@@ -1,18 +1,27 @@
 import {
-	fetchAttendees,
 	fetchAndSendAttendeeBatch,
+	fetchAttendees,
+	handleReservationCreated,
+	handleReservationUpdated,
+	init,
 	sendAttendeesToService,
 	updateAttendeeReservation,
-	handleReservationUpdated,
-	handleReservationCreated,
 } from '@tec/tickets/seating/admin/seatsReport';
 import { ACTION_FETCH_ATTENDEES } from '@tec/tickets/seating/ajax';
 import {
-	OUTBOUND_EVENT_ATTENDEES,
+	getHandlerForAction,
+	INBOUND_APP_READY_FOR_DATA,
 	OUTBOUND_ATTENDEE_UPDATE,
-} from '@tec/tickets/seating/service/api/service-actions';
+	OUTBOUND_EVENT_ATTENDEES,
+	RESERVATION_CREATED,
+	RESERVATION_UPDATED,
+	RESERVATIONS_DELETED,
+} from '@tec/tickets/seating/service/api';
+import { getIframeElement } from '@tec/tickets/seating/service/iframe';
+import { handleReservationsDeleted } from '@tec/tickets/seating/admin/action-handlers';
 
 const apiModule = require('@tec/tickets/seating/service/api');
+const iframeModule = require('@tec/tickets/seating/service/iframe');
 
 require('jest-fetch-mock').enableMocks();
 
@@ -90,6 +99,40 @@ describe('Seats Report', () => {
 		fetch.enableMocks();
 		jest.resetModules();
 		jest.resetAllMocks();
+	});
+
+	describe('init', () => {
+		it('should initialize the iframe', async () => {
+			const dom = getTestDocument('seats-report');
+			const iframe = getIframeElement(dom);
+			expect(iframe).toBeInstanceOf(HTMLIFrameElement);
+			iframeModule.initServiceIframe = jest.fn();
+
+			await init(dom);
+
+			expect(iframeModule.initServiceIframe).toHaveBeenCalledWith(iframe);
+		});
+
+		it('should register actions', async () => {
+			const dom = getTestDocument('seats-report');
+			const iframe = getIframeElement(dom);
+			expect(iframe).toBeInstanceOf(HTMLIFrameElement);
+			iframeModule.initServiceIframe = jest.fn();
+
+			await init(dom);
+			expect(
+				getHandlerForAction(INBOUND_APP_READY_FOR_DATA)
+			).toBeInstanceOf(Function);
+			expect(getHandlerForAction(RESERVATION_CREATED)).toBeInstanceOf(
+				Function
+			);
+			expect(getHandlerForAction(RESERVATION_UPDATED)).toBeInstanceOf(
+				Function
+			);
+			expect(getHandlerForAction(RESERVATIONS_DELETED)).toBe(
+				handleReservationsDeleted
+			);
+		});
 	});
 
 	describe('fetchAttendees', () => {
@@ -509,7 +552,9 @@ describe('Seats Report', () => {
 				JSON.stringify({ data: updatedAttendee })
 			);
 
-			const result = await updateAttendeeReservation({ ...messageData });
+			const result = await updateAttendeeReservation({
+				...messageData,
+			});
 
 			expect(result).toMatchObject(updatedAttendee);
 		});
@@ -554,7 +599,7 @@ describe('Seats Report', () => {
 					dataset: {
 						token: 'test-token',
 					},
-				})
+				}),
 			};
 			apiModule.sendPostMessage = jest.fn();
 
@@ -583,7 +628,7 @@ describe('Seats Report', () => {
 					dataset: {
 						token: 'test-token',
 					},
-				})
+				}),
 			};
 
 			const handled = await handleReservationCreated(iframe, messageData);
@@ -606,7 +651,7 @@ describe('Seats Report', () => {
 					dataset: {
 						token: 'test-token',
 					},
-				})
+				}),
 			};
 			apiModule.sendPostMessage = jest.fn();
 
@@ -635,7 +680,7 @@ describe('Seats Report', () => {
 					dataset: {
 						token: 'test-token',
 					},
-				})
+				}),
 			};
 
 			const handled = await handleReservationUpdated(iframe, messageData);

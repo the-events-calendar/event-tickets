@@ -5,8 +5,11 @@ namespace TEC\Tickets\Seating\Admin;
 use Codeception\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Maps as Maps_Tab;
 use TEC\Tickets\Seating\Meta;
+use TEC\Tickets\Seating\Service\Service;
+use Tribe\Tests\Traits\Service_Locator_Mocks;
 use Tribe\Tests\Traits\With_Uopz;
 use TEC\Tickets\Seating\Service\Maps as Maps_Service;
 use TEC\Tickets\Seating\Service\Layouts as Layouts_Service;
@@ -19,6 +22,7 @@ use Tribe__Tickets__Data_API as Data_API;
 class Maps_Layout_Homepage_Test extends WPTestCase {
 	use SnapshotAssertions;
 	use With_Uopz;
+	use Service_Locator_Mocks;
 
 	/**
 	 * @before
@@ -211,5 +215,24 @@ class Maps_Layout_Homepage_Test extends WPTestCase {
 			'http://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&tab=layouts',
 			$maps_layouts_home_page->get_layouts_home_url()
 		);
+	}
+
+	public function test_layout_edit(): void {
+		$_GET['tab'] = Layout_Edit::get_id();
+		$_GET['layoutId'] = 'some-layout-id';
+		$_GET['mapId'] = 'some-map-id';
+		$this->mock_singleton_service(
+			Service::class,
+			[
+				'get_ephemeral_token' => 'some-ephemeral-token',
+			]
+		);
+		$maps_layouts_home_page = tribe( Maps_Layouts_Home_Page::class );
+
+		ob_start();
+		$maps_layouts_home_page->render();
+		$html = ob_get_clean();
+
+		$this->assertMatchesHtmlSnapshot( $html );
 	}
 }

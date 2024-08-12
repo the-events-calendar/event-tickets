@@ -1,5 +1,10 @@
 import { init } from '@tec/tickets/seating/admin/layoutEdit';
 import {
+	handleReservationsDeleted,
+	handleReservationsUpdatedFollowingSeatTypes,
+	handleSeatTypesUpdated,
+} from '@tec/tickets/seating/admin/action-handlers';
+import {
 	getHandlerForAction,
 	RESERVATIONS_DELETED,
 	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
@@ -24,17 +29,6 @@ describe('Layouts Edit', () => {
 		reset();
 	});
 
-	function getTestDocument() {
-		return new DOMParser().parseFromString(
-			`<div class="event-tickets">
-					<div class="tec-tickets-seating__iframe-container" data-token="test-token">
-						<iframe class="tec-tickets-seating__iframe"></iframe>
-					</div>
-				</div>`,
-			'text/html'
-		);
-	}
-
 	describe('init', () => {
 		it('should initialize the iframe', async () => {
 			const dom = getTestDocument('layout-edit');
@@ -47,7 +41,7 @@ describe('Layouts Edit', () => {
 			expect(iframeModule.initServiceIframe).toHaveBeenCalledWith(iframe);
 		});
 
-		it('should register an action to handle reservations deleted', async () => {
+		it('should register actions', async () => {
 			const dom = getTestDocument('layout-edit');
 			const iframe = getIframeElement(dom);
 			expect(iframe).toBeInstanceOf(HTMLIFrameElement);
@@ -55,44 +49,15 @@ describe('Layouts Edit', () => {
 			actionHandlersModule.handleReservationsDeleted = jest.fn();
 
 			await init(dom);
-			getHandlerForAction(RESERVATIONS_DELETED).call();
-
+			expect(getHandlerForAction(RESERVATIONS_DELETED)).toBe(
+				handleReservationsDeleted
+			);
+			expect(getHandlerForAction(SEAT_TYPES_UPDATED)).toBe(
+				handleSeatTypesUpdated
+			);
 			expect(
-				actionHandlersModule.handleReservationsDeleted
-			).toHaveBeenCalled();
-		});
-
-		it('should register an action to handle seat types updated', async () => {
-			const dom = getTestDocument('layout-edit');
-			const iframe = getIframeElement(dom);
-			expect(iframe).toBeInstanceOf(HTMLIFrameElement);
-			iframeModule.initServiceIframe = jest.fn();
-			actionHandlersModule.handleSeatTypesUpdated = jest.fn();
-
-			await init(dom);
-			getHandlerForAction(SEAT_TYPES_UPDATED).call();
-
-			expect(
-				actionHandlersModule.handleSeatTypesUpdated
-			).toHaveBeenCalled();
-		});
-
-		it('should register an action to handle reservations updated', async () => {
-			const dom = getTestDocument('layout-edit');
-			const iframe = getIframeElement(dom);
-			expect(iframe).toBeInstanceOf(HTMLIFrameElement);
-			iframeModule.initServiceIframe = jest.fn();
-			actionHandlersModule.handleReservationsUpdatedFollowingSeatTypes =
-				jest.fn();
-
-			await init(dom);
-			getHandlerForAction(
-				RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES
-			).call();
-
-			expect(
-				actionHandlersModule.handleReservationsUpdatedFollowingSeatTypes
-			).toHaveBeenCalled();
+				getHandlerForAction(RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES)
+			).toBe(handleReservationsUpdatedFollowingSeatTypes);
 		});
 	});
 });

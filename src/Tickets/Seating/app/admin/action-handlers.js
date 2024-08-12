@@ -8,19 +8,21 @@ import {
 
 /**
  * @typedef {Object} UpdatedSeatType
- * @property {string} id          The seat type ID.
- * @property {string} name        The seat type name.
- * @property {string} mapId       The ID of the map the seat type belongs to.
- * @property {string} layoutId    The ID of the layout the seat type belongs to.
- * @property {string} description The seat type description.
- * @property {number} seatsCount  The seat type seats.
- */
-
-/**
+ * @property {string}            id               The seat type ID.
+ * @property {string}            name             The seat type name.
+ * @property {string}            mapId            The ID of the map the seat type belongs to.
+ * @property {string}            layoutId         The ID of the layout the seat type belongs to.
+ * @property {string}            description      The seat type description.
+ * @property {number}            seatsCount       The seat type seats.
+ *
+ * @typedef {Object} UpdatedSeatTypeData
+ * @property {UpdatedSeatType[]} seatTypes        The updated seat types.
+ *
+ *
  * @typedef {Object} SeatTypesUpdateResponseData
- * @property {number} updatedSeatTypes The number of seat types updated.
- * @property {number} updatedTickets   The number of tickets updated.
- * @property {number} updatedPosts     The number of posts updated.
+ * @property {number}            updatedSeatTypes The number of seat types updated.
+ * @property {number}            updatedTickets   The number of tickets updated.
+ * @property {number}            updatedPosts     The number of posts updated.
  */
 
 /**
@@ -28,12 +30,14 @@ import {
  *
  * @since TBD
  *
- * @param {UpdatedSeatType[]} updatedSeatTypes The updated seat types.
+ * @param {UpdatedSeatTypeData} data The updated seat types.
  *
  * @return {Promise<SeatTypesUpdateResponseData|false>} A promise that will resolve to the seat types update response
  *                                                      data or `false` on failure.
  */
-export async function handleSeatTypesUpdated(updatedSeatTypes) {
+export async function handleSeatTypesUpdated(data) {
+	const updatedSeatTypes = data?.seatTypes || [];
+
 	if (!(Array.isArray(updatedSeatTypes) && updatedSeatTypes.length > 0)) {
 		return false;
 	}
@@ -61,18 +65,24 @@ export async function handleSeatTypesUpdated(updatedSeatTypes) {
 	);
 }
 
+/**
+ * @typedef {Object} ReservationsDeletedData
+ * @property {string[]} ids The IDs of the reservations that were deleted.
+ */
 
 /**
  * Handles the deletion of reservations.
  *
  * @since TBD
  *
- * @param {string[]} ids The IDs of the reservations that were deleted.
+ * @param {ReservationsDeletedData} data The IDs of the reservations that were deleted.
  *
  * @return {Promise<boolean|number>} A promise that will resolve to the number of
  *                                   reservations that were deleted or `false` on failure.
  */
-export async function handleReservationsDeleted(ids) {
+export async function handleReservationsDeleted(data) {
+	const ids = data?.ids || [];
+
 	if (!(Array.isArray(ids) && ids.length > 0)) {
 		return 0;
 	}
@@ -96,7 +106,10 @@ export async function handleReservationsDeleted(ids) {
 
 /**
  * @typedef {Object} ReservationsUpdateResponseData
- * @property {number} updatedAttendees The number of Attendees updated.
+ * @property {number}               updatedAttendees The number of Attendees updated.
+ *
+ * @typedef {Object} ReservationsUpdateFollowingSeatTypesData
+ * @property {Map<string,string[]>} updated          The updated reservations.
  */
 
 /**
@@ -104,12 +117,14 @@ export async function handleReservationsDeleted(ids) {
  *
  * @since TBD
  *
- * @param {Map<string,string[]>} updated The updated reservations.
+ * @param {ReservationsUpdateFollowingSeatTypesData} data The updated reservations.
  *
  * @return {Promise<ReservationsUpdateResponseData|false>} A promise that will resolve to the reservations update
  *                                                         response data or `false` on failure.
  */
-export async function handleReservationsUpdatedFollowingSeatTypes(updated) {
+export async function handleReservationsUpdatedFollowingSeatTypes(data) {
+	const updated = data?.updated || {};
+
 	if (!updated || Object.keys(updated).length === 0) {
 		return 0;
 	}

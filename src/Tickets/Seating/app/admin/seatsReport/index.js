@@ -266,9 +266,7 @@ function registerActions(iframe) {
 		handleReservationUpdated(iframe, props)
 	);
 
-	registerAction(RESERVATIONS_DELETED, (data) =>
-		handleReservationsDeleted(data.ids || [])
-	);
+	registerAction(RESERVATIONS_DELETED, handleReservationsDeleted );
 }
 
 /**

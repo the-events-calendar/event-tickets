@@ -373,7 +373,7 @@ class Service {
 	public function delete_layout( string $layout_id, string $map_id ): bool {
 		return $this->layouts->delete( $layout_id, $map_id );
 	}
-	
+
 	/**
 	 * Returns the seat report URL.
 	 *
@@ -385,12 +385,17 @@ class Service {
 	 * @return string The seat report URL.
 	 */
 	public function get_seat_report_url( string $token, int $post_id ): string {
+		$query_args = [
+			'token'    => urlencode( $token ),
+			'eventId'  => urlencode( $this->get_post_uuid( $post_id ) ),
+		];
+
+		if ( $layout_id = get_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, true ) ) {
+			$query_args['layoutId'] = urlencode( $layout_id );
+		}
+
 		return add_query_arg(
-			[
-				'token'    => urlencode( $token ),
-				'eventId'  => urlencode( $this->get_post_uuid( $post_id ) ),
-				'layoutId' => urlencode( get_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, true ) ),
-			],
+			$query_args,
 			$this->get_frontend_url( '/embed/seat-assignment/' )
 		);
 	}

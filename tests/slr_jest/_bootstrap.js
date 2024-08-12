@@ -156,7 +156,9 @@ const memoizedHtml = {};
 global.getTestDocument = function (documentName) {
 	const validDocumentMap = {
 		'layout-edit':
-			'/../slr_integration/Admin/__snapshots__/Maps_Layout_Homepage_Test__test_empty_layouts_tab__0.snapshot.html',
+			'/../slr_integration/Admin/__snapshots__/Maps_Layout_Homepage_Test__test_layout_edit__0.snapshot.html',
+		'seats-report':
+			'/../slr_integration/Orders/__snapshots__/Seats_Report_Test__test_render_page__2_tickets_3_attendees__0.snapshot.html'
 	};
 
 	if (!validDocumentMap[documentName]) {

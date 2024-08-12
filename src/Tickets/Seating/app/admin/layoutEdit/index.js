@@ -28,16 +28,13 @@ import {
 export async function init(dom) {
 	dom = dom || document;
 
-	registerAction(RESERVATIONS_DELETED, (data) =>
-		handleReservationsDeleted(data?.ids || [])
-	);
+	registerAction(RESERVATIONS_DELETED, handleReservationsDeleted);
 
-	registerAction(SEAT_TYPES_UPDATED, (data) =>
-		handleSeatTypesUpdated(data?.seatTypes || [])
-	);
+	registerAction(SEAT_TYPES_UPDATED, handleSeatTypesUpdated);
 
-	registerAction(RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES, (data) =>
-		handleReservationsUpdatedFollowingSeatTypes(data?.updated || {})
+	registerAction(
+		RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
+		handleReservationsUpdatedFollowingSeatTypes
 	);
 
 	await initServiceIframe(getIframeElement(dom));
