@@ -21,7 +21,7 @@ use WP_Post;
 /**
  * Class Singular_Order_Page
  *
- * @since 5.2.0
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce\Admin
  */
