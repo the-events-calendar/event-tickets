@@ -50,9 +50,8 @@ class Singular_Order_PageTest extends \Codeception\TestCase\WPTestCase {
 	 * @before
 	 */
 	public function set_up() {
-		global $current_screen, $typenow;
-		$current_screen = WP_Screen::get( 'edit-' . Order::POSTTYPE );
-		$typenow        = Order::POSTTYPE;
+		$this->set_global_value( 'current_screen', WP_Screen::get( 'edit-' . Order::POSTTYPE ) );
+		$this->set_global_value( 'typenow', Order::POSTTYPE );
 	}
 
 	/**
