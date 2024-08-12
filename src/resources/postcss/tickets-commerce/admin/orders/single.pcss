@@ -5,9 +5,13 @@
  */
 
 body.wp-admin.post-type-tec_tc_order {
-	@media screen and (max-width: 782px) {
+	.tribe-mobile-hidden {
+		display: none;
+	}
+
+	@media screen and (--viewport-wpadmin) {
 		.tribe-mobile-hidden {
-			display: none;
+			display: inline-block;
 		}
 	}
 
@@ -18,10 +22,10 @@ body.wp-admin.post-type-tec_tc_order {
 	}
 
 	.tribe-mobile-only {
-		display: none;
+		display: inline-block;
 
-		@media screen and (max-width: 782px) {
-			display: inline-block;
+		@media screen and (--viewport-wpadmin) {
+			display: none;
 		}
 	}
 
