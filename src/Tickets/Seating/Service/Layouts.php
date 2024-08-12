@@ -234,6 +234,7 @@ class Layouts {
 					LEFT JOIN %i AS layout_meta
 					ON posts.ID = layout_meta.post_id
 					WHERE posts.post_type IN ({$post_types})
+					AND posts.post_status IN ('publish', 'private')
 					AND layout_meta.meta_key = %s
 					AND layout_meta.meta_value = %s",
 					$wpdb->posts,
