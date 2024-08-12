@@ -504,7 +504,9 @@ class Order extends Abstract_Order {
 	 * @return string
 	 */
 	public function get_gateway_label( $order ) {
-		$order = tec_tc_get_order( $order );
+		if ( is_numeric( $order ) ) {
+			$order = tec_tc_get_order( $order );
+		}
 
 		if ( empty( $order->gateway ) ) {
 			return null;
