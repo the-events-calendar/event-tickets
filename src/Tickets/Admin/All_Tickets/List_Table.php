@@ -34,11 +34,24 @@ class List_Table extends WP_List_Table {
 	 */
 	public function get_columns(): array {
 		return [
-			'cb'       => '<input type="checkbox" />',
 			'name'     => esc_html__( 'Name', 'event-tickets' ),
 			'quantity' => esc_html__( 'Quantity', 'event-tickets' ),
 			'price'    => esc_html__( 'Price', 'event-tickets' ),
-			'actions'  => esc_html__( 'Actions', 'event-tickets' ),
+		];
+	}
+
+	/**
+	 * Returns the sortable columns for the list table.
+	 *
+	 * @since  TBD
+	 *
+	 * @return array
+	 */
+	public function get_sortable_columns() {
+		return [
+			'name'	 => [ 'name', true ],
+			'quantity' => [ 'quantity', true ],
+			'price'	 => [ 'price', true ],
 		];
 	}
 
@@ -53,18 +66,7 @@ class List_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_default( $item, $column_name ): string {
-		return '';
-	}
-
-	/**
-	 * Renders the checkbox column.
-	 *
-	 * @since  TBD
-	 *
-	 * @param object $item The current item.
-	 */
-	public function column_cb( $item ) {
-		return '<input type="checkbox" />';
+		return $item[ $column_name ];
 	}
 
 	/**
@@ -101,29 +103,16 @@ class List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Renders the actions column.
-	 *
-	 * @since  TBD
-	 *
-	 * @param object $item The current item.
-	 */
-	public function column_actions( $item ) {
-		return esc_html__( 'Ticket Actions', 'event-tickets' );
-	}
-
-	/**
 	 * Prepares the list of items for displaying.
 	 *
 	 * @since 5.8.4 Adding caching to eliminate method running multiple times.
 	 */
 	public function prepare_items() {
-		$this->process_actions();
-
 		$current_page = $this->get_pagenum();
 		$per_page     = $this->get_items_per_page( $this->per_page_option );
 
 		$pagination_args = [
-			'total_items' => 0,
+			'total_items' => 1,
 			'per_page'    => $per_page,
 		];
 
@@ -146,7 +135,7 @@ class List_Table extends WP_List_Table {
 		/**
 		 * Filters the arguments used to query the tickets for the All Tickets Table.
 		 *
-		 * @since 5.9.1
+		 * @since TBD
 		 *
 		 * @param array $args The arguments used to query the tickets for the All Tickets Table.
 		 *
@@ -156,13 +145,24 @@ class List_Table extends WP_List_Table {
 
 		// $item_data = Tribe__Tickets__Tickets::get_attendees_by_args( $args );
 
-		$items = [];
+		$items = [
+			[
+				'name'     => 'Ticket Name',
+				'quantity' => 'Ticket Quantity',
+				'price'    => 'Ticket Price',
+			],
+		];
+
+		$pagination_args['total_items'] = count( $items );
 
 		// if ( ! empty( $item_data ) ) {
 		// 	$items = $item_data['attendees'];
 
 		// 	$pagination_args['total_items'] = $item_data['total_found'];
 		// }
+
+		$columns = $this->get_columns();
+		$this->_column_headers = [ $columns ];
 
 		$this->items = $items;
 

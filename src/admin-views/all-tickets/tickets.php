@@ -8,7 +8,7 @@
  * @var WP_List_Table     $tickets_table  The list table for the All Tickets screen.
  */
 
-$tickets_table->prepare_data();
+$tickets_table->prepare_items();
 ?>
 <h1>
 	<?php esc_html_e( 'All Tickets', 'event-tickets' ); ?>
