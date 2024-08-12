@@ -8,14 +8,14 @@ use Tribe\Tickets\Promoter\Service_Provider as Promoter_Service_Provider;
 use Tribe\Tickets\Admin\Settings;
 
 /**
- * Class Tribe__Tickets__Main
+ * Class Tribe__Tickets__Main.
  */
 class Tribe__Tickets__Main {
 
 	/**
 	 * Current version of this plugin.
 	 */
-	const VERSION = '5.13.0';
+	const VERSION = '5.13.1';
 
 	/**
 	 * Used to store the version history.

@@ -47,6 +47,7 @@
     "changelogger": {
       "changelog": "changelog.md",
       "types": {
+        "version" : "Version",
         "feat" : "Feature",
         "tweak" : "Tweak",
         "fix" : "Fix",
@@ -59,6 +60,9 @@
       },
       "formatter": {
         "filename": "bin/class-tec-changelog-formatter.php"
+      },
+      "versioning": {
+        "filename": "bin/ModifiedSemverVersioning.php"
       },
       "changes-dir": "changelog"
     }

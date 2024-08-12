@@ -46,7 +46,7 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Map of which status will be set when a given status is transitioned to.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @var string[]
 	 */
@@ -96,7 +96,7 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Fetches the group of statuses that a given status belongs to.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @param string $slug Which status we are looking for.
 	 * @param string $wp_slug Which status we are looking for.
@@ -155,7 +155,7 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 * Fetches the first status registered with a given slug.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Added `$ignore_map` parameter.
+	 * @since 5.13.0 Added `$ignore_map` parameter.
 	 *
 	 * @param string $slug Which status we are looking for.
 	 * @param bool   $ignore_map Whether to ignore the map or not.
@@ -184,7 +184,7 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 * Fetches the first status registered with a given wp slug.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Added `$ignore_map` parameter.
+	 * @since 5.13.0 Added `$ignore_map` parameter.
 	 *
 	 * @param string $slug Which status we are looking for.
 	 * @param bool   $ignore_map Whether to ignore the map or not.

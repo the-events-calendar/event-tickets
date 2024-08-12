@@ -156,7 +156,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Provides the results for the events dropdown in the Orders table.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @param array<string,mixed>  $results The results.
 	 * @param array<string,string> $search The search.
@@ -202,7 +202,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Provides the results for the customers dropdown in the Orders table.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @param array $results The results.
 	 * @param array $search The search.
@@ -248,7 +248,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Filters the admin order table to apply filters.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @param WP_Query $query The WP_Query instance.
 	 * @return void
@@ -415,7 +415,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Validates a date range.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @param string $date_from The start date.
 	 * @param string $date_to The end date.
@@ -436,7 +436,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Filters the WP List Table class name to use the new Orders table.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @param string $class_name The class name.
 	 * @param array  $args The arguments.

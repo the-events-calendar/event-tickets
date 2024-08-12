@@ -97,7 +97,7 @@ class Order_Repository extends Tribe__Repository {
 	/**
 	 * Retrieves distinct values of a given key.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @param string $key The key to retrieve the distinct values from.
 	 * @param array  $excluded_statuses The statuses to exclude from the query.

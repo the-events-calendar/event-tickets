@@ -2,7 +2,7 @@
 /**
  * Status: Unsupported
  *
- * @since TBD
+ * @since 5.13.0
  *
  * @package TEC\Tickets\Commerce\Status
  */
@@ -14,7 +14,7 @@ namespace TEC\Tickets\Commerce\Status;
  *
  * A status that is not supported, but avoids fatals.
  *
- * @since   TBD
+ * @since   5.13.0
  *
  * @package TEC\Tickets\Commerce\Status
  */
@@ -22,7 +22,7 @@ class Unsupported extends Status_Abstract {
 	/**
 	 * Slug for this Status.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @var string
 	 */
