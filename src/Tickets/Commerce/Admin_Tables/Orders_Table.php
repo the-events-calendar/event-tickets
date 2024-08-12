@@ -594,7 +594,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		return sprintf(
 			'<br><span class="tribe-dashicons" aria-hidden="true">%1$s<a role="button" aria-label="%2$s" aria-describedby="%4$s" title="%2$s" href="javascript:void(0)" data-clipboard-action="copy" data-clipboard-target=".%3$s" data-notice-target=".%4$s" class="tribe-copy-to-clipboard dashicons dashicons-admin-page"></a>%5$s</span>',
 			esc_html( $item->gateway_order_id ),
-			__( 'Copy Payment\'s Gateway Transaction ID to your Clipboard', 'event-tickets' ),
+			_x( 'Copy Payment\'s Gateway Transaction ID to your Clipboard', 'Copy payment transaction ID to clipboard.', 'event-tickets' ),
 			$copy_button_target,
 			str_replace( 'tec-copy-text-target-', 'tec-copy-to-clipboard-notice-content-', $copy_button_target ),
 			$copy_button,
