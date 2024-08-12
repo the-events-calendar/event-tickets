@@ -4,6 +4,8 @@
  *
  * @since TBD
  *
+ * @version TBD
+ *
  * @var WP_Post                                         $order             The current post object.
  * @var \TEC\Tickets\Commerce\Admin\Singular_Order_Page $single_page       The orders table output.
  */
