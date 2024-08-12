@@ -25,11 +25,13 @@ class List_Table extends WP_List_Table {
 	 * @since  TBD
 	 */
 	public function __construct() {
-		parent::__construct( [
-			'singular' => 'ticket',
-			'plural'   => 'tickets',
-			'ajax'     => false,
-		] );
+		parent::__construct(
+			[
+				'singular' => 'ticket',
+				'plural'   => 'tickets',
+				'ajax'     => false,
+			]
+		);
 	}
 
 	/**
@@ -56,9 +58,9 @@ class List_Table extends WP_List_Table {
 	 */
 	public function get_sortable_columns() {
 		return [
-			'name'	 => [ 'name', true ],
+			'name'     => [ 'name', true ],
 			'quantity' => [ 'quantity', true ],
-			'price'	 => [ 'price', true ],
+			'price'    => [ 'price', true ],
 		];
 	}
 
@@ -136,7 +138,7 @@ class List_Table extends WP_List_Table {
 		}
 
 		if ( tribe_get_request_var( 'order' ) ) {
-			$args['order']   = tribe_get_request_var( 'order' );
+			$args['order'] = tribe_get_request_var( 'order' );
 		}
 
 		/**
@@ -150,8 +152,6 @@ class List_Table extends WP_List_Table {
 		 */
 		$args = apply_filters( 'tec_tickets_all_tickets_table_query_args', $args );
 
-		// $item_data = Tribe__Tickets__Tickets::get_attendees_by_args( $args );
-
 		$items = [
 			[
 				'name'     => 'Ticket Name',
@@ -162,18 +162,10 @@ class List_Table extends WP_List_Table {
 
 		$pagination_args['total_items'] = count( $items );
 
-		// if ( ! empty( $item_data ) ) {
-		// 	$items = $item_data['attendees'];
-
-		// 	$pagination_args['total_items'] = $item_data['total_found'];
-		// }
-
-		$columns = $this->get_columns();
+		$columns               = $this->get_columns();
 		$this->_column_headers = [ $columns ];
-
-		$this->items = $items;
+		$this->items           = $items;
 
 		$this->set_pagination_args( $pagination_args );
 	}
-}{
-    }
+}

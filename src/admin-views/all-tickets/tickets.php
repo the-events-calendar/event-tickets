@@ -14,5 +14,5 @@ $tickets_table->prepare_items();
 	<?php esc_html_e( 'All Tickets', 'event-tickets' ); ?>
 </h1>
 <div>
-	<?php $tickets_table->display();?>
+	<?php $tickets_table->display(); ?>
 </div>
