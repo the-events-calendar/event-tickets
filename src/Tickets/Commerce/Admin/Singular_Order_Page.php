@@ -143,7 +143,7 @@ class Singular_Order_Page extends Service_Provider {
 			__( 'Order Details', 'event-tickets' ),
 			[ $this, 'render_order_details' ],
 			$post_type,
-			'advanced',
+			'normal',
 			'high'
 		);
 
