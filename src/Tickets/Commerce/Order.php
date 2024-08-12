@@ -242,8 +242,8 @@ class Order extends Abstract_Order {
 				'item_trashed'             => __( 'Order trashed.', 'event-tickets' ),
 				'item_scheduled'           => __( 'Order scheduled.', 'event-tickets' ),
 				'item_updated'             => __( 'Order updated.', 'event-tickets' ),
-				'item_link'                => _x( 'Order Link', 'navigation link block title', 'event-ticket' ),
-				'item_link_description'    => _x( 'A link to an order.', 'navigation link block description', 'event-ticket' ),
+				'item_link'                => _x( 'Order Link', 'navigation link block title', 'event-tickets' ),
+				'item_link_description'    => _x( 'A link to an order.', 'navigation link block description', 'event-tickets' ),
 			],
 		];
 
@@ -504,9 +504,7 @@ class Order extends Abstract_Order {
 	 * @return string
 	 */
 	public function get_gateway_label( $order ) {
-		if ( is_numeric( $order ) ) {
-			$order = tec_tc_get_order( $order );
-		}
+		$order = tec_tc_get_order( $order );
 
 		if ( empty( $order->gateway ) ) {
 			return null;
@@ -578,9 +576,7 @@ class Order extends Abstract_Order {
 	 * @return WP_Post[]
 	 */
 	public function get_events( $order ): array {
-		if ( is_numeric( $order ) ) {
-			$order = tec_tc_get_order( $order );
-		}
+		$order = tec_tc_get_order( $order );
 
 		if ( ! $order instanceof WP_Post ) {
 			return [];
@@ -611,9 +607,7 @@ class Order extends Abstract_Order {
 	 * @return ?string
 	 */
 	public function get_value( $order, $original = false ): ?string {
-		if ( is_numeric( $order ) ) {
-			$order = tec_tc_get_order( $order );
-		}
+		$order = tec_tc_get_order( $order );
 
 		if ( ! $order instanceof WP_Post ) {
 			return null;

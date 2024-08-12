@@ -240,9 +240,7 @@ class Singular_Order_Page extends Service_Provider {
 	 * @return string
 	 */
 	public function get_gateway_label( $order ): string {
-		if ( is_numeric( $order ) ) {
-			$order = tec_tc_get_order( $order );
-		}
+		$order = tec_tc_get_order( $order );
 
 		if ( ! $order instanceof WP_Post ) {
 			return '';

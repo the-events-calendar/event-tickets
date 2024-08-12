@@ -630,12 +630,11 @@ class Orders_Table extends WP_Posts_List_Table {
 			return $gateway::get_label();
 		}
 
-		return sprintf(
-			'%1$s%2$s%3$s%4$s%5$s',
-			'<a class="tribe-dashicons" href="' . esc_url( $order_url ) . '" target="_blank" rel="noopener noreferrer">',
-			esc_html( $gateway::get_label() ),
-			'<span class="dashicons dashicons-external"></span>',
-			'</a>',
+		return (
+			'<a class="tribe-dashicons" href="' . esc_url( $order_url ) . '" target="_blank" rel="noopener noreferrer">' .
+			esc_html( $gateway::get_label() ) .
+			'<span class="dashicons dashicons-external"></span>' .
+			'</a>' .
 			$this->column_gateway_order_id( $item, $order_url )
 		);
 	}
