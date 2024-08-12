@@ -15,6 +15,15 @@
 		<exclude-pattern>src/Test.php</exclude-pattern>
 	</rule>
 
+	<!-- Enformce our specific plugin's text domain. -->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array" value="event-tickets" />
+		</properties>
+	</rule>
+
 	<exclude-pattern>*/tests/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<!-- Exclude the common directory -->
+	<exclude-pattern>*/common/*</exclude-pattern>
 </ruleset>

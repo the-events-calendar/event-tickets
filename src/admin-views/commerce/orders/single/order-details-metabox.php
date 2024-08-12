@@ -9,7 +9,7 @@
 $ts = strtotime( $order->post_date_gmt );
 
 $post_date  = Tribe__Date_Utils::reformat( $ts, Tribe__Date_Utils::DATEONLYFORMAT );
-$post_date .= ' ' . esc_html__( 'at', 'event-ticktets' ) . ' ';
+$post_date .= ' ' . esc_html_x( 'at', 'It\'s usage is to separate date from time. For example May 2nd 2024 <b>at</b> 11:35 AM.', 'event-tickets' ) . ' ';
 $post_date .= Tribe__Date_Utils::reformat( $ts, 'g:i A' );
 
 ?>
