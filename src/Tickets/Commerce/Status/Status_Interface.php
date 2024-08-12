@@ -114,4 +114,13 @@ interface Status_Interface {
 	 * @return bool
 	 */
 	public function is_final();
+
+	/**
+	 * An array of the statuses this status can be updated to.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function can_be_updated_to(): array;
 }

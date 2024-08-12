@@ -192,7 +192,6 @@ abstract class Status_Abstract implements Status_Interface {
 		 * @param static $status    Which status these arguments are associated with.
 		 */
 		return apply_filters( "tec_tickets_commerce_order_status_{$this->get_slug()}_get_wp_arguments", $arguments, $this );
-
 	}
 
 	/**
@@ -200,10 +199,16 @@ abstract class Status_Abstract implements Status_Interface {
 	 * the ones that will require a translation.
 	 *
 	 * @since 5.1.9
-	 *
 	 */
 	protected function setup_wp_arguments() {
 		$this->wp_arguments['label']       = $this->get_name();
 		$this->wp_arguments['label_count'] = _n_noop( $this->get_name() . ' <span class="count">(%s)</span>', $this->get_name() . ' <span class="count">(%s)</span>', 'event-tickets' );
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function can_be_updated_to(): array {
+		return [];
 	}
 }

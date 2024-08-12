@@ -3,7 +3,8 @@
 namespace TEC\Tickets\Commerce\Status;
 
 use Tribe\Tickets\Test\Traits\With_Test_Orders;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;;
+use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Tickets\Commerce\Order;
 
 class Status_HandlerTest extends \Codeception\TestCase\WPTestCase {
 
@@ -64,7 +65,70 @@ class Status_HandlerTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->prepare_test_data();
 
-		$this->assertMatchesJsonSnapshot( wp_json_encode( $status_handler->get_orders_possible_status( $this->orders['0'] ), JSON_PRETTY_PRINT ) );
+		$map = [];
+
+		// Completed order.
+		$map[] = array_map(
+			function ( $st ) {
+				return $st->get_slug();
+			},
+			$status_handler->get_orders_possible_status( tec_tc_get_order( $this->orders['0']->ID ) )
+		);
+
+		$this->assertTrue( tribe( Order::class )->modify_status( $this->orders['0']->ID, Pending::SLUG ) );
+
+		$this->assertEquals( tribe( Pending::class )->get_wp_slug(), tec_tc_get_order( $this->orders['0']->ID )->post_status );
+
+		// Pending order.
+		$map[] = array_map(
+			function ( $st ) {
+				return $st->get_slug();
+			},
+			$status_handler->get_orders_possible_status( tec_tc_get_order( $this->orders['0']->ID ) )
+		);
+
+		$this->assertTrue( tribe( Order::class )->modify_status( $this->orders['0']->ID, Denied::SLUG ) );
+
+		$this->assertEquals( tribe( Denied::class )->get_wp_slug(), tec_tc_get_order( $this->orders['0']->ID )->post_status );
+
+		// Denied order.
+		$map[] = array_map(
+			function ( $st ) {
+				return $st->get_slug();
+			},
+			$status_handler->get_orders_possible_status( tec_tc_get_order( $this->orders['0']->ID ) )
+		);
+
+		$this->assertTrue( tribe( Order::class )->modify_status( $this->orders['1']->ID, Refunded::SLUG ) );
+
+		$this->assertEquals( tribe( Refunded::class )->get_wp_slug(), tec_tc_get_order( $this->orders['1']->ID )->post_status );
+
+		// Refunded order.
+		$map[] = array_map(
+			function ( $st ) {
+				return $st->get_slug();
+			},
+			$status_handler->get_orders_possible_status( tec_tc_get_order( $this->orders['1']->ID ) )
+		);
+
+		$this->assertTrue( tribe( Order::class )->modify_status( $this->orders['2']->ID, Voided::SLUG ) );
+
+		$this->assertEquals( tribe( Voided::class )->get_wp_slug(), tec_tc_get_order( $this->orders['2']->ID )->post_status );
+
+		// Voided order.
+		$map[] = array_map(
+			function ( $st ) {
+				return $st->get_slug();
+			},
+			$status_handler->get_orders_possible_status( tec_tc_get_order( $this->orders['2']->ID ) )
+		);
+
+		$this->assertMatchesJsonSnapshot(
+			wp_json_encode(
+				$map,
+				JSON_PRETTY_PRINT
+			)
+		);
 	}
 
 	/**

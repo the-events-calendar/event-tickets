@@ -101,18 +101,35 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 *
 	 * @param WP_Post $order The order we are checking.
 	 *
-	 * @return Status_Interface[]
+	 * @return array
 	 */
 	public function get_orders_possible_status( WP_Post $order ): array {
+		$order = tec_tc_get_order( $order );
+
+		if ( ! $order ) {
+			return [];
+		}
+
 		$possible = array_unique( array_values( self::STATUS_MAP ) );
 
 		$current_status = $this->get_by_wp_slug( $order->post_status );
 
+		if ( ! in_array( get_class( $current_status ), $possible, true ) ) {
+			$current_status = tribe( self::STATUS_MAP[ get_class( $current_status ) ] );
+		}
+
+		$possible_statuses = $current_status->can_be_updated_to();
+
 		$final = [];
 		foreach ( $possible as $status ) {
+			if ( ! in_array( tribe( $status ), $possible_statuses, true ) ) {
+				continue;
+			}
+
 			if ( ! $current_status->can_apply_to( $order, tribe( $status ) ) ) {
 				continue;
 			}
+
 			$final[] = tribe( $status );
 		}
 
