@@ -15,7 +15,24 @@ use TEC\Tickets\Commerce\Utils\Value;
 	<td><?php echo esc_html( $ticket->name ); ?></td>
 	<td class="tribe-desktop-only"><?php echo 'series_pass' === $ticket->type ? esc_html__( 'Series Pass', 'event-tickets' ) : esc_html__( 'Standard Ticket', 'event-tickets' ); ?></td>
 	<td class="tec-tickets-commerce-single-order--items--table--row--info-column"><!-- @todo dpan: this is were Refunded would go --></td>
-	<td style="padding-left:0;"><?php echo esc_html( Value::create( $item['regular_price'] )->get_currency() ); ?></td>
+	<td style="padding-left:0;">
+		<?php
+		$current  = tribe( Order::class )->get_item_value( $item );
+		$original = tribe( Order::class )->get_item_value( $item, true );
+		if ( $original !== $current ) {
+			printf(
+				'<div class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins><del><span class="tec-tickets-commerce-price">%s</span></del></div>',
+				esc_html( $current ),
+				esc_html( $original )
+			);
+		} else {
+			printf(
+				'<div class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins></div>',
+				esc_html( $current )
+			);
+		}
+		?>
+	</td>
 	<td>
 		<div class="tec-tickets-commerce-single-order--items--table--row--actions">
 			<a href="javascript:void(0)" class="tribe-dashicons">

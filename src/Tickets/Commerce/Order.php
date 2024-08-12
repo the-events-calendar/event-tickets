@@ -653,6 +653,23 @@ class Order extends Abstract_Order {
 	}
 
 	/**
+	 * Returns the total value of an order item.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $item     The order object or ID.
+	 * @param bool  $original Whether to get the original value or the current value.
+	 *
+	 * @return ?string
+	 */
+	public function get_item_value( $item, $original = false ): ?string {
+		$current = $item['price'];
+		$regular = $item['regular_price'] ?? $current;
+
+		return $original ? Value::create( $regular )->get_currency() : Value::create( $current )->get_currency();
+	}
+
+	/**
 	 * Returns the Ticket ID that is associated with the attendee
 	 *
 	 * @since 5.2.0

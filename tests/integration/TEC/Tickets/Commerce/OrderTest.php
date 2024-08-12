@@ -32,4 +32,20 @@ class OrderTest extends \Codeception\TestCase\WPTestCase {
 			$this->assertEquals( '&#x24;1.00', $current_value );
 		}
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_get_item_value() {
+		$this->prepare_test_data();
+		foreach ( $this->orders as $order ) {
+			foreach ( $order->items as $item ) {
+				$current_value  = tribe( Order::class )->get_item_value( $item );
+				$original_value = tribe( Order::class )->get_item_value( $item, true );
+
+				$this->assertSame( $current_value, $original_value );
+				$this->assertEquals( '&#x24;1.00', $current_value );
+			}
+		}
+	}
 }
