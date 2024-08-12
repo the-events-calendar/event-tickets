@@ -9,7 +9,6 @@
  */
 
 use TEC\Tickets\Commerce\Order;
-use TEC\Tickets\Commerce\Utils\Value;
 ?>
 <tr class="tec-tickets-commerce-single-order--items--table--row">
 	<td><?php echo esc_html( $ticket->name ); ?></td>
