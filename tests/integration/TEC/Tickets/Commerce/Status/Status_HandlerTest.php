@@ -2,7 +2,13 @@
 
 namespace TEC\Tickets\Commerce\Status;
 
+use Tribe\Tickets\Test\Traits\With_Test_Orders;
+use tad\Codeception\SnapshotAssertions\SnapshotAssertions;;
+
 class Status_HandlerTest extends \Codeception\TestCase\WPTestCase {
+
+	use With_Test_Orders;
+	use SnapshotAssertions;
 
 	/**
 	 * @test
@@ -48,6 +54,17 @@ class Status_HandlerTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertInstanceOf( Trashed::class, $status_handler->get_by_wp_slug( 'trash' ) );
 		$this->assertInstanceOf( Trashed::class, $status_handler->get_by_slug( 'trash', false ) );
 		$this->assertInstanceOf( Trashed::class, $status_handler->get_by_wp_slug( 'trash', false ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_get_orders_possible_status() {
+		$status_handler = tribe( Status_Handler::class );
+
+		$this->prepare_test_data();
+
+		$this->assertMatchesJsonSnapshot( wp_json_encode( $status_handler->get_orders_possible_status( $this->orders['0'] ), JSON_PRETTY_PRINT ) );
 	}
 
 	/**
