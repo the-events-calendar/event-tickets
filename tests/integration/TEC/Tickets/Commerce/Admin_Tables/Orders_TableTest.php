@@ -157,6 +157,11 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 			'Test TC ticket for {{order_id}}',
 			$html
 		);
+		$html = preg_replace(
+			'/#([0-9]+) - test/',
+			'#{{order_id}} - test',
+			$html
+		);
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
