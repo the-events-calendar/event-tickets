@@ -350,6 +350,7 @@ class Singular_Order_Page extends Service_Provider {
 			return $messages;
 		}
 
+		// @todo dpan - based on Action being taken we need to update the messages.
 		$messages[ Order::POSTTYPE ] = [
 			1000 => __( 'Order status updated!', 'event-tickets' ),
 			1001 => __( 'Order status could not be updated.', 'event-tickets' ),
