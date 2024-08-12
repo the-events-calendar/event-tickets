@@ -386,11 +386,13 @@ class Service {
 	 */
 	public function get_seat_report_url( string $token, int $post_id ): string {
 		$query_args = [
-			'token'    => urlencode( $token ),
-			'eventId'  => urlencode( $this->get_post_uuid( $post_id ) ),
+			'token'   => urlencode( $token ),
+			'eventId' => urlencode( $this->get_post_uuid( $post_id ) ),
 		];
 
-		if ( $layout_id = get_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, true ) ) {
+		$layout_id = get_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, true );
+
+		if ( $layout_id ) {
 			$query_args['layoutId'] = urlencode( $layout_id );
 		}
 
