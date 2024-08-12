@@ -595,7 +595,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		$copy_button        = ob_get_clean();
 
 		return sprintf(
-			'<br><span class="tribe-dashicons">%1$s<a role="button" aria-label="%2$s" aria-describedby="%4$s" title="%2$s" href="javascript:void(0)" data-clipboard-action="copy" data-clipboard-target=".%3$s" data-notice-target=".%4$s" class="tribe-copy-to-clipboard dashicons dashicons-admin-page"></a>%5$s</span>',
+			'<br><span class="tribe-dashicons" aria-hidden="true">%1$s<a role="button" aria-label="%2$s" aria-describedby="%4$s" title="%2$s" href="javascript:void(0)" data-clipboard-action="copy" data-clipboard-target=".%3$s" data-notice-target=".%4$s" class="tribe-copy-to-clipboard dashicons dashicons-admin-page"></a>%5$s</span>',
 			esc_html( $item->gateway_order_id ),
 			__( 'Copy Payment\'s Gateway Transaction ID to your Clipboard', 'event-tickets' ),
 			$copy_button_target,
