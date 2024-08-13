@@ -13,6 +13,7 @@ $tickets_table->prepare_items();
 <h1>
 	<?php esc_html_e( 'All Tickets', 'event-tickets' ); ?>
 </h1>
-<div>
+<form id="tec-tickets-all-tickets-form" method="get">
+	<input type="hidden" name="page" value="<?php echo $_REQUEST['page']; ?>" />
 	<?php $tickets_table->display(); ?>
-</div>
+</form>

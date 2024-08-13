@@ -89,7 +89,7 @@ class Page {
 	public function add_tec_tickets_all_tickets_page() {
 		$admin_pages = tribe( 'admin.pages' );
 
-		$all_tickets_page = $admin_pages->register_page(
+		$admin_pages->register_page(
 			[
 				'id'       => static::$slug,
 				'path'     => static::$slug,

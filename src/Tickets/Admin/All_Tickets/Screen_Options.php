@@ -1,0 +1,118 @@
+<?php
+/**
+ * Class the handles the All Tickets screen options.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Admin\All_Tickets
+ */
+
+namespace TEC\Tickets\Admin\All_Tickets;
+
+/**
+ * Class Screen_Options
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Admin\All_Tickets
+ */
+class Screen_Options {
+	/**
+	 * @var string The user option that will store how many attendees should be shown per page.
+	 */
+	public static $per_page_user_option = 'event_tickets_all_tickets_per_page';
+
+	/**
+	 * @var string The screen id these screen options should render on.
+	 */
+	protected $screen_id;
+
+	/**
+	 * @var WP_Screen Either the globally defined WP_Screen instance or an injected dependency.
+	 */
+	protected $screen;
+
+	/**
+	 * Initialize the screen options.
+	 *
+	 * @since TBD
+	 */
+	public function init() {
+		$screen = get_current_screen();
+		if ( ! is_null( $screen ) ) {
+			$this->screen_id = $screen->id;
+			$this->screen = $screen;
+			$this->add_hooks();
+		}
+	}
+
+	/**
+	 * Adds Screen Otion hooks.
+	 *
+	 * @since TBD
+	 */
+	public function add_hooks() {
+
+		add_filter( 'manage_' . Page::$hook_suffix . '_columns', [ $this, 'filter_manage_columns' ] );
+		add_filter( 'screen_options_show_screen', [ $this, 'filter_screen_options_show_screen' ], 10, 2 );
+	}
+
+	/**
+	 * Filters the screen options show screen.
+	 *
+	 * @since TBD
+	 *
+	 * @param boolean   $show   Whether to show the screen options.
+	 * @param WP_Screen $screen The current screen.
+	 *
+	 * @return boolean
+	 */
+	public function filter_screen_options_show_screen( $show, $screen ) {
+		return Page::$hook_suffix === $screen->id;
+	}
+
+	/**
+	 * Adds the screen options required on the current screen.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the screen options were added or not.
+	 */
+	public function add_options() {
+		return true;
+	}
+
+	/**
+	 * Adds the "Columns" screen option by simply listing the column headers and titles.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $columns The Attendee table columns and titles, def. empty array.
+	 *
+	 * @return array
+	 */
+	public function filter_manage_columns( array $columns ) {
+		return tribe( List_Table::class )->get_table_columns();
+	}
+
+	/**
+	 * Filters the save operations of screen options to save the ones the class manages.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $status Whether the option should be saved or not.
+	 * @param string $option The user option slug.
+	 * @param mixed $value The user option value.
+	 *
+	 * @return bool|mixed Either `false` if the user option is not one managed by the class or the user
+	 *                    option value to save.
+	 */
+	public function filter_set_screen_options( $status, $option, $value ) {
+		error_log( 'Screen_Options::filter_set_screen_options() - Option: ' . $option );
+		if ( $option === self::$per_page_user_option ) {
+			return $value;
+		}
+
+		return $status;
+	}
+}
