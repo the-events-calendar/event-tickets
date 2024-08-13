@@ -94,9 +94,11 @@ if ( ! empty( $attendee ) ) :
 							}
 
 							if ( 'trash' === $event->post_status ) {
+								// translators: 1) is the event's title and 2) is an indication as a text that it is now trashed.
 								printf(
-									'<div>%s (trashed)</div>',
-									esc_html( get_the_title( $event->ID ) )
+									'<div>%1$s %2$s</div>',
+									esc_html( get_the_title( $event->ID ) ),
+									esc_html_x( '(trashed)', 'This is about an "event" related to a Tickets Commerce order that now has been trashed.', 'event-tickets' )
 								);
 								continue;
 							}
