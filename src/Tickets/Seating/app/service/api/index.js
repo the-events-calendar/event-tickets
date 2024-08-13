@@ -1,5 +1,5 @@
 // Get the service base URL without the trailing slash.
-import { getBaseUrl } from './localized-data.js';
+import {associatedEventsUrl, getBaseUrl} from './localized-data.js';
 import {
 	setIsReady,
 	setEstablishingReadiness,
@@ -22,6 +22,7 @@ import {
 	RESERVATIONS_UPDATED,
 	SEAT_TYPES_UPDATED,
 	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
+	GO_TO_ASSOCIATED_EVENTS,
 } from './service-actions.js';
 
 /**
@@ -282,6 +283,7 @@ window.tec.tickets.seating.service.api = {
 	RESERVATIONS_UPDATED,
 	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
 	SEAT_TYPES_UPDATED,
+	GO_TO_ASSOCIATED_EVENTS,
 	establishReadiness,
 	getHandlerForAction,
 	getHandlerQueue,
@@ -291,4 +293,5 @@ window.tec.tickets.seating.service.api = {
 	removeAction,
 	sendPostMessage,
 	startListeningForServiceMessages,
+	getAssociatedEventsUrl,
 };
