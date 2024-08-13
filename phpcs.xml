@@ -15,7 +15,7 @@
 		<exclude-pattern>src/Test.php</exclude-pattern>
 	</rule>
 
-	<!-- Enformce our specific plugin's text domain. -->
+	<!-- Enforce our specific plugin's text domain. -->
 	<rule ref="WordPress.WP.I18n">
 		<properties>
 			<property name="text_domain" type="array" value="event-tickets" />
