@@ -11,6 +11,7 @@ namespace TEC\Tickets\Seating;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Assets\Asset;
+use TEC\Tickets\Seating\Admin\Events\Associated_Events;
 use TEC\Tickets\Seating\Admin\Maps_Layouts_Home_Page;
 use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Layouts;
@@ -146,9 +147,10 @@ class Assets extends Controller_Contract {
 
 			return [
 				'service' => [
-					'baseUrl'        => $this->container->get( Service\Service::class )->get_frontend_url(),
-					'mapsHomeUrl'    => $maps_layouts_home_page->get_maps_home_url(),
-					'layoutsHomeUrl' => $maps_layouts_home_page->get_layouts_home_url(),
+					'baseUrl'             => $this->container->get( Service\Service::class )->get_frontend_url(),
+					'mapsHomeUrl'         => $maps_layouts_home_page->get_maps_home_url(),
+					'layoutsHomeUrl'      => $maps_layouts_home_page->get_layouts_home_url(),
+					'associatedEventsUrl' => add_query_arg( [ 'page' => Associated_Events::get_slug() ], admin_url( 'admin.php' ) ),
 				],
 			];
 		};
