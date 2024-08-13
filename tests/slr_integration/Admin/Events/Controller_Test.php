@@ -7,7 +7,6 @@ use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Seating\Admin\Events\Controller;
 use TEC\Tickets\Seating\Service\Layouts as Layouts_Service;
 use TEC\Tickets\Seating\Meta;
-use TEC\Tickets\Seating\Tables\Layouts as Layouts_Table;
 use Tribe\Tests\Traits\With_Uopz;
 
 class Controller_Test extends Controller_Test_Case {
@@ -21,6 +20,8 @@ class Controller_Test extends Controller_Test_Case {
 	 */
 	public function setup_conditions() {
 		$this->set_fn_return( 'wp_create_nonce', 'xxxxxx' );
+		$this->set_fn_return( 'is_admin', true );
+		$this->set_fn_return( 'get_column_headers', [] );
 		
 		Layouts_Service::insert_rows_from_service(
 			[
