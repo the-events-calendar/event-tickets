@@ -5,10 +5,12 @@ import {
 } from '@tec/tickets/seating/service/iframe';
 import { onReady } from '@tec/tickets/seating/utils';
 import {
+	getAssociatedEventsUrl,
 	registerAction,
 	RESERVATIONS_DELETED,
 	SEAT_TYPES_UPDATED,
 	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
+	GO_TO_ASSOCIATED_EVENTS,
 } from '@tec/tickets/seating/service/api';
 import {
 	ACTION_DELETE_RESERVATIONS,
@@ -169,6 +171,10 @@ export async function init(dom) {
 	registerAction(RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES, (data) =>
 		handleReservationsUpdatedFollowingSeatTypes(data.updated || {})
 	);
+
+	registerAction(GO_TO_ASSOCIATED_EVENTS, ( data ) => {
+		window.location.href = getAssociatedEventsUrl(data.layoutId);
+	} );
 
 	await initServiceIframe(getIframeElement(dom));
 }

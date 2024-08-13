@@ -247,6 +247,17 @@ export function emptyHandlerQueue() {
 	handlerQueue = [];
 }
 
+/**
+ * Returns the associated events URL for the given layout ID.
+ *
+ * @since TBD
+ *
+ * @return {string} The associated events URL for the given layout ID.
+ */
+export function getAssociatedEventsUrl( layoutId ) {
+	return `${associatedEventsUrl}&layout=${layoutId}`;
+}
+
 // Re-export some functions from the state module.
 export {
 	INBOUND_APP_READY,
