@@ -86,11 +86,9 @@ class Screen_Options {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $columns The Attendee table columns and titles, def. empty array.
-	 *
 	 * @return array
 	 */
-	public function filter_manage_columns( array $columns ) {
+	public function filter_manage_columns() {
 		return tribe( List_Table::class )->get_table_columns();
 	}
 
