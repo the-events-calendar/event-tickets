@@ -1,4 +1,7 @@
 <?php
+/**
+ * Associated Events list table.
+ */
 
 namespace TEC\Tickets\Seating\Admin\Events;
 
