@@ -1127,6 +1127,7 @@ class Attendees extends Controller {
 	 * @return int|array<int> The updated post ID or IDs.
 	 */
 	public function include_series_to_fetch_attendees( $post_id, $repository = null ): array {
+		var_dump( $post_id );die();
 		if ( ! is_int( $post_id ) && ! is_array( $post_id ) ) {
 			return $post_id;
 		}
