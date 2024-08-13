@@ -41,7 +41,7 @@ class Screen_Options {
 		$screen = get_current_screen();
 		if ( ! is_null( $screen ) ) {
 			$this->screen_id = $screen->id;
-			$this->screen = $screen;
+			$this->screen    = $screen;
 			$this->add_hooks();
 		}
 	}
@@ -52,7 +52,6 @@ class Screen_Options {
 	 * @since TBD
 	 */
 	public function add_hooks() {
-
 		add_filter( 'manage_' . Page::$hook_suffix . '_columns', [ $this, 'filter_manage_columns' ] );
 		add_filter( 'screen_options_show_screen', [ $this, 'filter_screen_options_show_screen' ], 10, 2 );
 	}
@@ -100,15 +99,14 @@ class Screen_Options {
 	 *
 	 * @since TBD
 	 *
-	 * @param bool $status Whether the option should be saved or not.
+	 * @param bool   $status Whether the option should be saved or not.
 	 * @param string $option The user option slug.
-	 * @param mixed $value The user option value.
+	 * @param mixed  $value  The user option value.
 	 *
 	 * @return bool|mixed Either `false` if the user option is not one managed by the class or the user
 	 *                    option value to save.
 	 */
 	public function filter_set_screen_options( $status, $option, $value ) {
-		error_log( 'Screen_Options::filter_set_screen_options() - Option: ' . $option );
 		if ( $option === self::$per_page_user_option ) {
 			return $value;
 		}
