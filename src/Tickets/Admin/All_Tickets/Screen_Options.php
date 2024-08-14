@@ -32,7 +32,7 @@ class Screen_Options {
 	}
 
 	/**
-	 * Adds Screen Otion hooks.
+	 * Adds Screen Option hooks.
 	 *
 	 * @since TBD
 	 */
