@@ -64,7 +64,7 @@ class List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function get_table_columns(): array {
-		return [
+		$table_columns = [
 			'name'      => esc_html__( 'Ticket Name', 'event-tickets' ),
 			'id'        => esc_html__( 'Ticket ID', 'event-tickets' ),
 			'event'     => esc_html__( 'Event', 'event-tickets' ),
@@ -76,6 +76,17 @@ class List_Table extends WP_List_Table {
 			'remaining' => esc_html__( 'Remaining', 'event-tickets' ),
 			'sales'     => esc_html__( 'Sales', 'event-tickets' ),
 		];
+
+		/**
+		 * Filters the columns for the All Tickets Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $table_columns The columns for the All Tickets Table.
+		 *
+		 * @return array
+		 */
+		return apply_filters( 'tec_tickets_all_tickets_table_columns', $table_columns );
 	}
 
 	/**
@@ -101,6 +112,14 @@ class List_Table extends WP_List_Table {
 		return 'name';
 	}
 
+	public function get_hidden_columns(): array {
+		$screen = get_current_screen();
+		if ( is_null( $screen ) ) {
+			return $this->get_default_hidden_columns();
+		}
+		return get_hidden_columns( $screen );
+	}
+
 	/**
 	 * Returns the columns for the list table.
 	 *
@@ -108,13 +127,24 @@ class List_Table extends WP_List_Table {
 	 *
 	 * @return array
 	 */
-	public function get_hidden_columns(): array {
-		return [
+	public static function get_default_hidden_columns(): array {
+		$default_hidden_columns = [
 			'id',
 			'start',
 			'days_left',
 			'sales',
 		];
+
+		/**
+		 * Filter the default hidden columns for the All Tickets Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $default_hidden_columns The default hidden columns for the All Tickets Table.
+		 *
+		 * @return array
+		 */
+		return apply_filters( 'tec_tickets_all_tickets_table_default_hidden_columns', $default_hidden_columns );
 	}
 
 	/**
@@ -125,18 +155,28 @@ class List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function get_sortable_columns() {
-		return [
+		$sortable_columns = [
 			'name'      => [ 'name', true ],
 			'id'        => [ 'id', true ],
-			'event'     => [ 'event', true ],
 			'start'     => [ 'start', true ],
-			'end'       => [ 'end', true ],
+			'end'       => [ 'end', 'desc' ], // Start with DESC order.
 			'days_left' => [ 'days_left', true ],
 			'price'     => [ 'price', true ],
 			'sold'      => [ 'sold', true ],
 			'remaining' => [ 'remaining', true ],
 			'sales'     => [ 'sales', true ],
 		];
+
+		/**
+		 * Filters the sortable columns for the All Tickets Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $sortable_columns The sortable columns for the All Tickets Table.
+		 *
+		 * @return array
+		 */
+		return apply_filters( 'tec_tickets_all_tickets_table_sortable_columns', $sortable_columns );
 	}
 
 	/**
@@ -151,39 +191,6 @@ class List_Table extends WP_List_Table {
 	 */
 	public function column_default( $item, $column_name ): string {
 		return $item[ $column_name ];
-	}
-
-	/**
-	 * Renders the name column.
-	 *
-	 * @since  TBD
-	 *
-	 * @param object $item The current item.
-	 */
-	public function column_name( $item ) {
-		return esc_html__( 'Ticket Name', 'event-tickets' );
-	}
-
-	/**
-	 * Renders the quantity column.
-	 *
-	 * @since  TBD
-	 *
-	 * @param object $item The current item.
-	 */
-	public function column_quantity( $item ) {
-		return esc_html__( 'Ticket Quantity', 'event-tickets' );
-	}
-
-	/**
-	 * Renders the price column.
-	 *
-	 * @since  TBD
-	 *
-	 * @param object $item The current item.
-	 */
-	public function column_price( $item ) {
-		return esc_html__( 'Ticket Price', 'event-tickets' );
 	}
 
 	/**

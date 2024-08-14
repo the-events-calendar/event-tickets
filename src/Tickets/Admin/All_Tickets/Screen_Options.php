@@ -54,6 +54,7 @@ class Screen_Options {
 	public function add_hooks() {
 		add_filter( 'manage_' . Page::$hook_suffix . '_columns', [ $this, 'filter_manage_columns' ] );
 		add_filter( 'screen_options_show_screen', [ $this, 'filter_screen_options_show_screen' ], 10, 2 );
+		add_filter( 'default_hidden_columns', [ $this, 'filter_default_hidden_columns' ], 10, 2 );
 	}
 
 	/**
@@ -110,5 +111,23 @@ class Screen_Options {
 		}
 
 		return $status;
+	}
+
+	/**
+	 * Filters the default hidden columns.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $hidden_columns The hidden columns.
+	 * @param string $screen_id The screen id.
+	 *
+	 * @return array
+	 */
+	public function filter_default_hidden_columns( $hidden_columns, $screen ) {
+		if ( empty( $screen ) || Page::$hook_suffix !== $screen->id ) {
+			return $hidden_columns;
+		}
+
+		return List_Table::get_default_hidden_columns();
 	}
 }
