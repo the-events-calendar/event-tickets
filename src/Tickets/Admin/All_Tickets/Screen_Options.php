@@ -118,8 +118,8 @@ class Screen_Options {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $hidden_columns The hidden columns.
-	 * @param string $screen_id The screen id.
+	 * @param array     $hidden_columns The hidden columns.
+	 * @param WP_Screen $screen         The current screen.
 	 *
 	 * @return array
 	 */

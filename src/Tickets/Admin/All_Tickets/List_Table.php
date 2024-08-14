@@ -112,6 +112,13 @@ class List_Table extends WP_List_Table {
 		return 'name';
 	}
 
+	/**
+	 * Get hidden columns for the list table.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
 	public function get_hidden_columns(): array {
 		$screen = get_current_screen();
 		if ( is_null( $screen ) ) {
