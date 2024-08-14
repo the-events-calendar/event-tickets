@@ -90,6 +90,15 @@ class Ajax extends Controller_Contract {
 	 * @var string
 	 */
 	public const ACTION_DELETE_LAYOUT = 'tec_tickets_seating_service_delete_layout';
+	
+	/**
+	 * The action to add a layout.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const ACTION_ADD_NEW_LAYOUT = 'tec_tickets_seating_service_add_layout';
 
 	/**
 	 * The action to push the reservations to the backend from the seat-selection frontend.
@@ -309,6 +318,7 @@ class Ajax extends Controller_Contract {
 			'ACTION_INVALIDATE_LAYOUTS_CACHE'             => self::ACTION_INVALIDATE_LAYOUTS_CACHE,
 			'ACTION_DELETE_MAP'                           => self::ACTION_DELETE_MAP,
 			'ACTION_DELETE_LAYOUT'                        => self::ACTION_DELETE_LAYOUT,
+			'ACTION_ADD_NEW_LAYOUT'                       => self::ACTION_ADD_NEW_LAYOUT,
 			'ACTION_POST_RESERVATIONS'                    => self::ACTION_POST_RESERVATIONS,
 			'ACTION_CLEAR_RESERVATIONS'                   => self::ACTION_CLEAR_RESERVATIONS,
 			'ACTION_DELETE_RESERVATIONS'                  => self::ACTION_DELETE_RESERVATIONS,

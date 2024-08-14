@@ -1,5 +1,5 @@
-import { ajaxUrl, ajaxNonce } from '@tec/tickets/seating/ajax';
-import { onReady, getLocalizedString } from '@tec/tickets/seating/utils';
+import {ACTION_ADD_NEW_LAYOUT, ajaxNonce, ajaxUrl} from '@tec/tickets/seating/ajax';
+import {onReady} from '@tec/tickets/seating/utils';
 
 const objectName = 'dialog_obj_tec-tickets-seating-layouts-modal';
 

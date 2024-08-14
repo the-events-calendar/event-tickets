@@ -6,6 +6,7 @@
  * @property {string} ACTION_INVALIDATE_LAYOUTS_CACHE      The action to invalidate the layouts cache.
  * @property {string} ACTION_DELETE_MAP                    The action to delete a map.
  * @property {string} ACTION_DELETE_LAYOUT                 The action to delete a layout.
+ * @property {string} ACTION_ADD_NEW_LAYOUT                The action to add a layout.
  * @property {string} ACTION_POST_RESERVATIONS             The action to post the reservations to the backend from the seat-selection frontend.
  * @property {string} ACTION_CLEAR_RESERVATIONS            The action to clear the reservations from the backend from the seat-selection frontend.
  * @property {string} ACTION_FETCH_ATTENDEES               The action to fetch attendees by event or post ID.
