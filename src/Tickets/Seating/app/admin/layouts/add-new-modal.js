@@ -4,7 +4,7 @@ import {onReady} from '@tec/tickets/seating/utils';
 /**
  * @type {string}
  */
-const objectName = 'dialog_obj_tec-tickets-seating-layouts-modal';
+const objectName = tec.tickets.seating.layouts.addLayoutModal;
 
 /**
  * Waits for the modal element to be present in the DOM.
