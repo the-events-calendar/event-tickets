@@ -53,7 +53,6 @@
 				 */
 				do_action( 'tec_tickets_seating_seat_selection_timer', $token, $post_id );
 				?>
-				<!-- TODO: Test this on a physcical device -->
 				<div class="tec-tickets-seating__sidebar-arrow">
 					<span class="dashicons dashicons-arrow-up-alt2"></span>
 				</div>
