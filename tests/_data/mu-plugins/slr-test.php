@@ -3,11 +3,13 @@
  * Plugin Name: Events Assigned Seating Test
  */
 
+use TEC\Common\StellarWP\Uplink\Auth\Token\Contracts\Token_Manager;
 use TEC\Tickets\Seating\Service\Layouts;
 use TEC\Tickets\Seating\Service\Maps;
 use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Seat_Types;
 use TEC\Tickets\Seating\Service\Service;
+use function TEC\Common\StellarWP\Uplink\get_resource;
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	// Run `wp slr:seed:test` to seed the test data.
@@ -21,6 +23,33 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			} else {
 				\WP_CLI::error( 'Access token could not be set, check the __TEST__ Setup page.' );
 			}
+		},
+		[
+			'shortdesc' => 'Connects the site to the SLR service.'
+		]
+	);
+	\WP_CLI::add_command(
+		'slr:reset',
+		static function ( array $args ) {
+			\WP_CLI::line( 'Removing the access token ...' );
+			$res = get_resource( 'tec-seating' );
+			tribe( Token_Manager::class )->delete( $res->get_slug() );
+			\WP_CLI::line( 'Resetting tables ...' );
+			tribe( \TEC\Tickets\Seating\Tables\Maps::class )->drop();
+			tribe( \TEC\Tickets\Seating\Tables\Maps::class )->update();
+			tribe( \TEC\Tickets\Seating\Tables\Layouts::class )->drop();
+			tribe( \TEC\Tickets\Seating\Tables\Layouts::class )->update();
+			tribe( \TEC\Tickets\Seating\Tables\Seat_Types::class )->drop();
+			tribe( \TEC\Tickets\Seating\Tables\Seat_Types::class )->update();
+			tribe( \TEC\Tickets\Seating\Tables\Sessions::class )->drop();
+			tribe( \TEC\Tickets\Seating\Tables\Sessions::class )->update();
+			\WP_CLI::line( 'Cleaning transients ....' );
+			delete_transient( Maps::update_transient_name() );
+			delete_transient( Layouts::update_transient_name() );
+			delete_transient( Seat_Types::update_transient_name() );
+			tribe(Maps::class)->invalidate_cache();
+			tribe(Layouts::class)->invalidate_cache();
+			\WP_CLI::success( 'Done' );
 		},
 		[
 			'shortdesc' => 'Connects the site to the SLR service.'
@@ -49,6 +78,8 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			delete_transient( Maps::update_transient_name() );
 			delete_transient( Layouts::update_transient_name() );
 			delete_transient( Seat_Types::update_transient_name() );
+			tribe(Maps::class)->invalidate_cache();
+			tribe(Layouts::class)->invalidate_cache();
 			\WP_CLI::success( 'Transients cleaned.' );
 		}
 	);
@@ -68,6 +99,8 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			delete_transient( Maps::update_transient_name() );
 			delete_transient( Layouts::update_transient_name() );
 			delete_transient( Seat_Types::update_transient_name() );
+			tribe(Maps::class)->invalidate_cache();
+			tribe(Layouts::class)->invalidate_cache();
 			\WP_CLI::success( 'Transients cleaned.' );
 		}
 	);
