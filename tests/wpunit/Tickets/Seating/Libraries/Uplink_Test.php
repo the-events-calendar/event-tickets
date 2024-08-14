@@ -9,7 +9,7 @@ use TEC\Common\StellarWP\Uplink\Storage\Contracts\Storage;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tests\Traits\WP_Remote_Mocks;
 
-class UplinkTest extends \Codeception\TestCase\WPTestCase {
+class Uplink_Test extends \Codeception\TestCase\WPTestCase {
 	use MatchesSnapshots;
 	use With_Uopz;
 	use WP_Remote_Mocks;
