@@ -47,9 +47,11 @@ export function modalActionListener() {
  *
  * @since TBD
  *
+ * @param {Event} event The event object.
+ *
  * @return {Promise<void>}
  */
-async function addNewLayout() {
+async function addNewLayout( event ) {
 	const mapSelect = document.getElementById( 'tec-tickets-seating__select-map' );
 	const mapId = mapSelect.selectedOptions[0].value;
 	const wrapper = document.querySelector( '.tec-tickets-seating__new-layout-wrapper' );
@@ -58,6 +60,7 @@ async function addNewLayout() {
 		return;
 	}
 
+	event.target.disabled = true;
 	wrapper.style.opacity = 0.5;
 
 	const result = await addLayoutByMapId(mapId);
@@ -68,6 +71,7 @@ async function addNewLayout() {
 	} else {
 		alert( getLocalizedString( 'add-failed', 'layouts' ) );
 		wrapper.style.opacity = 1;
+		event.target.disabled = false;
 	}
 }
 
