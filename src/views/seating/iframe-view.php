@@ -33,45 +33,59 @@
 	</iframe>
 </div>
 
-<aside class="tec-tickets-seating__modal-sidebar">
-	<div class="tec-tickets-seating__sidebar-content">
-		<h4 class="tribe-common-h4 tec-tickets-seating__title">
-			Tickets
-		</h4>
+<div class="tec-tickets-seating__modal-sidebar-wrapper">
+	<aside class="tec-tickets-seating__modal-sidebar">
+		<div class="tec-tickets-seating__sidebar-content">
 
-		<?php
-		/**
-		 * Render the seat selection timer.
-		 *
-		 * @since TBD
-		 *
-		 * @param string $token The ephemeral token used to secure the iframe communication with the service.
-		 * @param int    $post_id The post ID of the post to purchase tickets for.
-		 */
-		do_action( 'tec_tickets_seating_seat_selection_timer', $token, $post_id );
-		?>
+			<div class="tec-tickets-seating__sidebar-header">
+				<h4 class="tribe-common-h4 tec-tickets-seating__title">
+					Tickets
+				</h4>
 
-		<div class="tec-tickets-seating__ticket-rows">
-		</div>
-	</div>
-
-	<div class="tec-tickets-seating__sidebar-footer">
-		<div class="tec-tickets-seating__total">
-			<div class="tec-tickets-seating__total-text">
-				<?php echo esc_html( $initial_total_text ); ?>
+				<?php
+				/**
+				 * Render the seat selection timer.
+				 *
+				 * @since TBD
+				 *
+				 * @param string $token The ephemeral token used to secure the iframe communication with the service.
+				 * @param int    $post_id The post ID of the post to purchase tickets for.
+				 */
+				do_action( 'tec_tickets_seating_seat_selection_timer', $token, $post_id );
+				?>
+				<!-- TODO: Test this on a physcical device -->
+				<div class="tec-tickets-seating__sidebar-arrow">
+					<span class="dashicons dashicons-arrow-up-alt2"></span>
+				</div>
 			</div>
-			<div class="tec-tickets-seating__total-price">
-				<?php echo esc_html( $initial_total_price ); ?>
+
+			<div class="tec-tickets-seating__empty-tickets-message">
+				Select a seat from the map to add seated tickets
+			</div>
+			<div class="tec-tickets-seating__tickets-wrapper">
+				<div class="tec-tickets-seating__ticket-rows"></div>
 			</div>
 		</div>
 
-		<div class="tec-tickets-seating__sidebar-controls">
-			<button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel">
-				Cancel
-			</button>
-			<button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm">
-				Check Out
-			</button>
+		<div class="tec-tickets-seating__sidebar-footer">
+			<div class="tec-tickets-seating__total tec-tickets-seating__total-hidden">
+				<div class="tec-tickets-seating__total-text">
+					<?php echo esc_html( $initial_total_text ); ?>
+				</div>
+				<div class="tec-tickets-seating__total-price">
+					<?php echo esc_html( $initial_total_price ); ?>
+				</div>
+			</div>
+
+			<div class="tec-tickets-seating__sidebar-controls">
+				<button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel">
+					Cancel
+				</button>
+				<button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm">
+					Check Out
+				</button>
+			</div>
 		</div>
-	</div>
-</aside>
+	</aside>
+
+</div>
