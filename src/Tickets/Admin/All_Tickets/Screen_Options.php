@@ -68,18 +68,16 @@ class Screen_Options {
 	 * @return boolean
 	 */
 	public function filter_screen_options_show_screen( $show, $screen ) {
-		return Page::$hook_suffix === $screen->id;
-	}
+		$show = ! empty( $screen ) && Page::$hook_suffix === $screen->id;
 
-	/**
-	 * Adds the screen options required on the current screen.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool Whether the screen options were added or not.
-	 */
-	public function add_options() {
-		return true;
+		/**
+		 * Filter the screen options show screen.
+		 *
+		 * @since TBD
+		 *
+		 * @param boolean   $show   Whether to show the screen options.
+		 */
+		return apply_filters( 'tec_tickets_all_tickets_screen_options_show_screen', $show );
 	}
 
 	/**

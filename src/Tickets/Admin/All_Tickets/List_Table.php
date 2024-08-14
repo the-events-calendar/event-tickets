@@ -191,7 +191,7 @@ class List_Table extends WP_List_Table {
 	 *
 	 * @since  TBD
 	 *
-	 * @param object $item The current item.
+	 * @param object $item        The current item.
 	 * @param string $column_name The current column name.
 	 *
 	 * @return string
