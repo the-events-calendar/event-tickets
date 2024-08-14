@@ -55,6 +55,9 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 		ob_start();
 		$this->page->render_tec_tickets_all_tickets_page();
 		$actual = ob_get_clean();
+		preg_match( '/name=\"_wpnonce\" value=\"([^\"]+)\"/', $actual, $matches );
+		$nonce = $matches[1];
+		$actual = str_replace( $nonce, 'WP_NONCE', $actual );
 		$this->assertMatchesHtmlSnapshot( $actual );
 	}
 }

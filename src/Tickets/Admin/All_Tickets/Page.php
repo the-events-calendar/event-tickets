@@ -89,7 +89,7 @@ class Page {
 	public function add_tec_tickets_all_tickets_page() {
 		$admin_pages = tribe( 'admin.pages' );
 
-		$all_tickets_page = $admin_pages->register_page(
+		$admin_pages->register_page(
 			[
 				'id'       => static::$slug,
 				'path'     => static::$slug,
@@ -117,7 +117,9 @@ class Page {
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 
-		$context = [];
+		$context = [
+			'tickets_table' => tribe( List_Table::class ),
+		];
 
 		$admin_views->template( 'all-tickets', $context );
 	}
