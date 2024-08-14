@@ -284,9 +284,6 @@ class Attendee {
 		return str_replace( $head_div, $label, $html );
 	}
 
-	public function fetch_attendees_by_post( int $post_id, $page, $per_page ) {
-	}
-
 	/**
 	 * Formats a  set of Attendees to the format expected by the Seats Report AJAX request.
 	 *

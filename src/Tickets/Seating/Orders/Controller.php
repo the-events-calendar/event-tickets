@@ -77,6 +77,13 @@ class Controller extends Controller_Contract {
 	private Sessions $sessions;
 
 	/**
+	 * A reference to Seats Report handler.
+	 *
+	 * @var Seats_Report
+	 */
+	private Seats_Report $seats_report;
+
+	/**
 	 * Controller constructor.
 	 *
 	 * @since TBD
@@ -87,6 +94,7 @@ class Controller extends Controller_Contract {
 	 * @param Reservations $reservations The Reservations object.
 	 * @param Session      $session      The seat selection session handler.
 	 * @param Sessions     $sessions     A reference to the Sessions table handler.
+	 * @param Seats_Report $seats_report The seats report handler.
 	 */
 	public function __construct(
 		Container $container,
@@ -94,7 +102,8 @@ class Controller extends Controller_Contract {
 		Cart $cart,
 		Reservations $reservations,
 		Session $session,
-		Sessions $sessions
+		Sessions $sessions,
+		Seats_Report $seats_report
 	) {
 		parent::__construct( $container );
 		$this->attendee     = $attendee;
@@ -102,6 +111,7 @@ class Controller extends Controller_Contract {
 		$this->reservations = $reservations;
 		$this->session      = $session;
 		$this->sessions     = $sessions;
+		$this->seats_report = $seats_report;
 	}
 
 	/**
@@ -138,8 +148,10 @@ class Controller extends Controller_Contract {
 				2
 			);
 			add_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', [ $this, 'register_seat_tab' ], 10, 2 );
-			add_action( 'init', [ $this, 'register_seat_reports' ] );
+			add_action( 'init', [ $this, 'register_seats_report_tab' ] );
+			add_action( 'admin_menu', [ $this, 'register_seats_report_page' ] );
 			add_filter( 'tec_tickets_commerce_reports_tabbed_page_title', [ $this, 'filter_seat_tab_title' ], 10, 3 );
+			add_filter( 'post_row_actions', [ $this, 'add_seats_row_action' ], 10, 2 );
 		}
 		// Attendee delete handler.
 		add_filter( 'tec_tickets_commerce_attendee_to_delete', [ $this, 'handle_attendee_delete' ] );
@@ -150,14 +162,18 @@ class Controller extends Controller_Contract {
 		add_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_UPDATED, [ $this, 'update_reservation' ] );
 
 		add_filter( 'tec_tickets_commerce_get_attendee', [ $this, 'filter_attendee_object' ] );
-		add_action( 'tribe_template_before_include:tickets/emails/template-parts/body/ticket/ticket-name',
+		add_action(
+			'tribe_template_before_include:tickets/emails/template-parts/body/ticket/ticket-name',
 			[ $this, 'include_seat_info_in_email' ],
 			10,
-			3 );
-		add_filter( 'tribe_template_html:tickets/tickets/my-tickets/ticket-information',
+			3
+		);
+		add_filter(
+			'tribe_template_html:tickets/tickets/my-tickets/ticket-information',
 			[ $this, 'inject_seat_info_in_my_tickets' ],
 			10,
-			4 );
+			4
+		);
 
 		$this->register_assets();
 	}
@@ -186,8 +202,10 @@ class Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_commerce_reports_tabbed_view_tab_map', [ $this, 'include_seats_tab' ] );
 		remove_action( 'tec_tickets_commerce_reports_tabbed_view_after_register_tab', [ $this, 'register_seat_tab' ] );
 		remove_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', [ $this, 'register_seat_tab' ] );
-		remove_action( 'init', [ $this, 'register_seat_reports' ] );
+		remove_action( 'init', [ $this, 'register_seats_report_tab' ] );
+		remove_action( 'admin_menu', [ $this, 'register_seats_report_page' ] );
 		remove_filter( 'tec_tickets_commerce_reports_tabbed_page_title', [ $this, 'filter_seat_tab_title' ] );
+		remove_filter( 'post_row_actions', [ $this, 'add_seats_row_action' ] );
 
 		remove_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
 		remove_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_post' ] );
@@ -195,14 +213,18 @@ class Controller extends Controller_Contract {
 		remove_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_UPDATED, [ $this, 'update_reservation' ] );
 
 		remove_filter( 'tec_tickets_commerce_get_attendee', [ $this, 'filter_attendee_object' ] );
-		remove_action( 'tribe_template_before_include:tickets/emails/template-parts/body/ticket/ticket-name',
+		remove_action(
+			'tribe_template_before_include:tickets/emails/template-parts/body/ticket/ticket-name',
 			[ $this, 'include_seat_info_in_email' ],
 			10,
-			3 );
-		remove_filter( 'tribe_template_html:tickets/tickets/my-tickets/ticket-information',
+			3
+		);
+		remove_filter(
+			'tribe_template_html:tickets/tickets/my-tickets/ticket-information',
 			[ $this, 'inject_seat_info_in_my_tickets' ],
 			10,
-			4 );
+			4
+		);
 		remove_filter( 'tec_tickets_commerce_attendee_to_delete', [ $this, 'handle_attendee_delete' ] );
 	}
 
@@ -234,8 +256,19 @@ class Controller extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	public function register_seat_reports() {
-		$this->container->make( Seats_Report::class )->hook();
+	public function register_seats_report_tab() {
+		$this->seats_report->register_tab();
+	}
+
+	/**
+	 * Registers the seat report page.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function register_seats_report_page() {
+		$this->seats_report->register_seats_page();
 	}
 
 	/**
@@ -430,26 +463,26 @@ class Controller extends Controller_Contract {
 			$this->built_asset_url( 'admin/seatsReport.js' ),
 			Tickets_Main::VERSION
 		)
-		     ->add_dependency( 'tec-tickets-seating-service-bundle' )
-		     ->enqueue_on( Seats_Report::$asset_action )
-		     ->add_localize_script(
-			     'tec.tickets.seating.admin.seatsReport',
-			     fn() => $this->get_localized_data( get_the_ID() )
-		     )
-		     ->add_to_group( 'tec-tickets-seating-admin' )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->register();
+			->add_dependency( 'tec-tickets-seating-service-bundle' )
+			->enqueue_on( Seats_Report::$asset_action )
+			->add_localize_script(
+				'tec.tickets.seating.admin.seatsReport',
+				fn() => $this->get_localized_data( get_the_ID() )
+			)
+			->add_to_group( 'tec-tickets-seating-admin' )
+			->add_to_group( 'tec-tickets-seating' )
+			->register();
 
 		Asset::add(
 			'tec-tickets-seating-admin-seats-report-style',
 			$this->built_asset_url( 'admin/seatsReport.css' ),
 			Tickets_Main::VERSION
 		)
-		     ->add_to_group( 'tec-tickets-seating-admin' )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->enqueue_on( Seats_Report::$asset_action )
-		     ->add_to_group( 'tec-tickets-seating-admin' )
-		     ->register();
+			->add_to_group( 'tec-tickets-seating-admin' )
+			->add_to_group( 'tec-tickets-seating' )
+			->enqueue_on( Seats_Report::$asset_action )
+			->add_to_group( 'tec-tickets-seating-admin' )
+			->register();
 	}
 
 	/**
@@ -478,18 +511,21 @@ class Controller extends Controller_Contract {
 		 */
 		$per_page = apply_filters( 'tec_tickets_seating_fetch_attendees_per_page', 50, $post_id );
 
-		$data = Tickets::get_attendees_by_args( [
-			'page'               => $current_batch,
-			'per_page'           => $per_page,
-			'return_total_found' => true,
-			'order'              => 'DESC',
-		], $post_id );
+		$data = Tickets::get_attendees_by_args(
+			[
+				'page'               => $current_batch,
+				'per_page'           => $per_page,
+				'return_total_found' => true,
+				'order'              => 'DESC',
+			],
+			$post_id
+		);
 
 		$total_found   = $data['total_found'] ?? 0;
 		$total_batches = (int) ( ceil( $total_found / $per_page ) );
 		$attendees     = $data['attendees'] ?? [];
 
-		if ( $total_found === 0 ) {
+		if ( 0 === $total_found ) {
 			wp_send_json_success(
 				[
 					'attendees'    => [],
@@ -641,14 +677,17 @@ class Controller extends Controller_Contract {
 		if ( ! empty( $json['sendUpdateToAttendee'] ) ) {
 			$provider = tribe_tickets_get_ticket_provider( $attendee_id );
 			if ( $provider ) {
-				$sent = $provider->send_tickets_email_for_attendees( [ $attendee_id ], [
-					'post_id' => $post_id,
-				] );
+				$sent = $provider->send_tickets_email_for_attendees(
+					[ $attendee_id ],
+					[
+						'post_id' => $post_id,
+					]
+				);
 
 				if ( empty( $sent ) ) {
 					wp_send_json_error(
 						[
-							'error' => 'Failed to send the update mail.'
+							'error' => 'Failed to send the update mail.',
 						]
 					);
 
@@ -657,13 +696,28 @@ class Controller extends Controller_Contract {
 			}
 		}
 
-		$attendees = Tickets::get_attendees_by_args( [
-			'page'     => 1,
-			'per_page' => 1,
-			'by'       => [ 'id' => $attendee_id ],
-		], $post_id );
+		$attendees = Tickets::get_attendees_by_args(
+			[
+				'page'     => 1,
+				'per_page' => 1,
+				'by'       => [ 'id' => $attendee_id ],
+			],
+			$post_id
+		);
 		$formatted = $this->attendee->format_many( $attendees['attendees'] ?? [] );
 
 		wp_send_json_success( $formatted[0] );
+	}
+
+	/**
+	 * Display row actions in the post listing for seats.
+	 *
+	 * @param array<string,string> $actions The action items.
+	 * @param WP_Post              $post The post object.
+	 *
+	 * @return array<string,string> The action items.
+	 */
+	public function add_seats_row_action( array $actions, $post ): array {
+		return $this->seats_report->add_seats_row_action( $actions, $post );
 	}
 }

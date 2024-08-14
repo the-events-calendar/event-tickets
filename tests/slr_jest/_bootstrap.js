@@ -1,4 +1,5 @@
 // This file will be loaded by the Jest setup file.
+import fs from 'fs';
 
 // Localized data mocks.
 global.tec = global.tec || {};
@@ -130,4 +131,52 @@ global.tec.tickets.seating = {
 			],
 		},
 	},
+};
+
+// Utility functions
+
+/**
+ * @type {Object<string, string>} The map of memoized HTML files from document name to their HTML.
+ */
+const memoizedHtml = {};
+
+/**
+ * Returns a document built from an HTML snapshot provided by the `tests/slr_integration` suite.
+ *
+ * Note: this is flaky **by design**. The intention of this function is to use HTML snapshots that would
+ * normally be used and updated by PHP tests to make sure the Javascript code working on them will keep working.
+ * The side effect of changing something in PHP, or in a PHP test, and breaking Javascript tests is **desired**.
+ * Resist the temptation to change this function to point to perfect HTML snapshots that would not be updated
+ * as part of the normal PHP tests: it would make the purpose of this function moot.
+ *
+ * @param {string} documentName The name of the document to return.
+ *
+ * @return {Document} A real document element, built from the snapshot HTML.
+ */
+global.getTestDocument = function (documentName) {
+	const validDocumentMap = {
+		'layout-edit':
+			'/../slr_integration/Admin/__snapshots__/Maps_Layout_Homepage_Test__test_layout_edit__0.snapshot.html',
+		'seats-report':
+			'/../slr_integration/Orders/__snapshots__/Seats_Report_Test__test_render_page__2_tickets_3_attendees__0.snapshot.html'
+	};
+
+	if (!validDocumentMap[documentName]) {
+		throw new Error(
+			`Invalid document name: ${documentName}; Valid names are: ${Object.keys(
+				validDocumentMap
+			).join(', ')}`
+		);
+	}
+
+	let sourceHtml;
+	if (memoizedHtml[documentName]) {
+		sourceHtml = memoizedHtml[documentName];
+	} else {
+		const sourceHtmlFile = validDocumentMap[documentName];
+		sourceHtml = fs.readFileSync(__dirname + sourceHtmlFile, 'utf8');
+	}
+	memoizedHtml[documentName] = sourceHtml;
+
+	return new DOMParser().parseFromString(sourceHtml, 'text/html');
 };
