@@ -11,6 +11,7 @@
 
 use TEC\Tickets\Seating\Admin\Tabs\Layout_Card;
 use TEC\Tickets\Seating\Admin\Tabs\Map_Card;
+use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 ?>
 
 <div class="tec-tickets__seating-tab-heading-wrapper"><h2
@@ -40,7 +41,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Map_Card;
 			'button_classes' => [ 'button-secondary', 'tec-tickets-seating-modal__button' ],
 			'append_target'  => '.tec-tickets-seating-layouts-modal__anchor',
 		];
-		$dialog_view->render_modal( $content, $args, 'tec-tickets-seating-layouts-modal' );
+		$dialog_view->render_modal( $content, $args, Layout_Edit::ADD_LAYOUT_MODAL_ID );
 		?>
 	</div>
 
