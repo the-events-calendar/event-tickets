@@ -1,5 +1,5 @@
 import {ACTION_ADD_NEW_LAYOUT, ajaxNonce, ajaxUrl} from '@tec/tickets/seating/ajax';
-import {onReady} from '@tec/tickets/seating/utils';
+import {onReady, getLocalizedString} from '@tec/tickets/seating/utils';
 
 /**
  * @type {string}
@@ -66,7 +66,7 @@ async function addNewLayout() {
 		closeModal();
 		window.location.href = result.data;
 	} else {
-		alert( 'Error adding layout' );
+		alert( getLocalizedString( 'add-failed', 'layouts' ) );
 		wrapper.style.opacity = 1;
 	}
 }
