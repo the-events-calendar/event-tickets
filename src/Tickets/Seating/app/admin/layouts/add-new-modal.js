@@ -1,6 +1,9 @@
 import {ACTION_ADD_NEW_LAYOUT, ajaxNonce, ajaxUrl} from '@tec/tickets/seating/ajax';
 import {onReady} from '@tec/tickets/seating/utils';
 
+/**
+ * @type {string}
+ */
 const objectName = 'dialog_obj_tec-tickets-seating-layouts-modal';
 
 /**
@@ -39,13 +42,56 @@ export function modalActionListener() {
 	addButton?.addEventListener( 'click', addNewLayout );
 }
 
-export function addNewLayout() {
+/**
+ * Handles adding a new layout.
+ *
+ * @since TBD
+ *
+ * @return {Promise<void>}
+ */
+async function addNewLayout() {
 	const mapSelect = document.getElementById( 'tec-tickets-seating__select-map' );
 	const mapId = mapSelect.selectedOptions[0].value;
+	const wrapper = document.querySelector( '.tec-tickets-seating__new-layout-wrapper' );
 
-	if ( mapId ){
-		alert( 'Map selected' + mapId );
+	if ( ! mapId ) {
+		return;
 	}
+
+	wrapper.style.opacity = 0.5;
+
+	const result = await addLayoutByMapId(mapId);
+
+	if ( result ) {
+		closeModal();
+		window.location.href = result.data;
+	} else {
+		alert( 'Error adding layout' );
+		wrapper.style.opacity = 1;
+	}
+}
+
+/**
+ * Adds a new layout by map ID.
+ *
+ * @since TBD
+ *
+ * @param {string} mapId The map ID.
+ *
+ * @return {Promise<boolean|object>} A promise that resolves to data object if the layout was added successfully, false otherwise.
+ */
+async function addLayoutByMapId( mapId ) {
+	const url = new URL(ajaxUrl);
+	url.searchParams.set('_ajax_nonce', ajaxNonce);
+	url.searchParams.set('mapId', mapId);
+	url.searchParams.set('action', ACTION_ADD_NEW_LAYOUT);
+	const response = await fetch(url.toString(), { method: 'POST' });
+
+	if ( response.status === 200 ) {
+		return await response.json();
+	}
+
+	return false;
 }
 
 /**
