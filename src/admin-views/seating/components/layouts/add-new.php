@@ -12,18 +12,20 @@
 use TEC\Tickets\Seating\Admin\Tabs\Map_Card;
 ?>
 <div class="tec-tickets-seating__new-layout-wrapper">
-	<h3 class="tec-tickets-seating__new-layout-header">
+	<label class="tec-tickets-seating__new-layout-header" for="tec-tickets-seating__select-map">
 		<?php esc_html_e( 'Choose a Seating Map for this Layout', 'event-tickets' ); ?>
-	</h3>
-	<select class="tec-tickets-seating__select-map" name="map" id="map">
+	</label>
+	<select class="tec-tickets-seating__select-map" name="select-map" id="tec-tickets-seating__select-map">
 		<?php foreach ( $maps as $map_object ) : ?>
-			<option value="<?php echo esc_attr( $map_object->get_id() ); ?>" data-seats-count="<?php echo esc_attr( $map_object->get_seats() ); ?>" data-screenshot-url="<?php echo esc_url( $map_object->get_screenshot_url() ); ?>">
+			<option value="<?php echo esc_attr( $map_object->get_id() ); ?>"
+					data-seats-count="<?php echo esc_attr( $map_object->get_seats() ); ?>"
+					data-screenshot-url="<?php echo esc_url( $map_object->get_screenshot_url() ); ?>">
 				<?php echo esc_html( $map_object->get_name() ); ?>
 			</option>
 		<?php endforeach; ?>
 	</select>
 	<div class="tec-tickets-seating__new-layout-map-preview">
-		<img class="tec-tickets-seating__new-layout-map-preview-img" src="<?php echo esc_url( $maps[0]->get_screenshot_url() ); ?>" alt="<?php echo esc_attr( $maps[0]->get_name() ); ?>">
+		<img id="tec-tickets-seating__new-layout-map-preview-img" class="tec-tickets-seating__new-layout-map-preview-img" src="<?php echo esc_url( $maps[0]->get_screenshot_url() ); ?>" alt="<?php echo esc_attr( $maps[0]->get_name() ); ?>">
 	</div>
 	<div class="tec-tickets-seating__new-layout-map-info">
 		<span class="tec-tickets-seating__new-layout-map-name">
