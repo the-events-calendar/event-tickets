@@ -121,9 +121,11 @@ class List_Table extends WP_List_Table {
 	 */
 	public function get_hidden_columns(): array {
 		$screen = get_current_screen();
+
 		if ( is_null( $screen ) ) {
 			return $this->get_default_hidden_columns();
 		}
+
 		return get_hidden_columns( $screen );
 	}
 
