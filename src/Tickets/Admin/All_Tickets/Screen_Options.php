@@ -23,27 +23,12 @@ class Screen_Options {
 	public static $per_page_user_option = 'event_tickets_all_tickets_per_page';
 
 	/**
-	 * @var string The screen id these screen options should render on.
-	 */
-	protected $screen_id;
-
-	/**
-	 * @var WP_Screen Either the globally defined WP_Screen instance or an injected dependency.
-	 */
-	protected $screen;
-
-	/**
 	 * Initialize the screen options.
 	 *
 	 * @since TBD
 	 */
 	public function init() {
-		$screen = get_current_screen();
-		if ( ! is_null( $screen ) ) {
-			$this->screen_id = $screen->id;
-			$this->screen    = $screen;
-			$this->add_hooks();
-		}
+		$this->add_hooks();
 	}
 
 	/**
