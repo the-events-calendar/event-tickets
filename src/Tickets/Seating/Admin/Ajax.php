@@ -14,6 +14,8 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Seating\Admin;
+use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Ajax_Methods;
 use TEC\Tickets\Seating\Built_Assets;
 use TEC\Tickets\Seating\Logging;
@@ -260,6 +262,7 @@ class Ajax extends Controller_Contract {
 		add_action( 'wp_ajax_' . self::ACTION_INVALIDATE_LAYOUTS_CACHE, [ $this, 'invalidate_layouts_cache' ] );
 		add_action( 'wp_ajax_' . self::ACTION_DELETE_MAP, [ $this, 'delete_map_from_service' ] );
 		add_action( 'wp_ajax_' . self::ACTION_DELETE_LAYOUT, [ $this, 'delete_layout_from_service' ] );
+		add_action( 'wp_ajax_' . self::ACTION_ADD_NEW_LAYOUT, [ $this, 'add_new_layout_to_service' ] );
 		add_action( 'wp_ajax_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
 		add_action( 'wp_ajax_nopriv_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
 		add_action( 'wp_ajax_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
@@ -290,6 +293,7 @@ class Ajax extends Controller_Contract {
 		remove_action( 'wp_ajax_' . self::ACTION_INVALIDATE_LAYOUTS_CACHE, [ $this, 'invalidate_layouts_cache' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_DELETE_MAP, [ $this, 'delete_map_from_service' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_DELETE_LAYOUT, [ $this, 'delete_layout_from_service' ] );
+		remove_action( 'wp_ajax_' . self::ACTION_ADD_NEW_LAYOUT, [ $this, 'add_new_layout_to_service' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
 		remove_action( 'wp_ajax_nopriv_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
@@ -485,6 +489,50 @@ class Ajax extends Controller_Contract {
 		}
 
 		wp_send_json_error( [ 'error' => __( 'Failed to delete the layout.', 'event-tickets' ) ], 500 );
+	}
+	
+	/**
+	 * Adds a new layout to the service.
+	 *
+	 * @since TBD
+	 *
+	 * @return void The function does not return a value but will send the JSON response.
+	 */
+	public function add_new_layout_to_service(): void {
+		if ( ! $this->check_current_ajax_user_can( 'manage_options' ) ) {
+			return;
+		}
+		
+		$map_id = (string) tribe_get_request_var( 'mapId' );
+		
+		if ( empty( $map_id ) ) {
+			wp_send_json_error(
+				[
+					'error' => __( 'No map ID provided', 'event-tickets' ),
+				],
+				400
+			);
+			
+			return;
+		}
+		
+		$layout_id = $this->layouts->add( $map_id );
+		
+		if ( ! empty( $layout_id ) ) {
+			$edit_url = add_query_arg(
+				[
+					'page'     => Admin::get_menu_slug(),
+					'tab'      => Layout_Edit::get_id(),
+					'layoutId' => $layout_id,
+				],
+				admin_url( 'admin.php' )
+			);
+			
+			wp_send_json_success( $edit_url );
+			return;
+		}
+		
+		wp_send_json_error( [ 'error' => __( 'Failed to Add new layout.', 'event-tickets' ) ], 500 );
 	}
 
 	/**
