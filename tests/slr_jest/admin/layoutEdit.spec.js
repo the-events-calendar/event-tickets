@@ -79,7 +79,7 @@ describe('Layouts Edit', () => {
 				layoutId: 'some-layout-id',
 			}
 
-			const result = goToAssociatedEvents(data);
+			goToAssociatedEvents(data);
 			expect(redirectTo).toBeCalledWith(getAssociatedEventsUrl(data.layoutId));
 		});
 
@@ -88,7 +88,7 @@ describe('Layouts Edit', () => {
 				noLayoutId: '',
 			}
 
-			const result = goToAssociatedEvents(data);
+			goToAssociatedEvents(data);
 			expect(redirectTo).not.toBeCalled();
 		});
 	})
