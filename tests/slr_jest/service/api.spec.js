@@ -8,6 +8,7 @@ import {
 	getHandlerQueue,
 	sendPostMessage,
 	emptyHandlerQueue,
+	getAssociatedEventsUrl,
 } from '@tec/tickets/seating/service/api';
 
 describe('Service API', () => {
@@ -342,4 +343,9 @@ describe('Service API', () => {
 
 		expect(getHandlerQueue()).toStrictEqual([]);
 	});
+
+	it( 'should generate proper getassociatedeventsurl', () => {
+		const url = getAssociatedEventsUrl('layout-1');
+		expect( url ).toMatchSnapshot();
+	} );
 });
