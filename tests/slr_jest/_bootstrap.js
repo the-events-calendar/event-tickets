@@ -149,16 +149,22 @@ const memoizedHtml = {};
  * Resist the temptation to change this function to point to perfect HTML snapshots that would not be updated
  * as part of the normal PHP tests: it would make the purpose of this function moot.
  *
- * @param {string} documentName The name of the document to return.
+ * @param {string}        documentName The name of the document to return.
+ * @param {Function|null} transformer  A function that will be used to transform the HTML of the document if provided.
+ *                                     The function will receive the HTML of the document as a parameter and should
+ *                                     return the transformed HTML as a string, or the transformed document as a Document
+ *                                     object.
  *
  * @return {Document} A real document element, built from the snapshot HTML.
  */
-global.getTestDocument = function (documentName) {
+global.getTestDocument = function (documentName, transformer) {
 	const validDocumentMap = {
 		'layout-edit':
 			'/../slr_integration/Admin/__snapshots__/Maps_Layout_Homepage_Test__test_layout_edit__0.snapshot.html',
 		'seats-report':
-			'/../slr_integration/Orders/__snapshots__/Seats_Report_Test__test_render_page__2_tickets_3_attendees__0.snapshot.html'
+			'/../slr_integration/Orders/__snapshots__/Seats_Report_Test__test_render_page__2_tickets_3_attendees__0.snapshot.html',
+		'seats-selection':
+			'/../slr_integration/__snapshots__/Frontend_Test__should_replace_ticket_block_when_seating_is_enabled__two tickets__0.snapshot.html',
 	};
 
 	if (!validDocumentMap[documentName]) {
@@ -177,6 +183,16 @@ global.getTestDocument = function (documentName) {
 		sourceHtml = fs.readFileSync(__dirname + sourceHtmlFile, 'utf8');
 	}
 	memoizedHtml[documentName] = sourceHtml;
+
+	if (transformer) {
+		const transformed = transformer(sourceHtml);
+
+		if (transformed instanceof Document) {
+			return transformed;
+		}
+
+		return new DOMParser().parseFromString(transformed, 'text/html');
+	}
 
 	return new DOMParser().parseFromString(sourceHtml, 'text/html');
 };
