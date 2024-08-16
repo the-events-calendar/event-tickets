@@ -1,6 +1,8 @@
 <?php
 /**
- * Associated Events list table.
+ * Associated Events list table handler.
+ *
+ * @package TEC\Tickets\Seating\Admin\Events
  */
 
 namespace TEC\Tickets\Seating\Admin\Events;
@@ -34,6 +36,20 @@ class Associated_Events extends WP_Posts_List_Table {
 	 * @var string
 	 */
 	public const SLUG = 'tec-tickets-seating-events';
+	
+	/**
+	 * The page to display in the list table page.
+	 *
+	 * @var string
+	 */
+	public const PAGE = 'admin_page_tec-tickets-seating-events';
+	
+	/**
+	 * The per page option.
+	 *
+	 * @var string
+	 */
+	public const OPTION_PER_PAGE = 'tec_tickets_seating_events_per_page';
 	
 	/**
 	 * The constructor.
@@ -165,7 +181,7 @@ class Associated_Events extends WP_Posts_List_Table {
 	public function prepare_items() {
 		$this->screen_setup();
 		
-		$per_page  = 10;
+		$per_page  = get_user_meta( get_current_user_id(), self::OPTION_PER_PAGE, true );
 		$layout_id = tribe_get_request_var( 'layout' );
 		$page      = absint( tribe_get_request_var( 'paged', 0 ) );
 		$orderby   = tribe_get_request_var( 'orderby' );

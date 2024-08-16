@@ -48,6 +48,8 @@ class Controller extends Controller_Contract {
 	 */
 	protected function do_register(): void {
 		add_action( 'admin_menu', [ $this, 'add_events_list_page' ], 20 );
+		add_action( 'load-' . Associated_Events::PAGE, [ $this, 'setup_events_list_screen' ] );
+		add_filter( 'set_screen_option_' . Associated_Events::OPTION_PER_PAGE, [ $this, 'save_per_page_option' ], 10, 3 );
 	}
 	
 	/**
@@ -59,6 +61,49 @@ class Controller extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_action( 'admin_menu', [ $this, 'add_events_list_page' ], 20 );
+		remove_action( 'load-' . Associated_Events::PAGE, [ $this, 'setup_events_list_screen' ] );
+	}
+	
+	/**
+	 * Setup Event listing screen.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function setup_events_list_screen() {
+		$screen = get_current_screen();
+		if ( Associated_Events::PAGE !== $screen->id ) {
+			return;
+		}
+		
+		$screen->add_option(
+			'per_page',
+			[
+				'label'   => __( 'Events per page', 'event-tickets' ),
+				'default' => 10,
+				'option'  => Associated_Events::OPTION_PER_PAGE,
+			]
+		);
+	}
+	
+	/**
+	 * Save per page option.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed  $screen_option The value to save instead of the option value. Default false (to skip saving the current option).
+	 * @param string $option The option name.
+	 * @param int    $value The option value.
+	 *
+	 * @return mixed The screen option value.
+	 */
+	public function save_per_page_option( $screen_option, $option, $value ) {
+		if ( Associated_Events::OPTION_PER_PAGE !== $option ) {
+			return $screen_option;
+		}
+		
+		return $value;
 	}
 	
 	/**
