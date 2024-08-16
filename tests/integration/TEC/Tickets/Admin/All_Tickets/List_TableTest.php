@@ -41,6 +41,19 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 		$this->list_table = new List_Table();
 	}
 
+	public function tearDown(): void {
+		// Delete the test data.
+		foreach ( $this->ticket_ids as $id ) {
+			wp_delete_post( $id, true );
+		}
+		foreach ( $this->event_ids as $id ) {
+			wp_delete_post( $id, true );
+		}
+
+		// then
+		parent::tearDown();
+	}
+
 	/**
 	 * Create test events.
 	 *
@@ -110,6 +123,7 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 				'ticket_start_time'       => '08:00:00',
 				'ticket_end_date'         => '2050-03-01',
 				'ticket_end_time'         => '20:00:00',
+				'ticket_sku'              => "TEST-TKT-{$index}",
 			],
 			[
 				'ticket_name'             => "BBB Ticket {$index}",
@@ -119,6 +133,7 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 				'ticket_start_time'       => '08:00:00',
 				'ticket_end_date'         => '2040-03-01',
 				'ticket_end_time'         => '20:00:00',
+				'ticket_sku'              => "TEST-TKT-{$index}",
 			],
 			[
 				'ticket_name'             => "CCC Ticket {$index}",
@@ -128,6 +143,7 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 				'ticket_start_time'       => '08:00:00',
 				'ticket_end_date'         => '2060-03-01',
 				'ticket_end_time'         => '20:00:00',
+				'ticket_sku'              => "TEST-TKT-{$index}",
 			],
 		];
 
