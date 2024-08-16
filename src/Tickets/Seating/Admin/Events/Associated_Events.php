@@ -165,7 +165,7 @@ class Associated_Events extends WP_Posts_List_Table {
 	public function prepare_items() {
 		$this->screen_setup();
 		
-		$per_page  = 20;
+		$per_page  = 10;
 		$layout_id = tribe_get_request_var( 'layout' );
 		$page      = absint( tribe_get_request_var( 'paged', 0 ) );
 		$orderby   = tribe_get_request_var( 'orderby' );
@@ -201,15 +201,10 @@ class Associated_Events extends WP_Posts_List_Table {
 			}
 		};
 		
-		$this->item_count = $repository
-			->where( 'meta_equals', Meta::META_KEY_LAYOUT_ID, $layout_id )
-			->by_args( $arguments )
-			->count();
+		$repository->where( 'meta_equals', Meta::META_KEY_LAYOUT_ID, $layout_id )->by_args( $arguments );
 		
-		$this->items = $repository
-			->where( 'meta_equals', Meta::META_KEY_LAYOUT_ID, $layout_id )
-			->by_args( $arguments )
-			->all( true );
+		$this->item_count = $repository->found();
+		$this->items      = $repository->all( true );
 		
 		$this->set_pagination_args(
 			[
