@@ -190,13 +190,13 @@ class List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Get the column value.
+	 * Get the ticket type icon.
 	 *
 	 * @since TBD
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $item The current item.
 	 *
-	 * @return string
+	 * @return string HTML for the ticket type icon.
 	 */
 	public function get_ticket_type_icon( $item ) {
 		ob_start();
@@ -233,6 +233,30 @@ class List_Table extends WP_List_Table {
 		];
 
 		return $admin_views->template( 'all-tickets/table-column-name', $context, false );
+	}
+
+	/**
+	 * Get the default column value.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tribe__Tickets__Ticket_Object $item        The current item.
+	 * @param string                        $column_name The column name.
+	 *
+	 * @return string
+	 */
+	public function column_default( $item, $column_name ): string {
+		// If the column name is empty or the item does not have the column name, return an empty string.
+		if ( empty( $column_name ) || ! isset( $item->$column_name ) ) {
+			return '';
+		}
+
+		// If value is not a string or a number, return an empty string.
+		if ( ! is_string( $item->$column_name ) && ! is_numeric( $item->$column_name ) ) {
+			return '';
+		}
+
+		return $item->$column_name;
 	}
 
 	/**
