@@ -62,6 +62,7 @@ class Controller extends Controller_Contract {
 	public function unregister(): void {
 		remove_action( 'admin_menu', [ $this, 'add_events_list_page' ], 20 );
 		remove_action( 'load-' . Associated_Events::PAGE, [ $this, 'setup_events_list_screen' ] );
+		remove_filter( 'set_screen_option_' . Associated_Events::OPTION_PER_PAGE, [ $this, 'save_per_page_option' ] );
 	}
 	
 	/**

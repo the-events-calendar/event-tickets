@@ -13,6 +13,7 @@ if ( ! class_exists( 'WP_List_Table' ) || ! class_exists( 'WP_Posts_List_Table' 
 	require_once ABSPATH . 'wp-admin/includes/class-wp-posts-list-table.php';
 }
 
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Seating\Meta;
 use Tribe__Tickets__Admin__Columns__Tickets;
 use Tribe__Tickets__Main as Tickets;
@@ -272,19 +273,7 @@ class Associated_Events extends WP_Posts_List_Table {
 		$post_status = tribe_get_request_var( 'post_status', '' );
 		$layout_id   = tribe_get_request_var( 'layout', false );
 		$statuses    = self::get_supported_status_list();
-		
-		$ticketable_post_types = Tickets::instance()->post_types();
-		$repository            = new class( $ticketable_post_types ) extends \Tribe__Repository {
-			/**
-			 * @param string[] $post_types The list of post types.
-			 */
-			public function __construct( array $post_types ) {
-				$this->default_args['post_type'] = $post_types;
-				parent::__construct();
-			}
-		};
-		
-		$repository->where( 'meta_equals', Meta::META_KEY_LAYOUT_ID, $layout_id );
+		$counts      = self::get_status_count_for_layout( $layout_id );
 		
 		$views = [];
 		
@@ -297,7 +286,7 @@ class Associated_Events extends WP_Posts_List_Table {
 				add_query_arg( [ 'post_status' => $status ] ),
 				$class,
 				$status_object->label,
-				$repository->where( 'status', $status )->count()
+				$counts[ $status ] ?? 0
 			);
 		}
 		
@@ -312,7 +301,7 @@ class Associated_Events extends WP_Posts_List_Table {
 			),
 			empty( $post_status ) ? 'current' : '',
 			_x( 'All', 'Associated events post filter list label for all status', 'event-tickets' ),
-			$repository->where( 'status', $statuses )->count(),
+			array_sum( $counts )
 		);
 		
 		return array_merge( $all, $views );
@@ -361,5 +350,59 @@ class Associated_Events extends WP_Posts_List_Table {
 				'private',
 			] 
 		);
+	}
+	
+	/**
+	 * Get the status count for layout.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $layout_id The layout ID.
+	 *
+	 * @return array<string, int> The status count.
+	 */
+	public static function get_status_count_for_layout( string $layout_id ): array {
+		global $wpdb;
+		
+		$ticketable_post_types = tribe_get_option( 'ticket-enabled-post-types', [] );
+		
+		if ( empty( $ticketable_post_types ) ) {
+			return [];
+		}
+		
+		$post_types = DB::prepare(
+			implode( ', ', array_fill( 0, count( $ticketable_post_types ), '%s' ) ),
+			...$ticketable_post_types
+		);
+		
+		$supported_status_list = self::get_supported_status_list();
+		
+		$status_list = DB::prepare(
+			implode( ', ', array_fill( 0, count( $supported_status_list ), '%s' ) ),
+			...$supported_status_list
+		);
+		
+		try {
+			$counts_by_status = DB::get_results(
+				DB::prepare(
+					"SELECT posts.post_status, COUNT(posts.ID) AS post_count
+					FROM %i AS posts
+					INNER JOIN %i AS layout_meta ON posts.ID = layout_meta.post_id
+					WHERE posts.post_type IN ({$post_types})
+					AND posts.post_status IN ({$status_list})
+					AND layout_meta.meta_key = %s
+					AND layout_meta.meta_value = %s
+					GROUP BY posts.post_status",
+					$wpdb->posts,
+					$wpdb->postmeta,
+					Meta::META_KEY_LAYOUT_ID,
+					$layout_id
+				),
+			);
+		} catch ( \Exception $e ) {
+			return [];
+		}
+		
+		return wp_list_pluck( $counts_by_status, 'post_count', 'post_status' );
 	}
 }
