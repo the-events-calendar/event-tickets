@@ -27,6 +27,7 @@ class Associated_Events extends WP_Posts_List_Table {
 	 * @var int Items count.
 	 */
 	private int $item_count = 0;
+	
 	/**
 	 * The constructor.
 	 *
@@ -50,28 +51,11 @@ class Associated_Events extends WP_Posts_List_Table {
 	 */
 	public function get_columns() {
 		return [
-			'title'   => __( 'Title', 'event-tickets' ),
-			'tags'    => __( 'Tags', 'event-tickets' ),
-			'tickets' => __( 'Attendees', 'event-tickets' ),
-			'date'    => __( 'Date', 'event-tickets' ),
+			'title'   => _x( 'Title', 'Post title for associated events list', 'event-tickets' ),
+			'tags'    => _x( 'Tags', 'Post tags for associated events list', 'event-tickets' ),
+			'tickets' => _x( 'Attendees', 'Attendee count for associated events list', 'event-tickets' ),
+			'date'    => _x( 'Date', 'Post date for associated events list', 'event-tickets' ),
 		];
-	}
-	
-	/**
-	 * Get the default column.
-	 *
-	 * @since TBD
-	 *
-	 * @param WP_Post $item The current WP_Post object.
-	 * @param string  $column_name The column name.
-	 *
-	 * @return string
-	 */
-	public function column_default( $item, $column_name ) {
-		switch ( $column_name ) {
-			default:
-				return $item->post_title;
-		}
 	}
 	
 	/**

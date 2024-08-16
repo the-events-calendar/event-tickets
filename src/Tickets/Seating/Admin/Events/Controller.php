@@ -94,13 +94,13 @@ class Controller extends Controller_Contract {
 		$layout    = DB::table( Layouts::table_name( false ) )->where( 'id', $layout_id )->get();
 		
 		if ( empty( $layout ) ) {
-			echo esc_html__( 'Layout ID is not valid!', 'event-tickets' );
+			echo esc_html( _x( 'Layout ID is not valid!', 'Associated events list layout id', 'event-tickets' ) );
 			return;
 		}
 		
 		$header = sprintf(
 			/* translators: %s: Layout name. */
-			__( 'Associated Events for %s', 'event-tickets' ),
+			_x( 'Associated Events for %s', 'Associated events list header', 'event-tickets' ),
 			$layout->name
 		);
 		

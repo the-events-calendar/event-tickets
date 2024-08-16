@@ -1,5 +1,11 @@
 <?php
 /**
+ * Associated events list view by layout.
+ *
+ * @since TBD
+ *
+ * @version TBD
+ *
  * @var WP_Posts_List_Table $events_table Events list table.
  * @var string              $header Header string.
  */
