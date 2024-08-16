@@ -205,6 +205,30 @@ class List_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Get the default column value.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tribe__Tickets__Ticket_Object $item        The current item.
+	 * @param string                        $column_name The column name.
+	 *
+	 * @return string
+	 */
+	public function column_default( $item, $column_name ): string {
+		// If the column name is empty or the item does not have the column name, return an empty string.
+		if ( empty( $column_name ) || ! isset( $item->$column_name ) ) {
+			return '';
+		}
+
+		// If value is not a string or a number, return an empty string.
+		if ( ! is_string( $item->$column_name ) && ! is_numeric( $item->$column_name ) ) {
+			return '';
+		}
+
+		return $item->$column_name;
+	}
+
+	/**
 	 * Get the column name value.
 	 *
 	 * @since TBD
@@ -233,30 +257,6 @@ class List_Table extends WP_List_Table {
 		];
 
 		return $admin_views->template( 'all-tickets/table-column-name', $context, false );
-	}
-
-	/**
-	 * Get the default column value.
-	 *
-	 * @since TBD
-	 *
-	 * @param Tribe__Tickets__Ticket_Object $item        The current item.
-	 * @param string                        $column_name The column name.
-	 *
-	 * @return string
-	 */
-	public function column_default( $item, $column_name ): string {
-		// If the column name is empty or the item does not have the column name, return an empty string.
-		if ( empty( $column_name ) || ! isset( $item->$column_name ) ) {
-			return '';
-		}
-
-		// If value is not a string or a number, return an empty string.
-		if ( ! is_string( $item->$column_name ) && ! is_numeric( $item->$column_name ) ) {
-			return '';
-		}
-
-		return $item->$column_name;
 	}
 
 	/**
