@@ -7,8 +7,8 @@
  * @var \Tribe__Template  $this       Current template object.
  * @var string            $icon_html  The list table for the All Tickets screen.
  * @var string            $ticket_link       The name of the ticket.
- *
  */
+
 ?>
 <div class="tec-tickets-all-tickets-table-column-header-name">
 	<div class="tec-tickets-all-tickets-table-column-header-name-icon">

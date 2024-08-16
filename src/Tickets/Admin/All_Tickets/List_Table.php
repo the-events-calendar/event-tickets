@@ -287,7 +287,7 @@ class List_Table extends WP_List_Table {
 			return '-';
 		}
 
-		$edit_post_url = get_edit_post_link( $event );
+		$edit_post_url  = get_edit_post_link( $event );
 		$edit_post_link = sprintf(
 			'<a href="%s" class="tec-tickets-all-tickets-table-event-link" target="_blank" rel="nofollow noopener">%s</a>',
 			esc_url( $edit_post_url ),
