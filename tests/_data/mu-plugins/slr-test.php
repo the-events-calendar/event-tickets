@@ -347,16 +347,23 @@ function slr_test_connect_to_service() {
 		$https_home_url = str_replace( 'http', 'https', $https_home_url );
 	}
 
-	$response = wp_remote_post(
+	$payload         = [
+		'timestamp'  => gmdate( 'U' ),
+		'token'      => $access_token,
+		'domain'     => $https_home_url,
+		'user_id'    => time(),
+		'expiration' => time() + YEAR_IN_SECONDS,
+	];
+    ksort($payload);
+    // The PHP correspondent of JSON.stringify requires these flags.
+	$encoded_payload = wp_json_encode( $payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+	$response        = wp_remote_post(
 		$auth_url . '/tokens/new',
 		[
 			'body'    => wp_json_encode(
-				[
-					'token'      => $access_token,
-					'domain'     => $https_home_url,
-					'user_id'    => time(),
-					'expiration' => time() + YEAR_IN_SECONDS,
-				]
+				array_merge( [
+					'hash' => hash( 'sha256', $encoded_payload . 'silence-is-golden' )
+				], $payload )
 			),
 			'timeout' => 30
 		]
