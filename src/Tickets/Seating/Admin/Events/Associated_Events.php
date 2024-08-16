@@ -173,7 +173,7 @@ class Associated_Events extends WP_Posts_List_Table {
 		$search    = tribe_get_request_var( 's' );
 		
 		$arguments = [
-			'status'         => 'any',
+			'status'         => self::get_supported_status_list(),
 			'paged'          => $page,
 			'posts_per_page' => $per_page,
 		];
@@ -258,5 +258,32 @@ class Associated_Events extends WP_Posts_List_Table {
 	 */
 	public function no_items() {
 		echo esc_html( _x( 'No Associated Events found.', 'Associated events list no items', 'event-tickets' ) );
+	}
+	
+	/**
+	 * Get the supported status list.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[] The supported status list.
+	 */
+	public static function get_supported_status_list(): array {
+		/**
+		 * Filter the list of supported status list.
+		 *
+		 * @since TBD
+		 *
+		 * @param string[] $status_list The list of supported status list.
+		 */
+		return apply_filters(
+			'tec_tickets_seating_associated_events_status_list',
+			[
+				'publish',
+				'future',
+				'draft',
+				'pending',
+				'private',
+			] 
+		);
 	}
 }

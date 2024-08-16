@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Seating\Service;
 
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Tickets\Seating\Admin\Events\Associated_Events;
 use TEC\Tickets\Seating\Logging;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Tables\Layouts as Layouts_Table;
@@ -226,6 +227,13 @@ class Layouts {
 			implode( ', ', array_fill( 0, count( $ticketable_post_types ), '%s' ) ),
 			...$ticketable_post_types
 		);
+		
+		$supported_status_list = Associated_Events::get_supported_status_list();
+		
+		$status_list = DB::prepare(
+			implode( ', ', array_fill( 0, count( $supported_status_list ), '%s' ) ),
+			...$supported_status_list
+		);
 
 		try {
 			$count = DB::get_var(
@@ -234,7 +242,7 @@ class Layouts {
 					LEFT JOIN %i AS layout_meta
 					ON posts.ID = layout_meta.post_id
 					WHERE posts.post_type IN ({$post_types})
-					AND posts.post_status IN ('publish', 'private')
+					AND posts.post_status IN ({$status_list})
 					AND layout_meta.meta_key = %s
 					AND layout_meta.meta_value = %s",
 					$wpdb->posts,
