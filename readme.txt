@@ -207,8 +207,13 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.13.2] 2024-08-16 =
 
-* Tweak - Start Sale and End Sale date will autopopulate when creating a new ticket. [ET-2103]\n* Tweak - Update legacy Wallet Plus plugin notices to the new Tickets Plus plugin.\n* Fix - Exporting all Attendees as a CSV file in the new Tickets Attendees Page. [ET-2094]\n* Fix - Shared capacity will no longer be affected by any of the unlimited sales tickets on the same event. [ETP-920]
+
+* Fix - Exporting all Attendees as a CSV file in the new Tickets Attendees Page. [ET-2094]
+* Fix - Shared capacity will no longer be affected by any of the unlimited sales tickets on the same event. [ETP-920]
+* Tweak - Start Sale and End Sale date will autopopulate when creating a new ticket. [ET-2103]
+* Tweak - Update legacy Wallet Plus plugin notices to the new Tickets Plus plugin.
 * Tweak - Changed views: `v2/commerce/checkout/gateways`, `v2/commerce/checkout/purchaser-info`, `v2/commerce/checkout/purchaser-info/address`, `v2/commerce/checkout/purchaser-info/city`, `v2/commerce/checkout/purchaser-info/country`, `v2/commerce/checkout/purchaser-info/email`, `v2/commerce/checkout/purchaser-info/name`, `v2/commerce/checkout/purchaser-info/state`, `v2/commerce/checkout/purchaser-info/zip`, `v2/commerce/gateway/stripe/payment-element`
+* Language - 2 new strings added, 33 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.13.1] 2024-08-06 =
 
