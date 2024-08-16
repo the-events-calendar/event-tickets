@@ -9,7 +9,6 @@
 
 namespace TEC\Tickets\Admin\All_Tickets;
 
-use TEC\Tickets\Commerce\Ticket;
 use Tribe__Tickets__Tickets;
 use Tribe__Tickets__Ticket_Object;
 use WP_List_Table;
@@ -202,8 +201,7 @@ class List_Table extends WP_List_Table {
 	public function get_ticket_type_icon( $item ) {
 		ob_start();
 		do_action( 'tec_tickets_editor_list_table_title_icon_' . $item->type() );
-		$icon_html = ob_get_clean();
-		return $icon_html;
+		return ob_get_clean();
 	}
 
 	/**
@@ -220,17 +218,20 @@ class List_Table extends WP_List_Table {
 		if ( ! $event ) {
 			return '-';
 		}
-		$edit_post_url = get_edit_post_link( $event );
+
+		$edit_post_url  = get_edit_post_link( $event );
 		$edit_post_link = sprintf(
 			'<a href="%s" class="tec-tickets-all-tickets-table-event-link" target="_blank" rel="nofollow noopener">%s</a>',
 			esc_url( $edit_post_url ),
 			esc_html( $item->name )
 		);
+
 		$admin_views = tribe( 'tickets.admin.views' );
 		$context     = [
 			'icon_html'   => $this->get_ticket_type_icon( $item ),
 			'ticket_link' => $edit_post_link,
 		];
+
 		return $admin_views->template( 'all-tickets/table-column-name', $context, false );
 	}
 
@@ -261,13 +262,15 @@ class List_Table extends WP_List_Table {
 		if ( ! $event ) {
 			return '-';
 		}
+
 		$edit_post_url = get_edit_post_link( $event );
 		$edit_post_link = sprintf(
 			'<a href="%s" class="tec-tickets-all-tickets-table-event-link" target="_blank" rel="nofollow noopener">%s</a>',
 			esc_url( $edit_post_url ),
 			get_the_title( $event )
 		);
-		$orders_report_url = sprintf(
+
+		$orders_report_url  = sprintf(
 			'https://wp.lndo.site/wp-admin/edit.php?post_type=%s&page=tickets-orders&event_id=%d',
 			$event->post_type,
 			$event->ID
@@ -277,7 +280,8 @@ class List_Table extends WP_List_Table {
 			esc_url( $orders_report_url ),
 			esc_html__( 'Orders', 'event-tickets' )
 		);
-		$attendees_report_url = sprintf(
+
+		$attendees_report_url  = sprintf(
 			'https://wp.lndo.site/wp-admin/edit.php?post_type=%s&page=tickets-attendees&event_id=%d',
 			$event->post_type,
 			$event->ID
@@ -287,6 +291,7 @@ class List_Table extends WP_List_Table {
 			esc_url( $attendees_report_url ),
 			esc_html__( 'Attendees', 'event-tickets' )
 		);
+
 		$actions = [
 			'orders'    => $orders_report_link,
 			'attendees' => $attendees_report_link,
@@ -315,7 +320,8 @@ class List_Table extends WP_List_Table {
 	 */
 	public function column_start( $item ): string {
 		$date_format = tribe_get_date_format( true );
-		$datetime = $item->start_date( false );
+		$datetime    = $item->start_date( false );
+
 		return $datetime->format( $date_format );
 	}
 
@@ -330,7 +336,8 @@ class List_Table extends WP_List_Table {
 	 */
 	public function column_end( $item ): string {
 		$date_format = tribe_get_date_format( true );
-		$datetime = $item->end_date( false );
+		$datetime    = $item->end_date( false );
+
 		return $datetime->format( $date_format );
 	}
 
@@ -345,11 +352,13 @@ class List_Table extends WP_List_Table {
 	 */
 	public function column_days_left( $item ): string {
 		$datetime = $item->end_date( false );
-		$now = new DateTime();
+		$now      = new DateTime();
 		$interval = $now->diff( $datetime );
+
 		if ( $interval->invert ) {
 			return '-';
 		}
+
 		return $interval->days;
 	}
 
@@ -425,26 +434,26 @@ class List_Table extends WP_List_Table {
 				$args['orderby'] = 'ID';
 				break;
 			case 'start':
-				$args['orderby'] = 'meta_value';
-				$args['meta_key'] = '_ticket_start_date';
+				$args['orderby']   = 'meta_value';
+				$args['meta_key']  = '_ticket_start_date';
 				$args['meta_type'] = 'DATE';
 				break;
 			case 'end':
-				$args['orderby'] = 'meta_value';
-				$args['meta_key'] = '_ticket_end_date';
+				$args['orderby']   = 'meta_value';
+				$args['meta_key']  = '_ticket_end_date';
 				$args['meta_type'] = 'DATE';
 				break;
 			case 'days_left':
-				$args['orderby'] = 'meta_value';
-				$args['meta_key'] = '_ticket_end_date';
+				$args['orderby']   = 'meta_value';
+				$args['meta_key']  = '_ticket_end_date';
 				$args['meta_type'] = 'DATE';
 				break;
 			case 'price':
-				$args['orderby'] = 'meta_value_num';
+				$args['orderby']  = 'meta_value_num';
 				$args['meta_key'] = '_price';
 				break;
 			case 'sold':
-				$args['orderby'] = 'meta_value_num';
+				$args['orderby']  = 'meta_value_num';
 				$args['meta_key'] = 'total_sales';
 				break;
 		}
