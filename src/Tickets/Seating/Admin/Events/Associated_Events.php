@@ -170,6 +170,7 @@ class Associated_Events extends WP_Posts_List_Table {
 		$page      = absint( tribe_get_request_var( 'paged', 0 ) );
 		$orderby   = tribe_get_request_var( 'orderby' );
 		$order     = tribe_get_request_var( 'order' );
+		$status    = tribe_get_request_var( 'post_status' );
 		$search    = tribe_get_request_var( 's' );
 		
 		$arguments = [
@@ -188,6 +189,10 @@ class Associated_Events extends WP_Posts_List_Table {
 		
 		if ( ! empty( $search ) ) {
 			$arguments['s'] = $search;
+		}
+		
+		if ( ! empty( $status ) ) {
+			$arguments['status'] = [ $status ];
 		}
 		
 		$ticketable_post_types = Tickets::instance()->post_types();
@@ -235,6 +240,66 @@ class Associated_Events extends WP_Posts_List_Table {
 		foreach ( $this->items as $item ) {
 			$this->single_row( $item );
 		}
+	}
+	
+	/**
+	 * Gets the list of views available on this table.
+	 *
+	 * The format is an associative array:
+	 * - `'id' => 'link'`
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, string> The list of views.
+	 */
+	protected function get_views(): array {
+		$post_status = tribe_get_request_var( 'post_status', '' );
+		$layout_id   = tribe_get_request_var( 'layout', false );
+		$statuses    = self::get_supported_status_list();
+		
+		$ticketable_post_types = Tickets::instance()->post_types();
+		$repository            = new class( $ticketable_post_types ) extends \Tribe__Repository {
+			/**
+			 * @param string[] $post_types The list of post types.
+			 */
+			public function __construct( array $post_types ) {
+				$this->default_args['post_type'] = $post_types;
+				parent::__construct();
+			}
+		};
+		
+		$repository->where( 'meta_equals', Meta::META_KEY_LAYOUT_ID, $layout_id );
+		
+		$views = [];
+		
+		foreach ( $statuses as $status ) {
+			$class         = $post_status === $status ? 'current' : '';
+			$status_object = get_post_status_object( $status );
+			
+			$views[ $status ] = sprintf(
+				'<a href="%s" class="%s">%s <span class="count">(%d)</span></a>',
+				add_query_arg( [ 'post_status' => $status ] ),
+				$class,
+				$status_object->label,
+				$repository->where( 'status', $status )->count()
+			);
+		}
+		
+		$all['all'] = sprintf(
+			'<a href="%s" class="%s">%s <span class="count">(%d)</span></a>',
+			add_query_arg(
+				[
+					'page'   => self::SLUG,
+					'layout' => $layout_id,
+				],
+				admin_url( 'admin.php' ) 
+			),
+			empty( $post_status ) ? 'current' : '',
+			_x( 'All', 'Associated events post filter list label for all status', 'event-tickets' ),
+			$repository->where( 'status', $statuses )->count(),
+		);
+		
+		return array_merge( $all, $views );
 	}
 	
 	/**
