@@ -54,6 +54,15 @@ let totalPriceElement = null;
 let totalTicketsElement = null;
 
 /**
+ * The empty ticket list message element.
+ *
+ * @since TBD
+ *
+ * @type {HTMLElement|null}
+ */
+let emptyTicketMessageElement = null;
+
+/**
  * The Confirm button selector.
  *
  * @since TBD
@@ -182,6 +191,15 @@ function updateTotals(parentElement) {
 		}, 0)
 	);
 	totalTicketsElement.innerText = formatTicketNumber(rows.length);
+
+	const totalsWrapper = parentElement.querySelector(
+		'.tec-tickets-seating__total'
+	);
+	if (rows.length === 0) {
+		totalsWrapper.classList.add('tec-tickets-seating__total-hidden');
+	} else {
+		totalsWrapper.classList.remove('tec-tickets-seating__total-hidden');
+	}
 }
 
 /**
@@ -297,6 +315,25 @@ function updateTicketsSelection(parentElement, items) {
 }
 
 /**
+ * Updates the empty tickets message.
+ *
+ * @since TBd
+ *
+ * @param {number|null} ticketCount The number of selected tickets.
+ */
+function updateEmptyTicketsMessage(ticketCount) {
+	if (!ticketCount) {
+		emptyTicketMessageElement.classList.remove(
+			'tec-tickets-seating__empty-tickets-message-hidden'
+		);
+	} else {
+		emptyTicketMessageElement.classList.add(
+			'tec-tickets-seating__empty-tickets-message-hidden'
+		);
+	}
+}
+
+/**
  * Validates a selection item received from the service is valid.
  *
  * @since TBD
@@ -336,7 +373,35 @@ function registerActions(iframe) {
 			iframe.closest('.event-tickets'),
 			items.filter((item) => validateSelectionItemFromService(item))
 		);
+
+		updateEmptyTicketsMessage(items.length);
 	});
+}
+
+/**
+ * Watches for click events on the sidebar arrow to toggle it up and down
+ *
+ * @since TBD
+ *
+ *
+ * @param {HTMLElement} dom The dom or document
+ */
+function toggleMobileSidebarOpen(dom) {
+	dom = dom || document;
+
+	dom.querySelector('.tec-tickets-seating__sidebar-arrow').addEventListener(
+		'click',
+		() => {
+			const sidebar = dom.querySelector(
+				'.tec-tickets-seating__modal-sidebar'
+			);
+			if (sidebar) {
+				sidebar.classList.toggle(
+					'tec-tickets-seating__modal-sidebar-open'
+				);
+			}
+		}
+	);
 }
 
 /**
@@ -361,10 +426,15 @@ export async function bootstrapIframe(dom) {
 	registerActions(iframe);
 
 	await initServiceIframe(iframe);
+	toggleMobileSidebarOpen(dom);
 
 	totalPriceElement = dom.querySelector('.tec-tickets-seating__total-price');
 
 	totalTicketsElement = dom.querySelector('.tec-tickets-seating__total-text');
+
+	emptyTicketMessageElement = dom.querySelector(
+		'.tec-tickets-seating__empty-tickets-message'
+	);
 }
 
 /**

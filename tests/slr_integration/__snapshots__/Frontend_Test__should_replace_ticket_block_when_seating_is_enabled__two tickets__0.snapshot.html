@@ -31,13 +31,16 @@
 	</iframe>
 </div>
 
-<aside class="tec-tickets-seating__modal-sidebar">
-	<div class="tec-tickets-seating__sidebar-content">
-		<h4 class="tribe-common-h4 tec-tickets-seating__title">
-			Tickets
-		</h4>
+<div class="tec-tickets-seating__modal-sidebar-wrapper">
+	<aside class="tec-tickets-seating__modal-sidebar">
+		<div class="tec-tickets-seating__sidebar-content">
 
-		
+			<div class="tec-tickets-seating__sidebar-header">
+				<h4 class="tribe-common-h4 tec-tickets-seating__title">
+					Tickets
+				</h4>
+
+				
 <div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 	data-token="test-ephemeral-token"
 	data-redirect-url="http://wordpress.test/?post_type=page&#038;p={{post_id}}"
@@ -45,45 +48,54 @@
 	>
 	<div class="dashicons dashicons-clock"></div>
 	<div class="tec-tickets-seating__message">
-			<span>
-				<span class="tec-tickets-seating__message-text">
-					Seat selections reserved for 				</span>
-				<span class="tec-tickets-seating__message-time">
-					<span class="tec-tickets-seating__time-minutes">
-						<!-- This will be set by JS. -->
-					</span>:<span class="tec-tickets-seating__time-seconds">
-						<!-- This will be set by JS. -->
-					</span>
+		<span>
+			<span class="tec-tickets-seating__message-text">
+				Seat selections reserved for 			</span>
+			<span class="tec-tickets-seating__message-time">
+				<span class="tec-tickets-seating__time-minutes">
+					<!-- This will be set by JS. -->
+				</span>:<span class="tec-tickets-seating__time-seconds">
+					<!-- This will be set by JS. -->
 				</span>
 			</span>
+		</span>
 	</div>
 	<div class="tec-tickets-seating__dialog-append-target"></div>
 </div>
 
+				<div class="tec-tickets-seating__sidebar-arrow">
+					<span class="dashicons dashicons-arrow-up-alt2"></span>
+				</div>
+			</div>
 
-		<div class="tec-tickets-seating__ticket-rows">
-		</div>
-	</div>
-
-	<div class="tec-tickets-seating__sidebar-footer">
-		<div class="tec-tickets-seating__total">
-			<div class="tec-tickets-seating__total-text">
-				0 Tickets			</div>
-			<div class="tec-tickets-seating__total-price">
-				&#x24;0.00			</div>
+			<div class="tec-tickets-seating__empty-tickets-message">
+				Select a seat from the map to add seated tickets
+			</div>
+			<div class="tec-tickets-seating__tickets-wrapper">
+				<div class="tec-tickets-seating__ticket-rows"></div>
+			</div>
 		</div>
 
-		<div class="tec-tickets-seating__sidebar-controls">
-			<button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel">
-				Cancel
-			</button>
-			<button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm">
-				Check Out
-			</button>
+		<div class="tec-tickets-seating__sidebar-footer">
+			<div class="tec-tickets-seating__total tec-tickets-seating__total-hidden">
+				<div class="tec-tickets-seating__total-text">
+					0 Tickets				</div>
+				<div class="tec-tickets-seating__total-price">
+					&#x24;0.00				</div>
+			</div>
+
+			<div class="tec-tickets-seating__sidebar-controls">
+				<button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel">
+					Cancel
+				</button>
+				<button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm">
+					Check Out
+				</button>
+			</div>
 		</div>
-	</div>
-</aside>
-	</div>
+	</aside>
+
+</div>	</div>
 </script>
 
 		<script>
