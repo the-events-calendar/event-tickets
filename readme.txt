@@ -207,7 +207,6 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.13.2] 2024-08-16 =
 
-
 * Fix - Exporting all Attendees as a CSV file in the new Tickets Attendees Page. [ET-2094]
 * Fix - Shared capacity will no longer be affected by any of the unlimited sales tickets on the same event. [ETP-920]
 * Tweak - Start Sale and End Sale date will autopopulate when creating a new ticket. [ET-2103]
