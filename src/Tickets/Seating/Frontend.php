@@ -355,6 +355,7 @@ class Frontend extends Controller_Contract {
 				'name'        => $ticket->name,
 				'price'       => $ticket->price,
 				'description' => $ticket->description,
+				'dateInRange' => $ticket->date_in_range()
 			];
 		}
 
