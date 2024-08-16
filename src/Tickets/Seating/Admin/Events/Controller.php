@@ -74,7 +74,7 @@ class Controller extends Controller_Contract {
 			__( 'Events', 'event-tickets' ),
 			'',
 			'manage_options',
-			Associated_Events::get_slug(),
+			Associated_Events::SLUG,
 			[ $this, 'render' ]
 		);
 	}

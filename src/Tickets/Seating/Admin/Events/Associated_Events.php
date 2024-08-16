@@ -29,6 +29,13 @@ class Associated_Events extends WP_Posts_List_Table {
 	private int $item_count = 0;
 	
 	/**
+	 * The slug to display in the list table page.
+	 *
+	 * @var string
+	 */
+	public const SLUG = 'tec-tickets-seating-events';
+	
+	/**
 	 * The constructor.
 	 *
 	 * @since TBD
@@ -250,17 +257,6 @@ class Associated_Events extends WP_Posts_List_Table {
 	 * @inheritDoc
 	 */
 	public function no_items() {
-		echo esc_html__( 'No Associated Events found.', 'event-tickets' );
-	}
-	
-	/**
-	 * Get the slug.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	public static function get_slug(): string {
-		return 'tec-tickets-seating-events';
+		echo esc_html( _x( 'No Associated Events found.', 'Associated events list no items', 'event-tickets' ) );
 	}
 }
