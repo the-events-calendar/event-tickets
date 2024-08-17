@@ -124,6 +124,76 @@ class Controller_Test extends Controller_Test_Case {
 				$event_id = tribe_events()->set_args(
 					[
 						'title'         => 'Event with layout',
+						'status'        => 'draft',
+						'start_date'    => '2020-01-01 00:00:00',
+						'duration'      => 2 * HOUR_IN_SECONDS,
+						'post_date'     => '2020-01-01 00:00:00',
+						'post_date_gmt' => '2020-01-01 00:00:00',
+					]
+				)->create()->ID;
+				
+				$post_id = self::factory()->post->create(
+					[
+						'post_title'  => 'Post with layout',
+						'post_status' => 'pending',
+					]
+				);
+				
+				wp_update_post(
+					[
+						'ID'            => $post_id,
+						'post_date'     => '2020-01-02 00:00:00',
+						'post_date_gmt' => '2020-01-02 00:00:00',
+					]
+				);
+				
+				$event_id_2 = tribe_events()->set_args(
+					[
+						'title'         => 'Event with draft status',
+						'status'        => 'publish',
+						'start_date'    => '2020-01-01 00:00:00',
+						'duration'      => 2 * HOUR_IN_SECONDS,
+						'post_date'     => '2020-01-01 00:00:00',
+						'post_date_gmt' => '2020-01-01 00:00:00',
+					]
+				)->create()->ID;
+				
+				$post_id_2 = self::factory()->post->create(
+					[
+						'post_title' => 'Post with pending status',
+					]
+				);
+				
+				wp_update_post(
+					[
+						'ID'            => $post_id_2,
+						'post_date'     => '2020-01-02 00:00:00',
+						'post_date_gmt' => '2020-01-02 00:00:00',
+					]
+				);
+				
+				foreach ( [ $event_id, $event_id_2, $post_id, $post_id_2 ] as $id ) {
+					update_post_meta( $id, Meta::META_KEY_ENABLED, true );
+					update_post_meta( $id, Meta::META_KEY_LAYOUT_ID, 'some-layout-2' );
+				}
+				
+				update_user_meta( get_current_user_id(), Associated_Events::OPTION_PER_PAGE, 1 );
+				
+				return [
+					[
+						'layout' => 'some-layout-2',
+						'order'  => 'ASC',
+					],
+					[ $event_id, $post_id, $event_id_2, $post_id_2 ],
+				];
+			},
+		];
+		
+		yield 'Events with search result for - future' => [
+			function (): array {
+				$event_id = tribe_events()->set_args(
+					[
+						'title'         => 'Event with future in title',
 						'status'        => 'publish',
 						'start_date'    => '2020-01-01 00:00:00',
 						'duration'      => 2 * HOUR_IN_SECONDS,
@@ -146,8 +216,8 @@ class Controller_Test extends Controller_Test_Case {
 				
 				$event_id_2 = tribe_events()->set_args(
 					[
-						'title'         => 'Event with draft status',
-						'status'        => 'draft',
+						'title'         => 'Event with private status',
+						'status'        => 'private',
 						'start_date'    => '2020-01-01 00:00:00',
 						'duration'      => 2 * HOUR_IN_SECONDS,
 						'post_date'     => '2020-01-01 00:00:00',
@@ -157,8 +227,7 @@ class Controller_Test extends Controller_Test_Case {
 				
 				$post_id_2 = self::factory()->post->create(
 					[
-						'post_title'  => 'Post with pending status',
-						'post_status' => 'pending',
+						'post_title' => 'Post with future in title',
 					]
 				);
 				
@@ -172,13 +241,14 @@ class Controller_Test extends Controller_Test_Case {
 				
 				foreach ( [ $event_id, $event_id_2, $post_id, $post_id_2 ] as $id ) {
 					update_post_meta( $id, Meta::META_KEY_ENABLED, true );
-					update_post_meta( $id, Meta::META_KEY_LAYOUT_ID, 'some-layout-2' );
+					update_post_meta( $id, Meta::META_KEY_LAYOUT_ID, 'some-layout-3' );
 				}
 				
-				update_user_meta( get_current_user_id(), Associated_Events::OPTION_PER_PAGE, 1 );
-				
 				return [
-					[ 'layout' => 'some-layout-2' ],
+					[
+						'layout' => 'some-layout-3',
+						's'      => 'future',
+					],
 					[ $event_id, $post_id, $event_id_2, $post_id_2 ],
 				];
 			},
