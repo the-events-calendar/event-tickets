@@ -255,10 +255,12 @@ export function emptyHandlerQueue() {
  *
  * @since TBD
  *
+ * @param {string} layoutId The layout ID.
+ *
  * @return {string} The associated events URL for the given layout ID.
  */
 export function getAssociatedEventsUrl( layoutId ) {
-	return `${associatedEventsUrl}&layout=${layoutId}`;
+	return layoutId ? `${associatedEventsUrl}&layout=${layoutId}` : associatedEventsUrl;
 }
 
 // Re-export some functions from the state module.
