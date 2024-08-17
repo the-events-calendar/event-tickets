@@ -25,6 +25,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 		?>
 	</h2>
 
+	<?php if ( ! empty( $maps ) ) : ?>
 	<div class="tec-tickets-seating-modal-wrapper tribe-common tec-tickets__seating-tab-heading__button">
 		<div class="tec-tickets-seating-layouts-modal__anchor"></div>
 		<?php
@@ -44,6 +45,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 		$dialog_view->render_modal( $content, $args, Layout_Edit::ADD_LAYOUT_MODAL_ID );
 		?>
 	</div>
+	<?php endif; ?>
 
 	<div class="tec-tickets__seating-tab-heading__description">
 		<p>
