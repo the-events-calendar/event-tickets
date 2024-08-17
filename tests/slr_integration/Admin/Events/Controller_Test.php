@@ -2,9 +2,10 @@
 
 namespace TEC\Tickets\Seating\Admin\Events;
 
+use Closure;
+use Generator;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
-use TEC\Tickets\Seating\Admin\Events\Controller;
 use TEC\Tickets\Seating\Service\Layouts as Layouts_Service;
 use TEC\Tickets\Seating\Meta;
 use Tribe\Tests\Traits\With_Uopz;
@@ -36,10 +37,18 @@ class Controller_Test extends Controller_Test_Case {
 				[
 					'id'            => 'some-layout-2',
 					'name'          => 'Some Layout 2',
-					'seats'         => 10,
+					'seats'         => 20,
 					'createdDate'   => time() * 1000,
 					'mapId'         => 'some-map-2',
 					'screenshotUrl' => 'https://example.com/some-layouts-2.png',
+				],
+				[
+					'id'            => 'some-layout-3',
+					'name'          => 'Some Layout 3',
+					'seats'         => 30,
+					'createdDate'   => time() * 1000,
+					'mapId'         => 'some-map-3',
+					'screenshotUrl' => 'https://example.com/some-layouts-3.png',
 				],
 			]
 		);
@@ -50,76 +59,152 @@ class Controller_Test extends Controller_Test_Case {
 		Layouts_Service::invalidate_cache();
 		unset( $_GET['layout'] );
 	}
-
-	public function test_rendering_associated_events_list() {
-		$event_id = tribe_events()->set_args(
-			[
-				'title'         => 'Event with layout',
-				'status'        => 'publish',
-				'start_date'    => '2020-01-01 00:00:00',
-				'duration'      => 2 * HOUR_IN_SECONDS,
-				'post_date'     => '2020-01-01 00:00:00',
-				'post_date_gmt' => '2020-01-01 00:00:00',
-			]
-		)->create()->ID;
-
-		$post_id = self::factory()->post->create(
-			[ 'post_title' => 'Post with layout' ]
-		);
-
-		wp_update_post(
-			[
-				'ID'            => $post_id,
-				'post_date'     => '2020-01-02 00:00:00',
-				'post_date_gmt' => '2020-01-02 00:00:00',
-			]
-		);
-
-		update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
-		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-1' );
-		update_post_meta( $post_id, Meta::META_KEY_ENABLED, true );
-		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-1' );
-
-		$_GET['layout'] = 'some-layout-1';
-
+	
+	public function events_list_data_provider(): Generator {
+		yield 'No Layout or invalid ID given' => [
+			function (): array {
+				return [
+					[],
+					[],
+				];
+			},
+		];
+		
+		yield 'Layout ID without attached event' => [
+			function (): array {
+				return [
+					[ 'layout' => 'some-layout-3' ],
+					[],
+				];
+			},
+		];
+		
+		yield 'Events with attached layout: some-layout-1' => [
+			function (): array {
+				$event_id = tribe_events()->set_args(
+					[
+						'title'         => 'Event with layout',
+						'status'        => 'publish',
+						'start_date'    => '2020-01-01 00:00:00',
+						'duration'      => 2 * HOUR_IN_SECONDS,
+						'post_date'     => '2020-01-01 00:00:00',
+						'post_date_gmt' => '2020-01-01 00:00:00',
+					]
+				)->create()->ID;
+				
+				$post_id = self::factory()->post->create(
+					[ 'post_title' => 'Post with layout' ]
+				);
+				
+				wp_update_post(
+					[
+						'ID'            => $post_id,
+						'post_date'     => '2020-01-02 00:00:00',
+						'post_date_gmt' => '2020-01-02 00:00:00',
+					]
+				);
+				
+				update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
+				update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-1' );
+				update_post_meta( $post_id, Meta::META_KEY_ENABLED, true );
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-1' );
+				
+				return [
+					[ 'layout' => 'some-layout-1' ],
+					[ $event_id, $post_id ],
+				];
+			},
+		];
+		
+		yield 'Events with varying status with pagination' => [
+			function (): array {
+				$event_id = tribe_events()->set_args(
+					[
+						'title'         => 'Event with layout',
+						'status'        => 'publish',
+						'start_date'    => '2020-01-01 00:00:00',
+						'duration'      => 2 * HOUR_IN_SECONDS,
+						'post_date'     => '2020-01-01 00:00:00',
+						'post_date_gmt' => '2020-01-01 00:00:00',
+					]
+				)->create()->ID;
+				
+				$post_id = self::factory()->post->create(
+					[ 'post_title' => 'Post with layout' ]
+				);
+				
+				wp_update_post(
+					[
+						'ID'            => $post_id,
+						'post_date'     => '2020-01-02 00:00:00',
+						'post_date_gmt' => '2020-01-02 00:00:00',
+					]
+				);
+				
+				$event_id_2 = tribe_events()->set_args(
+					[
+						'title'         => 'Event with draft status',
+						'status'        => 'draft',
+						'start_date'    => '2020-01-01 00:00:00',
+						'duration'      => 2 * HOUR_IN_SECONDS,
+						'post_date'     => '2020-01-01 00:00:00',
+						'post_date_gmt' => '2020-01-01 00:00:00',
+					]
+				)->create()->ID;
+				
+				$post_id_2 = self::factory()->post->create(
+					[
+						'post_title'  => 'Post with pending status',
+						'post_status' => 'pending',
+					]
+				);
+				
+				wp_update_post(
+					[
+						'ID'            => $post_id_2,
+						'post_date'     => '2020-01-02 00:00:00',
+						'post_date_gmt' => '2020-01-02 00:00:00',
+					]
+				);
+				
+				foreach ( [ $event_id, $event_id_2, $post_id, $post_id_2 ] as $id ) {
+					update_post_meta( $id, Meta::META_KEY_ENABLED, true );
+					update_post_meta( $id, Meta::META_KEY_LAYOUT_ID, 'some-layout-2' );
+				}
+				
+				update_user_meta( get_current_user_id(), Associated_Events::OPTION_PER_PAGE, 1 );
+				
+				return [
+					[ 'layout' => 'some-layout-2' ],
+					[ $event_id, $post_id, $event_id_2, $post_id_2 ],
+				];
+			},
+		];
+	}
+	
+	/**
+	 * @dataProvider events_list_data_provider
+	 */
+	public function test_associated_events_list( Closure $fixture ): void {
+		[ $vars, $ids ] = $fixture();
+		
+		if ( ! empty( $vars ) ) {
+			foreach ( $vars as $key => $value ) {
+				$_GET[ $key ] = $value;
+			}
+		}
+		
+		$this->make_controller()->register();
+		
 		ob_start();
 		$this->make_controller()->render();
 		$html = ob_get_clean();
 		
-		$html = str_replace( [ $event_id, $post_id ], [ '{{EVENT_ID}}', '{{POST_ID}}' ], $html );
-
-		$this->assertMatchesHtmlSnapshot( $html );
-	}
-
-	public function test_associated_events_list_without_layout() {
-		$this->make_controller()->register();
-		ob_start();
-		$this->make_controller()->render();
-		$html = ob_get_clean();
-
-		$this->assertMatchesHtmlSnapshot( $html );
-	}
-	
-	public function test_list_with_layout_without_association() {
-		$post_id = self::factory()->post->create(
-			[ 'post_title' => 'Post with layout' ]
-		);
-
-		wp_update_post(
-			[
-				'ID'            => $post_id,
-				'post_date'     => '2020-01-02 00:00:00',
-				'post_date_gmt' => '2020-01-02 00:00:00',
-			]
-		);
-
-		$_GET['layout'] = 'some-layout-2';
-		$this->make_controller()->register();
-
-		ob_start();
-		$this->make_controller()->render();
-		$html = ob_get_clean();
-
+		if ( ! empty( $ids ) ) {
+			// Remove the ids from the html.
+			$html = str_replace( $ids, array_fill( 0, count( $ids ), '{{ID}}' ), $html );
+		}
+		
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
 }
