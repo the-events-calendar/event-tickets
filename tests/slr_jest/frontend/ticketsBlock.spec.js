@@ -16,6 +16,27 @@ require('jest-fetch-mock').enableMocks();
 const apiModule = require('@tec/tickets/seating/service/api');
 const iframeModule = require('@tec/tickets/seating/service/iframe');
 
+/**
+ * Extracts and appends the modal dialog to the document as a click of the button would do.
+ *
+ * @param {string} html The source HTML of the whole document.
+ *
+ * @return {Document} The document element, transformed to include the modal dialog.
+ */
+function ticketSelectionModalExtractor(html) {
+	const wholeDocument = new DOMParser().parseFromString(html, 'text/html');
+	const modalHtml = wholeDocument
+		.querySelector(
+			'[data-js="dialog-content-tec-tickets-seating-seat-selection-modal"]'
+		)
+		.innerHTML.replace('{{post_id}}', 23);
+	wholeDocument
+		.querySelector('.event-tickets')
+		.insertAdjacentHTML('beforeend', modalHtml);
+
+	return wholeDocument;
+}
+
 describe('Seat Selection Modal', () => {
 	beforeEach(() => {
 		fetch.resetMocks();
@@ -111,34 +132,15 @@ describe('Seat Selection Modal', () => {
 	});
 
 	describe('selection push to backend', () => {
-		function getTestDocument() {
-			return new DOMParser().parseFromString(
-				`<div class="event-tickets">
-					<div class="tec-tickets-seating__iframe-container" data-token="test-token">
-						<iframe class="tec-tickets-seating__iframe"></iframe>
-					</div>
-					<div class="tec-tickets-seating__ticket-rows">
-					</div>
-					<div>
-						<p class="tec-tickets-seating__total-price"></p>
-						<p class="tec-tickets-seating__total-text"></p>
-					</div>
-					<div class="tec-tickets-seating__modal">
-						<button class="tec-tickets-seating__sidebar-control--confirm">
-							Check Out
-						</button>
-					</div>
-				</div>`,
-				'text/html'
-			);
-		}
-
 		iframeModule.initServiceIframe = jest.fn(() => true);
 
 		// Fire the INBOUND_SEATS_SELECTED  action with correct payload.
 		it('should handle adding seat selection correctly', async () => {
-			const dom = getTestDocument();
-			setToken('test-token');
+			const dom = getTestDocument(
+				'seats-selection',
+				ticketSelectionModalExtractor
+			);
+			setToken('test-ephemeral-token');
 			fetch.mockIf(
 				/^https:\/\/wordpress\.test\/wp-admin\/admin-ajax\.php?.*$/,
 				JSON.stringify({ success: true })
@@ -158,7 +160,7 @@ describe('Seat Selection Modal', () => {
 				{
 					method: 'POST',
 					body: JSON.stringify({
-						token: 'test-token',
+						token: 'test-ephemeral-token',
 						reservations: {},
 					}),
 					signal: expect.any(AbortSignal),
@@ -185,7 +187,7 @@ describe('Seat Selection Modal', () => {
 				{
 					method: 'POST',
 					body: JSON.stringify({
-						token: 'test-token',
+						token: 'test-ephemeral-token',
 						reservations: {
 							23: [
 								{
@@ -227,7 +229,7 @@ describe('Seat Selection Modal', () => {
 				{
 					method: 'POST',
 					body: JSON.stringify({
-						token: 'test-token',
+						token: 'test-ephemeral-token',
 						reservations: {
 							23: [
 								{
@@ -281,7 +283,7 @@ describe('Seat Selection Modal', () => {
 				{
 					method: 'POST',
 					body: JSON.stringify({
-						token: 'test-token',
+						token: 'test-ephemeral-token',
 						reservations: {
 							23: [
 								{
@@ -349,7 +351,7 @@ describe('Seat Selection Modal', () => {
 				{
 					method: 'POST',
 					body: JSON.stringify({
-						token: 'test-token',
+						token: 'test-ephemeral-token',
 						reservations: {
 							23: [
 								{
@@ -385,8 +387,11 @@ describe('Seat Selection Modal', () => {
 		});
 
 		it('should handle removing seat selection correctly', async () => {
-			const dom = getTestDocument();
-			setToken('test-token');
+			const dom = getTestDocument(
+				'seats-selection',
+				ticketSelectionModalExtractor
+			);
+			setToken('test-ephemeral-token');
 			fetch.mockIf(
 				/^https:\/\/wordpress\.test\/wp-admin\/admin-ajax\.php?.*$/,
 				JSON.stringify({ success: true })
@@ -464,7 +469,7 @@ describe('Seat Selection Modal', () => {
 				{
 					method: 'POST',
 					body: JSON.stringify({
-						token: 'test-token',
+						token: 'test-ephemeral-token',
 						reservations: {
 							23: [
 								{
@@ -520,7 +525,7 @@ describe('Seat Selection Modal', () => {
 				{
 					method: 'POST',
 					body: JSON.stringify({
-						token: 'test-token',
+						token: 'test-ephemeral-token',
 						reservations: {
 							23: [
 								{
@@ -562,7 +567,7 @@ describe('Seat Selection Modal', () => {
 				{
 					method: 'POST',
 					body: JSON.stringify({
-						token: 'test-token',
+						token: 'test-ephemeral-token',
 						reservations: {
 							89: [
 								{
@@ -589,7 +594,7 @@ describe('Seat Selection Modal', () => {
 				{
 					method: 'POST',
 					body: JSON.stringify({
-						token: 'test-token',
+						token: 'test-ephemeral-token',
 						reservations: {},
 					}),
 					signal: expect.any(AbortSignal),
