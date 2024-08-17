@@ -24,6 +24,9 @@ class Controller_Test extends Controller_Test_Case {
 		$this->set_fn_return( 'is_admin', true );
 		$this->set_fn_return( 'get_column_headers', [] );
 		
+		$user_id = self::factory()->user->create();
+		wp_set_current_user( $user_id );
+		
 		Layouts_Service::insert_rows_from_service(
 			[
 				[
