@@ -51,4 +51,11 @@ class Assets_Test extends Controller_Test_Case {
 		);
 		$this->assertMatchesJsonSnapshot( $json );
 	}
+	
+	public function test_service_bundle_data(): void {
+		$controller = $this->make_controller();
+		
+		$json = wp_json_encode( $controller->get_service_bundle_data(), JSON_SNAPSHOT_OPTIONS );
+		$this->assertMatchesJsonSnapshot( $json );
+	}
 }
