@@ -3,22 +3,167 @@
 namespace TEC\Tickets\Admin\All_Tickets;
 
 use TEC\Tickets\Admin\All_Tickets\List_Table;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe__Tickets__Ticket_Object;
 
 /**
  * Tests for the List_Table class.
  */
 class List_TableTest extends \Codeception\TestCase\WPTestCase {
+	use SnapshotAssertions;
+	use Ticket_Maker;
 
 	/**
 	 * @var List_Table
 	 */
 	protected $list_table;
 
+	/**
+	 * Created ticket IDs.
+	 *
+	 * @var array
+	 */
+	protected $ticket_ids;
+
+	/**
+	 * Created event IDs.
+	 *
+	 * @var array
+	 */
+	protected $event_ids;
+
 	public function setUp(): void {
 		// before
 		parent::setUp();
 
+		$this->prepare_test_data();
 		$this->list_table = new List_Table();
+	}
+
+	public function tearDown(): void {
+		// Delete the test data.
+		foreach ( $this->ticket_ids as $id ) {
+			wp_delete_post( $id, true );
+		}
+		foreach ( $this->event_ids as $id ) {
+			wp_delete_post( $id, true );
+		}
+
+		// then
+		parent::tearDown();
+	}
+
+	/**
+	 * Create test events.
+	 *
+	 * @param int $number_of_events
+	 *
+	 * @return array
+	 */
+	protected function create_test_events( $number_of_events = 3 ) {
+		$events_ids = [];
+
+		for ( $i = 0; $i < $number_of_events; $i ++ ) {
+			$event_ts = strtotime( '2025-01-01 00:00:00' ) + $i * DAY_IN_SECONDS;
+			$event_dt = new \DateTime( "@$event_ts" );
+
+			$events_ids[] = tribe_events()->set_args(
+				[
+					'title'      => 'Event ' . ( $i + 1 ),
+					'status'     => 'publish',
+					'start_date' => $event_dt->format( 'Y-m-d H:i:s' ),
+					'duration'   => ( $i + 1 ) * HOUR_IN_SECONDS,
+				]
+			)->create()->ID;
+		}
+
+		return $events_ids;
+	}
+
+	/**
+	 * Create test tickets.
+	 *
+	 * @param array $event_ids
+	 * @param array $number_of_tickets_per_event
+	 *
+	 * @return array
+	 */
+	protected function create_test_tickets( $event_ids, array $number_of_tickets_per_event = [ 1, 0, 2 ] ) {
+		$ticket_ids = [];
+		$override_index = 0;
+
+		foreach ( $event_ids as $key => $event_id ) {
+			for ( $i = 0; $i < $number_of_tickets_per_event[ $key ]; $i ++ ) {
+				$overrides = $this->get_ticket_overrides( $override_index );
+
+				$test_ticket = $this->create_tc_ticket( $event_id, $overrides['ticket_price'], $overrides );
+				$ticket_ids[] = $test_ticket;
+				$override_index++;
+			}
+		}
+
+		return $ticket_ids;
+	}
+
+	/**
+	 * Tickets overrides for sorting tests.
+	 *
+	 * @param int $index
+	 *
+	 * @return array
+	 */
+	protected function get_ticket_overrides( $index ) {
+		$overrides = [
+			[
+				'ticket_name'             => "AAA Ticket {$index}",
+				'ticket_description'      => "AAA Ticket description {$index}",
+				'ticket_price'            => 50,
+				'ticket_start_date'       => '2020-01-02',
+				'ticket_start_time'       => '08:00:00',
+				'ticket_end_date'         => '2050-03-01',
+				'ticket_end_time'         => '20:00:00',
+				'ticket_sku'              => "TEST-TKT-{$index}",
+			],
+			[
+				'ticket_name'             => "BBB Ticket {$index}",
+				'ticket_description'      => "AAA Ticket description {$index}",
+				'ticket_price'            => 100,
+				'ticket_start_date'       => '2030-01-02',
+				'ticket_start_time'       => '08:00:00',
+				'ticket_end_date'         => '2040-03-01',
+				'ticket_end_time'         => '20:00:00',
+				'ticket_sku'              => "TEST-TKT-{$index}",
+			],
+			[
+				'ticket_name'             => "CCC Ticket {$index}",
+				'ticket_description'      => "AAA Ticket description {$index}",
+				'ticket_price'            => 25,
+				'ticket_start_date'       => '2010-01-02',
+				'ticket_start_time'       => '08:00:00',
+				'ticket_end_date'         => '2060-03-01',
+				'ticket_end_time'         => '20:00:00',
+				'ticket_sku'              => "TEST-TKT-{$index}",
+			],
+		];
+
+		return $overrides[ $index ];
+	}
+
+	/**
+	 * Prepare test data.
+	 *
+	 * @return array
+	 */
+	protected function prepare_test_data() {
+		if ( ! empty( $this->ticket_ids ) ) {
+			return [ $this->ticket_ids, $this->event_ids ];
+		}
+
+		$this->event_ids  = $this->create_test_events();
+		$this->ticket_ids = $this->create_test_tickets( $this->event_ids );
+
+		return [ $this->ticket_ids, $this->event_ids ];
 	}
 
 	// test
@@ -29,7 +174,8 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 	// test
 	public function test_prepare_items() {
 		$this->list_table->prepare_items();
-		$this->assertEmpty( $this->list_table->items );
+		$this->assertNotEmpty( $this->list_table->items );
+		$this->assertEquals( count( $this->ticket_ids ), count( $this->list_table->items ) );
 	}
 
 	// test
@@ -58,8 +204,8 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertArrayHasKey( 'days_left', $sortable_columns );
 		$this->assertArrayHasKey( 'price', $sortable_columns );
 		$this->assertArrayHasKey( 'sold', $sortable_columns );
-		$this->assertArrayHasKey( 'remaining', $sortable_columns );
-		$this->assertArrayHasKey( 'sales', $sortable_columns );
+		$this->assertArrayNotHasKey( 'remaining', $sortable_columns );
+		$this->assertArrayNotHasKey( 'sales', $sortable_columns );
 	}
 
 	// test
@@ -77,25 +223,31 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertContains( 'sales', $default_hidden_columns );
 	}
 
-	// test
-	public function test_column_default() {
-		$item = [
-			'title'    => 'Test Ticket',
-			'event'    => 'Test Event',
-			'status'   => 'draft',
-			'price'    => 10.00,
-			'quantity' => 100,
-		];
-		$column = 'title';
-		$this->assertEquals( 'Test Ticket', $this->list_table->column_default( $item, $column ) );
-		$column = 'event';
-		$this->assertEquals( 'Test Event', $this->list_table->column_default( $item, $column ) );
-		$column = 'status';
-		$this->assertEquals( 'draft', $this->list_table->column_default( $item, $column ) );
-		$column = 'price';
-		$this->assertEquals( 10.00, $this->list_table->column_default( $item, $column ) );
-		$column = 'quantity';
-		$this->assertEquals( 100, $this->list_table->column_default( $item, $column ) );
+	/**
+	 * @test
+	 * @dataProvider sorting_columns_provider
+	 */
+	public function test_sorting( $column) {
+		$_GET['orderby'] = $column;
+		$_GET['order'] = 'asc';
+		$this->list_table->prepare_items();
+		$json_string = json_encode( $this->list_table->items, JSON_PRETTY_PRINT );
+		$json_string = str_replace( $this->ticket_ids, [ '1', '2', '3' ], $json_string );
+		$this->assertMatchesJsonSnapshot( $json_string );
+	}
+
+	/**
+	 * Data provider for testing different scenarios of get_gateway_dashboard_url_by_order.
+	 *
+	 * @return array
+	 */
+	public function sorting_columns_provider() {
+			yield "sorting by name" => [ 'name' ];
+			yield "sorting by id" => [ 'id' ];
+			yield "sorting by start" => [ 'start' ];
+			yield "sorting by end" => [ 'end' ];
+			yield "sorting by days_left" => [ 'days_left' ];
+			yield "sorting by price" => [ 'price' ];
 	}
 }
 

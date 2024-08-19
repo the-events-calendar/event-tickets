@@ -51,5 +51,6 @@ class Provider extends Service_Provider {
 	 * @since TBD
 	 */
 	protected function register_assets() {
+		$this->container->register( Assets::class );
 	}
 }

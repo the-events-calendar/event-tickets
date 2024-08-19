@@ -1,0 +1,52 @@
+/**
+ * All Tickets Page
+ *
+ * @since TBD
+ */
+.tickets_page_tec-tickets-all-tickets {
+	table.wp-list-table {
+		.column-end,
+		.column-start {
+			text-align: right;
+			width: 10%;
+		}
+
+		.column-id,
+		.column-price,
+		.column-sold,
+		.column-remaining,
+		.column-days_left,
+		.column-sales {
+			text-align: right;
+			width: 7%;
+		}
+
+		th.sortable > a,
+		th.sorted > a {
+			align-items: center;
+			display: flex;
+			justify-content: flex-end;
+		}
+
+		th.column-name.sortable > a,
+		th.column-name.sorted > a {
+			justify-content: flex-start;
+		}
+
+		.tec-tickets-all-tickets-table-column-header-name {
+			align-items: center;
+			display: flex;
+			gap: var(--tec-spacer-0);
+			line-height: var(--tec-spacer-3);
+		}
+
+		.tec-tickets-all-tickets-table-column-header-name-icon {
+			max-height: var(--tec-spacer-3);
+
+			img {
+				height: var(--tec-spacer-3);
+				width: auto;
+			}
+		}
+	}
+}
