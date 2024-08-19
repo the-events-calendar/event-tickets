@@ -294,10 +294,12 @@ class List_Table extends WP_List_Table {
 			get_the_title( $event )
 		);
 
-		$orders_report_url  = sprintf(
-			'https://wp.lndo.site/wp-admin/edit.php?post_type=%s&page=tickets-orders&event_id=%d',
-			$event->post_type,
-			$event->ID
+		$orders_report_url  = add_query_arg( [
+				'post_type' => $event->post_type,
+				'page' => 'tickets-orders',
+				'event_id' => $event->ID,
+			],
+			admin_url( 'edit.php' )
 		);
 		$orders_report_link = sprintf(
 			'<a href="%s" class="tec-tickets-all-tickets-table-event-link" target="_blank" rel="nofollow noopener">%s</a>',
@@ -305,10 +307,12 @@ class List_Table extends WP_List_Table {
 			esc_html__( 'Orders', 'event-tickets' )
 		);
 
-		$attendees_report_url  = sprintf(
-			'https://wp.lndo.site/wp-admin/edit.php?post_type=%s&page=tickets-attendees&event_id=%d',
-			$event->post_type,
-			$event->ID
+		$attendees_report_url  = add_query_arg( [
+				'post_type' => $event->post_type,
+				'page' => 'tickets-attendees',
+				'event_id' => $event->ID,
+			],
+			admin_url( 'edit.php' )
 		);
 		$attendees_report_link = sprintf(
 			'<a href="%s" class="tec-tickets-all-tickets-table-event-link" target="_blank" rel="nofollow noopener">%s</a>',
