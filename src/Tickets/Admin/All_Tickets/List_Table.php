@@ -269,7 +269,7 @@ class List_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_id( $item ): string {
-		return $item->ID;
+		return (string) $item->ID;
 	}
 
 	/**
@@ -350,9 +350,14 @@ class List_Table extends WP_List_Table {
 	 */
 	public function column_start( $item ): string {
 		$date_format = tribe_get_date_format( true );
-		$datetime    = $item->start_date( false );
+		$ts          = $item->start_date();
 
-		return $datetime->format( $date_format );
+		return sprintf(
+			'<time datetime="%1$s" title="%2$s">%3$s</time>',
+			esc_attr( \Tribe__Date_Utils::reformat( $ts, 'c' ) ),
+			esc_html( \Tribe__Date_Utils::reformat( $ts, get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) ) ),
+			esc_html( \Tribe__Date_Utils::reformat( $ts, $date_format ) )
+		);
 	}
 
 	/**
@@ -366,9 +371,14 @@ class List_Table extends WP_List_Table {
 	 */
 	public function column_end( $item ): string {
 		$date_format = tribe_get_date_format( true );
-		$datetime    = $item->end_date( false );
+		$ts          = $item->end_date();
 
-		return $datetime->format( $date_format );
+		return sprintf(
+			'<time datetime="%1$s" title="%2$s">%3$s</time>',
+			esc_attr( \Tribe__Date_Utils::reformat( $ts, 'c' ) ),
+			esc_html( \Tribe__Date_Utils::reformat( $ts, get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) ) ),
+			esc_html( \Tribe__Date_Utils::reformat( $ts, $date_format ) )
+		);
 	}
 
 	/**
@@ -389,7 +399,7 @@ class List_Table extends WP_List_Table {
 			return '-';
 		}
 
-		return $interval->days;
+		return (string) $interval->days;
 	}
 
 	/**
@@ -415,7 +425,7 @@ class List_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_sold( $item ): string {
-		return $item->qty_sold();
+		return (string) $item->qty_sold();
 	}
 
 	/**
