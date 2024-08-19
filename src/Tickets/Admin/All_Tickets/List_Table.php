@@ -338,7 +338,7 @@ class List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Get the column start value.
+	 * Get the column start date value.
 	 *
 	 * @since TBD
 	 *
@@ -354,7 +354,7 @@ class List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Get the column end value.
+	 * Get the column end date value.
 	 *
 	 * @since TBD
 	 *
@@ -500,7 +500,6 @@ class List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function get_query_args() {
-
 		$current_page = $this->get_pagenum();
 		$per_page     = $this->get_items_per_page( $this->per_page_option );
 
