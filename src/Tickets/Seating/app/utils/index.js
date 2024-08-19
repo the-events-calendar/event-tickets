@@ -87,6 +87,19 @@ export const onReady = (domReadyCallback) => {
 	}
 };
 
+/**
+ * Redirects to a URL.
+ *
+ * @since TBD
+ *
+ * @param {string} url The URL to relocate to.
+ *
+ * @return {void}
+ */
+export function redirectTo(url) {
+	window.location.href = url;
+}
+
 window.tec = window.tec || {};
 window.tec.tickets.seating = window.tec.tickets.seating || {};
 window.tec.tickets.seating.utils = {
@@ -96,4 +109,5 @@ window.tec.tickets.seating.utils = {
 	createHtmlComponentFromTemplateString,
 	createHtmlComponentFromTemplateElement,
 	onReady,
+	redirectTo,
 };

@@ -3,18 +3,33 @@ import {
 	getIframeElement,
 	initServiceIframe,
 } from '@tec/tickets/seating/service/iframe';
-import { onReady } from '@tec/tickets/seating/utils';
+import { onReady, redirectTo } from '@tec/tickets/seating/utils';
 import {
+	getAssociatedEventsUrl,
 	registerAction,
 	RESERVATIONS_DELETED,
 	SEAT_TYPES_UPDATED,
 	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
+	GO_TO_ASSOCIATED_EVENTS,
 } from '@tec/tickets/seating/service/api';
 import {
 	handleReservationsDeleted,
 	handleReservationsUpdatedFollowingSeatTypes,
 	handleSeatTypesUpdated,
 } from '../action-handlers';
+
+/**
+ * Go to associated events.
+ *
+ * @since TBD
+ *
+ * @param data
+ */
+export function goToAssociatedEvents( data ) {
+	if ( data.layoutId ) {
+		redirectTo( getAssociatedEventsUrl( data.layoutId ) );
+	}
+}
 
 /**
  * Initializes iframe and the communication with the service.
@@ -36,6 +51,8 @@ export async function init(dom) {
 		RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
 		handleReservationsUpdatedFollowingSeatTypes
 	);
+
+	registerAction(GO_TO_ASSOCIATED_EVENTS, goToAssociatedEvents);
 
 	await initServiceIframe(getIframeElement(dom));
 }

@@ -1,5 +1,5 @@
 // Get the service base URL without the trailing slash.
-import { getBaseUrl } from './localized-data.js';
+import {associatedEventsUrl, getBaseUrl} from './localized-data.js';
 import {
 	setIsReady,
 	setEstablishingReadiness,
@@ -23,6 +23,7 @@ import {
 	RESERVATIONS_UPDATED,
 	SEAT_TYPES_UPDATED,
 	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
+	GO_TO_ASSOCIATED_EVENTS,
 	RESERVATION_UPDATED,
 	RESERVATION_CREATED,
 } from './service-actions.js';
@@ -249,6 +250,19 @@ export function emptyHandlerQueue() {
 	handlerQueue = [];
 }
 
+/**
+ * Returns the associated events URL for the given layout ID.
+ *
+ * @since TBD
+ *
+ * @param {string} layoutId The layout ID.
+ *
+ * @return {string} The associated events URL for the given layout ID.
+ */
+export function getAssociatedEventsUrl( layoutId ) {
+	return layoutId ? `${associatedEventsUrl}&layout=${layoutId}` : associatedEventsUrl;
+}
+
 // Re-export some functions from the state module.
 export {
 	INBOUND_APP_READY,
@@ -289,6 +303,7 @@ window.tec.tickets.seating.service.api = {
 	RESERVATIONS_UPDATED,
 	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
 	SEAT_TYPES_UPDATED,
+	GO_TO_ASSOCIATED_EVENTS,
 	RESERVATION_UPDATED,
 	RESERVATION_CREATED,
 	establishReadiness,
@@ -300,4 +315,5 @@ window.tec.tickets.seating.service.api = {
 	removeAction,
 	sendPostMessage,
 	startListeningForServiceMessages,
+	getAssociatedEventsUrl,
 };
