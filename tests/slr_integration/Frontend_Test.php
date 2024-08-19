@@ -228,6 +228,7 @@ class Frontend_Test extends Controller_Test_Case {
 	}
 
 	public function test_get_ticket_block_data_with_tickets_not_in_range():void{
+		$this->set_fn_return( 'wp_create_nonce', '1234567890' );
 		$post_id = self::factory()->post->create();
 		// Create a first ticket that ended sales beforee the current time.
 		$ticket_1 = $this->create_tc_ticket( $post_id, 10, [
