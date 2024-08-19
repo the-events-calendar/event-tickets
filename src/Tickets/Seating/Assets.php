@@ -134,7 +134,34 @@ class Assets extends Controller_Contract {
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
 	}
-
+	
+	/**
+	 * Gets the data for the service bundle asset.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{
+	 *     service: array{
+	 *         baseUrl: string,
+	 *         mapsHomeUrl: string,
+	 *         layoutsHomeUrl: string,
+	 *         associatedEventsUrl: string
+	 *     }
+	 * } The data for the service bundle asset.
+	 */
+	public function get_service_bundle_data(): array {
+		$maps_layouts_home_page = $this->container->get( Maps_Layouts_Home_Page::class );
+		
+		return [
+			'service' => [
+				'baseUrl'             => $this->container->get( Service\Service::class )->get_frontend_url(),
+				'mapsHomeUrl'         => $maps_layouts_home_page->get_maps_home_url(),
+				'layoutsHomeUrl'      => $maps_layouts_home_page->get_layouts_home_url(),
+				'associatedEventsUrl' => add_query_arg( [ 'page' => Associated_Events::SLUG ], admin_url( 'admin.php' ) ),
+			],
+		];
+	}
+	
 	/**
 	 * Registers the service bundle, used to communicate with the Service.
 	 *
@@ -143,19 +170,6 @@ class Assets extends Controller_Contract {
 	 * @return void The service bundle script and styles are registered.
 	 */
 	private function register_service_bundle(): void {
-		$data = function () {
-			$maps_layouts_home_page = $this->container->get( Maps_Layouts_Home_Page::class );
-
-			return [
-				'service' => [
-					'baseUrl'             => $this->container->get( Service\Service::class )->get_frontend_url(),
-					'mapsHomeUrl'         => $maps_layouts_home_page->get_maps_home_url(),
-					'layoutsHomeUrl'      => $maps_layouts_home_page->get_layouts_home_url(),
-					'associatedEventsUrl' => add_query_arg( [ 'page' => Associated_Events::SLUG ], admin_url( 'admin.php' ) ),
-				],
-			];
-		};
-
 		Asset::add(
 			'tec-tickets-seating-service-bundle',
 			$this->built_asset_url( 'service.js' ),
@@ -168,7 +182,7 @@ class Assets extends Controller_Contract {
 				'tec-tickets-seating-ajax'
 			)
 			->add_to_group( 'tec-tickets-seating' )
-			->add_localize_script( 'tec.tickets.seating', $data )
+			->add_localize_script( 'tec.tickets.seating', [ $this, 'get_service_bundle_data' ] )
 			->register();
 	}
 
