@@ -56,6 +56,27 @@ class Singular_Order_Page extends Service_Provider {
 		add_action( 'adminmenu', [ $this, 'restore_current_parent_file' ] );
 
 		add_filter( 'post_updated_messages', [ $this, 'add_order_messages' ] );
+		add_filter( 'admin_body_class', [ $this, 'add_body_class' ] );
+	}
+
+	/**
+	 * Add our custom Tickets Commerce Order Detail class to the body of the page.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $classes The classes string for the body attribute.
+	 *
+	 * @return mixed|string The mutated classes string.
+	 */
+	public function add_body_class( $classes ) {
+		$screen = get_current_screen();
+
+		// Check if we are on the single edit screen of the custom post type.
+		if ( $screen && $screen->post_type === Order::POSTTYPE && $screen->base === 'post' ) {
+			$classes .= ' tec-tickets-commerce-single-order';
+		}
+
+		return $classes;
 	}
 
 	/**

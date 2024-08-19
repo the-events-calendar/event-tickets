@@ -101,6 +101,8 @@ class Hooks extends Service_Provider {
 		add_action( 'pre_get_posts', [ $this, 'pre_filter_admin_order_table' ] );
 
 		add_action( 'admin_menu', tribe_callback( Orders_Page::class, 'add_orders_page' ), 15 );
+
+		add_action( 'current_screen', [ $this, 'breadcrumb_order_edit_screen' ] );
 	}
 
 	/**
@@ -151,6 +153,29 @@ class Hooks extends Service_Provider {
 		add_filter( 'tribe_dropdown_tec_tc_order_table_events', [ $this, 'provide_events_results_to_ajax' ], 10, 2 );
 
 		add_filter( 'tribe_dropdown_tec_tc_order_table_customers', [ $this, 'provide_customers_results_to_ajax' ], 10, 2 );
+	}
+
+	public function breadcrumb_order_edit_screen() {
+		$screen = get_current_screen();
+		if ( ! $screen
+			|| $screen->id !== Order::POSTTYPE
+			|| $screen->post_type !== Order::POSTTYPE
+			|| $screen->base !== 'post' ) {
+			return;
+		}
+
+		add_action( 'all_admin_notices', [ $this, 'print_breadcrumb_order_edit_screen_html' ], 999 );
+	}
+
+	public function print_breadcrumb_order_edit_screen_html() {
+		$url  = get_current_screen()->parent_file;
+		$text = _x( 'Orders', 'Order edit page breadcrumb link back to Orders page.', 'event-tickets' );
+
+		echo <<<STR
+		<div class="tec-tickets-commerce-single-order--breadcrumb--order--edit">
+			<a href="$url"><span class="dashicons dashicons-arrow-left-alt2"></span> $text</a>
+		</div>
+STR;
 	}
 
 	/**
