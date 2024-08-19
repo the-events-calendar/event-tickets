@@ -294,7 +294,8 @@ class List_Table extends WP_List_Table {
 			get_the_title( $event )
 		);
 
-		$orders_report_url  = add_query_arg( [
+		$orders_report_url  = add_query_arg(
+			[
 				'post_type' => $event->post_type,
 				'page'      => 'tickets-orders',
 				'event_id'  => $event->ID,
@@ -307,7 +308,8 @@ class List_Table extends WP_List_Table {
 			esc_html__( 'Orders', 'event-tickets' )
 		);
 
-		$attendees_report_url  = add_query_arg( [
+		$attendees_report_url  = add_query_arg(
+			[
 				'post_type' => $event->post_type,
 				'page'      => 'tickets-attendees',
 				'event_id'  => $event->ID,
