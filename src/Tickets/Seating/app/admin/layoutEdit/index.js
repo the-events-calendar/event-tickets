@@ -27,7 +27,7 @@ import {
  */
 export function goToAssociatedEvents( data ) {
 	if ( data.layoutId ) {
-		redirectTo( getAssociatedEventsUrl( data.layoutId ) );
+		redirectTo( getAssociatedEventsUrl( data.layoutId ), true );
 	}
 }
 
