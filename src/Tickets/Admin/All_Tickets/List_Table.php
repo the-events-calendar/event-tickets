@@ -13,6 +13,8 @@ use Tribe__Tickets__Tickets;
 use Tribe__Tickets__Ticket_Object;
 use WP_List_Table;
 use DateTime;
+use Tribe__Tickets__Admin__Views;
+use Tribe__Template;
 
 /**
  * Class List_Table.
@@ -28,6 +30,29 @@ class List_Table extends WP_List_Table {
 	 * @var string
 	 */
 	protected $per_page_option;
+
+
+	/**
+	 * The template object.
+	 *
+	 * @var Tribe__Template
+	 */
+	protected $template;
+
+	/**
+	 * Get the template object.
+	 *
+	 * @since TBD
+	 *
+	 * @return Tribe__Template
+	 */
+	protected function get_template() {
+		if ( ! empty( $this->template ) ) {
+			return $this->template;
+		}
+		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		return tribe( 'tickets.admin.views' );
+	}
 
 	/**
 	 * The constructor.
@@ -250,13 +275,13 @@ class List_Table extends WP_List_Table {
 			esc_html( $item->name )
 		);
 
-		$admin_views = tribe( 'tickets.admin.views' );
+		$template = $this->get_template();
 		$context     = [
 			'icon_html'   => $this->get_ticket_type_icon( $item ),
 			'ticket_link' => $edit_post_link,
 		];
 
-		return $admin_views->template( 'all-tickets/table-column-name', $context, false );
+		return $template->template( 'all-tickets/table-column-name', $context, false );
 	}
 
 	/**
@@ -495,6 +520,82 @@ class List_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Modify the filter arguments.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $args The arguments used to query the tickets for the All Tickets Table.
+	 *
+	 * @return array
+	 */
+	public function modify_filter_args( $args ) {
+		$filter = tribe_get_request_var( 'ticket-filter', 'active' );
+
+		if ( 'all' === $filter ) {
+			return $args;
+		}
+
+		if ( ! isset( $args['meta_query'] ) ) {
+			$args['meta_query'] = [
+				'relation' => 'AND',
+			];
+		}
+
+		switch ( $filter ) {
+			case 'active':
+				$args['meta_query'][] = [
+					'key'     => '_ticket_start_date',
+					'value'   => current_time( 'mysql' ),
+					'compare' => '<=',
+					'type'    => 'DATETIME',
+				];
+				$args['meta_query'][] = [
+					'key'     => '_ticket_end_date',
+					'value'   => current_time( 'mysql' ),
+					'compare' => '>',
+					'type'    => 'DATETIME',
+				];
+				break;
+			case 'past':
+				$args['meta_query'][] = [
+					'key'     => '_ticket_end_date',
+					'value'   => current_time( 'mysql' ),
+					'compare' => '<=',
+					'type'    => 'DATETIME',
+				];
+				break;
+			case 'upcoming':
+				$args['meta_query'][] = [
+					'key'     => '_ticket_start_date',
+					'value'   => current_time( 'mysql' ),
+					'compare' => '>',
+					'type'    => 'DATETIME',
+				];
+				break;
+			case 'discounted':
+				$args['meta_query'][] = [
+						'key'     => '_sale_price',
+						'compare' => 'EXISTS',
+				];
+				$args['meta_query'][] = [
+					'key'     => '_sale_price_start_date',
+					'value'   => current_time( 'mysql' ),
+					'compare' => '<',
+					'type'    => 'DATETIME',
+				];
+				$args['meta_query'][] = [
+					'key'     => '_sale_price_end_date',
+					'value'   => current_time( 'mysql' ),
+					'compare' => '>',
+					'type'    => 'DATETIME',
+				];
+				break;
+		}
+
+		return $args;
+	}
+
+	/**
 	 * Get the query args for the list table.
 	 *
 	 * @since TBD
@@ -511,6 +612,7 @@ class List_Table extends WP_List_Table {
 			'return_total_found' => true,
 		];
 
+		$args = $this->modify_filter_args( $args );
 		$args = $this->modify_sort_args( $args );
 
 		/**
@@ -553,5 +655,34 @@ class List_Table extends WP_List_Table {
 		];
 
 		$this->set_pagination_args( $pagination_args );
+	}
+
+	public function extra_tablenav( $which ) {
+        if ('top' !== $which) {
+            return;
+        }
+
+		$select_options = [
+			'active'     => esc_html__( 'Active Tickets', 'event-tickets' ),
+			'past'       => esc_html__( 'Past Tickets', 'event-tickets' ),
+			'upcoming'   => esc_html__( 'Upcoming Tickets', 'event-tickets' ),
+			'discounted' => esc_html__( 'Discounted Tickets', 'event-tickets' ),
+			'all'        => esc_html__( 'All Tickets', 'event-tickets' ),
+		];
+
+		$current_filter = tribe_get_request_var( 'ticket-filter', 'active' );
+
+		$template = $this->get_template();
+		$context  = [
+			'list_table'         => $this,
+			'select_options'     => $select_options,
+			'current_filter'     => $current_filter,
+			'search_placeholder' => esc_html__( 'Ticket or Event Name', 'event-tickets' ),
+			'search_id'          => 'tec-tickets-all-tickets-search-input',
+			'search_value'       => _admin_search_query(),
+			'button_text'        => esc_html__( 'Show Tickets', 'event-tickets' ),
+		];
+
+		$template->template( 'all-tickets/select-filter', $context );
 	}
 }

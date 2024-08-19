@@ -119,6 +119,7 @@ class Page {
 
 		$context = [
 			'tickets_table' => tribe( List_Table::class ),
+			'page_slug'     => static::$slug,
 		];
 
 		$admin_views->template( 'all-tickets', $context );
