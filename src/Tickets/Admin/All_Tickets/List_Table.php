@@ -198,7 +198,7 @@ class List_Table extends WP_List_Table {
 	 *
 	 * @return string HTML for the ticket type icon.
 	 */
-	public function get_ticket_type_icon( $item ) {
+	protected function get_ticket_type_icon( $item ) {
 		ob_start();
 		do_action( 'tec_tickets_editor_list_table_title_icon_' . $item->type() );
 		return ob_get_clean();
@@ -225,7 +225,7 @@ class List_Table extends WP_List_Table {
 			return '';
 		}
 
-		return $item->$column_name;
+		return esc_html( $item->$column_name );
 	}
 
 	/**
@@ -439,7 +439,7 @@ class List_Table extends WP_List_Table {
 	 */
 	public function column_remaining( $item ): string {
 		$available = $item->available();
-		return $available < 0 ? '-' : $available;
+		return $available < 0 ? '-' : (string) $available;
 	}
 
 	/**
@@ -464,7 +464,7 @@ class List_Table extends WP_List_Table {
 	 *
 	 * @return array
 	 */
-	public function modify_sort_args( $args ) {
+	public function modify_sort_args( $args ): array {
 		$orderby = tribe_get_request_var( 'orderby', 'end' );
 		switch ( $orderby ) {
 			case 'name':
@@ -511,7 +511,7 @@ class List_Table extends WP_List_Table {
 	 *
 	 * @return array
 	 */
-	public function get_query_args() {
+	public function get_query_args(): array {
 		$current_page = $this->get_pagenum();
 		$per_page     = $this->get_items_per_page( $this->per_page_option );
 
