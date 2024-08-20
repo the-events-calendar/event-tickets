@@ -57,6 +57,42 @@ class Singular_Order_Page extends Service_Provider {
 
 		add_filter( 'post_updated_messages', [ $this, 'add_order_messages' ] );
 		add_filter( 'admin_body_class', [ $this, 'add_body_class' ] );
+		if( is_admin() ) {
+			add_action('current_screen', [$this, 'breadcrumb_order_edit_screen']);
+		}
+	}
+
+	/**
+	 * Checks if the correct screen to add the hook for rendering the breadcrumb.
+	 *
+	 * @since TBD
+	 */
+	public function breadcrumb_order_edit_screen() {
+		$screen = get_current_screen();
+		if ( ! $screen
+			|| $screen->id !== Order::POSTTYPE
+			|| $screen->post_type !== Order::POSTTYPE
+			|| $screen->base !== 'post' ) {
+			return;
+		}
+
+		add_action( 'all_admin_notices', [ $this, 'render_breadcrumb_order_edit_screen_html' ], 999 );
+	}
+
+	/**
+	 * Output the HTML for the Orders breadcrumb.
+	 *
+	 * @since TBD
+	 */
+	public function render_breadcrumb_order_edit_screen_html() {
+		$url  = get_current_screen()->parent_file;
+		$text = _x( 'Orders', 'Order edit page breadcrumb link back to Orders page.', 'event-tickets' );
+
+		echo <<<STR
+		<div class="tec-tickets-commerce-single-order--breadcrumb--order--edit">
+			<a href="$url"><span class="dashicons dashicons-arrow-left-alt2"></span> $text</a>
+		</div>
+STR;
 	}
 
 	/**

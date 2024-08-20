@@ -75,7 +75,6 @@ class Singular_Order_PageTest extends \Codeception\TestCase\WPTestCase {
 			ob_start();
 			$singular_page->render_actions( $order );
 			$html[] = str_replace( $order->ID, '{{order_id}}', ob_get_clean() );
-
 		}
 
 		$this->assertMatchesHtmlSnapshot( implode( PHP_EOL . '<!--NEXT ITEM-->' . PHP_EOL, $html ) );
@@ -112,6 +111,28 @@ class Singular_Order_PageTest extends \Codeception\TestCase\WPTestCase {
 		}
 
 		$this->assertMatchesHtmlSnapshot( implode( PHP_EOL . '<!--NEXT ITEM-->' . PHP_EOL, $html ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_render_breadcrumb() {
+		set_current_screen();
+
+		$screen                  = get_current_screen();
+		$screen->base            = 'post';
+		$screen->action          = '';
+		$screen->post_type       = Order::POSTTYPE;
+		$screen->parent_file     = 'edit.php?post_type=tec_tc_order';
+		$screen->is_block_editor = false;
+
+		set_current_screen( $screen );
+
+		$singular_page = tribe( Singular_Order_Page::class );
+		ob_start();
+		$singular_page->render_breadcrumb_order_edit_screen_html();
+		$html = ob_get_clean();
+		$this->assertMatchesHtmlSnapshot( $html );
 	}
 
 	/**
