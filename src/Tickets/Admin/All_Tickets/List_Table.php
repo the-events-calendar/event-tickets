@@ -13,7 +13,6 @@ use Tribe__Tickets__Tickets;
 use Tribe__Tickets__Ticket_Object;
 use WP_List_Table;
 use DateTime;
-use Tribe__Tickets__Admin__Views;
 use Tribe__Template;
 use WP_Query;
 
