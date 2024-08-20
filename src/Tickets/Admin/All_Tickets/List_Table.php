@@ -277,7 +277,7 @@ class List_Table extends WP_List_Table {
 		);
 
 		$template = $this->get_template();
-		$context     = [
+		$context  = [
 			'icon_html'   => $this->get_ticket_type_icon( $item ),
 			'ticket_link' => $edit_post_link,
 		];
@@ -557,7 +557,7 @@ class List_Table extends WP_List_Table {
 						'value'   => current_time( 'mysql' ),
 						'compare' => '>',
 						'type'    => 'DATETIME',
-					]
+					],
 				];
 				break;
 			case 'past':
@@ -594,7 +594,7 @@ class List_Table extends WP_List_Table {
 						'value'   => current_time( 'mysql' ),
 						'compare' => '>',
 						'type'    => 'DATETIME',
-					]
+					],
 				];
 				break;
 		}
@@ -667,16 +667,16 @@ class List_Table extends WP_List_Table {
 	 */
 	public function filter_query( $query ) {
 		// Only filter the query if we are on the All Tickets screen.
-		if ( empty( $query->query_vars['all_tickets_list_table'] ) ) {
+		if ( $query->is_main_query() || empty( $query->query_vars['all_tickets_list_table'] ) ) {
 			return;
 		}
 
 		// Filter out RSVP tickets.
-		$query_types = $query->get('post_type');
+		$query_types = $query->get( 'post_type' );
 		if ( ! is_array( $query_types ) ) {
 			$query_types = [ $query_types ];
 		}
-		$post_types  = array_diff( $query_types, [ 'tribe_rsvp_tickets' ] );
+		$post_types = array_diff( $query_types, [ 'tribe_rsvp_tickets' ] );
 		$query->set( 'post_type', $post_types );
 	}
 
@@ -717,8 +717,13 @@ class List_Table extends WP_List_Table {
 		$this->set_pagination_args( $pagination_args );
 	}
 
+	/**
+	 * Display the filter and search input.
+	 *
+	 * @since TBD
+	 */
 	public function extra_tablenav( $which ) {
-		if ('top' !== $which) {
+		if ( 'top' !== $which ) {
 			return;
 		}
 
