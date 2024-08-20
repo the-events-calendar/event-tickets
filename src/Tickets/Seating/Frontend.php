@@ -138,7 +138,7 @@ class Frontend extends Controller_Contract {
 		}
 
 		$prices     = wp_list_pluck( $tickets, 'price' );
-		$inventory  = tribe_get_event_capacity( $post_id );
+		$inventory  = $this->get_events_ticket_capacity_for_seating( $post_id );
 		$cost_range = tribe_format_currency( min( $prices ), $post_id )
 						. ' - '
 						. tribe_format_currency( max( $prices ), $post_id );
@@ -167,6 +167,50 @@ class Frontend extends Controller_Contract {
 		$html = apply_filters( 'tec_tickets_seating_tickets_block_html', $html, $template );
 
 		return $html;
+	}
+
+	/**
+	 * Adjusts the event's ticket capacity to consider seating.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id The event ID.
+	 *
+	 * @return int
+	 */
+	public function get_events_ticket_capacity_for_seating( int $event_id ): int {
+		if ( ! tec_tickets_seating_enabled( $event_id ) ) {
+			return 0;
+		}
+
+		$provider = Tickets::get_event_ticket_provider_object( $event_id );
+
+		$tickets = array_filter(
+			array_map(
+				static function ( $ticket_id ) use ( $provider, $event_id ) {
+					$ticket = $provider->get_ticket( $event_id, $ticket_id );
+					if ( ! $ticket ) {
+						return false;
+					}
+
+					return $ticket;
+				},
+				tribe_tickets()->where( 'event', $event_id )->get_ids()
+			)
+		);
+
+		if ( empty( $tickets ) ) {
+			return 0;
+		}
+
+		$available = [];
+
+		foreach ( $tickets as $ticket ) {
+			// The array's keys are the seating types. In order for us to calculate the stock per type and NOT per ticket.
+			$available[ get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true ) ] = $ticket->stock();
+		}
+
+		return array_sum( $available );
 	}
 
 	/**

@@ -175,9 +175,6 @@ class Controller extends Controller_Contract {
 			4
 		);
 
-		// Adjusting function tribe_get_event_capacity to consider seating. Our API should work with and without seating enabled for each event.
-		add_filter( 'tec_tickets_get_event_capacity', [ $this, 'adjust_events_ticket_capacity_for_seating' ], 10, 3 );
-
 		$this->register_assets();
 	}
 
@@ -229,53 +226,6 @@ class Controller extends Controller_Contract {
 			4
 		);
 		remove_filter( 'tec_tickets_commerce_attendee_to_delete', [ $this, 'handle_attendee_delete' ] );
-
-		remove_filter( 'tec_tickets_get_event_capacity', [ $this, 'adjust_events_ticket_capacity_for_seating' ] );
-	}
-
-	/**
-	 * Adjusts the event's ticket capacity to consider seating.
-	 *
-	 * @since TBD
-	 *
-	 * @param int     $capacity The event's ticket capacity.
-	 * @param int     $event_id The event ID.
-	 * @param Tickets $provider The Tickets provider.
-	 *
-	 * @return int
-	 */
-	public function adjust_events_ticket_capacity_for_seating( int $capacity, int $event_id, Tickets $provider ): int {
-		if ( ! tec_tickets_seating_enabled( $event_id ) ) {
-			return $capacity;
-		}
-
-		$tickets = array_filter(
-			array_map(
-				static function ( $ticket_id ) use ( $provider, $event_id ) {
-					$ticket = $provider->get_ticket( $event_id, $ticket_id );
-					if ( ! $ticket ) {
-						return false;
-					}
-
-					return $ticket;
-				},
-				tribe_tickets()->where( 'event', $event_id )->get_ids()
-			)
-		);
-
-		if ( empty( $tickets ) ) {
-			// Why are we here at all?
-			return $capacity;
-		}
-
-		$available = [];
-
-		foreach ( $tickets as $ticket ) {
-			// The array's keys are the seating types. In order for us to calculate the stock per type and NOT per ticket.
-			$available[ get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true ) ] = $ticket->stock;
-		}
-
-		return array_sum( $available );
 	}
 
 	/**
