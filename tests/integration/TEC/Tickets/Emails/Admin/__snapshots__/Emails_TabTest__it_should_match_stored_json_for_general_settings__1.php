@@ -17,9 +17,13 @@
     },
     "1": {
         "type": "html",
-        "html": "<h3>Sender Information<\\/h3>"
+        "html": "<div class=\\"tribe-common\\">\\n\\t<div  class=\\"tec-admin__upsell tec-admin__upsell-tec-tickets-wallet-plus\\" >\\n\\t\\t<div class=\\"tec-admin__upsell-content\\">\\n\\t\\t\\t<div class=\\"tec-admin__upsell-icon\\">\\n\\t<img\\n\\t\\tclass=\\"tec-admin__upsell-icon-image\\"\\n\\t\\tsrc=\\"http:\\/\\/wordpress.test\\/wp-content\\/plugins\\/the-events-calendar\\/common\\/src\\/resources\\/images\\/icons\\/circle-bolt.svg\\"\\n\\t\\talt=\\"The Events Calendar important notice icon\\"\\n\\t\\/>\\n<\\/div>\\t\\t\\t<div class=\\"tec-admin__upsell-text-wrap\\">\\n\\t\\t\\t\\t<span class=\\"tec-admin__upsell-text\\">\\n\\t\\t\\t\\t\\tGet additional ticketing flexibility including Apple Wallet and PDF tickets with \\t\\t\\t\\t<\\/span>\\n\\t\\t\\t\\t<a \\n\\t\\t\\t\\t\\t class=\\"tec-admin__upsell-link tec-admin__upsell-link--underlined\\"  \\n\\t\\t\\t\\t\\thref=\\"https:\\/\\/evnt.is\\/1bdz\\" \\n\\t\\t\\t\\t\\trel=\\"noopener noreferrer\\"\\n\\t\\t\\t\\t\\ttarget=\\"_blank\\"\\n\\t\\t\\t\\t>\\n\\t\\t\\t\\t\\tEvent Tickets Plus\\t\\t\\t\\t<\\/a>\\n\\t\\t\\t<\\/div>\\n\\t\\t<\\/div>\\n\\t<\\/div>\\n<\\/div>"
     },
     "2": {
+        "type": "html",
+        "html": "<h3>Sender Information<\\/h3>"
+    },
+    "3": {
         "type": "html",
         "html": "<p>If fields are empty, sender information will be from the site owner set in WordPress general settings.<\\/p>"
     },
@@ -43,11 +47,11 @@
         "validation_type": "email",
         "can_be_empty": true
     },
-    "3": {
+    "4": {
         "type": "html",
         "html": "<h3>Email Styling<\\/h3>"
     },
-    "4": {
+    "5": {
         "type": "html",
         "html": "<p>Add a logo and customize link colors and footer information to personalize your communications.  If you&#039;d like more granular control over email styling, you can override the email templates in your theme.  Learn More<\\/p>"
     },

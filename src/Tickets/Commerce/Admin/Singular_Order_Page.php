@@ -88,11 +88,12 @@ class Singular_Order_Page extends Service_Provider {
 		$url  = get_current_screen()->parent_file;
 		$text = _x( 'Orders', 'Order edit page breadcrumb link back to Orders page.', 'event-tickets' );
 
-		echo <<<STR
+		$html = <<<STR
 		<div class="tec-tickets-commerce-single-order--breadcrumb--order--edit">
 			<a href="$url"><span class="dashicons dashicons-arrow-left-alt2"></span> $text</a>
 		</div>
 STR;
+		echo wp_kses_post( $html );
 	}
 
 	/**
