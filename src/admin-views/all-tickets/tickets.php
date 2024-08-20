@@ -4,6 +4,8 @@
  *
  * @since  TBD
  *
+ * @version TBD
+ *
  * @var \Tribe__Template  $this           Current template object.
  * @var WP_List_Table     $tickets_table  The list table for the All Tickets screen.
  */

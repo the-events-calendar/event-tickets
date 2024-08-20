@@ -4,6 +4,8 @@
  *
  * @since  TBD
  *
+ * @version TBD
+ *
  * @var \Tribe__Template          $this      Current template object.
  */
 

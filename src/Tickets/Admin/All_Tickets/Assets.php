@@ -10,6 +10,8 @@
 namespace TEC\Tickets\Admin\All_Tickets;
 
 use TEC\Common\Contracts\Service_Provider;
+use TEC\Common\StellarWP\Assets\Asset;
+use Tribe__Tickets__Main;
 
 /**
  * Class Assets.
@@ -34,19 +36,10 @@ class Assets extends Service_Provider {
 	 * @since TBD
 	 */
 	public function register() {
-		/** @var Tribe__Tickets__Main $tickets_main */
-		$plugin = tribe( 'tickets.main' );
-
-		tribe_asset(
-			$plugin,
-			'tec-tickets-all-tickets-styles',
-			'all-tickets.css',
-			[],
-			'admin_enqueue_scripts',
-			[
-				'conditionals' => [ $this, 'should_enqueue_assets' ],
-			]
-		);
+		Asset::add( 'tec-tickets-all-tickets-styles', 'all-tickets.css', null, Tribe__Tickets__Main::instance()->plugin_path )
+			->enqueue_on( 'admin_enqueue_scripts' )
+			->set_condition( [ $this, 'should_enqueue_assets' ] )
+			->register();
 	}
 
 	/**
