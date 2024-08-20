@@ -751,11 +751,11 @@ class List_Table extends WP_List_Table {
 
 		$template = $this->get_template();
 		$context  = [
-			'list_table'         => $this,
-			'select_options'     => $select_options,
-			'current_filter'     => $current_filter,
-			'search_id'          => 'tec-tickets-all-tickets-search-input',
-			'search_value'       => tribe_get_request_var( 's' ),
+			'list_table'     => $this,
+			'select_options' => $select_options,
+			'current_filter' => $current_filter,
+			'search_id'      => 'tec-tickets-all-tickets-search-input',
+			'search_value'   => tribe_get_request_var( 's' ),
 		];
 
 		$template->template( 'all-tickets/filters', $context );
