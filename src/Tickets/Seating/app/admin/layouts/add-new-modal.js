@@ -4,20 +4,23 @@ import {onReady, getLocalizedString} from '@tec/tickets/seating/utils';
 /**
  * @type {string}
  */
-const objectName = tec.tickets.seating.layouts.addLayoutModal;
+export const objectName = tec.tickets.seating.layouts.addLayoutModal;
 
 /**
  * Waits for the modal element to be present in the DOM.
  *
  * @return {Promise<Element>} A promise that resolves to the modal element.
  */
-async function waitForModalElement() {
+export async function waitForModalElement() {
 	return new Promise((resolve) => {
+		let timeoutId;
 		const check = () => {
-			if (window[objectName]) {
-				resolve(window[objectName]);
+			if ( window[objectName] ) {
+				clearTimeout(timeoutId);
+				resolve( window[objectName] );
+				return;
 			}
-			setTimeout(check, 50);
+			timeoutId = setTimeout(check, 50);
 		};
 
 		check();
@@ -51,7 +54,7 @@ export function modalActionListener() {
  *
  * @return {Promise<void>}
  */
-async function addNewLayout( event ) {
+export async function addNewLayout( event ) {
 	const mapSelect = document.getElementById( 'tec-tickets-seating__select-map' );
 	const mapId = mapSelect.selectedOptions[0].value;
 	const wrapper = document.querySelector( '.tec-tickets-seating__new-layout-wrapper' );
@@ -84,7 +87,7 @@ async function addNewLayout( event ) {
  *
  * @return {Promise<boolean|object>} A promise that resolves to data object if the layout was added successfully, false otherwise.
  */
-async function addLayoutByMapId( mapId ) {
+export async function addLayoutByMapId( mapId ) {
 	const url = new URL(ajaxUrl);
 	url.searchParams.set('_ajax_nonce', ajaxNonce);
 	url.searchParams.set('mapId', mapId);
@@ -137,10 +140,20 @@ export function closeModal() {
 	modal._hide();
 }
 
-onReady(() => {
-	waitForModalElement().then((modalElement) => {
-		modalElement.on('show', () => {
-			modalActionListener();
-		});
+/**
+ * Initializes the modal element once it's loaded.
+ *
+ * @since TBD
+ *
+ * @return {void} Initializes the modal element once it's loaded.
+ */
+export async function init(dom) {
+	const modalElement = await waitForModalElement();
+
+	modalElement.on('show', () => {
+		modalActionListener(dom);
 	});
-})
+}
+onReady( async () => {
+	await init(dom);
+});
