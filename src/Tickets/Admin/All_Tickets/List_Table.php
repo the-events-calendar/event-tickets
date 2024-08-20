@@ -14,7 +14,6 @@ use Tribe__Tickets__Ticket_Object;
 use WP_List_Table;
 use DateTime;
 use Tribe__Template;
-use WP_Query;
 
 /**
  * Class List_Table.
@@ -718,12 +717,12 @@ class List_Table extends WP_List_Table {
 	 */
 	public function prepare_items() {
 
-		$args               = $this->get_query_args();
+		$args             = $this->get_query_args();
 		$this->repository = tribe_tickets()->by_args( $args );
 		$this->add_joins();
 
-		$total_items        = $this->repository->found();
-		$items              = $this->repository->all();
+		$total_items = $this->repository->found();
+		$items       = $this->repository->all();
 
 		foreach ( $items as $i => $item ) {
 			$this->items[] = Tribe__Tickets__Tickets::load_ticket_object( $item->ID );
@@ -749,7 +748,6 @@ class List_Table extends WP_List_Table {
 	 * @since TBD
 	 */
 	protected function add_joins() {
-
 	}
 
 	/**

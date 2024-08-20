@@ -1147,7 +1147,7 @@ class Hooks extends Service_Provider {
 	 * @return array The filtered options.
 	 */
 	public function filter_all_tickets_table_provider_options( $options ) {
-		$options[ Ticket::POSTTYPE ] = tribe( Module::class)->plugin_name;
+		$options[ Ticket::POSTTYPE ] = tribe( Module::class )->plugin_name;
 
 		return $options;
 	}
