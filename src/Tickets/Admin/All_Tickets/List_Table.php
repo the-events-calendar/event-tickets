@@ -75,6 +75,13 @@ class List_Table extends WP_List_Table {
 	public static $default_sort_order = 'desc';
 
 	/**
+	 * The repository for the tickets.
+	 *
+	 * @var Tribe__Tickets__Ticket_Repository $repository
+	 */
+	protected $repository;
+
+	/**
 	 * Get the template object.
 	 *
 	 * @since TBD
@@ -676,11 +683,16 @@ class List_Table extends WP_List_Table {
 		$current_page = $this->get_pagenum();
 		$per_page     = $this->get_items_per_page( $this->per_page_option );
 
+		$provider_options = $this->get_provider_options();
+		$default_provider = empty( $provider_options ) ? '' : key( $provider_options );
+		$current_provider = tribe_get_request_var( self::$provider_key, $default_provider );
+
 		$args = [
 			'all_tickets_list_table' => true,
 			'offset'                 => ( $current_page - 1 ) * $per_page,
 			'posts_per_page'         => $per_page,
 			'return_total_found'     => true,
+			'post_type'              => $current_provider,
 		];
 
 		$args = $this->modify_filter_args( $args );
@@ -700,47 +712,18 @@ class List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Filter to modify WP_Query for the table.
-	 *
-	 * @since TBD
-	 *
-	 * @param WP_Query $query The WP_Query to filter.
-	 *
-	 * @return void
-	 */
-	public function filter_query( $query ) {
-		// Only filter the query if we are on the All Tickets screen.
-		if ( $query->is_main_query() || empty( $query->query_vars['all_tickets_list_table'] ) ) {
-			return;
-		}
-
-		// Filter out RSVP tickets.
-		$query_types = $query->get( 'post_type' );
-		if ( ! is_array( $query_types ) ) {
-			$query_types = [ $query_types ];
-		}
-		$post_types = array_diff( $query_types, [ 'tribe_rsvp_tickets' ] );
-		$query->set( 'post_type', $post_types );
-	}
-
-	/**
 	 * Prepares the list of items for displaying.
 	 *
 	 * @since TBD
 	 */
 	public function prepare_items() {
-		global $wpdb;
-
-		// Add filter before query runs.
-		add_action( 'pre_get_posts', [ $this, 'filter_query' ] );
 
 		$args               = $this->get_query_args();
-		$tickets_repository = tribe_tickets()->by_args( $args );
-		$total_items        = $tickets_repository->found();
-		$items              = $tickets_repository->all();
+		$this->repository = tribe_tickets()->by_args( $args );
+		$this->add_joins();
 
-		// Remove filter after query runs.
-		remove_action( 'pre_get_posts', [ $this, 'filter_query' ] );
+		$total_items        = $this->repository->found();
+		$items              = $this->repository->all();
 
 		foreach ( $items as $i => $item ) {
 			$this->items[] = Tribe__Tickets__Tickets::load_ticket_object( $item->ID );
@@ -761,6 +744,15 @@ class List_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Add the necessary joins to the query to return event information.
+	 *
+	 * @since TBD
+	 */
+	protected function add_joins() {
+
+	}
+
+	/**
 	 * Display the filter and search input.
 	 *
 	 * @since TBD
@@ -772,7 +764,11 @@ class List_Table extends WP_List_Table {
 			return;
 		}
 
-		$current_status = tribe_get_request_var( 'ticket-filter', 'active' );
+		$provider_options = $this->get_provider_options();
+		$default_provider = empty( $provider_options ) ? '' : key( $provider_options );
+		$current_provider = tribe_get_request_var( self::$provider_key, $default_provider );
+
+		$current_status = tribe_get_request_var( 'ticket-filter', self::$default_status );
 
 		$template = $this->get_template();
 		$context  = [
@@ -782,7 +778,8 @@ class List_Table extends WP_List_Table {
 			'search_id'            => 'tec-tickets-all-tickets-search-input',
 			'search_value'         => tribe_get_request_var( 's' ),
 			'show_provider_filter' => $this->show_ticket_provider_filter(),
-			'provider_options'     => $this->get_ticket_providers(),
+			'provider_options'     => $provider_options,
+			'current_provider'     => $current_provider,
 		];
 
 		$template->template( 'all-tickets/filters', $context );

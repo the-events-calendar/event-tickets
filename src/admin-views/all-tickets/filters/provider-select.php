@@ -16,8 +16,8 @@ if ( ! $show_provider_filter ) {
 
 ?>
 <select name="provider-filter" id="tec-tickets-all-tickets-provider-filter">
-	<?php foreach ( $select_options as $value => $label ) : ?>
-		<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $value, $current_filter ); ?>>
+	<?php foreach ( $provider_options as $value => $label ) : ?>
+		<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $value, $current_provider ); ?>>
 			<?php echo esc_html( $label ); ?>
 		</option>
 	<?php endforeach; ?>
