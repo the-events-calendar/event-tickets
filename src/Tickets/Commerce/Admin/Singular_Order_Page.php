@@ -57,8 +57,8 @@ class Singular_Order_Page extends Service_Provider {
 
 		add_filter( 'post_updated_messages', [ $this, 'add_order_messages' ] );
 		add_filter( 'admin_body_class', [ $this, 'add_body_class' ] );
-		if( is_admin() ) {
-			add_action('current_screen', [$this, 'breadcrumb_order_edit_screen']);
+		if ( is_admin() ) {
+			add_action( 'current_screen', [ $this, 'breadcrumb_order_edit_screen' ] );
 		}
 	}
 
