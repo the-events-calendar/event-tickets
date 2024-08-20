@@ -51,6 +51,8 @@ describe( 'add-new-modal', () => {
 		jest.resetAllMocks();
 	});
 
+	const dom = getTestDocument( 'layout-list', addNewLayoutModalExtractor );
+
 	describe('should match the snapshot', () => {
 		it('should import all properly', () => {
 			expect( init ).toBeDefined();
@@ -113,4 +115,37 @@ describe( 'add-new-modal', () => {
 			expect(infoElement).toMatchSnapshot();
 		});
 	});
+
+	describe('cancel button clicked', () => {
+		beforeEach(() => {
+			// Mock the modal object on the window
+			window[objectName] = {
+				_hide: jest.fn(),
+			};
+		});
+
+		afterEach(() => {
+			// Clean up the mock
+			delete window[objectName];
+		});
+
+		it('should trigger closeModal', () => {
+			modalActionListener(dom);
+
+			const cancelButton = dom.querySelector( '.tec-tickets-seating__new-layout-button-cancel' );
+			cancelButton.click();
+
+			expect(window[objectName]._hide).toHaveBeenCalledTimes(1);
+		});
+	});
+
+	describe( 'init', () => {
+		it( 'should show the modal', async () => {
+			global.window[objectName] = {
+				on: jest.fn(),
+			}
+			await init(dom);
+			expect( window[objectName].on ).toHaveBeenCalledWith( 'show', expect.any( Function ) );
+		} );
+	})
 } );
