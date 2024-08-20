@@ -51,7 +51,7 @@ class List_Table extends WP_List_Table {
 		if ( ! empty( $this->template ) ) {
 			return $this->template;
 		}
-		/** @var Tribe__Tickets__Admin__Views $admin_views */
+
 		return tribe( 'tickets.admin.views' );
 	}
 
