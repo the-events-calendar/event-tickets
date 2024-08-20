@@ -32,17 +32,21 @@ export async function waitForModalElement() {
  *
  * @since TBD
  *
+ * @param {HTMLDocument|null} dom The document to use to search for the modal element.
+ *
  * @return {void} Handles the modal actions.
  */
-export function modalActionListener() {
-	const mapSelect = document.getElementById( 'tec-tickets-seating__select-map' );
-	mapSelect?.addEventListener( 'change', handleSelectUpdates );
+export function modalActionListener(dom) {
+	dom = dom || document;
 
-	const cancelButton = document.querySelector( '.tec-tickets-seating__new-layout-button-cancel' );
+	const mapSelect = dom.getElementById( 'tec-tickets-seating__select-map' );
+	mapSelect?.addEventListener( 'change', (e) => handleSelectUpdates(e, dom) );
+
+	const cancelButton = dom.querySelector( '.tec-tickets-seating__new-layout-button-cancel' );
 	cancelButton?.addEventListener( 'click', closeModal );
 
-	const addButton = document.querySelector( '.tec-tickets-seating__new-layout-button-add' );
-	addButton?.addEventListener( 'click', addNewLayout );
+	const addButton = dom.querySelector( '.tec-tickets-seating__new-layout-button-add' );
+	addButton?.addEventListener( 'click', (e) =>  addNewLayout( e, dom ) );
 }
 
 /**
@@ -108,18 +112,20 @@ export async function addLayoutByMapId( mapId ) {
  *
  * @param {Event} event The event object.
  *
+ * @param {HTMLDocument|null} dom The document to use to search for the modal element.
  * @return {void} Handles the map select updates.
  */
-export function handleSelectUpdates( event ) {
+export function handleSelectUpdates( event, dom ) {
+	dom = dom || document;
 	const selectedOption = event.target.options[event.target.selectedIndex];
 
-	const img = document.getElementById( 'tec-tickets-seating__new-layout-map-preview-img' );
+	const img = dom.getElementById( 'tec-tickets-seating__new-layout-map-preview-img' );
 	img.src = selectedOption.getAttribute('data-screenshot-url');;
 
-	const seatsCountElement = document.querySelector( '.tec-tickets-seating__new-layout-map-seats-count' );
+	const seatsCountElement = dom.querySelector( '.tec-tickets-seating__new-layout-map-seats-count' );
 	seatsCountElement.innerHTML = selectedOption.getAttribute('data-seats-count');
 
-	const mapNameElement = document.querySelector( '.tec-tickets-seating__new-layout-map-name' );
+	const mapNameElement = dom.querySelector( '.tec-tickets-seating__new-layout-map-name' );
 	mapNameElement.innerHTML = selectedOption.innerHTML;
 }
 
