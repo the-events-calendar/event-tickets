@@ -116,30 +116,32 @@ class Frontend extends Controller_Contract {
 		}
 
 		$prices   = [];
-		$provider = Tickets::get_event_ticket_provider_object( $post_id );
-		foreach ( tribe_tickets()->where( 'event', $post_id )->get_ids( true ) as $ticket_id ) {
-			$ticket = $provider->get_ticket( $post_id, $ticket_id );
-			if ( ! $ticket ) {
-				continue;
-			}
-			$prices[] = $ticket->price;
-		}
+		$provider = Tickets::get_event_ticket_provider_object( $post_id ); // @todo - i see the below method can return false but we are never checking against it.
 
-		if ( ! count( $prices ) ) {
+		$tickets = array_filter(
+			array_map(
+				static function ( $ticket_id ) use ( $provider, $post_id ) {
+					$ticket = $provider->get_ticket( $post_id, $ticket_id );
+					if ( ! $ticket ) {
+						return false;
+					}
+
+					return $ticket;
+				},
+				tribe_tickets()->where( 'event', $post_id )->get_ids()
+			)
+		);
+
+		if ( empty( $tickets ) ) {
 			// Why are we here at all?
 			return $html;
 		}
 
+		$prices     = wp_list_pluck( $tickets, 'price' );
+		$inventory  = tribe_get_event_capacity( $post_id );
 		$cost_range = tribe_format_currency( min( $prices ), $post_id )
 						. ' - '
 						. tribe_format_currency( max( $prices ), $post_id );
-
-		/**
-		 * @var Tickets_Handler $tickets_handler
-		 */
-		$tickets_handler   = tribe( 'tickets.handler' );
-		$capacity_meta_key = $tickets_handler->key_capacity;
-		$inventory         = get_post_meta( $post_id, $capacity_meta_key, true );
 
 		$timeout = $this->container->get( Timer::class )->get_timeout( $post_id );
 
