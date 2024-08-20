@@ -40,6 +40,41 @@ class List_Table extends WP_List_Table {
 	protected $template;
 
 	/**
+	 * The provider filter query key.
+	 *
+	 * @var string
+	 */
+	public static $provider_key = 'provider-filter';
+
+	/**
+	 * The status filter query key.
+	 *
+	 * @var string
+	 */
+	public static $status_key = 'status-filter';
+
+	/**
+	 * Default status filter.
+	 *
+	 * @var string
+	 */
+	public static $default_status = 'active';
+
+	/**
+	 * Default Sort By.
+	 *
+	 * @var string
+	 */
+	public static $default_sort_by = 'end';
+
+	/**
+	 * Default Sort Order.
+	 *
+	 * @var string
+	 */
+	public static $default_sort_order = 'desc';
+
+	/**
 	 * Get the template object.
 	 *
 	 * @since TBD
@@ -490,7 +525,7 @@ class List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function modify_sort_args( $args ): array {
-		$orderby = tribe_get_request_var( 'orderby', 'end' );
+		$orderby = tribe_get_request_var( 'orderby', self::$default_sort_by );
 		switch ( $orderby ) {
 			case 'name':
 				$args['orderby'] = 'post_title';
@@ -523,8 +558,7 @@ class List_Table extends WP_List_Table {
 				break;
 		}
 
-		$order         = tribe_get_request_var( 'order', 'desc' );
-		$args['order'] = strtoupper( $order );
+		$args['order'] = tribe_get_request_var( 'order', self::$default_sort_order );
 
 		return $args;
 	}
@@ -539,7 +573,7 @@ class List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function modify_filter_args( $args ) {
-		$filter = tribe_get_request_var( 'ticket-filter', 'active' );
+		$filter = tribe_get_request_var( self::$status_key, self::$default_status );
 
 		if ( 'all' === $filter ) {
 			return $args;
@@ -738,7 +772,31 @@ class List_Table extends WP_List_Table {
 			return;
 		}
 
-		$select_options = [
+		$current_status = tribe_get_request_var( 'ticket-filter', 'active' );
+
+		$template = $this->get_template();
+		$context  = [
+			'list_table'           => $this,
+			'status_options'       => $this->get_status_options(),
+			'current_status'       => $current_status,
+			'search_id'            => 'tec-tickets-all-tickets-search-input',
+			'search_value'         => tribe_get_request_var( 's' ),
+			'show_provider_filter' => $this->show_ticket_provider_filter(),
+			'provider_options'     => $this->get_ticket_providers(),
+		];
+
+		$template->template( 'all-tickets/filters', $context );
+	}
+
+	/**
+	 * Get the default status options.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	protected function get_status_options(): array {
+		$status_options = [
 			'active'     => esc_html__( 'Active Tickets', 'event-tickets' ),
 			'past'       => esc_html__( 'Past Tickets', 'event-tickets' ),
 			'upcoming'   => esc_html__( 'Upcoming Tickets', 'event-tickets' ),
@@ -746,17 +804,49 @@ class List_Table extends WP_List_Table {
 			'all'        => esc_html__( 'All Tickets', 'event-tickets' ),
 		];
 
-		$current_filter = tribe_get_request_var( 'ticket-filter', 'active' );
+		/**
+		 * Filters the status options for the All Tickets Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $status_options The status options for the All Tickets Table.
+		 *
+		 * @return array
+		 */
+		return apply_filters( 'tec_tickets_all_tickets_table_status_options', $status_options );
+	}
 
-		$template = $this->get_template();
-		$context  = [
-			'list_table'     => $this,
-			'select_options' => $select_options,
-			'current_filter' => $current_filter,
-			'search_id'      => 'tec-tickets-all-tickets-search-input',
-			'search_value'   => tribe_get_request_var( 's' ),
-		];
+	/**
+	 * Get the ticket providers.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	protected function get_provider_options() {
+		/**
+		 * Filters the ticket providers for the All Tickets Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $providers The ticket providers for the All Tickets Table.
+		 *
+		 * @return array
+		 */
+		return apply_filters( 'tec_tickets_all_tickets_table_provider_options', [] );
+	}
 
-		$template->template( 'all-tickets/filters', $context );
+	/**
+	 * Whether or not to display the ticket provider filter.
+	 *
+	 * @since TBD
+	 *
+	 * @return boolean
+	 */
+	protected function show_ticket_provider_filter(): bool {
+		$providers = $this->get_provider_options();
+
+		// Only show if more than one provider.
+		return count( $providers ) > 1;
 	}
 }
