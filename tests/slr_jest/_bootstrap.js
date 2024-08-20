@@ -18,6 +18,7 @@ global.tec.tickets.seating = {
 		ajaxUrl: 'https://wordpress.test/wp-admin/admin-ajax.php',
 		ajaxNonce: '1234567890',
 		ACTION_FETCH_ATTENDEES: 'tec_tickets_seating_fetch_attendees',
+		ACTION_ADD_NEW_LAYOUT: 'tec_tickets_seating_service_add_layout',
 	},
 	utils: {
 		localizedStrings: {
@@ -133,6 +134,9 @@ global.tec.tickets.seating = {
 			],
 		},
 	},
+	layouts: {
+		addLayoutModal: 'dialog_obj_tec-tickets-seating-layouts-modal',
+	}
 };
 
 // Utility functions
@@ -163,6 +167,8 @@ global.getTestDocument = function (documentName, transformer) {
 	const validDocumentMap = {
 		'layout-edit':
 			'/../slr_integration/Admin/__snapshots__/Maps_Layout_Homepage_Test__test_layout_edit__0.snapshot.html',
+		'layout-list':
+			'/../slr_integration/Admin/__snapshots__/Maps_Layout_Homepage_Test__test_layouts_tab_card_listing__0.snapshot.html',
 		'seats-report':
 			'/../slr_integration/Orders/__snapshots__/Seats_Report_Test__test_render_page__2_tickets_3_attendees__0.snapshot.html',
 		'seats-selection':
