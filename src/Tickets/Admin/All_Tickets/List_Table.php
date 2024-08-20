@@ -731,6 +731,8 @@ class List_Table extends WP_List_Table {
 	 * Display the filter and search input.
 	 *
 	 * @since TBD
+	 *
+	 * @param string $which The location of the extra table nav.
 	 */
 	public function extra_tablenav( $which ) {
 		if ( 'top' !== $which ) {
