@@ -11,6 +11,8 @@ global.tec.tickets.seating = {
 			'https://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&tab=layouts',
 		layoutsHomeUrl:
 			'https://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&tab=layouts',
+		associatedEventsUrl:
+			'https://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating-events',
 	},
 	ajax: {
 		ajaxUrl: 'https://wordpress.test/wp-admin/admin-ajax.php',

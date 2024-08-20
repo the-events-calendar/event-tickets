@@ -142,6 +142,7 @@ class Controller extends Controller_Contract {
 
 		if ( is_admin() ) {
 			$this->container->register( Admin::class );
+			$this->container->register( Admin\Events\Controller::class );
 		} else {
 			$this->container->register( Frontend::class );
 		}
