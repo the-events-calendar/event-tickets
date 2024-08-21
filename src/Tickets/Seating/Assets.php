@@ -65,9 +65,10 @@ class Assets extends Controller_Contract {
 					'delete-failed'       => _x( 'Failed to delete the map.', 'Error message for deleting a map', 'event-tickets' ),
 				],
 				'layouts'        => [
+					'add-failed'          => _x( 'Failed to add the new layout.', 'Error message for adding a layout', 'event-tickets' ),
+					'edit-confirmation'   => _x( 'This layout is associated with {count} events. Changes will impact all existing events and may affect the seating assignment of active ticket holders.', 'Confirmation message for editing a layout with events', 'event-tickets' ),
 					'delete-confirmation' => _x( 'Are you sure you want to delete this layout?', 'Confirmation message for deleting a layout', 'event-tickets' ),
 					'delete-failed'       => _x( 'Failed to delete the layout.', 'Error message for deleting a layout', 'event-tickets' ),
-					'edit-confirmation'   => _x( 'This layout is associated with {count} events. Changes will impact all existing events and may affect the seating assignment of active ticket holders.', 'Confirmation message for editing a layout with events', 'event-tickets' ),
 				],
 				'service-errors' => $localization->get_service_error_strings(),
 			],

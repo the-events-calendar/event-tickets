@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Seating\Service;
 
+use TEC\Common\StellarWP\Arrays\Arr;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Seating\Admin\Events\Associated_Events;
 use TEC\Tickets\Seating\Logging;
@@ -351,6 +352,56 @@ class Layouts {
 			]
 		);
 
+		return false;
+	}
+	
+	/**
+	 * Adds a new layout to the service.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $map_id The ID of the map to add the layout to.
+	 *
+	 * @return string|bool Layout ID on success, false on failure.
+	 */
+	public function add( string $map_id ) {
+		$url = add_query_arg(
+			[
+				'map' => $map_id,
+			],
+			$this->service_fetch_url
+		);
+		
+		$args = [
+			'method'  => 'POST',
+			'headers' => [
+				'Authorization' => 'Bearer ' . $this->get_oauth_token(),
+				'Content-Type'  => 'application/json',
+			],
+		];
+		
+		$response = wp_remote_request( $url, $args );
+		$code     = wp_remote_retrieve_response_code( $response );
+		
+		if ( ! is_wp_error( $response ) && 200 === $code ) {
+			$body      = json_decode( wp_remote_retrieve_body( $response ), true );
+			$layout_id = Arr::get( $body, [ 'data', 'items', 0, 'id' ] );
+			
+			self::invalidate_cache();
+			Maps::invalidate_cache();
+			return $layout_id;
+		}
+		
+		$this->log_error(
+			'Failed to Add new layout to the service.',
+			[
+				'source'   => __METHOD__,
+				'code'     => $code,
+				'url'      => $url,
+				'response' => $response,
+			]
+		);
+		
 		return false;
 	}
 
