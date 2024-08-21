@@ -12,6 +12,7 @@ namespace TEC\Tickets\Seating\Admin\Tabs;
 use TEC\Tickets\Seating\Admin;
 use TEC\Tickets\Seating\Admin\Template;
 use TEC\Tickets\Seating\Service\Layouts as Layouts_Service;
+use TEC\Tickets\Seating\Service\Maps as Maps_Service;
 
 /**
  * Class Layouts.
@@ -21,17 +22,37 @@ use TEC\Tickets\Seating\Service\Layouts as Layouts_Service;
  * @package TEC\Controller\Admin\Tabs;
  */
 class Layouts extends Tab {
+	
+	/**
+	 * The Layouts service.
+	 *
+	 * @since TBD
+	 *
+	 * @var Layouts_Service
+	 */
+	protected Layouts_Service $layouts;
+	
+	/**
+	 * The Maps service.
+	 *
+	 * @since TBD
+	 *
+	 * @var Maps_Service $maps The Maps service.
+	 */
+	protected Maps_Service $maps;
 	/**
 	 * The Layouts Tab.
 	 *
 	 * @since TBD
 	 *
 	 * @param Template        $template The template object.
-	 * @param Layouts_Service $layouts The Maps service.
+	 * @param Layouts_Service $layouts The Layouts service.
+	 * @param Maps_Service    $maps    The Maps service.
 	 */
-	public function __construct( Template $template, Layouts_Service $layouts ) {
+	public function __construct( Template $template, Layouts_Service $layouts, Maps_Service $maps ) {
 		parent::__construct( $template );
 		$this->layouts = $layouts;
+		$this->maps    = $maps;
 	}
 	
 	/**
@@ -66,6 +87,7 @@ class Layouts extends Tab {
 	public function render(): void {
 		$context = [
 			'cards'       => $this->layouts->get_in_card_format(),
+			'maps'        => $this->maps->get_in_card_format(),
 			'add_new_url' => add_query_arg(
 				[
 					'page' => Admin::get_menu_slug(),
