@@ -171,8 +171,8 @@ class Hooks extends Service_Provider {
 			'posts_per_page'         => 10,
 			's'                      => $term,
 			// Default to show most recent first.
-			'orderby'        		 => 'ID',
-			'order'          		 => 'DESC',
+			'orderby'                => 'ID',
+			'order'                  => 'DESC',
 		];
 
 		$query = new WP_Query( $args );
