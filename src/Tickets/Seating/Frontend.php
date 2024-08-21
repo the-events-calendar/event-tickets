@@ -131,7 +131,7 @@ class Frontend extends Controller_Contract {
 			$prices[] = $ticket->price;
 		}
 
-		if ( empty( $prices ) ) {
+		if ( ! count( $prices ) ) {
 			// Why are we here at all?
 			return $html;
 		}
