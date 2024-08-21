@@ -1,4 +1,4 @@
-import { init, goToAssociatedEvents } from '@tec/tickets/seating/admin/layoutEdit';
+import { init, goToAssociatedEvents, handleResize } from '@tec/tickets/seating/admin/layoutEdit';
 import {
 	handleReservationsDeleted,
 	handleReservationsUpdatedFollowingSeatTypes,
@@ -11,6 +11,7 @@ import {
 	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
 	SEAT_TYPES_UPDATED,
 	GO_TO_ASSOCIATED_EVENTS,
+	INBOUND_SET_ELEMENT_HEIGHT,
 } from '@tec/tickets/seating/service/api';
 import { reset } from '@tec/tickets/seating/service/api/state';
 import { getIframeElement } from '@tec/tickets/seating/service/iframe';
@@ -69,7 +70,7 @@ describe('Layouts Edit', () => {
 
 			expect(getHandlerForAction(GO_TO_ASSOCIATED_EVENTS)).toBe(
 				goToAssociatedEvents
-			)
+			);
 		});
 	});
 
@@ -80,7 +81,7 @@ describe('Layouts Edit', () => {
 			}
 
 			goToAssociatedEvents(data);
-			expect(redirectTo).toBeCalledWith(getAssociatedEventsUrl(data.layoutId));
+			expect(redirectTo).toBeCalledWith(getAssociatedEventsUrl(data.layoutId), true);
 		});
 
 		it('should not redirect with invalid layoutID data', () => {
