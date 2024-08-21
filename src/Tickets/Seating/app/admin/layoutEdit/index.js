@@ -19,11 +19,16 @@ import {
 } from '../action-handlers';
 
 /**
+ * @typedef {Object} AssociatedEventsData
+ * @property {string} layoutId The ID of the layout.
+ */
+
+/**
  * Go to associated events.
  *
  * @since TBD
  *
- * @param data
+ * @param {AssociatedEventsData} data The layout ID.
  */
 export function goToAssociatedEvents( data ) {
 	if ( data.layoutId ) {
@@ -43,6 +48,8 @@ export function goToAssociatedEvents( data ) {
 export async function init(dom) {
 	dom = dom || document;
 
+	registerAction('app_postmessage_set_element_height', (data) => handleResize( data, dom ));
+
 	registerAction(RESERVATIONS_DELETED, handleReservationsDeleted);
 
 	registerAction(SEAT_TYPES_UPDATED, handleSeatTypesUpdated);
@@ -55,6 +62,25 @@ export async function init(dom) {
 	registerAction(GO_TO_ASSOCIATED_EVENTS, goToAssociatedEvents);
 
 	await initServiceIframe(getIframeElement(dom));
+}
+
+
+/**
+ * @typedef {Object} ResizeData
+ * @property {number} height The new height.
+ */
+
+/**
+ * Handles resize requests.
+ *
+ * @since TBD
+ *
+ * @param {ResizeData} data The new height.
+ * @param {HTMLDocument|null} dom The document to use to search for the iframe element.
+ */
+export function handleResize(data, dom) {
+	const iframe = getIframeElement(dom);
+	iframe.style.height = data.height + 'px';
 }
 
 onReady(() => {
