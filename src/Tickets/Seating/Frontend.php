@@ -19,7 +19,6 @@ use TEC\Tickets\Seating\Service\Service;
 use Tribe__Template as Base_Template;
 use Tribe__Tickets__Main as ET;
 use Tribe__Tickets__Tickets as Tickets;
-use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 use WP_Error;
 
 /**
@@ -195,8 +194,15 @@ class Frontend extends Controller_Contract {
 				continue;
 			}
 
-			// The array's keys are the seating types. In order for us to calculate the stock per type and NOT per ticket.
-			$available[ get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true ) ] = $ticket->stock();
+			$seat_key = get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true );
+
+			if ( empty( $available[ $seat_key ] ) ) {
+				// The array's keys are the seating types. In order for us to calculate the stock per type and NOT per ticket.
+				$available[ $seat_key ] = $ticket->stock();
+				continue;
+			}
+
+			$available[ $seat_key ] = $available[ $seat_key ] < $ticket->stock() ? $available[ $seat_key ] : $ticket->stock();
 		}
 
 		if ( empty( $available ) ) {

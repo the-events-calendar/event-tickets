@@ -13,6 +13,11 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Seating\Meta;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use TEC\Tickets\Commerce\Ticket;
+use Tribe__Tickets__Tickets as Tickets;
+use WP_Post;
 
 /**
  * Class Controller.
@@ -34,6 +39,9 @@ class Controller extends Controller_Contract {
 			'tec_tickets_seating_timer_token_object_id_entries',
 			[ $this, 'filter_timer_token_object_id_entries' ],
 		);
+
+		add_filter( 'tec_tickets_commerce_increase_ticket_stock', [ $this, 'sync_seated_tickets_stock' ], 10, 3 );
+		add_filter( 'tec_tickets_commerce_decrease_ticket_stock', [ $this, 'sync_seated_tickets_stock' ], 10, 3 );
 	}
 
 	/**
@@ -48,6 +56,68 @@ class Controller extends Controller_Contract {
 			'tec_tickets_seating_timer_token_object_id_entries',
 			[ $this, 'filter_timer_token_object_id_entries' ],
 		);
+
+		remove_filter( 'tec_tickets_commerce_increase_ticket_stock', [ $this, 'sync_seated_tickets_stock' ] );
+		remove_filter( 'tec_tickets_commerce_decrease_ticket_stock', [ $this, 'sync_seated_tickets_stock' ] );
+	}
+
+	/**
+	 * Filters the stock update value for a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int           $stock  The updated stock value.
+	 * @param Ticket_Object $ticket The ticket object.
+	 * @param WP_Post       $order  The order post object.
+	 *
+	 * @return int The updated stock value.
+	 */
+	public function sync_seated_tickets_stock( int $stock, Ticket_Object $ticket, WP_Post $order ): int {
+		$events = $order->events_in_order ?? [];
+
+		if ( empty( $events ) ) {
+			return $stock;
+		}
+
+		$event = get_post( array_values( $events )['0'] ); // We only support one event per order for now.
+
+		if ( ! $event instanceof WP_Post || ! $event->ID ) {
+			return $stock;
+		}
+
+		$ticket_seat_key = get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true );
+
+		// Not a seating ticket. We should not modify the stock.
+		if ( ! $ticket_seat_key ) {
+			return $stock;
+		}
+
+		$provider = Tickets::get_event_ticket_provider_object( $event->ID );
+
+		if ( ! $provider ) {
+			return $stock;
+		}
+
+		foreach ( tribe_tickets()->where( 'event', $event->ID )->get_ids( true ) as $ticket_id ) {
+			if ( $ticket_id === $ticket->ID ) {
+				continue;
+			}
+
+			$other_ticket = $provider->get_ticket( $event->ID, $ticket_id );
+			if ( ! $other_ticket ) {
+				continue;
+			}
+
+			$other_ticket_seat_key = get_post_meta( $other_ticket->ID, Meta::META_KEY_SEAT_TYPE, true );
+
+			if ( $other_ticket_seat_key !== $ticket_seat_key ) {
+				continue;
+			}
+
+			update_post_meta( $other_ticket->ID, Ticket::$stock_meta_key, $stock );
+		}
+
+		return $stock;
 	}
 
 	/**
