@@ -750,13 +750,13 @@ class List_Table extends WP_List_Table {
 
 		// Add join clauses to retrieve the event title.
 		$clauses['join'] .= $wpdb->prepare(
-			" LEFT JOIN {$wpdb->postmeta} AS ticket_event ON ( {$wpdb->posts}.ID = ticket_event.post_id ) AND ticket_event.meta_key = '%s' ",
+			" LEFT JOIN {$wpdb->postmeta} AS ticket_event ON ( {$wpdb->posts}.ID = ticket_event.post_id ) AND ticket_event.meta_key = %s ",
 			$event_meta_key
 		);
 		$clauses['join'] .= " LEFT JOIN {$wpdb->posts} AS event_data ON event_data.ID = ticket_event.meta_value ";
 
 		// Add the event title to the fields.
-		$clauses['fields'] .= ", event_data.post_title AS event_title";
+		$clauses['fields'] .= ', event_data.post_title AS event_title';
 
 		// Add the where clause.
 		$clauses['where'] .= $wpdb->prepare(
