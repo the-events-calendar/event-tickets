@@ -92,7 +92,9 @@ class List_Table extends WP_List_Table {
 			return $this->template;
 		}
 
-		return tribe( 'tickets.admin.views' );
+		$this->template = tribe( 'tickets.admin.views' );
+
+		return $this->template;
 	}
 
 	/**

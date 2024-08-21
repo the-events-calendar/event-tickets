@@ -8,6 +8,7 @@
  *
  * @var \Tribe__Template  $this           Current template object.
  * @var WP_List_Table     $tickets_table  The list table for the All Tickets screen.
+ * @var string            $page_slug      The slug of the current page.
  */
 
 $tickets_table->prepare_items();
