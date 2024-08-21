@@ -324,3 +324,19 @@ function slr_test_connect_to_service() {
 
 	tribe_update_option( Service::get_oauth_token_option_name(), $data->data );
 }
+
+/**
+ * Bypass airplane mode when connecting to the service.
+ */
+function slr_test_bypass_airplane_mode( $allowed, $url, $args, $host ) {
+	$service_url = apply_filters( 'tec_tickets_seating_service_base_url', get_option( 'tec_tickets_seating_service_base_url' ) );
+	$parsed_url  = parse_url( $service_url );
+	
+	if ( $parsed_url['host'] === $host ) {
+		return true;
+	}
+	
+	return $allowed;
+}
+
+add_filter( 'airplane_mode_allow_http_api_request', 'slr_test_bypass_airplane_mode', 10, 4 );
