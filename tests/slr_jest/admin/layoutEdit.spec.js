@@ -80,7 +80,7 @@ describe('Layouts Edit', () => {
 			}
 
 			goToAssociatedEvents(data);
-			expect(redirectTo).toBeCalledWith(getAssociatedEventsUrl(data.layoutId));
+			expect(redirectTo).toBeCalledWith(getAssociatedEventsUrl(data.layoutId), true);
 		});
 
 		it('should not redirect with invalid layoutID data', () => {
