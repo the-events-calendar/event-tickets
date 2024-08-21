@@ -117,16 +117,14 @@ class Singular_Order_PageTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function it_should_render_breadcrumb() {
-		set_current_screen();
-
-		$screen                  = get_current_screen();
+		$screen                  = WP_Screen::get( '' );
 		$screen->base            = 'post';
 		$screen->action          = '';
 		$screen->post_type       = Order::POSTTYPE;
 		$screen->parent_file     = 'edit.php?post_type=tec_tc_order';
 		$screen->is_block_editor = false;
 
-		set_current_screen( $screen );
+		$this->set_fn_return( 'get_current_screen', $screen );
 
 		$singular_page = tribe( Singular_Order_Page::class );
 		ob_start();
