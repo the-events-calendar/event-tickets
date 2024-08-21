@@ -1,4 +1,4 @@
-import { init, goToAssociatedEvents } from '@tec/tickets/seating/admin/layoutEdit';
+import { init, goToAssociatedEvents, handleResize } from '@tec/tickets/seating/admin/layoutEdit';
 import {
 	handleReservationsDeleted,
 	handleReservationsUpdatedFollowingSeatTypes,
@@ -11,6 +11,7 @@ import {
 	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
 	SEAT_TYPES_UPDATED,
 	GO_TO_ASSOCIATED_EVENTS,
+	INBOUND_SET_ELEMENT_HEIGHT,
 } from '@tec/tickets/seating/service/api';
 import { reset } from '@tec/tickets/seating/service/api/state';
 import { getIframeElement } from '@tec/tickets/seating/service/iframe';
@@ -69,9 +70,32 @@ describe('Layouts Edit', () => {
 
 			expect(getHandlerForAction(GO_TO_ASSOCIATED_EVENTS)).toBe(
 				goToAssociatedEvents
-			)
+			);
 		});
 	});
+
+	describe('handleResize', () => {
+		it('should be registered and resize the iframe', async () => {
+			const dom = getTestDocument('layout-edit');
+			const iframe = getIframeElement(dom);
+			expect(iframe).toBeInstanceOf(HTMLIFrameElement);
+
+			iframeModule.initServiceIframe = jest.fn();
+			actionHandlersModule.handleReservationsDeleted = jest.fn();
+
+			await init(dom);
+
+			// Get the registered resize handler.
+			const resizeHandler = getHandlerForAction(INBOUND_SET_ELEMENT_HEIGHT);
+
+			resizeHandler({height: 100}, dom);
+
+			expect(iframe.style.height).toBe( 100 + 'px' );
+
+			resizeHandler({height: 200}, dom);
+			expect(iframe.style.height).toBe( 200 + 'px' );
+		});
+	})
 
 	describe('goToAssociatedEvents', () => {
 		it('should redirect with valid layoutID data', () => {
@@ -80,7 +104,7 @@ describe('Layouts Edit', () => {
 			}
 
 			goToAssociatedEvents(data);
-			expect(redirectTo).toBeCalledWith(getAssociatedEventsUrl(data.layoutId));
+			expect(redirectTo).toBeCalledWith(getAssociatedEventsUrl(data.layoutId), true);
 		});
 
 		it('should not redirect with invalid layoutID data', () => {
