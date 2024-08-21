@@ -77,6 +77,15 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			\WP_CLI::success( 'Transients cleaned.' );
 		}
 	);
+	
+	\WP_CLI::add_command(
+		'slr:auth-token',
+		function() {
+			\WP_CLI::line( 'Getting the auth token ...' );
+			$token = tribe_get_option( Service::get_oauth_token_option_name(), null );
+			\WP_CLI::success( 'Bearer ' . $token );
+		}
+	);
 }
 
 /**
