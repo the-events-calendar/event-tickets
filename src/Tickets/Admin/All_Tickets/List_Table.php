@@ -14,6 +14,7 @@ use Tribe__Tickets__Ticket_Object;
 use WP_List_Table;
 use DateTime;
 use Tribe__Template;
+use WP_Query;
 
 /**
  * Class List_Table.
@@ -74,11 +75,11 @@ class List_Table extends WP_List_Table {
 	public static $default_sort_order = 'desc';
 
 	/**
-	 * The repository for the tickets.
+	 * The query for the tickets.
 	 *
-	 * @var Tribe__Tickets__Ticket_Repository $repository
+	 * @var WP_Query $query
 	 */
-	protected $repository;
+	protected $query;
 
 	/**
 	 * Get the template object.
@@ -587,28 +588,19 @@ class List_Table extends WP_List_Table {
 			return $args;
 		}
 
-		if ( ! isset( $args['meta_query'] ) ) {
-			$args['meta_query'] = [
-				'relation' => 'AND',
-			];
-		}
-
 		switch ( $filter ) {
 			case 'active':
 				$args['meta_query'][] = [
-					'relation' => 'AND',
-					[
-						'key'     => '_ticket_start_date',
-						'value'   => current_time( 'mysql' ),
-						'compare' => '<=',
-						'type'    => 'DATETIME',
-					],
-					[
-						'key'     => '_ticket_end_date',
-						'value'   => current_time( 'mysql' ),
-						'compare' => '>',
-						'type'    => 'DATETIME',
-					],
+					'key'     => '_ticket_start_date',
+					'value'   => current_time( 'mysql' ),
+					'compare' => '<=',
+					'type'    => 'DATETIME',
+				];
+				$args['meta_query'][] = [
+					'key'     => '_ticket_end_date',
+					'value'   => current_time( 'mysql' ),
+					'compare' => '>',
+					'type'    => 'DATETIME',
 				];
 				break;
 			case 'past':
@@ -629,46 +621,23 @@ class List_Table extends WP_List_Table {
 				break;
 			case 'discounted':
 				$args['meta_query'][] = [
-					'relation' => 'AND',
-					[
-						'key'     => '_sale_price',
-						'compare' => 'EXISTS',
-					],
-					[
-						'key'     => '_sale_price_start_date',
-						'value'   => current_time( 'mysql' ),
-						'compare' => '<',
-						'type'    => 'DATETIME',
-					],
-					[
-						'key'     => '_sale_price_end_date',
-						'value'   => current_time( 'mysql' ),
-						'compare' => '>',
-						'type'    => 'DATETIME',
-					],
+					'key'     => '_sale_price',
+					'compare' => 'EXISTS',
+				];
+				$args['meta_query'][] = [
+					'key'     => '_sale_price_start_date',
+					'value'   => current_time( 'mysql' ),
+					'compare' => '<',
+					'type'    => 'DATETIME',
+				];
+				$args['meta_query'][] = [
+					'key'     => '_sale_price_end_date',
+					'value'   => current_time( 'mysql' ),
+					'compare' => '>',
+					'type'    => 'DATETIME',
 				];
 				break;
 		}
-
-		return $args;
-	}
-
-	/**
-	 * Modify the search arguments.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $args The arguments used to query the tickets for the All Tickets Table.
-	 *
-	 * @return array
-	 */
-	public function modify_search_args( $args ) {
-		$search = tribe_get_request_var( 's' );
-		if ( empty( $search ) ) {
-			return $args;
-		}
-
-		$args['s'] = $search;
 
 		return $args;
 	}
@@ -678,9 +647,9 @@ class List_Table extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @return array
+	 * @return array|bool
 	 */
-	public function get_query_args(): array {
+	public function get_query_args() {
 		$current_page = $this->get_pagenum();
 		$per_page     = $this->get_items_per_page( $this->per_page_option );
 
@@ -698,7 +667,10 @@ class List_Table extends WP_List_Table {
 
 		$args = $this->modify_filter_args( $args );
 		$args = $this->modify_sort_args( $args );
-		$args = $this->modify_search_args( $args );
+
+		if ( isset( $args['meta_query'] ) && count( $args['meta_query'] ) > 1 ) {
+			$args['meta_query']['relation'] = 'AND';
+		}
 
 		/**
 		 * Filters the arguments used to query the tickets for the All Tickets Table.
@@ -719,15 +691,21 @@ class List_Table extends WP_List_Table {
 	 */
 	public function prepare_items() {
 
-		$args             = $this->get_query_args();
-		$this->repository = tribe_tickets()->by_args( $args );
-		$this->add_joins();
+		add_filter( 'posts_clauses', [ $this, 'filter_query_clauses' ], 10, 2 );
 
-		$total_items = $this->repository->found();
-		$items       = $this->repository->all();
+		$args        = $this->get_query_args();
+		$this->query = new WP_Query( $args );
+		$total_items = $this->query->found_posts;
+		$items       = $this->query->posts;
+
+		remove_filter( 'posts_clauses', [ $this, 'filter_query_clauses' ], 10 );
 
 		foreach ( $items as $i => $item ) {
-			$this->items[] = Tribe__Tickets__Tickets::load_ticket_object( $item->ID );
+			$ticket = Tribe__Tickets__Tickets::load_ticket_object( $item->ID );
+			if ( ! empty( $ticket ) ) {
+				$ticket->raw_data = $item;
+			}
+			$this->items[] = $ticket;
 		}
 
 		$pagination_args = [
@@ -745,11 +723,75 @@ class List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Add the necessary joins to the query to return event information.
+	 * Filter the query clauses.
 	 *
 	 * @since TBD
+	 *
+	 * @param array    $clauses The query clauses.
+	 * @param WP_Query $query   The WP_Query object.
+	 *
+	 * @return array
 	 */
-	protected function add_joins() {
+	public function filter_query_clauses( $clauses, $query ) {
+		// Only modify if not the main query and is the All Tickets Table query.
+		if ( $query->is_main_query() || empty( $query->query_vars['all_tickets_list_table'] ) ) {
+			return $clauses;
+		}
+
+		global $wpdb;
+
+		$event_meta_key = $this->get_event_meta_key();
+
+		// Add join clauses to retrieve the event title.
+		$clauses['join'] .= $wpdb->prepare(
+			" LEFT JOIN {$wpdb->postmeta} AS ticket_event ON ( {$wpdb->posts}.ID = ticket_event.post_id ) AND ticket_event.meta_key = '%s' ",
+			$event_meta_key
+		);
+		$clauses['join'] .= " LEFT JOIN {$wpdb->posts} AS event_data ON event_data.ID = ticket_event.meta_value ";
+
+		// Add the event title to the fields.
+		$clauses['fields'] .= ", event_data.post_title AS event_title";
+
+		// Add the search clause.
+		$search = tribe_get_request_var( 's' );
+		if ( ! empty( $search ) ) {
+			$clauses['where'] .= $wpdb->prepare(
+				" AND ( {$wpdb->posts}.post_title LIKE %s OR event_data.post_title LIKE %s )",
+				'%' . $wpdb->esc_like( $search ) . '%',
+				'%' . $wpdb->esc_like( $search ) . '%'
+			);
+		}
+
+		return $clauses;
+	}
+
+	/**
+	 * Get event meta key.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	protected function get_event_meta_key(): string {
+		/**
+		 * Filters the event meta keys for the All Tickets Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $event_meta_keys The event meta keys for the All Tickets Table.
+		 *
+		 * @return array
+		 */
+		$event_meta_keys = apply_filters( 'tec_tickets_all_tickets_table_event_meta_keys', [] );
+
+		$provider_options = $this->get_provider_options();
+		$default_provider = empty( $provider_options ) ? '' : key( $provider_options );
+		$current_provider = tribe_get_request_var( self::$provider_key, $default_provider );
+
+		if ( ! isset( $event_meta_keys[ $current_provider ] ) ) {
+			return '';
+		}
+		return $event_meta_keys[ $current_provider ];
 	}
 
 	/**
