@@ -738,6 +738,7 @@ class List_Table extends WP_List_Table {
 			return $clauses;
 		}
 
+		// If there is no search, return the clauses.
 		$search = tribe_get_request_var( 's' );
 		if ( empty( $search ) ) {
 			return $clauses;
@@ -758,7 +759,6 @@ class List_Table extends WP_List_Table {
 		$clauses['fields'] .= ", event_data.post_title AS event_title";
 
 		// Add the where clause.
-		$search = tribe_get_request_var( 's' );
 		$clauses['where'] .= $wpdb->prepare(
 			" AND ( {$wpdb->posts}.post_title LIKE %s OR event_data.post_title LIKE %s )",
 			'%' . $wpdb->esc_like( $search ) . '%',
