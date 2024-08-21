@@ -738,6 +738,11 @@ class List_Table extends WP_List_Table {
 			return $clauses;
 		}
 
+		$search = tribe_get_request_var( 's' );
+		if ( empty( $search ) ) {
+			return $clauses;
+		}
+
 		global $wpdb;
 
 		$event_meta_key = $this->get_event_meta_key();
@@ -752,15 +757,13 @@ class List_Table extends WP_List_Table {
 		// Add the event title to the fields.
 		$clauses['fields'] .= ", event_data.post_title AS event_title";
 
-		// Add the search clause.
+		// Add the where clause.
 		$search = tribe_get_request_var( 's' );
-		if ( ! empty( $search ) ) {
-			$clauses['where'] .= $wpdb->prepare(
-				" AND ( {$wpdb->posts}.post_title LIKE %s OR event_data.post_title LIKE %s )",
-				'%' . $wpdb->esc_like( $search ) . '%',
-				'%' . $wpdb->esc_like( $search ) . '%'
-			);
-		}
+		$clauses['where'] .= $wpdb->prepare(
+			" AND ( {$wpdb->posts}.post_title LIKE %s OR event_data.post_title LIKE %s )",
+			'%' . $wpdb->esc_like( $search ) . '%',
+			'%' . $wpdb->esc_like( $search ) . '%'
+		);
 
 		return $clauses;
 	}
