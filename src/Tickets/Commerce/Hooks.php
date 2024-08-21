@@ -153,6 +153,7 @@ class Hooks extends Service_Provider {
 		add_filter( 'tribe_dropdown_tec_tc_order_table_customers', [ $this, 'provide_customers_results_to_ajax' ], 10, 2 );
 
 		add_filter( 'tec_tickets_all_tickets_table_provider_options', [ $this, 'filter_all_tickets_table_provider_options' ] );
+		add_filter( 'tec_tickets_all_tickets_table_event_meta_keys', [ $this, 'filter_all_tickets_table_event_meta_keys' ] );
 	}
 
 	/**
@@ -1150,5 +1151,20 @@ class Hooks extends Service_Provider {
 		$options[ Ticket::POSTTYPE ] = tribe( Module::class )->plugin_name;
 
 		return $options;
+	}
+
+	/**
+	 * Filters the meta keys for the All Tickets table.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $meta_keys The event meta keys.
+	 *
+	 * @return array The filtered event meta keys.
+	 */
+	public function filter_all_tickets_table_event_meta_keys( $meta_keys ) {
+		$meta_keys[ Ticket::POSTTYPE ] = Module::ATTENDEE_EVENT_KEY;
+
+		return $meta_keys;
 	}
 }
