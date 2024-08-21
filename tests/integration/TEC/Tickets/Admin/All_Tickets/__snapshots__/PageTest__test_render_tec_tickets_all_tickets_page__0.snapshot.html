@@ -2,11 +2,33 @@
 	<h1>
 	All Tickets</h1>
 <form id="tec-tickets-all-tickets-form" method="get">
+	<input type="hidden" name="page" value="tec-tickets-all-tickets" />
 	<input type="hidden" id="_wpnonce" name="_wpnonce" value="WP_NONCE" /><input type="hidden" name="_wp_http_referer" value="" />	<div class="tablenav top">
 
 				<div class="alignleft actions bulkactions">
 					</div>
-			<div class='tablenav-pages one-page'><span class="displaying-num">3 items</span>
+			<div class="alignleft actions">
+	<select name="status-filter" id="tec-tickets-all-tickets-status-filter">
+			<option value="active"  selected='selected'>
+			Active Tickets		</option>
+			<option value="past" >
+			Past Tickets		</option>
+			<option value="upcoming" >
+			Upcoming Tickets		</option>
+			<option value="discounted" >
+			Discounted Tickets		</option>
+			<option value="all" >
+			All Tickets		</option>
+	</select>
+		<input
+	type="search"
+	placeholder="Ticket or Event Name"
+	id="tec-tickets-all-tickets-search-input"
+	name="s"
+	value=""
+	/>
+	<input type="submit" id="tec-tickets-all-tickets-select-filter" class="button" value="Show Tickets"  /></div>
+<div class='tablenav-pages one-page'><span class="displaying-num">3 items</span>
 <span class='pagination-links'><span class="tablenav-pages-navspan button disabled" aria-hidden="true">&laquo;</span>
 <span class="tablenav-pages-navspan button disabled" aria-hidden="true">&lsaquo;</span>
 <span class="paging-input"><label for="current-page-selector" class="screen-reader-text">Current Page</label><input class='current-page' id='current-page-selector' type='text'
