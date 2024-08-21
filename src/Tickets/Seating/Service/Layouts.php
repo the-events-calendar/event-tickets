@@ -356,6 +356,24 @@ class Layouts {
 	}
 	
 	/**
+	 * Returns the URL to add a new layout.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $map_id The ID of the map to add the layout to.
+	 *
+	 * @return string The URL to add a new layout.
+	 */
+	public function get_add_url( string $map_id ): string {
+		return add_query_arg(
+			[
+				'map' => $map_id,
+			],
+			$this->service_fetch_url
+		);
+	}
+	
+	/**
 	 * Adds a new layout to the service.
 	 *
 	 * @since TBD
@@ -365,12 +383,7 @@ class Layouts {
 	 * @return string|bool Layout ID on success, false on failure.
 	 */
 	public function add( string $map_id ) {
-		$url = add_query_arg(
-			[
-				'map' => $map_id,
-			],
-			$this->service_fetch_url
-		);
+		$url = $this->get_add_url( $map_id );
 		
 		$args = [
 			'method'  => 'POST',
