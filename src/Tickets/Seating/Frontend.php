@@ -116,28 +116,27 @@ class Frontend extends Controller_Contract {
 		}
 
 		$prices   = [];
-		$provider = Tickets::get_event_ticket_provider_object( $post_id ); // @todo - i see the below method can return false but we are never checking against it.
+		$provider = Tickets::get_event_ticket_provider_object( $post_id );
 
-		$tickets = array_filter(
-			array_map(
-				static function ( $ticket_id ) use ( $provider, $post_id ) {
-					$ticket = $provider->get_ticket( $post_id, $ticket_id );
-					if ( ! $ticket ) {
-						return false;
-					}
+		if ( ! $provider ) {
+			return $html;
+		}
 
-					return $ticket;
-				},
-				tribe_tickets()->where( 'event', $post_id )->get_ids()
-			)
-		);
+		$prices = [];
 
-		if ( empty( $tickets ) ) {
+		foreach ( tribe_tickets()->where( 'event', $post_id )->get_ids( true ) as $ticket_id ) {
+			$ticket = $provider->get_ticket( $post_id, $ticket_id );
+			if ( ! $ticket ) {
+				continue;
+			}
+			$prices[] = $ticket->price;
+		}
+
+		if ( empty( $prices ) ) {
 			// Why are we here at all?
 			return $html;
 		}
 
-		$prices     = wp_list_pluck( $tickets, 'price' );
 		$inventory  = $this->get_events_ticket_capacity_for_seating( $post_id );
 		$cost_range = tribe_format_currency( min( $prices ), $post_id )
 						. ' - '
@@ -185,29 +184,24 @@ class Frontend extends Controller_Contract {
 
 		$provider = Tickets::get_event_ticket_provider_object( $event_id );
 
-		$tickets = array_filter(
-			array_map(
-				static function ( $ticket_id ) use ( $provider, $event_id ) {
-					$ticket = $provider->get_ticket( $event_id, $ticket_id );
-					if ( ! $ticket ) {
-						return false;
-					}
-
-					return $ticket;
-				},
-				tribe_tickets()->where( 'event', $event_id )->get_ids()
-			)
-		);
-
-		if ( empty( $tickets ) ) {
+		if ( ! $provider ) {
 			return 0;
 		}
 
 		$available = [];
 
-		foreach ( $tickets as $ticket ) {
+		foreach ( tribe_tickets()->where( 'event', $event_id )->get_ids( true ) as $ticket_id ) {
+			$ticket = $provider->get_ticket( $event_id, $ticket_id );
+			if ( ! $ticket ) {
+				continue;
+			}
+
 			// The array's keys are the seating types. In order for us to calculate the stock per type and NOT per ticket.
 			$available[ get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true ) ] = $ticket->stock();
+		}
+
+		if ( empty( $available ) ) {
+			return 0;
 		}
 
 		return array_sum( $available );
