@@ -24,15 +24,29 @@ use TEC\Tickets\Seating\Admin\Tabs\Layout_Card;
 			$count = $card->get_associated_posts_count();
 
 			if ( 0 === $count ) {
-				echo esc_html__( 'No associated events', 'event-tickets' );
+				echo esc_html( _x( 'No associated events', 'Layout card no associated events', 'event-tickets' ) );
 			} else {
-				echo esc_html(
-					sprintf(
-						/* translators: %d: Number of associated events for the layout */
-						_n( '%d associated event', '%d associated events', $count, 'event-tickets' ),
-						$count,
-						'event-tickets'
-					)
+				$link_label = sprintf(
+					/* translators: %d: Number of associated events for the layout */
+					_n( '%d associated event', '%d associated events', $count, 'event-tickets' ),
+					$count,
+				);
+				
+				$link_html = sprintf(
+					'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
+					esc_url( $card->get_associated_posts_url() ),
+					esc_html( $link_label )
+				);
+				
+				echo wp_kses(
+					$link_html,
+					[
+						'a' => [
+							'href'   => true,
+							'target' => true,
+							'rel'    => true,
+						],
+					]
 				);
 			}
 			?>
@@ -41,7 +55,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Layout_Card;
 			<a
 				class="button button-secondary edit-layout"
 				href="<?php echo esc_url( $card->get_edit_url() ); ?>"
-				data-event-count="<?php echo esc_attr( $card->get_associated_posts_count() ); ?>">
+				data-event-count="<?php echo esc_attr( $count ); ?>">
 				<?php esc_html_e( 'Edit', 'event-tickets' ); ?>
 			</a>
 			<?php if ( 0 === $count ) : ?>
