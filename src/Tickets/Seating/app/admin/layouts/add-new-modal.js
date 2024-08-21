@@ -155,6 +155,7 @@ export async function init() {
 		modalActionListener();
 	});
 }
+
 onReady( async () => {
 	await init();
 });

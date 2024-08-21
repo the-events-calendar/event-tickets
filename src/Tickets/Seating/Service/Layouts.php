@@ -383,26 +383,25 @@ class Layouts {
 		$response = wp_remote_request( $url, $args );
 		$code     = wp_remote_retrieve_response_code( $response );
 		
-		if ( ! is_wp_error( $response ) && 200 === $code ) {
-			$body      = json_decode( wp_remote_retrieve_body( $response ), true );
-			$layout_id = Arr::get( $body, [ 'data', 'items', 0, 'id' ] );
-			
-			self::invalidate_cache();
-			Maps::invalidate_cache();
-			return $layout_id;
+		if ( is_wp_error( $response ) || 200 !== $code ) {
+			$this->log_error(
+				'Failed to Add new layout to the service.',
+				[
+					'source'   => __METHOD__,
+					'code'     => $code,
+					'url'      => $url,
+					'response' => $response,
+				]
+			);
+			return false;
 		}
 		
-		$this->log_error(
-			'Failed to Add new layout to the service.',
-			[
-				'source'   => __METHOD__,
-				'code'     => $code,
-				'url'      => $url,
-				'response' => $response,
-			]
-		);
+		$body      = json_decode( wp_remote_retrieve_body( $response ), true );
+		$layout_id = Arr::get( $body, [ 'data', 'items', 0, 'id' ] );
 		
-		return false;
+		self::invalidate_cache();
+		Maps::invalidate_cache();
+		return $layout_id;
 	}
 
 	/**
