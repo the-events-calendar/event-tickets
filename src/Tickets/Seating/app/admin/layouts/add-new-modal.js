@@ -1,5 +1,5 @@
 import {ACTION_ADD_NEW_LAYOUT, ajaxNonce, ajaxUrl} from '@tec/tickets/seating/ajax';
-import {onReady, getLocalizedString} from '@tec/tickets/seating/utils';
+import {onReady, getLocalizedString, redirectTo} from '@tec/tickets/seating/utils';
 
 /**
  * @type {string}
@@ -32,21 +32,17 @@ export async function waitForModalElement() {
  *
  * @since TBD
  *
- * @param {HTMLDocument|null} dom The document to use to search for the modal element.
- *
  * @return {void} Handles the modal actions.
  */
-export function modalActionListener(dom) {
-	dom = dom || document;
+export function modalActionListener() {
+	const mapSelect = document.getElementById( 'tec-tickets-seating__select-map' );
+	mapSelect?.addEventListener( 'change', handleSelectUpdates );
 
-	const mapSelect = dom.getElementById( 'tec-tickets-seating__select-map' );
-	mapSelect?.addEventListener( 'change', (e) => handleSelectUpdates(e, dom) );
-
-	const cancelButton = dom.querySelector( '.tec-tickets-seating__new-layout-button-cancel' );
+	const cancelButton = document.querySelector( '.tec-tickets-seating__new-layout-button-cancel' );
 	cancelButton?.addEventListener( 'click', closeModal );
 
-	const addButton = dom.querySelector( '.tec-tickets-seating__new-layout-button-add' );
-	addButton?.addEventListener( 'click', (e) =>  addNewLayout( e, dom ) );
+	const addButton = document.querySelector( '.tec-tickets-seating__new-layout-button-add' );
+	addButton?.addEventListener( 'click', addNewLayout );
 }
 
 /**
@@ -74,7 +70,7 @@ export async function addNewLayout( event ) {
 
 	if ( result ) {
 		closeModal();
-		window.location.href = result.data;
+		redirectTo(result.data);
 	} else {
 		alert( getLocalizedString( 'add-failed', 'layouts' ) );
 		wrapper.style.opacity = 1;
@@ -112,20 +108,18 @@ export async function addLayoutByMapId( mapId ) {
  *
  * @param {Event} event The event object.
  *
- * @param {HTMLDocument|null} dom The document to use to search for the modal element.
  * @return {void} Handles the map select updates.
  */
-export function handleSelectUpdates( event, dom ) {
-	dom = dom || document;
+export function handleSelectUpdates(event) {
 	const selectedOption = event.target.options[event.target.selectedIndex];
 
-	const img = dom.getElementById( 'tec-tickets-seating__new-layout-map-preview-img' );
+	const img = document.getElementById( 'tec-tickets-seating__new-layout-map-preview-img' );
 	img.src = selectedOption.getAttribute('data-screenshot-url');;
 
-	const seatsCountElement = dom.querySelector( '.tec-tickets-seating__new-layout-map-seats-count' );
+	const seatsCountElement = document.querySelector( '.tec-tickets-seating__new-layout-map-seats-count' );
 	seatsCountElement.innerHTML = selectedOption.getAttribute('data-seats-count');
 
-	const mapNameElement = dom.querySelector( '.tec-tickets-seating__new-layout-map-name' );
+	const mapNameElement = document.querySelector( '.tec-tickets-seating__new-layout-map-name' );
 	mapNameElement.innerHTML = selectedOption.innerHTML;
 }
 
@@ -153,13 +147,13 @@ export function closeModal() {
  *
  * @return {void} Initializes the modal element once it's loaded.
  */
-export async function init(dom) {
+export async function init() {
 	const modalElement = await waitForModalElement();
 
 	modalElement.on('show', () => {
-		modalActionListener(dom);
+		modalActionListener();
 	});
 }
 onReady( async () => {
-	await init(dom);
+	await init();
 });
