@@ -115,7 +115,6 @@ class Frontend extends Controller_Contract {
 			return $html;
 		}
 
-		$prices   = [];
 		$provider = Tickets::get_event_ticket_provider_object( $post_id );
 
 		if ( ! $provider ) {
