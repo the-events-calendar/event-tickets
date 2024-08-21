@@ -93,11 +93,16 @@ export const onReady = (domReadyCallback) => {
  * @since TBD
  *
  * @param {string} url The URL to relocate to.
+ * @param {boolean} [newTab=false] Whether to open the URL in a new tab.
  *
  * @return {void}
  */
-export function redirectTo(url) {
-	window.location.href = url;
+export function redirectTo(url, newTab = false) {
+	if (newTab) {
+		window.open( url, '_blank', 'noopener,noreferrer' );
+	} else {
+		window.location.href = url;
+	}
 }
 
 window.tec = window.tec || {};

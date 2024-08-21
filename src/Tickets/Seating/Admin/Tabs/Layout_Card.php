@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Seating\Admin\Tabs;
 
 use TEC\Tickets\Seating\Admin;
+use TEC\Tickets\Seating\Admin\Events\Associated_Events;
 use TEC\Tickets\Seating\Service\Layouts as Layouts_Service;
 
 /**
@@ -166,5 +167,22 @@ class Layout_Card {
 	 */
 	public function get_associated_posts_count(): int {
 		return Layouts_Service::get_associated_posts_by_id( $this->get_id() );
+	}
+	
+	/**
+	 * Returns the URL to the Layout's associated posts.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The URL to the Layout's associated posts.
+	 */
+	public function get_associated_posts_url(): string {
+		return add_query_arg(
+			[
+				'page'   => Associated_Events::SLUG,
+				'layout' => $this->get_id(),
+			],
+			admin_url( 'admin.php' ) 
+		);
 	}
 }
