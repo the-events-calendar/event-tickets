@@ -78,16 +78,16 @@
 </div>
 	<form id="topics-filter" method="get">
 		<input
-			type="hidden" name="page"
+			type="hidden" name="tribe[page]"
 			value=""
 		/>
 		<input
-			type="hidden" name="post_id"
+			type="hidden" name="tribe[event_id]"
 			id="event_id"
 			value="{{ID}}"
 		/>
 		<input
-			type="hidden" name="post_type"
+			type="hidden" name="tribe[post_type]"
 			value="tribe_events"
 		/>
 		<p class="search-box">
@@ -120,7 +120,7 @@
 <span class="tablenav-pages-navspan button disabled" aria-hidden="true">&raquo;</span></span></div>
 		<br class="clear" />
 	</div>
-		<table class="wp-list-table widefat striped tribe-tickets-commerce-report-orders fixed">
+		<table class="wp-list-table widefat striped tribe-tickets-commerce-report-orders">
 			<thead>
 	<tr>
 		<th scope="col" id='order' class='manage-column column-order column-primary sorted desc'  aria-sort="descending" ><a href="http://wordpress.test?orderby=order_id&#038;order=asc"><span>Order</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span></a></th><th scope="col" id='purchaser' class='manage-column column-purchaser sortable desc'  ><a href="http://wordpress.test?orderby=purchaser_full_name&#038;order=asc"><span>Purchaser</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col" id='email' class='manage-column column-email sortable desc'  ><a href="http://wordpress.test?orderby=purchaser_email&#038;order=asc"><span>Email</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col" id='purchased' class='manage-column column-purchased'  >Purchased</th><th scope="col" id='date' class='manage-column column-date sortable desc'  ><a href="http://wordpress.test?orderby=purchase_time&#038;order=asc"><span>Date</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col" id='gateway' class='manage-column column-gateway sortable desc'  ><a href="http://wordpress.test?orderby=gateway&#038;order=asc"><span>Gateway</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col" id='gateway_order_id' class='manage-column column-gateway_order_id sortable desc'  ><a href="http://wordpress.test?orderby=gateway_id&#038;order=asc"><span>Gateway ID</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col" id='status' class='manage-column column-status sortable desc'  ><a href="http://wordpress.test?orderby=status&#038;order=asc"><span>Status</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col" id='total' class='manage-column column-total sortable desc'  ><a href="http://wordpress.test?orderby=total_value&#038;order=asc"><span>Total</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th>	</tr>
