@@ -4,6 +4,7 @@ namespace Tribe\Tickets;
 
 
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Ticket;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Tickets__Data_API as Data_API;
@@ -58,10 +59,12 @@ class Ticket_ObjectTest extends \Codeception\TestCase\WPTestCase {
 		$post_1 = static::factory()->post->create();
 		update_post_meta( $post_1, $capacity_key, 100 );
 		update_post_meta( $post_1, $global_stock_mode_enabled, 1 );
+		update_post_meta( $post_1, Global_Stock::GLOBAL_STOCK_LEVEL, 100 );
 		// Create a second post and set its shared capacity to 30.
 		$post_2 = static::factory()->post->create();
 		update_post_meta( $post_2, $capacity_key, 30 );
 		update_post_meta( $post_2, $global_stock_mode_enabled, 1 );
+		update_post_meta( $post_2, Global_Stock::GLOBAL_STOCK_LEVEL, 30 );
 		// Create one shared capacity ticket for the first post.
 		$post_1_ticket_1 = $this->create_tc_ticket( $post_1, 23, [
 			'tribe-ticket' => [
