@@ -4,6 +4,7 @@ export const INBOUND_APP_READY_FOR_DATA = 'app_postmessage_ready_for_data';
 export const OUTBOUND_HOST_READY = 'host_postmessage_ready';
 export const OUTBOUND_SEAT_TYPE_TICKETS = 'host_postmessage_seat_type_tickets';
 export const INBOUND_SEATS_SELECTED = 'app_postmessage_seats_selected';
+export const INBOUND_SET_ELEMENT_HEIGHT = 'app_postmessage_set_element_height';
 
 // Map, layout and seat type edit actions.
 export const MAP_CREATED_UPDATED = 'app_postmessage_map_created_updated';

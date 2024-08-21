@@ -11,6 +11,7 @@ import {
 	SEAT_TYPES_UPDATED,
 	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
 	GO_TO_ASSOCIATED_EVENTS,
+	INBOUND_SET_ELEMENT_HEIGHT,
 } from '@tec/tickets/seating/service/api';
 import {
 	handleReservationsDeleted,
@@ -48,7 +49,7 @@ export function goToAssociatedEvents( data ) {
 export async function init(dom) {
 	dom = dom || document;
 
-	registerAction('app_postmessage_set_element_height', (data) => handleResize( data, dom ));
+	registerAction(INBOUND_SET_ELEMENT_HEIGHT, (data) => handleResize( data, dom ));
 
 	registerAction(RESERVATIONS_DELETED, handleReservationsDeleted);
 
