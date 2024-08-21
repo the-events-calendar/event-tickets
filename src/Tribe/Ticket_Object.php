@@ -628,6 +628,9 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			if ( empty( $provider ) ) {
 				$inventory = $capacity - $this->qty_sold() - $this->qty_pending();
 
+				// Prevent inventory higher than the stock.
+				$inventory = min( $inventory, $this->stock() );
+
 				if ( $is_ticket_cache_enabled ) {
 					$cache->set( $cache_key, $inventory, 0, Cache::TRIGGER_SAVE_POST );
 				}
@@ -706,6 +709,10 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			}
 
 			$inventory = min( $inventory );
+
+			// Prevent inventory higher than the stock.
+			$inventory = min( $inventory, $this->stock() );
+
 			// Prevents Negative
 			$inventory = max( $inventory, 0 );
 
