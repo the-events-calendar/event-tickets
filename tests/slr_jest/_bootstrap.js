@@ -23,6 +23,7 @@ global.tec.tickets.seating = {
 	utils: {
 		localizedStrings: {
 			layouts: {
+				'add-failed': 'Failed to add the layout.',
 				'delete-confirmation':
 					'Are you sure you want to delete this layout?',
 				'delete-failed': 'Failed to delete the layout.',
