@@ -74,6 +74,29 @@ describe('Layouts Edit', () => {
 		});
 	});
 
+	describe('handleResize', () => {
+		it('should be registered and resize the iframe', async () => {
+			const dom = getTestDocument('layout-edit');
+			const iframe = getIframeElement(dom);
+			expect(iframe).toBeInstanceOf(HTMLIFrameElement);
+
+			iframeModule.initServiceIframe = jest.fn();
+			actionHandlersModule.handleReservationsDeleted = jest.fn();
+
+			await init(dom);
+
+			// Get the registered resize handler.
+			const resizeHandler = getHandlerForAction(INBOUND_SET_ELEMENT_HEIGHT);
+
+			resizeHandler({height: 100}, dom);
+
+			expect(iframe.style.height).toBe( 100 + 'px' );
+
+			resizeHandler({height: 200}, dom);
+			expect(iframe.style.height).toBe( 200 + 'px' );
+		});
+	})
+
 	describe('goToAssociatedEvents', () => {
 		it('should redirect with valid layoutID data', () => {
 			const data = {
