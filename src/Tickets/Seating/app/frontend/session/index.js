@@ -218,7 +218,7 @@ async function fetchInterruptModalData() {
 			'Seat selection expired timer button label',
 			'event-tickets'
 		),
-		redirectUrl: '/',
+		redirectUrl: window.location.href,
 	};
 
 	if (!response.ok) {
