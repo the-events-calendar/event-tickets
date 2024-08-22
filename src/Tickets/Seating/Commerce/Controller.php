@@ -40,8 +40,8 @@ class Controller extends Controller_Contract {
 			[ $this, 'filter_timer_token_object_id_entries' ],
 		);
 
-		add_filter( 'tec_tickets_commerce_increase_ticket_stock', [ $this, 'sync_seated_tickets_stock' ], 10, 3 );
-		add_filter( 'tec_tickets_commerce_decrease_ticket_stock', [ $this, 'sync_seated_tickets_stock' ], 10, 3 );
+		add_action( 'updated_postmeta', [ $this, 'sync_seated_tickets_stock' ], 10, 4 );
+		add_action( 'tec_tickets_commerce_decrease_ticket_stock', [ $this, 'sync_seated_tickets_stock' ], 10, 4 );
 	}
 
 	/**
@@ -57,8 +57,7 @@ class Controller extends Controller_Contract {
 			[ $this, 'filter_timer_token_object_id_entries' ],
 		);
 
-		remove_filter( 'tec_tickets_commerce_increase_ticket_stock', [ $this, 'sync_seated_tickets_stock' ] );
-		remove_filter( 'tec_tickets_commerce_decrease_ticket_stock', [ $this, 'sync_seated_tickets_stock' ] );
+		remove_action( 'tec_tickets_commerce_increase_ticket_stock', [ $this, 'sync_seated_tickets_stock' ] );
 	}
 
 	/**
@@ -66,37 +65,50 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int           $stock  The updated stock value.
-	 * @param Ticket_Object $ticket The ticket object.
-	 * @param WP_Post       $order  The order post object.
+	 * @param int    $meta_id    ID of the meta entry.
+	 * @param int    $object_id  ID of the object.
+	 * @param string $meta_key   Meta key.
+	 * @param mixed  $meta_value Meta value.
 	 *
-	 * @return int The updated stock value.
+	 * @return void
 	 */
-	public function sync_seated_tickets_stock( int $stock, Ticket_Object $ticket, WP_Post $order ): int {
-		$ticket_seat_key = get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true );
+	public function sync_seated_tickets_stock( $meta_id, $object_id, $meta_key, $meta_value ): void {
+		if ( '_stock' !== $meta_key ) {
+			return;
+		}
+
+		if ( ! is_numeric( $meta_value ) ) {
+			return;
+		}
+
+		$ticket_seat_key = get_post_meta( $object_id, Meta::META_KEY_SEAT_TYPE, true );
 
 		// Not a seating ticket. We should not modify the stock.
 		if ( ! $ticket_seat_key ) {
-			return $stock;
+			return;
 		}
 
-		$events = $order->events_in_order ?? [];
+		$ticket = Tickets::load_ticket_object( $object_id );
 
-		if ( empty( $events ) ) {
-			return $stock;
+		if ( ! $ticket instanceof Ticket_Object ) {
+			return;
 		}
 
-		$event = get_post( array_values( $events )['0'] ); // We only support one event per order for now.
+		$event = get_post( get_post_meta( $ticket->ID, Ticket::$event_relation_meta_key) );
 
 		if ( ! $event instanceof WP_Post || ! $event->ID ) {
-			return $stock;
+			return;
 		}
 
 		$provider = Tickets::get_event_ticket_provider_object( $event->ID );
 
 		if ( ! $provider ) {
-			return $stock;
+			return;
 		}
+
+		$stock = (int) $meta_value;
+
+		remove_action( 'tec_tickets_commerce_increase_ticket_stock', [ $this, 'sync_seated_tickets_stock' ] );
 
 		foreach ( tribe_tickets()->where( 'event', $event->ID )->get_ids( true ) as $ticket_id ) {
 			if ( $ticket_id === $ticket->ID ) {
@@ -117,7 +129,7 @@ class Controller extends Controller_Contract {
 			update_post_meta( $other_ticket->ID, Ticket::$stock_meta_key, $stock );
 		}
 
-		return $stock;
+		add_action( 'tec_tickets_commerce_decrease_ticket_stock', [ $this, 'sync_seated_tickets_stock' ], 10, 4 );
 	}
 
 	/**
