@@ -509,10 +509,7 @@ class Timer extends Controller_Contract {
 				$post_type_label
 			);
 			
-			$redirect_url = 'tribe_events' !== $post_type
-							|| ! function_exists( 'tribe_events_get_url' )
-						? get_post_type_archive_link( $post_type )
-						: tribe_events_get_url();
+			$redirect_url = get_post_type_archive_link( $post_type );
 		}
 
 		/**
