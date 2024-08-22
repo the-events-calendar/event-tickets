@@ -9,7 +9,12 @@
  * @var \Tribe__Template  $this           Current template object.
  * @var WP_List_Table     $tickets_table  The list table for the All Tickets screen.
  * @var string            $page_slug      The slug of the current page.
+ * @var bool              $tickets_exist  Whether tickets exist.
  */
+
+if ( ! $tickets_exist ) {
+	return;
+}
 
 $tickets_table->prepare_items();
 ?>
