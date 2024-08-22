@@ -196,6 +196,7 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Make sure you are reporting in a safe and responsible way. We take security very seriously. If you discover a security issue, please bring it to our attention right away! Below you will find all the methods to report security vulnerabilities:
 
 * [Report security bugs through the Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/event-tickets)
+* Check our [Bug Bounty Program](https://www.liquidweb.com/policies/bug-bounty-program/)
 * Reach out directly to us on `security [at] stellarwp.com`.
 
 = I've still got questions. Where can I find answers? =
