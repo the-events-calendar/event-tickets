@@ -4,6 +4,8 @@
  *
  * @since TBD
  *
+ * @version TBD
+ *
  * @var \Tribe__Template  $this                Current template object.
  * @var string            $search_id           ID for the search input element.
  * @var string            $search_value        Current search value.

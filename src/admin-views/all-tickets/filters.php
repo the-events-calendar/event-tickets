@@ -4,6 +4,8 @@
  *
  * @since TBD
  *
+ * @version TBD
+ *
  * @var \Tribe__Template  $this            Current template object.
  * @var string[]          $select_options  The list table for the All Tickets screen.
  * @var string            $current_filter  Currently selected filter.
