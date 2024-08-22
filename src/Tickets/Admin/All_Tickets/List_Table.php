@@ -891,7 +891,7 @@ class List_Table extends WP_List_Table {
 		$default_provider = empty( $provider_options ) ? '' : key( $provider_options );
 		$current_provider = tribe_get_request_var( self::PROVIDER_KEY, $default_provider );
 
-		$current_status = tribe_get_request_var( 'ticket-filter', self::get_default_status() );
+		$current_status = tribe_get_request_var( self::STATUS_KEY, self::get_default_status() );
 
 		$template = $this->get_template();
 		$context  = [
