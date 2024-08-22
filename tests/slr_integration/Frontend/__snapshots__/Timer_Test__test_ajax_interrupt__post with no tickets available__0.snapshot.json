@@ -1,6 +1,6 @@
 {
     "title": "Time limit expired",
     "content": "This post is now sold out.",
-    "buttonLabel": "Find another post",
+    "buttonLabel": "Return to Home Page",
     "redirectUrl": "http://wordpress.test"
 }
