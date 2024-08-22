@@ -73,6 +73,13 @@ class Controller extends Controller_Contract {
 	 * @return int The updated stock value.
 	 */
 	public function sync_seated_tickets_stock( int $stock, Ticket_Object $ticket, WP_Post $order ): int {
+		$ticket_seat_key = get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true );
+
+		// Not a seating ticket. We should not modify the stock.
+		if ( ! $ticket_seat_key ) {
+			return $stock;
+		}
+
 		$events = $order->events_in_order ?? [];
 
 		if ( empty( $events ) ) {
@@ -82,13 +89,6 @@ class Controller extends Controller_Contract {
 		$event = get_post( array_values( $events )['0'] ); // We only support one event per order for now.
 
 		if ( ! $event instanceof WP_Post || ! $event->ID ) {
-			return $stock;
-		}
-
-		$ticket_seat_key = get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true );
-
-		// Not a seating ticket. We should not modify the stock.
-		if ( ! $ticket_seat_key ) {
 			return $stock;
 		}
 
