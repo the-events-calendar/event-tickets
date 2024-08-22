@@ -40,8 +40,9 @@ class Controller extends Controller_Contract {
 			[ $this, 'filter_timer_token_object_id_entries' ],
 		);
 
+		add_filter( 'tribe_tickets_ticket_inventory', [ $this, 'adjust_seated_ticket_inventory_to_match_stock' ], 10, 2 );
+
 		add_action( 'updated_postmeta', [ $this, 'sync_seated_tickets_stock' ], 10, 4 );
-		add_action( 'tec_tickets_commerce_decrease_ticket_stock', [ $this, 'sync_seated_tickets_stock' ], 10, 4 );
 	}
 
 	/**
@@ -57,7 +58,29 @@ class Controller extends Controller_Contract {
 			[ $this, 'filter_timer_token_object_id_entries' ],
 		);
 
-		remove_action( 'tec_tickets_commerce_increase_ticket_stock', [ $this, 'sync_seated_tickets_stock' ] );
+		remove_filter( 'tribe_tickets_ticket_inventory', [ $this, 'adjust_seated_ticket_inventory_to_match_stock' ] );
+
+		remove_action( 'updated_postmeta', [ $this, 'sync_seated_tickets_stock' ] );
+	}
+
+	/**
+	 * Adjusts the seated ticket inventory to match the stock.
+	 *
+	 * @since TBD
+	 *
+	 * @param int           $inventory The current inventory.
+	 * @param Ticket_Object $ticket    The ticket object.
+	 *
+	 * @return int The adjusted inventory.
+	 */
+	public function adjust_seated_ticket_inventory_to_match_stock( int $inventory, Ticket_Object $ticket ): int {
+		$seat_key = get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true );
+
+		if ( ! $seat_key ) {
+			return $inventory;
+		}
+
+		return (int) $ticket->stock();
 	}
 
 	/**
@@ -94,7 +117,7 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		$event = get_post( get_post_meta( $ticket->ID, Ticket::$event_relation_meta_key) );
+		$event = get_post( get_post_meta( $ticket->ID, Ticket::$event_relation_meta_key, true ) );
 
 		if ( ! $event instanceof WP_Post || ! $event->ID ) {
 			return;
