@@ -5,20 +5,22 @@
  */
 .tickets_page_tec-tickets-all-tickets {
 	table.wp-list-table {
-		.column-end,
-		.column-start {
-			text-align: right;
-			width: 10%;
-		}
-
 		.column-id,
 		.column-price,
 		.column-sold,
 		.column-remaining,
 		.column-days_left,
-		.column-sales {
+		.column-sales,
+		.column-end,
+		.column-start {
 			text-align: right;
-			width: 7%;
+			white-space: nowrap;
+			width: 1%;
+
+			@media (max-width: 782px) {
+				text-align: left;
+				width: auto;
+			}
 		}
 
 		th.sortable > a,
@@ -47,6 +49,10 @@
 				height: var(--tec-spacer-3);
 				width: auto;
 			}
+		}
+
+		&.fixed {
+			table-layout: auto;
 		}
 	}
 }
