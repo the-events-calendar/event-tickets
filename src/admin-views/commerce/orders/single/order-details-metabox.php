@@ -23,7 +23,7 @@ $post_date .= Tribe__Date_Utils::reformat( $ts, 'g:i A' );
 	printf( esc_html__( 'Order #%d details', 'event-tickets' ), (int) $order->ID );
 	?>
 </h2>
-<div class="tec-tickets-commerce-single-order tec-tickets-commerce-single-order--details">
+<div class="tec-tickets-commerce-single-order--details">
 	<div class="tec-tickets-commerce-single-order--details--item">
 		<div class="tec-tickets-commerce-single-order--details--item--label">
 			<?php esc_html_e( 'Date of purchase', 'event-tickets' ); ?>
