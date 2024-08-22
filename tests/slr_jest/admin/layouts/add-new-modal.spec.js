@@ -1,6 +1,6 @@
 import {
 	init,
-	objectName,
+	addLayoutModal,
 	waitForModalElement,
 	modalActionListener,
 	closeModal,
@@ -53,17 +53,6 @@ describe( 'add-new-modal', () => {
 	});
 
 	describe('should match the snapshot', () => {
-		it('should import all properly', () => {
-			expect( init ).toBeDefined();
-			expect( objectName ).toBeDefined();
-			expect( waitForModalElement ).toBeDefined();
-			expect( modalActionListener ).toBeDefined();
-			expect( closeModal ).toBeDefined();
-			expect( addLayoutByMapId ).toBeDefined();
-			expect( addNewLayout ).toBeDefined();
-			expect( handleSelectUpdates ).toBeDefined();
-		});
-
 		it('should load the proper snapshot', () => {
 			const dom = getTestDocument( 'layout-list' );
 			expect( dom.body.innerHTML ).toMatchSnapshot();
@@ -75,7 +64,7 @@ describe( 'add-new-modal', () => {
 		});
 
 		it('should have proper objectName', () => {
-			expect(objectName).toMatchSnapshot();
+			expect(addLayoutModal).toMatchSnapshot();
 		});
 	});
 
@@ -114,14 +103,14 @@ describe( 'add-new-modal', () => {
 		beforeEach(() => {
 			window = {};
 			// Mock the modal object on the window
-			window[objectName] = {
+			window[addLayoutModal] = {
 				_hide: jest.fn(),
 			};
 		});
 
 		afterEach(() => {
 			// Clean up the mock
-			delete window[objectName];
+			delete window[addLayoutModal];
 		});
 
 		it('should trigger closeModal', () => {
@@ -132,7 +121,7 @@ describe( 'add-new-modal', () => {
 			const cancelButton = document.querySelector( '.tec-tickets-seating__new-layout-button-cancel' );
 			cancelButton.click();
 
-			expect(window[objectName]._hide).toHaveBeenCalledTimes(1);
+			expect(window[addLayoutModal]._hide).toHaveBeenCalledTimes(1);
 		});
 	});
 	
@@ -214,11 +203,11 @@ describe( 'add-new-modal', () => {
 
 	describe( 'init', () => {
 		it( 'should show the modal', async () => {
-			global.window[objectName] = {
+			global.window[addLayoutModal] = {
 				on: jest.fn(),
 			}
 			await init();
-			expect( window[objectName].on ).toHaveBeenCalledWith( 'show', expect.any( Function ) );
+			expect( window[addLayoutModal].on ).toHaveBeenCalledWith( 'show', expect.any( Function ) );
 		} );
 	})
 } );
