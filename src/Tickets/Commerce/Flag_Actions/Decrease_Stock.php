@@ -105,18 +105,7 @@ class Decrease_Stock extends Flag_Action_Abstract {
 				continue;
 			}
 
-			/**
-			 * Filter the stock update value for a ticket.
-			 *
-			 * @since TBD
-			 *
-			 * @param int      $update_stock The updated stock value.
-			 * @param Ticket   $ticket       The ticket object.
-			 * @param \WP_Post $post         The order post object.
-			 */
-			$update_stock = apply_filters( 'tec_tickets_commerce_decrease_ticket_stock', $ticket->stock() - $quantity, $ticket, $post );
-
-			update_post_meta( $ticket->ID, Ticket::$stock_meta_key, $update_stock );
+			update_post_meta( $ticket->ID, Ticket::$stock_meta_key, $ticket->stock() - $quantity );
 		}
 	}
 }
