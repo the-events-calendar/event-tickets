@@ -543,15 +543,24 @@ class Timer extends Controller_Contract {
 
 			return;
 		}
-
-		wp_send_json_success(
-			[
-				'title'       => esc_html_x( 'Time limit expired', 'Seat selection expired timer title', 'event-tickets' ),
-				'content'     => esc_html( $content ),
-				'buttonLabel' => esc_html( $button_label ),
-				'redirectUrl' => esc_url( $redirect_url ),
-			]
-		);
+		
+		$data = [
+			'title'       => esc_html_x( 'Time limit expired', 'Seat selection expired timer title', 'event-tickets' ),
+			'content'     => esc_html( $content ),
+			'buttonLabel' => esc_html( $button_label ),
+			'redirectUrl' => esc_url( $redirect_url ),
+		];
+		
+		/**
+		 * Filters the seat selection expired timer data.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<string, string>  $data The seat selection expired timer data.
+		 */
+		$data = apply_filters( 'tec_tickets_seat_selection_timer_expired_data', $data, $post_id, $token );
+		
+		wp_send_json_success( $data );
 	}
 
 	/**
