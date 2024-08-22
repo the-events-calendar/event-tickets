@@ -59,6 +59,15 @@ let healthCheckLoopId = null;
 let started = false;
 
 /**
+ * Whether the timer has expired or not.
+ *
+ * @since TBD
+ *
+ * @type {boolean}
+ */
+let expired = false;
+
+/**
  * The interrupt dialog HTML element.
  *
  * @since TBD
@@ -306,6 +315,7 @@ async function interrupt() {
 		setTimerTimeLeft(timerElement, 0, 0);
 	});
 
+	expired = true;
 	clearTimeout(countdownLoopId);
 	clearTimeout(healthCheckLoopId);
 	const interruptDialog = await getInterruptDialogElement();
@@ -349,7 +359,9 @@ function startCountdownLoop(secondsLeft) {
 				secondsLeft % 60
 			);
 		});
-		startCountdownLoop(secondsLeft);
+		if ( ! expired ) {
+			startCountdownLoop(secondsLeft);
+		}
 	}, 1000);
 }
 
@@ -361,6 +373,10 @@ function startCountdownLoop(secondsLeft) {
  * @return {void}
  */
 function startHealthCheckLoop() {
+	if ( expired ) {
+		return;
+	}
+
 	healthCheckLoopId = setTimeout(async () => {
 		await syncWithBackend();
 		startHealthCheckLoop();
@@ -377,7 +393,7 @@ function startHealthCheckLoop() {
  * @return {Promise<void>} A promise that will resolve when the request is completed.
  */
 export async function syncWithBackend() {
-	if (getTimerElements().length === 0) {
+	if ( expired || getTimerElements().length === 0 ) {
 		return;
 	}
 
@@ -385,6 +401,7 @@ export async function syncWithBackend() {
 
 	if (secondsLeft <= 0) {
 		interrupt();
+		return;
 	}
 
 	if (countdownLoopId) {
@@ -521,6 +538,7 @@ export function reset() {
 	}
 
 	started = false;
+	expired = false;
 }
 
 /**
