@@ -718,12 +718,14 @@ class List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function get_ticket_post_type() {
-		$provider_options = $this->get_provider_options();
+		$provider_options  = $this->get_provider_options();
 		$default_post_type = empty( $provider_options ) ? '' : key( $provider_options );
-		$post_type = tribe_get_request_var( self::PROVIDER_KEY, $default_post_type );
+		$post_type         = tribe_get_request_var( self::PROVIDER_KEY, $default_post_type );
+
 		if ( empty( $post_type ) || ! in_array( $post_type, array_keys( $provider_options ) ) ) {
 			$post_type = $default_post_type;
 		}
+
 		return $post_type;
 	}
 
