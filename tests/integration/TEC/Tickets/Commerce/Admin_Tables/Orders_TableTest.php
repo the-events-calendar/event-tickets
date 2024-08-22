@@ -258,16 +258,16 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$expected_events = [
 			[
-				'id'   => $this->event_ids[0],
-				'text' => 'Event 1',
+				'id'   => $this->event_ids[2],
+				'text' => 'Event 3',
 			],
 			[
 				'id'   => $this->event_ids[1],
 				'text' => 'Event 2',
 			],
 			[
-				'id'   => $this->event_ids[2],
-				'text' => 'Event 3',
+				'id'   => $this->event_ids[0],
+				'text' => 'Event 1',
 			],
 		];
 

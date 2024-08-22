@@ -137,6 +137,26 @@ class Singular_Order_PageTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_render_breadcrumb() {
+		$screen                  = WP_Screen::get( '' );
+		$screen->base            = 'post';
+		$screen->action          = '';
+		$screen->post_type       = Order::POSTTYPE;
+		$screen->parent_file     = 'edit.php?post_type=tec_tc_order';
+		$screen->is_block_editor = false;
+
+		$this->set_fn_return( 'get_current_screen', $screen );
+
+		$singular_page = tribe( Singular_Order_Page::class );
+		ob_start();
+		$singular_page->render_breadcrumb_order_edit_screen_html();
+		$html = ob_get_clean();
+		$this->assertMatchesHtmlSnapshot( $html );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_update_order_status() {
 		$this->prepare_test_data();
 		$singular_page = tribe( Singular_Order_Page::class );
