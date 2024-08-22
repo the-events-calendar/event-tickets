@@ -44,14 +44,14 @@ class List_Table extends WP_List_Table {
 	 *
 	 * @var string
 	 */
-	public static $provider_key = 'provider-filter';
+	const PROVIDER_KEY = 'provider-filter';
 
 	/**
 	 * The status filter query key.
 	 *
 	 * @var string
 	 */
-	public static $status_key = 'status-filter';
+	const STATUS_KEY = 'status-filter';
 
 	/**
 	 * Default status filter.
@@ -96,6 +96,66 @@ class List_Table extends WP_List_Table {
 		$this->template = tribe( 'tickets.admin.views' );
 
 		return $this->template;
+	}
+
+	/**
+	 * Get the default status for the All Tickets Table.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_default_status() {
+		/**
+		 * Filters the default status for the All Tickets Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $default_status The default status for the All Tickets Table.
+		 *
+		 * @return string
+		 */
+		return apply_filters( 'tec_tickets_all_tickets_table_default_status', self::$default_status );
+	}
+
+	/**
+	 * Get the default sort by for the All Tickets Table.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_default_sort_by() {
+		/**
+		 * Filters the default sort by for the All Tickets Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $default_sort_by The default sort by for the All Tickets Table.
+		 *
+		 * @return string
+		 */
+		return apply_filters( 'tec_tickets_all_tickets_table_default_sort_by', self::$default_sort_by );
+	}
+
+	/**
+	 * Get the default sort order for the All Tickets Table.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_default_sort_order() {
+		/**
+		 * Filters the default sort order for the All Tickets Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $default_sort_order The default sort order for the All Tickets Table.
+		 *
+		 * @return string
+		 */
+		return apply_filters( 'tec_tickets_all_tickets_table_default_sort_order', self::$default_sort_order );
 	}
 
 	/**
@@ -534,7 +594,7 @@ class List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function modify_sort_args( $args ): array {
-		$orderby = tribe_get_request_var( 'orderby', self::$default_sort_by );
+		$orderby = tribe_get_request_var( 'orderby', self::get_default_sort_by() );
 		switch ( $orderby ) {
 			case 'name':
 				$args['orderby'] = 'post_title';
@@ -567,7 +627,7 @@ class List_Table extends WP_List_Table {
 				break;
 		}
 
-		$args['order'] = tribe_get_request_var( 'order', self::$default_sort_order );
+		$args['order'] = tribe_get_request_var( 'order', self::get_default_sort_order() );
 
 		return $args;
 	}
@@ -582,7 +642,7 @@ class List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function modify_filter_args( $args ) {
-		$filter = tribe_get_request_var( self::$status_key, self::$default_status );
+		$filter = tribe_get_request_var( self::STATUS_KEY, self::get_default_status() );
 
 		if ( 'all' === $filter ) {
 			return $args;
@@ -655,7 +715,7 @@ class List_Table extends WP_List_Table {
 
 		$provider_options = $this->get_provider_options();
 		$default_provider = empty( $provider_options ) ? '' : key( $provider_options );
-		$current_provider = tribe_get_request_var( self::$provider_key, $default_provider );
+		$current_provider = tribe_get_request_var( self::PROVIDER_KEY, $default_provider );
 
 		$args = [
 			'all_tickets_list_table' => true,
@@ -789,7 +849,7 @@ class List_Table extends WP_List_Table {
 
 		$provider_options = $this->get_provider_options();
 		$default_provider = empty( $provider_options ) ? '' : key( $provider_options );
-		$current_provider = tribe_get_request_var( self::$provider_key, $default_provider );
+		$current_provider = tribe_get_request_var( self::PROVIDER_KEY, $default_provider );
 
 		if ( ! isset( $event_meta_keys[ $current_provider ] ) ) {
 			return '';
@@ -811,9 +871,9 @@ class List_Table extends WP_List_Table {
 
 		$provider_options = $this->get_provider_options();
 		$default_provider = empty( $provider_options ) ? '' : key( $provider_options );
-		$current_provider = tribe_get_request_var( self::$provider_key, $default_provider );
+		$current_provider = tribe_get_request_var( self::PROVIDER_KEY, $default_provider );
 
-		$current_status = tribe_get_request_var( 'ticket-filter', self::$default_status );
+		$current_status = tribe_get_request_var( 'ticket-filter', self::get_default_status() );
 
 		$template = $this->get_template();
 		$context  = [
