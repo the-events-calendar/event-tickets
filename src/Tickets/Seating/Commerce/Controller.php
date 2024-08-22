@@ -96,7 +96,7 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function sync_seated_tickets_stock( $meta_id, $object_id, $meta_key, $meta_value ): void {
-		if ( '_stock' !== $meta_key ) {
+		if ( Ticket::$stock_meta_key !== $meta_key ) {
 			return;
 		}
 
