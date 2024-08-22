@@ -195,7 +195,7 @@ class Page {
 		$context = [
 			'tickets_table' => tribe( List_Table::class ),
 			'page_slug'     => static::$slug,
-			'tickets_exist' => ! static::tickets_exist(),
+			'tickets_exist' => static::tickets_exist(),
 		];
 
 		$admin_views->template( 'all-tickets', $context );
