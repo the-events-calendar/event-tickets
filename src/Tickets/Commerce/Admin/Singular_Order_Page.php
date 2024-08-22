@@ -86,7 +86,7 @@ class Singular_Order_Page extends Service_Provider {
 	 */
 	public function render_breadcrumb_order_edit_screen_html() {
 		$url  = esc_url( admin_url( get_current_screen()->parent_file ) );
-		$text = _x( 'Orders', 'Order edit page breadcrumb link back to Orders page.', 'event-tickets' );
+		$text = esc_html_x( 'Orders', 'Order edit page breadcrumb link back to Orders page.', 'event-tickets' );
 
 		$html = <<<STR
 		<div class="tec-tickets-commerce-single-order--breadcrumb--order--edit">
