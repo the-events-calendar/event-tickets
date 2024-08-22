@@ -75,7 +75,27 @@ class Singular_Order_PageTest extends \Codeception\TestCase\WPTestCase {
 			ob_start();
 			$singular_page->render_actions( $order );
 			$html[] = str_replace( $order->ID, '{{order_id}}', ob_get_clean() );
+		}
 
+		$this->assertMatchesHtmlSnapshot( implode( PHP_EOL . '<!--NEXT ITEM-->' . PHP_EOL, $html ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_match_order_actions_as_admin() {
+		$this->prepare_test_data();
+		$singular_page = tribe( Singular_Order_Page::class );
+
+		// Login as admin.
+		$user_id = $this->factory()->user->create( [ 'role' => 'administrator' ] );
+		wp_set_current_user( $user_id );
+
+		$html = [];
+		foreach ( $this->orders as $key => $order ) {
+			ob_start();
+			$singular_page->render_actions( $order );
+			$html[] = str_replace( $order->ID, '{{order_id}}', ob_get_clean() );
 		}
 
 		$this->assertMatchesHtmlSnapshot( implode( PHP_EOL . '<!--NEXT ITEM-->' . PHP_EOL, $html ) );
@@ -112,6 +132,26 @@ class Singular_Order_PageTest extends \Codeception\TestCase\WPTestCase {
 		}
 
 		$this->assertMatchesHtmlSnapshot( implode( PHP_EOL . '<!--NEXT ITEM-->' . PHP_EOL, $html ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_render_breadcrumb() {
+		$screen                  = WP_Screen::get( '' );
+		$screen->base            = 'post';
+		$screen->action          = '';
+		$screen->post_type       = Order::POSTTYPE;
+		$screen->parent_file     = 'edit.php?post_type=tec_tc_order';
+		$screen->is_block_editor = false;
+
+		$this->set_fn_return( 'get_current_screen', $screen );
+
+		$singular_page = tribe( Singular_Order_Page::class );
+		ob_start();
+		$singular_page->render_breadcrumb_order_edit_screen_html();
+		$html = ob_get_clean();
+		$this->assertMatchesHtmlSnapshot( $html );
 	}
 
 	/**

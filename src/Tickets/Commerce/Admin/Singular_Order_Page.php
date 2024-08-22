@@ -56,6 +56,64 @@ class Singular_Order_Page extends Service_Provider {
 		add_action( 'adminmenu', [ $this, 'restore_current_parent_file' ] );
 
 		add_filter( 'post_updated_messages', [ $this, 'add_order_messages' ] );
+		add_filter( 'admin_body_class', [ $this, 'add_body_class' ] );
+		if ( is_admin() ) {
+			add_action( 'current_screen', [ $this, 'breadcrumb_order_edit_screen' ] );
+		}
+	}
+
+	/**
+	 * Checks if the correct screen to add the hook for rendering the breadcrumb.
+	 *
+	 * @since TBD
+	 */
+	public function breadcrumb_order_edit_screen() {
+		$screen = get_current_screen();
+		if ( ! $screen
+			|| $screen->id !== Order::POSTTYPE
+			|| $screen->post_type !== Order::POSTTYPE
+			|| $screen->base !== 'post' ) {
+			return;
+		}
+
+		add_action( 'all_admin_notices', [ $this, 'render_breadcrumb_order_edit_screen_html' ], 999 );
+	}
+
+	/**
+	 * Output the HTML for the Orders breadcrumb.
+	 *
+	 * @since TBD
+	 */
+	public function render_breadcrumb_order_edit_screen_html() {
+		$url  = esc_url( admin_url( get_current_screen()->parent_file ) );
+		$text = esc_html_x( 'Orders', 'Order edit page breadcrumb link back to Orders page.', 'event-tickets' );
+
+		$html = <<<STR
+		<div class="tec-tickets-commerce-single-order--breadcrumb--order--edit">
+			<a href="$url"><span class="dashicons dashicons-arrow-left-alt2"></span> $text</a>
+		</div>
+STR;
+		echo wp_kses_post( $html );
+	}
+
+	/**
+	 * Add our custom Tickets Commerce Order Detail class to the body of the page.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $classes The classes string for the body attribute.
+	 *
+	 * @return mixed|string The mutated classes string.
+	 */
+	public function add_body_class( $classes ) {
+		$screen = get_current_screen();
+
+		// Check if we are on the single edit screen of the custom post type.
+		if ( $screen && $screen->post_type === Order::POSTTYPE && $screen->base === 'post' ) {
+			$classes .= ' tec-tickets-commerce-single-order';
+		}
+
+		return $classes;
 	}
 
 	/**

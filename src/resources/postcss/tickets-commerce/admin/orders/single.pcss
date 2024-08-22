@@ -168,6 +168,7 @@ body.wp-admin.post-type-tec_tc_order {
 
 			th {
 				padding: var(--tec-spacer-5);
+				word-wrap: normal;
 			}
 
 			&--row {
@@ -284,6 +285,19 @@ body.wp-admin.post-type-tec_tc_order {
 
 			select {
 				padding: var(--tec-spacer-0) var(--tec-spacer-1);
+			}
+		}
+	}
+	&--breadcrumb--order--edit {
+		margin-top: 1em;
+
+		a {
+			text-decoration: none;
+
+			.dashicons {
+				font-size: var(--tec-font-size-2);
+				line-height: var(--tec-font-size-4);
+				vertical-align: middle;
 			}
 		}
 	}
