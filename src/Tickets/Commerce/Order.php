@@ -201,14 +201,14 @@ class Order extends Abstract_Order {
 			'map_meta_cap'    => true,
 			'capabilities'    => [
 				// Meta capabilities.
-				'edit_post'          => 'edit_post', // 'edit_post',
+				'edit_post'          => 'edit_post',
 				'read_post'          => 'read_post',
-				'delete_post'        => 'delete_tc-order', // 'delete_post',
-				// Primitive capabilities used outside of map_meta_cap():
+				'delete_post'        => 'delete_post',
+				// Primitive capabilities used outside of map_meta_cap().
 				'edit_posts'         => 'edit_posts',
 				'create_posts'       => 'edit_tc-orders',
 				'edit_others_posts'  => 'edit_others_posts',
-				'delete_posts'       => 'delete_tc-orders', // 'delete_posts',
+				'delete_posts'       => 'delete_posts',
 				'publish_posts'      => 'publish_tc-orders', // 'publish_posts',
 				'read_private_posts' => 'read_private_posts',
 			],
