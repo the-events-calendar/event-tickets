@@ -58,6 +58,8 @@ describe('Seat Selection Session', () => {
 		});
 	});
 
+	// TODO: Add tests for syncWithBackend, startCountdownLoop, startHealthCheckLoop and interrupt to make sure they are not running when expired.
+
 	afterEach(() => {
 		reset();
 	});

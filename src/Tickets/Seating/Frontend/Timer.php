@@ -478,7 +478,8 @@ class Timer extends Controller_Contract {
 
 		[ $token, $post_id ] = $token_and_post_id;
 
-		$post_type_object      = get_post_type_object( get_post_type( $post_id ) );
+		$post_type             = get_post_type( $post_id );
+		$post_type_object      = get_post_type_object( $post_type );
 		$has_tickets_available = tribe_tickets()->where( 'event', $post_id )->where( 'is_available', true )->count();
 
 		if ( $has_tickets_available ) {
@@ -501,14 +502,19 @@ class Timer extends Controller_Contract {
 				_x( 'This %s is now sold out.', 'Seat selection expired timer content', 'event-tickets' ),
 				$post_type_label
 			);
-
-			$button_label = sprintf(
-			// Translators: %s: The post type singular name.
-				_x( 'Find another %s', 'Seat selection expired timer button label', 'event-tickets' ),
-				$post_type_label
-			);
-
-			$redirect_url = get_post_type_archive_link( $post_type_object->name );
+			
+			if ( 'tribe_events' === $post_type ) {
+				$button_label = sprintf(
+				// Translators: %s: The post type singular name.
+					_x( 'Find another %s', 'Seat selection expired timer button label', 'event-tickets' ),
+					ucfirst( $post_type_label )
+				);
+				
+				$redirect_url = get_post_type_archive_link( $post_type );
+			} else {
+				$button_label = _x( 'Return to Home Page', 'Seat selection expired timer button label', 'event-tickets' );
+				$redirect_url = get_home_url();
+			}
 		}
 
 		/**
@@ -539,15 +545,26 @@ class Timer extends Controller_Contract {
 
 			return;
 		}
-
-		wp_send_json_success(
-			[
-				'title'       => esc_html_x( 'Time limit expired', 'Seat selection expired timer title', 'event-tickets' ),
-				'content'     => esc_html( $content ),
-				'buttonLabel' => esc_html( $button_label ),
-				'redirectUrl' => esc_url( $redirect_url ),
-			]
-		);
+		
+		$data = [
+			'title'       => esc_html_x( 'Time limit expired', 'Seat selection expired timer title', 'event-tickets' ),
+			'content'     => esc_html( $content ),
+			'buttonLabel' => esc_html( $button_label ),
+			'redirectUrl' => esc_url( $redirect_url ),
+		];
+		
+		/**
+		 * Filters the seat selection expired timer data.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<string,string>   $data The seat selection expired timer data.
+		 * @param int                    $post_id The post ID the session is being interrupted for.
+		 * @param string                 $token   The ephemeral token the session is being interrupted for.
+		 */
+		$data = apply_filters( 'tec_tickets_seat_selection_timer_expired_data', $data, $post_id, $token );
+		
+		wp_send_json_success( $data );
 	}
 
 	/**
