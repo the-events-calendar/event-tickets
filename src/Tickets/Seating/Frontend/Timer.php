@@ -478,7 +478,8 @@ class Timer extends Controller_Contract {
 
 		[ $token, $post_id ] = $token_and_post_id;
 
-		$post_type_object      = get_post_type_object( get_post_type( $post_id ) );
+		$post_type             = get_post_type( $post_id );
+		$post_type_object      = get_post_type_object( $post_type );
 		$has_tickets_available = tribe_tickets()->where( 'event', $post_id )->where( 'is_available', true )->count();
 
 		if ( $has_tickets_available ) {
@@ -507,8 +508,11 @@ class Timer extends Controller_Contract {
 				_x( 'Find another %s', 'Seat selection expired timer button label', 'event-tickets' ),
 				$post_type_label
 			);
-
-			$redirect_url = get_post_type_archive_link( $post_type_object->name );
+			
+			$redirect_url = 'tribe_events' !== $post_type
+							|| ! function_exists( 'tribe_events_get_url' )
+						? get_post_type_archive_link( $post_type )
+						: tribe_events_get_url();
 		}
 
 		/**
