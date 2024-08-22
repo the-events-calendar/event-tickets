@@ -132,6 +132,7 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 
 	// test
 	public function test_render_tec_tickets_all_tickets_page() {
+		$_GET['status-filter'] = 'all';
 		$this->set_class_fn_return( 'DateTime', 'diff', (object) [
 			'days' => 999,
 			'invert' => false,
@@ -144,6 +145,7 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 		$actual = str_replace( $nonce, 'WP_NONCE', $actual );
 		$actual = str_replace( $this->event_ids, 'EVENT_ID', $actual );
 		$actual = str_replace( $this->ticket_ids, 'TICKET_ID', $actual );
+		$actual = preg_replace( '/Event \d/', 'Event EVENT_NUMBER', $actual );
 		$this->assertMatchesHtmlSnapshot( $actual );
 	}
 }
