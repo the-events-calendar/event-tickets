@@ -648,6 +648,7 @@ class List_Table extends WP_List_Table {
 			return $args;
 		}
 
+		// phpcs:ignore // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 		if ( ! isset( $args['meta_query'] ) ) {
 			$args['meta_query'] = [];
 		}
