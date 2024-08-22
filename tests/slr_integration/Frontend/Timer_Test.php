@@ -440,6 +440,24 @@ class Timer_Test extends Controller_Test_Case {
 				return $event_id;
 			}
 		];
+		
+		yield 'event with no tickets available and custom calendar slug' => [
+			function () {
+				$event_id = tribe_events()->set_args(
+					[
+						'title'      => 'Test Event',
+						'status'     => 'publish',
+						'start_date' => '+1 week 10 am',
+						'duration'   => 2 * HOUR_IN_SECONDS,
+					]
+				)->create()->ID;
+				
+				tribe_update_option( 'eventsSlug', 'events-calendar' );
+				update_post_meta( $event_id, Meta::META_KEY_UUID, 'test-event-uuid' );
+				
+				return $event_id;
+			}
+		];
 
 		yield 'event with tickets available' => [
 			function () {
