@@ -356,6 +356,24 @@ class Layouts {
 	}
 	
 	/**
+	 * Returns the URL to add a new layout.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $map_id The ID of the map to add the layout to.
+	 *
+	 * @return string The URL to add a new layout.
+	 */
+	public function get_add_url( string $map_id ): string {
+		return add_query_arg(
+			[
+				'map' => $map_id,
+			],
+			$this->service_fetch_url
+		);
+	}
+	
+	/**
 	 * Adds a new layout to the service.
 	 *
 	 * @since TBD
@@ -365,12 +383,7 @@ class Layouts {
 	 * @return string|bool Layout ID on success, false on failure.
 	 */
 	public function add( string $map_id ) {
-		$url = add_query_arg(
-			[
-				'map' => $map_id,
-			],
-			$this->service_fetch_url
-		);
+		$url = $this->get_add_url( $map_id );
 		
 		$args = [
 			'method'  => 'POST',
@@ -383,26 +396,25 @@ class Layouts {
 		$response = wp_remote_request( $url, $args );
 		$code     = wp_remote_retrieve_response_code( $response );
 		
-		if ( ! is_wp_error( $response ) && 200 === $code ) {
-			$body      = json_decode( wp_remote_retrieve_body( $response ), true );
-			$layout_id = Arr::get( $body, [ 'data', 'items', 0, 'id' ] );
-			
-			self::invalidate_cache();
-			Maps::invalidate_cache();
-			return $layout_id;
+		if ( is_wp_error( $response ) || 200 !== $code ) {
+			$this->log_error(
+				'Failed to Add new layout to the service.',
+				[
+					'source'   => __METHOD__,
+					'code'     => $code,
+					'url'      => $url,
+					'response' => $response,
+				]
+			);
+			return false;
 		}
 		
-		$this->log_error(
-			'Failed to Add new layout to the service.',
-			[
-				'source'   => __METHOD__,
-				'code'     => $code,
-				'url'      => $url,
-				'response' => $response,
-			]
-		);
+		$body      = json_decode( wp_remote_retrieve_body( $response ), true );
+		$layout_id = Arr::get( $body, [ 'data', 'items', 0, 'id' ] );
 		
-		return false;
+		self::invalidate_cache();
+		Maps::invalidate_cache();
+		return $layout_id;
 	}
 
 	/**

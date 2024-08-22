@@ -1,10 +1,11 @@
 import {ACTION_ADD_NEW_LAYOUT, ajaxNonce, ajaxUrl} from '@tec/tickets/seating/ajax';
 import {onReady, getLocalizedString, redirectTo} from '@tec/tickets/seating/utils';
+import { localizedData } from './localized-data';
 
 /**
  * @type {string}
  */
-export const objectName = tec.tickets.seating.layouts.addLayoutModal;
+export const { addLayoutModal } = localizedData;
 
 /**
  * Waits for the modal element to be present in the DOM.
@@ -15,9 +16,9 @@ export async function waitForModalElement() {
 	return new Promise((resolve) => {
 		let timeoutId;
 		const check = () => {
-			if ( window[objectName] ) {
+			if ( window[addLayoutModal] ) {
 				clearTimeout(timeoutId);
-				resolve( window[objectName] );
+				resolve( window[addLayoutModal] );
 				return;
 			}
 			timeoutId = setTimeout(check, 50);
@@ -131,7 +132,7 @@ export function handleSelectUpdates(event) {
  * @return {void} The modal is closed.
  */
 export function closeModal() {
-	const modal = window?.[objectName];
+	const modal = window?.[addLayoutModal];
 
 	if (!modal) {
 		return;
@@ -154,6 +155,7 @@ export async function init() {
 		modalActionListener();
 	});
 }
+
 onReady( async () => {
 	await init();
 });
