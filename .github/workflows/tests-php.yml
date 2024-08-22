@@ -4,6 +4,7 @@ on:
     paths:
       - 'tests/**.php'
       - 'src/**.php'
+      - 'src/**.pcss'
       - '*.php'
       - 'composer.json'
       - 'composer.lock'
