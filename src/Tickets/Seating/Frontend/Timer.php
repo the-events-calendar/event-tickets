@@ -557,6 +557,8 @@ class Timer extends Controller_Contract {
 		 * @since TBD
 		 *
 		 * @param array<string, string>  $data The seat selection expired timer data.
+		 * @param int                    $post_id The post ID the session is being interrupted for.
+		 * @param string                 $token   The ephemeral token the session is being interrupted for.
 		 */
 		$data = apply_filters( 'tec_tickets_seat_selection_timer_expired_data', $data, $post_id, $token );
 		
