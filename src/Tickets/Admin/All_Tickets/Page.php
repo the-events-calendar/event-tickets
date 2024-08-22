@@ -9,6 +9,8 @@
 
 namespace TEC\Tickets\Admin\All_Tickets;
 
+use Tribe__Repository;
+
 /**
  * Class Page.
  *
@@ -38,6 +40,79 @@ class Page {
 	 * @var string
 	 */
 	public static $hook_suffix = 'tickets_page_tec-tickets-all-tickets';
+
+	/**
+	 * The provider filter query key.
+	 *
+	 * @var string
+	 */
+	const PROVIDER_KEY = 'provider-filter';
+
+	/**
+	 * The status filter query key.
+	 *
+	 * @var string
+	 */
+	const STATUS_KEY = 'status-filter';
+
+	/**
+	 * Get the ticket providers.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public static function get_provider_options() {
+		/**
+		 * Filters the ticket providers for the All Tickets Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $providers The ticket providers for the All Tickets Table.
+		 *
+		 * @return array
+		 */
+		return apply_filters( 'tec_tickets_all_tickets_table_provider_options', [] );
+	}
+
+	/**
+	 * Get the ticket post types.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public static function get_ticket_post_types() {
+		$providers = static::get_provider_options();
+
+		if ( empty( $providers ) ) {
+			return [];
+		}
+
+		return array_keys( $providers );
+	}
+
+	/**
+	 * Whether or not tickets exist to be displayed.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public static function tickets_exist() {
+		$post_types = static::get_ticket_post_types();
+
+		if ( empty( $post_types ) ) {
+			return false;
+		}
+
+		/** @var Tribe__Repository $repository  */
+		$repository = tribe_tickets()->by_args( [
+			'post_type'      => static::get_ticket_post_types(),
+		] );
+
+		return $repository->found() > 0;
+	}
 
 	/**
 	 * Defines wether the current page is the Event Tickets All Tickets page.
@@ -120,6 +195,7 @@ class Page {
 		$context = [
 			'tickets_table' => tribe( List_Table::class ),
 			'page_slug'     => static::$slug,
+			'tickets_exist' => ! static::tickets_exist(),
 		];
 
 		$admin_views->template( 'all-tickets', $context );
