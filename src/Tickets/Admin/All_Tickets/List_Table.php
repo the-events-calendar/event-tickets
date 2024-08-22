@@ -644,8 +644,12 @@ class List_Table extends WP_List_Table {
 	public function modify_filter_args( $args ) {
 		$filter = tribe_get_request_var( self::STATUS_KEY, self::get_default_status() );
 
-		if ( 'all' === $filter ) {
+		if ( empty( $filter ) || 'all' === $filter ) {
 			return $args;
+		}
+
+		if ( ! isset( $args['meta_query'] ) ) {
+			$args['meta_query'] = [];
 		}
 
 		switch ( $filter ) {
@@ -699,7 +703,28 @@ class List_Table extends WP_List_Table {
 				break;
 		}
 
+		if ( count( $args['meta_query'] ) > 1 ) {
+			$args['meta_query']['relation'] = 'AND';
+		}
+
 		return $args;
+	}
+
+	/**
+	 * Get the Ticket post_type based on current provider.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_ticket_post_type() {
+		$provider_options = $this->get_provider_options();
+		$default_post_type = empty( $provider_options ) ? '' : key( $provider_options );
+		$post_type = tribe_get_request_var( self::PROVIDER_KEY, $default_post_type );
+		if ( empty( $post_type ) || ! in_array( $post_type, array_keys( $provider_options ) ) ) {
+			$post_type = $default_post_type;
+		}
+		return $post_type;
 	}
 
 	/**
@@ -713,24 +738,16 @@ class List_Table extends WP_List_Table {
 		$current_page = $this->get_pagenum();
 		$per_page     = $this->get_items_per_page( $this->per_page_option );
 
-		$provider_options = $this->get_provider_options();
-		$default_provider = empty( $provider_options ) ? '' : key( $provider_options );
-		$current_provider = tribe_get_request_var( self::PROVIDER_KEY, $default_provider );
-
 		$args = [
 			'all_tickets_list_table' => true,
 			'offset'                 => ( $current_page - 1 ) * $per_page,
 			'posts_per_page'         => $per_page,
 			'return_total_found'     => true,
-			'post_type'              => $current_provider,
+			'post_type'              => $this->get_ticket_post_type(),
 		];
 
 		$args = $this->modify_filter_args( $args );
 		$args = $this->modify_sort_args( $args );
-
-		if ( isset( $args['meta_query'] ) && count( $args['meta_query'] ) > 1 ) {
-			$args['meta_query']['relation'] = 'AND';
-		}
 
 		/**
 		 * Filters the arguments used to query the tickets for the All Tickets Table.
@@ -847,14 +864,12 @@ class List_Table extends WP_List_Table {
 		 */
 		$event_meta_keys = apply_filters( 'tec_tickets_all_tickets_table_event_meta_keys', [] );
 
-		$provider_options = $this->get_provider_options();
-		$default_provider = empty( $provider_options ) ? '' : key( $provider_options );
-		$current_provider = tribe_get_request_var( self::PROVIDER_KEY, $default_provider );
+		$ticket_post_type = $this->get_ticket_post_type();
 
-		if ( ! isset( $event_meta_keys[ $current_provider ] ) ) {
+		if ( ! isset( $event_meta_keys[ $ticket_post_type ] ) ) {
 			return '';
 		}
-		return $event_meta_keys[ $current_provider ];
+		return $event_meta_keys[ $ticket_post_type ];
 	}
 
 	/**
