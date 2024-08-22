@@ -502,14 +502,19 @@ class Timer extends Controller_Contract {
 				_x( 'This %s is now sold out.', 'Seat selection expired timer content', 'event-tickets' ),
 				$post_type_label
 			);
-
-			$button_label = sprintf(
-			// Translators: %s: The post type singular name.
-				_x( 'Find another %s', 'Seat selection expired timer button label', 'event-tickets' ),
-				$post_type_label
-			);
 			
-			$redirect_url = get_post_type_archive_link( $post_type );
+			if ( 'tribe_events' === $post_type ) {
+				$button_label = sprintf(
+				// Translators: %s: The post type singular name.
+					_x( 'Find another %s', 'Seat selection expired timer button label', 'event-tickets' ),
+					ucfirst( $post_type_label )
+				);
+				
+				$redirect_url = get_post_type_archive_link( $post_type );
+			} else {
+				$button_label = _x( 'Return to Home Page', 'Seat selection expired timer button label', 'event-tickets' );
+				$redirect_url = get_home_url();
+			}
 		}
 
 		/**
@@ -553,7 +558,7 @@ class Timer extends Controller_Contract {
 		 *
 		 * @since TBD
 		 *
-		 * @param array<string, string>  $data The seat selection expired timer data.
+		 * @param array<string,string>   $data The seat selection expired timer data.
 		 * @param int                    $post_id The post ID the session is being interrupted for.
 		 * @param string                 $token   The ephemeral token the session is being interrupted for.
 		 */
