@@ -194,20 +194,22 @@ jobs:
         with:
           fetch-depth: 1
           repository: the-events-calendar/event-tickets-seating-service
-          ref: routes-local-development
-          path: ${GITHUB_WORKSPACE}/../event-tickets-seating-service
+          ref: id-end-to-end-testing
+          path: event-tickets-seating-service
           submodules: recursive
           token: ${{ secrets.GH_BOT_TOKEN }}
       - name: Set the env var for the Seating service directory
         id: seating-service-dir
         run: |
-          echo "SEATING_SERVICE_DIR=$(realpath {GITHUB_WORKSPACE}/../event-tickets-seating-service)" >> $GITHUB_OUTPUT
+          mv ${GITHUB_WORKSPACE}/event-tickets-seating-service ${GITHUB_WORKSPACE}/../../event-tickets-seating-service
+          echo "SEATING_SERVICE_DIR=$(realpath ${GITHUB_WORKSPACE}/../../event-tickets-seating-service)" >> $GITHUB_ENV
+      - name: Change directory toe the Seating service one
+        run: cd ${SEATING_SERVICE_DIR}
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version-file: ${SEATING_SERVICE_DIR}/.nvmrc
+          node-version-file: .nvmrc
       - name: Init the Seating service
-        working-directory: ${SEATING_SERVICE_DIR}
         run: |
           npm ci
           npm run build
@@ -217,10 +219,11 @@ jobs:
           pm2 -V
           pm2 list
       - name: Start the Seating service using pm2
-        working-directory: ${SEATING_SERVICE_DIR}
         run: |
           pm2 start npm --name "seating-ci" -- run local:up
           pm2 list
+      - name: Change directory back to the workspace
+        run: cd ${GITHUB_WORKSPACE}
       # ------------------------------------------------------------------------------
       # Run Playwright tests
       # ------------------------------------------------------------------------------
