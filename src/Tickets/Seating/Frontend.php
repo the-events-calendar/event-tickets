@@ -190,19 +190,20 @@ class Frontend extends Controller_Contract {
 
 		foreach ( tribe_tickets()->where( 'event', $event_id )->get_ids( true ) as $ticket_id ) {
 			$ticket = $provider->get_ticket( $event_id, $ticket_id );
+
 			if ( ! $ticket ) {
 				continue;
 			}
 
-			$seat_key = get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true );
+			$seat_type = get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true );
 
-			if ( empty( $available[ $seat_key ] ) ) {
+			if ( empty( $available[ $seat_type ] ) ) {
 				// The array's keys are the seating types. In order for us to calculate the stock per type and NOT per ticket.
-				$available[ $seat_key ] = $ticket->stock();
+				$available[ $seat_type ] = $ticket->stock();
 				continue;
 			}
 
-			$available[ $seat_key ] = $available[ $seat_key ] < $ticket->stock() ? $available[ $seat_key ] : $ticket->stock();
+			$available[ $seat_type ] = $available[ $seat_type ] < $ticket->stock() ? $available[ $seat_type ] : $ticket->stock();
 		}
 
 		if ( empty( $available ) ) {
