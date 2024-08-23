@@ -3,6 +3,7 @@ import {
 	handleReservationsDeleted,
 	handleReservationsUpdatedFollowingSeatTypes,
 	handleSeatTypesUpdated,
+	handleSeatTypeDeleted,
 } from '@tec/tickets/seating/admin/action-handlers';
 import {
 	getAssociatedEventsUrl,
@@ -72,6 +73,9 @@ describe('Layouts Edit', () => {
 			expect(getHandlerForAction(GO_TO_ASSOCIATED_EVENTS)).toBe(
 				goToAssociatedEvents
 			);
+			expect(getHandlerForAction(SEAT_TYPE_DELETED)).toBe(
+				handleSeatTypeDeleted
+			)
 		});
 	});
 

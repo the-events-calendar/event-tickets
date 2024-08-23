@@ -18,6 +18,7 @@ import {
 	handleReservationsDeleted,
 	handleReservationsUpdatedFollowingSeatTypes,
 	handleSeatTypesUpdated,
+	handleSeatTypeDeleted,
 } from '../action-handlers';
 
 /**
@@ -55,6 +56,8 @@ export async function init(dom) {
 	registerAction(RESERVATIONS_DELETED, handleReservationsDeleted);
 
 	registerAction(SEAT_TYPES_UPDATED, handleSeatTypesUpdated);
+
+	registerAction(SEAT_TYPE_DELETED, handleSeatTypeDeleted);
 
 	registerAction(
 		RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
