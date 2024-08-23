@@ -146,6 +146,15 @@ class Ajax extends Controller_Contract {
 	 * @var string
 	 */
 	public const ACTION_SEAT_TYPES_UPDATED = 'tec_tickets_seating_seat_types_updated';
+	
+	/**
+	 * The action to handle seat type deletion.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const ACTION_SEAT_TYPE_DELETED = 'tec_tickets_seating_seat_type_deleted';
 
 	/**
 	 * The action to update a set of reservations following a seat type update.
@@ -273,6 +282,7 @@ class Ajax extends Controller_Contract {
 			'wp_ajax_' . self::ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES,
 			[ $this, 'update_reservations_from_seat_types' ]
 		);
+		add_action( 'wp_ajax_' . self::ACTION_SEAT_TYPE_DELETED, [ $this, 'handle_seat_type_deleted' ] );
 
 		add_action( 'tec_tickets_seating_session_interrupt', [ $this, 'clear_commerce_cart_cookie' ] );
 	}
@@ -305,6 +315,8 @@ class Ajax extends Controller_Contract {
 			'wp_ajax_' . self::ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES,
 			[ $this, 'update_reservations_from_seat_types' ]
 		);
+		
+		remove_action( 'wp_ajax_' . self::ACTION_SEAT_TYPE_DELETED, [ $this, 'handle_seat_type_deleted' ] );
 	}
 
 	/**
@@ -933,5 +945,43 @@ class Ajax extends Controller_Contract {
 		$updated = $this->reservations->update_attendees_seat_type( $valid );
 
 		wp_send_json_success( [ 'updatedAttendees' => $updated ] );
+	}
+	
+	/**
+	 * Handles the deletion of a seat type by transferring existing reservations to new seat type.
+	 *
+	 * @since TBD
+	 *
+	 * @return void The function does not return a value but will send the JSON response.
+	 */
+	public function handle_seat_type_deleted() {
+		if ( ! $this->check_current_ajax_user_can( 'manage_options' ) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Nonce verification failed',
+				],
+				403
+			);
+			
+			return;
+		}
+		
+		$old_seat_type = (string) tribe_get_request_var( 'deletedId' );
+		$new_seat_type = (string) tribe_get_request_var( 'transferToId' );
+		
+		if ( empty( $old_seat_type ) || empty( $new_seat_type ) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Invalid request body',
+				],
+				400
+			);
+			
+			return;
+		}
+		
+		// update all ticket with old seat type meta to new seat type.
+		// refresh the seat type table from service.
+		// update ticket capacity for new seat type.
 	}
 }
