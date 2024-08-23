@@ -122,6 +122,6 @@ class Page {
 			'page_slug'     => static::$slug,
 		];
 
-		$admin_views->template( 'all-tickets', $context );
+		$admin_views->template( 'tickets', $context );
 	}
 }
