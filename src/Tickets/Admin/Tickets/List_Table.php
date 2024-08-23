@@ -569,19 +569,7 @@ class List_Table extends WP_List_Table {
 			return '-';
 		}
 
-		$price = tribe_format_currency( number_format( $item->price, 2 ), $item->ID );
-		$regular_price = isset( $item->on_sale )
-			? tribe_format_currency( number_format( $item->regular_price, 2 ), $item->ID )
-			: $price;
-
-		$template = $this->get_template();
-		$context  = [
-			'on_sale'   => $item->on_sale,
-			'regular_price' => $regular_price,
-			'price' => $price,
-		];
-
-		return $template->template( 'all-tickets/column/price', $context, false );
+		return tribe_format_currency( number_format( $item->price, 2 ), $item->ID );
 	}
 
 	/**
