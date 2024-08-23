@@ -1,4 +1,4 @@
-import { ajaxUrl, ajaxNonce } from '@tec/tickets/seating/service';
+import { ajaxUrl, ajaxNonce } from '@tec/tickets/seating/ajax';
 import { onReady, getLocalizedString } from '@tec/tickets/seating/utils';
 
 /**
@@ -14,10 +14,12 @@ export function getString(key) {
 
 /**
  * Register delete action on all links with class 'delete-map'.
+ *
+ * @param {HTMLDocument|null} dom The document to use to search for the delete buttons.
  */
-export function registerDeleteAction() {
+export function registerDeleteAction(dom) {
 	// Add click listener to all links with class 'delete'.
-	document.querySelectorAll('.delete-map').forEach(function (link) {
+	dom.querySelectorAll('.delete-map').forEach(function (link) {
 		link.addEventListener('click', async function (event) {
 			event.preventDefault();
 			await handleDelete(event.target);
@@ -74,4 +76,4 @@ async function deleteMap(mapId) {
 
 export { handleDelete, deleteMap };
 
-onReady(registerDeleteAction);
+onReady(() => registerDeleteAction(document));
