@@ -2,15 +2,15 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.13.0\n"
+"Project-Id-Version: Event Tickets 5.13.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-07-22T06:30:20-07:00\n"
-"PO-Revision-Date: 2024-07-22 13:30\n"
+"POT-Creation-Date: 2024-08-05T09:09:12-07:00\n"
+"PO-Revision-Date: 2024-08-05 16:09\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: event-tickets\n"
 
@@ -1282,12 +1282,12 @@ msgid "Keep WordPress and plugins up to date to ensure latest security fixes are
 msgstr ""
 
 #: src/admin-views/settings/tickets-commerce/paypal/modal/signup-complete/content.php:52
-#: src/admin-views/settings/tickets-commerce/stripe/modal/signup-complete/content.php:65
+#: src/admin-views/settings/tickets-commerce/stripe/modal/signup-complete/content.php:77
 msgid "Close this modal window"
 msgstr ""
 
 #: src/admin-views/settings/tickets-commerce/paypal/modal/signup-complete/content.php:54
-#: src/admin-views/settings/tickets-commerce/stripe/modal/signup-complete/content.php:67
+#: src/admin-views/settings/tickets-commerce/stripe/modal/signup-complete/content.php:79
 msgid "Got it, thanks!"
 msgstr ""
 
@@ -1425,6 +1425,15 @@ msgstr ""
 #. Translators: %1$s: opening `a` tag to the knowledge base article. %2$s: closing `a` tag.
 #: src/admin-views/settings/tickets-commerce/stripe/modal/signup-complete/content.php:51
 msgid "Stripe allows you to accept credit or debit cards directly on your website. Because of this, your site needs to maintain %1$sPCI-DSS compliance%2$s."
+msgstr ""
+
+#: src/admin-views/settings/tickets-commerce/stripe/modal/signup-complete/content.php:59
+msgid "Billing Fields"
+msgstr ""
+
+#. Translators: %1$s: opening `a` tag to the knowledge base article. %2$s: closing `a` tag.
+#: src/admin-views/settings/tickets-commerce/stripe/modal/signup-complete/content.php:63
+msgid "If you use certain payment providers with Stripe, including Afterpay, Klarna, or Clearpay, additional Billing Fields will be displayed at checkout as required by Stripe. %1$sLearn More%2$s."
 msgstr ""
 
 #: src/admin-views/settings/tickets-commerce/stripe/modal/signup-complete/notice-test-mode.php:23
@@ -2063,18 +2072,18 @@ msgid "A %1$s is specific to this %2$s."
 msgstr ""
 
 #. Translators: %s: Link to "Event Tickets Plus" plugin.
-#: src/Tickets/Admin/Upsell.php:55
+#: src/Tickets/Admin/Upsell.php:56
 msgid "Get individual information collection from each attendee and advanced capacity options with %s"
 msgstr ""
 
 #. Translators: %s: Link to "Event Tickets Plus" plugin.
-#: src/Tickets/Admin/Upsell.php:128
+#: src/Tickets/Admin/Upsell.php:117
 msgid "Manually add attendees with %s"
 msgstr ""
 
 #. Translators: %s: Link to "Wallet Plus" plugin.
-#: src/Tickets/Admin/Upsell.php:158
-#: src/Tickets/Admin/Upsell.php:273
+#: src/Tickets/Admin/Upsell.php:148
+#: src/Tickets/Admin/Upsell.php:267
 msgid "Get additional ticketing flexibility including Apple Wallet and PDF tickets with %s"
 msgstr ""
 
@@ -2088,40 +2097,40 @@ msgctxt "Block description"
 msgid "A single configured ticket type."
 msgstr ""
 
-#: src/Tickets/Blocks/Tickets/Block.php:320
+#: src/Tickets/Blocks/Tickets/Block.php:319
 #: src/Tribe/Tickets.php:4626
 msgctxt "Error message title, will be followed by the error code."
 msgid "API Error"
 msgstr ""
 
-#: src/Tickets/Blocks/Tickets/Block.php:321
+#: src/Tickets/Blocks/Tickets/Block.php:320
 #: src/Tribe/Tickets.php:4627
 msgid "Refresh this page or wait a few minutes before trying again. If this happens repeatedly, please contact the Site Admin."
 msgstr ""
 
 #. Translators: %s - the singular, lowercase label for a ticket.
-#: src/Tickets/Blocks/Tickets/Block.php:324
+#: src/Tickets/Blocks/Tickets/Block.php:323
 msgid "The %s for this event has sold out and has been removed from your cart."
 msgstr ""
 
-#: src/Tickets/Blocks/Tickets/Block.php:327
+#: src/Tickets/Blocks/Tickets/Block.php:326
 #: src/Tribe/Tickets.php:4629
 #: src/views/v2/commerce/order/header/title-empty.php:28
 msgid "Whoops!"
 msgstr ""
 
-#: src/Tickets/Blocks/Tickets/Block.php:328
+#: src/Tickets/Blocks/Tickets/Block.php:327
 #: src/Tribe/Tickets.php:4630
 msgctxt "The %s will change based on the error produced."
 msgid "You have %s ticket(s) with a field that requires information."
 msgstr ""
 
-#: src/Tickets/Blocks/Tickets/Block.php:349
+#: src/Tickets/Blocks/Tickets/Block.php:348
 msgctxt "Block title"
 msgid "Tickets"
 msgstr ""
 
-#: src/Tickets/Blocks/Tickets/Block.php:350
+#: src/Tickets/Blocks/Tickets/Block.php:349
 msgctxt "Block description"
 msgid "Sell tickets and register attendees."
 msgstr ""
@@ -3606,6 +3615,7 @@ msgstr ""
 #: src/Tickets/Commerce/Gateways/PayPal/Location/Country.php:476
 #: src/Tickets/Commerce/Gateways/PayPal/Location/Country.php:734
 #: src/Tickets/Commerce/Gateways/PayPal/Location/State.php:1576
+#: src/views/v2/commerce/checkout/purchaser-info/state.php:34
 msgid "State"
 msgstr ""
 
@@ -6910,12 +6920,12 @@ msgstr ""
 
 #. Translators: %1$s: Opening `<a>` tag for KB article link. %2$s: Closing `<a>` tag.
 #: src/Tickets/Commerce/Gateways/Stripe/Settings.php:199
-msgid "Additional payment methods are available based on currency and location and must be enabled individually within your Stripe account. %1$sLearn more%2$s"
+msgid "Additional payment methods are available based on currency and location and must be enabled individually within your Stripe account. Some payment methods require additional billing information to be collected. %1$sLearn more%2$s"
 msgstr ""
 
 #. Translators: %1$s: Opening `<span>` tag. %2$s: The currency name. %3$s: Closing `</span>` tag. %4$s: Opening `<a>` tag for Stripe link. %5$s: Closing `</a>` tag.
 #: src/Tickets/Commerce/Gateways/Stripe/Settings.php:206
-msgid "%1$sPayment methods available for %2$s%3$s.<br /><br /> The payment methods listed here are dependent on the currency selected for Tickets Commerce and the currency each payment method support. You can review the payment methods and their availablity for each currency on %4$sStripe's documentation%5$s.<br /><br />"
+msgid "%1$sPayment methods available for %2$s%3$s.<br /><br /> The payment methods listed here depend on the currency selected for Tickets Commerce and the currency supported by each payment method. If you select a payment provider other than Credit Cards, additional billing information fields will be displayed at checkout as required by Stripe. You can review the payment methods and their availablity for each currency on %4$sStripe's documentation%5$s.<br /><br />"
 msgstr ""
 
 #. Translators: %1$s: The Event Tickets Plus link.
@@ -11487,8 +11497,8 @@ msgstr ""
 msgid "Checkout is not available at this time because a payment method has not been set up. Please notify the site administrator."
 msgstr ""
 
-#: src/views/v2/commerce/checkout/gateways.php:37
-msgid "Payment"
+#: src/views/v2/commerce/checkout/gateways.php:42
+msgid "Payment info"
 msgstr ""
 
 #. Translators: %1$s: Singular `event` in lowercase.
@@ -11520,20 +11530,96 @@ msgstr ""
 msgid "create a new account"
 msgstr ""
 
-#: src/views/v2/commerce/checkout/purchaser-info.php:27
+#: src/views/v2/commerce/checkout/purchaser-info.php:31
 msgid "Purchaser info"
 msgstr ""
 
+#: src/views/v2/commerce/checkout/purchaser-info.php:49
+msgid "Billing info"
+msgstr ""
+
+#: src/views/v2/commerce/checkout/purchaser-info.php:69
+msgid "Proceed to payment"
+msgstr ""
+
+#: src/views/v2/commerce/checkout/purchaser-info/address.php:33
+msgid "Address line 1"
+msgstr ""
+
+#: src/views/v2/commerce/checkout/purchaser-info/address.php:41
+msgid "Street address"
+msgstr ""
+
+#: src/views/v2/commerce/checkout/purchaser-info/address.php:46
+msgid "Your address is required"
+msgstr ""
+
+#: src/views/v2/commerce/checkout/purchaser-info/address.php:52
+msgid "Address line 2"
+msgstr ""
+
+#: src/views/v2/commerce/checkout/purchaser-info/address.php:59
+msgid "Apt., suite, unit number, etc (optional)"
+msgstr ""
+
+#: src/views/v2/commerce/checkout/purchaser-info/city.php:34
+msgid "City"
+msgstr ""
+
+#: src/views/v2/commerce/checkout/purchaser-info/city.php:47
+msgid "Your city is required"
+msgstr ""
+
+#: src/views/v2/commerce/checkout/purchaser-info/country.php:32
+msgid "Select a country"
+msgstr ""
+
+#: src/views/v2/commerce/checkout/purchaser-info/country.php:41
+msgid "Country or region"
+msgstr ""
+
+#: src/views/v2/commerce/checkout/purchaser-info/country.php:55
+msgid "Your country is required"
+msgstr ""
+
 #: src/views/v2/commerce/checkout/purchaser-info/email.php:34
-msgid "Email address:"
+msgid "Email address"
 msgstr ""
 
 #: src/views/v2/commerce/checkout/purchaser-info/email.php:47
-msgid "Your tickets will be sent to this address"
+msgid "Your email address is required"
+msgstr ""
+
+#: src/views/v2/commerce/checkout/purchaser-info/email.php:50
+msgid "Your tickets will be sent to this email address"
+msgstr ""
+
+#: src/views/v2/commerce/checkout/purchaser-info/name.php:33
+msgid "Full name"
 msgstr ""
 
 #: src/views/v2/commerce/checkout/purchaser-info/name.php:33
 msgid "Person purchasing tickets:"
+msgstr ""
+
+#: src/views/v2/commerce/checkout/purchaser-info/name.php:41
+msgid "First and last name"
+msgstr ""
+
+#: src/views/v2/commerce/checkout/purchaser-info/name.php:46
+msgid "Your first and last names are required"
+msgstr ""
+
+#: src/views/v2/commerce/checkout/purchaser-info/state.php:47
+msgid "Your state is required"
+msgstr ""
+
+#: src/views/v2/commerce/checkout/purchaser-info/zip.php:34
+msgid "Zip/Postal code"
+msgstr ""
+
+#: src/views/v2/commerce/checkout/purchaser-info/zip.php:47
+msgid "Your Zip or Postal code is required"
 msgstr ""
 
 #. Translators: %1$s: Plural `Tickets` label.
