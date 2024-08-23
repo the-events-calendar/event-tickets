@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: stellarwp/slic
-          ref: main
+          ref: 1.7.1
           path: slic
           fetch-depth: 1
       # ------------------------------------------------------------------------------
@@ -189,25 +189,25 @@ jobs:
       # ------------------------------------------------------------------------------
       # Clone, init and spin up the Seating service
       # ------------------------------------------------------------------------------
-      - name: Set the env var for the Seating service directory
-        id: seating-service-dir
-        run: |
-          echo "::set-output name=dir::$(realpath {GITHUB_WORKSPACE}/../event-tickets-seating-service)"
       - name: Clone the Seating service
         uses: actions/checkout@v2
         with:
           fetch-depth: 1
           repository: the-events-calendar/event-tickets-seating-service
           ref: routes-local-development
-          path: ${{ steps.seating-service-dir.outputs.dir }}
+          path: ${GITHUB_WORKSPACE}/../event-tickets-seating-service
           submodules: recursive
           token: ${{ secrets.GH_BOT_TOKEN }}
+      - name: Set the env var for the Seating service directory
+        id: seating-service-dir
+        run: |
+          echo "SEATING_SERVICE_DIR=$(realpath {GITHUB_WORKSPACE}/../event-tickets-seating-service)" >> $GITHUB_OUTPUT
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version-file: ${{ steps.seating-service-dir.outputs.dir }}/.nvmrc
+          node-version-file: ${SEATING_SERVICE_DIR}/.nvmrc
       - name: Init the Seating service
-        working-directory: ${{ steps.seating-service-dir.outputs.dir }}
+        working-directory: ${SEATING_SERVICE_DIR}
         run: |
           npm ci
           npm run build
@@ -217,7 +217,7 @@ jobs:
           pm2 -V
           pm2 list
       - name: Start the Seating service using pm2
-        working-directory: ${{ steps.seating-service-dir.outputs.dir }}
+        working-directory: ${SEATING_SERVICE_DIR}
         run: |
           pm2 start npm --name "seating-ci" -- run local:up
           pm2 list
