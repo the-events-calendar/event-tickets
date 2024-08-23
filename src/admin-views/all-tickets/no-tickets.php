@@ -23,7 +23,7 @@ if ( $tickets_exist ) {
 		<div>
 			<img
 				class="tec-tickets-admin-all-tickets-no-tickets-icon"
-				src="<?php echo tribe_resource_url( 'icons/no-tickets.svg', false, null, \Tribe__Tickets__Main::instance() ) ?>"
+				src="<?php echo esc_url( tribe_resource_url( 'icons/no-tickets.svg', false, null, \Tribe__Tickets__Main::instance() ) ); ?>"
 				alt="No tickets icon"
 				/>
 		</div>
@@ -39,10 +39,10 @@ if ( $tickets_exist ) {
 			);
 			$link_two = sprintf(
 				'<a href="%s" target="_blank" rel="nofollow noopener">%s</a>',
-				esc_url( 'https://evnt.is/1c' ),
+				esc_url( 'https://evnt.is/all-tickets-admin' ),
 				esc_html__( 'knowledgebase', 'event-tickets' )
 			);
-			echo sprintf(
+			printf(
 				// Translators: %1$s is a link to the events and other posts page, %2$s is a link to the knowledgebase.
 				esc_html__( 'Create new tickets within %1$s. Once you have tickets, they\'ll all show up in one place here. Learn more at the %2$s.', 'event-tickets' ),
 				$link_one,
