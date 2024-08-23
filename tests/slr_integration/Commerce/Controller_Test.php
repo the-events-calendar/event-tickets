@@ -190,13 +190,13 @@ class Controller_Test extends Controller_Test_Case {
 		);
 
 		// Group A.
-		update_post_meta( $ticket_id1, Meta::META_KEY_SEAT_TYPE, md5( $ticket_id1 ) );
-		update_post_meta( $ticket_id2, Meta::META_KEY_SEAT_TYPE, md5( $ticket_id1 ) );
+		update_post_meta( $ticket_id1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-A' );
+		update_post_meta( $ticket_id2, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-A' );
 		// Group B.
-		update_post_meta( $ticket_id3, Meta::META_KEY_SEAT_TYPE, md5( $ticket_id3 ) );
-		update_post_meta( $ticket_id4, Meta::META_KEY_SEAT_TYPE, md5( $ticket_id3 ) );
+		update_post_meta( $ticket_id3, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-B' );
+		update_post_meta( $ticket_id4, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-B' );
 		// Group C.
-		update_post_meta( $ticket_id5, Meta::META_KEY_SEAT_TYPE, md5( $ticket_id5 ) );
+		update_post_meta( $ticket_id5, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-C' );
 
 		// Get the ticket objects.
 		$ticket_1 = tribe( Module::class )->get_ticket( $event_id, $ticket_id1 );
@@ -256,6 +256,7 @@ class Controller_Test extends Controller_Test_Case {
 		);
 
 		// Refresh the ticket objects.
+		wp_cache_flush();
 		$ticket_1 = tribe( Module::class )->get_ticket( $event_id, $ticket_id1 );
 		$ticket_2 = tribe( Module::class )->get_ticket( $event_id, $ticket_id2 );
 		$ticket_3 = tribe( Module::class )->get_ticket( $event_id, $ticket_id3 );
