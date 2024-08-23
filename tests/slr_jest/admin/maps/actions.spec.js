@@ -14,18 +14,6 @@ function mockWindowLocation() {
 	};
 }
 
-const getMapTestDocument = () => {
-	const transformer = (html) => {
-		return (
-			html +
-			html.replaceAll('mapId=1', 'mapId=2').replaceAll('data-map-id="1"', 'data-map-id="2"') +
-			html.replaceAll('mapId=1', 'mapId=3').replaceAll('data-map-id="1"', 'data-map-id="3"')
-		);
-	};
-
-	return getTestDocument('maps-edit', transformer);
-};
-
 describe('map actions', () => {
 	beforeEach(() => {
 		fetch.resetMocks();
@@ -43,7 +31,7 @@ describe('map actions', () => {
 
 	describe('delete action', () => {
 		it('should handle delete request correctly', async () => {
-			const dom = getMapTestDocument();
+			const dom = getTestDocument( 'maps-edit' );
 			const deleteButtons = dom.querySelectorAll('.delete-map');
 			global.confirm = jest.fn(() => true);
 			fetch.mockIf(
@@ -60,7 +48,7 @@ describe('map actions', () => {
 				getString('delete-confirmation')
 			);
 			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&mapId=1&action=tec_tickets_seating_service_delete_map',
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&mapId=map-uuid-1&action=tec_tickets_seating_service_delete_map',
 				{
 					method: 'POST',
 				}
@@ -76,7 +64,7 @@ describe('map actions', () => {
 				getString('delete-confirmation')
 			);
 			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&mapId=2&action=tec_tickets_seating_service_delete_map',
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&mapId=map-uuid-2&action=tec_tickets_seating_service_delete_map',
 				{
 					method: 'POST',
 				}
@@ -92,7 +80,7 @@ describe('map actions', () => {
 				getString('delete-confirmation')
 			);
 			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&mapId=3&action=tec_tickets_seating_service_delete_map',
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&mapId=map-uuid-3&action=tec_tickets_seating_service_delete_map',
 				{
 					method: 'POST',
 				}
@@ -101,7 +89,7 @@ describe('map actions', () => {
 		});
 
 		it('should not delete on backend if not confirmed', async () => {
-			const dom = getMapTestDocument();
+			const dom = getTestDocument( 'maps-edit' );
 			const deleteButtons = dom.querySelectorAll('.delete-map');
 			// Do not confirm the delete request.
 			global.confirm = jest.fn(() => false);
@@ -122,7 +110,7 @@ describe('map actions', () => {
 		});
 
 		it('should fail on backend fail to delete layout', async () => {
-			const dom = getMapTestDocument();
+			const dom = getTestDocument( 'maps-edit' );
 			const deleteButtons = dom.querySelectorAll('.delete-map');
 			global.confirm = jest.fn(() => true);
 			fetch.mockIf(
@@ -141,7 +129,7 @@ describe('map actions', () => {
 				getString('delete-confirmation')
 			);
 			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&mapId=1&action=tec_tickets_seating_service_delete_map',
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&mapId=map-uuid-1&action=tec_tickets_seating_service_delete_map',
 				{
 					method: 'POST',
 				}
