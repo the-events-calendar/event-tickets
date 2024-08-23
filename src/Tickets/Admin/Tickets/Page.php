@@ -231,6 +231,6 @@ class Page {
 			'edit_posts_url' => $this->get_link_to_edit_posts(),
 		];
 
-		$admin_views->template( 'all-tickets', $context );
+		$admin_views->template( 'tickets', $context );
 	}
 }
