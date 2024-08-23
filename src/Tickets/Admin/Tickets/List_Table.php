@@ -391,7 +391,7 @@ class List_Table extends WP_List_Table {
 			'ticket_link' => $edit_post_link,
 		];
 
-		return $template->template( 'all-tickets/table-column-name', $context, false );
+		return $template->template( 'tickets/table-column-name', $context, false );
 	}
 
 	/**
@@ -956,7 +956,7 @@ class List_Table extends WP_List_Table {
 			'current_provider'     => $current_provider,
 		];
 
-		$template->template( 'all-tickets/filters', $context );
+		$template->template( 'tickets/filters', $context );
 	}
 
 	/**
