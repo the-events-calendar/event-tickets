@@ -109,9 +109,11 @@ class Page {
 		}
 
 		/** @var Tribe__Repository $repository  */
-		$repository = tribe_tickets()->by_args( [
-			'post_type'      => static::get_ticket_post_types(),
-		] );
+		$repository = tribe_tickets()->by_args(
+			[
+				'post_type' => static::get_ticket_post_types(),
+			]
+		);
 
 		return $repository->found() > 0;
 	}
@@ -225,7 +227,7 @@ class Page {
 		$context = [
 			'tickets_table'  => tribe( List_Table::class ),
 			'page_slug'      => static::$slug,
-			'tickets_exist'  => ! static::tickets_exist(),
+			'tickets_exist'  => static::tickets_exist(),
 			'edit_posts_url' => $this->get_link_to_edit_posts(),
 		];
 
