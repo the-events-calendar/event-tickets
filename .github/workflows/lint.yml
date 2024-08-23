@@ -1,0 +1,34 @@
+name: 'npm lint'
+on:
+  pull_request:
+  workflow_dispatch:
+    paths:
+      - 'src/modules/**.js'
+      - 'src/resources/js/**.js'
+      - 'src/resources/postcss/**.pcss'
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          submodules: recursive
+      # ------------------------------------------------------------------------------
+      # Setup Node.
+      # ------------------------------------------------------------------------------
+      - name: Check for .nvmrc file
+        id: check-nvmrc
+        run: echo "::set-output name=exists::$(test -f ${{ github.workspace }}/.nvmrc && echo 'true' || echo 'false')"
+
+      - uses: actions/setup-node@v3
+        if: steps.check-nvmrc.outputs.exists == 'true'
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+      - name: Install node modules
+        run: npm ci
+      - name: Run linting tasks
+        run: npm run lint
