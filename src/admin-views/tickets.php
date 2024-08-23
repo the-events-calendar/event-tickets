@@ -16,6 +16,6 @@ $wrapper_classes = [
 ?>
 <div <?php tribe_classes( $wrapper_classes ); ?>>
 	<?php
-		$this->template( 'all-tickets/tickets' );
+		$this->template( 'tickets/tickets' );
 	?>
 </div>

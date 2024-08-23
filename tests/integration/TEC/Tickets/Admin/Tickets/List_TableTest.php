@@ -1,8 +1,8 @@
 <?php
 
-namespace TEC\Tickets\Admin\All_Tickets;
+namespace TEC\Tickets\Admin\Tickets;
 
-use TEC\Tickets\Admin\All_Tickets\List_Table;
+use TEC\Tickets\Admin\Tickets\List_Table;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use Tribe__Tickets__Ticket_Object;
@@ -78,6 +78,15 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 			)->create()->ID;
 		}
 
+		$events_ids[] = tribe_events()->set_args(
+			[
+				'title'      => 'Searchable Event ' . ( $i + 1 ),
+				'status'     => 'publish',
+				'start_date' => $event_dt->format( 'Y-m-d H:i:s' ),
+				'duration'   => ( $i + 1 ) * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+
 		return $events_ids;
 	}
 
@@ -89,7 +98,7 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 	 *
 	 * @return array
 	 */
-	protected function create_test_tickets( $event_ids, array $number_of_tickets_per_event = [ 1, 0, 2 ] ) {
+	protected function create_test_tickets( $event_ids, array $number_of_tickets_per_event = [ 1, 0, 2, 1 ] ) {
 		$ticket_ids = [];
 		$override_index = 0;
 
@@ -122,6 +131,16 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 				'ticket_start_date'       => '2020-01-02',
 				'ticket_start_time'       => '08:00:00',
 				'ticket_end_date'         => '2050-03-01',
+				'ticket_end_time'         => '20:00:00',
+				'ticket_sku'              => "TEST-TKT-{$index}",
+			],
+			[
+				'ticket_name'             => "Searchable Ticket {$index}",
+				'ticket_description'      => "Searchable Ticket description {$index}",
+				'ticket_price'            => 5,
+				'ticket_start_date'       => '2040-01-02',
+				'ticket_start_time'       => '08:00:00',
+				'ticket_end_date'         => '2090-03-01',
 				'ticket_end_time'         => '20:00:00',
 				'ticket_sku'              => "TEST-TKT-{$index}",
 			],
@@ -173,6 +192,7 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 
 	// test
 	public function test_prepare_items() {
+		$_GET['status-filter'] = 'all';
 		$this->list_table->prepare_items();
 		$this->assertNotEmpty( $this->list_table->items );
 		$this->assertEquals( count( $this->ticket_ids ), count( $this->list_table->items ) );
@@ -227,12 +247,13 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * @dataProvider sorting_columns_provider
 	 */
-	public function test_sorting( $column) {
+	public function test_sorting( $column ) {
+		$_GET['status-filter'] = 'all';
 		$_GET['orderby'] = $column;
 		$_GET['order'] = 'asc';
 		$this->list_table->prepare_items();
 		$json_string = json_encode( $this->list_table->items, JSON_PRETTY_PRINT );
-		$json_string = str_replace( $this->ticket_ids, [ '1', '2', '3' ], $json_string );
+		$json_string = str_replace( $this->ticket_ids, [ '1', '2', '3', '4' ], $json_string );
 		$this->assertMatchesJsonSnapshot( $json_string );
 	}
 
@@ -242,12 +263,60 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 	 * @return array
 	 */
 	public function sorting_columns_provider() {
-			yield "sorting by name" => [ 'name' ];
-			yield "sorting by id" => [ 'id' ];
-			yield "sorting by start" => [ 'start' ];
-			yield "sorting by end" => [ 'end' ];
+			yield "sorting by name"      => [ 'name' ];
+			yield "sorting by id"        => [ 'id' ];
+			yield "sorting by start"     => [ 'start' ];
+			yield "sorting by end"       => [ 'end' ];
 			yield "sorting by days_left" => [ 'days_left' ];
-			yield "sorting by price" => [ 'price' ];
+			yield "sorting by price"     => [ 'price' ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider search_provider
+	 */
+	public function test_search( $term ) {
+		$_GET['status-filter'] = 'all';
+		$_GET['s'] = $term;
+		$this->list_table->prepare_items();
+		$json_string = json_encode( $this->list_table->items, JSON_PRETTY_PRINT );
+		$json_string = str_replace( $this->ticket_ids, [ '1', '2', '3', '4' ], $json_string );
+		$this->assertMatchesJsonSnapshot( $json_string );
+	}
+
+	/**
+	 * Data provider for testing search terms.
+	 *
+	 * @return array
+	 */
+	public function search_provider() {
+			yield "search existing items"     => [ 'searchable' ];
+			yield "search non-existent items" => [ 'noexist' ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider filter_provider
+	 */
+	public function test_filters( $filter ) {
+		$_GET['status-filter'] = $filter;
+		$this->list_table->prepare_items();
+		$json_string = json_encode( $this->list_table->items, JSON_PRETTY_PRINT );
+		$json_string = str_replace( $this->ticket_ids, [ '1', '2', '3', '4' ], $json_string );
+		$this->assertMatchesJsonSnapshot( $json_string );
+	}
+
+	/**
+	 * Data provider for testing search terms.
+	 *
+	 * @return array
+	 */
+	public function filter_provider() {
+			yield "filter by active"     => [ 'active' ];
+			yield "filter by past"       => [ 'past' ];
+			yield "filter by upcoming"   => [ 'upcoming' ];
+			yield "filter by discounted" => [ 'discounted' ];
+			yield "filter by all"        => [ 'all' ];
 	}
 }
 

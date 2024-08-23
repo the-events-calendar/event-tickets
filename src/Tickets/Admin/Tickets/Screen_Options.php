@@ -4,17 +4,17 @@
  *
  * @since TBD
  *
- * @package TEC\Tickets\Admin\All_Tickets
+ * @package TEC\Tickets\Admin\Tickets
  */
 
-namespace TEC\Tickets\Admin\All_Tickets;
+namespace TEC\Tickets\Admin\Tickets;
 
 /**
  * Class Screen_Options
  *
  * @since TBD
  *
- * @package TEC\Tickets\Admin\All_Tickets
+ * @package TEC\Tickets\Admin\Tickets
  */
 class Screen_Options {
 	/**
