@@ -377,7 +377,7 @@ class List_Table extends WP_List_Table {
 			'ticket_link' => $edit_post_link,
 		];
 
-		return $template->template( 'all-tickets/table-column-name', $context, false );
+		return $template->template( 'all-tickets/column/name', $context, false );
 	}
 
 	/**
@@ -569,7 +569,19 @@ class List_Table extends WP_List_Table {
 			return '-';
 		}
 
-		return tribe_format_currency( number_format( $item->price, 2 ), $item->ID );
+		$price = tribe_format_currency( number_format( $item->price, 2 ), $item->ID );
+		$regular_price = isset( $item->on_sale )
+			? tribe_format_currency( number_format( $item->regular_price, 2 ), $item->ID )
+			: $price;
+
+		$template = $this->get_template();
+		$context  = [
+			'on_sale'   => $item->on_sale,
+			'regular_price' => $regular_price,
+			'price' => $price,
+		];
+
+		return $template->template( 'all-tickets/column/price', $context, false );
 	}
 
 	/**
