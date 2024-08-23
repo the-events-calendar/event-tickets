@@ -7,7 +7,7 @@
  * @package TEC\Tickets\Admin
  */
 
-namespace TEC\Tickets\Admin\All_Tickets;
+namespace TEC\Tickets\Admin\Tickets;
 
 /**
  * Class Page.

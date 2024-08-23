@@ -35,7 +35,7 @@ class Provider extends \TEC\Common\Contracts\Service_Provider {
 		$this->container->register( Attendees\Provider::class );
 
 		// Register the All Tickets provider.
-		$this->container->register( All_Tickets\Provider::class );
+		$this->container->register( Tickets\Provider::class );
 
 		// Register singleton classes.
 		$this->container->singleton( Plugin_Action_Links::class );

@@ -7,13 +7,15 @@
  * @package TEC\Tickets\Admin
  */
 
-namespace TEC\Tickets\Admin\All_Tickets;
+namespace TEC\Tickets\Admin\Tickets;
 
 use Tribe__Tickets__Tickets;
 use Tribe__Tickets__Ticket_Object;
 use WP_List_Table;
 use DateTime;
+use Tribe\Tickets\Admin\Settings;
 use Tribe__Template;
+use WP_Post;
 use WP_Query;
 
 /**
@@ -367,9 +369,13 @@ class List_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_name( $item ): string {
+		if ( $item instanceof WP_Post ) {
+			return get_the_title( $item );
+		}
+
 		$event = $item->get_event();
 		if ( ! $event ) {
-			return '-';
+			return esc_html( $item->name );
 		}
 
 		$edit_post_url  = get_edit_post_link( $event );
@@ -406,11 +412,31 @@ class List_Table extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param Tribe__Tickets__Ticket_Object $item The current item.
+	 * @param Tribe__Tickets__Ticket_Object|WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
 	public function column_event( $item ): string {
+		// If the item is a post, it means the post type is disabled in the ticket settings.
+		if ( $item instanceof WP_Post ) {
+			$msq_line_1 = esc_html__( 'This ticket is connected to a disabled post type.', 'event-tickets' );
+
+			$ticket_settings_url  = add_query_arg( [ 'page' => Settings::$settings_page_id, ], admin_url( 'admin.php' ) );
+			$ticket_settings_link = sprintf(
+				'<a href="%s" class="tec-tickets-all-tickets-table-event-link" rel="nofollow noopener">%s</a>',
+				esc_url( $ticket_settings_url ),
+				esc_html__( 'Ticket Settings Page', 'event-tickets' )
+			);
+			$msg_line_2 = sprintf(
+				// Translators: %s: Ticket Settings Page link.
+				esc_html__( 'You can enable this post type on the %s.', 'event-tickets' ),
+				$ticket_settings_link
+			);
+
+			return wp_kses_post( sprintf( '<i>%s<br>%s</i>', $msq_line_1, $msg_line_2 ) );
+		}
+
+		// If the item is a ticket object, get the event.
 		$event = $item->get_event();
 		if ( ! $event ) {
 			return '-';
@@ -473,11 +499,15 @@ class List_Table extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param Tribe__Tickets__Ticket_Object $item The current item.
+	 * @param Tribe__Tickets__Ticket_Object|WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
 	public function column_start( $item ): string {
+		if ( $item instanceof WP_Post ) {
+			return '-';
+		}
+
 		$date_format = tribe_get_date_format( true );
 		$ts          = $item->start_date();
 
@@ -494,11 +524,15 @@ class List_Table extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param Tribe__Tickets__Ticket_Object $item The current item.
+	 * @param Tribe__Tickets__Ticket_Object|WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
 	public function column_end( $item ): string {
+		if ( $item instanceof WP_Post ) {
+			return '-';
+		}
+
 		$date_format = tribe_get_date_format( true );
 		$ts          = $item->end_date();
 
@@ -515,11 +549,15 @@ class List_Table extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param Tribe__Tickets__Ticket_Object $item The current item.
+	 * @param Tribe__Tickets__Ticket_Object|WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
 	public function column_days_left( $item ): string {
+		if ( $item instanceof WP_Post ) {
+			return '-';
+		}
+
 		$datetime = $item->end_date( false );
 		$now      = new DateTime();
 		$interval = $now->diff( $datetime );
@@ -536,11 +574,15 @@ class List_Table extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param Tribe__Tickets__Ticket_Object $item The current item.
+	 * @param Tribe__Tickets__Ticket_Object|WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
 	public function column_price( $item ): string {
+		if ( $item instanceof WP_Post ) {
+			return '-';
+		}
+
 		return tribe_format_currency( number_format( $item->price, 2 ), $item->ID );
 	}
 
@@ -549,11 +591,15 @@ class List_Table extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param Tribe__Tickets__Ticket_Object $item The current item.
+	 * @param Tribe__Tickets__Ticket_Object|WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
 	public function column_sold( $item ): string {
+		if ( $item instanceof WP_Post ) {
+			return '-';
+		}
+
 		return (string) $item->qty_sold();
 	}
 
@@ -562,11 +608,15 @@ class List_Table extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param Tribe__Tickets__Ticket_Object $item The current item.
+	 * @param Tribe__Tickets__Ticket_Object|WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
 	public function column_remaining( $item ): string {
+		if ( $item instanceof WP_Post ) {
+			return '-';
+		}
+
 		$available = $item->available();
 		return $available < 0 ? '-' : (string) $available;
 	}
@@ -576,11 +626,15 @@ class List_Table extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param Tribe__Tickets__Ticket_Object $item The current item.
+	 * @param Tribe__Tickets__Ticket_Object|WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
 	public function column_sales( $item ): string {
+		if ( $item instanceof WP_Post ) {
+			return '-';
+		}
+
 		return tribe_format_currency( number_format( $item->qty_sold() * $item->price, 2 ), $item->ID );
 	}
 
@@ -781,11 +835,8 @@ class List_Table extends WP_List_Table {
 		remove_filter( 'posts_clauses', [ $this, 'filter_query_clauses' ], 10 );
 
 		foreach ( $items as $i => $item ) {
-			$ticket = Tribe__Tickets__Tickets::load_ticket_object( $item->ID );
-			if ( ! empty( $ticket ) ) {
-				$ticket->raw_data = $item;
-			}
-			$this->items[] = $ticket;
+			$ticket_object = Tribe__Tickets__Tickets::load_ticket_object( $item->ID );
+			$this->items[] = empty( $ticket_object ) ? $item : $ticket_object;
 		}
 
 		$pagination_args = [

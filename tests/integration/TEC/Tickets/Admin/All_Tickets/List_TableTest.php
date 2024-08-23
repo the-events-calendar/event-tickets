@@ -1,8 +1,8 @@
 <?php
 
-namespace TEC\Tickets\Admin\All_Tickets;
+namespace TEC\Tickets\Admin\Tickets;
 
-use TEC\Tickets\Admin\All_Tickets\List_Table;
+use TEC\Tickets\Admin\Tickets\List_Table;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use Tribe__Tickets__Ticket_Object;

@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\Tickets\Admin\All_Tickets;
+namespace TEC\Tickets\Admin\Tickets;
 
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use Tribe\Tests\Traits\With_Uopz;
@@ -12,7 +12,7 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 	use Ticket_Maker;
 
 	/**
-	 * @var \TEC\Tickets\Admin\All_Tickets\Page
+	 * @var \TEC\Tickets\Admin\Tickets\Page
 	 */
 	protected $page;
 
