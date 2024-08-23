@@ -1,6 +1,6 @@
 <?php
 /**
- * All Tickets screen.
+ * No Tickets screen.
  *
  * @since  TBD
  *
