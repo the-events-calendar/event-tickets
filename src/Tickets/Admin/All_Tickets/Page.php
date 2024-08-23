@@ -9,7 +9,9 @@
 
 namespace TEC\Tickets\Admin\All_Tickets;
 
+use Tribe__Events__Main;
 use Tribe__Repository;
+use Tribe__Tickets__Main;
 
 /**
  * Class Page.
@@ -180,6 +182,34 @@ class Page {
 	}
 
 	/**
+	 * Get the link to edit posts.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_link_to_edit_posts() {
+		// Get array of enabled post types.
+		$post_types = Tribe__Tickets__Main::instance()->post_types();
+		$not_set    = empty( $post_types );
+		$has_tec    = did_action( 'tribe_events_bound_implementations' );
+
+		if ( $has_tec && ( in_array( 'tribe_events', $post_types, true ) || $not_set ) ) {
+			// If TEC is installed and the event post type is enabled or post types are not set, return the event post type.
+			$post_type = Tribe__Events__Main::POSTTYPE;
+		} elseif ( in_array( 'page', $post_types, true ) || empty( $post_types ) ) {
+			// If the page post type is enabled or post types are not set, return the page post type.
+			$post_type = 'page';
+		} else {
+			// Otherwise, return the first post type in the array.
+			$post_type = $post_types[0];
+		}
+
+		// Create link to edit posts page.
+		return add_query_arg( [ 'post_type' => $post_type ], admin_url( 'edit.php' ) );
+	}
+
+	/**
 	 * Render the `All Tickets` page.
 	 *
 	 * @since TBD
@@ -193,9 +223,10 @@ class Page {
 		$admin_views = tribe( 'tickets.admin.views' );
 
 		$context = [
-			'tickets_table' => tribe( List_Table::class ),
-			'page_slug'     => static::$slug,
-			'tickets_exist' => static::tickets_exist(),
+			'tickets_table'  => tribe( List_Table::class ),
+			'page_slug'      => static::$slug,
+			'tickets_exist'  => ! static::tickets_exist(),
+			'edit_posts_url' => $this->get_link_to_edit_posts(),
 		];
 
 		$admin_views->template( 'all-tickets', $context );

@@ -32,12 +32,12 @@ if ( $tickets_exist ) {
 		</div>
 		<div class="tec-tickets-admin-all-tickets-no-tickets-content">
 			<?php
-			$link_one = sprintf(
+			$edit_posts_link = sprintf(
 				'<a href="%s" target="_blank" rel="nofollow noopener">%s</a>',
-				esc_url( 'https://evnt.is/1b' ),
+				esc_url( $edit_posts_url ),
 				esc_html__( 'events and other posts', 'event-tickets' )
 			);
-			$link_two = sprintf(
+			$kb_link = sprintf(
 				'<a href="%s" target="_blank" rel="nofollow noopener">%s</a>',
 				esc_url( 'https://evnt.is/all-tickets-admin' ),
 				esc_html__( 'knowledgebase', 'event-tickets' )
@@ -45,8 +45,8 @@ if ( $tickets_exist ) {
 			printf(
 				// Translators: %1$s is a link to the events and other posts page, %2$s is a link to the knowledgebase.
 				esc_html__( 'Create new tickets within %1$s. Once you have tickets, they\'ll all show up in one place here. Learn more at the %2$s.', 'event-tickets' ),
-				$link_one,
-				$link_two
+				wp_kses_post( $edit_posts_link ),
+				wp_kses_post( $kb_link )
 			);
 			?>
 		</div>
