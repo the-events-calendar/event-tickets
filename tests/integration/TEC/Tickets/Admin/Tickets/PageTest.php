@@ -34,7 +34,6 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 		// before
 		parent::setUp();
 
-		$this->prepare_test_data();
 		$this->page = new Page();
 	}
 
@@ -101,6 +100,23 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 		return [ $this->ticket_ids, $this->event_ids ];
 	}
 
+	/**
+	 * Delete test data.
+	 */
+	protected function delete_test_data() {
+		if ( ! empty( $this->ticket_ids ) ) {
+			foreach ( $this->ticket_ids as $ticket_id ) {
+				wp_delete_post( $ticket_id, true );
+			}
+		}
+
+		if ( ! empty( $this->event_ids ) ) {
+			foreach ( $this->event_ids as $event_id ) {
+				wp_delete_post( $event_id, true );
+			}
+		}
+	}
+
 	// test
 	public function test_is_on_page() {
 		// Not on page.
@@ -132,6 +148,8 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 
 	// test
 	public function test_render_tec_tickets_all_tickets_page() {
+		$this->prepare_test_data();
+
 		$_GET['status-filter'] = 'all';
 		$this->set_class_fn_return( 'DateTime', 'diff', (object) [
 			'days' => 999,
@@ -146,6 +164,16 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 		$actual = str_replace( $this->event_ids, 'EVENT_ID', $actual );
 		$actual = str_replace( $this->ticket_ids, 'TICKET_ID', $actual );
 		$actual = preg_replace( '/Event \d/', 'Event EVENT_NUMBER', $actual );
+		$this->assertMatchesHtmlSnapshot( $actual );
+
+		$this->delete_test_data();
+	}
+
+	// test
+	public function test_render_tec_tickets_no_tickets_page() {
+		ob_start();
+		$this->page->render_tec_tickets_all_tickets_page();
+		$actual = ob_get_clean();
 		$this->assertMatchesHtmlSnapshot( $actual );
 	}
 }
