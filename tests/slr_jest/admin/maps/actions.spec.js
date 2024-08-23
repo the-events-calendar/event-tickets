@@ -14,52 +14,17 @@ function mockWindowLocation() {
 	};
 }
 
-function getTestDocument() {
-	return new DOMParser().parseFromString(
-		`<div class="event-tickets"">
-					<div class="tec-tickets__seating-tab__card">
-						<a class="button button-secondary add-map"
-							href="/wp-admin/admin.php?action=create&amp;page=tec-tickets-seating&amp;tab=layout-edit&amp;mapId=map-1-uuid">
-							Create Layout
-						</a>
-						<a class="button button-secondary edit-map"
-							href="/wp-admin/admin.php?page=tec-tickets-seating&amp;tab=map-edit&amp;mapId=map-1-uuid">
-							Edit
-						</a>
-						<a class="delete-map" data-map-id="map-1-uuid" href="#">
-							Delete
-						</a>
-					</div>
-					<div class="tec-tickets__seating-tab__card">
-						<a class="button button-secondary add-map"
-							href="/wp-admin/admin.php?action=create&amp;page=tec-tickets-seating&amp;tab=layout-edit&amp;mapId=map-2-uuid">
-							Create Layout
-						</a>
-						<a class="button button-secondary edit-map"
-							href="/wp-admin/admin.php?page=tec-tickets-seating&amp;tab=map-edit&amp;mapId=map-2-uuid">
-							Edit
-						</a>
-						<a class="delete-map" data-map-id="map-2-uuid" href="#">
-							Delete
-						</a>
-					</div>
-					<div class="tec-tickets__seating-tab__card">
-						<a class="button button-secondary add-map"
-							href="/wp-admin/admin.php?action=create&amp;page=tec-tickets-seating&amp;tab=layout-edit&amp;mapId=map-3-uuid">
-							Create Layout
-						</a>
-						<a class="button button-secondary edit-map"
-							href="/wp-admin/admin.php?page=tec-tickets-seating&amp;tab=map-edit&amp;mapId=map-3-uuid">
-							Edit
-						</a>
-						<a class="delete-map" data-map-id="map-3-uuid" href="#">
-							Delete
-						</a>
-					</div>
-				</div>`,
-		'text/html'
-	);
-}
+const getMapTestDocument = () => {
+	const transformer = (html) => {
+		return (
+			html +
+			html.replaceAll('mapId=1', 'mapId=2').replaceAll('data-map-id="1"', 'data-map-id="2"') +
+			html.replaceAll('mapId=1', 'mapId=3').replaceAll('data-map-id="1"', 'data-map-id="3"')
+		);
+	};
+
+	return getTestDocument('maps-edit', transformer);
+};
 
 describe('map actions', () => {
 	beforeEach(() => {
@@ -78,7 +43,7 @@ describe('map actions', () => {
 
 	describe('delete action', () => {
 		it('should handle delete request correctly', async () => {
-			const dom = getTestDocument();
+			const dom = getMapTestDocument();
 			const deleteButtons = dom.querySelectorAll('.delete-map');
 			global.confirm = jest.fn(() => true);
 			fetch.mockIf(
@@ -95,7 +60,7 @@ describe('map actions', () => {
 				getString('delete-confirmation')
 			);
 			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&mapId=map-1-uuid&action=tec_tickets_seating_service_delete_map',
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&mapId=1&action=tec_tickets_seating_service_delete_map',
 				{
 					method: 'POST',
 				}
@@ -111,7 +76,7 @@ describe('map actions', () => {
 				getString('delete-confirmation')
 			);
 			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&mapId=map-2-uuid&action=tec_tickets_seating_service_delete_map',
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&mapId=2&action=tec_tickets_seating_service_delete_map',
 				{
 					method: 'POST',
 				}
@@ -127,7 +92,7 @@ describe('map actions', () => {
 				getString('delete-confirmation')
 			);
 			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&mapId=map-3-uuid&action=tec_tickets_seating_service_delete_map',
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&mapId=3&action=tec_tickets_seating_service_delete_map',
 				{
 					method: 'POST',
 				}
@@ -136,7 +101,7 @@ describe('map actions', () => {
 		});
 
 		it('should not delete on backend if not confirmed', async () => {
-			const dom = getTestDocument();
+			const dom = getMapTestDocument();
 			const deleteButtons = dom.querySelectorAll('.delete-map');
 			// Do not confirm the delete request.
 			global.confirm = jest.fn(() => false);
@@ -157,7 +122,7 @@ describe('map actions', () => {
 		});
 
 		it('should fail on backend fail to delete layout', async () => {
-			const dom = getTestDocument();
+			const dom = getMapTestDocument();
 			const deleteButtons = dom.querySelectorAll('.delete-map');
 			global.confirm = jest.fn(() => true);
 			fetch.mockIf(
@@ -176,7 +141,7 @@ describe('map actions', () => {
 				getString('delete-confirmation')
 			);
 			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&mapId=map-1-uuid&action=tec_tickets_seating_service_delete_map',
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&mapId=1&action=tec_tickets_seating_service_delete_map',
 				{
 					method: 'POST',
 				}
