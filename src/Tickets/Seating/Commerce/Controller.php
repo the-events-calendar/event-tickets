@@ -13,9 +13,9 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Seating\Meta;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
-use TEC\Tickets\Commerce\Ticket;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_Post;
 
@@ -39,9 +39,7 @@ class Controller extends Controller_Contract {
 			'tec_tickets_seating_timer_token_object_id_entries',
 			[ $this, 'filter_timer_token_object_id_entries' ],
 		);
-
-		add_filter( 'tribe_tickets_ticket_inventory', [ $this, 'adjust_seated_ticket_inventory_to_match_stock' ], 10, 2 );
-
+		add_filter( 'tribe_tickets_ticket_inventory', [ $this, 'get_seated_ticket_inventory' ], 10, 2 );
 		add_action( 'updated_postmeta', [ $this, 'sync_seated_tickets_stock' ], 10, 4 );
 	}
 
@@ -57,9 +55,7 @@ class Controller extends Controller_Contract {
 			'tec_tickets_seating_timer_token_object_id_entries',
 			[ $this, 'filter_timer_token_object_id_entries' ],
 		);
-
-		remove_filter( 'tribe_tickets_ticket_inventory', [ $this, 'adjust_seated_ticket_inventory_to_match_stock' ] );
-
+		remove_filter( 'tribe_tickets_ticket_inventory', [ $this, 'get_seated_ticket_inventory' ] );
 		remove_action( 'updated_postmeta', [ $this, 'sync_seated_tickets_stock' ] );
 	}
 
@@ -73,14 +69,51 @@ class Controller extends Controller_Contract {
 	 *
 	 * @return int The adjusted inventory.
 	 */
-	public function adjust_seated_ticket_inventory_to_match_stock( int $inventory, Ticket_Object $ticket ): int {
-		$seat_key = get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true );
+	public function get_seated_ticket_inventory( int $inventory, Ticket_Object $ticket ): int {
+		$seat_type = get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true );
 
-		if ( ! $seat_key ) {
+		if ( ! $seat_type ) {
 			return $inventory;
 		}
 
-		return (int) $ticket->stock();
+		$event_id      = $ticket->get_event_id();
+		$ticket_ids    = [ $ticket->ID ];
+		$this_inventory = $inventory;
+		$capacity = $ticket->capacity();
+		// Protect from over-selling
+		$total_sold = max( 0, $capacity - $this_inventory );
+
+		// Remove this function from the filter to avoid infinite loops.
+		remove_filter( 'tribe_tickets_ticket_inventory', [ $this, 'get_seated_ticket_inventory' ] );
+
+		// Later we'll remove this specific return false filter, not one that might have been added by other code.
+		$return_false = static fn() => false;
+		add_filter( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', $return_false );
+
+		// Pull the inventory from the other tickets with the same seat type.
+		foreach (
+			tribe_tickets()
+				->where( 'event', $event_id )
+				->not_in( $ticket->ID )
+				->where( 'meta_equals', Meta::META_KEY_SEAT_TYPE, $seat_type )
+				->get_ids( true ) as $ticket_id
+		) {
+			$ticket        = Tickets::load_ticket_object( $ticket_id );
+			$sold_for_this = $capacity - $ticket->inventory();
+			$total_sold    += $sold_for_this;
+			$ticket_ids[]  = $ticket_id;
+		}
+
+		add_filter( 'tribe_tickets_ticket_inventory',
+			[ $this, 'get_seated_ticket_inventory' ],
+			10,
+			2
+		);
+		remove_filter( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', $return_false );
+
+		$synced_inventory = $capacity - $total_sold;
+
+		return $synced_inventory;
 	}
 
 	/**
@@ -104,10 +137,10 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		$ticket_seat_key = get_post_meta( $object_id, Meta::META_KEY_SEAT_TYPE, true );
+		$seat_type = get_post_meta( $object_id, Meta::META_KEY_SEAT_TYPE, true );
 
 		// Not a seating ticket. We should not modify the stock.
-		if ( ! $ticket_seat_key ) {
+		if ( ! $seat_type ) {
 			return;
 		}
 
@@ -117,39 +150,25 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		$event = get_post( get_post_meta( $ticket->ID, Ticket::$event_relation_meta_key, true ) );
+		$event = $ticket->get_event();
 
 		if ( ! $event instanceof WP_Post || ! $event->ID ) {
 			return;
 		}
 
-		$provider = Tickets::get_event_ticket_provider_object( $event->ID );
-
-		if ( ! $provider ) {
-			return;
-		}
-
 		$stock = (int) $meta_value;
 
+		// Remove the action to avoid infinite loops.
 		remove_action( 'tec_tickets_commerce_increase_ticket_stock', [ $this, 'sync_seated_tickets_stock' ] );
 
-		foreach ( tribe_tickets()->where( 'event', $event->ID )->get_ids( true ) as $ticket_id ) {
-			if ( $ticket_id === $ticket->ID ) {
-				continue;
-			}
-
-			$other_ticket = $provider->get_ticket( $event->ID, $ticket_id );
-			if ( ! $other_ticket ) {
-				continue;
-			}
-
-			$other_ticket_seat_key = get_post_meta( $other_ticket->ID, Meta::META_KEY_SEAT_TYPE, true );
-
-			if ( $other_ticket_seat_key !== $ticket_seat_key ) {
-				continue;
-			}
-
-			update_post_meta( $other_ticket->ID, Ticket::$stock_meta_key, $stock );
+		foreach (
+			tribe_tickets()
+				->where( 'event', $event->ID )
+				->not_in( $ticket->ID )
+				->where( 'meta_equals', Meta::META_KEY_SEAT_TYPE, $seat_type )
+				->get_ids( true ) as $ticket_id
+		) {
+			update_post_meta( $ticket_id, Ticket::$stock_meta_key, $stock );
 		}
 
 		add_action( 'tec_tickets_commerce_decrease_ticket_stock', [ $this, 'sync_seated_tickets_stock' ], 10, 4 );

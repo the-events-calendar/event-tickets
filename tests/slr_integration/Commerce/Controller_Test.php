@@ -256,7 +256,6 @@ class Controller_Test extends Controller_Test_Case {
 		);
 
 		// Refresh the ticket objects.
-		wp_cache_flush();
 		$ticket_1 = tribe( Module::class )->get_ticket( $event_id, $ticket_id1 );
 		$ticket_2 = tribe( Module::class )->get_ticket( $event_id, $ticket_id2 );
 		$ticket_3 = tribe( Module::class )->get_ticket( $event_id, $ticket_id3 );
