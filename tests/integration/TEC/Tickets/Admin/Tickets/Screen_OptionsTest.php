@@ -2,9 +2,9 @@
 
 // Tests for SCreen_Options class.
 
-namespace TEC\Tickets\Admin\All_Tickets;
+namespace TEC\Tickets\Admin\Tickets;
 
-use TEC\Tickets\Admin\All_Tickets\Screen_Options;
+use TEC\Tickets\Admin\Tickets\Screen_Options;
 
 /**
  * Tests for the Screen_Options class.

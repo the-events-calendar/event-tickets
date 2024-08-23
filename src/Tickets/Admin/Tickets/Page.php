@@ -7,7 +7,7 @@
  * @package TEC\Tickets\Admin
  */
 
-namespace TEC\Tickets\Admin\All_Tickets;
+namespace TEC\Tickets\Admin\Tickets;
 
 use Tribe__Events__Main;
 use Tribe__Repository;
