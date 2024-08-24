@@ -42,20 +42,6 @@ class List_Table extends WP_List_Table {
 	protected $template;
 
 	/**
-	 * The provider filter query key.
-	 *
-	 * @var string
-	 */
-	const PROVIDER_KEY = 'provider-filter';
-
-	/**
-	 * The status filter query key.
-	 *
-	 * @var string
-	 */
-	const STATUS_KEY = 'status-filter';
-
-	/**
 	 * Default status filter.
 	 *
 	 * @var string
@@ -391,7 +377,7 @@ class List_Table extends WP_List_Table {
 			'ticket_link' => $edit_post_link,
 		];
 
-		return $template->template( 'tickets/table-column-name', $context, false );
+		return $template->template( 'tickets/column/name', $context, false );
 	}
 
 	/**
@@ -696,7 +682,7 @@ class List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function modify_filter_args( $args ) {
-		$filter = tribe_get_request_var( self::STATUS_KEY, self::get_default_status() );
+		$filter = tribe_get_request_var( Page::STATUS_KEY, self::get_default_status() );
 
 		if ( empty( $filter ) || 'all' === $filter ) {
 			return $args;
@@ -773,9 +759,9 @@ class List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function get_ticket_post_type() {
-		$provider_options  = $this->get_provider_options();
+		$provider_options  = Page::get_provider_options();
 		$default_post_type = empty( $provider_options ) ? '' : key( $provider_options );
-		$post_type         = tribe_get_request_var( self::PROVIDER_KEY, $default_post_type );
+		$post_type         = tribe_get_request_var( Page::PROVIDER_KEY, $default_post_type );
 
 		if ( empty( $post_type ) || ! in_array( $post_type, array_keys( $provider_options ) ) ) {
 			$post_type = $default_post_type;
@@ -938,11 +924,7 @@ class List_Table extends WP_List_Table {
 			return;
 		}
 
-		$provider_options = $this->get_provider_options();
-		$default_provider = empty( $provider_options ) ? '' : key( $provider_options );
-		$current_provider = tribe_get_request_var( self::PROVIDER_KEY, $default_provider );
-
-		$current_status = tribe_get_request_var( self::STATUS_KEY, self::get_default_status() );
+		$current_status = tribe_get_request_var( Page::STATUS_KEY, self::get_default_status() );
 
 		$template = $this->get_template();
 		$context  = [
@@ -952,8 +934,8 @@ class List_Table extends WP_List_Table {
 			'search_id'            => 'tec-tickets-all-tickets-search-input',
 			'search_value'         => tribe_get_request_var( 's' ),
 			'show_provider_filter' => $this->show_ticket_provider_filter(),
-			'provider_options'     => $provider_options,
-			'current_provider'     => $current_provider,
+			'provider_options'     => Page::get_provider_options(),
+			'current_provider'     => $this->get_ticket_post_type(),
 		];
 
 		$template->template( 'tickets/filters', $context );
@@ -988,26 +970,6 @@ class List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Get the ticket providers.
-	 *
-	 * @since TBD
-	 *
-	 * @return array
-	 */
-	protected function get_provider_options() {
-		/**
-		 * Filters the ticket providers for the All Tickets Table.
-		 *
-		 * @since TBD
-		 *
-		 * @param array $providers The ticket providers for the All Tickets Table.
-		 *
-		 * @return array
-		 */
-		return apply_filters( 'tec_tickets_all_tickets_table_provider_options', [] );
-	}
-
-	/**
 	 * Whether or not to display the ticket provider filter.
 	 *
 	 * @since TBD
@@ -1015,9 +977,16 @@ class List_Table extends WP_List_Table {
 	 * @return boolean
 	 */
 	protected function show_ticket_provider_filter(): bool {
-		$providers = $this->get_provider_options();
+		$providers = Page::get_provider_options();
 
 		// Only show if more than one provider.
 		return count( $providers ) > 1;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function no_items() {
+		esc_html_e( 'No tickets found for the active filter.', 'event-tickets' );
 	}
 }

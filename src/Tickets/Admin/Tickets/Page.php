@@ -9,6 +9,10 @@
 
 namespace TEC\Tickets\Admin\Tickets;
 
+use Tribe__Events__Main;
+use Tribe__Repository;
+use Tribe__Tickets__Main;
+
 /**
  * Class Page.
  *
@@ -38,6 +42,81 @@ class Page {
 	 * @var string
 	 */
 	public static $hook_suffix = 'tickets_page_tec-tickets-all-tickets';
+
+	/**
+	 * The provider filter query key.
+	 *
+	 * @var string
+	 */
+	const PROVIDER_KEY = 'provider-filter';
+
+	/**
+	 * The status filter query key.
+	 *
+	 * @var string
+	 */
+	const STATUS_KEY = 'status-filter';
+
+	/**
+	 * Get the ticket providers.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public static function get_provider_options() {
+		/**
+		 * Filters the ticket providers for the All Tickets Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $providers The ticket providers for the All Tickets Table.
+		 *
+		 * @return array
+		 */
+		return apply_filters( 'tec_tickets_all_tickets_table_provider_options', [] );
+	}
+
+	/**
+	 * Get the ticket post types.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public static function get_ticket_post_types() {
+		$providers = static::get_provider_options();
+
+		if ( empty( $providers ) ) {
+			return [];
+		}
+
+		return array_keys( $providers );
+	}
+
+	/**
+	 * Whether or not tickets exist to be displayed.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public static function tickets_exist() {
+		$post_types = static::get_ticket_post_types();
+
+		if ( empty( $post_types ) ) {
+			return false;
+		}
+
+		/** @var Tribe__Repository $repository  */
+		$repository = tribe_tickets()->by_args(
+			[
+				'post_type' => static::get_ticket_post_types(),
+			]
+		);
+
+		return $repository->found() > 0;
+	}
 
 	/**
 	 * Defines wether the current page is the Event Tickets All Tickets page.
@@ -105,6 +184,34 @@ class Page {
 	}
 
 	/**
+	 * Get the link to edit posts.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_link_to_edit_posts() {
+		// Get array of enabled post types.
+		$post_types = Tribe__Tickets__Main::instance()->post_types();
+		$not_set    = empty( $post_types );
+		$has_tec    = did_action( 'tribe_events_bound_implementations' );
+
+		if ( $has_tec && ( in_array( 'tribe_events', $post_types, true ) || $not_set ) ) {
+			// If TEC is installed and the event post type is enabled or post types are not set, return the event post type.
+			$post_type = Tribe__Events__Main::POSTTYPE;
+		} elseif ( in_array( 'page', $post_types, true ) || empty( $post_types ) ) {
+			// If the page post type is enabled or post types are not set, return the page post type.
+			$post_type = 'page';
+		} else {
+			// Otherwise, return the first post type in the array.
+			$post_type = $post_types[0];
+		}
+
+		// Create link to edit posts page.
+		return add_query_arg( [ 'post_type' => $post_type ], admin_url( 'edit.php' ) );
+	}
+
+	/**
 	 * Render the `All Tickets` page.
 	 *
 	 * @since TBD
@@ -118,8 +225,10 @@ class Page {
 		$admin_views = tribe( 'tickets.admin.views' );
 
 		$context = [
-			'tickets_table' => tribe( List_Table::class ),
-			'page_slug'     => static::$slug,
+			'tickets_table'  => tribe( List_Table::class ),
+			'page_slug'      => static::$slug,
+			'tickets_exist'  => static::tickets_exist(),
+			'edit_posts_url' => $this->get_link_to_edit_posts(),
 		];
 
 		$admin_views->template( 'tickets', $context );

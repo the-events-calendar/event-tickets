@@ -6,7 +6,8 @@
  *
  * @version TBD
  *
- * @var \Tribe__Template          $this      Current template object.
+ * @var \Tribe__Template  $this           Current template object.
+ * @var bool              $tickets_exist  Whether tickets exist.
  */
 
 $wrapper_classes = [
@@ -17,5 +18,6 @@ $wrapper_classes = [
 <div <?php tribe_classes( $wrapper_classes ); ?>>
 	<?php
 		$this->template( 'tickets/tickets' );
+		$this->template( 'tickets/no-tickets' );
 	?>
 </div>
