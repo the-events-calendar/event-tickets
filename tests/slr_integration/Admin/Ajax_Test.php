@@ -1744,4 +1744,117 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->reset_wp_send_json_mocks();
 		$wp_remote->tear_down();
 	}
+	
+	public function test_remove_seat_type_from_layout() {
+		Maps_Service::insert_rows_from_service(
+			[
+				[
+					'id'            => 'some-map-1',
+					'name'          => 'Some Map 1',
+					'seats'         => 50,
+					'screenshotUrl' => 'https://example.com/some-map-1.png',
+				],
+			]
+		);
+		set_transient( Maps_Service::update_transient_name(), time() );
+		
+		Layouts_Service::insert_rows_from_service(
+			[
+				[
+					'id'            => 'some-layout-1',
+					'name'          => 'Some Layout 1',
+					'seats'         => 50,
+					'createdDate'   => time() * 1000,
+					'mapId'         => 'some-map-1',
+					'screenshotUrl' => 'https://example.com/some-layouts-1.png',
+				],
+			]
+		);
+		set_transient( Layouts_Service::update_transient_name(), time() );
+		
+		Seat_Types_Table::insert_many(
+			[
+				[
+					'id'     => 'some-seat-type-1',
+					'name'   => 'Some Seat Type 1',
+					'seats'  => 30,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+				[
+					'id'     => 'some-seat-type-2',
+					'name'   => 'Some Seat Type 2',
+					'seats'  => 20,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+			]
+		);
+		set_transient( Seat_Types::update_transient_name(), time() );
+		$this->set_up_ajax_request_context();
+		
+		// setup request body.
+		$this->set_oauth_token( 'auth-token' );
+		$request_body = null;
+		$this->set_fn_return(
+			'file_get_contents',
+			function ( $file, ...$args ) use ( &$request_body ) {
+				if ( $file !== 'php://input' ) {
+					return file_get_contents( $file, ...$args );
+				}
+				
+				return $request_body;
+			},
+			true
+		);
+		
+		// create event with associated layout and ticket and attendees.
+		$post_id                                  = static::factory()->post->create();
+		$ticket_id                                = $this->create_tc_ticket( $post_id, 10 );
+		[ $attendee_1, $attendee_2, $attendee_3 ] = $this->create_many_attendees_for_ticket( 3, $ticket_id, $post_id );
+		
+		update_post_meta( $post_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-1' );
+		
+		update_post_meta( $ticket_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-1' );
+		update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'some-seat-type-1' );
+		
+		foreach ( [ $attendee_1, $attendee_2, $attendee_3 ] as $key => $attendee ) {
+			update_post_meta( $attendee, Meta::META_KEY_LAYOUT_ID, 'some-layout-1' );
+			update_post_meta( $attendee, Meta::META_KEY_SEAT_TYPE, 'some-seat-type-1' );
+			update_post_meta( $attendee, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'seat-label-' . $key );
+		}
+		
+		$this->make_controller()->register();
+		
+		$this->assertEquals( get_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, true ), 'some-seat-type-1' );
+		
+		$request_body = wp_json_encode(
+			[
+				'deletedId'  => 'some-seat-type-1',
+				'transferTo' => [
+					'id'          => 'some-seat-type-2',
+					'name'        => 'Some Seat Type 2',
+					'mapId'       => 'some-map-1',
+					'layoutId'    => 'some-layout-1',
+					'description' => 'This is the new description.',
+					'seatsCount'  => 50,
+				],
+			] 
+		);
+		
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		do_action( 'wp_ajax_' . Ajax::ACTION_SEAT_TYPE_DELETED );
+		
+		$wp_send_json_success->was_called_times_with(
+			1,
+			[
+				'updatedSeatTypes' => 1, // Replaced existing seats count for updated seat type.
+				'updatedTickets'   => 1, // Number of Tickets updated.
+				'updatedMeta'      => 4, // 3 attendees + 1 Ticket
+			] 
+		);
+		
+		$this->assertEquals( 'some-seat-type-2', get_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, true ) );
+	}
 }
