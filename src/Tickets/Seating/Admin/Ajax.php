@@ -12,6 +12,7 @@ namespace TEC\Tickets\Seating\Admin;
 use TEC\Common\Contracts\Container;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Assets\Asset;
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Admin;
@@ -19,6 +20,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Ajax_Methods;
 use TEC\Tickets\Seating\Built_Assets;
 use TEC\Tickets\Seating\Logging;
+use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Service\Layouts;
 use TEC\Tickets\Seating\Service\Maps;
 use TEC\Tickets\Seating\Service\Reservations;
@@ -341,6 +343,7 @@ class Ajax extends Controller_Contract {
 			'ACTION_FETCH_ATTENDEES'                      => self::ACTION_FETCH_ATTENDEES,
 			'ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID'          => self::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID,
 			'ACTION_SEAT_TYPES_UPDATED'                   => self::ACTION_SEAT_TYPES_UPDATED,
+			'ACTION_SEAT_TYPE_DELETED'                    => self::ACTION_SEAT_TYPE_DELETED,
 			'ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES' => self::ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES,
 			'ACTION_RESERVATION_CREATED'                  => self::ACTION_RESERVATION_CREATED,
 			'ACTION_RESERVATION_UPDATED'                  => self::ACTION_RESERVATION_UPDATED,
@@ -966,10 +969,21 @@ class Ajax extends Controller_Contract {
 			return;
 		}
 		
-		$old_seat_type = (string) tribe_get_request_var( 'deletedId' );
-		$new_seat_type = (string) tribe_get_request_var( 'transferToId' );
+		$decoded = $this->get_request_json();
 		
-		if ( empty( $old_seat_type ) || empty( $new_seat_type ) ) {
+		$old_seat_type_id = $decoded['deletedId'] ?? null;
+		$new_seat_type    = $decoded['transferTo'] ?? null;
+		
+		if ( empty( $old_seat_type_id )
+			|| ! is_array( $new_seat_type )
+			|| ! isset(
+				$new_seat_type['id'],
+				$new_seat_type['name'],
+				$new_seat_type['mapId'],
+				$new_seat_type['layoutId'],
+				$new_seat_type['description'],
+				$new_seat_type['seatsCount']
+			) ) {
 			wp_send_json_error(
 				[
 					'error' => 'Invalid request body',
@@ -980,8 +994,38 @@ class Ajax extends Controller_Contract {
 			return;
 		}
 		
-		// update all ticket with old seat type meta to new seat type.
-		// refresh the seat type table from service.
-		// update ticket capacity for new seat type.
+		// update all ticket/attendees with old seat type meta to new seat type.
+		global $wpdb;
+		
+		try {
+			$updated_seat_types_meta = DB::query(
+				DB::prepare(
+					'UPDATE %i SET meta_value = %s WHERE meta_key = %s AND meta_value = %s',
+					$wpdb->postmeta,
+					$new_seat_type['id'],
+					Meta::META_KEY_SEAT_TYPE,
+					$old_seat_type_id
+				),
+			);
+		} catch ( \Exception $exception ) {
+			$this->log_error(
+				'Failed to update seat type meta.',
+				[
+					'source' => __METHOD__,
+					'error'  => $exception->getMessage(),
+				]
+			);
+		}
+		
+		$updated_seat_types = $this->seat_types->update_from_service( [ $new_seat_type ] );
+		$updated_tickets    = $this->seat_types->update_tickets_capacity( [ $new_seat_type['id'] => $new_seat_type['seatsCount'] ] );
+		
+		wp_send_json_success(
+			[
+				'updatedSeatTypes' => $updated_seat_types,
+				'updatedTickets'   => $updated_tickets,
+				'updatedMeta'      => $updated_seat_types_meta,
+			]
+		);
 	}
 }
