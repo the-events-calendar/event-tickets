@@ -69,7 +69,7 @@ export async function handleSeatTypesUpdated(data) {
 /**
  * @typedef {Object} SeatTypeDeletedData
  * @property {string} deletedId The ID of the seat type that was deleted.
- * @property {string} transferToId The ID of the seat type that was transferred to.
+ * @property {UpdatedSeatType} transferTo The seat type that was transferred to.
  */
 
 /**
@@ -81,20 +81,17 @@ export async function handleSeatTypesUpdated(data) {
  * @return {Promise<boolean>}
  */
 export async function handleSeatTypeDeleted( data ) {
-	const deletedId = data?.deletedId;
-	const transferToId = data?.transferToId;
-
-	if ( !deletedId || !transferToId ) {
+	if ( ! data?.deletedId ) {
 		return false;
 	}
 
 	const url = new URL( ajaxUrl );
 	url.searchParams.set( '_ajax_nonce', ajaxNonce );
 	url.searchParams.set( 'action', ACTION_SEAT_TYPE_DELETED );
-	url.searchParams.set( 'deletedId', deletedId );
-	url.searchParams.set( 'transferToId', transferToId );
+
 	const response = await fetch( url.toString(), {
 		method: 'POST',
+		body: JSON.stringify(data),
 	});
 
 	if ( !response.ok ) {
