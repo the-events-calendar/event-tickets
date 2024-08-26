@@ -503,13 +503,10 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @since TBD Pulled out `options` variable to allow filtering using `tec_tickets_commerce_stripe_checkout_localized_data`.
 	 */
 	obj.setupCompactCardElement = () => {
-		// Use localized options
-		const options = obj.checkout.cardElementOptions;
-
 		// Instantiate the CardElement with the options
-		obj.cardElement = obj.stripeElements.create('card', options);
-		obj.cardElement.mount(obj.selectors.cardElement);
-		obj.cardElement.on('change', obj.onCardChange);
+		obj.cardElement = obj.stripeElements.create( 'card', options );
+		obj.cardElement.mount( obj.selectors.cardElement );
+		obj.cardElement.on( 'change', obj.onCardChange );
 	};
 
 
