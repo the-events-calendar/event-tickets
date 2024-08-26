@@ -476,19 +476,19 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		obj.cardElement = obj.stripeElements.create( 'cardNumber', {
 			showIcon: true,
 			iconStyle: 'default',
-			style: obj.checkout.cardElementObject.style,
+			style: obj.checkout.cardElementOptions.style,
 		} );
 		obj.cardElement.mount( obj.selectors.cardNumber );
 		obj.cardElement.on( 'change', obj.onCardChange );
 
 		obj.cardExpiry = obj.stripeElements.create( 'cardExpiry', {
-			style: obj.checkout.cardElementObject.style,
+			style: obj.checkout.cardElementOptions.style,
 		} );
 		obj.cardExpiry.mount( obj.selectors.cardExpiry );
 		obj.cardExpiry.on( 'change', obj.onCardChange );
 
 		obj.cardCvc = obj.stripeElements.create( 'cardCvc', {
-			style: obj.checkout.cardElementObject.style,
+			style: obj.checkout.cardElementOptions.style,
 		} );
 		obj.cardCvc.mount( obj.selectors.cardCvc );
 		obj.cardCvc.on( 'change', obj.onCardChange );
@@ -504,7 +504,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 */
 	obj.setupCompactCardElement = () => {
 		// Use localized options
-		const options = obj.checkout.cardElementObject;
+		const options = obj.checkout.cardElementOptions;
 
 		// Instantiate the CardElement with the options
 		obj.cardElement = obj.stripeElements.create('card', options);
