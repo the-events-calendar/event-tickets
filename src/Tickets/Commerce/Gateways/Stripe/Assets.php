@@ -100,11 +100,13 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 									]
 								]
 							],
-							'cardElementStyle' => [
-								'base' => [
-									'color' => '#23282d'
-								]
-							]
+							'cardElementOptions' => [
+								'style' => [
+									'base' => [
+										'color' => '#23282d',
+									],
+								],
+							],
 						] );
 					},
 				],
