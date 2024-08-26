@@ -45,7 +45,7 @@ class Voided extends Status_Abstract {
 	 * {@inheritdoc}
 	 */
 	public function get_name() {
-		return __( 'Voided', 'event-tickets' );
+		return __( 'Cancelled', 'event-tickets' );
 	}
 
 	/**

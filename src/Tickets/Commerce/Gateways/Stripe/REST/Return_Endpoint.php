@@ -9,6 +9,7 @@ use TEC\Tickets\Commerce\Gateways\Stripe\Settings;
 use TEC\Tickets\Commerce\Gateways\Stripe\Signup;
 use TEC\Tickets\Commerce\Payments_Tab;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
+use TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
 
 use WP_REST_Server;
 use WP_REST_Request;
@@ -84,7 +85,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 			}
 
 			if ( ! empty( $response->stripe_disconnected ) && $response->stripe_disconnected ) {
-				$this->handle_connection_terminated();
+				$this->handle_connection_terminated( [], $response );
 			}
 
 			$this->handle_connection_established( $response );
@@ -121,8 +122,15 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	 * @param object $payload data returned from WhoDat.
 	 */
 	public function handle_connection_established( $payload ) {
+		$payload = (array) $payload;
+		$webhook = false;
 
-		tribe( Merchant::class )->save_signup_data( (array) $payload );
+		if ( isset( $payload['webhook'] ) ) {
+			$webhook = (array) $payload['webhook'];
+			unset( $payload['webhook'] );
+		}
+
+		tribe( Merchant::class )->save_signup_data( $payload );
 		tribe( Settings::class )->setup_account_defaults();
 
 		$validate = tribe( Merchant::class )->validate_account_is_permitted();
@@ -144,6 +152,10 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 				'tc-status'  => 'stripe-signup-complete',
 			]
 		);
+
+		if ( ! empty( $webhook['id'] ) ) {
+			tribe( Webhooks::class )->add_webhook( $webhook );
+		}
 
 		wp_safe_redirect( $url );
 		exit();
@@ -170,9 +182,14 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handle account disconnections.
 	 *
-	 * @since 5.3.0
+	 * @since 5.11.0
+	 *
+	 * @param array     $reason Reason of disconnect.
+	 * @param ?stdClass $payload Data returned from WhoDat.
+	 *
+	 * @return void
 	 */
-	public function handle_connection_terminated( $reason = [] ) {
+	public function handle_connection_terminated( $reason = [], $payload = null ) {
 		tribe( Merchant::class )->delete_signup_data();
 		Gateway::disable();
 
@@ -181,6 +198,12 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 			'tc-section'          => Gateway::get_key(),
 			'stripe_disconnected' => 1,
 		];
+
+		if ( isset( $payload->webhook, $payload->webhook->id ) ) {
+			// Invalidate webhook related options.
+			tribe_remove_option( tribe( Webhooks::class )::$option_webhooks_signing_key );
+			tribe_remove_option( tribe( Webhooks::class )::$option_is_valid_webhooks );
+		}
 
 		$url_args = array_merge( $query_args, $reason );
 

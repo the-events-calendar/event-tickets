@@ -42,9 +42,9 @@ class Undefined extends Status_Abstract {
 	 * {@inheritdoc}
 	 */
 	protected $wp_arguments = [
-		'public'                    => true,
-		'exclude_from_search'       => false,
+		'public'                    => false,
+		'exclude_from_search'       => true,
 		'show_in_admin_all_list'    => true,
-		'show_in_admin_status_list' => true,
+		'show_in_admin_status_list' => false,
 	];
 }

@@ -34,8 +34,8 @@ if ( $stripe_currency !== $tc_currency ) {
 	);
 } else {
 	$message = sprintf(
-		// Translators: %1$s The opening `<a>` tag with the stripe link, %2$s The closing `</a>` tag.
-		__( 'Please be sure to enable all the payment methods you want to use for this currency on your %1$sstripe dashboard%2$s.', 'event-tickets' ),
+		// Translators: %1$s The opening `<a>` tag with the Stripe link, %2$s The closing `</a>` tag.
+		__( 'Please be sure to enable all the payment methods you want to use for this currency on your %1$sStripe dashboard%2$s.', 'event-tickets' ),
 		'<a href="https://dashboard.stripe.com/settings/payment_methods" target="_blank" rel="noopener noreferrer">',
 		'</a>'
 	);
