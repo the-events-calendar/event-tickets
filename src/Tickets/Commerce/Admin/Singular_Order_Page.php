@@ -321,7 +321,7 @@ STR;
 		}
 
 		ob_start();
-		tribe_copy_to_clipboard_button( $order->gateway_order_id, true, __( 'Copy Payment\'s Gateway Transaction ID to your Clipboard', 'event-tickets' ) );
+		tec_copy_to_clipboard_button( $order->gateway_order_id, true, __( 'Copy Payment\'s Gateway Transaction ID to your Clipboard', 'event-tickets' ) );
 		$copy_button = ob_get_clean();
 
 		return sprintf(
