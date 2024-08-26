@@ -9,6 +9,7 @@ import {
 	registerAction,
 	RESERVATIONS_DELETED,
 	SEAT_TYPES_UPDATED,
+	SEAT_TYPE_DELETED,
 	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
 	GO_TO_ASSOCIATED_EVENTS,
 	INBOUND_SET_ELEMENT_HEIGHT,
@@ -17,6 +18,7 @@ import {
 	handleReservationsDeleted,
 	handleReservationsUpdatedFollowingSeatTypes,
 	handleSeatTypesUpdated,
+	handleSeatTypeDeleted,
 } from '../action-handlers';
 
 /**
@@ -54,6 +56,8 @@ export async function init(dom) {
 	registerAction(RESERVATIONS_DELETED, handleReservationsDeleted);
 
 	registerAction(SEAT_TYPES_UPDATED, handleSeatTypesUpdated);
+
+	registerAction(SEAT_TYPE_DELETED, handleSeatTypeDeleted);
 
 	registerAction(
 		RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,

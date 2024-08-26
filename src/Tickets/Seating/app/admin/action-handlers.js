@@ -1,5 +1,6 @@
 import {
 	ACTION_SEAT_TYPES_UPDATED,
+	ACTION_SEAT_TYPE_DELETED,
 	ACTION_DELETE_RESERVATIONS,
 	ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES,
 	ajaxNonce,
@@ -63,6 +64,43 @@ export async function handleSeatTypesUpdated(data) {
 			updatedPosts: 0,
 		}
 	);
+}
+
+/**
+ * @typedef {Object} SeatTypeDeletedData
+ * @property {string} deletedId The ID of the seat type that was deleted.
+ * @property {UpdatedSeatType} transferTo The seat type that was transferred to.
+ */
+
+/**
+ * Handles the seat type deleted action.
+ *
+ * @since TBD
+ *
+ * @param {SeatTypeDeletedData} data The deleted seat type data.
+ * @return {Promise<boolean>}
+ */
+export async function handleSeatTypeDeleted( data ) {
+	if ( ! data?.deletedId ) {
+		return false;
+	}
+
+	const url = new URL( ajaxUrl );
+	url.searchParams.set( '_ajax_nonce', ajaxNonce );
+	url.searchParams.set( 'action', ACTION_SEAT_TYPE_DELETED );
+
+	const response = await fetch( url.toString(), {
+		method: 'POST',
+		body: JSON.stringify(data),
+	});
+
+	if ( !response.ok ) {
+		return false;
+	}
+
+	const json = await response.json();
+
+	return json?.data || false;
 }
 
 /**

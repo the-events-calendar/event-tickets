@@ -19,6 +19,7 @@ global.tec.tickets.seating = {
 		ajaxNonce: '1234567890',
 		ACTION_FETCH_ATTENDEES: 'tec_tickets_seating_fetch_attendees',
 		ACTION_ADD_NEW_LAYOUT: 'tec_tickets_seating_service_add_layout',
+		ACTION_SEAT_TYPE_DELETED: 'tec_tickets_seating_seat_type_deleted',
 	},
 	utils: {
 		localizedStrings: {
