@@ -55,6 +55,25 @@
 			table-layout: auto;
 		}
 	}
+
+	@media (max-width: 782px) {
+		.tablenav.top {
+			margin-top: var(--tec-spacer-1);
+
+			.actions {
+				display: flex;
+				flex-direction: column;
+				gap: var(--tec-spacer-0);
+				width: 100%;
+
+				select,
+				input {
+					max-width: 100%;
+					width: 100%;
+				}
+			}
+		}
+	}
 }
 
 .tec-tickets-admin-all-tickets-no-tickets-wrap {
