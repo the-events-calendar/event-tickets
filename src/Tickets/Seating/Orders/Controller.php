@@ -175,6 +175,13 @@ class Controller extends Controller_Contract {
 			10,
 			4
 		);
+		
+		add_filter(
+			'tribe_template_html:tickets/components/attendees-list/attendees/attendee/ticket',
+			[ $this, 'inject_seat_info_in_order_success_page' ],
+			10,
+			4
+		);
 		add_filter( 'pre_do_shortcode_tag', [ $this, 'filter_pre_do_shortcode_tag' ], 10, 4 );
 
 		$this->register_assets();
@@ -245,6 +252,12 @@ class Controller extends Controller_Contract {
 		remove_filter(
 			'tribe_template_html:tickets/tickets/my-tickets/ticket-information',
 			[ $this, 'inject_seat_info_in_my_tickets' ],
+			10,
+			4
+		);
+		remove_filter(
+			'tribe_template_html:tickets/components/attendees-list/attendees/attendee/ticket',
+			[ $this, 'inject_seat_info_in_order_success_page' ],
 			10,
 			4
 		);
@@ -616,6 +629,22 @@ class Controller extends Controller_Contract {
 	 */
 	public function inject_seat_info_in_my_tickets( $html, $file, $name, $template ): string {
 		return $this->attendee->inject_seat_info_in_my_tickets( $html, $template );
+	}
+	
+	/**
+	 * Inject seating label with ticket name on Order success page.
+	 *
+	 * @since TBD
+	 *
+	 * @param string        $html     The HTML content of ticket information.
+	 * @param string        $file     Complete path to include the PHP File.
+	 * @param array<string> $name     Template name.
+	 * @param Template      $template Current instance of the Tribe__Template.
+	 *
+	 * @return string The HTML content of ticket information.
+	 */
+	public function inject_seat_info_in_order_success_page( $html, $file, $name, $template ): string {
+		return $this->attendee->inject_seat_info_in_order_success_page( $html, $template );
 	}
 
 	/**
