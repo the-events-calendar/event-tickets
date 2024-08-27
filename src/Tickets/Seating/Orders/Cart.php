@@ -14,6 +14,7 @@ use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use TEC\Tickets\Commerce\Cart as TicketsCommerce_Cart;
 use WP_Post;
 
 /**
@@ -179,6 +180,32 @@ class Cart {
 		// Add the layout ID to the attendee if it exists for the attendee product.
 		if ( $layout_id ) {
 			update_post_meta( $attendee->ID, Meta::META_KEY_LAYOUT_ID, $layout_id );
+		}
+	}
+	
+	/**
+	 * Maybe clear the cart if the session is expired or the session is empty but cart has seated tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function maybe_clear_cart_for_empty_session(): void {
+		[ $token, $object_id ] = $this->get_session_token_object_id();
+		
+		// Check if there are any seating sessions available.
+		if ( ! empty( $token ) || ! empty( $object_id ) ) {
+			return;
+		}
+
+		$cart = tribe( TicketsCommerce_Cart::class );
+		
+		// If the cart has any item with seating enabled then we need to clear the cart.
+		foreach ( $cart->get_items_in_cart() as $ticket_id => $item ) {
+			if ( get_post_meta( $ticket_id, META::META_KEY_ENABLED, true ) ) {
+				$cart->clear_cart();
+				break;
+			}
 		}
 	}
 }
