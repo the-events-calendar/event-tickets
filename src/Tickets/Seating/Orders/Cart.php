@@ -192,13 +192,20 @@ class Cart {
 	 */
 	public function maybe_clear_cart_for_empty_session(): void {
 		[ $token, $object_id ] = $this->get_session_token_object_id();
+		$cart                  = tribe( TicketsCommerce_Cart::class );
 		
 		// Check if there are any seating sessions available.
 		if ( ! empty( $token ) || ! empty( $object_id ) ) {
+			/**
+			 * If we have a valid session, we should check if the token is expired or not.
+			 * This is to force clear cart for cases where AJAX request may have failed to delete an expired token.
+			 */
+			if ( $this->sessions->get_seconds_left( $token ) <= 0 ) {
+				$cart->clear_cart();
+			}
+			
 			return;
 		}
-
-		$cart = tribe( TicketsCommerce_Cart::class );
 		
 		// If the cart has any item with seating enabled then we need to clear the cart.
 		foreach ( $cart->get_items_in_cart() as $ticket_id => $item ) {
