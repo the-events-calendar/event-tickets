@@ -342,7 +342,20 @@ class List_Table extends WP_List_Table {
 			return '';
 		}
 
-		return esc_html( $item->$column_name );
+		$default = esc_html( $item->$column_name );
+
+		/**
+		 * Filters the default column value for the All Tickets Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $default The default column value for the All Tickets Table.
+		 * @param Tribe__Tickets__Ticket_Object $item The current item.
+		 * @param string $column_name The column name.
+		 *
+		 * @return string
+		 */
+		return apply_filters( 'tec_tickets_all_tickets_table_column_default', $default, $item, $column_name );
 	}
 
 	/**
@@ -377,7 +390,18 @@ class List_Table extends WP_List_Table {
 			'ticket_link' => $edit_post_link,
 		];
 
-		return $template->template( 'tickets/column/name', $context, false );
+		$name = $template->template( 'tickets/column/name', $context, false );
+
+		/**
+		 * Filters the name for the All Tickets Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $name The name for the All Tickets Table.
+		 *
+		 * @return string
+		 */
+		return apply_filters( 'tec_tickets_all_tickets_table_column_name', $name, $item );
 	}
 
 	/**
@@ -390,7 +414,18 @@ class List_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_id( $item ): string {
-		return (string) $item->ID;
+		$id = (string) $item->ID;
+
+		/**
+		 * Filters the ID for the All Tickets Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $id The ID for the All Tickets Table.
+		 *
+		 * @return string
+		 */
+		return apply_filters( 'tec_tickets_all_tickets_table_column_id', $id, $item );
 	}
 
 	/**
@@ -477,7 +512,18 @@ class List_Table extends WP_List_Table {
 		 */
 		$actions = apply_filters( 'tec_tickets_all_tickets_table_event_actions', $actions, $event, $item );
 
-		return sprintf( '%1$s %2$s', $edit_post_link, $this->row_actions( $actions ) );
+		$event = sprintf( '%1$s %2$s', $edit_post_link, $this->row_actions( $actions ) );
+
+		/**
+		 * Filters the event for the All Tickets Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $event The event for the All Tickets Table.
+		 *
+		 * @return string
+		 */
+		return apply_filters( 'tec_tickets_all_tickets_table_column_event', $event, $item );
 	}
 
 	/**
@@ -497,12 +543,23 @@ class List_Table extends WP_List_Table {
 		$date_format = tribe_get_date_format( true );
 		$ts          = $item->start_date();
 
-		return sprintf(
+		$start = sprintf(
 			'<time datetime="%1$s" title="%2$s">%3$s</time>',
 			esc_attr( \Tribe__Date_Utils::reformat( $ts, 'c' ) ),
 			esc_html( \Tribe__Date_Utils::reformat( $ts, get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) ) ),
 			esc_html( \Tribe__Date_Utils::reformat( $ts, $date_format ) )
 		);
+
+		/**
+		 * Filters the start date for the All Tickets Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $start The start date for the All Tickets Table.
+		 *
+		 * @return string
+		 */
+		return apply_filters( 'tec_tickets_all_tickets_table_column_start', $start, $item );
 	}
 
 	/**
@@ -522,12 +579,23 @@ class List_Table extends WP_List_Table {
 		$date_format = tribe_get_date_format( true );
 		$ts          = $item->end_date();
 
-		return sprintf(
+		$end = sprintf(
 			'<time datetime="%1$s" title="%2$s">%3$s</time>',
 			esc_attr( \Tribe__Date_Utils::reformat( $ts, 'c' ) ),
 			esc_html( \Tribe__Date_Utils::reformat( $ts, get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) ) ),
 			esc_html( \Tribe__Date_Utils::reformat( $ts, $date_format ) )
 		);
+
+		/**
+		 * Filters the end date for the All Tickets Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $end The end date for the All Tickets Table.
+		 *
+		 * @return string
+		 */
+		return apply_filters( 'tec_tickets_all_tickets_table_column_end', $end, $item );
 	}
 
 	/**
@@ -552,7 +620,18 @@ class List_Table extends WP_List_Table {
 			return '-';
 		}
 
-		return (string) $interval->days;
+		$days_left = (string) $interval->days;
+
+		/**
+		 * Filters the number of days left for the All Tickets Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $days_left The number of days left for the All Tickets Table.
+		 *
+		 * @return string
+		 */
+		return apply_filters( 'tec_tickets_all_tickets_table_column_days_left', $days_left, $item );
 	}
 
 	/**
@@ -569,7 +648,18 @@ class List_Table extends WP_List_Table {
 			return '-';
 		}
 
-		return tribe_format_currency( number_format( $item->price, 2 ), $item->ID );
+		$price = tribe_format_currency( number_format( $item->price, 2 ), $item->ID );
+
+		/**
+		 * Filters the price for the All Tickets Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $price The price for the All Tickets Table.
+		 *
+		 * @return string
+		 */
+		return apply_filters( 'tec_tickets_all_tickets_table_column_price', $price, $item );
 	}
 
 	/**
@@ -586,7 +676,18 @@ class List_Table extends WP_List_Table {
 			return '-';
 		}
 
-		return (string) $item->qty_sold();
+		$sold = (string) $item->qty_sold();
+
+		/**
+		 * Filters the number of tickets sold for the All Tickets Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $sold The number of tickets sold for the All Tickets Table.
+		 *
+		 * @return string
+		 */
+		return apply_filters( 'tec_tickets_all_tickets_table_column_sold', $sold, $item );
 	}
 
 	/**
@@ -604,7 +705,18 @@ class List_Table extends WP_List_Table {
 		}
 
 		$available = $item->available();
-		return $available < 0 ? '-' : (string) $available;
+		$remaining = $available < 0 ? '-' : (string) $available;
+
+		/**
+		 * Filters the number of tickets remaining for the All Tickets Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $remaining The number of tickets remaining for the All Tickets Table.
+		 *
+		 * @return string
+		 */
+		return apply_filters( 'tec_tickets_all_tickets_table_column_remaining', $remaining, $item );
 	}
 
 	/**
@@ -621,7 +733,18 @@ class List_Table extends WP_List_Table {
 			return '-';
 		}
 
-		return tribe_format_currency( number_format( $item->qty_sold() * $item->price, 2 ), $item->ID );
+		$sales = tribe_format_currency( number_format( $item->qty_sold() * $item->price, 2 ), $item->ID );
+
+		/**
+		 * Filters the total sales for the All Tickets Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $sales The total sales for the All Tickets Table.
+		 *
+		 * @return string
+		 */
+		return apply_filters( 'tec_tickets_all_tickets_table_column_sales', $sales, $item );
 	}
 
 	/**
