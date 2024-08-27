@@ -50,9 +50,6 @@ class Assets extends Service_Provider {
 	 * @return bool
 	 */
 	public function should_enqueue_assets(): bool {
-		/**  @var Page $page */
-		$page = tribe( Page::class );
-
-		return $page->is_on_page();
+		return tribe( Page::class )->is_on_page();
 	}
 }
