@@ -350,7 +350,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since TBD
 		 *
-		 * @return string
+		 * @var string
 		 */
 		public $event_key;
 
