@@ -158,6 +158,11 @@ class Cart_Test extends WPTestCase {
 		$this->assertEquals( 'layout-uuid-1', get_post_meta( $attendee_4, Meta::META_KEY_LAYOUT_ID, true ) );
 	}
 	
+	/**
+	 * @test
+	 *
+	 * @covers Cart::maybe_clear_cart_for_empty_session
+	 */
 	public function test_clearing_tc_cart_when_session_and_cart_is_valid() {
 		$post = self::factory()->post->create();
 		update_post_meta( $post, Meta::META_KEY_ENABLED, true );
@@ -192,6 +197,11 @@ class Cart_Test extends WPTestCase {
 		$this->assertNotContains( 'tribe-tickets__commerce-checkout-cart-empty', $html );
 	}
 	
+	/**
+	 * @test
+	 *
+	 * @covers Cart::maybe_clear_cart_for_empty_session
+	 */
 	public function test_clearing_tc_cart_when_token_is_expired() {
 		$post = self::factory()->post->create();
 		update_post_meta( $post, Meta::META_KEY_ENABLED, true );
@@ -224,6 +234,11 @@ class Cart_Test extends WPTestCase {
 		$this->assertContains( 'tribe-tickets__commerce-checkout-cart-empty', $html );
 	}
 	
+	/**
+	 * @test
+	 *
+	 * @covers Cart::maybe_clear_cart_for_empty_session
+	 */
 	public function test_clearing_tc_cart_when_session_is_not_found() {
 		$post = self::factory()->post->create();
 		update_post_meta( $post, Meta::META_KEY_ENABLED, true );
