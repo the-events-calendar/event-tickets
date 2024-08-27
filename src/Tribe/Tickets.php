@@ -346,7 +346,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public $checkin_key = '';
 
 		/**
-		 * Returns the key used to store the event ID in the ticket post meta.
+		 * The key used to store the event ID in the ticket post meta.
 		 *
 		 * @since TBD
 		 *
