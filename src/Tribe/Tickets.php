@@ -346,6 +346,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public $checkin_key = '';
 
 		/**
+		 * Returns the key used to store the event ID in the ticket post meta.
+		 *
+		 * @since TBD
+		 *
+		 * @return string
+		 */
+		public $event_key;
+
+		/**
 		 * Returns link to the report interface for sales for an event or
 		 * null if the provider doesn't have reporting capabilities.
 		 *
@@ -1257,6 +1266,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// Event cost may need to be formatted to the provider's currency settings.
 			add_filter( 'tribe_currency_cost', [ $this, 'maybe_format_event_cost' ], 10, 2 );
+
+			add_action( 'init', [ $this, 'add_all_tickets_hooks' ] );
 		}
 
 		/**
@@ -1287,6 +1298,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @param Tribe__Tickets__Tickets $ticket_handler
 			 */
 			do_action( 'tribe_tickets_tickets_hook', $this );
+		}
+
+		/**
+		 * Add all the hooks for the All Tickets page.
+		 *
+		 * @since TBD
+		 *
+		 * @return void
+		 */
+		public function add_all_tickets_hooks() {
+			error_log( 'add_all_tickets_hooks: '. $this->class_name );
+			add_filter( 'tec_tickets_all_tickets_table_provider_options', [ $this, 'filter_all_tickets_table_provider_options' ] );
+			add_filter( 'tec_tickets_all_tickets_table_event_meta_keys', [ $this, 'filter_all_tickets_table_event_meta_keys' ] );
 		}
 
 		/**
@@ -3275,17 +3299,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return string
 		 */
 		public function get_event_key() {
-			if ( property_exists( $this, 'event_key' ) ) {
-				// EDD module uses a static event_key so we need to check for it or we'll fatal
-				$prop = new ReflectionProperty( $this, 'event_key' );
-				if ( $prop->isStatic() ) {
-					return $prop->get_value();
-				}
-
-				return $this->event_key;
-			}
-
-			return '';
+			return $this->event_key;
 		}
 
 		/**
@@ -4718,6 +4732,38 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function deactivate(): void {
 			unset( self::$active_modules[ get_class( $this ) ] );
+		}
+
+		/**
+		 * Filter providers for the all tickets table.
+		 *
+		 * @since TBD
+		 *
+		 * @param string[] $provider_options The list of provider options.
+		 *
+		 * @return string[] The filtered list of provider options.
+		 */
+		public function filter_all_tickets_table_provider_options( $provider_options ) {
+			error_log( 'filter_all_tickets_table_provider_options: ' . print_r( $provider_options, true ) );
+			$provider_options[ $this->ticket_object ] = $this->plugin_name;
+
+			return $provider_options;
+		}
+
+		/**
+		 * Filter event meta keys for the all tickets table.
+		 *
+		 * @since TBD
+		 *
+		 * @param string[] $event_meta_keys The list of event meta keys.
+		 *
+		 * @return string[] The filtered list of event meta keys.
+		 */
+		public function filter_all_tickets_table_event_meta_keys( $event_meta_keys ) {
+			error_log( 'filter_all_tickets_table_event_meta_keys: ' . print_r( $event_meta_keys, true ) );
+			$event_meta_keys[ $this->ticket_object ] = $this->get_event_key();
+
+			return $event_meta_keys;
 		}
 
 		// @codingStandardsIgnoreEnd

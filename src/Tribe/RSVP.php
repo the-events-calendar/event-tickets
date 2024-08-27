@@ -2985,4 +2985,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		return $post_types;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function add_all_tickets_hooks() {
+		// We do not want to add Legacy Tribe Commerce tickets to the All Tickets page.
+	}
 }
