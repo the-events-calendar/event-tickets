@@ -106,8 +106,11 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 								],
 							],
 							'cardElementOptions' => [
-								// Intentionally empty to allow for filtering of available options from Stripe.
-								// @link https://docs.stripe.com/js/elements_object/create_element?type=card#elements_create-options
+								/**
+								 * Intentionally empty to allow for filtering of available options from Stripe.
+								 *
+								 * @link https://docs.stripe.com/js/elements_object/create_element?type=card#elements_create-options
+								 */
 							]
 						] );
 					},
