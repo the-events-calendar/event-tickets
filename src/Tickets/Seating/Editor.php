@@ -219,8 +219,8 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 		$layout_id = (string) $body['tribe-ticket']['seating']['layoutId'];
 
 		update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, $enabled );
-		update_post_meta( $post_id, META::META_KEY_ENABLED, $enabled );
-		update_post_meta( $post_id, META::META_KEY_LAYOUT_ID, $layout_id );
+		update_post_meta( $post_id, Meta::META_KEY_ENABLED, $enabled );
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, $layout_id );
 
 		if ( $seat_type ) {
 			update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, $seat_type );
