@@ -328,7 +328,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 		 * @param object              $ticket      Ticket that was just added.
 		 * @param array<string,mixed> $ticket_data The body of the request.
 		 */
-		do_action( 'tribe_tickets_ticket_added', $post_id, $ticket_id, $ticket_data );
+		do_action( 'tribe_tickets_ticket_added', $post_id, $ticket, $ticket_data );
 
 		$response = new WP_REST_Response( $this->get_readable_ticket_data( $ticket ) );
 		$response->set_status( 202 );

@@ -207,7 +207,8 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 			$body['tribe-ticket'],
 			$body['tribe-ticket']['seating'],
 			$body['tribe-ticket']['seating']['enabled'],
-			$body['tribe-ticket']['seating']['seatType']
+			$body['tribe-ticket']['seating']['seatType'],
+			$body['tribe-ticket']['seating']['layoutId']
 		)
 		) {
 			return;
@@ -215,8 +216,11 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 
 		$enabled   = (bool) $body['tribe-ticket']['seating']['enabled'];
 		$seat_type = (string) $body['tribe-ticket']['seating']['seatType'];
+		$layout_id = (string) $body['tribe-ticket']['seating']['layoutId'];
 
-		update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, $enabled ? '1' : '0' );
+		update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, $enabled );
+		update_post_meta( $post_id, META::META_KEY_ENABLED, $enabled );
+		update_post_meta( $post_id, META::META_KEY_LAYOUT_ID, $layout_id );
 
 		if ( $seat_type ) {
 			update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, $seat_type );

@@ -48,8 +48,10 @@ addFilter(
 function filterSetBodyDetails(body, clientId) {
 	const seatType = select(storeName).getTicketSeatType(clientId);
 	const eventCapacity = select(storeName).getEventCapacity();
+	const layoutId = select(storeName).getCurrentLayoutId();
 	body.append('ticket[seating][enabled]', seatType ? '1' : '0');
 	body.append('ticket[seating][seatType]', seatType);
+	body.append('ticket[seating][layoutId]', layoutId);
 	body.append('ticket[event_capacity]', eventCapacity);
 
 	// On first save of a ticket, lock the Layout.

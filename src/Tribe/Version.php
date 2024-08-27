@@ -95,7 +95,7 @@ class Tribe__Tickets__Version {
 
 		// It means it was a legacy ticket, set it to the one before
 		if ( ! $this->exists( $ticket ) ) {
-			$version = $this->legacy;
+			$version = Tribe__Tickets__Main::VERSION;
 		} else {
 			$version = get_post_meta( $ticket->ID, $this->meta_key, true );
 		}
