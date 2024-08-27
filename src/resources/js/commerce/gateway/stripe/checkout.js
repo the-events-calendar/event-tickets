@@ -476,19 +476,19 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		obj.cardElement = obj.stripeElements.create( 'cardNumber', {
 			showIcon: true,
 			iconStyle: 'default',
-			style: obj.checkout.cardElementOptions.style,
+			style: obj.checkout.cardElementStyle,
 		} );
 		obj.cardElement.mount( obj.selectors.cardNumber );
 		obj.cardElement.on( 'change', obj.onCardChange );
 
 		obj.cardExpiry = obj.stripeElements.create( 'cardExpiry', {
-			style: obj.checkout.cardElementOptions.style,
+			style: obj.checkout.cardElementStyle,
 		} );
 		obj.cardExpiry.mount( obj.selectors.cardExpiry );
 		obj.cardExpiry.on( 'change', obj.onCardChange );
 
 		obj.cardCvc = obj.stripeElements.create( 'cardCvc', {
-			style: obj.checkout.cardElementOptions.style,
+			style: obj.checkout.cardElementStyle,
 		} );
 		obj.cardCvc.mount( obj.selectors.cardCvc );
 		obj.cardCvc.on( 'change', obj.onCardChange );
@@ -503,7 +503,14 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @since TBD Pulled out `options` variable to allow filtering using `tec_tickets_commerce_stripe_checkout_localized_data`.
 	 */
 	obj.setupCompactCardElement = () => {
-		// Instantiate the CardElement with the options
+		const options = obj.checkout.cardElementOptions;
+
+		// If there are no customized style options being added, use the previously defined default.
+		if( ! options.style ){
+			options.style = obj.checkout.cardElementStyle;
+		}
+
+		// Instantiate the CardElement with the options.
 		obj.cardElement = obj.stripeElements.create( 'card', options );
 		obj.cardElement.mount( obj.selectors.cardElement );
 		obj.cardElement.on( 'change', obj.onCardChange );
