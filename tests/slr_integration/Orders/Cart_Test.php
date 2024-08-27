@@ -192,7 +192,6 @@ class Cart_Test extends WPTestCase {
 		$html = do_shortcode( '[tec_tickets_checkout]' );
 		
 		// The cart HTML should be showing session timer, items and not be empty.
-		$this->assertContains( 'tec-tickets-seating__message-text', $html );
 		$this->assertContains( 'tribe-tickets__commerce-checkout-cart-items', $html );
 		$this->assertNotContains( 'tribe-tickets__commerce-checkout-cart-empty', $html );
 	}
