@@ -192,4 +192,60 @@ class Cart_Test extends WPTestCase {
 		$this->assertNotContains( 'tribe-tickets__commerce-checkout-cart-empty', $html );
 	}
 	
+	public function test_clearing_tc_cart_when_token_is_expired() {
+		$post = self::factory()->post->create();
+		update_post_meta( $post, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $post, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		$ticket_1 = $this->create_tc_ticket( $post, 10 );
+		update_post_meta( $ticket_1, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		update_post_meta( $ticket_1, Meta::META_KEY_ENABLED, 1 );
+		$ticket_2 = $this->create_tc_ticket( $post, 20 );
+		update_post_meta( $ticket_2, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		update_post_meta( $ticket_2, Meta::META_KEY_ENABLED, 1 );
+		
+		// Create the expired session information.
+		$session = tribe( Session::class );
+		$session->add_entry( $post, 'test-token' );
+		$sessions_table = tribe( Sessions_Table::class );
+		$sessions_table->upsert( 'test-token', $post, time() - 100 );
+		$sessions_table->update_reservations( 'test-token', $this->create_mock_reservations_data( [ $ticket_1, $ticket_2 ], 2 ) );
+		
+		$tc_cart = tribe( TicketsCommerce_Cart::class );
+		
+		$tc_cart->add_ticket( $ticket_1, 2 );
+		$tc_cart->add_ticket( $ticket_2, 2 );
+		
+		$shortcode_manager = new Manager();
+		$shortcode_manager->add_shortcodes();
+		
+		$html = do_shortcode( '[tec_tickets_checkout]' );
+		
+		// As the session info is expired the cart should be empty.
+		$this->assertContains( 'tribe-tickets__commerce-checkout-cart-empty', $html );
+	}
+	
+	public function test_clearing_tc_cart_when_session_is_not_found() {
+		$post = self::factory()->post->create();
+		update_post_meta( $post, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $post, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		$ticket_1 = $this->create_tc_ticket( $post, 10 );
+		update_post_meta( $ticket_1, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		update_post_meta( $ticket_1, Meta::META_KEY_ENABLED, 1 );
+		$ticket_2 = $this->create_tc_ticket( $post, 20 );
+		update_post_meta( $ticket_2, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		update_post_meta( $ticket_2, Meta::META_KEY_ENABLED, 1 );
+		
+		$tc_cart = tribe( TicketsCommerce_Cart::class );
+		
+		$tc_cart->add_ticket( $ticket_1, 2 );
+		$tc_cart->add_ticket( $ticket_2, 2 );
+		
+		$shortcode_manager = new Manager();
+		$shortcode_manager->add_shortcodes();
+		
+		$html = do_shortcode( '[tec_tickets_checkout]' );
+		
+		// As we only have added seated tickets but no session data was added, the cart should be empty.
+		$this->assertContains( 'tribe-tickets__commerce-checkout-cart-empty', $html );
+	}
 }
