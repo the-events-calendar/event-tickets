@@ -3287,13 +3287,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Returns the meta key used to link ticket types with the base event.
 		 *
-		 * If the meta key cannot be determined the returned string will be empty.
 		 * Subclasses can override this if they use a key other than 'event_key'
 		 * for this purpose.
 		 *
-		 * @internal
-		 *
-		 * @throws ReflectionException Possible from calling ReflectionProperty().
+		 * @since TBD Removed check for static property. All static properties were removed over 2 major versions ago.
 		 *
 		 * @return string
 		 */
