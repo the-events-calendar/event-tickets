@@ -1124,6 +1124,10 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function it_should_delete_capacity_from_an_event() {
 		$event_id  = $this->factory()->event->create();
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		update_post_meta( $event_id, $tickets_handler->key_capacity, 20 );
+
 		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 1, [
 			'meta_input' => [
 				'_capacity'   => 10,
@@ -1136,9 +1140,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 			],
 		] );
 
-		$deleted_event = tribe_tickets_delete_capacity( $event_id );
-
-		$this->assertTrue( $deleted_event, 'Could not delete capacity for event' );
+		$this->assertTrue( tribe_tickets_delete_capacity( $event_id ), 'Could not delete capacity for event' );
 	}
 
 	/**
@@ -1151,6 +1153,11 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_delete_capacity_from_a_post() {
 		$this->allow_posts();
 		$post_id   = (int) $this->factory()->post->create();
+
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		update_post_meta( $post_id, $tickets_handler->key_capacity, 20 );
+
 		$ticket_id = $this->create_paypal_ticket_basic( $post_id, 1, [
 			'meta_input' => [
 				'_capacity'   => 10,
@@ -1163,9 +1170,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 			],
 		] );
 
-		$deleted_event = tribe_tickets_delete_capacity( $post_id );
-
-		$this->assertTrue( $deleted_event, 'Could not delete capacity for post' );
+		$this->assertTrue( tribe_tickets_delete_capacity( $post_id ), 'Could not delete capacity for post' );
 	}
 
 	/**
