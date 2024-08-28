@@ -3230,7 +3230,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * @inheritDoc
 	 */
-	public function add_all_tickets_hooks() {
-		// We do not want to add Legacy Tribe Commerce tickets to the All Tickets page.
+	public function add_admin_tickets_hooks() {
+		// We do not want to add Legacy Tribe Commerce tickets to the Admin Tickets page.
 	}
 }
