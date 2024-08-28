@@ -155,7 +155,7 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 	// test
 	public function test_render_tec_tickets_admin_tickets_page() {
 		$this->prepare_test_data();
-		codecept_debug( $this->page->get_ticket_post_types() );
+
 		$_GET['status-filter'] = 'all';
 		$_GET['provider-filter'] = 'tec_tc_ticket';
 		$this->set_class_fn_return( 'DateTime', 'diff', (object) [

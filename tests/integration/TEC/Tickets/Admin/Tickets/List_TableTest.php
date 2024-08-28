@@ -204,7 +204,7 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 		$_GET['status-filter'] = 'all';
 		$_GET['provider-filter'] = 'tec_tc_ticket';
 		$this->list_table->prepare_items();
-		codecept_debug( $this->list_table->query );
+
 		$this->assertNotEmpty( $this->list_table->items );
 		$this->assertEquals( count( $this->ticket_ids ), count( $this->list_table->items ) );
 	}
