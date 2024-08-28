@@ -4078,7 +4078,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode ) {
 					$capacity = $data['tribe-ticket']['capacity'];
 				} elseif ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $mode ) {
-					// When using Global we don't set a ticket cap
+					// When using Global we don't set a ticket cap.
 					$capacity = null;
 				} elseif ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $mode ) {
 					$capacity = $data['tribe-ticket']['capacity'];
