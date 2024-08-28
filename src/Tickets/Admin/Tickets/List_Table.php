@@ -355,7 +355,7 @@ class List_Table extends WP_List_Table {
 		 *
 		 * @return string
 		 */
-		return apply_filters( 'tec_tickets_admin_tickets_table_column_default', $default, $item, $column_name );
+		$default = apply_filters( 'tec_tickets_admin_tickets_table_column_default', $default, $item, $column_name );
 
 		/**
 		 * Filters the default column value for the All Tickets Table.
