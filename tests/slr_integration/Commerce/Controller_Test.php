@@ -6,6 +6,7 @@ use Closure;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Seating\Meta;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
@@ -288,6 +289,14 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertEquals( 20 - 5, $ticket_5->inventory() );
 
 		$this->assertEquals( 100 - 17, $global_stock->get_stock_level(), 'Global stock should be 100-17 = 83' );
+
+		update_post_meta( $ticket_id1, Ticket::$stock_meta_key, -1 );
+
+		// Refresh the ticket objects.
+		$ticket_1 = tribe( Module::class )->get_ticket( $event_id, $ticket_id1 );
+		$ticket_2 = tribe( Module::class )->get_ticket( $event_id, $ticket_id2 );
+		$this->assertEquals( 0, $ticket_1->stock() );
+		$this->assertEquals( 30 - 5, $ticket_2->stock() );
 	}
 
 	/**
