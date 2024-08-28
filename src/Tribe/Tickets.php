@@ -4070,6 +4070,27 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				do_action( 'tec_tickets_ticket_add', $post_id, $ticket, $data, __CLASS__ );
 			}
 
+			if ( ! empty( $data['tribe-ticket']['capacity'] ) ) {
+				$mode = empty( $data['tribe-ticket']['mode'] ) ? Tribe__Tickets__Global_Stock::OWN_STOCK_MODE : $data['tribe-ticket']['mode'];
+
+				$mode = in_array( $mode, [ Tribe__Tickets__Global_Stock::OWN_STOCK_MODE, Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE ], true ) ? $mode : Tribe__Tickets__Global_Stock::OWN_STOCK_MODE;
+
+				if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode ) {
+					$capacity = $data['tribe-ticket']['capacity'];
+				} elseif ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $mode ) {
+					// When using Global we don't set a ticket cap
+					$capacity = null;
+				} elseif ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $mode ) {
+					$capacity = $data['tribe-ticket']['capacity'];
+				} else {
+					$capacity = -1;
+				}
+
+				if ( null !== $capacity ) {
+					update_post_meta( $ticket->ID, $tickets_handler->key_capacity, $capacity );
+				}
+			}
+
 			$tickets_handler->toggle_manual_update_flag( false );
 
 			$post = get_post( $post_id );
