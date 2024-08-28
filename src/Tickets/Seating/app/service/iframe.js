@@ -68,6 +68,24 @@ export async function initServiceIframe(iframe) {
 	return iframe;
 }
 
+/**
+ * @typedef {Object} ResizeData
+ * @property {number} height The new height.
+ */
+
+/**
+ * Handles resize requests.
+ *
+ * @since TBD
+ *
+ * @param {ResizeData} data The new height.
+ * @param {HTMLDocument|null} dom The document to use to search for the iframe element.
+ */
+export function handleResize(data, dom) {
+	const iframe = getIframeElement(dom);
+	iframe.style.height = data.height + 'px';
+}
+
 window.tec = window.tec || {};
 window.tec.tickets.seating = window.tec.tickets.seating || {};
 window.tec.tickets.seating.service = window.tec.tickets.seating.service || {};
