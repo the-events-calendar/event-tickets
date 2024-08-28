@@ -4652,6 +4652,47 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			return $this->class_name;
 		}
 
+		/**
+		 * Removes this module from the list of active modules.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @return void This module is removed from the list of active modules, if it was active.
+		 */
+		public function deactivate(): void {
+			unset( self::$active_modules[ get_class( $this ) ] );
+		}
+
+		/**
+		 * Filter providers for the all tickets table.
+		 *
+		 * @since TBD
+		 *
+		 * @param string[] $provider_options The list of provider options.
+		 *
+		 * @return string[] The filtered list of provider options.
+		 */
+		public function filter_all_tickets_table_provider_options( $provider_options ) {
+			$provider_options[ $this->ticket_object ] = $this->plugin_name;
+
+			return $provider_options;
+		}
+
+		/**
+		 * Filter event meta keys for the all tickets table.
+		 *
+		 * @since TBD
+		 *
+		 * @param string[] $event_meta_keys The list of event meta keys.
+		 *
+		 * @return string[] The filtered list of event meta keys.
+		 */
+		public function filter_all_tickets_table_event_meta_keys( $event_meta_keys ) {
+			$event_meta_keys[ $this->ticket_object ] = $this->get_event_key();
+
+			return $event_meta_keys;
+		}
+
 		/************************
 		 *                      *
 		 *  Deprecated Methods  *
@@ -4717,47 +4758,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		final protected function ajax_ok( $data ) {
 			_deprecated_function( __METHOD__, '4.6.2', 'wp_send_json_success()' );
 			wp_send_json_success( $data );
-		}
-
-		/**
-		 * Removes this module from the list of active modules.
-		 *
-		 * @since 5.8.0
-		 *
-		 * @return void This module is removed from the list of active modules, if it was active.
-		 */
-		public function deactivate(): void {
-			unset( self::$active_modules[ get_class( $this ) ] );
-		}
-
-		/**
-		 * Filter providers for the all tickets table.
-		 *
-		 * @since TBD
-		 *
-		 * @param string[] $provider_options The list of provider options.
-		 *
-		 * @return string[] The filtered list of provider options.
-		 */
-		public function filter_all_tickets_table_provider_options( $provider_options ) {
-			$provider_options[ $this->ticket_object ] = $this->plugin_name;
-
-			return $provider_options;
-		}
-
-		/**
-		 * Filter event meta keys for the all tickets table.
-		 *
-		 * @since TBD
-		 *
-		 * @param string[] $event_meta_keys The list of event meta keys.
-		 *
-		 * @return string[] The filtered list of event meta keys.
-		 */
-		public function filter_all_tickets_table_event_meta_keys( $event_meta_keys ) {
-			$event_meta_keys[ $this->ticket_object ] = $this->get_event_key();
-
-			return $event_meta_keys;
 		}
 
 		// @codingStandardsIgnoreEnd
