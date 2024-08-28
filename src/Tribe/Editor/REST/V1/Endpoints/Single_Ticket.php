@@ -325,7 +325,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 		 * @since TBD Added the `$ticket` and `$body` parameters.
 		 *
 		 * @param int                 $post_id     ID of post the ticket is attached to.
-		 * @param object              $ticket      Ticket that was just added.
+		 * @param int              $ticket      Ticket ID that was just added.
 		 * @param array<string,mixed> $ticket_data The body of the request.
 		 */
 		do_action( 'tribe_tickets_ticket_added', $post_id, $ticket, $ticket_data );
