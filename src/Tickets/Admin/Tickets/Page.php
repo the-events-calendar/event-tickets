@@ -34,14 +34,14 @@ class Page {
 	 *
 	 * @var string
 	 */
-	public static $slug = 'tec-tickets-all-tickets';
+	public static $slug = 'tec-tickets-admin-tickets';
 
 	/**
 	 * Event Tickets All Tickets page hook suffix.
 	 *
 	 * @var string
 	 */
-	public static $hook_suffix = 'tickets_page_tec-tickets-all-tickets';
+	public static $hook_suffix = 'tickets_page_tec-tickets-admin-tickets';
 
 	/**
 	 * The provider filter query key.
@@ -74,7 +74,7 @@ class Page {
 		 *
 		 * @return array
 		 */
-		return apply_filters( 'tec_tickets_all_tickets_table_provider_options', [] );
+		return apply_filters( 'tec_tickets_admin_tickets_table_provider_options', [] );
 	}
 
 	/**
@@ -157,7 +157,7 @@ class Page {
 		 *
 		 * @param string $url The URL to the Event Tickets All Tickets page.
 		 */
-		return apply_filters( 'tec_tickets_all_tickets_page_url', $url );
+		return apply_filters( 'tec_tickets_admin_tickets_page_url', $url );
 	}
 
 	/**
@@ -165,7 +165,7 @@ class Page {
 	 *
 	 * @since TBD
 	 */
-	public function add_tec_tickets_all_tickets_page() {
+	public function add_tec_tickets_admin_tickets_page() {
 		$admin_pages = tribe( 'admin.pages' );
 
 		$admin_pages->register_page(
@@ -177,7 +177,7 @@ class Page {
 				'position' => 1.2,
 				'callback' => [
 					$this,
-					'render_tec_tickets_all_tickets_page',
+					'render_tec_tickets_admin_tickets_page',
 				],
 			]
 		);
@@ -218,8 +218,8 @@ class Page {
 	 *
 	 * @return void
 	 */
-	public function render_tec_tickets_all_tickets_page() {
-		tribe_asset_enqueue_group( 'event-tickets-admin-all-tickets' );
+	public function render_tec_tickets_admin_tickets_page() {
+		tribe_asset_enqueue_group( 'event-tickets-admin-tickets' );
 
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
@@ -231,6 +231,6 @@ class Page {
 			'edit_posts_url' => $this->get_link_to_edit_posts(),
 		];
 
-		$admin_views->template( 'tickets', $context );
+		$admin_views->template( 'admin-tickets', $context );
 	}
 }

@@ -35,19 +35,19 @@ $content         = sprintf(
 <h1>
 	<?php esc_html_e( 'All Tickets', 'event-tickets' ); ?>
 </h1>
-<div class="tec-tickets-admin-all-tickets-no-tickets-wrap">
-	<div class="tec-tickets-admin-all-tickets-no-tickets-inner-wrap">
+<div class="tec-tickets-admin-tickets-no-tickets-wrap">
+	<div class="tec-tickets-admin-tickets-no-tickets-inner-wrap">
 		<div>
 			<img
-				class="tec-tickets-admin-all-tickets-no-tickets-icon"
+				class="tec-tickets-admin-tickets-no-tickets-icon"
 				src="<?php echo esc_url( tribe_resource_url( 'icons/no-tickets.svg', false, null, \Tribe__Tickets__Main::instance() ) ); ?>"
 				alt="No tickets icon"
 				/>
 		</div>
-		<div class="tec-tickets-admin-all-tickets-no-tickets-heading">
+		<div class="tec-tickets-admin-tickets-no-tickets-heading">
 			<?php esc_html_e( 'Nothing here yet.', 'event-tickets' ); ?>
 		</div>
-		<div class="tec-tickets-admin-all-tickets-no-tickets-content">
+		<div class="tec-tickets-admin-tickets-no-tickets-content">
 			<?php
 				echo wp_kses_post( $content );
 			?>

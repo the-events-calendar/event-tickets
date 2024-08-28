@@ -35,6 +35,12 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 		parent::setUp();
 
 		$this->page = new Page();
+
+		add_filter( 'tec_tickets_admin_tickets_table_provider_options', function() {
+			return [
+				'tec_tc_ticket' => 'Tickets Commerce',
+			];
+		} );
 	}
 
 	/**
@@ -147,20 +153,23 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	// test
-	public function test_render_tec_tickets_all_tickets_page() {
+	public function test_render_tec_tickets_admin_tickets_page() {
 		$this->prepare_test_data();
 
 		$_GET['status-filter'] = 'all';
+		$_GET['provider-filter'] = 'tec_tc_ticket';
 		$this->set_class_fn_return( 'DateTime', 'diff', (object) [
 			'days' => 999,
 			'invert' => false,
 		] );
 		ob_start();
-		$this->page->render_tec_tickets_all_tickets_page();
+		$this->page->render_tec_tickets_admin_tickets_page();
 		$actual = ob_get_clean();
 		preg_match( '/name=\"_wpnonce\" value=\"([^\"]+)\"/', $actual, $matches );
-		$nonce = $matches[1];
-		$actual = str_replace( $nonce, 'WP_NONCE', $actual );
+		if ( count( $matches ) > 1 ) {
+			$nonce = $matches[1];
+			$actual = str_replace( $nonce, 'WP_NONCE', $actual );
+		}
 		$actual = str_replace( $this->event_ids, 'EVENT_ID', $actual );
 		$actual = str_replace( $this->ticket_ids, 'TICKET_ID', $actual );
 		$actual = preg_replace( '/Event \d/', 'Event EVENT_NUMBER', $actual );
@@ -172,7 +181,7 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 	// test
 	public function test_render_tec_tickets_no_tickets_page() {
 		ob_start();
-		$this->page->render_tec_tickets_all_tickets_page();
+		$this->page->render_tec_tickets_admin_tickets_page();
 		$actual = ob_get_clean();
 		$this->assertMatchesHtmlSnapshot( $actual );
 	}

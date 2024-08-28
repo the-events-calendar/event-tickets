@@ -12,11 +12,11 @@
  */
 
 ?>
-<div class="tec-tickets-all-tickets-table-column-header-name">
-	<div class="tec-tickets-all-tickets-table-column-header-name-icon">
+<div class="tec-tickets-admin-tickets-table-column-header-name">
+	<div class="tec-tickets-admin-tickets-table-column-header-name-icon">
 		<?php echo wp_kses_post( $icon_html ); ?>
 	</div>
-	<div class="tec-tickets-all-tickets-table-column-header-name-ticket-name">
+	<div class="tec-tickets-admin-tickets-table-column-header-name-ticket-name">
 		<?php echo wp_kses_post( $ticket_link ); ?>
 	</div>
 </div>

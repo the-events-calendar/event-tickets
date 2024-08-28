@@ -41,7 +41,7 @@ class Hooks extends Service_Provider {
 	 * @since TBD
 	 */
 	protected function add_actions() {
-		add_action( 'admin_menu', tribe_callback( Page::class, 'add_tec_tickets_all_tickets_page' ), 15 );
+		add_action( 'admin_menu', tribe_callback( Page::class, 'add_tec_tickets_admin_tickets_page' ), 15 );
 		add_action( 'current_screen', tribe_callback( Screen_Options::class, 'init' ) );
 	}
 
