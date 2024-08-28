@@ -1099,7 +1099,7 @@ class List_Table extends WP_List_Table {
 			'past'       => esc_html__( 'Past Tickets', 'event-tickets' ),
 			'upcoming'   => esc_html__( 'Upcoming Tickets', 'event-tickets' ),
 			'discounted' => esc_html__( 'Discounted Tickets', 'event-tickets' ),
-			'all'        => esc_html__( 'Admin Tickets', 'event-tickets' ),
+			'all'        => esc_html__( 'All Tickets', 'event-tickets' ),
 		];
 
 		/**
