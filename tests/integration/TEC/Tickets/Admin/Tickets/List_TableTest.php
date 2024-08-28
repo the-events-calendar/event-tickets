@@ -5,7 +5,6 @@ namespace TEC\Tickets\Admin\Tickets;
 use TEC\Tickets\Admin\Tickets\List_Table;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
-use Tribe__Tickets__Ticket_Object;
 
 /**
  * Tests for the List_Table class.
@@ -37,6 +36,8 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 		// before
 		parent::setUp();
 
+		add_filter( 'tec_tickets_admin_tickets_table_provider_options',[ $this, 'add_tc_ticket_type' ] );
+
 		$this->prepare_test_data();
 		$this->list_table = new List_Table();
 	}
@@ -50,8 +51,16 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 			wp_delete_post( $id, true );
 		}
 
+		remove_filter( 'tec_tickets_admin_tickets_table_provider_options', [ $this, 'add_tc_ticket_type' ] );
+
 		// then
 		parent::tearDown();
+	}
+
+	public function add_tc_ticket_type( $providers ) {
+		$providers['tec_tc_ticket'] = 'Tickets Commerce';
+
+		return $providers;
 	}
 
 	/**
@@ -193,7 +202,9 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 	// test
 	public function test_prepare_items() {
 		$_GET['status-filter'] = 'all';
+		$_GET['provider-filter'] = 'tec_tc_ticket';
 		$this->list_table->prepare_items();
+		codecept_debug( $this->list_table->query );
 		$this->assertNotEmpty( $this->list_table->items );
 		$this->assertEquals( count( $this->ticket_ids ), count( $this->list_table->items ) );
 	}

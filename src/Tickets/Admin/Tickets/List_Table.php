@@ -927,11 +927,11 @@ class List_Table extends WP_List_Table {
 		$per_page     = $this->get_items_per_page( $this->per_page_option );
 
 		$args = [
-			'all_tickets_list_table' => true,
-			'offset'                 => ( $current_page - 1 ) * $per_page,
-			'posts_per_page'         => $per_page,
-			'return_total_found'     => true,
-			'post_type'              => $this->get_ticket_post_type(),
+			'admin_tickets_list_table' => true,
+			'offset'                   => ( $current_page - 1 ) * $per_page,
+			'posts_per_page'           => $per_page,
+			'return_total_found'       => true,
+			'post_type'                => $this->get_ticket_post_type(),
 		];
 
 		$args = $this->modify_filter_args( $args );
@@ -996,7 +996,7 @@ class List_Table extends WP_List_Table {
 	 */
 	public function filter_query_clauses( $clauses, $query ) {
 		// Only modify if not the main query and is the All Tickets Table query.
-		if ( $query->is_main_query() || empty( $query->query_vars['all_tickets_list_table'] ) ) {
+		if ( $query->is_main_query() || empty( $query->query_vars['admin_tickets_list_table'] ) ) {
 			return $clauses;
 		}
 
