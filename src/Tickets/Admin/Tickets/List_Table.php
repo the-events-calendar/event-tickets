@@ -1,6 +1,6 @@
 <?php
 /**
- * The list table for the All Tickets screen.
+ * The list table for the Admin Tickets screen.
  *
  * @since  TBD
  *
@@ -87,7 +87,7 @@ class List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Get the default status for the All Tickets Table.
+	 * Get the default status for the Admin Tickets Table.
 	 *
 	 * @since TBD
 	 *
@@ -95,11 +95,11 @@ class List_Table extends WP_List_Table {
 	 */
 	public static function get_default_status() {
 		/**
-		 * Filters the default status for the All Tickets Table.
+		 * Filters the default status for the Admin Tickets Table.
 		 *
 		 * @since TBD
 		 *
-		 * @param string $default_status The default status for the All Tickets Table.
+		 * @param string $default_status The default status for the Admin Tickets Table.
 		 *
 		 * @return string
 		 */
@@ -107,7 +107,7 @@ class List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Get the default sort by for the All Tickets Table.
+	 * Get the default sort by for the Admin Tickets Table.
 	 *
 	 * @since TBD
 	 *
@@ -115,11 +115,11 @@ class List_Table extends WP_List_Table {
 	 */
 	public static function get_default_sort_by() {
 		/**
-		 * Filters the default sort by for the All Tickets Table.
+		 * Filters the default sort by for the Admin Tickets Table.
 		 *
 		 * @since TBD
 		 *
-		 * @param string $default_sort_by The default sort by for the All Tickets Table.
+		 * @param string $default_sort_by The default sort by for the Admin Tickets Table.
 		 *
 		 * @return string
 		 */
@@ -127,7 +127,7 @@ class List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Get the default sort order for the All Tickets Table.
+	 * Get the default sort order for the Admin Tickets Table.
 	 *
 	 * @since TBD
 	 *
@@ -135,11 +135,11 @@ class List_Table extends WP_List_Table {
 	 */
 	public static function get_default_sort_order() {
 		/**
-		 * Filters the default sort order for the All Tickets Table.
+		 * Filters the default sort order for the Admin Tickets Table.
 		 *
 		 * @since TBD
 		 *
-		 * @param string $default_sort_order The default sort order for the All Tickets Table.
+		 * @param string $default_sort_order The default sort order for the Admin Tickets Table.
 		 *
 		 * @return string
 		 */
@@ -198,11 +198,11 @@ class List_Table extends WP_List_Table {
 		];
 
 		/**
-		 * Filters the columns for the All Tickets Table.
+		 * Filters the columns for the Admin Tickets Table.
 		 *
 		 * @since TBD
 		 *
-		 * @param array $table_columns The columns for the All Tickets Table.
+		 * @param array $table_columns The columns for the Admin Tickets Table.
 		 *
 		 * @return array
 		 */
@@ -265,11 +265,11 @@ class List_Table extends WP_List_Table {
 		];
 
 		/**
-		 * Filter the default hidden columns for the All Tickets Table.
+		 * Filter the default hidden columns for the Admin Tickets Table.
 		 *
 		 * @since TBD
 		 *
-		 * @param array $default_hidden_columns The default hidden columns for the All Tickets Table.
+		 * @param array $default_hidden_columns The default hidden columns for the Admin Tickets Table.
 		 *
 		 * @return array
 		 */
@@ -295,11 +295,11 @@ class List_Table extends WP_List_Table {
 		];
 
 		/**
-		 * Filters the sortable columns for the All Tickets Table.
+		 * Filters the sortable columns for the Admin Tickets Table.
 		 *
 		 * @since TBD
 		 *
-		 * @param array $sortable_columns The sortable columns for the All Tickets Table.
+		 * @param array $sortable_columns The sortable columns for the Admin Tickets Table.
 		 *
 		 * @return array
 		 */
@@ -345,11 +345,11 @@ class List_Table extends WP_List_Table {
 		$default = esc_html( $item->$column_name );
 
 		/**
-		 * Filters the default column value for the All Tickets Table.
+		 * Filters the default column value for the Admin Tickets Table.
 		 *
 		 * @since TBD
 		 *
-		 * @param string                        $default     The default column value for the All Tickets Table.
+		 * @param string                        $default     The default column value for the Admin Tickets Table.
 		 * @param Tribe__Tickets__Ticket_Object $item        The current item.
 		 * @param string                        $column_name The column name.
 		 *
@@ -358,11 +358,11 @@ class List_Table extends WP_List_Table {
 		$default = apply_filters( 'tec_tickets_admin_tickets_table_column_default', $default, $item, $column_name );
 
 		/**
-		 * Filters the default column value for the All Tickets Table.
+		 * Filters the default column value for the Admin Tickets Table.
 		 *
 		 * @since TBD
 		 *
-		 * @param string                        $default The default column value for the All Tickets Table.
+		 * @param string                        $default The default column value for the Admin Tickets Table.
 		 * @param Tribe__Tickets__Ticket_Object $item    The current item.
 		 *
 		 * @return string
@@ -405,11 +405,11 @@ class List_Table extends WP_List_Table {
 		$name = $template->template( 'admin-tickets/column/name', $context, false );
 
 		/**
-		 * Filters the name for the All Tickets Table.
+		 * Filters the name for the Admin Tickets Table.
 		 *
 		 * @since TBD
 		 *
-		 * @param string                        $name The name for the All Tickets Table.
+		 * @param string                        $name The name for the Admin Tickets Table.
 		 * @param Tribe__Tickets__Ticket_Object $item The current item.
 		 *
 		 * @return string
@@ -430,11 +430,11 @@ class List_Table extends WP_List_Table {
 		$id = (string) $item->ID;
 
 		/**
-		 * Filters the ID for the All Tickets Table.
+		 * Filters the ID for the Admin Tickets Table.
 		 *
 		 * @since TBD
 		 *
-		 * @param string                        $id   The ID for the All Tickets Table.
+		 * @param string                        $id   The ID for the Admin Tickets Table.
 		 * @param Tribe__Tickets__Ticket_Object $item The current item.
 		 *
 		 * @return string
@@ -518,22 +518,22 @@ class List_Table extends WP_List_Table {
 		];
 
 		/**
-		 * Filters the actions for the event in the All Tickets Table.
+		 * Filters the actions for the event in the Admin Tickets Table.
 		 *
 		 * @since TBD
 		 *
-		 * @param array $actions The actions for the event in the All Tickets Table.
+		 * @param array $actions The actions for the event in the Admin Tickets Table.
 		 */
 		$actions = apply_filters( 'tec_tickets_admin_tickets_table_event_actions', $actions, $event, $item );
 
 		$event = sprintf( '%1$s %2$s', $edit_post_link, $this->row_actions( $actions ) );
 
 		/**
-		 * Filters the event for the All Tickets Table.
+		 * Filters the event for the Admin Tickets Table.
 		 *
 		 * @since TBD
 		 *
-		 * @param string                        $event The event for the All Tickets Table.
+		 * @param string                        $event The event for the Admin Tickets Table.
 		 * @param Tribe__Tickets__Ticket_Object $item  The current item.
 		 *
 		 * @return string
@@ -566,11 +566,11 @@ class List_Table extends WP_List_Table {
 		);
 
 		/**
-		 * Filters the start date for the All Tickets Table.
+		 * Filters the start date for the Admin Tickets Table.
 		 *
 		 * @since TBD
 		 *
-		 * @param string                        $start The start date for the All Tickets Table.
+		 * @param string                        $start The start date for the Admin Tickets Table.
 		 * @param Tribe__Tickets__Ticket_Object $item  The current item.
 		 *
 		 * @return string
@@ -603,11 +603,11 @@ class List_Table extends WP_List_Table {
 		);
 
 		/**
-		 * Filters the end date for the All Tickets Table.
+		 * Filters the end date for the Admin Tickets Table.
 		 *
 		 * @since TBD
 		 *
-		 * @param string                        $end  The end date for the All Tickets Table.
+		 * @param string                        $end  The end date for the Admin Tickets Table.
 		 * @param Tribe__Tickets__Ticket_Object $item The current item.
 		 *
 		 * @return string
@@ -640,11 +640,11 @@ class List_Table extends WP_List_Table {
 		$days_left = (string) $interval->days;
 
 		/**
-		 * Filters the number of days left for the All Tickets Table.
+		 * Filters the number of days left for the Admin Tickets Table.
 		 *
 		 * @since TBD
 		 *
-		 * @param string                        $days_left The number of days left for the All Tickets Table.
+		 * @param string                        $days_left The number of days left for the Admin Tickets Table.
 		 * @param Tribe__Tickets__Ticket_Object $item      The current item.
 		 *
 		 * @return string
@@ -669,11 +669,11 @@ class List_Table extends WP_List_Table {
 		$price = tribe_format_currency( number_format( $item->price, 2 ), $item->ID );
 
 		/**
-		 * Filters the price for the All Tickets Table.
+		 * Filters the price for the Admin Tickets Table.
 		 *
 		 * @since TBD
 		 *
-		 * @param string                        $price The price for the All Tickets Table.
+		 * @param string                        $price The price for the Admin Tickets Table.
 		 * @param Tribe__Tickets__Ticket_Object $item  The current item.
 		 *
 		 * @return string
@@ -698,11 +698,11 @@ class List_Table extends WP_List_Table {
 		$sold = (string) $item->qty_sold();
 
 		/**
-		 * Filters the number of tickets sold for the All Tickets Table.
+		 * Filters the number of tickets sold for the Admin Tickets Table.
 		 *
 		 * @since TBD
 		 *
-		 * @param string                        $sold The number of tickets sold for the All Tickets Table.
+		 * @param string                        $sold The number of tickets sold for the Admin Tickets Table.
 		 * @param Tribe__Tickets__Ticket_Object $item The current item.
 		 *
 		 * @return string
@@ -728,11 +728,11 @@ class List_Table extends WP_List_Table {
 		$remaining = $available < 0 ? '-' : (string) $available;
 
 		/**
-		 * Filters the number of tickets remaining for the All Tickets Table.
+		 * Filters the number of tickets remaining for the Admin Tickets Table.
 		 *
 		 * @since TBD
 		 *
-		 * @param string                        $remaining The number of tickets remaining for the All Tickets Table.
+		 * @param string                        $remaining The number of tickets remaining for the Admin Tickets Table.
 		 * @param Tribe__Tickets__Ticket_Object $item      The current item.
 		 *
 		 * @return string
@@ -757,11 +757,11 @@ class List_Table extends WP_List_Table {
 		$sales = tribe_format_currency( number_format( $item->qty_sold() * $item->price, 2 ), $item->ID );
 
 		/**
-		 * Filters the total sales for the All Tickets Table.
+		 * Filters the total sales for the Admin Tickets Table.
 		 *
 		 * @since TBD
 		 *
-		 * @param string                        $sales The total sales for the All Tickets Table.
+		 * @param string                        $sales The total sales for the Admin Tickets Table.
 		 * @param Tribe__Tickets__Ticket_Object $item  The current item.
 		 *
 		 * @return string
@@ -774,7 +774,7 @@ class List_Table extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $args The arguments used to query the tickets for the All Tickets Table.
+	 * @param array $args The arguments used to query the tickets for the Admin Tickets Table.
 	 *
 	 * @return array
 	 */
@@ -822,7 +822,7 @@ class List_Table extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $args The arguments used to query the tickets for the All Tickets Table.
+	 * @param array $args The arguments used to query the tickets for the Admin Tickets Table.
 	 *
 	 * @return array
 	 */
@@ -938,11 +938,11 @@ class List_Table extends WP_List_Table {
 		$args = $this->modify_sort_args( $args );
 
 		/**
-		 * Filters the arguments used to query the tickets for the All Tickets Table.
+		 * Filters the arguments used to query the tickets for the Admin Tickets Table.
 		 *
 		 * @since TBD
 		 *
-		 * @param array $args The arguments used to query the tickets for the All Tickets Table.
+		 * @param array $args The arguments used to query the tickets for the Admin Tickets Table.
 		 *
 		 * @return array
 		 */
@@ -995,7 +995,7 @@ class List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function filter_query_clauses( $clauses, $query ) {
-		// Only modify if not the main query and is the All Tickets Table query.
+		// Only modify if not the main query and is the Admin Tickets Table query.
 		if ( $query->is_main_query() || empty( $query->query_vars['admin_tickets_list_table'] ) ) {
 			return $clauses;
 		}
@@ -1039,11 +1039,11 @@ class List_Table extends WP_List_Table {
 	 */
 	protected function get_event_meta_key(): string {
 		/**
-		 * Filters the event meta keys for the All Tickets Table.
+		 * Filters the event meta keys for the Admin Tickets Table.
 		 *
 		 * @since TBD
 		 *
-		 * @param array $event_meta_keys The event meta keys for the All Tickets Table.
+		 * @param array $event_meta_keys The event meta keys for the Admin Tickets Table.
 		 *
 		 * @return array
 		 */
@@ -1076,7 +1076,7 @@ class List_Table extends WP_List_Table {
 			'list_table'           => $this,
 			'status_options'       => $this->get_status_options(),
 			'current_status'       => $current_status,
-			'search_id'            => 'tec-tickets-all-tickets-search-input',
+			'search_id'            => 'tec-tickets-admin-tickets-search-input',
 			'search_value'         => tribe_get_request_var( 's' ),
 			'show_provider_filter' => $this->show_ticket_provider_filter(),
 			'provider_options'     => Page::get_provider_options(),
@@ -1099,15 +1099,15 @@ class List_Table extends WP_List_Table {
 			'past'       => esc_html__( 'Past Tickets', 'event-tickets' ),
 			'upcoming'   => esc_html__( 'Upcoming Tickets', 'event-tickets' ),
 			'discounted' => esc_html__( 'Discounted Tickets', 'event-tickets' ),
-			'all'        => esc_html__( 'All Tickets', 'event-tickets' ),
+			'all'        => esc_html__( 'Admin Tickets', 'event-tickets' ),
 		];
 
 		/**
-		 * Filters the status options for the All Tickets Table.
+		 * Filters the status options for the Admin Tickets Table.
 		 *
 		 * @since TBD
 		 *
-		 * @param array $status_options The status options for the All Tickets Table.
+		 * @param array $status_options The status options for the Admin Tickets Table.
 		 *
 		 * @return array
 		 */
