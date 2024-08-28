@@ -140,7 +140,7 @@ class Controller extends Controller_Contract {
 		$stock = (int) $meta_value;
 
 		if ( 0 > $stock ) {
-			// We are not syncing bugs. Seats can be infinite.
+			// We are not syncing bugs. Seats can NOT be infinite.
 			return;
 		}
 
