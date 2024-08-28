@@ -44,6 +44,7 @@ class MetaTest extends \Codeception\TestCase\WPTestCase {
 		$tickets_handler = tribe( 'tickets.handler' );
 		// Set a global capacity for the post of 217 tickets.
 		update_post_meta( $post_id, $tickets_handler->key_capacity, 217 );
+		update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, 217 );
 		$unlimited_ticket_id = $this->create_tc_ticket( $post_id, 3, [
 			'tribe-ticket' => [
 				'mode' => '',
@@ -117,6 +118,7 @@ class MetaTest extends \Codeception\TestCase\WPTestCase {
 		$tickets_handler = tribe( 'tickets.handler' );
 		// Set a global capacity for the post of 217 tickets.
 		update_post_meta( $post_id, $tickets_handler->key_capacity, 217 );
+		update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, 217 );
 		$unlimited_ticket_id = $this->create_tc_ticket( $post_id, 3, [
 			'tribe-ticket' => [
 				'mode' => '',

@@ -112,7 +112,7 @@ class Ticket_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( 0, tribe_tickets()->where( 'event', $post )->get_independent_capacity() );
 		$this->assertEquals( 0, tribe_tickets()->where( 'event', $post )->get_shared_capacity() );
 
-		update_post_meta( $post, Global_Stock::GLOBAL_STOCK_LEVEL, 117 );
+		update_post_meta( $post, tribe( 'tickets.handler' )->key_capacity, 117 );
 
 		$global_ticket   = $this->create_tc_ticket( $post, 1, [
 			'tribe-ticket' => [
@@ -285,7 +285,7 @@ class Ticket_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 				->where( 'global_stock_mode', Global_Stock::UNLIMITED_STOCK_MODE )->count()
 		);
 	}
-	
+
 	/**
 	 * It should return empty if event ID is 0.
 	 *
@@ -294,7 +294,7 @@ class Ticket_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 	public function should_return_empty_if_event_id_is_0(): void {
 		$this->assertEmpty( tribe_tickets()->where( 'event', 0 )->get_ids() );
 		$this->assertEquals( 0, tribe_tickets()->where( 'event', 0 )->count() );
-		
+
 		// Test with an array of event IDs.
 		$this->assertEmpty( tribe_tickets()->where( 'event', [ 0 ] )->get_ids() );
 		$this->assertEquals( 0, tribe_tickets()->where( 'event', [ 0 ] )->count() );
