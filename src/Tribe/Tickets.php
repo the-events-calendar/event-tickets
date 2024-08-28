@@ -1267,7 +1267,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Event cost may need to be formatted to the provider's currency settings.
 			add_filter( 'tribe_currency_cost', [ $this, 'maybe_format_event_cost' ], 10, 2 );
 
-			add_action( 'init', [ $this, 'add_all_tickets_hooks' ] );
+			add_action( 'init', [ $this, 'add_admin_tickets_hooks' ] );
 		}
 
 		/**
@@ -1307,7 +1307,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return void
 		 */
-		public function add_all_tickets_hooks() {
+		public function add_admin_tickets_hooks() {
 			add_filter( 'tec_tickets_admin_tickets_table_provider_options', [ $this, 'filter_admin_tickets_table_provider_options' ] );
 			add_filter( 'tec_tickets_admin_tickets_table_event_meta_keys', [ $this, 'filter_admin_tickets_table_event_meta_keys' ] );
 		}
