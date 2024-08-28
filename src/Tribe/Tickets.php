@@ -1301,7 +1301,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Add all the hooks for the All Tickets page.
+		 * Add all the hooks for the Admin Tickets page.
 		 *
 		 * @since TBD
 		 *
