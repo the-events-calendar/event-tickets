@@ -1308,8 +1308,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return void
 		 */
 		public function add_all_tickets_hooks() {
-			add_filter( 'tec_tickets_all_tickets_table_provider_options', [ $this, 'filter_all_tickets_table_provider_options' ] );
-			add_filter( 'tec_tickets_all_tickets_table_event_meta_keys', [ $this, 'filter_all_tickets_table_event_meta_keys' ] );
+			add_filter( 'tec_tickets_admin_tickets_table_provider_options', [ $this, 'filter_admin_tickets_table_provider_options' ] );
+			add_filter( 'tec_tickets_admin_tickets_table_event_meta_keys', [ $this, 'filter_admin_tickets_table_event_meta_keys' ] );
 		}
 
 		/**
@@ -4664,7 +4664,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Filter providers for the all tickets table.
+		 * Filter providers for the admin tickets table.
 		 *
 		 * @since TBD
 		 *
@@ -4672,14 +4672,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return string[] The filtered list of provider options.
 		 */
-		public function filter_all_tickets_table_provider_options( $provider_options ) {
+		public function filter_admin_tickets_table_provider_options( $provider_options ) {
 			$provider_options[ $this->ticket_object ] = $this->plugin_name;
 
 			return $provider_options;
 		}
 
 		/**
-		 * Filter event meta keys for the all tickets table.
+		 * Filter event meta keys for the admin tickets table.
 		 *
 		 * @since TBD
 		 *
@@ -4687,7 +4687,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return string[] The filtered list of event meta keys.
 		 */
-		public function filter_all_tickets_table_event_meta_keys( $event_meta_keys ) {
+		public function filter_admin_tickets_table_event_meta_keys( $event_meta_keys ) {
 			$event_meta_keys[ $this->ticket_object ] = $this->get_event_key();
 
 			return $event_meta_keys;

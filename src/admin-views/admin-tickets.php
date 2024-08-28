@@ -12,12 +12,12 @@
 
 $wrapper_classes = [
 	'wrap',
-	'tec-tickets__admin-all-tickets',
+	'tec-tickets__admin-tickets',
 ];
 ?>
 <div <?php tribe_classes( $wrapper_classes ); ?>>
 	<?php
-		$this->template( 'tickets/tickets' );
-		$this->template( 'tickets/no-tickets' );
+		$this->template( 'admin-tickets/tickets' );
+		$this->template( 'admin-tickets/no-tickets' );
 	?>
 </div>

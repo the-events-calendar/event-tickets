@@ -12,7 +12,7 @@
  */
 
 ?>
-<select name="status-filter" id="tec-tickets-all-tickets-status-filter">
+<select name="status-filter" id="tec-tickets-admin-tickets-status-filter">
 	<?php foreach ( $status_options as $value => $label ) : ?>
 		<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $value, $current_status ); ?>>
 			<?php echo esc_html( $label ); ?>

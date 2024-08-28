@@ -103,7 +103,7 @@ class List_Table extends WP_List_Table {
 		 *
 		 * @return string
 		 */
-		return apply_filters( 'tec_tickets_all_tickets_table_default_status', self::$default_status );
+		return apply_filters( 'tec_tickets_admin_tickets_table_default_status', self::$default_status );
 	}
 
 	/**
@@ -123,7 +123,7 @@ class List_Table extends WP_List_Table {
 		 *
 		 * @return string
 		 */
-		return apply_filters( 'tec_tickets_all_tickets_table_default_sort_by', self::$default_sort_by );
+		return apply_filters( 'tec_tickets_admin_tickets_table_default_sort_by', self::$default_sort_by );
 	}
 
 	/**
@@ -143,7 +143,7 @@ class List_Table extends WP_List_Table {
 		 *
 		 * @return string
 		 */
-		return apply_filters( 'tec_tickets_all_tickets_table_default_sort_order', self::$default_sort_order );
+		return apply_filters( 'tec_tickets_admin_tickets_table_default_sort_order', self::$default_sort_order );
 	}
 
 	/**
@@ -206,7 +206,7 @@ class List_Table extends WP_List_Table {
 		 *
 		 * @return array
 		 */
-		return apply_filters( 'tec_tickets_all_tickets_table_columns', $table_columns );
+		return apply_filters( 'tec_tickets_admin_tickets_table_columns', $table_columns );
 	}
 
 	/**
@@ -273,7 +273,7 @@ class List_Table extends WP_List_Table {
 		 *
 		 * @return array
 		 */
-		return apply_filters( 'tec_tickets_all_tickets_table_default_hidden_columns', $default_hidden_columns );
+		return apply_filters( 'tec_tickets_admin_tickets_table_default_hidden_columns', $default_hidden_columns );
 	}
 
 	/**
@@ -303,7 +303,7 @@ class List_Table extends WP_List_Table {
 		 *
 		 * @return array
 		 */
-		return apply_filters( 'tec_tickets_all_tickets_table_sortable_columns', $sortable_columns );
+		return apply_filters( 'tec_tickets_admin_tickets_table_sortable_columns', $sortable_columns );
 	}
 
 	/**
@@ -349,13 +349,25 @@ class List_Table extends WP_List_Table {
 		 *
 		 * @since TBD
 		 *
-		 * @param string $default The default column value for the All Tickets Table.
-		 * @param Tribe__Tickets__Ticket_Object $item The current item.
-		 * @param string $column_name The column name.
+		 * @param string                        $default     The default column value for the All Tickets Table.
+		 * @param Tribe__Tickets__Ticket_Object $item        The current item.
+		 * @param string                        $column_name The column name.
 		 *
 		 * @return string
 		 */
-		return apply_filters( 'tec_tickets_all_tickets_table_column_default', $default, $item, $column_name );
+		return apply_filters( 'tec_tickets_admin_tickets_table_column_default', $default, $item, $column_name );
+
+		/**
+		 * Filters the default column value for the All Tickets Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param string                        $default The default column value for the All Tickets Table.
+		 * @param Tribe__Tickets__Ticket_Object $item    The current item.
+		 *
+		 * @return string
+		 */
+		return apply_filters( "tec_tickets_admin_tickets_table_column_default_{$column_name}", $default, $item );
 	}
 
 	/**
@@ -379,7 +391,7 @@ class List_Table extends WP_List_Table {
 
 		$edit_post_url  = get_edit_post_link( $event );
 		$edit_post_link = sprintf(
-			'<a href="%s" class="tec-tickets-all-tickets-table-event-link" target="_blank" rel="nofollow noopener">%s</a>',
+			'<a href="%s" class="tec-tickets-admin-tickets-table-event-link" target="_blank" rel="nofollow noopener">%s</a>',
 			esc_url( $edit_post_url ),
 			esc_html( $item->name )
 		);
@@ -390,18 +402,19 @@ class List_Table extends WP_List_Table {
 			'ticket_link' => $edit_post_link,
 		];
 
-		$name = $template->template( 'tickets/column/name', $context, false );
+		$name = $template->template( 'admin-tickets/column/name', $context, false );
 
 		/**
 		 * Filters the name for the All Tickets Table.
 		 *
 		 * @since TBD
 		 *
-		 * @param string $name The name for the All Tickets Table.
+		 * @param string                        $name The name for the All Tickets Table.
+		 * @param Tribe__Tickets__Ticket_Object $item The current item.
 		 *
 		 * @return string
 		 */
-		return apply_filters( 'tec_tickets_all_tickets_table_column_name', $name, $item );
+		return apply_filters( 'tec_tickets_admin_tickets_table_column_name', $name, $item );
 	}
 
 	/**
@@ -421,11 +434,12 @@ class List_Table extends WP_List_Table {
 		 *
 		 * @since TBD
 		 *
-		 * @param string $id The ID for the All Tickets Table.
+		 * @param string                        $id   The ID for the All Tickets Table.
+		 * @param Tribe__Tickets__Ticket_Object $item The current item.
 		 *
 		 * @return string
 		 */
-		return apply_filters( 'tec_tickets_all_tickets_table_column_id', $id, $item );
+		return apply_filters( 'tec_tickets_admin_tickets_table_column_id', $id, $item );
 	}
 
 	/**
@@ -444,7 +458,7 @@ class List_Table extends WP_List_Table {
 
 			$ticket_settings_url  = add_query_arg( [ 'page' => Settings::$settings_page_id, ], admin_url( 'admin.php' ) );
 			$ticket_settings_link = sprintf(
-				'<a href="%s" class="tec-tickets-all-tickets-table-event-link" rel="nofollow noopener">%s</a>',
+				'<a href="%s" class="tec-tickets-admin-tickets-table-event-link" rel="nofollow noopener">%s</a>',
 				esc_url( $ticket_settings_url ),
 				esc_html__( 'Ticket Settings Page', 'event-tickets' )
 			);
@@ -465,7 +479,7 @@ class List_Table extends WP_List_Table {
 
 		$edit_post_url  = get_edit_post_link( $event );
 		$edit_post_link = sprintf(
-			'<a href="%s" class="tec-tickets-all-tickets-table-event-link" target="_blank" rel="nofollow noopener">%s</a>',
+			'<a href="%s" class="tec-tickets-admin-tickets-table-event-link" target="_blank" rel="nofollow noopener">%s</a>',
 			esc_url( $edit_post_url ),
 			get_the_title( $event )
 		);
@@ -479,7 +493,7 @@ class List_Table extends WP_List_Table {
 			admin_url( 'edit.php' )
 		);
 		$orders_report_link = sprintf(
-			'<a href="%s" class="tec-tickets-all-tickets-table-event-link" target="_blank" rel="nofollow noopener">%s</a>',
+			'<a href="%s" class="tec-tickets-admin-tickets-table-event-link" target="_blank" rel="nofollow noopener">%s</a>',
 			esc_url( $orders_report_url ),
 			esc_html__( 'Orders', 'event-tickets' )
 		);
@@ -493,7 +507,7 @@ class List_Table extends WP_List_Table {
 			admin_url( 'edit.php' )
 		);
 		$attendees_report_link = sprintf(
-			'<a href="%s" class="tec-tickets-all-tickets-table-event-link" target="_blank" rel="nofollow noopener">%s</a>',
+			'<a href="%s" class="tec-tickets-admin-tickets-table-event-link" target="_blank" rel="nofollow noopener">%s</a>',
 			esc_url( $attendees_report_url ),
 			esc_html__( 'Attendees', 'event-tickets' )
 		);
@@ -510,7 +524,7 @@ class List_Table extends WP_List_Table {
 		 *
 		 * @param array $actions The actions for the event in the All Tickets Table.
 		 */
-		$actions = apply_filters( 'tec_tickets_all_tickets_table_event_actions', $actions, $event, $item );
+		$actions = apply_filters( 'tec_tickets_admin_tickets_table_event_actions', $actions, $event, $item );
 
 		$event = sprintf( '%1$s %2$s', $edit_post_link, $this->row_actions( $actions ) );
 
@@ -519,11 +533,12 @@ class List_Table extends WP_List_Table {
 		 *
 		 * @since TBD
 		 *
-		 * @param string $event The event for the All Tickets Table.
+		 * @param string                        $event The event for the All Tickets Table.
+		 * @param Tribe__Tickets__Ticket_Object $item  The current item.
 		 *
 		 * @return string
 		 */
-		return apply_filters( 'tec_tickets_all_tickets_table_column_event', $event, $item );
+		return apply_filters( 'tec_tickets_admin_tickets_table_column_event', $event, $item );
 	}
 
 	/**
@@ -555,11 +570,12 @@ class List_Table extends WP_List_Table {
 		 *
 		 * @since TBD
 		 *
-		 * @param string $start The start date for the All Tickets Table.
+		 * @param string                        $start The start date for the All Tickets Table.
+		 * @param Tribe__Tickets__Ticket_Object $item  The current item.
 		 *
 		 * @return string
 		 */
-		return apply_filters( 'tec_tickets_all_tickets_table_column_start', $start, $item );
+		return apply_filters( 'tec_tickets_admin_tickets_table_column_start_date', $start, $item );
 	}
 
 	/**
@@ -591,11 +607,12 @@ class List_Table extends WP_List_Table {
 		 *
 		 * @since TBD
 		 *
-		 * @param string $end The end date for the All Tickets Table.
+		 * @param string                        $end  The end date for the All Tickets Table.
+		 * @param Tribe__Tickets__Ticket_Object $item The current item.
 		 *
 		 * @return string
 		 */
-		return apply_filters( 'tec_tickets_all_tickets_table_column_end', $end, $item );
+		return apply_filters( 'tec_tickets_admin_tickets_table_column_end_date', $end, $item );
 	}
 
 	/**
@@ -627,11 +644,12 @@ class List_Table extends WP_List_Table {
 		 *
 		 * @since TBD
 		 *
-		 * @param string $days_left The number of days left for the All Tickets Table.
+		 * @param string                        $days_left The number of days left for the All Tickets Table.
+		 * @param Tribe__Tickets__Ticket_Object $item      The current item.
 		 *
 		 * @return string
 		 */
-		return apply_filters( 'tec_tickets_all_tickets_table_column_days_left', $days_left, $item );
+		return apply_filters( 'tec_tickets_admin_tickets_table_column_days_left', $days_left, $item );
 	}
 
 	/**
@@ -655,11 +673,12 @@ class List_Table extends WP_List_Table {
 		 *
 		 * @since TBD
 		 *
-		 * @param string $price The price for the All Tickets Table.
+		 * @param string                        $price The price for the All Tickets Table.
+		 * @param Tribe__Tickets__Ticket_Object $item  The current item.
 		 *
 		 * @return string
 		 */
-		return apply_filters( 'tec_tickets_all_tickets_table_column_price', $price, $item );
+		return apply_filters( 'tec_tickets_admin_tickets_table_column_price', $price, $item );
 	}
 
 	/**
@@ -683,11 +702,12 @@ class List_Table extends WP_List_Table {
 		 *
 		 * @since TBD
 		 *
-		 * @param string $sold The number of tickets sold for the All Tickets Table.
+		 * @param string                        $sold The number of tickets sold for the All Tickets Table.
+		 * @param Tribe__Tickets__Ticket_Object $item The current item.
 		 *
 		 * @return string
 		 */
-		return apply_filters( 'tec_tickets_all_tickets_table_column_sold', $sold, $item );
+		return apply_filters( 'tec_tickets_admin_tickets_table_column_sold', $sold, $item );
 	}
 
 	/**
@@ -712,11 +732,12 @@ class List_Table extends WP_List_Table {
 		 *
 		 * @since TBD
 		 *
-		 * @param string $remaining The number of tickets remaining for the All Tickets Table.
+		 * @param string                        $remaining The number of tickets remaining for the All Tickets Table.
+		 * @param Tribe__Tickets__Ticket_Object $item      The current item.
 		 *
 		 * @return string
 		 */
-		return apply_filters( 'tec_tickets_all_tickets_table_column_remaining', $remaining, $item );
+		return apply_filters( 'tec_tickets_admin_tickets_table_column_remaining', $remaining, $item );
 	}
 
 	/**
@@ -740,11 +761,12 @@ class List_Table extends WP_List_Table {
 		 *
 		 * @since TBD
 		 *
-		 * @param string $sales The total sales for the All Tickets Table.
+		 * @param string                        $sales The total sales for the All Tickets Table.
+		 * @param Tribe__Tickets__Ticket_Object $item  The current item.
 		 *
 		 * @return string
 		 */
-		return apply_filters( 'tec_tickets_all_tickets_table_column_sales', $sales, $item );
+		return apply_filters( 'tec_tickets_admin_tickets_table_column_sales', $sales, $item );
 	}
 
 	/**
@@ -924,7 +946,7 @@ class List_Table extends WP_List_Table {
 		 *
 		 * @return array
 		 */
-		return apply_filters( 'tec_tickets_all_tickets_table_query_args', $args );
+		return apply_filters( 'tec_tickets_admin_tickets_table_query_args', $args );
 	}
 
 	/**
@@ -1025,7 +1047,7 @@ class List_Table extends WP_List_Table {
 		 *
 		 * @return array
 		 */
-		$event_meta_keys = apply_filters( 'tec_tickets_all_tickets_table_event_meta_keys', [] );
+		$event_meta_keys = apply_filters( 'tec_tickets_admin_tickets_table_event_meta_keys', [] );
 
 		$ticket_post_type = $this->get_ticket_post_type();
 
@@ -1061,7 +1083,7 @@ class List_Table extends WP_List_Table {
 			'current_provider'     => $this->get_ticket_post_type(),
 		];
 
-		$template->template( 'tickets/filters', $context );
+		$template->template( 'admin-tickets/filters', $context );
 	}
 
 	/**
@@ -1089,7 +1111,7 @@ class List_Table extends WP_List_Table {
 		 *
 		 * @return array
 		 */
-		return apply_filters( 'tec_tickets_all_tickets_table_status_options', $status_options );
+		return apply_filters( 'tec_tickets_admin_tickets_table_status_options', $status_options );
 	}
 
 	/**

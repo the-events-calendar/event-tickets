@@ -20,7 +20,7 @@ class Screen_Options {
 	/**
 	 * @var string The user option that will store how many attendees should be shown per page.
 	 */
-	public static $per_page_user_option = 'event_tickets_all_tickets_per_page';
+	public static $per_page_user_option = 'event_tickets_admin_tickets_per_page';
 
 	/**
 	 * Initialize the screen options.
@@ -62,7 +62,7 @@ class Screen_Options {
 		 *
 		 * @param boolean   $show   Whether to show the screen options.
 		 */
-		return apply_filters( 'tec_tickets_all_tickets_screen_options_show_screen', $show );
+		return apply_filters( 'tec_tickets_admin_tickets_screen_options_show_screen', $show );
 	}
 
 	/**

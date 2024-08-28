@@ -36,7 +36,7 @@ class Assets extends Service_Provider {
 	 * @since TBD
 	 */
 	public function register() {
-		Asset::add( 'tec-tickets-all-tickets-styles', 'tickets-admin-tickets.css', null, Tribe__Tickets__Main::instance()->plugin_path )
+		Asset::add( 'tec-tickets-admin-tickets-styles', 'tickets-admin-tickets.css', null, Tribe__Tickets__Main::instance()->plugin_path )
 			->enqueue_on( 'admin_enqueue_scripts' )
 			->set_condition( [ $this, 'should_enqueue_assets' ] )
 			->register();

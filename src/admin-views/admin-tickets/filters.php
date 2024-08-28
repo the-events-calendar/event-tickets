@@ -15,8 +15,8 @@
 
 ?>
 <div class="alignleft actions">
-	<?php $this->template( 'tickets/filters/status-select' ); ?>
-	<?php $this->template( 'tickets/filters/provider-select' ); ?>
-	<?php $this->template( 'tickets/filters/search-input' ); ?>
-	<?php submit_button( esc_html__( 'Show Tickets', 'event-tickets' ), 'button', false, false, [ 'id' => 'tec-tickets-all-tickets-select-filter' ] ); ?>
+	<?php $this->template( 'admin-tickets/filters/status-select' ); ?>
+	<?php $this->template( 'admin-tickets/filters/provider-select' ); ?>
+	<?php $this->template( 'admin-tickets/filters/search-input' ); ?>
+	<?php submit_button( esc_html__( 'Show Tickets', 'event-tickets' ), 'button', false, false, [ 'id' => 'tec-tickets-admin-tickets-select-filter' ] ); ?>
 </div>
