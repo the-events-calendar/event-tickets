@@ -104,12 +104,14 @@ class Checkout_ShortcodeTest extends WPTestCase {
 				$this->ticket_id1,
 				$this->ticket_id2,
 				'wp-content/plugins/the-events-calendar/common',
+				'.min.css',
 			],
 			[
 				'{{page_id}}',
 				'{{ticket_id1}}',
 				'{{ticket_id2}}',
 				'wp-content/plugins/event-tickets/common',
+				'.css',
 			],
 			$html
 		);
@@ -134,11 +136,13 @@ class Checkout_ShortcodeTest extends WPTestCase {
 				$this->page_id,
 				$this->ticket_id1,
 				'wp-content/plugins/the-events-calendar/common',
+				'.min.css',
 			],
 			[
 				'{{page_id}}',
 				'{{ticket_id1}}',
 				'wp-content/plugins/event-tickets/common',
+				'.css',
 			],
 			$html
 		);
