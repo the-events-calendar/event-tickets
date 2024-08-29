@@ -287,4 +287,22 @@ class Maps_Layout_Homepage_Test extends WPTestCase {
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
+	
+	public function test_map_edit(): void {
+		$_GET['tab']  = 'map-edit';
+		$_GET['page'] = 'tec-tickets-seating';
+		$this->mock_singleton_service(
+			Service::class,
+			[
+				'get_ephemeral_token' => 'some-ephemeral-token',
+			]
+		);
+		$maps_layouts_home_page = tribe( Maps_Layouts_Home_Page::class );
+
+		ob_start();
+		$maps_layouts_home_page->render();
+		$html = ob_get_clean();
+
+		$this->assertMatchesHtmlSnapshot( $html );
+	}
 }
