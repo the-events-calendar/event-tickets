@@ -137,6 +137,13 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
+		$stock = (int) $meta_value;
+
+		if ( 0 > $stock ) {
+			// We are not syncing bugs. Seats can NOT be infinite.
+			return;
+		}
+
 		$seat_type = get_post_meta( $object_id, Meta::META_KEY_SEAT_TYPE, true );
 
 		// Not a seating ticket. We should not modify the stock.
@@ -156,10 +163,8 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		$stock = (int) $meta_value;
-
 		// Remove the action to avoid infinite loops.
-		remove_action( 'tec_tickets_commerce_increase_ticket_stock', [ $this, 'sync_seated_tickets_stock' ] );
+		remove_action( 'updated_postmeta', [ $this, 'sync_seated_tickets_stock' ] );
 
 		foreach (
 			tribe_tickets()
@@ -171,7 +176,7 @@ class Controller extends Controller_Contract {
 			update_post_meta( $ticket_id, Ticket::$stock_meta_key, $stock );
 		}
 
-		add_action( 'tec_tickets_commerce_decrease_ticket_stock', [ $this, 'sync_seated_tickets_stock' ], 10, 4 );
+		add_action( 'updated_postmeta', [ $this, 'sync_seated_tickets_stock' ], 10, 4 );
 	}
 
 	/**

@@ -10,6 +10,7 @@ use TEC\Tickets\Seating\Tests\Integration\Layouts_Factory;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Events__Main as TEC;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 
 class Editor_Test extends Controller_Test_Case {
 	use Layouts_Factory;
@@ -229,5 +230,84 @@ class Editor_Test extends Controller_Test_Case {
 			wp_json_encode( $store_data, JSON_SNAPSHOT_OPTIONS )
 		);
 		$this->assertMatchesJsonSnapshot( $json );
+	}
+
+	public function test_it_should_update_slr_flags_on_ticket_save() {
+		$id = tribe_events()->set_args( [
+			'title'      => 'Test Event',
+			'start_date' => '+1 week',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+		] )->create()->ID;
+
+		$ticket_1 = $this->create_tc_ticket( $id, 10.10 );
+
+		$this->assertFalse( (bool) get_post_meta( $id, Meta::META_KEY_ENABLED, true ) );
+		$this->assertEmpty( get_post_meta( $id, Meta::META_KEY_LAYOUT_ID, true ) );
+		$this->assertFalse( (bool) get_post_meta( $ticket_1, Meta::META_KEY_ENABLED, true ) );
+		$this->assertEmpty( get_post_meta( $ticket_1, Meta::META_KEY_SEAT_TYPE, true ) );
+
+		$ticket_data = [
+			'tribe-ticket' => [
+				'seating' => [
+					'enabled'  => 1,
+					'seatType' => 'seat-type-uuid-1',
+					'layoutId' => 'layout-uuid-1',
+					]
+			],
+		];
+
+		$this->make_controller()->register();
+
+		do_action( 'tribe_tickets_ticket_added', $id, $ticket_1, $ticket_data );
+
+		$this->assertTrue( (bool) get_post_meta( $id, Meta::META_KEY_ENABLED, true ) );
+		$this->assertEquals( 'layout-uuid-1', get_post_meta( $id, Meta::META_KEY_LAYOUT_ID, true ) );
+		$this->assertTrue( (bool) get_post_meta( $ticket_1, Meta::META_KEY_ENABLED, true ) );
+		$this->assertEquals( 'seat-type-uuid-1', get_post_meta( $ticket_1, Meta::META_KEY_SEAT_TYPE, true ) );
+	}
+
+	public function test_it_should_skip_capacity_storage_when_revision() {
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 12:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+
+		// Enable the global stock on the Event.
+		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
+
+		// Set the Event global stock level to 100.
+		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 100 );
+
+		update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 1 );
+
+		$ticket_id = $this->create_tc_ticket(
+			$event_id,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 30,
+				],
+			]
+		);
+
+		update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-A' );
+
+		$revision_id = wp_save_post_revision( $event_id );
+		tribe( 'tickets.handler' )->filter_capacity_support( null, $revision_id, tribe( 'tickets.handler' )->key_capacity, true );
+
+		$this->assertEquals( 100, get_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, true ) );
+
+		$autosave_id = wp_create_post_autosave( array_merge( [ 'post_ID' => $event_id ], get_post( $event_id, ARRAY_A ) ) );
+
+		tribe( 'tickets.handler' )->filter_capacity_support( null, $autosave_id, tribe( 'tickets.handler' )->key_capacity, true );
+
+		$this->assertEquals( 100, get_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, true ) );
 	}
 }
