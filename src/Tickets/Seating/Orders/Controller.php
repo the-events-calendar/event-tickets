@@ -85,6 +85,15 @@ class Controller extends Controller_Contract {
 	private Seats_Report $seats_report;
 
 	/**
+	 * A reference to the Reservations object.
+	 *
+	 * @since TBD
+	 *
+	 * @var Reservations
+	 */
+	private Reservations $reservations;
+
+	/**
 	 * Controller constructor.
 	 *
 	 * @since TBD
@@ -175,7 +184,7 @@ class Controller extends Controller_Contract {
 			10,
 			4
 		);
-		
+
 		add_filter(
 			'tribe_template_html:tickets/components/attendees-list/attendees/attendee/ticket',
 			[ $this, 'inject_seat_info_in_order_success_page' ],
@@ -186,7 +195,7 @@ class Controller extends Controller_Contract {
 
 		$this->register_assets();
 	}
-	
+
 	/**
 	 * Before Tickets Commerce Checkout shortcode is rendered.
 	 *
@@ -202,9 +211,9 @@ class Controller extends Controller_Contract {
 		if ( Checkout_Shortcode::get_wp_slug() !== $tag ) {
 			return $output;
 		}
-		
+
 		$this->cart->maybe_clear_cart_for_empty_session();
-		
+
 		return $output;
 	}
 
@@ -630,7 +639,7 @@ class Controller extends Controller_Contract {
 	public function inject_seat_info_in_my_tickets( $html, $file, $name, $template ): string {
 		return $this->attendee->inject_seat_info_in_my_tickets( $html, $template );
 	}
-	
+
 	/**
 	 * Inject seating label with ticket name on Order success page.
 	 *
