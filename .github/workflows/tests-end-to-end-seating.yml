@@ -203,7 +203,7 @@ jobs:
         run: |
           mv ${GITHUB_WORKSPACE}/event-tickets-seating-service ${GITHUB_WORKSPACE}/../../event-tickets-seating-service
           echo "SEATING_SERVICE_DIR=$(realpath ${GITHUB_WORKSPACE}/../../event-tickets-seating-service)" >> $GITHUB_ENV
-      - name: Change directory toe the Seating service one
+      - name: Change directory to the Seating service one
         run: cd ${SEATING_SERVICE_DIR}
       - name: Setup node
         uses: actions/setup-node@v4
