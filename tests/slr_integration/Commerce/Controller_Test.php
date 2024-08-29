@@ -125,9 +125,6 @@ class Controller_Test extends Controller_Test_Case {
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
 
-		// Set the Event shared capacity to 100.
-		update_post_meta( Tickets_Handler::instance()->key_capacity, 100, $event_id );
-
 		// Set the Event global stock level to 100.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 100 );
 
