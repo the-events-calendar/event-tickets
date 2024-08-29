@@ -299,10 +299,10 @@ class Editor_Test extends Controller_Test_Case {
 		update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
 		update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-A' );
 
-		// $revision_id = wp_save_post_revision( $event_id );
-		// tribe( 'tickets.handler' )->filter_capacity_support( null, $revision_id, tribe( 'tickets.handler' )->key_capacity, true );
+		$revision_id = wp_save_post_revision( $event_id );
+		tribe( 'tickets.handler' )->filter_capacity_support( null, $revision_id, tribe( 'tickets.handler' )->key_capacity, true );
 
-		// $this->assertEquals( 100, get_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, true ) );
+		$this->assertEquals( 100, get_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, true ) );
 
 		$autosave_id = wp_create_post_autosave( array_merge( [ 'post_ID' => $event_id ], get_post( $event_id, ARRAY_A ) ) );
 
