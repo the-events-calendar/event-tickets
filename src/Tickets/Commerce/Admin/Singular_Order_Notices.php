@@ -9,6 +9,8 @@
 
 namespace TEC\Tickets\Commerce\Admin;
 
+use Tribe__Admin__Notices;
+
 /**
  * Class Singular_Order_Notices
  *
@@ -203,9 +205,12 @@ class Singular_Order_Notices {
 	 */
 	public function do_message( string $message_code, ...$params ) {
 		$success = in_array( $message_code, $this->success_messages );
+		$slug    = 'tec-tickets-commerce-order-status-update-notice';
+
+		Tribe__Admin__Notices::instance()->undismiss( $slug );
 
 		tribe_transient_notice(
-			'tec-tickets-commerce-order-status-update-notice',
+			$slug,
 			$this->get_message( $message_code, ...$params ),
 			[
 				'type'     => $success ? 'success' : 'error',

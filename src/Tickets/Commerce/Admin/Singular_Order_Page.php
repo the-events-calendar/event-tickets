@@ -421,8 +421,9 @@ STR;
 
 		switch( $new_status->get_slug() ) {
 			case Refunded::SLUG:
+				// @todo This is only for status change, if gateway is attached then we need to use a different message.
 				$notice->do_message(
-					Singular_Order_Notices::ORDER_SUCCESSFULLY_REFUNDED,
+					Singular_Order_Notices::ORDER_STATUS_REFUNDED,
 					$post_id,
 					$current_status->get_name(),
 					$new_status->get_name()
