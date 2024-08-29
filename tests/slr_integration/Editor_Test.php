@@ -230,4 +230,38 @@ class Editor_Test extends Controller_Test_Case {
 		);
 		$this->assertMatchesJsonSnapshot( $json );
 	}
+
+	public function test_it_should_update_slr_flags_on_ticket_save() {
+		$id = tribe_events()->set_args( [
+			'title'      => 'Test Event',
+			'start_date' => '+1 week',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+		] )->create()->ID;
+
+		$ticket_1 = $this->create_tc_ticket( $id, 10.10 );
+
+		$this->assertFalse( (bool) get_post_meta( $id, Meta::META_KEY_ENABLED, true ) );
+		$this->assertEmpty( get_post_meta( $id, Meta::META_KEY_LAYOUT_ID, true ) );
+		$this->assertFalse( (bool) get_post_meta( $ticket_1, Meta::META_KEY_ENABLED, true ) );
+		$this->assertEmpty( get_post_meta( $ticket_1, Meta::META_KEY_SEAT_TYPE, true ) );
+
+		$ticket_data = [
+			'tribe-ticket' => [
+				'seating' => [
+					'enabled'  => 1,
+					'seatType' => 'seat-type-uuid-1',
+					'layoutId' => 'layout-uuid-1',
+					]
+			],
+		];
+
+		$this->make_controller()->register();
+
+		do_action( 'tribe_tickets_ticket_added', $id, $ticket_1, $ticket_data );
+
+		$this->assertTrue( (bool) get_post_meta( $id, Meta::META_KEY_ENABLED, true ) );
+		$this->assertEquals( 'layout-uuid-1', get_post_meta( $id, Meta::META_KEY_LAYOUT_ID, true ) );
+		$this->assertTrue( (bool) get_post_meta( $ticket_1, Meta::META_KEY_ENABLED, true ) );
+		$this->assertEquals( 'seat-type-uuid-1', get_post_meta( $ticket_1, Meta::META_KEY_SEAT_TYPE, true ) );
+	}
 }
