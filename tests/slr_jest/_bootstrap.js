@@ -178,7 +178,7 @@ global.getTestDocument = function (documentName, transformer) {
 			'/../slr_integration/Orders/__snapshots__/Seats_Report_Test__test_render_page__2_tickets_3_attendees__0.snapshot.html',
 		'seats-selection':
 			'/../slr_integration/__snapshots__/Frontend_Test__should_replace_ticket_block_when_seating_is_enabled__two tickets__0.snapshot.html',
-		'maps-edit':
+		'maps-list':
 			'/../slr_integration/Admin/__snapshots__/Maps_Layout_Homepage_Test__test_maps_tab_card_listing__0.snapshot.html',
 	};
 
