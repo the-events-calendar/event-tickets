@@ -3,9 +3,11 @@ import { onReady } from '@tec/tickets/seating/utils';
 import {
 	initServiceIframe,
 	getIframeElement,
+	handleResize,
 } from '@tec/tickets/seating/service/iframe';
 import {
 	registerAction,
+	INBOUND_SET_ELEMENT_HEIGHT,
 } from '@tec/tickets/seating/service/api';
 
 /**
@@ -19,6 +21,9 @@ import {
  */
 export async function init(dom) {
 	dom = dom || document;
+
+	registerAction(INBOUND_SET_ELEMENT_HEIGHT, (data) => handleResize( data, dom ) );
+
 	await initServiceIframe(getIframeElement(dom));
 }
 onReady(() => {
