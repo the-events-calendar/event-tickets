@@ -188,7 +188,7 @@ class Controller extends Controller_Contract {
 	}
 	
 	/**
-	 * Before TicketsCommerce Checkout shortcode is rendered.
+	 * Before Tickets Commerce Checkout shortcode is rendered.
 	 *
 	 * @param false|string $output Short-circuit return value. Either false or the value to replace the shortcode with.
 	 * @param string       $tag Shortcode name.
