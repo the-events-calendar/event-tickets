@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\Admin;
 
 use TEC\Common\Contracts\Service_Provider;
 use Tec\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Status\Refunded;
 use Tribe__Template;
 use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Gateways\Free\Gateway as Free_Gateway;
@@ -51,15 +52,33 @@ class Singular_Order_Page extends Service_Provider {
 	public function register() {
 		add_action( 'add_meta_boxes', [ $this, 'add_meta_boxes' ], 10, 2 );
 		add_action( 'save_post', [ $this, 'update_order_status' ], 10, 2 );
+		add_filter( 'post_updated_messages', [ $this, 'add_order_messages' ] );
 
 		add_filter( 'submenu_file', [ $this, 'hijack_current_parent_file' ] );
 		add_action( 'adminmenu', [ $this, 'restore_current_parent_file' ] );
-
-		add_filter( 'post_updated_messages', [ $this, 'add_order_messages' ] );
 		add_filter( 'admin_body_class', [ $this, 'add_body_class' ] );
 		if ( is_admin() ) {
 			add_action( 'current_screen', [ $this, 'breadcrumb_order_edit_screen' ] );
 		}
+	}
+
+	/**
+	 * Adds the order messages.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $messages The messages.
+	 *
+	 * @return array
+     */
+	public function add_order_messages( $messages ) {
+		global $post_type;
+
+		if ( Order::POSTTYPE !== $post_type ) {
+			return $messages;
+		}
+
+		return [];
 	}
 
 	/**
@@ -375,103 +394,48 @@ STR;
 			return;
 		}
 
+		$notice         = new Singular_Order_Notices();
 		$current_status = tribe( Status_Handler::class )->get_by_wp_slug( $order->post_status );
 
 		if ( ! $current_status->can_apply_to( $order, $new_status ) ) {
-			$this->redirect_with_message( $post_id, 1001 );
+			$notice->do_message(
+				Singular_Order_Notices::ORDER_STATUS_CHANGE_FAILED,
+				$post_id,
+				$current_status->get_name(),
+				$new_status->get_name()
+			);
 			return;
 		}
 
 		$result = tribe( Order::class )->modify_status( $order->ID, $new_status->get_slug() );
 
 		if ( ! $result || is_wp_error( $result ) ) {
-			$this->redirect_with_message( $post_id, 1001 );
+			$notice->do_message(
+				Singular_Order_Notices::ORDER_STATUS_CHANGE_FAILED,
+				$post_id,
+				$current_status->get_name(),
+				$new_status->get_name()
+			);
 			return;
 		}
 
-		$this->redirect_with_message( $post_id, 1000 );
-	}
-
-	/**
-	 * Adds the order messages.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $messages The messages.
-	 *
-	 * @return array
-	 */
-	public function add_order_messages( $messages ) {
-		global $post_type;
-
-		if ( Order::POSTTYPE !== $post_type ) {
-			return $messages;
-		}
-
-		// @todo dpan - based on Action being taken we need to update the messages.
-		$messages[ Order::POSTTYPE ] = [
-			1000 => __( 'Order status updated!', 'event-tickets' ),
-			1001 => __( 'Order status could not be updated.', 'event-tickets' ),
-		];
-
-		return $messages;
-	}
-
-	/**
-	 * Redirects to the order page with a message.
-	 *
-	 * Takes advantage of WP's core way of displaying messages in admin through the message query arg.
-	 * The message codes need to be high int in order to not conflict with WP's core messages.
-	 *
-	 * @since TBD
-	 *
-	 * @param int    $post_id      The post ID.
-	 * @param string $message_code The message code.
-	 *
-	 * @return void
-	 */
-	protected function redirect_with_message( $post_id, $message_code ) {
-		// Failure.
-		if ( $message_code > 1000 ) {
-			$callback = function () use ( $message_code ) {
-				$messages = apply_filters( 'post_updated_messages', [] );
-
-				if ( ! isset( $messages[ Order::POSTTYPE ][ $message_code ] ) ) {
-					return;
-				}
-
-				$message = $messages[ Order::POSTTYPE ][ $message_code ];
-
-				echo wp_kses_post(
-					wp_get_admin_notice(
-						$message,
-						[
-							'type'               => 'error',
-							'dismissible'        => true,
-							'id'                 => 'message',
-							'additional_classes' => [ 'error' ],
-						]
-					)
+		switch( $new_status->get_slug() ) {
+			case Refunded::SLUG:
+				$notice->do_message(
+					Singular_Order_Notices::ORDER_SUCCESSFULLY_REFUNDED,
+					$post_id,
+					$current_status->get_name(),
+					$new_status->get_name()
 				);
-			};
-
-			add_action( 'admin_notices', $callback );
-			return;
+				break;
+			default:
+				$notice->do_message(
+					Singular_Order_Notices::ORDER_STATUS_SUCCESSFULLY_UPDATED,
+					$post_id,
+					$current_status->get_name(),
+					$new_status->get_name()
+				);
+				break;
 		}
-
-
-		// Success.
-		add_filter(
-			'redirect_post_location',
-			function ( $location, $pid ) use ( $post_id, $message_code ) {
-				if ( (int) $pid !== $post_id ) {
-					return $location;
-				}
-
-				return add_query_arg( 'message', $message_code, $location );
-			},
-			10,
-			2
-		);
 	}
 }
