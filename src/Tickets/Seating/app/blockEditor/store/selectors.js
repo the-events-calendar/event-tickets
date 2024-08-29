@@ -65,5 +65,8 @@ export const selectors = {
 	},
 	getSeatTypesByPostID(state) {
 		return state?.seatTypesByPostId || [];
-	}
+	},
+	getSeatTypesByClientID(state) {
+		return state?.seatTypesByClientId || [];
+	},
 };
