@@ -68,7 +68,7 @@ export async function handleSeatTypesUpdated(data) {
 
 /**
  * @typedef {Object} SeatTypeDeletedData
- * @property {string} deletedId The ID of the seat type that was deleted.
+ * @property {string}          deletedId  The ID of the seat type that was deleted.
  * @property {UpdatedSeatType} transferTo The seat type that was transferred to.
  */
 
@@ -78,23 +78,24 @@ export async function handleSeatTypesUpdated(data) {
  * @since TBD
  *
  * @param {SeatTypeDeletedData} data The deleted seat type data.
- * @return {Promise<boolean>}
+ *
+ * @return {Promise<boolean>} A promise that will resolve to `true` if the seat type deletion handling was successful.
  */
-export async function handleSeatTypeDeleted( data ) {
-	if ( ! data?.deletedId ) {
+export async function handleSeatTypeDeleted(data) {
+	if (!data?.deletedId) {
 		return false;
 	}
 
-	const url = new URL( ajaxUrl );
-	url.searchParams.set( '_ajax_nonce', ajaxNonce );
-	url.searchParams.set( 'action', ACTION_SEAT_TYPE_DELETED );
+	const url = new URL(ajaxUrl);
+	url.searchParams.set('_ajax_nonce', ajaxNonce);
+	url.searchParams.set('action', ACTION_SEAT_TYPE_DELETED);
 
-	const response = await fetch( url.toString(), {
+	const response = await fetch(url.toString(), {
 		method: 'POST',
 		body: JSON.stringify(data),
 	});
 
-	if ( !response.ok ) {
+	if (!response.ok) {
 		return false;
 	}
 
