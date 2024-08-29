@@ -2,6 +2,7 @@ import './style.pcss';
 import {
 	getIframeElement,
 	initServiceIframe,
+	handleResize
 } from '@tec/tickets/seating/service/iframe';
 import { onReady, redirectTo } from '@tec/tickets/seating/utils';
 import {
@@ -67,25 +68,6 @@ export async function init(dom) {
 	registerAction(GO_TO_ASSOCIATED_EVENTS, goToAssociatedEvents);
 
 	await initServiceIframe(getIframeElement(dom));
-}
-
-
-/**
- * @typedef {Object} ResizeData
- * @property {number} height The new height.
- */
-
-/**
- * Handles resize requests.
- *
- * @since TBD
- *
- * @param {ResizeData} data The new height.
- * @param {HTMLDocument|null} dom The document to use to search for the iframe element.
- */
-export function handleResize(data, dom) {
-	const iframe = getIframeElement(dom);
-	iframe.style.height = data.height + 'px';
 }
 
 onReady(() => {

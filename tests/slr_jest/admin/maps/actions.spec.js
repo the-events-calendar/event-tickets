@@ -31,7 +31,7 @@ describe('map actions', () => {
 
 	describe('delete action', () => {
 		it('should handle delete request correctly', async () => {
-			const dom = getTestDocument( 'maps-edit' );
+			const dom = getTestDocument( 'maps-list' );
 			const deleteButtons = dom.querySelectorAll('.delete-map');
 			global.confirm = jest.fn(() => true);
 			fetch.mockIf(
@@ -89,7 +89,7 @@ describe('map actions', () => {
 		});
 
 		it('should not delete on backend if not confirmed', async () => {
-			const dom = getTestDocument( 'maps-edit' );
+			const dom = getTestDocument( 'maps-list' );
 			const deleteButtons = dom.querySelectorAll('.delete-map');
 			// Do not confirm the delete request.
 			global.confirm = jest.fn(() => false);
@@ -110,7 +110,7 @@ describe('map actions', () => {
 		});
 
 		it('should fail on backend fail to delete layout', async () => {
-			const dom = getTestDocument( 'maps-edit' );
+			const dom = getTestDocument( 'maps-list' );
 			const deleteButtons = dom.querySelectorAll('.delete-map');
 			global.confirm = jest.fn(() => true);
 			fetch.mockIf(
