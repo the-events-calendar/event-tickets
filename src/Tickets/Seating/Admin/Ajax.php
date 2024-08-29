@@ -993,8 +993,13 @@ class Ajax extends Controller_Contract {
 			
 			return;
 		}
-		
-		// update all ticket/attendees with old seat type meta to new seat type.
+
+		/*
+		* Update all Tickets and Attendees with old seat type meta to new seat type.
+		* Note this updated is NOT done based on currently active Tickets and Attendee types
+		* to include, in the update, those that are not currently active.
+		*/
+
 		global $wpdb;
 		
 		try {
