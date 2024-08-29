@@ -52,7 +52,7 @@ class Singular_Order_Page extends Service_Provider {
 	public function register() {
 		add_action( 'add_meta_boxes', [ $this, 'add_meta_boxes' ], 10, 2 );
 		add_action( 'save_post', [ $this, 'update_order_status' ], 10, 2 );
-		add_filter( 'post_updated_messages', [ $this, 'add_order_messages' ] );
+		add_filter( 'post_updated_messages', [ $this, 'clear_post_messages' ] );
 
 		add_filter( 'submenu_file', [ $this, 'hijack_current_parent_file' ] );
 		add_action( 'adminmenu', [ $this, 'restore_current_parent_file' ] );
@@ -71,7 +71,7 @@ class Singular_Order_Page extends Service_Provider {
 	 *
 	 * @return array
      */
-	public function add_order_messages( $messages ) {
+	public function clear_post_messages( $messages ) {
 		global $post_type;
 
 		if ( Order::POSTTYPE !== $post_type ) {
@@ -419,7 +419,7 @@ STR;
 			return;
 		}
 
-		switch( $new_status->get_slug() ) {
+		switch ( $new_status->get_slug() ) {
 			case Refunded::SLUG:
 				// @todo This is only for status change, if gateway is attached then we need to use a different message.
 				$notice->do_message(

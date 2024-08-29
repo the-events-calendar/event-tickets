@@ -222,7 +222,17 @@ class Singular_Order_Notices {
 		);
 	}
 
-	public function get_message( $message_code, ...$params) {
+	/**
+	 * Get the parsed message string.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $message_code The key for the admin notice.
+	 * @param mixed  ...$params Dynamic params for the message.
+	 *
+	 * @return string
+	 */
+	public function get_message( string $message_code, ...$params ) {
 		$message = sprintf( $this->messages()[ $message_code ], ...$params );
 
 		return "<p>$message</p>";
