@@ -93,4 +93,5 @@ window.tec.tickets.seating.service.iframe = {
 	...(window.tec.tickets.seating.service.iframe || {}),
 	getIframeElement,
 	initServiceIframe,
+	handleResize,
 };
