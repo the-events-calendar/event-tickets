@@ -27,8 +27,8 @@ export function filterCapacityTableMappedProps(mappedProps) {
 	}
 
 	const seatTypes = store.getSeatTypesForLayout(layoutId, true);
-	const activeSeatTypes = Object.values(
-		store.getSeatTypesByPostID()
+	const activeSeatTypes = Object.values(store.getSeatTypesByPostID()).filter(
+		(value, index, array) => array.indexOf(value) === index
 	);
 
 	mappedProps.rowsAfter = mappedProps.rowsAfter || [];
