@@ -1788,8 +1788,8 @@ class Ajax_Test extends Controller_Test_Case {
 			},
 			true
 		);
-		
-		// create event with associated layout and ticket and attendees.
+
+		// Create event with associated layout and ticket and attendees.
 		$post_id                                  = static::factory()->post->create();
 		$ticket_id                                = $this->create_tc_ticket( $post_id, 10 );
 		[ $attendee_1, $attendee_2, $attendee_3 ] = $this->create_many_attendees_for_ticket( 3, $ticket_id, $post_id );
@@ -1889,8 +1889,8 @@ class Ajax_Test extends Controller_Test_Case {
 		);
 		set_transient( Seat_Types::update_transient_name(), time() );
 		$this->set_up_ajax_request_context();
-		
-		// setup request body.
+
+		// Setup request body.
 		$this->set_oauth_token( 'auth-token' );
 		$request_body = null;
 		$this->set_fn_return(
@@ -1904,10 +1904,8 @@ class Ajax_Test extends Controller_Test_Case {
 			},
 			true
 		);
-		
-//		add_filter( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', '__return_false' );
-		
-		// create event with associated layout and ticket and attendees.
+
+		// Create event with associated layout and ticket and attendees.
 		$post_id = static::factory()->post->create();
 		
 		// Enable the global stock on the Event.
