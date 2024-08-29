@@ -106,4 +106,37 @@ describe('filterCapacityTableMappedProps', () => {
 		const result = filterCapacityTableMappedProps(mappedProps);
 		expect(result).toMatchSnapshot();
 	});
+
+	it('adds rowsAfter and updates totalCapacity if has multiple seat types and multipe of the same type', () => {
+		const seatTypes = {
+			vip: { name: 'VIP', seats: 20 },
+			'general-admission': { name: 'General Admission', seats: 20 },
+			'ultra-vip': { name: 'Ultra VIP', seats: 40 },
+		};
+		const activeSeatTypes = {
+			99: 'vip',
+			100: 'vip',
+			101: 'general-admission',
+			102: 'general-admission',
+			103: 'ultra-vip',
+		};
+		select.mockReturnValue({
+			isUsingAssignedSeating: () => true,
+			isLayoutLocked: () => true,
+			getCurrentLayoutId: () => 'layout-id',
+			getSeatTypesForLayout: () => seatTypes,
+			getSeatTypesByPostID: () => activeSeatTypes,
+		});
+
+		const mappedProps = {
+			rowsAfter: [],
+			independentCapacity: 20,
+			totalCapacity: 60,
+			sharedCapacity: 40,
+			sharedTicketItems: 'items',
+		};
+
+		const result = filterCapacityTableMappedProps(mappedProps);
+		expect(result).toMatchSnapshot();
+	});
 });
