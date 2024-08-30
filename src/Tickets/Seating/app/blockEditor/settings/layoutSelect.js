@@ -10,10 +10,23 @@ const LayoutSelect = ({
 	layouts,
 	currentLayout
 }) => {
+	const getCurrentLayoutOption = (layoutId, layouts)=> {
+		return layouts && layoutId
+			? layouts.find((layoutOption) => layoutOption.value === layoutId)
+			: null;
+	}
+
+	const [activeLayout, setActiveLayout] = useState(getCurrentLayoutOption(currentLayout, layouts));
 
 	return (
-		<div className="tec-tickets-seating__settings_layout-select">
-			<h2>Seat Layout</h2>
+		<div className="tec-tickets-seating__settings_layout--wrapper">
+			<p className="tec-tickets-seating__settings_layout--title">Seat Layout</p>
+			<Select
+				id="tec-tickets-seating__settings_layout-select"
+				value={activeLayout}
+				options={layouts}
+			/>
+			<p>Changing the event's layout will impact all existing tickets and attendees.</p>
 		</div>
 	);
 }
