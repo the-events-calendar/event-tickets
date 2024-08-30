@@ -13,6 +13,7 @@
  * @property {string} ACTION_DELETE_RESERVATIONS           The action to delete reservations.
  * @property {string} ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID   The action to get the seat types for a given layout ID.
  * @property {string} ACTION_SEAT_TYPES_UPDATED            The action to update the seat types.
+ * @property {string} ACTION_SEAT_TYPE_DELETED             The action to handle the deletion of a seat type.
  */
 
 /**

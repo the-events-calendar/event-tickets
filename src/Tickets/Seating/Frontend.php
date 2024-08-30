@@ -127,7 +127,7 @@ class Frontend extends Controller_Contract {
 			if ( ! $ticket ) {
 				continue;
 			}
-			$prices[] = $ticket->price;
+			$prices[ $ticket->price ] = true;
 		}
 
 		if ( ! count( $prices ) ) {
@@ -135,10 +135,16 @@ class Frontend extends Controller_Contract {
 			return $html;
 		}
 
-		$inventory  = $this->get_events_ticket_capacity_for_seating( $post_id );
-		$cost_range = tribe_format_currency( min( $prices ), $post_id )
-						. ' - '
-						. tribe_format_currency( max( $prices ), $post_id );
+		$prices = array_keys( $prices );
+
+		$inventory = $this->get_events_ticket_capacity_for_seating( $post_id );
+
+		$cost_range = count( $prices ) === 1 ?
+			tribe_format_currency( $prices[0], $post_id ) :
+			tribe_format_currency( min( $prices ), $post_id )
+			. ' - '
+			. tribe_format_currency( max( $prices ), $post_id );
+
 
 		$timeout = $this->container->get( Timer::class )->get_timeout( $post_id );
 

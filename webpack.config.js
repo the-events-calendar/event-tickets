@@ -155,14 +155,14 @@ const targets = [
 	},
 	{
 		name: 'seating-map-edit-bundle',
-		entry: './src/Tickets/Seating/app/admin/map-edit/index.js',
-		outputScript: './build/Seating/admin/map-edit.min.js',
-		outputStyle: `build/Seating/admin/map-edit.${postfix}`,
+		entry: './src/Tickets/Seating/app/admin/mapEdit/index.js',
+		outputScript: './build/Seating/admin/mapEdit.min.js',
+		outputStyle: `build/Seating/admin/mapEdit.${postfix}`,
 		moveFromTo: {
 			'src/resources/js/app/seating-map-edit-bundle.js':
-				'build/Seating/admin/map-edit.js',
+				'build/Seating/admin/mapEdit.js',
 			'src/resources/css/app/seating-map-edit-bundle.css':
-				'build/Seating/admin/map-edit.css',
+				'build/Seating/admin/mapEdit.css',
 		},
 	},
 	{

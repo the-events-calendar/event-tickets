@@ -2,6 +2,7 @@ import './style.pcss';
 import {
 	getIframeElement,
 	initServiceIframe,
+	handleResize
 } from '@tec/tickets/seating/service/iframe';
 import { onReady, redirectTo } from '@tec/tickets/seating/utils';
 import {
@@ -9,6 +10,7 @@ import {
 	registerAction,
 	RESERVATIONS_DELETED,
 	SEAT_TYPES_UPDATED,
+	SEAT_TYPE_DELETED,
 	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
 	GO_TO_ASSOCIATED_EVENTS,
 	INBOUND_SET_ELEMENT_HEIGHT,
@@ -17,6 +19,7 @@ import {
 	handleReservationsDeleted,
 	handleReservationsUpdatedFollowingSeatTypes,
 	handleSeatTypesUpdated,
+	handleSeatTypeDeleted,
 } from '../action-handlers';
 
 /**
@@ -55,6 +58,8 @@ export async function init(dom) {
 
 	registerAction(SEAT_TYPES_UPDATED, handleSeatTypesUpdated);
 
+	registerAction(SEAT_TYPE_DELETED, handleSeatTypeDeleted);
+
 	registerAction(
 		RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
 		handleReservationsUpdatedFollowingSeatTypes
@@ -63,25 +68,6 @@ export async function init(dom) {
 	registerAction(GO_TO_ASSOCIATED_EVENTS, goToAssociatedEvents);
 
 	await initServiceIframe(getIframeElement(dom));
-}
-
-
-/**
- * @typedef {Object} ResizeData
- * @property {number} height The new height.
- */
-
-/**
- * Handles resize requests.
- *
- * @since TBD
- *
- * @param {ResizeData} data The new height.
- * @param {HTMLDocument|null} dom The document to use to search for the iframe element.
- */
-export function handleResize(data, dom) {
-	const iframe = getIframeElement(dom);
-	iframe.style.height = data.height + 'px';
 }
 
 onReady(() => {

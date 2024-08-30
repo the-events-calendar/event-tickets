@@ -196,6 +196,7 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Make sure you are reporting in a safe and responsible way. We take security very seriously. If you discover a security issue, please bring it to our attention right away! Below you will find all the methods to report security vulnerabilities:
 
 * [Report security bugs through the Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/event-tickets)
+* Check our [Bug Bounty Program](https://www.liquidweb.com/policies/bug-bounty-program/)
 * Reach out directly to us on `security [at] stellarwp.com`.
 
 = I've still got questions. Where can I find answers? =
@@ -204,6 +205,30 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.13.2] 2024-09-20 =
+
+* Fix - Exporting all Attendees as a CSV file in the new Tickets Attendees Page. [ET-2094]
+* Fix - Shared capacity will no longer be affected by any of the unlimited sales tickets on the same event. [ETP-920]
+* Tweak - Start Sale and End Sale date will autopopulate when creating a new ticket. [ET-2103]
+* Tweak - Update legacy Wallet Plus plugin notices to the new Tickets Plus plugin.
+* Tweak - Changed views: `v2/commerce/checkout/gateways`, `v2/commerce/checkout/purchaser-info`, `v2/commerce/checkout/purchaser-info/address`, `v2/commerce/checkout/purchaser-info/city`, `v2/commerce/checkout/purchaser-info/country`, `v2/commerce/checkout/purchaser-info/email`, `v2/commerce/checkout/purchaser-info/name`, `v2/commerce/checkout/purchaser-info/state`, `v2/commerce/checkout/purchaser-info/zip`, `v2/commerce/gateway/stripe/payment-element`
+* Language - 2 new strings added, 33 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.13.1] 2024-08-06 =
+
+* Fix - Ensure that users fill in all required billing address fields when Stripe advanced payment methods are available. [ETP-934]
+* Fix - Added missing global property for javascript undefined error `Uncaught TypeError: format is undefined`. This happened during ticket checkout. [ET-2148]
+* Tweak - Changed views: `v2/commerce/checkout/gateways`, `v2/commerce/checkout/purchaser-info`, `v2/commerce/checkout/purchaser-info/address`, `v2/commerce/checkout/purchaser-info/city`, `v2/commerce/checkout/purchaser-info/country`, `v2/commerce/checkout/purchaser-info/email`, `v2/commerce/checkout/purchaser-info/name`, `v2/commerce/checkout/purchaser-info/state`, `v2/commerce/checkout/purchaser-info/zip`, `v2/commerce/gateway/stripe/payment-element`
+* Language - 23 new strings added, 14 updated, 3 fuzzied, and 3 obsoleted
+
+= [5.13.0.3] 2024-08-01 =
+
+* Fix - Ticket Commerce fails to load on checkout when both Stripe and PayPal are active. [ET-2172]
+
+= [5.13.0.2] 2024-08-01 =
+
+* Fix - Replaces deprecated `DOMNodeInserted` event, fixing TicketsCommerce checkout with PayPal. [ET-2171]
 
 = [5.13.0.1] 2024-07-24 =
 

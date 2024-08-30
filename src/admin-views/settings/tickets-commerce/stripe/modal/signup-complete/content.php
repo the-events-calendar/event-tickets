@@ -55,6 +55,18 @@
 		?>
 	</div>
 
+	<div class="tec-tickets__admin-settings-tickets-commerce-stripe-modal-content-section">
+		<strong><?php esc_html_e( 'Billing Fields', 'event-tickets' ); ?></strong> &mdash;
+		<?php
+		printf(
+			// Translators: %1$s: opening `a` tag to the knowledge base article. %2$s: closing `a` tag.
+			esc_html__( 'If you use certain payment providers with Stripe, including Afterpay, Klarna, or Clearpay, additional Billing Fields will be displayed at checkout as required by Stripe. %1$sLearn More%2$s.', 'event-tickets' ),
+			'<a href="https://evnt.is/stripe-info" target="_blank" rel="noopener noreferrer" class="tribe-common-anchor-alt">',
+			'</a>'
+		);
+		?>
+	</div>
+
 
 	<div class="tec-tickets__admin-modal-buttons">
 
