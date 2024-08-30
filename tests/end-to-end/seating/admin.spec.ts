@@ -2,7 +2,6 @@ import { expect, test } from '@playwright/test';
 import { Db } from '../_fixtures/db';
 import { WPAdmin } from '../_page_objects/wp-admin';
 import { hideNoticesOn, hideWpFooterOn } from '../_fixtures/utils';
-import fs from 'node:fs';
 
 const db = new Db();
 
