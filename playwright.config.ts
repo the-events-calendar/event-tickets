@@ -13,7 +13,8 @@ export default defineConfig({
 	testDir: './tests/end-to-end',
 	outputDir: './tests/_output/playwright',
 	preserveOutput: 'failures-only',
-	snapshotPathTemplate: '{testDir}/{testFileDir}/__screenshots__/{testName}-{arg}{ext}',
+	snapshotPathTemplate:
+		'{testDir}/{testFileDir}/__screenshots__/{testName}-{arg}{ext}',
 	updateSnapshots: 'missing',
 	/* Run tests in files in parallel? No, we want to run them in order since they are insisting on the same database. */
 	fullyParallel: false,
@@ -32,6 +33,11 @@ export default defineConfig({
 
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
 		trace: 'on-first-retry',
+
+		viewport: {
+			width: 1200,
+			height: 1100,
+		},
 	},
 	/* Configure projects for major browsers, using only chromium */
 	projects: [
