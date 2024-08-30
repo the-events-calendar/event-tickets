@@ -6,6 +6,7 @@ import Seats from './dashboard-actions/seats';
 import SeatType from './header/seat-type';
 import { filterCapacityTableMappedProps } from './capacity-table';
 import { filterSeatedTicketsAvailabilityMappedProps } from './availability-overview';
+import LayoutSelect from "./settings/layoutSelect";
 
 const shouldRenderAssignedSeatingForm = true;
 
@@ -166,4 +167,36 @@ addFilter(
 	'tec.tickets.blocks.Tickets.Availability.mappedProps',
 	'tec.tickets.seating',
 	filterSeatedTicketsAvailabilityMappedProps
+);
+
+function filterSettingsFields(fields) {
+	const store = select(storeName);
+	const hasSeats = store.isUsingAssignedSeating();
+	const layoutLocked = store.isLayoutLocked();
+
+	if ( ! hasSeats || ! layoutLocked ) {
+		return fields;
+	}
+
+	const currentLayout = select(storeName).getCurrentLayoutId();
+	const layouts = select(storeName).getLayoutsInOptionFormat()
+
+	if ( ! currentLayout || layouts.length === 0 ) {
+		return fields;
+	}
+
+	fields.push(
+		<LayoutSelect
+			layouts={layouts}
+			currentLayout={currentLayout}
+		/>
+	);
+
+	return fields;
+}
+
+addFilter(
+	'tec.tickets.blocks.Tickets.Settings.Fields',
+	'tec.tickets.seating',
+	filterSettingsFields
 );
