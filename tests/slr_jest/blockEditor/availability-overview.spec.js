@@ -139,6 +139,7 @@ describe('filterSeatedTicketsAvailabilityMappedProps', () => {
 			101: 'general-admission',
 			102: 'vip',
 			103: 'ultra',
+			104: 'null',
 		};
 		select.mockReturnValue({
 			isUsingAssignedSeating: () => true,
@@ -169,6 +170,7 @@ describe('filterSeatedTicketsAvailabilityMappedProps', () => {
 			100: 'general-admission',
 			101: 'general-admission',
 			102: 'vip',
+			103: 'null',
 		};
 		const activeSeatTypesClientId = {
 			99: 'vip',
