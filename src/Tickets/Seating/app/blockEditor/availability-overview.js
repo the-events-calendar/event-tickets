@@ -41,6 +41,7 @@ export const filterSeatedTicketsAvailabilityMappedProps = (mappedProps) => {
 		(sum, type) => sum + parseInt(seatTypes[type].seats),
 		0
 	);
+
 	const seatTypeTotalCapacity = Object.values(seatTypes).reduce(
 		(sum, { seats }) => sum + parseInt(seats),
 		0
