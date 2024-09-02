@@ -167,3 +167,9 @@ addFilter(
 	'tec.tickets.seating',
 	filterSeatedTicketsAvailabilityMappedProps
 );
+
+addFilter(
+	'tribe.editor.ticket.isAsc',
+	'tec.tickets.seating',
+	(isAsc, clientId) => !!select(storeName).getTicketSeatType(clientId)
+);
