@@ -16,12 +16,12 @@ use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 
 <div class="tec-tickets__seating-tab-heading-wrapper"><h2
 		class="tec-tickets__seating-tab-heading">
-		<?php 
+		<?php
 		echo esc_html_x(
 			'Seat Layouts',
 			'Seat layouts tab title',
-			'event-tickets' 
-		); 
+			'event-tickets'
+		);
 		?>
 	</h2>
 
@@ -36,7 +36,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 			[ 'maps' => $maps ],
 			false
 		);
-		
+
 		$args = [
 			'button_text'    => esc_html_x( 'Add New', 'Add new seat layout button text', 'event-tickets' ),
 			'button_classes' => [ 'button-secondary', 'tec-tickets-seating-modal__button' ],
@@ -49,7 +49,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 
 	<div class="tec-tickets__seating-tab-heading__description">
 		<p>
-			<?php 
+			<?php
 			echo esc_html__(
 				'Seat layouts on top of your maps allow you to create different seating types. You can create a seat layout from one of the existing seating maps.',
 				'event-tickets'
@@ -58,7 +58,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 		</p>
 	</div>
 </div>
-<div class="tec-tickets__seating-tab-wrapper">
+<div class="tec-tickets__seating-tab-wrapper wrap">
 	<?php
 		$this->template(
 			'components/layouts/list',
