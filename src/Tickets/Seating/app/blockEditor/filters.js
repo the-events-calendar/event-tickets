@@ -169,21 +169,19 @@ addFilter(
 	filterSeatedTicketsAvailabilityMappedProps
 );
 
+/**
+ * Filters the settings fields to include the layout selection.
+ *
+ * @since TBD
+ *
+ * @param {Array} fields The settings fields.
+ *
+ * @return {Array} The settings fields.
+ */
 function filterSettingsFields(fields) {
 	const store = select(storeName);
-	const hasSeats = store.isUsingAssignedSeating();
-	const layoutLocked = store.isLayoutLocked();
-
-	if ( ! hasSeats || ! layoutLocked ) {
-		return fields;
-	}
-
-	const currentLayout = select(storeName).getCurrentLayoutId();
-	const layouts = select(storeName).getLayoutsInOptionFormat()
-
-	if ( ! currentLayout || layouts.length === 0 ) {
-		return fields;
-	}
+	const currentLayout = store.getCurrentLayoutId();
+	const layouts = store.getLayoutsInOptionFormat();
 
 	fields.push(
 		<LayoutSelect
