@@ -15,6 +15,7 @@ use TEC\Tickets\Seating\Admin\Events\Associated_Events;
 use TEC\Tickets\Seating\Admin\Maps_Layouts_Home_Page;
 use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Layouts;
+use TEC\Tickets\Seating\Orders\Seats_Report;
 use Tribe__Tickets__Main as ET;
 use Tribe__Tickets__Tickets as Tickets;
 
@@ -50,11 +51,12 @@ class Assets extends Controller_Contract {
 	 */
 	public function get_utils_data(): array {
 		$localization = $this->container->get( Localization::class );
-
+		$post         = get_post();
+		
 		return [
 			'links'            => [
 				'layouts'     => $this->container->get( Layouts::class )->get_url(),
-				'layout-edit' => Layout_Edit::get_edit_url_by_post( get_the_ID() ),
+				'layout-edit' => empty( $post ) ? '' : Seats_Report::get_link( $post ),
 			],
 			'localizedStrings' => [
 				'capacity-form'  => $localization->get_capacity_form_strings(),
@@ -65,9 +67,10 @@ class Assets extends Controller_Contract {
 					'delete-failed'       => _x( 'Failed to delete the map.', 'Error message for deleting a map', 'event-tickets' ),
 				],
 				'layouts'        => [
+					'add-failed'          => _x( 'Failed to add the new layout.', 'Error message for adding a layout', 'event-tickets' ),
+					'edit-confirmation'   => _x( 'This layout is associated with {count} events. Changes will impact all existing events and may affect the seating assignment of active ticket holders.', 'Confirmation message for editing a layout with events', 'event-tickets' ),
 					'delete-confirmation' => _x( 'Are you sure you want to delete this layout?', 'Confirmation message for deleting a layout', 'event-tickets' ),
 					'delete-failed'       => _x( 'Failed to delete the layout.', 'Error message for deleting a layout', 'event-tickets' ),
-					'edit-confirmation'   => _x( 'This layout is associated with {count} events. Changes will impact all existing events and may affect the seating assignment of active ticket holders.', 'Confirmation message for editing a layout with events', 'event-tickets' ),
 				],
 				'service-errors' => $localization->get_service_error_strings(),
 			],

@@ -195,12 +195,17 @@ class Admin extends Controller_Contract {
 	 */
 	private function reqister_layouts_assets(): void {
 		$action = 'tec_tickets_seating_tab_' . Layouts::get_id();
+		$data   = [
+			'addLayoutModal' => 'dialog_obj_' . Layout_Edit::ADD_LAYOUT_MODAL_ID,
+		];
+
 		Asset::add(
 			'tec-tickets-seating-admin-layouts',
 			$this->built_asset_url( 'admin/layouts.js' ),
 			Tickets::VERSION
 		)
 			->set_dependencies( 'tec-tickets-seating-service-bundle', 'tribe-dialog-js' )
+			->add_localize_script( 'tec.tickets.seating.layouts', $data )
 			->add_to_group( 'tec-tickets-seating-admin' )
 			->add_to_group( 'tec-tickets-seating' )
 			->enqueue_on( $action )
@@ -229,7 +234,7 @@ class Admin extends Controller_Contract {
 		$action = 'tec_tickets_seating_tab_' . Map_Edit::get_id();
 		Asset::add(
 			'tec-tickets-seating-admin-map-edit',
-			$this->built_asset_url( 'admin/map-edit.js' ),
+			$this->built_asset_url( 'admin/mapEdit.js' ),
 			Tickets::VERSION
 		)
 			->add_dependency( 'tec-tickets-seating-service-bundle' )
@@ -240,7 +245,7 @@ class Admin extends Controller_Contract {
 
 		Asset::add(
 			'tec-tickets-seating-admin-map-edit-style',
-			$this->built_asset_url( 'admin/map-edit.css' ),
+			$this->built_asset_url( 'admin/mapEdit.css' ),
 			Tickets::VERSION
 		)
 			->add_to_group( 'tec-tickets-seating-admin' )

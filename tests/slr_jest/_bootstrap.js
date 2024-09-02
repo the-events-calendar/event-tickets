@@ -18,10 +18,13 @@ global.tec.tickets.seating = {
 		ajaxUrl: 'https://wordpress.test/wp-admin/admin-ajax.php',
 		ajaxNonce: '1234567890',
 		ACTION_FETCH_ATTENDEES: 'tec_tickets_seating_fetch_attendees',
+		ACTION_ADD_NEW_LAYOUT: 'tec_tickets_seating_service_add_layout',
+		ACTION_SEAT_TYPE_DELETED: 'tec_tickets_seating_seat_type_deleted',
 	},
 	utils: {
 		localizedStrings: {
 			layouts: {
+				'add-failed': 'Failed to add the layout.',
 				'delete-confirmation':
 					'Are you sure you want to delete this layout?',
 				'delete-failed': 'Failed to delete the layout.',
@@ -136,6 +139,9 @@ global.tec.tickets.seating = {
 			],
 		},
 	},
+	layouts: {
+		addLayoutModal: 'dialog_obj_tec-tickets-seating-layouts-modal',
+	}
 };
 
 // Utility functions
@@ -166,10 +172,16 @@ global.getTestDocument = function (documentName, transformer) {
 	const validDocumentMap = {
 		'layout-edit':
 			'/../slr_integration/Admin/__snapshots__/Maps_Layout_Homepage_Test__test_layout_edit__0.snapshot.html',
+		'layout-list':
+			'/../slr_integration/Admin/__snapshots__/Maps_Layout_Homepage_Test__test_layouts_tab_card_listing__0.snapshot.html',
 		'seats-report':
 			'/../slr_integration/Orders/__snapshots__/Seats_Report_Test__test_render_page__2_tickets_3_attendees__0.snapshot.html',
 		'seats-selection':
 			'/../slr_integration/__snapshots__/Frontend_Test__should_replace_ticket_block_when_seating_is_enabled__two tickets__0.snapshot.html',
+		'maps-list':
+			'/../slr_integration/Admin/__snapshots__/Maps_Layout_Homepage_Test__test_maps_tab_card_listing__0.snapshot.html',
+		'map-edit':
+			'/../slr_integration/Admin/__snapshots__/Maps_Layout_Homepage_Test__test_map_edit__0.snapshot.html',
 	};
 
 	if (!validDocumentMap[documentName]) {

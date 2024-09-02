@@ -19,7 +19,6 @@ use TEC\Tickets\Seating\Service\Service;
 use Tribe__Template as Base_Template;
 use Tribe__Tickets__Main as ET;
 use Tribe__Tickets__Tickets as Tickets;
-use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 use WP_Error;
 
 /**
@@ -115,14 +114,20 @@ class Frontend extends Controller_Contract {
 			return $html;
 		}
 
-		$prices   = [];
 		$provider = Tickets::get_event_ticket_provider_object( $post_id );
+
+		if ( ! $provider ) {
+			return $html;
+		}
+
+		$prices = [];
+
 		foreach ( tribe_tickets()->where( 'event', $post_id )->get_ids( true ) as $ticket_id ) {
 			$ticket = $provider->get_ticket( $post_id, $ticket_id );
 			if ( ! $ticket ) {
 				continue;
 			}
-			$prices[] = $ticket->price;
+			$prices[ $ticket->price ] = true;
 		}
 
 		if ( ! count( $prices ) ) {
@@ -130,16 +135,16 @@ class Frontend extends Controller_Contract {
 			return $html;
 		}
 
-		$cost_range = tribe_format_currency( min( $prices ), $post_id )
-						. ' - '
-						. tribe_format_currency( max( $prices ), $post_id );
+		$prices = array_keys( $prices );
 
-		/**
-		 * @var Tickets_Handler $tickets_handler
-		 */
-		$tickets_handler   = tribe( 'tickets.handler' );
-		$capacity_meta_key = $tickets_handler->key_capacity;
-		$inventory         = get_post_meta( $post_id, $capacity_meta_key, true );
+		$inventory = $this->get_events_ticket_capacity_for_seating( $post_id );
+
+		$cost_range = count( $prices ) === 1 ?
+			tribe_format_currency( $prices[0], $post_id ) :
+			tribe_format_currency( min( $prices ), $post_id )
+			. ' - '
+			. tribe_format_currency( max( $prices ), $post_id );
+
 
 		$timeout = $this->container->get( Timer::class )->get_timeout( $post_id );
 
@@ -165,6 +170,53 @@ class Frontend extends Controller_Contract {
 		$html = apply_filters( 'tec_tickets_seating_tickets_block_html', $html, $template );
 
 		return $html;
+	}
+
+	/**
+	 * Adjusts the event's ticket capacity to consider seating.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id The event ID.
+	 *
+	 * @return int
+	 */
+	public function get_events_ticket_capacity_for_seating( int $event_id ): int {
+		if ( ! tec_tickets_seating_enabled( $event_id ) ) {
+			return 0;
+		}
+
+		$provider = Tickets::get_event_ticket_provider_object( $event_id );
+
+		if ( ! $provider ) {
+			return 0;
+		}
+
+		$available = [];
+
+		foreach ( tribe_tickets()->where( 'event', $event_id )->get_ids( true ) as $ticket_id ) {
+			$ticket = $provider->get_ticket( $event_id, $ticket_id );
+
+			if ( ! $ticket ) {
+				continue;
+			}
+
+			$seat_type = get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true );
+
+			if ( empty( $available[ $seat_type ] ) ) {
+				// The array's keys are the seating types. In order for us to calculate the stock per type and NOT per ticket.
+				$available[ $seat_type ] = $ticket->stock();
+				continue;
+			}
+
+			$available[ $seat_type ] = $available[ $seat_type ] < $ticket->stock() ? $available[ $seat_type ] : $ticket->stock();
+		}
+
+		if ( empty( $available ) ) {
+			return 0;
+		}
+
+		return array_sum( $available );
 	}
 
 	/**

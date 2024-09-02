@@ -5,6 +5,7 @@ import { select, dispatch } from '@wordpress/data';
 import Seats from './dashboard-actions/seats';
 import SeatType from './header/seat-type';
 import { filterCapacityTableMappedProps } from './capacity-table';
+import { filterSeatedTicketsAvailabilityMappedProps } from './availability-overview';
 
 const shouldRenderAssignedSeatingForm = true;
 
@@ -48,8 +49,10 @@ addFilter(
 function filterSetBodyDetails(body, clientId) {
 	const seatType = select(storeName).getTicketSeatType(clientId);
 	const eventCapacity = select(storeName).getEventCapacity();
+	const layoutId = select(storeName).getCurrentLayoutId();
 	body.append('ticket[seating][enabled]', seatType ? '1' : '0');
 	body.append('ticket[seating][seatType]', seatType);
+	body.append('ticket[seating][layoutId]', layoutId);
 	body.append('ticket[event_capacity]', eventCapacity);
 
 	// On first save of a ticket, lock the Layout.
@@ -157,4 +160,10 @@ addFilter(
 	'tec.tickets.blocks.Tickets.CapacityTable.mappedProps',
 	'tec.tickets.flexibleTickets',
 	filterCapacityTableMappedProps
+);
+
+addFilter(
+	'tec.tickets.blocks.Tickets.Availability.mappedProps',
+	'tec.tickets.seating',
+	filterSeatedTicketsAvailabilityMappedProps
 );
