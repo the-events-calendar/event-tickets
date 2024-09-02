@@ -58,8 +58,6 @@ const TicketContainerHeader = ( {
 		clientId
 	);
 
-	console.log( 'rendering', detailsItems );
-
 	return (
 		<Fragment>
 			<div className="tribe-editor__ticket__container-header-details">
