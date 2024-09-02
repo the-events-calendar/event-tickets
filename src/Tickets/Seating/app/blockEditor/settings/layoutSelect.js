@@ -1,8 +1,8 @@
-import {LabeledItem, Select} from '@moderntribe/common/elements';
-import PropTypes from 'prop-types';
-import {Fragment, useState} from 'react';
+import {Select} from '@moderntribe/common/elements';
+import {useState} from 'react';
 import {getLink, getLocalizedString} from '@tec/tickets/seating/utils';
-import {Modal, Dashicon} from '@wordpress/components';
+import {Modal, Dashicon, CheckboxControl, Button} from '@wordpress/components';
+import './style.pcss';
 
 const getString = (key) => getLocalizedString(key, 'capacity-form');
 
@@ -18,6 +18,8 @@ const LayoutSelect = ({
 
 	const [activeLayout, setActiveLayout] = useState(getCurrentLayoutOption(currentLayout, layouts));
 	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [ newLayout, setNewLayout ] = useState(null);
+	const [ isChecked, setChecked ] = useState(false);
 
 	const handleLayoutChange = (selectedLayout) => {
 		if ( selectedLayout === activeLayout ) {
@@ -25,9 +27,16 @@ const LayoutSelect = ({
 		}
 
 		setIsModalOpen(true);
+		setNewLayout(selectedLayout);
 	};
 
 	const closeModal = () => {
+		setIsModalOpen(false);
+		setChecked(false);
+	}
+
+	const handleModalConfirm = () => {
+		setActiveLayout(newLayout);
 		setIsModalOpen(false);
 	}
 
@@ -44,16 +53,33 @@ const LayoutSelect = ({
 
 			{ isModalOpen &&
 				<Modal
+					className="tec-tickets-seating__settings--layout-modal"
 					title="Confirm Seat Layout Change"
 					isDismissible={true}
 					onRequestClose={closeModal}
 					size="medium"
 				>
-					<div>
-						<Dashicon icon="warning" size={20} />
+					<div className="tec-tickets-seating__settings-intro">
+
+						<Dashicon icon="warning" size={20}/>
 						Caution
+						<p>Changing the event's layout will impact all existing tickets and attendees.</p>
 					</div>
 
+					<CheckboxControl
+						className="tec-tickets-seating__settings--checkbox"
+						__nextHasNoMarginBottom
+						label="I Understand"
+						checked={ isChecked }
+						onChange={ setChecked }
+					/>
+
+					<p>You may want to export attendee data first as a record of current seat assignments.</p>
+
+					<div className="tec-tickets-seating__settings--actions">
+						<Button onClick={handleModalConfirm} disabled={!isChecked} isPrimary={isChecked}>Change Seat Layout</Button>
+						<Button onClick={closeModal} isSecondary={true}>Cancel</Button>
+					</div>
 				</Modal>
 			}
 		</div>
