@@ -297,4 +297,3 @@ class Uplink_Test extends Controller_Test_Case {
 
 		return $relevant_fields;
 	}
-}

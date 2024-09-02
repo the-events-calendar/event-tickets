@@ -3,33 +3,56 @@
  * Plugin Name: Events Assigned Seating Test
  */
 
+use TEC\Common\StellarWP\Uplink\Auth\Token\Contracts\Token_Manager;
 use TEC\Tickets\Seating\Service\Layouts;
 use TEC\Tickets\Seating\Service\Maps;
+use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Seat_Types;
 use TEC\Tickets\Seating\Service\Service;
+use function TEC\Common\StellarWP\Uplink\get_resource;
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	// Run `wp slr:seed:test` to seed the test data.
 	\WP_CLI::add_command(
-		'slr:set-access-token',
-		function ( array $args ) {
-			\WP_CLI::line( 'Adding access token for the Events Assigned Controller plugin ...' );
-			// This same value should be in the initial dump of the database on the service side.
-			tribe_update_option( Service::get_oauth_token_option_name(), $args[0] );
-			\WP_CLI::success( 'Access token set.' );
-			// Call the slr-test:check-connection command to make sure the connection is working.
-			\WP_CLI::runcommand( 'slr:check-connection' );
+		'slr:connect',
+		static function ( array $args ) {
+			\WP_CLI::line( 'Adding access token ...' );
+			$connected = slr_test_connect_to_service();
+			if ( $connected ) {
+				\WP_CLI::success( 'Access token set.' );
+			} else {
+				\WP_CLI::error( 'Access token could not be set, check the __TEST__ Setup page.' );
+			}
 		},
 		[
-			'shortdesc' => 'Sets the access token for the Events Assigned Controller plugin.',
-			'args'      => [
-				[
-					'name'        => 'access-token',
-					'description' => 'The access token to use for the Events Assigned Controller plugin.',
-					'type'        => 'string',
-					'required'    => true,
-				],
-			]
+			'shortdesc' => 'Connects the site to the SLR service.'
+		]
+	);
+	\WP_CLI::add_command(
+		'slr:reset',
+		static function ( array $args ) {
+			\WP_CLI::line( 'Removing the access token ...' );
+			$res = get_resource( 'tec-seating' );
+			tribe( Token_Manager::class )->delete( $res->get_slug() );
+			\WP_CLI::line( 'Resetting tables ...' );
+			tribe( \TEC\Tickets\Seating\Tables\Maps::class )->drop();
+			tribe( \TEC\Tickets\Seating\Tables\Maps::class )->update();
+			tribe( \TEC\Tickets\Seating\Tables\Layouts::class )->drop();
+			tribe( \TEC\Tickets\Seating\Tables\Layouts::class )->update();
+			tribe( \TEC\Tickets\Seating\Tables\Seat_Types::class )->drop();
+			tribe( \TEC\Tickets\Seating\Tables\Seat_Types::class )->update();
+			tribe( \TEC\Tickets\Seating\Tables\Sessions::class )->drop();
+			tribe( \TEC\Tickets\Seating\Tables\Sessions::class )->update();
+			\WP_CLI::line( 'Cleaning transients ....' );
+			delete_transient( Maps::update_transient_name() );
+			delete_transient( Layouts::update_transient_name() );
+			delete_transient( Seat_Types::update_transient_name() );
+			tribe(Maps::class)->invalidate_cache();
+			tribe(Layouts::class)->invalidate_cache();
+			\WP_CLI::success( 'Done' );
+		},
+		[
+			'shortdesc' => 'Connects the site to the SLR service.'
 		]
 	);
 	\WP_CLI::add_command(
@@ -55,6 +78,8 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			delete_transient( Maps::update_transient_name() );
 			delete_transient( Layouts::update_transient_name() );
 			delete_transient( Seat_Types::update_transient_name() );
+			tribe(Maps::class)->invalidate_cache();
+			tribe(Layouts::class)->invalidate_cache();
 			\WP_CLI::success( 'Transients cleaned.' );
 		}
 	);
@@ -74,6 +99,8 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			delete_transient( Maps::update_transient_name() );
 			delete_transient( Layouts::update_transient_name() );
 			delete_transient( Seat_Types::update_transient_name() );
+			tribe(Maps::class)->invalidate_cache();
+			tribe(Layouts::class)->invalidate_cache();
 			\WP_CLI::success( 'Transients cleaned.' );
 		}
 	);
@@ -121,6 +148,13 @@ function slr_test_filter_service_frontend_url() {
 
 add_filter( 'tec_tickets_seating_service_frontend_url', 'slr_test_filter_service_frontend_url' );
 
+function slr_test_filter_service_auth_url() {
+	return get_option( 'tec_tickets_seating_service_auth_url' )
+		?: 'http://host.docker.internal:33445'; // Likely correct: it will work if you can access the service from your browser.
+}
+
+add_filter( 'tec_tickets_seating_service_auth_url', 'slr_test_filter_service_auth_url' );
+
 //  __TEST__ Setup page.
 add_action( 'admin_menu', static function () {
 	add_submenu_page(
@@ -162,6 +196,18 @@ add_filter( 'pre_update_option_tec_tickets_seating_service_frontend_url', static
 	return $value;
 } );
 
+add_filter( 'pre_update_option_tec_tickets_seating_service_auth_url', static function ( $value ) {
+	if ( ! has_action( 'shutdown', 'slr_test_connect_to_service' ) ) {
+		add_action( 'shutdown', 'slr_test_connect_to_service', 20 );
+	}
+
+	if ( ! has_action( 'shutdown', 'slr_test_check_connection' ) ) {
+		add_action( 'shutdown', 'slr_test_check_connection', 10 );
+	}
+
+	return $value;
+} );
+
 function slr_test_register_test_setup_settings() {
 	register_setting( 'tec-tickets-seating-test-settings', 'tec_tickets_seating_service_base_url' );
 	register_setting( 'tec-tickets-seating-test-settings', 'tec_tickets_seating_service_frontend_url' );
@@ -171,6 +217,7 @@ function slr_test_render_test_setup_page() {
 	$service      = tribe( Service::class );
 	$backend_url  = get_option( 'tec_tickets_seating_service_base_url' ) ?: $service->get_backend_url();
 	$frontend_url = get_option( 'tec_tickets_seating_service_frontend_url' ) ?: $service->get_frontend_url();
+	$auth_url     = get_option( 'tec_tickets_seating_service_auth_url' ) ?: 'http://host.docker.internal:33445';
 	$connection   = get_option( 'tec_tickets_seating_connection', [
 		'status'       => 'not_connected',
 		'message'      => 'Not connected to the service.',
@@ -205,6 +252,7 @@ function slr_test_render_test_setup_page() {
 		<ul>
 			<li>Service Backend URL: <code>http://host.docker.internal:3000</code></li>
 			<li>Service Frontend URL: <code>http://localhost:3000</code></li>
+			<li>Auth Service URL: <code>http://host.docker.internal:33445</code></li>
 		</ul>
 		</p>
 
@@ -212,6 +260,7 @@ function slr_test_render_test_setup_page() {
 		<ul>
 			<li>Service Backend URL: <code>https://seating-staging.theeventscalendar.com</code></li>
 			<li>Service Frontend URL: <code>https://seating-staging.theeventscalendar.com</code></li>
+			<li>Auth Service URL: <code>https://seating-auth-staging.theeventscalendar.com</code></li>
 		</ul>
 		</p>
 
@@ -219,6 +268,7 @@ function slr_test_render_test_setup_page() {
 		<ul>
 			<li>Service Backend URL: <code>https://seating-dev.theeventscalendar.com</code></li>
 			<li>Service Frontend URL: <code>https://seating-dev.theeventscalendar.com</code></li>
+			<li>Auth Service URL: <code>https://seating-auth-dev.theeventscalendar.com</code></li>
 		</ul>
 		</p>
 
@@ -240,6 +290,13 @@ function slr_test_render_test_setup_page() {
 							   value="<?php echo esc_attr( $frontend_url ); ?>"/></td>
 				</tr>
 
+				<tr valign="top">
+					<th scope="row">Auth service URL</th>
+					<td><input type="text" name="tec_tickets_seating_service_auth_url"
+							   class="regular-text wide"
+							   value="<?php echo esc_attr( $auth_url ); ?>"/></td>
+				</tr>
+
 			</table>
 
 			<?php submit_button( 'Save & Connect' ); ?>
@@ -250,8 +307,15 @@ function slr_test_render_test_setup_page() {
 }
 
 function slr_test_check_connection(): bool {
-	$current_token = tribe_get_option( Service::get_oauth_token_option_name() );
-	$service_url   = apply_filters( 'tec_tickets_seating_service_base_url',
+	$current_token = ( new class {
+		use OAuth_Token;
+
+		public function open_get_oauth_token(): ?string {
+			return $this->get_oauth_token();
+		}
+	} )->open_get_oauth_token();
+
+	$service_url = apply_filters( 'tec_tickets_seating_service_base_url',
 		get_option( 'tec_tickets_seating_service_base_url' ) );
 
 	// Try and validate the token first.
@@ -277,16 +341,41 @@ function slr_test_check_connection(): bool {
 }
 
 function slr_test_connect_to_service() {
-	$service_url = apply_filters( 'tec_tickets_seating_service_base_url',
-		get_option( 'tec_tickets_seating_service_base_url' ) );
-
 	if ( slr_test_check_connection() ) {
-		return;
+		return true;
 	}
 
-	$response = wp_remote_post(
-		add_query_arg( [ 'site' => urlencode( home_url() ) ], $service_url . '/api/alpha-connect' ),
-		[ 'timeout' => 30 ]
+	$auth_url     = apply_filters( 'tec_tickets_seating_service_auth_url',
+		get_option( 'tec_tickets_seating_service_auth_url' ) );
+	$auth_url     = untrailingslashit( $auth_url );
+	$access_token = wp_generate_password( 36, false, false );
+
+	$https_home_url = home_url( '', 'https' );
+
+	if ( 'https' !== parse_url( $https_home_url, PHP_URL_SCHEME ) ) {
+		$https_home_url = str_replace( 'http', 'https', $https_home_url );
+	}
+
+	$payload         = [
+		'timestamp'  => gmdate( 'U' ),
+		'token'      => $access_token,
+		'domain'     => $https_home_url,
+		'user_id'    => time(),
+		'expiration' => time() + YEAR_IN_SECONDS,
+	];
+    ksort($payload);
+    // The PHP correspondent of JSON.stringify requires these flags.
+	$encoded_payload = wp_json_encode( $payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+	$response        = wp_remote_post(
+		$auth_url . '/tokens/new',
+		[
+			'body'    => wp_json_encode(
+				array_merge( [
+					'hash' => hash( 'sha256', $encoded_payload . 'silence-is-golden' )
+				], $payload )
+			),
+			'timeout' => 30
+		]
 	);
 
 	if ( is_wp_error( $response ) ) {
@@ -295,7 +384,7 @@ function slr_test_connect_to_service() {
 			'message' => $response->get_error_message()
 		] );
 
-		return;
+		return false;
 	}
 
 	$code = wp_remote_retrieve_response_code( $response );
@@ -312,18 +401,7 @@ function slr_test_connect_to_service() {
 			)
 		] );
 
-		return;
-	}
-
-	$data = json_decode( $body, false, 512, JSON_THROW_ON_ERROR );
-
-	if ( ! isset( $data->data ) ) {
-		update_option( 'tec_tickets_seating_connection', [
-			'status'  => 'error',
-			'message' => 'The service did not return an access token.'
-		] );
-
-		return;
+		return false;
 	}
 
 	update_option( 'tec_tickets_seating_connection', [
@@ -331,7 +409,15 @@ function slr_test_connect_to_service() {
 		'message' => 'Connected to the service.'
 	] );
 
-	tribe_update_option( Service::get_oauth_token_option_name(), $data->data );
+	( new class {
+		use OAuth_Token;
+
+		public function open_set_oauth_token( string $token ): void {
+			$this->set_oauth_token( $token );
+		}
+	} )->open_set_oauth_token( $access_token );
+
+	return true;
 }
 
 /**
