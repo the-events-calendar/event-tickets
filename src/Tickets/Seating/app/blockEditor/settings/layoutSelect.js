@@ -40,6 +40,15 @@ const LayoutSelect = ({
 		setIsModalOpen(false);
 	}
 
+	function NoLayouts() {
+		if ( currentLayout === null || currentLayout.length === 0 || layouts.length === 0 ) {
+			return (
+				<span className="tec-tickets-seating__settings_layout--description">
+					The event is not using assigned seating.
+				</span>
+			);
+		}
+	}
 	return (
 		<div className="tec-tickets-seating__settings_layout--wrapper">
 			<p className="tec-tickets-seating__settings_layout--title">Seat Layout</p>
@@ -82,6 +91,7 @@ const LayoutSelect = ({
 					</div>
 				</Modal>
 			}
+			<NoLayouts />
 		</div>
 	);
 }
