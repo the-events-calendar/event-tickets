@@ -3,10 +3,10 @@ import CapacityForm from './capacity-form';
 import { storeName } from './store';
 import { select, dispatch } from '@wordpress/data';
 import Seats from './dashboard-actions/seats';
-import SeatType from './header/seat-type';
 import { filterCapacityTableMappedProps } from './capacity-table';
 import { filterSeatedTicketsAvailabilityMappedProps } from './availability-overview';
 import { filterTicketIsAsc } from './ticket-is-asc';
+import { filterHeaderDetails } from './header-details';
 
 const shouldRenderAssignedSeatingForm = true;
 
@@ -120,36 +120,6 @@ addFilter(
 	'tec.tickets.seating',
 	filterMoveButtonAction
 );
-
-/**
- * Filters the header details of the ticket to add the seating type name.
- *
- * @since TBD
- *
- * @param {Array}  items    The header details of the ticket.
- * @param {string} clientId The client ID of the ticket block.
- *
- * @return {Array} The header details.
- */
-function filterHeaderDetails(items, clientId) {
-	const hasSeats = select(storeName).isUsingAssignedSeating(clientId);
-	if (!hasSeats) {
-		return items;
-	}
-
-	const seatTypeId = select(storeName).getTicketSeatType(clientId);
-	const seatTypes = select(storeName).getAllSeatTypes();
-
-	const seatTypeName = Object.values(seatTypes).find(
-		(seatType) => seatType.id === seatTypeId
-	)?.name;
-
-	if (seatTypeName) {
-		items.push(<SeatType name={seatTypeName} />);
-	}
-
-	return items;
-}
 
 addFilter(
 	'tec.tickets.blocks.Ticket.header.detailItems',
