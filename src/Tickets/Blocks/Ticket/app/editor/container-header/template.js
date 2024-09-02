@@ -38,7 +38,7 @@ const TicketContainerHeader = ( {
 		);
 	}
 
-	let defailsItems = [
+	let detailsItems = [
 		<OnSaleLabel isOnSale={ isOnSale } />,
 		<TicketContainerHeaderTitle clientId={ clientId } isSelected={ isSelected } />,
 		<TicketContainerHeaderDescription clientId={ clientId } isSelected={ isSelected } />
@@ -49,15 +49,23 @@ const TicketContainerHeader = ( {
 	 *
 	 * @since TBD
 	 *
-	 * @param {Array} items The header details of the ticket.
+	 * @param {Array}  items    The header details of the ticket.
 	 * @param {string} clientId The client ID of the ticket block.
 	 */
-	defailsItems = applyFilters( 'tec.tickets.blocks.Ticket.header.detailItems', defailsItems, clientId )
+	detailsItems = applyFilters(
+		'tec.tickets.blocks.Ticket.header.detailItems',
+		detailsItems,
+		clientId
+	);
+
+	console.log( 'rendering', detailsItems );
 
 	return (
 		<Fragment>
 			<div className="tribe-editor__ticket__container-header-details">
-				{ defailsItems.map( ( item, index) => <Fragment key={index}>{item}</Fragment> ) }
+				{detailsItems.map((item, index) => (
+					<Fragment key={index}>{item}</Fragment>
+				))}
 			</div>
 			<TicketContainerHeaderPrice clientId={ clientId } isSelected={ isSelected } />
 			<TicketContainerHeaderQuantity clientId={ clientId } isSelected={ isSelected } />
