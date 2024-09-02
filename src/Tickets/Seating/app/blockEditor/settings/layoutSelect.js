@@ -1,10 +1,10 @@
 import {Select} from '@moderntribe/common/elements';
-import {useState} from 'react';
+import {Fragment, useState} from 'react';
 import {getLink, getLocalizedString} from '@tec/tickets/seating/utils';
 import {Modal, Dashicon, CheckboxControl, Button} from '@wordpress/components';
 import './style.pcss';
 
-const getString = (key) => getLocalizedString(key, 'capacity-form');
+const getString = (key) => getLocalizedString(key, 'settings');
 
 const LayoutSelect = ({
 	layouts,
@@ -78,42 +78,50 @@ const LayoutSelect = ({
 			</Fragment>
 		);
 	}
+
+	function RenderModal () {
+		if ( ! isModalOpen ) {
+			return null
+		}
+
+		return (
+			<Modal
+				className="tec-tickets-seating__settings--layout-modal"
+				title="Confirm Seat Layout Change"
+				isDismissible={true}
+				onRequestClose={closeModal}
+				size="medium"
+			>
+				<div className="tec-tickets-seating__settings-intro">
+					<Dashicon icon="warning" size={20}/>
+					Caution
+					<p>Changing the event's layout will impact all existing tickets and attendees.</p>
+				</div>
+
+				<CheckboxControl
+					className="tec-tickets-seating__settings--checkbox"
+					__nextHasNoMarginBottom
+					label="I Understand"
+					checked={ isChecked }
+					onChange={ setChecked }
+				/>
+
+				<p>You may want to export attendee data first as a record of current seat assignments.</p>
+
+				<div className="tec-tickets-seating__settings--actions">
+					<Button onClick={handleModalConfirm} disabled={!isChecked} isPrimary={isChecked}>Change Seat Layout</Button>
+					<Button onClick={closeModal} isSecondary={true}>Cancel</Button>
+				</div>
+			</Modal>
+		);
+	}
+
 	return (
 		<div className="tec-tickets-seating__settings_layout--wrapper">
-			<p className="tec-tickets-seating__settings_layout--title">Seat Layout</p>
-
-			{ isModalOpen &&
-				<Modal
-					className="tec-tickets-seating__settings--layout-modal"
-					title="Confirm Seat Layout Change"
-					isDismissible={true}
-					onRequestClose={closeModal}
-					size="medium"
-				>
-					<div className="tec-tickets-seating__settings-intro">
-
-						<Dashicon icon="warning" size={20}/>
-						Caution
-						<p>Changing the event's layout will impact all existing tickets and attendees.</p>
-					</div>
-
-					<CheckboxControl
-						className="tec-tickets-seating__settings--checkbox"
-						__nextHasNoMarginBottom
-						label="I Understand"
-						checked={ isChecked }
-						onChange={ setChecked }
-					/>
-
-					<p>You may want to export attendee data first as a record of current seat assignments.</p>
-
-					<div className="tec-tickets-seating__settings--actions">
-						<Button onClick={handleModalConfirm} disabled={!isChecked} isPrimary={isChecked}>Change Seat Layout</Button>
-						<Button onClick={closeModal} isSecondary={true}>Cancel</Button>
-					</div>
-				</Modal>
-			}
+			<span className="tec-tickets-seating__settings_layout--title">Seat Layout</span>
 			<NoLayouts />
+			<RenderSelect />
+			<RenderModal />
 		</div>
 	);
 }
