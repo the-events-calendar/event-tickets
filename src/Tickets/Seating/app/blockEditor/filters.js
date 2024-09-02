@@ -6,6 +6,7 @@ import Seats from './dashboard-actions/seats';
 import SeatType from './header/seat-type';
 import { filterCapacityTableMappedProps } from './capacity-table';
 import { filterSeatedTicketsAvailabilityMappedProps } from './availability-overview';
+import { filterTicketIsAsc } from './ticket-is-asc';
 
 const shouldRenderAssignedSeatingForm = true;
 
@@ -166,4 +167,10 @@ addFilter(
 	'tec.tickets.blocks.Tickets.Availability.mappedProps',
 	'tec.tickets.seating',
 	filterSeatedTicketsAvailabilityMappedProps
+);
+
+addFilter(
+	'tribe.editor.ticket.isAsc',
+	'tec.tickets.seating',
+	filterTicketIsAsc
 );
