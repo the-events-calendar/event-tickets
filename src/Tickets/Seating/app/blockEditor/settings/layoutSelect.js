@@ -49,16 +49,38 @@ const LayoutSelect = ({
 			);
 		}
 	}
+
+	/**
+	 * Renders the select dropdown for the layout.
+	 *
+	 * @since TBD
+	 *
+	 * @return {JSX.Element|null}
+	 */
+	function RenderSelect () {
+		if (currentLayout === null || currentLayout.length === 0 || layouts.length === 0 ) {
+			return null;
+		}
+
+		return (
+			<Fragment>
+				<Select
+					id="tec-tickets-seating__settings_layout-select"
+					className="tec-tickets-seating__settings_layout--select"
+					value={activeLayout}
+					options={layouts}
+					onChange={handleLayoutChange}
+				/>
+				<span className="tec-tickets-seating__settings_layout--description">
+					Changing the event’s layout will impact all existing tickets.
+					Attendees will lose their seat assignments.
+				</span>
+			</Fragment>
+		);
+	}
 	return (
 		<div className="tec-tickets-seating__settings_layout--wrapper">
 			<p className="tec-tickets-seating__settings_layout--title">Seat Layout</p>
-			<Select
-				id="tec-tickets-seating__settings_layout-select"
-				value={activeLayout}
-				options={layouts}
-				onChange={handleLayoutChange}
-			/>
-			<p>Changing the event's layout will impact all existing tickets and attendees.</p>
 
 			{ isModalOpen &&
 				<Modal
