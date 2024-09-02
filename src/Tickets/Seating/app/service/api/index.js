@@ -1,5 +1,5 @@
 // Get the service base URL without the trailing slash.
-import { getBaseUrl } from './localized-data.js';
+import {associatedEventsUrl, getBaseUrl} from './localized-data.js';
 import {
 	setIsReady,
 	setEstablishingReadiness,
@@ -22,9 +22,12 @@ import {
 	RESERVATIONS_DELETED,
 	RESERVATIONS_UPDATED,
 	SEAT_TYPES_UPDATED,
+	SEAT_TYPE_DELETED,
 	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
+	GO_TO_ASSOCIATED_EVENTS,
 	RESERVATION_UPDATED,
 	RESERVATION_CREATED,
+	INBOUND_SET_ELEMENT_HEIGHT,
 } from './service-actions.js';
 
 /**
@@ -249,11 +252,25 @@ export function emptyHandlerQueue() {
 	handlerQueue = [];
 }
 
+/**
+ * Returns the associated events URL for the given layout ID.
+ *
+ * @since TBD
+ *
+ * @param {string} layoutId The layout ID.
+ *
+ * @return {string} The associated events URL for the given layout ID.
+ */
+export function getAssociatedEventsUrl( layoutId ) {
+	return layoutId ? `${associatedEventsUrl}&layout=${layoutId}` : associatedEventsUrl;
+}
+
 // Re-export some functions from the state module.
 export {
 	INBOUND_APP_READY,
 	INBOUND_APP_READY_FOR_DATA,
 	INBOUND_SEATS_SELECTED,
+	INBOUND_SET_ELEMENT_HEIGHT,
 	OUTBOUND_EVENT_ATTENDEES,
 	OUTBOUND_HOST_READY,
 	OUTBOUND_REMOVE_RESERVATIONS,
@@ -263,6 +280,7 @@ export {
 	RESERVATIONS_UPDATED,
 	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
 	SEAT_TYPES_UPDATED,
+	SEAT_TYPE_DELETED,
 	RESERVATION_UPDATED,
 	RESERVATION_CREATED,
 	getHandlerForAction,
@@ -280,6 +298,7 @@ window.tec.tickets.seating.service.api = {
 	INBOUND_APP_READY,
 	INBOUND_APP_READY_FOR_DATA,
 	INBOUND_SEATS_SELECTED,
+	INBOUND_SET_ELEMENT_HEIGHT,
 	OUTBOUND_EVENT_ATTENDEES,
 	OUTBOUND_HOST_READY,
 	OUTBOUND_REMOVE_RESERVATIONS,
@@ -289,6 +308,8 @@ window.tec.tickets.seating.service.api = {
 	RESERVATIONS_UPDATED,
 	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
 	SEAT_TYPES_UPDATED,
+	SEAT_TYPE_DELETED,
+	GO_TO_ASSOCIATED_EVENTS,
 	RESERVATION_UPDATED,
 	RESERVATION_CREATED,
 	establishReadiness,
@@ -300,4 +321,5 @@ window.tec.tickets.seating.service.api = {
 	removeAction,
 	sendPostMessage,
 	startListeningForServiceMessages,
+	getAssociatedEventsUrl,
 };

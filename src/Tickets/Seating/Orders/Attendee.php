@@ -351,4 +351,34 @@ class Attendee {
 
 		return $formatted_attendees;
 	}
+	
+	/**
+	 * Inject seating label with ticket name on Order success page.
+	 *
+	 * @since TBD
+	 *
+	 * @param string   $html The HTML content of ticket information.
+	 * @param Template $template The email template instance.
+	 *
+	 * @return string The HTML content of ticket information.
+	 */
+	public function inject_seat_info_in_order_success_page( string $html, Template $template ): string {
+		$context    = $template->get_local_values();
+		$seat_label = Arr::get( $context, [ 'attendee', 'seat_label' ], false );
+		
+		if ( ! $seat_label ) {
+			$ticket_id   = Arr::get( $context, [ 'attendee', 'product_id' ] );
+			$slr_enabled = get_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
+			$seat_label  = $slr_enabled ? __( 'Unassigned', 'event-tickets' ) : '';
+		}
+		
+		if ( empty( $seat_label ) ) {
+			return $html;
+		}
+		
+		$head_div = '<div class="tec-tickets__attendees-list-item-attendee-details-ticket">';
+		$label    = $head_div . sprintf( '<span class="tec-tickets__ticket-information__seat-label">%s</span>', esc_html( $seat_label ) );
+		
+		return str_replace( $head_div, $label, $html );
+	}
 }

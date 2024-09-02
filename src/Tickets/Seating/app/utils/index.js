@@ -87,6 +87,24 @@ export const onReady = (domReadyCallback) => {
 	}
 };
 
+/**
+ * Redirects to a URL.
+ *
+ * @since TBD
+ *
+ * @param {string} url The URL to relocate to.
+ * @param {boolean} [newTab=false] Whether to open the URL in a new tab.
+ *
+ * @return {void}
+ */
+export function redirectTo(url, newTab = false) {
+	if (newTab) {
+		window.open( url, '_blank', 'noopener,noreferrer' );
+	} else {
+		window.location.href = url;
+	}
+}
+
 window.tec = window.tec || {};
 window.tec.tickets.seating = window.tec.tickets.seating || {};
 window.tec.tickets.seating.utils = {
@@ -96,4 +114,5 @@ window.tec.tickets.seating.utils = {
 	createHtmlComponentFromTemplateString,
 	createHtmlComponentFromTemplateElement,
 	onReady,
+	redirectTo,
 };

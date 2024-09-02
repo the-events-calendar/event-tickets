@@ -7,7 +7,6 @@ use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use Tribe\Tickets\Test\Commerce\Ticket_Maker as Ticket_Maker_Base;
-use TEC\Tickets\Commerce\Module as Module;
 
 trait Order_Maker {
 
@@ -33,15 +32,25 @@ trait Order_Maker {
 			'purchaser_full_name'  => 'Test Purchaser',
 			'purchaser_first_name' => 'Test',
 			'purchaser_last_name'  => 'Purchaser',
-			'purchaser_email'      => 'test-'.uniqid().'@test.com',
+			'purchaser_email'      => 'test-' . uniqid() . '@test.com',
 		];
 
 		$gateway = $overrides['gateway'] ?? tribe( Gateway::class );
 
 		$order_status = $overrides['order_status'] ?? Completed::SLUG;
-		$purchaser = wp_parse_args( $overrides, $default_purchaser );
-		$orders    = tribe( Order::class );
-		$order     = $orders->create_from_cart( $gateway, $purchaser );
+		$purchaser    = wp_parse_args( $overrides, $default_purchaser );
+		
+		$feed_args_callback = function ( $args ) use ( $overrides ) {
+			$args['post_date']     = $overrides['post_date'] ?? '';
+			$args['post_date_gmt'] = $overrides['post_date_gmt'] ?? $args['post_date'];
+			
+			return $args;
+		};
+		
+		add_filter( 'tec_tickets_commerce_order_create_args', $feed_args_callback );
+		
+		$orders = tribe( Order::class );
+		$order  = $orders->create_from_cart( $gateway, $purchaser );
 
 		if ( ! $orders->modify_status( $order->ID, Pending::SLUG ) ) {
 			return false;
@@ -52,6 +61,8 @@ trait Order_Maker {
 		}
 
 		clean_post_cache( $order->ID );
+		
+		remove_filter( 'tec_tickets_commerce_order_create_args', $feed_args_callback );
 
 		$cart->clear_cart();
 

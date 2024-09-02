@@ -14,6 +14,7 @@ use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Admin\Attendees\Page as Attendee_Page;
+use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
 use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Ajax_Methods;
 use TEC\Tickets\Seating\Built_Assets;
@@ -82,6 +83,15 @@ class Controller extends Controller_Contract {
 	 * @var Seats_Report
 	 */
 	private Seats_Report $seats_report;
+
+	/**
+	 * A reference to the Reservations object.
+	 *
+	 * @since TBD
+	 *
+	 * @var Reservations
+	 */
+	private Reservations $reservations;
 
 	/**
 	 * Controller constructor.
@@ -175,7 +185,36 @@ class Controller extends Controller_Contract {
 			4
 		);
 
+		add_filter(
+			'tribe_template_html:tickets/components/attendees-list/attendees/attendee/ticket',
+			[ $this, 'inject_seat_info_in_order_success_page' ],
+			10,
+			4
+		);
+		add_filter( 'pre_do_shortcode_tag', [ $this, 'filter_pre_do_shortcode_tag' ], 10, 4 );
+
 		$this->register_assets();
+	}
+
+	/**
+	 * Before Tickets Commerce Checkout shortcode is rendered.
+	 *
+	 * @param false|string $output Short-circuit return value. Either false or the value to replace the shortcode with.
+	 * @param string       $tag Shortcode name.
+	 * @param array        $attr Shortcode attributes array, can be empty if the original arguments string cannot be parsed.
+	 * @param array        $m Regular expression match array.
+	 *
+	 * @return bool|string Short-circuit return value.
+	 */
+	public function filter_pre_do_shortcode_tag( $output, $tag, $attr, $m ) {
+		// If not checkout Shortcode then bail.
+		if ( Checkout_Shortcode::get_wp_slug() !== $tag ) {
+			return $output;
+		}
+
+		$this->cart->maybe_clear_cart_for_empty_session();
+
+		return $output;
 	}
 
 	/**
@@ -225,7 +264,14 @@ class Controller extends Controller_Contract {
 			10,
 			4
 		);
+		remove_filter(
+			'tribe_template_html:tickets/components/attendees-list/attendees/attendee/ticket',
+			[ $this, 'inject_seat_info_in_order_success_page' ],
+			10,
+			4
+		);
 		remove_filter( 'tec_tickets_commerce_attendee_to_delete', [ $this, 'handle_attendee_delete' ] );
+		remove_filter( 'pre_do_shortcode_tag', [ $this, 'filter_pre_do_shortcode_tag' ] );
 	}
 
 	/**
@@ -592,6 +638,22 @@ class Controller extends Controller_Contract {
 	 */
 	public function inject_seat_info_in_my_tickets( $html, $file, $name, $template ): string {
 		return $this->attendee->inject_seat_info_in_my_tickets( $html, $template );
+	}
+
+	/**
+	 * Inject seating label with ticket name on Order success page.
+	 *
+	 * @since TBD
+	 *
+	 * @param string        $html     The HTML content of ticket information.
+	 * @param string        $file     Complete path to include the PHP File.
+	 * @param array<string> $name     Template name.
+	 * @param Template      $template Current instance of the Tribe__Template.
+	 *
+	 * @return string The HTML content of ticket information.
+	 */
+	public function inject_seat_info_in_order_success_page( $html, $file, $name, $template ): string {
+		return $this->attendee->inject_seat_info_in_order_success_page( $html, $template );
 	}
 
 	/**

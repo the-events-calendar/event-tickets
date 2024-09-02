@@ -24,6 +24,11 @@ use TEC\Tickets\Seating\Meta;
  */
 class Layout_Edit extends Tab {
 	/**
+	 * The Modal ID  used to render the Add new layout modal.
+	 */
+	public const ADD_LAYOUT_MODAL_ID = 'tec-tickets-seating-layouts-modal';
+	
+	/**
 	 * The service used to render the iframe.
 	 *
 	 * @since TBD

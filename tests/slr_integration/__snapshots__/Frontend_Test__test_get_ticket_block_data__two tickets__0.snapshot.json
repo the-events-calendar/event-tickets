@@ -9,7 +9,8 @@
                     "ticketId": {{ticket_1}},
                     "name": "Test TC ticket for {{post_id}}",
                     "price": "20",
-                    "description": "Test TC ticket description for {{post_id}}"
+                    "description": "Test TC ticket description for {{post_id}}",
+                    "dateInRange": true
                 }
             ]
         },
@@ -20,7 +21,8 @@
                     "ticketId": {{ticket_2}},
                     "name": "Test TC ticket for {{post_id}}",
                     "price": "50",
-                    "description": "Test TC ticket description for {{post_id}}"
+                    "description": "Test TC ticket description for {{post_id}}",
+                    "dateInRange": true
                 }
             ]
         }

@@ -12,7 +12,9 @@ use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Shortcodes\Success_Shortcode;
 use TEC\Tickets\Commerce\Status\Pending;
+use TEC\Tickets\Commerce\Success;
 use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Meta;
@@ -20,6 +22,7 @@ use TEC\Tickets\Seating\Orders\Attendee as Orders_Attendee;
 use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Tables\Sessions;
+use Tribe\Shortcode\Manager;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tests\Traits\WP_Remote_Mocks;
 use Tribe\Tests\Traits\WP_Send_Json_Mocks;
@@ -1358,5 +1361,60 @@ class Controller_Test extends Controller_Test_Case {
 
 		$row_actions = apply_filters( 'post_row_actions', [], $post );
 		$this->assertNotContains( 'tickets_seats', array_keys( $row_actions ) );
+	}
+	
+	public function test_tc_order_success_page_has_seat_label() {
+		$shortcode_manager = new Manager();
+		$shortcode_manager->add_shortcodes();
+		
+		$this->make_controller()->register();
+		
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Event with single seated attendee',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		
+		update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'some-layout' );
+		
+		$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+		update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'some-seat' );
+		
+		$order = $this->create_order(
+			[ $ticket_id => 1 ],
+			[
+				'purchaser_email' => 'test-purchaser@test.com',
+				'post_date'       => '2022-01-21 00:00:00',
+			]
+		);
+		update_post_meta( $order->ID, '_tec_tc_order_gateway_order_id', $order->ID );
+		clean_post_cache( $order->ID );
+		
+		$attendee = tribe_attendees()
+			->by( 'event_id', $event_id )
+			->by( 'order_status', [ 'completed' ] )
+			->first();
+		
+		// Now add the seat label meta data to attendee.
+		update_post_meta( $attendee->ID, Meta::META_KEY_SEAT_TYPE, 'some-seat-type' );
+		update_post_meta( $attendee->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'A-1' );
+		clean_post_cache( $attendee->ID );
+		
+		$_REQUEST['tc-order-id'] = $order->ID;
+		
+		$shortcode = Success_Shortcode::get_wp_slug();
+		$html      = do_shortcode( "[{$shortcode}]" );
+		$html      = str_replace(
+			[ $event_id, $order->ID, $attendee->ID ],
+			[ '{EVENT_ID}', '{ORDER_ID}', '{ATTENDEE_ID}' ],
+			$html
+		);
+		
+		$this->assertMatchesHtmlSnapshot( $html );
 	}
 }

@@ -104,6 +104,15 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			\WP_CLI::success( 'Transients cleaned.' );
 		}
 	);
+	
+	\WP_CLI::add_command(
+		'slr:get-auth-token',
+		function() {
+			\WP_CLI::line( 'Getting the auth token ...' );
+			$token = tribe_get_option( Service::get_oauth_token_option_name(), null );
+			\WP_CLI::success( 'Bearer ' . $token );
+		}
+	);
 }
 
 /**
@@ -410,3 +419,19 @@ function slr_test_connect_to_service() {
 
 	return true;
 }
+
+/**
+ * Bypass airplane mode when connecting to the service.
+ */
+function slr_test_bypass_airplane_mode( $allowed, $url, $args, $host ) {
+	$service_url = apply_filters( 'tec_tickets_seating_service_base_url', get_option( 'tec_tickets_seating_service_base_url' ) );
+	$parsed_url  = parse_url( $service_url );
+	
+	if ( $parsed_url['host'] === $host ) {
+		return true;
+	}
+	
+	return $allowed;
+}
+
+add_filter( 'airplane_mode_allow_http_api_request', 'slr_test_bypass_airplane_mode', 10, 4 );

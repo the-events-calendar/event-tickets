@@ -12,11 +12,15 @@ namespace TEC\Tickets\Seating\Admin;
 use TEC\Common\Contracts\Container;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Assets\Asset;
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Seating\Admin;
+use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Ajax_Methods;
 use TEC\Tickets\Seating\Built_Assets;
 use TEC\Tickets\Seating\Logging;
+use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Service\Layouts;
 use TEC\Tickets\Seating\Service\Maps;
 use TEC\Tickets\Seating\Service\Reservations;
@@ -90,6 +94,15 @@ class Ajax extends Controller_Contract {
 	 * @var string
 	 */
 	public const ACTION_DELETE_LAYOUT = 'tec_tickets_seating_service_delete_layout';
+	
+	/**
+	 * The action to add a layout.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const ACTION_ADD_NEW_LAYOUT = 'tec_tickets_seating_service_add_layout';
 
 	/**
 	 * The action to push the reservations to the backend from the seat-selection frontend.
@@ -135,6 +148,15 @@ class Ajax extends Controller_Contract {
 	 * @var string
 	 */
 	public const ACTION_SEAT_TYPES_UPDATED = 'tec_tickets_seating_seat_types_updated';
+	
+	/**
+	 * The action to handle seat type deletion.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const ACTION_SEAT_TYPE_DELETED = 'tec_tickets_seating_seat_type_deleted';
 
 	/**
 	 * The action to update a set of reservations following a seat type update.
@@ -251,6 +273,7 @@ class Ajax extends Controller_Contract {
 		add_action( 'wp_ajax_' . self::ACTION_INVALIDATE_LAYOUTS_CACHE, [ $this, 'invalidate_layouts_cache' ] );
 		add_action( 'wp_ajax_' . self::ACTION_DELETE_MAP, [ $this, 'delete_map_from_service' ] );
 		add_action( 'wp_ajax_' . self::ACTION_DELETE_LAYOUT, [ $this, 'delete_layout_from_service' ] );
+		add_action( 'wp_ajax_' . self::ACTION_ADD_NEW_LAYOUT, [ $this, 'add_new_layout_to_service' ] );
 		add_action( 'wp_ajax_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
 		add_action( 'wp_ajax_nopriv_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
 		add_action( 'wp_ajax_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
@@ -261,6 +284,7 @@ class Ajax extends Controller_Contract {
 			'wp_ajax_' . self::ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES,
 			[ $this, 'update_reservations_from_seat_types' ]
 		);
+		add_action( 'wp_ajax_' . self::ACTION_SEAT_TYPE_DELETED, [ $this, 'handle_seat_type_deleted' ] );
 
 		add_action( 'tec_tickets_seating_session_interrupt', [ $this, 'clear_commerce_cart_cookie' ] );
 	}
@@ -281,6 +305,7 @@ class Ajax extends Controller_Contract {
 		remove_action( 'wp_ajax_' . self::ACTION_INVALIDATE_LAYOUTS_CACHE, [ $this, 'invalidate_layouts_cache' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_DELETE_MAP, [ $this, 'delete_map_from_service' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_DELETE_LAYOUT, [ $this, 'delete_layout_from_service' ] );
+		remove_action( 'wp_ajax_' . self::ACTION_ADD_NEW_LAYOUT, [ $this, 'add_new_layout_to_service' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
 		remove_action( 'wp_ajax_nopriv_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
@@ -292,6 +317,8 @@ class Ajax extends Controller_Contract {
 			'wp_ajax_' . self::ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES,
 			[ $this, 'update_reservations_from_seat_types' ]
 		);
+		
+		remove_action( 'wp_ajax_' . self::ACTION_SEAT_TYPE_DELETED, [ $this, 'handle_seat_type_deleted' ] );
 	}
 
 	/**
@@ -309,12 +336,14 @@ class Ajax extends Controller_Contract {
 			'ACTION_INVALIDATE_LAYOUTS_CACHE'             => self::ACTION_INVALIDATE_LAYOUTS_CACHE,
 			'ACTION_DELETE_MAP'                           => self::ACTION_DELETE_MAP,
 			'ACTION_DELETE_LAYOUT'                        => self::ACTION_DELETE_LAYOUT,
+			'ACTION_ADD_NEW_LAYOUT'                       => self::ACTION_ADD_NEW_LAYOUT,
 			'ACTION_POST_RESERVATIONS'                    => self::ACTION_POST_RESERVATIONS,
 			'ACTION_CLEAR_RESERVATIONS'                   => self::ACTION_CLEAR_RESERVATIONS,
 			'ACTION_DELETE_RESERVATIONS'                  => self::ACTION_DELETE_RESERVATIONS,
 			'ACTION_FETCH_ATTENDEES'                      => self::ACTION_FETCH_ATTENDEES,
 			'ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID'          => self::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID,
 			'ACTION_SEAT_TYPES_UPDATED'                   => self::ACTION_SEAT_TYPES_UPDATED,
+			'ACTION_SEAT_TYPE_DELETED'                    => self::ACTION_SEAT_TYPE_DELETED,
 			'ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES' => self::ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES,
 			'ACTION_RESERVATION_CREATED'                  => self::ACTION_RESERVATION_CREATED,
 			'ACTION_RESERVATION_UPDATED'                  => self::ACTION_RESERVATION_UPDATED,
@@ -475,6 +504,50 @@ class Ajax extends Controller_Contract {
 		}
 
 		wp_send_json_error( [ 'error' => __( 'Failed to delete the layout.', 'event-tickets' ) ], 500 );
+	}
+	
+	/**
+	 * Adds a new layout to the service.
+	 *
+	 * @since TBD
+	 *
+	 * @return void The function does not return a value but will send the JSON response.
+	 */
+	public function add_new_layout_to_service(): void {
+		if ( ! $this->check_current_ajax_user_can( 'manage_options' ) ) {
+			return;
+		}
+		
+		$map_id = (string) tribe_get_request_var( 'mapId' );
+		
+		if ( empty( $map_id ) ) {
+			wp_send_json_error(
+				[
+					'error' => __( 'No map ID provided', 'event-tickets' ),
+				],
+				400
+			);
+			
+			return;
+		}
+		
+		$layout_id = $this->layouts->add( $map_id );
+		
+		if ( ! empty( $layout_id ) ) {
+			$edit_url = add_query_arg(
+				[
+					'page'     => Admin::get_menu_slug(),
+					'tab'      => Layout_Edit::get_id(),
+					'layoutId' => $layout_id,
+				],
+				admin_url( 'admin.php' )
+			);
+			
+			wp_send_json_success( $edit_url );
+			return;
+		}
+		
+		wp_send_json_error( [ 'error' => __( 'Failed to Add new layout.', 'event-tickets' ) ], 500 );
 	}
 
 	/**
@@ -875,5 +948,89 @@ class Ajax extends Controller_Contract {
 		$updated = $this->reservations->update_attendees_seat_type( $valid );
 
 		wp_send_json_success( [ 'updatedAttendees' => $updated ] );
+	}
+	
+	/**
+	 * Handles the deletion of a seat type by transferring existing reservations to new seat type.
+	 *
+	 * @since TBD
+	 *
+	 * @return void The function does not return a value but will send the JSON response.
+	 */
+	public function handle_seat_type_deleted() {
+		if ( ! $this->check_current_ajax_user_can( 'manage_options' ) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Nonce verification failed',
+				],
+				403
+			);
+			
+			return;
+		}
+		
+		$decoded = $this->get_request_json();
+		
+		$old_seat_type_id = $decoded['deletedId'] ?? null;
+		$new_seat_type    = $decoded['transferTo'] ?? null;
+		
+		if ( empty( $old_seat_type_id )
+			|| ! is_array( $new_seat_type )
+			|| ! isset(
+				$new_seat_type['id'],
+				$new_seat_type['name'],
+				$new_seat_type['mapId'],
+				$new_seat_type['layoutId'],
+				$new_seat_type['description'],
+				$new_seat_type['seatsCount']
+			) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Invalid request body',
+				],
+				400
+			);
+			
+			return;
+		}
+
+		/*
+		* Update all Tickets and Attendees with old seat type meta to new seat type.
+		* Note this updated is NOT done based on currently active Tickets and Attendee types
+		* to include, in the update, those that are not currently active.
+		*/
+
+		global $wpdb;
+		
+		try {
+			$updated_seat_types_meta = DB::query(
+				DB::prepare(
+					'UPDATE %i SET meta_value = %s WHERE meta_key = %s AND meta_value = %s',
+					$wpdb->postmeta,
+					$new_seat_type['id'],
+					Meta::META_KEY_SEAT_TYPE,
+					$old_seat_type_id
+				),
+			);
+		} catch ( \Exception $exception ) {
+			$this->log_error(
+				'Failed to update seat type meta.',
+				[
+					'source' => __METHOD__,
+					'error'  => $exception->getMessage(),
+				]
+			);
+		}
+		
+		$updated_seat_types = $this->seat_types->update_from_service( [ $new_seat_type ] );
+		$updated_tickets    = $this->seat_types->update_tickets_capacity( [ $new_seat_type['id'] => $new_seat_type['seatsCount'] ] );
+		
+		wp_send_json_success(
+			[
+				'updatedSeatTypes' => $updated_seat_types,
+				'updatedTickets'   => $updated_tickets,
+				'updatedMeta'      => $updated_seat_types_meta,
+			]
+		);
 	}
 }

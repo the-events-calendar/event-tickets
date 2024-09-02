@@ -44,8 +44,6 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
-		// Set the Event shared capacity to 50.
-		update_post_meta( Tickets_Handler::instance()->key_capacity, 50, $event_id );
 		// Set the Event global stock level to 50.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 50 );
 
@@ -130,8 +128,6 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
-		// Set the Event shared capacity to 20.
-		update_post_meta( Tickets_Handler::instance()->key_capacity, 20, $event_id );
 		// Set the Event global stock level to 20.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 20 );
 
@@ -194,8 +190,6 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
-		// Set the Event shared capacity to 20.
-		update_post_meta( Tickets_Handler::instance()->key_capacity, 20, $event_id );
 		// Set the Event global stock level to 20.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 20 );
 
@@ -256,8 +250,6 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
-		// Set the Event shared capacity to 30.
-		update_post_meta( Tickets_Handler::instance()->key_capacity, 30, $event_id );
 		// Set the Event global stock level to 30.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 30 );
 
@@ -361,8 +353,6 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
-		// Set the Event shared capacity to 30.
-		update_post_meta( Tickets_Handler::instance()->key_capacity, 30, $event_id );
 		// Set the Event global stock level to 30.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 30 );
 
@@ -440,5 +430,89 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		];
 
 		$this->assertEqualSets( $expected_ticket_counts, $event_ticket_counts['tickets'] );
+	}
+
+	public function test_tc_total_shared_capacity_should_not_change_after_unlimited_capacity_ticket_purchase() {
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 12:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		// Enable the global stock on the Event.
+		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
+		// Set the Event global stock level to 20.
+		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 20 );
+
+		$ticket_a_id = $this->create_tc_ticket(
+			$event_id,
+			20,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::OWN_STOCK_MODE,
+					'capacity' => -1,
+				],
+			]
+		);
+		$ticket_b_id = $this->create_tc_ticket(
+			$event_id,
+			20,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::GLOBAL_STOCK_MODE,
+					'capacity' => 20,
+				],
+			]
+		);
+
+		// Get the ticket objects.
+		$ticket_a = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
+		$ticket_b = tribe( Module::class )->get_ticket( $event_id, $ticket_b_id );
+
+		$global_stock = new Global_Stock( $event_id );
+
+		$this->assertTrue( $global_stock->is_enabled(), 'Global stock should be enabled.' );
+		$this->assertEquals( -1, tribe_get_event_capacity( $event_id ), 'Total Event capacity should be -1 or unlimited' );
+		$this->assertEquals( 20, $global_stock->get_stock_level(), 'Global stock should be 20' );
+
+		// Make sure both tickets are valid Ticket Object.
+		$this->assertInstanceOf( Ticket_Object::class, $ticket_a );
+		$this->assertInstanceOf( Ticket_Object::class, $ticket_b );
+
+		$this->assertEquals( -1, $ticket_a->capacity() );
+		$this->assertEquals( -1, $ticket_a->stock() );
+		$this->assertEquals( -1, $ticket_a->available() );
+		$this->assertEquals( -1, $ticket_a->inventory() );
+
+		$this->assertEquals( 20, $ticket_b->capacity() );
+		$this->assertEquals( 20, $ticket_b->stock() );
+		$this->assertEquals( 20, $ticket_b->available() );
+		$this->assertEquals( 20, $ticket_b->inventory() );
+
+		// Create order for Unlimited capacity ticket only.
+		$order = $this->create_order(
+			[
+				$ticket_a_id => 5,
+			]
+		);
+
+		// Refresh the ticket objects.
+		$ticket_a = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
+		$ticket_b = tribe( Module::class )->get_ticket( $event_id, $ticket_b_id );
+
+		$this->assertEquals( -1, $ticket_a->capacity() );
+		$this->assertEquals( -1, $ticket_a->stock() );
+		$this->assertEquals( -1, $ticket_a->available() );
+		$this->assertEquals( -1, $ticket_a->inventory() );
+
+		// Shared capacity should not change.
+		$this->assertEquals( 20, $ticket_b->capacity() );
+		$this->assertEquals( 20, $ticket_b->stock() );
+		$this->assertEquals( 20, $ticket_b->available() );
+		$this->assertEquals( 20, $ticket_b->inventory() );
+
+		$this->assertEquals( 20, $global_stock->get_stock_level(), 'Global stock should still be 20' );
 	}
 }

@@ -9,6 +9,7 @@ use Tribe__Template as Template;
 /**
  * Class Upsell
  *
+ * @since 5.13.1 Updated Wallet Plus notices to be Event Tickets Plus.
  * @since 5.3.4
  *
  * @package TEC\Tickets\Admin
@@ -68,6 +69,7 @@ class Upsell {
 	/**
 	 * Show upsell on Attendees page.
 	 *
+	 * @since 5.13.1 Update notice logic.
 	 * @since 5.7.1
 	 *
 	 * @return void
@@ -78,23 +80,10 @@ class Upsell {
 			return;
 		}
 
-		$has_tickets_plus = class_exists( '\Tribe__Tickets_Plus__Main', false );
-		$has_wallet_plus  = class_exists( '\TEC\Tickets_Wallet_Plus\Plugin', false );
+		$has_tickets_plus = did_action( 'tec_container_registered_provider_Tribe__Tickets_Plus__Service_Provider' );
 
-		// If both Tickets Plus and Wallet Plus are installed, then bail.
-		if ( $has_tickets_plus && $has_wallet_plus ) {
-			return;
-		}
-
-		// If Tickets Plus installed, but not Wallet Plus.
-		if ( $has_tickets_plus && ! $has_wallet_plus ) {
-			$this->show_wallet_plus();
-			return;
-		}
-
-		// If Wallet Plus installed, but not Tickets Plus.
-		if ( ! $has_tickets_plus && $has_wallet_plus ) {
-			$this->maybe_show_manual_attendees();
+		// If Tickets Plus is installed, then bail.
+		if ( $has_tickets_plus ) {
 			return;
 		}
 
@@ -142,6 +131,7 @@ class Upsell {
 	/**
 	 * Maybe show upsell for Wallet Plus.
 	 *
+	 * @since 5.13.1 Update plugin name and URL.
 	 * @since 5.7.1
 	 *
 	 * @return void
@@ -162,8 +152,8 @@ class Upsell {
 				'classes' => [
 					'tec-admin__upsell-link--underlined'
 				],
-				'text'    => 'Wallet Plus',
-				'url'     => 'https://evnt.is/1bd9',
+				'text'    => 'Event Tickets Plus',
+				'url'     => 'https://evnt.is/1bdz',
 			],
 		] );
 		echo '</div>';
@@ -250,6 +240,7 @@ class Upsell {
 	/**
 	 * Show upsell on Emails Settings page.
 	 *
+	 * @since 5.13.1 Update notice logic, plugin name and URL.
 	 * @since 5.7.1
 	 *
 	 * @param array $fields Template list settings fields.
@@ -258,7 +249,10 @@ class Upsell {
 	 */
 	public function show_on_emails_settings_page( $fields ) {
 		// If they already have ET+ activated or are not within the admin area, then bail.
-		if ( class_exists( '\TEC\Tickets_Wallet_Plus\Plugin', false ) || ! is_admin() ) {
+		if (
+			did_action( 'tec_container_registered_provider_Tribe__Tickets_Plus__Service_Provider' )
+			|| ! is_admin()
+		) {
 			return $fields;
 		}
 
@@ -277,8 +271,8 @@ class Upsell {
 					'classes' => [
 						'tec-admin__upsell-link--underlined'
 					],
-					'text'    => 'Wallet Plus',
-					'url'     => 'https://evnt.is/1bd8',
+					'text'    => 'Event Tickets Plus',
+					'url'     => 'https://evnt.is/1bdz',
 				],
 			], false ),
 		];

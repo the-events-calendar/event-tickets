@@ -3,7 +3,7 @@
 		class="tec-tickets__seating-tab-heading">
 		Seat Layouts	</h2>
 
-	<div class="tec-tickets-seating-modal-wrapper tribe-common tec-tickets__seating-tab-heading__button">
+		<div class="tec-tickets-seating-modal-wrapper tribe-common tec-tickets__seating-tab-heading__button">
 		<div class="tec-tickets-seating-layouts-modal__anchor"></div>
 		<button
 	class="button-secondary tec-tickets-seating-modal__button"
@@ -12,7 +12,42 @@
 					>Add New</button>
 <script data-js="dialog-content-tec-tickets-seating-layouts-modal" type="text/template">
 		<div  class="tribe-dialog__content tribe-modal__content" >
-		<p>test</p>	</div>
+		<div class="tec-tickets-seating__new-layout-wrapper">
+	<label class="tec-tickets-seating__new-layout-header" for="tec-tickets-seating__select-map">
+		Choose a Seating Map for this Layout	</label>
+	<select class="tec-tickets-seating__select-map" name="select-map" id="tec-tickets-seating__select-map">
+					<option value="map-uuid-1"
+					data-seats-count="10"
+					data-screenshot-url="https://example.com/map-1-thumbnail">
+				Map 1			</option>
+					<option value="map-uuid-2"
+					data-seats-count="20"
+					data-screenshot-url="https://example.com/map-2-thumbnail">
+				Map 2			</option>
+					<option value="map-uuid-3"
+					data-seats-count="100"
+					data-screenshot-url="https://example.com/map-3-thumbnail">
+				Map 3			</option>
+			</select>
+	<div class="tec-tickets-seating__new-layout-map-preview">
+		<img id="tec-tickets-seating__new-layout-map-preview-img" class="tec-tickets-seating__new-layout-map-preview-img" src="https://example.com/map-1-thumbnail" alt="Map 1">
+	</div>
+	<div class="tec-tickets-seating__new-layout-map-info">
+		<span class="tec-tickets-seating__new-layout-map-name">
+			Map 1		</span>
+		<span class="tec-tickets-seating__new-layout-map-seats-count">
+			10		</span>
+		<span class="tec-tickets-seating__new-layout-map-seats-label">
+			seats		</span>
+	</div>
+	<div class="tec-tickets-seating__new-layout-buttons">
+		<button class="tec-tickets-seating__new-layout-button-cancel button button-secondary">
+			Cancel		</button>
+		<button class="tec-tickets-seating__new-layout-button-add button button-primary">
+			Use this Map		</button>
+	</div>
+</div>
+	</div>
 </script>
 
 		<script>
@@ -24,7 +59,7 @@
 
 					</script>
 			</div>
-
+	
 	<div class="tec-tickets__seating-tab-heading__description">
 		<p>
 			Seat layouts on top of your maps allow you to create different seating types. You can create a seat layout from one of the existing seating maps.		</p>
@@ -64,7 +99,7 @@
 	<div class="tec-tickets__seating-tab__card-content">
 		<div class="tec-tickets__seating-tab__card-title">Layout 2</div>
 		<div class="tec-tickets__seating-tab__card-info">
-			1 associated event		</div>
+			<a href="http://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating-events&#038;layout=layout-uuid-2" target="_blank" rel="noopener noreferrer">1 associated event</a>		</div>
 		<div class="tec-tickets__seating-tab__card-actions">
 			<a
 				class="button button-secondary edit-layout"
@@ -82,7 +117,7 @@
 	<div class="tec-tickets__seating-tab__card-content">
 		<div class="tec-tickets__seating-tab__card-title">Layout 3</div>
 		<div class="tec-tickets__seating-tab__card-info">
-			2 associated events		</div>
+			<a href="http://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating-events&#038;layout=layout-uuid-3" target="_blank" rel="noopener noreferrer">2 associated events</a>		</div>
 		<div class="tec-tickets__seating-tab__card-actions">
 			<a
 				class="button button-secondary edit-layout"

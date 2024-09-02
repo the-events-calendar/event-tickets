@@ -243,6 +243,8 @@ class Seat_Types {
 				->where( 'meta_in', Meta::META_KEY_SEAT_TYPE, $seat_types )
 				->get_ids( true ) as $ticket_id
 		) {
+			clean_post_cache( $ticket_id );
+			
 			$seat_type_id      = get_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, true );
 			$new_capacity      = $updates[ $seat_type_id ];
 			$previous_capacity = get_post_meta( $ticket_id, $capacity_meta_key, true );
@@ -251,7 +253,7 @@ class Seat_Types {
 			$new_stock         = max( 0, $previous_stock + $capacity_delta );
 			update_post_meta( $ticket_id, $capacity_meta_key, $new_capacity );
 			update_post_meta( $ticket_id, '_stock', $new_stock );
-			clean_post_cache( $ticket_id );
+			
 			++$total_updated;
 		}
 

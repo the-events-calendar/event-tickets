@@ -2,19 +2,43 @@ import './style.pcss';
 import {
 	getIframeElement,
 	initServiceIframe,
+	handleResize
 } from '@tec/tickets/seating/service/iframe';
-import { onReady } from '@tec/tickets/seating/utils';
+import { onReady, redirectTo } from '@tec/tickets/seating/utils';
 import {
+	getAssociatedEventsUrl,
 	registerAction,
 	RESERVATIONS_DELETED,
 	SEAT_TYPES_UPDATED,
+	SEAT_TYPE_DELETED,
 	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
+	GO_TO_ASSOCIATED_EVENTS,
+	INBOUND_SET_ELEMENT_HEIGHT,
 } from '@tec/tickets/seating/service/api';
 import {
 	handleReservationsDeleted,
 	handleReservationsUpdatedFollowingSeatTypes,
 	handleSeatTypesUpdated,
+	handleSeatTypeDeleted,
 } from '../action-handlers';
+
+/**
+ * @typedef {Object} AssociatedEventsData
+ * @property {string} layoutId The ID of the layout.
+ */
+
+/**
+ * Go to associated events.
+ *
+ * @since TBD
+ *
+ * @param {AssociatedEventsData} data The layout ID.
+ */
+export function goToAssociatedEvents( data ) {
+	if ( data.layoutId ) {
+		redirectTo( getAssociatedEventsUrl( data.layoutId ), true );
+	}
+}
 
 /**
  * Initializes iframe and the communication with the service.
@@ -28,14 +52,20 @@ import {
 export async function init(dom) {
 	dom = dom || document;
 
+	registerAction(INBOUND_SET_ELEMENT_HEIGHT, (data) => handleResize( data, dom ));
+
 	registerAction(RESERVATIONS_DELETED, handleReservationsDeleted);
 
 	registerAction(SEAT_TYPES_UPDATED, handleSeatTypesUpdated);
+
+	registerAction(SEAT_TYPE_DELETED, handleSeatTypeDeleted);
 
 	registerAction(
 		RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
 		handleReservationsUpdatedFollowingSeatTypes
 	);
+
+	registerAction(GO_TO_ASSOCIATED_EVENTS, goToAssociatedEvents);
 
 	await initServiceIframe(getIframeElement(dom));
 }
