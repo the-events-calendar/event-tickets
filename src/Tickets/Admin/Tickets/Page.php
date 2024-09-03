@@ -119,7 +119,7 @@ class Page {
 
 		$post_types = static::get_ticket_post_types();
 
-		return isset( $post_types[ $selected_provider ] ) ? $post_types[ $selected_provider ] : null;
+		return $post_types[ $selected_provider ] ?? null;
 	}
 
 	/**

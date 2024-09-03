@@ -931,29 +931,39 @@ class List_Table extends WP_List_Table {
 		return apply_filters( 'tec_tickets_admin_tickets_table_query_args', $args );
 	}
 
+	/**
+	 * Primes the queries for caching purposes.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $items The items to prime the queries for.
+	 */
 	public function prime_queries( $items ) {
 		// Gather event ids and run queries for caching purposes.
 		$event_ids   = wp_list_pluck( $items, 'event_id' );
-		$event_query = new WP_Query( [
-			'post__in'       => $event_ids,
-			'posts_per_page' => -1,
-			'post_type'      => 'any',
-			'post_status'    => 'any',
-		] );
+		$event_query = new WP_Query(
+			[
+				'post__in'       => $event_ids,
+				'posts_per_page' => -1,
+				'post_type'      => 'any',
+				'post_status'    => 'any',
+			]
+		);
 
-		$ticket_ids = wp_list_pluck( $items, 'ID' );
-		$attendee_query = new WP_Query( [
-			'posts_per_page' => -1,
-			'post_type'      => $this->get_attendee_post_type(),
-			'post_status'    => 'any',
-			'meta_query'     => [
-				[
-					'key'     => $this->get_event_meta_key(),
-					'value'   => $event_ids,
-					'compare' => 'IN',
+		$attendee_query = new WP_Query(
+			[
+				'posts_per_page' => -1,
+				'post_type'      => $this->get_attendee_post_type(),
+				'post_status'    => 'any',
+				'meta_query'     => [
+					[
+						'key'     => $this->get_event_meta_key(),
+						'value'   => $event_ids,
+						'compare' => 'IN',
+					],
 				],
-			],
-		] );
+			]
+		);
 	}
 
 	/**
