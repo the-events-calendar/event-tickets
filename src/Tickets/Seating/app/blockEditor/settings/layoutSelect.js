@@ -82,50 +82,59 @@ const LayoutSelect = ({
 		);
 	}
 
-	function RenderModal () {
-		if ( ! isModalOpen ) {
-			return null
-		}
-
-		return (
-			<Modal
-				className="tec-tickets-seating__settings--layout-modal"
-				title="Confirm Seat Layout Change"
-				isDismissible={true}
-				onRequestClose={closeModal}
-				size="medium"
-			>
-				<div className="tec-tickets-seating__settings-intro">
-					<Dashicon icon="warning"/>
-					<span className="icon-text">Caution</span>
-					<p className="warning-text">All attendees will lose their seat assignments. All existing tickets will be assigned to a default seat type.  This action cannot be undone.</p>
-				</div>
-
-				<CheckboxControl
-					className="tec-tickets-seating__settings--checkbox"
-					__nextHasNoMarginBottom
-					label="I Understand"
-					checked={ isChecked }
-					onChange={ setChecked }
-				/>
-
-				<p>You may want to export attendee data first as a record of current seat assignments.</p>
-
-				<div className="tec-tickets-seating__settings--actions">
-					<Button onClick={handleModalConfirm} disabled={!isChecked} isPrimary={isChecked}>Change Seat Layout</Button>
-					<Button onClick={closeModal} isSecondary={true}>Cancel</Button>
-				</div>
-			</Modal>
-		);
-	}
-
 	return (
 		<div className="tec-tickets-seating__settings_layout--wrapper">
 			<span className="tec-tickets-seating__settings_layout--title">Seat Layout</span>
 			<NoLayouts />
 			<RenderSelect />
-			<RenderModal />
+			{ isModalOpen && (
+				<Modal
+					className="tec-tickets-seating__settings--layout-modal"
+					title="Confirm Seat Layout Change"
+					isDismissible={true}
+					onRequestClose={closeModal}
+					size="medium"
+				>
+					{ !isLoading && (
+						<Fragment>
+							<div className="tec-tickets-seating__settings-intro">
+								<Dashicon icon="warning"/>
+								<span className="icon-text">Caution</span>
+								<p className="warning-text">All attendees will lose their seat assignments. All existing
+									tickets will be assigned to a default seat type. This action cannot be undone.</p>
+							</div>
+
+							<CheckboxControl
+								className="tec-tickets-seating__settings--checkbox"
+								label="I Understand"
+								checked={isChecked}
+								onChange={setChecked}
+								name="tec-tickets-seating__settings--switched-layout"
+							/>
+
+							<p>You may want to export attendee data first as a record of current seat assignments.</p>
+
+							<div className="tec-tickets-seating__settings--actions">
+								<Button
+									onClick={handleModalConfirm}
+									disabled={!isChecked}
+									isPrimary={isChecked}
+								>
+									Change Seat Layout
+								</Button>
+								<Button
+									onClick={closeModal}
+									isSecondary={true}
+								>
+									Cancel
+								</Button>
+							</div>
+						</Fragment>
+					)}
+
 					{isLoading && <Spinner/>}
+				</Modal>
+			)}
 		</div>
 	);
 }
