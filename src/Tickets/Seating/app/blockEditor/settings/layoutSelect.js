@@ -1,7 +1,7 @@
 import {Select} from '@moderntribe/common/elements';
 import {Fragment, useState} from 'react';
 import {getLink, getLocalizedString} from '@tec/tickets/seating/utils';
-import {Modal, Dashicon, CheckboxControl, Button} from '@wordpress/components';
+import {Modal, Dashicon, CheckboxControl, Button, Spinner } from '@wordpress/components';
 import './style.pcss';
 
 const getString = (key) => getLocalizedString(key, 'settings');
@@ -20,6 +20,7 @@ const LayoutSelect = ({
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [ newLayout, setNewLayout ] = useState(null);
 	const [ isChecked, setChecked ] = useState(false);
+	const [ isLoading, setIsLoading ] = useState(false);
 
 	const handleLayoutChange = (selectedLayout) => {
 		if ( selectedLayout === activeLayout ) {
@@ -33,10 +34,12 @@ const LayoutSelect = ({
 	const closeModal = () => {
 		setIsModalOpen(false);
 		setChecked(false);
+		setIsLoading(false);
 	}
 
 	const handleModalConfirm = () => {
 		setActiveLayout(newLayout);
+		setIsLoading(true);
 		setIsModalOpen(false);
 	}
 
@@ -122,6 +125,7 @@ const LayoutSelect = ({
 			<NoLayouts />
 			<RenderSelect />
 			<RenderModal />
+					{isLoading && <Spinner/>}
 		</div>
 	);
 }
