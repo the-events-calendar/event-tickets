@@ -184,6 +184,8 @@ class Ajax extends Controller_Contract {
 	 * @var string
 	 */
 	public const ACTION_RESERVATION_UPDATED = 'tec_tickets_seating_reservation_updated';
+	
+	public const ACTION_EVENT_LAYOUT_UPDATED = 'tec_tickets_seating_event_layout_updated';
 
 	/**
 	 * A reference to the Seat Types service object.
@@ -285,6 +287,7 @@ class Ajax extends Controller_Contract {
 			[ $this, 'update_reservations_from_seat_types' ]
 		);
 		add_action( 'wp_ajax_' . self::ACTION_SEAT_TYPE_DELETED, [ $this, 'handle_seat_type_deleted' ] );
+		add_action( 'wp_ajax_' . self::ACTION_EVENT_LAYOUT_UPDATED, [ $this, 'update_event_layout' ] );
 
 		add_action( 'tec_tickets_seating_session_interrupt', [ $this, 'clear_commerce_cart_cookie' ] );
 	}
@@ -319,6 +322,7 @@ class Ajax extends Controller_Contract {
 		);
 		
 		remove_action( 'wp_ajax_' . self::ACTION_SEAT_TYPE_DELETED, [ $this, 'handle_seat_type_deleted' ] );
+		remove_action( 'wp_ajax_' . self::ACTION_EVENT_LAYOUT_UPDATED, [ $this, 'update_event_layout' ] );
 	}
 
 	/**
@@ -347,6 +351,7 @@ class Ajax extends Controller_Contract {
 			'ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES' => self::ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES,
 			'ACTION_RESERVATION_CREATED'                  => self::ACTION_RESERVATION_CREATED,
 			'ACTION_RESERVATION_UPDATED'                  => self::ACTION_RESERVATION_UPDATED,
+			'ACTION_EVENT_LAYOUT_UPDATED'                 => self::ACTION_EVENT_LAYOUT_UPDATED,
 		];
 	}
 
@@ -1032,5 +1037,48 @@ class Ajax extends Controller_Contract {
 				'updatedMeta'      => $updated_seat_types_meta,
 			]
 		);
+	}
+
+	/**
+	 * Updates the layout of an event.
+	 *
+	 * @since TBD
+	 *
+	 * @return void The function does not return a value but will echo the JSON response.
+	 */
+	public function update_event_layout() {
+		if ( ! $this->check_current_ajax_user_can( 'edit_posts' ) ) {
+			return;
+		}
+		
+		$post_id   = tribe_get_request_var( 'postId' );
+		$layout_id = tribe_get_request_var( 'newLayout' );
+		
+		if ( empty( $layout_id ) || empty( $post_id ) ) {
+			wp_send_json_success( [] );
+			
+			return;
+		}
+		
+		$seat_types       = $this->seat_types->get_in_option_format( [ $layout_id ] );
+		$new_seat_type_id = $seat_types[0]['id'];
+		
+		// get tickets by post id.
+		$tickets = tribe_tickets()->where( 'event', $post_id )->get_ids( true );
+		
+		foreach ( $tickets as $ticket_id ) {
+			update_post_meta( $ticket_id, Meta::META_KEY_LAYOUT_ID, $layout_id );
+			update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, $new_seat_type_id );
+		}
+		
+		// attendees by post id.
+		$attendees = tribe_attendees()->where( 'event', $post_id )->get_ids( true );
+		
+		foreach ( $attendees as $attendee_id ) {
+			update_post_meta( $attendee_id, Meta::META_KEY_SEAT_TYPE, $new_seat_type_id );
+			update_post_meta( $attendee_id, Meta::META_KEY_ATTENDEE_SEAT_LABEL, '' );
+		}
+		
+		wp_send_json_success();
 	}
 }
