@@ -1310,6 +1310,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public function add_admin_tickets_hooks() {
 			add_filter( 'tec_tickets_admin_tickets_table_provider_options', [ $this, 'filter_admin_tickets_table_provider_options' ] );
 			add_filter( 'tec_tickets_admin_tickets_table_event_meta_keys', [ $this, 'filter_admin_tickets_table_event_meta_keys' ] );
+			add_filter( 'tec_tickets_admin_tickets_table_attendee_post_types', [ $this, 'filter_admin_tickets_table_attendee_post_types' ] );
+			add_filter( 'tec_tickets_admin_tickets_table_post_types', [ $this, 'filter_admin_tickets_table_post_types' ] );
 		}
 
 		/**
@@ -4673,7 +4675,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return string[] The filtered list of provider options.
 		 */
 		public function filter_admin_tickets_table_provider_options( $provider_options ) {
-			$provider_options[ $this->ticket_object ] = $this->plugin_name;
+			$provider_options[ $this->class_name ] = $this->plugin_name;
 
 			return $provider_options;
 		}
@@ -4688,9 +4690,39 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return string[] The filtered list of event meta keys.
 		 */
 		public function filter_admin_tickets_table_event_meta_keys( $event_meta_keys ) {
-			$event_meta_keys[ $this->ticket_object ] = $this->get_event_key();
+			$event_meta_keys[ $this->class_name ] = $this->get_event_key();
 
 			return $event_meta_keys;
+		}
+
+		/**
+		 * Filter attendee post types for the admin tickets table.
+		 *
+		 * @since TBD
+		 *
+		 * @param string[] $post_types The list of post types.
+		 *
+		 * @return string[] The filtered list of post types.
+		 */
+		public function filter_admin_tickets_table_attendee_post_types( $post_types ) {
+			$post_types[ $this->class_name ] = $this->attendee_object;
+
+			return $post_types;
+		}
+
+		/**
+		 * Filter ticket post types for the admin tickets table.
+		 *
+		 * @since TBD
+		 *
+		 * @param string[] $post_types The list of post types.
+		 *
+		 * @return string[] The filtered list of post types.
+		 */
+		public function filter_admin_tickets_table_post_types( $post_types ) {
+			$post_types[ $this->class_name ] = $this->ticket_object;
+
+			return $post_types;
 		}
 
 		/************************

@@ -78,6 +78,51 @@ class Page {
 	}
 
 	/**
+	 * Get the currently selected provider.
+	 *
+	 * @since TBD
+	 *
+	 * @return string;
+	 */
+	public static function get_current_provider() {
+		$provider_options  = static::get_provider_options();
+		$default_provider  = empty( $provider_options ) ? '' : key( $provider_options );
+		return tribe_get_request_var( static::PROVIDER_KEY, $default_provider );
+	}
+
+	/**
+	 * Get the currently selected provider object.
+	 *
+	 * @since TBD
+	 *
+	 * @return Tribe__Tickets__Tickets|null;
+	 */
+	public static function get_current_provider_object() {
+		$current_provider = static::get_current_provider();
+
+		return tribe_get_class_instance( $current_provider );
+	}
+
+	/**
+	 * Get the currently selected ticket post type.
+	 *
+	 * @since TBD
+	 *
+	 * @return string|null;
+	 */
+	public static function get_current_post_type() {
+		$selected_provider = static::get_current_provider();
+
+		if ( empty( $selected_provider ) ) {
+			return null;
+		}
+
+		$post_types = static::get_ticket_post_types();
+
+		return isset( $post_types[ $selected_provider ] ) ? $post_types[ $selected_provider ] : null;
+	}
+
+	/**
 	 * Get the ticket post types.
 	 *
 	 * @since TBD
@@ -85,13 +130,16 @@ class Page {
 	 * @return array
 	 */
 	public static function get_ticket_post_types() {
-		$providers = static::get_provider_options();
-
-		if ( empty( $providers ) ) {
-			return [];
-		}
-
-		return array_keys( $providers );
+		/**
+		 * Filters the ticket post types for the All Tickets Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $providers The ticket post types for the All Tickets Table.
+		 *
+		 * @return array
+		 */
+		return apply_filters( 'tec_tickets_admin_tickets_table_post_types', [] );
 	}
 
 	/**
