@@ -496,6 +496,9 @@ class Tribe__Tickets__Main {
 
 		// Admin provider.
 		tribe_register_provider( \Tribe\Tickets\Admin\Provider::class );
+
+		// Order Modifier.
+		tribe_register_provider( \TEC\Tickets\Order_Modifiers\Controller::class );
 	}
 
 	/**
