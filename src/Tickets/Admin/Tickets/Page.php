@@ -85,8 +85,8 @@ class Page {
 	 * @return string;
 	 */
 	public static function get_current_provider() {
-		$provider_options  = static::get_provider_options();
-		$default_provider  = empty( $provider_options ) ? '' : key( $provider_options );
+		$provider_options = static::get_provider_options();
+		$default_provider = empty( $provider_options ) ? '' : key( $provider_options );
 		return tribe_get_request_var( static::PROVIDER_KEY, $default_provider );
 	}
 
