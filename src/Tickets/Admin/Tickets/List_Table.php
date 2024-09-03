@@ -666,7 +666,9 @@ class List_Table extends WP_List_Table {
 			return '-';
 		}
 
-		$price = tribe_format_currency( number_format( $item->price, 2 ), $item->ID );
+		/** @var Tribe__Tickets__Commerce__Currency $currency */
+		$currency = tribe( 'tickets.commerce.currency' );
+		$price    = $currency->get_formatted_currency( number_format( $item->price, 2 ), null, Page::get_current_provider() );
 
 		/**
 		 * Filters the price for the Admin Tickets Table.
