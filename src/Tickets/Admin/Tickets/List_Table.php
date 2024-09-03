@@ -957,6 +957,7 @@ class List_Table extends WP_List_Table {
 				'posts_per_page' => -1,
 				'post_type'      => $this->get_attendee_post_type(),
 				'post_status'    => 'any',
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				'meta_query'     => [
 					[
 						'key'     => $this->get_event_meta_key(),
