@@ -2,11 +2,11 @@
 
 namespace TEC\Admin;
 
-use Spatie\Snapshots\MatchesSnapshots;
+use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Tickets\Commerce\Admin\Singular_Order_Notices as Notices;
 
 class Ticket_NoticesTest extends \Codeception\TestCase\WPTestCase {
-	use MatchesSnapshots;
+	use SnapshotAssertions;
 
 	public function message_params_data_provider() {
 		$notices  = new Notices();
@@ -24,7 +24,7 @@ class Ticket_NoticesTest extends \Codeception\TestCase\WPTestCase {
 	public function messages_should_match( $message_key, ...$params ) {
 		$notices = new Notices();
 
-		$this->assertMatchesSnapshot(
+		$this->assertMatchesHtmlSnapshot(
 			$notices->get_message(
 				$message_key,
 				...$params

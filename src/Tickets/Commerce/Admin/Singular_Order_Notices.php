@@ -204,7 +204,7 @@ class Singular_Order_Notices {
 	 * @param mixed  ...$params    [optional] Dynamic params for the message.
 	 */
 	public function do_message( string $message_code, ...$params ) {
-		$success = in_array( $message_code, $this->success_messages );
+		$success = in_array( $message_code, $this->success_messages, true );
 		$slug    = 'tec-tickets-commerce-order-status-update-notice';
 
 		Tribe__Admin__Notices::instance()->undismiss( $slug );
@@ -235,6 +235,6 @@ class Singular_Order_Notices {
 	public function get_message( string $message_code, ...$params ) {
 		$message = sprintf( $this->messages()[ $message_code ], ...$params );
 
-		return "<p>$message</p>";
+		return '<p>' . esc_html( $message ) . '</p>';
 	}
 }
