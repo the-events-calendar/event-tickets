@@ -93,9 +93,9 @@ const LayoutSelect = ({
 				size="medium"
 			>
 				<div className="tec-tickets-seating__settings-intro">
-					<Dashicon icon="warning" size={20}/>
-					Caution
-					<p>Changing the event's layout will impact all existing tickets and attendees.</p>
+					<Dashicon icon="warning"/>
+					<span className="icon-text">Caution</span>
+					<p className="warning-text">All attendees will lose their seat assignments. All existing tickets will be assigned to a default seat type.  This action cannot be undone.</p>
 				</div>
 
 				<CheckboxControl
