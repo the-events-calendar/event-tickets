@@ -42,6 +42,10 @@ class Uplink_Test extends Controller_Test_Case {
 	 * @var object
 	 */
 	protected $resource;
+	/**
+	 * @var string|null
+	 */
+	private ?string $pagenow = null;
 
 	/**
 	 * @before
@@ -51,6 +55,9 @@ class Uplink_Test extends Controller_Test_Case {
 		$this->collection    = tribe( Collection::class );
 		$this->resource      = $this->collection->get( $this->et_slr_plugin_slug );
 		$this->token_manager = tribe( Token_Manager::class );
+		global $pagenow;
+		$this->pagenow = $pagenow;
+		$pagenow = 'admin.php';
 		$storage             = tribe( Storage::class );
 		$storage->set(
 			'stellarwp_auth_url_tec_seating',
@@ -58,163 +65,12 @@ class Uplink_Test extends Controller_Test_Case {
 		);
 	}
 
-	public function test_get_authorize_button_text_not_authenticated(): void {
-		// Before registering the controller.
-		$this->assertEquals(
-			'Connect',
-			apply_filters(
-				'stellarwp/uplink/tec/tec-seating/view/authorize_button/link_text',
-				'Connect',
-				false
-			)
-		);
-
-		$controller = $this->make_controller();
-		$controller->register();
-
-		// After registering the controller.
-		$this->assertMatchesStringSnapshot(
-			apply_filters(
-				'stellarwp/uplink/tec/tec-seating/view/authorize_button/link_text',
-				'Connect',
-				false
-			)
-		);
-	}
-
-	public function test_get_authorize_button_text_authenticated(): void {
-		// Before registering the controller.
-		$this->assertEquals(
-			'Disconnect',
-			apply_filters(
-				'stellarwp/uplink/tec/tec-seating/view/authorize_button/link_text',
-				'Disconnect',
-				true
-			)
-		);
-
-		$controller = $this->make_controller();
-		$controller->register();
-
-		// After registering the controller.
-		$this->assertMatchesStringSnapshot(
-			apply_filters(
-				'stellarwp/uplink/tec/tec-seating/view/authorize_button/link_text',
-				'Disconnect',
-				true
-			)
-		);
-	}
-
 	/**
-	 * @test
+	 * @after
 	 */
-	public function it_should_have_the_fields_for_seating_licenses_with_incorrect_permissions_snapshot(): void {
-		wp_set_current_user( 0 );
-		$license_fields = apply_filters( 'tribe_license_fields', [], 0, 999 );
-		$this->assertIsArray( $license_fields );
-
-		$relevant_fields = $this->get_relevant_license_fields( $license_fields );
-
-		// Assert that the relevant keys exist.
-		$this->assertArrayHasKey( 'stellarwp-uplink_tec-seating-heading', $license_fields );
-		$this->assertArrayHasKey( 'stellarwp-uplink_tec-seating', $license_fields );
-
-		$this->assertStringContainsString( 'Contact your network administrator to connect',
-			$relevant_fields['stellarwp-uplink_tec-seating']['html'] );
-
-		// Snapshot test only the relevant fields.
-		$this->assertMatchescodeSnapshot( $relevant_fields );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_have_the_fields_for_seating_licenses_with_no_license_snapshot(): void {
-		$license_fields = apply_filters( 'tribe_license_fields', [], 0, 999 );
-		$this->assertIsArray( $license_fields );
-
-		$relevant_fields = $this->get_relevant_license_fields( $license_fields );
-
-		// Assert that the relevant keys exist.
-		$this->assertArrayHasKey( 'stellarwp-uplink_tec-seating-heading', $license_fields );
-		$this->assertArrayHasKey( 'stellarwp-uplink_tec-seating', $license_fields );
-
-		// Snapshot test only the relevant fields.
-		$this->assertMatchesCodeSnapshot( $relevant_fields );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_have_the_fields_for_seating_licenses_with_valid_license_snapshot(): void {
-		$this->set_valid_license();
-		$license_fields = apply_filters( 'tribe_license_fields', [], 0, 999 );
-		$this->assertIsArray( $license_fields );
-
-		$relevant_fields = $this->get_relevant_license_fields( $license_fields );
-
-		// Assert that the relevant keys exist.
-		$this->assertArrayHasKey( 'stellarwp-uplink_tec-seating-heading', $license_fields );
-		$this->assertArrayHasKey( 'stellarwp-uplink_tec-seating', $license_fields );
-
-		// Snapshot test only the relevant fields.
-		$this->assertMatchesCodeSnapshot( $relevant_fields );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_have_the_fields_for_seating_licenses_with_valid_license(): void {
-		$this->set_valid_license();
-		$this->verify_license_fields_contain_class( 'authorized' );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_toggle_license_and_check_authorization_status(): void {
-		$this->set_valid_license();
-		$this->verify_license_fields_contain_class( 'authorized' );
-
-		// Disconnect the license
-		$this->resource->set_license_key( '' );
-		$this->assertEquals( '', $this->resource->get_license_key() );
-		$this->assertEquals( '', get_option( $this->resource->get_license_object()->get_key_option_name() ) );
-		$this->assertTrue( $this->token_manager->delete( $this->et_slr_plugin_slug ) );
-
-		// Confirm lack of authorization
-		$this->verify_license_fields_contain_class( 'not-authorized' );
-
-		// Reconnect the license
-		$this->set_valid_license();
-		$this->verify_license_fields_contain_class( 'authorized' );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_handle_invalid_license(): void {
-		$this->set_invalid_license();
-		$this->verify_license_fields_contain_class( 'not-authorized' );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_handle_expired_license(): void {
-		$this->set_expired_license();
-		$this->verify_license_fields_contain_class( 'not-authorized' );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_handle_no_license_key(): void {
-		$this->resource->set_license_key( '' );
-		$this->assertEquals( '', $this->resource->get_license_key() );
-		$this->assertEquals( '', get_option( $this->resource->get_license_object()->get_key_option_name() ) );
-		$this->verify_license_fields_contain_class( 'not-authorized' );
+	public function after_each(): void {
+		global $pagenow;
+		$pagenow = $this->pagenow;
 	}
 
 	/**
@@ -248,27 +104,15 @@ class Uplink_Test extends Controller_Test_Case {
 		$this->resource->set_license_key( $key );
 		$this->assertEquals( $key, $this->resource->get_license_key() );
 		$this->assertEquals( $key, get_option( $this->resource->get_license_object()->get_key_option_name() ) );
+		$this->assertTrue( $this->resource->is_using_oauth() );
 
 		if ( $valid ) {
-			$this->assertTrue( $this->resource->is_using_oauth() );
 			$this->token_manager->store( $key, $this->resource );
+		} else {
+			$this->token_manager->delete( $this->resource->get_slug() );
 		}
 
 		$this->set_fn_return( 'wp_create_nonce', '12345678' );
-	}
-
-	/**
-	 * Helper method to verify that license fields contain a specific class.
-	 *
-	 * @param string $class The class to check for.
-	 */
-	private function verify_license_fields_contain_class( string $class ): void {
-		$license_fields = apply_filters( 'tribe_license_fields', [], 0, 999 );
-		$this->assertIsArray( $license_fields );
-
-		$relevant_fields = $this->get_relevant_license_fields( $license_fields );
-
-		$this->assertStringContainsString( $class, $relevant_fields['stellarwp-uplink_tec-seating']['html'] );
 	}
 
 	/**
@@ -297,3 +141,65 @@ class Uplink_Test extends Controller_Test_Case {
 
 		return $relevant_fields;
 	}
+
+	public function test_not_connected_empty_license_key():void{
+		wp_set_current_user( 1 );
+		$this->set_license_key( '', false );
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$license_fields = apply_filters( 'tribe_license_fields', [], 0, 999 );
+		$this->assertIsArray( $license_fields );
+		$fields = $this->get_relevant_license_fields( $license_fields );
+
+		$connect_html = $fields['stellarwp-uplink_tec-seating']['html'];
+		$fields['stellarwp-uplink_tec-seating']['html']  = 'tested in JSON snapshot';
+		$this->assertMatchesJsonSnapshot( wp_json_encode( $fields, JSON_SNAPSHOT_OPTIONS ) );
+		$this->assertMatchesHtmlSnapshot( $connect_html );
+	}
+
+	public function test_with_valid_license_key(): void {
+		$this->set_valid_license( 'valid-license-key', true );
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$license_fields = apply_filters( 'tribe_license_fields', [], 0, 999 );
+		$this->assertIsArray( $license_fields );
+		$fields = $this->get_relevant_license_fields( $license_fields );
+
+		$connect_html = $fields['stellarwp-uplink_tec-seating']['html'];
+		$fields['stellarwp-uplink_tec-seating']['html']  = 'tested in JSON snapshot';
+		$this->assertMatchesJsonSnapshot( wp_json_encode( $fields, JSON_SNAPSHOT_OPTIONS ) );
+		$this->assertMatchesHtmlSnapshot( $connect_html );
+	}
+
+	public function test_with_invalid_license_key(): void {
+		$this->set_invalid_license( 'invalid-license-key', false );
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$license_fields = apply_filters( 'tribe_license_fields', [], 0, 999 );
+		$this->assertIsArray( $license_fields );
+		$fields = $this->get_relevant_license_fields( $license_fields );
+
+		$connect_html = $fields['stellarwp-uplink_tec-seating']['html'];
+		$fields['stellarwp-uplink_tec-seating']['html']  = 'tested in JSON snapshot';
+		$this->assertMatchesJsonSnapshot( wp_json_encode( $fields, JSON_SNAPSHOT_OPTIONS ) );
+		$this->assertMatchesHtmlSnapshot( $connect_html );
+	}
+
+	public function test_with_expired_license_key(): void {
+		$this->set_expired_license( );
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$license_fields = apply_filters( 'tribe_license_fields', [], 0, 999 );
+		$this->assertIsArray( $license_fields );
+		$fields = $this->get_relevant_license_fields( $license_fields );
+
+		$connect_html = $fields['stellarwp-uplink_tec-seating']['html'];
+		$fields['stellarwp-uplink_tec-seating']['html']  = 'tested in JSON snapshot';
+		$this->assertMatchesJsonSnapshot( wp_json_encode( $fields, JSON_SNAPSHOT_OPTIONS ) );
+		$this->assertMatchesHtmlSnapshot( $connect_html );
+	}
+}
