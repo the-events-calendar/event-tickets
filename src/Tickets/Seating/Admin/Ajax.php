@@ -1079,6 +1079,9 @@ class Ajax extends Controller_Contract {
 			update_post_meta( $attendee_id, Meta::META_KEY_ATTENDEE_SEAT_LABEL, '' );
 		}
 		
+		// Finally update post layout ID.
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, $layout_id );
+		
 		wp_send_json_success();
 	}
 }
