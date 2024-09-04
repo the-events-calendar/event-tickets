@@ -47,7 +47,7 @@ class Uplink extends Controller_Contract {
 	/**
 	 * Uplink Controller constructor.
 	 *
-	 * since TBD
+	 * @since TBD
 	 *
 	 * @param Container $container A reference to the DI container object.
 	 */
@@ -133,12 +133,12 @@ class Uplink extends Controller_Contract {
 	 * @param string $field_id The field ID.
 	 */
 	public function render_legend_before_input( string $field_id ): void {
-		if ( $field_id !== 'tec-seating' ) {
+		if ( 'tec-seating' !== $field_id ) {
 			return;
 		}
 
 		echo '<legend class="tribe-field-label">' .
-		     esc_html_x( 'License Key', 'Legend for the license key field', 'event-tickets' ) .
-		     '</legend>';
+			esc_html_x( 'License Key', 'Legend for the license key field', 'event-tickets' ) .
+			'</legend>';
 	}
 }
