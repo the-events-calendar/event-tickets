@@ -111,8 +111,7 @@ const store = createReduxStore(storeName, {
 					},
 					seatTypesByPostId: {
 						...state.seatTypesByPostId,
-						[ticketPostId || action.clientId]:
-							state.seatTypesByClientId[action.clientId],
+						[ticketPostId || action.clientId]: action.seatTypeId,
 					},
 				};
 			case 'SET_TICKET_SEAT_TYPE_BY_POST_ID':
