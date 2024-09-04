@@ -19,7 +19,7 @@ use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
  *
  * @package TEC\Tickets\Order_Modifiers\Data_Transfer_Objects;
  */
-class Order_Modifiers_DTO extends DataTransferObject {
+class Order_Modifier_DTO extends DataTransferObject {
 
 	/**
 	 * The Order Modifier ID.
@@ -127,7 +127,7 @@ class Order_Modifiers_DTO extends DataTransferObject {
 	 *
 	 * @param object $object The object to build the DTO from.
 	 *
-	 * @return Order_Modifiers_DTO The DTO instance.
+	 * @return Order_Modifier_DTO The DTO instance.
 	 */
 	public static function fromObject( $object ): self {
 		$self = new self();

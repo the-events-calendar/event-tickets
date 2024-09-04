@@ -17,6 +17,7 @@ use TEC\Common\StellarWP\Models\Repositories\Contracts\Insertable;
 use TEC\Common\StellarWP\Models\Repositories\Contracts\Updatable;
 use TEC\Common\StellarWP\Models\Repositories\Repository;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers as Table;
+use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
 
 /**
  * Class Order_Modifiers.
@@ -68,22 +69,14 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 
 		$model->id = DB::last_insert_id();
 
+		// Return the correct Order_Modifier model.
 		return $model;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	function prepareQuery(): ModelQueryBuilder {
-		$builder = new ModelQueryBuilder( Order_Modifier::class );
-
-		return $builder->from( Table::table_name( false ) );
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function update( Model $model ): Model {
+	public function update( Model $model ): Order_Modifier {
 		DB::update(
 			Table::table_name(),
 			[
@@ -112,6 +105,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 			[ '%d' ]
 		);
 
+		// Return the updated Order_Modifier model.
 		return $model;
 	}
 
@@ -205,4 +199,11 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 					->get();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public function prepareQuery(): ModelQueryBuilder {
+		$builder = new ModelQueryBuilder( Order_Modifier::class );
+		return $builder->from( Table::table_name( false ) );
+	}
 }

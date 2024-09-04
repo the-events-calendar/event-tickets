@@ -13,7 +13,8 @@ use TEC\Common\StellarWP\Models\Contracts\ModelCrud;
 use TEC\Common\StellarWP\Models\Contracts\ModelFromQueryBuilderObject;
 use TEC\Common\StellarWP\Models\Model;
 use TEC\Common\StellarWP\Models\ModelQueryBuilder;
-use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers;
+use TEC\Tickets\Order_Modifiers\Data_Transfer_Objects\Order_Modifier_DTO;
+use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers as Order_Modifiers_Repository;
 
 /**
  * Class Order_Modifier.
@@ -39,20 +40,19 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	/**
 	 * @inheritDoc
 	 */
-	protected $properties
-		= [
-			'id'               => 'int',
-			'post_id'          => 'int',
-			'modifier_type'    => 'string',
-			'sub_type'         => 'string',
-			'fee_amount_cents' => 'int',
-			'slug'             => 'string',
-			'display_name'     => 'string',
-			'status'           => 'string',
-			'created_at'       => 'string',
-			'start_time'       => 'string',
-			'end_time'         => 'string',
-		];
+	protected $properties = [
+		'id'               => 'int',
+		'post_id'          => 'int',
+		'modifier_type'    => 'string',
+		'sub_type'         => 'string',
+		'fee_amount_cents' => 'int',
+		'slug'             => 'string',
+		'display_name'     => 'string',
+		'status'           => 'string',
+		'created_at'       => 'string',
+		'start_time'       => 'string',
+		'end_time'         => 'string',
+	];
 
 	/**
 	 * Finds a model by its ID.
@@ -64,7 +64,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 * @return Order_Modifier|null The model instance, or null if not found.
 	 */
 	public static function find( $id ): ?self {
-		return tribe( Order_Modifiers::class )->find_by_id( $id );
+		return tribe( Order_Modifiers_Repository::class )->find_by_id( $id );
 	}
 
 	/**
@@ -74,7 +74,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 *
 	 * @param array<string,mixed> $attributes The model attributes.
 	 *
-	 * @return Order_Modifier The model instance.
+	 * @return static
 	 */
 	public static function create( array $attributes ): self {
 		$model = new self( $attributes );
@@ -88,14 +88,14 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 *
 	 * @since TBD
 	 *
-	 * @return Order_Modifier The model instance.
+	 * @return static
 	 */
 	public function save(): self {
 		if ( $this->id ) {
-			return tribe( Order_Modifiers::class )->update( $this );
+			return tribe( Order_Modifiers_Repository::class )->update( $this );
 		}
 
-		$this->id = tribe( Order_Modifiers::class )->insert( $this )->id;
+		$this->id = tribe( Order_Modifiers_Repository::class )->insert( $this )->id;
 
 		return $this;
 	}
@@ -108,7 +108,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 * @return bool Whether the model was deleted.
 	 */
 	public function delete(): bool {
-		return tribe( Order_Modifiers::class )->delete( $this );
+		return tribe( Order_Modifiers_Repository::class )->delete( $this );
 	}
 
 	/**
@@ -119,7 +119,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 * @return ModelQueryBuilder The query builder instance.
 	 */
 	public static function query(): ModelQueryBuilder {
-		return tribe( Order_Modifiers::class )->query();
+		return tribe( Order_Modifiers_Repository::class )->query();
 	}
 
 	/**
@@ -129,23 +129,9 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 *
 	 * @param object $object The object to build the model from.
 	 *
-	 * @return Order_Modifier The model instance.
+	 * @return static
 	 */
-	public static function fromQueryBuilderObject( $object ): self {
-		return new self(
-			[
-				'id'               => $object->id,
-				'post_id'          => $object->post_id,
-				'modifier_type'    => $object->modifier_type,
-				'sub_type'         => $object->sub_type,
-				'fee_amount_cents' => $object->fee_amount_cents,
-				'slug'             => $object->slug,
-				'display_name'     => $object->display_name,
-				'status'           => $object->status,
-				'created_at'       => $object->created_at,
-				'start_time'       => $object->start_time,
-				'end_time'         => $object->end_time,
-			]
-		);
+	public static function fromQueryBuilderObject( $object ) {
+		return Order_Modifier_DTO::fromObject( $object )->toModel();
 	}
 }
