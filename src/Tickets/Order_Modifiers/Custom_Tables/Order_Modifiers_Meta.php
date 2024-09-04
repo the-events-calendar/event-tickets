@@ -70,4 +70,63 @@ class Order_Modifiers_Meta extends Table {
 			) $charset_collate;
 		";
 	}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * phpcs:disable
+	 * WordPress.DB.DirectDatabaseQuery.DirectQuery,
+	 * WordPress.DB.DirectDatabaseQuery.NoCaching,
+	 * WordPress.DB.DirectDatabaseQuery.SchemaChange,
+	 * WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	 */
+	protected function after_update( array $results ) {
+		// If nothing was changed by dbDelta(), bail.
+		if ( ! count( $results ) ) {
+			return $results;
+		}
+
+		global $wpdb;
+		$table_name = self::table_name( true );
+
+		// Add an index on order_modifier_id.
+		if ( $this->exists() && ! $this->has_index( 'tec_order_modifier_meta_inx_order_modifier_id' ) ) {
+			$updated = $wpdb->query( "ALTER TABLE `{$table_name}` ADD INDEX `tec_order_modifier_meta_inx_order_modifier_id` ( `order_modifier_id` )" );
+
+			if ( $updated ) {
+				$message = "Added index to the {$table_name} table on order_modifier_id.";
+			} else {
+				$message = "Failed to add an index on the {$table_name} table.";
+			}
+
+			$results[ $table_name . '.order_modifier_id' ] = $message;
+		}
+
+		// Add an index on meta_key.
+		if ( $this->exists() && ! $this->has_index( 'tec_order_modifier_meta_inx_meta_key' ) ) {
+			$updated = $wpdb->query( "ALTER TABLE `{$table_name}` ADD INDEX `tec_order_modifier_meta_inx_meta_key` ( `meta_key` )" );
+
+			if ( $updated ) {
+				$message = "Added index to the {$table_name} table on meta_key.";
+			} else {
+				$message = "Failed to add an index on the {$table_name} table.";
+			}
+
+			$results[ $table_name . '.meta_key' ] = $message;
+		}
+
+		// Add a composite index on order_modifier_id and meta_key.
+		if ( $this->exists() && ! $this->has_index( 'tec_order_modifier_meta_inx_order_modifier_id_meta_key' ) ) {
+			$updated = $wpdb->query( "ALTER TABLE `{$table_name}` ADD INDEX `tec_order_modifier_meta_inx_order_modifier_id_meta_key` ( `order_modifier_id`, `meta_key` )" );
+
+			if ( $updated ) {
+				$message = "Added composite index to the {$table_name} table on order_modifier_id and meta_key.";
+			} else {
+				$message = "Failed to add a composite index on the {$table_name} table.";
+			}
+
+			$results[ $table_name . '.order_modifier_id_meta_key' ] = $message;
+		}
+	}
+	/** @phpcs:enable */
 }

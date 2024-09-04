@@ -70,4 +70,76 @@ class Order_Modifiers extends Table {
 			) $charset_collate;
 		";
 	}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * phpcs:disable
+	 * WordPress.DB.DirectDatabaseQuery.DirectQuery,
+	 * WordPress.DB.DirectDatabaseQuery.NoCaching,
+	 * WordPress.DB.DirectDatabaseQuery.SchemaChange,
+	 * WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	 */
+	protected function after_update( array $results ) {
+		// If nothing was changed by dbDelta(), bail.
+		if ( ! count( $results ) ) {
+			return $results;
+		}
+
+		global $wpdb;
+		$table_name = self::table_name( true );
+
+		// Add a regular index on post_id.
+		if ( $this->exists() && ! $this->has_index( 'tec_order_modifier_indx_post_id' ) ) {
+			$updated = $wpdb->query( "ALTER TABLE `{$table_name}` ADD INDEX `tec_order_modifier_indx_post_id` ( `post_id` )" );
+
+			if ( $updated ) {
+				$message = "Added index to the {$table_name} table on post_id.";
+			} else {
+				$message = "Failed to add an index on the {$table_name} table.";
+			}
+
+			$results[ $table_name . '.post_id' ] = $message;
+		}
+
+		// Add a regular index on slug (optional, if slug is often queried alone).
+		if ( $this->exists() && ! $this->has_index( 'tec_order_modifier_indx_slug' ) ) {
+			$updated = $wpdb->query( "ALTER TABLE `{$table_name}` ADD INDEX `tec_order_modifier_indx_slug` ( `slug` )" );
+
+			if ( $updated ) {
+				$message = "Added index to the {$table_name} table on slug.";
+			} else {
+				$message = "Failed to add an index on the {$table_name} table.";
+			}
+
+			$results[ $table_name . '.slug' ] = $message;
+		}
+
+		// Add a composite index on post_id and status.
+		if ( $this->exists() && ! $this->has_index( 'tec_order_modifier_indx_post_id_status' ) ) {
+			$updated = $wpdb->query( "ALTER TABLE `{$table_name}` ADD INDEX `tec_order_modifier_indx_post_id_status` ( `post_id`, `status` )" );
+
+			if ( $updated ) {
+				$message = "Added composite index to the {$table_name} table on post_id and status.";
+			} else {
+				$message = "Failed to add a composite index on the {$table_name} table.";
+			}
+
+			$results[ $table_name . '.post_id_status' ] = $message;
+		}
+
+		// Add a composite index on status, modifier_type, and slug.
+		if ( $this->exists() && ! $this->has_index( 'tec_order_modifier_indx_status_modifier_type_slug' ) ) {
+			$updated = $wpdb->query( "ALTER TABLE `{$table_name}` ADD INDEX `tec_order_modifier_indx_status_modifier_type_slug` ( `status`, `modifier_type`, `slug` )" );
+
+			if ( $updated ) {
+				$message = "Added composite index to the {$table_name} table on status, modifier_type, and slug.";
+			} else {
+				$message = "Failed to add a composite index on the {$table_name} table.";
+			}
+
+			$results[ $table_name . '.status_modifier_type_slug' ] = $message;
+		}
+	}
+	/** @phpcs:enable */
 }
