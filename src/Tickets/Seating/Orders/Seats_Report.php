@@ -124,7 +124,7 @@ class Seats_Report extends Report_Abstract {
 		$post_id = tribe_get_request_var( 'event_id', $post_id );
 		$post    = get_post( $post_id );
 
-		$ephemeral_token     = tribe( Service::class )->get_ephemeral_token(6* HOUR_IN_SECONDS, 'admin');
+		$ephemeral_token     = tribe( Service::class )->get_ephemeral_token( 6 * HOUR_IN_SECONDS, 'admin' );
 		$token               = is_string( $ephemeral_token ) ? $ephemeral_token : '';
 		$this->template_vars = [
 			'post'       => $post,

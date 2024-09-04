@@ -48,8 +48,8 @@ class Ephemeral_Token {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $expiration The expiration in seconds. While this value is arbitrary, the service will still
-	 *                        return a token whose expiration has been set to 15', 30', 1 hour or 6 hours.
+	 * @param int         $expiration The expiration in seconds. While this value is arbitrary, the service will still
+	 *                                return a token whose expiration has been set to 15', 30', 1 hour or 6 hours.
 	 * @param string|null $scope The scope of the token to request. Defaults to `visitor` to get a token with the least
 	 *                            permissions.
 	 *
@@ -89,7 +89,7 @@ class Ephemeral_Token {
 				[
 					'site'       => urlencode_deep( $site_url ),
 					'expires_in' => $expiration * 1000, // In milliseconds.
-					'scope' => $scope,
+					'scope'      => $scope,
 				],
 				$this->get_ephemeral_token_url()
 			),

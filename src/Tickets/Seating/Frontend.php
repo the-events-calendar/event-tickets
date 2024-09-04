@@ -239,7 +239,7 @@ class Frontend extends Controller_Contract {
 
 		$ephemeral_token = $this->service->get_ephemeral_token( $ephemeral_token_ttl, 'visitor' );
 		$token           = is_string( $ephemeral_token ) ? $ephemeral_token : '';
-		$iframe_url          = $this->service->get_seat_selection_url( $token, $post_id, $ephemeral_token_ttl );
+		$iframe_url      = $this->service->get_seat_selection_url( $token, $post_id, $ephemeral_token_ttl );
 
 		/** @var \Tribe\Dialog\View $dialog_view */
 		$dialog_view = tribe( 'dialog.view' );
