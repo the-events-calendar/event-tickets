@@ -220,7 +220,12 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 
 		update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, $enabled );
 		update_post_meta( $post_id, Meta::META_KEY_ENABLED, $enabled );
-		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, $layout_id );
+
+		if ( $layout_id ) {
+			update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, $layout_id );
+		} else {
+			delete_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID );
+		}
 
 		if ( $seat_type ) {
 			update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, $seat_type );

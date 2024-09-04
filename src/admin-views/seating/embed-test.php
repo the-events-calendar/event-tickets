@@ -12,7 +12,7 @@
  */
 
 ?>
-<div class="tec-tickets__seating-tab-wrapper">
+<div class="tec-tickets__seating-tab-wrapper wrap">
 	<div id="tec-tickets-seating-notice" class="notice" style="display: none;"></div>
 	<div
 		class="tec-tickets-seating__iframe-container"
