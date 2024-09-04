@@ -35,7 +35,7 @@ $post_date .= Tribe__Date_Utils::reformat( $ts, 'g:i A' );
 	<div class="tec-tickets-commerce-single-order--details--item">
 		<div class="tec-tickets-commerce-single-order--details--item--label">
 			<?php esc_html_e( 'Purchaser', 'event-tickets' ); ?>
-			<a class="tribe-dashicons" href="javascript:void(0)">
+			<a data-content="dialog-content-my-awesome-modal" data-js="trigger-dialog-my-awesome-modal" class="tribe-dashicons">
 				<span class="dashicons dashicons-edit"></span>
 				<?php esc_html_e( 'Edit', 'event-tickets' ); ?>
 			</a>
@@ -64,4 +64,3 @@ $post_date .= Tribe__Date_Utils::reformat( $ts, 'g:i A' );
 		</div>
 	</div>
 </div>
-<?php
