@@ -140,6 +140,8 @@ class Order_Modifiers extends Table {
 
 			$results[ $table_name . '.status_modifier_type_slug' ] = $message;
 		}
+
+		return $results;
 	}
 	/** @phpcs:enable */
 }

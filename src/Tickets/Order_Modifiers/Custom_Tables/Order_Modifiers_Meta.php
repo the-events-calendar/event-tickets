@@ -127,6 +127,8 @@ class Order_Modifiers_Meta extends Table {
 
 			$results[ $table_name . '.order_modifier_id_meta_key' ] = $message;
 		}
+
+		return $results;
 	}
 	/** @phpcs:enable */
 }
