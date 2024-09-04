@@ -50,10 +50,12 @@ class Ephemeral_Token {
 	 *
 	 * @param int $expiration The expiration in seconds. While this value is arbitrary, the service will still
 	 *                        return a token whose expiration has been set to 15', 30', 1 hour or 6 hours.
+	 * @param string|null $scope The scope of the token to request. Defaults to `visitor` to get a token with the least
+	 *                            permissions.
 	 *
 	 * @return string|WP_Error Either a valid ephemeral token, or a `WP_Error` indicating the failure reason.
 	 */
-	public function get_ephemeral_token( int $expiration = 900 ) {
+	public function get_ephemeral_token( int $expiration = 900, string $scope = 'visitor' ) {
 		/**
 		 * Filters the ephemeral token to be used by the service before the default logic fetches one from the service.
 		 *
@@ -61,8 +63,13 @@ class Ephemeral_Token {
 		 *
 		 * @param string|null $ephemeral_token The ephemeral token to be used by the service. If not `null`, the default
 		 *                                     logic will not be used.
+		 * @param int         $expiration      The expiration in seconds. While this value is arbitrary, the service will
+		 *                                     still return a token whose expiration has been set to 15', 30', 1 hour or
+		 *                                     6 hours.
+		 * @param string      $scope           The scope of the token to request. Defaults to `visitor` to get a token with
+		 *                                     the least permissions.
 		 */
-		$token = apply_filters( 'tec_tickets_seating_ephemeral_token', null );
+		$token = apply_filters( 'tec_tickets_seating_ephemeral_token', null, $expiration, $scope );
 
 		if ( null !== $token ) {
 			return $token;
@@ -82,6 +89,7 @@ class Ephemeral_Token {
 				[
 					'site'       => urlencode_deep( $site_url ),
 					'expires_in' => $expiration * 1000, // In milliseconds.
+					'scope' => $scope,
 				],
 				$this->get_ephemeral_token_url()
 			),

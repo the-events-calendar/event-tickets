@@ -60,7 +60,7 @@ class Embed_Test {
 		$map_id          = tribe_get_request_var( 'mapId' );
 		$layout_id       = tribe_get_request_var( 'layoutId' );
 		$event_id        = tribe_get_request_var( 'eventId' );
-		$ephemeral_token = $this->service->get_ephemeral_token();
+		$ephemeral_token = $this->service->get_ephemeral_token(HOUR_IN_SECONDS, 'admin');
 		$token           = is_string( $ephemeral_token ) ? $ephemeral_token : '';
 		$iframe_url      = add_query_arg(
 			array_filter(
@@ -69,7 +69,7 @@ class Embed_Test {
 					'mapId'    => $map_id,
 					'layoutId' => $layout_id,
 					'eventId'  => $event_id,
-				] 
+				]
 			),
 			$this->service->get_frontend_url( '/embed/' . ltrim( $route, '/' ) )
 		);

@@ -122,11 +122,13 @@ class Service {
 	 *
 	 * @param int $expiration The expiration in seconds. While this value is arbitrary, the service will still
 	 *                        return a token whose expiration has been set to 15', 30', 1 hour or 6 hours.
+	 * @param string|null $scope The scope of the token to request. Defaults to `visitor` to get a token with the least
+	 *                           permissions.
 	 *
 	 * @return string|WP_Error Either a valid ephemeral token, or a `WP_Error` indicating the failure reason.
 	 */
-	public function get_ephemeral_token( int $expiration = 900 ) {
-		return $this->epehemeral_token->get_ephemeral_token( $expiration );
+	public function get_ephemeral_token( int $expiration = 900, string $scope = 'visitor' ) {
+		return $this->epehemeral_token->get_ephemeral_token( $expiration, $scope);
 	}
 
 	/**

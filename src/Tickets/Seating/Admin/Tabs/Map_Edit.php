@@ -75,7 +75,7 @@ class Map_Edit extends Tab {
 	 */
 	public function render(): void {
 		$map_id          = tribe_get_request_var( 'mapId' );
-		$ephemeral_token = $this->service->get_ephemeral_token();
+		$ephemeral_token = $this->service->get_ephemeral_token(6 * HOUR_IN_SECONDS, 'admin');
 		$token           = is_string( $ephemeral_token ) ? $ephemeral_token : '';
 		$iframe_url      = $map_id ? $this->service->get_map_edit_url( $token, $map_id )
 			: $this->service->get_map_create_url( $token );

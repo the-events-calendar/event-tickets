@@ -124,7 +124,7 @@ class Seats_Report extends Report_Abstract {
 		$post_id = tribe_get_request_var( 'event_id', $post_id );
 		$post    = get_post( $post_id );
 
-		$ephemeral_token     = tribe( Service::class )->get_ephemeral_token();
+		$ephemeral_token     = tribe( Service::class )->get_ephemeral_token(6* HOUR_IN_SECONDS, 'admin');
 		$token               = is_string( $ephemeral_token ) ? $ephemeral_token : '';
 		$this->template_vars = [
 			'post'       => $post,
@@ -154,7 +154,7 @@ class Seats_Report extends Report_Abstract {
 			admin_url( 'edit.php' )
 		);
 	}
-	
+
 	/**
 	 * Include seats action row.
 	 *
@@ -168,37 +168,37 @@ class Seats_Report extends Report_Abstract {
 	public function add_seats_row_action( $actions, $post ): array {
 		$post_id     = Tribe__Main::post_id_helper( $post );
 		$slr_enabled = get_post_meta( $post_id, Meta::META_KEY_ENABLED, true );
-		
+
 		if ( ! $slr_enabled ) {
 			return $actions;
 		}
-		
+
 		$post = get_post( $post_id );
-		
+
 		if ( ! in_array( $post->post_type, Tickets_Main::instance()->post_types(), true ) ) {
 			return $actions;
 		}
-		
+
 		if ( ! $this->can_access_page( $post_id ) ) {
 			return $actions;
 		}
-		
+
 		$commerce = tribe( Module::class );
-		
+
 		if ( ! $commerce->post_has_tickets( $post ) ) {
 			return $actions;
 		}
-		
+
 		$has_attendees = tec_tc_attendees()->by( 'event_id', $post_id )->count();
-		
+
 		if ( ! $has_attendees ) {
 			return $actions;
 		}
-		
+
 		$url         = self::get_link( $post );
 		$post_labels = get_post_type_labels( get_post_type_object( $post->post_type ) );
 		$post_type   = strtolower( $post_labels->singular_name );
-		
+
 		$actions['tickets_seats'] = sprintf(
 			'<a title="%s" href="%s">%s</a>',
 			sprintf(
@@ -209,7 +209,7 @@ class Seats_Report extends Report_Abstract {
 			esc_url( $url ),
 			esc_html__( 'Seats', 'event-tickets' )
 		);
-		
+
 		return $actions;
 	}
 }

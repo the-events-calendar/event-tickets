@@ -4,6 +4,7 @@ namespace TEC\Tickets\Seating\Frontend;
 
 use Closure;
 use Generator;
+use PHPUnit\Framework\Assert;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Tickets_View;
@@ -329,7 +330,12 @@ class Frontend_Test extends Controller_Test_Case {
 		$this->test_services->singleton( Service::class, function () {
 			return $this->make( Service::class, [
 				'frontend_base_url'   => 'https://service.test.local',
-				'get_ephemeral_token' => 'test-ephemeral-token',
+				'get_ephemeral_token' => function ( $expiration, $scope ) {
+					Assert::assertEquals( HOUR_IN_SECONDS, $expiration );
+					Assert::assertEquals( 'visitor', $scope );
+
+					return 'test-ephemeral-token';
+				},
 				'get_post_uuid'       => 'test-post-uuid',
 			] );
 		} );
