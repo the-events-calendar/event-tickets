@@ -1,7 +1,9 @@
 import {Select} from '@moderntribe/common/elements';
 import {Fragment, useState} from 'react';
+import {ACTION_EVENT_LAYOUT_UPDATED, ajaxNonce, ajaxUrl} from '@tec/tickets/seating/ajax';
 import {getLink, getLocalizedString} from '@tec/tickets/seating/utils';
 import {Modal, Dashicon, CheckboxControl, Button, Spinner } from '@wordpress/components';
+import {useSelect} from '@wordpress/data';
 import './style.pcss';
 
 const getString = (key) => getLocalizedString(key, 'settings');
@@ -15,6 +17,11 @@ const LayoutSelect = ({
 			? layouts.find((layoutOption) => layoutOption.value === layoutId)
 			: null;
 	}
+
+	const postId = useSelect(
+		(select) => select('core/editor').getCurrentPostId(),
+		[]
+	);
 
 	const [activeLayout, setActiveLayout] = useState(getCurrentLayoutOption(currentLayout, layouts));
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,10 +44,25 @@ const LayoutSelect = ({
 		setIsLoading(false);
 	}
 
-	const handleModalConfirm = () => {
+	const handleModalConfirm = async () => {
 		setActiveLayout(newLayout);
 		setIsLoading(true);
-		setIsModalOpen(false);
+		if ( await saveNewLayout() ) {
+			setIsLoading(false);
+			setIsModalOpen(false);
+			window.location.reload();
+		}
+	}
+
+	async function saveNewLayout() {
+		const url = new URL(ajaxUrl);
+		url.searchParams.set('_ajax_nonce', ajaxNonce);
+		url.searchParams.set('newLayout', newLayout.value);
+		url.searchParams.set('postId', postId);
+		url.searchParams.set('action', ACTION_EVENT_LAYOUT_UPDATED);
+		const response = await fetch(url.toString(), { method: 'POST' });
+
+		return response.status === 200;
 	}
 
 	function NoLayouts() {
