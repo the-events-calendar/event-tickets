@@ -49,6 +49,13 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			delete_transient( Seat_Types::update_transient_name() );
 			tribe(Maps::class)->invalidate_cache();
 			tribe(Layouts::class)->invalidate_cache();
+			\WP_CLI::line( 'Cleaning uplink transients ....' );
+			$tec_storage_option = get_option( 'tec_storage' );
+			unset(
+				$tec_storage_option['tec_uplink_nonce'],
+				$tec_storage_option['stellarwp_auth_url_tec_seating']
+			);
+			update_option( 'tec_storage', $tec_storage_option );
 			\WP_CLI::success( 'Done' );
 		},
 		[
@@ -104,7 +111,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			\WP_CLI::success( 'Transients cleaned.' );
 		}
 	);
-	
+
 	\WP_CLI::add_command(
 		'slr:get-auth-token',
 		function() {
@@ -426,11 +433,11 @@ function slr_test_connect_to_service() {
 function slr_test_bypass_airplane_mode( $allowed, $url, $args, $host ) {
 	$service_url = apply_filters( 'tec_tickets_seating_service_base_url', get_option( 'tec_tickets_seating_service_base_url' ) );
 	$parsed_url  = parse_url( $service_url );
-	
+
 	if ( $parsed_url['host'] === $host ) {
 		return true;
 	}
-	
+
 	return $allowed;
 }
 

@@ -12,6 +12,7 @@ namespace TEC\Tickets\Seating;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\StellarWP\Uplink\Register;
+use TEC\Common\StellarWP\Uplink\Resources\Resource;
 use Tribe__Tickets__Main as Main;
 
 /**
@@ -69,6 +70,7 @@ class Uplink extends Controller_Contract {
 			10,
 			2
 		);
+		add_action( 'stellarwp/uplink/tec/license_field_before_input', [ $this, 'render_legend_before_input' ] );
 	}
 
 	/**
@@ -84,6 +86,7 @@ class Uplink extends Controller_Contract {
 			'stellarwp/uplink/tec/tec-seating/view/authorize_button/link_text',
 			[ $this, 'get_connect_button_text' ]
 		);
+		remove_action( 'stellarwp/uplink/tec/license_field_before_input', [ $this, 'render_legend_before_input' ] );
 	}
 
 	/**
@@ -101,7 +104,7 @@ class Uplink extends Controller_Contract {
 			"{$this->et_main->plugin_dir}/event-tickets.php",
 			Main::class,
 			null,
-			true
+			Resource::OAUTH_REQUIRED | Resource::OAUTH_REQUIRES_LICENSE_KEY,
 		);
 	}
 
@@ -120,5 +123,22 @@ class Uplink extends Controller_Contract {
 		return $authenticated ?
 			_x( 'Disconnect from Seat Builder', 'Button text for the Seat Builder connection button', 'event-tickets' )
 			: _x( 'Connect to Seat Builder', 'Button text for the Seat Builder connection button', 'event-tickets' );
+	}
+
+	/**
+	 * Renders the legend for the license key field.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $field_id The field ID.
+	 */
+	public function render_legend_before_input( string $field_id ): void {
+		if ( $field_id !== 'tec-seating' ) {
+			return;
+		}
+
+		echo '<legend class="tribe-field-label">' .
+		     esc_html_x( 'License Key', 'Legend for the license key field', 'event-tickets' ) .
+		     '</legend>';
 	}
 }
