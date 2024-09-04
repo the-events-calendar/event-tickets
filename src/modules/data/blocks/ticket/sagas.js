@@ -675,6 +675,8 @@ export function* createNewTicket( action ) {
 				put( actions.setTicketHasChanges( clientId, false ) ),
 			] );
 
+			doAction( 'tec.tickets.blocks.ticketCreated', clientId );
+
 			yield fork( saveTicketWithPostSave, clientId );
 		}
 	} catch ( e ) {
@@ -817,6 +819,8 @@ export function* updateTicket( action ) {
 				put( actions.setTicketTempSaleEndDateInput( clientId, saleEndDateInput ) ),
 				put( actions.setTicketTempSaleEndDateMoment( clientId, saleEndDateMoment ) ),
 			] );
+
+			doAction( 'tec.tickets.blocks.ticketUpdated', clientId );
 		}
 	} catch ( e ) {
 		console.error( e );

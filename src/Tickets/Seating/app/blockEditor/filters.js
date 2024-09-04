@@ -1,4 +1,4 @@
-import { addFilter } from '@wordpress/hooks';
+import { addFilter, addAction } from '@wordpress/hooks';
 import CapacityForm from './capacity-form';
 import { storeName } from './store';
 import { select } from '@wordpress/data';
@@ -8,6 +8,7 @@ import { filterSeatedTicketsAvailabilityMappedProps } from './availability-overv
 import { filterTicketIsAsc } from './ticket-is-asc';
 import { filterHeaderDetails } from './header-details';
 import { filterSetBodyDetails } from './add-seating-params-to-ajax-save-ticket';
+import { useUpdateStatesSeatTypeByTicketId } from './update-states-seat-type-by-ticket-id';
 
 const shouldRenderAssignedSeatingForm = true;
 
@@ -119,4 +120,16 @@ addFilter(
 	'tribe.editor.ticket.isAsc',
 	'tec.tickets.seating',
 	filterTicketIsAsc
+);
+
+addAction(
+	'tec.tickets.blocks.ticketUpdated',
+	'tec.tickets.seating',
+	useUpdateStatesSeatTypeByTicketId
+);
+
+addAction(
+	'tec.tickets.blocks.ticketCreated',
+	'tec.tickets.seating',
+	useUpdateStatesSeatTypeByTicketId
 );

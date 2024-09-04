@@ -46,6 +46,12 @@ const actions = {
 			seatTypeId,
 		};
 	},
+	setTicketSeatTypeByPostId(clientId) {
+		return {
+			type: 'SET_TICKET_SEAT_TYPE_BY_POST_ID',
+			clientId,
+		};
+	},
 	fetchSeatTypesForLayout(layoutId) {
 		return {
 			type: 'FETCH_SEAT_TYPES_FOR_LAYOUT',
@@ -96,6 +102,7 @@ const store = createReduxStore(storeName, {
 				const ticketPostId = getTicketIdFromCommonStore(
 					action.clientId
 				);
+
 				return {
 					...state,
 					seatTypesByClientId: {
@@ -104,7 +111,27 @@ const store = createReduxStore(storeName, {
 					},
 					seatTypesByPostId: {
 						...state.seatTypesByPostId,
-						[ticketPostId]: action.seatTypeId,
+						[ticketPostId || action.clientId]:
+							state.seatTypesByClientId[action.clientId],
+					},
+				};
+			case 'SET_TICKET_SEAT_TYPE_BY_POST_ID':
+				const ticketId = getTicketIdFromCommonStore(action.clientId);
+
+				const { seatTypesByPostId, seatTypesByClientId } = state;
+
+				const seatTypeId =
+					seatTypesByClientId[action.clientId] ||
+					seatTypesByPostId[action.clientId] ||
+					seatTypesByPostId[ticketId];
+
+				delete seatTypesByPostId[action.clientId];
+
+				return {
+					...state,
+					seatTypesByPostId: {
+						...seatTypesByPostId,
+						[ticketId]: seatTypeId,
 					},
 				};
 			case 'LOCK_LAYOUT':
