@@ -672,8 +672,8 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			if ( 'Tribe__Tickets__RSVP' === $ticket['provider'] ) {
 				$src_stock ++;
 				$tgt_stock --;
-				update_post_meta( $src_ticket_type_id, '_stock', $src_stock );
-				update_post_meta( $tgt_ticket_type_id, '_stock', $tgt_stock );
+				update_post_meta( $src_event_id, '_stock', $src_stock );
+				update_post_meta( $tgt_event_id, '_stock', $tgt_stock );
 			}
 
 			$history_message = sprintf(

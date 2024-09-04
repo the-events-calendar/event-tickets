@@ -883,10 +883,6 @@ class Tribe__Tickets__Tickets_Handler {
 		// Remove Pending from total.
 		$totals['sold'] -= $totals['pending'];
 
-		// Update Stock.
-		$totals['stock'] = tribe_tickets_get_capacity( $ticket->ID ) - $totals['sold'];
-		update_post_meta( $ticket->ID, '_stock', $totals['stock'] );
-
 		return $totals;
 	}
 
