@@ -756,7 +756,9 @@ class List_Table extends WP_List_Table {
 			return '-';
 		}
 
-		$sales = tribe_format_currency( number_format( $item->qty_sold() * $item->price, 2 ), $item->ID );
+		/** @var Tribe__Tickets__Commerce__Currency $currency */
+		$currency = tribe( 'tickets.commerce.currency' );
+		$sales    = $currency->get_formatted_currency( number_format( $item->qty_sold() * $item->price, 2 ), null, Page::get_current_provider() );
 
 		/**
 		 * Filters the total sales for the Admin Tickets Table.
