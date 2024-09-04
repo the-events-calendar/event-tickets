@@ -1136,7 +1136,7 @@ class List_Table extends WP_List_Table {
 			'search_value'         => tribe_get_request_var( 's' ),
 			'show_provider_filter' => $this->show_ticket_provider_filter(),
 			'provider_options'     => Page::get_provider_options(),
-			'current_provider'     => $this->get_ticket_post_type(),
+			'current_provider'     => Page::get_current_provider(),
 		];
 
 		$template->template( 'admin-tickets/filters', $context );
