@@ -12,6 +12,8 @@ namespace TEC\Tickets\Order_Modifiers;
 use TEC\Common\StellarWP\Schema\Register as Schema_Register;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
+use TEC\Tickets\Order_Modifiers\Modifiers\Coupon;
+
 /**
  * Class Controller.
  *
@@ -28,6 +30,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	public function do_register(): void {
 		// Register classes here.
 		add_action( 'tribe_plugins_loaded', [ $this, 'register_tables' ] );
+		$this->container->singleton( Coupon::class );
 	}
 
 	/**
