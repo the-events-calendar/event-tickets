@@ -15,6 +15,7 @@ use WP_List_Table;
 use DateTime;
 use Tribe\Tickets\Admin\Settings;
 use Tribe__Template;
+use Tribe__Tickets__Main;
 use WP_Post;
 use WP_Query;
 
@@ -943,27 +944,26 @@ class List_Table extends WP_List_Table {
 	 * @param array $items The items to prime the queries for.
 	 */
 	public function prime_queries( $items ) {
-		// Gather event ids and run queries for caching purposes.
 		$event_ids   = wp_list_pluck( $items, 'event_id' );
 		$event_query = new WP_Query(
 			[
 				'post__in'       => $event_ids,
 				'posts_per_page' => -1,
-				'post_type'      => 'any',
+				'post_type'      => Tribe__Tickets__Main::instance()->post_types(),
 				'post_status'    => 'any',
 			]
 		);
 
+		$ticket_ids   = wp_list_pluck( $items, 'ID' );
 		$attendee_query = new WP_Query(
 			[
 				'posts_per_page' => -1,
 				'post_type'      => $this->get_attendee_post_type(),
-				'post_status'    => 'any',
 				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				'meta_query'     => [
 					[
 						'key'     => $this->get_event_meta_key(),
-						'value'   => $event_ids,
+						'value'   => $ticket_ids,
 						'compare' => 'IN',
 					],
 				],
