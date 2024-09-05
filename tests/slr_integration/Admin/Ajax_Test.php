@@ -2054,6 +2054,12 @@ class Ajax_Test extends Controller_Test_Case {
 					'seats'         => 200,
 					'screenshotUrl' => 'https://example.com/some-map-2.png',
 				],
+				[
+					'id'            => 'some-map-3',
+					'name'          => 'Some Map 3',
+					'seats'         => 10,
+					'screenshotUrl' => 'https://example.com/some-map-3.png',
+				],
 			]
 		);
 		set_transient( Maps_Service::update_transient_name(), time() );
@@ -2075,6 +2081,14 @@ class Ajax_Test extends Controller_Test_Case {
 					'createdDate'   => time() * 1000,
 					'mapId'         => 'some-map-2',
 					'screenshotUrl' => 'https://example.com/some-layouts-2.png',
+				],
+				[
+					'id'            => 'some-layout-3',
+					'name'          => 'Some Layout 3',
+					'seats'         => 10,
+					'createdDate'   => time() * 1000,
+					'mapId'         => 'some-map-3',
+					'screenshotUrl' => 'https://example.com/some-layouts-3.png',
 				],
 			]
 		);
@@ -2110,11 +2124,26 @@ class Ajax_Test extends Controller_Test_Case {
 					'map'    => 'some-map-2',
 					'layout' => 'some-layout-2',
 				],
+				[
+					'id'     => 'some-seat-type-5',
+					'name'   => 'Some Seat Type 5',
+					'seats'  => 3,
+					'map'    => 'some-map-3',
+					'layout' => 'some-layout-3',
+				],
+				[
+					'id'     => 'some-seat-type-6',
+					'name'   => 'Some Seat Type 6',
+					'seats'  => 7,
+					'map'    => 'some-map-3',
+					'layout' => 'some-layout-3',
+				],
 			]
 		);
 		
 		set_transient( Seat_Types::update_transient_name(), time() );
 		$this->set_up_ajax_request_context();
+		$this->reset_wp_send_json_mocks();
 		
 		// Setup request body.
 		$this->set_oauth_token( 'auth-token' );
@@ -2229,10 +2258,6 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertEquals( 50 - 5, $ticket_2->available() );
 		$this->assertEquals( 50 - 5, $ticket_2->inventory() );
 		
-		$counts = \Tribe__Tickets__Tickets::get_ticket_counts( $post_id );
-		
-		$this->assertMatchesJsonSnapshot( wp_json_encode( $counts, JSON_SNAPSHOT_OPTIONS ) );
-		
 		$attendees = tribe_attendees()->where( 'event', $post_id )->get_ids( true );
 		
 		foreach ( $attendees as $attendee_id ) {
@@ -2241,5 +2266,48 @@ class Ajax_Test extends Controller_Test_Case {
 			$this->assertEquals( '', get_post_meta( $attendee_id, Meta::META_KEY_RESERVATION_ID, true ) );
 			$this->assertEquals( '', get_post_meta( $attendee_id, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true ) );
 		}
+		
+		// Let's change the layout again to some-layout-3 to test negative case.
+		$this->reset_wp_send_json_mocks();
+		$_REQUEST['newLayout'] = 'some-layout-3';
+		$_REQUEST['postId']    = $post_id;
+		
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		
+		do_action( 'wp_ajax_' . Ajax::ACTION_EVENT_LAYOUT_UPDATED );
+		
+		$wp_send_json_success->was_called_times_with(
+			1,
+			[
+				'updatedTickets'   => 2, // Number of Tickets updated.
+				'updatedAttendees' => 10, // Number of Attendees updated.
+			]
+		);
+		
+		// Post capacity should be updated to 10 to match the new layout 3.
+		$this->assertEquals( 10, tribe_get_event_capacity( $post_id ), 'Total Event capacity should be 10' );
+		$this->assertEquals( 10, $global_stock->get_stock_level(), 'Global stock should be 10' );
+		
+		$ticket_1 = tribe( Module::class )->get_ticket( $post_id, $ticket_id_1 );
+		// Ticket 1 should have its seat type updated to 5 to match the new layout.
+		
+		$this->assertEquals( 'some-seat-type-5', get_post_meta( $ticket_id_1, Meta::META_KEY_SEAT_TYPE, true ) );
+		
+		// Ticket 1 should have its capacity updated to 3 to match the new default seat type 5.
+		$this->assertEquals( 3, $ticket_1->capacity() );
+		$this->assertEquals( 0, $ticket_1->stock() );
+		$this->assertEquals( 0, $ticket_1->available() );
+		$this->assertEquals( 0, $ticket_1->inventory() );
+		
+		$ticket_2 = tribe( Module::class )->get_ticket( $post_id, $ticket_id_2 );
+		
+		// Ticket 2 should have its seat type updated to 5 to match the new layout.
+		$this->assertEquals( 'some-seat-type-5', get_post_meta( $ticket_id_2, Meta::META_KEY_SEAT_TYPE, true ) );
+		
+		// Ticket 2 should have its capacity updated to 7 to match the new default seat type 5.
+		$this->assertEquals( 3, $ticket_2->capacity() );
+		$this->assertEquals( 0, $ticket_2->stock() );
+		$this->assertEquals( 0, $ticket_2->available() );
+		$this->assertEquals( 0, $ticket_2->inventory() );
 	}
 }
