@@ -4,11 +4,13 @@ import { storeName } from './store';
 import { select } from '@wordpress/data';
 import Seats from './dashboard-actions/seats';
 import { filterCapacityTableMappedProps } from './capacity-table';
-import { filterSeatedTicketsAvailabilityMappedProps } from './availability-overview';
-import { filterTicketIsAsc } from './ticket-is-asc';
-import { filterHeaderDetails } from './header-details';
-import { filterSetBodyDetails } from './add-seating-params-to-ajax-save-ticket';
-import { useUpdateStatesSeatTypeByTicketId } from './update-states-seat-type-by-ticket-id';
+import {
+	filterSeatedTicketsAvailabilityMappedProps,
+	filterSetBodyDetails,
+	filterHeaderDetails,
+	filterTicketIsAsc,
+	useUpdateStatesSeatTypeByTicketId,
+} from './hook-callbacks';
 
 const shouldRenderAssignedSeatingForm = true;
 

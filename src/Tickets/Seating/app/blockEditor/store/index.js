@@ -2,6 +2,7 @@ import { createReduxStore, register } from '@wordpress/data';
 import { getTicketIdFromCommonStore } from './common-store-bridge';
 import { controls } from './controls';
 import { selectors } from './selectors';
+import { actions } from './actions';
 
 const storeName = 'tec-tickets-seating';
 
@@ -13,58 +14,6 @@ const DEFAULT_STATE = {
 	ticketPostIdByClientId: {},
 };
 
-const actions = {
-	setUsingAssignedSeating(isUsingAssignedSeating) {
-		return {
-			type: 'SET_USING_ASSIGNED_SEATING',
-			isUsingAssignedSeating,
-		};
-	},
-	setLayout(layoutId) {
-		return {
-			type: 'SET_LAYOUT',
-			layoutId,
-		};
-	},
-	setEventCapacity(eventCapacity) {
-		return {
-			type: 'SET_EVENT_CAPACITY',
-			eventCapacity,
-		};
-	},
-	setSeatTypesForLayout(layoutId, seatTypes) {
-		return {
-			type: 'SET_SEAT_TYPES_FOR_LAYOUT',
-			layoutId,
-			seatTypes,
-		};
-	},
-	setTicketSeatType(clientId, seatTypeId) {
-		return {
-			type: 'SET_TICKET_SEAT_TYPE',
-			clientId,
-			seatTypeId,
-		};
-	},
-	setTicketSeatTypeByPostId(clientId) {
-		return {
-			type: 'SET_TICKET_SEAT_TYPE_BY_POST_ID',
-			clientId,
-		};
-	},
-	fetchSeatTypesForLayout(layoutId) {
-		return {
-			type: 'FETCH_SEAT_TYPES_FOR_LAYOUT',
-			layoutId,
-		};
-	},
-	setIsLayoutLocked(isLayoutLocked){
-		return {
-			type: 'LOCK_LAYOUT',
-			isLayoutLocked,
-		};
-	},
-};
 const store = createReduxStore(storeName, {
 	reducer(state = DEFAULT_STATE, action) {
 		switch (action.type) {
@@ -121,7 +70,6 @@ const store = createReduxStore(storeName, {
 
 				const seatTypeId =
 					seatTypesByClientId[action.clientId] ||
-					seatTypesByPostId[action.clientId] ||
 					seatTypesByPostId[ticketId];
 
 				delete seatTypesByPostId[action.clientId];
