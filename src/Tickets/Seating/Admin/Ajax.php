@@ -28,6 +28,7 @@ use TEC\Tickets\Seating\Service\Seat_Types;
 use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Main as Tickets_Main;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 
 /**
  * Class Ajax.
@@ -1059,15 +1060,27 @@ class Ajax extends Controller_Contract {
 			
 			return;
 		}
+		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler   = tribe( 'tickets.handler' );
+		$capacity_meta_key = $tickets_handler->key_capacity;
 		
-		$seat_types       = $this->seat_types->get_in_option_format( [ $layout_id ] );
-		$new_seat_type_id = $seat_types[0]['id'];
+		$seat_types        = $this->seat_types->get_in_option_format( [ $layout_id ] );
+		$new_seat_type_id  = $seat_types[0]['id'];
+		$new_seat_capacity = $seat_types[0]['seats'];
 		
 		// get tickets by post id.
 		$tickets = tribe_tickets()->where( 'event', $post_id )->get_ids( true );
 		
 		foreach ( $tickets as $ticket_id ) {
-			update_post_meta( $ticket_id, Meta::META_KEY_LAYOUT_ID, $layout_id );
+			clean_post_cache( $ticket_id );
+			
+			$previous_capacity = get_post_meta( $ticket_id, $capacity_meta_key, true );
+			$capacity_delta    = $new_seat_capacity - $previous_capacity;
+			$previous_stock    = get_post_meta( $ticket_id, '_stock', true );
+			$new_stock         = max( 0, $previous_stock + $capacity_delta );
+			
+			update_post_meta( $ticket_id, $capacity_meta_key, $new_seat_capacity );
+			update_post_meta( $ticket_id, '_stock', $new_stock );
 			update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, $new_seat_type_id );
 		}
 		
@@ -1075,13 +1088,17 @@ class Ajax extends Controller_Contract {
 		$attendees = tribe_attendees()->where( 'event', $post_id )->get_ids( true );
 		
 		foreach ( $attendees as $attendee_id ) {
+			clean_post_cache( $attendee_id );
 			update_post_meta( $attendee_id, Meta::META_KEY_SEAT_TYPE, $new_seat_type_id );
 			update_post_meta( $attendee_id, Meta::META_KEY_ATTENDEE_SEAT_LABEL, '' );
 		}
 		
-		// Finally update post layout ID.
+		// Finally update post data.
 		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, $layout_id );
+		update_post_meta( $post_id, $capacity_meta_key, $new_seat_capacity );
+		update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, $new_seat_capacity );
 		
+		clean_post_cache( $post_id );
 		wp_send_json_success();
 	}
 }
