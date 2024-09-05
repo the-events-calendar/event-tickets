@@ -32,10 +32,13 @@ class Edit_Purchaser_Provider extends Service_Provider {
 	}
 
 	public function register_hooks() {
-		add_action(
+		add_filter(
 			'tribe_template_pre_html:tickets/admin-views/commerce/orders/single/order-details-metabox',
-			[ $this, 'render_modal' ]
+			[ $this, 'render_modal' ],
+			10,
+			5
 		);
+		add_action( 'wp_ajax_tec_commerce_purchaser_edit', [ $this, 'ajax_handle_request' ] );
 	}
 
 	public function register_assets() {
@@ -53,13 +56,43 @@ class Edit_Purchaser_Provider extends Service_Provider {
 		);
 	}
 
-	public function render_modal() {
+	public function ajax_handle_request() {
+		check_ajax_referer('tec_commerce_purchaser_edit', '_nonce' );
+
+switch($_SERVER['REQUEST_METHOD']) {
+	case 'POST':
+		$updated = tec_tc_orders()->by_args(
+			[
+				'status' => 'any',
+				'id'     => $_POST['ID'],
+			]
+		)->set_args( [
+			'purchaser_email' => $_POST['email'],
+			'purchaser_fullname' => $_POST['name'],
+		] )->save();
+		if($updated) {
+			wp_send_json_success();
+		} else {
+			wp_send_json_error("Failed updating purchaser.");
+		}
+		break;
+	case 'GET':
+		$post = get_post($_GET['ID']);
+		$order = tec_tc_get_order( $post );
+		wp_send_json_success($order->purchaser);
+		break;
+}
+
+		die();
+	}
+	public function render_modal($html, $file, $name, $template, $context) {
 		$dialog_view = tribe( 'dialog.view' );
 
 		ob_start();
 		$dialog_view->render_modal(
-			$this->template('edit-purchaser-modal'),
+			$this->template('edit-purchaser-modal', $context),
 			[
+				'id' => 'edit-purchaser-modal',
 				'append_target' => '#edit-purchaser-modal-container',
 				'button_display'          => false,
 				'title' => esc_html_x( 'Edit purchaser', 'Edit purchaser modal title.', 'event-tickets'),
@@ -73,8 +106,9 @@ class Edit_Purchaser_Provider extends Service_Provider {
 		$modal  = '<div class="tribe-common"> <div id="edit-purchaser-modal-container"></div></div><div class="">';
 		$modal .= $modal_content;
 		$modal .= '</div>';
-
 		echo $modal;
+
+		return $html;
 	}
 
 
