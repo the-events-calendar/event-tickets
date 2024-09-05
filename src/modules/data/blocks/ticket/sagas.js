@@ -675,6 +675,12 @@ export function* createNewTicket( action ) {
 				put( actions.setTicketHasChanges( clientId, false ) ),
 			] );
 
+			/**
+			 * Fires after the ticket has been created.
+			 *
+			 * @since TBD
+			 * @param {string} clientId The ticket's client ID.
+			 */
 			doAction( 'tec.tickets.blocks.ticketCreated', clientId );
 
 			yield fork( saveTicketWithPostSave, clientId );
@@ -820,6 +826,12 @@ export function* updateTicket( action ) {
 				put( actions.setTicketTempSaleEndDateMoment( clientId, saleEndDateMoment ) ),
 			] );
 
+			/**
+			 * Fires after the ticket has been updated.
+			 *
+			 * @since TBD
+			 * @param {string} clientId The ticket's client ID.
+			 */
 			doAction( 'tec.tickets.blocks.ticketUpdated', clientId );
 		}
 	} catch ( e ) {
