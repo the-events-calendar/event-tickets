@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Seating\Admin;
 
 use Codeception\TestCase\WPTestCase;
+use PHPUnit\Framework\Assert;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
@@ -148,10 +149,10 @@ class Maps_Layout_Homepage_Test extends WPTestCase {
 				],
 			]
 		);
-		
+
 		// We've just updated the Maps, no need to run the update against the service.
 		set_transient( Maps_Service::update_transient_name(), time() - 1 );
-		
+
 		Layouts_Service::insert_rows_from_service(
 			[
 				[
@@ -197,10 +198,10 @@ class Maps_Layout_Homepage_Test extends WPTestCase {
 				],
 			]
 		);
-		
+
 		// We've just updated the Maps, no need to run the update against the service.
 		set_transient( Maps_Service::update_transient_name(), time() - 1 );
-		
+
 		Layouts_Service::insert_rows_from_service(
 			[
 				[
@@ -276,7 +277,12 @@ class Maps_Layout_Homepage_Test extends WPTestCase {
 		$this->mock_singleton_service(
 			Service::class,
 			[
-				'get_ephemeral_token' => 'some-ephemeral-token',
+				'get_ephemeral_token' => function ( $expiration, $scope ) {
+					Assert::assertEquals( 6 * HOUR_IN_SECONDS, $expiration );
+					Assert::assertEquals( 'admin', $scope );
+
+					return 'some-ephemeral-token';
+				}
 			]
 		);
 		$maps_layouts_home_page = tribe( Maps_Layouts_Home_Page::class );
@@ -287,14 +293,19 @@ class Maps_Layout_Homepage_Test extends WPTestCase {
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
-	
+
 	public function test_map_edit(): void {
 		$_GET['tab']  = 'map-edit';
 		$_GET['page'] = 'tec-tickets-seating';
 		$this->mock_singleton_service(
 			Service::class,
 			[
-				'get_ephemeral_token' => 'some-ephemeral-token',
+				'get_ephemeral_token' => function ( $expiration, $scope ) {
+					Assert::assertEquals( 6 * HOUR_IN_SECONDS, $expiration );
+					Assert::assertEquals( 'admin', $scope );
+
+					return 'some-ephemeral-token';
+				}
 			]
 		);
 		$maps_layouts_home_page = tribe( Maps_Layouts_Home_Page::class );
