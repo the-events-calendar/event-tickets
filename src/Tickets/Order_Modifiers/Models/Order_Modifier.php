@@ -68,6 +68,20 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	}
 
 	/**
+	 * Finds a model by its slug.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The model slug.
+	 * @param string $type The model type.
+	 *
+	 * @return Order_Modifier|null The model instance, or null if not found.
+	 */
+	public static function find_by_slug( $slug, $type ): ?self {
+		return tribe( Order_Modifiers_Repository::class )->find_by_slug( $slug, $type );
+	}
+
+	/**
 	 * Creates a new model and saves it to the database.
 	 *
 	 * @since TBD

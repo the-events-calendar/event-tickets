@@ -123,16 +123,21 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	}
 
 	/**
-	 * Finds an Order Modifier by its slug.
+	 * Finds an Order Modifier by its slug and modifier_type.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $slug The slug of the Order Modifier to find.
+	 * @param string $modifier_type The type of the modifier ('coupon' or 'fee').
 	 *
 	 * @return Order_Modifier|null The Order Modifier model instance, or null if not found.
 	 */
-	public function find_by_slug( string $slug ): ?Order_Modifier {
-		return $this->prepareQuery()->where( 'slug', $slug )->where( 'status', 'active' )->get();
+	public function find_by_slug( string $slug, string $modifier_type ): ?Order_Modifier {
+		return $this->prepareQuery()
+					->where( 'slug', $slug )
+					->where( 'modifier_type', $modifier_type )
+					->where( 'status', 'active' )
+					->get();
 	}
 
 	/**
