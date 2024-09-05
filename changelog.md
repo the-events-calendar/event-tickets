@@ -1,5 +1,12 @@
 # Changelog
 
+### [5.13.2] 2024-08-16
+
+* Tweak - Start Sale and End Sale date will autopopulate when creating a new ticket. [ET-2103]
+* Tweak - Update legacy Wallet Plus plugin notices to the new Tickets Plus plugin.
+* Fix - Exporting all Attendees as a CSV file in the new Tickets Attendees Page. [ET-2094]
+* Fix - Shared capacity will no longer be affected by any of the unlimited sales tickets on the same event. [ETP-920]
+
 ### [5.10.0] 2024-05-14
 
 * Version - Event Tickets 5.10.0 is only compatible with The Events Calendar 6.5.0 and higher
