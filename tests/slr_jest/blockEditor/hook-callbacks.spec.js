@@ -6,6 +6,7 @@ import {
 	filterHeaderDetails,
 	filterSeatedTicketsAvailabilityMappedProps,
 	filterSetBodyDetails,
+	setSeatTypeForTicket,
 } from '@tec/tickets/seating/blockEditor/hook-callbacks';
 
 jest.mock('@wordpress/data', () => ({
@@ -14,6 +15,8 @@ jest.mock('@wordpress/data', () => ({
 	register: jest.fn(),
 	dispatch: jest.fn(),
 }));
+
+describe('setSeatTypeForTicket', () => {});
 
 describe('filterSetBodyDetails', () => {
 	beforeEach(() => {

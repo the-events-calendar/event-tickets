@@ -9,7 +9,7 @@ import {
 	filterSetBodyDetails,
 	filterHeaderDetails,
 	filterTicketIsAsc,
-	useUpdateStatesSeatTypeByTicketId,
+	setSeatTypeForTicket,
 } from './hook-callbacks';
 
 const shouldRenderAssignedSeatingForm = true;
@@ -127,11 +127,11 @@ addFilter(
 addAction(
 	'tec.tickets.blocks.ticketUpdated',
 	'tec.tickets.seating',
-	useUpdateStatesSeatTypeByTicketId
+	setSeatTypeForTicket
 );
 
 addAction(
 	'tec.tickets.blocks.ticketCreated',
 	'tec.tickets.seating',
-	useUpdateStatesSeatTypeByTicketId
+	setSeatTypeForTicket
 );

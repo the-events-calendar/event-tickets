@@ -2,7 +2,7 @@ import { storeName } from './store';
 import { select, dispatch } from '@wordpress/data';
 import SeatType from './header/seat-type';
 
-export const useUpdateStatesSeatTypeByTicketId = (clientId) => {
+export const setSeatTypeForTicket = (clientId) => {
 	dispatch(storeName).setTicketSeatTypeByPostId(clientId);
 };
 
