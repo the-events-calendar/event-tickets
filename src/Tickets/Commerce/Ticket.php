@@ -396,7 +396,7 @@ class Ticket {
 			$return->global_stock_cap( $capped );
 		}
 
-		$qty_cancelled = $this->get_cancelled( $ticket_id );
+		$qty_cancelled = 0;
 
 		// Manually add cancelled to sold so that we can remove it correctly later when calculating.
 		$return->qty_sold( $qty_sold + $qty_cancelled );
@@ -431,26 +431,17 @@ class Ticket {
 	 * @todo  TribeCommerceLegacy: Move this method into the another place.
 	 *
 	 * @since 5.1.9
+	 * @deprecated TBD This method is deprecated due to the Legacy Tribe Commerce no longer being supported.
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 *
 	 * @return int
 	 */
 	protected function get_cancelled( $ticket_id ) {
-		$denied_orders = \Tribe__Tickets__Commerce__PayPal__Order::find_by( array(
-			'ticket_id'      => $ticket_id,
-			'post_status'    => Denied::SLUG,
-			'posts_per_page' => - 1,
-		), [
-			'items',
-		] );
+		// Trigger deprecation notice.
+		_deprecated_function( __METHOD__, 'TBD', 'This method is deprecated due to the Legacy Tribe Commerce no longer being supported.' );
 
-		$denied = 0;
-		foreach ( $denied_orders as $denied_order ) {
-			$denied += $denied_order->get_item_quantity( $ticket_id );
-		}
-
-		return max( 0, $denied );
+		return 0;
 	}
 
 	/**
