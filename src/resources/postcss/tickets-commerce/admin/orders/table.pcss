@@ -4,7 +4,10 @@
  * @since 5.13.0
  */
 
+@import "_svgs.pcss";
+
 body.wp-admin.post-type-tec_tc_order {
+
 	div.tablenav.top {
 		.tribe-datepicker {
 			margin-right: var(--tec-spacer-1);
@@ -104,35 +107,48 @@ body.wp-admin.post-type-tec_tc_order {
 	}
 }
 
-.tribe-external-link {
+.tribe-dashicons {
 	&--code {
 		font-family: monospace;
 	}
 
-	&:after {
-		content: url("../../../../images/tribe-external-link.svg");
+	.dashicons {
 		height: 16px;
 		padding-left: var(--tec-spacer-0);
 		width: 16px;
 	}
+
+	.tribe-icon-trash {
+		background-image: svg-inline(tec-order-management-trash-icon-red);
+		background-repeat: no-repeat;
+		background-size: contain;
+	}
 }
 
 .tribe-tickets-commerce-order-status {
+	align-items: center;
 	background: #c3c4c7;
 	border: 1px solid rgba(0, 0, 0, 0.05);
 	border-radius: var(--tec-border-radius-default);
 	color: #2c3338;
 	cursor: inherit !important;
 	display: inline-flex;
+	flex-flow: row nowrap;
+	justify-content: center;
 	line-height: 2.5em;
 	margin: calc(-1 * var(--tec-spacer-0)) 0;
 	max-width: 100%;
 	white-space: nowrap;
 
 	> span {
-		margin: 0 1em;
+		margin-right: var(--tec-spacer-3);
 		overflow: hidden;
 		text-overflow: ellipsis;
+
+		&:first-child {
+			margin-left: var(--tec-spacer-3);
+			margin-right: var(--tec-spacer-0);
+		}
 	}
 
 	&.status-pending {

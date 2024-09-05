@@ -14,7 +14,10 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 
 	protected static $webhook_buffer = [];
 
-	public function _setUp(): void {
+	/**
+	 * @before
+	 */
+	public function before_test(): void {
 		parent::_setUp();
 
 		$merchant = tribe( Merchant::class );
@@ -31,7 +34,10 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 		);
 	}
 
-	public function _tearDown()
+	/**
+	 * @after
+	 */
+	public function after_test()
 	{
 		parent::_tearDown();
 		$merchant = tribe( Merchant::class );
