@@ -27,7 +27,7 @@ class Layout_Edit extends Tab {
 	 * The Modal ID  used to render the Add new layout modal.
 	 */
 	public const ADD_LAYOUT_MODAL_ID = 'tec-tickets-seating-layouts-modal';
-	
+
 	/**
 	 * The service used to render the iframe.
 	 *
@@ -83,7 +83,7 @@ class Layout_Edit extends Tab {
 	public function render(): void {
 		$layout_id       = tribe_get_request_var( 'layoutId' );
 		$map_id          = tribe_get_request_var( 'mapId' );
-		$ephemeral_token = $this->service->get_ephemeral_token();
+		$ephemeral_token = $this->service->get_ephemeral_token( 6 * HOUR_IN_SECONDS, 'admin' );
 		$token           = is_string( $ephemeral_token ) ? $ephemeral_token : '';
 		$iframe_url      = $layout_id ? $this->service->get_layout_edit_url( $token, $layout_id )
 			: $this->service->get_layout_create_url( $token, $map_id );
@@ -106,11 +106,11 @@ class Layout_Edit extends Tab {
 	 */
 	public static function get_edit_url_by_post( string $post_id ): string {
 		$layout_id = get_post_meta( $post_id, META::META_KEY_LAYOUT_ID, true );
-		
+
 		if ( empty( $layout_id ) ) {
 			return '';
 		}
-		
+
 		return add_query_arg(
 			[
 				'page'     => Admin::get_menu_slug(),
