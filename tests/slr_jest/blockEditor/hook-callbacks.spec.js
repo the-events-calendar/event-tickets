@@ -1,6 +1,7 @@
 import { dispatch, select } from '@wordpress/data';
 import { applyFilters } from '@wordpress/hooks';
 import SeatType from '@tec/tickets/seating/blockEditor/header/seat-type';
+import { storeName } from '@tec/tickets/seating/blockEditor/store';
 import {
 	filterTicketIsAsc,
 	filterHeaderDetails,
@@ -16,7 +17,30 @@ jest.mock('@wordpress/data', () => ({
 	dispatch: jest.fn(),
 }));
 
-describe('setSeatTypeForTicket', () => {});
+describe('setSeatTypeForTicket', () => {
+	beforeEach(() => {
+		jest.resetModules();
+		jest.resetAllMocks();
+	});
+
+	afterEach(() => {
+		jest.resetModules();
+		jest.resetAllMocks();
+	});
+
+	it('should call dispatch with appropriate arguments', () => {
+		const clientId = 'client-id-1';
+		dispatch.mockReturnValue({
+			setTicketSeatTypeByPostId: jest.fn(),
+		});
+
+		setSeatTypeForTicket(clientId);
+		expect(dispatch).toHaveBeenCalledWith(storeName);
+		expect(dispatch().setTicketSeatTypeByPostId).toHaveBeenCalledWith(
+			clientId
+		);
+	});
+});
 
 describe('filterSetBodyDetails', () => {
 	beforeEach(() => {

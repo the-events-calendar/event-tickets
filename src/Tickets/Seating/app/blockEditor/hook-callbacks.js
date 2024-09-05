@@ -2,9 +2,8 @@ import { storeName } from './store';
 import { select, dispatch } from '@wordpress/data';
 import SeatType from './header/seat-type';
 
-export const setSeatTypeForTicket = (clientId) => {
+export const setSeatTypeForTicket = (clientId) =>
 	dispatch(storeName).setTicketSeatTypeByPostId(clientId);
-};
 
 /**
  * Filters whether the ticket is ASC.
