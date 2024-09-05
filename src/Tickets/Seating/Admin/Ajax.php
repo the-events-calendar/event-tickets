@@ -1056,10 +1056,18 @@ class Ajax extends Controller_Contract {
 		$layout_id = tribe_get_request_var( 'newLayout' );
 		
 		if ( empty( $layout_id ) || empty( $post_id ) ) {
-			wp_send_json_success( [] );
+			wp_send_json_error(
+				[
+					'error' => 'No layout ID or post ID provided',
+				],
+				400
+			);
 			
 			return;
 		}
+		
+		$layout = DB::table( \TEC\Tickets\Seating\Tables\Layouts::table_name( false ) )->where( 'id', $layout_id )->get();
+		
 		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler   = tribe( 'tickets.handler' );
 		$capacity_meta_key = $tickets_handler->key_capacity;
@@ -1068,7 +1076,10 @@ class Ajax extends Controller_Contract {
 		$new_seat_type_id  = $seat_types[0]['id'];
 		$new_seat_capacity = $seat_types[0]['seats'];
 		
-		// get tickets by post id.
+		$updated_tickets   = 0;
+		$updated_attendees = 0;
+		
+		// Get tickets by post id.
 		$tickets = tribe_tickets()->where( 'event', $post_id )->get_ids( true );
 		
 		foreach ( $tickets as $ticket_id ) {
@@ -1082,23 +1093,33 @@ class Ajax extends Controller_Contract {
 			update_post_meta( $ticket_id, $capacity_meta_key, $new_seat_capacity );
 			update_post_meta( $ticket_id, '_stock', $new_stock );
 			update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, $new_seat_type_id );
+			
+			++$updated_tickets;
 		}
 		
-		// attendees by post id.
+		// Attendees by post id.
 		$attendees = tribe_attendees()->where( 'event', $post_id )->get_ids( true );
 		
 		foreach ( $attendees as $attendee_id ) {
 			clean_post_cache( $attendee_id );
 			update_post_meta( $attendee_id, Meta::META_KEY_SEAT_TYPE, $new_seat_type_id );
 			update_post_meta( $attendee_id, Meta::META_KEY_ATTENDEE_SEAT_LABEL, '' );
+			
+			++$updated_attendees;
 		}
 		
 		// Finally update post data.
 		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, $layout_id );
-		update_post_meta( $post_id, $capacity_meta_key, $new_seat_capacity );
-		update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, $new_seat_capacity );
+		update_post_meta( $post_id, $capacity_meta_key, $layout->seats );
+		update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, $layout->seats );
 		
 		clean_post_cache( $post_id );
-		wp_send_json_success();
+		
+		wp_send_json_success(
+			[
+				'updatedTickets'   => $updated_tickets,
+				'updatedAttendees' => $updated_attendees,
+			]
+		);
 	}
 }
