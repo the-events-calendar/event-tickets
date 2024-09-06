@@ -37,7 +37,16 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 		// before
 		parent::setUp();
 
-		add_filter( 'tec_tickets_admin_tickets_table_provider_options',[ $this, 'add_tc_ticket_type' ] );
+		add_filter( 'tec_tickets_admin_tickets_table_provider_info', function() {
+			return [
+				TicketsCommerce\Module::class => [
+					'title'              => 'Tickets Commerce',
+					'event_meta_key'     => TicketsCommerce\Attendee::$event_relation_meta_key,
+					'attendee_post_type' => TicketsCommerce\Attendee::POSTTYPE,
+					'ticket_post_type'   => TicketsCommerce\Ticket::POSTTYPE,
+				]
+			];
+		} );
 
 		$this->prepare_test_data();
 		$this->list_table = new List_Table();

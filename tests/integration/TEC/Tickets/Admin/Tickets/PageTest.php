@@ -37,9 +37,14 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->page = new Page();
 
-		add_filter( 'tec_tickets_admin_tickets_table_provider_options', function() {
+		add_filter( 'tec_tickets_admin_tickets_table_provider_info', function() {
 			return [
-				'tec_tc_ticket' => 'Tickets Commerce',
+				TicketsCommerce\Module::class => [
+					'title'              => 'Tickets Commerce',
+					'event_meta_key'     => TicketsCommerce\Attendee::$event_relation_meta_key,
+					'attendee_post_type' => TicketsCommerce\Attendee::POSTTYPE,
+					'ticket_post_type'   => TicketsCommerce\Ticket::POSTTYPE,
+				]
 			];
 		} );
 	}
@@ -158,7 +163,6 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 		$this->prepare_test_data();
 
 		$_GET['status-filter'] = 'all';
-		$_GET['provider-filter'] = TicketsCommerce\Module::class;
 		$this->set_class_fn_return( 'DateTime', 'diff', (object) [
 			'days' => 999,
 			'invert' => false,
