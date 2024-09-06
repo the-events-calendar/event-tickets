@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Admin\Tickets;
 
+use TEC\Tickets\Commerce as TicketsCommerce;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -157,7 +158,7 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 		$this->prepare_test_data();
 
 		$_GET['status-filter'] = 'all';
-		$_GET['provider-filter'] = 'tec_tc_ticket';
+		$_GET['provider-filter'] = TicketsCommerce\Module::class;
 		$this->set_class_fn_return( 'DateTime', 'diff', (object) [
 			'days' => 999,
 			'invert' => false,

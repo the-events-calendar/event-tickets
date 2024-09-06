@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Admin\Tickets;
 
 use TEC\Tickets\Admin\Tickets\List_Table;
+use TEC\Tickets\Commerce as TicketsCommerce;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 
@@ -202,7 +203,7 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 	// test
 	public function test_prepare_items() {
 		$_GET['status-filter'] = 'all';
-		$_GET['provider-filter'] = 'tec_tc_ticket';
+		$_GET['provider-filter'] = TicketsCommerce\Module::class;
 		$this->list_table->prepare_items();
 
 		$this->assertNotEmpty( $this->list_table->items );
