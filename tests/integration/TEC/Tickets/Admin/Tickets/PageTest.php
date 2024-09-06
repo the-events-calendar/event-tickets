@@ -163,6 +163,7 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 		$this->prepare_test_data();
 
 		$_GET['status-filter'] = 'all';
+		$_GET['provider-filter'] = addslashes( TicketsCommerce\Module::class );
 		$this->set_class_fn_return( 'DateTime', 'diff', (object) [
 			'days' => 999,
 			'invert' => false,
