@@ -585,7 +585,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			) );
 		}
 
-		// We expect to have found as many tickets as were specified
+		// We expect to have found as many tickets as were specified.
 		if ( count( $ticket_objects ) !== count( $ticket_ids ) ) {
 			return 0;
 		}
@@ -610,7 +610,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			$src_qty_sold       = (int) get_post_meta( $src_ticket_type_id, 'total_sales', true );
 			$tgt_qty_sold       = (int) get_post_meta( $tgt_ticket_type_id, 'total_sales', true );
 
-			//get stock levels for RSVP Tickets
+			// get stock levels for RSVP Tickets.
 			if ( 'Tribe__Tickets__RSVP' === $ticket['provider'] ) {
 				$src_stock = (int) get_post_meta( $src_ticket_type_id, '_stock', true );
 				$tgt_stock = (int) get_post_meta( $tgt_ticket_type_id, '_stock', true );
@@ -633,26 +633,26 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 			$src_mode = get_post_meta( $product_id, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 
-			// When the Mode is not `own` we have to check and modify some stuff
+			// When the Mode is not `own` we have to check and modify some stuff.
 			if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE !== $src_mode ) {
-				// If we have Source cap and not on Target, we set it up
+				// If we have Source cap and not on Target, we set it up.
 				if ( ! $tgt_event_cap->is_enabled() ) {
 					$src_event_capacity = tribe_tickets_get_capacity( $src_event_id );
 
-					// Activate Shared Capacity on the Ticket
+					// Activate Shared Capacity on the Ticket.
 					$tgt_event_cap->enable();
 
-					// Setup the Stock level to match Source capacity
+					// Setup the Stock level to match Source capacity.
 					$tgt_event_cap->set_stock_level( $src_event_capacity );
 
-					// Update the Target event with the Capacity from the Source
+					// Update the Target event with the Capacity from the Source.
 					update_post_meta( $tgt_event_id, $tickets_handler->key_capacity, $src_event_capacity );
 				} elseif ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $src_mode || Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $src_mode ) {
-					// Check if we have capped to avoid ticket cap over event cap
+					// Check if we have capped to avoid ticket cap over event cap.
 					$src_ticket_capacity = tribe_tickets_get_capacity( $product_id );
 					$tgt_event_capacity  = tribe_tickets_get_capacity( $tgt_event_id );
 
-					// Don't allow ticket capacity to be bigger than Target Event Cap
+					// Don't allow ticket capacity to be bigger than Target Event Cap.
 					if ( $src_ticket_capacity > $tgt_event_capacity ) {
 						update_post_meta( $ticket_id, $tickets_handler->key_capacity, $tgt_event_capacity );
 					}
@@ -662,18 +662,18 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			update_post_meta( $ticket_id, $ticket_type_key, $tgt_ticket_type_id );
 			update_post_meta( $ticket_id, $ticket_event_key, $tgt_event_id );
 
-			// adjust sales numbers - don't allow negatives
+			// adjust sales numbers - don't allow negatives.
 			$src_qty_sold --;
 			$tgt_qty_sold ++;
 			update_post_meta( $src_ticket_type_id, 'total_sales', $src_qty_sold );
 			update_post_meta( $tgt_ticket_type_id, 'total_sales', $tgt_qty_sold );
 
-			//adjust stock numbers for RSVP Tickets
+			// adjust stock numbers for RSVP Tickets.
 			if ( 'Tribe__Tickets__RSVP' === $ticket['provider'] ) {
 				$src_stock ++;
 				$tgt_stock --;
-				update_post_meta( $src_event_id, '_stock', $src_stock );
-				update_post_meta( $tgt_event_id, '_stock', $tgt_stock );
+				update_post_meta( $src_ticket_type_id, '_stock', $src_stock );
+				update_post_meta( $tgt_ticket_type_id, '_stock', $tgt_stock );
 			}
 
 			$history_message = sprintf(
