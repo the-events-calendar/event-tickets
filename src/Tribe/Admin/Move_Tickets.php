@@ -5,6 +5,7 @@ use TEC\Events\Custom_Tables\V1\WP_Query\Custom_Tables_Query;
 use Tribe__Events__Pro__Main as ECP;
 use Tribe__Events__Main as TEC;
 use TEC\Tickets\Admin\Attendees\Page as Attendees_Page;
+use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
 
 /**
  * Handles moving attendees from a post to another.
@@ -610,12 +611,6 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			$src_qty_sold       = (int) get_post_meta( $src_ticket_type_id, 'total_sales', true );
 			$tgt_qty_sold       = (int) get_post_meta( $tgt_ticket_type_id, 'total_sales', true );
 
-			// get stock levels for RSVP Tickets.
-			if ( 'Tribe__Tickets__RSVP' === $ticket['provider'] ) {
-				$src_stock = (int) get_post_meta( $src_ticket_type_id, '_stock', true );
-				$tgt_stock = (int) get_post_meta( $tgt_ticket_type_id, '_stock', true );
-			}
-
 			/**
 			 * Fires immediately before a ticket is moved.
 			 *
@@ -662,18 +657,15 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			update_post_meta( $ticket_id, $ticket_type_key, $tgt_ticket_type_id );
 			update_post_meta( $ticket_id, $ticket_event_key, $tgt_event_id );
 
-			// adjust sales numbers - don't allow negatives.
-			$src_qty_sold --;
-			$tgt_qty_sold ++;
-			update_post_meta( $src_ticket_type_id, 'total_sales', $src_qty_sold );
-			update_post_meta( $tgt_ticket_type_id, 'total_sales', $tgt_qty_sold );
-
-			// adjust stock numbers for RSVP Tickets.
+			// adjust stock numbers for RSVP and Commerce Tickets.
 			if ( 'Tribe__Tickets__RSVP' === $ticket['provider'] ) {
-				$src_stock ++;
-				$tgt_stock --;
-				update_post_meta( $src_ticket_type_id, '_stock', $src_stock );
-				update_post_meta( $tgt_ticket_type_id, '_stock', $tgt_stock );
+				$rsvp = new Tribe__Tickets__RSVP();
+				$rsvp->decrease_ticket_sales_by( $src_ticket_type_id );
+				$rsvp->increase_ticket_sales_by( $tgt_ticket_type_id );
+			} else {
+				$c_ticket = new Commerce_Ticket();
+				$c_ticket->decrease_ticket_sales_by( $src_ticket_type_id );
+				$c_ticket->increase_ticket_sales_by( $tgt_ticket_type_id );
 			}
 
 			$history_message = sprintf(
