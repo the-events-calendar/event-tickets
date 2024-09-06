@@ -4667,9 +4667,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since TBD
 		 *
-		 * @param array[] $provider_options The list of provider options.
+		 * @param array[] $provider_info The list of provider information.
 		 *
-		 * @return array[] The filtered list of provider options.
+		 * @return array[] The filtered list of provider information.
 		 */
 		public function filter_admin_tickets_table_provider_info( $provider_info ) {
 			$provider_info[ $this->class_name ] = [

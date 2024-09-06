@@ -686,20 +686,19 @@ class List_Table extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param float $price     The price to format.
-	 * @param int   $ticket_id The ticket ID.
+	 * @param float $price    The price to format.
+	 * @param int   $event_id The event/post ID.
 	 *
 	 * @return string
 	 */
 	protected function format_currency( $price, $event_id ) {
 		/** @var Tribe__Tickets__Commerce__Currency $currency */
-		$currency = tribe( 'tickets.commerce.currency' );
+		$currency        = tribe( 'tickets.commerce.currency' );
 		$currency_symbol = $currency->get_provider_symbol( Page::get_current_provider(), $event_id );
 		$symbol_position = $currency->get_provider_symbol_position( Page::get_current_provider(), $event_id );
 		$formatted_price = $currency->get_formatted_currency( number_format( $price, 2 ), $event_id, Page::get_current_provider() );
-		$currency_string = $symbol_position === 'prefix' ? $currency_symbol . $formatted_price : $formatted_price . $currency_symbol;
 
-		return $currency_string;
+		return 'prefix' === $symbol_position ? $currency_symbol . $formatted_price : $formatted_price . $currency_symbol;
 	}
 
 	/**
@@ -1153,7 +1152,7 @@ class List_Table extends WP_List_Table {
 		$provider_info = Page::get_provider_info();
 		$provider      = Page::get_current_provider();
 
-		if ( ! isset( $provider_info[ $provider ] ) ||  empty( $provider_info[ $provider ]['event_meta_key'] ) ) {
+		if ( ! isset( $provider_info[ $provider ] ) || empty( $provider_info[ $provider ]['event_meta_key'] ) ) {
 			return '';
 		}
 
@@ -1171,7 +1170,7 @@ class List_Table extends WP_List_Table {
 		$provider_info = Page::get_provider_info();
 		$provider      = Page::get_current_provider();
 
-		if ( ! isset( $provider_info[ $provider ] ) ||  empty( $provider_info[ $provider ]['attendee_post_type'] ) ) {
+		if ( ! isset( $provider_info[ $provider ] ) || empty( $provider_info[ $provider ]['attendee_post_type'] ) ) {
 			return '';
 		}
 
