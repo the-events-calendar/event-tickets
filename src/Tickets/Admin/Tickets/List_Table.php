@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Admin\Tickets;
 
+use Tribe__Tickets__Commerce__Currency;
 use Tribe__Tickets__Ticket_Object;
 use WP_List_Table;
 use DateTime;
@@ -681,6 +682,27 @@ class List_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Format currency.
+	 *
+	 * @since TBD
+	 *
+	 * @param float $price     The price to format.
+	 * @param int   $ticket_id The ticket ID.
+	 *
+	 * @return string
+	 */
+	protected function format_currency( $price, $event_id ) {
+		/** @var Tribe__Tickets__Commerce__Currency $currency */
+		$currency = tribe( 'tickets.commerce.currency' );
+		$currency_symbol = $currency->get_provider_symbol( Page::get_current_provider(), $event_id );
+		$symbol_position = $currency->get_provider_symbol_position( Page::get_current_provider(), $event_id );
+		$formatted_price = $currency->get_formatted_currency( number_format( $price, 2 ), $event_id, Page::get_current_provider() );
+		$currency_string = $symbol_position === 'prefix' ? $currency_symbol . $formatted_price : $formatted_price . $currency_symbol;
+
+		return $currency_string;
+	}
+
+	/**
 	 * Get the column price value.
 	 *
 	 * @since TBD
@@ -694,9 +716,7 @@ class List_Table extends WP_List_Table {
 			return '-';
 		}
 
-		/** @var Tribe__Tickets__Commerce__Currency $currency */
-		$currency = tribe( 'tickets.commerce.currency' );
-		$price    = $currency->get_formatted_currency( number_format( $item->price, 2 ), null, Page::get_current_provider() );
+		$price = $this->format_currency( $item->price, $item->get_event() );
 
 		/**
 		 * Filters the price for the Admin Tickets Table.
@@ -784,9 +804,7 @@ class List_Table extends WP_List_Table {
 			return '-';
 		}
 
-		/** @var Tribe__Tickets__Commerce__Currency $currency */
-		$currency = tribe( 'tickets.commerce.currency' );
-		$sales    = $currency->get_formatted_currency( number_format( $item->qty_sold() * $item->price, 2 ), null, Page::get_current_provider() );
+		$sales = $this->format_currency( ( $item->qty_sold() * $item->price ), $item->get_event() );
 
 		/**
 		 * Filters the total sales for the Admin Tickets Table.
