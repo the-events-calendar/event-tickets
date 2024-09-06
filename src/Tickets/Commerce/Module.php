@@ -219,7 +219,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $attendees_by_ticket_id List of attendees.
+	 * @var array $attendees_by_ticket_id List of attendees.
 	 */
 	protected $attendees_by_ticket_id = [];
 
@@ -382,7 +382,13 @@ class Module extends \Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Get attendees by ticket ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id Ticket ID.
+	 *
+	 * @return array List of attendees.
 	 */
 	protected function get_attendees_by_ticket_id( $ticket_id ) {
 		// Check to see if we already have attendees by ticket id stored.

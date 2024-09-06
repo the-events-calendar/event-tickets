@@ -991,7 +991,7 @@ class List_Table extends WP_List_Table {
 		$ticket_ids     = wp_list_pluck( $items, 'ID' );
 		$attendee_query = new WP_Query(
 			[
-				'posts_per_page' => 1000,
+				'posts_per_page' => count( $ticket_ids ),
 				'post_type'      => $this->get_attendee_post_type(),
 				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				'meta_query'     => [
@@ -1004,13 +1004,13 @@ class List_Table extends WP_List_Table {
 			]
 		);
 
-		if ( $attendee_query->found_posts === 0 ) {
+		if ( 0 === $attendee_query->found_posts ) {
 			return;
 		}
 
 		$attendee_ids = wp_list_pluck( $attendee_query->posts, 'ID' );
 
-		foreach( $ticket_ids as $ticket_id ) {
+		foreach ( $ticket_ids as $ticket_id ) {
 			$attendees_by_ticket_id[ $ticket_id ] = 0;
 			TicketsCommerce\Module::get_instance()->add_attendee_by_ticket_id( $ticket_id );
 		}
@@ -1029,7 +1029,7 @@ class List_Table extends WP_List_Table {
 			$attendees_by_ticket_id
 		);
 
-		foreach( $attendees_by_ticket_id as $ticket_id => $attendees ) {
+		foreach ( $attendees_by_ticket_id as $ticket_id => $attendees ) {
 			TicketsCommerce\Ticket::set_attendees_by_ticket( $ticket_id, $attendees );
 		}
 	}
