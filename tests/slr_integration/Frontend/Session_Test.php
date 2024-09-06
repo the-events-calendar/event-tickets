@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Seating\Frontend;
 
 use PHPUnit\Framework\Assert;
+use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Meta;
@@ -11,6 +12,7 @@ use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tests\Traits\WP_Remote_Mocks;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
 
 class Session_Test extends \Codeception\TestCase\WPTestCase {
@@ -18,6 +20,8 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 	use With_Uopz;
 	use OAuth_Token;
 	use Reservations_Maker;
+	use Ticket_Maker;
+	use SnapshotAssertions;
 
 	public function test_entry_manipulation(): void {
 		$session = tribe( Session::class );
@@ -457,5 +461,30 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		);
 
 		$this->assertFalse( $session->confirm_all_reservations() );
+	}
+
+	public function test_should_get_events_registrations_ticket_seat_label() {
+		$sessions = tribe( Sessions::class );
+		$this->set_oauth_token( 'auth-token' );
+
+		$session = tribe( Session::class );
+
+		$session->add_entry( 23, 'test-token-1' );
+		$sessions->upsert( 'test-token-1', 23, time() + 100 );
+		$sessions->update_reservations( 'test-token-1', $this->create_mock_reservations_data( [ 23 ], 2 ) );
+		update_post_meta( 23, Meta::META_KEY_ENABLED, '1' );
+		update_post_meta( 23, Meta::META_KEY_LAYOUT_ID, 'test-layout-id-1' );
+
+		$data1 = $session->get_events_registrations_ticket_seat_label( 23, 23 );
+
+		$session->add_entry( 89, 'test-token-2' );
+		$sessions->upsert( 'test-token-2', 89, time() + 30 );
+		$sessions->update_reservations( 'test-token-2', $this->create_mock_reservations_data( [ 89 ], 2 ) );
+		update_post_meta( 89, Meta::META_KEY_ENABLED, '1' );
+		update_post_meta( 89, Meta::META_KEY_LAYOUT_ID, 'test-layout-id-2' );
+
+		$data2 = $session->get_events_registrations_ticket_seat_label( 89, 89 );
+
+		$this->assertMatchesJsonSnapshot( wp_json_encode( [ $data1, $data2 ], JSON_PRETTY_PRINT ) );
 	}
 }

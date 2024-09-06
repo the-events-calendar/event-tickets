@@ -12,6 +12,7 @@ namespace TEC\Tickets\Seating\Frontend;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Tables\Sessions;
+use Tribe__Cache;
 
 /**
  * Class Session.
@@ -339,5 +340,51 @@ class Session {
 		}
 
 		return $confirmed;
+	}
+
+	/**
+	 * Returns the seat label for a ticket in an event's registration modal/page.
+	 *
+	 * @since TBD
+	 *
+	 * @param ?int $event_id  The event ID.
+	 * @param ?int $ticket_id The ticket ID.
+	 *
+	 * @return ?array The seat reservations for the ticket.
+	 */
+	public function get_events_registrations_ticket_seat_label( int $event_id = null, int $ticket_id = null ) {
+		// Bail while in admin side always. There are no reservations in the admin.
+		if ( is_admin() ) {
+			return null;
+		}
+
+		if ( ! $event_id || ! tec_tickets_seating_enabled( $event_id ) ) {
+			return null;
+		}
+
+		[ $token, $object_id ] = $this->get_session_token_object_id();
+
+		if ( ! $token ) {
+			return null;
+		}
+
+		if ( ! $object_id || (int) $object_id !== $event_id ) {
+			return null;
+		}
+
+		$cache_key = 'tec_seated_reservations_' . $token . '_' . $object_id . '_' . $ticket_id;
+		$cached    = tribe_cache()->get( $cache_key, '', [] );
+
+		if ( ! empty( $cached ) ) {
+			return $cached;
+		}
+
+		$reservations = $this->sessions->get_reservations_for_token( $token );
+
+		$cached = $reservations[ $ticket_id ] ?? null;
+
+		tribe_cache()->set( $cache_key, $cached, Tribe__Cache::NON_PERSISTENT );
+
+		return $cached;
 	}
 }

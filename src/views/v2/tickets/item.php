@@ -67,6 +67,8 @@
  * @var int                                $max_at_a_time               The maximum quantity able to be purchased in a single Add to Cart action.
  */
 
+use TEC\Tickets\Seating\Frontend\Session;
+
 if (
 	empty( $provider )
 	|| $ticket->provider_class !== $provider->class_name
@@ -117,6 +119,15 @@ if ( $has_shared_cap ) {
 	$attributes['data-available-count'] = (string) $available_count;
 }
 
+$seat_labels = tribe( Session::class )->get_events_registrations_ticket_seat_label( $post_id, $ticket->ID );
+
+$seat_labels = wp_json_encode(
+	$seat_labels ? array_combine(
+		wp_list_pluck( $seat_labels, 'reservation_id' ),
+		wp_list_pluck( $seat_labels, 'seat_label' )
+	) : []
+);
+
 /**
  * Filter the ticket data attributes.
  *
@@ -129,6 +140,7 @@ $attributes = apply_filters( 'tribe_tickets_block_ticket_html_attributes', $attr
 ?>
 <div
 	id="<?php echo esc_attr( $ticket_item_id ); ?>"
+	data-seat-labels="<?php echo esc_attr( $seat_labels ); ?>"
 	<?php tribe_classes( $classes ); ?>
 	<?php tribe_attributes( $attributes ); ?>
 >
