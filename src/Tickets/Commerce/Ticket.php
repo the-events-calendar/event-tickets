@@ -137,6 +137,15 @@ class Ticket {
 	public static $type_meta_key = '_type';
 
 	/**
+	 * Memoization for attendees by ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @var array
+	 */
+	protected static $pending_attendees_by_ticket = [];
+
+	/**
 	 * Stores the instance of the template engine that we will use for rendering the elements.
 	 *
 	 * @since 5.2.3
@@ -180,6 +189,18 @@ class Ticket {
 	 * @var string
 	 */
 	public static $sale_price_end_date_key = '_sale_price_end_date';
+
+	/**
+	 * Sets the pending attendee count for a ticket id.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id      The ticket ID.
+	 * @param int $attendee_count The number of attendees.
+	 */
+	public static function set_attendees_by_ticket( $ticket_id, $attendee_count ) {
+		static::$pending_attendees_by_ticket[ $ticket_id ] = $attendee_count;
+	}
 
 	/**
 	 * Gets the template instance used to setup the rendering html.
@@ -457,16 +478,14 @@ class Ticket {
 	 * @return int
 	 */
 	public function get_qty_pending( $ticket_id, $refresh = false ) {
-		static $pending_attendees_by_ticket = [];
-
-		if ( $refresh || empty( $pending_attendees_by_ticket[ $ticket_id ] ) ) {
+		if ( $refresh || ! isset( static::$pending_attendees_by_ticket[ $ticket_id ] ) ) {
 			$pending_query = new \WP_Query( [
 				'fields'     => 'ids',
 				'per_page'   => 1,
 				'post_type'  => Attendee::POSTTYPE,
 				'meta_query' => [
 					[
-						'key'   => Attendee::$event_relation_meta_key,
+						'key'   => Attendee::$ticket_relation_meta_key,
 						'value' => $ticket_id,
 					],
 					'relation' => 'AND',
@@ -477,10 +496,10 @@ class Ticket {
 				],
 			] );
 
-			$pending_attendees_by_ticket[ $ticket_id ] = $pending_query->found_posts;
+			static::$pending_attendees_by_ticket[ $ticket_id ] = $pending_query->found_posts;
 		}
 
-		return $pending_attendees_by_ticket[ $ticket_id ];
+		return static::$pending_attendees_by_ticket[ $ticket_id ];
 	}
 
 	/**

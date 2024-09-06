@@ -215,6 +215,37 @@ class Module extends \Tribe__Tickets__Tickets {
 	protected $is_loaded = false;
 
 	/**
+	 * Attendees by ticket id.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $attendees_by_ticket_id List of attendees.
+	 */
+	protected $attendees_by_ticket_id = [];
+
+	/**
+	 * Attendees by order id.
+	 *
+	 * @since TBD
+	 *
+	 * @param int          $ticket_id Ticket ID.
+	 * @param WP_Post|null $attendee  Attendee object.
+	 */
+	public function add_attendee_by_ticket_id( $ticket_id, $attendee = null ) {
+		// Go ahead and set an empty array if it doesn't exist.
+		if ( ! isset( $this->attendees_by_ticket_id[ $ticket_id ] ) ) {
+			$this->attendees_by_ticket_id[ $ticket_id ] = [];
+		}
+
+		// If no attendee, bail.
+		if ( ! $attendee ) {
+			return;
+		}
+
+		$this->attendees_by_ticket_id[ $ticket_id ][] = $attendee;
+	}
+
+	/**
 	 * This method is required for the module to properly load.
 	 *
 	 * @since 5.1.9
@@ -348,6 +379,24 @@ class Module extends \Tribe__Tickets__Tickets {
 				break;
 		}
 
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	protected function get_attendees_by_ticket_id( $ticket_id ) {
+		// Check to see if we already have attendees by ticket id stored.
+		if ( isset( $this->attendees_by_ticket_id[ $ticket_id ] ) ) {
+			$attendees = $this->attendees_by_ticket_id[ $ticket_id ];
+		} else {
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tec_tc_attendees( $this->orm_provider );
+			$attendees  = $repository->by( 'ticket_id', $ticket_id )->all();
+
+			$this->attendees_by_ticket_id[ $ticket_id ] = $attendees;
+		}
+
+		return $this->get_attendees_from_module( $attendees );
 	}
 
 	/**
