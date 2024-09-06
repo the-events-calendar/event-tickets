@@ -9,10 +9,10 @@
 
 namespace TEC\Tickets\Admin\Tickets;
 
-use Tribe__Tickets__Tickets;
 use Tribe__Tickets__Ticket_Object;
 use WP_List_Table;
 use DateTime;
+use TEC\Tickets\Commerce as TicketsCommerce;
 use Tribe\Tickets\Admin\Settings;
 use Tribe__Template;
 use Tribe__Tickets__Main;
@@ -69,6 +69,13 @@ class List_Table extends WP_List_Table {
 	 * @var WP_Query $query
 	 */
 	protected $query;
+
+	/**
+	 * List of event edit URLs.
+	 *
+	 * @var array
+	 */
+	protected $event_edit_urls = [];
 
 	/**
 	 * Get the template object.
@@ -372,6 +379,26 @@ class List_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Get the event edit URL.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id The event ID.
+	 *
+	 * @return string
+	 */
+	protected function get_event_edit_url( $event_id ) {
+		if ( isset( $this->event_edit_urls[ $event_id ] ) ) {
+			return $this->event_edit_urls[ $event_id ];
+		}
+
+		$edit_post_url  = get_edit_post_link( $event_id );
+		$this->event_edit_urls[ $event_id ] = $edit_post_url;
+
+		return $edit_post_url;
+	}
+
+	/**
 	 * Get the column name value.
 	 *
 	 * @since TBD
@@ -390,7 +417,7 @@ class List_Table extends WP_List_Table {
 			return esc_html( $item->name );
 		}
 
-		$edit_post_url  = get_edit_post_link( $event );
+		$edit_post_url  = $this->get_event_edit_url( $event->ID );
 		$edit_post_link = sprintf(
 			'<a href="%s" class="tec-tickets-admin-tickets-table-event-link" target="_blank" rel="nofollow noopener">%s</a>',
 			esc_url( $edit_post_url ),
@@ -478,7 +505,7 @@ class List_Table extends WP_List_Table {
 			return '-';
 		}
 
-		$edit_post_url  = get_edit_post_link( $event );
+		$edit_post_url  = $this->get_event_edit_url( $event->ID );
 		$edit_post_link = sprintf(
 			'<a href="%s" class="tec-tickets-admin-tickets-table-event-link" target="_blank" rel="nofollow noopener">%s</a>',
 			esc_url( $edit_post_url ),
@@ -951,24 +978,60 @@ class List_Table extends WP_List_Table {
 				'posts_per_page' => -1,
 				'post_type'      => Tribe__Tickets__Main::instance()->post_types(),
 				'post_status'    => 'any',
+				'update_post_meta_cache' => true,
 			]
 		);
+
+		// Only continue if we're looking at Tickets Commerce tickets.
+		if ( Page::get_current_provider() === TicketsCommerce\Module::class ) {
+			error_log( 'Not Tickets Commerce.' );
+			return;
+		}
 
 		$ticket_ids   = wp_list_pluck( $items, 'ID' );
 		$attendee_query = new WP_Query(
 			[
-				'posts_per_page' => -1,
+				'posts_per_page' => 1000,
 				'post_type'      => $this->get_attendee_post_type(),
 				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				'meta_query'     => [
 					[
-						'key'     => $this->get_event_meta_key(),
+						'key'     => TicketsCommerce\Attendee::$ticket_relation_meta_key,
 						'value'   => $ticket_ids,
 						'compare' => 'IN',
 					],
 				],
 			]
 		);
+
+		if ( $attendee_query->found_posts === 0 ) {
+			return;
+		}
+
+		$attendee_ids = wp_list_pluck( $attendee_query->posts, 'ID' );
+
+		foreach( $ticket_ids as $ticket_id ) {
+			$attendees_by_ticket_id[ $ticket_id ] = 0;
+			TicketsCommerce\Module::get_instance()->add_attendee_by_ticket_id( $ticket_id );
+		}
+
+		$attendees_by_ticket_id = array_reduce(
+			$attendee_query->posts,
+			function ( $carry, $attendee ) {
+				$ticket_id = get_post_meta( $attendee->ID, TicketsCommerce\Attendee::$ticket_relation_meta_key, true );
+				if ( ! $ticket_id ) {
+					return $carry;
+				}
+				TicketsCommerce\Module::get_instance()->add_attendee_by_ticket_id( $ticket_id, $attendee );
+				$carry[ $ticket_id ]++;
+				return $carry;
+			},
+			$attendees_by_ticket_id
+		);
+
+		foreach( $attendees_by_ticket_id as $ticket_id => $attendees ) {
+			TicketsCommerce\Ticket::set_attendees_by_ticket( $ticket_id, $attendees );
+		}
 	}
 
 	/**
