@@ -215,37 +215,6 @@ class Module extends \Tribe__Tickets__Tickets {
 	protected $is_loaded = false;
 
 	/**
-	 * Attendees by ticket id.
-	 *
-	 * @since TBD
-	 *
-	 * @var array $attendees_by_ticket_id List of attendees.
-	 */
-	protected $attendees_by_ticket_id = [];
-
-	/**
-	 * Attendees by order id.
-	 *
-	 * @since TBD
-	 *
-	 * @param int          $ticket_id Ticket ID.
-	 * @param WP_Post|null $attendee  Attendee object.
-	 */
-	public function add_attendee_by_ticket_id( $ticket_id, $attendee = null ) {
-		// Go ahead and set an empty array if it doesn't exist.
-		if ( ! isset( $this->attendees_by_ticket_id[ $ticket_id ] ) ) {
-			$this->attendees_by_ticket_id[ $ticket_id ] = [];
-		}
-
-		// If no attendee, bail.
-		if ( ! $attendee ) {
-			return;
-		}
-
-		$this->attendees_by_ticket_id[ $ticket_id ][] = $attendee;
-	}
-
-	/**
 	 * This method is required for the module to properly load.
 	 *
 	 * @since 5.1.9

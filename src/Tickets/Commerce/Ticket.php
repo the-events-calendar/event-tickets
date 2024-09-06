@@ -137,13 +137,13 @@ class Ticket {
 	public static $type_meta_key = '_type';
 
 	/**
-	 * Memoization for attendees by ticket.
+	 * Memoization for attendees by ticket and status.
 	 *
 	 * @since TBD
 	 *
 	 * @var array
 	 */
-	protected static $pending_attendees_by_ticket = [];
+	protected static $attendees_by_ticket_status = [];
 
 	/**
 	 * Stores the instance of the template engine that we will use for rendering the elements.
@@ -191,15 +191,15 @@ class Ticket {
 	public static $sale_price_end_date_key = '_sale_price_end_date';
 
 	/**
-	 * Sets the pending attendee count for a ticket id.
+	 * Sets the attendee counts for a ticket by status.
 	 *
 	 * @since TBD
 	 *
-	 * @param int $ticket_id      The ticket ID.
-	 * @param int $attendee_count The number of attendees.
+	 * @param int   $ticket_id  The ticket ID.
+	 * @param int[] $status_qty The status.
 	 */
-	public static function set_attendees_by_ticket( $ticket_id, $attendee_count ) {
-		static::$pending_attendees_by_ticket[ $ticket_id ] = $attendee_count;
+	public static function set_attendees_by_ticket_status( $ticket_id, $status_qty ) {
+		static::$attendees_by_ticket_status[ $ticket_id ] = $status_qty;
 	}
 
 	/**
@@ -417,7 +417,7 @@ class Ticket {
 			$return->global_stock_cap( $capped );
 		}
 
-		$qty_cancelled = 0;
+		$qty_cancelled = $this->get_cancelled( $ticket_id );
 
 		// Manually add cancelled to sold so that we can remove it correctly later when calculating.
 		$return->qty_sold( $qty_sold + $qty_cancelled );
@@ -452,17 +452,34 @@ class Ticket {
 	 * @todo  TribeCommerceLegacy: Move this method into the another place.
 	 *
 	 * @since 5.1.9
-	 * @deprecated TBD This method is deprecated due to the Legacy Tribe Commerce no longer being supported.
+	 * @since TBD Added the $refresh parameter and use stored status counts.
 	 *
-	 * @param int $ticket_id The ticket post ID.
+	 * @param int  $ticket_id The ticket post ID.
+	 * @param bool $refresh Whether to try and use the cached value or not.
 	 *
 	 * @return int
 	 */
-	protected function get_cancelled( $ticket_id ) {
-		// Trigger deprecation notice.
-		_deprecated_function( __METHOD__, 'TBD', 'This method is deprecated due to the Legacy Tribe Commerce no longer being supported.' );
+	protected function get_cancelled( $ticket_id, $refresh = false ) {
+		if ( $refresh || !isset( static::$attendees_by_ticket_status[ $ticket_id ][ Denied::SLUG ] ) ) {
+			$denied_orders = \Tribe__Tickets__Commerce__PayPal__Order::find_by(
+				[
+					'ticket_id'      => $ticket_id,
+					'post_status'    => Denied::SLUG,
+					'posts_per_page' => - 1,
+				], [
+					'items',
+				]
+			);
 
-		return 0;
+			$denied = 0;
+			foreach ( $denied_orders as $denied_order ) {
+				$denied += $denied_order->get_item_quantity( $ticket_id );
+			}
+
+			static::$attendees_by_ticket_status[ $ticket_id ][ Denied::SLUG ] = max( 0, $denied );
+		}
+
+		return static::$attendees_by_ticket_status[ $ticket_id ][ Denied::SLUG ];
 	}
 
 	/**
@@ -478,7 +495,7 @@ class Ticket {
 	 * @return int
 	 */
 	public function get_qty_pending( $ticket_id, $refresh = false ) {
-		if ( $refresh || ! isset( static::$pending_attendees_by_ticket[ $ticket_id ] ) ) {
+		if ( $refresh || !isset( static::$attendees_by_ticket_status[ $ticket_id ][ Pending::SLUG ] ) ) {
 			$pending_query = new \WP_Query( [
 				'fields'     => 'ids',
 				'per_page'   => 1,
@@ -496,10 +513,10 @@ class Ticket {
 				],
 			] );
 
-			static::$pending_attendees_by_ticket[ $ticket_id ] = $pending_query->found_posts;
+			static::$attendees_by_ticket_status[ $ticket_id ][ Pending::SLUG ] = $pending_query->found_posts;
 		}
 
-		return static::$pending_attendees_by_ticket[ $ticket_id ];
+		return static::$attendees_by_ticket_status[ $ticket_id ][ Pending::SLUG ];
 	}
 
 	/**

@@ -11,6 +11,7 @@ namespace TEC\Tickets\Admin\Tickets;
 
 use Tribe__Tickets__Commerce__Currency;
 use Tribe__Tickets__Ticket_Object;
+use Tribe__Tickets__Commerce__PayPal__Order;
 use WP_List_Table;
 use DateTime;
 use TEC\Tickets\Commerce as TicketsCommerce;
@@ -1006,6 +1007,12 @@ class List_Table extends WP_List_Table {
 
 		// @todo @codingmusician - Add query priming solutions for other providers.
 		$ticket_ids     = wp_list_pluck( $items, 'ID' );
+
+		foreach ( $ticket_ids as $ticket_id ) {
+			TicketsCommerce\Ticket::set_attendees_by_ticket_status( $ticket_id, tribe( TicketsCommerce\Ticket::class )->get_status_quantity( $ticket_id ) );
+			TicketsCommerce\Module::get_instance()->add_attendee_by_ticket_id( $ticket_id );
+		}
+
 		$attendee_query = new WP_Query(
 			[
 				'posts_per_page' => count( $ticket_ids ),
@@ -1025,29 +1032,12 @@ class List_Table extends WP_List_Table {
 			return;
 		}
 
-		$attendee_ids = wp_list_pluck( $attendee_query->posts, 'ID' );
-
-		foreach ( $ticket_ids as $ticket_id ) {
-			$attendees_by_ticket_id[ $ticket_id ] = 0;
-			TicketsCommerce\Module::get_instance()->add_attendee_by_ticket_id( $ticket_id );
-		}
-
-		$attendees_by_ticket_id = array_reduce(
-			$attendee_query->posts,
-			function ( $carry, $attendee ) {
-				$ticket_id = get_post_meta( $attendee->ID, TicketsCommerce\Attendee::$ticket_relation_meta_key, true );
-				if ( ! $ticket_id ) {
-					return $carry;
-				}
-				TicketsCommerce\Module::get_instance()->add_attendee_by_ticket_id( $ticket_id, $attendee );
-				$carry[ $ticket_id ]++;
-				return $carry;
-			},
-			$attendees_by_ticket_id
-		);
-
-		foreach ( $attendees_by_ticket_id as $ticket_id => $attendees ) {
-			TicketsCommerce\Ticket::set_attendees_by_ticket( $ticket_id, $attendees );
+		foreach ( $attendee_query->posts as $attendee ) {
+			$ticket_id = get_post_meta( $attendee->ID, TicketsCommerce\Attendee::$ticket_relation_meta_key, true );
+			if ( ! $ticket_id ) {
+				continue;
+			}
+			TicketsCommerce\Module::get_instance()->add_attendee_by_ticket_id( $ticket_id, $attendee );
 		}
 	}
 
