@@ -1150,23 +1150,14 @@ class List_Table extends WP_List_Table {
 	 * @return string
 	 */
 	protected function get_event_meta_key(): string {
-		/**
-		 * Filters the event meta keys for the Admin Tickets Table.
-		 *
-		 * @since TBD
-		 *
-		 * @param array $event_meta_keys The event meta keys for the Admin Tickets Table.
-		 *
-		 * @return array
-		 */
-		$event_meta_keys = apply_filters( 'tec_tickets_admin_tickets_table_event_meta_keys', [] );
+		$provider_info = Page::get_provider_info();
+		$provider      = Page::get_current_provider();
 
-		$provider = Page::get_current_provider();
-
-		if ( ! isset( $event_meta_keys[ $provider ] ) ) {
+		if ( ! isset( $provider_info[ $provider ] ) ||  empty( $provider_info[ $provider ]['event_meta_key'] ) ) {
 			return '';
 		}
-		return $event_meta_keys[ $provider ];
+
+		return $provider_info[ $provider ]['event_meta_key'];
 	}
 
 	/**
@@ -1177,23 +1168,14 @@ class List_Table extends WP_List_Table {
 	 * @return string
 	 */
 	protected function get_attendee_post_type(): string {
-		/**
-		 * Filters the attendee post types for the Admin Tickets Table.
-		 *
-		 * @since TBD
-		 *
-		 * @param array $attendee_post_types The attendee post types for the Admin Tickets Table.
-		 *
-		 * @return array
-		 */
-		$attendee_post_types = apply_filters( 'tec_tickets_admin_tickets_table_attendee_post_types', [] );
+		$provider_info = Page::get_provider_info();
+		$provider      = Page::get_current_provider();
 
-		$provider = Page::get_current_provider();
-
-		if ( ! isset( $attendee_post_types[ $provider ] ) ) {
+		if ( ! isset( $provider_info[ $provider ] ) ||  empty( $provider_info[ $provider ]['attendee_post_type'] ) ) {
 			return '';
 		}
-		return $attendee_post_types[ $provider ];
+
+		return $provider_info[ $provider ]['attendee_post_type'];
 	}
 
 	/**
@@ -1261,7 +1243,7 @@ class List_Table extends WP_List_Table {
 	 * @return boolean
 	 */
 	protected function show_ticket_provider_filter(): bool {
-		$providers = Page::get_provider_options();
+		$providers = Page::get_provider_info();
 
 		// Only show if more than one provider.
 		return count( $providers ) > 1;

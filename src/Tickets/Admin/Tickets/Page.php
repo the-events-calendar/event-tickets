@@ -58,13 +58,13 @@ class Page {
 	const STATUS_KEY = 'status-filter';
 
 	/**
-	 * Get the ticket providers.
+	 * Get Provider information.
 	 *
 	 * @since TBD
 	 *
 	 * @return array
 	 */
-	public static function get_provider_options() {
+	public static function get_provider_info() {
 		/**
 		 * Filters the ticket providers for the All Tickets Table.
 		 *
@@ -74,7 +74,28 @@ class Page {
 		 *
 		 * @return array
 		 */
-		return apply_filters( 'tec_tickets_admin_tickets_table_provider_options', [] );
+		return apply_filters( 'tec_tickets_admin_tickets_table_provider_info', [] );
+	}
+
+	/**
+	 * Get the ticket providers.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public static function get_provider_options() {
+		$provider_info    = static::get_provider_info();
+		$provider_options = [];
+
+		foreach ( $provider_info as $provider => $provider_info ) {
+			if ( empty( $provider_info['title'] ) ) {
+				continue;
+			}
+			$provider_options[ $provider ] = $provider_info['title'];
+		}
+
+		return $provider_options;
 	}
 
 	/**
@@ -85,8 +106,8 @@ class Page {
 	 * @return string;
 	 */
 	public static function get_current_provider() {
-		$provider_options = static::get_provider_options();
-		$default_provider = empty( $provider_options ) ? '' : addslashes( key( $provider_options ) );
+		$provider_info    = static::get_provider_info();
+		$default_provider = empty( $provider_info ) ? '' : addslashes( key( $provider_info ) );
 		$current_provider = tribe_get_request_var( static::PROVIDER_KEY, $default_provider );
 
 		return stripslashes( $current_provider );
@@ -132,16 +153,17 @@ class Page {
 	 * @return array
 	 */
 	public static function get_ticket_post_types() {
-		/**
-		 * Filters the ticket post types for the All Tickets Table.
-		 *
-		 * @since TBD
-		 *
-		 * @param array $providers The ticket post types for the All Tickets Table.
-		 *
-		 * @return array
-		 */
-		return apply_filters( 'tec_tickets_admin_tickets_table_post_types', [] );
+		$provider_info = static::get_provider_info();
+		$post_types    = [];
+
+		foreach ( $provider_info as $provider => $provider_info ) {
+			if ( empty( $provider_info['ticket_post_type'] ) ) {
+				continue;
+			}
+			$post_types[ $provider ] = $provider_info['ticket_post_type'];
+		}
+
+		return $post_types;
 	}
 
 	/**

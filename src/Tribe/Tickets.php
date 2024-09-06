@@ -1308,10 +1308,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return void
 		 */
 		public function add_admin_tickets_hooks() {
-			add_filter( 'tec_tickets_admin_tickets_table_provider_options', [ $this, 'filter_admin_tickets_table_provider_options' ] );
-			add_filter( 'tec_tickets_admin_tickets_table_event_meta_keys', [ $this, 'filter_admin_tickets_table_event_meta_keys' ] );
-			add_filter( 'tec_tickets_admin_tickets_table_attendee_post_types', [ $this, 'filter_admin_tickets_table_attendee_post_types' ] );
-			add_filter( 'tec_tickets_admin_tickets_table_post_types', [ $this, 'filter_admin_tickets_table_post_types' ] );
+			add_filter( 'tec_tickets_admin_tickets_table_provider_info', [ $this, 'filter_admin_tickets_table_provider_info' ] );
 		}
 
 		/**
@@ -4666,63 +4663,23 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Filter providers for the admin tickets table.
+		 * Filter provider information for the admin tickets table.
 		 *
 		 * @since TBD
 		 *
-		 * @param string[] $provider_options The list of provider options.
+		 * @param array[] $provider_options The list of provider options.
 		 *
-		 * @return string[] The filtered list of provider options.
+		 * @return array[] The filtered list of provider options.
 		 */
-		public function filter_admin_tickets_table_provider_options( $provider_options ) {
-			$provider_options[ $this->class_name ] = $this->plugin_name;
+		public function filter_admin_tickets_table_provider_info( $provider_info ) {
+			$provider_info[ $this->class_name ] = [
+				'title'              => $this->plugin_name,
+				'event_meta_key'     => $this->get_event_key(),
+				'attendee_post_type' => $this->attendee_object,
+				'ticket_post_type'   => $this->ticket_object,
+			];
 
-			return $provider_options;
-		}
-
-		/**
-		 * Filter event meta keys for the admin tickets table.
-		 *
-		 * @since TBD
-		 *
-		 * @param string[] $event_meta_keys The list of event meta keys.
-		 *
-		 * @return string[] The filtered list of event meta keys.
-		 */
-		public function filter_admin_tickets_table_event_meta_keys( $event_meta_keys ) {
-			$event_meta_keys[ $this->class_name ] = $this->get_event_key();
-
-			return $event_meta_keys;
-		}
-
-		/**
-		 * Filter attendee post types for the admin tickets table.
-		 *
-		 * @since TBD
-		 *
-		 * @param string[] $post_types The list of post types.
-		 *
-		 * @return string[] The filtered list of post types.
-		 */
-		public function filter_admin_tickets_table_attendee_post_types( $post_types ) {
-			$post_types[ $this->class_name ] = $this->attendee_object;
-
-			return $post_types;
-		}
-
-		/**
-		 * Filter ticket post types for the admin tickets table.
-		 *
-		 * @since TBD
-		 *
-		 * @param string[] $post_types The list of post types.
-		 *
-		 * @return string[] The filtered list of post types.
-		 */
-		public function filter_admin_tickets_table_post_types( $post_types ) {
-			$post_types[ $this->class_name ] = $this->ticket_object;
-
-			return $post_types;
+			return $provider_info;
 		}
 
 		/************************
