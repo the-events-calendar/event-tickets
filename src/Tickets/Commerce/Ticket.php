@@ -460,13 +460,14 @@ class Ticket {
 	 * @return int
 	 */
 	protected function get_cancelled( $ticket_id, $refresh = false ) {
-		if ( $refresh || !isset( static::$attendees_by_ticket_status[ $ticket_id ][ Denied::SLUG ] ) ) {
+		if ( $refresh || ! isset( static::$attendees_by_ticket_status[ $ticket_id ][ Denied::SLUG ] ) ) {
 			$denied_orders = \Tribe__Tickets__Commerce__PayPal__Order::find_by(
 				[
 					'ticket_id'      => $ticket_id,
 					'post_status'    => Denied::SLUG,
 					'posts_per_page' => - 1,
-				], [
+				],
+				[
 					'items',
 				]
 			);
@@ -495,7 +496,7 @@ class Ticket {
 	 * @return int
 	 */
 	public function get_qty_pending( $ticket_id, $refresh = false ) {
-		if ( $refresh || !isset( static::$attendees_by_ticket_status[ $ticket_id ][ Pending::SLUG ] ) ) {
+		if ( $refresh || ! isset( static::$attendees_by_ticket_status[ $ticket_id ][ Pending::SLUG ] ) ) {
 			$pending_query = new \WP_Query( [
 				'fields'     => 'ids',
 				'per_page'   => 1,

@@ -11,7 +11,6 @@ namespace TEC\Tickets\Admin\Tickets;
 
 use Tribe__Tickets__Commerce__Currency;
 use Tribe__Tickets__Ticket_Object;
-use Tribe__Tickets__Commerce__PayPal__Order;
 use WP_List_Table;
 use DateTime;
 use TEC\Tickets\Commerce as TicketsCommerce;
@@ -1006,11 +1005,12 @@ class List_Table extends WP_List_Table {
 		}
 
 		// @todo @codingmusician - Add query priming solutions for other providers.
-		$ticket_ids     = wp_list_pluck( $items, 'ID' );
+		$ticket_ids = wp_list_pluck( $items, 'ID' );
+		$provider   = Page::get_current_provider_object();
 
 		foreach ( $ticket_ids as $ticket_id ) {
 			TicketsCommerce\Ticket::set_attendees_by_ticket_status( $ticket_id, tribe( TicketsCommerce\Ticket::class )->get_status_quantity( $ticket_id ) );
-			TicketsCommerce\Module::get_instance()->add_attendee_by_ticket_id( $ticket_id );
+			$provider->add_attendee_by_ticket_id( $ticket_id );
 		}
 
 		$attendee_query = new WP_Query(
@@ -1037,7 +1037,7 @@ class List_Table extends WP_List_Table {
 			if ( ! $ticket_id ) {
 				continue;
 			}
-			TicketsCommerce\Module::get_instance()->add_attendee_by_ticket_id( $ticket_id, $attendee );
+			$provider->add_attendee_by_ticket_id( $ticket_id, $attendee );
 		}
 	}
 
