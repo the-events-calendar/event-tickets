@@ -81,7 +81,7 @@ class Tribe__Tickets__Query {
 				 * in the `wp_postmeta.meta_value` column for a fast query.
 				 */
 				$query = "SELECT p.ID FROM $wpdb->posts p
-				 JOIN $wpdb->postmeta pm ON ( $meta_keys_in ) AND pm.meta_value = p.ID
+				 JOIN $wpdb->postmeta pm ON ( $meta_keys_in ) AND pm.meta_value = CONCAT( p.ID, '' )
 				 WHERE p.post_type IN ('$post_types_in')";
 			}
 
@@ -151,7 +151,7 @@ class Tribe__Tickets__Query {
 			 */
 			$query = $wpdb->prepare(
 				"SELECT COUNT(DISTINCT(p.ID)) FROM $wpdb->posts p
-				  JOIN $wpdb->postmeta pm ON ( $meta_keys_in ) AND pm.meta_value = p.ID
+				  JOIN $wpdb->postmeta pm ON ( $meta_keys_in ) AND pm.meta_value = CONCAT( p.ID, '' )
 				  WHERE p.post_type = %s AND p.post_status NOT IN ('auto-draft', 'trash')",
 				$post_type
 			);
@@ -198,7 +198,7 @@ class Tribe__Tickets__Query {
 				"SELECT COUNT(DISTINCT(p.ID)) FROM $wpdb->posts p
 					WHERE p.ID NOT IN (
 						SELECT p.ID FROM $wpdb->posts p
-									JOIN $wpdb->postmeta pm ON ( $meta_keys_in ) AND pm.meta_value = p.ID
+									JOIN $wpdb->postmeta pm ON ( $meta_keys_in ) AND pm.meta_value = CONCAT( p.ID, '' )
 									WHERE p.post_type = %s
 					) AND p.post_type = %s AND p.post_status NOT IN ('auto-draft', 'trash')",
 				$post_type,
