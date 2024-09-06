@@ -392,7 +392,7 @@ class List_Table extends WP_List_Table {
 			return $this->event_edit_urls[ $event_id ];
 		}
 
-		$edit_post_url  = get_edit_post_link( $event_id );
+		$edit_post_url                      = get_edit_post_link( $event_id );
 		$this->event_edit_urls[ $event_id ] = $edit_post_url;
 
 		return $edit_post_url;
@@ -974,21 +974,21 @@ class List_Table extends WP_List_Table {
 		$event_ids   = wp_list_pluck( $items, 'event_id' );
 		$event_query = new WP_Query(
 			[
-				'post__in'       => $event_ids,
-				'posts_per_page' => -1,
-				'post_type'      => Tribe__Tickets__Main::instance()->post_types(),
-				'post_status'    => 'any',
+				'post__in'               => $event_ids,
+				'posts_per_page'         => -1,
+				'post_type'              => Tribe__Tickets__Main::instance()->post_types(),
+				'post_status'            => 'any',
 				'update_post_meta_cache' => true,
 			]
 		);
 
 		// Only continue if we're looking at Tickets Commerce tickets.
-		if ( Page::get_current_provider() === TicketsCommerce\Module::class ) {
-			error_log( 'Not Tickets Commerce.' );
+		if ( Page::get_current_provider() !== TicketsCommerce\Module::class ) {
 			return;
 		}
 
-		$ticket_ids   = wp_list_pluck( $items, 'ID' );
+		// @todo @codingmusician - Add query priming solutions for other providers.
+		$ticket_ids     = wp_list_pluck( $items, 'ID' );
 		$attendee_query = new WP_Query(
 			[
 				'posts_per_page' => 1000,
