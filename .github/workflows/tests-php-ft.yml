@@ -286,7 +286,7 @@ jobs:
       # Upload artifacts (On failure)
       # ------------------------------------------------------------------------------
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: steps.skip.outputs.value != 1 && failure()
         with:
           name: output ${{ matrix.suite }}
