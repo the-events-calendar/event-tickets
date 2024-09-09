@@ -85,7 +85,18 @@ interface Modifier_Interface {
 	 *
 	 * @param array $context The context data for rendering the edit screen.
 	 *
-	 * @return mixed The rendered edit screen content, typically as HTML.
+	 * @return void The rendered edit screen content, typically as HTML.
 	 */
-	public function render_edit( array $context ): mixed;
+	public function render_edit( array $context ): void;
+
+	/**
+	 * Sanitizes the raw form data for this modifier type.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $data The raw form data.
+	 *
+	 * @return array The sanitized data.
+	 */
+	public function sanitize_data( array $data ): array;
 }

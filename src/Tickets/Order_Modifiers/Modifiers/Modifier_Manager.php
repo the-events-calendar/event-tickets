@@ -66,6 +66,7 @@ class Modifier_Manager {
 
 		// Validate data before proceeding.
 		if ( ! $this->strategy->validate_data( $data ) ) {
+			printr($data,'validation failed');
 			// Optionally log the validation failure.
 			// @todo redscar - decide how to handle this.
 			error_log( 'Validation failed for ' . $this->strategy->get_modifier_type() );
@@ -74,9 +75,11 @@ class Modifier_Manager {
 
 		// Check if it's an update or an insert.
 		if ( isset( $data['id'] ) && is_numeric( $data['id'] ) && (int) $data['id'] > 0 ) {
+			printr('updating modifier');
 			return $this->strategy->update_modifier( $data );
 		}
 
+		printr('inserting modifier');
 		return $this->strategy->insert_modifier( $data );
 	}
 

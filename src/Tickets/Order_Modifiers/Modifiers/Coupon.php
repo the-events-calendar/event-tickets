@@ -99,7 +99,6 @@ class Coupon implements Modifier_Strategy_Interface {
 	 */
 	public function validate_data( array $data ): bool {
 		$required_fields = [
-			'post_id',
 			'modifier_type',
 			'sub_type',
 			'fee_amount_cents',
@@ -111,6 +110,7 @@ class Coupon implements Modifier_Strategy_Interface {
 		// Ensure all required fields are present and not empty.
 		foreach ( $required_fields as $field ) {
 			if ( empty( $data[ $field ] ) ) {
+				printr($field,'field is empty');
 				return false;
 			}
 		}
@@ -119,6 +119,30 @@ class Coupon implements Modifier_Strategy_Interface {
 
 		return true;
 	}
+
+	/**
+	 * Sanitizes and maps the raw form data for a coupon.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $data The raw form data.
+	 *
+	 * @return array The sanitized and mapped data.
+	 */
+	public function sanitize_data( array $data ): array {
+		return [
+			'post_id'          => isset( $data['order_modifier_post_id'] ) ? absint( $data['order_modifier_post_id'] ) : 0,
+			'modifier_type'    => $this->get_modifier_type(), // Always set to 'coupon'.
+			'sub_type'         => isset( $data['order_modifier_sub_type'] ) ? sanitize_text_field( $data['order_modifier_sub_type'] ) : '',
+			'fee_amount_cents' => isset( $data['order_modifier_amount'] ) ? absint( $data['order_modifier_amount'] ) * 100 : 0,
+			'slug'             => isset( $data['order_modifier_slug'] ) ? sanitize_text_field( $data['order_modifier_slug'] ) : '',
+			'display_name'     => isset( $data['order_modifier_coupon_name'] ) ? sanitize_text_field( $data['order_modifier_coupon_name'] ) : '',
+			'status'           => isset( $data['order_modifier_status'] ) ? sanitize_text_field( $data['order_modifier_status'] ) : '',
+			// @todo - Need to get the meta data to insert next.
+			//'coupon_limit'     => isset( $data['order_modifier_coupon_limit'] ) ? absint( $data['order_modifier_coupon_limit'] ) : 0,
+		];
+	}
+
 
 	/**
 	 * Renders the coupon table.
@@ -141,10 +165,12 @@ class Coupon implements Modifier_Strategy_Interface {
 	 *
 	 * @param array $context The context data for rendering the edit screen.
 	 *
-	 * @return string The rendered coupon edit screen content.
+	 * @return void
 	 */
-	public function render_edit( array $context ): string {
-		// Example logic for rendering the coupon edit screen.
-		return 'Rendered Coupon Edit Screen';
+	public function render_edit( array $context ): void {
+		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		$admin_views = tribe( 'tickets.admin.views' );
+
+		$admin_views->template( 'order_modifiers/coupon_edit', $context );
 	}
 }

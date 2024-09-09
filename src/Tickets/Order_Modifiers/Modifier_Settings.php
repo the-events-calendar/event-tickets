@@ -133,6 +133,9 @@ class Modifier_Settings {
 			'modifier_id' => $modifier_id,
 		];
 
+		// Check if form is submitted and process the save.
+		$this->handle_form_submission( $context );
+
 		// Get the appropriate strategy for the selected modifier.
 		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
 
@@ -179,6 +182,7 @@ class Modifier_Settings {
 	 * @return void
 	 */
 	protected function render_edit_view( Modifier_Manager $manager, array $context ): void {
+		//printr($manager,'i am here?');
 		echo '<h2>' . esc_html( ucfirst( $context['modifier'] ) . ' Edit' ) . '</h2>';
 		echo $manager->render_edit_screen( $context );
 	}
@@ -193,4 +197,47 @@ class Modifier_Settings {
 	protected function render_invalid_modifier_message(): void {
 		echo '<p>' . esc_html__( 'Invalid modifier selected.', 'event-tickets' ) . '</p>';
 	}
+
+	/**
+	 * Handles the form submission and saves the modifier data.
+	 *
+	 * Checks if the form was submitted and verifies the nonce before proceeding with
+	 * data sanitization and saving the modifier.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $context The context for rendering the page.
+	 *
+	 * @return void
+	 */
+	protected function handle_form_submission( array $context ): void {
+		// Check if the form was submitted and verify nonce.
+		if ( isset( $_POST['order_modifier_form_save'] ) && check_admin_referer( 'order_modifier_save_action', 'order_modifier_save_action' ) ) {
+
+			// Get the appropriate strategy for the selected modifier.
+			$modifier_strategy = tribe( Controller::class )->get_modifier( $context['modifier'] );
+
+			// If the strategy doesn't exist, show an error message.
+			if ( ! $modifier_strategy ) {
+				$this->render_invalid_modifier_message();
+				return;
+			}
+
+			// Use the strategy to sanitize the form data.
+			$modifier_data = $modifier_strategy->sanitize_data( $_POST );
+
+			// Use the Modifier Manager to save the data.
+			$manager = new Modifier_Manager( $modifier_strategy );
+			$result  = $manager->save_modifier( $modifier_data );
+			printr($result,'result of saving');
+
+			// Display success or error message based on result.
+			if ( ! empty( $result ) ) {
+				echo '<div class="notice notice-success"><p>' . esc_html__( 'Modifier saved successfully!', 'event-tickets' ) . '</p></div>';
+			} else {
+				echo '<div class="notice notice-error"><p>' . esc_html__( 'Failed to save modifier.', 'event-tickets' ) . '</p></div>';
+			}
+		}
+	}
+
 }
