@@ -2,15 +2,15 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.13.1\n"
+"Project-Id-Version: Event Tickets 5.13.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-08-05T09:09:12-07:00\n"
-"PO-Revision-Date: 2024-08-05 16:09\n"
+"POT-Creation-Date: 2024-09-09T06:38:27-07:00\n"
+"PO-Revision-Date: 2024-09-09 13:38\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: event-tickets\n"
 
@@ -297,6 +297,7 @@ msgstr ""
 
 #: src/admin-views/attendees/attendees-event/overview.php:81
 #: src/admin-views/attendees/attendees-event/totals-list.php:26
+#: src/admin-views/commerce/orders/single/order-items-metabox.php:77
 #: src/Tickets/Commerce/Admin_Tables/Orders.php:123
 #: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:165
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:106
@@ -353,7 +354,7 @@ msgstr ""
 #: src/Tickets/Commerce/Reports/Attendees_Tab.php:35
 #: src/Tribe/Admin/Columns/Tickets.php:58
 #: src/Tribe/Admin/Manager/Service_Provider.php:173
-#: src/Tribe/Attendees.php:294
+#: src/Tribe/Attendees.php:295
 #: src/Tribe/Commerce/PayPal/Main.php:479
 #: src/Tribe/Tabbed_View/Attendee_Report_Tab.php:22
 msgid "Attendees"
@@ -381,7 +382,7 @@ msgstr ""
 #: src/admin-views/tribe-commerce-settings.php:93
 #: src/admin-views/tribe-commerce-settings.php:105
 #: src/Tickets/Commerce/Reports/Attendees.php:540
-#: src/Tribe/Attendees.php:682
+#: src/Tribe/Attendees.php:686
 msgid "Yes"
 msgstr ""
 
@@ -471,8 +472,8 @@ msgid "On sale from:"
 msgstr ""
 
 #: src/admin-views/commerce/metabox/sale-price.php:80
-#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:811
-#: src/Tickets/Commerce/Hooks.php:1107
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:820
+#: src/Tickets/Commerce/Hooks.php:1102
 msgid "to"
 msgstr ""
 
@@ -485,9 +486,133 @@ msgstr ""
 msgid "A unique identifying code for each %s you're selling"
 msgstr ""
 
+#: src/admin-views/commerce/orders/single/order-actions-metabox.php:21
+msgid "Email order details to purchaser"
+msgstr ""
+
+#: src/admin-views/commerce/orders/single/order-actions-metabox.php:25
+#: src/Tickets/Commerce/Admin_Tables/Attendees.php:178
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:122
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:163
+#: src/Tribe/Commerce/PayPal/Orders/Table.php:103
+msgid "Status"
+msgstr ""
+
+#: src/admin-views/commerce/orders/single/order-actions-metabox.php:28
+msgid "Select status"
+msgstr ""
+
+#: src/admin-views/commerce/orders/single/order-actions-metabox.php:43
+msgid "Save"
+msgstr ""
+
+#: src/admin-views/commerce/orders/single/order-actions-metabox.php:64
+msgid "Delete permanently"
+msgstr ""
+
+#: src/admin-views/commerce/orders/single/order-actions-metabox.php:64
+msgid "Move to Trash"
+msgstr ""
+
+#: src/admin-views/commerce/orders/single/order-actions-metabox.php:73
+#: src/admin-views/commerce/orders/single/order-actions-metabox.php:74
+msgid "Update"
+msgstr ""
+
+#: src/admin-views/commerce/orders/single/order-details-metabox.php:16
+msgctxt "It's usage is to separate date from time. For example May 2nd 2024 <b>at</b> 11:35 AM."
+msgid "at"
+msgstr ""
+
+#. translators: %d is the order ID.
+#: src/admin-views/commerce/orders/single/order-details-metabox.php:23
+msgid "Order #%d details"
+msgstr ""
+
+#: src/admin-views/commerce/orders/single/order-details-metabox.php:29
+msgid "Date of purchase"
+msgstr ""
+
+#: src/admin-views/commerce/orders/single/order-details-metabox.php:37
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:116
+#: src/Tickets/Emails/Email/Purchase_Receipt.php:71
+#: src/Tribe/Commerce/PayPal/Orders/Table.php:99
+msgid "Purchaser"
+msgstr ""
+
+#: src/admin-views/commerce/orders/single/order-details-metabox.php:40
+#: src/admin-views/commerce/orders/single/order-items-metabox-item.php:72
+#: src/admin-views/list.php:31
+msgid "Edit"
+msgstr ""
+
+#: src/admin-views/commerce/orders/single/order-details-metabox.php:58
+msgid "Payment"
+msgstr ""
+
+#: src/admin-views/commerce/orders/single/order-items-metabox-item.php:19
+msgid "Series Pass"
+msgstr ""
+
+#: src/admin-views/commerce/orders/single/order-items-metabox-item.php:19
+msgid "Standard Ticket"
+msgstr ""
+
+#: src/admin-views/commerce/orders/single/order-items-metabox-item.php:43
+#: src/admin-views/list.php:41
+#: src/Tribe/Attendees_Table.php:782
+msgid "Delete"
+msgstr ""
+
+#: src/admin-views/commerce/orders/single/order-items-metabox-item.php:47
+msgid "Expand row"
+msgstr ""
+
+#: src/admin-views/commerce/orders/single/order-items-metabox-item.php:62
+#: src/views/emails/template-parts/body/order/attendees-table/header-row.php:24
+#: src/views/registration-js/attendees/fields.php:19
+#: src/views/registration/attendees/fields.php:15
+#: src/views/tickets/email.php:455
+msgid "Attendee"
+msgstr ""
+
+#: src/admin-views/commerce/orders/single/order-items-metabox-item.php:82
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:167
+msgid "Event"
+msgstr ""
+
+#: src/admin-views/commerce/orders/single/order-items-metabox-item.php:101
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:561
+msgctxt "This is about an \"event\" related to a Tickets Commerce order that now has been trashed."
+msgid "(trashed)"
+msgstr ""
+
+#: src/admin-views/commerce/orders/single/order-items-metabox-item.php:125
+msgid "Seat"
+msgstr ""
+
+#: src/admin-views/commerce/orders/single/order-items-metabox.php:21
+msgid "Item name"
+msgstr ""
+
+#: src/admin-views/commerce/orders/single/order-items-metabox.php:22
+msgid "Type"
+msgstr ""
+
+#: src/admin-views/commerce/orders/single/order-items-metabox.php:24
+#: src/admin-views/editor/column-head-price.php:11
+#: src/views/emails/template-parts/body/order/ticket-totals/header-row.php:35
+#: src/views/registration/summary/tickets-header.php:19
+msgid "Price"
+msgstr ""
+
+#: src/admin-views/commerce/orders/single/order-items-metabox.php:72
+msgid "Refund"
+msgstr ""
+
 #: src/admin-views/commerce/reports/attendees.php:27
 #: src/Tickets/Commerce/Admin_Tables/Orders.php:558
-#: src/Tribe/Attendees.php:1164
+#: src/Tribe/Attendees.php:1177
 #: src/Tribe/Attendees_Table.php:745
 msgid "Export"
 msgstr ""
@@ -495,6 +620,7 @@ msgstr ""
 #: src/admin-views/commerce/reports/attendees.php:52
 #: src/admin-views/commerce/reports/orders.php:36
 #: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:84
+#: src/Tickets/Commerce/Order.php:227
 #: src/Tribe/Commerce/PayPal/Orders/Report.php:326
 msgid "Search Orders"
 msgstr ""
@@ -528,6 +654,7 @@ msgid "Total Ticket Sales"
 msgstr ""
 
 #: src/admin-views/editor/button-view-orders.php:45
+#: src/Tickets/Commerce/Order.php:226
 msgid "View Orders"
 msgstr ""
 
@@ -539,15 +666,10 @@ msgid "Price:"
 msgstr ""
 
 #: src/admin-views/editor/column-body-price.php:43
-#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:622
+#: src/Tickets/Commerce/Admin/Singular_Order_Page.php:310
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:619
 #: src/Tribe/RSVP.php:1718
 msgid "Free"
-msgstr ""
-
-#: src/admin-views/editor/column-head-price.php:11
-#: src/views/emails/template-parts/body/order/ticket-totals/header-row.php:35
-#: src/views/registration/summary/tickets-header.php:19
-msgid "Price"
 msgstr ""
 
 #: src/admin-views/editor/elements/new-rsvp.php:4
@@ -646,29 +768,29 @@ msgstr ""
 msgid "Available"
 msgstr ""
 
-#: src/admin-views/editor/panel/fields/dates.php:27
+#: src/admin-views/editor/panel/fields/dates.php:39
 #: src/admin-views/meta-box.php:225
 msgid "Start sale:"
 msgstr ""
 
-#: src/admin-views/editor/panel/fields/dates.php:41
-#: src/admin-views/editor/panel/fields/dates.php:72
-#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:807
-#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:821
+#: src/admin-views/editor/panel/fields/dates.php:53
+#: src/admin-views/editor/panel/fields/dates.php:84
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:816
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:830
 msgid "YYYY-MM-DD"
 msgstr ""
 
-#: src/admin-views/editor/panel/fields/dates.php:42
-#: src/admin-views/editor/panel/fields/dates.php:73
+#: src/admin-views/editor/panel/fields/dates.php:54
+#: src/admin-views/editor/panel/fields/dates.php:85
 msgid "at"
 msgstr ""
 
-#: src/admin-views/editor/panel/fields/dates.php:55
-#: src/admin-views/editor/panel/fields/dates.php:86
+#: src/admin-views/editor/panel/fields/dates.php:67
+#: src/admin-views/editor/panel/fields/dates.php:98
 msgid "HH:MM"
 msgstr ""
 
-#: src/admin-views/editor/panel/fields/dates.php:61
+#: src/admin-views/editor/panel/fields/dates.php:73
 #: src/admin-views/meta-box.php:256
 msgid "End sale:"
 msgstr ""
@@ -844,15 +966,6 @@ msgstr ""
 msgid "(Current sale price - this can be managed via the product editor)"
 msgstr ""
 
-#: src/admin-views/list.php:31
-msgid "Edit"
-msgstr ""
-
-#: src/admin-views/list.php:41
-#: src/Tribe/Attendees_Table.php:782
-msgid "Delete"
-msgstr ""
-
 #: src/admin-views/list.php:45
 msgid "View"
 msgstr ""
@@ -866,7 +979,7 @@ msgid "Move"
 msgstr ""
 
 #: src/admin-views/list.php:93
-#: src/Tribe/Attendees.php:292
+#: src/Tribe/Attendees.php:293
 msgid "See who purchased tickets to this event"
 msgstr ""
 
@@ -1139,16 +1252,17 @@ msgstr ""
 msgid "Beginner Resources"
 msgstr ""
 
+#: src/admin-views/settings/getting-started.php:28
+#: src/admin-views/settings/tickets-commerce/banner/new-badge.php:23
+msgid "New!"
+msgstr ""
+
 #: src/admin-views/settings/getting-started.php:36
 msgid "Advanced Plus Features"
 msgstr ""
 
 #: src/admin-views/settings/getting-started.php:39
 msgid "Need To Upgrade?"
-msgstr ""
-
-#: src/admin-views/settings/tickets-commerce/banner/new-badge.php:23
-msgid "New!"
 msgstr ""
 
 #. Translators: %s: Name of payment gateway.
@@ -2180,12 +2294,43 @@ msgstr ""
 msgid "In order to start selling with Tickets Commerce, you'll need to set up your permalinks setting to an option different than \"Plain\". Please configure the setting on %1$sSettings > Permalinks%2$s and confirm that you are not using plain permalinks. %3$s"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin/Orders_Page.php:87
-#: src/Tickets/Commerce/Order.php:191
+#: src/Tickets/Commerce/Admin/Orders_Page.php:108
+#: src/Tickets/Commerce/Order.php:194
+#: src/Tickets/Commerce/Order.php:219
 #: src/Tickets/Commerce/Reports/Orders.php:235
 #: src/Tickets/Commerce/Reports/Orders_Tab.php:33
 #: src/Tribe/Commerce/PayPal/Main.php:491
 msgid "Orders"
+msgstr ""
+
+#: src/Tickets/Commerce/Admin/Singular_Order_Page.php:89
+msgctxt "Order edit page breadcrumb link back to Orders page."
+msgid "Orders"
+msgstr ""
+
+#: src/Tickets/Commerce/Admin/Singular_Order_Page.php:201
+msgid "Order Details"
+msgstr ""
+
+#: src/Tickets/Commerce/Admin/Singular_Order_Page.php:210
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:164
+msgid "Items"
+msgstr ""
+
+#: src/Tickets/Commerce/Admin/Singular_Order_Page.php:225
+msgid "Actions"
+msgstr ""
+
+#: src/Tickets/Commerce/Admin/Singular_Order_Page.php:324
+msgid "Copy Payment's Gateway Transaction ID to your Clipboard"
+msgstr ""
+
+#: src/Tickets/Commerce/Admin/Singular_Order_Page.php:413
+msgid "Order status updated!"
+msgstr ""
+
+#: src/Tickets/Commerce/Admin/Singular_Order_Page.php:414
+msgid "Order status could not be updated."
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Attendees.php:98
@@ -2194,12 +2339,12 @@ msgid "Number of attendees per page:"
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Attendees.php:151
-#: src/Tribe/Attendees.php:419
+#: src/Tribe/Attendees.php:420
 msgid "Columns"
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Attendees.php:151
-#: src/Tribe/Attendees.php:419
+#: src/Tribe/Attendees.php:420
 msgid "You can use Screen Options to select which columns you want to see. The selection works in the table below, in the email, for print and for the CSV export."
 msgstr ""
 
@@ -2208,9 +2353,12 @@ msgid "Checkbox"
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Attendees.php:174
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:456
 #: src/views/emails/template-parts/body/order/ticket-totals/header-row.php:29
 msgid "Ticket"
-msgstr ""
+msgid_plural "Tickets"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/Tickets/Commerce/Admin_Tables/Attendees.php:175
 msgid "Primary Information"
@@ -2223,13 +2371,6 @@ msgstr ""
 #: src/Tickets/Commerce/Admin_Tables/Attendees.php:177
 #: src/views/tickets/email.php:459
 msgid "Security Code"
-msgstr ""
-
-#: src/Tickets/Commerce/Admin_Tables/Attendees.php:178
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:122
-#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:163
-#: src/Tribe/Commerce/PayPal/Orders/Table.php:103
-msgid "Status"
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Attendees.php:308
@@ -2324,14 +2465,9 @@ msgstr ""
 #: src/Tickets/Commerce/Admin_Tables/Orders.php:115
 #: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:162
 #: src/Tickets/Commerce/Gateways/Stripe/Payment_Intent_Handler.php:290
+#: src/Tickets/Commerce/Order.php:220
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:98
 msgid "Order"
-msgstr ""
-
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:116
-#: src/Tickets/Emails/Email/Purchase_Receipt.php:71
-#: src/Tribe/Commerce/PayPal/Orders/Table.php:99
-msgid "Purchaser"
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Orders.php:118
@@ -2372,12 +2508,12 @@ msgid "Search by Gateway"
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Orders.php:462
-#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:674
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:683
 msgid "Search by Gateway ID"
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Orders.php:463
-#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:675
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:684
 msgid "Search by Order ID"
 msgstr ""
 
@@ -2399,56 +2535,53 @@ msgstr ""
 msgid "Show more details"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:164
-msgid "Items"
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:599
+msgctxt "Copy payment transaction ID to clipboard."
+msgid "Copy Payment's Gateway Transaction ID to your Clipboard"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:167
-msgid "Event"
-msgstr ""
-
-#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:673
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:682
 msgid "Search All"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:731
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:740
 msgid "Apply Filters"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:741
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:750
 msgid "Clear All"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:797
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:806
 msgid "From"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:886
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:895
 msgid "All Gateways"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:894
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:903
 msgid "Filter By Gateway"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:940
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:949
 msgid "All Events"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:945
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:954
 msgid "Filter By Event"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:952
-#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:1010
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:961
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:1019
 msgid "Searching..."
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:995
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:1004
 msgid "All Customers"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:1003
+#: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:1012
 msgid "Filter By Customer"
 msgstr ""
 
@@ -7128,23 +7261,23 @@ msgstr ""
 msgid "Payment Intent %s does not require an update or is a duplicate of a past event."
 msgstr ""
 
-#: src/Tickets/Commerce/Hooks.php:1104
+#: src/Tickets/Commerce/Hooks.php:1099
 msgid "Add sale price"
 msgstr ""
 
-#: src/Tickets/Commerce/Hooks.php:1105
+#: src/Tickets/Commerce/Hooks.php:1100
 msgid "Sale Price"
 msgstr ""
 
-#: src/Tickets/Commerce/Hooks.php:1106
+#: src/Tickets/Commerce/Hooks.php:1101
 msgid "On sale from"
 msgstr ""
 
-#: src/Tickets/Commerce/Hooks.php:1108
+#: src/Tickets/Commerce/Hooks.php:1103
 msgid "Sale price must be lower than the regular ticket price."
 msgstr ""
 
-#: src/Tickets/Commerce/Hooks.php:1109
+#: src/Tickets/Commerce/Hooks.php:1104
 #: src/views/v2/tickets/item/content/sale-label.php:36
 msgid "On Sale"
 msgstr ""
@@ -7157,6 +7290,102 @@ msgstr ""
 #: src/Tribe/Commerce/PayPal/Main.php:3018
 #: src/Tribe/RSVP.php:2140
 msgid "(deleted)"
+msgstr ""
+
+#: src/Tickets/Commerce/Order.php:221
+#: src/Tickets/Commerce/Order.php:222
+msgid "Add New Order"
+msgstr ""
+
+#: src/Tickets/Commerce/Order.php:223
+msgid "Edit Order"
+msgstr ""
+
+#: src/Tickets/Commerce/Order.php:224
+msgid "New Order"
+msgstr ""
+
+#: src/Tickets/Commerce/Order.php:225
+#: src/Tickets/Emails/JSON_LD/Order_Schema.php:74
+msgid "View Order"
+msgstr ""
+
+#: src/Tickets/Commerce/Order.php:228
+msgid "No orders found."
+msgstr ""
+
+#: src/Tickets/Commerce/Order.php:229
+msgid "No orders found in Trash."
+msgstr ""
+
+#: src/Tickets/Commerce/Order.php:230
+msgid "All Orders"
+msgstr ""
+
+#: src/Tickets/Commerce/Order.php:231
+msgid "Order Archives"
+msgstr ""
+
+#: src/Tickets/Commerce/Order.php:232
+msgid "Order Attributes"
+msgstr ""
+
+#: src/Tickets/Commerce/Order.php:233
+msgid "Insert into order"
+msgstr ""
+
+#: src/Tickets/Commerce/Order.php:234
+msgid "Uploaded to this order"
+msgstr ""
+
+#: src/Tickets/Commerce/Order.php:235
+msgid "Filter orders list"
+msgstr ""
+
+#: src/Tickets/Commerce/Order.php:236
+msgid "Filter by date"
+msgstr ""
+
+#: src/Tickets/Commerce/Order.php:237
+msgid "Orders list navigation"
+msgstr ""
+
+#: src/Tickets/Commerce/Order.php:238
+msgid "Orders list"
+msgstr ""
+
+#: src/Tickets/Commerce/Order.php:239
+msgid "Order published."
+msgstr ""
+
+#: src/Tickets/Commerce/Order.php:240
+msgid "Order published privately."
+msgstr ""
+
+#: src/Tickets/Commerce/Order.php:241
+msgid "Order reverted to draft."
+msgstr ""
+
+#: src/Tickets/Commerce/Order.php:242
+msgid "Order trashed."
+msgstr ""
+
+#: src/Tickets/Commerce/Order.php:243
+msgid "Order scheduled."
+msgstr ""
+
+#: src/Tickets/Commerce/Order.php:244
+msgid "Order updated."
+msgstr ""
+
+#: src/Tickets/Commerce/Order.php:245
+msgctxt "navigation link block title"
+msgid "Order Link"
+msgstr ""
+
+#: src/Tickets/Commerce/Order.php:246
+msgctxt "navigation link block description"
+msgid "A link to an order."
 msgstr ""
 
 #: src/Tickets/Commerce/Payments_Tab.php:113
@@ -7227,49 +7456,48 @@ msgid "%1$s - Attendee list"
 msgstr ""
 
 #: src/Tickets/Commerce/Reports/Attendees.php:416
-#: src/Tribe/Attendees.php:795
 msgid "attendees"
 msgstr ""
 
 #: src/Tickets/Commerce/Reports/Attendees.php:501
-#: src/Tribe/Attendees.php:606
+#: src/Tribe/Attendees.php:610
 msgctxt "attendee export"
 msgid "Order ID"
 msgstr ""
 
 #: src/Tickets/Commerce/Reports/Attendees.php:502
-#: src/Tribe/Attendees.php:611
+#: src/Tribe/Attendees.php:615
 msgctxt "attendee export"
 msgid "Order Status"
 msgstr ""
 
 #. Translators: %s: The type of ID.
 #: src/Tickets/Commerce/Reports/Attendees.php:503
-#: src/Tribe/Attendees.php:619
+#: src/Tribe/Attendees.php:623
 msgctxt "attendee export"
 msgid "%s ID"
 msgstr ""
 
 #: src/Tickets/Commerce/Reports/Attendees.php:504
-#: src/Tribe/Attendees.php:627
+#: src/Tribe/Attendees.php:631
 msgctxt "attendee export"
 msgid "Ticket Holder Name"
 msgstr ""
 
 #: src/Tickets/Commerce/Reports/Attendees.php:505
-#: src/Tribe/Attendees.php:632
+#: src/Tribe/Attendees.php:636
 msgctxt "attendee export"
 msgid "Ticket Holder Email Address"
 msgstr ""
 
 #: src/Tickets/Commerce/Reports/Attendees.php:506
-#: src/Tribe/Attendees.php:637
+#: src/Tribe/Attendees.php:641
 msgctxt "attendee export"
 msgid "Purchaser Name"
 msgstr ""
 
 #: src/Tickets/Commerce/Reports/Attendees.php:507
-#: src/Tribe/Attendees.php:642
+#: src/Tribe/Attendees.php:646
 msgctxt "attendee export"
 msgid "Purchaser Email Address"
 msgstr ""
@@ -8458,10 +8686,6 @@ msgstr ""
 msgid "Additional content will be displayed below the tickets in your email."
 msgstr ""
 
-#: src/Tickets/Emails/JSON_LD/Order_Schema.php:74
-msgid "View Order"
-msgstr ""
-
 #: src/Tickets/Flexible_Tickets/Metabox.php:96
 msgctxt "Help text for the end date field in the Series Passes meta box."
 msgid "If you do not set an end sale date, passes will be available until the last event in the Series."
@@ -9267,65 +9491,75 @@ msgctxt "attendee summary"
 msgid "Deleted Attendees:"
 msgstr ""
 
-#: src/Tribe/Attendees.php:109
+#: src/Tribe/Attendees.php:110
 msgid "Post type"
-msgstr ""
-
-#: src/Tribe/Attendees.php:137
-msgctxt "attendee event actions"
-msgid "Edit %s"
 msgstr ""
 
 #: src/Tribe/Attendees.php:138
 msgctxt "attendee event actions"
-msgid "View %s"
+msgid "Edit %s"
 msgstr ""
 
-#: src/Tribe/Attendees.php:141
+#: src/Tribe/Attendees.php:139
 msgctxt "attendee event actions"
-msgid "Edit"
+msgid "View %s"
 msgstr ""
 
 #: src/Tribe/Attendees.php:142
 msgctxt "attendee event actions"
+msgid "Edit"
+msgstr ""
+
+#: src/Tribe/Attendees.php:143
+msgctxt "attendee event actions"
 msgid "View"
 msgstr ""
 
-#: src/Tribe/Attendees.php:476
-#: src/Tribe/Attendees.php:945
+#: src/Tribe/Attendees.php:478
+#: src/Tribe/Attendees.php:956
 msgid "Email sent successfully!"
 msgstr ""
 
-#: src/Tribe/Attendees.php:521
+#: src/Tribe/Attendees.php:523
 msgid "%s - Attendee list"
 msgstr ""
 
-#: src/Tribe/Attendees.php:842
+#: src/Tribe/Attendees.php:805
+msgctxt "CSV export file name"
+msgid "attendees"
+msgstr ""
+
+#: src/Tribe/Attendees.php:807
+msgctxt "CSV export file name"
+msgid "All event attendees"
+msgstr ""
+
+#: src/Tribe/Attendees.php:853
 msgid "Invalid Event ID"
 msgstr ""
 
-#: src/Tribe/Attendees.php:862
+#: src/Tribe/Attendees.php:873
 msgid "Cheatin Huh?"
 msgstr ""
 
-#: src/Tribe/Attendees.php:868
+#: src/Tribe/Attendees.php:879
 msgid "Empty user and/or email"
 msgstr ""
 
-#: src/Tribe/Attendees.php:874
+#: src/Tribe/Attendees.php:885
 msgid "Invalid Email"
 msgstr ""
 
-#: src/Tribe/Attendees.php:880
-#: src/Tribe/Attendees.php:917
+#: src/Tribe/Attendees.php:891
+#: src/Tribe/Attendees.php:928
 msgid "Invalid User ID"
 msgstr ""
 
-#: src/Tribe/Attendees.php:937
+#: src/Tribe/Attendees.php:948
 msgid "Attendee List for: %s"
 msgstr ""
 
-#: src/Tribe/Attendees.php:938
+#: src/Tribe/Attendees.php:949
 msgid "Error when sending the email"
 msgstr ""
 
@@ -11089,13 +11323,6 @@ msgstr ""
 #. Translators: %1$s - HTML link to origin website; %2$s - HTML link to `Event Tickets` website.
 #: src/views/emails/template-parts/body/footer/credit.php:45
 msgid "%1$s tickets are powered by %2$s"
-msgstr ""
-
-#: src/views/emails/template-parts/body/order/attendees-table/header-row.php:24
-#: src/views/registration-js/attendees/fields.php:19
-#: src/views/registration/attendees/fields.php:15
-#: src/views/tickets/email.php:455
-msgid "Attendee"
 msgstr ""
 
 #: src/views/emails/template-parts/body/order/attendees-table/header-row.php:27
