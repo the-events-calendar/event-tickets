@@ -8,7 +8,7 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'codeception.dist.yml'
-      - '.github/workflows/tests-php-ct1.yaml'
+      - '.github/**/*'
 jobs:
   test:
     strategy:

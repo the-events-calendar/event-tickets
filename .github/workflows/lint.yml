@@ -6,6 +6,7 @@ on:
       - 'src/modules/**.js'
       - 'src/resources/js/**.js'
       - 'src/resources/postcss/**.pcss'
+      - '.github/**/*'
 jobs:
   lint:
     runs-on: ubuntu-latest
