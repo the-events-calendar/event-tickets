@@ -2,9 +2,9 @@
 /**
  * Single order - Actions metabox.
  *
- * @since TBD
+ * @since 5.13.3
  *
- * @version TBD
+ * @version 5.13.3
  *
  * @var WP_Post                                         $order             The current post object.
  * @var \TEC\Tickets\Commerce\Admin\Singular_Order_Page $single_page       The orders table output.
@@ -50,7 +50,7 @@ $possible_statuses = tribe( Status_Handler::class )->get_orders_possible_status(
 		/**
 		 * Fires at the beginning of the publishing actions section of the Actions meta box.
 		 *
-		 * @since TBD
+		 * @since 5.13.3
 		 *
 		 * @param WP_Post $order WP_Post object for the current post on Edit Post screen..
 		 */
