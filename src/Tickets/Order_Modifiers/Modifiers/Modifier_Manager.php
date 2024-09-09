@@ -2,8 +2,6 @@
 
 namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
-use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
-
 /**
  * Context class that interacts with the strategy.
  *
@@ -63,5 +61,27 @@ class Modifier_Manager {
 		}
 
 		return $this->strategy->insert_modifier( $data );
+	}
+
+	/**
+	 * Renders the table for the current modifier strategy.
+	 *
+	 * @since TBD
+	 *
+	 * @return mixed The rendered table content.
+	 */
+	public function render_table( $context ): mixed {
+		return $this->strategy->render_table( $context );
+	}
+
+	/**
+	 * Renders the edit screen for the current modifier strategy.
+	 *
+	 * @since TBD
+	 *
+	 * @return mixed The rendered edit screen content.
+	 */
+	public function render_edit( $context ): mixed {
+		return $this->strategy->render_edit( $context );
 	}
 }
