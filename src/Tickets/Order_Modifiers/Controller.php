@@ -71,7 +71,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	/**
 	 * Registers the custom tables and makes them available in the container as singletons.
 	 *
-	 * @since 5.8.0
+	 * @since TBD
 	 *
 	 * @return void
 	 */
@@ -123,14 +123,26 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		foreach ( $modifiers as $key => $modifier ) {
 			if ( ! isset( $modifier['class'], $modifier['slug'], $modifier['display_name'] ) || ! class_exists( $modifier['class'], false ) ) {
 				unset( $modifiers[ $key ] ); // Remove invalid modifiers.
-				continue;
 			}
 		}
 
-		// Cache the result to avoid recomputation.
+		// Cache the result.
 		self::$cached_modifiers = $modifiers;
 
 		return $modifiers;
+	}
+
+	/**
+	 * Clear the cached list of order modifiers.
+	 *
+	 * This method is useful when plugins or settings that affect the order modifiers change.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public static function clear_cached_modifiers(): void {
+		self::$cached_modifiers = null;
 	}
 
 	/**
@@ -148,7 +160,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 
 		$modifiers = self::get_modifiers();
 
-		// Ensure the requested modifier exists in the whitelist and class is valid.
+		// Ensure the requested modifier exists in the whitelist and the class implements the correct interface.
 		if ( isset( $modifiers[ $modifier ] ) && is_subclass_of( $modifiers[ $modifier ]['class'], Modifier_Strategy_Interface::class ) ) {
 			// Instantiate and return the strategy class.
 			$strategy_class = $modifiers[ $modifier ]['class'];
