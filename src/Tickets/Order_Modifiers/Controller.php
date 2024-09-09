@@ -23,6 +23,16 @@ use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
  * @package TEC\Tickets\Order_Modifiers;
  */
 class Controller extends \TEC\Common\Contracts\Provider\Controller {
+
+	/**
+	 * Cached list of available modifiers.
+	 *
+	 * @since TBD
+	 *
+	 * @var array|null
+	 */
+	protected static ?array $cached_modifiers = null;
+
 	/**
 	 * Binds and sets up implementations.
 	 *
@@ -72,26 +82,55 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 
 	/**
 	 * Get the list of available modifiers.
+	 * Acts as a whitelist for potential Modifiers.
 	 *
 	 * @since TBD
 	 *
 	 * @return array List of registered modifier strategies.
 	 */
-	public function get_modifiers(): array {
-		// @todo redscar - Should this be moved to a class param?
-		// Default modifiers.
+	public static function get_modifiers(): array {
+		// Check if the modifiers are cached.
+		if ( null !== self::$cached_modifiers ) {
+			return self::$cached_modifiers;
+		}
+
+		// Default modifiers with display name, slug, and class.
 		$modifiers = [
-			'coupon' => Coupon::class,
-			//'fees'   => Booking_Fee::class,
+			'coupon' => [
+				'display_name' => __( 'Coupons', 'event-tickets' ),
+				'slug'         => 'coupon',
+				'class'        => Coupon::class,
+			],
+			'fee'    => [
+				'display_name' => __( 'Booking Fees', 'event-tickets' ),
+				'slug'         => 'fee',
+				'class'        => Booking_Fee::class,
+			],
 		];
 
 		/**
-		 * Filter to allow new modifiers to be added.
-		 * Developers can hook into this to register new modifiers.
+		 * Filters the list of available modifiers for Order Modifiers.
+		 *
+		 * This allows developers to add or modify the default list of order modifiers.
 		 *
 		 * @since TBD
+		 *
+		 * @param array $modifiers An array of default modifiers, each containing 'display_name', 'slug', and 'class'.
 		 */
-		return apply_filters( 'tec_tickets_order_modifiers', $modifiers );
+		$modifiers = apply_filters( 'tec_tickets_order_modifiers', $modifiers );
+
+		// Validate modifiers after the filter.
+		foreach ( $modifiers as $key => $modifier ) {
+			if ( ! isset( $modifier['class'], $modifier['slug'], $modifier['display_name'] ) || ! class_exists( $modifier['class'], false ) ) {
+				unset( $modifiers[ $key ] ); // Remove invalid modifiers.
+				continue;
+			}
+		}
+
+		// Cache the result to avoid recomputation.
+		self::$cached_modifiers = $modifiers;
+
+		return $modifiers;
 	}
 
 	/**
@@ -99,19 +138,23 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $modifier The modifier type to retrieve (e.g., 'coupon', 'fees').
+	 * @param string $modifier The modifier type to retrieve (e.g., 'coupon', 'fee').
 	 *
 	 * @return Modifier_Strategy_Interface|null The strategy class or null if not found.
 	 */
 	public function get_modifier( string $modifier ): ?Modifier_Strategy_Interface {
-		$modifiers = $this->get_modifiers();
+		// Sanitize the modifier parameter to ensure it's a valid string.
+		$modifier = sanitize_key( $modifier );
 
-		if ( isset( $modifiers[ $modifier ] ) ) {
-			// @todo redscar - Need to add more validation logic.
-			// Instantiate the correct strategy class.
-			return new $modifiers[ $modifier ]();
+		$modifiers = self::get_modifiers();
+
+		// Ensure the requested modifier exists in the whitelist and class is valid.
+		if ( isset( $modifiers[ $modifier ] ) && is_subclass_of( $modifiers[ $modifier ]['class'], Modifier_Strategy_Interface::class ) ) {
+			// Instantiate and return the strategy class.
+			$strategy_class = $modifiers[ $modifier ]['class'];
+			return new $strategy_class();
 		}
 
-		return null; // Return null if the modifier does not exist.
+		return null; // Return null if the modifier is not found or invalid.
 	}
 }
