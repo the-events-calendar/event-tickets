@@ -113,7 +113,6 @@ class Modifier_Settings {
 	}
 
 	/**
-	 * @todo redscar - Default is set to coupon, Is that correct?
 	 * Render the `Order Modifiers` page of our selected strategy.
 	 *
 	 * @since TBD
@@ -124,14 +123,16 @@ class Modifier_Settings {
 		// Enqueue required assets for the page.
 		tribe_asset_enqueue_group( 'event-tickets-admin-order-modifiers' );
 
-		// Get the selected modifier (default to 'coupon').
+		// @todo redscar - Should coupon be the default view?
+		// Get the selected modifier type (default to 'coupon').
 		$modifier_type = tribe_get_request_var( 'modifier', 'coupon' );
+		$modifier_id   = tribe_get_request_var( 'modifier_id', '0' );
 
 		// Prepare the context for the page.
 		$context = [
 			'event_id'    => 0,
 			'modifier'    => $modifier_type,
-			'modifier_id' => tribe_get_request_var( 'modifier_id', '0' ),
+			'modifier_id' => $modifier_id,
 		];
 
 		// Get the appropriate strategy for the selected modifier.
@@ -139,15 +140,61 @@ class Modifier_Settings {
 
 		// If the strategy doesn't exist, show an error message.
 		if ( ! $modifier_strategy ) {
-			echo '<p>' . esc_html__( 'Invalid modifier selected.', 'event-tickets' ) . '</p>';
+			$this->render_invalid_modifier_message();
 			return;
 		}
 
 		// Create a Modifier Manager with the selected strategy.
 		$manager = new Modifier_Manager( $modifier_strategy );
 
-		// Render the title and table for the selected modifier.
-		echo '<h2>' . esc_html( ucfirst( $modifier_type ) ) . '</h2>';
-		return $manager->render_table( $context );
+		// Determine if we are in edit or table mode.
+		if ( ! empty( $modifier_id ) && (int) $modifier_id > 0 ) {
+			$this->render_edit_view( $manager, $context );
+			return;
+		}
+
+		$this->render_table_view( $manager, $context );
 	}
+
+	/**
+	 * Render the table view for the selected modifier.
+	 *
+	 * @since TBD
+	 *
+	 * @param Modifier_Manager $manager The modifier manager.
+	 * @param array            $context The context for rendering the table.
+	 *
+	 * @return void
+	 */
+	protected function render_table_view( Modifier_Manager $manager, array $context ): void {
+		echo '<h2>' . esc_html( ucfirst( $context['modifier'] ) ) . '</h2>';
+		echo $manager->render_table( $context );
+	}
+
+	/**
+	 * Render the edit view for the selected modifier.
+	 *
+	 * @since TBD
+	 *
+	 * @param Modifier_Manager $manager The modifier manager.
+	 * @param array            $context The context for rendering the edit screen.
+	 *
+	 * @return void
+	 */
+	protected function render_edit_view( Modifier_Manager $manager, array $context ): void {
+		echo '<h2>' . esc_html( ucfirst( $context['modifier'] ) . ' Edit' ) . '</h2>';
+		echo $manager->render_edit_screen( $context );
+	}
+
+	/**
+	 * Render an error message for invalid modifiers.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function render_invalid_modifier_message(): void {
+		echo '<p>' . esc_html__( 'Invalid modifier selected.', 'event-tickets' ) . '</p>';
+	}
+
 }

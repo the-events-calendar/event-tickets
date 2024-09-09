@@ -81,7 +81,7 @@ class Modifier_Manager {
 	 *
 	 * @return mixed The rendered edit screen content.
 	 */
-	public function render_edit( $context ): mixed {
+	public function render_edit_screen( $context ): mixed {
 		return $this->strategy->render_edit( $context );
 	}
 }

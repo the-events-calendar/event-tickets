@@ -112,7 +112,7 @@ class Coupon implements Modifier_Strategy_Interface {
 	 *
 	 * @return mixed The rendered coupon edit screen.
 	 */
-	public function render_edit($context): mixed {
+	public function render_edit($context) {
 		// Your logic for rendering the coupon edit screen.
 		echo 'Rendered Coupon Edit Screen';
 	}
