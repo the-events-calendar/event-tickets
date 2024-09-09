@@ -2,7 +2,7 @@
 /**
  * Handles hooking all the actions and filters used by the admin area.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Order_Modifiers
  */
@@ -12,20 +12,18 @@ namespace TEC\Tickets\Order_Modifiers;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Manager;
 
 /**
- * Class Page.
+ * Class Modifier_Settings.
  *
- * @since   TBD
- *
- * @package TEC\Tickets\Order_Modifiers
- */
-
-/**
  * Manages the admin settings UI in relation to Order Modifiers.
+ *
+ * @since TBD
  */
 class Modifier_Settings {
 
 	/**
 	 * Event Tickets menu page slug.
+	 *
+	 * @since TBD
 	 *
 	 * @var string
 	 */
@@ -34,12 +32,16 @@ class Modifier_Settings {
 	/**
 	 * Event Tickets Order Modifiers page slug.
 	 *
+	 * @since TBD
+	 *
 	 * @var string
 	 */
 	public static $slug = 'tec-tickets-order-modifiers';
 
 	/**
 	 * Event Tickets Order Modifiers page hook suffix.
+	 *
+	 * @since TBD
 	 *
 	 * @var string
 	 */
@@ -50,7 +52,7 @@ class Modifier_Settings {
 	 *
 	 * @since TBD
 	 *
-	 * @return boolean
+	 * @return bool True if on the Order Modifiers page, false otherwise.
 	 */
 	public function is_on_page(): bool {
 		$admin_pages = tribe( 'admin.pages' );
@@ -66,17 +68,17 @@ class Modifier_Settings {
 	 *
 	 * @param array $args Arguments to pass to the URL.
 	 *
-	 * @return string
+	 * @return string The URL for the Order Modifiers admin page.
 	 */
 	public function get_url( array $args = [] ): string {
 		$defaults = [
 			'page' => static::$slug,
 		];
 
-		// Allow the link to be "changed" on the fly.
+		// Merge default args and passed args.
 		$args = wp_parse_args( $args, $defaults );
 
-		// Keep the resulting URL args clean.
+		// Generate the admin URL.
 		$url = add_query_arg( $args, admin_url( 'admin.php' ) );
 
 		/**
@@ -84,7 +86,7 @@ class Modifier_Settings {
 		 *
 		 * @since TBD
 		 *
-		 * @param string $url The URL to the Event Tickets Order Modifiers page.
+		 * @param string $url The URL to the Order Modifiers page.
 		 */
 		return apply_filters( 'tec_tickets_order_modifiers_page_url', $url );
 	}
@@ -92,41 +94,37 @@ class Modifier_Settings {
 	/**
 	 * Adds the Event Tickets Order Modifiers page.
 	 *
-	 * @since 5.9.1
+	 * @since TBD
 	 */
-	public function add_tec_tickets_order_modifiers_page() {
+	public function add_tec_tickets_order_modifiers_page(): void {
 		$admin_pages = tribe( 'admin.pages' );
 
-		$order_modifiers_page = $admin_pages->register_page(
+		$admin_pages->register_page(
 			[
 				'id'       => static::$slug,
 				'path'     => static::$slug,
 				'parent'   => static::$parent_slug,
 				'title'    => esc_html__( 'Coupon &amp; Fees', 'event-tickets' ),
 				'position' => 1.5,
-				'callback' => [
-					$this,
-					'render_tec_order_modifiers_page',
-				],
+				'callback' => [ $this, 'render_tec_order_modifiers_page' ],
 			]
 		);
 	}
 
 	/**
-	 * Render the `Order Modifiers` page of our selected strategy.
+	 * Render the `Order Modifiers` page for the selected strategy.
 	 *
 	 * @since TBD
 	 *
 	 * @return void
 	 */
-	public function render_tec_order_modifiers_page() {
+	public function render_tec_order_modifiers_page(): void {
 		// Enqueue required assets for the page.
 		tribe_asset_enqueue_group( 'event-tickets-admin-order-modifiers' );
 
-		// @todo redscar - Should coupon be the default view?
-		// Get the selected modifier type (default to 'coupon').
-		$modifier_type = tribe_get_request_var( 'modifier', 'coupon' );
-		$modifier_id   = tribe_get_request_var( 'modifier_id', '0' );
+		// Get and sanitize request vars for modifier and modifier_id.
+		$modifier_type = sanitize_key( tribe_get_request_var( 'modifier', 'coupon' ) );
+		$modifier_id   = absint( tribe_get_request_var( 'modifier_id', '0' ) );
 
 		// Prepare the context for the page.
 		$context = [
@@ -148,12 +146,11 @@ class Modifier_Settings {
 		$manager = new Modifier_Manager( $modifier_strategy );
 
 		// Determine if we are in edit or table mode.
-		if ( ! empty( $modifier_id ) && (int) $modifier_id > 0 ) {
+		if ( ! empty( $modifier_id ) ) {
 			$this->render_edit_view( $manager, $context );
-			return;
+		} else {
+			$this->render_table_view( $manager, $context );
 		}
-
-		$this->render_table_view( $manager, $context );
 	}
 
 	/**
@@ -196,5 +193,4 @@ class Modifier_Settings {
 	protected function render_invalid_modifier_message(): void {
 		echo '<p>' . esc_html__( 'Invalid modifier selected.', 'event-tickets' ) . '</p>';
 	}
-
 }

@@ -1,4 +1,14 @@
 <?php
+/**
+ * Concrete Strategy for Coupon Modifiers.
+ *
+ * Handles the specific logic for Coupon modifiers, including inserting, updating,
+ * rendering, and validating coupon data.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Order_Modifiers\Modifiers;
+ */
 
 namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
@@ -14,6 +24,8 @@ class Coupon implements Modifier_Strategy_Interface {
 
 	/**
 	 * The modifier type for coupons.
+	 *
+	 * @since TBD
 	 *
 	 * @var string
 	 */
@@ -43,6 +55,11 @@ class Coupon implements Modifier_Strategy_Interface {
 		// Ensure the modifier_type is set to 'coupon'.
 		$data['modifier_type'] = $this->modifier_type;
 
+		// Validate data before proceeding.
+		if ( ! $this->validate_data( $data ) ) {
+			return [];
+		}
+
 		// Use the repository to insert the data into the `order_modifiers` table.
 		$repository = new Order_Modifiers_Repository();
 		return $repository->insert( new Order_Modifier( $data ) );
@@ -61,6 +78,11 @@ class Coupon implements Modifier_Strategy_Interface {
 		// Ensure the modifier_type is set to 'coupon'.
 		$data['modifier_type'] = $this->modifier_type;
 
+		// Validate data before proceeding.
+		if ( ! $this->validate_data( $data ) ) {
+			return [];
+		}
+
 		// Use the repository to update the data in the `order_modifiers` table.
 		$repository = new Order_Modifiers_Repository();
 		return $repository->update( new Order_Modifier( $data ) );
@@ -68,6 +90,8 @@ class Coupon implements Modifier_Strategy_Interface {
 
 	/**
 	 * Validates the required fields for Coupons.
+	 *
+	 * @since TBD
 	 *
 	 * @param array $data The data to validate.
 	 *
@@ -84,11 +108,14 @@ class Coupon implements Modifier_Strategy_Interface {
 			'status',
 		];
 
+		// Ensure all required fields are present and not empty.
 		foreach ( $required_fields as $field ) {
 			if ( empty( $data[ $field ] ) ) {
 				return false;
 			}
 		}
+
+		// @todo redscar - We need to add data validation for each type.
 
 		return true;
 	}
@@ -98,11 +125,13 @@ class Coupon implements Modifier_Strategy_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @return void The rendered coupon table.
+	 * @param array $context The context data for rendering the table.
+	 *
+	 * @return string The rendered coupon table content.
 	 */
-	public function render_table($context) {
-		// Your logic for rendering the coupon table.
-		echo 'Rendered Coupons Table';
+	public function render_table( array $context ): string {
+		// Example logic for rendering the coupon table.
+		return 'Rendered Coupons Table';
 	}
 
 	/**
@@ -110,10 +139,12 @@ class Coupon implements Modifier_Strategy_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @return mixed The rendered coupon edit screen.
+	 * @param array $context The context data for rendering the edit screen.
+	 *
+	 * @return string The rendered coupon edit screen content.
 	 */
-	public function render_edit($context) {
-		// Your logic for rendering the coupon edit screen.
-		echo 'Rendered Coupon Edit Screen';
+	public function render_edit( array $context ): string {
+		// Example logic for rendering the coupon edit screen.
+		return 'Rendered Coupon Edit Screen';
 	}
 }

@@ -1,4 +1,14 @@
 <?php
+/**
+ * Modifier Manager for handling operations and rendering related to Order Modifiers.
+ *
+ * This class serves as a context that interacts with different modifier strategies (such as Coupons or Booking Fees).
+ * It handles the saving (insert/update) of modifiers and delegates rendering tasks to the appropriate strategy.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Order_Modifiers\Modifiers
+ */
 
 namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
@@ -33,6 +43,9 @@ class Modifier_Manager {
 	 * @param Modifier_Strategy_Interface $strategy The modifier strategy to use.
 	 */
 	public function __construct( Modifier_Strategy_Interface $strategy ) {
+		if ( ! $strategy instanceof Modifier_Strategy_Interface ) {
+			throw new \InvalidArgumentException( 'Invalid strategy provided.' );
+		}
 		$this->strategy = $strategy;
 	}
 
@@ -50,13 +63,17 @@ class Modifier_Manager {
 	 */
 	public function save_modifier( array $data ): mixed {
 		$data['modifier_type'] = $this->strategy->get_modifier_type();
+
 		// Validate data before proceeding.
 		if ( ! $this->strategy->validate_data( $data ) ) {
+			// Optionally log the validation failure.
+			// @todo redscar - decide how to handle this.
+			error_log( 'Validation failed for ' . $this->strategy->get_modifier_type() );
 			return [];
 		}
 
 		// Check if it's an update or an insert.
-		if ( isset( $data['id'] ) && is_int( $data['id'] ) && $data['id'] > 0 ) {
+		if ( isset( $data['id'] ) && is_numeric( $data['id'] ) && (int) $data['id'] > 0 ) {
 			return $this->strategy->update_modifier( $data );
 		}
 
@@ -68,9 +85,11 @@ class Modifier_Manager {
 	 *
 	 * @since TBD
 	 *
-	 * @return mixed The rendered table content.
+	 * @param array $context The context data for rendering the table.
+	 *
+	 * @return mixed The rendered table content, typically as HTML.
 	 */
-	public function render_table( $context ): mixed {
+	public function render_table( array $context ): mixed {
 		return $this->strategy->render_table( $context );
 	}
 
@@ -79,9 +98,11 @@ class Modifier_Manager {
 	 *
 	 * @since TBD
 	 *
+	 * @param array $context The context data for rendering the edit screen.
+	 *
 	 * @return mixed The rendered edit screen content.
 	 */
-	public function render_edit_screen( $context ): mixed {
+	public function render_edit_screen( array $context ): mixed {
 		return $this->strategy->render_edit( $context );
 	}
 }
