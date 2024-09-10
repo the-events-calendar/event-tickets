@@ -12,8 +12,6 @@
 
 namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
-use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
-
 /**
  * Concrete Strategy for Coupon Modifiers.
  *
@@ -31,113 +29,47 @@ class Coupon extends Modifier_Abstract {
 	protected string $modifier_type = 'coupon';
 
 	/**
+	 * Required fields for Coupons.
+	 *
+	 * @since TBD
+	 * @var array
+	 */
+	protected array $required_fields = [
+		'modifier_type',
+		'sub_type',
+		'fee_amount_cents',
+		'slug',
+		'display_name',
+		'status',
+	];
+
+	/**
 	 * Constructor for the Coupon strategy.
 	 *
 	 * @since TBD
 	 */
 	public function __construct() {
-		parent::__construct( 'coupon' ); // Call the parent constructor with the 'coupon' modifier type.
+		parent::__construct( $this->modifier_type );
 	}
 
 	/**
-	 * Inserts a new Coupon Modifier.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $data The data to insert.
-	 *
-	 * @return mixed The newly inserted modifier or an empty array if no changes were made.
-	 */
-	public function insert_modifier( array $data ): mixed {
-		// Ensure the modifier_type is set to 'coupon'.
-		$data['modifier_type'] = $this->modifier_type;
-
-		// Validate data before proceeding.
-		if ( ! $this->validate_data( $data ) ) {
-			return [];
-		}
-
-		// Use the repository to insert the data into the `order_modifiers` table.
-		return $this->repository->insert( new Order_Modifier( $data ) );
-	}
-
-	/**
-	 * Updates an existing Coupon Modifier.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $data The data to update.
-	 *
-	 * @return mixed The updated modifier or an empty array if no changes were made.
-	 */
-	public function update_modifier( array $data ): mixed {
-		// Ensure the modifier_type is set to 'coupon'.
-		$data['modifier_type'] = $this->modifier_type;
-
-		// Validate data before proceeding.
-		if ( ! $this->validate_data( $data ) ) {
-			return [];
-		}
-
-		// Use the repository to update the data in the `order_modifiers` table.
-		return $this->repository->update( new Order_Modifier( $data ) );
-	}
-
-	/**
-	 * Validates the required fields for Coupons.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $data The data to validate.
-	 *
-	 * @return bool True if the data is valid, false otherwise.
-	 */
-	public function validate_data( array $data ): bool {
-		$required_fields = [
-			'modifier_type',
-			'sub_type',
-			'fee_amount_cents',
-			'slug',
-			'display_name',
-			'status',
-		];
-
-		// Ensure all required fields are present and not empty.
-		foreach ( $required_fields as $field ) {
-			if ( empty( $data[ $field ] ) ) {
-				return false;
-			}
-		}
-
-		// @todo redscar - We need to add data validation for each type.
-
-		return true;
-	}
-
-	/**
-	 * Sanitizes and maps the raw form data for a coupon.
-	 *
-	 * This method sanitizes the incoming form data, ensuring all values are safe
-	 * for database storage. The fee amount is converted to cents using the provided
-	 * Modifier_Manager, and other fields are sanitized according to their type.
+	 * Maps and sanitizes raw form data into model-ready data.
 	 *
 	 * @since TBD
 	 *
 	 * @param array $data The raw form data, typically from $_POST.
 	 *
-	 * @return array The sanitized and mapped data ready for database insertion or updating.
+	 * @return array The sanitized and mapped data for database insertion or updating.
 	 */
-	public function sanitize_data( array $data ): array {
+	public function map_form_data_to_model( array $data ): array {
 		return [
 			'id'               => isset( $data['order_modifier_id'] ) ? absint( $data['order_modifier_id'] ) : 0,
-			'modifier_type'    => $this->get_modifier_type(), // Always set to 'coupon'.
-			'sub_type'         => isset( $data['order_modifier_sub_type'] ) ? sanitize_text_field( $data['order_modifier_sub_type'] ) : '',
-			'fee_amount_cents' => isset( $data['order_modifier_amount'] ) ? $this->convert_to_cents( floatval( $data['order_modifier_amount'] ) ) : 0,
-			'slug'             => isset( $data['order_modifier_slug'] ) ? sanitize_text_field( $data['order_modifier_slug'] ) : '',
-			'display_name'     => isset( $data['order_modifier_coupon_name'] ) ? sanitize_text_field( $data['order_modifier_coupon_name'] ) : '',
-			'status'           => isset( $data['order_modifier_status'] ) ? sanitize_text_field( $data['order_modifier_status'] ) : '',
-			// @todo - Need to get the meta data to insert next.
-			//'coupon_limit'     => isset( $data['order_modifier_coupon_limit'] ) ? absint( $data['order_modifier_coupon_limit'] ) : 0,
+			'modifier_type'    => $this->get_modifier_type(),
+			'sub_type'         => sanitize_text_field( $data['order_modifier_sub_type'] ?? '' ),
+			'fee_amount_cents' => $this->convert_to_cents( $data['order_modifier_amount'] ?? 0 ),
+			'slug'             => sanitize_text_field( $data['order_modifier_slug'] ?? '' ),
+			'display_name'     => sanitize_text_field( $data['order_modifier_coupon_name'] ?? '' ),
+			'status'           => sanitize_text_field( $data['order_modifier_status'] ?? '' ),
 		];
 	}
 
@@ -156,31 +88,6 @@ class Coupon extends Modifier_Abstract {
 	}
 
 	/**
-	 * Prepares the context for rendering the coupon form.
-	 *
-	 * This method maps the internal coupon data to the fields required by the edit form.
-	 * It converts amounts from cents to a formatted string using the provided Modifier_Manager.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $context The raw context data.
-	 *
-	 * @return array The prepared context data ready for rendering the form.
-	 */
-	public function prepare_context( array $context ): array {
-		return [
-			'order_modifier_display_name'     => $context['display_name'] ?? '',
-			'order_modifier_slug'             => $context['slug'] ?? $this->generate_unique_slug(),
-			'order_modifier_sub_type'         => $context['sub_type'] ?? '',
-			'order_modifier_fee_amount_cents' => isset( $context['fee_amount_cents'] )
-				? $this->convert_from_cents( $context['fee_amount_cents'] )
-				: '',
-			'order_modifier_status'           => $context['status'] ?? '',
-			'order_modifier_coupon_limit'     => $context['coupon_limit'] ?? '',
-		];
-	}
-
-	/**
 	 * Renders the coupon edit screen.
 	 *
 	 * @since TBD
@@ -192,8 +99,30 @@ class Coupon extends Modifier_Abstract {
 	public function render_edit( array $context ): void {
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
-		$context     = $this->prepare_context( $context );
+		$context     = $this->map_context_to_template( $context );
 
 		$admin_views->template( 'order_modifiers/coupon_edit', $context );
+	}
+
+	/**
+	 * Maps context data to the template context.
+	 *
+	 * This method prepares the context for rendering the coupon edit form.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $context The raw model data.
+	 *
+	 * @return array The context data ready for rendering the form.
+	 */
+	public function map_context_to_template( array $context ): array {
+		return [
+			'order_modifier_display_name'     => $context['display_name'] ?? '',
+			'order_modifier_slug'             => $context['slug'] ?? $this->generate_unique_slug(),
+			'order_modifier_sub_type'         => $context['sub_type'] ?? '',
+			'order_modifier_fee_amount_cents' => $this->convert_from_cents( $context['fee_amount_cents'] ?? 0 ),
+			'order_modifier_status'           => $context['status'] ?? '',
+			'order_modifier_coupon_limit'     => $context['coupon_limit'] ?? '',
+		];
 	}
 }

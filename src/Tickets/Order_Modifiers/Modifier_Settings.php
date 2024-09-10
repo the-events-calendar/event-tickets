@@ -266,7 +266,7 @@ class Modifier_Settings {
 
 			// Use the Modifier Manager to sanitize, and save the data.
 			$manager       = new Modifier_Manager( $modifier_strategy );
-			$modifier_data = $modifier_strategy->sanitize_data( $_POST, $manager );
+			$modifier_data = $modifier_strategy->map_form_data_to_model( $_POST, $manager );
 			$result        = $manager->save_modifier( $modifier_data );
 
 			// Display success or error message based on result.

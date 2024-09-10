@@ -18,6 +18,7 @@
 
 namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
+use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers as Order_Modifiers_Repository;
 
 /**
@@ -46,6 +47,14 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	protected Order_Modifiers_Repository $repository;
 
 	/**
+	 * Fields required by this modifier.
+	 *
+	 * @since TBD
+	 * @var array
+	 */
+	protected array $required_fields = [];
+
+	/**
 	 * Constructor to set up the repository and modifier type.
 	 *
 	 * @since TBD
@@ -65,6 +74,50 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 */
 	public function get_modifier_type(): string {
 		return $this->modifier_type;
+	}
+
+	/**
+	 * Inserts a new Coupon Modifier.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $data The data to insert.
+	 *
+	 * @return mixed The newly inserted modifier or an empty array if no changes were made.
+	 */
+	public function insert_modifier( array $data ): mixed {
+		// Ensure the modifier_type is set to 'coupon'.
+		$data['modifier_type'] = $this->modifier_type;
+
+		// Validate data before proceeding.
+		if ( ! $this->validate_data( $data ) ) {
+			return [];
+		}
+
+		// Use the repository to insert the data into the `order_modifiers` table.
+		return $this->repository->insert( new Order_Modifier( $data ) );
+	}
+
+	/**
+	 * Updates an existing Coupon Modifier.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $data The data to update.
+	 *
+	 * @return mixed The updated modifier or an empty array if no changes were made.
+	 */
+	public function update_modifier( array $data ): mixed {
+		// Ensure the modifier_type is set to 'coupon'.
+		$data['modifier_type'] = $this->modifier_type;
+
+		// Validate data before proceeding.
+		if ( ! $this->validate_data( $data ) ) {
+			return [];
+		}
+
+		// Use the repository to update the data in the `order_modifiers` table.
+		return $this->repository->update( new Order_Modifier( $data ) );
 	}
 
 	/**
@@ -95,22 +148,35 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	}
 
 	/**
-	 * Sanitizes and maps the raw form data for the modifier.
-	 *
-	 * This method is to be implemented by each strategy class.
+	 * Maps and sanitizes raw form data into model-ready data.
 	 *
 	 * @since TBD
 	 *
-	 * @param array $data The raw form data.
+	 * @param array $data The raw form data, typically from $_POST.
 	 *
-	 * @return array The sanitized and mapped data.
+	 * @return array The sanitized and mapped data for database insertion or updating.
 	 */
-	abstract public function sanitize_data( array $data ): array;
+	abstract public function map_form_data_to_model( array $data ): array;
+
+
+	/**
+	 * Maps context data to the template context.
+	 *
+	 * This method prepares the context for rendering the coupon edit form.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $context The raw model data.
+	 *
+	 * @return array The context data ready for rendering the form.
+	 */
+	abstract public function map_context_to_template( array $context ): array;
 
 	/**
 	 * Validates the required fields for the modifier.
 	 *
-	 * This method is to be implemented by each strategy class.
+	 * This base logic checks if all required fields are present and not empty.
+	 * Specific strategies can define additional validation logic.
 	 *
 	 * @since TBD
 	 *
@@ -118,7 +184,16 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @return bool True if the data is valid, false otherwise.
 	 */
-	abstract public function validate_data( array $data ): bool;
+	public function validate_data( array $data ): bool {
+		foreach ( $this->required_fields as $field ) {
+			if ( empty( $data[ $field ] ) ) {
+				return false;
+			}
+		}
+
+		// @todo redscar - We should implement some more "complex" validation.
+		return true;
+	}
 
 	/**
 	 * Converts a decimal amount to its value in cents.

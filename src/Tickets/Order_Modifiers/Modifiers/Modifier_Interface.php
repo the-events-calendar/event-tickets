@@ -90,15 +90,15 @@ interface Modifier_Interface {
 	public function render_edit( array $context ): void;
 
 	/**
-	 * Sanitizes the raw form data for this modifier type.
+	 * Maps and sanitizes raw form data into model-ready data.
 	 *
 	 * @since TBD
 	 *
-	 * @param array $data The raw form data.
+	 * @param array $data The raw form data, typically from $_POST.
 	 *
-	 * @return array The sanitized data.
+	 * @return array The sanitized and mapped data for database insertion or updating.
 	 */
-	public function sanitize_data( array $data ): array;
+	public function map_form_data_to_model( array $data ): array;
 
 	/**
 	 * Retrieves an Order Modifier by its ID.
