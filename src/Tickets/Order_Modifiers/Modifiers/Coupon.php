@@ -12,7 +12,6 @@
 
 namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
-use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers as Order_Modifiers_Repository;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
 
 /**
@@ -20,7 +19,7 @@ use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
  *
  * @since TBD
  */
-class Coupon implements Modifier_Strategy_Interface {
+class Coupon extends Modifier_Abstract {
 
 	/**
 	 * The modifier type for coupons.
@@ -32,35 +31,12 @@ class Coupon implements Modifier_Strategy_Interface {
 	protected string $modifier_type = 'coupon';
 
 	/**
-	 * The repository for interacting with the `order_modifiers` table.
-	 *
-	 * @since TBD
-	 *
-	 * @var Order_Modifiers_Repository
-	 */
-	protected Order_Modifiers_Repository $repository;
-
-	/**
-	 * Initializes the Coupon strategy with the necessary repository.
-	 *
-	 * This constructor sets up the repository that will be used for database interactions
-	 * related to the Coupon modifier.
+	 * Constructor for the Coupon strategy.
 	 *
 	 * @since TBD
 	 */
 	public function __construct() {
-		$this->repository = new Order_Modifiers_Repository();
-	}
-
-	/**
-	 * Gets the modifier type for coupons.
-	 *
-	 * @since TBD
-	 *
-	 * @return string The modifier type ('coupon').
-	 */
-	public function get_modifier_type(): string {
-		return $this->modifier_type;
+		parent::__construct( 'coupon' ); // Call the parent constructor with the 'coupon' modifier type.
 	}
 
 	/**
@@ -141,39 +117,28 @@ class Coupon implements Modifier_Strategy_Interface {
 	/**
 	 * Sanitizes and maps the raw form data for a coupon.
 	 *
+	 * This method sanitizes the incoming form data, ensuring all values are safe
+	 * for database storage. The fee amount is converted to cents using the provided
+	 * Modifier_Manager, and other fields are sanitized according to their type.
+	 *
 	 * @since TBD
 	 *
-	 * @param array $data The raw form data.
+	 * @param array            $data    The raw form data, typically from $_POST.
 	 *
-	 * @return array The sanitized and mapped data.
+	 * @return array The sanitized and mapped data ready for database insertion or updating.
 	 */
-	public function sanitize_data( array $data, Modifier_Manager $manager ): array {
+	public function sanitize_data( array $data): array {
 		return [
 			'id'               => isset( $data['order_modifier_id'] ) ? absint( $data['order_modifier_id'] ) : 0,
 			'modifier_type'    => $this->get_modifier_type(), // Always set to 'coupon'.
 			'sub_type'         => isset( $data['order_modifier_sub_type'] ) ? sanitize_text_field( $data['order_modifier_sub_type'] ) : '',
-			'fee_amount_cents' => isset( $data['order_modifier_amount'] ) ? $manager->convert_to_cents( floatval( $data['order_modifier_amount'] ) ) : 0,
+			'fee_amount_cents' => isset( $data['order_modifier_amount'] ) ? $this->convert_to_cents( floatval( $data['order_modifier_amount'] ) ) : 0,
 			'slug'             => isset( $data['order_modifier_slug'] ) ? sanitize_text_field( $data['order_modifier_slug'] ) : '',
 			'display_name'     => isset( $data['order_modifier_coupon_name'] ) ? sanitize_text_field( $data['order_modifier_coupon_name'] ) : '',
 			'status'           => isset( $data['order_modifier_status'] ) ? sanitize_text_field( $data['order_modifier_status'] ) : '',
 			// @todo - Need to get the meta data to insert next.
 			//'coupon_limit'     => isset( $data['order_modifier_coupon_limit'] ) ? absint( $data['order_modifier_coupon_limit'] ) : 0,
 		];
-	}
-
-	/**
-	 * Retrieves the modifier data by ID.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $modifier_id The ID of the modifier to retrieve.
-	 * @return array|null The modifier data or null if not found.
-	 */
-	public function get_modifier_by_id( int $modifier_id ) {
-		// Fetch the modifier from the repository by ID.
-		$modifier_data = $this->repository->find_by_id( $modifier_id );
-
-		return $modifier_data ? $modifier_data->to_array() : []; // Return null if no coupon is found with the provided ID.
 	}
 
 	/**
@@ -203,13 +168,13 @@ class Coupon implements Modifier_Strategy_Interface {
 	 *
 	 * @return array The prepared context data ready for rendering the form.
 	 */
-	public function prepare_context( array $context, Modifier_Manager $manager ): array {
+	public function prepare_context( array $context ): array {
 		return [
 			'order_modifier_display_name'     => $context['display_name'] ?? '',
-			'order_modifier_slug'             => $context['slug'] ?? $manager->generate_unique_slug(),
+			'order_modifier_slug'             => $context['slug'] ?? $this->generate_unique_slug(),
 			'order_modifier_sub_type'         => $context['sub_type'] ?? '',
 			'order_modifier_fee_amount_cents' => isset( $context['fee_amount_cents'] )
-				? $manager->convert_from_cents( $context['fee_amount_cents'] )
+				? $this->convert_from_cents( $context['fee_amount_cents'] )
 				: '',
 			'order_modifier_status'           => $context['status'] ?? '',
 			'order_modifier_coupon_limit'     => $context['coupon_limit'] ?? '',

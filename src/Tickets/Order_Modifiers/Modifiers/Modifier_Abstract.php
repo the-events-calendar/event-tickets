@@ -1,111 +1,174 @@
 <?php
+/**
+ * Abstract class for common Order Modifier functionality.
+ *
+ * This class provides reusable methods and enforces structure for specific order modifier strategies (such as Coupons,
+ * Fees).
+ *
+ * @since TBD
+ * @package TEC\Tickets\Order_Modifiers\Modifiers
+ */
 
 namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
-/**
- * Abstract class for Order Modifiers (Coupons and Booking Fees).
- *
- * @since TBD
- */
-abstract class Modifier_Abstract implements Modifier_Interface {
+use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers as Order_Modifiers_Repository;
+
+abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 
 	/**
-	 * The modifier type (e.g., 'coupon', 'fee').
+	 * The modifier type for the concrete strategy (e.g., 'coupon', 'fee').
 	 *
+	 * @since TBD
 	 * @var string
 	 */
 	protected string $modifier_type;
 
 	/**
-	 * Allowed sub_types (e.g., 'percentage', 'flat').
-	 * Can be extended by concrete classes.
+	 * The repository for interacting with the order modifiers table.
 	 *
-	 * @var array
+	 * @since TBD
+	 * @var Order_Modifiers_Repository
 	 */
-	protected array $allowed_sub_types = [ 'percentage', 'flat' ];
+	protected Order_Modifiers_Repository $repository;
 
 	/**
-	 * @inheritDoc
-	 */
-	abstract public function insert_modifier( array $data ): mixed;
-
-	/**
-	 * @inheritDoc
-	 */
-	abstract public function update_modifier( array $data ): mixed;
-
-	/**
-	 * Inserts or updates an Order Modifier to the system.
+	 * Constructor to set up the repository and modifier type.
 	 *
-	 * @param array $data The data to save the modifier.
+	 * @since TBD
 	 *
-	 * @return mixed The result of the insert or update operation, or an empty array if no changes were made.
+	 * @param string $modifier_type The modifier type (e.g., 'coupon', 'fee').
 	 */
-	public function save_modifier( array $data ): mixed {
-		if ( empty( $data ) ) {
-			return [];
-		}
-
-		$data['modifier_type'] = $this->modifier_type;
-
-		// Perform base validation for required fields.
-		if ( ! $this->validate_data( $data ) ) {
-			return [];
-		}
-
-		// Determine if this is an update or an insert operation.
-		if ( $this->is_update( $data ) ) {
-			// Perform the update.
-			$updated_data = $this->update_modifier( $data );
-			return $updated_data ? : [];
-		}
-
-		// Otherwise, insert a new modifier.
-		$inserted_data = $this->insert_modifier( $data );
-		return $inserted_data ? : [];
+	public function __construct( string $modifier_type ) {
+		$this->modifier_type = $modifier_type;
+		$this->repository    = new Order_Modifiers_Repository();
 	}
 
 	/**
-	 * Checks if the data contains an ID and is a valid update operation.
+	 * Gets the modifier type.
 	 *
-	 * @param array $data The data to check.
-	 *
-	 * @return bool True if the data contains a valid ID, indicating an update operation.
+	 * @since TBD
+	 * @return string The modifier type.
 	 */
-	protected function is_update( array $data ): bool {
-		return isset( $data['id'] ) && is_int( $data['id'] ) && $data['id'] > 0;
+	public function get_modifier_type(): string {
+		return $this->modifier_type;
 	}
 
 	/**
-	 * Validates the basic data required for an Order Modifier.
-	 * This method checks for essential fields and validates the sub_type.
+	 * Retrieves the modifier by its ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $modifier_id The modifier ID.
+	 *
+	 * @return array|null The modifier data or null if not found.
+	 */
+	public function get_modifier_by_id( int $modifier_id ): ?array {
+		$modifier_data = $this->repository->find_by_id( $modifier_id );
+		return $modifier_data?->to_array();
+	}
+
+	/**
+	 * Finds a modifier by its slug.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The slug to search for.
+	 *
+	 * @return mixed The modifier data or null if not found.
+	 */
+	public function find_by_slug( string $slug ): mixed {
+		return $this->repository->find_by_slug( $slug, $this->modifier_type );
+	}
+
+	/**
+	 * Sanitizes and maps the raw form data for the modifier.
+	 *
+	 * This method is to be implemented by each strategy class.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $data The raw form data.
+	 *
+	 * @return array The sanitized and mapped data.
+	 */
+	abstract public function sanitize_data( array $data ): array;
+
+	/**
+	 * Validates the required fields for the modifier.
+	 *
+	 * This method is to be implemented by each strategy class.
+	 *
+	 * @since TBD
 	 *
 	 * @param array $data The data to validate.
 	 *
 	 * @return bool True if the data is valid, false otherwise.
 	 */
-	protected function validate_data( array $data ): bool {
-		$required_fields = [ 'post_id', 'sub_type', 'slug', 'display_name', 'status' ];
+	abstract public function validate_data( array $data ): bool;
 
-		foreach ( $required_fields as $field ) {
-			if ( ! isset( $data[ $field ] ) || empty( $data[ $field ] ) ) {
-				return false;
-			}
-		}
-
-		// Validate the sub_type.
-		return $this->validate_sub_type( $data['sub_type'] );
+	/**
+	 * Converts a decimal amount to its value in cents.
+	 *
+	 * This method is used to convert a floating-point amount (e.g., 23.00) into an integer representing cents.
+	 *
+	 * @since TBD
+	 *
+	 * @param float $amount The amount to convert.
+	 *
+	 * @return int The amount converted to cents.
+	 */
+	public function convert_to_cents( float $amount ): int {
+		return (int) round( floatval( $amount ) * 100 );
 	}
 
 	/**
-	 * Validates the sub_type against the allowed sub_types.
-	 * Can be customized by child classes.
+	 * Converts an amount in cents to a formatted decimal string.
 	 *
-	 * @param string $sub_type The sub_type to validate.
+	 * This method is used to convert an integer amount in cents (e.g., 2300) into a string with two decimal points (e.g., 23.00).
 	 *
-	 * @return bool True if the sub_type is valid, false otherwise.
+	 * @since TBD
+	 *
+	 * @param int $cents The amount in cents.
+	 *
+	 * @return string The formatted decimal string representing the amount.
 	 */
-	protected function validate_sub_type( string $sub_type ): bool {
-		return in_array( $sub_type, $this->allowed_sub_types, true );
+	public function convert_from_cents( int $cents ): string {
+		return number_format( $cents / 100, 2, '.', '' );
+	}
+
+	/**
+	 * Generates a unique alphanumeric slug of 7 characters.
+	 *
+	 * The slug will be checked for uniqueness in the database before being returned.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The unique slug.
+	 */
+	public function generate_unique_slug(): string {
+		$slug_length = 7;
+
+		// Generate a random alphanumeric slug.
+		do {
+			// Generate random bytes and convert them to an alphanumeric string.
+			$random_string = substr( base_convert( bin2hex( random_bytes( 4 ) ), 16, 36 ), 0, $slug_length );
+		} while ( ! $this->is_slug_unique( $random_string ) );
+
+		return $random_string;
+	}
+
+	/**
+	 * Checks whether a slug is unique in the database.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The slug to check for uniqueness.
+	 *
+	 * @return bool True if the slug is unique, false otherwise.
+	 */
+	protected function is_slug_unique( string $slug ): bool {
+		$existing_slug = $this->find_by_slug( $slug );
+
+		return null === $existing_slug;
 	}
 }
