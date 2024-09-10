@@ -669,6 +669,30 @@ class Attendee {
 	}
 
 	/**
+	 * Get attendees by ticket ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $ticket_id    Ticket ID.
+	 * @param string $orm_provider ORM provider string.
+	 *
+	 * @return array List of attendees.
+	 */
+	public function get_attendees_by_ticket_id( $ticket_id, $orm_provider ) {
+		// Check to see if we already have attendees by ticket id stored.
+		$attendees = tribe( Memoize_Tickets::class )->get_attendees_by_ticket_id( $ticket_id );
+		if ( is_null( $attendees ) ) {
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tec_tc_attendees( $orm_provider );
+			$attendees  = $repository->by( 'ticket_id', $ticket_id )->all();
+
+			tribe( Memoize_Tickets::class )->add_attendees_by_ticket_id( $ticket_id, $attendees );
+		}
+
+		return tribe( Module::class )->get_attendees_from_module( $attendees );
+	}
+
+	/**
 	 * Loads event, ticket, order and other data into an attendee object
 	 *
 	 * @todo  We should not be using this particular piece of the code until it's using `tec_tc_get_attendee`.
