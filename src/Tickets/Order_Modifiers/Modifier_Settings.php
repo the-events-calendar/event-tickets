@@ -125,12 +125,14 @@ class Modifier_Settings {
 		// Get and sanitize request vars for modifier and modifier_id.
 		$modifier_type = sanitize_key( tribe_get_request_var( 'modifier', 'coupon' ) );
 		$modifier_id   = absint( tribe_get_request_var( 'modifier_id', '0' ) );
+		$is_edit       = tribe_is_truthy( tribe_get_request_var( 'edit', '0' ) );
 
 		// Prepare the context for the page.
 		$context = [
 			'event_id'    => 0,
 			'modifier'    => $modifier_type,
 			'modifier_id' => $modifier_id,
+			'is_edit'     => $is_edit,
 		];
 
 		// Check if form is submitted and process the save.
@@ -148,12 +150,12 @@ class Modifier_Settings {
 		// Create a Modifier Manager with the selected strategy.
 		$manager = new Modifier_Manager( $modifier_strategy );
 
-		// Determine if we are in edit or table mode.
-		if ( ! empty( $modifier_id ) ) {
-			$this->render_edit_view( $manager, $context );
-		} else {
+		if ( ! $is_edit ) {
 			$this->render_table_view( $manager, $context );
+			return;
 		}
+
+		$this->render_edit_view( $manager, $context );
 	}
 
 	/**
@@ -217,9 +219,12 @@ class Modifier_Settings {
 			// Only merge if modifier data is not null.
 			if ( ! is_null( $modifier_data ) ) {
 				$context = array_merge( $context, $modifier_data );
+			} else {
+				// @todo redscar - If a modifier ID is sent, and we are unable to find the data, do we display a message?
+				echo '<div class="notice notice-error"><p>' . esc_html__( 'We are unable to find that Modifier.', 'event-tickets' ) . '</p></div>';
+				return;
 			}
 		}
-		// @todo redscar - If a modifier ID is sent, and we are unable to find the data, do we display a message?
 
 		// Render the edit screen, passing the populated context.
 		echo '<h2>' . esc_html( ucfirst( $context['modifier'] ) . ' Edit' ) . '</h2>';

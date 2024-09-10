@@ -112,10 +112,8 @@ class Modifier_Manager {
 	 * @since TBD
 	 *
 	 * @param array $context The context data for rendering the edit screen.
-	 *
-	 * @return mixed The rendered edit screen content.
 	 */
-	public function render_edit_screen( array $context ): mixed {
-		return $this->strategy->render_edit( $context );
+	public function render_edit_screen( array $context ) {
+		$this->strategy->render_edit( $context );
 	}
 }
