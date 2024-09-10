@@ -77,12 +77,6 @@ class Timer_Test extends Controller_Test_Case {
 
 		$token   = 'test-token';
 
-		global $post;
-
-		$post = get_post( $post_id );
-
-		$this->assertEquals( $post_id, get_the_ID() );
-
 		ob_start();
 		do_action( 'tec_tickets_seating_seat_selection_timer', $token, $post_id );
 		$html = ob_get_clean();
@@ -175,12 +169,6 @@ class Timer_Test extends Controller_Test_Case {
 		$sessions->upsert( 'previous-token', $post_id, time() + 100 );
 
 		$controller = $this->make_controller();
-
-		global $post;
-
-		$post = get_post( $post_id );
-
-		$this->assertEquals( $post_id, get_the_ID() );
 
 		// Now render the timer a first time with a new token for the same post ID.
 		ob_start();

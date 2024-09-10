@@ -342,12 +342,6 @@ class Frontend_Test extends Controller_Test_Case {
 		$ids     = $fixture();
 		$post_id = array_shift( $ids );
 
-		global $post;
-
-		$post = get_post( $post_id );
-
-		$this->assertEquals( $post_id, get_the_ID() );
-
 		$this->make_controller()->register();
 
 		$html = tribe( Tickets_View::class )->get_tickets_block( $post_id );
