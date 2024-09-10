@@ -264,6 +264,7 @@ class Frontend extends Controller_Contract {
 			'button_classes'          => [ 'tribe-common-c-btn', 'tribe-common-c-btn--small' ],
 			'append_target'           => '.tec-tickets-seating__information',
 			'content_wrapper_classes' => 'tribe-dialog__wrapper tec-tickets-seating__modal',
+			'overlay_click_closes'    => false,
 		];
 
 		return $dialog_view->render_modal( $content, $args, self::MODAL_ID, false );
