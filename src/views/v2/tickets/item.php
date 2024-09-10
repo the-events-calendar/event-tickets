@@ -121,9 +121,9 @@ if ( $has_shared_cap ) {
 
 $seat_labels = tribe( Session::class )->get_events_registrations_ticket_seat_label( $post_id, $ticket->ID );
 
-$seat_labels = wp_json_encode(
-	$seat_labels ? array_combine(
-		wp_list_pluck( $seat_labels, 'reservation_id' ),
+$seat_labels = implode(
+	',',
+	$seat_labels ? array_values(
 		wp_list_pluck( $seat_labels, 'seat_label' )
 	) : []
 );
