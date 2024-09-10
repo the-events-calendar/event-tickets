@@ -109,7 +109,7 @@ class Uplink extends Controller_Contract {
 	}
 
 	/**
-	 * Filters the text for the Seat Builder connection button to return one customized for the
+	 * Filters the text for the Seating Builder connection button to return one customized for the
 	 * SLR feature.
 	 *
 	 * @since TBD
@@ -117,12 +117,12 @@ class Uplink extends Controller_Contract {
 	 * @param string $label         The label for the button.
 	 * @param bool   $authenticated Whether the user is authenticated or not.
 	 *
-	 * @return string The customized text for the Seat Builder connection button.
+	 * @return string The customized text for the Seating Builder connection button.
 	 */
 	public function get_connect_button_text( string $label, bool $authenticated ): string {
 		return $authenticated ?
-			_x( 'Disconnect from Seat Builder', 'Button text for the Seat Builder connection button', 'event-tickets' )
-			: _x( 'Connect to Seat Builder', 'Button text for the Seat Builder connection button', 'event-tickets' );
+			_x( 'Disconnect from Seating Builder', 'Button text for the Seating Builder connection button', 'event-tickets' )
+			: _x( 'Connect to Seating Builder', 'Button text for the Seating Builder connection button', 'event-tickets' );
 	}
 
 	/**
