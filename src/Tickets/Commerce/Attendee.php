@@ -680,13 +680,13 @@ class Attendee {
 	 */
 	public function get_attendees_by_ticket_id( $ticket_id, $orm_provider ) {
 		// Check to see if we already have attendees by ticket id stored.
-		$attendees = tribe( Memoize_Tickets::class )->get_attendees_by_ticket_id( $ticket_id );
+		$attendees = tribe( Memoize_Attendees::class )->get_attendees_by_ticket_id( $ticket_id );
 		if ( is_null( $attendees ) ) {
 			/** @var Tribe__Tickets__Attendee_Repository $repository */
 			$repository = tec_tc_attendees( $orm_provider );
 			$attendees  = $repository->by( 'ticket_id', $ticket_id )->all();
 
-			tribe( Memoize_Tickets::class )->add_attendees_by_ticket_id( $ticket_id, $attendees );
+			tribe( Memoize_Attendees::class )->add_attendees_by_ticket_id( $ticket_id, $attendees );
 		}
 
 		return tribe( Module::class )->get_attendees_from_module( $attendees );

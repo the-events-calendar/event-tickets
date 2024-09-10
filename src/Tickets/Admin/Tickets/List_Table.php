@@ -14,7 +14,7 @@ use Tribe__Tickets__Ticket_Object;
 use WP_List_Table;
 use DateTime;
 use TEC\Tickets\Commerce as TicketsCommerce;
-use TEC\Tickets\Commerce\Memoize_Tickets;
+use TEC\Tickets\Commerce\Memoize_Attendees;
 use Tribe\Tickets\Admin\Settings;
 use Tribe__Template;
 use Tribe__Tickets__Main;
@@ -1008,8 +1008,8 @@ class List_Table extends WP_List_Table {
 		// @todo @codingmusician - Add query priming solutions for other providers.
 		$ticket_ids = wp_list_pluck( $items, 'ID' );
 
-		/** @var Memoize_Tickets $memo */
-		$memo = tribe( Memoize_Tickets::class );
+		/** @var Memoize_Attendees $memo */
+		$memo = tribe( Memoize_Attendees::class );
 
 		foreach ( $ticket_ids as $ticket_id ) {
 			$memo->set_attendee_status_counts_by_ticket_id( $ticket_id, tribe( TicketsCommerce\Ticket::class )->get_status_quantity( $ticket_id ) );

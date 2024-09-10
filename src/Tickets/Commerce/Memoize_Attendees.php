@@ -1,6 +1,6 @@
 <?php
 /**
- * Momoize Tickets class is a helper class for the Tickets List Table to reduce the number of queries.
+ * Memoize Attendees class is a helper class for the Tickets List Table to reduce the number of queries.
  *
  * @since TBD
  *
@@ -10,29 +10,23 @@
 namespace TEC\Tickets\Commerce;
 
 /**
- * Class Memoize_Tickets
+ * Class Memoize_Attendees
  *
  * @since TBD
  *
  * @package TEC\Tickets\Admin\Commerce
  */
-class Memoize_Tickets {
-	/**
-	 * The memoized tickets.
-	 *
-	 * @var array
-	 */
-	protected $tickets = [];
+class Memoize_Attendees {
 
 	/**
-	 * The memoized ticket ids.
+	 * Attendees by ticket id.
 	 *
 	 * @var array
 	 */
 	protected $attendees_by_ticket_id = [];
 
 	/**
-	 * Memoization for attendees by ticket and status.
+	 * Attendees by ticket and status.
 	 *
 	 * @since TBD
 	 *

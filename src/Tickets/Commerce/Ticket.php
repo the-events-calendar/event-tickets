@@ -439,8 +439,8 @@ class Ticket {
 	 * @return int
 	 */
 	protected function get_cancelled( $ticket_id, $refresh = false ) {
-		/** @var Memoize_Tickets $memo */
-		$memo       = tribe( Memoize_Tickets::class );
+		/** @var Memoize_Attendees $memo */
+		$memo       = tribe( Memoize_Attendees::class );
 		$quantities = $memo->get_attendee_count_by_ticket_status( $ticket_id );
 
 		if ( $refresh || ! isset( $quantities[ Denied::SLUG ] ) ) {
@@ -481,8 +481,8 @@ class Ticket {
 	 * @return int
 	 */
 	public function get_qty_pending( $ticket_id, $refresh = false ) {
-		/** @var Memoize_Tickets $memo */
-		$memo       = tribe( Memoize_Tickets::class );
+		/** @var Memoize_Attendees $memo */
+		$memo       = tribe( Memoize_Attendees::class );
 		$quantities = $memo->get_attendee_count_by_ticket_status( $ticket_id );
 
 		if ( $refresh || ! isset( $quantities[ Pending::SLUG ] ) ) {

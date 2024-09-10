@@ -65,7 +65,7 @@ class Provider extends Service_Provider {
 		$this->container->singleton( Tickets_View::class );
 		$this->container->singleton( Promoter_Observer::class, new Promoter_Observer );
 
-		$this->container->singleton( Memoize_Tickets::class );
+		$this->container->singleton( Memoize_Attendees::class );
 
 		$this->container->register( Status\Status_Handler::class );
 		$this->container->register( Flag_Actions\Flag_Action_Handler::class );
