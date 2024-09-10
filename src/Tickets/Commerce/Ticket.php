@@ -431,7 +431,7 @@ class Ticket {
 	 * @todo  TribeCommerceLegacy: Move this method into the another place.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Added the $refresh parameter and use stored status counts.
+	 * @since TBD Added the $refresh parameter and use stored status counts and utilize new memoization class.
 	 *
 	 * @param int  $ticket_id The ticket post ID.
 	 * @param bool $refresh Whether to try and use the cached value or not.
@@ -473,6 +473,7 @@ class Ticket {
 	 * @todo  TribeCommerceLegacy: Move this method into the another place.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Utilize new memoization class.
 	 *
 	 * @param int  $ticket_id The ticket post ID
 	 * @param bool $refresh   Whether to try and use the cached value or not.
