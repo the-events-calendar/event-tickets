@@ -293,7 +293,6 @@ class Timer extends Controller_Contract {
 				'redirect_url' => get_permalink( $post_id ),
 				'post_id'      => $post_id,
 				'sync_on_load' => $sync_on_load,
-				'show_back_to_event' => get_the_id() !== $post_id,
 			]
 		);
 	}

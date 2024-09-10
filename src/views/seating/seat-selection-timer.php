@@ -42,11 +42,4 @@
 	</div>
 	<div class="tec-tickets-seating__dialog-append-target"></div>
 </div>
-<?php if ( $show_back_to_event ) : ?>
-	<div class="tec-tickets-seating__back-to-event">
-		<a href="<?php echo esc_url( $redirect_url ); ?>" class="tec-tickets-seating__back-to-event--link">
-			<?php echo esc_html_x( 'Return to seat selection', 'Link back to event for the user to select Seats again.', 'event-tickets' ); ?>
-		</a>
-	</div>
-<?php endif; ?>
 <?php
