@@ -264,12 +264,10 @@ class Modifier_Settings {
 
 			$_POST['order_modifier_id'] = $context['modifier_id'];
 
-			// Use the strategy to sanitize the form data.
-			$modifier_data = $modifier_strategy->sanitize_data( $_POST );
-
-			// Use the Modifier Manager to save the data.
-			$manager = new Modifier_Manager( $modifier_strategy );
-			$result  = $manager->save_modifier( $modifier_data );
+			// Use the Modifier Manager to sanitize, and save the data.
+			$manager       = new Modifier_Manager( $modifier_strategy );
+			$modifier_data = $modifier_strategy->sanitize_data( $_POST, $manager );
+			$result        = $manager->save_modifier( $modifier_data );
 
 			// Display success or error message based on result.
 			if ( ! empty( $result ) ) {

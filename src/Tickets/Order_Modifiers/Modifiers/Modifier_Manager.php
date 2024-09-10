@@ -131,7 +131,7 @@ class Modifier_Manager {
 	 * @return int The amount converted to cents.
 	 */
 	public function convert_to_cents( float $amount ): int {
-		return absint( $amount * 100 );
+		return (int) round( floatval( $amount ) * 100 );
 	}
 
 	/**

@@ -32,6 +32,27 @@ class Coupon implements Modifier_Strategy_Interface {
 	protected string $modifier_type = 'coupon';
 
 	/**
+	 * The repository for interacting with the `order_modifiers` table.
+	 *
+	 * @since TBD
+	 *
+	 * @var Order_Modifiers_Repository
+	 */
+	protected Order_Modifiers_Repository $repository;
+
+	/**
+	 * Initializes the Coupon strategy with the necessary repository.
+	 *
+	 * This constructor sets up the repository that will be used for database interactions
+	 * related to the Coupon modifier.
+	 *
+	 * @since TBD
+	 */
+	public function __construct() {
+		$this->repository = new Order_Modifiers_Repository();
+	}
+
+	/**
 	 * Gets the modifier type for coupons.
 	 *
 	 * @since TBD
@@ -61,8 +82,7 @@ class Coupon implements Modifier_Strategy_Interface {
 		}
 
 		// Use the repository to insert the data into the `order_modifiers` table.
-		$repository = new Order_Modifiers_Repository();
-		return $repository->insert( new Order_Modifier( $data ) );
+		return $this->repository->insert( new Order_Modifier( $data ) );
 	}
 
 	/**
@@ -84,8 +104,7 @@ class Coupon implements Modifier_Strategy_Interface {
 		}
 
 		// Use the repository to update the data in the `order_modifiers` table.
-		$repository = new Order_Modifiers_Repository();
-		return $repository->update( new Order_Modifier( $data ) );
+		return $this->repository->update( new Order_Modifier( $data ) );
 	}
 
 	/**
@@ -128,12 +147,12 @@ class Coupon implements Modifier_Strategy_Interface {
 	 *
 	 * @return array The sanitized and mapped data.
 	 */
-	public function sanitize_data( array $data ): array {
+	public function sanitize_data( array $data, Modifier_Manager $manager ): array {
 		return [
-			'id'          => isset( $data['order_modifier_id'] ) ? absint( $data['order_modifier_id'] ) : 0,
+			'id'               => isset( $data['order_modifier_id'] ) ? absint( $data['order_modifier_id'] ) : 0,
 			'modifier_type'    => $this->get_modifier_type(), // Always set to 'coupon'.
 			'sub_type'         => isset( $data['order_modifier_sub_type'] ) ? sanitize_text_field( $data['order_modifier_sub_type'] ) : '',
-			'fee_amount_cents' => isset( $data['order_modifier_amount'] ) ? (int) round( floatval( $data['order_modifier_amount'] ) * 100 ) : 0,
+			'fee_amount_cents' => isset( $data['order_modifier_amount'] ) ? $manager->convert_to_cents( floatval( $data['order_modifier_amount'] ) ) : 0,
 			'slug'             => isset( $data['order_modifier_slug'] ) ? sanitize_text_field( $data['order_modifier_slug'] ) : '',
 			'display_name'     => isset( $data['order_modifier_coupon_name'] ) ? sanitize_text_field( $data['order_modifier_coupon_name'] ) : '',
 			'status'           => isset( $data['order_modifier_status'] ) ? sanitize_text_field( $data['order_modifier_status'] ) : '',
@@ -151,10 +170,8 @@ class Coupon implements Modifier_Strategy_Interface {
 	 * @return array|null The modifier data or null if not found.
 	 */
 	public function get_modifier_by_id( int $modifier_id ) {
-		$repository = new Order_Modifiers_Repository();
-
 		// Fetch the modifier from the repository by ID.
-		$modifier_data = $repository->find_by_id( $modifier_id );
+		$modifier_data = $this->repository->find_by_id( $modifier_id );
 
 		return $modifier_data ? $modifier_data->to_array() : []; // Return null if no coupon is found with the provided ID.
 	}
@@ -228,7 +245,6 @@ class Coupon implements Modifier_Strategy_Interface {
 	 * @return mixed The coupon modifier data or null if not found.
 	 */
 	public function find_by_slug( string $slug ): mixed {
-		$repository = new Order_Modifiers_Repository();
-		return $repository->find_by_slug( $slug, $this->modifier_type );
+		return $this->repository->find_by_slug( $slug, $this->modifier_type );
 	}
 }
