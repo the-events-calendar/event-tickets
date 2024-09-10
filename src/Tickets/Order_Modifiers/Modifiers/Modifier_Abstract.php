@@ -77,7 +77,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	}
 
 	/**
-	 * Inserts a new Coupon Modifier.
+	 * Inserts a new Modifier.
 	 *
 	 * @since TBD
 	 *
@@ -86,7 +86,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return mixed The newly inserted modifier or an empty array if no changes were made.
 	 */
 	public function insert_modifier( array $data ): mixed {
-		// Ensure the modifier_type is set to 'coupon'.
+		// Ensure the modifier_type is set to the expected one.
 		$data['modifier_type'] = $this->modifier_type;
 
 		// Validate data before proceeding.
@@ -99,7 +99,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	}
 
 	/**
-	 * Updates an existing Coupon Modifier.
+	 * Updates an existing Modifier.
 	 *
 	 * @since TBD
 	 *
@@ -108,7 +108,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return mixed The updated modifier or an empty array if no changes were made.
 	 */
 	public function update_modifier( array $data ): mixed {
-		// Ensure the modifier_type is set to 'coupon'.
+		// Ensure the modifier_type is set to the expected one.
 		$data['modifier_type'] = $this->modifier_type;
 
 		// Validate data before proceeding.
@@ -162,7 +162,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	/**
 	 * Maps context data to the template context.
 	 *
-	 * This method prepares the context for rendering the coupon edit form.
+	 * This method prepares the context for rendering the edit form.
 	 *
 	 * @since TBD
 	 *
