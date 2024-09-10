@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Momoize Tickets class is a helper class for the Tickets List Table to reduce the number of queries.
  *
@@ -135,5 +134,4 @@ class Memoize_Tickets {
 
 		return $this->attendee_counts_by_ticket_status[ $ticket_id ];
 	}
-
 }
