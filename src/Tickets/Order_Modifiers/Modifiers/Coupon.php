@@ -110,7 +110,6 @@ class Coupon implements Modifier_Strategy_Interface {
 		// Ensure all required fields are present and not empty.
 		foreach ( $required_fields as $field ) {
 			if ( empty( $data[ $field ] ) ) {
-				printr($field,'field is empty');
 				return false;
 			}
 		}

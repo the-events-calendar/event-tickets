@@ -176,12 +176,8 @@ class Modifier_Settings {
 			return null; // Return null if the strategy is not found.
 		}
 
-		$test = $modifier_strategy->get_modifier_by_id( $modifier_id );
-
-		printr($test,'Modifier by id');
-
 		// Use the strategy to retrieve the modifier data by ID.
-		return $test;
+		return $modifier_strategy->get_modifier_by_id( $modifier_id );
 	}
 
 	/**
@@ -272,7 +268,6 @@ class Modifier_Settings {
 			// Use the Modifier Manager to save the data.
 			$manager = new Modifier_Manager( $modifier_strategy );
 			$result  = $manager->save_modifier( $modifier_data );
-			printr( $result, 'result of saving' );
 
 			// Display success or error message based on result.
 			if ( ! empty( $result ) ) {
