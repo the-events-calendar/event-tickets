@@ -80,6 +80,7 @@ class Tribe__Tickets__Query {
 				 * A fast sub-query on the indexed `wp_postmeta.meta_key` column; then a slow comparison on few values
 				 * in the `wp_postmeta.meta_value` column for a fast query.
 				 */
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$query = "SELECT p.ID FROM $wpdb->posts p
 				 JOIN $wpdb->postmeta pm ON ( $meta_keys_in ) AND pm.meta_value = CONCAT( p.ID, '' )
 				 WHERE p.post_type IN ('$post_types_in')";
