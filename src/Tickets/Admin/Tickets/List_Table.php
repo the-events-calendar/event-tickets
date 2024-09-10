@@ -14,6 +14,7 @@ use Tribe__Tickets__Ticket_Object;
 use WP_List_Table;
 use DateTime;
 use TEC\Tickets\Commerce as TicketsCommerce;
+use TEC\Tickets\Commerce\Memoize_Tickets;
 use Tribe\Tickets\Admin\Settings;
 use Tribe__Template;
 use Tribe__Tickets__Main;
@@ -1006,11 +1007,15 @@ class List_Table extends WP_List_Table {
 
 		// @todo @codingmusician - Add query priming solutions for other providers.
 		$ticket_ids = wp_list_pluck( $items, 'ID' );
-		$provider   = Page::get_current_provider_object();
+
+		/** @var Memoize_Tickets $memo */
+		$memo = tribe( Memoize_Tickets::class );
 
 		foreach ( $ticket_ids as $ticket_id ) {
-			TicketsCommerce\Ticket::set_attendees_by_ticket_status( $ticket_id, tribe( TicketsCommerce\Ticket::class )->get_status_quantity( $ticket_id ) );
-			$provider->add_attendee_by_ticket_id( $ticket_id );
+			$memo->set_attendee_status_counts_by_ticket_id( $ticket_id, tribe( TicketsCommerce\Ticket::class )->get_status_quantity( $ticket_id ) );
+
+			// This will create an empty array for memoization purposes.
+			$memo->add_attendee_by_ticket_id( $ticket_id );
 		}
 
 		$attendee_query = new WP_Query(
@@ -1037,7 +1042,8 @@ class List_Table extends WP_List_Table {
 			if ( ! $ticket_id ) {
 				continue;
 			}
-			$provider->add_attendee_by_ticket_id( $ticket_id, $attendee );
+
+			$memo->add_attendee_by_ticket_id( $ticket_id, $attendee );
 		}
 	}
 

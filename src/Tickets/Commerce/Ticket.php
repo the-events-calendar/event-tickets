@@ -137,15 +137,6 @@ class Ticket {
 	public static $type_meta_key = '_type';
 
 	/**
-	 * Memoization for attendees by ticket and status.
-	 *
-	 * @since TBD
-	 *
-	 * @var array
-	 */
-	protected static $attendees_by_ticket_status = [];
-
-	/**
 	 * Stores the instance of the template engine that we will use for rendering the elements.
 	 *
 	 * @since 5.2.3
@@ -189,18 +180,6 @@ class Ticket {
 	 * @var string
 	 */
 	public static $sale_price_end_date_key = '_sale_price_end_date';
-
-	/**
-	 * Sets the attendee counts for a ticket by status.
-	 *
-	 * @since TBD
-	 *
-	 * @param int   $ticket_id  The ticket ID.
-	 * @param int[] $status_qty The status.
-	 */
-	public static function set_attendees_by_ticket_status( $ticket_id, $status_qty ) {
-		static::$attendees_by_ticket_status[ $ticket_id ] = $status_qty;
-	}
 
 	/**
 	 * Gets the template instance used to setup the rendering html.
@@ -460,7 +439,11 @@ class Ticket {
 	 * @return int
 	 */
 	protected function get_cancelled( $ticket_id, $refresh = false ) {
-		if ( $refresh || ! isset( static::$attendees_by_ticket_status[ $ticket_id ][ Denied::SLUG ] ) ) {
+		/** @var Memoize_Tickets $memo */
+		$memo = tribe( Memoize_Tickets::class );
+		$quantities = $memo->get_attendee_count_by_ticket_status( $ticket_id );
+
+		if ( $refresh || ! isset( $quantities[ Denied::SLUG ] ) ) {
 			$denied_orders = \Tribe__Tickets__Commerce__PayPal__Order::find_by(
 				[
 					'ticket_id'      => $ticket_id,
@@ -477,10 +460,11 @@ class Ticket {
 				$denied += $denied_order->get_item_quantity( $ticket_id );
 			}
 
-			static::$attendees_by_ticket_status[ $ticket_id ][ Denied::SLUG ] = max( 0, $denied );
+			$quantities[ Denied::SLUG ] = max( 0, $denied );
+			$memo->set_attendee_status_count_by_ticket_id( $ticket_id, Denied::SLUG, $quantities[ Denied::SLUG ] );
 		}
 
-		return static::$attendees_by_ticket_status[ $ticket_id ][ Denied::SLUG ];
+		return $quantities[ Denied::SLUG ];
 	}
 
 	/**
@@ -496,7 +480,11 @@ class Ticket {
 	 * @return int
 	 */
 	public function get_qty_pending( $ticket_id, $refresh = false ) {
-		if ( $refresh || ! isset( static::$attendees_by_ticket_status[ $ticket_id ][ Pending::SLUG ] ) ) {
+		/** @var Memoize_Tickets $memo */
+		$memo = tribe( Memoize_Tickets::class );
+		$quantities = $memo->get_attendee_count_by_ticket_status( $ticket_id );
+
+		if ( $refresh || ! isset( $quantities[ Pending::SLUG ] ) ) {
 			$pending_query = new \WP_Query( [
 				'fields'     => 'ids',
 				'per_page'   => 1,
@@ -514,10 +502,11 @@ class Ticket {
 				],
 			] );
 
-			static::$attendees_by_ticket_status[ $ticket_id ][ Pending::SLUG ] = $pending_query->found_posts;
+			$quantities[ Pending::SLUG ] = $pending_query->found_posts;
+			$memo->set_attendee_status_count_by_ticket_id( $ticket_id, Pending::SLUG, $quantities[ Pending::SLUG ] );
 		}
 
-		return static::$attendees_by_ticket_status[ $ticket_id ][ Pending::SLUG ];
+		return $quantities[ Pending::SLUG ];
 	}
 
 	/**
