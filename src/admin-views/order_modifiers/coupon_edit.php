@@ -51,7 +51,7 @@
 
 		<fieldset>
 			<label for="order_modifier_amount"><?php esc_html_e( 'Amount', 'event-tickets' ); ?></label>
-			<input type="number" name="order_modifier_amount" id="order_modifier_amount" class="tribe-field"
+			<input type="text" name="order_modifier_amount" id="order_modifier_amount" class="tribe-field"
 				   value="<?php echo esc_attr( $order_modifier_fee_amount_cents ); ?>">
 		</fieldset>
 

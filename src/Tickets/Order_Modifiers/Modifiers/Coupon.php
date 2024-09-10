@@ -133,7 +133,7 @@ class Coupon implements Modifier_Strategy_Interface {
 			'id'          => isset( $data['order_modifier_id'] ) ? absint( $data['order_modifier_id'] ) : 0,
 			'modifier_type'    => $this->get_modifier_type(), // Always set to 'coupon'.
 			'sub_type'         => isset( $data['order_modifier_sub_type'] ) ? sanitize_text_field( $data['order_modifier_sub_type'] ) : '',
-			'fee_amount_cents' => isset( $data['order_modifier_amount'] ) ? absint( $data['order_modifier_amount'] ) * 100 : 0,
+			'fee_amount_cents' => isset( $data['order_modifier_amount'] ) ? (int) round( floatval( $data['order_modifier_amount'] ) * 100 ) : 0,
 			'slug'             => isset( $data['order_modifier_slug'] ) ? sanitize_text_field( $data['order_modifier_slug'] ) : '',
 			'display_name'     => isset( $data['order_modifier_coupon_name'] ) ? sanitize_text_field( $data['order_modifier_coupon_name'] ) : '',
 			'status'           => isset( $data['order_modifier_status'] ) ? sanitize_text_field( $data['order_modifier_status'] ) : '',
