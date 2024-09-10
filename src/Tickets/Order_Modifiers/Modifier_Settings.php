@@ -262,6 +262,8 @@ class Modifier_Settings {
 				return;
 			}
 
+			$_POST['order_modifier_id'] = $context['modifier_id'];
+
 			// Use the strategy to sanitize the form data.
 			$modifier_data = $modifier_strategy->sanitize_data( $_POST );
 

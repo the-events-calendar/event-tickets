@@ -130,7 +130,7 @@ class Coupon implements Modifier_Strategy_Interface {
 	 */
 	public function sanitize_data( array $data ): array {
 		return [
-			'post_id'          => isset( $data['order_modifier_post_id'] ) ? absint( $data['order_modifier_post_id'] ) : 0,
+			'id'          => isset( $data['order_modifier_id'] ) ? absint( $data['order_modifier_id'] ) : 0,
 			'modifier_type'    => $this->get_modifier_type(), // Always set to 'coupon'.
 			'sub_type'         => isset( $data['order_modifier_sub_type'] ) ? sanitize_text_field( $data['order_modifier_sub_type'] ) : '',
 			'fee_amount_cents' => isset( $data['order_modifier_amount'] ) ? absint( $data['order_modifier_amount'] ) * 100 : 0,
