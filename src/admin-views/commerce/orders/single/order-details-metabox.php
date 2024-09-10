@@ -42,11 +42,11 @@ $post_date .= Tribe__Date_Utils::reformat( $ts, 'g:i A' );
 		</div>
 		<div class="tec-tickets-commerce-single-order--details--item--value">
 			<?php
-			$order->purchaser['full_name'] = trim( $order->purchaser['full_name'] );
+			$name = $order->purchaser['first_name'].' '.$order->purchaser['last_name'];
 			printf(
 				'%1$s%2$s<a href="mailto:%3$s">%4$s</a>',
-				esc_html( $order->purchaser['full_name'] ),
-				$order->purchaser['full_name'] ? '<br/>' : '', // phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped
+				esc_html( $name ),
+				$name ? '<br/>' : '', // phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped
 				esc_attr( $order->purchaser['email'] ),
 				esc_html( $order->purchaser['email'] ),
 			);

@@ -51,37 +51,70 @@ class Edit_Purchaser_Provider extends Service_Provider {
 			[
 				'jquery',
 				'tribe-dialog',
+				'tribe-common-skeleton-style',
+				'tribe-common-full-style',
+				'tribe-common',
 			],
-			'admin_enqueue_scripts'
+			null
 		);
 	}
 
 	public function ajax_handle_request() {
 		check_ajax_referer('tec_commerce_purchaser_edit', '_nonce' );
+		$error_message = '';
 
-switch($_SERVER['REQUEST_METHOD']) {
-	case 'POST':
-		$updated = tec_tc_orders()->by_args(
-			[
-				'status' => 'any',
-				'id'     => $_POST['ID'],
-			]
-		)->set_args( [
-			'purchaser_email' => $_POST['email'],
-			'purchaser_fullname' => $_POST['name'],
-		] )->save();
-		if($updated) {
-			wp_send_json_success();
-		} else {
-			wp_send_json_error("Failed updating purchaser.");
+		switch( $_SERVER['REQUEST_METHOD'] ) {
+			case 'POST':
+				list( $first_name, $last_name ) = explode( ' ', $_POST['name'] );
+				$email   					    = $_POST['email'];
+				$post_id 						= $_POST['id'];
+
+				if ( ! filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
+					wp_send_json_error(
+						_x(
+							'Invalid email address',
+							'When the provided purchaser email address is invalid.',
+							'event-tickets'
+						)
+					);
+					die();
+				}
+
+				// Update through gateway first.
+
+
+				// Local database update.
+				tec_tc_orders()->by_args(
+						[
+							'status' => 'any',
+							'id'     => $post_id,
+						]
+					)->set_args( [
+						'purchaser_email'      => sanitize_email( $email ),
+						'purchaser_first_name' => sanitize_text_field( $first_name ),
+						'purchaser_last_name'  => sanitize_text_field( $last_name ),
+					] )->save();
+
+
+				if( $updated ) {
+					wp_send_json_success();
+				} else {
+					wp_send_json_error(
+						_x(
+							'There was an unknown error while updating the purchaser. Please try again later.',
+							'When the provided purchaser email address is invalid.',
+							'event-tickets'
+						)
+					);
+				}
+				break;
+			case 'GET':
+				$post  = get_post( $_GET['ID'] );
+				$order = tec_tc_get_order( $post );
+
+				wp_send_json_success( $order->purchaser );
+				break;
 		}
-		break;
-	case 'GET':
-		$post = get_post($_GET['ID']);
-		$order = tec_tc_get_order( $post );
-		wp_send_json_success($order->purchaser);
-		break;
-}
 
 		die();
 	}
@@ -90,7 +123,7 @@ switch($_SERVER['REQUEST_METHOD']) {
 
 		ob_start();
 		$dialog_view->render_modal(
-			$this->template('edit-purchaser-modal', $context),
+			$this->template('src/admin-views/commerce/orders/single/edit-purchaser-modal', $context),
 			[
 				'id' => 'edit-purchaser-modal',
 				'append_target' => '#edit-purchaser-modal-container',
@@ -113,10 +146,13 @@ switch($_SERVER['REQUEST_METHOD']) {
 
 
 	public function template( $name, $context = [] ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.echoFound
+		$template = tribe( 'tickets.admin.views' );
+		return $template->template( $name, $context, false );
+
 		if ( empty( $this->template ) ) {
 			$this->template = new Tribe__Template();
 			$this->template->set_template_origin( Tribe__Tickets__Main::instance() );
-			$this->template->set_template_folder( 'src/admin-views/commerce/orders/single' );
+		//	$this->template->set_template_folder( 'src/admin-views/commerce/orders/single' );
 			$this->template->set_template_context_extract( true );
 			$this->template->set_template_folder_lookup( true );
 		}

@@ -72,7 +72,9 @@ class Orders_Page {
 			tribe( 'tickets.main' ),
 			'event-tickets-commerce-admin-orders-single-css',
 			'tickets-commerce/admin/orders/single.css',
-			[],
+			[
+				'tribe-common-full-style',
+			],
 			[ 'admin_enqueue_scripts' ],
 			[ 'conditionals' => [ $this, 'is_admin_single_page' ] ]
 		);
@@ -84,6 +86,19 @@ class Orders_Page {
 			[
 				'jquery',
 				'tribe-datatables',
+			],
+			[ 'admin_enqueue_scripts' ],
+			[ 'conditionals' => [ $this, 'is_admin_single_page' ] ]
+		);
+
+		//
+		tribe_asset(
+			tribe( 'tickets.main' ),
+			'event-tickets-commerce-admin-order-purchaser-modal-scripts',
+			'admin/orders/purchaser-modal.js',
+			[
+				'jquery',
+				'tribe-common',
 			],
 			[ 'admin_enqueue_scripts' ],
 			[ 'conditionals' => [ $this, 'is_admin_single_page' ] ]
