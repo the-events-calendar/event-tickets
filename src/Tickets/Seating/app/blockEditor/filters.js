@@ -1,14 +1,17 @@
-import { addFilter } from '@wordpress/hooks';
+import { addFilter, addAction } from '@wordpress/hooks';
 import CapacityForm from './capacity-form';
 import { storeName } from './store';
 import { select } from '@wordpress/data';
 import Seats from './dashboard-actions/seats';
 import { filterCapacityTableMappedProps } from './capacity-table';
-import { filterSeatedTicketsAvailabilityMappedProps } from './availability-overview';
 import LayoutSelect from "./settings/layoutSelect";
-import { filterTicketIsAsc } from './ticket-is-asc';
-import { filterHeaderDetails } from './header-details';
-import { filterSetBodyDetails } from './add-seating-params-to-ajax-save-ticket';
+import {
+	filterSeatedTicketsAvailabilityMappedProps,
+	filterSetBodyDetails,
+	filterHeaderDetails,
+	filterTicketIsAsc,
+	setSeatTypeForTicket,
+} from './hook-callbacks';
 
 const shouldRenderAssignedSeatingForm = true;
 
@@ -150,4 +153,16 @@ addFilter(
 	'tec.tickets.blocks.Tickets.Settings.Fields',
 	'tec.tickets.seating',
 	filterSettingsFields
+);
+
+addAction(
+	'tec.tickets.blocks.ticketUpdated',
+	'tec.tickets.seating',
+	setSeatTypeForTicket
+);
+
+addAction(
+	'tec.tickets.blocks.ticketCreated',
+	'tec.tickets.seating',
+	setSeatTypeForTicket
 );
