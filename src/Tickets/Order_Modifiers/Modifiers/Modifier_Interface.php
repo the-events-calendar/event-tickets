@@ -111,6 +111,17 @@ interface Modifier_Interface {
 	public function get_modifier_by_id( int $id ): mixed;
 
 	/**
+	 * Finds an order modifier by its slug.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The slug to search for.
+	 *
+	 * @return mixed The order modifier data or null if not found.
+	 */
+	public function find_by_slug( string $slug ): mixed;
+
+	/**
 	 * Prepares the context data for rendering the edit form.
 	 *
 	 * This method takes the raw context data and modifies it as necessary,

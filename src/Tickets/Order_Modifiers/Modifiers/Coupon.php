@@ -189,7 +189,7 @@ class Coupon implements Modifier_Strategy_Interface {
 	public function prepare_context( array $context, Modifier_Manager $manager ): array {
 		return [
 			'order_modifier_display_name'     => $context['display_name'] ?? '',
-			'order_modifier_slug'             => $context['slug'] ?? '',
+			'order_modifier_slug'             => $context['slug'] ?? $manager->generate_unique_slug(),
 			'order_modifier_sub_type'         => $context['sub_type'] ?? '',
 			'order_modifier_fee_amount_cents' => isset( $context['fee_amount_cents'] )
 				? $manager->convert_from_cents( $context['fee_amount_cents'] )
@@ -216,5 +216,19 @@ class Coupon implements Modifier_Strategy_Interface {
 		$context = $this->prepare_context( $context, $manager );
 
 		$admin_views->template( 'order_modifiers/coupon_edit', $context );
+	}
+
+	/**
+	 * Finds a coupon modifier by its slug.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The slug to search for.
+	 *
+	 * @return mixed The coupon modifier data or null if not found.
+	 */
+	public function find_by_slug( string $slug ): mixed {
+		$repository = new Order_Modifiers_Repository();
+		return $repository->find_by_slug( $slug, $this->modifier_type );
 	}
 }

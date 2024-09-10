@@ -148,4 +148,40 @@ class Modifier_Manager {
 	public function convert_from_cents( int $cents ): string {
 		return number_format( $cents / 100, 2, '.', '' );
 	}
+
+	/**
+	 * Generates a unique alphanumeric slug of 7 characters.
+	 *
+	 * The slug will be checked for uniqueness in the database before being returned.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The unique slug.
+	 */
+	public function generate_unique_slug(): string {
+		$slug_length = 7;
+
+		// Generate a random alphanumeric slug.
+		do {
+			// Generate random bytes and convert them to an alphanumeric string.
+			$random_string = substr( base_convert( bin2hex( random_bytes( 4 ) ), 16, 36 ), 0, $slug_length );
+		} while ( ! $this->is_slug_unique( $random_string ) );
+
+		return $random_string;
+	}
+
+	/**
+	 * Checks whether a slug is unique in the database.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The slug to check for uniqueness.
+	 *
+	 * @return bool True if the slug is unique, false otherwise.
+	 */
+	protected function is_slug_unique( string $slug ): bool {
+		$existing_slug = $this->strategy->find_by_slug( $slug );
+
+		return null === $existing_slug;
+	}
 }
