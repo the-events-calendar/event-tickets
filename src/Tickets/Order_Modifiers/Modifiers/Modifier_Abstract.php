@@ -5,7 +5,14 @@
  * This class provides reusable methods and enforces structure for specific order modifier strategies (such as Coupons,
  * Fees).
  *
+ * It provides common utility methods like generating slugs, converting between cents and decimals,
+ * and interacting with the repository for finding modifiers by ID or slug.
+ *
+ * Each concrete modifier strategy (like Coupon or Fee) will extend this class and provide its own implementations
+ * for sanitizing and validating data.
+ *
  * @since TBD
+ *
  * @package TEC\Tickets\Order_Modifiers\Modifiers
  */
 
@@ -13,6 +20,13 @@ namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers as Order_Modifiers_Repository;
 
+/**
+ * Class Modifier_Abstract
+ *
+ * Provides a base class for order modifier strategies like Coupon and Fee.
+ *
+ * @since TBD
+ */
 abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 
 	/**
@@ -64,7 +78,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 */
 	public function get_modifier_by_id( int $modifier_id ): ?array {
 		$modifier_data = $this->repository->find_by_id( $modifier_id );
-		return $modifier_data?->to_array();
+		return $modifier_data ? $modifier_data->to_array() : null;
 	}
 
 	/**
@@ -167,7 +181,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return bool True if the slug is unique, false otherwise.
 	 */
 	protected function is_slug_unique( string $slug ): bool {
-		$existing_slug = $this->find_by_slug( $slug );
+		$existing_slug = $this->repository->find_by_slug( $slug, $this->modifier_type );
 
 		return null === $existing_slug;
 	}

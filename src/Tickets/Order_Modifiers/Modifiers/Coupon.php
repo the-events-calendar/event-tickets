@@ -123,11 +123,11 @@ class Coupon extends Modifier_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @param array            $data    The raw form data, typically from $_POST.
+	 * @param array $data The raw form data, typically from $_POST.
 	 *
 	 * @return array The sanitized and mapped data ready for database insertion or updating.
 	 */
-	public function sanitize_data( array $data): array {
+	public function sanitize_data( array $data ): array {
 		return [
 			'id'               => isset( $data['order_modifier_id'] ) ? absint( $data['order_modifier_id'] ) : 0,
 			'modifier_type'    => $this->get_modifier_type(), // Always set to 'coupon'.
@@ -163,8 +163,7 @@ class Coupon extends Modifier_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @param array            $context The raw context data.
-	 * @param Modifier_Manager $manager The Modifier_Manager to use for any reusable logic, such as fee conversions.
+	 * @param array $context The raw context data.
 	 *
 	 * @return array The prepared context data ready for rendering the form.
 	 */
@@ -193,23 +192,8 @@ class Coupon extends Modifier_Abstract {
 	public function render_edit( array $context ): void {
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
-
-		$manager = new Modifier_Manager( $this ); // Assuming Coupon is passed as a strategy.
-		$context = $this->prepare_context( $context, $manager );
+		$context     = $this->prepare_context( $context );
 
 		$admin_views->template( 'order_modifiers/coupon_edit', $context );
-	}
-
-	/**
-	 * Finds a coupon modifier by its slug.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $slug The slug to search for.
-	 *
-	 * @return mixed The coupon modifier data or null if not found.
-	 */
-	public function find_by_slug( string $slug ): mixed {
-		return $this->repository->find_by_slug( $slug, $this->modifier_type );
 	}
 }
