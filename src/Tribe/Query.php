@@ -151,12 +151,14 @@ class Tribe__Tickets__Query {
 			 * A fast query on the indexed `wp_postmeta.meta_key` column; then a slow comparison on few values
 			 * in the `wp_postmeta.meta_value` column for a fast query.
 			 */
+			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$query = $wpdb->prepare(
 				"SELECT COUNT(DISTINCT(p.ID)) FROM $wpdb->posts p
 				  JOIN $wpdb->postmeta pm ON ( $meta_keys_in ) AND pm.meta_value = CONCAT( p.ID, '' )
 				  WHERE p.post_type = %s AND p.post_status NOT IN ('auto-draft', 'trash')",
 				$post_type
 			);
+			// phpcs:enable
 		}
 
 		return $wpdb->get_var( $query );
@@ -196,6 +198,7 @@ class Tribe__Tickets__Query {
 			 * The SELECT sub-query to pull ticketed is fast, and then we run a query on `wp_posts.ID`: another
 			 * indexed column for another fast query.
 			 */
+			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$query = $wpdb->prepare(
 				"SELECT COUNT(DISTINCT(p.ID)) FROM $wpdb->posts p
 					WHERE p.ID NOT IN (
@@ -206,6 +209,7 @@ class Tribe__Tickets__Query {
 				$post_type,
 				$post_type
 			);
+			// phpcs:enable
 		}
 
 		return $wpdb->get_var( $query );
