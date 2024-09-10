@@ -230,16 +230,16 @@ class Frontend extends Controller_Contract {
 	 * @return string The HTML content of the seat selection modal.
 	 */
 	private function get_seat_selection_modal_content( int $post_id, int $timeout ): string {
-		$ephemeral_token = $this->service->get_ephemeral_token();
-		$token           = is_string( $ephemeral_token ) ? $ephemeral_token : '';
-
 		/*
 		 * While the user might have 15 minutes to purchase tickets, that timer will not start on page load,
 		 * but when the user starts the interaction withe the seat selection modal.
 		 * For this reason the token request is made with a TTL of 4 times the timeout.
 		 */
 		$ephemeral_token_ttl = $timeout * 4;
-		$iframe_url          = $this->service->get_seat_selection_url( $token, $post_id, $ephemeral_token_ttl );
+
+		$ephemeral_token = $this->service->get_ephemeral_token( $ephemeral_token_ttl, 'visitor' );
+		$token           = is_string( $ephemeral_token ) ? $ephemeral_token : '';
+		$iframe_url      = $this->service->get_seat_selection_url( $token, $post_id, $ephemeral_token_ttl );
 
 		/** @var \Tribe\Dialog\View $dialog_view */
 		$dialog_view = tribe( 'dialog.view' );

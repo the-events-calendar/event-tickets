@@ -5,6 +5,7 @@ namespace TEC\Tickets\Seating\Orders;
 use Closure;
 use Generator;
 use lucatume\WPBrowser\TestCase\WPTestCase;
+use PHPUnit\Framework\Assert;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Service\Service;
@@ -78,7 +79,11 @@ class Seats_Report_Test extends WPTEstCase {
 		$this->mock_singleton_service(
 			Service::class,
 			[
-				'get_ephemeral_token' => 'some-ephemeral-token',
+				'get_ephemeral_token' => function($expiration,$scope){
+					Assert::assertEquals( 6 * HOUR_IN_SECONDS, $expiration );
+					Assert::assertEquals( 'admin', $scope );
+					return 'some-ephemeral-token';
+				},
 			]
 		);
 
