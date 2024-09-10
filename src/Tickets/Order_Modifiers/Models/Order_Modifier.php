@@ -148,4 +148,15 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	public static function fromQueryBuilderObject( $object ) {
 		return Order_Modifier_DTO::fromObject( $object )->toModel();
 	}
+
+	/**
+	 * Converts the Order_Modifier object to an array.
+	 *
+	 * @since TBD
+	 *
+	 * @return array The object properties as an array.
+	 */
+	public function to_array(): array {
+		return $this->attributes;
+	}
 }

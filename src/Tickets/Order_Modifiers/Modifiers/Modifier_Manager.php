@@ -66,7 +66,6 @@ class Modifier_Manager {
 
 		// Validate data before proceeding.
 		if ( ! $this->strategy->validate_data( $data ) ) {
-			printr($data,'validation failed');
 			// Optionally log the validation failure.
 			// @todo redscar - decide how to handle this.
 			error_log( 'Validation failed for ' . $this->strategy->get_modifier_type() );
@@ -75,12 +74,23 @@ class Modifier_Manager {
 
 		// Check if it's an update or an insert.
 		if ( isset( $data['id'] ) && is_numeric( $data['id'] ) && (int) $data['id'] > 0 ) {
-			printr('updating modifier');
 			return $this->strategy->update_modifier( $data );
 		}
 
-		printr('inserting modifier');
 		return $this->strategy->insert_modifier( $data );
+	}
+
+	/**
+	 * Fetches a modifier based on its ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $id The modifier ID.
+	 *
+	 * @return mixed The modifier data if found, or null.
+	 */
+	public function find_modifier_by_id( int $id ): mixed {
+		return $this->strategy->get_modifier_by_id( $id );
 	}
 
 	/**
@@ -107,5 +117,35 @@ class Modifier_Manager {
 	 */
 	public function render_edit_screen( array $context ): mixed {
 		return $this->strategy->render_edit( $context );
+	}
+
+	/**
+	 * Converts a decimal amount to its value in cents.
+	 *
+	 * This method is used to convert a floating-point amount (e.g., 23.00) into an integer representing cents.
+	 *
+	 * @since TBD
+	 *
+	 * @param float $amount The amount to convert.
+	 *
+	 * @return int The amount converted to cents.
+	 */
+	public function convert_to_cents( float $amount ): int {
+		return absint( $amount * 100 );
+	}
+
+	/**
+	 * Converts an amount in cents to a formatted decimal string.
+	 *
+	 * This method is used to convert an integer amount in cents (e.g., 2300) into a string with two decimal points (e.g., 23.00).
+	 *
+	 * @since TBD
+	 *
+	 * @param int $cents The amount in cents.
+	 *
+	 * @return string The formatted decimal string representing the amount.
+	 */
+	public function convert_from_cents( int $cents ): string {
+		return number_format( $cents / 100, 2, '.', '' );
 	}
 }

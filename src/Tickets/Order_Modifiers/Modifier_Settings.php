@@ -157,6 +157,34 @@ class Modifier_Settings {
 	}
 
 	/**
+	 * Retrieves the modifier data by ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $modifier_id The ID of the modifier to retrieve.
+	 *
+	 * @return array|null The modifier data or null if not found.
+	 */
+	protected function get_modifier_data_by_id( int $modifier_id ): ?array {
+		// Get the modifier type from the request or default to 'coupon'.
+		$modifier_type = tribe_get_request_var( 'modifier', 'coupon' );
+
+		// Get the appropriate strategy for the selected modifier type.
+		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
+
+		if ( ! $modifier_strategy ) {
+			return null; // Return null if the strategy is not found.
+		}
+
+		$test = $modifier_strategy->get_modifier_by_id( $modifier_id );
+
+		printr($test,'Modifier by id');
+
+		// Use the strategy to retrieve the modifier data by ID.
+		return $test;
+	}
+
+	/**
 	 * Render the table view for the selected modifier.
 	 *
 	 * @since TBD
@@ -182,7 +210,22 @@ class Modifier_Settings {
 	 * @return void
 	 */
 	protected function render_edit_view( Modifier_Manager $manager, array $context ): void {
-		//printr($manager,'i am here?');
+		// Get modifier ID from the context.
+		$modifier_id = (int) $context['modifier_id'];
+
+		// Merge the modifier data into the context to be passed to the form rendering logic.
+		// If a valid modifier ID is provided, fetch the data to populate the form.
+		if ( $modifier_id > 0 ) {
+			$modifier_data = $this->get_modifier_data_by_id( $modifier_id );
+
+			// Only merge if modifier data is not null.
+			if ( ! is_null( $modifier_data ) ) {
+				$context = array_merge( $context, $modifier_data );
+			}
+		}
+		// @todo redscar - If a modifier ID is sent, and we are unable to find the data, do we display a message?
+
+		// Render the edit screen, passing the populated context.
 		echo '<h2>' . esc_html( ucfirst( $context['modifier'] ) . ' Edit' ) . '</h2>';
 		echo $manager->render_edit_screen( $context );
 	}
@@ -229,7 +272,7 @@ class Modifier_Settings {
 			// Use the Modifier Manager to save the data.
 			$manager = new Modifier_Manager( $modifier_strategy );
 			$result  = $manager->save_modifier( $modifier_data );
-			printr($result,'result of saving');
+			printr( $result, 'result of saving' );
 
 			// Display success or error message based on result.
 			if ( ! empty( $result ) ) {

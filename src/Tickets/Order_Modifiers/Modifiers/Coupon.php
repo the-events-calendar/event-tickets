@@ -143,6 +143,22 @@ class Coupon implements Modifier_Strategy_Interface {
 		];
 	}
 
+	/**
+	 * Retrieves the modifier data by ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $modifier_id The ID of the modifier to retrieve.
+	 * @return array|null The modifier data or null if not found.
+	 */
+	public function get_modifier_by_id( int $modifier_id ) {
+		$repository = new Order_Modifiers_Repository();
+
+		// Fetch the modifier from the repository by ID.
+		$modifier_data = $repository->find_by_id( $modifier_id );
+
+		return $modifier_data ? $modifier_data->to_array() : []; // Return null if no coupon is found with the provided ID.
+	}
 
 	/**
 	 * Renders the coupon table.
@@ -159,6 +175,32 @@ class Coupon implements Modifier_Strategy_Interface {
 	}
 
 	/**
+	 * Prepares the context for rendering the coupon form.
+	 *
+	 * This method maps the internal coupon data to the fields required by the edit form.
+	 * It converts amounts from cents to a formatted string using the provided Modifier_Manager.
+	 *
+	 * @since TBD
+	 *
+	 * @param array            $context The raw context data.
+	 * @param Modifier_Manager $manager The Modifier_Manager to use for any reusable logic, such as fee conversions.
+	 *
+	 * @return array The prepared context data ready for rendering the form.
+	 */
+	public function prepare_context( array $context, Modifier_Manager $manager ): array {
+		return [
+			'order_modifier_display_name'     => $context['display_name'] ?? '',
+			'order_modifier_slug'             => $context['slug'] ?? '',
+			'order_modifier_sub_type'         => $context['sub_type'] ?? '',
+			'order_modifier_fee_amount_cents' => isset( $context['fee_amount_cents'] )
+				? $manager->convert_from_cents( $context['fee_amount_cents'] )
+				: '',
+			'order_modifier_status'           => $context['status'] ?? '',
+			'order_modifier_coupon_limit'     => $context['coupon_limit'] ?? '',
+		];
+	}
+
+	/**
 	 * Renders the coupon edit screen.
 	 *
 	 * @since TBD
@@ -170,6 +212,9 @@ class Coupon implements Modifier_Strategy_Interface {
 	public function render_edit( array $context ): void {
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
+
+		$manager = new Modifier_Manager( $this ); // Assuming Coupon is passed as a strategy.
+		$context = $this->prepare_context( $context, $manager );
 
 		$admin_views->template( 'order_modifiers/coupon_edit', $context );
 	}

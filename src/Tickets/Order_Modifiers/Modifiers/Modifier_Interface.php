@@ -99,4 +99,29 @@ interface Modifier_Interface {
 	 * @return array The sanitized data.
 	 */
 	public function sanitize_data( array $data ): array;
+
+	/**
+	 * Retrieves an Order Modifier by its ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $id The modifier ID.
+	 * @return mixed The modifier data if found, or null.
+	 */
+	public function get_modifier_by_id( int $id ): mixed;
+
+	/**
+	 * Prepares the context data for rendering the edit form.
+	 *
+	 * This method takes the raw context data and modifies it as necessary,
+	 * including applying any conversions (e.g., converting amounts from cents to decimals) using the Modifier_Manager.
+	 *
+	 * @since TBD
+	 *
+	 * @param array            $context The raw context data.
+	 * @param Modifier_Manager $manager The Modifier_Manager to use for shared logic such as amount conversions.
+	 *
+	 * @return array The prepared context data ready for rendering the form.
+	 */
+	public function prepare_context( array $context, Modifier_Manager $manager ): array;
 }

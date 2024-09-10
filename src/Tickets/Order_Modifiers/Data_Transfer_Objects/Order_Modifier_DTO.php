@@ -103,22 +103,22 @@ class Order_Modifier_DTO extends DataTransferObject {
 	public string $created_at;
 
 	/**
-	 * The start time when the modifier becomes active.
+	 * The start time when the modifier becomes active (nullable).
 	 *
 	 * @since TBD
 	 *
-	 * @var string
+	 * @var string|null
 	 */
-	public string $start_time;
+	public ?string $start_time;
 
 	/**
-	 * The end time when the modifier expires.
+	 * The end time when the modifier expires (nullable).
 	 *
 	 * @since TBD
 	 *
-	 * @var string
+	 * @var string|null
 	 */
-	public string $end_time;
+	public ?string $end_time;
 
 	/**
 	 * Builds a new DTO from an object.
@@ -132,17 +132,17 @@ class Order_Modifier_DTO extends DataTransferObject {
 	public static function fromObject( $object ): self {
 		$self = new self();
 
-		$self->id              = $object->id;
-		$self->post_id         = $object->post_id;
-		$self->modifier_type   = $object->modifier_type;
-		$self->sub_type        = $object->sub_type;
-		$self->fee_amount_cents= $object->fee_amount_cents;
-		$self->slug            = $object->slug;
-		$self->display_name    = $object->display_name;
-		$self->status          = $object->status;
-		$self->created_at      = $object->created_at;
-		$self->start_time      = $object->start_time;
-		$self->end_time        = $object->end_time;
+		$self->id               = $object->id;
+		$self->post_id          = $object->post_id;
+		$self->modifier_type    = $object->modifier_type;
+		$self->sub_type         = $object->sub_type;
+		$self->fee_amount_cents = $object->fee_amount_cents;
+		$self->slug             = $object->slug;
+		$self->display_name     = $object->display_name;
+		$self->status           = $object->status;
+		$self->created_at       = $object->created_at;
+		$self->start_time       = $object->start_time ?? null;
+		$self->end_time         = $object->end_time ?? null;
 
 		return $self;
 	}
