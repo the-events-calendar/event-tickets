@@ -1,4 +1,0 @@
-Significance: minor
-Type: tweak
-
-Tweaked `setupCompactCardElement` method to allow filtering of options using the existing `tec_tickets_commerce_stripe_checkout_localized_data` filter. [TECTRIA-295]
