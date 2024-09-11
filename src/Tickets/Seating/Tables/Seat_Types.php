@@ -88,8 +88,7 @@ class Seat_Types extends Table {
 				`map` varchar(36) NOT NULL,
 				`layout` varchar(36) NOT NULL,
 				`seats` int(11) NOT NULL DEFAULT '0',
-				PRIMARY KEY (`order`),
-				UNIQUE KEY (`id`)
+				PRIMARY KEY (`id`)
 			) {$charset_collate};
 		";
 	}
