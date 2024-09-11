@@ -24,6 +24,14 @@ const TicketsSettingsDashboard = ( {
 	isSettingsLoading,
 	onCloseClick,
 } ) =>  {
+	/**
+	 * Filters the settings fields.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Array} fields The settings fields.
+	 * @param {Object} props The component props.
+	 */
 	const settingsFields = applyFilters(
 		'tec.tickets.blocks.Tickets.Settings.Fields',
 		[],
