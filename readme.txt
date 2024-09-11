@@ -206,7 +206,16 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.13.2] 2024-09-20 =
+= [5.13.3] 2024-09-11 =
+
+* Feature - Added Individual Order Screen in the Admin to improve the Order Management for Tickets Commerce. [ET-2150]
+* Tweak - Tweaked `setupCompactCardElement` method to allow filtering of options using the existing `tec_tickets_commerce_stripe_checkout_localized_data` filter. [TECTRIA-295]
+* Tweak - Made a string translatable in `getting-started.php` file. (props to @DAnn2012) [TECTRIA-303]
+* Tweak - Added filters: `post_updated_messages`
+* Tweak - Added actions: `tribe_tickets_commerce_order_actions_box_start`
+* Language - 44 new strings added, 39 updated, 1 fuzzied, and 0 obsoleted
+
+= [5.13.2] 2024-08-20 =
 
 * Fix - Exporting all Attendees as a CSV file in the new Tickets Attendees Page. [ET-2094]
 * Fix - Shared capacity will no longer be affected by any of the unlimited sales tickets on the same event. [ETP-920]

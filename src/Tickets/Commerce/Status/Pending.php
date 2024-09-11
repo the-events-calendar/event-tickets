@@ -178,4 +178,16 @@ class Pending extends Status_Abstract {
 
 		return true;
 	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function can_be_updated_to(): array {
+		return [
+			tribe( Voided::class ),
+			tribe( Refunded::class ),
+			tribe( Completed::class ),
+			tribe( Denied::class ),
+		];
+	}
 }
