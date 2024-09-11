@@ -110,4 +110,24 @@ trait Custom_Table_Query_Methods {
 	public static function fetch_all_where( string $where_clause, int $batch_size = 50, string $output = OBJECT ): Generator {
 		return static::fetch_all( $batch_size, $output, $where_clause );
 	}
+
+	/**
+	 * Fetches the first row from the table using a WHERE clause.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $where_clause The prepared WHERE clause to use.
+	 * @param string $output       The output type of the query, one of OBJECT, ARRAY_A, or ARRAY_N.
+	 *
+	 * @return array|object|null The row from the table, or `null` if no row was found.
+	 */
+	public static function fetch_first_where( string $where_clause, string $output = OBJECT ) {
+		return DB::get_row(
+			DB::prepare(
+				"SELECT * FROM %i {$where_clause} LIMIT 1",
+				static::table_name( true )
+			),
+			$output
+		);
+	}
 }

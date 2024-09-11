@@ -95,7 +95,7 @@ class Ajax extends Controller_Contract {
 	 * @var string
 	 */
 	public const ACTION_DELETE_LAYOUT = 'tec_tickets_seating_service_delete_layout';
-	
+
 	/**
 	 * The action to add a layout.
 	 *
@@ -149,7 +149,7 @@ class Ajax extends Controller_Contract {
 	 * @var string
 	 */
 	public const ACTION_SEAT_TYPES_UPDATED = 'tec_tickets_seating_seat_types_updated';
-	
+
 	/**
 	 * The action to handle seat type deletion.
 	 *
@@ -185,7 +185,7 @@ class Ajax extends Controller_Contract {
 	 * @var string
 	 */
 	public const ACTION_RESERVATION_UPDATED = 'tec_tickets_seating_reservation_updated';
-	
+
 	/**
 	 * The action to update the layout for an event.
 	 *
@@ -328,7 +328,7 @@ class Ajax extends Controller_Contract {
 			'wp_ajax_' . self::ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES,
 			[ $this, 'update_reservations_from_seat_types' ]
 		);
-		
+
 		remove_action( 'wp_ajax_' . self::ACTION_SEAT_TYPE_DELETED, [ $this, 'handle_seat_type_deleted' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_EVENT_LAYOUT_UPDATED, [ $this, 'update_event_layout' ] );
 	}
@@ -518,7 +518,7 @@ class Ajax extends Controller_Contract {
 
 		wp_send_json_error( [ 'error' => __( 'Failed to delete the layout.', 'event-tickets' ) ], 500 );
 	}
-	
+
 	/**
 	 * Adds a new layout to the service.
 	 *
@@ -530,9 +530,9 @@ class Ajax extends Controller_Contract {
 		if ( ! $this->check_current_ajax_user_can( 'manage_options' ) ) {
 			return;
 		}
-		
+
 		$map_id = (string) tribe_get_request_var( 'mapId' );
-		
+
 		if ( empty( $map_id ) ) {
 			wp_send_json_error(
 				[
@@ -540,12 +540,12 @@ class Ajax extends Controller_Contract {
 				],
 				400
 			);
-			
+
 			return;
 		}
-		
+
 		$layout_id = $this->layouts->add( $map_id );
-		
+
 		if ( ! empty( $layout_id ) ) {
 			$edit_url = add_query_arg(
 				[
@@ -555,11 +555,11 @@ class Ajax extends Controller_Contract {
 				],
 				admin_url( 'admin.php' )
 			);
-			
+
 			wp_send_json_success( $edit_url );
 			return;
 		}
-		
+
 		wp_send_json_error( [ 'error' => __( 'Failed to Add new layout.', 'event-tickets' ) ], 500 );
 	}
 
@@ -962,7 +962,7 @@ class Ajax extends Controller_Contract {
 
 		wp_send_json_success( [ 'updatedAttendees' => $updated ] );
 	}
-	
+
 	/**
 	 * Handles the deletion of a seat type by transferring existing reservations to new seat type.
 	 *
@@ -978,15 +978,15 @@ class Ajax extends Controller_Contract {
 				],
 				403
 			);
-			
+
 			return;
 		}
-		
+
 		$decoded = $this->get_request_json();
-		
+
 		$old_seat_type_id = $decoded['deletedId'] ?? null;
 		$new_seat_type    = $decoded['transferTo'] ?? null;
-		
+
 		if ( empty( $old_seat_type_id )
 			|| ! is_array( $new_seat_type )
 			|| ! isset(
@@ -1003,7 +1003,7 @@ class Ajax extends Controller_Contract {
 				],
 				400
 			);
-			
+
 			return;
 		}
 
@@ -1014,7 +1014,7 @@ class Ajax extends Controller_Contract {
 		*/
 
 		global $wpdb;
-		
+
 		try {
 			$updated_seat_types_meta = DB::query(
 				DB::prepare(
@@ -1034,10 +1034,10 @@ class Ajax extends Controller_Contract {
 				]
 			);
 		}
-		
+
 		$updated_seat_types = $this->seat_types->update_from_service( [ $new_seat_type ] );
 		$updated_tickets    = $this->seat_types->update_tickets_capacity( [ $new_seat_type['id'] => $new_seat_type['seatsCount'] ] );
-		
+
 		wp_send_json_success(
 			[
 				'updatedSeatTypes' => $updated_seat_types,
@@ -1057,7 +1057,7 @@ class Ajax extends Controller_Contract {
 	public function update_event_layout() {
 		$post_id   = tribe_get_request_var( 'postId' );
 		$layout_id = tribe_get_request_var( 'newLayout' );
-		
+
 		if ( empty( $layout_id ) || empty( $post_id ) ) {
 			wp_send_json_error(
 				[
@@ -1065,23 +1065,23 @@ class Ajax extends Controller_Contract {
 				],
 				400
 			);
-			
+
 			return;
 		}
-		
+
 		if ( ! $this->check_current_ajax_user_can( 'edit_posts', $post_id ) ) {
 			wp_send_json_error(
 				[
 					'error' => 'User has no permission.',
 				],
-				400
+				403
 			);
-			
+
 			return;
 		}
-		
+
 		$layout = DB::table( \TEC\Tickets\Seating\Tables\Layouts::table_name( false ) )->where( 'id', $layout_id )->get();
-		
+
 		if ( empty( $layout ) ) {
 			wp_send_json_error(
 				[
@@ -1089,52 +1089,64 @@ class Ajax extends Controller_Contract {
 				],
 				400
 			);
-			
+
 			return;
 		}
-		
+
 		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler   = tribe( 'tickets.handler' );
 		$capacity_meta_key = $tickets_handler->key_capacity;
-		
-		$seat_types        = $this->seat_types->get_in_option_format( [ $layout_id ] );
-		$new_seat_type_id  = $seat_types[0]['id'];
-		$new_seat_capacity = $seat_types[0]['seats'];
-		
+
+		$primary_seat_type = $this->seat_types->get_primary_seat_type( $layout_id );
+
+		if ( null === $primary_seat_type ) {
+			wp_send_json_error(
+				[
+					'error' => __( 'No primary seat type found for the layout.', 'event-tickets' ),
+				],
+				400
+			);
+
+			return;
+		}
+
+		$new_seat_type_id  = $primary_seat_type->id;
+		$new_seat_capacity = $primary_seat_type->seats;
+
 		$updated_tickets   = 0;
 		$updated_attendees = 0;
-		
+
 		// Get tickets by post id.
 		$tickets = tribe_tickets()->where( 'event', $post_id )->get_ids( true );
-		
+
 		foreach ( $tickets as $ticket_id ) {
 			$previous_capacity = get_post_meta( $ticket_id, $capacity_meta_key, true );
 			$capacity_delta    = $new_seat_capacity - $previous_capacity;
 			$previous_stock    = get_post_meta( $ticket_id, '_stock', true );
 			$new_stock         = max( 0, $previous_stock + $capacity_delta );
-			
+
 			update_post_meta( $ticket_id, $capacity_meta_key, $new_seat_capacity );
 			update_post_meta( $ticket_id, '_stock', $new_stock );
 			update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, $new_seat_type_id );
-			
+
 			++$updated_tickets;
 		}
-		
+
 		// Attendees by post id.
 		$attendees = tribe_attendees()->where( 'event', $post_id )->get_ids( true );
-		
+
 		foreach ( $attendees as $attendee_id ) {
 			update_post_meta( $attendee_id, Meta::META_KEY_SEAT_TYPE, $new_seat_type_id );
 			update_post_meta( $attendee_id, Meta::META_KEY_ATTENDEE_SEAT_LABEL, '' );
-			
+
 			++$updated_attendees;
 		}
-		
+
 		// Finally update post data.
 		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, $layout_id );
 		update_post_meta( $post_id, $capacity_meta_key, $layout->seats );
 		update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, $layout->seats );
-		
+
 		wp_send_json_success(
 			[
 				'updatedTickets'   => $updated_tickets,
