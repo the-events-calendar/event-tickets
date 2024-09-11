@@ -125,7 +125,10 @@ function tec_tc_get_attendee( $attendee = null, $output = OBJECT, $filter = 'raw
 	$provider          = tribe_tickets_get_ticket_provider( $attendee_id );
 	$post->provider    = $provider->class_name;
 	$post->attendee_id = $attendee_id;
-	$post->product_id  = $post->ID;
+
+	if ( ! property_exists( $post, 'product_id' ) ) {
+		$post->product_id = get_post_meta( $attendee_id, TEC\Tickets\Commerce\Module::ATTENDEE_PRODUCT_KEY, true );
+	}
 
 	if ( OBJECT !== $output ) {
 		$post = ARRAY_A === $output ? (array) $post : array_values( (array) $post );
