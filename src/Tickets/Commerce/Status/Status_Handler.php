@@ -97,7 +97,7 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Fetches the possible statuses that a given order can be transitioned to.
 	 *
-	 * @since TBD
+	 * @since 5.13.3
 	 *
 	 * @param WP_Post $order The order we are checking.
 	 *

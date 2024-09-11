@@ -204,7 +204,7 @@ class Orders_Page {
 	/**
 	 * Checks if the current screen is a single admin order page.
 	 *
-	 * @since TBD
+	 * @since 5.13.3
 	 *
 	 * @return bool
 	 */
@@ -225,7 +225,7 @@ class Orders_Page {
 	/**
 	 * Checks if the current screen is the admin orders page or a single admin order page.
 	 *
-	 * @since TBD
+	 * @since 5.13.3
 	 *
 	 * @return bool
 	 */

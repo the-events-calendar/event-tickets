@@ -2,9 +2,9 @@
 /**
  * Single order - Details metabox.
  *
- * @since TBD
+ * @since 5.13.3
  *
- * @version TBD
+ * @version 5.13.3
  *
  * @var WP_Post                                         $order             The current post object.
  * @var \TEC\Tickets\Commerce\Admin\Singular_Order_Page $single_page       The orders table output.

@@ -577,7 +577,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	 * Handler for gateway order id.
 	 *
 	 * @since 5.13.0
-	 * @since TBD Added the order URL parameter.
+	 * @since 5.13.3 Added the order URL parameter.
 	 *
 	 * @param WP_Post $item The current item.
 	 * @param string  $order_url The order URL.

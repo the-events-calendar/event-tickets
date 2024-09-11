@@ -118,7 +118,7 @@ interface Status_Interface {
 	/**
 	 * An array of the statuses this status can be updated to.
 	 *
-	 * @since TBD
+	 * @since 5.13.3
 	 *
 	 * @return array
 	 */

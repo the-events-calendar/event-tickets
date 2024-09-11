@@ -2,9 +2,9 @@
 /**
  * Single order - Items metabox - SingleItem.
  *
- * @since TBD
+ * @since 5.13.3
  *
- * @version TBD
+ * @version 5.13.3
  *
  * @var WP_Post                       $order    The current post object.
  * @var array                         $item     The current order item.
