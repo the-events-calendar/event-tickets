@@ -186,6 +186,13 @@ class Ajax extends Controller_Contract {
 	 */
 	public const ACTION_RESERVATION_UPDATED = 'tec_tickets_seating_reservation_updated';
 	
+	/**
+	 * The action to update the layout for an event.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	public const ACTION_EVENT_LAYOUT_UPDATED = 'tec_tickets_seating_event_layout_updated';
 
 	/**
@@ -1048,10 +1055,6 @@ class Ajax extends Controller_Contract {
 	 * @return void The function does not return a value but will echo the JSON response.
 	 */
 	public function update_event_layout() {
-		if ( ! $this->check_current_ajax_user_can( 'edit_posts' ) ) {
-			return;
-		}
-		
 		$post_id   = tribe_get_request_var( 'postId' );
 		$layout_id = tribe_get_request_var( 'newLayout' );
 		
@@ -1066,7 +1069,29 @@ class Ajax extends Controller_Contract {
 			return;
 		}
 		
+		if ( ! $this->check_current_ajax_user_can( 'edit_posts', $post_id ) ) {
+			wp_send_json_error(
+				[
+					'error' => 'User has no permission.',
+				],
+				400
+			);
+			
+			return;
+		}
+		
 		$layout = DB::table( \TEC\Tickets\Seating\Tables\Layouts::table_name( false ) )->where( 'id', $layout_id )->get();
+		
+		if ( empty( $layout ) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Invalid layout ID',
+				],
+				400
+			);
+			
+			return;
+		}
 		
 		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler   = tribe( 'tickets.handler' );
