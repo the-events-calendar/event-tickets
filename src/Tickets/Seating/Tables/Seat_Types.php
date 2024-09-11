@@ -82,7 +82,6 @@ class Seat_Types extends Table {
 
 		return "
 			CREATE TABLE `{$table_name}` (
-				`order` int(11) NOT NULL AUTO_INCREMENT,
 				`id` varchar(36) NOT NULL,
 				`name` varchar(255) NOT NULL,
 				`map` varchar(36) NOT NULL,
