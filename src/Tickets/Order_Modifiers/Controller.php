@@ -14,6 +14,7 @@ use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
 use TEC\Tickets\Order_Modifiers\Modifiers\Coupon;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
+use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 
 /**
  * Class Controller.
@@ -22,16 +23,16 @@ use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
  *
  * @package TEC\Tickets\Order_Modifiers;
  */
-class Controller extends \TEC\Common\Contracts\Provider\Controller {
+class Controller extends Controller_Contract {
 
 	/**
 	 * Cached list of available modifiers.
 	 *
 	 * @since TBD
 	 *
-	 * @var array|null
+	 * @var array
 	 */
-	protected static ?array $cached_modifiers = null;
+	protected static array $cached_modifiers = [];
 
 	/**
 	 * Binds and sets up implementations.
@@ -39,7 +40,6 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 * @since TBD
 	 */
 	public function do_register(): void {
-		// Register classes here.
 		add_action( 'tribe_plugins_loaded', [ $this, 'register_tables' ] );
 		$this->container->singleton( Coupon::class );
 		$this->hook();
@@ -53,8 +53,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 * @since TBD
 	 */
 	protected function hook() {
-		// Hooks here.
-		add_action( 'admin_menu', tribe_callback( Modifier_Settings::class, 'add_tec_tickets_order_modifiers_page' ), 15 );
+		tribe( Modifier_Settings::class )->register();
 	}
 
 	/**
@@ -89,8 +88,8 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 * @return array List of registered modifier strategies.
 	 */
 	public static function get_modifiers(): array {
-		// Check if the modifiers are cached.
-		if ( null !== self::$cached_modifiers ) {
+		// If cached modifiers exist, return them.
+		if ( ! empty( self::$cached_modifiers ) ) {
 			return self::$cached_modifiers;
 		}
 
@@ -121,8 +120,9 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 
 		// Validate modifiers after the filter.
 		foreach ( $modifiers as $key => $modifier ) {
+			// Remove invalid modifiers.
 			if ( ! isset( $modifier['class'], $modifier['slug'], $modifier['display_name'] ) || ! class_exists( $modifier['class'], false ) ) {
-				unset( $modifiers[ $key ] ); // Remove invalid modifiers.
+				unset( $modifiers[ $key ] );
 			}
 		}
 
@@ -142,19 +142,26 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 * @return void
 	 */
 	public static function clear_cached_modifiers(): void {
-		self::$cached_modifiers = null;
+		self::$cached_modifiers = [];
 	}
 
 	/**
 	 * Get a specific modifier strategy.
 	 *
+	 * Retrieves the appropriate strategy class based on the provided modifier type.
+	 * The strategy class must implement the Modifier_Strategy_Interface interface.
+	 *
+	 * If the class is not found or does not implement the required interface, an exception will be thrown.
+	 *
 	 * @since TBD
 	 *
 	 * @param string $modifier The modifier type to retrieve (e.g., 'coupon', 'fee').
 	 *
-	 * @return Modifier_Strategy_Interface|null The strategy class or null if not found.
+	 * @return Modifier_Strategy_Interface The strategy class if found.
+	 *
+	 * @throws \InvalidArgumentException If the modifier strategy class is not found or does not implement Modifier_Strategy_Interface.
 	 */
-	public function get_modifier( string $modifier ): ?Modifier_Strategy_Interface {
+	public function get_modifier( string $modifier ): Modifier_Strategy_Interface {
 		// Sanitize the modifier parameter to ensure it's a valid string.
 		$modifier = sanitize_key( $modifier );
 
@@ -167,6 +174,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 			return new $strategy_class();
 		}
 
-		return null; // Return null if the modifier is not found or invalid.
+		// Throw an exception if the modifier class is not found or does not implement the required interface.
+		throw new \InvalidArgumentException( sprintf( 'Modifier strategy class for "%s" not found or does not implement Modifier_Strategy_Interface.', $modifier ) );
 	}
 }

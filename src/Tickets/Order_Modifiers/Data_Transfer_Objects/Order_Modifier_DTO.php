@@ -28,7 +28,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 	 *
 	 * @var int
 	 */
-	public int $id;
+	protected int $id;
 
 	/**
 	 * The associated post ID.
@@ -37,7 +37,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 	 *
 	 * @var int
 	 */
-	public int $post_id;
+	protected int $post_id;
 
 	/**
 	 * The modifier type (coupon, fee).
@@ -46,7 +46,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 	 *
 	 * @var string
 	 */
-	public string $modifier_type;
+	protected string $modifier_type;
 
 	/**
 	 * The sub-type (percentage, flat).
@@ -55,7 +55,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 	 *
 	 * @var string
 	 */
-	public string $sub_type;
+	protected string $sub_type;
 
 	/**
 	 * The fee amount in cents.
@@ -64,7 +64,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 	 *
 	 * @var int
 	 */
-	public int $fee_amount_cents;
+	protected int $fee_amount_cents;
 
 	/**
 	 * The slug (coupon code).
@@ -73,7 +73,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 	 *
 	 * @var string
 	 */
-	public string $slug;
+	protected string $slug;
 
 	/**
 	 * The user-friendly display name.
@@ -82,7 +82,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 	 *
 	 * @var string
 	 */
-	public string $display_name;
+	protected string $display_name;
 
 	/**
 	 * The status (active, draft, inactive).
@@ -91,7 +91,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 	 *
 	 * @var string
 	 */
-	public string $status;
+	protected string $status;
 
 	/**
 	 * The created timestamp.
@@ -100,7 +100,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 	 *
 	 * @var string
 	 */
-	public string $created_at;
+	protected string $created_at;
 
 	/**
 	 * The start time when the modifier becomes active.
@@ -109,7 +109,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 	 *
 	 * @var string
 	 */
-	public string $start_time;
+	protected string $start_time;
 
 	/**
 	 * The end time when the modifier expires.
@@ -118,7 +118,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 	 *
 	 * @var string
 	 */
-	public string $end_time;
+	protected string $end_time;
 
 	/**
 	 * Builds a new DTO from an object.
