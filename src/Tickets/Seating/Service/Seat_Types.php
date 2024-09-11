@@ -281,7 +281,7 @@ class Seat_Types {
 
 		return Seat_Types_Table::fetch_first_where(
 			DB::prepare(
-				"WHERE layout = %s ORDER BY id ASC",
+				'WHERE layout = %s ORDER BY id ASC',
 				$layout_id
 			),
 			OBJECT
