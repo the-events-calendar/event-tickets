@@ -124,22 +124,25 @@ class Order_Modifiers_Meta extends Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param wpdb   $wpdb        The WordPress database global.
-	 * @param array  $results     The results array to track changes.
-	 * @param string $table_name  The name of the table.
-	 * @param string $index_name  The name of the index.
-	 * @param string $columns     The columns to index.
+	 * @param wpdb   $wpdb The WordPress database global.
+	 * @param array  $results The results array to track changes.
+	 * @param string $table_name The name of the table.
+	 * @param string $index_name The name of the index.
+	 * @param string $columns The columns to index.
 	 *
 	 * @return array The updated results array.
 	 */
 	protected function check_and_add_index( wpdb $wpdb, array $results, string $table_name, string $index_name, string $columns ): array {
+		// Escape table name and columns for safety.
+		$table_name = esc_sql( $table_name );
+		$columns    = esc_sql( $columns );
+
 		// Add index only if it does not exist.
 		if ( ! $this->has_index( $index_name ) ) {
+			// Prepare the SQL for adding an index.
 			$sql = $wpdb->prepare(
-				'ALTER TABLE `%s` ADD INDEX `%s` ( %s )',
-				$table_name,
-				$index_name,
-				$columns
+				"ALTER TABLE `$table_name` ADD INDEX `%s` ( $columns )",
+				$index_name
 			);
 
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared
