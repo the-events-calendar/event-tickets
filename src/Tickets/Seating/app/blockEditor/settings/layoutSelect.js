@@ -6,18 +6,51 @@ import {Modal, Dashicon, CheckboxControl, Button, Spinner } from '@wordpress/com
 import {useSelect} from '@wordpress/data';
 import './style.pcss';
 
+/**
+ * Returns the string from the settings localization.
+ *
+ * @since TBD
+ *
+ * @param {string} key The key to get the string for.
+ *
+ * @return {string}
+ */
 const getString = (key) => getLocalizedString(key, 'settings');
 
+/**
+ * The layout select component.
+ *
+ * @since TBD
+ *
+ * @param {Object} props The component props.
+ */
 const LayoutSelect = ({
 	layouts,
 	currentLayout
 }) => {
+	/**
+	 * Gets the current layout option.
+	 *
+	 * @since TBD
+	 *
+	 * @param {number} layoutId The layout ID.
+	 * @param {Array}  layouts  The layouts.
+	 *
+	 * @return {Object|null}
+	 */
 	const getCurrentLayoutOption = (layoutId, layouts)=> {
 		return layouts && layoutId
 			? layouts.find((layoutOption) => layoutOption.value === layoutId)
 			: null;
 	}
 
+	/**
+	 * The post ID.
+	 *
+	 * @since TBD
+	 *
+	 * @type {number}
+	 */
 	const postId = useSelect(
 		(select) => select('core/editor').getCurrentPostId(),
 		[]
@@ -29,6 +62,13 @@ const LayoutSelect = ({
 	const [ isChecked, setChecked ] = useState(false);
 	const [ isLoading, setIsLoading ] = useState(false);
 
+	/**
+	 * Handles the layout change.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} selectedLayout The selected layout.
+	 */
 	const handleLayoutChange = (selectedLayout) => {
 		if ( selectedLayout === activeLayout ) {
 			return;
@@ -38,12 +78,22 @@ const LayoutSelect = ({
 		setNewLayout(selectedLayout);
 	};
 
+	/**
+	 * Close the modal.
+	 *
+	 * @since TBD
+	 */
 	const closeModal = () => {
 		setIsModalOpen(false);
 		setChecked(false);
 		setIsLoading(false);
 	}
 
+	/**
+	 * Handle Modal confirmation.
+	 *
+	 * @since TBD
+	 */
 	const handleModalConfirm = async () => {
 		setActiveLayout(newLayout);
 		setIsLoading(true);
@@ -54,6 +104,13 @@ const LayoutSelect = ({
 		}
 	}
 
+	/**
+	 * Save the new layout with changes.
+	 *
+	 * @since TBD
+	 *
+	 * @return {Promise<boolean>}
+	 */
 	async function saveNewLayout() {
 		const url = new URL(ajaxUrl);
 		url.searchParams.set('_ajax_nonce', ajaxNonce);
@@ -65,6 +122,11 @@ const LayoutSelect = ({
 		return response.status === 200;
 	}
 
+	/**
+	 * Renders the no layouts message.
+	 *
+	 * @since TBD
+	 */
 	function NoLayouts() {
 		if ( currentLayout === null || currentLayout.length === 0 || layouts.length === 0 ) {
 			return (
