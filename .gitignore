@@ -59,3 +59,6 @@ lang/*.po
 
 .vscode
 *.code-workspace
+
+# Strauss
+bin/strauss.phar

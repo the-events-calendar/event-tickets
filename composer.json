@@ -43,7 +43,34 @@
       "dealerdirect/phpcodesniffer-composer-installer": true
     }
   },
+  "scripts": {
+    "strauss": [
+      "test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.13.0/strauss.phar",
+      "@php bin/strauss.phar"
+    ],
+    "post-install-cmd": [
+      "@strauss"
+    ],
+    "post-update-cmd": [
+      "@strauss"
+    ]
+  },
   "extra": {
+    "strauss": {
+      "target_directory": "vendor/vendor-prefixed",
+      "namespace_prefix": "TEC\\Tickets",
+      "classmap_prefix": "TEC__Tickets__",
+      "constant_prefix": "TEC_TICKETS_",
+      "packages": [
+        "stripe/stripe-php"
+      ],
+      "exclude_from_prefix": {
+        "file_patterns": []
+      },
+      "delete_vendor_files": true,
+      "include_modified_date": false,
+      "include_author": false
+    },
     "changelogger": {
       "changelog": "changelog.md",
       "types": {
@@ -80,5 +107,8 @@
       "Tribe\\Tickets\\Events\\Views\\": "tests/views_integration/Tribe/Tickets/Events/Views",
       "TEC\\Tickets\\Flexible_Tickets\\Test\\": "tests/_support/Flexible_Tickets"
     }
+  },
+  "require": {
+    "stripe/stripe-php": "15.8.*"
   }
 }
