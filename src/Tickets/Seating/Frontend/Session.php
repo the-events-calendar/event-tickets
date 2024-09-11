@@ -358,7 +358,7 @@ class Session {
 			return null;
 		}
 
-		if ( ! $event_id || ! tec_tickets_seating_enabled( $event_id ) ) {
+		if ( ! ( $event_id && tec_tickets_seating_enabled( $event_id ) ) ) {
 			return null;
 		}
 
