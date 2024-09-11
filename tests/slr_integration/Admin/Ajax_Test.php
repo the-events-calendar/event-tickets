@@ -28,7 +28,6 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use Tribe__Tickets__Global_Stock as Global_Stock;
-use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 
 class Ajax_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -129,12 +128,15 @@ class Ajax_Test extends Controller_Test_Case {
 		);
 	}
 
-	private function set_up_ajax_request_context( int $user_id = null ): void {
+	private function set_up_ajax_request_context( int $user_id = null ): int {
 		if ( null === $user_id ) {
-			wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
+			$user_id = self::factory()->user->create( [ 'role' => 'administrator' ] );
+			wp_set_current_user( $user_id );
 		}
 		$_REQUEST['action']      = Ajax::NONCE_ACTION;
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
+
+		return $user_id;
 	}
 
 	private function given_maps_layouts_and_seat_types_in_db(): void {
@@ -1042,8 +1044,8 @@ class Ajax_Test extends Controller_Test_Case {
 	public function test_delete_reservations(): void {
 		$this->set_up_ajax_request_context();
 		// Create 3 Attendees and assign a reservation ID to each one of them.
-		$post_id                                  = static::factory()->post->create();
-		$ticket_id                                = $this->create_tc_ticket( $post_id, 10 );
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
 		[ $attendee_1, $attendee_2, $attendee_3 ] = $this->create_many_attendees_for_ticket( 3, $ticket_id, $post_id );
 		update_post_meta( $attendee_1, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-1' );
 		update_post_meta( $attendee_2, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-2' );
@@ -1790,8 +1792,8 @@ class Ajax_Test extends Controller_Test_Case {
 		);
 
 		// Create event with associated layout and ticket and attendees.
-		$post_id                                  = static::factory()->post->create();
-		$ticket_id                                = $this->create_tc_ticket( $post_id, 10 );
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
 		[ $attendee_1, $attendee_2, $attendee_3 ] = $this->create_many_attendees_for_ticket( 3, $ticket_id, $post_id );
 
 		update_post_meta( $post_id, Meta::META_KEY_ENABLED, true );
@@ -2032,5 +2034,405 @@ class Ajax_Test extends Controller_Test_Case {
 		$counts = \Tribe__Tickets__Tickets::get_ticket_counts( $post_id );
 
 		$this->assertMatchesJsonSnapshot( wp_json_encode( $counts, JSON_SNAPSHOT_OPTIONS ) );
+	}
+
+	/**
+	 * @covers Ajax::update_event_layout
+	 */
+	public function test_changing_layout_for_events_updates_event_and_tickets_properly() {
+		$this->make_controller()->register();
+
+		Maps_Service::insert_rows_from_service(
+			[
+				[
+					'id'            => 'some-map-1',
+					'name'          => 'Some Map 1',
+					'seats'         => 100,
+					'screenshotUrl' => 'https://example.com/some-map-1.png',
+				],
+				[
+					'id'            => 'some-map-2',
+					'name'          => 'Some Map 2',
+					'seats'         => 200,
+					'screenshotUrl' => 'https://example.com/some-map-2.png',
+				],
+				[
+					'id'            => 'some-map-3',
+					'name'          => 'Some Map 3',
+					'seats'         => 10,
+					'screenshotUrl' => 'https://example.com/some-map-3.png',
+				],
+			]
+		);
+		set_transient( Maps_Service::update_transient_name(), time() );
+
+		Layouts::insert_rows_from_service(
+			[
+				[
+					'id'            => 'some-layout-1',
+					'name'          => 'Some Layout 1',
+					'seats'         => 100,
+					'createdDate'   => time() * 1000,
+					'mapId'         => 'some-map-1',
+					'screenshotUrl' => 'https://example.com/some-layouts-1.png',
+				],
+				[
+					'id'            => 'some-layout-2',
+					'name'          => 'Some Layout 2',
+					'seats'         => 200,
+					'createdDate'   => time() * 1000,
+					'mapId'         => 'some-map-2',
+					'screenshotUrl' => 'https://example.com/some-layouts-2.png',
+				],
+				[
+					'id'            => 'some-layout-3',
+					'name'          => 'Some Layout 3',
+					'seats'         => 10,
+					'createdDate'   => time() * 1000,
+					'mapId'         => 'some-map-3',
+					'screenshotUrl' => 'https://example.com/some-layouts-3.png',
+				],
+			]
+		);
+		set_transient( Layouts_Service::update_transient_name(), time() );
+
+		Seat_Types_Table::insert_many(
+			[
+				[
+					'id'     => 'some-seat-type-1',
+					'name'   => 'Some Seat Type 1',
+					'seats'  => 70,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+				[
+					'id'     => 'some-seat-type-2',
+					'name'   => 'Some Seat Type 2',
+					'seats'  => 30,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+				[
+					'id'     => 'some-seat-type-3',
+					'name'   => 'Some Seat Type 3',
+					'seats'  => 50,
+					'map'    => 'some-map-2',
+					'layout' => 'some-layout-2',
+				],
+				[
+					'id'     => 'some-seat-type-4',
+					'name'   => 'Some Seat Type 4',
+					'seats'  => 150,
+					'map'    => 'some-map-2',
+					'layout' => 'some-layout-2',
+				],
+				[
+					'id'     => 'some-seat-type-5',
+					'name'   => 'Some Seat Type 5',
+					'seats'  => 3,
+					'map'    => 'some-map-3',
+					'layout' => 'some-layout-3',
+				],
+				[
+					'id'     => 'some-seat-type-6',
+					'name'   => 'Some Seat Type 6',
+					'seats'  => 7,
+					'map'    => 'some-map-3',
+					'layout' => 'some-layout-3',
+				],
+			]
+		);
+
+		set_transient( Seat_Types::update_transient_name(), time() );
+		$this->set_up_ajax_request_context();
+		$this->reset_wp_send_json_mocks();
+
+		// Setup request body.
+		$this->set_oauth_token( 'auth-token' );
+
+		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler   = tribe( 'tickets.handler' );
+		$capacity_meta_key = $tickets_handler->key_capacity;
+
+		// Create event with associated layout and ticket and attendees.
+		$post_id = static::factory()->post->create();
+
+		// Enable the global stock on the Event.
+		update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
+
+		// set capacity as per layout 1.
+		update_post_meta( $post_id, $capacity_meta_key, 100 );
+		update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, 100 );
+
+		update_post_meta( $post_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-1' );
+
+		$ticket_id_1 = $this->create_tc_ticket(
+			$post_id,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 70,
+				],
+			]
+		);
+
+		$ticket_id_2 = $this->create_tc_ticket(
+			$post_id,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 30,
+				],
+			]
+		);
+
+		update_post_meta( $ticket_id_1, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_id_1, Meta::META_KEY_SEAT_TYPE, 'some-seat-type-1' );
+
+		update_post_meta( $ticket_id_2, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_id_2, Meta::META_KEY_SEAT_TYPE, 'some-seat-type-2' );
+
+		$ticket_1 = tribe( Module::class )->get_ticket( $post_id, $ticket_id_1 );
+		$ticket_2 = tribe( Module::class )->get_ticket( $post_id, $ticket_id_2 );
+
+		$this->assertEquals( 70, $ticket_1->capacity() );
+		$this->assertEquals( 70, $ticket_1->stock() );
+		$this->assertEquals( 70, $ticket_1->available() );
+		$this->assertEquals( 70, $ticket_1->inventory() );
+
+		$this->assertEquals( 30, $ticket_2->capacity() );
+		$this->assertEquals( 30, $ticket_2->stock() );
+		$this->assertEquals( 30, $ticket_2->available() );
+		$this->assertEquals( 30, $ticket_2->inventory() );
+
+		$global_stock = new Global_Stock( $post_id );
+
+		$this->assertTrue( $global_stock->is_enabled(), 'Global stock should be enabled.' );
+		$this->assertEquals( 100, tribe_get_event_capacity( $post_id ), 'Total Event capacity should be 100' );
+		$this->assertEquals( 100, $global_stock->get_stock_level(), 'Global stock should be 100' );
+
+		$order = $this->create_order(
+			[
+				$ticket_id_1 => 5,
+				$ticket_id_2 => 5,
+			]
+		);
+
+		$_REQUEST['postId']    = $post_id;
+		$_REQUEST['newLayout'] = 'some-layout-2';
+
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		do_action( 'wp_ajax_' . Ajax::ACTION_EVENT_LAYOUT_UPDATED );
+
+		$wp_send_json_success->was_called_times_with(
+			1,
+			[
+				'updatedTickets'   => 2, // Number of Tickets updated.
+				'updatedAttendees' => 10, // Number of Attendees updated.
+			]
+		);
+
+		// Post capacity should be updated to 200 to match the new layout 2.
+		$this->assertEquals( 200, tribe_get_event_capacity( $post_id ), 'Total Event capacity should be 200' );
+		$this->assertEquals( 200, $global_stock->get_stock_level(), 'Global stock should be 200' );
+
+		$ticket_1 = tribe( Module::class )->get_ticket( $post_id, $ticket_id_1 );
+		// Ticket 1 should have its seat type updated to 3 to match the new layout.
+		$this->assertEquals( 'some-seat-type-3', get_post_meta( $ticket_id_1, Meta::META_KEY_SEAT_TYPE, true ) );
+
+		// Ticket 1 should have its capacity updated to 50 to match the new default seat type 3.
+		$this->assertEquals( 50, $ticket_1->capacity() );
+		$this->assertEquals( 50 - 5, $ticket_1->stock() );
+		$this->assertEquals( 50 - 5, $ticket_1->available() );
+		$this->assertEquals( 50 - 5, $ticket_1->inventory() );
+
+		$ticket_2 = tribe( Module::class )->get_ticket( $post_id, $ticket_id_2 );
+
+		// Ticket 2 should have its seat type updated to 3 to match the new layout.
+		$this->assertEquals( 'some-seat-type-3', get_post_meta( $ticket_id_2, Meta::META_KEY_SEAT_TYPE, true ) );
+
+		// Ticket 2 should have its capacity updated to 50 to match the new default seat type 3.
+		$this->assertEquals( 50, $ticket_2->capacity() );
+		$this->assertEquals( 50 - 5, $ticket_2->stock() );
+		$this->assertEquals( 50 - 5, $ticket_2->available() );
+		$this->assertEquals( 50 - 5, $ticket_2->inventory() );
+
+		$attendees = tribe_attendees()->where( 'event', $post_id )->get_ids( true );
+
+		foreach ( $attendees as $attendee_id ) {
+			// Attendee should have its seat type updated to 3 to match the new layout.
+			$this->assertEquals( 'some-seat-type-3', get_post_meta( $attendee_id, Meta::META_KEY_SEAT_TYPE, true ) );
+			$this->assertEquals( '', get_post_meta( $attendee_id, Meta::META_KEY_RESERVATION_ID, true ) );
+			$this->assertEquals( '', get_post_meta( $attendee_id, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true ) );
+		}
+
+		// Let's change the layout again to some-layout-3 to test negative case.
+		$this->reset_wp_send_json_mocks();
+		$_REQUEST['newLayout'] = 'some-layout-3';
+		$_REQUEST['postId']    = $post_id;
+
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_EVENT_LAYOUT_UPDATED );
+
+		$wp_send_json_success->was_called_times_with(
+			1,
+			[
+				'updatedTickets'   => 2, // Number of Tickets updated.
+				'updatedAttendees' => 10, // Number of Attendees updated.
+			]
+		);
+
+		// Post capacity should be updated to 10 to match the new layout 3.
+		$this->assertEquals( 10, tribe_get_event_capacity( $post_id ), 'Total Event capacity should be 10' );
+		$this->assertEquals( 10, $global_stock->get_stock_level(), 'Global stock should be 10' );
+
+		$ticket_1 = tribe( Module::class )->get_ticket( $post_id, $ticket_id_1 );
+		// Ticket 1 should have its seat type updated to 5 to match the new layout.
+
+		$this->assertEquals( 'some-seat-type-5', get_post_meta( $ticket_id_1, Meta::META_KEY_SEAT_TYPE, true ) );
+
+		// Ticket 1 should have its capacity updated to 3 to match the new default seat type 5.
+		$this->assertEquals( 3, $ticket_1->capacity() );
+		$this->assertEquals( 0, $ticket_1->stock() );
+		$this->assertEquals( 0, $ticket_1->available() );
+		$this->assertEquals( 0, $ticket_1->inventory() );
+
+		$ticket_2 = tribe( Module::class )->get_ticket( $post_id, $ticket_id_2 );
+
+		// Ticket 2 should have its seat type updated to 5 to match the new layout.
+		$this->assertEquals( 'some-seat-type-5', get_post_meta( $ticket_id_2, Meta::META_KEY_SEAT_TYPE, true ) );
+
+		// Ticket 2 should have its capacity updated to 7 to match the new default seat type 5.
+		$this->assertEquals( 3, $ticket_2->capacity() );
+		$this->assertEquals( 0, $ticket_2->stock() );
+		$this->assertEquals( 0, $ticket_2->available() );
+		$this->assertEquals( 0, $ticket_2->inventory() );
+	}
+
+	public function test_update_event_layout_failures(): void {
+		set_transient( Seat_Types::update_transient_name(), time() );
+		$admin_user_id = $this->set_up_ajax_request_context();
+		$this->set_oauth_token( 'auth-token' );
+		$post_id = static::factory()->post->create();
+
+		$this->make_controller()->register();
+
+		// Missing post ID.
+		unset( $_REQUEST['postId'] );
+		$_REQUEST['newLayout'] = 'some-layout-1';
+		$wp_send_json_error    = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_EVENT_LAYOUT_UPDATED );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[
+					'error' => 'No layout ID or post ID provided',
+				],
+				400
+			)
+		);
+		$this->reset_wp_send_json_mocks();
+
+		// Missing layout ID.
+		unset( $_REQUEST['newLayout'] );
+		$_REQUEST['postId'] = $post_id;
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_EVENT_LAYOUT_UPDATED );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[
+					'error' => 'No layout ID or post ID provided',
+				],
+				400
+			)
+		);
+		$this->reset_wp_send_json_mocks();
+
+		// User cannot edit post.
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'subscriber' ] ) );
+		$_REQUEST['postId']    = $post_id;
+		$_REQUEST['newLayout'] = 'some-layout-1';
+		$wp_send_json_error    = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_EVENT_LAYOUT_UPDATED );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[
+					'error' => 'User has no permission.',
+				],
+				403
+			)
+		);
+		$this->reset_wp_send_json_mocks();
+		wp_set_current_user( $admin_user_id );
+
+		// No such layout in the DB.
+		$_REQUEST['postId']    = $post_id;
+		$_REQUEST['newLayout'] = 'some-layout-1';
+		$wp_send_json_error    = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_EVENT_LAYOUT_UPDATED );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[
+					'error' => 'Invalid layout ID',
+				],
+				400
+			)
+		);
+
+		// No primary seat type found for the layout.
+		Maps_Service::insert_rows_from_service(
+			[
+				[
+					'id'            => 'some-map-1',
+					'name'          => 'Some Map 1',
+					'seats'         => 100,
+					'screenshotUrl' => 'https://example.com/some-map-1.png',
+				],
+			]
+		);
+		set_transient( Maps_Service::update_transient_name(), time() );
+
+		Layouts::insert_rows_from_service(
+			[
+				[
+					'id'            => 'some-layout-1',
+					'name'          => 'Some Layout 1',
+					'seats'         => 100,
+					'createdDate'   => time() * 1000,
+					'mapId'         => 'some-map-1',
+					'screenshotUrl' => 'https://example.com/some-layouts-1.png',
+				],
+			]
+		);
+		set_transient( Layouts_Service::update_transient_name(), time() );
+
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_EVENT_LAYOUT_UPDATED );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[
+					'error' => 'No primary seat type found for the layout.',
+				],
+				400
+			)
+		);
 	}
 }

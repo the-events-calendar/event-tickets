@@ -4,12 +4,14 @@ import { storeName } from './store';
 import { select } from '@wordpress/data';
 import Seats from './dashboard-actions/seats';
 import { filterCapacityTableMappedProps } from './capacity-table';
+import LayoutSelect from "./settings/layoutSelect";
 import {
 	filterSeatedTicketsAvailabilityMappedProps,
 	filterSetBodyDetails,
 	filterHeaderDetails,
 	filterTicketIsAsc,
 	setSeatTypeForTicket,
+	filterSettingsFields,
 } from './hook-callbacks';
 
 const shouldRenderAssignedSeatingForm = true;
@@ -122,6 +124,12 @@ addFilter(
 	'tribe.editor.ticket.isAsc',
 	'tec.tickets.seating',
 	filterTicketIsAsc
+);
+
+addFilter(
+	'tec.tickets.blocks.Tickets.Settings.Fields',
+	'tec.tickets.seating',
+	filterSettingsFields
 );
 
 addAction(

@@ -15,5 +15,6 @@
     "ACTION_SEAT_TYPE_DELETED": "tec_tickets_seating_seat_type_deleted",
     "ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES": "tec_tickets_seating_reservations_updated_from_seat_types",
     "ACTION_RESERVATION_CREATED": "tec_tickets_seating_reservation_created",
-    "ACTION_RESERVATION_UPDATED": "tec_tickets_seating_reservation_updated"
+    "ACTION_RESERVATION_UPDATED": "tec_tickets_seating_reservation_updated",
+    "ACTION_EVENT_LAYOUT_UPDATED": "tec_tickets_seating_event_layout_updated"
 }
