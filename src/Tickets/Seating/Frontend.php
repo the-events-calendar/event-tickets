@@ -14,12 +14,14 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Tickets\Seating\Admin\Ajax;
+use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Frontend\Timer;
 use TEC\Tickets\Seating\Service\Service;
 use Tribe__Template as Base_Template;
 use Tribe__Tickets__Main as ET;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_Error;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
  * Class Controller.
@@ -91,6 +93,8 @@ class Frontend extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ] );
+
+		remove_filter( 'tribe_tickets_block_ticket_html_attributes', [ $this, 'add_seat_selected_labels_per_ticket_attribute' ] );
 	}
 
 	/**
@@ -280,6 +284,8 @@ class Frontend extends Controller_Contract {
 	protected function do_register(): void {
 		add_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ], 10, 5 );
 
+		add_filter( 'tribe_tickets_block_ticket_html_attributes', [ $this, 'add_seat_selected_labels_per_ticket_attribute' ], 10, 3 );
+
 		// Register the front-end JS.
 		Asset::add(
 			'tec-tickets-seating-frontend',
@@ -312,6 +318,40 @@ class Frontend extends Controller_Contract {
 			->add_to_group( 'tec-tickets-seating-frontend' )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
+	}
+
+	/**
+	 * Adds the seat selected labels to the ticket block.
+	 *
+	 * @since TBD
+	 *
+	 * @param array         $attributes The attributes of the ticket block.
+	 * @param Ticket_Object $ticket     The ticket object.
+	 * @param int           $event_id    The post ID.
+	 *
+	 * @return array The attributes of the ticket block.
+	 */
+	public function add_seat_selected_labels_per_ticket_attribute( array $attributes, Ticket_Object $ticket, int $event_id ): array {
+		if ( ! tec_tickets_seating_enabled( $event_id ) ) {
+			return $attributes;
+		}
+
+		$seat_labels = tribe( Session::class )->get_events_registrations_ticket_seat_label( $event_id, $ticket->ID );
+
+		if ( empty( $seat_labels ) || ! is_array( $seat_labels ) ) {
+			return $attributes;
+		}
+
+		$seat_labels = implode(
+			',',
+			$seat_labels ? array_values(
+				wp_list_pluck( $seat_labels, 'seat_label' )
+			) : []
+		);
+
+		$attributes['data-seat-labels'] = esc_attr( $seat_labels );
+
+		return $attributes;
 	}
 
 	/**
@@ -386,7 +426,7 @@ class Frontend extends Controller_Contract {
 			$provider ??= tribe_tickets_get_ticket_provider( $ticket_id );
 			$ticket     = $provider->get_ticket( $post_id, $ticket_id );
 
-			if ( ! $ticket instanceof \Tribe__Tickets__Ticket_Object ) {
+			if ( ! $ticket instanceof Ticket_Object ) {
 				continue;
 			}
 

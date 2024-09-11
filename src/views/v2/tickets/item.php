@@ -67,8 +67,6 @@
  * @var int                                $max_at_a_time               The maximum quantity able to be purchased in a single Add to Cart action.
  */
 
-use TEC\Tickets\Seating\Frontend\Session;
-
 if (
 	empty( $provider )
 	|| $ticket->provider_class !== $provider->class_name
@@ -119,28 +117,20 @@ if ( $has_shared_cap ) {
 	$attributes['data-available-count'] = (string) $available_count;
 }
 
-$seat_labels = tribe( Session::class )->get_events_registrations_ticket_seat_label( $post_id, $ticket->ID );
-
-$seat_labels = implode(
-	',',
-	$seat_labels ? array_values(
-		wp_list_pluck( $seat_labels, 'seat_label' )
-	) : []
-);
-
 /**
  * Filter the ticket data attributes.
  *
  * @since 5.1.1
+ * @since TBD Added $event_id parameter.
  *
- * @param array $attributes A list of data attributes with their values.
+ * @param array                         $attributes A list of data attributes with their values.
  * @param Tribe__Tickets__Ticket_Object $ticket The ticket object.
+ * @param int                           $post_id The current event ID.
  */
-$attributes = apply_filters( 'tribe_tickets_block_ticket_html_attributes', $attributes, $ticket );
+$attributes = apply_filters( 'tribe_tickets_block_ticket_html_attributes', $attributes, $ticket, $post_id );
 ?>
 <div
 	id="<?php echo esc_attr( $ticket_item_id ); ?>"
-	data-seat-labels="<?php echo esc_attr( $seat_labels ); ?>"
 	<?php tribe_classes( $classes ); ?>
 	<?php tribe_attributes( $attributes ); ?>
 >
