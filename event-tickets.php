@@ -47,6 +47,9 @@ require_once dirname( EVENT_TICKETS_MAIN_PLUGIN_FILE ) . '/src/functions/php-min
 // Load the Composer autoload file.
 require_once dirname( EVENT_TICKETS_MAIN_PLUGIN_FILE ) . '/vendor/autoload.php';
 
+// Load the Strauss Composer autoload file.
+require_once dirname( EVENT_TICKETS_MAIN_PLUGIN_FILE ) . '/vendor/vendor-prefixed/autoload.php';
+
 /**
  * Verifies if we need to warn the user about min PHP version and bail to avoid fatal errors.
  */

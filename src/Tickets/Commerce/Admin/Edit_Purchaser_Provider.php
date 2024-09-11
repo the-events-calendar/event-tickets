@@ -61,7 +61,6 @@ class Edit_Purchaser_Provider extends Service_Provider {
 
 	public function ajax_handle_request() {
 		check_ajax_referer('tec_commerce_purchaser_edit', '_nonce' );
-		$error_message = '';
 
 		switch( $_SERVER['REQUEST_METHOD'] ) {
 			case 'POST':
@@ -69,7 +68,7 @@ class Edit_Purchaser_Provider extends Service_Provider {
 				$email   					    = $_POST['email'];
 				$post_id 						= $_POST['id'];
 
-				if ( ! filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
+				if ( ! is_email( $email ) ) {
 					wp_send_json_error(
 						_x(
 							'Invalid email address',
@@ -80,11 +79,8 @@ class Edit_Purchaser_Provider extends Service_Provider {
 					die();
 				}
 
-				// Update through gateway first.
-
-
 				// Local database update.
-				tec_tc_orders()->by_args(
+				$updated = tec_tc_orders()->by_args(
 						[
 							'status' => 'any',
 							'id'     => $post_id,

@@ -1,5 +1,3 @@
-
-
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
@@ -17,6 +15,7 @@ tribe.dialogs.events = tribe.dialogs.events || {};
  * @type   {Object}
  */
 tribe.tickets.editPurchaser = {};
+
 ( function( $, obj ) {
 	'use strict';
 
@@ -78,7 +77,6 @@ tribe.tickets.editPurchaser = {};
 		'tecTicketsCommerceOpenPurchaserModal',
 		( e ) => {
 			obj.bindForm();
-//wp_ajax_tec_commerce_purchaser_edit
 			var values = obj.getFormFields();
 			$( obj.selectors.loader ).removeClass( 'tribe-common-a11y-hidden' );
 			// @todo ajaxurl
@@ -91,9 +89,11 @@ tribe.tickets.editPurchaser = {};
 				}
 			}).success(
 				function (response) {
-
-					$(obj.selectors.nameField).val(response.data.first_name + ' ' + response.data.last_name);
-					$(obj.selectors.emailField).val(response.data.email);
+					$( obj.selectors.nameField ).val( response.data.first_name + ' ' + response.data.last_name );
+					$( obj.selectors.emailField ).val( response.data.email );
+				}
+			).always(
+				function () {
 					$( obj.selectors.loader ).addClass( 'tribe-common-a11y-hidden' );
 				}
 			);

@@ -91,8 +91,10 @@ abstract class Abstract_Order {
 	 *
 	 */
 	public function get_purchaser_data( $data ) {
+		$purchaser = [];
 
-		if ( is_user_logged_in() ) {
+		if ( ( empty( $data['purchaser'] ) || empty( $data['purchaser']['name'] ) )
+			&& is_user_logged_in() ) {
 			$user                              = wp_get_current_user();
 			$purchaser['purchaser_user_id']    = $user->ID;
 			$purchaser['purchaser_full_name']  = $user->first_name . ' ' . $user->last_name;
