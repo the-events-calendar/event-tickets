@@ -81,6 +81,8 @@ class ItemsTest extends V2TestCase {
 		$args = $this->get_default_args();
 		$html = $template->template( $this->partial_path, $args, false );
 
+		$html = str_replace( $this->tolerables, '{{TICKET_POST_ID}}', $html );
+
 		$driver = $this->get_html_output_driver();
 
 		$driver->setTolerableDifferences( $this->tolerables );
