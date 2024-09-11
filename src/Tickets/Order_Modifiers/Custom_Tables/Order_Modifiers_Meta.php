@@ -20,6 +20,7 @@ use wpdb;
  * @package TEC\Tickets\Order_Modifiers\Custom_Tables;
  */
 class Order_Modifiers_Meta extends Table {
+
 	/**
 	 * @since TBD
 	 *

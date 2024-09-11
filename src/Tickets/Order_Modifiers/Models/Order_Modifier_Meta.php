@@ -13,6 +13,7 @@ use TEC\Common\StellarWP\Models\Contracts\ModelCrud;
 use TEC\Common\StellarWP\Models\Contracts\ModelFromQueryBuilderObject;
 use TEC\Common\StellarWP\Models\Model;
 use TEC\Common\StellarWP\Models\ModelQueryBuilder;
+use TEC\Tickets\Order_Modifiers\Data_Transfer_Objects\Order_Modifier_Meta_DTO;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers_Meta;
 
 /**

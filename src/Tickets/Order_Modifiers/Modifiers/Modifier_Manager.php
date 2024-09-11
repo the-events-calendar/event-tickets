@@ -43,9 +43,6 @@ class Modifier_Manager {
 	 * @param Modifier_Strategy_Interface $strategy The modifier strategy to use.
 	 */
 	public function __construct( Modifier_Strategy_Interface $strategy ) {
-		if ( ! $strategy instanceof Modifier_Strategy_Interface ) {
-			throw new \InvalidArgumentException( 'Invalid strategy provided.' );
-		}
 		$this->strategy = $strategy;
 	}
 
