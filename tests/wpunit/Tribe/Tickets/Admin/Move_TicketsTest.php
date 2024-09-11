@@ -15,6 +15,8 @@ use Tribe\Tickets\Test\Commerce\Attendee_Maker as Attendee_Maker;
 use Tribe__Tickets__RSVP__Attendance_Totals as Tickets_Attendance;
 use Tribe__Tickets__Admin__Move_Tickets as Move_Tickets;
 use TEC\Tickets\Commerce\Module as Commerce;
+use TEC\Tickets\Commerce\Provider as Commerce_Provider;
+
 
 class Move_TicketsTest extends WPTestCase {
 	use With_Uopz;
@@ -33,14 +35,18 @@ class Move_TicketsTest extends WPTestCase {
 
 		add_filter( 'tribe_tickets_user_can_manage_attendees', '__return_true' );
 
-		// Enable Tribe Commerce.
-		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
-		add_filter( 'tribe_tickets_get_modules', static function ( array $modules ): array {
-			$modules[ Commerce::class ] = 'Commerce';
-			return $modules;
-		} );
-		// Regenerate the Tickets Data API to pick up the filtered providers.
-		tribe()->singleton( 'tickets.data_api', new \Tribe__Tickets__Data_API() );
+		// Ensure Ticket Commerce is enabled.
+		if ( ! tec_tickets_commerce_is_enabled() ) {
+			add_filter( 'tec_tickets_commerce_is_enabled', '__return_true', 100 );
+			tribe()->register( Commerce_Provider::class );
+			tribe( Commerce::class );
+		}
+
+		$path = Main::instance()->plugin_path;
+		require_once $path . 'src/functions/commerce/orm.php';
+		require_once $path . 'src/functions/commerce/orders.php';
+		require_once $path . 'src/functions/commerce/attendees.php';
+		require_once $path . 'src/functions/commerce/tickets.php';
 	}
 
 
@@ -307,5 +313,69 @@ class Move_TicketsTest extends WPTestCase {
 
 		// Confirm the attendee count is as expected.
 		$this->assertEquals( count( $attendees ), count( $attendance ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_count_tc_ticket_attendees_correctly_after_moving_one() {
+		// First event with 1 commerce ticket and 1 attendee.
+		$src_event_id   = $this->factory()->event->create();
+		$src_ticket_id  = $this->create_tc_ticket( $src_event_id );
+		$src_attendee   = $this->create_attendee_for_ticket( $src_ticket_id, $src_event_id );
+		$src_attendance = tribe_attendees()->where( 'event', $src_event_id )->get_ids();
+
+		// Second event with 1 commerce ticket and 0 attendees.
+		$trg_event_id   = $this->factory()->event->create();
+		$trg_ticket_id  = $this->create_tc_ticket( $trg_event_id );
+		$trg_attendance = tribe_attendees()->where( 'event', $trg_event_id )->get_ids();
+
+		// Confirm the attendee counts are as expected.
+		$this->assertEquals( 1, count( $src_attendance ) );
+		$this->assertEquals( 0, count( $trg_attendance ) );
+
+		// Move the attendee from the first event to the second event.
+		$ticket_admin = new Move_Tickets();
+		$ticket_admin->move_tickets( [ $src_attendee ], $trg_ticket_id, $src_event_id, $trg_event_id );
+
+		// Get the attendee counts after the move.
+		$src_attendance = tribe_attendees()->where( 'event', $src_event_id )->get_ids();
+		$trg_attendance = tribe_attendees()->where( 'event', $trg_event_id )->get_ids();
+
+		// Confirm the attendee counts are as expected after the move.
+		$this->assertEquals( 0, count( $src_attendance ) );
+		$this->assertEquals( 1, count( $trg_attendance ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_count_tc_ticket_attendees_correctly_after_moving_many() {
+		// First event with 1 commerce ticket and 5 attendees.
+		$src_event_id   = $this->factory()->event->create();
+		$src_ticket_id  = $this->create_tc_ticket( $src_event_id );
+		$src_attendees  = $this->create_many_attendees_for_ticket( 5, $src_ticket_id, $src_event_id );
+		$src_attendance = tribe_attendees()->where( 'event', $src_event_id )->get_ids();
+
+		// Second event with 1 commerce ticket and 0 attendees.
+		$trg_event_id   = $this->factory()->event->create();
+		$trg_ticket_id  = $this->create_tc_ticket( $trg_event_id );
+		$trg_attendance = tribe_attendees()->where( 'event', $trg_event_id )->get_ids();
+
+		// Confirm the attendee counts are as expected.
+		$this->assertEquals( 5, count( $src_attendance ) );
+		$this->assertEquals( 0, count( $trg_attendance ) );
+
+		// Move all the attendees from the first event to the second event.
+		$ticket_admin = new Move_Tickets();
+		$ticket_admin->move_tickets( $src_attendees, $trg_ticket_id, $src_event_id, $trg_event_id );
+
+		// Get the attendee counts after the move.
+		$src_attendance = tribe_attendees()->where( 'event', $src_event_id )->get_ids();
+		$trg_attendance = tribe_attendees()->where( 'event', $trg_event_id )->get_ids();
+
+		// Confirm the attendee counts are as expected after the move.
+		$this->assertEquals( 0, count( $src_attendance ) );
+		$this->assertEquals( 5, count( $trg_attendance ) );
 	}
 }

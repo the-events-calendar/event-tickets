@@ -125,5 +125,15 @@ function tec_tc_get_attendee( $attendee = null, $output = OBJECT, $filter = 'raw
 		$post = ARRAY_A === $output ? (array) $post : array_values( (array) $post );
 	}
 
+	$provider = tribe_tickets_get_ticket_provider( $attendee->ID );
+	$post     = array_merge(
+		$post,
+		[
+			'provider'    => $provider->class_name,
+			'attendee_id' => $attendee->ID,
+			'product_id'  => $post['ID'],
+		]
+	);
+
 	return $post;
 }
