@@ -11,6 +11,7 @@ import {
 	filterHeaderDetails,
 	filterTicketIsAsc,
 	setSeatTypeForTicket,
+	filterSettingsFields,
 } from './hook-callbacks';
 
 const shouldRenderAssignedSeatingForm = true;
@@ -124,30 +125,6 @@ addFilter(
 	'tec.tickets.seating',
 	filterTicketIsAsc
 );
-
-/**
- * Filters the settings fields to include the layout selection.
- *
- * @since TBD
- *
- * @param {Array} fields The settings fields.
- *
- * @return {Array} The settings fields.
- */
-function filterSettingsFields(fields) {
-	const store = select(storeName);
-	const currentLayout = store.getCurrentLayoutId();
-	const layouts = store.getLayoutsInOptionFormat();
-
-	fields.push(
-		<LayoutSelect
-			layouts={layouts}
-			currentLayout={currentLayout}
-		/>
-	);
-
-	return fields;
-}
 
 addFilter(
 	'tec.tickets.blocks.Tickets.Settings.Fields',

@@ -1,6 +1,7 @@
 import { storeName } from './store';
 import { select, dispatch } from '@wordpress/data';
 import SeatType from './header/seat-type';
+import LayoutSelect from "./settings/layoutSelect";
 
 export const setSeatTypeForTicket = (clientId) =>
 	dispatch(storeName).setTicketSeatTypeByPostId(clientId);
@@ -136,3 +137,27 @@ export const filterSeatedTicketsAvailabilityMappedProps = (mappedProps) => {
 		available: Math.abs(activeSeatTypeTotalCapacity - soldAndPending),
 	};
 };
+
+/**
+ * Filters the settings fields to include the layout selection.
+ *
+ * @since TBD
+ *
+ * @param {Array} fields The settings fields.
+ *
+ * @return {Array} The settings fields.
+ */
+export const filterSettingsFields = (fields) => {
+	const store = select(storeName);
+	const currentLayout = store.getCurrentLayoutId();
+	const layouts = store.getLayoutsInOptionFormat();
+
+	fields.push(
+		<LayoutSelect
+			layouts={layouts}
+			currentLayout={currentLayout}
+		/>
+	);
+
+	return fields;
+}
