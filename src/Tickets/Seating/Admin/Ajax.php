@@ -1108,8 +1108,6 @@ class Ajax extends Controller_Contract {
 		$tickets = tribe_tickets()->where( 'event', $post_id )->get_ids( true );
 		
 		foreach ( $tickets as $ticket_id ) {
-			clean_post_cache( $ticket_id );
-			
 			$previous_capacity = get_post_meta( $ticket_id, $capacity_meta_key, true );
 			$capacity_delta    = $new_seat_capacity - $previous_capacity;
 			$previous_stock    = get_post_meta( $ticket_id, '_stock', true );
@@ -1126,7 +1124,6 @@ class Ajax extends Controller_Contract {
 		$attendees = tribe_attendees()->where( 'event', $post_id )->get_ids( true );
 		
 		foreach ( $attendees as $attendee_id ) {
-			clean_post_cache( $attendee_id );
 			update_post_meta( $attendee_id, Meta::META_KEY_SEAT_TYPE, $new_seat_type_id );
 			update_post_meta( $attendee_id, Meta::META_KEY_ATTENDEE_SEAT_LABEL, '' );
 			
@@ -1137,8 +1134,6 @@ class Ajax extends Controller_Contract {
 		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, $layout_id );
 		update_post_meta( $post_id, $capacity_meta_key, $layout->seats );
 		update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, $layout->seats );
-		
-		clean_post_cache( $post_id );
 		
 		wp_send_json_success(
 			[
