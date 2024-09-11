@@ -80,6 +80,8 @@ class Provider extends Service_Provider {
 		// Register and add hooks for admin notices.
 		$this->container->register( Admin\Notices::class );
 
+		$this->container->register( Admin\Singular_Order_Page::class );
+
 		$this->container->register_on_action(
 			'tec_events_pro_custom_tables_v1_fully_activated',
 			Custom_Tables\V1\Provider::class

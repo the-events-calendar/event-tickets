@@ -57,4 +57,13 @@ class Completed extends Status_Abstract {
 		'show_in_admin_status_list' => true,
 	];
 
+	/**
+	 * {@inheritdoc}
+	 */
+	public function can_be_updated_to(): array {
+		return [
+			tribe( Voided::class ),
+			tribe( Refunded::class ),
+		];
+	}
 }

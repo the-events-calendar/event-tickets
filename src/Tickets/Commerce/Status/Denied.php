@@ -54,4 +54,11 @@ class Denied extends Status_Abstract {
 	public function is_final() {
 		return true;
 	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function can_be_updated_to(): array {
+		return [];
+	}
 }
