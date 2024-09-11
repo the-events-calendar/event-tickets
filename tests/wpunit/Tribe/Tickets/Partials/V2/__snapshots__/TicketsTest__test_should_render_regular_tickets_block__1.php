@@ -35,7 +35,6 @@
 
 		<div
 	id="tribe-block-tickets-item-{{POST_TICKET_ID}}"
-	data-seat-labels=""
 	 class="tribe-tickets__tickets-item post-{{POST_TICKET_ID}} tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="{{POST_TICKET_ID}}" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
 
 	<div  class="tribe-tickets__tickets-item-content-title-container" >
@@ -84,7 +83,6 @@
 </div>
 <div
 	id="tribe-block-tickets-item-{{POST_TICKET_ID}}"
-	data-seat-labels=""
 	 class="tribe-tickets__tickets-item post-{{POST_TICKET_ID}} tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="{{POST_TICKET_ID}}" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
 
 	<div  class="tribe-tickets__tickets-item-content-title-container" >
