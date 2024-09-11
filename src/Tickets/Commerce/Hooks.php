@@ -24,7 +24,6 @@ use TEC\Tickets\Commerce\Admin_Tables\Orders_Table;
 use TEC\Tickets\Commerce\Reports\Orders;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
-use TEC\Tickets\Commerce\Payments_Tab;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use WP_Admin_Bar;
 use Tribe__Date_Utils;
@@ -137,19 +136,12 @@ class Hooks extends Service_Provider {
 		$this->provider_meta_sanitization_filters();
 
 		add_filter( 'tribe_template_context:tickets-plus/v2/tickets/submit/button-modal', [ $this, 'filter_showing_cart_button' ] );
-
 		add_filter( 'tec_tickets_commerce_payments_tab_settings', [ $this, 'filter_payments_tab_settings' ] );
-
 		add_filter( 'wp_redirect', [ $this, 'filter_redirect_url' ] );
-
 		add_filter( 'tec_tickets_editor_configuration_localized_data', [ $this, 'filter_block_editor_localized_data' ] );
-
 		add_action( 'tribe_editor_config', [ $this, 'filter_tickets_editor_config' ] );
-
 		add_filter( 'wp_list_table_class_name', [ $this, 'filter_wp_list_table_class_name' ], 10, 2 );
-
 		add_filter( 'tribe_dropdown_tec_tc_order_table_events', [ $this, 'provide_events_results_to_ajax' ], 10, 2 );
-
 		add_filter( 'tribe_dropdown_tec_tc_order_table_customers', [ $this, 'provide_customers_results_to_ajax' ], 10, 2 );
 	}
 
@@ -178,6 +170,9 @@ class Hooks extends Service_Provider {
 			'post_status'            => 'any',
 			'posts_per_page'         => 10,
 			's'                      => $term,
+			// Default to show most recent first.
+			'orderby'                => 'ID',
+			'order'                  => 'DESC',
 		];
 
 		$query = new WP_Query( $args );

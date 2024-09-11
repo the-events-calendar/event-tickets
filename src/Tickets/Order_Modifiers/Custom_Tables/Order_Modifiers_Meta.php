@@ -21,6 +21,7 @@ use wpdb;
  */
 class Order_Modifiers_Meta extends Table {
 
+
 	/**
 	 * @since TBD
 	 *
