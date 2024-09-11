@@ -343,18 +343,22 @@ class Session {
 	}
 
 	/**
-	 * Returns the seat label for a ticket in an event's registration modal/page.
+	 * Returns a list of all the reservations details for a specific ticket and event.
 	 *
 	 * @since TBD
 	 *
 	 * @param ?int $event_id  The event ID.
 	 * @param ?int $ticket_id The ticket ID.
 	 *
-	 * @return ?array The seat reservations for the ticket.
+	 * @return ?array The reservations.
 	 */
-	public function get_events_registrations_ticket_seat_label( int $event_id = null, int $ticket_id = null ) {
+	public function get_events_registrations_ticket_seat_label( int $event_id = null, int $ticket_id = null ): ?array {
 		// Bail while in admin side always. There are no reservations in the admin.
 		if ( is_admin() ) {
+			return null;
+		}
+
+		if ( ! $ticket_id ) {
 			return null;
 		}
 
@@ -364,27 +368,39 @@ class Session {
 
 		[ $token, $object_id ] = $this->get_session_token_object_id();
 
-		if ( ! $token ) {
+		if ( ! ( $token && $object_id && (int) $object_id === $event_id ) ) {
 			return null;
 		}
 
-		if ( ! $object_id || (int) $object_id !== $event_id ) {
-			return null;
-		}
+		$cache_key = $this->get_events_registrations_ticket_seat_label_cache_key( $token, $event_id, $ticket_id );
 
-		$cache_key = 'tec_seated_reservations_' . $token . '_' . $object_id . '_' . $ticket_id;
-		$cached    = tribe_cache()->get( $cache_key, '', [] );
+		$reservations_for_event_and_ticket = tribe_cache()->get( $cache_key, '', [] );
 
-		if ( ! empty( $cached ) ) {
-			return $cached;
+		if ( ! empty( $reservations_for_event_and_ticket ) && is_array( $reservations_for_event_and_ticket ) ) {
+			return $reservations_for_event_and_ticket;
 		}
 
 		$reservations = $this->sessions->get_reservations_for_token( $token );
 
-		$cached = $reservations[ $ticket_id ] ?? null;
+		$reservations_for_event_and_ticket = $reservations[ $ticket_id ] ?? null;
 
-		tribe_cache()->set( $cache_key, $cached, Tribe__Cache::NON_PERSISTENT );
+		tribe_cache()->set( $cache_key, $reservations_for_event_and_ticket, Tribe__Cache::NON_PERSISTENT );
 
-		return $cached;
+		return $reservations_for_event_and_ticket;
+	}
+
+	/**
+	 * Returns the cache key for the reservations for a specific ticket and event.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $token    The token.
+	 * @param int    $event_id The event ID.
+	 * @param int    $ticket_id The ticket ID.
+	 *
+	 * @return string The cache key.
+	 */
+	public function get_events_registrations_ticket_seat_label_cache_key( string $token, int $event_id, int $ticket_id ): string {
+		return 'tec_seated_reservations_' . $token . '_' . $event_id . '_' . $ticket_id;
 	}
 }
