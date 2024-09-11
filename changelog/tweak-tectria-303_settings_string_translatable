@@ -1,4 +1,0 @@
-Significance: minor
-Type: tweak
-
-Made a string translatable in `getting-started.php` file. (props to @DAnn2012) [TECTRIA-303]
