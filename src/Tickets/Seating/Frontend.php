@@ -108,9 +108,9 @@ class Frontend extends Controller_Contract {
 	 */
 	public function print_tickets_block( $html, $file, $name, $template, $context ): ?string {
 		$data    = $template->get_values();
-		$post_id = $data['post_id'];
+		$post_id = $data['post_id'] ?? null;
 
-		if ( ! tec_tickets_seating_enabled( $post_id ) ) {
+		if ( ! $post_id || ! tec_tickets_seating_enabled( $post_id ) ) {
 			return $html;
 		}
 
