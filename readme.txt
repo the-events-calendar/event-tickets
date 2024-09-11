@@ -215,7 +215,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Added actions: `tribe_tickets_commerce_order_actions_box_start`
 * Language - 44 new strings added, 39 updated, 1 fuzzied, and 0 obsoleted
 
-= [5.13.2] 2024-09-20 =
+= [5.13.2] 2024-08-20 =
 
 * Fix - Exporting all Attendees as a CSV file in the new Tickets Attendees Page. [ET-2094]
 * Fix - Shared capacity will no longer be affected by any of the unlimited sales tickets on the same event. [ETP-920]
