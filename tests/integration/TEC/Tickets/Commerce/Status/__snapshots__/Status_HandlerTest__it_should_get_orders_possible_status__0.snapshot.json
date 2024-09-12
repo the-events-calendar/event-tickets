@@ -1,0 +1,15 @@
+[
+    [
+        "refunded",
+        "voided"
+    ],
+    [
+        "completed",
+        "denied",
+        "refunded",
+        "voided"
+    ],
+    [],
+    [],
+    []
+]

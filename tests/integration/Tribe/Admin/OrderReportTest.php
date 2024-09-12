@@ -43,7 +43,7 @@ class OrderReportTest extends WPTestCase {
 						'status'     => 'publish',
 						'start_date' => '2020-01-01 00:00:00',
 						'duration'   => 2 * HOUR_IN_SECONDS,
-					] 
+					]
 				)->create()->ID;
 				$ticket_id = $this->create_tc_ticket( $event_id );
 
@@ -59,7 +59,7 @@ class OrderReportTest extends WPTestCase {
 						'status'     => 'publish',
 						'start_date' => '2020-01-01 00:00:00',
 						'duration'   => 2 * HOUR_IN_SECONDS,
-					] 
+					]
 				)->create()->ID;
 				$ticket_id = $this->create_tc_ticket( $event_id );
 				$order     = $this->create_order( [ $ticket_id => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
@@ -76,7 +76,7 @@ class OrderReportTest extends WPTestCase {
 						'status'     => 'publish',
 						'start_date' => '2020-01-01 00:00:00',
 						'duration'   => 2 * HOUR_IN_SECONDS,
-					] 
+					]
 				)->create()->ID;
 				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
 
@@ -86,7 +86,7 @@ class OrderReportTest extends WPTestCase {
 					[
 						'purchaser_email' => 'purchaser@test.com',
 						'order_status'    => Pending::SLUG,
-					] 
+					]
 				);
 
 				// Manually set the `post_date` of each order in sequence to ensure the order is consistent in the snapshot.
@@ -102,7 +102,7 @@ class OrderReportTest extends WPTestCase {
 							"UPDATE {$wpdb->posts} SET post_date = %s WHERE ID = %d",
 							$post_date,
 							$order_id
-						) 
+						)
 					);
 				}
 
@@ -118,7 +118,7 @@ class OrderReportTest extends WPTestCase {
 						'status'     => 'publish',
 						'start_date' => '2020-01-01 00:00:00',
 						'duration'   => 2 * HOUR_IN_SECONDS,
-					] 
+					]
 				)->create()->ID;
 				$ticket_id_a = $this->create_tc_ticket( $event_id, 10 );
 				$ticket_id_b = $this->create_tc_ticket( $event_id, 20.50 );
@@ -128,13 +128,13 @@ class OrderReportTest extends WPTestCase {
 					[
 						'ID'         => $ticket_id_a,
 						'menu_order' => 0,
-					] 
+					]
 				);
 				wp_update_post(
 					[
 						'ID'         => $ticket_id_b,
 						'menu_order' => 1,
-					] 
+					]
 				);
 
 				$order_a = $this->create_order( [ $ticket_id_a => 2 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
@@ -143,7 +143,7 @@ class OrderReportTest extends WPTestCase {
 					[
 						'purchaser_email' => 'purchaser@test.com',
 						'order_status'    => Pending::SLUG,
-					] 
+					]
 				);
 				$order_c = $this->create_order( [ $ticket_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
 				$order_d = $this->create_order(
@@ -151,7 +151,7 @@ class OrderReportTest extends WPTestCase {
 					[
 						'purchaser_email' => 'purchaser@test.com',
 						'order_status'    => Pending::SLUG,
-					] 
+					]
 				);
 
 				// Manually set the `post_date` of each order in sequence to ensure the order is consistent in the snapshot.
@@ -169,7 +169,7 @@ class OrderReportTest extends WPTestCase {
 							"UPDATE {$wpdb->posts} SET post_date = %s WHERE ID = %d",
 							$post_date,
 							$order_id
-						) 
+						)
 					);
 				}
 
@@ -185,7 +185,7 @@ class OrderReportTest extends WPTestCase {
 						'status'     => 'publish',
 						'start_date' => '2020-01-01 00:00:00',
 						'duration'   => 2 * HOUR_IN_SECONDS,
-					] 
+					]
 				)->create()->ID;
 				$ticket_id_a = $this->create_tc_ticket( $event_id, 10 );
 				$ticket_id_b = $this->create_tc_ticket( $event_id, 20.50 );
@@ -197,7 +197,7 @@ class OrderReportTest extends WPTestCase {
 							'mode'     => Global_Stock::OWN_STOCK_MODE,
 							'capacity' => -1,
 						],
-					] 
+					]
 				);
 
 				// Force ticket sorting order for display.
@@ -205,19 +205,19 @@ class OrderReportTest extends WPTestCase {
 					[
 						'ID'         => $ticket_id_a,
 						'menu_order' => 0,
-					] 
+					]
 				);
 				wp_update_post(
 					[
 						'ID'         => $ticket_id_b,
 						'menu_order' => 1,
-					] 
+					]
 				);
 				wp_update_post(
 					[
 						'ID'         => $ticket_id_c,
 						'menu_order' => 2,
-					] 
+					]
 				);
 
 				$order_a = $this->create_order( [ $ticket_id_a => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
@@ -226,7 +226,7 @@ class OrderReportTest extends WPTestCase {
 					[
 						'purchaser_email' => 'purchaser@test.com',
 						'order_status'    => Pending::SLUG,
-					] 
+					]
 				);
 				$order_c = $this->create_order( [ $ticket_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
 				$order_d = $this->create_order(
@@ -234,14 +234,14 @@ class OrderReportTest extends WPTestCase {
 					[
 						'purchaser_email' => 'purchaser@test.com',
 						'order_status'    => Pending::SLUG,
-					] 
+					]
 				);
 				$order_e = $this->create_order(
 					[
 						$ticket_id_a => 1,
 						$ticket_id_b => 1,
 					],
-					[ 'purchaser_email' => 'purchaser@test.com' ] 
+					[ 'purchaser_email' => 'purchaser@test.com' ]
 				);
 
 				// Manually set the `post_date` of each order in sequence to ensure the order is consistent in the snapshot.
@@ -260,14 +260,14 @@ class OrderReportTest extends WPTestCase {
 							"UPDATE {$wpdb->posts} SET post_date = %s WHERE ID = %d",
 							$post_date,
 							$order_id
-						) 
+						)
 					);
 				}
 
 				return [ $event_id, [ $event_id, $ticket_id_a, $ticket_id_b, $order_a->ID, $order_b->ID, $order_c->ID, $order_d->ID, $order_e->ID ] ];
 			},
 		];
-		
+
 		yield 'event with sale price enabled tickets and orders' => [
 			function (): array {
 				$event_id = tribe_events()->set_args(
@@ -278,7 +278,7 @@ class OrderReportTest extends WPTestCase {
 						'duration'   => 2 * HOUR_IN_SECONDS,
 					]
 				)->create()->ID;
-				
+
 				$ticket_id_a = $this->create_tc_ticket(
 					$event_id,
 					20,
@@ -287,11 +287,11 @@ class OrderReportTest extends WPTestCase {
 						'ticket_sale_price'      => 10,
 						'ticket_sale_start_date' => '2010-03-01',
 						'ticket_sale_end_date'   => '2040-03-01',
-					] 
+					]
 				);
-				
+
 				$ticket_id_b = $this->create_tc_ticket( $event_id, 30 );
-				
+
 				$order_a = $this->create_order( [ $ticket_id_a => 3 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
 				$order_b = $this->create_order(
 					[ $ticket_id_a => 2 ],
@@ -307,7 +307,7 @@ class OrderReportTest extends WPTestCase {
 					],
 					[ 'purchaser_email' => 'purchaser@test.com' ]
 				);
-				
+
 				// Manually set the `post_date` of each order in sequence to ensure the order is consistent in the snapshot.
 				global $wpdb;
 				foreach (
@@ -325,7 +325,7 @@ class OrderReportTest extends WPTestCase {
 						)
 					);
 				}
-			
+
 				return [
 					$event_id,
 					[
@@ -355,7 +355,7 @@ class OrderReportTest extends WPTestCase {
 
 		$_GET['event_id'] = $post_id;
 		$_GET['search']   = '';
-		$_GET['orderby']  = 'order_id';
+		$_GET['orderby']  = 'ID';
 		$_GET['order']    = 'desc';
 
 		// Clear cache to make sure proper orders appear.
