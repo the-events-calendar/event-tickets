@@ -336,7 +336,7 @@ class Frontend extends Controller_Contract {
 			return $attributes;
 		}
 
-		$reservations = tribe( Session::class )->get_reservations_for_post_and_ticket( $event_id, $ticket->ID );
+		$reservations = tribe( Session::class )->get_post_ticket_reservations( $event_id, $ticket->ID );
 
 		if ( empty( $reservations ) || ! is_array( $reservations ) ) {
 			return $attributes;

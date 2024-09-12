@@ -352,7 +352,7 @@ class Session {
 	 *
 	 * @return array|null The reservations for the ticket and post.
 	 */
-	public function get_reservations_for_post_and_ticket( int $post_id = null, int $ticket_id = null ): ?array {
+	public function get_post_ticket_reservations( int $post_id = null, int $ticket_id = null ): ?array {
 		// Bail while in admin side always. There are no reservations in the admin.
 		if ( is_admin() ) {
 			return null;
@@ -368,35 +368,8 @@ class Session {
 			return null;
 		}
 
-		$cache_key = $this->get_events_registrations_ticket_seat_label_cache_key( $token,
-			$post_id,
-			$ticket_id );
-		$cache = tribe_cache();
-		$matching_reservations = $cache[ $cache_key ] ?? null;
+		$token_reservations = $this->sessions->get_reservations_for_token( $token );
 
-		if ( ! empty( $matching_reservations ) && is_array( $matching_reservations ) ) {
-			return $matching_reservations;
-		}
-
-		$token_reservations    = $this->sessions->get_reservations_for_token( $token );
-		$matching_reservations = $token_reservations[ $ticket_id ] ?? null;
-		$cache[ $cache_key ]   = $matching_reservations;
-
-		return $matching_reservations;
-	}
-
-	/**
-	 * Returns the cache key for the reservations for a specific ticket and event.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $token    The token.
-	 * @param int    $event_id The event ID.
-	 * @param int    $ticket_id The ticket ID.
-	 *
-	 * @return string The cache key.
-	 */
-	public function get_events_registrations_ticket_seat_label_cache_key( string $token, int $event_id, int $ticket_id ): string {
-		return 'tec_seated_reservations_' . $token . '_' . $event_id . '_' . $ticket_id;
+		return $token_reservations[ $ticket_id ] ?? null;
 	}
 }

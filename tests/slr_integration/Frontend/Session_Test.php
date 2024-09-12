@@ -3,7 +3,6 @@
 namespace TEC\Tickets\Seating\Frontend;
 
 use PHPUnit\Framework\Assert;
-use stdClass;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Seating\Meta;
@@ -24,7 +23,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 	use SnapshotAssertions;
 
 	public function test_entry_manipulation(): void {
-		$session         = tribe( Session::class );
+		$session = tribe( Session::class );
 		$expiration_time = $session->get_cookie_expiration_time();
 		$setcookie_value = null;
 		$this->set_fn_return( 'setcookie',
@@ -468,77 +467,52 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		$sessions = tribe( Sessions::class );
 		$this->set_oauth_token( 'auth-token' );
 		$cache = tribe_cache();
+		// Creat an ASC post with 3 tickets.
+		$post_id = static::factory()->post->create();
+		update_post_meta( $post_id, Meta::META_KEY_ENABLED, '1' );
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'test-layout-id-1' );
+		$ticket_1 = $this->create_tc_ticket( $post_id, 10 );
+		update_post_meta( $ticket_1, Meta::META_KEY_ENABLED, '1' );
+		update_post_meta( $ticket_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
+		$ticket_2 = $this->create_tc_ticket( $post_id, 20 );
+		update_post_meta( $ticket_2, Meta::META_KEY_ENABLED, '1' );
+		update_post_meta( $ticket_2, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
+		$ticket_3 = $this->create_tc_ticket( $post_id, 30 );
+		update_post_meta( $ticket_3, Meta::META_KEY_ENABLED, '1' );
+		update_post_meta( $ticket_3, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-2' );
 
 		$session = tribe( Session::class );
 
-		$cache_key = $session->get_events_registrations_ticket_seat_label_cache_key( 'test-token-2', 89, 89 );
+		$session->add_entry( $post_id, 'test-token-1' );
+		$sessions->upsert( 'test-token-1', $post_id, time() + 100 );
 
-		$session->add_entry( 23, 'test-token-1' );
-		$sessions->upsert( 'test-token-1', 23, time() + 100 );
-		$sessions->update_reservations( 'test-token-1', $this->create_mock_reservations_data( [ 23 ], 2 ) );
-		update_post_meta( 23, Meta::META_KEY_ENABLED, '1' );
-		update_post_meta( 23, Meta::META_KEY_LAYOUT_ID, 'test-layout-id-1' );
+		$mock_reservations_data = $this->create_mock_reservations_data( [ $ticket_1 ], 2 );
+		$sessions->update_reservations( 'test-token-1', $mock_reservations_data );
 
-		$data_1 = $session->get_reservations_for_post_and_ticket( 23, 23 );
+		$this->assertEquals(
+			$mock_reservations_data[$ticket_1],
+			$session->get_post_ticket_reservations( $post_id, $ticket_1 )
+		);
+		$this->assertNull( $session->get_post_ticket_reservations( $post_id, $ticket_2 ) );
+		$this->assertNull( $session->get_post_ticket_reservations( $post_id, $ticket_3 ) );
 
-		$session->add_entry( 89, 'test-token-2' );
-		$sessions->upsert( 'test-token-2', 89, time() + 30 );
-		$sessions->update_reservations( 'test-token-2', $this->create_mock_reservations_data( [ 89 ], 2 ) );
-		update_post_meta( 89, Meta::META_KEY_ENABLED, '1' );
-		update_post_meta( 89, Meta::META_KEY_LAYOUT_ID, 'test-layout-id-2' );
+		$mock_reservations_data = $this->create_mock_reservations_data( [ $ticket_1, $ticket_2 ], 2 );
+		$sessions->update_reservations( 'test-token-1', $mock_reservations_data );
 
-		$data_2 = $session->get_reservations_for_post_and_ticket( 89, 89 );
+		$this->assertEquals(
+			$mock_reservations_data[ $ticket_1 ],
+			$session->get_post_ticket_reservations( $post_id, $ticket_1 )
+		);
+		$this->assertEquals(
+			$mock_reservations_data[ $ticket_2 ],
+			$session->get_post_ticket_reservations( $post_id, $ticket_2 )
+		);
+		$this->assertNull( $session->get_post_ticket_reservations( $post_id, $ticket_3 ) );
 
-		$this->assertMatchesJsonSnapshot( wp_json_encode( [ $data_1, $data_2 ], JSON_PRETTY_PRINT ) );
+		$sessions->update_reservations( 'test-token-1', []);
 
-		// Ensure we are protected against cache poisoning.
-		$cache[ $cache_key ] = 'poisoned-cached';
-
-		$data_3 = $session->get_reservations_for_post_and_ticket( 89, 89 );
-
-		$this->assertSame( $data_2, $data_3 );
-
-		$cache[ $cache_key ] = null;
-
-		$data_3 = $session->get_reservations_for_post_and_ticket( 89, 89 );
-
-		$this->assertSame( $data_2, $data_3 );
-
-		$cache[ $cache_key ] = 25;
-
-		$data_3 = $session->get_reservations_for_post_and_ticket( 89, 89 );
-
-		$this->assertSame( $data_2, $data_3 );
-
-		$obj = new stdClass();
-
-		$obj->test           = true;
-		$cache[ $cache_key ] = $obj;
-
-		$data_3 = $session->get_reservations_for_post_and_ticket( 89, 89 );
-
-		$this->assertSame( $data_2, $data_3 );
-
-		$cache[ $cache_key ] = true;
-
-		$data_3 = $session->get_reservations_for_post_and_ticket( 89, 89 );
-
-		$this->assertSame( $data_2, $data_3 );
-
-		$valid_but_empty     = [];
-		$cache[ $cache_key ] = $valid_but_empty;
-
-		$data_3 = $session->get_reservations_for_post_and_ticket( 89, 89 );
-
-		$this->assertSame( $data_2, $data_3 );
-
-		$valid               = [
-			'test' => true,
-		];
-		$cache[ $cache_key ] = $valid;
-
-		$data_3 = $session->get_reservations_for_post_and_ticket( 89, 89 );
-
-		$this->assertSame( $valid, $data_3 );
+		$this->assertNull( $session->get_post_ticket_reservations( $post_id, $ticket_1 ) );
+		$this->assertNull( $session->get_post_ticket_reservations( $post_id, $ticket_2 ) );
+		$this->assertNull( $session->get_post_ticket_reservations( $post_id, $ticket_3 ) );
 	}
 }

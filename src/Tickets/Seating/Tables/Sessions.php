@@ -320,13 +320,27 @@ class Sessions extends Table {
 			 * The result of this query might be 0 to indicate that the row was not updated.
 			 * We want to fail the update if the row was not updated.
 			 */
-			return DB::update(
+			$updated = DB::update(
 				self::table_name(),
 				[ 'reservations' => $reservations_json ],
 				[ 'token' => $token ],
 				[ '%s' ],
 				[ '%s' ]
-			) !== false;
+			);
+
+			if ( $updated > 0 ) {
+				/**
+				 * Fires after the reservations were updated for a given token.
+				 *
+				 * @since TBD
+				 *
+				 * @param string $token        The token to update the reservations for.
+				 * @param array  $reservations The list of reservations to update the existing ones with.
+				 */
+				do_action( 'tec_tickets_seating_reservations_updated', $token, $reservations );
+			}
+
+			return $updated !== false;
 		} catch ( \Exception $e ) {
 			$this->log_error(
 				'Failed to update the reservations for the token.',
