@@ -190,7 +190,7 @@ class List_Table extends WP_List_Table {
 			'event'     => esc_html__( 'Event', 'event-tickets' ),
 			'start'     => esc_html__( 'Sale Starts', 'event-tickets' ),
 			'end'       => esc_html__( 'Sale Ends', 'event-tickets' ),
-			'days_left' => esc_html__( 'Days Remaining', 'event-tickets' ),
+			'days_left' => esc_html__( 'Days Left', 'event-tickets' ),
 			'price'     => esc_html__( 'Price', 'event-tickets' ),
 			'sold'      => esc_html__( 'Sold', 'event-tickets' ),
 			'remaining' => esc_html__( 'Remaining', 'event-tickets' ),
@@ -555,13 +555,13 @@ class List_Table extends WP_List_Table {
 			return '-';
 		}
 
-		$date_format = tribe_get_date_format( true );
+		$date_format = get_option( 'date_format' );
 		$ts          = $item->start_date();
 
 		$start = sprintf(
 			'<time datetime="%1$s" title="%2$s">%3$s</time>',
 			esc_attr( \Tribe__Date_Utils::reformat( $ts, 'c' ) ),
-			esc_html( \Tribe__Date_Utils::reformat( $ts, get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) ) ),
+			esc_html( \Tribe__Date_Utils::reformat( $ts, $date_format . ' ' . get_option( 'time_format' ) ) ),
 			esc_html( \Tribe__Date_Utils::reformat( $ts, $date_format ) )
 		);
 
@@ -592,13 +592,13 @@ class List_Table extends WP_List_Table {
 			return '-';
 		}
 
-		$date_format = tribe_get_date_format( true );
+		$date_format = get_option( 'date_format' );
 		$ts          = $item->end_date();
 
 		$end = sprintf(
 			'<time datetime="%1$s" title="%2$s">%3$s</time>',
 			esc_attr( \Tribe__Date_Utils::reformat( $ts, 'c' ) ),
-			esc_html( \Tribe__Date_Utils::reformat( $ts, get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) ) ),
+			esc_html( \Tribe__Date_Utils::reformat( $ts, $date_format . ' ' . get_option( 'time_format' ) ) ),
 			esc_html( \Tribe__Date_Utils::reformat( $ts, $date_format ) )
 		);
 
