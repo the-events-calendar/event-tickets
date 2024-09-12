@@ -18,6 +18,8 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use Tribe__Date_Utils as Dates;
 use Tribe__Tickets__Global_Stock as Global_Stock;
+use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
+use Tribe__Tickets__Editor__Template as Template;
 
 class Frontend_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -316,6 +318,88 @@ class Frontend_Test extends Controller_Test_Case {
 				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
 
 				return [ $post_id, $ticket_1, $ticket_2, $ticket_3, $ticket_4, $ticket_5 ];
+			}
+		];
+		
+		yield 'ticket with past date' => [
+			function () {
+				$post_id = static::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+				/**
+				 * @var Tickets_Handler $tickets_handler
+				 */
+				$tickets_handler   = tribe( 'tickets.handler' );
+				$capacity_meta_key = $tickets_handler->key_capacity;
+				update_post_meta( $post_id, $capacity_meta_key, 100 );
+				$ticket = $this->create_tc_ticket( $post_id, 10, [
+					'ticket_start_date' => '2024-01-01',
+					'ticket_start_time' => '08:00:00',
+					'ticket_end_date'   => '2024-03-01',
+					'ticket_end_time'   => '20:00:00',
+				]);
+				
+				return [ $post_id, $ticket ];
+			}
+		];
+		
+		yield 'ticket with future date' => [
+			function () {
+				$post_id = static::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+				/**
+				 * @var Tickets_Handler $tickets_handler
+				 */
+				$tickets_handler   = tribe( 'tickets.handler' );
+				$capacity_meta_key = $tickets_handler->key_capacity;
+				update_post_meta( $post_id, $capacity_meta_key, 100 );
+				$ticket = $this->create_tc_ticket( $post_id, 20, [
+					'ticket_start_date' => '2044-01-01',
+					'ticket_start_time' => '08:00:00',
+					'ticket_end_date'   => '2044-03-01',
+					'ticket_end_time'   => '20:00:00',
+				]);
+				
+				return [ $post_id, $ticket ];
+			}
+		];
+		
+		yield 'ticket with future and past' => [
+			function () {
+				$post_id = static::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+				/**
+				 * @var Tickets_Handler $tickets_handler
+				 */
+				$tickets_handler   = tribe( 'tickets.handler' );
+				$capacity_meta_key = $tickets_handler->key_capacity;
+				update_post_meta( $post_id, $capacity_meta_key, 100 );
+				$ticket = $this->create_tc_ticket( $post_id, 20, [
+					'ticket_start_date' => '2044-01-01',
+					'ticket_start_time' => '08:00:00',
+					'ticket_end_date'   => '2044-03-01',
+					'ticket_end_time'   => '20:00:00',
+				]);
+				
+				$ticket_2 = $this->create_tc_ticket( $post_id, 10, [
+					'ticket_start_date' => '2024-01-01',
+					'ticket_start_time' => '08:00:00',
+					'ticket_end_date'   => '2024-03-01',
+					'ticket_end_time'   => '20:00:00',
+				]);
+				
+				return [ $post_id, $ticket, $ticket_2 ];
 			}
 		];
 	}
