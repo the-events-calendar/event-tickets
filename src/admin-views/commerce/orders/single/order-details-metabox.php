@@ -23,7 +23,7 @@ $post_date .= Tribe__Date_Utils::reformat( $ts, 'g:i A' );
 	printf( esc_html__( 'Order #%d details', 'event-tickets' ), (int) $order->ID );
 	?>
 </h2>
-<div class="tec-tickets-commerce-single-order--details">
+<div class="tec-tickets-commerce-single-order--details purchaser-details">
 	<div class="tec-tickets-commerce-single-order--details--item">
 		<div class="tec-tickets-commerce-single-order--details--item--label">
 			<?php esc_html_e( 'Date of purchase', 'event-tickets' ); ?>
@@ -44,7 +44,7 @@ $post_date .= Tribe__Date_Utils::reformat( $ts, 'g:i A' );
 			<?php
 			$name = $order->purchaser['first_name'].' '.$order->purchaser['last_name'];
 			printf(
-				'%1$s%2$s<a href="mailto:%3$s">%4$s</a>',
+				'<span class="purchaser-name">%1$s</span>%2$s<span class="purchaser-email"><a href="mailto:%3$s">%4$s</a></span>',
 				esc_html( $name ),
 				$name ? '<br/>' : '', // phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped
 				esc_attr( $order->purchaser['email'] ),

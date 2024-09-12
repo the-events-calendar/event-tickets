@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Commerce\Admin;
 
 use TEC\Common\Contracts\Service_Provider;
+use TEC\Tickets\Commerce\Flag_Actions\Send_Email_Purchase_Receipt;
 use Tribe__Template;
 use Tribe__Tickets__Main;
 
@@ -26,7 +27,6 @@ class Edit_Purchaser_Provider extends Service_Provider {
 	 */
 	public function register() {
 		if ( is_admin() ) {
-			$this->register_assets();
 			$this->register_hooks();
 		}
 	}
@@ -41,32 +41,20 @@ class Edit_Purchaser_Provider extends Service_Provider {
 		add_action( 'wp_ajax_tec_commerce_purchaser_edit', [ $this, 'ajax_handle_request' ] );
 	}
 
-	public function register_assets() {
-		$tickets_main = tribe( 'tickets.main' );
-
-		tribe_asset(
-			$tickets_main,
-			'tickets-commerce-purchaser-modal-scripts',
-			'admin/orders/purchaser-modal.js',
-			[
-				'jquery',
-				'tribe-dialog',
-				'tribe-common-skeleton-style',
-				'tribe-common-full-style',
-				'tribe-common',
-			],
-			null
-		);
-	}
-
 	public function ajax_handle_request() {
 		check_ajax_referer('tec_commerce_purchaser_edit', '_nonce' );
 
 		switch( $_SERVER['REQUEST_METHOD'] ) {
 			case 'POST':
-				list( $first_name, $last_name ) = explode( ' ', $_POST['name'] );
-				$email   					    = $_POST['email'];
-				$post_id 						= $_POST['id'];
+				// Deal with "full name" field into pieces.
+				list( $first_name, $last_name ) = explode( ' ', sanitize_text_field( $_POST['name'] ) );
+				$email   					    = sanitize_email( $_POST['email'] );
+				$post_id 						= (int) $_POST['ID'];
+				$send_email                     = ! empty( $_POST['send_email'] );
+
+				// Clean up vars.
+				$first_name ??= '';
+				$last_name  ??= '';
 
 				if ( ! is_email( $email ) ) {
 					wp_send_json_error(
@@ -86,19 +74,48 @@ class Edit_Purchaser_Provider extends Service_Provider {
 							'id'     => $post_id,
 						]
 					)->set_args( [
-						'purchaser_email'      => sanitize_email( $email ),
-						'purchaser_first_name' => sanitize_text_field( $first_name ),
-						'purchaser_last_name'  => sanitize_text_field( $last_name ),
+						'purchaser_email'      => $email,
+						'purchaser_first_name' => $first_name,
+						'purchaser_last_name'  => $last_name,
 					] )->save();
 
+				if ( $updated && $send_email ) {
+					$order = tec_tc_get_order( $post_id );
+					if( ! $order ) {
+						wp_send_json_error(
+							_x(
+								'There was an error retrieving details for the email. Please try again later.',
+								'When the purchaser get order for the email fails for an unknown reason.',
+								'event-tickets'
+							)
+						);
+						die();
+					}
 
+					$sent = tribe( Send_Email_Purchase_Receipt::class )->send_for_order( $order );
+					if( ! $sent ) {
+						wp_send_json_error(
+							_x(
+								'There was an error sending the email receipt. Please ensure Wordpress is configured for email delivery.',
+								'When the purchaser email receipt fails for an unknown reason.',
+								'event-tickets'
+							)
+						);
+						die();
+					}
+				}
 				if( $updated ) {
-					wp_send_json_success();
+					wp_send_json_success(
+						[
+							'name'  => $first_name . ' ' . $last_name,
+							'email' => $email,
+						]
+					);
 				} else {
 					wp_send_json_error(
 						_x(
 							'There was an unknown error while updating the purchaser. Please try again later.',
-							'When the provided purchaser email address is invalid.',
+							'When the purchaser update fails for an unknown reason.',
 							'event-tickets'
 						)
 					);

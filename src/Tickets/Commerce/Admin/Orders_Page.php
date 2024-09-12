@@ -91,7 +91,6 @@ class Orders_Page {
 			[ 'conditionals' => [ $this, 'is_admin_single_page' ] ]
 		);
 
-		//
 		tribe_asset(
 			tribe( 'tickets.main' ),
 			'event-tickets-commerce-admin-order-purchaser-modal-scripts',
@@ -101,7 +100,17 @@ class Orders_Page {
 				'tribe-common',
 			],
 			[ 'admin_enqueue_scripts' ],
-			[ 'conditionals' => [ $this, 'is_admin_single_page' ] ]
+			[
+				'conditionals' => [ $this, 'is_admin_single_page' ],
+
+					'localize'     => [
+						'name' => 'TicketsEditPurchaserOptions',
+						'data' => [
+							'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
+						],
+					],
+
+			]
 		);
 	}
 
