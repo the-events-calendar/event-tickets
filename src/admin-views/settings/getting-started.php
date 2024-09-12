@@ -25,7 +25,7 @@ $help_text = $etp_enabled
 			<ul class="tec-tickets__admin-banner-kb-list">
 				<?php
 				foreach ( $et_resource_links as $link ) {
-					$new_label = isset( $link['new'] ) ? '<span class="tec-tickets__admin-banner-links-link-label--new">' . esc_html( 'New!', 'event-tickets' ) . '</span>' : '';
+					$new_label = isset( $link['new'] ) ? '<span class="tec-tickets__admin-banner-links-link-label--new">' . esc_html__( 'New!', 'event-tickets' ) . '</span>' : '';
 					printf( '<li><a href="%s" target="_blank" rel="noopener noreferrer">%s%s</a></li>', esc_url( $link['href'] ), esc_html( $link['label'] ), $new_label );
 				}
 				?>
