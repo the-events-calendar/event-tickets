@@ -87,7 +87,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 				
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 	data-token="test-ephemeral-token"
-	data-redirect-url="http://wordpress.test/?post_type=page&#038;p={{post_id}}"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
 	data-post-id="{{post_id}}"
 	&gt;
 	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
@@ -106,7 +106,6 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 	&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 &lt;/div&gt;
-
 				&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
 					&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
 				&lt;/div&gt;
@@ -151,7 +150,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 			tribe.dialogs = tribe.dialogs || [];
 			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"1","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -228,7 +227,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
             <div
               class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
               data-post-id="{{post_id}}"
-              data-redirect-url="http://wordpress.test/?post_type=page&p=23"
+              data-redirect-url="http://wordpress.test/?page_id=23"
               data-token="test-ephemeral-token"
             >
               
@@ -296,7 +295,6 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
             </div>
             
-
 				
             <div
               class="tec-tickets-seating__sidebar-arrow"
@@ -499,7 +497,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 				
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 	data-token="test-ephemeral-token"
-	data-redirect-url="http://wordpress.test/?post_type=page&#038;p={{post_id}}"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
 	data-post-id="{{post_id}}"
 	&gt;
 	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
@@ -518,7 +516,6 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 	&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 &lt;/div&gt;
-
 				&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
 					&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
 				&lt;/div&gt;
@@ -563,7 +560,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 			tribe.dialogs = tribe.dialogs || [];
 			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"1","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -640,7 +637,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
             <div
               class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
               data-post-id="{{post_id}}"
-              data-redirect-url="http://wordpress.test/?post_type=page&p=23"
+              data-redirect-url="http://wordpress.test/?page_id=23"
               data-token="test-ephemeral-token"
             >
               
@@ -708,7 +705,6 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
             </div>
             
-
 				
             <div
               class="tec-tickets-seating__sidebar-arrow"
@@ -959,7 +955,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 				
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 	data-token="test-ephemeral-token"
-	data-redirect-url="http://wordpress.test/?post_type=page&#038;p={{post_id}}"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
 	data-post-id="{{post_id}}"
 	&gt;
 	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
@@ -978,7 +974,6 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 	&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 &lt;/div&gt;
-
 				&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
 					&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
 				&lt;/div&gt;
@@ -1023,7 +1018,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 			tribe.dialogs = tribe.dialogs || [];
 			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"1","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -1100,7 +1095,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
             <div
               class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
               data-post-id="{{post_id}}"
-              data-redirect-url="http://wordpress.test/?post_type=page&p=23"
+              data-redirect-url="http://wordpress.test/?page_id=23"
               data-token="test-ephemeral-token"
             >
               
@@ -1168,7 +1163,6 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
             </div>
             
-
 				
             <div
               class="tec-tickets-seating__sidebar-arrow"
@@ -1466,7 +1460,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 				
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 	data-token="test-ephemeral-token"
-	data-redirect-url="http://wordpress.test/?post_type=page&#038;p={{post_id}}"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
 	data-post-id="{{post_id}}"
 	&gt;
 	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
@@ -1485,7 +1479,6 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 	&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 &lt;/div&gt;
-
 				&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
 					&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
 				&lt;/div&gt;
@@ -1530,7 +1523,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 			tribe.dialogs = tribe.dialogs || [];
 			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"1","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -1607,7 +1600,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
             <div
               class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
               data-post-id="{{post_id}}"
-              data-redirect-url="http://wordpress.test/?post_type=page&p=23"
+              data-redirect-url="http://wordpress.test/?page_id=23"
               data-token="test-ephemeral-token"
             >
               
@@ -1675,7 +1668,6 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
             </div>
             
-
 				
             <div
               class="tec-tickets-seating__sidebar-arrow"
@@ -2020,7 +2012,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 				
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 	data-token="test-ephemeral-token"
-	data-redirect-url="http://wordpress.test/?post_type=page&#038;p={{post_id}}"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
 	data-post-id="{{post_id}}"
 	&gt;
 	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
@@ -2039,7 +2031,6 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 	&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 &lt;/div&gt;
-
 				&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
 					&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
 				&lt;/div&gt;
@@ -2084,7 +2075,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 			tribe.dialogs = tribe.dialogs || [];
 			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"1","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -2161,7 +2152,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
             <div
               class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
               data-post-id="{{post_id}}"
-              data-redirect-url="http://wordpress.test/?post_type=page&p=23"
+              data-redirect-url="http://wordpress.test/?page_id=23"
               data-token="test-ephemeral-token"
             >
               
@@ -2229,7 +2220,6 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
             </div>
             
-
 				
             <div
               class="tec-tickets-seating__sidebar-arrow"
@@ -2621,7 +2611,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 				
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 	data-token="test-ephemeral-token"
-	data-redirect-url="http://wordpress.test/?post_type=page&#038;p={{post_id}}"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
 	data-post-id="{{post_id}}"
 	&gt;
 	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
@@ -2640,7 +2630,6 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 	&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 &lt;/div&gt;
-
 				&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
 					&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
 				&lt;/div&gt;
@@ -2685,7 +2674,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 			tribe.dialogs = tribe.dialogs || [];
 			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"1","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -2762,7 +2751,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
             <div
               class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
               data-post-id="{{post_id}}"
-              data-redirect-url="http://wordpress.test/?post_type=page&p=23"
+              data-redirect-url="http://wordpress.test/?page_id=23"
               data-token="test-ephemeral-token"
             >
               
@@ -2830,7 +2819,6 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 
             </div>
             
-
 				
             <div
               class="tec-tickets-seating__sidebar-arrow"
@@ -3175,7 +3163,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 				
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 	data-token="test-ephemeral-token"
-	data-redirect-url="http://wordpress.test/?post_type=page&#038;p={{post_id}}"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
 	data-post-id="{{post_id}}"
 	&gt;
 	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
@@ -3194,7 +3182,6 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 	&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 &lt;/div&gt;
-
 				&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
 					&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
 				&lt;/div&gt;
@@ -3239,7 +3226,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 			tribe.dialogs = tribe.dialogs || [];
 			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"1","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -3316,7 +3303,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
             <div
               class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
               data-post-id="{{post_id}}"
-              data-redirect-url="http://wordpress.test/?post_type=page&p=23"
+              data-redirect-url="http://wordpress.test/?page_id=23"
               data-token="test-ephemeral-token"
             >
               
@@ -3384,7 +3371,6 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 
             </div>
             
-
 				
             <div
               class="tec-tickets-seating__sidebar-arrow"
@@ -3682,7 +3668,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 				
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 	data-token="test-ephemeral-token"
-	data-redirect-url="http://wordpress.test/?post_type=page&#038;p={{post_id}}"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
 	data-post-id="{{post_id}}"
 	&gt;
 	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
@@ -3701,7 +3687,6 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 	&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 &lt;/div&gt;
-
 				&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
 					&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
 				&lt;/div&gt;
@@ -3746,7 +3731,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 			tribe.dialogs = tribe.dialogs || [];
 			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"1","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -3823,7 +3808,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
             <div
               class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
               data-post-id="{{post_id}}"
-              data-redirect-url="http://wordpress.test/?post_type=page&p=23"
+              data-redirect-url="http://wordpress.test/?page_id=23"
               data-token="test-ephemeral-token"
             >
               
@@ -3891,7 +3876,6 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 
             </div>
             
-
 				
             <div
               class="tec-tickets-seating__sidebar-arrow"
@@ -4142,7 +4126,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 				
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 	data-token="test-ephemeral-token"
-	data-redirect-url="http://wordpress.test/?post_type=page&#038;p={{post_id}}"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
 	data-post-id="{{post_id}}"
 	&gt;
 	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
@@ -4161,7 +4145,6 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 	&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 &lt;/div&gt;
-
 				&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
 					&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
 				&lt;/div&gt;
@@ -4206,7 +4189,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 			tribe.dialogs = tribe.dialogs || [];
 			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"1","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -4283,7 +4266,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
             <div
               class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
               data-post-id="{{post_id}}"
-              data-redirect-url="http://wordpress.test/?post_type=page&p=23"
+              data-redirect-url="http://wordpress.test/?page_id=23"
               data-token="test-ephemeral-token"
             >
               
@@ -4351,7 +4334,6 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 
             </div>
             
-
 				
             <div
               class="tec-tickets-seating__sidebar-arrow"
