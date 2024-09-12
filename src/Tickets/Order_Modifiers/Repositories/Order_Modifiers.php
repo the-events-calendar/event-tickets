@@ -123,6 +123,71 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	}
 
 	/**
+	 * Search for Order Modifiers based on the given criteria.
+	 *
+	 * @param array $args {
+	 *     Optional. Arguments to filter the query.
+	 *
+	 * @type string $modifier_type The type of the modifier ('coupon' or 'fee').
+	 * @type string $search_term The term to search for (e.g., in display_name or slug).
+	 * @type string $orderby Column to order by. Default 'display_name'.
+	 * @type string $order Sorting order. Either 'asc' or 'desc'. Default 'asc'.
+	 * }
+	 *
+	 * @return array An array of Order_Modifiers or an empty array if none found.
+	 */
+	public function search_modifiers( array $args = [] ): array {
+		// Define default arguments.
+		$defaults = [
+			'modifier_type' => '',
+			'search_term'   => '',
+			'orderby'       => 'display_name',
+			'order'         => 'asc',
+		];
+
+		// Merge passed arguments with defaults.
+		$args = array_merge( $defaults, $args );
+
+		// Start building the query.
+		$query = $this->prepareQuery();
+
+		// Filter by modifier type if provided.
+		if ( ! empty( $args['modifier_type'] ) ) {
+			$query = $query->where( 'modifier_type', $args['modifier_type'] );
+		}
+
+		// Add search functionality (search in display_name or slug).
+		if ( ! empty( $args['search_term'] ) ) {
+			$query = $query->where(
+				function ( $subquery ) use ( $args ) {
+					$subquery->where( 'display_name', 'LIKE', '%' . $args['search_term'] . '%' )
+							 ->orWhere( 'slug', 'LIKE', '%' . $args['search_term'] . '%' );
+				}
+			);
+		}
+
+		// Add ordering.
+		if ( ! empty( $args['orderby'] ) && in_array(
+				$args['orderby'],
+				[
+					'display_name',
+					'slug',
+					'fee_amount_cents',
+					'used',
+					'remaining',
+					'status',
+				]
+			)
+		) {
+			$query = $query->orderBy( $args['orderby'], $args['order'] );
+		}
+		printr($query->getSQL(),'Sql for query');
+
+		// Return the results of the query.
+		return $query->getAll();
+	}
+
+	/**
 	 * Finds an Order Modifier by its slug and modifier_type.
 	 *
 	 * @since TBD

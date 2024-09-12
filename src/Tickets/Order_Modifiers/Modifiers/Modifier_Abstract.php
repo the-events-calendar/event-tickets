@@ -148,6 +148,28 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	}
 
 	/**
+	 * Gets all modifiers by the type.
+	 *
+	 * @return array
+	 */
+	public function get_all_modifiers(): mixed {
+		return $this->repository->find_by_type( $this->modifier_type );
+	}
+
+	/**
+	 * Finds a modifier by its slug.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $search Parameters to search Order Modifiers by.
+	 *
+	 * @return array The modifier data.
+	 */
+	public function find_by_search( array $search ): array {
+		return $this->repository->search_modifiers( $search );
+	}
+
+	/**
 	 * Maps and sanitizes raw form data into model-ready data.
 	 *
 	 * @since TBD

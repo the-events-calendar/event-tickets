@@ -12,6 +12,8 @@
 
 namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
+use TEC\Tickets\Order_Modifiers\Table_Views\Coupon_Table;
+
 /**
  * Concrete Strategy for Coupon Modifiers.
  *
@@ -80,11 +82,15 @@ class Coupon extends Modifier_Abstract {
 	 *
 	 * @param array $context The context data for rendering the table.
 	 *
-	 * @return string The rendered coupon table content.
+	 * @return void
 	 */
-	public function render_table( array $context ): string {
-		// Example logic for rendering the coupon table.
-		return 'Rendered Coupons Table';
+	public function render_table( array $context ): void {
+		$coupon_table = new Coupon_Table( $this );
+		echo '<div>';
+		$coupon_table->prepare_items();
+		$coupon_table->search_box( __( 'Search Coupons', 'event-tickets' ), 'coupon-search' );
+		$coupon_table->display();
+		echo '</div>';
 	}
 
 	/**
