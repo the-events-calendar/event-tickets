@@ -12,7 +12,6 @@ namespace TEC\Tickets\Seating\Frontend;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Tables\Sessions;
-use Tribe__Cache;
 
 /**
  * Class Session.
