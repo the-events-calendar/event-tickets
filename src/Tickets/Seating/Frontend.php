@@ -119,6 +119,11 @@ class Frontend extends Controller_Contract {
 		if ( ! $provider ) {
 			return $html;
 		}
+		
+		// Bail if there are no tickets on sale.
+		if ( empty( $data['has_tickets_on_sale'] ) ) {
+			return $html;
+		}
 
 		$prices = [];
 
