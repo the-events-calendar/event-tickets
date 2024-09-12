@@ -439,9 +439,12 @@ class Ticket {
 	 * @return int
 	 */
 	protected function get_cancelled( $ticket_id, $refresh = false ) {
-		/** @var Memoize_Attendees $memo */
-		$memo       = tribe( Memoize_Attendees::class );
-		$quantities = $memo->get_attendee_count_by_ticket_status( $ticket_id );
+		// Check cache for quantities by status.
+		$cache      = tribe_cache();
+		$quantities = $cache->get( 'tec_tickets_quantities_by_status_' . $ticket_id );
+		if ( ! is_array( $quantities ) ) {
+			$quantities = [];
+		}
 
 		if ( $refresh || ! isset( $quantities[ Denied::SLUG ] ) ) {
 			$denied_orders = \Tribe__Tickets__Commerce__PayPal__Order::find_by(
@@ -461,7 +464,7 @@ class Ticket {
 			}
 
 			$quantities[ Denied::SLUG ] = max( 0, $denied );
-			$memo->set_attendee_status_count_by_ticket_id( $ticket_id, Denied::SLUG, $quantities[ Denied::SLUG ] );
+			$cache->set( 'tec_tickets_quantities_by_status_' . $ticket_id, $quantities );
 		}
 
 		return $quantities[ Denied::SLUG ];
@@ -481,9 +484,12 @@ class Ticket {
 	 * @return int
 	 */
 	public function get_qty_pending( $ticket_id, $refresh = false ) {
-		/** @var Memoize_Attendees $memo */
-		$memo       = tribe( Memoize_Attendees::class );
-		$quantities = $memo->get_attendee_count_by_ticket_status( $ticket_id );
+		// Check cache for quantities by status.
+		$cache      = tribe_cache();
+		$quantities = $cache->get( 'tec_tickets_quantities_by_status_' . $ticket_id );
+		if ( ! is_array( $quantities ) ) {
+			$quantities = [];
+		}
 
 		if ( $refresh || ! isset( $quantities[ Pending::SLUG ] ) ) {
 			$pending_query = new \WP_Query( [
@@ -504,7 +510,7 @@ class Ticket {
 			] );
 
 			$quantities[ Pending::SLUG ] = $pending_query->found_posts;
-			$memo->set_attendee_status_count_by_ticket_id( $ticket_id, Pending::SLUG, $quantities[ Pending::SLUG ] );
+			$cache->set( 'tec_tickets_quantities_by_status_' . $ticket_id, $quantities );
 		}
 
 		return $quantities[ Pending::SLUG ];

@@ -14,7 +14,6 @@ use Tribe__Tickets__Ticket_Object;
 use WP_List_Table;
 use DateTime;
 use TEC\Tickets\Commerce as TicketsCommerce;
-use TEC\Tickets\Commerce\Memoize_Attendees;
 use Tribe\Tickets\Admin\Settings;
 use Tribe__Template;
 use Tribe__Tickets__Main;
@@ -419,10 +418,9 @@ class List_Table extends WP_List_Table {
 			return esc_html( $item->name );
 		}
 
-		$edit_post_url  = $this->get_event_edit_url( $event->ID );
 		$edit_post_link = sprintf(
 			'<a href="%s" class="tec-tickets-admin-tickets-table-event-link" target="_blank" rel="nofollow noopener">%s</a>',
-			esc_url( $edit_post_url ),
+			esc_url( $this->get_event_edit_url( $event->ID ) ),
 			esc_html( $item->name )
 		);
 
@@ -507,10 +505,9 @@ class List_Table extends WP_List_Table {
 			return '-';
 		}
 
-		$edit_post_url  = $this->get_event_edit_url( $event->ID );
 		$edit_post_link = sprintf(
 			'<a href="%s" class="tec-tickets-admin-tickets-table-event-link" target="_blank" rel="nofollow noopener">%s</a>',
-			esc_url( $edit_post_url ),
+			esc_url( $this->get_event_edit_url( $event->ID ) ),
 			get_the_title( $event )
 		);
 
@@ -1006,16 +1003,19 @@ class List_Table extends WP_List_Table {
 		}
 
 		// @todo @codingmusician - Add query priming solutions for other providers.
-		$ticket_ids = wp_list_pluck( $items, 'ID' );
-
-		/** @var Memoize_Attendees $memo */
-		$memo = tribe( Memoize_Attendees::class );
+		$ticket_ids             = wp_list_pluck( $items, 'ID' );
+		$cache                  = tribe_cache();
+		$attendees_by_ticket_id = $cache->get( 'tec_tickets_attendees_by_ticket_id' );
+		if ( ! is_array( $attendees_by_ticket_id ) ) {
+			$attendees_by_ticket_id = [];
+		}
 
 		foreach ( $ticket_ids as $ticket_id ) {
-			$memo->set_attendee_status_counts_by_ticket_id( $ticket_id, tribe( TicketsCommerce\Ticket::class )->get_status_quantity( $ticket_id ) );
-
-			// This will create an empty array for memoization purposes.
-			$memo->add_attendee_by_ticket_id( $ticket_id );
+			$cache->set(
+				'tec_tickets_quantities_by_status_' . $ticket_id,
+				tribe( TicketsCommerce\Ticket::class )->get_status_quantity( $ticket_id )
+			);
+			$attendees_by_ticket_id[ $ticket_id ] = [];
 		}
 
 		$attendee_query = new WP_Query(
@@ -1043,8 +1043,10 @@ class List_Table extends WP_List_Table {
 				continue;
 			}
 
-			$memo->add_attendee_by_ticket_id( $ticket_id, $attendee );
+			$attendees_by_ticket_id[ $ticket_id ][] = $attendee;
 		}
+
+		$cache->set( 'tec_tickets_attendees_by_ticket_id', $attendees_by_ticket_id );
 	}
 
 	/**
