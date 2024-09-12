@@ -880,7 +880,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		$totals = array_map( 'intval', $totals );
 
-		// Remove Pending from total
+		// Remove Pending from total.
 		$totals['sold'] -= $totals['pending'];
 
 		return $totals;
