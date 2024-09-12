@@ -47,6 +47,3 @@ remove_action( 'tribe_tickets_promoter_trigger', [ tribe( Dispatcher::class ), '
 if ( ! defined( 'SECURE_AUTH_KEY' ) ) {
 	define( 'SECURE_AUTH_KEY', 'HG&R(f/h#K5{n:,4@swG~1Fc*aQGd@?T,T+zlTR)IsF5ET{SvvwBkI|zq6E}xjxy' );
 }
-
-$commerce_provider = tribe( Commerce_Provider::class );
-$commerce_provider->run_init_hooks();
