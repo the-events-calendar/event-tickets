@@ -146,6 +146,11 @@ class Orders_TableTest extends WPTestCase {
 			'{{event_id}}',
 			$html
 		);
+		$html = preg_replace(
+			'/#([0-9]+) - test/',
+			'#{{order_id}} - test',
+			$html
+		);
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
@@ -242,16 +247,16 @@ class Orders_TableTest extends WPTestCase {
 
 		$expected_events = [
 			[
-				'id'   => $this->event_ids[0],
-				'text' => 'Event 1',
+				'id'   => $this->event_ids[2],
+				'text' => 'Event 3',
 			],
 			[
 				'id'   => $this->event_ids[1],
 				'text' => 'Event 2',
 			],
 			[
-				'id'   => $this->event_ids[2],
-				'text' => 'Event 3',
+				'id'   => $this->event_ids[0],
+				'text' => 'Event 1',
 			],
 		];
 
