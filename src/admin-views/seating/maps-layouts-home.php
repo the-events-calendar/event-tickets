@@ -4,7 +4,6 @@
  *
  * @since TBD
  *
- * @var string $page_title The title of the page.
  * @var Tab[] $tabs    The set of tabs to display, in order.
  * @var Tab   $current The current tab.
  */

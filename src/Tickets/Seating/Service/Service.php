@@ -403,4 +403,17 @@ class Service {
 			$this->get_frontend_url( '/embed/seat-assignment/' )
 		);
 	}
+
+	/**
+	 * Returns the Service Status instance.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $force Whether to force the rebuilding of the status for this request
+	 *
+	 * @return Service_Status The Service Status instance.
+	 */
+	public function get_status( bool $force = false ): Service_Status {
+		return Service_Status::build( $force );
+	}
 }

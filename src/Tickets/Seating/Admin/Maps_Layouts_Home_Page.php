@@ -15,6 +15,8 @@ use TEC\Tickets\Seating\Admin\Tabs\Layouts;
 use TEC\Tickets\Seating\Admin\Tabs\Map_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Maps;
 use TEC\Tickets\Seating\Admin\Tabs\Tab;
+use TEC\Tickets\Seating\Service\Service;
+use TEC\Tickets\Seating\Service\Service_Status;
 
 /**
  * Class Maps_Layouts_Home_Page.
@@ -34,14 +36,24 @@ class Maps_Layouts_Home_Page {
 	private Template $template;
 
 	/**
+	 * A reference to the service object.
+	 *
+	 * @since TBD
+	 *
+	 * @var Service
+	 */
+	private Service $service;
+
+	/**
 	 * Maps_Layouts_Home_Page constructor.
 	 *
 	 * @since TBD
 	 *
 	 * @param Template $template The template instance.
 	 */
-	public function __construct( Template $template ) {
+	public function __construct( Template $template, Service $service ) {
 		$this->template = $template;
+		$this->service  = $service;
 	}
 
 	/**
@@ -52,6 +64,42 @@ class Maps_Layouts_Home_Page {
 	 * @return void
 	 */
 	public function render(): void {
+		$service_status = $this->service->get_status();
+
+		if ( ! $service_status->is_ok() ) {
+			$cta_url   = null;
+			$cta_label = null;
+
+			switch ( $service_status->get_status() ) {
+				default:
+				case Service_Status::SERVICE_DOWN:
+					$message = __( 'The Seat Builder service is down. We are working to restore functionality.',
+						'event-tickets' );
+					break;
+				case Service_Status::NOT_CONNECTED:
+					$message   = __( 'You need to connect your site to the Seat Builder in order to create Seating Maps and Seat Layouts.',
+						'event-tickets' );
+					$cta_label = _x( 'Connect', 'Connect to the Seat Builder button label', 'event-tickets' );
+					$cta_url = admin_url( 'admin.php?page=tec-tickets-settings&tab=licenses' );
+					break;
+				case Service_Status::INVALID_LICENSE:
+					$message = __( 'Your license for Seating has expired. You need to renew your license to continue using Seating for Event Tickets.',
+						'event-tickets' );
+					break;
+			}
+
+			$this->template->template(
+				'maps-layouts-home-error',
+				[
+					'message'   => $message,
+					'cta_label' => $cta_label,
+					'cta_url'   => $cta_url,
+				]
+			);
+
+			return;
+		}
+
 		$maps_id        = Maps::get_id();
 		$layouts_id     = Layouts::get_id();
 		$map_edit_id    = Map_Edit::get_id();
