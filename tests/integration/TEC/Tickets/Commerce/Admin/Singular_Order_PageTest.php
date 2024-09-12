@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Admin;
 
 use TEC\Tickets\Commerce\Order;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Denied;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Traits\With_Test_Orders;
@@ -166,8 +167,9 @@ class Singular_Order_PageTest extends \Codeception\TestCase\WPTestCase {
 			$GLOBALS[ 'current_screen'] =  WP_Screen::get( 'edit-' . Order::POSTTYPE );
 			// Set current user to admin.
 			wp_set_current_user( 1 );
-			// Set request `tribe-tickets-commerce-status` to `completed`.
-			$_REQUEST[ tribe( Denied::class )->get_slug() ] = 'tribe-tickets-commerce-status';
+
+			// Set request `tribe-tickets-commerce-status` to `DENIED`.
+			$_REQUEST['tribe-tickets-commerce-status'] = tribe( Denied::class )->get_slug();
 
 			$singular_page->update_order_status( $order->ID, $order );
 

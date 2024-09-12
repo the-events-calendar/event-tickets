@@ -93,7 +93,7 @@ class Orders_PageTest extends WPTestCase {
 		$current_screen = WP_Screen::get( 'edit' );
 		$this->assertFalse( $orders_page->is_admin_single_page() );
 
-		$current_screen = WP_Screen::get( 'edit-' . Order::POSTTYPE );
+		$current_screen = WP_Screen::get( Order::POSTTYPE );
 		$this->assertTrue( $orders_page->is_admin_single_page() );
 	}
 
