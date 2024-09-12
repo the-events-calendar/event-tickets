@@ -336,20 +336,20 @@ class Frontend extends Controller_Contract {
 			return $attributes;
 		}
 
-		$seat_labels = tribe( Session::class )->get_events_registrations_ticket_seat_label( $event_id, $ticket->ID );
+		$reservations = tribe( Session::class )->get_reservations_for_post_and_ticket( $event_id, $ticket->ID );
 
-		if ( empty( $seat_labels ) || ! is_array( $seat_labels ) ) {
+		if ( empty( $reservations ) || ! is_array( $reservations ) ) {
 			return $attributes;
 		}
 
-		$seat_labels = implode(
+		$reservations = implode(
 			',',
-			$seat_labels ? array_values(
-				wp_list_pluck( $seat_labels, 'seat_label' )
+			$reservations ? array_values(
+				wp_list_pluck( $reservations, 'seat_label' )
 			) : []
 		);
 
-		$attributes['data-seat-labels'] = esc_attr( $seat_labels );
+		$attributes['data-seat-labels'] = esc_attr( $reservations );
 
 		return $attributes;
 	}

@@ -6,7 +6,6 @@ use PHPUnit\Framework\Assert;
 use stdClass;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\StellarWP\DB\DB;
-use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Reservations;
@@ -15,7 +14,6 @@ use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tests\Traits\WP_Remote_Mocks;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
-use Tribe__Cache;
 
 class Session_Test extends \Codeception\TestCase\WPTestCase {
 	use WP_Remote_Mocks;
@@ -26,7 +24,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 	use SnapshotAssertions;
 
 	public function test_entry_manipulation(): void {
-		$session = tribe( Session::class );
+		$session         = tribe( Session::class );
 		$expiration_time = $session->get_cookie_expiration_time();
 		$setcookie_value = null;
 		$this->set_fn_return( 'setcookie',
@@ -244,7 +242,8 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertFalse( $session->cancel_previous_for_object( 23, 'test-token' ) );
 		$this->assertEquals( [ 23 => 'test-token' ], $session->get_entries() );
-		$this->assertEquals( [ 'reservation-id-1', 'reservation-id-2' ], $sessions->get_reservation_uuids_for_token( 'test-token' ) );
+		$this->assertEquals( [ 'reservation-id-1', 'reservation-id-2' ],
+			$sessions->get_reservation_uuids_for_token( 'test-token' ) );
 	}
 
 	public function test_cancel_previous_for_object_succeeds_if_session_missing(): void {
@@ -468,8 +467,11 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 	public function test_should_get_events_registrations_ticket_seat_label() {
 		$sessions = tribe( Sessions::class );
 		$this->set_oauth_token( 'auth-token' );
+		$cache = tribe_cache();
 
 		$session = tribe( Session::class );
+
+		$cache_key = $session->get_events_registrations_ticket_seat_label_cache_key( 'test-token-2', 89, 89 );
 
 		$session->add_entry( 23, 'test-token-1' );
 		$sessions->upsert( 'test-token-1', 23, time() + 100 );
@@ -477,7 +479,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		update_post_meta( 23, Meta::META_KEY_ENABLED, '1' );
 		update_post_meta( 23, Meta::META_KEY_LAYOUT_ID, 'test-layout-id-1' );
 
-		$data1 = $session->get_events_registrations_ticket_seat_label( 23, 23 );
+		$data_1 = $session->get_reservations_for_post_and_ticket( 23, 23 );
 
 		$session->add_entry( 89, 'test-token-2' );
 		$sessions->upsert( 'test-token-2', 89, time() + 30 );
@@ -485,61 +487,58 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		update_post_meta( 89, Meta::META_KEY_ENABLED, '1' );
 		update_post_meta( 89, Meta::META_KEY_LAYOUT_ID, 'test-layout-id-2' );
 
-		$data2 = $session->get_events_registrations_ticket_seat_label( 89, 89 );
+		$data_2 = $session->get_reservations_for_post_and_ticket( 89, 89 );
 
-		$this->assertMatchesJsonSnapshot( wp_json_encode( [ $data1, $data2 ], JSON_PRETTY_PRINT ) );
+		$this->assertMatchesJsonSnapshot( wp_json_encode( [ $data_1, $data_2 ], JSON_PRETTY_PRINT ) );
 
 		// Ensure we are protected against cache poisoning.
-		$cache_key = $session->get_events_registrations_ticket_seat_label_cache_key( 'test-token-2', 89, 89 );
-		tribe_cache()->delete( $cache_key );
-		tribe_cache()->set( $cache_key, 'poisoned-cached', Tribe__Cache::NON_PERSISTENT );
+		$cache[ $cache_key ] = 'poisoned-cached';
 
-		$data3 = $session->get_events_registrations_ticket_seat_label( 89, 89 );
+		$data_3 = $session->get_reservations_for_post_and_ticket( 89, 89 );
 
-		$this->assertSame( $data2, $data3 );
+		$this->assertSame( $data_2, $data_3 );
 
-		tribe_cache()->set( $cache_key, null, Tribe__Cache::NON_PERSISTENT );
+		$cache[ $cache_key ] = null;
 
-		$data3 = $session->get_events_registrations_ticket_seat_label( 89, 89 );
+		$data_3 = $session->get_reservations_for_post_and_ticket( 89, 89 );
 
-		$this->assertSame( $data2, $data3 );
+		$this->assertSame( $data_2, $data_3 );
 
-		tribe_cache()->set( $cache_key, 25, Tribe__Cache::NON_PERSISTENT );
+		$cache[ $cache_key ] = 25;
 
-		$data3 = $session->get_events_registrations_ticket_seat_label( 89, 89 );
+		$data_3 = $session->get_reservations_for_post_and_ticket( 89, 89 );
 
-		$this->assertSame( $data2, $data3 );
+		$this->assertSame( $data_2, $data_3 );
 
 		$obj = new stdClass();
 
-		$obj->test = true;
-		tribe_cache()->set( $cache_key, $obj, Tribe__Cache::NON_PERSISTENT );
+		$obj->test           = true;
+		$cache[ $cache_key ] = $obj;
 
-		$data3 = $session->get_events_registrations_ticket_seat_label( 89, 89 );
+		$data_3 = $session->get_reservations_for_post_and_ticket( 89, 89 );
 
-		$this->assertSame( $data2, $data3 );
+		$this->assertSame( $data_2, $data_3 );
 
-		tribe_cache()->set( $cache_key, true, Tribe__Cache::NON_PERSISTENT );
+		$cache[ $cache_key ] = true;
 
-		$data3 = $session->get_events_registrations_ticket_seat_label( 89, 89 );
+		$data_3 = $session->get_reservations_for_post_and_ticket( 89, 89 );
 
-		$this->assertSame( $data2, $data3 );
+		$this->assertSame( $data_2, $data_3 );
 
-		$valid_but_empty = [];
-		tribe_cache()->set( $cache_key, $valid_but_empty, Tribe__Cache::NON_PERSISTENT );
+		$valid_but_empty     = [];
+		$cache[ $cache_key ] = $valid_but_empty;
 
-		$data3 = $session->get_events_registrations_ticket_seat_label( 89, 89 );
+		$data_3 = $session->get_reservations_for_post_and_ticket( 89, 89 );
 
-		$this->assertSame( $data2, $data3 );
+		$this->assertSame( $data_2, $data_3 );
 
-		tribe_cache()->delete( $cache_key );
-		$valid = [
+		$valid               = [
 			'test' => true,
 		];
-		tribe_cache()->set( $cache_key, $valid, Tribe__Cache::NON_PERSISTENT );
+		$cache[ $cache_key ] = $valid;
 
-		$data3 = $session->get_events_registrations_ticket_seat_label( 89, 89 );
+		$data_3 = $session->get_reservations_for_post_and_ticket( 89, 89 );
 
-		$this->assertSame( $valid, $data3 );
+		$this->assertSame( $valid, $data_3 );
 	}
 }

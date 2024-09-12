@@ -347,46 +347,42 @@ class Session {
 	 *
 	 * @since TBD
 	 *
-	 * @param ?int $event_id  The event ID.
-	 * @param ?int $ticket_id The ticket ID.
+	 * @param int|null $post_id   The post ID to get the reservations for.
+	 * @param int|null $ticket_id The ticket ID to get the reservations for.
 	 *
-	 * @return ?array The reservations.
+	 * @return array|null The reservations for the ticket and post.
 	 */
-	public function get_events_registrations_ticket_seat_label( int $event_id = null, int $ticket_id = null ): ?array {
+	public function get_reservations_for_post_and_ticket( int $post_id = null, int $ticket_id = null ): ?array {
 		// Bail while in admin side always. There are no reservations in the admin.
 		if ( is_admin() ) {
 			return null;
 		}
 
-		if ( ! $ticket_id ) {
-			return null;
-		}
-
-		if ( ! ( $event_id && tec_tickets_seating_enabled( $event_id ) ) ) {
+		if ( ! ( $ticket_id && $post_id && tec_tickets_seating_enabled( $post_id ) ) ) {
 			return null;
 		}
 
 		[ $token, $object_id ] = $this->get_session_token_object_id();
 
-		if ( ! ( $token && $object_id && (int) $object_id === $event_id ) ) {
+		if ( ! ( $token && $object_id && (int) $object_id === $post_id ) ) {
 			return null;
 		}
 
-		$cache_key = $this->get_events_registrations_ticket_seat_label_cache_key( $token, $event_id, $ticket_id );
+		$cache_key = $this->get_events_registrations_ticket_seat_label_cache_key( $token,
+			$post_id,
+			$ticket_id );
+		$cache = tribe_cache();
+		$matching_reservations = $cache[ $cache_key ] ?? null;
 
-		$reservations_for_event_and_ticket = tribe_cache()->get( $cache_key, '', [] );
-
-		if ( ! empty( $reservations_for_event_and_ticket ) && is_array( $reservations_for_event_and_ticket ) ) {
-			return $reservations_for_event_and_ticket;
+		if ( ! empty( $matching_reservations ) && is_array( $matching_reservations ) ) {
+			return $matching_reservations;
 		}
 
-		$reservations = $this->sessions->get_reservations_for_token( $token );
+		$token_reservations    = $this->sessions->get_reservations_for_token( $token );
+		$matching_reservations = $token_reservations[ $ticket_id ] ?? null;
+		$cache[ $cache_key ]   = $matching_reservations;
 
-		$reservations_for_event_and_ticket = $reservations[ $ticket_id ] ?? null;
-
-		tribe_cache()->set( $cache_key, $reservations_for_event_and_ticket, Tribe__Cache::NON_PERSISTENT );
-
-		return $reservations_for_event_and_ticket;
+		return $matching_reservations;
 	}
 
 	/**
