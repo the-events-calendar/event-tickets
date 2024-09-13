@@ -290,7 +290,7 @@ class Timer extends Controller_Contract {
 			'seat-selection-timer',
 			[
 				'token'        => $token,
-				'redirect_url' => get_post_permalink( $post_id ),
+				'redirect_url' => get_permalink( $post_id ),
 				'post_id'      => $post_id,
 				'sync_on_load' => $sync_on_load,
 			]
@@ -502,14 +502,14 @@ class Timer extends Controller_Contract {
 				_x( 'This %s is now sold out.', 'Seat selection expired timer content', 'event-tickets' ),
 				$post_type_label
 			);
-			
+
 			if ( 'tribe_events' === $post_type ) {
 				$button_label = sprintf(
 				// Translators: %s: The post type singular name.
 					_x( 'Find another %s', 'Seat selection expired timer button label', 'event-tickets' ),
 					ucfirst( $post_type_label )
 				);
-				
+
 				$redirect_url = get_post_type_archive_link( $post_type );
 			} else {
 				$button_label = _x( 'Return to Home Page', 'Seat selection expired timer button label', 'event-tickets' );
@@ -545,14 +545,14 @@ class Timer extends Controller_Contract {
 
 			return;
 		}
-		
+
 		$data = [
 			'title'       => esc_html_x( 'Time limit expired', 'Seat selection expired timer title', 'event-tickets' ),
 			'content'     => esc_html( $content ),
 			'buttonLabel' => esc_html( $button_label ),
 			'redirectUrl' => esc_url( $redirect_url ),
 		];
-		
+
 		/**
 		 * Filters the seat selection expired timer data.
 		 *
@@ -563,7 +563,7 @@ class Timer extends Controller_Contract {
 		 * @param string                 $token   The ephemeral token the session is being interrupted for.
 		 */
 		$data = apply_filters( 'tec_tickets_seat_selection_timer_expired_data', $data, $post_id, $token );
-		
+
 		wp_send_json_success( $data );
 	}
 
