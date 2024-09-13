@@ -124,7 +124,7 @@ describe( 'add-new-modal', () => {
 			expect(window[addLayoutModal]._hide).toHaveBeenCalledTimes(1);
 		});
 	});
-	
+
 	describe( 'add new layout button clicked', () => {
 		beforeEach(() => {
 			fetch.resetMocks();

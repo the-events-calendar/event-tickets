@@ -71,7 +71,8 @@ class Seats_Report_Test extends WPTEstCase {
 	 * @dataProvider render_page_data_provider
 	 */
 	public function test_render_page( Closure $fixture ): void {
-		[ $post_id ] = $fixture();
+		$ids = $fixture();
+		$post_id = array_shift($ids);
 		update_post_meta( $post_id, Meta::META_KEY_UUID, 'some-post-uuid' );
 		update_post_meta( $post_id, Meta::META_KEY_ENABLED, true );
 		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'layout-uuid' );
@@ -92,6 +93,13 @@ class Seats_Report_Test extends WPTEstCase {
 		ob_start();
 		$seats_report->render_page();
 		$html = ob_get_clean();
+
+		$ids = array_map( function( $id ) {
+			return is_object( $id ) ? $id->ID : (int) $id;
+		}, $ids );
+
+		arsort( $ids );
+		$html = str_replace( [ ...$ids, $post_id ], '{{ID}}', $html );
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}

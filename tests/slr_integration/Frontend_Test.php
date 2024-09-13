@@ -11,13 +11,17 @@ use TEC\Tickets\Commerce\Tickets_View;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use TEC\Tickets\Seating\Frontend;
 use TEC\Tickets\Seating\Meta;
+use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Service;
+use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe\Tests\Traits\With_Clock_Mock;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use Tribe__Date_Utils as Dates;
 use Tribe__Tickets__Global_Stock as Global_Stock;
+use Tribe__Tickets__Tickets as Tickets;
 
 class Frontend_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -26,6 +30,8 @@ class Frontend_Test extends Controller_Test_Case {
 	use With_Uopz;
 	use With_Clock_Mock;
 	use With_Tickets_Commerce;
+	use OAuth_Token;
+	use Reservations_Maker;
 
 	protected string $controller_class = Frontend::class;
 
@@ -391,6 +397,58 @@ class Frontend_Test extends Controller_Test_Case {
 		);
 
 		$this->assertMatchesJsonSnapshot( $json );
+	}
+
+	public function test_should_add_seat_selected_labels_per_ticket_attribute() {
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Event with single attendee',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+
+		update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
+
+		$data = [
+			'tribe-ticket'            => [
+				'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+				'capacity' => 100,
+			],
+		];
+
+		$ticket_id = $this->create_tc_ticket( $event_id, 1, $data );
+
+		update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-' . $ticket_id );
+
+		$sessions = tribe( Sessions::class );
+		$this->set_oauth_token( 'auth-token' );
+
+		$session = tribe( Session::class );
+
+		$this->assertNull( $session->get_session_token_object_id() );
+
+		$session->add_entry( $event_id, 'test-token-1' );
+		$sessions->upsert( 'test-token-1', $event_id, time() + 100 );
+		$sessions->update_reservations( 'test-token-1', $this->create_mock_reservations_data( [ $ticket_id ], 2 ) );
+
+		$this->assertEquals( [ 'test-token-1', $event_id ], $session->get_session_token_object_id() );
+
+		$this->make_controller()->register();
+
+		$ticket = Tickets::load_ticket_object( $ticket_id );
+
+		$attributes = apply_filters( 'tribe_tickets_block_ticket_html_attributes', [], $ticket, $event_id );
+
+		$this->assertEmpty( $attributes );
+
+		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+
+		$attributes = apply_filters( 'tribe_tickets_block_ticket_html_attributes', [], $ticket, $event_id );
+
+		$this->assertEquals( esc_attr( implode( ',', [ 'seat-label-0-1' , 'seat-label-0-2' ] ) ), $attributes['data-seat-labels'] );
 	}
 
 	public function test_get_ticket_block_data_with_tickets_not_in_range():void{

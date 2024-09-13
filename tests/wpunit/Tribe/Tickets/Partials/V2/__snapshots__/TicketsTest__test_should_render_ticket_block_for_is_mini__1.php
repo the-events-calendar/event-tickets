@@ -8,7 +8,7 @@
 		data-provider="Tribe__Tickets__Commerce__PayPal__Main"
 		autocomplete="off"
 		data-provider-id="tribe-commerce"
-		data-post-id="5108"
+		data-post-id="{{POST_TICKET_ID}}"
 		novalidate
 	>
 
@@ -34,14 +34,14 @@
 </div>
 
 		<div
-	id="tribe-block-tickets-item-5109"
-	 class="tribe-tickets__tickets-item post-5109 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="5109" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
+	id="tribe-block-tickets-item-{{POST_TICKET_ID}}"
+	 class="tribe-tickets__tickets-item post-{{POST_TICKET_ID}} tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="{{POST_TICKET_ID}}" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
 
-	<div  class="tribe-tickets__tickets-item-content-title-container tribe-tickets--no-description"  >
-		<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title tribe-tickets--no-description"  >
-					<div  class="tribe-common-b3 tribe-tickets__tickets-item-content-subtitle"  >
+	<div  class="tribe-tickets__tickets-item-content-title-container tribe-tickets--no-description" >
+		<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title tribe-tickets--no-description" >
+					<div  class="tribe-common-b3 tribe-tickets__tickets-item-content-subtitle" >
 				Test event for partial snapshot			</div>
-				Test ticket for 5108	</div>
+				Test ticket for {{POST_TICKET_ID}}	</div>
 </div><div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >
@@ -64,14 +64,14 @@
 	
 </div>
 <div
-	id="tribe-block-tickets-item-5110"
-	 class="tribe-tickets__tickets-item post-5110 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="5110" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
+	id="tribe-block-tickets-item-{{POST_TICKET_ID}}"
+	 class="tribe-tickets__tickets-item post-{{POST_TICKET_ID}} tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="{{POST_TICKET_ID}}" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
 
-	<div  class="tribe-tickets__tickets-item-content-title-container tribe-tickets--no-description"  >
-		<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title tribe-tickets--no-description"  >
-					<div  class="tribe-common-b3 tribe-tickets__tickets-item-content-subtitle"  >
+	<div  class="tribe-tickets__tickets-item-content-title-container tribe-tickets--no-description" >
+		<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title tribe-tickets--no-description" >
+					<div  class="tribe-common-b3 tribe-tickets__tickets-item-content-subtitle" >
 				Test event for partial snapshot			</div>
-				Test ticket for 5108	</div>
+				Test ticket for {{POST_TICKET_ID}}	</div>
 </div><div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >
