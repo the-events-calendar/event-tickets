@@ -409,7 +409,7 @@ class Service {
 	 *
 	 * @since TBD
 	 *
-	 * @param bool $force Whether to force the rebuilding of the status for this request
+	 * @param bool $force Whether to force the rebuilding of the status for this request.
 	 *
 	 * @return Service_Status The Service Status instance.
 	 */

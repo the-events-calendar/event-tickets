@@ -50,6 +50,7 @@ class Maps_Layouts_Home_Page {
 	 * @since TBD
 	 *
 	 * @param Template $template The template instance.
+	 * @param Service  $service  The service instance.
 	 */
 	public function __construct( Template $template, Service $service ) {
 		$this->template = $template;
@@ -73,18 +74,24 @@ class Maps_Layouts_Home_Page {
 			switch ( $service_status->get_status() ) {
 				default:
 				case Service_Status::SERVICE_DOWN:
-					$message = __( 'The Seat Builder service is down. We are working to restore functionality.',
-						'event-tickets' );
+					$message = __(
+						'The Seat Builder service is down. We are working to restore functionality.',
+						'event-tickets'
+					);
 					break;
 				case Service_Status::NOT_CONNECTED:
-					$message   = __( 'You need to connect your site to the Seat Builder in order to create Seating Maps and Seat Layouts.',
-						'event-tickets' );
+					$message   = __(
+						'You need to connect your site to the Seat Builder in order to create Seating Maps and Seat Layouts.',
+						'event-tickets'
+					);
 					$cta_label = _x( 'Connect', 'Connect to the Seat Builder button label', 'event-tickets' );
-					$cta_url = admin_url( 'admin.php?page=tec-tickets-settings&tab=licenses' );
+					$cta_url   = admin_url( 'admin.php?page=tec-tickets-settings&tab=licenses' );
 					break;
 				case Service_Status::INVALID_LICENSE:
-					$message = __( 'Your license for Seating has expired. You need to renew your license to continue using Seating for Event Tickets.',
-						'event-tickets' );
+					$message = __(
+						'Your license for Seating has expired. You need to renew your license to continue using Seating for Event Tickets.',
+						'event-tickets'
+					);
 					break;
 			}
 
