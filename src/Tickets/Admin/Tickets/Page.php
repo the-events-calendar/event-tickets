@@ -85,7 +85,7 @@ class Page {
 	 * @return array
 	 */
 	public static function get_provider_options() {
-		$providers    = static::get_provider_info();
+		$providers        = static::get_provider_info();
 		$provider_options = [];
 
 		foreach ( $providers as $provider => $provider_info ) {
