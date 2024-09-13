@@ -1,24 +1,27 @@
 <?php
 /**
- * Class Order_Modifier_Table to display coupon/fee data in a WordPress table.
+ * Coupon Table class for displaying coupon data in a WordPress table.
+ *
+ * This class extends the Order_Modifier_Table and customizes it to display coupon data.
  *
  * @since TBD
+ *
+ * @package TEC\Tickets\Order_Modifiers\Table_Views
  */
 
 namespace TEC\Tickets\Order_Modifiers\Table_Views;
 
-if ( ! class_exists( 'WP_List_Table' ) ) {
-	require_once ABSPATH . 'wp-admin/includes/screen.php';
-	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
-}
-
-use WP_List_Table;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 
-class Coupon_Table extends WP_List_Table {
+/**
+ * Class Coupon_Table to display coupon data in a WordPress table.
+ *
+ * @since TBD
+ */
+class Coupon_Table extends Order_Modifier_Table {
 
 	/**
-	 * Modifier class for the table (e.g., Coupon or Fee).
+	 * Modifier class for the table (Coupon in this case).
 	 *
 	 * @since TBD
 	 *
@@ -27,7 +30,7 @@ class Coupon_Table extends WP_List_Table {
 	protected $modifier;
 
 	/**
-	 * Constructor for the Order Modifier Table.
+	 * Constructor for the Coupon Table.
 	 *
 	 * @since TBD
 	 *
@@ -36,78 +39,19 @@ class Coupon_Table extends WP_List_Table {
 	public function __construct( Modifier_Strategy_Interface $modifier ) {
 		$this->modifier = $modifier;
 
-		parent::__construct(
-			[
-				'singular' => __( $modifier->get_modifier_type(), 'event-tickets' ),
-				'plural'   => __( $modifier->get_modifier_type() . 's', 'event-tickets' ),
-				'ajax'     => false,
-			]
-		);
+		parent::__construct();
 	}
 
 	/**
-	 * Prepares the items for display in the table.
-	 *
-	 * @since TBD
-	 */
-	public function prepare_items() {
-		$columns               = $this->get_columns();
-		$hidden                = [];
-		$sortable              = $this->get_sortable_columns();
-		$this->_column_headers = [ $columns, $hidden, $sortable ];
-
-		// Handle search.
-		$search = isset( $_REQUEST['s'] ) ? sanitize_text_field( $_REQUEST['s'] ) : '';
-
-		// Capture sorting parameters.
-		$orderby = isset( $_GET['orderby'] ) ? sanitize_text_field( $_GET['orderby'] ) : 'display_name';
-		$order   = isset( $_GET['order'] ) ? sanitize_text_field( $_GET['order'] ) : 'asc';
-
-		// Fetch the data from the modifier class, including sorting.
-		$data = $this->modifier->find_by_search(
-			[
-				'search_term' => $search,
-				'orderby'     => $orderby,
-				'order'       => $order,
-			]
-		);
-
-		// Make sure data is returned as an array of arrays.
-		if ( ! is_array( $data ) || empty( $data ) ) {
-			$data = [];
-		}
-
-		// Pagination.
-		$per_page     = $this->get_items_per_page( $this->modifier->get_modifier_type() . '_per_page', 10 );
-		$current_page = $this->get_pagenum();
-		$total_items  = count( $data );
-
-		$data = array_slice( $data, ( $current_page - 1 ) * $per_page, $per_page );
-
-		// Set the items for the table.
-		$this->items = $data;
-
-		$this->set_pagination_args(
-			[
-				'total_items' => $total_items,
-				'per_page'    => $per_page,
-				'total_pages' => ceil( $total_items / $per_page ),
-			]
-		);
-	}
-
-
-	/**
-	 * Define the columns for the table.
+	 * Define the columns for the Coupon table.
 	 *
 	 * @since TBD
 	 *
 	 * @return array An array of columns.
 	 */
-	public function get_columns() {
-		// Example for Coupon/Fees columns.
+	public function get_columns(): array {
 		return [
-			'display_name'     => __( 'Name', 'event-tickets' ),
+			'display_name'     => __( 'Coupon Name', 'event-tickets' ),
 			'slug'             => __( 'Code', 'event-tickets' ),
 			'fee_amount_cents' => __( 'Amount', 'event-tickets' ),
 			'used'             => __( 'Used', 'event-tickets' ),
@@ -117,13 +61,48 @@ class Coupon_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Fetch coupon data for the table.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $search Search term.
+	 * @param string $orderby Column to order by.
+	 * @param string $order Sorting order.
+	 *
+	 * @return array The data for the table.
+	 */
+	protected function get_modifier_data( string $search, string $orderby, string $order ): array {
+		$data = $this->modifier->find_by_search(
+			[
+				'search_term' => $search,
+				'orderby'     => $orderby,
+				'order'       => $order,
+			]
+		);
+
+		// Ensure data is returned as an array of arrays.
+		return is_array( $data ) ? $data : [];
+	}
+
+	/**
+	 * Define the default sort column for Coupons.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The default sort column.
+	 */
+	protected function get_default_sort_column(): string {
+		return 'display_name';
+	}
+
+	/**
 	 * Define sortable columns.
 	 *
 	 * @since TBD
 	 *
 	 * @return array An array of sortable columns.
 	 */
-	protected function get_sortable_columns() {
+	protected function get_sortable_columns(): array {
 		return [
 			'display_name'     => [ 'display_name', true ],
 			'slug'             => [ 'slug', false ],
@@ -144,15 +123,20 @@ class Coupon_Table extends WP_List_Table {
 	 *
 	 * @return string
 	 */
-	protected function column_default( $item, $column_name ) {
-		$value = empty( $item->$column_name ) ? '' : $item->$column_name;
+	protected function column_default( $item, $column_name ): string {
+		// Special handling for "used" and "remaining" columns to output a dash if empty.
+		if ( in_array( $column_name, [ 'used', 'remaining' ] ) ) {
+			$value = isset( $item->$column_name ) && ! empty( $item->$column_name ) ? $item->$column_name : '-';
+		} else {
+			$value = isset( $item->$column_name ) ? $item->$column_name : '';
+		}
 
 		// Pass the modifier class to the filter.
 		return apply_filters( 'tribe_events_tickets_order_modifiers_table_column', $value, $item, $column_name, $this->modifier );
 	}
 
 	/**
-	 * Render the "Name" column with Edit | Delete actions.
+	 * Render the "Coupon Name" column with Edit | Delete actions.
 	 *
 	 * @since TBD
 	 *
@@ -160,7 +144,7 @@ class Coupon_Table extends WP_List_Table {
 	 *
 	 * @return string
 	 */
-	protected function column_display_name( $item ) {
+	protected function column_display_name( $item ): string {
 		$edit_link   = '#'; // Replace with the actual link to the edit screen.
 		$delete_link = '#'; // Replace with the actual link to delete functionality.
 
@@ -203,25 +187,25 @@ class Coupon_Table extends WP_List_Table {
 	 *
 	 * @return array List of CSS classes for the table tag.
 	 */
-	protected function get_table_classes() {
-		$classes = [ 'widefat', 'striped', 'order-modifiers', 'tribe-order-modifiers' ];
+	protected function get_table_classes(): array {
+		$classes = [ 'widefat', 'striped', 'coupons', 'tribe-coupons' ];
 
 		/**
-		 * Filters the default classes added to the table `WP_List_Table`.
+		 * Filters the default classes added to the coupons table `WP_List_Table`.
 		 *
 		 * @since TBD
 		 *
 		 * @param array $classes The array of classes to be applied.
 		 */
-		return apply_filters( 'tec_order_modifiers_table_classes', $classes, $this->modifier );
+		return apply_filters( 'tec_coupons_table_classes', $classes, $this->modifier );
 	}
 
 	/**
-	 * Message to be displayed when there are no items
+	 * Message to be displayed when there are no items.
 	 *
 	 * @since TBD
 	 */
 	public function no_items() {
-		esc_html_e( 'No modifiers found.', 'event-tickets' );
+		esc_html_e( 'No coupons found.', 'event-tickets' );
 	}
 }

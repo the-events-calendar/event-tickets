@@ -282,4 +282,40 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 
 		return null === $existing_slug;
 	}
+
+	/**
+	 * Convert the status to a human-readable format.
+	 *
+	 * This method converts the internal status values ('active', 'inactive', 'draft')
+	 * into human-readable strings ('Active', 'Inactive', 'Draft').
+	 * It also provides a filter to allow for customizing the status labels if necessary.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $status The raw status from the database.
+	 *
+	 * @return string The human-readable status.
+	 */
+	public function get_status_display( string $status ): string {
+		// Default conversion.
+		$statuses = [
+			'active'   => __( 'Active', 'event-tickets' ),
+			'inactive' => __( 'Inactive', 'event-tickets' ),
+			'draft'    => __( 'Draft', 'event-tickets' ),
+		];
+
+		/**
+		 * Filters the conversion of order modifier status values to human-readable formats.
+		 *
+		 * This filter allows modifying the labels for the default status values:
+		 * 'active', 'inactive', and 'draft'. For example, 'draft' could be changed to 'In Progress'.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $statuses An array of status conversions where the key is the raw status and the value is the display version.
+		 */
+		$statuses = apply_filters( 'tec_modifier_status_conversion', $statuses );
+
+		return $statuses[ $status ] ?? ucfirst( $status );
+	}
 }
