@@ -37,14 +37,14 @@ export const selectors = {
 		});
 	},
 	getCurrentLayoutId(state) {
-		if (!!!state.isUsingAssignedSeating) {
+		if (!state.isUsingAssignedSeating) {
 			return null;
 		}
 
 		return state?.currentLayoutId || null;
 	},
 	getSeatTypeSeats(state, seatTypeId) {
-		if (!!!state.isUsingAssignedSeating) {
+		if (!state.isUsingAssignedSeating) {
 			return null;
 		}
 
@@ -54,7 +54,7 @@ export const selectors = {
 		);
 	},
 	getTicketSeatType(state, clientId) {
-		if (!!!state.isUsingAssignedSeating) {
+		if (!state.isUsingAssignedSeating) {
 			return null;
 		}
 
@@ -76,14 +76,14 @@ export const selectors = {
 		return state?.eventCapacity || 0;
 	},
 	getSeatTypesByPostID(state) {
-		if (!!!state.isUsingAssignedSeating) {
+		if (!state.isUsingAssignedSeating) {
 			return null;
 		}
 
 		return state?.seatTypesByPostId || [];
 	},
 	getSeatTypesByClientID(state) {
-		if (!!!state.isUsingAssignedSeating) {
+		if (!state.isUsingAssignedSeating) {
 			return null;
 		}
 
