@@ -40,6 +40,7 @@ class Controller extends Controller_Contract {
 			[ $this, 'filter_timer_token_object_id_entries' ],
 		);
 		add_filter( 'tribe_tickets_ticket_inventory', [ $this, 'get_seated_ticket_inventory' ], 10, 2 );
+		add_filter( 'tec_tickets_get_ticket_counts', [ $this, 'set_event_stock_counts' ], 10, 2 );
 		add_action( 'updated_postmeta', [ $this, 'sync_seated_tickets_stock' ], 10, 4 );
 	}
 
@@ -56,7 +57,58 @@ class Controller extends Controller_Contract {
 			[ $this, 'filter_timer_token_object_id_entries' ],
 		);
 		remove_filter( 'tribe_tickets_ticket_inventory', [ $this, 'get_seated_ticket_inventory' ] );
+		remove_filter( 'tec_tickets_get_ticket_counts', [ $this, 'set_event_stock_counts' ] );
 		remove_action( 'updated_postmeta', [ $this, 'sync_seated_tickets_stock' ] );
+	}
+	
+	/**
+	 * Sets the stock counts for the event.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,array<string|int>> $types  The types of tickets.
+	 * @param int                            $post_id The post ID.
+	 *
+	 * @return array<string,array<string|int>> The types of tickets.
+	 */
+	public function set_event_stock_counts( $types, $post_id ): array {
+		$has_seating = get_post_meta( $post_id, Meta::META_KEY_ENABLED, true );
+		
+		if ( ! $has_seating ) {
+			return $types;
+		}
+		
+		$types['tickets'] = [
+			'count'     => 0, // count of ticket types currently for sale
+			'stock'     => 0, // current stock of tickets available for sale
+			'global'    => 1, // numeric boolean if tickets share global stock
+			'unlimited' => 0, // numeric boolean if any ticket has unlimited stock
+			'available' => 0,
+		];
+		
+		$tickets = tribe_tickets()
+			->where( 'event', $post_id )
+			->get_ids( true );
+		
+		foreach ( $tickets as $ticket_id ) {
+			$ticket = Tickets::load_ticket_object( $ticket_id );
+			
+			if ( ! $ticket instanceof Ticket_Object ) {
+				continue;
+			}
+			
+			if ( ! tribe_events_ticket_is_on_sale( $ticket ) ) {
+				continue;
+			}
+			
+			$types['tickets']['count']++;
+			
+			$stock_level = max( 0, $ticket->available() );
+			$types['tickets']['stock'] += $stock_level;
+			$types['tickets']['available'] += $stock_level;
+		}
+		
+		return $types;
 	}
 
 	/**
