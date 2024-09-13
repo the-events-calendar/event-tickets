@@ -313,4 +313,85 @@ class Controller_Test extends Controller_Test_Case {
 			$filtered_entries,
 		);
 	}
+	
+	public function test_stock_count_for_seated_tickets() {
+		$controller = $this->make_controller();
+		$controller->register();
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 12:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		
+		// Enable the global stock on the Event.
+		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
+		
+		// Set the Event global stock level to 20.
+		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 20 );
+		
+		update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 1 );
+		
+		// Add a ticket with 5 capacity.
+		$vip = $this->create_tc_ticket(
+			$event_id,
+			30,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 5,
+				],
+			]
+		);
+		
+		// Only`vip` ticket should be available.
+		$counts = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+		
+		$this->assertEquals( 5, $counts[ 'tickets' ]['stock'] );
+		$this->assertEquals( 5, $counts[ 'tickets' ]['available'] );
+		
+		$general = $this->create_tc_ticket(
+			$event_id,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 15,
+				],
+			]
+		);
+		
+		// Both `vip` and `general` tickets should be available.
+		$counts = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+		
+		$this->assertEquals( 20, $counts[ 'tickets' ]['stock'] );
+		$this->assertEquals( 20, $counts[ 'tickets' ]['available'] );
+		
+		$order = $this->create_order(
+			[
+				$vip => 5,
+			]
+		);
+		
+		// Stock should be reduced for `vip` ticket.
+		$counts = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+		
+		$this->assertEquals( 15, $counts[ 'tickets' ]['stock'] );
+		$this->assertEquals( 15, $counts[ 'tickets' ]['available'] );
+		
+		$order_2 = $this->create_order(
+			[
+				$general => 15,
+			]
+		);
+		
+		// Stock should be reduced for `general` ticket and no tickets should be available.
+		$counts = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+		
+		$this->assertEquals( 0, $counts[ 'tickets' ]['stock'] );
+		$this->assertEquals( 0, $counts[ 'tickets' ]['available'] );
+	}
 }
