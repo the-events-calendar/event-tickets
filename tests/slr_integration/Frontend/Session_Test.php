@@ -463,7 +463,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		$this->assertFalse( $session->confirm_all_reservations() );
 	}
 
-	public function test_should_get_events_registrations_ticket_seat_label() {
+	public function test_get_post_ticket_reservations() {
 		$sessions = tribe( Sessions::class );
 		$this->set_oauth_token( 'auth-token' );
 		$cache = tribe_cache();
