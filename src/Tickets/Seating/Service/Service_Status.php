@@ -106,6 +106,13 @@ class Service_Status {
 		return $status;
 	}
 
+	/**
+	 * Service_Status constructor.
+	 *
+	 * since TBD
+	 *
+	 * @param string $backend_base_url The base URL of the service from the site backend.
+	 */
 	public function __construct( string $backend_base_url ) {
 		$this->backend_base_url = $backend_base_url;
 		$this->status           = null;
@@ -166,7 +173,14 @@ class Service_Status {
 		return $this->status === self::OK;
 	}
 
-	public function get_status():int {
+	/**
+	 * Returns the status of the service.
+	 *
+	 * @since TBD
+	 *
+	 * @return int The status of the service as an integer, one of the `self::*` constants.
+	 */
+	public function get_status(): int {
 		$this->update_status();
 
 		return $this->status;
