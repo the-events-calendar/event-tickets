@@ -9,12 +9,14 @@
 
 namespace TEC\Tickets\Admin\Tickets;
 
-use Tribe__Tickets__Tickets;
+use Tribe__Tickets__Commerce__Currency;
 use Tribe__Tickets__Ticket_Object;
 use WP_List_Table;
 use DateTime;
+use TEC\Tickets\Commerce as TicketsCommerce;
 use Tribe\Tickets\Admin\Settings;
 use Tribe__Template;
+use Tribe__Tickets__Main;
 use WP_Post;
 use WP_Query;
 
@@ -68,6 +70,13 @@ class List_Table extends WP_List_Table {
 	 * @var WP_Query $query
 	 */
 	protected $query;
+
+	/**
+	 * List of event edit URLs.
+	 *
+	 * @var array
+	 */
+	protected $event_edit_urls = [];
 
 	/**
 	 * Get the template object.
@@ -371,6 +380,26 @@ class List_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Get the event edit URL.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id The event ID.
+	 *
+	 * @return string
+	 */
+	protected function get_event_edit_url( $event_id ) {
+		if ( isset( $this->event_edit_urls[ $event_id ] ) ) {
+			return $this->event_edit_urls[ $event_id ];
+		}
+
+		$edit_post_url                      = get_edit_post_link( $event_id );
+		$this->event_edit_urls[ $event_id ] = $edit_post_url;
+
+		return $edit_post_url;
+	}
+
+	/**
 	 * Get the column name value.
 	 *
 	 * @since TBD
@@ -389,10 +418,9 @@ class List_Table extends WP_List_Table {
 			return esc_html( $item->name );
 		}
 
-		$edit_post_url  = get_edit_post_link( $event );
 		$edit_post_link = sprintf(
 			'<a href="%s" class="tec-tickets-admin-tickets-table-event-link" target="_blank" rel="nofollow noopener">%s</a>',
-			esc_url( $edit_post_url ),
+			esc_url( $this->get_event_edit_url( $event->ID ) ),
 			esc_html( $item->name )
 		);
 
@@ -477,10 +505,9 @@ class List_Table extends WP_List_Table {
 			return '-';
 		}
 
-		$edit_post_url  = get_edit_post_link( $event );
 		$edit_post_link = sprintf(
 			'<a href="%s" class="tec-tickets-admin-tickets-table-event-link" target="_blank" rel="nofollow noopener">%s</a>',
-			esc_url( $edit_post_url ),
+			esc_url( $this->get_event_edit_url( $event->ID ) ),
 			get_the_title( $event )
 		);
 
@@ -653,6 +680,26 @@ class List_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Format currency.
+	 *
+	 * @since TBD
+	 *
+	 * @param float $price    The price to format.
+	 * @param int   $event_id The event/post ID.
+	 *
+	 * @return string
+	 */
+	protected function format_currency( $price, $event_id ) {
+		/** @var Tribe__Tickets__Commerce__Currency $currency */
+		$currency        = tribe( 'tickets.commerce.currency' );
+		$currency_symbol = $currency->get_provider_symbol( Page::get_current_provider(), $event_id );
+		$symbol_position = $currency->get_provider_symbol_position( Page::get_current_provider(), $event_id );
+		$formatted_price = $currency->get_formatted_currency( number_format( $price, 2 ), $event_id, Page::get_current_provider() );
+
+		return 'prefix' === $symbol_position ? $currency_symbol . $formatted_price : $formatted_price . $currency_symbol;
+	}
+
+	/**
 	 * Get the column price value.
 	 *
 	 * @since TBD
@@ -666,7 +713,7 @@ class List_Table extends WP_List_Table {
 			return '-';
 		}
 
-		$price = tribe_format_currency( number_format( $item->price, 2 ), $item->ID );
+		$price = $this->format_currency( $item->price, $item->get_event() );
 
 		/**
 		 * Filters the price for the Admin Tickets Table.
@@ -754,7 +801,7 @@ class List_Table extends WP_List_Table {
 			return '-';
 		}
 
-		$sales = tribe_format_currency( number_format( $item->qty_sold() * $item->price, 2 ), $item->ID );
+		$sales = $this->format_currency( ( $item->qty_sold() * $item->price ), $item->get_event() );
 
 		/**
 		 * Filters the total sales for the Admin Tickets Table.
@@ -790,17 +837,17 @@ class List_Table extends WP_List_Table {
 			case 'start':
 				$args['orderby']   = 'meta_value';
 				$args['meta_key']  = '_ticket_start_date';
-				$args['meta_type'] = 'DATE';
+				$args['meta_type'] = 'DATETIME';
 				break;
 			case 'end':
 				$args['orderby']   = 'meta_value';
 				$args['meta_key']  = '_ticket_end_date';
-				$args['meta_type'] = 'DATE';
+				$args['meta_type'] = 'DATETIME';
 				break;
 			case 'days_left':
 				$args['orderby']   = 'meta_value';
 				$args['meta_key']  = '_ticket_end_date';
-				$args['meta_type'] = 'DATE';
+				$args['meta_type'] = 'DATETIME';
 				break;
 			case 'price':
 				$args['orderby']  = 'meta_value_num';
@@ -897,25 +944,6 @@ class List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Get the Ticket post_type based on current provider.
-	 *
-	 * @since TBD
-	 *
-	 * @return array
-	 */
-	public function get_ticket_post_type() {
-		$provider_options  = Page::get_provider_options();
-		$default_post_type = empty( $provider_options ) ? '' : key( $provider_options );
-		$post_type         = tribe_get_request_var( Page::PROVIDER_KEY, $default_post_type );
-
-		if ( empty( $post_type ) || ! in_array( $post_type, array_keys( $provider_options ) ) ) {
-			$post_type = $default_post_type;
-		}
-
-		return $post_type;
-	}
-
-	/**
 	 * Get the query args for the list table.
 	 *
 	 * @since TBD
@@ -931,7 +959,8 @@ class List_Table extends WP_List_Table {
 			'offset'                   => ( $current_page - 1 ) * $per_page,
 			'posts_per_page'           => $per_page,
 			'return_total_found'       => true,
-			'post_type'                => $this->get_ticket_post_type(),
+			'post_type'                => Page::get_current_post_type(),
+			'post_status'              => 'any',
 		];
 
 		$args = $this->modify_filter_args( $args );
@@ -950,6 +979,77 @@ class List_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Primes the queries for caching purposes.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $items The items to prime the queries for.
+	 */
+	public function prime_queries( $items ) {
+		$event_ids   = wp_list_pluck( $items, 'event_id' );
+		$event_query = new WP_Query(
+			[
+				'post__in'               => $event_ids,
+				'posts_per_page'         => -1,
+				'post_type'              => Tribe__Tickets__Main::instance()->post_types(),
+				'post_status'            => 'any',
+				'update_post_meta_cache' => true,
+			]
+		);
+
+		// Only continue if we're looking at Tickets Commerce tickets.
+		if ( Page::get_current_provider() !== TicketsCommerce\Module::class ) {
+			return;
+		}
+
+		// @todo @codingmusician - Add query priming solutions for other providers.
+		$ticket_ids             = wp_list_pluck( $items, 'ID' );
+		$cache                  = tribe_cache();
+		$attendees_by_ticket_id = $cache->get( 'tec_tickets_attendees_by_ticket_id' );
+		if ( ! is_array( $attendees_by_ticket_id ) ) {
+			$attendees_by_ticket_id = [];
+		}
+
+		foreach ( $ticket_ids as $ticket_id ) {
+			$cache->set(
+				'tec_tickets_quantities_by_status_' . $ticket_id,
+				tribe( TicketsCommerce\Ticket::class )->get_status_quantity( $ticket_id )
+			);
+			$attendees_by_ticket_id[ $ticket_id ] = [];
+		}
+
+		$attendee_query = new WP_Query(
+			[
+				'posts_per_page' => count( $ticket_ids ),
+				'post_type'      => $this->get_attendee_post_type(),
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+				'meta_query'     => [
+					[
+						'key'     => TicketsCommerce\Attendee::$ticket_relation_meta_key,
+						'value'   => $ticket_ids,
+						'compare' => 'IN',
+					],
+				],
+			]
+		);
+
+		if ( 0 === $attendee_query->found_posts ) {
+			return;
+		}
+
+		foreach ( $attendee_query->posts as $attendee ) {
+			$ticket_id = get_post_meta( $attendee->ID, TicketsCommerce\Attendee::$ticket_relation_meta_key, true );
+			if ( ! $ticket_id ) {
+				continue;
+			}
+
+			$attendees_by_ticket_id[ $ticket_id ][] = $attendee;
+		}
+
+		$cache->set( 'tec_tickets_attendees_by_ticket_id', $attendees_by_ticket_id );
+	}
+
+	/**
 	 * Prepares the list of items for displaying.
 	 *
 	 * @since TBD
@@ -965,8 +1065,15 @@ class List_Table extends WP_List_Table {
 
 		remove_filter( 'posts_clauses', [ $this, 'filter_query_clauses' ], 10 );
 
+		$this->prime_queries( $items );
+
+		$provider = Page::get_current_provider_object();
+
 		foreach ( $items as $i => $item ) {
-			$ticket_object = Tribe__Tickets__Tickets::load_ticket_object( $item->ID );
+			$ticket_object = $provider->get_ticket( $item->event_id, $item->ID );
+			if ( ! empty( $ticket_object ) ) {
+				$ticket_object->raw = $item;
+			}
 			$this->items[] = empty( $ticket_object ) ? $item : $ticket_object;
 		}
 
@@ -1000,12 +1107,6 @@ class List_Table extends WP_List_Table {
 			return $clauses;
 		}
 
-		// If there is no search, return the clauses.
-		$search = tribe_get_request_var( 's' );
-		if ( empty( $search ) ) {
-			return $clauses;
-		}
-
 		global $wpdb;
 
 		$event_meta_key = $this->get_event_meta_key();
@@ -1016,6 +1117,14 @@ class List_Table extends WP_List_Table {
 			$event_meta_key
 		);
 		$clauses['join'] .= " LEFT JOIN {$wpdb->posts} AS event_data ON event_data.ID = ticket_event.meta_value ";
+
+		$clauses['fields'] .= ', event_data.ID AS event_id';
+
+		// If there is no search, return the clauses.
+		$search = tribe_get_request_var( 's' );
+		if ( empty( $search ) ) {
+			return $clauses;
+		}
 
 		// Add the event title to the fields.
 		$clauses['fields'] .= ', event_data.post_title AS event_title';
@@ -1038,23 +1147,32 @@ class List_Table extends WP_List_Table {
 	 * @return string
 	 */
 	protected function get_event_meta_key(): string {
-		/**
-		 * Filters the event meta keys for the Admin Tickets Table.
-		 *
-		 * @since TBD
-		 *
-		 * @param array $event_meta_keys The event meta keys for the Admin Tickets Table.
-		 *
-		 * @return array
-		 */
-		$event_meta_keys = apply_filters( 'tec_tickets_admin_tickets_table_event_meta_keys', [] );
+		$provider_info = Page::get_provider_info();
+		$provider      = Page::get_current_provider();
 
-		$ticket_post_type = $this->get_ticket_post_type();
-
-		if ( ! isset( $event_meta_keys[ $ticket_post_type ] ) ) {
+		if ( ! isset( $provider_info[ $provider ] ) || empty( $provider_info[ $provider ]['event_meta_key'] ) ) {
 			return '';
 		}
-		return $event_meta_keys[ $ticket_post_type ];
+
+		return $provider_info[ $provider ]['event_meta_key'];
+	}
+
+	/**
+	 * Get attendee post type based on provider.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	protected function get_attendee_post_type(): string {
+		$provider_info = Page::get_provider_info();
+		$provider      = Page::get_current_provider();
+
+		if ( ! isset( $provider_info[ $provider ] ) || empty( $provider_info[ $provider ]['attendee_post_type'] ) ) {
+			return '';
+		}
+
+		return $provider_info[ $provider ]['attendee_post_type'];
 	}
 
 	/**
@@ -1080,7 +1198,7 @@ class List_Table extends WP_List_Table {
 			'search_value'         => tribe_get_request_var( 's' ),
 			'show_provider_filter' => $this->show_ticket_provider_filter(),
 			'provider_options'     => Page::get_provider_options(),
-			'current_provider'     => $this->get_ticket_post_type(),
+			'current_provider'     => Page::get_current_provider(),
 		];
 
 		$template->template( 'admin-tickets/filters', $context );
@@ -1122,7 +1240,7 @@ class List_Table extends WP_List_Table {
 	 * @return boolean
 	 */
 	protected function show_ticket_provider_filter(): bool {
-		$providers = Page::get_provider_options();
+		$providers = Page::get_provider_info();
 
 		// Only show if more than one provider.
 		return count( $providers ) > 1;

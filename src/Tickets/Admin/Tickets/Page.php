@@ -58,13 +58,13 @@ class Page {
 	const STATUS_KEY = 'status-filter';
 
 	/**
-	 * Get the ticket providers.
+	 * Get Provider information.
 	 *
 	 * @since TBD
 	 *
 	 * @return array
 	 */
-	public static function get_provider_options() {
+	public static function get_provider_info() {
 		/**
 		 * Filters the ticket providers for the All Tickets Table.
 		 *
@@ -74,7 +74,75 @@ class Page {
 		 *
 		 * @return array
 		 */
-		return apply_filters( 'tec_tickets_admin_tickets_table_provider_options', [] );
+		return apply_filters( 'tec_tickets_admin_tickets_table_provider_info', [] );
+	}
+
+	/**
+	 * Get the ticket providers.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public static function get_provider_options() {
+		$providers        = static::get_provider_info();
+		$provider_options = [];
+
+		foreach ( $providers as $provider => $provider_info ) {
+			if ( empty( $provider_info['title'] ) ) {
+				continue;
+			}
+			$provider_options[ $provider ] = $provider_info['title'];
+		}
+
+		return $provider_options;
+	}
+
+	/**
+	 * Get the currently selected provider.
+	 *
+	 * @since TBD
+	 *
+	 * @return string;
+	 */
+	public static function get_current_provider() {
+		$provider_info    = static::get_provider_info();
+		$default_provider = empty( $provider_info ) ? '' : addslashes( key( $provider_info ) );
+		$current_provider = tribe_get_request_var( static::PROVIDER_KEY, $default_provider );
+
+		return stripslashes( $current_provider );
+	}
+
+	/**
+	 * Get the currently selected provider object.
+	 *
+	 * @since TBD
+	 *
+	 * @return Tribe__Tickets__Tickets|null;
+	 */
+	public static function get_current_provider_object() {
+		$current_provider = static::get_current_provider();
+
+		return tribe_get_class_instance( $current_provider );
+	}
+
+	/**
+	 * Get the currently selected ticket post type.
+	 *
+	 * @since TBD
+	 *
+	 * @return string|null;
+	 */
+	public static function get_current_post_type() {
+		$selected_provider = static::get_current_provider();
+
+		if ( empty( $selected_provider ) ) {
+			return null;
+		}
+
+		$post_types = static::get_ticket_post_types();
+
+		return $post_types[ $selected_provider ] ?? null;
 	}
 
 	/**
@@ -85,13 +153,17 @@ class Page {
 	 * @return array
 	 */
 	public static function get_ticket_post_types() {
-		$providers = static::get_provider_options();
+		$provider_info = static::get_provider_info();
+		$post_types    = [];
 
-		if ( empty( $providers ) ) {
-			return [];
+		foreach ( $provider_info as $provider => $provider_info ) {
+			if ( empty( $provider_info['ticket_post_type'] ) ) {
+				continue;
+			}
+			$post_types[ $provider ] = $provider_info['ticket_post_type'];
 		}
 
-		return array_keys( $providers );
+		return $post_types;
 	}
 
 	/**

@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Admin\Tickets;
 
 use TEC\Tickets\Admin\Tickets\List_Table;
+use TEC\Tickets\Commerce as TicketsCommerce;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 
@@ -36,7 +37,16 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 		// before
 		parent::setUp();
 
-		add_filter( 'tec_tickets_admin_tickets_table_provider_options',[ $this, 'add_tc_ticket_type' ] );
+		add_filter( 'tec_tickets_admin_tickets_table_provider_info', function() {
+			return [
+				TicketsCommerce\Module::class => [
+					'title'              => 'Tickets Commerce',
+					'event_meta_key'     => TicketsCommerce\Attendee::$event_relation_meta_key,
+					'attendee_post_type' => TicketsCommerce\Attendee::POSTTYPE,
+					'ticket_post_type'   => TicketsCommerce\Ticket::POSTTYPE,
+				]
+			];
+		} );
 
 		$this->prepare_test_data();
 		$this->list_table = new List_Table();
@@ -202,7 +212,7 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 	// test
 	public function test_prepare_items() {
 		$_GET['status-filter'] = 'all';
-		$_GET['provider-filter'] = 'tec_tc_ticket';
+		$_GET['provider-filter'] = addslashes( TicketsCommerce\Module::class );
 		$this->list_table->prepare_items();
 
 		$this->assertNotEmpty( $this->list_table->items );
@@ -260,6 +270,7 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_sorting( $column ) {
 		$_GET['status-filter'] = 'all';
+		$_GET['provider-filter'] = addslashes( TicketsCommerce\Module::class );
 		$_GET['orderby'] = $column;
 		$_GET['order'] = 'asc';
 		$this->list_table->prepare_items();
@@ -288,6 +299,7 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_search( $term ) {
 		$_GET['status-filter'] = 'all';
+		$_GET['provider-filter'] = addslashes( TicketsCommerce\Module::class );
 		$_GET['s'] = $term;
 		$this->list_table->prepare_items();
 		$json_string = json_encode( $this->list_table->items, JSON_PRETTY_PRINT );
@@ -311,6 +323,7 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_filters( $filter ) {
 		$_GET['status-filter'] = $filter;
+		$_GET['provider-filter'] = addslashes( TicketsCommerce\Module::class );
 		$this->list_table->prepare_items();
 		$json_string = json_encode( $this->list_table->items, JSON_PRETTY_PRINT );
 		$json_string = str_replace( $this->ticket_ids, [ '1', '2', '3', '4' ], $json_string );
