@@ -53,7 +53,7 @@ class Stripe_Elements {
 
 		$payment_methods = ( new Merchant() )->get_payment_method_types();
 
-		if ( 1 > count( $payment_methods ) ) {
+		if ( 1 < count( $payment_methods ) ) {
 			return true;
 		} elseif ( 1 === count( $payment_methods ) && 'card' !== $payment_methods[0] ) {
 			return true;
