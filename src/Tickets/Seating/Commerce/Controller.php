@@ -67,7 +67,7 @@ class Controller extends Controller_Contract {
 	 * @since TBD
 	 *
 	 * @param array<string,array<string|int>> $types  The types of tickets.
-	 * @param int                            $post_id The post ID.
+	 * @param int                             $post_id The post ID.
 	 *
 	 * @return array<string,array<string|int>> The types of tickets.
 	 */
@@ -79,10 +79,10 @@ class Controller extends Controller_Contract {
 		}
 		
 		$types['tickets'] = [
-			'count'     => 0, // count of ticket types currently for sale
-			'stock'     => 0, // current stock of tickets available for sale
-			'global'    => 1, // numeric boolean if tickets share global stock
-			'unlimited' => 0, // numeric boolean if any ticket has unlimited stock
+			'count'     => 0, // count of ticket types currently for sale.
+			'stock'     => 0, // current stock of tickets available for sale.
+			'global'    => 1, // numeric boolean if tickets share global stock.
+			'unlimited' => 0, // numeric boolean if any ticket has unlimited stock.
 			'available' => 0,
 		];
 		
@@ -101,10 +101,10 @@ class Controller extends Controller_Contract {
 				continue;
 			}
 			
-			$types['tickets']['count']++;
+			++$types['tickets']['count'];
 			
-			$stock_level = max( 0, $ticket->available() );
-			$types['tickets']['stock'] += $stock_level;
+			$stock_level                    = max( 0, $ticket->available() );
+			$types['tickets']['stock']     += $stock_level;
 			$types['tickets']['available'] += $stock_level;
 		}
 		
@@ -128,11 +128,11 @@ class Controller extends Controller_Contract {
 			return $inventory;
 		}
 
-		$event_id      = $ticket->get_event_id();
-		$ticket_ids    = [ $ticket->ID ];
+		$event_id       = $ticket->get_event_id();
+		$ticket_ids     = [ $ticket->ID ];
 		$this_inventory = $inventory;
-		$capacity = $ticket->capacity();
-		// Protect from over-selling
+		$capacity       = $ticket->capacity();
+		// Protect from over-selling.
 		$total_sold = max( 0, $capacity - $this_inventory );
 
 		// Remove this function from the filter to avoid infinite loops.
@@ -152,20 +152,19 @@ class Controller extends Controller_Contract {
 		) {
 			$ticket        = Tickets::load_ticket_object( $ticket_id );
 			$sold_for_this = $capacity - $ticket->inventory();
-			$total_sold    += $sold_for_this;
+			$total_sold   += $sold_for_this;
 			$ticket_ids[]  = $ticket_id;
 		}
 
-		add_filter( 'tribe_tickets_ticket_inventory',
+		add_filter(
+			'tribe_tickets_ticket_inventory',
 			[ $this, 'get_seated_ticket_inventory' ],
 			10,
 			2
 		);
 		remove_filter( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', $return_false );
 
-		$synced_inventory = $capacity - $total_sold;
-
-		return $synced_inventory;
+		return $capacity - $total_sold;
 	}
 
 	/**
