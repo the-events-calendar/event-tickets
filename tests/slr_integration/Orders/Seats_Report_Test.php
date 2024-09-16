@@ -7,6 +7,7 @@ use Generator;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use PHPUnit\Framework\Assert;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Service\Service;
 use Tribe\Tests\Traits\Service_Locator_Mocks;
@@ -102,7 +103,10 @@ class Seats_Report_Test extends WPTEstCase {
 		);
 
 		arsort( $ids );
+		
 		$html = str_replace( [ ...$ids, $post_id ], '{{ID}}', $html );
+		
+		$html = str_replace( get_the_title( $post_id ), '{{POST_TITLE}}', $html );
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
