@@ -350,6 +350,8 @@ class Controller_Test extends Controller_Test_Case {
 			]
 		);
 		
+		update_post_meta( $vip, Meta::META_KEY_SEAT_TYPE, 'some-seat-type-uuid' );
+		
 		// Only`vip` ticket should be available.
 		$counts = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
 		
@@ -366,6 +368,8 @@ class Controller_Test extends Controller_Test_Case {
 				],
 			]
 		);
+		
+		update_post_meta( $general, Meta::META_KEY_SEAT_TYPE, 'other-seat-type-uuid' );
 		
 		// Both `vip` and `general` tickets should be available.
 		$counts = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
