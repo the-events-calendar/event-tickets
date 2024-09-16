@@ -35,14 +35,17 @@ class Controller_Test extends Controller_Test_Case {
 	public function ensure_tickets_commerce_active(): void {
 		// Ensure the Tickets Commerce module is active.
 		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
-		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
-			$modules[ Module::class ] = tribe( Module::class )->plugin_name;
+		add_filter(
+			'tribe_tickets_get_modules',
+			function ( $modules ) {
+				$modules[ Module::class ] = tribe( Module::class )->plugin_name;
 
-			return $modules;
-		} );
+				return $modules;
+			} 
+		);
 
 		// Reset Data_API object, so it sees Tribe Commerce.
-		tribe_singleton( 'tickets.data_api', new Data_API );
+		tribe_singleton( 'tickets.data_api', new Data_API() );
 	}
 
 	public function filter_timer_token_object_id_entries_data_provider(): \Generator {
@@ -52,7 +55,7 @@ class Controller_Test extends Controller_Test_Case {
 					[],
 					[],
 				];
-			}
+			},
 		];
 
 		yield 'not on checkout page' => [
@@ -65,7 +68,7 @@ class Controller_Test extends Controller_Test_Case {
 					[ $post_id => 'test-token' ],
 					[ $post_id => 'test-token' ],
 				];
-			}
+			},
 		];
 
 		yield 'on checkout page but no ASC post in cart' => [
@@ -85,7 +88,7 @@ class Controller_Test extends Controller_Test_Case {
 					[ $asc_post_id => 'test-token' ],
 					[],
 				];
-			}
+			},
 		];
 
 		yield 'on checkout page with ASC post in cart' => [
@@ -105,7 +108,7 @@ class Controller_Test extends Controller_Test_Case {
 					[ $asc_post_id => 'test-token' ],
 					[ $asc_post_id => 'test-token' ],
 				];
-			}
+			},
 		];
 	}
 
@@ -350,8 +353,8 @@ class Controller_Test extends Controller_Test_Case {
 		// Only`vip` ticket should be available.
 		$counts = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
 		
-		$this->assertEquals( 5, $counts[ 'tickets' ]['stock'] );
-		$this->assertEquals( 5, $counts[ 'tickets' ]['available'] );
+		$this->assertEquals( 5, $counts['tickets']['stock'] );
+		$this->assertEquals( 5, $counts['tickets']['available'] );
 		
 		$general = $this->create_tc_ticket(
 			$event_id,
@@ -367,8 +370,8 @@ class Controller_Test extends Controller_Test_Case {
 		// Both `vip` and `general` tickets should be available.
 		$counts = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
 		
-		$this->assertEquals( 20, $counts[ 'tickets' ]['stock'] );
-		$this->assertEquals( 20, $counts[ 'tickets' ]['available'] );
+		$this->assertEquals( 20, $counts['tickets']['stock'] );
+		$this->assertEquals( 20, $counts['tickets']['available'] );
 		
 		$order = $this->create_order(
 			[
@@ -379,8 +382,8 @@ class Controller_Test extends Controller_Test_Case {
 		// Stock should be reduced for `vip` ticket.
 		$counts = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
 		
-		$this->assertEquals( 15, $counts[ 'tickets' ]['stock'] );
-		$this->assertEquals( 15, $counts[ 'tickets' ]['available'] );
+		$this->assertEquals( 15, $counts['tickets']['stock'] );
+		$this->assertEquals( 15, $counts['tickets']['available'] );
 		
 		$order_2 = $this->create_order(
 			[
@@ -391,7 +394,7 @@ class Controller_Test extends Controller_Test_Case {
 		// Stock should be reduced for `general` ticket and no tickets should be available.
 		$counts = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
 		
-		$this->assertEquals( 0, $counts[ 'tickets' ]['stock'] );
-		$this->assertEquals( 0, $counts[ 'tickets' ]['available'] );
+		$this->assertEquals( 0, $counts['tickets']['stock'] );
+		$this->assertEquals( 0, $counts['tickets']['available'] );
 	}
 }
