@@ -72,9 +72,7 @@ class Controller extends Controller_Contract {
 	 * @return array<string,array<string|int>> The types of tickets.
 	 */
 	public function set_event_stock_counts( $types, $post_id ): array {
-		$has_seating = get_post_meta( $post_id, Meta::META_KEY_ENABLED, true );
-		
-		if ( ! $has_seating ) {
+		if ( ! tec_tickets_seating_enabled( $post_id ) ) {
 			return $types;
 		}
 		
