@@ -401,4 +401,163 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertEquals( 0, $counts['tickets']['stock'] );
 		$this->assertEquals( 0, $counts['tickets']['available'] );
 	}
+	
+	public function test_stock_count_for_multiple_same_seated_types() {
+		$controller = $this->make_controller();
+		$controller->register();
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 12:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		
+		// Enable the global stock on the Event.
+		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
+		
+		// Set the Event global stock level to 20.
+		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 20 );
+		
+		update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 1 );
+		
+		// Add a ticket with 5 capacity.
+		$vip = $this->create_tc_ticket(
+			$event_id,
+			30,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 10,
+				],
+			]
+		);
+		
+		update_post_meta( $vip, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
+		
+		$general = $this->create_tc_ticket(
+			$event_id,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 10,
+				],
+			]
+		);
+		
+		update_post_meta( $general, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
+		
+		$count = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+
+		$this->assertEquals( 10, $count['tickets']['stock'] );
+		$this->assertEquals( 10, $count['tickets']['available'] );
+		
+		$order = $this->create_order(
+			[
+				$vip => 5,
+			]
+		);
+		
+		$count = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+		
+		$this->assertEquals( 5, $count['tickets']['stock'] );
+		$this->assertEquals( 5, $count['tickets']['available'] );
+	}
+	
+	public function test_stock_count_for_multiple_seat_typed_tickets() {
+		$controller = $this->make_controller();
+		$controller->register();
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 12:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		
+		// Enable the global stock on the Event.
+		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
+		
+		// Set the Event global stock level to 20.
+		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 50 );
+		
+		update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 1 );
+		
+		// Add a ticket with 5 capacity.
+		$vip = $this->create_tc_ticket(
+			$event_id,
+			30,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 20,
+				],
+			]
+		);
+		
+		update_post_meta( $vip, Meta::META_KEY_SEAT_TYPE, 'seat-type-vip' );
+		
+		$general = $this->create_tc_ticket(
+			$event_id,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 30,
+				],
+			]
+		);
+		
+		update_post_meta( $general, Meta::META_KEY_SEAT_TYPE, 'seat-type-general' );
+		
+		$child = $this->create_tc_ticket(
+			$event_id,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 30,
+				],
+			]
+		);
+		
+		update_post_meta( $child, Meta::META_KEY_SEAT_TYPE, 'seat-type-general' );
+		
+		$count = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+		
+		// Should have full stock.
+		$this->assertEquals( 50, $count['tickets']['stock'] );
+		$this->assertEquals( 50, $count['tickets']['available'] );
+		
+		$order = $this->create_order(
+			[
+				$vip => 5,
+			]
+		);
+		
+		$count = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+		
+		// Should have full stock.
+		$this->assertEquals( 45, $count['tickets']['stock'] );
+		$this->assertEquals( 45, $count['tickets']['available'] );
+		
+		$order_2 = $this->create_order(
+			[
+				$vip     => 15,
+				$general => 10,
+				$child   => 10,
+			]
+		);
+		
+		$count = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+		
+		// Should be 45-25.
+		$this->assertEquals( 45 - 35, $count['tickets']['stock'] );
+		$this->assertEquals( 45 - 35, $count['tickets']['available'] );
+	}
 }
