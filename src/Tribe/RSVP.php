@@ -264,6 +264,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @since 4.12.3
 	 */
 	public function ajax_handle_rsvp() {
+		check_ajax_referer( 'tribe_tickets_rsvp_handle', 'nonce', true );
 		$response = [
 			'html' => '',
 		];
@@ -2803,9 +2804,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$first_attendee = $_POST['attendee'];
 		}
 
-		$attendee_email        = empty( $first_attendee['email'] ) ? null : sanitize_email( $first_attendee['email'] );
+		$attendee_email        = empty( $first_attendee['email'] ) ? null : htmlentities( sanitize_email( html_entity_decode( $first_attendee['email'] ) ) );
 		$attendee_email        = is_email( $attendee_email ) ? $attendee_email : null;
-		$attendee_full_name    = empty( $first_attendee['full_name'] ) ? null : sanitize_text_field( $first_attendee['full_name'] );
+		$attendee_full_name    = empty( $first_attendee['full_name'] ) ? null : htmlentities( sanitize_text_field( html_entity_decode( $first_attendee['full_name'] ) ) );
 		$attendee_optout       = empty( $first_attendee['optout'] ) ? 0 : $first_attendee['optout'];
 		$attendee_order_status = empty( $first_attendee['order_status'] ) ? 'yes' : $first_attendee['order_status'];
 
