@@ -21,6 +21,7 @@ use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use Tribe__Date_Utils as Dates;
 use Tribe__Tickets__Global_Stock as Global_Stock;
+use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 use Tribe__Tickets__Tickets as Tickets;
 
 class Frontend_Test extends Controller_Test_Case {
@@ -324,6 +325,88 @@ class Frontend_Test extends Controller_Test_Case {
 				return [ $post_id, $ticket_1, $ticket_2, $ticket_3, $ticket_4, $ticket_5 ];
 			}
 		];
+		
+		yield 'ticket with past date' => [
+			function () {
+				$post_id = static::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+				/**
+				 * @var Tickets_Handler $tickets_handler
+				 */
+				$tickets_handler   = tribe( 'tickets.handler' );
+				$capacity_meta_key = $tickets_handler->key_capacity;
+				update_post_meta( $post_id, $capacity_meta_key, 100 );
+				$ticket = $this->create_tc_ticket( $post_id, 10, [
+					'ticket_start_date' => '2024-01-01',
+					'ticket_start_time' => '08:00:00',
+					'ticket_end_date'   => '2024-03-01',
+					'ticket_end_time'   => '20:00:00',
+				]);
+				
+				return [ $post_id, $ticket ];
+			}
+		];
+		
+		yield 'ticket with future date' => [
+			function () {
+				$post_id = static::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+				/**
+				 * @var Tickets_Handler $tickets_handler
+				 */
+				$tickets_handler   = tribe( 'tickets.handler' );
+				$capacity_meta_key = $tickets_handler->key_capacity;
+				update_post_meta( $post_id, $capacity_meta_key, 100 );
+				$ticket = $this->create_tc_ticket( $post_id, 20, [
+					'ticket_start_date' => '2044-01-01',
+					'ticket_start_time' => '08:00:00',
+					'ticket_end_date'   => '2044-03-01',
+					'ticket_end_time'   => '20:00:00',
+				]);
+				
+				return [ $post_id, $ticket ];
+			}
+		];
+		
+		yield 'ticket with future and past' => [
+			function () {
+				$post_id = static::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+				/**
+				 * @var Tickets_Handler $tickets_handler
+				 */
+				$tickets_handler   = tribe( 'tickets.handler' );
+				$capacity_meta_key = $tickets_handler->key_capacity;
+				update_post_meta( $post_id, $capacity_meta_key, 100 );
+				$ticket = $this->create_tc_ticket( $post_id, 20, [
+					'ticket_start_date' => '2044-01-01',
+					'ticket_start_time' => '08:00:00',
+					'ticket_end_date'   => '2044-03-01',
+					'ticket_end_time'   => '20:00:00',
+				]);
+				
+				$ticket_2 = $this->create_tc_ticket( $post_id, 10, [
+					'ticket_start_date' => '2024-01-01',
+					'ticket_start_time' => '08:00:00',
+					'ticket_end_date'   => '2024-03-01',
+					'ticket_end_time'   => '20:00:00',
+				]);
+				
+				return [ $post_id, $ticket, $ticket_2 ];
+			}
+		];
 	}
 
 	/**
@@ -399,6 +482,56 @@ class Frontend_Test extends Controller_Test_Case {
 		$this->assertMatchesJsonSnapshot( $json );
 	}
 
+	public function test_get_ticket_block_data_with_tickets_not_in_range():void{
+		$this->set_fn_return( 'wp_create_nonce', '1234567890' );
+		$post_id = self::factory()->post->create();
+		// Create a first ticket that ended sales beforee the current time.
+		$ticket_1 = $this->create_tc_ticket( $post_id, 10, [
+			'ticket_start_date' => '2024-01-01',
+			'ticket_start_time' => '08:00:00',
+			'ticket_end_date'   => '2024-03-01',
+			'ticket_end_time'   => '20:00:00',
+		] );
+		update_post_meta( $ticket_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
+		// Create a second ticket that opens sales after the current time.
+		$ticket_2 = $this->create_tc_ticket( $post_id, 20, [
+			'ticket_start_date' => '2024-04-01',
+			'ticket_start_time' => '08:00:00',
+			'ticket_end_date'   => '2024-04-30',
+			'ticket_end_time'   => '20:00:00',
+		] );
+		update_post_meta( $ticket_2, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-2' );
+		// Create a third ticket that is in range.
+		$ticket_3 = $this->create_tc_ticket( $post_id, 30, [
+			'ticket_start_date' => '2024-03-01',
+			'ticket_start_time' => '08:00:00',
+			'ticket_end_date'   => '2024-03-30',
+			'ticket_end_time'   => '20:00:00',
+		] );
+		update_post_meta( $ticket_3, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
+		// Freeze time to 2024-03-23 12:34:00.
+		$this->freeze_time( Dates::immutable( '2024-03-23 12:34:00' ) );
+
+		$controller = $this->make_controller();
+		$controller->register();
+		$data = $controller->get_ticket_block_data( $post_id );
+
+		$json = wp_json_encode( $data, JSON_SNAPSHOT_OPTIONS );
+
+		// Replace the ticket IDs with placeholders.
+		$json = str_replace(
+			[ $post_id, $ticket_1, $ticket_2, $ticket_3 ],
+			[
+				'{{post_id}}',
+				'{{ticket_1}}',
+				'{{ticket_2}}',
+				'{{ticket_3}}',
+			],
+			$json
+		);
+		$this->assertMatchesJsonSnapshot( $json );
+	}
+	
 	public function test_should_add_seat_selected_labels_per_ticket_attribute() {
 		$event_id = tribe_events()->set_args(
 			[
@@ -449,55 +582,5 @@ class Frontend_Test extends Controller_Test_Case {
 		$attributes = apply_filters( 'tribe_tickets_block_ticket_html_attributes', [], $ticket, $event_id );
 
 		$this->assertEquals( esc_attr( implode( ',', [ 'seat-label-0-1' , 'seat-label-0-2' ] ) ), $attributes['data-seat-labels'] );
-	}
-
-	public function test_get_ticket_block_data_with_tickets_not_in_range():void{
-		$this->set_fn_return( 'wp_create_nonce', '1234567890' );
-		$post_id = self::factory()->post->create();
-		// Create a first ticket that ended sales beforee the current time.
-		$ticket_1 = $this->create_tc_ticket( $post_id, 10, [
-			'ticket_start_date' => '2024-01-01',
-			'ticket_start_time' => '08:00:00',
-			'ticket_end_date'   => '2024-03-01',
-			'ticket_end_time'   => '20:00:00',
-		] );
-		update_post_meta( $ticket_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
-		// Create a second ticket that opens sales after the current time.
-		$ticket_2 = $this->create_tc_ticket( $post_id, 20, [
-			'ticket_start_date' => '2024-04-01',
-			'ticket_start_time' => '08:00:00',
-			'ticket_end_date'   => '2024-04-30',
-			'ticket_end_time'   => '20:00:00',
-		] );
-		update_post_meta( $ticket_2, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-2' );
-		// Create a third ticket that is in range.
-		$ticket_3 = $this->create_tc_ticket( $post_id, 30, [
-			'ticket_start_date' => '2024-03-01',
-			'ticket_start_time' => '08:00:00',
-			'ticket_end_date'   => '2024-03-30',
-			'ticket_end_time'   => '20:00:00',
-		] );
-		update_post_meta( $ticket_3, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
-		// Freeze time to 2024-03-23 12:34:00.
-		$this->freeze_time( Dates::immutable( '2024-03-23 12:34:00' ) );
-
-		$controller = $this->make_controller();
-		$controller->register();
-		$data = $controller->get_ticket_block_data( $post_id );
-
-		$json = wp_json_encode( $data, JSON_SNAPSHOT_OPTIONS );
-
-		// Replace the ticket IDs with placeholders.
-		$json = str_replace(
-			[ $post_id, $ticket_1, $ticket_2, $ticket_3 ],
-			[
-				'{{post_id}}',
-				'{{ticket_1}}',
-				'{{ticket_2}}',
-				'{{ticket_3}}',
-			],
-			$json
-		);
-		$this->assertMatchesJsonSnapshot( $json );
 	}
 }
