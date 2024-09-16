@@ -90,15 +90,19 @@ tribe.tickets.editPurchaser = {};
 		if(!email) {
 			$(obj.selectors.emailErrorNode).text("Email is required");
 			$(obj.selectors.emailErrorNode).show();
+			$(obj.selectors.emailField).addClass('tec-tickets-commerce-error-field');
 			return false;
 		}
 		var emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 		if(!emailRegex.test(email)) {
 			$(obj.selectors.emailErrorNode).text("Email is invalid");
 			$(obj.selectors.emailErrorNode).show();
+			$(obj.selectors.emailField).addClass('tec-tickets-commerce-error-field');
+
 			return false;
 		}
 
+		$(obj.selectors.emailField).removeClass('tec-tickets-commerce-error-field');
 		$(obj.selectors.emailErrorNode).hide();
 		return true;
 	}
@@ -106,10 +110,14 @@ tribe.tickets.editPurchaser = {};
 		var name = $(obj.selectors.nameField).val().trim();
 		if( ! name ) {
 			$(obj.selectors.nameErrorNode).text("Name is required");
+			$(obj.selectors.nameField).addClass('tec-tickets-commerce-error-field');
 			$(obj.selectors.nameErrorNode).show();
+
 			return false;
 		}
 		$(obj.selectors.nameErrorNode).hide();
+		$(obj.selectors.nameField).removeClass('tec-tickets-commerce-error-field');
+
 		return true;
 	}
 
