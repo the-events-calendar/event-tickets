@@ -7,7 +7,6 @@ use Generator;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use PHPUnit\Framework\Assert;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
-use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Service\Service;
 use Tribe\Tests\Traits\Service_Locator_Mocks;
