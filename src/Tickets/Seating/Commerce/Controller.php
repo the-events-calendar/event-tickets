@@ -87,6 +87,9 @@ class Controller extends Controller_Contract {
 		$tickets = tribe_tickets()
 			->where( 'event', $post_id )
 			->get_ids( true );
+	
+		$capacity_by_type   = [];
+		$total_sold_by_type = [];
 		
 		foreach ( $tickets as $ticket_id ) {
 			$ticket = Tickets::load_ticket_object( $ticket_id );
@@ -99,9 +102,28 @@ class Controller extends Controller_Contract {
 				continue;
 			}
 			
-			++$types['tickets']['count'];
+			$seat_type = get_post_meta( $ticket_id, META::META_KEY_SEAT_TYPE, true );
 			
-			$stock_level                    = max( 0, $ticket->available() );
+			if ( empty( $seat_type ) ) {
+				continue;
+			}
+			
+			$capacity   = $ticket->capacity();
+			$stock      = $ticket->stock();
+			$total_sold = max( 0, $capacity - $stock );
+			if ( ! isset( $capacity_by_type[ $seat_type ] ) ) {
+				$capacity_by_type[ $seat_type ] = $capacity;
+			}
+			
+			if ( ! isset( $total_sold_by_type[ $seat_type ] ) ) {
+				$total_sold_by_type[ $seat_type ] = $total_sold;
+			}
+			
+			++$types['tickets']['count'];
+		}
+		
+		foreach ( $capacity_by_type as $seat_type => $capacity ) {
+			$stock_level                    = $capacity - $total_sold_by_type[ $seat_type ];
 			$types['tickets']['stock']     += $stock_level;
 			$types['tickets']['available'] += $stock_level;
 		}
