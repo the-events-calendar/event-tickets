@@ -30,27 +30,27 @@ class Seats_Report_Test extends WPTEstCase {
 				$ticket  = $this->create_tc_ticket( $post_id, 10 );
 
 				return [ $post_id ];
-			}
+			},
 		];
 
 		yield '1_ticket_1_attendee' => [
 			function (): array {
-				$post_id = self::factory()->post->create();
-				$ticket  = $this->create_tc_ticket( $post_id, 10 );
-				$order   = $this->create_order( [ $ticket => 1 ] );
+				$post_id      = self::factory()->post->create();
+				$ticket       = $this->create_tc_ticket( $post_id, 10 );
+				$order        = $this->create_order( [ $ticket => 1 ] );
 				[ $attendee ] = tribe_attendees()->where( 'event_id', $post_id )->get_ids();
 
 				return [ $post_id, $ticket, $attendee ];
-			}
+			},
 		];
 
 		yield '2_tickets_3_attendees' => [
 			function (): array {
-				$post_id        = self::factory()->post->create();
-				$ticket_1       = $this->create_tc_ticket( $post_id, 10 );
-				$ticket_2       = $this->create_tc_ticket( $post_id, 20 );
-				$ticket_1_order = $this->create_order( [ $ticket_1 => 1 ] );
-				$ticket_2_order = $this->create_order( [ $ticket_2 => 2 ] );
+				$post_id                                  = self::factory()->post->create();
+				$ticket_1                                 = $this->create_tc_ticket( $post_id, 10 );
+				$ticket_2                                 = $this->create_tc_ticket( $post_id, 20 );
+				$ticket_1_order                           = $this->create_order( [ $ticket_1 => 1 ] );
+				$ticket_2_order                           = $this->create_order( [ $ticket_2 => 2 ] );
 				[ $attendee_1, $attendee_2, $attendee_3 ] = tribe_attendees()->where( 'event_id', $post_id )->get_ids();
 
 				return [
@@ -61,9 +61,9 @@ class Seats_Report_Test extends WPTEstCase {
 					$ticket_2_order,
 					$attendee_1,
 					$attendee_2,
-					$attendee_3
+					$attendee_3,
 				];
-			}
+			},
 		];
 	}
 
@@ -71,8 +71,8 @@ class Seats_Report_Test extends WPTEstCase {
 	 * @dataProvider render_page_data_provider
 	 */
 	public function test_render_page( Closure $fixture ): void {
-		$ids = $fixture();
-		$post_id = array_shift($ids);
+		$ids     = $fixture();
+		$post_id = array_shift( $ids );
 		update_post_meta( $post_id, Meta::META_KEY_UUID, 'some-post-uuid' );
 		update_post_meta( $post_id, Meta::META_KEY_ENABLED, true );
 		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'layout-uuid' );
@@ -80,7 +80,7 @@ class Seats_Report_Test extends WPTEstCase {
 		$this->mock_singleton_service(
 			Service::class,
 			[
-				'get_ephemeral_token' => function($expiration,$scope){
+				'get_ephemeral_token' => function ( $expiration, $scope ) {
 					Assert::assertEquals( 6 * HOUR_IN_SECONDS, $expiration );
 					Assert::assertEquals( 'admin', $scope );
 					return 'some-ephemeral-token';
@@ -94,9 +94,12 @@ class Seats_Report_Test extends WPTEstCase {
 		$seats_report->render_page();
 		$html = ob_get_clean();
 
-		$ids = array_map( function( $id ) {
-			return is_object( $id ) ? $id->ID : (int) $id;
-		}, $ids );
+		$ids = array_map(
+			function ( $id ) {
+				return is_object( $id ) ? $id->ID : (int) $id;
+			},
+			$ids 
+		);
 
 		arsort( $ids );
 		$html = str_replace( [ ...$ids, $post_id ], '{{ID}}', $html );
