@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
+use TEC\Tickets_Plus\Commerce\Gateways\Stripe\Settings as ETP_Settings;
 
 /**
  * Class Payment_Element
@@ -88,8 +89,7 @@ class Stripe_Elements {
 			return false;
 		}
 
-		$settings = tribe( \TEC\Tickets_Plus\Commerce\Gateways\Stripe\Settings::class );
-		$wallets  = tribe_get_option( $settings::$option_checkout_element_wallets, [] );
+		$wallets = tribe_get_option( ETP_Settings::$option_checkout_element_wallets, [] );
 
 		return is_array( $wallets ) && ! empty( $wallets );
 	}
