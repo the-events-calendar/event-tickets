@@ -15,14 +15,22 @@ tribe.dialogs.events = tribe.dialogs.events || {};
  * @type   {Object}
  */
 tribe.tickets.editPurchaser = {};
+TicketsEditPurchaserOptions = TicketsEditPurchaserOptions || {};
 
 /**
  * Closure to initialize the purchaser edit modal.
- * 
+ *
  * @since TBD
  */
 ( ( $, obj ) => {
-	'use strict';
+	/**
+	 * Flags when the form events are bound.
+	 *
+	 * @since TBD
+	 *
+	 * @type {boolean}
+	 */
+	obj.isBound = false;
 
 	/**
 	 * HTML selectors.
@@ -207,6 +215,11 @@ tribe.tickets.editPurchaser = {};
 	 * @since TBD
 	 */
 	obj.bindForm = () => {
+		if ( obj.isBound ) {
+			return;
+		}
+		obj.isBound = true;
+
 		$( obj.selectors.form ).on( 'submit', ( e ) => {
 			e.preventDefault();
 			obj.updatePurchaser( obj.getFormFields() );
@@ -260,30 +273,40 @@ tribe.tickets.editPurchaser = {};
 	$( tribe.dialogs.events ).on(
 		'tecTicketsCommerceOpenPurchaserModal',
 		() => {
+			const values = obj.getFormFields();
 			obj.bindForm();
 			obj.clearErrorMessage();
-			var values = obj.getFormFields();
 			obj.showLoader();
 
-			$.ajax({
-				url: TicketsEditPurchaserOptions.ajaxurl,
-				data: {
-					action: 'tec_commerce_purchaser_edit',
-					_wpnonce: values._wpnonce,
-					ID: values.ID,
+			$.ajax(
+				{
+					url: TicketsEditPurchaserOptions.ajaxurl,
+					data: {
+						action: 'tec_commerce_purchaser_edit',
+						_wpnonce: values._wpnonce,
+						ID: values.ID,
+					}
 				}
-			}).success(
-				(response) => {
-					$( obj.selectors.nameField ).val( response.data.first_name + ' ' + response.data.last_name );
-					$( obj.selectors.emailField ).val( response.data.email );
-				}
+			).success(
+				( response ) => {
+					if( response.success ) {
+						$( obj.selectors.nameField ).val(
+							response.data.first_name + ' ' + response.data.last_name
+						);
+						$( obj.selectors.emailField ).val( response.data.email );
+					} else {
+						obj.setErrorMessage( response.data );
+					}
+				},
 			).always(
 				() => {
 					obj.hideLoader();
-				}
-			).error( () => {
-				obj.setErrorMessage( 'Error communicating with the server.' );
-			});
+				},
+			).error(
+				() => {
+					obj.setErrorMessage( 'Error communicating with the server.' );
+				},
+			);
 		},
 	);
 } )( jQuery, tribe.tickets.editPurchaser );

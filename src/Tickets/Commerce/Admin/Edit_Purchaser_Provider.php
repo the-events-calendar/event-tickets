@@ -12,7 +12,6 @@ namespace TEC\Tickets\Commerce\Admin;
 use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\Flag_Actions\Send_Email_Purchase_Receipt;
 use Tribe__Template;
-use Tribe__Tickets__Main;
 
 /**
  * Class Edit_Purchaser_Provider
@@ -31,6 +30,11 @@ class Edit_Purchaser_Provider extends Service_Provider {
 		}
 	}
 
+	/**
+	 * Adds filters for edit purchaser.
+	 *
+	 * @since TBD
+	 */
 	public function register_hooks() {
 		add_filter(
 			'tribe_template_pre_html:tickets/admin-views/commerce/orders/single/order-details-metabox',
@@ -41,15 +45,63 @@ class Edit_Purchaser_Provider extends Service_Provider {
 		add_action( 'wp_ajax_tec_commerce_purchaser_edit', [ $this, 'ajax_handle_request' ] );
 	}
 
-	public function ajax_handle_request() {
-		check_ajax_referer('tec_commerce_purchaser_edit', '_nonce' );
+	/**
+	 * Will apply field updates to the order.
+	 *
+	 * @since TBD
+	 *
+	 * @param numeric $post_id The order post ID.
+	 * @param array   $fields The fields to apply to the purchaser.
+	 *
+	 * @return bool
+	 */
+	public function update_purchaser( $post_id, array $fields ): bool {
+		$update = [];
+		if ( ! empty( $fields['purchaser_email'] ) ) {
+			$update['purchaser_email'] = $fields['purchaser_email'];
+		}
+		if ( ! empty( $fields['purchaser_first_name'] ) ) {
+			$update['purchaser_first_name'] = $fields['purchaser_first_name'];
+		}
+		if ( ! empty( $fields['purchaser_last_name'] ) ) {
+			$update['purchaser_last_name'] = $fields['purchaser_last_name'];
+		}
 
-		switch( $_SERVER['REQUEST_METHOD'] ) {
+		if ( empty( $update ) ) {
+
+			return false;
+		}
+
+		try {
+			return (bool) tec_tc_orders()->by_args(
+				[
+					'status' => 'any',
+					'id'     => $post_id,
+				]
+			)->set_args( $update )->save();
+		} catch ( \Exception $e ) {
+
+			return false;
+		}
+	}
+
+	/**
+	 * Handles the ajax callback for `wp_ajax_tec_commerce_purchaser_edit`.
+	 *
+	 * @since TBD
+	 */
+	public function ajax_handle_request() {
+		// Validate nonce.
+		check_ajax_referer( 'tec_commerce_purchaser_edit', '_nonce' );
+
+		$method = sanitize_text_field( $_SERVER['REQUEST_METHOD'] ?? '' );
+
+		switch ( $method ) {
 			case 'POST':
 				// Deal with "full name" field into pieces.
-				list( $first_name, $last_name ) = explode( ' ', sanitize_text_field( $_POST['name'] ) );
-				$email   					    = sanitize_email( $_POST['email'] );
-				$post_id 						= (int) $_POST['ID'];
+				list( $first_name, $last_name ) = explode( ' ', sanitize_text_field( $_POST['name'] ?? '' ) );
+				$email                          = sanitize_email( $_POST['email'] ?? '' );
+				$post_id                        = (int) $_POST['ID'] ?? '';
 				$send_email                     = ! empty( $_POST['send_email'] );
 
 				// Clean up vars.
@@ -68,20 +120,18 @@ class Edit_Purchaser_Provider extends Service_Provider {
 				}
 
 				// Local database update.
-				$updated = tec_tc_orders()->by_args(
-						[
-							'status' => 'any',
-							'id'     => $post_id,
-						]
-					)->set_args( [
-						'purchaser_email'      => $email,
+				$updated = $this->update_purchaser(
+					$post_id,
+					[
 						'purchaser_first_name' => $first_name,
 						'purchaser_last_name'  => $last_name,
-					] )->save();
+						'purchaser_email'      => $email,
+					]
+				);
 
 				if ( $updated && $send_email ) {
 					$order = tec_tc_get_order( $post_id );
-					if( ! $order ) {
+					if ( ! $order ) {
 						wp_send_json_error(
 							_x(
 								'There was an error retrieving details for the email. Please try again later.',
@@ -93,10 +143,10 @@ class Edit_Purchaser_Provider extends Service_Provider {
 					}
 
 					$sent = tribe( Send_Email_Purchase_Receipt::class )->send_for_order( $order );
-					if( ! $sent ) {
+					if ( ! $sent ) {
 						wp_send_json_error(
 							_x(
-								'There was an error sending the email receipt. Please ensure Wordpress is configured for email delivery.',
+								'There was an error sending the email receipt. Please ensure WordPress is configured for email delivery.',
 								'When the purchaser email receipt fails for an unknown reason.',
 								'event-tickets'
 							)
@@ -104,7 +154,8 @@ class Edit_Purchaser_Provider extends Service_Provider {
 						die();
 					}
 				}
-				if( $updated ) {
+
+				if ( $updated ) {
 					wp_send_json_success(
 						[
 							'name'  => $first_name . ' ' . $last_name,
@@ -122,8 +173,20 @@ class Edit_Purchaser_Provider extends Service_Provider {
 				}
 				break;
 			case 'GET':
-				$post  = get_post( $_GET['ID'] );
+				// Fetch the order.
+				$post  = get_post( sanitize_text_field( $_GET['ID'] ?? null ) );
 				$order = tec_tc_get_order( $post );
+
+				if ( ! $order ) {
+					wp_send_json_error(
+						_x(
+							'There was an unknown error while retrieving the purchaser. Please try again later.',
+							'When the purchaser GET request fails for an unknown reason.',
+							'event-tickets'
+						)
+					);
+					die();
+				}
 
 				wp_send_json_success( $order->purchaser );
 				break;
@@ -131,47 +194,50 @@ class Edit_Purchaser_Provider extends Service_Provider {
 
 		die();
 	}
-	public function render_modal($html, $file, $name, $template, $context) {
+
+	/**
+	 * Callback that renders the modal with context applied.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed           $html The html param from the filter.
+	 * @param string          $file The file path.
+	 * @param string          $name The name of the file.
+	 * @param Tribe__Template $template The template object.
+	 * @param mixed           $context The context data.
+	 *
+	 * @return mixed The passed html.
+	 */
+	public function render_modal( $html, $file, $name, Tribe__Template $template, $context ) {
 		$dialog_view = tribe( 'dialog.view' );
+		$title       = esc_html_x( 'Edit purchaser', 'Edit purchaser modal title.', 'event-tickets' );
 
 		ob_start();
 		$dialog_view->render_modal(
-			$this->template('src/admin-views/commerce/orders/single/edit-purchaser-modal', $context),
+			$template->template(
+				'src/admin-views/commerce/orders/single/edit-purchaser-modal',
+				$context,
+				false
+			),
 			[
-				'id' => 'edit-purchaser-modal',
-				'append_target' => '#edit-purchaser-modal-container',
-				'button_display'          => false,
-				'title' => esc_html_x( 'Edit purchaser', 'Edit purchaser modal title.', 'event-tickets'),
-				'close_event'             => 'tecTicketsCommerceClosePurchaserModal',
-				'show_event'              => 'tecTicketsCommerceOpenPurchaserModal',
+				'id'             => 'edit-purchaser-modal',
+				'append_target'  => '#edit-purchaser-modal-container',
+				'button_display' => false,
+				'title'          => $title,
+				'close_event'    => 'tecTicketsCommerceClosePurchaserModal',
+				'show_event'     => 'tecTicketsCommerceOpenPurchaserModal',
 			],
 			'edit-purchaser-modal'
 		);
-		$modal_content = ob_get_clean();
 
-		$modal  = '<div class="tribe-common"> <div id="edit-purchaser-modal-container"></div></div><div class="">';
-		$modal .= $modal_content;
-		$modal .= '</div>';
+		$modal_content = ob_get_clean();
+		$modal         = '<div class="tribe-common"><div id="edit-purchaser-modal-container"></div></div><div>';
+		$modal        .= $modal_content;
+		$modal        .= '</div>';
+
+		// phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped, WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo $modal;
 
 		return $html;
 	}
-
-
-	public function template( $name, $context = [] ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.echoFound
-		$template = tribe( 'tickets.admin.views' );
-		return $template->template( $name, $context, false );
-
-		if ( empty( $this->template ) ) {
-			$this->template = new Tribe__Template();
-			$this->template->set_template_origin( Tribe__Tickets__Main::instance() );
-		//	$this->template->set_template_folder( 'src/admin-views/commerce/orders/single' );
-			$this->template->set_template_context_extract( true );
-			$this->template->set_template_folder_lookup( true );
-		}
-
-		return $this->template->template( $name, $context, false );
-	}
-
-
 }

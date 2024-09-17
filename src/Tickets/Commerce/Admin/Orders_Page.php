@@ -102,14 +102,12 @@ class Orders_Page {
 			[ 'admin_enqueue_scripts' ],
 			[
 				'conditionals' => [ $this, 'is_admin_single_page' ],
-
-					'localize'     => [
-						'name' => 'TicketsEditPurchaserOptions',
-						'data' => [
-							'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
-						],
+				'localize'     => [
+					'name' => 'TicketsEditPurchaserOptions',
+					'data' => [
+						'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
 					],
-
+				],
 			]
 		);
 	}
