@@ -1127,6 +1127,10 @@ class Attendees extends Controller {
 	 * @return int|array<int> The updated post ID or IDs.
 	 */
 	public function include_series_to_fetch_attendees( $post_id, $repository = null ): array {
+		if ( is_array( $post_id ) && 'all' === $post_id[0] ) {
+			return $post_id;
+		}
+
 		if ( ! $repository instanceof Tribe__Repository__Interface ) {
 			return $post_id;
 		}

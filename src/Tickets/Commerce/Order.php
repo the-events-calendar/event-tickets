@@ -570,7 +570,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Returns the events associated with the order.
 	 *
-	 * @since TBD
+	 * @since 5.13.3
 	 *
 	 * @param WP_Post|int $order The order object or ID.
 	 *
@@ -600,7 +600,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Returns the total value of the order.
 	 *
-	 * @since TBD
+	 * @since 5.13.3
 	 *
 	 * @param WP_Post|int $order    The order object or ID.
 	 * @param bool        $original Whether to get the original value or the current value.
@@ -650,7 +650,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Returns the total value of an order item.
 	 *
-	 * @since TBD
+	 * @since 5.13.3
 	 *
 	 * @param array $item     The order object or ID.
 	 * @param bool  $original Whether to get the original value or the current value.
