@@ -42,7 +42,7 @@ $post_date .= Tribe__Date_Utils::reformat( $ts, 'g:i A' );
 		</div>
 		<div class="tec-tickets-commerce-single-order--details--item--value">
 			<?php
-			$name = $order->purchaser['first_name'].' '.$order->purchaser['last_name'];
+			$name = $order->purchaser['first_name'] . ' ' . $order->purchaser['last_name'];
 			printf(
 				'<span class="purchaser-name">%1$s</span>%2$s<span class="purchaser-email"><a href="mailto:%3$s">%4$s</a></span>',
 				esc_html( $name ),
