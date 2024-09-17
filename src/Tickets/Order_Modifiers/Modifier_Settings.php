@@ -282,7 +282,7 @@ class Modifier_Settings {
 
 		// If a new modifier was created, redirect to the edit page of the new modifier.
 		if ( empty( $context['modifier_id'] ) || 0 === (int) $context['modifier_id'] ) {
-			$this->redirect_to_edit_page( $result->id, $context );
+			$this->redirect_to_table_page( $result->id, $context );
 			return;
 		}
 
@@ -291,7 +291,7 @@ class Modifier_Settings {
 	}
 
 	/**
-	 * Redirects to the edit page for the newly created modifier.
+	 * Redirects to the table page after creating the modifier.
 	 *
 	 * @since TBD
 	 *
@@ -300,20 +300,15 @@ class Modifier_Settings {
 	 *
 	 * @return void
 	 */
-	protected function redirect_to_edit_page( int $modifier_id, array $context ): void {
+	protected function redirect_to_table_page( int $modifier_id, array $context ): void {
 		// Manually build the URL.
 		$new_url = add_query_arg(
 			[
-				'page'        => self::$slug,
-				'modifier'    => $context['modifier'],
-				'edit'        => 1,
-				'modifier_id' => $modifier_id,
+				'page'     => self::$slug,
+				'modifier' => $context['modifier'],
 			],
 			admin_url( 'admin.php' )
 		);
-
-		// Add a nonce for the newly created modifier.
-		$new_url = wp_nonce_url( $new_url, 'edit_modifier_' . $modifier_id );
 
 		wp_safe_redirect( esc_url_raw( html_entity_decode( $new_url ) ) );
 		exit;
