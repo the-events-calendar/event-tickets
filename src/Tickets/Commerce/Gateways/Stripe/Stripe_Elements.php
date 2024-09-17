@@ -85,7 +85,7 @@ class Stripe_Elements {
 	 * @return bool
 	 */
 	public function wallets_enabled() {
-		if ( ! defined( 'EVENT_TICKETS_PLUS_FILE' ) ) {
+		if ( ! has_action( 'tribe_common_loaded', 'tribe_register_event_tickets_plus' ) ) {
 			return false;
 		}
 
