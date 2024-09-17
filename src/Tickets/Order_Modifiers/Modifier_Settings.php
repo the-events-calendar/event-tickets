@@ -167,7 +167,6 @@ class Modifier_Settings {
 			$this->render_table_view( $manager, $context );
 			return;
 		}
-
 		$this->render_edit_view( $manager, $context );
 	}
 

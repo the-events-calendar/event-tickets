@@ -169,4 +169,24 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 
 		return null; // Return null if the modifier is not found or invalid.
 	}
+
+	/**
+	 * Get the display name for a specific modifier.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $modifier The slug of the modifier (e.g., 'coupon', 'fee').
+	 *
+	 * @return string|null The display name of the modifier or null if not found.
+	 */
+	public static function get_modifier_display_name( string $modifier ): ?string {
+		$modifiers = self::get_modifiers();
+
+		// Return the display name if the modifier exists in the array.
+		if ( isset( $modifiers[ $modifier ]['display_name'] ) ) {
+			return $modifiers[ $modifier ]['display_name'];
+		}
+
+		return null; // Return null if the modifier slug doesn't exist.
+	}
 }

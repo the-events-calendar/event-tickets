@@ -189,7 +189,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 *
 	 * @return void
 	 */
-	public function render_tabs() {
+	public function render_tabs(): void {
 		$modifiers = tribe( Controller::class )->get_modifiers();
 
 		$current_modifier = tribe_get_request_var( 'modifier', 'coupon' );
@@ -220,4 +220,35 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		echo '</h2>';
 	}
 
+	/**
+	 * Renders the title with the "Add New" button for the current modifier type.
+	 *
+	 * This method displays the title of the current modifier (e.g., 'Coupons', 'Fees') and an "Add New" button
+	 * to allow users to create a new modifier.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function render_title(): void {
+		// Get the display name of the current modifier type.
+		$modifier = tribe( Controller::class )->get_modifier_display_name( $this->modifier->get_modifier_type() );
+
+		// Create the URL for the "Add New" button.
+		$add_new_url = add_query_arg(
+			[
+				'page'        => $this->modifier->get_page_slug(),
+				'modifier'    => $this->modifier->get_modifier_type(),
+				'edit'        => 1,
+				'modifier_id' => 0, // No modifier ID for creating a new modifier.
+			],
+			admin_url( 'admin.php' )
+		);
+
+		// Add a nonce for creating a new modifier using `edit_modifier_0`.
+		$add_new_url = wp_nonce_url( $add_new_url, 'edit_modifier_0' );
+
+		// Output the title and the "Add New" button.
+		echo '<h3>' . esc_html( $modifier ) . ' <a href="' . esc_url( $add_new_url ) . '" class="page-title-action button">' . esc_html__( 'Add New', 'event-tickets' ) . '</a></h3>';
+	}
 }

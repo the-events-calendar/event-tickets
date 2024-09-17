@@ -88,6 +88,7 @@ class Coupon extends Modifier_Abstract {
 		// @todo redscar - implement reusable tabs.
 		$coupon_table = new Coupon_Table( $this );
 		$coupon_table->render_tabs();
+		$coupon_table->render_title();
 		echo '<div class="wrap">';
 		$coupon_table->prepare_items();
 		$coupon_table->search_box( __( 'Search', 'event-tickets' ), 'coupon-search', __( 'Search Coupons', 'event-tickets' ) );
@@ -105,7 +106,6 @@ class Coupon extends Modifier_Abstract {
 	 * @return void
 	 */
 	public function render_edit( array $context ): void {
-
 		$nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( $_GET['_wpnonce'] ) : '';
 
 		if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, 'edit_modifier_' . $context['modifier_id'] ) ) {
