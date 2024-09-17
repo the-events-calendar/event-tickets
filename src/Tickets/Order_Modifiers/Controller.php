@@ -13,6 +13,7 @@ use TEC\Common\StellarWP\Schema\Register as Schema_Register;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
 use TEC\Tickets\Order_Modifiers\Modifiers\Coupon;
+use TEC\Tickets\Order_Modifiers\Modifiers\Fee;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 
 /**
@@ -102,9 +103,9 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 				'class'        => Coupon::class,
 			],
 			'fee'    => [
-				'display_name' => __( 'Booking Fees', 'event-tickets' ),
+				'display_name' => __( 'Fees', 'event-tickets' ),
 				'slug'         => 'fee',
-				'class'        => Booking_Fee::class,
+				'class'        => Fee::class,
 			],
 		];
 
@@ -121,7 +122,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 
 		// Validate modifiers after the filter.
 		foreach ( $modifiers as $key => $modifier ) {
-			if ( ! isset( $modifier['class'], $modifier['slug'], $modifier['display_name'] ) || ! class_exists( $modifier['class'], false ) ) {
+			if ( ! isset( $modifier['class'], $modifier['slug'], $modifier['display_name'] ) || ! class_exists( $modifier['class'], true ) ) {
 				unset( $modifiers[ $key ] ); // Remove invalid modifiers.
 			}
 		}

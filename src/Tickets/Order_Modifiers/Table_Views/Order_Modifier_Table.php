@@ -65,6 +65,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 				'search_term' => $search,
 				'orderby'     => $orderby,
 				'order'       => $order,
+				'modifier_type' => $this->modifier->get_modifier_type()
 			]
 		);
 

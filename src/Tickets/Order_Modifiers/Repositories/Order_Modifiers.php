@@ -42,7 +42,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		DB::insert(
 			Table::table_name(),
 			[
-				'post_id'          => $model->post_id,
+				'post_id'          => $model->post_id ?? '',
 				'modifier_type'    => $model->modifier_type,
 				'sub_type'         => $model->sub_type,
 				'fee_amount_cents' => $model->fee_amount_cents,
@@ -183,7 +183,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		}
 
 		// Return the results of the query.
-		return $query->getAll();
+		return $query->getAll() ?? [];
 	}
 
 	/**

@@ -243,21 +243,7 @@ class Modifier_Settings {
 	}
 
 	/**
-	 * Render an error message for invalid modifiers.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	protected function render_invalid_modifier_message(): void {
-		echo '<p>' . esc_html__( 'Invalid modifier selected.', 'event-tickets' ) . '</p>';
-	}
-
-	/**
 	 * Handles the form submission and saves the modifier data.
-	 *
-	 * Checks if the form was submitted and verifies the nonce before proceeding with
-	 * data sanitization and saving the modifier.
 	 *
 	 * @since TBD
 	 *
@@ -267,31 +253,95 @@ class Modifier_Settings {
 	 */
 	protected function handle_form_submission( array $context ): void {
 		// Check if the form was submitted and verify nonce.
-		if ( isset( $_POST['order_modifier_form_save'] ) && check_admin_referer( 'order_modifier_save_action', 'order_modifier_save_action' ) ) {
-
-			// Get the appropriate strategy for the selected modifier.
-			$modifier_strategy = tribe( Controller::class )->get_modifier( $context['modifier'] );
-
-			// If the strategy doesn't exist, show an error message.
-			if ( ! $modifier_strategy ) {
-				$this->render_invalid_modifier_message();
-				return;
-			}
-
-			$_POST['order_modifier_id'] = $context['modifier_id'];
-
-			// Use the Modifier Manager to sanitize, and save the data.
-			$manager       = new Modifier_Manager( $modifier_strategy );
-			$modifier_data = $modifier_strategy->map_form_data_to_model( $_POST, $manager );
-			$result        = $manager->save_modifier( $modifier_data );
-
-			// Display success or error message based on result.
-			if ( ! empty( $result ) ) {
-				echo '<div class="notice notice-success"><p>' . esc_html__( 'Modifier saved successfully!', 'event-tickets' ) . '</p></div>';
-			} else {
-				echo '<div class="notice notice-error"><p>' . esc_html__( 'Failed to save modifier.', 'event-tickets' ) . '</p></div>';
-			}
+		if ( ! isset( $_POST['order_modifier_form_save'] ) || ! check_admin_referer( 'order_modifier_save_action', 'order_modifier_save_action' ) ) {
+			return;
 		}
+
+		// Get the appropriate strategy for the selected modifier.
+		$modifier_strategy = tribe( Controller::class )->get_modifier( $context['modifier'] );
+
+		// Early bail if the strategy doesn't exist.
+		if ( ! $modifier_strategy ) {
+			$this->show_error_message( __( 'Invalid modifier.', 'event-tickets' ) );
+			return;
+		}
+
+		// Set the modifier ID in the post data.
+		$_POST['order_modifier_id'] = $context['modifier_id'];
+
+		// Use the Modifier Manager to sanitize and save the data.
+		$manager       = new Modifier_Manager( $modifier_strategy );
+		$modifier_data = $modifier_strategy->map_form_data_to_model( $_POST );
+		$result        = $manager->save_modifier( $modifier_data );
+
+		// Early bail if saving the modifier failed.
+		if ( empty( $result ) ) {
+			$this->show_error_message( __( 'Failed to save modifier.', 'event-tickets' ) );
+			return;
+		}
+
+		// If a new modifier was created, redirect to the edit page of the new modifier.
+		if ( empty( $context['modifier_id'] ) || 0 === (int) $context['modifier_id'] ) {
+			$this->redirect_to_edit_page( $result->id, $context );
+			return;
+		}
+
+		// Show success message for updating an existing modifier.
+		$this->show_success_message( __( 'Modifier saved successfully!', 'event-tickets' ) );
 	}
 
+	/**
+	 * Redirects to the edit page for the newly created modifier.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $modifier_id The ID of the new modifier.
+	 * @param array $context     The context for rendering the page.
+	 *
+	 * @return void
+	 */
+	protected function redirect_to_edit_page( int $modifier_id, array $context ): void {
+		// Manually build the URL.
+		$new_url = add_query_arg(
+			[
+				'page'        => self::$slug,
+				'modifier'    => $context['modifier'],
+				'edit'        => 1,
+				'modifier_id' => $modifier_id,
+			],
+			admin_url( 'admin.php' )
+		);
+
+		// Add a nonce for the newly created modifier.
+		$new_url = wp_nonce_url( $new_url, 'edit_modifier_' . $modifier_id );
+
+		wp_safe_redirect( esc_url_raw( html_entity_decode( $new_url ) ) );
+		exit;
+	}
+
+	/**
+	 * Shows a success message.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $message The success message to display.
+	 *
+	 * @return void
+	 */
+	protected function show_success_message( string $message ): void {
+		echo '<div class="notice notice-success"><p>' . esc_html( $message ) . '</p></div>';
+	}
+
+	/**
+	 * Shows an error message.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $message The error message to display.
+	 *
+	 * @return void
+	 */
+	protected function show_error_message( string $message ): void {
+		echo '<div class="notice notice-error"><p>' . esc_html( $message ) . '</p></div>';
+	}
 }
