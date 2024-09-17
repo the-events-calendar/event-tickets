@@ -205,8 +205,7 @@ class Modifier_Settings {
 	 * @return void
 	 */
 	protected function render_table_view( Modifier_Manager $manager, array $context ): void {
-		echo '<h2>' . esc_html( ucfirst( $context['modifier'] ) ) . '</h2>';
-		echo $manager->render_table( $context );
+		echo esc_html( $manager->render_table( $context ) );
 	}
 
 	/**

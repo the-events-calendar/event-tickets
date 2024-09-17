@@ -85,15 +85,17 @@ class Coupon extends Modifier_Abstract {
 	 * @return void
 	 */
 	public function render_table( array $context ): void {
-		// @todo redscar - implement reusable tabs.
 		$coupon_table = new Coupon_Table( $this );
-		$coupon_table->render_tabs();
-		$coupon_table->render_title();
-		echo '<div class="wrap">';
-		$coupon_table->prepare_items();
-		$coupon_table->search_box( __( 'Search', 'event-tickets' ), 'coupon-search', __( 'Search Coupons', 'event-tickets' ) );
-		$coupon_table->display();
-		echo '</div>';
+		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		$admin_views = tribe( 'tickets.admin.views' );
+
+		$admin_views->template(
+			'order_modifiers/modifier-table',
+			[
+				'context'              => $context,
+				'order_modifier_table' => $coupon_table,
+			]
+		);
 	}
 
 	/**
