@@ -15,19 +15,22 @@ tribe.dialogs.events = tribe.dialogs.events || {};
  * @type   {Object}
  */
 tribe.tickets.editPurchaser = {};
+
+// eslint-disable-next-line
 TicketsEditPurchaserOptions = TicketsEditPurchaserOptions || {};
 
 /**
  * Closure to initialize the purchaser edit modal.
  *
  * @since TBD
+ * @param {{}} $ JQuery object.
+ * @param {{}} obj The edit purchaser object.
  */
 ( ( $, obj ) => {
 	/**
 	 * Flags when the form events are bound.
 	 *
 	 * @since TBD
-	 *
 	 * @type {boolean}
 	 */
 	obj.isBound = false;
@@ -36,8 +39,7 @@ TicketsEditPurchaserOptions = TicketsEditPurchaserOptions || {};
 	 * HTML selectors.
 	 *
 	 * @since TBD
-	 *
-	 * @type {{nameDetailNode: string, loader: string, emailDetailNode: string, nameField: string, emailField: string, errorNode: string, input: string, cancelButton: string, form: string, nameErrorNode: string, emailErrorNode: string, saveAndEmailButton: string, saveButton: string}}
+	 * @type {{}} The selectors for the modal.
 	 */
 	obj.selectors = {
 		form: '#tec-tickets-commerce-edit-purchaser-form',
@@ -59,13 +61,12 @@ TicketsEditPurchaserOptions = TicketsEditPurchaserOptions || {};
 	 * Utility to set displayed message.
 	 *
 	 * @since TBD
-	 *
 	 * @param {string} message The message string.
 	 */
 	obj.setErrorMessage = ( message ) => {
 		$( obj.selectors.errorNode ).text( message );
 		$( obj.selectors.errorNode ).show();
-	}
+	};
 
 	/**
 	 * Resets the displayed message.
@@ -75,7 +76,7 @@ TicketsEditPurchaserOptions = TicketsEditPurchaserOptions || {};
 	obj.clearErrorMessage = () => {
 		$( obj.selectors.errorNode ).text( '' );
 		$( obj.selectors.errorNode ).hide();
-	}
+	};
 
 	/**
 	 * Hides the modal spinner.
@@ -84,7 +85,7 @@ TicketsEditPurchaserOptions = TicketsEditPurchaserOptions || {};
 	 */
 	obj.hideLoader = () => {
 		$( obj.selectors.loader ).addClass( 'tribe-common-a11y-hidden' );
-	}
+	};
 
 	/**
 	 * Show the modal spinner.
@@ -93,18 +94,17 @@ TicketsEditPurchaserOptions = TicketsEditPurchaserOptions || {};
 	 */
 	obj.showLoader = () => {
 		$( obj.selectors.loader ).removeClass( 'tribe-common-a11y-hidden' );
-	}
+	};
 
 	/**
 	 * The success callback on the update purchaser POST request.
 	 *
 	 * @since TBD
-	 *
-	 * @param {object} response The response object.
+	 * @param {Object} response The response object.
 	 */
 	obj.updateSuccessCallback = ( response ) => {
 		if ( response.success ) {
-			window['dialog_obj_edit-purchaser-modal'].hide();
+			window[ 'dialog_obj_edit-purchaser-modal' ].hide();
 			$( obj.selectors.nameDetailNode ).text( response.data.name );
 			$( obj.selectors.emailDetailNode ).text( response.data.email );
 			$( obj.selectors.emailDetailNode ).attr( 'href', 'mailto:' + response.data.email );
@@ -113,15 +113,14 @@ TicketsEditPurchaserOptions = TicketsEditPurchaserOptions || {};
 		} else if ( response.data ) {
 			obj.setErrorMessage( response.data );
 		}
-	}
+	};
 
 	/**
 	 * Attempts to update the purchaser based on the fields passed.
 	 *
 	 * @since TBD
-	 *
-	 * @param {object} post The purchaser fields to be sent in the request.
-	 * @returns {*}
+	 * @param {Object} post The purchaser fields to be sent in the request.
+	 * @returns {*} The request promise when valid.
 	 */
 	obj.updatePurchaser = ( post = {} ) => {
 		if ( ! obj.isFormValid() ) {
@@ -131,72 +130,78 @@ TicketsEditPurchaserOptions = TicketsEditPurchaserOptions || {};
 		post.action = 'tec_commerce_purchaser_edit';
 		obj.clearErrorMessage();
 
-		return $.ajax({
-			method: 'POST',
-			url: TicketsEditPurchaserOptions.ajaxurl,
-			data: post
-		}).success(
-			obj.updateSuccessCallback
-		).error( () => {
-			obj.setErrorMessage( 'Error communicating with the server.' );
-		}).always(() => {
-			obj.hideLoader();
-		});
-	}
+		return $.ajax(
+			{
+				method: 'POST',
+				url: TicketsEditPurchaserOptions.ajaxurl, // eslint-disable-line
+				data: post,
+			},
+		).success(
+			obj.updateSuccessCallback,
+		).error(
+			() => {
+				obj.setErrorMessage( 'Error communicating with the server.' );
+			},
+		).always(
+			() => {
+				obj.hideLoader();
+			},
+		);
+	};
 
 	/**
 	 * Will run validator on the form.
 	 *
 	 * @since TBD
-	 *
-	 * @returns {boolean}
+	 * @returns {boolean} Whether the form fields are valid.
 	 */
 	obj.isFormValid = () => {
 		return obj.checkEmailField() && obj.checkNameField();
-	}
+	};
 
 	/**
 	 * Run validator on the email field.
 	 *
 	 * @since TBD
-	 *
-	 * @returns {boolean}
+	 * @returns {boolean} Whether the email field is valid.
 	 */
 	obj.checkEmailField = () => {
-		var email = $(obj.selectors.emailField).val().trim();
+		const email = $( obj.selectors.emailField ).val().trim();
 
-		if (!email) {
-			$(obj.selectors.emailErrorNode).text("Email is required");
-			$(obj.selectors.emailErrorNode).show();
-			$(obj.selectors.emailField).addClass('tec-tickets-commerce-error-field');
-			return false;
-		}
-		var emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-		if (!emailRegex.test(email)) {
-			$(obj.selectors.emailErrorNode).text("Email is invalid");
-			$(obj.selectors.emailErrorNode).show();
-			$(obj.selectors.emailField).addClass('tec-tickets-commerce-error-field');
+		if ( ! email ) {
+			$( obj.selectors.emailErrorNode ).text( 'Email is required' );
+			$( obj.selectors.emailErrorNode ).show();
+			$( obj.selectors.emailField ).addClass( 'tec-tickets-commerce-error-field' );
 
 			return false;
 		}
 
-		$(obj.selectors.emailField).removeClass('tec-tickets-commerce-error-field');
-		$(obj.selectors.emailErrorNode).hide();
+		const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+		if ( ! emailRegex.test( email ) ) {
+			$( obj.selectors.emailErrorNode ).text( 'Email is invalid' );
+			$( obj.selectors.emailErrorNode ).show();
+			$( obj.selectors.emailField ).addClass( 'tec-tickets-commerce-error-field' );
+
+			return false;
+		}
+
+		$( obj.selectors.emailField ).removeClass( 'tec-tickets-commerce-error-field' );
+		$( obj.selectors.emailErrorNode ).hide();
+
 		return true;
-	}
+	};
 
 	/**
-	 * Runn validator on the name field.
+	 * Run validator on the name field.
 	 *
 	 * @since TBD
-	 *
-	 * @returns {boolean}
+	 * @returns {boolean} Whether the name field is valid.
 	 */
 	obj.checkNameField = () => {
-		var name = $( obj.selectors.nameField ).val().trim();
+		const name = $( obj.selectors.nameField ).val().trim();
 
-		if (!name) {
-			$( obj.selectors.nameErrorNode ).text( "Name is required" );
+		if ( ! name ) {
+			$( obj.selectors.nameErrorNode ).text( 'Name is required' );
 			$( obj.selectors.nameField ).addClass( 'tec-tickets-commerce-error-field' );
 			$( obj.selectors.nameErrorNode ).show();
 
@@ -207,7 +212,7 @@ TicketsEditPurchaserOptions = TicketsEditPurchaserOptions || {};
 		$( obj.selectors.nameField ).removeClass( 'tec-tickets-commerce-error-field' );
 
 		return true;
-	}
+	};
 
 	/**
 	 * Binds the form events.
@@ -220,50 +225,60 @@ TicketsEditPurchaserOptions = TicketsEditPurchaserOptions || {};
 		}
 		obj.isBound = true;
 
-		$( obj.selectors.form ).on( 'submit', ( e ) => {
-			e.preventDefault();
-			obj.updatePurchaser( obj.getFormFields() );
-		});
-		$( obj.selectors.saveAndEmailButton ).on( 'click', ( e ) => {
-			e.preventDefault();
-			var values = obj.getFormFields();
-			values.send_email = true;
+		$( obj.selectors.form ).on(
+			'submit',
+			( e ) => {
+				e.preventDefault();
+				obj.updatePurchaser( obj.getFormFields() );
+			},
+		);
+		$( obj.selectors.saveAndEmailButton ).on(
+			'click',
+			( e ) => {
+				e.preventDefault();
+				const values = obj.getFormFields();
+				values.send_email = true;
 
-			obj.updatePurchaser( values );
-		});
-		$( obj.selectors.input ).on('change keyup', () => {
-			$( obj.selectors.saveButton ).attr( 'disabled', false );
-			$( obj.selectors.saveAndEmailButton ).attr( 'disabled', false );
-		});
-		$( obj.selectors.emailField ).on('change keyup', obj.checkEmailField );
-		$( obj.selectors.nameField ).on('change keyup', obj.checkNameField );
-		$( obj.selectors.cancelButton ).on('click', (e) => {
-			e.preventDefault();
-
-			window['dialog_obj_edit-purchaser-modal'].hide();
-		});
-	}
+				obj.updatePurchaser( values );
+			},
+		);
+		$( obj.selectors.input ).on(
+			'change keyup',
+			() => {
+				$( obj.selectors.saveButton ).attr( 'disabled', false );
+				$( obj.selectors.saveAndEmailButton ).attr( 'disabled', false );
+			},
+		);
+		$( obj.selectors.emailField ).on( 'change keyup', obj.checkEmailField );
+		$( obj.selectors.nameField ).on( 'change keyup', obj.checkNameField );
+		$( obj.selectors.cancelButton ).on(
+			'click',
+			( e ) => {
+				e.preventDefault();
+				window[ 'dialog_obj_edit-purchaser-modal' ].hide();
+			},
+		);
+	};
 
 	/**
 	 * Pulls the form fields from the form into an object.
 	 *
 	 * @since TBD
-	 *
-	 * @returns {{}}
+	 * @returns {{}} Object with form fields.
 	 */
 	obj.getFormFields = () => {
-		var values = $( obj.selectors.form ).serializeArray();
-		var fields = {};
+		const values = $( obj.selectors.form ).serializeArray();
+		const fields = {};
 
 		$.each(
 			values,
-			(i, item) => {
-				fields[item.name] = item.value;
-			}
+			( i, item ) => {
+				fields[ item.name ] = item.value;
+			},
 		);
 
 		return fields;
-	}
+	};
 
 	/**
 	 * Triggers the loading of the form fields for the purchaser on open of the dialog.
@@ -280,18 +295,18 @@ TicketsEditPurchaserOptions = TicketsEditPurchaserOptions || {};
 
 			$.ajax(
 				{
-					url: TicketsEditPurchaserOptions.ajaxurl,
+					url: TicketsEditPurchaserOptions.ajaxurl, // eslint-disable-line
 					data: {
 						action: 'tec_commerce_purchaser_edit',
 						_wpnonce: values._wpnonce,
 						ID: values.ID,
-					}
-				}
+					},
+				},
 			).success(
 				( response ) => {
-					if( response.success ) {
+					if ( response.success ) {
 						$( obj.selectors.nameField ).val(
-							response.data.first_name + ' ' + response.data.last_name
+							response.data.first_name + ' ' + response.data.last_name,
 						);
 						$( obj.selectors.emailField ).val( response.data.email );
 					} else {
