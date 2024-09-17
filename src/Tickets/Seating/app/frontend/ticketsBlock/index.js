@@ -22,6 +22,8 @@ import {
 	reset as resetTimer,
 } from '@tec/tickets/seating/frontend/session';
 import './filters';
+import { onReady } from '@tec/tickets/seating/utils';
+
 
 const {
 	objectName,
@@ -405,6 +407,36 @@ function toggleMobileSidebarOpen(dom) {
 }
 
 /**
+ * Inits the ticket drawer/sidebar and iframe ready to be used.
+ *
+ * @since TBD
+ *
+ *
+ * @param {HTMLElement} dom The dom or document
+ */
+function setupTicketsDrawer(dom) {
+	dom = dom || document;
+
+	if(window && window.innerWidth <= 960) {
+		const iframeContainer = dom.querySelector('.tec-tickets-seating__iframe-container');
+		iframeContainer.style.height = iframeContainer.clientHeight + 'px';
+		iframeContainer.style.minHeight = iframeContainer.clientHeight + 'px';
+		iframeContainer.style.maxHeight = iframeContainer.clientHeight + 'px';
+
+		const sidebarContainer = dom.querySelector('.tec-tickets-seating__modal-sidebar_container');
+		sidebarContainer.style.height = sidebarContainer.clientHeight + 'px';
+		sidebarContainer.style.minHeight = sidebarContainer.clientHeight + 'px';
+		sidebarContainer.style.maxHeight = sidebarContainer.clientHeight + 'px';
+
+		const sidebar = sidebarContainer.querySelector('.tec-tickets-seating__modal-sidebar');
+		if (sidebar) {
+			sidebar.style.position = 'absolute';
+		}
+	}
+}
+
+
+/**
  * Bootstraps the service iframe starting the communication with the service.
  *
  * @since TBd
@@ -427,6 +459,7 @@ export async function bootstrapIframe(dom) {
 
 	await initServiceIframe(iframe);
 	toggleMobileSidebarOpen(dom);
+	setupTicketsDrawer(dom);
 
 	totalPriceElement = dom.querySelector('.tec-tickets-seating__total-price');
 

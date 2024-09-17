@@ -19,23 +19,24 @@
 
 ?>
 
-<div
-	class="tec-tickets-seating__iframe-container"
-	data-token="<?php echo esc_attr( $token ); ?>"
-	data-error="<?php echo esc_attr( $error ); ?>"
->
-	<iframe
-		data-src="<?php echo esc_url( $iframe_url ); ?>"
-		id="tec-tickets-seating-iframe-tickets-block"
-		class="tec-tickets-seating__iframe tec-tickets-seating__iframe--tickets-block"
-		title="<?php echo esc_attr__( 'Seat selection', 'event-tickets' ); ?>"
+<!-- <div class="tec-tickets-seating__layout-wrap"> -->
+	<div
+		class="tec-tickets-seating__iframe-container"
+		data-token="<?php echo esc_attr( $token ); ?>"
+		data-error="<?php echo esc_attr( $error ); ?>"
 	>
-	</iframe>
-</div>
+		<iframe
+			data-src="<?php echo esc_url( $iframe_url ); ?>"
+			id="tec-tickets-seating-iframe-tickets-block"
+			class="tec-tickets-seating__iframe tec-tickets-seating__iframe--tickets-block"
+			title="<?php echo esc_attr__( 'Seat selection', 'event-tickets' ); ?>"
+		>
+		</iframe>
+	</div>
 
-<div class="tec-tickets-seating__modal-sidebar-wrapper">
-	<aside class="tec-tickets-seating__modal-sidebar">
-		<div class="tec-tickets-seating__sidebar-content">
+	<div class="tec-tickets-seating__modal-sidebar_container">
+		<aside class="tec-tickets-seating__modal-sidebar">
+			<!-- <div class="tec-tickets-seating__sidebar-content"> -->
 
 			<div class="tec-tickets-seating__sidebar-header">
 				<h4 class="tribe-common-h4 tec-tickets-seating__title">
@@ -64,27 +65,27 @@
 			<div class="tec-tickets-seating__tickets-wrapper">
 				<div class="tec-tickets-seating__ticket-rows"></div>
 			</div>
-		</div>
+			<!-- </div> -->
 
-		<div class="tec-tickets-seating__sidebar-footer">
-			<div class="tec-tickets-seating__total tec-tickets-seating__total-hidden">
-				<div class="tec-tickets-seating__total-text">
-					<?php echo esc_html( $initial_total_text ); ?>
+			<div class="tec-tickets-seating__sidebar-footer">
+				<div class="tec-tickets-seating__total tec-tickets-seating__total-hidden">
+					<div class="tec-tickets-seating__total-text">
+						<?php echo esc_html( $initial_total_text ); ?>
+					</div>
+					<div class="tec-tickets-seating__total-price">
+						<?php echo esc_html( $initial_total_price ); ?>
+					</div>
 				</div>
-				<div class="tec-tickets-seating__total-price">
-					<?php echo esc_html( $initial_total_price ); ?>
+
+				<div class="tec-tickets-seating__sidebar-controls">
+					<button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel">
+						Cancel
+					</button>
+					<button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm">
+						Check Out
+					</button>
 				</div>
 			</div>
-
-			<div class="tec-tickets-seating__sidebar-controls">
-				<button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel">
-					Cancel
-				</button>
-				<button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm">
-					Check Out
-				</button>
-			</div>
-		</div>
-	</aside>
-
-</div>
+		</aside>
+	</div>
+<!-- </div> -->
