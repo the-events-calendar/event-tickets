@@ -101,7 +101,7 @@ tribe.tickets.attendees = {};
 
 		if ( title ) {
 			const $modalTitle = $modal.find( obj.selectors.modalTitle );
-			$modalTitle.html( title );
+			$modalTitle.text( title );
 		}
 
 		// And replace the content.
