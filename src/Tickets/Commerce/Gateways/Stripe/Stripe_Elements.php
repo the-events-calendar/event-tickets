@@ -4,7 +4,6 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
-use TEC\Tickets_Plus\Commerce\Gateways\Stripe\Settings as ETP_Settings;
 
 /**
  * Class Payment_Element
@@ -58,11 +57,16 @@ class Stripe_Elements {
 			return true;
 		} elseif ( 1 === count( $payment_methods ) && 'card' !== $payment_methods[0] ) {
 			return true;
-		} elseif ( 1 === count( $payment_methods ) && 'card' === $payment_methods[0] && $this->wallets_enabled() ) {
-			return true;
 		}
 
-		return false;
+		/**
+		 * Filter to allow loading the Payment Element component
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $include_payment_element Whether to include the Payment Element.
+		 */
+		return (bool) apply_filters( 'tec_tickets_commerce_stripe_include_payment_element', false );
 	}
 
 	/**
@@ -74,23 +78,5 @@ class Stripe_Elements {
 	 */
 	public function card_element_type() {
 		return tribe_get_option( Settings::$option_checkout_element_card_fields );
-	}
-
-
-	/**
-	 * Are Apple/Google Pay wallets enabled?
-	 *
-	 * @since TBD
-	 *
-	 * @return bool
-	 */
-	public function wallets_enabled() {
-		if ( ! has_action( 'tribe_common_loaded', 'tribe_register_event_tickets_plus' ) ) {
-			return false;
-		}
-
-		$wallets = tribe_get_option( ETP_Settings::$option_checkout_element_wallets, [] );
-
-		return is_array( $wallets ) && ! empty( $wallets );
 	}
 }
