@@ -19,6 +19,7 @@
 namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
+use TEC\Tickets\Order_Modifiers\Modifier_Settings;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers as Order_Modifiers_Repository;
 
 /**
@@ -317,5 +318,22 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		$statuses = apply_filters( 'tec_modifier_status_conversion', $statuses );
 
 		return $statuses[ $status ] ?? ucfirst( $status );
+	}
+
+	/**
+	 * Retrieves the page slug for the current modifier context.
+	 *
+	 * This method provides the slug associated with the page where the modifier is being managed.
+	 * It is used in cases where the slug is required for rendering or processing actions
+	 * related to the specific modifier.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The page slug, or empty if not applicable.
+	 */
+	public function get_page_slug() {
+		// @todo redscar - Does this logic make sense? Should we alter this?
+		$modifier_settings = new Modifier_Settings();
+		return $modifier_settings->get_page_slug();
 	}
 }

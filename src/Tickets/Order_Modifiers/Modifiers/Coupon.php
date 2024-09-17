@@ -85,10 +85,11 @@ class Coupon extends Modifier_Abstract {
 	 * @return void
 	 */
 	public function render_table( array $context ): void {
+		// @todo redscar - implement reusable tabs.
 		$coupon_table = new Coupon_Table( $this );
-		echo '<div>';
+		echo '<div class="wrap">';
 		$coupon_table->prepare_items();
-		$coupon_table->search_box( __( 'Search Coupons', 'event-tickets' ), 'coupon-search' );
+		$coupon_table->search_box( __( 'Search', 'event-tickets' ), 'coupon-search', __( 'Search Coupons', 'event-tickets' ) );
 		$coupon_table->display();
 		echo '</div>';
 	}
@@ -103,6 +104,13 @@ class Coupon extends Modifier_Abstract {
 	 * @return void
 	 */
 	public function render_edit( array $context ): void {
+
+		$nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( $_GET['_wpnonce'] ) : '';
+
+		if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, 'edit_modifier_' . $context['modifier_id'] ) ) {
+			return;
+		}
+
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 		$context     = $this->map_context_to_template( $context );

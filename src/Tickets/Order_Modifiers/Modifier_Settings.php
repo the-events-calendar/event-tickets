@@ -48,6 +48,19 @@ class Modifier_Settings {
 	public static $hook_suffix = 'tickets_page_tec-tickets-order-modifiers';
 
 	/**
+	 * Retrieves the page slug associated with the modifier settings.
+	 *
+	 * This method returns the page slug.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The page slug for the modifier settings.
+	 */
+	public static function get_page_slug(): string {
+		return self::$slug;
+	}
+
+	/**
 	 * Defines whether the current page is the Event Tickets Order Modifiers page.
 	 *
 	 * @since TBD

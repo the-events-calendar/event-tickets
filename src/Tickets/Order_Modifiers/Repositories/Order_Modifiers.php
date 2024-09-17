@@ -181,7 +181,6 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		) {
 			$query = $query->orderBy( $args['orderby'], $args['order'] );
 		}
-		printr($query->getSQL(),'Sql for query');
 
 		// Return the results of the query.
 		return $query->getAll();
