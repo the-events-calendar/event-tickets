@@ -9,9 +9,11 @@
 
 namespace TEC\Tickets\Order_Modifiers;
 
+use InvalidArgumentException;
 use TEC\Common\StellarWP\Schema\Register as Schema_Register;
 use TEC\Common\StellarWP\Schema\Config as Schema_Config;
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
 use TEC\Tickets\Order_Modifiers\Modifiers\Coupon;
@@ -36,6 +38,16 @@ class Controller extends Controller_Contract {
 	 * @var array
 	 */
 	protected static array $cached_modifiers = [];
+
+	/**
+	 * List of custom tables to register.
+	 *
+	 * @var Table[]
+	 */
+	protected $custom_tables = [
+		Order_Modifiers::class,
+		Order_Modifiers_Meta::class,
+	];
 
 	/**
 	 * Binds and sets up implementations.
@@ -82,8 +94,9 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function register_tables(): void {
-		$this->container->singleton( Order_Modifiers::class, Schema_Register::table( Order_Modifiers::class ) );
-		$this->container->singleton( Order_Modifiers_Meta::class, Schema_Register::table( Order_Modifiers_Meta::class ) );
+		foreach ( $this->custom_tables as $table ) {
+			$this->container->singleton( $table, Schema_Register::table( $table ) );
+		}
 	}
 
 	/**
@@ -165,7 +178,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @return Modifier_Strategy_Interface The strategy class if found.
 	 *
-	 * @throws \InvalidArgumentException If the modifier strategy class is not found or does not implement Modifier_Strategy_Interface.
+	 * @throws InvalidArgumentException If the modifier strategy class is not found or does not implement Modifier_Strategy_Interface.
 	 */
 	public function get_modifier( string $modifier ): Modifier_Strategy_Interface {
 		// Sanitize the modifier parameter to ensure it's a valid string.
@@ -181,7 +194,62 @@ class Controller extends Controller_Contract {
 		}
 
 		// Throw an exception if the modifier class is not found or does not implement the required interface.
-		throw new \InvalidArgumentException( sprintf( 'Modifier strategy class for "%s" not found or does not implement Modifier_Strategy_Interface.', $modifier ) );
+		throw new InvalidArgumentException( sprintf( 'Modifier strategy class for "%s" not found or does not implement Modifier_Strategy_Interface.', $modifier ) );
+	}
+
+	/**
+	 * Drop all custom tables.
+	 *
+	 * @return int The number of tables dropped.
+	 */
+	public function drop_tables(): int {
+		return $this->table_helper( 'drop' );
+	}
+
+	/**
+	 * Truncate all custom tables.
+	 *
+	 * @return int The number of tables truncated.
+	 */
+	public function truncate_tables(): int {
+		return $this->table_helper( 'truncate' );
+	}
+
+	/**
+	 * Helper method to drop or truncate custom tables.
+	 *
+	 * @param string $action The action to perform on the tables. Either 'drop' or 'truncate'.
+	 *
+	 * @return int The number of tables affected.
+	 * @throws InvalidArgumentException If an invalid action is provided.
+	 */
+	protected function table_helper( string $action ): int {
+		switch ( $action ) {
+			case 'drop':
+				$query = 'DROP TABLE IF EXISTS %s';
+				break;
+			case 'truncate':
+				$query = 'TRUNCATE TABLE %s';
+				break;
+			default:
+				throw new InvalidArgumentException( 'Invalid action provided.' );
+		}
+
+		DB::query( 'SET FOREIGN_KEY_CHECKS = 0' );
+
+		$affected = 0;
+		foreach ( $this->custom_tables as $table ) {
+			$affected += DB::query(
+				DB::prepare(
+					$query,
+					$table::table_name()
+				)
+			);
+		}
+
+		DB::query( 'SET FOREIGN_KEY_CHECKS = 1' );
+
+		return $affected;
 	}
 
 	/**
