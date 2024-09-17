@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Order_Modifiers\Table_Views;
 
+use TEC\Tickets\Order_Modifiers\Controller;
 use WP_List_Table;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 
@@ -180,4 +181,43 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		submit_button( $text, '', '', false );
 		echo '</p>';
 	}
+
+	/**
+	 * Render the navigation tabs for available modifiers dynamically.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function render_tabs() {
+		$modifiers = tribe( Controller::class )->get_modifiers();
+
+		$current_modifier = tribe_get_request_var( 'modifier', 'coupon' );
+
+
+		echo '<h2 class="nav-tab-wrapper">';
+		foreach ( $modifiers as $modifier_slug => $modifier_data ) {
+			// Check if the current tab is active.
+			$active_class = ( $current_modifier === $modifier_slug ) ? 'nav-tab-active' : '';
+
+			// Generate the URL for the tab.
+			$url = add_query_arg(
+				[
+					'page'     => $this->modifier->get_page_slug(),
+					'modifier' => $modifier_slug,
+				],
+				admin_url( 'admin.php' )
+			);
+
+			// Output the tab.
+			printf(
+				'<a href="%s" class="nav-tab %s">%s</a>',
+				esc_url( $url ),
+				esc_attr( $active_class ),
+				esc_html( $modifier_data['display_name'] )
+			);
+		}
+		echo '</h2>';
+	}
+
 }

@@ -87,6 +87,7 @@ class Coupon extends Modifier_Abstract {
 	public function render_table( array $context ): void {
 		// @todo redscar - implement reusable tabs.
 		$coupon_table = new Coupon_Table( $this );
+		$coupon_table->render_tabs();
 		echo '<div class="wrap">';
 		$coupon_table->prepare_items();
 		$coupon_table->search_box( __( 'Search', 'event-tickets' ), 'coupon-search', __( 'Search Coupons', 'event-tickets' ) );
