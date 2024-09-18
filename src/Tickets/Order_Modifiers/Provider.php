@@ -30,5 +30,8 @@ class Provider extends ServiceProvider {
 		 * @param Provider $this The provider instance.
 		 */
 		do_action( 'tec_tickets_order_modifiers_register', $this );
+
+		// Register the custom table classes.
+		$this->container->register( Controller::class );
 	}
 }
