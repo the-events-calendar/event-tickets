@@ -61,7 +61,7 @@ tribe.tickets.rsvp.block = {};
 					action: 'tribe_tickets_rsvp_handle',
 					ticket_id: rsvpId,
 					step: 'going',
-					nonce: TribeRsvp.nonces.rsvpHandle
+					nonce: TribeRsvp.nonces.rsvpHandle,
 				};
 
 				tribe.tickets.rsvp.manager.request( data, $container );
