@@ -418,6 +418,7 @@ class Order extends Abstract_Order {
 			'hash'                 => $cart->get_cart_hash(),
 			'currency'             => Utils\Currency::get_currency_code(),
 			'purchaser_user_id'    => $purchaser['purchaser_user_id'],
+			'purchaser_full_name'  => $purchaser['purchaser_full_name'],
 			'purchaser_first_name' => $purchaser['purchaser_first_name'],
 			'purchaser_last_name'  => $purchaser['purchaser_last_name'],
 			'purchaser_email'      => $purchaser['purchaser_email'],

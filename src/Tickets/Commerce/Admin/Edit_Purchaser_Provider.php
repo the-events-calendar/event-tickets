@@ -56,6 +56,11 @@ class Edit_Purchaser_Provider extends Service_Provider {
 	 * @return bool
 	 */
 	public function update_purchaser( $post_id, array $fields ): bool {
+		if ( empty( $post_id ) ) {
+
+			return false;
+		}
+
 		$update = [];
 		if ( ! empty( $fields['purchaser_email'] ) ) {
 			$update['purchaser_email'] = $fields['purchaser_email'];
@@ -99,14 +104,15 @@ class Edit_Purchaser_Provider extends Service_Provider {
 		switch ( $method ) {
 			case 'POST':
 				// Deal with "full name" field into pieces.
-				list( $first_name, $last_name ) = explode( ' ', sanitize_text_field( $_POST['name'] ?? '' ) );
-				$email                          = sanitize_email( $_POST['email'] ?? '' );
-				$post_id                        = (int) $_POST['ID'] ?? '';
-				$send_email                     = ! empty( $_POST['send_email'] );
+				$name       = trim( sanitize_text_field( $_POST['name'] ?? '' ) );
+				$parts      = explode( ' ', $name );
+				$first_name = $parts[0] ?? '';
+				$last_name  = $parts[1] ?? '';
 
-				// Clean up vars.
-				$first_name ??= '';
-				$last_name  ??= '';
+				// Sanitize other fields.
+				$email      = sanitize_email( $_POST['email'] ?? '' );
+				$post_id    = (int) $_POST['ID'] ?? '';
+				$send_email = ! empty( $_POST['send_email'] );
 
 				if ( ! is_email( $email ) ) {
 					wp_send_json_error(
@@ -116,7 +122,18 @@ class Edit_Purchaser_Provider extends Service_Provider {
 							'event-tickets'
 						)
 					);
-					die();
+					return;
+				}
+
+				if ( empty( $name ) ) {
+					wp_send_json_error(
+						_x(
+							'Invalid name',
+							'When the provided purchaser name is missing.',
+							'event-tickets'
+						)
+					);
+					return;
 				}
 
 				// Local database update.
@@ -139,7 +156,7 @@ class Edit_Purchaser_Provider extends Service_Provider {
 								'event-tickets'
 							)
 						);
-						die();
+						return;
 					}
 
 					$sent = tribe( Send_Email_Purchase_Receipt::class )->send_for_order( $order );
@@ -151,7 +168,7 @@ class Edit_Purchaser_Provider extends Service_Provider {
 								'event-tickets'
 							)
 						);
-						die();
+						return;
 					}
 				}
 
@@ -185,14 +202,12 @@ class Edit_Purchaser_Provider extends Service_Provider {
 							'event-tickets'
 						)
 					);
-					die();
+					return;
 				}
 
 				wp_send_json_success( $order->purchaser );
 				break;
 		}
-
-		die();
 	}
 
 	/**
