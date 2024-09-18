@@ -19,7 +19,7 @@
 			data-action="tec"
 		>
 			<fieldset class="stellarwp-uplink__settings-group">
-				<input type=\'hidden\' name=\'option_page\' value=\'stellarwp_uplink_group_tec-seating\' /><input type="hidden" name="action" value="update" /><input type="hidden" id="_wpnonce" name="_wpnonce" value="bc6f843d05" /><input type="hidden" name="_wp_http_referer" value="" />
+				<input type=\'hidden\' name=\'option_page\' value=\'stellarwp_uplink_group_tec-seating\' /><input type="hidden" name="action" value="update" /><input type="hidden" id="_wpnonce" name="_wpnonce" value="12345678" /><input type="hidden" name="_wp_http_referer" value="" />
 				
 				<input
 					type="text"
@@ -44,7 +44,7 @@
 	<div class="key-validity"></div>
 </div>
 			</fieldset>
-			<input type="hidden" class="wp-nonce-fluent" name="stellarwp-uplink-license-key-nonce__tec-seating" value="99a5583bb2" />		</div>
+			<input type="hidden" class="wp-nonce-fluent" name="stellarwp-uplink-license-key-nonce__tec-seating" value="12345678" />		</div>
 	</div>
 ',
   ),
