@@ -404,7 +404,7 @@ class List_Table extends WP_List_Table {
 		if ( isset( $this->events_by_id[ $event_id ] ) ) {
 			$event = $this->events_by_id[ $event_id ];
 		} else {
-			$event = get_post( $event_id );
+			$event                           = get_post( $event_id );
 			$this->events_by_id[ $event_id ] = $event;
 		}
 
