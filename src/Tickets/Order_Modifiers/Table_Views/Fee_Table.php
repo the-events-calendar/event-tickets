@@ -18,12 +18,9 @@ class Fee_Table extends Order_Modifier_Table {
 	 */
 	public function get_columns() {
 		return [
-			'display_name'     => __( 'Fee Name', 'event-tickets' ),
-			'slug'             => __( 'Code', 'event-tickets' ),
+			'display_name'     => __( 'Fee', 'event-tickets' ),
 			'fee_amount_cents' => __( 'Amount', 'event-tickets' ),
-			'used'             => __( 'Used', 'event-tickets' ),
-			'remaining'        => __( 'Remaining', 'event-tickets' ),
-			'status'           => __( 'Status', 'event-tickets' ),
+			'active_on'        => __( 'Active on', 'event-tickets' ),
 		];
 	}
 
@@ -84,6 +81,11 @@ class Fee_Table extends Order_Modifier_Table {
 		return $this->modifier->get_status_display( $item->status );
 	}
 
+
+	protected function render_fee_amount_cents_column() {
+		return $this->modifier->convert_from_cents( $item->fee_amount_cents );
+	}
+
 	/**
 	 * Define sortable columns.
 	 *
@@ -94,11 +96,7 @@ class Fee_Table extends Order_Modifier_Table {
 	protected function get_sortable_columns() {
 		return [
 			'display_name'     => [ 'display_name', true ],
-			'slug'             => [ 'slug', false ],
 			'fee_amount_cents' => [ 'fee_amount_cents', false ],
-			'used'             => [ 'used', false ],
-			'remaining'        => [ 'remaining', false ],
-			'status'           => [ 'status', false ],
 		];
 	}
 }
