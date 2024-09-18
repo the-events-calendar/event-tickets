@@ -12,6 +12,7 @@ use Tribe__Tickets__Metabox as Metabox;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use TEC\Tickets\Commerce\Module as Commerce;
 use Tribe__Events__Main as TEC;
+use Tribe__Date_Utils as Date_Utils;
 
 class MetaboxTest extends WPTestCase {
 	use SnapshotAssertions;
@@ -27,6 +28,17 @@ class MetaboxTest extends WPTestCase {
 		$ticketable[] = 'post';
 		$ticketable[] = TEC::POSTTYPE;
 		tribe_update_option( 'ticket-enabled-post-types', array_values( array_unique( $ticketable ) ) );
+		// Set up a fake "now".
+		$date = new \DateTime( '2019-09-11 22:00:00', new \DateTimeZone( 'America/New_York' ) );
+		$now  = $date->getTimestamp();
+		// Alter the concept of the `now` timestamp to return the timestamp for `2019-09-11 22:00:00` in NY timezone.
+		uopz_set_return(
+			'strtotime', static function ( $str ) use ( $now ) {
+			return $str === 'now' ? $now : strtotime( $str );
+		},  true
+		);
+		// Make sure that `now` (string) will be resolved to the fake date object.
+		uopz_set_return( Date_Utils::class, 'build_date_object', $date );
 	}
 
 	/**
@@ -42,7 +54,7 @@ class MetaboxTest extends WPTestCase {
 				$modules[ Commerce::class ] = 'Tickets Commerce';
 
 				return $modules;
-			} 
+			}
 		);
 		// Regenerate the Tickets Data API to pick up the filtered providers.
 		tribe()->singleton( 'tickets.data_api', new \Tribe__Tickets__Data_API() );
@@ -75,7 +87,7 @@ class MetaboxTest extends WPTestCase {
 						'status'     => 'publish',
 						'start_date' => '2021-01-01 10:00:00',
 						'end_date'   => '2021-01-01 12:00:00',
-					] 
+					]
 				)->create()->ID;
 				$ticket_id = null;
 
@@ -91,7 +103,7 @@ class MetaboxTest extends WPTestCase {
 						'status'     => 'publish',
 						'start_date' => '2021-01-01 10:00:00',
 						'end_date'   => '2021-01-01 12:00:00',
-					] 
+					]
 				)->create()->ID;
 				$ticket_id = $this->create_tc_ticket( $post_id, 23 );
 
@@ -109,7 +121,7 @@ class MetaboxTest extends WPTestCase {
 							'_ticket_start_date' => '2021-01-01 10:00:00',
 							'_ticket_end_date'   => '2021-01-31 12:00:00',
 						],
-					] 
+					]
 				);
 
 				return [ $post_id, $ticket_id ];
@@ -124,7 +136,7 @@ class MetaboxTest extends WPTestCase {
 						'status'     => 'publish',
 						'start_date' => '2021-01-01 10:00:00',
 						'end_date'   => '2021-01-01 12:00:00',
-					] 
+					]
 				)->create()->ID;
 				$ticket_id = $this->create_rsvp_ticket(
 					$post_id,
@@ -133,13 +145,13 @@ class MetaboxTest extends WPTestCase {
 							'_ticket_start_date' => '2021-01-01 10:00:00',
 							'_ticket_end_date'   => '2021-01-31 12:00:00',
 						],
-					] 
+					]
 				);
 
 				return [ $post_id, $ticket_id ];
 			},
 		];
-		
+
 		yield 'post with ticket and sale price' => [
 			function (): array {
 				$post_id   = $this->factory()->post->create();
@@ -157,7 +169,7 @@ class MetaboxTest extends WPTestCase {
 				return [ $post_id, $ticket_id ];
 			},
 		];
-		
+
 		yield 'event with ticket and sale price' => [
 			function (): array {
 				$post_id = tribe_events()->set_args(
@@ -168,7 +180,7 @@ class MetaboxTest extends WPTestCase {
 						'duration'   => 2 * HOUR_IN_SECONDS,
 					]
 				)->create()->ID;
-				
+
 				$ticket_id = $this->create_tc_ticket(
 					$post_id,
 					20,
@@ -179,7 +191,7 @@ class MetaboxTest extends WPTestCase {
 						'ticket_sale_end_date'   => '2040-03-01',
 					]
 				);
-				
+
 				return [ $post_id, $ticket_id ];
 			},
 		];
@@ -208,7 +220,7 @@ class MetaboxTest extends WPTestCase {
 			[
 				'post_id'   => $post_id,
 				'ticket_id' => $ticket_id,
-			] 
+			]
 		);
 		// Depending on the Common versions, the assets might be loaded from ET or TEC; this should not break the tests.
 		$html = str_replace( 'the-events-calendar/common', 'event-tickets/common', $html );
@@ -231,7 +243,7 @@ class MetaboxTest extends WPTestCase {
 						'status'     => 'publish',
 						'start_date' => '2022-10-01 10:00:00',
 						'duration'   => 2 * HOUR_IN_SECONDS,
-					] 
+					]
 				)->create()->ID;
 			},
 		];
@@ -253,11 +265,17 @@ class MetaboxTest extends WPTestCase {
 			$html,
 			[
 				'post_id' => $post_id,
-			] 
+			]
 		);
 		// Depending on the Common versions, the assets might be loaded from ET or TEC; this should not break the tests.
 		$html = str_replace( 'the-events-calendar/common', 'event-tickets/common', $html );
 
 		$this->assertMatchesHtmlSnapshot( $html );
+	}
+
+	public function tearDown() {
+		parent::tearDown();
+		uopz_unset_return( 'strtotime' );
+		uopz_unset_return( Date_Utils::class, 'build_date_object' );
 	}
 }

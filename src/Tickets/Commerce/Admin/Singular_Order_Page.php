@@ -2,7 +2,7 @@
 /**
  * Singular order page.
  *
- * @since TBD
+ * @since 5.13.3
  *
  * @package TEC\Tickets\Commerce\Admin
  */
@@ -22,7 +22,7 @@ use WP_Post;
 /**
  * Class Singular_Order_Page
  *
- * @since TBD
+ * @since 5.13.3
  *
  * @package TEC\Tickets\Commerce\Admin
  */
@@ -31,7 +31,7 @@ class Singular_Order_Page extends Service_Provider {
 	/**
 	 * Stores the instance of the template engine that we will use for rendering the metaboxes.
 	 *
-	 * @since TBD
+	 * @since 5.13.3
 	 *
 	 * @var ?Tribe__Template
 	 */
@@ -40,7 +40,7 @@ class Singular_Order_Page extends Service_Provider {
 	/**
 	 * Stores the parent file that we are hijacking.
 	 *
-	 * @since TBD
+	 * @since 5.13.3
 	 *
 	 * @var ?string
 	 */
@@ -84,7 +84,7 @@ class Singular_Order_Page extends Service_Provider {
 	/**
 	 * Checks if the correct screen to add the hook for rendering the breadcrumb.
 	 *
-	 * @since TBD
+	 * @since 5.13.3
 	 */
 	public function breadcrumb_order_edit_screen() {
 		$screen = get_current_screen();
@@ -101,7 +101,7 @@ class Singular_Order_Page extends Service_Provider {
 	/**
 	 * Output the HTML for the Orders breadcrumb.
 	 *
-	 * @since TBD
+	 * @since 5.13.3
 	 */
 	public function render_breadcrumb_order_edit_screen_html() {
 		$url  = esc_url( admin_url( get_current_screen()->parent_file ) );
@@ -118,7 +118,7 @@ STR;
 	/**
 	 * Add our custom Tickets Commerce Order Detail class to the body of the page.
 	 *
-	 * @since TBD
+	 * @since 5.13.3
 	 *
 	 * @param string $classes The classes string for the body attribute.
 	 *
@@ -140,7 +140,7 @@ STR;
 	 *
 	 * This is used so in order when a single order is being viewed the Tickets admin menu item is open.
 	 *
-	 * @since TBD
+	 * @since 5.13.3
 	 *
 	 * @param string $submenu_file The submenu file.
 	 *
@@ -163,7 +163,7 @@ STR;
 	/**
 	 * Restores the current parent file.
 	 *
-	 * @since TBD
+	 * @since 5.13.3
 	 *
 	 * @return void
 	 */
@@ -180,7 +180,7 @@ STR;
 	/**
 	 * ET Template class instance.
 	 *
-	 * @since TBD
+	 * @since 5.13.3
 	 *
 	 * @param string $name    The name of the template to load.
 	 * @param array  $context The context to pass to the template.
@@ -203,7 +203,7 @@ STR;
 	/**
 	 * Adds the metaboxes to the order post type.
 	 *
-	 * @since TBD
+	 * @since 5.13.3
 	 *
 	 * @param string  $post_type The post type.
 	 * @param WP_Post $post The post object.
@@ -253,7 +253,7 @@ STR;
 	/**
 	 * Renders the actions metabox.
 	 *
-	 * @since TBD
+	 * @since 5.13.3
 	 *
 	 * @param WP_Post $post The post object.
 	 *
@@ -272,7 +272,7 @@ STR;
 	/**
 	 * Renders the order details metabox.
 	 *
-	 * @since TBD
+	 * @since 5.13.3
 	 *
 	 * @param WP_Post $post The post object.
 	 *
@@ -291,7 +291,7 @@ STR;
 	/**
 	 * Renders the order items metabox.
 	 *
-	 * @since TBD
+	 * @since 5.13.3
 	 *
 	 * @param WP_Post $post The post object.
 	 *
@@ -310,7 +310,7 @@ STR;
 	/**
 	 * Get the gateway label for the order.
 	 *
-	 * @since TBD
+	 * @since 5.13.3
 	 *
 	 * @param WP_Post|int $order The order post object or ID.
 	 *
@@ -356,7 +356,7 @@ STR;
 	/**
 	 * Updates the order status.
 	 *
-	 * @since TBD
+	 * @since 5.13.3
 	 *
 	 * @param int     $post_id The post ID.
 	 * @param WP_Post $post    The post object.
