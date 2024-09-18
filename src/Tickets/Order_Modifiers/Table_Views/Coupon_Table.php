@@ -85,6 +85,24 @@ class Coupon_Table extends Order_Modifier_Table {
 	}
 
 	/**
+	 * Renders the fee amount column for the current item.
+	 *
+	 * This method uses the modifier's `display_amount_field` to display the fee amount in the appropriate format
+	 * based on the sub_type (e.g., 'flat' or 'percent'). The fee amount is passed in cents and is converted
+	 * accordingly.
+	 *
+	 * @since TBD
+	 *
+	 * @param object $item The current item being rendered. This should contain `fee_amount_cents` and `sub_type`
+	 *     fields.
+	 *
+	 * @return string The formatted fee amount to be displayed in the table.
+	 */
+	protected function render_fee_amount_cents_column( $item ) {
+		return $this->modifier->display_amount_field( $item->fee_amount_cents, $item->sub_type );
+	}
+
+	/**
 	 * Define sortable columns.
 	 *
 	 * @since TBD

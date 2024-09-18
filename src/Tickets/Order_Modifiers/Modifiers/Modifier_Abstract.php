@@ -18,6 +18,7 @@
 
 namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
+use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
 use TEC\Tickets\Order_Modifiers\Modifier_Settings;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers as Order_Modifiers_Repository;
@@ -246,6 +247,72 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 */
 	public function convert_from_cents( int $cents ): string {
 		return number_format( $cents / 100, 2, '.', '' );
+	}
+
+	/**
+	 * Displays the formatted amount based on the type.
+	 *
+	 * Depending on whether the modifier is a percentage, flat fee, or any future type,
+	 * it will format the value accordingly. For percentages, it appends the '%' symbol,
+	 * and for flat fees, it formats the value as currency.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $value The raw amount value (e.g., in cents for flat fees).
+	 * @param string $type  The type of the fee ('percent' for percentage-based, 'flat' for fixed value).
+	 *
+	 * @return string The formatted amount, either as a percentage, currency, or future types.
+	 */
+	public function display_amount_field( int $value, string $type = 'flat' ) {
+		switch ( $type ) {
+			case 'percent':
+				// Return the value as a percentage with the '%' symbol.
+				return $this->display_percentage( $value );
+
+			case 'flat':
+			default:
+				// Return the value as a flat fee (currency) for 'flat' or unknown types.
+				return $this->display_flat_fee( $value );
+		}
+	}
+
+	/**
+	 * Formats the given value as a percentage.
+	 *
+	 * Converts the value from cents and appends a '%' symbol. If the percentage is a whole number, it drops the
+	 * decimal places (e.g., '23%' instead of '23.00%').
+	 *
+	 * @since TBD
+	 *
+	 * @param int $value The raw percentage value in cents.
+	 *
+	 * @return string The formatted percentage value.
+	 */
+	protected function display_percentage( $value ) {
+		$value = $this->convert_from_cents( $value );
+
+		// If the value is a whole number, format it without decimals.
+		if ( intval( $value ) == $value ) {
+			$value = intval( $value ); // Cast to int to remove the '.00'.
+		}
+
+		return $value . '%';
+	}
+
+	/**
+	 * Formats the given value as currency.
+	 *
+	 * Uses the Value class to convert the raw value (in cents) into a properly formatted currency amount.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $value The raw value in cents.
+	 *
+	 * @return string The formatted currency value (e.g., '10.00' for 1000 cents).
+	 */
+	protected function display_flat_fee( $value ) {
+		$value = $this->convert_from_cents( $value );
+		return Value::create( $value )->get_currency();
 	}
 
 	/**
