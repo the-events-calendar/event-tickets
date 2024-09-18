@@ -1049,7 +1049,7 @@ class List_Table extends WP_List_Table {
 
 		$attendee_query = new WP_Query(
 			[
-				'posts_per_page' => count( $ticket_ids ),
+				'posts_per_page' => 250,
 				'post_type'      => $this->get_attendee_post_type(),
 				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				'meta_query'     => [
