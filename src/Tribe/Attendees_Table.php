@@ -1148,8 +1148,15 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		 */
 		$search_keys = apply_filters( 'tribe_tickets_search_attendees_by', $search_keys, [], $search );
 
-		// Default selection.
-		$search_key = 'purchaser_name';
+		/**
+		 * Filters the default key to search attendees by.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $search_key  The default key to search attendees by.
+		 * @param array  $search_keys The keys that can be used to search attendees.
+		 */
+		$search_key = apply_filters( 'tribe_tickets_search_attendees_default', 'purchaser_name', $search_keys );
 
 		$search_type = sanitize_text_field( tribe_get_request_var( 'tribe_attendee_search_type' ) );
 
