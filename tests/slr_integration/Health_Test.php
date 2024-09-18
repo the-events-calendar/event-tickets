@@ -8,6 +8,7 @@ use Tribe\Tests\Traits\WP_Remote_Mocks;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\StellarWP\Uplink\Resources\License;
+use TEC\Tickets\Seating\Service\Service;
 
 class Health_Test extends Controller_Test_Case {
 	use WP_Send_Json_Mocks;
@@ -49,8 +50,8 @@ class Health_Test extends Controller_Test_Case {
 	 * @test
 	 */
 	public function it_should_fail_when_no_nonce() {
-		$this->user = self::factory()->user->create( [ 'role' => 'administrator' ] );
-		wp_set_current_user( $this->user );
+		$test_user = self::factory()->user->create( [ 'role' => 'administrator' ] );
+		wp_set_current_user( $test_user );
 
 		$controller = $this->make_controller();
 		$controller->register();
@@ -64,8 +65,8 @@ class Health_Test extends Controller_Test_Case {
 	 * @test
 	 */
 	public function it_should_check_slr_valid_license_with_invalid_license() {
-		$this->user = self::factory()->user->create( [ 'role' => 'administrator' ] );
-		wp_set_current_user( $this->user );
+		$test_user = self::factory()->user->create( [ 'role' => 'administrator' ] );
+		wp_set_current_user( $test_user );
 
 		$controller = $this->make_controller();
 		$controller->register();
@@ -88,8 +89,8 @@ class Health_Test extends Controller_Test_Case {
 	 * @test
 	 */
 	public function it_should_check_slr_valid_license() {
-		$this->user = self::factory()->user->create( [ 'role' => 'administrator' ] );
-		wp_set_current_user( $this->user );
+		$test_user = self::factory()->user->create( [ 'role' => 'administrator' ] );
+		wp_set_current_user( $test_user );
 
 		$controller = $this->make_controller();
 		$controller->register();
@@ -103,6 +104,58 @@ class Health_Test extends Controller_Test_Case {
 
 		// Success.
 		$controller->check_slr_valid_license();
+		$this->assertTrue( $wp_send_json_success->was_called() );
+		$this->assertFalse( $wp_send_json_error->was_called() );
+
+		$this->assertMatchesJsonSnapshot( $wp_send_json_success->get_pretty_arguments() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_check_slr_can_see_sass_when_sass_unavailable() {
+		$test_user = self::factory()->user->create( [ 'role' => 'administrator' ] );
+		wp_set_current_user( $test_user );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$wp_send_json_error   = $this->mock_wp_send_json_error();
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( self::NONCE_ACTION );
+
+		$this->set_class_fn_return( Service::class, 'check_connection', false );
+
+		// Fail because not valid license.
+		$controller->check_slr_can_see_sass();
+
+		$this->assertTrue( $wp_send_json_error->was_called() );
+		$this->assertFalse( $wp_send_json_success->was_called() );
+
+		$this->assertMatchesJsonSnapshot( $wp_send_json_error->get_pretty_arguments() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_check_slr_can_see_sass_when_sass_available() {
+		$test_user = self::factory()->user->create( [ 'role' => 'administrator' ] );
+		wp_set_current_user( $test_user );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$wp_send_json_error   = $this->mock_wp_send_json_error();
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( self::NONCE_ACTION );
+
+		$this->set_class_fn_return( Service::class, 'check_connection', true );
+
+		// Fail because not valid license.
+		$controller->check_slr_can_see_sass();
+
 		$this->assertTrue( $wp_send_json_success->was_called() );
 		$this->assertFalse( $wp_send_json_error->was_called() );
 
