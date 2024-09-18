@@ -1092,6 +1092,16 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$cache     = tribe( 'cache' );
 		$cache_key = __METHOD__ . '-' . md5( wp_json_encode( $args ) . $event_id );
 
+		/**
+		 * Filters the cache key used to store the attendees table items.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $cache_key The cache key used to store the attendees table items.
+		 * @param array  $args      The arguments used to query the attendees for the Attendees Table.
+		 * @param int    $event_id  The event ID for the Attendees Table.
+		 */
+		$cache_key = apply_filters( 'tec_tickets_attendees_table_cache_key', $cache_key, $args, $event_id );
 
 		// If we have a cached version of the attendees, use that.
 		$cached = $cache->get( $cache_key );
