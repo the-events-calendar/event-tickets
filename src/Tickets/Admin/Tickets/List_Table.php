@@ -408,7 +408,7 @@ class List_Table extends WP_List_Table {
 			$this->events_by_id[ $event_id ] = $event;
 		}
 
-		$ecp_installed = class_exists( Custom_Tables_Links_Provider::class );
+		$ecp_installed = has_action( 'tribe_common_loaded', 'tribe_register_pro' );
 		if ( $ecp_installed ) {
 			remove_filter( 'get_edit_post_link', [ tribe( Custom_Tables_Links_Provider::class ), 'update_event_edit_link' ], 10 );
 		}
