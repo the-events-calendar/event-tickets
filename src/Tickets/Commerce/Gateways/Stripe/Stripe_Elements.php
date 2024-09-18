@@ -72,7 +72,6 @@ class Stripe_Elements {
 
 	/**
 	 * Include the Stripe Card Element form.
-	 * Temp change to trigger github tests
 	 *
 	 * @since 5.3.0
 	 *
