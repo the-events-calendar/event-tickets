@@ -326,6 +326,16 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @return {Promise<*>}
 	 */
 	obj.submitMultiPayment = async ( order ) => {
+		// Only if we don't have the address fields to collect
+		if ( 0 === $('#tec-tc-gateway-stripe-render-payment').length ) {
+			return obj.stripeLib.confirmPayment( {
+				elements: obj.stripeElements,
+				redirect: 'if_required',
+				confirmParams: {
+					return_url: order.redirect_url
+				}
+			} ).then( obj.handleConfirmPayment );
+		}
 
 		return obj.stripeLib.confirmPayment( {
 			elements: obj.stripeElements,
