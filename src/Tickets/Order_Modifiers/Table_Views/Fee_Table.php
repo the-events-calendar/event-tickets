@@ -18,7 +18,7 @@ class Fee_Table extends Order_Modifier_Table {
 	 */
 	public function get_columns() {
 		return [
-			'display_name'     => __( 'Fee', 'event-tickets' ),
+			'display_name'     => __( 'Fee Name', 'event-tickets' ),
 			'fee_amount_cents' => __( 'Amount', 'event-tickets' ),
 			'active_on'        => __( 'Active on', 'event-tickets' ),
 		];
@@ -112,4 +112,28 @@ class Fee_Table extends Order_Modifier_Table {
 			'fee_amount_cents' => [ 'fee_amount_cents', false ],
 		];
 	}
+
+	/**
+	 * Renders the explanation text for the table.
+	 *
+	 * This method returns a description related to the current table context, providing users with information
+	 * about the functionality of the modifiers they are viewing or editing.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The explanation text with a clickable "Learn More" link.
+	 */
+	public function render_table_explain_text(): string {
+		$learn_more_link = sprintf(
+			'<a href="%s">%s</a>',
+			'#', // @todo redscar - need to get the KB article link.
+			__( 'Learn More', 'event-tickets' )
+		);
+
+		return sprintf(
+			'Fees will be applied to the cart at checkout. Fees can only be used with Tickets Commerce transactions. %s',
+			$learn_more_link
+		);
+	}
+
 }

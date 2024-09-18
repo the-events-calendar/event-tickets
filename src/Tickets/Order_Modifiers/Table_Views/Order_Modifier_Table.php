@@ -35,7 +35,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		parent::__construct(
 			[
 				'singular' => __( $modifier->get_modifier_type(), 'event-tickets' ),
-				'plural'   => __( $modifier->get_modifier_type() . 's', 'event-tickets' ),
+				'plural'   => __( $modifier->get_modifier_type() . 's', 'event-tickets' ), // @todo redscar - Need to implement better plural logic.
 				'ajax'     => false,
 			]
 		);
@@ -165,7 +165,8 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 *
 	 * @param string $text The text to display in the submit button.
 	 * @param string $input_id The input ID.
-	 * @param string $placeholder The placeholder text to display in the search input.
+	 * @param string $placeholder The placeholder text to display in the search input. If Placeholder is empty it will
+	 *                                default to the `display_name` column.
 	 *
 	 * @return void
 	 */
@@ -175,6 +176,10 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		}
 
 		$input_id = $input_id . '-search-input';
+
+		if ( empty( $placeholder ) ) {
+			$placeholder = $this->get_columns()['display_name'];
+		}
 
 		echo '<p class="search-box">';
 		echo '<label class="screen-reader-text" for="' . esc_attr( $input_id ) . '">' . esc_html( $text ) . '</label>';
@@ -251,5 +256,20 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 
 		// Output the title and the "Add New" button.
 		echo '<h3>' . esc_html( $modifier ) . ' <a href="' . esc_url( $add_new_url ) . '" class="page-title-action button">' . esc_html__( 'Add New', 'event-tickets' ) . '</a></h3>';
+	}
+
+	/**
+	 * Displays explanatory text below the tab title on the current page.
+	 *
+	 * This method allows for custom explanatory text to be rendered
+	 * under the title of the active tab in the table view.
+	 * It can be overridden by subclasses to provide specific content
+	 * based on the modifier type or context.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function render_table_explain_text() {
 	}
 }

@@ -38,8 +38,12 @@ $form_classes = [
 		?>
 
 		<?php
+		// Render the explanation text about the order modifier you are currently viewing.
+		echo wp_kses_post( $order_modifier_table->render_table_explain_text() );
+		?>
+		<?php
 		// Render the search box with a placeholder for searching through modifiers (e.g., Coupons, Fees).
-		$order_modifier_table->search_box( __( 'Search', 'event-tickets' ), 'order-modifier-search', __( 'Search Modifiers', 'event-tickets' ) );
+		$order_modifier_table->search_box( __( 'Search', 'event-tickets' ), 'order-modifier-search' );
 		?>
 
 		<?php

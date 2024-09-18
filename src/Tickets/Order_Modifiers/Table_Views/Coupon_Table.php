@@ -119,4 +119,28 @@ class Coupon_Table extends Order_Modifier_Table {
 			'status'           => [ 'status', false ],
 		];
 	}
+
+	/**
+	 * Renders the explanation text for the table.
+	 *
+	 * This method returns a description related to the current table context, providing users with information
+	 * about the functionality of modifiers they are viewing or editing.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The explanation text with a clickable "Learn More" link.
+	 */
+	public function render_table_explain_text(): string {
+		$learn_more_link = sprintf(
+			'<a href="%s">%s</a>',
+			'#', // @todo redscar - need to get the KB article link.
+			__( 'Learn More', 'event-tickets' )
+		);
+
+		return sprintf(
+			'Create a coupon for a discount to be applied at checkout. Coupons can only be used with Tickets Commerce transactions. %s',
+			$learn_more_link
+		);
+	}
+
 }
