@@ -415,23 +415,28 @@ function toggleMobileSidebarOpen(dom) {
 function setupMobileTicketsDrawer(dom) {
 	dom = dom || document;
 
-	if(window && window.innerWidth <= 960) {
-		const iframeContainer = dom.querySelector('.tec-tickets-seating__iframe-container');
+	if (window && window.innerWidth <= 960) {
+		const iframeContainer = dom.querySelector(
+			'.tec-tickets-seating__iframe-container'
+		);
 		iframeContainer.style.height = iframeContainer.clientHeight + 'px';
 		iframeContainer.style.maxHeight = iframeContainer.clientHeight + 'px';
 
-		const sidebarContainer = dom.querySelector('.tec-tickets-seating__modal-sidebar_container');
+		const sidebarContainer = dom.querySelector(
+			'.tec-tickets-seating__modal-sidebar_container'
+		);
 		sidebarContainer.style.height = sidebarContainer.clientHeight + 'px';
 		sidebarContainer.style.minHeight = sidebarContainer.clientHeight + 'px';
 		sidebarContainer.style.maxHeight = sidebarContainer.clientHeight + 'px';
 
-		const sidebar = sidebarContainer.querySelector('.tec-tickets-seating__modal-sidebar');
+		const sidebar = sidebarContainer.querySelector(
+			'.tec-tickets-seating__modal-sidebar'
+		);
 		if (sidebar) {
 			sidebar.style.position = 'absolute';
 		}
 	}
 }
-
 
 /**
  * Bootstraps the service iframe starting the communication with the service.
