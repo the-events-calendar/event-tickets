@@ -1,0 +1,18 @@
+[
+    [
+        {
+            "label": "Can serve AJAX requests in the rate required by the Seating functionality.",
+            "completed": true,
+            "status": "good",
+            "badge": {
+                "label": "Seating",
+                "color": "blue"
+            },
+            "description": "Your site can serve AJAX requests in the rate required by the Seating functionality!",
+            "actions": "<p><a href=\u0022https://theeventscalendar.com/product/seating/\u0022 target=\u0022_blank\u0022 rel=\u0022noopener noreferrer\u0022>Learn more about Seating</a></p>",
+            "test": "slr-ajax-rate"
+        },
+        null,
+        0
+    ]
+]

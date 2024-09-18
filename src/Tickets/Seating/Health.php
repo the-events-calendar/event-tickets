@@ -319,6 +319,8 @@ class Health extends Controller_Contract {
 
 			if ( is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) !== 200 ) {
 				wp_send_json_error( $this->get_failed_test_result( $test ) );
+				// Return helps with testing, since we 'll mock wp_send_json functions.
+				return;
 			}
 		}
 
@@ -335,6 +337,8 @@ class Health extends Controller_Contract {
 	public function test_ajax_rate() {
 		if ( ! wp_verify_nonce( wp_unslash( $_GET )['nonce'] ?? '', 'tec-site-health-test-' . $this->tests['slr_ajax_rate']['test'] ) ) {
 			wp_send_json( [], 400, 0 );
+			// Return helps with testing, since we 'll mock wp_send_json functions.
+			return;
 		}
 
 		wp_send_json( [], 200, 0 );
