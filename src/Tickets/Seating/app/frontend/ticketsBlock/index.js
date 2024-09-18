@@ -405,14 +405,14 @@ function toggleMobileSidebarOpen(dom) {
 }
 
 /**
- * Inits the ticket drawer/sidebar and iframe ready to be used.
+ * Setups up the mobile version of the ticket drawer and iframe.
  *
  * @since TBD
  *
  *
  * @param {HTMLElement} dom The dom or document
  */
-function setupTicketsDrawer(dom) {
+function setupMobileTicketsDrawer(dom) {
 	dom = dom || document;
 
 	if(window && window.innerWidth <= 960) {
@@ -456,7 +456,7 @@ export async function bootstrapIframe(dom) {
 
 	await initServiceIframe(iframe);
 	toggleMobileSidebarOpen(dom);
-	setupTicketsDrawer(dom);
+	setupMobileTicketsDrawer(dom);
 
 	totalPriceElement = dom.querySelector('.tec-tickets-seating__total-price');
 
