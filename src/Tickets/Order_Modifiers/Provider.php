@@ -1,6 +1,10 @@
 <?php
 /**
+ * Event Tickets Order Modifiers Provider.
  *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Order_Modifiers
  */
 
 declare( strict_types=1 );
@@ -17,7 +21,9 @@ use TEC\Common\lucatume\DI52\ServiceProvider;
 class Provider extends ServiceProvider {
 
 	/**
-	 * @inheritDoc
+	 * Registers the service provider bindings.
+	 *
+	 * @return void The method does not return any value.
 	 */
 	public function register() {
 		$this->container->singleton( static::class, $this );
