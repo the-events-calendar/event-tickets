@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Fix attendee search caching, and add search-related filters. [ET-2218]
