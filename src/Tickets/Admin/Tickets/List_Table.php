@@ -19,6 +19,7 @@ use Tribe__Template;
 use Tribe__Tickets__Main;
 use WP_Post;
 use WP_Query;
+use TEC\Events_Pro\Custom_Tables\V1\Links\Provider as Custom_Tables_Links_Provider;
 
 /**
  * Class List_Table.
@@ -70,6 +71,13 @@ class List_Table extends WP_List_Table {
 	 * @var WP_Query $query
 	 */
 	protected $query;
+
+	/**
+	 * List of events by ID.
+	 *
+	 * @var array
+	 */
+	protected $events_by_id = [];
 
 	/**
 	 * List of event edit URLs.
@@ -393,7 +401,23 @@ class List_Table extends WP_List_Table {
 			return $this->event_edit_urls[ $event_id ];
 		}
 
-		$edit_post_url                      = get_edit_post_link( $event_id );
+		if ( isset( $this->events_by_id[ $event_id ] ) ) {
+			$event = $this->events_by_id[ $event_id ];
+		} else {
+			$event = get_post( $event_id );
+			$this->events_by_id[ $event_id ] = $event;
+		}
+
+		$ecp_installed = class_exists( Custom_Tables_Links_Provider::class );
+		if ( $ecp_installed ) {
+			remove_filter( 'get_edit_post_link', [ tribe( Custom_Tables_Links_Provider::class ), 'update_event_edit_link' ], 10 );
+		}
+
+		$edit_post_url = get_edit_post_link( $event );
+
+		if ( $ecp_installed ) {
+			add_filter( 'get_edit_post_link', [ tribe( Custom_Tables_Links_Provider::class ), 'update_event_edit_link' ], 10, 2 );
+		}
 		$this->event_edit_urls[ $event_id ] = $edit_post_url;
 
 		return $edit_post_url;
@@ -996,6 +1020,11 @@ class List_Table extends WP_List_Table {
 				'update_post_meta_cache' => true,
 			]
 		);
+		if ( $event_query->found_posts ) {
+			foreach ( $event_query->posts as $event ) {
+				$this->events_by_id[ $event->ID ] = $event;
+			}
+		}
 
 		// Only continue if we're looking at Tickets Commerce tickets.
 		if ( Page::get_current_provider() !== TicketsCommerce\Module::class ) {
