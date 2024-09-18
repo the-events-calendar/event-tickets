@@ -1105,7 +1105,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		// If we have a cached version of the attendees, use that.
 		$cached = $cache->get( $cache_key );
-		if ( $cached ) {
+		if ( false !== $cached ) {
 			$this->items = $cached;
 			return;
 		}
