@@ -152,6 +152,8 @@ class Controller extends Controller_Contract {
 		}
 
 		$this->container->register( QR::class );
+
+		$this->container->register( Health::class );
 	}
 
 	/**
