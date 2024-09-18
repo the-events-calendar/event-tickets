@@ -1034,6 +1034,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * Prepares the list of items for displaying.
 	 *
 	 * @since 5.8.4 Adding caching to eliminate method running multiple times.
+	 *
+	 * @return void
 	 */
 	public function prepare_items() {
 		$this->process_actions();
@@ -1058,16 +1060,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		if ( empty( $event_id ) ) {
 			$event_id = 0;
-		}
-
-		/** @var Tribe__Cache $cache */
-		$cache     = tribe( 'cache' );
-		$cache_key = __METHOD__ . '-' . md5( wp_json_encode( $args ) . $event_id );
-		$cached    = $cache->get( $cache_key );
-
-		if ( $cached ) {
-			$this->items = $cached;
-			return $cached;
 		}
 
 		// Set up the search args if we have a search term.
@@ -1096,13 +1088,22 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		 */
 		$args = apply_filters( 'tec_tickets_attendees_table_query_args', $args, $event_id );
 
+		/** @var Tribe__Cache $cache */
+		$cache     = tribe( 'cache' );
+		$cache_key = __METHOD__ . '-' . md5( wp_json_encode( $args ) . $event_id );
+
+
+		// If we have a cached version of the attendees, use that.
+		$cached = $cache->get( $cache_key );
+		if ( $cached ) {
+			$this->items = $cached;
+			return;
+		}
+
+		$items     = [];
 		$item_data = Tribe__Tickets__Tickets::get_attendees_by_args( $args, $event_id );
-
-		$items = [];
-
 		if ( ! empty( $item_data ) ) {
-			$items = $item_data['attendees'];
-
+			$items                          = $item_data['attendees'];
 			$pagination_args['total_items'] = $item_data['total_found'];
 		}
 
