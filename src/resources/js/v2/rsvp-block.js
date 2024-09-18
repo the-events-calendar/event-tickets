@@ -60,7 +60,7 @@ tribe.tickets.rsvp.block = {};
 				data = {
 					action: 'tribe_tickets_rsvp_handle',
 					ticket_id: rsvpId,
-					step: 'going',
+					step: 'going'
 				};
 
 				tribe.tickets.rsvp.manager.request( data, $container );
