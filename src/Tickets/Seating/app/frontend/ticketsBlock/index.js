@@ -22,8 +22,6 @@ import {
 	reset as resetTimer,
 } from '@tec/tickets/seating/frontend/session';
 import './filters';
-import { onReady } from '@tec/tickets/seating/utils';
-
 
 const {
 	objectName,
@@ -420,7 +418,6 @@ function setupTicketsDrawer(dom) {
 	if(window && window.innerWidth <= 960) {
 		const iframeContainer = dom.querySelector('.tec-tickets-seating__iframe-container');
 		iframeContainer.style.height = iframeContainer.clientHeight + 'px';
-		iframeContainer.style.minHeight = iframeContainer.clientHeight + 'px';
 		iframeContainer.style.maxHeight = iframeContainer.clientHeight + 'px';
 
 		const sidebarContainer = dom.querySelector('.tec-tickets-seating__modal-sidebar_container');
