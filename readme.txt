@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.13.3
+Stable tag: 5.13.1
 Requires at least: 6.3
 Tested up to: 6.6.1
 Requires PHP: 7.4
@@ -196,7 +196,6 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Make sure you are reporting in a safe and responsible way. We take security very seriously. If you discover a security issue, please bring it to our attention right away! Below you will find all the methods to report security vulnerabilities:
 
 * [Report security bugs through the Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/event-tickets)
-* Check our [Bug Bounty Program](https://www.liquidweb.com/policies/bug-bounty-program/)
 * Reach out directly to us on `security [at] stellarwp.com`.
 
 = I've still got questions. Where can I find answers? =
@@ -205,24 +204,6 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
-
-= [5.13.3] 2024-09-11 =
-
-* Feature - Added Individual Order Screen in the Admin to improve the Order Management for Tickets Commerce. [ET-2150]
-* Tweak - Tweaked `setupCompactCardElement` method to allow filtering of options using the existing `tec_tickets_commerce_stripe_checkout_localized_data` filter. [TECTRIA-295]
-* Tweak - Made a string translatable in `getting-started.php` file. (props to @DAnn2012) [TECTRIA-303]
-* Tweak - Added filters: `post_updated_messages`
-* Tweak - Added actions: `tribe_tickets_commerce_order_actions_box_start`
-* Language - 44 new strings added, 39 updated, 1 fuzzied, and 0 obsoleted
-
-= [5.13.2] 2024-08-20 =
-
-* Fix - Exporting all Attendees as a CSV file in the new Tickets Attendees Page. [ET-2094]
-* Fix - Shared capacity will no longer be affected by any of the unlimited sales tickets on the same event. [ETP-920]
-* Tweak - Start Sale and End Sale date will autopopulate when creating a new ticket. [ET-2103]
-* Tweak - Update legacy Wallet Plus plugin notices to the new Tickets Plus plugin.
-* Tweak - Changed views: `v2/commerce/checkout/gateways`, `v2/commerce/checkout/purchaser-info`, `v2/commerce/checkout/purchaser-info/address`, `v2/commerce/checkout/purchaser-info/city`, `v2/commerce/checkout/purchaser-info/country`, `v2/commerce/checkout/purchaser-info/email`, `v2/commerce/checkout/purchaser-info/name`, `v2/commerce/checkout/purchaser-info/state`, `v2/commerce/checkout/purchaser-info/zip`, `v2/commerce/gateway/stripe/payment-element`
-* Language - 2 new strings added, 33 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.13.1] 2024-08-06 =
 

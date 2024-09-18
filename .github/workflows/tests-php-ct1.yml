@@ -8,7 +8,7 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'codeception.dist.yml'
-      - '.github/**/*'
+      - '.github/workflows/tests-php-ct1.yaml'
 jobs:
   test:
     strategy:
@@ -22,7 +22,7 @@ jobs:
       # Checkout the repo
       # ------------------------------------------------------------------------------
       - name: Checkout the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
         with:
           fetch-depth: 1000
           token: ${{ secrets.GH_BOT_TOKEN }}
@@ -35,20 +35,17 @@ jobs:
         run: |
           num_php_files=$(git diff ${{ github.event.pull_request.base.sha }} HEAD --name-only | grep -P "\.php" | wc -l)
           if [[ -z "$num_php_files" ]]; then
-            echo "value=1" >> $GITHUB_OUTPUT
-            echo "## No PHP Files changed, PHP tests automatically pass." >> $GITHUB_STEP_SUMMARY
+            echo "::set-output name=value::1"
           elif [[ "$num_php_files" == "0" || "$num_php_files" == "" ]]; then
-            echo "value=1" >> $GITHUB_OUTPUT
-            echo "## No PHP Files changed, PHP tests automatically pass." >> $GITHUB_STEP_SUMMARY
+            echo "::set-output name=value::1"
           else
-            echo "value=0" >> $GITHUB_OUTPUT
-            echo "## Found PHP file changes, running PHP tests." >> $GITHUB_STEP_SUMMARY
+            echo "::set-output name=value::0"
           fi
       # ------------------------------------------------------------------------------
       # Checkout slic
       # ------------------------------------------------------------------------------
       - name: Checkout slic
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
         if: steps.skip.outputs.value != 1
         with:
           repository: stellarwp/slic
@@ -173,7 +170,7 @@ jobs:
       # Clone and init TEC
       # ------------------------------------------------------------------------------
       - name: Clone TEC
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
         if: steps.skip.outputs.value != 1
         with:
           fetch-depth: 1
@@ -209,7 +206,7 @@ jobs:
       # Clone and init ECP
       # ------------------------------------------------------------------------------
       - name: Clone ECP
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
         if: steps.skip.outputs.value != 1
         with:
           fetch-depth: 1
@@ -284,7 +281,7 @@ jobs:
       # Upload artifacts (On failure)
       # ------------------------------------------------------------------------------
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v2
         if: steps.skip.outputs.value != 1 && failure()
         with:
           name: output ${{ matrix.suite }}

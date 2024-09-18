@@ -5,34 +5,7 @@ CURRENT_VERSION=${2-}
 ACTION_TYPE=${3-generate}
 RELEASE_DATE=${4-today}
 
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  # macOS with gdate
-  RELEASE_DATE=$( gdate "+%Y-%m-%d" -d "$RELEASE_DATE" )
-else
-  # Linux
-  RELEASE_DATE=$( date "+%Y-%m-%d" -d "$RELEASE_DATE" )
-fi
-
-sed_compatible() {
-    if [[ "$1" == "-r" ]]; then
-        # Remove the -r argument
-        shift
-        if [[ "$OSTYPE" == "darwin"* ]]; then
-            # macOS with -E flag
-            sed -i '' -E "$@"
-        else
-            # Linux with -r flag
-            sed -i -r "$@"
-        fi
-    else
-        # No -r argument, regular sed command
-        if [[ "$OSTYPE" == "darwin"* ]]; then
-            sed -i '' "$@"
-        else
-            sed -i "$@"
-        fi
-    fi
-}
+RELEASE_DATE=$( date "+%Y-%m-%d" -d "$RELEASE_DATE" ) # Release date formatted as YYYY-MM-DD
 
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 
@@ -41,7 +14,7 @@ cd $SCRIPT_DIR/../
 echo "RELEASE_DATE=$RELEASE_DATE"
 
 if [ "$ACTION_TYPE" == "amend-version" ]; then
-	sed_compatible "s/^### \[$CURRENT_VERSION\] .*$/### [$RELEASE_VERSION] $RELEASE_DATE/" changelog.md
+	sed -i "s/^### \[$CURRENT_VERSION\] .*$/### [$RELEASE_VERSION] $RELEASE_DATE/" changelog.md
 else
 	if [ "$ACTION_TYPE" == "generate" ]; then
 		CHANGELOG_FLAG=""
@@ -65,11 +38,11 @@ CHANGELOG=${CHANGELOG//&/\\&}
 echo "CHANGELOG=$CHANGELOG"
 
 if [ "$ACTION_TYPE" == "amend-version" ]; then
-	sed_compatible "s/^= \[$CURRENT_VERSION\] .* =$/= [$RELEASE_VERSION] $RELEASE_DATE =/" readme.txt
+	sed -i "s/^= \[$CURRENT_VERSION\] .* =$/= [$RELEASE_VERSION] $RELEASE_DATE =/" readme.txt
 else
 	if [ "$ACTION_TYPE" == "amend" ]; then
 	perl -i -p0e "s/= \[$RELEASE_VERSION\].*? =(.*?)(\n){2}(?==)//s" readme.txt # Delete the existing changelog for the release version first
 	fi
 
-	sed_compatible -r "s|(== Changelog ==)|\1\n\n= [$RELEASE_VERSION] $RELEASE_DATE =\n\n$CHANGELOG|" readme.txt
+	sed -ri "s|(== Changelog ==)|\1\n\n= [$RELEASE_VERSION] $RELEASE_DATE =\n\n$CHANGELOG|" readme.txt
 fi

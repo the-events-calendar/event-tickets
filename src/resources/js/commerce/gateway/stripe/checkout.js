@@ -500,22 +500,15 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @link https://stripe.com/docs/js/elements_object/create_element?type=card#elements_create-options
 	 *
 	 * @since 5.3.0
-	 * @since TBD Pulled out `options` variable to allow filtering using `tec_tickets_commerce_stripe_checkout_localized_data`.
 	 */
 	obj.setupCompactCardElement = () => {
-		const options = obj.checkout.cardElementOptions;
-
-		// If there are no customized style options being added, use the previously defined default.
-		if( ! options.style ){
-			options.style = obj.checkout.cardElementStyle;
-		}
-
-		// Instantiate the CardElement with the options.
-		obj.cardElement = obj.stripeElements.create( 'card', options );
+		// Instantiate the CardElement with a single field combo.
+		obj.cardElement = obj.stripeElements.create( 'card', {
+			style: obj.checkout.cardElementStyle,
+		} );
 		obj.cardElement.mount( obj.selectors.cardElement );
 		obj.cardElement.on( 'change', obj.onCardChange );
 	};
-
 
 	/**
 	 * Configure the PaymentElement with separate fields.
@@ -602,6 +595,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			$('.tribe-tickets__commerce-checkout-section-header').removeClass( obj.selectors.hiddenElement.className() )
 		}, 2000);
 	}
+
 
 	/**
 	 * Setup and initialize Stripe API.

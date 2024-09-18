@@ -893,7 +893,6 @@ class Ticket {
 	 * @todo  TribeCommerceLegacy: This should be moved into using a Flag Action.
 	 *
 	 * @since 5.1.9
-	 * @since 5.13.3 Modified logic when updating global stock.
 	 *
 	 * @param int                                $ticket_id       The ticket post ID.
 	 * @param int                                $quantity        The quantity to increase the ticket sales by.
@@ -918,7 +917,7 @@ class Ticket {
 			$updated_total_sales
 		);
 
-		if ( $shared_capacity && $global_stock instanceof \Tribe__Tickets__Global_Stock ) {
+		if ( 'own' !== $shared_capacity && $global_stock instanceof \Tribe__Tickets__Global_Stock ) {
 			$this->update_global_stock( $global_stock, $quantity );
 		}
 
