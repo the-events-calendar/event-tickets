@@ -33,37 +33,35 @@
 	</iframe>
 </div>
 
-<div class="tec-tickets-seating__modal-sidebar-wrapper">
+<div class="tec-tickets-seating__modal-sidebar_container">
 	<aside class="tec-tickets-seating__modal-sidebar">
-		<div class="tec-tickets-seating__sidebar-content">
 
-			<div class="tec-tickets-seating__sidebar-header">
-				<h4 class="tribe-common-h4 tec-tickets-seating__title">
-					Tickets
-				</h4>
+		<div class="tec-tickets-seating__sidebar-header">
+			<h4 class="tribe-common-h4 tec-tickets-seating__title">
+				<?php esc_html_e( 'Tickets', 'event-tickets' ); ?>
+			</h4>
 
-				<?php
-				/**
-				 * Render the seat selection timer.
-				 *
-				 * @since TBD
-				 *
-				 * @param string $token The ephemeral token used to secure the iframe communication with the service.
-				 * @param int    $post_id The post ID of the post to purchase tickets for.
-				 */
-				do_action( 'tec_tickets_seating_seat_selection_timer', $token, $post_id );
-				?>
-				<div class="tec-tickets-seating__sidebar-arrow">
-					<span class="dashicons dashicons-arrow-up-alt2"></span>
-				</div>
+			<?php
+			/**
+			 * Render the seat selection timer.
+			 *
+			 * @since TBD
+			 *
+			 * @param string $token The ephemeral token used to secure the iframe communication with the service.
+			 * @param int    $post_id The post ID of the post to purchase tickets for.
+			 */
+			do_action( 'tec_tickets_seating_seat_selection_timer', $token, $post_id );
+			?>
+			<div class="tec-tickets-seating__sidebar-arrow">
+				<span class="dashicons dashicons-arrow-up-alt2"></span>
 			</div>
+		</div>
 
-			<div class="tec-tickets-seating__empty-tickets-message">
-				Select a seat from the map to add seated tickets
-			</div>
-			<div class="tec-tickets-seating__tickets-wrapper">
-				<div class="tec-tickets-seating__ticket-rows"></div>
-			</div>
+		<div class="tec-tickets-seating__empty-tickets-message">
+			<?php esc_html_e( 'Select a seat from the map to add seated tickets', 'event-tickets' ); ?>
+		</div>
+		<div class="tec-tickets-seating__tickets-wrapper">
+			<div class="tec-tickets-seating__ticket-rows"></div>
 		</div>
 
 		<div class="tec-tickets-seating__sidebar-footer">
@@ -86,5 +84,4 @@
 			</div>
 		</div>
 	</aside>
-
 </div>

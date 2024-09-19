@@ -60,6 +60,7 @@ class UplinkTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function it_should_have_the_fields_for_seating_licenses_with_incorrect_permissions_snapshot(): void {
 		wp_set_current_user( 0 );
+		$this->set_fn_return( 'wp_create_nonce', '12345678' );
 		$license_fields = apply_filters( 'tribe_license_fields', [], 0, 999 );
 		$this->assertIsArray( $license_fields );
 
@@ -79,6 +80,7 @@ class UplinkTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function it_should_have_the_fields_for_seating_licenses_with_no_license_snapshot(): void {
+		$this->set_fn_return( 'wp_create_nonce', '12345678' );
 		$license_fields = apply_filters( 'tribe_license_fields', [], 0, 999 );
 		$this->assertIsArray( $license_fields );
 
