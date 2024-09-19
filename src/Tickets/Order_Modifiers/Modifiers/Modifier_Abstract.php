@@ -18,10 +18,13 @@
 
 namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
+use InvalidArgumentException;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
+use TEC\Tickets\Order_Modifiers\Models\Order_Modifier_Meta;
 use TEC\Tickets\Order_Modifiers\Modifier_Settings;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers as Order_Modifiers_Repository;
+use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers_Meta as Order_Modifiers_Meta_Repository;
 
 /**
  * Class Modifier_Abstract
@@ -49,6 +52,14 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	protected Order_Modifiers_Repository $repository;
 
 	/**
+	 * The repository for interacting with the order modifiers meta table.
+	 *
+	 * @since TBD
+	 * @var Order_Modifiers_Meta_Repository Repository
+	 */
+	protected Order_Modifiers_Meta_Repository $order_modifiers_meta_repository;
+
+	/**
 	 * Fields required by this modifier.
 	 *
 	 * @since TBD
@@ -64,8 +75,9 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @param string $modifier_type The modifier type (e.g., 'coupon', 'fee').
 	 */
 	public function __construct( string $modifier_type ) {
-		$this->modifier_type = $modifier_type;
-		$this->repository    = new Order_Modifiers_Repository();
+		$this->modifier_type                   = $modifier_type;
+		$this->repository                      = new Order_Modifiers_Repository();
+		$this->order_modifiers_meta_repository = new Order_Modifiers_Meta_Repository();
 	}
 
 	/**
@@ -402,5 +414,44 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		// @todo redscar - Does this logic make sense? Should we alter this?
 		$modifier_settings = new Modifier_Settings();
 		return $modifier_settings->get_page_slug();
+	}
+
+	/**
+	 * Handles metadata for a given modifier, either updating or inserting it as necessary.
+	 *
+	 * This method simplifies metadata handling by centralizing the logic for
+	 * creating/updating meta data. It passes default values which can be overwritten by the passed $args.
+	 * A 'meta_key' is mandatory; if it is missing, an exception will be thrown.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $modifier_id The ID of the modifier.
+	 * @param array $args The metadata arguments. Expects 'meta_key', 'meta_value', and can override 'priority'.
+	 *
+	 * @return mixed
+	 *
+	 * @throws InvalidArgumentException If 'meta_key' is not provided.
+	 */
+	protected function handle_meta_data( int $modifier_id, array $args = [] ): mixed {
+		// Default structure for the metadata.
+
+		$defaults = [
+			'order_modifier_id' => $modifier_id,
+			'meta_key'          => '',
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+			'meta_value'        => '',
+			'priority'          => 0,
+		];
+
+		// Merge defaults with the passed arguments.
+		$meta_data = array_merge( $defaults, $args );
+
+		// Ensure that a 'meta_key' is provided.
+		if ( empty( $meta_data['meta_key'] ) ) {
+			throw new \InvalidArgumentException( __( 'Meta key is required to insert or update meta data.', 'event-tickets' ) );
+		}
+
+		// Upsert the metadata using the repository.
+		return $this->order_modifiers_meta_repository->upsert_meta( new Order_Modifier_Meta( $meta_data ) );
 	}
 }

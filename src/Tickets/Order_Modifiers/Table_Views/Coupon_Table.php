@@ -2,8 +2,6 @@
 
 namespace TEC\Tickets\Order_Modifiers\Table_Views;
 
-use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers_Meta;
-
 /**
  * Class for displaying Coupon data in the table.
  *
@@ -131,7 +129,7 @@ class Coupon_Table extends Order_Modifier_Table {
 		}
 
 		// Calculate remaining coupons.
-		$remaining = $coupons_available - (int) $number_used->meta_value;
+		$remaining = $coupons_available - (int) ( $number_used->meta_value ?? 0 );
 
 		return (string) max( $remaining, 0 ); // Ensures no negative values are returned.
 	}
@@ -162,7 +160,7 @@ class Coupon_Table extends Order_Modifier_Table {
 		$coupons_uses_key = 'coupons_uses';
 		$number_used      = $this->order_modifier_meta_repository->find_by_order_modifier_id_and_meta_key( $order_modifier_id, $coupons_uses_key );
 
-		return (string) (int) $number_used->meta_value;
+		return (string) (int) ( $number_used->meta_value ?? 0 );
 	}
 
 	/**

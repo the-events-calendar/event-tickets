@@ -55,6 +55,58 @@ class Coupon extends Modifier_Abstract {
 	}
 
 	/**
+	 * Inserts a new modifier and handles related metadata.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $data The data to insert.
+	 *
+	 * @return mixed The newly inserted modifier or an empty array if no changes were made.
+	 */
+	public function insert_modifier( array $data ): mixed {
+		// Save the modifier.
+		$modifier = parent::insert_modifier( $data );
+
+		// Handle metadata (e.g., coupons_available).
+		$this->handle_meta_data(
+			$modifier->order_modifier_id,
+			[
+				'meta_key'   => 'coupons_available',
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+				'meta_value' => tribe_get_request_var( 'order_modifier_coupon_limit', '' ),
+			]
+		);
+
+		return $modifier;
+	}
+
+	/**
+	 * Updates an existing modifier and handles related metadata.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $data The data to update.
+	 *
+	 * @return mixed The updated modifier or an empty array if no changes were made.
+	 */
+	public function update_modifier( array $data ): mixed {
+		// Save the modifier.
+		$modifier = parent::update_modifier( $data );
+
+		// Handle metadata (e.g., coupons_available).
+		$this->handle_meta_data(
+			$modifier->id,
+			[
+				'meta_key'   => 'coupons_available',
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+				'meta_value' => tribe_get_request_var( 'order_modifier_coupon_limit', '' ),
+			]
+		);
+
+		return $modifier;
+	}
+
+	/**
 	 * Maps and sanitizes raw form data into model-ready data.
 	 *
 	 * @since TBD
@@ -133,13 +185,14 @@ class Coupon extends Modifier_Abstract {
 	 * @return array The context data ready for rendering the form.
 	 */
 	public function map_context_to_template( array $context ): array {
+		$order_modifier_coupon_limit_meta_value = $this->order_modifiers_meta_repository->find_by_order_modifier_id_and_meta_key( $context['modifier_id'], 'coupons_available' )->meta_value;
 		return [
 			'order_modifier_display_name'     => $context['display_name'] ?? '',
 			'order_modifier_slug'             => $context['slug'] ?? $this->generate_unique_slug(),
 			'order_modifier_sub_type'         => $context['sub_type'] ?? '',
 			'order_modifier_fee_amount_cents' => $this->convert_from_cents( $context['fee_amount_cents'] ?? 0 ),
 			'order_modifier_status'           => $context['status'] ?? '',
-			'order_modifier_coupon_limit'     => $context['coupon_limit'] ?? '',
+			'order_modifier_coupon_limit'     => $order_modifier_coupon_limit_meta_value ?? '',
 		];
 	}
 }

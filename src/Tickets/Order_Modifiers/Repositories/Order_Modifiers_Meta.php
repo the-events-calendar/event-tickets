@@ -77,20 +77,52 @@ class Order_Modifiers_Meta extends Repository implements Insertable, Updatable, 
 		DB::update(
 			Table::table_name(),
 			[
-				'meta_key'   => $model->meta_key,
 				'meta_value' => $model->meta_value,
 				'priority'   => $model->priority,
 			],
-			[ 'id' => $model->id ],
 			[
-				'%s',
+				'order_modifier_id' => $model->order_modifier_id,
+				'meta_key'          => $model->meta_key,
+			],
+			[
 				'%s',
 				'%d',
 			],
-			[ '%d' ]
+			[ '%d', '%s' ]
 		);
 
 		return $model;
+	}
+
+	/**
+	 * Insert or update meta data for a given Order Modifier.
+	 *
+	 * This method checks if metadata already exists for a specific
+	 * `order_modifier_id` and `meta_key`. If it exists, it updates the record;
+	 * otherwise, it inserts a new record.
+	 *
+	 * @since TBD
+	 *
+	 * @param Order_Modifier_Meta $meta_data The metadata object containing the
+	 *                                       order_modifier_id, meta_key, and meta_value.
+	 *
+	 * @return mixed The result of the insert or update operation, depending on
+	 *               what was performed (insert or update).
+	 */
+	public function upsert_meta( Order_Modifier_Meta $meta_data ): mixed {
+		// Check if a record with this order_modifier_id and meta_key already exists.
+		$existing_meta = $this->find_by_order_modifier_id_and_meta_key(
+			$meta_data->order_modifier_id,
+			$meta_data->meta_key
+		);
+
+		if ( $existing_meta ) {
+			// If the record exists, update it with the new data.
+			return $this->update( $meta_data );
+		}
+
+		// If no existing record is found, insert a new one.
+		return $this->insert( $meta_data );
 	}
 
 	/**
@@ -122,6 +154,7 @@ class Order_Modifiers_Meta extends Repository implements Insertable, Updatable, 
 		return $this->prepareQuery()
 					->where( 'order_modifier_id', $order_modifier_id )
 					->where( 'meta_key', $meta_key )
+					->limit( 1 )
 					->get();
 	}
 }
