@@ -238,7 +238,6 @@ class Modifier_Settings {
 		}
 
 		// Render the edit screen, passing the populated context.
-		echo '<h2>' . esc_html( ucfirst( $context['modifier'] ) . ' Edit' ) . '</h2>';
 		echo $manager->render_edit_screen( $context );
 	}
 

@@ -69,7 +69,7 @@ class Coupon extends Modifier_Abstract {
 
 		// Handle metadata (e.g., coupons_available).
 		$this->handle_meta_data(
-			$modifier->order_modifier_id,
+			$modifier->id,
 			[
 				'meta_key'   => 'coupons_available',
 				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
