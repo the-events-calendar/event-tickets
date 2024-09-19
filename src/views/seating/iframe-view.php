@@ -58,7 +58,7 @@
 		</div>
 
 		<div class="tec-tickets-seating__empty-tickets-message">
-			Select a seat from the map to add seated tickets
+			<?php esc_html_e( 'Select a seat from the map to add seated tickets', 'event-tickets' ); ?>
 		</div>
 		<div class="tec-tickets-seating__tickets-wrapper">
 			<div class="tec-tickets-seating__ticket-rows"></div>
