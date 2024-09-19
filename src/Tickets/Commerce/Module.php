@@ -44,6 +44,8 @@ class Module extends \Tribe__Tickets__Tickets {
 		$this->full_name = '_tribe_tpp_full_name';
 
 		$this->email = Attendee::$purchaser_email_meta_key;
+
+		$this->order_page_slug = Reports\Orders::$page_slug;
 	}
 
 	/**

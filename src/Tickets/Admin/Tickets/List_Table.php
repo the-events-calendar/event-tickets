@@ -538,7 +538,7 @@ class List_Table extends WP_List_Table {
 		$orders_report_url  = add_query_arg(
 			[
 				'post_type' => $event->post_type,
-				'page'      => 'tickets-orders',
+				'page'      => $this->get_order_page_slug(),
 				'event_id'  => $event->ID,
 			],
 			admin_url( 'edit.php' )
@@ -1167,6 +1167,24 @@ class List_Table extends WP_List_Table {
 		);
 
 		return $clauses;
+	}
+
+	/**
+	 * Get event meta key.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	protected function get_order_page_slug(): string {
+		$provider_info = Page::get_provider_info();
+		$provider      = Page::get_current_provider();
+
+		if ( ! isset( $provider_info[ $provider ] ) || empty( $provider_info[ $provider ]['order_page_slug'] ) ) {
+			return 'tickets-orders';
+		}
+
+		return $provider_info[ $provider ]['order_page_slug'];
 	}
 
 	/**
