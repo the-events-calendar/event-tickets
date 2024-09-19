@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Order_Modifiers\Table_Views;
 
+use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers_Meta;
+
 /**
  * Class for displaying Coupon data in the table.
  *
@@ -85,7 +87,86 @@ class Coupon_Table extends Order_Modifier_Table {
 	}
 
 	/**
-	 * Renders the fee amount column for the current item.
+	 * Retrieves the number of coupons available for a given order modifier.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_modifier_id The ID of the order modifier.
+	 *
+	 * @return int Returns the number of coupons available or 0 if none are set.
+	 */
+	protected function get_coupons_available( int $order_modifier_id ): int {
+		$coupons_available_key = 'coupons_available';
+
+		// Fetch the available coupons for the given order modifier.
+		$number_available = $this->order_modifier_meta_repository->find_by_order_modifier_id_and_meta_key( $order_modifier_id, $coupons_available_key );
+
+		// Return the available number, or 0 if it's not set or is empty.
+		return ! empty( $number_available->meta_value ) ? (int) $number_available->meta_value : 0;
+	}
+
+	/**
+	 * Renders the remaining column for an order modifier.
+	 *
+	 * Displays the number of remaining coupons by subtracting the number used from the available coupons.
+	 * If the coupons_available is empty or 0, returns '-'.
+	 *
+	 * @since TBD
+	 *
+	 * @param object $item The order modifier item.
+	 *
+	 * @return string The number of remaining coupons, or '-' if unlimited.
+	 */
+	protected function render_remaining_column( $item ): string {
+		$order_modifier_id = $item->id;
+
+		// Fetch available and used coupons.
+		$coupons_available = $this->get_coupons_available( $order_modifier_id );
+		$coupons_uses_key  = 'coupons_uses';
+		$number_used       = $this->order_modifier_meta_repository->find_by_order_modifier_id_and_meta_key( $order_modifier_id, $coupons_uses_key );
+
+		// If no available coupons are set, return '-'.
+		if ( 0 === $coupons_available ) {
+			return '-';
+		}
+
+		// Calculate remaining coupons.
+		$remaining = $coupons_available - (int) $number_used->meta_value;
+
+		return (string) max( $remaining, 0 ); // Ensures no negative values are returned.
+	}
+
+	/**
+	 * Renders the used column for an order modifier.
+	 *
+	 * Displays the number of used coupons. If coupons_available is 0 (unlimited), returns '-'.
+	 *
+	 * @since TBD
+	 *
+	 * @param object $item The order modifier item.
+	 *
+	 * @return string The number of used coupons, or '-' if unlimited.
+	 */
+	protected function render_used_column( $item ): string {
+		$order_modifier_id = $item->id;
+
+		// Fetch available coupons.
+		$coupons_available = $this->get_coupons_available( $order_modifier_id );
+
+		// If no available coupons are set, return '-'.
+		if ( 0 === $coupons_available ) {
+			return '-';
+		}
+
+		// Fetch and return the number of used coupons.
+		$coupons_uses_key = 'coupons_uses';
+		$number_used      = $this->order_modifier_meta_repository->find_by_order_modifier_id_and_meta_key( $order_modifier_id, $coupons_uses_key );
+
+		return (string) (int) $number_used->meta_value;
+	}
+
+	/**
+	 * Renders the coupons amount column for the current item.
 	 *
 	 * This method uses the modifier's `display_amount_field` to display the fee amount in the appropriate format
 	 * based on the sub_type (e.g., 'flat' or 'percent'). The fee amount is passed in cents and is converted

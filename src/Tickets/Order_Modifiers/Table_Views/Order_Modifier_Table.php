@@ -3,6 +3,8 @@
 namespace TEC\Tickets\Order_Modifiers\Table_Views;
 
 use TEC\Tickets\Order_Modifiers\Controller;
+use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers;
+use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers_Meta;
 use WP_List_Table;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 
@@ -23,6 +25,24 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	protected $modifier;
 
 	/**
+	 * Repository for handling operations related to the `order_modifiers` table.
+	 *
+	 * @since TBD
+	 *
+	 * @var Order_Modifiers
+	 */
+	public Order_Modifiers $order_modifier_repository;
+
+	/**
+	 * Repository for handling operations related to the `order_modifiers_meta` table.
+	 *
+	 * @since TBD
+	 *
+	 * @var Order_Modifiers_Meta
+	 */
+	public Order_Modifiers_Meta $order_modifier_meta_repository;
+
+	/**
 	 * Constructor for the Order Modifier Table.
 	 *
 	 * @since TBD
@@ -30,7 +50,11 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 * @param Modifier_Strategy_Interface $modifier The modifier class to use for data fetching and logic.
 	 */
 	public function __construct( Modifier_Strategy_Interface $modifier ) {
-		$this->modifier = $modifier;
+		$this->modifier                       = $modifier;
+		$this->order_modifier_repository      = new Order_Modifiers();
+		$this->order_modifier_meta_repository = new Order_Modifiers_Meta();
+
+
 
 		parent::__construct(
 			[
