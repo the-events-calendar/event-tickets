@@ -1170,7 +1170,7 @@ class List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Get event meta key.
+	 * Get order page slug.
 	 *
 	 * @since TBD
 	 *
