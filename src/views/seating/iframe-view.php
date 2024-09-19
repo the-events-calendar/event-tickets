@@ -38,7 +38,7 @@
 
 		<div class="tec-tickets-seating__sidebar-header">
 			<h4 class="tribe-common-h4 tec-tickets-seating__title">
-				Tickets
+				<?php esc_html_e( 'Tickets', 'event-tickets' ); ?>
 			</h4>
 
 			<?php
