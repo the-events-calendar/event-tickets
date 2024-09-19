@@ -105,7 +105,7 @@ class Seats_Report_Test extends WPTEstCase {
 		}, $ids );
 
 		arsort( $ids );
-		codecept_debug( $ids );
+
 		$html = str_replace( [ ...$ids, $post_id ], '{{ID}}', $html );
 
 		$this->assertMatchesHtmlSnapshot( $html );
