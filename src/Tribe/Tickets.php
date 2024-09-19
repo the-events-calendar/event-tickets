@@ -97,13 +97,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		private $parent_url;
 
 		/**
-		 * Order page slug.
-		 *
-		 * @var string
-		 */
-		public $order_page_slug = 'tickets-orders';
-
-		/**
 		 * Records batches of tickets that are currently unavailable (used for
 		 * displaying the correct "tickets are unavailable" message).
 		 *
@@ -4684,7 +4677,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				'event_meta_key'     => $this->get_event_key(),
 				'attendee_post_type' => $this->attendee_object,
 				'ticket_post_type'   => $this->ticket_object,
-				'order_page_slug'    => $this->order_page_slug,
 			];
 
 			return $provider_info;

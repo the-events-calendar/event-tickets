@@ -1177,14 +1177,12 @@ class List_Table extends WP_List_Table {
 	 * @return string
 	 */
 	protected function get_order_page_slug(): string {
-		$provider_info = Page::get_provider_info();
-		$provider      = Page::get_current_provider();
-
-		if ( ! isset( $provider_info[ $provider ] ) || empty( $provider_info[ $provider ]['order_page_slug'] ) ) {
-			return 'tickets-orders';
+		// Tickets Commerce has its own order page slug. All others are 'tickets-orders'.
+		if ( Page::get_current_provider() !== TicketsCommerce\Module::class ) {
+			return TicketsCommerce\Reports\Orders::$page_slug;
 		}
 
-		return $provider_info[ $provider ]['order_page_slug'];
+		return 'tickets-orders';
 	}
 
 	/**
