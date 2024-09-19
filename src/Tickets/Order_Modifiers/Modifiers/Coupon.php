@@ -185,7 +185,7 @@ class Coupon extends Modifier_Abstract {
 	 * @return array The context data ready for rendering the form.
 	 */
 	public function map_context_to_template( array $context ): array {
-		$order_modifier_coupon_limit_meta_value = $this->order_modifiers_meta_repository->find_by_order_modifier_id_and_meta_key( $context['modifier_id'], 'coupons_available' )->meta_value;
+		$order_modifier_coupon_limit_meta_value = $this->order_modifiers_meta_repository->find_by_order_modifier_id_and_meta_key( $context['modifier_id'], 'coupons_available' )->meta_value ?? '';
 		return [
 			'order_modifier_display_name'     => $context['display_name'] ?? '',
 			'order_modifier_slug'             => $context['slug'] ?? $this->generate_unique_slug(),
