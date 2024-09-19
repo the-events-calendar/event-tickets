@@ -538,7 +538,7 @@ class List_Table extends WP_List_Table {
 		$orders_report_url  = add_query_arg(
 			[
 				'post_type' => $event->post_type,
-				'page'      => 'tickets-orders',
+				'page'      => $this->get_order_page_slug(),
 				'event_id'  => $event->ID,
 			],
 			admin_url( 'edit.php' )
@@ -1167,6 +1167,22 @@ class List_Table extends WP_List_Table {
 		);
 
 		return $clauses;
+	}
+
+	/**
+	 * Get order page slug.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	protected function get_order_page_slug(): string {
+		// Tickets Commerce has its own order page slug. All others are 'tickets-orders'.
+		if ( Page::get_current_provider() !== TicketsCommerce\Module::class ) {
+			return TicketsCommerce\Reports\Orders::$page_slug;
+		}
+
+		return 'tickets-orders';
 	}
 
 	/**
