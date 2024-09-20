@@ -48,6 +48,7 @@ class Controller extends Controller_Contract {
 
 		add_action( 'tribe_plugins_loaded', [ $this, 'register_tables' ] );
 		$this->container->singleton( Coupon::class );
+		$this->container->singleton( Fee::class );
 		$this->hook();
 	}
 

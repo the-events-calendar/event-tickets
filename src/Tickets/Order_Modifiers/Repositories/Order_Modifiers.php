@@ -114,12 +114,13 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 *
 	 * @since TBD
 	 *
-	 * @param int $id The ID of the Order Modifier to find.
+	 * @param int    $id The ID of the Order Modifier to find.
+	 * @param string $type The type of Order Modifier to find.
 	 *
 	 * @return Order_Modifier|null The Order Modifier model instance, or null if not found.
 	 */
-	public function find_by_id( int $id ): ?Order_Modifier {
-		return $this->prepareQuery()->where( 'id', $id )->get();
+	public function find_by_id( int $id, $type ): ?Order_Modifier {
+		return $this->prepareQuery()->where( 'id', $id )->where( 'modifier_type', $type )->get();
 	}
 
 	/**

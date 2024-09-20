@@ -168,9 +168,9 @@ class Order_Modifiers_Meta extends Repository implements Insertable, Updatable, 
 	 * @param int    $order_modifier_id The ID of the Order Modifier.
 	 * @param string $meta_key The meta key to search by.
 	 *
-	 * @return ModelQueryBuilder The Order Modifier Meta models.
+	 * @return Order_Modifier_Meta| null The Order Modifier Meta models.
 	 */
-	public function find_by_order_modifier_id_and_meta_key( int $order_modifier_id, string $meta_key ): ModelQueryBuilder {
+	public function find_by_order_modifier_id_and_meta_key( int $order_modifier_id, string $meta_key ): ?Order_Modifier_Meta {
 		return $this->prepareQuery()
 					->where( 'order_modifier_id', $order_modifier_id )
 					->where( 'meta_key', $meta_key )

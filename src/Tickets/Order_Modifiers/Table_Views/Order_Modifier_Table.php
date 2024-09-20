@@ -270,7 +270,6 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 				'page'        => $this->modifier->get_page_slug(),
 				'modifier'    => $this->modifier->get_modifier_type(),
 				'edit'        => 1,
-				'modifier_id' => 0, // No modifier ID for creating a new modifier.
 			],
 			admin_url( 'admin.php' )
 		);

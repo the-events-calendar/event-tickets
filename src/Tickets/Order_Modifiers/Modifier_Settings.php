@@ -59,7 +59,7 @@ class Modifier_Settings {
 	public static function get_page_slug(): string {
 		return self::$slug;
 	}
-  
+
 	/**
 	 * Register hooks and actions.
 	 *
@@ -202,7 +202,7 @@ class Modifier_Settings {
 		}
 
 		// Use the strategy to retrieve the modifier data by ID.
-		return $modifier_strategy->get_modifier_by_id( $modifier_id );
+		return $modifier_strategy->get_modifier_by_id( $modifier_id, $modifier_type );
 	}
 
 	/**

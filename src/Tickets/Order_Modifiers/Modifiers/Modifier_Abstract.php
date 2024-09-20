@@ -139,12 +139,13 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $modifier_id The modifier ID.
+	 * @param int    $modifier_id The modifier ID.
+	 * @param string $modifier_type The modifier type.
 	 *
 	 * @return array|null The modifier data or null if not found.
 	 */
-	public function get_modifier_by_id( int $modifier_id ): ?array {
-		$modifier_data = $this->repository->find_by_id( $modifier_id );
+	public function get_modifier_by_id( int $modifier_id, string $modifier_type ): ?array {
+		$modifier_data = $this->repository->find_by_id( $modifier_id, $modifier_type );
 		return $modifier_data ? $modifier_data->to_array() : null;
 	}
 
@@ -275,17 +276,33 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @return string The formatted amount, either as a percentage, currency, or future types.
 	 */
-	public function display_amount_field( int $value, string $type = 'flat' ) {
+	public function display_amount_field( int $value, string $type = 'flat' ): string {
 		switch ( $type ) {
 			case 'percent':
 				// Return the value as a percentage with the '%' symbol.
-				return $this->display_percentage( $value );
+				$formatted_amount = $this->display_percentage( $value );
+				break;
 
 			case 'flat':
 			default:
 				// Return the value as a flat fee (currency) for 'flat' or unknown types.
-				return $this->display_flat_fee( $value );
+				$formatted_amount = $this->display_flat_fee( $value );
+				break;
 		}
+
+		/**
+		 * Filters the displayed amount for the order modifier.
+		 *
+		 * This allows other developers to modify how amounts (whether percentages or flat fees)
+		 * are displayed. For example, a developer could add a custom suffix or change the formatting.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $formatted_amount The formatted amount string (e.g., '10%', '$10.00').
+		 * @param int $value The raw amount value in cents.
+		 * @param string $type The type of the amount (e.g., 'percent', 'flat').
+		 */
+		return apply_filters( 'tec_tickets_order_modifier_display_amount', $formatted_amount, $value, $type );
 	}
 
 	/**
@@ -347,6 +364,20 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 
 			// Randomly change the case of each character in the string.
 			$random_string = $this->randomize_string_case( $random_string );
+
+			/**
+			 * Filters the generated unique slug for the order modifier.
+			 *
+			 * This allows developers to modify the way slugs are generated or impose additional
+			 * uniqueness checks before a slug is considered valid.
+			 *
+			 * @since TBD
+			 *
+			 * @param string $slug The generated slug.
+			 * @param string $modifier_type The type of modifier (e.g., 'coupon', 'fee').
+			 */
+			$random_string = apply_filters( 'tec_tickets_order_modifier_generate_slug', $random_string, $this->modifier_type );
+
 		} while ( ! $this->is_slug_unique( $random_string ) );
 
 		return $random_string;
@@ -411,16 +442,17 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		];
 
 		/**
-		 * Filters the conversion of order modifier status values to human-readable formats.
+		 * Filters the human-readable status label for an order modifier.
 		 *
-		 * This filter allows modifying the labels for the default status values:
-		 * 'active', 'inactive', and 'draft'. For example, 'draft' could be changed to 'In Progress'.
+		 * This allows developers to modify the status labels (e.g., changing 'Draft' to 'Pending').
 		 *
 		 * @since TBD
 		 *
-		 * @param array $statuses An array of status conversions where the key is the raw status and the value is the display version.
+		 * @param string[] $statuses The array of default status labels.
+		 * @param string $raw_status The raw status from the database (e.g., 'active', 'draft').
+		 * @param string $modifier_type The type of the modifier (e.g., 'coupon', 'fee').
 		 */
-		$statuses = apply_filters( 'tec_modifier_status_conversion', $statuses );
+		$statuses = apply_filters( 'tec_tickets_order_modifier_status_display', $statuses, $status, $this->modifier_type );
 
 		return $statuses[ $status ] ?? ucfirst( $status );
 	}
