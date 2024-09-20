@@ -11,7 +11,7 @@
 
 ?>
 <form class="tec-tickets-commerce-vertical-form" id="tec-tickets-commerce-edit-purchaser-form">
-<?php $this->template( 'src/admin-views/components/loader' ); ?>
+	<?php $this->template( 'src/admin-views/components/loader' ); ?>
 	<?php wp_nonce_field( 'tec_commerce_purchaser_edit', '_wpnonce' ); ?>
 	<input type="hidden" value="<?php echo esc_attr( $order->ID ); ?>" name="ID" />
 	<div class="tec-tickets-commerce-row tec-tickets-commerce-purchaser-name">

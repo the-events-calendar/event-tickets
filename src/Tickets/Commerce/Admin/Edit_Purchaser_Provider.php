@@ -57,23 +57,22 @@ class Edit_Purchaser_Provider extends Service_Provider {
 	 */
 	public function update_purchaser( $post_id, array $fields ): bool {
 		if ( empty( $post_id ) ) {
-
 			return false;
 		}
 
-		$update = [];
-		if ( ! empty( $fields['purchaser_email'] ) ) {
-			$update['purchaser_email'] = $fields['purchaser_email'];
-		}
-		if ( ! empty( $fields['purchaser_first_name'] ) ) {
-			$update['purchaser_first_name'] = $fields['purchaser_first_name'];
-		}
-		if ( ! empty( $fields['purchaser_last_name'] ) ) {
-			$update['purchaser_last_name'] = $fields['purchaser_last_name'];
+		$update       = [];
+		$allowed_keys = [
+			'purchaser_email',
+			'purchaser_first_name',
+			'purchaser_last_name',
+		];
+		foreach ( $allowed_keys as $key ) {
+			if ( ! empty( $fields[ $key ] ) ) {
+				$update[ $key ] = $fields[ $key ];
+			}
 		}
 
 		if ( empty( $update ) ) {
-
 			return false;
 		}
 
@@ -85,7 +84,6 @@ class Edit_Purchaser_Provider extends Service_Provider {
 				]
 			)->set_args( $update )->save();
 		} catch ( \Exception $e ) {
-
 			return false;
 		}
 	}
@@ -111,7 +109,7 @@ class Edit_Purchaser_Provider extends Service_Provider {
 
 				// Sanitize other fields.
 				$email      = sanitize_email( $_POST['email'] ?? '' );
-				$post_id    = (int) $_POST['ID'] ?? '';
+				$post_id    = (int) ( $_POST['ID'] ?? '' );
 				$send_email = ! empty( $_POST['send_email'] );
 
 				if ( ! is_email( $email ) ) {
