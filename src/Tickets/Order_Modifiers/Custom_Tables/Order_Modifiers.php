@@ -117,6 +117,7 @@ class Order_Modifiers extends Table {
 		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_indx_slug', 'slug' );
 		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_indx_post_id_status', 'post_id, status' );
 		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_indx_status_modifier_type_slug', 'status, modifier_type, slug' );
+		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_indx_type_display_name', 'modifier_type, display_name' );
 
 		return $results;
 	}

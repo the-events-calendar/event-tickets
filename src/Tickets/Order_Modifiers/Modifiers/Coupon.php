@@ -52,6 +52,8 @@ class Coupon extends Modifier_Abstract {
 	 */
 	public function __construct() {
 		parent::__construct( $this->modifier_type );
+		$this->modifier_display_name        = __( 'Coupon', 'event-tickets' );
+		$this->modifier_display_name_plural = __( 'Coupons', 'event-tickets' );
 	}
 
 	/**

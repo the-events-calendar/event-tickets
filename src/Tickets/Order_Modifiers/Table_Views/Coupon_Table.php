@@ -1,5 +1,15 @@
 <?php
-
+/**
+ * Coupon_Table class for displaying Coupon data in the table.
+ *
+ * This class defines the structure and behavior for rendering coupon-related data in a table format,
+ * including columns for coupon name, code, amount, usage, and status. It extends the Order_Modifier_Table
+ * class and provides specific logic for handling coupon-specific data display.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Order_Modifiers\Table_Views
+ */
 namespace TEC\Tickets\Order_Modifiers\Table_Views;
 
 /**
@@ -220,5 +230,4 @@ class Coupon_Table extends Order_Modifier_Table {
 			$learn_more_link
 		);
 	}
-
 }

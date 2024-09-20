@@ -1,4 +1,15 @@
 <?php
+/**
+ * Fee_Table class for displaying Fee data in the table.
+ *
+ * This class defines the structure and behavior for rendering fee-related data in a table format,
+ * including columns for fee name, code, amount, usage, and status. It extends the Order_Modifier_Table
+ * class and provides specific logic for handling fee-specific data display.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Order_Modifiers\Table_Views
+ */
 
 namespace TEC\Tickets\Order_Modifiers\Table_Views;
 
@@ -134,5 +145,4 @@ class Fee_Table extends Order_Modifier_Table {
 			$learn_more_link
 		);
 	}
-
 }

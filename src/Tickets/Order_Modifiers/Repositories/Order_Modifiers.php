@@ -120,7 +120,10 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 * @return Order_Modifier|null The Order Modifier model instance, or null if not found.
 	 */
 	public function find_by_id( int $id, $type ): ?Order_Modifier {
-		return $this->prepareQuery()->where( 'id', $id )->where( 'modifier_type', $type )->get();
+		return $this->prepareQuery()
+					->where( 'id', $id )
+					->where( 'modifier_type', $type )
+					->get();
 	}
 
 	/**
@@ -159,26 +162,21 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 
 		// Add search functionality (search in display_name or slug).
 		if ( ! empty( $args['search_term'] ) ) {
-			$query = $query->where(
-				function ( $subquery ) use ( $args ) {
-					$subquery->where( 'display_name', 'LIKE', '%' . $args['search_term'] . '%' )
-							 ->orWhere( 'slug', 'LIKE', '%' . $args['search_term'] . '%' );
-				}
-			);
+			$query = $query->whereLike( 'display_name', $args['search_term'] );
 		}
 
 		// Add ordering.
 		if ( ! empty( $args['orderby'] ) && in_array(
-				$args['orderby'],
-				[
-					'display_name',
-					'slug',
-					'fee_amount_cents',
-					'used',
-					'remaining',
-					'status',
-				]
-			)
+			$args['orderby'],
+			[
+				'display_name',
+				'slug',
+				'fee_amount_cents',
+				'used',
+				'remaining',
+				'status',
+			]
+		)
 		) {
 			$query = $query->orderBy( $args['orderby'], $args['order'] );
 		}

@@ -1,4 +1,21 @@
 <?php
+/**
+ * Abstract class for handling common functionality in Order Modifier tables.
+ *
+ * The Order_Modifier_Table class provides the base functionality for rendering table views of different
+ * types of order modifiers, such as coupons or fees. This class defines the structure, sortable columns,
+ * and common behaviors such as rendering actions for each row in the table and managing pagination.
+ *
+ * Specific implementations (e.g., Coupon_Table, Fee_Table) extend this class to define their own
+ * column data and item rendering logic.
+ *
+ * The class also includes methods for rendering specific columns like the "status" column and
+ * allows for the inclusion of search boxes and filters for modifier data.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Order_Modifiers\Table_Views
+ */
 
 namespace TEC\Tickets\Order_Modifiers\Table_Views;
 
@@ -55,11 +72,10 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		$this->order_modifier_meta_repository = new Order_Modifiers_Meta();
 
 
-
 		parent::__construct(
 			[
-				'singular' => __( $modifier->get_modifier_type(), 'event-tickets' ),
-				'plural'   => __( $modifier->get_modifier_type() . 's', 'event-tickets' ), // @todo redscar - Need to implement better plural logic.
+				'singular' => $modifier->get_modifier_display_name(),
+				'plural'   => $modifier->get_modifier_display_name( true ),
 				'ajax'     => false,
 			]
 		);
@@ -189,25 +205,34 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 *
 	 * @param string $text The text to display in the submit button.
 	 * @param string $input_id The input ID.
-	 * @param string $placeholder The placeholder text to display in the search input. If Placeholder is empty it will
-	 *                                default to the `display_name` column.
+	 * @param string $placeholder The placeholder text to display in the search input.
 	 *
 	 * @return void
 	 */
 	public function search_box( $text, $input_id, $placeholder = '' ) {
-		if ( empty( $_REQUEST['s'] ) && ! $this->has_items() ) {
-			return;
-		}
+		// Check if nonce is valid. The nonce value does not need sanitization, as wp_verify_nonce handles it.
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$nonce_valid = isset( $_REQUEST['_wpnonce'] ) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'search_order_modifier' );
 
+		// If nonce is invalid, set search term to empty; otherwise, get the value from $_REQUEST.
+		$search_value = $nonce_valid ? sanitize_text_field( $_REQUEST['s'] ?? '' ) : '';
+
+		// Set the input ID.
 		$input_id = $input_id . '-search-input';
 
+		// If no placeholder is provided, default to the display_name column.
 		if ( empty( $placeholder ) ) {
 			$placeholder = $this->get_columns()['display_name'];
 		}
 
+		// Output the search form with nonce for security.
 		echo '<p class="search-box">';
 		echo '<label class="screen-reader-text" for="' . esc_attr( $input_id ) . '">' . esc_html( $text ) . '</label>';
-		echo '<input type="search" id="' . esc_attr( $input_id ) . '" name="s" value="' . esc_attr( $_REQUEST['s'] ?? '' ) . '" placeholder="' . esc_attr( $placeholder ) . '" />';
+		echo '<input type="search" id="' . esc_attr( $input_id ) . '" name="s" value="' . esc_attr( $search_value ) . '" placeholder="' . esc_attr( $placeholder ) . '" />';
+
+		// Output the nonce field for verification.
+		wp_nonce_field( 'search_order_modifier', '_wpnonce' );
+
 		submit_button( $text, '', '', false );
 		echo '</p>';
 	}

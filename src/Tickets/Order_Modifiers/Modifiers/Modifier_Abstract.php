@@ -68,6 +68,30 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	protected array $required_fields = [];
 
 	/**
+	 * The human-readable display name of the modifier.
+	 *
+	 * This is used to represent the modifier in UI elements or other
+	 * contexts where a readable name is required.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public string $modifier_display_name = '';
+
+	/**
+	 * The human-readable plural display name of the modifier.
+	 *
+	 * This is used to represent the modifier in UI elements or other
+	 * contexts where a plural readable name is required.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public string $modifier_display_name_plural = '';
+
+	/**
 	 * Constructor to set up the repository and modifier type.
 	 *
 	 * @since TBD
@@ -511,5 +535,28 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 
 		// Upsert the metadata using the repository.
 		return $this->order_modifiers_meta_repository->upsert_meta( new Order_Modifier_Meta( $meta_data ) );
+	}
+
+	/**
+	 * Retrieves the display name of the modifier in singular or plural form.
+	 *
+	 * This method returns the human-readable display name of the modifier,
+	 * which can be used for rendering or displaying the modifier name in UI elements.
+	 * The method allows fetching either the singular or plural form.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $plural Whether to return the plural form. Defaults to false (singular).
+	 *
+	 * @return string The display name of the modifier.
+	 */
+	public function get_modifier_display_name( bool $plural = false ): string {
+		// If plural is requested and a plural form is set, return the plural display name.
+		if ( $plural && ! empty( $this->modifier_display_name_plural ) ) {
+			$this->modifier_display_name_plural;
+		}
+
+		// Return singular form by default.
+		return $this->modifier_display_name;
 	}
 }
