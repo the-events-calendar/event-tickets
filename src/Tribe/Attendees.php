@@ -1224,7 +1224,7 @@ class Tribe__Tickets__Attendees {
 				continue;
 			}
 
-			if ( ! isset( $available_contributors[ (int) $ticket->get_event_id() ] ) ) {
+			if ( ! isset( $available_contributors[ (int) $ticket->get_event_id() ] ) || $ticket->available() > $available_contributors[ (int) $ticket->get_event_id() ] ) {
 				// Shared or capped capacity: add to the available contributors only if we haven't already counted it.
 				$available_contributors[ (int) $ticket->get_event_id() ] = $ticket->available();
 			}
