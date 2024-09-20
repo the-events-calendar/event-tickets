@@ -182,18 +182,18 @@ class AttendeesTest extends \Codeception\TestCase\WPTestCase {
 						'capacity' => 17,
 					],
 				] );
-				$shared_capacity_ticket = $this->create_tc_ticket( $post_id, 1, [
-					'tribe-ticket' => [
-						'mode'           => Global_Stock::GLOBAL_STOCK_MODE,
-						'event_capacity' => 89,
-						'capacity'       => 89,
-					],
-				] );
 				$capped_capacity_ticket = $this->create_tc_ticket( $post_id, 1, [
 					'tribe-ticket' => [
 						'mode'           => Global_Stock::CAPPED_STOCK_MODE,
 						'event_capacity' => 89,
 						'capacity'       => 23,
+					],
+				] );
+				$shared_capacity_ticket = $this->create_tc_ticket( $post_id, 1, [
+					'tribe-ticket' => [
+						'mode'           => Global_Stock::GLOBAL_STOCK_MODE,
+						'event_capacity' => 89,
+						'capacity'       => 89,
 					],
 				] );
 
