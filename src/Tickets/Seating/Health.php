@@ -155,7 +155,7 @@ class Health extends Controller_Contract {
 							[
 								'<p>',
 								'</p>',
-								(int) ceil( self::AJAX_RATE / 25 ),
+								(int) ceil( 1000000 / self::AJAX_RATE ),
 								// Read more about AJAX rate link.
 								'<a href="https://theeventscalendar.com/product/seating/" target="_blank" rel="noopener noreferrer">',
 								'</a>',
