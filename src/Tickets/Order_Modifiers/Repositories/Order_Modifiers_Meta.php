@@ -28,14 +28,24 @@ use TEC\Tickets\Order_Modifiers\Models\Order_Modifier_Meta;
 class Order_Modifiers_Meta extends Repository implements Insertable, Updatable, Deletable {
 
 	/**
-	 * {@inheritDoc}
+	 * @since TBD
+	 *
+	 * @param Model $model The model.
+	 *
+	 * @return false|int
 	 */
 	public function delete( Model $model ): bool {
 		return (bool) DB::delete( Table::table_name(), [ 'id' => $model->id ], [ '%d' ] );
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Inserts a model record.
+	 *
+	 * @since TBD
+	 *
+	 * @param Model $model The model.
+	 *
+	 * @return Order_Modifier_Meta
 	 */
 	public function insert( Model $model ): Order_Modifier_Meta {
 		DB::insert(
@@ -62,16 +72,26 @@ class Order_Modifiers_Meta extends Repository implements Insertable, Updatable, 
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Prepare a query builder for the repository.
+	 *
+	 * @since TBD
+	 *
+	 * @return ModelQueryBuilder
 	 */
-	function prepareQuery(): ModelQueryBuilder {
+	public function prepareQuery(): ModelQueryBuilder {
 		$builder = new ModelQueryBuilder( Order_Modifier_Meta::class );
 
 		return $builder->from( Table::table_name( false ) );
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Inserts a model record.
+	 *
+	 * @since TBD
+	 *
+	 * @param Model $model The model.
+	 *
+	 * @return Order_Modifier_Meta
 	 */
 	public function update( Model $model ): Model {
 		DB::update(
@@ -132,12 +152,12 @@ class Order_Modifiers_Meta extends Repository implements Insertable, Updatable, 
 	 *
 	 * @param int $order_modifier_id The ID of the Order Modifier to find metadata for.
 	 *
-	 * @return Order_Modifier_Meta[]|null The Order Modifier Meta models, or null if not found.
+	 * @return ModelQueryBuilder The Order Modifier Meta models.
 	 */
-	public function find_by_order_modifier_id( int $order_modifier_id ): ?array {
+	public function find_by_order_modifier_id( int $order_modifier_id ): ModelQueryBuilder {
 		return $this->prepareQuery()
-					->where( 'order_modifier_id', $order_modifier_id )
-					->get();
+						->where( 'order_modifier_id', $order_modifier_id )
+						->get();
 	}
 
 	/**
@@ -148,9 +168,9 @@ class Order_Modifiers_Meta extends Repository implements Insertable, Updatable, 
 	 * @param int    $order_modifier_id The ID of the Order Modifier.
 	 * @param string $meta_key The meta key to search by.
 	 *
-	 * @return Order_Modifier_Meta|null The Order Modifier Meta model instance, or null if not found.
+	 * @return ModelQueryBuilder The Order Modifier Meta models.
 	 */
-	public function find_by_order_modifier_id_and_meta_key( int $order_modifier_id, string $meta_key ): ?Order_Modifier_Meta {
+	public function find_by_order_modifier_id_and_meta_key( int $order_modifier_id, string $meta_key ): ModelQueryBuilder {
 		return $this->prepareQuery()
 					->where( 'order_modifier_id', $order_modifier_id )
 					->where( 'meta_key', $meta_key )

@@ -3,6 +3,7 @@
  * Main plugin class.
  */
 
+use Tribe\Tickets\Admin\Provider;
 use Tribe\Tickets\Events\Service_Provider as Events_Service_Provider;
 use Tribe\Tickets\Promoter\Service_Provider as Promoter_Service_Provider;
 use Tribe\Tickets\Admin\Settings;
@@ -15,7 +16,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin.
 	 */
-	const VERSION = '5.13.2';
+	const VERSION = '5.13.3';
 
 	/**
 	 * Used to store the version history.
@@ -495,7 +496,7 @@ class Tribe__Tickets__Main {
 		tribe_register_provider( Promoter_Service_Provider::class );
 
 		// Admin provider.
-		tribe_register_provider( \Tribe\Tickets\Admin\Provider::class );
+		tribe_register_provider( Provider::class );
 
 		// Order Modifier.
 		tribe_register_provider( \TEC\Tickets\Order_Modifiers\Controller::class );

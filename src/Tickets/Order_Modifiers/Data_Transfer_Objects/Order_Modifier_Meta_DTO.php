@@ -28,7 +28,7 @@ class Order_Modifier_Meta_DTO extends DataTransferObject {
 	 *
 	 * @var int
 	 */
-	public int $id;
+	protected int $id;
 
 	/**
 	 * The associated Order Modifier ID.
@@ -37,7 +37,7 @@ class Order_Modifier_Meta_DTO extends DataTransferObject {
 	 *
 	 * @var int
 	 */
-	public int $order_modifier_id;
+	protected int $order_modifier_id;
 
 	/**
 	 * The meta key.
@@ -46,7 +46,7 @@ class Order_Modifier_Meta_DTO extends DataTransferObject {
 	 *
 	 * @var string
 	 */
-	public string $meta_key;
+	protected string $meta_key;
 
 	/**
 	 * The meta value.
@@ -55,7 +55,7 @@ class Order_Modifier_Meta_DTO extends DataTransferObject {
 	 *
 	 * @var string
 	 */
-	public string $meta_value;
+	protected string $meta_value;
 
 	/**
 	 * The priority of the meta entry.
@@ -64,7 +64,7 @@ class Order_Modifier_Meta_DTO extends DataTransferObject {
 	 *
 	 * @var int
 	 */
-	public int $priority;
+	protected int $priority;
 
 	/**
 	 * The creation timestamp.
@@ -73,7 +73,7 @@ class Order_Modifier_Meta_DTO extends DataTransferObject {
 	 *
 	 * @var string
 	 */
-	public string $created_at;
+	protected string $created_at;
 
 	/**
 	 * Builds a new DTO from an object.
