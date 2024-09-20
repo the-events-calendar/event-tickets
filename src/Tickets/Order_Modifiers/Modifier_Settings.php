@@ -27,7 +27,7 @@ class Modifier_Settings {
 	 *
 	 * @var string
 	 */
-	public static $parent_slug = 'tec-tickets';
+	protected static $parent_slug = 'tec-tickets';
 
 	/**
 	 * Event Tickets Order Modifiers page slug.
@@ -58,6 +58,17 @@ class Modifier_Settings {
 	 */
 	public static function get_page_slug(): string {
 		return self::$slug;
+	}
+  
+	/**
+	 * Register hooks and actions.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function register() {
+		add_action( 'admin_menu', [ $this, 'add_tec_tickets_order_modifiers_page' ], 15 );
 	}
 
 	/**
