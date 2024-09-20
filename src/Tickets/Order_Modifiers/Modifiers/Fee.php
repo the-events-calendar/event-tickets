@@ -109,12 +109,6 @@ class Fee extends Modifier_Abstract {
 	 * @return void
 	 */
 	public function render_edit( array $context ): void {
-		$nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( $_GET['_wpnonce'] ) : '';
-
-		if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, 'edit_modifier_' . $context['modifier_id'] ) ) {
-			return;
-		}
-
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 		$context     = $this->map_context_to_template( $context );

@@ -328,13 +328,14 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	}
 
 	/**
-	 * Generates a unique alphanumeric slug of 7 characters.
+	 * Generates a unique alphanumeric slug of 7 characters with random upper and lowercase characters.
 	 *
 	 * The slug will be checked for uniqueness in the database before being returned.
 	 *
 	 * @since TBD
 	 *
 	 * @return string The unique slug.
+	 * @throws Exception if random_bytes fails.
 	 */
 	public function generate_unique_slug(): string {
 		$slug_length = 7;
@@ -343,9 +344,34 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		do {
 			// Generate random bytes and convert them to an alphanumeric string.
 			$random_string = substr( base_convert( bin2hex( random_bytes( 4 ) ), 16, 36 ), 0, $slug_length );
+
+			// Randomly change the case of each character in the string.
+			$random_string = $this->randomize_string_case( $random_string );
 		} while ( ! $this->is_slug_unique( $random_string ) );
 
 		return $random_string;
+	}
+
+	/**
+	 * Randomizes the case of each character in a string, alternating between upper and lowercase.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $input The input string.
+	 *
+	 * @return string The string with randomized character cases.
+	 */
+	protected function randomize_string_case( string $input ): string {
+		$characters = str_split( $input );
+		foreach ( $characters as &$char ) {
+			if ( random_int( 0, 1 ) ) {
+				$char = strtoupper( $char );
+			} else {
+				$char = strtolower( $char );
+			}
+		}
+
+		return implode( '', $characters );
 	}
 
 	/**

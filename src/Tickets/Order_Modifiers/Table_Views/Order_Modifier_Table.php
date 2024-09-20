@@ -275,9 +275,6 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 			admin_url( 'admin.php' )
 		);
 
-		// Add a nonce for creating a new modifier using `edit_modifier_0`.
-		$add_new_url = wp_nonce_url( $add_new_url, 'edit_modifier_0' );
-
 		// Output the title and the "Add New" button.
 		echo '<h3>' . esc_html( $modifier ) . ' <a href="' . esc_url( $add_new_url ) . '" class="page-title-action button">' . esc_html__( 'Add New', 'event-tickets' ) . '</a></h3>';
 	}

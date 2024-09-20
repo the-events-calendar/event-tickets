@@ -45,7 +45,6 @@ class Fee_Table extends Order_Modifier_Table {
 				'modifier'    => $this->modifier->get_modifier_type(),
 				'edit'        => 1,
 				'modifier_id' => $item->id,
-				'_wpnonce'    => wp_create_nonce( 'edit_modifier_' . $item->id ),
 			],
 			admin_url( 'admin.php' )
 		);
