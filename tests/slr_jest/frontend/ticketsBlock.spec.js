@@ -602,4 +602,213 @@ describe('Seat Selection Modal', () => {
 			);
 		});
 	});
+
+	describe('bootstrapIframe dom effects', () => {
+		iframeModule.initServiceIframe = jest.fn(() => true);
+
+		let windowInnerWidth = null;
+
+		beforeEach(() => {
+			windowInnerWidth = window?.innerWidth || null;
+		});
+
+		afterEach(() => {
+			if (windowInnerWidth) {
+				window.innerWidth = windowInnerWidth;
+			}
+		});
+
+		it('it should resize iframecontainer on screens smaller than 960px', async () => {
+			const dom = getTestDocument(
+				'seats-selection',
+				ticketSelectionModalExtractor
+			);
+			setToken('test-ephemeral-token');
+			fetch.mockIf(
+				/^https:\/\/wordpress\.test\/wp-admin\/admin-ajax\.php?.*$/,
+				JSON.stringify({ success: true })
+			);
+
+			const iframeContainer = dom.querySelector(
+				'.tec-tickets-seating__iframe-container'
+			);
+
+			const sidebarContainer = dom.querySelector(
+				'.tec-tickets-seating__modal-sidebar_container'
+			);
+
+			const sidebar = sidebarContainer.querySelector(
+				'.tec-tickets-seating__modal-sidebar'
+			);
+
+			expect(iframeContainer.style.height).not.toEqual(
+				iframeContainer.clientHeight + 'px'
+			);
+			expect(iframeContainer.style.maxHeight).not.toEqual(
+				iframeContainer.clientHeight + 'px'
+			);
+
+			expect(sidebarContainer.style.height).not.toEqual(
+				sidebarContainer.clientHeight + 'px'
+			);
+			expect(sidebarContainer.style.minHeight).not.toEqual(
+				sidebarContainer.clientHeight + 'px'
+			);
+			expect(sidebarContainer.style.maxHeight).not.toEqual(
+				sidebarContainer.clientHeight + 'px'
+			);
+
+			expect(sidebar.style.position).not.toEqual('absolute');
+
+			window.innerWidth = 959;
+			await bootstrapIframe(dom);
+
+			expect(iframeContainer.style.height).toEqual(
+				iframeContainer.clientHeight + 'px'
+			);
+			expect(iframeContainer.style.maxHeight).toEqual(
+				iframeContainer.clientHeight + 'px'
+			);
+
+			expect(sidebarContainer.style.height).toEqual(
+				sidebarContainer.clientHeight + 'px'
+			);
+			expect(sidebarContainer.style.minHeight).toEqual(
+				sidebarContainer.clientHeight + 'px'
+			);
+			expect(sidebarContainer.style.maxHeight).toEqual(
+				sidebarContainer.clientHeight + 'px'
+			);
+
+			expect(sidebar.style.position).toEqual('absolute');
+		});
+
+		it('it should not resize iframecontainer on screens equal to 960px', async () => {
+			const dom = getTestDocument(
+				'seats-selection',
+				ticketSelectionModalExtractor
+			);
+			setToken('test-ephemeral-token');
+			fetch.mockIf(
+				/^https:\/\/wordpress\.test\/wp-admin\/admin-ajax\.php?.*$/,
+				JSON.stringify({ success: true })
+			);
+
+			const iframeContainer = dom.querySelector(
+				'.tec-tickets-seating__iframe-container'
+			);
+
+			const sidebarContainer = dom.querySelector(
+				'.tec-tickets-seating__modal-sidebar_container'
+			);
+
+			const sidebar = sidebarContainer.querySelector(
+				'.tec-tickets-seating__modal-sidebar'
+			);
+
+			expect(iframeContainer.style.height).not.toEqual(
+				iframeContainer.clientHeight + 'px'
+			);
+			expect(iframeContainer.style.maxHeight).not.toEqual(
+				iframeContainer.clientHeight + 'px'
+			);
+
+			expect(sidebarContainer.style.height).not.toEqual(
+				sidebarContainer.clientHeight + 'px'
+			);
+			expect(sidebarContainer.style.minHeight).not.toEqual(
+				sidebarContainer.clientHeight + 'px'
+			);
+			expect(sidebarContainer.style.maxHeight).not.toEqual(
+				sidebarContainer.clientHeight + 'px'
+			);
+
+			expect(sidebar.style.position).not.toEqual('absolute');
+
+			window.innerWidth = 960;
+			await bootstrapIframe(dom);
+			expect(iframeContainer.style.height).toEqual(
+				iframeContainer.clientHeight + 'px'
+			);
+			expect(iframeContainer.style.maxHeight).toEqual(
+				iframeContainer.clientHeight + 'px'
+			);
+
+			expect(sidebarContainer.style.height).toEqual(
+				sidebarContainer.clientHeight + 'px'
+			);
+			expect(sidebarContainer.style.minHeight).toEqual(
+				sidebarContainer.clientHeight + 'px'
+			);
+			expect(sidebarContainer.style.maxHeight).toEqual(
+				sidebarContainer.clientHeight + 'px'
+			);
+
+			expect(sidebar.style.position).toEqual('absolute');
+		});
+
+		it('it should not resize iframecontainer on screens gt 960px', async () => {
+			const dom = getTestDocument(
+				'seats-selection',
+				ticketSelectionModalExtractor
+			);
+			setToken('test-ephemeral-token');
+			fetch.mockIf(
+				/^https:\/\/wordpress\.test\/wp-admin\/admin-ajax\.php?.*$/,
+				JSON.stringify({ success: true })
+			);
+
+			const iframeContainer = dom.querySelector(
+				'.tec-tickets-seating__iframe-container'
+			);
+
+			const sidebarContainer = dom.querySelector(
+				'.tec-tickets-seating__modal-sidebar_container'
+			);
+
+			const sidebar = sidebarContainer.querySelector(
+				'.tec-tickets-seating__modal-sidebar'
+			);
+
+			expect(iframeContainer.style.height).not.toEqual(
+				iframeContainer.clientHeight + 'px'
+			);
+			expect(iframeContainer.style.maxHeight).not.toEqual(
+				iframeContainer.clientHeight + 'px'
+			);
+
+			expect(sidebarContainer.style.height).not.toEqual(
+				sidebarContainer.clientHeight + 'px'
+			);
+			expect(sidebarContainer.style.minHeight).not.toEqual(
+				sidebarContainer.clientHeight + 'px'
+			);
+			expect(sidebarContainer.style.maxHeight).not.toEqual(
+				sidebarContainer.clientHeight + 'px'
+			);
+
+			expect(sidebar.style.position).not.toEqual('absolute');
+
+			window.innerWidth = 1060;
+			await bootstrapIframe(dom);
+			expect(iframeContainer.style.height).not.toEqual(
+				iframeContainer.clientHeight + 'px'
+			);
+			expect(iframeContainer.style.maxHeight).not.toEqual(
+				iframeContainer.clientHeight + 'px'
+			);
+
+			expect(sidebarContainer.style.height).not.toEqual(
+				sidebarContainer.clientHeight + 'px'
+			);
+			expect(sidebarContainer.style.minHeight).not.toEqual(
+				sidebarContainer.clientHeight + 'px'
+			);
+			expect(sidebarContainer.style.maxHeight).not.toEqual(
+				sidebarContainer.clientHeight + 'px'
+			);
+
+			expect(sidebar.style.position).not.toEqual('absolute');
+		});
+	});
 });
