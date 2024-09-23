@@ -206,10 +206,6 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [TBD] TBD =
-
-* Fix - Send attendees by email feature will now function correctly. [ET-2223]
-
 = [5.13.3.1] 2024-09-16 =
 
 * Security - Improve sanitization and escaping for Administration screens of ticket purchases.
