@@ -25,6 +25,7 @@ use TEC\Tickets\Order_Modifiers\Models\Order_Modifier_Meta;
 use TEC\Tickets\Order_Modifiers\Modifier_Settings;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers as Order_Modifiers_Repository;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers_Meta as Order_Modifiers_Meta_Repository;
+use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifier_Relationship as Order_Modifier_Relationship_Repository;
 
 /**
  * Class Modifier_Abstract
@@ -58,6 +59,14 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @var Order_Modifiers_Meta_Repository Repository
 	 */
 	protected Order_Modifiers_Meta_Repository $order_modifiers_meta_repository;
+
+	/**
+	 * The repository for interacting with the order modifier relationship table.
+	 *
+	 * @since TBD
+	 * @var Order_Modifier_Relationship_Repository Repository
+	 */
+	protected Order_Modifier_Relationship_Repository $order_modifiers_relationship_repository;
 
 	/**
 	 * Fields required by this modifier.
@@ -99,9 +108,10 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @param string $modifier_type The modifier type (e.g., 'coupon', 'fee').
 	 */
 	public function __construct( string $modifier_type ) {
-		$this->modifier_type                   = $modifier_type;
-		$this->repository                      = new Order_Modifiers_Repository();
-		$this->order_modifiers_meta_repository = new Order_Modifiers_Meta_Repository();
+		$this->modifier_type                           = $modifier_type;
+		$this->repository                              = new Order_Modifiers_Repository();
+		$this->order_modifiers_meta_repository         = new Order_Modifiers_Meta_Repository();
+		$this->order_modifiers_relationship_repository = new Order_Modifier_Relationship_Repository();
 	}
 
 	/**

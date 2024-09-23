@@ -12,6 +12,7 @@ namespace TEC\Tickets\Order_Modifiers;
 use TEC\Common\StellarWP\Schema\Register as Schema_Register;
 use TEC\Common\StellarWP\Schema\Config as Schema_Config;
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifier_Relationships;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
 use TEC\Tickets\Order_Modifiers\Modifiers\Coupon;
@@ -84,6 +85,7 @@ class Controller extends Controller_Contract {
 	public function register_tables(): void {
 		$this->container->singleton( Order_Modifiers::class, Schema_Register::table( Order_Modifiers::class ) );
 		$this->container->singleton( Order_Modifiers_Meta::class, Schema_Register::table( Order_Modifiers_Meta::class ) );
+		$this->container->singleton( Order_Modifier_Relationships::class, Schema_Register::table( Order_Modifier_Relationships::class ) );
 	}
 
 	/**

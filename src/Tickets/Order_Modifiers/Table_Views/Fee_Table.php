@@ -79,6 +79,51 @@ class Fee_Table extends Order_Modifier_Table {
 	}
 
 	/**
+	 * Renders the "Active On" column, showing a list of linked post titles where the modifier is active.
+	 *
+	 * @since TBD
+	 *
+	 * @param object $item The current item from the table, typically an Order_Modifier object.
+	 *
+	 * @return string The HTML output for the "Active On" column, including links to the active posts.
+	 */
+	protected function render_active_on_column( $item ) {
+		// Get the active posts (returns an array of data, including 'post_id').
+		$active_posts = $this->modifier->get_active_on( $item->id );
+
+		// Initialize an empty array to store the linked post titles.
+		$linked_posts = [];
+
+		// Loop through the active posts.
+		foreach ( $active_posts as $active_post ) {
+			// Get the post ID.
+			$post_id = $active_post->post_id;
+
+			// Get the post title.
+			$post_title = get_the_title( $post_id );
+
+			// @todo redscar - This returns back the permalink to the ticket. However, it should be the parent event link.
+			// Get the post permalink (URL).
+			$post_link = get_permalink( $post_id );
+
+			// Create a linked post title.
+			$linked_posts[] = sprintf(
+				'<a href="%s">%s</a>',
+				esc_url( $post_link ),
+				esc_html( $post_title )
+			);
+		}
+
+		// If no active posts, return a dash.
+		if ( empty( $linked_posts ) ) {
+			return '-';
+		}
+
+		// Return the linked post titles, separated by commas.
+		return implode( ', ', $linked_posts );
+	}
+
+	/**
 	 * Render the "status" column.
 	 *
 	 * @since TBD

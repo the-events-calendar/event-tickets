@@ -42,7 +42,6 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		DB::insert(
 			Table::table_name(),
 			[
-				'post_id'          => $model->post_id ?? '',
 				'modifier_type'    => $model->modifier_type,
 				'sub_type'         => $model->sub_type,
 				'fee_amount_cents' => $model->fee_amount_cents,
@@ -54,7 +53,6 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 				'end_time'         => $model->end_time,
 			],
 			[
-				'%d',
 				'%s',
 				'%s',
 				'%d',
@@ -80,7 +78,6 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		DB::update(
 			Table::table_name(),
 			[
-				'post_id'          => $model->post_id,
 				'modifier_type'    => $model->modifier_type,
 				'sub_type'         => $model->sub_type,
 				'fee_amount_cents' => $model->fee_amount_cents,
@@ -92,7 +89,6 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 			],
 			[ 'id' => $model->id ],
 			[
-				'%d',
 				'%s',
 				'%s',
 				'%d',
@@ -204,23 +200,6 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	}
 
 	/**
-	 * Finds Order Modifiers by post_id and status.
-	 *
-	 * @since TBD
-	 *
-	 * @param int    $post_id The post ID to find the modifiers for.
-	 * @param string $status The status to filter by (e.g., 'active').
-	 *
-	 * @return Order_Modifier[]|null Array of Order Modifier model instances, or null if not found.
-	 */
-	public function find_by_post_id_and_status( int $post_id, string $status ): ?array {
-		return $this->prepareQuery()
-					->where( 'post_id', $post_id )
-					->where( 'status', $status )
-					->get();
-	}
-
-	/**
 	 * Finds all active Order Modifiers.
 	 *
 	 * @since TBD
@@ -245,25 +224,6 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	public function find_by_modifier_type( string $modifier_type ): ?array {
 		return $this->prepareQuery()
 					->where( 'modifier_type', $modifier_type )
-					->get();
-	}
-
-	/**
-	 * Finds Order Modifiers by post_id, status, and sub_type.
-	 *
-	 * @since TBD
-	 *
-	 * @param int    $post_id The post ID to find the modifiers for.
-	 * @param string $status The status to filter by.
-	 * @param string $sub_type The sub-type of the modifier (e.g., 'percentage' or 'flat').
-	 *
-	 * @return Order_Modifier[]|null Array of Order Modifier model instances, or null if not found.
-	 */
-	public function find_by_post_id_status_and_sub_type( int $post_id, string $status, string $sub_type ): ?array {
-		return $this->prepareQuery()
-					->where( 'post_id', $post_id )
-					->where( 'status', $status )
-					->where( 'sub_type', $sub_type )
 					->get();
 	}
 
