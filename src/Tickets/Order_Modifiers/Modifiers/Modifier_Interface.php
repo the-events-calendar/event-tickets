@@ -85,7 +85,54 @@ interface Modifier_Interface {
 	 *
 	 * @param array $context The context data for rendering the edit screen.
 	 *
-	 * @return mixed The rendered edit screen content, typically as HTML.
+	 * @return void The rendered edit screen content, typically as HTML.
 	 */
-	public function render_edit( array $context ): mixed;
+	public function render_edit( array $context ): void;
+
+	/**
+	 * Maps and sanitizes raw form data into model-ready data.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $data The raw form data, typically from $_POST.
+	 *
+	 * @return array The sanitized and mapped data for database insertion or updating.
+	 */
+	public function map_form_data_to_model( array $data ): array;
+
+	/**
+	 * Retrieves an Order Modifier by its ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $id The modifier ID.
+	 * @return mixed The modifier data if found, or null.
+	 */
+	public function get_modifier_by_id( int $id ): mixed;
+
+	/**
+	 * Finds an order modifier by its slug.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The slug to search for.
+	 *
+	 * @return mixed The order modifier data or null if not found.
+	 */
+	public function find_by_slug( string $slug ): mixed;
+
+	/**
+	 * Prepares the context data for rendering the edit form.
+	 *
+	 * This method takes the raw context data and modifies it as necessary,
+	 * including applying any conversions (e.g., converting amounts from cents to decimals) using the Modifier_Manager.
+	 *
+	 * @since TBD
+	 *
+	 * @param array            $context The raw context data.
+	 * @param Modifier_Manager $manager The Modifier_Manager to use for shared logic such as amount conversions.
+	 *
+	 * @return array The prepared context data ready for rendering the form.
+	 */
+	public function prepare_context( array $context, Modifier_Manager $manager ): array;
 }

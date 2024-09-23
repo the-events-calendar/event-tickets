@@ -15,6 +15,7 @@ use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
 use TEC\Tickets\Order_Modifiers\Modifiers\Coupon;
+use TEC\Tickets\Order_Modifiers\Modifiers\Fee;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 
@@ -47,6 +48,7 @@ class Controller extends Controller_Contract {
 
 		add_action( 'tribe_plugins_loaded', [ $this, 'register_tables' ] );
 		$this->container->singleton( Coupon::class );
+		$this->container->singleton( Fee::class );
 		$this->hook();
 	}
 
@@ -106,9 +108,9 @@ class Controller extends Controller_Contract {
 				'class'        => Coupon::class,
 			],
 			'fee'    => [
-				'display_name' => __( 'Booking Fees', 'event-tickets' ),
+				'display_name' => __( 'Fees', 'event-tickets' ),
 				'slug'         => 'fee',
-				'class'        => Booking_Fee::class,
+				'class'        => Fee::class,
 			],
 		];
 
@@ -125,9 +127,8 @@ class Controller extends Controller_Contract {
 
 		// Validate modifiers after the filter.
 		foreach ( $modifiers as $key => $modifier ) {
-			// Remove invalid modifiers.
-			if ( ! isset( $modifier['class'], $modifier['slug'], $modifier['display_name'] ) || ! class_exists( $modifier['class'], false ) ) {
-				unset( $modifiers[ $key ] );
+			if ( ! isset( $modifier['class'], $modifier['slug'], $modifier['display_name'] ) || ! class_exists( $modifier['class'], true ) ) {
+				unset( $modifiers[ $key ] ); // Remove invalid modifiers.
 			}
 		}
 
@@ -181,5 +182,25 @@ class Controller extends Controller_Contract {
 
 		// Throw an exception if the modifier class is not found or does not implement the required interface.
 		throw new \InvalidArgumentException( sprintf( 'Modifier strategy class for "%s" not found or does not implement Modifier_Strategy_Interface.', $modifier ) );
+	}
+
+	/**
+	 * Get the display name for a specific modifier.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $modifier The slug of the modifier (e.g., 'coupon', 'fee').
+	 *
+	 * @return string|null The display name of the modifier or null if not found.
+	 */
+	public static function get_modifier_display_name( string $modifier ): ?string {
+		$modifiers = self::get_modifiers();
+
+		// Return the display name if the modifier exists in the array.
+		if ( isset( $modifiers[ $modifier ]['display_name'] ) ) {
+			return $modifiers[ $modifier ]['display_name'];
+		}
+
+		return null; // Return null if the modifier slug doesn't exist.
 	}
 }

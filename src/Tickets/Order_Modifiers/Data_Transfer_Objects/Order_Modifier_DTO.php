@@ -103,22 +103,22 @@ class Order_Modifier_DTO extends DataTransferObject {
 	protected string $created_at;
 
 	/**
-	 * The start time when the modifier becomes active.
+	 * The start time when the modifier becomes active (nullable).
 	 *
 	 * @since TBD
 	 *
-	 * @var string
+	 * @var string|null
 	 */
-	protected string $start_time;
+	public ?string $start_time;
 
 	/**
-	 * The end time when the modifier expires.
+	 * The end time when the modifier expires (nullable).
 	 *
 	 * @since TBD
 	 *
-	 * @var string
+	 * @var string|null
 	 */
-	protected string $end_time;
+	public ?string $end_time;
 
 	/**
 	 * Builds a new DTO from an object.
@@ -141,8 +141,9 @@ class Order_Modifier_DTO extends DataTransferObject {
 		$self->display_name     = $object->display_name;
 		$self->status           = $object->status;
 		$self->created_at       = $object->created_at;
-		$self->start_time       = $object->start_time;
-		$self->end_time         = $object->end_time;
+		$self->start_time       = $object->start_time ?? null;
+		$self->end_time         = $object->end_time ?? null;
+
 
 		return $self;
 	}

@@ -78,6 +78,19 @@ class Modifier_Manager {
 	}
 
 	/**
+	 * Fetches a modifier based on its ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $id The modifier ID.
+	 *
+	 * @return mixed The modifier data if found, or null.
+	 */
+	public function find_modifier_by_id( int $id ): mixed {
+		return $this->strategy->get_modifier_by_id( $id );
+	}
+
+	/**
 	 * Renders the table for the current modifier strategy.
 	 *
 	 * @since TBD
@@ -96,10 +109,8 @@ class Modifier_Manager {
 	 * @since TBD
 	 *
 	 * @param array $context The context data for rendering the edit screen.
-	 *
-	 * @return mixed The rendered edit screen content.
 	 */
-	public function render_edit_screen( array $context ): mixed {
-		return $this->strategy->render_edit( $context );
+	public function render_edit_screen( array $context ) {
+		$this->strategy->render_edit( $context );
 	}
 }

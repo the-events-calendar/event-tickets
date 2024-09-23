@@ -48,6 +48,19 @@ class Modifier_Settings {
 	public static $hook_suffix = 'tickets_page_tec-tickets-order-modifiers';
 
 	/**
+	 * Retrieves the page slug associated with the modifier settings.
+	 *
+	 * This method returns the page slug.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The page slug for the modifier settings.
+	 */
+	public static function get_page_slug(): string {
+		return self::$slug;
+	}
+
+	/**
 	 * Register hooks and actions.
 	 *
 	 * @since TBD
@@ -136,13 +149,18 @@ class Modifier_Settings {
 		// Get and sanitize request vars for modifier and modifier_id.
 		$modifier_type = sanitize_key( tribe_get_request_var( 'modifier', 'coupon' ) );
 		$modifier_id   = absint( tribe_get_request_var( 'modifier_id', '0' ) );
+		$is_edit       = tribe_is_truthy( tribe_get_request_var( 'edit', '0' ) );
 
 		// Prepare the context for the page.
 		$context = [
 			'event_id'    => 0,
 			'modifier'    => $modifier_type,
 			'modifier_id' => $modifier_id,
+			'is_edit'     => $is_edit,
 		];
+
+		// Check if form is submitted and process the save.
+		$this->handle_form_submission( $context );
 
 		// Get the appropriate strategy for the selected modifier.
 		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
@@ -156,12 +174,35 @@ class Modifier_Settings {
 		// Create a Modifier Manager with the selected strategy.
 		$manager = new Modifier_Manager( $modifier_strategy );
 
-		// Determine if we are in edit or table mode.
-		if ( ! empty( $modifier_id ) ) {
-			$this->render_edit_view( $manager, $context );
-		} else {
+		if ( ! $is_edit ) {
 			$this->render_table_view( $manager, $context );
+			return;
 		}
+		$this->render_edit_view( $manager, $context );
+	}
+
+	/**
+	 * Retrieves the modifier data by ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $modifier_id The ID of the modifier to retrieve.
+	 *
+	 * @return array|null The modifier data or null if not found.
+	 */
+	protected function get_modifier_data_by_id( int $modifier_id ): ?array {
+		// Get the modifier type from the request or default to 'coupon'.
+		$modifier_type = tribe_get_request_var( 'modifier', 'coupon' );
+
+		// Get the appropriate strategy for the selected modifier type.
+		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
+
+		if ( ! $modifier_strategy ) {
+			return null; // Return null if the strategy is not found.
+		}
+
+		// Use the strategy to retrieve the modifier data by ID.
+		return $modifier_strategy->get_modifier_by_id( $modifier_id, $modifier_type );
 	}
 
 	/**
@@ -175,8 +216,7 @@ class Modifier_Settings {
 	 * @return void
 	 */
 	protected function render_table_view( Modifier_Manager $manager, array $context ): void {
-		echo '<h2>' . esc_html( ucfirst( $context['modifier'] ) ) . '</h2>';
-		echo $manager->render_table( $context );
+		echo esc_html( $manager->render_table( $context ) );
 	}
 
 	/**
@@ -190,18 +230,123 @@ class Modifier_Settings {
 	 * @return void
 	 */
 	protected function render_edit_view( Modifier_Manager $manager, array $context ): void {
-		echo '<h2>' . esc_html( ucfirst( $context['modifier'] ) . ' Edit' ) . '</h2>';
+		// Get modifier ID from the context.
+		$modifier_id = (int) $context['modifier_id'];
+
+		// Merge the modifier data into the context to be passed to the form rendering logic.
+		// If a valid modifier ID is provided, fetch the data to populate the form.
+		if ( $modifier_id > 0 ) {
+			$modifier_data = $this->get_modifier_data_by_id( $modifier_id );
+
+			// Only merge if modifier data is not null.
+			if ( ! is_null( $modifier_data ) ) {
+				$context = array_merge( $context, $modifier_data );
+			} else {
+				// @todo redscar - If a modifier ID is sent, and we are unable to find the data, do we display a message?
+				echo '<div class="notice notice-error"><p>' . esc_html__( 'We are unable to find that Modifier.', 'event-tickets' ) . '</p></div>';
+				return;
+			}
+		}
+
+		// Render the edit screen, passing the populated context.
 		echo $manager->render_edit_screen( $context );
 	}
 
 	/**
-	 * Render an error message for invalid modifiers.
+	 * Handles the form submission and saves the modifier data.
 	 *
 	 * @since TBD
 	 *
+	 * @param array $context The context for rendering the page.
+	 *
 	 * @return void
 	 */
-	protected function render_invalid_modifier_message(): void {
-		echo '<p>' . esc_html__( 'Invalid modifier selected.', 'event-tickets' ) . '</p>';
+	protected function handle_form_submission( array $context ): void {
+		// Check if the form was submitted and verify nonce.
+		if ( ! isset( $_POST['order_modifier_form_save'] ) || ! check_admin_referer( 'order_modifier_save_action', 'order_modifier_save_action' ) ) {
+			return;
+		}
+
+		// Get the appropriate strategy for the selected modifier.
+		$modifier_strategy = tribe( Controller::class )->get_modifier( $context['modifier'] );
+
+		// Early bail if the strategy doesn't exist.
+		if ( ! $modifier_strategy ) {
+			$this->show_error_message( __( 'Invalid modifier.', 'event-tickets' ) );
+			return;
+		}
+
+		// Set the modifier ID in the post data.
+		$_POST['order_modifier_id'] = $context['modifier_id'];
+
+		// Use the Modifier Manager to sanitize and save the data.
+		$manager       = new Modifier_Manager( $modifier_strategy );
+		$modifier_data = $modifier_strategy->map_form_data_to_model( $_POST );
+		$result        = $manager->save_modifier( $modifier_data );
+
+		// Early bail if saving the modifier failed.
+		if ( empty( $result ) ) {
+			$this->show_error_message( __( 'Failed to save modifier.', 'event-tickets' ) );
+			return;
+		}
+
+		// If a new modifier was created, redirect to the edit page of the new modifier.
+		if ( empty( $context['modifier_id'] ) || 0 === (int) $context['modifier_id'] ) {
+			$this->redirect_to_table_page( $result->id, $context );
+			return;
+		}
+
+		// Show success message for updating an existing modifier.
+		$this->show_success_message( __( 'Modifier saved successfully!', 'event-tickets' ) );
+	}
+
+	/**
+	 * Redirects to the table page after creating the modifier.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $modifier_id The ID of the new modifier.
+	 * @param array $context     The context for rendering the page.
+	 *
+	 * @return void
+	 */
+	protected function redirect_to_table_page( int $modifier_id, array $context ): void {
+		// Manually build the URL.
+		$new_url = add_query_arg(
+			[
+				'page'     => self::$slug,
+				'modifier' => $context['modifier'],
+			],
+			admin_url( 'admin.php' )
+		);
+
+		wp_safe_redirect( esc_url_raw( html_entity_decode( $new_url ) ) );
+		exit;
+	}
+
+	/**
+	 * Shows a success message.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $message The success message to display.
+	 *
+	 * @return void
+	 */
+	protected function show_success_message( string $message ): void {
+		echo '<div class="notice notice-success"><p>' . esc_html( $message ) . '</p></div>';
+	}
+
+	/**
+	 * Shows an error message.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $message The error message to display.
+	 *
+	 * @return void
+	 */
+	protected function show_error_message( string $message ): void {
+		echo '<div class="notice notice-error"><p>' . esc_html( $message ) . '</p></div>';
 	}
 }

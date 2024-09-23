@@ -60,4 +60,17 @@ interface Modifier_Strategy_Interface {
 	 * @return bool True if the data is valid, false otherwise.
 	 */
 	public function validate_data( array $data ): bool;
+
+	/**
+	 * Retrieves the page slug for the current modifier context.
+	 *
+	 * This method provides the slug associated with the page where the modifier is being managed.
+	 * It is used in cases where the slug is required for rendering or processing actions
+	 * related to the specific modifier.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The page slug, or empty string if not applicable.
+	 */
+	public function get_page_slug();
 }

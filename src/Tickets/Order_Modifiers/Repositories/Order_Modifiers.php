@@ -42,7 +42,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		DB::insert(
 			Table::table_name(),
 			[
-				'post_id'          => $model->post_id,
+				'post_id'          => $model->post_id ?? '',
 				'modifier_type'    => $model->modifier_type,
 				'sub_type'         => $model->sub_type,
 				'fee_amount_cents' => $model->fee_amount_cents,
@@ -114,12 +114,75 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 *
 	 * @since TBD
 	 *
-	 * @param int $id The ID of the Order Modifier to find.
+	 * @param int    $id The ID of the Order Modifier to find.
+	 * @param string $type The type of Order Modifier to find.
 	 *
 	 * @return Order_Modifier|null The Order Modifier model instance, or null if not found.
 	 */
-	public function find_by_id( int $id ): ?Order_Modifier {
-		return $this->prepareQuery()->where( 'id', $id )->get();
+	public function find_by_id( int $id, $type ): ?Order_Modifier {
+		return $this->prepareQuery()
+					->where( 'id', $id )
+					->where( 'modifier_type', $type )
+					->get();
+	}
+
+	/**
+	 * Search for Order Modifiers based on the given criteria.
+	 *
+	 * @param array $args {
+	 *     Optional. Arguments to filter the query.
+	 *
+	 * @type string $modifier_type The type of the modifier ('coupon' or 'fee').
+	 * @type string $search_term The term to search for (e.g., in display_name or slug).
+	 * @type string $orderby Column to order by. Default 'display_name'.
+	 * @type string $order Sorting order. Either 'asc' or 'desc'. Default 'asc'.
+	 * }
+	 *
+	 * @return array An array of Order_Modifiers or an empty array if none found.
+	 */
+	public function search_modifiers( array $args = [] ): array {
+		// Define default arguments.
+		$defaults = [
+			'modifier_type' => '',
+			'search_term'   => '',
+			'orderby'       => 'display_name',
+			'order'         => 'asc',
+		];
+
+		// Merge passed arguments with defaults.
+		$args = array_merge( $defaults, $args );
+
+		// Start building the query.
+		$query = $this->prepareQuery();
+
+		// Filter by modifier type if provided.
+		if ( ! empty( $args['modifier_type'] ) ) {
+			$query = $query->where( 'modifier_type', $args['modifier_type'] );
+		}
+
+		// Add search functionality (search in display_name or slug).
+		if ( ! empty( $args['search_term'] ) ) {
+			$query = $query->whereLike( 'display_name', $args['search_term'] );
+		}
+
+		// Add ordering.
+		if ( ! empty( $args['orderby'] ) && in_array(
+			$args['orderby'],
+			[
+				'display_name',
+				'slug',
+				'fee_amount_cents',
+				'used',
+				'remaining',
+				'status',
+			]
+		)
+		) {
+			$query = $query->orderBy( $args['orderby'], $args['order'] );
+		}
+
+		// Return the results of the query.
+		return $query->getAll() ?? [];
 	}
 
 	/**
