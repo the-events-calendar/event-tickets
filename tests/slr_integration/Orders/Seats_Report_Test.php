@@ -26,7 +26,11 @@ class Seats_Report_Test extends WPTEstCase {
 	public function render_page_data_provider(): Generator {
 		yield 'no_tickets' => [
 			function (): array {
-				$post_id = self::factory()->post->create();
+				$post_id = self::factory()->post->create(
+					[
+						'post_title' => 'The Event',
+					]
+				);
 				$ticket  = $this->create_tc_ticket( $post_id, 10 );
 
 				return [ $post_id ];
@@ -35,7 +39,11 @@ class Seats_Report_Test extends WPTEstCase {
 
 		yield '1_ticket_1_attendee' => [
 			function (): array {
-				$post_id      = self::factory()->post->create();
+				$post_id      = self::factory()->post->create(
+					[
+						'post_title' => 'The Event',
+					]
+				);
 				$ticket       = $this->create_tc_ticket( $post_id, 10 );
 				$order        = $this->create_order( [ $ticket => 1 ] );
 				[ $attendee ] = tribe_attendees()->where( 'event_id', $post_id )->get_ids();
@@ -46,7 +54,11 @@ class Seats_Report_Test extends WPTEstCase {
 
 		yield '2_tickets_3_attendees' => [
 			function (): array {
-				$post_id                                  = self::factory()->post->create();
+				$post_id                                  = self::factory()->post->create(
+					[
+						'post_title' => 'The Event',
+					]
+				);
 				$ticket_1                                 = $this->create_tc_ticket( $post_id, 10 );
 				$ticket_2                                 = $this->create_tc_ticket( $post_id, 20 );
 				$ticket_1_order                           = $this->create_order( [ $ticket_1 => 1 ] );
@@ -105,8 +117,6 @@ class Seats_Report_Test extends WPTEstCase {
 		
 		$html = str_replace( [ ...$ids, $post_id ], '{{ID}}', $html );
 		
-		$html = str_replace( get_the_title( $post_id ), '{{POST_TITLE}}', $html );
-
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
 }
