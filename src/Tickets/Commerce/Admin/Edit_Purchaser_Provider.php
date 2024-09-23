@@ -109,7 +109,7 @@ class Edit_Purchaser_Provider extends Service_Provider {
 
 				// Sanitize other fields.
 				$email      = sanitize_email( $_POST['email'] ?? '' );
-				$post_id    = (int) ( $_POST['ID'] ?? '' );
+				$post_id    = sanitize_text_field( $_POST['ID'] ?? '' );
 				$send_email = ! empty( $_POST['send_email'] );
 
 				if ( ! is_email( $email ) ) {
@@ -222,12 +222,13 @@ class Edit_Purchaser_Provider extends Service_Provider {
 	 * @return mixed The passed html.
 	 */
 	public function render_modal( $html, $file, $name, Tribe__Template $template, $context ) {
-		$dialog_view = tribe( 'dialog.view' );
-		$title       = esc_html_x( 'Edit purchaser', 'Edit purchaser modal title.', 'event-tickets' );
+		$dialog_view    = tribe( 'dialog.view' );
+		$title          = esc_html_x( 'Edit purchaser', 'Edit purchaser modal title.', 'event-tickets' );
+		$admin_template = tribe( 'tickets.admin.views' );
 
 		ob_start();
 		$dialog_view->render_modal(
-			$template->template(
+			$admin_template->template(
 				'src/admin-views/commerce/orders/single/edit-purchaser-modal',
 				$context,
 				false
@@ -251,6 +252,7 @@ class Edit_Purchaser_Provider extends Service_Provider {
 		// phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped, WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo $modal;
 
+		// Always return $html - we are not overriding the template, simply "appending" our modal.
 		return $html;
 	}
 }

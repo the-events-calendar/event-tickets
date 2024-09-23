@@ -16,14 +16,14 @@
 	<input type="hidden" value="<?php echo esc_attr( $order->ID ); ?>" name="ID" />
 	<div class="tec-tickets-commerce-row tec-tickets-commerce-purchaser-name">
 		<label for="tec-tickets-commerce-edit-purchaser-name">
-			<?php echo esc_html_x( 'Purchaser name*', 'Field label for the purchaser name.', 'event-tickets' ); ?>
+			<?php echo esc_html_x( 'Purchaser name', 'Field label for the purchaser name.', 'event-tickets' ); ?> <span class="tribe-required" aria-hidden="true" role="presentation">*</span>
 		</label>
 		<input type="text" required="required" name="name" id="tec-tickets-commerce-edit-purchaser-name" />
 		<p class="tec-tickets-commerce-error-message"></p>
 	</div>
 	<div class="tec-tickets-commerce-row tec-tickets-commerce-purchaser-email">
 		<label for="tec-tickets-commerce-edit-purchaser-email">
-			<?php echo esc_html_x( 'Purchaser email*', 'Field label for the purchaser email.', 'event-tickets' ); ?>
+			<?php echo esc_html_x( 'Purchaser email', 'Field label for the purchaser email.', 'event-tickets' ); ?> <span class="tribe-required" aria-hidden="true" role="presentation">*</span>
 		</label>
 		<input type="email" required="required" name="email" id="tec-tickets-commerce-edit-purchaser-email" />
 		<p class="tec-tickets-commerce-error-message"></p>
