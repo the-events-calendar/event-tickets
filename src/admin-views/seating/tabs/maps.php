@@ -11,7 +11,8 @@
 use TEC\Tickets\Seating\Admin\Tabs\Map_Card;
 ?>
 
-<div class="tec-tickets__seating-tab-heading-wrapper"><h2
+<div class="tec-tickets__seating-tab-heading-wrapper">
+	<h2
 		class="tec-tickets__seating-tab-heading">
 		<?php
 		echo esc_html_x(
@@ -36,7 +37,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Map_Card;
 						'Create a seating map that represents your room or venue.  Configurations are used to create layouts that allow purchasers choose specific seats and ticketing tiers. %1$s',
 						'event-tickets'
 					),
-					'<a href="https://evnt.is" target="_blank">'
+					'<a href="https://evnt.is/seating-map" target="_blank">'
 					. __( 'Learn more', 'event-tickets' )
 					. '</a>'
 				),

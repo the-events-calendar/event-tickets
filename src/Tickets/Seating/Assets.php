@@ -52,7 +52,7 @@ class Assets extends Controller_Contract {
 	public function get_utils_data(): array {
 		$localization = $this->container->get( Localization::class );
 		$post         = get_post();
-		
+
 		return [
 			'links'            => [
 				'layouts'     => $this->container->get( Layouts::class )->get_url(),
@@ -69,7 +69,7 @@ class Assets extends Controller_Contract {
 				'layouts'        => [
 					'add-failed'          => _x( 'Failed to add the new layout.', 'Error message for adding a layout', 'event-tickets' ),
 					'edit-confirmation'   => _x( 'This layout is associated with {count} events. Changes will impact all existing events and may affect the seating assignment of active ticket holders.', 'Confirmation message for editing a layout with events', 'event-tickets' ),
-					'delete-confirmation' => _x( 'Are you sure you want to delete this layout?', 'Confirmation message for deleting a layout', 'event-tickets' ),
+					'delete-confirmation' => _x( 'Are you sure you want to delete this layout? This cannot be undone.', 'Confirmation message for deleting a layout', 'event-tickets' ),
 					'delete-failed'       => _x( 'Failed to delete the layout.', 'Error message for deleting a layout', 'event-tickets' ),
 				],
 				'service-errors' => $localization->get_service_error_strings(),
@@ -136,7 +136,7 @@ class Assets extends Controller_Contract {
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
 	}
-	
+
 	/**
 	 * Gets the data for the service bundle asset.
 	 *
@@ -153,7 +153,7 @@ class Assets extends Controller_Contract {
 	 */
 	public function get_service_bundle_data(): array {
 		$maps_layouts_home_page = $this->container->get( Maps_Layouts_Home_Page::class );
-		
+
 		return [
 			'service' => [
 				'baseUrl'             => $this->container->get( Service\Service::class )->get_frontend_url(),
@@ -163,7 +163,7 @@ class Assets extends Controller_Contract {
 			],
 		];
 	}
-	
+
 	/**
 	 * Registers the service bundle, used to communicate with the Service.
 	 *
