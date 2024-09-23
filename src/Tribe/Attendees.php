@@ -463,7 +463,7 @@ class Tribe__Tickets__Attendees {
 			$type              = $email_address ? 'email' : 'user';
 			$send_to           = $type === 'email' ? $email_address : $user_id;
 
-			/** @var bool|WP_Error|string Email status. If false, no status is shown. */
+			/** @var bool|WP_Error|string $status Email status. If false, no status is shown. */
 			$status = false;
 			if ( $should_send_email ) {
 				$status = $this->send_mail_list( $event_id, $type, $send_to );
