@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Event's ticket availability calculations. Total event's availability could be miscalculated depending on the order of the tickets. [ET-2222].
