@@ -457,25 +457,16 @@ class Tribe__Tickets__Attendees {
 
 			$event_id          = tribe_get_request_var( 'event_id' );
 			$event_id          = ! is_numeric( $event_id ) ? null : absint( $event_id );
-			$nonce             = tribe_get_request_var( '_wpnonce' );
 			$email_address     = tribe_get_request_var( 'email_to_address' );
 			$user_id           = tribe_get_request_var( 'email_to_user' );
 			$should_send_email = (bool) tribe_get_request_var( 'tribe-send-email', false );
 			$type              = $email_address ? 'email' : 'user';
 			$send_to           = $type === 'email' ? $email_address : $user_id;
 
-			$status = $this->has_attendees_list_access(
-				$event_id,
-				$nonce,
-				$type,
-				$send_to
-			);
-
-			if ( ! $should_send_email ) {
-				$status = $this->send_mail_list( $event_id, $email_address, $send_to, $status );
-			} else {
-				// If status is true return a friendly message.
-				$status = esc_html__( 'Email sent successfully!', 'event-tickets' );
+			/** @var bool|WP_Error|string Email status. If false, no status is shown. */
+			$status = false;
+			if ( $should_send_email ) {
+				$status = $this->send_mail_list( $event_id, $type, $send_to );
 			}
 
 			tribe( 'tickets.admin.views' )->template( 'attendees/attendees-email', [ 'status' => $status ] );
@@ -913,6 +904,19 @@ class Tribe__Tickets__Attendees {
 	 * @return string|WP_Error
 	 */
 	public function send_mail_list( $event_id = null, ?string $type = 'user', $send_to = null, $error = null ) {
+
+		// Check user access.
+		$nonce         = tribe_get_request_var( '_wpnonce' );
+		$access_status = $this->has_attendees_list_access(
+			$event_id,
+			$nonce,
+			$type,
+			$send_to
+		);
+		if ( is_wp_error( $access_status ) ) {
+			return $access_status;
+		}
+
 		if ( null === $error ) {
 			$error = new WP_Error();
 		}
@@ -921,8 +925,11 @@ class Tribe__Tickets__Attendees {
 			return $error;
 		}
 
+		// Send to could be an email or a user ID.
+		$email = sanitize_email( $send_to );
+
 		if ( 'user' === $type ) {
-			$user = get_user_by( 'id', $send_to );
+			$user = get_user_by( 'id', (int) $send_to );
 
 			if ( ! is_object( $user ) ) {
 				$error->add( 'invalid-user', esc_html__( 'Invalid User ID', 'event-tickets' ), [ 'type' => $type, 'user' => $send_to ] );
