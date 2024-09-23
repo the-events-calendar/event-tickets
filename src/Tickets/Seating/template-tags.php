@@ -9,7 +9,7 @@ use TEC\Tickets\Seating\Meta;
 
 if ( ! function_exists( 'tec_tickets_seating_enabled' ) ) {
 	/**
-	 * Returns whether the event is using assigned seating.
+	 * Returns whether the post is using assigned seating.
 	 *
 	 * @since TBD
 	 *
@@ -18,6 +18,6 @@ if ( ! function_exists( 'tec_tickets_seating_enabled' ) ) {
 	 * @return bool Whether the event is using assigned seating.
 	 */
 	function tec_tickets_seating_enabled( int $post_id ): bool {
-		return ! empty( get_post_meta( $post_id, Meta::META_KEY_ENABLED, true ) );
+		return ! empty( get_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, true ) );
 	}
 }
