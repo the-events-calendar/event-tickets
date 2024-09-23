@@ -91,6 +91,10 @@ class Fee_Table extends Order_Modifier_Table {
 		// Get the active posts (returns an array of data, including 'post_id').
 		$active_posts = $this->modifier->get_active_on( $item->id );
 
+		// @todo redscar - We may want to implement a switch case here in regards to the post type?
+
+		// tribe_venue, tribe_organizer, tec_tc_ticket
+
 		// Initialize an empty array to store the linked post titles.
 		$linked_posts = [];
 
@@ -102,16 +106,8 @@ class Fee_Table extends Order_Modifier_Table {
 			// Get the post title.
 			$post_title = get_the_title( $post_id );
 
-			// @todo redscar - This returns back the permalink to the ticket. However, it should be the parent event link.
-			// Get the post permalink (URL).
-			$post_link = get_permalink( $post_id );
-
 			// Create a linked post title.
-			$linked_posts[] = sprintf(
-				'<a href="%s">%s</a>',
-				esc_url( $post_link ),
-				esc_html( $post_title )
-			);
+			$linked_posts[] =  esc_html( $post_title );
 		}
 
 		// If no active posts, return a dash.
