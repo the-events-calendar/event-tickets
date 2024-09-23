@@ -22,6 +22,7 @@ use InvalidArgumentException;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier_Meta;
+use TEC\Tickets\Order_Modifiers\Models\Order_Modifier_Relationships;
 use TEC\Tickets\Order_Modifiers\Modifier_Settings;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers as Order_Modifiers_Repository;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers_Meta as Order_Modifiers_Meta_Repository;
@@ -546,6 +547,66 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		// Upsert the metadata using the repository.
 		return $this->order_modifiers_meta_repository->upsert_meta( new Order_Modifier_Meta( $meta_data ) );
 	}
+
+
+	/**
+	 * Adds a new relationship between a modifier and a post.
+	 *
+	 * This method inserts a new relationship into the database, linking the modifier to
+	 * the provided post ID with the specified post type.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $modifier_id The ID of the modifier.
+	 * @param int $post_id The ID of the post being linked to the modifier.
+	 *
+	 * @return void
+	 */
+	protected function add_relationship( int $modifier_id, int $post_id ): void {
+		$data = [
+			'modifier_id' => $modifier_id,
+			'post_id'     => $post_id,
+			'post_type'   => get_post_type( $post_id ),
+		];
+		$this->order_modifiers_relationship_repository->insert( new Order_Modifier_Relationships( $data ) );
+	}
+
+	/**
+	 * Deletes a relationship between a modifier and a post.
+	 *
+	 * This method removes a relationship from the database, unlinking the modifier
+	 * from the specified post ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $modifier_id The ID of the modifier.
+	 * @param int $post_id The ID of the post to remove from the relationship.
+	 *
+	 * @return void
+	 */
+	protected function delete_relationship( int $modifier_id, int $post_id ): void {
+		$data = [
+			'modifier_id' => $modifier_id,
+			'post_id'     => $post_id,
+			'post_type'   => get_post_type( $post_id ),
+		];
+		$this->order_modifiers_relationship_repository->delete( new Order_Modifier_Relationships( $data ) );
+	}
+
+	/**
+	 * Abstract method for handling relationship updates.
+	 *
+	 * This method must be implemented in child classes to handle the specific logic for
+	 * updating relationships between modifiers and posts, depending on the modifier type.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $modifier_id The ID of the modifier.
+	 * @param array $new_post_ids An array of post IDs representing the new set of relationships.
+	 *
+	 * @return void
+	 */
+	abstract protected function handle_relationship_update( int $modifier_id, array $new_post_ids ): void;
 
 	/**
 	 * Retrieves the display name of the modifier in singular or plural form.

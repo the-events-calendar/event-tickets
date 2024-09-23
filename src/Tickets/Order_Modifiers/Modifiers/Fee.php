@@ -70,13 +70,21 @@ class Fee extends Modifier_Abstract {
 		// Save the modifier.
 		$modifier = parent::insert_modifier( $data );
 
-		// Handle metadata (e.g., coupons_available).
+		// Handle metadata (e.g., order_modifier_apply_to).
 		$this->handle_meta_data(
 			$modifier->id,
 			[
 				'meta_key'   => 'fee_applied_to',
 				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 				'meta_value' => tribe_get_request_var( 'order_modifier_apply_to', '' ),
+			]
+		);
+
+		$this->handle_relationship_data(
+			$modifier->id,
+			[
+				'post_id'   => '123',
+				'post_type' => get_post_type( 123 ),
 			]
 		);
 
@@ -93,20 +101,78 @@ class Fee extends Modifier_Abstract {
 	 * @return mixed The updated modifier or an empty array if no changes were made.
 	 */
 	public function update_modifier( array $data ): mixed {
-		// Save the modifier.
+		// Save the modifier using the parent method.
 		$modifier = parent::update_modifier( $data );
 
-		// Handle metadata (e.g., coupons_available).
+		// Check if modifier was successfully updated.
+		if ( empty( $modifier ) ) {
+			return [];
+		}
+
+		// Handle metadata (e.g., order_modifier_apply_to).
+		$apply_fee_to = tribe_get_request_var( 'order_modifier_apply_to', '' );
+
 		$this->handle_meta_data(
 			$modifier->id,
 			[
 				'meta_key'   => 'fee_applied_to',
 				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
-				'meta_value' => tribe_get_request_var( 'order_modifier_apply_to', '' ),
+				'meta_value' => $apply_fee_to,
 			]
 		);
 
+		// Determine the post ID(s) to apply the fee to based on the 'apply_fee_to' value.
+		$apply_to_post_id = null;
+
+		switch ( $apply_fee_to ) {
+			case 'venue':
+				$apply_to_post_id = tribe_get_request_var( 'venue_list', null );
+				break;
+			case 'organizer':
+				$apply_to_post_id = tribe_get_request_var( 'organizer_list', null );
+				break;
+		}
+
+		// Ensure that $apply_to_post_id is an array for consistency.
+		$apply_to_post_ids = $apply_to_post_id ? [ $apply_to_post_id ] : [];
+
+		// Handle the relationship update, passing the relevant data.
+		$this->handle_relationship_update( $modifier->id, $apply_to_post_ids );
+
 		return $modifier;
+	}
+
+	/**
+	 * Handles relationship updates for Fee modifiers.
+	 *
+	 * This method compares the new set of post IDs with the existing relationships for
+	 * the given fee modifier. It inserts new relationships if they don't exist and deletes
+	 * old relationships that are no longer valid.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $modifier_id The ID of the fee modifier.
+	 * @param array $new_post_ids An array of new post IDs to be associated with the fee.
+	 *
+	 * @return void
+	 */
+	protected function handle_relationship_update( int $modifier_id, array $new_post_ids ): void {
+		// Retrieve the existing relationships from the repository.
+		$existing_relationships = $this->get_active_on( $modifier_id );
+
+		// Insert new relationships that don't exist in the current relationships.
+		foreach ( $new_post_ids as $new_post_id ) {
+			if ( ! $this->order_modifiers_relationship_repository->find_by_modifier_and_post_type( $modifier_id, $new_post_id ) ) {
+				$this->add_relationship( $modifier_id, $new_post_id, 'fee' );
+			}
+		}
+
+		// Delete old relationships that no longer match the new set.
+		foreach ( $existing_relationships as $existing_relationship ) {
+			if ( ! in_array( $existing_relationship->post_id, $new_post_ids ) ) {
+				$this->delete_relationship( $modifier_id, $existing_relationship->post_id );
+			}
+		}
 	}
 
 	/**
@@ -194,7 +260,21 @@ class Fee extends Modifier_Abstract {
 		];
 	}
 
+	/**
+	 * Retrieves the active posts related to a specific order modifier.
+	 *
+	 * This method finds the posts that are associated with a given modifier ID.
+	 * It uses the order modifiers relationship repository to look up the relationship
+	 * between the modifier and the post (such as tickets, venues, or organizers).
+	 *
+	 * @since TBD
+	 *
+	 * @param int $modifier_id The ID of the modifier to find active posts for.
+	 *
+	 * @return array The list of posts related to the modifier.
+	 */
 	public function get_active_on( $modifier_id ) {
 		return $this->order_modifiers_relationship_repository->find_by_modifier_id( $modifier_id );
 	}
+
 }

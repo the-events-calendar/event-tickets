@@ -191,4 +191,19 @@ class Coupon extends Modifier_Abstract {
 			'order_modifier_coupon_limit'     => $order_modifier_coupon_limit_meta_value ?? '',
 		];
 	}
+
+	/**
+	 * Handles relationship updates for Coupon modifiers.
+	 *
+	 * Coupons do not currently use relationships.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $modifier_id The ID of the fee modifier.
+	 * @param array $new_post_ids An array of new post IDs to be associated with the fee.
+	 *
+	 * @return void
+	 */
+	protected function handle_relationship_update( int $modifier_id, array $new_post_ids ): void {
+	}
 }

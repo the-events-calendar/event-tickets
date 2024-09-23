@@ -79,44 +79,101 @@ class Fee_Table extends Order_Modifier_Table {
 	}
 
 	/**
-	 * Renders the "Active On" column, showing a list of linked post titles where the modifier is active.
+	 * Renders the "Active On" column for a specific order modifier.
+	 *
+	 * This method determines where the modifier is active (e.g., on all tickets, per ticket, specific venues, or
+	 * organizers) and delegates the rendering logic to the corresponding method based on the modifier's application.
 	 *
 	 * @since TBD
 	 *
 	 * @param object $item The current item from the table, typically an Order_Modifier object.
 	 *
-	 * @return string The HTML output for the "Active On" column, including links to the active posts.
+	 * @return string The HTML output for the "Active On" column, depending on where the modifier is applied.
 	 */
 	protected function render_active_on_column( $item ) {
-		// Get the active posts (returns an array of data, including 'post_id').
-		$active_posts = $this->modifier->get_active_on( $item->id );
+		$apply_to = $this->order_modifier_meta_repository->find_by_order_modifier_id_and_meta_key( $item->id, 'fee_applied_to' )->meta_value ?? '';
 
-		// @todo redscar - We may want to implement a switch case here in regards to the post type?
+		switch ( $apply_to ) {
+			case 'all':
+				return $this->display_all_tickets();
+			case 'per':
+				return $this->display_per_tickets( $item->id );
+			case 'venue':
+				return $this->display_venues( $item->id );
+			case 'organizer':
+				return $this->display_organizers( $item->id );
+			default:
+				return '-';
+		}
+	}
 
-		// tribe_venue, tribe_organizer, tec_tc_ticket
+	/**
+	 * Displays a message indicating the modifier is applied to all tickets.
+	 *
+	 * This method is used when the modifier is applied across all tickets without specific conditions.
+	 *
+	 * @since TBD
+	 *
+	 * @return string A message indicating the modifier applies to all tickets.
+	 */
+	protected function display_all_tickets() {
+		return 'All tickets';
+	}
 
-		// Initialize an empty array to store the linked post titles.
+	/**
+	 * Displays a list of posts where the modifier is applied on a per-ticket basis.
+	 *
+	 * This method retrieves the post titles where the modifier is applied and displays them as a comma-separated list.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $modifier_id The ID of the order modifier.
+	 *
+	 * @return string A comma-separated list of post titles where the modifier is applied, or a dash if none found.
+	 */
+	protected function display_per_tickets( $modifier_id ) {
+		$active_posts = $this->modifier->get_active_on( $modifier_id );
 		$linked_posts = [];
 
-		// Loop through the active posts.
 		foreach ( $active_posts as $active_post ) {
-			// Get the post ID.
-			$post_id = $active_post->post_id;
-
-			// Get the post title.
-			$post_title = get_the_title( $post_id );
-
-			// Create a linked post title.
-			$linked_posts[] =  esc_html( $post_title );
+			$post_title     = get_the_title( $active_post->post_id );
+			$linked_posts[] = esc_html( $post_title );
 		}
 
-		// If no active posts, return a dash.
-		if ( empty( $linked_posts ) ) {
-			return '-';
-		}
+		return ! empty( $linked_posts ) ? implode( ', ', $linked_posts ) : '-';
+	}
 
-		// Return the linked post titles, separated by commas.
-		return implode( ', ', $linked_posts );
+	/**
+	 * Displays a message indicating the modifier is applied to specific venues.
+	 *
+	 * This method is a placeholder for future implementation to handle cases where the modifier is applied to venues.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $modifier_id The ID of the order modifier.
+	 *
+	 * @return string A message or data related to the venues where the modifier is applied (currently "TBD").
+	 */
+	protected function display_venues( $modifier_id ) {
+		// @todo: Implement logic to retrieve and display venue data.
+		return 'TBD Venues';
+	}
+
+	/**
+	 * Displays a message indicating the modifier is applied to specific organizers.
+	 *
+	 * This method is a placeholder for future implementation to handle cases where the modifier is applied to
+	 * organizers.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $modifier_id The ID of the order modifier.
+	 *
+	 * @return string A message or data related to the organizers where the modifier is applied (currently "TBD").
+	 */
+	protected function display_organizers( $modifier_id ) {
+		// @todo: Implement logic to retrieve and display organizer data.
+		return 'TBD Organizers';
 	}
 
 	/**

@@ -86,6 +86,50 @@
 						basis during ticket creation.</p>
 				</div>
 
+				<?php
+				// @todo redscar - This needs to be refactored.
+				$posts = get_posts(
+					[
+						'post_type'      => 'tribe_organizer',  // Or 'tribe_venue' for venues.
+						'orderby'        => 'title',
+						'order'          => 'ASC',
+						'posts_per_page' => -1,
+					]
+				);
+				?>
+
+				<select name="venue_list">
+					<option value=""><?php esc_html_e( 'Select an organizer', 'event-tickets' ); ?></option>
+					<?php foreach ( $posts as $post ) : ?>
+						<option value="<?php echo esc_attr( $post->ID ); ?>">
+							<?php echo esc_html( $post->post_title ); ?>
+						</option>
+					<?php endforeach; ?>
+				</select>
+
+				<?php
+				// @todo redscar - This needs to be refactored.
+				$venues = get_posts(
+					[
+						'post_type'      => 'tribe_venue',
+						'orderby'        => 'title',
+						'order'          => 'ASC',
+						'posts_per_page' => -1,
+					]
+				);
+				?>
+
+				<select name="venue_list">
+					<option value=""><?php esc_html_e( 'Select a venue', 'event-tickets' ); ?></option>
+					<?php foreach ( $venues as $venue ) : ?>
+						<option value="<?php echo esc_attr( $venue->ID ); ?>">
+							<?php echo esc_html( $venue->post_title ); ?>
+						</option>
+					<?php endforeach; ?>
+				</select>
+
+
+
 				<p class="submit">
 					<input
 						type="submit"
