@@ -465,7 +465,6 @@ class Tribe__Tickets__Attendees {
 
 			/** @var bool|WP_Error|string $status Email status. If false, no status is shown. */
 			$status = $should_send_email ? $this->send_mail_list( $event_id, $type, $send_to ) : false;
-			}
 
 			tribe( 'tickets.admin.views' )->template( 'attendees/attendees-email', [ 'status' => $status ] );
 
