@@ -45,7 +45,7 @@ class Denied extends Status_Abstract {
 	 * {@inheritdoc}
 	 */
 	public function get_name() {
-		return __( 'Denied', 'event-tickets' );
+		return __( 'Failed', 'event-tickets' );
 	}
 
 	/**
@@ -53,5 +53,12 @@ class Denied extends Status_Abstract {
 	 */
 	public function is_final() {
 		return true;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function can_be_updated_to(): array {
+		return [];
 	}
 }

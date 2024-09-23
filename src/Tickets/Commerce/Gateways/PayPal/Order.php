@@ -16,10 +16,12 @@ use Tribe__Utils__Array as Arr;
 class Order extends Abstract_Order {
 	/**
 	 * @inheritDoc
+	 *
+	 * @since 5.10.0 Fixed extra trailing slash.
 	 */
 	public function get_gateway_dashboard_url_by_order( \WP_Post $order ): string {
-		$status          = tribe( Status_Handler::class )->get_by_wp_slug( $order->post_status );
-		$payload         = isset( $order->gateway_payload[ $status::SLUG ] ) ? $order->gateway_payload[ $status::SLUG ] : current( $order->gateway_payload );
+		$status  = tribe( Status_Handler::class )->get_by_wp_slug( $order->post_status );
+		$payload = $order->gateway_payload[ $status::SLUG ] ?? current( $order->gateway_payload );
 
 		if ( ! is_array( $payload ) || empty( $payload ) ) {
 			return '';
@@ -31,11 +33,11 @@ class Order extends Abstract_Order {
 		$paypal_base_url = 'https://www.paypal.com/';
 
 		$capture_link = Arr::get( $capture_payload, [ 'links', 0, 'href' ] );
-		// check if the link contains sandbox
+		// Check if the link contains sandbox.
 		if ( strpos( $capture_link, 'sandbox' ) !== false ) {
 			$paypal_base_url = 'https://sandbox.paypal.com/';
 		}
 
-		return sprintf( '%1$s/activity/payment/%2$s', $paypal_base_url, $capture_id );
+		return sprintf( '%1$s/activity/payment/%2$s', untrailingslashit( $paypal_base_url ), $capture_id );
 	}
 }

@@ -12,6 +12,7 @@
  * @version 5.6.0
  *
  * @since 5.6.0
+ * @since 5.10.0 Don't show if gateway order number is same as regular order number.
  *
  * @var Tribe__Template                    $this               Current template object.
  * @var \TEC\Tickets\Emails\Email_Abstract $email              The email object.
@@ -25,6 +26,11 @@ if ( empty( $order )  ) {
 }
 
 if ( empty( $order->gateway_order_id )  ) {
+	return;
+}
+
+// No need to show gateway ID if it's the same as the order ID.
+if ( is_numeric( $order->gateway_order_id ) && intval( $order->ID ) === intval( $order->gateway_order_id ) ) {
 	return;
 }
 

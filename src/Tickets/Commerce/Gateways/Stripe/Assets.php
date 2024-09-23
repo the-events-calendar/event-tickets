@@ -102,8 +102,16 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 							],
 							'cardElementStyle' => [
 								'base' => [
-									'color' => '#23282d'
-								]
+									'color' => '#23282d',
+								],
+							],
+							'cardElementOptions' => [
+								/**
+								 * Allow for filtering of available options from Stripe.
+								 *
+								 * @link https://docs.stripe.com/js/elements_object/create_element?type=card#elements_create-options
+								 */
+								'disabled' => false,
 							]
 						] );
 					},
@@ -161,7 +169,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 	}
 
 	/**
-	 * Determines if we are currently on the stripe section of the settings.
+	 * Determines if we are currently on the Stripe section of the settings.
 	 *
 	 * @since 5.3.0
 	 *

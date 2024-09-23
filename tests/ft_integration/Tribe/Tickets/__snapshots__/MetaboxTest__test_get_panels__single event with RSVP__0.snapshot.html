@@ -342,7 +342,7 @@ New ticket</button><button
 			class="tribe-datepicker tribe-field-start_date ticket_field"
 			name="ticket_start_date"
 			id="ticket_start_date"
-			value=""
+			value="9/11/2019"
 			data-validation-type="datepicker"
 			data-validation-is-less-or-equal-to="#ticket_end_date"
 			data-validation-error="{&quot;is-required&quot;:&quot;Start sale date cannot be empty.&quot;,&quot;is-less-or-equal-to&quot;:&quot;Start sale date cannot be greater than End Sale date&quot;}"
@@ -357,7 +357,7 @@ New ticket</button><button
 			id="ticket_start_time"
 						data-step="30"
 			data-round="00:00:00"
-			value=""
+			value="00:00:00"
 			aria-label="Ticket start date"
 		/>
 		<span class="helper-text hide-if-js">HH:MM</span>
@@ -374,7 +374,7 @@ New ticket</button><button
 			class="tribe-datepicker tribe-field-end_date ticket_field"
 			name="ticket_end_date"
 			id="ticket_end_date"
-			value=""
+			value="9/11/2019"
 		/>
 		<span class="helper-text hide-if-js">YYYY-MM-DD</span>
 		<span class="datetime_seperator"> at </span>
@@ -386,7 +386,7 @@ New ticket</button><button
 			id="ticket_end_time"
 						data-step="30"
 			data-round="00:00:00"
-			value=""
+			value="00:00:00"
 			aria-label="Ticket end date"
 		/>
 		<span class="helper-text hide-if-js">HH:MM</span>
@@ -431,8 +431,10 @@ New ticket</button><button
 			class="ticket_field ticket_form_right"
 			size="7"
 			value=""
-						data-validation-error="Ticket price must be greater than zero." data-required data-validation-is-greater-than="0"		/>
-		<div class="ticket_sale_price_wrapper ticket_form_right">
+								/>
+					<p class="description ticket_form_right">
+				Leave blank for free Ticket			</p>
+			<div class="ticket_sale_price_wrapper ticket_form_right">
 	<!--Checkbox to toggle sale price fields-->
 	<div>
 		<input
@@ -460,10 +462,7 @@ New ticket</button><button
 				class="ticket_field"
 				size="7"
 				value=""
-				data-validation-is-greater-than="0"
-				data-validation-is-less-than="#ticket_price"
-				data-validation-error="{&quot;is-greater-than&quot;:&quot;Sale price must be greater than 0&quot;,&quot;is-less-than&quot;:&quot;Sale price must be less than the regular price&quot;}"
-			/>
+				data-validation-is-less-than="#ticket_price" data-validation-error="{&quot;is-greater-than&quot;:&quot;Sale price must be greater than 0&quot;,&quot;is-less-than&quot;:&quot;Sale price must be less than the regular price&quot;}"			/>
 		</div>
 		<div class="ticket_sale_price-field">
 			<label class="ticket_form_label" for="ticket_start_date">

@@ -75,9 +75,12 @@ class Provider extends Service_Provider {
 		$this->container->register( Gateways\Stripe\Provider::class );
 		$this->container->register( Gateways\PayPal\Provider::class );
 		$this->container->register( Gateways\Manual\Provider::class );
+		$this->container->register( Gateways\Free\Provider::class );
 
 		// Register and add hooks for admin notices.
 		$this->container->register( Admin\Notices::class );
+
+		$this->container->register( Admin\Singular_Order_Page::class );
 
 		$this->container->register_on_action(
 			'tec_events_pro_custom_tables_v1_fully_activated',

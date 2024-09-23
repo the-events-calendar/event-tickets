@@ -48,9 +48,9 @@ class Approved extends Status_Abstract {
 	 * {@inheritdoc}
 	 */
 	protected $wp_arguments = [
-		'public'                    => true,
+		'public'                    => false,
 		'exclude_from_search'       => false,
 		'show_in_admin_all_list'    => true,
-		'show_in_admin_status_list' => true,
+		'show_in_admin_status_list' => false,
 	];
 }

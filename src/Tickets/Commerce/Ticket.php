@@ -893,6 +893,7 @@ class Ticket {
 	 * @todo  TribeCommerceLegacy: This should be moved into using a Flag Action.
 	 *
 	 * @since 5.1.9
+	 * @since 5.13.3 Modified logic when updating global stock.
 	 *
 	 * @param int                                $ticket_id       The ticket post ID.
 	 * @param int                                $quantity        The quantity to increase the ticket sales by.
@@ -917,7 +918,7 @@ class Ticket {
 			$updated_total_sales
 		);
 
-		if (  'own' !== $shared_capacity && $global_stock instanceof \Tribe__Tickets__Global_Stock ) {
+		if ( $shared_capacity && $global_stock instanceof \Tribe__Tickets__Global_Stock ) {
 			$this->update_global_stock( $global_stock, $quantity );
 		}
 
@@ -959,14 +960,16 @@ class Ticket {
 	 *
 	 * @since   5.1.9
 	 * @since   5.2.3 method signature changed to return an instance of Value instead of a string.
+	 * @since   5.13.0   added new param to force regular price value return.
 	 *
-	 * @param int|\WP_Post $product
+	 * @param int|\WP_Post $product       The ticket post ID or object.
+	 * @param bool         $force_regular Whether to force the regular price.
 	 *
 	 * @return Commerce\Utils\Value;
 	 * @version 5.2.3
 	 *
 	 */
-	public function get_price_value( $product ) {
+	public function get_price_value( $product, $force_regular = false ) {
 		$ticket = Models\Ticket_Model::from_post( $product );
 
 		if ( ! $ticket instanceof Models\Ticket_Model ) {
@@ -974,6 +977,10 @@ class Ticket {
 		}
 
 		$ticket_object = $this->get_ticket( $product );
+
+		if ( $force_regular ) {
+			return $ticket->get_price_value();
+		}
 
 		return $ticket_object->on_sale ? $ticket->get_sale_price_value() : $ticket->get_price_value();
 	}
@@ -1108,7 +1115,7 @@ class Ticket {
 		$sale_price    = Arr::get( $raw_data, 'ticket_sale_price', false );
 		$regular_price = Arr::get( $raw_data, 'ticket_price', false );
 
-		if ( empty( $sale_price ) || $sale_price >= $regular_price ) {
+		if ( $sale_price >= $regular_price ) {
 			$this->remove_sale_price_data( $ticket );
 			return;
 		}

@@ -13,6 +13,7 @@
  *
  * @since 5.5.11
  * @since 5.6.4    Capitalize payment gateway name.
+ * @since 5.10.0      Don't show if gateway name is blank.
  *
  * @var Tribe__Template                    $this               Current template object.
  * @var \TEC\Tickets\Emails\Email_Abstract $email              The email object.
@@ -29,6 +30,10 @@ if ( empty( $order ) || empty( $order->provider ) ) {
 }
 
 $gateway_name = tribe( TEC\Tickets\Commerce\Order::class )->get_gateway_label( $order );
+
+if ( empty( $gateway_name ) ) {
+	return;
+}
 
 $payment_info = empty( $order->status_slug ) || 'completed' !== strtolower( $order->status_slug ) ?
 	sprintf(

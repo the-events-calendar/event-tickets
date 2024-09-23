@@ -45,7 +45,7 @@ class Voided extends Status_Abstract {
 	 * {@inheritdoc}
 	 */
 	public function get_name() {
-		return __( 'Voided', 'event-tickets' );
+		return __( 'Cancelled', 'event-tickets' );
 	}
 
 	/**
@@ -53,6 +53,16 @@ class Voided extends Status_Abstract {
 	 */
 	public function is_final() {
 		return true;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function can_be_updated_to(): array {
+		return [
+			tribe( Completed::class ),
+			tribe( Pending::class ),
+		];
 	}
 }
 

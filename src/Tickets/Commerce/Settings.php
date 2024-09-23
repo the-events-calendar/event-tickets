@@ -609,4 +609,22 @@ class Settings {
 
 		return $is_license_valid;
 	}
+
+	/**
+	 * Determine if free ticket is allowed in Tickets Commerce.
+	 *
+	 * @since 5.10.0
+	 *
+	 * @return bool
+	 */
+	public static function is_free_ticket_allowed() {
+		/**
+		 * Filter to allow free tickets in Tickets Commerce.
+		 *
+		 * @since 5.10.0
+		 *
+		 * @param bool $is_free_ticket_allowed Whether free tickets are allowed in Tickets Commerce.
+		 */
+		return apply_filters( 'tec_tickets_commerce_is_free_ticket_allowed', true );
+	}
 }
