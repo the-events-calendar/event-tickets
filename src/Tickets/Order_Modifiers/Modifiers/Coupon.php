@@ -199,8 +199,8 @@ class Coupon extends Modifier_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int   $modifier_id The ID of the fee modifier.
-	 * @param array $new_post_ids An array of new post IDs to be associated with the fee.
+	 * @param int    $modifier_id The ID of the fee modifier.
+	 * @param array  $new_post_ids An array of new post IDs to be associated with the fee.
 	 *
 	 * @return void
 	 */

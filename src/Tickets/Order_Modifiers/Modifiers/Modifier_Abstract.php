@@ -601,8 +601,8 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @param int   $modifier_id The ID of the modifier.
-	 * @param array $new_post_ids An array of post IDs representing the new set of relationships.
+	 * @param int   $modifier_id The ID of the fee modifier.
+	 * @param array $new_post_ids An array of new post IDs to be associated with the fee.
 	 *
 	 * @return void
 	 */
@@ -629,5 +629,37 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 
 		// Return singular form by default.
 		return $this->modifier_display_name;
+	}
+
+	/**
+	 * Clears relationships if the apply_type has changed.
+	 *
+	 * This method compares the current apply_type stored in the database with the newly provided
+	 * apply_type. If they are different, it clears all existing relationships for the modifier.
+	 *
+	 * @param int    $modifier_id  The ID of the fee modifier.
+	 * @param string $new_apply_type The new apply_type (e.g., 'venue', 'organizer'). Based off of the meta key `fee_applied_to`.
+	 *
+	 * @return void
+	 */
+	public function maybe_clear_relationships( int $modifier_id, string $new_apply_type ): void {
+		// Retrieve the current apply_type from the metadata.
+		$current_apply_type = $this->order_modifiers_meta_repository->find_by_order_modifier_id_and_meta_key( $modifier_id, 'fee_applied_to' )->meta_value ?? null;
+		printr($current_apply_type,'Current Apply Type');
+		printr($new_apply_type,'New apply type');
+
+		// If the apply_type has changed, clear all relationships.
+		if ( $current_apply_type !== $new_apply_type ) {
+
+			$data = [
+				'modifier_id' => $modifier_id,
+			];
+
+			// Clear the relationships for this modifier.
+			$this->order_modifiers_relationship_repository->clear_relationships( new Order_Modifier_Relationships( $data ) );
+
+			// Update the apply_type in the metadata.
+			update_post_meta( $modifier_id, 'fee_applied_to', $new_apply_type );
+		}
 	}
 }

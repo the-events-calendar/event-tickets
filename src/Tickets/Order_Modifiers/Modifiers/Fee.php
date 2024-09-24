@@ -125,6 +125,8 @@ class Fee extends Modifier_Abstract {
 		// Handle metadata (e.g., order_modifier_apply_to).
 		$apply_fee_to = tribe_get_request_var( 'order_modifier_apply_to', '' );
 
+		$this->maybe_clear_relationships( $modifier->id, $apply_fee_to );
+
 		$this->handle_meta_data(
 			$modifier->id,
 			[
@@ -160,7 +162,8 @@ class Fee extends Modifier_Abstract {
 	 *
 	 * This method compares the new set of post IDs with the existing relationships for
 	 * the given fee modifier. It inserts new relationships if they don't exist and deletes
-	 * old relationships that are no longer valid.
+	 * old relationships that are no longer valid. If no new post IDs are provided, it deletes
+	 * all existing relationships.
 	 *
 	 * @since TBD
 	 *
@@ -172,6 +175,14 @@ class Fee extends Modifier_Abstract {
 	protected function handle_relationship_update( int $modifier_id, array $new_post_ids ): void {
 		// Retrieve the existing relationships from the repository.
 		$existing_relationships = $this->get_active_on( $modifier_id );
+
+		// If no new post IDs are provided, delete all existing relationships.
+		if ( empty( $new_post_ids ) ) {
+			foreach ( $existing_relationships as $existing_relationship ) {
+				$this->delete_relationship( $modifier_id, $existing_relationship->post_id );
+			}
+			return; // Early return after deleting all relationships.
+		}
 
 		// Insert new relationships that don't exist in the current relationships.
 		foreach ( $new_post_ids as $new_post_id ) {
