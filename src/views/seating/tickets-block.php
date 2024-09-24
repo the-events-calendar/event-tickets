@@ -34,7 +34,7 @@
 						disabled="disabled"
 						aria-disabled="true"
 				>
-					<?php esc_html_x( 'Sold Out', 'seating tickets sold out button', 'event-tickets' ); ?>
+					<?php echo esc_html_x( 'Sold Out', 'seating tickets sold out button', 'event-tickets' ); ?>
 				</button>
 				<?php 
 			else :
