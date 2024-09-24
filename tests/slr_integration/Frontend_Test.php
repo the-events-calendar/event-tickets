@@ -16,6 +16,7 @@ use TEC\Tickets\Seating\Service\Service;
 use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe\Tests\Traits\With_Clock_Mock;
 use Tribe\Tests\Traits\With_Uopz;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
@@ -27,6 +28,7 @@ use Tribe__Tickets__Tickets as Tickets;
 class Frontend_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
 	use Ticket_Maker;
+	use Order_Maker;
 	use Series_Pass_Factory;
 	use With_Uopz;
 	use With_Clock_Mock;
@@ -421,6 +423,44 @@ class Frontend_Test extends Controller_Test_Case {
 				);
 				
 				return [ $post_id, $ticket, $ticket_2 ];
+			},
+		];
+		
+		yield 'sold out event' => [
+			function () {
+				$post_id = static::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				
+				update_post_meta( $post_id, Meta::META_KEY_ENABLED, 1 );
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+				
+				/**
+				 * @var Tickets_Handler $tickets_handler
+				 */
+				$tickets_handler   = tribe( 'tickets.handler' );
+				$capacity_meta_key = $tickets_handler->key_capacity;
+				update_post_meta( $post_id, $capacity_meta_key, 5 );
+				$ticket = $this->create_tc_ticket(
+					$post_id,
+					20,
+					[
+						'tribe-ticket' => [
+							'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+							'capacity' => 5,
+						],
+					]
+				);
+				
+				$order = $this->create_order(
+					[
+						$ticket => 5,
+					] 
+				);
+				
+				return [ $post_id, $ticket ];
 			},
 		];
 	}
