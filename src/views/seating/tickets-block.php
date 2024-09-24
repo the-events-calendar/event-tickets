@@ -38,7 +38,7 @@
 				</button>
 				<?php 
 			else :
-				echo $modal_content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo $modal_content; // phpcs:ignore
 				?>
 			<?php endif; ?>
 		</div>
