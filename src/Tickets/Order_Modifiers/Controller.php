@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Order_Modifiers;
 
 use InvalidArgumentException;
+use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\StellarWP\Schema\Register as Schema_Register;
 use TEC\Common\StellarWP\Schema\Config as Schema_Config;
 use TEC\Common\StellarWP\DB\DB;
@@ -40,6 +41,15 @@ class Controller extends Controller_Contract {
 	protected static array $cached_modifiers = [];
 
 	/**
+	 * The callback to register the tables.
+	 *
+	 * @since TBD
+	 *
+	 * @var callable
+	 */
+	protected $register_callback;
+
+	/**
 	 * List of custom tables to register.
 	 *
 	 * @var Table[]
@@ -50,6 +60,20 @@ class Controller extends Controller_Contract {
 	];
 
 	/**
+	 * ServiceProvider constructor.
+	 *
+	 * @param Container $container
+	 */
+	public function __construct( Container $container ) {
+		parent::__construct( $container );
+
+		// Set up the callback function to register the tables.
+		$this->register_callback = function () {
+			$this->register_tables();
+		};
+	}
+
+	/**
 	 * Binds and sets up implementations.
 	 *
 	 * @since TBD
@@ -58,32 +82,20 @@ class Controller extends Controller_Contract {
 		Schema_Config::set_container( $this->container );
 		Schema_Config::set_db( DB::class );
 
-		add_action( 'tribe_plugins_loaded', [ $this, 'register_tables' ] );
-		$this->container->singleton( Coupon::class );
-		$this->container->singleton( Fee::class );
-		$this->hook();
+		add_action( 'tribe_plugins_loaded', $this->register_callback );
 	}
 
 	/**
-	 * Any hooking any class needs happen here.
+	 * Removes the filters and actions hooks added by the controller.
 	 *
-	 * In place of delegating the hooking responsibility to the single classes they are all hooked here.
-	 *
-	 * @since TBD
-	 */
-	protected function hook() {
-		tribe( Modifier_Settings::class )->register();
-	}
-
-	/**
-	 * {@inheritDoc}
+	 * Bound implementations should not be removed in this method!
 	 *
 	 * @since TBD
 	 *
 	 * @return void
 	 */
 	public function unregister(): void {
-		remove_action( 'tribe_plugins_loaded', [ $this, 'register_tables' ] );
+		remove_action( 'tribe_plugins_loaded', $this->register_callback );
 	}
 
 	/**
@@ -93,7 +105,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	public function register_tables(): void {
+	protected function register_tables(): void {
 		foreach ( $this->custom_tables as $table ) {
 			$this->container->singleton( $table, Schema_Register::table( $table ) );
 		}
