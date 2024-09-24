@@ -648,16 +648,12 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 
 		// If the apply_type has changed, clear all relationships.
 		if ( $current_apply_type !== $new_apply_type ) {
-
 			$data = [
 				'modifier_id' => $modifier_id,
 			];
 
 			// Clear the relationships for this modifier.
 			$this->order_modifiers_relationship_repository->clear_relationships( new Order_Modifier_Relationships( $data ) );
-
-			// Update the apply_type in the metadata.
-			update_post_meta( $modifier_id, 'fee_applied_to', $new_apply_type );
 		}
 	}
 }

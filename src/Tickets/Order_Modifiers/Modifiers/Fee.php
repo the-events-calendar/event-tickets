@@ -137,19 +137,19 @@ class Fee extends Modifier_Abstract {
 		);
 
 		// Determine the post ID(s) to apply the fee to based on the 'apply_fee_to' value.
-		$apply_to_post_id = null;
+		$apply_to_post_ids = [];
 
 		switch ( $apply_fee_to ) {
 			case 'venue':
-				$apply_to_post_id = tribe_get_request_var( 'venue_list', null );
+				$apply_to_post_ids = tribe_get_request_var( 'venue_list', [] );
 				break;
 			case 'organizer':
-				$apply_to_post_id = tribe_get_request_var( 'organizer_list', null );
+				$apply_to_post_ids = tribe_get_request_var( 'organizer_list', [] );
 				break;
 		}
 
 		// Ensure that $apply_to_post_id is an array for consistency.
-		$apply_to_post_ids = $apply_to_post_id ? [ $apply_to_post_id ] : [];
+		$apply_to_post_ids = is_array( $apply_to_post_ids ) ? $apply_to_post_ids : [ $apply_to_post_ids ];
 
 		// Handle the relationship update, passing the relevant data.
 		$this->handle_relationship_update( $modifier->id, $apply_to_post_ids );
@@ -162,8 +162,7 @@ class Fee extends Modifier_Abstract {
 	 *
 	 * This method compares the new set of post IDs with the existing relationships for
 	 * the given fee modifier. It inserts new relationships if they don't exist and deletes
-	 * old relationships that are no longer valid. If no new post IDs are provided, it deletes
-	 * all existing relationships.
+	 * old relationships that are no longer valid.
 	 *
 	 * @since TBD
 	 *
@@ -176,12 +175,8 @@ class Fee extends Modifier_Abstract {
 		// Retrieve the existing relationships from the repository.
 		$existing_relationships = $this->get_active_on( $modifier_id );
 
-		// If no new post IDs are provided, delete all existing relationships.
 		if ( empty( $new_post_ids ) ) {
-			foreach ( $existing_relationships as $existing_relationship ) {
-				$this->delete_relationship( $modifier_id, $existing_relationship->post_id );
-			}
-			return; // Early return after deleting all relationships.
+			return;
 		}
 
 		// Insert new relationships that don't exist in the current relationships.
