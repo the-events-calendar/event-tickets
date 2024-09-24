@@ -98,7 +98,7 @@
 				);
 				?>
 
-				<select name="venue_list">
+				<select name="organizer_list">
 					<option value=""><?php esc_html_e( 'Select an organizer', 'event-tickets' ); ?></option>
 					<?php foreach ( $posts as $post ) : ?>
 						<option value="<?php echo esc_attr( $post->ID ); ?>">

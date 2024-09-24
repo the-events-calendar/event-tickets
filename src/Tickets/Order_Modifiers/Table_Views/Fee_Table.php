@@ -144,36 +144,41 @@ class Fee_Table extends Order_Modifier_Table {
 	}
 
 	/**
-	 * Displays a message indicating the modifier is applied to specific venues.
+	 * Displays a message indicating the modifier is applied to a specific organizer.
 	 *
-	 * This method is a placeholder for future implementation to handle cases where the modifier is applied to venues.
+	 * This method retrieves the first organizer related to the given modifier and returns
+	 * a translated message indicating the organizer's name. If no organizer is found, it returns early.
 	 *
 	 * @since TBD
 	 *
 	 * @param int $modifier_id The ID of the order modifier.
 	 *
-	 * @return string A message or data related to the venues where the modifier is applied (currently "TBD").
+	 * @return string A message displaying the organizer's name or an empty string if no organizer is found.
 	 */
-	protected function display_venues( $modifier_id ) {
-		// @todo: Implement logic to retrieve and display venue data.
-		return 'TBD Venues';
-	}
+	protected function display_organizers( int $modifier_id ): string {
+		// Get the relationships associated with the modifier for organizers.
+		// @todo redscar - We shouldn't make the post-type hard coded.
+		$get_relationship = $this->order_modifier_relationship->find_by_modifier_and_post_type( $modifier_id, 'tribe_organizer' );
 
-	/**
-	 * Displays a message indicating the modifier is applied to specific organizers.
-	 *
-	 * This method is a placeholder for future implementation to handle cases where the modifier is applied to
-	 * organizers.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $modifier_id The ID of the order modifier.
-	 *
-	 * @return string A message or data related to the organizers where the modifier is applied (currently "TBD").
-	 */
-	protected function display_organizers( $modifier_id ) {
-		// @todo: Implement logic to retrieve and display organizer data.
-		return 'TBD Organizers';
+		// Early return if no organizer is found or if post_id is missing.
+		if ( empty( $get_relationship ) || empty( $get_relationship->post_id ) ) {
+			return ''; // Early return if there's no organizer.
+		}
+
+		// Retrieve the organizer name using the post ID.
+		$organizer_name = get_the_title( $get_relationship->post_id );
+
+		// Early return if the organizer name is not available.
+		if ( empty( $organizer_name ) ) {
+			return ''; // Early return if there's no organizer name.
+		}
+
+		// Return the translated message displaying the organizer's name.
+		return sprintf(
+		/* translators: %s is the organizer's name */
+			__( 'Organizer: %s', 'event-tickets' ),
+			$organizer_name
+		);
 	}
 
 	/**

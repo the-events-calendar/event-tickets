@@ -71,22 +71,35 @@ class Fee extends Modifier_Abstract {
 		$modifier = parent::insert_modifier( $data );
 
 		// Handle metadata (e.g., order_modifier_apply_to).
+		$apply_fee_to = tribe_get_request_var( 'order_modifier_apply_to', '' );
+
+		// Handle metadata (e.g., order_modifier_apply_to).
 		$this->handle_meta_data(
 			$modifier->id,
 			[
 				'meta_key'   => 'fee_applied_to',
 				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
-				'meta_value' => tribe_get_request_var( 'order_modifier_apply_to', '' ),
+				'meta_value' => $apply_fee_to,
 			]
 		);
 
-		$this->handle_relationship_data(
-			$modifier->id,
-			[
-				'post_id'   => '123',
-				'post_type' => get_post_type( 123 ),
-			]
-		);
+		// Determine the post ID(s) to apply the fee to based on the 'apply_fee_to' value.
+		$apply_to_post_id = null;
+
+		switch ( $apply_fee_to ) {
+			case 'venue':
+				$apply_to_post_id = tribe_get_request_var( 'venue_list', null );
+				break;
+			case 'organizer':
+				$apply_to_post_id = tribe_get_request_var( 'organizer_list', null );
+				break;
+		}
+
+		// Ensure that $apply_to_post_id is an array for consistency.
+		$apply_to_post_ids = $apply_to_post_id ? [ $apply_to_post_id ] : [];
+
+		// Handle the relationship update, passing the relevant data.
+		$this->handle_relationship_update( $modifier->id, $apply_to_post_ids );
 
 		return $modifier;
 	}
@@ -163,7 +176,7 @@ class Fee extends Modifier_Abstract {
 		// Insert new relationships that don't exist in the current relationships.
 		foreach ( $new_post_ids as $new_post_id ) {
 			if ( ! $this->order_modifiers_relationship_repository->find_by_modifier_and_post_type( $modifier_id, $new_post_id ) ) {
-				$this->add_relationship( $modifier_id, $new_post_id, 'fee' );
+				$this->add_relationship( $modifier_id, $new_post_id );
 			}
 		}
 
