@@ -94,6 +94,7 @@ class Admin_Test extends Controller_Test_Case {
 	 */
 	public function it_should_not_display_woo_incompatibility_notice_when_woo_inactive(): void {
 		$this->set_fn_return( 'function_exists', static fn( $fn ) => $fn === 'WC' ? false : function_exists( $fn ), true );
+		$this->set_fn_return( 'wp_create_nonce', '12345678' );
 		$controller = $this->make_controller();
 		$controller->register_woo_incompatibility_notice();
 
@@ -111,6 +112,7 @@ class Admin_Test extends Controller_Test_Case {
 	 */
 	public function it_should_display_woo_incompatibility_notice_when_woo_active(): void {
 		$this->set_fn_return( 'function_exists', static fn( $fn ) => $fn === 'WC' ? true : function_exists( $fn ), true );
+		$this->set_fn_return( 'wp_create_nonce', '12345678' );
 		$controller = $this->make_controller();
 		$controller->register_woo_incompatibility_notice();
 
