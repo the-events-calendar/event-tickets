@@ -645,8 +645,6 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	public function maybe_clear_relationships( int $modifier_id, string $new_apply_type ): void {
 		// Retrieve the current apply_type from the metadata.
 		$current_apply_type = $this->order_modifiers_meta_repository->find_by_order_modifier_id_and_meta_key( $modifier_id, 'fee_applied_to' )->meta_value ?? null;
-		printr($current_apply_type,'Current Apply Type');
-		printr($new_apply_type,'New apply type');
 
 		// If the apply_type has changed, clear all relationships.
 		if ( $current_apply_type !== $new_apply_type ) {
