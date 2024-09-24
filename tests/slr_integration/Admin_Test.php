@@ -10,6 +10,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Layouts;
 use TEC\Tickets\Seating\Admin\Tabs\Map_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Maps;
 use Tribe\Tests\Traits\With_Uopz;
+use Tribe__Admin__Notices as Notices;
 
 class Admin_Test extends Controller_Test_Case {
 	use With_Uopz;
@@ -85,6 +86,40 @@ class Admin_Test extends Controller_Test_Case {
 		// Render the page.
 		ob_start();
 		do_action( 'tickets_page_tec-tickets-seating' );
+		$this->assertMatchesHtmlSnapshot( ob_get_clean() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_display_woo_incompatibility_notice_when_woo_inactive(): void {
+		$this->set_fn_return( 'function_exists', static fn( $fn ) => $fn === 'WC' ? false : function_exists( $fn ), true );
+		$controller = $this->make_controller();
+		$controller->register_woo_incompatibility_notice();
+
+		Notices::instance()->hook();
+
+		$this->assertFalse( function_exists( 'WC' ) );
+
+		ob_start();
+		do_action( 'admin_notices' );
+		$this->assertEmpty( ob_get_clean() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_display_woo_incompatibility_notice_when_woo_active(): void {
+		$this->set_fn_return( 'function_exists', static fn( $fn ) => $fn === 'WC' ? true : function_exists( $fn ), true );
+		$controller = $this->make_controller();
+		$controller->register_woo_incompatibility_notice();
+
+		Notices::instance()->hook();
+
+		$this->assertTrue( function_exists( 'WC' ) );
+
+		ob_start();
+		do_action( 'admin_notices' );
 		$this->assertMatchesHtmlSnapshot( ob_get_clean() );
 	}
 }
