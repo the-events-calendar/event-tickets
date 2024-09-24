@@ -169,7 +169,8 @@ class Admin extends Controller_Contract {
 	 */
 	public function register_woo_incompatibility_notice() {
 		$message = sprintf(
-			esc_html__( '%1$sTickets with assigned seating can only be created when selling with %3$sTickets Commerce%4$s. Support for WooCommerce sales will be included in a future release.%2$s' ),
+			// Translators: %1$s and %2$s are opening/closing p tags, %3$s and %4$s are opening/closing a tags.
+			esc_html__( '%1$sTickets with assigned seating can only be created when selling with %3$sTickets Commerce%4$s. Support for WooCommerce sales will be included in a future release.%2$s', 'event-tickets' ),
 			'<p>',
 			'</p>',
 			'<a href="' . esc_url( tribe( Settings::class )->get_url( [ 'tab' => 'payments' ] ) ) . '">',
