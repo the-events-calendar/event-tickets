@@ -28,6 +28,15 @@
 		</div>
 		<div class="tec-tickets-seating__action">
 			<?php echo $modal_content; ?>
+			<?php if ( empty( $inventory ) ): ?>
+				<button class="tribe-common-c-btn tribe-common-c-btn--small sold-out-button"
+						type="submit"
+						disabled="disabled"
+						aria-disabled="true"
+				>
+					<?php esc_html_x( 'Sold Out', 'seating tickets sold out button', 'event-tickets' ); ?>
+				</button>
+			<?php endif; ?>
 		</div>
 	</div>
 </div>
