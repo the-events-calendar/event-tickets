@@ -35,8 +35,9 @@
 				>
 					<?php esc_html_x( 'Sold Out', 'seating tickets sold out button', 'event-tickets' ); ?>
 				</button>
-			<?php else : ?>
-				<?php echo $modal_content; ?>
+			<?php else :
+				echo $modal_content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			?>
 			<?php endif; ?>
 		</div>
 	</div>
