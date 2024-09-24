@@ -82,6 +82,7 @@ $tickets_fields = [
 		'tooltip'         => esc_html__( 'If checked, all Event Tickets data will be removed from the database when the plugin is uninstalled.', 'event-tickets' ),
 		'default'         => false,
 		'validation_type' => 'boolean',
+		'parent_option'   => false,
 	],
 ];
 
