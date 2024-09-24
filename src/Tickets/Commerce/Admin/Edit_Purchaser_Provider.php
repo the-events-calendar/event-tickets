@@ -37,7 +37,7 @@ class Edit_Purchaser_Provider extends Service_Provider {
 	 */
 	public function register_hooks() {
 		add_filter(
-			'tribe_template_pre_html:tickets/admin-views/commerce/orders/single/order-details-metabox',
+			'tribe_template_before_include_html:tickets/admin-views/commerce/orders/single/order-details-metabox',
 			[ $this, 'render_modal' ],
 			10,
 			5
@@ -217,11 +217,10 @@ class Edit_Purchaser_Provider extends Service_Provider {
 	 * @param string          $file The file path.
 	 * @param string          $name The name of the file.
 	 * @param Tribe__Template $template The template object.
-	 * @param mixed           $context The context data.
 	 *
 	 * @return mixed The passed html.
 	 */
-	public function render_modal( $html, $file, $name, Tribe__Template $template, $context ) {
+	public function render_modal( $html, $file, $name, Tribe__Template $template ) {
 		$dialog_view    = tribe( 'dialog.view' );
 		$title          = esc_html_x( 'Edit purchaser', 'Edit purchaser modal title.', 'event-tickets' );
 		$admin_template = tribe( 'tickets.admin.views' );
@@ -230,7 +229,7 @@ class Edit_Purchaser_Provider extends Service_Provider {
 		$dialog_view->render_modal(
 			$admin_template->template(
 				'src/admin-views/commerce/orders/single/edit-purchaser-modal',
-				$context,
+				$template->get_local_values(),
 				false
 			),
 			[
@@ -249,10 +248,7 @@ class Edit_Purchaser_Provider extends Service_Provider {
 		$modal        .= $modal_content;
 		$modal        .= '</div>';
 
-		// phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped, WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo $modal;
-
-		// Always return $html - we are not overriding the template, simply "appending" our modal.
-		return $html;
+		// Appending our modal.
+		return $modal . $html;
 	}
 }
