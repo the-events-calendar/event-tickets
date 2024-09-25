@@ -58,7 +58,7 @@ class Duplicate_Post extends Integration_Abstract {
 
 		add_filter( 'tec_events_pro_custom_tables_v1_duplicate_meta_data', [ $this, 'add_tickets_meta_to_duplicate' ], 10, 2 );
 
-		add_action( 'tribe_tickets_tickets_duplicated', [ $this, 'fix_post_fields_pointing_to_old_tickets' ], 10, 3 );
+		add_action( 'tribe_tickets_tickets_duplicated', [ $this, 'remap_fields_pointing_to_old_tickets_after_duplicate' ], 10, 3 );
 	}
 
 	/**
@@ -126,25 +126,23 @@ class Duplicate_Post extends Integration_Abstract {
 	 * @since TBD
 	 *
 	 * @param array $duplicated_ticket_maps An array of ticket IDs that were duplicated.
-	 * @param int $new_post_id The ID of the new post.
-	 * @param int $original_post_id The ID of the original post.
+	 * @param int   $new_post_id The ID of the new post.
+	 * @param int   $original_post_id The ID of the original post.
 	 *
 	 * @return void
 	 */
-	public function fix_post_fields_pointing_to_old_tickets( array $duplicated_ticket_maps, int $new_post_id, int $original_post_id ) {
+	public function remap_fields_pointing_to_old_tickets_after_duplicate( array $duplicated_ticket_maps, int $new_post_id, int $original_post_id ) {
 		$duplicated_post = get_post( $new_post_id );
 		if ( ! ( $duplicated_post && $duplicated_post->ID && $duplicated_post->post_content ) ) {
 			return;
 		}
 
-		$post_content = $duplicated_post->post_content;
-
 		$tickets_block_locator = static fn( $v ) => '"ticketId":' . $v;
 
-		$new_post_content      = str_replace(
+		$new_post_content = str_replace(
 			array_map( $tickets_block_locator, array_keys( $duplicated_ticket_maps ) ),
 			array_map( $tickets_block_locator, array_values( $duplicated_ticket_maps ) ),
-			$post_content
+			$duplicated_post->post_content
 		);
 
 		wp_update_post(
