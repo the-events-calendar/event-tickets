@@ -238,10 +238,10 @@ class Controller extends Controller_Contract {
 	protected function table_helper( string $action ): int {
 		switch ( $action ) {
 			case 'drop':
-				$query = 'DROP TABLE IF EXISTS %s';
+				$query = 'DROP TABLE IF EXISTS `%s`';
 				break;
 			case 'truncate':
-				$query = 'TRUNCATE TABLE %s';
+				$query = 'TRUNCATE TABLE `%s`';
 				break;
 			default:
 				throw new InvalidArgumentException( 'Invalid action provided.' );
@@ -252,9 +252,9 @@ class Controller extends Controller_Contract {
 		$affected = 0;
 		foreach ( $this->custom_tables as $table ) {
 			$affected += DB::query(
-				DB::prepare(
+				sprintf(
 					$query,
-					$table::table_name()
+					esc_sql( $table::table_name() )
 				)
 			);
 		}
