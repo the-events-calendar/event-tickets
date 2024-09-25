@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Load the full Payment Element if we have Wallets enabled. [ETP-942]
