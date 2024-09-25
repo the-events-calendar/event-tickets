@@ -686,8 +686,6 @@ class Attendees_Test extends WPTestCase {
 			]
 		)->create()->ID;
 
-		$attendees = new Attendees();
-
 		// Switch to the test role user.
 		$user_id = $this->factory->user->create( [ 'role' => $role ] );
 		wp_set_current_user( $user_id );
