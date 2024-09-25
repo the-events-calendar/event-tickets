@@ -69,6 +69,7 @@ class Modifier_Settings {
 	 */
 	public function register() {
 		add_action( 'admin_menu', [ $this, 'add_tec_tickets_order_modifiers_page' ], 15 );
+		add_action( 'admin_init', [ $this, 'handle_delete_modifier' ] );
 	}
 
 	/**
@@ -348,5 +349,50 @@ class Modifier_Settings {
 	 */
 	protected function show_error_message( string $message ): void {
 		echo '<div class="notice notice-error"><p>' . esc_html( $message ) . '</p></div>';
+	}
+
+	/**
+	 * Handles the deletion of a modifier.
+	 *
+	 * This function checks for the 'delete_modifier' action in the query parameters, verifies the nonce, and
+	 * deletes the modifier if the nonce is valid. It also redirects the user back to the referring page after
+	 * performing the deletion to avoid form resubmission.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function handle_delete_modifier(): void {
+		// Check if the action is 'delete_modifier' and nonce is set.
+		$action        = tribe_get_request_var( 'action', '' );
+		$modifier_id   = absint( tribe_get_request_var( 'modifier_id', '' ) );
+		$nonce         = tribe_get_request_var( '_wpnonce', '' );
+		$modifier_type = sanitize_key( tribe_get_request_var( 'modifier', '' ) );
+
+		if ( 'delete_modifier' === $action && ! empty( $modifier_id ) && ! empty( $modifier_type ) ) {
+			// Verify nonce.
+			if ( ! wp_verify_nonce( $nonce, 'delete_modifier_' . $modifier_id ) ) {
+				wp_die( esc_html__( 'Nonce verification failed.', 'event-tickets' ) );
+			}
+
+			// Get the appropriate strategy for the selected modifier type.
+			$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
+
+			// Handle invalid modifier strategy.
+			if ( ! $modifier_strategy ) {
+				wp_die( esc_html__( 'Invalid modifier type.', 'event-tickets' ) );
+			}
+
+			// Perform the deletion logic.
+			$deletion_success = $modifier_strategy->delete_modifier( $modifier_id );
+
+			// Construct the redirect URL with a success or failure flag.
+			$redirect_url = remove_query_arg( [ 'action', 'modifier_id', '_wpnonce' ], wp_get_referer() );
+			$redirect_url = add_query_arg( 'deleted', $deletion_success ? 'success' : 'fail', $redirect_url );
+
+			// Redirect to the original page to avoid resubmitting the form upon refresh.
+			wp_safe_redirect( $redirect_url );
+			exit;
+		}
 	}
 }

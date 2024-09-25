@@ -656,4 +656,52 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 			$this->order_modifiers_relationship_repository->clear_relationships( new Order_Modifier_Relationships( $data ) );
 		}
 	}
+
+	/**
+	 * Deletes a modifier and its associated data.
+	 *
+	 * This method deletes the modifier from the repository and also attempts to remove any associated meta data,
+	 * relationships, and other related information. The existence of meta and relationships is optional.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $modifier_id The ID of the modifier to delete.
+	 *
+	 * @return bool True if the deletion of the modifier was successful, false otherwise.
+	 */
+	public function delete_modifier( int $modifier_id ): bool {
+
+		// Check if the modifier exists before attempting to delete it.
+		$modifier = $this->repository->find_by_id( $modifier_id, $this->modifier_type );
+
+		if ( empty( $modifier ) ) {
+			// Modifier does not exist, return false.
+			return false;
+		}
+
+		// Begin deletion process.
+		$data = [
+			'id' => $modifier_id,
+		];
+
+		$relationship_data = [
+			'modifier_id' => $modifier_id,
+		];
+
+		// Clear relationships associated with the modifier (optional).
+		$this->order_modifiers_relationship_repository->clear_relationships( new Order_Modifier_Relationships( $relationship_data ) );
+
+		// Delete associated meta data (optional).
+		$this->order_modifiers_meta_repository->delete( new Order_Modifier_Meta( $data ) );
+
+		// Delete the modifier itself (mandatory).
+		$delete_modifier = $this->repository->delete( new Order_Modifier( $data ) );
+
+		// Check if the modifier deletion was successful.
+		if ( $delete_modifier ) {
+			return true;
+		}
+
+		return false; // Return false if the modifier deletion failed.
+	}
 }

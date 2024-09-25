@@ -66,6 +66,7 @@ class Fee_Table extends Order_Modifier_Table {
 				'action'      => 'delete_modifier',
 				'modifier_id' => $item->id,
 				'_wpnonce'    => wp_create_nonce( 'delete_modifier_' . $item->id ),
+				'modifier'    => $this->modifier->get_modifier_type(),
 			],
 			admin_url( 'admin.php' )
 		);
