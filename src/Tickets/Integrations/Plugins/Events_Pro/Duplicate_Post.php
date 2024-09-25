@@ -58,7 +58,7 @@ class Duplicate_Post extends Integration_Abstract {
 
 		add_filter( 'tec_events_pro_custom_tables_v1_duplicate_meta_data', [ $this, 'add_tickets_meta_to_duplicate' ], 10, 2 );
 
-		add_action( 'tribe_tickets_tickets_duplicated', [ $this, 'remap_fields_pointing_to_old_tickets_after_duplicate' ], 10, 3 );
+		add_action( 'tec_tickets_tickets_duplicated', [ $this, 'remap_fields_pointing_to_old_tickets_after_duplicate' ], 10, 3 );
 	}
 
 	/**
@@ -103,7 +103,7 @@ class Duplicate_Post extends Integration_Abstract {
 			 * @param int $new_post_id The ID of the new post.
 			 * @param int $original_post_id The ID of the original post.
 			 */
-			do_action( 'tribe_tickets_ticket_duplicated', $duplicate_ticket_id, $ticket->ID, $new_post_id, $post->ID );
+			do_action( 'tec_tickets_ticket_duplicated', $duplicate_ticket_id, $ticket->ID, $new_post_id, $post->ID );
 
 			$duplicated_ticket_ids[ $ticket->ID ] = $duplicate_ticket_id;
 		}
@@ -117,7 +117,7 @@ class Duplicate_Post extends Integration_Abstract {
 		 * @param int $new_post_id The ID of the new post.
 		 * @param int $original_post_id The ID of the original post.
 		 */
-		do_action( 'tribe_tickets_tickets_duplicated', $duplicated_ticket_ids, $new_post_id, $post->ID );
+		do_action( 'tec_tickets_tickets_duplicated', $duplicated_ticket_ids, $new_post_id, $post->ID );
 	}
 
 	/**
