@@ -832,7 +832,7 @@ class Tribe__Tickets__Attendees {
 		$can_export = current_user_can( 'publish_pages' );
 
 		/**
-		 * Filter roles that are allowed to export the attendees list as a CSV.
+		 * Filter if the current user can export the Attendees list as a CSV.
 		 *
 		 * This allows developers to customize the function to grant permission
 		 * to additional roles or specific users.
