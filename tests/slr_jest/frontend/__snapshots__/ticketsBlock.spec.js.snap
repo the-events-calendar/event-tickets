@@ -80,8 +80,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
 		&lt;div class="tec-tickets-seating__sidebar-header"&gt;
 			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
-				Tickets
-			&lt;/h4&gt;
+				Tickets			&lt;/h4&gt;
 
 			
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
@@ -111,8 +110,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 		&lt;/div&gt;
 
 		&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
-			Select a seat from the map to add seated tickets
-		&lt;/div&gt;
+			Select a seat from the map to add seated tickets		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
 			&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
 		&lt;/div&gt;
@@ -127,11 +125,9 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
 			&lt;div class="tec-tickets-seating__sidebar-controls"&gt;
 				&lt;button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"&gt;
-					Cancel
-				&lt;/button&gt;
+					Cancel				&lt;/button&gt;
 				&lt;button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"&gt;
-					Check Out
-				&lt;/button&gt;
+					Continue				&lt;/button&gt;
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/aside&gt;
@@ -210,8 +206,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
             class="tribe-common-h4 tec-tickets-seating__title"
           >
             
-				Tickets
-			
+				Tickets			
           </h4>
           
 
@@ -310,8 +305,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
           class="tec-tickets-seating__empty-tickets-message"
         >
           
-			Select a seat from the map to add seated tickets
-		
+			Select a seat from the map to add seated tickets		
         </div>
         
 		
@@ -368,8 +362,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"
             >
               
-					Cancel
-				
+					Cancel				
             </button>
             
 				
@@ -377,8 +370,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"
             >
               
-					Check Out
-				
+					Continue				
             </button>
             
 			
@@ -480,8 +472,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
 		&lt;div class="tec-tickets-seating__sidebar-header"&gt;
 			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
-				Tickets
-			&lt;/h4&gt;
+				Tickets			&lt;/h4&gt;
 
 			
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
@@ -511,8 +502,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 		&lt;/div&gt;
 
 		&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
-			Select a seat from the map to add seated tickets
-		&lt;/div&gt;
+			Select a seat from the map to add seated tickets		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
 			&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
 		&lt;/div&gt;
@@ -527,11 +517,9 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
 			&lt;div class="tec-tickets-seating__sidebar-controls"&gt;
 				&lt;button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"&gt;
-					Cancel
-				&lt;/button&gt;
+					Cancel				&lt;/button&gt;
 				&lt;button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"&gt;
-					Check Out
-				&lt;/button&gt;
+					Continue				&lt;/button&gt;
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/aside&gt;
@@ -610,8 +598,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
             class="tribe-common-h4 tec-tickets-seating__title"
           >
             
-				Tickets
-			
+				Tickets			
           </h4>
           
 
@@ -710,8 +697,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
           class="tec-tickets-seating__empty-tickets-message tec-tickets-seating__empty-tickets-message-hidden"
         >
           
-			Select a seat from the map to add seated tickets
-		
+			Select a seat from the map to add seated tickets		
         </div>
         
 		
@@ -816,8 +802,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"
             >
               
-					Cancel
-				
+					Cancel				
             </button>
             
 				
@@ -825,8 +810,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"
             >
               
-					Check Out
-				
+					Continue				
             </button>
             
 			
@@ -928,8 +912,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
 		&lt;div class="tec-tickets-seating__sidebar-header"&gt;
 			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
-				Tickets
-			&lt;/h4&gt;
+				Tickets			&lt;/h4&gt;
 
 			
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
@@ -959,8 +942,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 		&lt;/div&gt;
 
 		&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
-			Select a seat from the map to add seated tickets
-		&lt;/div&gt;
+			Select a seat from the map to add seated tickets		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
 			&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
 		&lt;/div&gt;
@@ -975,11 +957,9 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
 			&lt;div class="tec-tickets-seating__sidebar-controls"&gt;
 				&lt;button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"&gt;
-					Cancel
-				&lt;/button&gt;
+					Cancel				&lt;/button&gt;
 				&lt;button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"&gt;
-					Check Out
-				&lt;/button&gt;
+					Continue				&lt;/button&gt;
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/aside&gt;
@@ -1058,8 +1038,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
             class="tribe-common-h4 tec-tickets-seating__title"
           >
             
-				Tickets
-			
+				Tickets			
           </h4>
           
 
@@ -1158,8 +1137,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
           class="tec-tickets-seating__empty-tickets-message tec-tickets-seating__empty-tickets-message-hidden"
         >
           
-			Select a seat from the map to add seated tickets
-		
+			Select a seat from the map to add seated tickets		
         </div>
         
 		
@@ -1311,8 +1289,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"
             >
               
-					Cancel
-				
+					Cancel				
             </button>
             
 				
@@ -1320,8 +1297,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"
             >
               
-					Check Out
-				
+					Continue				
             </button>
             
 			
@@ -1423,8 +1399,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
 		&lt;div class="tec-tickets-seating__sidebar-header"&gt;
 			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
-				Tickets
-			&lt;/h4&gt;
+				Tickets			&lt;/h4&gt;
 
 			
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
@@ -1454,8 +1429,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 		&lt;/div&gt;
 
 		&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
-			Select a seat from the map to add seated tickets
-		&lt;/div&gt;
+			Select a seat from the map to add seated tickets		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
 			&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
 		&lt;/div&gt;
@@ -1470,11 +1444,9 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
 			&lt;div class="tec-tickets-seating__sidebar-controls"&gt;
 				&lt;button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"&gt;
-					Cancel
-				&lt;/button&gt;
+					Cancel				&lt;/button&gt;
 				&lt;button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"&gt;
-					Check Out
-				&lt;/button&gt;
+					Continue				&lt;/button&gt;
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/aside&gt;
@@ -1553,8 +1525,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
             class="tribe-common-h4 tec-tickets-seating__title"
           >
             
-				Tickets
-			
+				Tickets			
           </h4>
           
 
@@ -1653,8 +1624,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
           class="tec-tickets-seating__empty-tickets-message tec-tickets-seating__empty-tickets-message-hidden"
         >
           
-			Select a seat from the map to add seated tickets
-		
+			Select a seat from the map to add seated tickets		
         </div>
         
 		
@@ -1853,8 +1823,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"
             >
               
-					Cancel
-				
+					Cancel				
             </button>
             
 				
@@ -1862,8 +1831,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"
             >
               
-					Check Out
-				
+					Continue				
             </button>
             
 			
@@ -1965,8 +1933,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
 		&lt;div class="tec-tickets-seating__sidebar-header"&gt;
 			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
-				Tickets
-			&lt;/h4&gt;
+				Tickets			&lt;/h4&gt;
 
 			
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
@@ -1996,8 +1963,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 		&lt;/div&gt;
 
 		&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
-			Select a seat from the map to add seated tickets
-		&lt;/div&gt;
+			Select a seat from the map to add seated tickets		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
 			&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
 		&lt;/div&gt;
@@ -2012,11 +1978,9 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
 			&lt;div class="tec-tickets-seating__sidebar-controls"&gt;
 				&lt;button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"&gt;
-					Cancel
-				&lt;/button&gt;
+					Cancel				&lt;/button&gt;
 				&lt;button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"&gt;
-					Check Out
-				&lt;/button&gt;
+					Continue				&lt;/button&gt;
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/aside&gt;
@@ -2095,8 +2059,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
             class="tribe-common-h4 tec-tickets-seating__title"
           >
             
-				Tickets
-			
+				Tickets			
           </h4>
           
 
@@ -2195,8 +2158,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
           class="tec-tickets-seating__empty-tickets-message tec-tickets-seating__empty-tickets-message-hidden"
         >
           
-			Select a seat from the map to add seated tickets
-		
+			Select a seat from the map to add seated tickets		
         </div>
         
 		
@@ -2442,8 +2404,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"
             >
               
-					Cancel
-				
+					Cancel				
             </button>
             
 				
@@ -2451,8 +2412,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"
             >
               
-					Check Out
-				
+					Continue				
             </button>
             
 			
@@ -2554,8 +2514,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 
 		&lt;div class="tec-tickets-seating__sidebar-header"&gt;
 			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
-				Tickets
-			&lt;/h4&gt;
+				Tickets			&lt;/h4&gt;
 
 			
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
@@ -2585,8 +2544,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 		&lt;/div&gt;
 
 		&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
-			Select a seat from the map to add seated tickets
-		&lt;/div&gt;
+			Select a seat from the map to add seated tickets		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
 			&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
 		&lt;/div&gt;
@@ -2601,11 +2559,9 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 
 			&lt;div class="tec-tickets-seating__sidebar-controls"&gt;
 				&lt;button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"&gt;
-					Cancel
-				&lt;/button&gt;
+					Cancel				&lt;/button&gt;
 				&lt;button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"&gt;
-					Check Out
-				&lt;/button&gt;
+					Continue				&lt;/button&gt;
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/aside&gt;
@@ -2684,8 +2640,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
             class="tribe-common-h4 tec-tickets-seating__title"
           >
             
-				Tickets
-			
+				Tickets			
           </h4>
           
 
@@ -2784,8 +2739,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
           class="tec-tickets-seating__empty-tickets-message tec-tickets-seating__empty-tickets-message-hidden"
         >
           
-			Select a seat from the map to add seated tickets
-		
+			Select a seat from the map to add seated tickets		
         </div>
         
 		
@@ -2984,8 +2938,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
               class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"
             >
               
-					Cancel
-				
+					Cancel				
             </button>
             
 				
@@ -2993,8 +2946,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
               class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"
             >
               
-					Check Out
-				
+					Continue				
             </button>
             
 			
@@ -3096,8 +3048,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 
 		&lt;div class="tec-tickets-seating__sidebar-header"&gt;
 			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
-				Tickets
-			&lt;/h4&gt;
+				Tickets			&lt;/h4&gt;
 
 			
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
@@ -3127,8 +3078,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 		&lt;/div&gt;
 
 		&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
-			Select a seat from the map to add seated tickets
-		&lt;/div&gt;
+			Select a seat from the map to add seated tickets		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
 			&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
 		&lt;/div&gt;
@@ -3143,11 +3093,9 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 
 			&lt;div class="tec-tickets-seating__sidebar-controls"&gt;
 				&lt;button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"&gt;
-					Cancel
-				&lt;/button&gt;
+					Cancel				&lt;/button&gt;
 				&lt;button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"&gt;
-					Check Out
-				&lt;/button&gt;
+					Continue				&lt;/button&gt;
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/aside&gt;
@@ -3226,8 +3174,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
             class="tribe-common-h4 tec-tickets-seating__title"
           >
             
-				Tickets
-			
+				Tickets			
           </h4>
           
 
@@ -3326,8 +3273,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
           class="tec-tickets-seating__empty-tickets-message tec-tickets-seating__empty-tickets-message-hidden"
         >
           
-			Select a seat from the map to add seated tickets
-		
+			Select a seat from the map to add seated tickets		
         </div>
         
 		
@@ -3479,8 +3425,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
               class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"
             >
               
-					Cancel
-				
+					Cancel				
             </button>
             
 				
@@ -3488,8 +3433,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
               class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"
             >
               
-					Check Out
-				
+					Continue				
             </button>
             
 			
@@ -3591,8 +3535,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 
 		&lt;div class="tec-tickets-seating__sidebar-header"&gt;
 			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
-				Tickets
-			&lt;/h4&gt;
+				Tickets			&lt;/h4&gt;
 
 			
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
@@ -3622,8 +3565,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 		&lt;/div&gt;
 
 		&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
-			Select a seat from the map to add seated tickets
-		&lt;/div&gt;
+			Select a seat from the map to add seated tickets		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
 			&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
 		&lt;/div&gt;
@@ -3638,11 +3580,9 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 
 			&lt;div class="tec-tickets-seating__sidebar-controls"&gt;
 				&lt;button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"&gt;
-					Cancel
-				&lt;/button&gt;
+					Cancel				&lt;/button&gt;
 				&lt;button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"&gt;
-					Check Out
-				&lt;/button&gt;
+					Continue				&lt;/button&gt;
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/aside&gt;
@@ -3721,8 +3661,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
             class="tribe-common-h4 tec-tickets-seating__title"
           >
             
-				Tickets
-			
+				Tickets			
           </h4>
           
 
@@ -3821,8 +3760,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
           class="tec-tickets-seating__empty-tickets-message tec-tickets-seating__empty-tickets-message-hidden"
         >
           
-			Select a seat from the map to add seated tickets
-		
+			Select a seat from the map to add seated tickets		
         </div>
         
 		
@@ -3927,8 +3865,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
               class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"
             >
               
-					Cancel
-				
+					Cancel				
             </button>
             
 				
@@ -3936,8 +3873,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
               class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"
             >
               
-					Check Out
-				
+					Continue				
             </button>
             
 			
@@ -4039,8 +3975,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 
 		&lt;div class="tec-tickets-seating__sidebar-header"&gt;
 			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
-				Tickets
-			&lt;/h4&gt;
+				Tickets			&lt;/h4&gt;
 
 			
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
@@ -4070,8 +4005,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 		&lt;/div&gt;
 
 		&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
-			Select a seat from the map to add seated tickets
-		&lt;/div&gt;
+			Select a seat from the map to add seated tickets		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
 			&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
 		&lt;/div&gt;
@@ -4086,11 +4020,9 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 
 			&lt;div class="tec-tickets-seating__sidebar-controls"&gt;
 				&lt;button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"&gt;
-					Cancel
-				&lt;/button&gt;
+					Cancel				&lt;/button&gt;
 				&lt;button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"&gt;
-					Check Out
-				&lt;/button&gt;
+					Continue				&lt;/button&gt;
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/aside&gt;
@@ -4169,8 +4101,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
             class="tribe-common-h4 tec-tickets-seating__title"
           >
             
-				Tickets
-			
+				Tickets			
           </h4>
           
 
@@ -4269,8 +4200,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
           class="tec-tickets-seating__empty-tickets-message"
         >
           
-			Select a seat from the map to add seated tickets
-		
+			Select a seat from the map to add seated tickets		
         </div>
         
 		
@@ -4327,8 +4257,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
               class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"
             >
               
-					Cancel
-				
+					Cancel				
             </button>
             
 				
@@ -4336,8 +4265,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
               class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"
             >
               
-					Check Out
-				
+					Continue				
             </button>
             
 			

@@ -28,7 +28,7 @@ global.tec.tickets.seating = {
 			layouts: {
 				'add-failed': 'Failed to add the layout.',
 				'delete-confirmation':
-					'Are you sure you want to delete this layout?',
+					'Are you sure you want to delete this layout? This cannot be undone.',
 				'delete-failed': 'Failed to delete the layout.',
 				'edit-confirmation':
 					'This layout is associated with {count} events. Changes will impact all existing events and may affect the seating assignment of active ticket holders.',

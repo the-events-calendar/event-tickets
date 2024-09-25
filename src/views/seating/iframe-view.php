@@ -76,10 +76,10 @@
 
 			<div class="tec-tickets-seating__sidebar-controls">
 				<button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel">
-					Cancel
+					<?php esc_html_e( 'Cancel', 'event-tickets' ); ?>
 				</button>
 				<button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm">
-					Check Out
+					<?php esc_html_e( 'Continue', 'event-tickets' ); ?>
 				</button>
 			</div>
 		</div>
