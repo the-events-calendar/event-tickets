@@ -49,7 +49,7 @@ class Fee_Table extends Order_Modifier_Table {
 	 *
 	 * @return string The HTML output for the "display_name" column, including row actions.
 	 */
-	protected function render_display_name_column( $item ) {
+	protected function render_display_name_column( $item ): string {
 		$edit_link = add_query_arg(
 			[
 				'page'        => $this->modifier->get_page_slug(),
@@ -90,7 +90,7 @@ class Fee_Table extends Order_Modifier_Table {
 	 *
 	 * @return string The HTML output for the "Active On" column, depending on where the modifier is applied.
 	 */
-	protected function render_active_on_column( $item ) {
+	protected function render_active_on_column( $item ): string {
 		$apply_to = $this->order_modifier_meta_repository->find_by_order_modifier_id_and_meta_key( $item->id, 'fee_applied_to' )->meta_value ?? '';
 
 		switch ( $apply_to ) {
@@ -116,8 +116,8 @@ class Fee_Table extends Order_Modifier_Table {
 	 *
 	 * @return string A message indicating the modifier applies to all tickets.
 	 */
-	protected function display_all_tickets() {
-		return 'All tickets';
+	protected function display_all_tickets(): string {
+		return __( 'All tickets', 'event-tickets' );
 	}
 
 	/**
@@ -131,7 +131,7 @@ class Fee_Table extends Order_Modifier_Table {
 	 *
 	 * @return string A comma-separated list of post titles where the modifier is applied, or a dash if none found.
 	 */
-	protected function display_per_tickets( $modifier_id ) {
+	protected function display_per_tickets( int $modifier_id ): string {
 		$active_posts = $this->modifier->get_active_on( $modifier_id );
 		$linked_posts = [];
 
@@ -228,7 +228,7 @@ class Fee_Table extends Order_Modifier_Table {
 	 *
 	 * @return string
 	 */
-	protected function render_status_column( $item ) {
+	protected function render_status_column( $item ): string {
 		return $this->modifier->get_status_display( $item->status );
 	}
 
@@ -246,7 +246,7 @@ class Fee_Table extends Order_Modifier_Table {
 	 *
 	 * @return string The formatted fee amount to be displayed in the table.
 	 */
-	protected function render_fee_amount_cents_column( $item ) {
+	protected function render_fee_amount_cents_column( $item ): string {
 		return $this->modifier->display_amount_field( $item->fee_amount_cents, $item->sub_type );
 	}
 
@@ -257,7 +257,7 @@ class Fee_Table extends Order_Modifier_Table {
 	 *
 	 * @return array An array of sortable columns.
 	 */
-	protected function get_sortable_columns() {
+	protected function get_sortable_columns(): array {
 		return [
 			'display_name'     => [ 'display_name', true ],
 			'fee_amount_cents' => [ 'fee_amount_cents', false ],
