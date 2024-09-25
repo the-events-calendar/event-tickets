@@ -80,7 +80,7 @@ class Duplicate_PostTest extends WPTestCase {
 			$this->assertNotContains( (string) $ticket_id, $duplicated_event->post_content );
 		}
 
-		foreach( array_reverse( $meta ) as $k => $v ) {
+		foreach( $meta as $k => $v ) {
 			$this->assertEquals( $v, get_post_meta( $event_id, $k, true ), $k );
 			$this->assertEquals( $v, get_post_meta( $duplicated_event->ID, $k, true ), $k );
 		}
