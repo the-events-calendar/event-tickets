@@ -828,11 +828,8 @@ class Tribe__Tickets__Attendees {
 	 * @return boolean
 	 */
 	public function user_can_export_attendees_csv() {
-		$user = wp_get_current_user();
-
-		$allowed_roles = [ 'administrator', 'editor' ];
-
-		$can_export = ! empty( array_intersect( $allowed_roles, $user->roles ) );
+		// Applies to Super Admins, Admins and Editors by default.
+		$can_export = current_user_can( 'publish_pages' );
 
 		/**
 		 * Filter roles that are allowed to export the attendees list as a CSV.
@@ -843,7 +840,7 @@ class Tribe__Tickets__Attendees {
 		 * @param bool $can_export Whether the user can export CSV or not.
 		 * @param WP_User $user The current user object.
 		 */
-		return apply_filters( 'tec_tickets_attendees_user_can_export_csv', $can_export, $user );
+		return apply_filters( 'tec_tickets_attendees_user_can_export_csv', $can_export );
 	}
 
 	/**
