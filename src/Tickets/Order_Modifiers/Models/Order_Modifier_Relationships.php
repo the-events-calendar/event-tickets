@@ -33,16 +33,23 @@ use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifier_Relationship as Orde
 class Order_Modifier_Relationships extends Model implements ModelCrud, ModelFromQueryBuilderObject {
 
 	/**
+	 * Properties of the Order Modifier Relationships model.
+	 *
+	 * This defines the types of the properties that belong to the relationship between
+	 * an order modifier and a WordPress post.
+	 *
+	 * @var array<string, string> The array of properties and their corresponding data types.
+	 *
 	 * @inheritDoc
 	 */
-	protected $properties
-		= [
-			'object_id'   => 'int',
-			'modifier_id' => 'int',
-			'post_id'     => 'int',
-			'post_type'   => 'string',
-			'post_title'  => 'string',
-		];
+	protected $properties = [
+		'object_id'   => 'int',
+		'modifier_id' => 'int',
+		'post_id'     => 'int',
+		'post_type'   => 'string',
+		'post_title'  => 'string',
+	];
+
 
 	/**
 	 * Finds a model by its ID.

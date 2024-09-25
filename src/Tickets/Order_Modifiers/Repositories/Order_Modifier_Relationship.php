@@ -1,4 +1,15 @@
 <?php
+/**
+ * Repository for managing relationships between Order Modifiers and wp_posts.
+ *
+ * This class provides methods to insert, update, delete, and query the relationships between
+ * order modifiers (such as fees or coupons) and WordPress posts (like venues or organizers).
+ * It interacts with the custom `Order_Modifier_Relationships` table and uses WordPress database functions
+ * for CRUD operations.
+ *
+ * @package TEC\Tickets\Order_Modifiers\Repositories
+ * @since TBD
+ */
 
 namespace TEC\Tickets\Order_Modifiers\Repositories;
 
