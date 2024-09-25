@@ -61,7 +61,7 @@ class Controller extends Controller_Contract {
 	 * @since TBD
 	 */
 	protected function hook() {
-		tribe( Modifier_Settings::class )->register();
+		tribe( Modifier_Admin_Handler::class )->register();
 	}
 
 	/**

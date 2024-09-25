@@ -18,7 +18,7 @@ use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Manager;
  *
  * @since TBD
  */
-class Modifier_Settings {
+class Modifier_Admin_Handler {
 
 	/**
 	 * Event Tickets menu page slug.

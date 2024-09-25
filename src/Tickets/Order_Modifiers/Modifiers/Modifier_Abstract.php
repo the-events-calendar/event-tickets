@@ -23,7 +23,7 @@ use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier_Meta;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier_Relationships;
-use TEC\Tickets\Order_Modifiers\Modifier_Settings;
+use TEC\Tickets\Order_Modifiers\Modifier_Admin_Handler;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers as Order_Modifiers_Repository;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers_Meta as Order_Modifiers_Meta_Repository;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifier_Relationship as Order_Modifier_Relationship_Repository;
@@ -505,7 +505,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 */
 	public function get_page_slug() {
 		// @todo redscar - Does this logic make sense? Should we alter this?
-		$modifier_settings = new Modifier_Settings();
+		$modifier_settings = new Modifier_Admin_Handler();
 		return $modifier_settings->get_page_slug();
 	}
 
