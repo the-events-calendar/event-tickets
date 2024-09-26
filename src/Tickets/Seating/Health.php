@@ -57,6 +57,17 @@ class Health extends Controller_Contract {
 	public function __construct( Container $container ) {
 		parent::__construct( $container );
 
+		$this->define_tests();
+	}
+
+	/**
+	 * Defines the tests to be registered with the Site Health component.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function define_tests() {
 		$this->tests = [
 			'slr_valid_license' => [
 				'label'     => __( 'Has valid Seating license', 'event-tickets' ),
@@ -190,11 +201,11 @@ class Health extends Controller_Contract {
 	public function unregister(): void {
 		remove_filter( 'site_status_tests', [ $this, 'add_site_status_tests' ] );
 
-		foreach ( $this->tests as $callback => $test ) {
+		foreach ( $this->get_tests() as $callback => $test ) {
 			remove_action( 'wp_ajax_health-check-' . $test['test'], [ $this, 'check_' . $callback ] );
 		}
 
-		remove_action( 'wp_ajax_tec-site-health-test-' . $this->tests['slr_ajax_rate']['test'], [ $this, 'test_ajax_rate' ] );
+		remove_action( 'wp_ajax_tec-site-health-test-' . $this->get_tests()['slr_ajax_rate']['test'], [ $this, 'test_ajax_rate' ] );
 	}
 
 	/**
@@ -207,11 +218,11 @@ class Health extends Controller_Contract {
 	protected function do_register(): void {
 		add_filter( 'site_status_tests', [ $this, 'add_site_status_tests' ] );
 
-		foreach ( $this->tests as $callback => $test ) {
+		foreach ( $this->get_tests() as $callback => $test ) {
 			add_action( 'wp_ajax_health-check-' . $test['test'], [ $this, 'check_' . $callback ] );
 		}
 
-		add_action( 'wp_ajax_tec-site-health-test-' . $this->tests['slr_ajax_rate']['test'], [ $this, 'test_ajax_rate' ] );
+		add_action( 'wp_ajax_tec-site-health-test-' . $this->get_tests()['slr_ajax_rate']['test'], [ $this, 'test_ajax_rate' ] );
 	}
 
 	/**
@@ -228,7 +239,7 @@ class Health extends Controller_Contract {
 			$tests['async'] = [];
 		}
 
-		foreach ( $this->tests as $test ) {
+		foreach ( $this->get_tests() as $test ) {
 			unset( $test['extra'] );
 			$tests['async'][ $test['test'] ] = $test;
 		}
@@ -245,7 +256,7 @@ class Health extends Controller_Contract {
 	 */
 	public function check_slr_valid_license() {
 		check_ajax_referer( 'health-check-site-status' );
-		$test = $this->tests['slr_valid_license'];
+		$test = $this->get_tests()['slr_valid_license'];
 
 		$seating = get_resource( 'tec-seating' );
 
@@ -267,7 +278,7 @@ class Health extends Controller_Contract {
 	 */
 	public function check_slr_can_see_sass() {
 		check_ajax_referer( 'health-check-site-status' );
-		$test = $this->tests['slr_can_see_sass'];
+		$test = $this->get_tests()['slr_can_see_sass'];
 
 		$service = $this->container->get( Service::class );
 
@@ -289,7 +300,7 @@ class Health extends Controller_Contract {
 	 */
 	public function check_slr_ajax_rate() {
 		check_ajax_referer( 'health-check-site-status' );
-		$test = $this->tests['slr_ajax_rate'];
+		$test = $this->get_tests()['slr_ajax_rate'];
 
 		$action = 'tec-site-health-test-' . $test['test'];
 		$nonce  = wp_create_nonce( $action );
@@ -335,7 +346,7 @@ class Health extends Controller_Contract {
 	 * @return void
 	 */
 	public function test_ajax_rate() {
-		if ( ! wp_verify_nonce( wp_unslash( $_GET )['nonce'] ?? '', 'tec-site-health-test-' . $this->tests['slr_ajax_rate']['test'] ) ) {
+		if ( ! wp_verify_nonce( wp_unslash( $_GET )['nonce'] ?? '', 'tec-site-health-test-' . $this->get_tests()['slr_ajax_rate']['test'] ) ) {
 			wp_send_json( [], 400, 0 );
 			// Return helps with testing, since we 'll mock wp_send_json functions.
 			return;
