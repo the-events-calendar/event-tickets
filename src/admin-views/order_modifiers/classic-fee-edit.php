@@ -11,6 +11,9 @@
  * @var array $selectable_fees Array of fees that can be manually selected (meta_value is not 'all').
  */
 
+if ( empty( $automatic_fees ) && empty( $selectable_fees ) ) {
+	return;
+}
 ?>
 
 <div class="input_block">
