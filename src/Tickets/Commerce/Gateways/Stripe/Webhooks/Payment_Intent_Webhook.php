@@ -12,7 +12,8 @@ use Tribe__Utils__Array as Arr;
 /**
  * Webhook for Payment_Intent operations
  *
- * @since   5.3.0
+ * @since 5.3.0
+ * @since TBD Remove check if payment intent should be updated.
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\Webhooks
  */
@@ -63,19 +64,6 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 			) );
 		}
 
-		if ( ! static::should_payment_intent_be_updated( $payment_intent, $order->gateway_payload ) ) {
-			$response->set_status( 200 );
-			$response->set_data(
-				sprintf(
-				// Translators: %s is the payment intent id
-					__( 'Payment Intent %s does not require an update or is a duplicate of a past event.', 'event-tickets' ),
-					esc_html( $payment_intent_id )
-				)
-			);
-
-			return $response;
-		}
-
 		$meta = [
 			'gateway_payload'  => $payment_intent,
 			'gateway_order_id' => $payment_intent_id,
@@ -116,7 +104,8 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 	/**
 	 * Checks if the payment intent contained in the event received has already been processed.
 	 *
-	 * @since 5.3.0
+	 * @deprecated TBD
+	 * @since      5.3.0
 	 *
 	 * @param array   $payment_intent_received The payment intent data received
 	 * @param array[] $payment_intents_stored  The payment intent data stored from each update, keyed by status.
@@ -124,6 +113,7 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 	 * @return bool
 	 */
 	public static function should_payment_intent_be_updated( $payment_intent_received, $payment_intents_stored ) {
+		_deprecated_function( __METHOD__, 'TBD', 'This method will be removed in the future.' );
 		// This payment intent was reset, or processing has re-started without invalidating.
 		if ( 1 < count( $payment_intents_stored ) && $payment_intent_received['status'] === Status::REQUIRES_PAYMENT_METHOD ) {
 			return true;
@@ -131,6 +121,11 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 
 		foreach ( $payment_intents_stored as $status => $intents ) {
 			foreach( $intents as $intent ) {
+				// Ignore intents that require source.
+				if ( $intent['status'] === Status::REQUIRES_SOURCE && $payment_intent_received['status'] === Status::SUCCEEDED ) {
+					continue;
+				}
+
 				// This payment intent has already been processed and updated.
 				if ( $payment_intent_received['id'] === $intent['id'] ) {
 					return false;
