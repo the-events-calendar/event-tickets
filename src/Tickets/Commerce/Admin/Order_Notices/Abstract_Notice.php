@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Commerce\Admin\Order_Notices;
 
+use Tribe__Admin__Notices;
+
 /**
  * Class Abstract_Notice
  *
