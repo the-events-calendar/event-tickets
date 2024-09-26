@@ -91,9 +91,8 @@ class Base extends Controller {
 		], 10, 5 );
 		
 		add_filter(
-			'tec_tickets_seating_tickets_block_html',
+			'tec_tickets_seating_tickets_block_after',
 			[ $this, 'filter_seating_tickets_block_html' ],
-			10, 2
 		);
 
 		// Remove the warning about Tickets added to a Recurring Event.
@@ -201,9 +200,8 @@ class Base extends Controller {
 		] );
 		
 		remove_filter(
-			'tec_tickets_seating_tickets_block_html',
-			[ $this, 'filter_seating_tickets_block_html' ],
-			10, 2
+			'tec_tickets_seating_tickets_block_after',
+			[ $this, 'filter_seating_tickets_block_html' ]
 		);
 
 		// Restore the warning about Tickets added to a Recurring Event.
@@ -363,32 +361,28 @@ class Base extends Controller {
 	 *
 	 * @param string  $html The initial HTML.
 	 * @param Template $template The template object.
-	 *
-	 * @return string The updated HTML.
 	 */
-	public function filter_seating_tickets_block_html( string $html, Template $template ): string {
+	public function filter_seating_tickets_block_html( Template $template ) {
 		$context = $template->get_values();
 		$post_id = $context['post_id'] ?? 0;
 		
 		if ( get_post_type( $post_id ) !== TEC::POSTTYPE ) {
 			// Not an Event, bail.
-			return $html;
+			return;
 		}
 		
 		$series = tec_series()->where( 'event_post_id', $post_id )->first_id();
 		
 		if ( $series === null ) {
 			// Not part of a Series, bail.
-			return $html;
+			return;
 		}
 		
 		tribe_asset_enqueue( 'tec-tickets-flexible-tickets-style' );
 		
 		$context['tickets_template'] = $template;
 		$context['series_permalink'] = get_post_permalink( $series );
-		$buffer                      = $this->admin_views->template( 'frontend/tickets/items', $context, false );
-		
-		return $html . $buffer;
+		$this->admin_views->template( 'frontend/tickets/items', $context );
 	}
 
 	/**
