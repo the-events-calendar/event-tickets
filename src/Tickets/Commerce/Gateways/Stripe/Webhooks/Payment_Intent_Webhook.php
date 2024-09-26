@@ -121,11 +121,6 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 
 		foreach ( $payment_intents_stored as $status => $intents ) {
 			foreach( $intents as $intent ) {
-				// Ignore intents that require source.
-				if ( $intent['status'] === Status::REQUIRES_SOURCE && $payment_intent_received['status'] === Status::SUCCEEDED ) {
-					continue;
-				}
-
 				// This payment intent has already been processed and updated.
 				if ( $payment_intent_received['id'] === $intent['id'] ) {
 					return false;
