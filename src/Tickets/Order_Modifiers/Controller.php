@@ -62,7 +62,9 @@ class Controller extends Controller_Contract {
 	/**
 	 * ServiceProvider constructor.
 	 *
-	 * @param Container $container
+	 * @since TBD
+	 *
+	 * @param Container $container The DI container instance.
 	 */
 	public function __construct( Container $container ) {
 		parent::__construct( $container );
@@ -212,6 +214,8 @@ class Controller extends Controller_Contract {
 	/**
 	 * Drop all custom tables.
 	 *
+	 * @since TBD
+	 *
 	 * @return int The number of tables dropped.
 	 */
 	public function drop_tables(): int {
@@ -221,6 +225,8 @@ class Controller extends Controller_Contract {
 	/**
 	 * Truncate all custom tables.
 	 *
+	 * @since TBD
+	 *
 	 * @return int The number of tables truncated.
 	 */
 	public function truncate_tables(): int {
@@ -229,6 +235,8 @@ class Controller extends Controller_Contract {
 
 	/**
 	 * Helper method to drop or truncate custom tables.
+	 *
+	 * @since TBD
 	 *
 	 * @param string $action The action to perform on the tables. Either 'drop' or 'truncate'.
 	 *
