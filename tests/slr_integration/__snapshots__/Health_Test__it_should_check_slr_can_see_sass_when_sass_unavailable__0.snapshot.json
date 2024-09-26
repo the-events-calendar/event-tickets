@@ -1,0 +1,18 @@
+[
+    [
+        {
+            "label": "Can communicate with the Seating App",
+            "completed": false,
+            "status": "critical",
+            "badge": {
+                "label": "Seating",
+                "color": "red"
+            },
+            "description": "Your site cannot communicate with the Seating App! This is a critical requirement for the Seating functionality to work as expected!",
+            "actions": "<p>Ensure the Seating App is online and health by checking the <a href=\u0022https://theeventscalendar.com/product/seating/\u0022 target=\u0022_blank\u0022 rel=\u0022noopener noreferrer\u0022>status page.</a></p><p><a href=\u0022https://theeventscalendar.com/product/seating/\u0022 target=\u0022_blank\u0022 rel=\u0022noopener noreferrer\u0022>Get help</a> resolving this issue.</p>",
+            "test": "slr-can-see-sass"
+        },
+        null,
+        0
+    ]
+]
