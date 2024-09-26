@@ -28,7 +28,7 @@ final class Provider extends ServiceProvider {
 	 * @return void The method does not return any value.
 	 */
 	public function register() {
-		$this->container->singleton( static::class, $this );
+		$this->container->singleton( self::class, $this );
 
 		/**
 		 * Fires when the provider is registered.
