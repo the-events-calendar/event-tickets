@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Tickets Commerce orders will update to the correct status after multiple payment attempts. [ET-2225]
