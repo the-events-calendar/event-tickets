@@ -1,4 +1,11 @@
 <?php
+/**
+ * Gateway_Partial_Refund_Failed object to output the order status message.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Admin\Order_Notices
+ */
 
 namespace TEC\Tickets\Commerce\Admin\Order_Notices;
 

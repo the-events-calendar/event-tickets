@@ -1,4 +1,11 @@
 <?php
+/**
+ * Abstract_Notice to build admin notice objects from.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Admin\Order_Notices
+ */
 
 namespace TEC\Tickets\Commerce\Admin\Order_Notices;
 
@@ -68,5 +75,4 @@ abstract class Abstract_Notice {
 			1
 		);
 	}
-
 }
