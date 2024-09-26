@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Handle duplicating Tickets during event duplciation [ECP-1826].
