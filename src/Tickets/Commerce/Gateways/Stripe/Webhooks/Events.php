@@ -277,5 +277,4 @@ class Events {
 
 		return tribe( Commerce_Status\Status_Handler::class )->get_by_class( $events[ $event_name ] );
 	}
-
 }
