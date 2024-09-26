@@ -94,8 +94,8 @@ class Order_Modifier_Fee_Metabox {
 	 */
 	public function register(): void {
 		add_action( 'tribe_events_tickets_metabox_edit_main', [ $this, 'add_fee_section' ], 10, 2 );
-		add_action( 'tec_tickets_commerce_after_save_ticket', [ $this, 'save_ticket_fee' ], 10, 4 );
-		add_action( 'tec_tickets_commerce_ticket_deleted', [ $this, 'delete_ticket_fee' ], 10, 3 );
+		add_action( 'tec_tickets_commerce_after_save_ticket', [ $this, 'save_ticket_fee' ], 10, 3 );
+		add_action( 'tec_tickets_commerce_ticket_deleted', [ $this, 'delete_ticket_fee' ] );
 	}
 
 	/**
@@ -172,15 +172,13 @@ class Order_Modifier_Fee_Metabox {
 	 * @param int    $post_id The post ID of the ticket.
 	 * @param object $ticket The ticket object.
 	 * @param array  $raw_data The raw form data.
-	 * @param string $class The class name.
 	 *
 	 * @return void
 	 */
-	public function save_ticket_fee( int $post_id, object $ticket, array $raw_data, string $class ): void {
+	public function save_ticket_fee( int $post_id, object $ticket, array $raw_data ): void {
 		// Delete existing relationships for the ticket.
 		$this->manager->delete_relationships_by_post( $ticket->ID );
 
-		// @todo redscar - It would make sense to check 'all' fees and reapply them here.
 		// Get available fees with specific meta values.
 		$fees = $this->order_modifiers_repository->find_by_modifier_type_and_meta(
 			$this->modifier_type,
@@ -220,12 +218,10 @@ class Order_Modifier_Fee_Metabox {
 	 * @since TBD
 	 *
 	 * @param int $ticket_id The ticket ID.
-	 * @param int $event_id The event ID.
-	 * @param int $product_id The product ID.
 	 *
 	 * @return void
 	 */
-	public function delete_ticket_fee( int $ticket_id, int $event_id, int $product_id ): void {
+	public function delete_ticket_fee( int $ticket_id ): void {
 		// Delete all fee relationships for the ticket.
 		$this->manager->delete_relationships_by_post( $ticket_id );
 	}

@@ -14,8 +14,9 @@
 ?>
 
 <div class="input_block">
-	<label class="ticket_form_label ticket_form_left"
-		   for="ticket_fees"><?php esc_html_e( 'Ticket Fees:', 'event-tickets' ); ?></label>
+	<label class="ticket_form_label ticket_form_left" for="ticket_fees">
+		<?php esc_html_e( 'Ticket Fees:', 'event-tickets' ); ?>
+	</label>
 	<div class="ticket_form_right">
 
 		<?php if ( ! empty( $automatic_fees ) || ! empty( $selectable_fees ) ) : ?>
