@@ -31,6 +31,12 @@ if ( ! $option_value && ! $constant_value ) {
  * @todo Run other uninstallation tasks unrelated to Order Modifiers.
  */
 
+/*
+ * Disable PHPCS warnings for this part of the file.
+ *
+ * phpcs:disable WordPress.DB.DirectDatabaseQuery
+ */
+
 global $wpdb;
 
 // Drop our custom tables.
