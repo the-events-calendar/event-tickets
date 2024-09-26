@@ -99,7 +99,7 @@ class Fee extends Modifier_Abstract {
 		$apply_to_post_ids = $apply_to_post_id ? [ $apply_to_post_id ] : [];
 
 		// Handle the relationship update, passing the relevant data.
-		$this->handle_relationship_update( $modifier->id, $apply_to_post_ids );
+		$this->handle_relationship_update( [ $modifier->id ], $apply_to_post_ids );
 
 		return $modifier;
 	}
@@ -152,44 +152,103 @@ class Fee extends Modifier_Abstract {
 		$apply_to_post_ids = is_array( $apply_to_post_ids ) ? $apply_to_post_ids : [ $apply_to_post_ids ];
 
 		// Handle the relationship update, passing the relevant data.
-		$this->handle_relationship_update( $modifier->id, $apply_to_post_ids );
+		$this->handle_relationship_update( [ $modifier->id ], $apply_to_post_ids );
 
 		return $modifier;
 	}
 
 	/**
-	 * Handles relationship updates for Fee modifiers.
+	 * Handles relationships for multiple scenarios based on input.
 	 *
-	 * This method compares the new set of post IDs with the existing relationships for
-	 * the given fee modifier. It inserts new relationships if they don't exist and deletes
-	 * old relationships that are no longer valid.
+	 * This method intelligently determines how to update relationships
+	 * based on the number of `modifier_ids` and `post_ids` provided.
 	 *
 	 * @since TBD
 	 *
-	 * @param int   $modifier_id The ID of the fee modifier.
-	 * @param array $new_post_ids An array of new post IDs to be associated with the fee.
+	 * @param array $modifier_ids An array of modifier IDs to update.
+	 * @param array $new_post_ids An array of post IDs to associate with the modifier(s).
 	 *
 	 * @return void
 	 */
-	protected function handle_relationship_update( int $modifier_id, array $new_post_ids ): void {
-		// Retrieve the existing relationships from the repository.
-		$existing_relationships = $this->get_active_on( $modifier_id );
-
-		if ( empty( $new_post_ids ) ) {
+	public function handle_relationship_update( array $modifier_ids, array $new_post_ids ): void {
+		// Scenario 1: Multiple modifier_ids and a single post_id.
+		if ( count( $modifier_ids ) > 1 && count( $new_post_ids ) === 1 ) {
+			$this->update_relationships_by_post( $new_post_ids[0], $modifier_ids );
 			return;
 		}
 
-		// Insert new relationships that don't exist in the current relationships.
+		// Scenario 2: Single modifier_id and multiple post_ids.
+		if ( count( $modifier_ids ) === 1 && count( $new_post_ids ) > 1 ) {
+			$this->update_relationships_by_modifier( $modifier_ids[0], $new_post_ids );
+			return;
+		}
+
+		// Scenario 3: Multiple modifier_ids and multiple post_ids for 1:1 relationships.
+		if ( count( $modifier_ids ) === count( $new_post_ids ) ) {
+			foreach ( $modifier_ids as $index => $modifier_id ) {
+				// Match each modifier_id with the corresponding post_id.
+				$this->update_relationships_by_modifier( $modifier_id, [ $new_post_ids[ $index ] ] );
+			}
+			return;
+		}
+
+		// If input is not valid, we should bail out (optional).
+		if ( count( $modifier_ids ) === 0 || count( $new_post_ids ) === 0 ) {
+			return; // Bail out if there's no data to process.
+		}
+	}
+
+	/**
+	 * Handles relationships by modifier ID.
+	 *
+	 * This method updates the relationships for a single modifier, ensuring the
+	 * `modifier_id` is associated with the correct set of `post_ids`.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $modifier_id The ID of the modifier to update.
+	 * @param array $new_post_ids An array of new post IDs to associate with the modifier.
+	 *
+	 * @return void
+	 */
+	public function update_relationships_by_modifier( int $modifier_id, array $new_post_ids ): void {
+
+		// Step 1: Delete all existing relationships for this modifier ID.
+		$this->delete_relationship_by_modifier( $modifier_id );
+
+		// Step 2: Insert all new relationships from $new_post_ids for the given modifier ID.
 		foreach ( $new_post_ids as $new_post_id ) {
-			if ( ! $this->order_modifiers_relationship_repository->find_by_modifier_and_post_type( $modifier_id, $new_post_id ) ) {
+			// Ensure the post ID is valid before inserting the relationship.
+			if ( ! empty( $new_post_id ) ) {
 				$this->add_relationship( $modifier_id, $new_post_id );
 			}
 		}
+	}
 
-		// Delete old relationships that no longer match the new set.
-		foreach ( $existing_relationships as $existing_relationship ) {
-			if ( ! in_array( $existing_relationship->post_id, $new_post_ids ) ) {
-				$this->delete_relationship( $modifier_id, $existing_relationship->post_id );
+
+	/**
+	 * Handles relationships by post ID.
+	 *
+	 * This method updates the relationships for a single post, ensuring the
+	 * `post_id` is associated with the correct set of `modifier_ids`.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $post_id The ID of the post to update.
+	 * @param array $new_modifier_ids An array of new modifier IDs to associate with the post.
+	 *
+	 * @return void
+	 */
+	public function update_relationships_by_post( int $post_id, array $new_modifier_ids ): void {
+
+		// Step 1: Delete all existing relationships for this post ID.
+		$this->delete_relationship_by_post( $post_id );
+
+		// Step 2: Insert all new relationships from $new_modifier_ids for the given post ID.
+		foreach ( $new_modifier_ids as $new_modifier_id ) {
+			// Ensure the modifier ID is valid before inserting the relationship.
+			if ( ! empty( $new_modifier_id ) ) {
+				$this->add_relationship( $new_modifier_id, $post_id );
 			}
 		}
 	}

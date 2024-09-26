@@ -199,11 +199,11 @@ class Coupon extends Modifier_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int   $modifier_id The ID of the fee modifier.
+	 * @param array $modifier_ids An array of modifier IDs to update.
 	 * @param array $new_post_ids An array of new post IDs to be associated with the fee.
 	 *
 	 * @return void
 	 */
-	protected function handle_relationship_update( int $modifier_id, array $new_post_ids ): void {
+	public function handle_relationship_update( array $modifier_ids, array $new_post_ids ): void {
 	}
 }

@@ -117,17 +117,42 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 	/**
 	 * Clears all relationships associated with a given modifier.
 	 *
-	 * This method deletes all records in the relationships table for the provided modifier.
+	 * This method deletes all records in the relationships table for the provided modifier
+	 * based on the `modifier_id`.
+	 *
+	 * @since TBD
 	 *
 	 * @param Model $model The model representing the modifier for which relationships should be cleared.
 	 *
 	 * @return bool True if the relationships were successfully deleted, false otherwise.
 	 */
-	public function clear_relationships( Model $model ): bool {
+	public function clear_relationships_by_modifier_id( Model $model ): bool {
 		return (bool) DB::delete(
 			Table::table_name(),
 			[
 				'modifier_id' => $model->modifier_id,
+			],
+			[ '%d' ]
+		);
+	}
+
+	/**
+	 * Clears all relationships associated with a given post.
+	 *
+	 * This method deletes all records in the relationships table for the provided post
+	 * based on the `post_id`.
+	 *
+	 * @since TBD
+	 *
+	 * @param Model $model The model representing the post for which relationships should be cleared.
+	 *
+	 * @return bool True if the relationships were successfully deleted, false otherwise.
+	 */
+	public function clear_relationships_by_post_id( Model $model ): bool {
+		return (bool) DB::delete(
+			Table::table_name(),
+			[
+				'post_id' => $model->post_id,
 			],
 			[ '%d' ]
 		);

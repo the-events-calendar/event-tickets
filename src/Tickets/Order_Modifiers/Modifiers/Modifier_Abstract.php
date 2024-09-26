@@ -572,25 +572,42 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	}
 
 	/**
-	 * Deletes a relationship between a modifier and a post.
+	 * Deletes all relationships for a given modifier.
 	 *
-	 * This method removes a relationship from the database, unlinking the modifier
-	 * from the specified post ID.
+	 * This method removes all relationships associated with the specified modifier ID
+	 * from the database, unlinking the modifier from any posts it was related to.
 	 *
 	 * @since TBD
 	 *
-	 * @param int $modifier_id The ID of the modifier.
-	 * @param int $post_id The ID of the post to remove from the relationship.
+	 * @param int $modifier_id The ID of the modifier whose relationships will be deleted.
 	 *
 	 * @return void
 	 */
-	protected function delete_relationship( int $modifier_id, int $post_id ): void {
+	protected function delete_relationship_by_modifier( int $modifier_id ): void {
 		$data = [
 			'modifier_id' => $modifier_id,
-			'post_id'     => $post_id,
-			'post_type'   => get_post_type( $post_id ),
 		];
-		$this->order_modifiers_relationship_repository->delete( new Order_Modifier_Relationships( $data ) );
+		$this->order_modifiers_relationship_repository->clear_relationships_by_modifier_id( new Order_Modifier_Relationships( $data ) );
+	}
+
+	/**
+	 * Deletes all relationships associated with a given post.
+	 *
+	 * This method clears all records in the relationships table for the provided post
+	 * by calling the repository method to delete relationships based on the `post_id`.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The ID of the post for which relationships should be deleted.
+	 *
+	 * @return void
+	 */
+	protected function delete_relationship_by_post( int $post_id ): void {
+		$data = [
+			'post_id'   => $post_id,
+			'post_type' => get_post_type( $post_id ),
+		];
+		$this->order_modifiers_relationship_repository->clear_relationships_by_post_id( new Order_Modifier_Relationships( $data ) );
 	}
 
 	/**
@@ -601,12 +618,12 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @param int   $modifier_id The ID of the fee modifier.
+	 * @param array $modifier_ids An array of modifier IDs to update.
 	 * @param array $new_post_ids An array of new post IDs to be associated with the fee.
 	 *
 	 * @return void
 	 */
-	abstract protected function handle_relationship_update( int $modifier_id, array $new_post_ids ): void;
+	abstract public function handle_relationship_update( array $modifier_ids, array $new_post_ids ): void;
 
 	/**
 	 * Retrieves the display name of the modifier in singular or plural form.
@@ -653,7 +670,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 			];
 
 			// Clear the relationships for this modifier.
-			$this->order_modifiers_relationship_repository->clear_relationships( new Order_Modifier_Relationships( $data ) );
+			$this->order_modifiers_relationship_repository->clear_relationships_by_modifier_id( new Order_Modifier_Relationships( $data ) );
 		}
 	}
 

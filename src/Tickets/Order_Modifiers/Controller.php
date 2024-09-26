@@ -18,6 +18,7 @@ use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
 use TEC\Tickets\Order_Modifiers\Modifiers\Coupon;
 use TEC\Tickets\Order_Modifiers\Modifiers\Fee;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
+use TEC\Tickets\Order_Modifiers\Admin\Classic_Modifier;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 
 /**
@@ -62,6 +63,7 @@ class Controller extends Controller_Contract {
 	 */
 	protected function hook() {
 		tribe( Modifier_Admin_Handler::class )->register();
+		tribe( Classic_Modifier::class )->register();
 	}
 
 	/**

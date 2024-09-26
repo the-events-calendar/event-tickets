@@ -18,6 +18,7 @@ use TEC\Common\StellarWP\Models\Repositories\Contracts\Updatable;
 use TEC\Common\StellarWP\Models\Repositories\Repository;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers as Table;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
+use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
 
 /**
  * Class Order_Modifiers.
@@ -225,6 +226,33 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		return $this->prepareQuery()
 					->where( 'modifier_type', $modifier_type )
 					->get();
+	}
+
+	/**
+	 * Finds Order Modifiers by modifier_type and specific meta key-value pair.
+	 *
+	 * This method joins the `Order_Modifier` table with the `Order_Modifier_Meta` table
+	 * to filter modifiers based on their `modifier_type`, and a dynamic meta key-value pair.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $modifier_type The type of the modifier (e.g., 'coupon', 'fee').
+	 * @param string $meta_key      The meta key to filter by (e.g., 'fee_applied_to').
+	 * @param string $meta_value    The meta value to filter by (e.g., 'per').
+	 *
+	 * @return Order_Modifier[]|null Array of Order Modifier model instances, or null if not found.
+	 */
+	public function find_by_modifier_type_and_meta( string $modifier_type, string $meta_key, string $meta_value ): ?array {
+		$meta_table = Order_Modifiers_Meta::base_table_name();
+		$builder    = new ModelQueryBuilder( Order_Modifier::class );
+
+		return $builder->from( Table::table_name( false ), 'orders' )
+					   ->select( 'orders.*' )
+					   ->innerJoin( "$meta_table as meta", 'meta.order_modifier_id', 'orders.id' )
+					   ->where( 'modifier_type', $modifier_type )
+					   ->where( 'meta.meta_key', $meta_key )
+					   ->where( 'meta.meta_value', $meta_value )
+					   ->getAll();
 	}
 
 	/**
