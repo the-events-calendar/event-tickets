@@ -15,6 +15,7 @@ namespace TEC\Tickets\Order_Modifiers\Admin;
 
 use TEC\Tickets\Order_Modifiers\Controller;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Manager;
+use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifier_Relationship;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers;
 
 /**
@@ -59,6 +60,14 @@ class Order_Modifier_Fee_Metabox {
 	 * @var Order_Modifiers
 	 */
 	protected Order_Modifiers $order_modifiers_repository;
+	/**
+	 * The repository for interacting with the order modifiers relationships.
+	 *
+	 * @since TBD
+	 * @var Order_Modifier_Relationship
+	 */
+	protected Order_Modifier_Relationship $order_modifiers_relationship_repository;
+
 
 	/**
 	 * Constructor to initialize dependencies and set up the modifier strategy and manager.
@@ -71,7 +80,8 @@ class Order_Modifier_Fee_Metabox {
 		$this->manager           = new Modifier_Manager( $this->modifier_strategy );
 
 		// Set up the order modifiers repository for accessing fee data.
-		$this->order_modifiers_repository = new Order_Modifiers();
+		$this->order_modifiers_repository              = new Order_Modifiers();
+		$this->order_modifiers_relationship_repository = new Order_Modifier_Relationship();
 	}
 
 	/**
@@ -102,16 +112,37 @@ class Order_Modifier_Fee_Metabox {
 	 * @return void
 	 */
 	public function add_fee_section( int $post_id, ?int $ticket_id ): void {
-		if ( empty( $ticket_id ) ) {
-			return;
+		$related_ticket_fees = [];
+
+		// If ticket_id is provided, retrieve associated fee relationships for the ticket.
+		if ( ! empty( $ticket_id ) ) {
+			$related_ticket_fees = $this->order_modifiers_relationship_repository->find_by_post_id( $ticket_id );
 		}
-		// Get available fees with specific meta values.
-		$fees = $this->order_modifiers_repository->find_by_modifier_type_and_meta(
+
+		// Extract modifier IDs from the related fees for the ticket.
+		$related_fee_ids = array_map(
+			fn( $relationship ) => $relationship->modifier_id,
+			$related_ticket_fees
+		);
+
+		// Retrieve all fees based on modifier type and specific meta conditions.
+		$available_fees = $this->order_modifiers_repository->find_by_modifier_type_and_meta(
 			$this->modifier_type,
 			'fee_applied_to',
 			[ 'per', 'all' ],
 			'fee_applied_to',
 			'all'
+		);
+
+		// Partition the fees into automatically applied fees ('all') and selectable fees (non-'all').
+		$automatic_fees = array_filter(
+			$available_fees,
+			fn( $fee ) => empty( $fee->meta_value ) || $fee->meta_value === 'all'
+		);
+
+		$selectable_fees = array_filter(
+			$available_fees,
+			fn( $fee ) => ! empty( $fee->meta_value ) && $fee->meta_value !== 'all'
 		);
 
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
@@ -121,9 +152,11 @@ class Order_Modifier_Fee_Metabox {
 		$admin_views->template(
 			'order_modifiers/classic-fee-edit',
 			[
-				'post_id'   => $post_id,
-				'ticket_id' => $ticket_id,
-				'fees'      => $fees,
+				'post_id'         => $post_id,
+				'ticket_id'       => $ticket_id,
+				'related_fee_ids' => $related_fee_ids,
+				'automatic_fees'  => $automatic_fees,
+				'selectable_fees' => $selectable_fees,
 			]
 		);
 	}
@@ -147,11 +180,36 @@ class Order_Modifier_Fee_Metabox {
 		// Delete existing relationships for the ticket.
 		$this->manager->delete_relationships_by_post( $ticket->ID );
 
-		// Save new fee relationships if fees are selected.
-		if ( isset( $raw_data['ticket_order_modifier_fees'] ) && is_array( $raw_data['ticket_order_modifier_fees'] ) ) {
-			$fee_ids = array_map( 'absint', $raw_data['ticket_order_modifier_fees'] ); // Ensure IDs are integers.
-			$this->manager->sync_modifier_relationships( $fee_ids, [ $ticket->ID ] );
-		}
+		// @todo redscar - It would make sense to check 'all' fees and reapply them here.
+		// Get available fees with specific meta values.
+		$fees = $this->order_modifiers_repository->find_by_modifier_type_and_meta(
+			$this->modifier_type,
+			'fee_applied_to',
+			[ 'per', 'all' ],
+			'fee_applied_to',
+			'all'
+		);
+
+		// Filter fees into those automatically applied ('all') and extract their IDs.
+		$automatic_fee_ids = array_map(
+			function ( $fee ) {
+				return $fee->id;
+			},
+			array_filter(
+				$fees,
+				function ( $fee ) {
+					return empty( $fee->meta_value ) || $fee->meta_value === 'all';
+				}
+			)
+		);
+
+		// Assuming $raw_data['ticket_order_modifier_fees'] is an array (if not, initialize it).
+		$raw_data['ticket_order_modifier_fees'] = isset( $raw_data['ticket_order_modifier_fees'] ) && is_array( $raw_data['ticket_order_modifier_fees'] ) ? $raw_data['ticket_order_modifier_fees'] : [];
+
+		// Merge the automatic fee IDs into the ticket_order_modifier_fees array.
+		$ticket_order_modifier_fees = array_merge( $raw_data['ticket_order_modifier_fees'], $automatic_fee_ids );
+		$fee_ids                    = array_map( 'absint', $ticket_order_modifier_fees ); // Ensure IDs are integers.
+		$this->manager->sync_modifier_relationships( $fee_ids, [ $ticket->ID ] );
 	}
 
 	/**
