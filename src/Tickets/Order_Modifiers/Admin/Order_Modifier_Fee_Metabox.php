@@ -119,11 +119,11 @@ class Order_Modifier_Fee_Metabox {
 			$related_ticket_fees = $this->order_modifiers_relationship_repository->find_by_post_id( $ticket_id );
 		}
 
-		// Extract modifier IDs from the related fees for the ticket.
-		$related_fee_ids = array_map(
+		// Ensure that $related_ticket_fees is an array and extract modifier IDs from the related fees for the ticket.
+		$related_fee_ids = is_array( $related_ticket_fees ) ? array_map(
 			fn( $relationship ) => $relationship->modifier_id,
 			$related_ticket_fees
-		);
+		) : [];
 
 		// Retrieve all fees based on modifier type and specific meta conditions.
 		$available_fees = $this->order_modifiers_repository->find_by_modifier_type_and_meta(
