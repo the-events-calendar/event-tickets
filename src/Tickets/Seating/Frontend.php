@@ -92,7 +92,7 @@ class Frontend extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
-		remove_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ] );
+		remove_filter( 'tribe_template_before_include:tickets/v2/tickets', [ $this, 'print_tickets_block' ] );
 
 		remove_filter( 'tribe_tickets_block_ticket_html_attributes', [ $this, 'add_seat_selected_labels_per_ticket_attribute' ] );
 	}
@@ -108,25 +108,24 @@ class Frontend extends Controller_Contract {
 	 * @param Base_Template       $template Current instance of the Tribe__Template.
 	 * @param array<string,mixed> $context  The context data passed to the template.
 	 *
-	 * @return string|null The template HTML, or `null` to let the default template process it.
 	 */
-	public function print_tickets_block( $html, $file, $name, $template, $context ): ?string {
+	public function print_tickets_block( $file, $name, $template ): void{
 		$data    = $template->get_values();
 		$post_id = $data['post_id'] ?? null;
 
 		if ( ! ( $post_id && tec_tickets_seating_enabled( $post_id ) ) ) {
-			return $html;
+			return;
 		}
 
 		$provider = Tickets::get_event_ticket_provider_object( $post_id );
 
 		if ( ! $provider ) {
-			return $html;
+			return;
 		}
 		
 		// Bail if there are no tickets on sale.
 		if ( empty( $data['has_tickets_on_sale'] ) ) {
-			return $html;
+			return;
 		}
 
 		$prices = [];
@@ -141,7 +140,7 @@ class Frontend extends Controller_Contract {
 
 		if ( ! count( $prices ) ) {
 			// Why are we here at all?
-			return $html;
+			return;
 		}
 
 		$prices = array_keys( $prices );
@@ -164,6 +163,7 @@ class Frontend extends Controller_Contract {
 				'inventory'     => $inventory,
 				'modal_content' => 0 === $inventory ? '' : $this->get_seat_selection_modal_content( $post_id, $timeout ),
 				'timeout'       => $timeout,
+				'template'      => $template,
 			],
 			false
 		);
@@ -177,8 +177,8 @@ class Frontend extends Controller_Contract {
 		 * @param Template $template A reference to the template object.
 		 */
 		$html = apply_filters( 'tec_tickets_seating_tickets_block_html', $html, $template );
-
-		return $html;
+		
+		echo $html;
 	}
 
 	/**
@@ -287,7 +287,7 @@ class Frontend extends Controller_Contract {
 	 * @return void
 	 */
 	protected function do_register(): void {
-		add_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ], 10, 5 );
+		add_filter( 'tribe_template_before_include:tickets/v2/tickets', [ $this, 'print_tickets_block' ], 10, 3 );
 
 		add_filter( 'tribe_tickets_block_ticket_html_attributes', [ $this, 'add_seat_selected_labels_per_ticket_attribute' ], 10, 3 );
 
