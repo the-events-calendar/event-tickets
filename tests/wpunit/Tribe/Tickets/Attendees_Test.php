@@ -666,4 +666,35 @@ class Attendees_Test extends WPTestCase {
 		$expected_access = ( 'administrator' !== $role ); // Inverting access for the sake of the test.
 		$this->assertSame( $expected_access, $can_access_page, sprintf( 'Filter did not modify access for role %s as expected.', $role ) );
 	}
+
+	/**
+	 * Test CSV Export permissions for various user roles.
+	 *
+	 * @test
+	 *
+	 * @dataProvider role_access_provider
+	 *
+	 * @param string $role The user role to test.
+	 */
+	public function test_user_can_export_attendees_csv( $role ) {
+		$post_id = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 09:00:00',
+				'end_date'   => '2020-01-01 11:30:00',
+			]
+		)->create()->ID;
+
+		// Switch to the test role user.
+		$user_id = $this->factory->user->create( [ 'role' => $role ] );
+		wp_set_current_user( $user_id );
+
+		$attendees  = new Attendees();
+		$can_export = $attendees->user_can_export_attendees_csv( $post_id );
+
+		// Expected behavior: Only roles with `publish_pages` should have access by default.
+		$expected_access = current_user_can( 'publish_pages' );
+		$this->assertSame( $expected_access, $can_export, sprintf( 'Role %s access did not match expected.', $role ) );
+	}
 }
