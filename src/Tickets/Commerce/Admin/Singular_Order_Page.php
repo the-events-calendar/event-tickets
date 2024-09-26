@@ -10,7 +10,7 @@
 namespace TEC\Tickets\Commerce\Admin;
 
 use TEC\Common\Contracts\Service_Provider;
-use Tec\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Refunded;
 use Tribe__Template;
 use TEC\Tickets\Commerce\Gateways\Manager;
@@ -394,12 +394,10 @@ STR;
 			return;
 		}
 
-		$notice         = new Singular_Order_Notices();
 		$current_status = tribe( Status_Handler::class )->get_by_wp_slug( $order->post_status );
 
 		if ( ! $current_status->can_apply_to( $order, $new_status ) ) {
-			$notice->do_message(
-				Singular_Order_Notices::ORDER_STATUS_CHANGE_FAILED,
+			Order_Notices\Status_Change_Failed::register_message(
 				$post_id,
 				$current_status->get_name(),
 				$new_status->get_name()
@@ -410,28 +408,26 @@ STR;
 		$result = tribe( Order::class )->modify_status( $order->ID, $new_status->get_slug() );
 
 		if ( ! $result || is_wp_error( $result ) ) {
-			$notice->do_message(
-				Singular_Order_Notices::ORDER_STATUS_CHANGE_FAILED,
+			Order_Notices\Status_Change_Failed::register_message(
 				$post_id,
 				$current_status->get_name(),
 				$new_status->get_name()
 			);
+
 			return;
 		}
 
 		switch ( $new_status->get_slug() ) {
 			case Refunded::SLUG:
 				// @todo This is only for status change, if gateway is attached then we need to use a different message.
-				$notice->do_message(
-					Singular_Order_Notices::ORDER_STATUS_REFUNDED,
+				Order_Notices\Status_Refunded::register_message(
 					$post_id,
 					$current_status->get_name(),
 					$new_status->get_name()
 				);
 				break;
 			default:
-				$notice->do_message(
-					Singular_Order_Notices::ORDER_STATUS_SUCCESSFULLY_UPDATED,
+				Order_Notices\Status_Change_Success::register_message(
 					$post_id,
 					$current_status->get_name(),
 					$new_status->get_name()
