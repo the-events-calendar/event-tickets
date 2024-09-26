@@ -1,6 +1,6 @@
 # Changelog
 
-### [5.13.4] 2024-09-25 =
+### [5.13.4] 2024-09-26 =
 
 * Fix - Load the full Payment Element if we have Wallets enabled. [ETP-942]
 * Language - 0 new strings added, 0 updated, 0 fuzzied, and 0 obsoleted
