@@ -7,43 +7,32 @@
 
 declare( strict_types=1 );
 
-use TEC\Tickets\Order_Modifiers\Controller as Order_Modifier_Controller;
-use Tribe__Tickets__Main as Main;
-
 // Ensure the uninstall script is not called directly.
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
 // Ensure that uninstallation happens deliberately, via an option or a constant.
-$should_uninstall = get_option( 'event_tickets_uninstall', defined( 'EVENT_TICKETS_UNINSTALL' ) && EVENT_TICKETS_UNINSTALL );
-if ( ! $should_uninstall ) {
+$option_value   = get_option( 'event_tickets_uninstall', false );
+$constant_value = defined( 'EVENT_TICKETS_UNINSTALL' ) && EVENT_TICKETS_UNINSTALL;
+if ( ! $option_value && ! $constant_value ) {
 	return;
 }
 
-// Get the custom table controller class instance.
-$main_instance = Main::instance();
+/*
+ * Run the uninstallation process.
+ *
+ * Ideally, this sould make use of objects directly. Due to the way the plugin
+ * is structured, we are using the global $wpdb object directly for simplicity.
+ *
+ * For example, the custom tables should be dropped by using \TEC\Tickets\Order_Modifiers\Controller::drop_tables().
+ *
+ * @todo Refactor to use objects directly.
+ * @todo Run other uninstallation tasks unrelated to Order Modifiers.
+ */
 
-// Remove the actions that were added in the constructor.
-remove_action( 'plugins_loaded', [ $main_instance, 'should_autoload' ], -1 );
-remove_action( 'plugins_loaded', [ $main_instance, 'plugins_loaded' ], 0 );
+global $wpdb;
 
-// Determine should_autoload().
-$main_instance->should_autoload();
-
-// Init the autoloader.
-$init_autoloader = Closure::bind(
-	function () {
-		$this->init_autoloading();
-	},
-	$main_instance,
-	$main_instance
-);
-$init_autoloader();
-
-// Get the instance of the order modifier controller.
-tribe_register_provider( Order_Modifier_Controller::class );
-$instance = tribe( Order_Modifier_Controller::class );
-
-// Drop the custom tables.
-$instance->drop_tables();
+// Drop our custom tables.
+$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tec_order_modifiers" );
+$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tec_order_modifiers_meta" );
