@@ -162,7 +162,7 @@ class Frontend extends Controller_Contract {
 			[
 				'cost_range'    => $cost_range,
 				'inventory'     => $inventory,
-				'modal_content' => $this->get_seat_selection_modal_content( $post_id, $timeout ),
+				'modal_content' => 0 === $inventory ? '' : $this->get_seat_selection_modal_content( $post_id, $timeout ),
 				'timeout'       => $timeout,
 			],
 			false
