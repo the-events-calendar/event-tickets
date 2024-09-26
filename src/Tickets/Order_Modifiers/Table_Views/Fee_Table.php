@@ -92,10 +92,12 @@ class Fee_Table extends Order_Modifier_Table {
 	 * @return string The HTML output for the "Active On" column, depending on where the modifier is applied.
 	 */
 	protected function render_active_on_column( $item ): string {
-		$apply_to = $this->order_modifier_meta_repository->find_by_order_modifier_id_and_meta_key( $item->id, 'fee_applied_to' )->meta_value ?? '';
+		// If there is no relationship type, we assume the fee is assigned to all tickets.
+		$relationship_type = $this->modifier->get_order_modifier_meta_by_key( $item->id, 'fee_applied_to' )->meta_value ?? '';
 
-		switch ( $apply_to ) {
+		switch ( $relationship_type ) {
 			case 'all':
+			case '':
 				return $this->display_all_tickets();
 			case 'per':
 				return $this->display_per_tickets( $item->id );

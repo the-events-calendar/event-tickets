@@ -583,7 +583,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @return void
 	 */
-	protected function delete_relationship_by_modifier( int $modifier_id ): void {
+	public function delete_relationship_by_modifier( int $modifier_id ): void {
 		$data = [
 			'modifier_id' => $modifier_id,
 		];
@@ -602,7 +602,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @return void
 	 */
-	protected function delete_relationship_by_post( int $post_id ): void {
+	public function delete_relationship_by_post( int $post_id ): void {
 		$data = [
 			'post_id'   => $post_id,
 			'post_type' => get_post_type( $post_id ),
@@ -720,5 +720,22 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		}
 
 		return false; // Return false if the modifier deletion failed.
+	}
+
+	/**
+	 * Retrieves the meta value for a specific order modifier and meta key.
+	 *
+	 * This method fetches the meta data associated with the given order modifier ID and meta key.
+	 * It queries the `order_modifiers_meta` table to find the relevant meta data for the modifier.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $order_modifier_id The ID of the order modifier to retrieve meta for.
+	 * @param string $meta_key          The meta key to look up (e.g., 'fee_applied_to').
+	 *
+	 * @return mixed|null The meta data found, or null if no matching record is found.
+	 */
+	public function get_order_modifier_meta_by_key( int $order_modifier_id, string $meta_key ) {
+		return $this->order_modifiers_meta_repository->find_by_order_modifier_id_and_meta_key( $order_modifier_id, $meta_key );
 	}
 }

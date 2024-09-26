@@ -229,30 +229,97 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	}
 
 	/**
-	 * Finds Order Modifiers by modifier_type and specific meta key-value pair.
+	 * Finds Order Modifiers by modifier_type and specific meta key-value pair with optional defaults.
 	 *
-	 * This method joins the `Order_Modifier` table with the `Order_Modifier_Meta` table
-	 * to filter modifiers based on their `modifier_type`, and a dynamic meta key-value pair.
+	 * This method uses $wpdb to filter modifiers based on their `modifier_type`, and a dynamic meta key-value pair.
+	 * If no meta key-value pair exists, it defaults to configurable values. If no defaults are provided, `IFNULL()` is
+	 * not used.
+	 *
+	 * Caches the results for identical query arguments to improve performance.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $modifier_type The type of the modifier (e.g., 'coupon', 'fee').
-	 * @param string $meta_key      The meta key to filter by (e.g., 'fee_applied_to').
-	 * @param string $meta_value    The meta value to filter by (e.g., 'per').
+	 * @param string      $modifier_type The type of the modifier (e.g., 'coupon', 'fee').
+	 * @param string      $meta_key The meta key to filter by (e.g., 'fee_applied_to').
+	 * @param array       $meta_values The meta values to filter by (e.g., ['per', 'all']).
+	 * @param string|null $default_meta_key The default meta key if none exists (null to skip `IFNULL()`).
+	 * @param string|null $default_meta_value The default meta value if none exists (null to skip `IFNULL()`).
 	 *
-	 * @return Order_Modifier[]|null Array of Order Modifier model instances, or null if not found.
+	 * @return array|null Array of Order Modifier model instances, or null if not found.
 	 */
-	public function find_by_modifier_type_and_meta( string $modifier_type, string $meta_key, string $meta_value ): ?array {
-		$meta_table = Order_Modifiers_Meta::base_table_name();
-		$builder    = new ModelQueryBuilder( Order_Modifier::class );
+	public function find_by_modifier_type_and_meta(
+		string $modifier_type,
+		string $meta_key,
+		array $meta_values,
+		?string $default_meta_key = null,
+		?string $default_meta_value = null
+	): ?array {
+		global $wpdb;
 
-		return $builder->from( Table::table_name( false ), 'orders' )
-					   ->select( 'orders.*' )
-					   ->innerJoin( "$meta_table as meta", 'meta.order_modifier_id', 'orders.id' )
-					   ->where( 'modifier_type', $modifier_type )
-					   ->where( 'meta.meta_key', $meta_key )
-					   ->where( 'meta.meta_value', $meta_value )
-					   ->getAll();
+		// Generate a cache key based on the arguments.
+		$cache_key = 'modifier_type_meta_' . md5(
+			wp_json_encode(
+				[
+					$modifier_type,
+					$meta_key,
+					$meta_values,
+					$default_meta_key,
+					$default_meta_value,
+				]
+			)
+		);
+
+		// Try to get the results from the cache.
+		$cached_results = wp_cache_get( $cache_key, 'order_modifiers' );
+		if ( false !== $cached_results ) {
+			return $cached_results;
+		}
+
+		// Get the table names dynamically.
+		$order_modifiers_table      = Table::table_name();
+		$order_modifiers_meta_table = Order_Modifiers_Meta::table_name();
+
+		// Initialize the SQL query with the base WHERE clause for modifier_type.
+		$sql = "
+        SELECT o.*,m.meta_value
+        FROM {$order_modifiers_table} o
+        LEFT JOIN {$order_modifiers_meta_table} m
+        ON o.id = m.order_modifier_id
+        WHERE o.modifier_type = %s
+    ";
+
+		$params = [ $modifier_type ];
+
+		// Handle the meta_key condition: Use IFNULL if a default_meta_key is provided, otherwise check for meta_key directly.
+		if ( $default_meta_key ) {
+			$sql     .= ' AND (IFNULL(m.meta_key, %s) = %s)';
+			$params[] = $default_meta_key;
+			$params[] = $meta_key;
+		} else {
+			$sql     .= ' AND m.meta_key = %s';
+			$params[] = $meta_key;
+		}
+
+		// Handle the meta_value condition: Use IFNULL if a default_meta_value is provided, otherwise check directly.
+		if ( $default_meta_value ) {
+			$sql     .= ' AND (IFNULL(m.meta_value, %s) IN (' . implode( ',', array_fill( 0, count( $meta_values ), '%s' ) ) . '))';
+			$params[] = $default_meta_value;
+		} else {
+			$sql .= ' AND m.meta_value IN (' . implode( ',', array_fill( 0, count( $meta_values ), '%s' ) ) . ')';
+		}
+
+		$params = array_merge( $params, $meta_values );
+
+		// Prepare and execute the query.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$query = $wpdb->prepare( $sql, ...$params );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
+		$results = $wpdb->get_results( $query );
+
+		// Cache the results for future use.
+		wp_cache_set( $cache_key, $results, 'order_modifiers', HOUR_IN_SECONDS );
+
+		return $results;
 	}
 
 	/**

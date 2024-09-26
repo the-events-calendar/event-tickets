@@ -118,4 +118,35 @@ class Modifier_Manager {
 	public function sync_modifier_relationships( array $modifier_ids, array $new_post_ids ): void {
 		$this->strategy->handle_relationship_update( $modifier_ids, $new_post_ids );
 	}
+
+	/**
+	 * Deletes all relationships associated with a given modifier ID.
+	 *
+	 * This method allows the manager to clear relationships based on the modifier ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $modifier_id The ID of the modifier for which relationships should be deleted.
+	 *
+	 * @return void
+	 */
+	public function delete_relationships_by_modifier( int $modifier_id ): void {
+		$this->strategy->delete_relationship_by_modifier( $modifier_id );
+	}
+
+	/**
+	 * Deletes all relationships associated with a given post ID.
+	 *
+	 * This method allows the manager to clear relationships based on the post ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The ID of the post for which relationships should be deleted.
+	 *
+	 * @return void
+	 */
+	public function delete_relationships_by_post( int $post_id ): void {
+		$this->strategy->delete_relationship_by_post( $post_id );
+	}
+
 }
