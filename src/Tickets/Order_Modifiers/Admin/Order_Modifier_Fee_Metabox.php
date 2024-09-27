@@ -93,9 +93,35 @@ class Order_Modifier_Fee_Metabox {
 	 * @since TBD
 	 */
 	public function register(): void {
-		add_action( 'tribe_events_tickets_metabox_edit_main', [ $this, 'add_fee_section' ], 10, 2 );
+		add_action( 'tribe_events_tickets_metabox_edit_main', [ $this, 'add_fee_section' ], 30, 2 );
 		add_action( 'tec_tickets_commerce_after_save_ticket', [ $this, 'save_ticket_fee' ], 10, 3 );
 		add_action( 'tec_tickets_commerce_ticket_deleted', [ $this, 'delete_ticket_fee' ] );
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_order_modifiers_fee_scripts' ] );
+	}
+
+	/**
+	 * Enqueue custom JS for the Order Modifiers Fee functionality.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function enqueue_order_modifiers_fee_scripts() {
+		/** @var Tribe__Tickets__Main $tickets_main */
+		$tickets_main = tribe( 'tickets.main' );
+
+		// Define the path to your JS files.
+		$assets = [
+			[
+				'order-modifiers-fees-js',
+				'admin/order-modifiers/fees.js',
+				[ 'jquery', 'tribe-dropdowns', 'tribe-select2' ],
+				'admin_enqueue_scripts',
+			],
+		];
+
+		// Use tribe_assets to register and enqueue the JS file.
+		tribe_assets( $tickets_main, $assets );
 	}
 
 	/**
@@ -112,6 +138,7 @@ class Order_Modifier_Fee_Metabox {
 	 * @return void
 	 */
 	public function add_fee_section( int $post_id, ?int $ticket_id ): void {
+
 		$related_ticket_fees = [];
 
 		// If ticket_id is provided, retrieve associated fee relationships for the ticket.
