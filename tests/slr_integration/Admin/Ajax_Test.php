@@ -1718,7 +1718,7 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertTrue(
 			$wp_send_json_success->was_called_times_with(
 				1,
-				'http://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&tab=layout-edit&layoutId=new-layout-1',
+				'http://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&tab=layout-edit&layoutId=new-layout-1&isNew=1',
 			)
 		);
 		$this->assertCount( 0, iterator_to_array( Maps::fetch_all() ) );
