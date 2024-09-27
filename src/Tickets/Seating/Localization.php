@@ -46,6 +46,7 @@ class Localization {
 			'event-layouts-select-placeholder' => _x( 'Choose event layout', 'Capacity form label', 'event-tickets' ),
 			'view-layouts-link-label'          => _x( 'View layouts', 'Capacity form label', 'event-tickets' ),
 			'seat-types-select-placeholder'    => _x( 'Choose seat type', 'Capacity form label', 'event-tickets' ),
+			'seat-types-loading-msg'           => _x( 'Loading seat types', 'Capacity form seat types option loading message', 'event-tickets' ),
 			'event-layouts-capacity-info'      => _x( 'Capacity is defined by seat layout options.', 'Capacity form info', 'event-tickets' ),
 			'seat-layout-label'                => _x( 'Seat Layout', 'Capacity form label', 'event-tickets' ),
 			'no-layouts-available'             => _x( 'No active Seat Layouts.', 'Capacity form empty layouts', 'event-tickets' ),
