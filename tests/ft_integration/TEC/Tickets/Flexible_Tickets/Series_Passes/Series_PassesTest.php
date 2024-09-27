@@ -1026,9 +1026,11 @@ class Series_PassesTest extends Controller_Test_Case {
 			}
 		];
 
-		yield '3 unticketed posts' => [
+		yield '5 unticketed posts, 3 valid and 2 invalid post status' => [
 			function (): string {
 				$this->factory()->post->create_many( 3 );
+				$this->factory()->post->create( [ 'post_status' => 'trash' ] );
+				$this->factory()->post->create( [ 'post_status' => 'auto-draft' ] );
 
 				return 'post';
 			}
@@ -1045,24 +1047,31 @@ class Series_PassesTest extends Controller_Test_Case {
 			}
 		];
 
-		yield '3 ticketed and 4 unticketed posts' => [
+		yield '5 ticketed and 6 unticketed posts, 2 invalid post status in each case' => [
 			function (): string {
 				foreach ( $this->factory()->post->create_many( 3 ) as $post ) {
 					$this->create_tc_ticket( $post );
 				}
 
+				$post_id_1 = $this->factory()->post->create( [ 'post_status' => 'trash' ] );
+				$post_id_2 = $this->factory()->post->create( [ 'post_status' => 'auto-draft' ] );
+				$this->create_tc_ticket( $post_id_1 );
+				$this->create_tc_ticket( $post_id_2 );
+
 				$this->factory()->post->create_many( 4 );
+				$this->factory()->post->create( [ 'post_status' => 'trash' ] );
+				$this->factory()->post->create( [ 'post_status' => 'auto-draft' ] );
 
 				return 'post';
 			}
 		];
 
-		yield '3 ticketed, 4 unticketed single events' => [
+		yield '3 ticketed, 4 unticketed single events - 1 of each with invalid post status' => [
 			function (): string {
 				foreach ( range( 1, 7 ) as $k ) {
 					$event_id = tribe_events()->set_args( [
 						'title'      => "Event $k",
-						'status'     => 'publish',
+						'status'     => $k === 3 ? 'trash' : ( $k === 6 ? 'auto-draft' : 'publish' ),
 						'start_date' => '2020-02-11 17:30:00',
 						'duration'   => 2 * HOUR_IN_SECONDS,
 					] )->create()->ID;
