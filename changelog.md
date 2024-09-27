@@ -1,5 +1,24 @@
 # Changelog
 
+### [5.13.4] 2024-09-26 =
+
+* Fix - Load the full Payment Element if we have Wallets enabled. [ETP-942]
+* Language - 0 new strings added, 0 updated, 0 fuzzied, and 0 obsoleted
+
+### [5.13.3.1] 2024-09-16 =
+
+* Security - Improve sanitization and escaping for Administration screens of ticket purchases.
+* Security - Improve general escaping for ORM queries to prevent legacy Events methods to be used for SQL injections.
+
+### [5.13.3] 2024-09-11 =
+
+* Feature - Added Individual Order Screen in the Admin to improve the Order Management for Tickets Commerce. [ET-2150]
+* Tweak - Tweaked `setupCompactCardElement` method to allow filtering of options using the existing `tec_tickets_commerce_stripe_checkout_localized_data` filter. [TECTRIA-295]
+* Tweak - Made a string translatable in `getting-started.php` file. (props to @DAnn2012) [TECTRIA-303]
+* Tweak - Added filters: `post_updated_messages`
+* Tweak - Added actions: `tribe_tickets_commerce_order_actions_box_start`
+* Language - 44 new strings added, 39 updated, 1 fuzzied, and 0 obsoleted
+
 ### [5.13.2] 2024-08-16
 
 * Tweak - Start Sale and End Sale date will autopopulate when creating a new ticket. [ET-2103]

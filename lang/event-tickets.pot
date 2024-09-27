@@ -2,15 +2,15 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.13.3\n"
+"Project-Id-Version: Event Tickets 5.13.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-09-09T06:38:27-07:00\n"
-"PO-Revision-Date: 2024-09-09 13:38\n"
+"POT-Creation-Date: 2024-09-24T14:07:42-07:00\n"
+"PO-Revision-Date: 2024-09-24 21:07\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: event-tickets\n"
 
@@ -668,7 +668,7 @@ msgstr ""
 #: src/admin-views/editor/column-body-price.php:43
 #: src/Tickets/Commerce/Admin/Singular_Order_Page.php:310
 #: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:619
-#: src/Tribe/RSVP.php:1718
+#: src/Tribe/RSVP.php:1719
 msgid "Free"
 msgstr ""
 
@@ -6885,39 +6885,39 @@ msgstr ""
 #. Translators: %1$s: The HTML <a> tag, %2$s: The closing HTML </a> tag.
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:77
 #: src/Tribe/Commerce/PayPal/Main.php:1965
-#: src/Tribe/RSVP.php:2482
+#: src/Tribe/RSVP.php:2483
 msgid "Return to the %1$sAttendees Report%2$s."
 msgstr ""
 
 #. Translators: %1$s: The return link.
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:84
 #: src/Tribe/Commerce/PayPal/Main.php:1972
-#: src/Tribe/RSVP.php:2490
+#: src/Tribe/RSVP.php:2491
 msgid "Post updated. %1$s"
 msgstr ""
 
 #. Translators: %1$s: The return link.
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:88
 #: src/Tribe/Commerce/PayPal/Main.php:1976
-#: src/Tribe/RSVP.php:2495
+#: src/Tribe/RSVP.php:2496
 msgid "Post published. %1$s"
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:91
 #: src/Tribe/Commerce/PayPal/Main.php:1979
-#: src/Tribe/RSVP.php:2498
+#: src/Tribe/RSVP.php:2499
 msgid "Post submitted."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:92
 #: src/Tribe/Commerce/PayPal/Main.php:1980
-#: src/Tribe/RSVP.php:2499
+#: src/Tribe/RSVP.php:2500
 msgid "Post scheduled."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:93
 #: src/Tribe/Commerce/PayPal/Main.php:1981
-#: src/Tribe/RSVP.php:2500
+#: src/Tribe/RSVP.php:2501
 msgid "Post draft updated."
 msgstr ""
 
@@ -7288,7 +7288,7 @@ msgstr ""
 
 #: src/Tickets/Commerce/Models/Attendee_Model.php:62
 #: src/Tribe/Commerce/PayPal/Main.php:3018
-#: src/Tribe/RSVP.php:2140
+#: src/Tribe/RSVP.php:2141
 msgid "(deleted)"
 msgstr ""
 
@@ -9186,7 +9186,7 @@ msgid "Insecure request."
 msgstr ""
 
 #: src/Tribe/Admin/Manager/Service_Provider.php:89
-#: src/Tribe/RSVP.php:287
+#: src/Tribe/RSVP.php:288
 msgid "Something happened here."
 msgstr ""
 
@@ -9817,7 +9817,7 @@ msgstr ""
 msgid "Who's coming?"
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Rsvp.php:261
+#: src/Tribe/Editor/Blocks/Rsvp.php:273
 msgid "Are you sure you want to cancel?"
 msgstr ""
 
@@ -10861,81 +10861,81 @@ msgstr ""
 msgid "An error happened while building the response: "
 msgstr ""
 
-#: src/Tribe/RSVP.php:556
+#: src/Tribe/RSVP.php:557
 msgid "Unable to verify your opt-in request, please try again."
 msgstr ""
 
-#: src/Tribe/RSVP.php:662
+#: src/Tribe/RSVP.php:663
 msgctxt "Attendee number"
 msgid "Attendee %1$s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:701
+#: src/Tribe/RSVP.php:702
 msgid "RSVP Tickets"
 msgstr ""
 
-#: src/Tribe/RSVP.php:702
+#: src/Tribe/RSVP.php:703
 msgid "RSVP Ticket"
 msgstr ""
 
 #. translators: %s is the attendee field name.
-#: src/Tribe/RSVP.php:827
+#: src/Tribe/RSVP.php:828
 msgid "Attendee field \"%s\" is not set."
 msgstr ""
 
 #. translators: %s is the attendee field name.
-#: src/Tribe/RSVP.php:833
+#: src/Tribe/RSVP.php:834
 msgid "Attendee field \"%s\" is empty."
 msgstr ""
 
-#: src/Tribe/RSVP.php:871
+#: src/Tribe/RSVP.php:872
 msgid "Unable to process your request, invalid content resource."
 msgstr ""
 
-#: src/Tribe/RSVP.php:921
+#: src/Tribe/RSVP.php:922
 msgid "Unable to process your request, attendee creation failed."
 msgstr ""
 
-#: src/Tribe/RSVP.php:1120
+#: src/Tribe/RSVP.php:1121
 msgid "Invalid data! Missing required attendee details!"
 msgstr ""
 
 #. Translators: %1$s: The plural ticket label, %2$s: The site name.
-#: src/Tribe/RSVP.php:1345
+#: src/Tribe/RSVP.php:1346
 msgid "Your %1$s from %2$s"
 msgstr ""
 
 #. Translators: %s: Event name.
-#: src/Tribe/RSVP.php:1475
+#: src/Tribe/RSVP.php:1476
 msgid "You confirmed you will not be attending %s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:1838
+#: src/Tribe/RSVP.php:1839
 msgid "Your %1$s has been received! Check your email for your %1$s confirmation."
 msgstr ""
 
-#: src/Tribe/RSVP.php:1845
+#: src/Tribe/RSVP.php:1846
 msgid "You can't %1$s more than the total remaining %2$s."
 msgstr ""
 
-#: src/Tribe/RSVP.php:1853
+#: src/Tribe/RSVP.php:1854
 msgid "In order to %s, you must enter your name and a valid email address."
 msgstr ""
 
-#: src/Tribe/RSVP.php:2666
+#: src/Tribe/RSVP.php:2667
 msgid "Invalid parent ID provided!"
 msgstr ""
 
-#: src/Tribe/RSVP.php:2673
+#: src/Tribe/RSVP.php:2674
 msgid "Invalid Ticket ID provided!"
 msgstr ""
 
-#: src/Tribe/RSVP.php:2688
-#: src/Tribe/RSVP.php:2694
+#: src/Tribe/RSVP.php:2689
+#: src/Tribe/RSVP.php:2695
 msgid "Missing required RSVP field: %s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:2732
+#: src/Tribe/RSVP.php:2733
 msgid "Requested amount of Tickets are not available!"
 msgstr ""
 
