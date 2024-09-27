@@ -201,10 +201,10 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 	 *
 	 * @return array|null The data from the Order Modifier and wp_posts tables.
 	 */
-	public function find_by_post_id( int $post_id ): ?Order_Modifier_Model {
+	public function find_by_post_id( int $post_id ): ?array {
 		return $this->build_base_query()
 					->where( 'p.ID', $post_id )
-					->get();
+					->getAll();
 	}
 
 	/**

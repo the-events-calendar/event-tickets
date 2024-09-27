@@ -354,5 +354,4 @@ class Fee extends Modifier_Abstract {
 	public function get_active_on( $modifier_id ) {
 		return $this->order_modifiers_relationship_repository->find_by_modifier_id( $modifier_id );
 	}
-
 }

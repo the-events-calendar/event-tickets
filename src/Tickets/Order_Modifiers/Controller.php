@@ -18,7 +18,7 @@ use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
 use TEC\Tickets\Order_Modifiers\Modifiers\Coupon;
 use TEC\Tickets\Order_Modifiers\Modifiers\Fee;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
-use TEC\Tickets\Order_Modifiers\Admin\Classic_Modifier;
+use TEC\Tickets\Order_Modifiers\Admin\Order_Modifier_Fee_Metabox;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 
 /**
@@ -63,7 +63,7 @@ class Controller extends Controller_Contract {
 	 */
 	protected function hook() {
 		tribe( Modifier_Admin_Handler::class )->register();
-		tribe( Classic_Modifier::class )->register();
+		tribe( Order_Modifier_Fee_Metabox::class )->register();
 	}
 
 	/**
@@ -169,7 +169,8 @@ class Controller extends Controller_Contract {
 	 *
 	 * @return Modifier_Strategy_Interface The strategy class if found.
 	 *
-	 * @throws \InvalidArgumentException If the modifier strategy class is not found or does not implement Modifier_Strategy_Interface.
+	 * @throws \InvalidArgumentException If the modifier strategy class is not found or does not implement
+	 *     Modifier_Strategy_Interface.
 	 */
 	public function get_modifier( string $modifier ): Modifier_Strategy_Interface {
 		// Sanitize the modifier parameter to ensure it's a valid string.
