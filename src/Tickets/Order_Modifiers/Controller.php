@@ -91,18 +91,6 @@ class Controller extends Controller_Contract {
 	}
 
 	/**
-	 * Bound implementations should not be removed in this method!
-	 *
-	 * In place of delegating the hooking responsibility to the single classes they are all hooked here.
-	 *
-	 * @since TBD
-	 */
-	protected function hook() {
-		tribe( Modifier_Admin_Handler::class )->register();
-		tribe( Order_Modifier_Fee_Metabox::class )->register();
-	}
-
-	/**
 	 * Removes the filters and actions hooks added by the controller.
 	 *
 	 * @since TBD

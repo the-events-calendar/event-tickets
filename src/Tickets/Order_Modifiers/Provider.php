@@ -12,6 +12,7 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Order_Modifiers;
 
 use TEC\Common\lucatume\DI52\ServiceProvider;
+use TEC\Tickets\Order_Modifiers\Admin\Order_Modifier_Fee_Metabox;
 use TEC\Tickets\Order_Modifiers\Modifiers\Coupon;
 use TEC\Tickets\Order_Modifiers\Modifiers\Fee;
 
@@ -49,7 +50,8 @@ final class Provider extends ServiceProvider {
 		// Tag our classes that have their own registration needs.
 		$this->container->tag(
 			[
-//				Modifier_Settings::class,
+				Modifier_Admin_Handler::class,
+				Order_Modifier_Fee_Metabox::class,
 			],
 			'order_modifiers'
 		);
