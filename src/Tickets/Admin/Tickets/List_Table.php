@@ -508,13 +508,13 @@ class List_Table extends WP_List_Table {
 		if ( $item instanceof WP_Post ) {
 			$msq_line_1 = esc_html__( 'This ticket is connected to a disabled post type.', 'event-tickets' );
 
-			$ticket_settings_url  = add_query_arg( [ 'page' => Settings::$settings_page_id, ], admin_url( 'admin.php' ) );
+			$ticket_settings_url  = add_query_arg( [ 'page' => Settings::$settings_page_id ], admin_url( 'admin.php' ) );
 			$ticket_settings_link = sprintf(
 				'<a href="%s" class="tec-tickets-admin-tickets-table-event-link" rel="nofollow noopener">%s</a>',
 				esc_url( $ticket_settings_url ),
 				esc_html__( 'Ticket Settings Page', 'event-tickets' )
 			);
-			$msg_line_2 = sprintf(
+			$msg_line_2           = sprintf(
 				// Translators: %s: Ticket Settings Page link.
 				esc_html__( 'You can enable this post type on the %s.', 'event-tickets' ),
 				$ticket_settings_link
