@@ -102,6 +102,8 @@ class Seats_Report_Test extends WPTEstCase {
 
 		$seats_report = tribe( Seats_Report::class );
 
+		tribe_update_option( 'tec_tickets_seating_connected_on', time() );
+
 		ob_start();
 		$seats_report->render_page();
 		$html = ob_get_clean();
@@ -110,13 +112,56 @@ class Seats_Report_Test extends WPTEstCase {
 			function ( $id ) {
 				return is_object( $id ) ? $id->ID : (int) $id;
 			},
-			$ids 
+			$ids
 		);
 
 		arsort( $ids );
-		
+
 		$html = str_replace( [ ...$ids, $post_id ], '{{ID}}', $html );
-		
+
+		$this->assertMatchesHtmlSnapshot( $html );
+	}
+
+	/**
+	 * @dataProvider render_page_data_provider
+	 */
+	public function test_upsell_render_page( Closure $fixture ): void {
+		$ids     = $fixture();
+		$post_id = array_shift( $ids );
+		update_post_meta( $post_id, Meta::META_KEY_UUID, 'some-post-uuid' );
+		update_post_meta( $post_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'layout-uuid' );
+		$_GET['post_id'] = $post_id;
+		$this->mock_singleton_service(
+			Service::class,
+			[
+				'get_ephemeral_token' => function ( $expiration, $scope ) {
+					Assert::assertEquals( 6 * HOUR_IN_SECONDS, $expiration );
+					Assert::assertEquals( 'admin', $scope );
+					return 'some-ephemeral-token';
+				},
+			]
+		);
+
+		$seats_report = tribe( Seats_Report::class );
+
+		tribe_remove_option( 'tec_tickets_seating_connected_on' );
+
+		ob_start();
+		$seats_report->render_page();
+		$html = ob_get_clean();
+
+		$ids = array_map(
+			function ( $id ) {
+				return is_object( $id ) ? $id->ID : (int) $id;
+			},
+			$ids
+		);
+
+		arsort( $ids );
+
+		$html = str_replace( [ ...$ids, $post_id ], '{{ID}}', $html );
+
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
 }
