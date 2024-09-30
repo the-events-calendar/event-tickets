@@ -15,6 +15,7 @@ class Tribe__Tickets__Version {
 	 */
 	public $legacy = '4.5.6';
 
+
 	/**
 	 * Post meta key for the ticket version
 	 *
