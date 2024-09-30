@@ -76,6 +76,14 @@ $tickets_fields = [
 		'can_be_empty'    => true,
 		'validation_type' => 'options_multi',
 	],
+	'event_tickets_uninstall'   => [
+		'type'            => 'checkbox_bool',
+		'label'           => esc_html__( 'Remove all Event Tickets data upon uninstall?', 'event-tickets' ),
+		'tooltip'         => esc_html__( 'If checked, all Event Tickets data will be removed from the database when the plugin is uninstalled.', 'event-tickets' ),
+		'default'         => false,
+		'validation_type' => 'boolean',
+		'parent_option'   => false,
+	],
 ];
 
 $tec_fields  = [];
