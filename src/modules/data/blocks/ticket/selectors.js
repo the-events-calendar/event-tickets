@@ -814,6 +814,34 @@ export const getIndependentAndSharedTicketsAvailable = createSelector(
 );
 
 //
+// ─── FEES SELECTORS ─────────────────────────────────────────────────────────────
+//
+
+/**
+ * Selector to get selected fees for a ticket.
+ *
+ * @param {Object} state - The Redux state.
+ * @param {Object} ownProps - Props containing the client ID.
+ * @returns {Array} The selected fees.
+ */
+export const getSelectedFees = createSelector(
+	[ getTicket ],
+	( ticket ) => ticket.selectedFees || []
+);
+
+/**
+ * Selector to get active fees for a ticket.
+ *
+ * @param {Object} state - The Redux state.
+ * @param {Object} ownProps - Props containing the client ID.
+ * @returns {Array} The active fees.
+ */
+export const getActiveFees = createSelector(
+	[ getTicket ],
+	( ticket ) => ticket.activeFees || []
+);
+
+//
 // ─── MISC SELECTORS ─────────────────────────────────────────────────────────────
 //
 
