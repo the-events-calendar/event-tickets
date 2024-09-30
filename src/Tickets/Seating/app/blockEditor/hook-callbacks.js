@@ -153,11 +153,46 @@ export const filterSettingsFields = (fields) => {
 	const layouts = store.getLayoutsInOptionFormat();
 
 	fields.push(
-		<LayoutSelect
-			layouts={layouts}
-			currentLayout={currentLayout}
-		/>
+		<LayoutSelect layouts={layouts} currentLayout={currentLayout} />
 	);
 
 	return fields;
-}
+};
+
+/**
+ * Filters whether the ticket is valid.
+ *
+ * @since TBD
+ *
+ * @param {boolean} isValid  Whether the ticket is valid.
+ * @param {Object}  state    The state of the store.
+ * @param {Object}  ownProps The own props of the component.
+ *
+ * @return {boolean} Whether the ticket is valid.
+ */
+export const filterTicketIsValid = (isValid, state, ownProps) => {
+	if (!isValid) {
+		// No need to continue with the check if the ticket is already invalid.
+		return isValid;
+	}
+
+	const store = select(storeName);
+
+	const isUsingAssignedSeating = store.isUsingAssignedSeating();
+	if (!isUsingAssignedSeating) {
+		return isValid;
+	}
+
+	const layoutId = store.getCurrentLayoutId();
+	if (!layoutId) {
+		return false;
+	}
+
+	const seatType = store.getTicketSeatType(ownProps.clientId);
+
+	if (!seatType) {
+		return false;
+	}
+
+	return true;
+};

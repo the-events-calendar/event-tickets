@@ -268,7 +268,7 @@ export const getTicketHasBeenCreated = createSelector(
 
 export const getTicketHasChanges = createSelector(
 	[ getTicket ],
-	( ticket ) => ticket.hasChanges,
+	( ticket ) => ticket.hasChanges || ! ticket.ticketId,
 );
 
 export const getTicketHasDurationError = createSelector(
@@ -701,7 +701,7 @@ export const isTicketSalePriceValid = createSelector(
 
 export const isTempTitleValid = createSelector(
 	[ getTicketTempTitle ],
-	( title ) => trim( title ) !== '',
+	( title ) => title && trim( title ) !== '',
 );
 
 export const isTempCapacityValid = createSelector(
