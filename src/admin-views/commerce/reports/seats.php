@@ -4,13 +4,17 @@
  *
  * @since TBD
  *
- * @var string $iframe_url The URL to the service iframe.
- * @var string $token The ephemeral token used to secure the iframe communication with the service.
- * @var string $error The error message returned by the service.
+ * @var string $iframe_url    The URL to the service iframe.
+ * @var string $token         The ephemeral token used to secure the iframe communication with the service.
+ * @var string $error         The error message returned by the service.
+ * @var bool   $should_upsell Whether it should up-sell instead of showing the iframe.
  */
 
-?>
+if ( $should_upsell ) {
+	return $this->template( 'seats-upsell' );
+}
 
+?>
 <div class="tec-tickets__seating-tab-wrapper wrap">
 	<div id="tec-tickets-seating-notice" class="notice" style="display: none;"></div>
 	<div
