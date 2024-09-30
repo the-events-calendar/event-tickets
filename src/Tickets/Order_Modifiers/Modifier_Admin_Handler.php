@@ -168,7 +168,7 @@ class Modifier_Admin_Handler {
 
 		// If the strategy doesn't exist, show an error message.
 		if ( ! $modifier_strategy ) {
-			$this->render_invalid_modifier_message();
+			$this->render_error_message( __( 'Invalid modifier.', 'event-tickets' ) );
 			return;
 		}
 
@@ -217,7 +217,7 @@ class Modifier_Admin_Handler {
 	 * @return void
 	 */
 	protected function render_table_view( Modifier_Manager $manager, array $context ): void {
-		echo esc_html( $manager->render_table( $context ) );
+		$manager->render_table( $context );
 	}
 
 	/**
@@ -250,7 +250,7 @@ class Modifier_Admin_Handler {
 		}
 
 		// Render the edit screen, passing the populated context.
-		echo $manager->render_edit_screen( $context );
+		$manager->render_edit_screen( $context );
 	}
 
 	/**
@@ -273,7 +273,7 @@ class Modifier_Admin_Handler {
 
 		// Early bail if the strategy doesn't exist.
 		if ( ! $modifier_strategy ) {
-			$this->show_error_message( __( 'Invalid modifier.', 'event-tickets' ) );
+			$this->render_error_message( __( 'Invalid modifier.', 'event-tickets' ) );
 			return;
 		}
 
@@ -287,7 +287,7 @@ class Modifier_Admin_Handler {
 
 		// Early bail if saving the modifier failed.
 		if ( empty( $result ) ) {
-			$this->show_error_message( __( 'Failed to save modifier.', 'event-tickets' ) );
+			$this->render_error_message( __( 'Failed to save modifier.', 'event-tickets' ) );
 			return;
 		}
 
@@ -298,7 +298,7 @@ class Modifier_Admin_Handler {
 		}
 
 		// Show success message for updating an existing modifier.
-		$this->show_success_message( __( 'Modifier saved successfully!', 'event-tickets' ) );
+		$this->render_success_message( __( 'Modifier saved successfully!', 'event-tickets' ) );
 	}
 
 	/**
@@ -334,8 +334,11 @@ class Modifier_Admin_Handler {
 	 *
 	 * @return void
 	 */
-	protected function show_success_message( string $message ): void {
-		echo '<div class="notice notice-success"><p>' . esc_html( $message ) . '</p></div>';
+	protected function render_success_message( string $message ): void {
+		printf(
+			'<div class="notice notice-success"><p>%s</p></div>',
+			esc_html( $message )
+		);
 	}
 
 	/**
@@ -347,8 +350,11 @@ class Modifier_Admin_Handler {
 	 *
 	 * @return void
 	 */
-	protected function show_error_message( string $message ): void {
-		echo '<div class="notice notice-error"><p>' . esc_html( $message ) . '</p></div>';
+	protected function render_error_message( string $message ): void {
+		printf(
+			'<div class="notice notice-error"><p>%s</p></div>',
+			esc_html( $message )
+		);
 	}
 
 	/**
