@@ -243,7 +243,10 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function it_should_provide_results_to_ajax() {
-		$this->prepare_test_data( true );
+		$name             = 'Faux Event for it_should_provide_results_to_ajax';
+		$this->event_ids  = $this->create_test_events(3, $name );
+		$this->tickets    = $this->create_test_tickets( $this->event_ids );
+		$this->orders     = $this->create_test_orders( $this->tickets, 2, true );
 
 		$test_events = function ( $term ) {
 			return tribe( Hooks::class )->provide_events_results_to_ajax( [], [ 'term' => $term ] );
@@ -259,15 +262,15 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 		$expected_events = [
 			[
 				'id'   => $this->event_ids[2],
-				'text' => 'Event 3',
+				'text' => $name.' 3',
 			],
 			[
 				'id'   => $this->event_ids[1],
-				'text' => 'Event 2',
+				'text' => $name.' 2',
 			],
 			[
 				'id'   => $this->event_ids[0],
-				'text' => 'Event 1',
+				'text' => $name.' 1',
 			],
 		];
 
@@ -275,14 +278,14 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 			[
 				'results' => $expected_events,
 			],
-			$test_events( 'Event' )
+			$test_events( $name )
 		);
 
 		$this->assertEquals(
 			[
 				'results' => [ $expected_events['1'] ],
 			],
-			$test_events( 'Event 2' )
+			$test_events( $name.' 2' )
 		);
 
 		$this->assertEmpty( $test_events( 'Does not Exists' ) );
@@ -290,11 +293,11 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 		// search user by email.
 		$expected_customers = [
 			[
-				'id' => '1',
+				'id'   => '1',
 				'text' => 'admin (admin@wordpress.test)',
 			],
 		];
-		for ( $i = 1; $i <= 6; $i ++ ) {
+		for ( $i = 1; $i <= 6; $i++ ) {
 			$expected_customers[] = [
 				'id'   => $this->user_ids[ $i ],
 				'text' => 'Test Purchaser ' . $i . ' (test-' . $i . '@test.com)',
@@ -369,7 +372,7 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 	 *
 	 * @return array
 	 */
-	protected function create_test_events( $number_of_events = 3 ) {
+	protected function create_test_events( $number_of_events = 3, $name_prefix = 'Event ' ) {
 		$events_ids = [];
 
 		for ( $i = 0; $i < $number_of_events; $i ++ ) {
@@ -378,7 +381,7 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 
 			$events_ids[] = tribe_events()->set_args(
 				[
-					'title'      => 'Event ' . ( $i + 1 ),
+					'title'      => $name_prefix . ' ' . ( $i + 1 ),
 					'status'     => 'publish',
 					'start_date' => $event_dt->format( 'Y-m-d H:i:s' ),
 					'duration'   => ( $i + 1 ) * HOUR_IN_SECONDS,
