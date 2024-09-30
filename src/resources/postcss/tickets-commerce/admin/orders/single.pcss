@@ -1,3 +1,59 @@
+.tec-tickets-commerce-vertical-form label {
+	display: block;
+	margin-bottom: var(--tec-spacer-0);
+	margin-top: var(--tec-spacer-0);
+}
+.tec-tickets-commerce-vertical-form .tec-tickets-commerce-row {
+	display: block;
+	padding: var(--tec-spacer-0) 0;
+}
+#tribe-tickets-order-details .tec-tickets-commerce-error-message {
+	color: var(--tec-error-border-color);
+}
+.tec-tickets-commerce-vertical-form .tec-tickets-commerce-error-field {
+	border-color: var(--tec-error-border-color);
+}
+#tribe-tickets-order-details .tribe-dialog__wrapper .tribe-common-c-loader {
+	background: var(--tec-color-background-transparent);
+	bottom: 0;
+	height: 100%;
+	justify-content: center;
+	left: 0;
+	padding: 0;
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 100%;
+	z-index: var(--tec-z-index-spinner-container);
+}
+
+#tribe-tickets-order-details .tribe-dialog__wrapper.tribe-modal__wrapper {
+	border-radius: 0;
+	padding: 0;
+}
+
+#tribe-tickets-order-details .tribe-dialog__wrapper.tribe-modal__wrapper h2.tribe-dialog__title {
+	border-bottom: 1px solid;
+	font-size: var(--tec-font-size-3);
+	margin: 0;
+	padding: var(--tec-spacer-0) var(--tec-spacer-2);
+	width: 100%;
+}
+
+#tribe-tickets-order-details .tribe-dialog__wrapper .tribe-dialog__close-button.tribe-modal__close-button {
+	float: right;
+	margin-top: var(--tec-spacer-1);
+	margin-right: var(--tec-spacer-2);
+}
+
+#tribe-tickets-order-details .tribe-dialog__content.tribe-modal__content {
+	padding: var(--tec-spacer-2);
+}
+
+#tribe-tickets-order-details .tec-tickets-commerce-edit-purchaser-actions {
+	margin-top: var(--tec-spacer-2);
+}
+
 /**
  * Event Tickets - Single Admin Order Page
  *
@@ -15,7 +71,7 @@ body.wp-admin.post-type-tec_tc_order {
 		display: none;
 	}
 	.tec-tickets-commerce-single-order--details--item--label a {
-		display: none;
+		cursor: pointer;
 	}
 }
 /**

@@ -60,6 +60,8 @@ class Singular_Order_Page extends Service_Provider {
 		if ( is_admin() ) {
 			add_action( 'current_screen', [ $this, 'breadcrumb_order_edit_screen' ] );
 		}
+
+		$this->container->register( Edit_Purchaser_Provider::class );
 	}
 
 	/**
@@ -93,6 +95,7 @@ class Singular_Order_Page extends Service_Provider {
 			<a href="$url"><span class="dashicons dashicons-arrow-left-alt2"></span> $text</a>
 		</div>
 STR;
+
 		echo wp_kses_post( $html );
 	}
 

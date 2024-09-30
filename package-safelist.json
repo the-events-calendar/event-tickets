@@ -9,5 +9,11 @@
   "vendor/autoload.php",
   "vendor/composer/*",
   "vendor/phpqrcode/**/*",
-  "build/**/*"
+  "build/**/*",
+  "vendor/vendor-prefixed",
+  "vendor/vendor-prefixed/**/*.js",
+  "vendor/vendor-prefixed/**/*.php",
+  "vendor/vendor-prefixed/autoload-classmap.php",
+  "vendor/vendor-prefixed/autoload.php",
+  "vendor/vendor-prefixed/stellarwp/**/*"
 ]
