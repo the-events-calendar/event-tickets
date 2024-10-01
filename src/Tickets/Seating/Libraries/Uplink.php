@@ -51,9 +51,6 @@ class Uplink extends Controller_Contract {
 		$this->et_main = tribe( 'tickets.main' );
 
 		add_action( 'init', [ $this, 'register_plugin' ] );
-
-		$prefix = tribe( Libraries_Provider::class )->get_hook_prefix();
-		add_action( 'stellarwp/uplink/' . $prefix . '/' . $this->et_slr_plugin_slug . '/connected', [ $this, 'store_successful_connection' ] );
 	}
 
 	/**
@@ -65,18 +62,6 @@ class Uplink extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_action( 'init', [ $this, 'register_plugin' ] );
-
-		$prefix = tribe( Libraries_Provider::class )->get_hook_prefix();
-		remove_action( 'stellarwp/uplink/' . $prefix . '/' . $this->et_slr_plugin_slug . '/connected', [ $this, 'store_successful_connection' ] );
-	}
-
-	/**
-	 * Stores a successful connection through uplink.
-	 *
-	 * @since TBD
-	 */
-	public function store_successful_connection(): void {
-		tribe_update_option( 'tickets_seating_connected_on', true );
 	}
 
 	/**

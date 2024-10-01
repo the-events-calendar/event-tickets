@@ -14,6 +14,7 @@ use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
+use TEC\Common\StellarWP\Uplink\Resources\License;
 
 class Seats_Report_Test extends WPTEstCase {
 	use With_Tickets_Commerce;
@@ -102,7 +103,7 @@ class Seats_Report_Test extends WPTEstCase {
 
 		$seats_report = tribe( Seats_Report::class );
 
-		tribe_update_option( 'tickets_seating_connected_on', true );
+		$this->set_class_fn_return( License::class, 'is_valid', true );
 
 		ob_start();
 		$seats_report->render_page();
@@ -145,7 +146,8 @@ class Seats_Report_Test extends WPTEstCase {
 
 		$seats_report = tribe( Seats_Report::class );
 
-		tribe_remove_option( 'tickets_seating_connected_on' );
+		$this->set_class_fn_return( License::class, 'is_valid', false );
+		$this->set_class_fn_return( License::class, 'is_expired', false );
 
 		ob_start();
 		$seats_report->render_page();

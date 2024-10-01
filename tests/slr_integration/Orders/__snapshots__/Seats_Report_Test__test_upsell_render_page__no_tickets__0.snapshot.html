@@ -12,18 +12,28 @@
 					href="http://wordpress.test/wp-admin/edit.php?post_type=post&#038;page=tickets-attendees&#038;event_id={{ID}}">Attendees				</a>
 					</h2>
 	</div>
-<div class="tec-tickets__seating-tab-wrapper wrap">
-	<div id="tec-tickets-seating-notice" class="notice" style="display: none;"></div>
-	<div
-		class="tec-tickets-seating__iframe-container"
-		data-token="some-ephemeral-token"
-		data-error=""
-	>
-		<iframe
-			data-src="https://evnt.is/embed/seat-assignment?token=some-ephemeral-token&#038;eventId=some-post-uuid&#038;layoutId=layout-uuid"
-			id="tec-tickets-seating-iframe-layout-edit"
-			class="tec-tickets-seating__iframe tec-tickets-seating__iframe--layout-edit"
-			title="Seats Assignment">
-		</iframe>
+<div class="tec-tickets-seating-upsell">
+	<div class="tec-tickets-seating-upsell__content">
+		<div class="tec-tickets-seating-upsell__title">
+			<img
+				src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/icons/seating-icon.svg"
+				alt="Seating Icon"
+			>
+			<h3>
+				Seating			</h3>
+		</div>
+		<p>
+			Maximize event revenue and improve the attendee experience by adding assigned seats with this innovative add-on.		</p>
+		<div class="tec-tickets-seating-upsell__btn">
+			<a href="https://evnt.is/get-seating" target="_blank" rel="noopener noreferrer">
+				Check out Seating for Event Tickets			</a>
+		</div>
+	</div>
+
+	<div class="tec-tickets-seating-upsell__icon">
+		<img
+			src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/icons/seating-banner.png"
+			alt="Seating Banner Icon"
+		>
 	</div>
 </div>

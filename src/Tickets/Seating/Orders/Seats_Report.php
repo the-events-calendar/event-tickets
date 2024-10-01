@@ -243,8 +243,7 @@ class Seats_Report extends Report_Abstract {
 			'tec_tickets_seating_should_show_upsell',
 			! (
 				$seating->get_license_object()->is_valid() ||
-				$seating->get_license_object()->is_expired() ||
-				tribe_get_option( 'tickets_seating_connected_on', false )
+				$seating->get_license_object()->is_expired()
 			),
 			$seating
 		);
