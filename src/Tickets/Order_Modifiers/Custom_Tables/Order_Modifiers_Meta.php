@@ -100,7 +100,7 @@ class Order_Modifiers_Meta extends Abstract_Custom_Table {
 		}
 
 		global $wpdb;
-		$table_name        = self::table_name( true );
+		$table_name        = self::table_name();
 		$parent_table_name = Order_Modifiers::table_name();
 		$parent_table_uid  = Order_Modifiers::uid_column();
 

@@ -42,7 +42,7 @@ abstract class Abstract_Custom_Table extends Table {
 
 		// Add index only if it does not exist.
 		if ( ! $this->has_index( $index_name ) ) {
-			$sql = "ALTER TABLE `$table_name` ADD INDEX `$index_name` ( $columns )";
+			$sql = "ALTER TABLE `{$table_name}` ADD INDEX `{$index_name}` ( {$columns} )";
 
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared
 			$updated = $wpdb->query( $sql );
@@ -62,16 +62,23 @@ abstract class Abstract_Custom_Table extends Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $table_name The name of the table to add the foreign key to.
-	 * @param string $foreign_key_name The name of the foreign key constraint.
-	 * @param string $column_name The column that references the foreign key.
-	 * @param string $referenced_table The referenced table name.
+	 * @param string $table_name        The name of the table to add the foreign key to.
+	 * @param string $foreign_key_name  The name of the foreign key constraint.
+	 * @param string $column_name       The column that references the foreign key.
+	 * @param string $referenced_table  The referenced table name.
 	 * @param string $referenced_column The referenced column in the foreign table.
-	 * @param string $on_delete_action The action on delete (e.g., CASCADE).
+	 * @param string $on_delete_action  The action on delete (e.g., CASCADE).
 	 *
 	 * @return void
 	 */
-	protected function add_foreign_key( string $table_name, string $foreign_key_name, string $column_name, string $referenced_table, string $referenced_column, string $on_delete_action = 'CASCADE' ) {
+	protected function add_foreign_key(
+		string $table_name,
+		string $foreign_key_name,
+		string $column_name,
+		string $referenced_table,
+		string $referenced_column,
+		string $on_delete_action = 'CASCADE'
+	) {
 		global $wpdb;
 
 		// Check if the foreign key already exists using `has_foreign_key`.
@@ -80,11 +87,13 @@ abstract class Abstract_Custom_Table extends Table {
 		}
 
 		// Add the foreign key constraint if it doesn't exist.
-		$sql = "ALTER TABLE `$table_name`
-            ADD CONSTRAINT `$foreign_key_name`
-            FOREIGN KEY (`$column_name`)
-            REFERENCES `$referenced_table`(`$referenced_column`)
-            ON DELETE $on_delete_action";
+		$sql = <<<SQL
+ALTER TABLE `{$table_name}`
+ADD CONSTRAINT `{$foreign_key_name}`
+FOREIGN KEY (`{$column_name}`)
+REFERENCES `{$referenced_table}`(`{$referenced_column}`)
+ON DELETE {$on_delete_action}
+SQL;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared
 		$wpdb->query( $sql );
 	}
