@@ -28,11 +28,11 @@ abstract class Abstract_Custom_Table extends Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param wpdb   $wpdb The WordPress database global.
-	 * @param array  $results The results array to track changes.
+	 * @param wpdb   $wpdb       The WordPress database global.
+	 * @param array  $results    The results array to track changes.
 	 * @param string $table_name The name of the table.
 	 * @param string $index_name The name of the index.
-	 * @param string $columns The columns to index.
+	 * @param string $columns    The columns to index.
 	 *
 	 * @return array The updated results array.
 	 */
