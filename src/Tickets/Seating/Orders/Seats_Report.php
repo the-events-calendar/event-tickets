@@ -222,7 +222,7 @@ class Seats_Report extends Report_Abstract {
 	}
 
 	/**
-	 * Checks if the upsell should be shown in the Seats report tab instead.
+	 * Returns whether the upsell should show or not.
 	 *
 	 * @since TBD
 	 *
