@@ -268,7 +268,7 @@ export const getTicketHasBeenCreated = createSelector(
 
 export const getTicketHasChanges = createSelector(
 	[ getTicket ],
-	( ticket ) => ticket.hasChanges || ! ticket.ticketId,
+	( ticket ) => ticket.hasChanges,
 );
 
 export const getTicketHasDurationError = createSelector(
