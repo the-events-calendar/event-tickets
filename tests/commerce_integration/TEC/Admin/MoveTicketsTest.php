@@ -69,6 +69,8 @@ class MoveTicketsTest extends \Codeception\TestCase\WPTestCase {
 		// Assert that the move was successful.
 		$this->assertEquals( 1, $successful_moves, 'The ticket move operation should be successful.' );
 
+		tribe_cache()->delete( 'tec_tickets_attendees_by_ticket_id' );
+
 		// refresh the ticket objects.
 		$ticket_event_1 = tribe( Module::class )->get_ticket( $event_1_id, $event_1_ticket );
 		$ticket_event_2 = tribe( Module::class )->get_ticket( $event_2_id, $event_2_ticket );
@@ -163,6 +165,8 @@ class MoveTicketsTest extends \Codeception\TestCase\WPTestCase {
 		// Assert that the move was successful.
 		$this->assertEquals( 1, $successful_moves, 'The ticket move operation should be successful.' );
 
+		tribe_cache()->delete( 'tec_tickets_attendees_by_ticket_id' );
+
 		$ticket_event_1_ticket_1 = tribe( Module::class )->get_ticket( $event_1_id, $event_1_ticket_1 );
 		$ticket_event_1_ticket_2 = tribe( Module::class )->get_ticket( $event_1_id, $event_1_ticket_2 );
 
@@ -236,6 +240,8 @@ class MoveTicketsTest extends \Codeception\TestCase\WPTestCase {
 		// Create an order for 5 tickets of the first event.
 		$order = $this->create_order( [ $event_1_ticket_1 => 5 ] );
 
+		tribe_cache()->delete( 'tec_tickets_attendees_by_ticket_id' );
+
 		$this->assertEquals( 25, tribe( Module::class )->get_ticket( $event_1_id, $event_1_ticket_1 )->inventory() );
 		$this->assertEquals( 30, tribe( Module::class )->get_ticket( $event_1_id, $event_1_ticket_2 )->inventory() );
 
@@ -257,6 +263,8 @@ class MoveTicketsTest extends \Codeception\TestCase\WPTestCase {
 
 		// Assert that the move was successful.
 		$this->assertEquals( 1, $successful_moves, 'The ticket move operation should be successful.' );
+
+		tribe_cache()->delete( 'tec_tickets_attendees_by_ticket_id' );
 
 		$ticket_event_1_ticket_1 = tribe( Module::class )->get_ticket( $event_1_id, $event_1_ticket_1 );
 		$ticket_event_1_ticket_2 = tribe( Module::class )->get_ticket( $event_1_id, $event_1_ticket_2 );
@@ -326,6 +334,8 @@ class MoveTicketsTest extends \Codeception\TestCase\WPTestCase {
 
 		// Assert that the move was successful.
 		$this->assertEquals( 1, $successful_moves, 'The ticket move operation should be successful.' );
+
+		tribe_cache()->delete( 'tec_tickets_attendees_by_ticket_id' );
 
 		$ticket_event_1_ticket_1 = tribe( Module::class )->get_ticket( $event_1_id, $event_1_ticket_1 );
 		$ticket_event_1_ticket_2 = tribe( Module::class )->get_ticket( $event_1_id, $event_1_ticket_2 );
@@ -405,6 +415,8 @@ class MoveTicketsTest extends \Codeception\TestCase\WPTestCase {
 
 		// Assert that the move was successful.
 		$this->assertEquals( 1, $successful_moves, 'The ticket move operation should be successful.' );
+
+		tribe_cache()->delete( 'tec_tickets_attendees_by_ticket_id' );
 
 		$ticket_event_1_ticket_1 = tribe( Module::class )->get_ticket( $event_1_id, $event_1_ticket_1 );
 		$ticket_event_1_ticket_2 = tribe( Module::class )->get_ticket( $event_1_id, $event_1_ticket_2 );
