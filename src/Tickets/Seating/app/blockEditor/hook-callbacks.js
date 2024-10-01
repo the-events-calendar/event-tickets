@@ -178,19 +178,15 @@ export const filterTicketIsValid = (isValid, state, ownProps) => {
 
 	const store = select(storeName);
 
-	const isUsingAssignedSeating = store.isUsingAssignedSeating();
-	if (!isUsingAssignedSeating) {
+	if (!store.isUsingAssignedSeating()) {
 		return isValid;
 	}
 
-	const layoutId = store.getCurrentLayoutId();
-	if (!layoutId) {
+	if (!store.getCurrentLayoutId()) {
 		return false;
 	}
 
-	const seatType = store.getTicketSeatType(ownProps.clientId);
-
-	if (!seatType) {
+	if (!store.getTicketSeatType(ownProps.clientId)) {
 		return false;
 	}
 
