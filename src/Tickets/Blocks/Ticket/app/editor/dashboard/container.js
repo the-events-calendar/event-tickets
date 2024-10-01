@@ -28,6 +28,18 @@ import { withStore } from '@moderntribe/common/hoc';
  * @return {boolean} Whether the confirm button should be disabled.
  */
 const shouldConfirmBeDisabled = (state, ownProps) => {
+	if (selectors.isTicketDisabled(state, ownProps)) {
+		return true;
+	}
+
+	if (selectors.getTicketHasDurationError(state, ownProps)) {
+		return true;
+	}
+
+	if (!selectors.getTicketHasChanges(state, ownProps)) {
+		return true;
+	}
+
 	/**
 	 * Filters whether the ticket is valid.
 	 *
@@ -37,26 +49,12 @@ const shouldConfirmBeDisabled = (state, ownProps) => {
 	 * @param {Object}  state    The state of the store.
 	 * @param {Object}  ownProps The own props of the component.
 	 */
-	const isTicketValid = applyFilters(
+	return !applyFilters(
 		'tec.tickets.blocks.ticket.isValid',
 		selectors.isTicketValid(state, ownProps),
 		state,
 		ownProps
 	);
-
-	if (!isTicketValid) {
-		return true;
-	}
-
-	if (selectors.isTicketDisabled(state, ownProps)) {
-		return true;
-	}
-
-	if (selectors.getTicketHasDurationError(state, ownProps)) {
-		return true;
-	}
-
-	return !selectors.getTicketHasChanges(state, ownProps);
 };
 
 /**
