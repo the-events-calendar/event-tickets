@@ -4,7 +4,6 @@ import { storeName } from './store';
 import { select } from '@wordpress/data';
 import Seats from './dashboard-actions/seats';
 import { filterCapacityTableMappedProps } from './capacity-table';
-import LayoutSelect from "./settings/layoutSelect";
 import {
 	filterSeatedTicketsAvailabilityMappedProps,
 	filterSetBodyDetails,
@@ -12,6 +11,7 @@ import {
 	filterTicketIsAsc,
 	setSeatTypeForTicket,
 	filterSettingsFields,
+	filterButtonIsDisabled,
 } from './hook-callbacks';
 
 const shouldRenderAssignedSeatingForm = true;
@@ -142,4 +142,10 @@ addAction(
 	'tec.tickets.blocks.ticketCreated',
 	'tec.tickets.seating',
 	setSeatTypeForTicket
+);
+
+addFilter(
+	'tec.tickets.blocks.confirmButton.isDisabled',
+	'tec.tickets.seating',
+	filterButtonIsDisabled
 );
