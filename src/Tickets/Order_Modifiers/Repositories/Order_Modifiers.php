@@ -118,9 +118,9 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 */
 	public function find_by_id( int $id, $type ): ?Order_Modifier {
 		return $this->prepareQuery()
-					->where( 'id', $id )
-					->where( 'modifier_type', $type )
-					->get();
+			->where( 'id', $id )
+			->where( 'modifier_type', $type )
+			->get();
 	}
 
 	/**
@@ -194,10 +194,10 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 */
 	public function find_by_slug( string $slug, string $modifier_type ): ?Order_Modifier {
 		return $this->prepareQuery()
-					->where( 'slug', $slug )
-					->where( 'modifier_type', $modifier_type )
-					->where( 'status', 'active' )
-					->get();
+			->where( 'slug', $slug )
+			->where( 'modifier_type', $modifier_type )
+			->where( 'status', 'active' )
+			->get();
 	}
 
 	/**
@@ -209,8 +209,8 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 */
 	public function find_active(): ?array {
 		return $this->prepareQuery()
-					->where( 'status', 'active' )
-					->get();
+			->where( 'status', 'active' )
+			->get();
 	}
 
 	/**
@@ -224,8 +224,8 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 */
 	public function find_by_modifier_type( string $modifier_type ): ?array {
 		return $this->prepareQuery()
-					->where( 'modifier_type', $modifier_type )
-					->get();
+			->where( 'modifier_type', $modifier_type )
+			->get();
 	}
 
 	/**
