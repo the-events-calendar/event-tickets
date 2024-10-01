@@ -104,17 +104,17 @@ abstract class Abstract_Custom_Table extends Table {
 
 		// Check in statistics (for indexes).
 		$count_for_statistics = $this->db::table( $this->db::raw( 'information_schema.statistics' ) )
-									 ->whereRaw( 'WHERE TABLE_SCHEMA = DATABASE()' )
-									 ->where( 'TABLE_NAME', $table_name )
-									 ->where( 'INDEX_NAME', $foreign_key )
-									 ->count();
+			->whereRaw( 'WHERE TABLE_SCHEMA = DATABASE()' )
+			->where( 'TABLE_NAME', $table_name )
+			->where( 'INDEX_NAME', $foreign_key )
+			->count();
 
 		// Check in constraints (for foreign key constraints).
 		$count_for_constraints = $this->db::table( $this->db::raw( 'information_schema.TABLE_CONSTRAINTS' ) )
-									  ->whereRaw( 'WHERE TABLE_SCHEMA = DATABASE()' )
-									  ->where( 'TABLE_NAME', $table_name )
-									  ->where( 'CONSTRAINT_NAME', $foreign_key )
-									  ->count();
+			->whereRaw( 'WHERE TABLE_SCHEMA = DATABASE()' )
+			->where( 'TABLE_NAME', $table_name )
+			->where( 'CONSTRAINT_NAME', $foreign_key )
+			->count();
 
 		// Return true if foreign key exists in either the statistics or constraints table.
 		return ( $count_for_statistics > 0 || $count_for_constraints > 0 );
