@@ -134,12 +134,12 @@ class Seats_Report extends Report_Abstract {
 		$ephemeral_token     = tribe( Service::class )->get_ephemeral_token( 6 * HOUR_IN_SECONDS, 'admin' );
 		$token               = is_string( $ephemeral_token ) ? $ephemeral_token : '';
 		$this->template_vars = [
-			'post'          => $post,
-			'post_id'       => $post_id,
-			'iframe_url'    => tribe( Service::class )->get_seat_report_url( $token, $post_id ),
-			'token'         => $token,
-			'error'         => $ephemeral_token instanceof WP_Error ? $ephemeral_token->get_error_message() : '',
-			'should_upsell' => $this->should_show_upsell(),
+			'post'               => $post,
+			'post_id'            => $post_id,
+			'iframe_url'         => tribe( Service::class )->get_seat_report_url( $token, $post_id ),
+			'token'              => $token,
+			'error'              => $ephemeral_token instanceof WP_Error ? $ephemeral_token->get_error_message() : '',
+			'should_show_upsell' => $this->should_show_upsell(),
 		];
 
 		return $this->template_vars;
@@ -236,8 +236,8 @@ class Seats_Report extends Report_Abstract {
 		 *
 		 * @since TBD
 		 *
-		 * @param bool                                           $show_upsell Whether the upsell should be shown.
-		 * @param TEC\Common\StellarWP\Uplink\Resources\Resource $seating     The seating service.
+		 * @param bool                                           $should_show_upsell Whether the upsell should be shown.
+		 * @param TEC\Common\StellarWP\Uplink\Resources\Resource $seating            The seating service.
 		 */
 		return apply_filters(
 			'tec_tickets_seating_should_show_upsell',
