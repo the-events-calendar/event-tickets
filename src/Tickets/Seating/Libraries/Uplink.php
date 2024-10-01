@@ -9,7 +9,6 @@
 namespace TEC\Tickets\Seating\Libraries;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Common\Libraries\Provider as Libraries_Provider;
 use TEC\Common\StellarWP\Uplink\Register;
 use Tribe__Tickets__Main as Main;
 
