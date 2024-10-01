@@ -1,11 +1,28 @@
 <?php
+/**
+ * Abstract Custom Table class for handling common operations on custom tables, such as adding indexes
+ * and foreign key constraints.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Order_Modifiers\Custom_Tables
+ */
 
 namespace TEC\Tickets\Order_Modifiers\Custom_Tables;
 
 use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
 use wpdb;
 
+/**
+ * Abstract class that provides utility methods for managing custom table schemas,
+ * including adding indexes and foreign key constraints.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Order_Modifiers\Custom_Tables
+ */
 abstract class Abstract_Custom_Table extends Table {
+
 	/**
 	 * Helper method to check and add an index to a table.
 	 *
@@ -35,7 +52,7 @@ abstract class Abstract_Custom_Table extends Table {
 				sprintf( 'Added index to the %s table on %s.', $table_name, $columns ) :
 				sprintf( 'Failed to add an index on the %s table for %s.', $table_name, $columns );
 
-			$results["{$table_name}.{$columns}"] = $message;
+			$results[ "{$table_name}.{$columns}" ] = $message;
 		}
 
 		return $results;
@@ -46,12 +63,12 @@ abstract class Abstract_Custom_Table extends Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $table_name        The name of the table to add the foreign key to.
-	 * @param string $foreign_key_name  The name of the foreign key constraint.
-	 * @param string $column_name       The column that references the foreign key.
-	 * @param string $referenced_table  The referenced table name.
+	 * @param string $table_name The name of the table to add the foreign key to.
+	 * @param string $foreign_key_name The name of the foreign key constraint.
+	 * @param string $column_name The column that references the foreign key.
+	 * @param string $referenced_table The referenced table name.
 	 * @param string $referenced_column The referenced column in the foreign table.
-	 * @param string $on_delete_action  The action on delete (e.g., CASCADE).
+	 * @param string $on_delete_action The action on delete (e.g., CASCADE).
 	 *
 	 * @return void
 	 */
@@ -64,13 +81,13 @@ abstract class Abstract_Custom_Table extends Table {
 		}
 
 		// Add the foreign key constraint if it doesn't exist.
-		$wpdb->query("
-            ALTER TABLE `$table_name`
+		$sql = "ALTER TABLE `$table_name`
             ADD CONSTRAINT `$foreign_key_name`
             FOREIGN KEY (`$column_name`)
             REFERENCES `$referenced_table`(`$referenced_column`)
-            ON DELETE $on_delete_action
-        ");
+            ON DELETE $on_delete_action";
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared
+		$wpdb->query( $sql );
 	}
 
 	/**
@@ -86,16 +103,20 @@ abstract class Abstract_Custom_Table extends Table {
 	public function has_foreign_key( string $foreign_key, string $table_name = null ): bool {
 		$table_name = $table_name ? : static::table_name();
 
-		$count_for_statistics  = $this->db::table( $this->db::raw( 'information_schema.statistics' ) )
-										  ->whereRaw( 'WHERE TABLE_SCHEMA = DATABASE()' )
-										  ->where( 'TABLE_NAME', $table_name )
-										  ->where( 'INDEX_NAME', $foreign_key )
-										  ->count();
+		// Check in statistics (for indexes).
+		$count_for_statistics = $this->db::table( $this->db::raw( 'information_schema.statistics' ) )
+									 ->whereRaw( 'WHERE TABLE_SCHEMA = DATABASE()' )
+									 ->where( 'TABLE_NAME', $table_name )
+									 ->where( 'INDEX_NAME', $foreign_key )
+									 ->count();
+
+		// Check in constraints (for foreign key constraints).
 		$count_for_constraints = $this->db::table( $this->db::raw( 'information_schema.TABLE_CONSTRAINTS' ) )
 										  ->whereRaw( 'WHERE TABLE_SCHEMA = DATABASE()' )
 										  ->where( 'TABLE_NAME', $table_name )
 										  ->where( 'CONSTRAINT_NAME', $foreign_key )
 										  ->count();
+
 		// Return true if foreign key exists in either the statistics or constraints table.
 		return ( $count_for_statistics > 0 || $count_for_constraints > 0 );
 	}
