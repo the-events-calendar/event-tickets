@@ -7,17 +7,14 @@
 
 namespace TEC\Tickets\Order_Modifiers\Custom_Tables;
 
-use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
-use wpdb;
-
 /**
- * Class Orders_Modifiers.
+ * Class Order_Modifier_Relationships.
  *
  * @since TBD
  *
  * @package TEC\Tickets\Order_Modifiers\Custom_Tables;
  */
-class Order_Modifier_Relationships extends Table {
+class Order_Modifier_Relationships extends Abstract_Custom_Table {
 	/**
 	 * @since TBD
 	 *
@@ -64,11 +61,8 @@ class Order_Modifier_Relationships extends Table {
 	 */
 	protected function get_definition() {
 		global $wpdb;
-		$table_name        = self::table_name( true );
-		$charset_collate   = $wpdb->get_charset_collate();
-		$parent_table_name = Order_Modifiers::table_name();
-		$parent_table_uid  = Order_Modifiers::uid_column();
-		$wp_posts_table    = $wpdb->posts;
+		$table_name      = self::table_name( true );
+		$charset_collate = $wpdb->get_charset_collate();
 
 		return "
 			CREATE TABLE `$table_name` (
@@ -76,9 +70,7 @@ class Order_Modifier_Relationships extends Table {
 				`modifier_id` BIGINT UNSIGNED NOT NULL,
 				`post_id`  BIGINT UNSIGNED NOT NULL,
 				`post_type` VARCHAR(20) NOT NULL,
-				PRIMARY KEY (`object_id`),
-				FOREIGN KEY (`modifier_id`) REFERENCES $parent_table_name($parent_table_uid)ON DELETE CASCADE,
-    			CONSTRAINT `fk_post_id` FOREIGN KEY (`post_id`) REFERENCES `$wp_posts_table` (`ID`) ON DELETE CASCADE
+				PRIMARY KEY (`object_id`)
 			) $charset_collate;
 		";
 	}
@@ -102,58 +94,21 @@ class Order_Modifier_Relationships extends Table {
 		}
 
 		global $wpdb;
-		$table_name = self::table_name( true );
+		$table_name        = self::table_name( true );
+		$parent_table_name = Order_Modifiers::table_name();
+		$parent_table_uid  = Order_Modifiers::uid_column();
+		$wp_posts_table    = $wpdb->posts;
 
-		// Check if the table exists first.
-		if ( ! $this->exists() ) {
-			return $results;
-		}
+		// Add foreign key for `modifier_id`.
+		$this->add_foreign_key( $table_name, 'fk_modifier_id', 'modifier_id', $parent_table_name, $parent_table_uid, 'CASCADE' );
+
+		// Add foreign key for `post_id`.
+		$this->add_foreign_key( $table_name, 'fk_post_id', 'post_id', $wp_posts_table, 'ID', 'CASCADE' );
 
 		// Helper method to check and add indexes.
 		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_relationship_indx_modifier_id', 'modifier_id' );
 		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_relationship_indx_post_type', 'post_id,post_type' );
 		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_relationship_indx_composite_join', 'modifier_id, post_id, post_type' );
-
-		return $results;
-	}
-
-	/**
-	 * Helper method to check and add an index to a table.
-	 *
-	 * @since TBD
-	 *
-	 * @param wpdb   $wpdb The WordPress database global.
-	 * @param array  $results The results array to track changes.
-	 * @param string $table_name The name of the table.
-	 * @param string $index_name The name of the index.
-	 * @param string $columns The columns to index.
-	 *
-	 * @return array The updated results array.
-	 */
-	protected function check_and_add_index( wpdb $wpdb, array $results, string $table_name, string $index_name, string $columns ): array {
-		// Escape table name and columns for safety.
-		$table_name = esc_sql( $table_name );
-		$columns    = esc_sql( $columns );
-
-		// Add index only if it does not exist.
-		if ( ! $this->has_index( $index_name ) ) {
-			// Prepare the SQL for adding an index.
-			$sql = $wpdb->prepare(
-				"ALTER TABLE `$table_name` ADD INDEX `%s` ( $columns )",
-				$index_name
-			);
-
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared
-			$updated = $wpdb->query( $sql );
-
-			if ( $updated ) {
-				$message = sprintf( 'Added index to the %s table on %s.', $table_name, $columns );
-			} else {
-				$message = sprintf( 'Failed to add an index on the %s table for %s.', $table_name, $columns );
-			}
-
-			$results[ "{$table_name}.{$columns}" ] = $message;
-		}
 
 		return $results;
 	}

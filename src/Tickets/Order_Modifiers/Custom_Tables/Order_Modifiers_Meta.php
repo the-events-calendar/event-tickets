@@ -9,9 +9,6 @@
 
 namespace TEC\Tickets\Order_Modifiers\Custom_Tables;
 
-use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
-use wpdb;
-
 /**
  * Class Order_Modifiers_Meta.
  *
@@ -19,8 +16,7 @@ use wpdb;
  *
  * @package TEC\Tickets\Order_Modifiers\Custom_Tables;
  */
-class Order_Modifiers_Meta extends Table {
-
+class Order_Modifiers_Meta extends Abstract_Custom_Table {
 
 	/**
 	 * @since TBD
@@ -70,11 +66,9 @@ class Order_Modifiers_Meta extends Table {
 		global $wpdb;
 		$table_name        = self::table_name( true );
 		$charset_collate   = $wpdb->get_charset_collate();
-		$parent_table_name = Order_Modifiers::table_name();
-		$parent_table_uid  = Order_Modifiers::uid_column();
 
 		return "
-			CREATE TABLE `$table_name` (
+				CREATE TABLE `$table_name` (
 				`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
 				`order_modifier_id` BIGINT UNSIGNED NOT NULL,
 				`meta_key` VARCHAR(100) NOT NULL,
@@ -82,10 +76,7 @@ class Order_Modifiers_Meta extends Table {
 				`priority` INT NOT NULL DEFAULT 0,
 				`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				`updated_at` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-				PRIMARY KEY (`id`),
-				FOREIGN KEY (`order_modifier_id`)
-				REFERENCES $parent_table_name($parent_table_uid)
-				ON DELETE CASCADE
+				PRIMARY KEY (`id`)
 			) $charset_collate;
 		";
 	}
@@ -109,54 +100,18 @@ class Order_Modifiers_Meta extends Table {
 		}
 
 		global $wpdb;
-		$table_name = self::table_name( true );
+		$table_name        = self::table_name( true );
+		$parent_table_name = Order_Modifiers::table_name();
+		$parent_table_uid  = Order_Modifiers::uid_column();
+
+		// Add the foreign key constraint using the method from the abstract class.
+		$this->add_foreign_key( $table_name, 'fk_order_modifier', 'order_modifier_id', $parent_table_name, $parent_table_uid, 'CASCADE' );
 
 		// Helper method to check and add indexes.
 		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_meta_inx_order_modifier_id', 'order_modifier_id' );
 		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_meta_inx_meta_key', 'meta_key' );
 		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_meta_inx_order_modifier_id_meta_key', 'order_modifier_id, meta_key' );
 		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_meta_inx_meta_key_meta_value', 'meta_key,meta_value(255)' );
-
-		return $results;
-	}
-
-	/**
-	 * Helper method to check and add an index to a table.
-	 *
-	 * @since TBD
-	 *
-	 * @param wpdb   $wpdb The WordPress database global.
-	 * @param array  $results The results array to track changes.
-	 * @param string $table_name The name of the table.
-	 * @param string $index_name The name of the index.
-	 * @param string $columns The columns to index.
-	 *
-	 * @return array The updated results array.
-	 */
-	protected function check_and_add_index( wpdb $wpdb, array $results, string $table_name, string $index_name, string $columns ): array {
-		// Escape table name and columns for safety.
-		$table_name = esc_sql( $table_name );
-		$columns    = esc_sql( $columns );
-
-		// Add index only if it does not exist.
-		if ( ! $this->has_index( $index_name ) ) {
-			// Prepare the SQL for adding an index.
-			$sql = $wpdb->prepare(
-				"ALTER TABLE `$table_name` ADD INDEX `%s` ( $columns )",
-				$index_name
-			);
-
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared
-			$updated = $wpdb->query( $sql );
-
-			if ( $updated ) {
-				$message = sprintf( 'Added index to the %s table on %s.', $table_name, $columns );
-			} else {
-				$message = sprintf( 'Failed to add an index on the %s table for %s.', $table_name, $columns );
-			}
-
-			$results[ "{$table_name}.{$columns}" ] = $message;
-		}
 
 		return $results;
 	}
