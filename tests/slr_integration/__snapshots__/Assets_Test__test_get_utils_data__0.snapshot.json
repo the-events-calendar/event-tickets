@@ -10,6 +10,7 @@
             "event-layouts-select-placeholder": "Choose event layout",
             "view-layouts-link-label": "View layouts",
             "seat-types-select-placeholder": "Choose seat type",
+            "seat-types-loading-msg": "Loading seat types",
             "event-layouts-capacity-info": "Capacity is defined by seat layout options.",
             "seat-layout-label": "Seat Layout",
             "no-layouts-available": "No active Seat Layouts.",

@@ -4,6 +4,7 @@ import { Fragment } from 'react';
 import { getLink, getLocalizedString } from '@tec/tickets/seating/utils';
 
 const getString = (key) => getLocalizedString(key, 'capacity-form');
+const loadingSeatTypes = getString('seat-types-loading-msg');
 
 function EmptyLayouts( props ) {
 	if ( props.layouts.length !== 0 ) {
@@ -91,6 +92,7 @@ const EventLayoutSelect = ({
 					options={seatTypes}
 					onChange={onSeatTypeChange}
 					value={currentSeatType}
+					noOptionsMessage={ () => loadingSeatTypes }
 				/>
 			)}
 			<LayoutsInfo layouts={layouts} />
