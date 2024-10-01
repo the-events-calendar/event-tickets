@@ -153,11 +153,42 @@ export const filterSettingsFields = (fields) => {
 	const layouts = store.getLayoutsInOptionFormat();
 
 	fields.push(
-		<LayoutSelect
-			layouts={layouts}
-			currentLayout={currentLayout}
-		/>
+		<LayoutSelect layouts={layouts} currentLayout={currentLayout} />
 	);
 
 	return fields;
-}
+};
+
+/**
+ * Filters whether the confirm save button is disabled.
+ *
+ * @since TBD
+ *
+ * @param {boolean} isDisabled Whether the button is disabled.
+ * @param {Object}  state      The state of the store.
+ * @param {Object}  ownProps   The own props of the component.
+ *
+ * @return {boolean} Whether the button is disabled.
+ */
+export const filterButtonIsDisabled = (isDisabled, state, ownProps) => {
+	if (isDisabled) {
+		// If disabled already, we have no reason to enable it.
+		return isDisabled;
+	}
+
+	const store = select(storeName);
+
+	if (!store.isUsingAssignedSeating()) {
+		return isDisabled;
+	}
+
+	if (!store.getCurrentLayoutId()) {
+		return true;
+	}
+
+	if (!store.getTicketSeatType(ownProps.clientId)) {
+		return true;
+	}
+
+	return false;
+};

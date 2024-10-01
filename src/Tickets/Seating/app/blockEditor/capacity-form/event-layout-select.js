@@ -27,8 +27,8 @@ function EmptyLayouts( props ) {
 	);
 }
 
-function LockedLayout( props ) {
-	if ( ! props.layoutLocked ) {
+function LockedLayout(props) {
+	if (!(props.layoutLocked && props?.currentLayout)) {
 		return null;
 	}
 
