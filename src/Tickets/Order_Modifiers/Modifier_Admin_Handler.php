@@ -375,30 +375,38 @@ class Modifier_Admin_Handler {
 		$nonce         = tribe_get_request_var( '_wpnonce', '' );
 		$modifier_type = sanitize_key( tribe_get_request_var( 'modifier', '' ) );
 
-		if ( 'delete_modifier' === $action && ! empty( $modifier_id ) && ! empty( $modifier_type ) ) {
-			// Verify nonce.
-			if ( ! wp_verify_nonce( $nonce, 'delete_modifier_' . $modifier_id ) ) {
-				wp_die( esc_html__( 'Nonce verification failed.', 'event-tickets' ) );
-			}
-
-			// Get the appropriate strategy for the selected modifier type.
-			$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
-
-			// Handle invalid modifier strategy.
-			if ( ! $modifier_strategy ) {
-				wp_die( esc_html__( 'Invalid modifier type.', 'event-tickets' ) );
-			}
-
-			// Perform the deletion logic.
-			$deletion_success = $modifier_strategy->delete_modifier( $modifier_id );
-
-			// Construct the redirect URL with a success or failure flag.
-			$redirect_url = remove_query_arg( [ 'action', 'modifier_id', '_wpnonce' ], wp_get_referer() );
-			$redirect_url = add_query_arg( 'deleted', $deletion_success ? 'success' : 'fail', $redirect_url );
-
-			// Redirect to the original page to avoid resubmitting the form upon refresh.
-			wp_safe_redirect( $redirect_url );
-			exit;
+		// Early bail if the action is not 'delete_modifier'.
+		if ( 'delete_modifier' !== $action ) {
+			return;
 		}
+
+		// Bail if the modifier ID or type is empty.
+		if ( empty( $modifier_id ) || empty( $modifier_type ) ) {
+			return;
+		}
+
+		// Verify nonce.
+		if ( ! wp_verify_nonce( $nonce, 'delete_modifier_' . $modifier_id ) ) {
+			wp_die( esc_html__( 'Nonce verification failed.', 'event-tickets' ) );
+		}
+
+		// Get the appropriate strategy for the selected modifier type.
+		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
+
+		// Handle invalid modifier strategy.
+		if ( ! $modifier_strategy ) {
+			wp_die( esc_html__( 'Invalid modifier type.', 'event-tickets' ) );
+		}
+
+		// Perform the deletion logic.
+		$deletion_success = $modifier_strategy->delete_modifier( $modifier_id );
+
+		// Construct the redirect URL with a success or failure flag.
+		$redirect_url = remove_query_arg( [ 'action', 'modifier_id', '_wpnonce' ], wp_get_referer() );
+		$redirect_url = add_query_arg( 'deleted', $deletion_success ? 'success' : 'fail', $redirect_url );
+
+		// Redirect to the original page to avoid resubmitting the form upon refresh.
+		wp_safe_redirect( $redirect_url );
+		exit;
 	}
 }
