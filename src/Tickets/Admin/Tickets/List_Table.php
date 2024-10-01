@@ -514,7 +514,7 @@ class List_Table extends WP_List_Table {
 				esc_url( $ticket_settings_url ),
 				esc_html__( 'Ticket Settings Page', 'event-tickets' )
 			);
-			$msg_line_2 = sprintf(
+			$msg_line_2           = sprintf(
 				// Translators: %s: Ticket Settings Page link.
 				esc_html__( 'You can enable this post type on the %s.', 'event-tickets' ),
 				$ticket_settings_link
