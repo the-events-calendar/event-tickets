@@ -701,7 +701,7 @@ export const isTicketSalePriceValid = createSelector(
 
 export const isTempTitleValid = createSelector(
 	[ getTicketTempTitle ],
-	( title ) => title && trim( title ) !== '',
+	( title ) => trim( title ) !== '',
 );
 
 export const isTempCapacityValid = createSelector(
