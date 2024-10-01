@@ -226,7 +226,7 @@ class Seats_Report extends Report_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @return bool
+	 * @return bool Whether the upsell should show or not.
 	 */
 	protected function should_show_upsell(): bool {
 		$seating = get_resource( 'tec-seating' );
