@@ -17,6 +17,9 @@ use TEC\Tickets\Order_Modifiers\Controller;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifier_Relationship;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers;
+use Tribe__Tickets__Admin__Views;
+use Tribe__Tickets__Main;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
  * Class Order_Modifier_Fee_Metabox
@@ -60,6 +63,7 @@ class Order_Modifier_Fee_Metabox {
 	 * @var Order_Modifiers
 	 */
 	protected Order_Modifiers $order_modifiers_repository;
+
 	/**
 	 * The repository for interacting with the order modifiers relationships.
 	 *
@@ -67,7 +71,6 @@ class Order_Modifier_Fee_Metabox {
 	 * @var Order_Modifier_Relationship
 	 */
 	protected Order_Modifier_Relationship $order_modifiers_relationship_repository;
-
 
 	/**
 	 * Constructor to initialize dependencies and set up the modifier strategy and manager.
@@ -94,7 +97,19 @@ class Order_Modifier_Fee_Metabox {
 	 */
 	public function register(): void {
 		add_action( 'tribe_events_tickets_metabox_edit_main', [ $this, 'add_fee_section' ], 30, 2 );
-		add_action( 'tec_tickets_commerce_after_save_ticket', [ $this, 'save_ticket_fee' ], 10, 3 );
+		add_action(
+			'tec_tickets_commerce_after_save_ticket',
+			function ( $post_id, $ticket, array $raw_data ) {
+				// Ensure the ticket is a Ticket_Object instance.
+				if ( ! $ticket instanceof Ticket_Object ) {
+					return;
+				}
+
+				$this->save_ticket_fee( $ticket, $raw_data );
+			},
+			10,
+			3
+		);
 		add_action( 'tec_tickets_commerce_ticket_deleted', [ $this, 'delete_ticket_fee' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_order_modifiers_fee_scripts' ] );
 	}
@@ -196,13 +211,12 @@ class Order_Modifier_Fee_Metabox {
 	 *
 	 * @since TBD
 	 *
-	 * @param int    $post_id The post ID of the ticket.
-	 * @param object $ticket The ticket object.
-	 * @param array  $raw_data The raw form data.
+	 * @param Ticket_Object $ticket   The ticket object.
+	 * @param array         $raw_data The raw form data.
 	 *
 	 * @return void
 	 */
-	public function save_ticket_fee( int $post_id, object $ticket, array $raw_data ): void {
+	protected function save_ticket_fee( Ticket_Object $ticket, array $raw_data ): void {
 		// Delete existing relationships for the ticket.
 		$this->manager->delete_relationships_by_post( $ticket->ID );
 
@@ -217,14 +231,10 @@ class Order_Modifier_Fee_Metabox {
 
 		// Filter fees into those automatically applied ('all') and extract their IDs.
 		$automatic_fee_ids = array_map(
-			function ( $fee ) {
-				return $fee->id;
-			},
+			fn( $fee ) => $fee->id,
 			array_filter(
 				$fees,
-				function ( $fee ) {
-					return empty( $fee->meta_value ) || $fee->meta_value === 'all';
-				}
+				fn( $fee ) => empty( $fee->meta_value ) || $fee->meta_value === 'all'
 			)
 		);
 
@@ -233,7 +243,11 @@ class Order_Modifier_Fee_Metabox {
 
 		// Merge the automatic fee IDs into the ticket_order_modifier_fees array.
 		$ticket_order_modifier_fees = array_merge( $raw_data['ticket_order_modifier_fees'], $automatic_fee_ids );
-		$fee_ids                    = array_map( 'absint', $ticket_order_modifier_fees ); // Ensure IDs are integers.
+
+		// Ensure IDs are integers.
+		$fee_ids = array_map( 'absint', $ticket_order_modifier_fees );
+
+		// Sync the relationships between the selected fees and the ticket.
 		$this->manager->sync_modifier_relationships( $fee_ids, [ $ticket->ID ] );
 	}
 
@@ -249,7 +263,6 @@ class Order_Modifier_Fee_Metabox {
 	 * @return void
 	 */
 	public function delete_ticket_fee( int $ticket_id ): void {
-		// Delete all fee relationships for the ticket.
 		$this->manager->delete_relationships_by_post( $ticket_id );
 	}
 }
