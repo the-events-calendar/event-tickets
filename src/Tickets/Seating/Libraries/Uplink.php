@@ -76,7 +76,7 @@ class Uplink extends Controller_Contract {
 	 * @since TBD
 	 */
 	public function store_successful_connection(): void {
-		tribe_update_option( 'tec_tickets_seating_connected_on', time() );
+		tribe_update_option( 'tickets_seating_connected_on', true );
 	}
 
 	/**

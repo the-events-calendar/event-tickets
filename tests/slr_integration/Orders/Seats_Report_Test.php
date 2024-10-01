@@ -102,7 +102,7 @@ class Seats_Report_Test extends WPTEstCase {
 
 		$seats_report = tribe( Seats_Report::class );
 
-		tribe_update_option( 'tec_tickets_seating_connected_on', time() );
+		tribe_update_option( 'tickets_seating_connected_on', true );
 
 		ob_start();
 		$seats_report->render_page();
@@ -145,7 +145,7 @@ class Seats_Report_Test extends WPTEstCase {
 
 		$seats_report = tribe( Seats_Report::class );
 
-		tribe_remove_option( 'tec_tickets_seating_connected_on' );
+		tribe_remove_option( 'tickets_seating_connected_on' );
 
 		ob_start();
 		$seats_report->render_page();

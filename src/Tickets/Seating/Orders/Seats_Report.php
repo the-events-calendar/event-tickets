@@ -244,7 +244,7 @@ class Seats_Report extends Report_Abstract {
 			! (
 				$seating->get_license_object()->is_valid() ||
 				$seating->get_license_object()->is_expired() ||
-				tribe_get_option( 'tec_tickets_seating_connected_on', false )
+				tribe_get_option( 'tickets_seating_connected_on', false )
 			),
 			$seating
 		);
