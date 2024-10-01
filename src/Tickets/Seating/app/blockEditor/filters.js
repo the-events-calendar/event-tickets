@@ -11,7 +11,7 @@ import {
 	filterTicketIsAsc,
 	setSeatTypeForTicket,
 	filterSettingsFields,
-	filterTicketIsValid,
+	filterButtonIsDisabled,
 } from './hook-callbacks';
 
 const shouldRenderAssignedSeatingForm = true;
@@ -145,7 +145,7 @@ addAction(
 );
 
 addFilter(
-	'tec.tickets.blocks.ticket.isValid',
+	'tec.tickets.blocks.confirmButton.isDisabled',
 	'tec.tickets.seating',
-	filterTicketIsValid
+	filterButtonIsDisabled
 );

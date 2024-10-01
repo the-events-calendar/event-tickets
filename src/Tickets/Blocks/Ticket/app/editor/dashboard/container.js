@@ -18,46 +18,6 @@ import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
 
 /**
- * Filters whether the confirm button should be disabled.
- *
- * @since TBD
- *
- * @param {Object} state    The state of the store.
- * @param {Object} ownProps The own props of the component.
- *
- * @return {boolean} Whether the confirm button should be disabled.
- */
-const shouldConfirmBeDisabled = (state, ownProps) => {
-	if (selectors.isTicketDisabled(state, ownProps)) {
-		return true;
-	}
-
-	if (selectors.getTicketHasDurationError(state, ownProps)) {
-		return true;
-	}
-
-	if (!selectors.getTicketHasChanges(state, ownProps)) {
-		return true;
-	}
-
-	/**
-	 * Filters whether the ticket is valid.
-	 *
-	 * @since TBD
-	 *
-	 * @param {boolean} isValid  Whether the ticket is valid.
-	 * @param {Object}  state    The state of the store.
-	 * @param {Object}  ownProps The own props of the component.
-	 */
-	return !applyFilters(
-		'tec.tickets.blocks.ticket.isValid',
-		selectors.isTicketValid(state, ownProps),
-		state,
-		ownProps
-	);
-};
-
-/**
  * Whether the confirm button should be disabled.
  *
  * @since TBD
@@ -67,7 +27,13 @@ const shouldConfirmBeDisabled = (state, ownProps) => {
  *
  * @return {boolean} Whether the confirm button should be disabled.
  */
-const getIsConfirmDisabled = (state, ownProps) =>
+const getIsConfirmDisabled = (state, ownProps) => {
+	const shouldConfirmBeDisabled =
+		selectors.isTicketDisabled(state, ownProps) ||
+		selectors.getTicketHasDurationError(state, ownProps) ||
+		!selectors.getTicketHasChanges(state, ownProps) ||
+		!selectors.isTicketValid(state, ownProps);
+
 	/**
 	 * Filters whether the confirm button should be disabled.
 	 *
@@ -77,12 +43,13 @@ const getIsConfirmDisabled = (state, ownProps) =>
 	 * @param {Object}  state      The state of the store.
 	 * @param {Object}  ownProps   The own props of the component.
 	 */
-	applyFilters(
+	return applyFilters(
 		'tec.tickets.blocks.confirmButton.isDisabled',
-		shouldConfirmBeDisabled(state, ownProps),
+		shouldConfirmBeDisabled,
 		state,
 		ownProps
 	);
+};
 
 const onCancelClick = ( state, dispatch, ownProps ) => () => {
 	if ( selectors.getTicketHasBeenCreated( state, ownProps ) ) {

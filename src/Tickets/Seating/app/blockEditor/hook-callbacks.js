@@ -160,35 +160,35 @@ export const filterSettingsFields = (fields) => {
 };
 
 /**
- * Filters whether the ticket is valid.
+ * Filters whether the confirm save button is disabled.
  *
  * @since TBD
  *
- * @param {boolean} isValid  Whether the ticket is valid.
- * @param {Object}  state    The state of the store.
- * @param {Object}  ownProps The own props of the component.
+ * @param {boolean} isDisabled Whether the button is disabled.
+ * @param {Object}  state      The state of the store.
+ * @param {Object}  ownProps   The own props of the component.
  *
- * @return {boolean} Whether the ticket is valid.
+ * @return {boolean} Whether the button is disabled.
  */
-export const filterTicketIsValid = (isValid, state, ownProps) => {
-	if (!isValid) {
-		// No need to continue with the check if the ticket is already invalid.
-		return isValid;
+export const filterButtonIsDisabled = (isDisabled, state, ownProps) => {
+	if (isDisabled) {
+		// If disabled already, we have no reason to enable it.
+		return isDisabled;
 	}
 
 	const store = select(storeName);
 
 	if (!store.isUsingAssignedSeating()) {
-		return isValid;
+		return isDisabled;
 	}
 
 	if (!store.getCurrentLayoutId()) {
-		return false;
+		return true;
 	}
 
 	if (!store.getTicketSeatType(ownProps.clientId)) {
-		return false;
+		return true;
 	}
 
-	return true;
+	return false;
 };

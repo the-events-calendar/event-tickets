@@ -8,7 +8,7 @@ import {
 	filterSeatedTicketsAvailabilityMappedProps,
 	filterSetBodyDetails,
 	setSeatTypeForTicket,
-	filterTicketIsValid,
+	filterButtonIsDisabled,
 } from '@tec/tickets/seating/blockEditor/hook-callbacks';
 
 jest.mock('@wordpress/data', () => ({
@@ -469,12 +469,12 @@ describe('hook-callbacks', () => {
 		});
 	});
 
-	describe('filterTicketIsValid', () => {
-		it('if invalid should return invalid', () => {
+	describe('filterButtonIsDisabled', () => {
+		it('if disabled should return disabled', () => {
 			const ownProps = { clientId: 'client-id-1' };
 
 			const state = {};
-			expect(filterTicketIsValid(false, state, ownProps)).toEqual(false);
+			expect(filterButtonIsDisabled(true, state, ownProps)).toEqual(true);
 		});
 
 		it('if not ASC it should not interfere', () => {
@@ -492,10 +492,10 @@ describe('hook-callbacks', () => {
 				isUsingAssignedSeating: () => isUsingAssignedSeating,
 			});
 
-			expect(filterTicketIsValid(true, state, ownProps)).toEqual(true);
+			expect(filterButtonIsDisabled(true, state, ownProps)).toEqual(true);
 		});
 
-		it('if ASC and no layout id or seat type it should return invalid', () => {
+		it('if ASC and no layout id or seat type it should return disabled', () => {
 			const seatType = null;
 			const layoutId = '';
 			const isUsingAssignedSeating = true;
@@ -510,10 +510,12 @@ describe('hook-callbacks', () => {
 				isUsingAssignedSeating: () => isUsingAssignedSeating,
 			});
 
-			expect(filterTicketIsValid(true, state, ownProps)).toEqual(false);
+			expect(filterButtonIsDisabled(false, state, ownProps)).toEqual(
+				true
+			);
 		});
 
-		it('if ASC and no layout id or seat type it should return invalid', () => {
+		it('if ASC and no layout id or seat type it should return disabled', () => {
 			const seatType = '';
 			const layoutId = false;
 			const isUsingAssignedSeating = true;
@@ -528,10 +530,12 @@ describe('hook-callbacks', () => {
 				isUsingAssignedSeating: () => isUsingAssignedSeating,
 			});
 
-			expect(filterTicketIsValid(true, state, ownProps)).toEqual(false);
+			expect(filterButtonIsDisabled(false, state, ownProps)).toEqual(
+				true
+			);
 		});
 
-		it('if ASC and layout id but no seat type it should return invalid', () => {
+		it('if ASC and layout id but no seat type it should return disabled', () => {
 			const seatType = '';
 			const layoutId = 'layout-uuid-1';
 			const isUsingAssignedSeating = true;
@@ -546,10 +550,12 @@ describe('hook-callbacks', () => {
 				isUsingAssignedSeating: () => isUsingAssignedSeating,
 			});
 
-			expect(filterTicketIsValid(true, state, ownProps)).toEqual(false);
+			expect(filterButtonIsDisabled(false, state, ownProps)).toEqual(
+				true
+			);
 		});
 
-		it('if ASC and seat type but no layout id it should return invalid', () => {
+		it('if ASC and seat type but no layout id it should return disabled', () => {
 			const seatType = 'seat-type-uuid-1';
 			const layoutId = '';
 			const isUsingAssignedSeating = true;
@@ -564,10 +570,12 @@ describe('hook-callbacks', () => {
 				isUsingAssignedSeating: () => isUsingAssignedSeating,
 			});
 
-			expect(filterTicketIsValid(true, state, ownProps)).toEqual(false);
+			expect(filterButtonIsDisabled(false, state, ownProps)).toEqual(
+				true
+			);
 		});
 
-		it('if ASC and seat type and layout id it should return valid', () => {
+		it('if ASC and seat type and layout id it should return enabled', () => {
 			const seatType = 'seat-type-uuid-1';
 			const layoutId = 'layout-uuid-1';
 			const isUsingAssignedSeating = true;
@@ -582,7 +590,9 @@ describe('hook-callbacks', () => {
 				isUsingAssignedSeating: () => isUsingAssignedSeating,
 			});
 
-			expect(filterTicketIsValid(true, state, ownProps)).toEqual(true);
+			expect(filterButtonIsDisabled(false, state, ownProps)).toEqual(
+				false
+			);
 		});
 	});
 });
