@@ -44,7 +44,6 @@ abstract class Abstract_Custom_Table extends Table {
 		if ( ! $this->has_index( $index_name ) ) {
 			$sql = "ALTER TABLE `$table_name` ADD INDEX `$index_name` ( $columns )";
 
-			codecept_debug( $sql );
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared
 			$updated = $wpdb->query( $sql );
 
@@ -112,10 +111,10 @@ abstract class Abstract_Custom_Table extends Table {
 
 		// Check in constraints (for foreign key constraints).
 		$count_for_constraints = $this->db::table( $this->db::raw( 'information_schema.TABLE_CONSTRAINTS' ) )
-										  ->whereRaw( 'WHERE TABLE_SCHEMA = DATABASE()' )
-										  ->where( 'TABLE_NAME', $table_name )
-										  ->where( 'CONSTRAINT_NAME', $foreign_key )
-										  ->count();
+									  ->whereRaw( 'WHERE TABLE_SCHEMA = DATABASE()' )
+									  ->where( 'TABLE_NAME', $table_name )
+									  ->where( 'CONSTRAINT_NAME', $foreign_key )
+									  ->count();
 
 		// Return true if foreign key exists in either the statistics or constraints table.
 		return ( $count_for_statistics > 0 || $count_for_constraints > 0 );
