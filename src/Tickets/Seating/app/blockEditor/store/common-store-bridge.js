@@ -6,11 +6,9 @@ import {
 	setTicketTempCapacity,
 	setTicketTempCapacityType,
 	setTicketHasChanges,
-	setTicketTempTitle,
 } from '@moderntribe/tickets/data/blocks/ticket/actions';
 import {
 	getTicketId,
-	getTicketTempTitle,
 } from '@moderntribe/tickets/data/blocks/ticket/selectors';
 import { CAPPED } from '@moderntribe/tickets/data/blocks/ticket/constants';
 
@@ -41,11 +39,5 @@ export function setCappedTicketCapacityInCommonStore(clientId, capacity) {
 }
 
 export function setTicketHasChangesInCommonStore(clientId) {
-	const ticketTempTitle = selectFromCommonStore(getTicketTempTitle, {
-		clientId,
-	});
-
-	// "Changing" the tempTitle will trigger a re-evaluation on the confirm button's disabled status.
-	dispatchToCommonStore(setTicketTempTitle(clientId, ticketTempTitle));
 	dispatchToCommonStore(setTicketHasChanges(clientId, true));
 }
