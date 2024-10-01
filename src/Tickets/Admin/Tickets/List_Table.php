@@ -1178,7 +1178,7 @@ class List_Table extends WP_List_Table {
 	 */
 	protected function get_order_page_slug(): string {
 		// Tickets Commerce has its own order page slug. All others are 'tickets-orders'.
-		if ( Page::get_current_provider() !== TicketsCommerce\Module::class ) {
+		if ( Page::get_current_provider() === TicketsCommerce\Module::class ) {
 			return TicketsCommerce\Reports\Orders::$page_slug;
 		}
 
