@@ -159,6 +159,7 @@ class Map_Card {
 				'page'   => Admin::get_menu_slug(),
 				'tab'    => Layout_Edit::get_id(),
 				'mapId'  => $this->get_id(),
+				'isNew'  => '1',
 			],
 			admin_url( 'admin.php' )
 		);

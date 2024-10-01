@@ -14,12 +14,14 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Tickets\Seating\Admin\Ajax;
+use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Frontend\Timer;
 use TEC\Tickets\Seating\Service\Service;
 use Tribe__Template as Base_Template;
 use Tribe__Tickets__Main as ET;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_Error;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
  * Class Controller.
@@ -91,6 +93,8 @@ class Frontend extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ] );
+
+		remove_filter( 'tribe_tickets_block_ticket_html_attributes', [ $this, 'add_seat_selected_labels_per_ticket_attribute' ] );
 	}
 
 	/**
@@ -108,15 +112,20 @@ class Frontend extends Controller_Contract {
 	 */
 	public function print_tickets_block( $html, $file, $name, $template, $context ): ?string {
 		$data    = $template->get_values();
-		$post_id = $data['post_id'];
+		$post_id = $data['post_id'] ?? null;
 
-		if ( ! tec_tickets_seating_enabled( $post_id ) ) {
+		if ( ! ( $post_id && tec_tickets_seating_enabled( $post_id ) ) ) {
 			return $html;
 		}
 
 		$provider = Tickets::get_event_ticket_provider_object( $post_id );
 
 		if ( ! $provider ) {
+			return $html;
+		}
+		
+		// Bail if there are no tickets on sale.
+		if ( empty( $data['has_tickets_on_sale'] ) ) {
 			return $html;
 		}
 
@@ -153,7 +162,7 @@ class Frontend extends Controller_Contract {
 			[
 				'cost_range'    => $cost_range,
 				'inventory'     => $inventory,
-				'modal_content' => $this->get_seat_selection_modal_content( $post_id, $timeout ),
+				'modal_content' => 0 === $inventory ? '' : $this->get_seat_selection_modal_content( $post_id, $timeout ),
 				'timeout'       => $timeout,
 			],
 			false
@@ -264,6 +273,7 @@ class Frontend extends Controller_Contract {
 			'button_classes'          => [ 'tribe-common-c-btn', 'tribe-common-c-btn--small' ],
 			'append_target'           => '.tec-tickets-seating__information',
 			'content_wrapper_classes' => 'tribe-dialog__wrapper tec-tickets-seating__modal',
+			'overlay_click_closes'    => false,
 		];
 
 		return $dialog_view->render_modal( $content, $args, self::MODAL_ID, false );
@@ -278,6 +288,8 @@ class Frontend extends Controller_Contract {
 	 */
 	protected function do_register(): void {
 		add_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ], 10, 5 );
+
+		add_filter( 'tribe_tickets_block_ticket_html_attributes', [ $this, 'add_seat_selected_labels_per_ticket_attribute' ], 10, 3 );
 
 		// Register the front-end JS.
 		Asset::add(
@@ -311,6 +323,40 @@ class Frontend extends Controller_Contract {
 			->add_to_group( 'tec-tickets-seating-frontend' )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
+	}
+
+	/**
+	 * Adds the seat selected labels to the ticket block.
+	 *
+	 * @since TBD
+	 *
+	 * @param array         $attributes The attributes of the ticket block.
+	 * @param Ticket_Object $ticket     The ticket object.
+	 * @param int           $event_id    The post ID.
+	 *
+	 * @return array The attributes of the ticket block.
+	 */
+	public function add_seat_selected_labels_per_ticket_attribute( array $attributes, Ticket_Object $ticket, int $event_id ): array {
+		if ( ! tec_tickets_seating_enabled( $event_id ) ) {
+			return $attributes;
+		}
+
+		$reservations = tribe( Session::class )->get_post_ticket_reservations( $event_id, $ticket->ID );
+
+		if ( empty( $reservations ) || ! is_array( $reservations ) ) {
+			return $attributes;
+		}
+
+		$reservations = implode(
+			',',
+			$reservations ? array_values(
+				wp_list_pluck( $reservations, 'seat_label' )
+			) : []
+		);
+
+		$attributes['data-seat-labels'] = esc_attr( $reservations );
+
+		return $attributes;
 	}
 
 	/**
@@ -385,7 +431,7 @@ class Frontend extends Controller_Contract {
 			$provider ??= tribe_tickets_get_ticket_provider( $ticket_id );
 			$ticket     = $provider->get_ticket( $post_id, $ticket_id );
 
-			if ( ! $ticket instanceof \Tribe__Tickets__Ticket_Object ) {
+			if ( ! $ticket instanceof Ticket_Object ) {
 				continue;
 			}
 

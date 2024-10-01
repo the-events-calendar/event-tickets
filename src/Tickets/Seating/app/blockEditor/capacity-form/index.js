@@ -79,20 +79,30 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 		[]
 	);
 
-	const onToggleChange = useCallback(
-		(value) => {
-			if (isLayoutLocked) {
-				return;
-			}
-
-			setUsingAssignedSeating(value === 'seat');
-		},
-		[isLayoutLocked, setUsingAssignedSeating]
-	);
-
 	const [meta, setMeta] = useEntityProp('postType', postType, 'meta', postId);
 	const updateEventMeta = useCallback(
 		(layoutId) => {
+			if (true === layoutId) {
+				const newMeta = {
+					...meta,
+					// We leave [META_KEY_LAYOUT_ID] as it was since that hasn't changed yet.
+					[META_KEY_ENABLED]: '1',
+				};
+				setMeta(newMeta);
+				return;
+			}
+
+			if (false === layoutId) {
+				const newMeta = {
+					...meta,
+					[META_KEY_ENABLED]: '0',
+					// We set [META_KEY_LAYOUT_ID] to an empty string since we're disabling assigned seating.
+					[META_KEY_LAYOUT_ID]: '',
+				};
+				setMeta(newMeta);
+				return;
+			}
+
 			const newMeta = {
 				...meta,
 				[META_KEY_ENABLED]: '1',
@@ -101,6 +111,18 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 			setMeta(newMeta);
 		},
 		[meta, setMeta]
+	);
+
+	const onToggleChange = useCallback(
+		(value) => {
+			if (isLayoutLocked) {
+				return;
+			}
+
+			setUsingAssignedSeating(value === 'seat');
+			updateEventMeta(value === 'seat');
+		},
+		[isLayoutLocked, setUsingAssignedSeating, updateEventMeta]
 	);
 
 	const onLayoutChange = useCallback(

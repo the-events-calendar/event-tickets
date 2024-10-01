@@ -340,4 +340,35 @@ class Session {
 
 		return $confirmed;
 	}
+
+	/**
+	 * Returns a list of all the reservations details for a specific ticket and event.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|null $post_id   The post ID to get the reservations for.
+	 * @param int|null $ticket_id The ticket ID to get the reservations for.
+	 *
+	 * @return array|null The reservations for the ticket and post.
+	 */
+	public function get_post_ticket_reservations( int $post_id = null, int $ticket_id = null ): ?array {
+		// Bail while in admin side always. There are no reservations in the admin.
+		if ( is_admin() ) {
+			return null;
+		}
+
+		if ( ! ( $ticket_id && $post_id && tec_tickets_seating_enabled( $post_id ) ) ) {
+			return null;
+		}
+
+		[ $token, $object_id ] = $this->get_session_token_object_id();
+
+		if ( ! ( $token && $object_id && (int) $object_id === $post_id ) ) {
+			return null;
+		}
+
+		$token_reservations = $this->sessions->get_reservations_for_token( $token );
+
+		return $token_reservations[ $ticket_id ] ?? null;
+	}
 }

@@ -64,6 +64,7 @@ class Timer_Test extends Controller_Test_Case {
 
 	public function test_render_with_args(): void {
 		$post_id = static::factory()->post->create();
+		update_post_meta( $post_id, Meta::META_KEY_ENABLED, 1 );
 		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-id' );
 
 		$this->make_controller()->register();
@@ -92,6 +93,7 @@ class Timer_Test extends Controller_Test_Case {
 
 	public function test_render_from_cookie_data(): void {
 		$post_id = static::factory()->post->create();
+		update_post_meta( $post_id, Meta::META_KEY_ENABLED, 1 );
 		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-id' );
 
 		$this->make_controller()->register();
@@ -132,6 +134,7 @@ class Timer_Test extends Controller_Test_Case {
 
 	public function test_render_to_sync(): void {
 		$post_id = static::factory()->post->create();
+		update_post_meta( $post_id, Meta::META_KEY_ENABLED, 1 );
 		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-id' );
 
 		$session = tribe( Session::class );
@@ -159,6 +162,7 @@ class Timer_Test extends Controller_Test_Case {
 
 	public function test_render_to_sync_with_previous_render(): void {
 		$post_id = static::factory()->post->create();
+		update_post_meta( $post_id, Meta::META_KEY_ENABLED, 1 );
 		update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
 		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-id' );
 		$session  = tribe( Session::class );
@@ -440,7 +444,7 @@ class Timer_Test extends Controller_Test_Case {
 				return $event_id;
 			}
 		];
-		
+
 		yield 'event with no tickets available and custom calendar slug' => [
 			function () {
 				$event_id = tribe_events()->set_args(
@@ -451,10 +455,10 @@ class Timer_Test extends Controller_Test_Case {
 						'duration'   => 2 * HOUR_IN_SECONDS,
 					]
 				)->create()->ID;
-				
+
 				tribe_update_option( 'eventsSlug', 'events-calendar' );
 				update_post_meta( $event_id, Meta::META_KEY_UUID, 'test-event-uuid' );
-				
+
 				return $event_id;
 			}
 		];
@@ -750,6 +754,7 @@ class Timer_Test extends Controller_Test_Case {
 		$post_id = self::factory()->post->create();
 		$ticket  = $this->create_tc_ticket( $post_id, 10 );
 		// Ensure Seat Selection is not enabled on the post.
+		delete_post_meta( $post_id, Meta::META_KEY_ENABLED );
 		delete_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID );
 
 		$controller = $this->make_controller();
@@ -779,9 +784,11 @@ class Timer_Test extends Controller_Test_Case {
 		$post_id = self::factory()->post->create();
 		$ticket  = $this->create_tc_ticket( $post_id, 10 );
 		// Ensure Seat Selection is not enabled on the post.
+		delete_post_meta( $post_id, Meta::META_KEY_ENABLED );
 		delete_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID );
 		// Create a session that contains information for another post.
 		$post_with_assigned_seating = self::factory()->post->create();
+		update_post_meta( $post_with_assigned_seating, Meta::META_KEY_ENABLED, 1 );
 		update_post_meta( $post_with_assigned_seating, Meta::META_KEY_LAYOUT_ID, 'some-layout-id' );
 		$session  = tribe( Session::class );
 		$sessions = tribe( Sessions::class );

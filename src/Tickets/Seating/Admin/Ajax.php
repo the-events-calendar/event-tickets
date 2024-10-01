@@ -552,6 +552,7 @@ class Ajax extends Controller_Contract {
 					'page'     => Admin::get_menu_slug(),
 					'tab'      => Layout_Edit::get_id(),
 					'layoutId' => $layout_id,
+					'isNew'    => 1,
 				],
 				admin_url( 'admin.php' )
 			);

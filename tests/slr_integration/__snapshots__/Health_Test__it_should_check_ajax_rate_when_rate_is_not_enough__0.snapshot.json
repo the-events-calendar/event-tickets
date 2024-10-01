@@ -1,0 +1,18 @@
+[
+    [
+        {
+            "label": "Can serve AJAX requests in the rate required by the Seating functionality.",
+            "completed": false,
+            "status": "critical",
+            "badge": {
+                "label": "Seating",
+                "color": "red"
+            },
+            "description": "Your site cannot serve AJAX requests in the rate required for the Seating functionality to work as expected! ! This is a critical requirement.",
+            "actions": "<p>Do you have any security plugins that could be enforcing a rate limit?</p><p>Ask your hosting provider why your site is not handling AJAX requests in the rate of 200 requests per second.</p><p><a href=\u0022https://theeventscalendar.com/product/seating/\u0022 target=\u0022_blank\u0022 rel=\u0022noopener noreferrer\u0022>Read more</a> or <a href=\u0022https://theeventscalendar.com/product/seating/\u0022 target=\u0022_blank\u0022 rel=\u0022noopener noreferrer\u0022>get help</a> resolving this issue.</p>",
+            "test": "slr-ajax-rate"
+        },
+        null,
+        0
+    ]
+]

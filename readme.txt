@@ -206,6 +206,16 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.13.4] 2024-09-26 =
+
+* Fix - Load the full Payment Element if we have Wallets enabled. [ETP-942]
+* Language - 0 new strings added, 0 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.13.3.1] 2024-09-16 =
+
+* Security - Improve sanitization and escaping for Administration screens of ticket purchases.
+* Security - Improve general escaping for ORM queries to prevent legacy Events methods to be used for SQL injections.
+
 = [5.13.3] 2024-09-11 =
 
 * Feature - Added Individual Order Screen in the Admin to improve the Order Management for Tickets Commerce. [ET-2150]

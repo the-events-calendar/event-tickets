@@ -1,0 +1,18 @@
+[
+    [
+        {
+            "label": "Has valid Seating license",
+            "completed": false,
+            "status": "critical",
+            "badge": {
+                "label": "Seating",
+                "color": "red"
+            },
+            "description": "Your Seating license is invalid! This is a critical requirement for the Seating functionality to work as expected!",
+            "actions": "<p>If you don&#039;t have a license, you can purchase one <a href=\u0022https://theeventscalendar.com/product/seating/\u0022 target=\u0022_blank\u0022 rel=\u0022noopener noreferrer\u0022>here.</a></p><p>If you do have a license, make sure it is active for this site by visiting your <a href=\u0022https://theeventscalendar.com/product/seating/\u0022 target=\u0022_blank\u0022 rel=\u0022noopener noreferrer\u0022>account.</a></p><p>Finally, please try authorizing <a href=\u0022\u0022>again.</a></p>",
+            "test": "slr-valid-license"
+        },
+        null,
+        0
+    ]
+]

@@ -48,7 +48,8 @@ class Uplink extends Controller_Contract {
 	 */
 	public function do_register(): void {
 		$this->et_main = tribe( 'tickets.main' );
-		$this->add_actions();
+
+		add_action( 'init', [ $this, 'register_plugin' ] );
 	}
 
 	/**
@@ -59,24 +60,6 @@ class Uplink extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
-		$this->remove_actions();
-	}
-
-	/**
-	 * Add the action hooks.
-	 *
-	 * @since TBD
-	 */
-	public function add_actions(): void {
-		add_action( 'init', [ $this, 'register_plugin' ] );
-	}
-
-	/**
-	 * Remove the action hooks.
-	 *
-	 * @since TBD
-	 */
-	public function remove_actions(): void {
 		remove_action( 'init', [ $this, 'register_plugin' ] );
 	}
 
