@@ -41,19 +41,20 @@ abstract class Abstract_Custom_Table extends Table {
 		$columns    = esc_sql( $columns );
 
 		// Add index only if it does not exist.
-		if ( ! $this->has_index( $index_name ) ) {
-			$sql = "ALTER TABLE `{$table_name}` ADD INDEX `{$index_name}` ( {$columns} )";
-
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared
-			$updated = $wpdb->query( $sql );
-
-			$message = $updated ?
-				sprintf( 'Added index to the %s table on %s.', $table_name, $columns ) :
-				sprintf( 'Failed to add an index on the %s table for %s.', $table_name, $columns );
-
-			$results[ "{$table_name}.{$columns}" ] = $message;
+		if ( $this->has_index( $index_name ) ) {
+			return $results;
 		}
 
+		$sql = "ALTER TABLE `{$table_name}` ADD INDEX `{$index_name}` ( {$columns} )";
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared
+		$updated = $wpdb->query( $sql );
+
+		$message = $updated ?
+			sprintf( 'Added index to the %s table on %s.', $table_name, $columns ) :
+			sprintf( 'Failed to add an index on the %s table for %s.', $table_name, $columns );
+
+		$results[ "{$table_name}.{$columns}" ] = $message;
 		return $results;
 	}
 
