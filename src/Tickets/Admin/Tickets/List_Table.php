@@ -762,7 +762,7 @@ class List_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_sold( $item ): string {
-		if ( $item instanceof WP_Post || empty( $item->get_event() ) ) {
+		if ( $item instanceof WP_Post ) {
 			return '-';
 		}
 
@@ -791,8 +791,13 @@ class List_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_remaining( $item ): string {
-		if ( $item instanceof WP_Post || empty( $item->get_event() ) ) {
+		if ( $item instanceof WP_Post ) {
 			return '-';
+		}
+
+		// If there is no event, do not attempt to calculate remaining tickets.
+		if ( empty( $item->get_event() ) ) {
+			return 0;
 		}
 
 		$available = $item->available();
@@ -821,7 +826,7 @@ class List_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_sales( $item ): string {
-		if ( $item instanceof WP_Post || empty( $item->get_event() ) ) {
+		if ( $item instanceof WP_Post ) {
 			return '-';
 		}
 
