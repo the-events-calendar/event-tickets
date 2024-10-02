@@ -65,11 +65,17 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 			$post_id                   = get_the_ID();
 			$is_using_assigned_seating = tribe_is_truthy( get_post_meta( $post_id, Meta::META_KEY_ENABLED, true ) );
 			$layout_id                 = get_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, true );
-			$is_layout_locked          = ! empty( $layout_id );
 			$seat_types_by_post_id     = [];
+			$is_layout_locked          = ! empty( $layout_id );
 			foreach ( tribe_tickets()->where( 'event', $post_id )->get_ids( true ) as $ticket_id ) {
+				if ( ! $ticket_id ) {
+					continue;
+				}
+
+				$is_layout_locked                    = true; // If there are tickets already, layout is definitely locked!
 				$seat_types_by_post_id[ $ticket_id ] = get_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, true );
 			}
+
 			$event_capacity = tribe_get_event_capacity( $post_id );
 		}
 
