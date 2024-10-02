@@ -2986,4 +2986,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		return $post_types;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function add_admin_tickets_hooks() {
+		// We do not want to add RSVPs to the Admin Tickets page.
+	}
 }
