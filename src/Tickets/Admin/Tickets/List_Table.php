@@ -506,7 +506,7 @@ class List_Table extends WP_List_Table {
 	public function column_event( $item ): string {
 		// If the item is a post, it means the post type is disabled in the ticket settings.
 		if ( $item instanceof WP_Post ) {
-			$msq_line_1 = esc_html__( 'This ticket is connected to a disabled post type.', 'event-tickets' );
+			$msg_line_1 = esc_html__( 'This ticket is connected to a disabled post type.', 'event-tickets' );
 
 			$ticket_settings_url  = add_query_arg( [ 'page' => Settings::$settings_page_id ], admin_url( 'admin.php' ) );
 			$ticket_settings_link = sprintf(
@@ -520,7 +520,7 @@ class List_Table extends WP_List_Table {
 				$ticket_settings_link
 			);
 
-			return wp_kses_post( sprintf( '<i>%s<br>%s</i>', $msq_line_1, $msg_line_2 ) );
+			return wp_kses_post( sprintf( '<i>%s<br>%s</i>', $msg_line_1, $msg_line_2 ) );
 		}
 
 		// If the item is a ticket object, get the event.
