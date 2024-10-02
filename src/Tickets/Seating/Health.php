@@ -12,6 +12,7 @@ namespace TEC\Tickets\Seating;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Tickets\Seating\Service\Service;
+use Tribe\Tickets\Admin\Settings;
 use function TEC\Common\StellarWP\Uplink\get_resource;
 
 /**
@@ -68,110 +69,114 @@ class Health extends Controller_Contract {
 	 * @return void
 	 */
 	protected function define_tests() {
+		$set_license_url = tribe( Settings::class )->get_url( [ 'tab' => 'licenses' ] );
+
 		$this->tests = [
 			'slr_valid_license' => [
-				'label'     => __( 'Has valid Seating license', 'event-tickets' ),
+				'label'     => __( 'Seating license is valid', 'event-tickets' ),
 				'test'      => 'slr-valid-license',
 				'completed' => false,
 				'extra'     => [
 					'success' => [
-						'description' => __( 'Your Seating license is valid!', 'event-tickets' ),
+						'description' => __( 'Your license is valid.', 'event-tickets' ),
 						'actions'     => [
-							// Translators: %1$s and %2$s are opening and closing tags respectively for HTML p and a elements.
-							_x( '%1$sLearn more about Seating%2$s', 'Shown as an action result, when the test regarding Seating license in Site Health is successful.', 'event-tickets' ),
+							// Translators: 1 is opening a element, 2 is closing of p element, 3 is opening of a element and 4 is closing of a element.
+							_x( '%1$sYou can check your license status on your account at %3$stheeventscalendar.com%4$s.%2$s', 'Shown as an action result, when the test regarding Seating license in Site Health is successful.', 'event-tickets' ),
 							[
-								// Learn more about Seating link.
-								'<p><a href="https://theeventscalendar.com/product/seating/" target="_blank" rel="noopener noreferrer">',
-								'</a></p>',
+								'<p>',
+								'</p>',
+								// Visit my account.
+								'<a href="https://evnt.is/1be1" target="_blank" rel="noopener noreferrer">',
+								'</a>',
 							],
 						],
 					],
 					'failure' => [
-						'description' => __( 'Your Seating license is invalid! This is a critical requirement for the Seating functionality to work as expected!', 'event-tickets' ),
+						'description' => __( 'Your Seating license is invalid. You must have a valid license to use Seating for Event Tickets.', 'event-tickets' ),
 						'actions'     => [
-							// Translators: %1$s Opening p element, %2$s closing a and p elements, %3$s %4$s and %5$s opening a elements.
-							_x( '%1$sIf you don\'t have a license, you can purchase one %3$shere.%2$s%1$sIf you do have a license, make sure it is active for this site by visiting your %4$saccount.%2$s%1$sFinally, please try authorizing %5$sagain.%2$s', 'Shown as an action result, when the test regarding Seating license in Site Health has failed.', 'event-tickets' ),
+							// Translators: 1 Opening p element, 2 closing p element, 3 is closing a element, 4, 5, 6 and 7 opening a elements.
+							_x( '%1$sYou may need to %4$spurchase a license%3$s or %5$srenew an existing license%3$s.%2$s%2$sOnce you have a valid license, enter it under %6$sTickets > Settings > Licenses%3$s and connect to the Seat Builder Service.%2$s%1$s%7$sLearn more about about setting up Seating%3$s%2$s', 'Shown as an action result, when the test regarding Seating license in Site Health has failed.', 'event-tickets' ),
 							[
 								'<p>',
-								'</a></p>',
+								'</p>',
+								'</a>',
 								// Purchase Seating license link.
-								'<a href="https://theeventscalendar.com/product/seating/" target="_blank" rel="noopener noreferrer">',
+								'<a href="https://evnt.is/1be0" target="_blank" rel="noopener noreferrer">',
 								// Visit my account - Seating section link.
-								'<a href="https://theeventscalendar.com/product/seating/" target="_blank" rel="noopener noreferrer">',
+								'<a href="https://evnt.is/1be1" target="_blank" rel="noopener noreferrer">',
 								// Authorize Seating link.
-								'<a href="">',
+								'<a href="' . esc_url( $set_license_url ) . '">',
+								// Learn more about setting up Seating link.
+								'<a href="https://evnt.is/1be2" target="_blank" rel="noopener noreferrer">',
 							],
 						],
 					],
 				],
 			],
 			'slr_can_see_sass'  => [
-				'label'     => __( 'Can communicate with the Seating App', 'event-tickets' ),
+				'label'     => __( 'Your site communicates with the Seating Builder SaaS', 'event-tickets' ),
 				'test'      => 'slr-can-see-sass',
 				'completed' => false,
 				'extra'     => [
 					'success' => [
-						'description' => __( 'Your site can communicate with the Seating App!', 'event-tickets' ),
+						'description' => __( 'Your site is connected to the Seating Builder SaaS.', 'event-tickets' ),
 						'actions'     => [
-							// Translators: %1$s and %2$s are opening and closing tags respectively for HTML p and a elements.
-							_x( '%1$sLearn more about Seating%2$s', 'Shown as an action result, when the test regarding Seating license in Site Health is successful.', 'event-tickets' ),
+							// Translators: 1 is opening p element, 2 is closing p element, 3 is opening a element and 4 is closing a element.
+							_x( '%1$sYou\'re ready to %3$suse Seating for Event Tickets%4$s.%2$s', 'Shown as an action result, when the test regarding Seating license in Site Health is successful.', 'event-tickets' ),
 							[
+								'<p>',
+								'</p>',
 								// Learn more about Seating link.
-								'<p><a href="https://theeventscalendar.com/product/seating/" target="_blank" rel="noopener noreferrer">',
-								'</a></p>',
+								'<a href="https://evnt.is/1be3" target="_blank" rel="noopener noreferrer">',
+								'</a>',
 							],
 						],
 					],
 					'failure' => [
-						'description' => __( 'Your site cannot communicate with the Seating App! This is a critical requirement for the Seating functionality to work as expected!', 'event-tickets' ),
+						'description' => __( 'Your site is not connected to the Seating Builder SaaS. The Seating Builder is a SaaS tool that provides the functionality for creating Seating Maps, Seat Layouts, and tickets with assigned seating. Your site must be connected to the Seating Builder in order to use these features.', 'event-tickets' ),
 						'actions'     => [
-							// Translators: %1$s Opening p element, %2$s closing p element, %3$s and %4$s opening a elements, %5$s closing a element.
-							_x( '%1$sEnsure the Seating App is online and health by checking the %3$sstatus page.%5$s%2$s%1$s%4$sGet help%5$s resolving this issue.%2$s', 'Shown as an action result, when the test regarding Seating license in Site Health has failed.', 'event-tickets' ),
+							// Translators: 1 Opening p element, 2 closing p element, 3 is closing a element, 4, 5 and 6 opening a elements.
+							_x( '%1$sGo to %4$sTickets > Settings > License%3$s > Seating and you connect to the Seating Builder.%2$s%1$s%5$sLearn more about connecting to the Seat Builder%3$s or %6$scontact support%3$s.%2$s', 'Shown as an action result, when the test regarding Seating license in Site Health has failed.', 'event-tickets' ),
 							[
 								'<p>',
 								'</p>',
-								// Seating Status page link.
-								'<a href="https://theeventscalendar.com/product/seating/" target="_blank" rel="noopener noreferrer">',
-								// Support link.
-								'<a href="https://theeventscalendar.com/product/seating/" target="_blank" rel="noopener noreferrer">',
-								// Authorize Seating link.
 								'</a>',
+								// Authorize Seating link.
+								'<a href="' . esc_url( $set_license_url ) . '">',
+								// Learn more about Seating link.
+								'<a href="https://evnt.is/1be2" target="_blank" rel="noopener noreferrer">',
+								// Support link.
+								'<a href="https://evnt.is/1be4" target="_blank" rel="noopener noreferrer">',
 							],
 						],
 					],
 				],
 			],
 			'slr_ajax_rate'     => [
-				'label'     => __( 'Can serve AJAX requests in the rate required by the Seating functionality.', 'event-tickets' ),
+				'label'     => __( 'Site serves AJAX requests at the required rate', 'event-tickets' ),
 				'test'      => 'slr-ajax-rate',
 				'completed' => false,
 				'extra'     => [
 					'success' => [
-						'description' => __( 'Your site can serve AJAX requests in the rate required by the Seating functionality!', 'event-tickets' ),
+						'description' => __( 'Your site can serve AJAX requests at the required rate.', 'event-tickets' ),
 						'actions'     => [
-							// Translators: %1$s and %2$s are opening and closing tags respectively for HTML p and a elements.
-							_x( '%1$sLearn more about Seating%2$s', 'Shown as an action result, when the test regarding Seating license in Site Health is successful.', 'event-tickets' ),
-							[
-								// Learn more about Seating link.
-								'<p><a href="https://theeventscalendar.com/product/seating/" target="_blank" rel="noopener noreferrer">',
-								'</a></p>',
-							],
+							'',
+							[],
 						],
 					],
 					'failure' => [
-						'description' => __( 'Your site cannot serve AJAX requests in the rate required for the Seating functionality to work as expected! ! This is a critical requirement.', 'event-tickets' ),
+						'description' => __( 'Your site cannot serve AJAX requests at the rate required for Seating and the WordPress block editor.', 'event-tickets' ),
 						'actions'     => [
-							// Translators: %1$s Opening p element, %2$s closing p element, %3$s and %5$s opening a elements, %4$s closing a element.
-							_x( '%1$sDo you have any security plugins that could be enforcing a rate limit?%2$s%1$sAsk your hosting provider why your site is not handling AJAX requests in the rate of %3$d requests per second.%2$s%1$s%4$sRead more%5$s or %6$sget help%5$s resolving this issue.%2$s', 'Shown as an action result, when the test regarding Seating license in Site Health has failed.', 'event-tickets' ),
+							// Translators: 1 Opening p element, 2 closing p element, 3 closing a element, 4 and 5 opening a elements.
+							_x( '%1$sSome plugins and hosts enforce a rate limit which interferes with other WordPress functionality including Seating.%2$s%1$sIf your site uses any security plugins, check if they are enforcing a limit on AJAX requests.%2$s%1$sContact your host provider and ask how to remove or raise the rate limit for your site.%2$s%1$s%4$sLearn more about AJAX%3$s or %5$scontact support%3$s.%2$s', 'Shown as an action result, when the test regarding Seating license in Site Health has failed.', 'event-tickets' ),
 							[
 								'<p>',
 								'</p>',
-								(int) ceil( 1000000 / self::AJAX_RATE ),
-								// Read more about AJAX rate link.
-								'<a href="https://theeventscalendar.com/product/seating/" target="_blank" rel="noopener noreferrer">',
 								'</a>',
+								// Learn more about AJAX link.
+								'<a href="https://developer.wordpress.org/plugins/javascript/ajax/" target="_blank" rel="noopener noreferrer">',
 								// Support link.
-								'<a href="https://theeventscalendar.com/product/seating/" target="_blank" rel="noopener noreferrer">',
+								'<a href="https://evnt.is/1be4" target="_blank" rel="noopener noreferrer">',
 							],
 						],
 					],
