@@ -15,6 +15,7 @@ use TEC\Common\lucatume\DI52\ServiceProvider;
 use TEC\Tickets\Order_Modifiers\Admin\Order_Modifier_Fee_Metabox;
 use TEC\Tickets\Order_Modifiers\Modifiers\Coupon;
 use TEC\Tickets\Order_Modifiers\Modifiers\Fee;
+use TEC\Tickets\Registerable;
 
 /**
  * Class Provider
@@ -57,7 +58,9 @@ final class Provider extends ServiceProvider {
 		);
 
 		foreach ( $this->container->tagged( 'order_modifiers' ) as $class_instance ) {
-			$class_instance->register();
+			if ( $class_instance instanceof Registerable ) {
+				$class_instance->register();
+			}
 		}
 	}
 }

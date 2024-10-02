@@ -17,6 +17,8 @@ use TEC\Tickets\Order_Modifiers\Controller;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifier_Relationship;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers;
+use TEC\Tickets\Order_Modifiers\Traits\Fee_Types;
+use TEC\Tickets\Registerable;
 use Tribe__Tickets__Admin__Views;
 use Tribe__Tickets__Main;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
@@ -30,7 +32,9 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
  *
  * @since TBD
  */
-class Order_Modifier_Fee_Metabox {
+class Order_Modifier_Fee_Metabox implements Registerable {
+
+	use Fee_Types;
 
 	/**
 	 * The modifier type for this metabox handler.
@@ -177,15 +181,8 @@ class Order_Modifier_Fee_Metabox {
 		);
 
 		// Partition the fees into automatically applied fees ('all') and selectable fees (non-'all').
-		$automatic_fees = array_filter(
-			$available_fees,
-			fn( $fee ) => empty( $fee->meta_value ) || $fee->meta_value === 'all'
-		);
-
-		$selectable_fees = array_filter(
-			$available_fees,
-			fn( $fee ) => ! empty( $fee->meta_value ) && $fee->meta_value !== 'all'
-		);
+		$automatic_fees  = $this->get_automatic_fees( $available_fees );
+		$selectable_fees = $this->get_selectable_fees( $available_fees );
 
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
