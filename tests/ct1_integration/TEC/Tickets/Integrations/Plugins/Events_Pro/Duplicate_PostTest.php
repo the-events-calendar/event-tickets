@@ -37,11 +37,11 @@ class Duplicate_PostTest extends WPTestCase {
 				);
 
 				$meta = [
-					tribe( 'tickets.handler' )->key_capacity       => 10,
+					tribe( 'tickets.handler' )->key_capacity       => 100,
 					tribe( 'tickets.handler' )->key_image_header   => 4,
 					tribe( 'tickets.handler' )->key_provider_field => 'TEC\Tickets\Commerce\Module',
 					Global_Stock::GLOBAL_STOCK_ENABLED             => true,
-					Global_Stock::GLOBAL_STOCK_LEVEL               => 100,
+					Global_Stock::GLOBAL_STOCK_LEVEL               => 9,
 					Attendees_List::HIDE_META_KEY                  => false,
 				];
 
@@ -82,7 +82,8 @@ class Duplicate_PostTest extends WPTestCase {
 
 		foreach( $meta as $k => $v ) {
 			$this->assertEquals( $v, get_post_meta( $event_id, $k, true ), $k );
-			$this->assertEquals( $v, get_post_meta( $duplicated_event->ID, $k, true ), $k );
+			$val_to_check = $k !== Global_Stock::GLOBAL_STOCK_LEVEL ? $v : $meta[ tribe( 'tickets.handler' )->key_capacity ];
+			$this->assertEquals( $val_to_check, get_post_meta( $duplicated_event->ID, $k, true ), $k );
 		}
 	}
 }

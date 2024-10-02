@@ -159,7 +159,7 @@ class Duplicate_Post extends Integration_Abstract {
 		update_post_meta(
 			$new_post_id,
 			Global_Stock::GLOBAL_STOCK_LEVEL,
-			get_post_meta( $original_post_id, tribe( 'tickets.handler' )->key_capacity, true)
+			get_post_meta( $original_post_id, tribe( 'tickets.handler' )->key_capacity, true )
 		);
 	}
 
