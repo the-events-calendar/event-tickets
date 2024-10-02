@@ -1136,7 +1136,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Filters the options for the provider select in the All Tickets table.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 *
 	 * @param array $options The options.
 	 *
@@ -1151,7 +1151,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Filters the meta keys for the All Tickets table.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 *
 	 * @param array $meta_keys The event meta keys.
 	 *

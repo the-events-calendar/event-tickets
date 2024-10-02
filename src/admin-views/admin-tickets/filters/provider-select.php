@@ -2,9 +2,9 @@
 /**
  * All Tickets list table provider filter template.
  *
- * @since TBD
+ * @since 5.14.0
  *
- * @version TBD
+ * @version 5.14.0
  *
  * @var \Tribe__Template  $this                 Current template object.
  * @var string[]          $provider_options     The list table for the All Tickets screen.

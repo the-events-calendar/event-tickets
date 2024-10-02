@@ -823,7 +823,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Determines if the current user is allowed to export Attendees list as a CSV.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 *
 	 * @return boolean
 	 */

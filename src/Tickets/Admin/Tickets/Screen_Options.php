@@ -2,7 +2,7 @@
 /**
  * Class the handles the All Tickets screen options.
  *
- * @since TBD
+ * @since 5.14.0
  *
  * @package TEC\Tickets\Admin\Tickets
  */
@@ -12,7 +12,7 @@ namespace TEC\Tickets\Admin\Tickets;
 /**
  * Class Screen_Options
  *
- * @since TBD
+ * @since 5.14.0
  *
  * @package TEC\Tickets\Admin\Tickets
  */
@@ -25,7 +25,7 @@ class Screen_Options {
 	/**
 	 * Initialize the screen options.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 */
 	public function init() {
 		$this->add_hooks();
@@ -34,7 +34,7 @@ class Screen_Options {
 	/**
 	 * Adds Screen Option hooks.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 */
 	public function add_hooks() {
 		add_filter( 'manage_' . Page::$hook_suffix . '_columns', [ $this, 'filter_manage_columns' ] );
@@ -45,7 +45,7 @@ class Screen_Options {
 	/**
 	 * Filters the screen options show screen.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 *
 	 * @param boolean   $show   Whether to show the screen options.
 	 * @param WP_Screen $screen The current screen.
@@ -58,7 +58,7 @@ class Screen_Options {
 		/**
 		 * Filter the screen options show screen.
 		 *
-		 * @since TBD
+		 * @since 5.14.0
 		 *
 		 * @param boolean   $show   Whether to show the screen options.
 		 */
@@ -68,7 +68,7 @@ class Screen_Options {
 	/**
 	 * Adds the "Columns" screen option by simply listing the column headers and titles.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 *
 	 * @return array
 	 */
@@ -79,7 +79,7 @@ class Screen_Options {
 	/**
 	 * Filters the save operations of screen options to save the ones the class manages.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 *
 	 * @param bool   $status Whether the option should be saved or not.
 	 * @param string $option The user option slug.
@@ -99,7 +99,7 @@ class Screen_Options {
 	/**
 	 * Filters the default hidden columns.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 *
 	 * @param array     $hidden_columns The hidden columns.
 	 * @param WP_Screen $screen         The current screen.

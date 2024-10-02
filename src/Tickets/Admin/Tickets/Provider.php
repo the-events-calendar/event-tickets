@@ -2,7 +2,7 @@
 /**
  * The main service provider for the Tickets Admin Attendees page.
  *
- * @since   TBD
+ * @since 5.14.0
  *
  * @package TEC\Tickets\Admin
  */
@@ -14,7 +14,7 @@ use TEC\Common\Contracts\Service_Provider;
 /**
  * Service provider for the Tickets Admin All Tickets
  *
- * @since   TBD
+ * @since 5.14.0
  *
  * @package TEC\Tickets\Admin
  */
@@ -23,7 +23,7 @@ class Provider extends Service_Provider {
 	/**
 	 * Register the provider singletons.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 */
 	public function register() {
 		$this->register_hooks();
@@ -33,7 +33,7 @@ class Provider extends Service_Provider {
 	/**
 	 * Registers the provider handling all the 1st level filters and actions for the Tickets Admin area.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 */
 	protected function register_hooks() {
 		$hooks = new Hooks( $this->container );
@@ -48,7 +48,7 @@ class Provider extends Service_Provider {
 	/**
 	 * Registers the assets for the Tickets All Tickets area.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 */
 	protected function register_assets() {
 		$this->container->register( Assets::class );

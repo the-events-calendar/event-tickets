@@ -142,7 +142,7 @@ class Events {
 	 * Returns the handle to be used for each webhook event.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Removed Charge events that can be replaced by Payment Intent events.
+	 * @since 5.14.0 Removed Charge events that can be replaced by Payment Intent events.
 	 *
 	 * @return array
 	 */
@@ -174,7 +174,7 @@ class Events {
 	 * If it converts directly to a TC status it will be the status Class name, otherwise it will be callable.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Removed Charge events that can be replaced by Payment Intent events.
+	 * @since 5.14.0 Removed Charge events that can be replaced by Payment Intent events.
 	 *
 	 * @return callable[]|Commerce_Status\Status_Interface[]
 	 */

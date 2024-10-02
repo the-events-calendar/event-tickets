@@ -2,9 +2,9 @@
 /**
  * No Tickets screen.
  *
- * @since  TBD
+ * @since 5.14.0
  *
- * @version TBD
+ * @version 5.14.0
  *
  * @var \Tribe__Template  $this           Current template object.
  * @var bool              $tickets_exist  Whether tickets exist.

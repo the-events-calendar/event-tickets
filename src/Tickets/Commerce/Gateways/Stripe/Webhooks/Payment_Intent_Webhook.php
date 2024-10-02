@@ -13,7 +13,7 @@ use Tribe__Utils__Array as Arr;
  * Webhook for Payment_Intent operations
  *
  * @since 5.3.0
- * @since TBD Remove check if payment intent should be updated.
+ * @since 5.14.0 Remove check if payment intent should be updated.
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\Webhooks
  */
@@ -104,7 +104,7 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 	/**
 	 * Checks if the payment intent contained in the event received has already been processed.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 5.14.0
 	 * @since      5.3.0
 	 *
 	 * @param array   $payment_intent_received The payment intent data received
@@ -113,7 +113,7 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 	 * @return bool
 	 */
 	public static function should_payment_intent_be_updated( $payment_intent_received, $payment_intents_stored ) {
-		_deprecated_function( __METHOD__, 'TBD', 'This method will be removed in the future.' );
+		_deprecated_function( __METHOD__, '5.14.0', 'This method will be removed in the future.' );
 		// This payment intent was reset, or processing has re-started without invalidating.
 		if ( 1 < count( $payment_intents_stored ) && $payment_intent_received['status'] === Status::REQUIRES_PAYMENT_METHOD ) {
 			return true;

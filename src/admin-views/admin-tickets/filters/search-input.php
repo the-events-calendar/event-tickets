@@ -2,9 +2,9 @@
 /**
  * All Tickets list table search input template.
  *
- * @since TBD
+ * @since 5.14.0
  *
- * @version TBD
+ * @version 5.14.0
  *
  * @var \Tribe__Template  $this                Current template object.
  * @var string            $search_id           ID for the search input element.

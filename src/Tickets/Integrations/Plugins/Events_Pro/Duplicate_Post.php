@@ -96,7 +96,7 @@ class Duplicate_Post extends Integration_Abstract {
 			/**
 			 * Fires after a ticket has been duplicated to a new post.
 			 *
-			 * @since TBD
+			 * @since 5.14.0
 			 *
 			 * @param int $duplicate_ticket_id The ID of the duplicated ticket.
 			 * @param int $original_ticket_id The ID of the original ticket.
@@ -111,7 +111,7 @@ class Duplicate_Post extends Integration_Abstract {
 		/**
 		 * Fires after all tickets have been duplicated to a new post.
 		 *
-		 * @since TBD
+		 * @since 5.14.0
 		 *
 		 * @param array $duplicated_ticket_ids An array of ticket IDs that were duplicated.
 		 * @param int $new_post_id The ID of the new post.
@@ -123,7 +123,7 @@ class Duplicate_Post extends Integration_Abstract {
 	/**
 	 * Fix post fields pointing to old tickets.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 *
 	 * @param array $duplicated_ticket_maps An array of ticket IDs that were duplicated.
 	 * @param int   $new_post_id The ID of the new post.
@@ -166,7 +166,7 @@ class Duplicate_Post extends Integration_Abstract {
 	/**
 	 * Add tickets meta to the list of meta keys to duplicate.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 *
 	 * @param array $meta Meta keys to duplicate.
 	 *

@@ -2,7 +2,7 @@
 /**
  * Handles registering the admin menu and rendering of the All Tickets page.
  *
- * @since   TBD
+ * @since 5.14.0
  *
  * @package TEC\Tickets\Admin
  */
@@ -16,7 +16,7 @@ use Tribe__Tickets__Main;
 /**
  * Class Page.
  *
- * @since   TBD
+ * @since 5.14.0
  *
  * @package TEC\Tickets\Admin
  */
@@ -60,7 +60,7 @@ class Page {
 	/**
 	 * Get Provider information.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 *
 	 * @return array
 	 */
@@ -68,7 +68,7 @@ class Page {
 		/**
 		 * Filters the ticket providers for the All Tickets Table.
 		 *
-		 * @since TBD
+		 * @since 5.14.0
 		 *
 		 * @param array $providers The ticket providers for the All Tickets Table.
 		 *
@@ -80,7 +80,7 @@ class Page {
 	/**
 	 * Get the ticket providers.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 *
 	 * @return array
 	 */
@@ -101,7 +101,7 @@ class Page {
 	/**
 	 * Get the currently selected provider.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 *
 	 * @return string;
 	 */
@@ -116,7 +116,7 @@ class Page {
 	/**
 	 * Get the currently selected provider object.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 *
 	 * @return Tribe__Tickets__Tickets|null;
 	 */
@@ -129,7 +129,7 @@ class Page {
 	/**
 	 * Get the currently selected ticket post type.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 *
 	 * @return string|null;
 	 */
@@ -148,7 +148,7 @@ class Page {
 	/**
 	 * Get the ticket post types.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 *
 	 * @return array
 	 */
@@ -169,7 +169,7 @@ class Page {
 	/**
 	 * Whether or not tickets exist to be displayed.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 *
 	 * @return bool
 	 */
@@ -193,7 +193,7 @@ class Page {
 	/**
 	 * Defines wether the current page is the Event Tickets All Tickets page.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 *
 	 * @return boolean
 	 */
@@ -225,7 +225,7 @@ class Page {
 		/**
 		 * Filters the URL to the Event Tickets All Tickets page.
 		 *
-		 * @since TBD
+		 * @since 5.14.0
 		 *
 		 * @param string $url The URL to the Event Tickets All Tickets page.
 		 */
@@ -235,7 +235,7 @@ class Page {
 	/**
 	 * Adds the Event Tickets All Tickets page.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 */
 	public function add_tec_tickets_admin_tickets_page() {
 		$admin_pages = tribe( 'admin.pages' );
@@ -258,7 +258,7 @@ class Page {
 	/**
 	 * Get the link to edit posts.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 *
 	 * @return string
 	 */
@@ -286,7 +286,7 @@ class Page {
 	/**
 	 * Render the `All Tickets` page.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 *
 	 * @return void
 	 */

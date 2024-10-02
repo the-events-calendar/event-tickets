@@ -2,7 +2,7 @@
 /**
  * Handles registering and setup for assets on All Tickets page.
  *
- * @since TBD
+ * @since 5.14.0
  *
  * @package TEC\Tickets\Admin
  */
@@ -16,7 +16,7 @@ use Tribe__Tickets__Main;
 /**
  * Class Assets.
  *
- * @since TBD
+ * @since 5.14.0
  *
  * @package TEC\Tickets\Admin
  */
@@ -24,7 +24,7 @@ class Assets extends Service_Provider {
 	/**
 	 * Key for this group of assets.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 *
 	 * @var string
 	 */
@@ -33,7 +33,7 @@ class Assets extends Service_Provider {
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 */
 	public function register() {
 		Asset::add( 'tec-tickets-admin-tickets-table-styles', 'tickets-admin-tickets.css', null, Tribe__Tickets__Main::instance()->plugin_path )
@@ -45,7 +45,7 @@ class Assets extends Service_Provider {
 	/**
 	 * Determines if the assets should be enqueued.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 *
 	 * @return bool
 	 */

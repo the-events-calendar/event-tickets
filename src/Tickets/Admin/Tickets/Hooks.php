@@ -8,7 +8,7 @@
  * To remove an action:
  * remove_action( 'some_action', [ tribe( TEC\Tickets\Admin\Tickets\Hooks::class ), 'some_method' ] );
  *
- * @since   TBD
+ * @since   5.14.0
  *
  * @package TEC\Tickets\Admin
  */
@@ -20,7 +20,7 @@ use TEC\Common\Contracts\Service_Provider;
 /**
  * Class Hooks.
  *
- * @since   TBD
+ * @since   5.14.0
  *
  * @package TEC\Tickets\Admin
  */
@@ -28,7 +28,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 */
 	public function register() {
 		$this->add_actions();
@@ -38,7 +38,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Adds the actions for the Admin All Tickets page.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 */
 	protected function add_actions() {
 		add_action( 'admin_menu', tribe_callback( Page::class, 'add_tec_tickets_admin_tickets_page' ), 15 );
@@ -48,7 +48,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Adds the filters for the Admin All Tickets page.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 */
 	protected function add_filters() {
 		add_filter( 'set-screen-option', [ tribe( Screen_Options::class ), 'filter_set_screen_options' ], 10, 3 );

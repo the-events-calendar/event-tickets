@@ -1,4 +1,0 @@
-Significance: patch
-Type: fix
-
-Allow Admin and Editor roles to export Attendees CSV. [ET-2226]

@@ -348,7 +348,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * The key used to store the event ID in the ticket post meta.
 		 *
-		 * @since TBD
+		 * @since 5.14.0
 		 *
 		 * @var string
 		 */
@@ -1303,7 +1303,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Add all the hooks for the Admin Tickets page.
 		 *
-		 * @since TBD
+		 * @since 5.14.0
 		 *
 		 * @return void
 		 */
@@ -3289,7 +3289,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Subclasses can override this if they use a key other than 'event_key'
 		 * for this purpose.
 		 *
-		 * @since TBD Removed check for static property. All static properties were removed over 2 major versions ago.
+		 * @since 5.14.0 Removed check for static property. All static properties were removed over 2 major versions ago.
 		 *
 		 * @return string
 		 */
@@ -4665,7 +4665,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Filter provider information for the admin tickets table.
 		 *
-		 * @since TBD
+		 * @since 5.14.0
 		 *
 		 * @param array[] $provider_info The list of provider information.
 		 *

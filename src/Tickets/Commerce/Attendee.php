@@ -671,7 +671,7 @@ class Attendee {
 	/**
 	 * Get attendees by ticket ID.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 *
 	 * @param int    $ticket_id    Ticket ID.
 	 * @param string $orm_provider ORM provider string.

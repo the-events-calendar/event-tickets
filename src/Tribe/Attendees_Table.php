@@ -1095,7 +1095,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		/**
 		 * Filters the cache key used to store the attendees table items.
 		 *
-		 * @since TBD
+		 * @since 5.14.0
 		 *
 		 * @param string $cache_key The cache key used to store the attendees table items.
 		 * @param array  $args      The arguments used to query the attendees for the Attendees Table.
@@ -1126,7 +1126,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Set up the search arguments for the attendees table.
 	 *
-	 * @since TBD
+	 * @since 5.14.0
 	 *
 	 * @param string $search The search string.
 	 * @param array  $args   The current arguments.
@@ -1151,7 +1151,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		/**
 		 * Filters the default key to search attendees by.
 		 *
-		 * @since TBD
+		 * @since 5.14.0
 		 *
 		 * @param string $search_key  The default key to search attendees by.
 		 * @param array  $search_keys The keys that can be used to search attendees.

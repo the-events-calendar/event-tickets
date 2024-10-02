@@ -2,9 +2,9 @@
 /**
  * Table column template.
  *
- * @since TBD
+ * @since 5.14.0
  *
- * @version TBD
+ * @version 5.14.0
  *
  * @var \Tribe__Template  $this         Current template object.
  * @var string            $icon_html    The list table for the All Tickets screen.
