@@ -151,6 +151,16 @@ class Duplicate_Post extends Integration_Abstract {
 				'post_content' => $new_post_content,
 			]
 		);
+
+		if ( ! get_post_meta( $original_post_id, Global_Stock::GLOBAL_STOCK_ENABLED, true ) ) {
+			return;
+		}
+
+		update_post_meta(
+			$new_post_id,
+			Global_Stock::GLOBAL_STOCK_LEVEL,
+			get_post_meta( $original_post_id, tribe( 'tickets.handler' )->key_capacity, true )
+		);
 	}
 
 	/**
@@ -170,7 +180,6 @@ class Duplicate_Post extends Integration_Abstract {
 				tribe( 'tickets.handler' )->key_image_header,
 				tribe( 'tickets.handler' )->key_provider_field,
 				Global_Stock::GLOBAL_STOCK_ENABLED,
-				Global_Stock::GLOBAL_STOCK_LEVEL,
 				Attendees_List::HIDE_META_KEY,
 			],
 		);
