@@ -1,15 +1,15 @@
 [
     [
         {
-            "label": "Has valid Seating license",
+            "label": "Seating license is valid",
             "completed": true,
             "status": "good",
             "badge": {
                 "label": "Seating",
                 "color": "blue"
             },
-            "description": "Your Seating license is valid!",
-            "actions": "<p><a href=\u0022https://theeventscalendar.com/product/seating/\u0022 target=\u0022_blank\u0022 rel=\u0022noopener noreferrer\u0022>Learn more about Seating</a></p>",
+            "description": "Your license is valid.",
+            "actions": "<p>You can check your license status on your account at <a href=\u0022https://evnt.is/1be1\u0022 target=\u0022_blank\u0022 rel=\u0022noopener noreferrer\u0022>theeventscalendar.com</a>.</p>",
             "test": "slr-valid-license"
         },
         null,
