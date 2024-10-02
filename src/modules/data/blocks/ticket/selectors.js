@@ -143,7 +143,7 @@ export const getIndependentTickets = createSelector(
 export const getSharedTickets = createSelector(
 	[ getTicketsArray ],
 	( tickets ) => (
-		tickets.filter( ( ticket ) => ticket.details.- === TICKET_TYPES[ SHARED ] )
+		tickets.filter( ( ticket ) => ticket.details.capacityType === TICKET_TYPES[ SHARED ] )
 	),
 );
 
