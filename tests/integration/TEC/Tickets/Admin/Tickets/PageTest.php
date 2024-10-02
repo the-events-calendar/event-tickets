@@ -31,6 +31,13 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	protected $event_ids;
 
+	/**
+	 * Deleted event ID.
+	 *
+	 * @var int
+	 */
+	protected $deleted_event_id;
+
 	public function setUp(): void {
 		// before
 		parent::setUp();
@@ -73,6 +80,19 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 			)->create()->ID;
 		}
 
+		// Create an event that will be deleted.
+		$event_ts               = strtotime( '2025-01-01 00:00:00' ) + ( 3 * DAY_IN_SECONDS );
+		$event_dt               = new \DateTime( "@$event_ts" );
+		$this->deleted_event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Deleted Event 4',
+				'status'     => 'publish',
+				'start_date' => $event_dt->format( 'Y-m-d H:i:s' ),
+				'duration'   => 4 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		$events_ids[]           = $this->deleted_event_id;
+
 		return $events_ids;
 	}
 
@@ -84,7 +104,7 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 	 *
 	 * @return array
 	 */
-	protected function create_test_tickets( $event_ids, array $number_of_tickets_per_event = [ 1, 0, 2 ] ) {
+	protected function create_test_tickets( $event_ids, array $number_of_tickets_per_event = [ 1, 0, 2, 1 ] ) {
 		$ticket_ids = [];
 
 		foreach ( $event_ids as $key => $event_id ) {
@@ -161,6 +181,9 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 	// test
 	public function test_render_tec_tickets_admin_tickets_page() {
 		$this->prepare_test_data();
+
+		// Delete event to test orphaned ticket scenario.
+		wp_delete_post( $this->deleted_event_id, true );
 
 		$_GET['status-filter'] = 'all';
 		$_GET['provider-filter'] = addslashes( TicketsCommerce\Module::class );
