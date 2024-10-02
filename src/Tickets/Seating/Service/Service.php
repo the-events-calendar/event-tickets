@@ -77,6 +77,15 @@ class Service {
 	private Maps $maps;
 
 	/**
+	 * A memoized reference to the Service Status value object.
+	 *
+	 * @since TBD
+	 *
+	 * @var
+	 */
+	private ?Service_Status $status = null;
+
+	/**
 	 * Service constructor.
 	 *
 	 * @since TBD
@@ -414,6 +423,24 @@ class Service {
 	 * @return Service_Status The Service Status instance.
 	 */
 	public function get_status( bool $force = false ): Service_Status {
-		return Service_Status::build( $force );
+		if ( ! $force && $this->status instanceof Service_Status ) {
+			return $this->status;
+		}
+
+		$this->status = new Service_Status( $this->backend_base_url );
+
+		/**
+		 * Filters the Service Status instance.
+		 *
+		 * @since TBD
+		 *
+		 * @param Service_Status $status The Service Status instance.
+		 * @param string         $base_url The base URL of the service.
+		 */
+		return apply_filters(
+			'tec_tickets_seating_service_status',
+			$this->status,
+			$this->backend_base_url
+		);
 	}
 }

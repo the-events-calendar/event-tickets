@@ -76,46 +76,29 @@ class Service_Status {
 	private ?int $status = null;
 
 	/**
-	 * Returns the Service Status instance.
-	 *
-	 * Note the status is memoized and will only be rebuilt if the `$force` parameter is set to `true`.
-	 * The returned instance is shared among all code that holds a reference to it. Calling methods that
-	 * affect the status will affect the same instance.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $backend_base_url The base URL of the service from the site backend.
-	 * @param bool   $force            Whether to force the rebuilding of the status for this request
-	 *                                 or not.
-	 *
-	 * @return Service_Status The Service Status instance.
-	 */
-	public static function build( string $backend_base_url, bool $force = false ): Service_Status {
-		$cache     = tribe_cache();
-		$cache_key = 'tec_tickets_seating_service_status_' . $backend_base_url;
-		$status    = $cache[ $cache_key ] ?? null;
-
-		if ( ! $force && $status && $status instanceof Service_Status ) {
-			return $status;
-		}
-
-		$status = new self( $backend_base_url );
-
-		$cache[ $cache_key ] = $status;
-
-		return $status;
-	}
-
-	/**
 	 * Service_Status constructor.
 	 *
 	 * since TBD
 	 *
 	 * @param string $backend_base_url The base URL of the service from the site backend.
+	 *
+	 * @throws \InvalidArgumentException If the status is not one of the valid statuses.
 	 */
-	public function __construct( string $backend_base_url ) {
+	public function __construct( string $backend_base_url, int $status = null ) {
 		$this->backend_base_url = $backend_base_url;
-		$this->status           = null;
+
+		if (
+			null !== $status
+			&& ! in_array( $status, [ self::OK, self::SERVICE_DOWN, self::NOT_CONNECTED, self::INVALID_LICENSE ], true )
+		) {
+			/*
+			 * While it should not be cached directly, the status could be built from client code during a cache read,
+			 * for this reason do not freak out on invalid status, just do not consider it.
+			 */
+			$status = null;
+		}
+
+		$this->status = $status;
 	}
 
 	/**
@@ -125,7 +108,7 @@ class Service_Status {
 	 *
 	 * @return void
 	 */
-	private function update_status(): void {
+	private function update(): void {
 		if ( $this->status !== null ) {
 			return;
 		}
@@ -168,7 +151,7 @@ class Service_Status {
 	 * @return bool  Whether the service status is OK or not.
 	 */
 	public function is_ok(): bool {
-		$this->update_status();
+		$this->update();
 
 		return $this->status === self::OK;
 	}
@@ -181,7 +164,7 @@ class Service_Status {
 	 * @return int The status of the service as an integer, one of the `self::*` constants.
 	 */
 	public function get_status(): int {
-		$this->update_status();
+		$this->update();
 
 		return $this->status;
 	}
