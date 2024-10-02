@@ -1,15 +1,15 @@
 [
     [
         {
-            "label": "Can communicate with the Seating App",
+            "label": "Your site communicates with the Seating Builder SaaS",
             "completed": true,
             "status": "good",
             "badge": {
                 "label": "Seating",
                 "color": "blue"
             },
-            "description": "Your site can communicate with the Seating App!",
-            "actions": "<p><a href=\u0022https://theeventscalendar.com/product/seating/\u0022 target=\u0022_blank\u0022 rel=\u0022noopener noreferrer\u0022>Learn more about Seating</a></p>",
+            "description": "Your site is connected to the Seating Builder SaaS.",
+            "actions": "<p>You're ready to <a href=\u0022https://evnt.is/1be3\u0022 target=\u0022_blank\u0022 rel=\u0022noopener noreferrer\u0022>use Seating for Event Tickets</a>.</p>",
             "test": "slr-can-see-sass"
         },
         null,
