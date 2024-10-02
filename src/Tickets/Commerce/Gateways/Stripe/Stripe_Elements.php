@@ -2,7 +2,6 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
-use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
 
@@ -54,8 +53,21 @@ class Stripe_Elements {
 
 		$payment_methods = ( new Merchant() )->get_payment_method_types();
 
-		// Don't load the Payment Element if just the Credit Card method is selected.
-		return ! ( 1 === count( $payment_methods ) && 'card' === $payment_methods[0] );
+		if ( 1 < count( $payment_methods ) ) {
+			return true;
+		} elseif ( 1 === count( $payment_methods ) && 'card' !== $payment_methods[0] ) {
+			return true;
+		}
+
+		/**
+		 * Filter to allow loading the Payment Element component
+		 *
+		 * @since 5.13.4
+		 *
+		 * @param bool $include_payment_element Whether to include the Payment Element.
+		 * @param Stripe_Elements $this The instance of the Stripe_Elements class.
+		 */
+		return (bool) apply_filters( 'tec_tickets_commerce_stripe_include_payment_element', false, $this );
 	}
 
 	/**
@@ -68,5 +80,4 @@ class Stripe_Elements {
 	public function card_element_type() {
 		return tribe_get_option( Settings::$option_checkout_element_card_fields );
 	}
-
 }

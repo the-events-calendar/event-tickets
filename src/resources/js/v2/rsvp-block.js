@@ -61,6 +61,7 @@ tribe.tickets.rsvp.block = {};
 					action: 'tribe_tickets_rsvp_handle',
 					ticket_id: rsvpId,
 					step: 'going',
+					nonce: TribeRsvp.nonces.rsvpHandle,
 				};
 
 				tribe.tickets.rsvp.manager.request( data, $container );
@@ -86,6 +87,7 @@ tribe.tickets.rsvp.block = {};
 					action: 'tribe_tickets_rsvp_handle',
 					ticket_id: rsvpId,
 					step: 'not-going',
+					nonce: TribeRsvp.nonces.rsvpHandle,
 				};
 
 				tribe.tickets.rsvp.manager.request( data, $container );
@@ -115,6 +117,7 @@ tribe.tickets.rsvp.block = {};
 					action: 'tribe_tickets_rsvp_handle',
 					ticket_id: rsvpId,
 					step: null,
+					nonce: TribeRsvp.nonces.rsvpHandle,
 				};
 
 				tribe.tickets.rsvp.manager.request( data, $container );
@@ -145,6 +148,7 @@ tribe.tickets.rsvp.block = {};
 			opt_in: checked,
 			opt_in_nonce: nonce,
 			attendee_ids: attendeeIds,
+			nonce: TribeRsvp.nonces.rsvpHandle,
 		};
 
 		tribe.tickets.rsvp.manager.request( data, $container );
@@ -168,6 +172,7 @@ tribe.tickets.rsvp.block = {};
 			action: 'tribe_tickets_rsvp_handle',
 			ticket_id: rsvpId,
 			step: 'success',
+			nonce: TribeRsvp.nonces.rsvpHandle,
 		};
 
 		$( params ).each( function( index, object ) {

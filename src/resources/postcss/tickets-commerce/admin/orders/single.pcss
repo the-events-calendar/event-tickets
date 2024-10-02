@@ -1,28 +1,26 @@
 /**
  * Event Tickets - Single Admin Order Page
  *
- * @since TBD
+ * @since 5.13.4
  */
 
-/**
- * Temporary hide
- */
 body.wp-admin.post-type-tec_tc_order {
-	.tec-tickets-commerce-single-order--items button, .tec-tickets-commerce-single-order--items a {
+	/* Temporary hide */
+	.tec-tickets-commerce-single-order--items button,
+	.tec-tickets-commerce-single-order--items a {
 		display: none;
 	}
+
 	#submitdiv {
 		display: none;
 	}
+
 	.tec-tickets-commerce-single-order--details--item--label a {
 		display: none;
 	}
-}
-/**
- * End Temporary hide
- */
 
-body.wp-admin.post-type-tec_tc_order {
+	/* End Temporary hide */
+
 	.tribe-mobile-hidden {
 		display: none;
 	}
@@ -306,6 +304,7 @@ body.wp-admin.post-type-tec_tc_order {
 			}
 		}
 	}
+
 	&--breadcrumb--order--edit {
 		margin-top: 1em;
 
