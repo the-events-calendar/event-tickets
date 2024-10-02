@@ -510,7 +510,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @link https://stripe.com/docs/js/elements_object/create_element?type=card#elements_create-options
 	 *
 	 * @since 5.3.0
-	 * @since TBD Pulled out `options` variable to allow filtering using `tec_tickets_commerce_stripe_checkout_localized_data`.
+	 * @since 5.13.4 Pulled out `options` variable to allow filtering using `tec_tickets_commerce_stripe_checkout_localized_data`.
 	 */
 	obj.setupCompactCardElement = () => {
 		const options = obj.checkout.cardElementOptions;

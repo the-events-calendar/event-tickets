@@ -62,7 +62,7 @@ class Stripe_Elements {
 		/**
 		 * Filter to allow loading the Payment Element component
 		 *
-		 * @since TBD
+		 * @since 5.13.4
 		 *
 		 * @param bool $include_payment_element Whether to include the Payment Element.
 		 * @param Stripe_Elements $this The instance of the Stripe_Elements class.
