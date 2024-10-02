@@ -526,7 +526,7 @@ class List_Table extends WP_List_Table {
 		// If the item is a ticket object, get the event.
 		$event = $item->get_event();
 		if ( ! $event ) {
-			return '-';
+			return esc_html__( 'No associated event', 'event-tickets' );
 		}
 
 		$edit_post_link = sprintf(
@@ -762,7 +762,7 @@ class List_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_sold( $item ): string {
-		if ( $item instanceof WP_Post ) {
+		if ( $item instanceof WP_Post || empty( $item->get_event() ) ) {
 			return '-';
 		}
 
@@ -791,7 +791,7 @@ class List_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_remaining( $item ): string {
-		if ( $item instanceof WP_Post ) {
+		if ( $item instanceof WP_Post || empty( $item->get_event() ) ) {
 			return '-';
 		}
 
@@ -821,7 +821,7 @@ class List_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_sales( $item ): string {
-		if ( $item instanceof WP_Post ) {
+		if ( $item instanceof WP_Post || empty( $item->get_event() ) ) {
 			return '-';
 		}
 
