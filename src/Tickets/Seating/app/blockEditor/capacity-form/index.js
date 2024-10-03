@@ -142,19 +142,19 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 	const onLayoutChange = useCallback(
 		(choice) => {
 			const layoutSeats = getLayoutSeats(choice.value);
-			setTicketsSharedCapacityInCommonStore(layoutSeats);
 			updateEventMeta(choice.value);
 			setLayout(choice.value);
 			setEventCapacity(layoutSeats);
+			setTicketsSharedCapacityInCommonStore(layoutSeats, clientId);
 		},
-		[getLayoutSeats, setEventCapacity, setLayout, updateEventMeta]
+		[getLayoutSeats, setEventCapacity, setLayout, updateEventMeta, clientId]
 	);
 
 	const onSeatTypeChange = useCallback(
 		(choice) => {
 			const seatTypeSeats = getSeatTypeSeats(choice.value);
-			setCappedTicketCapacityInCommonStore(clientId, seatTypeSeats);
 			setTicketSeatType(clientId, choice.value);
+			setCappedTicketCapacityInCommonStore(clientId, seatTypeSeats);
 		},
 		[getSeatTypeSeats, setTicketSeatType, clientId]
 	);
@@ -180,9 +180,13 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 
 	return (
 		<div className="tec-tickets-seating__capacity-form">
-			{isUsingAssignedSeating && isLayoutLocked ? (
+			{isLayoutLocked ? (
 				<div className="tec-tickets-seating__capacity-locked-info">
-					{getString('seat-option-label')}
+					{getString(
+						isUsingAssignedSeating
+							? 'seat-option-label'
+							: 'general-admission-label'
+					)}
 				</div>
 			) : (
 				<RadioControl

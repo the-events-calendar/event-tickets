@@ -123,6 +123,22 @@ class Editor_Test extends Controller_Test_Case {
 			}
 		];
 
+		yield 'existing post, not using meta set or layout set, with tickets' => [
+			function (): array {
+				$id = self::factory()->post->create();
+				global $pagenow, $post;
+				$pagenow = 'edit.php';
+				$post    = get_post( $id );
+				$this->given_many_layouts_in_db( 3 );
+				$this->given_layouts_just_updated();
+				$ticket_1 = $this->create_tc_ticket( $id, 10.10 );
+				$ticket_2 = $this->create_tc_ticket( $id, 20.30 );
+				$ticket_3 = $this->create_tc_ticket( $id, 30.40 );
+
+				return [$ticket_1, $ticket_2, $ticket_3];
+			}
+		];
+
 		yield 'new event' => [
 			function (): array {
 				$post_type = TEC::POSTTYPE;
@@ -252,6 +268,26 @@ class Editor_Test extends Controller_Test_Case {
 				$post    = get_post( static::factory()->post->create() );
 
 				return [];
+			}
+		];
+
+		yield 'existing event, not using meta set or layout set, with tickets' => [
+			function (): array {
+				$id = tribe_events()->set_args( [
+					'title'      => 'Test Event',
+					'start_date' => '+1 week',
+					'duration'   => 3 * HOUR_IN_SECONDS,
+				] )->create()->ID;
+				global $pagenow, $post;
+				$pagenow = 'edit.php';
+				$post    = get_post( $id );
+				$this->given_many_layouts_in_db( 3 );
+				$this->given_layouts_just_updated();
+				$ticket_1 = $this->create_tc_ticket( $id, 10.10 );
+				$ticket_2 = $this->create_tc_ticket( $id, 20.30 );
+				$ticket_3 = $this->create_tc_ticket( $id, 30.40 );
+
+				return [ $ticket_1, $ticket_2, $ticket_3 ];
 			}
 		];
 	}

@@ -4,6 +4,7 @@ import { Fragment } from 'react';
 import { getLink, getLocalizedString } from '@tec/tickets/seating/utils';
 
 const getString = (key) => getLocalizedString(key, 'capacity-form');
+const loadingSeatTypes = getString('seat-types-loading-msg');
 
 function EmptyLayouts( props ) {
 	if ( props.layouts.length !== 0 ) {
@@ -26,8 +27,8 @@ function EmptyLayouts( props ) {
 	);
 }
 
-function LockedLayout( props ) {
-	if ( ! props.layoutLocked ) {
+function LockedLayout(props) {
+	if (!(props.layoutLocked && props?.currentLayout)) {
 		return null;
 	}
 
@@ -91,6 +92,7 @@ const EventLayoutSelect = ({
 					options={seatTypes}
 					onChange={onSeatTypeChange}
 					value={currentSeatType}
+					noOptionsMessage={ () => loadingSeatTypes }
 				/>
 			)}
 			<LayoutsInfo layouts={layouts} />

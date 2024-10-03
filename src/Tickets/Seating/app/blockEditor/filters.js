@@ -14,6 +14,7 @@ import {
 	disableConfirmInTicketDashboard,
 	removeAllActionsFromTicket,
 	disableTicketSelection
+	filterButtonIsDisabled,
 } from './hook-callbacks';
 
 const shouldRenderAssignedSeatingForm = true;
@@ -162,4 +163,7 @@ addFilter(
 	'tec.tickets.blocks.Ticket.isSelected',
 	'tec.tickets.seating',
 	disableTicketSelection
+	'tec.tickets.blocks.confirmButton.isDisabled',
+	'tec.tickets.seating',
+	filterButtonIsDisabled
 );

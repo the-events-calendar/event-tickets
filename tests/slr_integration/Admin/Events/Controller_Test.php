@@ -13,9 +13,9 @@ use Tribe\Tests\Traits\With_Uopz;
 class Controller_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
 	use With_Uopz;
-	
+
 	protected string $controller_class = Controller::class;
-	
+
 	/**
 	 * @before
 	 */
@@ -23,10 +23,10 @@ class Controller_Test extends Controller_Test_Case {
 		$this->set_fn_return( 'wp_create_nonce', 'xxxxxx' );
 		$this->set_fn_return( 'is_admin', true );
 		$this->set_fn_return( 'get_column_headers', [] );
-		
+
 		$user_id = self::factory()->user->create();
 		wp_set_current_user( $user_id );
-		
+
 		Layouts_Service::insert_rows_from_service(
 			[
 				[
@@ -56,13 +56,13 @@ class Controller_Test extends Controller_Test_Case {
 			]
 		);
 	}
-	
+
 	public function tearDown() {
 		parent::tearDown();
 		Layouts_Service::invalidate_cache();
 		unset( $_GET['layout'] );
 	}
-	
+
 	public function events_list_data_provider(): Generator {
 		yield 'No Layout or invalid ID given' => [
 			function (): array {
@@ -72,7 +72,7 @@ class Controller_Test extends Controller_Test_Case {
 				];
 			},
 		];
-		
+
 		yield 'Layout ID without attached event' => [
 			function (): array {
 				return [
@@ -81,7 +81,7 @@ class Controller_Test extends Controller_Test_Case {
 				];
 			},
 		];
-		
+
 		yield 'Events with attached layout: some-layout-1' => [
 			function (): array {
 				$event_id = tribe_events()->set_args(
@@ -94,11 +94,11 @@ class Controller_Test extends Controller_Test_Case {
 						'post_date_gmt' => '2020-01-01 00:00:00',
 					]
 				)->create()->ID;
-				
+
 				$post_id = self::factory()->post->create(
 					[ 'post_title' => 'Post with layout' ]
 				);
-				
+
 				wp_update_post(
 					[
 						'ID'            => $post_id,
@@ -106,24 +106,24 @@ class Controller_Test extends Controller_Test_Case {
 						'post_date_gmt' => '2020-01-02 00:00:00',
 					]
 				);
-				
+
 				update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
 				update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-1' );
 				update_post_meta( $post_id, Meta::META_KEY_ENABLED, true );
 				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-1' );
-				
+
 				return [
 					[ 'layout' => 'some-layout-1' ],
 					[ $event_id, $post_id ],
 				];
 			},
 		];
-		
+
 		yield 'Events with varying status with pagination' => [
 			function (): array {
 				$event_id = tribe_events()->set_args(
 					[
-						'title'         => 'Event with layout',
+						'title'         => 'Event with layout and draft status',
 						'status'        => 'draft',
 						'start_date'    => '2020-01-01 00:00:00',
 						'duration'      => 2 * HOUR_IN_SECONDS,
@@ -131,14 +131,14 @@ class Controller_Test extends Controller_Test_Case {
 						'post_date_gmt' => '2020-01-01 00:00:00',
 					]
 				)->create()->ID;
-				
+
 				$post_id = self::factory()->post->create(
 					[
-						'post_title'  => 'Post with layout',
+						'post_title'  => 'Post with layout and pending status',
 						'post_status' => 'pending',
 					]
 				);
-				
+
 				wp_update_post(
 					[
 						'ID'            => $post_id,
@@ -146,7 +146,7 @@ class Controller_Test extends Controller_Test_Case {
 						'post_date_gmt' => '2020-01-02 00:00:00',
 					]
 				);
-				
+
 				$event_id_2 = tribe_events()->set_args(
 					[
 						'title'         => 'Event with draft status',
@@ -157,13 +157,13 @@ class Controller_Test extends Controller_Test_Case {
 						'post_date_gmt' => '2020-01-01 00:00:00',
 					]
 				)->create()->ID;
-				
+
 				$post_id_2 = self::factory()->post->create(
 					[
-						'post_title' => 'Post with pending status',
+						'post_title' => 'Post with published status',
 					]
 				);
-				
+
 				wp_update_post(
 					[
 						'ID'            => $post_id_2,
@@ -171,14 +171,14 @@ class Controller_Test extends Controller_Test_Case {
 						'post_date_gmt' => '2020-01-02 00:00:00',
 					]
 				);
-				
+
 				foreach ( [ $event_id, $event_id_2, $post_id, $post_id_2 ] as $id ) {
 					update_post_meta( $id, Meta::META_KEY_ENABLED, true );
 					update_post_meta( $id, Meta::META_KEY_LAYOUT_ID, 'some-layout-2' );
 				}
-				
+
 				update_user_meta( get_current_user_id(), Associated_Events::OPTION_PER_PAGE, 1 );
-				
+
 				return [
 					[
 						'layout' => 'some-layout-2',
@@ -188,7 +188,7 @@ class Controller_Test extends Controller_Test_Case {
 				];
 			},
 		];
-		
+
 		yield 'Events with search result for - future' => [
 			function (): array {
 				$event_id = tribe_events()->set_args(
@@ -201,11 +201,11 @@ class Controller_Test extends Controller_Test_Case {
 						'post_date_gmt' => '2020-01-01 00:00:00',
 					]
 				)->create()->ID;
-				
+
 				$post_id = self::factory()->post->create(
 					[ 'post_title' => 'Post with layout' ]
 				);
-				
+
 				wp_update_post(
 					[
 						'ID'            => $post_id,
@@ -213,7 +213,7 @@ class Controller_Test extends Controller_Test_Case {
 						'post_date_gmt' => '2020-01-02 00:00:00',
 					]
 				);
-				
+
 				$event_id_2 = tribe_events()->set_args(
 					[
 						'title'         => 'Event with private status',
@@ -224,13 +224,13 @@ class Controller_Test extends Controller_Test_Case {
 						'post_date_gmt' => '2020-01-01 00:00:00',
 					]
 				)->create()->ID;
-				
+
 				$post_id_2 = self::factory()->post->create(
 					[
 						'post_title' => 'Post with future in title',
 					]
 				);
-				
+
 				wp_update_post(
 					[
 						'ID'            => $post_id_2,
@@ -238,12 +238,12 @@ class Controller_Test extends Controller_Test_Case {
 						'post_date_gmt' => '2020-01-02 00:00:00',
 					]
 				);
-				
+
 				foreach ( [ $event_id, $event_id_2, $post_id, $post_id_2 ] as $id ) {
 					update_post_meta( $id, Meta::META_KEY_ENABLED, true );
 					update_post_meta( $id, Meta::META_KEY_LAYOUT_ID, 'some-layout-3' );
 				}
-				
+
 				return [
 					[
 						'layout' => 'some-layout-3',
@@ -254,30 +254,30 @@ class Controller_Test extends Controller_Test_Case {
 			},
 		];
 	}
-	
+
 	/**
 	 * @dataProvider events_list_data_provider
 	 */
 	public function test_associated_events_list( Closure $fixture ): void {
 		[ $vars, $ids ] = $fixture();
-		
+
 		if ( ! empty( $vars ) ) {
 			foreach ( $vars as $key => $value ) {
 				$_GET[ $key ] = $value;
 			}
 		}
-		
+
 		$this->make_controller()->register();
-		
+
 		ob_start();
 		$this->make_controller()->render();
 		$html = ob_get_clean();
-		
+
 		if ( ! empty( $ids ) ) {
 			// Remove the ids from the html.
 			$html = str_replace( $ids, array_fill( 0, count( $ids ), '{{ID}}' ), $html );
 		}
-		
+
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
 }

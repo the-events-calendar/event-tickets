@@ -1,15 +1,15 @@
 [
     [
         {
-            "label": "Has valid Seating license",
+            "label": "Seating license is valid",
             "completed": false,
             "status": "critical",
             "badge": {
                 "label": "Seating",
                 "color": "red"
             },
-            "description": "Your Seating license is invalid! This is a critical requirement for the Seating functionality to work as expected!",
-            "actions": "<p>If you don&#039;t have a license, you can purchase one <a href=\u0022https://theeventscalendar.com/product/seating/\u0022 target=\u0022_blank\u0022 rel=\u0022noopener noreferrer\u0022>here.</a></p><p>If you do have a license, make sure it is active for this site by visiting your <a href=\u0022https://theeventscalendar.com/product/seating/\u0022 target=\u0022_blank\u0022 rel=\u0022noopener noreferrer\u0022>account.</a></p><p>Finally, please try authorizing <a href=\u0022\u0022>again.</a></p>",
+            "description": "Your Seating license is invalid. You must have a valid license to use Seating for Event Tickets.",
+            "actions": "<p>You may need to <a href=\u0022https://evnt.is/1be0\u0022 target=\u0022_blank\u0022 rel=\u0022noopener noreferrer\u0022>purchase a license</a> or <a href=\u0022https://evnt.is/1be1\u0022 target=\u0022_blank\u0022 rel=\u0022noopener noreferrer\u0022>renew an existing license</a>.</p></p>Once you have a valid license, enter it under <a href=\u0022http://wordpress.test/wp-admin/admin.php?page=tec-tickets-settings&#038;tab=licenses\u0022>Tickets &gt; Settings &gt; Licenses</a> and connect to the Seat Builder Service.</p><p><a href=\u0022https://evnt.is/1be2\u0022 target=\u0022_blank\u0022 rel=\u0022noopener noreferrer\u0022>Learn more about about setting up Seating</a></p>",
             "test": "slr-valid-license"
         },
         null,
