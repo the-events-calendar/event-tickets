@@ -54,7 +54,9 @@ $clean_after_test = static function () {
 		throw new RuntimeException( "There was an issue cleaning the postmeta table: $wpdb->last_error" );
 	}
 
+	$wpdb->query( 'SET FOREIGN_KEY_CHECKS = 0;' );
 	$wpdb->query( "TRUNCATE TABLE $wpdb->posts" );
+	$wpdb->query( 'SET FOREIGN_KEY_CHECKS = 1;' );
 	if ( ! empty( $wpdb->last_error ) && $wpdb->last_error !== $last_error ) {
 		throw new RuntimeException( "There was an issue cleaning the posts table: $wpdb->last_error" );
 	}

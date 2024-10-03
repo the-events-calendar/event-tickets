@@ -24,7 +24,6 @@ use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers as Order_Modifiers_
  * @package TEC\Tickets\Order_Modifiers\Models;
  *
  * @property int    $id              The Order Modifier ID.
- * @property int    $post_id         Associated post ID.
  * @property string $modifier_type   The type of modifier (coupon, fee).
  * @property string $sub_type        The sub-type of modifier (percentage, flat).
  * @property int    $fee_amount_cents Amount of fee in cents.
@@ -42,7 +41,6 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 */
 	protected $properties = [
 		'id'               => 'int',
-		'post_id'          => 'int',
 		'modifier_type'    => 'string',
 		'sub_type'         => 'string',
 		'fee_amount_cents' => 'int',

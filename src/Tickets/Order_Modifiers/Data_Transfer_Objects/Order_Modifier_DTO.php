@@ -31,15 +31,6 @@ class Order_Modifier_DTO extends DataTransferObject {
 	protected int $id;
 
 	/**
-	 * The associated post ID.
-	 *
-	 * @since TBD
-	 *
-	 * @var int
-	 */
-	protected int $post_id;
-
-	/**
 	 * The modifier type (coupon, fee).
 	 *
 	 * @since TBD
@@ -133,7 +124,6 @@ class Order_Modifier_DTO extends DataTransferObject {
 		$self = new self();
 
 		$self->id               = $object->id;
-		$self->post_id          = $object->post_id;
 		$self->modifier_type    = $object->modifier_type;
 		$self->sub_type         = $object->sub_type;
 		$self->fee_amount_cents = $object->fee_amount_cents;

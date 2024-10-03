@@ -14,12 +14,13 @@ use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\StellarWP\Schema\Register as Schema_Register;
 use TEC\Common\StellarWP\Schema\Config as Schema_Config;
 use TEC\Common\StellarWP\DB\DB;
-use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
+use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifier_Relationships;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
 use TEC\Tickets\Order_Modifiers\Modifiers\Coupon;
 use TEC\Tickets\Order_Modifiers\Modifiers\Fee;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
+use TEC\Tickets\Order_Modifiers\Admin\Classic_Modifier;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 
 /**
@@ -80,6 +81,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 */
+
 	public function do_register(): void {
 		Schema_Config::set_container( $this->container );
 		Schema_Config::set_db( DB::class );
@@ -107,6 +109,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @return void
 	 */
+
 	protected function register_tables(): void {
 		foreach ( $this->custom_tables as $table ) {
 			$this->container->singleton( $table, Schema_Register::table( $table ) );
