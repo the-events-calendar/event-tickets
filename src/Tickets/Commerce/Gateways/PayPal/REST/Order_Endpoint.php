@@ -16,6 +16,7 @@ use TEC\Tickets\Commerce\Success;
 use Tribe__Utils__Array as Arr;
 
 use WP_Error;
+use WP_Post;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
@@ -119,16 +120,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		];
 
 		foreach ( $order->items as $item ) {
-			$ticket          = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
-			$post_title      = get_the_title( $item['event_id'] );
-			$item_name       = sprintf( '%s - %s', $ticket->name, $post_title );
-			$unit['items'][] = [
-				'name'        => $this->format_order_item_name( $item_name ),
-				'unit_amount' => [ 'value' => (string) $item['price'], 'currency_code' => $order->currency ],
-				'quantity'    => $item['quantity'],
-				'item_total'  => [ 'value' => (string) $item['sub_total'], 'currency_code' => $order->currency ],
-				'sku'         => $ticket->sku,
-			];
+			$unit['items'][] = $this->get_unit_data( $item, $order );
 		}
 
 		$paypal_order = tribe( Client::class )->create_order( $unit );
@@ -156,6 +148,49 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$response['id']      = $paypal_order['id'];
 
 		return new WP_REST_Response( $response );
+	}
+
+	/**
+	 * Retrieves the unit data for an item in the cart.
+	 *
+	 * By default, the item type will be considered a 'ticket' if not specified.
+	 * If an item type is provided, the method allows filtering the data generation
+	 * process based on that type, otherwise, it proceeds with the default ticket logic.
+	 *
+	 * @since TBD
+	 *
+	 * @param array          $item The cart item for which to retrieve unit data.
+	 * @param WP_Post|false $order The order from the items in the cart.
+	 *
+	 * @return array The structured data for the item including 'name', 'unit_amount', 'quantity', 'item_total', and
+	 *     'sku'.
+	 */
+	public function get_unit_data( $item, $order ) {
+		$type = $item['type'] ?? 'ticket';
+
+		if ( 'ticket' !== $type ) {
+			// Allow external code to generate custom unit data based on the type.
+			return apply_filters( "tec_commerce_get_unit_data_{$type}", $item, $order );
+		}
+
+		// Default ticket logic.
+		$ticket     = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+		$post_title = get_the_title( $item['event_id'] );
+		$item_name  = sprintf( '%s - %s', $ticket->name, $post_title );
+
+		return [
+			'name'        => $this->format_order_item_name( $item_name ),
+			'unit_amount' => [
+				'value'         => (string) $item['price'],
+				'currency_code' => $order->currency,
+			],
+			'quantity'    => $item['quantity'],
+			'item_total'  => [
+				'value'         => (string) $item['sub_total'],
+				'currency_code' => $order->currency,
+			],
+			'sku'         => $ticket->sku,
+		];
 	}
 
 	/**
@@ -223,7 +258,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @since 5.4.0.2
 	 *
 	 * @param string   $order_id The PayPal order ID.
-	 * @param \WP_Post $order    The TC Order object.
+	 * @param WP_Post $order    The TC Order object.
 	 *
 	 * @return bool|WP_Error|WP_REST_Response
 	 */

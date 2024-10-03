@@ -53,6 +53,8 @@ class Fees {
 
 		// Hook for displaying fees in the checkout.
 		add_action( 'tec_tickets_commerce_checkout_cart_before_footer_quantity', [ $this, 'display_fee_section' ], 30, 3 );
+		add_action( 'tec_tickets_commerce_create_from_cart_items', [ $this, 'add_fees_to_cart' ], 3, 3 );
+		add_action( 'tec_commerce_get_unit_data_fee', [ $this, 'add_fee_unit_data' ], 2, 3 );
 	}
 
 	/**
@@ -70,7 +72,6 @@ class Fees {
 		// Store the subtotal as a class property for later use.
 		$this->subtotal = Value::create()->total( $subtotal )->get_float();
 
-		printr($this->subtotal,'Original subtotal');
 		// Fetch the combined fees for the items in the cart.
 		$combined_fees = $this->get_combined_fees_for_items( $items );
 
@@ -171,5 +172,37 @@ class Fees {
 		}
 
 		return array_values( $unique_fees );
+	}
+
+	public function add_fees_to_cart( $items, $gateway, $purchaser ) {
+		/**
+		 * Loop over items in $items
+		 * If type = `ticket` then see if there are anyway fees associated with it
+		 * Add fee to items array
+		 */
+		$items[] = [
+			'price'     => 1,
+			'sub_total' => 1,
+			'type'      => 'fee',
+
+		];
+
+		return $items;
+	}
+
+	public function add_fee_unit_data( $item, $order ) {
+		return [
+			'name'        => 'Get name from id?',
+			'unit_amount' => [
+				'value'         => '1',
+				'currency_code' => 'USD',
+			],
+			'quantity'    => '1',
+			'item_total'  => [
+				'value'         => '1',
+				'currency_code' => 'USD',
+			],
+			'sku'         => 'ABC123',
+		];
 	}
 }

@@ -408,6 +408,23 @@ class Order extends Abstract_Order {
 			},
 			$items
 		) );
+
+		/**
+		 * Filters the cart items before creating an order.
+		 *
+		 * Allows modification of the cart items array before creating an order,
+		 * passing the current payment gateway and purchaser details.
+		 *
+		 * @since TBD
+		 *
+		 * @param array            $items     The items in the cart.
+		 * @param Gateway_Interface $gateway   The payment gateway used for the order.
+		 * @param array|null       $purchaser An array of purchaser information including purchaser_user_id,
+		 *                                    purchaser_full_name, purchaser_first_name, purchaser_last_name,
+		 *                                    and purchaser_email.
+		 */
+		$items = apply_filters( 'tec_tickets_commerce_create_from_cart_items', $items, $gateway, $purchaser );
+
 		$total = $this->get_value_total( array_filter( $items ) );
 
 		$order_args = [
