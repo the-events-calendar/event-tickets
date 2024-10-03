@@ -9,6 +9,7 @@ use TEC\Common\Tests\Provider\Controller_Test_Case;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\StellarWP\Uplink\Resources\License;
 use TEC\Tickets\Seating\Service\Service;
+use WP_Error;
 
 class Health_Test extends Controller_Test_Case {
 	use WP_Send_Json_Mocks;
@@ -212,6 +213,58 @@ class Health_Test extends Controller_Test_Case {
 						]
 					),
 				];
+			}
+		);
+
+		$controller->check_slr_ajax_rate();
+
+		$this->assertTrue( $wp_send_json_error->was_called() );
+		$this->assertFalse( $wp_send_json_success->was_called() );
+
+		$this->assertMatchesJsonSnapshot( $wp_send_json_error->get_pretty_arguments() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_check_ajax_rate_when_request_returns_wp_error() {
+		$test_user = self::factory()->user->create( [ 'role' => 'administrator' ] );
+		wp_set_current_user( $test_user );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$wp_send_json_error   = $this->mock_wp_send_json_error();
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( self::NONCE_ACTION );
+
+		$test = $controller->get_tests()['slr_ajax_rate'];
+
+		$action = 'tec-site-health-test-' . $test['test'];
+
+		$this->set_fn_return( 'wp_create_nonce', '12345678' );
+		$this->set_fn_return( 'wp_verify_nonce', true );
+		$this->set_fn_return( 'usleep', true );
+		$this->set_fn_return( 'wp_safe_remote_get', static fn( $url, $args ) => wp_remote_get( $url, $args ), true );
+
+		$this->mock_wp_remote(
+			'get',
+			add_query_arg(
+				[
+					'action' => rawurlencode( $action ),
+					'nonce'  => '12345678',
+				],
+				admin_url( '/admin-ajax.php' )
+			),
+			[
+				'timeout' => 1,
+				'headers' => [
+					'Cookie' => $_SERVER['HTTP_COOKIE'] ?? '',
+				],
+			],
+			function () {
+				return new WP_Error( 403, 'Forbidden' );
 			}
 		);
 
