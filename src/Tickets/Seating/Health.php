@@ -136,7 +136,7 @@ class Health extends Controller_Contract {
 						'description' => __( 'Your site is not connected to the Seating Builder SaaS. The Seating Builder is a SaaS tool that provides the functionality for creating Seating Maps, Seat Layouts, and tickets with assigned seating. Your site must be connected to the Seating Builder in order to use these features.', 'event-tickets' ),
 						'actions'     => [
 							// Translators: 1 Opening p element, 2 closing p element, 3 is closing a element, 4, 5 and 6 opening a elements.
-							_x( '%1$sGo to %4$sTickets > Settings > License%3$s > Seating and you connect to the Seating Builder.%2$s%1$s%5$sLearn more about connecting to the Seat Builder%3$s or %6$scontact support%3$s.%2$s', 'Shown as an action result, when the test regarding Seating license in Site Health has failed.', 'event-tickets' ),
+							_x( '%1$sGo to %4$sTickets > Settings > License%3$s > Seating and connect to the Seating Builder.%2$s%1$s%5$sLearn more about connecting to the Seat Builder%3$s or %6$scontact support%3$s.%2$s', 'Shown as an action result, when the test regarding Seating license in Site Health has failed.', 'event-tickets' ),
 							[
 								'<p>',
 								'</p>',
