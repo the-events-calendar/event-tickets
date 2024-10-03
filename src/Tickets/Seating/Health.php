@@ -330,7 +330,7 @@ class Health extends Controller_Contract {
 
 			if ( microtime( true ) - $start < self::AJAX_RATE ) {
 				// Sleep for the remaining time.
-				usleep( self::AJAX_RATE - ( microtime( true ) - $start ) );
+				usleep( (int) floor( self::AJAX_RATE - ( microtime( true ) - $start ) ) );
 			}
 
 			if ( is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) !== 200 ) {
