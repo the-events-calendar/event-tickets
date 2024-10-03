@@ -705,6 +705,73 @@ class Controller_Test extends Controller_Test_Case {
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
+	
+	/**
+	 * @test
+	 * @covers Attendee::include_seat_info_in_email
+	 */
+	public function test_ticket_emails_has_seat_info_for_multiple_attendees() {
+		$this->set_class_fn_return( 'Tribe__Tickets__Tickets', 'generate_security_code', 'SECURITY_CODE' );
+		
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Event with multiple seated attendee',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		
+		update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+		
+		$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+		
+		update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+		update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'some-seat-type' );
+		
+		$order = $this->create_order(
+			[ $ticket_id => 2 ],
+			[
+				'purchaser_email' => 'test-purchaser@test.com',
+			]
+		);
+		
+		$attendees = tribe_attendees()->by( 'event_id', $event_id )->by( 'order_status', [ 'completed' ] )->all();
+		
+		update_post_meta( $attendees[0]->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'A-1' );
+		update_post_meta( $attendees[1]->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'A-2' );
+		
+		$html = '';
+		
+		add_filter(
+			'tec_tickets_emails_dispatcher_content',
+			function ( $content ) use ( &$html ) {
+				$html = $content;
+				
+				// skip sending the email.
+				return '';
+			}
+		);
+		
+		$this->make_controller()->register();
+		
+		$send = tribe( Module::class )->send_tickets_email_for_attendees( [ $attendees[0]->ID, $attendees[1]->ID ] );
+		
+		$html = str_replace(
+			[ $event_id, $order->ID, $attendees[0]->ID, $attendees[1]->ID ],
+			[
+				'EVENT_ID',
+				'ORDER_ID',
+				'ATTENDEE_ID_1',
+				'ATTENDEE_ID_2',
+			],
+			$html
+		);
+		
+		$this->assertMatchesHtmlSnapshot( $html );
+	}
 
 	public function my_tickets_page_data_provider(): Generator {
 		yield 'regular post with tickets' => [
