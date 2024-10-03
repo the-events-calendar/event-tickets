@@ -21,7 +21,6 @@ use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
 use TEC\Tickets\Order_Modifiers\Modifiers\Coupon;
 use TEC\Tickets\Order_Modifiers\Modifiers\Fee;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
-use TEC\Tickets\Order_Modifiers\Admin\Order_Modifier_Fee_Metabox;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 
 /**
