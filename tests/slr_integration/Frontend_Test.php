@@ -13,6 +13,7 @@ use TEC\Tickets\Seating\Frontend;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Service;
+use TEC\Tickets\Seating\Service\Service_Status;
 use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe\Tests\Traits\With_Clock_Mock;
 use Tribe\Tests\Traits\With_Uopz;
@@ -462,6 +463,81 @@ class Frontend_Test extends Controller_Test_Case {
 
 				return [ $post_id, $ticket ];
 			},
+		];
+
+		yield 'service down' => [
+			function () {
+				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
+					return new Service_Status( $backend_base_url, Service_Status::SERVICE_DOWN );
+				}, 1000, 2 );
+				$post_id = static::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+				/**
+				 * @var Tickets_Handler $tickets_handler
+				 */
+				$tickets_handler   = tribe( 'tickets.handler' );
+				$capacity_meta_key = $tickets_handler->key_capacity;
+				update_post_meta( $post_id, $capacity_meta_key, 100 );
+				$ticket = $this->create_tc_ticket( $post_id, 20 );
+
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+
+				return [ $post_id, $ticket ];
+			}
+		];
+
+		yield 'service not connected' => [
+			function () {
+				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
+					return new Service_Status( $backend_base_url, Service_Status::NOT_CONNECTED );
+				}, 1000, 2 );
+				$post_id = static::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+				/**
+				 * @var Tickets_Handler $tickets_handler
+				 */
+				$tickets_handler   = tribe( 'tickets.handler' );
+				$capacity_meta_key = $tickets_handler->key_capacity;
+				update_post_meta( $post_id, $capacity_meta_key, 100 );
+				$ticket = $this->create_tc_ticket( $post_id, 20 );
+
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+
+				return [ $post_id, $ticket ];
+			}
+		];
+
+		yield 'invalid license' => [
+			function () {
+				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
+					return new Service_Status( $backend_base_url, Service_Status::INVALID_LICENSE );
+				}, 1000, 2 );
+				$post_id = static::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+				/**
+				 * @var Tickets_Handler $tickets_handler
+				 */
+				$tickets_handler   = tribe( 'tickets.handler' );
+				$capacity_meta_key = $tickets_handler->key_capacity;
+				update_post_meta( $post_id, $capacity_meta_key, 100 );
+				$ticket = $this->create_tc_ticket( $post_id, 20 );
+
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+
+				return [ $post_id, $ticket ];
+			}
 		];
 	}
 

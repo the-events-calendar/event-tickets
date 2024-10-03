@@ -399,10 +399,12 @@ class Frontend extends Controller_Contract {
 	 * } The data to be localized on the ticket block frontend.
 	 */
 	public function get_ticket_block_data( $post_id ): array {
+		$service_ok = $this->service->get_status()->is_ok();
+
 		return [
 			'objectName'                => 'dialog_obj_' . self::MODAL_ID,
 			'modalId'                   => self::MODAL_ID,
-			'seatTypeMap'               => $this->build_seat_type_map( $post_id ),
+			'seatTypeMap'               => $service_ok ? $this->build_seat_type_map( $post_id ) : [],
 			'labels'                    => [
 				'oneTicket'       => esc_html( _x( '1 Ticket', 'Seat selection modal total string', 'event-tickets' ) ),
 				'multipleTickets' => esc_html(
