@@ -126,7 +126,7 @@ class Maps_Layouts_Home_Page {
 		$this->template->template(
 			'maps-layouts-home',
 			[
-				'tabs'    => $tabs,
+				'the_tabs'    => $tabs,
 				'current' => $current,
 			]
 		);

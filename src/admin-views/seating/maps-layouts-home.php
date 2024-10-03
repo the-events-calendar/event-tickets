@@ -4,8 +4,8 @@
  *
  * @since TBD
  *
- * @var Tab[] $tabs    The set of tabs to display, in order.
- * @var Tab   $current The current tab.
+ * @var Tab[] $the_tabs The set of tabs to display, in order.
+ * @var Tab   $current  The current tab.
  */
 
 use TEC\Tickets\Seating\Admin\Tabs\Tab;
@@ -20,32 +20,32 @@ use TEC\Tickets\Seating\Admin\Tabs\Tab;
 	</h1>
 
 	<?php
-	if ( count( $tabs ) > 1 ) :
+	if ( count( $the_tabs ) > 1 ) :
 		?>
 		<h2 id="tribe-settings-tabs" class="nav-tab-wrapper">
 
 			<?php
-			foreach ( $tabs as $tab ) :
+			foreach ( $the_tabs as $the_tab ) :
 				?>
 				<a
 					id="
 					<?php
-					echo esc_attr( $tab::get_id() );
+					echo esc_attr( $the_tab::get_id() );
 					?>
 					"
 					class="nav-tab
 					<?php
-					echo esc_attr( $tab === $current ? 'nav-tab-active' : '' );
+					echo esc_attr( $the_tab === $current ? 'nav-tab-active' : '' );
 					?>
 					"
 					href="
 					<?php
-					echo esc_url( $tab->get_url() );
+					echo esc_url( $the_tab->get_url() );
 					?>
 					"
 				>
 					<?php
-					echo esc_html( $tab->get_title() );
+					echo esc_html( $the_tab->get_title() );
 					?>
 				</a>
 				<?php
