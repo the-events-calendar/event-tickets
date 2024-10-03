@@ -13,6 +13,7 @@ namespace TEC\Tickets\Order_Modifiers;
 
 use TEC\Common\lucatume\DI52\ServiceProvider;
 use TEC\Tickets\Order_Modifiers\Admin\Order_Modifier_Fee_Metabox;
+use TEC\Tickets\Order_Modifiers\API\Fees;
 use TEC\Tickets\Order_Modifiers\Modifiers\Coupon;
 use TEC\Tickets\Order_Modifiers\Modifiers\Fee;
 use TEC\Tickets\Registerable;
@@ -53,6 +54,7 @@ final class Provider extends ServiceProvider {
 			[
 				Modifier_Admin_Handler::class,
 				Order_Modifier_Fee_Metabox::class,
+				Fees::class,
 			],
 			'order_modifiers'
 		);
