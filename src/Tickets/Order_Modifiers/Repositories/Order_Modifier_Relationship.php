@@ -208,6 +208,26 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 	}
 
 	/**
+	 * Finds posts and their related modifiers based on an array of post IDs.
+	 *
+	 * This method retrieves data from the Order Modifier and wp_posts tables for
+	 * the given array of post IDs. It returns an array of results or null if no
+	 * matching posts are found.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $post_ids The array of post IDs to find.
+	 *
+	 * @return array|null The data from the Order Modifier and wp_posts tables, or null if no matches are found.
+	 */
+	public function find_by_post_ids( array $post_ids ): ?array {
+		return $this->build_base_query()
+					->select('m.display_name')
+					->whereIn( 'p.ID', $post_ids )
+					->getAll();
+	}
+
+	/**
 	 * Builds the base query with joins for Order Modifiers and wp_posts.
 	 *
 	 * This method centralizes the JOIN logic so that it can be reused in other query-building methods.

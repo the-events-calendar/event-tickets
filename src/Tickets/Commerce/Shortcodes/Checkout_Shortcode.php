@@ -41,10 +41,25 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	 * {@inheritDoc}
 	 */
 	public function setup_template_vars() {
-		$items       = tribe( Cart::class )->get_items_in_cart( true );
-		$sections    = array_unique( array_filter( wp_list_pluck( $items, 'event_id' ) ) );
-		$sub_totals  = Value::build_list( array_filter( wp_list_pluck( $items, 'sub_total' ) ) );
-		$total_value = Value::create();
+		$items      = tribe( Cart::class )->get_items_in_cart( true );
+		$sections   = array_unique( array_filter( wp_list_pluck( $items, 'event_id' ) ) );
+		$sub_totals = Value::build_list( array_filter( wp_list_pluck( $items, 'sub_total' ) ) );
+
+		/**
+		 * Filters the total value in the checkout shortcode.
+		 *
+		 * This filter allows adding additional values to the total amount in the checkout shortcode. The additional values
+		 * must be instances of the `Value` class to ensure correct behavior.
+		 *
+		 * @since TBD
+		 *
+		 * @param Value[] $values An array of `Value` instances representing additional fees or discounts to be applied.
+		 * @param array   $items The items in the cart, typically an array of ticket data.
+		 */
+		$additional_values = apply_filters( 'tec_tickets_commerce_checkout_shortcode_total_value', [], $items, $sub_totals );
+
+		// Combine the sub_totals and additional_values for total calculation.
+		$total_value = Value::create()->total( array_merge( $sub_totals, $additional_values ) );
 
 		$gateways = tribe( Manager::class )->get_gateways();
 
@@ -53,7 +68,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 			'provider'           => tribe( Module::class ),
 			'items'              => $items,
 			'sections'           => $sections,
-			'total_value'        => $total_value->total( $sub_totals ),
+			'total_value'        => $total_value,
 			'must_login'         => ! is_user_logged_in() && tribe( Module::class )->login_required(),
 			'login_url'          => tribe( Checkout::class )->get_login_url(),
 			'registration_url'   => tribe( Checkout::class )->get_registration_url(),

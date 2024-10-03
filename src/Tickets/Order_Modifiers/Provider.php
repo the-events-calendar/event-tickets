@@ -15,6 +15,7 @@ use TEC\Common\lucatume\DI52\ServiceProvider;
 use TEC\Tickets\Order_Modifiers\Admin\Order_Modifier_Fee_Metabox;
 use TEC\Tickets\Order_Modifiers\Modifiers\Coupon;
 use TEC\Tickets\Order_Modifiers\Modifiers\Fee;
+use TEC\Tickets\Order_Modifiers\Checkout\Fees as Checkout_Fees;
 
 /**
  * Class Provider
@@ -52,6 +53,7 @@ final class Provider extends ServiceProvider {
 			[
 				Modifier_Admin_Handler::class,
 				Order_Modifier_Fee_Metabox::class,
+				Checkout_Fees::class,
 			],
 			'order_modifiers'
 		);

@@ -17,6 +17,7 @@ use TEC\Common\StellarWP\Models\Repositories\Contracts\Insertable;
 use TEC\Common\StellarWP\Models\Repositories\Contracts\Updatable;
 use TEC\Common\StellarWP\Models\Repositories\Repository;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers as Table;
+use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifier_Relationships as Relationship_Table;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
 
@@ -226,6 +227,32 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		return $this->prepareQuery()
 			->where( 'modifier_type', $modifier_type )
 			->get();
+	}
+
+	/**
+	 * Finds order modifiers by post IDs, modifier type, and status based on the relationship table.
+	 *
+	 * This method retrieves order modifiers that are related to the provided post IDs,
+	 * match the specified modifier type, and have the specified status. It joins the Order Modifier
+	 * and Relationship tables to fetch the related modifiers.
+	 *
+	 * @since TBD
+	 *
+	 * @param array  $post_ids The array of post IDs to look up in the relationship table.
+	 * @param string $modifier_type The type of modifier to filter by.
+	 * @param string $status The status of the modifiers to filter by. Defaults to 'active'.
+	 *
+	 * @return array The data from the related order modifiers.
+	 */
+	public function find_relationship_by_post_ids( array $post_ids, string $modifier_type, string $status = 'active' ): array {
+		$order_modifiers_table = Relationship_Table::base_table_name();
+		$builder               = new ModelQueryBuilder( Order_Modifier::class );
+		return $builder->from( Table::table_name( false ) . ' as m' )
+			->innerJoin( "{$order_modifiers_table} as r", 'm.id', 'r.modifier_id' )
+			->whereIn( 'r.post_id', $post_ids )
+			->where( 'modifier_type', $modifier_type )
+			->where( 'status', $status )
+			->getAll();
 	}
 
 	/**

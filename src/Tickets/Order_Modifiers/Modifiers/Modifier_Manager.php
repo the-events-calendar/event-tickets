@@ -56,7 +56,8 @@ class Modifier_Manager {
 	 *
 	 * @param array $data The data to save the modifier.
 	 *
-	 * @return mixed The result of the insert or update operation, or an empty array if validation fails or no changes were made.
+	 * @return mixed The result of the insert or update operation, or an empty array if validation fails or no changes
+	 *     were made.
 	 */
 	public function save_modifier( array $data ): mixed {
 		$data['modifier_type'] = $this->strategy->get_modifier_type();
@@ -149,4 +150,58 @@ class Modifier_Manager {
 		$this->strategy->delete_relationship_by_post( $post_id );
 	}
 
+	/**
+	 * Calculates the total fees for the provided tickets.
+	 *
+	 * This method loops through the items (tickets) in the cart and calculates
+	 * the total fees (both percentage and flat) based on the associated modifiers.
+	 *
+	 * @since TBD
+	 *
+	 * @param float $base_price The base price of the item.
+	 * @param array $items The items in the cart (tickets).
+	 *
+	 * @return float The total amount after fees are applied.
+	 */
+	public function calculate_total_fees( float $base_price, array $items ): float {
+
+		$total_fees = 0.0;
+
+		foreach ( $items as $item ) {
+			// Apply the fees directly without wrapping in an array.
+			$total_fees += $this->apply_fees_to_item( $base_price, $item );
+		}
+
+		return $total_fees;
+	}
+
+
+	/**
+	 * Apply percentage and flat fees to a single item.
+	 *
+	 * This method applies all relevant percentage and flat fees to the provided base price.
+	 *
+	 * @since TBD
+	 *
+	 * @param float $base_price The base price of the item.
+	 * @param array $item The fee data for a single item (percentage or flat).
+	 *
+	 * @return float The total price after fees are applied.
+	 */
+	public function apply_fees_to_item( float $base_price, array $item ): float {
+		$base_price_in_cents = $this->strategy->convert_to_cents( $base_price );
+		$subtotal            = 0;
+
+		// Apply percentage fee if applicable.
+		if ( isset( $item['sub_type'] ) && $item['sub_type'] === 'percent' ) {
+			$subtotal += $this->strategy->convert_from_cents( $item['fee_amount_cents'] / $base_price_in_cents );
+		}
+
+		// Apply flat fee if applicable.
+		if ( isset( $item['sub_type'] ) && $item['sub_type'] === 'flat' ) {
+			$subtotal += $item['fee_amount_cents'];
+		}
+
+		return $subtotal;
+	}
 }

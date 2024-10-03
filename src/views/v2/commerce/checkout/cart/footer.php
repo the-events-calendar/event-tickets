@@ -30,8 +30,11 @@ $classes = [
 	'tribe-common-b1',
 ];
 ?>
-<footer <?php tribe_classes( $classes ); ?>>
 
+<footer <?php tribe_classes( $classes ); ?>>
+	<?php
+	do_action( 'tec_tickets_commerce_checkout_cart_before_footer_quantity', $post, $items, $this );
+	?>
 	<?php $this->template( 'checkout/cart/footer/quantity' ); ?>
 
 	<?php $this->template( 'checkout/cart/footer/total' ); ?>
