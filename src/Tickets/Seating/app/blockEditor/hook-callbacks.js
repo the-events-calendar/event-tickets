@@ -220,7 +220,7 @@ export const removeAllActionsFromTicket = (actions) => {
 export const disableTicketSelection = (isSelected) => {
 	const store = select(storeName);
 
-	if (!store.isServiceStatusOk()) {
+	if (store.isServiceStatusOk()) {
 		return isSelected;
 	}
 
