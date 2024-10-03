@@ -9,12 +9,23 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Order_Modifiers\Traits;
 
+use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers;
+
 /**
  * Trait Fee_Types
  *
  * @since TBD
  */
 trait Fee_Types {
+
+	/**
+	 * The repository for interacting with the order modifiers table.
+	 *
+	 * @since TBD
+	 *
+	 * @var Order_Modifiers
+	 */
+	protected Order_Modifiers $order_modifiers_repository;
 
 	/**
 	 * Get the automatic fees.
@@ -46,5 +57,24 @@ trait Fee_Types {
 			$all_fees,
 			fn( $fee ) => ! empty( $fee->meta_value ) && $fee->meta_value !== 'all'
 		);
+	}
+
+	/**
+	 * Get all fees.
+	 *
+	 * @since TBD
+	 *
+	 * @return array The fees.
+	 */
+	protected function get_all_fees(): array {
+		$available_fees = $this->order_modifiers_repository->find_by_modifier_type_and_meta(
+			'fee',
+			'fee_applied_to',
+			[ 'per', 'all' ],
+			'fee_applied_to',
+			'all'
+		);
+
+		return $available_fees ?? [];
 	}
 }
