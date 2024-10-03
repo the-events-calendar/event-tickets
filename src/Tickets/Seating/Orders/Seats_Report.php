@@ -9,6 +9,7 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Reports\Report_Abstract;
 use TEC\Tickets\Commerce\Reports\Tabbed_View;
 use TEC\Tickets\Seating\Meta;
+use TEC\Tickets\Seating\Service\Error_Content;
 use TEC\Tickets\Seating\Service\Service;
 use Tribe__Main;
 use WP_Error;
@@ -115,6 +116,15 @@ class Seats_Report extends Report_Abstract {
 		$tc_tabbed_view = new Tabbed_View();
 		$tc_tabbed_view->set_active( self::$tab_slug );
 		$tc_tabbed_view->render();
+
+		$service = tribe( Service::class );
+		$service_status = $service->get_status();
+
+		if ( ! $service->get_status()->is_ok() ) {
+			tribe( Error_Content::class )->render_tab( $service_status );
+
+			return;
+		}
 
 		$this->get_template()->template( 'seats', $this->get_template_vars() );
 	}

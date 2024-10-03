@@ -1,7 +1,7 @@
 import { storeName } from './store';
 import { select, dispatch } from '@wordpress/data';
 import SeatType from './header/seat-type';
-import LayoutSelect from "./settings/layoutSelect";
+import LayoutSelect from './settings/layoutSelect';
 
 export const setSeatTypeForTicket = (clientId) =>
 	dispatch(storeName).setTicketSeatTypeByPostId(clientId);
@@ -118,7 +118,8 @@ export const filterSeatedTicketsAvailabilityMappedProps = (mappedProps) => {
 	);
 
 	const activeSeatTypeTotalCapacity = activeSeatTypesFiltered.reduce(
-		(sum, type) => sum + parseInt(seatTypes[type] ? seatTypes[type].seats : 0),
+		(sum, type) =>
+			sum + parseInt(seatTypes[type] ? seatTypes[type].seats : 0),
 		0
 	);
 
@@ -153,11 +154,79 @@ export const filterSettingsFields = (fields) => {
 	const layouts = store.getLayoutsInOptionFormat();
 
 	fields.push(
-		<LayoutSelect
-			layouts={layouts}
-			currentLayout={currentLayout}
-		/>
+		<LayoutSelect layouts={layouts} currentLayout={currentLayout} />
 	);
 
 	return fields;
-}
+};
+
+/**
+ * Disables the confirm button in the ticket dashboard if the service is down.
+ *
+ * @since TBD
+ *
+ * @param {{isConfirmDisabled: boolean}} mappedProps The mapped props for the Tickets block.
+ *
+ * @return {{isConfirmDisabled: boolean}} The filtered mapped props.
+ */
+export const disableConfirmInTicketDashboard = (mappedProps) => {
+	const store = select(storeName);
+
+	if (store.isServiceStatusOk()) {
+		return mappedProps;
+	}
+
+	if (!(store.isUsingAssignedSeating() && store.getCurrentLayoutId())) {
+		return mappedProps;
+	}
+
+	mappedProps.isConfirmDisabled = true;
+
+	return mappedProps;
+};
+
+/**
+ * Removes all the actions from the ticket if the service is down.
+ *
+ * @since TBD
+ *
+ * @param {Array} actions The current actions.
+ *
+ * @return {Array} The filtered actions.
+ */
+export const removeAllActionsFromTicket = (actions) => {
+	const store = select(storeName);
+
+	if (store.isServiceStatusOk()) {
+		return actions;
+	}
+
+	if (!(store.isUsingAssignedSeating() && store.getCurrentLayoutId())) {
+		return actions;
+	}
+
+	return [];
+};
+
+/**
+ * Disables the ticket selection if the service is down.
+ *
+ * @since TBD
+ *
+ * @param {boolean} isSelected Whether the ticket is selected or not.
+ *
+ * @return {boolean} Whether the ticket is selected or not.
+ */
+export const disableTicketSelection = (isSelected) => {
+	const store = select(storeName);
+
+	if (!store.isServiceStatusOk()) {
+		return isSelected;
+	}
+
+	if (!(store.isUsingAssignedSeating() && store.getCurrentLayoutId())) {
+		return isSelected;
+	}
+
+	return false;
+};

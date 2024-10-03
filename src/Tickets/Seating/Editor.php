@@ -11,6 +11,7 @@ namespace TEC\Tickets\Seating;
 
 use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Common\StellarWP\Assets\Assets;
+use TEC\Tickets\Seating\Service\Error_Content;
 use TEC\Tickets\Seating\Service\Service;
 use Tribe__Tickets__Main as Tickets;
 
@@ -73,7 +74,8 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 			$event_capacity = tribe_get_event_capacity( $post_id );
 		}
 
-		$service = $this->container->get( Service::class );
+		$service          = tribe( Service::class );
+		$service_status = $service->get_status();
 
 		return [
 			'isUsingAssignedSeating' => $is_using_assigned_seating,
@@ -83,6 +85,11 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 			'seatTypesByPostId'      => $seat_types_by_post_id,
 			'isLayoutLocked'         => $is_layout_locked,
 			'eventCapacity'          => $event_capacity,
+			'serviceStatus'          => [
+				'ok'     => $service_status->is_ok(),
+				'status' => $service_status->get_status_string(),
+				'connectUrl' => $service_status->get_connnect_url(),
+			]
 		];
 	}
 

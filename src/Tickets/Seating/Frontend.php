@@ -123,9 +123,27 @@ class Frontend extends Controller_Contract {
 		if ( ! $provider ) {
 			return $html;
 		}
-		
+
 		// Bail if there are no tickets on sale.
 		if ( empty( $data['has_tickets_on_sale'] ) ) {
+			return $html;
+		}
+
+		$service_status = $this->service->get_status();
+
+		if ( ! $service_status->is_ok() ) {
+			$html = $this->template->template( 'tickets-block-error', [], false );
+
+			/**
+			 * Filters the contents of the Tickets block when there is a problem with the service.
+			 *
+			 * @since TBD
+			 *
+			 * @param string   $html     The HTML of the Tickets block.
+			 * @param Template $template A reference to the template object.
+			 */
+			$html = apply_filters( 'tec_tickets_seating_tickets_block_html', $html, $template );
+
 			return $html;
 		}
 

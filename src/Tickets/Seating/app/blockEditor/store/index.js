@@ -3,12 +3,13 @@ import { getTicketIdFromCommonStore } from './common-store-bridge';
 import { controls } from './controls';
 import { selectors } from './selectors';
 import { actions } from './actions';
+import { localizedData } from './localized-data';
 
 const storeName = 'tec-tickets-seating';
 
 // Initialize from the localized object.
 const DEFAULT_STATE = {
-	...window.tec.tickets.seating.blockEditor,
+	...localizedData,
 	seatTypesByLayoutId: {},
 	seatTypesByClientId: {},
 	ticketPostIdByClientId: {},

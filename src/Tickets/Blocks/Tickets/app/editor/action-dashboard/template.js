@@ -22,7 +22,7 @@ import NotSupportedMessage from '../not-supported-message/container';
 import { ActionDashboard } from '@moderntribe/tickets/elements';
 import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import './style.pcss';
-import {applyFilters} from "@wordpress/hooks";
+import { applyFilters } from '@wordpress/hooks';
 
 // eslint-disable-next-line no-undef
 const confirmLabel = sprintf(
@@ -40,6 +40,7 @@ class TicketsDashboardAction extends PureComponent {
 		showConfirm: PropTypes.bool,
 		showNotSupportedMessage: PropTypes.bool,
 		clientId: PropTypes.string,
+		isConfirmDisabled: PropTypes.bool,
 	};
 
 	constructor(props) {
@@ -85,7 +86,7 @@ class TicketsDashboardAction extends PureComponent {
 	};
 
 	render() {
-		const { onConfirmClick, showConfirm, showNotSupportedMessage } =
+		const { onConfirmClick, showConfirm, showNotSupportedMessage, isConfirmDisabled } =
 			this.props;
 
 		const actionDashboardClassName = classNames(
@@ -106,6 +107,7 @@ class TicketsDashboardAction extends PureComponent {
 					onConfirmClick={onConfirmClick}
 					showCancel={false}
 					showConfirm={showConfirm}
+					isConfirmDisabled={isConfirmDisabled}
 				/>
 				{showNotSupportedMessage ? (
 					<div className="tribe-editor__tickets__action-dashboard__not-supported-message">

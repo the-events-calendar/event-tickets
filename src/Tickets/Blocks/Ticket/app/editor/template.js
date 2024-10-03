@@ -33,12 +33,12 @@ class Ticket extends PureComponent {
 	};
 
 	componentDidMount() {
-		this.props.onBlockUpdate( this.props.isSelected );
+		this.props.onBlockUpdate(this.props.isSelected);
 	}
 
-	componentDidUpdate( prevProps ) {
-		if ( prevProps.isSelected !== this.props.isSelected ) {
-			this.props.onBlockUpdate( this.props.isSelected );
+	componentDidUpdate(prevProps) {
+		if (prevProps.isSelected !== this.props.isSelected) {
+			this.props.onBlockUpdate(this.props.isSelected);
 		}
 	}
 
@@ -53,13 +53,31 @@ class Ticket extends PureComponent {
 			showTicket,
 		} = this.props;
 
+		/**
+		 * Filters the ticket `isSelected` property. The property comes fron the Block Editor,
+		 * and it's a proxy to many of the interactivity properties of the ticket.
+		 *
+		 * @since TBD
+		 *
+		 * @param {boolean} isSelected The ticket `isSelected` property.
+		 * @param {Object}  props      The Ticket component props.
+		 */
+		const filteredIsSelected = applyFilters(
+			'tec.tickets.blocks.Ticket.isSelected',
+			isSelected,
+			this.props
+		);
+
 		return showTicket ? (
 			<Fragment>
 				<article
 					className={classNames(
 						'tribe-editor__ticket',
 						{ 'tribe-editor__ticket--disabled': isDisabled },
-						{ 'tribe-editor__ticket--selected': isSelected },
+						{
+							'tribe-editor__ticket--selected':
+								filteredIsSelected,
+						},
 						{
 							'tribe-editor__ticket--has-tickets-plus':
 								hasTicketsPlus,
@@ -75,11 +93,11 @@ class Ticket extends PureComponent {
 				>
 					<TicketContainer
 						clientId={clientId}
-						isSelected={isSelected}
+						isSelected={filteredIsSelected}
 					/>
 					<TicketDashboard
 						clientId={clientId}
-						isSelected={isSelected}
+						isSelected={filteredIsSelected}
 					/>
 					{isLoading && <Spinner />}
 				</article>

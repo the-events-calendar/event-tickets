@@ -11,6 +11,7 @@ import {
 } from '../store/common-store-bridge';
 import { META_KEY_ENABLED, META_KEY_LAYOUT_ID } from '../constants';
 import EventLayoutSelect from './event-layout-select';
+import ServiceError from './service-error';
 import { getLocalizedString } from '@tec/tickets/seating/utils';
 
 const getString = (key) => getLocalizedString(key, 'capacity-form');
@@ -30,6 +31,7 @@ function getCurrentSeatTypeOption(seatTypeId, seatTypes) {
 }
 
 const MemoizedEventLayoutSelect = React.memo(EventLayoutSelect);
+const MemoizedServiceError = React.memo(ServiceError);
 
 export default function CapacityForm({ renderDefaultForm, clientId }) {
 	const {
@@ -68,6 +70,18 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 
 	const isLayoutLocked = useSelect((select) => {
 		return select(storeName).isLayoutLocked();
+	}, []);
+
+	const isServiceStatusOk = useSelect((select) => {
+		return select(storeName).isServiceStatusOk();
+	}, []);
+
+	const serviceStatus = useSelect((select) => {
+		return select(storeName).getServiceStatus();
+	}, []);
+
+	const serviceConnectUrl = useSelect((select) => {
+		return select(storeName).getServiceConnectUrl();
 	}, []);
 
 	const postType = useSelect(
@@ -145,6 +159,25 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 		[getSeatTypeSeats, setTicketSeatType, clientId]
 	);
 
+	const renderLayoutSelect = () => {
+		return isServiceStatusOk ? (
+			<MemoizedEventLayoutSelect
+				layoutLocked={isLayoutLocked}
+				layouts={layouts}
+				onLayoutChange={onLayoutChange}
+				currentLayout={getCurrentLayoutOption(layout, layouts)}
+				seatTypes={seatTypes}
+				onSeatTypeChange={onSeatTypeChange}
+				currentSeatType={getCurrentSeatTypeOption(seatType, seatTypes)}
+			/>
+		) : (
+			<MemoizedServiceError
+				status={serviceStatus}
+				serviceConnectUrl={serviceConnectUrl}
+			/>
+		);
+	};
+
 	return (
 		<div className="tec-tickets-seating__capacity-form">
 			{isUsingAssignedSeating && isLayoutLocked ? (
@@ -169,22 +202,9 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 				/>
 			)}
 
-			{isUsingAssignedSeating ? (
-				<MemoizedEventLayoutSelect
-					layoutLocked={isLayoutLocked}
-					layouts={layouts}
-					onLayoutChange={onLayoutChange}
-					currentLayout={getCurrentLayoutOption(layout, layouts)}
-					seatTypes={seatTypes}
-					onSeatTypeChange={onSeatTypeChange}
-					currentSeatType={getCurrentSeatTypeOption(
-						seatType,
-						seatTypes
-					)}
-				/>
-			) : (
-				renderDefaultForm()
-			)}
+			{isUsingAssignedSeating
+				? renderLayoutSelect()
+				: renderDefaultForm()}
 		</div>
 	);
 }
