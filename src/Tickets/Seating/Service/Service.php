@@ -423,11 +423,9 @@ class Service {
 	 * @return Service_Status The Service Status instance.
 	 */
 	public function get_status( bool $force = false ): Service_Status {
-		if ( ! $force && $this->status instanceof Service_Status ) {
-			return $this->status;
+		if ( $force || ! $this->status instanceof Service_Status ) {
+			$this->status = new Service_Status( $this->backend_base_url );
 		}
-
-		$this->status = new Service_Status( $this->backend_base_url );
 
 		/**
 		 * Filters the Service Status instance.

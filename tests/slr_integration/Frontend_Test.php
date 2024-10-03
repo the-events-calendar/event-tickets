@@ -327,7 +327,7 @@ class Frontend_Test extends Controller_Test_Case {
 				return [ $post_id, $ticket_1, $ticket_2, $ticket_3, $ticket_4, $ticket_5 ];
 			},
 		];
-		
+
 		yield 'ticket with past date' => [
 			function () {
 				$post_id = static::factory()->post->create(
@@ -352,11 +352,11 @@ class Frontend_Test extends Controller_Test_Case {
 						'ticket_end_time'   => '20:00:00',
 					]
 				);
-				
+
 				return [ $post_id, $ticket ];
 			},
 		];
-		
+
 		yield 'ticket with future date' => [
 			function () {
 				$post_id = static::factory()->post->create(
@@ -381,11 +381,11 @@ class Frontend_Test extends Controller_Test_Case {
 						'ticket_end_time'   => '20:00:00',
 					]
 				);
-				
+
 				return [ $post_id, $ticket ];
 			},
 		];
-		
+
 		yield 'ticket with future and past' => [
 			function () {
 				$post_id = static::factory()->post->create(
@@ -410,7 +410,7 @@ class Frontend_Test extends Controller_Test_Case {
 						'ticket_end_time'   => '20:00:00',
 					]
 				);
-				
+
 				$ticket_2 = $this->create_tc_ticket(
 					$post_id,
 					10,
@@ -421,11 +421,11 @@ class Frontend_Test extends Controller_Test_Case {
 						'ticket_end_time'   => '20:00:00',
 					]
 				);
-				
+
 				return [ $post_id, $ticket, $ticket_2 ];
 			},
 		];
-		
+
 		yield 'sold out event' => [
 			function () {
 				$post_id = static::factory()->post->create(
@@ -433,10 +433,10 @@ class Frontend_Test extends Controller_Test_Case {
 						'post_type' => 'page',
 					]
 				);
-				
+
 				update_post_meta( $post_id, Meta::META_KEY_ENABLED, 1 );
 				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
-				
+
 				/**
 				 * @var Tickets_Handler $tickets_handler
 				 */
@@ -453,13 +453,13 @@ class Frontend_Test extends Controller_Test_Case {
 						],
 					]
 				);
-				
+
 				$order = $this->create_order(
 					[
 						$ticket => 5,
-					] 
+					]
 				);
-				
+
 				return [ $post_id, $ticket ];
 			},
 		];
@@ -479,6 +479,7 @@ class Frontend_Test extends Controller_Test_Case {
 					Service::class,
 					[
 						'frontend_base_url'   => 'https://service.test.local',
+						'backend_base_url'   => 'https://service.test.local',
 						'get_ephemeral_token' => function ( $expiration, $scope ) {
 							Assert::assertEquals( HOUR_IN_SECONDS, $expiration );
 							Assert::assertEquals( 'visitor', $scope );
@@ -486,9 +487,9 @@ class Frontend_Test extends Controller_Test_Case {
 							return 'test-ephemeral-token';
 						},
 						'get_post_uuid'       => 'test-post-uuid',
-					] 
+					]
 				);
-			} 
+			}
 		);
 		$ids     = $fixture();
 		$post_id = array_shift( $ids );
@@ -506,7 +507,7 @@ class Frontend_Test extends Controller_Test_Case {
 					function ( $id ) {
 						return '{{ticket_' . $id . '}}';
 					},
-					range( 1, count( $ids ) ) 
+					range( 1, count( $ids ) )
 				),
 			],
 			$html
@@ -541,7 +542,7 @@ class Frontend_Test extends Controller_Test_Case {
 					function ( $id ) {
 						return '{{ticket_' . $id . '}}';
 					},
-					range( 1, count( $ids ) ) 
+					range( 1, count( $ids ) )
 				),
 			],
 			$json
@@ -562,7 +563,7 @@ class Frontend_Test extends Controller_Test_Case {
 				'ticket_start_time' => '08:00:00',
 				'ticket_end_date'   => '2024-03-01',
 				'ticket_end_time'   => '20:00:00',
-			] 
+			]
 		);
 		update_post_meta( $ticket_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
 		// Create a second ticket that opens sales after the current time.
@@ -574,7 +575,7 @@ class Frontend_Test extends Controller_Test_Case {
 				'ticket_start_time' => '08:00:00',
 				'ticket_end_date'   => '2024-04-30',
 				'ticket_end_time'   => '20:00:00',
-			] 
+			]
 		);
 		update_post_meta( $ticket_2, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-2' );
 		// Create a third ticket that is in range.
@@ -586,7 +587,7 @@ class Frontend_Test extends Controller_Test_Case {
 				'ticket_start_time' => '08:00:00',
 				'ticket_end_date'   => '2024-03-30',
 				'ticket_end_time'   => '20:00:00',
-			] 
+			]
 		);
 		update_post_meta( $ticket_3, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
 		// Freeze time to 2024-03-23 12:34:00.
@@ -611,7 +612,7 @@ class Frontend_Test extends Controller_Test_Case {
 		);
 		$this->assertMatchesJsonSnapshot( $json );
 	}
-	
+
 	public function test_should_add_seat_selected_labels_per_ticket_attribute() {
 		$event_id = tribe_events()->set_args(
 			[

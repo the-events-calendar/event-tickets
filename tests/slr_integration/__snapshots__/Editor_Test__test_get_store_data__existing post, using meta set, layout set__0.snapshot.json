@@ -21,5 +21,10 @@
     "currentLayoutId": "layout-1",
     "seatTypesByPostId": [],
     "isLayoutLocked": true,
-    "eventCapacity": 0
+    "eventCapacity": 0,
+    "serviceStatus": {
+        "ok": true,
+        "status": "ok",
+        "connectUrl": "http://wordpress.test/wp-admin/admin.php?page=tec-tickets-settings&tab=licenses"
+    }
 }
