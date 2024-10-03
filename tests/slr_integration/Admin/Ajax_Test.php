@@ -383,11 +383,11 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->reset_wp_send_json_mocks();
 
 		// Map deletion from  service fails.
-		$_REQUEST['mapId']  = 'some-map-1';
+		$_REQUEST['mapId']  = 'some-map-4';
 		$wp_send_json_error = $this->mock_wp_send_json_error();
 		$wp_remote          = $this->mock_wp_remote(
 			'delete',
-			$maps_service->get_delete_url( 'some-map-1' ),
+			$maps_service->get_delete_url( 'some-map-4' ),
 			[
 				'method'  => 'DELETE',
 				'headers' => [
@@ -427,11 +427,11 @@ class Ajax_Test extends Controller_Test_Case {
 		$wp_remote->tear_down();
 		
 		// Map deletion succeeds.
-		$_REQUEST['mapId']    = 'some-map-1';
+		$_REQUEST['mapId']    = 'some-map-4';
 		$wp_send_json_success = $this->mock_wp_send_json_success();
 		$wp_remote            = $this->mock_wp_remote(
 			'delete',
-			$maps_service->get_delete_url( 'some-map-1' ),
+			$maps_service->get_delete_url( 'some-map-4' ),
 			[
 				'method'  => 'DELETE',
 				'headers' => [
