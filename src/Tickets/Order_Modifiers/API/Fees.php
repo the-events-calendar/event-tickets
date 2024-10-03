@@ -29,6 +29,13 @@ class Fees implements Registerable {
 	use Fee_Types;
 
 	/**
+	 * TThe modifier manager instance to handle relationship updates.
+	 *
+	 * @var Manager
+	 */
+	protected Manager $manager;
+
+	/**
 	 * The namespace for the API.
 	 *
 	 * @var string
@@ -47,10 +54,16 @@ class Fees implements Registerable {
 	 *
 	 * @param ?Modifiers     $modifiers     The repository for interacting with the order modifiers.
 	 * @param ?Relationships $relationships The repository for interacting with the order modifiers relationships.
+	 * @param ?Manager       $manager       The manager for the order modifiers.
 	 */
-	public function __construct( ?Modifiers $modifiers = null, ?Relationships $relationships = null ) {
+	public function __construct(
+		?Modifiers $modifiers = null,
+		?Relationships $relationships = null,
+		?Manager $manager = null
+	) {
 		$this->modifiers_repository = $modifiers ?? new Modifiers();
 		$this->relationships        = $relationships ?? new Relationships();
+		$this->manager              = $manager ?? new Manager( new Fee() );
 	}
 
 	/**
@@ -96,6 +109,17 @@ class Fees implements Registerable {
 				'methods'             => Server::READABLE,
 				'callback'            => fn( Request $request ) => $this->get_fees_for_ticket_response( $request ),
 				'permission_callback' => $this->get_permission_callback(),
+			]
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/tickets/(?P<id>\\d+)/fees',
+			[
+				'methods'             => Server::EDITABLE,
+				'callback'            => fn( Request $request ) => $this->update_fees_for_ticket_response( $request ),
+				'permission_callback' => $this->get_permission_callback(),
+				'args'                => [], // @todo Add args.
 			]
 		);
 	}
@@ -188,5 +212,27 @@ class Fees implements Registerable {
 		$data['fees'] = $ticket_fees;
 
 		return $data;
+	}
+
+	/**
+	 * Update the fees for a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param Request $request The request object.
+	 *
+	 * @return Response
+	 */
+	protected function update_fees_for_ticket_response( Request $request ) {
+		$ticket_id = (int) $request->get_param( 'id' );
+		$fees      = $request->get_param( 'fees' );
+
+		$this->manager->delete_relationships_by_post( $ticket_id );
+
+		$fee_ids = array_map( 'absint', $fees );
+
+		$this->manager->sync_modifier_relationships( $fee_ids, [ $ticket_id ] );
+
+		return rest_ensure_response( $this->get_fees_for_ticket( $ticket_id ) );
 	}
 }
