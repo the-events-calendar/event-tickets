@@ -81,7 +81,7 @@ class Service {
 	 *
 	 * @since TBD
 	 *
-	 * @var
+	 * @var Service_Status|null
 	 */
 	private ?Service_Status $status = null;
 

@@ -117,7 +117,7 @@ class Seats_Report extends Report_Abstract {
 		$tc_tabbed_view->set_active( self::$tab_slug );
 		$tc_tabbed_view->render();
 
-		$service = tribe( Service::class );
+		$service        = tribe( Service::class );
 		$service_status = $service->get_status();
 
 		if ( ! $service->get_status()->is_ok() ) {

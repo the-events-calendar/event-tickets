@@ -17,7 +17,6 @@ use TEC\Tickets\Seating\Admin\Tabs\Maps;
 use TEC\Tickets\Seating\Admin\Tabs\Tab;
 use TEC\Tickets\Seating\Service\Error_Content;
 use TEC\Tickets\Seating\Service\Service;
-use TEC\Tickets\Seating\Service\Service_Status;
 
 /**
  * Class Maps_Layouts_Home_Page.
@@ -126,8 +125,8 @@ class Maps_Layouts_Home_Page {
 		$this->template->template(
 			'maps-layouts-home',
 			[
-				'the_tabs'    => $tabs,
-				'current' => $current,
+				'the_tabs' => $tabs,
+				'current'  => $current,
 			]
 		);
 	}

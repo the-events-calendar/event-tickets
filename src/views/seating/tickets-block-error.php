@@ -18,11 +18,13 @@
 			<?php echo esc_html( tribe_get_ticket_label_plural( 'seat-form' ) ); ?>
 		</h2>
 		<p>
-			<?php echo esc_html_x(
+			<?php
+			echo esc_html_x(
 				'Ticket sales are not available. Please contact the site administrator.',
 				'Seat selection ticket block error message',
 				'event-tickets'
-			); ?>
+			);
+			?>
 		</p>
 	</div>
 </div>

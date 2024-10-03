@@ -78,9 +78,10 @@ class Service_Status {
 	/**
 	 * Service_Status constructor.
 	 *
-	 * since TBD
+	 * @since TBD
 	 *
-	 * @param string $backend_base_url The base URL of the service from the site backend.
+	 * @param string   $backend_base_url The base URL of the service from the site backend.
+	 * @param int|null $status           The status of the service.
 	 *
 	 * @throws \InvalidArgumentException If the status is not one of the valid statuses.
 	 */
@@ -176,7 +177,7 @@ class Service_Status {
 	 *
 	 * @return string The status of the service as a string.
 	 */
-	public function get_status_string():string{
+	public function get_status_string(): string {
 		$this->update();
 
 		switch ( $this->status ) {
@@ -188,7 +189,7 @@ class Service_Status {
 				return 'not-connected';
 			case self::INVALID_LICENSE:
 				return 'invalid-license';
-		};
+		}
 	}
 
 	/**

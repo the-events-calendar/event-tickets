@@ -9,7 +9,7 @@
 
 namespace TEC\Tickets\Seating\Service;
 
-use TEC\Tickets\Seating\Admin\Template as Template;
+use TEC\Tickets\Seating\Admin\Template;
 
 /**
  * Class Error_Content.
@@ -40,7 +40,7 @@ class Error_Content {
 	/**
 	 * Error_Content constructor.
 	 *
-	 * since TBD
+	 * @since TBD
 	 *
 	 * @param Template $template A reference to the admin Template object.
 	 */
@@ -81,7 +81,7 @@ class Error_Content {
 					'<a href="https://evnt.is/1bdu" target="_blank">%s</a>',
 					_x( 'renew your license', 'link label for renewing the license', 'event-tickets' )
 				);
-				$message    = sprintf(
+				$message = sprintf(
 					// translators: %s is the renew link.
 					__(
 						'Your license for Seating has expired. You need to %s to continue using Seating for Event Tickets.',
@@ -131,7 +131,7 @@ class Error_Content {
 					$connect_link_url,
 					_x( 'Connect', 'Connect to the Seat Builder link label', 'event-tickets' )
 				);
-				$message          = sprintf(
+				$message = sprintf(
 					// translators: %s is the connect link.
 					__(
 						'Your site is not connected to the Seat Builder service. You need to connect your site to use assigned seating. %s',
@@ -146,7 +146,7 @@ class Error_Content {
 					'<a href="https://evnt.is/1bdu" target="_blank">%s</a>',
 					_x( 'Renew your license', 'link label for renewing the license', 'event-tickets' )
 				);
-				$message    = sprintf(
+				$message = sprintf(
 					// translators: %s is the renew link.
 					__(
 						'Your license for Seating has expired. %s to continue using Seating for Event Tickets.',
@@ -157,6 +157,14 @@ class Error_Content {
 				break;
 		}
 
-		return wp_kses( $message, [ 'a' => [ 'href' => [], 'target' => [] ] ] );
+		return wp_kses(
+			$message,
+			[
+				'a' => [
+					'href'   => [],
+					'target' => [],
+				],
+			]
+		);
 	}
 }
