@@ -63,8 +63,10 @@ export const filterHeaderDetails = (items, clientId) => {
  * @return {Object} The body of the request with the seating details.
  */
 export const filterSetBodyDetails = (body, clientId) => {
-	// On first save of a ticket, lock the Layout.
-	// Doesn't matter if ASC or GAC, they layout should be locked.
+	/**
+	 * On first save of a ticket, lock the Layout.
+	 * Doesn't matter if ASC or GAC, they layout should be locked.
+	 */
 	dispatch(storeName).setIsLayoutLocked(true);
 
 	const layoutId = select(storeName).getCurrentLayoutId();
