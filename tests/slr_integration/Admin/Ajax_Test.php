@@ -381,8 +381,28 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
 		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 		$this->reset_wp_send_json_mocks();
-
-		// Map deletion from  service fails.
+		
+		// Map deletion attempt fails for map with layouts.
+		$_REQUEST['mapId']  = 'some-map-1';
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+		
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_MAP );
+		
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[ 'error' => 'Failed to delete the map.' ],
+				500
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		
+		$this->assertCount( 4, iterator_to_array( Maps::fetch_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
+		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->reset_wp_send_json_mocks();
+		
+		// Map deletion from service fails.
 		$_REQUEST['mapId']  = 'some-map-4';
 		$wp_send_json_error = $this->mock_wp_send_json_error();
 		$wp_remote          = $this->mock_wp_remote(
