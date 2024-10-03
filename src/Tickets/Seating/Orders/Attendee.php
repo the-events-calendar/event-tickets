@@ -236,7 +236,7 @@ class Attendee {
 	 */
 	public function include_seat_info_in_email( Template $template ): void {
 		$context    = $template->get_local_values();
-		$seat_label = Arr::get( $context, [ 'tickets', 0, 'seat_label' ], false );
+		$seat_label = Arr::get( $context, [ 'ticket', 'seat_label' ], false );
 
 		if ( ! $seat_label ) {
 			return;
