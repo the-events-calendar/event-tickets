@@ -71,8 +71,9 @@ class Fees implements Registerable {
 			'event-tickets/v1',
 			'/fees',
 			[
-				'methods'  => 'GET',
-				'callback' => fn( Request $request ) => $this->get_fees( $request ),
+				'methods'             => 'GET',
+				'callback'            => fn( Request $request ) => $this->get_fees( $request ),
+				'permission_callback' => fn() => current_user_can( 'manage_options' ),
 			]
 		);
 	}
