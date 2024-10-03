@@ -152,36 +152,6 @@ class Health extends Controller_Contract {
 					],
 				],
 			],
-			'slr_ajax_rate'     => [
-				'label'     => __( 'Site serves AJAX requests at the required rate', 'event-tickets' ),
-				'test'      => 'slr-ajax-rate',
-				'completed' => false,
-				'extra'     => [
-					'success' => [
-						'description' => __( 'Your site can serve AJAX requests at the required rate.', 'event-tickets' ),
-						'actions'     => [
-							'',
-							[],
-						],
-					],
-					'failure' => [
-						'description' => __( 'Your site cannot serve AJAX requests at the rate required for Seating and the WordPress block editor.', 'event-tickets' ),
-						'actions'     => [
-							// Translators: 1 Opening p element, 2 closing p element, 3 closing a element, 4 and 5 opening a elements.
-							_x( '%1$sSome plugins and hosts enforce a rate limit which interferes with other WordPress functionality including Seating.%2$s%1$sIf your site uses any security plugins, check if they are enforcing a limit on AJAX requests.%2$s%1$sContact your host provider and ask how to remove or raise the rate limit for your site.%2$s%1$s%4$sLearn more about AJAX%3$s or %5$scontact support%3$s.%2$s', 'Shown as an action result, when the test regarding Seating license in Site Health has failed.', 'event-tickets' ),
-							[
-								'<p>',
-								'</p>',
-								'</a>',
-								// Learn more about AJAX link.
-								'<a href="https://developer.wordpress.org/plugins/javascript/ajax/" target="_blank" rel="noopener noreferrer">',
-								// Support link.
-								'<a href="https://evnt.is/1be4" target="_blank" rel="noopener noreferrer">',
-							],
-						],
-					],
-				],
-			],
 		];
 	}
 
@@ -209,8 +179,6 @@ class Health extends Controller_Contract {
 		foreach ( $this->get_tests() as $callback => $test ) {
 			remove_action( 'wp_ajax_health-check-' . $test['test'], [ $this, 'check_' . $callback ] );
 		}
-
-		remove_action( 'wp_ajax_tec-site-health-test-' . $this->get_tests()['slr_ajax_rate']['test'], [ $this, 'test_ajax_rate' ] );
 	}
 
 	/**
@@ -226,8 +194,6 @@ class Health extends Controller_Contract {
 		foreach ( $this->get_tests() as $callback => $test ) {
 			add_action( 'wp_ajax_health-check-' . $test['test'], [ $this, 'check_' . $callback ] );
 		}
-
-		add_action( 'wp_ajax_tec-site-health-test-' . $this->get_tests()['slr_ajax_rate']['test'], [ $this, 'test_ajax_rate' ] );
 	}
 
 	/**
@@ -294,70 +260,6 @@ class Health extends Controller_Contract {
 		}
 
 		wp_send_json_error( $this->get_failed_test_result( $test ) );
-	}
-
-	/**
-	 * Checks if the site can serve AJAX requests in the rate required by the Seating functionality.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function check_slr_ajax_rate() {
-		check_ajax_referer( 'health-check-site-status' );
-		$test = $this->get_tests()['slr_ajax_rate'];
-
-		$action = 'tec-site-health-test-' . $test['test'];
-		$nonce  = wp_create_nonce( $action );
-		for ( $i = 0; $i < self::AJAX_AMOUNT_OF_TESTS; $i++ ) {
-			$start = microtime( true );
-
-			$response = wp_safe_remote_get(
-				add_query_arg(
-					[
-						'action' => rawurlencode( $action ),
-						'nonce'  => $nonce,
-					],
-					admin_url( '/admin-ajax.php' )
-				),
-				[
-					'timeout' => 1,
-					'headers' => [
-						'Cookie' => $_SERVER['HTTP_COOKIE'] ?? '', // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-					],
-				]
-			);
-
-			if ( microtime( true ) - $start < self::AJAX_RATE ) {
-				// Sleep for the remaining time.
-				usleep( (int) floor( self::AJAX_RATE - ( microtime( true ) - $start ) ) );
-			}
-
-			if ( is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) !== 200 ) {
-				wp_send_json_error( $this->get_failed_test_result( $test ) );
-				// Return helps with testing, since we 'll mock wp_send_json functions.
-				return;
-			}
-		}
-
-		wp_send_json_success( $this->get_test_result( $test ) );
-	}
-
-	/**
-	 * Serves the AJAX request for the AJAX rate test.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function test_ajax_rate() {
-		if ( ! wp_verify_nonce( wp_unslash( $_GET )['nonce'] ?? '', 'tec-site-health-test-' . $this->get_tests()['slr_ajax_rate']['test'] ) ) {
-			wp_send_json( [], 400, 0 );
-			// Return helps with testing, since we 'll mock wp_send_json functions.
-			return;
-		}
-
-		wp_send_json( [], 200, 0 );
 	}
 
 	/**
