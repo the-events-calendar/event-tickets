@@ -25,7 +25,7 @@ trait Fee_Types {
 	 *
 	 * @var Order_Modifiers
 	 */
-	protected Order_Modifiers $order_modifiers_repository;
+	protected Order_Modifiers $modifiers_repository;
 
 	/**
 	 * Get the automatic fees.
@@ -67,7 +67,7 @@ trait Fee_Types {
 	 * @return array The fees.
 	 */
 	protected function get_all_fees(): array {
-		$available_fees = $this->order_modifiers_repository->find_by_modifier_type_and_meta(
+		$available_fees = $this->modifiers_repository->find_by_modifier_type_and_meta(
 			'fee',
 			'fee_applied_to',
 			[ 'per', 'all' ],

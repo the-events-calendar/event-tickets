@@ -79,7 +79,7 @@ class Order_Modifier_Fee_Metabox implements Registerable {
 		$this->manager           = new Modifier_Manager( $this->modifier_strategy );
 
 		// Set up the order modifiers repository for accessing fee data.
-		$this->order_modifiers_repository              = new Order_Modifiers();
+		$this->modifiers_repository                    = new Order_Modifiers();
 		$this->order_modifiers_relationship_repository = new Order_Modifier_Relationship();
 	}
 
