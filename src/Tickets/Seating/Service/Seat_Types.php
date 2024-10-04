@@ -18,6 +18,7 @@ use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
 use Tribe__Tickets__Tickets_Handler;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Seating\Commerce\Controller as Commerce_Controller;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 
 /**
  * Class Seat_Types.
@@ -265,7 +266,18 @@ class Seat_Types {
 		return $total_updated;
 	}
 
-	public function update_tickets_with_calculated_stock_and_capacity( string $new_seat_type_id, int $new_capacity, array $excluded_ticket_ids ) {
+	/**
+	 * Updates the tickets moving to the with the $new_seat_type_id with the calculated stock and capacity.
+	 *
+	 * @since TBD
+	 *
+	 * @param string     $new_seat_type_id    The new seat type ID.
+	 * @param int        $new_capacity        The new capacity.
+	 * @param array<int> $original_ticket_ids The original ticket IDs that belonged to the new seat type prior this update.
+	 *
+	 * @return int The number of tickets updated.
+	 */
+	public function update_tickets_with_calculated_stock_and_capacity( string $new_seat_type_id, int $new_capacity, array $original_ticket_ids ): int {
 		if ( empty( $new_seat_type_id ) || empty( $new_capacity ) ) {
 			return 0;
 		}
@@ -283,7 +295,7 @@ class Seat_Types {
 		foreach (
 			tribe_tickets()
 				->where( 'meta_equals', Meta::META_KEY_SEAT_TYPE, $new_seat_type_id )
-				->not_in( $excluded_ticket_ids )
+				->not_in( $original_ticket_ids )
 				->get_ids( true ) as $ticket_id
 		) {
 			clean_post_cache( $ticket_id );
@@ -293,16 +305,40 @@ class Seat_Types {
 			$primary_seat_type_ticket = tribe_tickets()
 				->where( 'event', $event_id )
 				->where( 'meta_equals', Meta::META_KEY_SEAT_TYPE, $new_seat_type_id )
-				->in( $excluded_ticket_ids )
+				->in( $original_ticket_ids )
 				->first();
 
 			if ( empty( $primary_seat_type_ticket->ID ) ) {
+				/**
+				 * In this case, since the seat types' capacity is not present already in the event.
+				 * The event's capacity is going to change because of the new seat type becoming a part of the event.
+				 */
 				$previous_capacity = get_post_meta( $ticket_id, $capacity_meta_key, true );
 				$capacity_delta    = $new_capacity - $previous_capacity;
 				$previous_stock    = get_post_meta( $ticket_id, '_stock', true );
 				$new_stock         = max( 0, $previous_stock + $capacity_delta );
+
+				// Update ticket's stock and capacity.
 				update_post_meta( $ticket_id, $capacity_meta_key, $new_capacity );
 				update_post_meta( $ticket_id, '_stock', $new_stock );
+
+				// Update event's stock and capacity.
+				$old_stock_level = (int) get_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, true );
+				$old_capacity    = (int) get_post_meta( $event_id, $capacity_meta_key, true );
+
+				// The order of the updates is too IMPORTANT here! Don't change it or you'll introduce a bug unless you remove a filter attached to capacity's update.
+				update_post_meta(
+					$event_id,
+					$capacity_meta_key,
+					$old_capacity + $capacity_delta
+				);
+				update_post_meta(
+					$event_id,
+					Global_Stock::GLOBAL_STOCK_LEVEL,
+					$old_stock_level + $capacity_delta
+				);
+
+				// Count this as just a ticket update.
 				++$total_updated;
 				continue;
 			}
@@ -316,15 +352,59 @@ class Seat_Types {
 			update_post_meta( $ticket_id, Ticket::$stock_meta_key, $new_stock );
 			update_post_meta( $ticket_id, $capacity_meta_key, $new_capacity );
 
-			$events_primary[ $primary_seat_type_ticket->ID ] = [ $new_stock, $new_capacity ];
+			$events_primary[ $event_id ] = [ $new_stock, $new_capacity ];
 
 			++$total_updated;
 		}
 
-		foreach ( $events_primary as $primary_seat_type_ticket_id => $stock_capacity ) {
+		foreach ( $original_ticket_ids as $primary_seat_type_ticket_id ) {
+			$primary_event_id = get_post_meta( $primary_seat_type_ticket_id, Ticket::$event_relation_meta_key, true );
+
+			if ( ! isset( $events_primary[ $primary_event_id ] ) ) {
+				/**
+				 * Here we have events without the old seat type but the one being updated was already present.
+				 *
+				 * So we need to handle both the event's capacity and stock and the tickets!
+				 *
+				 * We need to be careful here!
+				 */
+
+				$previous_capacity = get_post_meta( $primary_seat_type_ticket_id, $capacity_meta_key, true );
+				$capacity_delta    = $new_capacity - $previous_capacity;
+
+				update_post_meta(
+					$primary_seat_type_ticket_id,
+					Ticket::$stock_meta_key,
+					(int) get_post_meta( $primary_seat_type_ticket_id, Ticket::$stock_meta_key, true ) + $capacity_delta
+				);
+				update_post_meta( $primary_seat_type_ticket_id, $capacity_meta_key, $new_capacity );
+
+				$old_stock_level = (int) get_post_meta( $primary_event_id, Global_Stock::GLOBAL_STOCK_LEVEL, true );
+				$old_capacity    = (int) get_post_meta( $primary_event_id, $capacity_meta_key, true );
+
+				update_post_meta(
+					$primary_event_id,
+					$capacity_meta_key,
+					$old_capacity + $capacity_delta
+				);
+				update_post_meta(
+					$primary_event_id,
+					Global_Stock::GLOBAL_STOCK_LEVEL,
+					$old_stock_level + $capacity_delta
+				);
+
+				// Count the ticked update.
+				++$total_updated;
+				continue;
+			}
+
+			$stock_capacity = $events_primary[ $primary_event_id ];
+
 			update_post_meta( $primary_seat_type_ticket_id, Ticket::$stock_meta_key, $stock_capacity[0] );
 			update_post_meta( $primary_seat_type_ticket_id, $capacity_meta_key, $stock_capacity[1] );
-			// ++$total_updated;
+
+			// Count the updates taking place in the tickets using originally the seat type as well.
+			++$total_updated;
 		}
 
 		add_action( 'updated_postmeta', [ tribe( Commerce_Controller::class ), 'sync_seated_tickets_stock' ], 10, 4 );
