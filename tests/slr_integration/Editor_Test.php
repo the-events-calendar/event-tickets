@@ -4,6 +4,7 @@ namespace TEC\Tickets\Seating;
 
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use TEC\Tickets\Seating\Service\Service_Status;
 use TEC\Tickets\Seating\Tables\Layouts;
 use TEC\Tickets\Seating\Tables\Seat_Types;
 use TEC\Tickets\Seating\Tests\Integration\Layouts_Factory;
@@ -228,6 +229,45 @@ class Editor_Test extends Controller_Test_Case {
 				update_post_meta( $ticket_3, Meta::META_KEY_SEAT_TYPE, 'uuid-vip' );
 
 				return [ $ticket_1, $ticket_2, $ticket_3 ];
+			}
+		];
+
+		yield 'service down' => [
+			function (): array {
+				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
+					return new Service_Status( $backend_base_url, Service_Status::SERVICE_DOWN );
+				}, 1000, 2 );
+				global $pagenow, $post;
+				$pagenow = 'edit.php';
+				$post    = get_post( static::factory()->post->create() );
+
+				return [];
+			}
+		];
+
+		yield 'service not connected' => [
+			function (): array {
+				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
+					return new Service_Status( $backend_base_url, Service_Status::NOT_CONNECTED );
+				}, 1000, 2 );
+				global $pagenow, $post;
+				$pagenow = 'edit.php';
+				$post    = get_post( static::factory()->post->create() );
+
+				return [];
+			}
+		];
+
+		yield 'invalid license' => [
+			function (): array {
+				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
+					return new Service_Status( $backend_base_url, Service_Status::INVALID_LICENSE );
+				}, 1000, 2 );
+				global $pagenow, $post;
+				$pagenow = 'edit.php';
+				$post    = get_post( static::factory()->post->create() );
+
+				return [];
 			}
 		];
 

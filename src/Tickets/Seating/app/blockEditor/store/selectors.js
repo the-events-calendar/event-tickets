@@ -89,4 +89,13 @@ export const selectors = {
 
 		return state?.seatTypesByClientId || [];
 	},
+	isServiceStatusOk(state) {
+		return state?.serviceStatus?.ok === true;
+	},
+	getServiceStatus(state) {
+		return state?.serviceStatus?.status;
+	},
+	getServiceConnectUrl(state) {
+		return state?.serviceStatus?.connectUrl;
+	},
 };

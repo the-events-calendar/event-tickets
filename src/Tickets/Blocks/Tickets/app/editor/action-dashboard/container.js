@@ -43,6 +43,7 @@ const mapStateToProps = (state, ownProps) => {
 			const block = createBlock('tribe/tickets-item', {});
 			insertBlock(block, nextChildPosition, clientId);
 		},
+		isConfirmDisabled: false,
 	};
 
 	/**

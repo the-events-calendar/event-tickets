@@ -4,6 +4,7 @@
 use Codeception\Util\Autoload;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Provider as Commerce_Provider;
+use TEC\Tickets\Seating\Service\Service_Status;
 use TEC\Tickets\Seating\Tables\Layouts;
 use TEC\Tickets\Seating\Tables\Maps;
 use TEC\Tickets\Seating\Tables\Seat_Types;
@@ -47,3 +48,8 @@ remove_action( 'tribe_tickets_promoter_trigger', [ tribe( Dispatcher::class ), '
 if ( ! defined( 'SECURE_AUTH_KEY' ) ) {
 	define( 'SECURE_AUTH_KEY', 'HG&R(f/h#K5{n:,4@swG~1Fc*aQGd@?T,T+zlTR)IsF5ET{SvvwBkI|zq6E}xjxy' );
 }
+
+// In the contest of tests, assume the Service connection is OK.
+add_filter( 'tec_tickets_seating_service_status', static function ( $_status, $backend_base_url ) {
+	return new Service_Status( $backend_base_url, Service_Status::OK );
+}, 10, 2 );

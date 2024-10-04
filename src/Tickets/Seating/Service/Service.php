@@ -77,6 +77,15 @@ class Service {
 	private Maps $maps;
 
 	/**
+	 * A memoized reference to the Service Status value object.
+	 *
+	 * @since TBD
+	 *
+	 * @var Service_Status|null
+	 */
+	private ?Service_Status $status = null;
+
+	/**
 	 * Service constructor.
 	 *
 	 * @since TBD
@@ -343,7 +352,7 @@ class Service {
 	 *
 	 * @param string $layout_id The layout ID to get the seat types for.
 	 *
-	 * @return array<string, array{id: string, name: string, seats: int}> The seat types in option format.
+	 * @return array<array{id: string, name: string, seats: int}> The seat types in option format.
 	 */
 	public function get_seat_types_by_layout( string $layout_id ): array {
 		return $this->seat_types->get_in_option_format( [ $layout_id ] );
@@ -401,6 +410,35 @@ class Service {
 		return add_query_arg(
 			$query_args,
 			$this->get_frontend_url( '/embed/seat-assignment/' )
+		);
+	}
+
+	/**
+	 * Returns the Service Status instance.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $force Whether to force the rebuilding of the status for this request.
+	 *
+	 * @return Service_Status The Service Status instance.
+	 */
+	public function get_status( bool $force = false ): Service_Status {
+		if ( $force || ! $this->status instanceof Service_Status ) {
+			$this->status = new Service_Status( $this->backend_base_url );
+		}
+
+		/**
+		 * Filters the Service Status instance.
+		 *
+		 * @since TBD
+		 *
+		 * @param Service_Status $status The Service Status instance.
+		 * @param string         $base_url The base URL of the service.
+		 */
+		return apply_filters(
+			'tec_tickets_seating_service_status',
+			$this->status,
+			$this->backend_base_url
 		);
 	}
 }

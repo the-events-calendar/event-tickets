@@ -105,7 +105,7 @@ class Seat_Types {
 	 *
 	 * @param string[] $layout_ids The layout IDs to get the seat types for.
 	 *
-	 * @return array<string, array{id: string, name: string, seats: int}> The seat types in option format.
+	 * @return array<array{id: string, name: string, seats: int}> The seat types in option format.
 	 */
 	public function get_in_option_format( array $layout_ids ): array {
 		if ( ! $this->update() ) {
