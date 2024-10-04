@@ -120,7 +120,7 @@ class Seats_Report extends Report_Abstract {
 		$service        = tribe( Service::class );
 		$service_status = $service->get_status();
 
-		if ( ! $service->get_status()->is_ok() ) {
+		if ( ! $service_status->is_ok() ) {
 			tribe( Error_Content::class )->render_tab( $service_status );
 
 			return;

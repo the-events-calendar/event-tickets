@@ -13,7 +13,7 @@ import {
 	filterSettingsFields,
 	disableConfirmInTicketDashboard,
 	removeAllActionsFromTicket,
-	disableTicketSelection
+	disableTicketSelection,
 	filterButtonIsDisabled,
 } from './hook-callbacks';
 
@@ -162,7 +162,7 @@ addFilter(
 addFilter(
 	'tec.tickets.blocks.Ticket.isSelected',
 	'tec.tickets.seating',
-	disableTicketSelection
+	disableTicketSelection,
 	'tec.tickets.blocks.confirmButton.isDisabled',
 	'tec.tickets.seating',
 	filterButtonIsDisabled

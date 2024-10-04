@@ -78,7 +78,7 @@ class Error_Content {
 			case Service_Status::INVALID_LICENSE:
 				$renew_link = sprintf(
 					// translators: %s is the renew link label.
-					'<a href="https://evnt.is/1bdu" target="_blank">%s</a>',
+					'<a href="https://evnt.is/1bdu" target="_blank" rel="noreferrer noopener">%s</a>',
 					_x( 'renew your license', 'link label for renewing the license', 'event-tickets' )
 				);
 				$message = sprintf(
@@ -143,7 +143,7 @@ class Error_Content {
 			case Service_Status::INVALID_LICENSE:
 				$renew_link = sprintf(
 					// translators: %s is the renew link label.
-					'<a href="https://evnt.is/1bdu" target="_blank">%s</a>',
+					'<a href="https://evnt.is/1bdu" target="_blank" rel="noreferrer noopener">%s</a>',
 					_x( 'Renew your license', 'link label for renewing the license', 'event-tickets' )
 				);
 				$message = sprintf(
@@ -163,6 +163,7 @@ class Error_Content {
 				'a' => [
 					'href'   => [],
 					'target' => [],
+					'rel'    => [],
 				],
 			]
 		);

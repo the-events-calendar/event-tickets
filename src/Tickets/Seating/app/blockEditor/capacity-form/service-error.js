@@ -34,7 +34,7 @@ const getMessage = (serviceStatus, serviceConnectUrl) => {
 						style={anchorStyle}
 						href={serviceConnectUrl}
 						target="_blank"
-						rel="noreferrer"
+						rel="noreferrer noopener"
 					>
 						{_x(
 							'You need to connect your site to use assigned seating.',
@@ -55,7 +55,7 @@ const getMessage = (serviceStatus, serviceConnectUrl) => {
 						style={anchorStyle}
 						href="https://evnt.is/1bdu"
 						target="_blank"
-						rel="noreferrer"
+						rel="noreferrer noopener"
 					>
 						{_x(
 							'Renew your license to continue using Seating for Event Tickets.',
