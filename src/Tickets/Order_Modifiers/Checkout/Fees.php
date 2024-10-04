@@ -119,13 +119,13 @@ class Fees {
 	 *
 	 * @param array $values The existing values being passed through the filter.
 	 * @param array $items The items in the cart.
-	 * @param Value $subtotal The subtotal of the cart items.
+	 * @param array $sub_totals The list of subtotals from the items.
 	 *
 	 * @return array The updated total values, including the fees.
 	 */
-	public function calculate_fees( array $values, array $items, Value $subtotal ): array {
+	public function calculate_fees( array $values, array $items, array $subtotal ): array {
 		// Store the subtotal as a class property for later use.
-		$this->subtotal = max( 0, $subtotal->get_float() );
+		$this->subtotal = max( 0, Value::create()->total( $subtotal )->get_float() );
 
 		if ( $this->subtotal < 0 ) {
 			return $values;
@@ -282,6 +282,7 @@ class Fees {
 				'type'         => 'fee',
 				'fee_id'       => $fee['id'],
 				'display_name' => $fee['display_name'],
+				'ticket_id'    => '', // @todo redscar - Passing this so places where wp_list_luck is used doesn't fail.
 			];
 
 			// Add the fee ID to the tracking array.

@@ -411,6 +411,8 @@ class Order extends Abstract_Order {
 
 		$subtotal = $this->get_value_total( array_filter( $items ) );
 
+		$original_cart_items = $items;
+
 		/**
 		 * Filters the cart items before creating an order.
 		 *
@@ -431,7 +433,7 @@ class Order extends Abstract_Order {
 		$total = $this->get_value_total( array_filter( $items ) );
 
 		$order_args = [
-			'title'                => $this->generate_order_title( $items, $cart->get_cart_hash() ),
+			'title'                => $this->generate_order_title( $original_cart_items, $cart->get_cart_hash() ),
 			'total_value'          => $total->get_decimal(),
 			'items'                => $items,
 			'gateway'              => $gateway::get_key(),

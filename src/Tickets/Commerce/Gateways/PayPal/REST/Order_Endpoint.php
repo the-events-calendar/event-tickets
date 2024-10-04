@@ -171,7 +171,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return [];
 		}
 
-		$type = $item['type'] ?? 'default';
+		$type = $item['type'] ?? 'ticket';
 
 		switch ( $type ) {
 			case 'ticket':
