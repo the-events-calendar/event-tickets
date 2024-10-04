@@ -15,6 +15,7 @@ use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Tickets\Seating\Built_Assets;
 use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Tables\Sessions;
+use TEC\Tickets\Seating\Frontend;
 use TEC\Tickets\Seating\Template;
 use Tribe__Tickets__Main as ET;
 
@@ -480,7 +481,7 @@ class Timer extends Controller_Contract {
 
 		$post_type             = get_post_type( $post_id );
 		$post_type_object      = get_post_type_object( $post_type );
-		$has_tickets_available = tribe_tickets()->where( 'event', $post_id )->where( 'is_available', true )->count();
+		$has_tickets_available = $this->container->get( Frontend::class )->get_events_ticket_capacity_for_seating( $post_id );
 
 		if ( $has_tickets_available ) {
 			$content      = _x(
@@ -489,7 +490,7 @@ class Timer extends Controller_Contract {
 				'event-tickets'
 			);
 			$button_label = _x( 'Find Seats', 'Seat selection expired timer button label', 'event-tickets' );
-			$redirect_url = get_post_permalink( $post_id );
+			$redirect_url = get_permalink( $post_id );
 		} else {
 			if ( $post_type_object ) {
 				$post_type_label = strtolower( get_post_type_labels( $post_type_object )->singular_name ) ?? 'event';

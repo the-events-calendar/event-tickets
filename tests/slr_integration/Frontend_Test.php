@@ -81,7 +81,7 @@ class Frontend_Test extends Controller_Test_Case {
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
 
-		/**
+	/**
 	 * @dataProvider tickets_capacity_data_provider
 	 *
 	 * @covers       Controller::adjust_events_ticket_capacity_for_seating
