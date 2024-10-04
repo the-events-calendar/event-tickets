@@ -152,11 +152,23 @@ class Payment_Intent {
 	public static function create_from_cart( Cart $cart, $retry = false ) {
 		$items = tribe( Order::class )->prepare_cart_items_for_order( $cart );
 
+		// Items need to be added to cart here?
+
 		if ( empty( $items ) ) {
 			return [];
 		}
 
 		$value = tribe( Order::class )->get_value_total( array_filter( $items ) );
+
+		/**
+		 * Filters the value and items before creating a Payment Intent.
+		 *
+		 * @since TBD
+		 *
+		 * @param float $value The total value of the cart.
+		 * @param array $items The items in the cart.
+		 */
+		$value = apply_filters( 'tec_tickets_commerce_stripe_create_from_cart', $value, $items );
 
 		return static::create( $value, $retry );
 	}

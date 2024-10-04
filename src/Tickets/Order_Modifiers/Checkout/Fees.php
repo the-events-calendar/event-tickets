@@ -109,7 +109,8 @@ class Fees {
 			3
 		);
 		add_action( 'tec_tickets_commerce_create_from_cart_items', [ $this, 'append_fees_to_cart' ], 10, 4 );
-		add_action( 'tec_commerce_paypal_order__get_unit_data_fee', [ $this, 'add_fee_unit_data_to_paypal' ], 10, 2 );
+		add_action( 'tec_tickets_commerce_stripe_create_from_cart', [ $this, 'append_fees_to_cart_stripe' ], 10, 4 );
+		add_action( 'tec_commerce_paypal_order_get_unit_data_fee', [ $this, 'add_fee_unit_data_to_paypal' ], 10, 2 );
 	}
 
 	/**
@@ -183,6 +184,9 @@ class Fees {
 	 * @return array The combined fees.
 	 */
 	protected function get_combined_fees_for_items( array $items ): array {
+		if ( empty( $items ) ) {
+			return [];
+		}
 		$ticket_ids = array_map(
 			function ( $item ) {
 				return $item['ticket_id'];
@@ -283,6 +287,7 @@ class Fees {
 				'fee_id'       => $fee['id'],
 				'display_name' => $fee['display_name'],
 				'ticket_id'    => '', // @todo redscar - Passing this so places where wp_list_luck is used doesn't fail.
+				'event_id'     => '',
 			];
 
 			// Add the fee ID to the tracking array.
@@ -290,6 +295,25 @@ class Fees {
 		}
 
 		return $items;
+	}
+
+
+	public function append_fees_to_cart_stripe( $value, array $items ) {
+		$this->subtotal = $value->get_float();
+		if ( empty( $items ) ) {
+			return $items;
+		}
+
+		// Fetch the combined fees for the items in the cart.
+		$combined_fees = $this->get_combined_fees_for_items( $items );
+
+		if ( empty( $combined_fees ) ) {
+			return $value;
+		}
+		// Use the stored subtotal for fee calculations.
+		$sum_of_fees = Value::create( $this->manager->calculate_total_fees( $this->subtotal, $combined_fees ) );
+
+		return Value::create()->total( [ $value, $sum_of_fees ] );
 	}
 
 
