@@ -109,7 +109,7 @@ class Fees {
 			3
 		);
 		add_action( 'tec_tickets_commerce_create_from_cart_items', [ $this, 'append_fees_to_cart' ], 10, 4 );
-		add_action( 'tec_commerce_get_unit_data_fee', [ $this, 'add_fee_unit_data' ], 10, 2 );
+		add_action( 'tec_commerce_paypal_order__get_unit_data_fee', [ $this, 'add_fee_unit_data_to_paypal' ], 10, 2 );
 	}
 
 	/**
@@ -119,7 +119,7 @@ class Fees {
 	 *
 	 * @param array $values The existing values being passed through the filter.
 	 * @param array $items The items in the cart.
-	 * @param array $sub_totals The list of subtotals from the items.
+	 * @param array $subtotal The list of subtotals from the items.
 	 *
 	 * @return array The updated total values, including the fees.
 	 */
@@ -303,7 +303,7 @@ class Fees {
 	 *
 	 * @return array The unit data for the fee item.
 	 */
-	public function add_fee_unit_data( array $item, WP_Post $order ) {
+	public function add_fee_unit_data_to_paypal( array $item, WP_Post $order ) {
 		return [
 			'name'        => $item['display_name'],
 			'unit_amount' => [

@@ -197,12 +197,12 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				 *
 				 * @return array The unit data for the item.
 				 */
-				$unit_data = apply_filters( "tec_commerce_get_unit_data_{$type}", $item, $order );
+				$unit_data = apply_filters( "tec_commerce_paypal_order_get_unit_data_{$type}", $item, $order );
 				break;
 		}
 
 		// Apply overarching filter for any further customization of the returned data.
-		return apply_filters( 'tec_commerce_get_unit_data', $unit_data, $item, $order );
+		return apply_filters( 'tec_commerce_paypal_order_get_unit_data', $unit_data, $item, $order );
 	}
 
 	/**
