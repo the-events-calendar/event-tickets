@@ -1017,6 +1017,18 @@ class Ajax extends Controller_Contract {
 		global $wpdb;
 
 		try {
+			$original_seat_types_tickets = array_map(
+				'intval',
+				DB::get_col(
+					DB::prepare(
+						'SELECT DISTINCT(post_id) FROM %i WHERE meta_key = %s AND meta_value = %s',
+						$wpdb->postmeta,
+						Meta::META_KEY_SEAT_TYPE,
+						$new_seat_type['id']
+					)
+				)
+			);
+
 			$updated_seat_types_meta = DB::query(
 				DB::prepare(
 					'UPDATE %i SET meta_value = %s WHERE meta_key = %s AND meta_value = %s',
@@ -1037,7 +1049,7 @@ class Ajax extends Controller_Contract {
 		}
 
 		$updated_seat_types = $this->seat_types->update_from_service( [ $new_seat_type ] );
-		$updated_tickets    = $this->seat_types->update_tickets_capacity( [ $new_seat_type['id'] => $new_seat_type['seatsCount'] ] );
+		$updated_tickets    = $this->seat_types->update_tickets_with_calculated_stock_and_capacity( $new_seat_type['id'], $new_seat_type['seatsCount'], $original_seat_types_tickets );
 
 		wp_send_json_success(
 			[

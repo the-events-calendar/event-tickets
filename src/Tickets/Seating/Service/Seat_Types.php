@@ -16,6 +16,8 @@ use TEC\Tickets\Seating\Logging;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
 use Tribe__Tickets__Tickets_Handler;
+use TEC\Tickets\Commerce\Ticket;
+use TEC\Tickets\Seating\Commerce\Controller as Commerce_Controller;
 
 /**
  * Class Seat_Types.
@@ -259,6 +261,73 @@ class Seat_Types {
 
 			++$total_updated;
 		}
+
+		return $total_updated;
+	}
+
+	public function update_tickets_with_calculated_stock_and_capacity( string $new_seat_type_id, int $new_capacity, array $excluded_ticket_ids ) {
+		if ( empty( $new_seat_type_id ) || empty( $new_capacity ) ) {
+			return 0;
+		}
+
+		$total_updated = 0;
+
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler   = tribe( 'tickets.handler' );
+		$capacity_meta_key = $tickets_handler->key_capacity;
+
+		$events_primary = [];
+
+		remove_action( 'updated_postmeta', [ tribe( Commerce_Controller::class ), 'sync_seated_tickets_stock' ] );
+
+		foreach (
+			tribe_tickets()
+				->where( 'meta_equals', Meta::META_KEY_SEAT_TYPE, $new_seat_type_id )
+				->not_in( $excluded_ticket_ids )
+				->get_ids( true ) as $ticket_id
+		) {
+			clean_post_cache( $ticket_id );
+
+			$event_id = get_post_meta( $ticket_id, Ticket::$event_relation_meta_key, true );
+
+			$primary_seat_type_ticket = tribe_tickets()
+				->where( 'event', $event_id )
+				->where( 'meta_equals', Meta::META_KEY_SEAT_TYPE, $new_seat_type_id )
+				->in( $excluded_ticket_ids )
+				->first();
+
+			if ( empty( $primary_seat_type_ticket->ID ) ) {
+				$previous_capacity = get_post_meta( $ticket_id, $capacity_meta_key, true );
+				$capacity_delta    = $new_capacity - $previous_capacity;
+				$previous_stock    = get_post_meta( $ticket_id, '_stock', true );
+				$new_stock         = max( 0, $previous_stock + $capacity_delta );
+				update_post_meta( $ticket_id, $capacity_meta_key, $new_capacity );
+				update_post_meta( $ticket_id, '_stock', $new_stock );
+				++$total_updated;
+				continue;
+			}
+
+			// In case there are previous tickets with the seat type we are updating to, we should depend on them.
+			$old_seat_types_ticket_stock = get_post_meta( $primary_seat_type_ticket->ID, Ticket::$stock_meta_key, true );
+			$new_seat_types_ticket_stock = get_post_meta( $ticket_id, Ticket::$stock_meta_key, true );
+
+			$new_stock = $old_seat_types_ticket_stock + $new_seat_types_ticket_stock;
+
+			update_post_meta( $ticket_id, Ticket::$stock_meta_key, $new_stock );
+			update_post_meta( $ticket_id, $capacity_meta_key, $new_capacity );
+
+			$events_primary[ $primary_seat_type_ticket->ID ] = [ $new_stock, $new_capacity ];
+
+			++$total_updated;
+		}
+
+		foreach ( $events_primary as $primary_seat_type_ticket_id => $stock_capacity ) {
+			update_post_meta( $primary_seat_type_ticket_id, Ticket::$stock_meta_key, $stock_capacity[0] );
+			update_post_meta( $primary_seat_type_ticket_id, $capacity_meta_key, $stock_capacity[1] );
+			// ++$total_updated;
+		}
+
+		add_action( 'updated_postmeta', [ tribe( Commerce_Controller::class ), 'sync_seated_tickets_stock' ], 10, 4 );
 
 		return $total_updated;
 	}
