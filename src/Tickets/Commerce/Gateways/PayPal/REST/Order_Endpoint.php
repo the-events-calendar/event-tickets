@@ -154,25 +154,71 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Retrieves the unit data for an item in the cart.
 	 *
 	 * By default, the item type will be considered a 'ticket' if not specified.
-	 * If an item type is provided, the method allows filtering the data generation
-	 * process based on that type, otherwise, it proceeds with the default ticket logic.
+	 * This method handles different item types with a switch case, providing custom logic
+	 * for 'ticket' and a default behavior for other item types.
+	 * An overarching filter allows for customization of the final returned data.
 	 *
 	 * @since TBD
 	 *
-	 * @param array          $item The cart item for which to retrieve unit data.
+	 * @param array         $item The cart item for which to retrieve unit data.
 	 * @param WP_Post|false $order The order from the items in the cart.
 	 *
-	 * @return array The structured data for the item including 'name', 'unit_amount', 'quantity', 'item_total', and
+	 * @return array The structured data for the item, including 'name', 'unit_amount', 'quantity', 'item_total', and
 	 *     'sku'.
 	 */
-	public function get_unit_data( $item, $order ) {
-		$type = $item['type'] ?? 'ticket';
-
-		if ( 'ticket' !== $type ) {
-			// Allow external code to generate custom unit data based on the type.
-			return apply_filters( "tec_commerce_get_unit_data_{$type}", $item, $order );
+	public function get_unit_data( array $item, $order ) {
+		if ( empty( $order ) ) {
+			return [];
 		}
 
+		$type = $item['type'] ?? 'default';
+
+		switch ( $type ) {
+			case 'ticket':
+				$unit_data = $this->get_unit_data_for_ticket( $item, $order );
+				break;
+
+			default:
+				/**
+				 * Filters the unit data for custom item types in the cart.
+				 *
+				 * This filter allows external developers to generate and customize the unit data
+				 * for items in the cart based on the item type (other than 'ticket').
+				 *
+				 * The filter name is dynamic and uses the item type (`$type`) to provide flexibility for
+				 * different item categories.
+				 *
+				 * Example: If `$type` is 'fee', the filter will be `tec_commerce_get_unit_data_fee`.
+				 *
+				 * @since TBD
+				 *
+				 * @param array   $item   The cart item for which the unit data is being generated.
+				 * @param WP_Post $order  The current order object.
+				 *
+				 * @return array The unit data for the item.
+				 */
+				$unit_data = apply_filters( "tec_commerce_get_unit_data_{$type}", $item, $order );
+				break;
+		}
+
+		// Apply overarching filter for any further customization of the returned data.
+		return apply_filters( 'tec_commerce_get_unit_data', $unit_data, $item, $order );
+	}
+
+	/**
+	 * Retrieves the default unit data for a ticket in the cart.
+	 *
+	 * This method is used when the item type is 'ticket', and it structures the data
+	 * for a ticket item, including details such as name, price, quantity, and SKU.
+	 *
+	 * @since TBD
+	 *
+	 * @param array         $item The cart item (representing the ticket).
+	 * @param WP_Post|false $order The order from the items in the cart.
+	 *
+	 * @return array The structured data for the ticket item.
+	 */
+	protected function get_unit_data_for_ticket( array $item, $order ) {
 		// Default ticket logic.
 		$ticket     = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
 		$post_title = get_the_title( $item['event_id'] );

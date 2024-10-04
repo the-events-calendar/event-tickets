@@ -192,9 +192,12 @@ class Modifier_Manager {
 		$base_price_in_cents = $this->strategy->convert_to_cents( $base_price );
 		$subtotal            = 0;
 
-		// Apply percentage fee if applicable.
-		if ( isset( $item['sub_type'] ) && $item['sub_type'] === 'percent' ) {
-			$subtotal += $this->strategy->convert_from_cents( $item['fee_amount_cents'] / $base_price_in_cents );
+		// Ensure the base price in cents is not zero to avoid division by zero.
+		if ( $base_price_in_cents > 0 ) {
+			// Apply percentage fee if applicable.
+			if ( isset( $item['sub_type'] ) && $item['sub_type'] === 'percent' ) {
+				$subtotal += $this->strategy->convert_from_cents( $item['fee_amount_cents'] / $base_price_in_cents );
+			}
 		}
 
 		// Apply flat fee if applicable.
