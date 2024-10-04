@@ -148,6 +148,12 @@ addAction(
 );
 
 addFilter(
+	'tec.tickets.blocks.confirmButton.isDisabled',
+	'tec.tickets.seating',
+	filterButtonIsDisabled
+);
+
+addFilter(
 	'tec.tickets.blocks.Tickets.TicketsDashboardAction.mappedProps',
 	'tec.tickets.seating',
 	disableConfirmInTicketDashboard
@@ -162,8 +168,5 @@ addFilter(
 addFilter(
 	'tec.tickets.blocks.Ticket.isSelected',
 	'tec.tickets.seating',
-	disableTicketSelection,
-	'tec.tickets.blocks.confirmButton.isDisabled',
-	'tec.tickets.seating',
-	filterButtonIsDisabled
+	disableTicketSelection
 );
