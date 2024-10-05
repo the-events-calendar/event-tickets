@@ -99,12 +99,6 @@ class Seats_Report extends Report_Abstract {
 	 */
 	public function screen_setup(): void {
 		do_action( self::$asset_action );
-
-		if ( ! $this->should_show_upsell() ) {
-			return;
-		}
-
-		tribe_asset( Tickets_Main::instance(), 'tec-tickets-seating-upsell-css', 'seating-upsell.css', [], 'admin_enqueue_scripts' );
 	}
 
 	/**
