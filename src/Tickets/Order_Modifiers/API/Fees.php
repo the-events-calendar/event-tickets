@@ -61,7 +61,7 @@ class Fees implements Registerable {
 		?Relationships $relationships = null,
 		?Manager $manager = null
 	) {
-		$this->modifiers_repository = $modifiers ?? new Modifiers();
+		$this->modifiers_repository = $modifiers ?? new Modifiers( 'fee' );
 		$this->relationships        = $relationships ?? new Relationships();
 		$this->manager              = $manager ?? new Manager( new Fee() );
 	}
