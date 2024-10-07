@@ -550,11 +550,19 @@ export function reset() {
  */
 export function postponeHealthcheck() {
 	if (healthCheckLoopId) {
+		// Pause the healthcheck loop.
 		clearTimeout(healthCheckLoopId);
 	}
 
+	if (countdownLoopId) {
+		// Pause the countdown loop.
+		clearTimeout(countdownLoopId);
+	}
+
 	// Postpone the healthcheck for 30 seconds.
-	setTimeout(syncWithBackend, 30000);
+	setTimeout(() => {
+		syncWithBackend();
+	}, 30000);
 }
 
 /**
