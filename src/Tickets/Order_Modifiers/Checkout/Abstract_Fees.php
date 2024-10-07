@@ -91,6 +91,20 @@ abstract class Abstract_Fees {
 	protected static bool $fees_displayed = false;
 
 	/**
+	 * Tracks whether the fees have already been appended to the cart.
+	 *
+	 * This static property ensures that the fees are only appended once during the
+	 * checkout process across multiple instances of the class. If set to `true`, the
+	 * method `append_fees_to_cart` will not add the fees again. The default is `false`,
+	 * indicating the fees have not yet been appended.
+	 *
+	 * @since TBD
+	 * @var bool
+	 */
+	protected static bool $fees_appended = false;
+
+
+	/**
 	 * Constructor
 	 */
 	public function __construct() {
@@ -252,6 +266,9 @@ abstract class Abstract_Fees {
 	 * @return array Updated list of items with fees added.
 	 */
 	public function append_fees_to_cart( array $items, Value $subtotal, Gateway_Interface $gateway, ?array $purchaser ) {
+		if ( self::$fees_appended ) {
+			return $items;
+		}
 		if ( empty( $items ) ) {
 			return $items;
 		}
@@ -291,7 +308,7 @@ abstract class Abstract_Fees {
 			// Add the fee ID to the tracking array.
 			$existing_fee_ids[] = $fee['id'];
 		}
-
+		self::$fees_appended = true;
 		return $items;
 	}
 }
