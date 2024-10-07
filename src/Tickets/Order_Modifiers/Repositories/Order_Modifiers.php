@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Order_Modifiers\Repositories;
 
+use RuntimeException;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Common\StellarWP\Models\ModelQueryBuilder;
@@ -33,13 +34,21 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 * {@inheritDoc}
 	 */
 	public function delete( Model $model ): bool {
-		return (bool) DB::delete( Table::table_name(), [ 'id' => $model->id ], [ '%d' ] );
+		$this->validate_model_type( $model );
+
+		return (bool) DB::delete(
+			Table::table_name(),
+			[ 'id' => $model->id ],
+			[ '%d' ]
+		);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function insert( Model $model ): Order_Modifier {
+	public function insert( Model $model ): Model {
+		$this->validate_model_type( $model );
+
 		DB::insert(
 			Table::table_name(),
 			[
@@ -68,14 +77,15 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 
 		$model->id = DB::last_insert_id();
 
-		// Return the correct Order_Modifier model.
 		return $model;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function update( Model $model ): Order_Modifier {
+	public function update( Model $model ): Model {
+		$this->validate_model_type( $model );
+
 		DB::update(
 			Table::table_name(),
 			[
@@ -102,7 +112,6 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 			[ '%d' ]
 		);
 
-		// Return the updated Order_Modifier model.
 		return $model;
 	}
 
@@ -328,5 +337,21 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	public function prepareQuery(): ModelQueryBuilder {
 		$builder = new ModelQueryBuilder( Order_Modifier::class );
 		return $builder->from( Table::table_name( false ) );
+	}
+
+	/**
+	 * Validate the model type.
+	 *
+	 * @since TBD
+	 *
+	 * @param Model $model The model to validate.
+	 *
+	 * @return void
+	 * @throws RuntimeException If the model type is invalid.
+	 */
+	protected function validate_model_type( Model $model ): void {
+		if ( ! $model instanceof Order_Modifier ) {
+			throw new RuntimeException( 'Invalid model type.' );
+		}
 	}
 }
