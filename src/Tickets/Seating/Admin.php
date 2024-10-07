@@ -99,8 +99,8 @@ class Admin extends Controller_Contract {
 	public function add_submenu_page(): void {
 		add_submenu_page(
 			'tec-tickets',
-			__( 'Seat Layouts', 'event-tickets' ),
-			__( 'Seat Layouts', 'event-tickets' ),
+			__( 'Seating', 'event-tickets' ),
+			__( 'Seating', 'event-tickets' ),
 			'manage_options',
 			self::get_menu_slug(),
 			$this->container->callback( Admin\Maps_Layouts_Home_Page::class, 'render' )
