@@ -1016,13 +1016,16 @@ class Ajax extends Controller_Contract {
 
 		global $wpdb;
 
+		$ticket_post_types = implode( ', ', array_map( static fn( $v ) => "'" . esc_sql( $v ) . "'", array_values( tribe_tickets()->ticket_types() ) ) );
+
 		try {
 			$original_seat_types_tickets = array_map(
 				'intval',
 				DB::get_col(
 					DB::prepare(
-						'SELECT DISTINCT(post_id) FROM %i WHERE meta_key = %s AND meta_value = %s',
+						'SELECT DISTINCT(pm.post_id) FROM %i pm JOIN %i p ON p.ID=pm.post_id WHERE pm.meta_key = %s AND pm.meta_value = %s AND p.post_type IN (' . $ticket_post_types . ')',
 						$wpdb->postmeta,
+						$wpdb->posts,
 						Meta::META_KEY_SEAT_TYPE,
 						$new_seat_type['id']
 					)
@@ -1031,11 +1034,12 @@ class Ajax extends Controller_Contract {
 
 			$updated_seat_types_meta = DB::query(
 				DB::prepare(
-					'UPDATE %i SET meta_value = %s WHERE meta_key = %s AND meta_value = %s',
+					'UPDATE %i SET meta_value = %s WHERE meta_key = %s AND meta_value = %s and post_id IN ( SELECT ID FROM %i WHERE post_type IN (' . $ticket_post_types . ') )',
 					$wpdb->postmeta,
 					$new_seat_type['id'],
 					Meta::META_KEY_SEAT_TYPE,
-					$old_seat_type_id
+					$old_seat_type_id,
+					$wpdb->posts,
 				),
 			);
 		} catch ( \Exception $exception ) {
