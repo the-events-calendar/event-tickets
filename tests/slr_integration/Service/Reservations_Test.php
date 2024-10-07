@@ -397,4 +397,54 @@ class Reservations_Test extends \Codeception\TestCase\WPTestCase {
 			$deleted 
 		);
 	}
+	
+	public function test_delete_reservations_with_seat_meta() {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+		[
+			$attendee_1,
+			$attendee_2,
+			$attendee_3,
+			$attendee_4,
+		]          = $this->create_many_attendees_for_ticket( 4, $ticket_id, $post_id );
+		
+		// Assign a reservation ID to each one of them.
+		update_post_meta( $attendee_1, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-1' );
+		update_post_meta( $attendee_2, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-2' );
+		update_post_meta( $attendee_3, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-2' );
+		update_post_meta( $attendee_4, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-3' );
+		
+		// Assign seat labels to the Attendees.
+		update_post_meta( $attendee_1, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'A1' );
+		update_post_meta( $attendee_2, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'B1' );
+		update_post_meta( $attendee_3, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'B2' );
+		
+		$reservations = tribe( Reservations::class );
+		
+		$deleted_count = $reservations->delete_reservations_from_attendees( [ 'reservation-uuid-1' ] );
+		// Count should be 2 as we are deleting both reservation meta and seat label meta.
+		$this->assertEquals( 2, $deleted_count );
+		
+		// Check that the meta has been deleted.
+		$this->assertEquals( '', get_post_meta( $attendee_1, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( '', get_post_meta( $attendee_1, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true ) );
+		
+		// Now deleting 2nd reservation.
+		$deleted_count = $reservations->delete_reservations_from_attendees( [ 'reservation-uuid-2' ] );
+		
+		// Count should be 4 as we are deleting both reservation meta and seat label meta.
+		$this->assertEquals( 4, $deleted_count );
+		
+		// Check that the meta has been deleted.
+		$this->assertEquals( '', get_post_meta( $attendee_2, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( '', get_post_meta( $attendee_2, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true ) );
+		$this->assertEquals( '', get_post_meta( $attendee_3, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( '', get_post_meta( $attendee_3, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true ) );
+		
+		// Now deleting 3rd reservation.
+		$deleted_count = $reservations->delete_reservations_from_attendees( [ 'reservation-uuid-3' ] );
+		
+		// Count should be 1 as there is no seat label meta for this reservation.
+		$this->assertEquals( 1, $deleted_count );
+	}
 }
