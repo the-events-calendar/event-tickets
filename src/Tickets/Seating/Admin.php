@@ -20,6 +20,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Map_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Maps;
 use TEC\Tickets\Seating\Service\Service;
 use Tribe__Tickets__Main as Tickets;
+use Tribe\Tickets\Admin\Settings;
 
 /**
  * Class Admin.
@@ -73,6 +74,8 @@ class Admin extends Controller_Contract {
 
 		remove_action( 'admin_menu', [ $this, 'add_submenu_page' ], 1000 );
 		remove_action( 'admin_menu', [ $this, 'add_embed_submenu_page' ], 1000 );
+
+		remove_action( 'admin_init', [ $this, 'register_woo_incompatibility_notice' ] );
 	}
 
 	/**
@@ -153,6 +156,36 @@ class Admin extends Controller_Contract {
 
 		// @todo TEST STUFF remove when no more required.
 		add_action( 'admin_menu', [ $this, 'add_embed_submenu_page' ], 1000 );
+
+		add_action( 'admin_init', [ $this, 'register_woo_incompatibility_notice' ] );
+	}
+
+	/**
+	 * Registers Seating incompatibility notice with WooCommerce.
+	 *
+	 * @since TBD
+	 *
+	 * @return void The notice is registered.
+	 */
+	public function register_woo_incompatibility_notice() {
+		$message = sprintf(
+			// Translators: %1$s and %2$s are opening/closing p tags, %3$s and %4$s are opening/closing a tags.
+			esc_html__( '%1$sTickets with assigned seating can only be created when selling with %3$sTickets Commerce%4$s. Support for WooCommerce sales will be included in a future release.%2$s', 'event-tickets' ),
+			'<p>',
+			'</p>',
+			'<a href="' . esc_url( tribe( Settings::class )->get_url( [ 'tab' => 'payments' ] ) ) . '">',
+			'</a>'
+		);
+
+		tribe_notice(
+			'seating-incompatible-with-woo',
+			$message,
+			[
+				'dismiss' => true,
+				'type'    => 'warning',
+			],
+			static fn() => function_exists( 'WC' )
+		);
 	}
 
 	/**

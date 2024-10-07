@@ -167,7 +167,7 @@ class Controller_Test extends Controller_Test_Case {
 				clean_post_cache( $order->ID );
 				$cart->clear_cart();
 
-				return [ $event_id, [ $event_id, $ticket_id ] ];
+				return [ $event_id, [ $event_id, $ticket_id ], $order->ID ];
 			},
 		];
 
@@ -188,7 +188,7 @@ class Controller_Test extends Controller_Test_Case {
 				$ticket_id = $this->create_tc_ticket( $event_id );
 				$order     = $this->create_order( [ $ticket_id => 3 ] );
 
-				return [ $event_id, [ $event_id, $ticket_id ] ];
+				return [ $event_id, [ $event_id, $ticket_id ], $order->ID ];
 			},
 		];
 	}
@@ -212,7 +212,7 @@ class Controller_Test extends Controller_Test_Case {
 		// Disable showing random notice from Upsell::show_on_attendees_page.
 		$this->set_fn_return( 'wp_rand', 0 );
 
-		[ $post_id, $post_ids ] = $fixture();
+		[ $post_id, $post_ids, $order_id ] = $fixture();
 
 		$_GET['event_id'] = $post_id;
 
@@ -226,7 +226,7 @@ class Controller_Test extends Controller_Test_Case {
 
 		// Stabilize snapshots.
 		$attendee_data = $this->get_attendee_data( $attendees->attendees_table->items );
-		$replace       = array_combine( $post_ids, array_fill( 0, count( $post_ids ), 'POST_ID' ) ) + $attendee_data;
+		$replace       = array_combine( $post_ids, array_fill( 0, count( $post_ids ), 'POST_ID' ) ) + $attendee_data + [ $order_id => 'ORDER_ID' ];
 		uksort(
 			$replace,
 			function ( $a, $b ) {
@@ -266,7 +266,7 @@ class Controller_Test extends Controller_Test_Case {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		$this->set_fn_return( 'wp_create_nonce', '1234567890' );
 
-		[ $post_id, $post_ids ] = $fixture();
+		[ $post_id, $post_ids, $order_id ] = $fixture();
 
 		$_GET['event_id'] = $post_id;
 
@@ -280,7 +280,7 @@ class Controller_Test extends Controller_Test_Case {
 
 		// Stabilize snapshots.
 		$attendee_data = $this->get_attendee_data( $attendees->attendees_table->items );
-		$replace       = array_combine( $post_ids, array_fill( 0, count( $post_ids ), 'POST_ID' ) ) + $attendee_data;
+		$replace       = array_combine( $post_ids, array_fill( 0, count( $post_ids ), 'POST_ID' ) ) + $attendee_data + [ $order_id => 'ORDER_ID' ];
 		uksort(
 			$replace,
 			function ( $a, $b ) {
@@ -703,6 +703,73 @@ class Controller_Test extends Controller_Test_Case {
 			$html
 		);
 
+		$this->assertMatchesHtmlSnapshot( $html );
+	}
+	
+	/**
+	 * @test
+	 * @covers Attendee::include_seat_info_in_email
+	 */
+	public function test_ticket_emails_has_seat_info_for_multiple_attendees() {
+		$this->set_class_fn_return( 'Tribe__Tickets__Tickets', 'generate_security_code', 'SECURITY_CODE' );
+		
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Event with multiple seated attendee',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		
+		update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+		
+		$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+		
+		update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+		update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'some-seat-type' );
+		
+		$order = $this->create_order(
+			[ $ticket_id => 2 ],
+			[
+				'purchaser_email' => 'test-purchaser@test.com',
+			]
+		);
+		
+		$attendees = tribe_attendees()->by( 'event_id', $event_id )->by( 'order_status', [ 'completed' ] )->all();
+		
+		update_post_meta( $attendees[0]->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'A-1' );
+		update_post_meta( $attendees[1]->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'A-2' );
+		
+		$html = '';
+		
+		add_filter(
+			'tec_tickets_emails_dispatcher_content',
+			function ( $content ) use ( &$html ) {
+				$html = $content;
+				
+				// skip sending the email.
+				return '';
+			}
+		);
+		
+		$this->make_controller()->register();
+		
+		$send = tribe( Module::class )->send_tickets_email_for_attendees( [ $attendees[0]->ID, $attendees[1]->ID ] );
+		
+		$html = str_replace(
+			[ $event_id, $order->ID, $attendees[0]->ID, $attendees[1]->ID ],
+			[
+				'EVENT_ID',
+				'ORDER_ID',
+				'ATTENDEE_ID_1',
+				'ATTENDEE_ID_2',
+			],
+			$html
+		);
+		
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
 
@@ -1362,13 +1429,13 @@ class Controller_Test extends Controller_Test_Case {
 		$row_actions = apply_filters( 'post_row_actions', [], $post );
 		$this->assertNotContains( 'tickets_seats', array_keys( $row_actions ) );
 	}
-	
+
 	public function test_tc_order_success_page_has_seat_label() {
 		$shortcode_manager = new Manager();
 		$shortcode_manager->add_shortcodes();
-		
+
 		$this->make_controller()->register();
-		
+
 		$event_id = tribe_events()->set_args(
 			[
 				'title'      => 'Event with single seated attendee',
@@ -1377,14 +1444,14 @@ class Controller_Test extends Controller_Test_Case {
 				'duration'   => 2 * HOUR_IN_SECONDS,
 			]
 		)->create()->ID;
-		
+
 		update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
 		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'some-layout' );
-		
+
 		$ticket_id = $this->create_tc_ticket( $event_id, 10 );
 		update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
 		update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'some-seat' );
-		
+
 		$order = $this->create_order(
 			[ $ticket_id => 1 ],
 			[
@@ -1394,19 +1461,19 @@ class Controller_Test extends Controller_Test_Case {
 		);
 		update_post_meta( $order->ID, '_tec_tc_order_gateway_order_id', $order->ID );
 		clean_post_cache( $order->ID );
-		
+
 		$attendee = tribe_attendees()
 			->by( 'event_id', $event_id )
 			->by( 'order_status', [ 'completed' ] )
 			->first();
-		
+
 		// Now add the seat label meta data to attendee.
 		update_post_meta( $attendee->ID, Meta::META_KEY_SEAT_TYPE, 'some-seat-type' );
 		update_post_meta( $attendee->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'A-1' );
 		clean_post_cache( $attendee->ID );
-		
+
 		$_REQUEST['tc-order-id'] = $order->ID;
-		
+
 		$shortcode = Success_Shortcode::get_wp_slug();
 		$html      = do_shortcode( "[{$shortcode}]" );
 		$html      = str_replace(
@@ -1414,7 +1481,7 @@ class Controller_Test extends Controller_Test_Case {
 			[ '{EVENT_ID}', '{ORDER_ID}', '{ATTENDEE_ID}' ],
 			$html
 		);
-		
+
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
 }

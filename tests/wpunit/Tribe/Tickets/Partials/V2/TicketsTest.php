@@ -160,6 +160,8 @@ class TicketsTest extends V2TestCase {
 
 		$driver = $this->get_html_output_driver();
 		$driver->setTolerableDifferences( $this->tolerables );
+
+		$html = str_replace( $this->tolerables, '{{POST_TICKET_ID}}', $html );
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
@@ -196,6 +198,8 @@ class TicketsTest extends V2TestCase {
 			]
 		);
 
+		$html = str_replace( $this->tolerables, '{{POST_TICKET_ID}}', $html );
+
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
@@ -215,6 +219,8 @@ class TicketsTest extends V2TestCase {
 
 		$driver = $this->get_html_output_driver();
 		$driver->setTolerableDifferences( $this->tolerables );
+
+		$html = str_replace( $this->tolerables, '{{POST_TICKET_ID}}', $html );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}

@@ -236,6 +236,11 @@ class Maps {
 	 * @return bool Whether the map was deleted or not.
 	 */
 	public function delete( string $map_id ): bool {
+		// If the map has layouts, it should not be deleted.
+		if ( $this->map_has_layouts( $map_id ) ) {
+			return false;
+		}
+		
 		$url = $this->get_delete_url( $map_id );
 
 		$args = [

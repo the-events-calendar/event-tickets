@@ -1,6 +1,7 @@
 import { storeName } from './store';
 import { select, dispatch } from '@wordpress/data';
 import SeatType from './header/seat-type';
+import LayoutSelect from './settings/layoutSelect';
 
 export const setSeatTypeForTicket = (clientId) =>
 	dispatch(storeName).setTicketSeatTypeByPostId(clientId);
@@ -62,6 +63,12 @@ export const filterHeaderDetails = (items, clientId) => {
  * @return {Object} The body of the request with the seating details.
  */
 export const filterSetBodyDetails = (body, clientId) => {
+	/**
+	 * On first save of a ticket, lock the Layout.
+	 * Doesn't matter if ASC or GAC, they layout should be locked.
+	 */
+	dispatch(storeName).setIsLayoutLocked(true);
+
 	const layoutId = select(storeName).getCurrentLayoutId();
 	if (!layoutId) {
 		return body;
@@ -73,9 +80,6 @@ export const filterSetBodyDetails = (body, clientId) => {
 	body.append('ticket[seating][seatType]', seatType ? seatType : '');
 	body.append('ticket[seating][layoutId]', layoutId);
 	body.append('ticket[event_capacity]', eventCapacity);
-
-	// On first save of a ticket, lock the Layout.
-	dispatch(storeName).setIsLayoutLocked(true);
 
 	return body;
 };
@@ -117,7 +121,8 @@ export const filterSeatedTicketsAvailabilityMappedProps = (mappedProps) => {
 	);
 
 	const activeSeatTypeTotalCapacity = activeSeatTypesFiltered.reduce(
-		(sum, type) => sum + parseInt(seatTypes[type] ? seatTypes[type].seats : 0),
+		(sum, type) =>
+			sum + parseInt(seatTypes[type] ? seatTypes[type].seats : 0),
 		0
 	);
 
@@ -135,4 +140,130 @@ export const filterSeatedTicketsAvailabilityMappedProps = (mappedProps) => {
 		total: seatTypeTotalCapacity,
 		available: Math.abs(activeSeatTypeTotalCapacity - soldAndPending),
 	};
+};
+
+/**
+ * Filters the settings fields to include the layout selection.
+ *
+ * @since TBD
+ *
+ * @param {Array} fields The settings fields.
+ *
+ * @return {Array} The settings fields.
+ */
+export const filterSettingsFields = (fields) => {
+	const store = select(storeName);
+	const currentLayout = store.getCurrentLayoutId();
+	const layouts = store.getLayoutsInOptionFormat();
+
+	fields.push(
+		<LayoutSelect layouts={layouts} currentLayout={currentLayout} />
+	);
+
+	return fields;
+};
+
+/**
+ * Disables the confirm button in the ticket dashboard if the service is down.
+ *
+ * @since TBD
+ *
+ * @param {{isConfirmDisabled: boolean}} mappedProps The mapped props for the Tickets block.
+ *
+ * @return {{isConfirmDisabled: boolean}} The filtered mapped props.
+ */
+export const disableConfirmInTicketDashboard = (mappedProps) => {
+	const store = select(storeName);
+
+	if (store.isServiceStatusOk()) {
+		return mappedProps;
+	}
+
+	if (!(store.isUsingAssignedSeating() && store.getCurrentLayoutId())) {
+		return mappedProps;
+	}
+
+	mappedProps.isConfirmDisabled = true;
+
+	return mappedProps;
+};
+
+/**
+ * Removes all the actions from the ticket if the service is down.
+ *
+ * @since TBD
+ *
+ * @param {Array} actions The current actions.
+ *
+ * @return {Array} The filtered actions.
+ */
+export const removeAllActionsFromTicket = (actions) => {
+	const store = select(storeName);
+
+	if (store.isServiceStatusOk()) {
+		return actions;
+	}
+
+	if (!(store.isUsingAssignedSeating() && store.getCurrentLayoutId())) {
+		return actions;
+	}
+
+	return [];
+};
+
+/**
+ * Disables the ticket selection if the service is down.
+ *
+ * @since TBD
+ *
+ * @param {boolean} isSelected Whether the ticket is selected or not.
+ *
+ * @return {boolean} Whether the ticket is selected or not.
+ */
+export const disableTicketSelection = (isSelected) => {
+	const store = select(storeName);
+
+	if (store.isServiceStatusOk()) {
+		return isSelected;
+	}
+
+	if (!(store.isUsingAssignedSeating() && store.getCurrentLayoutId())) {
+		return isSelected;
+	}
+
+	return false;
+};
+
+/**
+ * Filters whether the confirm save button is disabled.
+ *
+ * @since TBD
+ *
+ * @param {boolean} isDisabled Whether the button is disabled.
+ * @param {Object}  state      The state of the store.
+ * @param {Object}  ownProps   The own props of the component.
+ *
+ * @return {boolean} Whether the button is disabled.
+ */
+export const filterButtonIsDisabled = (isDisabled, state, ownProps) => {
+	if (isDisabled) {
+		// If disabled already, we have no reason to enable it.
+		return isDisabled;
+	}
+
+	const store = select(storeName);
+
+	if (!store.isUsingAssignedSeating()) {
+		return isDisabled;
+	}
+
+	if (!store.getCurrentLayoutId()) {
+		return true;
+	}
+
+	if (!store.getTicketSeatType(ownProps.clientId)) {
+		return true;
+	}
+
+	return false;
 };

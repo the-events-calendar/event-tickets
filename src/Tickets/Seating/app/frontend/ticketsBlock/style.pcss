@@ -23,6 +23,11 @@
 		display: flex;
 		flex-direction: row-reverse;
 		padding: 10px 0;
+
+		.tribe-common-c-btn.tribe-common-c-btn--small.sold-out-button {
+			background-color: #BABABA;
+			color: #FFFFFF;
+		}
 	}
 }
 
@@ -41,6 +46,17 @@
 
 	div[role="document"] {
 		height: 100%;
+		max-height: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+
+		@media screen and (max-width: 960px) {
+			@supports (height: 100dvh) {
+				height: 100dvh;
+				max-height: 100dvh;
+			}
+		}
 	}
 
 	.tribe-dialog__close-button.tribe-modal__close-button {
@@ -50,7 +66,6 @@
 		@media screen and (max-width: 960px) {
 			display: none;
 		}
-
 	}
 
 	.tribe-dialog__content.tribe-modal__content {
@@ -58,6 +73,7 @@
 		display: flex;
 		flex-direction: row;
 		height: 100%;
+		gap: 0;
 
 		@media screen and (max-width: 960px) {
 			flex-direction: column;
@@ -66,45 +82,55 @@
 		.tec-tickets-seating__iframe-container {
 			display: flex;
 			flex-grow: 1;
+
+			.tec-tickets-seating__iframe {
+				min-height: 0;
+				height: 100%;
+			}
+
+			@media screen and (max-width: 960px) {
+				flex-direction: column;
+				/* This number is artirary - it's a hack to force the iframe to respond to the height of the parent container */
+				height: 60%;
+			}
+
 		}
 
-		.tec-tickets-seating__modal-sidebar-wrapper {
+		.tec-tickets-seating__modal-sidebar_container {
 			position: relative;
 
 			@media screen and  (max-width: 960px) {
-				height: 179px;
 				width: 100%;
 			}
-		}
 
-		.tec-tickets-seating__modal-sidebar {
-			width: 330px;
-			flex-shrink: 0;
-			padding: var(--tec-dialog-padding);
-			display: flex;
-			flex-direction: column;
-			gap: var(--tec-spacer-3);
-			align-items: flex-start;
-			justify-content: flex-start;
-			font-family: var(--tec-font-family-sans-serif);
-			position: relative;
-			height: 100%;
-
-			@media screen and  (max-width: 960px) {
-				width: 100%;
+			.tec-tickets-seating__modal-sidebar {
+				width: 330px;
+				flex-shrink: 0;
+				padding: var(--tec-dialog-padding);
+				display: flex;
+				flex-direction: column;
 				gap: 0;
-				box-shadow: 0 -4px 10px 0 rgba(0, 0, 0, 0.2);
-				position: absolute;
-				bottom: 0;
-				left: 0;
-				background-color: white;
-				transition: all 0.2s ease-in-out;
+				align-items: flex-start;
+				justify-content: flex-start;
+				font-family: var(--tec-font-family-sans-serif);
+				position: relative;
 				height: 100%;
 
-				&.tec-tickets-seating__modal-sidebar-open {
-					height: 81vh;
+				@media screen and  (max-width: 960px) {
+					width: 100%;
+					gap: 0;
+					box-shadow: 0 -4px 10px 0 rgba(0, 0, 0, 0.2);
+					position: relative; /* this gets changed to absolute via JS */
+					left: 0;
+					bottom: 0;
+					background-color: white;
+					transition: all 0.2s ease-in-out;
+					height: 100%;
 
-					.tec-tickets-seating__sidebar-content {
+					&.tec-tickets-seating__modal-sidebar-open {
+						height: 81vh;
+						bottom: 0;
+
 						.tec-tickets-seating__sidebar-header {
 							.tec-tickets-seating__sidebar-arrow {
 								transform: rotate(180deg);
@@ -112,17 +138,11 @@
 						}
 					}
 				}
-			}
-
-			.tec-tickets-seating__sidebar-content {
-				width: 100%;
-				flex: 1;
-				display: flex;
-				flex-flow: column nowrap;
 
 				.tec-tickets-seating__sidebar-header {
 					display: flex;
 					flex-direction: column;
+					width: 100%;
 
 					@media screen and  (max-width: 960px) {
 						flex-direction: row;
@@ -143,6 +163,7 @@
 						font-weight: var(--tec-font-weight-regular);
 						width: 100%;
 
+
 						@media screen and  (max-width: 960px) {
 							padding: 0;
 							border-bottom: 0;
@@ -155,6 +176,11 @@
 					.tec-tickets-seating__sidebar-arrow {
 						transform: rotate(0deg);
 						transition: transform .15s ease-in-out;
+						height: 34px;
+						width: 34px;
+						display: flex;
+						justify-content: center;
+						align-items: center;
 
 						.dashicons.dashicons-arrow-up-alt2 {
 							color: var(--tec-color-text-primary-light);
@@ -174,6 +200,7 @@
 					margin-right: -5px;
 					overflow-y: scroll;
 					flex: 1;
+					width: 100%;
 
 					@media screen and  (max-width: 960px) {
 						margin-top: 0;
@@ -253,69 +280,68 @@
 					font-weight: var(--tec-font-weight-bold);
 					font-size: var(--tec-font-size-1);
 					margin: var(--tec-spacer-6) 0;
+					width: 100%;
 
 					@media screen and  (max-width: 960px) {
-						margin: var(--tec-spacer-3) 0;
+						margin: var(--tec-spacer-3) 0 0;
 					}
 
 					&.tec-tickets-seating__empty-tickets-message-hidden {
 						display: none;
 					}
 				}
-			}
-		}
 
-		.tec-tickets-seating__sidebar-footer {
-			display: flex;
-			gap: var(--tec-spacer-3);
-			width: 100%;
-			flex-direction: column;
-
-			.tec-tickets-seating__total {
-				display: flex;
-				flex-direction: row;
-				justify-content: space-between;
-				gap: var(--tec-spacer-1);
-				height: 26px;
-				font-weight: var(--tec-font-weight-bold);
-
-				@media screen and  (max-width: 960px) {
+				.tec-tickets-seating__sidebar-footer {
+					display: flex;
 					margin-top: var(--tec-spacer-3);
-				}
+					gap: var(--tec-spacer-3);
+					width: 100%;
+					flex-direction: column;
 
-				&.tec-tickets-seating__total-hidden {
-					display: none;
-				}
+					.tec-tickets-seating__total {
+						display: flex;
+						flex-direction: row;
+						justify-content: space-between;
+						gap: var(--tec-spacer-1);
+						font-weight: var(--tec-font-weight-bold);
 
-				.tec-tickets-seating__total-text {
-					flex-basis: 74%;
-					text-align: left;
-				}
+						&.tec-tickets-seating__total-hidden {
+							display: none;
+						}
 
-				.tec-tickets-seating__total-price {
-					flex-basis: 26%;
-					text-align: right;
+						.tec-tickets-seating__total-text {
+							flex-basis: 74%;
+							text-align: left;
+						}
+
+						.tec-tickets-seating__total-price {
+							flex-basis: 26%;
+							text-align: right;
+						}
+					}
+
+					.tec-tickets-seating__sidebar-controls {
+						display: flex;
+						flex-direction: row;
+						justify-content: flex-end;
+						gap: var(--tec-spacer-4);
+
+						.tec-tickets-seating__sidebar-control {
+							font-weight: var(--tec-font-weight-bold);
+						}
+
+						.tec-tickets-seating__sidebar-control--cancel {
+							color: var(--tec-color-text-primary-light);
+						}
+
+						.tec-tickets-seating__sidebar-control--confirm {
+							width: auto;
+						}
+					}
 				}
 			}
 
-			.tec-tickets-seating__sidebar-controls {
-				display: flex;
-				flex-direction: row;
-				justify-content: flex-end;
-				gap: var(--tec-spacer-4);
 
-				.tec-tickets-seating__sidebar-control {
-					font-weight: var(--tec-font-weight-bold);
-				}
-
-				.tec-tickets-seating__sidebar-control--cancel {
-					color: var(--tec-color-text-primary-light);
-				}
-
-				.tec-tickets-seating__sidebar-control--confirm {
-					width: auto;
-				}
-			}
 		}
 	}
 }

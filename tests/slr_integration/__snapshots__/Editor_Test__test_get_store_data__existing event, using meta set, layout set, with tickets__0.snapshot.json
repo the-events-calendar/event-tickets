@@ -25,5 +25,10 @@
         "{{ticket_id}}": "uuid-vip"
     },
     "isLayoutLocked": true,
-    "eventCapacity": 300
+    "eventCapacity": 300,
+    "serviceStatus": {
+        "ok": true,
+        "status": "ok",
+        "connectUrl": "http://wordpress.test/wp-admin/admin.php?page=tec-tickets-settings&tab=licenses"
+    }
 }

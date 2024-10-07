@@ -11,6 +11,7 @@ import {
 } from '../store/common-store-bridge';
 import { META_KEY_ENABLED, META_KEY_LAYOUT_ID } from '../constants';
 import EventLayoutSelect from './event-layout-select';
+import ServiceError from './service-error';
 import { getLocalizedString } from '@tec/tickets/seating/utils';
 
 const getString = (key) => getLocalizedString(key, 'capacity-form');
@@ -30,6 +31,7 @@ function getCurrentSeatTypeOption(seatTypeId, seatTypes) {
 }
 
 const MemoizedEventLayoutSelect = React.memo(EventLayoutSelect);
+const MemoizedServiceError = React.memo(ServiceError);
 
 export default function CapacityForm({ renderDefaultForm, clientId }) {
 	const {
@@ -70,6 +72,18 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 		return select(storeName).isLayoutLocked();
 	}, []);
 
+	const isServiceStatusOk = useSelect((select) => {
+		return select(storeName).isServiceStatusOk();
+	}, []);
+
+	const serviceStatus = useSelect((select) => {
+		return select(storeName).getServiceStatus();
+	}, []);
+
+	const serviceConnectUrl = useSelect((select) => {
+		return select(storeName).getServiceConnectUrl();
+	}, []);
+
 	const postType = useSelect(
 		(select) => select('core/editor').getCurrentPostType(),
 		[]
@@ -79,20 +93,30 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 		[]
 	);
 
-	const onToggleChange = useCallback(
-		(value) => {
-			if (isLayoutLocked) {
-				return;
-			}
-
-			setUsingAssignedSeating(value === 'seat');
-		},
-		[isLayoutLocked, setUsingAssignedSeating]
-	);
-
 	const [meta, setMeta] = useEntityProp('postType', postType, 'meta', postId);
 	const updateEventMeta = useCallback(
 		(layoutId) => {
+			if (true === layoutId) {
+				const newMeta = {
+					...meta,
+					// We leave [META_KEY_LAYOUT_ID] as it was since that hasn't changed yet.
+					[META_KEY_ENABLED]: '1',
+				};
+				setMeta(newMeta);
+				return;
+			}
+
+			if (false === layoutId) {
+				const newMeta = {
+					...meta,
+					[META_KEY_ENABLED]: '0',
+					// We set [META_KEY_LAYOUT_ID] to an empty string since we're disabling assigned seating.
+					[META_KEY_LAYOUT_ID]: '',
+				};
+				setMeta(newMeta);
+				return;
+			}
+
 			const newMeta = {
 				...meta,
 				[META_KEY_ENABLED]: '1',
@@ -103,31 +127,66 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 		[meta, setMeta]
 	);
 
+	const onToggleChange = useCallback(
+		(value) => {
+			if (isLayoutLocked) {
+				return;
+			}
+
+			setUsingAssignedSeating(value === 'seat');
+			updateEventMeta(value === 'seat');
+		},
+		[isLayoutLocked, setUsingAssignedSeating, updateEventMeta]
+	);
+
 	const onLayoutChange = useCallback(
 		(choice) => {
 			const layoutSeats = getLayoutSeats(choice.value);
-			setTicketsSharedCapacityInCommonStore(layoutSeats);
 			updateEventMeta(choice.value);
 			setLayout(choice.value);
 			setEventCapacity(layoutSeats);
+			setTicketsSharedCapacityInCommonStore(layoutSeats, clientId);
 		},
-		[getLayoutSeats, setEventCapacity, setLayout, updateEventMeta]
+		[getLayoutSeats, setEventCapacity, setLayout, updateEventMeta, clientId]
 	);
 
 	const onSeatTypeChange = useCallback(
 		(choice) => {
 			const seatTypeSeats = getSeatTypeSeats(choice.value);
-			setCappedTicketCapacityInCommonStore(clientId, seatTypeSeats);
 			setTicketSeatType(clientId, choice.value);
+			setCappedTicketCapacityInCommonStore(clientId, seatTypeSeats);
 		},
 		[getSeatTypeSeats, setTicketSeatType, clientId]
 	);
 
+	const renderLayoutSelect = () => {
+		return isServiceStatusOk ? (
+			<MemoizedEventLayoutSelect
+				layoutLocked={isLayoutLocked}
+				layouts={layouts}
+				onLayoutChange={onLayoutChange}
+				currentLayout={getCurrentLayoutOption(layout, layouts)}
+				seatTypes={seatTypes}
+				onSeatTypeChange={onSeatTypeChange}
+				currentSeatType={getCurrentSeatTypeOption(seatType, seatTypes)}
+			/>
+		) : (
+			<MemoizedServiceError
+				status={serviceStatus}
+				serviceConnectUrl={serviceConnectUrl}
+			/>
+		);
+	};
+
 	return (
 		<div className="tec-tickets-seating__capacity-form">
-			{isUsingAssignedSeating && isLayoutLocked ? (
+			{isLayoutLocked ? (
 				<div className="tec-tickets-seating__capacity-locked-info">
-					{getString('seat-option-label')}
+					{getString(
+						isUsingAssignedSeating
+							? 'seat-option-label'
+							: 'general-admission-label'
+					)}
 				</div>
 			) : (
 				<RadioControl
@@ -147,22 +206,9 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 				/>
 			)}
 
-			{isUsingAssignedSeating ? (
-				<MemoizedEventLayoutSelect
-					layoutLocked={isLayoutLocked}
-					layouts={layouts}
-					onLayoutChange={onLayoutChange}
-					currentLayout={getCurrentLayoutOption(layout, layouts)}
-					seatTypes={seatTypes}
-					onSeatTypeChange={onSeatTypeChange}
-					currentSeatType={getCurrentSeatTypeOption(
-						seatType,
-						seatTypes
-					)}
-				/>
-			) : (
-				renderDefaultForm()
-			)}
+			{isUsingAssignedSeating
+				? renderLayoutSelect()
+				: renderDefaultForm()}
 		</div>
 	);
 }

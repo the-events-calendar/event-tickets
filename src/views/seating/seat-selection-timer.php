@@ -29,7 +29,7 @@
 	<div class="tec-tickets-seating__message">
 		<span>
 			<span class="tec-tickets-seating__message-text">
-				<?php echo esc_html_x( 'Seat selections reserved for ', 'Seat selection timer text', 'event-tickets' ); ?>
+				<?php echo esc_html_x( 'Seats reserved for ', 'Seat selection timer text', 'event-tickets' ); ?>
 			</span>
 			<span class="tec-tickets-seating__message-time">
 				<span class="tec-tickets-seating__time-minutes">
@@ -42,4 +42,4 @@
 	</div>
 	<div class="tec-tickets-seating__dialog-append-target"></div>
 </div>
-
+<?php

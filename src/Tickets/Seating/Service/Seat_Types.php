@@ -9,10 +9,13 @@
 
 namespace TEC\Tickets\Seating\Service;
 
+use Exception;
+use stdClass;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Seating\Logging;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
+use Tribe__Tickets__Tickets_Handler;
 
 /**
  * Class Seat_Types.
@@ -102,7 +105,7 @@ class Seat_Types {
 	 *
 	 * @param string[] $layout_ids The layout IDs to get the seat types for.
 	 *
-	 * @return array<string, array{id: string, name: string, seats: int}> The seat types in option format.
+	 * @return array<array{id: string, name: string, seats: int}> The seat types in option format.
 	 */
 	public function get_in_option_format( array $layout_ids ): array {
 		if ( ! $this->update() ) {
@@ -196,7 +199,7 @@ class Seat_Types {
 						$id
 					),
 				);
-			} catch ( \Exception $e ) {
+			} catch ( Exception $e ) {
 				$this->log_error(
 					'Failed to update the seat types from the service.',
 					[
@@ -234,7 +237,7 @@ class Seat_Types {
 		$total_updated = 0;
 
 		$seat_types = array_keys( $updates );
-		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler   = tribe( 'tickets.handler' );
 		$capacity_meta_key = $tickets_handler->key_capacity;
 
@@ -244,7 +247,7 @@ class Seat_Types {
 				->get_ids( true ) as $ticket_id
 		) {
 			clean_post_cache( $ticket_id );
-			
+
 			$seat_type_id      = get_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, true );
 			$new_capacity      = $updates[ $seat_type_id ];
 			$previous_capacity = get_post_meta( $ticket_id, $capacity_meta_key, true );
@@ -253,10 +256,35 @@ class Seat_Types {
 			$new_stock         = max( 0, $previous_stock + $capacity_delta );
 			update_post_meta( $ticket_id, $capacity_meta_key, $new_capacity );
 			update_post_meta( $ticket_id, '_stock', $new_stock );
-			
+
 			++$total_updated;
 		}
 
 		return $total_updated;
+	}
+
+	/**
+	 * Returns the primary seat type for a given layout.
+	 *
+	 * The primary seat type is the first seat type in `id` order.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $layout_id The layout ID to fetch the primary seat type for.
+	 *
+	 * @return stdClass|null The primary seat type, or `null` if no seat types are found.
+	 */
+	public function get_primary_seat_type( string $layout_id ): ?stdClass {
+		if ( ! $this->update() ) {
+			return null;
+		}
+
+		return Seat_Types_Table::fetch_first_where(
+			DB::prepare(
+				'WHERE layout = %s ORDER BY id ASC',
+				$layout_id
+			),
+			OBJECT
+		);
 	}
 }

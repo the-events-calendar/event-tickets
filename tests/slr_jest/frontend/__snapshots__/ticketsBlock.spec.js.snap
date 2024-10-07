@@ -75,26 +75,24 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 	&lt;/iframe&gt;
 &lt;/div&gt;
 
-&lt;div class="tec-tickets-seating__modal-sidebar-wrapper"&gt;
+&lt;div class="tec-tickets-seating__modal-sidebar_container"&gt;
 	&lt;aside class="tec-tickets-seating__modal-sidebar"&gt;
-		&lt;div class="tec-tickets-seating__sidebar-content"&gt;
 
-			&lt;div class="tec-tickets-seating__sidebar-header"&gt;
-				&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
-					Tickets
-				&lt;/h4&gt;
+		&lt;div class="tec-tickets-seating__sidebar-header"&gt;
+			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
+				Tickets			&lt;/h4&gt;
 
-				
+			
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 	data-token="test-ephemeral-token"
-	data-redirect-url="http://wordpress.test/?post_type=page&#038;p={{post_id}}"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
 	data-post-id="{{post_id}}"
 	&gt;
 	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__message"&gt;
 		&lt;span&gt;
 			&lt;span class="tec-tickets-seating__message-text"&gt;
-				Seat selections reserved for 			&lt;/span&gt;
+				Seats reserved for 			&lt;/span&gt;
 			&lt;span class="tec-tickets-seating__message-time"&gt;
 				&lt;span class="tec-tickets-seating__time-minutes"&gt;
 					&lt;!-- This will be set by JS. --&gt;
@@ -106,18 +104,15 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 	&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 &lt;/div&gt;
+			&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
+				&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
+			&lt;/div&gt;
+		&lt;/div&gt;
 
-				&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
-					&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
-				&lt;/div&gt;
-			&lt;/div&gt;
-
-			&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
-				Select a seat from the map to add seated tickets
-			&lt;/div&gt;
-			&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
-				&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
-			&lt;/div&gt;
+		&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
+			Select a seat from the map to add seated tickets		&lt;/div&gt;
+		&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
+			&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
 		&lt;/div&gt;
 
 		&lt;div class="tec-tickets-seating__sidebar-footer"&gt;
@@ -130,16 +125,14 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
 			&lt;div class="tec-tickets-seating__sidebar-controls"&gt;
 				&lt;button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"&gt;
-					Cancel
-				&lt;/button&gt;
+					Cancel				&lt;/button&gt;
 				&lt;button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"&gt;
-					Check Out
-				&lt;/button&gt;
+					Continue				&lt;/button&gt;
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/aside&gt;
-
-&lt;/div&gt;	&lt;/div&gt;
+&lt;/div&gt;
+	&lt;/div&gt;
 
       </script>
       
@@ -151,7 +144,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 			tribe.dialogs = tribe.dialogs || [];
 			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"1","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -194,7 +187,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
 
     <div
-      class="tec-tickets-seating__modal-sidebar-wrapper"
+      class="tec-tickets-seating__modal-sidebar_container"
     >
       
 	
@@ -202,139 +195,128 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
         class="tec-tickets-seating__modal-sidebar"
       >
         
+
 		
         <div
-          class="tec-tickets-seating__sidebar-content"
+          class="tec-tickets-seating__sidebar-header"
         >
           
-
 			
-          <div
-            class="tec-tickets-seating__sidebar-header"
+          <h4
+            class="tribe-common-h4 tec-tickets-seating__title"
           >
             
-				
-            <h4
-              class="tribe-common-h4 tec-tickets-seating__title"
-            >
-              
-					Tickets
-				
-            </h4>
+				Tickets			
+          </h4>
+          
+
+			
+
+          <div
+            class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
+            data-post-id="{{post_id}}"
+            data-redirect-url="http://wordpress.test/?page_id=23"
+            data-token="test-ephemeral-token"
+          >
             
-
-				
-
+	
             <div
-              class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
-              data-post-id="{{post_id}}"
-              data-redirect-url="http://wordpress.test/?post_type=page&p=23"
-              data-token="test-ephemeral-token"
+              class="dashicons dashicons-clock"
+            />
+            
+	
+            <div
+              class="tec-tickets-seating__message"
             >
               
-	
-              <div
-                class="dashicons dashicons-clock"
-              />
-              
-	
-              <div
-                class="tec-tickets-seating__message"
-              >
+		
+              <span>
                 
-		
-                <span>
-                  
 			
-                  <span
-                    class="tec-tickets-seating__message-text"
-                  >
-                    
-				Seat selections reserved for 			
-                  </span>
+                <span
+                  class="tec-tickets-seating__message-text"
+                >
                   
-			
-                  <span
-                    class="tec-tickets-seating__message-time"
-                  >
-                    
-				
-                    <span
-                      class="tec-tickets-seating__time-minutes"
-                    >
-                      
-					
-                      <!-- This will be set by JS. -->
-                      
-				
-                    </span>
-                    :
-                    <span
-                      class="tec-tickets-seating__time-seconds"
-                    >
-                      
-					
-                      <!-- This will be set by JS. -->
-                      
-				
-                    </span>
-                    
-			
-                  </span>
-                  
-		
+				Seats reserved for 			
                 </span>
                 
-	
-              </div>
-              
-	
-              <div
-                class="tec-tickets-seating__dialog-append-target"
-              />
-              
-
-            </div>
-            
-
+			
+                <span
+                  class="tec-tickets-seating__message-time"
+                >
+                  
 				
-            <div
-              class="tec-tickets-seating__sidebar-arrow"
-            >
-              
+                  <span
+                    class="tec-tickets-seating__time-minutes"
+                  >
+                    
 					
-              <span
-                class="dashicons dashicons-arrow-up-alt2"
-              />
-              
+                    <!-- This will be set by JS. -->
+                    
 				
+                  </span>
+                  :
+                  <span
+                    class="tec-tickets-seating__time-seconds"
+                  >
+                    
+					
+                    <!-- This will be set by JS. -->
+                    
+				
+                  </span>
+                  
+			
+                </span>
+                
+		
+              </span>
+              
+	
             </div>
             
-			
-          </div>
-          
-
-			
-          <div
-            class="tec-tickets-seating__empty-tickets-message"
-          >
+	
+            <div
+              class="tec-tickets-seating__dialog-append-target"
+            />
             
-				Select a seat from the map to add seated tickets
-			
+
           </div>
           
 			
           <div
-            class="tec-tickets-seating__tickets-wrapper"
+            class="tec-tickets-seating__sidebar-arrow"
           >
             
 				
-            <div
-              class="tec-tickets-seating__ticket-rows"
+            <span
+              class="dashicons dashicons-arrow-up-alt2"
             />
             
 			
           </div>
+          
+		
+        </div>
+        
+
+		
+        <div
+          class="tec-tickets-seating__empty-tickets-message"
+        >
+          
+			Select a seat from the map to add seated tickets		
+        </div>
+        
+		
+        <div
+          class="tec-tickets-seating__tickets-wrapper"
+        >
+          
+			
+          <div
+            class="tec-tickets-seating__ticket-rows"
+          />
           
 		
         </div>
@@ -380,8 +362,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"
             >
               
-					Cancel
-				
+					Cancel				
             </button>
             
 				
@@ -389,8 +370,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"
             >
               
-					Check Out
-				
+					Continue				
             </button>
             
 			
@@ -403,9 +383,9 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
       </aside>
       
 
-
     </div>
-    	
+    
+	
   </div>
   
 
@@ -487,26 +467,24 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 	&lt;/iframe&gt;
 &lt;/div&gt;
 
-&lt;div class="tec-tickets-seating__modal-sidebar-wrapper"&gt;
+&lt;div class="tec-tickets-seating__modal-sidebar_container"&gt;
 	&lt;aside class="tec-tickets-seating__modal-sidebar"&gt;
-		&lt;div class="tec-tickets-seating__sidebar-content"&gt;
 
-			&lt;div class="tec-tickets-seating__sidebar-header"&gt;
-				&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
-					Tickets
-				&lt;/h4&gt;
+		&lt;div class="tec-tickets-seating__sidebar-header"&gt;
+			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
+				Tickets			&lt;/h4&gt;
 
-				
+			
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 	data-token="test-ephemeral-token"
-	data-redirect-url="http://wordpress.test/?post_type=page&#038;p={{post_id}}"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
 	data-post-id="{{post_id}}"
 	&gt;
 	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__message"&gt;
 		&lt;span&gt;
 			&lt;span class="tec-tickets-seating__message-text"&gt;
-				Seat selections reserved for 			&lt;/span&gt;
+				Seats reserved for 			&lt;/span&gt;
 			&lt;span class="tec-tickets-seating__message-time"&gt;
 				&lt;span class="tec-tickets-seating__time-minutes"&gt;
 					&lt;!-- This will be set by JS. --&gt;
@@ -518,18 +496,15 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 	&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 &lt;/div&gt;
+			&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
+				&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
+			&lt;/div&gt;
+		&lt;/div&gt;
 
-				&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
-					&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
-				&lt;/div&gt;
-			&lt;/div&gt;
-
-			&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
-				Select a seat from the map to add seated tickets
-			&lt;/div&gt;
-			&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
-				&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
-			&lt;/div&gt;
+		&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
+			Select a seat from the map to add seated tickets		&lt;/div&gt;
+		&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
+			&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
 		&lt;/div&gt;
 
 		&lt;div class="tec-tickets-seating__sidebar-footer"&gt;
@@ -542,16 +517,14 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
 			&lt;div class="tec-tickets-seating__sidebar-controls"&gt;
 				&lt;button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"&gt;
-					Cancel
-				&lt;/button&gt;
+					Cancel				&lt;/button&gt;
 				&lt;button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"&gt;
-					Check Out
-				&lt;/button&gt;
+					Continue				&lt;/button&gt;
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/aside&gt;
-
-&lt;/div&gt;	&lt;/div&gt;
+&lt;/div&gt;
+	&lt;/div&gt;
 
       </script>
       
@@ -563,7 +536,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 			tribe.dialogs = tribe.dialogs || [];
 			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"1","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -606,7 +579,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
 
     <div
-      class="tec-tickets-seating__modal-sidebar-wrapper"
+      class="tec-tickets-seating__modal-sidebar_container"
     >
       
 	
@@ -614,186 +587,175 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
         class="tec-tickets-seating__modal-sidebar"
       >
         
+
 		
         <div
-          class="tec-tickets-seating__sidebar-content"
+          class="tec-tickets-seating__sidebar-header"
         >
           
-
 			
-          <div
-            class="tec-tickets-seating__sidebar-header"
+          <h4
+            class="tribe-common-h4 tec-tickets-seating__title"
           >
             
-				
-            <h4
-              class="tribe-common-h4 tec-tickets-seating__title"
-            >
-              
-					Tickets
-				
-            </h4>
+				Tickets			
+          </h4>
+          
+
+			
+
+          <div
+            class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
+            data-post-id="{{post_id}}"
+            data-redirect-url="http://wordpress.test/?page_id=23"
+            data-token="test-ephemeral-token"
+          >
             
-
-				
-
+	
             <div
-              class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
-              data-post-id="{{post_id}}"
-              data-redirect-url="http://wordpress.test/?post_type=page&p=23"
-              data-token="test-ephemeral-token"
+              class="dashicons dashicons-clock"
+            />
+            
+	
+            <div
+              class="tec-tickets-seating__message"
             >
               
-	
-              <div
-                class="dashicons dashicons-clock"
-              />
-              
-	
-              <div
-                class="tec-tickets-seating__message"
-              >
+		
+              <span>
                 
-		
-                <span>
-                  
 			
-                  <span
-                    class="tec-tickets-seating__message-text"
-                  >
-                    
-				Seat selections reserved for 			
-                  </span>
+                <span
+                  class="tec-tickets-seating__message-text"
+                >
                   
-			
-                  <span
-                    class="tec-tickets-seating__message-time"
-                  >
-                    
-				
-                    <span
-                      class="tec-tickets-seating__time-minutes"
-                    >
-                      
-					
-                      <!-- This will be set by JS. -->
-                      
-				
-                    </span>
-                    :
-                    <span
-                      class="tec-tickets-seating__time-seconds"
-                    >
-                      
-					
-                      <!-- This will be set by JS. -->
-                      
-				
-                    </span>
-                    
-			
-                  </span>
-                  
-		
+				Seats reserved for 			
                 </span>
                 
-	
-              </div>
-              
-	
-              <div
-                class="tec-tickets-seating__dialog-append-target"
-              />
-              
-
-            </div>
-            
-
+			
+                <span
+                  class="tec-tickets-seating__message-time"
+                >
+                  
 				
-            <div
-              class="tec-tickets-seating__sidebar-arrow"
-            >
-              
+                  <span
+                    class="tec-tickets-seating__time-minutes"
+                  >
+                    
 					
-              <span
-                class="dashicons dashicons-arrow-up-alt2"
-              />
-              
+                    <!-- This will be set by JS. -->
+                    
 				
-            </div>
-            
-			
-          </div>
-          
-
-			
-          <div
-            class="tec-tickets-seating__empty-tickets-message tec-tickets-seating__empty-tickets-message-hidden"
-          >
-            
-				Select a seat from the map to add seated tickets
-			
-          </div>
-          
-			
-          <div
-            class="tec-tickets-seating__tickets-wrapper"
-          >
-            
-				
-            <div
-              class="tec-tickets-seating__ticket-rows"
-            >
-              <div
-                class="tec-tickets-seating__ticket-row"
-                data-price="50"
-                data-seat-label="A-1"
-                data-seat-type-id="uuid-seat-type-0"
-                data-ticket-id="23"
-              >
-                
-			
-                <div
-                  class="tec-tickets-seating__seat-color"
-                  style="background: #00ff00"
-                />
-                
-
-			
-                <div
-                  class="tec-tickets-seating__label"
-                >
-                  
-				
-                  <div
-                    class="tec-tickets-seating__ticket-name"
+                  </span>
+                  :
+                  <span
+                    class="tec-tickets-seating__time-seconds"
                   >
-                    Adult
-                  </div>
-                  
+                    
+					
+                    <!-- This will be set by JS. -->
+                    
 				
-                  <div
-                    class="tec-tickets-seating__seat-label"
-                  >
-                    A-1
-                  </div>
+                  </span>
                   
 			
-                </div>
-                
-
-			
-                <div
-                  class="tec-tickets-seating__ticket-price"
-                >
-                  $50
-                </div>
+                </span>
                 
 		
-              </div>
+              </span>
+              
+	
             </div>
             
+	
+            <div
+              class="tec-tickets-seating__dialog-append-target"
+            />
+            
+
+          </div>
+          
 			
+          <div
+            class="tec-tickets-seating__sidebar-arrow"
+          >
+            
+				
+            <span
+              class="dashicons dashicons-arrow-up-alt2"
+            />
+            
+			
+          </div>
+          
+		
+        </div>
+        
+
+		
+        <div
+          class="tec-tickets-seating__empty-tickets-message tec-tickets-seating__empty-tickets-message-hidden"
+        >
+          
+			Select a seat from the map to add seated tickets		
+        </div>
+        
+		
+        <div
+          class="tec-tickets-seating__tickets-wrapper"
+        >
+          
+			
+          <div
+            class="tec-tickets-seating__ticket-rows"
+          >
+            <div
+              class="tec-tickets-seating__ticket-row"
+              data-price="50"
+              data-seat-label="A-1"
+              data-seat-type-id="uuid-seat-type-0"
+              data-ticket-id="23"
+            >
+              
+			
+              <div
+                class="tec-tickets-seating__seat-color"
+                style="background: #00ff00"
+              />
+              
+
+			
+              <div
+                class="tec-tickets-seating__label"
+              >
+                
+				
+                <div
+                  class="tec-tickets-seating__ticket-name"
+                >
+                  Adult
+                </div>
+                
+				
+                <div
+                  class="tec-tickets-seating__seat-label"
+                >
+                  A-1
+                </div>
+                
+			
+              </div>
+              
+
+			
+              <div
+                class="tec-tickets-seating__ticket-price"
+              >
+                $50
+              </div>
+              
+		
+            </div>
           </div>
           
 		
@@ -840,8 +802,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"
             >
               
-					Cancel
-				
+					Cancel				
             </button>
             
 				
@@ -849,8 +810,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"
             >
               
-					Check Out
-				
+					Continue				
             </button>
             
 			
@@ -863,9 +823,9 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
       </aside>
       
 
-
     </div>
-    	
+    
+	
   </div>
   
 
@@ -947,26 +907,24 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 	&lt;/iframe&gt;
 &lt;/div&gt;
 
-&lt;div class="tec-tickets-seating__modal-sidebar-wrapper"&gt;
+&lt;div class="tec-tickets-seating__modal-sidebar_container"&gt;
 	&lt;aside class="tec-tickets-seating__modal-sidebar"&gt;
-		&lt;div class="tec-tickets-seating__sidebar-content"&gt;
 
-			&lt;div class="tec-tickets-seating__sidebar-header"&gt;
-				&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
-					Tickets
-				&lt;/h4&gt;
+		&lt;div class="tec-tickets-seating__sidebar-header"&gt;
+			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
+				Tickets			&lt;/h4&gt;
 
-				
+			
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 	data-token="test-ephemeral-token"
-	data-redirect-url="http://wordpress.test/?post_type=page&#038;p={{post_id}}"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
 	data-post-id="{{post_id}}"
 	&gt;
 	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__message"&gt;
 		&lt;span&gt;
 			&lt;span class="tec-tickets-seating__message-text"&gt;
-				Seat selections reserved for 			&lt;/span&gt;
+				Seats reserved for 			&lt;/span&gt;
 			&lt;span class="tec-tickets-seating__message-time"&gt;
 				&lt;span class="tec-tickets-seating__time-minutes"&gt;
 					&lt;!-- This will be set by JS. --&gt;
@@ -978,18 +936,15 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 	&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 &lt;/div&gt;
+			&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
+				&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
+			&lt;/div&gt;
+		&lt;/div&gt;
 
-				&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
-					&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
-				&lt;/div&gt;
-			&lt;/div&gt;
-
-			&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
-				Select a seat from the map to add seated tickets
-			&lt;/div&gt;
-			&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
-				&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
-			&lt;/div&gt;
+		&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
+			Select a seat from the map to add seated tickets		&lt;/div&gt;
+		&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
+			&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
 		&lt;/div&gt;
 
 		&lt;div class="tec-tickets-seating__sidebar-footer"&gt;
@@ -1002,16 +957,14 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
 			&lt;div class="tec-tickets-seating__sidebar-controls"&gt;
 				&lt;button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"&gt;
-					Cancel
-				&lt;/button&gt;
+					Cancel				&lt;/button&gt;
 				&lt;button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"&gt;
-					Check Out
-				&lt;/button&gt;
+					Continue				&lt;/button&gt;
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/aside&gt;
-
-&lt;/div&gt;	&lt;/div&gt;
+&lt;/div&gt;
+	&lt;/div&gt;
 
       </script>
       
@@ -1023,7 +976,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 			tribe.dialogs = tribe.dialogs || [];
 			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"1","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -1066,7 +1019,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
 
     <div
-      class="tec-tickets-seating__modal-sidebar-wrapper"
+      class="tec-tickets-seating__modal-sidebar_container"
     >
       
 	
@@ -1074,233 +1027,222 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
         class="tec-tickets-seating__modal-sidebar"
       >
         
+
 		
         <div
-          class="tec-tickets-seating__sidebar-content"
+          class="tec-tickets-seating__sidebar-header"
         >
           
-
 			
-          <div
-            class="tec-tickets-seating__sidebar-header"
+          <h4
+            class="tribe-common-h4 tec-tickets-seating__title"
           >
             
-				
-            <h4
-              class="tribe-common-h4 tec-tickets-seating__title"
-            >
-              
-					Tickets
-				
-            </h4>
+				Tickets			
+          </h4>
+          
+
+			
+
+          <div
+            class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
+            data-post-id="{{post_id}}"
+            data-redirect-url="http://wordpress.test/?page_id=23"
+            data-token="test-ephemeral-token"
+          >
             
-
-				
-
+	
             <div
-              class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
-              data-post-id="{{post_id}}"
-              data-redirect-url="http://wordpress.test/?post_type=page&p=23"
-              data-token="test-ephemeral-token"
+              class="dashicons dashicons-clock"
+            />
+            
+	
+            <div
+              class="tec-tickets-seating__message"
             >
               
-	
-              <div
-                class="dashicons dashicons-clock"
-              />
-              
-	
-              <div
-                class="tec-tickets-seating__message"
-              >
+		
+              <span>
                 
-		
-                <span>
-                  
 			
-                  <span
-                    class="tec-tickets-seating__message-text"
-                  >
-                    
-				Seat selections reserved for 			
-                  </span>
+                <span
+                  class="tec-tickets-seating__message-text"
+                >
                   
-			
-                  <span
-                    class="tec-tickets-seating__message-time"
-                  >
-                    
-				
-                    <span
-                      class="tec-tickets-seating__time-minutes"
-                    >
-                      
-					
-                      <!-- This will be set by JS. -->
-                      
-				
-                    </span>
-                    :
-                    <span
-                      class="tec-tickets-seating__time-seconds"
-                    >
-                      
-					
-                      <!-- This will be set by JS. -->
-                      
-				
-                    </span>
-                    
-			
-                  </span>
-                  
-		
+				Seats reserved for 			
                 </span>
                 
-	
-              </div>
-              
-	
-              <div
-                class="tec-tickets-seating__dialog-append-target"
-              />
-              
-
-            </div>
-            
-
+			
+                <span
+                  class="tec-tickets-seating__message-time"
+                >
+                  
 				
-            <div
-              class="tec-tickets-seating__sidebar-arrow"
-            >
-              
+                  <span
+                    class="tec-tickets-seating__time-minutes"
+                  >
+                    
 					
-              <span
-                class="dashicons dashicons-arrow-up-alt2"
+                    <!-- This will be set by JS. -->
+                    
+				
+                  </span>
+                  :
+                  <span
+                    class="tec-tickets-seating__time-seconds"
+                  >
+                    
+					
+                    <!-- This will be set by JS. -->
+                    
+				
+                  </span>
+                  
+			
+                </span>
+                
+		
+              </span>
+              
+	
+            </div>
+            
+	
+            <div
+              class="tec-tickets-seating__dialog-append-target"
+            />
+            
+
+          </div>
+          
+			
+          <div
+            class="tec-tickets-seating__sidebar-arrow"
+          >
+            
+				
+            <span
+              class="dashicons dashicons-arrow-up-alt2"
+            />
+            
+			
+          </div>
+          
+		
+        </div>
+        
+
+		
+        <div
+          class="tec-tickets-seating__empty-tickets-message tec-tickets-seating__empty-tickets-message-hidden"
+        >
+          
+			Select a seat from the map to add seated tickets		
+        </div>
+        
+		
+        <div
+          class="tec-tickets-seating__tickets-wrapper"
+        >
+          
+			
+          <div
+            class="tec-tickets-seating__ticket-rows"
+          >
+            <div
+              class="tec-tickets-seating__ticket-row"
+              data-price="50"
+              data-seat-label="A-1"
+              data-seat-type-id="uuid-seat-type-0"
+              data-ticket-id="23"
+            >
+              
+			
+              <div
+                class="tec-tickets-seating__seat-color"
+                style="background: #00ff00"
               />
               
-				
-            </div>
-            
-			
-          </div>
-          
 
 			
-          <div
-            class="tec-tickets-seating__empty-tickets-message tec-tickets-seating__empty-tickets-message-hidden"
-          >
-            
-				Select a seat from the map to add seated tickets
-			
-          </div>
-          
-			
-          <div
-            class="tec-tickets-seating__tickets-wrapper"
-          >
-            
+              <div
+                class="tec-tickets-seating__label"
+              >
+                
 				
+                <div
+                  class="tec-tickets-seating__ticket-name"
+                >
+                  Adult
+                </div>
+                
+				
+                <div
+                  class="tec-tickets-seating__seat-label"
+                >
+                  A-1
+                </div>
+                
+			
+              </div>
+              
+
+			
+              <div
+                class="tec-tickets-seating__ticket-price"
+              >
+                $50
+              </div>
+              
+		
+            </div>
             <div
-              class="tec-tickets-seating__ticket-rows"
+              class="tec-tickets-seating__ticket-row"
+              data-price="50"
+              data-seat-label="A-2"
+              data-seat-type-id="uuid-seat-type-0"
+              data-ticket-id="23"
             >
+              
+			
               <div
-                class="tec-tickets-seating__ticket-row"
-                data-price="50"
-                data-seat-label="A-1"
-                data-seat-type-id="uuid-seat-type-0"
-                data-ticket-id="23"
+                class="tec-tickets-seating__seat-color"
+                style="background: #ff0000"
+              />
+              
+
+			
+              <div
+                class="tec-tickets-seating__label"
               >
                 
-			
+				
                 <div
-                  class="tec-tickets-seating__seat-color"
-                  style="background: #00ff00"
-                />
-                
-
-			
-                <div
-                  class="tec-tickets-seating__label"
+                  class="tec-tickets-seating__ticket-name"
                 >
-                  
-				
-                  <div
-                    class="tec-tickets-seating__ticket-name"
-                  >
-                    Adult
-                  </div>
-                  
-				
-                  <div
-                    class="tec-tickets-seating__seat-label"
-                  >
-                    A-1
-                  </div>
-                  
-			
+                  Adult
                 </div>
                 
-
-			
+				
                 <div
-                  class="tec-tickets-seating__ticket-price"
+                  class="tec-tickets-seating__seat-label"
                 >
-                  $50
+                  A-2
                 </div>
                 
-		
+			
               </div>
+              
+
+			
               <div
-                class="tec-tickets-seating__ticket-row"
-                data-price="50"
-                data-seat-label="A-2"
-                data-seat-type-id="uuid-seat-type-0"
-                data-ticket-id="23"
+                class="tec-tickets-seating__ticket-price"
               >
-                
-			
-                <div
-                  class="tec-tickets-seating__seat-color"
-                  style="background: #ff0000"
-                />
-                
-
-			
-                <div
-                  class="tec-tickets-seating__label"
-                >
-                  
-				
-                  <div
-                    class="tec-tickets-seating__ticket-name"
-                  >
-                    Adult
-                  </div>
-                  
-				
-                  <div
-                    class="tec-tickets-seating__seat-label"
-                  >
-                    A-2
-                  </div>
-                  
-			
-                </div>
-                
-
-			
-                <div
-                  class="tec-tickets-seating__ticket-price"
-                >
-                  $50
-                </div>
-                
-		
+                $50
               </div>
+              
+		
             </div>
-            
-			
           </div>
           
 		
@@ -1347,8 +1289,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"
             >
               
-					Cancel
-				
+					Cancel				
             </button>
             
 				
@@ -1356,8 +1297,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"
             >
               
-					Check Out
-				
+					Continue				
             </button>
             
 			
@@ -1370,9 +1310,9 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
       </aside>
       
 
-
     </div>
-    	
+    
+	
   </div>
   
 
@@ -1454,26 +1394,24 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 	&lt;/iframe&gt;
 &lt;/div&gt;
 
-&lt;div class="tec-tickets-seating__modal-sidebar-wrapper"&gt;
+&lt;div class="tec-tickets-seating__modal-sidebar_container"&gt;
 	&lt;aside class="tec-tickets-seating__modal-sidebar"&gt;
-		&lt;div class="tec-tickets-seating__sidebar-content"&gt;
 
-			&lt;div class="tec-tickets-seating__sidebar-header"&gt;
-				&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
-					Tickets
-				&lt;/h4&gt;
+		&lt;div class="tec-tickets-seating__sidebar-header"&gt;
+			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
+				Tickets			&lt;/h4&gt;
 
-				
+			
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 	data-token="test-ephemeral-token"
-	data-redirect-url="http://wordpress.test/?post_type=page&#038;p={{post_id}}"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
 	data-post-id="{{post_id}}"
 	&gt;
 	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__message"&gt;
 		&lt;span&gt;
 			&lt;span class="tec-tickets-seating__message-text"&gt;
-				Seat selections reserved for 			&lt;/span&gt;
+				Seats reserved for 			&lt;/span&gt;
 			&lt;span class="tec-tickets-seating__message-time"&gt;
 				&lt;span class="tec-tickets-seating__time-minutes"&gt;
 					&lt;!-- This will be set by JS. --&gt;
@@ -1485,18 +1423,15 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 	&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 &lt;/div&gt;
+			&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
+				&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
+			&lt;/div&gt;
+		&lt;/div&gt;
 
-				&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
-					&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
-				&lt;/div&gt;
-			&lt;/div&gt;
-
-			&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
-				Select a seat from the map to add seated tickets
-			&lt;/div&gt;
-			&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
-				&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
-			&lt;/div&gt;
+		&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
+			Select a seat from the map to add seated tickets		&lt;/div&gt;
+		&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
+			&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
 		&lt;/div&gt;
 
 		&lt;div class="tec-tickets-seating__sidebar-footer"&gt;
@@ -1509,16 +1444,14 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
 			&lt;div class="tec-tickets-seating__sidebar-controls"&gt;
 				&lt;button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"&gt;
-					Cancel
-				&lt;/button&gt;
+					Cancel				&lt;/button&gt;
 				&lt;button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"&gt;
-					Check Out
-				&lt;/button&gt;
+					Continue				&lt;/button&gt;
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/aside&gt;
-
-&lt;/div&gt;	&lt;/div&gt;
+&lt;/div&gt;
+	&lt;/div&gt;
 
       </script>
       
@@ -1530,7 +1463,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 			tribe.dialogs = tribe.dialogs || [];
 			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"1","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -1573,7 +1506,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
 
     <div
-      class="tec-tickets-seating__modal-sidebar-wrapper"
+      class="tec-tickets-seating__modal-sidebar_container"
     >
       
 	
@@ -1581,280 +1514,269 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
         class="tec-tickets-seating__modal-sidebar"
       >
         
+
 		
         <div
-          class="tec-tickets-seating__sidebar-content"
+          class="tec-tickets-seating__sidebar-header"
         >
           
-
 			
-          <div
-            class="tec-tickets-seating__sidebar-header"
+          <h4
+            class="tribe-common-h4 tec-tickets-seating__title"
           >
             
-				
-            <h4
-              class="tribe-common-h4 tec-tickets-seating__title"
-            >
-              
-					Tickets
-				
-            </h4>
+				Tickets			
+          </h4>
+          
+
+			
+
+          <div
+            class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
+            data-post-id="{{post_id}}"
+            data-redirect-url="http://wordpress.test/?page_id=23"
+            data-token="test-ephemeral-token"
+          >
             
-
-				
-
+	
             <div
-              class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
-              data-post-id="{{post_id}}"
-              data-redirect-url="http://wordpress.test/?post_type=page&p=23"
-              data-token="test-ephemeral-token"
+              class="dashicons dashicons-clock"
+            />
+            
+	
+            <div
+              class="tec-tickets-seating__message"
             >
               
-	
-              <div
-                class="dashicons dashicons-clock"
-              />
-              
-	
-              <div
-                class="tec-tickets-seating__message"
-              >
+		
+              <span>
                 
-		
-                <span>
-                  
 			
-                  <span
-                    class="tec-tickets-seating__message-text"
-                  >
-                    
-				Seat selections reserved for 			
-                  </span>
+                <span
+                  class="tec-tickets-seating__message-text"
+                >
                   
-			
-                  <span
-                    class="tec-tickets-seating__message-time"
-                  >
-                    
-				
-                    <span
-                      class="tec-tickets-seating__time-minutes"
-                    >
-                      
-					
-                      <!-- This will be set by JS. -->
-                      
-				
-                    </span>
-                    :
-                    <span
-                      class="tec-tickets-seating__time-seconds"
-                    >
-                      
-					
-                      <!-- This will be set by JS. -->
-                      
-				
-                    </span>
-                    
-			
-                  </span>
-                  
-		
+				Seats reserved for 			
                 </span>
                 
-	
-              </div>
-              
-	
-              <div
-                class="tec-tickets-seating__dialog-append-target"
-              />
-              
-
-            </div>
-            
-
+			
+                <span
+                  class="tec-tickets-seating__message-time"
+                >
+                  
 				
-            <div
-              class="tec-tickets-seating__sidebar-arrow"
-            >
-              
+                  <span
+                    class="tec-tickets-seating__time-minutes"
+                  >
+                    
 					
-              <span
-                class="dashicons dashicons-arrow-up-alt2"
+                    <!-- This will be set by JS. -->
+                    
+				
+                  </span>
+                  :
+                  <span
+                    class="tec-tickets-seating__time-seconds"
+                  >
+                    
+					
+                    <!-- This will be set by JS. -->
+                    
+				
+                  </span>
+                  
+			
+                </span>
+                
+		
+              </span>
+              
+	
+            </div>
+            
+	
+            <div
+              class="tec-tickets-seating__dialog-append-target"
+            />
+            
+
+          </div>
+          
+			
+          <div
+            class="tec-tickets-seating__sidebar-arrow"
+          >
+            
+				
+            <span
+              class="dashicons dashicons-arrow-up-alt2"
+            />
+            
+			
+          </div>
+          
+		
+        </div>
+        
+
+		
+        <div
+          class="tec-tickets-seating__empty-tickets-message tec-tickets-seating__empty-tickets-message-hidden"
+        >
+          
+			Select a seat from the map to add seated tickets		
+        </div>
+        
+		
+        <div
+          class="tec-tickets-seating__tickets-wrapper"
+        >
+          
+			
+          <div
+            class="tec-tickets-seating__ticket-rows"
+          >
+            <div
+              class="tec-tickets-seating__ticket-row"
+              data-price="50"
+              data-seat-label="A-1"
+              data-seat-type-id="uuid-seat-type-0"
+              data-ticket-id="23"
+            >
+              
+			
+              <div
+                class="tec-tickets-seating__seat-color"
+                style="background: #00ff00"
               />
               
-				
-            </div>
-            
-			
-          </div>
-          
 
 			
-          <div
-            class="tec-tickets-seating__empty-tickets-message tec-tickets-seating__empty-tickets-message-hidden"
-          >
-            
-				Select a seat from the map to add seated tickets
-			
-          </div>
-          
-			
-          <div
-            class="tec-tickets-seating__tickets-wrapper"
-          >
-            
+              <div
+                class="tec-tickets-seating__label"
+              >
+                
 				
+                <div
+                  class="tec-tickets-seating__ticket-name"
+                >
+                  Adult
+                </div>
+                
+				
+                <div
+                  class="tec-tickets-seating__seat-label"
+                >
+                  A-1
+                </div>
+                
+			
+              </div>
+              
+
+			
+              <div
+                class="tec-tickets-seating__ticket-price"
+              >
+                $50
+              </div>
+              
+		
+            </div>
             <div
-              class="tec-tickets-seating__ticket-rows"
+              class="tec-tickets-seating__ticket-row"
+              data-price="50"
+              data-seat-label="A-2"
+              data-seat-type-id="uuid-seat-type-0"
+              data-ticket-id="23"
             >
+              
+			
               <div
-                class="tec-tickets-seating__ticket-row"
-                data-price="50"
-                data-seat-label="A-1"
-                data-seat-type-id="uuid-seat-type-0"
-                data-ticket-id="23"
+                class="tec-tickets-seating__seat-color"
+                style="background: #ff0000"
+              />
+              
+
+			
+              <div
+                class="tec-tickets-seating__label"
               >
                 
-			
+				
                 <div
-                  class="tec-tickets-seating__seat-color"
-                  style="background: #00ff00"
-                />
-                
-
-			
-                <div
-                  class="tec-tickets-seating__label"
+                  class="tec-tickets-seating__ticket-name"
                 >
-                  
-				
-                  <div
-                    class="tec-tickets-seating__ticket-name"
-                  >
-                    Adult
-                  </div>
-                  
-				
-                  <div
-                    class="tec-tickets-seating__seat-label"
-                  >
-                    A-1
-                  </div>
-                  
-			
+                  Adult
                 </div>
                 
-
-			
+				
                 <div
-                  class="tec-tickets-seating__ticket-price"
+                  class="tec-tickets-seating__seat-label"
                 >
-                  $50
+                  A-2
                 </div>
                 
-		
+			
               </div>
+              
+
+			
               <div
-                class="tec-tickets-seating__ticket-row"
-                data-price="50"
-                data-seat-label="A-2"
-                data-seat-type-id="uuid-seat-type-0"
-                data-ticket-id="23"
+                class="tec-tickets-seating__ticket-price"
               >
-                
-			
-                <div
-                  class="tec-tickets-seating__seat-color"
-                  style="background: #ff0000"
-                />
-                
-
-			
-                <div
-                  class="tec-tickets-seating__label"
-                >
-                  
-				
-                  <div
-                    class="tec-tickets-seating__ticket-name"
-                  >
-                    Adult
-                  </div>
-                  
-				
-                  <div
-                    class="tec-tickets-seating__seat-label"
-                  >
-                    A-2
-                  </div>
-                  
-			
-                </div>
-                
-
-			
-                <div
-                  class="tec-tickets-seating__ticket-price"
-                >
-                  $50
-                </div>
-                
-		
+                $50
               </div>
-              <div
-                class="tec-tickets-seating__ticket-row"
-                data-price="30"
-                data-seat-label="B-15"
-                data-seat-type-id="uuid-seat-type-1"
-                data-ticket-id="89"
-              >
-                
-			
-                <div
-                  class="tec-tickets-seating__seat-color"
-                  style="background: #00ff00"
-                />
-                
-
-			
-                <div
-                  class="tec-tickets-seating__label"
-                >
-                  
-				
-                  <div
-                    class="tec-tickets-seating__ticket-name"
-                  >
-                    Child
-                  </div>
-                  
-				
-                  <div
-                    class="tec-tickets-seating__seat-label"
-                  >
-                    B-15
-                  </div>
-                  
-			
-                </div>
-                
-
-			
-                <div
-                  class="tec-tickets-seating__ticket-price"
-                >
-                  $30
-                </div>
-                
+              
 		
-              </div>
             </div>
-            
+            <div
+              class="tec-tickets-seating__ticket-row"
+              data-price="30"
+              data-seat-label="B-15"
+              data-seat-type-id="uuid-seat-type-1"
+              data-ticket-id="89"
+            >
+              
 			
+              <div
+                class="tec-tickets-seating__seat-color"
+                style="background: #00ff00"
+              />
+              
+
+			
+              <div
+                class="tec-tickets-seating__label"
+              >
+                
+				
+                <div
+                  class="tec-tickets-seating__ticket-name"
+                >
+                  Child
+                </div>
+                
+				
+                <div
+                  class="tec-tickets-seating__seat-label"
+                >
+                  B-15
+                </div>
+                
+			
+              </div>
+              
+
+			
+              <div
+                class="tec-tickets-seating__ticket-price"
+              >
+                $30
+              </div>
+              
+		
+            </div>
           </div>
           
 		
@@ -1901,8 +1823,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"
             >
               
-					Cancel
-				
+					Cancel				
             </button>
             
 				
@@ -1910,8 +1831,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"
             >
               
-					Check Out
-				
+					Continue				
             </button>
             
 			
@@ -1924,9 +1844,9 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
       </aside>
       
 
-
     </div>
-    	
+    
+	
   </div>
   
 
@@ -2008,26 +1928,24 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 	&lt;/iframe&gt;
 &lt;/div&gt;
 
-&lt;div class="tec-tickets-seating__modal-sidebar-wrapper"&gt;
+&lt;div class="tec-tickets-seating__modal-sidebar_container"&gt;
 	&lt;aside class="tec-tickets-seating__modal-sidebar"&gt;
-		&lt;div class="tec-tickets-seating__sidebar-content"&gt;
 
-			&lt;div class="tec-tickets-seating__sidebar-header"&gt;
-				&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
-					Tickets
-				&lt;/h4&gt;
+		&lt;div class="tec-tickets-seating__sidebar-header"&gt;
+			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
+				Tickets			&lt;/h4&gt;
 
-				
+			
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 	data-token="test-ephemeral-token"
-	data-redirect-url="http://wordpress.test/?post_type=page&#038;p={{post_id}}"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
 	data-post-id="{{post_id}}"
 	&gt;
 	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__message"&gt;
 		&lt;span&gt;
 			&lt;span class="tec-tickets-seating__message-text"&gt;
-				Seat selections reserved for 			&lt;/span&gt;
+				Seats reserved for 			&lt;/span&gt;
 			&lt;span class="tec-tickets-seating__message-time"&gt;
 				&lt;span class="tec-tickets-seating__time-minutes"&gt;
 					&lt;!-- This will be set by JS. --&gt;
@@ -2039,18 +1957,15 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 	&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 &lt;/div&gt;
+			&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
+				&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
+			&lt;/div&gt;
+		&lt;/div&gt;
 
-				&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
-					&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
-				&lt;/div&gt;
-			&lt;/div&gt;
-
-			&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
-				Select a seat from the map to add seated tickets
-			&lt;/div&gt;
-			&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
-				&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
-			&lt;/div&gt;
+		&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
+			Select a seat from the map to add seated tickets		&lt;/div&gt;
+		&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
+			&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
 		&lt;/div&gt;
 
 		&lt;div class="tec-tickets-seating__sidebar-footer"&gt;
@@ -2063,16 +1978,14 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
 			&lt;div class="tec-tickets-seating__sidebar-controls"&gt;
 				&lt;button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"&gt;
-					Cancel
-				&lt;/button&gt;
+					Cancel				&lt;/button&gt;
 				&lt;button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"&gt;
-					Check Out
-				&lt;/button&gt;
+					Continue				&lt;/button&gt;
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/aside&gt;
-
-&lt;/div&gt;	&lt;/div&gt;
+&lt;/div&gt;
+	&lt;/div&gt;
 
       </script>
       
@@ -2084,7 +1997,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 			tribe.dialogs = tribe.dialogs || [];
 			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"1","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -2127,7 +2040,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
 
     <div
-      class="tec-tickets-seating__modal-sidebar-wrapper"
+      class="tec-tickets-seating__modal-sidebar_container"
     >
       
 	
@@ -2135,327 +2048,316 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
         class="tec-tickets-seating__modal-sidebar"
       >
         
+
 		
         <div
-          class="tec-tickets-seating__sidebar-content"
+          class="tec-tickets-seating__sidebar-header"
         >
           
-
 			
-          <div
-            class="tec-tickets-seating__sidebar-header"
+          <h4
+            class="tribe-common-h4 tec-tickets-seating__title"
           >
             
-				
-            <h4
-              class="tribe-common-h4 tec-tickets-seating__title"
-            >
-              
-					Tickets
-				
-            </h4>
+				Tickets			
+          </h4>
+          
+
+			
+
+          <div
+            class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
+            data-post-id="{{post_id}}"
+            data-redirect-url="http://wordpress.test/?page_id=23"
+            data-token="test-ephemeral-token"
+          >
             
-
-				
-
+	
             <div
-              class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
-              data-post-id="{{post_id}}"
-              data-redirect-url="http://wordpress.test/?post_type=page&p=23"
-              data-token="test-ephemeral-token"
+              class="dashicons dashicons-clock"
+            />
+            
+	
+            <div
+              class="tec-tickets-seating__message"
             >
               
-	
-              <div
-                class="dashicons dashicons-clock"
-              />
-              
-	
-              <div
-                class="tec-tickets-seating__message"
-              >
+		
+              <span>
                 
-		
-                <span>
-                  
 			
-                  <span
-                    class="tec-tickets-seating__message-text"
-                  >
-                    
-				Seat selections reserved for 			
-                  </span>
+                <span
+                  class="tec-tickets-seating__message-text"
+                >
                   
-			
-                  <span
-                    class="tec-tickets-seating__message-time"
-                  >
-                    
-				
-                    <span
-                      class="tec-tickets-seating__time-minutes"
-                    >
-                      
-					
-                      <!-- This will be set by JS. -->
-                      
-				
-                    </span>
-                    :
-                    <span
-                      class="tec-tickets-seating__time-seconds"
-                    >
-                      
-					
-                      <!-- This will be set by JS. -->
-                      
-				
-                    </span>
-                    
-			
-                  </span>
-                  
-		
+				Seats reserved for 			
                 </span>
                 
-	
-              </div>
-              
-	
-              <div
-                class="tec-tickets-seating__dialog-append-target"
-              />
-              
-
-            </div>
-            
-
+			
+                <span
+                  class="tec-tickets-seating__message-time"
+                >
+                  
 				
-            <div
-              class="tec-tickets-seating__sidebar-arrow"
-            >
-              
+                  <span
+                    class="tec-tickets-seating__time-minutes"
+                  >
+                    
 					
-              <span
-                class="dashicons dashicons-arrow-up-alt2"
+                    <!-- This will be set by JS. -->
+                    
+				
+                  </span>
+                  :
+                  <span
+                    class="tec-tickets-seating__time-seconds"
+                  >
+                    
+					
+                    <!-- This will be set by JS. -->
+                    
+				
+                  </span>
+                  
+			
+                </span>
+                
+		
+              </span>
+              
+	
+            </div>
+            
+	
+            <div
+              class="tec-tickets-seating__dialog-append-target"
+            />
+            
+
+          </div>
+          
+			
+          <div
+            class="tec-tickets-seating__sidebar-arrow"
+          >
+            
+				
+            <span
+              class="dashicons dashicons-arrow-up-alt2"
+            />
+            
+			
+          </div>
+          
+		
+        </div>
+        
+
+		
+        <div
+          class="tec-tickets-seating__empty-tickets-message tec-tickets-seating__empty-tickets-message-hidden"
+        >
+          
+			Select a seat from the map to add seated tickets		
+        </div>
+        
+		
+        <div
+          class="tec-tickets-seating__tickets-wrapper"
+        >
+          
+			
+          <div
+            class="tec-tickets-seating__ticket-rows"
+          >
+            <div
+              class="tec-tickets-seating__ticket-row"
+              data-price="50"
+              data-seat-label="A-1"
+              data-seat-type-id="uuid-seat-type-0"
+              data-ticket-id="23"
+            >
+              
+			
+              <div
+                class="tec-tickets-seating__seat-color"
+                style="background: #00ff00"
               />
               
-				
-            </div>
-            
-			
-          </div>
-          
 
 			
-          <div
-            class="tec-tickets-seating__empty-tickets-message tec-tickets-seating__empty-tickets-message-hidden"
-          >
-            
-				Select a seat from the map to add seated tickets
-			
-          </div>
-          
-			
-          <div
-            class="tec-tickets-seating__tickets-wrapper"
-          >
-            
+              <div
+                class="tec-tickets-seating__label"
+              >
+                
 				
+                <div
+                  class="tec-tickets-seating__ticket-name"
+                >
+                  Adult
+                </div>
+                
+				
+                <div
+                  class="tec-tickets-seating__seat-label"
+                >
+                  A-1
+                </div>
+                
+			
+              </div>
+              
+
+			
+              <div
+                class="tec-tickets-seating__ticket-price"
+              >
+                $50
+              </div>
+              
+		
+            </div>
             <div
-              class="tec-tickets-seating__ticket-rows"
+              class="tec-tickets-seating__ticket-row"
+              data-price="50"
+              data-seat-label="A-2"
+              data-seat-type-id="uuid-seat-type-0"
+              data-ticket-id="23"
             >
+              
+			
               <div
-                class="tec-tickets-seating__ticket-row"
-                data-price="50"
-                data-seat-label="A-1"
-                data-seat-type-id="uuid-seat-type-0"
-                data-ticket-id="23"
+                class="tec-tickets-seating__seat-color"
+                style="background: #ff0000"
+              />
+              
+
+			
+              <div
+                class="tec-tickets-seating__label"
               >
                 
-			
+				
                 <div
-                  class="tec-tickets-seating__seat-color"
-                  style="background: #00ff00"
-                />
-                
-
-			
-                <div
-                  class="tec-tickets-seating__label"
+                  class="tec-tickets-seating__ticket-name"
                 >
-                  
-				
-                  <div
-                    class="tec-tickets-seating__ticket-name"
-                  >
-                    Adult
-                  </div>
-                  
-				
-                  <div
-                    class="tec-tickets-seating__seat-label"
-                  >
-                    A-1
-                  </div>
-                  
-			
+                  Adult
                 </div>
                 
-
-			
+				
                 <div
-                  class="tec-tickets-seating__ticket-price"
+                  class="tec-tickets-seating__seat-label"
                 >
-                  $50
+                  A-2
                 </div>
                 
-		
+			
               </div>
+              
+
+			
               <div
-                class="tec-tickets-seating__ticket-row"
-                data-price="50"
-                data-seat-label="A-2"
-                data-seat-type-id="uuid-seat-type-0"
-                data-ticket-id="23"
+                class="tec-tickets-seating__ticket-price"
               >
-                
-			
-                <div
-                  class="tec-tickets-seating__seat-color"
-                  style="background: #ff0000"
-                />
-                
-
-			
-                <div
-                  class="tec-tickets-seating__label"
-                >
-                  
-				
-                  <div
-                    class="tec-tickets-seating__ticket-name"
-                  >
-                    Adult
-                  </div>
-                  
-				
-                  <div
-                    class="tec-tickets-seating__seat-label"
-                  >
-                    A-2
-                  </div>
-                  
-			
-                </div>
-                
-
-			
-                <div
-                  class="tec-tickets-seating__ticket-price"
-                >
-                  $50
-                </div>
-                
-		
+                $50
               </div>
-              <div
-                class="tec-tickets-seating__ticket-row"
-                data-price="30"
-                data-seat-label="B-15"
-                data-seat-type-id="uuid-seat-type-1"
-                data-ticket-id="89"
-              >
-                
-			
-                <div
-                  class="tec-tickets-seating__seat-color"
-                  style="background: #00ff00"
-                />
-                
-
-			
-                <div
-                  class="tec-tickets-seating__label"
-                >
-                  
-				
-                  <div
-                    class="tec-tickets-seating__ticket-name"
-                  >
-                    Child
-                  </div>
-                  
-				
-                  <div
-                    class="tec-tickets-seating__seat-label"
-                  >
-                    B-15
-                  </div>
-                  
-			
-                </div>
-                
-
-			
-                <div
-                  class="tec-tickets-seating__ticket-price"
-                >
-                  $30
-                </div>
-                
+              
 		
-              </div>
-              <div
-                class="tec-tickets-seating__ticket-row"
-                data-price="100"
-                data-seat-label="C-23"
-                data-seat-type-id="uuid-seat-type-2"
-                data-ticket-id="66"
-              >
-                
-			
-                <div
-                  class="tec-tickets-seating__seat-color"
-                  style="background: #00ff00"
-                />
-                
-
-			
-                <div
-                  class="tec-tickets-seating__label"
-                >
-                  
-				
-                  <div
-                    class="tec-tickets-seating__ticket-name"
-                  >
-                    VIP
-                  </div>
-                  
-				
-                  <div
-                    class="tec-tickets-seating__seat-label"
-                  >
-                    C-23
-                  </div>
-                  
-			
-                </div>
-                
-
-			
-                <div
-                  class="tec-tickets-seating__ticket-price"
-                >
-                  $100
-                </div>
-                
-		
-              </div>
             </div>
-            
+            <div
+              class="tec-tickets-seating__ticket-row"
+              data-price="30"
+              data-seat-label="B-15"
+              data-seat-type-id="uuid-seat-type-1"
+              data-ticket-id="89"
+            >
+              
 			
+              <div
+                class="tec-tickets-seating__seat-color"
+                style="background: #00ff00"
+              />
+              
+
+			
+              <div
+                class="tec-tickets-seating__label"
+              >
+                
+				
+                <div
+                  class="tec-tickets-seating__ticket-name"
+                >
+                  Child
+                </div>
+                
+				
+                <div
+                  class="tec-tickets-seating__seat-label"
+                >
+                  B-15
+                </div>
+                
+			
+              </div>
+              
+
+			
+              <div
+                class="tec-tickets-seating__ticket-price"
+              >
+                $30
+              </div>
+              
+		
+            </div>
+            <div
+              class="tec-tickets-seating__ticket-row"
+              data-price="100"
+              data-seat-label="C-23"
+              data-seat-type-id="uuid-seat-type-2"
+              data-ticket-id="66"
+            >
+              
+			
+              <div
+                class="tec-tickets-seating__seat-color"
+                style="background: #00ff00"
+              />
+              
+
+			
+              <div
+                class="tec-tickets-seating__label"
+              >
+                
+				
+                <div
+                  class="tec-tickets-seating__ticket-name"
+                >
+                  VIP
+                </div>
+                
+				
+                <div
+                  class="tec-tickets-seating__seat-label"
+                >
+                  C-23
+                </div>
+                
+			
+              </div>
+              
+
+			
+              <div
+                class="tec-tickets-seating__ticket-price"
+              >
+                $100
+              </div>
+              
+		
+            </div>
           </div>
           
 		
@@ -2502,8 +2404,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"
             >
               
-					Cancel
-				
+					Cancel				
             </button>
             
 				
@@ -2511,8 +2412,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"
             >
               
-					Check Out
-				
+					Continue				
             </button>
             
 			
@@ -2525,9 +2425,9 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
       </aside>
       
 
-
     </div>
-    	
+    
+	
   </div>
   
 
@@ -2609,26 +2509,24 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 	&lt;/iframe&gt;
 &lt;/div&gt;
 
-&lt;div class="tec-tickets-seating__modal-sidebar-wrapper"&gt;
+&lt;div class="tec-tickets-seating__modal-sidebar_container"&gt;
 	&lt;aside class="tec-tickets-seating__modal-sidebar"&gt;
-		&lt;div class="tec-tickets-seating__sidebar-content"&gt;
 
-			&lt;div class="tec-tickets-seating__sidebar-header"&gt;
-				&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
-					Tickets
-				&lt;/h4&gt;
+		&lt;div class="tec-tickets-seating__sidebar-header"&gt;
+			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
+				Tickets			&lt;/h4&gt;
 
-				
+			
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 	data-token="test-ephemeral-token"
-	data-redirect-url="http://wordpress.test/?post_type=page&#038;p={{post_id}}"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
 	data-post-id="{{post_id}}"
 	&gt;
 	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__message"&gt;
 		&lt;span&gt;
 			&lt;span class="tec-tickets-seating__message-text"&gt;
-				Seat selections reserved for 			&lt;/span&gt;
+				Seats reserved for 			&lt;/span&gt;
 			&lt;span class="tec-tickets-seating__message-time"&gt;
 				&lt;span class="tec-tickets-seating__time-minutes"&gt;
 					&lt;!-- This will be set by JS. --&gt;
@@ -2640,18 +2538,15 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 	&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 &lt;/div&gt;
+			&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
+				&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
+			&lt;/div&gt;
+		&lt;/div&gt;
 
-				&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
-					&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
-				&lt;/div&gt;
-			&lt;/div&gt;
-
-			&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
-				Select a seat from the map to add seated tickets
-			&lt;/div&gt;
-			&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
-				&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
-			&lt;/div&gt;
+		&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
+			Select a seat from the map to add seated tickets		&lt;/div&gt;
+		&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
+			&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
 		&lt;/div&gt;
 
 		&lt;div class="tec-tickets-seating__sidebar-footer"&gt;
@@ -2664,16 +2559,14 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 
 			&lt;div class="tec-tickets-seating__sidebar-controls"&gt;
 				&lt;button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"&gt;
-					Cancel
-				&lt;/button&gt;
+					Cancel				&lt;/button&gt;
 				&lt;button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"&gt;
-					Check Out
-				&lt;/button&gt;
+					Continue				&lt;/button&gt;
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/aside&gt;
-
-&lt;/div&gt;	&lt;/div&gt;
+&lt;/div&gt;
+	&lt;/div&gt;
 
       </script>
       
@@ -2685,7 +2578,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 			tribe.dialogs = tribe.dialogs || [];
 			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"1","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -2728,7 +2621,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 
 
     <div
-      class="tec-tickets-seating__modal-sidebar-wrapper"
+      class="tec-tickets-seating__modal-sidebar_container"
     >
       
 	
@@ -2736,280 +2629,269 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
         class="tec-tickets-seating__modal-sidebar"
       >
         
+
 		
         <div
-          class="tec-tickets-seating__sidebar-content"
+          class="tec-tickets-seating__sidebar-header"
         >
           
-
 			
-          <div
-            class="tec-tickets-seating__sidebar-header"
+          <h4
+            class="tribe-common-h4 tec-tickets-seating__title"
           >
             
-				
-            <h4
-              class="tribe-common-h4 tec-tickets-seating__title"
-            >
-              
-					Tickets
-				
-            </h4>
+				Tickets			
+          </h4>
+          
+
+			
+
+          <div
+            class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
+            data-post-id="{{post_id}}"
+            data-redirect-url="http://wordpress.test/?page_id=23"
+            data-token="test-ephemeral-token"
+          >
             
-
-				
-
+	
             <div
-              class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
-              data-post-id="{{post_id}}"
-              data-redirect-url="http://wordpress.test/?post_type=page&p=23"
-              data-token="test-ephemeral-token"
+              class="dashicons dashicons-clock"
+            />
+            
+	
+            <div
+              class="tec-tickets-seating__message"
             >
               
-	
-              <div
-                class="dashicons dashicons-clock"
-              />
-              
-	
-              <div
-                class="tec-tickets-seating__message"
-              >
+		
+              <span>
                 
-		
-                <span>
-                  
 			
-                  <span
-                    class="tec-tickets-seating__message-text"
-                  >
-                    
-				Seat selections reserved for 			
-                  </span>
+                <span
+                  class="tec-tickets-seating__message-text"
+                >
                   
-			
-                  <span
-                    class="tec-tickets-seating__message-time"
-                  >
-                    
-				
-                    <span
-                      class="tec-tickets-seating__time-minutes"
-                    >
-                      
-					
-                      <!-- This will be set by JS. -->
-                      
-				
-                    </span>
-                    :
-                    <span
-                      class="tec-tickets-seating__time-seconds"
-                    >
-                      
-					
-                      <!-- This will be set by JS. -->
-                      
-				
-                    </span>
-                    
-			
-                  </span>
-                  
-		
+				Seats reserved for 			
                 </span>
                 
-	
-              </div>
-              
-	
-              <div
-                class="tec-tickets-seating__dialog-append-target"
-              />
-              
-
-            </div>
-            
-
+			
+                <span
+                  class="tec-tickets-seating__message-time"
+                >
+                  
 				
-            <div
-              class="tec-tickets-seating__sidebar-arrow"
-            >
-              
+                  <span
+                    class="tec-tickets-seating__time-minutes"
+                  >
+                    
 					
-              <span
-                class="dashicons dashicons-arrow-up-alt2"
+                    <!-- This will be set by JS. -->
+                    
+				
+                  </span>
+                  :
+                  <span
+                    class="tec-tickets-seating__time-seconds"
+                  >
+                    
+					
+                    <!-- This will be set by JS. -->
+                    
+				
+                  </span>
+                  
+			
+                </span>
+                
+		
+              </span>
+              
+	
+            </div>
+            
+	
+            <div
+              class="tec-tickets-seating__dialog-append-target"
+            />
+            
+
+          </div>
+          
+			
+          <div
+            class="tec-tickets-seating__sidebar-arrow"
+          >
+            
+				
+            <span
+              class="dashicons dashicons-arrow-up-alt2"
+            />
+            
+			
+          </div>
+          
+		
+        </div>
+        
+
+		
+        <div
+          class="tec-tickets-seating__empty-tickets-message tec-tickets-seating__empty-tickets-message-hidden"
+        >
+          
+			Select a seat from the map to add seated tickets		
+        </div>
+        
+		
+        <div
+          class="tec-tickets-seating__tickets-wrapper"
+        >
+          
+			
+          <div
+            class="tec-tickets-seating__ticket-rows"
+          >
+            <div
+              class="tec-tickets-seating__ticket-row"
+              data-price="50"
+              data-seat-label="A-1"
+              data-seat-type-id="uuid-seat-type-0"
+              data-ticket-id="23"
+            >
+              
+			
+              <div
+                class="tec-tickets-seating__seat-color"
+                style="background: #00ff00"
               />
               
-				
-            </div>
-            
-			
-          </div>
-          
 
 			
-          <div
-            class="tec-tickets-seating__empty-tickets-message tec-tickets-seating__empty-tickets-message-hidden"
-          >
-            
-				Select a seat from the map to add seated tickets
-			
-          </div>
-          
-			
-          <div
-            class="tec-tickets-seating__tickets-wrapper"
-          >
-            
+              <div
+                class="tec-tickets-seating__label"
+              >
+                
 				
+                <div
+                  class="tec-tickets-seating__ticket-name"
+                >
+                  Adult
+                </div>
+                
+				
+                <div
+                  class="tec-tickets-seating__seat-label"
+                >
+                  A-1
+                </div>
+                
+			
+              </div>
+              
+
+			
+              <div
+                class="tec-tickets-seating__ticket-price"
+              >
+                $50
+              </div>
+              
+		
+            </div>
             <div
-              class="tec-tickets-seating__ticket-rows"
+              class="tec-tickets-seating__ticket-row"
+              data-price="30"
+              data-seat-label="B-15"
+              data-seat-type-id="uuid-seat-type-1"
+              data-ticket-id="89"
             >
+              
+			
               <div
-                class="tec-tickets-seating__ticket-row"
-                data-price="50"
-                data-seat-label="A-1"
-                data-seat-type-id="uuid-seat-type-0"
-                data-ticket-id="23"
+                class="tec-tickets-seating__seat-color"
+                style="background: #00ff00"
+              />
+              
+
+			
+              <div
+                class="tec-tickets-seating__label"
               >
                 
-			
+				
                 <div
-                  class="tec-tickets-seating__seat-color"
-                  style="background: #00ff00"
-                />
-                
-
-			
-                <div
-                  class="tec-tickets-seating__label"
+                  class="tec-tickets-seating__ticket-name"
                 >
-                  
-				
-                  <div
-                    class="tec-tickets-seating__ticket-name"
-                  >
-                    Adult
-                  </div>
-                  
-				
-                  <div
-                    class="tec-tickets-seating__seat-label"
-                  >
-                    A-1
-                  </div>
-                  
-			
+                  Child
                 </div>
                 
-
-			
+				
                 <div
-                  class="tec-tickets-seating__ticket-price"
+                  class="tec-tickets-seating__seat-label"
                 >
-                  $50
+                  B-15
                 </div>
                 
-		
+			
               </div>
+              
+
+			
               <div
-                class="tec-tickets-seating__ticket-row"
-                data-price="30"
-                data-seat-label="B-15"
-                data-seat-type-id="uuid-seat-type-1"
-                data-ticket-id="89"
+                class="tec-tickets-seating__ticket-price"
               >
-                
-			
-                <div
-                  class="tec-tickets-seating__seat-color"
-                  style="background: #00ff00"
-                />
-                
-
-			
-                <div
-                  class="tec-tickets-seating__label"
-                >
-                  
-				
-                  <div
-                    class="tec-tickets-seating__ticket-name"
-                  >
-                    Child
-                  </div>
-                  
-				
-                  <div
-                    class="tec-tickets-seating__seat-label"
-                  >
-                    B-15
-                  </div>
-                  
-			
-                </div>
-                
-
-			
-                <div
-                  class="tec-tickets-seating__ticket-price"
-                >
-                  $30
-                </div>
-                
-		
+                $30
               </div>
-              <div
-                class="tec-tickets-seating__ticket-row"
-                data-price="100"
-                data-seat-label="C-23"
-                data-seat-type-id="uuid-seat-type-2"
-                data-ticket-id="66"
-              >
-                
-			
-                <div
-                  class="tec-tickets-seating__seat-color"
-                  style="background: #00ff00"
-                />
-                
-
-			
-                <div
-                  class="tec-tickets-seating__label"
-                >
-                  
-				
-                  <div
-                    class="tec-tickets-seating__ticket-name"
-                  >
-                    VIP
-                  </div>
-                  
-				
-                  <div
-                    class="tec-tickets-seating__seat-label"
-                  >
-                    C-23
-                  </div>
-                  
-			
-                </div>
-                
-
-			
-                <div
-                  class="tec-tickets-seating__ticket-price"
-                >
-                  $100
-                </div>
-                
+              
 		
-              </div>
             </div>
-            
+            <div
+              class="tec-tickets-seating__ticket-row"
+              data-price="100"
+              data-seat-label="C-23"
+              data-seat-type-id="uuid-seat-type-2"
+              data-ticket-id="66"
+            >
+              
 			
+              <div
+                class="tec-tickets-seating__seat-color"
+                style="background: #00ff00"
+              />
+              
+
+			
+              <div
+                class="tec-tickets-seating__label"
+              >
+                
+				
+                <div
+                  class="tec-tickets-seating__ticket-name"
+                >
+                  VIP
+                </div>
+                
+				
+                <div
+                  class="tec-tickets-seating__seat-label"
+                >
+                  C-23
+                </div>
+                
+			
+              </div>
+              
+
+			
+              <div
+                class="tec-tickets-seating__ticket-price"
+              >
+                $100
+              </div>
+              
+		
+            </div>
           </div>
           
 		
@@ -3056,8 +2938,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
               class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"
             >
               
-					Cancel
-				
+					Cancel				
             </button>
             
 				
@@ -3065,8 +2946,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
               class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"
             >
               
-					Check Out
-				
+					Continue				
             </button>
             
 			
@@ -3079,9 +2959,9 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
       </aside>
       
 
-
     </div>
-    	
+    
+	
   </div>
   
 
@@ -3163,26 +3043,24 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 	&lt;/iframe&gt;
 &lt;/div&gt;
 
-&lt;div class="tec-tickets-seating__modal-sidebar-wrapper"&gt;
+&lt;div class="tec-tickets-seating__modal-sidebar_container"&gt;
 	&lt;aside class="tec-tickets-seating__modal-sidebar"&gt;
-		&lt;div class="tec-tickets-seating__sidebar-content"&gt;
 
-			&lt;div class="tec-tickets-seating__sidebar-header"&gt;
-				&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
-					Tickets
-				&lt;/h4&gt;
+		&lt;div class="tec-tickets-seating__sidebar-header"&gt;
+			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
+				Tickets			&lt;/h4&gt;
 
-				
+			
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 	data-token="test-ephemeral-token"
-	data-redirect-url="http://wordpress.test/?post_type=page&#038;p={{post_id}}"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
 	data-post-id="{{post_id}}"
 	&gt;
 	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__message"&gt;
 		&lt;span&gt;
 			&lt;span class="tec-tickets-seating__message-text"&gt;
-				Seat selections reserved for 			&lt;/span&gt;
+				Seats reserved for 			&lt;/span&gt;
 			&lt;span class="tec-tickets-seating__message-time"&gt;
 				&lt;span class="tec-tickets-seating__time-minutes"&gt;
 					&lt;!-- This will be set by JS. --&gt;
@@ -3194,18 +3072,15 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 	&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 &lt;/div&gt;
+			&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
+				&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
+			&lt;/div&gt;
+		&lt;/div&gt;
 
-				&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
-					&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
-				&lt;/div&gt;
-			&lt;/div&gt;
-
-			&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
-				Select a seat from the map to add seated tickets
-			&lt;/div&gt;
-			&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
-				&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
-			&lt;/div&gt;
+		&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
+			Select a seat from the map to add seated tickets		&lt;/div&gt;
+		&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
+			&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
 		&lt;/div&gt;
 
 		&lt;div class="tec-tickets-seating__sidebar-footer"&gt;
@@ -3218,16 +3093,14 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 
 			&lt;div class="tec-tickets-seating__sidebar-controls"&gt;
 				&lt;button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"&gt;
-					Cancel
-				&lt;/button&gt;
+					Cancel				&lt;/button&gt;
 				&lt;button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"&gt;
-					Check Out
-				&lt;/button&gt;
+					Continue				&lt;/button&gt;
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/aside&gt;
-
-&lt;/div&gt;	&lt;/div&gt;
+&lt;/div&gt;
+	&lt;/div&gt;
 
       </script>
       
@@ -3239,7 +3112,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 			tribe.dialogs = tribe.dialogs || [];
 			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"1","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -3282,7 +3155,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 
 
     <div
-      class="tec-tickets-seating__modal-sidebar-wrapper"
+      class="tec-tickets-seating__modal-sidebar_container"
     >
       
 	
@@ -3290,233 +3163,222 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
         class="tec-tickets-seating__modal-sidebar"
       >
         
+
 		
         <div
-          class="tec-tickets-seating__sidebar-content"
+          class="tec-tickets-seating__sidebar-header"
         >
           
-
 			
-          <div
-            class="tec-tickets-seating__sidebar-header"
+          <h4
+            class="tribe-common-h4 tec-tickets-seating__title"
           >
             
-				
-            <h4
-              class="tribe-common-h4 tec-tickets-seating__title"
-            >
-              
-					Tickets
-				
-            </h4>
+				Tickets			
+          </h4>
+          
+
+			
+
+          <div
+            class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
+            data-post-id="{{post_id}}"
+            data-redirect-url="http://wordpress.test/?page_id=23"
+            data-token="test-ephemeral-token"
+          >
             
-
-				
-
+	
             <div
-              class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
-              data-post-id="{{post_id}}"
-              data-redirect-url="http://wordpress.test/?post_type=page&p=23"
-              data-token="test-ephemeral-token"
+              class="dashicons dashicons-clock"
+            />
+            
+	
+            <div
+              class="tec-tickets-seating__message"
             >
               
-	
-              <div
-                class="dashicons dashicons-clock"
-              />
-              
-	
-              <div
-                class="tec-tickets-seating__message"
-              >
+		
+              <span>
                 
-		
-                <span>
-                  
 			
-                  <span
-                    class="tec-tickets-seating__message-text"
-                  >
-                    
-				Seat selections reserved for 			
-                  </span>
+                <span
+                  class="tec-tickets-seating__message-text"
+                >
                   
-			
-                  <span
-                    class="tec-tickets-seating__message-time"
-                  >
-                    
-				
-                    <span
-                      class="tec-tickets-seating__time-minutes"
-                    >
-                      
-					
-                      <!-- This will be set by JS. -->
-                      
-				
-                    </span>
-                    :
-                    <span
-                      class="tec-tickets-seating__time-seconds"
-                    >
-                      
-					
-                      <!-- This will be set by JS. -->
-                      
-				
-                    </span>
-                    
-			
-                  </span>
-                  
-		
+				Seats reserved for 			
                 </span>
                 
-	
-              </div>
-              
-	
-              <div
-                class="tec-tickets-seating__dialog-append-target"
-              />
-              
-
-            </div>
-            
-
+			
+                <span
+                  class="tec-tickets-seating__message-time"
+                >
+                  
 				
-            <div
-              class="tec-tickets-seating__sidebar-arrow"
-            >
-              
+                  <span
+                    class="tec-tickets-seating__time-minutes"
+                  >
+                    
 					
-              <span
-                class="dashicons dashicons-arrow-up-alt2"
+                    <!-- This will be set by JS. -->
+                    
+				
+                  </span>
+                  :
+                  <span
+                    class="tec-tickets-seating__time-seconds"
+                  >
+                    
+					
+                    <!-- This will be set by JS. -->
+                    
+				
+                  </span>
+                  
+			
+                </span>
+                
+		
+              </span>
+              
+	
+            </div>
+            
+	
+            <div
+              class="tec-tickets-seating__dialog-append-target"
+            />
+            
+
+          </div>
+          
+			
+          <div
+            class="tec-tickets-seating__sidebar-arrow"
+          >
+            
+				
+            <span
+              class="dashicons dashicons-arrow-up-alt2"
+            />
+            
+			
+          </div>
+          
+		
+        </div>
+        
+
+		
+        <div
+          class="tec-tickets-seating__empty-tickets-message tec-tickets-seating__empty-tickets-message-hidden"
+        >
+          
+			Select a seat from the map to add seated tickets		
+        </div>
+        
+		
+        <div
+          class="tec-tickets-seating__tickets-wrapper"
+        >
+          
+			
+          <div
+            class="tec-tickets-seating__ticket-rows"
+          >
+            <div
+              class="tec-tickets-seating__ticket-row"
+              data-price="50"
+              data-seat-label="A-1"
+              data-seat-type-id="uuid-seat-type-0"
+              data-ticket-id="23"
+            >
+              
+			
+              <div
+                class="tec-tickets-seating__seat-color"
+                style="background: #00ff00"
               />
               
-				
-            </div>
-            
-			
-          </div>
-          
 
 			
-          <div
-            class="tec-tickets-seating__empty-tickets-message tec-tickets-seating__empty-tickets-message-hidden"
-          >
-            
-				Select a seat from the map to add seated tickets
-			
-          </div>
-          
-			
-          <div
-            class="tec-tickets-seating__tickets-wrapper"
-          >
-            
+              <div
+                class="tec-tickets-seating__label"
+              >
+                
 				
+                <div
+                  class="tec-tickets-seating__ticket-name"
+                >
+                  Adult
+                </div>
+                
+				
+                <div
+                  class="tec-tickets-seating__seat-label"
+                >
+                  A-1
+                </div>
+                
+			
+              </div>
+              
+
+			
+              <div
+                class="tec-tickets-seating__ticket-price"
+              >
+                $50
+              </div>
+              
+		
+            </div>
             <div
-              class="tec-tickets-seating__ticket-rows"
+              class="tec-tickets-seating__ticket-row"
+              data-price="30"
+              data-seat-label="B-15"
+              data-seat-type-id="uuid-seat-type-1"
+              data-ticket-id="89"
             >
+              
+			
               <div
-                class="tec-tickets-seating__ticket-row"
-                data-price="50"
-                data-seat-label="A-1"
-                data-seat-type-id="uuid-seat-type-0"
-                data-ticket-id="23"
+                class="tec-tickets-seating__seat-color"
+                style="background: #00ff00"
+              />
+              
+
+			
+              <div
+                class="tec-tickets-seating__label"
               >
                 
-			
+				
                 <div
-                  class="tec-tickets-seating__seat-color"
-                  style="background: #00ff00"
-                />
-                
-
-			
-                <div
-                  class="tec-tickets-seating__label"
+                  class="tec-tickets-seating__ticket-name"
                 >
-                  
-				
-                  <div
-                    class="tec-tickets-seating__ticket-name"
-                  >
-                    Adult
-                  </div>
-                  
-				
-                  <div
-                    class="tec-tickets-seating__seat-label"
-                  >
-                    A-1
-                  </div>
-                  
-			
+                  Child
                 </div>
                 
-
-			
+				
                 <div
-                  class="tec-tickets-seating__ticket-price"
+                  class="tec-tickets-seating__seat-label"
                 >
-                  $50
+                  B-15
                 </div>
                 
-		
+			
               </div>
+              
+
+			
               <div
-                class="tec-tickets-seating__ticket-row"
-                data-price="30"
-                data-seat-label="B-15"
-                data-seat-type-id="uuid-seat-type-1"
-                data-ticket-id="89"
+                class="tec-tickets-seating__ticket-price"
               >
-                
-			
-                <div
-                  class="tec-tickets-seating__seat-color"
-                  style="background: #00ff00"
-                />
-                
-
-			
-                <div
-                  class="tec-tickets-seating__label"
-                >
-                  
-				
-                  <div
-                    class="tec-tickets-seating__ticket-name"
-                  >
-                    Child
-                  </div>
-                  
-				
-                  <div
-                    class="tec-tickets-seating__seat-label"
-                  >
-                    B-15
-                  </div>
-                  
-			
-                </div>
-                
-
-			
-                <div
-                  class="tec-tickets-seating__ticket-price"
-                >
-                  $30
-                </div>
-                
-		
+                $30
               </div>
+              
+		
             </div>
-            
-			
           </div>
           
 		
@@ -3563,8 +3425,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
               class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"
             >
               
-					Cancel
-				
+					Cancel				
             </button>
             
 				
@@ -3572,8 +3433,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
               class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"
             >
               
-					Check Out
-				
+					Continue				
             </button>
             
 			
@@ -3586,9 +3446,9 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
       </aside>
       
 
-
     </div>
-    	
+    
+	
   </div>
   
 
@@ -3670,26 +3530,24 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 	&lt;/iframe&gt;
 &lt;/div&gt;
 
-&lt;div class="tec-tickets-seating__modal-sidebar-wrapper"&gt;
+&lt;div class="tec-tickets-seating__modal-sidebar_container"&gt;
 	&lt;aside class="tec-tickets-seating__modal-sidebar"&gt;
-		&lt;div class="tec-tickets-seating__sidebar-content"&gt;
 
-			&lt;div class="tec-tickets-seating__sidebar-header"&gt;
-				&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
-					Tickets
-				&lt;/h4&gt;
+		&lt;div class="tec-tickets-seating__sidebar-header"&gt;
+			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
+				Tickets			&lt;/h4&gt;
 
-				
+			
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 	data-token="test-ephemeral-token"
-	data-redirect-url="http://wordpress.test/?post_type=page&#038;p={{post_id}}"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
 	data-post-id="{{post_id}}"
 	&gt;
 	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__message"&gt;
 		&lt;span&gt;
 			&lt;span class="tec-tickets-seating__message-text"&gt;
-				Seat selections reserved for 			&lt;/span&gt;
+				Seats reserved for 			&lt;/span&gt;
 			&lt;span class="tec-tickets-seating__message-time"&gt;
 				&lt;span class="tec-tickets-seating__time-minutes"&gt;
 					&lt;!-- This will be set by JS. --&gt;
@@ -3701,18 +3559,15 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 	&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 &lt;/div&gt;
+			&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
+				&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
+			&lt;/div&gt;
+		&lt;/div&gt;
 
-				&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
-					&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
-				&lt;/div&gt;
-			&lt;/div&gt;
-
-			&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
-				Select a seat from the map to add seated tickets
-			&lt;/div&gt;
-			&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
-				&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
-			&lt;/div&gt;
+		&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
+			Select a seat from the map to add seated tickets		&lt;/div&gt;
+		&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
+			&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
 		&lt;/div&gt;
 
 		&lt;div class="tec-tickets-seating__sidebar-footer"&gt;
@@ -3725,16 +3580,14 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 
 			&lt;div class="tec-tickets-seating__sidebar-controls"&gt;
 				&lt;button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"&gt;
-					Cancel
-				&lt;/button&gt;
+					Cancel				&lt;/button&gt;
 				&lt;button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"&gt;
-					Check Out
-				&lt;/button&gt;
+					Continue				&lt;/button&gt;
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/aside&gt;
-
-&lt;/div&gt;	&lt;/div&gt;
+&lt;/div&gt;
+	&lt;/div&gt;
 
       </script>
       
@@ -3746,7 +3599,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 			tribe.dialogs = tribe.dialogs || [];
 			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"1","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -3789,7 +3642,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 
 
     <div
-      class="tec-tickets-seating__modal-sidebar-wrapper"
+      class="tec-tickets-seating__modal-sidebar_container"
     >
       
 	
@@ -3797,186 +3650,175 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
         class="tec-tickets-seating__modal-sidebar"
       >
         
+
 		
         <div
-          class="tec-tickets-seating__sidebar-content"
+          class="tec-tickets-seating__sidebar-header"
         >
           
-
 			
-          <div
-            class="tec-tickets-seating__sidebar-header"
+          <h4
+            class="tribe-common-h4 tec-tickets-seating__title"
           >
             
-				
-            <h4
-              class="tribe-common-h4 tec-tickets-seating__title"
-            >
-              
-					Tickets
-				
-            </h4>
+				Tickets			
+          </h4>
+          
+
+			
+
+          <div
+            class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
+            data-post-id="{{post_id}}"
+            data-redirect-url="http://wordpress.test/?page_id=23"
+            data-token="test-ephemeral-token"
+          >
             
-
-				
-
+	
             <div
-              class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
-              data-post-id="{{post_id}}"
-              data-redirect-url="http://wordpress.test/?post_type=page&p=23"
-              data-token="test-ephemeral-token"
+              class="dashicons dashicons-clock"
+            />
+            
+	
+            <div
+              class="tec-tickets-seating__message"
             >
               
-	
-              <div
-                class="dashicons dashicons-clock"
-              />
-              
-	
-              <div
-                class="tec-tickets-seating__message"
-              >
+		
+              <span>
                 
-		
-                <span>
-                  
 			
-                  <span
-                    class="tec-tickets-seating__message-text"
-                  >
-                    
-				Seat selections reserved for 			
-                  </span>
+                <span
+                  class="tec-tickets-seating__message-text"
+                >
                   
-			
-                  <span
-                    class="tec-tickets-seating__message-time"
-                  >
-                    
-				
-                    <span
-                      class="tec-tickets-seating__time-minutes"
-                    >
-                      
-					
-                      <!-- This will be set by JS. -->
-                      
-				
-                    </span>
-                    :
-                    <span
-                      class="tec-tickets-seating__time-seconds"
-                    >
-                      
-					
-                      <!-- This will be set by JS. -->
-                      
-				
-                    </span>
-                    
-			
-                  </span>
-                  
-		
+				Seats reserved for 			
                 </span>
                 
-	
-              </div>
-              
-	
-              <div
-                class="tec-tickets-seating__dialog-append-target"
-              />
-              
-
-            </div>
-            
-
+			
+                <span
+                  class="tec-tickets-seating__message-time"
+                >
+                  
 				
-            <div
-              class="tec-tickets-seating__sidebar-arrow"
-            >
-              
+                  <span
+                    class="tec-tickets-seating__time-minutes"
+                  >
+                    
 					
-              <span
-                class="dashicons dashicons-arrow-up-alt2"
-              />
-              
+                    <!-- This will be set by JS. -->
+                    
 				
-            </div>
-            
-			
-          </div>
-          
-
-			
-          <div
-            class="tec-tickets-seating__empty-tickets-message tec-tickets-seating__empty-tickets-message-hidden"
-          >
-            
-				Select a seat from the map to add seated tickets
-			
-          </div>
-          
-			
-          <div
-            class="tec-tickets-seating__tickets-wrapper"
-          >
-            
-				
-            <div
-              class="tec-tickets-seating__ticket-rows"
-            >
-              <div
-                class="tec-tickets-seating__ticket-row"
-                data-price="30"
-                data-seat-label="B-15"
-                data-seat-type-id="uuid-seat-type-1"
-                data-ticket-id="89"
-              >
-                
-			
-                <div
-                  class="tec-tickets-seating__seat-color"
-                  style="background: #00ff00"
-                />
-                
-
-			
-                <div
-                  class="tec-tickets-seating__label"
-                >
-                  
-				
-                  <div
-                    class="tec-tickets-seating__ticket-name"
+                  </span>
+                  :
+                  <span
+                    class="tec-tickets-seating__time-seconds"
                   >
-                    Child
-                  </div>
-                  
+                    
+					
+                    <!-- This will be set by JS. -->
+                    
 				
-                  <div
-                    class="tec-tickets-seating__seat-label"
-                  >
-                    B-15
-                  </div>
+                  </span>
                   
 			
-                </div>
-                
-
-			
-                <div
-                  class="tec-tickets-seating__ticket-price"
-                >
-                  $30
-                </div>
+                </span>
                 
 		
-              </div>
+              </span>
+              
+	
             </div>
             
+	
+            <div
+              class="tec-tickets-seating__dialog-append-target"
+            />
+            
+
+          </div>
+          
 			
+          <div
+            class="tec-tickets-seating__sidebar-arrow"
+          >
+            
+				
+            <span
+              class="dashicons dashicons-arrow-up-alt2"
+            />
+            
+			
+          </div>
+          
+		
+        </div>
+        
+
+		
+        <div
+          class="tec-tickets-seating__empty-tickets-message tec-tickets-seating__empty-tickets-message-hidden"
+        >
+          
+			Select a seat from the map to add seated tickets		
+        </div>
+        
+		
+        <div
+          class="tec-tickets-seating__tickets-wrapper"
+        >
+          
+			
+          <div
+            class="tec-tickets-seating__ticket-rows"
+          >
+            <div
+              class="tec-tickets-seating__ticket-row"
+              data-price="30"
+              data-seat-label="B-15"
+              data-seat-type-id="uuid-seat-type-1"
+              data-ticket-id="89"
+            >
+              
+			
+              <div
+                class="tec-tickets-seating__seat-color"
+                style="background: #00ff00"
+              />
+              
+
+			
+              <div
+                class="tec-tickets-seating__label"
+              >
+                
+				
+                <div
+                  class="tec-tickets-seating__ticket-name"
+                >
+                  Child
+                </div>
+                
+				
+                <div
+                  class="tec-tickets-seating__seat-label"
+                >
+                  B-15
+                </div>
+                
+			
+              </div>
+              
+
+			
+              <div
+                class="tec-tickets-seating__ticket-price"
+              >
+                $30
+              </div>
+              
+		
+            </div>
           </div>
           
 		
@@ -4023,8 +3865,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
               class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"
             >
               
-					Cancel
-				
+					Cancel				
             </button>
             
 				
@@ -4032,8 +3873,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
               class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"
             >
               
-					Check Out
-				
+					Continue				
             </button>
             
 			
@@ -4046,9 +3886,9 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
       </aside>
       
 
-
     </div>
-    	
+    
+	
   </div>
   
 
@@ -4130,26 +3970,24 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 	&lt;/iframe&gt;
 &lt;/div&gt;
 
-&lt;div class="tec-tickets-seating__modal-sidebar-wrapper"&gt;
+&lt;div class="tec-tickets-seating__modal-sidebar_container"&gt;
 	&lt;aside class="tec-tickets-seating__modal-sidebar"&gt;
-		&lt;div class="tec-tickets-seating__sidebar-content"&gt;
 
-			&lt;div class="tec-tickets-seating__sidebar-header"&gt;
-				&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
-					Tickets
-				&lt;/h4&gt;
+		&lt;div class="tec-tickets-seating__sidebar-header"&gt;
+			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
+				Tickets			&lt;/h4&gt;
 
-				
+			
 &lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 	data-token="test-ephemeral-token"
-	data-redirect-url="http://wordpress.test/?post_type=page&#038;p={{post_id}}"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
 	data-post-id="{{post_id}}"
 	&gt;
 	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__message"&gt;
 		&lt;span&gt;
 			&lt;span class="tec-tickets-seating__message-text"&gt;
-				Seat selections reserved for 			&lt;/span&gt;
+				Seats reserved for 			&lt;/span&gt;
 			&lt;span class="tec-tickets-seating__message-time"&gt;
 				&lt;span class="tec-tickets-seating__time-minutes"&gt;
 					&lt;!-- This will be set by JS. --&gt;
@@ -4161,18 +3999,15 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 	&lt;/div&gt;
 	&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 &lt;/div&gt;
+			&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
+				&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
+			&lt;/div&gt;
+		&lt;/div&gt;
 
-				&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
-					&lt;span class="dashicons dashicons-arrow-up-alt2"&gt;&lt;/span&gt;
-				&lt;/div&gt;
-			&lt;/div&gt;
-
-			&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
-				Select a seat from the map to add seated tickets
-			&lt;/div&gt;
-			&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
-				&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
-			&lt;/div&gt;
+		&lt;div class="tec-tickets-seating__empty-tickets-message"&gt;
+			Select a seat from the map to add seated tickets		&lt;/div&gt;
+		&lt;div class="tec-tickets-seating__tickets-wrapper"&gt;
+			&lt;div class="tec-tickets-seating__ticket-rows"&gt;&lt;/div&gt;
 		&lt;/div&gt;
 
 		&lt;div class="tec-tickets-seating__sidebar-footer"&gt;
@@ -4185,16 +4020,14 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 
 			&lt;div class="tec-tickets-seating__sidebar-controls"&gt;
 				&lt;button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"&gt;
-					Cancel
-				&lt;/button&gt;
+					Cancel				&lt;/button&gt;
 				&lt;button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"&gt;
-					Check Out
-				&lt;/button&gt;
+					Continue				&lt;/button&gt;
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/aside&gt;
-
-&lt;/div&gt;	&lt;/div&gt;
+&lt;/div&gt;
+	&lt;/div&gt;
 
       </script>
       
@@ -4206,7 +4039,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 			tribe.dialogs = tribe.dialogs || [];
 			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"1","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -4249,7 +4082,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 
 
     <div
-      class="tec-tickets-seating__modal-sidebar-wrapper"
+      class="tec-tickets-seating__modal-sidebar_container"
     >
       
 	
@@ -4257,139 +4090,128 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
         class="tec-tickets-seating__modal-sidebar"
       >
         
+
 		
         <div
-          class="tec-tickets-seating__sidebar-content"
+          class="tec-tickets-seating__sidebar-header"
         >
           
-
 			
-          <div
-            class="tec-tickets-seating__sidebar-header"
+          <h4
+            class="tribe-common-h4 tec-tickets-seating__title"
           >
             
-				
-            <h4
-              class="tribe-common-h4 tec-tickets-seating__title"
-            >
-              
-					Tickets
-				
-            </h4>
+				Tickets			
+          </h4>
+          
+
+			
+
+          <div
+            class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
+            data-post-id="{{post_id}}"
+            data-redirect-url="http://wordpress.test/?page_id=23"
+            data-token="test-ephemeral-token"
+          >
             
-
-				
-
+	
             <div
-              class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
-              data-post-id="{{post_id}}"
-              data-redirect-url="http://wordpress.test/?post_type=page&p=23"
-              data-token="test-ephemeral-token"
+              class="dashicons dashicons-clock"
+            />
+            
+	
+            <div
+              class="tec-tickets-seating__message"
             >
               
-	
-              <div
-                class="dashicons dashicons-clock"
-              />
-              
-	
-              <div
-                class="tec-tickets-seating__message"
-              >
+		
+              <span>
                 
-		
-                <span>
-                  
 			
-                  <span
-                    class="tec-tickets-seating__message-text"
-                  >
-                    
-				Seat selections reserved for 			
-                  </span>
+                <span
+                  class="tec-tickets-seating__message-text"
+                >
                   
-			
-                  <span
-                    class="tec-tickets-seating__message-time"
-                  >
-                    
-				
-                    <span
-                      class="tec-tickets-seating__time-minutes"
-                    >
-                      
-					
-                      <!-- This will be set by JS. -->
-                      
-				
-                    </span>
-                    :
-                    <span
-                      class="tec-tickets-seating__time-seconds"
-                    >
-                      
-					
-                      <!-- This will be set by JS. -->
-                      
-				
-                    </span>
-                    
-			
-                  </span>
-                  
-		
+				Seats reserved for 			
                 </span>
                 
-	
-              </div>
-              
-	
-              <div
-                class="tec-tickets-seating__dialog-append-target"
-              />
-              
-
-            </div>
-            
-
+			
+                <span
+                  class="tec-tickets-seating__message-time"
+                >
+                  
 				
-            <div
-              class="tec-tickets-seating__sidebar-arrow"
-            >
-              
+                  <span
+                    class="tec-tickets-seating__time-minutes"
+                  >
+                    
 					
-              <span
-                class="dashicons dashicons-arrow-up-alt2"
-              />
-              
+                    <!-- This will be set by JS. -->
+                    
 				
+                  </span>
+                  :
+                  <span
+                    class="tec-tickets-seating__time-seconds"
+                  >
+                    
+					
+                    <!-- This will be set by JS. -->
+                    
+				
+                  </span>
+                  
+			
+                </span>
+                
+		
+              </span>
+              
+	
             </div>
             
-			
-          </div>
-          
-
-			
-          <div
-            class="tec-tickets-seating__empty-tickets-message"
-          >
+	
+            <div
+              class="tec-tickets-seating__dialog-append-target"
+            />
             
-				Select a seat from the map to add seated tickets
-			
+
           </div>
           
 			
           <div
-            class="tec-tickets-seating__tickets-wrapper"
+            class="tec-tickets-seating__sidebar-arrow"
           >
             
 				
-            <div
-              class="tec-tickets-seating__ticket-rows"
+            <span
+              class="dashicons dashicons-arrow-up-alt2"
             />
             
 			
           </div>
+          
+		
+        </div>
+        
+
+		
+        <div
+          class="tec-tickets-seating__empty-tickets-message"
+        >
+          
+			Select a seat from the map to add seated tickets		
+        </div>
+        
+		
+        <div
+          class="tec-tickets-seating__tickets-wrapper"
+        >
+          
+			
+          <div
+            class="tec-tickets-seating__ticket-rows"
+          />
           
 		
         </div>
@@ -4435,8 +4257,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
               class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel"
             >
               
-					Cancel
-				
+					Cancel				
             </button>
             
 				
@@ -4444,8 +4265,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
               class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm"
             >
               
-					Check Out
-				
+					Continue				
             </button>
             
 			
@@ -4458,9 +4278,9 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
       </aside>
       
 
-
     </div>
-    	
+    
+	
   </div>
   
 

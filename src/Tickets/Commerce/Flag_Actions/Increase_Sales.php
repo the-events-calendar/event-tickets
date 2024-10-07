@@ -40,7 +40,7 @@ class Increase_Sales extends Flag_Action_Abstract {
 	 * {@inheritDoc}
 	 *
 	 * @since 5.2.0
-	 * @since TBD Check shared capacity before sending to the `Ticket::increase_ticket_sales_by` method.
+	 * @since 5.13.3 Check shared capacity before sending to the `Ticket::increase_ticket_sales_by` method.
 	 */
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $post ) {
 		if ( empty( $post->items ) ) {

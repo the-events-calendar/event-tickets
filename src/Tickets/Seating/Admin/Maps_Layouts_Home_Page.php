@@ -15,6 +15,8 @@ use TEC\Tickets\Seating\Admin\Tabs\Layouts;
 use TEC\Tickets\Seating\Admin\Tabs\Map_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Maps;
 use TEC\Tickets\Seating\Admin\Tabs\Tab;
+use TEC\Tickets\Seating\Service\Error_Content;
+use TEC\Tickets\Seating\Service\Service;
 
 /**
  * Class Maps_Layouts_Home_Page.
@@ -34,14 +36,25 @@ class Maps_Layouts_Home_Page {
 	private Template $template;
 
 	/**
+	 * A reference to the service object.
+	 *
+	 * @since TBD
+	 *
+	 * @var Service
+	 */
+	private Service $service;
+
+	/**
 	 * Maps_Layouts_Home_Page constructor.
 	 *
 	 * @since TBD
 	 *
 	 * @param Template $template The template instance.
+	 * @param Service  $service  The service instance.
 	 */
-	public function __construct( Template $template ) {
+	public function __construct( Template $template, Service $service ) {
 		$this->template = $template;
+		$this->service  = $service;
 	}
 
 	/**
@@ -52,6 +65,14 @@ class Maps_Layouts_Home_Page {
 	 * @return void
 	 */
 	public function render(): void {
+		$service_status = $this->service->get_status();
+
+		if ( ! $service_status->is_ok() ) {
+			tribe( Error_Content::class )->render_tab( $service_status );
+
+			return;
+		}
+
 		$maps_id        = Maps::get_id();
 		$layouts_id     = Layouts::get_id();
 		$map_edit_id    = Map_Edit::get_id();
@@ -104,8 +125,8 @@ class Maps_Layouts_Home_Page {
 		$this->template->template(
 			'maps-layouts-home',
 			[
-				'tabs'    => $tabs,
-				'current' => $current,
+				'the_tabs' => $tabs,
+				'current'  => $current,
 			]
 		);
 	}

@@ -41,7 +41,7 @@ abstract class Tab {
 	/**
 	 * Tab constructor.
 	 *
-	 * since TBD
+	 * @since TBD
 	 *
 	 * @param Template $template A reference to the template handle used to render this tab.
 	 */
@@ -51,7 +51,7 @@ abstract class Tab {
 				'page' => Admin::get_menu_slug(),
 				'tab'  => static::get_id(),
 			],
-			admin_url( 'admin.php' ) 
+			admin_url( 'admin.php' )
 		);
 		$this->template = $template;
 	}

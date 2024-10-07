@@ -10,6 +10,11 @@ import {
 	filterHeaderDetails,
 	filterTicketIsAsc,
 	setSeatTypeForTicket,
+	filterSettingsFields,
+	disableConfirmInTicketDashboard,
+	removeAllActionsFromTicket,
+	disableTicketSelection,
+	filterButtonIsDisabled,
 } from './hook-callbacks';
 
 const shouldRenderAssignedSeatingForm = true;
@@ -124,6 +129,12 @@ addFilter(
 	filterTicketIsAsc
 );
 
+addFilter(
+	'tec.tickets.blocks.Tickets.Settings.Fields',
+	'tec.tickets.seating',
+	filterSettingsFields
+);
+
 addAction(
 	'tec.tickets.blocks.ticketUpdated',
 	'tec.tickets.seating',
@@ -134,4 +145,28 @@ addAction(
 	'tec.tickets.blocks.ticketCreated',
 	'tec.tickets.seating',
 	setSeatTypeForTicket
+);
+
+addFilter(
+	'tec.tickets.blocks.confirmButton.isDisabled',
+	'tec.tickets.seating',
+	filterButtonIsDisabled
+);
+
+addFilter(
+	'tec.tickets.blocks.Tickets.TicketsDashboardAction.mappedProps',
+	'tec.tickets.seating',
+	disableConfirmInTicketDashboard
+);
+
+addFilter(
+	'tec.tickets.blocks.Ticket.actionItems',
+	'tec.tickets.seating',
+	removeAllActionsFromTicket
+);
+
+addFilter(
+	'tec.tickets.blocks.Ticket.isSelected',
+	'tec.tickets.seating',
+	disableTicketSelection
 );

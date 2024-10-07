@@ -40,6 +40,7 @@ class Controller extends Controller_Contract {
 			[ $this, 'filter_timer_token_object_id_entries' ],
 		);
 		add_filter( 'tribe_tickets_ticket_inventory', [ $this, 'get_seated_ticket_inventory' ], 10, 2 );
+		add_filter( 'tec_tickets_get_ticket_counts', [ $this, 'set_event_stock_counts' ], 10, 2 );
 		add_action( 'updated_postmeta', [ $this, 'sync_seated_tickets_stock' ], 10, 4 );
 	}
 
@@ -56,7 +57,78 @@ class Controller extends Controller_Contract {
 			[ $this, 'filter_timer_token_object_id_entries' ],
 		);
 		remove_filter( 'tribe_tickets_ticket_inventory', [ $this, 'get_seated_ticket_inventory' ] );
+		remove_filter( 'tec_tickets_get_ticket_counts', [ $this, 'set_event_stock_counts' ] );
 		remove_action( 'updated_postmeta', [ $this, 'sync_seated_tickets_stock' ] );
+	}
+	
+	/**
+	 * Sets the stock counts for the event.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,array<string|int>> $types  The types of tickets.
+	 * @param int                             $post_id The post ID.
+	 *
+	 * @return array<string,array<string|int>> The types of tickets.
+	 */
+	public function set_event_stock_counts( $types, $post_id ): array {
+		if ( ! tec_tickets_seating_enabled( $post_id ) ) {
+			return $types;
+		}
+		
+		$types['tickets'] = [
+			'count'     => 0, // count of ticket types currently for sale.
+			'stock'     => 0, // current stock of tickets available for sale.
+			'global'    => 1, // numeric boolean if tickets share global stock.
+			'unlimited' => 0, // numeric boolean if any ticket has unlimited stock.
+			'available' => 0,
+		];
+		
+		$tickets = tribe_tickets()
+			->where( 'event', $post_id )
+			->get_ids( true );
+	
+		$capacity_by_type   = [];
+		$total_sold_by_type = [];
+		
+		foreach ( $tickets as $ticket_id ) {
+			$ticket = Tickets::load_ticket_object( $ticket_id );
+			
+			if ( ! $ticket instanceof Ticket_Object ) {
+				continue;
+			}
+			
+			if ( ! tribe_events_ticket_is_on_sale( $ticket ) ) {
+				continue;
+			}
+			
+			$seat_type = get_post_meta( $ticket_id, META::META_KEY_SEAT_TYPE, true );
+			
+			if ( empty( $seat_type ) ) {
+				continue;
+			}
+			
+			$capacity   = $ticket->capacity();
+			$stock      = $ticket->stock();
+			$total_sold = max( 0, $capacity - $stock );
+			if ( ! isset( $capacity_by_type[ $seat_type ] ) ) {
+				$capacity_by_type[ $seat_type ] = $capacity;
+			}
+			
+			if ( ! isset( $total_sold_by_type[ $seat_type ] ) ) {
+				$total_sold_by_type[ $seat_type ] = $total_sold;
+			}
+			
+			++$types['tickets']['count'];
+		}
+		
+		foreach ( $capacity_by_type as $seat_type => $capacity ) {
+			$stock_level                    = $capacity - $total_sold_by_type[ $seat_type ];
+			$types['tickets']['stock']     += $stock_level;
+			$types['tickets']['available'] += $stock_level;
+		}
+		
+		return $types;
 	}
 
 	/**
@@ -76,11 +148,11 @@ class Controller extends Controller_Contract {
 			return $inventory;
 		}
 
-		$event_id      = $ticket->get_event_id();
-		$ticket_ids    = [ $ticket->ID ];
+		$event_id       = $ticket->get_event_id();
+		$ticket_ids     = [ $ticket->ID ];
 		$this_inventory = $inventory;
-		$capacity = $ticket->capacity();
-		// Protect from over-selling
+		$capacity       = $ticket->capacity();
+		// Protect from over-selling.
 		$total_sold = max( 0, $capacity - $this_inventory );
 
 		// Remove this function from the filter to avoid infinite loops.
@@ -100,20 +172,19 @@ class Controller extends Controller_Contract {
 		) {
 			$ticket        = Tickets::load_ticket_object( $ticket_id );
 			$sold_for_this = $capacity - $ticket->inventory();
-			$total_sold    += $sold_for_this;
+			$total_sold   += $sold_for_this;
 			$ticket_ids[]  = $ticket_id;
 		}
 
-		add_filter( 'tribe_tickets_ticket_inventory',
+		add_filter(
+			'tribe_tickets_ticket_inventory',
 			[ $this, 'get_seated_ticket_inventory' ],
 			10,
 			2
 		);
 		remove_filter( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', $return_false );
 
-		$synced_inventory = $capacity - $total_sold;
-
-		return $synced_inventory;
+		return $capacity - $total_sold;
 	}
 
 	/**

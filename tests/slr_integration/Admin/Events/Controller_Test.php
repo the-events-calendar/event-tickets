@@ -123,7 +123,7 @@ class Controller_Test extends Controller_Test_Case {
 			function (): array {
 				$event_id = tribe_events()->set_args(
 					[
-						'title'         => 'Event with layout',
+						'title'         => 'Event with layout and draft status',
 						'status'        => 'draft',
 						'start_date'    => '2020-01-01 00:00:00',
 						'duration'      => 2 * HOUR_IN_SECONDS,
@@ -134,7 +134,7 @@ class Controller_Test extends Controller_Test_Case {
 
 				$post_id = self::factory()->post->create(
 					[
-						'post_title'  => 'Post with layout',
+						'post_title'  => 'Post with layout and pending status',
 						'post_status' => 'pending',
 					]
 				);
@@ -160,7 +160,7 @@ class Controller_Test extends Controller_Test_Case {
 
 				$post_id_2 = self::factory()->post->create(
 					[
-						'post_title' => 'Post with pending status',
+						'post_title' => 'Post with published status',
 					]
 				);
 

@@ -3,14 +3,15 @@
 namespace TEC\Tickets\Seating\Frontend;
 
 use PHPUnit\Framework\Assert;
+use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\StellarWP\DB\DB;
-use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tests\Traits\WP_Remote_Mocks;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
 
 class Session_Test extends \Codeception\TestCase\WPTestCase {
@@ -18,6 +19,8 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 	use With_Uopz;
 	use OAuth_Token;
 	use Reservations_Maker;
+	use Ticket_Maker;
+	use SnapshotAssertions;
 
 	public function test_entry_manipulation(): void {
 		$session = tribe( Session::class );
@@ -238,7 +241,8 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertFalse( $session->cancel_previous_for_object( 23, 'test-token' ) );
 		$this->assertEquals( [ 23 => 'test-token' ], $session->get_entries() );
-		$this->assertEquals( [ 'reservation-id-1', 'reservation-id-2' ], $sessions->get_reservation_uuids_for_token( 'test-token' ) );
+		$this->assertEquals( [ 'reservation-id-1', 'reservation-id-2' ],
+			$sessions->get_reservation_uuids_for_token( 'test-token' ) );
 	}
 
 	public function test_cancel_previous_for_object_succeeds_if_session_missing(): void {
@@ -457,5 +461,58 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		);
 
 		$this->assertFalse( $session->confirm_all_reservations() );
+	}
+
+	public function test_get_post_ticket_reservations() {
+		$sessions = tribe( Sessions::class );
+		$this->set_oauth_token( 'auth-token' );
+		$cache = tribe_cache();
+		// Creat an ASC post with 3 tickets.
+		$post_id = static::factory()->post->create();
+		update_post_meta( $post_id, Meta::META_KEY_ENABLED, '1' );
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'test-layout-id-1' );
+		$ticket_1 = $this->create_tc_ticket( $post_id, 10 );
+		update_post_meta( $ticket_1, Meta::META_KEY_ENABLED, '1' );
+		update_post_meta( $ticket_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
+		$ticket_2 = $this->create_tc_ticket( $post_id, 20 );
+		update_post_meta( $ticket_2, Meta::META_KEY_ENABLED, '1' );
+		update_post_meta( $ticket_2, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
+		$ticket_3 = $this->create_tc_ticket( $post_id, 30 );
+		update_post_meta( $ticket_3, Meta::META_KEY_ENABLED, '1' );
+		update_post_meta( $ticket_3, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-2' );
+
+		$session = tribe( Session::class );
+
+		$session->add_entry( $post_id, 'test-token-1' );
+		$sessions->upsert( 'test-token-1', $post_id, time() + 100 );
+
+		$mock_reservations_data = $this->create_mock_reservations_data( [ $ticket_1 ], 2 );
+		$sessions->update_reservations( 'test-token-1', $mock_reservations_data );
+
+		$this->assertEquals(
+			$mock_reservations_data[$ticket_1],
+			$session->get_post_ticket_reservations( $post_id, $ticket_1 )
+		);
+		$this->assertNull( $session->get_post_ticket_reservations( $post_id, $ticket_2 ) );
+		$this->assertNull( $session->get_post_ticket_reservations( $post_id, $ticket_3 ) );
+
+		$mock_reservations_data = $this->create_mock_reservations_data( [ $ticket_1, $ticket_2 ], 2 );
+		$sessions->update_reservations( 'test-token-1', $mock_reservations_data );
+
+		$this->assertEquals(
+			$mock_reservations_data[ $ticket_1 ],
+			$session->get_post_ticket_reservations( $post_id, $ticket_1 )
+		);
+		$this->assertEquals(
+			$mock_reservations_data[ $ticket_2 ],
+			$session->get_post_ticket_reservations( $post_id, $ticket_2 )
+		);
+		$this->assertNull( $session->get_post_ticket_reservations( $post_id, $ticket_3 ) );
+
+		$sessions->update_reservations( 'test-token-1', []);
+
+		$this->assertNull( $session->get_post_ticket_reservations( $post_id, $ticket_1 ) );
+		$this->assertNull( $session->get_post_ticket_reservations( $post_id, $ticket_2 ) );
+		$this->assertNull( $session->get_post_ticket_reservations( $post_id, $ticket_3 ) );
 	}
 }

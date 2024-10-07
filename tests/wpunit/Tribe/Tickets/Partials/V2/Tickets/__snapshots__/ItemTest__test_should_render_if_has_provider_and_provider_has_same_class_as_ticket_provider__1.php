@@ -1,16 +1,16 @@
 <?php return '<div
-	id="tribe-block-tickets-item-5314"
-	 class="tribe-tickets__tickets-item post-5314 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="5314" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
+	id="tribe-block-tickets-item-{{TICKET_ID}}"
+	 class="tribe-tickets__tickets-item post-{{TICKET_ID}} tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="{{TICKET_ID}}" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
 
-	<div class="tribe-tickets__tickets-item-content-title-container">
-		<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
-				Test ticket for 8	</div>
+	<div  class="tribe-tickets__tickets-item-content-title-container" >
+		<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title" >
+				Test ticket for {{POST_ID}}	</div>
 </div>
 
 <div
-	id="tribe__details__content--5314"
+	id="tribe__details__content--{{TICKET_ID}}"
 	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >
-	Test ticket description for 8</div>
+	Test ticket description for {{POST_ID}}</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >

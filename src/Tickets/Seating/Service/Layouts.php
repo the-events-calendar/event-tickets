@@ -104,9 +104,9 @@ class Layouts {
 	 *
 	 * @since TBD
 	 *
-	 * @return array<string, array{id: string, name: string, seats: int}> The layouts in option format.
+	 * @return array<array{id: string, name: string, seats: int}> The layouts in option format.
 	 */
-	public function get_in_option_format() {
+	public function get_in_option_format(): array {
 		if ( ! $this->update() ) {
 			return [];
 		}
@@ -228,9 +228,9 @@ class Layouts {
 			implode( ', ', array_fill( 0, count( $ticketable_post_types ), '%s' ) ),
 			...$ticketable_post_types
 		);
-		
+
 		$supported_status_list = Associated_Events::get_supported_status_list();
-		
+
 		$status_list = DB::prepare(
 			implode( ', ', array_fill( 0, count( $supported_status_list ), '%s' ) ),
 			...$supported_status_list
@@ -354,7 +354,7 @@ class Layouts {
 
 		return false;
 	}
-	
+
 	/**
 	 * Returns the URL to add a new layout.
 	 *
@@ -372,7 +372,7 @@ class Layouts {
 			$this->service_fetch_url
 		);
 	}
-	
+
 	/**
 	 * Adds a new layout to the service.
 	 *
@@ -384,7 +384,7 @@ class Layouts {
 	 */
 	public function add( string $map_id ) {
 		$url = $this->get_add_url( $map_id );
-		
+
 		$args = [
 			'method'  => 'POST',
 			'headers' => [
@@ -392,10 +392,10 @@ class Layouts {
 				'Content-Type'  => 'application/json',
 			],
 		];
-		
+
 		$response = wp_remote_request( $url, $args );
 		$code     = wp_remote_retrieve_response_code( $response );
-		
+
 		if ( is_wp_error( $response ) || 200 !== $code ) {
 			$this->log_error(
 				'Failed to Add new layout to the service.',
@@ -408,10 +408,10 @@ class Layouts {
 			);
 			return false;
 		}
-		
+
 		$body      = json_decode( wp_remote_retrieve_body( $response ), true );
 		$layout_id = Arr::get( $body, [ 'data', 'items', 0, 'id' ] );
-		
+
 		self::invalidate_cache();
 		Maps::invalidate_cache();
 		return $layout_id;

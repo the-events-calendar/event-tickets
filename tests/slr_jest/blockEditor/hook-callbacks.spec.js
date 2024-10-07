@@ -1,13 +1,16 @@
 import { dispatch, select } from '@wordpress/data';
-import { applyFilters } from '@wordpress/hooks';
 import SeatType from '@tec/tickets/seating/blockEditor/header/seat-type';
 import { storeName } from '@tec/tickets/seating/blockEditor/store';
 import {
-	filterTicketIsAsc,
+	disableConfirmInTicketDashboard,
+	disableTicketSelection,
 	filterHeaderDetails,
 	filterSeatedTicketsAvailabilityMappedProps,
 	filterSetBodyDetails,
+	filterTicketIsAsc,
+	removeAllActionsFromTicket,
 	setSeatTypeForTicket,
+	filterButtonIsDisabled,
 } from '@tec/tickets/seating/blockEditor/hook-callbacks';
 
 jest.mock('@wordpress/data', () => ({
@@ -61,9 +64,15 @@ describe('hook-callbacks', () => {
 			const body = new FormData();
 			const modifiedBody = filterSetBodyDetails(body, 'client-id-1');
 			expect(modifiedBody.get('ticket[seating][enabled]')).toEqual('1');
-			expect(modifiedBody.get('ticket[seating][seatType]')).toEqual(seatType);
-			expect(modifiedBody.get('ticket[seating][layoutId]')).toEqual(layoutId);
-			expect(modifiedBody.get('ticket[event_capacity]')).toEqual(eventCapacity);
+			expect(modifiedBody.get('ticket[seating][seatType]')).toEqual(
+				seatType
+			);
+			expect(modifiedBody.get('ticket[seating][layoutId]')).toEqual(
+				layoutId
+			);
+			expect(modifiedBody.get('ticket[event_capacity]')).toEqual(
+				eventCapacity
+			);
 		});
 
 		it('should not modify body when layout not truthy', () => {
@@ -146,8 +155,12 @@ describe('hook-callbacks', () => {
 			let modifiedBody = filterSetBodyDetails(body, 'client-id-1');
 			expect(modifiedBody.get('ticket[seating][enabled]')).toEqual('0');
 			expect(modifiedBody.get('ticket[seating][seatType]')).toEqual('');
-			expect(modifiedBody.get('ticket[seating][layoutId]')).toEqual(layoutId);
-			expect(modifiedBody.get('ticket[event_capacity]')).toEqual(eventCapacity);
+			expect(modifiedBody.get('ticket[seating][layoutId]')).toEqual(
+				layoutId
+			);
+			expect(modifiedBody.get('ticket[event_capacity]')).toEqual(
+				eventCapacity
+			);
 
 			seatType = null;
 			select.mockReturnValue({
@@ -159,8 +172,12 @@ describe('hook-callbacks', () => {
 			modifiedBody = filterSetBodyDetails(body, 'client-id-1');
 			expect(modifiedBody.get('ticket[seating][enabled]')).toEqual('0');
 			expect(modifiedBody.get('ticket[seating][seatType]')).toEqual('');
-			expect(modifiedBody.get('ticket[seating][layoutId]')).toEqual(layoutId);
-			expect(modifiedBody.get('ticket[event_capacity]')).toEqual(eventCapacity);
+			expect(modifiedBody.get('ticket[seating][layoutId]')).toEqual(
+				layoutId
+			);
+			expect(modifiedBody.get('ticket[event_capacity]')).toEqual(
+				eventCapacity
+			);
 
 			seatType = '';
 			select.mockReturnValue({
@@ -172,8 +189,12 @@ describe('hook-callbacks', () => {
 			modifiedBody = filterSetBodyDetails(body, 'client-id-1');
 			expect(modifiedBody.get('ticket[seating][enabled]')).toEqual('0');
 			expect(modifiedBody.get('ticket[seating][seatType]')).toEqual('');
-			expect(modifiedBody.get('ticket[seating][layoutId]')).toEqual(layoutId);
-			expect(modifiedBody.get('ticket[event_capacity]')).toEqual(eventCapacity);
+			expect(modifiedBody.get('ticket[seating][layoutId]')).toEqual(
+				layoutId
+			);
+			expect(modifiedBody.get('ticket[event_capacity]')).toEqual(
+				eventCapacity
+			);
 
 			seatType = 0;
 			select.mockReturnValue({
@@ -185,8 +206,12 @@ describe('hook-callbacks', () => {
 			modifiedBody = filterSetBodyDetails(body, 'client-id-1');
 			expect(modifiedBody.get('ticket[seating][enabled]')).toEqual('0');
 			expect(modifiedBody.get('ticket[seating][seatType]')).toEqual('');
-			expect(modifiedBody.get('ticket[seating][layoutId]')).toEqual(layoutId);
-			expect(modifiedBody.get('ticket[event_capacity]')).toEqual(eventCapacity);
+			expect(modifiedBody.get('ticket[seating][layoutId]')).toEqual(
+				layoutId
+			);
+			expect(modifiedBody.get('ticket[event_capacity]')).toEqual(
+				eventCapacity
+			);
 
 			seatType = undefined;
 			select.mockReturnValue({
@@ -198,8 +223,12 @@ describe('hook-callbacks', () => {
 			modifiedBody = filterSetBodyDetails(body, 'client-id-1');
 			expect(modifiedBody.get('ticket[seating][enabled]')).toEqual('0');
 			expect(modifiedBody.get('ticket[seating][seatType]')).toEqual('');
-			expect(modifiedBody.get('ticket[seating][layoutId]')).toEqual(layoutId);
-			expect(modifiedBody.get('ticket[event_capacity]')).toEqual(eventCapacity);
+			expect(modifiedBody.get('ticket[seating][layoutId]')).toEqual(
+				layoutId
+			);
+			expect(modifiedBody.get('ticket[event_capacity]')).toEqual(
+				eventCapacity
+			);
 		});
 	});
 
@@ -210,7 +239,8 @@ describe('hook-callbacks', () => {
 				isLayoutLocked: () => true,
 			});
 			const mappedProps = { foo: 'bar' };
-			const newMappedProps = filterSeatedTicketsAvailabilityMappedProps(mappedProps);
+			const newMappedProps =
+				filterSeatedTicketsAvailabilityMappedProps(mappedProps);
 			expect(newMappedProps).toEqual(mappedProps);
 		});
 
@@ -220,7 +250,8 @@ describe('hook-callbacks', () => {
 				isLayoutLocked: () => false,
 			});
 			const mappedProps = { foo: 'bar' };
-			const newMappedProps = filterSeatedTicketsAvailabilityMappedProps(mappedProps);
+			const newMappedProps =
+				filterSeatedTicketsAvailabilityMappedProps(mappedProps);
 			expect(newMappedProps).toEqual(mappedProps);
 		});
 
@@ -231,7 +262,8 @@ describe('hook-callbacks', () => {
 				getCurrentLayoutId: () => null,
 			});
 			const mappedProps = { foo: 'bar' };
-			const newMappedProps = filterSeatedTicketsAvailabilityMappedProps(mappedProps);
+			const newMappedProps =
+				filterSeatedTicketsAvailabilityMappedProps(mappedProps);
 			expect(newMappedProps).toEqual(mappedProps);
 		});
 
@@ -265,7 +297,8 @@ describe('hook-callbacks', () => {
 				available: 94, // Sold 6.
 			};
 
-			const result = filterSeatedTicketsAvailabilityMappedProps(mappedProps);
+			const result =
+				filterSeatedTicketsAvailabilityMappedProps(mappedProps);
 			expect(result).toEqual({ total: 35, available: 24 });
 		});
 
@@ -302,7 +335,8 @@ describe('hook-callbacks', () => {
 				available: 94, // Sold 6.
 			};
 
-			const result = filterSeatedTicketsAvailabilityMappedProps(mappedProps);
+			const result =
+				filterSeatedTicketsAvailabilityMappedProps(mappedProps);
 			expect(result).toEqual({ total: 35, available: 29 });
 		});
 
@@ -340,7 +374,8 @@ describe('hook-callbacks', () => {
 				available: 40, // None sold..
 			};
 
-			const result = filterSeatedTicketsAvailabilityMappedProps(mappedProps);
+			const result =
+				filterSeatedTicketsAvailabilityMappedProps(mappedProps);
 			expect(result).toEqual({ total: 35, available: 35 });
 		});
 
@@ -376,7 +411,8 @@ describe('hook-callbacks', () => {
 				available: 40, // None sold..
 			};
 
-			const result = filterSeatedTicketsAvailabilityMappedProps(mappedProps);
+			const result =
+				filterSeatedTicketsAvailabilityMappedProps(mappedProps);
 			expect(result).toEqual({ total: 35, available: 30 });
 		});
 	});
@@ -465,6 +501,294 @@ describe('hook-callbacks', () => {
 
 			const newMappedPropsFromTrue = filterTicketIsAsc(true, 40);
 			expect(newMappedPropsFromTrue).toEqual(true);
+		});
+	});
+
+	describe('disableConfirmInTicketDashboard', () => {
+		it('returns mapped props unchanged if service status ok', () => {
+			select.mockReturnValue({
+				isServiceStatusOk: () => true,
+			});
+
+			const newMappedProps = disableConfirmInTicketDashboard({
+				isConfirmDisabled: false,
+			});
+
+			expect(newMappedProps).toEqual({ isConfirmDisabled: false });
+		});
+
+		it('returns mapped props unchanged if not using assigned seating', () => {
+			select.mockReturnValue({
+				isServiceStatusOk: () => false,
+				isUsingAssignedSeating: () => false,
+			});
+
+			const newMappedProps = disableConfirmInTicketDashboard({
+				isConfirmDisabled: false,
+			});
+
+			expect(newMappedProps).toEqual({ isConfirmDisabled: false });
+		});
+
+		it('returns mapped props unchanged if no current layout id', () => {
+			select.mockReturnValue({
+				isServiceStatusOk: () => false,
+				isUsingAssignedSeating: () => true,
+				getCurrentLayoutId: () => null,
+			});
+
+			const newMappedProps = disableConfirmInTicketDashboard({
+				isConfirmDisabled: false,
+			});
+
+			expect(newMappedProps).toEqual({ isConfirmDisabled: false });
+		});
+
+		it('disables confirm button if using assigned seating, has layout and service not ok', () => {
+			select.mockReturnValue({
+				isServiceStatusOk: () => false,
+				isUsingAssignedSeating: () => true,
+				getCurrentLayoutId: () => 'some-layout-uuid',
+			});
+
+			const newMappedProps = disableConfirmInTicketDashboard({
+				isConfirmDisabled: false,
+			});
+
+			expect(newMappedProps).toEqual({ isConfirmDisabled: true });
+		});
+	});
+
+	describe('removeAllActionsFromTicket', () => {
+		it('returns actions unchanged if service status ok', () => {
+			select.mockReturnValue({
+				isServiceStatusOk: () => true,
+			});
+
+			const actions = removeAllActionsFromTicket([
+				'action-1',
+				'action-2',
+			]);
+
+			expect(actions).toEqual(['action-1', 'action-2']);
+		});
+
+		it('returns actions unchanged if not using assigned seating', () => {
+			select.mockReturnValue({
+				isServiceStatusOk: () => false,
+				isUsingAssignedSeating: () => false,
+			});
+
+			const actions = removeAllActionsFromTicket([
+				'action-1',
+				'action-2',
+			]);
+
+			expect(actions).toEqual(['action-1', 'action-2']);
+		});
+
+		it('returns actions unchanged if no current layout id', () => {
+			select.mockReturnValue({
+				isServiceStatusOk: () => false,
+				isUsingAssignedSeating: () => true,
+				getCurrentLayoutId: () => null,
+			});
+
+			const actions = removeAllActionsFromTicket([
+				'action-1',
+				'action-2',
+			]);
+
+			expect(actions).toEqual(['action-1', 'action-2']);
+		});
+
+		it('removes actions if using assigned seating, has layout and service not ok', () => {
+			select.mockReturnValue({
+				isServiceStatusOk: () => false,
+				isUsingAssignedSeating: () => true,
+				getCurrentLayoutId: () => 'some-layout-uuid',
+			});
+
+			const actions = removeAllActionsFromTicket([
+				'action-1',
+				'action-2',
+			]);
+
+			expect(actions).toEqual([]);
+		});
+	});
+
+	describe('disableTicketSelection', () => {
+		it('returns isSelected unchanged if service status ok', () => {
+			select.mockReturnValue({
+				isServiceStatusOk: () => true,
+			});
+
+			const isSelected = disableTicketSelection(true);
+
+			expect(isSelected).toEqual(true);
+		});
+
+		it('returns isSelected unchanged if not using assigned seating', () => {
+			select.mockReturnValue({
+				isServiceStatusOk: () => false,
+				isUsingAssignedSeating: () => false,
+			});
+
+			const isSelected = disableTicketSelection(true);
+
+			expect(isSelected).toEqual(true);
+		});
+
+		it('returns isSelected unchanged if no current layout id', () => {
+			select.mockReturnValue({
+				isServiceStatusOk: () => false,
+				isUsingAssignedSeating: () => true,
+				getCurrentLayoutId: () => null,
+			});
+
+			const isSelected = disableTicketSelection(true);
+
+			expect(isSelected).toEqual(true);
+		});
+
+		it('falsifies isSelected if using assigned seating, has layout and service not ok', () => {
+			select.mockReturnValue({
+				isServiceStatusOk: () => false,
+				isUsingAssignedSeating: () => true,
+				getCurrentLayoutId: () => 'some-layout-uuid',
+			});
+
+			const isSelected = disableTicketSelection(true);
+
+			expect(isSelected).toEqual(false);
+		});
+	});
+
+	describe('filterButtonIsDisabled', () => {
+		it('if disabled should return disabled', () => {
+			const ownProps = { clientId: 'client-id-1' };
+
+			const state = {};
+			expect(filterButtonIsDisabled(true, state, ownProps)).toEqual(true);
+		});
+
+		it('if not ASC it should not interfere', () => {
+			const seatType = null;
+			const layoutId = null;
+			const isUsingAssignedSeating = false;
+
+			const ownProps = { clientId: 'client-id-1' };
+
+			const state = {};
+
+			select.mockReturnValue({
+				getCurrentLayoutId: () => layoutId,
+				getTicketSeatType: () => seatType,
+				isUsingAssignedSeating: () => isUsingAssignedSeating,
+			});
+
+			expect(filterButtonIsDisabled(true, state, ownProps)).toEqual(true);
+		});
+
+		it('if ASC and no layout id or seat type it should return disabled', () => {
+			const seatType = null;
+			const layoutId = '';
+			const isUsingAssignedSeating = true;
+
+			const ownProps = { clientId: 'client-id-1' };
+
+			const state = {};
+
+			select.mockReturnValue({
+				getCurrentLayoutId: () => layoutId,
+				getTicketSeatType: () => seatType,
+				isUsingAssignedSeating: () => isUsingAssignedSeating,
+			});
+
+			expect(filterButtonIsDisabled(false, state, ownProps)).toEqual(
+				true
+			);
+		});
+
+		it('if ASC and no layout id or seat type it should return disabled', () => {
+			const seatType = '';
+			const layoutId = false;
+			const isUsingAssignedSeating = true;
+
+			const ownProps = { clientId: 'client-id-1' };
+
+			const state = {};
+
+			select.mockReturnValue({
+				getCurrentLayoutId: () => layoutId,
+				getTicketSeatType: () => seatType,
+				isUsingAssignedSeating: () => isUsingAssignedSeating,
+			});
+
+			expect(filterButtonIsDisabled(false, state, ownProps)).toEqual(
+				true
+			);
+		});
+
+		it('if ASC and layout id but no seat type it should return disabled', () => {
+			const seatType = '';
+			const layoutId = 'layout-uuid-1';
+			const isUsingAssignedSeating = true;
+
+			const ownProps = { clientId: 'client-id-1' };
+
+			const state = {};
+
+			select.mockReturnValue({
+				getCurrentLayoutId: () => layoutId,
+				getTicketSeatType: () => seatType,
+				isUsingAssignedSeating: () => isUsingAssignedSeating,
+			});
+
+			expect(filterButtonIsDisabled(false, state, ownProps)).toEqual(
+				true
+			);
+		});
+
+		it('if ASC and seat type but no layout id it should return disabled', () => {
+			const seatType = 'seat-type-uuid-1';
+			const layoutId = '';
+			const isUsingAssignedSeating = true;
+
+			const ownProps = { clientId: 'client-id-1' };
+
+			const state = {};
+
+			select.mockReturnValue({
+				getCurrentLayoutId: () => layoutId,
+				getTicketSeatType: () => seatType,
+				isUsingAssignedSeating: () => isUsingAssignedSeating,
+			});
+
+			expect(filterButtonIsDisabled(false, state, ownProps)).toEqual(
+				true
+			);
+		});
+
+		it('if ASC and seat type and layout id it should return enabled', () => {
+			const seatType = 'seat-type-uuid-1';
+			const layoutId = 'layout-uuid-1';
+			const isUsingAssignedSeating = true;
+
+			const ownProps = { clientId: 'client-id-1' };
+
+			const state = {};
+
+			select.mockReturnValue({
+				getCurrentLayoutId: () => layoutId,
+				getTicketSeatType: () => seatType,
+				isUsingAssignedSeating: () => isUsingAssignedSeating,
+			});
+
+			expect(filterButtonIsDisabled(false, state, ownProps)).toEqual(
+				false
+			);
 		});
 	});
 });

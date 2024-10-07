@@ -19,27 +19,6 @@ use TEC\Tickets\Commerce\Hooks;
 
 class Orders_PageTest extends WPTestCase {
 	/**
-	 * Created orders.
-	 *
-	 * @var array
-	 */
-	protected $orders;
-
-	/**
-	 * Created tickets.
-	 *
-	 * @var array
-	 */
-	protected $tickets;
-
-	/**
-	 * Created event IDs.
-	 *
-	 * @var array
-	 */
-	protected $event_ids;
-
-	/**
 	 * @before
 	 */
 	public function set_up_test_case() {
@@ -101,6 +80,39 @@ class Orders_PageTest extends WPTestCase {
 
 		$current_screen = WP_Screen::get( 'edit-' . Order::POSTTYPE );
 		$this->assertTrue( $orders_page->is_admin_orders_page() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_locate_the_singular_order_page() {
+		$orders_page = new Orders_Page();
+
+		global $current_screen;
+
+		$current_screen = WP_Screen::get( 'edit' );
+		$this->assertFalse( $orders_page->is_admin_single_page() );
+
+		$current_screen = WP_Screen::get( Order::POSTTYPE );
+		$this->assertTrue( $orders_page->is_admin_single_page() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_locate_the_orders_or_the_singular_order_page() {
+		$orders_page = new Orders_Page();
+
+		global $current_screen;
+
+		$current_screen = WP_Screen::get( 'edit' );
+		$this->assertFalse( $orders_page->is_admin_orders_page_or_admin_single_page() );
+
+		$current_screen = WP_Screen::get( Order::POSTTYPE );
+		$this->assertTrue( $orders_page->is_admin_orders_page_or_admin_single_page() );
+
+		$current_screen = WP_Screen::get( 'edit-' . Order::POSTTYPE );
+		$this->assertTrue( $orders_page->is_admin_orders_page_or_admin_single_page() );
 	}
 
 	/**
