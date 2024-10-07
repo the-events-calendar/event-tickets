@@ -325,12 +325,6 @@ class Reservations {
 			 * @param array<string,int> $reservation_to_attendee_map The map from reservation UUIDs to Attendee IDs.
 			 */
 			do_action( 'tec_tickets_seating_delete_reservations_from_attendees', $reservation_to_attendee_map );
-
-			$meta_ids_list = DB::prepare(
-				implode( ', ', array_fill( 0, count( $affected ), '%d' ) ),
-				...array_column( $affected, 'meta_id' )
-			);
-
 			
 			$attendee_ids_list = DB::prepare(
 				implode( ', ', array_fill( 0, count( $affected ), '%d' ) ),
@@ -345,6 +339,14 @@ class Reservations {
 					Meta::META_KEY_ATTENDEE_SEAT_LABEL
 				),
 			);
+			
+			// Generate meta ids list from reservation meta ids + seat label meta ids.
+			$meta_ids_list = DB::prepare(
+				implode( ', ', array_fill( 0, count( $affected ) + count( $seat_label_meta_ids ), '%d' ) ),
+				...array_column( $affected, 'meta_id' ),
+				...$seat_label_meta_ids
+			);
+			
 			$removed_here = (int) DB::query(
 				DB::prepare(
 					"DELETE FROM %i where meta_id in ({$meta_ids_list})",
