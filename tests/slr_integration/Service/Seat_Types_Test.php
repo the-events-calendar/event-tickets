@@ -406,7 +406,7 @@ class Seat_Types_Test extends WPTestCase {
 		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler   = tribe( 'tickets.handler' );
 		$capacity_meta_key = $tickets_handler->key_capacity;
-		// Create the 5 seat types.
+		// Create the 3 seat types.
 		Seat_Types::insert_rows_from_service(
 			[
 				[
