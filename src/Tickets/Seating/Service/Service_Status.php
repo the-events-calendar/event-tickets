@@ -181,14 +181,14 @@ class Service_Status {
 		$this->update();
 
 		switch ( $this->status ) {
-			case self::OK:
-				return 'ok';
 			case self::SERVICE_DOWN:
 				return 'down';
 			case self::NOT_CONNECTED:
 				return 'not-connected';
 			case self::INVALID_LICENSE:
 				return 'invalid-license';
+			default:
+				return 'ok';
 		}
 	}
 
