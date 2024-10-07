@@ -206,7 +206,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.14.0] 2024-10-03 =
+= [5.14.0] 2024-10-09 =
 
 * Feature - Added new Tickets Home page to view and manage all tickets in a central location. [ET-2173]
 * Fix - Fix attendee search caching, and add search-related filters. [ET-2218]
