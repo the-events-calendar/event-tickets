@@ -84,7 +84,7 @@ let interruptDialogElement = null;
  * @type {string}
  */
 export const checkoutControlsSelectors =
-	'.tribe-tickets__commerce-checkout-form-submit-button';
+	'.tribe-tickets__commerce-checkout-form-submit-button, .tribe-tickets__commerce-checkout-paypal-buttons button';
 
 /**
  * @typedef {Object} TimerData
