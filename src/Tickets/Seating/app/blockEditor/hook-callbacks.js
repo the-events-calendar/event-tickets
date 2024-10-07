@@ -3,6 +3,7 @@ import { select, dispatch } from '@wordpress/data';
 import SeatType from './header/seat-type';
 import LayoutSelect from './settings/layoutSelect';
 import Upsell from './settings/upsell';
+import Outage from './settings/outage';
 
 export const setSeatTypeForTicket = (clientId) =>
 	dispatch(storeName).setTicketSeatTypeByPostId(clientId);
@@ -154,22 +155,29 @@ export const filterSeatedTicketsAvailabilityMappedProps = (mappedProps) => {
  */
 export const filterSettingsFields = (fields) => {
 	const store = select(storeName);
+	const status = store.getServiceStatus();
 
-	if ( store.isServiceStatusOk() ) {
-		const currentLayout = store.getCurrentLayoutId();
-		const layouts = store.getLayoutsInOptionFormat();
+	switch (status) {
+		case 'not-connected':
+		case 'invalid-license':
+			fields.push(
+				<Upsell />
+			);
+			break;
+		case 'down':
+			fields.push(
+				<Outage />
+			);
+			break;
+		default:
+			const currentLayout = store.getCurrentLayoutId();
+			const layouts = store.getLayoutsInOptionFormat();
 
-		fields.push(
-			<LayoutSelect layouts={layouts} currentLayout={currentLayout} />
-		);
-
-		return fields;
+			fields.push(
+				<LayoutSelect layouts={layouts} currentLayout={currentLayout} />
+			);
+			break;
 	}
-
-	// Show seating upsell.
-	fields.push(
-		<Upsell />
-	)
 
 	return fields;
 };
