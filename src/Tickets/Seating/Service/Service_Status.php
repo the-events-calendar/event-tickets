@@ -199,7 +199,7 @@ class Service_Status {
 	 *
 	 * @return string The URI to connect to the service.
 	 */
-	public function get_connnect_url(): string {
+	public function get_connect_url(): string {
 		return admin_url( 'admin.php?page=tec-tickets-settings&tab=licenses' );
 	}
 }
