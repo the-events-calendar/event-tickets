@@ -11,6 +11,7 @@ import {
 	removeAllActionsFromTicket,
 	setSeatTypeForTicket,
 	filterButtonIsDisabled,
+	filterSettingsFields,
 } from '@tec/tickets/seating/blockEditor/hook-callbacks';
 
 jest.mock('@wordpress/data', () => ({
@@ -791,4 +792,44 @@ describe('hook-callbacks', () => {
 			);
 		});
 	});
+
+	describe('filterSettingsFields', () => {
+		it('should return layout select component if service is ok', () => {
+			select.mockReturnValue({
+				isServiceStatusOk: () => true,
+				getCurrentLayoutId: () => 'layout-uuid-1',
+				getLayoutsInOptionFormat: () => [
+					{
+						value: 'layout-uuid-1',
+						label: 'Layout Name',
+					},
+				],
+			});
+
+			const fields = filterSettingsFields([]);
+
+			// fields should be an array with one item.
+			expect(fields.length).toEqual(1);
+			// the first item should be an object with a type property.
+			expect(fields[0]).toHaveProperty('type');
+			// expect it to be the LayoutSelect component.
+			expect(fields[0].type.name).toEqual('LayoutSelect');
+		});
+
+		it('should return layout upsell component if service is not ok', () => {
+			select.mockReturnValue({
+				isServiceStatusOk: () => false,
+			});
+
+			const fields = filterSettingsFields([]);
+
+			// fields should be an array with one item.
+			expect(fields.length).toEqual(1);
+			// the first item should be an object with a type property.
+			expect(fields[0]).toHaveProperty('type');
+			// expect it to be the LayoutSelect component.
+			expect(fields[0].type.name).toEqual('UpSell');
+		});
+
+	} );
 });
