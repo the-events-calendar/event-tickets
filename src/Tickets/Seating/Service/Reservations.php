@@ -331,6 +331,11 @@ class Reservations {
 				...array_column( $affected, 'meta_id' )
 			);
 
+			
+			$attendee_ids_list = DB::prepare(
+				implode( ', ', array_fill( 0, count( $affected ), '%d' ) ),
+				...array_column( $affected, 'post_id' )
+			);
 			$removed_here = (int) DB::query(
 				DB::prepare(
 					"DELETE FROM %i where meta_id in ({$meta_ids_list})",
