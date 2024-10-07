@@ -295,7 +295,7 @@ class Seat_Types {
 		foreach (
 			tribe_tickets()
 				->where( 'meta_equals', Meta::META_KEY_SEAT_TYPE, $new_seat_type_id )
-				->not_in( $original_ticket_ids )
+				->not_in( ! empty( $original_ticket_ids ) ? $original_ticket_ids : 0 )
 				->get_ids( true ) as $ticket_id
 		) {
 			clean_post_cache( $ticket_id );
@@ -305,7 +305,7 @@ class Seat_Types {
 			$primary_seat_type_ticket = tribe_tickets()
 				->where( 'event', $event_id )
 				->where( 'meta_equals', Meta::META_KEY_SEAT_TYPE, $new_seat_type_id )
-				->in( $original_ticket_ids )
+				->in( ! empty( $original_ticket_ids ) ? $original_ticket_ids : 0 )
 				->first();
 
 			if ( empty( $primary_seat_type_ticket->ID ) ) {
