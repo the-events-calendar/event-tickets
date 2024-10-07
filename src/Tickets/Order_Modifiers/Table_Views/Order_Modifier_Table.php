@@ -78,7 +78,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 */
 	public function __construct( Modifier_Strategy_Interface $modifier ) {
 		$this->modifier                       = $modifier;
-		$this->order_modifier_repository      = new Order_Modifiers();
+		$this->order_modifier_repository      = new Order_Modifiers( $modifier->get_modifier_type() );
 		$this->order_modifier_meta_repository = new Order_Modifiers_Meta();
 		$this->order_modifier_relationship    = new Order_Modifier_Relationship();
 

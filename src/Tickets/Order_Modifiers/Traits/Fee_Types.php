@@ -68,7 +68,6 @@ trait Fee_Types {
 	 */
 	protected function get_all_fees(): array {
 		$available_fees = $this->modifiers_repository->find_by_modifier_type_and_meta(
-			'fee',
 			'fee_applied_to',
 			[ 'per', 'all' ],
 			'fee_applied_to',

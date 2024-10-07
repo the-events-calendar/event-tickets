@@ -2,7 +2,7 @@
 /**
  * Order Modifiers repository.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\Order_Modifiers\Repositories;
  */
@@ -17,21 +17,46 @@ use TEC\Common\StellarWP\Models\Repositories\Contracts\Deletable;
 use TEC\Common\StellarWP\Models\Repositories\Contracts\Insertable;
 use TEC\Common\StellarWP\Models\Repositories\Contracts\Updatable;
 use TEC\Common\StellarWP\Models\Repositories\Repository;
+use TEC\Tickets\Exceptions\Not_Found_Exception;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers as Table;
-use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
+use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
 
 /**
  * Class Order_Modifiers.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\Order_Modifiers\Repositories;
  */
 class Order_Modifiers extends Repository implements Insertable, Updatable, Deletable {
 
 	/**
-	 * {@inheritDoc}
+	 * The modifier type for queries.
+	 *
+	 * @var string
+	 */
+	protected string $modifier_type;
+
+	/**
+	 * Order_Modifiers constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $modifier_type The modifier type for queries.
+	 */
+	public function __construct( $modifier_type ) {
+		$this->modifier_type = $modifier_type;
+	}
+
+	/**
+	 * Inserts a model record.
+	 *
+	 * @since TBD
+	 *
+	 * @param Model $model The model to insert.
+	 *
+	 * @return bool
 	 */
 	public function delete( Model $model ): bool {
 		$this->validate_model_type( $model );
@@ -120,16 +145,19 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 *
 	 * @since TBD
 	 *
-	 * @param int    $id The ID of the Order Modifier to find.
-	 * @param string $type The type of Order Modifier to find.
+	 * @param int $id The ID of the Order Modifier to find.
 	 *
-	 * @return Order_Modifier|null The Order Modifier model instance, or null if not found.
+	 * @return Order_Modifier The Order Modifier model instance, or null if not found.
+	 * @throws Not_Found_Exception If the Order Modifier is not found.
+	 * @throws RuntimeException If we didn't get an Order_Modifier object.
 	 */
-	public function find_by_id( int $id, $type ): ?Order_Modifier {
-		return $this->prepareQuery()
+	public function find_by_id( int $id ): Order_Modifier {
+		$result = $this->prepareQuery()
 			->where( 'id', $id )
-			->where( 'modifier_type', $type )
+			->where( 'modifier_type', $this->modifier_type )
 			->get();
+
+		return $this->normalize_return_result( $result );
 	}
 
 	/**
@@ -138,21 +166,19 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 * @param array $args {
 	 *     Optional. Arguments to filter the query.
 	 *
-	 * @type string $modifier_type The type of the modifier ('coupon' or 'fee').
-	 * @type string $search_term The term to search for (e.g., in display_name or slug).
-	 * @type string $orderby Column to order by. Default 'display_name'.
-	 * @type string $order Sorting order. Either 'asc' or 'desc'. Default 'asc'.
+	 *     @type string $search_term The term to search for (e.g., in display_name or slug).
+	 *     @type string $orderby     Column to order by. Default 'display_name'.
+	 *     @type string $order       Sorting order. Either 'asc' or 'desc'. Default 'asc'.
 	 * }
 	 *
-	 * @return array An array of Order_Modifiers or an empty array if none found.
+	 * @return Order_Modifier[] An array of Order_Modifiers or an empty array if none found.
 	 */
 	public function search_modifiers( array $args = [] ): array {
 		// Define default arguments.
 		$defaults = [
-			'modifier_type' => '',
-			'search_term'   => '',
-			'orderby'       => 'display_name',
-			'order'         => 'asc',
+			'search_term' => '',
+			'orderby'     => 'display_name',
+			'order'       => 'asc',
 		];
 
 		// Merge passed arguments with defaults.
@@ -160,11 +186,6 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 
 		// Start building the query.
 		$query = $this->prepareQuery();
-
-		// Filter by modifier type if provided.
-		if ( ! empty( $args['modifier_type'] ) ) {
-			$query = $query->where( 'modifier_type', $args['modifier_type'] );
-		}
 
 		// Add search functionality (search in display_name or slug).
 		if ( ! empty( $args['search_term'] ) ) {
@@ -187,7 +208,9 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 			$query = $query->orderBy( $args['orderby'], $args['order'] );
 		}
 
-		// Return the results of the query.
+		// Set the modifier type.
+		$query = $query->where( 'modifier_type', $this->modifier_type );
+
 		return $query->getAll() ?? [];
 	}
 
@@ -197,16 +220,18 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 * @since TBD
 	 *
 	 * @param string $slug The slug of the Order Modifier to find.
-	 * @param string $modifier_type The type of the modifier ('coupon' or 'fee').
 	 *
-	 * @return Order_Modifier|null The Order Modifier model instance, or null if not found.
+	 * @return Order_Modifier The Order Modifier model instance, or null if not found.
+	 * @throws Not_Found_Exception If the Order Modifier is not found.
+	 * @throws RuntimeException If we didn't get an Order_Modifier object.
 	 */
-	public function find_by_slug( string $slug, string $modifier_type ): ?Order_Modifier {
-		return $this->prepareQuery()
+	public function find_by_slug( string $slug ): Order_Modifier {
+		$result = $this->prepareQuery()
 			->where( 'slug', $slug )
-			->where( 'modifier_type', $modifier_type )
-			->where( 'status', 'active' )
+			->where( 'modifier_type', $this->modifier_type )
 			->get();
+
+		return $this->normalize_return_result( $result );
 	}
 
 	/**
@@ -214,12 +239,15 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 *
 	 * @since TBD
 	 *
-	 * @return Order_Modifier[]|null Array of active Order Modifier model instances, or null if not found.
+	 * @return Order_Modifier[] Array of active Order Modifier model instances.
 	 */
-	public function find_active(): ?array {
-		return $this->prepareQuery()
+	public function find_active(): array {
+		$results = $this->prepareQuery()
 			->where( 'status', 'active' )
-			->get();
+			->where( 'modifier_type', $this->modifier_type )
+			->getAll();
+
+		return $results ?? [];
 	}
 
 	/**
@@ -227,14 +255,14 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 *
 	 * @since TBD
 	 *
-	 * @param string $modifier_type The type of modifier to find (e.g., 'coupon' or 'fee').
-	 *
-	 * @return Order_Modifier[]|null Array of Order Modifier model instances, or null if not found.
+	 * @return Order_Modifier[] Array of Order Modifier model instances.
 	 */
-	public function find_by_modifier_type( string $modifier_type ): ?array {
-		return $this->prepareQuery()
-			->where( 'modifier_type', $modifier_type )
-			->get();
+	public function get_all(): array {
+		$results = $this->prepareQuery()
+			->where( 'modifier_type', $this->modifier_type )
+			->getAll();
+
+		return $results ?? [];
 	}
 
 	/**
@@ -248,16 +276,14 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 *
 	 * @since TBD
 	 *
-	 * @param string      $modifier_type The type of the modifier (e.g., 'coupon', 'fee').
-	 * @param string      $meta_key The meta key to filter by (e.g., 'fee_applied_to').
-	 * @param array       $meta_values The meta values to filter by (e.g., ['per', 'all']).
-	 * @param string|null $default_meta_key The default meta key if none exists (null to skip `IFNULL()`).
+	 * @param string      $meta_key           The meta key to filter by (e.g., 'fee_applied_to').
+	 * @param array       $meta_values        The meta values to filter by (e.g., ['per', 'all']).
+	 * @param string|null $default_meta_key   The default meta key if none exists (null to skip `IFNULL()`).
 	 * @param string|null $default_meta_value The default meta value if none exists (null to skip `IFNULL()`).
 	 *
 	 * @return array|null Array of Order Modifier model instances, or null if not found.
 	 */
 	public function find_by_modifier_type_and_meta(
-		string $modifier_type,
 		string $meta_key,
 		array $meta_values,
 		?string $default_meta_key = null,
@@ -267,16 +293,16 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 
 		// Generate a cache key based on the arguments.
 		$cache_key = 'modifier_type_meta_' . md5(
-			wp_json_encode(
-				[
-					$modifier_type,
-					$meta_key,
-					$meta_values,
-					$default_meta_key,
-					$default_meta_value,
-				]
-			)
-		);
+				wp_json_encode(
+					[
+						$this->modifier_type,
+						$meta_key,
+						$meta_values,
+						$default_meta_key,
+						$default_meta_value,
+					]
+				)
+			);
 
 		// Try to get the results from the cache.
 		$cached_results = wp_cache_get( $cache_key, 'order_modifiers' );
@@ -297,7 +323,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
         WHERE o.modifier_type = %s
     ";
 
-		$params = [ $modifier_type ];
+		$params = [ $this->modifier_type ];
 
 		// Handle the meta_key condition: Use IFNULL if a default_meta_key is provided, otherwise check for meta_key directly.
 		if ( $default_meta_key ) {
@@ -332,11 +358,38 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Prepare a query builder for the repository.
+	 *
+	 * @since TBD
+	 *
+	 * @return ModelQueryBuilder
 	 */
 	public function prepareQuery(): ModelQueryBuilder {
 		$builder = new ModelQueryBuilder( Order_Modifier::class );
+
 		return $builder->from( Table::table_name( false ) );
+	}
+
+	/**
+	 * Normalize the return result to ensure we have an Order_Modifier object.
+	 *
+	 * @param mixed $result The result to normalize.
+	 *
+	 * @return Order_Modifier The normalized Order Modifier.
+	 * @throws Not_Found_Exception If the result is null.
+	 * @throws RuntimeException If the result is not an Order Modifier.
+	 */
+	protected function normalize_return_result( $result ): Order_Modifier {
+		if ( null === $result ) {
+			throw new Not_Found_Exception( 'Order Modifier not found.' );
+		}
+
+		// We should always get an Order Modifier instance here, this is a sanity check.
+		if ( ! $result instanceof Order_Modifier ) {
+			throw new RuntimeException( 'Order Modifier not found.' );
+		}
+
+		return $result;
 	}
 
 	/**
@@ -351,6 +404,10 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 */
 	protected function validate_model_type( Model $model ): void {
 		if ( ! $model instanceof Order_Modifier ) {
+			throw new RuntimeException( 'Invalid model type.' );
+		}
+
+		if ( $model->modifier_type !== $this->modifier_type ) {
 			throw new RuntimeException( 'Invalid model type.' );
 		}
 	}
