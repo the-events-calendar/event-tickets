@@ -336,6 +336,15 @@ class Reservations {
 				implode( ', ', array_fill( 0, count( $affected ), '%d' ) ),
 				...array_column( $affected, 'post_id' )
 			);
+			
+			// Fetch the meta IDs for meta key _tec_slr_seat_label for the affected Attendees.
+			$seat_label_meta_ids = DB::get_col(
+				DB::prepare(
+					"SELECT meta_id FROM %i WHERE post_id IN ({$attendee_ids_list}) AND meta_key = %s",
+					$wpdb->postmeta,
+					Meta::META_KEY_ATTENDEE_SEAT_LABEL
+				),
+			);
 			$removed_here = (int) DB::query(
 				DB::prepare(
 					"DELETE FROM %i where meta_id in ({$meta_ids_list})",
