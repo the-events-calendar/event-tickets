@@ -205,18 +205,16 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		}
 
 		// Add ordering.
-		if ( ! empty( $args['orderby'] ) && in_array(
-			$args['orderby'],
-			[
-				'display_name',
-				'slug',
-				'fee_amount_cents',
-				'used',
-				'remaining',
-				'status',
-			]
-		)
-		) {
+		$valid_orderby = [
+			'display_name'     => 1,
+			'slug'             => 1,
+			'fee_amount_cents' => 1,
+			'used'             => 1,
+			'remaining'        => 1,
+			'status'           => 1,
+		];
+
+		if ( ! empty( $args['orderby'] ) && array_key_exists( $args['orderby'], $valid_orderby ) ) {
 			$query = $query->orderBy( $args['orderby'], $args['order'] );
 		}
 
