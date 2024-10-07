@@ -265,21 +265,6 @@ class Capacity extends PureComponent {
 						__('%s Capacity', 'event-tickets'),
 						TICKET_LABELS.ticket.singular
 					)}
-					tooltipText={sprintf(
-						/* Translators: %1$s - the singular label for a ticket; %2$s - the singular, lowercase label for a ticket. */
-						__(
-							'%1$s capacity will only be used by attendees buying this %2$s type',
-							'event-tickets'
-						),
-						TICKET_LABELS.ticket.singular,
-						TICKET_LABELS.ticket.singularLowercase
-					)}
-					tooltipLabel={
-						<Dashicon
-							className="tribe-editor__ticket__tooltip-label"
-							icon="info-outline"
-						/>
-					}
 				/>
 				<div className="tribe-editor__ticket__capacity-form">
 					{ renderForm && renderForm() }
