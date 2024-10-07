@@ -21,8 +21,9 @@ const UpSell = () => {
 						'Seat layout upsell description start',
 						'event-tickets'
 					)
-				}{ ' ' }
+				}{' '}
 				<a
+					style={anchorStyle}
 					href="https://evnt.is/add-seating"
 					target="_blank"
 					rel="noreferrer noopener"
