@@ -31,6 +31,10 @@ export function filterCapacityTableMappedProps(mappedProps) {
 		(value, index, array) => array.indexOf(value) === index
 	);
 
+	if (!seatTypes.length ||  !activeSeatTypes.length) {
+		return mappedProps;
+	}
+
 	mappedProps.rowsAfter = mappedProps.rowsAfter || [];
 	const seatTypeLabels = activeSeatTypes.map((type) => seatTypes[type].name);
 	const seatTypeTotalCapacity = activeSeatTypes.reduce(
