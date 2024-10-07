@@ -1034,12 +1034,11 @@ class Ajax extends Controller_Contract {
 
 			$updated_seat_types_meta = DB::query(
 				DB::prepare(
-					'UPDATE %i SET meta_value = %s WHERE meta_key = %s AND meta_value = %s and post_id IN ( SELECT ID FROM %i WHERE post_type IN (' . $ticket_post_types . ') )',
+					'UPDATE %i SET meta_value = %s WHERE meta_key = %s AND meta_value = %s',
 					$wpdb->postmeta,
 					$new_seat_type['id'],
 					Meta::META_KEY_SEAT_TYPE,
 					$old_seat_type_id,
-					$wpdb->posts,
 				),
 			);
 		} catch ( \Exception $exception ) {
