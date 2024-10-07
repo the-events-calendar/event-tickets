@@ -2,6 +2,7 @@ import { storeName } from './store';
 import { select, dispatch } from '@wordpress/data';
 import SeatType from './header/seat-type';
 import LayoutSelect from './settings/layoutSelect';
+import UpSell from './settings/upSell';
 
 export const setSeatTypeForTicket = (clientId) =>
 	dispatch(storeName).setTicketSeatTypeByPostId(clientId);
@@ -153,12 +154,22 @@ export const filterSeatedTicketsAvailabilityMappedProps = (mappedProps) => {
  */
 export const filterSettingsFields = (fields) => {
 	const store = select(storeName);
-	const currentLayout = store.getCurrentLayoutId();
-	const layouts = store.getLayoutsInOptionFormat();
 
+	if ( store.isServiceStatusOk() ) {
+		const currentLayout = store.getCurrentLayoutId();
+		const layouts = store.getLayoutsInOptionFormat();
+
+		fields.push(
+			<LayoutSelect layouts={layouts} currentLayout={currentLayout} />
+		);
+
+		return fields;
+	}
+
+	// Show seating upsell.
 	fields.push(
-		<LayoutSelect layouts={layouts} currentLayout={currentLayout} />
-	);
+		<UpSell />
+	)
 
 	return fields;
 };
