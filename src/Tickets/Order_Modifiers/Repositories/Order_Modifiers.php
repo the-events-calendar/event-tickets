@@ -69,7 +69,13 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Inserts a model record.
+	 *
+	 * @since TBD
+	 *
+	 * @param Model $model
+	 *
+	 * @return Model
 	 */
 	public function insert( Model $model ): Model {
 		$this->validate_model_type( $model );
@@ -106,7 +112,13 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Inserts a model record.
+	 *
+	 * @since TBD
+	 *
+	 * @param Model $model The model to insert.
+	 *
+	 * @return Model
 	 */
 	public function update( Model $model ): Model {
 		$this->validate_model_type( $model );
