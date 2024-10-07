@@ -796,7 +796,7 @@ describe('hook-callbacks', () => {
 	describe('filterSettingsFields', () => {
 		it('should return layout select component if service is ok', () => {
 			select.mockReturnValue({
-				isServiceStatusOk: () => true,
+				getServiceStatus: () => 'ok',
 				getCurrentLayoutId: () => 'layout-uuid-1',
 				getLayoutsInOptionFormat: () => [
 					{
@@ -813,17 +813,40 @@ describe('hook-callbacks', () => {
 			expect(fields[0].type.name).toEqual('LayoutSelect');
 		});
 
-		it('should return layout upsell component if service is not ok', () => {
+		it('should return the upsell component if service is not connected', () => {
 			select.mockReturnValue({
-				isServiceStatusOk: () => false,
+				getServiceStatus: () => 'not-connected',
 			});
 
 			const fields = filterSettingsFields([]);
 
 			expect(fields.length).toEqual(1);
 			expect(fields[0]).toHaveProperty('type');
-			expect(fields[0].type.name).toEqual('UpSell');
+			expect(fields[0].type.name).toEqual('Upsell');
 		});
 
+		it('should return the upsell component if service has invalid license', () => {
+			select.mockReturnValue({
+				getServiceStatus: () => 'invalid-license',
+			});
+
+			const fields = filterSettingsFields([]);
+
+			expect(fields.length).toEqual(1);
+			expect(fields[0]).toHaveProperty('type');
+			expect(fields[0].type.name).toEqual('Upsell');
+		});
+
+		it('should return the outage component if service is down', () => {
+			select.mockReturnValue({
+				getServiceStatus: () => 'down',
+			});
+
+			const fields = filterSettingsFields([]);
+
+			expect(fields.length).toEqual(1);
+			expect(fields[0]).toHaveProperty('type');
+			expect(fields[0].type.name).toEqual('Outage');
+		});
 	} );
 });
