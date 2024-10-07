@@ -1,6 +1,6 @@
 import { ECP as PlusIcon } from '@moderntribe/tickets/icons';
 import { _x } from '@wordpress/i18n';
-const UpSell = () => {
+const Upsell = () => {
 	const anchorStyle = {
 		color: 'var(--tec-color-link-accent)',
 	};
@@ -41,4 +41,4 @@ const UpSell = () => {
 		</div>
 	);
 }
-export default UpSell;
+export default Upsell;

@@ -808,11 +808,8 @@ describe('hook-callbacks', () => {
 
 			const fields = filterSettingsFields([]);
 
-			// fields should be an array with one item.
 			expect(fields.length).toEqual(1);
-			// the first item should be an object with a type property.
 			expect(fields[0]).toHaveProperty('type');
-			// expect it to be the LayoutSelect component.
 			expect(fields[0].type.name).toEqual('LayoutSelect');
 		});
 
@@ -823,11 +820,8 @@ describe('hook-callbacks', () => {
 
 			const fields = filterSettingsFields([]);
 
-			// fields should be an array with one item.
 			expect(fields.length).toEqual(1);
-			// the first item should be an object with a type property.
 			expect(fields[0]).toHaveProperty('type');
-			// expect it to be the LayoutSelect component.
 			expect(fields[0].type.name).toEqual('UpSell');
 		});
 

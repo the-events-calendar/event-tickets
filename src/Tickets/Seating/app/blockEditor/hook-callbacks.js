@@ -2,7 +2,7 @@ import { storeName } from './store';
 import { select, dispatch } from '@wordpress/data';
 import SeatType from './header/seat-type';
 import LayoutSelect from './settings/layoutSelect';
-import UpSell from './settings/upSell';
+import Upsell from './settings/upsell';
 
 export const setSeatTypeForTicket = (clientId) =>
 	dispatch(storeName).setTicketSeatTypeByPostId(clientId);
@@ -168,7 +168,7 @@ export const filterSettingsFields = (fields) => {
 
 	// Show seating upsell.
 	fields.push(
-		<UpSell />
+		<Upsell />
 	)
 
 	return fields;
