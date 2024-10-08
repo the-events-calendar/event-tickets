@@ -174,7 +174,7 @@ class Admin extends Controller_Contract {
 	 * @return array The modified query arguments.
 	 */
 	public function exclude_asc_events_from_candidates_from_moving_tickets_to( array $query_args ): array {
-		if ( empty( $query_args['meta_query'] ) || ! is_array( $query_args['meta_query'] ) ) {
+		if ( empty( $query_args['meta_query'] ) || ! is_array( $query_args['meta_query'] ) ) { // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 			$query_args['meta_query'] = [];
 		}
 
@@ -188,7 +188,7 @@ class Admin extends Controller_Contract {
 				'key'     => META::META_KEY_ENABLED,
 				'value'   => '1',
 				'compare' => '!=',
-			]
+			],
 		];
 
 		if ( count( $query_args['meta_query'] ) > 1 ) {
