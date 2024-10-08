@@ -2,14 +2,20 @@
 
 namespace TEC\Tickets\Order_Modifiers\Checkout;
 
-use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
 use TEC\Tickets\Commerce\Order;
-use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Commerce\Utils\Value;
+use TEC\Tickets\Order_Modifiers\Modifiers\Coupon;
 
 class Coupons {
+
+	protected Coupon $coupon;
+
+	public function __construct() {
+		$this->coupon = new Coupon();
+
+	}
 
 	/**
 	 * Registers hooks and AJAX actions.
@@ -24,7 +30,7 @@ class Coupons {
 				$this,
 				'display_coupon_section',
 			],
-			30,
+			40,
 			3
 		);
 
@@ -126,14 +132,15 @@ class Coupons {
 		Payment_Intent::update( $payment_intent_id, $body );
 
 		$currency_code = $order->currency;
-		$currency_symbol     = Currency::get_currency_symbol($currency_code);
 		// Construct a response with success and the discount applied.
 		$response = [
 			'valid'    => true,
-			'discount' => Value::create( $coupon_discount / 100 )->get_currency(),
+			'discount' => Value::create( $this->coupon->convert_from_cents( $coupon_discount ) )->get_currency(),
 			'message'  => sprintf( __( 'Coupon "%s" applied successfully.', 'event-tickets' ), $coupon_code ),
-			'amount'   => Value::create( $new_order_value / 100 )->get_currency(),
+			'amount'   => Value::create( $this->coupon->convert_from_cents( $new_order_value ) )->get_currency(),
 		];
+
+
 
 		// Send the success response back to the client.
 		wp_send_json_success( $response );
