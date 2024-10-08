@@ -14,7 +14,6 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Shortcodes\Success_Shortcode;
 use TEC\Tickets\Commerce\Status\Pending;
-use TEC\Tickets\Commerce\Success;
 use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Meta;
@@ -237,11 +236,11 @@ class Controller_Test extends Controller_Test_Case {
 			[
 				...array_keys( $replace ),
 				// Ensure consistency of Common URLs.
-				'wp-content/plugins/the-events-calendar/common'
+				'wp-content/plugins/the-events-calendar/common',
 			],
 			[
 				...array_values( $replace ),
-				'wp-content/plugins/event-tickets/common'
+				'wp-content/plugins/event-tickets/common',
 			],
 			$html
 		);
@@ -291,11 +290,11 @@ class Controller_Test extends Controller_Test_Case {
 			[
 				...array_keys( $replace ),
 				// Ensure consistency of Common URLs.
-				'wp-content/plugins/the-events-calendar/common'
+				'wp-content/plugins/the-events-calendar/common',
 			],
 			[
 				...array_values( $replace ),
-				'wp-content/plugins/event-tickets/common'
+				'wp-content/plugins/event-tickets/common',
 			],
 			$html
 		);
@@ -311,7 +310,7 @@ class Controller_Test extends Controller_Test_Case {
 			'post',
 			$reservations->get_confirm_url(),
 			function () use ( &$service_confirmations ) {
-				$service_confirmations ++;
+				$service_confirmations++;
 
 				return [
 					'headers' => [
@@ -927,8 +926,12 @@ class Controller_Test extends Controller_Test_Case {
 		);
 
 		$html       = str_replace( $post_ids, array_fill( 0, count( $post_ids ), '{{ID}}' ), $html );
-		$order_date = esc_html( Tribe__Date_Utils::reformat( current_time( 'mysql' ),
-			Tribe__Date_Utils::DATEONLYFORMAT ) );
+		$order_date = esc_html(
+			Tribe__Date_Utils::reformat(
+				current_time( 'mysql' ),
+				Tribe__Date_Utils::DATEONLYFORMAT 
+			) 
+		);
 		$html       = str_replace( $order_date, '{{order_date}}', $html );
 
 		$this->assertMatchesHtmlSnapshot( $html );
@@ -945,11 +948,14 @@ class Controller_Test extends Controller_Test_Case {
 		$purchaser = self::factory()->user->create( [ 'role' => 'subscriber' ] );
 		wp_set_current_user( $purchaser );
 		$this->create_order( [ $ticket_2 => 3 ] );
-		$data      = Tickets::get_attendees_by_args( [
-			'per_page'           => 10,
-			'return_total_found' => false,
-			'order'              => 'DESC',
-		], $post_id );
+		$data      = Tickets::get_attendees_by_args(
+			[
+				'per_page'           => 10,
+				'return_total_found' => false,
+				'order'              => 'DESC',
+			],
+			$post_id 
+		);
 		$attendees = $data['attendees'];
 		[
 			$attendee_6,
@@ -958,7 +964,7 @@ class Controller_Test extends Controller_Test_Case {
 			$attendee_3,
 			$attendee_2,
 			$attendee_1,
-		] = $attendees;
+		]          = $attendees;
 		update_post_meta( $attendee_1, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-1' );
 		update_post_meta( $attendee_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-1-uuid' );
 		update_post_meta( $attendee_1, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'A-1' );
@@ -993,7 +999,8 @@ class Controller_Test extends Controller_Test_Case {
 		$wp_send_json_error = $this->mock_wp_send_json_error();
 		do_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES );
 		$this->assertTrue(
-			$wp_send_json_error->was_called_times_with( 1,
+			$wp_send_json_error->was_called_times_with(
+				1,
 				[
 					'error' => 'You do not have permission to perform this action.',
 				],
@@ -1008,7 +1015,8 @@ class Controller_Test extends Controller_Test_Case {
 		$wp_send_json_success = $this->mock_wp_send_json_success();
 		do_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES );
 		$this->assertTrue(
-			$wp_send_json_success->was_called_times_with( 1,
+			$wp_send_json_success->was_called_times_with(
+				1,
 				[
 					'attendees'    => [],
 					'totalBatches' => 0,
@@ -1026,7 +1034,8 @@ class Controller_Test extends Controller_Test_Case {
 		$wp_send_json_success = $this->mock_wp_send_json_success();
 		do_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES );
 		$this->assertTrue(
-			$wp_send_json_success->was_called_times_with( 1,
+			$wp_send_json_success->was_called_times_with(
+				1,
 				[
 					'attendees'    => tribe( Orders_Attendee::class )->format_many( [ $attendee_6, $attendee_5 ] ),
 					'totalBatches' => 3,
@@ -1043,7 +1052,8 @@ class Controller_Test extends Controller_Test_Case {
 		$wp_send_json_success     = $this->mock_wp_send_json_success();
 		do_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES );
 		$this->assertTrue(
-			$wp_send_json_success->was_called_times_with( 1,
+			$wp_send_json_success->was_called_times_with(
+				1,
 				[
 					'attendees'    => tribe( Orders_Attendee::class )->format_many( [ $attendee_4, $attendee_3 ] ),
 					'totalBatches' => 3,
@@ -1060,7 +1070,8 @@ class Controller_Test extends Controller_Test_Case {
 		$wp_send_json_success     = $this->mock_wp_send_json_success();
 		do_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES );
 		$this->assertTrue(
-			$wp_send_json_success->was_called_times_with( 1,
+			$wp_send_json_success->was_called_times_with(
+				1,
 				[
 					'attendees'    => tribe( Orders_Attendee::class )->format_many( [ $attendee_2, $attendee_1 ] ),
 					'totalBatches' => 3,
@@ -1077,7 +1088,8 @@ class Controller_Test extends Controller_Test_Case {
 		$wp_send_json_success     = $this->mock_wp_send_json_success();
 		do_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES );
 		$this->assertTrue(
-			$wp_send_json_success->was_called_times_with( 1,
+			$wp_send_json_success->was_called_times_with(
+				1,
 				[
 					'attendees'    => [],
 					'totalBatches' => 0,
@@ -1098,17 +1110,21 @@ class Controller_Test extends Controller_Test_Case {
 		$_REQUEST['action']      = Ajax::ACTION_RESERVATION_CREATED;
 		// Set up to mock the request body.
 		$request_body = '';
-		$this->set_fn_return( 'file_get_contents', function ( $file ) use ( &$request_body ) {
-			if ( $file === 'php://input' ) {
-				return $request_body;
-			}
+		$this->set_fn_return(
+			'file_get_contents',
+			function ( $file ) use ( &$request_body ) {
+				if ( $file === 'php://input' ) {
+					return $request_body;
+				}
 
-			return file_get_contents( $file );
-		}, true );
+				return file_get_contents( $file );
+			},
+			true 
+		);
 		// Set up post, ticket, and attendees. Do that as visitor.
-		$post_id = self::factory()->post->create();
-		$ticket  = $this->create_tc_ticket( $post_id );
-		$order   = $this->create_order( [ $ticket => 3 ] )->ID;
+		$post_id                                  = self::factory()->post->create();
+		$ticket                                   = $this->create_tc_ticket( $post_id );
+		$order                                    = $this->create_order( [ $ticket => 3 ] )->ID;
 		[ $attendee_1, $attendee_2, $attendee_3 ] = tribe_attendees()->by( 'event_id', $post_id )->get_ids();
 
 		$controller = $this->make_controller();
@@ -1118,7 +1134,8 @@ class Controller_Test extends Controller_Test_Case {
 		$wp_send_json_error = $this->mock_wp_send_json_error();
 		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_CREATED );
 		$this->assertTrue(
-			$wp_send_json_error->was_called_times_with( 1,
+			$wp_send_json_error->was_called_times_with(
+				1,
 				[
 					'error' => 'You do not have permission to perform this action.',
 				],
@@ -1134,7 +1151,8 @@ class Controller_Test extends Controller_Test_Case {
 		$wp_send_json_error = $this->mock_wp_send_json_error();
 		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_CREATED );
 		$this->assertTrue(
-			$wp_send_json_error->was_called_times_with( 1,
+			$wp_send_json_error->was_called_times_with(
+				1,
 				[
 					'error' => 'Invalid request body',
 				],
@@ -1149,7 +1167,8 @@ class Controller_Test extends Controller_Test_Case {
 		$wp_send_json_error = $this->mock_wp_send_json_error();
 		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_CREATED );
 		$this->assertTrue(
-			$wp_send_json_error->was_called_times_with( 1,
+			$wp_send_json_error->was_called_times_with(
+				1,
 				[
 					'error' => 'Invalid request body',
 				],
@@ -1164,7 +1183,8 @@ class Controller_Test extends Controller_Test_Case {
 		$wp_send_json_error = $this->mock_wp_send_json_error();
 		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_CREATED );
 		$this->assertTrue(
-			$wp_send_json_error->was_called_times_with( 1,
+			$wp_send_json_error->was_called_times_with(
+				1,
 				[
 					'error' => 'Invalid request body',
 				],
@@ -1179,7 +1199,7 @@ class Controller_Test extends Controller_Test_Case {
 			'tribe_tickets_get_ticket_provider',
 			function ( $id ) use ( $attendee_1 ) {
 				if ( $id === $attendee_1 ) {
-					return new class {
+					return new class() {
 						public function send_tickets_email_for_attendees() {
 							throw new AssertionFailedError( 'Should not send email' );
 						}
@@ -1190,17 +1210,20 @@ class Controller_Test extends Controller_Test_Case {
 			},
 			true
 		);
-		$request_body                                   = wp_json_encode( [
-			'attendeeId'           => $attendee_1,
-			'reservationId'        => 'reservation-uuid-1',
-			'seatTypeId'           => 'seat-type-uuid-1',
-			'seatLabel'            => 'A-1',
-			'sendUpdateToAttendee' => false,
-		] );
+		$request_body                                   = wp_json_encode(
+			[
+				'attendeeId'           => $attendee_1,
+				'reservationId'        => 'reservation-uuid-1',
+				'seatTypeId'           => 'seat-type-uuid-1',
+				'seatLabel'            => 'A-1',
+				'sendUpdateToAttendee' => false,
+			] 
+		);
 		$wp_send_json_success                           = $this->mock_wp_send_json_success();
 		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_CREATED );
 		$this->assertTrue(
-			$wp_send_json_success->was_called_times_with( 1,
+			$wp_send_json_success->was_called_times_with(
+				1,
 				[
 					'id'            => $attendee_1,
 					'name'          => 'Test Purchaser',
@@ -1226,17 +1249,20 @@ class Controller_Test extends Controller_Test_Case {
 		$unset_tribe_tickets_get_ticket_provider_return();
 
 		// Create attendee, do send update to Attendee.
-		$request_body         = wp_json_encode( [
-			'attendeeId'           => $attendee_2,
-			'reservationId'        => 'reservation-uuid-2',
-			'seatTypeId'           => 'seat-type-uuid-1',
-			'seatLabel'            => 'A-2',
-			'sendUpdateToAttendee' => true,
-		] );
+		$request_body         = wp_json_encode(
+			[
+				'attendeeId'           => $attendee_2,
+				'reservationId'        => 'reservation-uuid-2',
+				'seatTypeId'           => 'seat-type-uuid-1',
+				'seatLabel'            => 'A-2',
+				'sendUpdateToAttendee' => true,
+			] 
+		);
 		$wp_send_json_success = $this->mock_wp_send_json_success();
 		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_CREATED );
 		$this->assertTrue(
-			$wp_send_json_success->was_called_times_with( 1,
+			$wp_send_json_success->was_called_times_with(
+				1,
 				[
 					'id'            => $attendee_2,
 					'name'          => 'Test Purchaser',
@@ -1261,18 +1287,20 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertEquals( 'A-2', get_post_meta( $attendee_2, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true ) );
 
 		// Failure to send update to Attendee.
-		$request_body                                   = wp_json_encode( [
-			'attendeeId'           => $attendee_3,
-			'reservationId'        => 'reservation-uuid-3',
-			'seatTypeId'           => 'seat-type-uuid-1',
-			'seatLabel'            => 'A-3',
-			'sendUpdateToAttendee' => true,
-		] );
+		$request_body                                   = wp_json_encode(
+			[
+				'attendeeId'           => $attendee_3,
+				'reservationId'        => 'reservation-uuid-3',
+				'seatTypeId'           => 'seat-type-uuid-1',
+				'seatLabel'            => 'A-3',
+				'sendUpdateToAttendee' => true,
+			] 
+		);
 		$unset_tribe_tickets_get_ticket_provider_return = $this->set_fn_return(
 			'tribe_tickets_get_ticket_provider',
 			function ( $id ) use ( $attendee_3 ) {
 				if ( $id === $attendee_3 ) {
-					return new class {
+					return new class() {
 						public function send_tickets_email_for_attendees() {
 							return false;
 						}
@@ -1286,9 +1314,10 @@ class Controller_Test extends Controller_Test_Case {
 		$wp_send_json_error                             = $this->mock_wp_send_json_error();
 		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_CREATED );
 		$this->assertTrue(
-			$wp_send_json_error->was_called_times_with( 1,
+			$wp_send_json_error->was_called_times_with(
+				1,
 				[
-					'error' => 'Failed to send the update mail.'
+					'error' => 'Failed to send the update mail.',
 				]
 			),
 			$wp_send_json_error->get_calls_as_string()
@@ -1300,18 +1329,20 @@ class Controller_Test extends Controller_Test_Case {
 		$unset_tribe_tickets_get_ticket_provider_return();
 
 		// Update Attendee 1 reservation, do not send the update to Attendee.
-		$request_body                                   = wp_json_encode( [
-			'attendeeId'           => $attendee_1,
-			'reservationId'        => 'reservation-uuid-1',
-			'seatTypeId'           => 'seat-type-uuid-2',
-			'seatLabel'            => 'B-4',
-			'sendUpdateToAttendee' => false,
-		] );
+		$request_body                                   = wp_json_encode(
+			[
+				'attendeeId'           => $attendee_1,
+				'reservationId'        => 'reservation-uuid-1',
+				'seatTypeId'           => 'seat-type-uuid-2',
+				'seatLabel'            => 'B-4',
+				'sendUpdateToAttendee' => false,
+			] 
+		);
 		$unset_tribe_tickets_get_ticket_provider_return = $this->set_fn_return(
 			'tribe_tickets_get_ticket_provider',
 			function ( $id ) use ( $attendee_1 ) {
 				if ( $id === $attendee_1 ) {
-					return new class {
+					return new class() {
 						public function send_tickets_email_for_attendees() {
 							throw new AssertionFailedError( 'Should not send email' );
 						}
@@ -1325,7 +1356,8 @@ class Controller_Test extends Controller_Test_Case {
 		$wp_send_json_success                           = $this->mock_wp_send_json_success();
 		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_UPDATED );
 		$this->assertTrue(
-			$wp_send_json_success->was_called_times_with( 1,
+			$wp_send_json_success->was_called_times_with(
+				1,
 				[
 					'id'            => $attendee_1,
 					'name'          => 'Test Purchaser',
@@ -1351,17 +1383,20 @@ class Controller_Test extends Controller_Test_Case {
 		$unset_tribe_tickets_get_ticket_provider_return();
 
 		// Update Attendee 1 reservation again, this time send the update to Attendee.
-		$request_body         = wp_json_encode( [
-			'attendeeId'           => $attendee_1,
-			'reservationId'        => 'reservation-uuid-1',
-			'seatTypeId'           => 'seat-type-uuid-3',
-			'seatLabel'            => 'C-5',
-			'sendUpdateToAttendee' => true,
-		] );
+		$request_body         = wp_json_encode(
+			[
+				'attendeeId'           => $attendee_1,
+				'reservationId'        => 'reservation-uuid-1',
+				'seatTypeId'           => 'seat-type-uuid-3',
+				'seatLabel'            => 'C-5',
+				'sendUpdateToAttendee' => true,
+			] 
+		);
 		$wp_send_json_success = $this->mock_wp_send_json_success();
 		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_UPDATED );
 		$this->assertTrue(
-			$wp_send_json_success->was_called_times_with( 1,
+			$wp_send_json_success->was_called_times_with(
+				1,
 				[
 					'id'            => $attendee_1,
 					'name'          => 'Test Purchaser',
