@@ -35,6 +35,10 @@ class Success_Shortcode extends Shortcode_Abstract {
 	 */
 	public function setup_template_vars() {
 		$order_id = tribe_get_request_var( Success::$order_id_query_arg );
+		if ( empty( $order_id ) ) {
+			return;
+		}
+
 		$order    = tec_tc_orders()->by_args( [
 			'status'           => 'any',
 			'gateway_order_id' => $order_id,
