@@ -12,8 +12,6 @@
 
 namespace TEC\Tickets\Order_Modifiers\Checkout;
 
-use TEC\Tickets\Order_Modifiers\Checkout\Abstract_Fees;
-
 /**
  * Class Fees
  *
