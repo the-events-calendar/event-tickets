@@ -533,10 +533,7 @@ class Timer extends Controller_Contract {
 
 		// Cancel the reservations for the post ID and token, remove the session associated with the token from the database.
 		if ( ! (
-			$this->reservations->cancel(
-				$post_id,
-				array_column( $this->sessions->get_reservations_for_token( $token ), 'reservation_id' )
-			)
+			$this->reservations->cancel( $post_id, $this->sessions->get_reservation_uuids_for_token( $token ) )
 			&& $this->sessions->delete_token_session( $token )
 		) ) {
 			wp_send_json_error(
