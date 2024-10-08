@@ -21,6 +21,7 @@ use TEC\Tickets\Exceptions\Not_Found_Exception;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers as Table;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
+use TEC\Tickets\Order_Modifiers\Traits\Valid_Types;
 
 /**
  * Class Order_Modifiers.
@@ -30,6 +31,8 @@ use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
  * @package TEC\Tickets\Order_Modifiers\Repositories;
  */
 class Order_Modifiers extends Repository implements Insertable, Updatable, Deletable {
+
+	use Valid_Types;
 
 	/**
 	 * The modifier type for queries.
@@ -44,8 +47,11 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 * @since TBD
 	 *
 	 * @param string $modifier_type The modifier type for queries.
+	 *
+	 * @throws RuntimeException If the modifier type is invalid.
 	 */
 	public function __construct( $modifier_type ) {
+		$this->validate_type( $modifier_type );
 		$this->modifier_type = $modifier_type;
 	}
 
@@ -57,6 +63,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 * @param Model $model The model to insert.
 	 *
 	 * @return bool
+	 * @throws RuntimeException If the model type is invalid.
 	 */
 	public function delete( Model $model ): bool {
 		$this->validate_model_type( $model );
@@ -76,6 +83,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 * @param Model $model
 	 *
 	 * @return Model
+	 * @throws RuntimeException If the model type is invalid.
 	 */
 	public function insert( Model $model ): Model {
 		$this->validate_model_type( $model );
@@ -119,6 +127,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 * @param Model $model The model to insert.
 	 *
 	 * @return Model
+	 * @throws RuntimeException If the model type is invalid.
 	 */
 	public function update( Model $model ): Model {
 		$this->validate_model_type( $model );
@@ -337,17 +346,17 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 
 		// Handle the meta_key condition: Use IFNULL if a default_meta_key is provided, otherwise check for meta_key directly.
 		if ( $default_meta_key ) {
-			$sql     .= ' AND (IFNULL(m.meta_key, %s) = %s)';
+			$sql      .= ' AND (IFNULL(m.meta_key, %s) = %s)';
 			$params[] = $default_meta_key;
 			$params[] = $meta_key;
 		} else {
-			$sql     .= ' AND m.meta_key = %s';
+			$sql      .= ' AND m.meta_key = %s';
 			$params[] = $meta_key;
 		}
 
 		// Handle the meta_value condition: Use IFNULL if a default_meta_value is provided, otherwise check directly.
 		if ( $default_meta_value ) {
-			$sql     .= ' AND (IFNULL(m.meta_value, %s) IN (' . implode( ',', array_fill( 0, count( $meta_values ), '%s' ) ) . '))';
+			$sql      .= ' AND (IFNULL(m.meta_value, %s) IN (' . implode( ',', array_fill( 0, count( $meta_values ), '%s' ) ) . '))';
 			$params[] = $default_meta_value;
 		} else {
 			$sql .= ' AND m.meta_value IN (' . implode( ',', array_fill( 0, count( $meta_values ), '%s' ) ) . ')';
