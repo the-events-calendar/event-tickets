@@ -65,7 +65,7 @@ export function getCheckoutHandlerForProvider(provider) {
 	 * @param {string}        provider        The provider to get the checkout handler for.
 	 */
 	checkoutHandler = applyFilters(
-		'tec_tickets_seating_checkout_handler',
+		'tec.tickets.seating.checkoutHandler',
 		checkoutHandler,
 		provider
 	);
