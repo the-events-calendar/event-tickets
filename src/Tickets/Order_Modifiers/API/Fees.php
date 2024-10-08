@@ -14,7 +14,6 @@ use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Manager as Manager;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifier_Relationship as Relationships;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers as Modifiers;
 use TEC\Tickets\Order_Modifiers\Traits\Fee_Types;
-use TEC\Tickets\Registerable;
 use WP_REST_Request as Request;
 use WP_REST_Response as Response;
 use WP_REST_Server as Server;
@@ -24,7 +23,7 @@ use WP_REST_Server as Server;
  *
  * @since TBD
  */
-class Fees implements Registerable {
+class Fees extends Base_API {
 
 	use Fee_Types;
 
@@ -34,13 +33,6 @@ class Fees implements Registerable {
 	 * @var Manager
 	 */
 	protected Manager $manager;
-
-	/**
-	 * The namespace for the API.
-	 *
-	 * @var string
-	 */
-	protected string $namespace = 'tribe/tickets/v1';
 
 	/**
 	 * The repository for interacting with the order modifiers relationships.
@@ -67,15 +59,13 @@ class Fees implements Registerable {
 	}
 
 	/**
-	 * Registers the class with WordPress hooks.
+	 * Registers additional methods/logic with WordPress hooks.
 	 *
 	 * @since TBD
 	 *
 	 * @return void The method does not return any value.
 	 */
-	public function register(): void {
-		add_action( 'rest_api_init', fn() => $this->register_routes() );
-
+	protected function register_additional_hooks(): void {
 		add_filter(
 			'tribe_rest_single_ticket_data',
 			fn( array $data, Request $request ) => $this->add_fees_to_ticket_data( $data, $request ),
@@ -91,7 +81,7 @@ class Fees implements Registerable {
 	 *
 	 * @return void
 	 */
-	protected function register_routes() {
+	protected function register_routes(): void {
 		register_rest_route(
 			$this->namespace,
 			'/fees',
@@ -181,19 +171,6 @@ class Fees implements Registerable {
 			'fees'      => $ticket_fees,
 			'automatic' => $automatic_fees,
 		];
-	}
-
-	/**
-	 * Get the permission callback.
-	 *
-	 * @since TBD
-	 *
-	 * @return callable The permission callback.
-	 */
-	protected function get_permission_callback() {
-		return static function () {
-			return current_user_can( 'manage_options' );
-		};
 	}
 
 	/**
