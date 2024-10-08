@@ -102,7 +102,7 @@ export const checkoutControlsSelectors =
  *
  * @param {boolean} interruptableFlag The interruptable flag.
  */
-function setIsInterruptable(interruptableFlag) {
+export function setIsInterruptable(interruptableFlag) {
 	interruptable = interruptableFlag;
 }
 
@@ -731,6 +731,9 @@ export function setHealthcheckLoopId(id) {
 onReady(syncOnLoad);
 onReady(() => watchCheckoutControls(document));
 
+// On page/tab close (or app close in some instances) interrupt the timer and clear the session.
+window.addEventListener('beforeUnload', interrupt);
+
 window.tec = window.tec || {};
 window.tec.tickets = window.tec.tickets || {};
 window.tec.tickets.seating = window.tec.tickets.seating || {};
@@ -741,4 +744,5 @@ window.tec.tickets.seating.frontend.session = {
 	reset,
 	syncWithBackend,
 	interrupt,
+	setIsInterruptable,
 };
