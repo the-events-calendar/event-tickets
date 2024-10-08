@@ -35,6 +35,7 @@ class Fees extends Abstract_Fees {
 	 * @since TBD
 	 */
 	public function register(): void {
+		// @todo move agnostic logic into seperate class.
 		// Hook for calculating total values, setting subtotal, and modifying the total value.
 		add_filter( 'tec_tickets_commerce_checkout_shortcode_total_value', [ $this, 'calculate_fees' ], 10, 3 );
 

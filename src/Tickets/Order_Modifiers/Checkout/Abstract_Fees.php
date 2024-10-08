@@ -296,6 +296,7 @@ abstract class Abstract_Fees {
 
 			// Append the fee to the cart.
 			$items[] = [
+				'id' => 'id for the item', // Default, if type is missing then default to ticket. If it's a ticket and there is no ID, see if 'ticket_id' exists.
 				'price'        => $fee['fee_amount'],
 				'sub_total'    => $fee['fee_amount'],
 				'type'         => 'fee',
@@ -303,6 +304,10 @@ abstract class Abstract_Fees {
 				'display_name' => $fee['display_name'],
 				'ticket_id'    => '', // @todo redscar - Passing this so places where wp_list_luck is used doesn't fail.
 				'event_id'     => '',
+				'parent' => [
+					'id' =>123,
+					'type'=>'ticket',
+				]
 			];
 
 			// Add the fee ID to the tracking array.
