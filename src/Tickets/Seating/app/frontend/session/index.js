@@ -59,11 +59,13 @@ let healthCheckLoopId = null;
 let started = false;
 
 /**
- * Whether the timer is currently interrupting or not.
+ * Whether the timer is currently interruptable or not.
+ *
+ * @since TBD
  *
  * @type {boolean}
  */
-let interrupting = false;
+let interruptable = true;
 
 /**
  * Whether the timer has expired or not.
@@ -92,6 +94,72 @@ let interruptDialogElement = null;
  */
 export const checkoutControlsSelectors =
 	'.tribe-tickets__commerce-checkout-form-submit-button, .tribe-tickets__commerce-checkout-paypal-buttons button';
+
+/**
+ * Sets the interruptable flag.
+ *
+ * @since TBD
+ *
+ * @param {boolean} interruptableFlag The interruptable flag.
+ */
+function setIsInterruptable(interruptableFlag) {
+	interruptable = interruptableFlag;
+}
+
+/**
+ * Returns the interruptable flag.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the timer is currently interruptable or not.
+ */
+function isInterruptable() {
+	return interruptable;
+}
+
+/**
+ * Sets the expired flag.
+ *
+ * @since TBD
+ *
+ * @param {boolean} expiredFlag The expired flag.
+ */
+function setIsExpired(expiredFlag) {
+	expired = expiredFlag;
+}
+
+/**
+ * Returns the expired flag.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the timer has expired or not.
+ */
+function isExpired() {
+	return expired;
+}
+
+/**
+ * Sets the started flag.
+ *
+ * @since TBD
+ *
+ * @param {boolean} startedFlag The started flag.
+ */
+function setIsStarted(startedFlag) {
+	started = startedFlag;
+}
+
+/**
+ * Returns the started flag.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the timer has been started or not.
+ */
+function isStarted() {
+	return started;
+}
 
 /**
  * @typedef {Object} TimerData
@@ -318,13 +386,17 @@ async function getInterruptDialogElement() {
  * @return {void} The timer is interrupted.
  */
 async function interrupt() {
-	interrupting = true;
+	if (!isInterruptable()) {
+		return;
+	}
+
+	setIsInterruptable(true);
 
 	getTimerElements().forEach((timerElement) => {
 		setTimerTimeLeft(timerElement, 0, 0);
 	});
 
-	expired = true;
+	setIsExpired(true);
 	clearTimeout(countdownLoopId);
 	clearTimeout(healthCheckLoopId);
 	const interruptDialog = await getInterruptDialogElement();
@@ -342,7 +414,7 @@ async function interrupt() {
 		interruptDialog.shown = false;
 	}
 
-	interrupting = false;
+	setIsInterruptable(false);
 }
 
 /**
@@ -355,7 +427,7 @@ async function interrupt() {
  * @return {void}
  */
 function startCountdownLoop(secondsLeft) {
-	if (interrupting) {
+	if (!isInterruptable()) {
 		return;
 	}
 
@@ -375,7 +447,7 @@ function startCountdownLoop(secondsLeft) {
 			);
 		});
 
-		if (!expired) {
+		if (!isExpired()) {
 			startCountdownLoop(secondsLeft);
 		}
 	}, 1000);
@@ -389,7 +461,7 @@ function startCountdownLoop(secondsLeft) {
  * @return {void}
  */
 function startHealthCheckLoop() {
-	if (expired || interrupting) {
+	if (isExpired() || !isInterruptable()) {
 		return;
 	}
 
@@ -409,7 +481,7 @@ function startHealthCheckLoop() {
  * @return {Promise<void>} A promise that will resolve when the request is completed.
  */
 export async function syncWithBackend() {
-	if (expired || getTimerElements().length === 0 || interrupting) {
+	if (isExpired() || getTimerElements().length === 0 || !isInterruptable()) {
 		return;
 	}
 
@@ -511,7 +583,7 @@ async function requestToBackend(action) {
  * @return {Promise<void>} A Promise that resolves when the timer is started.
  */
 export async function start() {
-	if (started || getTimerElements().length === 0) {
+	if (setIsStarted() || getTimerElements().length === 0) {
 		return;
 	}
 
@@ -531,8 +603,7 @@ export async function start() {
 		setTimerTimeLeft(timerElement, minutes, seconds);
 	});
 
-	started = true;
-
+	setIsStarted(true);
 	startCountdownLoop(secondsLeft);
 	startHealthCheckLoop();
 }
@@ -553,8 +624,8 @@ export function reset() {
 		clearTimeout(healthCheckLoopId);
 	}
 
-	started = false;
-	expired = false;
+	setIsStarted(false);
+	setIsExpired(false);
 }
 
 /**
@@ -565,6 +636,8 @@ export function reset() {
  * @return {void}
  */
 export function postponeHealthcheck() {
+	setIsInterruptable(false);
+
 	if (healthCheckLoopId) {
 		// Pause the healthcheck loop.
 		clearTimeout(healthCheckLoopId);
@@ -577,6 +650,7 @@ export function postponeHealthcheck() {
 
 	// Postpone the healthcheck for 30 seconds.
 	setTimeout(() => {
+		setIsInterruptable(true);
 		syncWithBackend();
 	}, 30000);
 }
@@ -600,6 +674,8 @@ function syncOnLoad() {
 	}
 
 	syncWithBackend();
+
+	setIsInterruptable(true);
 }
 
 /**
