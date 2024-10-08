@@ -343,6 +343,7 @@ class Attendee {
 					'associatedAttendees' => $order_id ? $associated_attendees[ $order_id ] : 0,
 				],
 				'ticketId'      => $attendee['product_id'],
+				'ticketName'    => $attendee['ticket'],
 				'seatTypeId'    => get_post_meta( $id, Meta::META_KEY_SEAT_TYPE, true ),
 				'seatLabel'     => get_post_meta( $id, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true ),
 				'reservationId' => get_post_meta( $id, Meta::META_KEY_RESERVATION_ID, true ),
