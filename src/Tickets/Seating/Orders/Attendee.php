@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Seating\Orders;
 
+use TEC\Tickets\Commerce\Module;
 use Tribe__Main as Common;
 use Tribe__Tickets__Attendee_Repository as Attendee_Repository;
 use Tribe__Utils__Array as Arr;
@@ -295,7 +296,16 @@ class Attendee {
 	 */
 	public function format_many( array $attendees ): array {
 		$unknown_attendee_name = __( 'Unknown', 'event-tickets' );
-		$associated_attendees  = array_reduce(
+		
+		// Filter out attendees that are not from the Commerce module.
+		$attendees = array_filter(
+			$attendees,
+			static function ( array $attendee ): bool {
+				return Module::class === $attendee['provider'];
+			}
+		);
+		
+		$associated_attendees = array_reduce(
 			$attendees,
 			static function ( array $carry, array $attendee ): array {
 				if ( ! isset( $attendee['order_id'] ) ) {
