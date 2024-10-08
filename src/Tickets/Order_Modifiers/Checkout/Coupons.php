@@ -6,6 +6,7 @@ use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Commerce\Utils\Value;
 
 class Coupons {
@@ -109,7 +110,7 @@ class Coupons {
 
 			wp_send_json_success( [
 				'message' => __( 'Coupon removed successfully.', 'event-tickets' ),
-				'amount'  => $order->total_value->get_float(),
+				'amount'  => $order->total_value->get_currency(),
 			] );
 			return;
 		}
@@ -124,12 +125,14 @@ class Coupons {
 		$body['amount'] = $new_order_value;
 		Payment_Intent::update( $payment_intent_id, $body );
 
+		$currency_code = $order->currency;
+		$currency_symbol     = Currency::get_currency_symbol($currency_code);
 		// Construct a response with success and the discount applied.
 		$response = [
 			'valid'    => true,
-			'discount' => Value::create( $coupon_discount / 100 )->get_float(),
+			'discount' => Value::create( $coupon_discount / 100 )->get_currency(),
 			'message'  => sprintf( __( 'Coupon "%s" applied successfully.', 'event-tickets' ), $coupon_code ),
-			'amount'   => Value::create( $new_order_value / 100 )->get_float(),
+			'amount'   => Value::create( $new_order_value / 100 )->get_currency(),
 		];
 
 		// Send the success response back to the client.

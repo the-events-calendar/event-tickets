@@ -94,12 +94,25 @@ tribe.tickets.commerce = {};
 	 * @since TBD
 	 * @param {string} newAmount The new total amount to display.
 	 */
-	obj.updateTotalPrice = function ( newAmount ) {
+	obj.updateTotalPrice = function (newAmount) {
 		const $totalPriceElement = $( '.tribe-tickets__commerce-checkout-cart-footer-total-wrap' );
 
-		// Update the total price with the new amount.
-		$totalPriceElement.text( `$${ newAmount }` );
+		const parser = new DOMParser();
+		const unescapedAmount = parser.parseFromString(`<!doctype html><body>${newAmount}`, 'text/html').body.textContent;
+
+		$totalPriceElement.text(unescapedAmount);
 	};
+
+	obj.updateCouponDiscount = function (discount) {
+		const $couponValueElement = $( obj.selectors.couponAppliedValue );
+
+		// Use DOMParser to unescape the discount value
+		const parser = new DOMParser();
+		const unescapedDiscount = parser.parseFromString(`<!doctype html><body>${discount}`, 'text/html').body.textContent;
+
+		$couponValueElement.text(unescapedDiscount);
+	};
+
 
 	obj.bindCouponApply = function() {
 		let ajaxInProgress = false;
@@ -159,7 +172,7 @@ tribe.tickets.commerce = {};
 						$( obj.selectors.couponApplyButton ).hide();
 
 						// Display coupon value and discount.
-						$( obj.selectors.couponAppliedValue ).text( response.data.discount );
+						obj.updateCouponDiscount( response.data.discount );
 						obj.updateTotalPrice( response.data.amount );
 						$( obj.selectors.couponAppliedSection ).show();
 					} else {
