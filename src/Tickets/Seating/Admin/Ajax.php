@@ -692,7 +692,7 @@ class Ajax extends Controller_Contract {
 
 		if ( ! (
 			$this->reservations->cancel( $post_id, $this->sessions->get_reservation_uuids_for_token( $token ) )
-			&& $this->sessions->clear_token_reservations( $token )
+			&& $this->sessions->delete_token_session( $token )
 		) ) {
 			wp_send_json_error(
 				[

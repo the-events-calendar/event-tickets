@@ -31,7 +31,7 @@ export function filterCapacityTableMappedProps(mappedProps) {
 		(value, index, array) => array.indexOf(value) === index
 	);
 
-	if (!(seatTypes && activeSeatTypes.length)) {
+	if (!Object.keys(seatTypes).length || !activeSeatTypes.length) {
 		return mappedProps;
 	}
 
