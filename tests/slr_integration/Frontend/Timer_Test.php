@@ -494,7 +494,8 @@ class Timer_Test extends Controller_Test_Case {
 		$session->add_entry( $post_id, 'test-token' );
 		update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
 		$sessions->upsert( 'test-token', $post_id, time() + 100 );
-		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
+		$mock_reservations = $this->create_mock_reservations_data( [ $post_id ], 3 );
+		$sessions->update_reservations( 'test-token', $mock_reservations );
 
 		// Set up the request context.
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Session::COOKIE_NAME );
@@ -518,7 +519,7 @@ class Timer_Test extends Controller_Test_Case {
 					'body'    => wp_json_encode(
 						[
 							'eventId' => 'test-post-uuid',
-							'ids'     => [ '1234567890', '0987654321' ],
+							'ids'     => [ 'reservation-id-1', 'reservation-id-2', 'reservation-id-3' ],
 						]
 					),
 				];
@@ -585,7 +586,8 @@ class Timer_Test extends Controller_Test_Case {
 		$session->add_entry( $post_id, 'test-token' );
 		update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
 		$sessions->upsert( 'test-token', $post_id, time() + 100 );
-		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
+		$mock_reservations = $this->create_mock_reservations_data( [ $post_id ], 3 );
+		$sessions->update_reservations( 'test-token', $mock_reservations );
 
 		// Set up the request context.
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Session::COOKIE_NAME );
@@ -609,7 +611,7 @@ class Timer_Test extends Controller_Test_Case {
 					'body'    => wp_json_encode(
 						[
 							'eventId' => 'test-post-uuid',
-							'ids'     => [ '1234567890', '0987654321' ],
+							'ids'     => [ 'reservation-id-1', 'reservation-id-2', 'reservation-id-3' ],
 						]
 					),
 				];
@@ -642,7 +644,7 @@ class Timer_Test extends Controller_Test_Case {
 		do_action( 'wp_ajax_nopriv_' . Timer::ACTION_INTERRUPT_GET_DATA );
 
 		$this->assertEquals( 1, $service_cancellations );
-		$this->assertEquals( [ '1234567890', '0987654321' ], $sessions->get_reservations_for_token( 'test-token' ) );
+		$this->assertEquals( $mock_reservations, $sessions->get_reservations_for_token( 'test-token' ) );
 		$this->assertEquals( [], $session->get_entries() );
 		$this->assertEquals( 500, $wp_send_json_error_code );
 		$this->assertEquals( [ 'error' => 'Failed to cancel the reservations' ], $wp_send_json_error_data );
@@ -657,7 +659,8 @@ class Timer_Test extends Controller_Test_Case {
 		$session->add_entry( $post_id, 'test-token' );
 		update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
 		$sessions->upsert( 'test-token', $post_id, time() + 100 );
-		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
+		$mock_reservations = $this->create_mock_reservations_data( [ $post_id ], 3 );
+		$sessions->update_reservations( 'test-token', $mock_reservations );
 
 		// Set up the request context.
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Session::COOKIE_NAME );
@@ -680,7 +683,7 @@ class Timer_Test extends Controller_Test_Case {
 					'body'    => wp_json_encode(
 						[
 							'eventId' => 'test-post-uuid',
-							'ids'     => [ '1234567890', '0987654321' ],
+							'ids'     => [ 'reservation-id-1', 'reservation-id-2', 'reservation-id-3' ],
 						]
 					),
 				];
@@ -718,7 +721,7 @@ class Timer_Test extends Controller_Test_Case {
 		do_action( 'wp_ajax_nopriv_' . Timer::ACTION_INTERRUPT_GET_DATA );
 
 		$this->assertEquals( 1, $service_cancellations );
-		$this->assertEquals( [ '1234567890', '0987654321' ], $sessions->get_reservations_for_token( 'test-token' ) );
+		$this->assertEquals( $mock_reservations, $sessions->get_reservations_for_token( 'test-token' ) );
 		$this->assertEquals( [], $session->get_entries() );
 		$this->assertEquals( 500, $wp_send_json_error_code );
 		$this->assertEquals( [ 'error' => 'Failed to cancel the reservations' ], $wp_send_json_error_data );
