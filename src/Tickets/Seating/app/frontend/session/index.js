@@ -38,7 +38,7 @@ const hiddenClassName = 'tec-tickets-seating__timer--hidden';
  *
  * @type {?number}
  */
-let countdownLoopId = null;
+let countdownTimeoutId = null;
 
 /**
  * The ID of the health check loop that will sync the timer with the backend every minute.
@@ -47,7 +47,16 @@ let countdownLoopId = null;
  *
  * @type {?number}
  */
-let healthCheckLoopId = null;
+let healthCheckTimeoutId = null;
+
+/**
+ * The ID of the resume loop that will resume the timer after a pause.
+ *
+ * @since TBD
+ *
+ * @type {?number}
+ */
+let resumeTimeoutId = null;
 
 /**
  * Whether the timer has been started or not.
@@ -86,6 +95,26 @@ let expired = false;
 let interruptDialogElement = null;
 
 /**
+ * The document element that should be targeted by the module.
+ * Defaults to the document.
+ *
+ * @since TBD
+ *
+ * @type {HTMLElement}
+ */
+let targetDom = document;
+
+/**
+ * The list of checkout controls that are being watched.
+ *
+ * @since TBD
+ *
+ *
+ * @type {HTMLElement[]} the list of checkout controls that are being watched.
+ */
+let watchedCheckoutControls = [];
+
+/**
  * The selectors used to find the checkout controls on the page.
  *
  * @since TBD
@@ -113,7 +142,7 @@ export function setIsInterruptable(interruptableFlag) {
  *
  * @return {boolean} Whether the timer is currently interruptable or not.
  */
-function isInterruptable() {
+export function isInterruptable() {
 	return interruptable;
 }
 
@@ -135,7 +164,7 @@ function setIsExpired(expiredFlag) {
  *
  * @return {boolean} Whether the timer has expired or not.
  */
-function isExpired() {
+export function isExpired() {
 	return expired;
 }
 
@@ -157,7 +186,7 @@ function setIsStarted(startedFlag) {
  *
  * @return {boolean} Whether the timer has been started or not.
  */
-function isStarted() {
+export function isStarted() {
 	return started;
 }
 
@@ -176,7 +205,7 @@ function isStarted() {
  * @return {NodeList<HTMLElement>} All the timer elements on the page.
  */
 function getTimerElements() {
-	return document.querySelectorAll(selector);
+	return targetDom.querySelectorAll(selector);
 }
 
 /**
@@ -361,7 +390,7 @@ async function getInterruptDialogElement() {
 			redirectUrl,
 		});
 
-		document
+		targetDom
 			.querySelector(appendTarget)
 			?.appendChild(interruptDialogElement);
 	}
@@ -397,8 +426,10 @@ async function interrupt() {
 	});
 
 	setIsExpired(true);
-	clearTimeout(countdownLoopId);
-	clearTimeout(healthCheckLoopId);
+	clearTimeout(countdownTimeoutId);
+	countdownTimeoutId = null;
+	clearTimeout(healthCheckTimeoutId);
+	healthCheckTimeoutId = null;
 	const interruptDialog = await getInterruptDialogElement();
 
 	/**
@@ -437,7 +468,9 @@ function startCountdownLoop(secondsLeft) {
 		return;
 	}
 
-	countdownLoopId = setTimeout(() => {
+	setIsStarted(true);
+
+	countdownTimeoutId = setTimeout(() => {
 		secondsLeft -= 1;
 		getTimerElements().forEach((timerElement) => {
 			setTimerTimeLeft(
@@ -465,7 +498,7 @@ function startHealthCheckLoop() {
 		return;
 	}
 
-	healthCheckLoopId = setTimeout(async () => {
+	healthCheckTimeoutId = setTimeout(async () => {
 		await syncWithBackend();
 		startHealthCheckLoop();
 	}, 3 * 1000);
@@ -492,12 +525,13 @@ export async function syncWithBackend() {
 		return;
 	}
 
-	if (countdownLoopId) {
-		clearTimeout(countdownLoopId);
+	if (countdownTimeoutId) {
+		clearTimeout(countdownTimeoutId);
+		countdownTimeoutId = null;
 	}
 
 	startCountdownLoop(secondsLeft);
-	if (!healthCheckLoopId) {
+	if (!healthCheckTimeoutId) {
 		startHealthCheckLoop();
 	}
 }
@@ -616,17 +650,25 @@ export async function start() {
  * @return {void} The timer is reset.
  */
 export function reset() {
-	if (countdownLoopId) {
-		clearTimeout(countdownLoopId);
+	if (countdownTimeoutId) {
+		clearTimeout(countdownTimeoutId);
 	}
 
-	if (healthCheckLoopId) {
-		clearTimeout(healthCheckLoopId);
+	if (healthCheckTimeoutId) {
+		clearTimeout(healthCheckTimeoutId);
 	}
 
-	setIsStarted(false);
-	setIsExpired(false);
-	setIsInterruptable(true);
+	if (resumeTimeoutId) {
+		clearTimeout(resumeTimeoutId);
+	}
+
+	started = false;
+	expired = false;
+	healthCheckTimeoutId = null;
+	countdownTimeoutId = null;
+	resumeTimeoutId = null;
+	interruptable = true;
+	stopWatchingCheckoutControls();
 }
 
 /**
@@ -636,24 +678,53 @@ export function reset() {
  *
  * @return {void}
  */
-export function postponeHealthcheck() {
+export function pause() {
 	setIsInterruptable(false);
 
-	if (healthCheckLoopId) {
+	if (healthCheckTimeoutId) {
 		// Pause the healthcheck loop.
-		clearTimeout(healthCheckLoopId);
+		clearTimeout(healthCheckTimeoutId);
+		healthCheckTimeoutId = null;
 	}
 
-	if (countdownLoopId) {
+	if (countdownTimeoutId) {
 		// Pause the countdown loop.
-		clearTimeout(countdownLoopId);
+		clearTimeout(countdownTimeoutId);
+		countdownTimeoutId = null;
 	}
 
 	// Postpone the healthcheck for 30 seconds.
-	setTimeout(() => {
-		setIsInterruptable(true);
-		syncWithBackend();
-	}, 30000);
+	resumeTimeoutId = setTimeout(resume, 30000);
+}
+
+/**
+ * Resumes the timer from a pause.
+ *
+ * @since TBD
+ *
+ * @return {void} The timer is resumed.
+ */
+export async function resume() {
+	if (resumeTimeoutId) {
+		clearTimeout(resumeTimeoutId);
+		resumeTimeoutId = null;
+	}
+
+	setIsInterruptable(true);
+	await syncWithBackend();
+}
+
+/**
+ * Sets the DOM to initialize the timer(s) in.
+ *
+ * Defaults to the document.
+ *
+ * @since TBD
+ *
+ * @param {HTMLElement} targetDocument The DOM to initialize the timer(s) in.
+ */
+export function setTargetDom(targetDocument) {
+	targetDom = targetDocument || document;
 }
 
 /**
@@ -663,7 +734,7 @@ export function postponeHealthcheck() {
  *
  * @return {void} The timer is synced.
  */
-function syncOnLoad() {
+export async function syncOnLoad() {
 	const syncTimerElements = Array.from(getTimerElements()).filter(
 		(syncTimerElement) => {
 			return 'syncOnLoad' in syncTimerElement.dataset;
@@ -674,9 +745,9 @@ function syncOnLoad() {
 		return;
 	}
 
-	syncWithBackend();
-
 	setIsInterruptable(true);
+
+	await syncWithBackend();
 }
 
 /**
@@ -684,11 +755,9 @@ function syncOnLoad() {
  *
  * @since TBD
  *
- * @param {HTMLElement|null} parent The parent element to search the checkout controls in.
- *
  * @return {void}
  */
-export function watchCheckoutControls(parent) {
+export function watchCheckoutControls() {
 	/**
 	 * Filters the selectors used to find the checkout controls on the page.
 	 *
@@ -701,16 +770,42 @@ export function watchCheckoutControls(parent) {
 		checkoutControlsSelectors
 	);
 
-	parent = parent || document;
-
-	const checkoutControlElements = parent.querySelectorAll(
+	const checkoutControlElements = targetDom.querySelectorAll(
 		filteredCheckoutControls
 	);
 
 	checkoutControlElements.forEach((checkoutControlElement) => {
-		checkoutControlElement.addEventListener('click', postponeHealthcheck);
-		checkoutControlElement.addEventListener('submit', postponeHealthcheck);
+		watchedCheckoutControls.push(checkoutControlElement);
+		checkoutControlElement.addEventListener('click', pause);
+		checkoutControlElement.addEventListener('submit', pause);
 	});
+}
+
+/**
+ * Remove the event listeners from the watched checkout controls.
+ *
+ * @since TBD
+ *
+ * @return {void} The event listeners are removed from the watched checkout controls.
+ */
+function stopWatchingCheckoutControls() {
+	watchedCheckoutControls.forEach((checkoutControlElement) => {
+		checkoutControlElement.removeEventListener('click', pause);
+		checkoutControlElement.removeEventListener('submit', pause);
+	});
+
+	watchedCheckoutControls = [];
+}
+
+/**
+ * Returns the list of checkout controls that are being watched by the timer.
+ *
+ * @since TBD
+ *
+ * @return {HTMLElement[]} The list of checkout controls that are being watched by the timer.
+ */
+export function getWatchedCheckoutControls() {
+	return watchedCheckoutControls;
 }
 
 /**
@@ -723,14 +818,47 @@ export function watchCheckoutControls(parent) {
  * @return {number} The updated healthcheck loop ID.
  */
 export function setHealthcheckLoopId(id) {
-	healthCheckLoopId = id;
+	healthCheckTimeoutId = id;
 
-	return healthCheckLoopId;
+	return healthCheckTimeoutId;
+}
+
+/**
+ * Returns the ID of the healthcheck timeout.
+ *
+ * @since TBD
+ *
+ * @return {?number} The ID of the healthcheck timeout.
+ */
+export function getHealthcheckTimeoutId() {
+	return healthCheckTimeoutId;
+}
+
+/**
+ * Returns the ID of the countdown timeout.
+ *
+ * @since TBD
+ *
+ * @return {?number} The ID of the countdown timeout.
+ */
+export function getCountdownTimeoutId() {
+	return countdownTimeoutId;
+}
+
+/**
+ * Returns the ID of the resume timeout
+ *
+ * @since TBD
+ *
+ * @return {?number} The ID of the resume timeout.
+ */
+export function getResumeTimeoutId() {
+	return resumeTimeoutId;
 }
 
 // On DOM ready check if any timer needs to be synced.
-onReady(syncOnLoad);
-onReady(() => watchCheckoutControls(document));
+onReady(() => syncOnLoad());
+onReady(() => watchCheckoutControls());
 
 // On page/tab close (or app close in some instances) interrupt the timer and clear the session.
 window.addEventListener('beforeUnload', interrupt);
@@ -743,7 +871,7 @@ window.tec.tickets.seating.frontend.session = {
 	...(window.tec.tickets.seating.frontend.session || {}),
 	start,
 	reset,
-	syncWithBackend,
+	syncOnLoad,
 	interrupt,
 	setIsInterruptable,
 };
