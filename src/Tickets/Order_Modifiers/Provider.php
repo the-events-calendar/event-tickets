@@ -17,6 +17,7 @@ use TEC\Tickets\Order_Modifiers\Checkout\Coupons as Coupon_Checkout;
 use TEC\Tickets\Order_Modifiers\Modifiers\Fee;
 use TEC\Tickets\Order_Modifiers\Checkout\Gateway\Paypal\Fees as Paypal_Checkout_Fees;
 use TEC\Tickets\Order_Modifiers\Checkout\Gateway\Stripe\Fees as Stripe_Checkout_Fees;
+use TEC\Tickets\Order_Modifiers\Checkout\Fees as Agnostic_Checkout_Fees;
 
 /**
  * Class Provider
@@ -56,6 +57,7 @@ final class Provider extends ServiceProvider {
 				Order_Modifier_Fee_Metabox::class,
 				Paypal_Checkout_Fees::class,
 				Stripe_Checkout_Fees::class,
+				Agnostic_Checkout_Fees::class,
 				Coupon_Checkout::class,
 			],
 			'order_modifiers'

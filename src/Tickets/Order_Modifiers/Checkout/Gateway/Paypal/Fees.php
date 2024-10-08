@@ -35,20 +35,6 @@ class Fees extends Abstract_Fees {
 	 * @since TBD
 	 */
 	public function register(): void {
-		// @todo move agnostic logic into seperate class.
-		// Hook for calculating total values, setting subtotal, and modifying the total value.
-		add_filter( 'tec_tickets_commerce_checkout_shortcode_total_value', [ $this, 'calculate_fees' ], 10, 3 );
-
-		// Hook for displaying fees in the checkout.
-		add_action(
-			'tec_tickets_commerce_checkout_cart_before_footer_quantity',
-			[
-				$this,
-				'display_fee_section',
-			],
-			30,
-			3
-		);
 		// Hook for appending fees to the cart for PayPal processing.
 		add_action( 'tec_tickets_commerce_create_from_cart_items', [ $this, 'append_fees_to_cart' ], 10, 4 );
 
