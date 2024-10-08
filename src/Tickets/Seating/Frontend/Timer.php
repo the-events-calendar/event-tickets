@@ -15,6 +15,7 @@ use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Tickets\Seating\Built_Assets;
 use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Tables\Sessions;
+use TEC\Tickets\Seating\Frontend;
 use TEC\Tickets\Seating\Template;
 use Tribe__Tickets__Main as ET;
 
@@ -92,6 +93,15 @@ class Timer extends Controller_Contract {
 	private Session $session;
 
 	/**
+	 * A reference to the Frontend object.
+	 *
+	 * @since TBD
+	 *
+	 * @var Frontend
+	 */
+	private Frontend $frontend;
+
+	/**
 	 * The current token used to render the timer.
 	 * Set on explicit render requests.
 	 *
@@ -121,19 +131,22 @@ class Timer extends Controller_Contract {
 	 * @param Sessions     $sessions     A reference to the Sessions table handler.
 	 * @param Reservations $reservations A reference to the Reservations object.
 	 * @param Session      $session      A reference to the Session object.
+	 * @param Frontend     $frontend     A reference to the Frontend object.
 	 */
 	public function __construct(
 		Container $container,
 		Template $template,
 		Sessions $sessions,
 		Reservations $reservations,
-		Session $session
+		Session $session,
+		Frontend $frontend
 	) {
 		parent::__construct( $container );
 		$this->template     = $template;
 		$this->sessions     = $sessions;
 		$this->reservations = $reservations;
 		$this->session      = $session;
+		$this->frontend     = $frontend;
 	}
 
 	/**
@@ -480,7 +493,7 @@ class Timer extends Controller_Contract {
 
 		$post_type             = get_post_type( $post_id );
 		$post_type_object      = get_post_type_object( $post_type );
-		$has_tickets_available = tribe_tickets()->where( 'event', $post_id )->where( 'is_available', true )->count();
+		$has_tickets_available = $this->frontend->get_events_ticket_capacity_for_seating( $post_id );
 
 		if ( $has_tickets_available ) {
 			$content      = _x(
@@ -489,7 +502,7 @@ class Timer extends Controller_Contract {
 				'event-tickets'
 			);
 			$button_label = _x( 'Find Seats', 'Seat selection expired timer button label', 'event-tickets' );
-			$redirect_url = get_post_permalink( $post_id );
+			$redirect_url = get_permalink( $post_id );
 		} else {
 			if ( $post_type_object ) {
 				$post_type_label = strtolower( get_post_type_labels( $post_type_object )->singular_name ) ?? 'event';

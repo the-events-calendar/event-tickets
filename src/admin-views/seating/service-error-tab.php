@@ -15,7 +15,7 @@
 <div class="wrap">
 	<h1>
 		<?php
-		echo esc_html_x( 'Seat Layouts', 'Seat Layouts home page title', 'event-tickets' );
+		echo esc_html_x( 'Seating', 'Seat Layouts home page title', 'event-tickets' );
 		?>
 	</h1>
 

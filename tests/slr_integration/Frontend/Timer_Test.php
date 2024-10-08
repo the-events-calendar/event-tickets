@@ -17,6 +17,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Data_API as Data_API;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 
 class Timer_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -413,7 +414,13 @@ class Timer_Test extends Controller_Test_Case {
 		yield 'post with no tickets available' => [
 			function () {
 				$post_id = static::factory()->post->create();
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'layout-uuid' );
 				update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
+				update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, 0 );
+
+				$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+				update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
+				update_post_meta( $ticket_id, '_stock', 0 );
 
 				return $post_id;
 			}
@@ -422,8 +429,14 @@ class Timer_Test extends Controller_Test_Case {
 		yield 'post with tickets available' => [
 			function () {
 				$post_id = static::factory()->post->create();
+
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'layout-uuid' );
 				update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
+				update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, 10 );
+
 				$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+				update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
+				update_post_meta( $ticket_id, '_stock', 10 );
 
 				return $post_id;
 			}
@@ -439,7 +452,13 @@ class Timer_Test extends Controller_Test_Case {
 						'duration'   => 2 * HOUR_IN_SECONDS,
 					]
 				)->create()->ID;
-				update_post_meta( $event_id, Meta::META_KEY_UUID, 'test-event-uuid' );
+				update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'layout-uuid' );
+				update_post_meta( $event_id, Meta::META_KEY_UUID, 'test-post-uuid' );
+				update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 0 );
+
+				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+				update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
+				update_post_meta( $ticket_id, '_stock', 0 );
 
 				return $event_id;
 			}
@@ -457,7 +476,13 @@ class Timer_Test extends Controller_Test_Case {
 				)->create()->ID;
 
 				tribe_update_option( 'eventsSlug', 'events-calendar' );
-				update_post_meta( $event_id, Meta::META_KEY_UUID, 'test-event-uuid' );
+				update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'layout-uuid' );
+				update_post_meta( $event_id, Meta::META_KEY_UUID, 'test-post-uuid' );
+				update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 0 );
+
+				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+				update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
+				update_post_meta( $ticket_id, '_stock', 0 );
 
 				return $event_id;
 			}
@@ -474,7 +499,12 @@ class Timer_Test extends Controller_Test_Case {
 					]
 				)->create()->ID;
 				update_post_meta( $event_id, Meta::META_KEY_UUID, 'test-event-uuid' );
+				update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'layout-uuid' );
+				update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 10 );
+
 				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+				update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
+				update_post_meta( $ticket_id, '_stock', 10 );
 
 				return $event_id;
 			}

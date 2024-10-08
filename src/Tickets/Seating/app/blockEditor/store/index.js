@@ -53,6 +53,22 @@ const store = createReduxStore(storeName, {
 					action.clientId
 				);
 
+				// Delete the seat type if it's null. Equivalent to the user selecting a blank option.
+				if (null === action.seatTypeId) {
+					const { seatTypesByClientId, seatTypesByPostId } = state;
+
+					// Remove the seat type for specific client id and post id from the store.
+					delete seatTypesByClientId[action.clientId];
+					delete seatTypesByPostId[ticketPostId];
+					delete seatTypesByPostId[action.clientId];
+
+					return {
+						...state,
+						seatTypesByClientId,
+						seatTypesByPostId,
+					};
+				}
+
 				return {
 					...state,
 					seatTypesByClientId: {
