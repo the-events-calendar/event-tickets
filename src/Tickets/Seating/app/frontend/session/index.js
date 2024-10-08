@@ -626,6 +626,7 @@ export function reset() {
 
 	setIsStarted(false);
 	setIsExpired(false);
+	setIsInterruptable(true);
 }
 
 /**
