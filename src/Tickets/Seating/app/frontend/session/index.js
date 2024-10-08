@@ -59,6 +59,13 @@ let healthCheckLoopId = null;
 let started = false;
 
 /**
+ * Whether the timer is currently interrupting or not.
+ *
+ * @type {boolean}
+ */
+let interrupting = false;
+
+/**
  * Whether the timer has expired or not.
  *
  * @since TBD
@@ -311,6 +318,8 @@ async function getInterruptDialogElement() {
  * @return {void} The timer is interrupted.
  */
 async function interrupt() {
+	interrupting = true;
+
 	getTimerElements().forEach((timerElement) => {
 		setTimerTimeLeft(timerElement, 0, 0);
 	});
@@ -332,6 +341,8 @@ async function interrupt() {
 		// This is a  hack to prevent the user from being able to dismiss or close the dialog.
 		interruptDialog.shown = false;
 	}
+
+	interrupting = false;
 }
 
 /**
@@ -344,6 +355,10 @@ async function interrupt() {
  * @return {void}
  */
 function startCountdownLoop(secondsLeft) {
+	if (interrupting) {
+		return;
+	}
+
 	if (secondsLeft <= 0) {
 		interrupt();
 
@@ -359,7 +374,8 @@ function startCountdownLoop(secondsLeft) {
 				secondsLeft % 60
 			);
 		});
-		if ( ! expired ) {
+
+		if (!expired) {
 			startCountdownLoop(secondsLeft);
 		}
 	}, 1000);
@@ -373,7 +389,7 @@ function startCountdownLoop(secondsLeft) {
  * @return {void}
  */
 function startHealthCheckLoop() {
-	if ( expired ) {
+	if (expired || interrupting) {
 		return;
 	}
 
@@ -393,7 +409,7 @@ function startHealthCheckLoop() {
  * @return {Promise<void>} A promise that will resolve when the request is completed.
  */
 export async function syncWithBackend() {
-	if ( expired || getTimerElements().length === 0 ) {
+	if (expired || getTimerElements().length === 0 || interrupting) {
 		return;
 	}
 
