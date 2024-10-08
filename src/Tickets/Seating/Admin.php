@@ -76,6 +76,8 @@ class Admin extends Controller_Contract {
 		remove_action( 'admin_menu', [ $this, 'add_embed_submenu_page' ], 1000 );
 
 		remove_action( 'admin_init', [ $this, 'register_woo_incompatibility_notice' ] );
+
+		remove_filter( 'tec_tickets_find_ticket_type_host_posts_query_args', [ $this, 'exclude_asc_events_from_candidates_from_moving_tickets_to' ] );
 	}
 
 	/**
@@ -158,6 +160,42 @@ class Admin extends Controller_Contract {
 		add_action( 'admin_menu', [ $this, 'add_embed_submenu_page' ], 1000 );
 
 		add_action( 'admin_init', [ $this, 'register_woo_incompatibility_notice' ] );
+
+		add_filter( 'tec_tickets_find_ticket_type_host_posts_query_args', [ $this, 'exclude_asc_events_from_candidates_from_moving_tickets_to' ] );
+	}
+
+	/**
+	 * Excludes ASC events from the candidates to move tickets to.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $query_args The query arguments.
+	 *
+	 * @return array The modified query arguments.
+	 */
+	public function exclude_asc_events_from_candidates_from_moving_tickets_to( array $query_args ): array {
+		if ( empty( $query_args['meta_query'] ) || ! is_array( $query_args['meta_query'] ) ) {
+			$query_args['meta_query'] = [];
+		}
+
+		$query_args['meta_query'][] = [
+			'relation' => 'OR',
+			[
+				'key'     => META::META_KEY_ENABLED,
+				'compare' => 'NOT EXISTS',
+			],
+			[
+				'key'     => META::META_KEY_ENABLED,
+				'value'   => '1',
+				'compare' => '!=',
+			]
+		];
+
+		if ( count( $query_args['meta_query'] ) > 1 ) {
+			$query_args['meta_query']['relation'] = 'AND';
+		}
+
+		return $query_args;
 	}
 
 	/**
