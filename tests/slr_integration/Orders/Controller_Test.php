@@ -34,6 +34,7 @@ use Tribe__Date_Utils;
 use Tribe__Tickets__Attendees as Attendees;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Tickets_View as Tickets_View;
+use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 
 class Controller_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -46,6 +47,7 @@ class Controller_Test extends Controller_Test_Case {
 	use Reservations_Maker;
 	use Attendee_Maker;
 	use WP_Send_Json_Mocks;
+	use RSVP_Ticket_Maker;
 
 	protected string $controller_class = Controller::class;
 
@@ -1522,5 +1524,44 @@ class Controller_Test extends Controller_Test_Case {
 		);
 
 		$this->assertMatchesHtmlSnapshot( $html );
+	}
+	
+	public function test_format_many_should_skip_non_tc_provider_attendees() {
+		// Create a post with Tickets and Attendees, create a User to assign to the Attendees.
+		$post_id  = self::factory()->post->create();
+		$ticket_1 = $this->create_tc_ticket( $post_id, 10 );
+		$ticket_2 = $this->create_tc_ticket( $post_id, 20 );
+		// Create an Order for 3 of Ticket 1, visitor user.
+		$this->create_order(
+			[
+				$ticket_1 => 3,
+				$ticket_2 => 3,
+			]
+		);
+		
+		$rsvp_ticket = $this->create_rsvp_ticket( $post_id );
+		
+		[
+			$rsvp_attendee_1,
+			$rsvp_attendee_2,
+		] = $this->create_many_attendees_for_ticket( 2, $rsvp_ticket, $post_id );
+		
+		$data      = Tickets::get_attendees_by_args(
+			[
+				'per_page'           => 10,
+				'return_total_found' => false,
+				'order'              => 'DESC',
+			],
+			$post_id
+		);
+		$attendees = $data['attendees'];
+		
+		// Make sure we have 8 attendees in total.
+		$this->assertEquals( 8, count( $attendees ) );
+		
+		$formatted = tribe( Orders_Attendee::class )->format_many( $attendees );
+		
+		// Make sure we only have 6 attendees formatted, as the other 2 are not from TC provider.
+		$this->assertEquals( 6, count( $formatted ) );
 	}
 }
