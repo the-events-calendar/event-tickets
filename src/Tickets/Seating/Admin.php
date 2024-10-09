@@ -20,6 +20,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Maps;
 use TEC\Tickets\Seating\Service\Service;
 use Tribe__Tickets__Main as Tickets;
 use Tribe\Tickets\Admin\Settings;
+use Tribe__Admin__Helpers as Admin_Helper;
 
 /**
  * Class Admin.
@@ -192,6 +193,20 @@ class Admin extends Controller_Contract {
 			'</a>'
 		);
 
+		$filter_callback = static fn( $post_types ) => [];
+		$add_filter      = static fn() => add_filter( 'tribe_is_post_type_screen_post_types', $filter_callback );
+		$remove_filter   = static fn() => remove_filter( 'tribe_is_post_type_screen_post_types', $filter_callback );
+
+		$screen_ids = [
+			'toplevel_page_tec-tickets',
+			'tickets_page_tec-tickets-attendees',
+			'edit-tec_tc_order',
+			'tickets_page_tec-tickets-settings',
+			'tickets_page_tec-tickets-help',
+			'tickets_page_tec-tickets-troubleshooting',
+			'edit-ticket-meta-fieldset',
+			'tickets_page_tec-tickets-seating',
+		];
 		tribe_notice(
 			'seating-incompatible-with-woo',
 			$message,
@@ -199,7 +214,8 @@ class Admin extends Controller_Contract {
 				'dismiss' => true,
 				'type'    => 'warning',
 			],
-			static fn() => function_exists( 'WC' )
+			// We don't care what $add_filter or $remove_filter return. add_filter will always return true so we can include it in the conditions that matter.
+			static fn() => function_exists( 'WC' ) && $add_filter() && Admin_Helper::instance()->is_screen( $screen_ids ) && $remove_filter()
 		);
 	}
 
