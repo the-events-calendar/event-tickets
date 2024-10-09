@@ -237,7 +237,7 @@ class Seats_Report extends Report_Abstract {
 	 * @return bool Whether the upsell should show or not.
 	 */
 	protected function should_show_upsell(): bool {
-		$service_status = tribe( Service::class )->get_status( true );
+		$service_status = tribe( Service::class )->get_status();
 
 		/**
 		 * Filters whether the upsell should be shown in the Seats report tab.
