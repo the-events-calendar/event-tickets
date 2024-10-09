@@ -15,7 +15,6 @@ use Tribe__Main;
 use WP_Error;
 use WP_Post;
 use Tribe__Tickets__Main as Tickets_Main;
-use function TEC\Common\StellarWP\Uplink\get_resource;
 
 /**
  * Class Seats_Tab.
@@ -114,6 +113,12 @@ class Seats_Report extends Report_Abstract {
 		$service        = tribe( Service::class );
 		$service_status = $service->get_status();
 
+		if ( $this->should_show_upsell() ) {
+			$this->get_template()->template( 'seats-upsell' );
+
+			return;
+		}
+
 		if ( ! $service_status->is_ok() ) {
 			tribe( Error_Content::class )->render_tab( $service_status );
 
@@ -138,12 +143,11 @@ class Seats_Report extends Report_Abstract {
 		$ephemeral_token     = tribe( Service::class )->get_ephemeral_token( 6 * HOUR_IN_SECONDS, 'admin' );
 		$token               = is_string( $ephemeral_token ) ? $ephemeral_token : '';
 		$this->template_vars = [
-			'post'               => $post,
-			'post_id'            => $post_id,
-			'iframe_url'         => tribe( Service::class )->get_seat_report_url( $token, $post_id ),
-			'token'              => $token,
-			'error'              => $ephemeral_token instanceof WP_Error ? $ephemeral_token->get_error_message() : '',
-			'should_show_upsell' => $this->should_show_upsell(),
+			'post'       => $post,
+			'post_id'    => $post_id,
+			'iframe_url' => tribe( Service::class )->get_seat_report_url( $token, $post_id ),
+			'token'      => $token,
+			'error'      => $ephemeral_token instanceof WP_Error ? $ephemeral_token->get_error_message() : '',
 		];
 
 		return $this->template_vars;
@@ -233,23 +237,20 @@ class Seats_Report extends Report_Abstract {
 	 * @return bool Whether the upsell should show or not.
 	 */
 	protected function should_show_upsell(): bool {
-		$seating = get_resource( 'tec-seating' );
+		$service_status = tribe( Service::class )->get_status( true );
 
 		/**
 		 * Filters whether the upsell should be shown in the Seats report tab.
 		 *
 		 * @since TBD
 		 *
-		 * @param bool                                           $should_show_upsell Whether the upsell should be shown.
-		 * @param TEC\Common\StellarWP\Uplink\Resources\Resource $seating            The seating service.
+		 * @param bool                                       $should_show_upsell Whether the upsell should be shown.
+		 * @param TEC\Tickets\Seating\Service\Service_Status $service_status     The seating service's status.
 		 */
 		return apply_filters(
 			'tec_tickets_seating_should_show_upsell',
-			! (
-				$seating->get_license_object()->is_valid() ||
-				$seating->get_license_object()->is_expired()
-			),
-			$seating
+			$service_status->is_license_invalid(),
+			$service_status
 		);
 	}
 }
