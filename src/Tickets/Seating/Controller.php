@@ -118,7 +118,7 @@ class Controller extends Controller_Contract {
 		$this->container->register( Tables::class );
 		$this->container->register( Assets::class );
 
-		$this->container->register( Libraries\Uplink::class );
+		$this->container->register( Uplink::class );
 
 		// Manage Order and Attendee data.
 		$this->container->register( Orders\Controller::class );

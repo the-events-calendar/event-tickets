@@ -1,14 +1,4 @@
-<?php return array (
-  'stellarwp-uplink_tec-seating-heading' => 
-  array (
-    'type' => 'heading',
-    'label' => 'Seat Layouts & Reservations',
-  ),
-  'stellarwp-uplink_tec-seating' => 
-  array (
-    'type' => 'html',
-    'label' => '',
-    'html' => '
+
 	<div class="stellarwp-uplink__license-field">
 		<div
 			class="stellarwp-uplink-license-key-field"
@@ -19,12 +9,12 @@
 			data-action="tec"
 		>
 			<fieldset class="stellarwp-uplink__settings-group">
-				<input type=\'hidden\' name=\'option_page\' value=\'stellarwp_uplink_group_tec-seating\' /><input type="hidden" name="action" value="update" /><input type="hidden" id="_wpnonce" name="_wpnonce" value="12345678" /><input type="hidden" name="_wp_http_referer" value="" />
-				
+				<input type='hidden' name='option_page' value='stellarwp_uplink_group_tec-seating' /><input type="hidden" name="action" value="update" /><input type="hidden" id="_wpnonce" name="_wpnonce" value="12345678" /><input type="hidden" name="_wp_http_referer" value="" />
+				<legend class="tribe-field-label">License Key</legend>
 				<input
 					type="text"
 					name="pue_install_key_tec_seating"
-					value=""
+					value="invalid_key"
 					placeholder="License key"
 					class="regular-text stellarwp-uplink__settings-field"
 				/>
@@ -34,7 +24,7 @@
 	   target="_blank"
 	   class="button uplink-authorize not-authorized"	   data-plugin-slug="tec-seating"
 	>
-		Connect	</a>
+		Connect to Seating Builder	</a>
 </div>
 
 								<p class="tooltip description">
@@ -46,6 +36,3 @@
 			</fieldset>
 			<input type="hidden" class="wp-nonce-fluent" name="stellarwp-uplink-license-key-nonce__tec-seating" value="12345678" />		</div>
 	</div>
-',
-  ),
-);

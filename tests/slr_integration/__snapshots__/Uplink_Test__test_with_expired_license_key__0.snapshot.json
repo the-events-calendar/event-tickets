@@ -1,0 +1,11 @@
+{
+    "stellarwp-uplink_tec-seating-heading": {
+        "type": "heading",
+        "label": "Seating"
+    },
+    "stellarwp-uplink_tec-seating": {
+        "type": "html",
+        "label": "",
+        "html": "tested in JSON snapshot"
+    }
+}
