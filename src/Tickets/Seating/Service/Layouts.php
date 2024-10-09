@@ -76,7 +76,7 @@ class Layouts {
 				}
 
 				$created_date_in_ms = $service_row['createdDate'];
-				$created_date       = gmdate( 'Y-m-d H:i:s', $created_date_in_ms / 1000 );
+				$created_date       = gmdate( 'Y-m-d H:i:s', intval( $created_date_in_ms / 1000 ) );
 
 				$valid[] = [
 					'id'             => $service_row['id'],
