@@ -56,6 +56,8 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 				$tec_storage_option['stellarwp_auth_url_tec_seating']
 			);
 			update_option( 'tec_storage', $tec_storage_option );
+			// Legacy token location.
+			tribe_update_option( OAuth_Token::get_oauth_token_option_name(), '' );
 			\WP_CLI::success( 'Done' );
 		},
 		[
@@ -111,13 +113,22 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			\WP_CLI::success( 'Transients cleaned.' );
 		}
 	);
-
 	\WP_CLI::add_command(
-		'slr:get-auth-token',
-		function() {
-			\WP_CLI::line( 'Getting the auth token ...' );
-			$token = tribe_get_option( Service::get_oauth_token_option_name(), null );
-			\WP_CLI::success( 'Bearer ' . $token );
+		'slr:set-access-token',
+		function (array $args, array $assoc_args) {
+			\WP_CLI::line( 'Setting the access token ...' );
+			$access_token = $args[0];
+			if(!$access_token) {
+				\WP_CLI::error( 'No access token provided.' );
+			}
+			( new class {
+				use OAuth_Token;
+
+				public function open_set_oauth_token( string $token ): void {
+					$this->set_oauth_token( $token );
+				}
+			} )->open_set_oauth_token( $access_token );
+			\WP_CLI::success( 'Access token set.' );
 		}
 	);
 }
@@ -286,22 +297,22 @@ function slr_test_render_test_setup_page() {
 				<tr valign="top">
 					<th scope="row">Service Backend URL</th>
 					<td><input type="text" name="tec_tickets_seating_service_base_url"
-							   class="regular-text wide"
-							   value="<?php echo esc_attr( $backend_url ); ?>"/></td>
+										 class="regular-text wide"
+										 value="<?php echo esc_attr( $backend_url ); ?>"/></td>
 				</tr>
 
 				<tr valign="top">
 					<th scope="row">Service Frontend URL</th>
 					<td><input type="text" name="tec_tickets_seating_service_frontend_url"
-							   class="regular-text wide"
-							   value="<?php echo esc_attr( $frontend_url ); ?>"/></td>
+										 class="regular-text wide"
+										 value="<?php echo esc_attr( $frontend_url ); ?>"/></td>
 				</tr>
 
 				<tr valign="top">
 					<th scope="row">Auth service URL</th>
 					<td><input type="text" name="tec_tickets_seating_service_auth_url"
-							   class="regular-text wide"
-							   value="<?php echo esc_attr( $auth_url ); ?>"/></td>
+										 class="regular-text wide"
+										 value="<?php echo esc_attr( $auth_url ); ?>"/></td>
 				</tr>
 
 			</table>
@@ -370,8 +381,8 @@ function slr_test_connect_to_service() {
 		'user_id'    => time(),
 		'expiration' => time() + YEAR_IN_SECONDS,
 	];
-    ksort($payload);
-    // The PHP correspondent of JSON.stringify requires these flags.
+	ksort($payload);
+	// The PHP correspondent of JSON.stringify requires these flags.
 	$encoded_payload = wp_json_encode( $payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
 	$response        = wp_remote_post(
 		$auth_url . '/tokens/new',
@@ -426,19 +437,3 @@ function slr_test_connect_to_service() {
 
 	return true;
 }
-
-/**
- * Bypass airplane mode when connecting to the service.
- */
-function slr_test_bypass_airplane_mode( $allowed, $url, $args, $host ) {
-	$service_url = apply_filters( 'tec_tickets_seating_service_base_url', get_option( 'tec_tickets_seating_service_base_url' ) );
-	$parsed_url  = parse_url( $service_url );
-
-	if ( $parsed_url['host'] === $host ) {
-		return true;
-	}
-
-	return $allowed;
-}
-
-add_filter( 'airplane_mode_allow_http_api_request', 'slr_test_bypass_airplane_mode', 10, 4 );
