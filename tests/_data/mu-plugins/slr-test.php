@@ -11,6 +11,16 @@ use TEC\Tickets\Seating\Service\Seat_Types;
 use TEC\Tickets\Seating\Service\Service;
 use function TEC\Common\StellarWP\Uplink\get_resource;
 
+function slr_test_clean_uplink_transients() {
+	$tec_storage_option = get_option( 'tec_storage' );
+	unset(
+		$tec_storage_option['tec_uplink_nonce'],
+		$tec_storage_option['stellarwp_auth_url_tec_seating']
+	);
+
+	update_option( 'tec_storage', $tec_storage_option );
+}
+
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	// Run `wp slr:seed:test` to seed the test data.
 	\WP_CLI::add_command(
@@ -50,12 +60,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			tribe( Maps::class )->invalidate_cache();
 			tribe( Layouts::class )->invalidate_cache();
 			\WP_CLI::line( 'Cleaning uplink transients ....' );
-			$tec_storage_option = get_option( 'tec_storage' );
-			unset(
-				$tec_storage_option['tec_uplink_nonce'],
-				$tec_storage_option['stellarwp_auth_url_tec_seating']
-			);
-			update_option( 'tec_storage', $tec_storage_option );
+			slr_test_clean_uplink_transients();
 			// Legacy token location.
 			tribe_update_option( OAuth_Token::get_oauth_token_option_name(), '' );
 			\WP_CLI::success( 'Done' );
@@ -191,6 +196,8 @@ add_action( 'admin_menu', static function () {
 // This will happen every time the user save the settings.
 // Use the filter as an action.
 add_filter( 'pre_update_option_tec_tickets_seating_service_base_url', static function ( $value ) {
+	slr_test_clean_uplink_transients();
+
 	if ( ! has_action( 'shutdown', 'slr_test_connect_to_service' ) ) {
 		add_action( 'shutdown', 'slr_test_connect_to_service', 20 );
 	}
@@ -203,6 +210,8 @@ add_filter( 'pre_update_option_tec_tickets_seating_service_base_url', static fun
 } );
 
 add_filter( 'pre_update_option_tec_tickets_seating_service_frontend_url', static function ( $value ) {
+	slr_test_clean_uplink_transients();
+
 	if ( ! has_action( 'shutdown', 'slr_test_connect_to_service' ) ) {
 		add_action( 'shutdown', 'slr_test_connect_to_service', 20 );
 	}
@@ -215,6 +224,8 @@ add_filter( 'pre_update_option_tec_tickets_seating_service_frontend_url', static
 } );
 
 add_filter( 'pre_update_option_tec_tickets_seating_service_auth_url', static function ( $value ) {
+	slr_test_clean_uplink_transients();
+
 	if ( ! has_action( 'shutdown', 'slr_test_connect_to_service' ) ) {
 		add_action( 'shutdown', 'slr_test_connect_to_service', 20 );
 	}
