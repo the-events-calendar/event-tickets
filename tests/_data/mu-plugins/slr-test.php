@@ -457,4 +457,4 @@ function slr_test_filter_uplink_url(): void {
 	}
 }
 
-add_action( 'init', 'slr_test_filter_uplink_url' );
+add_action( 'init', 'slr_test_filter_uplink_url', -1000 );
