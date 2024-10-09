@@ -76,10 +76,10 @@ class Emails_Test extends Controller_Test_Case {
 		$settings = tribe( Tribe__Settings::class );
 
 		ob_start();
-		$settings->initTabs();
+		$settings->init_tabs();
 		$emails_tab = tribe( Emails_Tab::class );
 		$tab        = $emails_tab->register_tab( 'tec-tickets-settings' );
-		$tab->doContent();
+		$tab->do_content();
 		$html = ob_get_clean();
 
 		$this->assertMatchesHtmlSnapshot( $html );
@@ -105,7 +105,7 @@ class Emails_Test extends Controller_Test_Case {
 		ob_start();
 		$emails_tab = tribe( Emails_Tab::class );
 		$tab        = $emails_tab->register_tab( 'tec-tickets-settings' );
-		$tab->doContent();
+		$tab->do_content();
 		$html = ob_get_clean();
 
 		$this->assertMatchesHtmlSnapshot( $html );

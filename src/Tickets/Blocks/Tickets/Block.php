@@ -53,7 +53,7 @@ class Block extends Abstract_Block {
 	 *
 	 * @since 4.9
 	 *
-	 * @param array $attributes
+	 * @param array<string,mixed> $attributes The attributes to use when rendering the block.
 	 *
 	 * @return string
 	 */
@@ -86,6 +86,7 @@ class Block extends Abstract_Block {
 				'jquery',
 				'wp-util',
 				'wp-i18n',
+				'wp-hooks',
 				'tribe-common',
 			],
 			null,
@@ -105,7 +106,7 @@ class Block extends Abstract_Block {
 						'name' => 'TribeCartEndpoint',
 						'data' => static function () {
 							return [ 'url' => tribe_tickets_rest_url( '/cart/' ) ];
-						}
+						},
 					],
 					[
 						'name' => 'TribeMessages',
@@ -139,14 +140,13 @@ class Block extends Abstract_Block {
 	 *
 	 * @since 4.9
 	 *
-	 * @param array $tickets (IDs of tickets to check)
+	 * @param int[] $tickets The IDs of tickets to check.
 	 *
 	 * @return void
 	 */
 	public function ticket_availability( $tickets = [] ) {
-
-		$response = [ 'html' => '' ];
-		$tickets  = tribe_get_request_var( 'tickets', [] );
+		$response  = [ 'html' => '' ];
+		$tickets ??= tribe_get_request_var( 'tickets', [] );
 
 		// Bail if we receive no tickets.
 		if ( empty( $tickets ) ) {
@@ -312,10 +312,10 @@ class Block extends Abstract_Block {
 	 *
 	 * @since 4.11.0
 	 *
-	 * @return void
+	 * @return array<string,string> The localized messages.
 	 */
 	public function set_messages() {
-		$messages = [
+		return [
 			'api_error_title'        => _x( 'API Error', 'Error message title, will be followed by the error code.', 'event-tickets' ),
 			'connection_error'       => __( 'Refresh this page or wait a few minutes before trying again. If this happens repeatedly, please contact the Site Admin.', 'event-tickets' ),
 			'capacity_error'         => sprintf(
@@ -324,10 +324,9 @@ class Block extends Abstract_Block {
 				tribe_get_ticket_label_singular_lowercase()
 			),
 			'validation_error_title' => __( 'Whoops!', 'event-tickets' ),
+			/* Translators: %s - the HTML of the number of tickets with validation errors. */
 			'validation_error'       => '<p>' . sprintf( _x( 'You have %s ticket(s) with a field that requires information.', 'The %s will change based on the error produced.', 'event-tickets' ), '<span class="tribe-tickets__notice--error__count">0</span>' ) . '</p>',
 		];
-
-		return $messages;
 	}
 
 	/**
@@ -343,6 +342,11 @@ class Block extends Abstract_Block {
 	 * {@inheritDoc}
 	 *
 	 * @since 5.8.0
+	 *
+	 * @param array<string,mixed> $args The default arguments the block would be registered with if this method is not
+	 *                                  overridden.
+	 *
+	 * @return array<string,mixed> The arguments to use when registering the block.
 	 */
 	public function get_registration_args( array $args ): array {
 		$args['title']       = _x( 'Tickets', 'Block title', 'event-tickets' );
@@ -366,13 +370,16 @@ class Block extends Abstract_Block {
 		wp_register_script(
 			'tec-tickets-tickets-block-editor-script',
 			$plugin->plugin_url . "build/Tickets/Blocks/Tickets/editor{$min}.js",
-			[ 'tribe-common-gutenberg-vendor', 'tribe-tickets-gutenberg-vendor' ]
+			[ 'tribe-common-gutenberg-vendor', 'tribe-tickets-gutenberg-vendor' ],
+			Tickets_Main::VERSION,
+			[ 'in_footer' => false ]
 		);
 
 		wp_register_style(
 			'tec-tickets-tickets-block-editor-style',
 			$plugin->plugin_url . "build/Tickets/Blocks/Tickets/editor{$min}.css",
-			[ 'tribe-tickets-gutenberg-main-styles' ]
+			[ 'tribe-tickets-gutenberg-main-styles' ],
+			Tickets_Main::VERSION
 		);
 	}
 }

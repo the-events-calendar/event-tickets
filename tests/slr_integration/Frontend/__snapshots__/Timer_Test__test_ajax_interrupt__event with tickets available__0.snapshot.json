@@ -1,0 +1,6 @@
+{
+    "title": "Time limit expired",
+    "content": "Your seat selections are no longer reserved, but tickets are still available.",
+    "buttonLabel": "Find Seats",
+    "redirectUrl": "http://wordpress.test/?tribe_events=test-event"
+}

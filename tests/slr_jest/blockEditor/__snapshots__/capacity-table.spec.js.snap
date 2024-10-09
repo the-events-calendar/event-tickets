@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`filterCapacityTableMappedProps adds rowsAfter and updates totalCapacity if has multiple seat types 1`] = `
+Object {
+  "independentCapacity": 20,
+  "rowsAfter": Array [
+    Object {
+      "items": "(VIP,General Admission)",
+      "label": "Assigned seating",
+      "right": "40",
+    },
+  ],
+  "sharedCapacity": "",
+  "sharedTicketItems": "",
+  "totalCapacity": 60,
+}
+`;
+
+exports[`filterCapacityTableMappedProps adds rowsAfter and updates totalCapacity if has multiple seat types and multipe of the same type 1`] = `
+Object {
+  "independentCapacity": 20,
+  "rowsAfter": Array [
+    Object {
+      "items": "(VIP,General Admission,Ultra VIP)",
+      "label": "Assigned seating",
+      "right": "80",
+    },
+  ],
+  "sharedCapacity": "",
+  "sharedTicketItems": "",
+  "totalCapacity": 100,
+}
+`;
+
+exports[`filterCapacityTableMappedProps adds rowsAfter and updates totalCapacity if hasSeats and layoutLocked are true 1`] = `
+Object {
+  "independentCapacity": 20,
+  "rowsAfter": Array [
+    Object {
+      "items": "(VIP)",
+      "label": "Assigned seating",
+      "right": "20",
+    },
+  ],
+  "sharedCapacity": "",
+  "sharedTicketItems": "",
+  "totalCapacity": 40,
+}
+`;

@@ -29,7 +29,8 @@
     "stellarwp/coding-standards": "dev-main",
     "the-events-calendar/tec-testing-facilities": "dev-master",
     "lucatume/codeception-snapshot-assertions": "^0.4.0",
-    "automattic/jetpack-changelogger": "^4.2"
+    "automattic/jetpack-changelogger": "^4.2",
+    "slope-it/clock-mock": "^0.4.0"
   },
   "minimum-stability": "stable",
   "prefer-stable": true,

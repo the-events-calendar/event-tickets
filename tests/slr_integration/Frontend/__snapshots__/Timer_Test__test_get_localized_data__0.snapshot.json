@@ -1,0 +1,7 @@
+{
+    "ajaxUrl": "http://wordpress.test/wp-admin/admin-ajax.php",
+    "ajaxNonce": "22848eb6a0",
+    "ACTION_START": "tec_tickets_seating_timer_start",
+    "ACTION_SYNC": "tec_tickets_seating_timer_sync",
+    "ACTION_INTERRUPT_GET_DATA": "tec_tickets_seating_timer_interrupt_get_data"
+}
