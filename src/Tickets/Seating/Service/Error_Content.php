@@ -75,6 +75,7 @@ class Error_Content {
 				$cta_label = _x( 'Connect', 'Connect to the Seat Builder button label', 'event-tickets' );
 				$cta_url   = admin_url( 'admin.php?page=tec-tickets-settings&tab=licenses' );
 				break;
+			case Service_Status::EXPIRED_LICENSE:
 			case Service_Status::INVALID_LICENSE:
 				$renew_link = sprintf(
 					// translators: %s is the renew link label.
@@ -140,6 +141,7 @@ class Error_Content {
 					$connect_link
 				);
 				break;
+			case Service_Status::EXPIRED_LICENSE:
 			case Service_Status::INVALID_LICENSE:
 				$renew_link = sprintf(
 					// translators: %s is the renew link label.

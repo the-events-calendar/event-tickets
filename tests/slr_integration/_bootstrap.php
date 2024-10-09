@@ -49,7 +49,16 @@ if ( ! defined( 'SECURE_AUTH_KEY' ) ) {
 	define( 'SECURE_AUTH_KEY', 'HG&R(f/h#K5{n:,4@swG~1Fc*aQGd@?T,T+zlTR)IsF5ET{SvvwBkI|zq6E}xjxy' );
 }
 
-// In the contest of tests, assume the Service connection is OK.
-add_filter( 'tec_tickets_seating_service_status', static function ( $_status, $backend_base_url ) {
+function test_return_ok_service_status( $_status, $backend_base_url ) {
 	return new Service_Status( $backend_base_url, Service_Status::OK );
-}, 10, 2 );
+};
+
+function test_add_service_status_ok_callback() {
+	add_filter( 'tec_tickets_seating_service_status', 'test_return_ok_service_status', 10, 2 );
+}
+function test_remove_service_status_ok_callback() {
+	remove_filter( 'tec_tickets_seating_service_status', 'test_return_ok_service_status' );
+}
+
+// In the contest of tests, assume the Service connection is OK.
+test_add_service_status_ok_callback();

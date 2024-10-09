@@ -159,6 +159,7 @@ export const filterSettingsFields = (fields) => {
 
 	switch (status) {
 		case 'not-connected':
+		case 'expired-license':
 		case 'invalid-license':
 			fields.push(
 				<Upsell />
