@@ -11,6 +11,7 @@ use TEC\Tickets\Commerce\Reports\Tabbed_View;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Service\Error_Content;
 use TEC\Tickets\Seating\Service\Service;
+use TEC\Tickets\Seating\Service\Service_Status;
 use Tribe__Main;
 use WP_Error;
 use WP_Post;
@@ -244,8 +245,8 @@ class Seats_Report extends Report_Abstract {
 		 *
 		 * @since TBD
 		 *
-		 * @param bool                                       $should_show_upsell Whether the upsell should be shown.
-		 * @param TEC\Tickets\Seating\Service\Service_Status $service_status     The seating service's status.
+		 * @param bool            $should_show_upsell Whether the upsell should be shown.
+		 * @param Service_Status  $service_status     The seating service's status.
 		 */
 		return apply_filters(
 			'tec_tickets_seating_should_show_upsell',
