@@ -528,16 +528,16 @@ function clearTicketSelection() {
  *
  * @since TBD
  *
- * @param {HTMLElement} dialogElement the iframe element that should be used to communicate with the service.
+ * @param {HTMLElement|null} dialogElement The dialog element the iframe element that should be used to communicate with the service.
  */
 export async function cancelReservations(dialogElement) {
 	if (!shouldCancelReservations) {
 		return;
 	}
 
-	const iframe = dialogElement.querySelector(
+	const iframe = dialogElement ? dialogElement.querySelector(
 		'.tec-tickets-seating__iframe-container iframe.tec-tickets-seating__iframe'
-	);
+	) : null;
 
 	if (iframe) {
 		sendPostMessage(iframe, OUTBOUND_REMOVE_RESERVATIONS);

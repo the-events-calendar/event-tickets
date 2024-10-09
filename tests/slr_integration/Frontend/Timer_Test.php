@@ -17,6 +17,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Data_API as Data_API;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 
 class Timer_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -413,7 +414,13 @@ class Timer_Test extends Controller_Test_Case {
 		yield 'post with no tickets available' => [
 			function () {
 				$post_id = static::factory()->post->create();
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'layout-uuid' );
 				update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
+				update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, 0 );
+
+				$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+				update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
+				update_post_meta( $ticket_id, '_stock', 0 );
 
 				return $post_id;
 			}
@@ -422,8 +429,14 @@ class Timer_Test extends Controller_Test_Case {
 		yield 'post with tickets available' => [
 			function () {
 				$post_id = static::factory()->post->create();
+
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'layout-uuid' );
 				update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
+				update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, 10 );
+
 				$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+				update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
+				update_post_meta( $ticket_id, '_stock', 10 );
 
 				return $post_id;
 			}
@@ -439,7 +452,13 @@ class Timer_Test extends Controller_Test_Case {
 						'duration'   => 2 * HOUR_IN_SECONDS,
 					]
 				)->create()->ID;
-				update_post_meta( $event_id, Meta::META_KEY_UUID, 'test-event-uuid' );
+				update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'layout-uuid' );
+				update_post_meta( $event_id, Meta::META_KEY_UUID, 'test-post-uuid' );
+				update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 0 );
+
+				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+				update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
+				update_post_meta( $ticket_id, '_stock', 0 );
 
 				return $event_id;
 			}
@@ -457,7 +476,13 @@ class Timer_Test extends Controller_Test_Case {
 				)->create()->ID;
 
 				tribe_update_option( 'eventsSlug', 'events-calendar' );
-				update_post_meta( $event_id, Meta::META_KEY_UUID, 'test-event-uuid' );
+				update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'layout-uuid' );
+				update_post_meta( $event_id, Meta::META_KEY_UUID, 'test-post-uuid' );
+				update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 0 );
+
+				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+				update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
+				update_post_meta( $ticket_id, '_stock', 0 );
 
 				return $event_id;
 			}
@@ -474,7 +499,12 @@ class Timer_Test extends Controller_Test_Case {
 					]
 				)->create()->ID;
 				update_post_meta( $event_id, Meta::META_KEY_UUID, 'test-event-uuid' );
+				update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'layout-uuid' );
+				update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 10 );
+
 				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+				update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
+				update_post_meta( $ticket_id, '_stock', 10 );
 
 				return $event_id;
 			}
@@ -494,7 +524,8 @@ class Timer_Test extends Controller_Test_Case {
 		$session->add_entry( $post_id, 'test-token' );
 		update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
 		$sessions->upsert( 'test-token', $post_id, time() + 100 );
-		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
+		$mock_reservations = $this->create_mock_reservations_data( [ $post_id ], 3 );
+		$sessions->update_reservations( 'test-token', $mock_reservations );
 
 		// Set up the request context.
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Session::COOKIE_NAME );
@@ -518,7 +549,7 @@ class Timer_Test extends Controller_Test_Case {
 					'body'    => wp_json_encode(
 						[
 							'eventId' => 'test-post-uuid',
-							'ids'     => [ '1234567890', '0987654321' ],
+							'ids'     => [ 'reservation-id-1', 'reservation-id-2', 'reservation-id-3' ],
 						]
 					),
 				];
@@ -585,7 +616,8 @@ class Timer_Test extends Controller_Test_Case {
 		$session->add_entry( $post_id, 'test-token' );
 		update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
 		$sessions->upsert( 'test-token', $post_id, time() + 100 );
-		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
+		$mock_reservations = $this->create_mock_reservations_data( [ $post_id ], 3 );
+		$sessions->update_reservations( 'test-token', $mock_reservations );
 
 		// Set up the request context.
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Session::COOKIE_NAME );
@@ -609,7 +641,7 @@ class Timer_Test extends Controller_Test_Case {
 					'body'    => wp_json_encode(
 						[
 							'eventId' => 'test-post-uuid',
-							'ids'     => [ '1234567890', '0987654321' ],
+							'ids'     => [ 'reservation-id-1', 'reservation-id-2', 'reservation-id-3' ],
 						]
 					),
 				];
@@ -642,7 +674,7 @@ class Timer_Test extends Controller_Test_Case {
 		do_action( 'wp_ajax_nopriv_' . Timer::ACTION_INTERRUPT_GET_DATA );
 
 		$this->assertEquals( 1, $service_cancellations );
-		$this->assertEquals( [ '1234567890', '0987654321' ], $sessions->get_reservations_for_token( 'test-token' ) );
+		$this->assertEquals( $mock_reservations, $sessions->get_reservations_for_token( 'test-token' ) );
 		$this->assertEquals( [], $session->get_entries() );
 		$this->assertEquals( 500, $wp_send_json_error_code );
 		$this->assertEquals( [ 'error' => 'Failed to cancel the reservations' ], $wp_send_json_error_data );
@@ -657,7 +689,8 @@ class Timer_Test extends Controller_Test_Case {
 		$session->add_entry( $post_id, 'test-token' );
 		update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
 		$sessions->upsert( 'test-token', $post_id, time() + 100 );
-		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
+		$mock_reservations = $this->create_mock_reservations_data( [ $post_id ], 3 );
+		$sessions->update_reservations( 'test-token', $mock_reservations );
 
 		// Set up the request context.
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Session::COOKIE_NAME );
@@ -680,7 +713,7 @@ class Timer_Test extends Controller_Test_Case {
 					'body'    => wp_json_encode(
 						[
 							'eventId' => 'test-post-uuid',
-							'ids'     => [ '1234567890', '0987654321' ],
+							'ids'     => [ 'reservation-id-1', 'reservation-id-2', 'reservation-id-3' ],
 						]
 					),
 				];
@@ -718,7 +751,7 @@ class Timer_Test extends Controller_Test_Case {
 		do_action( 'wp_ajax_nopriv_' . Timer::ACTION_INTERRUPT_GET_DATA );
 
 		$this->assertEquals( 1, $service_cancellations );
-		$this->assertEquals( [ '1234567890', '0987654321' ], $sessions->get_reservations_for_token( 'test-token' ) );
+		$this->assertEquals( $mock_reservations, $sessions->get_reservations_for_token( 'test-token' ) );
 		$this->assertEquals( [], $session->get_entries() );
 		$this->assertEquals( 500, $wp_send_json_error_code );
 		$this->assertEquals( [ 'error' => 'Failed to cancel the reservations' ], $wp_send_json_error_data );

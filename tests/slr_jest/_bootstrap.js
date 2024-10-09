@@ -143,7 +143,7 @@ global.tec.tickets.seating = {
 	},
 	layouts: {
 		addLayoutModal: 'dialog_obj_tec-tickets-seating-layouts-modal',
-	}
+	},
 };
 
 // Utility functions
@@ -184,6 +184,7 @@ global.getTestDocument = function (documentName, transformer) {
 			'/../slr_integration/Admin/__snapshots__/Maps_Layout_Homepage_Test__test_maps_tab_card_listing__0.snapshot.html',
 		'map-edit':
 			'/../slr_integration/Admin/__snapshots__/Maps_Layout_Homepage_Test__test_map_edit__0.snapshot.html',
+		timer: '/../slr_integration/Frontend/__snapshots__/Timer_Test__test_render_to_sync__0.snapshot.html',
 	};
 
 	if (!validDocumentMap[documentName]) {

@@ -1,66 +1,156 @@
 import {
 	reset,
-	watchCheckoutControls,
-	setHealthcheckLoopId,
-	syncWithBackend,
+	setTargetDom,
+	syncOnLoad,
+	isInterruptable,
+	isStarted,
+	isExpired,
+	getHealthcheckTimeoutId,
+	getCountdownTimeoutId,
+	getResumeTimeoutId,
+	pause,
+	resume,
+	getWatchedCheckoutControls,
 } from '@tec/tickets/seating/frontend/session';
-import { addFilter } from '@wordpress/hooks';
+import { watchCheckoutControls } from '../../../src/Tickets/Seating/app/frontend/session';
+import {addFilter} from '@wordpress/hooks';
+
+require('jest-fetch-mock').enableMocks();
 
 describe('Seat Selection Session', () => {
+	let dom;
+
 	beforeEach(() => {
+		fetch.resetMocks();
+		jest.resetAllMocks();
 		reset();
 	});
-
-	describe('watchCheckoutControls', () => {
-		let dom;
-
-		beforeEach(() => {
-			// Filter the checkout controls selectors.
-			addFilter(
-				'tec.tickets.seating.frontend.session.checkoutControls',
-				'test',
-				() => '.test-checkout-control, .test-checkout-control-form'
-			);
-			// Mock the document to look for the checkout controls.
-			dom = new DOMParser().parseFromString(
-				`<html><body>
-				<form class="test-checkout-control-form">
-					<button class="test-checkout-control">Click me 1</button>
-				</formcl>
-			</body></html>`,
-				'text/html'
-			);
-			global.clearTimeout = jest.fn();
-			global.setTimeout = jest.fn();
-			setHealthcheckLoopId(23);
-		});
-
-		it('should watch checkout controls to postpone timer backend sync on click', () => {
-			watchCheckoutControls(dom);
-			dom.querySelector('.test-checkout-control').click();
-
-			expect(global.clearTimeout).toHaveBeenCalledWith(23);
-			expect(global.setTimeout).toHaveBeenCalledWith(
-				syncWithBackend,
-				30000
-			);
-		});
-
-		it('should watch checkout controls to postpone timer backend sync on submit', () => {
-			watchCheckoutControls(dom);
-			dom.querySelector('.test-checkout-control-form').submit();
-
-			expect(global.clearTimeout).toHaveBeenCalledWith(23);
-			expect(global.setTimeout).toHaveBeenCalledWith(
-				syncWithBackend,
-				30000
-			);
-		});
-	});
-
-	// TODO: Add tests for syncWithBackend, startCountdownLoop, startHealthCheckLoop and interrupt to make sure they are not running when expired.
 
 	afterEach(() => {
+		fetch.resetMocks();
+		jest.resetAllMocks();
 		reset();
+	});
+
+	it('should set up the timer element', async () => {
+		fetch.mockIf(
+			'https://wordpress.test/wp-admin/admin-ajax.php?_ajaxNonce=1234567890&action=tec_tickets_seating_session_sync&token=test-token&postId=23',
+			JSON.stringify({
+				success: true,
+				data: { secondsLeft: 30, timestamp: Date.now() / 1000 },
+			})
+		);
+		let timeoutId = 100;
+		global.setTimeout = jest.fn(() => timeoutId++);
+		dom = getTestDocument('timer', (html) =>
+			html
+				.replaceAll('{{post_id}}', 23)
+				.replaceAll('{{token}}', 'test-token')
+		);
+		setTargetDom(dom);
+
+		await syncOnLoad();
+
+		expect(isInterruptable()).toBe(true);
+		expect(isStarted()).toBe(true);
+		expect(isExpired()).toBe(false);
+		expect(getCountdownTimeoutId()).toBe(100);
+		expect(getHealthcheckTimeoutId()).toBe(101);
+		expect(getResumeTimeoutId()).toBe(null);
+
+		await pause();
+
+		expect(isInterruptable()).toBe(false);
+		expect(isStarted()).toBe(true);
+		expect(isExpired()).toBe(false);
+		expect(getCountdownTimeoutId()).toBe(null);
+		expect(getHealthcheckTimeoutId()).toBe(null);
+		expect(getResumeTimeoutId()).toBe(102);
+
+		await resume();
+
+		expect(isInterruptable()).toBe(true);
+		expect(isStarted()).toBe(true);
+		expect(isExpired()).toBe(false);
+		expect(getCountdownTimeoutId()).toBe(103);
+		expect(getHealthcheckTimeoutId()).toBe(104);
+		expect(getResumeTimeoutId()).toBe(null);
+	});
+
+	it('should pause the timer on checkout control click', async () => {
+		fetch.mockIf(
+			'https://wordpress.test/wp-admin/admin-ajax.php?_ajaxNonce=1234567890&action=tec_tickets_seating_session_sync&token=test-token&postId=23',
+			JSON.stringify({
+				success: true,
+				data: { secondsLeft: 30, timestamp: Date.now() / 1000 },
+			})
+		);
+		let timeoutId = 100;
+		global.setTimeout = jest.fn(() => timeoutId++);
+		dom = getTestDocument(
+			'timer',
+			(html) =>
+				html
+					.replaceAll('{{post_id}}', 23)
+					.replaceAll('{{token}}', 'test-token') +
+				'<button class="tribe-tickets__commerce-checkout-form-submit-button" id="button-1">Checkout</button>'
+		);
+		setTargetDom(dom);
+
+		await syncOnLoad();
+		await watchCheckoutControls();
+
+		expect(getWatchedCheckoutControls()).toHaveLength(1);
+
+		dom.querySelector('#button-1').click();
+
+		expect(isInterruptable()).toBe(false);
+		expect(isStarted()).toBe(true);
+		expect(isExpired()).toBe(false);
+		expect(getCountdownTimeoutId()).toBe(null);
+		expect(getHealthcheckTimeoutId()).toBe(null);
+		expect(getResumeTimeoutId()).toBe(102);
+	});
+
+	it('should pause the timer on checkout control submit', async () => {
+		fetch.mockIf(
+			'https://wordpress.test/wp-admin/admin-ajax.php?_ajaxNonce=1234567890&action=tec_tickets_seating_session_sync&token=test-token&postId=23',
+			JSON.stringify({
+				success: true,
+				data: { secondsLeft: 30, timestamp: Date.now() / 1000 },
+			})
+		);
+		let timeoutId = 100;
+		global.setTimeout = jest.fn(() => timeoutId++);
+		dom = getTestDocument(
+			'timer',
+			(html) =>
+				html
+					.replaceAll('{{post_id}}', 23)
+					.replaceAll('{{token}}', 'test-token') +
+				'<form id="my-custom-checkout-form">' +
+				'<button>Checkout</button>' +
+				'</form>'
+		);
+		setTargetDom(dom);
+		addFilter(
+			'tec.tickets.seating.frontend.session.checkoutControls',
+			'test',
+			(selector) => selector + ', #my-custom-checkout-form'
+		);
+
+		await syncOnLoad();
+		await watchCheckoutControls();
+
+		expect(getWatchedCheckoutControls()).toHaveLength(1);
+
+		dom.querySelector('#my-custom-checkout-form').submit();
+
+		expect(isInterruptable()).toBe(false);
+		expect(isStarted()).toBe(true);
+		expect(isExpired()).toBe(false);
+		expect(getCountdownTimeoutId()).toBe(null);
+		expect(getHealthcheckTimeoutId()).toBe(null);
+		expect(getResumeTimeoutId()).toBe(102);
 	});
 });

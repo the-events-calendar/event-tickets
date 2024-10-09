@@ -10,7 +10,9 @@ use TEC\Tickets\Seating\Admin\Tabs\Layouts;
 use TEC\Tickets\Seating\Admin\Tabs\Map_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Maps;
 use Tribe\Tests\Traits\With_Uopz;
+use TEC\Tickets\Seating\Meta;
 use Tribe__Admin__Notices as Notices;
+use Tribe__Tickets__Admin__Move_Tickets as Move_Tickets;
 
 class Admin_Test extends Controller_Test_Case {
 	use With_Uopz;
@@ -123,5 +125,39 @@ class Admin_Test extends Controller_Test_Case {
 		ob_start();
 		do_action( 'admin_notices' );
 		$this->assertMatchesHtmlSnapshot( ob_get_clean() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_exclude_asc_events_from_candidates_from_moving_tickets_to(): void {
+		$this->make_controller()->register();
+
+		[
+			$post_id_1,
+			$post_id_2,
+			$post_id_3,
+			$post_id_4,
+		] = static::factory()->post->create_many( 4 );
+
+		update_post_meta( $post_id_1, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		update_post_meta( $post_id_2, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		update_post_meta( $post_id_2, Meta::META_KEY_ENABLED, '1' );
+		update_post_meta( $post_id_3, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		update_post_meta( $post_id_3, Meta::META_KEY_ENABLED, '3' );
+
+		$_POST['post_type'] = 'post';
+		$_POST['check']     = 'nonce';
+		$this->set_fn_return('wp_verify_nonce', true );
+
+		$wp_send_json_success_result = null;
+
+		$this->set_fn_return('wp_send_json_success', function ( $value = null, $status_code = null, $flags = 0 ) use (&$wp_send_json_success_result) {
+			$wp_send_json_success_result = $value;
+		}, true );
+
+		tribe( Move_Tickets::class )->get_post_choices();
+
+		$this->assertEquals( [ $post_id_1, $post_id_3, $post_id_4 ], array_keys( $wp_send_json_success_result['posts'] ) );
 	}
 }

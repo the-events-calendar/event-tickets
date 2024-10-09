@@ -181,14 +181,14 @@ class Service_Status {
 		$this->update();
 
 		switch ( $this->status ) {
-			case self::OK:
-				return 'ok';
 			case self::SERVICE_DOWN:
 				return 'down';
 			case self::NOT_CONNECTED:
 				return 'not-connected';
 			case self::INVALID_LICENSE:
 				return 'invalid-license';
+			default:
+				return 'ok';
 		}
 	}
 
@@ -199,7 +199,7 @@ class Service_Status {
 	 *
 	 * @return string The URI to connect to the service.
 	 */
-	public function get_connnect_url(): string {
+	public function get_connect_url(): string {
 		return admin_url( 'admin.php?page=tec-tickets-settings&tab=licenses' );
 	}
 }

@@ -1,4 +1,5 @@
 import { applyFilters } from '@wordpress/hooks';
+import { setIsInterruptable } from '@tec/tickets/seating/frontend/session';
 
 /**
  * Checks out a ticket using the Tickets Commerce module.
@@ -23,6 +24,9 @@ export async function checkoutWithTicketsCommerce(data) {
 	});
 
 	if (response.ok && response.url) {
+		// We're going to leave the page: this should not interrupt the timer and clear the session.
+		setIsInterruptable(false);
+
 		// We got a Checkout page URL back: redirect to it.
 		window.location.href = response.url;
 
@@ -65,7 +69,7 @@ export function getCheckoutHandlerForProvider(provider) {
 	 * @param {string}        provider        The provider to get the checkout handler for.
 	 */
 	checkoutHandler = applyFilters(
-		'tec_tickets_seating_checkout_handler',
+		'tec.tickets.seating.checkoutHandler',
 		checkoutHandler,
 		provider
 	);

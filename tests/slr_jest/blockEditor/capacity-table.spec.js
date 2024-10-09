@@ -83,7 +83,7 @@ describe('filterCapacityTableMappedProps', () => {
 			vip: { name: 'VIP', seats: 20 },
 			'general-admission': { name: 'General Admission', seats: 20 },
 		};
-		const activeSeatTypes = {
+		const seatTypesByPostId = {
 			99: 'vip',
 			100: 'general-admission',
 		};
@@ -92,7 +92,7 @@ describe('filterCapacityTableMappedProps', () => {
 			isLayoutLocked: () => true,
 			getCurrentLayoutId: () => 'layout-id',
 			getSeatTypesForLayout: () => seatTypes,
-			getSeatTypesByPostID: () => activeSeatTypes,
+			getSeatTypesByPostID: () => seatTypesByPostId,
 		});
 
 		const mappedProps = {
@@ -108,12 +108,12 @@ describe('filterCapacityTableMappedProps', () => {
 	});
 
 	it('adds rowsAfter and updates totalCapacity if has multiple seat types and multipe of the same type', () => {
-		const seatTypes = {
+		const seatTypesForLayout = {
 			vip: { name: 'VIP', seats: 20 },
 			'general-admission': { name: 'General Admission', seats: 20 },
 			'ultra-vip': { name: 'Ultra VIP', seats: 40 },
 		};
-		const activeSeatTypes = {
+		const seatTypesByPostId = {
 			99: 'vip',
 			100: 'vip',
 			101: 'general-admission',
@@ -124,8 +124,8 @@ describe('filterCapacityTableMappedProps', () => {
 			isUsingAssignedSeating: () => true,
 			isLayoutLocked: () => true,
 			getCurrentLayoutId: () => 'layout-id',
-			getSeatTypesForLayout: () => seatTypes,
-			getSeatTypesByPostID: () => activeSeatTypes,
+			getSeatTypesForLayout: () => seatTypesForLayout,
+			getSeatTypesByPostID: () => seatTypesByPostId,
 		});
 
 		const mappedProps = {

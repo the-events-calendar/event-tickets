@@ -93,7 +93,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 			'serviceStatus'          => [
 				'ok'         => $service_status->is_ok(),
 				'status'     => $service_status->get_status_string(),
-				'connectUrl' => $service_status->get_connnect_url(),
+				'connectUrl' => $service_status->get_connect_url(),
 			],
 		];
 	}

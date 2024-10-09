@@ -692,7 +692,7 @@ class Ajax extends Controller_Contract {
 
 		if ( ! (
 			$this->reservations->cancel( $post_id, $this->sessions->get_reservation_uuids_for_token( $token ) )
-			&& $this->sessions->clear_token_reservations( $token )
+			&& $this->sessions->delete_token_session( $token )
 		) ) {
 			wp_send_json_error(
 				[
@@ -1016,14 +1016,29 @@ class Ajax extends Controller_Contract {
 
 		global $wpdb;
 
+		$ticket_post_types = implode( ', ', array_map( static fn( $v ) => "'" . esc_sql( $v ) . "'", array_values( tribe_tickets()->ticket_types() ) ) );
+
 		try {
+			$original_seat_types_tickets = array_map(
+				'intval',
+				DB::get_col(
+					DB::prepare(
+						'SELECT DISTINCT(pm.post_id) FROM %i pm JOIN %i p ON p.ID=pm.post_id WHERE pm.meta_key = %s AND pm.meta_value = %s AND p.post_type IN (' . $ticket_post_types . ')',
+						$wpdb->postmeta,
+						$wpdb->posts,
+						Meta::META_KEY_SEAT_TYPE,
+						$new_seat_type['id']
+					)
+				)
+			);
+
 			$updated_seat_types_meta = DB::query(
 				DB::prepare(
 					'UPDATE %i SET meta_value = %s WHERE meta_key = %s AND meta_value = %s',
 					$wpdb->postmeta,
 					$new_seat_type['id'],
 					Meta::META_KEY_SEAT_TYPE,
-					$old_seat_type_id
+					$old_seat_type_id,
 				),
 			);
 		} catch ( \Exception $exception ) {
@@ -1037,7 +1052,7 @@ class Ajax extends Controller_Contract {
 		}
 
 		$updated_seat_types = $this->seat_types->update_from_service( [ $new_seat_type ] );
-		$updated_tickets    = $this->seat_types->update_tickets_capacity( [ $new_seat_type['id'] => $new_seat_type['seatsCount'] ] );
+		$updated_tickets    = $this->seat_types->update_tickets_with_calculated_stock_and_capacity( $new_seat_type['id'], $new_seat_type['seatsCount'], $original_seat_types_tickets );
 
 		wp_send_json_success(
 			[
