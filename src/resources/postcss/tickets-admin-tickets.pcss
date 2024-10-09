@@ -1,0 +1,144 @@
+/**
+ * All Tickets Page
+ *
+ * @since 5.14.0
+ */
+.tickets_page_tec-tickets-admin-tickets {
+	th,
+	td {
+		padding: var(--tec-spacer-1) var(--tec-spacer-3);
+
+		&:first-child {
+			padding-left: var(--tec-spacer-1);
+		}
+
+		&:last-child {
+			padding-right: var(--tec-spacer-1);
+		}
+	}
+
+	th.sortable {
+		padding: 0;
+
+		& > a {
+			padding: var(--tec-spacer-1) var(--tec-spacer-3);
+		}
+	}
+
+	table.wp-list-table {
+		.column-price,
+		.column-sold,
+		.column-remaining,
+		.column-days_left,
+		.column-sales,
+		.column-end,
+		.column-start {
+			text-align: right;
+			white-space: nowrap;
+			width: 1%;
+
+			@media (max-width: 782px) {
+				text-align: left;
+				width: auto;
+			}
+		}
+
+		.column-id {
+			text-align: left;
+			white-space: nowrap;
+			width: 1%;
+
+			@media (max-width: 782px) {
+				width: auto;
+			}
+		}
+
+		th.sortable > a,
+		th.sorted > a {
+			align-items: center;
+			display: flex;
+			justify-content: flex-end;
+		}
+
+		th.column-id.sortable > a,
+		th.column-id.sorted > a,
+		th.column-name.sortable > a,
+		th.column-name.sorted > a {
+			justify-content: flex-start;
+		}
+
+		.tec-tickets-admin-tickets-table-column-header-name {
+			align-items: center;
+			display: flex;
+			gap: var(--tec-spacer-0);
+			line-height: var(--tec-spacer-3);
+		}
+
+		.tec-tickets-admin-tickets-table-column-header-name-icon {
+			max-height: var(--tec-spacer-3);
+
+			img {
+				height: var(--tec-spacer-3);
+				width: auto;
+			}
+		}
+
+		&.fixed {
+			table-layout: auto;
+		}
+	}
+
+	@media (max-width: 782px) {
+		.tablenav.top {
+			margin-top: var(--tec-spacer-1);
+
+			.actions {
+				display: flex;
+				flex-direction: column;
+				gap: var(--tec-spacer-0);
+				width: 100%;
+
+				select,
+				input {
+					max-width: 100%;
+					width: 100%;
+				}
+			}
+		}
+	}
+}
+
+.tec-tickets-admin-tickets-no-tickets-wrap {
+	align-items: center;
+	display: flex;
+	height: 100vh;
+	justify-content: center;
+	max-height: calc(100vh - 250px);
+
+	.tec-tickets-admin-tickets-no-tickets-inner-wrap {
+		align-items: center;
+		display: flex;
+		flex-direction: column;
+		gap: var(--tec-spacer-4);
+		justify-content: center;
+	}
+
+	.tec-tickets-admin-tickets-no-tickets-icon {
+		height: 128px;
+		width: auto;
+	}
+
+	.tec-tickets-admin-tickets-no-tickets-heading {
+		font-size: var(--tec-font-size-7);
+		font-weight: var(--tec-font-weight-regular);
+		margin-bottom: var(--tec-spacer-2);
+	}
+
+	.tec-tickets-admin-tickets-no-tickets-content {
+		font-size: var(--tec-font-size-2);
+		font-weight: var(--tec-font-weight-regular);
+		line-height: var(--tec-line-height-2);
+		max-width: 480px;
+		width: 100%;
+	}
+}

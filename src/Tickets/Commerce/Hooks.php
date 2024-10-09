@@ -143,6 +143,9 @@ class Hooks extends Service_Provider {
 		add_filter( 'wp_list_table_class_name', [ $this, 'filter_wp_list_table_class_name' ], 10, 2 );
 		add_filter( 'tribe_dropdown_tec_tc_order_table_events', [ $this, 'provide_events_results_to_ajax' ], 10, 2 );
 		add_filter( 'tribe_dropdown_tec_tc_order_table_customers', [ $this, 'provide_customers_results_to_ajax' ], 10, 2 );
+
+		add_filter( 'tec_tickets_all_tickets_table_provider_options', [ $this, 'filter_all_tickets_table_provider_options' ] );
+		add_filter( 'tec_tickets_all_tickets_table_event_meta_keys', [ $this, 'filter_all_tickets_table_event_meta_keys' ] );
 	}
 
 	/**
@@ -1128,5 +1131,35 @@ class Hooks extends Service_Provider {
 		$data['tickets']['commerce']['isFreeTicketAllowed'] = tec_tickets_commerce_is_free_ticket_allowed();
 
 		return $data;
+	}
+
+	/**
+	 * Filters the options for the provider select in the All Tickets table.
+	 *
+	 * @since 5.14.0
+	 *
+	 * @param array $options The options.
+	 *
+	 * @return array The filtered options.
+	 */
+	public function filter_all_tickets_table_provider_options( $options ) {
+		$options[ Ticket::POSTTYPE ] = tribe( Module::class )->plugin_name;
+
+		return $options;
+	}
+
+	/**
+	 * Filters the meta keys for the All Tickets table.
+	 *
+	 * @since 5.14.0
+	 *
+	 * @param array $meta_keys The event meta keys.
+	 *
+	 * @return array The filtered event meta keys.
+	 */
+	public function filter_all_tickets_table_event_meta_keys( $meta_keys ) {
+		$meta_keys[ Ticket::POSTTYPE ] = Module::ATTENDEE_EVENT_KEY;
+
+		return $meta_keys;
 	}
 }
