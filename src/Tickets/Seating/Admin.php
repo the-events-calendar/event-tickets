@@ -13,7 +13,6 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Common\StellarWP\Assets\Assets;
-use TEC\Tickets\Seating\Admin\Embed_Test;
 use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Layouts;
 use TEC\Tickets\Seating\Admin\Tabs\Map_Edit;
@@ -73,10 +72,7 @@ class Admin extends Controller_Contract {
 		$assets->remove( 'tec-tickets-seating-admin-layout-edit-style' );
 
 		remove_action( 'admin_menu', [ $this, 'add_submenu_page' ], 1000 );
-		remove_action( 'admin_menu', [ $this, 'add_embed_submenu_page' ], 1000 );
-
 		remove_action( 'admin_init', [ $this, 'register_woo_incompatibility_notice' ] );
-
 		remove_filter( 'tec_tickets_find_ticket_type_host_posts_query_args', [ $this, 'exclude_asc_events_from_candidates_from_moving_tickets_to' ] );
 	}
 
@@ -121,20 +117,6 @@ class Admin extends Controller_Contract {
 	}
 
 	/**
-	 * @todo remove this when embed testing is not required anymore.
-	 */
-	public function add_embed_submenu_page(): void {
-		add_submenu_page(
-			'tec-tickets',
-			__( '__TEST__ Embed', 'event-tickets' ),
-			__( '__TEST__ Embed', 'event-tickets' ),
-			'manage_options',
-			Embed_Test::get_menu_slug(),
-			$this->container->callback( Admin\Embed_Test::class, 'render' )
-		);
-	}
-
-	/**
 	 * Register the admin area bindings and hooks on the required hooks.
 	 *
 	 * @since TBD
@@ -155,12 +137,7 @@ class Admin extends Controller_Contract {
 		$this->reqister_layout_edit_assets();
 
 		add_action( 'admin_menu', [ $this, 'add_submenu_page' ], 1000 );
-
-		// @todo TEST STUFF remove when no more required.
-		add_action( 'admin_menu', [ $this, 'add_embed_submenu_page' ], 1000 );
-
 		add_action( 'admin_init', [ $this, 'register_woo_incompatibility_notice' ] );
-
 		add_filter( 'tec_tickets_find_ticket_type_host_posts_query_args', [ $this, 'exclude_asc_events_from_candidates_from_moving_tickets_to' ] );
 	}
 
