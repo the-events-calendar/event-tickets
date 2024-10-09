@@ -19,8 +19,16 @@ use TEC\Tickets\Seating\Service\Maps as Maps_Service;
  * @since TBD
  *
  * @package TEC\Controller\Admin\Tabs;
-// */
+ */
 class Maps extends Tab {
+	/**
+	 * The Maps service.
+	 *
+	 * @since TBD
+	 *
+	 * @var Maps_Service
+	 */
+	private Maps_Service $maps;
 	
 	/**
 	 * The Maps Tab.
