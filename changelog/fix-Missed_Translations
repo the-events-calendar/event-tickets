@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Some dates in admin screens were not translated [TEC-4873]

@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Wrong ticket stock when attendeed were moved between tickets [ET-2098]

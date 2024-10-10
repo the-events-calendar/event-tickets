@@ -11,25 +11,25 @@
 if ( empty( $ticket->start_date ) ) {
 	return;
 }
-$classes = [
+$classes     = [
 	'tribe-tickets__tickets-editor-ticket-available-dates',
 	'dashicons-before',
 ];
 $date_format = tribe_get_date_format( true );
-$start_time = strtotime( $ticket->start_date );
-$date_string = date( $date_format, $start_time ) . ' - ';
+$start_time  = strtotime( $ticket->start_date );
+$date_string = date_i18n( $date_format, $start_time ) . ' - ';
 
 // Icon design is based on if start date is in the future or not.
-$classes[] = ( current_time( 'timestamp' ) < $start_time ) 
-	? 'dashicons-arrow-right-alt' 
+$classes[] = ( current_time( 'timestamp' ) < $start_time ) // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested
+	? 'dashicons-arrow-right-alt'
 	: 'dashicons-clock';
 
 if ( ! empty( $ticket->end_date ) ) {
-	$end_time = strtotime( $ticket->end_date );
-	$date_string .= date( $date_format, $end_time );
-	
+	$end_time     = strtotime( $ticket->end_date );
+	$date_string .= date_i18n( $date_format, $end_time );
+
 	// Add a class to differentiate tickets that are no longer on sale.
-	if ( current_time( 'timestamp' ) > $end_time ) {
+	if ( current_time( 'timestamp' ) > $end_time ) { // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested
 		$classes[] = 'tribe-tickets__tickets-editor-ticket-available-dates-icon-expired';
 	}
 }
