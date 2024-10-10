@@ -10,6 +10,8 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Order_Modifiers\Traits;
 
 use InvalidArgumentException;
+use TEC\Tickets\Order_Modifiers\Models\Coupon;
+use TEC\Tickets\Order_Modifiers\Models\Fee;
 
 /**
  * Trait Valid_Types
@@ -40,15 +42,16 @@ trait Valid_Types {
 	 */
 	protected function get_valid_types(): array {
 		$types = [
-			'coupon' => __( 'Coupon', 'event-tickets' ),
-			'fee'    => __( 'Fee', 'event-tickets' ),
+			'coupon' => Coupon::class,
+			'fee'    => Fee::class,
 		];
 
 		/**
 		 * Filters the valid order modifier types.
 		 *
-		 * Note that the keys are the type slugs and the values are the type labels. The
-		 * key is used to determine whether a type is valid or not.
+		 * Note that the keys are the type slugs and the values are the model class. The
+		 * key is used to determine whether a type is valid or not. The value
+		 * is used to instantiate the model.
 		 *
 		 * @since TBD
 		 *

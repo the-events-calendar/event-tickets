@@ -110,7 +110,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 */
 	public function __construct( string $modifier_type ) {
 		$this->modifier_type                           = $modifier_type;
-		$this->repository                              = new Order_Modifiers_Repository();
+		$this->repository                              = new Order_Modifiers_Repository( $modifier_type );
 		$this->order_modifiers_meta_repository         = new Order_Modifiers_Meta_Repository();
 		$this->order_modifiers_relationship_repository = new Order_Modifier_Relationship_Repository();
 	}

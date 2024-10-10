@@ -11,6 +11,7 @@ namespace TEC\Tickets\Order_Modifiers\Traits;
 
 use Exception;
 use TEC\Tickets\Exceptions\Not_Found_Exception;
+use TEC\Tickets\Order_Modifiers\Models\Coupon;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
 use TEC\Tickets\Order_Modifiers\Repositories\Coupons as Coupons_Repository;
 
@@ -48,11 +49,11 @@ trait Coupons {
 	/**
 	 * Determine if a coupon is valid.
 	 *
-	 * @param Order_Modifier $coupon
+	 * @param Coupon $coupon The coupon to check.
 	 *
 	 * @return bool
 	 */
-	protected function is_coupon_valid( Order_Modifier $coupon ) {
+	protected function is_coupon_valid( Coupon $coupon ) {
 		try {
 			// If it's not a coupon, it's invalid.
 			if ( ! $this->is_coupon( $coupon ) ) {
@@ -73,6 +74,9 @@ trait Coupons {
 			if ( null !== $coupon->start_date && strtotime( $coupon->start_date ) > current_time( 'timestamp' ) ) {
 				return false;
 			}
+
+			// Check whether the coupon is still within its usage limit.
+			// @todo: Implement this.
 
 			return true;
 		} catch ( Exception $e ) {

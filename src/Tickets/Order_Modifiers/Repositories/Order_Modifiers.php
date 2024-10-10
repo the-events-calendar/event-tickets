@@ -20,6 +20,7 @@ use TEC\Common\StellarWP\Models\Repositories\Repository;
 use TEC\Tickets\Exceptions\Not_Found_Exception;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers as Table;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
+use TEC\Tickets\Order_Modifiers\Models\Coupon;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
 use TEC\Tickets\Order_Modifiers\Traits\Valid_Types;
 
@@ -384,7 +385,11 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 * @return ModelQueryBuilder
 	 */
 	public function prepareQuery(): ModelQueryBuilder {
-		$builder = new ModelQueryBuilder( Order_Modifier::class );
+		// Determine the model class based on the modifier type.
+		$this->validate_type( $this->modifier_type );
+		$class = $this->get_valid_types()[ $this->modifier_type ];
+
+		$builder = new ModelQueryBuilder( $class );
 
 		return $builder->from( Table::table_name( false ) );
 	}
