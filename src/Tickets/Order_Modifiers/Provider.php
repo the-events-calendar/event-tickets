@@ -13,6 +13,7 @@ namespace TEC\Tickets\Order_Modifiers;
 
 use TEC\Common\lucatume\DI52\ServiceProvider;
 use TEC\Tickets\Order_Modifiers\Admin\Order_Modifier_Fee_Metabox;
+use TEC\Tickets\Order_Modifiers\API\Coupons;
 use TEC\Tickets\Order_Modifiers\API\Fees;
 use TEC\Tickets\Order_Modifiers\Modifiers\Coupon;
 use TEC\Tickets\Order_Modifiers\Modifiers\Fee;
@@ -50,6 +51,7 @@ final class Provider extends ServiceProvider {
 		$this->container->singleton( Fee::class );
 
 		// Register and bind the API classes.
+		$this->container->bind( Coupons::class, new Coupons() );
 		$this->container->bind( Fees::class, new Fees() );
 
 		// Tag our classes that have their own registration needs.
@@ -57,6 +59,7 @@ final class Provider extends ServiceProvider {
 			[
 				Modifier_Admin_Handler::class,
 				Order_Modifier_Fee_Metabox::class,
+				Coupons::class,
 				Fees::class,
 			],
 			'order_modifiers'
