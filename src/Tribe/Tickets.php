@@ -346,6 +346,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public $checkin_key = '';
 
 		/**
+		 * The key used to store the event ID in the ticket post meta.
+		 *
+		 * @since 5.14.0
+		 *
+		 * @var string
+		 */
+		public $event_key;
+
+		/**
 		 * Returns link to the report interface for sales for an event or
 		 * null if the provider doesn't have reporting capabilities.
 		 *
@@ -1257,6 +1266,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// Event cost may need to be formatted to the provider's currency settings.
 			add_filter( 'tribe_currency_cost', [ $this, 'maybe_format_event_cost' ], 10, 2 );
+
+			add_action( 'init', [ $this, 'add_admin_tickets_hooks' ] );
 		}
 
 		/**
@@ -1287,6 +1298,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @param Tribe__Tickets__Tickets $ticket_handler
 			 */
 			do_action( 'tribe_tickets_tickets_hook', $this );
+		}
+
+		/**
+		 * Add all the hooks for the Admin Tickets page.
+		 *
+		 * @since 5.14.0
+		 *
+		 * @return void
+		 */
+		public function add_admin_tickets_hooks() {
+			add_filter( 'tec_tickets_admin_tickets_table_provider_info', [ $this, 'filter_admin_tickets_table_provider_info' ] );
 		}
 
 		/**
@@ -3264,28 +3286,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Returns the meta key used to link ticket types with the base event.
 		 *
-		 * If the meta key cannot be determined the returned string will be empty.
 		 * Subclasses can override this if they use a key other than 'event_key'
 		 * for this purpose.
 		 *
-		 * @internal
-		 *
-		 * @throws ReflectionException Possible from calling ReflectionProperty().
+		 * @since 5.14.0 Removed check for static property. All static properties were removed over 2 major versions ago.
 		 *
 		 * @return string
 		 */
 		public function get_event_key() {
-			if ( property_exists( $this, 'event_key' ) ) {
-				// EDD module uses a static event_key so we need to check for it or we'll fatal
-				$prop = new ReflectionProperty( $this, 'event_key' );
-				if ( $prop->isStatic() ) {
-					return $prop->get_value();
-				}
-
-				return $this->event_key;
-			}
-
-			return '';
+			return $this->event_key;
 		}
 
 		/**
@@ -4642,6 +4651,37 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			return $this->class_name;
 		}
 
+		/**
+		 * Removes this module from the list of active modules.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @return void This module is removed from the list of active modules, if it was active.
+		 */
+		public function deactivate(): void {
+			unset( self::$active_modules[ get_class( $this ) ] );
+		}
+
+		/**
+		 * Filter provider information for the admin tickets table.
+		 *
+		 * @since 5.14.0
+		 *
+		 * @param array[] $provider_info The list of provider information.
+		 *
+		 * @return array[] The filtered list of provider information.
+		 */
+		public function filter_admin_tickets_table_provider_info( $provider_info ) {
+			$provider_info[ $this->class_name ] = [
+				'title'              => $this->plugin_name,
+				'event_meta_key'     => $this->get_event_key(),
+				'attendee_post_type' => $this->attendee_object,
+				'ticket_post_type'   => $this->ticket_object,
+			];
+
+			return $provider_info;
+		}
+
 		/************************
 		 *                      *
 		 *  Deprecated Methods  *
@@ -4707,17 +4747,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		final protected function ajax_ok( $data ) {
 			_deprecated_function( __METHOD__, '4.6.2', 'wp_send_json_success()' );
 			wp_send_json_success( $data );
-		}
-
-		/**
-		 * Removes this module from the list of active modules.
-		 *
-		 * @since 5.8.0
-		 *
-		 * @return void This module is removed from the list of active modules, if it was active.
-		 */
-		public function deactivate(): void {
-			unset( self::$active_modules[ get_class( $this ) ] );
 		}
 
 		// @codingStandardsIgnoreEnd

@@ -431,26 +431,43 @@ class Ticket {
 	 * @todo  TribeCommerceLegacy: Move this method into the another place.
 	 *
 	 * @since 5.1.9
+	 * @since 5.14.0 Added the $refresh parameter and use stored status counts and utilize new memoization class.
 	 *
-	 * @param int $ticket_id The ticket post ID.
+	 * @param int  $ticket_id The ticket post ID.
+	 * @param bool $refresh Whether to try and use the cached value or not.
 	 *
 	 * @return int
 	 */
-	protected function get_cancelled( $ticket_id ) {
-		$denied_orders = \Tribe__Tickets__Commerce__PayPal__Order::find_by( array(
-			'ticket_id'      => $ticket_id,
-			'post_status'    => Denied::SLUG,
-			'posts_per_page' => - 1,
-		), [
-			'items',
-		] );
-
-		$denied = 0;
-		foreach ( $denied_orders as $denied_order ) {
-			$denied += $denied_order->get_item_quantity( $ticket_id );
+	protected function get_cancelled( $ticket_id, $refresh = false ) {
+		// Check cache for quantities by status.
+		$cache      = tribe_cache();
+		$quantities = $cache->get( 'tec_tickets_quantities_by_status_' . $ticket_id );
+		if ( ! is_array( $quantities ) ) {
+			$quantities = [];
 		}
 
-		return max( 0, $denied );
+		if ( $refresh || ! isset( $quantities[ Denied::SLUG ] ) ) {
+			$denied_orders = \Tribe__Tickets__Commerce__PayPal__Order::find_by(
+				[
+					'ticket_id'      => $ticket_id,
+					'post_status'    => Denied::SLUG,
+					'posts_per_page' => - 1,
+				],
+				[
+					'items',
+				]
+			);
+
+			$denied = 0;
+			foreach ( $denied_orders as $denied_order ) {
+				$denied += $denied_order->get_item_quantity( $ticket_id );
+			}
+
+			$quantities[ Denied::SLUG ] = max( 0, $denied );
+			$cache->set( 'tec_tickets_quantities_by_status_' . $ticket_id, $quantities );
+		}
+
+		return $quantities[ Denied::SLUG ];
 	}
 
 	/**
@@ -459,6 +476,7 @@ class Ticket {
 	 * @todo  TribeCommerceLegacy: Move this method into the another place.
 	 *
 	 * @since 5.1.9
+	 * @since 5.14.0 Utilize new memoization class.
 	 *
 	 * @param int  $ticket_id The ticket post ID
 	 * @param bool $refresh   Whether to try and use the cached value or not.
@@ -466,16 +484,21 @@ class Ticket {
 	 * @return int
 	 */
 	public function get_qty_pending( $ticket_id, $refresh = false ) {
-		static $pending_attendees_by_ticket = [];
+		// Check cache for quantities by status.
+		$cache      = tribe_cache();
+		$quantities = $cache->get( 'tec_tickets_quantities_by_status_' . $ticket_id );
+		if ( ! is_array( $quantities ) ) {
+			$quantities = [];
+		}
 
-		if ( $refresh || empty( $pending_attendees_by_ticket[ $ticket_id ] ) ) {
+		if ( $refresh || ! isset( $quantities[ Pending::SLUG ] ) ) {
 			$pending_query = new \WP_Query( [
 				'fields'     => 'ids',
 				'per_page'   => 1,
 				'post_type'  => Attendee::POSTTYPE,
 				'meta_query' => [
 					[
-						'key'   => Attendee::$event_relation_meta_key,
+						'key'   => Attendee::$ticket_relation_meta_key,
 						'value' => $ticket_id,
 					],
 					'relation' => 'AND',
@@ -486,10 +509,11 @@ class Ticket {
 				],
 			] );
 
-			$pending_attendees_by_ticket[ $ticket_id ] = $pending_query->found_posts;
+			$quantities[ Pending::SLUG ] = $pending_query->found_posts;
+			$cache->set( 'tec_tickets_quantities_by_status_' . $ticket_id, $quantities );
 		}
 
-		return $pending_attendees_by_ticket[ $ticket_id ];
+		return $quantities[ Pending::SLUG ];
 	}
 
 	/**

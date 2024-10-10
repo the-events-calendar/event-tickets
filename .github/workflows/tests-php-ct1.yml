@@ -110,9 +110,7 @@ jobs:
         if: steps.skip.outputs.value != 1
         id: fetch-tec-head-branch
         with:
-          route: GET /repos/{owner}/{repo}/branches/${{ github.head_ref }}
-          owner: the-events-calendar
-          repo: the-events-calendar
+          route: GET /repos/the-events-calendar/the-events-calendar/branches/${{ github.head_ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
         continue-on-error: true
@@ -121,9 +119,7 @@ jobs:
         id: fetch-tec-base-branch
         if: steps.skip.outputs.value != 1 && steps.fetch-tec-head-branch.outcome != 'success'
         with:
-          route: GET /repos/{owner}/{repo}/branches/${{ github.base_ref }}
-          owner: the-events-calendar
-          repo: the-events-calendar
+          route: GET /repos/the-events-calendar/the-events-calendar/branches/${{ github.base_ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
         continue-on-error: true
@@ -132,9 +128,7 @@ jobs:
         if: steps.skip.outputs.value != 1
         id: fetch-ecp-head-branch
         with:
-          route: GET /repos/{owner}/{repo}/branches/${{ github.head_ref }}
-          owner: the-events-calendar
-          repo: events-pro
+          route: GET /repos/the-events-calendar/events-pro/branches/${{ github.head_ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
         continue-on-error: true
@@ -143,9 +137,7 @@ jobs:
         id: fetch-ecp-base-branch
         if: steps.skip.outputs.value != 1 && steps.fetch-ecp-head-branch.outcome != 'success'
         with:
-          route: GET /repos/{owner}/{repo}/branches/${{ github.base_ref }}
-          owner: the-events-calendar
-          repo: events-pro
+          route: GET /repos/the-events-calendar/events-pro/branches/${{ github.base_ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
         continue-on-error: true

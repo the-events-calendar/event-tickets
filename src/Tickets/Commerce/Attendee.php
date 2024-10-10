@@ -669,6 +669,37 @@ class Attendee {
 	}
 
 	/**
+	 * Get attendees by ticket ID.
+	 *
+	 * @since 5.14.0
+	 *
+	 * @param int    $ticket_id    Ticket ID.
+	 * @param string $orm_provider ORM provider string.
+	 *
+	 * @return array List of attendees.
+	 */
+	public function get_attendees_by_ticket_id( $ticket_id, $orm_provider ) {
+		// Check cache.
+		$cache                  = tribe_cache();
+		$attendees_by_ticket_id = $cache->get( 'tec_tickets_attendees_by_ticket_id' );
+		if ( ! is_array( $attendees_by_ticket_id ) ) {
+			$attendees_by_ticket_id = [];
+		}
+
+		if ( ! isset( $attendees_by_ticket_id[ $ticket_id ] ) ) {
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tec_tc_attendees( $orm_provider );
+			$attendees  = $repository->by( 'ticket_id', $ticket_id )->all();
+
+			// Store in cache.
+			$attendees_by_ticket_id[ $ticket_id ] = $attendees;
+			$cache->set( 'tec_tickets_attendees_by_ticket_id', $attendees_by_ticket_id );
+		}
+
+		return tribe( Module::class )->get_attendees_from_module( $attendees_by_ticket_id[ $ticket_id ] );
+	}
+
+	/**
 	 * Loads event, ticket, order and other data into an attendee object
 	 *
 	 * @todo  We should not be using this particular piece of the code until it's using `tec_tc_get_attendee`.

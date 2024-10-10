@@ -3226,4 +3226,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		return $post_types;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function add_admin_tickets_hooks() {
+		// We do not want to add Legacy Tribe Commerce tickets to the Admin Tickets page.
+	}
 }
