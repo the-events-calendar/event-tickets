@@ -193,7 +193,7 @@ class Admin extends Controller_Contract {
 			'</a>'
 		);
 
-		$filter_callback = static fn( $post_types ) => [];
+		$filter_callback = static fn() => [];
 		$add_filter      = static fn() => add_filter( 'tribe_is_post_type_screen_post_types', $filter_callback );
 		$remove_filter   = static fn() => remove_filter( 'tribe_is_post_type_screen_post_types', $filter_callback );
 
