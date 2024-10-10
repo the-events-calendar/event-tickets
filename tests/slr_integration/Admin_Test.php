@@ -13,6 +13,7 @@ use Tribe\Tests\Traits\With_Uopz;
 use TEC\Tickets\Seating\Meta;
 use Tribe__Admin__Notices as Notices;
 use Tribe__Tickets__Admin__Move_Tickets as Move_Tickets;
+use WP_Screen;
 
 class Admin_Test extends Controller_Test_Case {
 	use With_Uopz;
@@ -97,6 +98,11 @@ class Admin_Test extends Controller_Test_Case {
 	public function it_should_not_display_woo_incompatibility_notice_when_woo_inactive(): void {
 		$this->set_fn_return( 'function_exists', static fn( $fn ) => $fn === 'WC' ? false : function_exists( $fn ), true );
 		$this->set_fn_return( 'wp_create_nonce', '12345678' );
+		add_filter( 'tribe_admin_is_wp_screen', '__return_true' );
+
+		global $current_screen;
+
+		$current_screen = WP_Screen::get( 'tickets_page_tec-tickets-attendees' );
 		$controller = $this->make_controller();
 		$controller->register_woo_incompatibility_notice();
 
@@ -115,6 +121,12 @@ class Admin_Test extends Controller_Test_Case {
 	public function it_should_display_woo_incompatibility_notice_when_woo_active(): void {
 		$this->set_fn_return( 'function_exists', static fn( $fn ) => $fn === 'WC' ? true : function_exists( $fn ), true );
 		$this->set_fn_return( 'wp_create_nonce', '12345678' );
+		add_filter( 'tribe_admin_is_wp_screen', '__return_true' );
+
+		global $current_screen;
+
+		$current_screen = WP_Screen::get( 'tickets_page_tec-tickets-attendees' );
+
 		$controller = $this->make_controller();
 		$controller->register_woo_incompatibility_notice();
 
