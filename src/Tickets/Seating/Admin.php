@@ -214,7 +214,7 @@ class Admin extends Controller_Contract {
 				'dismiss' => true,
 				'type'    => 'warning',
 			],
-			static function() use ( $add_filter, $remove_filter, $screen_ids ) {
+			static function () use ( $add_filter, $remove_filter, $screen_ids ) {
 				$add_filter();
 				$result = function_exists( 'WC' ) && Admin_Helper::instance()->is_screen( $screen_ids );
 				$remove_filter();
