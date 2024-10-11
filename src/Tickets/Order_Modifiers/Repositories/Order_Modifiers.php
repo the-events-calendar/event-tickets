@@ -22,8 +22,6 @@ use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers as Table;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifier_Relationships as Relationship_Table;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
-use TEC\Tickets\Order_Modifiers\Models\Coupon;
-use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
 use TEC\Tickets\Order_Modifiers\Traits\Valid_Types;
 
 /**
