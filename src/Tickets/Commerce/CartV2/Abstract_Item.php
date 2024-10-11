@@ -49,11 +49,14 @@ abstract class Abstract_Item implements Item_Interface {
 	 * @param string|null $sub_type Optional. The subtype of the item (e.g., 'flat', 'percent').
 	 */
 	public function __construct( $id, int $quantity, int $value, ?string $sub_type = 'flat' ) {
-		$this->id       = $id;
-		$this->quantity = $quantity;
-		$this->value    = $value;
+		$this->id = $id;
+		// If quantity is less than 0, default to 0. Limit the maximum quantity.
+		$this->quantity = max( 0, min( $quantity, 1000000 ) );
+
+		$this->value    = max( 0, $value );
 		$this->sub_type = $sub_type;
 	}
+
 
 	/**
 	 * Retrieves the ID of the item.

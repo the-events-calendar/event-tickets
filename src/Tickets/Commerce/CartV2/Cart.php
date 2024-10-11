@@ -31,6 +31,7 @@ class Cart {
 
 	/**
 	 * Adds an item to the cart. If the item already exists, it updates the quantity.
+	 * If the item's quantity is zero, it removes the item from the cart.
 	 *
 	 * @param mixed $item The item to add to the cart.
 	 *
@@ -40,11 +41,23 @@ class Cart {
 		$type    = $item->get_type() ?? 'ticket';
 		$item_id = $item->get_id( true );
 
+		// If the item has a quantity of zero, remove it from the cart.
+		if ( $item->get_quantity() <= 0 ) {
+			$this->remove_item( $item_id );
+			return;
+		}
+
 		if ( $this->has_item( $item_id ) ) {
 			// Update the quantity if the item already exists.
 			$this->items[ $item_id ]->set_quantity(
 				$this->items[ $item_id ]->get_quantity() + $item->get_quantity()
 			);
+
+			// If the updated quantity is zero, remove the item from the cart.
+			if ( $this->items[ $item_id ]->get_quantity() <= 0 ) {
+				$this->remove_item( $item_id );
+				return;
+			}
 		} else {
 			// Add the item if it doesn't already exist.
 			$this->items_by_type[ $type ][ $item_id ] = $item;

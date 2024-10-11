@@ -38,6 +38,7 @@ class Fee_Item extends Abstract_Item {
 	 * @return int The calculated fee amount in cents.
 	 */
 	public function get_amount( ?int $subtotal = null ): int {
+		// @todo switch to case sttement, for percent, flat, default - throw an exception - Maybe create trait for the subtype
 		if ( $this->sub_type === 'percent' && $subtotal !== null ) {
 			// Calculate percentage fee based on the subtotal.
 			return (int) ( $subtotal * ( $this->value / 100 ) );
