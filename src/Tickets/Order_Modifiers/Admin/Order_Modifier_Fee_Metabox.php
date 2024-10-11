@@ -17,8 +17,10 @@ use TEC\Tickets\Order_Modifiers\Controller;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifier_Relationship;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers;
-use Tribe__Tickets__Admin__Views;
-use Tribe__Tickets__Main;
+use TEC\Tickets\Order_Modifiers\Traits\Fee_Types;
+use TEC\Tickets\Registerable;
+use Tribe__Tickets__Admin__Views as Admin_Views;
+use Tribe__Tickets__Main as Main;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
@@ -30,7 +32,9 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
  *
  * @since TBD
  */
-class Order_Modifier_Fee_Metabox {
+class Order_Modifier_Fee_Metabox implements Registerable {
+
+	use Fee_Types;
 
 	/**
 	 * The modifier type for this metabox handler.
@@ -57,14 +61,6 @@ class Order_Modifier_Fee_Metabox {
 	protected Modifier_Manager $manager;
 
 	/**
-	 * The repository for interacting with the order modifiers table.
-	 *
-	 * @since TBD
-	 * @var Order_Modifiers
-	 */
-	protected Order_Modifiers $order_modifiers_repository;
-
-	/**
 	 * The repository for interacting with the order modifiers relationships.
 	 *
 	 * @since TBD
@@ -83,7 +79,7 @@ class Order_Modifier_Fee_Metabox {
 		$this->manager           = new Modifier_Manager( $this->modifier_strategy );
 
 		// Set up the order modifiers repository for accessing fee data.
-		$this->order_modifiers_repository              = new Order_Modifiers();
+		$this->modifiers_repository                    = new Order_Modifiers( $this->modifier_type );
 		$this->order_modifiers_relationship_repository = new Order_Modifier_Relationship();
 	}
 
@@ -122,7 +118,7 @@ class Order_Modifier_Fee_Metabox {
 	 * @return void
 	 */
 	public function enqueue_order_modifiers_fee_scripts() {
-		/** @var Tribe__Tickets__Main $tickets_main */
+		/** @var Main $tickets_main */
 		$tickets_main = tribe( 'tickets.main' );
 
 		// Define the path to your JS files.
@@ -168,26 +164,13 @@ class Order_Modifier_Fee_Metabox {
 		) : [];
 
 		// Retrieve all fees based on modifier type and specific meta conditions.
-		$available_fees = $this->order_modifiers_repository->find_by_modifier_type_and_meta(
-			$this->modifier_type,
-			'fee_applied_to',
-			[ 'per', 'all' ],
-			'fee_applied_to',
-			'all'
-		);
+		$available_fees = $this->get_all_fees();
 
 		// Partition the fees into automatically applied fees ('all') and selectable fees (non-'all').
-		$automatic_fees = array_filter(
-			$available_fees,
-			fn( $fee ) => empty( $fee->meta_value ) || $fee->meta_value === 'all'
-		);
+		$automatic_fees  = $this->get_automatic_fees( $available_fees );
+		$selectable_fees = $this->get_selectable_fees( $available_fees );
 
-		$selectable_fees = array_filter(
-			$available_fees,
-			fn( $fee ) => ! empty( $fee->meta_value ) && $fee->meta_value !== 'all'
-		);
-
-		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		/** @var Admin_Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 
 		// Render the fee section in the ticket metabox.
@@ -221,25 +204,13 @@ class Order_Modifier_Fee_Metabox {
 		$this->manager->delete_relationships_by_post( $ticket->ID );
 
 		// Get available fees with specific meta values.
-		$fees = $this->order_modifiers_repository->find_by_modifier_type_and_meta(
-			$this->modifier_type,
-			'fee_applied_to',
-			[ 'per', 'all' ],
-			'fee_applied_to',
-			'all'
-		);
+		$fees = $this->get_all_fees();
 
 		// Filter fees into those automatically applied ('all') and extract their IDs.
-		$automatic_fee_ids = array_map(
-			fn( $fee ) => $fee->id,
-			array_filter(
-				$fees,
-				fn( $fee ) => empty( $fee->meta_value ) || $fee->meta_value === 'all'
-			)
-		);
+		$automatic_fee_ids = $this->get_automatic_fees( $fees );
 
 		// Assuming $raw_data['ticket_order_modifier_fees'] is an array (if not, initialize it).
-		$raw_data['ticket_order_modifier_fees'] = isset( $raw_data['ticket_order_modifier_fees'] ) && is_array( $raw_data['ticket_order_modifier_fees'] ) ? $raw_data['ticket_order_modifier_fees'] : [];
+		$raw_data['ticket_order_modifier_fees'] = (array) ( $raw_data['ticket_order_modifier_fees'] ?? [] );
 
 		// Merge the automatic fee IDs into the ticket_order_modifier_fees array.
 		$ticket_order_modifier_fees = array_merge( $raw_data['ticket_order_modifier_fees'], $automatic_fee_ids );

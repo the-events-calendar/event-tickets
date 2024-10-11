@@ -14,7 +14,7 @@ use TEC\Common\StellarWP\Models\Contracts\ModelFromQueryBuilderObject;
 use TEC\Common\StellarWP\Models\Model;
 use TEC\Common\StellarWP\Models\ModelQueryBuilder;
 use TEC\Tickets\Order_Modifiers\Data_Transfer_Objects\Order_Modifier_DTO;
-use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers as Order_Modifiers_Repository;
+use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers as Repository;
 
 /**
  * Class Order_Modifier.
@@ -62,7 +62,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 * @return Order_Modifier|null The model instance, or null if not found.
 	 */
 	public static function find( $id ): ?self {
-		return tribe( Order_Modifiers_Repository::class )->find_by_id( $id );
+		return tribe( Repository::class )->find_by_id( $id );
 	}
 
 	/**
@@ -76,7 +76,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 * @return Order_Modifier|null The model instance, or null if not found.
 	 */
 	public static function find_by_slug( $slug, $type ): ?self {
-		return tribe( Order_Modifiers_Repository::class )->find_by_slug( $slug, $type );
+		return ( new Repository( $type ) )->find_by_slug( $slug );
 	}
 
 	/**
@@ -88,8 +88,13 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 *
 	 * @return static
 	 */
-	public static function create( array $attributes ): self {
-		$model = new self( $attributes );
+	public static function create( array $attributes ): static {
+		// Maybe override the modifier type based on the final class.
+		if ( property_exists( static::class, 'order_modifier_type' ) ) {
+			$attributes['modifier_type'] = static::$order_modifier_type;
+		}
+
+		$model = new static( $attributes );
 		$model->save();
 
 		return $model;
@@ -103,11 +108,13 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 * @return static
 	 */
 	public function save(): self {
+		$repository = new Repository( $this->modifier_type );
 		if ( $this->id ) {
-			return tribe( Order_Modifiers_Repository::class )->update( $this );
+			$repository->update( $this );
+			return $this;
 		}
 
-		$this->id = tribe( Order_Modifiers_Repository::class )->insert( $this )->id;
+		$this->id = $repository->insert( $this )->id;
 
 		return $this;
 	}
@@ -120,7 +127,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 * @return bool Whether the model was deleted.
 	 */
 	public function delete(): bool {
-		return tribe( Order_Modifiers_Repository::class )->delete( $this );
+		return ( new Repository( $this->modifier_type ) )->delete( $this );
 	}
 
 	/**
@@ -131,7 +138,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 * @return ModelQueryBuilder The query builder instance.
 	 */
 	public static function query(): ModelQueryBuilder {
-		return tribe( Order_Modifiers_Repository::class )->query();
+		return tribe( Repository::class )->query();
 	}
 
 	/**

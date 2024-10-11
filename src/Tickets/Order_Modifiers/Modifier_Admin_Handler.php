@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Order_Modifiers;
 
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Manager;
+use TEC\Tickets\Registerable;
 
 /**
  * Class Modifier_Settings.
@@ -18,7 +19,7 @@ use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Manager;
  *
  * @since TBD
  */
-class Modifier_Admin_Handler {
+class Modifier_Admin_Handler implements Registerable {
 
 	/**
 	 * Event Tickets menu page slug.
@@ -67,9 +68,10 @@ class Modifier_Admin_Handler {
 	 *
 	 * @return void
 	 */
-	public function register() {
+	public function register(): void {
 		add_action( 'admin_menu', [ $this, 'add_tec_tickets_order_modifiers_page' ], 15 );
 		add_action( 'admin_init', [ $this, 'handle_delete_modifier' ] );
+		add_action( 'admin_init', fn() => $this->handle_form_submission() );
 	}
 
 	/**
@@ -159,9 +161,6 @@ class Modifier_Admin_Handler {
 			'modifier_id' => $modifier_id,
 			'is_edit'     => $is_edit,
 		];
-
-		// Check if form is submitted and process the save.
-		$this->handle_form_submission( $context );
 
 		// Get the appropriate strategy for the selected modifier.
 		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
@@ -258,15 +257,26 @@ class Modifier_Admin_Handler {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $context The context for rendering the page.
-	 *
 	 * @return void
 	 */
-	protected function handle_form_submission( array $context ): void {
+	protected function handle_form_submission(): void {
 		// Check if the form was submitted and verify nonce.
 		if ( ! isset( $_POST['order_modifier_form_save'] ) || ! check_admin_referer( 'order_modifier_save_action', 'order_modifier_save_action' ) ) {
 			return;
 		}
+
+		// Get and sanitize request vars for modifier and modifier_id.
+		$modifier_type = sanitize_key( tribe_get_request_var( 'modifier', 'coupon' ) );
+		$modifier_id   = absint( tribe_get_request_var( 'modifier_id', '0' ) );
+		$is_edit       = tribe_is_truthy( tribe_get_request_var( 'edit', '0' ) );
+
+		// Prepare the context for the page.
+		$context = [
+			'event_id'    => 0,
+			'modifier'    => $modifier_type,
+			'modifier_id' => $modifier_id,
+			'is_edit'     => $is_edit,
+		];
 
 		// Get the appropriate strategy for the selected modifier.
 		$modifier_strategy = tribe( Controller::class )->get_modifier( $context['modifier'] );

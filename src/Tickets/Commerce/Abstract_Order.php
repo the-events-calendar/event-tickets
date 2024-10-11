@@ -5,6 +5,7 @@ namespace TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Utils__Array as Arr;
+use WP_Error;
 
 /**
  * @todo backend move common methods from Commerce/Order, Manual/Order and PayPal/Order here.
@@ -87,8 +88,7 @@ abstract class Abstract_Order {
 	 *
 	 * @param array $data user data input in the checkout page.
 	 *
-	 * @return array | \WP_Error
-	 *
+	 * @return array|WP_Error
 	 */
 	public function get_purchaser_data( $data ) {
 
@@ -103,18 +103,18 @@ abstract class Abstract_Order {
 			return $purchaser;
 		}
 
-		if ( ! isset( $data['purchaser'] ) || empty( $data['purchaser'] ) ) {
-			return new \WP_Error( 'invalid-purchaser-info', __( 'Please provide a valid purchaser name and email.', 'event-tickets' ), [ 'status' => 400 ] );
+		if ( empty( $data['purchaser'] ) ) {
+			return new WP_Error( 'invalid-purchaser-info', __( 'Please provide a valid purchaser name and email.', 'event-tickets' ), [ 'status' => 400 ] );
 		}
 
 		$purchaser_data = array_map( 'sanitize_text_field', $data['purchaser'] );
 
-		if ( ! isset( $purchaser_data['name'] ) || empty( $purchaser_data['name'] ) ) {
-			return new \WP_Error( 'invalid-purchaser-info', __( 'Please provide a valid purchaser name.', 'event-tickets' ), [ 'status' => 400 ] );
+		if ( empty( $purchaser_data['name'] ) ) {
+			return new WP_Error( 'invalid-purchaser-info', __( 'Please provide a valid purchaser name.', 'event-tickets' ), [ 'status' => 400 ] );
 		}
 
-		if ( ! isset( $purchaser_data['email'] ) || empty( $purchaser_data['email'] ) || ! is_email( $purchaser_data['email'] ) ) {
-			return new \WP_Error( 'invalid-purchaser-info', __( 'Please provide a valid purchaser email.', 'event-tickets' ), [ 'status' => 400 ] );
+		if ( empty( $purchaser_data['email'] ) || ! is_email( $purchaser_data['email'] ) ) {
+			return new WP_Error( 'invalid-purchaser-info', __( 'Please provide a valid purchaser email.', 'event-tickets' ), [ 'status' => 400 ] );
 		}
 
 		$purchaser = [

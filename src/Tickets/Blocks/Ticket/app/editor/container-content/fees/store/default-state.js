@@ -1,5 +1,5 @@
 export default {
-	ticketFees: [],
+	fees: [],
 	automaticFees: [],
 	selectableFees: [],
-}
+};
