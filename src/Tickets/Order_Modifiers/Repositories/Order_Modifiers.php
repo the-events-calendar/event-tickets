@@ -242,7 +242,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 * @return Order_Modifier[]|null Array of active Order Modifier model instances, or null if not found.
 	 */
 	public function find_active(): ?array {
-		return $this->prepareQuery()
+		$result = $this->prepareQuery()
 			->where( 'status', 'active' )
 			->get();
 
@@ -254,14 +254,13 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug          The slug of the Order Modifier to find.
+	 * @param string $slug The slug of the Order Modifier to find.
 	 *
 	 * @return Order_Modifier|null The Order Modifier model instance, or null if not found.
 	 */
 	public function find_by_slug( string $slug ): ?Order_Modifier {
-		return $this->prepareQuery()
+		$results = $this->prepareQuery()
 			->where( 'slug', $slug )
-			->where( 'modifier_type', $modifier_type )
 			->where( 'status', 'active' )
 			->getAll();
 
