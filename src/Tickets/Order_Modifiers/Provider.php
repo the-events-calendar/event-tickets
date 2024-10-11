@@ -21,7 +21,6 @@ use TEC\Tickets\Order_Modifiers\Checkout\Fees as Agnostic_Checkout_Fees;
 use TEC\Tickets\Order_Modifiers\API\Coupons;
 use TEC\Tickets\Order_Modifiers\API\Fees;
 use TEC\Tickets\Order_Modifiers\Modifiers\Coupon;
-use TEC\Tickets\Order_Modifiers\Modifiers\Fee;
 use TEC\Tickets\Registerable;
 
 /**
