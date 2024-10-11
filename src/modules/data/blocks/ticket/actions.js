@@ -918,3 +918,24 @@ export const setTicketInitialState = ( props ) => ( {
 	type: types.SET_TICKET_INITIAL_STATE,
 	payload: props,
 } );
+
+//
+// ─── FEE ACTIONS ────────────────────────────────────────────────────────
+//
+
+export const setSelectedFees = (clientId, selectedFees) => ({
+	type: types.SET_SELECTED_FEES,
+	payload: {
+		clientId,
+		selectedFees,
+	},
+});
+
+export const setActiveFees = (clientId, activeFees) => ({
+	type: types.SET_ACTIVE_FEES,
+	payload: {
+		clientId,
+		activeFees,
+	},
+});
+

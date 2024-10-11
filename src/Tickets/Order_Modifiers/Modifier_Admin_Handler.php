@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Order_Modifiers;
 
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Manager;
+use TEC\Tickets\Registerable;
 
 /**
  * Class Modifier_Settings.
@@ -18,7 +19,7 @@ use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Manager;
  *
  * @since TBD
  */
-class Modifier_Settings {
+class Modifier_Admin_Handler implements Registerable {
 
 	/**
 	 * Event Tickets menu page slug.
@@ -67,8 +68,10 @@ class Modifier_Settings {
 	 *
 	 * @return void
 	 */
-	public function register() {
+	public function register(): void {
 		add_action( 'admin_menu', [ $this, 'add_tec_tickets_order_modifiers_page' ], 15 );
+		add_action( 'admin_init', [ $this, 'handle_delete_modifier' ] );
+		add_action( 'admin_init', fn() => $this->handle_form_submission() );
 	}
 
 	/**
@@ -159,15 +162,12 @@ class Modifier_Settings {
 			'is_edit'     => $is_edit,
 		];
 
-		// Check if form is submitted and process the save.
-		$this->handle_form_submission( $context );
-
 		// Get the appropriate strategy for the selected modifier.
 		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
 
 		// If the strategy doesn't exist, show an error message.
 		if ( ! $modifier_strategy ) {
-			$this->render_invalid_modifier_message();
+			$this->render_error_message( __( 'Invalid modifier.', 'event-tickets' ) );
 			return;
 		}
 
@@ -216,7 +216,7 @@ class Modifier_Settings {
 	 * @return void
 	 */
 	protected function render_table_view( Modifier_Manager $manager, array $context ): void {
-		echo esc_html( $manager->render_table( $context ) );
+		$manager->render_table( $context );
 	}
 
 	/**
@@ -249,7 +249,7 @@ class Modifier_Settings {
 		}
 
 		// Render the edit screen, passing the populated context.
-		echo $manager->render_edit_screen( $context );
+		$manager->render_edit_screen( $context );
 	}
 
 	/**
@@ -257,22 +257,33 @@ class Modifier_Settings {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $context The context for rendering the page.
-	 *
 	 * @return void
 	 */
-	protected function handle_form_submission( array $context ): void {
+	protected function handle_form_submission(): void {
 		// Check if the form was submitted and verify nonce.
 		if ( ! isset( $_POST['order_modifier_form_save'] ) || ! check_admin_referer( 'order_modifier_save_action', 'order_modifier_save_action' ) ) {
 			return;
 		}
+
+		// Get and sanitize request vars for modifier and modifier_id.
+		$modifier_type = sanitize_key( tribe_get_request_var( 'modifier', 'coupon' ) );
+		$modifier_id   = absint( tribe_get_request_var( 'modifier_id', '0' ) );
+		$is_edit       = tribe_is_truthy( tribe_get_request_var( 'edit', '0' ) );
+
+		// Prepare the context for the page.
+		$context = [
+			'event_id'    => 0,
+			'modifier'    => $modifier_type,
+			'modifier_id' => $modifier_id,
+			'is_edit'     => $is_edit,
+		];
 
 		// Get the appropriate strategy for the selected modifier.
 		$modifier_strategy = tribe( Controller::class )->get_modifier( $context['modifier'] );
 
 		// Early bail if the strategy doesn't exist.
 		if ( ! $modifier_strategy ) {
-			$this->show_error_message( __( 'Invalid modifier.', 'event-tickets' ) );
+			$this->render_error_message( __( 'Invalid modifier.', 'event-tickets' ) );
 			return;
 		}
 
@@ -286,7 +297,7 @@ class Modifier_Settings {
 
 		// Early bail if saving the modifier failed.
 		if ( empty( $result ) ) {
-			$this->show_error_message( __( 'Failed to save modifier.', 'event-tickets' ) );
+			$this->render_error_message( __( 'Failed to save modifier.', 'event-tickets' ) );
 			return;
 		}
 
@@ -297,7 +308,7 @@ class Modifier_Settings {
 		}
 
 		// Show success message for updating an existing modifier.
-		$this->show_success_message( __( 'Modifier saved successfully!', 'event-tickets' ) );
+		$this->render_success_message( __( 'Modifier saved successfully!', 'event-tickets' ) );
 	}
 
 	/**
@@ -333,8 +344,11 @@ class Modifier_Settings {
 	 *
 	 * @return void
 	 */
-	protected function show_success_message( string $message ): void {
-		echo '<div class="notice notice-success"><p>' . esc_html( $message ) . '</p></div>';
+	protected function render_success_message( string $message ): void {
+		printf(
+			'<div class="notice notice-success"><p>%s</p></div>',
+			esc_html( $message )
+		);
 	}
 
 	/**
@@ -346,7 +360,63 @@ class Modifier_Settings {
 	 *
 	 * @return void
 	 */
-	protected function show_error_message( string $message ): void {
-		echo '<div class="notice notice-error"><p>' . esc_html( $message ) . '</p></div>';
+	protected function render_error_message( string $message ): void {
+		printf(
+			'<div class="notice notice-error"><p>%s</p></div>',
+			esc_html( $message )
+		);
+	}
+
+	/**
+	 * Handles the deletion of a modifier.
+	 *
+	 * This function checks for the 'delete_modifier' action in the query parameters, verifies the nonce, and
+	 * deletes the modifier if the nonce is valid. It also redirects the user back to the referring page after
+	 * performing the deletion to avoid form resubmission.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function handle_delete_modifier(): void {
+		// Check if the action is 'delete_modifier' and nonce is set.
+		$action        = tribe_get_request_var( 'action', '' );
+		$modifier_id   = absint( tribe_get_request_var( 'modifier_id', '' ) );
+		$nonce         = tribe_get_request_var( '_wpnonce', '' );
+		$modifier_type = sanitize_key( tribe_get_request_var( 'modifier', '' ) );
+
+		// Early bail if the action is not 'delete_modifier'.
+		if ( 'delete_modifier' !== $action ) {
+			return;
+		}
+
+		// Bail if the modifier ID or type is empty.
+		if ( empty( $modifier_id ) || empty( $modifier_type ) ) {
+			return;
+		}
+
+		// Verify nonce.
+		if ( ! wp_verify_nonce( $nonce, 'delete_modifier_' . $modifier_id ) ) {
+			wp_die( esc_html__( 'Nonce verification failed.', 'event-tickets' ) );
+		}
+
+		// Get the appropriate strategy for the selected modifier type.
+		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
+
+		// Handle invalid modifier strategy.
+		if ( ! $modifier_strategy ) {
+			wp_die( esc_html__( 'Invalid modifier type.', 'event-tickets' ) );
+		}
+
+		// Perform the deletion logic.
+		$deletion_success = $modifier_strategy->delete_modifier( $modifier_id );
+
+		// Construct the redirect URL with a success or failure flag.
+		$redirect_url = remove_query_arg( [ 'action', 'modifier_id', '_wpnonce' ], wp_get_referer() );
+		$redirect_url = add_query_arg( 'deleted', $deletion_success ? 'success' : 'fail', $redirect_url );
+
+		// Redirect to the original page to avoid resubmitting the form upon refresh.
+		wp_safe_redirect( $redirect_url );
+		exit;
 	}
 }

@@ -825,6 +825,34 @@ p.description {
 	}
 }
 
+#ticket_order_modifier_ticket_fees {
+	width: 70%;
+
+	.automatic-fees {
+		ul {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 5px;
+			list-style-type: none;
+			padding: 0;
+		}
+
+		li {
+			flex: 1 0 30%;
+			margin: 0;
+		}
+	}
+
+	.selectable-fees {
+		width: 100%;
+
+		.select2-selection {
+			/* @todo redscar - We shouldnt hardcode this at all. Something is wrong with the element styling. */
+			width:300px;
+		}
+	}
+}
+
 .tec-tickets-price {
 	ins {
 		text-decoration: none;

@@ -14,6 +14,7 @@ use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\StellarWP\Schema\Register as Schema_Register;
 use TEC\Common\StellarWP\Schema\Config as Schema_Config;
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifier_Relationships;
 use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
@@ -57,6 +58,7 @@ class Controller extends Controller_Contract {
 	protected $custom_tables = [
 		Order_Modifiers::class,
 		Order_Modifiers_Meta::class,
+		Order_Modifier_Relationships::class,
 	];
 
 	/**
@@ -89,8 +91,6 @@ class Controller extends Controller_Contract {
 
 	/**
 	 * Removes the filters and actions hooks added by the controller.
-	 *
-	 * Bound implementations should not be removed in this method!
 	 *
 	 * @since TBD
 	 *
@@ -191,7 +191,6 @@ class Controller extends Controller_Contract {
 	 * @param string $modifier The modifier type to retrieve (e.g., 'coupon', 'fee').
 	 *
 	 * @return Modifier_Strategy_Interface The strategy class if found.
-	 *
 	 * @throws InvalidArgumentException If the modifier strategy class is not found or does not implement Modifier_Strategy_Interface.
 	 */
 	public function get_modifier( string $modifier ): Modifier_Strategy_Interface {

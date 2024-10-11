@@ -115,6 +115,7 @@ class Order_Modifiers_Meta extends Table {
 		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_meta_inx_order_modifier_id', 'order_modifier_id' );
 		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_meta_inx_meta_key', 'meta_key' );
 		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_meta_inx_order_modifier_id_meta_key', 'order_modifier_id, meta_key' );
+		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_meta_inx_meta_key_meta_value', 'meta_key,meta_value(255)' );
 
 		return $results;
 	}

@@ -78,29 +78,16 @@ class Modifier_Manager {
 	}
 
 	/**
-	 * Fetches a modifier based on its ID.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $id The modifier ID.
-	 *
-	 * @return mixed The modifier data if found, or null.
-	 */
-	public function find_modifier_by_id( int $id ): mixed {
-		return $this->strategy->get_modifier_by_id( $id );
-	}
-
-	/**
 	 * Renders the table for the current modifier strategy.
 	 *
 	 * @since TBD
 	 *
 	 * @param array $context The context data for rendering the table.
 	 *
-	 * @return mixed The rendered table content, typically as HTML.
+	 * @return void
 	 */
-	public function render_table( array $context ): mixed {
-		return $this->strategy->render_table( $context );
+	public function render_table( array $context ): void {
+		$this->strategy->render_table( $context );
 	}
 
 	/**
@@ -113,4 +100,53 @@ class Modifier_Manager {
 	public function render_edit_screen( array $context ) {
 		$this->strategy->render_edit( $context );
 	}
+
+	/**
+	 * Syncs the relationships between modifiers and posts.
+	 *
+	 * This method handles the synchronization of relationships between the provided
+	 * modifier IDs and the new post IDs, delegating the actual update process to the strategy.
+	 * It ensures that the correct relationships are either inserted or deleted based on the input.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $modifier_ids The array of modifier IDs to sync.
+	 * @param array $new_post_ids The array of new post IDs to associate with the modifiers.
+	 *
+	 * @return void
+	 */
+	public function sync_modifier_relationships( array $modifier_ids, array $new_post_ids ): void {
+		$this->strategy->handle_relationship_update( $modifier_ids, $new_post_ids );
+	}
+
+	/**
+	 * Deletes all relationships associated with a given modifier ID.
+	 *
+	 * This method allows the manager to clear relationships based on the modifier ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $modifier_id The ID of the modifier for which relationships should be deleted.
+	 *
+	 * @return void
+	 */
+	public function delete_relationships_by_modifier( int $modifier_id ): void {
+		$this->strategy->delete_relationship_by_modifier( $modifier_id );
+	}
+
+	/**
+	 * Deletes all relationships associated with a given post ID.
+	 *
+	 * This method allows the manager to clear relationships based on the post ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The ID of the post for which relationships should be deleted.
+	 *
+	 * @return void
+	 */
+	public function delete_relationships_by_post( int $post_id ): void {
+		$this->strategy->delete_relationship_by_post( $post_id );
+	}
+
 }

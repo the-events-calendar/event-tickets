@@ -147,6 +147,28 @@ export default ( state = DEFAULT_STATE, action ) => {
 				...state,
 				uneditableTicketsLoading: false,
 			};
+		case types.SET_SELECTED_FEES:
+			return {
+				...state,
+				tickets: tickets(state.tickets, {
+					...action,
+					type: types.SET_SELECTED_FEES,
+				}),
+			};
+
+		case types.SET_ACTIVE_FEES:
+			return {
+				...state,
+				tickets: tickets(state.tickets, {
+					...action,
+					type: types.SET_ACTIVE_FEES,
+				}),
+			};
+		case types.SET_TICKETS_IS_SELECTED:
+			return {
+				...state,
+				isSelected: action.payload.isSelected,
+			};
 		default:
 			return state;
 	}

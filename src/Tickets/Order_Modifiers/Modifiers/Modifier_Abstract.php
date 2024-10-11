@@ -22,9 +22,11 @@ use InvalidArgumentException;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier_Meta;
-use TEC\Tickets\Order_Modifiers\Modifier_Settings;
+use TEC\Tickets\Order_Modifiers\Models\Order_Modifier_Relationships;
+use TEC\Tickets\Order_Modifiers\Modifier_Admin_Handler;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers as Order_Modifiers_Repository;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers_Meta as Order_Modifiers_Meta_Repository;
+use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifier_Relationship as Order_Modifier_Relationship_Repository;
 
 /**
  * Class Modifier_Abstract
@@ -58,6 +60,14 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @var Order_Modifiers_Meta_Repository Repository
 	 */
 	protected Order_Modifiers_Meta_Repository $order_modifiers_meta_repository;
+
+	/**
+	 * The repository for interacting with the order modifier relationship table.
+	 *
+	 * @since TBD
+	 * @var Order_Modifier_Relationship_Repository Repository
+	 */
+	protected Order_Modifier_Relationship_Repository $order_modifiers_relationship_repository;
 
 	/**
 	 * Fields required by this modifier.
@@ -99,9 +109,10 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @param string $modifier_type The modifier type (e.g., 'coupon', 'fee').
 	 */
 	public function __construct( string $modifier_type ) {
-		$this->modifier_type                   = $modifier_type;
-		$this->repository                      = new Order_Modifiers_Repository();
-		$this->order_modifiers_meta_repository = new Order_Modifiers_Meta_Repository();
+		$this->modifier_type                           = $modifier_type;
+		$this->repository                              = new Order_Modifiers_Repository( $modifier_type );
+		$this->order_modifiers_meta_repository         = new Order_Modifiers_Meta_Repository();
+		$this->order_modifiers_relationship_repository = new Order_Modifier_Relationship_Repository();
 	}
 
 	/**
@@ -494,7 +505,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 */
 	public function get_page_slug() {
 		// @todo redscar - Does this logic make sense? Should we alter this?
-		$modifier_settings = new Modifier_Settings();
+		$modifier_settings = new Modifier_Admin_Handler();
 		return $modifier_settings->get_page_slug();
 	}
 
@@ -537,6 +548,83 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		return $this->order_modifiers_meta_repository->upsert_meta( new Order_Modifier_Meta( $meta_data ) );
 	}
 
+
+	/**
+	 * Adds a new relationship between a modifier and a post.
+	 *
+	 * This method inserts a new relationship into the database, linking the modifier to
+	 * the provided post ID with the specified post type.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $modifier_id The ID of the modifier.
+	 * @param int $post_id The ID of the post being linked to the modifier.
+	 *
+	 * @return void
+	 */
+	protected function add_relationship( int $modifier_id, int $post_id ): void {
+		$data = [
+			'modifier_id' => $modifier_id,
+			'post_id'     => $post_id,
+			'post_type'   => get_post_type( $post_id ),
+		];
+		$this->order_modifiers_relationship_repository->insert( new Order_Modifier_Relationships( $data ) );
+	}
+
+	/**
+	 * Deletes all relationships for a given modifier.
+	 *
+	 * This method removes all relationships associated with the specified modifier ID
+	 * from the database, unlinking the modifier from any posts it was related to.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $modifier_id The ID of the modifier whose relationships will be deleted.
+	 *
+	 * @return void
+	 */
+	public function delete_relationship_by_modifier( int $modifier_id ): void {
+		$data = [
+			'modifier_id' => $modifier_id,
+		];
+		$this->order_modifiers_relationship_repository->clear_relationships_by_modifier_id( new Order_Modifier_Relationships( $data ) );
+	}
+
+	/**
+	 * Deletes all relationships associated with a given post.
+	 *
+	 * This method clears all records in the relationships table for the provided post
+	 * by calling the repository method to delete relationships based on the `post_id`.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The ID of the post for which relationships should be deleted.
+	 *
+	 * @return void
+	 */
+	public function delete_relationship_by_post( int $post_id ): void {
+		$data = [
+			'post_id'   => $post_id,
+			'post_type' => get_post_type( $post_id ),
+		];
+		$this->order_modifiers_relationship_repository->clear_relationships_by_post_id( new Order_Modifier_Relationships( $data ) );
+	}
+
+	/**
+	 * Abstract method for handling relationship updates.
+	 *
+	 * This method must be implemented in child classes to handle the specific logic for
+	 * updating relationships between modifiers and posts, depending on the modifier type.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $modifier_ids An array of modifier IDs to update.
+	 * @param array $new_post_ids An array of new post IDs to be associated with the fee.
+	 *
+	 * @return void
+	 */
+	abstract public function handle_relationship_update( array $modifier_ids, array $new_post_ids ): void;
+
 	/**
 	 * Retrieves the display name of the modifier in singular or plural form.
 	 *
@@ -558,5 +646,96 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 
 		// Return singular form by default.
 		return $this->modifier_display_name;
+	}
+
+	/**
+	 * Clears relationships if the apply_type has changed.
+	 *
+	 * This method compares the current apply_type stored in the database with the newly provided
+	 * apply_type. If they are different, it clears all existing relationships for the modifier.
+	 *
+	 * @param int    $modifier_id  The ID of the fee modifier.
+	 * @param string $new_apply_type The new apply_type (e.g., 'venue', 'organizer'). Based off of the meta key `fee_applied_to`.
+	 *
+	 * @return void
+	 */
+	public function maybe_clear_relationships( int $modifier_id, string $new_apply_type ): void {
+		// Retrieve the current apply_type from the metadata.
+		$current_apply_type = $this->order_modifiers_meta_repository->find_by_order_modifier_id_and_meta_key( $modifier_id, 'fee_applied_to' )->meta_value ?? null;
+
+		// If the apply_type has changed, clear all relationships.
+		if ( $current_apply_type !== $new_apply_type ) {
+			$data = [
+				'modifier_id' => $modifier_id,
+			];
+
+			// Clear the relationships for this modifier.
+			$this->order_modifiers_relationship_repository->clear_relationships_by_modifier_id( new Order_Modifier_Relationships( $data ) );
+		}
+	}
+
+	/**
+	 * Deletes a modifier and its associated data.
+	 *
+	 * This method deletes the modifier from the repository and also attempts to remove any associated meta data,
+	 * relationships, and other related information. The existence of meta and relationships is optional.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $modifier_id The ID of the modifier to delete.
+	 *
+	 * @return bool True if the deletion of the modifier was successful, false otherwise.
+	 */
+	public function delete_modifier( int $modifier_id ): bool {
+
+		// Check if the modifier exists before attempting to delete it.
+		$modifier = $this->repository->find_by_id( $modifier_id, $this->modifier_type );
+
+		if ( empty( $modifier ) ) {
+			// Modifier does not exist, return false.
+			return false;
+		}
+
+		// Begin deletion process.
+		$data = [
+			'id' => $modifier_id,
+		];
+
+		$relationship_data = [
+			'modifier_id' => $modifier_id,
+		];
+
+		// Clear relationships associated with the modifier (optional).
+		$this->order_modifiers_relationship_repository->clear_relationships( new Order_Modifier_Relationships( $relationship_data ) );
+
+		// Delete associated meta data (optional).
+		$this->order_modifiers_meta_repository->delete( new Order_Modifier_Meta( $data ) );
+
+		// Delete the modifier itself (mandatory).
+		$delete_modifier = $this->repository->delete( new Order_Modifier( $data ) );
+
+		// Check if the modifier deletion was successful.
+		if ( $delete_modifier ) {
+			return true;
+		}
+
+		return false; // Return false if the modifier deletion failed.
+	}
+
+	/**
+	 * Retrieves the meta value for a specific order modifier and meta key.
+	 *
+	 * This method fetches the meta data associated with the given order modifier ID and meta key.
+	 * It queries the `order_modifiers_meta` table to find the relevant meta data for the modifier.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $order_modifier_id The ID of the order modifier to retrieve meta for.
+	 * @param string $meta_key          The meta key to look up (e.g., 'fee_applied_to').
+	 *
+	 * @return mixed|null The meta data found, or null if no matching record is found.
+	 */
+	public function get_order_modifier_meta_by_key( int $order_modifier_id, string $meta_key ) {
+		return $this->order_modifiers_meta_repository->find_by_order_modifier_id_and_meta_key( $order_modifier_id, $meta_key );
 	}
 }

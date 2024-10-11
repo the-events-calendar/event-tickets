@@ -1,6 +1,6 @@
 <?php
 /**
- * Order Modifiers custom table logic.
+ * Order Modifiers Relationships custom table logic.
  *
  * @package TEC\Tickets\Order_Modifiers\Custom_Tables;
  */
@@ -17,7 +17,7 @@ use wpdb;
  *
  * @package TEC\Tickets\Order_Modifiers\Custom_Tables;
  */
-class Order_Modifiers extends Table {
+class Order_Modifier_Relationships extends Table {
 	/**
 	 * @since TBD
 	 *
@@ -30,7 +30,7 @@ class Order_Modifiers extends Table {
 	 *
 	 * @var string The base table name.
 	 */
-	protected static $base_table_name = 'tec_order_modifiers';
+	protected static $base_table_name = 'tec_order_modifier_relationships';
 
 	/**
 	 * @since TBD
@@ -44,14 +44,14 @@ class Order_Modifiers extends Table {
 	 *
 	 * @var string|null The slug used to identify the custom table.
 	 */
-	protected static $schema_slug = 'tec-order-modifiers';
+	protected static $schema_slug = 'tec-order-modifiers-relationships';
 
 	/**
 	 * @since TBD
 	 *
 	 * @var string The field that uniquely identifies a row in the table.
 	 */
-	protected static $uid_column = 'id';
+	protected static $uid_column = 'object_id';
 
 	/**
 	 * Returns the table creation SQL in the format supported
@@ -64,23 +64,21 @@ class Order_Modifiers extends Table {
 	 */
 	protected function get_definition() {
 		global $wpdb;
-		$table_name      = self::table_name( true );
-		$charset_collate = $wpdb->get_charset_collate();
+		$table_name        = self::table_name( true );
+		$charset_collate   = $wpdb->get_charset_collate();
+		$parent_table_name = Order_Modifiers::table_name();
+		$parent_table_uid  = Order_Modifiers::uid_column();
+		$wp_posts_table    = $wpdb->posts;
 
 		return "
 			CREATE TABLE `$table_name` (
-				`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-				`modifier_type` VARCHAR(255) NOT NULL,
-				`sub_type` VARCHAR(255) NOT NULL,
-				`fee_amount_cents` INT NOT NULL,
-				`slug` VARCHAR(255) NOT NULL,
-				`display_name` VARCHAR(255) NOT NULL,
-				`status` VARCHAR(20) NOT NULL DEFAULT 'draft',
-				`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-				`start_time` TIMESTAMP NULL DEFAULT NULL,
-				`end_time` TIMESTAMP NULL DEFAULT NULL,
-				`updated_at` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-				PRIMARY KEY (`id`)
+				`object_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+				`modifier_id` BIGINT UNSIGNED NOT NULL,
+				`post_id`  BIGINT UNSIGNED NOT NULL,
+				`post_type` VARCHAR(20) NOT NULL,
+				PRIMARY KEY (`object_id`),
+				FOREIGN KEY (`modifier_id`) REFERENCES $parent_table_name($parent_table_uid)ON DELETE CASCADE,
+    			CONSTRAINT `fk_post_id` FOREIGN KEY (`post_id`) REFERENCES `$wp_posts_table` (`ID`) ON DELETE CASCADE
 			) $charset_collate;
 		";
 	}
@@ -112,9 +110,9 @@ class Order_Modifiers extends Table {
 		}
 
 		// Helper method to check and add indexes.
-		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_indx_slug', 'slug' );
-		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_indx_status_modifier_type_slug', 'status, modifier_type, slug' );
-		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_indx_type_display_name', 'modifier_type, display_name' );
+		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_relationship_indx_modifier_id', 'modifier_id' );
+		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_relationship_indx_post_type', 'post_id,post_type' );
+		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_relationship_indx_composite_join', 'modifier_id, post_id, post_type' );
 
 		return $results;
 	}
