@@ -435,6 +435,23 @@ describe('hook-callbacks', () => {
 			expect(details).toEqual([<SeatType name={'Seat Type Name'} />]);
 		});
 
+		it('add the new seat type to the array of details when fallback', () => {
+			select.mockReturnValue({
+				isUsingAssignedSeating: () => true,
+				getTicketSeatType: () => 'seat-type-uuid-1',
+				getSeatTypesForLayout: () => false,
+				getCurrentLayoutId: () => 'layout-uuid-1',
+				getAllSeatTypes: () => ({
+					'seat-type-uuid-1': {
+						id: 'seat-type-uuid-1',
+						name: 'Seat Type Name',
+					},
+				}),
+			});
+			const details = filterHeaderDetails([], 40);
+			expect(details).toEqual([<SeatType name={'Seat Type Name'} />]);
+		});
+
 		it('dont add the new seat type to the array of details when not ASC', () => {
 			select.mockReturnValue({
 				isUsingAssignedSeating: () => false,
