@@ -121,6 +121,8 @@ if ( $has_tec ) {
 		</ul>
 	</div>
 
+    <?php tribe( \TEC\Common\Admin\Conditional_Content\Black_Friday::class )->render_narrow_banner_html(); ?>
+
 	<h3 class="tribe-events-admin-section-header"><?php esc_html_e( 'Helpful Resources', 'event-tickets' ); ?></h3>
 
 	<?php
