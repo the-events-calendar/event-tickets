@@ -113,19 +113,19 @@ class Coupon extends Modifier_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $data The raw form data, typically from $_POST.
+	 * @param array $raw_data The raw form data, typically from $_POST.
 	 *
 	 * @return array The sanitized and mapped data for database insertion or updating.
 	 */
-	public function map_form_data_to_model( array $data ): array {
+	public function map_form_data_to_model( array $raw_data ): array {
 		return [
-			'id'               => isset( $data['order_modifier_id'] ) ? absint( $data['order_modifier_id'] ) : 0,
+			'id'               => isset( $raw_data['order_modifier_id'] ) ? absint( $raw_data['order_modifier_id'] ) : 0,
 			'modifier_type'    => $this->get_modifier_type(),
-			'sub_type'         => sanitize_text_field( $data['order_modifier_sub_type'] ?? '' ),
-			'fee_amount_cents' => $this->convert_to_cents( $data['order_modifier_amount'] ?? 0 ),
-			'slug'             => sanitize_text_field( $data['order_modifier_slug'] ?? '' ),
-			'display_name'     => sanitize_text_field( $data['order_modifier_coupon_name'] ?? '' ),
-			'status'           => sanitize_text_field( $data['order_modifier_status'] ?? '' ),
+			'sub_type'         => sanitize_text_field( $raw_data['order_modifier_sub_type'] ?? '' ),
+			'fee_amount_cents' => $this->convert_to_cents( $raw_data['order_modifier_amount'] ?? 0 ),
+			'slug'             => sanitize_text_field( $raw_data['order_modifier_slug'] ?? '' ),
+			'display_name'     => sanitize_text_field( $raw_data['order_modifier_coupon_name'] ?? '' ),
+			'status'           => sanitize_text_field( $raw_data['order_modifier_status'] ?? '' ),
 		];
 	}
 

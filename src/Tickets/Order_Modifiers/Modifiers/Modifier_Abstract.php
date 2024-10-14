@@ -224,11 +224,11 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $data The raw form data, typically from $_POST.
+	 * @param array $raw_data The raw form data, typically from $_POST.
 	 *
 	 * @return array The sanitized and mapped data for database insertion or updating.
 	 */
-	abstract public function map_form_data_to_model( array $data ): array;
+	abstract public function map_form_data_to_model( array $raw_data ): array;
 
 
 	/**
