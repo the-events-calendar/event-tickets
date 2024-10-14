@@ -12,11 +12,7 @@
  * @var string $cost_range    The cost range of the tickets.
  * @var string $inventory     The inventory of the tickets.
  * @var string $modal_content The content of seat selection modal.
- * @var Base_Template $template The base template.
  */
-	
-use Tribe__Template as Base_Template;
-
 ?>
 
 <div class="tribe-common event-tickets tribe-tickets__tickets-wrapper">
@@ -45,7 +41,5 @@ use Tribe__Template as Base_Template;
 				?>
 			<?php endif; ?>
 		</div>
-		<?php do_action( 'tec_tickets_seating_tickets_block_after', $template ); ?>
 	</div>
-	
 </div>
