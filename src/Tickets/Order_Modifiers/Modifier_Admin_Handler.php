@@ -262,7 +262,7 @@ class Modifier_Admin_Handler implements Registerable {
 	protected function handle_form_submission(): void {
 		// Check if the form was submitted and verify nonce.
 
-		if ( ! empty( tribe_get_request_var( 'order_modifier_form_save' ) ) || ! check_admin_referer( 'order_modifier_save_action', 'order_modifier_save_action' ) ) {
+		if ( empty( tribe_get_request_var( 'order_modifier_form_save' ) ) || ! check_admin_referer( 'order_modifier_save_action', 'order_modifier_save_action' ) ) {
 			return;
 		}
 
