@@ -163,7 +163,7 @@ class Admin extends Controller_Contract {
 	 * @return void
 	 */
 	public function post_duplication_ticket_and_uuid_updates( array $duplicated_ticket_ids, int $new_post_id, int $old_post_id ) {
-		if ( ! tec_tickets_seating_enabled( $old_post_id) ) {
+		if ( ! tec_tickets_seating_enabled( $old_post_id ) ) {
 			return;
 		}
 
