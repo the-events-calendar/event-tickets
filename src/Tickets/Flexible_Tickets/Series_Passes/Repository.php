@@ -24,7 +24,7 @@ class Repository {
 	/**
 	 * Given the ID of a Series Pass, returns the last Occurrence of the Series
 	 *
-	 * @since 5.80
+	 * @since 5.8.0
 	 *
 	 * @param int $ticket_id The ID of the ticket.
 	 *
