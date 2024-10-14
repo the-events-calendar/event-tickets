@@ -13,6 +13,7 @@ namespace TEC\Tickets\Seating;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\StellarWP\Assets\Asset;
+use TEC\Tickets\Commerce\Tickets_View;
 use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Frontend\Timer;
@@ -185,17 +186,18 @@ class Frontend extends Controller_Contract {
 			],
 			false
 		);
+		
+		$show_non_asc_tickets = tribe_tickets()
+									->where( 'event', $post_id )
+									->where( 'meta_not_exists', Meta::META_KEY_SEAT_TYPE )
+									->count() > 0;
 
-		$needs_to_show_regular_tickets = tribe_tickets()
-			                                 ->where( 'event', $post_id )
-			                                 ->where( 'meta_not_exists', Meta::META_KEY_SEAT_TYPE )
-			                                 ->count() > 0;
-
-		if($needs_to_show_regular_tickets){
-			$this->filter_asc_tickets_out_of_queries($post_id);
+		if ( $show_non_asc_tickets ) {
+			add_filter( 'tribe_template_context:tickets/v2/tickets', [ $this, 'exclude_asc_tickets' ] );
 			remove_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ] );
-			$html .= $this->render_regular_tickets_block( );
+			$html .= tribe( Tickets_View::class )->get_tickets_block( $post_id, false );
 			add_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ] );
+			remove_filter( 'tribe_template_context:tickets/v2/tickets', [ $this, 'exclude_asc_tickets' ] );
 		}
 
 		/**
@@ -209,6 +211,34 @@ class Frontend extends Controller_Contract {
 		$html = apply_filters( 'tec_tickets_seating_tickets_block_html', $html, $template );
 
 		return $html;
+	}
+	
+	/**
+	 * Excludes ASC tickets from the context.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $context The context data passed to the template.
+	 *
+	 * @return array The context data passed to the template.
+	 */
+	public function exclude_asc_tickets( $context ): array {
+		if ( ! isset( $context['tickets_on_sale'] ) ) {
+			return $context;
+		}
+		
+		$non_asc_tickets = array_filter(
+			$context['tickets_on_sale'],
+			function ( $ticket ) {
+				return ! get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true );
+			} 
+		);
+		
+		// Update context with non asc tickets.
+		$context['tickets']         = $non_asc_tickets;
+		$context['tickets_on_sale'] = $non_asc_tickets;
+		
+		return $context;
 	}
 
 	/**
