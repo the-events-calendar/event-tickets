@@ -90,11 +90,6 @@ class Base extends Controller {
 			'classic_editor_ticket_items'
 		], 10, 5 );
 		
-		add_filter(
-			'tec_tickets_seating_tickets_block_after',
-			[ $this, 'filter_seating_tickets_block_html' ],
-		);
-
 		// Remove the warning about Tickets added to a Recurring Event.
 		$ticket_admin_notices = tribe( 'tickets.admin.notices' );
 		remove_action( 'admin_init', [
@@ -168,16 +163,6 @@ class Base extends Controller {
 			$this,
 			'show_series_link_after_ticket_type_title'
 		], 10, 3 );
-
-        add_filter(
-            'tribe_template_pre_html:tickets/admin-views/editor/panel/settings-button',
-            [
-                $this,
-                'remove_settings_button_from_classic_metabox',
-            ],
-            10,
-            5
-        );
 	}
 
 	/**
@@ -199,11 +184,6 @@ class Base extends Controller {
 			'classic_editor_ticket_items'
 		] );
 		
-		remove_filter(
-			'tec_tickets_seating_tickets_block_after',
-			[ $this, 'filter_seating_tickets_block_html' ]
-		);
-
 		// Restore the warning about Tickets added to a Recurring Event.
 		$ticket_admin_notices = tribe( 'tickets.admin.notices' );
 		if ( ! has_action( 'admin_init',
@@ -285,16 +265,6 @@ class Base extends Controller {
 			$this,
 			'show_series_link_after_ticket_type_title'
 		], 10, 3 );
-
-        remove_filter(
-            'tribe_template_pre_html:tickets/admin-views/editor/panel/settings-button',
-            [
-                $this,
-                'remove_settings_button_from_classic_metabox',
-            ],
-            10,
-            5
-        );
 	}
 
 	/**
@@ -354,37 +324,6 @@ class Base extends Controller {
 		return $buffer;
 	}
 	
-	/**
-	 * Filters the HTML for the seating tickets block.
-	 *
-	 * @since TBD
-	 *
-	 * @param string  $html The initial HTML.
-	 * @param Template $template The template object.
-	 */
-	public function filter_seating_tickets_block_html( Template $template ) {
-		$context = $template->get_values();
-		$post_id = $context['post_id'] ?? 0;
-		
-		if ( get_post_type( $post_id ) !== TEC::POSTTYPE ) {
-			// Not an Event, bail.
-			return;
-		}
-		
-		$series = tec_series()->where( 'event_post_id', $post_id )->first_id();
-		
-		if ( $series === null ) {
-			// Not part of a Series, bail.
-			return;
-		}
-		
-		tribe_asset_enqueue( 'tec-tickets-flexible-tickets-style' );
-		
-		$context['tickets_template'] = $template;
-		$context['series_permalink'] = get_post_permalink( $series );
-		$this->admin_views->template( 'frontend/tickets/items', $context );
-	}
-
 	/**
 	 * Disables Tickets and RSVPs on recurring events.
 	 *
