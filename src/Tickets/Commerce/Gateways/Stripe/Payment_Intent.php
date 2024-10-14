@@ -8,6 +8,7 @@ use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Settings as Settings;
+use TEC\Tickets\Commerce\Gateways\Stripe\Settings as Stripe_Settings;
 
 /**
  * Stripe orders aka Payment Intents class.
@@ -126,7 +127,7 @@ class Payment_Intent {
 			],
 		];
 
-		$stripe_statement_descriptor = tribe_get_option( Settings::$option_statement_descriptor );
+		$stripe_statement_descriptor = tribe_get_option( Stripe_Settings::$option_statement_descriptor );
 
 		if ( ! empty( $stripe_statement_descriptor ) ) {
 			$body['statement_descriptor'] = substr( $stripe_statement_descriptor, 0, 22 );
