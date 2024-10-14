@@ -41,7 +41,7 @@
 					<label for="order_modifier_sub_type"><?php esc_html_e( 'Fee Type', 'event-tickets' ); ?></label>
 					<select name="order_modifier_sub_type" id="order_modifier_sub_type">
 						<option
-							value="percent" <?php selected( $order_modifier_sub_type ?? '', 'percent' ); ?>><?php esc_html_e( 'Percent of Ticket', 'event-tickets' ); ?></option>
+							value="percent" <?php selected( $order_modifier_sub_type ?? '', 'percent' ); ?>><?php esc_html_e( 'Percent', 'event-tickets' ); ?></option>
 						<option
 							value="flat" <?php selected( $order_modifier_sub_type ?? '', 'flat' ); ?>><?php esc_html_e( 'Flat', 'event-tickets' ); ?></option>
 					</select>
