@@ -29,8 +29,8 @@ trait Valid_Types {
 	 *
 	 * @return bool
 	 */
-	protected function is_valid_type( string $type ): bool {
-		return array_key_exists( $type, $this->get_valid_types() );
+	protected static function is_valid_type( string $type ): bool {
+		return array_key_exists( $type, self::get_valid_types() );
 	}
 
 	/**
@@ -40,7 +40,7 @@ trait Valid_Types {
 	 *
 	 * @return array The valid order modifier types.
 	 */
-	protected function get_valid_types(): array {
+	protected static function get_valid_types(): array {
 		$types = [
 			'coupon' => Coupon::class,
 			'fee'    => Fee::class,
@@ -68,8 +68,8 @@ trait Valid_Types {
 	 * @return void
 	 * @throws InvalidArgumentException If the type is invalid.
 	 */
-	protected function validate_type( string $type ) {
-		if ( ! $this->is_valid_type( $type ) ) {
+	protected static function validate_type( string $type ) {
+		if ( ! self::is_valid_type( $type ) ) {
 			throw new InvalidArgumentException( 'Invalid modifier type.' );
 		}
 	}
