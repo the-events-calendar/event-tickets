@@ -55,7 +55,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 	 *
 	 * @var int
 	 */
-	protected int $fee_amount_cents;
+	protected int $raw_amount;
 
 	/**
 	 * The slug (coupon code).
@@ -126,7 +126,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 		$self->id               = $object->id;
 		$self->modifier_type    = $object->modifier_type;
 		$self->sub_type         = $object->sub_type;
-		$self->fee_amount_cents = $object->fee_amount_cents;
+		$self->raw_amount = $object->raw_amount;
 		$self->slug             = $object->slug;
 		$self->display_name     = $object->display_name;
 		$self->status           = $object->status;

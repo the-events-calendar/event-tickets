@@ -28,12 +28,12 @@ class Coupon_Table extends Order_Modifier_Table {
 	 */
 	public function get_columns() {
 		return [
-			'display_name'     => __( 'Coupon Name', 'event-tickets' ),
-			'slug'             => __( 'Code', 'event-tickets' ),
-			'fee_amount_cents' => __( 'Amount', 'event-tickets' ),
-			'used'             => __( 'Used', 'event-tickets' ),
-			'remaining'        => __( 'Remaining', 'event-tickets' ),
-			'status'           => __( 'Status', 'event-tickets' ),
+			'display_name' => __( 'Coupon Name', 'event-tickets' ),
+			'slug'         => __( 'Code', 'event-tickets' ),
+			'raw_amount'   => __( 'Amount', 'event-tickets' ),
+			'used'         => __( 'Used', 'event-tickets' ),
+			'remaining'    => __( 'Remaining', 'event-tickets' ),
+			'status'       => __( 'Status', 'event-tickets' ),
 		];
 	}
 
@@ -182,7 +182,7 @@ class Coupon_Table extends Order_Modifier_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param object $item The current item being rendered. This should contain `fee_amount_cents` and `sub_type`
+	 * @param object $item The current item being rendered. This should contain `raw_amount` and `sub_type`
 	 *     fields.
 	 *
 	 * @return string The formatted fee amount to be displayed in the table.
@@ -200,12 +200,12 @@ class Coupon_Table extends Order_Modifier_Table {
 	 */
 	protected function get_sortable_columns() {
 		return [
-			'display_name'     => [ 'display_name', true ],
-			'slug'             => [ 'slug', false ],
-			'fee_amount_cents' => [ 'fee_amount_cents', false ],
-			'used'             => [ 'used', false ],
-			'remaining'        => [ 'remaining', false ],
-			'status'           => [ 'status', false ],
+			'display_name' => [ 'display_name', true ],
+			'slug'         => [ 'slug', false ],
+			'raw_amount'   => [ 'raw_amount', false ],
+			'used'         => [ 'used', false ],
+			'remaining'    => [ 'remaining', false ],
+			'status'       => [ 'status', false ],
 		];
 	}
 

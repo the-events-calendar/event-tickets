@@ -26,7 +26,7 @@ use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers as Repository;
  * @property int    $id              The Order Modifier ID.
  * @property string $modifier_type   The type of modifier (coupon, fee).
  * @property string $sub_type        The sub-type of modifier (percentage, flat).
- * @property int    $fee_amount_cents Amount of fee in cents.
+ * @property int    $raw_amount Amount of fee in cents.
  * @property string $slug            The Order Modifier slug (coupon code).
  * @property string $display_name    User-friendly name.
  * @property string $status          The status (active, draft, inactive).
@@ -40,16 +40,16 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 * @inheritDoc
 	 */
 	protected $properties = [
-		'id'               => 'int',
-		'modifier_type'    => 'string',
-		'sub_type'         => 'string',
-		'fee_amount_cents' => 'int',
-		'slug'             => 'string',
-		'display_name'     => 'string',
-		'status'           => 'string',
-		'created_at'       => 'string',
-		'start_time'       => 'string',
-		'end_time'         => 'string',
+		'id'            => 'int',
+		'modifier_type' => 'string',
+		'sub_type'      => 'string',
+		'raw_amount'    => 'int',
+		'slug'          => 'string',
+		'display_name'  => 'string',
+		'status'        => 'string',
+		'created_at'    => 'string',
+		'start_time'    => 'string',
+		'end_time'      => 'string',
 	];
 
 	/**

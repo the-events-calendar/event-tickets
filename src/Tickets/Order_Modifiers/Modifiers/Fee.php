@@ -40,7 +40,7 @@ class Fee extends Modifier_Abstract {
 		= [
 			'modifier_type',
 			'sub_type',
-			'fee_amount_cents',
+			'raw_amount',
 			'slug',
 			'display_name',
 			'status',
@@ -264,13 +264,13 @@ class Fee extends Modifier_Abstract {
 	 */
 	public function map_form_data_to_model( array $raw_data ): array {
 		return [
-			'id'               => isset( $raw_data['order_modifier_id'] ) ? absint( $raw_data['order_modifier_id'] ) : 0,
-			'modifier_type'    => $this->get_modifier_type(),
-			'sub_type'         => sanitize_text_field( $raw_data['order_modifier_sub_type'] ?? '' ),
-			'fee_amount_cents' => absint( $raw_data['order_modifier_amount'] ?? 0 ),
-			'slug'             => sanitize_text_field( $raw_data['order_modifier_slug'] ?? '' ),
-			'display_name'     => sanitize_text_field( $raw_data['order_modifier_fee_name'] ?? '' ),
-			'status'           => sanitize_text_field( $raw_data['order_modifier_status'] ?? '' ),
+			'id'            => isset( $raw_data['order_modifier_id'] ) ? absint( $raw_data['order_modifier_id'] ) : 0,
+			'modifier_type' => $this->get_modifier_type(),
+			'sub_type'      => sanitize_text_field( $raw_data['order_modifier_sub_type'] ?? '' ),
+			'raw_amount'    => absint( $raw_data['order_modifier_amount'] ?? 0 ),
+			'slug'          => sanitize_text_field( $raw_data['order_modifier_slug'] ?? '' ),
+			'display_name'  => sanitize_text_field( $raw_data['order_modifier_fee_name'] ?? '' ),
+			'status'        => sanitize_text_field( $raw_data['order_modifier_status'] ?? '' ),
 		];
 	}
 
@@ -331,7 +331,7 @@ class Fee extends Modifier_Abstract {
 			'order_modifier_display_name'     => $context['display_name'] ?? '',
 			'order_modifier_slug'             => $context['slug'] ?? $this->generate_unique_slug(),
 			'order_modifier_sub_type'         => $context['sub_type'] ?? '',
-			'order_modifier_fee_amount_cents' => $this->convert_from_cents( $context['fee_amount_cents'] ?? 0 ),
+			'order_modifier_fee_amount_cents' => $this->convert_from_raw_amount( $context['raw_amount'] ?? 0 ),
 			'order_modifier_status'           => $context['status'] ?? '',
 			'order_modifier_fee_limit'        => $context['fee_limit'] ?? '',
 			'order_modifier_apply_to'         => $order_modifier_fee_applied_to,

@@ -162,13 +162,13 @@ class Coupons extends Base_API {
 			$data   = $request->get_params();
 			$coupon = Coupon::create(
 				[
-					'slug'             => $data['slug'],
-					'display_name'     => $data['display_name'],
-					'status'           => $data['status'],
-					'fee_amount_cents' => $data['amount'],
-					'sub_type'         => $data['sub_type'] ?? 'flat',
-					'start_time'       => $data['start_time'] ?? null,
-					'end_time'         => $data['end_time'] ?? null,
+					'slug'         => $data['slug'],
+					'display_name' => $data['display_name'],
+					'status'       => $data['status'],
+					'raw_amount'   => $data['amount'],
+					'sub_type'     => $data['sub_type'] ?? 'flat',
+					'start_time'   => $data['start_time'] ?? null,
+					'end_time'     => $data['end_time'] ?? null,
 				]
 			);
 
@@ -237,7 +237,7 @@ class Coupons extends Base_API {
 			}
 
 			$original_order_value = $order->total_value->get_integer();
-			$new_order_value      = max( 0, $original_order_value - $coupon->fee_amount_cents );
+			$new_order_value      = max( 0, $original_order_value - $coupon->raw_amount );
 
 			// Update the payment intent with the new value
 			Payment_Intent::update(
@@ -251,13 +251,13 @@ class Coupons extends Base_API {
 
 			return rest_ensure_response(
 				[
-					'discount' => Value::create( $modifier->convert_from_cents( $coupon->fee_amount_cents ) )->get_currency(),
+					'discount' => Value::create( $modifier->convert_from_raw_amount( $coupon->raw_amount ) )->get_currency(),
 					'message'  => sprintf(
-					/* translators: %s: the coupon code */
+						/* translators: %s: the coupon code */
 						esc_html__( 'Coupon "%s" applied successfully.', 'event-tickets' ),
 						$coupon->slug
 					),
-					'amount'   => Value::create( $modifier->convert_from_cents( $new_order_value ) )->get_currency(),
+					'amount'   => Value::create( $modifier->convert_from_raw_amount( $new_order_value ) )->get_currency(),
 				]
 			);
 		} catch ( Exception $e ) {
@@ -347,14 +347,14 @@ class Coupons extends Base_API {
 	 */
 	protected function prepare_coupon_for_response( Order_Modifier $coupon ) {
 		// @todo: better processing of the response.
-		$raw_amount = $coupon->fee_amount_cents;
+		$raw_amount = $coupon->raw_amount;
 
 		return [
 			'id'         => $coupon->id,
 			'slug'       => $coupon->slug,
 			'name'       => $coupon->display_name,
 			'sub_type'   => $coupon->sub_type,
-			'amount'     => $coupon->fee_amount_cents,
+			'amount'     => $coupon->raw_amount,
 			'status'     => $coupon->status,
 			'start_time' => $coupon->start_time,
 			'end_time'   => $coupon->end_time,

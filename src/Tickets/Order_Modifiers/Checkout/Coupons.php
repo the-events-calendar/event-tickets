@@ -136,9 +136,9 @@ class Coupons implements Registerable {
 		// Construct a response with success and the discount applied.
 		$response = [
 			'valid'    => true,
-			'discount' => Value::create( $this->coupon->convert_from_cents( $coupon_discount ) )->get_currency(),
+			'discount' => Value::create( $this->coupon->convert_from_raw_amount( $coupon_discount ) )->get_currency(),
 			'message'  => sprintf( __( 'Coupon "%s" applied successfully.', 'event-tickets' ), $coupon_code ),
-			'amount'   => Value::create( $this->coupon->convert_from_cents( $new_order_value ) )->get_currency(),
+			'amount'   => Value::create( $this->coupon->convert_from_raw_amount( $new_order_value ) )->get_currency(),
 		];
 
 

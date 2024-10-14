@@ -92,15 +92,15 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		DB::insert(
 			Table::table_name(),
 			[
-				'modifier_type'    => $model->modifier_type,
-				'sub_type'         => $model->sub_type,
-				'fee_amount_cents' => $model->fee_amount_cents,
-				'slug'             => $model->slug,
-				'display_name'     => $model->display_name,
-				'status'           => $model->status,
-				'created_at'       => current_time( 'mysql' ),
-				'start_time'       => $model->start_time,
-				'end_time'         => $model->end_time,
+				'modifier_type' => $model->modifier_type,
+				'sub_type'      => $model->sub_type,
+				'raw_amount'    => $model->raw_amount,
+				'slug'          => $model->slug,
+				'display_name'  => $model->display_name,
+				'status'        => $model->status,
+				'created_at'    => current_time( 'mysql' ),
+				'start_time'    => $model->start_time,
+				'end_time'      => $model->end_time,
 			],
 			[
 				'%s',
@@ -136,14 +136,14 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		DB::update(
 			Table::table_name(),
 			[
-				'modifier_type'    => $model->modifier_type,
-				'sub_type'         => $model->sub_type,
-				'fee_amount_cents' => $model->fee_amount_cents,
-				'slug'             => $model->slug,
-				'display_name'     => $model->display_name,
-				'status'           => $model->status,
-				'start_time'       => $model->start_time,
-				'end_time'         => $model->end_time,
+				'modifier_type' => $model->modifier_type,
+				'sub_type'      => $model->sub_type,
+				'raw_amount'    => $model->raw_amount,
+				'slug'          => $model->slug,
+				'display_name'  => $model->display_name,
+				'status'        => $model->status,
+				'start_time'    => $model->start_time,
+				'end_time'      => $model->end_time,
 			],
 			[ 'id' => $model->id ],
 			[
@@ -216,12 +216,12 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 
 		// Add ordering.
 		$valid_orderby = [
-			'display_name'     => 1,
-			'slug'             => 1,
-			'fee_amount_cents' => 1,
-			'used'             => 1,
-			'remaining'        => 1,
-			'status'           => 1,
+			'display_name' => 1,
+			'slug'         => 1,
+			'raw_amount'   => 1,
+			'used'         => 1,
+			'remaining'    => 1,
+			'status'       => 1,
 		];
 
 		if ( ! empty( $args['orderby'] ) && array_key_exists( $args['orderby'], $valid_orderby ) ) {

@@ -69,7 +69,7 @@ class Order_Modifiers extends Abstract_Custom_Table {
 				`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
 				`modifier_type` VARCHAR(255) NOT NULL,
 				`sub_type` VARCHAR(255) NOT NULL,
-				`fee_amount_cents` INT NOT NULL,
+				`raw_amount` INT NOT NULL,
 				`slug` VARCHAR(255) NOT NULL,
 				`display_name` VARCHAR(255) NOT NULL,
 				`status` VARCHAR(20) NOT NULL DEFAULT 'draft',

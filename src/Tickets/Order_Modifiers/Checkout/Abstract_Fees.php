@@ -254,7 +254,7 @@ abstract class Abstract_Fees {
 			if ( ! isset( $unique_fees[ $id ] ) ) {
 				$unique_fees[ $id ] = [
 					'id'               => $id,
-					'fee_amount_cents' => $fee->fee_amount_cents,
+					'raw_amount' => $fee->raw_amount,
 					'display_name'     => $fee->display_name,
 					'sub_type'         => $fee->sub_type,
 				];
