@@ -195,9 +195,13 @@ class Frontend extends Controller_Contract {
 		if ( $show_non_asc_tickets ) {
 			add_filter( 'tribe_template_context:tickets/v2/tickets', [ $this, 'exclude_asc_tickets' ] );
 			remove_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ] );
+			add_filter( 'tribe_template_pre_html:tickets/v2/tickets/title', '__return_false' );
+			
 			$html .= tribe( Tickets_View::class )->get_tickets_block( $post_id, false );
+			
 			add_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ] );
 			remove_filter( 'tribe_template_context:tickets/v2/tickets', [ $this, 'exclude_asc_tickets' ] );
+			remove_filter( 'tribe_template_pre_html:tickets/v2/tickets/title', '__return_false' );
 		}
 
 		/**
@@ -348,6 +352,7 @@ class Frontend extends Controller_Contract {
 	 */
 	protected function do_register(): void {
 		add_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ], 10, 5 );
+		add_filter( 'tribe_template_pre_html:tickets/v2/tickets/title', [ $this, 'exclude_duplicate_title_from_series_block' ], 10, 5 );
 
 		add_filter( 'tribe_tickets_block_ticket_html_attributes', [ $this, 'add_seat_selected_labels_per_ticket_attribute' ], 10, 3 );
 
