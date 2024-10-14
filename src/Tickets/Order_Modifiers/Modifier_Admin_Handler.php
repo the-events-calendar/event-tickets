@@ -261,7 +261,8 @@ class Modifier_Admin_Handler implements Registerable {
 	 */
 	protected function handle_form_submission(): void {
 		// Check if the form was submitted and verify nonce.
-		if ( ! isset( $_POST['order_modifier_form_save'] ) || ! check_admin_referer( 'order_modifier_save_action', 'order_modifier_save_action' ) ) {
+
+		if ( ! empty( tribe_get_request_var( 'order_modifier_form_save' ) ) || ! check_admin_referer( 'order_modifier_save_action', 'order_modifier_save_action' ) ) {
 			return;
 		}
 
@@ -292,7 +293,7 @@ class Modifier_Admin_Handler implements Registerable {
 
 		// Use the Modifier Manager to sanitize and save the data.
 		$manager       = new Modifier_Manager( $modifier_strategy );
-		$modifier_data = $modifier_strategy->map_form_data_to_model( $_POST );
+		$modifier_data = $modifier_strategy->map_form_data_to_model( tribe_get_request_vars() );
 		$result        = $manager->save_modifier( $modifier_data );
 
 		// Early bail if saving the modifier failed.

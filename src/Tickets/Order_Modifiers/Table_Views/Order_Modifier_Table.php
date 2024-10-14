@@ -104,19 +104,20 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		$this->_column_headers = [ $columns, $hidden, $sortable ];
 
 		// Handle search.
-		$search = isset( $_REQUEST['s'] ) ? sanitize_text_field( $_REQUEST['s'] ) : '';
+		$search = tribe_get_request_var( 's', '' );
 
 		// Capture sorting parameters.
-		$orderby = isset( $_GET['orderby'] ) ? sanitize_text_field( $_GET['orderby'] ) : 'display_name';
-		$order   = isset( $_GET['order'] ) ? sanitize_text_field( $_GET['order'] ) : 'asc';
+
+		$orderby = sanitize_text_field( tribe_get_request_var( 'orderby', 'display_name' ) );
+		$order   = sanitize_text_field( tribe_get_request_var( 'order', 'asc' ) );
 
 		// Fetch the data from the modifier class, including sorting.
 		$data = $this->modifier->find_by_search(
 			[
-				'search_term' => $search,
-				'orderby'     => $orderby,
-				'order'       => $order,
-				'modifier_type' => $this->modifier->get_modifier_type()
+				'search_term'   => $search,
+				'orderby'       => $orderby,
+				'order'         => $order,
+				'modifier_type' => $this->modifier->get_modifier_type(),
 			]
 		);
 
