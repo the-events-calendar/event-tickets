@@ -62,7 +62,9 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			\WP_CLI::line( 'Cleaning uplink transients ....' );
 			slr_test_clean_uplink_transients();
 			// Legacy token location.
-			tribe_update_option( OAuth_Token::get_oauth_token_option_name(), '' );
+			if(method_exists(OAuth_Token::class, 'get_oauth_token_option_name')){
+				tribe_update_option( OAuth_Token::get_oauth_token_option_name(), '' );
+			}
 			\WP_CLI::success( 'Done' );
 		},
 		[
