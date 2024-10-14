@@ -12,6 +12,8 @@
 
 namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
+use TEC\Tickets\Commerce\Utils\Value;
+
 /**
  * Context class that interacts with the strategy.
  *
@@ -158,23 +160,20 @@ class Modifier_Manager {
 	 *
 	 * @since TBD
 	 *
-	 * @param float $base_price The base price of the item.
+	 * @param Value $base_price The base price of the item.
 	 * @param array $items The items in the cart (tickets).
 	 *
-	 * @return float The total amount after fees are applied.
+	 * @return Value The total amount after fees are applied.
 	 */
-	public function calculate_total_fees( float $base_price, array $items ): float {
-
-		$total_fees = 0.0;
+	public function calculate_total_fees( Value $base_price, array $items ): Value {
+		$total_fees = Value::create( 0 );
 
 		foreach ( $items as $item ) {
-			// Apply the fees directly without wrapping in an array.
-			$total_fees += $this->apply_fees_to_item( $base_price, $item );
+			$total_fees = Value::create()->total( [ $total_fees, $this->apply_fees_to_item( $base_price, $item ) ] );
 		}
 
 		return $total_fees;
 	}
-
 
 	/**
 	 * Apply percentage and flat fees to a single item.
@@ -183,28 +182,32 @@ class Modifier_Manager {
 	 *
 	 * @since TBD
 	 *
-	 * @param float $base_price The base price of the item.
-	 * @param array $item The fee data for a single item (percentage or flat).
+	 * @param Value $base_price The base price of the item.
+	 * @param array $item       The fee data for a single item (percentage or flat).
 	 *
-	 * @return float The total price after fees are applied.
+	 * @return Value The total price after fees are applied.
 	 */
-	public function apply_fees_to_item( float $base_price, array $item ): float {
-		$base_price_in_cents = $this->strategy->convert_to_cents( $base_price );
-		$subtotal            = 0;
+	public function apply_fees_to_item( Value $base_price, array $item ): Value {
+		$base_price_in_cents = $base_price->get_integer();
 
-		// Ensure the base price in cents is not zero to avoid division by zero.
-		if ( $base_price_in_cents > 0 ) {
-			// Apply percentage fee if applicable.
-			if ( isset( $item['sub_type'] ) && $item['sub_type'] === 'percent' ) {
-				$subtotal += $this->strategy->convert_from_cents( $item['fee_amount_cents'] / $base_price_in_cents );
-			}
+		// Early bail if base price is zero or negative, return zero value.
+		if ( $base_price_in_cents <= 0 ) {
+			return Value::create( 0 );
 		}
 
-		// Apply flat fee if applicable.
+		// Apply percentage fee if applicable and bail early.
+		if ( isset( $item['sub_type'] ) && $item['sub_type'] === 'percent' ) {
+			$percentage_fee = $item['fee_amount_cents'] / $base_price_in_cents;
+
+			return Value::create( $this->strategy->convert_from_cents( $percentage_fee ) );
+		}
+
+		// Apply flat fee if applicable and bail early.
 		if ( isset( $item['sub_type'] ) && $item['sub_type'] === 'flat' ) {
-			$subtotal += $item['fee_amount_cents'];
+			return Value::create( $item['fee_amount_cents'] );
 		}
 
-		return $subtotal;
+		// Return zero if no valid fee type is found.
+		return Value::create( 0 );
 	}
 }

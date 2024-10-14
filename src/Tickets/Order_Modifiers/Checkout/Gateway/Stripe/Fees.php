@@ -66,7 +66,7 @@ class Fees extends Abstract_Fees implements Registerable {
 	 */
 	public function append_fees_to_cart_stripe( Value $value, array $items ): Value {
 		// Set the class-level subtotal to the current cart value.
-		$this->subtotal = $value->get_float();
+		$this->subtotal = $value;
 
 		// If no items exist in the cart, return the original value.
 		if ( empty( $items ) ) {
@@ -81,12 +81,20 @@ class Fees extends Abstract_Fees implements Registerable {
 			return $value;
 		}
 
-		// Validate that all combined fees are non-negative values.
+
+		// Convert each fee_amount to an integer using get_integer() and filter out negative values.
 		$combined_fees = array_filter(
-			$combined_fees,
-			function ( $fee ) {
-				return $fee['fee_amount'] >= 0;
-			}
+			array_map(
+				function ( $fee ) {
+					if ( isset( $fee['fee_amount'] ) && $fee['fee_amount'] instanceof Value ) {
+						$fee['fee_amount'] = $fee['fee_amount']->get_decimal();
+					}
+
+					// Return the fee only if the amount is non-negative.
+					return $fee['fee_amount'] >= 0 ? $fee : null;
+				},
+				$combined_fees
+			)
 		);
 
 		if ( empty( $combined_fees ) ) {
@@ -94,7 +102,7 @@ class Fees extends Abstract_Fees implements Registerable {
 		}
 
 		// Calculate the total fees based on the subtotal and combined fees.
-		$sum_of_fees = Value::create( $this->manager->calculate_total_fees( $this->subtotal, $combined_fees ) );
+		$sum_of_fees = $this->manager->calculate_total_fees( $this->subtotal, $combined_fees );
 
 		// Return the total value by adding the subtotal and the fees.
 		return Value::create()->total( [ $value, $sum_of_fees ] );

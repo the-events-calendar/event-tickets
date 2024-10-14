@@ -55,9 +55,9 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		 *
 		 * @param Value[] $values An array of `Value` instances representing additional fees or discounts to be applied.
 		 * @param array   $items The items in the cart, typically an array of ticket data.
-		 * @param array   $sub_totals The list of subtotals from the items.
+		 * @param Value   $sub_totals The list of subtotals from the items.
 		 */
-		$additional_values = apply_filters( 'tec_tickets_commerce_checkout_shortcode_total_value', [], $items, $sub_totals );
+		$additional_values = apply_filters( 'tec_tickets_commerce_checkout_shortcode_total_value', [], $items, Value::create()->total( $sub_totals ) );
 
 		// Combine the sub_totals and additional_values for total calculation.
 		$total_value = Value::create()->total( array_merge( $sub_totals, $additional_values ) );

@@ -18,6 +18,8 @@ use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifier_Relationship;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers;
+use Tribe__Template;
+use WP_Post;
 
 /**
  * Class Fees
@@ -74,9 +76,9 @@ abstract class Abstract_Fees {
 	 * This represents the total amount used as a basis for calculating applicable fees.
 	 *
 	 * @since TBD
-	 * @var float
+	 * @var Value
 	 */
-	protected float $subtotal = 0.0;
+	protected Value $subtotal;
 
 	/**
 	 * Tracks whether the fees have already been displayed during the checkout process.
@@ -128,15 +130,15 @@ abstract class Abstract_Fees {
 	 *
 	 * @param array $values The existing values being passed through the filter.
 	 * @param array $items The items in the cart.
-	 * @param array $subtotal The list of subtotals from the items.
+	 * @param Value $subtotal The list of subtotals from the items.
 	 *
 	 * @return array The updated total values, including the fees.
 	 */
-	public function calculate_fees( array $values, array $items, array $subtotal ): array {
-		// Store the subtotal as a class property for later use.
-		$this->subtotal = max( 0, Value::create()->total( $subtotal )->get_float() );
+	public function calculate_fees( array $values, array $items, Value $subtotal ): array {
+		// Store the subtotal as a class property for later use, encapsulated as a Value object.
+		$this->subtotal = $subtotal;
 
-		if ( $this->subtotal < 0 ) {
+		if ( $this->subtotal->get_integer() <= 0 ) {
 			return $values;
 		}
 
@@ -147,11 +149,11 @@ abstract class Abstract_Fees {
 			return $values;
 		}
 
-		// Calculate the total fees based on the subtotal.
+		// Calculate the total fees based on the subtotal using Value objects.
 		$sum_of_fees = $this->manager->calculate_total_fees( $this->subtotal, $combined_fees );
 
 		// Add the calculated fees to the total value.
-		$values[] = Value::create( $sum_of_fees );
+		$values[] = $sum_of_fees;
 
 		return $values;
 	}
@@ -161,11 +163,11 @@ abstract class Abstract_Fees {
 	 *
 	 * @since TBD
 	 *
-	 * @param \WP_Post         $post The current post object.
-	 * @param array            $items The items in the cart.
-	 * @param \Tribe__Template $template The template object for rendering.
+	 * @param WP_Post         $post     The current post object.
+	 * @param array           $items    The items in the cart.
+	 * @param Tribe__Template $template The template object for rendering.
 	 */
-	public function display_fee_section( \WP_Post $post, array $items, \Tribe__Template $template ): void {
+	public function display_fee_section( WP_Post $post, array $items, Tribe__Template $template ): void {
 		if ( self::$fees_displayed ) {
 			return;
 		}
@@ -174,7 +176,19 @@ abstract class Abstract_Fees {
 		$combined_fees = $this->get_combined_fees_for_items( $items );
 
 		// Use the stored subtotal for fee calculations.
-		$sum_of_fees = $this->manager->calculate_total_fees( $this->subtotal, $combined_fees );
+		$sum_of_fees = $this->manager->calculate_total_fees( $this->subtotal, $combined_fees )->get_decimal();
+
+		// Convert each fee_amount to an integer using get_integer().
+		$combined_fees = array_map(
+			function ( $fee ) {
+				if ( isset( $fee['fee_amount'] ) && $fee['fee_amount'] instanceof Value ) {
+					$fee['fee_amount'] = $fee['fee_amount']->get_currency();
+				}
+
+				return $fee;
+			},
+			$combined_fees
+		);
 
 		// Pass the fees to the template for display.
 		$template->template(
@@ -272,7 +286,7 @@ abstract class Abstract_Fees {
 			return $items;
 		}
 
-		$this->subtotal = max( 0, $subtotal->get_float() );
+		$this->subtotal = $subtotal;
 
 		// Get all the combined fees for the items in the cart.
 		$fees = $this->get_combined_fees_for_items( $items );
