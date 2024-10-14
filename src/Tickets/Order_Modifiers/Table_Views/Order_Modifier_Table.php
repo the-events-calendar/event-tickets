@@ -224,10 +224,11 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	public function search_box( $text, $input_id, $placeholder = '' ) {
 		// Check if nonce is valid. The nonce value does not need sanitization, as wp_verify_nonce handles it.
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		$nonce_valid = isset( $_REQUEST['_wpnonce'] ) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'search_order_modifier' );
+		$maybe_nonce = tribe_get_request_var( '_wpnonce' );
+		$nonce_valid = ! empty( $maybe_nonce ) && wp_verify_nonce( $maybe_nonce, 'search_order_modifier' );
 
-		// If nonce is invalid, set search term to empty; otherwise, get the value from $_REQUEST.
-		$search_value = $nonce_valid ? sanitize_text_field( $_REQUEST['s'] ?? '' ) : '';
+		// If nonce is invalid, set search term to empty; otherwise, get the value from the request.
+		$search_value = $nonce_valid ? sanitize_text_field( tribe_get_request_var( 's', '' ) ) : '';
 
 		// Set the input ID.
 		$input_id = $input_id . '-search-input';

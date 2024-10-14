@@ -288,12 +288,15 @@ class Modifier_Admin_Handler implements Registerable {
 			return;
 		}
 
+		// Get the raw POST data, and add our context.
+		$raw_data = tribe_get_request_vars();
+
 		// Set the modifier ID in the post data.
-		$_POST['order_modifier_id'] = $context['modifier_id'];
+		$raw_data['order_modifier_id'] = $context['modifier_id'];
 
 		// Use the Modifier Manager to sanitize and save the data.
 		$manager       = new Modifier_Manager( $modifier_strategy );
-		$modifier_data = $modifier_strategy->map_form_data_to_model( tribe_get_request_vars() );
+		$modifier_data = $modifier_strategy->map_form_data_to_model( $raw_data );
 		$result        = $manager->save_modifier( $modifier_data );
 
 		// Early bail if saving the modifier failed.
