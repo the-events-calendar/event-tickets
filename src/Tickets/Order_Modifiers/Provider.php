@@ -55,8 +55,8 @@ final class Provider extends ServiceProvider {
 		$this->container->singleton( Fee::class );
 
 		// Register and bind the API classes.
-		$this->container->bind( Coupons::class, new Coupons() );
-		$this->container->bind( Fees::class, new Fees() );
+		$this->container->bind( Coupons::class, fn() => new Coupons() );
+		$this->container->bind( Fees::class, fn() => new Fees() );
 
 		// Tag our classes that have their own registration needs.
 		$this->container->tag(
