@@ -110,7 +110,7 @@ abstract class Abstract_Fees {
 	public function __construct() {
 		$this->modifier_strategy                       = tribe( Controller::class )->get_modifier( $this->modifier_type );
 		$this->manager                                 = new Modifier_Manager( $this->modifier_strategy );
-		$this->order_modifiers_repository              = new Order_Modifiers();
+		$this->order_modifiers_repository              = new Order_Modifiers( $this->modifier_type );
 		$this->order_modifiers_relationship_repository = new Order_Modifier_Relationship();
 	}
 
@@ -209,7 +209,6 @@ abstract class Abstract_Fees {
 		// Fetch related ticket fees and automatic fees.
 		$related_ticket_fees = $this->order_modifiers_repository->find_relationship_by_post_ids( $ticket_ids, $this->modifier_type );
 		$automatic_fees      = $this->order_modifiers_repository->find_by_modifier_type_and_meta(
-			$this->modifier_type,
 			'fee_applied_to',
 			[ 'per', 'all' ],
 			'fee_applied_to',

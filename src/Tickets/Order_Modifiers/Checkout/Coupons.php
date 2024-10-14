@@ -7,8 +7,9 @@ use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Order_Modifiers\Modifiers\Coupon;
+use TEC\Tickets\Registerable;
 
-class Coupons {
+class Coupons implements Registerable {
 
 	protected Coupon $coupon;
 

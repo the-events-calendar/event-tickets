@@ -12,6 +12,8 @@
 
 namespace TEC\Tickets\Order_Modifiers\Checkout;
 
+use TEC\Tickets\Registerable;
+
 /**
  * Class Fees
  *
@@ -21,7 +23,7 @@ namespace TEC\Tickets\Order_Modifiers\Checkout;
  *
  * @since TBD
  */
-class Fees extends Abstract_Fees {
+class Fees extends Abstract_Fees implements Registerable {
 
 	/**
 	 * Registers the necessary hooks for adding and managing fees during the checkout process.
