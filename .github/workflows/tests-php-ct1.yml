@@ -8,6 +8,7 @@ jobs:
       matrix:
         suite:
           - ct1_integration
+          - slr_ecp_integration
     runs-on: ubuntu-latest
     steps:
       # ------------------------------------------------------------------------------
