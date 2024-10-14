@@ -186,6 +186,18 @@ class Frontend extends Controller_Contract {
 			false
 		);
 
+		$needs_to_show_regular_tickets = tribe_tickets()
+			                                 ->where( 'event', $post_id )
+			                                 ->where( 'meta_not_exists', Meta::META_KEY_SEAT_TYPE )
+			                                 ->count() > 0;
+
+		if($needs_to_show_regular_tickets){
+			$this->filter_asc_tickets_out_of_queries($post_id);
+			remove_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ] );
+			$html .= $this->render_regular_tickets_block( );
+			add_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ] );
+		}
+
 		/**
 		 * Filters the contents of the Tickets block.
 		 *
