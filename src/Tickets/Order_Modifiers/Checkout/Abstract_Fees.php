@@ -18,6 +18,7 @@ use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifier_Relationship;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers;
+use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers_Factory;
 use Tribe__Template;
 use WP_Post;
 
@@ -112,7 +113,7 @@ abstract class Abstract_Fees {
 	public function __construct() {
 		$this->modifier_strategy                       = tribe( Controller::class )->get_modifier( $this->modifier_type );
 		$this->manager                                 = new Modifier_Manager( $this->modifier_strategy );
-		$this->order_modifiers_repository              = new Order_Modifiers( $this->modifier_type );
+		$this->order_modifiers_repository              = Order_Modifiers_Factory::get_repository_for_type( $this->modifier_type );
 		$this->order_modifiers_relationship_repository = new Order_Modifier_Relationship();
 	}
 

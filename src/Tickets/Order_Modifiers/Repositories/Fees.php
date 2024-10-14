@@ -1,6 +1,6 @@
 <?php
 /**
- * Coupons repository.
+ * Fees repository.
  *
  * @since TBD
  */
@@ -10,18 +10,18 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Order_Modifiers\Repositories;
 
 /**
- * Class Coupons
+ * Class Fees
  *
  * @since TBD
  */
-class Coupons extends Order_Modifiers {
+class Fees extends Order_Modifiers {
 
 	/**
-	 * Coupons constructor.
+	 * Fees constructor.
 	 *
 	 * @since TBD
 	 */
 	public function __construct() {
-		parent::__construct( 'coupon' );
+		parent::__construct( 'fee' );
 	}
 }
