@@ -861,7 +861,9 @@ onReady(() => syncOnLoad());
 onReady(() => watchCheckoutControls());
 
 // On page/tab close (or app close in some instances) interrupt the timer and clear the session.
-window.addEventListener('beforeUnload', interrupt);
+window.onbeforeunload = () => {
+	interrupt();
+};
 
 window.tec = window.tec || {};
 window.tec.tickets = window.tec.tickets || {};
