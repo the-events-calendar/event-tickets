@@ -13,6 +13,7 @@ use TEC\Tickets\Commerce\Status\Denied;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Success;
+use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Utils__Array as Arr;
 
 use WP_Error;
@@ -220,9 +221,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 */
 	protected function get_unit_data_for_ticket( array $item, $order ) {
 		// Default ticket logic.
-		$ticket     = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+		$ticket     = Tickets::load_ticket_object( $item['ticket_id'] );
 		$post_title = get_the_title( $item['event_id'] );
-		$item_name  = sprintf( '%s - %s', $ticket->name, $post_title );
+		$item_name  = "{$ticket->name} - {$post_title}";
 
 		return [
 			'name'        => $this->format_order_item_name( $item_name ),
@@ -230,7 +231,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'value'         => (string) $item['price'],
 				'currency_code' => $order->currency,
 			],
-			'quantity'    => $item['quantity'],
+			'quantity'    => (string) $item['quantity'],
 			'item_total'  => [
 				'value'         => (string) $item['sub_total'],
 				'currency_code' => $order->currency,

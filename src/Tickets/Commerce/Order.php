@@ -409,7 +409,7 @@ class Order extends Abstract_Order {
 			$items
 		) );
 
-		$subtotal = $this->get_value_total( array_filter( $items ) );
+		$subtotal = $this->get_value_total( $items );
 
 		$original_cart_items = $items;
 

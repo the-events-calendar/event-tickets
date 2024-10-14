@@ -549,8 +549,8 @@ class Coupons extends Base_API {
 		return [
 			'purchaser_user_id'    => 0,
 			'purchaser_full_name'  => $purchaser_data['name'],
-			'purchaser_first_name' => $first_name,
-			'purchaser_last_name'  => $last_name,
+			'purchaser_first_name' => $first_name ?? $purchaser_data['name'],
+			'purchaser_last_name'  => $last_name ?? '',
 			'purchaser_email'      => sanitize_email( $purchaser_data['email'] ),
 		];
 	}

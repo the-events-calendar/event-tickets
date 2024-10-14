@@ -37,10 +37,20 @@ class Fees extends Abstract_Fees implements Registerable {
 	 */
 	public function register(): void {
 		// Hook for appending fees to the cart for PayPal processing.
-		add_action( 'tec_tickets_commerce_create_from_cart_items', [ $this, 'append_fees_to_cart' ], 10, 4 );
+		add_action(
+			'tec_tickets_commerce_create_from_cart_items',
+			fn( $items, $subtotal, $gateway, $purchaser ) => $this->append_fees_to_cart( $items, $subtotal, $gateway, $purchaser ),
+			10,
+			4
+		);
 
 		// Hook for adding fee unit data to PayPal order.
-		add_action( 'tec_commerce_paypal_order_get_unit_data_fee', [ $this, 'add_fee_unit_data_to_paypal' ], 10, 2 );
+		add_action(
+			'tec_commerce_paypal_order_get_unit_data_fee',
+			fn( $item, $order ) => $this->add_fee_unit_data_to_paypal( $item, $order ),
+			10,
+			2
+		);
 	}
 
 	/**
@@ -57,19 +67,20 @@ class Fees extends Abstract_Fees implements Registerable {
 	 *
 	 * @return array The structured unit data for the fee item to be sent to PayPal.
 	 */
-	public function add_fee_unit_data_to_paypal( array $item, WP_Post $order ) {
+	protected function add_fee_unit_data_to_paypal( array $item, WP_Post $order ) {
 		return [
 			'name'        => $item['display_name'],
 			'unit_amount' => [
 				'value'         => (string) $item['price'],
 				'currency_code' => $order->currency,
 			],
-			'quantity'    => '1', // Fees always have a quantity of 1.
+			// Fees always have a quantity of 1, and they need to be a string for the API.
+			'quantity'    => '1',
 			'item_total'  => [
 				'value'         => (string) $item['sub_total'],
 				'currency_code' => $order->currency,
 			],
-			'sku'         => 'fee-' . $item['fee_id'],
+			'sku'         => "fee-{$item['fee_id']}",
 		];
 	}
 }
