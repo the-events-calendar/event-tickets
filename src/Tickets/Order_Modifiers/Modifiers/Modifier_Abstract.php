@@ -20,6 +20,7 @@ namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
 use InvalidArgumentException;
 use TEC\Tickets\Commerce\Utils\Value;
+use TEC\Tickets\Exceptions\Not_Found_Exception;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier_Meta;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier_Relationships;
@@ -180,7 +181,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return array|null The modifier data or null if not found.
 	 */
 	public function get_modifier_by_id( int $modifier_id, string $modifier_type ): ?array {
-		$modifier_data = $this->repository->find_by_id( $modifier_id, $modifier_type );
+		$modifier_data = $this->repository->find_by_id( $modifier_id );
 		return $modifier_data ? $modifier_data->to_array() : null;
 	}
 
@@ -428,9 +429,13 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return bool True if the slug is unique, false otherwise.
 	 */
 	protected function is_slug_unique( string $slug ): bool {
-		$existing_slug = $this->repository->find_by_slug( $slug, $this->modifier_type );
-
-		return null === $existing_slug;
+		try {
+			$this->repository->find_by_slug( $slug );
+			return false;
+		} catch ( Not_Found_Exception $e ) {
+			// Slug does not exist, so it is unique.
+			return true;
+		}
 	}
 
 	/**
