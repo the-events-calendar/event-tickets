@@ -67,6 +67,10 @@ class Attendee {
 		if ( 'seat' !== $column ) {
 			return $value;
 		}
+		
+		if ( ! isset( $item['ID'] ) ) {
+			return '-';
+		}
 
 		$seat_label = get_post_meta( $item['ID'], Meta::META_KEY_ATTENDEE_SEAT_LABEL, true );
 
