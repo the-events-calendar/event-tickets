@@ -21,6 +21,7 @@ use TEC\Tickets\Seating\Service\Service;
 use Tribe__Tickets__Main as Tickets;
 use Tribe\Tickets\Admin\Settings;
 use Tribe__Admin__Helpers as Admin_Helper;
+use WP_Post;
 
 /**
  * Class Admin.
@@ -75,6 +76,10 @@ class Admin extends Controller_Contract {
 		remove_action( 'admin_menu', [ $this, 'add_submenu_page' ], 1000 );
 		remove_action( 'admin_init', [ $this, 'register_woo_incompatibility_notice' ] );
 		remove_filter( 'tec_tickets_find_ticket_type_host_posts_query_args', [ $this, 'exclude_asc_events_from_candidates_from_moving_tickets_to' ] );
+
+		// Remove the hooks related to the seating meta data duplication.
+		remove_filter( 'tec_events_pro_custom_tables_v1_duplicate_meta_data', [ $this, 'duplicate_seating_meta_data' ] );
+		remove_action( 'tec_tickets_tickets_duplicated', [ $this, 'post_duplication_ticket_and_uuid_updates' ] );
 	}
 
 	/**
@@ -140,6 +145,69 @@ class Admin extends Controller_Contract {
 		add_action( 'admin_menu', [ $this, 'add_submenu_page' ], 1000 );
 		add_action( 'admin_init', [ $this, 'register_woo_incompatibility_notice' ] );
 		add_filter( 'tec_tickets_find_ticket_type_host_posts_query_args', [ $this, 'exclude_asc_events_from_candidates_from_moving_tickets_to' ] );
+
+		// Add the hooks related to the seating meta data duplication.
+		add_filter( 'tec_events_pro_custom_tables_v1_duplicate_meta_data', [ $this, 'duplicate_seating_meta_data' ], 10, 2 );
+		add_action( 'tec_tickets_tickets_duplicated', [ $this, 'post_duplication_ticket_and_uuid_updates' ], 10, 3 );
+	}
+
+	/**
+	 * Updates the duplicated tickets and produces a new UUID for the duplicated post.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $duplicated_ticket_ids  The duplicated ticket IDs.
+	 * @param int   $new_post_id            The new post ID.
+	 * @param int   $old_post_id            The old post ID.
+	 *
+	 * @return void
+	 */
+	public function post_duplication_ticket_and_uuid_updates( array $duplicated_ticket_ids, int $new_post_id, int $old_post_id ) {
+		if ( ! tec_tickets_seating_enabled( $old_post_id ) ) {
+			return;
+		}
+
+		// Generate a new UUID for the duplicated seating post.
+		update_post_meta( $new_post_id, Meta::META_KEY_UUID, wp_generate_uuid4() );
+
+		// Copy the seating meta data of duplicated tickets.
+		foreach ( $duplicated_ticket_ids as $original_ticket_id => $new_ticket_id ) {
+			update_post_meta(
+				$new_ticket_id,
+				Meta::META_KEY_ENABLED,
+				get_post_meta( $original_ticket_id, Meta::META_KEY_ENABLED, true )
+			);
+
+			update_post_meta(
+				$new_ticket_id,
+				Meta::META_KEY_SEAT_TYPE,
+				get_post_meta( $original_ticket_id, Meta::META_KEY_SEAT_TYPE, true )
+			);
+		}
+	}
+
+	/**
+	 * Duplicates the seating meta data.
+	 *
+	 * @since TBD
+	 *
+	 * @param array   $meta   The meta data to duplicate.
+	 * @param WP_Post $post The post object.
+	 *
+	 * @return array The duplicated meta data.
+	 */
+	public function duplicate_seating_meta_data( array $meta, WP_Post $post ): array {
+		if ( ! tec_tickets_seating_enabled( $post->ID ) ) {
+			return $meta;
+		}
+
+		return array_merge(
+			$meta,
+			[
+				Meta::META_KEY_ENABLED,
+				Meta::META_KEY_LAYOUT_ID,
+			],
+		);
 	}
 
 	/**
