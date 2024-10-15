@@ -81,6 +81,11 @@ const confirmSelector =
  */
 
 /**
+ * @typedef {Object} A11yDialog
+ * @property {HTMLElement} node The dialog element.
+ */
+
+/**
  * The tickets map.
  *
  * @since TBD
@@ -535,9 +540,11 @@ export async function cancelReservations(dialogElement) {
 		return;
 	}
 
-	const iframe = dialogElement ? dialogElement.querySelector(
-		'.tec-tickets-seating__iframe-container iframe.tec-tickets-seating__iframe'
-	) : null;
+	const iframe = dialogElement
+		? dialogElement.querySelector(
+				'.tec-tickets-seating__iframe-container iframe.tec-tickets-seating__iframe'
+		  )
+		: null;
 
 	if (iframe) {
 		sendPostMessage(iframe, OUTBOUND_REMOVE_RESERVATIONS);
@@ -655,6 +662,27 @@ async function proceedToCheckout() {
 }
 
 /**
+ * Append the expire date to the iframe src.
+ *
+ * @since TBD
+ *
+ * @param {A11yDialog} dialogElement The A11y dialog element.
+ */
+function setExpireDate(dialogElement) {
+	const iframe = dialogElement
+		? dialogElement?.node?.querySelector(
+				'.tec-tickets-seating__iframe-container iframe.tec-tickets-seating__iframe'
+		  )
+		: null;
+
+	if (!iframe) {
+		return;
+	}
+
+	iframe.src = iframe.src + '&expireDate=' + new Date().getTime();
+}
+
+/**
  * Adds event listeners to the modal element once it's loaded.
  *
  * @since TBD
@@ -706,6 +734,7 @@ waitForModalElement().then((modalElement) => {
 		disableCheckout();
 		bootstrapIframe(document);
 		addModalEventListeners();
+		setExpireDate(modalElement);
 	});
 });
 
