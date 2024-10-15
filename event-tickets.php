@@ -41,7 +41,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'EVENT_TICKETS_DIR', dirname( __FILE__ ) );
 define( 'EVENT_TICKETS_MAIN_PLUGIN_FILE', __FILE__ );
 
-// Load the required php min version functions.
+// Load the required PHP min version functions.
 require_once dirname( EVENT_TICKETS_MAIN_PLUGIN_FILE ) . '/src/functions/php-min-version.php';
 
 // Load the Composer autoload file.

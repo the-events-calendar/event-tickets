@@ -294,7 +294,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @param bool $as_timestamp Flag to disable the default behavior and use DateTime object instead.
 		 *
-		 * @return string
+		 * @return string|DateTime|false|int
 		 */
 		public function start_date( $as_timestamp = true ) {
 			$start_date = null;
@@ -317,7 +317,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @param bool $as_timestamp Flag to disable the default behavior and use DateTime object instead.
 		 *
-		 * @return string
+		 * @return string|DateTime|false|int
 		 */
 		public function end_date( $as_timestamp = true ) {
 			$end_date = null;

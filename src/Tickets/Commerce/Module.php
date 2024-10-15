@@ -3,7 +3,6 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce;
-use TEC\Tickets\Commerce\Status\Completed;
 use Tribe__Utils__Array as Arr;
 use TEC\Tickets\Commerce\Communication\Email as Email_Communication;
 
@@ -339,7 +338,7 @@ class Module extends \Tribe__Tickets__Tickets {
 
 				break;
 			case $this->ticket_object:
-				return $this->get_attendees_by_ticket_id( $post_id );
+				return tribe( Attendee::class )->get_attendees_by_ticket_id( $post_id, $this->orm_provider );
 
 				break;
 			default:

@@ -1034,6 +1034,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * Prepares the list of items for displaying.
 	 *
 	 * @since 5.8.4 Adding caching to eliminate method running multiple times.
+	 *
+	 * @return void
 	 */
 	public function prepare_items() {
 		$this->process_actions();
@@ -1060,73 +1062,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			$event_id = 0;
 		}
 
-		/** @var Tribe__Cache $cache */
-		$cache     = tribe( 'cache' );
-		$cache_key = __METHOD__ . '-' . md5( wp_json_encode( $args ) . $event_id );
-		$cached    = $cache->get( $cache_key );
-
-		if ( $cached ) {
-			$this->items = $cached;
-			return $cached;
-		}
-
+		// Set up the search args if we have a search term.
 		if ( ! empty( $search ) ) {
-			$search_keys = array_keys( $this->get_search_options() );
-
-			/**
-			 * Filters the item keys that can be used to filter attendees while searching them.
-			 *
-			 * @since 4.7
-			 * @since 4.10.6 Deprecated usage of $items attendees list.
-			 *
-			 * @param array  $search_keys The keys that can be used to search attendees.
-			 * @param array  $items       (deprecated) The attendees list.
-			 * @param string $search      The current search string.
-			 */
-			$search_keys = apply_filters( 'tribe_tickets_search_attendees_by', $search_keys, [], $search );
-
-			// Default selection.
-			$search_key = 'purchaser_name';
-
-			$search_type = sanitize_text_field( tribe_get_request_var( 'tribe_attendee_search_type' ) );
-
-			if (
-				$search_type
-				&& in_array( $search_type, $search_keys, true )
-			) {
-				$search_key = $search_type;
-			}
-
-			$search_like_keys = [
-				'purchaser_name',
-				'purchaser_email',
-				'holder_name',
-				'holder_email',
-			];
-
-			/**
-			 * Filters the item keys that support LIKE matching to filter attendees while searching them.
-			 *
-			 * @since 4.10.6
-			 *
-			 * @param array  $search_like_keys The keys that support LIKE matching.
-			 * @param array  $search_keys      The keys that can be used to search attendees.
-			 * @param string $search           The current search string.
-			 */
-			$search_like_keys = apply_filters( 'tribe_tickets_search_attendees_by_like', $search_like_keys, $search_keys, $search );
-
-			// Update search key if it supports LIKE matching.
-			if ( in_array( $search_key, $search_like_keys, true ) ) {
-				$search_key .= '__like';
-				$search      = '%' . $search . '%';
-			}
-
-			// Only get matches that have search phrase in the key.
-			$args['by'] = [
-				$search_key => [
-					$search,
-				],
-			];
+			$args = $this->set_up_search_args( $search, $args );
 		}
 
 		// Setup sorting args.
@@ -1150,13 +1088,32 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		 */
 		$args = apply_filters( 'tec_tickets_attendees_table_query_args', $args, $event_id );
 
+		/** @var Tribe__Cache $cache */
+		$cache     = tribe( 'cache' );
+		$cache_key = __METHOD__ . '-' . md5( wp_json_encode( $args ) . $event_id );
+
+		/**
+		 * Filters the cache key used to store the attendees table items.
+		 *
+		 * @since 5.14.0
+		 *
+		 * @param string $cache_key The cache key used to store the attendees table items.
+		 * @param array  $args      The arguments used to query the attendees for the Attendees Table.
+		 * @param int    $event_id  The event ID for the Attendees Table.
+		 */
+		$cache_key = apply_filters( 'tec_tickets_attendees_table_cache_key', $cache_key, $args, $event_id );
+
+		// If we have a cached version of the attendees, use that.
+		$cached = $cache->get( $cache_key );
+		if ( false !== $cached ) {
+			$this->items = $cached;
+			return;
+		}
+
+		$items     = [];
 		$item_data = Tribe__Tickets__Tickets::get_attendees_by_args( $args, $event_id );
-
-		$items = [];
-
 		if ( ! empty( $item_data ) ) {
-			$items = $item_data['attendees'];
-
+			$items                          = $item_data['attendees'];
 			$pagination_args['total_items'] = $item_data['total_found'];
 		}
 
@@ -1164,6 +1121,84 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$cache->set( $cache_key, $items, 60 );
 
 		$this->set_pagination_args( $pagination_args );
+	}
+
+	/**
+	 * Set up the search arguments for the attendees table.
+	 *
+	 * @since 5.14.0
+	 *
+	 * @param string $search The search string.
+	 * @param array  $args   The current arguments.
+	 *
+	 * @return array The updated arguments.
+	 */
+	private function set_up_search_args( string $search, array $args ) {
+		$search_keys = array_keys( $this->get_search_options() );
+
+		/**
+		 * Filters the item keys that can be used to filter attendees while searching them.
+		 *
+		 * @since 4.7
+		 * @since 4.10.6 Deprecated usage of $items attendees list.
+		 *
+		 * @param array  $search_keys The keys that can be used to search attendees.
+		 * @param array  $items       (deprecated) The attendees list.
+		 * @param string $search      The current search string.
+		 */
+		$search_keys = apply_filters( 'tribe_tickets_search_attendees_by', $search_keys, [], $search );
+
+		/**
+		 * Filters the default key to search attendees by.
+		 *
+		 * @since 5.14.0
+		 *
+		 * @param string $search_key  The default key to search attendees by.
+		 * @param array  $search_keys The keys that can be used to search attendees.
+		 */
+		$search_key = apply_filters( 'tec_tickets_search_attendees_default', 'purchaser_name', $search_keys );
+
+		$search_type = sanitize_text_field( tribe_get_request_var( 'tribe_attendee_search_type' ) );
+
+		if (
+			$search_type
+			&& in_array( $search_type, $search_keys, true )
+		) {
+			$search_key = $search_type;
+		}
+
+		$search_like_keys = [
+			'purchaser_name',
+			'purchaser_email',
+			'holder_name',
+			'holder_email',
+		];
+
+		/**
+		 * Filters the item keys that support LIKE matching to filter attendees while searching them.
+		 *
+		 * @since 4.10.6
+		 *
+		 * @param array  $search_like_keys The keys that support LIKE matching.
+		 * @param array  $search_keys      The keys that can be used to search attendees.
+		 * @param string $search           The current search string.
+		 */
+		$search_like_keys = apply_filters( 'tribe_tickets_search_attendees_by_like', $search_like_keys, $search_keys, $search );
+
+		// Update search key if it supports LIKE matching.
+		if ( in_array( $search_key, $search_like_keys, true ) ) {
+			$search_key .= '__like';
+			$search      = "%{$search}%";
+		}
+
+		// Only get matches that have search phrase in the key.
+		$args['by'] = [
+			$search_key => [
+				$search,
+			],
+		];
+
+		return $args;
 	}
 
 	/**
