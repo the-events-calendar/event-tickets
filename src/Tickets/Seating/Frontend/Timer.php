@@ -463,9 +463,12 @@ class Timer extends Controller_Contract {
 	 * @return void The AJAX response is sent back to the browser.
 	 */
 	public function ajax_sync(): void {
-		[ $token, ] = $this->ajax_check_request();
+		[ $token, $post_id ] = $this->ajax_check_request();
 
-		$seconds_left = $this->sessions->get_seconds_left( $token );
+		$has_tickets_available = $this->frontend->get_events_ticket_capacity_for_seating( $post_id );
+
+		// If no tickets are available, the users should be interrupted.
+		$seconds_left = $has_tickets_available ? $this->sessions->get_seconds_left( $token ) : 0;
 
 		wp_send_json_success(
 			[

@@ -374,20 +374,33 @@ class Timer_Test extends Controller_Test_Case {
 		], $wp_send_json_error_data );
 	}
 
-	public function test_ajax_sync(): void {
+	public function test_ajax_sync_with_stock(): void {
 		// Create a previous session.
 		$session      = tribe( Session::class );
 		$sessions     = tribe( Sessions::class );
 		$reservations = tribe( Reservations::class );
-		$session->add_entry( 23, 'test-token' );
-		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
-		$sessions->upsert( 'test-token', 23, time() + 100 );
+
+		$post_id = static::factory()->post->create();
+		update_post_meta( $post_id, Meta::META_KEY_ENABLED, 1 );
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-id' );
+
+		$post_1_ticket_1 = $this->create_tc_ticket( $post_id, 10 );
+
+		update_post_meta( $post_1_ticket_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
+		update_post_meta( $post_1_ticket_1, tribe( 'tickets.handler' )->key_capacity, 10 );
+		update_post_meta( $post_1_ticket_1, '_stock', 10 );
+
+		$this->make_controller()->register();
+
+		$session->add_entry( $post_id, 'test-token' );
+		update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
+		$sessions->upsert( 'test-token', $post_id, time() + 100 );
 		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
 
 		// Set up the request context.
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Session::COOKIE_NAME );
 		$_REQUEST['token']       = 'test-token';
-		$_REQUEST['postId']      = 23;
+		$_REQUEST['postId']      = $post_id;
 		$this->set_oauth_token( 'auth-token' );
 
 		// Mock the wp_send_json_success response.
@@ -407,6 +420,55 @@ class Timer_Test extends Controller_Test_Case {
 
 		$this->assertEquals( 200, $wp_send_json_success_code );
 		$this->assertEqualsWithDelta( 100, $wp_send_json_success_data['secondsLeft'], 5 );
+		$this->assertEqualsWithDelta( time(), (int) $wp_send_json_success_data['timestamp'], 5 );
+	}
+
+	public function test_ajax_sync_without_stock(): void {
+		// Create a previous session.
+		$session      = tribe( Session::class );
+		$sessions     = tribe( Sessions::class );
+		$reservations = tribe( Reservations::class );
+
+		$post_id = static::factory()->post->create();
+		update_post_meta( $post_id, Meta::META_KEY_ENABLED, 1 );
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-id' );
+
+		$post_1_ticket_1 = $this->create_tc_ticket( $post_id, 10 );
+
+		update_post_meta( $post_1_ticket_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
+		update_post_meta( $post_1_ticket_1, tribe( 'tickets.handler' )->key_capacity, 10 );
+		update_post_meta( $post_1_ticket_1, '_stock', 0 );
+
+		$this->make_controller()->register();
+
+		$session->add_entry( $post_id, 'test-token' );
+		update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
+		$sessions->upsert( 'test-token', $post_id, time() + 100 );
+		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
+
+		// Set up the request context.
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Session::COOKIE_NAME );
+		$_REQUEST['token']       = 'test-token';
+		$_REQUEST['postId']      = $post_id;
+		$this->set_oauth_token( 'auth-token' );
+
+		// Mock the wp_send_json_success response.
+		$wp_send_json_success_data = null;
+		$wp_send_json_success_code = null;
+		$this->set_fn_return( 'wp_send_json_success',
+			function ( $data, $code = 200 ) use ( &$wp_send_json_success_data, &$wp_send_json_success_code ) {
+				$wp_send_json_success_data = $data;
+				$wp_send_json_success_code = $code;
+			},
+			true );
+
+		$timer = $this->make_controller();
+		$timer->register();
+
+		do_action( 'wp_ajax_nopriv_' . Timer::ACTION_SYNC );
+
+		$this->assertEquals( 200, $wp_send_json_success_code );
+		$this->assertEqualsWithDelta( 0, $wp_send_json_success_data['secondsLeft'], 5 );
 		$this->assertEqualsWithDelta( time(), (int) $wp_send_json_success_data['timestamp'], 5 );
 	}
 
