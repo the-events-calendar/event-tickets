@@ -126,6 +126,14 @@ class Seat_Types {
 				'seats' => $row->seats,
 			];
 		}
+		
+		// Order seat types by name.
+		usort(
+			$seat_types,
+			static function ( $a, $b ) {
+				return strcasecmp( $a['name'], $b['name'] );
+			} 
+		);
 
 		return $seat_types;
 	}
