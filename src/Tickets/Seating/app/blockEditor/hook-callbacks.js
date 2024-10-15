@@ -50,7 +50,7 @@ export const filterHeaderDetails = (items, clientId) => {
 	 *
 	 * Inconsistent return of getSeatTypesForLayout, we need to check for both array and object.
 	 */
-	if (!seatTypes && !seatTypes.length) {
+	if (!seatTypes || (Array.isArray(seatTypes) && !seatTypes.length)) {
 		seatTypes = select(storeName).getAllSeatTypes();
 	}
 
