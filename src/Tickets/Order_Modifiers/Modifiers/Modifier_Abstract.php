@@ -19,6 +19,7 @@
 namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
 use InvalidArgumentException;
+use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Exceptions\Not_Found_Exception;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
@@ -133,15 +134,15 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @param array $data The data to insert.
 	 *
-	 * @return mixed The newly inserted modifier or an empty array if no changes were made.
+	 * @return Model The newly inserted modifier or an empty array if no changes were made.
 	 */
-	public function insert_modifier( array $data ): mixed {
+	public function insert_modifier( array $data ): Model {
 		// Ensure the modifier_type is set to the expected one.
 		$data['modifier_type'] = $this->modifier_type;
 
 		// Validate data before proceeding.
 		if ( ! $this->validate_data( $data ) ) {
-			return [];
+			new Order_Modifier( [] );
 		}
 
 		// Use the repository to insert the data into the `order_modifiers` table.
@@ -155,15 +156,15 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @param array $data The data to update.
 	 *
-	 * @return mixed The updated modifier or an empty array if no changes were made.
+	 * @return Model The updated modifier or an empty array if no changes were made.
 	 */
-	public function update_modifier( array $data ): mixed {
+	public function update_modifier( array $data ): Model {
 		// Ensure the modifier_type is set to the expected one.
 		$data['modifier_type'] = $this->modifier_type;
 
 		// Validate data before proceeding.
 		if ( ! $this->validate_data( $data ) ) {
-			return [];
+			new Order_Modifier( [] );
 		}
 
 		// Use the repository to update the data in the `order_modifiers` table.
@@ -238,6 +239,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	public function validate_data( array $data ): bool {
 		foreach ( $this->required_fields as $field ) {
 			if ( empty( $data[ $field ] ) ) {
+				error_log($field .' is missing');
 				return false;
 			}
 		}
@@ -257,7 +259,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @return int The amount converted to cents.
 	 */
-	public function convert_to_cents( float $amount ): int {
+	public function convert_to_raw_amount( float $amount ): int {
 		return (int) round( floatval( $amount ) * 100 );
 	}
 
@@ -272,7 +274,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @return string The formatted decimal string representing the amount.
 	 */
-	public function convert_from_cents( int $cents ): string {
+	public function convert_from_raw_amount( int $cents ): string {
 		return number_format( $cents / 100, 2, '.', '' );
 	}
 
@@ -504,11 +506,11 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @param int   $modifier_id The ID of the modifier.
 	 * @param array $args The metadata arguments. Expects 'meta_key', 'meta_value', and can override 'priority'.
 	 *
-	 * @return mixed
+	 * @return Model
 	 *
 	 * @throws InvalidArgumentException If 'meta_key' is not provided.
 	 */
-	protected function handle_meta_data( int $modifier_id, array $args = [] ): mixed {
+	protected function handle_meta_data( int $modifier_id, array $args = [] ): Model {
 		// Default structure for the metadata.
 
 		$defaults = [

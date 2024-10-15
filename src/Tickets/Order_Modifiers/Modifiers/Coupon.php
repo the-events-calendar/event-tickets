@@ -12,6 +12,7 @@
 
 namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
+use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Order_Modifiers\Table_Views\Coupon_Table;
 
 /**
@@ -63,9 +64,9 @@ class Coupon extends Modifier_Abstract {
 	 *
 	 * @param array $data The data to insert.
 	 *
-	 * @return mixed The newly inserted modifier or an empty array if no changes were made.
+	 * @return Model The newly inserted modifier or an empty array if no changes were made.
 	 */
-	public function insert_modifier( array $data ): mixed {
+	public function insert_modifier( array $data ): Model {
 		// Save the modifier.
 		$modifier = parent::insert_modifier( $data );
 
@@ -89,9 +90,9 @@ class Coupon extends Modifier_Abstract {
 	 *
 	 * @param array $data The data to update.
 	 *
-	 * @return mixed The updated modifier or an empty array if no changes were made.
+	 * @return Model The updated modifier or an empty array if no changes were made.
 	 */
-	public function update_modifier( array $data ): mixed {
+	public function update_modifier( array $data ): Model {
 		// Save the modifier.
 		$modifier = parent::update_modifier( $data );
 

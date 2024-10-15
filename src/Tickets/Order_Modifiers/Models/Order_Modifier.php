@@ -53,6 +53,16 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	];
 
 	/**
+	 * The order modifier type (e.g., 'coupon', 'fee').
+	 *
+	 * This will be defined in child classes.
+	 *
+	 * @since TBD
+	 * @var string
+	 */
+	protected static string $order_modifier_type;
+
+	/**
 	 * Finds a model by its ID.
 	 *
 	 * @since TBD
@@ -62,7 +72,10 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 * @return Order_Modifier|null The model instance, or null if not found.
 	 */
 	public static function find( $id ): ?self {
-		return tribe( Repository::class )->find_by_id( $id );
+		if ( empty( static::$order_modifier_type ) ) {
+			return null;
+		}
+		return ( new Repository( static::$order_modifier_type ) )->find_by_id( $id );
 	}
 
 	/**
@@ -72,9 +85,9 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 *
 	 * @param array<string,mixed> $attributes The model attributes.
 	 *
-	 * @return static
+	 * @return Order_Modifier
 	 */
-	public static function create( array $attributes ): static {
+	public static function create( array $attributes ): Order_Modifier {
 		// Maybe override the modifier type based on the final class.
 		if ( property_exists( static::class, 'order_modifier_type' ) ) {
 			$attributes['modifier_type'] = static::$order_modifier_type;

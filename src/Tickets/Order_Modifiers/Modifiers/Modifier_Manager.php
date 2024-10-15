@@ -12,6 +12,7 @@
 
 namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
+use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Commerce\Utils\Value;
 
 /**
@@ -58,10 +59,10 @@ class Modifier_Manager {
 	 *
 	 * @param array $data The data to save the modifier.
 	 *
-	 * @return mixed The result of the insert or update operation, or an empty array if validation fails or no changes
+	 * @return Model The result of the insert or update operation, or an empty array if validation fails or no changes
 	 *     were made.
 	 */
-	public function save_modifier( array $data ): mixed {
+	public function save_modifier( array $data ): Model {
 		$data['modifier_type'] = $this->strategy->get_modifier_type();
 
 		// Validate data before proceeding.
@@ -69,7 +70,6 @@ class Modifier_Manager {
 			// Optionally log the validation failure.
 			// @todo redscar - decide how to handle this.
 			error_log( 'Validation failed for ' . $this->strategy->get_modifier_type() );
-			return [];
 		}
 
 		// Check if it's an update or an insert.
