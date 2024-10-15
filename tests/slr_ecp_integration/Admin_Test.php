@@ -6,8 +6,7 @@ use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Seating\Admin;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use TEC\Events_Pro\Custom_Tables\V1\Duplicate\Duplicate;
-use Tribe\Tickets\Events\Attendees_List;
-use Tribe__Tickets__Global_Stock as Global_Stock;
+use Tribe\Tests\Traits\With_Uopz;
 use Generator;
 use Closure;
 use TEC\Tickets\Seating\Meta;
@@ -15,8 +14,17 @@ use WP_Post;
 
 class Admin_Test extends Controller_Test_Case {
 	use Ticket_Maker;
+	use With_Uopz;
 
 	protected string $controller_class = Admin::class;
+
+	/**
+	 * @before
+	 */
+	public function mock_admin_context(): void {
+		$this->set_fn_return( 'is_admin', true );
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
+	}
 
 	public function event_with_tickets_provider(): Generator {
 		yield 'event with tickets' => [
@@ -78,21 +86,23 @@ class Admin_Test extends Controller_Test_Case {
 	 * @dataProvider event_with_tickets_provider
 	 * it should duplicate tickets along with event
 	 */
-	public function it_should_duplicate_tickets_along_with_event( Closure $fixture ) {
-		[ $event_id, $ticket_ids, $meta, $tickets_meta ] = $fixture();
+	public function it_should_duplicate_seating_meta_along_with_event_and_tickets( Closure $fixture ) {
+		[ $event_id, $ticket_ids, $meta, $ticket_meta ] = $fixture();
 
 		$duplicator = tribe( Duplicate::class );
 
 		$event = get_post( $event_id );
 
-		add_action( 'tec_tickets_tickets_duplicated', function( $tickets_map ) use ( $tickets_meta ) {
+		add_action( 'tec_tickets_tickets_duplicated', function( $tickets_map ) use ( $ticket_meta ) {
 			foreach ( $tickets_map as $old_ticket_id => $new_ticket_id ) {
-				foreach( $tickets_meta[ $old_ticket_id ] as $k => $v ) {
+				foreach( $ticket_meta[ $old_ticket_id ] as $k => $v ) {
 					$this->assertEquals( $v, get_post_meta( $old_ticket_id, $k, true ), $k );
 					$this->assertEquals( $v, get_post_meta( $new_ticket_id, $k, true ), $k );
 				}
 			}
-		} );
+		}, 20 );
+
+		$this->make_controller()->register();
 
 		$duplicated_event = $duplicator->duplicate_event( $event );
 
