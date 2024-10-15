@@ -7,7 +7,7 @@
         "capacity-form": {
             "general-admission-label": "General Admission",
             "seat-option-label": "Assigned Seating",
-            "event-layouts-select-placeholder": "Choose event layout",
+            "event-layouts-select-placeholder": "Choose Seat Layout",
             "view-layouts-link-label": "View layouts",
             "seat-types-select-placeholder": "Choose seat type",
             "seat-types-loading-msg": "Loading seat types",

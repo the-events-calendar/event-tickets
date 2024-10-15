@@ -1,6 +1,6 @@
 {
-    "title": "Time limit expired",
+    "title": "Sold Out",
     "content": "This event is now sold out.",
-    "buttonLabel": "Find another Event",
+    "buttonLabel": "Find Another Event",
     "redirectUrl": "http://wordpress.test/events-calendar/"
 }

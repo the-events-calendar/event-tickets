@@ -522,7 +522,7 @@ class Timer extends Controller_Contract {
 			if ( 'tribe_events' === $post_type ) {
 				$button_label = sprintf(
 				// Translators: %s: The post type singular name.
-					_x( 'Find another %s', 'Seat selection expired timer button label', 'event-tickets' ),
+					_x( 'Find Another %s', 'Seat selection expired timer button label', 'event-tickets' ),
 					ucfirst( $post_type_label )
 				);
 
@@ -562,8 +562,11 @@ class Timer extends Controller_Contract {
 			return;
 		}
 
+		// Check whether the session was interrupted due to the timer expiring or the tickets being sold out.
+		$interrupt_title = ! $has_tickets_available ? _x( 'Sold Out', 'Seat selection sold out timer title', 'event-tickets' ) : _x( 'Time limit expired', 'Seat selection expired timer title', 'event-tickets' );
+
 		$data = [
-			'title'       => esc_html_x( 'Time limit expired', 'Seat selection expired timer title', 'event-tickets' ),
+			'title'       => esc_html( $interrupt_title ),
 			'content'     => esc_html( $content ),
 			'buttonLabel' => esc_html( $button_label ),
 			'redirectUrl' => esc_url( $redirect_url ),

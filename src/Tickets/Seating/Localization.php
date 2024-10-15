@@ -43,7 +43,7 @@ class Localization {
 		$strings = [
 			'general-admission-label'          => _x( 'General Admission', 'Capacity option label', 'event-tickets' ),
 			'seat-option-label'                => _x( 'Assigned Seating', 'Capacity option label', 'event-tickets' ),
-			'event-layouts-select-placeholder' => _x( 'Choose event layout', 'Capacity form label', 'event-tickets' ),
+			'event-layouts-select-placeholder' => _x( 'Choose Seat Layout', 'Capacity form label', 'event-tickets' ),
 			'view-layouts-link-label'          => _x( 'View layouts', 'Capacity form label', 'event-tickets' ),
 			'seat-types-select-placeholder'    => _x( 'Choose seat type', 'Capacity form label', 'event-tickets' ),
 			'seat-types-loading-msg'           => _x( 'Loading seat types', 'Capacity form seat types option loading message', 'event-tickets' ),
@@ -77,42 +77,42 @@ class Localization {
 			'bad-service-response'          => _x(
 				'Bad service response',
 				'Error message',
-				'event-tickets' 
+				'event-tickets'
 			),
 			'missing-request-parameters'    => _x(
 				'Missing request parameters',
 				'Error message',
-				'event-tickets' 
+				'event-tickets'
 			),
 			'invalid-site-parameter'        => _x(
 				'Invalid site parameter',
 				'Error message',
-				'event-tickets' 
+				'event-tickets'
 			),
 			'invalid-expire-time-parameter' => _x(
 				'Invalid expire time parameter',
 				'Error message',
-				'event-tickets' 
+				'event-tickets'
 			),
 			'missing-ephemeral-token'       => _x(
 				'Ephemeral token not found in response',
 				'Error message',
-				'event-tickets' 
+				'event-tickets'
 			),
 			'site-not-found'                => _x(
 				'Site not found',
 				'Error message',
-				'event-tickets' 
+				'event-tickets'
 			),
 			'ephemeral-token-store-error'   => _x(
 				'Ephemeral token store error',
 				'Error message',
-				'event-tickets' 
+				'event-tickets'
 			),
 			'site-not-authorized'           => _x(
 				'Site not authorized',
 				'Error message',
-				'event-tickets' 
+				'event-tickets'
 			),
 		];
 
