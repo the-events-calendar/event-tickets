@@ -176,14 +176,11 @@ Yes. Event Tickets automatically sends an email confirmation after attendees reg
 
 The following add-ons are available for The Events Calendar:
 
-* [Events Calendar Pro](https://evnt.is/18wi), for adding premium calendar features like recurring events, advanced views, cool widgets, [shortcodes](https://evnt.is/1ajw), additional fields, and more!
+* [Events Calendar Pro](https://evnt.is/18wi), for adding premium calendar features like recurring events, advanced views, cool widgets, [shortcodes](https://evnt.is/1ajw), additional fields, virtual events including Zoom integration, video, livestream embed and more!
 * [Event Aggregator](https://evnt.is/197u), a service that effortlessly fills your calendar with events from Meetup, Google Calendar, iCalendar, Eventbrite, CSV, and ICS.
-* [Virtual Events](https://evnt.is/1aky), which optimizes your calendar for virtual events including Zoom integration, video and livestream embeds, SEO optimization for online events and more.
 * [Event Tickets Plus](https://evnt.is/18wk), which allows you to sell tickets for your events using your favorite e-commerce platform.
-* [Wallet Plus](https://evnt.is/etwp), for adding digital tickets like Apple Wallet passes and PDF tickets.
 * [Promoter](https://evnt.is/1ajt), automated email communication made just for The Events Calendar and Event Tickets. Stay in touch with your attendees every step of the way.
-* [Community Events](https://evnt.is/2g), for allowing frontend event submission from your readers.
-* [Community Tickets](https://evnt.is/18wl), which allows event organizers to sell tickets to the events they submit via Community Events.
+* [Community Events](https://evnt.is/2g), for allowing frontend event submission from your readers and allows event organizers to sell tickets to the events.
 * [Filter Bar](https://evnt.is/fa), for adding advanced frontend filtering capabilities to your events calendar.
 * [Eventbrite Tickets](https://evnt.is/2e), for selling tickets to your event directly through Eventbrite.
 
