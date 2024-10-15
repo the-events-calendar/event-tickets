@@ -187,22 +187,7 @@ class Frontend extends Controller_Contract {
 			false
 		);
 		
-		$show_non_asc_tickets = tribe_tickets()
-									->where( 'event', $post_id )
-									->where( 'meta_not_exists', Meta::META_KEY_SEAT_TYPE )
-									->count() > 0;
-
-		if ( $show_non_asc_tickets ) {
-			add_filter( 'tribe_template_context:tickets/v2/tickets', [ $this, 'exclude_asc_tickets' ] );
-			remove_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ] );
-			add_filter( 'tribe_template_pre_html:tickets/v2/tickets/title', '__return_false' );
-			
-			$html .= tribe( Tickets_View::class )->get_tickets_block( $post_id, false );
-			
-			add_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ] );
-			remove_filter( 'tribe_template_context:tickets/v2/tickets', [ $this, 'exclude_asc_tickets' ] );
-			remove_filter( 'tribe_template_pre_html:tickets/v2/tickets/title', '__return_false' );
-		}
+		$html .= $this->render_non_asc_ticket_form( $post_id );
 
 		/**
 		 * Filters the contents of the Tickets block.
@@ -215,6 +200,38 @@ class Frontend extends Controller_Contract {
 		$html = apply_filters( 'tec_tickets_seating_tickets_block_html', $html, $template );
 
 		return $html;
+	}
+	
+	/**
+	 * Renders the non-ASC ticket form.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post ID.
+	 *
+	 * @return string The HTML of the non-ASC ticket form.
+	 */
+	public function render_non_asc_ticket_form( int $post_id ): string {
+		$has_non_asc_tickets = tribe_tickets()
+								->where( 'event', $post_id )
+								->where( 'meta_not_exists', Meta::META_KEY_SEAT_TYPE )
+								->count() > 0;
+		
+		if ( $has_non_asc_tickets ) {
+			add_filter( 'tribe_template_context:tickets/v2/tickets', [ $this, 'exclude_asc_tickets' ] );
+			remove_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ] );
+			add_filter( 'tribe_template_pre_html:tickets/v2/tickets/title', '__return_false' );
+			
+			$html = tribe( Tickets_View::class )->get_tickets_block( $post_id, false );
+			
+			add_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ] );
+			remove_filter( 'tribe_template_context:tickets/v2/tickets', [ $this, 'exclude_asc_tickets' ] );
+			remove_filter( 'tribe_template_pre_html:tickets/v2/tickets/title', '__return_false' );
+			
+			return $html;
+		}
+		
+		return '';
 	}
 	
 	/**
