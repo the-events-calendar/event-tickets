@@ -346,6 +346,10 @@ class Controller extends Controller_Contract {
 		if ( ! $post ) {
 			return;
 		}
+		
+		if ( ! tec_tickets_seating_enabled( $post->ID ) ) {
+			return;
+		}
 
 		add_filter( 'tribe_tickets_attendees_show_title', '__return_false' );
 
