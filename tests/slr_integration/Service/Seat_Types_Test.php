@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Seating\Service;
 
 use Codeception\TestCase\WPTestCase;
+use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Meta;
@@ -13,6 +14,7 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
 
 class Seat_Types_Test extends WPTestCase {
 	use Ticket_Maker;
+	use SnapshotAssertions;
 
 	/**
 	 * @before
@@ -233,11 +235,11 @@ class Seat_Types_Test extends WPTestCase {
 			'seat-type-uuid-1' => 23
 		] ) );
 		// Posts should not be affected by the update, only the tickets.
-		$this->assertEquals( 30, get_post_meta( $post_id_2, $capacity_meta_key, true ), );
-		$this->assertEquals( 30, get_post_meta( $post_id_2, Global_Stock::GLOBAL_STOCK_LEVEL, true ), );
-		$this->assertEquals( 70, get_post_meta( $post_id_3, $capacity_meta_key, true ), );
-		$this->assertEquals( 70, get_post_meta( $post_id_3, Global_Stock::GLOBAL_STOCK_LEVEL, true ), );
-		$this->assertEquals( 23, get_post_meta( $post_2_ticket_1, $capacity_meta_key, true ), );
+		$this->assertEquals( 30, get_post_meta( $post_id_2, $capacity_meta_key, true ) );
+		$this->assertEquals( 30, get_post_meta( $post_id_2, Global_Stock::GLOBAL_STOCK_LEVEL, true ) );
+		$this->assertEquals( 70, get_post_meta( $post_id_3, $capacity_meta_key, true ) );
+		$this->assertEquals( 70, get_post_meta( $post_id_3, Global_Stock::GLOBAL_STOCK_LEVEL, true ) );
+		$this->assertEquals( 23, get_post_meta( $post_2_ticket_1, $capacity_meta_key, true ) );
 		$this->assertEquals( 23, get_post_meta( $post_2_ticket_1, '_stock', true ) );
 		$this->assertEquals( 20, get_post_meta( $post_2_ticket_2, $capacity_meta_key, true ) );
 		$this->assertEquals( 20, get_post_meta( $post_2_ticket_2, '_stock', true ) );
@@ -254,11 +256,11 @@ class Seat_Types_Test extends WPTestCase {
 			'seat-type-uuid-3' => 123,
 			'seat-type-uuid-4' => 266,
 		] ) );
-		$this->assertEquals( 30, get_post_meta( $post_id_2, $capacity_meta_key, true ), );
-		$this->assertEquals( 30, get_post_meta( $post_id_2, Global_Stock::GLOBAL_STOCK_LEVEL, true ), );
-		$this->assertEquals( 70, get_post_meta( $post_id_3, $capacity_meta_key, true ), );
-		$this->assertEquals( 70, get_post_meta( $post_id_3, Global_Stock::GLOBAL_STOCK_LEVEL, true ), );
-		$this->assertEquals( 23, get_post_meta( $post_2_ticket_1, $capacity_meta_key, true ), );
+		$this->assertEquals( 30, get_post_meta( $post_id_2, $capacity_meta_key, true ) );
+		$this->assertEquals( 30, get_post_meta( $post_id_2, Global_Stock::GLOBAL_STOCK_LEVEL, true ) );
+		$this->assertEquals( 70, get_post_meta( $post_id_3, $capacity_meta_key, true ) );
+		$this->assertEquals( 70, get_post_meta( $post_id_3, Global_Stock::GLOBAL_STOCK_LEVEL, true ) );
+		$this->assertEquals( 23, get_post_meta( $post_2_ticket_1, $capacity_meta_key, true ) );
 		$this->assertEquals( 23, get_post_meta( $post_2_ticket_1, '_stock', true ) );
 		$this->assertEquals( 89, get_post_meta( $post_2_ticket_2, $capacity_meta_key, true ) );
 		$this->assertEquals( 89, get_post_meta( $post_2_ticket_2, '_stock', true ) );
@@ -817,5 +819,55 @@ class Seat_Types_Test extends WPTestCase {
 		$this->assertEquals( 30, get_post_meta( $post_2_ticket_1, $capacity_meta_key, true ) );
 		$this->assertEquals( 26, get_post_meta( $post_2_ticket_1, '_stock', true ) );
 		$this->assertEquals( 'seat-type-uuid-1', get_post_meta( $post_2_ticket_1, Meta::META_KEY_SEAT_TYPE, true ) );
+	}
+	
+	public function test_get_in_option_format() {
+		// Create seat types with different name value starting with different letters in random order.
+		Seat_Types::insert_rows_from_service(
+			[
+				[
+					'id'       => 'seat-type-uuid-1',
+					'name'     => 'Mangoe',
+					'seats'    => 10,
+					'mapId'    => 'map-uuid-1',
+					'layoutId' => 'layout-uuid-1',
+				],
+				[
+					'id'       => 'seat-type-uuid-2',
+					'name'     => 'Banana',
+					'seats'    => 20,
+					'mapId'    => 'map-uuid-1',
+					'layoutId' => 'layout-uuid-1',
+				],
+				[
+					'id'       => 'seat-type-uuid-3',
+					'name'     => 'apple',
+					'seats'    => 30,
+					'mapId'    => 'map-uuid-1',
+					'layoutId' => 'layout-uuid-1',
+				],
+				[
+					'id'       => 'seat-type-uuid-4',
+					'name'     => 'wolves',
+					'seats'    => 40,
+					'mapId'    => 'map-uuid-1',
+					'layoutId' => 'layout-uuid-1',
+				],
+				[
+					'id'       => 'seat-type-uuid-5',
+					'name'     => '5guys',
+					'seats'    => 50,
+					'mapId'    => 'map-uuid-1',
+					'layoutId' => 'layout-uuid-1',
+				],
+			]
+		);
+		
+		set_transient( Seat_Types::update_transient_name(), time() );
+		
+		$seat_types = tribe( Seat_Types::class );
+		
+		// Get the seat types in option format and match snapshot.
+		$this->assertMatchesJsonSnapshot( wp_json_encode( $seat_types->get_in_option_format( [ 'layout-uuid-1' ] ), JSON_SNAPSHOT_OPTIONS ) );
 	}
 }
