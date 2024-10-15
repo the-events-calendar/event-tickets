@@ -146,6 +146,7 @@ class Seats_Report_Test extends WPTEstCase {
 
 		$seats_report = tribe( Seats_Report::class );
 
+		test_remove_service_status_ok_callback();
 		$this->set_class_fn_return( License::class, 'is_valid', false );
 		$this->set_class_fn_return( License::class, 'is_expired', false );
 

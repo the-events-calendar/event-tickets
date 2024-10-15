@@ -38,10 +38,21 @@ export const filterHeaderDetails = (items, clientId) => {
 		return items;
 	}
 	const seatTypeId = select(storeName).getTicketSeatType(clientId);
-	const seatTypes = select(storeName).getSeatTypesForLayout(
+	let seatTypes = select(storeName).getSeatTypesForLayout(
 		select(storeName).getCurrentLayoutId(),
 		true
 	);
+
+	/**
+	 * Seat types per layout may not be available initially. Even though thats the most accurate.
+	 *
+	 * When it's not we used localized data provided by PHP.
+	 *
+	 * Inconsistent return of getSeatTypesForLayout, we need to check for both array and object.
+	 */
+	if (!seatTypes && !seatTypes.length) {
+		seatTypes = select(storeName).getAllSeatTypes();
+	}
 
 	const seatTypeName = Object.values(seatTypes).find(
 		(seatType) => seatType.id === seatTypeId
@@ -159,6 +170,7 @@ export const filterSettingsFields = (fields) => {
 
 	switch (status) {
 		case 'not-connected':
+		case 'expired-license':
 		case 'invalid-license':
 			fields.push(
 				<Upsell />

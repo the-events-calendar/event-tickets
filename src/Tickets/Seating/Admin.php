@@ -13,7 +13,6 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Common\StellarWP\Assets\Assets;
-use TEC\Tickets\Seating\Admin\Embed_Test;
 use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Layouts;
 use TEC\Tickets\Seating\Admin\Tabs\Map_Edit;
@@ -21,6 +20,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Maps;
 use TEC\Tickets\Seating\Service\Service;
 use Tribe__Tickets__Main as Tickets;
 use Tribe\Tickets\Admin\Settings;
+use Tribe__Admin__Helpers as Admin_Helper;
 
 /**
  * Class Admin.
@@ -73,10 +73,7 @@ class Admin extends Controller_Contract {
 		$assets->remove( 'tec-tickets-seating-admin-layout-edit-style' );
 
 		remove_action( 'admin_menu', [ $this, 'add_submenu_page' ], 1000 );
-		remove_action( 'admin_menu', [ $this, 'add_embed_submenu_page' ], 1000 );
-
 		remove_action( 'admin_init', [ $this, 'register_woo_incompatibility_notice' ] );
-
 		remove_filter( 'tec_tickets_find_ticket_type_host_posts_query_args', [ $this, 'exclude_asc_events_from_candidates_from_moving_tickets_to' ] );
 	}
 
@@ -121,20 +118,6 @@ class Admin extends Controller_Contract {
 	}
 
 	/**
-	 * @todo remove this when embed testing is not required anymore.
-	 */
-	public function add_embed_submenu_page(): void {
-		add_submenu_page(
-			'tec-tickets',
-			__( '__TEST__ Embed', 'event-tickets' ),
-			__( '__TEST__ Embed', 'event-tickets' ),
-			'manage_options',
-			Embed_Test::get_menu_slug(),
-			$this->container->callback( Admin\Embed_Test::class, 'render' )
-		);
-	}
-
-	/**
 	 * Register the admin area bindings and hooks on the required hooks.
 	 *
 	 * @since TBD
@@ -155,12 +138,7 @@ class Admin extends Controller_Contract {
 		$this->reqister_layout_edit_assets();
 
 		add_action( 'admin_menu', [ $this, 'add_submenu_page' ], 1000 );
-
-		// @todo TEST STUFF remove when no more required.
-		add_action( 'admin_menu', [ $this, 'add_embed_submenu_page' ], 1000 );
-
 		add_action( 'admin_init', [ $this, 'register_woo_incompatibility_notice' ] );
-
 		add_filter( 'tec_tickets_find_ticket_type_host_posts_query_args', [ $this, 'exclude_asc_events_from_candidates_from_moving_tickets_to' ] );
 	}
 
@@ -215,6 +193,20 @@ class Admin extends Controller_Contract {
 			'</a>'
 		);
 
+		$filter_callback = static fn() => [];
+		$add_filter      = static fn() => add_filter( 'tribe_is_post_type_screen_post_types', $filter_callback );
+		$remove_filter   = static fn() => remove_filter( 'tribe_is_post_type_screen_post_types', $filter_callback );
+
+		$screen_ids = [
+			'toplevel_page_tec-tickets',
+			'tickets_page_tec-tickets-attendees',
+			'edit-tec_tc_order',
+			'tickets_page_tec-tickets-settings',
+			'tickets_page_tec-tickets-help',
+			'tickets_page_tec-tickets-troubleshooting',
+			'edit-ticket-meta-fieldset',
+			'tickets_page_tec-tickets-seating',
+		];
 		tribe_notice(
 			'seating-incompatible-with-woo',
 			$message,
@@ -222,7 +214,12 @@ class Admin extends Controller_Contract {
 				'dismiss' => true,
 				'type'    => 'warning',
 			],
-			static fn() => function_exists( 'WC' )
+			static function () use ( $add_filter, $remove_filter, $screen_ids ) {
+				$add_filter();
+				$result = function_exists( 'WC' ) && Admin_Helper::instance()->is_screen( $screen_ids );
+				$remove_filter();
+				return $result;
+			}
 		);
 	}
 

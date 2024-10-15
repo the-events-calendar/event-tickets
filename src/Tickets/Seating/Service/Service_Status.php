@@ -22,7 +22,7 @@ class Service_Status {
 	use OAuth_Token;
 
 	/**
-	 * A constant representing a generic error status in the connection to the service.
+	 * A constant representing that the connection to the service is established.
 	 *
 	 * @since TBD
 	 *
@@ -58,6 +58,15 @@ class Service_Status {
 	public const INVALID_LICENSE = 8;
 
 	/**
+	 * A constant representing the fact that the site is connected to the service but the license is expired.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	public const EXPIRED_LICENSE = 16;
+
+	/**
 	 * The base URL of the service from the site backend.
 	 *
 	 * @since TBD
@@ -90,7 +99,7 @@ class Service_Status {
 
 		if (
 			null !== $status
-			&& ! in_array( $status, [ self::OK, self::SERVICE_DOWN, self::NOT_CONNECTED, self::INVALID_LICENSE ], true )
+			&& ! in_array( $status, [ self::OK, self::SERVICE_DOWN, self::NOT_CONNECTED, self::INVALID_LICENSE, self::EXPIRED_LICENSE ], true )
 		) {
 			/*
 			 * While it should not be cached directly, the status could be built from client code during a cache read,
@@ -117,7 +126,14 @@ class Service_Status {
 		$resource = get_resource( 'tec-seating' );
 
 		if ( ! $resource->has_valid_license() ) {
-			// There is a license key, but it is not valid or expired.
+			if ( $resource->get_license_object()->is_expired() ) {
+				// There is a license key, but it is expired.
+				$this->status = self::EXPIRED_LICENSE;
+
+				return;
+			}
+
+			// There is a license key, but it is invalid and NOT expired.
 			$this->status = self::INVALID_LICENSE;
 
 			return;
@@ -158,6 +174,32 @@ class Service_Status {
 	}
 
 	/**
+	 * Returns whether the license used is invalid.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the service status is Invalid License or not.
+	 */
+	public function is_license_invalid(): bool {
+		$this->update();
+
+		return $this->status === self::INVALID_LICENSE;
+	}
+
+	/**
+	 * Returns whether the license used is expired.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the service status is Expired License or not.
+	 */
+	public function is_license_expired(): bool {
+		$this->update();
+
+		return $this->status === self::EXPIRED_LICENSE;
+	}
+
+	/**
 	 * Returns the status of the service.
 	 *
 	 * @since TBD
@@ -185,6 +227,8 @@ class Service_Status {
 				return 'down';
 			case self::NOT_CONNECTED:
 				return 'not-connected';
+			case self::EXPIRED_LICENSE:
+				return 'expired-license';
 			case self::INVALID_LICENSE:
 				return 'invalid-license';
 			default:

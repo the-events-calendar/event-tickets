@@ -11,6 +11,7 @@ import {
 	pause,
 	resume,
 	getWatchedCheckoutControls,
+	beaconInterrupt,
 } from '@tec/tickets/seating/frontend/session';
 import { watchCheckoutControls } from '../../../src/Tickets/Seating/app/frontend/session';
 import {addFilter} from '@wordpress/hooks';
@@ -152,5 +153,36 @@ describe('Seat Selection Session', () => {
 		expect(getCountdownTimeoutId()).toBe(null);
 		expect(getHealthcheckTimeoutId()).toBe(null);
 		expect(getResumeTimeoutId()).toBe(102);
+	});
+
+	it('should interrupt on page close', async () => {
+		fetch.mockIf(
+			'https://wordpress.test/wp-admin/admin-ajax.php?_ajaxNonce=1234567890&action=tec_tickets_seating_session_sync&token=test-token&postId=23',
+			JSON.stringify({
+				success: true,
+				data: { secondsLeft: 30, timestamp: Date.now() / 1000 },
+			})
+		);
+		// Mock the window.navigator.sendBeacon function.
+		window.navigator.sendBeacon = jest.fn();
+		// Mock the window.addEventListener function.
+		window.addEventListener = jest.fn();
+
+		dom = getTestDocument('timer', (html) =>
+			html
+			.replaceAll('{{post_id}}', 23)
+			.replaceAll('{{token}}', 'test-token')
+		);
+		setTargetDom(dom);
+
+		await syncOnLoad();
+
+		expect(window.addEventListener).toHaveBeenCalledWith('beforeunload', beaconInterrupt);
+
+		beaconInterrupt();
+
+		expect(window.navigator.sendBeacon).toHaveBeenCalledWith(
+			'https://wordpress.test/wp-admin/admin-ajax.php?_ajaxNonce=1234567890&action=tec_tickets_seating_session_interrupt_get_data&postId=23&token=test-token'
+		);
 	});
 });

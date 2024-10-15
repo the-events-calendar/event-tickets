@@ -44,6 +44,7 @@ const getMessage = (serviceStatus, serviceConnectUrl) => {
 					</a>
 				</span>
 			);
+		case 'expired-license':
 		case 'invalid-license':
 			return (
 				<span style={style}>

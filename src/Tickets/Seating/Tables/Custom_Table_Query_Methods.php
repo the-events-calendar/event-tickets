@@ -44,7 +44,7 @@ trait Custom_Table_Query_Methods {
 
 			$batch = DB::get_results(
 				DB::prepare(
-					"SELECT ${sql_calc_found_rows} * FROM %i {$where_clause} ORDER BY id LIMIT %d, %d",
+					"SELECT {$sql_calc_found_rows} * FROM %i {$where_clause} ORDER BY id LIMIT %d, %d",
 					static::table_name( true ),
 					$offset,
 					$batch_size

@@ -539,6 +539,31 @@ class Frontend_Test extends Controller_Test_Case {
 				return [ $post_id, $ticket ];
 			}
 		];
+
+		yield 'expired license' => [
+			function () {
+				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
+					return new Service_Status( $backend_base_url, Service_Status::EXPIRED_LICENSE );
+				}, 1000, 2 );
+				$post_id = static::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+				/**
+				 * @var Tickets_Handler $tickets_handler
+				 */
+				$tickets_handler   = tribe( 'tickets.handler' );
+				$capacity_meta_key = $tickets_handler->key_capacity;
+				update_post_meta( $post_id, $capacity_meta_key, 100 );
+				$ticket = $this->create_tc_ticket( $post_id, 20 );
+
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+
+				return [ $post_id, $ticket ];
+			}
+		];
 	}
 
 	/**

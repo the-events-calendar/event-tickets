@@ -449,6 +449,28 @@ async function interrupt() {
 }
 
 /**
+ * Sends a beacon to the backend to interrupt the user flow.
+ *
+ * @since TBD
+ *
+ * @return {void} The timer is interrupted.
+ */
+export function beaconInterrupt() {
+	if (!isInterruptable()) {
+		return;
+	}
+
+	const { postId, token } = findTimerData();
+	const requestUrl = new URL(ajaxUrl);
+	requestUrl.searchParams.set('_ajaxNonce', ajaxNonce);
+	requestUrl.searchParams.set('action', ACTION_INTERRUPT_GET_DATA);
+	requestUrl.searchParams.set('postId', postId);
+	requestUrl.searchParams.set('token', token);
+
+	window.navigator.sendBeacon(requestUrl.toString());
+}
+
+/**
  * Starts the loop that will recursively update the timer(s) every second.
  *
  * @since TBD
@@ -747,6 +769,9 @@ export async function syncOnLoad() {
 
 	setIsInterruptable(true);
 
+	// On page/tab close (or app close in some instances) interrupt the timer, clear the sessions and cancel the reservations.
+	window.addEventListener('beforeunload', beaconInterrupt);
+
 	await syncWithBackend();
 }
 
@@ -859,9 +884,6 @@ export function getResumeTimeoutId() {
 // On DOM ready check if any timer needs to be synced.
 onReady(() => syncOnLoad());
 onReady(() => watchCheckoutControls());
-
-// On page/tab close (or app close in some instances) interrupt the timer and clear the session.
-window.addEventListener('beforeUnload', interrupt);
 
 window.tec = window.tec || {};
 window.tec.tickets = window.tec.tickets || {};

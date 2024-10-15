@@ -271,6 +271,19 @@ class Editor_Test extends Controller_Test_Case {
 			}
 		];
 
+		yield 'expired license' => [
+			function (): array {
+				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
+					return new Service_Status( $backend_base_url, Service_Status::EXPIRED_LICENSE );
+				}, 1000, 2 );
+				global $pagenow, $post;
+				$pagenow = 'edit.php';
+				$post    = get_post( static::factory()->post->create() );
+
+				return [];
+			}
+		];
+
 		yield 'existing event, not using meta set or layout set, with tickets' => [
 			function (): array {
 				$id = tribe_events()->set_args( [

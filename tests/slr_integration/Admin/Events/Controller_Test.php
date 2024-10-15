@@ -259,6 +259,8 @@ class Controller_Test extends Controller_Test_Case {
 	 * @dataProvider events_list_data_provider
 	 */
 	public function test_associated_events_list( Closure $fixture ): void {
+		// Impose an order to stabilize the snapshot.
+		$_GET['orderby'] = 'ID';
 		[ $vars, $ids ] = $fixture();
 
 		if ( ! empty( $vars ) ) {
