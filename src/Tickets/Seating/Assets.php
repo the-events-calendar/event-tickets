@@ -178,8 +178,8 @@ class Assets extends Controller_Contract {
 			ET::VERSION
 		)
 			->set_dependencies(
+				'tec-tickets-vendor-babel',
 				'wp-i18n',
-				'tribe-tickets-gutenberg-vendor', // Not actually about Block Editor, but transpiling.
 				'tec-tickets-seating-utils',
 				'tec-tickets-seating-ajax'
 			)

@@ -23,6 +23,23 @@ const PLUGIN_SCOPE = 'tickets';
 // ──────────────────────────────────────────────────────────────────────────────────────────────
 //
 
+/**
+ * By default, the optimization would break all modules from the `node_modules` directory
+ * in a `src/resources/js/app/vendor.js` file. That file would include React and block-editor
+ * dependencies that are not always required on the frontend. This modification of the default
+ * optimization will create two files: one (`src/resources/js/app/vendor-babel.js`) that contains
+ * only the Babel transpilers and one (`src/resources/js/app/vendor.js`) that contains all the
+ * other dependencies. The second file (`src/resources/js/app/vendor.js`) MUST require the first
+ * (`src/resources/js/app/vendor-babel.js`) file as a dependency.
+ */
+common.optimization.splitChunks.cacheGroups['vendor-babel-runtime'] = {
+	name: 'vendor-babel',
+	chunks: 'all',
+	test: /[\\/]node_modules[\\/]@babel[\\/]/,
+	priority: 20,
+};
+common.optimization.splitChunks.cacheGroups.vendor.priority = 10;
+
 const isProduction = process.env.NODE_ENV === 'production';
 const postfix = isProduction ? 'min.css' : 'css';
 
