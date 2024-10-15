@@ -522,7 +522,7 @@ class Timer extends Controller_Contract {
 			if ( 'tribe_events' === $post_type ) {
 				$button_label = sprintf(
 				// Translators: %s: The post type singular name.
-					_x( 'Find another %s', 'Seat selection expired timer button label', 'event-tickets' ),
+					_x( 'Find Another %s', 'Seat selection expired timer button label', 'event-tickets' ),
 					ucfirst( $post_type_label )
 				);
 
