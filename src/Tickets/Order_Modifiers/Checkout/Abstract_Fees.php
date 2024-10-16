@@ -253,10 +253,10 @@ abstract class Abstract_Fees {
 
 			if ( ! isset( $unique_fees[ $id ] ) ) {
 				$unique_fees[ $id ] = [
-					'id'               => $id,
-					'raw_amount' => $fee->raw_amount,
-					'display_name'     => $fee->display_name,
-					'sub_type'         => $fee->sub_type,
+					'id'           => $id,
+					'raw_amount'   => $fee->raw_amount,
+					'display_name' => $fee->display_name,
+					'sub_type'     => $fee->sub_type,
 				];
 
 				// Use the stored subtotal in the fee calculation.
@@ -329,5 +329,15 @@ abstract class Abstract_Fees {
 		}
 		self::$fees_appended = true;
 		return $items;
+	}
+
+	/**
+	 * Reset if the fees have been appended and displayed on the cart page.
+	 *
+	 * @return void
+	 */
+	public static function reset_cart_fees(): void {
+		self::$fees_appended  = false;
+		self::$fees_displayed = false;
 	}
 }
