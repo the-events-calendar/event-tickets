@@ -231,7 +231,7 @@ class Service {
 	 * @return string  The URL built from the base frontend URL and the given path.
 	 */
 	public function get_frontend_url( string $path = '' ): string {
-		$args = ! empty( $_GET['isNew'] ) && '1' === $_GET['isNew'] ? [ 'isNew' => '1' ] : [];
+		$args = 1 === (int) tribe_get_request_var( 'isNew', 0 ) ? [ 'isNew' => '1' ] : [];
 		return add_query_arg( $args, rtrim( $this->frontend_base_url . '/' . ltrim( $path, '/' ), '/' ) );
 	}
 
