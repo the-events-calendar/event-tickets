@@ -197,14 +197,14 @@ class Modifier_Manager {
 
 		// Apply percentage fee if applicable and bail early.
 		if ( isset( $item['sub_type'] ) && $item['sub_type'] === 'percent' ) {
-			$percentage_fee = $item['raw_amount'] / $base_price_in_cents;
+			$percentage_fee = $base_price_in_cents / $item['raw_amount'];
 
-			return Value::create( $this->strategy->convert_from_raw_amount( $percentage_fee ) );
+			return Value::create( $percentage_fee );
 		}
 
 		// Apply flat fee if applicable and bail early.
 		if ( isset( $item['sub_type'] ) && $item['sub_type'] === 'flat' ) {
-			return Value::create(  $this->strategy->convert_from_raw_amount( $item['raw_amount'] ) );
+			return Value::create( $this->strategy->convert_from_raw_amount( $item['raw_amount'] ) );
 		}
 
 		// Return zero if no valid fee type is found.
