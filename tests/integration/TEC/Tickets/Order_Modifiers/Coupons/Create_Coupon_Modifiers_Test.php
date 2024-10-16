@@ -20,6 +20,7 @@ class Create_Coupon_Modifiers_Test extends Create_Order_Modifiers_Abstract {
 	 * @throws \Gajus\Dindent\Exception\InvalidArgumentException
 	 */
 	public function does_table_render_correctly() {
+		// @todo redscar - Test sometimes fails randomly due to race conditions.
 		$this->assertMatchesHtmlSnapshot( $this->get_table_display() );
 	}
 

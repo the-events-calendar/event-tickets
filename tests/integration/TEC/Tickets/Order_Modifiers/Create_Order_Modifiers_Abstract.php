@@ -26,6 +26,7 @@ abstract class Create_Order_Modifiers_Abstract extends WPTestCase {
 	 * @before
 	 */
 	public function set_up(): void {
+		$this->clear_all_modifiers( $this->modifier_type );
 		$this->set_fn_return( 'wp_create_nonce', '1234567890' );
 		$this->set_class_fn_return(
 			Modifier_Abstract::class,
@@ -44,6 +45,14 @@ abstract class Create_Order_Modifiers_Abstract extends WPTestCase {
 			},
 			true
 		);
+	}
+
+	/**
+	 * @after
+	 * @return void
+	 */
+	public function tear_down() {
+		$this->clear_all_modifiers( $this->modifier_type );
 	}
 
 	/**
@@ -365,7 +374,6 @@ abstract class Create_Order_Modifiers_Abstract extends WPTestCase {
 
 
 	protected function get_table_display() {
-		$this->clear_all_modifiers( $this->modifier_type );
 		for ( $i = 0; $i < 20; $i++ ) {
 			// Step 1: Insert a new modifier.
 			$insert_data = [
