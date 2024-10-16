@@ -20,6 +20,7 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
+use Exception;
 use InvalidArgumentException;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Exceptions\Not_Found_Exception;
@@ -626,7 +627,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	public function get_modifier_display_name( bool $plural = false ): string {
 		// If plural is requested and a plural form is set, return the plural display name.
 		if ( $plural && ! empty( $this->modifier_display_name_plural ) ) {
-			$this->modifier_display_name_plural;
+			return $this->modifier_display_name_plural;
 		}
 
 		// Return singular form by default.
@@ -672,12 +673,11 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return bool True if the deletion of the modifier was successful, false otherwise.
 	 */
 	public function delete_modifier( int $modifier_id ): bool {
-
-		// Check if the modifier exists before attempting to delete it.
-		$modifier = $this->repository->find_by_id( $modifier_id, $this->modifier_type );
-
-		if ( empty( $modifier ) ) {
-			// Modifier does not exist, return false.
+		try {
+			// Check if the modifier exists before attempting to delete it.
+			$modifier = $this->repository->find_by_id( $modifier_id );
+		} catch ( Exception $e ) {
+			// Return false if the modifier does not exist.
 			return false;
 		}
 
