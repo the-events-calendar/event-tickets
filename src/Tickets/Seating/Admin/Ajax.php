@@ -29,6 +29,7 @@ use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Main as Tickets_Main;
 use Tribe__Tickets__Global_Stock as Global_Stock;
+use TEC\Tickets\Commerce\Ticket;
 
 /**
  * Class Ajax.
@@ -298,6 +299,8 @@ class Ajax extends Controller_Contract {
 		add_action( 'wp_ajax_' . self::ACTION_EVENT_LAYOUT_UPDATED, [ $this, 'update_event_layout' ] );
 
 		add_action( 'tec_tickets_seating_session_interrupt', [ $this, 'clear_commerce_cart_cookie' ] );
+
+		add_filter( 'tec_tickets_ticket_totals', [ $this, 'filter_seating_totals' ], 10, 2 );
 	}
 
 	/**
@@ -331,6 +334,35 @@ class Ajax extends Controller_Contract {
 
 		remove_action( 'wp_ajax_' . self::ACTION_SEAT_TYPE_DELETED, [ $this, 'handle_seat_type_deleted' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_EVENT_LAYOUT_UPDATED, [ $this, 'update_event_layout' ] );
+
+		remove_filter( 'tec_tickets_ticket_totals', [ $this, 'filter_seating_totals' ] );
+	}
+
+	/**
+	 * Filters the seating totals.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $totals    The totals.
+	 * @param int   $ticket_id The ticket ID.
+	 *
+	 * @return array The filtered totals.
+	 */
+	public function filter_seating_totals( array $totals, int $ticket_id ): array {
+		$ticket_object = Tickets::load_ticket_object( $ticket_id );
+
+		$event_id = get_post_meta( $ticket_id, Ticket::$event_relation_meta_key, true );
+
+		if ( ! ( $ticket_object && $event_id && tec_tickets_seating_enabled( $event_id ) ) ) {
+			return $totals;
+		}
+
+		return array_merge(
+			$totals,
+			[
+				'stock' => $ticket_object->stock(),
+			]
+		);
 	}
 
 	/**

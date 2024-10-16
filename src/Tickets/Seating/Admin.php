@@ -22,7 +22,6 @@ use Tribe__Tickets__Main as Tickets;
 use Tribe\Tickets\Admin\Settings;
 use Tribe__Admin__Helpers as Admin_Helper;
 use WP_Post;
-use Tribe__Tickets__Tickets as Tribe_Tickets;
 
 /**
  * Class Admin.
@@ -81,8 +80,6 @@ class Admin extends Controller_Contract {
 		// Remove the hooks related to the seating meta data duplication.
 		remove_filter( 'tec_events_pro_custom_tables_v1_duplicate_meta_data', [ $this, 'duplicate_seating_meta_data' ] );
 		remove_action( 'tec_tickets_tickets_duplicated', [ $this, 'post_duplication_ticket_and_uuid_updates' ] );
-
-		remove_filter( 'tec_tickets_ticket_totals', [ $this, 'filter_seating_totals' ] );
 	}
 
 	/**
@@ -152,33 +149,6 @@ class Admin extends Controller_Contract {
 		// Add the hooks related to the seating meta data duplication.
 		add_filter( 'tec_events_pro_custom_tables_v1_duplicate_meta_data', [ $this, 'duplicate_seating_meta_data' ], 10, 2 );
 		add_action( 'tec_tickets_tickets_duplicated', [ $this, 'post_duplication_ticket_and_uuid_updates' ], 10, 3 );
-
-		add_filter( 'tec_tickets_ticket_totals', [ $this, 'filter_seating_totals' ], 10, 2 );
-	}
-
-	/**
-	 * Filters the seating totals.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $totals    The totals.
-	 * @param int   $ticket_id The ticket ID.
-	 *
-	 * @return array The filtered totals.
-	 */
-	public function filter_seating_totals( array $totals, int $ticket_id ): array {
-		$ticket_object = Tribe_Tickets::load_ticket_object( $ticket_id );
-
-		if ( ! ( $ticket_object && $ticket_object->event_id && tec_tickets_seating_enabled( $ticket_object->event_id ) ) ) {
-			return $totals;
-		}
-
-		return array_merge(
-			$totals,
-			[
-				'stock' => $ticket_object->stock(),
-			]
-		);
 	}
 
 	/**
