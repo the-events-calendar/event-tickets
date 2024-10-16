@@ -182,6 +182,16 @@ class Controller extends Controller_Contract {
 			}
 		);
 	}
+	
+	/**
+	 * Filter the block editor series meta box to show restriction message.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $wp_meta_boxes The meta boxes.
+	 *
+	 * @return array
+	 */
 	public function filter_block_editor_series_meta_box( $wp_meta_boxes ) {
 		global $post;
 		
