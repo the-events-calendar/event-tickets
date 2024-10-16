@@ -3,9 +3,12 @@
 namespace Tribe\Tickets\Test\Partials\Order_Modifiers;
 
 use Codeception\TestCase\WPTestCase;
+use ReflectionClass;
+use tad\Codeception\SnapshotAssertions\AbstractSnapshot;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Tickets\Order_Modifiers\Modifier_Admin_Handler;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Abstract;
+use TEC\Tickets\Order_Modifiers\Table_Views\Order_Modifier_Table;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Traits\Order_Modifiers;
 
@@ -30,6 +33,18 @@ abstract class Create_Order_Modifiers_Abstract extends WPTestCase {
 			Modifier_Abstract::class,
 			'generate_unique_slug',
 			'fixed_slug'
+		);
+		$this->set_class_fn_return(
+			Order_Modifier_Table::class,
+			'render_actions',
+			static function ( $item ) {
+				if ( isset( $item['display_name'] ) ) {
+					return (string) $item['display_name'];
+				}
+
+				return 'Modifier Display Name';
+			},
+			true
 		);
 	}
 
@@ -378,8 +393,6 @@ abstract class Create_Order_Modifiers_Abstract extends WPTestCase {
 		$modifier_admin_handler = new Modifier_Admin_Handler();
 		$_POST                  = [
 			'modifier'    => $this->modifier_type,
-			'modifier_id' => 0,
-			'edit'        => 0,
 		];
 		ob_start();
 		$modifier_admin_handler->render_tec_order_modifiers_page();
