@@ -231,7 +231,8 @@ class Service {
 	 * @return string  The URL built from the base frontend URL and the given path.
 	 */
 	public function get_frontend_url( string $path = '' ): string {
-		return rtrim( $this->frontend_base_url . '/' . ltrim( $path, '/' ), '/' );
+		$args = ! empty( $_GET['isNew'] ) && '1' === $_GET['isNew'] ? [ 'isNew' => '1' ] : [];
+		return add_query_arg( $args, rtrim( $this->frontend_base_url . '/' . ltrim( $path, '/' ), '/' ) );
 	}
 
 	/**
