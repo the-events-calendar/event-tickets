@@ -18,6 +18,7 @@ use TEC\Tickets\Seating\Tables\Sessions;
 use TEC\Tickets\Seating\Frontend;
 use TEC\Tickets\Seating\Template;
 use Tribe__Tickets__Main as ET;
+use Tribe__Tickets__Attendee_Registration__Main as Attendee_Registration;
 
 /**
  * Class Cookie.
@@ -490,6 +491,18 @@ class Timer extends Controller_Contract {
 
 		if ( ! $token_and_post_id ) {
 			return;
+		}
+
+		$is_auto = 1 === (int) tribe_get_request_var( 'auto', 0 );
+
+		if ( $is_auto ) {
+			$is_ar_page = tribe( Attendee_Registration::class )->get_url();
+			$referrer   = wp_get_referer();
+
+			// IMPORTANT: This is an automatic interrupt, originating from the AR page. We want to ignore it!
+			if ( $referrer && $is_ar_page === explode( '?', $referrer )['0'] ) {
+				return;
+			}
 		}
 
 		[ $token, $post_id ] = $token_and_post_id;
