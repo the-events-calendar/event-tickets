@@ -5,7 +5,7 @@
  * This class serves as a context that interacts with different modifier strategies (such as Coupons or Booking Fees).
  * It handles the saving (insert/update) of modifiers and delegates rendering tasks to the appropriate strategy.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\Order_Modifiers\Modifiers
  */
@@ -161,7 +161,7 @@ class Modifier_Manager {
 	 * @since TBD
 	 *
 	 * @param Value $base_price The base price of the item.
-	 * @param array $items The items in the cart (tickets).
+	 * @param array $items      The items in the cart (tickets).
 	 *
 	 * @return Value The total amount after fees are applied.
 	 */
@@ -188,28 +188,30 @@ class Modifier_Manager {
 	 * @return Value The total price after fees are applied.
 	 */
 	public function apply_fees_to_item( Value $base_price, array $item ): Value {
-		$base_price_in_cents = $base_price->get_integer();
+		$raw_base_price = $base_price->get_integer();
+		$zero_value     = Value::create();
 
 		// Early bail if base price is zero or negative, return zero value.
-		if ( $base_price_in_cents <= 0 ) {
-			return Value::create( 0 );
+		if ( $raw_base_price <= 0 ) {
+			return $zero_value;
 		}
 
-		// Apply percentage fee if applicable and bail early.
-		if ( isset( $item['sub_type'] ) && $item['sub_type'] === 'percent' ) {
-			$raw_amount       = $item['raw_amount'];
-			$converted_amount = $this->strategy->convert_from_raw_amount( $raw_amount );
-			$percentage_fee   = $this->strategy->convert_from_raw_amount( $base_price_in_cents * ( $converted_amount / 100 ) );
+		$raw_amount = $item['raw_amount'];
+		$sub_type   = $item['sub_type'] ?? '';
 
-			return Value::create( $percentage_fee );
+		// Apply the fee based on the sub-type.
+		switch ( $sub_type ) {
+			case 'percent':
+				$converted_amount = $this->strategy->convert_from_raw_amount( $raw_amount );
+				$percentage_fee   = $this->strategy->convert_from_raw_amount( $raw_base_price * ( $converted_amount / 100 ) );
+
+				return Value::create( $percentage_fee );
+
+			case 'flat':
+				return Value::create( $this->strategy->convert_from_raw_amount( $raw_amount ) );
+
+			default:
+				return $zero_value;
 		}
-
-		// Apply flat fee if applicable and bail early.
-		if ( isset( $item['sub_type'] ) && $item['sub_type'] === 'flat' ) {
-			return Value::create( $this->strategy->convert_from_raw_amount( $item['raw_amount'] ) );
-		}
-
-		// Return zero if no valid fee type is found.
-		return Value::create( 0 );
 	}
 }
