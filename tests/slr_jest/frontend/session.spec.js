@@ -182,7 +182,7 @@ describe('Seat Selection Session', () => {
 		beaconInterrupt();
 
 		expect(window.navigator.sendBeacon).toHaveBeenCalledWith(
-			'https://wordpress.test/wp-admin/admin-ajax.php?_ajaxNonce=1234567890&action=tec_tickets_seating_session_interrupt_get_data&postId=23&token=test-token'
+			'https://wordpress.test/wp-admin/admin-ajax.php?_ajaxNonce=1234567890&action=tec_tickets_seating_session_interrupt_get_data&postId=23&token=test-token&auto=1'
 		);
 	});
 });
