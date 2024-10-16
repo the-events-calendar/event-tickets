@@ -15,6 +15,7 @@ use TEC\Tickets\Seating\Service\Service;
 use Tribe__Tickets__Main as Tickets;
 use TEC\Tickets\Commerce\Ticket;
 use Tribe__Tickets__Tickets as Tribe_Tickets;
+use WP_REST_Request;
 
 /**
  * Class Editor.
@@ -166,12 +167,12 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $data    The data to be shared with the block editor.
-	 * @param array $request The block editor's request.
+	 * @param array           $data    The data to be shared with the block editor.
+	 * @param WP_REST_Request $request The block editor's request.
 	 *
 	 * @return array The filtered totals.
 	 */
-	public function filter_seating_totals( array $data, array $request ): array {
+	public function filter_seating_totals( array $data, WP_REST_Request $request ): array {
 		$ticket_id = $request['id'] ?? false;
 
 		if ( ! $ticket_id ) {
