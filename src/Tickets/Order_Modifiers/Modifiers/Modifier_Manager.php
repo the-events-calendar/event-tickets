@@ -197,7 +197,9 @@ class Modifier_Manager {
 
 		// Apply percentage fee if applicable and bail early.
 		if ( isset( $item['sub_type'] ) && $item['sub_type'] === 'percent' ) {
-			$percentage_fee = $base_price_in_cents / $item['raw_amount'];
+			$raw_amount       = $item['raw_amount'];
+			$converted_amount = $this->strategy->convert_from_raw_amount( $raw_amount );
+			$percentage_fee   = $this->strategy->convert_from_raw_amount( $base_price_in_cents * ( $converted_amount / 100 ) );
 
 			return Value::create( $percentage_fee );
 		}
