@@ -3,10 +3,12 @@
 namespace TEC\Tickets\Order_Modifiers;
 
 use Codeception\TestCase\WPTestCase;
+use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use Tribe\Tickets\Test\Traits\Order_Modifiers;
 
 class Create_Coupon_Modifiers_Test extends WPTestCase {
 	use Order_Modifiers;
+	use SnapshotAssertions;
 
 	/**
 	 * The type of order modifier being tested (coupon).

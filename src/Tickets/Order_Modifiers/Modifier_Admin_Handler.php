@@ -196,9 +196,8 @@ class Modifier_Admin_Handler implements Registerable {
 
 		// Get the appropriate strategy for the selected modifier type.
 		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
-
 		if ( ! $modifier_strategy ) {
-			return null; // Return null if the strategy is not found.
+			return null;
 		}
 
 		// Use the strategy to retrieve the modifier data by ID.
@@ -288,10 +287,8 @@ class Modifier_Admin_Handler implements Registerable {
 			return;
 		}
 
-		// Get the raw POST data, and add our context.
-		$raw_data = tribe_get_request_vars();
-
-		// Set the modifier ID in the post data.
+		// Get the raw POST data, and set the modifier ID.
+		$raw_data                      = tribe_get_request_vars();
 		$raw_data['order_modifier_id'] = $context['modifier_id'];
 
 		// Use the Modifier Manager to sanitize and save the data.

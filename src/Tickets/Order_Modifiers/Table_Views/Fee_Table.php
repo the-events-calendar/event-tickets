@@ -249,8 +249,8 @@ class Fee_Table extends Order_Modifier_Table {
 	 *
 	 * @return string The formatted fee amount to be displayed in the table.
 	 */
-	protected function render_fee_amount_cents_column( $item ): string {
-		return $this->modifier->display_amount_field( $item->fee_amount_cents, $item->sub_type );
+	protected function render_raw_amount_column( $item ): string {
+		return $this->modifier->display_amount_field( $item->raw_amount, $item->sub_type );
 	}
 
 	/**

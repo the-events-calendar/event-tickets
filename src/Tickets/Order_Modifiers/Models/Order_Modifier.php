@@ -26,7 +26,7 @@ use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers as Repository;
  * @property int    $id              The Order Modifier ID.
  * @property string $modifier_type   The type of modifier (coupon, fee).
  * @property string $sub_type        The sub-type of modifier (percentage, flat).
- * @property int    $raw_amount Amount of fee in cents.
+ * @property int    $raw_amount      Amount of fee in cents.
  * @property string $slug            The Order Modifier slug (coupon code).
  * @property string $display_name    User-friendly name.
  * @property string $status          The status (active, draft, inactive).
@@ -85,9 +85,9 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 *
 	 * @param array<string,mixed> $attributes The model attributes.
 	 *
-	 * @return Order_Modifier
+	 * @return static
 	 */
-	public static function create( array $attributes ): Order_Modifier {
+	public static function create( array $attributes ): self {
 		// Maybe override the modifier type based on the final class.
 		if ( property_exists( static::class, 'order_modifier_type' ) ) {
 			$attributes['modifier_type'] = static::$order_modifier_type;

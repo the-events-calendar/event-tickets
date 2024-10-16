@@ -134,7 +134,6 @@ class Order_Modifier_DTO extends DataTransferObject {
 		$self->start_time    = $object->start_time ?? null;
 		$self->end_time      = $object->end_time ?? null;
 
-
 		return $self;
 	}
 

@@ -14,6 +14,7 @@ namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
 use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Order_Modifiers\Table_Views\Fee_Table;
+use Tribe__Tickets__Admin__Views;
 
 /**
  * Concrete Strategy for fee Modifiers.
@@ -37,15 +38,14 @@ class Fee extends Modifier_Abstract {
 	 * @since TBD
 	 * @var array
 	 */
-	protected array $required_fields
-		= [
-			'modifier_type',
-			'sub_type',
-			'raw_amount',
-			'slug',
-			'display_name',
-			'status',
-		];
+	protected array $required_fields = [
+		'modifier_type',
+		'sub_type',
+		'raw_amount',
+		'slug',
+		'display_name',
+		'status',
+	];
 
 	/**
 	 * Constructor for the fee strategy.
@@ -175,12 +175,14 @@ class Fee extends Modifier_Abstract {
 		// Scenario 1: Multiple modifier_ids and a single post_id.
 		if ( count( $modifier_ids ) > 1 && count( $new_post_ids ) === 1 ) {
 			$this->update_relationships_by_post( $new_post_ids[0], $modifier_ids );
+
 			return;
 		}
 
 		// Scenario 2: Single modifier_id and multiple post_ids.
 		if ( count( $modifier_ids ) === 1 && count( $new_post_ids ) > 1 ) {
 			$this->update_relationships_by_modifier( $modifier_ids[0], $new_post_ids );
+
 			return;
 		}
 
@@ -190,6 +192,7 @@ class Fee extends Modifier_Abstract {
 				// Match each modifier_id with the corresponding post_id.
 				$this->update_relationships_by_modifier( $modifier_id, [ $new_post_ids[ $index ] ] );
 			}
+
 			return;
 		}
 
@@ -207,13 +210,12 @@ class Fee extends Modifier_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int   $modifier_id The ID of the modifier to update.
+	 * @param int   $modifier_id  The ID of the modifier to update.
 	 * @param array $new_post_ids An array of new post IDs to associate with the modifier.
 	 *
 	 * @return void
 	 */
 	public function update_relationships_by_modifier( int $modifier_id, array $new_post_ids ): void {
-
 		// Step 1: Delete all existing relationships for this modifier ID.
 		$this->delete_relationship_by_modifier( $modifier_id );
 
@@ -226,7 +228,6 @@ class Fee extends Modifier_Abstract {
 		}
 	}
 
-
 	/**
 	 * Handles relationships by post ID.
 	 *
@@ -235,13 +236,12 @@ class Fee extends Modifier_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int   $post_id The ID of the post to update.
+	 * @param int   $post_id          The ID of the post to update.
 	 * @param array $new_modifier_ids An array of new modifier IDs to associate with the post.
 	 *
 	 * @return void
 	 */
 	public function update_relationships_by_post( int $post_id, array $new_modifier_ids ): void {
-
 		// Step 1: Delete all existing relationships for this post ID.
 		$this->delete_relationship_by_post( $post_id );
 
@@ -268,7 +268,7 @@ class Fee extends Modifier_Abstract {
 			'id'            => isset( $raw_data['order_modifier_id'] ) ? absint( $raw_data['order_modifier_id'] ) : 0,
 			'modifier_type' => $this->get_modifier_type(),
 			'sub_type'      => sanitize_text_field( $raw_data['order_modifier_sub_type'] ?? '' ),
-			'raw_amount'    => absint( $raw_data['order_modifier_amount'] ?? 0 ),
+			'raw_amount'    => $this->prepare_raw_amount( $raw_data['order_modifier_amount'] ?? 0 ),
 			'slug'          => sanitize_text_field( $raw_data['order_modifier_slug'] ?? '' ),
 			'display_name'  => sanitize_text_field( $raw_data['order_modifier_fee_name'] ?? '' ),
 			'status'        => sanitize_text_field( $raw_data['order_modifier_status'] ?? '' ),

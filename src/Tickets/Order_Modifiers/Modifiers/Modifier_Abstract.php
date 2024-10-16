@@ -16,8 +16,11 @@
  * @package TEC\Tickets\Order_Modifiers\Modifiers
  */
 
+declare( strict_types=1 );
+
 namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
+use Exception;
 use InvalidArgumentException;
 use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Commerce\Utils\Value;
@@ -249,9 +252,9 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	}
 
 	/**
-	 * Converts a decimal amount to its value in cents.
+	 * Converts a decimal amount to its value multiplied by 100.
 	 *
-	 * This method is used to convert a floating-point amount (e.g., 23.00) into an integer representing cents.
+	 * This method is used to convert a floating-point amount (e.g., 23.00) into an integer.
 	 *
 	 * @since TBD
 	 *
@@ -260,7 +263,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return int The amount converted to cents.
 	 */
 	public function convert_to_raw_amount( float $amount ): int {
-		return (int) round( floatval( $amount ) * 100 );
+		return (int) round( $amount * 100 );
 	}
 
 	/**
@@ -270,12 +273,12 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $cents The amount in cents.
+	 * @param int $raw_amount The amount in cents.
 	 *
 	 * @return string The formatted decimal string representing the amount.
 	 */
-	public function convert_from_raw_amount( int $cents ): string {
-		return number_format( $cents / 100, 2, '.', '' );
+	public function convert_from_raw_amount( int $raw_amount ): string {
+		return number_format( $raw_amount / 100, 2, '.', '' );
 	}
 
 	/**
@@ -334,14 +337,14 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return string The formatted percentage value.
 	 */
 	protected function display_percentage( $value ) {
-		$value = $this->convert_from_cents( $value );
+		$value = $this->convert_from_raw_amount( $value );
 
 		// If the value is a whole number, format it without decimals.
 		if ( intval( $value ) == $value ) {
-			$value = intval( $value ); // Cast to int to remove the '.00'.
+			$value = intval( $value );
 		}
 
-		return $value . '%';
+		return "{$value}%";
 	}
 
 	/**
@@ -356,7 +359,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return string The formatted currency value (e.g., '10.00' for 1000 cents).
 	 */
 	protected function display_flat_fee( $value ) {
-		$value = $this->convert_from_cents( $value );
+		$value = $this->convert_from_raw_amount( $value );
 		return Value::create( $value )->get_currency();
 	}
 
@@ -368,7 +371,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @since TBD
 	 *
 	 * @return string The unique slug.
-	 * @throws Exception if random_bytes fails.
+	 * @throws Exception If random_bytes fails.
 	 */
 	public function generate_unique_slug(): string {
 		$slug_length = 7;
@@ -626,7 +629,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	public function get_modifier_display_name( bool $plural = false ): string {
 		// If plural is requested and a plural form is set, return the plural display name.
 		if ( $plural && ! empty( $this->modifier_display_name_plural ) ) {
-			$this->modifier_display_name_plural;
+			return $this->modifier_display_name_plural;
 		}
 
 		// Return singular form by default.
@@ -672,12 +675,11 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return bool True if the deletion of the modifier was successful, false otherwise.
 	 */
 	public function delete_modifier( int $modifier_id ): bool {
-
-		// Check if the modifier exists before attempting to delete it.
-		$modifier = $this->repository->find_by_id( $modifier_id, $this->modifier_type );
-
-		if ( empty( $modifier ) ) {
-			// Modifier does not exist, return false.
+		try {
+			// Check if the modifier exists before attempting to delete it.
+			$modifier = $this->repository->find_by_id( $modifier_id );
+		} catch ( Exception $e ) {
+			// Return false if the modifier does not exist.
 			return false;
 		}
 
@@ -722,5 +724,20 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 */
 	public function get_order_modifier_meta_by_key( int $order_modifier_id, string $meta_key ) {
 		return $this->order_modifiers_meta_repository->find_by_order_modifier_id_and_meta_key( $order_modifier_id, $meta_key );
+	}
+
+	/**
+	 * Prepares the raw amount for database insertion.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $amount The amount to prepare.
+	 *
+	 * @return int The amount as an integer (multiplied by 100).
+	 */
+	protected function prepare_raw_amount( $amount ) {
+		$amount = (float) $amount;
+
+		return $this->convert_to_raw_amount( $amount );
 	}
 }

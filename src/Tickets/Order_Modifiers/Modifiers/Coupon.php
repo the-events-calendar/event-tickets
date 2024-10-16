@@ -14,6 +14,7 @@ namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
 use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Order_Modifiers\Table_Views\Coupon_Table;
+use Tribe__Tickets__Admin__Views;
 
 /**
  * Concrete Strategy for Coupon Modifiers.
@@ -120,13 +121,13 @@ class Coupon extends Modifier_Abstract {
 	 */
 	public function map_form_data_to_model( array $raw_data ): array {
 		return [
-			'id'               => isset( $raw_data['order_modifier_id'] ) ? absint( $raw_data['order_modifier_id'] ) : 0,
-			'modifier_type'    => $this->get_modifier_type(),
-			'sub_type'         => sanitize_text_field( $raw_data['order_modifier_sub_type'] ?? '' ),
-			'raw_amount' => $this->convert_to_raw_amount( $raw_data['order_modifier_amount'] ?? 0 ),
-			'slug'             => sanitize_text_field( $raw_data['order_modifier_slug'] ?? '' ),
-			'display_name'     => sanitize_text_field( $raw_data['order_modifier_coupon_name'] ?? '' ),
-			'status'           => sanitize_text_field( $raw_data['order_modifier_status'] ?? '' ),
+			'id'            => isset( $raw_data['order_modifier_id'] ) ? absint( $raw_data['order_modifier_id'] ) : 0,
+			'modifier_type' => $this->get_modifier_type(),
+			'sub_type'      => sanitize_text_field( $raw_data['order_modifier_sub_type'] ?? '' ),
+			'raw_amount'    => $this->prepare_raw_amount( $raw_data['order_modifier_amount'] ?? 0 ),
+			'slug'          => sanitize_text_field( $raw_data['order_modifier_slug'] ?? '' ),
+			'display_name'  => sanitize_text_field( $raw_data['order_modifier_coupon_name'] ?? '' ),
+			'status'        => sanitize_text_field( $raw_data['order_modifier_status'] ?? '' ),
 		];
 	}
 
