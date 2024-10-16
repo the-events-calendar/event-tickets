@@ -50,15 +50,15 @@ class Custom_Table_Creation_Test extends WPTestCase {
 	 */
 	public function custom_tables_provider() {
 		yield 'Order Modifiers Table' => [
-			'table_name' => Order_Modifiers::table_name( true ),
+			'table_name' => Order_Modifiers::table_name(),
 		];
 
 		yield 'Order Modifiers Meta Table' => [
-			'table_name' => Order_Modifiers_Meta::table_name( true ),
+			'table_name' => Order_Modifiers_Meta::table_name(),
 		];
 
 		yield 'Order Modifiers Relationships Table' => [
-			'table_name' => Order_Modifier_Relationships::table_name( true ),
+			'table_name' => Order_Modifier_Relationships::table_name(),
 		];
 	}
 
