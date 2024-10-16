@@ -1,4 +1,0 @@
-Significance: patch
-Type: fix
-
-If users added an index to the `post_meta` table on `meta_value` using `CONCAT()` should speed up queries for them. [GTRIA-1236]

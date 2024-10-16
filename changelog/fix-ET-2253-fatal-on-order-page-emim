@@ -1,4 +1,0 @@
-Significance: patch
-Type: fix
-
-Order Completed page will no longer throw a fatal when visiting it directly. [ET-2253]

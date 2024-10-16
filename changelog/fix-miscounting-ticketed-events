@@ -1,4 +1,0 @@
-Significance: patch
-Type: fix
-
-Possible miscounted ticketed or un-ticketed events in the events admin list [ET-2221].
