@@ -204,7 +204,7 @@ class Modifier_Manager {
 
 		// Apply flat fee if applicable and bail early.
 		if ( isset( $item['sub_type'] ) && $item['sub_type'] === 'flat' ) {
-			return Value::create( $item['raw_amount'] );
+			return Value::create(  $this->strategy->convert_from_raw_amount( $item['raw_amount'] ) );
 		}
 
 		// Return zero if no valid fee type is found.
