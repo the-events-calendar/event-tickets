@@ -887,15 +887,7 @@ class Tribe__Tickets__Tickets_Handler {
 		// Remove Pending from total
 		$totals['sold'] -= $totals['pending'];
 
-		/**
-		 * Filters the ticket totals.
-		 *
-		 * @since TBD
-		 *
-		 * @param array  $totals The ticket totals.
-		 * @param int    $ticket The ticket ID.
-		 */
-		return apply_filters( 'tec_tickets_ticket_totals', $totals, $ticket->ID );
+		return $totals;
 	}
 
 	/**
