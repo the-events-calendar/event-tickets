@@ -2,12 +2,14 @@
 
 namespace TEC\Tickets\Order_Modifiers\Checkout;
 
+use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Order_Modifiers\Modifiers\Coupon;
 use TEC\Tickets\Registerable;
+use Tribe__Assets;
 
 class Coupons implements Registerable {
 
@@ -38,6 +40,9 @@ class Coupons implements Registerable {
 		// Register AJAX handlers (for both logged-in users and guests).
 		add_action( 'wp_ajax_validate_coupon', [ $this, 'validate_coupon_ajax' ] );
 		add_action( 'wp_ajax_nopriv_validate_coupon', [ $this, 'validate_coupon_ajax' ] );
+
+		// Add asset localization to ensure the script has the necessary data.
+		add_action( 'init', fn() => $this->localize_assets() );
 	}
 
 	/**
@@ -147,5 +152,19 @@ class Coupons implements Registerable {
 		wp_send_json_success( $response );
 	}
 
-
+	/**
+	 * Localizes the assets for the coupon section.
+	 *
+	 * @return void
+	 */
+	protected function localize_assets() {
+		/** @var Asset $main */
+		$main = Tribe__Assets::instance()->get( 'tribe-tickets-commerce-js' );
+		$main->add_localize_script(
+			'tecTicketsCommerce',
+			[
+				'restUrl' => tribe_tickets_rest_url(),
+			]
+		);
+	}
 }
