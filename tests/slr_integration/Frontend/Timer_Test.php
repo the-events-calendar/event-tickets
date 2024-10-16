@@ -18,6 +18,7 @@ use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Data_API as Data_API;
 use Tribe__Tickets__Global_Stock as Global_Stock;
+use Tribe__Tickets__Attendee_Registration__Main as Attendee_Registration;
 
 class Timer_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -666,6 +667,63 @@ class Timer_Test extends Controller_Test_Case {
 					JSON_UNESCAPED_SLASHES | JSON_HEX_QUOT | JSON_PRETTY_PRINT
 				)
 			)
+		);
+	}
+
+	/**
+	 * @dataProvider interrupt_data_provider
+	 */
+	public function test_auto_ajax_interrupt( \Closure $fixture ): void {
+		$post_id = $fixture();
+
+		// Create a previous session.
+		$session      = tribe( Session::class );
+		$sessions     = tribe( Sessions::class );
+		$reservations = tribe( Reservations::class );
+		$session->add_entry( $post_id, 'test-token' );
+		update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
+		$sessions->upsert( 'test-token', $post_id, time() + 100 );
+		$mock_reservations = $this->create_mock_reservations_data( [ $post_id ], 3 );
+		$sessions->update_reservations( 'test-token', $mock_reservations );
+
+		// Set up the request context.
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Session::COOKIE_NAME );
+		$_REQUEST['token']       = 'test-token';
+		$_REQUEST['postId']      = $post_id;
+		$_REQUEST['auto']        = 1;
+		$this->set_class_fn_return( Attendee_Registration::class, 'get_url', 'https://test.url/ar-page/' );
+		$this->set_fn_return( 'wp_get_referer', 'https://test.url/ar-page/' );
+		$this->set_oauth_token( 'auth-token' );
+
+		$timer = $this->make_controller();
+		$timer->register();
+
+		do_action( 'wp_ajax_nopriv_' . Timer::ACTION_INTERRUPT_GET_DATA );
+
+		$this->assertEquals( $mock_reservations, $sessions->get_reservations_for_token( 'test-token' ) );
+		$this->assertEquals( [ $post_id => 'test-token' ], $session->get_entries() );
+
+		$db_object = DB::get_row(
+			DB::prepare(
+				"SELECT * FROM %i WHERE token = %s",
+				Sessions::table_name(),
+				'test-token'
+			)
+			);
+		$this->assertEquals(
+			'test-token',
+			$db_object->token,
+			'On auto interruption from AR page, the token session should NOT have been removed from the database.'
+		);
+		$this->assertEquals(
+			(string) $post_id,
+			$db_object->object_id,
+			'On auto interruption from AR page, the token session should NOT have been removed from the database.'
+		);
+		$this->assertEquals(
+			wp_json_encode( $mock_reservations ),
+			$db_object->reservations,
+			'On auto interruption from AR page, the token session should NOT have been removed from the database.'
 		);
 	}
 
