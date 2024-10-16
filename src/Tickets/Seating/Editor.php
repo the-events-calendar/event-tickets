@@ -39,7 +39,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 		$assets->remove( 'tec-tickets-seating-block-editor' );
 		remove_action( 'init', [ $this, 'register_meta' ], 1000 );
 		remove_action( 'tribe_tickets_ticket_added', [ $this, 'save_ticket_seat_type' ] );
-		remove_filter( 'tribe_rest_single_ticket_data', [ $this, 'filter_seating_totals' ] );
+		remove_filter( 'tribe_rest_single_ticket_data', [ $this, 'filter_seating_totals' ], 20 );
 	}
 
 	/**
@@ -159,7 +159,8 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 		$this->register_block_editor_assets();
 		add_action( 'init', [ $this, 'register_meta' ], 1000 );
 		add_action( 'tribe_tickets_ticket_added', [ $this, 'save_ticket_seat_type' ], 10, 3 );
-		add_filter( 'tribe_rest_single_ticket_data', [ $this, 'filter_seating_totals' ], 10, 2 );
+		// Priority is important to be above 10!
+		add_filter( 'tribe_rest_single_ticket_data', [ $this, 'filter_seating_totals' ], 20, 2 );
 	}
 
 	/**
