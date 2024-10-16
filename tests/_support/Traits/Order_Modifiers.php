@@ -64,4 +64,14 @@ trait Order_Modifiers {
 		// Retrieve the modifier by ID.
 		return $order_modifier_repository->find_by_id( $modifier_id );
 	}
+
+	protected function clear_all_modifiers( $type = 'coupon' ) {
+		$order_modifier_repository = new Order_Modifiers_Repository( $type );
+
+		$all_modifiers = $order_modifier_repository->get_all();
+
+		foreach ( $all_modifiers as $modifier ) {
+			$order_modifier_repository->delete( $modifier );
+		}
+	}
 }

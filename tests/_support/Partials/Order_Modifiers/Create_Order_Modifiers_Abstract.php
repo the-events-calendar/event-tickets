@@ -362,6 +362,7 @@ abstract class Create_Order_Modifiers_Abstract extends WPTestCase {
 	 * @test
 	 */
 	public function does_table_display_properly() {
+		$this->clear_all_modifiers( $this->modifier_type );
 		for ( $i = 0; $i < 20; $i++ ) {
 			// Step 1: Insert a new modifier.
 			$insert_data = [
