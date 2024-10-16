@@ -249,9 +249,9 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	}
 
 	/**
-	 * Converts a decimal amount to its value in cents.
+	 * Converts a decimal amount to its value multiplied by 100.
 	 *
-	 * This method is used to convert a floating-point amount (e.g., 23.00) into an integer representing cents.
+	 * This method is used to convert a floating-point amount (e.g., 23.00) into an integer.
 	 *
 	 * @since TBD
 	 *
