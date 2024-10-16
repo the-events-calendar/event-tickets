@@ -50,6 +50,7 @@ class Controller extends Controller_Contract {
 		add_action( 'admin_menu', [ $this, 'add_events_list_page' ], 20 );
 		add_action( 'load-' . Associated_Events::PAGE, [ $this, 'setup_events_list_screen' ] );
 		add_filter( 'set_screen_option_' . Associated_Events::OPTION_PER_PAGE, [ $this, 'save_per_page_option' ], 10, 3 );
+		add_filter( 'tec_events_pro_custom_tables_v1_add_to_series_available_events', [ $this, 'exclude_seating_events_from_series_list' ] );
 	}
 	
 	/**
@@ -63,6 +64,7 @@ class Controller extends Controller_Contract {
 		remove_action( 'admin_menu', [ $this, 'add_events_list_page' ], 20 );
 		remove_action( 'load-' . Associated_Events::PAGE, [ $this, 'setup_events_list_screen' ] );
 		remove_filter( 'set_screen_option_' . Associated_Events::OPTION_PER_PAGE, [ $this, 'save_per_page_option' ] );
+		remove_filter( 'tec_events_pro_custom_tables_v1_add_to_series_available_events', [ $this, 'exclude_seating_events_from_series_list' ] );
 	}
 	
 	/**
@@ -156,6 +158,24 @@ class Controller extends Controller_Contract {
 				'header'       => $header,
 				'events_table' => $events_table,
 			]
+		);
+	}
+	
+	/**
+	 * Exclude seating events from series list.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $event_ids The event IDs.
+	 *
+	 * @return array
+	 */
+	public function exclude_seating_events_from_series_list( array $event_ids ): array {
+		return array_filter(
+			$event_ids,
+			static function ( $event_id ) {
+				return ! tec_tickets_seating_enabled( $event_id );
+			}
 		);
 	}
 }
