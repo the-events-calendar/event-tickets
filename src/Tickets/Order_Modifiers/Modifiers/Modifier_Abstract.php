@@ -259,8 +259,8 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @return int The amount converted to cents.
 	 */
-	public function convert_to_cents( float $amount ): int {
-		return (int) round( floatval( $amount ) * 100 );
+	public function convert_to_raw_amount( float $amount ): int {
+		return (int) round( $amount * 100 );
 	}
 
 	/**
@@ -274,7 +274,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @return string The formatted decimal string representing the amount.
 	 */
-	public function convert_from_cents( int $cents ): string {
+	public function convert_from_raw_amount( int $cents ): string {
 		return number_format( $cents / 100, 2, '.', '' );
 	}
 
@@ -334,14 +334,14 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return string The formatted percentage value.
 	 */
 	protected function display_percentage( $value ) {
-		$value = $this->convert_from_cents( $value );
+		$value = $this->convert_from_raw_amount( $value );
 
 		// If the value is a whole number, format it without decimals.
 		if ( intval( $value ) == $value ) {
-			$value = intval( $value ); // Cast to int to remove the '.00'.
+			$value = intval( $value );
 		}
 
-		return $value . '%';
+		return "{$value}%";
 	}
 
 	/**
@@ -356,7 +356,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return string The formatted currency value (e.g., '10.00' for 1000 cents).
 	 */
 	protected function display_flat_fee( $value ) {
-		$value = $this->convert_from_cents( $value );
+		$value = $this->convert_from_raw_amount( $value );
 		return Value::create( $value )->get_currency();
 	}
 
@@ -722,5 +722,20 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 */
 	public function get_order_modifier_meta_by_key( int $order_modifier_id, string $meta_key ) {
 		return $this->order_modifiers_meta_repository->find_by_order_modifier_id_and_meta_key( $order_modifier_id, $meta_key );
+	}
+
+	/**
+	 * Prepares the raw amount for database insertion.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $amount The amount to prepare.
+	 *
+	 * @return int The amount as an integer (multiplied by 100).
+	 */
+	protected function prepare_raw_amount( $amount ) {
+		$amount = (float) $amount;
+
+		return $this->convert_to_raw_amount( $amount );
 	}
 }
