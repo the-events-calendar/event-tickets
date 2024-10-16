@@ -36,8 +36,7 @@ class Fee extends Modifier_Abstract {
 	 * @since TBD
 	 * @var array
 	 */
-	protected array $required_fields
-		= [
+	protected array $required_fields = [
 			'modifier_type',
 			'sub_type',
 			'raw_amount',
@@ -66,7 +65,7 @@ class Fee extends Modifier_Abstract {
 	 *
 	 * @return mixed The newly inserted modifier or an empty array if no changes were made.
 	 */
-	public function insert_modifier( array $data ): mixed {
+	public function insert_modifier( array $data ) {
 		// Save the modifier.
 		$modifier = parent::insert_modifier( $data );
 
@@ -113,7 +112,7 @@ class Fee extends Modifier_Abstract {
 	 *
 	 * @return mixed The updated modifier or an empty array if no changes were made.
 	 */
-	public function update_modifier( array $data ): mixed {
+	public function update_modifier( array $data ) {
 		// Save the modifier using the parent method.
 		$modifier = parent::update_modifier( $data );
 

@@ -34,7 +34,7 @@ interface Modifier_Strategy_Interface {
 	 *
 	 * @return mixed The result of the insertion, typically the inserted order modifier or an empty array on failure.
 	 */
-	public function insert_modifier( array $data ): mixed;
+	public function insert_modifier( array $data );
 
 	/**
 	 * Updates an existing Order Modifier in the system.
@@ -45,7 +45,7 @@ interface Modifier_Strategy_Interface {
 	 *
 	 * @return mixed The result of the update, typically the updated order modifier or an empty array on failure.
 	 */
-	public function update_modifier( array $data ): mixed;
+	public function update_modifier( array $data );
 
 	/**
 	 * Validates the provided data for the order modifier.

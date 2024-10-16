@@ -16,6 +16,8 @@
  * @package TEC\Tickets\Order_Modifiers\Modifiers
  */
 
+declare( strict_types=1 );
+
 namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
 use InvalidArgumentException;
@@ -135,7 +137,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @return mixed The newly inserted modifier or an empty array if no changes were made.
 	 */
-	public function insert_modifier( array $data ): mixed {
+	public function insert_modifier( array $data ) {
 		// Ensure the modifier_type is set to the expected one.
 		$data['modifier_type'] = $this->modifier_type;
 
@@ -157,7 +159,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @return mixed The updated modifier or an empty array if no changes were made.
 	 */
-	public function update_modifier( array $data ): mixed {
+	public function update_modifier( array $data ) {
 		// Ensure the modifier_type is set to the expected one.
 		$data['modifier_type'] = $this->modifier_type;
 
@@ -508,7 +510,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @throws InvalidArgumentException If 'meta_key' is not provided.
 	 */
-	protected function handle_meta_data( int $modifier_id, array $args = [] ): mixed {
+	protected function handle_meta_data( int $modifier_id, array $args = [] ) {
 		// Default structure for the metadata.
 
 		$defaults = [
