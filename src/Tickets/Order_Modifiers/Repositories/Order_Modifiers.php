@@ -61,7 +61,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 *
 	 * @since TBD
 	 *
-	 * @param Model $model The model to insert.
+	 * @param Model $model The model to delete.
 	 *
 	 * @return bool
 	 * @throws RuntimeException If the model type is invalid.
@@ -81,7 +81,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 *
 	 * @since TBD
 	 *
-	 * @param Model $model
+	 * @param Model $model The model to insert.
 	 *
 	 * @return Model
 	 * @throws RuntimeException If the model type is invalid.
