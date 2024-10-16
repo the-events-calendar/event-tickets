@@ -62,7 +62,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			\WP_CLI::line( 'Cleaning uplink transients ....' );
 			slr_test_clean_uplink_transients();
 			// Legacy token location.
-			if(method_exists(OAuth_Token::class, 'get_oauth_token_option_name')){
+			if ( method_exists( OAuth_Token::class, 'get_oauth_token_option_name' ) ) {
 				tribe_update_option( OAuth_Token::get_oauth_token_option_name(), '' );
 			}
 			\WP_CLI::success( 'Done' );
@@ -138,6 +138,19 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			\WP_CLI::success( 'Access token set.' );
 		}
 	);
+	\WP_CLI::add_command(
+		'slr:get-access-token',
+		function () {
+			$access_token = ( new class {
+				use OAuth_Token;
+
+				public function open_get_oauth_token(): string {
+					return $this->get_oauth_token();
+				}
+			} )->open_get_oauth_token();
+			\WP_CLI::success( 'Access token: ' . $access_token );
+		}
+	);
 }
 
 /**
@@ -182,6 +195,10 @@ add_filter( 'tec_tickets_seating_service_auth_url', 'slr_test_filter_service_aut
 
 //  __TEST__ Setup page.
 add_action( 'admin_menu', static function () {
+	if ( ! tribe()->has( Service::class ) ) {
+		return;
+	}
+
 	add_submenu_page(
 		'tec-tickets',
 		__( '__TEST__ Setup', 'event-tickets' ),
@@ -245,6 +262,9 @@ function slr_test_register_test_setup_settings() {
 }
 
 function slr_test_render_test_setup_page() {
+	if ( ! tribe()->has( Service::class ) ) {
+		return;
+	}
 	$service      = tribe( Service::class );
 	$backend_url  = get_option( 'tec_tickets_seating_service_base_url' ) ?: $service->get_backend_url();
 	$frontend_url = get_option( 'tec_tickets_seating_service_frontend_url' ) ?: $service->get_frontend_url();
@@ -310,22 +330,22 @@ function slr_test_render_test_setup_page() {
 				<tr valign="top">
 					<th scope="row">Service Backend URL</th>
 					<td><input type="text" name="tec_tickets_seating_service_base_url"
-										 class="regular-text wide"
-										 value="<?php echo esc_attr( $backend_url ); ?>" /></td>
+					           class="regular-text wide"
+					           value="<?php echo esc_attr( $backend_url ); ?>" /></td>
 				</tr>
 
 				<tr valign="top">
 					<th scope="row">Service Frontend URL</th>
 					<td><input type="text" name="tec_tickets_seating_service_frontend_url"
-										 class="regular-text wide"
-										 value="<?php echo esc_attr( $frontend_url ); ?>" /></td>
+					           class="regular-text wide"
+					           value="<?php echo esc_attr( $frontend_url ); ?>" /></td>
 				</tr>
 
 				<tr valign="top">
 					<th scope="row">Auth service URL</th>
 					<td><input type="text" name="tec_tickets_seating_service_auth_url"
-										 class="regular-text wide"
-										 value="<?php echo esc_attr( $auth_url ); ?>" /></td>
+					           class="regular-text wide"
+					           value="<?php echo esc_attr( $auth_url ); ?>" /></td>
 				</tr>
 
 			</table>
@@ -456,6 +476,9 @@ function slr_test_connect_to_service() {
  * the development version of the licensing server.
  */
 function slr_test_filter_uplink_url(): void {
+	if ( ! tribe()->has( Service::class ) ) {
+		return;
+	}
 	if ( defined( 'STELLARWP_UPLINK_API_BASE_URL' ) ) {
 		return;
 	}
@@ -470,4 +493,4 @@ function slr_test_filter_uplink_url(): void {
 	}
 }
 
-add_action( 'init', 'slr_test_filter_uplink_url', -1000 );
+add_action( 'init', 'slr_test_filter_uplink_url', - 1000 );
