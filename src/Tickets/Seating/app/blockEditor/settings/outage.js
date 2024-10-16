@@ -30,7 +30,7 @@ const Outage = () => {
 			<div style={wrapperStyle}>
 				<Icon icon="warning" size={16} style={iconStyle}/>
 				<span style={messageStyle}>
-				{_x('The Seat Builder service is down. We are working to restore the functionality.', 'Seating service outage message', 'event-tickets')}
+				{_x('The Seating Builder service is down. We are working to restore the functionality.', 'Seating service outage message', 'event-tickets')}
 			</span>
 			</div>
 		</div>
