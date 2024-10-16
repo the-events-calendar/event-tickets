@@ -2,21 +2,21 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.14.0\n"
+"Project-Id-Version: Event Tickets 5.15.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-10-02T13:09:44-07:00\n"
-"PO-Revision-Date: 2024-10-02 20:09\n"
+"POT-Creation-Date: 2024-10-16T10:27:41-07:00\n"
+"PO-Revision-Date: 2024-10-16 17:27\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: event-tickets\n"
 
 #. Plugin Name of the plugin
 #: event-tickets.php:66
-#: src/admin-views/admin-welcome-message.php:73
+#: src/admin-views/admin-welcome-message.php:74
 #: src/Tickets/Site_Health/Info_Section.php:73
 #: src/Tribe/Admin/Notices.php:85
 #: src/Tribe/Main.php:799
@@ -73,37 +73,37 @@ msgstr ""
 msgid "Nothing here yet."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:23
+#: src/admin-views/admin-welcome-message.php:24
 msgid "Tickets Commerce provides flexible online payments right out of the box."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:29
+#: src/admin-views/admin-welcome-message.php:30
 msgid "Want to monetize your events?"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:42
+#: src/admin-views/admin-welcome-message.php:43
 msgid "The Events Calendar product suite logo"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:44
+#: src/admin-views/admin-welcome-message.php:45
 msgctxt "short expression of excitement"
 msgid "WOOHOO!"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:44
+#: src/admin-views/admin-welcome-message.php:45
 msgid "You're the proud owner of Event Tickets Plus! Let's get started…"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:53
-#: src/admin-views/admin-welcome-message.php:59
+#: src/admin-views/admin-welcome-message.php:54
+#: src/admin-views/admin-welcome-message.php:60
 msgid "Shapes and lines for visual interest"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:66
+#: src/admin-views/admin-welcome-message.php:67
 msgid "Event Tickets logo"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:71
+#: src/admin-views/admin-welcome-message.php:72
 #: src/admin-views/tribe-commerce-settings.php:4
 #: src/Tickets/Commerce/Payments_Tab.php:300
 #: src/Tribe/Admin/Notices.php:207
@@ -111,110 +111,110 @@ msgstr ""
 msgid "Event Tickets Plus"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:79
+#: src/admin-views/admin-welcome-message.php:80
 msgid "Thanks for installing Event Tickets Plus! Here are some handy resources for getting started with our plugins."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:81
+#: src/admin-views/admin-welcome-message.php:82
 msgid "Thanks for installing Event Tickets! Here are some handy resources for getting started with our plugins."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:87
+#: src/admin-views/admin-welcome-message.php:88
 msgid "Quick Links:"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:90
+#: src/admin-views/admin-welcome-message.php:91
 msgid "Configure Settings"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:94
-#: src/admin-views/admin-welcome-message.php:101
+#: src/admin-views/admin-welcome-message.php:95
+#: src/admin-views/admin-welcome-message.php:102
 msgid "Install WooCommerce"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:97
+#: src/admin-views/admin-welcome-message.php:98
 msgid "Create Ticket"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:104
-#: src/admin-views/admin-welcome-message.php:115
+#: src/admin-views/admin-welcome-message.php:105
+#: src/admin-views/admin-welcome-message.php:116
 msgid "Install The Events Calendar"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:108
+#: src/admin-views/admin-welcome-message.php:109
 msgid "Create RSVP"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:111
-#: src/admin-views/admin-welcome-message.php:118
+#: src/admin-views/admin-welcome-message.php:112
+#: src/admin-views/admin-welcome-message.php:119
 msgid "Set Up Tickets Commerce"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:124
+#: src/admin-views/admin-welcome-message.php:127
 msgid "Helpful Resources"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:139
-#: src/admin-views/admin-welcome-message.php:181
-#: src/admin-views/admin-welcome-message.php:203
+#: src/admin-views/admin-welcome-message.php:142
+#: src/admin-views/admin-welcome-message.php:184
+#: src/admin-views/admin-welcome-message.php:206
 msgid "Illustration of a book with The Events Calendar logo"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:141
+#: src/admin-views/admin-welcome-message.php:144
 #: src/Tribe/Admin/Settings/Service_Provider.php:53
 msgid "Getting Started Guide"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:142
+#: src/admin-views/admin-welcome-message.php:145
 msgid "New to Event Tickets? Here's everything you need to get started."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:143
+#: src/admin-views/admin-welcome-message.php:146
 msgid "Check out the guide"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:149
+#: src/admin-views/admin-welcome-message.php:152
 msgid "Illustration of a thought lightbulb coming from a book"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:151
+#: src/admin-views/admin-welcome-message.php:154
 #: src/Tickets/Emails/Admin/Emails_Tab.php:168
 msgid "Knowledgebase"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:152
+#: src/admin-views/admin-welcome-message.php:155
 msgid "Ready to dig deeper? Our Knowledgebase can help you get the most out of The Events Calendar suite."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:153
+#: src/admin-views/admin-welcome-message.php:156
 msgid "Dig deeper"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:159
+#: src/admin-views/admin-welcome-message.php:162
 msgid "Illustration of money turning into a ticket"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:161
+#: src/admin-views/admin-welcome-message.php:164
 #: src/Tickets/Commerce/Module.php:20
 #: src/Tickets/Commerce/Payments_Tab.php:200
 msgid "Tickets Commerce"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:163
+#: src/admin-views/admin-welcome-message.php:166
 #: src/Tribe/Admin/Settings/Service_Provider.php:145
 msgid "Get started"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:171
+#: src/admin-views/admin-welcome-message.php:174
 msgid "Illustration of a power plug and gears"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:173
+#: src/admin-views/admin-welcome-message.php:176
 msgid "Browse our library of free extensions for Event Tickets."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:174
-#: src/admin-views/admin-welcome-message.php:194
+#: src/admin-views/admin-welcome-message.php:177
+#: src/admin-views/admin-welcome-message.php:197
 #: src/admin-views/settings/tickets-commerce/paypal/connect/non-ssl-notice.php:24
 #: src/Tickets/Commerce/Gateways/Stripe/Settings.php:194
 #: src/Tickets/Emails/Email/Completed_Order.php:117
@@ -229,53 +229,53 @@ msgstr ""
 msgid "Learn more"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:183
-#: src/admin-views/admin-welcome-message.php:205
+#: src/admin-views/admin-welcome-message.php:186
+#: src/admin-views/admin-welcome-message.php:208
 msgid "Want to take your events to the next level?"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:184
-#: src/admin-views/admin-welcome-message.php:206
+#: src/admin-views/admin-welcome-message.php:187
+#: src/admin-views/admin-welcome-message.php:209
 msgid "Check out our suite of add-ons"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:191
+#: src/admin-views/admin-welcome-message.php:194
 msgid "Illustration of a calendar"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:193
+#: src/admin-views/admin-welcome-message.php:196
 msgid "Add The Events Calendar (it's free!) to enhance Event Tickets."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:213
+#: src/admin-views/admin-welcome-message.php:216
 msgid "Illustration of a hand holding a ticket and the WooCommerce logo"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:215
+#: src/admin-views/admin-welcome-message.php:218
 msgid "Add WooCommerce integration, advanced registration, and more."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:216
+#: src/admin-views/admin-welcome-message.php:219
 msgid "Check out Event Tickets Plus"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:221
+#: src/admin-views/admin-welcome-message.php:224
 msgid "Want this emailed to you?"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:222
+#: src/admin-views/admin-welcome-message.php:225
 msgid "Keep this list of links on hand and stay subscribed to receive tips and tricks about The Events Calendar products."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:225
+#: src/admin-views/admin-welcome-message.php:228
 msgid "Your email"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:227
+#: src/admin-views/admin-welcome-message.php:230
 msgid "Sign Up"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:240
+#: src/admin-views/admin-welcome-message.php:243
 msgid "The Events Calendar brand logo"
 msgstr ""
 
@@ -9295,69 +9295,69 @@ msgstr ""
 msgid "Manage attendees"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:84
+#: src/Tribe/Admin/Move_Tickets.php:85
 msgid "Move Attendees"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:119
+#: src/Tribe/Admin/Move_Tickets.php:120
 msgid "Woops! We could not complete the requested operation due to an unforeseen problem."
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:120
+#: src/Tribe/Admin/Move_Tickets.php:121
 msgid "Unable to update the post list. Please refresh the page and try again."
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:121
+#: src/Tribe/Admin/Move_Tickets.php:122
 msgid "No results found - you may need to widen your search criteria."
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:122
+#: src/Tribe/Admin/Move_Tickets.php:123
 msgid "No tickets were found for this post."
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:123
+#: src/Tribe/Admin/Move_Tickets.php:124
 msgid "Loading, please wait&hellip;"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:247
+#: src/Tribe/Admin/Move_Tickets.php:248
 msgctxt "attendee screen bulk actions"
 msgid "Move"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:476
+#: src/Tribe/Admin/Move_Tickets.php:477
 msgid "%1$s could not be moved: valid %2$s IDs or a destination ID were not provided."
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:488
+#: src/Tribe/Admin/Move_Tickets.php:489
 msgid "%s could not be moved: there was an unexpected failure during reassignment."
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:497
+#: src/Tribe/Admin/Move_Tickets.php:498
 msgctxt "moved tickets success message fragment"
 msgid "assigned to %s"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:504
+#: src/Tribe/Admin/Move_Tickets.php:505
 msgctxt "moved tickets success message fragment"
 msgid "moved to %s and"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:511
+#: src/Tribe/Admin/Move_Tickets.php:512
 msgid "%1$d attendee for %2$s was successfully %3$s. By default, we adjust capacity and stock, however, we recommend reviewing each as needed to ensure numbers are correct. This attendee will receive an email notifying them of the change."
 msgid_plural "%1$d attendees for %2$s were successfully %3$s. By default, we adjust capacity and stock, however, we recommend reviewing each as needed to ensure numbers are correct. These attendees will receive an email notifying them of the change."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Tribe/Admin/Move_Tickets.php:680
+#: src/Tribe/Admin/Move_Tickets.php:638
 msgid "This ticket was moved to %1$s %2$s from %3$s %4$s"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:805
-#: src/Tribe/Admin/Move_Ticket_Types.php:341
+#: src/Tribe/Admin/Move_Tickets.php:763
+#: src/Tribe/Admin/Move_Ticket_Types.php:310
 msgid "Changes to your tickets from %s"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:868
+#: src/Tribe/Admin/Move_Tickets.php:826
 msgid "This ticket was moved to %1$s from %2$s"
 msgstr ""
 
@@ -9381,7 +9381,7 @@ msgstr ""
 msgid "%1$s type %2$s for %3$s was successfully moved to %4$s. All previously sold %5$s have been transferred to %4$s. Please adjust capacity and stock manually as needed. %2$s %6$s holders have received an email notifying them of the change. You may now close this window!"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Ticket_Types.php:240
+#: src/Tribe/Admin/Move_Ticket_Types.php:209
 msgid "%1$s type was moved to <a href=\"%2$s\" target=\"_blank\">%3$s</a> from <a href=\"%4$s\" target=\"_blank\">%5$s</a>"
 msgstr ""
 
