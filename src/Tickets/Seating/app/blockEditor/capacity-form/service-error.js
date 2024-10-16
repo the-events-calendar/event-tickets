@@ -18,7 +18,7 @@ const getMessage = (serviceStatus, serviceConnectUrl) => {
 			return (
 				<span style={style}>
 					{__(
-						'The Seat Builder service is down and assigned seating is not available. We are working to restore functionality.',
+						'The Seating Builder service is down and assigned seating is not available. We are working to restore functionality.',
 						'event-tickets'
 					)}
 				</span>
@@ -27,7 +27,7 @@ const getMessage = (serviceStatus, serviceConnectUrl) => {
 			return (
 				<span style={style}>
 					{__(
-						'Your site is not connected to the Seat Builder service.',
+						'Your site is not connected to the Seating Builder service.',
 						'event-tickets'
 					)}{' '}
 					<a
@@ -38,7 +38,7 @@ const getMessage = (serviceStatus, serviceConnectUrl) => {
 					>
 						{_x(
 							'You need to connect your site to use assigned seating.',
-							'Connect to the Seat Builder link label',
+							'Connect to the Seating Builder link label',
 							'event-tickets'
 						)}
 					</a>

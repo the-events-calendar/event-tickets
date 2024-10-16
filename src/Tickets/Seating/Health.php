@@ -96,7 +96,7 @@ class Health extends Controller_Contract {
 						'description' => __( 'You must have a valid license to use Seating for Event Tickets.', 'event-tickets' ),
 						'actions'     => [
 							// Translators: 1 Opening p element, 2 closing p element, 3 is closing a element, 4, 5, 6 and 7 opening a elements.
-							_x( '%1$sYou may need to %4$spurchase a license%3$s or %5$srenew an existing license%3$s.%2$s%2$sOnce you have a valid license, enter it under %6$sTickets > Settings > Licenses%3$s and connect to the Seat Builder Service.%2$s%1$s%7$sLearn more about about setting up Seating%3$s%2$s', 'Shown as an action result, when the test regarding Seating license in Site Health has failed.', 'event-tickets' ),
+							_x( '%1$sYou may need to %4$spurchase a license%3$s or %5$srenew an existing license%3$s.%2$s%2$sOnce you have a valid license, enter it under %6$sTickets > Settings > Licenses%3$s and connect to the Seating Builder Service.%2$s%1$s%7$sLearn more about about setting up Seating%3$s%2$s', 'Shown as an action result, when the test regarding Seating license in Site Health has failed.', 'event-tickets' ),
 							[
 								'<p>',
 								'</p>',
@@ -138,7 +138,7 @@ class Health extends Controller_Contract {
 						'description' => __( 'The Seating Builder is a SaaS tool that provides the functionality for creating Seating Maps, Seat Layouts, and tickets with assigned seating. Your site must be connected to the Seating Builder in order to use these features.', 'event-tickets' ),
 						'actions'     => [
 							// Translators: 1 Opening p element, 2 closing p element, 3 is closing a element, 4 and 5 opening a elements.
-							_x( '%1$s%4$sLearn more about connecting to the Seat Builder%3$s or %5$scontact support%3$s.%2$s', 'Shown as an action result, when the test regarding Seating license in Site Health has failed.', 'event-tickets' ),
+							_x( '%1$s%4$sLearn more about connecting to the Seating Builder%3$s or %5$scontact support%3$s.%2$s', 'Shown as an action result, when the test regarding Seating license in Site Health has failed.', 'event-tickets' ),
 							[
 								'<p>',
 								'</p>',

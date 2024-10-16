@@ -63,16 +63,16 @@ class Error_Content {
 			default:
 			case Service_Status::SERVICE_DOWN:
 				$message = __(
-					'The Seat Builder service is down. We are working to restore functionality.',
+					'The Seating Builder service is down. We are working to restore functionality.',
 					'event-tickets'
 				);
 				break;
 			case Service_Status::NOT_CONNECTED:
 				$message   = __(
-					'You need to connect your site to the Seat Builder in order to create Seating Maps and Seat Layouts.',
+					'You need to connect your site to the Seating Builder in order to create Seating Maps and Seat Layouts.',
 					'event-tickets'
 				);
-				$cta_label = _x( 'Connect', 'Connect to the Seat Builder button label', 'event-tickets' );
+				$cta_label = _x( 'Connect', 'Connect to the Seating Builder button label', 'event-tickets' );
 				$cta_url   = admin_url( 'admin.php?page=tec-tickets-settings&tab=licenses' );
 				break;
 			case Service_Status::EXPIRED_LICENSE:
@@ -120,7 +120,7 @@ class Error_Content {
 				break;
 			case Service_Status::SERVICE_DOWN:
 				$message = __(
-					'The Seat Builder service is down and assigned seating is not available. We are working to restore functionality.',
+					'The Seating Builder service is down and assigned seating is not available. We are working to restore functionality.',
 					'event-tickets'
 				);
 				break;
@@ -130,12 +130,12 @@ class Error_Content {
 					// translators: %1$s is the connect link, %2$s is the connect link label.
 					'<a href="%1$s" target="_blank">%2$s</a>',
 					$connect_link_url,
-					_x( 'Connect', 'Connect to the Seat Builder link label', 'event-tickets' )
+					_x( 'Connect', 'Connect to the Seating Builder link label', 'event-tickets' )
 				);
 				$message = sprintf(
 					// translators: %s is the connect link.
 					__(
-						'Your site is not connected to the Seat Builder service. You need to connect your site to use assigned seating. %s',
+						'Your site is not connected to the Seating Builder service. You need to connect your site to use assigned seating. %s',
 						'event-tickets'
 					),
 					$connect_link
