@@ -633,8 +633,10 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				 *
 				 * @param int $inventory The inventory of the ticket.
 				 * @param Tribe__Tickets__Ticket_Object $ticket The ticket object.
+				 * @param array<string,mixed>           $event_attendees The event attendees.
+				 * @param array<string,mixed>           $attendees       The ticket attendees.
 				 */
-				$inventory = apply_filters( 'tribe_tickets_ticket_inventory', $capacity - $this->qty_sold() - $this->qty_pending(), $this );
+				$inventory = apply_filters( 'tribe_tickets_ticket_inventory', $capacity - $this->qty_sold() - $this->qty_pending(), $this, [], [] );
 
 				if ( $is_ticket_cache_enabled ) {
 					$cache->set( $cache_key, $inventory, 0, Cache::TRIGGER_SAVE_POST );
@@ -725,12 +727,13 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			 * @param int                           $inventory       The inventory of the ticket.
 			 * @param Tribe__Tickets__Ticket_Object $ticket          The ticket object.
 			 * @param array<string,mixed>           $event_attendees The event attendees.
+			 * @param array<string,mixed>           $attendees       The ticket attendees.
 			 */
 			$inventory = apply_filters(
 				'tribe_tickets_ticket_inventory',
 				$inventory,
 				$this,
-					$event_attendees ?? [],
+				$event_attendees ?? [],
 				$attendees ?? []
 			);
 

@@ -241,16 +241,17 @@ class Controller extends Controller_Contract {
 		// Remove the action to avoid infinite loops.
 		remove_action( 'update_post_metadata', [ $this, 'sync_seated_tickets_stock' ] );
 
-		$updated_stock = $stock;
+		$updated_stock   = $stock;
 		$prev_meta_value = get_post_meta( $object_id, Ticket::$stock_meta_key, true );
 		if ( $prev_meta_value !== '' ) {
 			$updated_stock = min( $stock, $prev_meta_value );
 		}
 
-		$updated = update_post_meta( $object_id, Ticket::$stock_meta_key, $updated_stock );
-		$cache_listener = tribe('Tribe__Cache_Listener');
+		update_post_meta( $object_id, Ticket::$stock_meta_key, $updated_stock );
+
+		$cache_listener = tribe( 'Tribe__Cache_Listener' );
 		// Trigger the cache invalidation for this ticket.
-		$cache_listener->save_post($object_id,get_post($object_id));
+		$cache_listener->save_post( $object_id, get_post( $object_id ) );
 
 		foreach (
 			tribe_tickets()
@@ -261,7 +262,7 @@ class Controller extends Controller_Contract {
 		) {
 			update_post_meta( $ticket_id, Ticket::$stock_meta_key, $updated_stock );
 			// Trigger the cache invalidation for this ticket.
-			$cache_listener->save_post($object_id,get_post($object_id));
+			$cache_listener->save_post( $object_id, get_post( $object_id ) );
 		}
 
 		add_action( 'updated_postmeta', [ $this, 'sync_seated_tickets_stock' ], 10, 4 );
