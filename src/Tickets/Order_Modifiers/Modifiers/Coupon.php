@@ -13,6 +13,7 @@
 namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
 use TEC\Tickets\Order_Modifiers\Table_Views\Coupon_Table;
+use Tribe__Tickets__Admin__Views;
 
 /**
  * Concrete Strategy for Coupon Modifiers.
