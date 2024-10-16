@@ -38,6 +38,7 @@ class Fee extends Modifier_Abstract {
 	 * @since TBD
 	 * @var array
 	 */
+	// @todo redscar- refactor into key based array.
 	protected array $required_fields = [
 		'modifier_type',
 		'sub_type',

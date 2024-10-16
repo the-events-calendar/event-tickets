@@ -68,7 +68,7 @@ class Modifier_Manager {
 		// Validate data before proceeding.
 		if ( ! $this->strategy->validate_data( $data ) ) {
 			// Optionally log the validation failure.
-			// @todo redscar - decide how to handle this.
+			// @todo redscar - Throw an error that it failed validation.
 			error_log( 'Validation failed for ' . $this->strategy->get_modifier_type() );
 		}
 

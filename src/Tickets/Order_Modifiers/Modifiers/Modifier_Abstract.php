@@ -240,8 +240,10 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return bool True if the data is valid, false otherwise.
 	 */
 	public function validate_data( array $data ): bool {
+		// @todo redscar - refactor method to generate errors and caller should have catch.
 		foreach ( $this->required_fields as $field ) {
 			if ( empty( $data[ $field ] ) ) {
+				//@todo redscar -  Throw an error that the data is missing.
 				error_log($field .' is missing');
 				return false;
 			}
