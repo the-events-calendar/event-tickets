@@ -4,11 +4,14 @@ namespace TEC\Tickets\Order_Modifiers;
 
 use Codeception\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Abstract;
+use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Traits\Order_Modifiers;
 
 class Create_Coupon_Modifiers_Test extends WPTestCase {
 	use Order_Modifiers;
 	use SnapshotAssertions;
+	use With_Uopz;
 
 	/**
 	 * The type of order modifier being tested (coupon).
@@ -16,6 +19,18 @@ class Create_Coupon_Modifiers_Test extends WPTestCase {
 	 * @var string
 	 */
 	protected string $modifier_type = 'coupon';
+
+	/**
+	 * @before
+	 */
+	public function set_up(): void {
+		$this->set_fn_return( 'wp_create_nonce', '1234567890' );
+		$this->set_class_fn_return(
+			Modifier_Abstract::class,
+			'generate_unique_slug',
+			'fixed_slug'
+		);
+	}
 
 	/**
 	 * Data provider for testing various order modifiers and edge cases using yield.
@@ -208,5 +223,185 @@ class Create_Coupon_Modifiers_Test extends WPTestCase {
 		$this->assertEquals( $updated_modifier->id, $retrieved_modifier->id );
 		$this->assertEquals( 1000, $retrieved_modifier->raw_amount ); // Should now be $10.00.
 		$this->assertEquals( $update_data['order_modifier_display_name'], $retrieved_modifier->display_name ); // Name should be updated.
+	}
+
+	/**
+	 * @test
+	 */
+	public function does_edit_form_display_properly_with_no_data() {
+		$modifier_admin_handler = new Modifier_Admin_Handler();
+		$_POST                  = [
+			'modifier'    => 'coupon',
+			'modifier_id' => 0,
+			'edit'        => 1,
+		];
+		ob_start();
+		$modifier_admin_handler->render_tec_order_modifiers_page();
+		$test = ob_get_contents();
+		ob_end_flush();
+		$this->assertMatchesHtmlSnapshot( $test );
+	}
+
+	/**
+	 * @test
+	 * @dataProvider modifier_edit_form_data_provider
+	 */
+	public function does_edit_form_display_properly_with_data( array $insert_data, array $post_data ) {
+		// Step 1: Insert a new modifier.
+		$inserted_modifier = $this->upsert_order_modifier_for_test( $insert_data );
+
+		// Update the modifier ID in the POST data with the inserted modifier's ID.
+		$post_data['modifier_id'] = $inserted_modifier->id;
+
+		// Initialize the Modifier Admin Handler.
+		$modifier_admin_handler = new Modifier_Admin_Handler();
+
+		// Set the $_POST data for the request.
+		$_POST = $post_data;
+
+		// Capture the output of the render method.
+		ob_start();
+		$modifier_admin_handler->render_tec_order_modifiers_page();
+		$output = ob_get_contents();
+		ob_end_clean();
+
+		// Assert that the form renders correctly by comparing to the snapshot.
+		$this->assertMatchesHtmlSnapshot( $output );
+	}
+
+	/**
+	 * Data provider for testing different scenarios of the modifier edit form.
+	 *
+	 * @return \Generator
+	 */
+	public function modifier_edit_form_data_provider(): \Generator {
+		yield 'Flat Coupon' => [
+			'insert_data' => [
+				'modifier'                    => 'coupon',
+				'order_modifier_amount'       => 5.00, // $5.00 in cents.
+				'order_modifier_sub_type'     => 'flat',
+				'order_modifier_slug'         => 'test_flat_coupon',
+				'order_modifier_display_name' => 'Flat Coupon',
+			],
+			'post_data'   => [
+				'modifier' => 'coupon',
+				'edit'     => 1,
+			],
+		];
+
+		yield 'Percent Coupon' => [
+			'insert_data' => [
+				'modifier'                    => 'coupon',
+				'order_modifier_amount'       => 10.00, // 10% as a percentage.
+				'order_modifier_sub_type'     => 'percent',
+				'order_modifier_slug'         => 'test_percent_coupon',
+				'order_modifier_display_name' => 'Percent Coupon',
+			],
+			'post_data'   => [
+				'modifier' => 'coupon',
+				'edit'     => 1,
+			],
+		];
+
+		yield 'Invalid Slug' => [
+			'insert_data' => [
+				'modifier'                    => 'coupon',
+				'order_modifier_amount'       => 7.00, // $7.00 in cents.
+				'order_modifier_sub_type'     => 'flat',
+				'order_modifier_slug'         => '', // Invalid slug (empty).
+				'order_modifier_display_name' => 'Invalid Slug Coupon',
+			],
+			'post_data'   => [
+				'modifier' => 'coupon',
+				'edit'     => 1,
+			],
+		];
+		yield 'Flat Coupon' => [
+			'insert_data' => [
+				'modifier'                    => 'coupon',
+				'order_modifier_amount'       => 1000, // $10.00 in cents.
+				'order_modifier_sub_type'     => 'flat',
+				'order_modifier_slug'         => 'flat_coupon',
+				'order_modifier_display_name' => 'Flat Coupon',
+			],
+			'post_data'   => [
+				'modifier' => 'coupon',
+				'edit'     => 1,
+			],
+		];
+
+		yield 'Percent Coupon' => [
+			'insert_data' => [
+				'modifier'                    => 'coupon',
+				'order_modifier_amount'       => 10.00, // 10% as a percentage.
+				'order_modifier_sub_type'     => 'percent',
+				'order_modifier_slug'         => 'percent_coupon',
+				'order_modifier_display_name' => 'Percent Coupon',
+			],
+			'post_data'   => [
+				'modifier' => 'coupon',
+				'edit'     => 1,
+			],
+		];
+
+		// Edge case: Long decimal value
+		yield 'Coupon - Long Decimal Value' => [
+			'insert_data' => [
+				'modifier'                    => 'coupon',
+				'order_modifier_amount'       => 100.595, // Amount with long decimal (will be rounded).
+				'order_modifier_sub_type'     => 'flat',
+				'order_modifier_slug'         => 'long_decimal',
+				'order_modifier_display_name' => 'Long Decimal',
+			],
+			'post_data'   => [
+				'modifier' => 'coupon',
+				'edit'     => 1,
+			],
+		];
+
+		// Edge case: Excessively large amount
+		yield 'Coupon - Excessively Large Amount' => [
+			'insert_data' => [
+				'modifier'                    => 'coupon',
+				'order_modifier_amount'       => 123456790, // Large amount.
+				'order_modifier_sub_type'     => 'flat',
+				'order_modifier_slug'         => 'large_amount',
+				'order_modifier_display_name' => 'Large Amount',
+			],
+			'post_data'   => [
+				'modifier' => 'coupon',
+				'edit'     => 1,
+			],
+		];
+
+		// Edge case: Special characters in display name and slug
+		yield 'Coupon - Special Characters' => [
+			'insert_data' => [
+				'modifier'                    => 'coupon',
+				'order_modifier_amount'       => 500, // $5.00 in cents.
+				'order_modifier_sub_type'     => 'flat',
+				'order_modifier_slug'         => 'special_!@#$%^&*',
+				'order_modifier_display_name' => 'Special !@#$%^&*',
+			],
+			'post_data'   => [
+				'modifier' => 'coupon',
+				'edit'     => 1,
+			],
+		];
+
+		// Edge case: Emojis in display name and slug
+		yield 'Coupon - Emojis in Name and Slug' => [
+			'insert_data' => [
+				'modifier'                    => 'coupon',
+				'order_modifier_amount'       => 1500, // $15.00 in cents.
+				'order_modifier_sub_type'     => 'flat',
+				'order_modifier_slug'         => 'emoji_😊🔥',
+				'order_modifier_display_name' => 'Emoji 😊🔥 Coupon',
+			],
+			'post_data'   => [
+				'modifier' => 'coupon',
+				'edit'     => 1,
+			],
+		];
 	}
 }
