@@ -499,6 +499,7 @@ class Timer extends Controller_Contract {
 			$is_ar_page = tribe( Attendee_Registration::class )->get_url();
 			$referrer   = wp_get_referer();
 
+			// IMPORTANT: This is an automatic interrupt, originating from the AR page. We want to ignore it!
 			if ( $referrer && $is_ar_page === explode( '?', $referrer )['0'] ) {
 				return;
 			}
