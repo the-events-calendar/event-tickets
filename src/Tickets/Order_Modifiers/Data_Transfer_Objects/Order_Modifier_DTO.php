@@ -123,17 +123,16 @@ class Order_Modifier_DTO extends DataTransferObject {
 	public static function fromObject( $object ): self {
 		$self = new self();
 
-		$self->id               = $object->id;
-		$self->modifier_type    = $object->modifier_type;
-		$self->sub_type         = $object->sub_type;
-		$self->raw_amount = $object->raw_amount;
-		$self->slug             = $object->slug;
-		$self->display_name     = $object->display_name;
-		$self->status           = $object->status;
-		$self->created_at       = $object->created_at;
-		$self->start_time       = $object->start_time ?? null;
-		$self->end_time         = $object->end_time ?? null;
-
+		$self->id            = $object->id;
+		$self->modifier_type = $object->modifier_type;
+		$self->sub_type      = $object->sub_type;
+		$self->raw_amount    = $object->raw_amount;
+		$self->slug          = $object->slug;
+		$self->display_name  = $object->display_name;
+		$self->status        = $object->status;
+		$self->created_at    = $object->created_at;
+		$self->start_time    = $object->start_time ?? null;
+		$self->end_time      = $object->end_time ?? null;
 
 		return $self;
 	}
