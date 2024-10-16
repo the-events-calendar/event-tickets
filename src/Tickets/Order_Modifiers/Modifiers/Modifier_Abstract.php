@@ -271,12 +271,12 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $cents The amount in cents.
+	 * @param int $raw_amount The amount in cents.
 	 *
 	 * @return string The formatted decimal string representing the amount.
 	 */
-	public function convert_from_raw_amount( int $cents ): string {
-		return number_format( $cents / 100, 2, '.', '' );
+	public function convert_from_raw_amount( int $raw_amount ): string {
+		return number_format( $raw_amount / 100, 2, '.', '' );
 	}
 
 	/**
