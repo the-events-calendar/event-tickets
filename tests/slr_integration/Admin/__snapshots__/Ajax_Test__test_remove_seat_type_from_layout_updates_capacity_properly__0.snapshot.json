@@ -8,7 +8,7 @@
     "tickets": {
         "count": 2,
         "stock": 90,
-        "global": 0,
+        "global": 1,
         "unlimited": 0,
         "available": 90
     }

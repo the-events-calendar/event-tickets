@@ -126,13 +126,13 @@ class Seat_Types {
 				'seats' => $row->seats,
 			];
 		}
-		
+
 		// Order seat types by name.
 		usort(
 			$seat_types,
 			static function ( $a, $b ) {
 				return strcasecmp( $a['name'], $b['name'] );
-			} 
+			}
 		);
 
 		return $seat_types;
@@ -252,6 +252,12 @@ class Seat_Types {
 		$tickets_handler   = tribe( 'tickets.handler' );
 		$capacity_meta_key = $tickets_handler->key_capacity;
 
+		/*
+		 * The Commerce controller will, on update of the `_stock` meta, trigger a cross-update of all Tickets sharing the
+		 * same seat type: we're doing this here so the action should not fire.
+		 */
+		remove_action( 'updated_postmeta', [ tribe(Commerce_Controller::class), 'sync_seated_tickets_stock' ], 10, 4 );
+
 		foreach (
 			tribe_tickets()
 				->where( 'meta_in', Meta::META_KEY_SEAT_TYPE, $seat_types )
@@ -266,10 +272,13 @@ class Seat_Types {
 			$previous_stock    = get_post_meta( $ticket_id, '_stock', true );
 			$new_stock         = max( 0, $previous_stock + $capacity_delta );
 			update_post_meta( $ticket_id, $capacity_meta_key, $new_capacity );
+
 			update_post_meta( $ticket_id, '_stock', $new_stock );
 
 			++$total_updated;
 		}
+
+		add_action( 'updated_postmeta', [ tribe(Commerce_Controller::class), 'sync_seated_tickets_stock' ], 10, 4 );
 
 		return $total_updated;
 	}

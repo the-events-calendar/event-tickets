@@ -2274,8 +2274,9 @@ class Ajax_Test extends Controller_Test_Case {
 		// Ticket 1 should have its capacity updated to 50 to match the new default seat type 3.
 		$this->assertEquals( 50, $ticket_1->capacity() );
 		$this->assertEquals( 50 - 5, $ticket_1->stock() );
-		$this->assertEquals( 50 - 5, $ticket_1->available() );
-		$this->assertEquals( 50 - 5, $ticket_1->inventory() );
+		// Two tickets, each with 5 sales, share the same seat type.
+		$this->assertEquals( 50 - 10, $ticket_1->available() );
+		$this->assertEquals( 50 - 10, $ticket_1->inventory() );
 
 		$ticket_2 = tribe( Module::class )->get_ticket( $post_id, $ticket_id_2 );
 
@@ -2285,8 +2286,9 @@ class Ajax_Test extends Controller_Test_Case {
 		// Ticket 2 should have its capacity updated to 50 to match the new default seat type 3.
 		$this->assertEquals( 50, $ticket_2->capacity() );
 		$this->assertEquals( 50 - 5, $ticket_2->stock() );
-		$this->assertEquals( 50 - 5, $ticket_2->available() );
-		$this->assertEquals( 50 - 5, $ticket_2->inventory() );
+		// Two tickets, each with 5 sales, share the same seat type.
+		$this->assertEquals( 50 - 10, $ticket_2->available() );
+		$this->assertEquals( 50 - 10, $ticket_2->inventory() );
 
 		$attendees = tribe_attendees()->where( 'event', $post_id )->get_ids( true );
 
@@ -2327,7 +2329,8 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertEquals( 3, $ticket_1->capacity() );
 		$this->assertEquals( 0, $ticket_1->stock() );
 		$this->assertEquals( 0, $ticket_1->available() );
-		$this->assertEquals( 0, $ticket_1->inventory() );
+		// With 10 Attendees (5 sales for each ticket with this seat type), this ticket will be over-sold.
+		$this->assertEquals( -7, $ticket_1->inventory() );
 
 		$ticket_2 = tribe( Module::class )->get_ticket( $post_id, $ticket_id_2 );
 
@@ -2338,7 +2341,8 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertEquals( 3, $ticket_2->capacity() );
 		$this->assertEquals( 0, $ticket_2->stock() );
 		$this->assertEquals( 0, $ticket_2->available() );
-		$this->assertEquals( 0, $ticket_2->inventory() );
+		// With 10 Attendees (5 sales for each ticket with this seat type), this ticket will be over-sold.
+		$this->assertEquals( -7, $ticket_2->inventory() );
 	}
 
 	public function test_update_event_layout_failures(): void {

@@ -722,10 +722,17 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			 *
 			 * @since TBD
 			 *
-			 * @param int $inventory The inventory of the ticket.
-			 * @param Tribe__Tickets__Ticket_Object $ticket The ticket object.
+			 * @param int                           $inventory       The inventory of the ticket.
+			 * @param Tribe__Tickets__Ticket_Object $ticket          The ticket object.
+			 * @param array<string,mixed>           $event_attendees The event attendees.
 			 */
-			$inventory = apply_filters( 'tribe_tickets_ticket_inventory', $inventory, $this );
+			$inventory = apply_filters(
+				'tribe_tickets_ticket_inventory',
+				$inventory,
+				$this,
+					$event_attendees ?? [],
+				$attendees ?? []
+			);
 
 			if ( $is_ticket_cache_enabled ) {
 				$cache->set( $cache_key, $inventory, 0, Cache::TRIGGER_SAVE_POST );

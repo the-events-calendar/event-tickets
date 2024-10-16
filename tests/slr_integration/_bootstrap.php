@@ -10,6 +10,7 @@ use TEC\Tickets\Seating\Tables\Maps;
 use TEC\Tickets\Seating\Tables\Seat_Types;
 use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe\Tickets\Promoter\Triggers\Dispatcher;
+use TEC\Tickets\Seating\Commerce\Controller as Seating_Commerce_Controller;
 
 $tec_support = dirname( __DIR__, 3 ) . '/the-events-calendar/tests/_support';
 Codeception\Util\Autoload::addNamespace( 'Tribe\Events\Test', $tec_support );
@@ -62,3 +63,6 @@ function test_remove_service_status_ok_callback() {
 
 // In the contest of tests, assume the Service connection is OK.
 test_add_service_status_ok_callback();
+
+// The Seating Commerce controller might not be registered yet: do it now.
+tribe_register_provider( Seating_Commerce_Controller::class );

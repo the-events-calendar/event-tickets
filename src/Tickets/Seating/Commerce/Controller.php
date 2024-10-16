@@ -39,7 +39,7 @@ class Controller extends Controller_Contract {
 			'tec_tickets_seating_timer_token_object_id_entries',
 			[ $this, 'filter_timer_token_object_id_entries' ],
 		);
-		add_filter( 'tribe_tickets_ticket_inventory', [ $this, 'get_seated_ticket_inventory' ], 10, 2 );
+		add_filter( 'tribe_tickets_ticket_inventory', [ $this, 'get_seated_ticket_inventory' ], 10, 3 );
 		add_filter( 'tec_tickets_get_ticket_counts', [ $this, 'set_event_stock_counts' ], 10, 2 );
 		add_action( 'updated_postmeta', [ $this, 'sync_seated_tickets_stock' ], 10, 4 );
 	}
@@ -60,7 +60,7 @@ class Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_get_ticket_counts', [ $this, 'set_event_stock_counts' ] );
 		remove_action( 'updated_postmeta', [ $this, 'sync_seated_tickets_stock' ] );
 	}
-	
+
 	/**
 	 * Sets the stock counts for the event.
 	 *
@@ -75,7 +75,7 @@ class Controller extends Controller_Contract {
 		if ( ! tec_tickets_seating_enabled( $post_id ) ) {
 			return $types;
 		}
-		
+
 		$types['tickets'] = [
 			'count'     => 0, // count of ticket types currently for sale.
 			'stock'     => 0, // current stock of tickets available for sale.
@@ -83,51 +83,51 @@ class Controller extends Controller_Contract {
 			'unlimited' => 0, // numeric boolean if any ticket has unlimited stock.
 			'available' => 0,
 		];
-		
+
 		$tickets = tribe_tickets()
 			->where( 'event', $post_id )
 			->get_ids( true );
-	
+
 		$capacity_by_type   = [];
 		$total_sold_by_type = [];
-		
+
 		foreach ( $tickets as $ticket_id ) {
 			$ticket = Tickets::load_ticket_object( $ticket_id );
-			
+
 			if ( ! $ticket instanceof Ticket_Object ) {
 				continue;
 			}
-			
+
 			if ( ! tribe_events_ticket_is_on_sale( $ticket ) ) {
 				continue;
 			}
-			
+
 			$seat_type = get_post_meta( $ticket_id, META::META_KEY_SEAT_TYPE, true );
-			
+
 			if ( empty( $seat_type ) ) {
 				continue;
 			}
-			
+
 			$capacity   = $ticket->capacity();
 			$stock      = $ticket->stock();
 			$total_sold = max( 0, $capacity - $stock );
 			if ( ! isset( $capacity_by_type[ $seat_type ] ) ) {
 				$capacity_by_type[ $seat_type ] = $capacity;
 			}
-			
+
 			if ( ! isset( $total_sold_by_type[ $seat_type ] ) ) {
 				$total_sold_by_type[ $seat_type ] = $total_sold;
 			}
-			
+
 			++$types['tickets']['count'];
 		}
-		
+
 		foreach ( $capacity_by_type as $seat_type => $capacity ) {
 			$stock_level                    = $capacity - $total_sold_by_type[ $seat_type ];
 			$types['tickets']['stock']     += $stock_level;
 			$types['tickets']['available'] += $stock_level;
 		}
-		
+
 		return $types;
 	}
 
@@ -136,12 +136,13 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int           $inventory The current inventory.
-	 * @param Ticket_Object $ticket    The ticket object.
+	 * @param int                        $inventory       The current inventory.
+	 * @param Ticket_Object              $ticket          The ticket object.
+	 * @param array<array<string,mixed>> $event_attendees The post Attendees.
 	 *
 	 * @return int The adjusted inventory.
 	 */
-	public function get_seated_ticket_inventory( int $inventory, Ticket_Object $ticket ): int {
+	public function get_seated_ticket_inventory( int $inventory, Ticket_Object $ticket, array $event_attendees ): int {
 		$seat_type = get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true );
 
 		if ( ! $seat_type ) {
@@ -149,11 +150,7 @@ class Controller extends Controller_Contract {
 		}
 
 		$event_id       = $ticket->get_event_id();
-		$ticket_ids     = [ $ticket->ID ];
-		$this_inventory = $inventory;
 		$capacity       = $ticket->capacity();
-		// Protect from over-selling.
-		$total_sold = max( 0, $capacity - $this_inventory );
 
 		// Remove this function from the filter to avoid infinite loops.
 		remove_filter( 'tribe_tickets_ticket_inventory', [ $this, 'get_seated_ticket_inventory' ] );
@@ -161,6 +158,8 @@ class Controller extends Controller_Contract {
 		// Later we'll remove this specific return false filter, not one that might have been added by other code.
 		$return_false = static fn() => false;
 		add_filter( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', $return_false );
+
+		$ticket_ids = [ $ticket->ID ];
 
 		// Pull the inventory from the other tickets with the same seat type.
 		foreach (
@@ -170,17 +169,22 @@ class Controller extends Controller_Contract {
 				->where( 'meta_equals', Meta::META_KEY_SEAT_TYPE, $seat_type )
 				->get_ids( true ) as $ticket_id
 		) {
-			$ticket        = Tickets::load_ticket_object( $ticket_id );
-			$sold_for_this = $capacity - $ticket->inventory();
-			$total_sold   += $sold_for_this;
-			$ticket_ids[]  = $ticket_id;
+			$ticket_ids[]  = (int)$ticket_id;
+		}
+
+		$total_sold = 0;
+		if ( count( $event_attendees ) ) {
+			$total_sold = count( array_filter(
+				$event_attendees,
+				static fn( array $attendee ): bool => in_array( (int) $attendee['product_id'], $ticket_ids, true )
+			) );
 		}
 
 		add_filter(
 			'tribe_tickets_ticket_inventory',
 			[ $this, 'get_seated_ticket_inventory' ],
 			10,
-			2
+			3
 		);
 		remove_filter( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', $return_false );
 
@@ -235,7 +239,18 @@ class Controller extends Controller_Contract {
 		}
 
 		// Remove the action to avoid infinite loops.
-		remove_action( 'updated_postmeta', [ $this, 'sync_seated_tickets_stock' ] );
+		remove_action( 'update_post_metadata', [ $this, 'sync_seated_tickets_stock' ] );
+
+		$updated_stock = $stock;
+		$prev_meta_value = get_post_meta( $object_id, Ticket::$stock_meta_key, true );
+		if ( $prev_meta_value !== '' ) {
+			$updated_stock = min( $stock, $prev_meta_value );
+		}
+
+		$updated = update_post_meta( $object_id, Ticket::$stock_meta_key, $updated_stock );
+		$cache_listener = tribe('Tribe__Cache_Listener');
+		// Trigger the cache invalidation for this ticket.
+		$cache_listener->save_post($object_id,get_post($object_id));
 
 		foreach (
 			tribe_tickets()
@@ -244,7 +259,9 @@ class Controller extends Controller_Contract {
 				->where( 'meta_equals', Meta::META_KEY_SEAT_TYPE, $seat_type )
 				->get_ids( true ) as $ticket_id
 		) {
-			update_post_meta( $ticket_id, Ticket::$stock_meta_key, $stock );
+			update_post_meta( $ticket_id, Ticket::$stock_meta_key, $updated_stock );
+			// Trigger the cache invalidation for this ticket.
+			$cache_listener->save_post($object_id,get_post($object_id));
 		}
 
 		add_action( 'updated_postmeta', [ $this, 'sync_seated_tickets_stock' ], 10, 4 );
