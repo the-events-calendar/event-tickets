@@ -12,6 +12,8 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Global_Stock as Global_Stock;
+use Tribe__Tickets__REST__V1__Endpoints__Single_Ticket as Single_Ticket_Rest;
+use WP_REST_Request;
 
 class Editor_Test extends Controller_Test_Case {
 	use Layouts_Factory;
@@ -45,6 +47,110 @@ class Editor_Test extends Controller_Test_Case {
 	public function truncate_custom_tables(): void {
 		Seat_Types::truncate();
 		Layouts::truncate();
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_filter_seating_totals(): void {
+		$post_id = static::factory()->post->create();
+
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		update_post_meta( $post_id, Meta::META_KEY_ENABLED, '1' );
+		update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_ENABLED, '1' );
+		update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, 40 );
+		update_post_meta( $post_id, $tickets_handler->key_capacity, 40 );
+
+		$ticket_id_1 = $this->create_tc_ticket(
+			$post_id,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 40,
+				],
+			]
+		);
+
+		$ticket_id_2 = $this->create_tc_ticket(
+			$post_id,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 40,
+				],
+			]
+		);
+
+		$ticket_id_3 = $this->create_tc_ticket(
+			$post_id,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 40,
+				],
+			]
+		);
+
+		update_post_meta( $ticket_id_1, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_id_1, Meta::META_KEY_SEAT_TYPE, 'some-seat-type-1' );
+
+		update_post_meta( $ticket_id_2, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_id_2, Meta::META_KEY_SEAT_TYPE, 'some-seat-type-1' );
+
+		update_post_meta( $ticket_id_3, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_id_3, Meta::META_KEY_SEAT_TYPE, 'some-seat-type-1' );
+
+		$order = $this->create_order(
+			[
+				$ticket_id_1 => 3,
+				$ticket_id_2 => 5,
+			]
+		);
+
+		$totals_1 = [
+			'stock'   => 40 - 3 - 5,
+			'sold'    => 3,
+			'pending' => 0,
+		];
+
+		$totals_2 = [
+			'stock'   => 40 - 3 - 5,
+			'sold'    => 5,
+			'pending' => 0,
+		];
+
+		$totals_3 = [
+			'stock'   => 40 - 3 - 5,
+			'sold'    => 0,
+			'pending' => 0,
+		];
+
+		$controller = $this->make_controller();
+
+		$request_1 = new WP_REST_Request( 'GET', "tribe/tickets/v1/tickets/{$ticket_id_1}" );
+		$request_1['id'] = $ticket_id_1;
+		$request_2 = new WP_REST_Request( 'GET', "tribe/tickets/v1/tickets/{$ticket_id_2}" );
+		$request_2['id'] = $ticket_id_2;
+		$request_3 = new WP_REST_Request( 'GET', "tribe/tickets/v1/tickets/{$ticket_id_3}" );
+		$request_3['id'] = $ticket_id_3;
+
+		$data_1 = [ 'totals' => $totals_1 ];
+		$data_2 = [ 'totals' => $totals_2 ];
+		$data_3 = [ 'totals' => $totals_3 ];
+		$data_1['totals']['stock'] = $data_2['totals']['stock'] = $data_3['totals']['stock'] = 40;
+
+		$response_1 = $controller->filter_seating_totals( $data_1, $request_1 );
+		$response_2 = $controller->filter_seating_totals( $data_2, $request_2 );
+		$response_3 = $controller->filter_seating_totals( $data_3, $request_3 );
+
+		$this->assertEquals( $totals_1, $response_1['totals'] );
+		$this->assertEquals( $totals_2, $response_2['totals'] );
+		$this->assertEquals( $totals_3, $response_3['totals'] );
 	}
 
 	public function get_store_data_provider(): \Generator {
