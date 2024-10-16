@@ -74,7 +74,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 *
 	 * @return static
 	 */
-	public static function create( array $attributes ): static {
+	public static function create( array $attributes ): self {
 		// Maybe override the modifier type based on the final class.
 		if ( property_exists( static::class, 'order_modifier_type' ) ) {
 			$attributes['modifier_type'] = static::$order_modifier_type;
