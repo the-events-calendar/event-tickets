@@ -15,9 +15,8 @@ namespace TEC\Tickets\Order_Modifiers\Admin;
 
 use TEC\Tickets\Order_Modifiers\Controller;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Manager;
+use TEC\Tickets\Order_Modifiers\Factory;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifier_Relationship;
-use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers;
-use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers_Factory;
 use TEC\Tickets\Order_Modifiers\Traits\Fee_Types;
 use TEC\Tickets\Registerable;
 use Tribe__Tickets__Admin__Views as Admin_Views;
@@ -80,7 +79,7 @@ class Order_Modifier_Fee_Metabox implements Registerable {
 		$this->manager           = new Modifier_Manager( $this->modifier_strategy );
 
 		// Set up the order modifiers repository for accessing fee data.
-		$this->modifiers_repository                    = Order_Modifiers_Factory::get_repository_for_type( $this->modifier_type );
+		$this->modifiers_repository                    = Factory::get_repository_for_type( $this->modifier_type );
 		$this->order_modifiers_relationship_repository = new Order_Modifier_Relationship();
 	}
 

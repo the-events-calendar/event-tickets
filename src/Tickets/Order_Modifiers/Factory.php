@@ -7,9 +7,12 @@
 
 declare( strict_types=1 );
 
-namespace TEC\Tickets\Order_Modifiers\Repositories;
+namespace TEC\Tickets\Order_Modifiers;
 
 use InvalidArgumentException;
+use TEC\Tickets\Order_Modifiers\Repositories\Coupons as CouponsRepository;
+use TEC\Tickets\Order_Modifiers\Repositories\Fees as FeesRepository;
+use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers as ModifiersRepository;
 use TEC\Tickets\Order_Modifiers\Traits\Valid_Types;
 
 /**
@@ -17,7 +20,7 @@ use TEC\Tickets\Order_Modifiers\Traits\Valid_Types;
  *
  * @since TBD
  */
-class Order_Modifiers_Factory {
+class Factory {
 
 	use Valid_Types;
 
@@ -28,20 +31,20 @@ class Order_Modifiers_Factory {
 	 *
 	 * @param string $type The type.
 	 *
-	 * @return Order_Modifiers
+	 * @return ModifiersRepository
 	 */
-	public static function get_repository_for_type( string $type ): Order_Modifiers {
+	public static function get_repository_for_type( string $type ): ModifiersRepository {
 		self::validate_type( $type );
 
 		switch ( $type ) {
 			case 'fee':
-				return new Fees();
+				return new FeesRepository();
 
 			case 'coupon':
-				return new Coupons();
+				return new CouponsRepository();
 
 			default:
-				$class = Order_Modifiers::class;
+				$class = ModifiersRepository::class;
 
 				/**
 				 * Filters the order modifiers repository class for a given type.
@@ -58,8 +61,13 @@ class Order_Modifiers_Factory {
 					throw new InvalidArgumentException( 'The order modifiers repository class does not exist.' );
 				}
 
-				if ( ! $class instanceof Order_Modifiers ) {
-					throw new InvalidArgumentException( 'The order modifiers repository class must be a child of Order_Modifiers.' );
+				if ( ! $class instanceof ModifiersRepository ) {
+					throw new InvalidArgumentException(
+						sprintf(
+							'The order modifiers repository class must be a child of %s.',
+							ModifiersRepository::class
+						)
+					);
 				}
 
 				return new $class( $type );
