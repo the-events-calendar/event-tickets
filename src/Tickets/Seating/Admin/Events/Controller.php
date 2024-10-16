@@ -6,10 +6,12 @@
 namespace TEC\Tickets\Seating\Admin\Events;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Common\StellarWP\Arrays\Arr;
 use TEC\Tickets\Seating\Admin\Template;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Tickets\Seating\Tables\Layouts;
 use TEC\Common\StellarWP\DB\DB;
+use WP_Post;
 
 /**
  * Class Events Controller.
@@ -50,6 +52,8 @@ class Controller extends Controller_Contract {
 		add_action( 'admin_menu', [ $this, 'add_events_list_page' ], 20 );
 		add_action( 'load-' . Associated_Events::PAGE, [ $this, 'setup_events_list_screen' ] );
 		add_filter( 'set_screen_option_' . Associated_Events::OPTION_PER_PAGE, [ $this, 'save_per_page_option' ], 10, 3 );
+		add_filter( 'tec_events_pro_custom_tables_v1_add_to_series_available_events', [ $this, 'exclude_seating_events_from_series_list' ] );
+		add_filter( 'filter_block_editor_meta_boxes', [ $this, 'filter_block_editor_series_meta_box' ] );
 	}
 	
 	/**
@@ -63,6 +67,8 @@ class Controller extends Controller_Contract {
 		remove_action( 'admin_menu', [ $this, 'add_events_list_page' ], 20 );
 		remove_action( 'load-' . Associated_Events::PAGE, [ $this, 'setup_events_list_screen' ] );
 		remove_filter( 'set_screen_option_' . Associated_Events::OPTION_PER_PAGE, [ $this, 'save_per_page_option' ] );
+		remove_filter( 'tec_events_pro_custom_tables_v1_add_to_series_available_events', [ $this, 'exclude_seating_events_from_series_list' ] );
+		remove_filter( 'filter_block_editor_meta_boxes', [ $this, 'filter_block_editor_series_meta_box' ] );
 	}
 	
 	/**
@@ -157,5 +163,54 @@ class Controller extends Controller_Contract {
 				'events_table' => $events_table,
 			]
 		);
+	}
+	
+	/**
+	 * Exclude seating events from series list.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $event_ids The event IDs.
+	 *
+	 * @return array
+	 */
+	public function exclude_seating_events_from_series_list( array $event_ids ): array {
+		return array_filter(
+			$event_ids,
+			static function ( $event_id ) {
+				return ! tec_tickets_seating_enabled( $event_id );
+			}
+		);
+	}
+	
+	/**
+	 * Filter the block editor series meta box to show restriction message.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $wp_meta_boxes The meta boxes.
+	 *
+	 * @return array
+	 */
+	public function filter_block_editor_series_meta_box( $wp_meta_boxes ) {
+		global $post;
+		
+		if ( ! $post instanceof WP_Post ) {
+			return $wp_meta_boxes;
+		}
+		
+		if ( ! tec_tickets_seating_enabled( $post->ID ) ) {
+			return $wp_meta_boxes;
+		}
+		
+		$series_meta_box = Arr::get( $wp_meta_boxes, [ 'tribe_events', 'side', 'default', 'tec_event_series_relationship' ] );
+		
+		if ( $series_meta_box ) {
+			$wp_meta_boxes['tribe_events']['side']['default']['tec_event_series_relationship']['callback'] = static function () {
+				echo esc_html( _x( 'Events using Seating for ticket capacity are not supported by Series at this time.', 'Seating events series meta box message', 'event-tickets' ) );
+			};
+		}
+		
+		return $wp_meta_boxes;
 	}
 }
