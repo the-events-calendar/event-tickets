@@ -125,7 +125,7 @@ class Service_Status {
 
 		$resource = get_resource( 'tec-seating' );
 
-		if ( empty( $resource->license_key ) || ! $resource->has_valid_license() ) {
+		if ( ! ( $resource->get_license_object()->get_key() && $resource->has_valid_license() ) ) {
 			if ( $resource->get_license_object()->is_expired() ) {
 				// There is a license key, but it is expired.
 				$this->status = self::EXPIRED_LICENSE;
