@@ -13,6 +13,9 @@ use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Tickets\Seating\Service\Service;
 use Tribe__Tickets__Main as Tickets;
+use TEC\Tickets\Commerce\Ticket;
+use Tribe__Tickets__Tickets as Tribe_Tickets;
+use WP_REST_Request;
 
 /**
  * Class Editor.
@@ -36,6 +39,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 		$assets->remove( 'tec-tickets-seating-block-editor' );
 		remove_action( 'init', [ $this, 'register_meta' ], 1000 );
 		remove_action( 'tribe_tickets_ticket_added', [ $this, 'save_ticket_seat_type' ] );
+		remove_filter( 'tribe_rest_single_ticket_data', [ $this, 'filter_seating_totals' ], 20 );
 	}
 
 	/**
@@ -155,6 +159,43 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 		$this->register_block_editor_assets();
 		add_action( 'init', [ $this, 'register_meta' ], 1000 );
 		add_action( 'tribe_tickets_ticket_added', [ $this, 'save_ticket_seat_type' ], 10, 3 );
+		// Priority is important to be above 10!
+		add_filter( 'tribe_rest_single_ticket_data', [ $this, 'filter_seating_totals' ], 20, 2 );
+	}
+
+	/**
+	 * Filters the seating totals during a rest request.
+	 *
+	 * @since TBD
+	 *
+	 * @param array           $data    The data to be shared with the block editor.
+	 * @param WP_REST_Request $request The block editor's request.
+	 *
+	 * @return array The filtered totals.
+	 */
+	public function filter_seating_totals( array $data, WP_REST_Request $request ): array {
+		$ticket_id = $request['id'] ?? false;
+
+		if ( ! $ticket_id ) {
+			return $data;
+		}
+
+		$ticket_object = Tribe_Tickets::load_ticket_object( $ticket_id );
+
+		$event_id = get_post_meta( $ticket_id, Ticket::$event_relation_meta_key, true );
+
+		if ( ! ( $ticket_object && $event_id && tec_tickets_seating_enabled( $event_id ) ) ) {
+			return $data;
+		}
+
+		$data['totals'] = array_merge(
+			$data['totals'],
+			[
+				'stock' => $ticket_object->stock(),
+			]
+		);
+
+		return $data;
 	}
 
 	/**
