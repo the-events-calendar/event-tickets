@@ -8,6 +8,7 @@ use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Tickets__Data_API as Data_API;
 use Tribe__Tickets__Global_Stock as Global_Stock;
@@ -15,6 +16,7 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
 class Seat_Types_Test extends WPTestCase {
 	use Ticket_Maker;
 	use SnapshotAssertions;
+	use Order_Maker;
 
 	/**
 	 * @before
@@ -343,10 +345,12 @@ class Seat_Types_Test extends WPTestCase {
 		update_post_meta( $post_3_ticket_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
 		update_post_meta( $post_3_ticket_1, $capacity_meta_key, 10 );
 		update_post_meta( $post_3_ticket_1, '_stock', 8 );
+		$this->create_order( [ $post_3_ticket_1 => 2 ] );
 
 		update_post_meta( $post_3_ticket_2, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-2' );
 		update_post_meta( $post_3_ticket_2, $capacity_meta_key, 20 );
 		update_post_meta( $post_3_ticket_2, '_stock', 16 );
+		$this->create_order( [ $post_3_ticket_2 => 4 ] );
 
 		// Post 4 set up.
 		$post_4_ticket_1 = $this->create_tc_ticket( $post_id_4, 10 );
@@ -358,6 +362,7 @@ class Seat_Types_Test extends WPTestCase {
 		update_post_meta( $post_4_ticket_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-2' );
 		update_post_meta( $post_4_ticket_1, $capacity_meta_key, 20 );
 		update_post_meta( $post_4_ticket_1, '_stock', 16 );
+		$this->create_order( [ $post_4_ticket_1 => 4 ] );
 
 		// Start testing!
 		// We need to mock the update of seat type 2 to simulate the deletion of the seat type.
@@ -507,6 +512,12 @@ class Seat_Types_Test extends WPTestCase {
 		update_post_meta( $post_2_ticket_6, $capacity_meta_key, 30 );
 		update_post_meta( $post_2_ticket_6, '_stock', 11 );
 
+		$this->create_order( [
+			$post_2_ticket_1 => 4,
+			$post_2_ticket_5 => 8,
+			$post_2_ticket_6 => 19,
+		] );
+
 		// Post 3 set up.
 		$post_3_ticket_1 = $this->create_tc_ticket( $post_id_3, 10 );
 		$post_3_ticket_2 = $this->create_tc_ticket( $post_id_3, 20 );
@@ -538,6 +549,11 @@ class Seat_Types_Test extends WPTestCase {
 		update_post_meta( $post_4_ticket_2, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-2' );
 		update_post_meta( $post_4_ticket_2, $capacity_meta_key, 20 );
 		update_post_meta( $post_4_ticket_2, '_stock', 15 );
+
+		$this->create_order( [
+			$post_4_ticket_1 => 3,
+			$post_4_ticket_2 => 5,
+		] );
 
 		// Post 5 set up.
 		$post_5_ticket_1 = $this->create_tc_ticket( $post_id_5, 10 );
@@ -571,6 +587,11 @@ class Seat_Types_Test extends WPTestCase {
 		update_post_meta( $post_6_ticket_2, $capacity_meta_key, 20 );
 		update_post_meta( $post_6_ticket_2, '_stock', 16 );
 
+		$this->create_order( [
+			$post_6_ticket_1 => 5,
+			$post_6_ticket_2 => 4,
+		] );
+
 		// Post 7 set up.
 		$post_7_ticket_1 = $this->create_tc_ticket( $post_id_7, 10 );
 
@@ -593,6 +614,10 @@ class Seat_Types_Test extends WPTestCase {
 		update_post_meta( $post_8_ticket_1, $capacity_meta_key, 20 );
 		update_post_meta( $post_8_ticket_1, '_stock', 12 );
 
+		$this->create_order( [
+			$post_8_ticket_1 => 8
+		] );
+
 		// Post 9 set up.
 		$post_9_ticket_1 = $this->create_tc_ticket( $post_id_9, 10 );
 
@@ -614,6 +639,10 @@ class Seat_Types_Test extends WPTestCase {
 		update_post_meta( $post_10_ticket_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
 		update_post_meta( $post_10_ticket_1, $capacity_meta_key, 10 );
 		update_post_meta( $post_10_ticket_1, '_stock', 8 );
+
+		$this->create_order( [
+			$post_10_ticket_1 => 2
+		] );
 
 		// Start testing!
 		// We need to mock the update of seat type 2 to simulate the deletion of the seat type.
@@ -798,6 +827,10 @@ class Seat_Types_Test extends WPTestCase {
 		update_post_meta( $post_2_ticket_1, $capacity_meta_key, 20 );
 		update_post_meta( $post_2_ticket_1, '_stock', 16 );
 
+		$this->create_order([
+			$post_2_ticket_1 => 4
+		]);
+
 		// Start testing!
 		// We need to mock the update of seat type 2 to simulate the deletion of the seat type.
 		update_post_meta( $post_1_ticket_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
@@ -820,7 +853,7 @@ class Seat_Types_Test extends WPTestCase {
 		$this->assertEquals( 26, get_post_meta( $post_2_ticket_1, '_stock', true ) );
 		$this->assertEquals( 'seat-type-uuid-1', get_post_meta( $post_2_ticket_1, Meta::META_KEY_SEAT_TYPE, true ) );
 	}
-	
+
 	public function test_get_in_option_format() {
 		// Create seat types with different name value starting with different letters in random order.
 		Seat_Types::insert_rows_from_service(
@@ -862,11 +895,11 @@ class Seat_Types_Test extends WPTestCase {
 				],
 			]
 		);
-		
+
 		set_transient( Seat_Types::update_transient_name(), time() );
-		
+
 		$seat_types = tribe( Seat_Types::class );
-		
+
 		// Get the seat types in option format and match snapshot.
 		$this->assertMatchesJsonSnapshot( wp_json_encode( $seat_types->get_in_option_format( [ 'layout-uuid-1' ] ), JSON_SNAPSHOT_OPTIONS ) );
 	}

@@ -8,24 +8,14 @@ use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Tables\Layouts as Layouts_Table;
 use TEC\Tickets\Seating\Tables\Maps as Maps_Table;
 use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
+use TEC\Tickets\Seating\Tests\Integration\Truncates_Custom_Tables;
 use Tribe\Tests\Traits\WP_Remote_Mocks;
 use Tribe__Tickets__Data_API as Data_API;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 
 class Layouts_Test extends \Codeception\TestCase\WPTestCase {
 	use WP_Remote_Mocks;
-
-	/**
-	 * @before
-	 * @after
-	 */
-	public function truncate_custom_tables(): void {
-		Seat_Types_Table::truncate();
-		Layouts_Table::truncate();
-		Maps_Table::truncate();
-		delete_transient( Seat_Types::update_transient_name() );
-		delete_transient( Layouts::update_transient_name() );
-	}
+	use Truncates_Custom_Tables;
 
 	/**
 	 * @before
@@ -48,9 +38,6 @@ class Layouts_Test extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function test_invalidate_cache(): void {
-		$this->assertEmpty( get_transient( Layouts::update_transient_name() ) );
-		$this->assertEmpty( get_transient( Seat_Types::update_transient_name() ) );
-
 		$this->given_some_maps_layouts_in_db();
 		set_transient( Seat_Types::update_transient_name(), time() );
 		set_transient( Layouts::update_transient_name(), time() );

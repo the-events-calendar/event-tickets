@@ -10,13 +10,18 @@
 namespace TEC\Tickets\Seating\Commerce;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Seating\Meta;
+use TEC\Tickets\Seating\Service\Service;
+use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
+use Tribe__Cache_Listener as Cache_Listener;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
+use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 use WP_Post;
 
 /**
@@ -27,6 +32,60 @@ use WP_Post;
  * @package TEC\Tickets\Seating\Commerce;
  */
 class Controller extends Controller_Contract {
+	/**
+	 * A reference to the Seating Service facade.
+	 *
+	 * @since TBD
+	 *
+	 * @var Service
+	 */
+	private Service $service;
+
+	/**
+	 * A reference to the Tickets Handler.
+	 *
+	 * @since TBD
+	 *
+	 * @var Tickets_Handler
+	 */
+	private Tickets_Handler $tickets_handler;
+	/**
+	 * A reference to the Seat Types Table handle.
+	 *
+	 * @since TBD
+	 *
+	 * @var Seat_Types_Table
+	 */
+	private Seat_Types_Table $seat_types_table;
+
+	/**
+	 * A reference to the Attendees handler.
+	 *
+	 * @since TBD
+	 *
+	 * @var Attendees
+	 */
+	private Attendees $attendees;
+
+	/**
+	 * Controller constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param Container        $container        A reference to the DI container instance.
+	 * @param Service          $service          A reference to the Seating Service facade.
+	 * @param Seat_Types_Table $seat_types_table A reference to the Seat Types Table handler.
+	 * @param Attendees        $attendees        A reference to the Attendees data handler.
+	 */
+	public function __construct( Container $container, Service $service, Seat_Types_Table $seat_types_table, Attendees $attendees ) {
+		parent::__construct( $container );
+		$this->service = $service;
+		/** @var Tickets_Handler $tickets_handler */
+		$this->tickets_handler  = tribe( 'tickets.handler' );
+		$this->seat_types_table = $seat_types_table;
+		$this->attendees        = $attendees;
+	}
+
 	/**
 	 * Subscribes to the WordPress hooks and actions required by the controller.
 	 *
@@ -41,7 +100,7 @@ class Controller extends Controller_Contract {
 		);
 		add_filter( 'tribe_tickets_ticket_inventory', [ $this, 'get_seated_ticket_inventory' ], 10, 3 );
 		add_filter( 'tec_tickets_get_ticket_counts', [ $this, 'set_event_stock_counts' ], 10, 2 );
-		add_action( 'updated_postmeta', [ $this, 'sync_seated_tickets_stock' ], 10, 4 );
+		add_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ], 10, 4 );
 	}
 
 	/**
@@ -58,7 +117,7 @@ class Controller extends Controller_Contract {
 		);
 		remove_filter( 'tribe_tickets_ticket_inventory', [ $this, 'get_seated_ticket_inventory' ] );
 		remove_filter( 'tec_tickets_get_ticket_counts', [ $this, 'set_event_stock_counts' ] );
-		remove_action( 'updated_postmeta', [ $this, 'sync_seated_tickets_stock' ] );
+		remove_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ] );
 	}
 
 	/**
@@ -192,83 +251,6 @@ class Controller extends Controller_Contract {
 	}
 
 	/**
-	 * Filters the stock update value for a ticket.
-	 *
-	 * @since TBD
-	 *
-	 * @param int    $meta_id    ID of the meta entry.
-	 * @param int    $object_id  ID of the object.
-	 * @param string $meta_key   Meta key.
-	 * @param mixed  $meta_value Meta value.
-	 *
-	 * @return void
-	 */
-	public function sync_seated_tickets_stock( $meta_id, $object_id, $meta_key, $meta_value ): void {
-		if ( Ticket::$stock_meta_key !== $meta_key ) {
-			return;
-		}
-
-		if ( ! is_numeric( $meta_value ) ) {
-			return;
-		}
-
-		$stock = (int) $meta_value;
-
-		if ( 0 > $stock ) {
-			// We are not syncing bugs. Seats can NOT be infinite.
-			return;
-		}
-
-		$seat_type = get_post_meta( $object_id, Meta::META_KEY_SEAT_TYPE, true );
-
-		// Not a seating ticket. We should not modify the stock.
-		if ( ! $seat_type ) {
-			return;
-		}
-
-		$ticket = Tickets::load_ticket_object( $object_id );
-
-		if ( ! $ticket instanceof Ticket_Object ) {
-			return;
-		}
-
-		$event = $ticket->get_event();
-
-		if ( ! $event instanceof WP_Post || ! $event->ID ) {
-			return;
-		}
-
-		// Remove the action to avoid infinite loops.
-		remove_action( 'update_post_metadata', [ $this, 'sync_seated_tickets_stock' ] );
-
-		$updated_stock   = $stock;
-		$prev_meta_value = get_post_meta( $object_id, Ticket::$stock_meta_key, true );
-		if ( $prev_meta_value !== '' ) {
-			$updated_stock = min( $stock, $prev_meta_value );
-		}
-
-		update_post_meta( $object_id, Ticket::$stock_meta_key, $updated_stock );
-
-		$cache_listener = tribe( 'Tribe__Cache_Listener' );
-		// Trigger the cache invalidation for this ticket.
-		$cache_listener->save_post( $object_id, get_post( $object_id ) );
-
-		foreach (
-			tribe_tickets()
-				->where( 'event', $event->ID )
-				->not_in( $ticket->ID )
-				->where( 'meta_equals', Meta::META_KEY_SEAT_TYPE, $seat_type )
-				->get_ids( true ) as $ticket_id
-		) {
-			update_post_meta( $ticket_id, Ticket::$stock_meta_key, $updated_stock );
-			// Trigger the cache invalidation for this ticket.
-			$cache_listener->save_post( $object_id, get_post( $object_id ) );
-		}
-
-		add_action( 'updated_postmeta', [ $this, 'sync_seated_tickets_stock' ], 10, 4 );
-	}
-
-	/**
 	 * Filters the handler used to get the token and object ID from the cookie.
 	 *
 	 * @since TBD
@@ -328,4 +310,132 @@ class Controller extends Controller_Contract {
 			)
 		);
 	}
+
+	/**
+	 * Cross-updates the Ticket stock meta across a set of Tickets sharing the same seat type and post.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $ticket_id The Ticket ID to start the cross-update from.
+	 * @param string $seat_type The seat type UUID.
+	 *
+	 * @return bool Whether the meta update of the Ticket specified by `$ticket_id` was successful or not.
+	 */
+	private function update_seated_ticket_stock( int $ticket_id, string $seat_type ): bool {
+		$ticket = Tickets::load_ticket_object( $ticket_id );
+
+		if ( ! $ticket instanceof Ticket_Object ) {
+			return false;
+		}
+
+		$event = $ticket->get_event();
+
+		if ( ! $event instanceof WP_Post || ! $event->ID ) {
+			return false;
+		}
+
+		$seat_type_seats           = $this->seat_types_table->get_seats( $seat_type );
+		$seat_type_attendees_count = $this->attendees->get_count_by_post_seat_type( $event->ID, $seat_type );
+		$updated_stock             = $seat_type_seats - $seat_type_attendees_count;
+
+		$updated = update_post_meta( $ticket_id, Ticket::$stock_meta_key, $updated_stock );
+
+		// Trigger the save post cache invalidation for this ticket.
+		$cache_listener    = tribe( Cache_Listener::class );
+		$to_invalidate_ids = [ $ticket_id ];
+
+		/*
+		 * Not memoized as its invalidation could not be handled only in this Controller and would run the risk of
+		 * caching the wrong value.
+		 */
+		foreach (
+			tribe_tickets()
+				->where( 'event', $event->ID )
+				->not_in( $ticket->ID )
+				->where( 'meta_equals', Meta::META_KEY_SEAT_TYPE, $seat_type )
+				->get_ids( true ) as $seat_type_ticket_id
+		) {
+			update_post_meta( $seat_type_ticket_id, Ticket::$stock_meta_key, $updated_stock );
+			$to_invalidate_ids[] = $seat_type_ticket_id;
+		}
+
+		// This cross-update might have skipped some methods that would normally invalidate theirs caches: do it now.
+		foreach ( $to_invalidate_ids as $to_invalidate_id ) {
+			// Trigger the save post cache invalidation for this ticket.
+			$cache_listener->save_post( $to_invalidate_id, get_post( $to_invalidate_id ) );
+		}
+
+		return $updated;
+	}
+
+	/**
+	 * Handle the update of some ticket meta keys depending on the service status and taking care to update
+	 * related meta in other Tickets that should be affected.
+	 *
+	 * @since TBD
+	 *
+	 * @param null|bool $check      Whether to allow the update (`null`) or whether the update is already being processed.
+	 * @param int       $object_id  The ID of the object being updated.
+	 * @param string    $meta_key   The meta key being updated.
+	 * @param mixed     $meta_value The new value for the meta key.
+	 *
+	 * @return null|bool Whether to allow the update (`null`) or whether the update is already being processed and
+	 *                   what is the update result (`false|true`).
+	 */
+	public function handle_ticket_meta_update( $check, $object_id, $meta_key, $meta_value ) {
+		if ( $check !== null ) {
+			// Some other code is already controlling the update, so we should not.
+			return $check;
+		}
+
+		if ( ! in_array(
+			$meta_key,
+			[
+				Ticket::$stock_meta_key,
+				$this->tickets_handler->key_capacity,
+			],
+			true
+		) ) {
+			// Not a ticket meta key we care about.
+			return $check;
+		}
+
+		$ticket_post_types = tribe_tickets()->ticket_types();
+
+		if ( ! in_array( get_post_type( $object_id ), $ticket_post_types, true ) ) {
+			// Not a ticket post type.
+			return $check;
+		}
+
+		$seat_type = get_post_meta( $object_id, Meta::META_KEY_SEAT_TYPE, true );
+
+		if ( ! ( $seat_type ) ) {
+			// Not an ASC ticket.
+			return $check;
+		}
+
+		if ( ! $this->service->get_status()->is_ok() ) {
+			// Service status is not OK: prevent the update until the service comes back online.
+			return false;
+		}
+
+		// Remove this filter to avoid infinite loops.
+		remove_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ] );
+
+		if ( $meta_key === Ticket::$stock_meta_key ) {
+			if ( (int) $meta_value < 0 ) {
+				// Not syncing unlimited stock: no such thing as infinite seats.
+				return false;
+			}
+
+			$updated = $this->update_seated_ticket_stock( $object_id, $seat_type );
+		} else {
+			$updated = update_post_meta( $object_id, $meta_key, $meta_value );
+		}
+
+		add_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ], 10, 4 );
+
+		return $updated;
+	}
+
 }

@@ -10,9 +10,12 @@ use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Reservations;
+use TEC\Tickets\Seating\Tables\Seat_Types;
 use TEC\Tickets\Seating\Tables\Sessions;
+use TEC\Tickets\Seating\Tests\Integration\Truncates_Custom_Tables;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tests\Traits\WP_Remote_Mocks;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe__Events__Main as TEC;
@@ -27,6 +30,8 @@ class Timer_Test extends Controller_Test_Case {
 	use OAuth_Token;
 	use Ticket_Maker;
 	use Reservations_Maker;
+	use Truncates_Custom_Tables;
+	use Order_Maker;
 
 	protected string $controller_class = Timer::class;
 
@@ -385,6 +390,27 @@ class Timer_Test extends Controller_Test_Case {
 		update_post_meta( $post_id, Meta::META_KEY_ENABLED, 1 );
 		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-id' );
 
+		// Create the Seat Types.
+		Seat_Types::insert_many(
+			[
+				[
+					'id'     => 'seat-type-uuid-1',
+					'name'   => 'B',
+					'seats'  => 10,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+				[
+					'id'     => 'seat-type-general',
+					'name'   => 'C',
+					'seats'  => 30,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+			]
+		);
+		set_transient( \TEC\Tickets\Seating\Service\Seat_Types::update_transient_name(), time() );
+
 		$post_1_ticket_1 = $this->create_tc_ticket( $post_id, 10 );
 
 		update_post_meta( $post_1_ticket_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
@@ -482,6 +508,7 @@ class Timer_Test extends Controller_Test_Case {
 				update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, 0 );
 
 				$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+				$this->create_order( [ $ticket_id => 2 ] );
 				update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
 				update_post_meta( $ticket_id, '_stock', 0 );
 
@@ -499,7 +526,7 @@ class Timer_Test extends Controller_Test_Case {
 
 				$ticket_id = $this->create_tc_ticket( $post_id, 10 );
 				update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
-				update_post_meta( $ticket_id, '_stock', 10 );
+				update_post_meta( $ticket_id, '_stock', 2 );
 
 				return $post_id;
 			}
@@ -520,6 +547,7 @@ class Timer_Test extends Controller_Test_Case {
 				update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 0 );
 
 				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+				$this->create_order( [ $ticket_id => 2 ] );
 				update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
 				update_post_meta( $ticket_id, '_stock', 0 );
 
@@ -544,6 +572,7 @@ class Timer_Test extends Controller_Test_Case {
 				update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 0 );
 
 				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+				$this->create_order( [ $ticket_id => 2 ] );
 				update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
 				update_post_meta( $ticket_id, '_stock', 0 );
 
@@ -567,7 +596,7 @@ class Timer_Test extends Controller_Test_Case {
 
 				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
 				update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
-				update_post_meta( $ticket_id, '_stock', 10 );
+				update_post_meta( $ticket_id, '_stock', 2 );
 
 				return $event_id;
 			}
@@ -578,6 +607,20 @@ class Timer_Test extends Controller_Test_Case {
 	 * @dataProvider interrupt_data_provider
 	 */
 	public function test_ajax_interrupt( \Closure $fixture ): void {
+		// Create the Seat Types.
+		Seat_Types::insert_many(
+			[
+				[
+					'id'     => 'seat-type-uuid',
+					'name'   => 'A',
+					'seats'  => 2,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+			]
+		);
+		set_transient( \TEC\Tickets\Seating\Service\Seat_Types::update_transient_name(), time() );
+
 		$post_id = $fixture();
 
 		// Create a previous session.

@@ -3,20 +3,28 @@
 namespace TEC\Tickets\Seating\Commerce;
 
 use Closure;
+use Generator;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Seating\Meta;
+use TEC\Tickets\Seating\Tables\Layouts;
+use TEC\Tickets\Seating\Tables\Maps;
+use TEC\Tickets\Seating\Tables\Seat_Types;
+use TEC\Tickets\Seating\Tables\Sessions;
+use TEC\Tickets\Seating\Tests\Integration\Truncates_Custom_Tables;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe__Tickets__Data_API as Data_API;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use Tribe__Tickets__Tickets;
 
 class Controller_Test extends Controller_Test_Case {
 	use Ticket_Maker;
 	use Order_Maker;
+	use Truncates_Custom_Tables;
 
 	protected string $controller_class = Controller::class;
 
@@ -41,14 +49,14 @@ class Controller_Test extends Controller_Test_Case {
 				$modules[ Module::class ] = tribe( Module::class )->plugin_name;
 
 				return $modules;
-			} 
+			}
 		);
 
 		// Reset Data_API object, so it sees Tribe Commerce.
 		tribe_singleton( 'tickets.data_api', new Data_API() );
 	}
 
-	public function filter_timer_token_object_id_entries_data_provider(): \Generator {
+	public function filter_timer_token_object_id_entries_data_provider(): Generator {
 		yield 'no entries' => [
 			function (): array {
 				return [
@@ -189,6 +197,34 @@ class Controller_Test extends Controller_Test_Case {
 			]
 		);
 
+		// Create the Seat Types.
+		Seat_Types::insert_many(
+			[
+				[
+					'id'     => 'seat-type-uuid-A',
+					'name'   => 'A',
+					'seats'  => 30,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+				[
+					'id'     => 'seat-type-uuid-B',
+					'name'   => 'B',
+					'seats'  => 50,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+				[
+					'id'     => 'seat-type-uuid-C',
+					'name'   => 'C',
+					'seats'  => 20,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+			]
+		);
+		set_transient( \TEC\Tickets\Seating\Service\Seat_Types::update_transient_name(), time() );
+
 		// Group A.
 		update_post_meta( $ticket_id1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-A' );
 		update_post_meta( $ticket_id2, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-A' );
@@ -295,7 +331,7 @@ class Controller_Test extends Controller_Test_Case {
 		$ticket_1 = tribe( Module::class )->get_ticket( $event_id, $ticket_id1 );
 		$ticket_2 = tribe( Module::class )->get_ticket( $event_id, $ticket_id2 );
 		// Make sure we are not syncing infinite seats.
-		$this->assertEquals( 0, $ticket_1->stock() );
+		$this->assertEquals( 30 - 5, $ticket_1->stock() );
 		$this->assertEquals( 30 - 5, $ticket_2->stock() );
 	}
 
@@ -316,7 +352,7 @@ class Controller_Test extends Controller_Test_Case {
 			$filtered_entries,
 		);
 	}
-	
+
 	public function test_stock_count_for_seated_tickets() {
 		$controller = $this->make_controller();
 		$controller->register();
@@ -328,16 +364,51 @@ class Controller_Test extends Controller_Test_Case {
 				'duration'   => 2 * HOUR_IN_SECONDS,
 			]
 		)->create()->ID;
-		
+
+		// Create the Seat Types.
+		Seat_Types::insert_many(
+			[
+				[
+					'id'     => 'some-seat-type-uuid',
+					'name'   => 'A',
+					'seats'  => 5,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+				[
+					'id'     => 'other-seat-type-uuid',
+					'name'   => 'B',
+					'seats'  => 15,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+				[
+					'id'     => 'seat-type-vip',
+					'name'   => 'C',
+					'seats'  => 20,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+				[
+					'id'     => 'seat-type-general',
+					'name'   => 'D',
+					'seats'  => 30,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+			]
+		);
+		set_transient( \TEC\Tickets\Seating\Service\Seat_Types::update_transient_name(), time() );
+
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
-		
+
 		// Set the Event global stock level to 20.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 20 );
-		
+
 		update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
 		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 1 );
-		
+
 		// Add a ticket with 5 capacity.
 		$vip = $this->create_tc_ticket(
 			$event_id,
@@ -349,15 +420,15 @@ class Controller_Test extends Controller_Test_Case {
 				],
 			]
 		);
-		
+
 		update_post_meta( $vip, Meta::META_KEY_SEAT_TYPE, 'some-seat-type-uuid' );
-		
+
 		// Only`vip` ticket should be available.
-		$counts = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
-		
+		$counts = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+
 		$this->assertEquals( 5, $counts['tickets']['stock'] );
 		$this->assertEquals( 5, $counts['tickets']['available'] );
-		
+
 		$general = $this->create_tc_ticket(
 			$event_id,
 			10,
@@ -368,40 +439,40 @@ class Controller_Test extends Controller_Test_Case {
 				],
 			]
 		);
-		
+
 		update_post_meta( $general, Meta::META_KEY_SEAT_TYPE, 'other-seat-type-uuid' );
-		
+
 		// Both `vip` and `general` tickets should be available.
-		$counts = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
-		
+		$counts = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+
 		$this->assertEquals( 20, $counts['tickets']['stock'] );
 		$this->assertEquals( 20, $counts['tickets']['available'] );
-		
+
 		$order = $this->create_order(
 			[
 				$vip => 5,
 			]
 		);
-		
+
 		// Stock should be reduced for `vip` ticket.
-		$counts = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
-		
+		$counts = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+
 		$this->assertEquals( 15, $counts['tickets']['stock'] );
 		$this->assertEquals( 15, $counts['tickets']['available'] );
-		
+
 		$order_2 = $this->create_order(
 			[
 				$general => 15,
 			]
 		);
-		
+
 		// Stock should be reduced for `general` ticket and no tickets should be available.
-		$counts = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
-		
+		$counts = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+
 		$this->assertEquals( 0, $counts['tickets']['stock'] );
 		$this->assertEquals( 0, $counts['tickets']['available'] );
 	}
-	
+
 	public function test_stock_count_for_multiple_same_seated_types() {
 		$controller = $this->make_controller();
 		$controller->register();
@@ -413,16 +484,44 @@ class Controller_Test extends Controller_Test_Case {
 				'duration'   => 2 * HOUR_IN_SECONDS,
 			]
 		)->create()->ID;
-		
+
+		// Create the Seat Types.
+		Seat_Types::insert_many(
+			[
+				[
+					'id'     => 'seat-type-uuid',
+					'name'   => 'A',
+					'seats'  => 10,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+				[
+					'id'     => 'seat-type-vip',
+					'name'   => 'B',
+					'seats'  => 20,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+				[
+					'id'     => 'seat-type-general',
+					'name'   => 'C',
+					'seats'  => 30,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+			]
+		);
+		set_transient( \TEC\Tickets\Seating\Service\Seat_Types::update_transient_name(), time() );
+
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
-		
+
 		// Set the Event global stock level to 20.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 20 );
-		
+
 		update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
 		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 1 );
-		
+
 		// Add a ticket with 5 capacity.
 		$vip = $this->create_tc_ticket(
 			$event_id,
@@ -434,9 +533,9 @@ class Controller_Test extends Controller_Test_Case {
 				],
 			]
 		);
-		
+
 		update_post_meta( $vip, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
-		
+
 		$general = $this->create_tc_ticket(
 			$event_id,
 			10,
@@ -447,26 +546,26 @@ class Controller_Test extends Controller_Test_Case {
 				],
 			]
 		);
-		
+
 		update_post_meta( $general, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
-		
-		$count = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+
+		$count = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
 
 		$this->assertEquals( 10, $count['tickets']['stock'] );
 		$this->assertEquals( 10, $count['tickets']['available'] );
-		
+
 		$order = $this->create_order(
 			[
 				$vip => 5,
 			]
 		);
-		
-		$count = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
-		
+
+		$count = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+
 		$this->assertEquals( 5, $count['tickets']['stock'] );
 		$this->assertEquals( 5, $count['tickets']['available'] );
 	}
-	
+
 	public function test_stock_count_for_multiple_seat_typed_tickets() {
 		$controller = $this->make_controller();
 		$controller->register();
@@ -478,16 +577,37 @@ class Controller_Test extends Controller_Test_Case {
 				'duration'   => 2 * HOUR_IN_SECONDS,
 			]
 		)->create()->ID;
-		
+
+		// Create the Seat Types.
+		Seat_Types::insert_many(
+			[
+				[
+					'id'     => 'seat-type-vip',
+					'name'   => 'B',
+					'seats'  => 20,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+				[
+					'id'     => 'seat-type-general',
+					'name'   => 'C',
+					'seats'  => 30,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+			]
+		);
+		set_transient( \TEC\Tickets\Seating\Service\Seat_Types::update_transient_name(), time() );
+
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
-		
+
 		// Set the Event global stock level to 20.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 50 );
-		
+
 		update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
 		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 1 );
-		
+
 		// Add a ticket with 5 capacity.
 		$vip = $this->create_tc_ticket(
 			$event_id,
@@ -499,9 +619,9 @@ class Controller_Test extends Controller_Test_Case {
 				],
 			]
 		);
-		
+
 		update_post_meta( $vip, Meta::META_KEY_SEAT_TYPE, 'seat-type-vip' );
-		
+
 		$general = $this->create_tc_ticket(
 			$event_id,
 			10,
@@ -512,9 +632,9 @@ class Controller_Test extends Controller_Test_Case {
 				],
 			]
 		);
-		
+
 		update_post_meta( $general, Meta::META_KEY_SEAT_TYPE, 'seat-type-general' );
-		
+
 		$child = $this->create_tc_ticket(
 			$event_id,
 			10,
@@ -525,27 +645,27 @@ class Controller_Test extends Controller_Test_Case {
 				],
 			]
 		);
-		
+
 		update_post_meta( $child, Meta::META_KEY_SEAT_TYPE, 'seat-type-general' );
-		
-		$count = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
-		
+
+		$count = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+
 		// Should have full stock.
 		$this->assertEquals( 50, $count['tickets']['stock'] );
 		$this->assertEquals( 50, $count['tickets']['available'] );
-		
+
 		$order = $this->create_order(
 			[
 				$vip => 5,
 			]
 		);
-		
-		$count = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
-		
+
+		$count = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+
 		// Should have full stock.
 		$this->assertEquals( 45, $count['tickets']['stock'] );
 		$this->assertEquals( 45, $count['tickets']['available'] );
-		
+
 		$order_2 = $this->create_order(
 			[
 				$vip     => 15,
@@ -553,9 +673,9 @@ class Controller_Test extends Controller_Test_Case {
 				$child   => 10,
 			]
 		);
-		
-		$count = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
-		
+
+		$count = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+
 		// Should be 45-25.
 		$this->assertEquals( 45 - 35, $count['tickets']['stock'] );
 		$this->assertEquals( 45 - 35, $count['tickets']['available'] );
