@@ -123,6 +123,8 @@ class Controller extends Controller_Contract {
 		// Manage Order and Attendee data.
 		$this->container->register( Orders\Controller::class );
 
+		$this->container->register( Delete_Operations::class );
+
 		/*
 		 * The Timer will have to handle the AJAX and initial requests to handle and render the timer.
 		 * For this reason, it's always registered.
