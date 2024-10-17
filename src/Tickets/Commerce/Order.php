@@ -307,6 +307,7 @@ class Order extends Abstract_Order {
 	 * Modify the status of a given order based on Slug.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Added the transient to prevent multiple status changes in a short period.
 	 *
 	 * @throws \Tribe__Repository__Usage_Error
 	 *
@@ -322,6 +323,15 @@ class Order extends Abstract_Order {
 		if ( ! $status ) {
 			return false;
 		}
+
+		// If status change has already been attempted in the last few seconds, bail.
+		$transient_key = 'tec_tickets_tc_order_modify_status_' . $order_id . '_' . $status->get_wp_slug();
+		$transient     = get_transient( $transient_key );
+		if ( $transient ) {
+			return false;
+		}
+
+		set_transient( $transient_key, true, 10 );
 
 		$can_apply = $status->can_apply_to( $order_id, $status );
 		if ( ! $can_apply ) {
