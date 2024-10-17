@@ -1137,7 +1137,7 @@ class Ajax extends Controller_Contract {
 		$tickets = tribe_tickets()->where( 'event', $post_id )->get_ids( true );
 
 		// We're handling the update of the ticket meta ourselves.
-		remove_filter('update_post_metadata', [tribe(Controller::class), 'handle_ticket_meta_update'], 10);
+		remove_filter( 'update_post_metadata', [ tribe( Controller::class ), 'handle_ticket_meta_update' ], 10 );
 
 		foreach ( $tickets as $ticket_id ) {
 			$previous_capacity = get_post_meta( $ticket_id, $capacity_meta_key, true );

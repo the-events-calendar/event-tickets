@@ -70,20 +70,20 @@ class Controller extends Controller_Contract {
 	/**
 	 * Controller constructor.
 	 *
-	 * since TBD
+	 * @since TBD
 	 *
-	 * @param Container $container A reference to the DI container instance.
-	 * @param Service   $service   A reference to the Seating Service facade.
-	 * @param Seat_Types_Table  $seat_types_table A reference to the Seat Types Table handler.
-	 * @param Attendees $attendees A reference to the Attendees data handler.
+	 * @param Container        $container        A reference to the DI container instance.
+	 * @param Service          $service          A reference to the Seating Service facade.
+	 * @param Seat_Types_Table $seat_types_table A reference to the Seat Types Table handler.
+	 * @param Attendees        $attendees        A reference to the Attendees data handler.
 	 */
-	public function __construct( Container $container, Service $service, Seat_Types_Table  $seat_types_table, Attendees $attendees ) {
+	public function __construct( Container $container, Service $service, Seat_Types_Table $seat_types_table, Attendees $attendees ) {
 		parent::__construct( $container );
 		$this->service = $service;
 		/** @var Tickets_Handler $tickets_handler */
-		$this->tickets_handler = tribe( 'tickets.handler' );
+		$this->tickets_handler  = tribe( 'tickets.handler' );
 		$this->seat_types_table = $seat_types_table;
-		$this->attendees = $attendees;
+		$this->attendees        = $attendees;
 	}
 
 	/**
@@ -346,7 +346,8 @@ class Controller extends Controller_Contract {
 
 		/*
 		 * Not memoized as its invalidation could not be handled only in this Controller and would run the risk of
-		 * caching the wrong value. */
+		 * caching the wrong value.
+		 */
 		foreach (
 			tribe_tickets()
 				->where( 'event', $event->ID )
@@ -387,10 +388,14 @@ class Controller extends Controller_Contract {
 			return $check;
 		}
 
-		if ( ! in_array( $meta_key, [
-			Ticket::$stock_meta_key,
-			$this->tickets_handler->key_capacity,
-		], true ) ) {
+		if ( ! in_array(
+			$meta_key,
+			[
+				Ticket::$stock_meta_key,
+				$this->tickets_handler->key_capacity,
+			],
+			true
+		) ) {
 			// Not a ticket meta key we care about.
 			return $check;
 		}
@@ -430,7 +435,7 @@ class Controller extends Controller_Contract {
 
 		add_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ], 10, 4 );
 
-		return  $updated;
+		return $updated;
 	}
 
 }

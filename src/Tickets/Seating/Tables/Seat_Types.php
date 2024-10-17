@@ -79,7 +79,7 @@ class Seat_Types extends Table {
 	public function get_seats( string $seat_type ): int {
 		return (int) DB::get_var(
 			DB::prepare(
-				"SELECT seats FROM %i WHERE id = %s",
+				'SELECT seats FROM %i WHERE id = %s',
 				self::table_name( true ),
 				$seat_type
 			)
