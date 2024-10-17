@@ -16,9 +16,8 @@ use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Order_Modifiers\Controller;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
-use TEC\Tickets\Order_Modifiers\Factory;
+use TEC\Tickets\Order_Modifiers\Repositories\Fees as Fee_Repository;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifier_Relationship;
-use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers;
 use Tribe__Template;
 use WP_Post;
 
@@ -59,9 +58,9 @@ abstract class Abstract_Fees {
 	 * Repository for accessing order modifiers.
 	 *
 	 * @since TBD
-	 * @var Order_Modifiers
+	 * @var Fee_Repository
 	 */
-	protected Order_Modifiers $order_modifiers_repository;
+	protected Fee_Repository $order_modifiers_repository;
 
 	/**
 	 * Repository for accessing and managing relationships between order modifiers.
@@ -113,7 +112,7 @@ abstract class Abstract_Fees {
 	public function __construct() {
 		$this->modifier_strategy                       = tribe( Controller::class )->get_modifier( $this->modifier_type );
 		$this->manager                                 = new Modifier_Manager( $this->modifier_strategy );
-		$this->order_modifiers_repository              = Factory::get_repository_for_type( $this->modifier_type );
+		$this->order_modifiers_repository              = new Fee_Repository();
 		$this->order_modifiers_relationship_repository = new Order_Modifier_Relationship();
 	}
 
@@ -223,12 +222,7 @@ abstract class Abstract_Fees {
 
 		// Fetch related ticket fees and automatic fees.
 		$related_ticket_fees = $this->order_modifiers_repository->find_relationship_by_post_ids( $ticket_ids, $this->modifier_type );
-		$automatic_fees      = $this->order_modifiers_repository->find_by_modifier_type_and_meta(
-			'fee_applied_to',
-			[ 'per', 'all' ],
-			'fee_applied_to',
-			'all'
-		);
+		$automatic_fees      = $this->order_modifiers_repository->get_all_automatic_fees();
 
 		// Combine the fees and remove duplicates.
 		return $this->extract_and_combine_fees( $related_ticket_fees, $automatic_fees );
