@@ -10,7 +10,9 @@
 namespace TEC\Tickets\Order_Modifiers\Data_Transfer_Objects;
 
 use TEC\Common\StellarWP\Models\DataTransferObject;
+use TEC\Tickets\Order_Modifiers\Factory;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
+use TEC\Tickets\Order_Modifiers\Traits\Valid_Types;
 
 /**
  * Class Order_Modifier_DTO.
@@ -20,6 +22,8 @@ use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
  * @package TEC\Tickets\Order_Modifiers\Data_Transfer_Objects;
  */
 class Order_Modifier_DTO extends DataTransferObject {
+
+	use Valid_Types;
 
 	/**
 	 * The Order Modifier ID.
@@ -147,6 +151,8 @@ class Order_Modifier_DTO extends DataTransferObject {
 	public function toModel(): Order_Modifier {
 		$attributes = get_object_vars( $this );
 
-		return new Order_Modifier( $attributes );
+		return array_key_exists( 'modifier_type', $attributes )
+			? Factory::get_model_for_type( $attributes['modifier_type'], $attributes )
+			: new Order_Modifier( $attributes );
 	}
 }
