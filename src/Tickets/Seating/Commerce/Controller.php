@@ -100,7 +100,16 @@ class Controller extends Controller_Contract {
 		);
 		add_filter( 'tribe_tickets_ticket_inventory', [ $this, 'get_seated_ticket_inventory' ], 10, 3 );
 		add_filter( 'tec_tickets_get_ticket_counts', [ $this, 'set_event_stock_counts' ], 10, 2 );
+		add_filter( 'update_post_metadata', [ $this, 'prevent_capacity_saves_without_service' ], 1, 4 );
 		add_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ], 10, 4 );
+
+		add_action( 'updated_postmeta', function ( $meta_id, $update_object_id, $update_meta_key, $update_meta_value ) {
+			if ( '_tribe_ticket_capacity' !== $update_meta_key ) {
+				return;
+			}
+
+			$who = 'test';
+		}, 10, 4 );
 	}
 
 	/**
@@ -117,7 +126,8 @@ class Controller extends Controller_Contract {
 		);
 		remove_filter( 'tribe_tickets_ticket_inventory', [ $this, 'get_seated_ticket_inventory' ] );
 		remove_filter( 'tec_tickets_get_ticket_counts', [ $this, 'set_event_stock_counts' ] );
-		remove_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ] );
+		remove_filter( 'update_post_metadata', [ $this, 'prevent_capacity_saves_without_service' ], 1 );
+		remove_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ], 10 );
 	}
 
 	/**
@@ -369,6 +379,60 @@ class Controller extends Controller_Contract {
 	}
 
 	/**
+	 * Prevents the update of the capacity meta keys for Tickets that are ASC tickets and Ticket-able Post types that are using Seating.
+	 *
+	 * @since TBD
+	 *
+	 * @param null|bool $check      Whether to allow the update (`null`) or whether the update is already being processed.
+	 * @param int       $object_id  The ID of the object being updated.
+	 * @param string    $meta_key   The meta key being updated.
+	 * @param mixed     $meta_value The new value for the meta key.
+	 *
+	 * @return null|bool Whether to allow the update (`null`) or whether the update is already being processed and
+	 *                   what is the update result (`false|true`).
+	 */
+	public function prevent_capacity_saves_without_service( $check, $object_id, $meta_key, $meta_value ) {
+		if ( $check !== null ) {
+			// Some other code is already controlling the update, so we should not.
+			return $check;
+		}
+
+		if ( ! in_array(
+			$meta_key,
+			[
+				Ticket::$stock_meta_key,
+				$this->tickets_handler->key_capacity,
+			],
+			true
+		) ) {
+			// Not a ticket meta key we care about.
+			return $check;
+		}
+
+		$ticket_post_types      = tribe_tickets()->ticket_types();
+		$ticket_able_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+
+		if ( ! in_array( get_post_type( $object_id ), $ticket_post_types, true ) && ! in_array( get_post_type( $object_id ), $ticket_able_post_types, true ) ) {
+			// Not a ticket post type.
+			return $check;
+		}
+
+		$seat_type = get_post_meta( $object_id, Meta::META_KEY_SEAT_TYPE, true );
+
+		if ( ! $seat_type && ! tec_tickets_seating_enabled( $object_id ) ) {
+			// Not an ASC ticket.
+			return $check;
+		}
+
+		if ( ! $this->service->get_status()->is_ok() ) {
+			// Service status is not OK: prevent the update until the service comes back online.
+			return false;
+		}
+
+		return $check;
+	}
+
+	/**
 	 * Handle the update of some ticket meta keys depending on the service status and taking care to update
 	 * related meta in other Tickets that should be affected.
 	 *
@@ -409,16 +473,10 @@ class Controller extends Controller_Contract {
 
 		$seat_type = get_post_meta( $object_id, Meta::META_KEY_SEAT_TYPE, true );
 
-		if ( ! ( $seat_type ) ) {
+		if ( ! $seat_type ) {
 			// Not an ASC ticket.
 			return $check;
 		}
-
-		if ( ! $this->service->get_status()->is_ok() ) {
-			// Service status is not OK: prevent the update until the service comes back online.
-			return false;
-		}
-
 		// Remove this filter to avoid infinite loops.
 		remove_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ] );
 
@@ -430,6 +488,10 @@ class Controller extends Controller_Contract {
 
 			$updated = $this->update_seated_ticket_stock( $object_id, $seat_type );
 		} else {
+			if ( (int) $meta_value < 0 ) {
+				// Not syncing unlimited capacity: no such thing as infinite seats.
+				return false;
+			}
 			$updated = update_post_meta( $object_id, $meta_key, $meta_value );
 		}
 
