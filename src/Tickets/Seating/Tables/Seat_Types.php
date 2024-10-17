@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Seating\Tables;
 
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
 
 /**
@@ -65,6 +66,25 @@ class Seat_Types extends Table {
 	 * @var string
 	 */
 	protected static $uid_column = 'id';
+
+	/**
+	 * Returns the number of seats for a given seat type.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $seat_type The seat type UUID to return the number of seats for.
+	 *
+	 * @return int The number of seats for the given seat type. If the seat type does not exist, returns `0`.
+	 */
+	public function get_seats( string $seat_type ): int {
+		return (int) DB::get_var(
+			DB::prepare(
+				"SELECT seats FROM %i WHERE id = %s",
+				self::table_name( true ),
+				$seat_type
+			)
+		);
+	}
 
 	/**
 	 * Returns the table creation SQL in the format supported

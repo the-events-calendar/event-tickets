@@ -256,7 +256,7 @@ class Seat_Types {
 		 * The Commerce controller will, on update of the `_stock` meta, trigger a cross-update of all Tickets sharing the
 		 * same seat type: we're doing this here so the action should not fire.
 		 */
-		remove_action( 'updated_postmeta', [ tribe( Commerce_Controller::class ), 'sync_seated_tickets_stock' ] );
+		remove_action( 'update_post_metadata', [ tribe( Commerce_Controller::class ), 'handle_ticket_meta_update' ] );
 
 		foreach (
 			tribe_tickets()
@@ -278,7 +278,7 @@ class Seat_Types {
 			++$total_updated;
 		}
 
-		add_action( 'updated_postmeta', [ tribe( Commerce_Controller::class ), 'sync_seated_tickets_stock' ], 10, 4 );
+		add_action( 'update_post_metadata', [ tribe( Commerce_Controller::class ), 'handle_ticket_meta_update' ], 10, 4 );
 
 		return $total_updated;
 	}
@@ -307,7 +307,7 @@ class Seat_Types {
 
 		$events_primary = [];
 
-		remove_action( 'updated_postmeta', [ tribe( Commerce_Controller::class ), 'sync_seated_tickets_stock' ] );
+		remove_action( 'update_post_metadata', [ tribe( Commerce_Controller::class ), 'handle_ticket_meta_update' ] );
 
 		foreach (
 			tribe_tickets()
@@ -424,7 +424,7 @@ class Seat_Types {
 			++$total_updated;
 		}
 
-		add_action( 'updated_postmeta', [ tribe( Commerce_Controller::class ), 'sync_seated_tickets_stock' ], 10, 4 );
+		add_action( 'updated_post_metadata', [ tribe( Commerce_Controller::class ), 'handle_ticket_meta_update' ], 10, 4 );
 
 		return $total_updated;
 	}

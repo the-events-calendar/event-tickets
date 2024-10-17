@@ -19,6 +19,7 @@ use TEC\Tickets\Seating\Admin;
 use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Ajax_Methods;
 use TEC\Tickets\Seating\Built_Assets;
+use TEC\Tickets\Seating\Commerce\Controller;
 use TEC\Tickets\Seating\Logging;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Service\Layouts;
@@ -1135,6 +1136,9 @@ class Ajax extends Controller_Contract {
 		// Get tickets by post id.
 		$tickets = tribe_tickets()->where( 'event', $post_id )->get_ids( true );
 
+		// We're handling the update of the ticket meta ourselves.
+		remove_filter('update_post_metadata', [tribe(Controller::class), 'handle_ticket_meta_update'], 10);
+
 		foreach ( $tickets as $ticket_id ) {
 			$previous_capacity = get_post_meta( $ticket_id, $capacity_meta_key, true );
 			$capacity_delta    = $new_seat_capacity - $previous_capacity;
@@ -1162,6 +1166,8 @@ class Ajax extends Controller_Contract {
 		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, $layout_id );
 		update_post_meta( $post_id, $capacity_meta_key, $layout->seats );
 		update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, $layout->seats );
+
+		add_filter( 'update_post_metadata', [ tribe( Controller::class ), 'handle_ticket_meta_update' ], 10, 4 );
 
 		wp_send_json_success(
 			[

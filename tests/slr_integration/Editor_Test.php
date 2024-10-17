@@ -8,6 +8,7 @@ use TEC\Tickets\Seating\Service\Service_Status;
 use TEC\Tickets\Seating\Tables\Layouts;
 use TEC\Tickets\Seating\Tables\Seat_Types;
 use TEC\Tickets\Seating\Tests\Integration\Layouts_Factory;
+use TEC\Tickets\Seating\Tests\Integration\Truncates_Custom_Tables;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Events__Main as TEC;
@@ -20,6 +21,7 @@ class Editor_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
 	use Ticket_Maker;
 	use Order_Maker;
+	use Truncates_Custom_Tables;
 
 	protected string $controller_class = Editor::class;
 
@@ -41,15 +43,6 @@ class Editor_Test extends Controller_Test_Case {
 	}
 
 	/**
-	 * @before
-	 * @after
-	 */
-	public function truncate_custom_tables(): void {
-		Seat_Types::truncate();
-		Layouts::truncate();
-	}
-
-	/**
 	 * @test
 	 */
 	public function it_should_filter_seating_totals(): void {
@@ -62,6 +55,20 @@ class Editor_Test extends Controller_Test_Case {
 		update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_ENABLED, '1' );
 		update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, 40 );
 		update_post_meta( $post_id, $tickets_handler->key_capacity, 40 );
+
+		// Create the Seat Types.
+		Seat_Types::insert_many(
+			[
+				[
+					'id'     => 'some-seat-type-1',
+					'name'   => 'B',
+					'seats'  => 40,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+			]
+		);
+		set_transient( \TEC\Tickets\Seating\Service\Seat_Types::update_transient_name(), time() );
 
 		$ticket_id_1 = $this->create_tc_ticket(
 			$post_id,
