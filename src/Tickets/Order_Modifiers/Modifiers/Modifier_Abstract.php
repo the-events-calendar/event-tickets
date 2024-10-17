@@ -272,7 +272,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		$amount       = $raw_amount / 100;
 		$amount_value = Value::create( $amount );
 
-		return $amount_value->get_string();
+		return number_format( $amount_value->get_decimal(), 2, '.', '' );
 	}
 
 	/**
