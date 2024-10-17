@@ -424,7 +424,7 @@ class Seat_Types {
 			++$total_updated;
 		}
 
-		add_action( 'updated_post_metadata', [ tribe( Commerce_Controller::class ), 'handle_ticket_meta_update' ], 10, 4 );
+		add_action( 'update_post_metadata', [ tribe( Commerce_Controller::class ), 'handle_ticket_meta_update' ], 10, 4 );
 
 		return $total_updated;
 	}
