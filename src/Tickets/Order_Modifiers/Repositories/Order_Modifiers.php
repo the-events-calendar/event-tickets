@@ -381,18 +381,20 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		if ( $default_meta_key ) {
 			$sql      .= ' AND (IFNULL(m.meta_key, %s) = %s)';
 			$params[] = $default_meta_key;
-			$params[] = $meta_key;
 		} else {
-			$sql      .= ' AND m.meta_key = %s';
-			$params[] = $meta_key;
+			$sql .= ' AND m.meta_key = %s';
 		}
 
+		// Add the meta key to the params.
+		$params[] = $meta_key;
+
 		// Handle the meta_value condition: Use IFNULL if a default_meta_value is provided, otherwise check directly.
+		$meta_params_string = implode( ',', array_fill( 0, count( $meta_values ), '%s' ) );
 		if ( $default_meta_value ) {
-			$sql      .= ' AND (IFNULL(m.meta_value, %s) IN (' . implode( ',', array_fill( 0, count( $meta_values ), '%s' ) ) . '))';
+			$sql      .= " AND (IFNULL(m.meta_value, %s) IN ({$meta_params_string}))";
 			$params[] = $default_meta_value;
 		} else {
-			$sql .= ' AND m.meta_value IN (' . implode( ',', array_fill( 0, count( $meta_values ), '%s' ) ) . ')';
+			$sql .= " AND m.meta_value IN ({$meta_params_string})";
 		}
 
 		$params = array_merge( $params, $meta_values );
