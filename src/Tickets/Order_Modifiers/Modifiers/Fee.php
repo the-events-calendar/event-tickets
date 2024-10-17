@@ -12,6 +12,7 @@
 
 namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
+use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Order_Modifiers\Table_Views\Fee_Table;
 use Tribe__Tickets__Admin__Views;
 
@@ -37,14 +38,15 @@ class Fee extends Modifier_Abstract {
 	 * @since TBD
 	 * @var array
 	 */
+	// @todo redscar- refactor into key based array.
 	protected array $required_fields = [
-			'modifier_type',
-			'sub_type',
-			'raw_amount',
-			'slug',
-			'display_name',
-			'status',
-		];
+		'modifier_type',
+		'sub_type',
+		'raw_amount',
+		'slug',
+		'display_name',
+		'status',
+	];
 
 	/**
 	 * Constructor for the fee strategy.
@@ -64,9 +66,9 @@ class Fee extends Modifier_Abstract {
 	 *
 	 * @param array $data The data to insert.
 	 *
-	 * @return mixed The newly inserted modifier or an empty array if no changes were made.
+	 * @return Model The newly inserted modifier or an empty array if no changes were made.
 	 */
-	public function insert_modifier( array $data ) {
+	public function insert_modifier( array $data ): Model {
 		// Save the modifier.
 		$modifier = parent::insert_modifier( $data );
 
@@ -111,9 +113,9 @@ class Fee extends Modifier_Abstract {
 	 *
 	 * @param array $data The data to update.
 	 *
-	 * @return mixed The updated modifier or an empty array if no changes were made.
+	 * @return Model The updated modifier or an empty array if no changes were made.
 	 */
-	public function update_modifier( array $data ) {
+	public function update_modifier( array $data ): Model {
 		// Save the modifier using the parent method.
 		$modifier = parent::update_modifier( $data );
 
@@ -284,7 +286,7 @@ class Fee extends Modifier_Abstract {
 	 * @return void
 	 */
 	public function render_table( array $context ): void {
-		$fee_table = new fee_Table( $this );
+		$fee_table = new Fee_Table( $this );
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 
@@ -327,7 +329,6 @@ class Fee extends Modifier_Abstract {
 	 */
 	public function map_context_to_template( array $context ): array {
 		$order_modifier_fee_applied_to = $this->order_modifiers_meta_repository->find_by_order_modifier_id_and_meta_key( $context['modifier_id'], 'fee_applied_to' )->meta_value ?? '';
-
 		return [
 			'order_modifier_display_name'     => $context['display_name'] ?? '',
 			'order_modifier_slug'             => $context['slug'] ?? $this->generate_unique_slug(),

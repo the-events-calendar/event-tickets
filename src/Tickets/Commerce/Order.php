@@ -435,6 +435,7 @@ class Order extends Abstract_Order {
 		$order_args = [
 			'title'                => $this->generate_order_title( $original_cart_items, $cart->get_cart_hash() ),
 			'total_value'          => $total->get_decimal(),
+			'subtotal'             => $subtotal,
 			'items'                => $items,
 			'gateway'              => $gateway::get_key(),
 			'hash'                 => $cart->get_cart_hash(),

@@ -12,6 +12,7 @@
 
 namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
+use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Commerce\Utils\Value;
 
 /**
@@ -58,19 +59,17 @@ class Modifier_Manager {
 	 *
 	 * @param array $data The data to save the modifier.
 	 *
-	 * @return mixed The result of the insert or update operation, or an empty array if validation fails or no changes
+	 * @return Model The result of the insert or update operation, or an empty array if validation fails or no changes
 	 *     were made.
 	 */
-	public function save_modifier( array $data ): mixed {
+	public function save_modifier( array $data ): Model {
 		$data['modifier_type'] = $this->strategy->get_modifier_type();
 
 		// Validate data before proceeding.
 		if ( ! $this->strategy->validate_data( $data ) ) {
 			// Optionally log the validation failure.
-			// @todo redscar - decide how to handle this.
+			// @todo redscar - Throw an error that it failed validation.
 			error_log( 'Validation failed for ' . $this->strategy->get_modifier_type() );
-
-			return [];
 		}
 
 		// Check if it's an update or an insert.
@@ -203,9 +202,10 @@ class Modifier_Manager {
 		// Apply the fee based on the sub-type.
 		switch ( $sub_type ) {
 			case 'percent':
-				$percentage_fee = $raw_amount / $raw_base_price;
+				$converted_amount = $this->strategy->convert_from_raw_amount( $raw_amount );
+				$percentage_fee   = $this->strategy->convert_from_raw_amount( $raw_base_price * ( $converted_amount / 100 ) );
 
-				return Value::create( $this->strategy->convert_from_raw_amount( $percentage_fee ) );
+				return Value::create( $percentage_fee );
 
 			case 'flat':
 				return Value::create( $this->strategy->convert_from_raw_amount( $raw_amount ) );

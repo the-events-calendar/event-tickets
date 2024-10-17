@@ -126,7 +126,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 		$self->id            = $object->id;
 		$self->modifier_type = $object->modifier_type;
 		$self->sub_type      = $object->sub_type;
-		$self->raw_amount    = $object->raw_amount;
+		$self->raw_amount    = $object->raw_amount ?? 0;
 		$self->slug          = $object->slug;
 		$self->display_name  = $object->display_name;
 		$self->status        = $object->status;

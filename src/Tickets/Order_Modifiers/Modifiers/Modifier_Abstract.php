@@ -22,6 +22,7 @@ namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
 use Exception;
 use InvalidArgumentException;
+use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Exceptions\Not_Found_Exception;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
@@ -136,15 +137,15 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @param array $data The data to insert.
 	 *
-	 * @return mixed The newly inserted modifier or an empty array if no changes were made.
+	 * @return Model The newly inserted modifier or an empty array if no changes were made.
 	 */
-	public function insert_modifier( array $data ) {
+	public function insert_modifier( array $data ): Model {
 		// Ensure the modifier_type is set to the expected one.
 		$data['modifier_type'] = $this->modifier_type;
 
 		// Validate data before proceeding.
 		if ( ! $this->validate_data( $data ) ) {
-			return [];
+			new Order_Modifier( [] );
 		}
 
 		// Use the repository to insert the data into the `order_modifiers` table.
@@ -158,15 +159,15 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @param array $data The data to update.
 	 *
-	 * @return mixed The updated modifier or an empty array if no changes were made.
+	 * @return Model The updated modifier or an empty array if no changes were made.
 	 */
-	public function update_modifier( array $data ) {
+	public function update_modifier( array $data ): Model {
 		// Ensure the modifier_type is set to the expected one.
 		$data['modifier_type'] = $this->modifier_type;
 
 		// Validate data before proceeding.
 		if ( ! $this->validate_data( $data ) ) {
-			return [];
+			new Order_Modifier( [] );
 		}
 
 		// Use the repository to update the data in the `order_modifiers` table.
@@ -239,8 +240,11 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return bool True if the data is valid, false otherwise.
 	 */
 	public function validate_data( array $data ): bool {
+		// @todo redscar - refactor method to generate errors and caller should have catch.
 		foreach ( $this->required_fields as $field ) {
 			if ( empty( $data[ $field ] ) ) {
+				//@todo redscar -  Throw an error that the data is missing.
+				error_log($field .' is missing');
 				return false;
 			}
 		}
@@ -369,7 +373,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @since TBD
 	 *
 	 * @return string The unique slug.
-	 * @throws Exception if random_bytes fails.
+	 * @throws Exception If random_bytes fails.
 	 */
 	public function generate_unique_slug(): string {
 		$slug_length = 7;
@@ -507,11 +511,11 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @param int   $modifier_id The ID of the modifier.
 	 * @param array $args The metadata arguments. Expects 'meta_key', 'meta_value', and can override 'priority'.
 	 *
-	 * @return mixed
+	 * @return Model
 	 *
 	 * @throws InvalidArgumentException If 'meta_key' is not provided.
 	 */
-	protected function handle_meta_data( int $modifier_id, array $args = [] ) {
+	protected function handle_meta_data( int $modifier_id, array $args = [] ): Model {
 		// Default structure for the metadata.
 
 		$defaults = [

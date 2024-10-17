@@ -26,6 +26,8 @@ class Coupons implements Registerable {
 	 * @since TBD
 	 */
 	public function register(): void {
+		// Disbling the coupon check for now.
+		return;
 		// Hook for displaying coupons in the checkout.
 		add_action(
 			'tec_tickets_commerce_checkout_cart_before_footer_quantity',

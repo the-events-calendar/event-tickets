@@ -61,7 +61,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 *
 	 * @since TBD
 	 *
-	 * @param Model $model The model to insert.
+	 * @param Model $model The model to delete.
 	 *
 	 * @return bool
 	 * @throws RuntimeException If the model type is invalid.
@@ -81,7 +81,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 *
 	 * @since TBD
 	 *
-	 * @param Model $model
+	 * @param Model $model The model to insert.
 	 *
 	 * @return Model
 	 * @throws RuntimeException If the model type is invalid.
@@ -302,12 +302,14 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		$order_modifiers_table = Relationship_Table::base_table_name();
 		$builder               = new ModelQueryBuilder( Order_Modifier::class );
 
-		return $builder->from( Table::table_name( false ) . ' as m' )
+		$results = $builder->from( Table::table_name( false ) . ' as m' )
 			->innerJoin( "{$order_modifiers_table} as r", 'm.id', 'r.modifier_id' )
 			->whereIn( 'r.post_id', $post_ids )
 			->where( 'modifier_type', $modifier_type )
 			->where( 'status', $status )
 			->getAll();
+
+		return $results ?? [];
 	}
 
 	/**
