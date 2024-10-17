@@ -301,8 +301,10 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 * @return array The data from the related order modifiers.
 	 */
 	public function find_relationship_by_post_ids( array $post_ids, string $modifier_type, string $status = 'active' ): array {
+		$this->validate_type( $modifier_type );
+
 		$order_modifiers_table = Relationship_Table::base_table_name();
-		$builder               = new ModelQueryBuilder( Order_Modifier::class );
+		$builder               = new ModelQueryBuilder( $this->get_valid_types()[ $modifier_type ] );
 
 		$results = $builder->from( Table::table_name( false ) . ' as m' )
 			->innerJoin( "{$order_modifiers_table} as r", 'm.id', 'r.modifier_id' )
