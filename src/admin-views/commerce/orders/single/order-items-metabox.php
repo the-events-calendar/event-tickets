@@ -12,7 +12,6 @@
 
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
-
 ?>
 <div class="tec-tickets-commerce-single-order--items">
 	<table class="tec-tickets-commerce-single-order--items--table widefat fixed">

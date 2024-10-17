@@ -12,7 +12,9 @@
 
 namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
+use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Order_Modifiers\Table_Views\Fee_Table;
+use Tribe__Tickets__Admin__Views;
 
 /**
  * Concrete Strategy for fee Modifiers.
@@ -36,15 +38,14 @@ class Fee extends Modifier_Abstract {
 	 * @since TBD
 	 * @var array
 	 */
-	protected array $required_fields
-		= [
-			'modifier_type',
-			'sub_type',
-			'fee_amount_cents',
-			'slug',
-			'display_name',
-			'status',
-		];
+	protected array $required_fields = [
+		'modifier_type' => 1,
+		'sub_type'      => 1,
+		'raw_amount'    => 1,
+		'slug'          => 1,
+		'display_name'  => 1,
+		'status'        => 1,
+	];
 
 	/**
 	 * Constructor for the fee strategy.
@@ -64,9 +65,9 @@ class Fee extends Modifier_Abstract {
 	 *
 	 * @param array $data The data to insert.
 	 *
-	 * @return mixed The newly inserted modifier or an empty array if no changes were made.
+	 * @return Model The newly inserted modifier or an empty array if no changes were made.
 	 */
-	public function insert_modifier( array $data ): mixed {
+	public function insert_modifier( array $data ): Model {
 		// Save the modifier.
 		$modifier = parent::insert_modifier( $data );
 
@@ -111,9 +112,9 @@ class Fee extends Modifier_Abstract {
 	 *
 	 * @param array $data The data to update.
 	 *
-	 * @return mixed The updated modifier or an empty array if no changes were made.
+	 * @return Model The updated modifier or an empty array if no changes were made.
 	 */
-	public function update_modifier( array $data ): mixed {
+	public function update_modifier( array $data ): Model {
 		// Save the modifier using the parent method.
 		$modifier = parent::update_modifier( $data );
 
@@ -174,12 +175,14 @@ class Fee extends Modifier_Abstract {
 		// Scenario 1: Multiple modifier_ids and a single post_id.
 		if ( count( $modifier_ids ) > 1 && count( $new_post_ids ) === 1 ) {
 			$this->update_relationships_by_post( $new_post_ids[0], $modifier_ids );
+
 			return;
 		}
 
 		// Scenario 2: Single modifier_id and multiple post_ids.
 		if ( count( $modifier_ids ) === 1 && count( $new_post_ids ) > 1 ) {
 			$this->update_relationships_by_modifier( $modifier_ids[0], $new_post_ids );
+
 			return;
 		}
 
@@ -189,6 +192,7 @@ class Fee extends Modifier_Abstract {
 				// Match each modifier_id with the corresponding post_id.
 				$this->update_relationships_by_modifier( $modifier_id, [ $new_post_ids[ $index ] ] );
 			}
+
 			return;
 		}
 
@@ -206,13 +210,12 @@ class Fee extends Modifier_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int   $modifier_id The ID of the modifier to update.
+	 * @param int   $modifier_id  The ID of the modifier to update.
 	 * @param array $new_post_ids An array of new post IDs to associate with the modifier.
 	 *
 	 * @return void
 	 */
 	public function update_relationships_by_modifier( int $modifier_id, array $new_post_ids ): void {
-
 		// Step 1: Delete all existing relationships for this modifier ID.
 		$this->delete_relationship_by_modifier( $modifier_id );
 
@@ -225,7 +228,6 @@ class Fee extends Modifier_Abstract {
 		}
 	}
 
-
 	/**
 	 * Handles relationships by post ID.
 	 *
@@ -234,13 +236,12 @@ class Fee extends Modifier_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int   $post_id The ID of the post to update.
+	 * @param int   $post_id          The ID of the post to update.
 	 * @param array $new_modifier_ids An array of new modifier IDs to associate with the post.
 	 *
 	 * @return void
 	 */
 	public function update_relationships_by_post( int $post_id, array $new_modifier_ids ): void {
-
 		// Step 1: Delete all existing relationships for this post ID.
 		$this->delete_relationship_by_post( $post_id );
 
@@ -258,19 +259,19 @@ class Fee extends Modifier_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $data The raw form data, typically from $_POST.
+	 * @param array $raw_data The raw form data, typically from $_POST.
 	 *
 	 * @return array The sanitized and mapped data for database insertion or updating.
 	 */
-	public function map_form_data_to_model( array $data ): array {
+	public function map_form_data_to_model( array $raw_data ): array {
 		return [
-			'id'               => isset( $data['order_modifier_id'] ) ? absint( $data['order_modifier_id'] ) : 0,
-			'modifier_type'    => $this->get_modifier_type(),
-			'sub_type'         => sanitize_text_field( $data['order_modifier_sub_type'] ?? '' ),
-			'fee_amount_cents' => $this->convert_to_cents( $data['order_modifier_amount'] ?? 0 ),
-			'slug'             => sanitize_text_field( $data['order_modifier_slug'] ?? '' ),
-			'display_name'     => sanitize_text_field( $data['order_modifier_fee_name'] ?? '' ),
-			'status'           => sanitize_text_field( $data['order_modifier_status'] ?? '' ),
+			'id'            => isset( $raw_data['order_modifier_id'] ) ? absint( $raw_data['order_modifier_id'] ) : 0,
+			'modifier_type' => $this->get_modifier_type(),
+			'sub_type'      => sanitize_text_field( $raw_data['order_modifier_sub_type'] ?? '' ),
+			'raw_amount'    => $this->prepare_raw_amount( $raw_data['order_modifier_amount'] ?? 0 ),
+			'slug'          => sanitize_text_field( $raw_data['order_modifier_slug'] ?? '' ),
+			'display_name'  => sanitize_text_field( $raw_data['order_modifier_fee_name'] ?? '' ),
+			'status'        => sanitize_text_field( $raw_data['order_modifier_status'] ?? '' ),
 		];
 	}
 
@@ -284,7 +285,7 @@ class Fee extends Modifier_Abstract {
 	 * @return void
 	 */
 	public function render_table( array $context ): void {
-		$fee_table = new fee_Table( $this );
+		$fee_table = new Fee_Table( $this );
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 
@@ -331,7 +332,7 @@ class Fee extends Modifier_Abstract {
 			'order_modifier_display_name'     => $context['display_name'] ?? '',
 			'order_modifier_slug'             => $context['slug'] ?? $this->generate_unique_slug(),
 			'order_modifier_sub_type'         => $context['sub_type'] ?? '',
-			'order_modifier_fee_amount_cents' => $this->convert_from_cents( $context['fee_amount_cents'] ?? 0 ),
+			'order_modifier_fee_amount_cents' => $this->convert_from_raw_amount( $context['raw_amount'] ?? 0 ),
 			'order_modifier_status'           => $context['status'] ?? '',
 			'order_modifier_fee_limit'        => $context['fee_limit'] ?? '',
 			'order_modifier_apply_to'         => $order_modifier_fee_applied_to,

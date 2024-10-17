@@ -18,6 +18,8 @@ class Coupons extends Order_Modifiers {
 
 	/**
 	 * Coupons constructor.
+	 *
+	 * @since TBD
 	 */
 	public function __construct() {
 		parent::__construct( 'coupon' );

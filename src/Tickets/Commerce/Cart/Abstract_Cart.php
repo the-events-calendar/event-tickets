@@ -59,6 +59,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 
 					$item['event_id']  = $item['obj']->get_event_id();
 					$item['sub_total'] = $sub_total_value->sub_total( $item['quantity'] );
+					$item['type']      = 'ticket';
 
 					return $item;
 				},

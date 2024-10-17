@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Order_Modifiers;
 
+use InvalidArgumentException;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Registerable;
 
@@ -196,9 +197,8 @@ class Modifier_Admin_Handler implements Registerable {
 
 		// Get the appropriate strategy for the selected modifier type.
 		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
-
 		if ( ! $modifier_strategy ) {
-			return null; // Return null if the strategy is not found.
+			return null;
 		}
 
 		// Use the strategy to retrieve the modifier data by ID.
@@ -261,7 +261,8 @@ class Modifier_Admin_Handler implements Registerable {
 	 */
 	protected function handle_form_submission(): void {
 		// Check if the form was submitted and verify nonce.
-		if ( ! isset( $_POST['order_modifier_form_save'] ) || ! check_admin_referer( 'order_modifier_save_action', 'order_modifier_save_action' ) ) {
+
+		if ( empty( tribe_get_request_var( 'order_modifier_form_save' ) ) || ! check_admin_referer( 'order_modifier_save_action', 'order_modifier_save_action' ) ) {
 			return;
 		}
 
@@ -287,16 +288,16 @@ class Modifier_Admin_Handler implements Registerable {
 			return;
 		}
 
-		// Set the modifier ID in the post data.
-		$_POST['order_modifier_id'] = $context['modifier_id'];
+		// Get the raw POST data, and set the modifier ID.
+		$raw_data                      = tribe_get_request_vars();
+		$raw_data['order_modifier_id'] = $context['modifier_id'];
 
 		// Use the Modifier Manager to sanitize and save the data.
 		$manager       = new Modifier_Manager( $modifier_strategy );
-		$modifier_data = $modifier_strategy->map_form_data_to_model( $_POST );
-		$result        = $manager->save_modifier( $modifier_data );
-
-		// Early bail if saving the modifier failed.
-		if ( empty( $result ) ) {
+		$modifier_data = $modifier_strategy->map_form_data_to_model( $raw_data );
+		try {
+			$result = $manager->save_modifier( $modifier_data );
+		} catch ( InvalidArgumentException $exception ) {
 			$this->render_error_message( __( 'Failed to save modifier.', 'event-tickets' ) );
 			return;
 		}
