@@ -56,6 +56,7 @@ class Controller extends Controller_Contract {
 		add_filter( 'tec_events_pro_custom_tables_v1_add_to_series_available_events', [ $this, 'exclude_seating_events_from_series_list' ] );
 		add_filter( 'filter_block_editor_meta_boxes', [ $this, 'filter_block_editor_series_meta_box' ] );
 		add_action( 'tec_events_pro_custom_tables_v1_event_relationship_updated', [ $this, 'remove_event_relationship_for_seated_events' ] );
+		add_action( 'tec_events_pro_custom_tables_v1_series_relationships_updated', [ $this, 'remove_series_relationship_for_seated_events' ], 10, 2 );
 	}
 	
 	/**
@@ -72,6 +73,7 @@ class Controller extends Controller_Contract {
 		remove_filter( 'tec_events_pro_custom_tables_v1_add_to_series_available_events', [ $this, 'exclude_seating_events_from_series_list' ] );
 		remove_filter( 'filter_block_editor_meta_boxes', [ $this, 'filter_block_editor_series_meta_box' ] );
 		remove_action( 'tec_events_pro_custom_tables_v1_event_relationship_updated', [ $this, 'remove_event_relationship_for_seated_events' ] );
+		remove_action( 'tec_events_pro_custom_tables_v1_series_relationships_updated', [ $this, 'remove_series_relationship_for_seated_events' ] );
 	}
 	
 	/**
@@ -226,12 +228,38 @@ class Controller extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	public function remove_event_relationship_for_seated_events( int $event_id ) {
+	public function remove_event_relationship_for_seated_events( int $event_id ): void {
 		if ( ! tec_tickets_seating_enabled( $event_id ) ) {
 			return;
 		}
 		
 		// Remove the relationship between the event and the series for seating events.
 		Series_Relationship::where( 'event_post_id', '=', $event_id )->delete();
+	}
+	
+	/**
+	 * Remove series relationship for seated events.
+	 *
+	 * @since TBD
+	 *
+	 * @param int        $series_id The series ID.
+	 * @param array<int> $events The event ids.
+	 *
+	 * @return void
+	 */
+	public function remove_series_relationship_for_seated_events( int $series_id, array $events ): void {
+		$seated_events = array_filter(
+			$events,
+			static function ( $event_id ) {
+				return tec_tickets_seating_enabled( $event_id );
+			}
+		);
+		
+		if ( empty( $seated_events ) ) {
+			return;
+		}
+		
+		// Remove the relationship between the series and the events for seating events.
+		Series_Relationship::where_in( 'event_post_id', $seated_events )->delete();
 	}
 }
