@@ -20,6 +20,7 @@ use Tribe__Tickets__Data_API as Data_API;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets;
+use TEC\Tickets\Seating\Service\Service_Status;
 
 class Controller_Test extends Controller_Test_Case {
 	use Ticket_Maker;
@@ -679,5 +680,61 @@ class Controller_Test extends Controller_Test_Case {
 		// Should be 45-25.
 		$this->assertEquals( 45 - 35, $count['tickets']['stock'] );
 		$this->assertEquals( 45 - 35, $count['tickets']['available'] );
+	}
+
+	public function test_no_capacity_updates_while_service_is_down() {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+
+		$capacity_meta_key = tribe( 'tickets.handler' )->key_capacity;
+
+		update_post_meta( $post_id, Meta::META_KEY_ENABLED, '1' );
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-id' );
+		update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
+		update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_ENABLED, '1' );
+		update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, 30 );
+		update_post_meta( $post_id, $capacity_meta_key, 30 );
+
+		update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, '1' );
+		update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'some-seattype-id' );
+		update_post_meta( $ticket_id, '_stock', 30 );
+		update_post_meta( $ticket_id, $capacity_meta_key, 30 );
+
+		$this->assertEquals( 30, get_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, true ) );
+		$this->assertEquals( 30, get_post_meta( $post_id, $capacity_meta_key, true ) );
+		$this->assertEquals( 30, get_post_meta( $ticket_id, $capacity_meta_key, true ) );
+		$this->assertEquals( 30, get_post_meta( $ticket_id, '_stock', true ) );
+
+		update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, 22 );
+		update_post_meta( $post_id, $capacity_meta_key, 22 );
+		update_post_meta( $ticket_id, '_stock', 22 );
+		update_post_meta( $ticket_id, $capacity_meta_key, 22 );
+
+		$this->assertEquals( 22, get_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, true ) );
+		$this->assertEquals( 22, get_post_meta( $post_id, $capacity_meta_key, true ) );
+		$this->assertEquals( 22, get_post_meta( $ticket_id, $capacity_meta_key, true ) );
+		$this->assertEquals( 22, get_post_meta( $ticket_id, '_stock', true ) );
+
+		$service_statuses = [
+			Service_Status::SERVICE_DOWN,
+			Service_Status::NOT_CONNECTED,
+			Service_Status::INVALID_LICENSE,
+			Service_Status::EXPIRED_LICENSE,
+		];
+
+		$this->make_controller()->register();
+
+		foreach ( $service_statuses as $service_status ) {
+			add_filter( 'tec_tickets_seating_service_status', fn( $_status, $backend_base_url ) => new Service_Status( $backend_base_url, $service_status ), 10, 2 );
+
+			update_post_meta( $post_id, $capacity_meta_key, 26 );
+			update_post_meta( $ticket_id, '_stock', 26 );
+			update_post_meta( $ticket_id, $capacity_meta_key, 26 );
+
+			// NO CHanges while service is down!
+			$this->assertEquals( 22, get_post_meta( $post_id, $capacity_meta_key, true ) );
+			$this->assertEquals( 22, get_post_meta( $ticket_id, $capacity_meta_key, true ) );
+			$this->assertEquals( 22, get_post_meta( $ticket_id, '_stock', true ) );
+		}
 	}
 }
