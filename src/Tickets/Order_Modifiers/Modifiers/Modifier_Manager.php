@@ -191,7 +191,7 @@ class Modifier_Manager {
 			return $zero_value;
 		}
 
-		$raw_amount = $item['raw_amount'];
+		$raw_amount = $item['raw_amount'] ?? 0;
 		$sub_type   = $item['sub_type'] ?? '';
 
 		// Apply the fee based on the sub-type.

@@ -269,7 +269,10 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return string The formatted decimal string representing the amount.
 	 */
 	public function convert_from_raw_amount( int $raw_amount ): string {
-		return number_format( $raw_amount / 100, 2, '.', '' );
+		$amount       = $raw_amount / 100;
+		$amount_value = Value::create( $amount );
+
+		return $amount_value->get_string();
 	}
 
 	/**
