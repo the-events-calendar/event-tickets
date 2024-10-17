@@ -203,31 +203,6 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	}
 
 	/**
-	 * Maps and sanitizes raw form data into model-ready data.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $raw_data The raw form data, typically from $_POST.
-	 *
-	 * @return array The sanitized and mapped data for database insertion or updating.
-	 */
-	abstract public function map_form_data_to_model( array $raw_data ): array;
-
-
-	/**
-	 * Maps context data to the template context.
-	 *
-	 * This method prepares the context for rendering the edit form.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $context The raw model data.
-	 *
-	 * @return array The context data ready for rendering the form.
-	 */
-	abstract public function map_context_to_template( array $context ): array;
-
-	/**
 	 * Validates the required fields for the modifier.
 	 *
 	 * This base logic checks if all required fields are present and not empty.
@@ -601,21 +576,6 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	}
 
 	/**
-	 * Abstract method for handling relationship updates.
-	 *
-	 * This method must be implemented in child classes to handle the specific logic for
-	 * updating relationships between modifiers and posts, depending on the modifier type.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $modifier_ids An array of modifier IDs to update.
-	 * @param array $new_post_ids An array of new post IDs to be associated with the fee.
-	 *
-	 * @return void
-	 */
-	abstract public function handle_relationship_update( array $modifier_ids, array $new_post_ids ): void;
-
-	/**
 	 * Retrieves the display name of the modifier in singular or plural form.
 	 *
 	 * This method returns the human-readable display name of the modifier,
@@ -708,7 +668,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 			return true;
 		}
 
-		return false; // Return false if the modifier deletion failed.
+		return false;
 	}
 
 	/**
@@ -742,4 +702,43 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 
 		return $this->convert_to_raw_amount( $amount );
 	}
+
+	/**
+	 * Maps and sanitizes raw form data into model-ready data.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $raw_data The raw form data, typically from $_POST.
+	 *
+	 * @return array The sanitized and mapped data for database insertion or updating.
+	 */
+	abstract public function map_form_data_to_model( array $raw_data ): array;
+
+	/**
+	 * Maps context data to the template context.
+	 *
+	 * This method prepares the context for rendering the edit form.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $context The raw model data.
+	 *
+	 * @return array The context data ready for rendering the form.
+	 */
+	abstract public function map_context_to_template( array $context ): array;
+
+	/**
+	 * Abstract method for handling relationship updates.
+	 *
+	 * This method must be implemented in child classes to handle the specific logic for
+	 * updating relationships between modifiers and posts, depending on the modifier type.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $modifier_ids An array of modifier IDs to update.
+	 * @param array $new_post_ids An array of new post IDs to be associated with the fee.
+	 *
+	 * @return void
+	 */
+	abstract public function handle_relationship_update( array $modifier_ids, array $new_post_ids ): void;
 }
