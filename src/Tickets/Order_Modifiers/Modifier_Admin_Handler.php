@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Order_Modifiers;
 
+use InvalidArgumentException;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Registerable;
 
@@ -294,10 +295,9 @@ class Modifier_Admin_Handler implements Registerable {
 		// Use the Modifier Manager to sanitize and save the data.
 		$manager       = new Modifier_Manager( $modifier_strategy );
 		$modifier_data = $modifier_strategy->map_form_data_to_model( $raw_data );
-		$result        = $manager->save_modifier( $modifier_data );
-
-		// Early bail if saving the modifier failed.
-		if ( empty( $result ) ) {
+		try {
+			$result = $manager->save_modifier( $modifier_data );
+		} catch ( InvalidArgumentException $exception ) {
 			$this->render_error_message( __( 'Failed to save modifier.', 'event-tickets' ) );
 			return;
 		}
