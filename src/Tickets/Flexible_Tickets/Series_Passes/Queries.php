@@ -92,7 +92,9 @@ class Queries {
 			"SELECT COUNT(DISTINCT(IF(p.post_type = %s, p.ID, sr.event_post_id))) FROM $wpdb->posts p
 			 JOIN $wpdb->postmeta pm ON ( $meta_keys_in ) AND p.ID = pm.meta_value
 			 LEFT JOIN $series_relationships sr ON ( p.ID = sr.series_post_id )
-				 WHERE p.post_type IN (%s,%s) AND (p.post_parent = 0 OR p.post_parent IS NULL)",
+				WHERE p.post_type IN (%s,%s)
+				AND (p.post_parent = 0 OR p.post_parent IS NULL)
+				AND p.post_status NOT IN ('auto-draft', 'trash')",
 			TEC::POSTTYPE,
 			TEC::POSTTYPE,
 			Series_Post_Type::POSTTYPE
@@ -119,7 +121,7 @@ class Queries {
 							JOIN $wpdb->postmeta pm ON ( $meta_keys_in ) AND p.ID = pm.meta_value
 							LEFT JOIN $series_relationships sr ON ( p.ID = sr.series_post_id )
 								 WHERE p.post_type IN (%s,%s)
-				 ) AND p.post_type = %s AND (p.post_parent = 0 OR p.post_parent IS NULL)",
+				 ) AND p.post_type = %s AND p.post_status NOT IN ('auto-draft', 'trash') AND (p.post_parent = 0 OR p.post_parent IS NULL)",
 			TEC::POSTTYPE,
 			TEC::POSTTYPE,
 			Series_Post_Type::POSTTYPE,
