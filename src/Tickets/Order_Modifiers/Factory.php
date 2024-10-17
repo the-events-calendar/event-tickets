@@ -98,7 +98,7 @@ class Factory {
 				return CouponModel::create( $attributes );
 
 			default:
-				$class = ModifiersRepository::class;
+				$class = ModifierModel::class;
 
 				/**
 				 * Filters the order modifiers model class for a given type.
