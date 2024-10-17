@@ -102,14 +102,6 @@ class Controller extends Controller_Contract {
 		add_filter( 'tec_tickets_get_ticket_counts', [ $this, 'set_event_stock_counts' ], 10, 2 );
 		add_filter( 'update_post_metadata', [ $this, 'prevent_capacity_saves_without_service' ], 1, 4 );
 		add_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ], 10, 4 );
-
-		add_action( 'updated_postmeta', function ( $meta_id, $update_object_id, $update_meta_key, $update_meta_value ) {
-			if ( '_tribe_ticket_capacity' !== $update_meta_key ) {
-				return;
-			}
-
-			$who = 'test';
-		}, 10, 4 );
 	}
 
 	/**
