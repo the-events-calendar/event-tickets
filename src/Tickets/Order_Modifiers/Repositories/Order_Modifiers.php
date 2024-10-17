@@ -235,7 +235,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	}
 
 	/**
-	 * Finds all active Order Modifiers.
+	 * Finds all active Order Modifiers of the current type.
 	 *
 	 * @since TBD
 	 *
@@ -243,6 +243,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 */
 	public function find_active(): array {
 		$result = $this->prepareQuery()
+			->where( 'modifier_type', $this->modifier_type )
 			->where( 'status', 'active' )
 			->getAll();
 
@@ -261,6 +262,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 */
 	public function find_by_slug( string $slug ): Order_Modifier {
 		$result = $this->prepareQuery()
+			->where( 'modifier_type', $this->modifier_type )
 			->where( 'slug', $slug )
 			->where( 'status', 'active' )
 			->get();
@@ -368,6 +370,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
         LEFT JOIN {$order_modifiers_meta_table} m
         ON o.id = m.order_modifier_id
         WHERE o.modifier_type = %s
+        AND o.status = 'active'
     ";
 
 		$params = [ $this->modifier_type ];
