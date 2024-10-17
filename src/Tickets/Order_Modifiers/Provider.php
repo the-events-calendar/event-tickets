@@ -62,6 +62,9 @@ final class Provider extends ServiceProvider {
 		// Maybe register the Coupon classes.
 		if ( apply_filters( 'tec_tickets_order_modifiers_coupons_enabled', false ) ) {
 			$this->register_couopon_classes();
+			$this->container->setVar( 'tickets_coupons_enabled', true );
+		} else {
+			$this->container->setVar( 'tickets_coupons_enabled', false );
 		}
 
 		// Tag our classes that have their own registration needs.
