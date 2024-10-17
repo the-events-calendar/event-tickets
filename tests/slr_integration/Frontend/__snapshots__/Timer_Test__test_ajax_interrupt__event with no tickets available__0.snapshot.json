@@ -1,0 +1,6 @@
+{
+    "title": "Sold Out",
+    "content": "This event is now sold out.",
+    "buttonLabel": "Find Another Event",
+    "redirectUrl": "http://wordpress.test/events/"
+}

@@ -8,7 +8,11 @@ exports[`Ticket Constants EDD_CLASS 1`] = `"Tribe__Tickets_Plus__Commerce__EDD__
 
 exports[`Ticket Constants EDD_ORDERS 1`] = `"edd-orders"`;
 
+exports[`Ticket Constants GLOBAL 1`] = `"global"`;
+
 exports[`Ticket Constants INDEPENDENT 1`] = `"independent"`;
+
+exports[`Ticket Constants IS_FREE_TC_TICKET_ALLOWED 1`] = `undefined`;
 
 exports[`Ticket Constants OWN 1`] = `"own"`;
 
@@ -41,6 +45,8 @@ exports[`Ticket Constants RSVP 1`] = `"rsvp"`;
 
 exports[`Ticket Constants RSVP_CLASS 1`] = `"Tribe__Tickets__RSVP"`;
 
+exports[`Ticket Constants SALE_PRICE_LABELS 1`] = `undefined`;
+
 exports[`Ticket Constants SHARED 1`] = `"shared"`;
 
 exports[`Ticket Constants SUFFIX 1`] = `"postfix"`;
@@ -50,6 +56,8 @@ exports[`Ticket Constants TC 1`] = `"tribe-commerce"`;
 exports[`Ticket Constants TC_CLASS 1`] = `"Tribe__Tickets__Commerce__PayPal__Main"`;
 
 exports[`Ticket Constants TC_ORDERS 1`] = `"tpp-orders"`;
+
+exports[`Ticket Constants TICKET_LABELS 1`] = `undefined`;
 
 exports[`Ticket Constants TICKET_ORDERS_PAGE_SLUG 1`] = `
 Object {
