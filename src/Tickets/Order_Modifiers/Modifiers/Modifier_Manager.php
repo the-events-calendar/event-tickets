@@ -65,12 +65,7 @@ class Modifier_Manager {
 	public function save_modifier( array $data ): Model {
 		$data['modifier_type'] = $this->strategy->get_modifier_type();
 
-		// Validate data before proceeding.
-		if ( ! $this->strategy->validate_data( $data ) ) {
-			// Optionally log the validation failure.
-			// @todo redscar - Throw an error that it failed validation.
-			error_log( 'Validation failed for ' . $this->strategy->get_modifier_type() );
-		}
+		$this->strategy->validate_data( $data );
 
 		// Check if it's an update or an insert.
 		if ( isset( $data['id'] ) && is_numeric( $data['id'] ) && (int) $data['id'] > 0 ) {

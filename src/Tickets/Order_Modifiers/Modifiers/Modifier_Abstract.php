@@ -76,6 +76,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 
 	/**
 	 * Fields required by this modifier.
+	 * The required field should be the key name.
 	 *
 	 * @since TBD
 	 * @var array
@@ -143,8 +144,9 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		// Ensure the modifier_type is set to the expected one.
 		$data['modifier_type'] = $this->modifier_type;
 
-		// Validate data before proceeding.
-		if ( ! $this->validate_data( $data ) ) {
+		try {
+			$this->validate_data( $data );
+		} catch ( InvalidArgumentException $exception ) {
 			new Order_Modifier( [] );
 		}
 
@@ -165,8 +167,9 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		// Ensure the modifier_type is set to the expected one.
 		$data['modifier_type'] = $this->modifier_type;
 
-		// Validate data before proceeding.
-		if ( ! $this->validate_data( $data ) ) {
+		try {
+			$this->validate_data( $data );
+		} catch ( InvalidArgumentException $exception ) {
 			new Order_Modifier( [] );
 		}
 
@@ -205,7 +208,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	/**
 	 * Validates the required fields for the modifier.
 	 *
-	 * This base logic checks if all required fields are present and not empty.
+	 * This base logic checks if all required fields are present, and not empty.
 	 * Specific strategies can define additional validation logic.
 	 *
 	 * @since TBD
@@ -213,18 +216,29 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @param array $data The data to validate.
 	 *
 	 * @return bool True if the data is valid, false otherwise.
+	 * @throws InvalidArgumentException If there are any validation errors.
 	 */
 	public function validate_data( array $data ): bool {
-		// @todo redscar - refactor method to generate errors and caller should have catch.
-		foreach ( $this->required_fields as $field ) {
-			if ( empty( $data[ $field ] ) ) {
-				//@todo redscar -  Throw an error that the data is missing.
-				error_log($field .' is missing');
-				return false;
+		$errors = [];
+
+		// Step 1: Validate that required fields are present.
+		$missing_fields = array_diff_key( $this->required_fields, $data );
+		if ( ! empty( $missing_fields ) ) {
+			$errors[] = 'The following required fields are missing: ' . implode( ', ', array_keys( $missing_fields ) );
+		}
+
+		// Step 2: Validate that required fields are not empty (allow '0' as a valid value).
+		foreach ( $this->required_fields as $field => $required ) {
+			if ( $required && ( ! isset( $data[ $field ] ) || ( is_string( $data[ $field ] ) && trim( $data[ $field ] ) === '' ) ) ) {
+				$errors[] = "The field '{$field}' is required and cannot be empty.";
 			}
 		}
 
-		// @todo redscar - We should implement some more "complex" validation.
+		// Step 6: Check for accumulated errors and throw exception if any.
+		if ( ! empty( $errors ) ) {
+			throw new InvalidArgumentException( 'Validation failed: ' . implode( '; ', $errors ) );
+		}
+
 		return true;
 	}
 
