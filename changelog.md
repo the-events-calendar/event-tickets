@@ -1,6 +1,7 @@
 # Changelog
-### [5.15.0] 2024-10-17
+### [5.15.0] 2024-10-21
 
+* Fix - Tickets Commerce orders through Stripe no longer will create duplicate attendees. [ET-2256]
 * Fix - Order Completed page will no longer throw a fatal when visiting it directly. [ET-2253]
 * Fix - If users added an index to the `post_meta` table on `meta_value` using `CONCAT()` should speed up queries for them. [GTRIA-1236]
 * Fix - Possible miscounted ticketed or un-ticketed events in the events admin list [ET-2221]
