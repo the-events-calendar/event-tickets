@@ -65,6 +65,7 @@ class Capacity extends PureComponent {
 		onTempCapacityNoPlusChange: PropTypes.func,
 		onTempCapacityTypeChange: PropTypes.func,
 		onTempSharedCapacityChange: PropTypes.func,
+		ticketProvider: PropTypes.string,
 	};
 
 	constructor( props ) {
