@@ -35,7 +35,7 @@ class Precision_Value_Test extends WPTestCase {
 		new Precision_Value( $raw_value );
 	}
 
-	protected function get_data_provider() {
+	public function get_data_provider() {
 		// raw value, precision, expected value
 		return [
 			[ 1.234, 2, 1.23 ],
@@ -47,7 +47,7 @@ class Precision_Value_Test extends WPTestCase {
 		];
 	}
 
-	protected function validate_data_provider() {
+	public function validate_data_provider() {
 		return [
 			[ 'foo' ],
 			[ [] ],
