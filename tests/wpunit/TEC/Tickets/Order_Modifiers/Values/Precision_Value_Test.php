@@ -76,63 +76,58 @@ class Precision_Value_Test extends WPTestCase {
 
 	public function get_data_provider() {
 		// raw value, precision, expected value
-		return [
-			// Normal floats.
-			[ 1.234, 2, 1.23 ],
-			[ 1.236, 2, 1.24 ],
-			[ pi(), 5, 3.14159 ],
+		yield 'Normal float rounding down' => [ 1.234, 2, 1.23 ];
+		yield 'Normal float rounding up' => [ 1.236, 2, 1.24 ];
+		yield 'PI rounded to 5 decimal places' => [ pi(), 5, 3.14159 ];
 
-			// Integers to floats.
-			[ 1, 2, 1.00 ],
-			[ 100, 0, (float) 100 ],
+		// Integers to floats.
+		yield 'Integer to float with 2 decimal precision' => [ 1, 2, 1.00 ];
+		yield 'Integer with no precision' => [ 100, 0, (float) 100 ];
 
-			// Numeric strings.
-			[ '1.234', 2, 1.23 ],
-			[ '1.2345', 4, 1.2345 ],
+		// Numeric strings.
+		yield 'Numeric string to float with 2 decimal precision' => [ '1.234', 2, 1.23 ];
+		yield 'Numeric string with 4 decimal places' => [ '1.2345', 4, 1.2345 ];
 
-			// Hexadecimal notation.
-			[ 0x539, 2, 1337.00 ],
+		// Hexadecimal notation.
+		yield 'Hexadecimal notation to float' => [ 0x539, 2, 1337.00 ];
 
-			// Binary notation.
-			[ 0b10100111001, 2, 1337.00 ],
-			[ 0b10100111001, 0, (float) 1337 ],
+		// Binary notation.
+		yield 'Binary notation to float with 2 decimal precision' => [ 0b10100111001, 2, 1337.00 ];
+		yield 'Binary notation to float with no precision' => [ 0b10100111001, 0, (float) 1337 ];
 
-			// Octal notation.
-			[ 02471, 4, 1337.0000 ],
+		// Octal notation.
+		yield 'Octal notation to float with 4 decimal places' => [ 02471, 4, 1337.0000 ];
 
-			// Underscores in numbers.
-			[ 1_234_567, 0, (float) 1234567 ],
-			[ 1_234, 2, 1234.00 ],
-		];
+		// Underscores in numbers.
+		yield 'Number with underscores and no precision' => [ 1_234_567, 0, (float) 1234567 ];
+		yield 'Number with underscores and 2 decimal precision' => [ 1_234, 2, 1234.00 ];
 	}
 
 	public function validate_data_provider() {
-		return [
-			[ 'foo' ],
-			[ 'abc123' ],
-			[ [] ],
-			[ new stdClass() ],
-			[ null ],
-			[ true ],
-			[ false ],
-		];
+		// Invalid data cases for validation
+		yield 'String "foo"' => [ 'foo' ];
+		yield 'Alphanumeric string "abc123"' => [ 'abc123' ];
+		yield 'Empty array' => [ [] ];
+		yield 'Empty object' => [ new stdClass() ];
+		yield 'Null value' => [ null ];
+		yield 'Boolean true' => [ true ];
+		yield 'Boolean false' => [ false ];
 	}
 
 	public function addition_data_provider() {
-		return [
-			[ new PV( 1.23 ), new PV( 2.34 ), 3.57 ],
-			[ new PV( 1.23 ), new PV( 2.345, new Positive_Integer_Value( 3 ) ), 3.575 ],
-			[ new PV( 1.23 ), new PV( 2.34, new Positive_Integer_Value( 4 ) ), 3.5700 ],
-			[ new PV( 3.57 ), new PV( -2.34 ), 1.23 ],
-			[ new PV( 0b10100111001 ), new PV( 0b10100111001 ), 2674.00 ],
-			[ new PV( .05 ), new PV( .01 ), 0.06 ],
-			[ new PV( .05 ), new PV( .05 ), 0.10 ],
-			[ new PV( 0.1 ), new PV( 0.2 ), 0.3 ],
-			[ new PV( 0.0 ), new PV( 0.0 ), 0.00 ],
-			[ new PV( 0.9 ), new PV( 0.1 ), 1.00 ],
-			[ new PV( 0.000009, new Positive_Integer_Value( 6 ) ), new PV( 0.000001, new Positive_Integer_Value( 6 ) ), 0.000010 ],
-			[ new PV( -1.2 ), new PV( 1.2 ), 0.00 ],
-			[ new PV( -1.21 ), new PV( -1.21 ), -2.42 ],
-		];
+		// Test cases for adding two PV (present value) objects together
+		yield 'Simple addition of two PV values' => [ new PV( 1.23 ), new PV( 2.34 ), 3.57 ];
+		yield 'Addition with custom precision on second PV' => [ new PV( 1.23 ), new PV( 2.345, new Positive_Integer_Value( 3 ) ), 3.575 ];
+		yield 'Addition with custom precision of 4 decimal places' => [ new PV( 1.23 ), new PV( 2.34, new Positive_Integer_Value( 4 ) ), 3.5700 ];
+		yield 'Addition of positive and negative values' => [ new PV( 3.57 ), new PV( -2.34 ), 1.23 ];
+		yield 'Addition of binary values' => [ new PV( 0b10100111001 ), new PV( 0b10100111001 ), 2674.00 ];
+		yield 'Small decimals addition' => [ new PV( .05 ), new PV( .01 ), 0.06 ];
+		yield 'Addition of two equal small decimal values' => [ new PV( .05 ), new PV( .05 ), 0.10 ];
+		yield 'Addition with floating-point precision' => [ new PV( 0.1 ), new PV( 0.2 ), 0.3 ];
+		yield 'Addition of zero values' => [ new PV( 0.0 ), new PV( 0.0 ), 0.00 ];
+		yield 'Addition of 0.9 and 0.1' => [ new PV( 0.9 ), new PV( 0.1 ), 1.00 ];
+		yield 'Addition with very small values and 6 decimal precision' => [ new PV( 0.000009, new Positive_Integer_Value( 6 ) ), new PV( 0.000001, new Positive_Integer_Value( 6 ) ), 0.000010 ];
+		yield 'Addition of two negative values' => [ new PV( -1.2 ), new PV( 1.2 ), 0.00 ];
+		yield 'Negative values addition' => [ new PV( -1.21 ), new PV( -1.21 ), -2.42 ];
 	}
 }
