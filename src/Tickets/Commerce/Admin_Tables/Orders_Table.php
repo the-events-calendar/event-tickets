@@ -449,6 +449,10 @@ class Orders_Table extends WP_Posts_List_Table {
 		}
 
 		foreach ( $item->items as $cart_item ) {
+			// Check if 'type' exists and proceed only if it's empty or equals 'ticket'.
+			if ( ! empty( $cart_item['type'] ) && 'ticket' !== $cart_item['type'] ) {
+				continue;
+			}
 			$ticket   = Tribe__Tickets__Tickets::load_ticket_object( $cart_item['ticket_id'] );
 			$quantity = esc_html( (int) $cart_item['quantity'] );
 
