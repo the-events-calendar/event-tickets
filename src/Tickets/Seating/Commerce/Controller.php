@@ -138,10 +138,10 @@ class Controller extends Controller_Contract {
 		}
 
 		$types['tickets'] = [
-			'count'     => 0, // count of ticket types currently for sale.
-			'stock'     => 0, // current stock of tickets available for sale.
-			'global'    => 1, // numeric boolean if tickets share global stock.
-			'unlimited' => 0, // numeric boolean if any ticket has unlimited stock.
+			'count'     => 0, // Count of ticket types currently for sale.
+			'stock'     => 0, // Current stock of tickets available for sale.
+			'global'    => 1, // Numeric boolean if tickets share global stock.
+			'unlimited' => 0, // Numeric boolean if any ticket has unlimited stock.
 			'available' => 0,
 		];
 
@@ -172,7 +172,7 @@ class Controller extends Controller_Contract {
 			$capacity = $ticket->capacity();
 			$stock    = $ticket->stock();
 			$sold_qty = $ticket->qty_sold();
-			
+
 			if ( ! isset( $capacity_by_type[ $seat_type ] ) ) {
 				$capacity_by_type[ $seat_type ] = $capacity;
 			}
