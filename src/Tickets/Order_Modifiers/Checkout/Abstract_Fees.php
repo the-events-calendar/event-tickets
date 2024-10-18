@@ -212,6 +212,17 @@ abstract class Abstract_Fees {
 		if ( empty( $items ) ) {
 			return [];
 		}
+
+		// Generate a cache key based on the items.
+		$cache_key = 'combined_fees_' . md5( wp_json_encode( $items ) );
+
+		// Check if the combined fees are already cached.
+		$cached_fees = wp_cache_get( $cache_key, 'combined_fees' );
+		if ( false !== $cached_fees ) {
+			return $cached_fees;
+		}
+
+		// Extract ticket IDs from the items.
 		$ticket_ids = array_map(
 			function ( $item ) {
 				return $item['ticket_id'];
@@ -224,8 +235,14 @@ abstract class Abstract_Fees {
 		$automatic_fees      = $this->order_modifiers_repository->get_all_automatic_fees();
 
 		// Combine the fees and remove duplicates.
-		return $this->extract_and_combine_fees( $related_ticket_fees, $automatic_fees );
+		$combined_fees = $this->extract_and_combine_fees( $related_ticket_fees, $automatic_fees );
+
+		// Cache the combined fees for future use.
+		wp_cache_set( $cache_key, $combined_fees, 'combined_fees', 120 );
+
+		return $combined_fees;
 	}
+
 
 	/**
 	 * Extracts and combines fees from related ticket fees and automatic fees, removing duplicates.
