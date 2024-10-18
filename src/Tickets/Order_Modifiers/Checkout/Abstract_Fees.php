@@ -11,7 +11,6 @@
 
 namespace TEC\Tickets\Order_Modifiers\Checkout;
 
-use TEC\Tickets\Commerce\Gateways\Contracts\Gateway_Interface;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Order_Modifiers\Controller;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Manager;
@@ -266,14 +265,12 @@ abstract class Abstract_Fees {
 	 *
 	 * @since TBD
 	 *
-	 * @param array             $items The current items in the cart.
-	 * @param Value             $subtotal The calculated subtotal of the cart items.
-	 * @param Gateway_Interface $gateway The payment gateway.
-	 * @param array|null        $purchaser Information about the purchaser.
+	 * @param array $items    The current items in the cart.
+	 * @param Value $subtotal The calculated subtotal of the cart items.
 	 *
 	 * @return array Updated list of items with fees added.
 	 */
-	public function append_fees_to_cart( array $items, Value $subtotal, Gateway_Interface $gateway, ?array $purchaser ) {
+	public function append_fees_to_cart( array $items, Value $subtotal ) {
 		if ( self::$fees_appended ) {
 			return $items;
 		}
@@ -303,19 +300,16 @@ abstract class Abstract_Fees {
 			}
 
 			// Append the fee to the cart.
+			// @todo - Review what needs to be sent. Some of these are used so wp_pluck doesn't cause a warning.
 			$items[] = [
-				'id' => 'id for the item', // Default, if type is missing then default to ticket. If it's a ticket and there is no ID, see if 'ticket_id' exists.
+				'id'           => "fee_{$fee['id']}",
 				'price'        => $fee['fee_amount'],
 				'sub_total'    => $fee['fee_amount'],
 				'type'         => 'fee',
 				'fee_id'       => $fee['id'],
 				'display_name' => $fee['display_name'],
-				'ticket_id'    => '', // @todo redscar - Passing this so places where wp_list_luck is used doesn't fail.
-				'event_id'     => '',
-				'parent' => [
-					'id' =>123,
-					'type'=>'ticket',
-				]
+				'ticket_id'    => '0',
+				'event_id'     => '0',
 			];
 
 			// Add the fee ID to the tracking array.

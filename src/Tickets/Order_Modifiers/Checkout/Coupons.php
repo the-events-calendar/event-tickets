@@ -1,4 +1,9 @@
 <?php
+/**
+ * Coupon class for the Checkout.
+ *
+ * @todo - This class is a placeholder, and will need to be refactored/optimized when Coupons are worked on.
+ */
 
 namespace TEC\Tickets\Order_Modifiers\Checkout;
 
@@ -10,14 +15,28 @@ use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Order_Modifiers\Modifiers\Coupon;
 use TEC\Tickets\Registerable;
 use Tribe__Assets;
+use Tribe__Template;
+use WP_Post;
 
+/**
+ * Class Coupons
+ *
+ * Handles coupon logic in the checkout process.
+ *
+ * @since TBD
+ */
 class Coupons implements Registerable {
 
+	/**
+	 * @var Coupon
+	 */
 	protected Coupon $coupon;
 
+	/**
+	 * Constructor
+	 */
 	public function __construct() {
 		$this->coupon = new Coupon();
-
 	}
 
 	/**
@@ -26,8 +45,6 @@ class Coupons implements Registerable {
 	 * @since TBD
 	 */
 	public function register(): void {
-		// Disbling the coupon check for now.
-		return;
 		// Hook for displaying coupons in the checkout.
 		add_action(
 			'tec_tickets_commerce_checkout_cart_before_footer_quantity',
@@ -52,12 +69,12 @@ class Coupons implements Registerable {
 	 *
 	 * @since TBD
 	 *
-	 * @param array            $items The items in the cart.
-	 * @param \Tribe__Template $template The template object for rendering.
+	 * @param WP_Post         $post     The current post object.
+	 * @param array           $items    The items in the cart.
+	 * @param Tribe__Template $template The template object for rendering.
 	 *
-	 * @param \WP_Post         $post The current post object.
 	 */
-	public function display_coupon_section( \WP_Post $post, array $items, \Tribe__Template $template ): void {
+	public function display_coupon_section( WP_Post $post, array $items, Tribe__Template $template ): void {
 		// Display the coupon section template.
 		$template->template(
 			'checkout/order-modifiers/Coupons',
@@ -78,6 +95,7 @@ class Coupons implements Registerable {
 		// Early bail: Check if the nonce is valid.
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'wp_rest' ) ) {
 			wp_send_json_error( [ 'message' => 'Invalid nonce. Please refresh the page and try again.' ] );
+
 			return;
 		}
 
@@ -85,6 +103,7 @@ class Coupons implements Registerable {
 		$is_removing_coupon = ! empty( $_POST['remove_coupon'] );
 		if ( empty( $_POST['coupon'] ) && ! $is_removing_coupon ) {
 			wp_send_json_error( [ 'message' => __( 'No coupon provided.', 'event-tickets' ) ] );
+
 			return;
 		}
 
@@ -94,6 +113,7 @@ class Coupons implements Registerable {
 		// Early bail: Extract the paymentIntent ID, or exit if not provided.
 		if ( ! isset( $_POST['data']['paymentIntentData']['id'] ) ) {
 			wp_send_json_error( [ 'message' => __( 'Missing Payment Intent ID.', 'event-tickets' ) ] );
+
 			return;
 		}
 
@@ -103,6 +123,7 @@ class Coupons implements Registerable {
 		$purchaser_data = tribe( Order::class )->get_purchaser_data( $_POST['data'] );
 		if ( empty( $purchaser_data ) ) {
 			wp_send_json_error( [ 'message' => __( 'Invalid purchaser data.', 'event-tickets' ) ] );
+
 			return;
 		}
 
@@ -110,6 +131,7 @@ class Coupons implements Registerable {
 		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser_data );
 		if ( empty( $order ) ) {
 			wp_send_json_error( [ 'message' => __( 'Failed to retrieve order data.', 'event-tickets' ) ] );
+
 			return;
 		}
 
@@ -122,10 +144,13 @@ class Coupons implements Registerable {
 			$body['amount'] = $original_order_value;
 			Payment_Intent::update( $payment_intent_id, $body );
 
-			wp_send_json_success( [
-				'message' => __( 'Coupon removed successfully.', 'event-tickets' ),
-				'amount'  => $order->total_value->get_currency(),
-			] );
+			wp_send_json_success(
+				[
+					'message' => __( 'Coupon removed successfully.', 'event-tickets' ),
+					'amount'  => $order->total_value->get_currency(),
+				]
+			);
+
 			return;
 		}
 
@@ -147,8 +172,6 @@ class Coupons implements Registerable {
 			'message'  => sprintf( __( 'Coupon "%s" applied successfully.', 'event-tickets' ), $coupon_code ),
 			'amount'   => Value::create( $this->coupon->convert_from_raw_amount( $new_order_value ) )->get_currency(),
 		];
-
-
 
 		// Send the success response back to the client.
 		wp_send_json_success( $response );
