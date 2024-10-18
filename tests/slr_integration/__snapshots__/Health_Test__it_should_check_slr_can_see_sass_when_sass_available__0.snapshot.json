@@ -8,7 +8,7 @@
                 "label": "Seating",
                 "color": "blue"
             },
-            "description": "Your site is connected to the Seating Builder SaaS.",
+            "description": "Your site is able to connect to the Seating Builder SaaS.",
             "actions": "<p>You're ready to <a href=\u0022https://evnt.is/1be3\u0022 target=\u0022_blank\u0022 rel=\u0022noopener noreferrer\u0022>use Seating for Event Tickets</a>.</p>",
             "test": "slr-can-see-sass"
         },
