@@ -12,7 +12,12 @@ import {
 	setSeatTypeForTicket,
 	filterButtonIsDisabled,
 	filterSettingsFields,
+	replaceSharedCapacityInput,
 } from '@tec/tickets/seating/blockEditor/hook-callbacks';
+import commonStoreBridge from '@tec/tickets/seating/blockEditor/store/common-store-bridge';
+jest.mock('@tec/tickets/seating/blockEditor/store/common-store-bridge', () => ({
+	getTicketsSharedCapacityFromCommonStore: jest.fn(),
+}));
 
 jest.mock('@wordpress/data', () => ({
 	select: jest.fn(),
@@ -917,4 +922,32 @@ describe('hook-callbacks', () => {
 			expect(fields[0].type.name).toEqual('Outage');
 		});
 	} );
+
+	describe('replaceSharedCapacityInput', ()=>{
+		it('should reutrn the original input if not using assigned seating', ()=>{
+			select.mockReturnValue({
+				isUsingAssignedSeating: () => false,
+			});
+			commonStoreBridge.getTicketsSharedCapacityFromCommonStore = jest.fn();
+			const sharedCapacityInput = (<div>Shared Capacity Input</div>);
+
+			const newSharedCapacityInput = replaceSharedCapacityInput(sharedCapacityInput);
+
+			expect(newSharedCapacityInput).toEqual(sharedCapacityInput);
+			expect(commonStoreBridge.getTicketsSharedCapacityFromCommonStore).not.toHaveBeenCalled();
+		});
+
+		it('should return the shared capacity value if using assigned seating', ()=>{
+			select.mockReturnValue({
+				isUsingAssignedSeating: () => true,
+			});
+			commonStoreBridge.getTicketsSharedCapacityFromCommonStore.mockReturnValue(23);
+			const sharedCapacityInput = (<div>Shared Capacity Input</div>);
+
+			const newSharedCapacityInput = replaceSharedCapacityInput(sharedCapacityInput);
+
+			expect(newSharedCapacityInput).toEqual(23);
+			expect(commonStoreBridge.getTicketsSharedCapacityFromCommonStore).toHaveBeenCalled();
+		});
+	});
 });

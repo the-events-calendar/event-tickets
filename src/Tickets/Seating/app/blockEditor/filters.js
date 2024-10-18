@@ -15,6 +15,7 @@ import {
 	removeAllActionsFromTicket,
 	disableTicketSelection,
 	filterButtonIsDisabled,
+	replaceSharedCapacityInput,
 } from './hook-callbacks';
 
 const shouldRenderAssignedSeatingForm = true;
@@ -174,4 +175,10 @@ addFilter(
 	'tec.tickets.blocks.Ticket.isSelected',
 	'tec.tickets.seating',
 	disableTicketSelection
+);
+
+addFilter(
+	'tec.tickets.blocks.Tickets.CapacityTable.sharedCapacityInput',
+	'tec.tickets.seating',
+	replaceSharedCapacityInput
 );

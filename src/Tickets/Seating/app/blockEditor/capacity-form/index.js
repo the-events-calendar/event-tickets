@@ -148,7 +148,7 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 			setEventCapacity(layoutSeats);
 			setTicketSeatType(clientId, null);
 			setCappedTicketCapacityInCommonStore(clientId, 0);
-			setTicketsSharedCapacityInCommonStore(layoutSeats, clientId);
+			setTicketsSharedCapacityInCommonStore(clientId, layoutSeats);
 		},
 		[getLayoutSeats, setEventCapacity, setLayout, updateEventMeta, clientId]
 	);

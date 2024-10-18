@@ -4,6 +4,7 @@ import SeatType from './header/seat-type';
 import LayoutSelect from './settings/layoutSelect';
 import Upsell from './settings/upsell';
 import Outage from './settings/outage';
+import { getTicketsSharedCapacityFromCommonStore } from './store/common-store-bridge';
 
 export const setSeatTypeForTicket = (clientId) =>
 	dispatch(storeName).setTicketSeatTypeByPostId(clientId);
@@ -172,14 +173,10 @@ export const filterSettingsFields = (fields) => {
 		case 'not-connected':
 		case 'expired-license':
 		case 'invalid-license':
-			fields.push(
-				<Upsell />
-			);
+			fields.push(<Upsell />);
 			break;
 		case 'down':
-			fields.push(
-				<Outage />
-			);
+			fields.push(<Outage />);
 			break;
 		default:
 			const currentLayout = store.getCurrentLayoutId();
@@ -298,3 +295,33 @@ export const filterButtonIsDisabled = (isDisabled, state, ownProps) => {
 
 	return false;
 };
+
+export function captureCapacityTableMappedProps(mappedProps) {
+	const store = select(storeName);
+	store.setTicketsSharedCapacity(mappedProps.sharedCapacity || 0);
+
+	return mappedProps;
+}
+
+/**
+ * Filters the shared capacity input component to return an uneditable number if the seating feature is enabled
+ * for the current post.
+ *
+ * @since TBD
+ *
+ * @param {React.Node} sharedCapacityInput The shared capacity input component.
+ *
+ * @return {React.Node|number} The shared capacity input component if the seating feature is enabled for the current post,
+ *                              otherwise the shared capacity current value.
+ */
+export function replaceSharedCapacityInput(sharedCapacityInput) {
+	const store = select(storeName);
+
+	if (!store.isUsingAssignedSeating()) {
+		return sharedCapacityInput;
+	}
+
+	const sharedCapacity = getTicketsSharedCapacityFromCommonStore();
+
+	return sharedCapacity || 0;
+}
