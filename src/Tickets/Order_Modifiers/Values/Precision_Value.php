@@ -122,5 +122,9 @@ class Precision_Value extends Base_Value {
 		if ( ! is_numeric( $value ) ) {
 			throw new InvalidArgumentException( 'Value must be numeric.' );
 		}
+
+		if ( 'NAN' === (string) $value ) {
+			throw new InvalidArgumentException( 'NAN is by definition not a number.' );
+		}
 	}
 }

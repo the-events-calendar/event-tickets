@@ -13,8 +13,6 @@ use TEC\Tickets\Order_Modifiers\Values\Precision_Value;
 class Precision_Value_Test extends WPTestCase {
 
 	/**
-	 * Test get.
-	 *
 	 * @dataProvider get_data_provider
 	 * @test
 	 */
@@ -24,8 +22,6 @@ class Precision_Value_Test extends WPTestCase {
 	}
 
 	/**
-	 * Test validate.
-	 *
 	 * @dataProvider validate_data_provider
 	 * @test
 	 */
@@ -33,6 +29,15 @@ class Precision_Value_Test extends WPTestCase {
 		$this->expectException( InvalidArgumentException::class );
 		$this->expectExceptionMessage( 'Value must be numeric.' );
 		new Precision_Value( $raw_value );
+	}
+
+	/**
+	 * @test
+	 */
+	public function validation_fails_for_NAN_constant() {
+		$this->expectException( InvalidArgumentException::class );
+		$this->expectExceptionMessage( 'NAN is by definition not a number.' );
+		new Precision_Value( NAN );
 	}
 
 	public function get_data_provider() {
@@ -50,11 +55,12 @@ class Precision_Value_Test extends WPTestCase {
 	public function validate_data_provider() {
 		return [
 			[ 'foo' ],
+			[ 'abc123' ],
 			[ [] ],
 			[ new stdClass() ],
-			[ 'abc123' ],
 			[ null ],
-			[ NAN ],
+			[ true ],
+			[ false ],
 		];
 	}
 }
