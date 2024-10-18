@@ -91,6 +91,35 @@ class Precision_Value extends Base_Value {
 	}
 
 	/**
+	 * Add a value to this value.
+	 *
+	 * @since TBD
+	 *
+	 * @param Precision_Value $value The value to add.
+	 *
+	 * @return static The new value object
+	 */
+	public function add( Precision_Value $value ) {
+		$current_value    = $this;
+		$precision        = $this->precision->get();
+		$precision_object = $this->precision;
+
+		if ( $precision !== $value->get_precision()->get() ) {
+			$precision        = max( $this->precision->get(), $value->get_precision()->get() );
+			$precision_object = new Positive_Int( $precision );
+			$current_value    = $this->convert_to_precision( $precision_object );
+			$value            = $value->convert_to_precision( $precision_object );
+		}
+
+		$new_value = $current_value->value + $value->value;
+
+		return new static(
+			(float) ( $new_value / ( 10 ** $precision ) ),
+			$precision_object
+		);
+	}
+
+	/**
 	 * Convert this object to an object with a new precision level.
 	 *
 	 * @since TBD
