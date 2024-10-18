@@ -206,6 +206,11 @@ class Seats_Report extends Report_Abstract {
 			return $actions;
 		}
 
+		// Tickets Commerce requirement.
+		if ( ! function_exists( 'tec_tc_attendees' ) ) {
+			return $actions;
+		}
+
 		$has_attendees = tec_tc_attendees()->by( 'event_id', $post_id )->count();
 
 		if ( ! $has_attendees ) {
