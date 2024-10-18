@@ -92,10 +92,10 @@ class Factory {
 
 		switch ( $type ) {
 			case 'fee':
-				return FeeModel::create( $attributes );
+				return new FeeModel( $attributes );
 
 			case 'coupon':
-				return CouponModel::create( $attributes );
+				return new CouponModel( $attributes );
 
 			default:
 				$class = ModifierModel::class;
@@ -124,7 +124,7 @@ class Factory {
 					);
 				}
 
-				return $class::create( $attributes );
+				return new $class( $attributes );
 		}
 	}
 }
