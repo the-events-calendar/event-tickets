@@ -8,7 +8,7 @@ use Codeception\TestCase\WPTestCase;
 use InvalidArgumentException;
 use stdClass;
 use TEC\Tickets\Order_Modifiers\Values\Positive_Integer_Value;
-use TEC\Tickets\Order_Modifiers\Values\Precision_Value;
+use TEC\Tickets\Order_Modifiers\Values\Precision_Value as PV;
 
 class Precision_Value_Test extends WPTestCase {
 
@@ -17,7 +17,7 @@ class Precision_Value_Test extends WPTestCase {
 	 * @test
 	 */
 	public function value_is_returned_correctly( $raw_value, $precision, $expected ) {
-		$value = new Precision_Value( $raw_value, new Positive_Integer_Value( $precision ) );
+		$value = new PV( $raw_value, new Positive_Integer_Value( $precision ) );
 		$this->assertSame( $expected, $value->get() );
 	}
 
@@ -28,7 +28,7 @@ class Precision_Value_Test extends WPTestCase {
 	public function validation_fails_for_invalid_types( $raw_value ) {
 		$this->expectException( InvalidArgumentException::class );
 		$this->expectExceptionMessage( 'Value must be numeric.' );
-		new Precision_Value( $raw_value );
+		new PV( $raw_value );
 	}
 
 	/**
@@ -37,7 +37,7 @@ class Precision_Value_Test extends WPTestCase {
 	public function validation_fails_for_NAN_constant() {
 		$this->expectException( InvalidArgumentException::class );
 		$this->expectExceptionMessage( 'NAN is by definition not a number.' );
-		new Precision_Value( NAN );
+		new PV( NAN );
 	}
 
 	/**
@@ -45,7 +45,7 @@ class Precision_Value_Test extends WPTestCase {
 	 */
 	public function precision_value_object_is_cloned() {
 		$precision = new Positive_Integer_Value( 2 );
-		$value     = new Precision_Value( 1.23, $precision );
+		$value     = new PV( 1.23, $precision );
 		$this->assertNotSame( $precision, $value->get_precision() );
 	}
 
@@ -53,7 +53,7 @@ class Precision_Value_Test extends WPTestCase {
 	 * @test
 	 */
 	public function precision_can_be_changed() {
-		$value = new Precision_Value( 1.234 );
+		$value = new PV( 1.234 );
 		$this->assertEquals( 2, $value->get_precision()->get() );
 
 		// Test that the object is the same when the same precision is set.
@@ -64,6 +64,14 @@ class Precision_Value_Test extends WPTestCase {
 		$new_value = $value->convert_to_precision( new Positive_Integer_Value( 3 ) );
 		$this->assertEquals( 3, $new_value->get_precision()->get() );
 		$this->assertNotSame( $value, $new_value );
+	}
+
+	/**
+	 * @dataProvider addition_data_provider
+	 * @test
+	 */
+	public function addition_works_with_objects( PV $a, PV $b, $expected_sum ) {
+		$this->assertEquals( $expected_sum, $a->add( $b )->get() );
 	}
 
 	public function get_data_provider() {
@@ -107,6 +115,14 @@ class Precision_Value_Test extends WPTestCase {
 			[ null ],
 			[ true ],
 			[ false ],
+		];
+	}
+
+	public function addition_data_provider() {
+		return [
+			[ new PV( 1.23 ), new PV( 2.34 ), 3.57 ],
+			[ new PV( 1.23 ), new PV( 2.345, new Positive_Integer_Value( 3 ) ), 3.575 ],
+			[ new PV( 1.23 ), new PV( 2.34, new Positive_Integer_Value( 4 ) ), 3.5700 ],
 		];
 	}
 }
