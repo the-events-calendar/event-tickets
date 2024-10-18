@@ -185,11 +185,11 @@ class Controller extends Controller_Contract {
 				$total_sold_by_type[ $seat_type ] += $sold_qty;
 			}
 
-			++ $types['tickets']['count'];
+			++$types['tickets']['count'];
 		}
 
 		foreach ( $capacity_by_type as $seat_type => $capacity ) {
-			$stock_level                   = $capacity - $total_sold_by_type[ $seat_type ];
+			$stock_level                    = $capacity - $total_sold_by_type[ $seat_type ];
 			$types['tickets']['stock']     += $stock_level;
 			$types['tickets']['available'] += $stock_level;
 		}
@@ -240,10 +240,12 @@ class Controller extends Controller_Contract {
 
 		$total_sold = 0;
 		if ( count( $event_attendees ) ) {
-			$total_sold = count( array_filter(
-				$event_attendees,
-				static fn( array $attendee ): bool => in_array( (int) $attendee['product_id'], $ticket_ids, true )
-			) );
+			$total_sold = count(
+				array_filter(
+					$event_attendees,
+					static fn( array $attendee ): bool => in_array( (int) $attendee['product_id'], $ticket_ids, true )
+				)
+			);
 		}
 
 		add_filter(
@@ -412,9 +414,7 @@ class Controller extends Controller_Contract {
 		$ticket_post_types      = tribe_tickets()->ticket_types();
 		$ticket_able_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
 
-		if ( ! in_array( get_post_type( $object_id ),
-				$ticket_post_types,
-				true ) && ! in_array( get_post_type( $object_id ), $ticket_able_post_types, true ) ) {
+		if ( ! in_array( get_post_type( $object_id ), $ticket_post_types, true ) && ! in_array( get_post_type( $object_id ), $ticket_able_post_types, true ) ) {
 			// Not a ticket post type.
 			return $check;
 		}
@@ -504,8 +504,8 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int      $post_id The ID of the post being deleted.
-	 * @param WP_Post  $post    The post object being deleted.
+	 * @param int     $post_id The ID of the post being deleted.
+	 * @param WP_Post $post    The post object being deleted.
 	 *
 	 * @return void
 	 */
@@ -532,12 +532,12 @@ class Controller extends Controller_Contract {
 			}
 
 			if ( in_array( $meta_key, $attendee_to_post_keys, true ) ) {
-				$post_id = reset($meta_value);
+				$post_id = reset( $meta_value );
 				continue;
 			}
 
 			if ( in_array( $meta_key, $attendee_to_ticket_keys, true ) ) {
-				$ticket_id = reset($meta_value);
+				$ticket_id = reset( $meta_value );
 			}
 		}
 
