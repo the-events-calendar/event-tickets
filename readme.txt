@@ -203,7 +203,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.15.0] 2024-10-17 =
+= [5.15.0] 2024-10-21 =
 
 * Fix - Order Completed page will no longer throw a fatal when visiting it directly. [ET-2253]
 * Fix - If users added an index to the `post_meta` table on `meta_value` using `CONCAT()` should speed up queries for them. [GTRIA-1236]
