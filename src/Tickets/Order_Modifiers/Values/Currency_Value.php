@@ -98,7 +98,7 @@ class Currency_Value implements Value_Interface {
 	public function get(): string {
 		$formatted = number_format(
 			$this->value->get(),
-			$this->value->get_precision()->get(),
+			$this->value->get_precision(),
 			$this->decimal_separator,
 			$this->thousands_separator
 		);
