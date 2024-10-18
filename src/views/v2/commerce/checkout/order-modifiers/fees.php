@@ -13,7 +13,7 @@
  *
  * @version TBD
  *
- * @var \Tribe__Template $this [Global] Template object.
+ * @var \Tribe__Template $this        [Global] Template object.
  * @var array[]          $active_fees [Global] List of active fees to be displayed, where each fee contains:
  * @var float            $sum_of_fees [Global] The total sum of all active fees.
  */
@@ -27,9 +27,9 @@
 			?>
 			<li>
 		<span
-			class="tribe-tickets__commerce-checkout-cart-footer-quantity-label"><?php echo $fee['display_name']; ?>:</span>
+			class="tribe-tickets__commerce-checkout-cart-footer-quantity-label"><?php echo esc_html( $fee['display_name'] ); ?>:</span>
 				<span
-					class="tribe-tickets__commerce-checkout-cart-footer-quantity-number"><?php echo $fee['fee_amount']; ?></span>
+					class="tribe-tickets__commerce-checkout-cart-footer-quantity-number"><?php echo esc_html( $fee['fee_amount'] ); ?></span>
 			</li>
 		<?php endforeach; ?>
 	</ul>
