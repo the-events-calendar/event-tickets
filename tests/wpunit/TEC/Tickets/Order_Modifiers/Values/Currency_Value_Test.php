@@ -2,7 +2,7 @@
 
 declare( strict_types=1 );
 
-namespace Tribe\TEC\Tickets\Order_Modifiers\Values;
+namespace TEC\Tickets\Tests\Unit\Order_Modifiers\Values;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Order_Modifiers\Values\Currency_Value;

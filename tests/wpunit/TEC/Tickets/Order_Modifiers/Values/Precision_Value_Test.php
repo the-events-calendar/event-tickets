@@ -7,7 +7,6 @@ namespace TEC\Tickets\Tests\Unit\Order_Modifiers\Values;
 use Codeception\TestCase\WPTestCase;
 use InvalidArgumentException;
 use stdClass;
-use TEC\Tickets\Order_Modifiers\Values\Positive_Integer_Value;
 use TEC\Tickets\Order_Modifiers\Values\Precision_Value as PV;
 
 class Precision_Value_Test extends WPTestCase {
