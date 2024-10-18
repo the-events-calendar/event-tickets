@@ -178,10 +178,10 @@ class Currency_Value implements Value_Interface {
 		?string $currency_symbol_position = null
 	) {
 		self::$defaults = [
-			'currency_symbol'          => $currency_symbol ?? self::$defaults['currency_symbol'],
-			'thousands_separator'      => $thousands_separator ?? self::$defaults['thousands_separator'],
-			'decimal_separator'        => $decimal_separator ?? self::$defaults['decimal_separator'],
-			'currency_symbol_position' => $currency_symbol_position ?? self::$defaults['currency_symbol_position'],
+			'currency_symbol'          => $currency_symbol ?? '$',
+			'thousands_separator'      => $thousands_separator ?? ',',
+			'decimal_separator'        => $decimal_separator ?? '.',
+			'currency_symbol_position' => $currency_symbol_position ?? 'before',
 		];
 	}
 }
