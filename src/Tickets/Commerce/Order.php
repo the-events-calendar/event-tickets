@@ -307,7 +307,6 @@ class Order extends Abstract_Order {
 	 * Modify the status of a given order based on Slug.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Added the transient to prevent multiple status changes in a short period.
 	 *
 	 * @throws \Tribe__Repository__Usage_Error
 	 *
