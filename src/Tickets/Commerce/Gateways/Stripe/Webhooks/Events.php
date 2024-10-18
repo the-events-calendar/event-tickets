@@ -151,7 +151,9 @@ class Events {
 			static::ACCOUNT_UPDATED                  => [ Account_Webhook::class, 'handle_account_updated' ],
 			static::ACCOUNT_APPLICATION_DEAUTHORIZED => [ Account_Webhook::class, 'handle_account_deauthorized' ],
 			static::CHARGE_EXPIRED                   => [ Charge_Webhook::class, 'handle' ],
+			static::CHARGE_FAILED                    => [ Charge_Webhook::class, 'handle' ],
 			static::CHARGE_REFUNDED                  => [ Charge_Webhook::class, 'handle' ],
+			static::CHARGE_SUCCEEDED                 => [ Charge_Webhook::class, 'handle' ],
 			static::PAYMENT_INTENT_PROCESSING        => [ Payment_Intent_Webhook::class, 'handle' ],
 			static::PAYMENT_INTENT_REQUIRES_ACTION   => [ Payment_Intent_Webhook::class, 'handle' ],
 			static::PAYMENT_INTENT_SUCCEEDED         => [ Payment_Intent_Webhook::class, 'handle' ],
@@ -181,7 +183,9 @@ class Events {
 	public static function get_event_transition_status(): array {
 		$events = [
 			static::CHARGE_EXPIRED                 => Commerce_Status\Not_Completed::class,
+			static::CHARGE_FAILED                  => Commerce_Status\Denied::class,
 			static::CHARGE_REFUNDED                => Commerce_Status\Refunded::class,
+			static::CHARGE_SUCCEEDED               => Commerce_Status\Completed::class,
 			static::PAYMENT_INTENT_CANCELED        => Commerce_Status\Denied::class,
 			static::PAYMENT_INTENT_CREATED         => Commerce_Status\Created::class,
 			static::PAYMENT_INTENT_PAYMENT_FAILED  => Commerce_Status\Denied::class,
