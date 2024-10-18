@@ -324,15 +324,6 @@ class Order extends Abstract_Order {
 			return false;
 		}
 
-		// If status change has already been attempted in the last few seconds, bail.
-		$transient_key = 'tec_tickets_tc_order_modify_status_' . $order_id . '_' . $status->get_wp_slug();
-		$transient     = get_transient( $transient_key );
-		if ( $transient ) {
-			return false;
-		}
-
-		set_transient( $transient_key, true, 10 );
-
 		$can_apply = $status->can_apply_to( $order_id, $status );
 		if ( ! $can_apply ) {
 			return $can_apply;
