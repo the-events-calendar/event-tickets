@@ -21,7 +21,17 @@ use TEC\Tickets\Order_Modifiers\Values\Positive_Integer_Value as Positive_Int;
  *
  * @since TBD
  */
-class Precision_Value extends Base_Value {
+class Precision_Value implements Value_Interface {
+
+	/**
+	 * The value.
+	 *
+	 * This is stored as an integer to prevent floating point errors. When the value
+	 * is retrieved, it will be converted back to a float.
+	 *
+	 * @var int
+	 */
+	protected $value;
 
 	/**
 	 * The precision (how many decimal places).
@@ -39,9 +49,9 @@ class Precision_Value extends Base_Value {
 	 * @param ?int             $precision The precision (how many decimal places).
 	 */
 	public function __construct( $value, ?int $precision = null ) {
-		$this->validate( $value );
+		$value           = Float_Value::from_number( $value )->get();
 		$this->precision = new Positive_Int( $precision ?? 2 );
-		$this->value     = $this->convert_value_to_integer( (float) $value );
+		$this->value     = $this->convert_value_to_integer( $value );
 	}
 
 	/**
@@ -170,25 +180,5 @@ class Precision_Value extends Base_Value {
 		}
 
 		return new static( $this->get(), $precision );
-	}
-
-	/**
-	 * Validate that the value is valid.
-	 *
-	 * @since TBD
-	 *
-	 * @param mixed $value The value to validate.
-	 *
-	 * @return void
-	 * @throws InvalidArgumentException When the value is not valid.
-	 */
-	protected function validate( $value ): void {
-		if ( ! is_numeric( $value ) ) {
-			throw new InvalidArgumentException( 'Value must be numeric.' );
-		}
-
-		if ( 'NAN' === (string) $value ) {
-			throw new InvalidArgumentException( 'NAN is by definition not a number.' );
-		}
 	}
 }
