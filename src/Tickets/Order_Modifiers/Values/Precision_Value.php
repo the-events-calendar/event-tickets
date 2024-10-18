@@ -31,7 +31,7 @@ class Precision_Value implements Value_Interface {
 	 *
 	 * @var int
 	 */
-	protected $value;
+	protected int $value;
 
 	/**
 	 * The precision (how many decimal places).
@@ -39,6 +39,13 @@ class Precision_Value implements Value_Interface {
 	 * @var Positive_Int
 	 */
 	protected Positive_Int $precision;
+
+	/**
+	 * The maximum precision allowed.
+	 *
+	 * @var int
+	 */
+	protected int $max_precision = 6;
 
 	/**
 	 * Currency_Value constructor.
@@ -51,7 +58,10 @@ class Precision_Value implements Value_Interface {
 	public function __construct( $value, ?int $precision = null ) {
 		$value           = Float_Value::from_number( $value )->get();
 		$this->precision = new Positive_Int( $precision ?? 2 );
-		$this->value     = $this->convert_value_to_integer( $value );
+
+		$this->validate_precision();
+
+		$this->value = $this->convert_value_to_integer( $value );
 	}
 
 	/**
@@ -72,7 +82,7 @@ class Precision_Value implements Value_Interface {
 	 *
 	 * @return float
 	 */
-	protected function convert_value_to_float( $value ): float {
+	protected function convert_value_to_float( int $value ): float {
 		return (float) ( $value / ( 10 ** $this->precision->get() ) );
 	}
 
@@ -180,5 +190,18 @@ class Precision_Value implements Value_Interface {
 		}
 
 		return new static( $this->get(), $precision );
+	}
+
+	/**
+	 * Validate that the precision is valid.
+	 *
+	 * @since TBD
+	 *
+	 * @throws InvalidArgumentException If the precision is greater than the max precision.
+	 */
+	protected function validate_precision() {
+		if ( $this->precision->get() > $this->max_precision ) {
+			throw new InvalidArgumentException( sprintf( 'Precision cannot be greater than %d', $this->max_precision ) );
+		}
 	}
 }
