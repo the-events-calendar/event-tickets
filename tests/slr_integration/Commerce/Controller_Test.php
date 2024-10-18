@@ -21,6 +21,7 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets;
 use TEC\Tickets\Seating\Service\Service_Status;
+use WP_Post;
 
 class Controller_Test extends Controller_Test_Case {
 	use Ticket_Maker;
@@ -565,22 +566,22 @@ class Controller_Test extends Controller_Test_Case {
 
 		$this->assertEquals( 5, $count['tickets']['stock'] );
 		$this->assertEquals( 5, $count['tickets']['available'] );
-		
+
 		// test attendee count and stock after deleting an attendee.
 		$attendees = tribe( Module::class )->get_event_attendees( $event_id );
-		
+
 		$this->assertEquals( 5, count( $attendees ) );
-		
+
 		$deleted = tribe( Module::class )->delete_ticket( $event_id, $attendees[0]['ID'] );
-		
+
 		$this->assertTrue( $deleted );
-		
+
 		$attendees = tribe( Module::class )->get_event_attendees( $event_id );
-		
+
 		$this->assertEquals( 4, count( $attendees ) );
-		
+
 		$count = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
-		
+
 		$this->assertEquals( 6, $count['tickets']['stock'] );
 	}
 
@@ -748,10 +749,139 @@ class Controller_Test extends Controller_Test_Case {
 			update_post_meta( $ticket_id, '_stock', 26 );
 			update_post_meta( $ticket_id, $capacity_meta_key, 26 );
 
-			// NO CHanges while service is down!
+			// No changes while service is down!
 			$this->assertEquals( 22, get_post_meta( $post_id, $capacity_meta_key, true ) );
 			$this->assertEquals( 22, get_post_meta( $ticket_id, $capacity_meta_key, true ) );
 			$this->assertEquals( 22, get_post_meta( $ticket_id, '_stock', true ) );
 		}
+	}
+
+	public function test_stock_count_for_seated_tickets_replenished_on_attendee_deletion() {
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 12:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+
+		Seat_Types::insert_many(
+			[
+				[
+					'id'     => 'seat-type-A',
+					'name'   => 'A',
+					'seats'  => 5,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+				[
+					'id'     => 'seat-type-B',
+					'name'   => 'B',
+					'seats'  => 15,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+			]
+		);
+		set_transient( \TEC\Tickets\Seating\Service\Seat_Types::update_transient_name(), time() );
+
+		// Ticket 1 and 2 use the same seat type A.
+		$ticket_1 = $this->create_tc_ticket(
+			$event_id,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 5,
+				],
+			]
+		);
+		update_post_meta( $ticket_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-A' );
+		update_post_meta( $ticket_1, '_stock', 5 );
+		$ticket_2 = $this->create_tc_ticket(
+			$event_id,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 5,
+				],
+			]
+		);
+		update_post_meta( $ticket_2, Meta::META_KEY_SEAT_TYPE, 'seat-type-A' );
+		update_post_meta( $ticket_2, '_stock', 5 );
+
+		// Ticket 3 and 4 use the same seat type B.
+		$ticket_3 = $this->create_tc_ticket(
+			$event_id,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 15,
+				],
+			]
+		);
+		update_post_meta( $ticket_3, Meta::META_KEY_SEAT_TYPE, 'seat-type-B' );
+		update_post_meta( $ticket_3, '_stock', 15 );
+		$ticket_4 = $this->create_tc_ticket(
+			$event_id,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 15,
+				],
+			]
+		);
+		update_post_meta( $ticket_4, Meta::META_KEY_SEAT_TYPE, 'seat-type-B' );
+		update_post_meta( $ticket_4, '_stock', 15 );
+
+		// Check before order creation.
+		$this->assertEquals( 5, get_post_meta( $ticket_1, '_stock', true ) );
+		$this->assertEquals( 5, get_post_meta( $ticket_2, '_stock', true ) );
+		$this->assertEquals( 15, get_post_meta( $ticket_3, '_stock', true ) );
+		$this->assertEquals( 15, get_post_meta( $ticket_4, '_stock', true ) );
+
+		// Register the controller.
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Place an order for 3 Ticket 1 (Seat Type A) and 2 Ticket 3 (Seat Type B).
+		$order_1 = $this->create_order(
+			[
+				$ticket_1 => 3,
+				$ticket_3 => 2,
+			]
+		);
+
+		// Check Attendees.
+		$this->assertEquals( 3, tribe_attendees()->where( 'ticket', $ticket_1 )->count() );
+		$this->assertEquals( 0, tribe_attendees()->where( 'ticket', $ticket_2 )->count() );
+		$this->assertEquals( 2, tribe_attendees()->where( 'ticket', $ticket_3 )->count() );
+		$this->assertEquals( 0, tribe_attendees()->where( 'ticket', $ticket_4 )->count() );
+
+		// Check after order creation.
+		$this->assertEquals( 2, (int) get_post_meta( $ticket_1, '_stock', true ) );
+		$this->assertEquals( 2, (int) get_post_meta( $ticket_2, '_stock', true ) );
+		$this->assertEquals( 13, (int) get_post_meta( $ticket_3, '_stock', true ) );
+		$this->assertEquals( 13, (int) get_post_meta( $ticket_4, '_stock', true ) );
+
+		// Delete an Attendee from Ticket 1.
+		$ticket_1_attendee_1 = tribe_attendees()->where('ticket', $ticket_1)->first_id();
+		$this->assertInstanceOf( WP_Post::class, wp_delete_post( $ticket_1_attendee_1 ) );
+
+		// Check Attendees after Attendee deletion.
+		$this->assertEquals( 2, tribe_attendees()->where( 'ticket', $ticket_1 )->count() );
+		$this->assertEquals( 0, tribe_attendees()->where( 'ticket', $ticket_2 )->count() );
+		$this->assertEquals( 2, tribe_attendees()->where( 'ticket', $ticket_3 )->count() );
+		$this->assertEquals( 0, tribe_attendees()->where( 'ticket', $ticket_4 )->count() );
+
+		// Check stock after Attendee deletion.
+		$this->assertEquals( 3, (int) get_post_meta( $ticket_1, '_stock', true ) );
+		$this->assertEquals( 3, (int) get_post_meta( $ticket_2, '_stock', true ) );
+		$this->assertEquals( 13, (int) get_post_meta( $ticket_3, '_stock', true ) );
+		$this->assertEquals( 13, (int) get_post_meta( $ticket_4, '_stock', true ) );
 	}
 }

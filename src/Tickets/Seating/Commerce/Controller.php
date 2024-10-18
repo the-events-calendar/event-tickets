@@ -102,6 +102,7 @@ class Controller extends Controller_Contract {
 		add_filter( 'tec_tickets_get_ticket_counts', [ $this, 'set_event_stock_counts' ], 10, 2 );
 		add_filter( 'update_post_metadata', [ $this, 'prevent_capacity_saves_without_service' ], 1, 4 );
 		add_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ], 10, 4 );
+		add_action( 'before_delete_post', [ $this, 'restock_ticket_on_attendee_deletion' ], 10, 2 );
 	}
 
 	/**
@@ -120,6 +121,7 @@ class Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_get_ticket_counts', [ $this, 'set_event_stock_counts' ] );
 		remove_filter( 'update_post_metadata', [ $this, 'prevent_capacity_saves_without_service' ], 1 );
 		remove_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ], 10 );
+		remove_action( 'before_delete_post', [ $this, 'restock_ticket_on_attendee_deletion' ] );
 	}
 
 	/**
@@ -127,7 +129,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string,array<string|int>> $types  The types of tickets.
+	 * @param array<string,array<string|int>> $types   The types of tickets.
 	 * @param int                             $post_id The post ID.
 	 *
 	 * @return array<string,array<string|int>> The types of tickets.
@@ -213,8 +215,8 @@ class Controller extends Controller_Contract {
 			return $inventory;
 		}
 
-		$event_id       = $ticket->get_event_id();
-		$capacity       = $ticket->capacity();
+		$event_id = $ticket->get_event_id();
+		$capacity = $ticket->capacity();
 
 		// Remove this function from the filter to avoid infinite loops.
 		remove_filter( 'tribe_tickets_ticket_inventory', [ $this, 'get_seated_ticket_inventory' ] );
@@ -233,15 +235,17 @@ class Controller extends Controller_Contract {
 				->where( 'meta_equals', Meta::META_KEY_SEAT_TYPE, $seat_type )
 				->get_ids( true ) as $ticket_id
 		) {
-			$ticket_ids[]  = (int)$ticket_id;
+			$ticket_ids[] = (int) $ticket_id;
 		}
 
 		$total_sold = 0;
 		if ( count( $event_attendees ) ) {
-			$total_sold = count( array_filter(
-				$event_attendees,
-				static fn( array $attendee ): bool => in_array( (int) $attendee['product_id'], $ticket_ids, true )
-			) );
+			$total_sold = count(
+				array_filter(
+					$event_attendees,
+					static fn( array $attendee ): bool => in_array( (int) $attendee['product_id'], $ticket_ids, true )
+				)
+			);
 		}
 
 		add_filter(
@@ -321,12 +325,15 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int    $ticket_id The Ticket ID to start the cross-update from.
-	 * @param string $seat_type The seat type UUID.
+	 * @param int    $ticket_id      The Ticket ID to start the cross-update from.
+	 * @param string $seat_type      The seat type UUID.
+	 * @param int    $stock_modifier Modify the stock further by this amount. Useful when we already know the value
+	 *                               will be modified by a certain amount in the context of this call (e.g. when handling
+	 *                               an Attendee deletion).
 	 *
 	 * @return bool Whether the meta update of the Ticket specified by `$ticket_id` was successful or not.
 	 */
-	private function update_seated_ticket_stock( int $ticket_id, string $seat_type ): bool {
+	private function update_seated_ticket_stock( int $ticket_id, string $seat_type, int $stock_modifier = 0 ): bool {
 		$ticket = Tickets::load_ticket_object( $ticket_id );
 
 		if ( ! $ticket instanceof Ticket_Object ) {
@@ -341,7 +348,7 @@ class Controller extends Controller_Contract {
 
 		$seat_type_seats           = $this->seat_types_table->get_seats( $seat_type );
 		$seat_type_attendees_count = $this->attendees->get_count_by_post_seat_type( $event->ID, $seat_type );
-		$updated_stock             = $seat_type_seats - $seat_type_attendees_count;
+		$updated_stock             = $seat_type_seats - $seat_type_attendees_count + $stock_modifier;
 
 		$updated = update_post_meta( $ticket_id, Ticket::$stock_meta_key, $updated_stock );
 
@@ -472,15 +479,12 @@ class Controller extends Controller_Contract {
 			// Not an ASC ticket.
 			return $check;
 		}
+
 		// Remove this filter to avoid infinite loops.
 		remove_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ] );
 
 		if ( $meta_key === Ticket::$stock_meta_key ) {
-			if ( (int) $meta_value < 0 ) {
-				// Not syncing unlimited stock: no such thing as infinite seats.
-				return false;
-			}
-
+			// Meta value might be negative from default calculation: not an issue, we run a different calculation.
 			$updated = $this->update_seated_ticket_stock( $object_id, $seat_type );
 		} else {
 			if ( (int) $meta_value < 0 ) {
@@ -495,4 +499,63 @@ class Controller extends Controller_Contract {
 		return $updated;
 	}
 
+	/**
+	 * Updates the stock of the Tickets sharing the same seat type when an Attendee is deleted.
+	 *
+	 * @since TBD
+	 *
+	 * @param int     $post_id The ID of the post being deleted.
+	 * @param WP_Post $post    The post object being deleted.
+	 *
+	 * @return void
+	 */
+	public function restock_ticket_on_attendee_deletion( $post_id, $post ) {
+		if ( ! ( $post instanceof WP_Post ) ) {
+			return;
+		}
+
+		$attendee_types = tribe_attendees()->attendee_types();
+
+		if ( ! in_array( $post->post_type, $attendee_types, true ) ) {
+			return;
+		}
+
+		// Fetching Post and Ticket ID from the Attendee can require some queries, but the data is already in the meta (cached).
+		$attendee_to_post_keys   = array_values( tribe_attendees()->attendee_to_event_keys() );
+		$attendee_to_ticket_keys = array_values( tribe_attendees()->attendee_to_ticket_keys() );
+		$attendee_meta           = get_post_meta( $post_id );
+		$post_id                 = null;
+		$ticket_id               = null;
+		foreach ( $attendee_meta as $meta_key => $meta_value ) {
+			if ( $post_id && $ticket_id ) {
+				break;
+			}
+
+			if ( in_array( $meta_key, $attendee_to_post_keys, true ) ) {
+				$post_id = reset( $meta_value );
+				continue;
+			}
+
+			if ( in_array( $meta_key, $attendee_to_ticket_keys, true ) ) {
+				$ticket_id = reset( $meta_value );
+			}
+		}
+
+		if ( ! ( $post_id && $ticket_id ) ) {
+			return;
+		}
+
+		$seat_type = get_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, true );
+
+		if ( ! $seat_type ) {
+			return;
+		}
+
+		remove_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ] );
+
+		// Updating this Ticket will update all the Tickets that share the same seat type.
+		$this->update_seated_ticket_stock( $ticket_id, $seat_type, 1 );
+
+		add_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ], 10, 4 );
+	}
 }
