@@ -33,7 +33,7 @@ function filterRenderCapacityForm(renderDefaultForm, { clientId, ticketProvider 
 		return renderDefaultForm;
 	}
 
-	if ( ticketProvider !== 'tc' ) {
+	if ( ticketProvider !== "TEC\\Tickets\\Commerce\\Module" && ticketProvider !== 'tc' ) {
 		return renderDefaultForm;
 	}
 
