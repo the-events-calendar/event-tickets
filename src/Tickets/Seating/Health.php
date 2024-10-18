@@ -120,7 +120,7 @@ class Health extends Controller_Contract {
 				'completed' => false,
 				'extra'     => [
 					'success' => [
-						'description' => __( 'Your site is connected to the Seating Builder SaaS.', 'event-tickets' ),
+						'description' => __( 'Your site is able to connect to the Seating Builder SaaS.', 'event-tickets' ),
 						'actions'     => [
 							// Translators: 1 is opening p element, 2 is closing p element, 3 is opening a element and 4 is closing a element.
 							_x( '%1$sYou\'re ready to %3$suse Seating for Event Tickets%4$s.%2$s', 'Shown as an action result, when the test regarding Seating license in Site Health is successful.', 'event-tickets' ),
