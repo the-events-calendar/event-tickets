@@ -24,11 +24,16 @@ const shouldRenderAssignedSeatingForm = true;
  *
  * @param {function(): void} renderDefaultForm The render function of the Capacity form.k
  * @param {string }          clientId          The client ID of the ticket block.
+ * @param {string}           ticketProvider    The ticket provider.
  *
  * @return {Function} The render function of the Capacity form with the seating options.
  */
-function filterRenderCapacityForm(renderDefaultForm, { clientId }) {
+function filterRenderCapacityForm(renderDefaultForm, { clientId, ticketProvider }) {
 	if (!shouldRenderAssignedSeatingForm) {
+		return renderDefaultForm;
+	}
+
+	if ( ticketProvider !== 'tc' ) {
 		return renderDefaultForm;
 	}
 
