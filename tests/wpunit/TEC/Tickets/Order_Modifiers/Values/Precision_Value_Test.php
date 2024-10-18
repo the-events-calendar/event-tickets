@@ -74,6 +74,15 @@ class Precision_Value_Test extends WPTestCase {
 		$this->assertEquals( $expected_sum, $a->add( $b )->get() );
 	}
 
+	/**
+	 * @dataProvider subtraction_data_provider
+	 * @test
+	 */
+	public function subtraction_works_with_objects( PV $a, PV $b, $expected_difference ) {
+		$this->assertEquals( $expected_difference, $a->subtract( $b )->get() );
+	}
+
+
 	public function get_data_provider() {
 		// raw value, precision, expected value
 		yield 'Normal float rounding down' => [ 1.234, 2, 1.23 ];
@@ -130,4 +139,21 @@ class Precision_Value_Test extends WPTestCase {
 		yield 'Addition of two negative values' => [ new PV( -1.2 ), new PV( 1.2 ), 0.00 ];
 		yield 'Negative values addition' => [ new PV( -1.21 ), new PV( -1.21 ), -2.42 ];
 	}
+
+	public function subtraction_data_provider() {
+		// Test cases for subtracting two PV (present value) objects
+		yield 'Simple subtraction of two PV values' => [ new PV( 2.34 ), new PV( 1.23 ), 1.11 ];
+		yield 'Subtraction resulting in zero' => [ new PV( 3.57 ), new PV( 3.57 ), 0.00 ];
+		yield 'Subtraction with custom precision on second PV' => [ new PV( 3.345 ), new PV( 1.234, new Positive_Integer_Value( 3 ) ), 2.111 ];
+		yield 'Subtraction of negative value from positive value' => [ new PV( 3.57 ), new PV( -2.34 ), 5.91 ];
+		yield 'Subtraction of positive value from negative value' => [ new PV( -1.23 ), new PV( 2.34 ), -3.57 ];
+		yield 'Subtraction of binary values' => [ new PV( 0b10100111001 ), new PV( 0b10100111001 ), 0.00 ];
+		yield 'Subtraction of small decimal values' => [ new PV( 0.06 ), new PV( 0.05 ), 0.01 ];
+		yield 'Subtraction resulting in negative value' => [ new PV( 0.05 ), new PV( 0.10 ), -0.05 ];
+		yield 'Subtraction with zero as the second value' => [ new PV( 1.23 ), new PV( 0.00 ), 1.23 ];
+		yield 'Subtraction of zero from zero' => [ new PV( 0.0 ), new PV( 0.0 ), 0.00 ];
+		yield 'Subtraction of two negative values' => [ new PV( -1.21 ), new PV( -1.2 ), -0.01 ];
+		yield 'Subtraction of very small values with 6 decimal precision' => [ new PV( 0.000010, new Positive_Integer_Value( 6 ) ), new PV( 0.000001, new Positive_Integer_Value( 6 ) ), 0.000009 ];
+	}
+
 }
