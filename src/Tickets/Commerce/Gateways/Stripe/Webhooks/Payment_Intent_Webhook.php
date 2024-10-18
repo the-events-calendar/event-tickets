@@ -68,7 +68,7 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 			$response->set_status( 200 );
 			$response->set_data(
 				sprintf(
-				// Translators: %s is the payment intent id
+					// Translators: %s is the payment intent id.
 					__( 'Payment Intent %s does not require an update or is a duplicate of a past event.', 'event-tickets' ),
 					esc_html( $payment_intent_id )
 				)
