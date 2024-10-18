@@ -42,3 +42,4 @@ global $wpdb;
 // Drop our custom tables.
 $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tec_order_modifiers" );
 $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tec_order_modifiers_meta" );
+$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tec_order_modifier_relationships" );

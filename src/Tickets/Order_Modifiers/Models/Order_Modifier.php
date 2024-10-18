@@ -26,7 +26,7 @@ use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers as Repository;
  * @property int    $id              The Order Modifier ID.
  * @property string $modifier_type   The type of modifier (coupon, fee).
  * @property string $sub_type        The sub-type of modifier (percentage, flat).
- * @property int    $fee_amount_cents Amount of fee in cents.
+ * @property int    $raw_amount      Amount of fee in cents.
  * @property string $slug            The Order Modifier slug (coupon code).
  * @property string $display_name    User-friendly name.
  * @property string $status          The status (active, draft, inactive).
@@ -40,17 +40,27 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 * @inheritDoc
 	 */
 	protected $properties = [
-		'id'               => 'int',
-		'modifier_type'    => 'string',
-		'sub_type'         => 'string',
-		'fee_amount_cents' => 'int',
-		'slug'             => 'string',
-		'display_name'     => 'string',
-		'status'           => 'string',
-		'created_at'       => 'string',
-		'start_time'       => 'string',
-		'end_time'         => 'string',
+		'id'            => 'int',
+		'modifier_type' => 'string',
+		'sub_type'      => 'string',
+		'raw_amount'    => 'int',
+		'slug'          => 'string',
+		'display_name'  => 'string',
+		'status'        => 'string',
+		'created_at'    => 'string',
+		'start_time'    => 'string',
+		'end_time'      => 'string',
 	];
+
+	/**
+	 * The order modifier type (e.g., 'coupon', 'fee').
+	 *
+	 * This will be defined in child classes.
+	 *
+	 * @since TBD
+	 * @var string
+	 */
+	protected static string $order_modifier_type;
 
 	/**
 	 * Finds a model by its ID.
@@ -62,21 +72,10 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 * @return Order_Modifier|null The model instance, or null if not found.
 	 */
 	public static function find( $id ): ?self {
-		return tribe( Repository::class )->find_by_id( $id );
-	}
-
-	/**
-	 * Finds a model by its slug.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $slug The model slug.
-	 * @param string $type The model type.
-	 *
-	 * @return Order_Modifier|null The model instance, or null if not found.
-	 */
-	public static function find_by_slug( $slug, $type ): ?self {
-		return ( new Repository( $type ) )->find_by_slug( $slug );
+		if ( empty( static::$order_modifier_type ) ) {
+			return null;
+		}
+		return ( new Repository( static::$order_modifier_type ) )->find_by_id( $id );
 	}
 
 	/**
@@ -88,7 +87,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 *
 	 * @return static
 	 */
-	public static function create( array $attributes ): static {
+	public static function create( array $attributes ): self {
 		// Maybe override the modifier type based on the final class.
 		if ( property_exists( static::class, 'order_modifier_type' ) ) {
 			$attributes['modifier_type'] = static::$order_modifier_type;

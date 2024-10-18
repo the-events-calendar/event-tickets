@@ -20,11 +20,12 @@
 namespace TEC\Tickets\Order_Modifiers\Table_Views;
 
 use TEC\Tickets\Order_Modifiers\Controller;
+use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
+use TEC\Tickets\Order_Modifiers\Factory;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifier_Relationship;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers_Meta;
 use WP_List_Table;
-use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 
 /**
  * Abstract class for Order Modifier Table (Coupons/Fees).
@@ -78,10 +79,9 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 */
 	public function __construct( Modifier_Strategy_Interface $modifier ) {
 		$this->modifier                       = $modifier;
-		$this->order_modifier_repository      = new Order_Modifiers( $modifier->get_modifier_type() );
+		$this->order_modifier_repository      = Factory::get_repository_for_type( $modifier->get_modifier_type() );
 		$this->order_modifier_meta_repository = new Order_Modifiers_Meta();
 		$this->order_modifier_relationship    = new Order_Modifier_Relationship();
-
 
 		parent::__construct(
 			[
@@ -104,19 +104,20 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		$this->_column_headers = [ $columns, $hidden, $sortable ];
 
 		// Handle search.
-		$search = isset( $_REQUEST['s'] ) ? sanitize_text_field( $_REQUEST['s'] ) : '';
+		$search = tribe_get_request_var( 's', '' );
 
 		// Capture sorting parameters.
-		$orderby = isset( $_GET['orderby'] ) ? sanitize_text_field( $_GET['orderby'] ) : 'display_name';
-		$order   = isset( $_GET['order'] ) ? sanitize_text_field( $_GET['order'] ) : 'asc';
+
+		$orderby = sanitize_text_field( tribe_get_request_var( 'orderby', 'display_name' ) );
+		$order   = sanitize_text_field( tribe_get_request_var( 'order', 'asc' ) );
 
 		// Fetch the data from the modifier class, including sorting.
 		$data = $this->modifier->find_by_search(
 			[
-				'search_term' => $search,
-				'orderby'     => $orderby,
-				'order'       => $order,
-				'modifier_type' => $this->modifier->get_modifier_type()
+				'search_term'   => $search,
+				'orderby'       => $orderby,
+				'order'         => $order,
+				'modifier_type' => $this->modifier->get_modifier_type(),
 			]
 		);
 
@@ -223,10 +224,11 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	public function search_box( $text, $input_id, $placeholder = '' ) {
 		// Check if nonce is valid. The nonce value does not need sanitization, as wp_verify_nonce handles it.
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		$nonce_valid = isset( $_REQUEST['_wpnonce'] ) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'search_order_modifier' );
+		$maybe_nonce = tribe_get_request_var( '_wpnonce' );
+		$nonce_valid = ! empty( $maybe_nonce ) && wp_verify_nonce( $maybe_nonce, 'search_order_modifier' );
 
-		// If nonce is invalid, set search term to empty; otherwise, get the value from $_REQUEST.
-		$search_value = $nonce_valid ? sanitize_text_field( $_REQUEST['s'] ?? '' ) : '';
+		// If nonce is invalid, set search term to empty; otherwise, get the value from the request.
+		$search_value = $nonce_valid ? sanitize_text_field( tribe_get_request_var( 's', '' ) ) : '';
 
 		// Set the input ID.
 		$input_id = $input_id . '-search-input';

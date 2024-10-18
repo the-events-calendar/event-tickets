@@ -2,10 +2,13 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
+use RuntimeException;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Commerce\Utils\Value;
+use Tribe__Settings as Settings;
+use TEC\Tickets\Commerce\Gateways\Stripe\Settings as Stripe_Settings;
 
 /**
  * Stripe orders aka Payment Intents class.
@@ -124,7 +127,7 @@ class Payment_Intent {
 			],
 		];
 
-		$stripe_statement_descriptor = tribe_get_option( Settings::$option_statement_descriptor );
+		$stripe_statement_descriptor = tribe_get_option( Stripe_Settings::$option_statement_descriptor );
 
 		if ( ! empty( $stripe_statement_descriptor ) ) {
 			$body['statement_descriptor'] = substr( $stripe_statement_descriptor, 0, 22 );
@@ -151,12 +154,26 @@ class Payment_Intent {
 	 */
 	public static function create_from_cart( Cart $cart, $retry = false ) {
 		$items = tribe( Order::class )->prepare_cart_items_for_order( $cart );
-
 		if ( empty( $items ) ) {
 			return [];
 		}
 
 		$value = tribe( Order::class )->get_value_total( array_filter( $items ) );
+
+		/**
+		 * Filters the value and items before creating a Payment Intent.
+		 *
+		 * @since TBD
+		 *
+		 * @param Value $value The total value of the cart.
+		 * @param array $items The items in the cart
+		 */
+		$value = apply_filters( 'tec_tickets_commerce_stripe_create_from_cart', $value, $items );
+
+		// Ensure we have a Value object returned from the filters.
+		if ( ! $value instanceof Value ) {
+			throw new RuntimeException( esc_html__( 'Value object not returned from filter', 'event-tickets' ) );
+		}
 
 		return static::create( $value, $retry );
 	}
@@ -290,7 +307,7 @@ class Payment_Intent {
 
 		if ( empty( $payment_methods ) ) {
 			if ( $checkout_type === Settings::PAYMENT_ELEMENT_SLUG ) {
-				\Tribe__Settings::instance()->errors[] = esc_html__( 'Payment methods accepted cannot be empty', 'event-tickets' );
+				Settings::instance()->errors[] = esc_html__( 'Payment methods accepted cannot be empty', 'event-tickets' );
 			}
 
 			// Revert value to the previous configuration.
@@ -313,10 +330,9 @@ class Payment_Intent {
 		}
 
 		// Payment attempt failed. Provide an alert in the Dashboard.
-		\Tribe__Settings::instance()->errors[] = $payment_intent_test->get_error_message();
+		Settings::instance()->errors[] = $payment_intent_test->get_error_message();
 
 		// Revert value to the previous configuration.
 		return tribe_get_option( $field_id, [] );
 	}
-
 }
