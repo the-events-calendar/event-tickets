@@ -120,6 +120,43 @@ class Precision_Value extends Base_Value {
 	}
 
 	/**
+	 * Subtract a value from this value.
+	 *
+	 * @since TBD
+	 *
+	 * @param Precision_Value $value The value to subtract.
+	 *
+	 * @return static The new value object
+	 */
+	public function subtract( Precision_Value $value ) {
+		$negative_value = new Precision_Value(
+			$value->get() * -1,
+			$value->get_precision()
+		);
+
+		return $this->add( $negative_value );
+	}
+
+	/**
+	 * Add multiple values together.
+	 *
+	 * @since TBD
+	 *
+	 * @param Precision_Value ...$values The values to add.
+	 *
+	 * @return Precision_Value The sum of the values.
+	 */
+	public static function sum( Precision_Value ...$values ): Precision_Value {
+		$sum = new static( 0 );
+
+		foreach ( $values as $value ) {
+			$sum = $sum->add( $value );
+		}
+
+		return $sum;
+	}
+
+	/**
 	 * Convert this object to an object with a new precision level.
 	 *
 	 * @since TBD
