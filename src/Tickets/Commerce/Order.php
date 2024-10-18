@@ -707,7 +707,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @return mixed|WP_Post|null
 	 */
-	public function get_from_gateway_order_id( string $gateway_order_id ) {
+	public function get_from_gateway_order_id( $gateway_order_id ) {
 		return tec_tc_orders()->by_args( [
 			'order_by'         => 'ID',
 			'order'            => 'DESC',
