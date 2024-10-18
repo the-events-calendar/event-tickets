@@ -144,7 +144,7 @@ class Precision_Value_Test extends WPTestCase {
 		// Test cases for subtracting two PV (present value) objects
 		yield 'Simple subtraction of two PV values' => [ new PV( 2.34 ), new PV( 1.23 ), 1.11 ];
 		yield 'Subtraction resulting in zero' => [ new PV( 3.57 ), new PV( 3.57 ), 0.00 ];
-		yield 'Subtraction with custom precision on second PV' => [ new PV( 3.345 ), new PV( 1.234, new Positive_Integer_Value( 3 ) ), 2.111 ];
+		yield 'Subtraction with custom precision on second PV' => [ new PV( 3.35 ), new PV( 1.234, new Positive_Integer_Value( 3 ) ), 2.116 ];
 		yield 'Subtraction of negative value from positive value' => [ new PV( 3.57 ), new PV( -2.34 ), 5.91 ];
 		yield 'Subtraction of positive value from negative value' => [ new PV( -1.23 ), new PV( 2.34 ), -3.57 ];
 		yield 'Subtraction of binary values' => [ new PV( 0b10100111001 ), new PV( 0b10100111001 ), 0.00 ];
