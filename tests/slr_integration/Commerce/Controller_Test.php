@@ -565,6 +565,23 @@ class Controller_Test extends Controller_Test_Case {
 
 		$this->assertEquals( 5, $count['tickets']['stock'] );
 		$this->assertEquals( 5, $count['tickets']['available'] );
+		
+		// test attendee count and stock after deleting an attendee.
+		$attendees = tribe( Module::class )->get_event_attendees( $event_id );
+		
+		$this->assertEquals( 5, count( $attendees ) );
+		
+		$deleted = tribe( Module::class )->delete_ticket( $event_id, $attendees[0]['ID'] );
+		
+		$this->assertTrue( $deleted );
+		
+		$attendees = tribe( Module::class )->get_event_attendees( $event_id );
+		
+		$this->assertEquals( 4, count( $attendees ) );
+		
+		$count = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+		
+		$this->assertEquals( 6, $count['tickets']['stock'] );
 	}
 
 	public function test_stock_count_for_multiple_seat_typed_tickets() {
@@ -678,8 +695,8 @@ class Controller_Test extends Controller_Test_Case {
 		$count = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
 
 		// Should be 45-25.
-		$this->assertEquals( 45 - 35, $count['tickets']['stock'] );
-		$this->assertEquals( 45 - 35, $count['tickets']['available'] );
+		$this->assertEquals( 50 - 20 - 20, $count['tickets']['stock'] );
+		$this->assertEquals( 50 - 20 - 20, $count['tickets']['available'] );
 	}
 
 	public function test_no_capacity_updates_while_service_is_down() {
