@@ -60,8 +60,8 @@ class Percent_Value_Test extends WPTestCase {
 
 	public function percent_data_provider() {
 		return [
-			[ 10, 10 ],
-			[ 5, 5 ],
+			[ 10, (float) 10 ],
+			[ 5, (float) 5 ],
 			[ 0.5, 0.5 ],
 			[ 0.05, 0.05 ],
 		];
