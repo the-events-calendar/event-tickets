@@ -129,7 +129,10 @@ class Precision_Value_Test extends WPTestCase {
 			[ new PV( .05 ), new PV( .05 ), 0.10 ],
 			[ new PV( 0.1 ), new PV( 0.2 ), 0.3 ],
 			[ new PV( 0.0 ), new PV( 0.0 ), 0.00 ],
-			[ new PV( 0.9), new PV( 0.1 ), 1.00 ],
+			[ new PV( 0.9 ), new PV( 0.1 ), 1.00 ],
+			[ new PV( 0.000009, new Positive_Integer_Value( 6 ) ), new PV( 0.000001, new Positive_Integer_Value( 6 ) ), 0.000010 ],
+			[ new PV( -1.2 ), new PV( 1.2 ), 0.00 ],
+			[ new PV( -1.21 ), new PV( -1.21 ), -2.42 ],
 		];
 	}
 }
