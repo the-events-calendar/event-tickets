@@ -169,15 +169,18 @@ class Controller extends Controller_Contract {
 				continue;
 			}
 
-			$capacity   = $ticket->capacity();
-			$stock      = $ticket->stock();
-			$total_sold = max( 0, $capacity - $stock );
+			$capacity = $ticket->capacity();
+			$stock    = $ticket->stock();
+			$sold_qty = $ticket->qty_sold();
+			
 			if ( ! isset( $capacity_by_type[ $seat_type ] ) ) {
 				$capacity_by_type[ $seat_type ] = $capacity;
 			}
 
 			if ( ! isset( $total_sold_by_type[ $seat_type ] ) ) {
-				$total_sold_by_type[ $seat_type ] = $total_sold;
+				$total_sold_by_type[ $seat_type ] = $sold_qty;
+			} else {
+				$total_sold_by_type[ $seat_type ] += $sold_qty;
 			}
 
 			++$types['tickets']['count'];
