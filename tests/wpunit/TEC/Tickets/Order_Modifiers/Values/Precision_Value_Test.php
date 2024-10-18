@@ -27,7 +27,7 @@ class Precision_Value_Test extends WPTestCase {
 	 */
 	public function validation_fails_for_invalid_types( $raw_value ) {
 		$this->expectException( InvalidArgumentException::class );
-		$this->expectExceptionMessage( 'Value must be numeric.' );
+		$this->expectExceptionMessage( 'Value must be a number.' );
 		new PV( $raw_value );
 	}
 
@@ -38,6 +38,15 @@ class Precision_Value_Test extends WPTestCase {
 		$this->expectException( InvalidArgumentException::class );
 		$this->expectExceptionMessage( 'NAN is by definition not a number.' );
 		new PV( NAN );
+	}
+
+	/**
+	 * @test
+	 */
+	public function validation_fails_for_INF_constant() {
+		$this->expectException( InvalidArgumentException::class );
+		$this->expectExceptionMessage( 'Infinity is too big for us to work with.' );
+		new PV( INF );
 	}
 
 	/**
