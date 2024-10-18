@@ -31,7 +31,7 @@ const mapStateToProps = ( state, ownProps ) => ( {
 	tempCapacityType: selectors.getTicketTempCapacityType( state, ownProps ),
 	tempCapacityTypeOption: selectors.getTicketTempCapacityTypeOption( state, ownProps ),
 	tempSharedCapacity: selectors.getTicketsTempSharedCapacity( state ),
-	ticketProvider: selectors.getTicketProvider( state, ownProps ),
+	ticketProvider: selectors.getDefaultTicketProvider( state, ownProps ),
 } );
 
 const mapDispatchToProps = ( dispatch, ownProps ) => {
