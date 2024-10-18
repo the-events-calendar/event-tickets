@@ -102,7 +102,7 @@ class Controller extends Controller_Contract {
 		add_filter( 'tec_tickets_get_ticket_counts', [ $this, 'set_event_stock_counts' ], 10, 2 );
 		add_filter( 'update_post_metadata', [ $this, 'prevent_capacity_saves_without_service' ], 1, 4 );
 		add_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ], 10, 4 );
-		add_action( 'before_delete_post', [ $this, 'update_ticket_stocks' ], 10, 2 );
+		add_action( 'before_delete_post', [ $this, 'restock_ticket_on_attendee_deletion' ], 10, 2 );
 	}
 
 	/**
@@ -121,7 +121,7 @@ class Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_get_ticket_counts', [ $this, 'set_event_stock_counts' ] );
 		remove_filter( 'update_post_metadata', [ $this, 'prevent_capacity_saves_without_service' ], 1 );
 		remove_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ], 10 );
-		remove_action( 'before_delete_post', [ $this, 'update_ticket_stocks' ] );
+		remove_action( 'before_delete_post', [ $this, 'restock_ticket_on_attendee_deletion' ] );
 	}
 
 	/**
@@ -499,7 +499,17 @@ class Controller extends Controller_Contract {
 		return $updated;
 	}
 
-	public function update_ticket_stocks( $post_id, $post ) {
+	/**
+	 * Updates the stock of the Tickets sharing the same seat type when an Attendee is deleted.
+	 *
+	 * @since TBD
+	 *
+	 * @param int      $post_id The ID of the post being deleted.
+	 * @param WP_Post  $post    The post object being deleted.
+	 *
+	 * @return void
+	 */
+	public function restock_ticket_on_attendee_deletion( $post_id, $post ) {
 		if ( ! ( $post instanceof WP_Post ) ) {
 			return;
 		}
@@ -541,8 +551,11 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
+		remove_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ] );
+
 		// Updating this Ticket will update all the Tickets that share the same seat type.
 		$this->update_seated_ticket_stock( $ticket_id, $seat_type, 1 );
-	}
 
+		add_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ], 10, 4 );
+	}
 }
