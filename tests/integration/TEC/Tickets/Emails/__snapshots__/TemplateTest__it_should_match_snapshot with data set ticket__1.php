@@ -298,9 +298,28 @@
 		margin: 0;
 		padding: 0;
 	}
+	
+	div.tec-tickets__email-table-content-ticket-seat-label {
+		color: #ffffff;
+		display: inline-block;
+		font-size: 16px;
+		font-weight: 400;
+		margin-top: 8px;
+	}
+	
+	div.tec-tickets__email-table-content-ticket-seat-label-separator {
+		color: #ffffff;
+		display: inline-block;
+		font-size: 16px;
+		font-weight: 400;
+		margin-top: 8px;
+		opacity: 0.5;
+		padding: 0 4px;
+	}
 
 	div.tec-tickets__email-table-content-ticket-type-name {
 		color: #ffffff;
+		display: inline-block;
 		font-size: 16px;
 		margin-top: 8px;
 		padding: 0;
@@ -511,7 +530,7 @@
 	}
 
 	.tec-tickets__email-table-content-ticket-security-code {
-		color: #ffffffAA;
+		color: #ffffff;
 	}
 
 	table.tec-tickets__email-table-content-ticket-table {
@@ -705,6 +724,34 @@
 		</td>
 	</tr>
 </table>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<td class="tec-tickets__email-table-content-event-links-container">
+		<table role="presentation" class="tec-tickets__email-table-content-event-links-table">
+			<tr>
+				<td class="tec-tickets__email-table-content-event-links-table-data" align="center">
+
+					<a
+	target="_blank"
+	rel="noopener noreferrer"
+	href="#"
+	class="tec-tickets__email-table-content-event-links-ical-link"
+>
+	Add event to iCal</a>
+
+					
+<a
+	target="_blank"
+	rel="noopener noreferrer"
+	href="#"
+	class="tec-tickets__email-table-content-event-links-gcal-link"
+>
+	Add event to Google Calendar</a>
+
 				</td>
 			</tr>
 		</table>

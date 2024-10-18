@@ -1,0 +1,113 @@
+@import "./../../postcss/_tabs.pcss";
+
+.tec-tickets__seating-tab--empty {
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	min-height: 400px;
+}
+
+.tec-tickets__seating-tab__cards {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 30px;
+	justify-content: flex-start;
+
+	.tec-tickets__seating-tab__card {
+		background: #ffffff;
+		height: 320px;
+		padding: 10px;
+		width: 260px;
+	}
+
+	.tec-tickets__seating-tab__card-thumbnail {
+		height: 220px;
+		img {
+			height: 100%;
+			width: 100%;
+			object-fit: contain;
+			vertical-align: bottom;
+		}
+	}
+
+	.tec-tickets__seating-tab__card-content {
+		color: #3C434A;
+		margin: 15px 0;
+	}
+
+	.tec-tickets__seating-tab__card-title {
+		font-size: 16px;
+		font-weight: 700;
+		line-height: 24px;
+	}
+
+	.tec-tickets__seating-tab__card-capacity {
+		font-size: 13px;
+		font-weight: 400;
+		line-height: 18px;
+	}
+
+	.tec-tickets__seating-tab__card-actions {
+		align-items: center;
+		display: flex;
+		gap: 10px;
+		justify-content: flex-start;
+		margin: 10px 0;
+
+		.delete-layout {
+			color: #D63638;
+		}
+	}
+}
+.tec-tickets-seating-modal-wrapper {
+	.tribe-modal__wrapper{
+		max-width: 500px;
+	}
+}
+.tec-tickets-seating__new-layout-wrapper {
+	display: flex;
+	gap: 10px;
+	flex-direction: column;
+
+	.tec-tickets-seating__new-layout-header {
+		font-size: 16px;
+		font-weight: 700;
+		line-height: 24px;
+	}
+
+	.tec-tickets-seating__select-map {
+		font-size: 18px;
+		line-height: 36px;
+	}
+
+	.tec-tickets-seating__new-layout-map-preview {
+		display: flex;
+		height: 260px;
+		justify-content: center;
+		img {
+			height: 100%;
+		}
+	}
+
+	.tec-tickets-seating__new-layout-map-info {
+		margin: 0 auto;
+
+		.tec-tickets-seating__new-layout-map-name {
+			font-size: 16px;
+			font-weight: 700;
+			line-height: 24px;
+		}
+		.tec-tickets-seating__new-layout-map-seats-count, .tec-tickets-seating__new-layout-map-seats-label {
+			font-size: 13px;
+			font-weight: 400;
+			line-height: 18px;
+		}
+	}
+
+	.tec-tickets-seating__new-layout-buttons {
+		display: flex;
+		gap: 10px;
+		margin-top: 15px;
+		justify-content: flex-end;
+	}
+}

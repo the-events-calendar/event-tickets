@@ -13,14 +13,19 @@ class Tribe__Tickets__Editor__Assets {
 	public function register() {
 		$plugin = Tribe__Tickets__Main::instance();
 
+		// A minimal set of Babel transpilers for commonly used JavaScript features.
+		tribe_asset(
+			$plugin,
+			'tec-tickets-vendor-babel',
+			'app/vendor-babel.js'
+		);
+
 		tribe_asset(
 			$plugin,
 			'tribe-tickets-gutenberg-vendor',
 			'app/vendor.js',
-			/**
-			 * @todo revise this dependencies
-			 */
 			[
+				'tec-tickets-vendor-babel',
 				'react',
 				'react-dom',
 				'thickbox',

@@ -654,7 +654,7 @@ class Ticket {
 		} else {
 			// If the Global Stock is configured we pull it from the Event
 			$global_capacity        = (int) tribe_tickets_get_capacity( $post_id );
-			$data['event_capacity'] = (int) \Tribe__Utils__Array::get( 'event_capacity', $data, 0 );
+			$data['event_capacity'] = (int) \Tribe__Utils__Array::get( $data, 'event_capacity', 0 );
 
 			if ( ! empty( $data['event_capacity'] ) && $data['event_capacity'] !== $global_capacity ) {
 				// Update stock level with $data['event_capacity'].

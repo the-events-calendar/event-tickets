@@ -151,9 +151,28 @@
 		margin: 0;
 		padding: 0;
 	}
+	
+	div.tec-tickets__email-table-content-ticket-seat-label {
+		color: <?php echo esc_attr( $ticket_text_color ); ?>;
+		display: inline-block;
+		font-size: 16px;
+		font-weight: 400;
+		margin-top: 8px;
+	}
+	
+	div.tec-tickets__email-table-content-ticket-seat-label-separator {
+		color: <?php echo esc_attr( $ticket_text_color ); ?>;
+		display: inline-block;
+		font-size: 16px;
+		font-weight: 400;
+		margin-top: 8px;
+		opacity: 0.5;
+		padding: 0 4px;
+	}
 
 	div.tec-tickets__email-table-content-ticket-type-name {
 		color: <?php echo esc_attr( $ticket_text_color ); ?>;
+		display: inline-block;
 		font-size: 16px;
 		margin-top: 8px;
 		padding: 0;
@@ -364,7 +383,7 @@
 	}
 
 	.tec-tickets__email-table-content-ticket-security-code {
-		color: <?php echo $ticket_text_color; ?>AA;
+		color: <?php echo esc_attr( $ticket_text_color ); ?>;
 	}
 
 	table.tec-tickets__email-table-content-ticket-table {

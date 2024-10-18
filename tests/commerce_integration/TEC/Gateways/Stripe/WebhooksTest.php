@@ -18,8 +18,6 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 	 * @before
 	 */
 	public function before_test(): void {
-		parent::_setUp();
-
 		$merchant = tribe( Merchant::class );
 		$merchant->save_signup_data(
 			[
@@ -32,6 +30,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 				],
 			]
 		);
+		delete_transient( 'tec_tickets_commerce_setup_stripe_webhook');
 	}
 
 	/**
@@ -39,7 +38,6 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function after_test()
 	{
-		parent::_tearDown();
 		$merchant = tribe( Merchant::class );
 		$merchant->save_signup_data( [] );
 	}
@@ -276,7 +274,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 		// // No capability!
 		$this->assertEquals( wp_json_encode( $json_error ), $response );
 
-		set_current_user( 1 );
+		wp_set_current_user( 1 );
 
 		// refresh nonce.
 		$_POST['tc_nonce'] = wp_create_nonce( Webhooks::NONCE_KEY_SETUP );
@@ -335,7 +333,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertEquals( wp_json_encode( $json_error ), $response );
 
-		set_current_user( 0 );
+		wp_set_current_user( 0 );
 
 		unset( $_POST['tc_nonce'] );
 	}

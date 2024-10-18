@@ -8,6 +8,7 @@ jobs:
       matrix:
         suite:
           - ct1_integration
+          - slr_ecp_integration
     runs-on: ubuntu-latest
     steps:
       # ------------------------------------------------------------------------------
@@ -222,7 +223,6 @@ jobs:
       - name: Set up ET Common (npm)
         if: steps.skip.outputs.value != 1 && matrix.suite == 'acceptance'
         run: |
-          ${SLIC_BIN} nvm use
           ${SLIC_BIN} npm install
           ${SLIC_BIN} npm run build
       # ------------------------------------------------------------------------------
@@ -239,7 +239,6 @@ jobs:
       - name: Set up ET (npm)
         if: steps.skip.outputs.value != 1 && matrix.suite == 'acceptance'
         run: |
-          ${SLIC_BIN} nvm use
           ${SLIC_BIN} npm install
           ${SLIC_BIN} npm run build
       # ------------------------------------------------------------------------------

@@ -8,7 +8,7 @@
 		data-provider="Tribe__Tickets__Commerce__PayPal__Main"
 		autocomplete="off"
 		data-provider-id="tribe-commerce"
-		data-post-id="tribe"
+		data-post-id="{{POST_TICKET_ID}}"
 		novalidate
 	>
 
@@ -34,18 +34,18 @@
 </div>
 
 		<div
-	id="tribe-block-tickets-item-common"
-	 class="tribe-tickets__tickets-item post-common tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="common" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
+	id="tribe-block-tickets-item-{{POST_TICKET_ID}}"
+	 class="tribe-tickets__tickets-item post-{{POST_TICKET_ID}} tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="{{POST_TICKET_ID}}" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
 
-	<div  class="tribe-tickets__tickets-item-content-title-container"  >
-		<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
-				Test ticket for tribe	</div>
+	<div  class="tribe-tickets__tickets-item-content-title-container" >
+		<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title" >
+				Test ticket for {{POST_TICKET_ID}}	</div>
 </div>
 
 <div
-	id="tribe__details__content--common"
+	id="tribe__details__content--{{POST_TICKET_ID}}"
 	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >
-	Test ticket description for tribe</div>
+	Test ticket description for {{POST_TICKET_ID}}</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >
@@ -82,18 +82,18 @@
 	
 </div>
 <div
-	id="tribe-block-tickets-item-tickets"
-	 class="tribe-tickets__tickets-item post-tickets tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="tickets" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
+	id="tribe-block-tickets-item-{{POST_TICKET_ID}}"
+	 class="tribe-tickets__tickets-item post-{{POST_TICKET_ID}} tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="{{POST_TICKET_ID}}" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
 
-	<div  class="tribe-tickets__tickets-item-content-title-container"  >
-		<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
-				Test ticket for tribe	</div>
+	<div  class="tribe-tickets__tickets-item-content-title-container" >
+		<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title" >
+				Test ticket for {{POST_TICKET_ID}}	</div>
 </div>
 
 <div
-	id="tribe__details__content--tickets"
+	id="tribe__details__content--{{POST_TICKET_ID}}"
 	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >
-	Test ticket description for tribe</div>
+	Test ticket description for {{POST_TICKET_ID}}</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >
