@@ -17,7 +17,7 @@ class Precision_Value_Test extends WPTestCase {
 	 * @test
 	 */
 	public function value_is_returned_correctly( $raw_value, $precision, $expected ) {
-		$value = new PV( $raw_value, new Positive_Integer_Value( $precision ) );
+		$value = new PV( $raw_value, $precision );
 		$this->assertSame( $expected, $value->get() );
 	}
 
@@ -43,26 +43,17 @@ class Precision_Value_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function precision_value_object_is_cloned() {
-		$precision = new Positive_Integer_Value( 2 );
-		$value     = new PV( 1.23, $precision );
-		$this->assertNotSame( $precision, $value->get_precision() );
-	}
-
-	/**
-	 * @test
-	 */
 	public function precision_can_be_changed() {
 		$value = new PV( 1.234 );
-		$this->assertEquals( 2, $value->get_precision()->get() );
+		$this->assertEquals( 2, $value->get_precision() );
 
 		// Test that the object is the same when the same precision is set.
-		$new_value = $value->convert_to_precision( new Positive_Integer_Value( 2 ) );
+		$new_value = $value->convert_to_precision( 2 );
 		$this->assertSame( $value, $new_value );
 
 		// Test that the object is different when a different precision is set.
-		$new_value = $value->convert_to_precision( new Positive_Integer_Value( 3 ) );
-		$this->assertEquals( 3, $new_value->get_precision()->get() );
+		$new_value = $value->convert_to_precision( 3 );
+		$this->assertEquals( 3, $new_value->get_precision() );
 		$this->assertNotSame( $value, $new_value );
 	}
 
@@ -126,8 +117,8 @@ class Precision_Value_Test extends WPTestCase {
 	public function addition_data_provider() {
 		// Test cases for adding two PV (present value) objects together
 		yield 'Simple addition of two PV values' => [ new PV( 1.23 ), new PV( 2.34 ), 3.57 ];
-		yield 'Addition with custom precision on second PV' => [ new PV( 1.23 ), new PV( 2.345, new Positive_Integer_Value( 3 ) ), 3.575 ];
-		yield 'Addition with custom precision of 4 decimal places' => [ new PV( 1.23 ), new PV( 2.34, new Positive_Integer_Value( 4 ) ), 3.5700 ];
+		yield 'Addition with custom precision on second PV' => [ new PV( 1.23 ), new PV( 2.345, 3 ), 3.575 ];
+		yield 'Addition with custom precision of 4 decimal places' => [ new PV( 1.23 ), new PV( 2.34, 4 ), 3.5700 ];
 		yield 'Addition of positive and negative values' => [ new PV( 3.57 ), new PV( -2.34 ), 1.23 ];
 		yield 'Addition of binary values' => [ new PV( 0b10100111001 ), new PV( 0b10100111001 ), 2674.00 ];
 		yield 'Small decimals addition' => [ new PV( .05 ), new PV( .01 ), 0.06 ];
@@ -135,7 +126,7 @@ class Precision_Value_Test extends WPTestCase {
 		yield 'Addition with floating-point precision' => [ new PV( 0.1 ), new PV( 0.2 ), 0.3 ];
 		yield 'Addition of zero values' => [ new PV( 0.0 ), new PV( 0.0 ), 0.00 ];
 		yield 'Addition of 0.9 and 0.1' => [ new PV( 0.9 ), new PV( 0.1 ), 1.00 ];
-		yield 'Addition with very small values and 6 decimal precision' => [ new PV( 0.000009, new Positive_Integer_Value( 6 ) ), new PV( 0.000001, new Positive_Integer_Value( 6 ) ), 0.000010 ];
+		yield 'Addition with very small values and 6 decimal precision' => [ new PV( 0.000009, 6 ), new PV( 0.000001, 6 ), 0.000010 ];
 		yield 'Addition of two negative values' => [ new PV( -1.2 ), new PV( 1.2 ), 0.00 ];
 		yield 'Negative values addition' => [ new PV( -1.21 ), new PV( -1.21 ), -2.42 ];
 	}
@@ -144,7 +135,7 @@ class Precision_Value_Test extends WPTestCase {
 		// Test cases for subtracting two PV (present value) objects
 		yield 'Simple subtraction of two PV values' => [ new PV( 2.34 ), new PV( 1.23 ), 1.11 ];
 		yield 'Subtraction resulting in zero' => [ new PV( 3.57 ), new PV( 3.57 ), 0.00 ];
-		yield 'Subtraction with custom precision on second PV' => [ new PV( 3.35 ), new PV( 1.234, new Positive_Integer_Value( 3 ) ), 2.116 ];
+		yield 'Subtraction with custom precision on second PV' => [ new PV( 3.35 ), new PV( 1.234, 3 ), 2.116 ];
 		yield 'Subtraction of negative value from positive value' => [ new PV( 3.57 ), new PV( -2.34 ), 5.91 ];
 		yield 'Subtraction of positive value from negative value' => [ new PV( -1.23 ), new PV( 2.34 ), -3.57 ];
 		yield 'Subtraction of binary values' => [ new PV( 0b10100111001 ), new PV( 0b10100111001 ), 0.00 ];
@@ -153,7 +144,6 @@ class Precision_Value_Test extends WPTestCase {
 		yield 'Subtraction with zero as the second value' => [ new PV( 1.23 ), new PV( 0.00 ), 1.23 ];
 		yield 'Subtraction of zero from zero' => [ new PV( 0.0 ), new PV( 0.0 ), 0.00 ];
 		yield 'Subtraction of two negative values' => [ new PV( -1.21 ), new PV( -1.2 ), -0.01 ];
-		yield 'Subtraction of very small values with 6 decimal precision' => [ new PV( 0.000010, new Positive_Integer_Value( 6 ) ), new PV( 0.000001, new Positive_Integer_Value( 6 ) ), 0.000009 ];
+		yield 'Subtraction of very small values with 6 decimal precision' => [ new PV( 0.000010, 6 ), new PV( 0.000001, 6 ), 0.000009 ];
 	}
-
 }

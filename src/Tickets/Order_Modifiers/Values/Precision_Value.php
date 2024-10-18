@@ -26,21 +26,21 @@ class Precision_Value extends Base_Value {
 	/**
 	 * The precision (how many decimal places).
 	 *
-	 * @var int
+	 * @var Positive_Int
 	 */
-	protected $precision;
+	protected Positive_Int $precision;
 
 	/**
 	 * Currency_Value constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param float         $value     The value to store.
-	 * @param ?Positive_Int $precision The precision (how many decimal places).
+	 * @param float|int|string $value     The value to store. Can be a float, int, or numeric string.
+	 * @param ?int             $precision The precision (how many decimal places).
 	 */
-	public function __construct( $value, ?Positive_Int $precision = null ) {
+	public function __construct( $value, ?int $precision = null ) {
 		$this->validate( $value );
-		$this->precision = $precision ?? new Positive_Int( 2 );
+		$this->precision = new Positive_Int( $precision ?? 2 );
 		$this->value     = $this->convert_value_to_integer( (float) $value );
 	}
 
@@ -84,10 +84,10 @@ class Precision_Value extends Base_Value {
 	 *
 	 * @since TBD
 	 *
-	 * @return Positive_Int The precision.
+	 * @return int The precision.
 	 */
-	public function get_precision(): Positive_Int {
-		return clone $this->precision;
+	public function get_precision(): int {
+		return $this->precision->get();
 	}
 
 	/**
@@ -100,22 +100,20 @@ class Precision_Value extends Base_Value {
 	 * @return static The new value object
 	 */
 	public function add( Precision_Value $value ) {
-		$current_value    = $this;
-		$precision        = $this->precision->get();
-		$precision_object = $this->precision;
+		$current_value = $this;
+		$precision     = $this->get_precision();
 
-		if ( $precision !== $value->get_precision()->get() ) {
-			$precision        = max( $this->precision->get(), $value->get_precision()->get() );
-			$precision_object = new Positive_Int( $precision );
-			$current_value    = $this->convert_to_precision( $precision_object );
-			$value            = $value->convert_to_precision( $precision_object );
+		if ( $precision !== $value->get_precision() ) {
+			$precision     = max( $precision, $value->get_precision() );
+			$current_value = $this->convert_to_precision( $precision );
+			$value         = $value->convert_to_precision( $precision );
 		}
 
 		$new_value = $current_value->value + $value->value;
 
 		return new static(
 			(float) ( $new_value / ( 10 ** $precision ) ),
-			$precision_object
+			$precision
 		);
 	}
 
@@ -161,13 +159,13 @@ class Precision_Value extends Base_Value {
 	 *
 	 * @since TBD
 	 *
-	 * @param Positive_Int $precision The new precision level.
+	 * @param int $precision The new precision level.
 	 *
 	 * @return static Will return the same instance if the precision is the same, or
 	 *                a new instance when the precision has changed.
 	 */
-	public function convert_to_precision( Positive_Int $precision ) {
-		if ( $this->precision->get() === $precision->get() ) {
+	public function convert_to_precision( int $precision ) {
+		if ( $this->precision->get() === $precision ) {
 			return $this;
 		}
 
