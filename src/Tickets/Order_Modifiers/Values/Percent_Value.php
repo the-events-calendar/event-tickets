@@ -9,6 +9,8 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Order_Modifiers\Values;
 
+use InvalidArgumentException;
+
 /**
  * Class Percent_Value
  *
@@ -30,6 +32,7 @@ class Percent_Value extends Precision_Value {
 	public function __construct( $value ) {
 		$value = Float_Value::from_number( $value )->get() / 100;
 		parent::__construct( $value, 4 );
+		$this->validate_value();
 	}
 
 	/**
@@ -67,5 +70,18 @@ class Percent_Value extends Precision_Value {
 	 */
 	public function __toString() {
 		return sprintf( '%F%%', $this->get_as_percent() );
+	}
+
+	/**
+	 * Validate that the value is valid.
+	 *
+	 * @since TBD
+	 *
+	 * @throws InvalidArgumentException If the precision is greater than the max precision.
+	 */
+	public function validate_value(): void {
+		if ( abs( $this->get() ) < 0.0001 ) {
+			throw new InvalidArgumentException( 'Percent value cannot be smaller than 0.0001 (0.01%).' );
+		}
 	}
 }
