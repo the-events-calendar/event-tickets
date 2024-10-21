@@ -18,5 +18,5 @@ export const layoutsHomeUrl = localizedData.layoutsHomeUrl.replace(/\/$/, '');
 export const associatedEventsUrl = localizedData.associatedEventsUrl.replace(/\/$/, '');
 
 export function getBaseUrl() {
-	return baseUrl;
+	return baseUrl.split('?')[0];
 }
