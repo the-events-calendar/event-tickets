@@ -58,24 +58,8 @@ const Availability = ( { available, total } ) => {
 				'tribe-editor__tickets__availability-label--total',
 			) }
 			count={ total }
-			singular={
-				'%d ' +
-				// eslint-disable-next-line no-undef
-				sprintf(
-					/* Translators: %s - ticket singular label, lowercase */
-					__('total %s', 'event-tickets'),
-					TICKET_LABELS.ticket.singularLowercase
-				)
-			}
-			plural={
-				'%d ' +
-				// eslint-disable-next-line no-undef
-				sprintf(
-					/* Translators: %s - ticket plural label, lowercase */
-					__('total %s', 'event-tickets'),
-					TICKET_LABELS.ticket.pluralLowercase
-				)
-			}
+			singular={ '%d ' + __( 'total capacity', 'event-tickets' ) } 
+			plural={ '%d ' + __( 'total capacity', 'event-tickets' ) }
 		/>
 	);
 

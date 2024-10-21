@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Tickets Commerce orders through Stripe no longer will create duplicate attendees [ET-2256]

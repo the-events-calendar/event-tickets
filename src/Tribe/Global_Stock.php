@@ -231,4 +231,56 @@ class Tribe__Tickets__Global_Stock {
 
 		return $sales;
 	}
+
+	/**
+	 * When moving attendees between tickets or tickets between events and the
+	 * source is not managing its own stock, we need to update the global stock.
+	 *
+	 * We also update the target's capacity if it is not already set.
+	 *
+	 * @see Tribe__Tickets__Admin__Move_Tickets::move_tickets()
+	 * @see Tribe__Tickets__Admin__Move_Ticket_Types::move_ticket_type()
+	 *
+	 * @since  TBD
+	 *
+	 * @param int $source_id The ID of the source event/post.
+	 * @param int $target_id The ID of the destination event/post.
+	 *
+	 * @return void
+	 */
+	public function update_stock_level_on_move( $source_id, $target_id ) {
+		$src_mode = get_post_meta( $this->post_id, self::TICKET_STOCK_MODE, true );
+
+		// When the Mode is not `own` we have to check and modify some stuff.
+		if ( self::OWN_STOCK_MODE !== $src_mode ) {
+
+			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+			$tickets_handler = tribe( 'tickets.handler' );
+
+			$tgt_event_cap = new Tribe__Tickets__Global_Stock( $target_id );
+
+			// If we have Source cap and not on Target, we set it up.
+			if ( ! $tgt_event_cap->is_enabled() ) {
+				$src_event_capacity = tribe_tickets_get_capacity( $source_id );
+
+				// Activate Shared Capacity on the Ticket.
+				$tgt_event_cap->enable();
+
+				// Setup the Stock level to match Source capacity.
+				$tgt_event_cap->set_stock_level( $src_event_capacity );
+
+				// Update the Target event with the Capacity from the Source.
+				update_post_meta( $target_id, $tickets_handler->key_capacity, $src_event_capacity );
+			} elseif ( self::CAPPED_STOCK_MODE === $src_mode || self::GLOBAL_STOCK_MODE === $src_mode ) {
+				// Check if we have capped to avoid ticket cap over event cap.
+				$src_ticket_capacity = tribe_tickets_get_capacity( $this->post_id );
+				$tgt_event_capacity  = tribe_tickets_get_capacity( $target_id );
+
+				// Don't allow ticket capacity to be bigger than Target Event Cap.
+				if ( $src_ticket_capacity > $tgt_event_capacity ) {
+					update_post_meta( $this->post_id, $tickets_handler->key_capacity, $tgt_event_capacity );
+				}
+			}
+		}
+	}
 }

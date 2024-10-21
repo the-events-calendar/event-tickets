@@ -37,6 +37,13 @@ class Success_Shortcode extends Shortcode_Abstract {
 		$order_id = tribe_get_request_var( Success::$order_id_query_arg );
 		$order    = tribe( Order::class )->get_from_gateway_order_id( $order_id );
 
+		// If the order is not found, clear the template variables and bail.
+		if ( empty( $order ) ) {
+			$this->template_vars = [];
+
+			return;
+		}
+
 		$attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
 		// Sort the Attendees by ID.
 		$attendee_ids = array_column( $attendees, 'ID' );

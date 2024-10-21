@@ -176,14 +176,11 @@ Yes. Event Tickets automatically sends an email confirmation after attendees reg
 
 The following add-ons are available for The Events Calendar:
 
-* [Events Calendar Pro](https://evnt.is/18wi), for adding premium calendar features like recurring events, advanced views, cool widgets, [shortcodes](https://evnt.is/1ajw), additional fields, and more!
+* [Events Calendar Pro](https://evnt.is/18wi), for adding premium calendar features like recurring events, advanced views, cool widgets, [shortcodes](https://evnt.is/1ajw), additional fields, virtual events including Zoom integration, video, livestream embed and more!
 * [Event Aggregator](https://evnt.is/197u), a service that effortlessly fills your calendar with events from Meetup, Google Calendar, iCalendar, Eventbrite, CSV, and ICS.
-* [Virtual Events](https://evnt.is/1aky), which optimizes your calendar for virtual events including Zoom integration, video and livestream embeds, SEO optimization for online events and more.
 * [Event Tickets Plus](https://evnt.is/18wk), which allows you to sell tickets for your events using your favorite e-commerce platform.
-* [Wallet Plus](https://evnt.is/etwp), for adding digital tickets like Apple Wallet passes and PDF tickets.
 * [Promoter](https://evnt.is/1ajt), automated email communication made just for The Events Calendar and Event Tickets. Stay in touch with your attendees every step of the way.
-* [Community Events](https://evnt.is/2g), for allowing frontend event submission from your readers.
-* [Community Tickets](https://evnt.is/18wl), which allows event organizers to sell tickets to the events they submit via Community Events.
+* [Community Events](https://evnt.is/2g), for allowing frontend event submission from your readers and allows event organizers to sell tickets to the events.
 * [Filter Bar](https://evnt.is/fa), for adding advanced frontend filtering capabilities to your events calendar.
 * [Eventbrite Tickets](https://evnt.is/2e), for selling tickets to your event directly through Eventbrite.
 
@@ -205,6 +202,20 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.15.0] 2024-10-21 =
+
+* Fix - Tickets Commerce orders through Stripe no longer will create duplicate attendees. [ET-2256]
+* Fix - Order Completed page will no longer throw a fatal when visiting it directly. [ET-2253]
+* Fix - If users added an index to the `post_meta` table on `meta_value` using `CONCAT()` should speed up queries for them. [GTRIA-1236]
+* Fix - Possible miscounted ticketed or un-ticketed events in the events admin list [ET-2221]
+* Fix - Some dates in admin screens were not translated [TEC-4873]
+* Fix - Wrong ticket stock when attendeed were moved between tickets [ET-2098]
+* Fix - Fix issue with svg display in settings page. [TEC-5282]
+* Tweak - Modify language around ticket capacity on "Tickets" block to improve clarity.
+* Tweak - Added filters: `tec_tickets_admin_tickets_table_default_status`, `tec_tickets_admin_tickets_table_default_sort_by`, `tec_tickets_admin_tickets_table_default_sort_order`, `tec_tickets_admin_tickets_table_columns`, `tec_tickets_admin_tickets_table_default_hidden_columns`, `tec_tickets_admin_tickets_table_sortable_columns`, `tec_tickets_admin_tickets_table_column_default`, `tec_tickets_admin_tickets_table_column_default_{$column_name}`, `tec_tickets_admin_tickets_table_column_name`, `tec_tickets_admin_tickets_table_column_id`, `tec_tickets_admin_tickets_table_event_actions`, `tec_tickets_admin_tickets_table_column_event`, `tec_tickets_admin_tickets_table_column_start_date`, `tec_tickets_admin_tickets_table_column_end_date`, `tec_tickets_admin_tickets_table_column_days_left`, `tec_tickets_admin_tickets_table_column_price`, `tec_tickets_admin_tickets_table_column_sold`, `tec_tickets_admin_tickets_table_column_remaining`, `tec_tickets_admin_tickets_table_column_sales`, `tec_tickets_admin_tickets_table_query_args`, `tec_tickets_admin_tickets_table_status_options`, `tec_tickets_admin_tickets_table_provider_info`, `tec_tickets_admin_tickets_page_url`, `tec_tickets_admin_tickets_screen_options_show_screen`, `tec_tickets_attendees_user_can_export_csv`, `tec_tickets_attendees_table_cache_key`, `tec_tickets_search_attendees_default`
+* Tweak - Added actions: `tec_tickets_editor_list_table_title_icon_`, `tec_tickets_ticket_duplicated`, `tec_tickets_tickets_duplicated`
+* Language - 0 new strings added, 61 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.14.0] 2024-10-09 =
 
@@ -232,7 +243,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Feature - Added Individual Order Screen in the Admin to improve the Order Management for Tickets Commerce. [ET-2150]
 * Tweak - Tweaked `setupCompactCardElement` method to allow filtering of options using the existing `tec_tickets_commerce_stripe_checkout_localized_data` filter. [TECTRIA-295]
-* Tweak - Made a string translatable in `getting-started.php` file. (props to @DAnn2012) [TECTRIA-303]
+* Tweak - Made a string translatable in `getting-started.php` file. (props to @DAnn2012) [ET-2215]
 * Tweak - Added filters: `post_updated_messages`
 * Tweak - Added actions: `tribe_tickets_commerce_order_actions_box_start`
 * Language - 44 new strings added, 39 updated, 1 fuzzied, and 0 obsoleted
@@ -285,27 +296,27 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.11.0.5] 2024-07-11 =
 
 * Security - Prevent an unauthorized disconnection of Payment Method for Tickets Commerce [SVUL-4]
-* Fix - Ensure compatibility with WordPress 6.6 for removed polyfill `regenerator-runtime`. [TECTRIA-149]
+* Fix - Ensure compatibility with WordPress 6.6 for removed polyfill `regenerator-runtime`. [TEC-5120]
 
 = [5.11.0.4] 2024-06-18 =
 
-* Fix - In installations where the plugins or wp-content directories were symbolic linked, assets would fail to be located.[TECTRIA-91]
+* Fix - In installations where the plugins or wp-content directories were symbolic linked, assets would fail to be located.[TEC-5106]
 * Language - 0 new strings added, 0 updated, 0 fuzzied, and 0 obsoleted
 
 
 = [5.11.0.3] 2024-06-14 =
 
-* Fix - Issue where scripts would not be enqueued as modules. [TECTRIA-86]
+* Fix - Issue where scripts would not be enqueued as modules. [ET-2136]
 * Language - 0 new strings added, 22 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.11.0.2] 2024-06-14 =
 
-* Fix - Windows Server compatibility issues with updated Assets handling. [TECTRIA-83]
+* Fix - Windows Server compatibility issues with updated Assets handling. [TEC-5104]
 * Language - 0 new strings added, 22 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.11.0.1] 2024-06-13 =
 
-* Fix - Issue on which some assets (css,js) would not be located in WP installs which could have some WP constant modified (WP_CONTENT_DIR, WP_PLUGIN_DIR)[TECTRIA-83]
+* Fix - Issue on which some assets (css,js) would not be located in WP installs which could have some WP constant modified (WP_CONTENT_DIR, WP_PLUGIN_DIR)[TEC-5104]
 * Language - 0 new strings added, 0 updated, 1 fuzzied, and 0 obsoleted.
 
 = [5.11.0] 2024-06-11 =
