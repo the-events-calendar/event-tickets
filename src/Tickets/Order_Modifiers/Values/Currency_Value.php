@@ -1,9 +1,4 @@
 <?php
-/**
- * Currency Value
- *
- * @since TBD
- */
 
 declare( strict_types=1 );
 
@@ -24,99 +19,59 @@ class Currency_Value implements Value_Interface {
 	protected Precision_Value $value;
 
 	/**
-	 * The currency symbol.
+	 * The Locale_Format instance for formatting the currency value.
 	 *
-	 * @var string
+	 * @var Locale_Format
 	 */
-	protected $currency_symbol;
-
-	/**
-	 * The currency symbol position.
-	 *
-	 * @var string
-	 */
-	protected $currency_symbol_position;
-
-	/**
-	 * The thousands separator.
-	 *
-	 * @var string
-	 */
-	protected $thousands_separator;
-
-	/**
-	 * The decimal separator.
-	 *
-	 * @var string
-	 */
-	protected $decimal_separator;
-
-	/**
-	 * Default values.
-	 *
-	 * @var array
-	 */
-	protected static array $defaults = [
-		'currency_symbol'          => '$',
-		'thousands_separator'      => ',',
-		'decimal_separator'        => '.',
-		'currency_symbol_position' => 'before',
-	];
+	protected Locale_Format $locale_format;
 
 	/**
 	 * Currency_Value constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param Precision_Value $value                    The value to store.
-	 * @param string          $currency_symbol          The currency symbol.
-	 * @param string          $thousands_separator      The thousands separator.
-	 * @param string          $decimal_separator        The decimal separator.
-	 * @param string          $currency_symbol_position The currency symbol position.
+	 * @param Precision_Value $value           The value to store.
+	 * @param array           $custom_settings Optional custom locale formatting settings.
 	 */
 	public function __construct(
 		Precision_Value $value,
-		string $currency_symbol = '$',
-		string $thousands_separator = ',',
-		string $decimal_separator = '.',
-		string $currency_symbol_position = 'before'
+		array $custom_settings = []
 	) {
-		$this->value                    = $value;
-		$this->currency_symbol          = $currency_symbol;
-		$this->thousands_separator      = $thousands_separator;
-		$this->decimal_separator        = $decimal_separator;
-		$this->currency_symbol_position = $currency_symbol_position;
+		$this->value         = $value;
+		$this->locale_format = new Locale_Format( $custom_settings );
 	}
 
 	/**
-	 * Get the formatted value.
+	 * Get the formatted value (unescaped symbol).
 	 *
 	 * @since TBD
 	 *
-	 * @return string The value.
+	 * @return string The formatted value with the unescaped currency symbol.
 	 */
 	public function get(): string {
-		$formatted = number_format(
+		return $this->locale_format->format_value(
+			$this->value->get(),
+			$this->value->get_precision()
+		);
+	}
+
+	/**
+	 * Get the formatted value with an escaped currency symbol.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The formatted value with an escaped currency symbol.
+	 */
+	public function get_escaped_value(): string {
+		return $this->locale_format->format_value(
 			$this->value->get(),
 			$this->value->get_precision(),
-			$this->decimal_separator,
-			$this->thousands_separator
+			true
 		);
-
-		switch ( $this->currency_symbol_position ) {
-			case 'after':
-				return "{$formatted}{$this->currency_symbol}";
-
-			case 'before':
-			default:
-				return "{$this->currency_symbol}{$formatted}";
-		}
 	}
 
 	/**
 	 * Get the raw value.
-	 *
-	 * This returns a clone of the value to prevent mutation.
 	 *
 	 * @since TBD
 	 *
@@ -138,7 +93,7 @@ class Currency_Value implements Value_Interface {
 	}
 
 	/**
-	 * Create a new instance of the class.
+	 * Create a new instance of the class with default settings.
 	 *
 	 * @since TBD
 	 *
@@ -147,27 +102,18 @@ class Currency_Value implements Value_Interface {
 	 * @return Currency_Value
 	 */
 	public static function create( Precision_Value $value ): self {
-		return new self(
-			$value,
-			self::$defaults['currency_symbol'],
-			self::$defaults['thousands_separator'],
-			self::$defaults['decimal_separator'],
-			self::$defaults['currency_symbol_position']
-		);
+		return new self( $value, Locale_Format::get_default_settings() );
 	}
 
 	/**
-	 * Set the default values for the class.
-	 *
-	 * Use this to allow for setting default values for all instances of this class
-	 * that are created with the create() method.
+	 * Set the default formatting values.
 	 *
 	 * @since TBD
 	 *
-	 * @param ?string $currency_symbol
-	 * @param ?string $thousands_separator
-	 * @param ?string $decimal_separator
-	 * @param ?string $currency_symbol_position
+	 * @param ?string $currency_symbol          The currency symbol.
+	 * @param ?string $thousands_separator      The thousands' separator.
+	 * @param ?string $decimal_separator        The decimal separator.
+	 * @param ?string $currency_symbol_position The symbol position - before, after.
 	 *
 	 * @return void
 	 */
@@ -176,12 +122,32 @@ class Currency_Value implements Value_Interface {
 		?string $thousands_separator = null,
 		?string $decimal_separator = null,
 		?string $currency_symbol_position = null
-	) {
-		self::$defaults = [
-			'currency_symbol'          => $currency_symbol ?? '$',
-			'thousands_separator'      => $thousands_separator ?? ',',
-			'decimal_separator'        => $decimal_separator ?? '.',
-			'currency_symbol_position' => $currency_symbol_position ?? 'before',
+	): void {
+		$defaults = [
+			'symbol'              => $currency_symbol ?? '$',
+			'thousands_separator' => $thousands_separator ?? ',',
+			'decimal_separator'   => $decimal_separator ?? '.',
+			'symbol_position'     => $currency_symbol_position ?? 'before',
 		];
+
+		Locale_Format::set_default_settings( $defaults );
+	}
+
+	/**
+	 * Reset the default locale formatting to the initial state.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public static function reset_locale_to_defaults(): void {
+		Locale_Format::set_default_settings(
+			[
+				'symbol'              => '$',
+				'thousands_separator' => ',',
+				'decimal_separator'   => '.',
+				'symbol_position'     => 'before',
+			]
+		);
 	}
 }
