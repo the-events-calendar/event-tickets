@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Seating\Tests\Integration;
 
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Seating\Tables\Layouts;
 use TEC\Tickets\Seating\Tables\Maps;
 use TEC\Tickets\Seating\Tables\Seat_Types;
@@ -13,10 +14,19 @@ trait Truncates_Custom_Tables {
 	 * @after
 	 */
 	public function truncate_tables(): void {
-		Maps::truncate();
-		Seat_Types::truncate();
-		Layouts::truncate();
-		Sessions::truncate();
+		foreach([
+			Maps::table_name(),
+			Seat_Types::table_name(),
+			Layouts::table_name(),
+			Sessions::table_name(),
+		] as $table_name){
+			DB::query(
+				DB::prepare(
+					"DELETE FROM %i",
+					$table_name
+				)
+			);
+		}
 	}
 
 }
