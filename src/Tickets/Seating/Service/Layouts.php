@@ -463,12 +463,12 @@ class Layouts {
 							->get_ids( true ) as $post_id
 			) {
 				$previous_capacity = get_post_meta( $post_id, $capacity_meta_key, true );
-				$capacity_delta    = $seats - $previous_capacity;
+				$capacity_delta    = $seats - (int) $previous_capacity;
 				$previous_stock    = get_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, true );
-				$new_stock         = max( 0, $previous_stock + $capacity_delta );
+				$new_stock         = max( 0, (int) $previous_stock + $capacity_delta );
 				update_post_meta( $post_id, $capacity_meta_key, $seats );
 				update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, $new_stock );
-				++$total_updated;
+				++ $total_updated;
 				// The reason we're not running a batch update is to have per-post cache control.
 				clean_post_cache( $post_id );
 			}
