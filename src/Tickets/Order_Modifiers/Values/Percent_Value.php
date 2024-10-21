@@ -19,6 +19,13 @@ use InvalidArgumentException;
 class Percent_Value extends Precision_Value {
 
 	/**
+	 * Minimum number a percentage can be.
+	 *
+	 * @var float
+	 */
+	protected float $min_threshold = 0.0001;
+
+	/**
 	 * Percent_Value constructor.
 	 *
 	 * Numbers passed into this class should be written as a percent, and not a decimal. For
@@ -32,7 +39,7 @@ class Percent_Value extends Precision_Value {
 	public function __construct( $value ) {
 		$value = Float_Value::from_number( $value )->get() / 100;
 		parent::__construct( $value, 4 );
-		$this->validate_value();
+		$this->validate_minimum_value();
 	}
 
 	/**
@@ -73,15 +80,17 @@ class Percent_Value extends Precision_Value {
 	}
 
 	/**
-	 * Validate that the value is valid.
+	 * Validate that the percentage value is not below the allowed threshold.
 	 *
 	 * @since TBD
 	 *
-	 * @throws InvalidArgumentException If the precision is greater than the max precision.
+	 * @throws InvalidArgumentException If the percentage value is smaller than the minimum allowed.
 	 */
-	public function validate_value(): void {
-		if ( abs( $this->get() ) < 0.0001 ) {
-			throw new InvalidArgumentException( 'Percent value cannot be smaller than 0.0001 (0.01%).' );
+	public function validate_minimum_value(): void {
+		if ( abs( $this->get() ) < $this->min_threshold ) {
+			throw new InvalidArgumentException(
+				sprintf( 'Percent value cannot be smaller than %.4f (%.2f%%).', $this->min_threshold, $this->min_threshold * 100 )
+			);
 		}
 	}
 }
