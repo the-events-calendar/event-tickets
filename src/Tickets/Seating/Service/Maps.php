@@ -36,14 +36,24 @@ class Maps {
 	private string $service_fetch_url;
 
 	/**
+	 * A reference to the Layouts service facade.
+	 *
+	 * @since TBD
+	 *
+	 * @var Layouts
+	 */
+	private Layouts $layouts;
+
+	/**
 	 * Maps constructor.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $backend_base_url The base URL of the service from the site backend.
 	 */
-	public function __construct( string $backend_base_url ) {
+	public function __construct( string $backend_base_url, Layouts $layouts ) {
 		$this->service_fetch_url = rtrim( $backend_base_url, '/' ) . '/api/v1/maps';
+		$this->layouts = $layouts;
 	}
 
 	/**
@@ -87,6 +97,9 @@ class Maps {
 
 		$cache_key = 'option_map_card_objects';
 		$map_cards = wp_cache_get( $cache_key, 'tec-tickets-seating' );
+
+		// Update the Layouts.
+		$this->layouts->update( true );
 
 		if ( ! ( $map_cards && is_array( $map_cards ) ) ) {
 			$map_cards = [];
@@ -240,7 +253,7 @@ class Maps {
 		if ( $this->map_has_layouts( $map_id ) ) {
 			return false;
 		}
-		
+
 		$url = $this->get_delete_url( $map_id );
 
 		$args = [
