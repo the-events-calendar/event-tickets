@@ -1,3 +1,17 @@
+<?php
+/**
+ * Logic for handling coupons during the checkout process.
+ *
+ * @since   TBD
+ * @package TEC\Tickets\Order_Modifiers\Checkout
+ *
+ * @private Still a work in progress.
+ * @phpcs:disable
+ * @todo: Add the necessary logic to handle coupons during the checkout process.
+ */
+
+
+?>
 <div class="tribe-tickets__commerce-checkout-cart-coupons">
 	<label for="coupon_input" class="tribe-tickets__commerce-checkout-cart-coupons__label">Enter Coupon Code</label>
 	<input type="text" class="tribe-tickets__commerce-checkout-cart-coupons__input" id="coupon_input" name="coupons" aria-describedby="coupon_error">
