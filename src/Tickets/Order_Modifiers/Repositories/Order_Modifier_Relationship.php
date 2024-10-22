@@ -7,8 +7,8 @@
  * It interacts with the custom `Order_Modifier_Relationships` table and uses WordPress database functions
  * for CRUD operations.
  *
+ * @since   TBD
  * @package TEC\Tickets\Order_Modifiers\Repositories
- * @since TBD
  */
 
 namespace TEC\Tickets\Order_Modifiers\Repositories;
@@ -22,7 +22,7 @@ use TEC\Common\StellarWP\Models\Repositories\Contracts\Updatable;
 use TEC\Common\StellarWP\Models\Repositories\Repository;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifier_Relationships as Table;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers;
-use TEC\Tickets\Order_Modifiers\Models\Order_Modifier_Relationships as Order_Modifier_Model;
+use TEC\Tickets\Order_Modifiers\Models\Order_Modifier_Relationships as Relationship_Model;
 
 /**
  * Class Order_Modifier_Relationships
@@ -40,9 +40,9 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 	 *
 	 * @param Model $model The model instance to insert.
 	 *
-	 * @return Order_Modifier_Relationship The inserted model instance.
+	 * @return Relationship_Model The inserted model instance.
 	 */
-	public function insert( Model $model ): Order_Modifier_Model {
+	public function insert( Model $model ): Relationship_Model {
 		DB::insert(
 			Table::table_name(),
 			[
@@ -71,7 +71,7 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 	 *
 	 * @return Order_Modifier_Relationship The updated model instance.
 	 */
-	public function update( Model $model ): Order_Modifier_Model {
+	public function update( Model $model ): Relationship_Model {
 		DB::update(
 			Table::table_name(),
 			[
@@ -169,8 +169,8 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 	 */
 	public function find_by_modifier_id( int $modifier_id ): array {
 		$query = $this->build_base_query()
-					->where( 'r.modifier_id', $modifier_id )
-					->getAll();
+			->where( 'r.modifier_id', $modifier_id )
+			->getAll();
 
 		return $query ?? [];
 	}
@@ -181,15 +181,15 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 	 * @since TBD
 	 *
 	 * @param int    $modifier_id The ID of the Order Modifier.
-	 * @param string $post_type The post type.
+	 * @param string $post_type   The post type.
 	 *
-	 * @return array|null The data from the wp_posts and modifier relationship.
+	 * @return ?Relationship_Model The data from the wp_posts and modifier relationship.
 	 */
-	public function find_by_modifier_and_post_type( int $modifier_id, string $post_type ): ?Order_Modifier_Model {
+	public function find_by_modifier_and_post_type( int $modifier_id, string $post_type ): ?Relationship_Model {
 		return $this->build_base_query()
-					->where( 'r.modifier_id', $modifier_id )
-					->where( 'p.post_type', $post_type )
-					->get();
+			->where( 'r.modifier_id', $modifier_id )
+			->where( 'p.post_type', $post_type )
+			->get();
 	}
 
 	/**
@@ -203,28 +203,8 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 	 */
 	public function find_by_post_id( int $post_id ): ?array {
 		return $this->build_base_query()
-					->where( 'p.ID', $post_id )
-					->getAll();
-	}
-
-	/**
-	 * Finds posts and their related modifiers based on an array of post IDs.
-	 *
-	 * This method retrieves data from the Order Modifier and wp_posts tables for
-	 * the given array of post IDs. It returns an array of results or null if no
-	 * matching posts are found.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $post_ids The array of post IDs to find.
-	 *
-	 * @return array|null The data from the Order Modifier and wp_posts tables, or null if no matches are found.
-	 */
-	public function find_by_post_ids( array $post_ids ): ?array {
-		return $this->build_base_query()
-					->select('m.display_name')
-					->whereIn( 'p.ID', $post_ids )
-					->getAll();
+			->where( 'p.ID', $post_id )
+			->getAll();
 	}
 
 	/**
@@ -240,13 +220,14 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 		global $wpdb;
 
 		// Get dynamic table names from $wpdb.
+//		$posts_table           = $wpdb->posts;
 		$posts_table           = 'posts';
 		$order_modifiers_table = Order_Modifiers::base_table_name();
 
 		return $this->prepareQuery()
-					->select( 'r.object_id,m.id as modifier_id', 'p.ID as post_id', 'p.post_type', 'p.post_title' )
-					->innerJoin( "$order_modifiers_table as m", 'r.modifier_id', 'm.id' )
-					->innerJoin( "$posts_table as p", 'r.post_id', 'p.ID' );
+			->select( 'r.object_id,m.id as modifier_id', 'p.ID as post_id', 'p.post_type', 'p.post_title' )
+			->innerJoin( "$order_modifiers_table as m", 'r.modifier_id', 'm.id' )
+			->innerJoin( "$posts_table as p", 'r.post_id', 'p.ID' );
 	}
 
 	/**
@@ -257,7 +238,8 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 	 * @return ModelQueryBuilder
 	 */
 	public function prepareQuery(): ModelQueryBuilder {
-		$builder = new ModelQueryBuilder( Order_Modifier_Model::class );
+		$builder = new ModelQueryBuilder( Relationship_Model::class );
+
 		return $builder->from( Table::table_name( false ) . ' as r' );
 	}
 }
