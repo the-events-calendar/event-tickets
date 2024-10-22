@@ -10,6 +10,7 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Order_Modifiers\Values;
 
 use InvalidArgumentException;
+use TEC\Tickets\Order_Modifiers\Traits\Validate_Numeric;
 
 /**
  * Class Integer_Value
@@ -17,6 +18,8 @@ use InvalidArgumentException;
  * @since TBD
  */
 class Integer_Value extends Base_Value {
+
+	use Validate_Numeric;
 
 	/**
 	 * Get the value.
@@ -27,6 +30,23 @@ class Integer_Value extends Base_Value {
 	 */
 	public function get(): int {
 		return $this->value;
+	}
+
+	/**
+	 * Create a new instance from a numeric value.
+	 *
+	 * This will convert the value to an integer.
+	 *
+	 * @since TBD
+	 *
+	 * @param float|int|string $value The value to store. Can be a float, int, or numeric string.
+	 *
+	 * @return static
+	 */
+	public static function from_number( $value ): Integer_Value {
+		static::validate_numeric( $value );
+
+		return new static( (int) $value );
 	}
 
 	/**

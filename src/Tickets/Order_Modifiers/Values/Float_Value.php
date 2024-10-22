@@ -10,6 +10,7 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Order_Modifiers\Values;
 
 use InvalidArgumentException;
+use TEC\Tickets\Order_Modifiers\Traits\Validate_Numeric;
 
 /**
  * Class Float_Value
@@ -17,6 +18,8 @@ use InvalidArgumentException;
  * @since TBD
  */
 class Float_Value extends Base_Value {
+
+	use Validate_Numeric;
 
 	/**
 	 * Get the value.
@@ -37,17 +40,7 @@ class Float_Value extends Base_Value {
 	 * @return static
 	 */
 	public static function from_number( $value ): Float_Value {
-		if ( ! is_numeric( $value ) ) {
-			throw new InvalidArgumentException( 'Value must be a number.' );
-		}
-
-		if ( 'NAN' === (string) $value ) {
-			throw new InvalidArgumentException( 'NAN is by definition not a number.' );
-		}
-
-		if ( 'INF' === (string) $value ) {
-			throw new InvalidArgumentException( 'Infinity is too big for us to work with.' );
-		}
+		static::validate_numeric( $value );
 
 		return new static( (float) $value );
 	}
