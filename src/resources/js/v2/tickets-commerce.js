@@ -52,12 +52,6 @@ tribe.tickets.commerce = {};
 		purchaserFormContainer: '.tribe-tickets__commerce-checkout-purchaser-info-wrapper',
 		purchaserName: '.tribe-tickets__commerce-checkout-purchaser-info-form-field-name',
 		purchaserEmail: '.tribe-tickets__commerce-checkout-purchaser-info-form-field-email',
-		couponInputLabel: '.tribe-tickets__commerce-checkout-cart-coupons__label',
-		couponInput: '.tribe-tickets__commerce-checkout-cart-coupons__input',
-		couponApplyButton: '.tribe-tickets__commerce-checkout-cart-coupons__apply-button',
-		couponAppliedSection: '.tribe-tickets__commerce-checkout-cart-coupons__applied',
-		couponAppliedValue: '.tribe-tickets__commerce-checkout-cart-coupons__applied-value',
-		couponRemoveButton: '.tribe-tickets__commerce-checkout-cart-coupons__remove-button'
 	};
 
 	/**
@@ -86,174 +80,6 @@ tribe.tickets.commerce = {};
 	obj.bindLoaderEvents = function() {
 		$document.on( obj.customEvents.showLoader, obj.loaderShow );
 		$document.on( obj.customEvents.hideLoader, obj.loaderHide );
-	};
-
-	/**
-	 * Updates the total price displayed on the page.
-	 *
-	 * @since TBD
-	 * @param {string} newAmount The new total amount to display.
-	 */
-	obj.updateTotalPrice = function (newAmount) {
-		const $totalPriceElement = $( '.tribe-tickets__commerce-checkout-cart-footer-total-wrap' );
-
-		const parser = new DOMParser();
-		const unescapedAmount = parser.parseFromString(`<!doctype html><body>${newAmount}`, 'text/html').body.textContent;
-
-		$totalPriceElement.text(unescapedAmount);
-	};
-
-	obj.updateCouponDiscount = function (discount) {
-		const $couponValueElement = $( obj.selectors.couponAppliedValue );
-
-		// Use DOMParser to unescape the discount value
-		const parser = new DOMParser();
-		const unescapedDiscount = parser.parseFromString(`<!doctype html><body>${discount}`, 'text/html').body.textContent;
-
-		$couponValueElement.text(unescapedDiscount);
-	};
-
-
-	obj.bindCouponApply = function() {
-		let ajaxInProgress = false;
-
-		$document.on( 'click', obj.selectors.couponApplyButton, applyCoupon );
-		$document.on( 'keydown', obj.selectors.couponInput, function( e ) {
-			if ( e.key === 'Enter' ) {
-				e.preventDefault();
-				applyCoupon();
-			}
-		});
-
-		/**
-		 * Function to apply the coupon and handle AJAX request.
-		 *
-		 * @since TBD
-		 */
-		function applyCoupon() {
-			// Prevent multiple AJAX requests at once.
-			if ( ajaxInProgress ) {
-				return;
-			}
-
-			const couponValue = $( obj.selectors.couponInput ).val().trim();
-			const nonce = $( obj.selectors.nonce ).val();
-			const $errorMessage = $( '.tribe-tickets__commerce-checkout-cart-coupons__error' );
-
-			// Hide the error message initially.
-			$errorMessage.hide();
-
-			// Ensure the coupon is not empty.
-			if ( !couponValue ) {
-				$errorMessage.text( 'Coupon code cannot be empty.' ).show();
-				return;
-			}
-
-			ajaxInProgress = true;
-			obj.loaderShow();
-
-			$.ajax({
-				url: ajaxurl,
-				method: 'POST',
-				data: {
-					action: 'validate_coupon',
-					coupon: couponValue,
-					nonce: nonce,
-					data: window.tecTicketsCommerceGatewayStripeCheckout
-				},
-				beforeSend() {
-					obj.loaderShow();
-				},
-				success( response ) {
-					if ( response.success ) {
-						// Hide input and button, show applied coupon.
-						$( obj.selectors.couponInput ).hide();
-						$( obj.selectors.couponInputLabel ).hide();
-						$( obj.selectors.couponApplyButton ).hide();
-
-						// Display coupon value and discount.
-						obj.updateCouponDiscount( response.data.discount );
-						obj.updateTotalPrice( response.data.amount );
-						$( obj.selectors.couponAppliedSection ).show();
-					} else {
-						$errorMessage.text( response.data.message || 'Invalid Coupon Code' ).show();
-						$( obj.selectors.couponInput ).show();
-						$( obj.selectors.couponInputLabel ).show();
-						$( obj.selectors.couponApplyButton ).show();
-					}
-				},
-				error() {
-					$errorMessage.text( 'Error applying coupon. Please try again.' ).show();
-					$( obj.selectors.couponInput ).show();
-					$( obj.selectors.couponApplyButton ).show();
-				},
-				complete() {
-					obj.loaderHide();
-					ajaxInProgress = false;
-				}
-			});
-		}
-	};
-
-	/**
-	 * Bind the remove coupon button.
-	 *
-	 * @since TBD
-	 */
-	obj.bindCouponRemove = function () {
-		$document.on( 'click', obj.selectors.couponRemoveButton, function () {
-			let ajaxInProgress = false;
-
-			// Prevent multiple AJAX requests at once.
-			if ( ajaxInProgress ) {
-				return;
-			}
-
-			const nonce = $( obj.selectors.nonce ).val();
-			const $errorMessage = $( '.tribe-tickets__commerce-checkout-cart-coupons__error' );
-
-			// Hide the error message initially.
-			$errorMessage.hide();
-
-			ajaxInProgress = true;
-			obj.loaderShow();
-
-			// Perform the AJAX request to remove the coupon.
-			$.ajax( {
-				url: ajaxurl,
-				method: 'POST',
-				data: {
-					action: 'validate_coupon',
-					remove_coupon: true, // Send this flag to indicate coupon removal.
-					nonce: nonce,
-					data: window.tecTicketsCommerceGatewayStripeCheckout // Send all required checkout data.
-				},
-				beforeSend() {
-					obj.loaderShow();
-				},
-				success( response ) {
-					if ( response.success ) {
-						// Show input and apply button again.
-						$( obj.selectors.couponInput ).val( '' ).show();
-						$( obj.selectors.couponInputLabel ).show();
-						$( obj.selectors.couponApplyButton ).show();
-
-						// Hide the applied coupon section.
-						$( obj.selectors.couponAppliedSection ).hide();
-						obj.updateTotalPrice( response.data.amount );
-					} else {
-						$errorMessage.text( response.data.message || 'Failed to remove coupon.' ).show();
-					}
-				},
-				error() {
-					$errorMessage.text( 'Error removing coupon. Please try again.' ).show();
-				},
-				complete() {
-					obj.loaderHide();
-					ajaxInProgress = false;
-				}
-			} );
-		} );
 	};
 
 	/**
@@ -334,12 +160,6 @@ tribe.tickets.commerce = {};
 	 */
 	obj.bindCheckoutEvents = function( $container ) {
 		$document.trigger( 'beforeSetup.tecTicketsCommerce', [ $container ] );
-
-		// Bind coupon apply event.
-		obj.bindCouponApply();
-
-		// Bind coupon remove event.
-		obj.bindCouponRemove();
 
 		// Bind container based events.
 		obj.bindCheckoutItemDescriptionToggle( $container );
