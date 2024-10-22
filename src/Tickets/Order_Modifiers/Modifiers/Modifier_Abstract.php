@@ -32,6 +32,11 @@ use TEC\Tickets\Order_Modifiers\Modifier_Admin_Handler;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers as Order_Modifiers_Repository;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers_Meta as Order_Modifiers_Meta_Repository;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifier_Relationship as Order_Modifier_Relationship_Repository;
+use TEC\Tickets\Order_Modifiers\Values\Currency_Value;
+use TEC\Tickets\Order_Modifiers\Values\Float_Value;
+use TEC\Tickets\Order_Modifiers\Values\Percent_Value;
+use TEC\Tickets\Order_Modifiers\Values\Positive_Integer_Value;
+use TEC\Tickets\Order_Modifiers\Values\Precision_Value;
 
 /**
  * Class Modifier_Abstract
@@ -284,22 +289,21 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @param int    $value The raw amount value (e.g., in cents for flat fees).
+	 * @param float  $value The raw amount value (e.g., in cents for flat fees).
 	 * @param string $type  The type of the fee ('percent' for percentage-based, 'flat' for fixed value).
 	 *
 	 * @return string The formatted amount, either as a percentage, currency, or future types.
 	 */
-	public function display_amount_field( int $value, string $type = 'flat' ): string {
+	public function display_amount_field( float $value, string $type = 'flat' ): string {
 		switch ( $type ) {
 			case 'percent':
-				// Return the value as a percentage with the '%' symbol.
-				$formatted_amount = $this->display_percentage( $value );
+				$formatted_amount = ( new Percent_Value( $value ) )->__toString();
 				break;
 
 			case 'flat':
 			default:
-				// Return the value as a flat fee (currency) for 'flat' or unknown types.
-				$formatted_amount = $this->display_flat_fee( $value );
+				$precision_value  = ( new Precision_Value( $value ) );
+				$formatted_amount = ( new Currency_Value( $precision_value ) )->get();
 				break;
 		}
 
@@ -312,49 +316,10 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		 * @since TBD
 		 *
 		 * @param string $formatted_amount The formatted amount string (e.g., '10%', '$10.00').
-		 * @param int $value The raw amount value in cents.
-		 * @param string $type The type of the amount (e.g., 'percent', 'flat').
+		 * @param int    $value            The raw amount value in cents.
+		 * @param string $type             The type of the amount (e.g., 'percent', 'flat').
 		 */
 		return apply_filters( 'tec_tickets_order_modifier_display_amount', $formatted_amount, $value, $type );
-	}
-
-	/**
-	 * Formats the given value as a percentage.
-	 *
-	 * Converts the value from cents and appends a '%' symbol. If the percentage is a whole number, it drops the
-	 * decimal places (e.g., '23%' instead of '23.00%').
-	 *
-	 * @since TBD
-	 *
-	 * @param int $value The raw percentage value in cents.
-	 *
-	 * @return string The formatted percentage value.
-	 */
-	protected function display_percentage( $value ) {
-		$value = $this->convert_from_raw_amount( $value );
-
-		// If the value is a whole number, format it without decimals.
-		if ( intval( $value ) == $value ) {
-			$value = intval( $value );
-		}
-
-		return "{$value}%";
-	}
-
-	/**
-	 * Formats the given value as currency.
-	 *
-	 * Uses the Value class to convert the raw value (in cents) into a properly formatted currency amount.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $value The raw value in cents.
-	 *
-	 * @return string The formatted currency value (e.g., '10.00' for 1000 cents).
-	 */
-	protected function display_flat_fee( $value ) {
-		$value = $this->convert_from_raw_amount( $value );
-		return Value::create( $value )->get_currency();
 	}
 
 	/**
@@ -703,21 +668,6 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 */
 	public function get_order_modifier_meta_by_key( int $order_modifier_id, string $meta_key ) {
 		return $this->order_modifiers_meta_repository->find_by_order_modifier_id_and_meta_key( $order_modifier_id, $meta_key );
-	}
-
-	/**
-	 * Prepares the raw amount for database insertion.
-	 *
-	 * @since TBD
-	 *
-	 * @param mixed $amount The amount to prepare.
-	 *
-	 * @return int The amount as an integer (multiplied by 100).
-	 */
-	protected function prepare_raw_amount( $amount ) {
-		$amount = (float) $amount;
-
-		return $this->convert_to_raw_amount( $amount );
 	}
 
 	/**

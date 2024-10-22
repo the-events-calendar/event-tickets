@@ -43,7 +43,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 		'id'            => 'int',
 		'modifier_type' => 'string',
 		'sub_type'      => 'string',
-		'raw_amount'    => 'int',
+		'raw_amount'    => 'float',
 		'slug'          => 'string',
 		'display_name'  => 'string',
 		'status'        => 'string',
@@ -162,5 +162,25 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 */
 	public function to_array(): array {
 		return $this->attributes;
+	}
+
+	/**
+	 * Validates an attribute to a PHP type.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $key   Property name.
+	 * @param mixed  $value Property value.
+	 *
+	 * @return bool
+	 */
+	public function isPropertyTypeValid( string $key, $value ): bool {
+		switch ( $key ) {
+			case 'raw_amount':
+				return is_float( $value );
+
+			default:
+				return parent::isPropertyTypeValid( $key, $value );
+		}
 	}
 }
