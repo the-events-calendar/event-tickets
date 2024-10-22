@@ -144,7 +144,7 @@ class Currency_Value implements Value_Interface {
 	 *
 	 * @param Precision_Value $value The value to store.
 	 *
-	 * @return Currency_Value
+	 * @return Currency_Value The new instance.
 	 */
 	public static function create( Precision_Value $value ): self {
 		return new self(
@@ -164,10 +164,10 @@ class Currency_Value implements Value_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @param ?string $currency_symbol
-	 * @param ?string $thousands_separator
-	 * @param ?string $decimal_separator
-	 * @param ?string $currency_symbol_position
+	 * @param ?string $currency_symbol          The currency symbol.
+	 * @param ?string $thousands_separator      The thousands separator.
+	 * @param ?string $decimal_separator        The decimal separator.
+	 * @param ?string $currency_symbol_position The currency symbol position.
 	 *
 	 * @return void
 	 */

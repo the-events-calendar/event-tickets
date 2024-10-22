@@ -19,15 +19,15 @@ use InvalidArgumentException;
 class Positive_Integer_Value extends Integer_Value {
 
 	/**
-	 * Validate that the value is valid.
+	 * Validate the value.
 	 *
 	 * @since TBD
 	 *
 	 * @param mixed $value The value to validate.
 	 *
 	 * @return void
-	 * @throws InvalidArgumentException When the value is not valid.
-	 * @throws InvalidArgumentException When the value is not a positive integer.
+	 * @throws InvalidArgumentException When the value is not an integer.
+	 * @throws InvalidArgumentException When the value is not positive.
 	 */
 	protected function validate( $value ): void {
 		parent::validate( $value );
