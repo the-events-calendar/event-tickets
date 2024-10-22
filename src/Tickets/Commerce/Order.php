@@ -428,7 +428,13 @@ class Order extends Abstract_Order {
 		 *                                     purchaser_full_name, purchaser_first_name, purchaser_last_name,
 		 *                                     and purchaser_email.
 		 */
-		$items = apply_filters( 'tec_tickets_commerce_create_from_cart_items', $items, $subtotal, $gateway, $purchaser );
+		$items = apply_filters(
+			'tec_tickets_commerce_create_order_from_cart_items',
+			$items,
+			$subtotal,
+			$gateway,
+			$purchaser
+		);
 
 		$total = $this->get_value_total( array_filter( $items ) );
 
