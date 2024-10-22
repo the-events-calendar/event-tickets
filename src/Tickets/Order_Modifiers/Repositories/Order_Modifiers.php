@@ -366,23 +366,24 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		$order_modifiers_meta_table = Order_Modifiers_Meta::table_name();
 
 		// Initialize the SQL query with the base WHERE clause for modifier_type.
-		$sql = "
+		$sql   = [];
+		$sql[] = <<<SQL
         SELECT o.*,m.meta_value
         FROM {$order_modifiers_table} o
         LEFT JOIN {$order_modifiers_meta_table} m
         ON o.id = m.order_modifier_id
         WHERE o.modifier_type = %s
         AND o.status = 'active'
-    ";
+SQL;
 
 		$params = [ $this->modifier_type ];
 
 		// Handle the meta_key condition: Use IFNULL if a default_meta_key is provided, otherwise check for meta_key directly.
 		if ( $default_meta_key ) {
-			$sql      .= ' AND (IFNULL(m.meta_key, %s) = %s)';
+			$sql[]    = 'AND (IFNULL(m.meta_key, %s) = %s)';
 			$params[] = $default_meta_key;
 		} else {
-			$sql .= ' AND m.meta_key = %s';
+			$sql[] = 'AND m.meta_key = %s';
 		}
 
 		// Add the meta key to the params.
@@ -391,19 +392,18 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		// Handle the meta_value condition: Use IFNULL if a default_meta_value is provided, otherwise check directly.
 		$meta_params_string = implode( ',', array_fill( 0, count( $meta_values ), '%s' ) );
 		if ( $default_meta_value ) {
-			$sql      .= " AND (IFNULL(m.meta_value, %s) IN ({$meta_params_string}))";
+			$sql[]    = "AND (IFNULL(m.meta_value, %s) IN ({$meta_params_string}))";
 			$params[] = $default_meta_value;
 		} else {
-			$sql .= " AND m.meta_value IN ({$meta_params_string})";
+			$sql[] = "AND m.meta_value IN ({$meta_params_string})";
 		}
 
 		$params = array_merge( $params, $meta_values );
 
 		// Prepare and execute the query.
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-		$query = $wpdb->prepare( $sql, ...$params );
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
-		$results = $wpdb->get_results( $query );
+		$results = $wpdb->get_results(
+			$wpdb->prepare( implode( ' ', $sql ), ...$params )
+		);
 
 		// Cache the results for future use.
 		wp_cache_set( $cache_key, $results, 'order_modifiers', HOUR_IN_SECONDS );
