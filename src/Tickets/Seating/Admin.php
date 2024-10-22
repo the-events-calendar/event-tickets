@@ -73,7 +73,7 @@ class Admin extends Controller_Contract {
 		$assets->remove( 'tec-tickets-seating-admin-layout-edit' );
 		$assets->remove( 'tec-tickets-seating-admin-layout-edit-style' );
 
-		remove_action( 'admin_menu', [ $this, 'add_submenu_page' ], 1000 );
+		remove_action( 'admin_menu', [ $this, 'add_submenu_page' ], 15 );
 		remove_action( 'admin_init', [ $this, 'register_woo_incompatibility_notice' ] );
 		remove_filter( 'tec_tickets_find_ticket_type_host_posts_query_args', [ $this, 'exclude_asc_events_from_candidates_from_moving_tickets_to' ] );
 
@@ -101,13 +101,18 @@ class Admin extends Controller_Contract {
 	 * @return void The seating management page link is added to the admin menu.
 	 */
 	public function add_submenu_page(): void {
-		add_submenu_page(
-			'tec-tickets',
-			__( 'Seating', 'event-tickets' ),
-			__( 'Seating', 'event-tickets' ),
-			'manage_options',
-			self::get_menu_slug(),
-			$this->container->callback( Admin\Maps_Layouts_Home_Page::class, 'render' )
+		/** @var $admin_pages */
+		$admin_pages = tribe( 'admin.pages' );
+		
+		$admin_pages->register_page(
+			[
+				'id'       => self::get_menu_slug(),
+				'parent'   => 'tec-tickets',
+				'title'    => __( 'Seating', 'event-tickets' ),
+				'path'     => self::get_menu_slug(),
+				'position' => 4,
+				'callback' => $this->container->callback( Admin\Maps_Layouts_Home_Page::class, 'render' ),
+			]
 		);
 	}
 
@@ -142,7 +147,7 @@ class Admin extends Controller_Contract {
 		$this->register_map_edit_assets();
 		$this->reqister_layout_edit_assets();
 
-		add_action( 'admin_menu', [ $this, 'add_submenu_page' ], 1000 );
+		add_action( 'admin_menu', [ $this, 'add_submenu_page' ], 15 );
 		add_action( 'admin_init', [ $this, 'register_woo_incompatibility_notice' ] );
 		add_filter( 'tec_tickets_find_ticket_type_host_posts_query_args', [ $this, 'exclude_asc_events_from_candidates_from_moving_tickets_to' ] );
 
