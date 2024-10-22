@@ -42,6 +42,7 @@ class Integer_Value extends Base_Value {
 	 * @param float|int|string $value The value to store. Can be a float, int, or numeric string.
 	 *
 	 * @return static
+	 * @throws InvalidArgumentException When the value is not numeric.
 	 */
 	public static function from_number( $value ): Integer_Value {
 		static::validate_numeric( $value );
