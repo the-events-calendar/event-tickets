@@ -401,8 +401,9 @@ SQL;
 		$params = array_merge( $params, $meta_values );
 
 		// Prepare and execute the query.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 		$results = $wpdb->get_results(
-			$wpdb->prepare( implode( ' ', $sql ), ...$params )
+			$wpdb->prepare( implode( ' ', $sql ), ...$params ) // phpcs:ignore WordPress.DB.PreparedSQL, WordPress.DB.PreparedSQLPlaceholders
 		);
 
 		// Cache the results for future use.
