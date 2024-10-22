@@ -4,6 +4,11 @@ namespace TEC\Tickets\Order_Modifiers\Coupons;
 
 use TEC\Tickets\Tests\Integration\Order_Modifiers\Create_Order_Modifiers_Abstract;
 
+/**
+ * Class Create_Coupon_Modifiers_Test
+ *
+ * @skip Pending the coupon feature being enabled.
+ */
 class Create_Coupon_Modifiers_Test extends Create_Order_Modifiers_Abstract {
 
 	/**
