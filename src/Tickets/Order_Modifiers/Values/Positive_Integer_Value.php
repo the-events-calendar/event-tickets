@@ -31,8 +31,7 @@ class Positive_Integer_Value extends Integer_Value {
 	 */
 	protected function validate( $value ): void {
 		parent::validate( $value );
-		$abs_value = abs( $value );
-		if ( $abs_value  !== $value ) {
+		if ( abs( $value ) !== $value ) {
 			throw new InvalidArgumentException( 'Value must be a positive integer.' );
 		}
 	}
