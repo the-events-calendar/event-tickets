@@ -26,16 +26,22 @@
  *
  * @return string
  */
-function get_validation_error_attr( string $field_label ): string {
+$get_validation_error_attr = function ( string $field_label ): string {
 	// translators: %s is the field label.
 	return sprintf( __( '%s is required', 'event-tickets' ), $field_label );
-}
+};
 
 if ( ! empty( $order_modifier_display_name ) ) {
 	$heading = __( 'Edit Fee', 'event-tickets' );
 } else {
 	$heading = __( 'New Fee', 'event-tickets' );
 }
+
+$modifier_statuses = [
+	'active'   => __( 'Active', 'event-tickets' ),
+	'inactive' => __( 'Inactive', 'event-tickets' ),
+	'draft'    => __( 'Draft', 'event-tickets' ),
+];
 
 ?>
 <div class="wrap">
@@ -53,59 +59,91 @@ if ( ! empty( $order_modifier_display_name ) ) {
 				</div>
 
 				<div class="form-field form-required">
-					<label for="order_modifier_fee_name"><?php esc_html_e( 'Fee Name', 'event-tickets' ); ?></label>
-					<input type="text" name="order_modifier_fee_name" id="order_modifier_fee_name" class="tribe-field tribe-validation-field"
+					<label for="order_modifier_fee_name">
+						<?php esc_html_e( 'Fee Name', 'event-tickets' ); ?>
+					</label>
+					<input
+						type="text"
+						name="order_modifier_fee_name"
+						id="order_modifier_fee_name"
+						class="tribe-field tribe-validation-field"
 						maxlength="255"
 						data-validation-required="true"
-						data-validation-error="<?php echo esc_attr( get_validation_error_attr( 'Fee Name' ) ); ?>"
-						value="<?php echo esc_attr( $order_modifier_display_name ?? '' ); ?>">
-					<p>This fee name will display in the cart at checkout.</p>
+						data-validation-error="<?php echo esc_attr( $get_validation_error_attr( __( 'Fee Name', 'event-tickets' ) ) ); ?>"
+						value="<?php echo esc_attr( $order_modifier_display_name ?? '' ); ?>" />
+					<p><?php esc_html_e( 'This fee name will display in the cart at checkout.', 'event-tickets' ); ?></p>
 				</div>
 
-				<input type="hidden" name="order_modifier_slug" id="order_modifier_slug" class="tribe-field"
-					value="<?php echo esc_attr( $order_modifier_slug ?? '' ); ?>">
+				<input
+					type="hidden"
+					name="order_modifier_slug"
+					id="order_modifier_slug"
+					class="tribe-field"
+					value="<?php echo esc_attr( $order_modifier_slug ?? '' ); ?>" />
 
 				<div class="form-field form-required">
-					<label for="order_modifier_sub_type"><?php esc_html_e( 'Fee Type', 'event-tickets' ); ?></label>
-					<select name="order_modifier_sub_type" id="order_modifier_sub_type" class="tribe-validation-field"
+					<label for="order_modifier_sub_type">
+						<?php esc_html_e( 'Fee Type', 'event-tickets' ); ?>
+					</label>
+					<select
+						name="order_modifier_sub_type"
+						id="order_modifier_sub_type"
+						class="tribe-validation-field"
 						data-validation-required="true"
-						data-validation-error="<?php echo esc_attr( get_validation_error_attr( 'Fee Type' ) ); ?>">
-						<option
-							value="percent" <?php selected( $order_modifier_sub_type ?? '', 'percent' ); ?>><?php esc_html_e( 'Percent', 'event-tickets' ); ?></option>
-						<option
-							value="flat" <?php selected( $order_modifier_sub_type ?? '', 'flat' ); ?>><?php esc_html_e( 'Flat', 'event-tickets' ); ?></option>
+						data-validation-error="<?php echo esc_attr( $get_validation_error_attr( __( 'Fee Type', 'event-tickets' ) ) ); ?>">
+						<option value="percent" <?php selected( $order_modifier_sub_type ?? '', 'percent' ); ?>>
+							<?php esc_html_e( 'Percent', 'event-tickets' ); ?>
+						</option>
+						<option value="flat" <?php selected( $order_modifier_sub_type ?? '', 'flat' ); ?>>
+							<?php esc_html_e( 'Flat', 'event-tickets' ); ?>
+						</option>
 					</select>
 				</div>
 
 				<div class="form-field form-required">
 					<label for="order_modifier_amount"><?php esc_html_e( 'Amount', 'event-tickets' ); ?></label>
-					<input type="text" name="order_modifier_amount" id="order_modifier_amount" class="tribe-field tribe-validation-field tec_order_modifier_amount_field"
+					<input
+						type="text"
+						name="order_modifier_amount"
+						id="order_modifier_amount"
+						class="tribe-field tribe-validation-field tec_order_modifier_amount_field"
 						maxlength="9"
 						data-validation-required="true"
 						data-validation-is-greater-than="0"
-						data-validation-error="<?php echo esc_attr( get_validation_error_attr( 'Amount' ) ); ?>"
-						value="<?php echo esc_attr( $order_modifier_fee_amount_cents ); ?>">
+						data-validation-error="<?php echo esc_attr( $get_validation_error_attr( __( 'Amount', 'event-tickets' ) ) ); ?>"
+						value="<?php echo esc_attr( $order_modifier_fee_amount_cents ); ?>" />
 				</div>
 
 				<div class="form-field form-required">
-					<label for="order_modifier_status"><?php esc_html_e( 'Status', 'event-tickets' ); ?></label>
-					<select name="order_modifier_status" id="order_modifier_status" class="tribe-validation-field"
+					<label for="order_modifier_status">
+						<?php esc_html_e( 'Status', 'event-tickets' ); ?>
+					</label>
+					<select
+						name="order_modifier_status"
+						id="order_modifier_status"
+						class="tribe-validation-field"
 						data-validation-required="true"
-						data-validation-error="<?php echo esc_attr( get_validation_error_attr( 'Status' ) ); ?>">
-						<option
-							value="active" <?php selected( $order_modifier_status ?? '', 'active' ); ?>><?php esc_html_e( 'Active', 'event-tickets' ); ?></option>
-						<option
-							value="inactive" <?php selected( $order_modifier_status ?? '', 'inactive' ); ?>><?php esc_html_e( 'Inactive', 'event-tickets' ); ?></option>
-						<option
-							value="draft" <?php selected( $order_modifier_status ?? '', 'draft' ); ?>><?php esc_html_e( 'Draft', 'event-tickets' ); ?></option>
+						data-validation-error="<?php echo esc_attr( $get_validation_error_attr( __( 'Status', 'event-tickets' ) ) ); ?>">
+
+						<?php foreach ( $modifier_statuses as $status => $label ) : ?>
+							<option value="<?php echo esc_attr( $status ); ?>" <?php selected( $order_modifier_status ?? '', $status ); ?>>
+								<?php echo esc_html( $label ); ?>
+							</option>
+						<?php endforeach; ?>
+
 					</select>
 				</div>
 
 				<div class="form-field form-required">
-					<label for="order_modifier_apply_to"><?php esc_html_e( 'Apply fee to', 'event-tickets' ); ?></label>
-					<select name="order_modifier_apply_to" id="order_modifier_apply_to" class="tribe-validation-field"
+					<label for="order_modifier_apply_to">
+						<?php esc_html_e( 'Apply fee to', 'event-tickets' ); ?>
+					</label>
+					<select
+						name="order_modifier_apply_to"
+						id="order_modifier_apply_to"
+						class="tribe-validation-field"
 						data-validation-required="true"
-						data-validation-error="<?php echo esc_attr( get_validation_error_attr( 'Apply fee to' ) ); ?>">
+						data-validation-error="<?php echo esc_attr( $get_validation_error_attr( __( 'Apply fee to', 'event-tickets' ) ) ); ?>">
 						<option value="per" <?php selected( $order_modifier_apply_to, 'per' ); ?>>
 							<?php esc_html_e( 'Set per ticket', 'event-tickets' ); ?>
 						</option>
@@ -113,7 +151,9 @@ if ( ! empty( $order_modifier_display_name ) ) {
 							<?php esc_html_e( 'All tickets', 'event-tickets' ); ?>
 						</option>
 					</select>
-					<p><?php esc_html_e( 'Select a group to apply this fee to tickets automatically. This can be overridden on a per ticket basis during ticket creation.', 'event-tickets' ); ?></p>
+					<p>
+						<?php esc_html_e( 'Select a group to apply this fee to tickets automatically. This can be overridden on a per ticket basis during ticket creation.', 'event-tickets' ); ?>
+					</p>
 				</div>
 				<p class="submit">
 					<input
@@ -121,7 +161,7 @@ if ( ! empty( $order_modifier_display_name ) ) {
 						id="order_modifier_form_save"
 						class="button-primary tribe-validation-submit"
 						name="order_modifier_form_save"
-						value="<?php echo esc_attr__( 'Save Fee', 'event-tickets' ); ?>"
+						value="<?php esc_attr_e( 'Save Fee', 'event-tickets' ); ?>"
 					/>
 				</p>
 			</div>
