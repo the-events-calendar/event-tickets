@@ -8,10 +8,6 @@
 namespace TEC\Tickets\Order_Modifiers\Checkout;
 
 use TEC\Common\StellarWP\Assets\Asset;
-use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
-use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
-use TEC\Tickets\Commerce\Order;
-use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Order_Modifiers\Modifiers\Coupon;
 use TEC\Tickets\Registerable;
 use Tribe__Assets;
