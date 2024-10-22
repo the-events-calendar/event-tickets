@@ -34,7 +34,8 @@ class Factory {
 	 *
 	 * @param string $type The type.
 	 *
-	 * @return ModifiersRepository
+	 * @return ModifiersRepository The repository instance.
+	 * @throws InvalidArgumentException If the type is invalid, or if the repository class is not a child of the ModifiersRepository class.
 	 */
 	public static function get_repository_for_type( string $type ): ModifiersRepository {
 		self::validate_type( $type );
@@ -85,7 +86,8 @@ class Factory {
 	 * @param string $type       The type.
 	 * @param array  $attributes The attributes.
 	 *
-	 * @return ModifierModel
+	 * @return ModifierModel The model instance.
+	 * @throws InvalidArgumentException If the type is invalid, or if the model class is not a child of the ModifierModel class.
 	 */
 	public static function get_model_for_type( string $type, array $attributes ): ModifierModel {
 		self::validate_type( $type );
