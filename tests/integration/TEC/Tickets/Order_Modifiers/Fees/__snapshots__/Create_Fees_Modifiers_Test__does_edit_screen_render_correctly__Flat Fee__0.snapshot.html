@@ -1,81 +1,110 @@
 <div class="wrap">
+	<h1>Edit Fee</h1>
 	<div class="form-wrap">
-		<h1> New Fee </h1>
-		<form method="post" action="" id="tec-settings-form">
+
+		<form method="post" action="" id="tec-settings-form" class="tribe-validation tec-settings-order_modifier">
 			<div class="tribe-settings-form-wrap">
 
 				<input type="hidden" id="order_modifier_save_action" name="order_modifier_save_action" value="1234567890" /><input type="hidden" name="_wp_http_referer" value="" />
-				<div class="form-field form-required">
-					<label for="order_modifier_fee_name">Fee Name</label>
-					<input type="text" name="order_modifier_fee_name" id="order_modifier_fee_name" class="tribe-field"
-						   value="Flat Fee">
+				<!-- Error Notice Section -->
+				<div class="tribe-notice tribe-notice-validation notice-error is-dismissible">
+					<!-- Error messages will be appended here -->
 				</div>
 
-
-				<input type="hidden" name="order_modifier_slug" id="order_modifier_slug" class="tribe-field"
-					   value="test_flat_fee">
 				<div class="form-field form-required">
-					<label for="order_modifier_sub_type">Fee Type</label>
-					<select name="order_modifier_sub_type" id="order_modifier_sub_type">
-						<option
-							value="percent" >Percent</option>
-						<option
-							value="flat"  selected='selected'>Flat</option>
+					<label for="order_modifier_fee_name">
+						Fee Name					</label>
+					<input
+						type="text"
+						name="order_modifier_fee_name"
+						id="order_modifier_fee_name"
+						class="tribe-field tribe-validation-field"
+						maxlength="255"
+						data-validation-required="true"
+						data-validation-error="Fee Name is required"
+						value="Flat Fee" />
+					<p>This fee name will display in the cart at checkout.</p>
+				</div>
+
+				<input
+					type="hidden"
+					name="order_modifier_slug"
+					id="order_modifier_slug"
+					class="tribe-field"
+					value="test_flat_fee" />
+
+				<div class="form-field form-required">
+					<label for="order_modifier_sub_type">
+						Fee Type					</label>
+					<select
+						name="order_modifier_sub_type"
+						id="order_modifier_sub_type"
+						class="tribe-validation-field"
+						data-validation-required="true"
+						data-validation-error="Fee Type is required">
+						<option value="percent" >
+							Percent						</option>
+						<option value="flat"  selected='selected'>
+							Flat						</option>
 					</select>
 				</div>
 
 				<div class="form-field form-required">
 					<label for="order_modifier_amount">Amount</label>
-					<input type="text" name="order_modifier_amount" id="order_modifier_amount" class="tribe-field"
-						   value="5.00">
+					<input
+						type="text"
+						name="order_modifier_amount"
+						id="order_modifier_amount"
+						class="tribe-field tribe-validation-field tec_order_modifier_amount_field"
+						maxlength="9"
+						data-validation-required="true"
+						data-validation-is-greater-than="0"
+						data-validation-error="Amount is required"
+						value="0.05" />
 				</div>
 
 				<div class="form-field form-required">
-					<label for="order_modifier_status">Status</label>
-					<select name="order_modifier_status" id="order_modifier_status">
-						<option
-							value="active"  selected='selected'>Active</option>
-						<option
-							value="inactive" >Inactive</option>
-						<option
-							value="draft" >Draft</option>
+					<label for="order_modifier_status">
+						Status					</label>
+					<select
+						name="order_modifier_status"
+						id="order_modifier_status"
+						class="tribe-validation-field"
+						data-validation-required="true"
+						data-validation-error="Status is required">
+
+													<option value="active"  selected='selected'>
+								Active							</option>
+													<option value="inactive" >
+								Inactive							</option>
+													<option value="draft" >
+								Draft							</option>
+						
 					</select>
 				</div>
 
 				<div class="form-field form-required">
-					<label
-						for="order_modifier_fee_limit">Apply fee to</label>
-					<select name="order_modifier_apply_to" id="order_modifier_apply_to">
+					<label for="order_modifier_apply_to">
+						Apply fee to					</label>
+					<select
+						name="order_modifier_apply_to"
+						id="order_modifier_apply_to"
+						class="tribe-validation-field"
+						data-validation-required="true"
+						data-validation-error="Apply fee to is required">
 						<option value="per" >
 							Set per ticket						</option>
 						<option value="all" >
 							All tickets						</option>
-						<option value="venue" >
-							Venue						</option>
-						<option value="organizer" >
-							Organizer						</option>
 					</select>
-					<p>Select a group to apply this fee to tickets automatically. This can be overridden on a per ticket
-						basis during ticket creation.</p>
+					<p>
+						Select a group to apply this fee to tickets automatically. This can be overridden on a per ticket basis during ticket creation.					</p>
 				</div>
-
-				
-				<select name="organizer_list">
-					<option value="">Select an organizer</option>
-									</select>
-
-				
-				<select name="venue_list">
-					<option value="">Select a venue</option>
-									</select>
-
-
-
 				<p class="submit">
 					<input
 						type="submit"
 						id="order_modifier_form_save"
-						class="button-primary"
+						class="button-primary tribe-validation-submit"
 						name="order_modifier_form_save"
 						value="Save Fee"
 					/>
