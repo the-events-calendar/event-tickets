@@ -61,20 +61,49 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	 */
 	public function is_on_page() {
 		global $wp_query;
+		global $post;
+
+		error_log( var_export( $post, true ) );
 
 		$ar_page_slug = $this->get_slug();
+		error_log( 'ar_page_slug: ' . $ar_page_slug );
 
 		// Check for original redirect vars.
 		$on_original_redirect = ! empty( $wp_query->query_vars[ $this->key_query_var ] );
+		error_log( 'on_original_redirect: ' . var_export( $on_original_redirect, true ) );
 
 		// Check for custom AR slug.
 		$on_custom_slug = tribe_get_request_var( 'pagename', '' ) === $ar_page_slug;
+		error_log( 'on_custom_slug: ' . var_export( $on_custom_slug, true ) );
+
+		// Check for custom AR page.
+		$on_custom_page = ! empty( $wp_query->query_vars['pagename'] )
+			&& $ar_page_slug === $wp_query->query_vars['pagename'];
+		error_log( 'on_custom_page: ' . var_export( $on_custom_page, true ) );
+
+		return  $on_original_redirect || $on_custom_slug || $on_custom_page;
+	}
+
+	/**
+	 * Returns whether or not the user is on a custom attendee registration page
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_on_custom_page() {
+		global $wp_query;
+		global $post;
+
+		$ar_page_slug = $this->get_slug();
 
 		// Check for custom AR page.
 		$on_custom_page = ! empty( $wp_query->query_vars['pagename'] )
 			&& $ar_page_slug === $wp_query->query_vars['pagename'];
 
-		return  $on_original_redirect || $on_custom_slug || $on_custom_page;
+		$uses_shortcode = ! empty( $post->post_content ) && has_shortcode( $post->post_content, 'tribe_attendee_registration' );
+
+		return $on_custom_page && $uses_shortcode;
 	}
 
 	/**

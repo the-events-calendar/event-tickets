@@ -19,7 +19,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		 * Choose the theme template to use. It has to have a higher priority than the
 		 * TEC filters (at 10) to ensure they do not usurp our rewrite here.
 		 */
-		add_filter( 'template_include', [ $this, 'set_page_template' ], 15 );
+		// add_filter( 'template_include', [ $this, 'set_page_template' ], 15 );
 
 		add_action( 'tribe_events_editor_assets_should_enqueue_frontend', [ $this, 'should_enqueue_frontend' ] );
 		add_action( 'tribe_events_views_v2_assets_should_enqueue_frontend', [ $this, 'should_enqueue_frontend' ] );
@@ -66,12 +66,8 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		 * We are on the AR page, but we have the shortcode in the content,
 		 * so we don't want to spoof this page.
 		 */
-		if ( is_array( $posts ) && ! empty( $posts ) ) {
-			if ( $posts[0] instanceof WP_Post ) {
-				if ( has_shortcode( $posts[0]->post_content, 'tribe_attendee_registration' ) ) {
-					return $posts;
-				}
-			}
+		if ( tribe( 'tickets.attendee_registration' )->is_on_custom_page() ) {
+			return $posts;
 		}
 
 		// Empty posts.
