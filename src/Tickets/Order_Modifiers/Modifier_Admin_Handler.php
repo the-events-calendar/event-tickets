@@ -292,13 +292,21 @@ class Modifier_Admin_Handler implements Registerable {
 		$raw_data                      = tribe_get_request_vars();
 		$raw_data['order_modifier_id'] = $context['modifier_id'];
 
-		// Use the Modifier Manager to sanitize and save the data.
-		$manager       = new Modifier_Manager( $modifier_strategy );
-		$modifier_data = $modifier_strategy->map_form_data_to_model( $raw_data );
+
 		try {
+			// Use the Modifier Manager to sanitize and save the data.
+			$manager       = new Modifier_Manager( $modifier_strategy );
+			$modifier_data = $modifier_strategy->map_form_data_to_model( $raw_data );
+
 			$result = $manager->save_modifier( $modifier_data );
 		} catch ( InvalidArgumentException $exception ) {
-			$this->render_error_message( __( 'Failed to save modifier.', 'event-tickets' ) );
+			$this->render_error_message(
+				sprintf(
+					/* translators: %s: error message */
+					__( 'Error saving modifier: %s', 'event-tickets' ),
+					$exception->getMessage()
+				)
+			);
 			return;
 		}
 
