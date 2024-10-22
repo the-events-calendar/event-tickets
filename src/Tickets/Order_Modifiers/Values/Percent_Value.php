@@ -76,7 +76,7 @@ class Percent_Value extends Precision_Value {
 	 * @return string The value as a string.
 	 */
 	public function __toString() {
-		return sprintf( '%F%%', $this->get_as_percent() );
+		return sprintf( '%02.2F%%', $this->get_as_percent() );
 	}
 
 	/**
