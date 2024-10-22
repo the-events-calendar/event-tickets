@@ -6,10 +6,10 @@
  * @package TEC\Tickets\Order_Modifiers\Checkout
  *
  * @private Still a work in progress.
+ *
  * @phpcs:disable
  * @todo: Add the necessary logic to handle coupons during the checkout process.
  */
-
 
 ?>
 <div class="tribe-tickets__commerce-checkout-cart-coupons">

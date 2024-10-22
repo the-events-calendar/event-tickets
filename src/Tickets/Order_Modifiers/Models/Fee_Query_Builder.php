@@ -16,7 +16,7 @@ use TEC\Common\StellarWP\Models\ModelQueryBuilder;
  *
  * @since TBD
  */
-class FeeQueryBuilder extends ModelQueryBuilder {
+class Fee_Query_Builder extends ModelQueryBuilder {
 
 	/**
 	 * FeeQueryBuilder constructor.

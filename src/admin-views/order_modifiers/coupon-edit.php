@@ -16,6 +16,7 @@
  * @var int    $order_modifier_coupon_limit     The coupon limit.
  *
  * @package TEC\Tickets\Order_Modifiers
+ * @phpcs:disable WordPress.WP.GlobalVariablesOverride
  */
 
 /**

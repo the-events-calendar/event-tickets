@@ -3,6 +3,8 @@
  * Fee model.
  *
  * @since TBD
+ *
+ * @phpcs:disable Generic.CodeAnalysis.UselessOverridingMethod
  */
 
 declare( strict_types=1 );
@@ -32,11 +34,11 @@ class Fee extends Order_Modifier {
 	 *
 	 * @since TBD
 	 *
-	 * @param object $object The object to build the model from.
+	 * @param object $obj The object to build the model from.
 	 *
 	 * @return Fee
 	 */
-	public static function fromQueryBuilderObject( $object ) {
-		return parent::fromQueryBuilderObject( $object );
+	public static function fromQueryBuilderObject( $obj ) {
+		return parent::fromQueryBuilderObject( $obj );
 	}
 }

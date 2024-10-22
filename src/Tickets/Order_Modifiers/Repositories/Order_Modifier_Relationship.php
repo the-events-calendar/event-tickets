@@ -217,10 +217,6 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 	 * @return ModelQueryBuilder The query builder with the necessary joins.
 	 */
 	protected function build_base_query(): ModelQueryBuilder {
-		global $wpdb;
-
-		// Get dynamic table names from $wpdb.
-//		$posts_table           = $wpdb->posts;
 		$posts_table           = 'posts';
 		$order_modifiers_table = Order_Modifiers::base_table_name();
 
