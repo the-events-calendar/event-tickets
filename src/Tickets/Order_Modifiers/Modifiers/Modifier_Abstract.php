@@ -729,7 +729,17 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @return array The sanitized and mapped data for database insertion or updating.
 	 */
-	abstract public function map_form_data_to_model( array $raw_data ): array;
+	public function map_form_data_to_model( array $raw_data ): array {
+		return [
+			'id'            => Positive_Integer_Value::from_number( $raw_data['order_modifier_id'] ?? 0 )->get(),
+			'modifier_type' => $this->get_modifier_type(),
+			'sub_type'      => sanitize_text_field( $raw_data['order_modifier_sub_type'] ?? '' ),
+			'raw_amount'    => Float_Value::from_number( $raw_data['order_modifier_amount'] ?? 0 )->get(),
+			'slug'          => sanitize_text_field( $raw_data['order_modifier_slug'] ?? '' ),
+			'display_name'  => sanitize_text_field( $raw_data['order_modifier_fee_name'] ?? '' ),
+			'status'        => sanitize_text_field( $raw_data['order_modifier_status'] ?? '' ),
+		];
+	}
 
 	/**
 	 * Maps context data to the template context.
