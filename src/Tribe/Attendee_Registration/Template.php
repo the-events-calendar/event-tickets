@@ -127,7 +127,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		}
 
 		// If the post doesn't have the shortcode, check if the queried object does.
-		$queried_object                = get_queried_object();
+		$queried_object = get_queried_object();
 		return ! empty( $queried_object->post_content )
 			&& has_shortcode( $queried_object->post_content, 'tribe_attendee_registration' );
 	}
