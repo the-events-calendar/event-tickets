@@ -397,17 +397,31 @@ class Attendee {
 		return str_replace( $head_div, $label, $html );
 	}
 
-	public function fix_attendee_page_render_context( array $render_context, int $post_id, array $tickets ): array {
+	/**
+	 * Calculates the total number of available seats for a given set of tickets considering their seat type.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $render_context The render context for the attendee page.
+	 * @param int                 $post_id The post ID.
+	 * @param array<WP_Post>      $tickets The tickets for the event.
+	 *
+	 * @return array<string,mixed> The updated render context.
+	 */
+	public function adjust_attendee_page_render_context_for_seating( array $render_context, int $post_id, array $tickets ): array {
 		$available_by_seat_type = [];
+
 		foreach ( $tickets as $ticket ) {
 			$ticket_seat_type = get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true );
-			if ( isset( $available_by_seat_type[ $ticket_seat_type ] ) ) {
+			if ( isset( $available_by_seat_type[ $ticket_seat_type ] ) && $ticket->available() <= $available_by_seat_type[ $ticket_seat_type ] ) {
 				continue;
 			}
+
 			$available_by_seat_type[ $ticket_seat_type ] = $ticket->available();
 		}
-		$fixed_available = array_sum( $available_by_seat_type );
-		$render_context['ticket_totals']['available'] = $fixed_available;
+
+		$render_context['ticket_totals']['available'] = array_sum( $available_by_seat_type );
+
 		return $render_context;
 	}
 }

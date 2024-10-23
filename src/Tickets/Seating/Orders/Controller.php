@@ -192,7 +192,7 @@ class Controller extends Controller_Contract {
 			4
 		);
 		add_filter( 'pre_do_shortcode_tag', [ $this, 'filter_pre_do_shortcode_tag' ], 10, 4 );
-		add_filter( 'tec_tickets_attendees_page_render_context', [ $this, 'fix_attendee_page_render_context' ], 10, 3 );
+		add_filter( 'tec_tickets_attendees_page_render_context', [ $this, 'adjust_attendee_page_render_context_for_seating' ], 10, 3 );
 
 		$this->register_assets();
 	}
@@ -273,7 +273,7 @@ class Controller extends Controller_Contract {
 		);
 		remove_filter( 'tec_tickets_commerce_attendee_to_delete', [ $this, 'handle_attendee_delete' ] );
 		remove_filter( 'pre_do_shortcode_tag', [ $this, 'filter_pre_do_shortcode_tag' ] );
-		remove_filter( 'tec_tickets_attendees_page_render_context', [ $this, 'fix_attendee_page_render_context' ], 10, 3 );
+		remove_filter( 'tec_tickets_attendees_page_render_context', [ $this, 'adjust_attendee_page_render_context_for_seating' ] );
 	}
 
 	/**
@@ -789,7 +789,16 @@ class Controller extends Controller_Contract {
 		return $this->seats_report->add_seats_row_action( $actions, $post );
 	}
 
-	public function fix_attendee_page_render_context($render_context, $post_id, $tickets) {
+	/**
+	 * Adjust the attendee page render context for seating.
+	 *
+	 * @param array<string,mixed> $render_context The render context.
+	 * @param int                 $post_id        The post ID.
+	 * @param array<string,mixed> $tickets        The tickets.
+	 *
+	 * @return array<string,mixed> The adjusted render context.
+	 */
+	public function adjust_attendee_page_render_context_for_seating($render_context, $post_id, $tickets) {
 		if ( ! ( is_array( $render_context ) && is_numeric( $post_id ) && is_array( $tickets ) ) ) {
 			return $render_context;
 		}
@@ -798,6 +807,6 @@ class Controller extends Controller_Contract {
 			return $render_context;
 		}
 
-		return $this->attendee->fix_attendee_page_render_context($render_context, (int)$post_id, $tickets);
+		return $this->attendee->adjust_attendee_page_render_context_for_seating($render_context, (int) $post_id, $tickets );
 	}
 }
