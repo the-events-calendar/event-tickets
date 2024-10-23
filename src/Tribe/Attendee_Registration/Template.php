@@ -125,8 +125,10 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			return true;
 		}
 
-		$queried_object_uses_shortcode = ! empty( $wp_query->queried_object->post_content )
-			&& has_shortcode( $wp_query->queried_object->post_content, 'tribe_attendee_registration' );
+		// If the post doesn't have the shortcode, check if the queried object does.
+		$queried_object = get_queried_object();
+		$queried_object_uses_shortcode = ! empty( $queried_object->post_content )
+			&& has_shortcode( $queried_object->post_content, 'tribe_attendee_registration' );
 
 		return $on_custom_page && $queried_object_uses_shortcode;
 	}
