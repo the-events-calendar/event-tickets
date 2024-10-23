@@ -99,7 +99,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	}
 
 	/**
-	 * Returns whether or not the user is on a custom attendee registration page
+	 * Returns whether or not the user is on a custom attendee registration page.
 	 *
 	 * @since TBD
 	 *
