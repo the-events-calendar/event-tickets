@@ -192,6 +192,7 @@ class Controller extends Controller_Contract {
 			4
 		);
 		add_filter( 'pre_do_shortcode_tag', [ $this, 'filter_pre_do_shortcode_tag' ], 10, 4 );
+		add_filter( 'tec_tickets_attendees_page_render_context', [ $this, 'fix_attendee_page_render_context' ], 10, 3 );
 
 		$this->register_assets();
 	}
@@ -272,6 +273,7 @@ class Controller extends Controller_Contract {
 		);
 		remove_filter( 'tec_tickets_commerce_attendee_to_delete', [ $this, 'handle_attendee_delete' ] );
 		remove_filter( 'pre_do_shortcode_tag', [ $this, 'filter_pre_do_shortcode_tag' ] );
+		remove_filter( 'tec_tickets_attendees_page_render_context', [ $this, 'fix_attendee_page_render_context' ], 10, 3 );
 	}
 
 	/**
@@ -346,7 +348,7 @@ class Controller extends Controller_Contract {
 		if ( ! $post ) {
 			return;
 		}
-		
+
 		if ( ! tec_tickets_seating_enabled( $post->ID ) ) {
 			return;
 		}
@@ -785,5 +787,17 @@ class Controller extends Controller_Contract {
 	 */
 	public function add_seats_row_action( array $actions, $post ): array {
 		return $this->seats_report->add_seats_row_action( $actions, $post );
+	}
+
+	public function fix_attendee_page_render_context($render_context, $post_id, $tickets) {
+		if ( ! ( is_array( $render_context ) && is_numeric( $post_id ) && is_array( $tickets ) ) ) {
+			return $render_context;
+		}
+
+		if ( ! tec_tickets_seating_enabled( $post_id ) ) {
+			return $render_context;
+		}
+
+		return $this->attendee->fix_attendee_page_render_context($render_context, (int)$post_id, $tickets);
 	}
 }

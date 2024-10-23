@@ -67,7 +67,7 @@ class Attendee {
 		if ( 'seat' !== $column ) {
 			return $value;
 		}
-		
+
 		if ( ! isset( $item['ID'] ) ) {
 			return '-';
 		}
@@ -300,7 +300,7 @@ class Attendee {
 	 */
 	public function format_many( array $attendees ): array {
 		$unknown_attendee_name = __( 'Unknown', 'event-tickets' );
-		
+
 		// Filter out attendees that are not from the Commerce module.
 		$attendees = array_filter(
 			$attendees,
@@ -308,7 +308,7 @@ class Attendee {
 				return Module::class === $attendee['provider'];
 			}
 		);
-		
+
 		$associated_attendees = array_reduce(
 			$attendees,
 			static function ( array $carry, array $attendee ): array {
@@ -366,7 +366,7 @@ class Attendee {
 
 		return $formatted_attendees;
 	}
-	
+
 	/**
 	 * Inject seating label with ticket name on Order success page.
 	 *
@@ -380,20 +380,34 @@ class Attendee {
 	public function inject_seat_info_in_order_success_page( string $html, Template $template ): string {
 		$context    = $template->get_local_values();
 		$seat_label = Arr::get( $context, [ 'attendee', 'seat_label' ], false );
-		
+
 		if ( ! $seat_label ) {
 			$ticket_id   = Arr::get( $context, [ 'attendee', 'product_id' ] );
 			$slr_enabled = get_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
 			$seat_label  = $slr_enabled ? __( 'Unassigned', 'event-tickets' ) : '';
 		}
-		
+
 		if ( empty( $seat_label ) ) {
 			return $html;
 		}
-		
+
 		$head_div = '<div class="tec-tickets__attendees-list-item-attendee-details-ticket">';
 		$label    = $head_div . sprintf( '<span class="tec-tickets__ticket-information__seat-label">%s</span>', esc_html( $seat_label ) );
-		
+
 		return str_replace( $head_div, $label, $html );
+	}
+
+	public function fix_attendee_page_render_context( array $render_context, int $post_id, array $tickets ): array {
+		$available_by_seat_type = [];
+		foreach ( $tickets as $ticket ) {
+			$ticket_seat_type = get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true );
+			if ( isset( $available_by_seat_type[ $ticket_seat_type ] ) ) {
+				continue;
+			}
+			$available_by_seat_type[ $ticket_seat_type ] = $ticket->available();
+		}
+		$fixed_available = array_sum( $available_by_seat_type );
+		$render_context['ticket_totals']['available'] = $fixed_available;
+		return $render_context;
 	}
 }
