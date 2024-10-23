@@ -78,6 +78,7 @@ class Attendees {
 				JOIN %i AS attendee_for_ticket ON attendee.ID = attendee_for_ticket.post_id
 					AND attendee_for_ticket.meta_key in ({$attendee_to_ticket_meta_keys_in})
 				WHERE attendee.post_type IN ({$attendee_types_in})
+				AND attendee.post_status != 'trash'
 				AND attendee_for_event.meta_value = %d
 				AND attendee_for_ticket.meta_value IN (
 					SELECT ID FROM %i ticket
