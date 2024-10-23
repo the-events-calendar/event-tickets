@@ -37,6 +37,7 @@ use Tribe__Tickets__Tickets_View as Tickets_View;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 use TEC\Tickets\Seating\Commerce\Controller as Commerce_Controller;
+use TEC\Tickets\Seating\Tables\Seat_Types;
 
 class Controller_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -1568,6 +1569,32 @@ class Controller_Test extends Controller_Test_Case {
 	}
 
 	public function test_it_adjusts_attendee_page_render_context_for_seating() {
+		Seat_Types::insert_many(
+			[
+				[
+					'id'     => 'some-seat-1',
+					'name'   => 'A',
+					'seats'  => 10,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout',
+				],
+				[
+					'id'     => 'some-seat-2',
+					'name'   => 'B',
+					'seats'  => 20,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout',
+				],
+				[
+					'id'     => 'some-seat-3',
+					'name'   => 'C',
+					'seats'  => 30,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout',
+				],
+			]
+		);
+
 		// Create ticket-able post and tickets
 		$post_id  = self::factory()->post->create();
 		$ticket_1 = $this->create_tc_ticket(
