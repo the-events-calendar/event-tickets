@@ -60,6 +60,9 @@ class Error_Content {
 		$cta_label = null;
 
 		switch ( $status->get_status() ) {
+			case Service_Status::NO_LICENSE:
+				// upsell ?
+				return;
 			default:
 			case Service_Status::SERVICE_DOWN:
 				$message = __(

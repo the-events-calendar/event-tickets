@@ -101,9 +101,14 @@ class Admin extends Controller_Contract {
 	 * @return void The seating management page link is added to the admin menu.
 	 */
 	public function add_submenu_page(): void {
-		/** @var $admin_pages */
+		// Don't add the submenu page if there is no license for seating.
+		if ( $this->service->get_status()->has_no_license() ) {
+			return;
+		}
+
+		/** @var \Tribe\Admin\Pages */
 		$admin_pages = tribe( 'admin.pages' );
-		
+
 		$admin_pages->register_page(
 			[
 				'id'       => self::get_menu_slug(),

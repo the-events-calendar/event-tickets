@@ -14,6 +14,7 @@ use TEC\Tickets\Seating\Meta;
 use Tribe__Admin__Notices as Notices;
 use Tribe__Tickets__Admin__Move_Tickets as Move_Tickets;
 use WP_Screen;
+use TEC\Tickets\Seating\Service\Service_Status;
 
 class Admin_Test extends Controller_Test_Case {
 	use With_Uopz;
@@ -59,13 +60,44 @@ class Admin_Test extends Controller_Test_Case {
 		];
 	}
 
+	public function license_states_data_provider() {
+		return [
+			'no tab - expired license'          => [
+				'fixture' => function(){
+					add_filter( 'tec_tickets_seating_service_status', static fn( $_status, $backend_base_url ) => new Service_Status( $backend_base_url, Service_Status::EXPIRED_LICENSE ), 10, 2 );
+				},
+			],
+			'no tab - no license'          => [
+				'fixture' => function(){
+					add_filter( 'tec_tickets_seating_service_status', static fn( $_status, $backend_base_url ) => new Service_Status( $backend_base_url, Service_Status::NO_LICENSE ), 10, 2 );
+				},
+				'should_menu_exist' => false,
+			],
+			'no tab - invalid license'          => [
+				'fixture' => function(){
+					add_filter( 'tec_tickets_seating_service_status', static fn( $_status, $backend_base_url ) => new Service_Status( $backend_base_url, Service_Status::INVALID_LICENSE ), 10, 2 );
+				}
+			],
+			'no tab - service down'          => [
+				'fixture' => function(){
+					add_filter( 'tec_tickets_seating_service_status', static fn( $_status, $backend_base_url ) => new Service_Status( $backend_base_url, Service_Status::SERVICE_DOWN ), 10, 2 );
+				}
+			],
+			'no tab - not connected'          => [
+				'fixture' => function(){
+					add_filter( 'tec_tickets_seating_service_status', static fn( $_status, $backend_base_url ) => new Service_Status( $backend_base_url, Service_Status::NOT_CONNECTED ), 10, 2 );
+				}
+			],
+		];
+	}
+
 	/**
 	 * It should add the sub-menu page
 	 *
 	 * @test
 	 * @dataProvider tabs_data_provider
 	 */
-	public function should_add_the_sub_menu_page( string $tab = null, \Closure $fixture = null ): void {
+	public function should_add_the_sub_menu_page( string $tab = null, \Closure $fixture = null, $should_menu_exist = true ): void {
 		unset( $_GET['tab'], $_GET['layout'], $_GET['mapId'], $_REQUEST['tab'], $_REQUEST['layoutId'], $_REQUEST['mapId'] );
 
 		if ( $fixture ) {
@@ -89,7 +121,59 @@ class Admin_Test extends Controller_Test_Case {
 		// Render the page.
 		ob_start();
 		do_action( 'tickets_page_tec-tickets-seating' );
-		$this->assertMatchesHtmlSnapshot( ob_get_clean() );
+
+		$html = ob_get_clean();
+
+		if ( $should_menu_exist ) {
+			$this->assertMatchesHtmlSnapshot( $html );
+		}
+
+		global $submenu;
+
+		$new_sub_menu = [ 'Seating', 'manage_options', 'tec-tickets-seating', 'Seating' ];
+
+		$this->assertEquals( $should_menu_exist, in_array( $new_sub_menu, $submenu['tec-tickets'], true ) );
+	}
+
+	/**
+	 * It should add the sub-menu page
+	 *
+	 * @test
+	 * @dataProvider license_states_data_provider
+	 */
+	public function should_add_the_sub_menu_page_when_license_exists( \Closure $fixture = null, $should_menu_exist = true ): void {
+		$fixture();
+		add_filter( 'tec_tickets_seating_ephemeral_token', static fn() => 'test-ephemeral-token' );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Register the Admin controller sub-menu page.
+		do_action( 'admin_menu' );
+		// Render the page.
+		ob_start();
+		do_action( 'tickets_page_tec-tickets-seating' );
+
+		$html = ob_get_clean();
+
+		if ( $should_menu_exist ) {
+			$this->assertMatchesHtmlSnapshot( $html );
+		}
+
+		global $submenu;
+
+		$new_sub_menu = [ 'Seating', 'manage_options', 'tec-tickets-seating', 'Seating' ];
+
+		$this->assertEquals( $should_menu_exist, in_array( $new_sub_menu, $submenu['tec-tickets'], true ) );
+	}
+
+	/**
+	 * @after
+	 */
+	public function cleanup(): void {
+		global $submenu;
+
+		$submenu = null;
 	}
 
 	/**

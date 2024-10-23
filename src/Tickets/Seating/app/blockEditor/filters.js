@@ -38,6 +38,11 @@ function filterRenderCapacityForm(renderDefaultForm, { clientId, ticketProvider 
 		return renderDefaultForm;
 	}
 
+	// When no license, we DO NOT render the radios General vs Seating.
+	if ('no-license' === select(storeName).getServiceStatus()) {
+		return renderDefaultForm;
+	}
+
 	return () => (
 		<CapacityForm
 			renderDefaultForm={renderDefaultForm}

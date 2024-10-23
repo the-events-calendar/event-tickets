@@ -738,6 +738,7 @@ class Controller_Test extends Controller_Test_Case {
 			Service_Status::NOT_CONNECTED,
 			Service_Status::INVALID_LICENSE,
 			Service_Status::EXPIRED_LICENSE,
+			Service_Status::NO_LICENSE,
 		];
 
 		$this->make_controller()->register();

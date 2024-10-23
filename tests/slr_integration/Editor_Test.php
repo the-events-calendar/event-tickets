@@ -371,6 +371,19 @@ class Editor_Test extends Controller_Test_Case {
 			}
 		];
 
+		yield 'no license' => [
+			function (): array {
+				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
+					return new Service_Status( $backend_base_url, Service_Status::NO_LICENSE );
+				}, 1000, 2 );
+				global $pagenow, $post;
+				$pagenow = 'edit.php';
+				$post    = get_post( static::factory()->post->create() );
+
+				return [];
+			}
+		];
+
 		yield 'invalid license' => [
 			function (): array {
 				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
