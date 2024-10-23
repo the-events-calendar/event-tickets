@@ -38,6 +38,11 @@ function filterRenderCapacityForm(renderDefaultForm, { clientId, ticketProvider 
 		return renderDefaultForm;
 	}
 
+	// When no license, we render the classic form.
+	if ('no-license' === select(storeName).getServiceStatus()) {
+		return renderDefaultForm;
+	}
+
 	return () => (
 		<CapacityForm
 			renderDefaultForm={renderDefaultForm}

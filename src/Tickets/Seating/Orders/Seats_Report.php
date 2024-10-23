@@ -255,7 +255,7 @@ class Seats_Report extends Report_Abstract {
 		 */
 		return apply_filters(
 			'tec_tickets_seating_should_show_upsell',
-			$service_status->is_license_invalid(),
+			$service_status->is_license_invalid() || $service_status->has_no_license(),
 			$service_status
 		);
 	}

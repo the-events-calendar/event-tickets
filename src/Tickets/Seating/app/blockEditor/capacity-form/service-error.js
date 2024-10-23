@@ -67,6 +67,7 @@ const getMessage = (serviceStatus, serviceConnectUrl) => {
 				</span>
 			);
 
+		case 'no-license':
 		default:
 			return '';
 	}

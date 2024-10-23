@@ -67,6 +67,15 @@ class Service_Status {
 	public const EXPIRED_LICENSE = 16;
 
 	/**
+	 * A constant representing the fact that there is no license.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	public const NO_LICENSE = 32;
+
+	/**
 	 * The base URL of the service from the site backend.
 	 *
 	 * @since TBD
@@ -125,7 +134,13 @@ class Service_Status {
 
 		$resource = get_resource( 'tec-seating' );
 
-		if ( ! ( $resource->get_license_object()->get_key() && $resource->has_valid_license() ) ) {
+		if ( ! $resource->get_license_object()->get_key() ) {
+			$this->status = self::NO_LICENSE;
+
+			return;
+		}
+
+		if ( ! $resource->has_valid_license() ) {
 			if ( $resource->get_license_object()->is_expired() ) {
 				// There is a license key, but it is expired.
 				$this->status = self::EXPIRED_LICENSE;
@@ -187,6 +202,19 @@ class Service_Status {
 	}
 
 	/**
+	 * Returns whether the site is not connected to the service.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the service status is Not Connected or not.
+	 */
+	public function has_no_license(): bool {
+		$this->update();
+
+		return $this->status === self::NO_LICENSE;
+	}
+
+	/**
 	 * Returns whether the license used is expired.
 	 *
 	 * @since TBD
@@ -231,6 +259,8 @@ class Service_Status {
 				return 'expired-license';
 			case self::INVALID_LICENSE:
 				return 'invalid-license';
+			case self::NO_LICENSE:
+				return 'no-license';
 			default:
 				return 'ok';
 		}
