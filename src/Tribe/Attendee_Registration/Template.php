@@ -110,7 +110,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 
 		$ar_page_slug = tribe( 'tickets.attendee_registration' )->get_slug();
 
-		// Check for custom AR page.
+		// Check for custom AR page by page slug.
 		$on_custom_page = ! empty( $wp_query->query_vars['pagename'] )
 			&& $ar_page_slug === $wp_query->query_vars['pagename'];
 
