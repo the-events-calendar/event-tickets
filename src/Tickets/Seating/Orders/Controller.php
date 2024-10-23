@@ -792,13 +792,13 @@ class Controller extends Controller_Contract {
 	/**
 	 * Adjust the attendee page render context for seating.
 	 *
-	 * @param array<string,mixed> $render_context The render context.
-	 * @param int                 $post_id        The post ID.
-	 * @param array<string,mixed> $tickets        The tickets.
+	 * @param array<string,mixed>  $render_context The render context.
+	 * @param int                  $post_id        The post ID.
+	 * @param array<Ticket_Object> $tickets        The tickets.
 	 *
 	 * @return array<string,mixed> The adjusted render context.
 	 */
-	public function adjust_attendee_page_render_context_for_seating($render_context, $post_id, $tickets) {
+	public function adjust_attendee_page_render_context_for_seating( $render_context, $post_id, $tickets ) {
 		if ( ! ( is_array( $render_context ) && is_numeric( $post_id ) && is_array( $tickets ) ) ) {
 			return $render_context;
 		}
@@ -807,6 +807,6 @@ class Controller extends Controller_Contract {
 			return $render_context;
 		}
 
-		return $this->attendee->adjust_attendee_page_render_context_for_seating($render_context, (int) $post_id, $tickets );
+		return $this->attendee->adjust_attendee_page_render_context_for_seating( $render_context, (int) $post_id, $tickets );
 	}
 }

@@ -19,6 +19,7 @@ use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Meta;
 use WP_Query;
 use WP_Post;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
  * Class Attendee
@@ -402,9 +403,9 @@ class Attendee {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string,mixed> $render_context The render context for the attendee page.
-	 * @param int                 $post_id The post ID.
-	 * @param array<WP_Post>      $tickets The tickets for the event.
+	 * @param array<string,mixed>  $render_context The render context for the attendee page.
+	 * @param int                  $post_id The post ID.
+	 * @param array<Ticket_Object> $tickets The tickets for the event.
 	 *
 	 * @return array<string,mixed> The updated render context.
 	 */
