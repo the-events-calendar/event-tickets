@@ -160,7 +160,7 @@ exports[`add-new-modal should match the snapshot should load proper extractor sn
 		<div class=\\"tec-tickets__seating-tab__card-actions\\">
 			<a class=\\"button button-secondary edit-layout\\" href=\\"http://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&amp;tab=layout-edit&amp;layoutId=layout-uuid-1\\" data-event-count=\\"0\\">
 				Edit			</a>
-						<a class=\\"delete-layout\\" data-layout-id=\\"layout-uuid-1\\" data-map-id=\\"a\\" href=\\"#\\">
+						<a class=\\"delete-layout\\" data-layout-id=\\"layout-uuid-1\\" data-map-id=\\"map-uuid-1\\" href=\\"#\\">
 				Delete			</a>
 					</div>
 	</div>
@@ -304,7 +304,7 @@ exports[`add-new-modal should match the snapshot should load the proper snapshot
 		<div class=\\"tec-tickets__seating-tab__card-actions\\">
 			<a class=\\"button button-secondary edit-layout\\" href=\\"http://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&amp;tab=layout-edit&amp;layoutId=layout-uuid-1\\" data-event-count=\\"0\\">
 				Edit			</a>
-						<a class=\\"delete-layout\\" data-layout-id=\\"layout-uuid-1\\" data-map-id=\\"a\\" href=\\"#\\">
+						<a class=\\"delete-layout\\" data-layout-id=\\"layout-uuid-1\\" data-map-id=\\"map-uuid-1\\" href=\\"#\\">
 				Delete			</a>
 					</div>
 	</div>
