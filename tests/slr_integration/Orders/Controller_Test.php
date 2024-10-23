@@ -1206,6 +1206,7 @@ class Controller_Test extends Controller_Test_Case {
 			function ( $id ) use ( $attendee_1 ) {
 				if ( $id === $attendee_1 ) {
 					return new class() {
+						public $class_name = Module::class;
 						public function send_tickets_email_for_attendees() {
 							throw new AssertionFailedError( 'Should not send email' );
 						}
@@ -1307,6 +1308,7 @@ class Controller_Test extends Controller_Test_Case {
 			function ( $id ) use ( $attendee_3 ) {
 				if ( $id === $attendee_3 ) {
 					return new class() {
+						public $class_name = Module::class;
 						public function send_tickets_email_for_attendees() {
 							return false;
 						}
@@ -1349,6 +1351,7 @@ class Controller_Test extends Controller_Test_Case {
 			function ( $id ) use ( $attendee_1 ) {
 				if ( $id === $attendee_1 ) {
 					return new class() {
+						public $class_name = Module::class;
 						public function send_tickets_email_for_attendees() {
 							throw new AssertionFailedError( 'Should not send email' );
 						}
