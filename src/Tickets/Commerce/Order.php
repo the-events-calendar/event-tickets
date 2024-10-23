@@ -408,11 +408,40 @@ class Order extends Abstract_Order {
 			},
 			$items
 		) );
+
+		$subtotal = $this->get_value_total( $items );
+
+		$original_cart_items = $items;
+
+		/**
+		 * Filters the cart items before creating an order.
+		 *
+		 * Allows modification of the cart items array before creating an order,
+		 * passing the current subtotal, payment gateway, and purchaser details.
+		 *
+		 * @since TBD
+		 *
+		 * @param array             $items     The items in the cart.
+		 * @param Value             $subtotal  The calculated subtotal of the cart items.
+		 * @param Gateway_Interface $gateway   The payment gateway used for the order.
+		 * @param array|null        $purchaser An array of purchaser information including purchaser_user_id,
+		 *                                     purchaser_full_name, purchaser_first_name, purchaser_last_name,
+		 *                                     and purchaser_email.
+		 */
+		$items = apply_filters(
+			'tec_tickets_commerce_create_order_from_cart_items',
+			$items,
+			$subtotal,
+			$gateway,
+			$purchaser
+		);
+
 		$total = $this->get_value_total( array_filter( $items ) );
 
 		$order_args = [
-			'title'                => $this->generate_order_title( $items, $cart->get_cart_hash() ),
+			'title'                => $this->generate_order_title( $original_cart_items, $cart->get_cart_hash() ),
 			'total_value'          => $total->get_decimal(),
+			'subtotal'             => $subtotal,
 			'items'                => $items,
 			'gateway'              => $gateway::get_key(),
 			'hash'                 => $cart->get_cart_hash(),

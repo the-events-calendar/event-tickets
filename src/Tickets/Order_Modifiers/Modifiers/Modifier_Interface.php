@@ -12,6 +12,8 @@
 
 namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
+use TEC\Common\StellarWP\Models\Contracts\Model;
+
 /**
  * Interface for Order Modifiers (Coupons and Booking Fees).
  *
@@ -43,9 +45,9 @@ interface Modifier_Interface {
 	 *
 	 * @param array $data Form data from the request.
 	 *
-	 * @return mixed The newly created modifier instance (e.g., Coupon or Booking Fee).
+	 * @return Model The newly created modifier instance (e.g., Coupon or Booking Fee).
 	 */
-	public function insert_modifier( array $data ): mixed;
+	public function insert_modifier( array $data ): Model;
 
 	/**
 	 * Updates an existing Order Modifier.
@@ -57,9 +59,9 @@ interface Modifier_Interface {
 	 *
 	 * @param array $data Form data from the request.
 	 *
-	 * @return mixed The updated modifier instance (e.g., Coupon or Booking Fee).
+	 * @return Model The updated modifier instance (e.g., Coupon or Booking Fee).
 	 */
-	public function update_modifier( array $data ): mixed;
+	public function update_modifier( array $data ): Model;
 
 	/**
 	 * Renders the table for this specific modifier type (e.g., Coupon table, Fee table).

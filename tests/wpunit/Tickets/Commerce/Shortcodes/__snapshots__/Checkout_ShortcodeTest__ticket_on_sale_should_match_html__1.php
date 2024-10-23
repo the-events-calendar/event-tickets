@@ -9,7 +9,7 @@
 	
 <a
 	class="tribe-common-anchor-alt tribe-tickets__commerce-checkout-header-link-back-to-event"
-	href="http://wordpress.test/?page_id=5096"
+	href="http://wordpress.test/?page_id=5108"
 >back to event</a>
 </div>
 </header>
@@ -18,25 +18,25 @@
 
 	<header class="tribe-tickets__commerce-checkout-cart-header">
 	<h4 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__commerce-checkout-cart-header-title">
-		<a href="http://wordpress.test/?page_id=5096">
+		<a href="http://wordpress.test/?page_id=5108">
 			Page with Tickets		</a>
 	</h4>
 </header>
 
 	<div class="tribe-tickets__commerce-checkout-cart-items">
 					<article
-	 class="tribe-tickets__commerce-checkout-cart-item post-5098 tec_tc_ticket type-tec_tc_ticket status-publish hentry tribe-common-b1" 	 data-ticket-id="5098" data-ticket-quantity="1" data-ticket-price="10.00" >
+	 class="tribe-tickets__commerce-checkout-cart-item post-5110 tec_tc_ticket type-tec_tc_ticket status-publish hentry tribe-common-b1" 	 data-ticket-id="5110" data-ticket-quantity="1" data-ticket-price="10.00" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details">
 
 	<div class="tribe-common-h6 tribe-tickets__commerce-checkout-cart-item-details-title">
-	Test TC ticket for 5096</div>
+	Test TC ticket for 5108</div>
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details-toggle">
 	<button
 		type="button"
 		class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-button--more"
-		aria-controls="tribe-tickets__commerce-checkout-cart-item-details-description--5098"
+		aria-controls="tribe-tickets__commerce-checkout-cart-item-details-description--5110"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">
 			Open the ticket description in checkout.		</span>
@@ -46,7 +46,7 @@
 	<button
 		type="button"
 		class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-button--less"
-		aria-controls="tribe-tickets__commerce-checkout-cart-item-details-description--5098"
+		aria-controls="tribe-tickets__commerce-checkout-cart-item-details-description--5110"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">
 			Close the ticket description in checkout.		</span>
@@ -55,8 +55,8 @@
 	</button>
 </div>
 
-	<div id="tribe-tickets__commerce-checkout-cart-item-details-description--5098"  class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-description tribe-common-a11y-hidden" >
-	Test TC ticket description for 5096
+	<div id="tribe-tickets__commerce-checkout-cart-item-details-description--5110"  class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-description tribe-common-a11y-hidden" >
+	Test TC ticket description for 5108
 	</div>
 
 </div>
@@ -87,8 +87,13 @@
 </article>
 	</div>
 
-	<footer  class="tribe-tickets__commerce-checkout-cart-footer tribe-common-b1" >
-
+	
+<footer  class="tribe-tickets__commerce-checkout-cart-footer tribe-common-b1" >
+	
+<div class="tribe-tickets__commerce-checkout-cart-footer-order-modifier-fees">
+	<ul>
+			</ul>
+</div>
 	<div class="tribe-tickets__commerce-checkout-cart-footer-quantity">
 	<span class="tribe-tickets__commerce-checkout-cart-footer-quantity-label">Quantity: </span><span class="tribe-tickets__commerce-checkout-cart-footer-quantity-number">1</span></div>
 

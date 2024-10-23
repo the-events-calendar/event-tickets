@@ -2,24 +2,32 @@
 /**
  * The data transfer object for the Order Modifier model.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\Order_Modifiers\Data_Transfer_Objects;
  */
+
+declare( strict_types=1 );
 
 namespace TEC\Tickets\Order_Modifiers\Data_Transfer_Objects;
 
 use TEC\Common\StellarWP\Models\DataTransferObject;
+use TEC\Tickets\Order_Modifiers\Factory;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
+use TEC\Tickets\Order_Modifiers\Traits\Valid_Types;
+use TEC\Tickets\Order_Modifiers\Values\Float_Value;
+use TEC\Tickets\Order_Modifiers\Values\Positive_Integer_Value;
 
 /**
  * Class Order_Modifier_DTO.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\Order_Modifiers\Data_Transfer_Objects;
  */
 class Order_Modifier_DTO extends DataTransferObject {
+
+	use Valid_Types;
 
 	/**
 	 * The Order Modifier ID.
@@ -53,9 +61,9 @@ class Order_Modifier_DTO extends DataTransferObject {
 	 *
 	 * @since TBD
 	 *
-	 * @var int
+	 * @var float
 	 */
-	protected int $fee_amount_cents;
+	protected float $raw_amount;
 
 	/**
 	 * The slug (coupon code).
@@ -123,17 +131,16 @@ class Order_Modifier_DTO extends DataTransferObject {
 	public static function fromObject( $object ): self {
 		$self = new self();
 
-		$self->id               = $object->id;
-		$self->modifier_type    = $object->modifier_type;
-		$self->sub_type         = $object->sub_type;
-		$self->fee_amount_cents = $object->fee_amount_cents;
-		$self->slug             = $object->slug;
-		$self->display_name     = $object->display_name;
-		$self->status           = $object->status;
-		$self->created_at       = $object->created_at;
-		$self->start_time       = $object->start_time ?? null;
-		$self->end_time         = $object->end_time ?? null;
-
+		$self->id            = Positive_Integer_Value::from_number( $object->id )->get();
+		$self->modifier_type = $object->modifier_type;
+		$self->sub_type      = $object->sub_type;
+		$self->raw_amount    = Float_Value::from_number( $object->raw_amount ?? 0 )->get();
+		$self->slug          = $object->slug;
+		$self->display_name  = $object->display_name;
+		$self->status        = $object->status;
+		$self->created_at    = $object->created_at;
+		$self->start_time    = $object->start_time ?? null;
+		$self->end_time      = $object->end_time ?? null;
 
 		return $self;
 	}
@@ -148,6 +155,8 @@ class Order_Modifier_DTO extends DataTransferObject {
 	public function toModel(): Order_Modifier {
 		$attributes = get_object_vars( $this );
 
-		return new Order_Modifier( $attributes );
+		return array_key_exists( 'modifier_type', $attributes )
+			? Factory::get_model_for_type( $attributes['modifier_type'], $attributes )
+			: new Order_Modifier( $attributes );
 	}
 }

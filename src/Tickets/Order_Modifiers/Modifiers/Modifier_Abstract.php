@@ -16,10 +16,15 @@
  * @package TEC\Tickets\Order_Modifiers\Modifiers
  */
 
+declare( strict_types=1 );
+
 namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
+use Exception;
 use InvalidArgumentException;
+use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Commerce\Utils\Value;
+use TEC\Tickets\Exceptions\Not_Found_Exception;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier_Meta;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier_Relationships;
@@ -27,6 +32,11 @@ use TEC\Tickets\Order_Modifiers\Modifier_Admin_Handler;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers as Order_Modifiers_Repository;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers_Meta as Order_Modifiers_Meta_Repository;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifier_Relationship as Order_Modifier_Relationship_Repository;
+use TEC\Tickets\Order_Modifiers\Values\Currency_Value;
+use TEC\Tickets\Order_Modifiers\Values\Float_Value;
+use TEC\Tickets\Order_Modifiers\Values\Percent_Value;
+use TEC\Tickets\Order_Modifiers\Values\Positive_Integer_Value;
+use TEC\Tickets\Order_Modifiers\Values\Precision_Value;
 
 /**
  * Class Modifier_Abstract
@@ -71,6 +81,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 
 	/**
 	 * Fields required by this modifier.
+	 * The required field should be the key name.
 	 *
 	 * @since TBD
 	 * @var array
@@ -132,15 +143,16 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @param array $data The data to insert.
 	 *
-	 * @return mixed The newly inserted modifier or an empty array if no changes were made.
+	 * @return Model The newly inserted modifier or an empty array if no changes were made.
 	 */
-	public function insert_modifier( array $data ): mixed {
+	public function insert_modifier( array $data ): Model {
 		// Ensure the modifier_type is set to the expected one.
 		$data['modifier_type'] = $this->modifier_type;
 
-		// Validate data before proceeding.
-		if ( ! $this->validate_data( $data ) ) {
-			return [];
+		try {
+			$this->validate_data( $data );
+		} catch ( InvalidArgumentException $exception ) {
+			new Order_Modifier( [] );
 		}
 
 		// Use the repository to insert the data into the `order_modifiers` table.
@@ -154,15 +166,16 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @param array $data The data to update.
 	 *
-	 * @return mixed The updated modifier or an empty array if no changes were made.
+	 * @return Model The updated modifier or an empty array if no changes were made.
 	 */
-	public function update_modifier( array $data ): mixed {
+	public function update_modifier( array $data ): Model {
 		// Ensure the modifier_type is set to the expected one.
 		$data['modifier_type'] = $this->modifier_type;
 
-		// Validate data before proceeding.
-		if ( ! $this->validate_data( $data ) ) {
-			return [];
+		try {
+			$this->validate_data( $data );
+		} catch ( InvalidArgumentException $exception ) {
+			new Order_Modifier( [] );
 		}
 
 		// Use the repository to update the data in the `order_modifiers` table.
@@ -180,30 +193,8 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return array|null The modifier data or null if not found.
 	 */
 	public function get_modifier_by_id( int $modifier_id, string $modifier_type ): ?array {
-		$modifier_data = $this->repository->find_by_id( $modifier_id, $modifier_type );
+		$modifier_data = $this->repository->find_by_id( $modifier_id );
 		return $modifier_data ? $modifier_data->to_array() : null;
-	}
-
-	/**
-	 * Finds a modifier by its slug.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $slug The slug to search for.
-	 *
-	 * @return mixed The modifier data or null if not found.
-	 */
-	public function find_by_slug( string $slug ): mixed {
-		return $this->repository->find_by_slug( $slug, $this->modifier_type );
-	}
-
-	/**
-	 * Gets all modifiers by the type.
-	 *
-	 * @return array
-	 */
-	public function get_all_modifiers(): mixed {
-		return $this->repository->find_by_type( $this->modifier_type );
 	}
 
 	/**
@@ -220,34 +211,9 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	}
 
 	/**
-	 * Maps and sanitizes raw form data into model-ready data.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $data The raw form data, typically from $_POST.
-	 *
-	 * @return array The sanitized and mapped data for database insertion or updating.
-	 */
-	abstract public function map_form_data_to_model( array $data ): array;
-
-
-	/**
-	 * Maps context data to the template context.
-	 *
-	 * This method prepares the context for rendering the edit form.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $context The raw model data.
-	 *
-	 * @return array The context data ready for rendering the form.
-	 */
-	abstract public function map_context_to_template( array $context ): array;
-
-	/**
 	 * Validates the required fields for the modifier.
 	 *
-	 * This base logic checks if all required fields are present and not empty.
+	 * This base logic checks if all required fields are present, and not empty.
 	 * Specific strategies can define additional validation logic.
 	 *
 	 * @since TBD
@@ -255,22 +221,36 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @param array $data The data to validate.
 	 *
 	 * @return bool True if the data is valid, false otherwise.
+	 * @throws InvalidArgumentException If there are any validation errors.
 	 */
 	public function validate_data( array $data ): bool {
-		foreach ( $this->required_fields as $field ) {
-			if ( empty( $data[ $field ] ) ) {
-				return false;
+		$errors = [];
+
+		// Step 1: Validate that required fields are present.
+		$missing_fields = array_diff_key( $this->required_fields, $data );
+		if ( ! empty( $missing_fields ) ) {
+			$errors[] = 'The following required fields are missing: ' . implode( ', ', array_keys( $missing_fields ) );
+		}
+
+		// Step 2: Validate that required fields are not empty (allow '0' as a valid value).
+		foreach ( $this->required_fields as $field => $required ) {
+			if ( $required && ( ! isset( $data[ $field ] ) || ( is_string( $data[ $field ] ) && trim( $data[ $field ] ) === '' ) ) ) {
+				$errors[] = "The field '{$field}' is required and cannot be empty.";
 			}
 		}
 
-		// @todo redscar - We should implement some more "complex" validation.
+		// Step 6: Check for accumulated errors and throw exception if any.
+		if ( ! empty( $errors ) ) {
+			throw new InvalidArgumentException( 'Validation failed: ' . implode( '; ', $errors ) );
+		}
+
 		return true;
 	}
 
 	/**
-	 * Converts a decimal amount to its value in cents.
+	 * Converts a decimal amount to its value multiplied by 100.
 	 *
-	 * This method is used to convert a floating-point amount (e.g., 23.00) into an integer representing cents.
+	 * This method is used to convert a floating-point amount (e.g., 23.00) into an integer.
 	 *
 	 * @since TBD
 	 *
@@ -278,8 +258,8 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @return int The amount converted to cents.
 	 */
-	public function convert_to_cents( float $amount ): int {
-		return (int) round( floatval( $amount ) * 100 );
+	public function convert_to_raw_amount( float $amount ): int {
+		return (int) round( $amount * 100 );
 	}
 
 	/**
@@ -289,12 +269,15 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $cents The amount in cents.
+	 * @param int $raw_amount The amount in cents.
 	 *
 	 * @return string The formatted decimal string representing the amount.
 	 */
-	public function convert_from_cents( int $cents ): string {
-		return number_format( $cents / 100, 2, '.', '' );
+	public function convert_from_raw_amount( int $raw_amount ): string {
+		$amount       = $raw_amount / 100;
+		$amount_value = Value::create( $amount );
+
+		return number_format( $amount_value->get_decimal(), 2, '.', '' );
 	}
 
 	/**
@@ -306,22 +289,21 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @param int    $value The raw amount value (e.g., in cents for flat fees).
+	 * @param float  $value The raw amount value (e.g., in cents for flat fees).
 	 * @param string $type  The type of the fee ('percent' for percentage-based, 'flat' for fixed value).
 	 *
 	 * @return string The formatted amount, either as a percentage, currency, or future types.
 	 */
-	public function display_amount_field( int $value, string $type = 'flat' ): string {
+	public function display_amount_field( float $value, string $type = 'flat' ): string {
 		switch ( $type ) {
 			case 'percent':
-				// Return the value as a percentage with the '%' symbol.
-				$formatted_amount = $this->display_percentage( $value );
+				$formatted_amount = ( new Percent_Value( $value ) )->__toString();
 				break;
 
 			case 'flat':
 			default:
-				// Return the value as a flat fee (currency) for 'flat' or unknown types.
-				$formatted_amount = $this->display_flat_fee( $value );
+				$precision_value  = ( new Precision_Value( $value ) );
+				$formatted_amount = ( new Currency_Value( $precision_value ) )->get();
 				break;
 		}
 
@@ -334,49 +316,10 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		 * @since TBD
 		 *
 		 * @param string $formatted_amount The formatted amount string (e.g., '10%', '$10.00').
-		 * @param int $value The raw amount value in cents.
-		 * @param string $type The type of the amount (e.g., 'percent', 'flat').
+		 * @param int    $value            The raw amount value in cents.
+		 * @param string $type             The type of the amount (e.g., 'percent', 'flat').
 		 */
 		return apply_filters( 'tec_tickets_order_modifier_display_amount', $formatted_amount, $value, $type );
-	}
-
-	/**
-	 * Formats the given value as a percentage.
-	 *
-	 * Converts the value from cents and appends a '%' symbol. If the percentage is a whole number, it drops the
-	 * decimal places (e.g., '23%' instead of '23.00%').
-	 *
-	 * @since TBD
-	 *
-	 * @param int $value The raw percentage value in cents.
-	 *
-	 * @return string The formatted percentage value.
-	 */
-	protected function display_percentage( $value ) {
-		$value = $this->convert_from_cents( $value );
-
-		// If the value is a whole number, format it without decimals.
-		if ( intval( $value ) == $value ) {
-			$value = intval( $value ); // Cast to int to remove the '.00'.
-		}
-
-		return $value . '%';
-	}
-
-	/**
-	 * Formats the given value as currency.
-	 *
-	 * Uses the Value class to convert the raw value (in cents) into a properly formatted currency amount.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $value The raw value in cents.
-	 *
-	 * @return string The formatted currency value (e.g., '10.00' for 1000 cents).
-	 */
-	protected function display_flat_fee( $value ) {
-		$value = $this->convert_from_cents( $value );
-		return Value::create( $value )->get_currency();
 	}
 
 	/**
@@ -387,7 +330,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @since TBD
 	 *
 	 * @return string The unique slug.
-	 * @throws Exception if random_bytes fails.
+	 * @throws Exception If random_bytes fails.
 	 */
 	public function generate_unique_slug(): string {
 		$slug_length = 7;
@@ -450,9 +393,13 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return bool True if the slug is unique, false otherwise.
 	 */
 	protected function is_slug_unique( string $slug ): bool {
-		$existing_slug = $this->repository->find_by_slug( $slug, $this->modifier_type );
-
-		return null === $existing_slug;
+		try {
+			$this->repository->find_by_slug( $slug );
+			return false;
+		} catch ( Not_Found_Exception $e ) {
+			// Slug does not exist, so it is unique.
+			return true;
+		}
 	}
 
 	/**
@@ -521,11 +468,11 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @param int   $modifier_id The ID of the modifier.
 	 * @param array $args The metadata arguments. Expects 'meta_key', 'meta_value', and can override 'priority'.
 	 *
-	 * @return mixed
+	 * @return Model
 	 *
 	 * @throws InvalidArgumentException If 'meta_key' is not provided.
 	 */
-	protected function handle_meta_data( int $modifier_id, array $args = [] ): mixed {
+	protected function handle_meta_data( int $modifier_id, array $args = [] ): Model {
 		// Default structure for the metadata.
 
 		$defaults = [
@@ -611,21 +558,6 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	}
 
 	/**
-	 * Abstract method for handling relationship updates.
-	 *
-	 * This method must be implemented in child classes to handle the specific logic for
-	 * updating relationships between modifiers and posts, depending on the modifier type.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $modifier_ids An array of modifier IDs to update.
-	 * @param array $new_post_ids An array of new post IDs to be associated with the fee.
-	 *
-	 * @return void
-	 */
-	abstract public function handle_relationship_update( array $modifier_ids, array $new_post_ids ): void;
-
-	/**
 	 * Retrieves the display name of the modifier in singular or plural form.
 	 *
 	 * This method returns the human-readable display name of the modifier,
@@ -641,7 +573,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	public function get_modifier_display_name( bool $plural = false ): string {
 		// If plural is requested and a plural form is set, return the plural display name.
 		if ( $plural && ! empty( $this->modifier_display_name_plural ) ) {
-			$this->modifier_display_name_plural;
+			return $this->modifier_display_name_plural;
 		}
 
 		// Return singular form by default.
@@ -687,12 +619,11 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return bool True if the deletion of the modifier was successful, false otherwise.
 	 */
 	public function delete_modifier( int $modifier_id ): bool {
-
-		// Check if the modifier exists before attempting to delete it.
-		$modifier = $this->repository->find_by_id( $modifier_id, $this->modifier_type );
-
-		if ( empty( $modifier ) ) {
-			// Modifier does not exist, return false.
+		try {
+			// Check if the modifier exists before attempting to delete it.
+			$modifier = $this->repository->find_by_id( $modifier_id );
+		} catch ( Exception $e ) {
+			// Return false if the modifier does not exist.
 			return false;
 		}
 
@@ -719,7 +650,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 			return true;
 		}
 
-		return false; // Return false if the modifier deletion failed.
+		return false;
 	}
 
 	/**
@@ -738,4 +669,53 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	public function get_order_modifier_meta_by_key( int $order_modifier_id, string $meta_key ) {
 		return $this->order_modifiers_meta_repository->find_by_order_modifier_id_and_meta_key( $order_modifier_id, $meta_key );
 	}
+
+	/**
+	 * Maps and sanitizes raw form data into model-ready data.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $raw_data The raw form data, typically from $_POST.
+	 *
+	 * @return array The sanitized and mapped data for database insertion or updating.
+	 */
+	public function map_form_data_to_model( array $raw_data ): array {
+		return [
+			'id'            => Positive_Integer_Value::from_number( $raw_data['order_modifier_id'] ?? 0 )->get(),
+			'modifier_type' => $this->get_modifier_type(),
+			'sub_type'      => sanitize_text_field( $raw_data['order_modifier_sub_type'] ?? '' ),
+			'raw_amount'    => Float_Value::from_number( $raw_data['order_modifier_amount'] ?? 0 )->get(),
+			'slug'          => sanitize_text_field( $raw_data['order_modifier_slug'] ?? '' ),
+			'display_name'  => sanitize_text_field( $raw_data['order_modifier_fee_name'] ?? '' ),
+			'status'        => sanitize_text_field( $raw_data['order_modifier_status'] ?? '' ),
+		];
+	}
+
+	/**
+	 * Maps context data to the template context.
+	 *
+	 * This method prepares the context for rendering the edit form.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $context The raw model data.
+	 *
+	 * @return array The context data ready for rendering the form.
+	 */
+	abstract public function map_context_to_template( array $context ): array;
+
+	/**
+	 * Abstract method for handling relationship updates.
+	 *
+	 * This method must be implemented in child classes to handle the specific logic for
+	 * updating relationships between modifiers and posts, depending on the modifier type.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $modifier_ids An array of modifier IDs to update.
+	 * @param array $new_post_ids An array of new post IDs to be associated with the fee.
+	 *
+	 * @return void
+	 */
+	abstract public function handle_relationship_update( array $modifier_ids, array $new_post_ids ): void;
 }

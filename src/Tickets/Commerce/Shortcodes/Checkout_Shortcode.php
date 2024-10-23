@@ -41,10 +41,11 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	 * {@inheritDoc}
 	 */
 	public function setup_template_vars() {
-		$items       = tribe( Cart::class )->get_items_in_cart( true );
-		$sections    = array_unique( array_filter( wp_list_pluck( $items, 'event_id' ) ) );
-		$sub_totals  = Value::build_list( array_filter( wp_list_pluck( $items, 'sub_total' ) ) );
-		$total_value = Value::create();
+		$cart          = tribe( Cart::class );
+		$items         = $cart->get_items_in_cart( true );
+		$cart_subtotal = Value::create( $cart->get_cart_subtotal() ?? 0 );
+		$cart_total    = Value::create( $cart->get_cart_total() ?? 0 );
+		$sections      = array_unique( array_filter( wp_list_pluck( $items, 'event_id' ) ) );
 
 		$gateways = tribe( Manager::class )->get_gateways();
 
@@ -53,7 +54,8 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 			'provider'           => tribe( Module::class ),
 			'items'              => $items,
 			'sections'           => $sections,
-			'total_value'        => $total_value->total( $sub_totals ),
+			'total_value'        => $cart_total,
+			'subtotal'           => $cart_subtotal,
 			'must_login'         => ! is_user_logged_in() && tribe( Module::class )->login_required(),
 			'login_url'          => tribe( Checkout::class )->get_login_url(),
 			'registration_url'   => tribe( Checkout::class )->get_registration_url(),

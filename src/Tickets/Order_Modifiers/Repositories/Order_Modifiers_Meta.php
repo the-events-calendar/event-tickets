@@ -126,10 +126,10 @@ class Order_Modifiers_Meta extends Repository implements Insertable, Updatable, 
 	 * @param Order_Modifier_Meta $meta_data The metadata object containing the
 	 *                                       order_modifier_id, meta_key, and meta_value.
 	 *
-	 * @return mixed The result of the insert or update operation, depending on
+	 * @return Model The result of the insert or update operation, depending on
 	 *               what was performed (insert or update).
 	 */
-	public function upsert_meta( Order_Modifier_Meta $meta_data ): mixed {
+	public function upsert_meta( Order_Modifier_Meta $meta_data ): Model {
 		// Check if a record with this order_modifier_id and meta_key already exists.
 		$existing_meta = $this->find_by_order_modifier_id_and_meta_key(
 			$meta_data->order_modifier_id,

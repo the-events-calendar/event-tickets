@@ -29,9 +29,9 @@ class Fee_Table extends Order_Modifier_Table {
 	 */
 	public function get_columns() {
 		return [
-			'display_name'     => __( 'Fee Name', 'event-tickets' ),
-			'fee_amount_cents' => __( 'Amount', 'event-tickets' ),
-			'active_on'        => __( 'Active on', 'event-tickets' ),
+			'display_name' => __( 'Fee Name', 'event-tickets' ),
+			'raw_amount'   => __( 'Amount', 'event-tickets' ),
+			'active_on'    => __( 'Active on', 'event-tickets' ),
 		];
 	}
 
@@ -244,13 +244,13 @@ class Fee_Table extends Order_Modifier_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param object $item The current item being rendered. This should contain `fee_amount_cents` and `sub_type`
+	 * @param object $item The current item being rendered. This should contain `raw_amount` and `sub_type`
 	 *     fields.
 	 *
 	 * @return string The formatted fee amount to be displayed in the table.
 	 */
-	protected function render_fee_amount_cents_column( $item ): string {
-		return $this->modifier->display_amount_field( $item->fee_amount_cents, $item->sub_type );
+	protected function render_raw_amount_column( $item ): string {
+		return $this->modifier->display_amount_field( $item->raw_amount, $item->sub_type );
 	}
 
 	/**
@@ -262,8 +262,8 @@ class Fee_Table extends Order_Modifier_Table {
 	 */
 	protected function get_sortable_columns(): array {
 		return [
-			'display_name'     => [ 'display_name', true ],
-			'fee_amount_cents' => [ 'fee_amount_cents', false ],
+			'display_name' => [ 'display_name', true ],
+			'raw_amount'   => [ 'raw_amount', false ],
 		];
 	}
 

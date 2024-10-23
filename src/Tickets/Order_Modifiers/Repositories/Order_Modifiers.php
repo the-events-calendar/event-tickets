@@ -19,9 +19,9 @@ use TEC\Common\StellarWP\Models\Repositories\Contracts\Updatable;
 use TEC\Common\StellarWP\Models\Repositories\Repository;
 use TEC\Tickets\Exceptions\Not_Found_Exception;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers as Table;
-use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
-use TEC\Tickets\Order_Modifiers\Models\Coupon;
+use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifier_Relationships as Relationship_Table;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
+use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
 use TEC\Tickets\Order_Modifiers\Traits\Valid_Types;
 
 /**
@@ -61,7 +61,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 *
 	 * @since TBD
 	 *
-	 * @param Model $model The model to insert.
+	 * @param Model $model The model to delete.
 	 *
 	 * @return bool
 	 * @throws RuntimeException If the model type is invalid.
@@ -81,7 +81,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 *
 	 * @since TBD
 	 *
-	 * @param Model $model
+	 * @param Model $model The model to insert.
 	 *
 	 * @return Model
 	 * @throws RuntimeException If the model type is invalid.
@@ -92,15 +92,15 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		DB::insert(
 			Table::table_name(),
 			[
-				'modifier_type'    => $model->modifier_type,
-				'sub_type'         => $model->sub_type,
-				'fee_amount_cents' => $model->fee_amount_cents,
-				'slug'             => $model->slug,
-				'display_name'     => $model->display_name,
-				'status'           => $model->status,
-				'created_at'       => current_time( 'mysql' ),
-				'start_time'       => $model->start_time,
-				'end_time'         => $model->end_time,
+				'modifier_type' => $model->modifier_type,
+				'sub_type'      => $model->sub_type,
+				'raw_amount'    => $model->raw_amount,
+				'slug'          => $model->slug,
+				'display_name'  => $model->display_name,
+				'status'        => $model->status,
+				'created_at'    => current_time( 'mysql' ),
+				'start_time'    => $model->start_time,
+				'end_time'      => $model->end_time,
 			],
 			[
 				'%s',
@@ -136,14 +136,14 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		DB::update(
 			Table::table_name(),
 			[
-				'modifier_type'    => $model->modifier_type,
-				'sub_type'         => $model->sub_type,
-				'fee_amount_cents' => $model->fee_amount_cents,
-				'slug'             => $model->slug,
-				'display_name'     => $model->display_name,
-				'status'           => $model->status,
-				'start_time'       => $model->start_time,
-				'end_time'         => $model->end_time,
+				'modifier_type' => $model->modifier_type,
+				'sub_type'      => $model->sub_type,
+				'raw_amount'    => $model->raw_amount,
+				'slug'          => $model->slug,
+				'display_name'  => $model->display_name,
+				'status'        => $model->status,
+				'start_time'    => $model->start_time,
+				'end_time'      => $model->end_time,
 			],
 			[ 'id' => $model->id ],
 			[
@@ -185,8 +185,8 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	/**
 	 * Search for Order Modifiers based on the given criteria.
 	 *
-	 * @param array $args {
-	 *     Optional. Arguments to filter the query.
+	 * @param array $args          {
+	 *                             Optional. Arguments to filter the query.
 	 *
 	 *     @type string $search_term The term to search for (e.g., in display_name or slug).
 	 *     @type string $orderby     Column to order by. Default 'display_name'.
@@ -216,12 +216,12 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 
 		// Add ordering.
 		$valid_orderby = [
-			'display_name'     => 1,
-			'slug'             => 1,
-			'fee_amount_cents' => 1,
-			'used'             => 1,
-			'remaining'        => 1,
-			'status'           => 1,
+			'display_name' => 1,
+			'slug'         => 1,
+			'raw_amount'   => 1,
+			'used'         => 1,
+			'remaining'    => 1,
+			'status'       => 1,
 		];
 
 		if ( ! empty( $args['orderby'] ) && array_key_exists( $args['orderby'], $valid_orderby ) ) {
@@ -235,6 +235,22 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	}
 
 	/**
+	 * Finds all active Order Modifiers of the current type.
+	 *
+	 * @since TBD
+	 *
+	 * @return Order_Modifier[] Array of active Order Modifier model instances, or null if not found.
+	 */
+	public function find_active(): array {
+		$result = $this->prepareQuery()
+			->where( 'modifier_type', $this->modifier_type )
+			->where( 'status', 'active' )
+			->getAll();
+
+		return $result ?? [];
+	}
+
+	/**
 	 * Finds an Order Modifier by its slug and modifier_type.
 	 *
 	 * @since TBD
@@ -243,31 +259,15 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 *
 	 * @return Order_Modifier The Order Modifier model instance, or null if not found.
 	 * @throws Not_Found_Exception If the Order Modifier is not found.
-	 * @throws RuntimeException If we didn't get an Order_Modifier object.
 	 */
 	public function find_by_slug( string $slug ): Order_Modifier {
 		$result = $this->prepareQuery()
-			->where( 'slug', $slug )
 			->where( 'modifier_type', $this->modifier_type )
+			->where( 'slug', $slug )
+			->where( 'status', 'active' )
 			->get();
 
 		return $this->normalize_return_result( $result );
-	}
-
-	/**
-	 * Finds all active Order Modifiers.
-	 *
-	 * @since TBD
-	 *
-	 * @return Order_Modifier[] Array of active Order Modifier model instances.
-	 */
-	public function find_active(): array {
-		$results = $this->prepareQuery()
-			->where( 'status', 'active' )
-			->where( 'modifier_type', $this->modifier_type )
-			->getAll();
-
-		return $results ?? [];
 	}
 
 	/**
@@ -280,6 +280,37 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	public function get_all(): array {
 		$results = $this->prepareQuery()
 			->where( 'modifier_type', $this->modifier_type )
+			->getAll();
+
+		return $results ?? [];
+	}
+
+	/**
+	 * Finds order modifiers by post IDs, modifier type, and status based on the relationship table.
+	 *
+	 * This method retrieves order modifiers that are related to the provided post IDs,
+	 * match the specified modifier type, and have the specified status. It joins the Order Modifier
+	 * and Relationship tables to fetch the related modifiers.
+	 *
+	 * @since TBD
+	 *
+	 * @param array  $post_ids      The array of post IDs to look up in the relationship table.
+	 * @param string $modifier_type The type of modifier to filter by.
+	 * @param string $status        The status of the modifiers to filter by. Defaults to 'active'.
+	 *
+	 * @return array The data from the related order modifiers.
+	 */
+	public function find_relationship_by_post_ids( array $post_ids, string $modifier_type, string $status = 'active' ): array {
+		$this->validate_type( $modifier_type );
+
+		$order_modifiers_table = Relationship_Table::base_table_name();
+		$builder               = new ModelQueryBuilder( $this->get_valid_types()[ $modifier_type ] );
+
+		$results = $builder->from( Table::table_name( false ) . ' as m' )
+			->innerJoin( "{$order_modifiers_table} as r", 'm.id', 'r.modifier_id' )
+			->whereIn( 'r.post_id', $post_ids )
+			->where( 'modifier_type', $modifier_type )
+			->where( 'status', $status )
 			->getAll();
 
 		return $results ?? [];
@@ -335,41 +366,45 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		$order_modifiers_meta_table = Order_Modifiers_Meta::table_name();
 
 		// Initialize the SQL query with the base WHERE clause for modifier_type.
-		$sql = "
+		$sql   = [];
+		$sql[] = <<<SQL
         SELECT o.*,m.meta_value
         FROM {$order_modifiers_table} o
         LEFT JOIN {$order_modifiers_meta_table} m
         ON o.id = m.order_modifier_id
         WHERE o.modifier_type = %s
-    ";
+        AND o.status = 'active'
+SQL;
 
 		$params = [ $this->modifier_type ];
 
 		// Handle the meta_key condition: Use IFNULL if a default_meta_key is provided, otherwise check for meta_key directly.
 		if ( $default_meta_key ) {
-			$sql      .= ' AND (IFNULL(m.meta_key, %s) = %s)';
+			$sql[]    = 'AND (IFNULL(m.meta_key, %s) = %s)';
 			$params[] = $default_meta_key;
-			$params[] = $meta_key;
 		} else {
-			$sql      .= ' AND m.meta_key = %s';
-			$params[] = $meta_key;
+			$sql[] = 'AND m.meta_key = %s';
 		}
 
+		// Add the meta key to the params.
+		$params[] = $meta_key;
+
 		// Handle the meta_value condition: Use IFNULL if a default_meta_value is provided, otherwise check directly.
+		$meta_params_string = implode( ',', array_fill( 0, count( $meta_values ), '%s' ) );
 		if ( $default_meta_value ) {
-			$sql      .= ' AND (IFNULL(m.meta_value, %s) IN (' . implode( ',', array_fill( 0, count( $meta_values ), '%s' ) ) . '))';
+			$sql[]    = "AND (IFNULL(m.meta_value, %s) IN ({$meta_params_string}))";
 			$params[] = $default_meta_value;
 		} else {
-			$sql .= ' AND m.meta_value IN (' . implode( ',', array_fill( 0, count( $meta_values ), '%s' ) ) . ')';
+			$sql[] = "AND m.meta_value IN ({$meta_params_string})";
 		}
 
 		$params = array_merge( $params, $meta_values );
 
 		// Prepare and execute the query.
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-		$query = $wpdb->prepare( $sql, ...$params );
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
-		$results = $wpdb->get_results( $query );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		$results = $wpdb->get_results(
+			$wpdb->prepare( implode( ' ', $sql ), ...$params ) // phpcs:ignore WordPress.DB.PreparedSQL, WordPress.DB.PreparedSQLPlaceholders
+		);
 
 		// Cache the results for future use.
 		wp_cache_set( $cache_key, $results, 'order_modifiers', HOUR_IN_SECONDS );
