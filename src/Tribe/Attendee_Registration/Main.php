@@ -78,28 +78,6 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	}
 
 	/**
-	 * Returns whether or not the user is on a custom attendee registration page
-	 *
-	 * @since TBD
-	 *
-	 * @return bool
-	 */
-	public function is_on_custom_page() {
-		global $wp_query;
-		global $post;
-
-		$ar_page_slug = $this->get_slug();
-
-		// Check for custom AR page.
-		$on_custom_page = ! empty( $wp_query->query_vars['pagename'] )
-			&& $ar_page_slug === $wp_query->query_vars['pagename'];
-
-		$uses_shortcode = ! empty( $post->post_content ) && has_shortcode( $post->post_content, 'tribe_attendee_registration' );
-
-		return $on_custom_page && $uses_shortcode;
-	}
-
-	/**
 	 * Returns whether the user is on the /cart/ REST API endpoint.
 	 *
 	 * @since 4.11.0

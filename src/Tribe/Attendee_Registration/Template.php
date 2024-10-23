@@ -19,7 +19,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		 * Choose the theme template to use. It has to have a higher priority than the
 		 * TEC filters (at 10) to ensure they do not usurp our rewrite here.
 		 */
-		// add_filter( 'template_include', [ $this, 'set_page_template' ], 15 );
+		add_filter( 'template_include', [ $this, 'set_page_template' ], 15 );
 
 		add_action( 'tribe_events_editor_assets_should_enqueue_frontend', [ $this, 'should_enqueue_frontend' ] );
 		add_action( 'tribe_events_views_v2_assets_should_enqueue_frontend', [ $this, 'should_enqueue_frontend' ] );
@@ -54,7 +54,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @return array
 	 */
 	public function setup_context( $posts ) {
-		global $wp, $wp_query;
+		global $wp_query;
 
 		// Bail if we're not on the attendee info page.
 		if ( ! $this->is_on_ar_page() ) {
@@ -63,10 +63,10 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 
 		/*
 		 * Early bail:
-		 * We are on the AR page, but we have the shortcode in the content,
+		 * We are on the AR page, and we have the shortcode in the content,
 		 * so we don't want to spoof this page.
 		 */
-		if ( tribe( 'tickets.attendee_registration' )->is_on_custom_page() ) {
+		if ( $this->is_on_custom_ar_page() ) {
 			return $posts;
 		}
 
@@ -96,6 +96,39 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 
 		return $posts;
 
+	}
+
+	/**
+	 * Returns whether or not the user is on a custom attendee registration page
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_on_custom_ar_page() {
+		global $wp_query, $post;
+
+		$ar_page_slug = tribe( 'tickets.attendee_registration' )->get_slug();
+
+		// Check for custom AR page.
+		$on_custom_page = ! empty( $wp_query->query_vars['pagename'] )
+			&& $ar_page_slug === $wp_query->query_vars['pagename'];
+
+		if ( ! $on_custom_page ) {
+			return false;
+		}
+
+		$uses_shortcode = ! empty( $post->post_content )
+			&& has_shortcode( $post->post_content, 'tribe_attendee_registration' );
+
+		if ( $on_custom_page && $uses_shortcode ) {
+			return true;
+		}
+
+		$queried_object_uses_shortcode = ! empty( $wp_query->queried_object->post_content )
+			&& has_shortcode( $wp_query->queried_object->post_content, 'tribe_attendee_registration' );
+
+		return $on_custom_page && $queried_object_uses_shortcode;
 	}
 
 	/**
@@ -140,6 +173,11 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 
 		// Bail if we're not on the attendee info page.
 		if ( ! $this->is_on_ar_page() ) {
+			return $template;
+		}
+
+		if ( $this->is_on_custom_ar_page() ) {
+			$template = get_page_template();
 			return $template;
 		}
 
