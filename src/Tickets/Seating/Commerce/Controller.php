@@ -103,7 +103,7 @@ class Controller extends Controller_Contract {
 		add_filter( 'update_post_metadata', [ $this, 'prevent_capacity_saves_without_service' ], 1, 4 );
 		add_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ], 10, 4 );
 		add_action( 'before_delete_post', [ $this, 'restock_ticket_on_attendee_deletion' ], 10, 2 );
-		add_action( 'wp_trash_post', [ $this, 'restock_ticket_on_attendee_trash' ]);
+		add_action( 'wp_trash_post', [ $this, 'restock_ticket_on_attendee_trash' ] );
 	}
 
 	/**
@@ -518,7 +518,7 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		$this->restock_ticket_on_attendee_deletion( $post_id, $post );;
+		$this->restock_ticket_on_attendee_deletion( $post_id, $post );
 	}
 
 	/**
