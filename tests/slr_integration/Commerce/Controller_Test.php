@@ -884,5 +884,21 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertEquals( 3, (int) get_post_meta( $ticket_2, '_stock', true ) );
 		$this->assertEquals( 13, (int) get_post_meta( $ticket_3, '_stock', true ) );
 		$this->assertEquals( 13, (int) get_post_meta( $ticket_4, '_stock', true ) );
+
+		// Trash an Attendee from Ticket 1.
+		$ticket_1_attendee_2 = tribe_attendees()->where('ticket', $ticket_1)->first_id();
+		wp_trash_post( $ticket_1_attendee_2 );
+
+		// Check Attendees after Attendee deletion.
+		$this->assertEquals( 1, tribe_attendees()->where( 'ticket', $ticket_1 )->count() );
+		$this->assertEquals( 0, tribe_attendees()->where( 'ticket', $ticket_2 )->count() );
+		$this->assertEquals( 2, tribe_attendees()->where( 'ticket', $ticket_3 )->count() );
+		$this->assertEquals( 0, tribe_attendees()->where( 'ticket', $ticket_4 )->count() );
+
+		// Check stock after Attendee deletion.
+		$this->assertEquals( 4, (int) get_post_meta( $ticket_1, '_stock', true ) );
+		$this->assertEquals( 4, (int) get_post_meta( $ticket_2, '_stock', true ) );
+		$this->assertEquals( 13, (int) get_post_meta( $ticket_3, '_stock', true ) );
+		$this->assertEquals( 13, (int) get_post_meta( $ticket_4, '_stock', true ) );
 	}
 }

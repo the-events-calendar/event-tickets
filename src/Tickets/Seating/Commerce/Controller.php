@@ -103,6 +103,7 @@ class Controller extends Controller_Contract {
 		add_filter( 'update_post_metadata', [ $this, 'prevent_capacity_saves_without_service' ], 1, 4 );
 		add_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ], 10, 4 );
 		add_action( 'before_delete_post', [ $this, 'restock_ticket_on_attendee_deletion' ], 10, 2 );
+		add_action( 'wp_trash_post', [ $this, 'restock_ticket_on_attendee_trash' ] );
 	}
 
 	/**
@@ -122,6 +123,7 @@ class Controller extends Controller_Contract {
 		remove_filter( 'update_post_metadata', [ $this, 'prevent_capacity_saves_without_service' ], 1 );
 		remove_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ], 10 );
 		remove_action( 'before_delete_post', [ $this, 'restock_ticket_on_attendee_deletion' ] );
+		remove_action( 'wp_trash_post', [ $this, 'restock_ticket_on_attendee_trash' ] );
 	}
 
 	/**
@@ -497,6 +499,26 @@ class Controller extends Controller_Contract {
 		add_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ], 10, 4 );
 
 		return $updated;
+	}
+
+	/**
+	 * Updates the stock of the Tickets sharing the same seat type when an Attendee is trashed.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The ID of the post being trashed.
+	 *
+	 * @return void
+	 */
+	public function restock_ticket_on_attendee_trash( $post_id ) {
+		$post = get_post( $post_id );
+
+		$attendee_types = tribe_attendees()->attendee_types();
+		if ( ! $post instanceof WP_Post && in_array( $post->post_type, $attendee_types, true ) ) {
+			return;
+		}
+
+		$this->restock_ticket_on_attendee_deletion( $post_id, $post );
 	}
 
 	/**
