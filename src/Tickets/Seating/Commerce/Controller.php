@@ -507,6 +507,8 @@ class Controller extends Controller_Contract {
 	 * @since TBD
 	 *
 	 * @param int $post_id The ID of the post being trashed.
+	 *
+	 * @return void
 	 */
 	public function restock_ticket_on_attendee_trash( $post_id ) {
 		$post = get_post( $post_id );
