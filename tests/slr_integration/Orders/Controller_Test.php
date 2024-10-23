@@ -36,8 +36,8 @@ use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Tickets_View as Tickets_View;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe__Tickets__Global_Stock as Global_Stock;
-use TEC\Tickets\Seating\Commerce\Controller as Commerce_Controller;
 use TEC\Tickets\Seating\Tables\Seat_Types;
+use TEC\Tickets\Seating\Tests\Integration\Truncates_Custom_Tables;
 
 class Controller_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -51,6 +51,7 @@ class Controller_Test extends Controller_Test_Case {
 	use Attendee_Maker;
 	use WP_Send_Json_Mocks;
 	use RSVP_Ticket_Maker;
+	use Truncates_Custom_Tables;
 
 	protected string $controller_class = Controller::class;
 
@@ -1684,8 +1685,6 @@ class Controller_Test extends Controller_Test_Case {
 
 		$this->assertEquals( 30, get_post_meta( $ticket_5, tribe( 'tickets.handler' )->key_capacity, true ) );
 		$this->assertEquals( 30, get_post_meta( $ticket_5, '_stock', true ) );
-
-		$this->make_controller( Commerce_Controller::class )->register();
 
 		// Create an order.
 		$this->create_order(
