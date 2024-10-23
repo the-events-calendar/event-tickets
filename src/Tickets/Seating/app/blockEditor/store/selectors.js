@@ -67,7 +67,7 @@ export const selectors = {
 		);
 	},
 	isLayoutLocked(state) {
-		return state?.isUsingAssignedSeating && state?.isLayoutLocked;
+		return state?.isLayoutLocked || false;
 	},
 	getAllSeatTypes(state) {
 		return state?.seatTypes || [];
