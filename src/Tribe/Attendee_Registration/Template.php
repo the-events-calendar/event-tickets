@@ -122,7 +122,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		$uses_shortcode = ! empty( $post->post_content )
 			&& has_shortcode( $post->post_content, 'tribe_attendee_registration' );
 
-		if ( $on_custom_page && $uses_shortcode ) {
+		if ( $uses_shortcode ) {
 			return true;
 		}
 
@@ -131,7 +131,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		$queried_object_uses_shortcode = ! empty( $queried_object->post_content )
 			&& has_shortcode( $queried_object->post_content, 'tribe_attendee_registration' );
 
-		return $on_custom_page && $queried_object_uses_shortcode;
+		return $queried_object_uses_shortcode;
 	}
 
 	/**
