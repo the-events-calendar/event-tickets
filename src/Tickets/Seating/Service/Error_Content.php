@@ -60,10 +60,10 @@ class Error_Content {
 		$cta_label = null;
 
 		switch ( $status->get_status() ) {
-			default:
 			case Service_Status::NO_LICENSE:
 				// upsell ?
 				return;
+			default:
 			case Service_Status::SERVICE_DOWN:
 				$message = __(
 					'The Seating Builder service is down. We are working to restore functionality.',
