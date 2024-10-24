@@ -22,3 +22,4 @@ export { default as Close } from './close.svg';
 export { default as Ticket } from './ticket-left.svg';
 export { default as ECP } from './ecp.svg';
 export { default as Bulb } from './bulb.svg';
+export { default as Seat } from './seat.svg';

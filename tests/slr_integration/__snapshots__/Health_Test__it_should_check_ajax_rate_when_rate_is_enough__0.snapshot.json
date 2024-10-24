@@ -1,0 +1,18 @@
+[
+    [
+        {
+            "label": "Site serves AJAX requests at the required rate",
+            "completed": true,
+            "status": "good",
+            "badge": {
+                "label": "Seating",
+                "color": "blue"
+            },
+            "description": "Your site can serve AJAX requests at the required rate.",
+            "actions": "",
+            "test": "slr-ajax-rate"
+        },
+        null,
+        0
+    ]
+]

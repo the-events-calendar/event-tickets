@@ -2,64 +2,67 @@
 
 namespace TEC\Tickets\Commerce\Admin_Tables;
 
+use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Order;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_Clock_Mock;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tests\Traits\With_Uopz;
 use TEC\Tickets\Commerce\Hooks;
-use Tribe\Tickets\Test\Traits\With_Globals;
 use WP_Screen;
 use WP_Query;
+use Tribe__Date_Utils as Dates;
 
-class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
-
+class Orders_TableTest extends WPTestCase {
 	use SnapshotAssertions;
 	use Order_Maker;
 	use Ticket_Maker;
 	use With_Uopz;
-	use With_Globals;
+	use With_Clock_Mock;
 
 	/**
 	 * Created orders.
 	 *
-	 * @var array
+	 * @var array<\WP_Post>
 	 */
 	protected $orders;
 
 	/**
 	 * Created tickets.
 	 *
-	 * @var array
+	 * @var array<int>
 	 */
 	protected $tickets;
 
 	/**
 	 * Created event IDs.
 	 *
-	 * @var array
+	 * @var array<int>
 	 */
 	protected $event_ids;
 
 	/**
 	 * Created user IDs.
 	 *
-	 * @var array
+	 * @var array<int>
 	 */
 	protected $user_ids = [];
 
 	/**
 	 * @before
 	 */
-	public function set_up() {
-		$this->set_global_value( 'current_screen', WP_Screen::get( 'edit-' . Order::POSTTYPE ) );
-		$this->set_global_value( 'typenow', Order::POSTTYPE );
+	public function set_up_test_case() {
+		global $current_screen, $typenow;
+		$current_screen = WP_Screen::get( 'edit-' . Order::POSTTYPE );
+		$typenow        = Order::POSTTYPE;
 	}
 
 	/**
 	 * @test
 	 */
 	public function it_should_match_single_row() {
+		$this->freeze_time( Dates::immutable( '2024-06-18 10:00:00' ) );
 		$this->prepare_tests_and_overwrite_wp_query();
 		$orders_table = new Orders_Table();
 
@@ -71,15 +74,9 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$html = str_replace( $this->orders['0']->ID, '{{order_id}}', $html );
 
-		$html = preg_replace(
-			'/<time datetime="(.*)" title="(.*)">(.*)<\/time>/',
-			'<time datetime="{{order_date}}" title="{{order_date}}">{{order_date}}</time>',
-			$html
-		);
-
-		$html = preg_replace(
-			'/Test TC ticket for ([0-9]+)/',
-			'Test TC ticket for {{ticket_id}}',
+		$html = str_replace(
+			$this->event_ids,
+			'{{event_id}}',
 			$html
 		);
 
@@ -125,6 +122,7 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function it_should_match_display() {
+		$this->freeze_time( Dates::immutable( '2024-06-18 10:00:00' ) );
 		$this->prepare_tests_and_overwrite_wp_query();
 		$orders_table = new Orders_Table();
 
@@ -137,24 +135,15 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$html = ob_get_clean();
 
-		$html = preg_replace(
-			'/<time datetime="(.*)" title="(.*)">(.*)<\/time>/',
-			'<time datetime="{{order_date}}" title="{{order_date}}">{{order_date}}</time>',
+		$html = str_replace(
+			wp_list_pluck( $this->orders, 'ID' ),
+			'{{order_id}}',
 			$html
 		);
-		$html = preg_replace(
-			'/id="tec_tc_order-([0-9]+)"/',
-			'id="tec_tc_order-{{order_id}}"',
-			$html
-		);
-		$html = preg_replace(
-			'/#([0-9]+) Test Purchaser/',
-			'#{{order_id}} Test Purchaser',
-			$html
-		);
-		$html = preg_replace(
-			'/Test TC ticket for ([0-9]+)/',
-			'Test TC ticket for {{order_id}}',
+
+		$html = str_replace(
+			$this->event_ids,
+			'{{event_id}}',
 			$html
 		);
 		$html = preg_replace(
@@ -198,27 +187,27 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		remove_filter( 'edit_posts_per_page', [ $this, 'return_1' ], 10 );
 
-		$this->set_global_value( '_REQUEST', 0, 'paged' );
+		$_REQUEST['paged'] = 0;
 
 		$this->assertEquals( 1, $orders_table->get_pagination_arg( 'per_page' ) );
 
 		$this->assertEquals( 1, $orders_table->get_pagenum() );
 
-		$this->set_global_value( '_REQUEST', 1, 'paged' );
+		$_REQUEST['paged'] = 1;
 
 		$this->assertEquals( 1, $orders_table->get_pagenum() );
 
-		$this->set_global_value( '_REQUEST', 2, 'paged' );
+		$_REQUEST['paged'] = 2;
 
 		$this->assertTrue( 2 === $_REQUEST['paged'] );
 
 		$this->assertEquals( 2, $orders_table->get_pagenum() );
 
-		$this->set_global_value( '_REQUEST', 100, 'paged' );
+		$_REQUEST['paged'] = 100;
 
 		$this->assertEquals( $orders_table->get_pagination_arg( 'total_items' ), $orders_table->get_pagenum() );
 
-		$this->set_global_value( '_REQUEST', 1000, 'paged' );
+		$_REQUEST['paged'] = 1000;
 
 		$this->assertEquals( $orders_table->get_pagination_arg( 'total_items' ), $orders_table->get_pagenum() );
 	}
@@ -229,12 +218,12 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_match_current_action() {
 		$orders_table = new Orders_Table();
 
-		$this->set_global_value( '_REQUEST', true, 'filter_action' );
-		$this->set_global_value( '_REQUEST', 'test', 'action' );
+		$_REQUEST['filter_action'] = true;
+		$_REQUEST['action']        = 'test';
 
 		$this->assertFalse( $orders_table->current_action() );
 
-		$this->set_global_value( '_REQUEST', false, 'filter_action' );
+		$_REQUEST['filter_action'] = false;
 
 		$this->assertTrue( 'test' === $orders_table->current_action() );
 	}
@@ -342,7 +331,8 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 			'orderby'     => 'ID',
 		] );
 
-		$this->set_global_value( 'wp_query', $overwrite_query );
+		global $wp_query;
+		$wp_query = $overwrite_query;
 	}
 
 	/**

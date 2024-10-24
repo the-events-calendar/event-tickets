@@ -52,6 +52,11 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 
 		$this->register_for_blocks();
 
+		if ( wp_doing_ajax() ) {
+			// The Tickets Block editor will handle AJAX requests, register now if we're in an AJAX context.
+			tribe( 'tickets.editor.blocks.tickets' )->hook();
+		}
+
 		// Handle general non-block-specific instances.
 		tribe( 'tickets.editor.warnings' );
 	}
@@ -164,7 +169,10 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 */
 	public function render_form_toggle_buttons( $post_id ): void {
 		// By default, any ticket-able post type can have tickets and RSVPs.
-		$enabled = [ 'default' => true, 'rsvp' => true ];
+		$enabled = [
+			'default' => true,
+			'rsvp'    => true,
+		];
 
 		$post_type = get_post_field( 'post_type', $post_id );
 
@@ -216,12 +224,15 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		/** @var Admin_Views $admin_views */
 		$admin_views           = tribe( 'tickets.admin.views' );
 		$show_duplicate_button = ! function_exists( 'tribe_is_community_edit_event_page' )
-		                         || ! tribe_is_community_edit_event_page();
+								|| ! tribe_is_community_edit_event_page();
 
-		$admin_views->template( 'editor/list-row/edit', [
-			'ticket'                => $ticket,
-			'show_duplicate_button' => $show_duplicate_button,
-		] );
+		$admin_views->template(
+			'editor/list-row/edit',
+			[
+				'ticket'                => $ticket,
+				'show_duplicate_button' => $show_duplicate_button,
+			]
+		);
 	}
 
 	/**
@@ -240,11 +251,5 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		remove_action( 'block_categories_all', tribe_callback( 'tickets.editor', 'block_categories' ) );
 		remove_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle_buttons' ] );
 		remove_action( 'tec_tickets_list_row_edit', [ $this, 'render_ticket_edit_controls' ] );
-	}
-
-	private function is_ticketable_post_type():bool {
-		$post_type = get_post_type();
-
-		return in_array( $post_type, (array) tribe_get_option( 'ticket-enabled-post-types', [] ), true );
 	}
 }

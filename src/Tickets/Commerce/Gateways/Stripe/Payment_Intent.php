@@ -290,7 +290,7 @@ class Payment_Intent {
 
 		if ( empty( $payment_methods ) ) {
 			if ( $checkout_type === Settings::PAYMENT_ELEMENT_SLUG ) {
-				\Tribe__Settings::instance()->errors[] = esc_html__( 'Payment methods accepted cannot be empty', 'event-tickets' );
+				tribe( 'settings' )->errors[] = esc_html__( 'Payment methods accepted cannot be empty', 'event-tickets' );
 			}
 
 			// Revert value to the previous configuration.
@@ -313,7 +313,7 @@ class Payment_Intent {
 		}
 
 		// Payment attempt failed. Provide an alert in the Dashboard.
-		\Tribe__Settings::instance()->errors[] = $payment_intent_test->get_error_message();
+		tribe( 'settings' )->errors[] = $payment_intent_test->get_error_message();
 
 		// Revert value to the previous configuration.
 		return tribe_get_option( $field_id, [] );

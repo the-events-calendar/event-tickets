@@ -1,0 +1,14 @@
+{
+    "isUsingAssignedSeating": false,
+    "layouts": [],
+    "seatTypes": [],
+    "currentLayoutId": "",
+    "seatTypesByPostId": [],
+    "isLayoutLocked": false,
+    "eventCapacity": 0,
+    "serviceStatus": {
+        "ok": false,
+        "status": "no-license",
+        "connectUrl": "http://wordpress.test/wp-admin/admin.php?page=tec-tickets-settings&tab=licenses"
+    }
+}

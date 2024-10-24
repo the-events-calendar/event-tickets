@@ -1,0 +1,26 @@
+[
+    [
+        {
+            "reservation_id": "reservation-id-1",
+            "seat_type_id": "seat-type-id-0",
+            "seat_label": "seat-label-0-1"
+        },
+        {
+            "reservation_id": "reservation-id-2",
+            "seat_type_id": "seat-type-id-0",
+            "seat_label": "seat-label-0-2"
+        }
+    ],
+    [
+        {
+            "reservation_id": "reservation-id-3",
+            "seat_type_id": "seat-type-id-0",
+            "seat_label": "seat-label-0-1"
+        },
+        {
+            "reservation_id": "reservation-id-4",
+            "seat_type_id": "seat-type-id-0",
+            "seat_label": "seat-label-0-2"
+        }
+    ]
+]
