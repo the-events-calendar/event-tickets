@@ -16,5 +16,7 @@ remove_action( 'tribe_tickets_promoter_trigger', [ tribe( Dispatcher::class ), '
 if ( ! tec_tickets_commerce_is_enabled() ) {
 	add_filter( 'tec_tickets_commerce_is_enabled', '__return_true', 100 );
 	tribe()->register( Commerce_Provider::class );
+	$commerce_provider = tribe( 'tickets.commerce.provider' );
+	$commerce_provider->run_init_hooks();
 }
 tribe( Commerce_Module::class );

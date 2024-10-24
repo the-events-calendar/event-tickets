@@ -1,6 +1,12 @@
 name: 'npm jest'
 on:
   pull_request:
+    paths:
+      - 'src/modules/**.js'
+      - 'src/resources/js/**.js'
+      - 'src/Tickets/Seating/app/**.js'
+      - 'tests/slr_jest/**.js'
+      - '.github/**/*'
 jobs:
   jest:
     runs-on: ubuntu-latest

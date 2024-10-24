@@ -1,0 +1,30 @@
+{
+    "isUsingAssignedSeating": true,
+    "layouts": [
+        {
+            "id": "layout-1",
+            "name": "Test layout 1",
+            "seats": "1"
+        },
+        {
+            "id": "layout-2",
+            "name": "Test layout 2",
+            "seats": "2"
+        },
+        {
+            "id": "layout-3",
+            "name": "Test layout 3",
+            "seats": "3"
+        }
+    ],
+    "seatTypes": [],
+    "currentLayoutId": null,
+    "seatTypesByPostId": [],
+    "isLayoutLocked": false,
+    "eventCapacity": 0,
+    "serviceStatus": {
+        "ok": true,
+        "status": "ok",
+        "connectUrl": "http://wordpress.test/wp-admin/admin.php?page=tec-tickets-settings&tab=licenses"
+    }
+}

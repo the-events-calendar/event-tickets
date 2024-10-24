@@ -10,6 +10,10 @@
 		line-height: 18px;
 		padding: 0;
 
+		&:last-child {
+			color: var(--tec-color-button-primary);
+		}
+
 		&:first-child {
 			color: var(--tec-color-icon-error);
 
@@ -20,8 +24,8 @@
 			}
 		}
 
-		&:last-child {
-			color: var(--tec-color-button-primary);
+		&:only-child:after {
+			content: '';
 		}
 	}
 }

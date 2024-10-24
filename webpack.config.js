@@ -23,6 +23,23 @@ const PLUGIN_SCOPE = 'tickets';
 // ──────────────────────────────────────────────────────────────────────────────────────────────
 //
 
+/**
+ * By default, the optimization would break all modules from the `node_modules` directory
+ * in a `src/resources/js/app/vendor.js` file. That file would include React and block-editor
+ * dependencies that are not always required on the frontend. This modification of the default
+ * optimization will create two files: one (`src/resources/js/app/vendor-babel.js`) that contains
+ * only the Babel transpilers and one (`src/resources/js/app/vendor.js`) that contains all the
+ * other dependencies. The second file (`src/resources/js/app/vendor.js`) MUST require the first
+ * (`src/resources/js/app/vendor-babel.js`) file as a dependency.
+ */
+common.optimization.splitChunks.cacheGroups['vendor-babel-runtime'] = {
+	name: 'vendor-babel',
+	chunks: 'all',
+	test: /[\\/]node_modules[\\/]@babel[\\/]/,
+	priority: 20,
+};
+common.optimization.splitChunks.cacheGroups.vendor.priority = 10;
+
 const isProduction = process.env.NODE_ENV === 'production';
 const postfix = isProduction ? 'min.css' : 'css';
 
@@ -62,7 +79,7 @@ const targets = [
 	},
 	{
 		name: 'flexible-tickets-block-editor',
-		entry: './src/Tickets/Blocks/app/flexible-tickets/block-editor/index.js',
+		entry: './src/Tickets/Flexible_Tickets/app/block-editor/index.js',
 		outputScript: './build/FlexibleTickets/block-editor.min.js',
 		outputStyle: `build/FlexibleTickets/block-editor.${postfix}`,
 		moveFromTo: {
@@ -74,7 +91,7 @@ const targets = [
 	},
 	{
 		name: 'flexible-tickets-classic-editor',
-		entry: './src/Tickets/Blocks/app/flexible-tickets/classic-editor/index.js',
+		entry: './src/Tickets/Flexible_Tickets/app/classic-editor/index.js',
 		outputScript: './build/FlexibleTickets/classic-editor.min.js',
 		outputStyle: `build/FlexibleTickets/classic-editor.${postfix}`,
 		moveFromTo: {
@@ -82,6 +99,147 @@ const targets = [
 				'build/FlexibleTickets/classic-editor.js',
 			'src/resources/css/app/flexible-tickets-classic-editor.css':
 				'build/FlexibleTickets/classic-editor.css',
+		},
+	},
+	{
+		name: 'seating-utils',
+		entry: './src/Tickets/Seating/app/utils/index.js',
+		outputScript: './build/Seating/utils.min.js',
+		outputStyle: `build/Seating/utils.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-utils.js': 'build/Seating/utils.js',
+			'src`/resources/css/app/seating-utils.css`':
+				'build/Seating/utils.css',
+		},
+	},
+	{
+		name: 'seating-ajax',
+		entry: './src/Tickets/Seating/app/ajax/index.js',
+		outputScript: './build/Seating/ajax.min.js',
+		outputStyle: `build/Seating/ajax.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-ajax.js': 'build/Seating/ajax.js',
+			'src/resources/css/app/seating-ajax.css': 'build/Seating/ajax.css',
+		},
+	},
+	{
+		name: 'seating-currency',
+		entry: './src/Tickets/Seating/app/currency/index.js',
+		outputScript: './build/Seating/currency.min.js',
+		outputStyle: `build/Seating/currency.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-currency.js':
+				'build/Seating/currency.js',
+			'src/resources/css/app/seating-currency.css':
+				'build/Seating/currency.css',
+		},
+	},
+	{
+		name: 'seating-service-bundle',
+		entry: './src/Tickets/Seating/app/service/index.js',
+		outputScript: './build/Seating/service.min.js',
+		outputStyle: `build/Seating/service.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-service-bundle.js':
+				'build/Seating/service.js',
+			'src/resources/css/app/seating-service-bundle.css':
+				'build/Seating/service.css',
+		},
+	},
+	{
+		name: 'seating-maps-bundle',
+		entry: './src/Tickets/Seating/app/admin/maps/index.js',
+		outputScript: './build/Seating/admin/maps.min.js',
+		outputStyle: `build/Seating/admin/maps.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-maps-bundle.js':
+				'build/Seating/admin/maps.js',
+			'src/resources/css/app/seating-maps-bundle.css':
+				'build/Seating/admin/maps.css',
+		},
+	},
+	{
+		name: 'seating-layouts-bundle',
+		entry: './src/Tickets/Seating/app/admin/layouts/index.js',
+		outputScript: './build/Seating/admin/layouts.min.js',
+		outputStyle: `build/Seating/admin/layouts.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-layouts-bundle.js':
+				'build/Seating/admin/layouts.js',
+			'src/resources/css/app/seating-layouts-bundle.css':
+				'build/Seating/admin/layouts.css',
+		},
+	},
+	{
+		name: 'seating-map-edit-bundle',
+		entry: './src/Tickets/Seating/app/admin/mapEdit/index.js',
+		outputScript: './build/Seating/admin/mapEdit.min.js',
+		outputStyle: `build/Seating/admin/mapEdit.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-map-edit-bundle.js':
+				'build/Seating/admin/mapEdit.js',
+			'src/resources/css/app/seating-map-edit-bundle.css':
+				'build/Seating/admin/mapEdit.css',
+		},
+	},
+	{
+		name: 'seating-layout-edit-bundle',
+		entry: './src/Tickets/Seating/app/admin/layoutEdit/index.js',
+		outputScript: './build/Seating/admin/layoutEdit.min.js',
+		outputStyle: `build/Seating/admin/layoutEdit.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-layout-edit-bundle.js':
+				'build/Seating/admin/layoutEdit.js',
+			'src/resources/css/app/seating-layout-edit-bundle.css':
+				'build/Seating/admin/layoutEdit.css',
+		},
+	},
+	{
+		name: 'seating-seats-report-bundle',
+		entry: './src/Tickets/Seating/app/admin/seatsReport/index.js',
+		outputScript: './build/Seating/admin/seatsReport.min.js',
+		outputStyle: `build/Seating/admin/seatsReport.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-seats-report-bundle.js':
+				'build/Seating/admin/seatsReport.js',
+			'src/resources/css/app/seating-seats-report-bundle.css':
+				'build/Seating/admin/seatsReport.css',
+		},
+	},
+	{
+		name: 'seating-block-editor-bundle',
+		entry: './src/Tickets/Seating/app/blockEditor/index.js',
+		outputScript: './build/Seating/block-editor.min.js',
+		outputStyle: `build/Seating/blockEditor.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-block-editor-bundle.js':
+				'build/Seating/blockEditor.js',
+			'src/resources/css/app/seating-block-editor-bundle.css':
+				'build/Seating/blockEditor.css',
+		},
+	},
+	{
+		name: 'seating-frontend-ticketsBlock-bundle',
+		entry: './src/Tickets/Seating/app/frontend/ticketsBlock/index.js',
+		outputScript: './build/Seating/frontend/ticketsBlock.min.js',
+		outputStyle: `build/Seating/frontend/ticketsBlock.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-frontend-ticketsBlock-bundle.js':
+				'build/Seating/frontend/ticketsBlock.js',
+			'src/resources/css/app/seating-frontend-ticketsBlock-bundle.css':
+				'build/Seating/frontend/ticketsBlock.css',
+		},
+	},
+	{
+		name: 'seating-frontend-session-bundle',
+		entry: './src/Tickets/Seating/app/frontend/session/index.js',
+		outputScript: './build/Seating/frontend/session.min.js',
+		outputStyle: `build/Seating/frontend/session.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-frontend-session-bundle.js':
+				'build/Seating/frontend/session.js',
+			'src/resources/css/app/seating-frontend-session-bundle.css':
+				'build/Seating/frontend/session.css',
 		},
 	},
 ];
@@ -96,8 +254,28 @@ const targetEntries = reduce(
 	{}
 );
 
-// Configure multiple entry points.
 const config = merge(common, {
+	// Add externals missing from products-taskmaster.
+	externals: [
+		{
+			'@wordpress/core-data': 'wp.coreData',
+			'@tec/tickets/seating/service/iframe':
+				'tec.tickets.seating.service.iframe',
+			'@tec/tickets/seating/service/errors':
+				'tec.tickets.seating.service.errors',
+			'@tec/tickets/seating/service/notices':
+				'tec.tickets.seating.service.notices',
+			'@tec/tickets/seating/service': 'tec.tickets.seating.service',
+			'@tec/tickets/seating/service/api':
+				'tec.tickets.seating.service.api',
+			'@tec/tickets/seating/utils': 'tec.tickets.seating.utils',
+			'@tec/tickets/seating/ajax': 'tec.tickets.seating.ajax',
+			'@tec/tickets/seating/currency': 'tec.tickets.seating.currency',
+			'@tec/tickets/seating/frontend/session':
+				'tec.tickets.seating.frontend.session',
+		},
+	],
+	// Configure multiple entry points.
 	entry: targetEntries,
 });
 
