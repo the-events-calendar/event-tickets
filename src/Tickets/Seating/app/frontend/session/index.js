@@ -466,7 +466,6 @@ export function beaconInterrupt() {
 	requestUrl.searchParams.set('action', ACTION_INTERRUPT_GET_DATA);
 	requestUrl.searchParams.set('postId', postId);
 	requestUrl.searchParams.set('token', token);
-	requestUrl.searchParams.set('auto', 1);
 
 	window.navigator.sendBeacon(requestUrl.toString());
 }

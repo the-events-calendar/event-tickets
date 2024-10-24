@@ -207,7 +207,7 @@ class Maps_Layout_Homepage_Test extends WPTestCase {
 				[
 					'id'            => 'layout-uuid-1',
 					'name'          => 'Layout 1',
-					'mapId'         => 'a',
+					'mapId'         => 'map-uuid-1',
 					'seats'         => 100,
 					'screenshotUrl' => 'https://example.com/150',
 					'createdDate'   => '1716901924',
@@ -215,7 +215,7 @@ class Maps_Layout_Homepage_Test extends WPTestCase {
 				[
 					'id'            => 'layout-uuid-2',
 					'name'          => 'Layout 2',
-					'mapId'         => 'b',
+					'mapId'         => 'map-uuid-2',
 					'seats'         => 200,
 					'screenshotUrl' => 'https://example.com/150',
 					'createdDate'   => '1716901924',
@@ -223,7 +223,7 @@ class Maps_Layout_Homepage_Test extends WPTestCase {
 				[
 					'id'            => 'layout-uuid-3',
 					'name'          => 'Layout 3',
-					'mapId'         => 'c',
+					'mapId'         => 'map-uuid-3',
 					'seats'         => 300,
 					'screenshotUrl' => 'https://example.com/150',
 					'createdDate'   => '1716901924',

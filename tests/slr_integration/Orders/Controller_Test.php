@@ -35,6 +35,9 @@ use Tribe__Tickets__Attendees as Attendees;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Tickets_View as Tickets_View;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
+use Tribe__Tickets__Global_Stock as Global_Stock;
+use TEC\Tickets\Seating\Tables\Seat_Types;
+use TEC\Tickets\Seating\Tests\Integration\Truncates_Custom_Tables;
 
 class Controller_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -48,6 +51,7 @@ class Controller_Test extends Controller_Test_Case {
 	use Attendee_Maker;
 	use WP_Send_Json_Mocks;
 	use RSVP_Ticket_Maker;
+	use Truncates_Custom_Tables;
 
 	protected string $controller_class = Controller::class;
 
@@ -706,14 +710,14 @@ class Controller_Test extends Controller_Test_Case {
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
-	
+
 	/**
 	 * @test
 	 * @covers Attendee::include_seat_info_in_email
 	 */
 	public function test_ticket_emails_has_seat_info_for_multiple_attendees() {
 		$this->set_class_fn_return( 'Tribe__Tickets__Tickets', 'generate_security_code', 'SECURITY_CODE' );
-		
+
 		$event_id = tribe_events()->set_args(
 			[
 				'title'      => 'Event with multiple seated attendee',
@@ -722,44 +726,44 @@ class Controller_Test extends Controller_Test_Case {
 				'duration'   => 2 * HOUR_IN_SECONDS,
 			]
 		)->create()->ID;
-		
+
 		update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
 		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
-		
+
 		$ticket_id = $this->create_tc_ticket( $event_id, 10 );
-		
+
 		update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
 		update_post_meta( $ticket_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
 		update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'some-seat-type' );
-		
+
 		$order = $this->create_order(
 			[ $ticket_id => 2 ],
 			[
 				'purchaser_email' => 'test-purchaser@test.com',
 			]
 		);
-		
+
 		$attendees = tribe_attendees()->by( 'event_id', $event_id )->by( 'order_status', [ 'completed' ] )->all();
-		
+
 		update_post_meta( $attendees[0]->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'A-1' );
 		update_post_meta( $attendees[1]->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'A-2' );
-		
+
 		$html = '';
-		
+
 		add_filter(
 			'tec_tickets_emails_dispatcher_content',
 			function ( $content ) use ( &$html ) {
 				$html = $content;
-				
+
 				// skip sending the email.
 				return '';
 			}
 		);
-		
+
 		$this->make_controller()->register();
-		
+
 		$send = tribe( Module::class )->send_tickets_email_for_attendees( [ $attendees[0]->ID, $attendees[1]->ID ] );
-		
+
 		$html = str_replace(
 			[ $event_id, $order->ID, $attendees[0]->ID, $attendees[1]->ID ],
 			[
@@ -770,7 +774,7 @@ class Controller_Test extends Controller_Test_Case {
 			],
 			$html
 		);
-		
+
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
 
@@ -931,8 +935,8 @@ class Controller_Test extends Controller_Test_Case {
 		$order_date = esc_html(
 			Tribe__Date_Utils::reformat(
 				current_time( 'mysql' ),
-				Tribe__Date_Utils::DATEONLYFORMAT 
-			) 
+				Tribe__Date_Utils::DATEONLYFORMAT
+			)
 		);
 		$html       = str_replace( $order_date, '{{order_date}}', $html );
 
@@ -956,7 +960,7 @@ class Controller_Test extends Controller_Test_Case {
 				'return_total_found' => false,
 				'order'              => 'DESC',
 			],
-			$post_id 
+			$post_id
 		);
 		$attendees = $data['attendees'];
 		[
@@ -1121,7 +1125,7 @@ class Controller_Test extends Controller_Test_Case {
 
 				return file_get_contents( $file );
 			},
-			true 
+			true
 		);
 		// Set up post, ticket, and attendees. Do that as visitor.
 		$post_id                                  = self::factory()->post->create();
@@ -1202,6 +1206,7 @@ class Controller_Test extends Controller_Test_Case {
 			function ( $id ) use ( $attendee_1 ) {
 				if ( $id === $attendee_1 ) {
 					return new class() {
+						public $class_name = Module::class;
 						public function send_tickets_email_for_attendees() {
 							throw new AssertionFailedError( 'Should not send email' );
 						}
@@ -1219,7 +1224,7 @@ class Controller_Test extends Controller_Test_Case {
 				'seatTypeId'           => 'seat-type-uuid-1',
 				'seatLabel'            => 'A-1',
 				'sendUpdateToAttendee' => false,
-			] 
+			]
 		);
 		$wp_send_json_success                           = $this->mock_wp_send_json_success();
 		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_CREATED );
@@ -1258,7 +1263,7 @@ class Controller_Test extends Controller_Test_Case {
 				'seatTypeId'           => 'seat-type-uuid-1',
 				'seatLabel'            => 'A-2',
 				'sendUpdateToAttendee' => true,
-			] 
+			]
 		);
 		$wp_send_json_success = $this->mock_wp_send_json_success();
 		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_CREATED );
@@ -1296,13 +1301,14 @@ class Controller_Test extends Controller_Test_Case {
 				'seatTypeId'           => 'seat-type-uuid-1',
 				'seatLabel'            => 'A-3',
 				'sendUpdateToAttendee' => true,
-			] 
+			]
 		);
 		$unset_tribe_tickets_get_ticket_provider_return = $this->set_fn_return(
 			'tribe_tickets_get_ticket_provider',
 			function ( $id ) use ( $attendee_3 ) {
 				if ( $id === $attendee_3 ) {
 					return new class() {
+						public $class_name = Module::class;
 						public function send_tickets_email_for_attendees() {
 							return false;
 						}
@@ -1338,13 +1344,14 @@ class Controller_Test extends Controller_Test_Case {
 				'seatTypeId'           => 'seat-type-uuid-2',
 				'seatLabel'            => 'B-4',
 				'sendUpdateToAttendee' => false,
-			] 
+			]
 		);
 		$unset_tribe_tickets_get_ticket_provider_return = $this->set_fn_return(
 			'tribe_tickets_get_ticket_provider',
 			function ( $id ) use ( $attendee_1 ) {
 				if ( $id === $attendee_1 ) {
 					return new class() {
+						public $class_name = Module::class;
 						public function send_tickets_email_for_attendees() {
 							throw new AssertionFailedError( 'Should not send email' );
 						}
@@ -1392,7 +1399,7 @@ class Controller_Test extends Controller_Test_Case {
 				'seatTypeId'           => 'seat-type-uuid-3',
 				'seatLabel'            => 'C-5',
 				'sendUpdateToAttendee' => true,
-			] 
+			]
 		);
 		$wp_send_json_success = $this->mock_wp_send_json_success();
 		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_UPDATED );
@@ -1525,7 +1532,7 @@ class Controller_Test extends Controller_Test_Case {
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
-	
+
 	public function test_format_many_should_skip_non_tc_provider_attendees() {
 		// Create a post with Tickets and Attendees, create a User to assign to the Attendees.
 		$post_id  = self::factory()->post->create();
@@ -1538,14 +1545,14 @@ class Controller_Test extends Controller_Test_Case {
 				$ticket_2 => 3,
 			]
 		);
-		
+
 		$rsvp_ticket = $this->create_rsvp_ticket( $post_id );
-		
+
 		[
 			$rsvp_attendee_1,
 			$rsvp_attendee_2,
 		] = $this->create_many_attendees_for_ticket( 2, $rsvp_ticket, $post_id );
-		
+
 		$data      = Tickets::get_attendees_by_args(
 			[
 				'per_page'           => 10,
@@ -1555,12 +1562,12 @@ class Controller_Test extends Controller_Test_Case {
 			$post_id
 		);
 		$attendees = $data['attendees'];
-		
+
 		// Make sure we have 8 attendees in total.
 		$this->assertEquals( 8, count( $attendees ) );
-		
+
 		$formatted = tribe( Orders_Attendee::class )->format_many( $attendees );
-		
+
 		// Make sure we only have 6 attendees formatted, as the other 2 are not from TC provider.
 		$this->assertEquals( 6, count( $formatted ) );
 	}
