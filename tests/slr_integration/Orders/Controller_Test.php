@@ -1571,4 +1571,165 @@ class Controller_Test extends Controller_Test_Case {
 		// Make sure we only have 6 attendees formatted, as the other 2 are not from TC provider.
 		$this->assertEquals( 6, count( $formatted ) );
 	}
+
+	public function test_it_adjusts_attendee_page_render_context_for_seating() {
+		Seat_Types::insert_many(
+			[
+				[
+					'id'     => 'some-seat-1',
+					'name'   => 'A',
+					'seats'  => 10,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout',
+				],
+				[
+					'id'     => 'some-seat-2',
+					'name'   => 'B',
+					'seats'  => 20,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout',
+				],
+				[
+					'id'     => 'some-seat-3',
+					'name'   => 'C',
+					'seats'  => 30,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout',
+				],
+			]
+		);
+
+		// Create ticket-able post and tickets
+		$post_id  = self::factory()->post->create();
+		$ticket_1 = $this->create_tc_ticket(
+			$post_id,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 10,
+				],
+			]
+		);
+		$ticket_2 = $this->create_tc_ticket(
+			$post_id,
+			20,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 10,
+				],
+			]
+		);
+		$ticket_3 = $this->create_tc_ticket(
+			$post_id,
+			30,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 20,
+				],
+			]
+		);
+		$ticket_4 = $this->create_tc_ticket(
+			$post_id,
+			40,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 20,
+				],
+			]
+		);
+		$ticket_5 = $this->create_tc_ticket(
+			$post_id,
+			50,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 30,
+				],
+			]
+		);
+
+		// Set up meta of post and tickets.
+		update_post_meta( $post_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout' );
+		update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
+		update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, 60 );
+		update_post_meta( $post_id, tribe( 'tickets.handler' )->key_capacity, 60 );
+
+		update_post_meta( $ticket_1, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_1, Meta::META_KEY_SEAT_TYPE, 'some-seat-1' );
+		update_post_meta( $ticket_2, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_2, Meta::META_KEY_SEAT_TYPE, 'some-seat-1' );
+		update_post_meta( $ticket_3, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_3, Meta::META_KEY_SEAT_TYPE, 'some-seat-2' );
+		update_post_meta( $ticket_4, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_4, Meta::META_KEY_SEAT_TYPE, 'some-seat-2' );
+		update_post_meta( $ticket_5, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_5, Meta::META_KEY_SEAT_TYPE, 'some-seat-3' );
+
+		// Sanity check
+		$this->assertEquals( 60, get_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, true ) );
+		$this->assertEquals( 60, get_post_meta( $post_id, tribe( 'tickets.handler' )->key_capacity, true ) );
+
+		$this->assertEquals( 10, get_post_meta( $ticket_1, tribe( 'tickets.handler' )->key_capacity, true ) );
+		$this->assertEquals( 10, get_post_meta( $ticket_1, '_stock', true ) );
+
+		$this->assertEquals( 10, get_post_meta( $ticket_2, tribe( 'tickets.handler' )->key_capacity, true ) );
+		$this->assertEquals( 10, get_post_meta( $ticket_2, '_stock', true ) );
+
+		$this->assertEquals( 20, get_post_meta( $ticket_3, tribe( 'tickets.handler' )->key_capacity, true ) );
+		$this->assertEquals( 20, get_post_meta( $ticket_3, '_stock', true ) );
+
+		$this->assertEquals( 20, get_post_meta( $ticket_4, tribe( 'tickets.handler' )->key_capacity, true ) );
+		$this->assertEquals( 20, get_post_meta( $ticket_4, '_stock', true ) );
+
+		$this->assertEquals( 30, get_post_meta( $ticket_5, tribe( 'tickets.handler' )->key_capacity, true ) );
+		$this->assertEquals( 30, get_post_meta( $ticket_5, '_stock', true ) );
+
+		// Create an order.
+		$this->create_order(
+			[
+				$ticket_2 => 2,
+				$ticket_4 => 4,
+				$ticket_5 => 5,
+			]
+		);
+
+		$this->assertEquals( 49, get_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, true ) );
+		$this->assertEquals( 60, get_post_meta( $post_id, tribe( 'tickets.handler' )->key_capacity, true ) );
+
+		$this->assertEquals( 10, get_post_meta( $ticket_1, tribe( 'tickets.handler' )->key_capacity, true ) );
+		$this->assertEquals( 8, get_post_meta( $ticket_1, '_stock', true ) );
+
+		$this->assertEquals( 10, get_post_meta( $ticket_2, tribe( 'tickets.handler' )->key_capacity, true ) );
+		$this->assertEquals( 8, get_post_meta( $ticket_2, '_stock', true ) );
+
+		$this->assertEquals( 20, get_post_meta( $ticket_3, tribe( 'tickets.handler' )->key_capacity, true ) );
+		$this->assertEquals( 16, get_post_meta( $ticket_3, '_stock', true ) );
+
+		$this->assertEquals( 20, get_post_meta( $ticket_4, tribe( 'tickets.handler' )->key_capacity, true ) );
+		$this->assertEquals( 16, get_post_meta( $ticket_4, '_stock', true ) );
+
+		$this->assertEquals( 30, get_post_meta( $ticket_5, tribe( 'tickets.handler' )->key_capacity, true ) );
+		$this->assertEquals( 25, get_post_meta( $ticket_5, '_stock', true ) );
+
+		$this->make_controller()->register();
+
+		$this->assertEquals(
+			[
+				'ticket_totals' => [
+					'available' => 8 + 16 + 25,
+				]
+			],
+			apply_filters(
+				'tec_tickets_attendees_page_render_context',
+				[],
+				$post_id,
+				array_map( [ Tickets::class, 'load_ticket_object' ], [ $ticket_1, $ticket_2, $ticket_3, $ticket_4, $ticket_5 ] )
+			)
+		);
+	}
 }
