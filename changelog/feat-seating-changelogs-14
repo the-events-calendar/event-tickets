@@ -1,0 +1,4 @@
+Significance: minor
+Type: tweak
+
+Changed views: `emails/template-parts/header/head/styles`, `seating/iframe-view`, `seating/seat-selection-timer`, `seating/tickets-block-error`, `seating/tickets-block`, `v2/tickets/item`
