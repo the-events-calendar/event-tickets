@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Order_Modifiers\Fees\Checkout;
 
+use Closure;
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
@@ -255,12 +256,34 @@ class Checkout_Test extends WPTestCase {
 		// Step 5: Calculate the expected total.
 		$expected_total = $order->subtotal->get_decimal() + $expected_total_adjustment;
 
+		// Reset fees before assertions.
+		$this->reset_fees();
+
 		// Step 6: Assert that the total matches the expected total.
 		$this->assertEquals( $expected_total, $order->total_value->get_decimal() );
 
 		// Clear cart and reset fees.
 		$cart->clear_cart();
 		$this->modifier_manager->delete_relationships_by_post( $this->ticket_id );
-		Fees::reset_cart_fees();
+	}
+
+	/**
+	 * Reset the fees for the test class.
+	 */
+	protected function reset_fees() {
+		static $closure_reset = null;
+		if ( null === $closure_reset ) {
+			$closure_reset = Closure::bind(
+				function() {
+					self::$fees_appended = false;
+					self::$fees_displayed = false;
+					echo 'Fees reset for class ' . self::class . PHP_EOL;
+				},
+				null,
+				Fees::class
+			);
+		}
+
+		$closure_reset();
 	}
 }

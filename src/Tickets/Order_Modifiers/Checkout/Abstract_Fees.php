@@ -335,16 +335,7 @@ abstract class Abstract_Fees {
 		}
 
 		self::$fees_appended = true;
-		return $items;
-	}
 
-	/**
-	 * Reset if the fees have been appended and displayed on the cart page.
-	 *
-	 * @return void
-	 */
-	public static function reset_cart_fees(): void {
-		self::$fees_appended  = false;
-		self::$fees_displayed = false;
+		return $items;
 	}
 }
