@@ -287,7 +287,7 @@ abstract class Abstract_Fees {
 	 *
 	 * @return array Updated list of items with fees added.
 	 */
-	public function append_fees_to_cart( array $items, Value $subtotal ) {
+	protected function append_fees_to_cart( array $items, Value $subtotal ) {
 		if ( self::$fees_appended ) {
 			return $items;
 		}

@@ -37,8 +37,8 @@ class Fees extends Abstract_Fees implements Registerable {
 	 */
 	public function register(): void {
 		// Hook for appending fees to the cart for PayPal processing.
-		add_action(
-			'tec_tickets_commerce_create_from_cart_items',
+		add_filter(
+			'tec_tickets_commerce_create_order_from_cart_items',
 			fn( $items, $subtotal ) => $this->append_fees_to_cart( $items, $subtotal ),
 			10,
 			4

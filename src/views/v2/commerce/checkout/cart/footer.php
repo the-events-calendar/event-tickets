@@ -37,8 +37,8 @@ $classes = [
 <footer <?php tribe_classes( $classes ); ?>>
 	<?php
 
-	// Run the entry point hooks.
-	$this->do_entry_point( 'tec_tickets_commerce_checkout_cart_before_footer_quantity' );
+	// Trigger an action before the footer quantity.
+	do_action( 'tec_tickets_commerce_checkout_cart_before_footer_quantity', $post, $items, $this );
 
 	// Do the footer templates.
 	$this->template( 'checkout/cart/footer/quantity' );

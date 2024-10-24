@@ -6,7 +6,7 @@
  * during the Stripe checkout process. It integrates with various filters
  * and hooks specific to Stripe's order and payment flow.
  *
- * @since TBD
+ * @since   TBD
  * @package TEC\Tickets\Order_Modifiers\Checkout\Gateway\Stripe
  */
 
@@ -37,17 +37,25 @@ class Fees extends Abstract_Fees implements Registerable {
 	 * @since TBD
 	 */
 	public function register(): void {
+		$ten_two = [ 10, 2 ];
+
 		// Hook for appending fees to the cart for Stripe processing.
-		add_action( 'tec_tickets_commerce_create_from_cart_items', [ $this, 'append_fees_to_cart' ], 10, 2 );
-		add_action( 'tec_tickets_commerce_stripe_create_from_cart', [ $this, 'append_fees_to_cart_stripe' ], 10, 4 );
-		add_action(
+		add_filter(
+			'tec_tickets_commerce_create_order_from_cart_items',
+			fn( $items, $subtotal ) => $this->append_fees_to_cart( $items, $subtotal ),
+			...$ten_two
+		);
+
+		add_filter(
+			'tec_tickets_commerce_stripe_create_from_cart',
+			fn( $value, $items ) => $this->append_fees_to_cart_stripe( $value, $items ),
+			...$ten_two
+		);
+
+		add_filter(
 			'tec_tickets_commerce_stripe_update_payment_intent_metadata',
-			[
-				$this,
-				'add_meta_data_to_stripe',
-			],
-			10,
-			3
+			fn( $metadata, $order ) => $this->add_meta_data_to_stripe( $metadata, $order ),
+			...$ten_two
 		);
 	}
 
@@ -64,7 +72,7 @@ class Fees extends Abstract_Fees implements Registerable {
 	 *
 	 * @return Value Updated value including fees, or the original value if no fees exist.
 	 */
-	public function append_fees_to_cart_stripe( Value $value, array $items ): Value {
+	protected function append_fees_to_cart_stripe( Value $value, array $items ): Value {
 		// Set the class-level subtotal to the current cart value.
 		$this->subtotal = $value;
 
@@ -80,7 +88,6 @@ class Fees extends Abstract_Fees implements Registerable {
 		if ( empty( $combined_fees ) ) {
 			return $value;
 		}
-
 
 		// Convert each fee_amount to an integer using get_integer() and filter out negative values.
 		$combined_fees = array_filter(
@@ -116,13 +123,12 @@ class Fees extends Abstract_Fees implements Registerable {
 	 *
 	 * @since TBD
 	 *
-	 * @param array   $metadata The metadata array to add fees information to.
-	 * @param WP_Post $order The order containing the fee items.
-	 * @param array   $payment_intent The Stripe payment intent object.
+	 * @param array   $metadata       The metadata array to add fees information to.
+	 * @param WP_Post $order          The order containing the fee items.
 	 *
 	 * @return array Updated metadata including the fees as a string.
 	 */
-	public function add_meta_data_to_stripe( array $metadata, WP_Post $order, array $payment_intent ) {
+	protected function add_meta_data_to_stripe( array $metadata, WP_Post $order ) {
 		// Filter out the fee items from the order's items.
 		$fee_items = array_filter(
 			$order->items,
