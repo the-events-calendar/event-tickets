@@ -17,7 +17,7 @@ use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use TEC\Tickets\Order_Modifiers\Repositories\Fees as Fee_Repository;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifier_Relationship;
-use Tribe__Template;
+use Tribe__Template as Template;
 use WP_Post;
 
 /**
@@ -104,7 +104,6 @@ abstract class Abstract_Fees {
 	 */
 	protected static bool $fees_appended = false;
 
-
 	/**
 	 * Constructor
 	 */
@@ -162,15 +161,17 @@ abstract class Abstract_Fees {
 	 *
 	 * @since TBD
 	 *
-	 * @param WP_Post         $post     The current post object.
-	 * @param array           $items    The items in the cart.
-	 * @param Tribe__Template $template The template object for rendering.
+	 * @param WP_Post  $post     The current post object.
+	 * @param array    $items    The items in the cart.
+	 * @param Template $template The template object for rendering.
 	 */
-	public function display_fee_section( WP_Post $post, array $items, Tribe__Template $template ): void {
+	public function display_fee_section( WP_Post $post, array $items, Template $template ): void {
 		if ( self::$fees_displayed ) {
 			return;
 		}
+
 		self::$fees_displayed = true;
+
 		// Fetch the combined fees for the items in the cart.
 		$combined_fees = $this->get_combined_fees_for_items( $items );
 
@@ -243,7 +244,6 @@ abstract class Abstract_Fees {
 		return $combined_fees;
 	}
 
-
 	/**
 	 * Extracts and combines fees from related ticket fees and automatic fees, removing duplicates.
 	 *
@@ -291,6 +291,7 @@ abstract class Abstract_Fees {
 		if ( self::$fees_appended ) {
 			return $items;
 		}
+
 		if ( empty( $items ) ) {
 			return $items;
 		}
@@ -305,15 +306,15 @@ abstract class Abstract_Fees {
 
 		foreach ( $items as $item ) {
 			if ( isset( $item['fee_id'] ) ) {
-				$existing_fee_ids[] = $item['fee_id']; // Collect existing fee_ids.
+				$existing_fee_ids[ $item['fee_id'] ] = 1;
 			}
 		}
 
 		// Loop through each fee and append it to the $items array if it's not already added.
 		foreach ( $fees as $fee ) {
 			// Skip if this fee has already been added to the cart.
-			if ( in_array( $fee['id'], $existing_fee_ids, true ) ) {
-				continue; // Skip if fee is already in the cart.
+			if ( array_key_exists( $fee['id'], $existing_fee_ids ) ) {
+				continue;
 			}
 
 			// Append the fee to the cart.
@@ -330,8 +331,9 @@ abstract class Abstract_Fees {
 			];
 
 			// Add the fee ID to the tracking array.
-			$existing_fee_ids[] = $fee['id'];
+			$existing_fee_ids[ $fee['id'] ] = 1;
 		}
+
 		self::$fees_appended = true;
 		return $items;
 	}
