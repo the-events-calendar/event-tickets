@@ -33,8 +33,6 @@ trait Order_Modifiers {
 
 		if ( 'coupon' === $modifier_data['modifier'] ) {
 			$modifier_data['order_modifier_coupon_name'] = $modifier_data['order_modifier_display_name'];
-		} elseif ( 'fee' === $modifier_data['modifier'] ) {
-			$modifier_data['order_modifier_fee_name'] = $modifier_data['order_modifier_display_name'];
 		}
 
 		// Get the modifier type (e.g., coupon, fee, etc.).

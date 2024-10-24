@@ -686,7 +686,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 			'sub_type'      => sanitize_text_field( $raw_data['order_modifier_sub_type'] ?? '' ),
 			'raw_amount'    => Float_Value::from_number( $raw_data['order_modifier_amount'] ?? 0 )->get(),
 			'slug'          => sanitize_text_field( $raw_data['order_modifier_slug'] ?? '' ),
-			'display_name'  => sanitize_text_field( $raw_data['order_modifier_fee_name'] ?? '' ),
+			'display_name'  => sanitize_text_field( $raw_data['order_modifier_display_name'] ?? '' ),
 			'status'        => sanitize_text_field( $raw_data['order_modifier_status'] ?? '' ),
 		];
 	}

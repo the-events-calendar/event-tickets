@@ -59,13 +59,13 @@ $modifier_statuses = [
 				</div>
 
 				<div class="form-field form-required">
-					<label for="order_modifier_fee_name">
+					<label for="order_modifier_display_name">
 						<?php esc_html_e( 'Fee Name', 'event-tickets' ); ?>
 					</label>
 					<input
 						type="text"
-						name="order_modifier_fee_name"
-						id="order_modifier_fee_name"
+						name="order_modifier_display_name"
+						id="order_modifier_display_name"
 						class="tribe-field tribe-validation-field"
 						maxlength="255"
 						data-validation-required="true"
