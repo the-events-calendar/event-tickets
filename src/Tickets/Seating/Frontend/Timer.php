@@ -493,19 +493,8 @@ class Timer extends Controller_Contract {
 			return;
 		}
 
-		$is_auto = 1 === (int) tribe_get_request_var( 'auto', 0 );
-
-		if ( $is_auto ) {
-			$is_ar_page = tribe( Attendee_Registration::class )->get_url();
-			$referrer   = wp_get_referer();
-
-			// IMPORTANT: This is an automatic interrupt, originating from the AR page. We want to ignore it!
-			if ( $referrer && $is_ar_page === explode( '?', $referrer )['0'] ) {
-				return;
-			}
-		}
-
 		[ $token, $post_id ] = $token_and_post_id;
+
 
 		$post_type             = get_post_type( $post_id );
 		$post_type_object      = get_post_type_object( $post_type );
