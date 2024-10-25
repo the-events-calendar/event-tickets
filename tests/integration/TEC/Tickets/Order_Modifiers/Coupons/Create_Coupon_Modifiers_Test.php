@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Order_Modifiers\Coupons;
 
+use Gajus\Dindent\Exception\InvalidArgumentException;
 use TEC\Tickets\Tests\Integration\Order_Modifiers\Create_Order_Modifiers_Abstract;
 
 /**
@@ -22,7 +23,7 @@ class Create_Coupon_Modifiers_Test extends Create_Order_Modifiers_Abstract {
 	 * @test
 	 *
 	 * @return void
-	 * @throws \Gajus\Dindent\Exception\InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 */
 	public function does_table_render_correctly() {
 		// @todo redscar - Test sometimes fails randomly due to race conditions.
@@ -41,7 +42,7 @@ class Create_Coupon_Modifiers_Test extends Create_Order_Modifiers_Abstract {
 	/**
 	 * @test
 	 * @return void
-	 * @throws \Gajus\Dindent\Exception\InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 */
 	public function does_edit_screen_render_with_no_data() {
 		$snapshot = $this->does_edit_form_display_properly_with_no_data();
