@@ -1,4 +1,0 @@
-Significance: minor
-Type: tweak
-
-Added actions: `tec_tickets_seating_tab_{$tab}`, `tec_tickets_seating_session_interrupt`, `tec_tickets_seating_invalidate_layouts_cache`, `tec_tickets_seating_invalidate_maps_layouts_cache`, `tec_tickets_seating_delete_reservations_from_attendees`, `tec_tickets_seating_deleted_reservations_from_attendees`, `tec_tickets_seating_reservations_updated`, `tec_tickets_seating_seat_selection_timer`

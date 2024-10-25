@@ -1,4 +1,0 @@
-Significance: minor
-Type: tweak
-
-Added filters: `tec_tickets_seating_active`, `tec_tickets_seating_service_base_url`, `tec_tickets_seating_service_frontend_url`, `tec_tickets_seating_tickets_block_html`, `tec_tickets_seating_session_cookie_expiration_time`, `tec_tickets_seating_selection_timeout`, `tec_tickets_seat_selection_timer_expired_data`, `tec_tickets_seating_fetch_attendees_per_page`, `tec_tickets_seating_ephemeral_token`, `tec_tickets_seating_ephemeral_token_site_url`, `tec_tickets_attendees_page_render_context`, `tec_tickets_attendees_table_sortable_columns`, `tribe_tickets_ticket_inventory`
