@@ -4369,6 +4369,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$meta = tribe( 'tickets-plus.meta' );
 
 			$cart_has_meta = true;
+			$cart_has_iac  = true;
 
 			// If the method exists in ET+, run it.
 			if ( method_exists( $meta, 'cart_has_meta' ) ) {
