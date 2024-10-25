@@ -4295,7 +4295,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @since 5.0.2 Correct provider attendee object.
 		 * @since TBD Add check for IAC.
 		 *
-		 *
 		 * @param string|null $redirect URL to redirect to.
 		 * @param null|int    $post_id  Post ID for cart.
 		 */
