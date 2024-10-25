@@ -37,25 +37,23 @@ class Fees extends Abstract_Fees implements Registerable {
 	 * @since TBD
 	 */
 	public function register(): void {
-		$ten_two = [ 10, 2 ];
-
 		// Hook for appending fees to the cart for Stripe processing.
 		add_filter(
 			'tec_tickets_commerce_create_order_from_cart_items',
 			fn( $items, $subtotal ) => $this->append_fees_to_cart( $items, $subtotal ),
-			...$ten_two
+			...$this->hook_args['ten_two']
 		);
 
 		add_filter(
 			'tec_tickets_commerce_stripe_create_from_cart',
 			fn( $value, $items ) => $this->append_fees_to_cart_stripe( $value, $items ),
-			...$ten_two
+			...$this->hook_args['ten_two']
 		);
 
 		add_filter(
 			'tec_tickets_commerce_stripe_update_payment_intent_metadata',
 			fn( $metadata, $order ) => $this->add_meta_data_to_stripe( $metadata, $order ),
-			...$ten_two
+			...$this->hook_args['ten_two']
 		);
 	}
 

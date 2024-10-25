@@ -40,16 +40,14 @@ class Fees extends Abstract_Fees implements Registerable {
 		add_filter(
 			'tec_tickets_commerce_create_order_from_cart_items',
 			fn( $items, $subtotal ) => $this->append_fees_to_cart( $items, $subtotal ),
-			10,
-			4
+			...$this->hook_args['ten_two']
 		);
 
 		// Hook for adding fee unit data to PayPal order.
 		add_action(
 			'tec_commerce_paypal_order_get_unit_data_fee',
 			fn( $item, $order ) => $this->add_fee_unit_data_to_paypal( $item, $order ),
-			10,
-			2
+			...$this->hook_args['ten_two']
 		);
 	}
 

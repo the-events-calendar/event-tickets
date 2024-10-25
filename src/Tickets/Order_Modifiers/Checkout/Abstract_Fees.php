@@ -30,6 +30,16 @@ use WP_Post;
 abstract class Abstract_Fees {
 
 	/**
+	 * The default priority and number of arguments for hooks.
+	 *
+	 * @var array
+	 */
+	protected array $hook_args = [
+		'ten_three' => [ 10, 3 ],
+		'ten_two'   => [ 10, 2 ],
+	];
+
+	/**
 	 * The modifier type used for fees.
 	 *
 	 * @since TBD
@@ -132,7 +142,7 @@ abstract class Abstract_Fees {
 	 *
 	 * @return array The updated total values, including the fees.
 	 */
-	public function calculate_fees( array $values, array $items, Value $subtotal ): array {
+	protected function calculate_fees( array $values, array $items, Value $subtotal ): array {
 		// Store the subtotal as a class property for later use, encapsulated as a Value object.
 		$this->subtotal = $subtotal;
 
@@ -161,11 +171,10 @@ abstract class Abstract_Fees {
 	 *
 	 * @since TBD
 	 *
-	 * @param WP_Post  $post     The current post object.
 	 * @param array    $items    The items in the cart.
 	 * @param Template $template The template object for rendering.
 	 */
-	public function display_fee_section( WP_Post $post, array $items, Template $template ): void {
+	protected function display_fee_section( array $items, Template $template ): void {
 		if ( self::$fees_displayed ) {
 			return;
 		}

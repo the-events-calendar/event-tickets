@@ -36,12 +36,16 @@ class Fees extends Abstract_Fees implements Registerable {
 	 */
 	public function register(): void {
 		// Hook for calculating total values, setting subtotal, and modifying the total value.
-		add_filter( 'tec_tickets_commerce_get_cart_total_value', [ $this, 'calculate_fees' ], 10, 3 );
+		add_filter(
+			'tec_tickets_commerce_get_cart_total_value',
+			fn( $values, $items, $subtotal ) => $this->calculate_fees( $values, $items, $subtotal ),
+			...$this->hook_args['ten_three']
+		);
 
 		// Hook for displaying fees in the checkout.
 		add_action(
 			'tec_tickets_commerce_checkout_cart_before_footer_quantity',
-			[ $this, 'display_fee_section' ],
+			fn( $post, $items, $template ) => $this->display_fee_section( $items, $template ),
 			30,
 			3
 		);
