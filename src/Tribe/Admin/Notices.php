@@ -366,14 +366,10 @@ class Tribe__Tickets__Admin__Notices {
 			esc_html__( 'Attendee Registration settings', 'event-tickets' )
 		);
 
-		$message_text = __(
-			sprintf(
-				// Translators: %s: The "Attendee Registration settings" link.
-				esc_html__( 'We detected that you are using a Full Site Editing theme. In order for the Attendee Registration Page to function properly, you will need to set up a page, using the [tribe_attendee_registration] shortcode in the %s.', 'event-tickets' ),
-				$settings_link
-			),
-			'text for FSE AR Modal notice',
-			'event-tickets'
+		$message_text = sprintf(
+			// Translators: %s: The "Attendee Registration settings" link.
+			esc_html__( 'We detected that you are using a Full Site Editing theme. In order for the Attendee Registration Page to function properly, you will need to set up a page, using the [tribe_attendee_registration] shortcode in the %s.', 'event-tickets' ),
+			$settings_link
 		);
 
 		$message = sprintf(
