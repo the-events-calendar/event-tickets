@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\Tickets\Order_Modifiers\Fees;
+namespace TEC\Tickets\Tests\Integration\Order_Modifiers\Fees;
 
 use TEC\Tickets\Tests\Integration\Order_Modifiers\Create_Order_Modifiers_Abstract;
 

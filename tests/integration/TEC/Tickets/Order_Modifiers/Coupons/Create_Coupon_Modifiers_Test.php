@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\Tickets\Order_Modifiers\Coupons;
+namespace TEC\Tickets\Tests\Integration\Order_Modifiers\Coupons;
 
 use Gajus\Dindent\Exception\InvalidArgumentException;
 use TEC\Tickets\Tests\Integration\Order_Modifiers\Create_Order_Modifiers_Abstract;

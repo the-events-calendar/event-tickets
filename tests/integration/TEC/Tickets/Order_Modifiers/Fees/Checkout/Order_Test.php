@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\Tickets\Order_Modifiers\Fees\Checkout;
+namespace TEC\Tickets\Tests\Integration\Order_Modifiers\Fees\Checkout;
 
 use Closure;
 use Codeception\TestCase\WPTestCase;
