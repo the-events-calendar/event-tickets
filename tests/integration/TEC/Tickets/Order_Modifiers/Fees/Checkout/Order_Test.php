@@ -15,7 +15,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use TEC\Tickets\Order_Modifiers\Checkout\Fees;
 use Tribe\Tickets\Test\Traits\Order_Modifiers;
 
-class Checkout_Test extends WPTestCase {
+class Order_Test extends WPTestCase {
 	use Ticket_Maker;
 	use Order_Maker;
 	use Order_Modifiers;
