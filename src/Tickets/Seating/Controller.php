@@ -168,7 +168,7 @@ class Controller extends Controller_Contract {
 	private function build_service_facade(): Service\Service {
 		$backend_base_url = defined( 'TEC_TICKETS_SEATING_SERVICE_BASE_URL' )
 			? TEC_TICKETS_SEATING_SERVICE_BASE_URL
-			: 'https://evnt.is';
+			: 'https://seating.theeventscalendar.com';
 
 		/**
 		 * Filters the base URL of the service for backend requests.
@@ -183,7 +183,7 @@ class Controller extends Controller_Contract {
 
 		$frontend_base_url = defined( 'TEC_TICKETS_SEATING_SERVICE_BASE_URL' )
 			? TEC_TICKETS_SEATING_SERVICE_BASE_URL
-			: 'https://evnt.is';
+			: 'https://seating.theeventscalendar.com';
 
 		/**
 		 * Filters the base URL of the service for frontend requests.

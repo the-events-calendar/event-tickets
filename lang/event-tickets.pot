@@ -2,15 +2,15 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.15.0\n"
+"Project-Id-Version: Event Tickets 5.16.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-10-16T10:27:41-07:00\n"
-"PO-Revision-Date: 2024-10-16 17:27\n"
+"POT-Creation-Date: 2024-10-25T08:34:03-07:00\n"
+"PO-Revision-Date: 2024-10-25 15:34\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: event-tickets\n"
 
@@ -215,6 +215,7 @@ msgstr ""
 
 #: src/admin-views/admin-welcome-message.php:177
 #: src/admin-views/admin-welcome-message.php:197
+#: src/admin-views/seating/tabs/maps.php:41
 #: src/admin-views/settings/tickets-commerce/paypal/connect/non-ssl-notice.php:24
 #: src/Tickets/Commerce/Gateways/Stripe/Settings.php:194
 #: src/Tickets/Emails/Email/Completed_Order.php:117
@@ -576,6 +577,8 @@ msgstr ""
 #: src/admin-views/commerce/orders/single/order-details-metabox.php:40
 #: src/admin-views/commerce/orders/single/order-items-metabox-item.php:72
 #: src/admin-views/list.php:31
+#: src/admin-views/seating/components/layouts/card.php:59
+#: src/admin-views/seating/components/maps/card.php:38
 msgid "Edit"
 msgstr ""
 
@@ -593,6 +596,8 @@ msgstr ""
 
 #: src/admin-views/commerce/orders/single/order-items-metabox-item.php:43
 #: src/admin-views/list.php:41
+#: src/admin-views/seating/components/layouts/card.php:67
+#: src/admin-views/seating/components/maps/card.php:46
 #: src/Tribe/Attendees_Table.php:782
 msgid "Delete"
 msgstr ""
@@ -686,6 +691,32 @@ msgstr ""
 
 #: src/admin-views/commerce/reports/orders/summary.php:122
 msgid "Total Ticket Sales"
+msgstr ""
+
+#: src/admin-views/commerce/reports/seats-upsell.php:23
+msgid "Seating Icon"
+msgstr ""
+
+#: src/admin-views/commerce/reports/seats-upsell.php:26
+#: src/Tickets/Seating/Admin.php:116
+#: src/Tickets/Seating/Health.php:280
+msgid "Seating"
+msgstr ""
+
+#: src/admin-views/commerce/reports/seats-upsell.php:30
+msgid "Maximize event revenue and improve the attendee experience by adding assigned seats with this innovative add-on."
+msgstr ""
+
+#: src/admin-views/commerce/reports/seats-upsell.php:33
+msgid "Check out Seating for Event Tickets"
+msgstr ""
+
+#: src/admin-views/commerce/reports/seats-upsell.php:39
+msgid "Seating Banner Icon"
+msgstr ""
+
+#: src/admin-views/commerce/reports/seats.php:24
+msgid "Seats Assignment"
 msgstr ""
 
 #: src/admin-views/editor/button-view-orders.php:45
@@ -903,6 +934,8 @@ msgstr ""
 #: src/admin-views/editor/panel/settings.php:44
 #: src/admin-views/editor/panel/ticket.php:299
 #: src/admin-views/meta-box.php:304
+#: src/admin-views/seating/components/layouts/add-new.php:45
+#: src/views/seating/iframe-view.php:79
 #: src/views/v2/rsvp/ari/form/buttons.php:22
 #: src/views/v2/rsvp/form/fields/cancel.php:23
 msgid "Cancel"
@@ -1259,6 +1292,101 @@ msgstr ""
 
 #: src/admin-views/rsvp-metabox-not-going.php:27
 msgid "Enable \"Can't Go\" responses"
+msgstr ""
+
+#: src/admin-views/seating/components/layouts/add-new.php:16
+msgid "Choose a Seating Map for this Layout"
+msgstr ""
+
+#: src/admin-views/seating/components/layouts/add-new.php:40
+msgid "seats"
+msgstr ""
+
+#: src/admin-views/seating/components/layouts/add-new.php:48
+msgid "Use this Map"
+msgstr ""
+
+#: src/admin-views/seating/components/layouts/card.php:27
+msgctxt "Layout card no associated events"
+msgid "No associated events"
+msgstr ""
+
+#. translators: %d: Number of associated events for the layout
+#: src/admin-views/seating/components/layouts/card.php:31
+msgid "%d associated event"
+msgid_plural "%d associated events"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/admin-views/seating/components/layouts/empty.php:12
+msgid "No seat layouts to show."
+msgstr ""
+
+#. translators: %s: the capacity of the map
+#: src/admin-views/seating/components/maps/card.php:27
+msgctxt "map seats count"
+msgid "%s seats"
+msgstr ""
+
+#: src/admin-views/seating/components/maps/card.php:35
+msgid "Create Layout"
+msgstr ""
+
+#: src/admin-views/seating/components/maps/empty.php:15
+msgctxt "Add new seating map link"
+msgid "Add a map"
+msgstr ""
+
+#. translators: %1$s: Add new link
+#: src/admin-views/seating/components/maps/empty.php:24
+msgid "There are no maps available. %1$s"
+msgstr ""
+
+#: src/admin-views/seating/embed-test.php:27
+msgid "Embed Test"
+msgstr ""
+
+#: src/admin-views/seating/maps-layouts-home.php:18
+#: src/admin-views/seating/service-error-tab.php:18
+msgctxt "Seat Layouts home page title"
+msgid "Seating"
+msgstr ""
+
+#: src/admin-views/seating/tabs/layout-edit.php:26
+msgid "Seat Layout"
+msgstr ""
+
+#: src/admin-views/seating/tabs/layouts.php:20
+msgctxt "Seat layouts tab title"
+msgid "Seat Layouts"
+msgstr ""
+
+#: src/admin-views/seating/tabs/layouts.php:41
+msgctxt "Add new seat layout button text"
+msgid "Add New"
+msgstr ""
+
+#: src/admin-views/seating/tabs/layouts.php:53
+msgid "Seat layouts on top of your maps allow you to create different seating types. You can create a seat layout from one of the existing seating maps."
+msgstr ""
+
+#: src/admin-views/seating/tabs/map-edit.php:26
+msgid "Map Edit"
+msgstr ""
+
+#: src/admin-views/seating/tabs/maps.php:18
+msgctxt "Controller maps tab title"
+msgid "Seating Maps"
+msgstr ""
+
+#: src/admin-views/seating/tabs/maps.php:28
+msgctxt "Add new seating configuration button"
+msgid "Add New"
+msgstr ""
+
+#. translators: %1$s: Documentation link
+#: src/admin-views/seating/tabs/maps.php:36
+msgid "Create a seating map that represents your room or venue.  Configurations are used to create layouts that allow purchasers choose specific seats and ticketing tiers. %1$s"
 msgstr ""
 
 #. Translators: %s: The email "to".
@@ -2332,13 +2460,13 @@ msgid "A single configured ticket type."
 msgstr ""
 
 #: src/Tickets/Blocks/Tickets/Block.php:319
-#: src/Tribe/Tickets.php:4635
+#: src/Tribe/Tickets.php:4636
 msgctxt "Error message title, will be followed by the error code."
 msgid "API Error"
 msgstr ""
 
 #: src/Tickets/Blocks/Tickets/Block.php:320
-#: src/Tribe/Tickets.php:4636
+#: src/Tribe/Tickets.php:4637
 msgid "Refresh this page or wait a few minutes before trying again. If this happens repeatedly, please contact the Site Admin."
 msgstr ""
 
@@ -2348,23 +2476,24 @@ msgid "The %s for this event has sold out and has been removed from your cart."
 msgstr ""
 
 #: src/Tickets/Blocks/Tickets/Block.php:326
-#: src/Tribe/Tickets.php:4638
+#: src/Tribe/Tickets.php:4639
 #: src/views/v2/commerce/order/header/title-empty.php:28
 msgid "Whoops!"
 msgstr ""
 
-#: src/Tickets/Blocks/Tickets/Block.php:327
-#: src/Tribe/Tickets.php:4639
+#. Translators: %s - the HTML of the number of tickets with validation errors.
+#: src/Tickets/Blocks/Tickets/Block.php:328
+#: src/Tribe/Tickets.php:4640
 msgctxt "The %s will change based on the error produced."
 msgid "You have %s ticket(s) with a field that requires information."
 msgstr ""
 
-#: src/Tickets/Blocks/Tickets/Block.php:348
+#: src/Tickets/Blocks/Tickets/Block.php:352
 msgctxt "Block title"
 msgid "Tickets"
 msgstr ""
 
-#: src/Tickets/Blocks/Tickets/Block.php:349
+#: src/Tickets/Blocks/Tickets/Block.php:353
 msgctxt "Block description"
 msgid "Sell tickets and register attendees."
 msgstr ""
@@ -2704,11 +2833,11 @@ msgstr ""
 msgid "Additional payment options"
 msgstr ""
 
-#: src/Tickets/Commerce/Attendee.php:942
+#: src/Tickets/Commerce/Attendee.php:947
 msgid "Name not available"
 msgstr ""
 
-#: src/Tickets/Commerce/Attendee.php:961
+#: src/Tickets/Commerce/Attendee.php:966
 msgid "Email not available"
 msgstr ""
 
@@ -7312,43 +7441,48 @@ msgid "Account deauthorized is not the same as account connected."
 msgstr ""
 
 #. Translators: %1$s is the event id and %2$s is the event type name.
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Charge_Webhook.php:35
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Charge_Webhook.php:59
+msgid "Event %1$s was received and will not be handled because the Payment Intent %2$s was already moved to the Success status."
+msgstr ""
+
+#. Translators: %1$s is the event id and %2$s is the event type name.
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Charge_Webhook.php:74
 #: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Payment_Intent_Webhook.php:43
 msgid "Event %1$s was received and will not be handled because the Payment Intent %2$s does not refer to an Event Tickets transaction."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Charge_Webhook.php:46
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Charge_Webhook.php:85
 #: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Payment_Intent_Webhook.php:54
 msgid "Payment Intent Test Successful"
 msgstr ""
 
 #. Translators: %s is the payment intent id.
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Charge_Webhook.php:54
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Charge_Webhook.php:93
 #: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Payment_Intent_Webhook.php:62
 msgid "Payment Intent %s does not correspond to a known order."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Events.php:214
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Events.php:218
 msgid "Canceled payments"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Events.php:215
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Events.php:219
 msgid "Created payments"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Events.php:216
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Events.php:220
 msgid "Failed payments"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Events.php:217
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Events.php:221
 msgid "Pending payments"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Events.php:218
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Events.php:222
 msgid "Action required payments"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Events.php:219
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Events.php:223
 msgid "Successful payments"
 msgstr ""
 
@@ -7360,6 +7494,11 @@ msgstr ""
 #. Translators: %1$s is the event type name.
 #: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Handler.php:107
 msgid "Event was received but events of type %1$s are not currently handled."
+msgstr ""
+
+#. Translators: %s is the payment intent id.
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Payment_Intent_Webhook.php:72
+msgid "Payment Intent %s does not require an update or is a duplicate of a past event."
 msgstr ""
 
 #: src/Tickets/Commerce/Hooks.php:1102
@@ -7799,12 +7938,12 @@ msgid "%s will be available on %s at %s"
 msgstr ""
 
 #: src/Tickets/Commerce/Status/Pending.php:163
-#: src/Tribe/Tickets.php:3422
+#: src/Tribe/Tickets.php:3423
 msgid "%s are no longer available."
 msgstr ""
 
 #: src/Tickets/Commerce/Status/Pending.php:165
-#: src/Tribe/Tickets.php:3424
+#: src/Tribe/Tickets.php:3425
 msgid "There are no %s available at this time."
 msgstr ""
 
@@ -7834,6 +7973,7 @@ msgstr ""
 
 #: src/Tickets/Commerce/Ticket.php:211
 #: src/Tribe/Commerce/PayPal/Main.php:463
+#: src/views/seating/iframe-view.php:41
 msgid "Tickets"
 msgstr ""
 
@@ -8823,7 +8963,7 @@ msgid "There is no payment gateway configured. To create %1$s, you'll need to en
 msgstr ""
 
 #: src/Tickets/Flexible_Tickets/Series_Passes/Attendees.php:531
-#: src/Tribe/REST/V1/Endpoints/QR.php:320
+#: src/Tribe/REST/V1/Endpoints/QR.php:352
 msgid "Already checked in!"
 msgstr ""
 
@@ -9049,8 +9189,8 @@ msgstr ""
 #: src/Tribe/Metabox.php:449
 #: src/Tribe/Metabox.php:538
 #: src/Tribe/Metabox.php:637
-#: src/Tribe/Metabox.php:704
-#: src/Tribe/Metabox.php:754
+#: src/Tribe/Metabox.php:709
+#: src/Tribe/Metabox.php:759
 msgid "Commerce Module invalid"
 msgstr ""
 
@@ -9108,6 +9248,481 @@ msgstr ""
 #. Translators: %s is the ticket ID.
 #: src/Tickets/QR/Observer.php:250
 msgid "The ticket with ID %s was checked in."
+msgstr ""
+
+#. Translators: %1$s and %2$s are opening/closing p tags, %3$s and %4$s are opening/closing a tags.
+#: src/Tickets/Seating/Admin.php:267
+msgid "%1$sTickets with assigned seating can only be created when selling with %3$sTickets Commerce%4$s. Support for WooCommerce sales will be included in a future release.%2$s"
+msgstr ""
+
+#: src/Tickets/Seating/Admin/Ajax.php:471
+#: src/Tickets/Seating/Admin/Ajax.php:540
+msgid "No map ID provided"
+msgstr ""
+
+#: src/Tickets/Seating/Admin/Ajax.php:485
+msgid "Failed to delete the map."
+msgstr ""
+
+#: src/Tickets/Seating/Admin/Ajax.php:506
+msgid "No layout ID or map ID provided"
+msgstr ""
+
+#: src/Tickets/Seating/Admin/Ajax.php:520
+msgid "Failed to delete the layout."
+msgstr ""
+
+#: src/Tickets/Seating/Admin/Ajax.php:565
+msgid "Failed to Add new layout."
+msgstr ""
+
+#: src/Tickets/Seating/Admin/Ajax.php:686
+msgid "Invalid request parameters"
+msgstr ""
+
+#: src/Tickets/Seating/Admin/Ajax.php:700
+msgid "Failed to clear the reservations"
+msgstr ""
+
+#: src/Tickets/Seating/Admin/Ajax.php:1122
+msgid "No primary seat type found for the layout."
+msgstr ""
+
+#: src/Tickets/Seating/Admin/Events/Associated_Events.php:78
+msgctxt "Post title for associated events list"
+msgid "Title"
+msgstr ""
+
+#: src/Tickets/Seating/Admin/Events/Associated_Events.php:79
+msgctxt "Post tags for associated events list"
+msgid "Tags"
+msgstr ""
+
+#: src/Tickets/Seating/Admin/Events/Associated_Events.php:80
+msgctxt "Attendee count for associated events list"
+msgid "Attendees"
+msgstr ""
+
+#: src/Tickets/Seating/Admin/Events/Associated_Events.php:81
+msgctxt "Post date for associated events list"
+msgid "Date"
+msgstr ""
+
+#: src/Tickets/Seating/Admin/Events/Associated_Events.php:303
+msgctxt "Associated events post filter list label for all status"
+msgid "All"
+msgstr ""
+
+#: src/Tickets/Seating/Admin/Events/Associated_Events.php:325
+msgctxt "Associated events list no items"
+msgid "No Associated Events found."
+msgstr ""
+
+#: src/Tickets/Seating/Admin/Events/Controller.php:95
+msgid "Events per page"
+msgstr ""
+
+#: src/Tickets/Seating/Admin/Events/Controller.php:131
+msgid "Events"
+msgstr ""
+
+#: src/Tickets/Seating/Admin/Events/Controller.php:154
+msgctxt "Associated events list layout id"
+msgid "Layout ID is not valid!"
+msgstr ""
+
+#. translators: %s: Layout name.
+#: src/Tickets/Seating/Admin/Events/Controller.php:160
+msgctxt "Associated events list header"
+msgid "Associated Events for %s"
+msgstr ""
+
+#: src/Tickets/Seating/Admin/Events/Controller.php:215
+msgctxt "Seating events series meta box message"
+msgid "Events using Seating for ticket capacity are not supported by Series at this time."
+msgstr ""
+
+#: src/Tickets/Seating/Admin/Tabs/Layouts.php:66
+msgctxt "Tab title"
+msgid "Seat Layouts"
+msgstr ""
+
+#: src/Tickets/Seating/Admin/Tabs/Maps.php:53
+msgctxt "Tab title"
+msgid "Seating Maps"
+msgstr ""
+
+#: src/Tickets/Seating/Ajax_Methods.php:36
+msgid "Nonce verification failed"
+msgstr ""
+
+#: src/Tickets/Seating/Ajax_Methods.php:47
+msgid "You do not have permission to perform this action."
+msgstr ""
+
+#: src/Tickets/Seating/Assets.php:63
+msgctxt "Capacity table row label for assigned seating tickets"
+msgid "Assigned Seating"
+msgstr ""
+
+#: src/Tickets/Seating/Assets.php:64
+msgctxt "Ticket Dashboard actions"
+msgid "Seats"
+msgstr ""
+
+#: src/Tickets/Seating/Assets.php:66
+msgctxt "Confirmation message for deleting a map"
+msgid "Are you sure you want to delete this map?"
+msgstr ""
+
+#: src/Tickets/Seating/Assets.php:67
+msgctxt "Error message for deleting a map"
+msgid "Failed to delete the map."
+msgstr ""
+
+#: src/Tickets/Seating/Assets.php:70
+msgctxt "Error message for adding a layout"
+msgid "Failed to add the new layout."
+msgstr ""
+
+#: src/Tickets/Seating/Assets.php:71
+msgctxt "Confirmation message for editing a layout with events"
+msgid "This layout is associated with {count} events. Changes will impact all existing events and may affect the seating assignment of active ticket holders."
+msgstr ""
+
+#: src/Tickets/Seating/Assets.php:72
+msgctxt "Confirmation message for deleting a layout"
+msgid "Are you sure you want to delete this layout? This cannot be undone."
+msgstr ""
+
+#: src/Tickets/Seating/Assets.php:73
+msgctxt "Error message for deleting a layout"
+msgid "Failed to delete the layout."
+msgstr ""
+
+#: src/Tickets/Seating/Frontend.php:282
+msgctxt "Seat selection modal initial total string"
+msgid "0 Tickets"
+msgstr ""
+
+#: src/Tickets/Seating/Frontend.php:290
+msgctxt "Find seats button text"
+msgid "Find Seats"
+msgstr ""
+
+#: src/Tickets/Seating/Frontend.php:409
+msgctxt "Seat selection modal total string"
+msgid "1 Ticket"
+msgstr ""
+
+#: src/Tickets/Seating/Frontend.php:411
+msgctxt "Seat selection modal total string"
+msgid "{count} Tickets"
+msgstr ""
+
+#: src/Tickets/Seating/Frontend/Timer.php:504
+msgctxt "Seat selection expired timer content"
+msgid "Your seat selections are no longer reserved, but tickets are still available."
+msgstr ""
+
+#: src/Tickets/Seating/Frontend/Timer.php:509
+msgctxt "Seat selection expired timer button label"
+msgid "Find Seats"
+msgstr ""
+
+#. Translators: %s: The post type singular name.
+#: src/Tickets/Seating/Frontend/Timer.php:520
+msgctxt "Seat selection expired timer content"
+msgid "This %s is now sold out."
+msgstr ""
+
+#. Translators: %s: The post type singular name.
+#: src/Tickets/Seating/Frontend/Timer.php:527
+msgctxt "Seat selection expired timer button label"
+msgid "Find Another %s"
+msgstr ""
+
+#: src/Tickets/Seating/Frontend/Timer.php:533
+msgctxt "Seat selection expired timer button label"
+msgid "Return to Home Page"
+msgstr ""
+
+#: src/Tickets/Seating/Frontend/Timer.php:568
+msgctxt "Seat selection sold out timer title"
+msgid "Sold Out"
+msgstr ""
+
+#: src/Tickets/Seating/Frontend/Timer.php:568
+msgctxt "Seat selection expired timer title"
+msgid "Time limit expired"
+msgstr ""
+
+#: src/Tickets/Seating/Health.php:76
+msgid "Seating license is valid"
+msgstr ""
+
+#: src/Tickets/Seating/Health.php:81
+msgid "Your license is valid."
+msgstr ""
+
+#. Translators: 1 is opening a element, 2 is closing of p element, 3 is opening of a element and 4 is closing of a element.
+#: src/Tickets/Seating/Health.php:84
+msgctxt "Shown as an action result, when the test regarding Seating license in Site Health is successful."
+msgid "%1$sYou can check your license status on your account at %3$stheeventscalendar.com%4$s.%2$s"
+msgstr ""
+
+#: src/Tickets/Seating/Health.php:95
+msgid "Seating license is invalid"
+msgstr ""
+
+#: src/Tickets/Seating/Health.php:96
+msgid "You must have a valid license to use Seating for Event Tickets."
+msgstr ""
+
+#. Translators: 1 Opening p element, 2 closing p element, 3 is closing a element, 4, 5, 6 and 7 opening a elements.
+#: src/Tickets/Seating/Health.php:99
+msgctxt "Shown as an action result, when the test regarding Seating license in Site Health has failed."
+msgid "%1$sYou may need to %4$spurchase a license%3$s or %5$srenew an existing license%3$s.%2$s%2$sOnce you have a valid license, enter it under %6$sTickets > Settings > Licenses%3$s and connect to the Seating Builder service.%2$s%1$s%7$sLearn more about about setting up Seating%3$s%2$s"
+msgstr ""
+
+#: src/Tickets/Seating/Health.php:118
+msgid "Your site communicates with the Seating Builder SaaS"
+msgstr ""
+
+#: src/Tickets/Seating/Health.php:123
+msgid "Your site is able to connect to the Seating Builder SaaS."
+msgstr ""
+
+#. Translators: 1 is opening p element, 2 is closing p element, 3 is opening a element and 4 is closing a element.
+#: src/Tickets/Seating/Health.php:126
+msgctxt "Shown as an action result, when the test regarding Seating license in Site Health is successful."
+msgid "%1$sYou're ready to %3$suse Seating for Event Tickets%4$s.%2$s"
+msgstr ""
+
+#: src/Tickets/Seating/Health.php:137
+msgid "Your site cannot communicate with the Seating Builder SaaS"
+msgstr ""
+
+#: src/Tickets/Seating/Health.php:138
+msgid "The Seating Builder is a SaaS tool that provides the functionality for creating Seating Maps, Seat Layouts, and tickets with assigned seating. Your site must be connected to the Seating Builder in order to use these features."
+msgstr ""
+
+#. Translators: 1 Opening p element, 2 closing p element, 3 is closing a element, 4 and 5 opening a elements.
+#: src/Tickets/Seating/Health.php:141
+msgctxt "Shown as an action result, when the test regarding Seating license in Site Health has failed."
+msgid "%1$s%4$sLearn more about connecting to the Seating Builder%3$s or %5$scontact support%3$s.%2$s"
+msgstr ""
+
+#: src/Tickets/Seating/Localization.php:44
+msgctxt "Capacity option label"
+msgid "General Admission"
+msgstr ""
+
+#: src/Tickets/Seating/Localization.php:45
+msgctxt "Capacity option label"
+msgid "Assigned Seating"
+msgstr ""
+
+#: src/Tickets/Seating/Localization.php:46
+msgctxt "Capacity form label"
+msgid "Choose Seat Layout"
+msgstr ""
+
+#: src/Tickets/Seating/Localization.php:47
+msgctxt "Capacity form label"
+msgid "View layouts"
+msgstr ""
+
+#: src/Tickets/Seating/Localization.php:48
+msgctxt "Capacity form label"
+msgid "Choose seat type"
+msgstr ""
+
+#: src/Tickets/Seating/Localization.php:49
+msgctxt "Capacity form seat types option loading message"
+msgid "Loading seat types"
+msgstr ""
+
+#: src/Tickets/Seating/Localization.php:50
+msgctxt "Capacity form info"
+msgid "Capacity is defined by seat layout options."
+msgstr ""
+
+#: src/Tickets/Seating/Localization.php:51
+msgctxt "Capacity form label"
+msgid "Seat Layout"
+msgstr ""
+
+#: src/Tickets/Seating/Localization.php:52
+msgctxt "Capacity form empty layouts"
+msgid "No active Seat Layouts."
+msgstr ""
+
+#: src/Tickets/Seating/Localization.php:53
+msgctxt "Capacity form empty layouts info"
+msgid "You must create a Seat Layout to use this feature."
+msgstr ""
+
+#: src/Tickets/Seating/Localization.php:54
+msgctxt "Capacity form empty layouts label"
+msgid "Go to Seat Layouts"
+msgstr ""
+
+#: src/Tickets/Seating/Localization.php:77
+msgctxt "Error message"
+msgid "Bad service response"
+msgstr ""
+
+#: src/Tickets/Seating/Localization.php:82
+msgctxt "Error message"
+msgid "Missing request parameters"
+msgstr ""
+
+#: src/Tickets/Seating/Localization.php:87
+msgctxt "Error message"
+msgid "Invalid site parameter"
+msgstr ""
+
+#: src/Tickets/Seating/Localization.php:92
+msgctxt "Error message"
+msgid "Invalid expire time parameter"
+msgstr ""
+
+#: src/Tickets/Seating/Localization.php:97
+msgctxt "Error message"
+msgid "Ephemeral token not found in response"
+msgstr ""
+
+#: src/Tickets/Seating/Localization.php:102
+msgctxt "Error message"
+msgid "Site not found"
+msgstr ""
+
+#: src/Tickets/Seating/Localization.php:107
+msgctxt "Error message"
+msgid "Ephemeral token store error"
+msgstr ""
+
+#: src/Tickets/Seating/Localization.php:112
+msgctxt "Error message"
+msgid "Site not authorized"
+msgstr ""
+
+#: src/Tickets/Seating/Orders/Attendee.php:52
+msgctxt "attendee table seat column header"
+msgid "Seat"
+msgstr ""
+
+#: src/Tickets/Seating/Orders/Attendee.php:85
+#: src/Tickets/Seating/Orders/Attendee.php:388
+msgid "Unassigned"
+msgstr ""
+
+#: src/Tickets/Seating/Orders/Attendee.php:280
+msgid "No assigned seat"
+msgstr ""
+
+#: src/Tickets/Seating/Orders/Attendee.php:303
+msgid "Unknown"
+msgstr ""
+
+#. Translators: %1$s: the post/event title, %2$d: the post/event ID.
+#: src/Tickets/Seating/Orders/Controller.php:295
+msgctxt "seat report screen heading"
+msgid "Seats for: %1$s [#%2$d]"
+msgstr ""
+
+#: src/Tickets/Seating/Orders/Seats_Report.php:80
+#: src/Tickets/Seating/Orders/Seats_Report.php:232
+#: src/Tickets/Seating/Orders/Seats_Tab.php:51
+msgid "Seats"
+msgstr ""
+
+#. translators: %s: post type
+#: src/Tickets/Seating/Orders/Seats_Report.php:228
+msgid "See seats purchased for this %s"
+msgstr ""
+
+#. translators: 1: HTTP status code.
+#: src/Tickets/Seating/Service/Ephemeral_Token.php:119
+msgid "Ephemeral token request failed (%d)."
+msgstr ""
+
+#: src/Tickets/Seating/Service/Ephemeral_Token.php:138
+msgid "Ephemeral token response from service is empty."
+msgstr ""
+
+#: src/Tickets/Seating/Service/Ephemeral_Token.php:156
+msgid "Ephemeral token response from service is invalid."
+msgstr ""
+
+#: src/Tickets/Seating/Service/Error_Content.php:68
+msgid "The Seating Builder service is down. We are working to restore functionality."
+msgstr ""
+
+#: src/Tickets/Seating/Service/Error_Content.php:74
+msgid "You need to connect your site to the Seating Builder in order to create Seating Maps and Seat Layouts."
+msgstr ""
+
+#: src/Tickets/Seating/Service/Error_Content.php:78
+msgctxt "Connect to the Seating Builder button label"
+msgid "Connect"
+msgstr ""
+
+#. translators: %s is the renew link label.
+#: src/Tickets/Seating/Service/Error_Content.php:86
+msgctxt "link label for renewing the license"
+msgid "renew your license"
+msgstr ""
+
+#. translators: %s is the renew link.
+#: src/Tickets/Seating/Service/Error_Content.php:90
+msgid "Your license for Seating has expired. You need to %s to continue using Seating for Event Tickets."
+msgstr ""
+
+#: src/Tickets/Seating/Service/Error_Content.php:125
+msgid "The Seating Builder service is down and assigned seating is not available. We are working to restore functionality."
+msgstr ""
+
+#: src/Tickets/Seating/Service/Error_Content.php:136
+msgctxt "Connect to the Seating Builder link label"
+msgid "Connect"
+msgstr ""
+
+#. translators: %s is the connect link.
+#: src/Tickets/Seating/Service/Error_Content.php:140
+msgid "Your site is not connected to the Seating Builder service. You need to connect your site to use assigned seating. %s"
+msgstr ""
+
+#. translators: %s is the renew link label.
+#: src/Tickets/Seating/Service/Error_Content.php:152
+msgctxt "link label for renewing the license"
+msgid "Renew your license"
+msgstr ""
+
+#. translators: %s is the renew link.
+#: src/Tickets/Seating/Service/Error_Content.php:156
+msgid "Your license for Seating has expired. %s to continue using Seating for Event Tickets."
+msgstr ""
+
+#: src/Tickets/Seating/Uplink.php:57
+msgctxt "Header of the connection controls"
+msgid "Seating"
+msgstr ""
+
+#: src/Tickets/Seating/Uplink.php:124
+msgctxt "Button text for the Seating Builder connection button"
+msgid "Disconnect from Seating Builder"
+msgstr ""
+
+#: src/Tickets/Seating/Uplink.php:125
+msgctxt "Button text for the Seating Builder connection button"
+msgid "Connect to Seating Builder"
+msgstr ""
+
+#: src/Tickets/Seating/Uplink.php:141
+msgctxt "Legend for the license key field"
+msgid "License Key"
 msgstr ""
 
 #: src/Tickets/Site_Health/Abstract_Info_Subsection.php:75
@@ -9559,7 +10174,7 @@ msgid "It looks like you have modified your shared capacity setting but have not
 msgstr ""
 
 #: src/Tribe/Assets.php:284
-#: src/Tribe/Metabox.php:936
+#: src/Tribe/Metabox.php:941
 msgid "Please enter in without thousand separators and currency symbols."
 msgstr ""
 
@@ -9885,7 +10500,7 @@ msgstr ""
 msgid "%s Capacity"
 msgstr ""
 
-#: src/Tribe/CSV_Importer/RSVP_Importer.php:254
+#: src/Tribe/CSV_Importer/RSVP_Importer.php:270
 msgid "Recurring event tickets are not supported, event %s."
 msgstr ""
 
@@ -10140,12 +10755,12 @@ msgid "Failed to duplicate the %s. Refresh the page to try again."
 msgstr ""
 
 #. Translators: %1$s - singular ticket term
-#: src/Tribe/Metabox.php:654
+#: src/Tribe/Metabox.php:659
 msgid "Failed to duplicate the %1$s"
 msgstr ""
 
-#: src/Tribe/Metabox.php:696
-#: src/Tribe/Metabox.php:746
+#: src/Tribe/Metabox.php:701
+#: src/Tribe/Metabox.php:751
 msgid "The attendee ID is missing from the request parameters."
 msgstr ""
 
@@ -10680,61 +11295,61 @@ msgstr ""
 msgid "List of meta for each ticket to be saved for Attendee Registration"
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/QR.php:105
+#: src/Tribe/REST/V1/Endpoints/QR.php:119
 msgid "Returns successful check in"
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/QR.php:111
+#: src/Tribe/REST/V1/Endpoints/QR.php:125
 msgid "A required parameter is missing or an input parameter is in the wrong format"
 msgstr ""
 
 #. Translators: %s is the 'ticket' label (singular, lowercase).
-#: src/Tribe/REST/V1/Endpoints/QR.php:117
+#: src/Tribe/REST/V1/Endpoints/QR.php:131
 msgid "The %s is already checked in"
 msgstr ""
 
 #. Translators: %s is the 'ticket' label (singular, lowercase).
-#: src/Tribe/REST/V1/Endpoints/QR.php:142
+#: src/Tribe/REST/V1/Endpoints/QR.php:156
 msgid "The %s id."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/QR.php:169
+#: src/Tribe/REST/V1/Endpoints/QR.php:183
 msgid "The API key to authorize check in."
 msgstr ""
 
 #. Translators: %s is the 'ticket' label (singular, lowercase).
-#: src/Tribe/REST/V1/Endpoints/QR.php:178
+#: src/Tribe/REST/V1/Endpoints/QR.php:192
 msgid "The ID of the %s to check in."
 msgstr ""
 
 #. Translators: %s is the 'ticket' label (singular, lowercase).
-#: src/Tribe/REST/V1/Endpoints/QR.php:190
+#: src/Tribe/REST/V1/Endpoints/QR.php:204
 msgid "The security code of the %s to verify for check in."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/QR.php:263
+#: src/Tribe/REST/V1/Endpoints/QR.php:277
 msgid "Security code is not valid!"
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/QR.php:278
+#: src/Tribe/REST/V1/Endpoints/QR.php:292
 msgid "An attendee is not found with this ID."
 msgstr ""
 
 #. Translators: %s: 'ticket' label (singular, lowercase).
-#: src/Tribe/REST/V1/Endpoints/QR.php:301
+#: src/Tribe/REST/V1/Endpoints/QR.php:333
 msgid "This attendee's %s is not authorized to be Checked in. Please check the order status."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/QR.php:338
+#: src/Tribe/REST/V1/Endpoints/QR.php:370
 msgid "Event has not started or it has finished."
 msgstr ""
 
 #. Translators: %s: 'ticket' label (singular, lowercase).
-#: src/Tribe/REST/V1/Endpoints/QR.php:357
+#: src/Tribe/REST/V1/Endpoints/QR.php:389
 msgid "%s not checked in!"
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/QR.php:395
+#: src/Tribe/REST/V1/Endpoints/QR.php:427
 msgid "Checked In!"
 msgstr ""
 
@@ -11059,6 +11674,7 @@ msgstr ""
 
 #: src/Tribe/Status/Abstract_Commerce.php:217
 #: src/views/blocks/tickets/extra-available-quantity.php:31
+#: src/views/seating/tickets-block.php:27
 msgid "available"
 msgstr ""
 
@@ -11100,33 +11716,33 @@ msgid "Set capacity for this ticket only"
 msgstr ""
 
 #. translators: %1$s: The singular of "RSVP" or "ticket", %2$s: The plural of "RSVPs" or "tickets", %3$s: The site name.
-#: src/Tribe/Tickets.php:2639
+#: src/Tribe/Tickets.php:2640
 msgctxt "The default RSVP/ticket email subject"
 msgid "Your %1$s from %3$s"
 msgid_plural "Your %2$s from %3$s"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Tribe/Tickets.php:3374
+#: src/Tribe/Tickets.php:3375
 msgid "%s are not available as this %s has passed."
 msgstr ""
 
-#: src/Tribe/Tickets.php:3410
+#: src/Tribe/Tickets.php:3411
 msgid "%s will be available on "
 msgstr ""
 
 #. translators: %s: Tickets label
-#: src/Tribe/Tickets.php:3419
+#: src/Tribe/Tickets.php:3420
 #: src/views/blocks/tickets/content-inactive.php:19
 #: src/views/v2/tickets/item/content/inactive.php:53
 msgid "%s are not yet available"
 msgstr ""
 
-#: src/Tribe/Tickets.php:3871
+#: src/Tribe/Tickets.php:3872
 msgid "(copy)"
 msgstr ""
 
-#: src/Tribe/Tickets.php:4637
+#: src/Tribe/Tickets.php:4638
 msgid "The ticket for this event has sold out and has been removed from your cart."
 msgstr ""
 
@@ -11562,6 +12178,33 @@ msgstr ""
 
 #: src/views/registration/summary/tickets-header.php:16
 msgid "Ticket summary"
+msgstr ""
+
+#: src/views/seating/iframe-view.php:31
+msgid "Seat selection"
+msgstr ""
+
+#: src/views/seating/iframe-view.php:61
+msgid "Select a seat from the map to add seated tickets"
+msgstr ""
+
+#: src/views/seating/iframe-view.php:82
+msgid "Continue"
+msgstr ""
+
+#: src/views/seating/seat-selection-timer.php:32
+msgctxt "Seat selection timer text"
+msgid "Seats reserved for "
+msgstr ""
+
+#: src/views/seating/tickets-block-error.php:22
+msgctxt "Seat selection ticket block error message"
+msgid "Ticket sales are not available. Please contact the site administrator."
+msgstr ""
+
+#: src/views/seating/tickets-block.php:37
+msgctxt "seating tickets sold out button"
+msgid "Sold Out"
 msgstr ""
 
 #: src/views/shortcodes/my-attendance-list-logged-out.php:12
