@@ -476,7 +476,7 @@ function slr_test_connect_to_service() {
  * the development version of the licensing server.
  */
 function slr_test_filter_uplink_url(): void {
-	if ( ! tribe()->has( Service::class ) ) {
+	if ( ! tribe()->isBound( Service::class ) ) {
 		return;
 	}
 	if ( defined( 'STELLARWP_UPLINK_API_BASE_URL' ) ) {
