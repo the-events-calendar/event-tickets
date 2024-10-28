@@ -4,7 +4,7 @@ jobs:
   conditional:
     runs-on: ubuntu-latest
     outputs:
-      has_php_files: ${{ steps.skip.outputs.has_php_files }}
+      has_no_php_files: ${{ steps.skip.outputs.has_no_php_files }}
     steps:
       # ------------------------------------------------------------------------------
       # Checkout the repo
@@ -23,19 +23,19 @@ jobs:
         run: |
           num_php_files=$(git diff ${{ github.event.pull_request.base.sha }} HEAD --name-only | grep -P "\.php" | wc -l)
           if [[ -z "$num_php_files" ]]; then
-            echo "has_php_files=1" >> $GITHUB_OUTPUT
+            echo "has_no_php_files=1" >> $GITHUB_OUTPUT
             echo "## No PHP Files changed, PHPCS will not run." >> $GITHUB_STEP_SUMMARY
-          elif [[ "$has_php_files" == "0" || "$num_php_files" == "" ]]; then
-            echo "value=1" >> $GITHUB_OUTPUT
+          elif [[ "$num_php_files" == "0" || "$num_php_files" == "" ]]; then
+            echo "has_no_php_files=1" >> $GITHUB_OUTPUT
             echo "## No PHP Files changed, PHPCS will not run." >> $GITHUB_STEP_SUMMARY
           else
-            echo "has_php_files=0" >> $GITHUB_OUTPUT
+            echo "has_no_php_files=0" >> $GITHUB_OUTPUT
             echo "## Found PHP file changes, running PHPCS." >> $GITHUB_STEP_SUMMARY
           fi  
   phpcs:
     needs:
       - conditional
-    if: needs.conditional.outputs.has_php_files == 1
+    if: needs.conditional.outputs.has_no_php_files == '0'
     uses: stellarwp/github-actions/.github/workflows/phpcs.yml@main
     with:
       ref: ${{ github.event.inputs.ref }}
