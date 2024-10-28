@@ -1,7 +1,41 @@
 name: 'PHPCS'
 on: [pull_request]
 jobs:
+  conditional:
+    runs-on: ubuntu-latest
+    outputs:
+      has_php_files: ${{ steps.skip.outputs.has_php_files }}
+    steps:
+      # ------------------------------------------------------------------------------
+      # Checkout the repo
+      # ------------------------------------------------------------------------------
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1000
+          token: ${{ secrets.GH_BOT_TOKEN }}
+          submodules: recursive
+      # ------------------------------------------------------------------------------
+      # Check if any PHP files have changed
+      # ------------------------------------------------------------------------------
+      - name: Check changed files
+        id: skip
+        run: |
+          num_php_files=$(git diff ${{ github.event.pull_request.base.sha }} HEAD --name-only | grep -P "\.php" | wc -l)
+          if [[ -z "$num_php_files" ]]; then
+            echo "has_php_files=1" >> $GITHUB_OUTPUT
+            echo "## No PHP Files changed, PHP tests automatically pass." >> $GITHUB_STEP_SUMMARY
+          elif [[ "$has_php_files" == "0" || "$num_php_files" == "" ]]; then
+            echo "value=1" >> $GITHUB_OUTPUT
+            echo "## No PHP Files changed, PHP tests automatically pass." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "has_php_files=0" >> $GITHUB_OUTPUT
+            echo "## Found PHP file changes, running PHP tests." >> $GITHUB_STEP_SUMMARY
+          fi  
   phpcs:
+    needs:
+      - conditional
+    if: needs.conditional.outputs.has_php_files == 1
     uses: stellarwp/github-actions/.github/workflows/phpcs.yml@main
     with:
       ref: ${{ github.event.inputs.ref }}
