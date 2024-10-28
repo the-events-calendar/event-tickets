@@ -24,13 +24,13 @@ jobs:
           num_php_files=$(git diff ${{ github.event.pull_request.base.sha }} HEAD --name-only | grep -P "\.php" | wc -l)
           if [[ -z "$num_php_files" ]]; then
             echo "has_php_files=1" >> $GITHUB_OUTPUT
-            echo "## No PHP Files changed, PHP tests automatically pass." >> $GITHUB_STEP_SUMMARY
+            echo "## No PHP Files changed, PHPCS will not run." >> $GITHUB_STEP_SUMMARY
           elif [[ "$has_php_files" == "0" || "$num_php_files" == "" ]]; then
             echo "value=1" >> $GITHUB_OUTPUT
-            echo "## No PHP Files changed, PHP tests automatically pass." >> $GITHUB_STEP_SUMMARY
+            echo "## No PHP Files changed, PHPCS will not run." >> $GITHUB_STEP_SUMMARY
           else
             echo "has_php_files=0" >> $GITHUB_OUTPUT
-            echo "## Found PHP file changes, running PHP tests." >> $GITHUB_STEP_SUMMARY
+            echo "## Found PHP file changes, running PHPCS." >> $GITHUB_STEP_SUMMARY
           fi  
   phpcs:
     needs:
