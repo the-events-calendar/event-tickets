@@ -24,7 +24,7 @@ jobs:
             echo "has_no_js_changes=1" >> $GITHUB_OUTPUT
             echo "## No .js, .jsx, or .ts files changed, linter will not run." >> $GITHUB_STEP_SUMMARY
           else
-            echo "num_files_changed=0" >> $GITHUB_OUTPUT
+            echo "has_no_js_changes=0" >> $GITHUB_OUTPUT
             echo "## Found .js, .jsx, or .ts file changes, running linter." >> $GITHUB_STEP_SUMMARY
           fi 
       # ------------------------------------------------------------------------------
