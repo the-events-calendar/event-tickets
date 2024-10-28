@@ -297,13 +297,6 @@ export const filterButtonIsDisabled = (isDisabled, state, ownProps) => {
 	return false;
 };
 
-export function captureCapacityTableMappedProps(mappedProps) {
-	const store = select(storeName);
-	store.setTicketsSharedCapacity(mappedProps.sharedCapacity || 0);
-
-	return mappedProps;
-}
-
 /**
  * Filters the shared capacity input component to return an uneditable number if the seating feature is enabled
  * for the current post.

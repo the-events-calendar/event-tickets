@@ -1,8 +1,9 @@
 import { getTicketIdFromCommonStore } from './common-store-bridge';
+import { currentProviderSupportsSeating } from './compatibility';
 
 export const selectors = {
 	isUsingAssignedSeating(state) {
-		return state.isUsingAssignedSeating;
+		return state.isUsingAssignedSeating && currentProviderSupportsSeating();
 	},
 	getLayouts(state) {
 		return state.layouts;
