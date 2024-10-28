@@ -16,15 +16,15 @@ jobs:
       - name: Check changed files
         id: skip
         run: |
-          num_js_ts_files=$(git diff ${{ github.event.pull_request.base.sha }} HEAD --name-only | grep -E "\.(js|jsx|ts)$" | wc -l)
+          has_no_js_changes=$(git diff ${{ github.event.pull_request.base.sha }} HEAD --name-only | grep -E "\.(js|jsx|ts)$" | wc -l)
           if [[ -z "$num_js_ts_files" ]]; then
-            echo "has_js_ts_files=1" >> $GITHUB_OUTPUT
+            echo "has_no_js_changes=1" >> $GITHUB_OUTPUT
             echo "## No .js, .jsx, or .ts files changed, linter will not run." >> $GITHUB_STEP_SUMMARY
-          elif [[ "$has_js_ts_files" == "0" || "$num_js_ts_files" == "" ]]; then
-            echo "value=1" >> $GITHUB_OUTPUT
+          elif [[ "$has_no_js_changes" == "0" || "$has_no_js_changes" == "" ]]; then
+            echo "has_no_js_changes=1" >> $GITHUB_OUTPUT
             echo "## No .js, .jsx, or .ts files changed, linter will not run." >> $GITHUB_STEP_SUMMARY
           else
-            echo "has_js_ts_files=0" >> $GITHUB_OUTPUT
+            echo "has_no_js_changes=0" >> $GITHUB_OUTPUT
             echo "## Found .js, .jsx, or .ts file changes, running linter." >> $GITHUB_STEP_SUMMARY
           fi 
       # ------------------------------------------------------------------------------
@@ -32,6 +32,7 @@ jobs:
       # ------------------------------------------------------------------------------
       - name: Check for .nvmrc file
         id: check-nvmrc
+        if: steps.skip.outputs.has_no_js_changes != 0
         run: |
           if test -f "${{ github.workspace }}/.nvmrc"; then
             echo "exists=true" >> $GITHUB_OUTPUT
@@ -40,7 +41,7 @@ jobs:
           fi
 
       - uses: actions/setup-node@v3
-        if: steps.check-nvmrc.outputs.exists == 'true' && steps.skip.outputs.has_js_ts_files != 0
+        if: steps.skip.outputs.has_no_js_changes != 0 && steps.check-nvmrc.outputs.exists == 'true'
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
