@@ -32,7 +32,7 @@ jobs:
       # ------------------------------------------------------------------------------
       - name: Check for .nvmrc file
         id: check-nvmrc
-        if: steps.skip.outputs.has_no_js_changes != 0
+        if: steps.skip.outputs.has_no_js_changes == '0'
         run: |
           if test -f "${{ github.workspace }}/.nvmrc"; then
             echo "exists=true" >> $GITHUB_OUTPUT
@@ -41,14 +41,14 @@ jobs:
           fi
 
       - uses: actions/setup-node@v3
-        if: steps.skip.outputs.has_no_js_changes != 0 && steps.check-nvmrc.outputs.exists == 'true'
+        if: steps.skip.outputs.has_no_js_changes == '0' && steps.check-nvmrc.outputs.exists == 'true'
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
           cache-dependency-path: package-lock.json
       - name: Install node modules
-        if: steps.skip.outputs.has_no_js_changes != 0
+        if: steps.skip.outputs.has_no_js_changes == '0'
         run: npm ci
       - name: Run jest task
-        if: steps.skip.outputs.has_no_js_changes != 0
+        if: steps.skip.outputs.has_no_js_changes == '0'
         run: npm run jest
