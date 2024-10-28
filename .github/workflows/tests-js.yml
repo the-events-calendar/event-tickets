@@ -1,12 +1,6 @@
 name: 'npm jest'
 on:
   pull_request:
-    paths:
-      - 'src/modules/**.js'
-      - 'src/resources/js/**.js'
-      - 'src/Tickets/Seating/app/**.js'
-      - 'tests/slr_jest/**.js'
-      - '.github/**/*'
 jobs:
   jest:
     runs-on: ubuntu-latest
@@ -14,22 +8,47 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 1000
           submodules: recursive
+      # ------------------------------------------------------------------------------
+      # Check if any .js, .jsx, or .ts files have changed
+      # ------------------------------------------------------------------------------
+      - name: Check changed files
+        id: skip
+        run: |
+          num_files_changed=$(git diff ${{ github.event.pull_request.base.sha }} HEAD --name-only | grep -E "\.(js|jsx|ts)$" | wc -l)
+          if [[ -z "$num_files_changed" ]]; then
+            echo "has_no_js_changes=1" >> $GITHUB_OUTPUT
+            echo "## No .js, .jsx, or .ts files changed, linter will not run." >> $GITHUB_STEP_SUMMARY
+          elif [[ "$num_files_changed" == "0" || "$num_files_changed" == "" ]]; then
+            echo "has_no_js_changes=1" >> $GITHUB_OUTPUT
+            echo "## No .js, .jsx, or .ts files changed, linter will not run." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "has_no_js_changes=0" >> $GITHUB_OUTPUT
+            echo "## Found .js, .jsx, or .ts file changes, running linter." >> $GITHUB_STEP_SUMMARY
+          fi 
       # ------------------------------------------------------------------------------
       # Setup Node.
       # ------------------------------------------------------------------------------
       - name: Check for .nvmrc file
         id: check-nvmrc
-        run: echo "::set-output name=exists::$(test -f ${{ github.workspace }}/.nvmrc && echo 'true' || echo 'false')"
+        if: steps.skip.outputs.has_no_js_changes == '0'
+        run: |
+          if test -f "${{ github.workspace }}/.nvmrc"; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
 
       - uses: actions/setup-node@v3
-        if: steps.check-nvmrc.outputs.exists == 'true'
+        if: steps.skip.outputs.has_no_js_changes == '0' && steps.check-nvmrc.outputs.exists == 'true'
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
           cache-dependency-path: package-lock.json
       - name: Install node modules
+        if: steps.skip.outputs.has_no_js_changes == '0'
         run: npm ci
       - name: Run jest task
+        if: steps.skip.outputs.has_no_js_changes == '0'
         run: npm run jest

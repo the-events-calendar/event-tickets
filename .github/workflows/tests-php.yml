@@ -215,7 +215,8 @@ jobs:
       # Install and activate TwentyTwenty
       # ------------------------------------------------------------------------------
       - name: Install and activate TwentyTwenty
-        run:  ${SLIC_BIN} wp theme install twentytwenty --activate
+        if: steps.skip.outputs.value != 1
+        run: ${SLIC_BIN} wp theme install twentytwenty --activate
       # ------------------------------------------------------------------------------
       # Run tests
       # ------------------------------------------------------------------------------
