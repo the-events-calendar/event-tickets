@@ -10,6 +10,7 @@ import {
 import {
 	getTicketId,
 	getTicketsSharedCapacityInt,
+	getTicketsProvider,
 } from '@moderntribe/tickets/data/blocks/ticket/selectors';
 import { CAPPED } from '@moderntribe/tickets/data/blocks/ticket/constants';
 
@@ -102,4 +103,20 @@ export function getTicketIdFromCommonStore(clientId) {
  */
 export function getTicketsSharedCapacityFromCommonStore() {
 	return selectFromCommonStore(getTicketsSharedCapacityInt);
+}
+
+/**
+ * Returns the current Ticket provider fetched from the Common store.
+ *
+ * @since TBD
+ *
+ * @return {string} The current ticket Provider fetched from the Common store,
+ *                  or an empty string if the Ticket block client ID is not set.
+ */
+export function getTicketProviderFromCommonStore() {
+	try {
+		return selectFromCommonStore(getTicketsProvider);
+	} catch (e) {
+		return '';
+	}
 }

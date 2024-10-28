@@ -1,4 +1,21 @@
 import { selectors } from '@tec/tickets/seating/blockEditor/store/selectors';
+import compatibility from '@tec/tickets/seating/blockEditor/store/compatibility';
+jest.mock('@tec/tickets/seating/blockEditor/store/compatibility', () => ({
+	currentProviderSupportsSeating: jest.fn(()=>true),
+}));
+jest.mock('@tec/tickets/seating/blockEditor/store/common-store-bridge', () => ({
+	getTicketIdFromCommonStore: (clientId) => {
+		if ('client-id-1' === clientId) {
+			return 24;
+		}
+
+		if ('client-id-2' === clientId) {
+			return 56;
+		}
+
+		return 0;
+	},
+}));
 
 const state = {
 	isUsingAssignedSeating: true,
@@ -96,20 +113,6 @@ const state = {
 	isLayoutLocked: true,
 };
 
-jest.mock('@tec/tickets/seating/blockEditor/store/common-store-bridge', () => ({
-	getTicketIdFromCommonStore: (clientId) => {
-		if ('client-id-1' === clientId) {
-			return 24;
-		}
-
-		if ('client-id-2' === clientId) {
-			return 56;
-		}
-
-		return 0;
-	},
-}));
-
 describe('selectors', () => {
 	beforeEach(() => {
 		jest.resetModules();
@@ -123,10 +126,27 @@ describe('selectors', () => {
 
 	describe('isUsingAssignedSeating', () => {
 		it('should return isUsingAssignedSeating value', () => {
+			compatibility.currentProviderSupportsSeating.mockReturnValue(true);
+
 			expect(selectors.isUsingAssignedSeating(state)).toBe(true);
 			state.isUsingAssignedSeating = false;
 			expect(selectors.isUsingAssignedSeating(state)).toBe(false);
 			state.isUsingAssignedSeating = true;
+		});
+
+		it('should return false if current provider does not support seating', () => {
+			state.isUsingAssignedSeating = true;
+			compatibility.currentProviderSupportsSeating.mockReturnValue(true);
+
+			expect(selectors.isUsingAssignedSeating(state)).toBe(true);
+
+			compatibility.currentProviderSupportsSeating.mockReturnValue(false);
+
+			expect(selectors.isUsingAssignedSeating(state)).toBe(false);
+
+			state.isUsingAssignedSeating = true;
+
+			expect(selectors.isUsingAssignedSeating(state)).toBe(false);
 		});
 	});
 
@@ -175,7 +195,9 @@ describe('selectors', () => {
 			expect(
 				selectors.getSeatTypesForLayout(state, 'unknown', true)
 			).toStrictEqual([]);
-			expect(selectors.getSeatTypesForLayout(state, 'unknown')).toStrictEqual([]);
+			expect(
+				selectors.getSeatTypesForLayout(state, 'unknown')
+			).toStrictEqual([]);
 		});
 	});
 
