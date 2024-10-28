@@ -47,6 +47,8 @@ jobs:
           cache: 'npm'
           cache-dependency-path: package-lock.json
       - name: Install node modules
+        if: steps.skip.outputs.has_no_js_changes != 0
         run: npm ci
       - name: Run jest task
+        if: steps.skip.outputs.has_no_js_changes != 0
         run: npm run jest
