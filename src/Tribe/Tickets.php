@@ -4369,20 +4369,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$meta = tribe( 'tickets-plus.meta' );
 
 			$cart_has_meta = true;
-			$cart_has_iac  = true;
 
-			// If the method exists in ET+, run it.
+			// If the method exists (latest ET+ version), run it.
 			if ( method_exists( $meta, 'cart_has_meta' ) ) {
 				$cart_has_meta = $meta->cart_has_meta( $tickets_in_cart );
 			}
 
-			// If the method exists in ET+, run it.
-			if ( method_exists( $meta, 'cart_has_iac' ) ) {
-				$cart_has_iac = $meta->cart_has_iac( $tickets_in_cart );
-			}
-
-			// There are no meta fields or iac set on the cart tickets.
-			if ( ! $cart_has_meta && ! $cart_has_iac ) {
+			if ( ! $cart_has_meta ) {
 				return;
 			}
 
