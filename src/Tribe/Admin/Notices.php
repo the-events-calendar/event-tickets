@@ -1,6 +1,7 @@
 <?php
 
 use TEC\Tickets\Commerce\Utils\Currency;
+use Tribe\Tickets\Admin\Settings;
 
 /**
  * Class Tribe__Tickets__Admin__Notices
@@ -340,29 +341,29 @@ class Tribe__Tickets__Admin__Notices {
 	 */
 	public function maybe_display_fse_ar_page_notice() {
 		// Bail if we aren't in Tickets > Settings.
-		if ( \Tribe\Tickets\Admin\Settings::$settings_page_id !== tribe_get_request_var( 'page' ) ) {
+		if ( Settings::$settings_page_id !== tec_get_request_var( 'page' ) ) {
 			return;
 		}
 
 		// Bail if Tickets Plus is not active.
-		if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
+		if ( ! did_action( 'tec_container_registered_provider_Tribe__Tickets_Plus__Service_Provider' ) ) {
 			return;
 		}
 
-		// Bail if not using FSE theme.
-		if ( ! is_readable( get_stylesheet_directory() . '/templates/index.html' ) ) {
+		// Bail if not using block theme.
+		if ( ! wp_is_block_theme() ) {
 			return;
 		}
 
-		// Bail if the attendee registration page is already set.
+		// Bail if the attendee registration page is already set or does not exist.
 		$id = Tribe__Settings_Manager::get_option( 'ticket-attendee-page-id', false );
-		if ( ! empty( $id ) ) {
+		if ( ! empty( $id ) || ! get_post_status( $id ) ) {
 			return;
 		}
 
 		$settings_link = sprintf(
 			'<a href="%s">%s</a>',
-			esc_url( admin_url( 'admin.php?page=tec-tickets-settings&tab=attendee-registration' ) ),
+			esc_url( tribe( Settings::class )->get_url( [ 'tab' => 'attendee-registration' ] ) ),
 			esc_html__( 'Attendee Registration settings', 'event-tickets' )
 		);
 
