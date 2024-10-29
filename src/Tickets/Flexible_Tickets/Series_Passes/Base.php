@@ -89,7 +89,7 @@ class Base extends Controller {
 			$this,
 			'classic_editor_ticket_items'
 		], 10, 5 );
-
+		
 		// Remove the warning about Tickets added to a Recurring Event.
 		$ticket_admin_notices = tribe( 'tickets.admin.notices' );
 		remove_action( 'admin_init', [
@@ -163,16 +163,6 @@ class Base extends Controller {
 			$this,
 			'show_series_link_after_ticket_type_title'
 		], 10, 3 );
-
-        add_filter(
-            'tribe_template_pre_html:tickets/admin-views/editor/panel/settings-button',
-            [
-                $this,
-                'remove_settings_button_from_classic_metabox',
-            ],
-            10,
-            5
-        );
 	}
 
 	/**
@@ -193,7 +183,7 @@ class Base extends Controller {
 			$this,
 			'classic_editor_ticket_items'
 		] );
-
+		
 		// Restore the warning about Tickets added to a Recurring Event.
 		$ticket_admin_notices = tribe( 'tickets.admin.notices' );
 		if ( ! has_action( 'admin_init',
@@ -275,16 +265,6 @@ class Base extends Controller {
 			$this,
 			'show_series_link_after_ticket_type_title'
 		], 10, 3 );
-
-        remove_filter(
-            'tribe_template_pre_html:tickets/admin-views/editor/panel/settings-button',
-            [
-                $this,
-                'remove_settings_button_from_classic_metabox',
-            ],
-            10,
-            5
-        );
 	}
 
 	/**
@@ -343,7 +323,7 @@ class Base extends Controller {
 
 		return $buffer;
 	}
-
+	
 	/**
 	 * Disables Tickets and RSVPs on recurring events.
 	 *

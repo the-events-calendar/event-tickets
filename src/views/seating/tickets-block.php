@@ -13,7 +13,6 @@
  * @var string $inventory     The inventory of the tickets.
  * @var string $modal_content The content of seat selection modal.
  */
-
 ?>
 
 <div class="tribe-common event-tickets tribe-tickets__tickets-wrapper">
