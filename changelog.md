@@ -18,7 +18,6 @@
 * Tweak - Removed superfluous tool tip from capacity options in block editor.
 * Tweak - Show seat assignment on My Tickets page for attendees with assigned seating.
 * Tweak - Show seat assignment on tickets for attendees with assigned seating.
-* Fix - Tickets Commerce orders through Stripe no longer will create duplicate attendees [ET-2256]
 
 ### [5.15.0] 2024-10-21
 
