@@ -58,6 +58,12 @@ use TEC\Tickets\Seating\Admin\Tabs\Layout_Card;
 				data-event-count="<?php echo esc_attr( $count ); ?>">
 				<?php esc_html_e( 'Edit', 'event-tickets' ); ?>
 			</a>
+			<button
+				class="button button-secondary duplicate-layout"
+				data-layout-id="<?php echo esc_attr( $card->get_id() ); ?>"
+			>
+				<?php esc_html_e( 'Duplicate', 'event-tickets' ); ?>
+			</button>
 			<?php if ( 0 === $count ) : ?>
 			<a
 				class="delete-layout"

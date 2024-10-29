@@ -1,5 +1,6 @@
-import { ajaxUrl, ajaxNonce } from '@tec/tickets/seating/ajax';
-import { onReady, getLocalizedString } from '@tec/tickets/seating/utils';
+import { ajaxUrl, ajaxNonce, ACTION_DUPLICATE_LAYOUT } from '@tec/tickets/seating/ajax';
+import { onReady, getLocalizedString, redirectTo } from '@tec/tickets/seating/utils';
+
 
 /**
  * Get localized string for the given key.
@@ -136,7 +137,79 @@ async function handleDestructiveEdit(event) {
 	}
 }
 
+/**
+ * Register a duplicate action on all the duplicate layout buttons.
+ *
+ * @since TBD
+ *
+ * @param {HTMLDocument|null} dom The document to use to search for the duplicate buttons.
+ */
+export function registerDuplicateLayoutAction(dom) {
+	dom = dom || document;
+
+	dom.querySelectorAll('.duplicate-layout').forEach(function (btn) {
+		btn.addEventListener('click', handleDuplicateAction);
+	});
+}
+
+/**
+ * Handle the duplicate layout action.
+ *
+ * @since TBD
+ *
+ * @param {ClickEvent} event The click event.
+ *
+ * @return {Promise<void>}
+ */
+async function handleDuplicateAction(event) {
+	const layoutId = event.target.getAttribute('data-layout-id');
+	if(!layoutId) {
+		alert( getLocalizedString( 'duplicate-failed', 'layouts' ) );
+	}
+
+	event.target.disabled = false;
+	const card = event.target.closest('.tec-tickets__seating-tab__card');
+	card.style.opacity = 0.5;
+
+	const result = await duplicateLayout(layoutId);
+
+	if ( result ) {
+		redirectTo(result.data);
+	} else {
+		alert( getLocalizedString( 'duplicate-failed', 'layouts' ) );
+		card.style.opacity = 1;
+		event.target.disabled = false;
+	}
+}
+
+/**
+ * Duplicate a layout by layout ID.
+ *
+ * @since TBD
+ *
+ * @param {string} mapId The map ID.
+ *
+ * @return {Promise<boolean|object>} A promise with an object of the duplicated layout, or false otherwise.
+ */
+async function duplicateLayout( layoutId ) {
+	const url = new URL(ajaxUrl);
+	url.searchParams.set('_ajax_nonce', ajaxNonce);
+	url.searchParams.set('layoutId', layoutId);
+	url.searchParams.set('action', ACTION_DUPLICATE_LAYOUT);
+	const response = await fetch(url.toString(), { method: 'POST' });
+
+	console.log('response', response);
+
+	if ( response.status === 200 ) {
+		return await response.json();
+	}
+
+	return false;
+}
+
+
 export { handleDelete, deleteLayout };
 
 onReady(() => registerDeleteAction(document));
 onReady(() => registerDestructiveEditAction(document));
+onReady(() => registerDuplicateLayoutAction(document));
