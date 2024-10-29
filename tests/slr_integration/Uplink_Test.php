@@ -8,7 +8,6 @@ use TEC\Common\StellarWP\Uplink\Resources\Collection;
 use TEC\Common\StellarWP\Uplink\Storage\Contracts\Storage;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Seating\Service\Layouts as Layouts_Service;
-use TEC\Tickets\Seating\Service\Maps;
 use TEC\Tickets\Seating\Service\Maps as Maps_Service;
 use TEC\Tickets\Seating\Tables\Layouts;
 use TEC\Tickets\Seating\Tables\Seat_Types;
