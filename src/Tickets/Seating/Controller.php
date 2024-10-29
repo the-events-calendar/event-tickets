@@ -16,7 +16,7 @@ use TEC\Tickets\Seating\Frontend\Session;
 /**
  * Class Controller
  *
- * @since   1.0.0
+ * @since 5.16.0
  *
  * @package TEC/Controller
  */

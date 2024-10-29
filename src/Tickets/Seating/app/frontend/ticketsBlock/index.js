@@ -290,7 +290,7 @@ async function postReservationsToBackend(reservations) {
 /**
  * Updates the tickets selection.
  *
- * @since TBd
+ * @since 5.16.0
  *
  * @param {HTMLElement|null}       parentElement The parent element to add the tickets to.
  * @param {TicketSelectionProps[]} items         The items to add to the selection.
@@ -322,7 +322,7 @@ function updateTicketsSelection(parentElement, items) {
 /**
  * Updates the empty tickets message.
  *
- * @since TBd
+ * @since 5.16.0
  *
  * @param {number|null} ticketCount The number of selected tickets.
  */
@@ -446,7 +446,7 @@ function setupMobileTicketsDrawer(dom) {
 /**
  * Bootstraps the service iframe starting the communication with the service.
  *
- * @since TBd
+ * @since 5.16.0
  *
  * @param {HTMLDocument|null} dom The document to use to bootstrap the iframe.
  *
