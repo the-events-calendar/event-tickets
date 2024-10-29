@@ -2,7 +2,7 @@
 /**
  * ${CARET}
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC\Controller\Service;
  */
@@ -15,7 +15,7 @@ use WP_Error;
 /**
  * Class Ephemeral_Token.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC\Controller\Service;
  */
@@ -26,7 +26,7 @@ class Ephemeral_Token {
 	/**
 	 * The URL to the ephemeral token endpoint on the service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ class Ephemeral_Token {
 	/**
 	 * Ephemeral_Token constructor.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $backend_base_url The base URL of the service.
 	 */
@@ -46,7 +46,7 @@ class Ephemeral_Token {
 	/**
 	 * Fetches an ephemeral token from the service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param int         $expiration The expiration in seconds. While this value is arbitrary, the service will still
 	 *                                return a token whose expiration has been set to 15', 30', 1 hour or 6 hours.
@@ -59,7 +59,7 @@ class Ephemeral_Token {
 		/**
 		 * Filters the ephemeral token to be used by the service before the default logic fetches one from the service.
 		 *
-		 * @since TBD
+		 * @since 5.16.0
 		 *
 		 * @param string|null $ephemeral_token The ephemeral token to be used by the service. If not `null`, the default
 		 *                                     logic will not be used.
@@ -78,7 +78,7 @@ class Ephemeral_Token {
 		/**
 		 * Filters the site URL used to obtain an ephemeral token from the service.
 		 *
-		 * @since TBD
+		 * @since 5.16.0
 		 *
 		 * @param string $site_url The site URL, defaulting to the home URL.
 		 */
@@ -164,7 +164,7 @@ class Ephemeral_Token {
 	/**
 	 * Returns the URL to the ephemeral token endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The URL to the ephemeral token endpoint.
 	 */

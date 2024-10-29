@@ -2,9 +2,9 @@
 /**
  * The template used to render empty layouts list.
  *
- * @since TBD
+ * @since 5.16.0
  *
- * @version TBD
+ * @version 5.16.0
  */
 
 ?>

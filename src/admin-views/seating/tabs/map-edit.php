@@ -2,7 +2,7 @@
 /**
  * The template used to render the Controller Configuration Edit tab.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @var TEC\Events_Assigned_Seating\Admin\Tabs\Map_Edit $tab        The tab object to render.
  * @var string                                          $iframe_url The URL to the service iframe.

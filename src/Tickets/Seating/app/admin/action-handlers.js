@@ -29,7 +29,7 @@ import {
 /**
  * Handles the seat types updated action.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {UpdatedSeatTypeData} data The updated seat types.
  *
@@ -75,7 +75,7 @@ export async function handleSeatTypesUpdated(data) {
 /**
  * Handles the seat type deleted action.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {SeatTypeDeletedData} data The deleted seat type data.
  *
@@ -112,7 +112,7 @@ export async function handleSeatTypeDeleted(data) {
 /**
  * Handles the deletion of reservations.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {ReservationsDeletedData} data The IDs of the reservations that were deleted.
  *
@@ -154,7 +154,7 @@ export async function handleReservationsDeleted(data) {
 /**
  * Handles the update of Reservations following a Seat Type update.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {ReservationsUpdateFollowingSeatTypesData} data The updated reservations.
  *

@@ -20,7 +20,7 @@ use Tribe__Tickets__Main as Tickets_Main;
 /**
  * Class Seats_Tab.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC/Tickets/Seating/Orders
  */
@@ -28,7 +28,7 @@ class Seats_Report extends Report_Abstract {
 	/**
 	 * Slug of the admin page for orders
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -42,7 +42,7 @@ class Seats_Report extends Report_Abstract {
 	/**
 	 * The action to register the assets for the report.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -51,7 +51,7 @@ class Seats_Report extends Report_Abstract {
 	/**
 	 * Order Pages ID on the menu.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string The menu slug of the orders page
 	 */
@@ -60,7 +60,7 @@ class Seats_Report extends Report_Abstract {
 	/**
 	 * Hooks the actions and filter required by the class.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 */
 	public function register_tab() {
 		// Register the tabbed view.
@@ -72,7 +72,7 @@ class Seats_Report extends Report_Abstract {
 	/**
 	 * Registers the Seats page among those the tabbed view should render.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -93,7 +93,7 @@ class Seats_Report extends Report_Abstract {
 	/**
 	 * Screen setup.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -104,7 +104,7 @@ class Seats_Report extends Report_Abstract {
 	/**
 	 * Renders the order page
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 */
 	public function render_page() {
 		$tc_tabbed_view = new Tabbed_View();
@@ -132,7 +132,7 @@ class Seats_Report extends Report_Abstract {
 	/**
 	 * Sets up the template variables used to render the Seats Report Page.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return array<string, mixed> The template variables.
 	 */
@@ -157,7 +157,7 @@ class Seats_Report extends Report_Abstract {
 	/**
 	 * Get the report link.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param WP_Post $post The Post object.
 	 */
@@ -175,7 +175,7 @@ class Seats_Report extends Report_Abstract {
 	/**
 	 * Include seats action row.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array<string,string> $actions The action items.
 	 * @param WP_Post              $post The post object.
@@ -238,7 +238,7 @@ class Seats_Report extends Report_Abstract {
 	/**
 	 * Returns whether the upsell should show or not.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return bool Whether the upsell should show or not.
 	 */
@@ -248,7 +248,7 @@ class Seats_Report extends Report_Abstract {
 		/**
 		 * Filters whether the upsell should be shown in the Seats report tab.
 		 *
-		 * @since TBD
+		 * @since 5.16.0
 		 *
 		 * @param bool            $should_show_upsell Whether the upsell should be shown.
 		 * @param Service_Status  $service_status     The seating service's status.

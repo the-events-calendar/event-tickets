@@ -4,7 +4,7 @@ import { localizedData } from './localized-data';
 /**
  * The list of ticket IDs that is checked for availability in the Tickets Block.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @type {number[]}
  */
@@ -19,7 +19,7 @@ const ticketIds = Object.values(localizedData.seatTypeMap).reduce(
 /**
  * Filters the list of Ticket IDS that is checked for availability in the Tickets Block.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {number[]} The filtered list of Ticket IDS that is checked for availability in the Tickets Block.
  */

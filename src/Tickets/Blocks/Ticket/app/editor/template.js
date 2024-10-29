@@ -57,7 +57,7 @@ class Ticket extends PureComponent {
 		 * Filters the ticket `isSelected` property. The property comes fron the Block Editor,
 		 * and it's a proxy to many of the interactivity properties of the ticket.
 		 *
-		 * @since TBD
+		 * @since 5.16.0
 		 *
 		 * @param {boolean} isSelected The ticket `isSelected` property.
 		 * @param {Object}  props      The Ticket component props.

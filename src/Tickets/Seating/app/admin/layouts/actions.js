@@ -4,7 +4,7 @@ import { onReady, getLocalizedString } from '@tec/tickets/seating/utils';
 /**
  * Get localized string for the given key.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {string} key The key to get the localized string for.
  *
@@ -17,7 +17,7 @@ export function getString(key) {
 /**
  * Register delete action on all links with class 'delete-layout'.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {HTMLDocument|null} dom The document to use to search for the delete buttons.
  */
@@ -35,7 +35,7 @@ export function registerDeleteAction(dom) {
 /**
  * Handle delete action.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {HTMLElement} element The target item.
  *
@@ -71,7 +71,7 @@ async function handleDelete(element) {
 /**
  * Delete layout.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {string} layoutId The layout ID.
  * @param {string} mapId    The map ID.
@@ -92,7 +92,7 @@ async function deleteLayout(layoutId, mapId) {
 /**
  * Register destructive edit action on all links with class 'edit-layout'.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {HTMLDocument|null} dom The document to use to search for the edit buttons.
  */
@@ -109,7 +109,7 @@ export function registerDestructiveEditAction(dom) {
 /**
  * Handle destructive edit action.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {ClickEvent} event The click event.
  *

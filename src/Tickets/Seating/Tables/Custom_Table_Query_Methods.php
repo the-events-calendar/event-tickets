@@ -2,7 +2,7 @@
 /**
  * Provides query methods common to all custom tables.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Controller\Tables;
  */
@@ -15,7 +15,7 @@ use TEC\Common\StellarWP\DB\DB;
 /**
  * Trait Custom_Table_Query_Methods.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Controller\Tables;
  */
@@ -25,7 +25,7 @@ trait Custom_Table_Query_Methods {
 	/**
 	 * Fetches all the rows from the table using a batched query.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param int    $batch_size   The number of rows to fetch per batch.
 	 * @param string $output       The output type of the query, one of OBJECT, ARRAY_A, or ARRAY_N.
@@ -63,7 +63,7 @@ trait Custom_Table_Query_Methods {
 	/**
 	 * Inserts multiple rows into the table.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array<mixed> $entries The entries to insert.
 	 *
@@ -99,7 +99,7 @@ trait Custom_Table_Query_Methods {
 	/**
 	 * Fetches all the rows from the table using a batched query and a WHERE clause.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $where_clause The WHERE clause to use.
 	 * @param int    $batch_size   The number of rows to fetch per batch.
@@ -114,7 +114,7 @@ trait Custom_Table_Query_Methods {
 	/**
 	 * Fetches the first row from the table using a WHERE clause.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $where_clause The prepared WHERE clause to use.
 	 * @param string $output       The output type of the query, one of OBJECT, ARRAY_A, or ARRAY_N.

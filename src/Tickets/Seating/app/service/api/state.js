@@ -47,7 +47,7 @@ export const state = {
 /**
  * Returns the handler for a given action, or the default handler if none is found.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {string} action The action to get the handler for.
  *
@@ -64,7 +64,7 @@ export function getHandlerForAction(action) {
 /**
  * Registers an action and its callback.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {string}   action   The action to register the callback for.
  * @param {Function} callback The callback to register for the action.
@@ -76,7 +76,7 @@ export function registerAction(action, callback) {
 /**
  * Removes an action and its callback form the actions map.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {string} action The action to remove form the actions map.
  */
@@ -87,7 +87,7 @@ export function removeAction(action) {
 /**
  * Returns the actions map.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {Object} The actions map.
  */
@@ -98,7 +98,7 @@ export function getRegisteredActions() {
 /**
  * Sets the ready state of the Service.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {boolean} isReady Whether the Service is ready or not.
  */
@@ -109,7 +109,7 @@ export function setIsReady(isReady) {
 /**
  * Returns whether the Service is ready or not.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {boolean} Whether the Service is ready or not.
  */
@@ -120,7 +120,7 @@ export function getIsReady() {
 /**
  * Sets whether the Service is establishing readiness or not.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {boolean} establishingReadiness Whether the Service is establishing or not.
  */
@@ -131,7 +131,7 @@ export function setEstablishingReadiness(establishingReadiness) {
 /**
  * Returns whether the Service is establishing readiness or not.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {boolean} Whether the Service is establishing readiness or not.
  */
@@ -142,7 +142,7 @@ export function getEstablishingReadiness() {
 /**
  * Sets the token used to communicate with the service.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {string} token The token to set.
  */
@@ -153,7 +153,7 @@ export function setToken(token) {
 /**
  * Returns the current ephemeral token used to communicate with the service.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {string} The current ephemeral token.
  */
@@ -166,7 +166,7 @@ export function getToken() {
  *
  * This is useful for testing and should not be used in production.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {void}
  */

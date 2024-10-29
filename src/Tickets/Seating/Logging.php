@@ -2,7 +2,7 @@
 /**
  * Provides an API over action-based logging.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC\Controller;
  */
@@ -12,7 +12,7 @@ namespace TEC\Tickets\Seating;
 /**
  * Class Logging.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC\Controller;
  */
@@ -20,7 +20,7 @@ trait Logging {
 	/**
 	 * Logs an error message dispatching the `tribe_log` action.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $message The message to log.
 	 * @param array  $context The context of the message.

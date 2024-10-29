@@ -66,7 +66,7 @@ addFilter(
 /**
  * Filters the action items of the dashboard to add the seating actions.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {Array}  actions  The action items of the dashboard.
  * @param {string} clientId The client ID of the ticket block.
@@ -94,7 +94,7 @@ addFilter(
 /**
  * Filters the ticket edit action items to remove the move button for seated tickets.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {Object[]} actions  The action items of the ticket.
  * @param {string}   clientId The client ID of the ticket block.

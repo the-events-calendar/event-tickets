@@ -2,7 +2,7 @@
 /**
  * The Seating feature frontend session cookie.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating\Frontend;
  */
@@ -16,7 +16,7 @@ use TEC\Tickets\Seating\Tables\Sessions;
 /**
  * Class Session.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating\Frontend;
  */
@@ -24,7 +24,7 @@ class Session {
 	/**
 	 * The cookie name used to store the ephemeral token.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -33,7 +33,7 @@ class Session {
 	/**
 	 * A reference to the Sessions table handler.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Sessions
 	 */
@@ -42,7 +42,7 @@ class Session {
 	/**
 	 * A reference to the Reservations object.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Reservations
 	 */
@@ -51,7 +51,7 @@ class Session {
 	/**
 	 * Session constructor.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param Sessions     $sessions     A reference to the Sessions table handler.
 	 * @param Reservations $reservations A reference to the Reservations object.
@@ -64,7 +64,7 @@ class Session {
 	/**
 	 * Parses the cookie string into an array of object IDs and tokens.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return array<string,string> The parsed cookie string, a map from object ID to token.
 	 */
@@ -85,7 +85,7 @@ class Session {
 	/**
 	 * Returns the cookie string from the entries.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array<int,string> $entries The entries to convert to a cookie string.
 	 *
@@ -109,7 +109,7 @@ class Session {
 	 * For this reason, we set the cookie expiration time to 1 day, a value that should be large enough for any token
 	 * contained in it to expire.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return int The expiration time of the Seating session cookie.
 	 */
@@ -117,7 +117,7 @@ class Session {
 		/**
 		 * Filters the expiration time of the Seating session cookie.
 		 *
-		 * @since TBD
+		 * @since 5.16.0
 		 *
 		 * @param int $expiration_time The expiration time of the Seating session cookie.
 		 */
@@ -127,7 +127,7 @@ class Session {
 	/**
 	 * Adds a new entry to the cookie string.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param int    $object_id The object ID that will become the new entry key.
 	 * @param string $token     The token that will become the new entry value.
@@ -153,7 +153,7 @@ class Session {
 	/**
 	 * Removes an entry from the cookie.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param int    $post_id The post ID to remove the cookie entry for.
 	 * @param string $token   The token to remove the cookie entry for.
@@ -197,7 +197,7 @@ class Session {
 	 *
 	 * The token used for previous session reservations is read from the cookie.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param int    $object_id The object ID to delete the sessions for.
 	 * @param string $token     The token to cancel the previous session for.
@@ -242,7 +242,7 @@ class Session {
 	/**
 	 * Returns the token and object ID couple with the earliest expiration time from the cookie.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array<string,string> $cookie_entries The entries from the cookie. A map from object ID to token.
 	 *
@@ -274,7 +274,7 @@ class Session {
 	 * to pick the object ID with the earliest expiration time.
 	 * Extensions can modify this logic by filtering the `tec_tickets_seating_timer_token_object_id_handler` filter.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return array{0: string, 1: int}|null The token and object ID from the cookie, or `null` if not found.
 	 */
@@ -285,7 +285,7 @@ class Session {
 		 * Filters the session entries used to get the token and object ID from the cookie for the purpose of
 		 * tracking the seat selection session.
 		 *
-		 * @since TBD
+		 * @since 5.16.0
 		 *
 		 * @param array<string,string> $entries The entries from the cookie. A map from object ID to token.
 		 */
@@ -302,7 +302,7 @@ class Session {
 		 * Filters the handler used to get the token and object ID from the cookie.
 		 * The default handler will pick the object ID and token couple with the earliest expiration time.
 		 *
-		 * @since TBD
+		 * @since 5.16.0
 		 *
 		 * @param callable             $handler The handler used to get the token and object ID from the cookie.
 		 * @param array<string,string> $entries The entries from the cookie. A map from object ID to token.
@@ -320,7 +320,7 @@ class Session {
 	/**
 	 * Confirms all the reservations contained in the cookie.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return bool Whether the reservations were confirmed or not.
 	 */
@@ -344,7 +344,7 @@ class Session {
 	/**
 	 * Returns a list of all the reservations details for a specific ticket and event.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param int|null $post_id   The post ID to get the reservations for.
 	 * @param int|null $ticket_id The ticket ID to get the reservations for.

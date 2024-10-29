@@ -2,7 +2,7 @@
 /**
  * The service component used to fetch the Seat Types from the service.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Controller\Service;
  */
@@ -23,7 +23,7 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
 /**
  * Class Seat_Types.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Controller\Service;
  */
@@ -33,7 +33,7 @@ class Seat_Types {
 	/**
 	 * The URL to the service used to fetch the layouts from the backend.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -42,7 +42,7 @@ class Seat_Types {
 	/**
 	 * Layouts constructor.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $backend_base_url The base URL of the service from the site backend.
 	 */
@@ -53,7 +53,7 @@ class Seat_Types {
 	/**
 	 * Inserts multiple rows from the service into the table.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array $service_rows {
 	 *    The list of seat types to insert.
@@ -104,7 +104,7 @@ class Seat_Types {
 	/**
 	 * Returns the seat types in option format.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string[] $layout_ids The layout IDs to get the seat types for.
 	 *
@@ -141,7 +141,7 @@ class Seat_Types {
 	/**
 	 * Updates the seat types from the service by updating the caches and custom tables.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param bool $force If true, the seat types will be updated even if they are up-to-date.
 	 *
@@ -164,7 +164,7 @@ class Seat_Types {
 	/**
 	 * Returns the transient name used to store the last update time.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The transient name used to store the last update time.
 	 */
@@ -175,7 +175,7 @@ class Seat_Types {
 	/**
 	 * Returns the expiration time in seconds.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return int The expiration time in seconds.
 	 */
@@ -186,7 +186,7 @@ class Seat_Types {
 	/**
 	 * Updates the seat types from the service by updating the custom table.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array<array<string,string>> $seat_types The data of the seat types to update.
 	 *
@@ -234,7 +234,7 @@ class Seat_Types {
 	/**
 	 * Updates the capacity of all tickets for the seat types.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array<string,int> $updates The seat type ID to capacity map.
 	 *
@@ -286,7 +286,7 @@ class Seat_Types {
 	/**
 	 * Updates the tickets moving to the with the $new_seat_type_id with the calculated stock and capacity.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string     $new_seat_type_id    The new seat type ID.
 	 * @param int        $new_capacity        The new capacity.
@@ -434,7 +434,7 @@ class Seat_Types {
 	 *
 	 * The primary seat type is the first seat type in `id` order.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $layout_id The layout ID to fetch the primary seat type for.
 	 *

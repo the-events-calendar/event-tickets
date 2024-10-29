@@ -2,7 +2,7 @@
 /**
  * The Seat Selection reservations table schema.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating\Tables;
  */
@@ -16,7 +16,7 @@ use TEC\Tickets\Seating\Logging;
 /**
  * Class Sessions.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating\Tables;
  */
@@ -27,7 +27,7 @@ class Sessions extends Table {
 	/**
 	 * The schema version.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -36,7 +36,7 @@ class Sessions extends Table {
 	/**
 	 * The base table name, without the table prefix.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -45,7 +45,7 @@ class Sessions extends Table {
 	/**
 	 * The table group.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -54,7 +54,7 @@ class Sessions extends Table {
 	/**
 	 * The slug used to identify the custom table.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -63,7 +63,7 @@ class Sessions extends Table {
 	/**
 	 * The field that uniquely identifies a row in the table.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -72,7 +72,7 @@ class Sessions extends Table {
 	/**
 	 * Removes all the expired sessions from the table.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return int The number of expired sessions removed.
 	 */
@@ -103,7 +103,7 @@ class Sessions extends Table {
 	 * Returns the table creation SQL in the format supported
 	 * by the `dbDelta` function.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The table creation SQL, in the format supported
 	 *                by the `dbDelta` function.
@@ -127,7 +127,7 @@ class Sessions extends Table {
 	/**
 	 * Insert or updates a new row in the table depending on the existence of the token.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $token                The token to insert or update.
 	 * @param int    $object_id            The object ID to insert or update.
@@ -167,7 +167,7 @@ class Sessions extends Table {
 	/**
 	 * Returns the number of seconds left in the timer for a given token.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $token The token to get the seconds left for.
 	 *
@@ -207,7 +207,7 @@ class Sessions extends Table {
 	/**
 	 * Returns the list of reservations for a given token and object ID.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $token The token to get the reservations for.
 	 *
@@ -250,7 +250,7 @@ class Sessions extends Table {
 	/**
 	 * Gets the reservation UUIDs for a given token.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $token The token to get the reservation UUIDs for.
 	 *
@@ -276,7 +276,7 @@ class Sessions extends Table {
 	/**
 	 * Updates, replacing them, the reservations for a given token.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $token        Temporary token to identify the reservations.
 	 * @param array  $reservations { The list of reservations to replace the existing ones with.
@@ -332,7 +332,7 @@ class Sessions extends Table {
 				/**
 				 * Fires after the reservations were updated for a given token.
 				 *
-				 * @since TBD
+				 * @since 5.16.0
 				 *
 				 * @param string $token        The token to update the reservations for.
 				 * @param array  $reservations The list of reservations to update the existing ones with.
@@ -360,7 +360,7 @@ class Sessions extends Table {
 	/**
 	 * Deletes all the sessions for a given token.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $token The token to delete the sessions for.
 	 *
@@ -393,7 +393,7 @@ class Sessions extends Table {
 	/**
 	 * Clears the reservations for a given token.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $token The token to clear the reservations for.
 	 *

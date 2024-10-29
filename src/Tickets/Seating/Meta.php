@@ -2,7 +2,7 @@
 /**
  * Information repository and handler of post meta data for the plugin.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC\Controller;
  */
@@ -12,7 +12,7 @@ namespace TEC\Tickets\Seating;
 /**
  * Class Meta.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC\Controller;
  */
@@ -20,7 +20,7 @@ class Meta {
 	/**
 	 * The meta key used to store the enabled state of seat layouts and reservations for a post.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -29,7 +29,7 @@ class Meta {
 	/**
 	 * The meta key used to store the layout ID of a post.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -38,7 +38,7 @@ class Meta {
 	/**
 	 * The meta key used to store the seat type of a Ticket.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -47,7 +47,7 @@ class Meta {
 	/**
 	 * The meta key used to store the UUID of a post.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -56,7 +56,7 @@ class Meta {
 	/**
 	 * The meta key used to store the seat labels of a Ticket as attendee meta.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -65,7 +65,7 @@ class Meta {
 	/**
 	 * The meta key used to store the reservation ID of an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */

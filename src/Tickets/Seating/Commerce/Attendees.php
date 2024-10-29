@@ -2,7 +2,7 @@
 /**
  * Provides methods to interact with Attndees' data.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating\Commerce;
  */
@@ -16,7 +16,7 @@ use Tribe__Cache_Listener as Triggers;
 /**
  * Class Attendees.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating\Commerce;
  */
@@ -25,7 +25,7 @@ class Attendees {
 	/**
 	 * Returns the number of attendees for a given post and seat type..
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param int    $post_id   The post ID to return the number of attendees for.
 	 * @param string $seat_type The seat type UUID to return the number of attendees for.

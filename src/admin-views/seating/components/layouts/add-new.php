@@ -2,11 +2,11 @@
 /**
  * The template used to render the Layouts tab.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @var Map_Card[] $maps The set of maps to display.
  *
- * @version TBD
+ * @version 5.16.0
  */
 
 use TEC\Tickets\Seating\Admin\Tabs\Map_Card;

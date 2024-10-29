@@ -2,7 +2,7 @@
 /**
  * Handles the rendering of the service error content.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating\Service;
  */
@@ -14,7 +14,7 @@ use TEC\Tickets\Seating\Admin\Template;
 /**
  * Class Error_Content.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating\Service;
  */
@@ -22,7 +22,7 @@ class Error_Content {
 	/**
 	 * A reference to the Service Status object.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Service_Status
 	 */
@@ -31,7 +31,7 @@ class Error_Content {
 	/**
 	 * A reference to the Template object.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Template
 	 */
@@ -40,7 +40,7 @@ class Error_Content {
 	/**
 	 * Error_Content constructor.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param Template $template A reference to the admin Template object.
 	 */
@@ -51,7 +51,7 @@ class Error_Content {
 	/**
 	 * Renders the error content in the context of an admin area tab.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param Service_Status $status The service status object.
 	 */
@@ -109,7 +109,7 @@ class Error_Content {
 	/**
 	 * Returns the message to be displayed in the editor relative to the service status.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param Service_Status $status The service status object.
 	 *

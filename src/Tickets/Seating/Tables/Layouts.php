@@ -2,7 +2,7 @@
 /**
  * The Layouts table schema.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC\Controller\Tables;
  */
@@ -14,7 +14,7 @@ use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
 /**
  * Class Layouts.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC\Controller\Tables;
  */
@@ -24,7 +24,7 @@ class Layouts extends Table {
 	/**
 	 * The schema version.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -33,7 +33,7 @@ class Layouts extends Table {
 	/**
 	 * The base table name, without the table prefix.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -42,7 +42,7 @@ class Layouts extends Table {
 	/**
 	 * The table group.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -51,7 +51,7 @@ class Layouts extends Table {
 	/**
 	 * The slug used to identify the custom table.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -60,7 +60,7 @@ class Layouts extends Table {
 	/**
 	 * The field that uniquely identifies a row in the table.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -70,7 +70,7 @@ class Layouts extends Table {
 	 * Returns the table creation SQL in the format supported
 	 * by the `dbDelta` function.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The table creation SQL, in the format supported
 	 *                by the `dbDelta` function.

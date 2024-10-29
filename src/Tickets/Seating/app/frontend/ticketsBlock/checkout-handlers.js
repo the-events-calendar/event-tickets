@@ -6,7 +6,7 @@ import { setIsInterruptable } from '@tec/tickets/seating/frontend/session';
  * This is the default checkout handler for the Tickets Commerce in the context of the Tickets Seating feature.
  * This method call the backend to get the redirection URL with the cart data.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {FormData} data The data to send to the Tickets Commerce checkout page.
  *
@@ -41,7 +41,7 @@ export async function checkoutWithTicketsCommerce(data) {
  * Returns the checkout handler for a given provider.
  * This function filters the checkout handler for a given provider in the context of the Tickets Seating feature.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {string} provider The provider to get the checkout handler for.
  *
@@ -63,7 +63,7 @@ export function getCheckoutHandlerForProvider(provider) {
 	/**
 	 * Filters the checkout handler for a given provider in the context of the Tickets Seating feature..
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param {Function|null} checkoutHandler The checkout handler for the provider.
 	 * @param {string}        provider        The provider to get the checkout handler for.

@@ -9,7 +9,7 @@ import './style.pcss';
 /**
  * Returns the string from the settings localization.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {string} key The key to get the string for.
  *
@@ -20,7 +20,7 @@ const getString = (key) => getLocalizedString(key, 'settings');
 /**
  * The layout select component.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {Object} props The component props.
  */
@@ -31,7 +31,7 @@ const LayoutSelect = ({
 	/**
 	 * Gets the current layout option.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param {number} layoutId The layout ID.
 	 * @param {Array}  layouts  The layouts.
@@ -47,7 +47,7 @@ const LayoutSelect = ({
 	/**
 	 * The post ID.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @type {number}
 	 */
@@ -65,7 +65,7 @@ const LayoutSelect = ({
 	/**
 	 * Handles the layout change.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param {Object} selectedLayout The selected layout.
 	 */
@@ -81,7 +81,7 @@ const LayoutSelect = ({
 	/**
 	 * Close the modal.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 */
 	const closeModal = () => {
 		setIsModalOpen(false);
@@ -92,7 +92,7 @@ const LayoutSelect = ({
 	/**
 	 * Handle Modal confirmation.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 */
 	const handleModalConfirm = async () => {
 		setActiveLayout(newLayout);
@@ -107,7 +107,7 @@ const LayoutSelect = ({
 	/**
 	 * Save the new layout with changes.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return {Promise<boolean>}
 	 */
@@ -125,7 +125,7 @@ const LayoutSelect = ({
 	/**
 	 * Renders the no layouts message.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 */
 	function NoLayouts() {
 		if ( currentLayout === null || currentLayout.length === 0 || layouts.length === 0 ) {
@@ -140,7 +140,7 @@ const LayoutSelect = ({
 	/**
 	 * Renders the select dropdown for the layout.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return {JSX.Element|null}
 	 */

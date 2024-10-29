@@ -2,7 +2,7 @@
 /**
  * Manage seat selection data for attendee.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC/Tickets/Seating/Orders
  */
@@ -24,7 +24,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 /**
  * Class Attendee
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC/Tickets/Seating/Orders
  */
@@ -32,7 +32,7 @@ class Attendee {
 	/**
 	 * Adds the attendee seat column to the attendee list.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array<string,string> $columns The columns for the Attendees table.
 	 * @param int                  $event_id The event ID.
@@ -56,7 +56,7 @@ class Attendee {
 	/**
 	 * Renders the seat column for the attendee list.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string              $value  Row item value.
 	 * @param array<string,mixed> $item   Row item data.
@@ -101,7 +101,7 @@ class Attendee {
 	/**
 	 * Handle seat column sorting.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array<string,mixed> $query_args An array of the query arguments the query will be initialized with.
 	 * @param WP_Query            $query The query object, the query arguments have not been parsed yet.
@@ -146,7 +146,7 @@ class Attendee {
 	/**
 	 * Remove move row action from attendee list for seated tickets.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array<string,mixed> $actions The list of actions.
 	 * @param array<string,mixed> $item    The item being acted upon.
@@ -197,7 +197,7 @@ class Attendee {
 	/**
 	 * Include seating data into the attendee object.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param WP_Post $post The attendee post object, decorated with a set of custom properties.
 	 *
@@ -234,7 +234,7 @@ class Attendee {
 	/**
 	 * Include seat info in email.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param Template $template The email template instance.
 	 *
@@ -263,7 +263,7 @@ class Attendee {
 	/**
 	 * Inject seating label with ticket name on My Tickets page.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string   $html The HTML content of ticket information.
 	 * @param Template $template The email template instance.
@@ -293,7 +293,7 @@ class Attendee {
 	/**
 	 * Formats a  set of Attendees to the format expected by the Seats Report AJAX request.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array<array<string,mixed>> $attendees The Attendees to format.
 	 *
@@ -371,7 +371,7 @@ class Attendee {
 	/**
 	 * Inject seating label with ticket name on Order success page.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string   $html The HTML content of ticket information.
 	 * @param Template $template The email template instance.
@@ -401,7 +401,7 @@ class Attendee {
 	/**
 	 * Calculates the total number of available seats for a given set of tickets considering their seat type.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array<string,mixed>  $render_context The render context for the attendee page.
 	 * @param int                  $post_id The post ID.

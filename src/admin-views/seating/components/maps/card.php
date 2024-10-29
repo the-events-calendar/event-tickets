@@ -2,9 +2,9 @@
 /**
  * Template to render a Map card.
  *
- * @since TBD
+ * @since 5.16.0
  *
- * @version TBD
+ * @version 5.16.0
  *
  * @var Map_Card $card The Map card to render.
  */

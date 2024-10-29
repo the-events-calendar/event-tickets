@@ -2,7 +2,7 @@
 /**
  * The pseudo-tab used to create or edit a Layout.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Controller\Admin\Tabs;
  */
@@ -18,7 +18,7 @@ use TEC\Tickets\Seating\Meta;
 /**
  * Class Layout_Edit.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Controller\Admin\Tabs;
  */
@@ -31,7 +31,7 @@ class Layout_Edit extends Tab {
 	/**
 	 * The service used to render the iframe.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Service
 	 */
@@ -40,7 +40,7 @@ class Layout_Edit extends Tab {
 	/**
 	 * Layout_Edit constructor.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param Template $template A reference to the template handle used to render this tab.
 	 * @param Service  $service A reference to the service object.
@@ -53,7 +53,7 @@ class Layout_Edit extends Tab {
 	/**
 	 * Returns the title of this tab. The one that will be displayed on the top of the page.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The title of this tab.
 	 */
@@ -65,7 +65,7 @@ class Layout_Edit extends Tab {
 	/**
 	 * Returns the ID of this tab, used in the URL and CSS/JS attributes.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The CSS/JS id of this tab.
 	 */
@@ -76,7 +76,7 @@ class Layout_Edit extends Tab {
 	/**
 	 * Renders the tab.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void The rendered HTML of this tab is passed to the output buffer.
 	 */
@@ -98,7 +98,7 @@ class Layout_Edit extends Tab {
 	/**
 	 * Returns the URL to edit the Layout.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $post_id The Post ID.
 	 *

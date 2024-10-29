@@ -14,7 +14,7 @@ import {
 /**
  * Fetches seat types for a given layout ID.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {string} layoutId The layout ID to fetch seat types for.
  *

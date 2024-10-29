@@ -2,7 +2,7 @@
 /**
  * The Controller to set up the Uplink library.
  *
- * @since   TBD
+ * @since   5.16.0
  * @package TEC\Tickets\Libraries\Uplink
  */
 
@@ -15,7 +15,7 @@ use Tribe__Tickets__Main as Main;
 /**
  * Controller for setting up the stellarwp/uplink library.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Libraries\Uplink
  */
@@ -44,7 +44,7 @@ class Uplink extends Controller_Contract {
 	/**
 	 * Register the controller.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 */
 	public function do_register(): void {
 		$this->et_main = tribe( 'tickets.main' );
@@ -55,7 +55,7 @@ class Uplink extends Controller_Contract {
 	/**
 	 * Unregister the controller.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -66,7 +66,7 @@ class Uplink extends Controller_Contract {
 	/**
 	 * Register the plugin in the uplink library.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */

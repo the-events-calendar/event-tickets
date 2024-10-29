@@ -36,7 +36,7 @@ const CapacityTable = ({
 	/**
 	 * Filters the shared capacity input component.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param {React.Node} sharedCapacityInput The shared capacity input component.
 	 * @param {number}     sharedCapacity      The shared capacity current value.

@@ -2,7 +2,7 @@
 /**
  * A value object representing the status of the Seating Service.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating\Service;
  */
@@ -14,7 +14,7 @@ use function TEC\Common\StellarWP\Uplink\get_resource;
 /**
  * Class Service_Status.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating\Service;
  */
@@ -24,7 +24,7 @@ class Service_Status {
 	/**
 	 * A constant representing that the connection to the service is established.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var int
 	 */
@@ -33,7 +33,7 @@ class Service_Status {
 	/**
 	 * A constant representing the fact that the service is not responding.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var int
 	 */
@@ -42,7 +42,7 @@ class Service_Status {
 	/**
 	 * A constant representing the fact that the site is not connected to the service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var int
 	 */
@@ -51,7 +51,7 @@ class Service_Status {
 	/**
 	 * A constant representing the fact that the site is connected to the service but the license is invalid.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var int
 	 */
@@ -60,7 +60,7 @@ class Service_Status {
 	/**
 	 * A constant representing the fact that the site is connected to the service but the license is expired.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var int
 	 */
@@ -69,7 +69,7 @@ class Service_Status {
 	/**
 	 * A constant representing the fact that there is no license.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var int
 	 */
@@ -78,7 +78,7 @@ class Service_Status {
 	/**
 	 * The base URL of the service from the site backend.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -87,7 +87,7 @@ class Service_Status {
 	/**
 	 * The status of the service, a combination of the constants (flags) above.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var int|null
 	 */
@@ -96,7 +96,7 @@ class Service_Status {
 	/**
 	 * Service_Status constructor.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string   $backend_base_url The base URL of the service from the site backend.
 	 * @param int|null $status           The status of the service.
@@ -123,7 +123,7 @@ class Service_Status {
 	/**
 	 * Updates the status of the service with a check of the license, token and the connection to the service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -178,7 +178,7 @@ class Service_Status {
 	/**
 	 * Returns whether the service status is OK or not.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return bool  Whether the service status is OK or not.
 	 */
@@ -191,7 +191,7 @@ class Service_Status {
 	/**
 	 * Returns whether the license used is invalid.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return bool Whether the service status is Invalid License or not.
 	 */
@@ -204,7 +204,7 @@ class Service_Status {
 	/**
 	 * Returns whether the site is not connected to the service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return bool Whether the service status is Not Connected or not.
 	 */
@@ -217,7 +217,7 @@ class Service_Status {
 	/**
 	 * Returns whether the license used is expired.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return bool Whether the service status is Expired License or not.
 	 */
@@ -230,7 +230,7 @@ class Service_Status {
 	/**
 	 * Returns the status of the service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return int The status of the service as an integer, one of the `self::*` constants.
 	 */
@@ -243,7 +243,7 @@ class Service_Status {
 	/**
 	 * Returns the status of the service as a string.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The status of the service as a string.
 	 */
@@ -269,7 +269,7 @@ class Service_Status {
 	/**
 	 * Returns the URI to connect to the service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The URI to connect to the service.
 	 */

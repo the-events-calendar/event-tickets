@@ -2,7 +2,7 @@
 /**
  * The Layout card object class.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Admin\Tabs;
  */
@@ -16,7 +16,7 @@ use TEC\Tickets\Seating\Service\Layouts as Layouts_Service;
 /**
  * The Layout_Card Class.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Admin\Tabs;
  */
@@ -24,52 +24,52 @@ class Layout_Card {
 	/**
 	 * The Layout ID.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
 	protected string $id;
-		
+
 	/**
 	 * The Layout name.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
 	protected string $name;
-	
+
 	/**
 	 * The Layout map ID.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
 	protected string $map;
-		
+
 	/**
 	 * The number of seats in the Layout.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var int
 	 */
 	protected int $seats;
-		
+
 	/**
 	 * The URL to the Layout's screenshot.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
 	protected string $screenshot_url;
-		
+
 	/**
 	 * Layout_Card constructor.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $id The Layout ID.
 	 * @param string $name The Layout name.
@@ -84,66 +84,66 @@ class Layout_Card {
 		$this->seats          = $seats;
 		$this->screenshot_url = $screen_shot_url;
 	}
-		
+
 	/**
 	 * Returns the Layout ID.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The Layout ID.
 	 */
 	public function get_id(): string {
 		return $this->id;
 	}
-		
+
 	/**
 	 * Returns the Layout name.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The Layout name.
 	 */
 	public function get_name(): string {
 		return $this->name;
 	}
-	
+
 	/**
 	 * Returns the Layout map ID.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The Layout map.
 	 */
 	public function get_map(): string {
 		return $this->map;
 	}
-		
+
 	/**
 	 * Returns the number of seats in the Layout.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return int The number of seats in the Layout.
 	 */
 	public function get_seats(): int {
 		return $this->seats;
 	}
-		
+
 	/**
 	 * Returns the URL to the Layout's screenshot.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The URL to the Layout's screenshot.
 	 */
 	public function get_screenshot_url(): string {
 		return $this->screenshot_url;
 	}
-	
+
 	/**
 	 * Returns the URL to edit the Layout.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The URL to edit the Layout.
 	 */
@@ -157,22 +157,22 @@ class Layout_Card {
 			admin_url( 'admin.php' )
 		);
 	}
-	
+
 	/**
 	 * Returns the number of associated posts.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return int The number of associated posts.
 	 */
 	public function get_associated_posts_count(): int {
 		return Layouts_Service::get_associated_posts_by_id( $this->get_id() );
 	}
-	
+
 	/**
 	 * Returns the URL to the Layout's associated posts.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The URL to the Layout's associated posts.
 	 */
@@ -182,7 +182,7 @@ class Layout_Card {
 				'page'   => Associated_Events::SLUG,
 				'layout' => $this->get_id(),
 			],
-			admin_url( 'admin.php' ) 
+			admin_url( 'admin.php' )
 		);
 	}
 }

@@ -2,7 +2,7 @@
 /**
  * Provides the truncate methods for the Seating tables.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating\Tables;
  */
@@ -14,7 +14,7 @@ use TEC\Common\StellarWP\DB\DB;
 /**
  * Trait Truncate_Methods.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating\Tables;
  */
@@ -22,7 +22,7 @@ trait Truncate_Methods {
 	/**
 	 * Truncates the table.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return bool|int The number of rows affected, or `false` on failure.
 	 */

@@ -391,7 +391,7 @@ export function* setBodyDetails( clientId ) {
 	 * Fires after the body details have been set and before the request is sent.
 	 * The action will fire both when a ticket is being created and when an existing ticket is being updated.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 * @param {Object} body The body of the request.
 	 * @param {string} clientId The client ID of the ticket block that is being created or updated.
 	 */
@@ -678,7 +678,7 @@ export function* createNewTicket( action ) {
 			/**
 			 * Fires after the ticket has been created.
 			 *
-			 * @since TBD
+			 * @since 5.16.0
 			 * @param {string} clientId The ticket's client ID.
 			 */
 			doAction( 'tec.tickets.blocks.ticketCreated', clientId );
@@ -829,7 +829,7 @@ export function* updateTicket( action ) {
 			/**
 			 * Fires after the ticket has been updated.
 			 *
-			 * @since TBD
+			 * @since 5.16.0
 			 * @param {string} clientId The ticket's client ID.
 			 */
 			doAction( 'tec.tickets.blocks.ticketUpdated', clientId );

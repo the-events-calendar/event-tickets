@@ -2,7 +2,7 @@
 /**
  * Handle cart data for assigned seat tickets.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC/Tickets/Seating/Orders
  */
@@ -20,7 +20,7 @@ use WP_Post;
 /**
  * Class Cart
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC/Tickets/Seating/Orders
  */
@@ -29,7 +29,7 @@ class Cart {
 	/**
 	 * A reference to the Session handler.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Session
 	 */
@@ -38,7 +38,7 @@ class Cart {
 	/**
 	 * A reference to the Sessions table handler.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Sessions
 	 */
@@ -49,7 +49,7 @@ class Cart {
 	 * We're storing Generators and not arrays to keep the pointer to the current reservation data across
 	 * multiple calls to the same ticket.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var array<int,array<int,array<int,Generator<array{
 	 *     reservation_id: string,
@@ -62,7 +62,7 @@ class Cart {
 	/**
 	 * Cart constructor.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param Session  $session A reference to the Session handler.
 	 * @param Sessions $sessions A reference to the Sessions table handler.
@@ -75,7 +75,7 @@ class Cart {
 	/**
 	 * Handles the seat selection for the cart.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array $data The data to prepare for the cart.
 	 *
@@ -102,7 +102,7 @@ class Cart {
 	 * will return the same Generator with `current()` pointing to the current reservation data. It's the caller's
 	 * responsibility to call `next()` to advance the Generator.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $token     The ephemeral token used to secure the iframe communication with the service.
 	 * @param int    $object_id The object ID of the post the tickets are attached to.
@@ -131,7 +131,7 @@ class Cart {
 	 *
 	 * If the values are not memoized, they will be memoized and returned.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return array{0: string, 1: int} The memoized session token and object ID.
 	 */
@@ -154,7 +154,7 @@ class Cart {
 	/**
 	 * Saves the seat data for the attendee.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param WP_Post       $attendee   The generated attendee.
 	 * @param Ticket_Object $ticket     The ticket the attendee is generated for.
@@ -182,18 +182,18 @@ class Cart {
 			update_post_meta( $attendee->ID, Meta::META_KEY_LAYOUT_ID, $layout_id );
 		}
 	}
-	
+
 	/**
 	 * Maybe clear the cart if the session is expired or the session is empty but cart has seated tickets.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
 	public function maybe_clear_cart_for_empty_session(): void {
 		[ $token, $object_id ] = $this->get_session_token_object_id();
 		$cart                  = tribe( TicketsCommerce_Cart::class );
-		
+
 		// Check if there are any seating sessions available.
 		if ( ! empty( $token ) || ! empty( $object_id ) ) {
 			/**
@@ -203,10 +203,10 @@ class Cart {
 			if ( $this->sessions->get_seconds_left( $token ) <= 0 ) {
 				$cart->clear_cart();
 			}
-			
+
 			return;
 		}
-		
+
 		// If the cart has any item with seating enabled then we need to clear the cart.
 		foreach ( $cart->get_items_in_cart() as $ticket_id => $item ) {
 			if ( get_post_meta( $ticket_id, META::META_KEY_ENABLED, true ) ) {

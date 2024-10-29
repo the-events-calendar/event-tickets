@@ -88,7 +88,7 @@ class Event_Repository extends Repository_Decorator {
 	/**
 	 * Returns the SQL to include Series in the meta value comparison.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $alias The post meta table alias used in the context SQL.
 	 *

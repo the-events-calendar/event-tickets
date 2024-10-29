@@ -5,9 +5,9 @@
  * Override this template in your own theme by creating a file at
  * [your-theme]/tribe/tickets-seating/tickets-block.php
  *
- * @since   TBD
+ * @since   5.16.0
  *
- * @version TBD
+ * @version 5.16.0
  *
  * @var string $cost_range    The cost range of the tickets.
  * @var string $inventory     The inventory of the tickets.
@@ -36,7 +36,7 @@
 				>
 					<?php echo esc_html_x( 'Sold Out', 'seating tickets sold out button', 'event-tickets' ); ?>
 				</button>
-				<?php 
+				<?php
 			else :
 				echo $modal_content; // phpcs:ignore
 				?>

@@ -23,7 +23,7 @@ class Provider extends Service_Provider {
 	/**
 	 * A reference to the Hooks object.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Hooks|null
 	 */
@@ -174,7 +174,7 @@ class Provider extends Service_Provider {
 	/**
 	 * Runs the init hooks managed by the Hooks object.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */

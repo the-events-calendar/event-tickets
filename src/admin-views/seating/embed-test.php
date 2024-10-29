@@ -2,7 +2,7 @@
 /**
  * The Embed Test page.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @var TEC\Events_Assigned_Seating\Admin\Embed_Test $controller The controller object.
  * @var string $iframe_url The URL to the service iframe.

@@ -30,7 +30,7 @@ export function registerDeleteAction(dom) {
 /**
  * Handle delete action.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {HTMLElement} element - The target item.
  *
@@ -58,7 +58,7 @@ async function handleDelete(element) {
 /**
  * Delete map by ID.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {string} mapId - The map ID.
  *

@@ -15,7 +15,7 @@ const unknownError = _x('Unknown error', 'Error message', 'event-tickets');
 /**
  * A map from error codes to error messages.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @type {string: string}
  */
@@ -54,7 +54,7 @@ const errorCodeToMessageMap = {
 /**
  * Returns the error message for the given error code.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {string} errorCode The error code.
  *

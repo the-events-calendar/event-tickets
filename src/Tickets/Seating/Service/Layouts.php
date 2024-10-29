@@ -2,7 +2,7 @@
 /**
  * The service component used to fetch the Layouts from the service.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC\Controller\Service;
  */
@@ -23,7 +23,7 @@ use Tribe__Tickets__Main as Tickets;
 /**
  * Class Layouts.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC\Controller\Service;
  */
@@ -34,7 +34,7 @@ class Layouts {
 	/**
 	 * The URL to the service used to fetch the layouts from the backend.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -43,7 +43,7 @@ class Layouts {
 	/**
 	 * Layouts constructor.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $backend_base_url The base URL of the service from the site backend.
 	 */
@@ -54,7 +54,7 @@ class Layouts {
 	/**
 	 * Inserts multiple rows from the service into the table.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array<array{ id?: string, name?: string, seats?: int, mapId?: string, createdDate?: string, screenshotUrl?: string}> $service_rows The rows to insert.
 	 *
@@ -102,7 +102,7 @@ class Layouts {
 	/**
 	 * Returns the layouts in option format.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return array<array{id: string, name: string, seats: int}> The layouts in option format.
 	 */
@@ -137,7 +137,7 @@ class Layouts {
 	/**
 	 * Fetches all the Layouts from the database.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return Layout_Card[] Array of layout card objects.
 	 */
@@ -171,7 +171,7 @@ class Layouts {
 	/**
 	 * Updates the layouts from the service by updating the caches and custom tables.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param bool $force If true, the layouts will be updated even if they are up-to-date.
 	 *
@@ -188,7 +188,7 @@ class Layouts {
 	/**
 	 * Returns the transient name used to store the last update time.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The transient name used to store the last update time.
 	 */
@@ -199,7 +199,7 @@ class Layouts {
 	/**
 	 * Returns the expiration time in seconds.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return int The expiration time in seconds.
 	 */
@@ -210,7 +210,7 @@ class Layouts {
 	/**
 	 * Returns the number of events associated with the layout.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $layout_id The ID of the layout.
 	 *
@@ -262,7 +262,7 @@ class Layouts {
 	/**
 	 * Invalidates all the caches and custom tables storing information about Layouts.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param boolean $truncate Whether to truncate the caches and custom tables storing information about Layouts.
 	 *
@@ -283,7 +283,7 @@ class Layouts {
 		 * Fires after the caches and custom tables storing information about Layouts have been
 		 * invalidated.
 		 *
-		 * @since TBD
+		 * @since 5.16.0
 		 *
 		 * @param boolean $truncate Whether to truncate the caches and custom tables storing information about Layouts.
 		 */
@@ -295,7 +295,7 @@ class Layouts {
 	/**
 	 * Returns the URL to delete a layout.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $layout_id The UUID of the layout to delete.
 	 * @param string $map_id    The UUID of the map the layout belongs to.
@@ -315,7 +315,7 @@ class Layouts {
 	/**
 	 * Deletes a layout from the service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $layout_id The ID of the layout to delete.
 	 * @param string $map_id    The Map ID of the layout to delete.
@@ -358,7 +358,7 @@ class Layouts {
 	/**
 	 * Returns the URL to add a new layout.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $map_id The ID of the map to add the layout to.
 	 *
@@ -376,7 +376,7 @@ class Layouts {
 	/**
 	 * Adds a new layout to the service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $map_id The ID of the map to add the layout to.
 	 *
@@ -420,7 +420,7 @@ class Layouts {
 	/**
 	 * Updates the capacity of all posts for the given layout IDs.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array<string,int> $updates The layout ID to seats count map.
 	 *

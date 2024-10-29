@@ -16,7 +16,7 @@ const {
 /**
  * The selector used to find the timer elements on the page.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @type {string}
  */
@@ -25,7 +25,7 @@ const selector = '.tec-tickets-seating__timer';
 /**
  * The class name that, applied to the timer elements, will hide them.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @type {string}
  */
@@ -34,7 +34,7 @@ const hiddenClassName = 'tec-tickets-seating__timer--hidden';
 /**
  * The ID of the countdown loop that will update the timer every second.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @type {?number}
  */
@@ -43,7 +43,7 @@ let countdownTimeoutId = null;
 /**
  * The ID of the health check loop that will sync the timer with the backend every minute.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @type {?number}
  */
@@ -52,7 +52,7 @@ let healthCheckTimeoutId = null;
 /**
  * The ID of the resume loop that will resume the timer after a pause.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @type {?number}
  */
@@ -61,7 +61,7 @@ let resumeTimeoutId = null;
 /**
  * Whether the timer has been started or not.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @type {boolean}
  */
@@ -70,7 +70,7 @@ let started = false;
 /**
  * Whether the timer is currently interruptable or not.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @type {boolean}
  */
@@ -79,7 +79,7 @@ let interruptable = true;
 /**
  * Whether the timer has expired or not.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @type {boolean}
  */
@@ -88,7 +88,7 @@ let expired = false;
 /**
  * The interrupt dialog HTML element.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @type {HTMLElement|null}
  */
@@ -98,7 +98,7 @@ let interruptDialogElement = null;
  * The document element that should be targeted by the module.
  * Defaults to the document.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @type {HTMLElement}
  */
@@ -107,7 +107,7 @@ let targetDom = document;
 /**
  * The list of checkout controls that are being watched.
  *
- * @since TBD
+ * @since 5.16.0
  *
  *
  * @type {HTMLElement[]} the list of checkout controls that are being watched.
@@ -117,7 +117,7 @@ let watchedCheckoutControls = [];
 /**
  * The selectors used to find the checkout controls on the page.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @type {string}
  */
@@ -127,7 +127,7 @@ export const checkoutControlsSelectors =
 /**
  * Sets the interruptable flag.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {boolean} interruptableFlag The interruptable flag.
  */
@@ -138,7 +138,7 @@ export function setIsInterruptable(interruptableFlag) {
 /**
  * Returns the interruptable flag.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {boolean} Whether the timer is currently interruptable or not.
  */
@@ -149,7 +149,7 @@ export function isInterruptable() {
 /**
  * Sets the expired flag.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {boolean} expiredFlag The expired flag.
  */
@@ -160,7 +160,7 @@ function setIsExpired(expiredFlag) {
 /**
  * Returns the expired flag.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {boolean} Whether the timer has expired or not.
  */
@@ -171,7 +171,7 @@ export function isExpired() {
 /**
  * Sets the started flag.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {boolean} startedFlag The started flag.
  */
@@ -182,7 +182,7 @@ function setIsStarted(startedFlag) {
 /**
  * Returns the started flag.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {boolean} Whether the timer has been started or not.
  */
@@ -200,7 +200,7 @@ export function isStarted() {
 /**
  * Returns all the timer elements on the page.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {NodeList<HTMLElement>} All the timer elements on the page.
  */
@@ -257,7 +257,7 @@ export function findTimerData() {
 /**
  * Sets the minutes and seconds of the timer.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {HTMLElement} timerElement The timer element to set the minutes and seconds for..
  * @param {number}      minutes
@@ -290,7 +290,7 @@ function setTimerTimeLeft(timerElement, minutes, seconds) {
 /**
  * Fetches the data required to render the correct timer expiration modal on the frontend.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {Promise<InterruptModalData>} The data required to render the correct timer expiration modal on the frontend.
  */
@@ -348,7 +348,7 @@ async function fetchInterruptModalData() {
 /**
  * Returns  the interrupt dialog element.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {A11yDialog|null} Either the interrupt dialog element or `null` if it could not be found.
  */
@@ -410,7 +410,7 @@ async function getInterruptDialogElement() {
 /**
  * Interrupts the user triggering the user flow redirection when the time is up.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {void} The timer is interrupted.
  */
@@ -435,7 +435,7 @@ async function interrupt() {
 	/**
 	 * Fires to trigger an interruption of the user flow due to the timer expiring.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 */
 	doAction('tec.tickets.seating.timer_interrupt');
 
@@ -451,7 +451,7 @@ async function interrupt() {
 /**
  * Sends a beacon to the backend to interrupt the user flow.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {void} The timer is interrupted.
  */
@@ -473,7 +473,7 @@ export function beaconInterrupt() {
 /**
  * Starts the loop that will recursively update the timer(s) every second.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {number} secondsLeft The number of seconds left in the timer.
  *
@@ -511,7 +511,7 @@ function startCountdownLoop(secondsLeft) {
 /**
  * Starts a loop to sync the timer with the backend every minute.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {void}
  */
@@ -531,7 +531,7 @@ function startHealthCheckLoop() {
  *
  * If the seconds left is less than or equal to 0, the interruption logic will be triggered.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {Promise<void>} A promise that will resolve when the request is completed.
  */
@@ -561,7 +561,7 @@ export async function syncWithBackend() {
 /**
  * Sends a request to the backend to either start or sync the timer.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {ACTION_START|ACTION_SYNC} action The action to send to the backend.
  *
@@ -634,7 +634,7 @@ async function requestToBackend(action) {
 /**
  * Starts the seat selection timer on the backend and frontend of the site.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {Promise<void>} A Promise that resolves when the timer is started.
  */
@@ -667,7 +667,7 @@ export async function start() {
 /**
  * Resets the timer cancelling any pending countdown and health check loops and setting the started flag to false.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {void} The timer is reset.
  */
@@ -696,7 +696,7 @@ export function reset() {
 /**
  * Postpones the healthcheck that will sync with the backend resetting its timer.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {void}
  */
@@ -722,7 +722,7 @@ export function pause() {
 /**
  * Resumes the timer from a pause.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {void} The timer is resumed.
  */
@@ -741,7 +741,7 @@ export async function resume() {
  *
  * Defaults to the document.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {HTMLElement} targetDocument The DOM to initialize the timer(s) in.
  */
@@ -752,7 +752,7 @@ export function setTargetDom(targetDocument) {
 /**
  * Syncs the timer with the backend on DOM ready.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {void} The timer is synced.
  */
@@ -778,7 +778,7 @@ export async function syncOnLoad() {
 /**
  * Watches for the checkout controls to be clicked or submitted and postpones the healthcheck.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {void}
  */
@@ -786,7 +786,7 @@ export function watchCheckoutControls() {
 	/**
 	 * Filters the selectors used to find the checkout controls on the page.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @type {string} The `querySeelctorAll` selectors used to find the checkout controls on the page.
 	 */
@@ -809,7 +809,7 @@ export function watchCheckoutControls() {
 /**
  * Remove the event listeners from the watched checkout controls.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {void} The event listeners are removed from the watched checkout controls.
  */
@@ -825,7 +825,7 @@ function stopWatchingCheckoutControls() {
 /**
  * Returns the list of checkout controls that are being watched by the timer.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {HTMLElement[]} The list of checkout controls that are being watched by the timer.
  */
@@ -836,7 +836,7 @@ export function getWatchedCheckoutControls() {
 /**
  * Sets the healthcheck loop ID.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {number} id The ID of the healthcheck loop.
  *
@@ -851,7 +851,7 @@ export function setHealthcheckLoopId(id) {
 /**
  * Returns the ID of the healthcheck timeout.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {?number} The ID of the healthcheck timeout.
  */
@@ -862,7 +862,7 @@ export function getHealthcheckTimeoutId() {
 /**
  * Returns the ID of the countdown timeout.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {?number} The ID of the countdown timeout.
  */
@@ -873,7 +873,7 @@ export function getCountdownTimeoutId() {
 /**
  * Returns the ID of the resume timeout
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {?number} The ID of the resume timeout.
  */

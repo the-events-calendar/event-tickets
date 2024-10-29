@@ -2,7 +2,7 @@
 /**
  * Fetches and updates data from the service.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC\Controller\Service;
  */
@@ -15,7 +15,7 @@ use TEC\Tickets\Seating\Logging;
 /**
  * Class Updater.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC\Controller\Service;
  */
@@ -26,7 +26,7 @@ class Updater {
 	/**
 	 * The name of the transient to use to store the last update time.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ class Updater {
 	/**
 	 * The expiration time in seconds.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var int
 	 */
@@ -44,7 +44,7 @@ class Updater {
 	/**
 	 * Whether the data should be updated from the service or not.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var bool
 	 */
@@ -53,7 +53,7 @@ class Updater {
 	/**
 	 * The URL to the service used to fetch the items from the backend.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -62,7 +62,7 @@ class Updater {
 	/**
 	 * Updater constructor.
 	 *
-	 * since TBD
+	 * since 5.16.0
 	 *
 	 * @param string $fetch_url  The URL to fetch the services URL.
 	 * @param string $transient  The name of the transient to use to store the last update time.
@@ -78,7 +78,7 @@ class Updater {
 	/**
 	 * Checks if the data should be updated from the service or not.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param bool $force If true, the data will be updated even if they are up-to-date.
 	 *
@@ -99,7 +99,7 @@ class Updater {
 	/**
 	 * Updates the data from the service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param callable $before_update The callback to use to prepare the tables for the update.
 	 *
@@ -128,7 +128,7 @@ class Updater {
 	/**
 	 * Stores the fetched data from the service with the provided callback.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param callable $insert The callback to use to insert the data into the database.
 	 *

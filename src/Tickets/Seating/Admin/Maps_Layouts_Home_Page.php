@@ -2,7 +2,7 @@
 /**
  * Renders and manages the state of the Maps and Layouts Home page.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Controller\Admin;
  */
@@ -21,7 +21,7 @@ use TEC\Tickets\Seating\Service\Service;
 /**
  * Class Maps_Layouts_Home_Page.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Controller\Admin;
  */
@@ -29,7 +29,7 @@ class Maps_Layouts_Home_Page {
 	/**
 	 * A reference to the template instance used to render the templates.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Template
 	 */
@@ -38,7 +38,7 @@ class Maps_Layouts_Home_Page {
 	/**
 	 * A reference to the service object.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Service
 	 */
@@ -47,7 +47,7 @@ class Maps_Layouts_Home_Page {
 	/**
 	 * Maps_Layouts_Home_Page constructor.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param Template $template The template instance.
 	 * @param Service  $service  The service instance.
@@ -60,7 +60,7 @@ class Maps_Layouts_Home_Page {
 	/**
 	 * Renders the maps home page.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -114,7 +114,7 @@ class Maps_Layouts_Home_Page {
 		/**
 		 * Fires before the Maps and Layouts page renders.
 		 *
-		 * @since TBD
+		 * @since 5.16.0
 		 *
 		 * @param Maps_Layouts_Home_Page $this    The Maps and Layouts page object.
 		 * @param Tab                    $current The current tab.
@@ -134,7 +134,7 @@ class Maps_Layouts_Home_Page {
 	/**
 	 * Returns the URL of the Maps home page.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The URL of the Maps home page.
 	 */
@@ -151,7 +151,7 @@ class Maps_Layouts_Home_Page {
 	/**
 	 * Returns the URL of the Layouts home page.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The URL of the Layouts home page.
 	 */

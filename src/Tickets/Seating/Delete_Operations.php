@@ -2,7 +2,7 @@
 /**
  * The controller that manages relationships between entities in the Seating context.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating;
  */
@@ -17,7 +17,7 @@ use WP_Post;
 /**
  * Class Delete_Operations.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating;
  */
@@ -25,7 +25,7 @@ class Delete_Operations extends Controller_Contract {
 	/**
 	 * Register the controller by subscribing to WordPress hooks and binding implementations.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -37,7 +37,7 @@ class Delete_Operations extends Controller_Contract {
 	/**
 	 * Unregister the controller by unsubscribing from WordPress hooks.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -49,7 +49,7 @@ class Delete_Operations extends Controller_Contract {
 	/**
 	 * Removes the Seating flags from a post when the last ASC ticket is deleted or trashed.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param int          $ticket_id   The (candidate) ticket ID.
 	 * @param WP_Post|null $ticket_post The (candidate) ticket post object.

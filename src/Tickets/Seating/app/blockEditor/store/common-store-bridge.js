@@ -17,7 +17,7 @@ import { CAPPED } from '@moderntribe/tickets/data/blocks/ticket/constants';
 /**
  * Dispatches an action to the common store.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {Object} action The action to dispatch.
  */
@@ -28,7 +28,7 @@ function dispatchToCommonStore(action) {
 /**
  * Selects from the common store.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {string} selector The common store selector function to call.
  * @param {...*}   args     The arguments to call the common store selector with.
@@ -42,7 +42,7 @@ function selectFromCommonStore(selector, ...args) {
 /**
  * Sets the shared capacity in the common store.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {string} clientId The client ID of Ticket block to set the capacity for.
  * @param {number} capacity The capacity to set.
@@ -56,7 +56,7 @@ export function setTicketsSharedCapacityInCommonStore(clientId, capacity) {
 /**
  * Sets the capacity in the common store.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {string} clientId The client ID of the current ticket block.
  * @param {number} capacity The capacity to set.
@@ -72,7 +72,7 @@ export function setCappedTicketCapacityInCommonStore(clientId, capacity) {
 /**
  * Sets the has changes flag in the common store.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {string} clientId The client ID of the Ticket block to update.
  */
@@ -83,7 +83,7 @@ export function setTicketHasChangesInCommonStore(clientId) {
 /**
  * Returns the ticket post ID fetched from the common store.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {string} clientId The client ID of the Ticket block to update.
  *
@@ -96,7 +96,7 @@ export function getTicketIdFromCommonStore(clientId) {
 /**
  * Returns the shared capacity integer value fetched from the common store.
  *
- * @since TBD
+ * @since 5.16.0
  *
  *
  * @return {number} The current integer value of the shared capacity.
@@ -108,7 +108,7 @@ export function getTicketsSharedCapacityFromCommonStore() {
 /**
  * Returns the current Ticket provider fetched from the Common store.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {string} The current ticket Provider fetched from the Common store,
  *                  or an empty string if the Ticket block client ID is not set.

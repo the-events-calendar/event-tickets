@@ -5,9 +5,9 @@
  * Override this template in your own theme by creating a file at
  * [your-theme]/tribe/tickets-seating/iframe-view.php
  *
- * @since   TBD
+ * @since   5.16.0
  *
- * @version TBD
+ * @version 5.16.0
  *
  * @var string $iframe_url          The URL to the service iframe.
  * @var string $token               The ephemeral token used to secure the iframe communication with the service.
@@ -45,7 +45,7 @@
 			/**
 			 * Render the seat selection timer.
 			 *
-			 * @since TBD
+			 * @since 5.16.0
 			 *
 			 * @param string $token The ephemeral token used to secure the iframe communication with the service.
 			 * @param int    $post_id The post ID of the post to purchase tickets for.

@@ -47,7 +47,7 @@ const TicketContainerHeader = ( {
 	/**
 	 * Filter the header details of the ticket.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param {Array}  items    The header details of the ticket.
 	 * @param {string} clientId The client ID of the ticket block.

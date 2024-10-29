@@ -2,7 +2,7 @@
 /**
  * The tab used to display the current site Maps.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Controller\Admin\Tabs;
  */
@@ -16,7 +16,7 @@ use TEC\Tickets\Seating\Service\Maps as Maps_Service;
 /**
  * Class Maps.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC\Controller\Admin\Tabs;
  */
@@ -24,16 +24,16 @@ class Maps extends Tab {
 	/**
 	 * The Maps service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Maps_Service
 	 */
 	private Maps_Service $maps;
-	
+
 	/**
 	 * The Maps Tab.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param Template     $template The template object.
 	 * @param Maps_Service $maps The Maps service.
@@ -45,7 +45,7 @@ class Maps extends Tab {
 	/**
 	 * Returns the title of this tab. The one that will be displayed on the top of the page.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The title of this tab.
 	 */
@@ -56,7 +56,7 @@ class Maps extends Tab {
 	/**
 	 * Returns the ID of this tab, used in the URL and CSS/JS attributes.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The CSS/JS id of this tab.
 	 */
@@ -67,7 +67,7 @@ class Maps extends Tab {
 	/**
 	 * Renders the tab.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void The rendered HTML of this tab is passed to the output buffer.
 	 */

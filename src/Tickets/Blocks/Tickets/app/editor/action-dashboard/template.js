@@ -77,7 +77,7 @@ class TicketsDashboardAction extends PureComponent {
 		/**
 		 * Filters the actions that will be shown in the dashboard.
 		 *
-		 * @since TBD
+		 * @since 5.16.0
 		 *
 		 * @param {Array} actions The actions list that will be shown in the dashboard.
 		 * @param {Object} props The component props.

@@ -382,7 +382,7 @@ window.tribe.tickets.block = {
 		/**
 		 * Filters the tickets IDs to check availability for.
 		 *
-		 * @since TBD
+		 * @since 5.16.0
 		 *
 		 * @param {number[]} tickets The tickets IDs to check availability for.
 		 */

@@ -2,7 +2,7 @@
 /**
  * The main Maps and Layouts Home template used when there is an error.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @var string      $page_title The title of the page.
  * @var string      $message    The message to display.

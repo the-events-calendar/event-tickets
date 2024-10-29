@@ -629,7 +629,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				/**
 				 * Filters the inventory of the ticket.
 				 *
-				 * @since TBD
+				 * @since 5.16.0
 				 *
 				 * @param int $inventory The inventory of the ticket.
 				 * @param Tribe__Tickets__Ticket_Object $ticket The ticket object.
@@ -722,7 +722,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			/**
 			 * Filters the inventory of the ticket.
 			 *
-			 * @since TBD
+			 * @since 5.16.0
 			 *
 			 * @param int                           $inventory       The inventory of the ticket.
 			 * @param Tribe__Tickets__Ticket_Object $ticket          The ticket object.

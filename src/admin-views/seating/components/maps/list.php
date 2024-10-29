@@ -2,9 +2,9 @@
 /**
  * The template to render the list of map cards.
  *
- * @since TBD
+ * @since 5.16.0
  *
- * @version TBD
+ * @version 5.16.0
  *
  * @var Map_Card[] $cards The map cards array.
  * @var string     $add_new_url The URL to add a new map.

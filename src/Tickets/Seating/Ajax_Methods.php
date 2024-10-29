@@ -2,7 +2,7 @@
 /**
  * Provides common methods to check AJAX requests.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating;
  */
@@ -14,7 +14,7 @@ use TEC\Tickets\Seating\Admin\Ajax;
 /**
  * Class Ajax_Methods.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating;
  */
@@ -22,7 +22,7 @@ trait Ajax_Methods {
 	/**
 	 * Checks if the current user can perform the requested AJAX action.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $capability         The capability to check.
 	 * @param mixed  ...$capability_args Optional arguments to pass to the capability check.
@@ -58,7 +58,7 @@ trait Ajax_Methods {
 	/**
 	 * Returns the request body.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The request body.
 	 */
@@ -76,7 +76,7 @@ trait Ajax_Methods {
 	/**
 	 * Returns the request body as JSON.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return array<mixed>|null Either the request body as JSON or `null` if the request body is empty
 	 *                           or invalid JSON.

@@ -2,7 +2,7 @@
 /**
  * Controller for registering and serving Site Health tests for the Seating functionality.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Controller;
  */
@@ -18,7 +18,7 @@ use function TEC\Common\StellarWP\Uplink\get_resource;
 /**
  * Class Controller.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Controller;
  */
@@ -51,7 +51,7 @@ class Health extends Controller_Contract {
 	/**
 	 * Controller constructor.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param Container $container A reference to the container object.
 	 */
@@ -64,7 +64,7 @@ class Health extends Controller_Contract {
 	/**
 	 * Defines the tests to be registered with the Site Health component.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -158,7 +158,7 @@ class Health extends Controller_Contract {
 	/**
 	 * Returns the tests registered with the controller.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return array
 	 */
@@ -169,7 +169,7 @@ class Health extends Controller_Contract {
 	/**
 	 * Unregisters the Controller by unsubscribing from WordPress hooks.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -184,7 +184,7 @@ class Health extends Controller_Contract {
 	/**
 	 * Registers the controller by subscribing to front-end hooks and binding implementations.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -199,7 +199,7 @@ class Health extends Controller_Contract {
 	/**
 	 * Adds the Seating tests to the Site Health component.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array $tests The tests to be added to the Site Health component.
 	 *
@@ -221,7 +221,7 @@ class Health extends Controller_Contract {
 	/**
 	 * Checks if the Seating license is valid.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -243,7 +243,7 @@ class Health extends Controller_Contract {
 	/**
 	 * Checks if the Seating license can communicate with the Seating App.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -265,7 +265,7 @@ class Health extends Controller_Contract {
 	/**
 	 * Returns the test result for a successful test.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array $test The test to be processed.
 	 *
@@ -289,7 +289,7 @@ class Health extends Controller_Contract {
 	/**
 	 * Returns the test result for a failed test.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array $test The test to be processed.
 	 *

@@ -2,7 +2,7 @@
 /**
  * Provides common methods to interact with the oAuth token.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Controller\Service;
  */
@@ -17,7 +17,7 @@ use function TEC\Common\StellarWP\Uplink\get_resource;
 /**
  * Trait OAuth_Token.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Controller\Service;
  */
@@ -25,7 +25,7 @@ trait OAuth_Token {
 	/**
 	 * Returns the OAuth token used to authenticate the site in the service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string|null The OAuth token, or `null` if there is no OAuth token.
 	 */
@@ -49,7 +49,7 @@ trait OAuth_Token {
 	/**
 	 * Updates the OAuth token used to authenticate the site in the service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $token The OAuth token to set.
 	 *

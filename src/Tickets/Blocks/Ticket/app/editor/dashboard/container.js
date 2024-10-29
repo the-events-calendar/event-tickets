@@ -20,7 +20,7 @@ import { withStore } from '@moderntribe/common/hoc';
 /**
  * Whether the confirm button should be disabled.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {Object} state    The state of the store.
  * @param {Object} ownProps The own props of the component.
@@ -37,7 +37,7 @@ const getIsConfirmDisabled = (state, ownProps) => {
 	/**
 	 * Filters whether the confirm button should be disabled.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param {boolean} isDisabled Whether the button is disabled.
 	 * @param {Object}  state      The state of the store.

@@ -1301,7 +1301,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * Return list of sortable columns.
 	 *
 	 * @since 5.5.0
-	 * @since TBD Make sortable columns filterable.
+	 * @since 5.16.0 Make sortable columns filterable.
 	 *
 	 * @return array
 	 */
@@ -1316,7 +1316,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		/**
 		 * Filter list of sortable columns.
 		 *
-		 * @since TBD
+		 * @since 5.16.0
 		 *
 		 * @param array<string,string> $columns List of sortable columns.
 		 */

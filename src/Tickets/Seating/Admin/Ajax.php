@@ -2,7 +2,7 @@
 /**
  * Handles the AJAX requests for the Seating feature.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating\Admin;
  */
@@ -34,7 +34,7 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
 /**
  * Class Ajax.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating\Admin;
  */
@@ -46,7 +46,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * The nonce action.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -55,7 +55,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * The action to get the seat types for a given layout ID.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -64,7 +64,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * The action to invalidate the maps and layouts cache.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -73,7 +73,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * The action to invalidate the layouts cache.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -82,7 +82,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * The action to delete a map.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -91,7 +91,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * The action to delete a layout.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -100,7 +100,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * The action to add a layout.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -109,7 +109,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * The action to push the reservations to the backend from the seat-selection frontend.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -118,7 +118,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * The action to remove the reservations from the backend from the seat-selection frontend.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -127,7 +127,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * The action to delete reservations.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -136,7 +136,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * The action to fetch attendees.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -145,7 +145,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * The action to update a set of seat types.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -154,7 +154,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * The action to handle seat type deletion.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -163,7 +163,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * The action to update a set of reservations following a seat type update.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -172,7 +172,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * The action to create a new reservation from the Seats Report page.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -181,7 +181,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * The action to update an existing reservation from the Seats Report page.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -190,7 +190,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * The action to update the layout for an event.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -199,7 +199,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * A reference to the Seat Types service object.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Seat_Types
 	 */
@@ -208,7 +208,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * A reference to the Sessions table object.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Sessions
 	 */
@@ -217,7 +217,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * A reference to the Reservations service object.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Reservations
 	 */
@@ -226,7 +226,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * A reference to the Maps service object.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Maps
 	 */
@@ -235,7 +235,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * A reference to the Layouts service object.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Layouts
 	 */
@@ -244,7 +244,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Ajax constructor.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param Container    $container    A reference to the DI container object.
 	 * @param Seat_Types   $seat_types   A reference to the Seat Types service object.
@@ -272,7 +272,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Registers the controller bindings and subscribes to WordPress hooks.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 */
 	protected function do_register(): void {
 		$this->register_assets();
@@ -304,7 +304,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Unsubscribes the controller from WordPress hooks.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -337,7 +337,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Returns the Ajax data for the Seating feature.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return array<string,string> The Ajax data for the Seating feature.
 	 */
@@ -367,7 +367,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Registers the assets used by the AJAX component.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 */
 	private function register_assets(): void {
 		Asset::add(
@@ -383,7 +383,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Returns the seat types in option format for the given layout IDs.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void The seat types in option format for the given layout IDs are returned as JSON.
 	 */
@@ -408,7 +408,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Invalidates the Maps and Layouts caches.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void The function does not return a value but will echo the JSON response.
 	 */
@@ -435,7 +435,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Invalidates the Layouts cache.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void The function does not return a value but will echo the JSON response.
 	 */
@@ -454,7 +454,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Deletes a map from the service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void The function does not return a value but will send the JSON response.
 	 */
@@ -488,7 +488,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Deletes a layout from the service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void The function does not return a value but will send the JSON response.
 	 */
@@ -523,7 +523,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Adds a new layout to the service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void The function does not return a value but will send the JSON response.
 	 */
@@ -568,7 +568,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Handles the request to update reservations on the Service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void The JSON response is sent to the client.
 	 */
@@ -668,7 +668,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Handles the request to remove reservations on the Service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void The JSON response is sent to the client.
 	 */
@@ -711,7 +711,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Removes the Tribe Commerce cart cookie when a seat selection session is interrupted.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param int $post_id The post ID the session is being interrupted for.
 	 *
@@ -741,7 +741,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Handles the request to delete reservations from attendees.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void The function does not return a value but will send the JSON response.
 	 */
@@ -809,7 +809,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Handles the update of seat types from the service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void The function does not return a value but will echo the JSON response.
 	 */
@@ -917,7 +917,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Updates the seat type of Attendees following based on their reservation.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void The function does not return a value but will send the JSON response.
 	 */
@@ -968,7 +968,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Handles the deletion of a seat type by transferring existing reservations to new seat type.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void The function does not return a value but will send the JSON response.
 	 */
@@ -1067,7 +1067,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Updates the layout of an event.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void The function does not return a value but will echo the JSON response.
 	 */

@@ -2,7 +2,7 @@
 /**
  * A template class dedicated to the admin area.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Controller\Admin;
  */
@@ -14,7 +14,7 @@ use Tribe__Tickets__Main as Tickets;
 /**
  * Class Template.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Controller\Admin;
  */
@@ -22,7 +22,7 @@ class Template extends \Tribe__Template {
 	/**
 	 * Template constructor.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 */
 	public function __construct() {
 		$this->set_template_origin( tribe( Tickets::instance() ) );

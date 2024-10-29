@@ -304,7 +304,7 @@ class Tribe__Tickets__REST__V1__Endpoints__QR extends Tribe__Tickets__REST__V1__
 		/**
 		 * Filters the Attendee data for the QR check-in.
 		 *
-		 * @since TBD
+		 * @since 5.16.0
 		 *
 		 * @param array<string,mixed> $attendee_data The Attendee data.
 		 * @param int                 $attendee_id   The Attendee ID.
@@ -624,7 +624,7 @@ class Tribe__Tickets__REST__V1__Endpoints__QR extends Tribe__Tickets__REST__V1__
 	 * Check in attendee and on first success return
 	 *
 	 * @since 5.7.0
-	 * @since TBD Changed method name from `_check_in` to `do_check_in`.
+	 * @since 5.16.0 Changed method name from `_check_in` to `do_check_in`.
 	 *
 	 * @param int     $attendee_id The attendee ID.
 	 * @param int     $event_id The ID of the ticketable post the Attendee is being checked into.

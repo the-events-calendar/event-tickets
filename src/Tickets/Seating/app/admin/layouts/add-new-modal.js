@@ -31,7 +31,7 @@ export async function waitForModalElement() {
 /**
  * Registers the modal actions.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {void} Handles the modal actions.
  */
@@ -49,7 +49,7 @@ export function modalActionListener() {
 /**
  * Handles adding a new layout.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {Event} event The event object.
  *
@@ -82,7 +82,7 @@ export async function addNewLayout( event ) {
 /**
  * Adds a new layout by map ID.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {string} mapId The map ID.
  *
@@ -105,7 +105,7 @@ export async function addLayoutByMapId( mapId ) {
 /**
  * Handles the map select updates.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {Event} event The event object.
  *
@@ -127,7 +127,7 @@ export function handleSelectUpdates(event) {
 /**
  * Closes the modal element using its reference on the window object.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {void} The modal is closed.
  */
@@ -144,7 +144,7 @@ export function closeModal() {
 /**
  * Initializes the modal element once it's loaded.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {void} Initializes the modal element once it's loaded.
  */

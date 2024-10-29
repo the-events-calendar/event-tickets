@@ -53,7 +53,7 @@ const { seatTypeMap, postId } = localizedData;
 /**
  * Fetches attendees for a given post ID.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {number} currentBatch The batch number to fetch.
  *
@@ -91,7 +91,7 @@ export async function fetchAttendees(currentBatch) {
 /**
  * Recursively fetches attendees in batches and sends them to the service via the iframe.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {HTMLElement} iframe         The service iframe element to send messages to.
  * @param {number}      currentBatch   The batch number to fetch.
@@ -135,7 +135,7 @@ export async function fetchAndSendAttendeeBatch(
 /**
  * Fetches the attendees in batches and sends them to the service via the iframe.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {HTMLElement} iframe The service iframe element to send messages to.
  *
@@ -163,7 +163,7 @@ export async function sendAttendeesToService(iframe) {
 /**
  * Updates the Attendee with the new reservation data.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {ReservationCreatedProps|ReservationUpdatedProps} props The update/create properties.
  *
@@ -198,7 +198,7 @@ export async function updateAttendeeReservation(props) {
 /**
  * Handles the action to create an Attendee reservation.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {HTMLElement}             iframe The service iframe element to send messages to.
  * @param {ReservationCreatedProps} props  The action properties.
@@ -222,7 +222,7 @@ export async function handleReservationCreated(iframe, props) {
 /**
  * Handles the action to update an Attendee reservation.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {HTMLElement}             iframe The service iframe element to send messages to.
  * @param {ReservationUpdatedProps} props  The action properties.
@@ -246,7 +246,7 @@ export async function handleReservationUpdated(iframe, props) {
 /**
  * Registers the handlers for the messages received from the service.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {HTMLElement} iframe The service iframe element to listen to.
  */
@@ -272,7 +272,7 @@ function registerActions(iframe) {
 /**
  * Initializes iframe and the communication with the service.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {HTMLDocument|null} dom The document to use to search for the iframe element.
  *

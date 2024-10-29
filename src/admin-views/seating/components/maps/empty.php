@@ -2,9 +2,9 @@
 /**
  * The template used to render empty map list in the center of the page with button to add a new map.
  *
- * @since TBD
+ * @since 5.16.0
  *
- * @version TBD
+ * @version 5.16.0
  *
  * @var string $add_new_url The URL to add a new map.
  */
@@ -17,7 +17,7 @@ $add_new_link = sprintf(
 ?>
 <div class="tec-tickets__seating-tab--empty">
 	<p>
-	<?php 
+	<?php
 	echo wp_kses(
 		sprintf(
 			/* translators: %1$s: Add new link */

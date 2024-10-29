@@ -322,7 +322,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 		 * Fires after a ticket has been added.
 		 *
 		 * @since 4.8.4
-		 * @since TBD Added the `$ticket` and `$body` parameters.
+		 * @since 5.16.0 Added the `$ticket` and `$body` parameters.
 		 *
 		 * @param int                 $post_id     ID of post the ticket is attached to.
 		 * @param int                 $ticket      Ticket ID that was just added.

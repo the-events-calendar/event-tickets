@@ -2,7 +2,7 @@
 /**
  * The service component used to exchange reservations infarmation with the service.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating\Service;
  */
@@ -16,7 +16,7 @@ use TEC\Tickets\Seating\Meta;
 /**
  * Class Reservations.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating\Service;
  */
@@ -27,7 +27,7 @@ class Reservations {
 	/**
 	 * The URL to the service reservations endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -36,7 +36,7 @@ class Reservations {
 	/**
 	 * Reservations constructor.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $backend_base_url The base URL of the service from the site backend.
 	 */
@@ -47,7 +47,7 @@ class Reservations {
 	/**
 	 * Prompts the service to cancel the reservations.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param int      $object_id    The object ID to cancel the reservations for.
 	 * @param string[] $reservations The reservations to cancel.
@@ -132,7 +132,7 @@ class Reservations {
 	/**
 	 * Returns the URL to the endpoint to cancel the reservations.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The URL to the endpoint to cancel the reservations.
 	 */
@@ -143,7 +143,7 @@ class Reservations {
 	/**
 	 * Confirms the reservations.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param int      $object_id    The object ID to confirm the reservations for.
 	 * @param string[] $reservations The reservations to confirm.
@@ -226,7 +226,7 @@ class Reservations {
 	/**
 	 * Returns the URL to the endpoint to confirm the reservations.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The URL to the endpoint to confirm the reservations.
 	 */
@@ -237,7 +237,7 @@ class Reservations {
 	/**
 	 * Deletes reservations from Attendees.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string[] $reservation_ids The IDs of the reservations to delete.
 	 *
@@ -268,7 +268,7 @@ class Reservations {
 		 * in its `max_allowed_packet` setting. Furthermore, security and performance plugins might also impose limits
 		 * on the size of the query.
 		 *
-		 * @since TBD
+		 * @since 5.16.0
 		 *
 		 * @param int $batch_size The batch size.
 		 */
@@ -320,17 +320,17 @@ class Reservations {
 			 *
 			 * Note this action will fire multiple times, once for each batch of reservations.
 			 *
-			 * @since TBD
+			 * @since 5.16.0
 			 *
 			 * @param array<string,int> $reservation_to_attendee_map The map from reservation UUIDs to Attendee IDs.
 			 */
 			do_action( 'tec_tickets_seating_delete_reservations_from_attendees', $reservation_to_attendee_map );
-			
+
 			$attendee_ids_list = DB::prepare(
 				implode( ', ', array_fill( 0, count( $affected ), '%d' ) ),
 				...array_column( $affected, 'post_id' )
 			);
-			
+
 			// Fetch the meta IDs for meta key _tec_slr_seat_label for the affected Attendees.
 			$seat_label_meta_ids = DB::get_col(
 				DB::prepare(
@@ -339,14 +339,14 @@ class Reservations {
 					Meta::META_KEY_ATTENDEE_SEAT_LABEL
 				),
 			);
-			
+
 			// Generate meta ids list from reservation meta ids + seat label meta ids.
 			$meta_ids_list = DB::prepare(
 				implode( ', ', array_fill( 0, count( $affected ) + count( $seat_label_meta_ids ), '%d' ) ),
 				...array_column( $affected, 'meta_id' ),
 				...$seat_label_meta_ids
 			);
-			
+
 			$removed_here = (int) DB::query(
 				DB::prepare(
 					"DELETE FROM %i where meta_id in ({$meta_ids_list})",
@@ -364,7 +364,7 @@ class Reservations {
 			 *
 			 * Note this action will fire multiple times, once for each batch of reservations.
 			 *
-			 * @since TBD
+			 * @since 5.16.0
 			 *
 			 * @param array<string,int> $reservation_to_attendee_map The map from reservation UUIDs to Attendee IDs.
 			 */
@@ -383,7 +383,7 @@ class Reservations {
 	 * Note: the following code assumes a one-to-one relationship between a reservation and an Attendee.
 	 * An Attendee can have zero or one Reservations, a Reservation can be related to zero or one Attendees.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array<string,string[]> $map A map from seat type IDs to reservation IDs.
 	 *

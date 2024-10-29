@@ -2,7 +2,7 @@
 /**
  * The map card object class.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Admin\Tabs;
  */
@@ -14,7 +14,7 @@ use TEC\Tickets\Seating\Admin;
 /**
  * The Map_Card Class.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Admin\Tabs;
  */
@@ -22,7 +22,7 @@ class Map_Card {
 	/**
 	 * The map ID.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -31,7 +31,7 @@ class Map_Card {
 	/**
 	 * The map name.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -40,25 +40,25 @@ class Map_Card {
 	/**
 	 * The number of seats in the map.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var int
 	 */
 	protected int $seats;
-	
+
 	/**
 	 * The URL to the map's screen shot.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
 	protected string $screenshot_url;
-	
+
 	/**
 	 * Whether the map has layouts.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var bool
 	 */
@@ -67,7 +67,7 @@ class Map_Card {
 	/**
 	 * Map_Card constructor.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $id The map ID.
 	 * @param string $name The map name.
@@ -86,7 +86,7 @@ class Map_Card {
 	/**
 	 * Returns the map ID.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The map ID.
 	 */
@@ -97,7 +97,7 @@ class Map_Card {
 	/**
 	 * Returns the map name.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The map name.
 	 */
@@ -108,29 +108,29 @@ class Map_Card {
 	/**
 	 * Returns the number of seats in the map.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return int The number of seats in the map.
 	 */
 	public function get_seats(): int {
 		return $this->seats;
 	}
-	
+
 	/**
 	 * Returns the URL to the map's screen shot.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The URL to the map's screen shot.
 	 */
 	public function get_screenshot_url(): string {
 		return $this->screenshot_url;
 	}
-	
+
 	/**
 	 * Returns the URL to edit the Layout.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The URL to edit the Layout.
 	 */
@@ -144,11 +144,11 @@ class Map_Card {
 			admin_url( 'admin.php' )
 		);
 	}
-	
+
 	/**
 	 * Returns the URL to create a new Layout for this Map.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The URL to create a new Layout.
 	 */
@@ -164,11 +164,11 @@ class Map_Card {
 			admin_url( 'admin.php' )
 		);
 	}
-	
+
 	/**
 	 * Returns whether the map has layouts.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return bool Whether the map has layouts.
 	 */

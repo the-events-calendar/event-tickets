@@ -2,7 +2,7 @@
 /**
  * The Seating feature frontend timer handler.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating\Frontend;
  */
@@ -23,7 +23,7 @@ use Tribe__Tickets__Attendee_Registration__Main as Attendee_Registration;
 /**
  * Class Cookie.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating\Frontend;
  */
@@ -33,7 +33,7 @@ class Timer extends Controller_Contract {
 	/**
 	 * The AJAX action used from the JS code to start the timer.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -42,7 +42,7 @@ class Timer extends Controller_Contract {
 	/**
 	 * The AJAX action used from the JS code to sync the timer with the backend.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -51,7 +51,7 @@ class Timer extends Controller_Contract {
 	/**
 	 * The AJAX action used from the JS code to get the data to render the redirection modal.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -60,7 +60,7 @@ class Timer extends Controller_Contract {
 	/**
 	 * A reference to the template object.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Template
 	 */
@@ -69,7 +69,7 @@ class Timer extends Controller_Contract {
 	/**
 	 * A reference to the Sessions table handler.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Sessions
 	 */
@@ -78,7 +78,7 @@ class Timer extends Controller_Contract {
 	/**
 	 * A reference to the Service object.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Reservations
 	 */
@@ -87,7 +87,7 @@ class Timer extends Controller_Contract {
 	/**
 	 * A reference to the Session object.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Session
 	 */
@@ -96,7 +96,7 @@ class Timer extends Controller_Contract {
 	/**
 	 * A reference to the Frontend object.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Frontend
 	 */
@@ -106,7 +106,7 @@ class Timer extends Controller_Contract {
 	 * The current token used to render the timer.
 	 * Set on explicit render requests.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string|null
 	 */
@@ -116,7 +116,7 @@ class Timer extends Controller_Contract {
 	 * The current post ID used to render the timer.
 	 * Set on explicit render requests.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var int|null
 	 */
@@ -125,7 +125,7 @@ class Timer extends Controller_Contract {
 	/**
 	 * Timer constructor.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param Container    $container    A reference to the container object.
 	 * @param Template     $template     A reference to the template object.
@@ -153,7 +153,7 @@ class Timer extends Controller_Contract {
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -222,7 +222,7 @@ class Timer extends Controller_Contract {
 	/**
 	 * Unregisters the controller by unsubscribing from front-end hooks.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -259,7 +259,7 @@ class Timer extends Controller_Contract {
 	 *
 	 * Note it's the JS code responsibility to start the timer by means of a request to the backend.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string|null $token        The ephemeral token used to secure the iframe communication with the service
 	 *                                  and identify the seat selection session.
@@ -315,7 +315,7 @@ class Timer extends Controller_Contract {
 	 * Renders the seat selection timer HTML adding the attribute that will trigger its immediate
 	 * synchronization with the backend.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -326,7 +326,7 @@ class Timer extends Controller_Contract {
 	/**
 	 * Returns the seat-selection timeout for a post in seconds.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param int $post_id The post ID the iframe is for.
 	 *
@@ -336,7 +336,7 @@ class Timer extends Controller_Contract {
 		/**
 		 * Filters the seat selection timeout, default is 15 minutes.
 		 *
-		 * @since TBD
+		 * @since 5.16.0
 		 *
 		 * @param int $timeout The timeout in seconds.
 		 * @param int $post_id The post ID the iframe is for.
@@ -347,7 +347,7 @@ class Timer extends Controller_Contract {
 	/**
 	 * Returns the data to be localized on the timer frontend.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return array{
 	 *     ajaxUrl: string,
@@ -371,7 +371,7 @@ class Timer extends Controller_Contract {
 	/**
 	 * Checks the AJAX request parameters and returns them if they are valid.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return array{0: string, 1: int}|false The token and post ID or `false` if the nonce verification failed.
 	 */
@@ -411,7 +411,7 @@ class Timer extends Controller_Contract {
 	 *
 	 * This request will create a new session in the database and will return the number of seconds left in the timer.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -459,7 +459,7 @@ class Timer extends Controller_Contract {
 	 * This request will read the number of seconds left in the timer from the database to allow the
 	 * frontend to update the timer with a synced value.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void The AJAX response is sent back to the browser.
 	 */
@@ -482,7 +482,7 @@ class Timer extends Controller_Contract {
 	/**
 	 * Handles an AJAX request to interrupt the user flow and clear the seat selection.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void  The AJAX response is sent back to the browser.
 	 */
@@ -539,7 +539,7 @@ class Timer extends Controller_Contract {
 		 * Fires when a seat selection session is interrupted due to the timer expiring or the seat selection session
 		 * being otherwise interrupted.
 		 *
-		 * @since TBD
+		 * @since 5.16.0
 		 *
 		 * @param int    $post_id The post ID the session is being interrupted for.
 		 * @param string $token   The ephemeral token the session is being interrupted for.
@@ -577,7 +577,7 @@ class Timer extends Controller_Contract {
 		/**
 		 * Filters the seat selection expired timer data.
 		 *
-		 * @since TBD
+		 * @since 5.16.0
 		 *
 		 * @param array<string,string>   $data The seat selection expired timer data.
 		 * @param int                    $post_id The post ID the session is being interrupted for.
@@ -591,7 +591,7 @@ class Timer extends Controller_Contract {
 	/**
 	 * Returns the current token set from a previous render in the context of this request.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string|null The current token, or `null` if not set.
 	 */
@@ -602,7 +602,7 @@ class Timer extends Controller_Contract {
 	/**
 	 * Returns the current post ID set from a previous render in the context of this request.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return int|null The current post ID, or `null` if not set.
 	 */

@@ -1,7 +1,7 @@
 /**
  * Gets a reference to the notice element from the DOM.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {Element|null} The notice element, or null if it does not exist.j
  */
@@ -12,7 +12,7 @@ function getNoticeElement() {
 /**
  * Hides the notice element.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {Element|null} notice The notice element to hide.
  */
@@ -27,7 +27,7 @@ function hideNotice(notice) {
 /**
  * Shows the notice element.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {Element|null} notice The notice element to show.
  */
@@ -42,7 +42,7 @@ function showNotice(notice) {
 /**
  * Sets the notice element to display the given class.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {Element|null} notice    The notice element to manipulate.
  * @param {string}       className The class to set; all other classes will be removed.
@@ -61,7 +61,7 @@ function setNoticeClass(notice, className) {
 /**
  * Sets the notice element to display the given message.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {Element|null} notice  The notice element to manipulate.
  * @param {string}       message The message to display.
@@ -76,7 +76,7 @@ function setNoticeMessage(notice, message) {
 /**
  * Notifies the user of an error by manipulating the notice element.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {string} message The message to display.
  */
@@ -91,7 +91,7 @@ export function notifyUserOfError(message) {
 /**
  * Notifies the user of a warning by manipulating the notice element.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {string} message The message to display.
  */

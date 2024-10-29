@@ -2,7 +2,7 @@
 /**
  * A tab used in the context of a page render
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Controller\Admin;
  */
@@ -15,7 +15,7 @@ use TEC\Tickets\Seating\Admin\Template;
 /**
  * Class Tab.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Controller\Admin;
  */
@@ -23,7 +23,7 @@ abstract class Tab {
 	/**
 	 * The tab URL.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -32,7 +32,7 @@ abstract class Tab {
 	/**
 	 * A reference to the template object used to render this tab.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Template
 	 */
@@ -41,7 +41,7 @@ abstract class Tab {
 	/**
 	 * Tab constructor.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param Template $template A reference to the template handle used to render this tab.
 	 */
@@ -59,7 +59,7 @@ abstract class Tab {
 	/**
 	 * Returns the title of this tab. The one that will be displayed on the top of the page.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The title of this tab.
 	 */
@@ -68,7 +68,7 @@ abstract class Tab {
 	/**
 	 * Returns the ID of this tab, used in the URL and CSS/JS attributes.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The CSS/JS id of this tab.
 	 */
@@ -77,7 +77,7 @@ abstract class Tab {
 	/**
 	 * Returns the URL of this tab.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The URL of this tab.
 	 */
@@ -88,7 +88,7 @@ abstract class Tab {
 	/**
 	 * Renders the tab.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void The rendered HTML of this tab is passed to the output buffer.
 	 */

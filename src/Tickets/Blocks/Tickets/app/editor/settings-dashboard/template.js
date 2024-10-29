@@ -27,7 +27,7 @@ const TicketsSettingsDashboard = ( {
 	/**
 	 * Filters the settings fields.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param {Array} fields The settings fields.
 	 * @param {Object} props The component props.

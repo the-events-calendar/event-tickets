@@ -38,7 +38,7 @@ let handlerQueue = [];
 /**
  * Posts a message to the service iframe.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {HTMLIFrameElement} iframe The iframe to post the message to.
  * @param {string}            action The message action.
@@ -70,7 +70,7 @@ export function sendPostMessage(iframe, action, data) {
  * A "wrapper handler" is a handler that will execute its own code and call the next handler
  * in the queue or, if thenable, will resolve and then call the next handler.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {void}
  */
@@ -90,7 +90,7 @@ function callNextHandler() {
  *
  * Since all functions can be awaited, the wrapper will treat all functions as async functions.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {Function} handler The handler to wrap.
  *
@@ -113,7 +113,7 @@ function wrapHandlerForQueue(handler) {
  * Handlers are called based on the `state.actionsMap` map that is controlled
  * using the `takeAction` and `takeEveryAction` functions.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {MessageEvent} event The message event received from the service.
  */
@@ -150,7 +150,7 @@ export function catchMessage(event) {
 /**
  * Listens for service messages.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {HTMLIFrameElement} iframe The iframe to listen for messages from.
  *
@@ -182,7 +182,7 @@ export function startListeningForServiceMessages(iframe) {
  * The connection is initiated by the Service by sending a `app_postmessage_ready` message through the iframe.
  * The Site will reply with a `host_postmessage_ready` message to confirm the connection is established.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {HTMLIFrameElement} iframe The iframe to establish the connection with the service.
  *
@@ -233,7 +233,7 @@ export async function establishReadiness(iframe) {
 /**
  * Returns the handler queue for the service.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {Object<string, Function>} The handler queue for the service.
  */
@@ -244,7 +244,7 @@ export function getHandlerQueue() {
 /**
  * Empties the handler queue.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {void}
  */
@@ -255,7 +255,7 @@ export function emptyHandlerQueue() {
 /**
  * Returns the associated events URL for the given layout ID.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {string} layoutId The layout ID.
  *

@@ -27,7 +27,7 @@ class Controller extends Controller_Contract {
 	 * The name of the constant that will be used to disable the feature.
 	 * Setting it to a truthy value will disable the feature.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * The action that will be fired when this Controller registers.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -44,7 +44,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Unregisters the Controller by unsubscribing from WordPress hooks.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -59,7 +59,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Determines if the feature is enabled or not.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return bool Whether the feature is enabled or not.
 	 */
@@ -84,7 +84,7 @@ class Controller extends Controller_Contract {
 		 * Note: this filter will only apply if the disable constant or env var
 		 * are not set or are set to falsy values.
 		 *
-		 * @since TBD
+		 * @since 5.16.0
 		 *
 		 * @param bool $activate Defaults to `true`.
 		 */
@@ -94,7 +94,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Registers the controller by subscribing to WordPress hooks and binding implementations.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -161,7 +161,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Builds and returns the Service facade class ready to use.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return Service\Service An instance of the Service facade class.
 	 */
@@ -173,7 +173,7 @@ class Controller extends Controller_Contract {
 		/**
 		 * Filters the base URL of the service for backend requests.
 		 *
-		 * @since TBD
+		 * @since 5.16.0
 		 *
 		 * @param string $backend_base_url The base URL of the service.
 		 */
@@ -188,7 +188,7 @@ class Controller extends Controller_Contract {
 		/**
 		 * Filters the base URL of the service for frontend requests.
 		 *
-		 * @since TBD
+		 * @since 5.16.0
 		 *
 		 * @param string $frontend_base_url The base URL of the service.
 		 */

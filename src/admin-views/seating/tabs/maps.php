@@ -2,7 +2,7 @@
 /**
  * The template used to render the Controller Configurations tab.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @var Map_Card[] $cards The set of cards to display.
  * @var string $add_new_url The URL to add a new Controller Configuration.

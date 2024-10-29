@@ -121,7 +121,7 @@ if ( $has_shared_cap ) {
  * Filter the ticket data attributes.
  *
  * @since 5.1.1
- * @since TBD Added $event_id parameter.
+ * @since 5.16.0 Added $event_id parameter.
  *
  * @param array                         $attributes A list of data attributes with their values.
  * @param Tribe__Tickets__Ticket_Object $ticket The ticket object.

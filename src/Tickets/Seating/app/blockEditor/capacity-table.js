@@ -6,7 +6,7 @@ import { getLocalizedString } from '@tec/tickets/seating/utils';
  * Filters the mapped props for the Capacity Table component.
  *
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {Object} mappedProps The mapped props for the Capacity Table component.
  *

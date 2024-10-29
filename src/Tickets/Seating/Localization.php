@@ -2,7 +2,7 @@
 /**
  * A class that holds all the localized strings for the plugin.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC\Controller;
  */
@@ -12,7 +12,7 @@ namespace TEC\Tickets\Seating;
 /**
  * Class Localization.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC\Controller;
  */
@@ -20,7 +20,7 @@ class Localization {
 	/**
 	 * A
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var array
 	 */
@@ -29,7 +29,7 @@ class Localization {
 	/**
 	 * Get the capacity form strings.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param bool $force If true, the strings will be rebuilt.
 	 *
@@ -62,7 +62,7 @@ class Localization {
 	/**
 	 * Get the service errors strings.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param bool $force If true, the strings will be rebuilt.
 	 *

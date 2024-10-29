@@ -2,7 +2,7 @@
 /**
  * The template used to render the Seats Report tab.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @var string $iframe_url The URL to the service iframe.
  * @var string $token      The ephemeral token used to secure the iframe communication with the service.

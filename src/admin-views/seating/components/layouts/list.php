@@ -2,9 +2,9 @@
 /**
  * The template to render the list of Layout cards.
  *
- * @since TBD
+ * @since 5.16.0
  *
- * @version TBD
+ * @version 5.16.0
  *
  * @var Layout_Card[] $cards The Layout cards array.
  */

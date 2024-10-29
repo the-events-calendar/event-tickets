@@ -2,7 +2,7 @@
 /**
  * Template tags defined by the Seating Tickets feature.
  *
- * @since TBD
+ * @since 5.16.0
  */
 
 use TEC\Tickets\Seating\Meta;
@@ -11,7 +11,7 @@ if ( ! function_exists( 'tec_tickets_seating_enabled' ) ) {
 	/**
 	 * Returns whether the post is using assigned seating.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param int $post_id The post ID of the event.
 	 *

@@ -2,7 +2,7 @@
 /**
  * The Controller to set up the Uplink library.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating
  */
@@ -18,7 +18,7 @@ use Tribe__Tickets__Main as Main;
 /**
  * Controller for setting up the stellarwp/uplink library.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating
  */
@@ -47,7 +47,7 @@ class Uplink extends Controller_Contract {
 	/**
 	 * Uplink Controller constructor.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param Container $container A reference to the DI container object.
 	 */
@@ -60,7 +60,7 @@ class Uplink extends Controller_Contract {
 	/**
 	 * Register the controller.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 */
 	public function do_register(): void {
 		add_action( 'init', [ $this, 'register_plugin' ] );
@@ -76,7 +76,7 @@ class Uplink extends Controller_Contract {
 	/**
 	 * Unregister the controller.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -92,7 +92,7 @@ class Uplink extends Controller_Contract {
 	/**
 	 * Register the plugin in the uplink library.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -112,7 +112,7 @@ class Uplink extends Controller_Contract {
 	 * Filters the text for the Seating Builder connection button to return one customized for the
 	 * SLR feature.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $label         The label for the button.
 	 * @param bool   $authenticated Whether the user is authenticated or not.
@@ -128,7 +128,7 @@ class Uplink extends Controller_Contract {
 	/**
 	 * Renders the legend for the license key field.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $field_id The field ID.
 	 */

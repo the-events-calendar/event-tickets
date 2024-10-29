@@ -2,7 +2,7 @@
 /**
  * The controller for the Seating Orders.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC/Tickets/Seating/Orders
  */
@@ -35,7 +35,7 @@ use WP_Query;
 /**
  * Class Controller
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC/Tickets/Seating/Orders
  */
@@ -46,7 +46,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * A reference to Attendee data handler
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Attendee
 	 */
@@ -55,7 +55,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * A reference to Cart data handler
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Cart
 	 */
@@ -64,7 +64,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * A reference to the seat selection session handler
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Session
 	 */
@@ -87,7 +87,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * A reference to the Reservations object.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Reservations
 	 */
@@ -96,7 +96,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Controller constructor.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param Container    $container    The DI container.
 	 * @param Attendee     $attendee     The Attendee data handler.
@@ -127,7 +127,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * The action that will be fired when this Controller registers.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -221,7 +221,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Unregisters all the hooks and implementations.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -279,7 +279,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Filters the page title for the seat tab.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $title     The page title.
 	 * @param int    $post_id   The post ID.
@@ -300,7 +300,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Registers the seat reports.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -311,7 +311,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Registers the seat report page.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -322,7 +322,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Adds seat tab slug to the tab slug map.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array<string,string> $tab_map The tab slug map.
 	 *
@@ -337,7 +337,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Registers the seat tab.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param Tabbed_View $tabbed_view The tabbed view.
 	 * @param WP_Post     $post        The post.
@@ -363,7 +363,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Handles the seat selection for the cart.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array $data The data to prepare for the cart.
 	 *
@@ -388,7 +388,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Adds the attendee seat column to the attendee list.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array<string,string> $columns  The columns for the Attendees table.
 	 * @param int                  $event_id The event ID.
@@ -402,7 +402,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Renders the seat column for the attendee list.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string              $value  Row item value.
 	 * @param array<string,mixed> $item   Row item data.
@@ -417,7 +417,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Include seats into sortable columns list.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array<string,string> $columns The column names.
 	 *
@@ -430,7 +430,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Handle seat column sorting.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array<string,mixed> $query_args An array of the query arguments the query will be initialized with.
 	 * @param WP_Query            $query      The query object, the query arguments have not been parsed yet.
@@ -445,7 +445,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Remove the move row action.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array<string,mixed> $default_row_actions The default row actions list.
 	 * @param array<string,mixed> $item                The attendee item array.
@@ -459,7 +459,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Confirms all the reservations contained in the Session cookie.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -470,7 +470,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Handle attendee delete.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param int $attendee_id The attendee ID.
 	 *
@@ -483,7 +483,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Get the localized data for the report.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param int|null $post_id The post ID.
 	 *
@@ -505,7 +505,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Registers the assets used by the Seats Report tab under individual event views.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -540,7 +540,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Fetch attendees by post.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void The function does not return a value but will send the JSON response.
 	 */
@@ -556,7 +556,7 @@ class Controller extends Controller_Contract {
 		/**
 		 * Filters the number of Attendees to fetch per page when replying to the Fetch Attendees AJAX request.
 		 *
-		 * @since TBD
+		 * @since 5.16.0
 		 *
 		 * @param int $per_page The number of attendees to fetch per page.
 		 * @param int $post_id  The post ID.
@@ -605,7 +605,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Filters the default Attendee object to include seating data.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param WP_Post $post The attendee post object, decorated with a set of custom properties.
 	 *
@@ -618,7 +618,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Includes seating data in the email.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string                $file     The email file.
 	 * @param array<string, string> $name     The email name.
@@ -633,7 +633,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Inject seating label with ticket name on My Tickets page.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string        $html     The HTML content of ticket information.
 	 * @param string        $file     Complete path to include the PHP File.
@@ -649,7 +649,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Inject seating label with ticket name on Order success page.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string        $html     The HTML content of ticket information.
 	 * @param string        $file     Complete path to include the PHP File.
@@ -665,7 +665,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Updates an Attendee reservation from AJAX data.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void The function does not return a value but will send the JSON response.
 	 */

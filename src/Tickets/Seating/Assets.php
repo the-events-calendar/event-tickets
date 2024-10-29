@@ -2,7 +2,7 @@
 /**
  * Handles the reegistration of assets common to all the Tickets Seating modules.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating;
  */
@@ -22,7 +22,7 @@ use Tribe__Tickets__Tickets as Tickets;
 /**
  * Class Assets.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating;
  */
@@ -32,7 +32,7 @@ class Assets extends Controller_Contract {
 	/**
 	 * Unregisters the controller by unsubscribing from WordPress hooks.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -42,7 +42,7 @@ class Assets extends Controller_Contract {
 	/**
 	 * Returns the utils data for the Seating feature.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return array{
 	 *     links: array<string, string>,
@@ -80,7 +80,7 @@ class Assets extends Controller_Contract {
 	/**
 	 * Gets the data for the currency asset.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return array{
 	 *     symbol: string,
@@ -109,7 +109,7 @@ class Assets extends Controller_Contract {
 	/**
 	 * Registers the controller by subscribing to WordPress hooks and binding implementations.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -122,7 +122,7 @@ class Assets extends Controller_Contract {
 	/**
 	 * Registers the utils asset.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void The utils asset is registered.
 	 */
@@ -140,7 +140,7 @@ class Assets extends Controller_Contract {
 	/**
 	 * Gets the data for the service bundle asset.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return array{
 	 *     service: array{
@@ -167,7 +167,7 @@ class Assets extends Controller_Contract {
 	/**
 	 * Registers the service bundle, used to communicate with the Service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void The service bundle script and styles are registered.
 	 */
@@ -191,7 +191,7 @@ class Assets extends Controller_Contract {
 	/**
 	 * Registers the currency asset, used to format currency values.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void The currency asset is registered.
 	 */

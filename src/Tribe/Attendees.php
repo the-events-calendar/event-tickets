@@ -1279,7 +1279,7 @@ class Tribe__Tickets__Attendees {
 		/**
 		 * Filters the context used to render the Attendee Report page.
 		 *
-		 * @since TBD
+		 * @since 5.16.0
 		 *
 		 * @param array $render_context The context used to render the Attendee Report page.
 		 * @param int $post_id The post ID of the post to retrieve tickets for.

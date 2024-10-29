@@ -14,7 +14,7 @@ import { createHtmlComponentFromTemplateString } from '@tec/tickets/seating/util
 /**
  * Create a Ticket Row component for the Seat Selection modal ticket block.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {TicketRowProps} props The props for the Ticket Row component.
  *

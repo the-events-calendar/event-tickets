@@ -2,7 +2,7 @@
 /**
  * The tab used to display the current site Layouts.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Controller\Admin\Tabs;
  */
@@ -17,25 +17,25 @@ use TEC\Tickets\Seating\Service\Maps as Maps_Service;
 /**
  * Class Layouts.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Controller\Admin\Tabs;
  */
 class Layouts extends Tab {
-	
+
 	/**
 	 * The Layouts service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Layouts_Service
 	 */
 	protected Layouts_Service $layouts;
-	
+
 	/**
 	 * The Maps service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Maps_Service $maps The Maps service.
 	 */
@@ -43,7 +43,7 @@ class Layouts extends Tab {
 	/**
 	 * The Layouts Tab.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param Template        $template The template object.
 	 * @param Layouts_Service $layouts The Layouts service.
@@ -54,11 +54,11 @@ class Layouts extends Tab {
 		$this->layouts = $layouts;
 		$this->maps    = $maps;
 	}
-	
+
 	/**
 	 * Returns the title of this tab. The one that will be displayed on the top of the page.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The title of this tab.
 	 */
@@ -69,7 +69,7 @@ class Layouts extends Tab {
 	/**
 	 * Returns the ID of this tab, used in the URL and CSS/JS attributes.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return string The CSS/JS id of this tab.
 	 */
@@ -80,7 +80,7 @@ class Layouts extends Tab {
 	/**
 	 * Renders the tab.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void The rendered HTML of this tab is passed to the output buffer.
 	 */
@@ -92,7 +92,7 @@ class Layouts extends Tab {
 				[
 					'page' => Admin::get_menu_slug(),
 					'tab'  => Layout_Edit::get_id(),
-				] 
+				]
 			),
 		];
 

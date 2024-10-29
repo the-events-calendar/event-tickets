@@ -647,7 +647,7 @@ class Tribe__Tickets__Metabox {
 			 * Fire action when a ticket has been added.
 			 *
 			 * @since 5.2.3
-			 * @since TBD Added the `$ticket_id` and `$data` parameters.
+			 * @since 5.16.0 Added the `$ticket_id` and `$data` parameters.
 			 *
 			 * @param int $post_id ID of parent "event" post.
 			 * @param int $ticket_id ID of ticket post

@@ -2,9 +2,9 @@
 /**
  * Associated events list view by layout.
  *
- * @since TBD
+ * @since 5.16.0
  *
- * @version TBD
+ * @version 5.16.0
  *
  * @var WP_Posts_List_Table $events_table Events list table.
  * @var string              $header Header string.

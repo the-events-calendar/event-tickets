@@ -2,7 +2,7 @@
 /**
  * The main Editor controller, for both Classic and Blocks.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Controller;
  */
@@ -20,7 +20,7 @@ use WP_REST_Request;
 /**
  * Class Editor.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Controller;
  */
@@ -30,7 +30,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	/**
 	 * Unregisters the Controller by unsubscribing from WordPress hooks.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -45,7 +45,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	/**
 	 * Returns the store data used to hydrate the store in Block Editor context.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return array{
 	 *     isUsingAssignedSeating: bool,
@@ -105,7 +105,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	/**
 	 * Registers the meta for the Tickets and the ticketable post types.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 */
 	public function register_meta(): void {
 		foreach ( tribe_tickets()->ticket_types() as $ticket_type ) {
@@ -151,7 +151,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	/**
 	 * Registers the controller by subscribing to WordPress hooks and binding implementations.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -166,7 +166,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	/**
 	 * Filters the seating totals during a rest request.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array           $data    The data to be shared with the block editor.
 	 * @param WP_REST_Request $request The block editor's request.
@@ -201,7 +201,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	/**
 	 * Registers the Block Editor JavaScript and CSS assets.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -247,7 +247,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	/**
 	 * Saves the seating details of a ticket from the POST or PUT request data sent to the REST API.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param int                 $post_id   The ID of the post the ticket is attached to.
 	 * @param int                 $ticket_id The ID of the ticket.

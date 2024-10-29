@@ -2,7 +2,7 @@
 /**
  * Handles the integration with the Tickets Commerce module.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating\Commerce;
  */
@@ -27,7 +27,7 @@ use WP_Post;
 /**
  * Class Controller.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating\Commerce;
  */
@@ -35,7 +35,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * A reference to the Seating Service facade.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Service
 	 */
@@ -44,7 +44,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * A reference to the Tickets Handler.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Tickets_Handler
 	 */
@@ -52,7 +52,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * A reference to the Seat Types Table handle.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Seat_Types_Table
 	 */
@@ -61,7 +61,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * A reference to the Attendees handler.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Attendees
 	 */
@@ -70,7 +70,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Controller constructor.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param Container        $container        A reference to the DI container instance.
 	 * @param Service          $service          A reference to the Seating Service facade.
@@ -89,7 +89,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Subscribes to the WordPress hooks and actions required by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -109,7 +109,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Unregisters the controller by unsubscribing from WordPress hooks.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -129,7 +129,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Sets the stock counts for the event.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array<string,array<string|int>> $types   The types of tickets.
 	 * @param int                             $post_id The post ID.
@@ -202,7 +202,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Adjusts the seated ticket inventory to match the stock.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param int                        $inventory       The current inventory.
 	 * @param Ticket_Object              $ticket          The ticket object.
@@ -264,7 +264,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Filters the handler used to get the token and object ID from the cookie.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array<string,string> $session_entries The entries from the cookie. A map from object ID to token.
 	 *
@@ -325,7 +325,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Cross-updates the Ticket stock meta across a set of Tickets sharing the same seat type and post.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param int    $ticket_id      The Ticket ID to start the cross-update from.
 	 * @param string $seat_type      The seat type UUID.
@@ -385,7 +385,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Prevents the update of the capacity meta keys for Tickets that are ASC tickets and Ticket-able Post types that are using Seating.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param null|bool $check      Whether to allow the update (`null`) or whether the update is already being processed.
 	 * @param int       $object_id  The ID of the object being updated.
@@ -440,7 +440,7 @@ class Controller extends Controller_Contract {
 	 * Handle the update of some ticket meta keys depending on the service status and taking care to update
 	 * related meta in other Tickets that should be affected.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param null|bool $check      Whether to allow the update (`null`) or whether the update is already being processed.
 	 * @param int       $object_id  The ID of the object being updated.
@@ -504,7 +504,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Updates the stock of the Tickets sharing the same seat type when an Attendee is trashed.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param int $post_id The ID of the post being trashed.
 	 *
@@ -524,7 +524,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Updates the stock of the Tickets sharing the same seat type when an Attendee is deleted.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param int     $post_id The ID of the post being deleted.
 	 * @param WP_Post $post    The post object being deleted.

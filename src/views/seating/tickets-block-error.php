@@ -5,9 +5,9 @@
  * Override this template in your own theme by creating a file at
  * [your-theme]/tribe/tickets-seating/tickets-block-error.php
  *
- * @since TBD
+ * @since 5.16.0
  *
- * @version TBD
+ * @version 5.16.0
  */
 
 ?>

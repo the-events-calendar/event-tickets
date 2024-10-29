@@ -2,7 +2,7 @@
 /**
  * The main Maps and Layouts Home template.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @var Tab[] $the_tabs The set of tabs to display, in order.
  * @var Tab   $current  The current tab.

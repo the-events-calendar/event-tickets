@@ -43,7 +43,7 @@ async function init(iframe) {
 /**
  * Returns the first iframe element in the document.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {HTMLDocument|null} dom The document to use to get the iframe element.
  *
@@ -76,7 +76,7 @@ export async function initServiceIframe(iframe) {
 /**
  * Handles resize requests.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {ResizeData} data The new height.
  * @param {HTMLDocument|null} dom The document to use to search for the iframe element.

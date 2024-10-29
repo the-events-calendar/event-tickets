@@ -4,7 +4,7 @@ import { layoutsHomeUrl, mapsHomeUrl } from './localized-data';
 /**
  * The default message handler that will be called when a message is received from the service.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {MessageEvent} event The message event received from the service.
  *
@@ -17,7 +17,7 @@ export function defaultMessageHandler(event) {
 /**
  * Sends a POST request to the backend to invalidate the Maps and Layouts cache.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {Promise<boolean>} A promise that will resolve to `true` if the request was successful, `false` otherwise.
  */
@@ -43,7 +43,7 @@ export async function invalidateMapsLayoutsCache() {
 /**
  * Sends a POST request to the backend to invalidate the Layouts cache.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {Promise<boolean>} A promise that will resolve to `true` if the request was successful, `false` otherwise.
  */
@@ -69,7 +69,7 @@ export async function invalidateLayoutsCache() {
 /**
  * Fires when a Map is created or updated on the Service.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {void}
  */
@@ -80,7 +80,7 @@ export function onMapCreatedUpdated() {
 /**
  * Fires when a Layout is created or updated on the Service.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {void}
  */
@@ -91,7 +91,7 @@ export function onLayoutCreatedUpdated() {
 /**
  * Fires when a Seat type is created or updated on the Service.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {void}
  */
@@ -102,7 +102,7 @@ export function onSeatTypeCreatedUpdated() {
 /**
  * On request to go to the Maps home from the Service, redirect to the Maps home.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {void}
  */
@@ -118,7 +118,7 @@ export function onGoToMapsHome() {
 /**
  * On request to go to the Layouts home from the Service, redirect to the Layouts home.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @return {void}
  */

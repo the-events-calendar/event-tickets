@@ -2,7 +2,7 @@
 /**
  * A facade for the Service interaction hiding the details of the service.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Controller\Service;
  */
@@ -16,7 +16,7 @@ use WP_Error;
 /**
  * Class Service.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Controller\Service;
  */
@@ -26,7 +26,7 @@ class Service {
 	/**
 	 * The base URL of the service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -34,7 +34,7 @@ class Service {
 	/**
 	 * The base URL of the service for frontend requests.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var string
 	 */
@@ -43,7 +43,7 @@ class Service {
 	/**
 	 * A reference to the Ephemeral_Token handler.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Ephemeral_Token
 	 */
@@ -52,7 +52,7 @@ class Service {
 	/**
 	 * A reference to the Layouts handler.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Layouts
 	 */
@@ -61,7 +61,7 @@ class Service {
 	/**
 	 * A reference to the Seat Types handler.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Seat_Types
 	 */
@@ -70,7 +70,7 @@ class Service {
 	/**
 	 * A reference to the Maps handler.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Maps
 	 */
@@ -79,7 +79,7 @@ class Service {
 	/**
 	 * A memoized reference to the Service Status value object.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @var Service_Status|null
 	 */
@@ -88,7 +88,7 @@ class Service {
 	/**
 	 * Service constructor.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string          $backend_base_url The base URL of the service.
 	 * @param string          $frontend_base_url The base URL of the service for frontend requests.
@@ -116,7 +116,7 @@ class Service {
 	/**
 	 * Fetches all the Maps from the database.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return Map_Card[] Array of map card objects.
 	 */
@@ -127,7 +127,7 @@ class Service {
 	/**
 	 * Fetches an ephemeral token from the service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param int         $expiration The expiration in seconds. While this value is arbitrary, the service will still
 	 *                                return a token whose expiration has been set to 15', 30', 1 hour or 6 hours.
@@ -143,7 +143,7 @@ class Service {
 	/**
 	 * Returns the layouts in option format.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return array<string, array{id: string, name: string, seats: int}> The layouts in option format.
 	 */
@@ -154,7 +154,7 @@ class Service {
 	/**
 	 * Checks if the connection to the service is working from the backend.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return bool Whether the connection is working or not.
 	 */
@@ -171,7 +171,7 @@ class Service {
 	/**
 	 * Returns a service URL built from the base URL and the given path.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $path The path to append to the base URL.
 	 *
@@ -184,7 +184,7 @@ class Service {
 	/**
 	 * Checks if the access token is valid with the service.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return bool Whether the access token is valid or not.
 	 */
@@ -206,7 +206,7 @@ class Service {
 	/**
 	 * Returns the URL to load the service route to create a new map and associated layout.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $token The ephemeral token used to secure the iframe communication with the service.
 	 *
@@ -224,7 +224,7 @@ class Service {
 	/**
 	 * Returns a service URL built from the base frontend URL and the given path.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $path The path to append to the base URL.
 	 *
@@ -238,7 +238,7 @@ class Service {
 	/**
 	 * Returns the URL to load the Maps create and edit page.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $token The ephemeral token used to secure the iframe communication with the service.
 	 * @param string $map_id ID of th Map to return the edit URL for.
@@ -258,7 +258,7 @@ class Service {
 	/**
 	 * Returns the URL to load the service route to create a new seat layout.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $token The ephemeral token used to secure the iframe communication with the service.
 	 * @param string $map_id ID of the Map to create the layout for.
@@ -278,7 +278,7 @@ class Service {
 	/**
 	 * Returns the URL to load the service route to edit a seat layout.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $token     The ephemeral token used to secure the iframe communication with the service.
 	 * @param string $layout_id The ID of the layout to edit.
@@ -301,7 +301,7 @@ class Service {
 	/**
 	 * Returns the URL to load the service route to purchase tickets with assigned seating.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $token   The ephemeral token used to secure the iframe communication with the service.
 	 * @param int    $post_id The post ID of the post to purchase tickets for.
@@ -329,7 +329,7 @@ class Service {
 	 *
 	 * If the post UUID is not set, it will be generated and set.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param int $event_id The post ID of the post.
 	 *
@@ -349,7 +349,7 @@ class Service {
 	/**
 	 * Returns the seat types for given Layout ID.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $layout_id The layout ID to get the seat types for.
 	 *
@@ -362,7 +362,7 @@ class Service {
 	/**
 	 * Deletes a map.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $map_id The ID of the map.
 	 *
@@ -375,7 +375,7 @@ class Service {
 	/**
 	 * Deletes a layout.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $layout_id The ID of the layout.
 	 * @param string $map_id The map ID of the layout.
@@ -389,7 +389,7 @@ class Service {
 	/**
 	 * Returns the seat report URL.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param string $token   The ephemeral token used to secure the iframe communication with the service.
 	 * @param int    $post_id The post ID of the post to get the seat report for.
@@ -417,7 +417,7 @@ class Service {
 	/**
 	 * Returns the Service Status instance.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param bool $force Whether to force the rebuilding of the status for this request.
 	 *
@@ -431,7 +431,7 @@ class Service {
 		/**
 		 * Filters the Service Status instance.
 		 *
-		 * @since TBD
+		 * @since 5.16.0
 		 *
 		 * @param Service_Status $status The Service Status instance.
 		 * @param string         $base_url The base URL of the service.

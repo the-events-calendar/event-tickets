@@ -11,7 +11,7 @@ import { createHtmlComponentFromTemplateString } from '@tec/tickets/seating/util
 /**
  * Builds and returns the interrupt dialog component.
  *
- * @since TBD
+ * @since 5.16.0
  *
  * @param {InterruptDialogComponentProps} props The props to use to build the component.
  *

@@ -1139,7 +1139,7 @@ class Hooks extends Service_Provider {
 	 * This method is useful for a late registration of the Commerce functionality after the `init` action has already
 	 * been fired.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 */
 	public function run_init_hooks(): void {
 		$this->register_post_types();

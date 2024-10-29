@@ -2,7 +2,7 @@
 /**
  * Handles the integration of the Seating feature with the QR code functionality.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating;
  */
@@ -14,7 +14,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 /**
  * Class QR.
  *
- * @since   TBD
+ * @since   5.16.0
  *
  * @package TEC\Tickets\Seating;
  */
@@ -22,7 +22,7 @@ class QR extends Controller_Contract {
 	/**
 	 * Binds and sets up implementations, subscribes to WordPress hooks and binds implementations.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 */
 	protected function do_register(): void {
 		add_filter( 'tec_tickets_qr_checkin_attendee_data', [ $this, 'inject_qr_data' ], 10, 2 );
@@ -31,7 +31,7 @@ class QR extends Controller_Contract {
 	/**
 	 * Unregisters the controller by unsubscribing from WordPress hooks.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @return void
 	 */
@@ -42,7 +42,7 @@ class QR extends Controller_Contract {
 	/**
 	 * Injects ASC data into the data returned when a QR code is scanned.
 	 *
-	 * @since TBD
+	 * @since 5.16.0
 	 *
 	 * @param array<string,mixed> $attendee_data The data returned when a QR code is scanned.
 	 * @param int                 $attendee_id   The ID of the attendee.
@@ -71,7 +71,7 @@ class QR extends Controller_Contract {
 		$attendee_data['seat_label'] = ( (string) get_post_meta(
 			$attendee_id,
 			Meta::META_KEY_ATTENDEE_SEAT_LABEL,
-			true 
+			true
 		)
 		);
 
