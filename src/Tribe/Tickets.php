@@ -4293,7 +4293,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since 4.9
 		 * @since 5.0.2 Correct provider attendee object.
-		 * @since TBD Add check for IAC.
 		 *
 		 * @param string|null $redirect URL to redirect to.
 		 * @param null|int    $post_id  Post ID for cart.
@@ -4375,6 +4374,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$cart_has_meta = $meta->cart_has_meta( $tickets_in_cart );
 			}
 
+			// There are no meta fields on the cart tickets.
 			if ( ! $cart_has_meta ) {
 				return;
 			}
