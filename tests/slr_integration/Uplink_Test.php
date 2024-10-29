@@ -269,9 +269,9 @@ class Uplink_Test extends Controller_Test_Case {
 		);
 		set_transient( Service\Seat_Types::update_transient_name(), time() );
 		
-		$this->assertNotEmpty( iterator_to_array( Tables\Maps::fetch_all() ) );
-		$this->assertNotEmpty( iterator_to_array( Layouts::fetch_all() ) );
-		$this->assertNotEmpty( iterator_to_array( Seat_Types::fetch_all() ) );
+		$this->assertCount( 2, iterator_to_array( Tables\Maps::fetch_all() ) );
+		$this->assertCount( 2, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 2, iterator_to_array( Seat_Types::fetch_all() ) );
 		
 		$this->make_controller()->register();
 		
