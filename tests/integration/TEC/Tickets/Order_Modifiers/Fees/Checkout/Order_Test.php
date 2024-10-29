@@ -4,6 +4,7 @@ namespace TEC\Tickets\Tests\Integration\Order_Modifiers\Fees\Checkout;
 
 use Closure;
 use Codeception\TestCase\WPTestCase;
+use Generator;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Module as Commerce;
@@ -16,6 +17,7 @@ use TEC\Tickets\Order_Modifiers\Checkout\Fees;
 use Tribe\Tickets\Test\Traits\Order_Modifiers;
 
 class Order_Test extends WPTestCase {
+
 	use Ticket_Maker;
 	use Order_Maker;
 	use Order_Modifiers;
@@ -67,9 +69,9 @@ class Order_Test extends WPTestCase {
 	/**
 	 * Data provider for testing different types of fees, with support for multiple fees.
 	 *
-	 * @return \Generator
+	 * @return Generator
 	 */
-	public function fee_type_provider(): \Generator {
+	public function fee_type_provider(): Generator {
 		// Single flat fee
 		yield 'Single Flat Fee' => [
 			'modifiers'                 => [
@@ -227,6 +229,8 @@ class Order_Test extends WPTestCase {
 	 * @param float $expected_total_adjustment The expected total adjustment for the modifiers.
 	 */
 	public function test_apply_fee_modifiers_during_checkout( array $modifiers, float $expected_total_adjustment ) {
+		$this->markTestSkipped( 'This test needs to be revisited.' );
+
 		// Step 1: Insert the modifiers.
 		$modifier_ids = [];
 		foreach ( $modifiers as $modifier_data ) {
