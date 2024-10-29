@@ -346,7 +346,7 @@ class Tribe__Tickets__Admin__Notices {
 		}
 
 		// Bail if Tickets Plus is not active.
-		if ( ! did_action( 'tec_container_registered_provider_Tribe__Tickets_Plus__Service_Provider' ) ) {
+		if ( ! has_action( 'tribe_common_loaded', 'tribe_register_event_tickets_plus' ) ) {
 			return;
 		}
 
