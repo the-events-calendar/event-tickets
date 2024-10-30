@@ -17,6 +17,7 @@
  * @var string $order_modifier_apply_to         What the fee is applied to (All, Per, Organizer, Venue)
  *
  * @package TEC\Tickets\Order_Modifiers
+ * phpcs:ignore WordPress.WP.GlobalVariablesOverride
  */
 
 /**
