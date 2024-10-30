@@ -25,6 +25,7 @@ use TEC\Tickets\Order_Modifiers\Factory;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifier_Relationship;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers_Meta;
+use TEC\Tickets\Order_Modifiers\Traits\Valid_Types;
 use WP_List_Table;
 
 /**
@@ -33,6 +34,8 @@ use WP_List_Table;
  * @since TBD
  */
 abstract class Order_Modifier_Table extends WP_List_Table {
+
+	use Valid_Types;
 
 	/**
 	 * Modifier class for the table (e.g., Coupon or Fee).
@@ -258,10 +261,15 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 * @return void
 	 */
 	public function render_tabs(): void {
-		$modifiers = tribe( Controller::class )->get_modifiers();
+		$modifiers = $this->get_modifiers();
 
-		$current_modifier = tribe_get_request_var( 'modifier', 'coupon' );
+		// If we don't have multiple modifiers, don't render tabs.
+		if ( count( $modifiers ) < 2 ) {
+			return;
+		}
 
+		// Determine the current modifier, falling back to the default.
+		$current_modifier = tribe_get_request_var( 'modifier', $this->get_default_type() );
 
 		echo '<h2 class="nav-tab-wrapper">';
 		foreach ( $modifiers as $modifier_slug => $modifier_data ) {
@@ -305,15 +313,20 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		// Create the URL for the "Add New" button.
 		$add_new_url = add_query_arg(
 			[
-				'page'        => $this->modifier->get_page_slug(),
-				'modifier'    => $this->modifier->get_modifier_type(),
-				'edit'        => 1,
+				'page'     => $this->modifier->get_page_slug(),
+				'modifier' => $this->modifier->get_modifier_type(),
+				'edit'     => 1,
 			],
 			admin_url( 'admin.php' )
 		);
 
 		// Output the title and the "Add New" button.
-		echo '<h3>' . esc_html( $modifier ) . ' <a href="' . esc_url( $add_new_url ) . '" class="page-title-action button">' . esc_html__( 'Add New', 'event-tickets' ) . '</a></h3>';
+		printf(
+			'<h3>%s <a href="%s" class="page-title-action button">%s</a></h3>',
+			esc_html( $modifier ),
+			esc_url( $add_new_url ),
+			esc_html__( 'Add New', 'event-tickets' )
+		);
 	}
 
 	/**

@@ -18,10 +18,9 @@ use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifier_Relationships;
 use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers;
 use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
-use TEC\Tickets\Order_Modifiers\Modifiers\Coupon;
-use TEC\Tickets\Order_Modifiers\Modifiers\Fee;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Tickets\Order_Modifiers\Traits\Valid_Types;
 
 /**
  * Class Controller.
@@ -32,14 +31,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
  */
 class Controller extends Controller_Contract {
 
-	/**
-	 * Cached list of available modifiers.
-	 *
-	 * @since TBD
-	 *
-	 * @var array
-	 */
-	protected static array $cached_modifiers = [];
+	use Valid_Types;
 
 	/**
 	 * The callback to register the tables.
@@ -114,71 +106,6 @@ class Controller extends Controller_Contract {
 	}
 
 	/**
-	 * Get the list of available modifiers.
-	 * Acts as a whitelist for potential Modifiers.
-	 *
-	 * @since TBD
-	 *
-	 * @return array List of registered modifier strategies.
-	 */
-	public static function get_modifiers(): array {
-		// If cached modifiers exist, return them.
-		if ( ! empty( self::$cached_modifiers ) ) {
-			return self::$cached_modifiers;
-		}
-
-		// Default modifiers with display name, slug, and class.
-		$modifiers = [
-			'coupon' => [
-				'display_name' => __( 'Coupons', 'event-tickets' ),
-				'slug'         => 'coupon',
-				'class'        => Coupon::class,
-			],
-			'fee'    => [
-				'display_name' => __( 'Fees', 'event-tickets' ),
-				'slug'         => 'fee',
-				'class'        => Fee::class,
-			],
-		];
-
-		/**
-		 * Filters the list of available modifiers for Order Modifiers.
-		 *
-		 * This allows developers to add or modify the default list of order modifiers.
-		 *
-		 * @since TBD
-		 *
-		 * @param array $modifiers An array of default modifiers, each containing 'display_name', 'slug', and 'class'.
-		 */
-		$modifiers = apply_filters( 'tec_tickets_order_modifiers', $modifiers );
-
-		// Validate modifiers after the filter.
-		foreach ( $modifiers as $key => $modifier ) {
-			if ( ! isset( $modifier['class'], $modifier['slug'], $modifier['display_name'] ) || ! class_exists( $modifier['class'], true ) ) {
-				unset( $modifiers[ $key ] ); // Remove invalid modifiers.
-			}
-		}
-
-		// Cache the result.
-		self::$cached_modifiers = $modifiers;
-
-		return $modifiers;
-	}
-
-	/**
-	 * Clear the cached list of order modifiers.
-	 *
-	 * This method is useful when plugins or settings that affect the order modifiers change.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public static function clear_cached_modifiers(): void {
-		self::$cached_modifiers = [];
-	}
-
-	/**
 	 * Get a specific modifier strategy.
 	 *
 	 * Retrieves the appropriate strategy class based on the provided modifier type.
@@ -197,7 +124,7 @@ class Controller extends Controller_Contract {
 		// Sanitize the modifier parameter to ensure it's a valid string.
 		$modifier = sanitize_key( $modifier );
 
-		$modifiers = self::get_modifiers();
+		$modifiers = $this->get_modifiers();
 
 		// Ensure the requested modifier exists in the whitelist and the class implements the correct interface.
 		if ( isset( $modifiers[ $modifier ] ) && is_subclass_of( $modifiers[ $modifier ]['class'], Modifier_Strategy_Interface::class ) ) {
@@ -288,6 +215,6 @@ class Controller extends Controller_Contract {
 			return $modifiers[ $modifier ]['display_name'];
 		}
 
-		return null; // Return null if the modifier slug doesn't exist.
+		return null;
 	}
 }

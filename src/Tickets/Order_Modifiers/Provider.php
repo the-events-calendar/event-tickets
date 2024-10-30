@@ -58,12 +58,19 @@ final class Provider extends ServiceProvider {
 		// Register the Fee classes.
 		$this->register_fee_classes();
 
-		// Maybe register the Coupon classes.
+		/**
+		 * Filters whether the coupons are enabled.
+		 *
+		 * This filter will be removed when the Coupon functionality is ready for production.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $enabled Whether the coupons are enabled.
+		 */
 		if ( apply_filters( 'tec_tickets_order_modifiers_coupons_enabled', false ) ) {
 			$this->register_couopon_classes();
-			$this->container->setVar( 'tickets_coupons_enabled', true );
 		} else {
-			$this->container->setVar( 'tickets_coupons_enabled', false );
+			$this->filter_out_coupons();
 		}
 
 		// Tag our classes that have their own registration needs.
@@ -138,5 +145,25 @@ final class Provider extends ServiceProvider {
 				Coupons::class,
 			]
 		);
+	}
+
+	/**
+	 * Filter out the coupons.
+	 *
+	 * This will be removed when the Coupon functionality is ready for production.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	private function filter_out_coupons() {
+		$remove_coupon_array_key = function ( array $items ): array {
+			unset( $items['coupon'] );
+
+			return $items;
+		};
+
+		add_filter( 'tec_tickets_order_modifiers', $remove_coupon_array_key );
+		add_filter( 'tec_tickets_order_modifier_types', $remove_coupon_array_key );
 	}
 }

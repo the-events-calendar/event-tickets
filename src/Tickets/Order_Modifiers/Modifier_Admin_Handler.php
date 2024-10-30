@@ -11,6 +11,7 @@ namespace TEC\Tickets\Order_Modifiers;
 
 use InvalidArgumentException;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Manager;
+use TEC\Tickets\Order_Modifiers\Traits\Valid_Types;
 use TEC\Tickets\Registerable;
 
 /**
@@ -21,6 +22,8 @@ use TEC\Tickets\Registerable;
  * @since TBD
  */
 class Modifier_Admin_Handler implements Registerable {
+
+	use Valid_Types;
 
 	/**
 	 * Event Tickets menu page slug.
@@ -70,8 +73,8 @@ class Modifier_Admin_Handler implements Registerable {
 	 * @return void
 	 */
 	public function register(): void {
-		add_action( 'admin_menu', [ $this, 'add_tec_tickets_order_modifiers_page' ], 15 );
-		add_action( 'admin_init', [ $this, 'handle_delete_modifier' ] );
+		add_action( 'admin_menu', fn() => $this->add_tec_tickets_order_modifiers_page(), 15 );
+		add_action( 'admin_init', fn() => $this->handle_delete_modifier() );
 		add_action( 'admin_init', fn() => $this->handle_form_submission() );
 	}
 
@@ -124,7 +127,7 @@ class Modifier_Admin_Handler implements Registerable {
 	 *
 	 * @since TBD
 	 */
-	public function add_tec_tickets_order_modifiers_page(): void {
+	protected function add_tec_tickets_order_modifiers_page(): void {
 		$admin_pages = tribe( 'admin.pages' );
 
 		$admin_pages->register_page(
@@ -132,7 +135,7 @@ class Modifier_Admin_Handler implements Registerable {
 				'id'       => static::$slug,
 				'path'     => static::$slug,
 				'parent'   => static::$parent_slug,
-				'title'    => esc_html__( 'Coupon &amp; Fees', 'event-tickets' ),
+				'title'    => esc_html__( 'Booking Fees', 'event-tickets' ),
 				'position' => 1.5,
 				'callback' => [ $this, 'render_tec_order_modifiers_page' ],
 			]
@@ -151,7 +154,7 @@ class Modifier_Admin_Handler implements Registerable {
 		tribe_asset_enqueue_group( 'event-tickets-admin-order-modifiers' );
 
 		// Get and sanitize request vars for modifier and modifier_id.
-		$modifier_type = sanitize_key( tribe_get_request_var( 'modifier', 'coupon' ) );
+		$modifier_type = sanitize_key( tribe_get_request_var( 'modifier', $this->get_default_type() ) );
 		$modifier_id   = absint( tribe_get_request_var( 'modifier_id', '0' ) );
 		$is_edit       = tribe_is_truthy( tribe_get_request_var( 'edit', '0' ) );
 
@@ -193,7 +196,7 @@ class Modifier_Admin_Handler implements Registerable {
 	 */
 	protected function get_modifier_data_by_id( int $modifier_id ): ?array {
 		// Get the modifier type from the request or default to 'coupon'.
-		$modifier_type = tribe_get_request_var( 'modifier', 'coupon' );
+		$modifier_type = tribe_get_request_var( 'modifier', $this->get_default_type() );
 
 		// Get the appropriate strategy for the selected modifier type.
 		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
@@ -387,7 +390,7 @@ class Modifier_Admin_Handler implements Registerable {
 	 *
 	 * @return void
 	 */
-	public function handle_delete_modifier(): void {
+	protected function handle_delete_modifier(): void {
 		// Check if the action is 'delete_modifier' and nonce is set.
 		$action        = tribe_get_request_var( 'action', '' );
 		$modifier_id   = absint( tribe_get_request_var( 'modifier_id', '' ) );

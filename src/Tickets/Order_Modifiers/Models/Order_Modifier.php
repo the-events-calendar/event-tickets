@@ -249,7 +249,6 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 * @param mixed  $default Default value. Default is null.
 	 *
 	 * @return mixed The attribute value.
-	 *
 	 * @throws RuntimeException When the attribute does not exist.
 	 */
 	public function getAttribute( string $key, $default = null ) {
