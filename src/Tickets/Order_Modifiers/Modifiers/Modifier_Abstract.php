@@ -248,21 +248,6 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	}
 
 	/**
-	 * Converts a decimal amount to its value multiplied by 100.
-	 *
-	 * This method is used to convert a floating-point amount (e.g., 23.00) into an integer.
-	 *
-	 * @since TBD
-	 *
-	 * @param float $amount The amount to convert.
-	 *
-	 * @return int The amount converted to cents.
-	 */
-	public function convert_to_raw_amount( float $amount ): int {
-		return (int) round( $amount * 100 );
-	}
-
-	/**
 	 * Converts an amount in cents to a formatted decimal string.
 	 *
 	 * This method is used to convert an integer amount in cents (e.g., 2300) into a string with two decimal points (e.g., 23.00).
