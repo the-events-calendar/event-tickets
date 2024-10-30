@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Prevent fatal while creating Sessions table for Seating on environments with limited character length on indexes while also using multi byte collation. [ET-2262]
