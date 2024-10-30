@@ -214,7 +214,7 @@ abstract class Create_Order_Modifiers_Abstract extends WPTestCase {
 		// Step 1: Insert a new modifier.
 		$insert_data       = [
 			'modifier'                    => $this->modifier_type,
-			'order_modifier_amount'       => 5.00, // $5.00 in cents.
+			'order_modifier_amount'       => 5.00,
 			'order_modifier_sub_type'     => 'flat',
 			'order_modifier_slug'         => "test_{$this->modifier_type}_update",
 			'order_modifier_display_name' => "Test {$this->modifier_type} Insert",
@@ -225,7 +225,7 @@ abstract class Create_Order_Modifiers_Abstract extends WPTestCase {
 		$update_data      = [
 			'modifier'                    => $this->modifier_type,
 			'order_modifier_id'           => $inserted_modifier->id,
-			'order_modifier_amount'       => 10.00, // Update to $10.00 in cents.
+			'order_modifier_amount'       => 10.00,
 			'order_modifier_display_name' => "Test {$this->modifier_type} Updated",
 		];
 		$updated_modifier = $this->upsert_order_modifier_for_test( $update_data );
@@ -235,7 +235,7 @@ abstract class Create_Order_Modifiers_Abstract extends WPTestCase {
 
 		// Validate that the updates are properly saved.
 		$this->assertEquals( $updated_modifier->id, $retrieved_modifier->id );
-		$this->assertEquals( 1000, $retrieved_modifier->raw_amount ); // Should now be $10.00.
+		$this->assertEquals( 10.00, $retrieved_modifier->raw_amount );
 		$this->assertEquals( $update_data['order_modifier_display_name'], $retrieved_modifier->display_name ); // Name should be updated.
 	}
 
