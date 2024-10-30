@@ -389,9 +389,9 @@ class Currency {
 		$default_map = apply_filters( 'tec_tickets_commerce_default_currency_map', $currency_map );
 
 		/** @var Tribe__Cache $cache */
-		$cache = tribe( 'cache' );
+		$cache     = tribe( 'cache' );
 		$cache_key = 'tec_tc_stripe_default_currency_map';
-		$map = isset( $cache[ $cache_key ] ) ? $cache[ $cache_key ] : false;
+		$map       = isset( $cache[ $cache_key ] ) ? $cache[ $cache_key ] : false;
 
 		// If not cached or the count is different, store the map in alpha order.
 		if ( ! $map || ! is_array( $map ) || count( $map ) != count( $default_map ) ) {

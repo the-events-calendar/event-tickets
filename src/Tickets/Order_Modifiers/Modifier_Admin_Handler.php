@@ -195,7 +195,7 @@ class Modifier_Admin_Handler implements Registerable {
 	 * @return array|null The modifier data or null if not found.
 	 */
 	protected function get_modifier_data_by_id( int $modifier_id ): ?array {
-		// Get the modifier type from the request or default to 'coupon'.
+		// Get the modifier type from the request or use the default.
 		$modifier_type = tribe_get_request_var( 'modifier', $this->get_default_type() );
 
 		// Get the appropriate strategy for the selected modifier type.
@@ -270,7 +270,7 @@ class Modifier_Admin_Handler implements Registerable {
 		}
 
 		// Get and sanitize request vars for modifier and modifier_id.
-		$modifier_type = sanitize_key( tribe_get_request_var( 'modifier', 'coupon' ) );
+		$modifier_type = sanitize_key( tribe_get_request_var( 'modifier', $this->get_default_type() ) );
 		$modifier_id   = absint( tribe_get_request_var( 'modifier_id', '0' ) );
 		$is_edit       = tribe_is_truthy( tribe_get_request_var( 'edit', '0' ) );
 
