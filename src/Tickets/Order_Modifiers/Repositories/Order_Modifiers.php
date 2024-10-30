@@ -105,7 +105,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 			[
 				'%s',
 				'%s',
-				'%d',
+				'%f',
 				'%s',
 				'%s',
 				'%s',
@@ -149,7 +149,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 			[
 				'%s',
 				'%s',
-				'%d',
+				'%f',
 				'%s',
 				'%s',
 				'%s',

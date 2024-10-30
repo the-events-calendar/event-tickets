@@ -32,7 +32,7 @@ use TEC\Tickets\Order_Modifiers\Values\Value_Interface;
  * @property int    $id              The Order Modifier ID.
  * @property string $modifier_type   The type of modifier (coupon, fee).
  * @property string $sub_type        The sub-type of modifier (percentage, flat).
- * @property int    $raw_amount      Amount of fee in cents.
+ * @property float  $raw_amount      Raw fee amount.
  * @property string $slug            The Order Modifier slug (coupon code).
  * @property string $display_name    User-friendly name.
  * @property string $status          The status (active, draft, inactive).
