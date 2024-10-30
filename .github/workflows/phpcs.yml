@@ -4,11 +4,7 @@ jobs:
   conditional:
     runs-on: ubuntu-latest
     outputs:
-<<<<<<< HEAD
-      has_no_php_files: ${{ steps.skip.outputs.has_no_php_files }}
-=======
       has_no_php_changes: ${{ steps.skip.outputs.has_no_php_changes }}
->>>>>>> e0f665ed312367395db352fde5259676bedccccf
     steps:
       # ------------------------------------------------------------------------------
       # Checkout the repo
@@ -22,26 +18,7 @@ jobs:
       # ------------------------------------------------------------------------------
       # Check if any PHP files have changed
       # ------------------------------------------------------------------------------
-<<<<<<< HEAD
-      - name: Check changed files
-        id: skip
-        run: |
-          num_php_files=$(git diff ${{ github.event.pull_request.base.sha }} HEAD --name-only | grep -P "\.php" | wc -l)
-          if [[ -z "$num_php_files" ]]; then
-            echo "has_no_php_files=1" >> $GITHUB_OUTPUT
-            echo "## No PHP Files changed, PHPCS will not run." >> $GITHUB_STEP_SUMMARY
-          elif [[ "$num_php_files" == "0" || "$num_php_files" == "" ]]; then
-            echo "has_no_php_files=1" >> $GITHUB_OUTPUT
-            echo "## No PHP Files changed, PHPCS will not run." >> $GITHUB_STEP_SUMMARY
-          else
-            echo "has_no_php_files=0" >> $GITHUB_OUTPUT
-            echo "## Found PHP file changes, running PHPCS." >> $GITHUB_STEP_SUMMARY
-          fi  
-  phpcs:
-    needs:
-      - conditional
-    if: needs.conditional.outputs.has_no_php_files == '0'
-=======
+
       - name: Check PHP file changes
         id: skip
         run: |
@@ -62,7 +39,6 @@ jobs:
     needs:
       - conditional
     if: needs.conditional.outputs.has_no_php_changes == '0'
->>>>>>> e0f665ed312367395db352fde5259676bedccccf
     uses: stellarwp/github-actions/.github/workflows/phpcs.yml@main
     with:
       ref: ${{ github.event.inputs.ref }}
