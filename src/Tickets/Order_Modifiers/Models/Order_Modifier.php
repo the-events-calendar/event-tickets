@@ -252,7 +252,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 * @return mixed The attribute value.
 	 * @throws RuntimeException When the attribute does not exist.
 	 */
-	public function getAttribute( string $key, $default = null ) {
+	public function getAttribute( string $key, $default = null ) { // phpcs:ignore Universal.NamingConventions
 		$this->validatePropertyExists( $key );
 		if ( ! $this->hasAttribute( $key ) ) {
 			return $default;
