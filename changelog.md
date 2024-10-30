@@ -1,6 +1,6 @@
 # Changelog
 
-### [5.16.0] 2024-10-29
+### [5.16.0] 2024-10-30
 
 * Version - Event Tickets 5.16.0 is only compatible with Event Tickets Plus 6.1.0 or higher.
 * Version - Event Tickets 5.16.0 is only compatible with The Events Calendar 6.8.0 or higher.
@@ -18,7 +18,6 @@
 * Tweak - Removed superfluous tool tip from capacity options in block editor.
 * Tweak - Show seat assignment on My Tickets page for attendees with assigned seating.
 * Tweak - Show seat assignment on tickets for attendees with assigned seating.
-* Fix - Tickets Commerce orders through Stripe no longer will create duplicate attendees [ET-2256]
 
 ### [5.15.0] 2024-10-21
 
