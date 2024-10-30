@@ -91,18 +91,6 @@ abstract class Abstract_Fees {
 	protected Value $subtotal;
 
 	/**
-	 * Tracks whether the fees have already been displayed during the checkout process.
-	 *
-	 * This static property ensures that the fees are only displayed once across multiple instances
-	 * of the class. If set to `true`, the hook for displaying fees will not be added again.
-	 * The default is `false`, indicating the fees have not yet been displayed.
-	 *
-	 * @since TBD
-	 * @var bool
-	 */
-	protected static bool $fees_displayed = false;
-
-	/**
 	 * Tracks whether the fees have already been appended to the cart.
 	 *
 	 * This static property ensures that the fees are only appended once during the
