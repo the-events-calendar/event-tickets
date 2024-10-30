@@ -201,7 +201,10 @@ class Modifier_Manager {
 		// Apply the fee based on the sub-type.
 		switch ( $sub_type ) {
 			case 'percent':
-				return new Percent_Value( $raw_amount );
+				$fee       = new Percent_Value( $raw_amount );
+				$fee_value = $base_price->get_float() * $fee->get_as_decimal();
+
+				return new Precision_Value( $fee_value );
 
 			case 'flat':
 				return new Precision_Value( $raw_amount );
