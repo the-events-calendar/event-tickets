@@ -357,7 +357,7 @@ class Tribe__Tickets__Admin__Notices {
 
 		// Bail if the attendee registration page is already set or does not exist.
 		$id = Tribe__Settings_Manager::get_option( 'ticket-attendee-page-id', false );
-		if ( ! empty( $id ) || ! get_post_status( $id ) ) {
+		if ( ! empty( $id ) && get_post_status( $id ) ) {
 			return;
 		}
 
