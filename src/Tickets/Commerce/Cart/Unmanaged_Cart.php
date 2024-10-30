@@ -203,7 +203,13 @@ class Unmanaged_Cart extends Abstract_Cart {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Process the items in the cart.
+	 *
+	 * @since 5.1.10
+	 *
+	 * @param array $data to be processed by the cart.
+	 *
+	 * @return array
 	 */
 	public function process( array $data = [] ) {
 		if ( empty( $data ) ) {

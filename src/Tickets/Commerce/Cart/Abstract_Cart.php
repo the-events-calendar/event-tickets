@@ -82,12 +82,12 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * @return float|null The total value of the cart, or null if there are no items.
 	 */
 	public function get_cart_total(): ?float {
-		$subtotal = $this->get_cart_subtotal(); // Get the subtotal of the cart items.
+		$subtotal = $this->get_cart_subtotal();
 		if ( null === $subtotal ) {
-			return null; // If no items, return null.
+			return null;
 		}
 
-		$items = $this->get_items_in_cart( true ); // Get items currently in the cart.
+		$items = $this->get_items_in_cart( true );
 
 		// Extract subtotals from the cart items.
 		$sub_totals = array_filter( wp_list_pluck( $items, 'sub_total' ) );
@@ -131,10 +131,11 @@ abstract class Abstract_Cart implements Cart_Interface {
 		// Reset cart_total to ensure it's not cumulative across calls.
 		$this->cart_total = 0.0;
 
-		$items = $this->get_items_in_cart( true ); // Fetch items currently in the cart.
+		$items = $this->get_items_in_cart( true );
 
+		// If no items in the cart, return null.
 		if ( empty( $items ) ) {
-			return null; // If no items in the cart, return null.
+			return null;
 		}
 
 		// Calculate the total from the subtotals of each item.

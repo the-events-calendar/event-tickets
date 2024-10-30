@@ -20,7 +20,7 @@ trait Order_Modifiers {
 	protected function upsert_order_modifier_for_test( array $data ): Model {
 		// Set default data for the modifier.
 		$default_data = [
-			'order_modifier_id'           => 0, // For creating a new modifier.
+			'order_modifier_id'           => 0,
 			'order_modifier_amount'       => '0', // Default fee of 10.00 USD in cents.
 			'order_modifier_sub_type'     => 'flat',
 			'order_modifier_status'       => 'active',
