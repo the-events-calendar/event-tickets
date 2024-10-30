@@ -203,6 +203,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.16.0.1] 2024-10-30 =
+
+* Fix - Resolved a fatal error that prevented the Sessions table from being set up on some databases with stricter settings. [ET-2262]
+
 = [5.16.0] 2024-10-30 =
 
 * Version - Event Tickets 5.16.0 is only compatible with Event Tickets Plus 6.1.0 or higher.
