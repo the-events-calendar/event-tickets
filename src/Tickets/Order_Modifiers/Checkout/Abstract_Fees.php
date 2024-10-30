@@ -17,8 +17,9 @@ use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use TEC\Tickets\Order_Modifiers\Repositories\Fees as Fee_Repository;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifier_Relationship;
+use TEC\Tickets\Order_Modifiers\Values\Currency_Value;
+use TEC\Tickets\Order_Modifiers\Values\Precision_Value;
 use Tribe__Template as Template;
-use WP_Post;
 
 /**
  * Class Fees
@@ -175,12 +176,6 @@ abstract class Abstract_Fees {
 	 * @param Template $template The template object for rendering.
 	 */
 	protected function display_fee_section( array $items, Template $template ): void {
-		if ( self::$fees_displayed ) {
-			return;
-		}
-
-		self::$fees_displayed = true;
-
 		// Fetch the combined fees for the items in the cart.
 		$combined_fees = $this->get_combined_fees_for_items( $items );
 
@@ -190,8 +185,14 @@ abstract class Abstract_Fees {
 		// Convert each fee_amount to an integer using get_integer().
 		$combined_fees = array_map(
 			function ( $fee ) {
-				if ( isset( $fee['fee_amount'] ) && $fee['fee_amount'] instanceof Value ) {
+				if ( ! array_key_exists( 'fee_amount', $fee ) ) {
+					return $fee;
+				}
+
+				if ( $fee['fee_amount'] instanceof Value ) {
 					$fee['fee_amount'] = $fee['fee_amount']->get_currency();
+				} elseif ( $fee['fee_amount'] instanceof Precision_Value ) {
+					$fee['fee_amount'] = new Currency_Value( $fee['fee_amount'] );
 				}
 
 				return $fee;

@@ -18,6 +18,7 @@ use TEC\Common\StellarWP\Models\ModelQueryBuilder;
 use TEC\Tickets\Order_Modifiers\Data_Transfer_Objects\Order_Modifier_DTO;
 use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers as Repository;
 use TEC\Tickets\Order_Modifiers\Values\Float_Value;
+use TEC\Tickets\Order_Modifiers\Values\Percent_Value;
 use TEC\Tickets\Order_Modifiers\Values\Positive_Integer_Value;
 use TEC\Tickets\Order_Modifiers\Values\Value_Interface;
 
@@ -191,7 +192,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	public function isPropertyTypeValid( string $key, $value ): bool {
 		switch ( $key ) {
 			case 'raw_amount':
-				return is_float( $value ) || $value instanceof Float_Value;
+				return is_float( $value ) || $value instanceof Float_Value || $value instanceof Percent_Value;
 
 			case 'id':
 				return is_int( $value ) || $value instanceof Positive_Integer_Value;
@@ -219,7 +220,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 		// Ensure specific attributes are stored as value objects.
 		switch ( $key ) {
 			case 'raw_amount':
-				if ( ! $value instanceof Float_Value ) {
+				if ( ! $value instanceof Value_Interface ) {
 					$value = Float_Value::from_number( $value );
 				}
 				break;
@@ -259,10 +260,15 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 
 		$value = $this->attributes[ $key ];
 
+		// Return the value directly if it's not a value object.
+		if ( ! $value instanceof Value_Interface ) {
+			return $value;
+		}
+
 		// When retrieving a value object, return the raw value.
-		return $value instanceof Value_Interface
-			? $value->get()
-			: $value;
+		return $value instanceof Percent_Value
+			? $value->get_as_percent()
+			: $value->get();
 	}
 
 	/**

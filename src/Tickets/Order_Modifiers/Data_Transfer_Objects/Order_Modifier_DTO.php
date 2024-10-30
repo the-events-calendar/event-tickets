@@ -16,7 +16,9 @@ use TEC\Tickets\Order_Modifiers\Factory;
 use TEC\Tickets\Order_Modifiers\Models\Order_Modifier;
 use TEC\Tickets\Order_Modifiers\Traits\Valid_Types;
 use TEC\Tickets\Order_Modifiers\Values\Float_Value;
+use TEC\Tickets\Order_Modifiers\Values\Percent_Value;
 use TEC\Tickets\Order_Modifiers\Values\Positive_Integer_Value;
+use TEC\Tickets\Order_Modifiers\Values\Value_Interface;
 
 /**
  * Class Order_Modifier_DTO.
@@ -61,9 +63,9 @@ class Order_Modifier_DTO extends DataTransferObject {
 	 *
 	 * @since TBD
 	 *
-	 * @var float
+	 * @var float|Value_Interface
 	 */
-	protected float $raw_amount;
+	protected $raw_amount;
 
 	/**
 	 * The slug (coupon code).
@@ -129,12 +131,17 @@ class Order_Modifier_DTO extends DataTransferObject {
 	 * @return Order_Modifier_DTO The DTO instance.
 	 */
 	public static function fromObject( $object ): self {
+		// Set the raw amount based on the sub-type.
+		$raw_amount = 'percent' === $object->sub_type
+			? ( new Percent_Value( $object->raw_amount ?? 0 ) )
+			: Float_Value::from_number( $object->raw_amount ?? 0 );
+
 		$self = new self();
 
 		$self->id            = Positive_Integer_Value::from_number( $object->id )->get();
 		$self->modifier_type = $object->modifier_type;
 		$self->sub_type      = $object->sub_type;
-		$self->raw_amount    = Float_Value::from_number( $object->raw_amount ?? 0 )->get();
+		$self->raw_amount    = $raw_amount;
 		$self->slug          = $object->slug;
 		$self->display_name  = $object->display_name;
 		$self->status        = $object->status;

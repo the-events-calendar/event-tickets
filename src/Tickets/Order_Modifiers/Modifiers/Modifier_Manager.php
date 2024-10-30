@@ -14,6 +14,9 @@ namespace TEC\Tickets\Order_Modifiers\Modifiers;
 
 use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Commerce\Utils\Value;
+use TEC\Tickets\Order_Modifiers\Values\Legacy_Value_Factory;
+use TEC\Tickets\Order_Modifiers\Values\Precision_Value;
+use TEC\Tickets\Order_Modifiers\Values\Percent_Value;
 
 /**
  * Context class that interacts with the strategy.
@@ -161,13 +164,14 @@ class Modifier_Manager {
 	 * @return Value The total amount after fees are applied.
 	 */
 	public function calculate_total_fees( Value $base_price, array $items ): Value {
-		$total_fees = Value::create( 0 );
+		$total_fees = new Precision_Value( 0.0 );
 
+		$all_fees = [];
 		foreach ( $items as $item ) {
-			$total_fees = Value::create()->total( [ $total_fees, $this->apply_fees_to_item( $base_price, $item ) ] );
+			$all_fees[] = $this->apply_fees_to_item( $base_price, $item );
 		}
 
-		return $total_fees;
+		return Legacy_Value_Factory::to_legacy_value( $total_fees->sum( ...$all_fees ) );
 	}
 
 	/**
@@ -180,11 +184,11 @@ class Modifier_Manager {
 	 * @param Value $base_price The base price of the item.
 	 * @param array $item       The fee data for a single item (percentage or flat).
 	 *
-	 * @return Value The total price after fees are applied.
+	 * @return Precision_Value The total price after fees are applied.
 	 */
-	public function apply_fees_to_item( Value $base_price, array $item ): Value {
+	public function apply_fees_to_item( Value $base_price, array $item ): Precision_Value {
 		$raw_base_price = $base_price->get_integer();
-		$zero_value     = Value::create();
+		$zero_value     = new Precision_Value( 0.0 );
 
 		// Early bail if base price is zero or negative, return zero value.
 		if ( $raw_base_price <= 0 ) {
@@ -197,13 +201,10 @@ class Modifier_Manager {
 		// Apply the fee based on the sub-type.
 		switch ( $sub_type ) {
 			case 'percent':
-				$converted_amount = $this->strategy->convert_from_raw_amount( $raw_amount );
-				$percentage_fee   = $this->strategy->convert_from_raw_amount( $raw_base_price * ( $converted_amount / 100 ) );
-
-				return Value::create( $percentage_fee );
+				return new Percent_Value( $raw_amount );
 
 			case 'flat':
-				return Value::create( $this->strategy->convert_from_raw_amount( $raw_amount ) );
+				return new Precision_Value( $raw_amount );
 
 			default:
 				return $zero_value;

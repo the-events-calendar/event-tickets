@@ -37,6 +37,7 @@ use TEC\Tickets\Order_Modifiers\Values\Float_Value;
 use TEC\Tickets\Order_Modifiers\Values\Percent_Value;
 use TEC\Tickets\Order_Modifiers\Values\Positive_Integer_Value;
 use TEC\Tickets\Order_Modifiers\Values\Precision_Value;
+use TEC\Tickets\Order_Modifiers\Values\Value_Interface;
 
 /**
  * Class Modifier_Abstract
@@ -316,7 +317,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		 * @since TBD
 		 *
 		 * @param string $formatted_amount The formatted amount string (e.g., '10%', '$10.00').
-		 * @param int    $value            The raw amount value in cents.
+		 * @param float  $value            The raw float value.
 		 * @param string $type             The type of the amount (e.g., 'percent', 'flat').
 		 */
 		return apply_filters( 'tec_tickets_order_modifier_display_amount', $formatted_amount, $value, $type );
