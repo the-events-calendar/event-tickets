@@ -1,4 +1,0 @@
-Significance: minor
-Type: fix
-
-Resolved a fatal error that prevented the Sessions table from being set up on some databases with stricter settings. [ET-2262]
