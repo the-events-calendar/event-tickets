@@ -203,7 +203,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.16.0] 2024-10-29 =
+= [5.16.0] 2024-10-30 =
 
 * Version - Event Tickets 5.16.0 is only compatible with Event Tickets Plus 6.1.0 or higher.
 * Version - Event Tickets 5.16.0 is only compatible with The Events Calendar 6.8.0 or higher.
