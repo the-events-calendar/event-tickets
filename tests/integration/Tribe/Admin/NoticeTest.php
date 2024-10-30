@@ -2,11 +2,9 @@
 
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Admin\Settings;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 
 class NoticeTest extends Codeception\TestCase\WPTestCase {
 	use With_Uopz;
-	use SnapshotAssertions;
 
 	/**
 	 * @before
@@ -40,7 +38,7 @@ class NoticeTest extends Codeception\TestCase\WPTestCase {
 
 	public function fse_ar_page_notice_provider() {
 		return [
-			'ar page set' => [
+			'no notice - ar page set' => [
 				[
 					'page' => Settings::$settings_page_id,
 					'is_admin' => true,
@@ -51,7 +49,7 @@ class NoticeTest extends Codeception\TestCase\WPTestCase {
 				],
 				true,
 			],
-			'incorrect page id' => [
+			'no notice - incorrect page id' => [
 				[
 					'page' => 'incorrect-page-id',
 					'is_admin' => true,
@@ -62,7 +60,7 @@ class NoticeTest extends Codeception\TestCase\WPTestCase {
 				],
 				true,
 			],
-			'not block theme' => [
+			'no notice - not block theme' => [
 				[
 					'page' => Settings::$settings_page_id,
 					'is_admin' => true,
