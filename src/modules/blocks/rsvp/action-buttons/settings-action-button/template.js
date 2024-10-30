@@ -14,13 +14,14 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { ActionButton } from '@moderntribe/tickets/elements';
-import { Cog as CogIcon } from '@moderntribe/common/icons';
+import { Settings as SettingsIcon } from '@moderntribe/tickets/icons';
 
 const SettingsActionButton = ( { isDisabled, onClick } ) => (
 	<ActionButton
 		className="tribe-editor__rsvp__action-button tribe-editor__rsvp__action-button--settings"
 		disabled={ isDisabled }
-		icon={ <CogIcon /> }
+		id="settings-rsvp"
+		icon={ <SettingsIcon /> }
 		onClick={ onClick }
 	>
 		{ __( 'Settings', 'event-tickets' ) }

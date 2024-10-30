@@ -1,15 +1,16 @@
 /**
  * External Dependencies
  */
-import { put, all, select, takeEvery, call, fork, take, cancel } from 'redux-saga/effects';
+import { all, call, cancel, fork, put, select, take, takeEvery } from 'redux-saga/effects';
 import { includes } from 'lodash';
 
 /**
  * Wordpress dependencies
  */
-import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
+import { dispatch as wpDispatch, select as wpSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { createBlock } from '@wordpress/blocks';
+import { doAction } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -19,33 +20,25 @@ import * as types from './types';
 import * as actions from './actions';
 import * as selectors from './selectors';
 import { DEFAULT_STATE } from './reducer';
-import {
-	DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE,
-} from './reducers/header-image';
-import {
-	DEFAULT_STATE as TICKET_DEFAULT_STATE,
-} from './reducers/tickets/ticket';
+import { DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE } from './reducers/header-image';
+import { DEFAULT_STATE as TICKET_DEFAULT_STATE } from './reducers/tickets/ticket';
 import * as rsvpActions from '@moderntribe/tickets/data/blocks/rsvp/actions';
 import {
 	DEFAULT_STATE as RSVP_HEADER_IMAGE_DEFAULT_STATE,
 } from '@moderntribe/tickets/data/blocks/rsvp/reducers/header-image';
 import * as utils from '@moderntribe/tickets/data/utils';
-import {
-	api,
-	globals,
-	moment as momentUtil,
-	time as timeUtil,
-} from '@moderntribe/common/utils';
+import { api, globals, moment as momentUtil, time as timeUtil } from '@moderntribe/common/utils';
 import { plugins } from '@moderntribe/common/data';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
 import {
-	isTribeEventPostType,
-	createWPEditorSavingChannel,
-	createWPEditorNotSavingChannel,
-	hasPostTypeChannel,
 	createDates,
+	createWPEditorNotSavingChannel,
+	createWPEditorSavingChannel,
+	hasPostTypeChannel,
+	isTribeEventPostType,
 } from '@moderntribe/tickets/data/shared/sagas';
+import { isTicketEditableFromPost } from '@moderntribe/tickets/data/blocks/ticket/utils';
 
 const {
 	UNLIMITED,
@@ -60,7 +53,7 @@ const {
 const { wpREST } = api;
 
 export function* createMissingTicketBlocks( tickets ) {
-	const { insertBlock } = yield call( wpDispatch, 'core/editor' );
+	const { insertBlock, updateBlockListSettings } = yield call( wpDispatch, 'core/block-editor' );
 	const { getBlockCount, getBlocks } = yield call( wpSelect, 'core/editor' );
 	const ticketsBlocks = yield call(
 		[ getBlocks(), 'filter' ],
@@ -68,6 +61,11 @@ export function* createMissingTicketBlocks( tickets ) {
 	);
 
 	ticketsBlocks.forEach( ( { clientId } ) => {
+		// Since we're not using the store provided by WordPress, we need to update the block list
+		// settings for the Tickets block here to allow the tickets-item block to be inserted.
+		// If the WP store did not initialize yet when the `insertBlock` function is called, the
+		// block will not be inserted and there will be a silent failure.
+		updateBlockListSettings( clientId, { allowedBlocks: [ 'tribe/tickets-item' ] } );
 		tickets.forEach( ( ticketId ) => {
 			const attributes = {
 				hasBeenCreated: true,
@@ -80,18 +78,113 @@ export function* createMissingTicketBlocks( tickets ) {
 	} );
 }
 
+export function formatTicketFromRestToAttributeFormat( ticket ) {
+	const capacity = ticket?.capacity_details?.max || 0;
+	const available = ticket?.capacity_details?.available || 0;
+	const capacityType = ticket?.capacity_details?.global_stock_mode || constants.UNLIMITED;
+	const sold = ticket?.capacity_details?.sold || 0;
+	const isShared = capacityType === constants.SHARED ||
+		capacityType === constants.CAPPED ||
+		capacityType === constants.GLOBAL;
+
+	return {
+		id: ticket.id,
+		type: ticket.type,
+		title: ticket.title,
+		description: ticket.description,
+		capacityType: capacityType,
+		price: ticket?.cost || '0.00',
+		capacity: capacity,
+		available: available,
+		sharedCapacity: capacity,
+		sold: sold,
+		shareSold: sold,
+		isShared: isShared,
+		currencyDecimalPoint: ticket?.cost_details?.currency_decimal_separator || '.',
+		currencyNumberOfDecimals: ticket?.cost_details?.currency_decimal_numbers || 2,
+		currencyPosition: ticket?.cost_details?.currency_position || 'prefix',
+		currencySymbol: ticket?.cost_details.currency_symbol || '$',
+		currencyThousandsSep: ticket?.cost_details?.currency_thousand_separator || ',',
+	};
+}
+
+export function* updateUneditableTickets() {
+	yield ( put( actions.setUneditableTicketsLoading( true ) ) );
+
+	const post = yield call( () => wpSelect( 'core/editor' ).getCurrentPost() );
+
+	if ( ! post?.id ) {
+		return;
+	}
+
+	// Get **all** the tickets, not just the uneditable ones. Filtering will take care of removing the editable ones.
+	const { response, data = { tickets: [] } } = yield call( wpREST, {
+		namespace: 'tribe/tickets/v1',
+		path: `tickets/?include_post=${ post.id }&per_page=30`,
+		initParams: {
+			method: 'GET',
+		},
+	} );
+
+	if ( response?.status !== 200 || ! Array.isArray( data?.tickets ) ) {
+		// Something went wrong, bail out.
+		return null;
+	}
+
+	const restFormatUneditableTickets = data.tickets
+		// Remove the editable tickets.
+		.filter( ( ticket ) => ! isTicketEditableFromPost( ticket.id, ticket.type, post ) );
+
+	const uneditableTickets = [];
+
+	if ( restFormatUneditableTickets.length >= 1 ) {
+		for ( const ticket of restFormatUneditableTickets ) {
+			const formattedUneditableTicket = yield formatTicketFromRestToAttributeFormat( ticket );
+			uneditableTickets.push( formattedUneditableTicket );
+		}
+	}
+
+	/**
+	 * Fires after the uneditable tickets have been updated from the backend.
+	 *
+	 * @since 5.8.0
+	 * @param {Object[]} uneditableTickets The uneditable tickets just fetched from the backend.
+	 */
+	doAction( 'tec.tickets.blocks.uneditableTicketsUpdated', uneditableTickets );
+
+	yield put( actions.setUneditableTickets( uneditableTickets ) );
+	yield put( actions.setUneditableTicketsLoading( false ) );
+}
+
 export function* setTicketsInitialState( action ) {
 	const { get } = action.payload;
 
+	const currentPost = yield wpSelect( 'core/editor' ).getCurrentPost();
+
 	const header = parseInt( get( 'header', TICKET_HEADER_IMAGE_DEFAULT_STATE.id ), 10 );
 	const sharedCapacity = get( 'sharedCapacity' );
-	const ticketsList = get( 'tickets', [] );
+	// Shape: [ {id: int, type: string}, ... ].
+	const allTickets = JSON.parse( get( 'tickets', '[]' ) );
+
+	const { editableTickets, uneditableTickets } = allTickets.reduce( ( acc, ticket ) => {
+		if ( isTicketEditableFromPost( ticket.id, ticket.type, currentPost ) ) {
+			acc.editableTickets.push( ticket );
+		} else {
+			acc.uneditableTickets.push( ticket );
+		}
+		return acc;
+	}, { editableTickets: [], uneditableTickets: [] } );
+
+	// Get only the IDs of the tickets that are not in the block list already.
 	const ticketsInBlock = yield select( selectors.getTicketsIdsInBlocks );
-	// Get only the IDs of the tickets that are not in the block list already
-	const ticketsDiff = ticketsList.filter( ( item ) => ! includes( ticketsInBlock, item ) );
+	const ticketsDiff = editableTickets.filter( ( item ) => ! includes( ticketsInBlock, item.id ) );
 
 	if ( ticketsDiff.length >= 1 ) {
-		yield call( createMissingTicketBlocks, ticketsDiff );
+		yield call( createMissingTicketBlocks, ticketsDiff.map( ( ticket ) => ticket.id ) );
+	}
+
+	if ( uneditableTickets.length >= 1 ) {
+		yield put( actions.setUneditableTickets( uneditableTickets ) );
 	}
 
 	// Meta value is '0' however fields use empty string as default
@@ -123,7 +216,7 @@ export function* resetTicketsBlock() {
 
 	if ( ! hasCreatedTickets ) {
 		const currentMeta = yield call(
-			[ wpSelect( 'core/editor' ), 'getCurrentPostAttribute' ],
+			[ wpSelect( 'core/editor' ), 'getEditedPostAttribute' ],
 			'meta',
 		);
 		const newMeta = {
@@ -273,6 +366,27 @@ export function* setBodyDetails( clientId ) {
 		body.append( 'ticket[event_capacity]', yield select( selectors.getTicketsTempSharedCapacity ) );
 	}
 
+	const showSalePrice = yield select( selectors.showSalePrice, props );
+
+	if ( showSalePrice ) {
+		body.append(
+			'ticket[sale_price][checked]',
+			yield select( selectors.getTempSalePriceChecked, props ),
+		);
+		body.append(
+			'ticket[sale_price][price]',
+			yield select( selectors.getTempSalePrice, props ),
+		);
+		body.append(
+			'ticket[sale_price][start_date]',
+			yield select( selectors.getTicketTempSaleStartDate, props ),
+		);
+		body.append(
+			'ticket[sale_price][end_date]',
+			yield select( selectors.getTicketTempSaleEndDate, props ),
+		);
+	}
+
 	return body;
 }
 
@@ -309,6 +423,7 @@ export function* fetchTicket( action ) {
 
 		if ( response.ok ) {
 			/* eslint-disable camelcase */
+
 			const {
 				totals = {},
 				available_from,
@@ -321,6 +436,10 @@ export function* fetchTicket( action ) {
 				capacity_type,
 				capacity,
 				supports_attendee_information,
+				attendee_information_fields,
+				type,
+				sale_price_data,
+				on_sale,
 			} = ticket;
 			/* eslint-enable camelcase */
 
@@ -350,10 +469,29 @@ export function* fetchTicket( action ) {
 				endTimeInput = yield call( momentUtil.toTime, endMoment );
 			}
 
+			const salePriceChecked = sale_price_data?.enabled || false;
+			const salePrice = sale_price_data?.sale_price || '';
+
+			const sale_start_date = sale_price_data?.start_date || ''; // eslint-disable-line camelcase
+			const saleStartDateMoment = yield call( momentUtil.toMoment, sale_start_date );
+			const saleStartDate = yield call( momentUtil.toDatabaseDate, saleStartDateMoment );
+			const saleStartDateInput = yield datePickerFormat
+				? call( momentUtil.toDate, saleStartDateMoment, datePickerFormat )
+				: call( momentUtil.toDate, saleStartDateMoment );
+
+			const sale_end_date = sale_price_data?.end_date || ''; // eslint-disable-line camelcase
+			const saleEndDateMoment = yield call( momentUtil.toMoment, sale_end_date );
+			const saleEndDate = yield call( momentUtil.toDatabaseDate, saleEndDateMoment );
+			const saleEndDateInput = yield datePickerFormat
+				? call( momentUtil.toDate, saleEndDateMoment, datePickerFormat )
+				: call( momentUtil.toDate, saleEndDateMoment );
+
 			const details = {
+				attendeeInfoFields: attendee_information_fields,
 				title,
 				description,
 				price: cost_details.values[ 0 ],
+				on_sale,
 				sku,
 				iac,
 				startDate,
@@ -368,6 +506,15 @@ export function* fetchTicket( action ) {
 				endTimeInput,
 				capacityType: capacity_type,
 				capacity,
+				type,
+				salePriceChecked,
+				salePrice,
+				saleStartDate,
+				saleStartDateInput,
+				saleStartDateMoment,
+				saleEndDate,
+				saleEndDateInput,
+				saleEndDateMoment,
 			};
 
 			yield all( [
@@ -424,6 +571,10 @@ export function* createNewTicket( action ) {
 				? 0
 				: ticket.capacity_details.available;
 
+			const { sale_price_data } = ticket; // eslint-disable-line camelcase
+			const salePriceChecked = sale_price_data?.enabled || false;
+			const salePrice = sale_price_data?.sale_price || '';
+
 			const [
 				title,
 				description,
@@ -442,6 +593,12 @@ export function* createNewTicket( action ) {
 				endTimeInput,
 				capacityType,
 				capacity,
+				saleStartDate,
+				saleStartDateInput,
+				saleStartDateMoment,
+				saleEndDate,
+				saleEndDateInput,
+				saleEndDateMoment,
 			] = yield all( [
 				select( selectors.getTicketTempTitle, props ),
 				select( selectors.getTicketTempDescription, props ),
@@ -460,6 +617,12 @@ export function* createNewTicket( action ) {
 				select( selectors.getTicketTempEndTimeInput, props ),
 				select( selectors.getTicketTempCapacityType, props ),
 				select( selectors.getTicketTempCapacity, props ),
+				select( selectors.getTicketTempSaleStartDate, props ),
+				select( selectors.getTicketTempSaleStartDateInput, props ),
+				select( selectors.getTicketTempSaleStartDateMoment, props ),
+				select( selectors.getTicketTempSaleEndDate, props ),
+				select( selectors.getTicketTempSaleEndDateInput, props ),
+				select( selectors.getTicketTempSaleEndDateMoment, props ),
 			] );
 
 			yield all( [
@@ -481,7 +644,17 @@ export function* createNewTicket( action ) {
 					endTimeInput,
 					capacityType,
 					capacity,
+					salePriceChecked,
+					salePrice,
+					saleStartDate,
+					saleStartDateInput,
+					saleStartDateMoment,
+					saleEndDate,
+					saleEndDateInput,
+					saleEndDateMoment,
 				} ) ),
+				put( actions.setTempSalePriceChecked( clientId, salePriceChecked ) ),
+				put( actions.setTempSalePrice( clientId, salePrice ) ),
 				put( actions.setTicketId( clientId, ticket.id ) ),
 				put( actions.setTicketHasBeenCreated( clientId, true ) ),
 				put( actions.setTicketAvailable( clientId, available ) ),
@@ -534,8 +707,26 @@ export function* updateTicket( action ) {
 		} );
 
 		if ( response.ok ) {
-			const { capacity_details } = ticket; // eslint-disable-line camelcase
+			const { capacity_details, sale_price_data, on_sale } = ticket; // eslint-disable-line camelcase, max-len
 			const available = capacity_details.available === -1 ? 0 : capacity_details.available;
+
+			const salePriceChecked = sale_price_data?.enabled || false;
+			const salePrice = sale_price_data?.sale_price || '';
+
+			const datePickerFormat = tecDateSettings().datepickerFormat;
+			const sale_start_date = sale_price_data?.start_date || ''; // eslint-disable-line camelcase
+			const saleStartDateMoment = yield call( momentUtil.toMoment, sale_start_date );
+			const saleStartDate = yield call( momentUtil.toDatabaseDate, saleStartDateMoment );
+			const saleStartDateInput = yield datePickerFormat
+				? call( momentUtil.toDate, saleStartDateMoment, datePickerFormat )
+				: call( momentUtil.toDate, saleStartDateMoment );
+
+			const sale_end_date = sale_price_data?.end_date || ''; // eslint-disable-line camelcase
+			const saleEndDateMoment = yield call( momentUtil.toMoment, sale_end_date );
+			const saleEndDate = yield call( momentUtil.toDatabaseDate, saleEndDateMoment );
+			const saleEndDateInput = yield datePickerFormat
+				? call( momentUtil.toDate, saleEndDateMoment, datePickerFormat )
+				: call( momentUtil.toDate, saleEndDateMoment );
 
 			const [
 				title,
@@ -580,6 +771,7 @@ export function* updateTicket( action ) {
 					title,
 					description,
 					price,
+					on_sale,
 					sku,
 					iac,
 					startDate,
@@ -594,10 +786,26 @@ export function* updateTicket( action ) {
 					endTimeInput,
 					capacityType,
 					capacity,
+					salePriceChecked,
+					salePrice,
+					saleStartDate,
+					saleStartDateInput,
+					saleStartDateMoment,
+					saleEndDate,
+					saleEndDateInput,
+					saleEndDateMoment,
 				} ) ),
 				put( actions.setTicketSold( clientId, capacity_details.sold ) ),
 				put( actions.setTicketAvailable( clientId, available ) ),
 				put( actions.setTicketHasChanges( clientId, false ) ),
+				put( actions.setTempSalePrice( clientId, salePrice ) ),
+				put( actions.setTempSalePriceChecked( clientId, salePriceChecked ) ),
+				put( actions.setTicketTempSaleStartDate( clientId, saleStartDate ) ),
+				put( actions.setTicketTempSaleStartDateInput( clientId, saleStartDateInput ) ),
+				put( actions.setTicketTempSaleStartDateMoment( clientId, saleStartDateMoment ) ),
+				put( actions.setTicketTempSaleEndDate( clientId, saleEndDate ) ),
+				put( actions.setTicketTempSaleEndDateInput( clientId, saleEndDateInput ) ),
+				put( actions.setTicketTempSaleEndDateMoment( clientId, saleEndDateMoment ) ),
 			] );
 		}
 	} catch ( e ) {
@@ -611,13 +819,19 @@ export function* updateTicket( action ) {
 }
 
 export function* deleteTicket( action ) {
-	const { clientId } = action.payload;
+	const { clientId, askForDeletion = true } = action.payload;
 	const props = { clientId };
 
-	const shouldDelete = yield call(
-		[ window, 'confirm' ],
-		__( 'Are you sure you want to delete this ticket? It cannot be undone.', 'event-tickets' ),
-	);
+	let shouldDelete = false;
+
+	if ( askForDeletion ) {
+		shouldDelete = yield call(
+			[ window, 'confirm' ],
+			__( 'Are you sure you want to delete this ticket? It cannot be undone.', 'event-tickets' ),
+		);
+	} else {
+		shouldDelete = true;
+	}
 
 	if ( shouldDelete ) {
 		const ticketId = yield select( selectors.getTicketId, props );
@@ -796,9 +1010,11 @@ export function* deleteTicketsHeaderImage() {
 export function* setTicketDetails( action ) {
 	const { clientId, details } = action.payload;
 	const {
+		attendeeInfoFields,
 		title,
 		description,
 		price,
+		on_sale, // eslint-disable-line camelcase
 		sku,
 		iac,
 		startDate,
@@ -813,12 +1029,23 @@ export function* setTicketDetails( action ) {
 		endTimeInput,
 		capacityType,
 		capacity,
+		type,
+		salePriceChecked,
+		salePrice,
+		saleStartDate,
+		saleStartDateInput,
+		saleStartDateMoment,
+		saleEndDate,
+		saleEndDateInput,
+		saleEndDateMoment,
 	} = details;
 
 	yield all( [
+		put( actions.setTicketAttendeeInfoFields( clientId, attendeeInfoFields ) ),
 		put( actions.setTicketTitle( clientId, title ) ),
 		put( actions.setTicketDescription( clientId, description ) ),
 		put( actions.setTicketPrice( clientId, price ) ),
+		put( actions.setTicketOnSale( clientId, on_sale ) ),
 		put( actions.setTicketSku( clientId, sku ) ),
 		put( actions.setTicketIACSetting( clientId, iac ) ),
 		put( actions.setTicketStartDate( clientId, startDate ) ),
@@ -833,6 +1060,15 @@ export function* setTicketDetails( action ) {
 		put( actions.setTicketEndTimeInput( clientId, endTimeInput ) ),
 		put( actions.setTicketCapacityType( clientId, capacityType ) ),
 		put( actions.setTicketCapacity( clientId, capacity ) ),
+		put( actions.setTicketType( clientId, type ) ),
+		put( actions.setSalePriceChecked( clientId, salePriceChecked ) ),
+		put( actions.setSalePrice( clientId, salePrice ) ),
+		put( actions.setTicketSaleStartDate( clientId, saleStartDate ) ),
+		put( actions.setTicketSaleStartDateInput( clientId, saleStartDateInput ) ),
+		put( actions.setTicketSaleStartDateMoment( clientId, saleStartDateMoment ) ),
+		put( actions.setTicketSaleEndDate( clientId, saleEndDate ) ),
+		put( actions.setTicketSaleEndDateInput( clientId, saleEndDateInput ) ),
+		put( actions.setTicketSaleEndDateMoment( clientId, saleEndDateMoment ) ),
 	] );
 }
 
@@ -856,6 +1092,14 @@ export function* setTicketTempDetails( action ) {
 		endTimeInput,
 		capacityType,
 		capacity,
+		salePriceChecked,
+		salePrice,
+		saleStartDate,
+		saleStartDateInput,
+		saleStartDateMoment,
+		saleEndDate,
+		saleEndDateInput,
+		saleEndDateMoment,
 	} = tempDetails;
 
 	yield all( [
@@ -876,6 +1120,14 @@ export function* setTicketTempDetails( action ) {
 		put( actions.setTicketTempEndTimeInput( clientId, endTimeInput ) ),
 		put( actions.setTicketTempCapacityType( clientId, capacityType ) ),
 		put( actions.setTicketTempCapacity( clientId, capacity ) ),
+		put( actions.setTempSalePriceChecked( clientId, salePriceChecked ) ),
+		put( actions.setTempSalePrice( clientId, salePrice ) ),
+		put( actions.setTicketTempSaleStartDate( clientId, saleStartDate ) ),
+		put( actions.setTicketTempSaleStartDateInput( clientId, saleStartDateInput ) ),
+		put( actions.setTicketTempSaleStartDateMoment( clientId, saleStartDateMoment ) ),
+		put( actions.setTicketTempSaleEndDate( clientId, saleEndDate ) ),
+		put( actions.setTicketTempSaleEndDateInput( clientId, saleEndDateInput ) ),
+		put( actions.setTicketTempSaleEndDateMoment( clientId, saleEndDateMoment ) ),
 	] );
 }
 
@@ -1121,6 +1373,24 @@ export function* handleTicketEndDate( action ) {
 	yield put( actions.setTicketTempEndDateMoment( clientId, endDateMoment ) );
 }
 
+export function* handleTicketSaleStartDate( action ) {
+	const { clientId, date, dayPickerInput } = action.payload;
+	const startDateMoment = yield date ? call( momentUtil.toMoment, date ) : undefined;
+	const startDate = yield date ? call( momentUtil.toDatabaseDate, startDateMoment ) : '';
+
+	yield put( actions.setTicketTempSaleStartDate( clientId, startDate ) );
+	yield put( actions.setTicketTempSaleStartDateInput( clientId, dayPickerInput.state.value ) );
+	yield put( actions.setTicketTempSaleStartDateMoment( clientId, startDateMoment ) );
+}
+
+export function* handleTicketSaleEndDate( action ) {
+	const { clientId, date, dayPickerInput } = action.payload;
+	const endDateMoment = yield date ? call( momentUtil.toMoment, date ) : undefined;
+	const endDate = yield date ? call( momentUtil.toDatabaseDate, endDateMoment ) : '';
+	yield put( actions.setTicketTempSaleEndDate( clientId, endDate ) );
+	yield put( actions.setTicketTempSaleEndDateInput( clientId, dayPickerInput.state.value ) );
+	yield put( actions.setTicketTempSaleEndDateMoment( clientId, endDateMoment ) );
+}
 export function* handleTicketStartTime( action ) {
 	const { clientId, seconds } = action.payload;
 	const startTime = yield call( timeUtil.fromSeconds, seconds, timeUtil.TIME_FORMAT_HH_MM );
@@ -1227,6 +1497,16 @@ export function* handler( action ) {
 			yield put( actions.setTicketHasChanges( action.payload.clientId, true ) );
 			break;
 
+		case types.HANDLE_TICKET_SALE_START_DATE:
+			yield call( handleTicketSaleStartDate, action );
+			yield put( actions.setTicketHasChanges( action.payload.clientId, true ) );
+			break;
+
+		case types.HANDLE_TICKET_SALE_END_DATE:
+			yield call( handleTicketSaleEndDate, action );
+			yield put( actions.setTicketHasChanges( action.payload.clientId, true ) );
+			break;
+
 		case types.HANDLE_TICKET_START_TIME:
 			yield call( handleTicketStartTime, action );
 			yield call( handleTicketStartTimeInput, action );
@@ -1244,6 +1524,9 @@ export function* handler( action ) {
 		case MOVE_TICKET_SUCCESS:
 			yield call( handleTicketMove );
 			break;
+
+		case types.UPDATE_UNEDITABLE_TICKETS:
+			yield call( updateUneditableTickets );
 
 		default:
 			break;
@@ -1268,7 +1551,10 @@ export default function* watchers() {
 		types.HANDLE_TICKET_END_DATE,
 		types.HANDLE_TICKET_START_TIME,
 		types.HANDLE_TICKET_END_TIME,
+		types.HANDLE_TICKET_SALE_START_DATE,
+		types.HANDLE_TICKET_SALE_END_DATE,
 		MOVE_TICKET_SUCCESS,
+		types.UPDATE_UNEDITABLE_TICKETS,
 	], handler );
 
 	yield fork( handleEventStartDateChanges );

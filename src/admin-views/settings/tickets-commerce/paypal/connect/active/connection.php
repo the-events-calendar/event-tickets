@@ -2,10 +2,11 @@
 /**
  * The Template for displaying the Tickets Commerce PayPal connection details.
  *
- * @version 5.3.0
+ * @version 5.4.0
  *
  * @since   5.1.10
  * @since   5.3.0 Using generic CSS classes for gateway instead of PayPal.
+ * @since   5.4.0 Using the new tickets settings get_url() method.
  *
  * @var Tribe__Tickets__Admin__Views                  $this               [Global] Template object.
  * @var string                                        $plugin_url         [Global] The plugin URL.
@@ -16,18 +17,12 @@
  * @var string                                        $gateway_key           [Global] Key for gateway.
  */
 
-use TEC\Tickets\Commerce\Payments_Tab;
-
 if ( empty( $is_merchant_connected ) ) {
 	return;
 }
 
 $name           = $merchant->get_merchant_id();
-$disconnect_url = Tribe__Settings::instance()->get_url( [
-	'tab' => Payments_Tab::$slug,
-	Payments_Tab::$key_current_section_get_var => $gateway_key,
-	'tc-action' => 'paypal-disconnect'
-] );
+$disconnect_url = $merchant->get_disconnect_url();
 
 ?>
 <div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-row">

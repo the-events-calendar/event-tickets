@@ -35,10 +35,19 @@ class Success_Shortcode extends Shortcode_Abstract {
 	 */
 	public function setup_template_vars() {
 		$order_id = tribe_get_request_var( Success::$order_id_query_arg );
-		$order    = tec_tc_orders()->by_args( [
-			'status'           => 'any',
-			'gateway_order_id' => $order_id,
-		] )->first();
+		$order    = tribe( Order::class )->get_from_gateway_order_id( $order_id );
+
+		// If the order is not found, clear the template variables and bail.
+		if ( empty( $order ) ) {
+			$this->template_vars = [];
+
+			return;
+		}
+
+		$attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		// Sort the Attendees by ID.
+		$attendee_ids = array_column( $attendees, 'ID' );
+		array_multisort( $attendee_ids, SORT_ASC, $attendees );
 
 		$args = [
 			'provider_id'    => Module::class,
@@ -47,6 +56,7 @@ class Success_Shortcode extends Shortcode_Abstract {
 			'order'          => $order,
 			'is_tec_active'  => defined( 'TRIBE_EVENTS_FILE' ) && class_exists( 'Tribe__Events__Main' ),
 			'payment_method' => tribe( Order::class )->get_gateway_label( $order ),
+			'attendees'      => $attendees,
 		];
 
 		$this->template_vars = $args;

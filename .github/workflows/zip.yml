@@ -7,6 +7,12 @@ on:
         description: 'Zip type: 0 = dev, 1 = production'
         required: false
         default: '0'
+      slack_channel:
+        description: 'Slack channel ID to post to'
+        required: false
+      slack_thread:
+        description: 'Slack thread to post to'
+        required: false
 jobs:
   zip:
     runs-on: ubuntu-latest
@@ -25,35 +31,59 @@ jobs:
       - name: Setup branch for consumption in subsequent steps
         id: settings
         run: |
-          echo "::set-output name=branch::${JOB_BRANCH}"
+          echo "branch=${JOB_BRANCH}" >> $GITHUB_OUTPUT
       # -----------------------------------------------------------------------------
       # Setup SSH keys and known_hosts
       # ------------------------------------------------------------------------------
-      - name: Setup SSH keys and known_hosts
-        env:
-          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
-          ssh-add - <<< "${{ secrets.GH_ACTIONS_SSH_KEY }}"
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.GH_ACTIONS_SSH_KEY }}
+          name: id_rsa
+          known_hosts: github.com
       # ------------------------------------------------------------------------------
-      # Checkout the repo and tut
+      # Checkout the repo
       # ------------------------------------------------------------------------------
       - name: Checkout the repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1000
           token: ${{ secrets.GH_BOT_TOKEN }}
           submodules: recursive
           ref: ${{ steps.settings.outputs.branch }}
+
+      # ------------------------------------------------------------------------------
+      # Setup Node.
+      # ------------------------------------------------------------------------------
+      - name: Check for .nvmrc file
+        id: check-nvmrc
+        run: echo "::set-output name=exists::$(test -f ${{ github.workspace }}/.nvmrc && echo 'true' || echo 'false')"
+
+      - uses: actions/setup-node@v3
+        if: steps.check-nvmrc.outputs.exists == 'true'
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      # ------------------------------------------------------------------------------
+      # Checkout tut
+      # ------------------------------------------------------------------------------
       - name: Checkout tut
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.GH_BOT_TOKEN }}
           repository: the-events-calendar/tut
           ref: main
           path: tut
+          fetch-depth: 1
+      - name: Checkout jenkins-scripts
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_BOT_TOKEN }}
+          repository: the-events-calendar/jenkins-scripts
+          ref: main
+          path: jenkins-scripts
           fetch-depth: 1
       # ------------------------------------------------------------------------------
       # Determine if we need to zip
@@ -74,10 +104,11 @@ jobs:
           if [ "${JOB_FINAL}" == "1" ]; then
             FILENAME="${ZIP_NAME}.${VERSION}.zip"
           fi
-          echo "::set-output name=value::${FILENAME}"
+          echo "value=${FILENAME}" >> $GITHUB_OUTPUT
           echo $FILENAME
       - name: Check if zip already exists
         uses: the-events-calendar/action-s3-utility@main
+        if: github.event.inputs.final != '1'
         id: s3_zip
         continue-on-error: true
         env:
@@ -95,7 +126,7 @@ jobs:
         if: steps.s3_zip.outcome != 'success'
         id: get-composer-cache-dir
         run: |
-          echo "::set-output name=dir::$(composer config cache-files-dir)"
+          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
       - uses: actions/cache@v2
         if: steps.s3_zip.outcome != 'success'
         id: composer-cache
@@ -105,11 +136,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-composer-
       # ------------------------------------------------------------------------------
-      # Downgrade composer
+      # Ensure composer permissions
       # ------------------------------------------------------------------------------
-      - name: Downgrade composer to v1
+      - name: Set composer folder permissions
         run: |
-          sudo composer self-update --1
           sudo chown $USER $HOME/.composer
       # ------------------------------------------------------------------------------
       # Initialize tut
@@ -130,6 +160,11 @@ jobs:
         working-directory: ./tut
         run: |
           composer install --no-dev -o --ignore-platform-reqs
+      - name: Install jenkins-scripts composer dependencies
+        working-directory: ./jenkins-scripts
+        run: |
+          composer install --no-dev -o --ignore-platform-reqs
+          cp script-config-sample.yml script-config.yml
       # ------------------------------------------------------------------------------
       # Zip
       # ------------------------------------------------------------------------------
@@ -144,10 +179,13 @@ jobs:
           REPO_NAME=$( echo $GITHUB_REPOSITORY | sed "s/the-events-calendar\///")
           mkdir zip
           if [ "${JOB_FINAL}" == "1" ]; then
-            $TUT_BIN package --plugin=$REPO_NAME --branch="${{ steps.settings.outputs.branch }}" --ignore-view-versions --output="./zip" --final -v
+            output=$($TUT_BIN package --plugin=$REPO_NAME --branch="${{ steps.settings.outputs.branch }}" --ignore-view-versions --output=./zip --final -v)
           else
-            $TUT_BIN package --plugin=$REPO_NAME --branch="${{ steps.settings.outputs.branch }}" --ignore-view-versions --output="./zip" -v
+            output=$($TUT_BIN package --plugin=$REPO_NAME --branch="${{ steps.settings.outputs.branch }}" --ignore-view-versions --output=./zip -v)
           fi
+          echo "$output"
+          touch ${GITHUB_WORKSPACE}/results.txt
+          echo "$output" > ${GITHUB_WORKSPACE}/results.txt
           mv zip ${GITHUB_WORKSPACE}/zip
       - uses: the-events-calendar/action-s3-utility@main
         if: steps.s3_zip.outcome != 'success'
@@ -161,3 +199,19 @@ jobs:
           S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
           COMMAND: sync
           SOURCE_DIR: /github/workspace/zip
+      - name: Maybe prep data for Slack message
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.slack_channel != '' && github.event.inputs.slack_thread != '' && steps.s3_zip.outcome == 'success'
+        working-directory: ../
+        run: |
+          touch ${GITHUB_WORKSPACE}/results.txt
+          echo "Packaging results" >> ${GITHUB_WORKSPACE}/results.txt
+          echo "-----------------" >> ${GITHUB_WORKSPACE}/results.txt
+          echo "" >> ${GITHUB_WORKSPACE}/results.txt
+          echo "Successfully packaged:" >> ${GITHUB_WORKSPACE}/results.txt
+          echo "* ./zip/\"${{ steps.file_name.outputs.value }}\"" >> ${GITHUB_WORKSPACE}/results.txt
+          echo "" >> ${GITHUB_WORKSPACE}/results.txt
+      - name: Maybe notify in Slack
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.slack_channel != '' && github.event.inputs.slack_thread != ''
+        working-directory: ../
+        run: |
+          php ${GITHUB_WORKSPACE}/jenkins-scripts/mt-jenkins package:send-results --channel ${{ github.event.inputs.slack_channel }} --ts ${{ github.event.inputs.slack_thread }} --results-file "${GITHUB_WORKSPACE}/results.txt" --slack-token ${{ secrets.SLACK_TOKEN }} --build-url https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}

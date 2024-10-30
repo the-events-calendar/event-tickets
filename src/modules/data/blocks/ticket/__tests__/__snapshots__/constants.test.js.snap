@@ -53,6 +53,7 @@ exports[`Ticket Constants TC_ORDERS 1`] = `"tpp-orders"`;
 
 exports[`Ticket Constants TICKET_ORDERS_PAGE_SLUG 1`] = `
 Object {
+  "TEC\\\\Tickets\\\\Commerce\\\\Module": "tickets-commerce-orders",
   "Tribe__Tickets_Plus__Commerce__EDD__Main": "edd-orders",
   "Tribe__Tickets_Plus__Commerce__WooCommerce__Main": "tickets-orders",
   "Tribe__Tickets__Commerce__PayPal__Main": "tpp-orders",
@@ -74,6 +75,10 @@ Array [
   "own",
 ]
 `;
+
+exports[`Ticket Constants TICKETS_COMMERCE_MODULE_CLASS 1`] = `"TEC\\\\Tickets\\\\Commerce\\\\Module"`;
+
+exports[`Ticket Constants TICKETS_COMMERCE_ORDERS 1`] = `"tickets-commerce-orders"`;
 
 exports[`Ticket Constants UNLIMITED 1`] = `"unlimited"`;
 

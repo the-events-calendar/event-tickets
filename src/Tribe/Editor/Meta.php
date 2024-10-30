@@ -1,10 +1,23 @@
 <?php
+
+use Tribe__Tickets__Admin__Views as Admin_Views;
+use Tribe__Tickets__Global_Stock as Global_Stock;
+
 /**
  * Initialize Gutenberg Event Meta fields.
  *
  * @since 4.9
  */
 class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
+	/**
+	 * A reference to the Admin Views class.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @var Admin_Views
+	 */
+	private Admin_Views $admin_views;
+
 	/**
 	 * Register the required Meta fields for good Gutenberg saving.
 	 *
@@ -125,7 +138,14 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 		register_meta(
 			'post',
 			'_tribe_tickets_list',
-			$this->numeric_array()
+			[
+				'description'       => __( 'JSON object of all the post tickets', 'event-tickets' ),
+				'auth_callback'     => [ $this, 'auth_callback' ],
+				'sanitize_callback' => [ $this, 'sanitize_tickets_list' ],
+				'single'       => true,
+				'type'         => 'string',
+				'show_in_rest' => true,
+			]
 		);
 
 		register_meta(
@@ -133,6 +153,17 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 			'_tribe_ticket_has_attendee_info_fields',
 			$this->boolean_or_null()
 		);
+	}
+
+	/**
+	 * Tribe__Tickets__Editor__Meta constructor.
+	 *
+	 * since 5.8.0
+	 *
+	 * @param Tribe__Tickets__Admin__Views $admin_views A reference to the Admin Views class.
+	 */
+	public function __construct(Admin_Views $admin_views){
+		$this->admin_views = $admin_views;
 	}
 
 	/**
@@ -298,10 +329,39 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 				continue;
 			}
 
-			$list_of_tickets[] = $ticket->ID;
+			/** @var Tribe__Tickets__Commerce__Currency $currency */
+			$currency          = tribe( 'tickets.commerce.currency' );
+			// The `capacity` method will already take the shared nature of the ticket capacity into account.
+			$capacity    = $ticket->capacity();
+			$global_stock_mode = $ticket->global_stock_mode();
+			$sold = $ticket->qty_sold();
+			$list_of_tickets[] = [
+				'id'                       => $ticket->ID,
+				'type'                     => $ticket->type(),
+				'title'                    => $ticket->name,
+				'description'              => $ticket->description,
+				'capacityType'             => $global_stock_mode ?: 'unlimited',
+				'price'                    => $ticket->price,
+				'capacity'                 => $capacity,
+				'available'                => $ticket->available(),
+				'sharedCapacity'           => $capacity,
+				'sold'                     => $sold,
+				'shareSold'                => $sold,
+				'isShared'                 => $global_stock_mode !== Global_Stock::OWN_STOCK_MODE,
+				'currencyDecimalPoint'     => $currency->get_currency_decimal_point($ticket->provider_class),
+				'currencyNumberOfDecimals' => $currency->get_currency_number_of_decimals(),
+				'currencyPosition'         => $currency->get_currency_symbol_position($ticket->ID),
+				'currencySymbol'           => $currency->get_currency_symbol($ticket->ID,true),
+				'currencyThousandsSep'     => $currency->get_currency_thousands_sep($ticket->provider_class),
+			];
 		}
 
-		return $list_of_tickets;
+		// Return an array since this method is filtering a query to get all the meta for the key.
+		try {
+			return [ json_encode( $list_of_tickets, JSON_THROW_ON_ERROR ) ?: '' ];
+		} catch ( \JsonException $e ) {
+			return [];
+		}
 	}
 
 	/**
@@ -397,5 +457,73 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 			Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE    => 1,
 			Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP     => 1,
 		];
+	}
+
+	/**
+	 * Renders the New Ticket form in the metabox, as appropriate.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param int $post_id The ID of the post the form is being rendered for.
+	 */
+	public function render_ticket_form_toggle( int $post_id ): void {
+		$ticket_providing_modules = array_diff_key( Tribe__Tickets__Tickets::modules(), [ 'Tribe__Tickets__RSVP' => true ] );
+		$add_new_ticket_label     = count( $ticket_providing_modules ) > 0
+			? esc_attr__( 'Add a new ticket', 'event-tickets' )
+			: esc_attr__( 'No commerce providers available', 'event-tickets' );
+
+		$this->admin_views->template( 'editor/elements/new-ticket', [
+			'post_id'                  => $post_id,
+			'add_new_ticket_label'     => $add_new_ticket_label,
+			'ticket_providing_modules' => $ticket_providing_modules,
+		] );
+	}
+
+	/**
+	 * Renders the New RSVP form in the metabox, as appropriate.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param int $post_id The ID of the post the form is being rendered for.
+	 */
+	public function render_rsvp_form_toggle( int $post_id ): void {
+		$this->admin_views->template( 'editor/elements/new-rsvp', [ 'post_id' => $post_id ] );
+	}
+
+	/**
+	 * Sanitize the tickets list.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param string $tickets_list The tickets list to sanitize.
+	 *
+	 * @return false|string Either the sanitized tickets list or false if the tickets list is invalid.
+	 */
+	public function sanitize_tickets_list( $tickets_list ) {
+		if ( ! is_string( $tickets_list ) ) {
+			return false;
+		}
+
+		$decoded = @json_decode( $tickets_list, true );
+
+		if ( ! is_array( $decoded ) ) {
+			return false;
+		}
+
+		foreach ( $decoded as $ticket ) {
+			if ( ! ( is_array( $ticket ) && isset( $ticket['id'], $ticket['type'] ) ) ) {
+				return false;
+			}
+
+			if ( ! is_numeric( $ticket['id'] ) ) {
+				return false;
+			}
+
+			if ( ! is_string( $ticket['type'] ) ) {
+				return false;
+			}
+		}
+
+		return $tickets_list;
 	}
 }

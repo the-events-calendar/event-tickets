@@ -3,6 +3,10 @@
  * The template that displays the welcome message when the plugin is first activated.
  */
 
+use TEC\Tickets\Commerce\Payments_Tab;
+use Tribe\Tickets\Admin\Settings;
+use TEC\Common\Admin\Conditional_Content\Black_Friday;
+
 $main     = Tribe__Main::instance();
 $has_plus = class_exists( 'Tribe__Tickets_Plus__Main' );
 $has_tec  = class_exists( 'Tribe__Events__Main' );
@@ -16,6 +20,18 @@ if ( $has_plus ) {
 	$logo_image      = 'images/logo/event-tickets-plus.svg';
 	$mobile_graphic  = 'images/header/welcome-mobile-etplus.jpg';
 }
+
+$tc_description = esc_html__( 'Tickets Commerce provides flexible online payments right out of the box.', 'event-tickets' );
+$tc_link = tribe( Payments_Tab::class )->get_url();
+
+if ( $has_tec ) {
+	$tc_description = sprintf(
+		'%1$s %2$s',
+		esc_html__( 'Want to monetize your events?', 'event-tickets' ),
+		$tc_description
+	);
+}
+
 ?>
 
 <?php if ( $has_plus ) : ?>
@@ -71,10 +87,10 @@ if ( $has_plus ) {
 	<div class="tribe-events-admin-quick-nav">
 		<div class="tribe-events-admin-quick-nav__title"><?php esc_html_e( 'Quick Links:', 'event-tickets' ); ?></div>
 		<ul class="tribe-events-admin-quick-nav__links">
+			<li class="tribe-events-admin-quick-nav__link-item">
+				<a href="<?php echo esc_url( tribe( Settings::class )->get_url() ); ?>" class="tribe-events-admin-quick-nav__link"><?php esc_html_e( 'Configure Settings', 'event-tickets' ); ?></a>
+			</li>
 			<?php if ( $has_plus && $has_tec ) : // ET+ with TEC. ?>
-				<li class="tribe-events-admin-quick-nav__link-item">
-					<a href="edit.php?page=tribe-common&tab=event-tickets&post_type=tribe_events" target="_blank" rel="noopener noreferrer" class="tribe-events-admin-quick-nav__link"><?php esc_html_e( 'Configure Settings', 'event-tickets' ); ?></a>
-				</li>
 				<li class="tribe-events-admin-quick-nav__link-item">
 					<a href="plugin-install.php?tab=plugin-information&amp;plugin=woocommerce&amp;TB_iframe=true" class="tribe-events-admin-quick-nav__link thickbox open-plugin-details-modal"><?php esc_html_e( 'Install WooCommerce', 'event-tickets' ); ?></a>
 				</li>
@@ -83,9 +99,6 @@ if ( $has_plus ) {
 				</li>
 			<?php elseif ( $has_plus ) : // ET+ without TEC. ?>
 				<li class="tribe-events-admin-quick-nav__link-item">
-					<a href="edit.php?page=tribe-common&tab=event-tickets" target="_blank" rel="noopener noreferrer" class="tribe-events-admin-quick-nav__link"><?php esc_html_e( 'Configure Settings', 'event-tickets' ); ?></a>
-				</li>
-				<li class="tribe-events-admin-quick-nav__link-item">
 					<a href="plugin-install.php?tab=plugin-information&amp;plugin=woocommerce&amp;TB_iframe=true" class="tribe-events-admin-quick-nav__link thickbox open-plugin-details-modal"><?php esc_html_e( 'Install WooCommerce', 'event-tickets' ); ?></a>
 				</li>
 				<li class="tribe-events-admin-quick-nav__link-item">
@@ -93,18 +106,12 @@ if ( $has_plus ) {
 				</li>
 			<?php elseif ( $has_tec ) : // ET with TEC. ?>
 				<li class="tribe-events-admin-quick-nav__link-item">
-					<a href="edit.php?page=tribe-common&tab=event-tickets&post_type=tribe_events" target="_blank" rel="noopener noreferrer" class="tribe-events-admin-quick-nav__link"><?php esc_html_e( 'Configure Settings', 'event-tickets' ); ?></a>
-				</li>
-				<li class="tribe-events-admin-quick-nav__link-item">
 					<a href="post-new.php?post_type=tribe_events" class="tribe-events-admin-quick-nav__link"><?php esc_html_e( 'Create RSVP', 'event-tickets' ); ?></a>
 				</li>
 				<li class="tribe-events-admin-quick-nav__link-item">
 					<a href="https://evnt.is/1axt" target="_blank" rel="noopener noreferrer" class="tribe-events-admin-quick-nav__link"><?php esc_html_e( 'Set Up Tickets Commerce', 'event-tickets' ); ?></a>
 				</li>
 			<?php else : // ET without TEC. ?>
-				<li class="tribe-events-admin-quick-nav__link-item">
-					<a href="edit.php?page=tribe-common&tab=event-tickets" target="_blank" rel="noopener noreferrer" class="tribe-events-admin-quick-nav__link"><?php esc_html_e( 'Configure Settings', 'event-tickets' ); ?></a>
-				</li>
 				<li class="tribe-events-admin-quick-nav__link-item">
 					<a href="plugin-install.php?tab=plugin-information&amp;plugin=the-events-calendar&amp;TB_iframe=true" class="tribe-events-admin-quick-nav__link thickbox open-plugin-details-modal"><?php esc_html_e( 'Install The Events Calendar', 'event-tickets' ); ?></a>
 				</li>
@@ -114,6 +121,8 @@ if ( $has_plus ) {
 			<?php endif; ?>
 		</ul>
 	</div>
+
+	<?php tribe( Black_Friday::class )->render_narrow_banner_html(); ?>
 
 	<h3 class="tribe-events-admin-section-header"><?php esc_html_e( 'Helpful Resources', 'event-tickets' ); ?></h3>
 
@@ -149,23 +158,12 @@ if ( $has_plus ) {
 		<div class="tribe-events-admin-card tribe-events-admin-card--3up tribe-events-admin-card--last">
 			<img
 				class="tribe-events-admin-card__image"
-				src="<?php echo esc_url( tribe_resource_url( 'images/welcome/translations.jpg', false, null, $main ) ); ?>"
-				alt="<?php esc_attr_e( 'Illustration of characters being translated', 'event-tickets' ); ?>"
+				src="<?php echo esc_url( tribe_resource_url( 'images/welcome/tickets-commerce.png', false, null, $main ) ); ?>"
+				alt="<?php esc_attr_e( 'Illustration of money turning into a ticket', 'event-tickets' ); ?>"
 			/>
-			<div class="tribe-events-admin-card__title"><?php esc_html_e( 'Translations', 'event-tickets' ); ?></div>
-			<div class="tribe-events-admin-card__description"><?php esc_html_e( 'Need a language other than English? We\'ve got you covered here.', 'event-tickets' ); ?></div>
-			<a class="tribe-events-admin-card__link" href="https://evnt.is/language" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Learn more', 'event-tickets' ); ?></a>
-		</div>
-
-		<div class="tribe-events-admin-card tribe-events-admin-card--1up">
-			<img
-				class="tribe-events-admin-card__image"
-				src="<?php echo esc_url( tribe_resource_url( 'images/welcome/virtual-events.jpg', false, null, $main ) ); ?>"
-				alt="<?php esc_attr_e( 'Illustration of a phone screen with a person\'s face', 'event-tickets' ); ?>"
-			/>
-			<div class="tribe-events-admin-card__title"><?php esc_html_e( 'Virtual Event Resources', 'event-tickets' ); ?></div>
-			<div class="tribe-events-admin-card__description"><?php esc_html_e( 'Tips and tools to help with planning online events, webinars, and more on WordPress and beyond.', 'event-tickets' ); ?></div>
-			<a class="tribe-events-admin-card__link" href="https://evnt.is/1ani" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Get started with online events', 'event-tickets' ); ?></a>
+			<div class="tribe-events-admin-card__title"><?php esc_html_e( 'Tickets Commerce', 'event-tickets' ); ?></div>
+			<div class="tribe-events-admin-card__description"><?php echo $tc_description; ?></div>
+			<a class="tribe-events-admin-card__link" href="<?php echo $tc_link; ?>"><?php esc_html_e( 'Get started', 'event-tickets' ); ?></a>
 		</div>
 
 		<?php if ( $has_plus && $has_tec ) : // ET+ with TEC. ?>
@@ -186,7 +184,7 @@ if ( $has_plus ) {
 					alt="<?php esc_attr_e( 'Illustration of a book with The Events Calendar logo', 'event-tickets' ); ?>"
 				/>
 				<div class="tribe-events-admin-card__title"><?php esc_html_e( 'Want to take your events to the next level?', 'event-tickets' ); ?></div>
-				<a class="tribe-events-admin-card__link" href="admin.php?page=tribe-app-shop"><?php esc_html_e( 'Check out our suite of add-ons', 'event-tickets' ); ?></a>
+				<a class="tribe-events-admin-card__link" href="edit.php?page=tribe-app-shop&post_type=tribe_events"><?php esc_html_e( 'Check out our suite of add-ons', 'event-tickets' ); ?></a>
 			</div>
 		<?php else : // ET or ET+ without TEC. ?>
 			<div class="tribe-events-admin-card tribe-events-admin-card--2up tribe-events-admin-card--first">
@@ -208,7 +206,7 @@ if ( $has_plus ) {
 					alt="<?php esc_attr_e( 'Illustration of a book with The Events Calendar logo', 'event-tickets' ); ?>"
 				/>
 				<div class="tribe-events-admin-card__title"><?php esc_html_e( 'Want to take your events to the next level?', 'event-tickets' ); ?></div>
-				<a class="tribe-events-admin-card__link" href="admin.php?page=tribe-app-shop"><?php esc_html_e( 'Check out our suite of add-ons', 'event-tickets' ); ?></a>
+				<a class="tribe-events-admin-card__link" href="edit.php?page=tribe-app-shop&post_type=tribe_events"><?php esc_html_e( 'Check out our suite of add-ons', 'event-tickets' ); ?></a>
 			</div>
 		<?php else : // this is for ET. ?>
 			<div class="tribe-events-admin-card tribe-events-admin-card--2up tribe-events-admin-card--second">

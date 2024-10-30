@@ -12,11 +12,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import {
-	SettingsActionButton,
-	AttendeesActionButton,
-} from '@moderntribe/tickets/blocks/rsvp/action-buttons';
-import { ActionDashboard, WarningButton } from '@moderntribe/tickets/elements';
+import MoveDelete from '@moderntribe/tickets/blocks/rsvp/move-delete/container';
+import { ActionDashboard } from '@moderntribe/tickets/elements';
 import './style.pcss';
 
 const confirmLabel = ( created ) => (
@@ -29,6 +26,7 @@ const cancelLabel = __( 'Cancel', 'event-tickets' );
 
 class RSVPActionDashboard extends PureComponent {
 	static propTypes = {
+		clientId: PropTypes.string.isRequired,
 		created: PropTypes.bool.isRequired,
 		hasRecurrenceRules: PropTypes.bool.isRequired,
 		isCancelDisabled: PropTypes.bool.isRequired,
@@ -51,59 +49,37 @@ class RSVPActionDashboard extends PureComponent {
 	};
 
 	getActions = () => {
-		const {
-			created,
-			hasRecurrenceRules,
-			isLoading,
-		} = this.props;
+		const actions = [];
+		if ( this.props.created ) {
+			actions.push( <MoveDelete clientId={ this.props.clientId } /> );
+		}
 
-		const actions = [ <SettingsActionButton /> ];
-		if ( created ) {
-			actions.push( <AttendeesActionButton /> );
-		}
-		if ( hasRecurrenceRules ) {
-			const icon = this.state.isWarningOpen ? 'no' : 'info-outline';
-			const text = this.state.isWarningOpen
-				? __( 'Hide Warning', 'event-tickets' )
-				: __( 'Warning', 'event-tickets' );
-			actions.push(
-				<WarningButton
-					icon={ icon }
-					onClick={ this.onWarningClick }
-					isDisabled={ isLoading }
-				>
-					{ text }
-				</WarningButton>,
-			);
-		}
 		return actions;
 	}
 
 	render() {
 		const {
 			created,
-			isCancelDisabled,
+			hasRecurrenceRules,
 			isConfirmDisabled,
 			onCancelClick,
 			onConfirmClick,
-			showCancel,
 		} = this.props;
 
 		/* eslint-disable max-len */
 		return (
 			<Fragment>
 				<ActionDashboard
-					className="tribe-editor__rsvp__action-dashboard"
+					className="tribe-editor__rsvp__action-dashboard tribe-common"
 					actions={ this.getActions() }
 					cancelLabel={ cancelLabel }
 					confirmLabel={ confirmLabel( created ) }
-					isCancelDisabled={ isCancelDisabled }
 					isConfirmDisabled={ isConfirmDisabled }
 					onCancelClick={ onCancelClick }
 					onConfirmClick={ onConfirmClick }
-					showCancel={ showCancel }
+					showCancel={ true }
 				/>
-				{ this.state.isWarningOpen && (
+				{ hasRecurrenceRules && (
 					<div className="tribe-editor__rsvp__warning">
 						{ __( 'This is a recurring event. If you add tickets they will only show up on the next upcoming event in the recurrence pattern. The same ticket form will appear across all events in the series. Please configure your events accordingly.', 'event-tickets' ) }
 					</div>

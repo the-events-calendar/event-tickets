@@ -9,7 +9,8 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
-$post_id = get_the_ID();
+
+$post_id = $post_id ?? get_the_ID();
 
 /** @var Tribe__Tickets__Admin__Views $admin_views */
 $admin_views = tribe( 'tickets.admin.views' );

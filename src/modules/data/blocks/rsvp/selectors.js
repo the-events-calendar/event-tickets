@@ -26,6 +26,11 @@ export const getRSVPSettingsOpen = createSelector(
 	( rsvp ) => rsvp.settingsOpen,
 );
 
+export const getRSVPIsAddEditOpen = createSelector(
+	[ getRSVPBlock ],
+	( rsvp ) => rsvp.isAddEditOpen,
+);
+
 export const getRSVPHasChanges = createSelector(
 	[ getRSVPBlock ],
 	( rsvp ) => rsvp.hasChanges,

@@ -78,8 +78,8 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		// Setup a base response.
 		$response = new WP_REST_Response( null, 200 );
 
-		// Flag that the webhooks are working as expected.
-		tribe_update_option( Webhooks::$option_is_valid_webhooks, true );
+		// Flag that the webhooks are working as expected and store a hash of the last key to be verified.
+		tribe_update_option( Webhooks::$option_is_valid_webhooks, md5( tribe_get_option( Webhooks::$option_webhooks_signing_key ) ) );
 
 		// After this point we are ready to do individual modifications based on the Webhook value.
 		return Webhooks\Handler::process_webhook_response( $request, $response );
@@ -115,11 +115,11 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return false;
 		}
 
-		if ( defined( 'TEC_TC_STRIPE_SIGNING_SECRET' ) && TEC_TC_STRIPE_SIGNING_SECRET )  {
+		if ( tribe( Webhooks::class )->is_signing_secret_const_defined() ) {
 			$signing_secret = TEC_TC_STRIPE_SIGNING_SECRET;
 		}
 
-		if ( empty ( $signing_secret ) ) {
+		if ( empty( $signing_secret ) ) {
 			$signing_secret = tribe_get_option( Webhooks::$option_webhooks_signing_key );
 		}
 

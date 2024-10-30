@@ -1,4 +1,12 @@
 <?php
+
+use TEC\Events\Custom_Tables\V1\Tables\Occurrences;
+use TEC\Events\Custom_Tables\V1\WP_Query\Custom_Tables_Query;
+use Tribe__Events__Pro__Main as ECP;
+use Tribe__Events__Main as TEC;
+use TEC\Tickets\Admin\Attendees\Page as Attendees_Page;
+use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
+
 /**
  * Handles moving attendees from a post to another.
  */
@@ -16,19 +24,19 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 *
 	 * @var array
 	 */
-	protected $attendees = array();
+	protected $attendees = [];
 
 	public function setup() {
 		$this->ticket_history();
 
-		add_action( 'admin_init', array( $this, 'dialog' ) );
-		add_filter( 'tribe_events_tickets_attendees_table_bulk_actions', array( $this, 'bulk_actions' ) );
-		add_action( 'wp_ajax_move_tickets', array( $this, 'move_tickets_request' ) );
-		add_action( 'tribe_tickets_ticket_type_moved', array( $this, 'move_all_tickets_for_type' ), 10, 4 );
-		add_action( 'wp_ajax_move_tickets_get_post_types', array( $this, 'get_post_types' ) );
-		add_action( 'wp_ajax_move_tickets_get_post_choices', array( $this, 'get_post_choices' ) );
-		add_action( 'wp_ajax_move_tickets_get_ticket_types', array( $this, 'get_ticket_types' ) );
-		add_action( 'tribe_tickets_all_tickets_moved', array( $this, 'notify_attendees' ), 10, 4 );
+		add_action( 'admin_init', [ $this, 'dialog' ] );
+		add_filter( 'tribe_events_tickets_attendees_table_bulk_actions', [ $this, 'bulk_actions' ] );
+		add_action( 'wp_ajax_move_tickets', [ $this, 'move_tickets_request' ] );
+		add_action( 'tribe_tickets_ticket_type_moved', [ $this, 'move_all_tickets_for_type' ], 10, 4 );
+		add_action( 'wp_ajax_move_tickets_get_post_types', [ $this, 'get_post_types' ] );
+		add_action( 'wp_ajax_move_tickets_get_post_choices', [ $this, 'get_post_choices' ] );
+		add_action( 'wp_ajax_move_tickets_get_ticket_types', [ $this, 'get_ticket_types' ] );
+		add_action( 'tribe_tickets_all_tickets_moved', [ $this, 'notify_attendees' ], 10, 4 );
 	}
 
 	/**
@@ -56,7 +64,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 		$event_id = absint( tribe_get_request_var( 'event_id', tribe_get_request_var( 'post', 0 ) ) );
 
-		// Bail when we dont have the event
+		// Bail when we don't have the event.
 		if ( 0 === $event_id ) {
 			return;
 		}
@@ -108,16 +116,16 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		 * @param array $script_data
 		 */
 		$data = apply_filters( 'tribe_tickets_move_tickets_script_data', array(
-			'check' => wp_create_nonce( 'move_tickets' ),
-			'unexpected_failure' => '<p>' . __( 'Woops! We could not complete the requested operation due to an unforeseen problem.', 'event-tickets' ) . '</p>',
+			'check'                    => wp_create_nonce( 'move_tickets' ),
+			'unexpected_failure'       => '<p>' . __( 'Woops! We could not complete the requested operation due to an unforeseen problem.', 'event-tickets' ) . '</p>',
 			'update_post_list_failure' => __( 'Unable to update the post list. Please refresh the page and try again.', 'event-tickets' ),
-			'no_posts_found' => __( 'No results found - you may need to widen your search criteria.', 'event-tickets' ),
-			'no_ticket_types_found' => __( 'No ticket types were found for this post.', 'event-tickets' ),
-			'loading_msg' => __( 'Loading, please wait&hellip;', 'event-tickets' ),
-			'src_post_id' => absint( tribe_get_request_var( 'event_id', tribe_get_request_var( 'post', 0 ) ) ),
-			'ticket_ids' => array_keys( $this->attendees ),
-			'provider' => $this->ticket_provider,
-			'mode' => 'move_tickets',
+			'no_posts_found'           => __( 'No results found - you may need to widen your search criteria.', 'event-tickets' ),
+			'no_ticket_types_found'    => __( 'No tickets were found for this post.', 'event-tickets' ),
+			'loading_msg'              => __( 'Loading, please wait&hellip;', 'event-tickets' ),
+			'src_post_id'              => absint( tribe_get_request_var( 'event_id', tribe_get_request_var( 'post', 0 ) ) ),
+			'ticket_ids'               => array_keys( $this->attendees ),
+			'provider'                 => $this->ticket_provider,
+			'mode'                     => 'move_tickets',
 		) );
 
 		tribe_asset(
@@ -191,7 +199,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 				$this->has_multiple_providers = true;
 			}
 
-			$this->ticket_provider = $provider;
+			$this->ticket_provider = empty( $provider ) && isset( $attendee['provider'] ) ? $attendee['provider'] : $provider;
 		}
 	}
 
@@ -232,7 +240,11 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * @return array
 	 */
 	public function bulk_actions( array $actions ) {
-		if ( tribe( 'tickets.attendees' )->user_can_manage_attendees() && is_admin() ) {
+		if (
+			tribe( 'tickets.attendees' )->user_can_manage_attendees()
+			&& is_admin()
+			&& ! tribe( Attendees_Page::class )->is_on_page()
+		) {
 			$actions['move'] = _x( 'Move', 'attendee screen bulk actions', 'event-tickets' );
 		}
 
@@ -243,7 +255,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * Responds to ajax requests for a list of supported post types.
 	 */
 	public function get_post_types() {
-		if ( ! wp_verify_nonce( $_POST['check' ], 'move_tickets' ) ) {
+		if ( ! wp_verify_nonce( $_POST['check'], 'move_tickets' ) ) {
 			wp_send_json_error();
 		}
 
@@ -263,7 +275,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		$types_list = array( 'all' => __( 'All supported types', 'tribe-tickets' ) );
 
 		foreach ( Tribe__Tickets__Main::instance()->post_types() as $type ) {
-			$pto = get_post_type_object( $type );
+			$pto                 = get_post_type_object( $type );
 			$types_list[ $type ] = $pto->label;
 		}
 
@@ -274,7 +286,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * Responds to requests for a list of possible destination posts.
 	 */
 	public function get_post_choices() {
-		if ( ! wp_verify_nonce( $_POST['check' ], 'move_tickets' ) ) {
+		if ( ! wp_verify_nonce( $_POST['check'], 'move_tickets' ) ) {
 			wp_send_json_error();
 		}
 
@@ -306,9 +318,9 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	protected function get_possible_matches( array $request = null ) {
 		// Take the params from $request if set, else look at $_POST
 		$params = wp_parse_args( is_null( $request ) ? $_POST : $request, array(
-			'post_type' => array(),
+			'post_type'    => array(),
 			'search_terms' => '',
-			'ignore' => '',
+			'ignore'       => '',
 		) );
 
 		// The post_type argument should be an array (of all possible types, if not specified)
@@ -330,19 +342,30 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		$ignore_ids = array_map( 'absint', $ignore_ids );
 		$ignore_ids = array_filter( $ignore_ids );
 
-		$query_args = array(
-			'post_type'      => $post_types,
-			'posts_per_page' => $limit,
-			'eventDisplay'   => 'custom',
-			'orderby'        => 'title',
-			'order'          => 'ASC',
-			's'              => $params['search_terms'],
-			'post__not_in'   => $ignore_ids,
-		);
+		$query_args = [
+			'post_type'           => $post_types,
+			'posts_per_page'      => $limit,
+			'eventDisplay'        => 'custom',
+			'orderby'             => 'title',
+			'order'               => 'ASC',
+			's'                   => $params['search_terms'],
+			'post__not_in'        => $ignore_ids,
+			'post__not_recurring' => true, // Supported only in CT1.
+		];
 
-		$posts = get_posts( $query_args );
+		/**
+		 * Filters the query arguments used to find posts that can serve as ticket hosts.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param array<string,mixed> $query_args The query arguments that will be used to find posts that can serve
+		 *                                        as ticket hosts.
+		 * @param array<string,mixed> $request    The request parameters that were used to generate the query arguments.
+		 */
+		$query_args = apply_filters( 'tec_tickets_find_ticket_type_host_posts_query_args', $query_args, $request );
+		$query = new \WP_Query( $query_args );
 
-		return $this->format_post_list( $posts );
+		return $this->format_post_list( $query );
 	}
 
 	/**
@@ -353,20 +376,24 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 *
 	 * @return array
 	 */
-	protected function format_post_list( array $query_results ) {
+	protected function format_post_list( \WP_Query $query ) {
+		global $post;
 		$posts = array();
 
-		foreach ( $query_results as $wp_post ) {
-			/** This filter is documented in wp-includes/post-template.php */
-			$title = apply_filters( 'the_title', $wp_post->post_title, $wp_post->ID );
+		while ( $query->have_posts() ) {
+			$query->the_post();
+			/*y This filter is documented in wp-includes/post-template.php */
+			$title = apply_filters( 'the_title', $post->post_title, $post->ID );
 
 			// Append the event start date if there is one, ie for events
-			if ( $wp_post->_EventStartDate ) {
-				$title .= ' (' . tribe_get_start_date( $wp_post->ID ) . ')';
+			if ( $post->_EventStartDate ) {
+				$title .= ' (' . tribe_get_start_date( $post->ID ) . ')';
 			}
 
-			$posts[ $wp_post->ID ] = $title;
+			$posts[ $post->ID ] = $title;
 		}
+
+		wp_reset_postdata();
 
 		return $posts;
 	}
@@ -376,7 +403,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * (belonging to a specific provider).
 	 */
 	public function get_ticket_types() {
-		if ( ! wp_verify_nonce( $_POST['check' ], 'move_tickets' ) ) {
+		if ( ! wp_verify_nonce( $_POST['check'], 'move_tickets' ) ) {
 			wp_send_json_error();
 		}
 
@@ -398,13 +425,13 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 *
 	 * @param int    $target_post_id
 	 * @param string $provider
-	 * @param array $ticket_ids
+	 * @param array  $ticket_ids
 	 *
 	 * @return array
 	 */
 	protected function get_ticket_type_matches( $target_post_id, $provider, $ticket_ids = array() ) {
 		$ticket_types = array();
-		$ticket_ids = array_map( 'absint', array_filter( $ticket_ids, 'is_numeric' ) );
+		$ticket_ids   = array_map( 'absint', array_filter( $ticket_ids, 'is_numeric' ) );
 
 		foreach ( Tribe__Tickets__Tickets::get_event_tickets( $target_post_id ) as $ticket ) {
 			if ( stripslashes( $provider ) !== $ticket->provider_class ) {
@@ -438,8 +465,8 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			'target_post_id' => '',
 		) );
 
-		$src_post_id    = absint( $args['src_post_id' ] );
-		$ticket_ids     = array_map( 'intval', (array) $args['ticket_ids' ] );
+		$src_post_id    = absint( $args['src_post_id'] );
+		$ticket_ids     = array_map( 'intval', (array) $args['ticket_ids'] );
 		$target_type_id = absint( $args['target_type_id'] );
 		$target_post_id = absint( $args['target_post_id'] );
 
@@ -475,13 +502,13 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		// If that ticket type is hosted by a different event post, prepend details of that also
 		if ( $src_post_id !== $target_post_id ) {
 			$moved_to = sprintf(
-				_x( 'moved to %s and', 'moved tickets success message fragment', 'event-tickets' ),
-				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $target_post_id . '&action=edit' ) ) . '" target="_blank">' . get_the_title( $target_post_id ) . '</a>'
-			) . ' ' . $moved_to;
+				            _x( 'moved to %s and', 'moved tickets success message fragment', 'event-tickets' ),
+				            '<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $target_post_id . '&action=edit' ) ) . '" target="_blank">' . get_the_title( $target_post_id ) . '</a>'
+			            ) . ' ' . $moved_to;
 		}
 
 		wp_send_json_success( array(
-			'message' => sprintf(
+			'message'        => sprintf(
 				_n(
 					'%1$d attendee for %2$s was successfully %3$s. By default, we adjust capacity and stock, however, we recommend reviewing each as needed to ensure numbers are correct. This attendee will receive an email notifying them of the change.',
 					'%1$d attendees for %2$s were successfully %3$s. By default, we adjust capacity and stock, however, we recommend reviewing each as needed to ensure numbers are correct. These attendees will receive an email notifying them of the change.',
@@ -511,7 +538,25 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * @return int number of successfully moved tickets (zero upon failure to move any)
 	 */
 	public function move_tickets( array $ticket_ids, $tgt_ticket_type_id, $src_event_id, $tgt_event_id ) {
-		$ticket_ids       = array_map( 'intval', $ticket_ids );
+		$ticket_ids = array_map( 'intval', $ticket_ids );
+
+		/**
+		 * Filters the set of Attendee IDs that will be moved following a user request to move Attendees.
+		 *
+		 * A note about misnomers coming from legacy code: 1 .this method moves Attendees, not Tickets, from a Ticket
+		 * on a ticket-able post to another Ticket on another ticketable post 2. the term Event is used to refer to any
+		 * ticket-able post, not just Events.
+		 *
+		 * @since  5.8.3
+		 *
+		 * @parram int[] $ticket_ids The set of Attendee IDs that will be moved.
+		 *
+		 * @param int $tgt_ticket_type_id The ID of the Ticket the Attendees will be moved to.
+		 * @param int $src_event_id       The ID of the ticket-able Post the Attendees are currently associated with.
+		 * @param int $tgt_event_id       The ID of the ticket-able Post the Attendees will be moved to.
+		 */
+		$ticket_ids = apply_filters( 'tec_tickets_move_attendees_ids', $ticket_ids, $tgt_ticket_type_id, $src_event_id, $tgt_event_id );
+
 		$instigator_id    = get_current_user_id();
 		$ticket_type      = Tribe__Tickets__Tickets::load_ticket_object( $tgt_ticket_type_id );
 		$successful_moves = 0;
@@ -527,18 +572,18 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			'in' => $ticket_ids,
 		];
 
-		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
-		$tickets_handler = tribe( 'tickets.handler' );
-
 		$attendee_data = Tribe__Tickets__Tickets::get_event_attendees_by_args( $src_event_id, $args );
 
 		foreach ( $attendee_data['attendees'] as $issued_ticket ) {
 			$ticket_objects[] = $issued_ticket;
 
-			$providers[ $issued_ticket['provider'] ] = call_user_func( array( $issued_ticket['provider'], 'get_instance' ) );
+			$providers[ $issued_ticket['provider'] ] = call_user_func( array(
+				$issued_ticket['provider'],
+				'get_instance'
+			) );
 		}
 
-		// We expect to have found as many tickets as were specified
+		// We expect to have found as many tickets as were specified.
 		if ( count( $ticket_objects ) !== count( $ticket_ids ) ) {
 			return 0;
 		}
@@ -560,14 +605,6 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			$ticket_id          = $ticket['attendee_id'];
 			$product_id         = $ticket['product_id'];
 			$src_ticket_type_id = get_post_meta( $ticket_id, $ticket_type_key, true );
-			$src_qty_sold       = (int) get_post_meta( $src_ticket_type_id, 'total_sales', true );
-			$tgt_qty_sold       = (int) get_post_meta( $tgt_ticket_type_id, 'total_sales', true );
-
-			//get stock levels for RSVP Tickets
-			if ( 'Tribe__Tickets__RSVP' === $ticket['provider'] ) {
-				$src_stock = (int) get_post_meta( $src_ticket_type_id, '_stock', true );
-				$tgt_stock = (int) get_post_meta( $tgt_ticket_type_id, '_stock', true );
-			}
 
 			/**
 			 * Fires immediately before a ticket is moved.
@@ -579,54 +616,22 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			 */
 			do_action( 'tribe_tickets_ticket_before_move', $ticket_id, $tgt_ticket_type_id, $tgt_event_id, $instigator_id );
 
-			/**
-			 * Actual moving happens
-			 */
-			$tgt_event_cap = new Tribe__Tickets__Global_Stock( $tgt_event_id );
+			// Update the global stock level if necessary.
+			( new Tribe__Tickets__Global_Stock( $product_id ) )->update_stock_level_on_move( $src_event_id, $tgt_event_id );
 
-			$src_mode = get_post_meta( $product_id, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
-
-			// When the Mode is not `own` we have to check and modify some stuff
-			if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE !== $src_mode ) {
-				// If we have Source cap and not on Target, we set it up
-				if ( ! $tgt_event_cap->is_enabled() ) {
-					$src_event_capacity = tribe_tickets_get_capacity( $src_event_id );
-
-					// Activate Shared Capacity on the Ticket
-					$tgt_event_cap->enable();
-
-					// Setup the Stock level to match Source capacity
-					$tgt_event_cap->set_stock_level( $src_event_capacity );
-
-					// Update the Target event with the Capacity from the Source
-					update_post_meta( $tgt_event_id, $tickets_handler->key_capacity, $src_event_capacity );
-				} elseif ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $src_mode || Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $src_mode ) {
-					// Check if we have capped to avoid ticket cap over event cap
-					$src_ticket_capacity = tribe_tickets_get_capacity( $product_id );
-					$tgt_event_capacity = tribe_tickets_get_capacity( $tgt_event_id );
-
-					// Don't allow ticket capacity to be bigger than Target Event Cap
-					if ( $src_ticket_capacity > $tgt_event_capacity ) {
-						update_post_meta( $ticket_id, $tickets_handler->key_capacity, $tgt_event_capacity );
-					}
-				}
-			}
-
+			// Move the Attendee to the new Ticket Type and Event.
 			update_post_meta( $ticket_id, $ticket_type_key, $tgt_ticket_type_id );
 			update_post_meta( $ticket_id, $ticket_event_key, $tgt_event_id );
 
-			// adjust sales numbers - don't allow negatives
-			$src_qty_sold--;
-			$tgt_qty_sold++;
-			update_post_meta( $src_ticket_type_id, 'total_sales', $src_qty_sold );
-			update_post_meta( $tgt_ticket_type_id, 'total_sales', $tgt_qty_sold );
-
-			//adjust stock numbers for RSVP Tickets
+			// adjust stock numbers for RSVP and Commerce Tickets.
 			if ( 'Tribe__Tickets__RSVP' === $ticket['provider'] ) {
-				$src_stock ++;
-				$tgt_stock --;
-				update_post_meta( $src_ticket_type_id, '_stock', $src_stock );
-				update_post_meta( $tgt_ticket_type_id, '_stock', $tgt_stock );
+				$rsvp = new Tribe__Tickets__RSVP();
+				$rsvp->decrease_ticket_sales_by( $src_ticket_type_id );
+				$rsvp->increase_ticket_sales_by( $tgt_ticket_type_id );
+			} else {
+				$c_ticket = new Commerce_Ticket();
+				$c_ticket->decrease_ticket_sales_by( $src_ticket_type_id );
+				$c_ticket->increase_ticket_sales_by( $tgt_ticket_type_id );
 			}
 
 			$history_message = sprintf(
@@ -638,9 +643,9 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			);
 
 			$history_data = array(
-				'ticket_ids' => $ticket_ids,
-				'src_event_id' => $src_event_id,
-				'tgt_event_id' => $tgt_event_id,
+				'ticket_ids'         => $ticket_ids,
+				'src_event_id'       => $src_event_id,
+				'tgt_event_id'       => $tgt_event_id,
 				'tgt_ticket_type_id' => $tgt_ticket_type_id,
 			);
 
@@ -650,16 +655,16 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			 * Fires when a ticket is relocated from ticket type to another, which may be in
 			 * a different post altogether.
 			 *
-			 * @param int $ticket_id                the ticket which has been moved
-			 * @param int $src_ticket_type_id       the ticket type it belonged to originally
-			 * @param int $tgt_ticket_type_id       the ticket type it now belongs to
-			 * @param int $src_event_id             the event/post which the ticket originally belonged to
-			 * @param int $tgt_event_id             the event/post which the ticket now belongs to
-			 * @param int $instigator_id            the user who initiated the change
+			 * @param int $ticket_id          the ticket which has been moved
+			 * @param int $src_ticket_type_id the ticket type it belonged to originally
+			 * @param int $tgt_ticket_type_id the ticket type it now belongs to
+			 * @param int $src_event_id       the event/post which the ticket originally belonged to
+			 * @param int $tgt_event_id       the event/post which the ticket now belongs to
+			 * @param int $instigator_id      the user who initiated the change
 			 */
 			do_action( 'tribe_tickets_ticket_moved', $ticket_id, $src_ticket_type_id, $tgt_ticket_type_id, $src_event_id, $tgt_event_id, $instigator_id );
 
-			$successful_moves++;
+			$successful_moves ++;
 		}
 
 		// Clear attendee cache now that the attendees have moved.
@@ -671,10 +676,10 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		/**
 		 * Fires when all of the specified ticket IDs have been moved
 		 *
-		 * @param array $ticket_ids          each ticket ID
-		 * @param int   $tgt_ticket_type_id  the ticket type they were moved to
-		 * @param int   $src_event_id        the event they belonged to prior to the move
-		 * @param int   $tgt_event_id        the event they belong to after the move
+		 * @param array $ticket_ids         each ticket ID
+		 * @param int   $tgt_ticket_type_id the ticket type they were moved to
+		 * @param int   $src_event_id       the event they belonged to prior to the move
+		 * @param int   $tgt_event_id       the event they belong to after the move
 		 */
 		do_action( 'tribe_tickets_all_tickets_moved', $ticket_ids, $tgt_ticket_type_id, $src_event_id, $tgt_event_id );
 
@@ -788,12 +793,13 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * When a ticket type is moved, the tickets need to move with it. This callback takes
 	 * care of that process.
 	 *
-	 * @see Tribe__Tickets__Admin__Move_Ticket_Types::move_ticket_type()
-	 *
 	 * @param int $ticket_type_id
 	 * @param int $destination_post_id
 	 * @param int $src_post_id
 	 * @param int $instigator_id
+	 *
+	 * @see Tribe__Tickets__Admin__Move_Ticket_Types::move_ticket_type()
+	 *
 	 */
 	public function move_all_tickets_for_type( $ticket_type_id, $destination_post_id, $src_post_id, $instigator_id ) {
 		$args = [

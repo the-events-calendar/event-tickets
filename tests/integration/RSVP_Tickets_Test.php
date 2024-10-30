@@ -4,12 +4,19 @@ use Tribe__Tickets__RSVP as RSVP;
 
 class RSVP_Tickets_Test extends \Codeception\TestCase\WPTestCase {
 	/**
+	 * @before
+	 */
+	public function ensure_ticketable_post_types(): void {
+		$ticketable   = tribe_get_option( 'ticket-enabled-post-types', [] );
+		$ticketable[] = 'post';
+		tribe_update_option( 'ticket-enabled-post-types', array_values( array_unique( $ticketable ) ) );
+	}
+
+	/**
 	 * When a ticket has a stock value, make sure the object returns expected value druing the life of
 	 * the in-stock values
 	 */
 	public function test_ticket_with_stock() {
-		add_filter( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', '__return_false' );
-
 		$post_id = $this->factory->post->create();
 		$start = strtotime( date( 'Y-m-d H:00:00' ) );
 		$end = strtotime( date( 'Y-m-d H:00:00', strtotime( '+5 days' ) ) );
@@ -67,8 +74,6 @@ class RSVP_Tickets_Test extends \Codeception\TestCase\WPTestCase {
 	 * the in-stock values
 	 */
 	public function test_ticket_without_stock() {
-		add_filter( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', '__return_false' );
-
 		$start = strtotime( date( 'Y-m-d H:00:00' ) );
 		$end = strtotime( date( 'Y-m-d H:00:00', strtotime( '+5 days' ) ) );
 		$post_id = $this->factory->post->create();

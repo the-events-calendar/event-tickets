@@ -47,15 +47,17 @@ const ActionDashboard = ( {
 		</Button>
 	);
 
+	/* eslint-disable max-len */
 	const confirmButton = showConfirm && (
 		<Button
-			className="tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm"
+			className="tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm tribe-common-c-btn"
 			isDisabled={ isConfirmDisabled }
-			onClick={ onConfirmClick }
+			onMouseDown={ onConfirmClick }
 		>
 			{ confirmLabel }
 		</Button>
 	);
+	/* eslint-enable max-len */
 
 	const groupRight = ( showCancel || showConfirm ) && (
 		<div className="tribe-editor__action-dashboard__group-right">
@@ -68,6 +70,10 @@ const ActionDashboard = ( {
 		<section
 			className={ classNames(
 				'tribe-editor__action-dashboard',
+				{
+					'tribe-editor__action-dashboard__no-top-bottom-paddings':
+					( ! actionsList && ! groupRight ),
+				},
 				className,
 			) }
 		>

@@ -93,7 +93,7 @@ class Settings extends Abstract_Settings {
 	public static $option_collect_billing_details = 'tickets-commerce-stripe-billing-details';
 
 	/**
-	 * Option name for the stripe receipt emails field
+	 * Option name for the Stripe receipt emails field
 	 *
 	 * @since 5.3.0
 	 *
@@ -102,7 +102,7 @@ class Settings extends Abstract_Settings {
 	public static $option_stripe_receipt_emails = 'tickets-commerce-stripe-receipt-emails';
 
 	/**
-	 * Option name for the stripe checkout element field
+	 * Option name for the Stripe checkout element field
 	 *
 	 * @since 5.3.0
 	 *
@@ -175,7 +175,7 @@ class Settings extends Abstract_Settings {
 				'content' =>
 					sprintf(
 					// Translators: %1$s The tickets commerce currency. %2$s: The currency from the Stripe account.
-						__( 'Tickets Commerce is configured to use %1$s as its currency but the default currency for the connected stripe account is %2$s. Using different currencies for Tickets Commerce and Stripe may not be supported by all payment methods available in %1$s, and may result in exchange rates and conversions from %1$s to %2$s being handled by Stripe. If you believe this is an error, you can modify the Tickets Commerce currency in the main Payments tab.', 'event-tickets' ),
+						__( 'Tickets Commerce is configured to use %1$s as its currency but the default currency for the connected Stripe account is %2$s. Using different currencies for Tickets Commerce and Stripe may not be supported by all payment methods available in %1$s, and may result in exchange rates and conversions from %1$s to %2$s being handled by Stripe. If you believe this is an error, you can modify the Tickets Commerce currency in the main Payments tab.', 'event-tickets' ),
 						$site_currency,
 						$stripe_currency
 					),
@@ -196,14 +196,14 @@ class Settings extends Abstract_Settings {
 
 		$checkout_type_tooltip = sprintf(
 			// Translators: %1$s: Opening `<a>` tag for KB article link. %2$s: Closing `<a>` tag.
-			__( 'Additional payment methods are available based on currency and location and must be enabled individually within your Stripe account. %1$sLearn more%2$s', 'event-tickets' ),
+			__( 'Additional payment methods are available based on currency and location and must be enabled individually within your Stripe account. Some payment methods require additional billing information to be collected. %1$sLearn more%2$s', 'event-tickets' ),
 			'<a href="https://evnt.is/1axw" target="_blank" rel="noopener noreferrer">',
 			'</a>'
 		);
 
 		$payment_methods_tooltip = sprintf(
 		// Translators: %1$s: Opening `<span>` tag. %2$s: The currency name. %3$s: Closing `</span>` tag. %4$s: Opening `<a>` tag for Stripe link. %5$s: Closing `</a>` tag.
-			__( '%1$sPayment methods available for %2$s%3$s.<br /><br /> The payment methods listed here are dependent on the currency selected for Tickets Commerce and the currency each payment method support. You can review the payment methods and their availablity for each currency on %4$sStripe\'s documentation%5$s.<br /><br />', 'event-tickets' ),
+			__( '%1$sPayment methods available for %2$s%3$s.<br /><br /> The payment methods listed here depend on the currency selected for Tickets Commerce and the currency supported by each payment method. If you select a payment provider other than Credit Cards, additional billing information fields will be displayed at checkout as required by Stripe. You can review the payment methods and their availablity for each currency on %4$sStripe\'s documentation%5$s.<br /><br />', 'event-tickets' ),
 			'<span class="tec-tickets__admin-settings-tickets-commerce-gateway-currency">',
 			$currency_name,
 			'</span>',
@@ -264,7 +264,7 @@ class Settings extends Abstract_Settings {
 			static::$option_stripe_receipt_emails                    => [
 				'type'            => 'checkbox_bool',
 				'label'           => esc_html__( 'Enable Stripe Receipt Emails', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'If this option is selected, ticket buyers will get stripe receipts, as well as Event Tickets confirmation emails.', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'If this option is selected, ticket buyers will get Stripe receipts, as well as Event Tickets confirmation emails.', 'event-tickets' ),
 				'default'         => false,
 				'validation_type' => 'boolean',
 			],

@@ -56,6 +56,7 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_TITLE:
 		case types.SET_TICKET_DESCRIPTION:
 		case types.SET_TICKET_PRICE:
+		case types.SET_TICKET_ON_SALE:
 		case types.SET_TICKET_SKU:
 		case types.SET_TICKET_IAC_SETTING:
 		case types.SET_TICKET_START_DATE:
@@ -70,6 +71,14 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_END_TIME_INPUT:
 		case types.SET_TICKET_CAPACITY_TYPE:
 		case types.SET_TICKET_CAPACITY:
+		case types.SET_TICKET_SALE_PRICE_CHECK:
+		case types.SET_TICKET_SALE_PRICE:
+		case types.SET_TICKET_SALE_START_DATE:
+		case types.SET_TICKET_SALE_START_DATE_INPUT:
+		case types.SET_TICKET_SALE_START_DATE_MOMENT:
+		case types.SET_TICKET_SALE_END_DATE:
+		case types.SET_TICKET_SALE_END_DATE_INPUT:
+		case types.SET_TICKET_SALE_END_DATE_MOMENT:
 		case types.SET_TICKET_TEMP_TITLE:
 		case types.SET_TICKET_TEMP_DESCRIPTION:
 		case types.SET_TICKET_TEMP_PRICE:
@@ -87,6 +96,14 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_TEMP_END_TIME_INPUT:
 		case types.SET_TICKET_TEMP_CAPACITY_TYPE:
 		case types.SET_TICKET_TEMP_CAPACITY:
+		case types.SET_TICKET_TEMP_SALE_PRICE_CHECK:
+		case types.SET_TICKET_TEMP_SALE_PRICE:
+		case types.SET_TICKET_TEMP_SALE_START_DATE:
+		case types.SET_TICKET_TEMP_SALE_START_DATE_INPUT:
+		case types.SET_TICKET_TEMP_SALE_START_DATE_MOMENT:
+		case types.SET_TICKET_TEMP_SALE_END_DATE:
+		case types.SET_TICKET_TEMP_SALE_END_DATE_INPUT:
+		case types.SET_TICKET_TEMP_SALE_END_DATE_MOMENT:
 		case types.SET_TICKET_SOLD:
 		case types.SET_TICKET_AVAILABLE:
 		case types.SET_TICKET_ID:
@@ -94,18 +111,41 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_CURRENCY_POSITION:
 		case types.SET_TICKET_PROVIDER:
 		case types.SET_TICKET_HAS_ATTENDEE_INFO_FIELDS:
+		case types.SET_TICKET_ATTENDEE_INFO_FIELDS:
 		case types.SET_TICKET_IS_LOADING:
 		case types.SET_TICKET_IS_MODAL_OPEN:
 		case types.SET_TICKET_HAS_BEEN_CREATED:
 		case types.SET_TICKET_HAS_CHANGES:
 		case types.SET_TICKET_HAS_DURATION_ERROR:
 		case types.SET_TICKET_IS_SELECTED:
+		case types.SET_TICKET_TYPE:
+		case types.SET_TICKET_TYPE_DESCRIPTION:
+		case types.SET_TICKET_TYPE_ICON_URL:
+		case types.SET_TICKET_TYPE_NAME:
 		case types.REGISTER_TICKET_BLOCK:
 		case types.REMOVE_TICKET_BLOCK:
 		case types.REMOVE_TICKET_BLOCKS:
 			return {
 				...state,
 				tickets: tickets( state.tickets, action ),
+			};
+		case types.SET_UNEDITABLE_TICKETS:
+			return {
+				...state,
+				uneditableTickets: action.payload.uneditableTickets,
+				uneditableTicketsLoading: false,
+			};
+		case types.SET_UNEDITABLE_TICKETS_LOADING:
+			if ( action.loading ) {
+				return {
+					...state,
+					uneditableTickets: [],
+					uneditableTicketsLoading: true,
+				};
+			}
+			return {
+				...state,
+				uneditableTicketsLoading: false,
 			};
 		default:
 			return state;

@@ -9,7 +9,7 @@ use TEC\Tickets\Commerce\Ticket;
 use Tribe__Utils__Array as Arr;
 
 /**
- * Class Increase_Stock, normally triggered when refunding on orders get set to not-completed.
+ * Class Send_Email, normally triggered when an order is complete.
  *
  * @since   5.1.9
  *
@@ -18,6 +18,8 @@ use Tribe__Utils__Array as Arr;
 class Send_Email extends Flag_Action_Abstract {
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @var array
 	 */
 	protected $flags = [
 		'send_email',
@@ -25,9 +27,11 @@ class Send_Email extends Flag_Action_Abstract {
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @var array
 	 */
 	protected $post_types = [
-		Order::POSTTYPE
+		Order::POSTTYPE,
 	];
 
 	/**

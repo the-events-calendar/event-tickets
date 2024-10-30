@@ -5,7 +5,6 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
 use Tribe__Utils__Array as Arr;
 use Tribe__Date_Utils as Dates;
-use TEC\Tickets\Commerce\Traits\Has_Mode;
 
 /**
  * Class Merchant.
@@ -15,6 +14,15 @@ use TEC\Tickets\Commerce\Traits\Has_Mode;
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
 class Merchant extends Abstract_Merchant {
+
+	/**
+	 * Stores the nonce action for disconnecting paypal.
+	 *
+	 * @since 5.11.0.5
+	 *
+	 * @var string
+	 */
+	protected string $disconnect_action = 'paypal-disconnect';
 
 	/**
 	 * All account Props we use for the merchant
@@ -912,6 +920,36 @@ class Merchant extends Abstract_Merchant {
 		 *
 		 * @param string $locale
 		 */
-		return apply_filters( 'tec_tickets_commerce_gateway_paypal_merchant_locale', $locale );
+		$locale = apply_filters( 'tec_tickets_commerce_gateway_paypal_merchant_locale', $locale );
+
+		return $this->validate_locale( $locale );
+	}
+
+	/**
+	 * Validates the locale to make sure it has a valid length.
+	 * If it's not, it will return the default locale.
+	 *
+	 * @since 5.5.6
+	 *
+	 * @param string $locale The Locale code.
+	 *
+	 * @return string
+	 */
+	public function validate_locale( string $locale ) : string {
+		// check if the length is valid.
+		if ( 5 === strlen( $locale ) ) {
+			return $locale;
+		}
+
+		$fallback_locale = 'en_US';
+
+		/**
+		 * Allows filtering of the fallback locale value for the PayPal SDK if the existing is invalid.
+		 *
+		 * @since 5.5.6
+		 *
+		 * @param string $fallback_locale
+		 */
+		return apply_filters( 'tec_tickets_commerce_gateway_paypal_locale_fallback_default', $fallback_locale );
 	}
 }

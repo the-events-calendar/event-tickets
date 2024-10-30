@@ -6,11 +6,12 @@ use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe__Tickets__Ticket_Repository as Ticket_Repository;
 use Tribe__Tickets__Data_API as Data_API;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker as Commerce_Ticket_Maker;
 
 class FetchTest extends \Codeception\TestCase\WPTestCase {
-
 	use RSVP_Ticket_Maker;
 	use PayPal_Ticket_Maker;
+	use Commerce_Ticket_Maker;
 
 	/**
 	 * {@inheritdoc}
@@ -36,8 +37,8 @@ class FetchTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function _before() {
-		tribe_events()->per_page( -1 )->delete();
-		tribe_tickets()->per_page( -1 )->delete();
+		tribe_events()->per_page( - 1 )->delete();
+		tribe_tickets()->per_page( - 1 )->delete();
 	}
 
 	/**
@@ -97,4 +98,112 @@ class FetchTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEqualSets( $paypal_ticket_ids, $ticket_ids );
 	}
 
+	/**
+	 * It should allow fetching tickets by their ticket type
+	 *
+	 * @test
+	 */
+	public function should_allow_fetching_tickets_by_their_ticket_type(): void {
+		$post_id = $this->factory->post->create();
+
+		$default_ticket_1 = $this->create_tc_ticket( $post_id );
+		update_post_meta( $default_ticket_1, '_type', 'default' );
+		$default_ticket_2 = $this->create_tc_ticket( $post_id );
+		update_post_meta( $default_ticket_2, '_type', 'default' );
+		$pass_ticket_1 = $this->create_tc_ticket( $post_id );
+		update_post_meta( $pass_ticket_1, '_type', 'pass' );
+		$pass_ticket_2 = $this->create_tc_ticket( $post_id );
+		update_post_meta( $pass_ticket_2, '_type', 'pass' );
+		$no_type_ticket_1 = $this->create_tc_ticket( $post_id );
+		delete_post_meta( $no_type_ticket_1, '_type' );
+		$no_type_ticket_2 = $this->create_tc_ticket( $post_id );
+		delete_post_meta( $no_type_ticket_2, '_type' );
+		$member_type_ticket_1 = $this->create_tc_ticket( $post_id );
+		update_post_meta( $member_type_ticket_1, '_type', 'member' );
+		$member_type_ticket_2 = $this->create_tc_ticket( $post_id );
+		update_post_meta( $member_type_ticket_2, '_type', 'member' );
+
+		// Try and fetch all tickets for the event.
+		$this->assertEqualSets(
+			[
+				$default_ticket_1,
+				$default_ticket_2,
+				$no_type_ticket_1,
+				$no_type_ticket_2,
+				$pass_ticket_1,
+				$pass_ticket_2,
+				$member_type_ticket_1,
+				$member_type_ticket_2,
+			],
+			tribe_tickets()->where( 'event', $post_id )->get_ids()
+		);
+
+		// Fetch only default tickets.
+		$this->assertEqualSets( [
+			$default_ticket_1,
+			$default_ticket_2,
+			$no_type_ticket_1,
+			$no_type_ticket_2,
+		],
+			tribe_tickets()->where( 'event', $post_id )->where( 'type', 'default' )->get_ids()
+		);
+		$this->assertEqualSets( [
+			$default_ticket_1,
+			$default_ticket_2,
+			$no_type_ticket_1,
+			$no_type_ticket_2,
+		],
+			tribe_tickets()->where( 'event', $post_id )->where( 'type__not_in', [ 'pass', 'member' ] )->get_ids()
+		);
+
+		// Fetch only passes.
+		$this->assertEqualSets(
+			[ $pass_ticket_1, $pass_ticket_2 ],
+			tribe_tickets()->where( 'event', $post_id )->where( 'type', 'pass' )->get_ids()
+		);
+		$this->assertEqualSets(
+			[ $pass_ticket_1, $pass_ticket_2 ],
+			tribe_tickets()->where( 'event', $post_id )->where( 'type__not_in', [ 'default', 'member' ] )->get_ids()
+		);
+
+		// Fetch passes and member tickets.
+		$this->assertEqualSets(
+			[ $pass_ticket_1, $pass_ticket_2, $member_type_ticket_1, $member_type_ticket_2 ],
+			tribe_tickets()->where( 'event', $post_id )->where( 'type', [
+				'pass',
+				'member'
+			] )->get_ids()
+		);
+		$this->assertEqualSets(
+			[ $pass_ticket_1, $pass_ticket_2, $member_type_ticket_1, $member_type_ticket_2 ],
+			tribe_tickets()->where( 'event', $post_id )->where( 'type__not_in', 'default' )->get_ids()
+		);
+
+		// Fetch member and default type.
+		$this->assertEqualSets(
+			[
+				$default_ticket_1,
+				$default_ticket_2,
+				$no_type_ticket_1,
+				$no_type_ticket_2,
+				$member_type_ticket_1,
+				$member_type_ticket_2
+			],
+			tribe_tickets()->where( 'event', $post_id )->where( 'type', [
+				'default',
+				'member'
+			] )->get_ids()
+		);
+		$this->assertEqualSets(
+			[
+				$default_ticket_1,
+				$default_ticket_2,
+				$no_type_ticket_1,
+				$no_type_ticket_2,
+				$member_type_ticket_1,
+				$member_type_ticket_2
+			],
+			tribe_tickets()->where( 'event', $post_id )->where( 'type__not_in', 'pass' )->get_ids()
+		);
+	}
 }

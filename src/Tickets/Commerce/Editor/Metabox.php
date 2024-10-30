@@ -4,6 +4,8 @@ namespace TEC\Tickets\Commerce\Editor;
 
 use TEC\Tickets\Commerce\Module;
 use Tribe__Tickets__Main as Tickets_Plugin;
+use TEC\Tickets\Commerce\Ticket;
+use Tribe__Date_Utils as Dates;
 
 
 /**
@@ -60,6 +62,7 @@ class Metabox {
 	 * they want, specific to their implementation.
 	 *
 	 * @since 5.1.9
+	 * @since 5.5.10 removed `tribe_is_frontend` so the SKU displays when using Community Tickets.
 	 *
 	 * @param int $post_id
 	 * @param int $ticket_id
@@ -69,9 +72,7 @@ class Metabox {
 
 		echo '<div id="' . sanitize_html_class( $provider ) . '_advanced" class="tribe-dependent" data-depends="#provider_TEC_Tickets_Commerce_Module_radio" data-condition-is-checked>';
 
-		if ( ! tribe_is_frontend() ) {
-			$this->do_metabox_sku_options( $post_id, $ticket_id );
-		}
+		$this->do_metabox_sku_options( $post_id, $ticket_id );
 
 		/**
 		 * Allows for the insertion of additional content into the ticket edit form - advanced section
@@ -153,5 +154,58 @@ class Metabox {
 		if ( file_exists( $file ) ) {
 			include $file;
 		}
+	}
+
+	/**
+	 * Renders the sale price fields for TicketsCommerce.
+	 *
+	 * @since 5.9.0
+	 *
+	 * @param int                 $ticket_id The ticket ID.
+	 * @param int                 $post_id The post ID.
+	 * @param array<string,mixed> $context The context array.
+	 */
+	public function render_sale_price_fields( $ticket_id, $post_id, $context ): void {
+		$provider = $context['provider'] ?? false;
+
+		if ( ! $provider || Module::class !== $provider->class_name ) {
+			return;
+		}
+
+		$sale_start_date   = get_post_meta( $ticket_id, Ticket::$sale_price_start_date_key, true );
+		$sale_end_date     = get_post_meta( $ticket_id, Ticket::$sale_price_end_date_key, true );
+		$datepicker_format = Dates::datepicker_formats( Dates::get_datepicker_format_index() );
+
+		if ( ! empty( $sale_start_date ) ) {
+			$sale_start_date = Dates::date_only( $sale_start_date, false, $datepicker_format );
+		}
+		if ( ! empty( $sale_end_date ) ) {
+			$sale_end_date = Dates::date_only( $sale_end_date, false, $datepicker_format );
+		}
+
+		$sale_price = get_post_meta( $ticket_id, Ticket::$sale_price_key, true );
+		$sale_price = $sale_price ? $sale_price->get_string() : '';
+
+		$args = [
+			'post_id'           => $post_id,
+			'ticket'            => $context['ticket'] ?? null,
+			'sale_checkbox_on'  => get_post_meta( $ticket_id, Ticket::$sale_price_checked_key, true ),
+			'sale_price'        => $sale_price,
+			'sale_price_errors' => [
+				'is-greater-than' => __( 'Sale price must be greater than 0', 'event-tickets' ),
+				'is-less-than'    => __( 'Sale price must be less than the regular price', 'event-tickets' ),
+			],
+			'sale_start_date'   => $sale_start_date,
+			'sale_end_date'     => $sale_end_date,
+			'start_date_errors' => [
+				'is-less-or-equal-to' => __( 'Sale from date cannot be greater than Sale to date', 'event-tickets' ),
+			],
+			'end_date_errors'   => [
+				'is-greater-or-equal-to' => __( 'Sale to date cannot be less than Sale from date', 'event-tickets' ),
+			],
+			'is_free_ticket_allowed' => tec_tickets_commerce_is_free_ticket_allowed(),
+		];
+
+		tribe( 'tickets.admin.views' )->template( 'commerce/metabox/sale-price', $args );
 	}
 }

@@ -448,6 +448,7 @@ Object {
 exports[`Ticket actions Ticket saga actions delete ticket 1`] = `
 Object {
   "payload": Object {
+    "askForDeletion": undefined,
     "clientId": "modern-tribe",
   },
   "type": "@@MT/TICKETS/DELETE_TICKET",

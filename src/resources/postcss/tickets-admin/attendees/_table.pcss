@@ -1,0 +1,295 @@
+/**
+ * Event Tickets Admin Attendees - Table
+ *
+ * @since 5.5.9
+ */
+.tec-tickets__admin-attendees {
+	.tribe-report-panel .welcome-panel-last {
+		display: inline-block;
+		width: auto;
+	}
+
+	td {
+		padding: 12px 10px;
+	}
+
+	.tec-tickets__admin-table-attendees.widefat tbody th.check-column {
+		padding-top: 14px;
+	}
+
+	.column-primary_info {
+		min-width: 33%;
+	}
+
+	.fixed .column-security,
+	.fixed .column-status,
+	.fixed .column-check_in {
+		width: 10%;
+	}
+
+	.fixed .column-ticket {
+		width: 18%;
+	}
+
+	.fixed .column-attendee_event {
+		width: 15%;
+	}
+
+	.tec-tickets__admin-table-attendees-check-in-button,
+	.tec-tickets__admin-table-attendees-undo-check-in-button {
+		height: initial;
+		justify-content: center;
+	}
+
+	.tec-tickets__admin-table-attendees-purchaser-email {
+		color: #757575;
+	}
+
+	.tec-tickets__admin-table-attendees-purchaser-email-link {
+		border-bottom: 1px solid #e0e0e0;
+		color: #757575;
+		text-transform: lowercase;
+	}
+
+	.tec-tickets__admin-table-attendees {
+		.tec-tickets__admin-table-attendees-order-status {
+			background: #e5e5e5;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+			border-radius: 4px;
+			color: #777;
+			cursor: inherit !important;
+			display: inline-flex;
+			max-width: 100%;
+			overflow: hidden;
+			padding: 2px 8px;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+
+			a {
+				color: #777;
+				text-decoration: none;
+			}
+
+			.dashicons {
+				font-size: 16px;
+				line-height: inherit;
+				margin-right: 2px;
+			}
+		}
+
+		.tec-tickets__admin-table-attendees-order-status--completed {
+			background: #c8d7e1;
+			color: #505e68;
+
+			a {
+				color: #505e68;
+			}
+		}
+
+		.tec-tickets__admin-table-attendees-order-status--on-hold,
+		.tec-tickets__admin-table-attendees-order-status--cancelled,
+		.tec-tickets__admin-table-attendees-order-status--failed,
+		.tec-tickets__admin-table-attendees-order-status--refunded,
+		.tec-tickets__admin-table-attendees-order-status--not-completed {
+			background: #f8dda7;
+			color: #94660c;
+
+			a {
+				color: #94660c;
+			}
+		}
+	}
+
+	.tec-tickets__admin-attendees-attendance-container {
+		padding: 20px;
+	}
+
+	.tec-tickets__admin-attendees-attendance-type-heading {
+		align-items: center;
+		display: flex;
+		margin-bottom: 8px;
+	}
+
+	.tec-tickets__admin-attendees-attendance-type-heading-label {
+		font-size: 14px;
+		font-weight: 700;
+		margin-right: 8px;
+	}
+
+	.tec-tickets__admin-attendees-attendance-type-heading-border {
+		border-bottom: 1px solid #dcdcde;
+		flex: 1;
+		height: 1px;
+	}
+
+	.tec-tickets__admin-attendees-attendance-type-heading-total {
+		margin-left: 8px;
+	}
+
+	.tec-tickets__admin-attendees-attendance-type-heading-total-label {
+		font-size: 13px;
+	}
+
+	.tec-tickets__admin-attendees-attendance-type-heading-total-amount {
+		font-size: 12px;
+	}
+
+	.tec-tickets__admin-attendees-attendance-type-list {
+		margin: 8px 0;
+		padding: 0 15px;
+
+		@media (--viewport-medium) {
+			padding: 0;
+		}
+	}
+
+	.tec-tickets__admin-attendees-attendance-type-complete {
+		align-items: center;
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 8px;
+	}
+
+	.tec-tickets__admin-attendees-attendance-type-complete-label {
+		font-size: 13px;
+	}
+
+	.tec-tickets__admin-attendees-attendance-type-complete-amount {
+		font-size: 12px;
+	}
+
+	.tec-tickets__admin-attendees-attendance-type-cancelled {
+		align-items: center;
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 12px;
+	}
+
+	.tec-tickets__admin-attendees-attendance-type-cancelled-label {
+		font-size: 13px;
+	}
+
+	.tec-tickets__admin-attendees-attendance-type-cancelled-amount {
+		font-size: 12px;
+	}
+
+	.tec-tickets__admin-attendees-attendance-totals-row {
+		border-top: 1px solid #ccc;
+		display: flex;
+		justify-content: space-between;
+		margin: 0 15px;
+		padding-top: 12px;
+
+		@media (--viewport-medium) {
+			margin: 0;
+		}
+	}
+
+	.tec-tickets__admin-attendees-attendance-totals-title {
+		font-size: 13px;
+		font-weight: 700;
+	}
+
+	.tec-tickets__admin-attendees-attendance-totals-amount {
+		font-size: 12px;
+	}
+
+	.tec-tickets__admin-attendees-overview-title {
+		margin-bottom: 10px;
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-type {
+		align-items: center;
+		display: flex;
+		padding: 0 2px;
+
+		@media (--viewport-medium) {
+			padding: 0;
+		}
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-type-label {
+		color: #000;
+		font-size: var(--tec-font-size-2);
+		font-weight: var(--tec-font-weight-bold);
+		padding-right: var(--tec-spacer-1);
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-type-icon {
+		background-repeat: no-repeat;
+		display: inline-block;
+		height: 20px;
+		margin-right: var(--tec-spacer-0);
+		width: 20px;
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-type-icon--ticket {
+		background-image: url('../icons/icon-ticket-left.svg');
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-type-icon--rsvp {
+		background-image: url('../icons/icon-rsvp-left.svg');
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-type-icon--series-pass {
+		background-image: url('../icons/ticket-series-pass-icon.svg');
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-type-border {
+		border-bottom: 1px solid #dcdcde;
+		flex: 1;
+		height: 1px;
+	}
+
+	ul.tec-tickets__admin-attendees-overview-ticket-type-list {
+		margin: 0;
+		padding: var(--tec-spacer-0) var(--tec-spacer-2) var(--tec-spacer-3) var(--tec-spacer-5) !important;
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-type-list-item {
+		display: flex;
+		justify-content: space-between;
+		margin-right: 0;
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-type-list-item-ticket-name,
+	.tec-tickets__admin-attendees-overview-ticket-type-list-item-ticket-id {
+		font-size: 13px;
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-type-list-item-ticket-name {
+		color: #000;
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-type-list-item-ticket-id {
+		color: #646970;
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-type-list-item-stat {
+		font-size: var(--tec-font-size-1);
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-totals {
+		border-top: 1px solid #dcdcde;
+		display: flex;
+		justify-content: space-between;
+		margin: var(--tec-spacer-0) var(--tec-spacer-3) 0;
+		padding: var(--tec-spacer-1) 0 0 var(--tec-spacer-5) !important;
+
+		@media (--viewport-medium) {
+			margin: var(--tec-spacer-0) 0 0;
+		}
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-totals-title {
+		color: #1d2327;
+		font-size: 13px;
+		font-weight: var(--tec-font-weight-bold);
+		margin-right: var(--tec-spacer-0);
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-totals-stat {
+		font-size: var(--tec-font-size-1);
+		padding-right: var(--tec-spacer-2);
+	}
+}

@@ -6,3 +6,81 @@
 
 @import "_banners.pcss";
 @import "_tickets-commerce.pcss";
+@import "_emails.pcss";
+
+.tec-tickets__admin-settings-back-link-wrapper {
+	padding: var(--tec-spacer-4) 0;
+}
+
+.tec-tickets__admin-settings-back-link {
+	font-size: var(--tec-font-size-2);
+	text-decoration: none;
+
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
+.tec-tickets__admin-settings-toggle-large-wrapper {
+	margin-bottom: 20px;
+	margin-top: 45px;
+}
+
+.tec-tickets__admin-settings-toggle-large {
+	cursor: pointer;
+	display: flex;
+}
+
+.tec-tickets__admin-settings-toggle-large-switch {
+	background: #ccc;
+	border-radius: 16px;
+	display: inline-block;
+	height: 18px;
+	position: relative;
+	transition: background 0.4s;
+	vertical-align: middle;
+	width: 36px;
+
+	&:before,
+	&:after {
+		content: "";
+	}
+
+	&:before {
+		background: linear-gradient(to bottom, #fff 0%, #eee 100%);
+		border-radius: 50%;
+		display: block;
+		height: 12px;
+		left: 3px;
+		position: absolute;
+		top: 3px;
+		transition: left 0.4s;
+		width: 12px;
+	}
+
+	.tec-tickets__admin-settings-toggle-large:hover &:before {
+		background: linear-gradient(to bottom, #fff 0%, #fff 100%);
+	}
+
+	.tec-tickets__admin-settings-toggle-large-checkbox:checked + & {
+		background-color: #2271b1;
+
+		&:before {
+			left: 20px;
+		}
+	}
+}
+
+.tec-tickets__admin-settings-toggle-large-checkbox {
+	position: absolute;
+	visibility: hidden;
+}
+
+.tec-tickets__admin-settings-toggle-large-label {
+	color: #1d2327;
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 17px;
+	margin-left: 12px;
+	position: relative;
+}

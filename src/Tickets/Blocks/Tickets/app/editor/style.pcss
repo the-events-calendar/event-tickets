@@ -1,0 +1,69 @@
+.tribe-editor__tickets {
+	font-family: 'Helvetica Neue', Helvetica, -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
+
+	.block-list-appender {
+		display: none;
+	}
+
+	.block-editor-block-list__layout {
+		.block-editor-block-list__block.wp-block {
+			margin-bottom: 0;
+			margin-top: 0;
+		}
+	}
+}
+
+.tribe-editor__tickets--loading {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+}
+
+.tribe-editor__not-supported-message {
+	a.helper-link{
+		color: var(--tec-color-link-accent);
+	}
+
+	.tribe-editor__tickets__container__helper__container {
+		border-left: 0;
+		border-right: 0;
+		padding: var(--tec-spacer-4) 0;
+	}
+
+	.tribe-editor__uneditable__card {
+		border: none;
+		padding: 0;
+	}
+}
+
+.components-spinner {
+
+	.tribe-editor__tickets & {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		float: none;
+		margin: 0;
+		opacity: 0.8;
+	}
+}
+
+.tribe-editor__uneditable__loader {
+	position: relative;
+	padding-top: var(--tec-spacer-12);
+}
+
+.tickets-heading__wrapper {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+
+	.tickets-heading__description {
+		.tickets-heading__description__link {
+			font-size: var(--tec-font-size-2);
+			color: var(--tec-color-link-accent);
+		}
+	}
+}

@@ -35,11 +35,12 @@
 
 		<div
 	id="tribe-block-tickets-item-[TICKET_ID]"
-	 class="tribe-tickets__tickets-item post-[TICKET_ID] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="[TICKET_ID]" data-available="false" data-has-shared-cap="true" data-ticket-price="5" data-shared-cap="15" data-available-count="11" >
+	 class="tribe-tickets__tickets-item tribe-tickets__tickets-item--shared-capacity post-[TICKET_ID] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="[TICKET_ID]" data-available="false" data-has-shared-cap="true" data-ticket-price="5" data-shared-cap="15" data-available-count="11" >
 
-	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
-		Test PayPal ticket for [EVENT_ID]</div>
-
+	<div class="tribe-tickets__tickets-item-content-title-container">
+		<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
+				Test PayPal ticket for [EVENT_ID]	</div>
+</div>
 
 <div
 	id="tribe__details__content--[TICKET_ID]"

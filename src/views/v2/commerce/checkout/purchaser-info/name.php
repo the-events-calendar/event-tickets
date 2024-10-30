@@ -30,7 +30,7 @@ $field_classes = [
 ?>
 <div class="tribe-tickets__commerce-checkout-purchaser-info-field tribe-tickets__form-field tribe-tickets__form-field--text">
 	<label for="tec-tc-purchaser-name" <?php tribe_classes( $label_classes ); ?>>
-		<?php esc_html_e( 'Person purchasing tickets:', 'event-tickets' ); ?>
+		<?php echo $show_address ? esc_html__( 'Full name', 'event-tickets' ) : esc_html__( 'Person purchasing tickets:', 'event-tickets' ); ?>
 	</label>
 	<div class="tribe-tickets__form-field-input-wrapper">
 		<input
@@ -38,8 +38,12 @@ $field_classes = [
 			id="tec-tc-purchaser-name"
 			name="purchaser-name"
 			autocomplete="off"
+			placeholder="<?php esc_attr_e( 'First and last name', 'event-tickets' ); ?>"
 			<?php tribe_classes( $field_classes ); ?>
 			required
 		/>
+		<div class="tribe-common-b3 tribe-tickets__form-field-description tribe-common-a11y-hidden error">
+			<?php esc_html_e( 'Your first and last names are required', 'event-tickets' ); ?>
+		</div>
 	</div>
 </div>

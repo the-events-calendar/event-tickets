@@ -68,6 +68,24 @@ class Status {
 	CONST PAYER_ACTION_REQUIRED = 'PAYER_ACTION_REQUIRED';
 
 	/**
+	 * Order Capture Status in PayPal for failed captures.
+	 *
+	 * @since 5.4.0.2
+	 *
+	 * @var string
+	 */
+	CONST FAILED = 'FAILED';
+
+	/**
+	 * Order Capture Status in PayPal for declined captures.
+	 *
+	 * @since 5.4.0.2
+	 *
+	 * @var string
+	 */
+	CONST DECLINED = 'DECLINED';
+
+	/**
 	 * Default mapping from PayPal Status to Tickets Commerce
 	 *
 	 * @since 5.1.9
@@ -81,6 +99,8 @@ class Status {
 		self::VOIDED => Commerce_Status\Voided::SLUG,
 		self::COMPLETED => Commerce_Status\Completed::SLUG,
 		self::PAYER_ACTION_REQUIRED => Commerce_Status\Action_Required::SLUG,
+		self::FAILED => Commerce_Status\Denied::SLUG,
+		self::DECLINED => Commerce_Status\Denied::SLUG,
 	];
 
 	/**

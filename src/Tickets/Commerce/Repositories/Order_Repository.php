@@ -4,12 +4,15 @@ namespace TEC\Tickets\Commerce\Repositories;
 
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Module;
-use \Tribe__Repository;
+use Tribe__Repository;
 use TEC\Tickets\Commerce\Order;
+use Tribe__Repository__Interface;
 use Tribe__Repository__Usage_Error as Usage_Error;
 
 use Tribe__Utils__Array as Arr;
 use Tribe__Date_Utils as Dates;
+use WP_Post;
+use WP_Query;
 
 /**
  * Class Order
@@ -33,7 +36,7 @@ class Order_Repository extends Tribe__Repository {
 	 *
 	 * @var string
 	 */
-	protected $key_name = \TEC\Tickets\Commerce::ABBR;
+	protected $key_name = Commerce::ABBR;
 
 	/**
 	 * {@inheritdoc}
@@ -83,10 +86,72 @@ class Order_Repository extends Tribe__Repository {
 		$this->add_simple_meta_schema_entry( 'currency', Order::$currency_meta_key, 'meta_equals' );
 		$this->add_simple_meta_schema_entry( 'purchaser_user_id', Order::$purchaser_user_id_meta_key, 'meta_equals' );
 		$this->add_simple_meta_schema_entry( 'purchaser_full_name', Order::$purchaser_full_name_meta_key, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'purchaser_full_name__like', Order::$purchaser_full_name_meta_key, 'meta_like' );
 		$this->add_simple_meta_schema_entry( 'purchaser_first_name', Order::$purchaser_first_name_meta_key, 'meta_equals' );
 		$this->add_simple_meta_schema_entry( 'purchaser_last_name', Order::$purchaser_last_name_meta_key, 'meta_equals' );
 		$this->add_simple_meta_schema_entry( 'purchaser_email', Order::$purchaser_email_meta_key, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'purchaser_email__like', Order::$purchaser_email_meta_key, 'meta_like' );
 		$this->add_simple_meta_schema_entry( 'hash', Order::$hash_meta_key, 'meta_equals' );
+	}
+
+	/**
+	 * Retrieves distinct values of a given key.
+	 *
+	 * @since 5.13.0
+	 *
+	 * @param string $key The key to retrieve the distinct values from.
+	 * @param array  $excluded_statuses The statuses to exclude from the query.
+	 *
+	 * @return array
+	 */
+	public function get_distinct_values_of_key( string $key, array $excluded_statuses = [ 'trash' ] ) {
+		if ( ! $this->schema_has_modifier_for( $key ) ) {
+			return [];
+		}
+
+		if ( ! empty( $excluded_statuses ) ) {
+			$excluded_statuses = array_map(
+				function ( $status ) {
+					return "'" . sanitize_text_field( $status ) . "'";
+				},
+				$excluded_statuses
+			);
+
+			$excluded_statuses = implode( ',', $excluded_statuses );
+		} else {
+			$excluded_statuses = 0;
+		}
+
+		global $wpdb;
+
+		if ( $this->has_default_modifier( $key ) ) {
+			$normalized_key = $this->normalize_key( $key );
+
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$results = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT DISTINCT {$normalized_key} FROM {$wpdb->posts} WHERE post_type=%s AND post_status NOT IN ({$excluded_statuses})", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+					Order::POSTTYPE,
+				)
+			);
+
+			return wp_list_pluck( $results, $normalized_key );
+		}
+
+		if ( isset( $this->simple_meta_schema[ $key ]['meta_key'] ) ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$results = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT DISTINCT pm.meta_value FROM {$wpdb->postmeta} pm JOIN {$wpdb->posts} p ON p.ID=pm.post_id WHERE p.post_type=%s AND pm.meta_key = %s AND p.post_status NOT IN ({$excluded_statuses})", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+					Order::POSTTYPE,
+					$this->simple_meta_schema[ $key ]['meta_key']
+				)
+			);
+
+			return wp_list_pluck( $results, 'meta_value' );
+		}
+
+		return [];
 	}
 
 	/**
@@ -102,9 +167,9 @@ class Order_Repository extends Tribe__Repository {
 		 *
 		 * @since 5.1.9
 		 *
-		 * @param mixed|\WP_Post                $formatted The formatted event result, usually a post object.
+		 * @param mixed|WP_Post                 $formatted The formatted event result, usually a post object.
 		 * @param int                           $id        The formatted post ID.
-		 * @param \Tribe__Repository__Interface $this      The current repository object.
+		 * @param Tribe__Repository__Interface $this      The current repository object.
 		 */
 		$formatted = apply_filters( 'tec_tickets_commerce_repository_order_format', $formatted, $id, $this );
 
@@ -275,6 +340,8 @@ class Order_Repository extends Tribe__Repository {
 		if ( ! empty( $items ) ) {
 			$ticket_ids    = array_unique( array_filter( array_values( wp_list_pluck( $items, 'ticket_id' ) ) ) );
 			$event_objects = array_map( [ tribe( Module::class ), 'get_event_for_ticket' ], $ticket_ids );
+			// Filter out any non Post objects.
+			$event_objects = array_filter( $event_objects, static fn( $object ) => $object instanceof WP_Post );
 			$event_ids     = array_unique( array_filter( array_values( wp_list_pluck( $event_objects, 'ID' ) ) ) );
 
 			// These will be remove right before actually creating the order.
@@ -369,7 +436,7 @@ class Order_Repository extends Tribe__Repository {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int|\WP_Post|int[]|\WP_Post[] $posts Which posts we are filtering by.
+	 * @param int|WP_Post|int[]|WP_Post[] $posts Which posts we are filtering by.
 	 *
 	 * @return array
 	 */
@@ -379,7 +446,7 @@ class Order_Repository extends Tribe__Repository {
 				return $post;
 			}
 
-			if ( $post instanceof \WP_Post ) {
+			if ( $post instanceof WP_Post ) {
 				return $post->ID;
 			}
 
@@ -392,7 +459,7 @@ class Order_Repository extends Tribe__Repository {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int|\WP_Post|int[]|\WP_Post[] $tickets Which tickets we are filtering by.
+	 * @param int|WP_Post|int[]|WP_Post[] $tickets Which tickets we are filtering by.
 	 *
 	 * @return null
 	 */
@@ -417,7 +484,7 @@ class Order_Repository extends Tribe__Repository {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int|\WP_Post|int[]|\WP_Post[] $tickets Which tickets we are filtering by.
+	 * @param int|WP_Post|int[]|WP_Post[] $tickets Which tickets we are filtering by.
 	 *
 	 * @return null
 	 */
@@ -442,7 +509,7 @@ class Order_Repository extends Tribe__Repository {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int|\WP_Post|int[]|\WP_Post[] $events Which events we are filtering by.
+	 * @param int|WP_Post|int[]|WP_Post[] $events Which events we are filtering by.
 	 *
 	 * @return null
 	 */
@@ -467,7 +534,7 @@ class Order_Repository extends Tribe__Repository {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int|\WP_Post|int[]|\WP_Post[] $events Which events we are filtering by.
+	 * @param int|WP_Post|int[]|WP_Post[] $events Which events we are filtering by.
 	 *
 	 * @return null
 	 */
@@ -485,6 +552,267 @@ class Order_Repository extends Tribe__Repository {
 		$this->by( 'meta_not_in', Order::$events_in_order_meta_key, $events );
 
 		return null;
+	}
+
+	/**
+	 * Overrides the base method to correctly handle the `order_by` clauses before.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @return WP_Query The built query object.
+	 */
+	protected function build_query_internally() {
+		$order_by = Arr::get_in_any( [ $this->query_args, $this->default_args ], 'orderby', 'event_date' );
+		unset( $this->query_args['orderby'], $this->default_args['order_by'] );
+
+		$this->handle_order_by( $order_by );
+
+		return parent::build_query_internally();
+	}
+
+	/**
+	 * Handles the `order_by` clauses for events
+	 *
+	 * @since 5.5.0
+	 *
+	 * @param string $order_by The key used to order items.
+	 */
+	public function handle_order_by( $order_by ) {
+		$check_orderby = $order_by;
+
+		if ( ! is_array( $check_orderby ) ) {
+			$check_orderby = explode( ' ', $check_orderby );
+		}
+
+		$after = false;
+		$loop  = 0;
+
+		foreach ( $check_orderby as $key => $value ) {
+			$order_by      = is_numeric( $key ) ? $value : $key;
+			$default_order = Arr::get_in_any( [ $this->query_args, $this->default_args ], 'order', 'ASC' );
+			$order         = is_numeric( $key ) ? $default_order : $value;
+
+			// Let the first applied ORDER BY clause override the existing ones, then stack the ORDER BY clauses.
+			$override = $loop === 0;
+
+			switch ( $order_by ) {
+				case 'purchaser_full_name':
+					$this->order_by_purchaser_full_name( $order, $after, $override );
+					break;
+				case 'purchaser_email':
+					$this->order_by_purchaser_email( $order, $after, $override );
+					break;
+				case 'total_value':
+					$this->order_by_total_value( $order, $after, $override );
+					break;
+				case 'status':
+					$this->order_by_status( $order, $after, $override );
+					break;
+				case 'gateway':
+					$this->order_by_gateway( $order, $after, $override );
+					break;
+				case 'gateway_id':
+					$this->order_by_gateway_id( $order, $after, $override );
+					break;
+				case '__none':
+					unset( $this->query_args['orderby'] );
+					unset( $this->query_args['order'] );
+					break;
+				default:
+					$after = $after || 1 === $loop;
+					if ( empty( $this->query_args['orderby'] ) ) {
+						// In some versions of WP, [ $order_by, $order ] doesn't work as expected. Using explict value setting instead.
+						$this->query_args['orderby'] = $order_by;
+						$this->query_args['order']   = $order;
+					} else {
+						$add = [ $order_by => $order ];
+						// Make sure all `orderby` clauses have the shape `<orderby> => <order>`.
+						$normalized = [];
+
+						if ( ! is_array( $this->query_args['orderby'] ) ) {
+							$this->query_args['orderby'] = [
+								$this->query_args['orderby'] => $this->query_args['order']
+							];
+						}
+
+						foreach ( $this->query_args['orderby'] as $k => $v ) {
+							$the_order_by                = is_numeric( $k ) ? $v : $k;
+							$the_order                   = is_numeric( $k ) ? $default_order : $v;
+							$normalized[ $the_order_by ] = $the_order;
+						}
+						$this->query_args['orderby'] = $normalized;
+						$this->query_args['orderby'] = array_merge( $this->query_args['orderby'], $add );
+					}
+			}
+		}
+	}
+
+	/**
+	 * Sets up the query filters to order items by the purchaser email.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @param string $key        The meta key that is used for the sorting.
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_key( $meta_key, $order = null, $after = false, $override = true ) {
+		global $wpdb;
+
+		$meta_alias     = "sorted_by_{$meta_key}";
+		$filter_id      = "order_by_{$meta_alias}";
+		$postmeta_table = "orderby_{$meta_alias}_meta";
+
+		$this->filter_query->join(
+			$wpdb->prepare(
+				"
+				LEFT JOIN {$wpdb->postmeta} AS {$postmeta_table}
+					ON (
+						{$postmeta_table}.post_id = {$wpdb->posts}.ID
+						AND {$postmeta_table}.meta_key = %s
+					)
+				",
+				$meta_key
+			),
+			$filter_id,
+			true
+		);
+
+		$order = $this->get_query_order_type( $order );
+
+		$this->filter_query->orderby( [ $meta_alias => $order ], $filter_id, $override, $after );
+		$this->filter_query->fields( "{$postmeta_table}.meta_value AS {$meta_alias}", $filter_id, $override );
+	}
+
+	/**
+	 * Sets up the query filters to order items by purchaser name.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_purchaser_full_name( $order = null, $after = false, $override = true ) {
+		$this->order_by_key( Order::$purchaser_full_name_meta_key, $order, $after, $override );
+	}
+
+	/**
+	 * Sets up the query filters to order items by the purchaser email.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_purchaser_email( $order = null, $after = false, $override = true ) {
+		$this->order_by_key( Order::$purchaser_email_meta_key, $order, $after, $override );
+	}
+
+	/**
+	 * Sets up the query filters to order items by the total value.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_total_value( $order = null, $after = false, $override = true ) {
+		$this->order_by_key( Order::$total_value_meta_key, $order, $after, $override );
+	}
+
+	/**
+	 * Sets up the query filters to order items by the gateway id.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_gateway_id( $order = null, $after = false, $override = true ) {
+		$this->order_by_key( Order::$gateway_order_id_meta_key, $order, $after, $override );
+	}
+
+	/**
+	 * Sets up the query filters to order items by the gatway name.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_gateway( $order = null, $after = false, $override = true ) {
+		$this->order_by_key( Order::$gateway_meta_key, $order, $after, $override );
+	}
+
+	/**
+	 * Sets up the query filters to order items by the status.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_status( $order = null, $after = false, $override = true ) {
+		global $wpdb;
+
+		$meta_alias = 'status';
+		$filter_id  = "order_by_{$meta_alias}";
+		$prefix     = 'tec-' . Commerce::ABBR . '-';
+
+		$order = $this->get_query_order_type( $order );
+
+		$this->filter_query->orderby( [ $meta_alias => $order ], $filter_id, $override, $after );
+		$this->filter_query->fields( "TRIM( '{$prefix}' from {$wpdb->posts}.post_status ) AS {$meta_alias}", $filter_id, $override );
+	}
+
+	/**
+	 * Get the order param for the current orderby clause.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @param $order string|null order type value either 'ASC' or 'DESC'.
+	 *
+	 * @return string
+	 */
+	protected function get_query_order_type( $order = null ) {
+		return $order === null
+			? Arr::get_in_any( [ $this->query_args, $this->default_args ], 'order', 'ASC' )
+			: $order;
 	}
 
 }

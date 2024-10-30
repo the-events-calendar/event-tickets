@@ -15,8 +15,8 @@ import classNames from 'classnames';
  *
  * Labels need to have a %d on it where the number will be replaced
  *
- * @param {object} props The props passed to this component
- * @param {string | Array | object} props.className The class of the element
+ * @param {Object} props The props passed to this component
+ * @param {string | Array | Object} props.className The class of the element
  * @param {number} props.count The amount to be compared
  * @param {boolean} props.includeZero If true, zero is included in count
  * @param {string} props.singular The label for the singular case
@@ -66,6 +66,7 @@ NumericLabel.propTypes = {
 	singular: PropTypes.string,
 	plural: PropTypes.string,
 	useFallback: PropTypes.any,
+	fallback: PropTypes.any,
 };
 
 NumericLabel.defaultProps = {

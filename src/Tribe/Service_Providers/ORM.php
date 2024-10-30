@@ -13,7 +13,15 @@ use Tribe\Tickets\Repositories\Order;
  *
  * @since 4.10.4
  */
-class Tribe__Tickets__Service_Providers__ORM extends tad_DI52_ServiceProvider {
+class Tribe__Tickets__Service_Providers__ORM extends \TEC\Common\Contracts\Service_Provider {
+	/**
+	 * The action to fire when this provider is registered in the container.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @var string
+	 */
+	public static string $registration_action = 'tec_tickets_orm_registered';
 
 	/**
 	 * Binds and sets up implementations.

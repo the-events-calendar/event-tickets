@@ -5,6 +5,8 @@
 
 namespace Tribe\Tickets\Editor;
 
+use Tribe__Tickets__Admin__Views;
+
 /**
  * Warnings handling class.
  *
@@ -18,36 +20,31 @@ class Warnings {
 	 * @since 5.0.4
 	 */
 	public function hook() {
-		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'show_recurring_event_warning_message' ] );
-		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'add_commerce_provider_warning' ] );
+		add_action( 'tribe_events_tickets_new_ticket_warnings', [ $this, 'add_commerce_provider_warning' ] );
+		add_action( 'tribe_events_tickets_new_ticket_warnings', [ $this, 'render_hidden_recurring_warning_for_ticket_meta_box' ] );
 	}
 
 	/**
 	 * Show the Recurring Event warning message.
 	 *
+	 * @since 5.6.7 Remove rendering the warning message for CE.
+	 * @since 5.6.4 Remove dependency on `#tribe-recurrence-active`.
+	 * @since 5.6.2 Added 'recurring_event_warning' as an $additionalClasses.
 	 * @since 5.0.4
+	 * @since 5.8.0 Deprecated.
+	 *
+	 * @deprecated 5.8.0
 	 *
 	 * @param int $post_id Post ID.
 	 */
 	public function show_recurring_event_warning_message( $post_id ) {
-		if ( ! class_exists( 'Tribe__Events__Pro__Main' ) || ! class_exists( 'Tribe__Events__Main' ) ) {
-			return;
-		}
-
-		if ( ! function_exists( 'tribe_is_recurring_event' ) ) {
-			return;
-		}
-
-		if ( \Tribe__Events__Main::POSTTYPE != get_post_type( $post_id ) ) {
-			return;
-		}
-
-		$this->render_notice( $this->get_recurring_event_warning_message(), 'info', '#tribe-recurrence-active', 'checked' );
+		_deprecated_function( __METHOD__, '5.8.0', __CLASS__ . '::render_hidden_recurring_warning_for_ticket_meta_box' );
 	}
 
 	/**
 	 * Add Provider missing warning for tickets.
 	 *
+	 * @since 5.6.2 Added 'provider_warning' as an $additionalClasses.
 	 * @since 5.0.4
 	 */
 	public function add_commerce_provider_warning() {
@@ -57,7 +54,7 @@ class Warnings {
 			return;
 		}
 
-		$this->render_notice( $this->get_commerce_provider_missing_warning_message() );
+		$this->render_notice( $this->get_commerce_provider_missing_warning_message(), 'info info--background', '', '', [ 'provider-warning' ], 'lightbulb' );
 	}
 
 	/**
@@ -77,12 +74,31 @@ class Warnings {
 			esc_html_x( 'Learn More', 'Helper link in Ticket Editor', 'event-tickets' )
 		);
 
-		return wp_kses_post(
-			sprintf(
-				/* translators: %1$s: link to help article. */
-				__( 'There is no payment gateway configured. To create tickets, you\'ll need to enable and configure an ecommerce solution. %1$s', 'event-tickets' ),
-				$link
-			)
+		$message = sprintf(
+			/* Translators: %1$s: link to help article. */
+			__( 'There is no payment gateway configured. To create %1$s, you\'ll need to enable and configure an ecommerce solution. %2$s', 'event-tickets' ),
+			tribe_get_ticket_label_plural_lowercase( 'commerce provider missing warning' ),
+			$link
+		);
+
+		/**
+		 * Filter the Commerce Provider missing warning message.
+		 *
+		 * @since 5.8.2
+		 *
+		 * @param string $message The Commerce Provider missing message.
+		 */
+		$message = apply_filters( 'tec_tickets_commerce_provider_missing_warning_message', $message );
+
+		return wp_kses(
+			$message,
+			[
+				'a' => [
+					'href'   => [],
+					'target' => [],
+					'rel'    => [],
+				],
+			]
 		);
 	}
 
@@ -90,38 +106,84 @@ class Warnings {
 	 * Get the Recurring Event warning message.
 	 *
 	 * @since 5.0.4
+	 * @since 5.8.0 Removed `class` attribute, dynamize ticket and rsvp labels.
 	 *
-	 * @return string The Recurring Event warning message.
+	 * @param int $post_id The Post ID.
 	 */
-	public function get_recurring_event_warning_message() {
-		return __( 'This is a recurring event. If you add tickets, they will only show up on first event in the recurrence series. Please carefully configure your recurring events.', 'event-tickets' );
+	public function get_recurring_event_warning_message( int $post_id ): void {
+		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		$admin_views = tribe( Tribe__Tickets__Admin__Views::class );
+
+		$help_text_link = sprintf(
+			'<a href="%1$s" target="_blank" rel="noreferrer noopener">%2$s</a>',
+			esc_url( 'https://evnt.is/1b7a' ),
+			esc_html( __( 'See our future planned features.', 'event-tickets' ) )
+		);
+
+		$et_message = sprintf(
+		/* translators: %1$s: link to help article. */
+			__( 'Standard tickets are not yet supported on recurring events. %1$s', 'event-tickets' ),
+			$help_text_link
+		);
+
+		$admin_views->template(
+			'editor/recurring-warning',
+			[
+				'post_id'  => $post_id,
+				'messages' => [ 'et-warning' => $et_message ],
+			],
+		);
 	}
 
 	/**
 	 * Render the notice block.
 	 *
+	 * @since 5.6.2 added the `$additionalClasses` attribute to allow customizing the notice.
 	 * @since 5.0.4
+	 * @since 5.8.2 Added `$dashicon` attribute to allow adding a dashicon to the notice.
 	 *
-	 * @param string $message Tee message to show.
-	 * @param string $type    Type of message.
-	 * @param string $depends_on Dependency selector.
-	 * @param string $condition Dependency condition like 'checked' | 'not-checked' | 'numeric'.
+	 * @param string $message           The message to show.
+	 * @param string $type              Type of message. Default is 'info'.
+	 * @param string $depends_on        Dependency selector. Default is empty.
+	 * @param string $condition         Dependency condition like 'checked' | 'not-checked' | 'numeric'. Default is empty.
+	 * @param array  $classes           Additional CSS classes to add to the notice block. Default is an empty array.
 	 */
-	public function render_notice( $message, $type = 'info', $depends_on = '', $condition = '' ) {
-		$icon           = 'dashicons-' . $type;
+	public function render_notice( $message, $type = 'info', $depends_on = '', $condition = '', $classes = [], $dashicon = '' ) {
 		$has_dependency = empty( $depends_on ) ? '' : 'tribe-dependent';
-		$classes        = $type . ' ' . $has_dependency;
 		$condition_attr = empty( $condition ) ? '' : 'data-condition-is-' . $condition;
+
+		$base_classes = [
+			'ticket-editor-notice',
+			$type,
+			$has_dependency,
+		];
+		$classes      = array_merge( $base_classes, $classes );
+
 		?>
-		<div class="ticket-editor-notice <?php echo esc_attr( $classes ); ?>"
+		<div <?php tribe_classes( $classes ); ?>
 			<?php if ( $depends_on ) { ?>
 				data-depends="<?php echo esc_attr( $depends_on ); ?>"
 			<?php } ?>
 			<?php echo esc_attr( $condition_attr ); ?>
 		>
-			<span class="dashicons <?php echo esc_attr( $icon ); ?>"></span>
+			<?php
+			if ( ! empty( $dashicon ) ) {
+				echo '<span class="dashicons dashicons-' . esc_attr( $dashicon ) . '"></span>';
+			}
+			?>
 			<span class="message"><?php echo wp_kses_post( $message ); ?></span>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Render hidden recurring warning message for new post/event creation page.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param int $post_id The Post ID.
+	 */
+	public function render_hidden_recurring_warning_for_ticket_meta_box( int $post_id ): void {
+		$this->get_recurring_event_warning_message( $post_id );
 	}
 }

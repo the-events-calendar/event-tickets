@@ -3,7 +3,7 @@
  * This template renders the Tribe Commerce ticket form
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe-events/tickets/tpp.php
+ * [your-theme]/tribe/tickets/tpp.php
  *
  * @deprecated 4.11.0
  *
@@ -19,8 +19,9 @@
  * @since      4.11.3 Changed button ID to match the format of the non-tpp buttons. (`tribe-tickets` instead of `buy-tickets`)
  * @since      4.11.5 Display total available separately from setting max allowed to purchase at once and avoid the
  *                    potential of `$readable_amount` being a undefined variable.
+ * @since      5.9.1 Corrected template override filepath
  *
- * @version    4.11.3
+ * @version    5.9.1
  *
  * @var bool $must_login
  * @var bool $display_login_link

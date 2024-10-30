@@ -5,10 +5,15 @@
 
 # Composer / Package files
 node_modules
-/vendor
 /files
 /vcs
 /repo
+
+# Vendor handling.
+/vendor
+
+# Allow certain vendor files.
+!vendor/phpqrcode
 
 # Some people makes...
 Makefile
@@ -17,7 +22,7 @@ Makefile
 codeception.yml
 tests/*.suite.yml
 phpunit.xml
-.env.*
+
 *.local
 *.test
 *.testing
@@ -32,12 +37,25 @@ src/resources/**/app
 src/resources/css
 src/resources/js/**/*.min.js
 
+# Build files
+build
+
 # build files for js minification
 compiler.jar
 *.ps1
+
+# Local packaging files
+.pup-*
 
 # add this yourself to add githoooks - see .huskyrc.sample
 .huskyrc
 
 # get from translate.wordpress.org as needed
 lang/*.po
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+.vscode
+*.code-workspace

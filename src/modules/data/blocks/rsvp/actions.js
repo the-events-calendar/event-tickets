@@ -21,6 +21,13 @@ export const setRSVPSettingsOpen = ( settingsOpen ) => ( {
 	},
 } );
 
+export const setRSVPIsAddEditOpen = ( isAddEditOpen ) => ( {
+	type: types.SET_RSVP_IS_ADD_EDIT_OPEN,
+	payload: {
+		isAddEditOpen,
+	},
+} );
+
 export const setRSVPHasChanges = ( hasChanges ) => ( {
 	type: types.SET_RSVP_HAS_CHANGES,
 	payload: {

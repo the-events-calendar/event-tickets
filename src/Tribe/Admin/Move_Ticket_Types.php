@@ -25,7 +25,7 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 		}
 
 		return array_merge( $vars, array(
-			'title'    => esc_html( sprintf( __( 'Move %s Types', 'event-tickets' ), tribe_get_ticket_label_singular( 'move_ticket_type_title' ) ) ),
+			'title'    => esc_html( sprintf( __( 'Move %s', 'event-tickets' ), tribe_get_ticket_label_singular( 'move_ticket_type_title' ) ) ),
 			'mode'     => 'ticket_type_only',
 		) );
 	}
@@ -101,33 +101,54 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 		$src_post_id    = absint( $args['src_post_id'] );
 
 		if ( ! $ticket_type_id || ! $destination_id ) {
-			wp_send_json_error( array(
-				'message' => esc_html( sprintf(
-					__( '%1$s type could not be moved: the %2$s type or destination post was invalid.', 'event-tickets' ),
-					tribe_get_ticket_label_singular( 'move_ticket_type_error' ),
-					tribe_get_ticket_label_singular_lowercase( 'move_ticket_type_error' )
-				) )
-			) );
+			wp_send_json_error(
+				[
+					'message' => esc_html(
+						sprintf(
+							// translators: %1$s is the ticket type label, %2$s is the destination post label.
+							__( '%1$s type could not be moved: the %2$s type or destination post was invalid.', 'event-tickets' ),
+							tribe_get_ticket_label_singular( 'move_ticket_type_error' ),
+							tribe_get_ticket_label_singular_lowercase( 'move_ticket_type_error' )
+						)
+					),
+				]
+			);
 		}
 
 		if ( ! $this->move_ticket_type( $ticket_type_id, $destination_id ) ) {
-			wp_send_json_error( array(
-				'message' => esc_html( sprintf( __( '%s type could not be moved: unexpected failure during reassignment.', 'event-tickets' ), tribe_get_ticket_label_singular( 'move_ticket_type_error' ) ) )
-			) );
+			wp_send_json_error(
+				[
+					'message' => esc_html(
+						sprintf(
+							// Translators: %s is the ticket label.
+							__( '%s type could not be moved: unexpected failure during reassignment.', 'event-tickets' ),
+							tribe_get_ticket_label_singular( 'move_ticket_type_error' )
+						)
+					),
+				]
+			);
 		}
 
-		wp_send_json_success( array(
-			'message' => sprintf(
-				'<p>' . esc_html__( '%1$s type %2$s for %3$s was successfully moved to %4$s. All previously sold %5$s of this type have been transferred to %4$s. Please adjust capacity and stock manually as needed. %2$s %6$s holders have received an email notifying them of the change. You may now close this window!', 'event-tickets' ) . '</p>',
-				esc_html( tribe_get_ticket_label_singular( 'move_ticket_type_success' ) ),
-				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $ticket_type_id . '&action=edit' ) ) . '" target="_blank">' . esc_html( get_the_title( $ticket_type_id ) ) . '</a>',
-				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $src_post_id . '&action=edit' ) ) . '" target="_blank">' . esc_html( get_the_title( $src_post_id ) ) . '</a>',
-				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $destination_id . '&action=edit' ) ) . '" target="_blank">' . esc_html( get_the_title( $destination_id ) ) . '</a>',
-				esc_html( tribe_get_ticket_label_plural_lowercase( 'move_ticket_type_success' ) ),
-				esc_html( tribe_get_ticket_label_singular_lowercase( 'move_ticket_type_success' ) )
-			),
-			'remove_ticket_type' => $ticket_type_id,
-		) );
+		wp_send_json_success(
+			[
+				'message'            => sprintf(
+					'<p>' .
+					// translators: %1$s is the ticket type label, %2$s is the ticket type name, %3$s is the source post name, %4$s is the destination post name, %5$s is the ticket type label plural, %6$s is the ticket type label singular.
+					esc_html__(
+						'%1$s type %2$s for %3$s was successfully moved to %4$s. All previously sold %5$s have been transferred to %4$s. Please adjust capacity and stock manually as needed. %2$s %6$s holders have received an email notifying them of the change. You may now close this window!',
+						'event-tickets'
+					)
+					. '</p>',
+					esc_html( tribe_get_ticket_label_singular( 'move_ticket_type_success' ) ),
+					'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $ticket_type_id . '&action=edit' ) ) . '" target="_blank">' . esc_html( get_the_title( $ticket_type_id ) ) . '</a>',
+					'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $src_post_id . '&action=edit' ) ) . '" target="_blank">' . esc_html( get_the_title( $src_post_id ) ) . '</a>',
+					'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $destination_id . '&action=edit' ) ) . '" target="_blank">' . esc_html( get_the_title( $destination_id ) ) . '</a>',
+					esc_html( tribe_get_ticket_label_plural_lowercase( 'move_ticket_type_success' ) ),
+					esc_html( tribe_get_ticket_label_singular_lowercase( 'move_ticket_type_success' ) )
+				),
+				'remove_ticket_type' => $ticket_type_id,
+			]
+		);
 	}
 
 	/**
@@ -178,39 +199,8 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 			return false;
 		}
 
-		$src_event_cap = new Tribe__Tickets__Global_Stock( $src_post_id );
-		$tgt_event_cap = new Tribe__Tickets__Global_Stock( $destination_post_id );
-
-		$src_mode = get_post_meta( $ticket_type_id, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
-
-		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
-		$tickets_handler = tribe( 'tickets.handler' );
-
-		// When the Mode is not `own` we have to check and modify some stuff
-		if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE !== $src_mode ) {
-			// If we have Source cap and not on Target, we set it up
-			if ( ! $tgt_event_cap->is_enabled() ) {
-				$src_event_capacity = tribe_tickets_get_capacity( $src_post_id );
-
-				// Activate Shared Capacity on the Ticket
-				$tgt_event_cap->enable();
-
-				// Setup the Stock level to match Source capacity
-				$tgt_event_cap->set_stock_level( $src_event_capacity );
-
-				// Update the Target event with the Capacity from the Source
-				update_post_meta( $destination_post_id, $tickets_handler->key_capacity, $src_event_capacity );
-			} elseif ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $src_mode ) {
-				// Check if we have capped to avoid ticket cap over event cap
-				$src_ticket_capacity = tribe_tickets_get_capacity( $ticket_type_id );
-				$tgt_event_capacity = tribe_tickets_get_capacity( $destination_post_id );
-
-				// Don't allow ticket capacity to be bigger than Target Event Cap
-				if ( $src_ticket_capacity > $tgt_event_capacity ) {
-					update_post_meta( $ticket_type_id, $tickets_handler->key_capacity, $tgt_event_capacity );
-				}
-			}
-		}
+		// Update the global stock level if necessary.
+		( new Tribe__Tickets__Global_Stock( $ticket_type_id ) )->update_stock_level_on_move( $src_post_id, $destination_post_id );
 
 		$provider->clear_attendees_cache( $src_post_id );
 		$provider->clear_attendees_cache( $destination_post_id );

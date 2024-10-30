@@ -10,7 +10,7 @@ exports[`MoveDelete should render 1`] = `
     onClick={[MockFunction]}
     type="button"
   >
-    Move RSVP
+    Remove RSVP
   </button>
   <button
     className="tribe-editor__button"
@@ -18,7 +18,7 @@ exports[`MoveDelete should render 1`] = `
     onClick={[MockFunction]}
     type="button"
   >
-    Remove RSVP
+    Move RSVP
   </button>
 </div>
 `;

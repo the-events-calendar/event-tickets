@@ -49,7 +49,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		'yes',     // RSVP
 		'completed', // PayPal Legacy
 		'wc-completed', // WooCommerce
-		'publish', // Easy Digital Downloads
+		'publish', // Easy Digital Downloads, Legacy
+		'complete', // Easy Digital Downloads
 	];
 
 	/**
@@ -74,8 +75,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		] );
 
 		// Add initial simple schema.
-		$this->add_simple_meta_schema_entry( 'event', $this->attendee_to_event_keys(), 'meta_in' );
-		$this->add_simple_meta_schema_entry( 'event__not_in', $this->attendee_to_event_keys(), 'meta_not_in' );
+		$this->add_schema_entry( 'event', [ $this, 'filter_by_event' ] );
+		$this->add_schema_entry( 'event__not_in', [ $this, 'filter_by_event_not_in' ] );
 		$this->add_simple_meta_schema_entry( 'ticket', $this->attendee_to_ticket_keys(), 'meta_in' );
 		$this->add_simple_meta_schema_entry( 'ticket__not_in', $this->attendee_to_ticket_keys(), 'meta_not_in' );
 		$this->add_simple_meta_schema_entry( 'order', $this->attendee_to_order_keys(), 'meta_in' );
@@ -114,6 +115,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			'provider'              => [ $this, 'filter_by_provider' ],
 			'rsvp_status__or_none'  => [ $this, 'filter_by_rsvp_status_or_none' ],
 			'rsvp_status'           => [ $this, 'filter_by_rsvp_status' ],
+			'ticket_type'           => [ $this, 'filter_by_ticket_type' ],
+			'ticket_type__not_in'   => [ $this, 'filter_by_ticket_type_not_in' ],
 		] );
 
 		// Add object default aliases.
@@ -131,6 +134,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 				'price_currency' => '_tribe_tickets_price_currency_symbol',
 				'full_name'      => '_tribe_tickets_full_name',
 				'email'          => '_tribe_tickets_email',
+				'check_in'       => current( $this->checked_in_keys() ),
 			]
 		);
 
@@ -217,7 +221,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		return [
 			'rsvp'                          => '_tribe_rsvp_full_name',
 			'tribe-commerce'                => '_tribe_tpp_full_name',
-			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$purchaser_name_meta_key,
+			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$full_name_meta_key,
 		];
 	}
 
@@ -234,7 +238,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		return [
 			'rsvp'                          => '_tribe_rsvp_email',
 			'tribe-commerce'                => '_tribe_tpp_email',
-			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$purchaser_email_meta_key,
+			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$email_meta_key,
 		];
 	}
 
@@ -448,9 +452,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @since 4.8
 	 *
-	 * @throws Tribe__Repository__Void_Query_Exception If the requested statuses are not accessible by the user.
-	 *
 	 * @param string|array $event_status
+	 *
+	 * @throws Tribe__Repository__Void_Query_Exception If the requested statuses are not accessible by the user.
 	 *
 	 */
 	public function filter_by_event_status( $event_status ) {
@@ -516,20 +520,36 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	}
 
 	/**
+	 * Applies the WHERE and JOIN clauses to filter Attendees by a specific order status.
+	 *
+	 * @since 5.6.4
+	 *
+	 * @param string $where_clause   The WHERE clause to apply.
+	 * @param string $value_operator The operator to use for the value clause.
+	 * @param string $value_clause   The value clause to use.
+	 */
+	protected function filter_by_order_status_where( string $where_clause, string $value_operator, string $value_clause ): void {
+		$this->filter_query->where( $where_clause );
+	}
+
+	/**
 	 * Filters attendee to only get those related to orders with a specific status.
 	 *
 	 * @since 4.8
-	 *
-	 * @throws Tribe__Repository__Void_Query_Exception If the requested statuses are not accessible by the user.
+	 * @since 5.6.4 Refactored the logic to remove Event Tickets Plus logic.
+	 * @since 5.6.5 Added support to filter by TicketsCommerce order status.
 	 *
 	 * @param string       $type         Type of matching (in, not_in, like).
 	 *
 	 * @param string|array $order_status Order status.
+	 *
+	 * @throws Tribe__Repository__Void_Query_Exception If the requested statuses are not accessible by the user.
+	 *
 	 */
 	public function filter_by_order_status( $order_status, $type = 'in' ) {
 		$statuses = Arr::list_to_array( $order_status );
 
-		$has_manage_access = current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' );
+		$has_manage_access = tribe( 'tickets.rest-v1.main' )->request_has_manage_access();
 
 		// map the `any` meta-status
 		if ( 1 === count( $statuses ) && 'any' === $statuses[0] ) {
@@ -540,6 +560,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 				return;
 			}
 		}
+
+		// set a status for tc only, that fetches the wp_slug from the given slugs in $statuses array.
 
 		// Allow the user to define singular statuses or the meta-status "public"
 		if ( in_array( 'public', $statuses, true ) ) {
@@ -572,9 +594,6 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			$value_operator = 'NOT IN';
 		}
 
-		$has_plus_providers = class_exists( 'Tribe__Tickets_Plus__Commerce__EDD__Main' )
-		                      || class_exists( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' );
-
 		$this->filter_query->join( "
 			LEFT JOIN {$wpdb->postmeta} order_status_meta
 			ON order_status_meta.post_id = {$wpdb->posts}.ID
@@ -587,24 +606,25 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			)
 		";
 
-		if ( ! $has_plus_providers ) {
-			$this->filter_query->where( $et_where_clause );
-		} else {
-			$this->filter_query->join( "
-				LEFT JOIN {$wpdb->posts} order_status_post
-				ON order_status_post.ID = order_status_meta.meta_value
-			", 'order-status-post' );
+		// filter $statuses to only get proper TC status slugs.
+		$tc_order_statuses = array_filter( array_map( function ( $status ) {
+			$status_obj = tribe( \TEC\Tickets\Commerce\Status\Status_Handler::class )->get_by_slug( $status );
 
-			$this->filter_query->where( "
-				(
-					{$et_where_clause}
-					OR (
-						order_status_meta.meta_key IN ( '_tribe_wooticket_order','_tribe_eddticket_order' )
-						AND order_status_post.post_status {$value_operator} {$value_clause}
-					)
-				)
-			" );
-		}
+			return $status_obj ? $status_obj->get_wp_slug() : '';
+		}, $statuses ) );
+
+		$tc_order_statuses  = "( '" . implode( "','", array_map( [ $wpdb, '_escape' ], $tc_order_statuses ) ) . "' )";
+		$tc_order_post_type = \TEC\Tickets\Commerce\Order::POSTTYPE;
+
+		$this->filter_query->join( "LEFT JOIN {$wpdb->posts} tc_order_status ON (
+		 {$wpdb->posts}.post_parent = tc_order_status.ID
+		  AND tc_order_status.post_type = '{$tc_order_post_type}'
+		  AND tc_order_status.post_status IN {$tc_order_statuses} )" );
+
+		$et_where_clause .= " OR {$wpdb->posts}.post_parent IN ( tc_order_status.ID )";
+
+		// Allow extending classes to alter the JOIN and WHERE clauses.
+		$this->filter_by_order_status_where( $et_where_clause, $value_operator, $value_clause );
 	}
 
 	/**
@@ -612,9 +632,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @since 4.10.6
 	 *
-	 * @throws Tribe__Repository__Void_Query_Exception If the requested statuses are not accessible by the user.
-	 *
 	 * @param string|array $order_status
+	 *
+	 * @throws Tribe__Repository__Void_Query_Exception If the requested statuses are not accessible by the user.
 	 *
 	 */
 	public function filter_by_order_status_not_in( $order_status ) {
@@ -663,10 +683,11 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * Filters attendees depending on their checkedin status.
 	 *
 	 * @since 4.8
+	 * @since 5.6.4 Refactored the logic to use `Tribe__Repository__Query_Filters::meta_not` on `false`.
 	 *
 	 * @param bool $checkedin
 	 *
-	 * @return array
+	 * @return array|null Either the filtered query or `null` if the query filtering does not require arguments.
 	 */
 	public function filter_by_checkedin( $checkedin ) {
 		$meta_keys = $this->checked_in_keys();
@@ -675,7 +696,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			return Tribe__Repository__Query_Filters::meta_in( $meta_keys, '1', 'is-checked-in' );
 		}
 
-		return Tribe__Repository__Query_Filters::meta_not_in_or_not_exists( $meta_keys, '1', 'is-not-checked-in' );
+		$this->filter_query->meta_not( $meta_keys, '1', 'is-not-checked-in' );
 	}
 
 	/**
@@ -777,13 +798,13 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @since 5.1.0
 	 *
-	 * @throws Tribe__Repository__Usage_Error If the argument types are not set as expected.
-	 *
 	 * @param array                             $attendee_data List of additional attendee data.
 	 *
 	 * @param Tribe__Tickets__Ticket_Object|int $ticket        The ticket object or ID.
 	 *
 	 * @return WP_Post|false The new post object or false if unsuccessful.
+	 *
+	 * @throws Tribe__Repository__Usage_Error If the argument types are not set as expected.
 	 *
 	 */
 	public function create_attendee_for_ticket( $ticket, $attendee_data ) {
@@ -822,8 +843,6 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @since 5.1.0
 	 *
-	 * @throws Tribe__Repository__Usage_Error If the argument types are not set as expected.
-	 *
 	 * @param bool  $return_promise Whether to return a promise object or just the ids
 	 *                              of the updated posts; if `true` then a promise will
 	 *                              be returned whether the update is happening in background
@@ -834,6 +853,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array|Tribe__Promise A list of the post IDs that have been (synchronous) or will
 	 *                              be (asynchronous) updated if `$return_promise` is set to `false`;
 	 *                              the Promise object if `$return_promise` is set to `true`.
+	 *
+	 * @throws Tribe__Repository__Usage_Error If the argument types are not set as expected.
 	 *
 	 */
 	public function update_attendee( $attendee_data, $return_promise = false ) {
@@ -881,11 +902,12 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @since 5.1.0
 	 *
-	 * @throws Tribe__Repository__Usage_Error If the argument types are not set as expected.
-	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object or null if not relying on it.
 	 *
 	 * @param array                         $attendee_data List of additional attendee data.
+	 *
+	 * @throws Tribe__Repository__Usage_Error If the argument types are not set as expected.
+	 *
 	 */
 	public function set_attendee_args( $attendee_data, $ticket = null ) {
 		$args = [
@@ -901,6 +923,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			'attendee_status'   => null,
 			'price_paid'        => null,
 			'optout'            => null,
+			'check_in'          => null,
 		];
 
 		$args = array_merge( $args, $attendee_data );
@@ -969,6 +992,11 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			if ( isset( $args['optout'] ) ) {
 				// Enforce a 0/1 value for the optout value.
 				$args['optout'] = (int) tribe_is_truthy( $args['optout'] );
+			}
+
+			if ( isset( $args['check_in'] ) ) {
+				// Enforce a 0/1 value for the check_in value.
+				$args['check_in'] = (int) tribe_is_truthy( $args['check_in'] );
 			}
 		}
 
@@ -1190,9 +1218,34 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		// Maybe send the attendee email.
 		$this->maybe_send_attendee_email( $attendee_data['attendee_id'], $attendee_data );
 
+		$this->maybe_handle_checkin( $attendee_data['attendee_id'], $attendee_data );
+
 		// Clear the attendee cache if post_id is provided.
 		if ( ! empty( $this->updates['post_id'] ) && $this->attendee_provider ) {
 			$this->attendee_provider->clear_attendees_cache( $this->updates['post_id'] );
+		}
+	}
+
+
+	/**
+	 * Handle check in actions.
+	 *
+	 * @since 5.5.6
+	 *
+	 * @param int   $attendee_id   The attendee ID.
+	 * @param array $attendee_data List of attendee data that was used for saving.
+	 *
+	 * @return void
+	 */
+	public function maybe_handle_checkin( $attendee_id, $attendee_data ): void {
+		if ( ! isset( $attendee_data['check_in'] ) ) {
+			return;
+		}
+
+		if ( $attendee_data['check_in'] ) {
+			$this->attendee_provider->checkin( $attendee_id );
+		} else {
+			$this->attendee_provider->uncheckin( $attendee_id );
 		}
 	}
 
@@ -1202,7 +1255,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @since 5.1.0
 	 *
 	 * @param array                                  $attendee_data List of attendee data to reference.
-	 * @param null|int|Tribe__Tickets__Ticket_Object $ticket        The ticket object, ticket ID, or null if not relying on it.
+	 * @param null|int|Tribe__Tickets__Ticket_Object $ticket        The ticket object, ticket ID, or null if not
+	 *                                                              relying on it.
 	 *
 	 * @return int|string|false The order ID or false if not created.
 	 */
@@ -1306,5 +1360,399 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		];
 
 		$this->attendee_provider->send_tickets_email_for_attendees( $attendee_tickets, $send_ticket_email_args );
+	}
+
+	/**
+	 * Overrides the base method to correctly handle the `order_by` clauses before.
+	 *
+	 * The Event repository handles ordering with some non trivial logic and some query filtering.
+	 * To avoid the "stacking" of `orderby` clauses and filters the query filters are added at the very last moment,
+	 * right before building the query.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @return WP_Query The built query object.
+	 */
+	protected function build_query_internally() {
+		$order_by = Arr::get_in_any( [ $this->query_args, $this->default_args ], 'orderby' );
+		unset( $this->query_args['orderby'], $this->default_args['order_by'] );
+
+		$this->handle_order_by( $order_by );
+
+		return parent::build_query_internally();
+	}
+
+	/**
+	 * Handles the `order_by` clauses for events
+	 *
+	 * @since 5.5.0
+	 *
+	 * @param string $order_by The key used to order events; e.g. `event_date` to order events by start date.
+	 */
+	public function handle_order_by( $order_by ) {
+		$check_orderby = $order_by;
+
+		if ( ! is_array( $check_orderby ) ) {
+			$check_orderby = explode( ' ', $check_orderby );
+		}
+
+		$after = false;
+		$loop  = 0;
+
+		foreach ( $check_orderby as $key => $value ) {
+			$order_by      = is_numeric( $key ) ? $value : $key;
+			$default_order = Arr::get_in_any( [ $this->query_args, $this->default_args ], 'order', 'ASC' );
+			$order         = is_numeric( $key ) ? $default_order : $value;
+
+			// Let the first applied ORDER BY clause override the existing ones, then stack the ORDER BY clauses.
+			$override = $loop === 0;
+
+			switch ( $order_by ) {
+				case 'full_name':
+					$this->order_by_full_name( $order, $after, $override );
+					break;
+				case 'security_code':
+					$this->order_by_security_code( $order, $after, $override );
+					break;
+				case 'check_in':
+					$this->order_by_check_in( $order, $after, $override );
+					break;
+				case 'rsvp_status':
+					$this->order_by_rsvp_status( $order, $after, $override );
+					break;
+				case '__none':
+					unset( $this->query_args['orderby'] );
+					unset( $this->query_args['order'] );
+					break;
+				default:
+					$after = $after || 1 === $loop;
+					if ( empty( $this->query_args['orderby'] ) ) {
+						// In some versions of WP, [ $order_by, $order ] doesn't work as expected. Using explict value setting instead.
+						$this->query_args['orderby'] = $order_by;
+						$this->query_args['order']   = $order;
+					} else {
+						$add = [ $order_by => $order ];
+						// Make sure all `orderby` clauses have the shape `<orderby> => <order>`.
+						$normalized = [];
+
+						if ( ! is_array( $this->query_args['orderby'] ) ) {
+							$this->query_args['orderby'] = [
+								$this->query_args['orderby'] => $this->query_args['order']
+							];
+						}
+
+						foreach ( $this->query_args['orderby'] as $k => $v ) {
+							$the_order_by                = is_numeric( $k ) ? $v : $k;
+							$the_order                   = is_numeric( $k ) ? $default_order : $v;
+							$normalized[ $the_order_by ] = $the_order;
+						}
+						$this->query_args['orderby'] = $normalized;
+						$this->query_args['orderby'] = array_merge( $this->query_args['orderby'], $add );
+					}
+			}
+		}
+	}
+
+	/**
+	 * Sets up the query filters to order attendees by the full name meta.
+	 *
+	 * @since 5.5.2
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_full_name( $order = null, $after = false, $override = true ) {
+		global $wpdb;
+
+		$meta_alias     = 'full_name';
+		$meta_keys_in   = $this->prepare_interval( $this->holder_name_keys() );
+		$postmeta_table = "orderby_{$meta_alias}_meta";
+		$filter_id      = 'order_by_full_name';
+
+		$this->filter_query->join(
+			"
+			LEFT JOIN {$wpdb->postmeta} AS {$postmeta_table}
+				ON (
+					{$postmeta_table}.post_id = {$wpdb->posts}.ID
+					AND {$postmeta_table}.meta_key IN {$meta_keys_in}
+				)
+			",
+			$filter_id,
+			true
+		);
+
+		$order = $this->get_query_order_type( $order );
+
+		$this->filter_query->orderby( [ $meta_alias => $order ], $filter_id, true, $after );
+		$this->filter_query->fields( "{$postmeta_table}.meta_value AS {$meta_alias}", $filter_id, $override );
+	}
+
+	/**
+	 * Sets up the query filters to order attendees by the security code meta.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_security_code( $order = null, $after = false, $override = true ) {
+		global $wpdb;
+
+		$meta_alias     = 'security_code';
+		$meta_keys_in   = $this->prepare_interval( $this->security_code_keys() );
+		$postmeta_table = "orderby_{$meta_alias}_meta";
+		$filter_id      = 'order_by_security_code';
+
+		$this->filter_query->join(
+			"
+			LEFT JOIN {$wpdb->postmeta} AS {$postmeta_table}
+				ON (
+					{$postmeta_table}.post_id = {$wpdb->posts}.ID
+					AND {$postmeta_table}.meta_key IN {$meta_keys_in}
+				)
+			"
+			,
+			$filter_id,
+			true
+		);
+
+		$order = $this->get_query_order_type( $order );
+
+		$this->filter_query->orderby( [ $meta_alias => $order ], $filter_id, true, $after );
+		$this->filter_query->fields( "{$postmeta_table}.meta_value AS {$meta_alias}", $filter_id, $override );
+	}
+
+	/**
+	 * Sets up the query filters to order attendees by the check-in status.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_check_in( $order = null, $after = false, $override = true ) {
+		global $wpdb;
+
+		$meta_alias   = 'check_in';
+		$meta_keys_in = $this->prepare_interval( $this->checked_in_keys() );
+
+		$postmeta_table = "orderby_{$meta_alias}_meta";
+		$filter_id      = "order_by_{$meta_alias}";
+
+		$this->filter_query->join(
+			"
+			LEFT JOIN {$wpdb->postmeta} AS {$postmeta_table}
+				ON (
+					{$postmeta_table}.post_id = {$wpdb->posts}.ID
+					AND {$postmeta_table}.meta_key IN {$meta_keys_in}
+				)
+			"
+			,
+			$filter_id,
+			true
+		);
+
+		$order = $this->get_query_order_type( $order );
+
+		$this->filter_query->orderby( [ $meta_alias => $order ], $filter_id, true, $after );
+		$this->filter_query->fields( "{$postmeta_table}.meta_value AS {$meta_alias}", $filter_id, $override );
+	}
+
+	/**
+	 * Sets up the query filters to order attendees by the order status.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_rsvp_status( $order = null, $after = false, $override = true ) {
+		global $wpdb;
+
+		$meta_alias = 'rsvp_status';
+		$meta_key   = Tribe__Tickets__RSVP::ATTENDEE_RSVP_KEY;
+
+		$postmeta_table = "orderby_{$meta_alias}";
+		$filter_id      = "order_by_{$meta_alias}";
+
+		$this->filter_query->join(
+			$wpdb->prepare(
+				"
+				LEFT JOIN {$wpdb->postmeta} AS {$postmeta_table}
+					ON (
+						{$postmeta_table}.post_id = {$wpdb->posts}.ID
+						AND {$postmeta_table}.meta_key = %s
+					)
+				",
+				$meta_key
+			),
+			$filter_id,
+			true
+		);
+
+		$order = $this->get_query_order_type( $order );
+
+		$this->filter_query->orderby( [ $meta_alias => $order ], $filter_id, $override, $after );
+		$this->filter_query->fields( "{$postmeta_table}.meta_value AS {$meta_alias}", $filter_id, $override );
+	}
+
+	/**
+	 * Get the order param for the current orderby clause.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @param $order string|null order type value either 'ASC' or 'DESC'.
+	 *
+	 * @return string
+	 */
+	protected function get_query_order_type( $order = null ) {
+		return $order === null
+			? Arr::get_in_any( [ $this->query_args, $this->default_args ], 'order', 'ASC' )
+			: $order;
+	}
+
+	/**
+	 * Sets up the query filters to fetch Attendees by post they are attached to.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param int|array<int> $post_id Either a single post ID or an array of post IDs.
+	 *
+	 * @return void Query filters are set up to fetch Attendees by post they are attached to.
+	 */
+	public function filter_by_event( $post_id ): void {
+		$post_ids = (array) $post_id;
+
+		/**
+		 * Filter the post IDs to be used when fetching Attendees by the related post.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param array<int> $post_ids The post IDs to be used when fetching Attendees by the related post.
+		 */
+		$post_ids = apply_filters( 'tec_tickets_attendees_filter_by_event', $post_ids, $this );
+
+		$this->by( 'meta_in', $this->attendee_to_event_keys(), $post_ids );
+	}
+
+	/**
+	 * Sets up the query filters to fetch Attendees not related to a post.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param int|array<int> $post_id Either a single post ID or an array of post IDs.
+	 *
+	 * @return void Query filters are set up to fetch Attendees not related to a post.
+	 */
+	public function filter_by_event_not_in( $post_id ): void {
+		$post_ids = (array) $post_id;
+
+		/**
+		 * Filter the post IDs to be used when fetching Attendees not related to a post.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param array<int> $post_ids The post IDs to be used when fetching Attendees by the related post.
+		 *
+		 */
+		$post_ids = apply_filters( 'tec_tickets_attendees_filter_by_event_not_in', $post_ids, $this );
+
+		$this->by( 'meta_not_in', $this->attendee_to_event_keys(), $post_ids );
+	}
+
+	private function filter_by_ticket_type_operator( string $operator, $ticket_type ): void {
+		$ticket_types = (array) $ticket_type;
+
+		if ( empty( $ticket_types ) ) {
+			// No ticket types means no Attendee of any kind will match.
+			$this->void_query( true );
+
+			return;
+		}
+
+		global $wpdb;
+		$alias = 'attendee_by_ticket_type_' . substr( md5( microtime(), ), - 5 );
+		$attendee_to_ticket_keys          = $this->attendee_to_ticket_keys();
+		$prepared_attendee_to_ticket_keys = $wpdb->prepare(
+			implode( ',', array_fill( 0, count( $attendee_to_ticket_keys ), '%s' ) ),
+			$attendee_to_ticket_keys
+		);
+
+		// Join on the meta that holds the Attendee > Ticket relationship.
+		$join = "LEFT JOIN {$wpdb->postmeta} {$alias} " .
+		        "ON {$wpdb->posts}.ID = {$alias}.post_id " .
+		        "AND {$alias}.meta_key IN ({$prepared_attendee_to_ticket_keys})";
+
+		$ticket_post_types          = tribe_tickets()->ticket_types();
+		$prepared_ticket_post_types = $wpdb->prepare(
+			implode( ',', array_fill( 0, count( $ticket_post_types ), '%s' ) ),
+			$ticket_post_types
+		);
+		$prepared_ticket_types             = $wpdb->prepare(
+			implode( ',', array_fill( 0, count( $ticket_types ), '%s' ) ),
+			$ticket_types
+		);
+		/*
+		 * The value of the meta key that relates Attendees > Tickets will hold a Ticket ID.
+		 * The Ticket IDs should be among those of a specific Ticket type, the `_type` meta key on
+		 * the Ticket.
+		 * The sub-query is used to avoid fetching from the database an unbound quantity of Ticket IDs
+		 * to use them to filter the meta values.
+		 */
+		$where = "{$alias}.meta_value IN (
+			SELECT tickets.ID FROM {$wpdb->posts} tickets
+			LEFT JOIN {$wpdb->postmeta} type ON type.post_id = tickets.ID AND type.meta_key = '_type'
+			WHERE tickets.post_type IN ({$prepared_ticket_post_types})
+			AND COALESCE(type.meta_value, 'default') {$operator} ({$prepared_ticket_types})
+		)";
+
+		$this->join_clause( $join );
+		$this->where_clause( $where );
+	}
+
+	/**
+	 * Filters the Attendees by keeping only the ones for Tickets of a specific type.
+	 *
+	 * @since 5.8.2
+	 *
+	 * @param string|string[] $ticket_type The type of Ticket to keep Attendees for.
+	 *
+	 * @return void
+	 */
+	public function filter_by_ticket_type( $ticket_type ): void {
+		$this->filter_by_ticket_type_operator( 'IN', $ticket_type );
+	}
+
+	/**
+	 * Filters the Attendees by keeping only the ones for Tickets that are not of a specific type.
+	 *
+	 * @since 5.8.2
+	 *
+	 * @param string|string[] $ticket_type The type of Ticket to exclude Attendees for.
+	 *
+	 * @return void
+	 */
+	public function filter_by_ticket_type_not_in( $ticket_type ): void {
+		$this->filter_by_ticket_type_operator( 'NOT IN', $ticket_type );
 	}
 }

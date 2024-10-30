@@ -13,7 +13,7 @@ use TEC\Tickets\Commerce\Payments_Tab;
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
-class Assets extends \tad_DI52_ServiceProvider {
+class Assets extends \TEC\Common\Contracts\Service_Provider {
 
 	/**
 	 * The nonce action to use when requesting the creation of a new order
@@ -102,8 +102,16 @@ class Assets extends \tad_DI52_ServiceProvider {
 							],
 							'cardElementStyle' => [
 								'base' => [
-									'color' => '#23282d'
-								]
+									'color' => '#23282d',
+								],
+							],
+							'cardElementOptions' => [
+								/**
+								 * Allow for filtering of available options from Stripe.
+								 *
+								 * @link https://docs.stripe.com/js/elements_object/create_element?type=card#elements_create-options
+								 */
+								'disabled' => false,
 							]
 						] );
 					},
@@ -161,7 +169,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Determines if we are currently on the stripe section of the settings.
+	 * Determines if we are currently on the Stripe section of the settings.
 	 *
 	 * @since 5.3.0
 	 *

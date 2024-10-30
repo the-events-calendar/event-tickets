@@ -10,9 +10,9 @@ import renderer from 'react-test-renderer';
 import { SettingsDashboard } from '@moderntribe/tickets/elements';
 
 // Mock to overwrite the default SVG icons mock
-jest.mock( '@moderntribe/common/icons', () => ( {
+jest.mock( '@moderntribe/tickets/icons', () => ( {
 	Close: () => <span>Close Icon</span>,
-	Cog: () => <span>Cog Icon</span>,
+	Settings: () => <span>Settings Icon</span>,
 } ) );
 
 describe( 'Settings Dashboard Element', () => {

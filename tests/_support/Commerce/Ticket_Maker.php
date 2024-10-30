@@ -3,6 +3,7 @@
 namespace Tribe\Tickets\Test\Commerce;
 
 use Tribe__Tickets__Global_Stock as Global_Stock;
+use Tribe__Tickets__Tickets_Handler;
 
 trait Ticket_Maker {
 
@@ -39,6 +40,10 @@ trait Ticket_Maker {
 		];
 
 		$data = array_merge( $data, $overrides );
+
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+		update_post_meta( $post_id, $tickets_handler->key_provider_field, get_class( $provider_class ) );
 
 		return $provider_class->ticket_add( $post_id, $data );
 	}

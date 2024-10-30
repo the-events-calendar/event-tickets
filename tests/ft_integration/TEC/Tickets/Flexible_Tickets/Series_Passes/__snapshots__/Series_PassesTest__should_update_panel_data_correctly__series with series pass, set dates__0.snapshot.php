@@ -1,0 +1,1 @@
+a:3:{s:25:"ticket_end_date_help_text";s:96:"If you do not set an end sale date, passes will be available until the last event in the Series.";s:15:"ticket_end_date";s:8:"3/4/2022";s:15:"ticket_end_time";s:8:"12:00:00";}

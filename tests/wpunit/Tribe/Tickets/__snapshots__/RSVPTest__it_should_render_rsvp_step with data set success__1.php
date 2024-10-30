@@ -23,10 +23,10 @@
 		<div class="tribe-tickets__rsvp-details-wrapper tribe-common-g-col">
 	<div class="tribe-tickets__rsvp-details">
 		<h3 class="tribe-tickets__rsvp-title tribe-common-h2 tribe-common-h4--min-medium">
-	Test RSVP ticket for 283</h3>
+	Test RSVP ticket for 279</h3>
 
 		<div class="tribe-tickets__rsvp-description tribe-common-h6 tribe-common-h--alt tribe-common-b3--min-medium">
-	<p>Ticket RSVP ticket excerpt for 283</p>
+	<p>Ticket RSVP ticket excerpt for 279</p>
 </div>
 
 		<div class="tribe-tickets__rsvp-attendance">
@@ -65,4 +65,30 @@
 </div>
 
 	</div>
+
+	<div class="tribe-tickets__rsvp-attendees-wrapper tribe-common-g-row">
+	<div class="tec-tickets__attendees-list-wrapper tribe-tickets__rsvp-attendees tribe-common-b1 tribe-common-g-col">
+		<h4 class="tribe-common-h4 tribe-common-h6--min-medium">
+	Your RSVPs</h4>
+		<div class="tec-tickets__attendees-list">
+							<div class="tec-tickets__attendees-list-item">
+					<div class="tec-tickets__attendees-list-item-attendee-details tribe-common-b1">
+	<div class="tec-tickets__attendees-list-item-attendee-details-name tribe-common-b1--bold">
+	Jane Doe</div>
+	<div class="tec-tickets__attendees-list-item-attendee-details-rsvp">
+	Test RSVP ticket for 279</div>
+</div>
+				</div>
+							<div class="tec-tickets__attendees-list-item">
+					<div class="tec-tickets__attendees-list-item-attendee-details tribe-common-b1">
+	<div class="tec-tickets__attendees-list-item-attendee-details-name tribe-common-b1--bold">
+	Jane Doe</div>
+	<div class="tec-tickets__attendees-list-item-attendee-details-rsvp">
+	Test RSVP ticket for 279</div>
+</div>
+				</div>
+					</div>
+	</div>
+</div>
+
 ';

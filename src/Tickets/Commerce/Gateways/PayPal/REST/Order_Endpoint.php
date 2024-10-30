@@ -88,6 +88,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Handles the request that creates an order with Tickets Commerce and the PayPal gateway.
 	 *
 	 * @since 5.1.9
+	 * @since 5.6.4 Include Event/Post title in the Ticket name.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -119,8 +120,10 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		foreach ( $order->items as $item ) {
 			$ticket          = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+			$post_title      = get_the_title( $item['event_id'] );
+			$item_name       = sprintf( '%s - %s', $ticket->name, $post_title );
 			$unit['items'][] = [
-				'name'        => $ticket->name,
+				'name'        => $this->format_order_item_name( $item_name ),
 				'unit_amount' => [ 'value' => (string) $item['price'], 'currency_code' => $order->currency ],
 				'quantity'    => $item['quantity'],
 				'item_total'  => [ 'value' => (string) $item['sub_total'], 'currency_code' => $order->currency ],
@@ -182,6 +185,12 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-paypal-nonexistent-order-id', $messages['nonexistent-order-id'], $order );
 		}
 
+		$recheck = $request->get_param( 'recheck' );
+
+		if ( $recheck ) {
+			return $this->handle_recheck_order( $paypal_order_id, $order );
+		}
+
 		$payer_id = $request->get_param( 'payer_id' );
 
 		$paypal_capture_response = tribe( Client::class )->capture_order( $paypal_order_id, $payer_id );
@@ -202,19 +211,71 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-paypal-failed-capture', $messages['failed-capture'], $paypal_capture_response );
 		}
 
-		$paypal_capture_status = Arr::get( $paypal_capture_response, [ 'status' ] );
-		$status                = tribe( Status::class )->convert_to_commerce_status( $paypal_capture_status );
+		$response['success']  = true;
+		$response['order_id'] = $paypal_order_id;
+
+		return new WP_REST_Response( $response );
+	}
+
+	/**
+	 * Gets the Order object again, in another request, to check for purchases possibly denied after creation.
+	 *
+	 * @since 5.4.0.2
+	 *
+	 * @param string   $order_id The PayPal order ID.
+	 * @param \WP_Post $order    The TC Order object.
+	 *
+	 * @return bool|WP_Error|WP_REST_Response
+	 */
+	public function handle_recheck_order( $order_id, $order ) {
+
+		$paypal_order_response       = tribe( Client::class )->get_order( $order_id );
+		$paypal_order_status         = Arr::get( $paypal_order_response, [ 'status' ] );
+		$paypal_order_purchase_units = Arr::get( $paypal_order_response, [ 'purchase_units' ], [] );
+		$paypal_order_captures       = [];
+		$messages                    = $this->get_error_messages();
+
+		foreach( $paypal_order_purchase_units as $unit ) {
+			if ( ! empty( $unit['payments']['captures'] ) ) {
+				$paypal_order_captures[] = $unit['payments']['captures'];
+			}
+		}
+
+		if ( Status::CREATED === $paypal_order_status && ! empty( $paypal_order_captures ) ) {
+			$paypal_order_captures = array_shift( $paypal_order_captures );
+			if ( count( $paypal_order_captures ) > 1 ) {
+				// Sort the captures array by the update timestamp
+				usort( $paypal_order_captures, function( $a, $b ) {
+					return strtotime( $a['update_time'] ) <=> strtotime( $b['update_time'] );
+				} );
+			}
+
+			foreach( $paypal_order_captures as $capture ) {
+				$paypal_order_status = $capture['status'];
+				$final = $capture['final_capture'] ?? false;
+
+				if ( $final ) {
+					break;
+				}
+			}
+		}
+
+		$status = tribe( Status::class )->convert_to_commerce_status( $paypal_order_status );
 
 		if ( ! $status ) {
-			return new WP_Error( 'tec-tc-gateway-paypal-invalid-capture-status', $messages['invalid-capture-status'], $paypal_capture_response );
+			return new WP_Error( 'tec-tc-gateway-paypal-invalid-capture-status', $messages['invalid-capture-status'], $paypal_order_response );
 		}
 
 		$updated = tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), [
-			'gateway_payload' => $paypal_capture_response,
+			'gateway_payload' => $paypal_order_response,
 		] );
 
 		if ( is_wp_error( $updated ) ) {
 			return $updated;
+		}
+
+		if ( in_array( $paypal_order_status, [ Status::FAILED, Status::DECLINED ], true ) ) {
+			return new WP_Error( 'tec-tc-gateway-paypal-capture-declined', $messages['capture-declined'], $paypal_order_response );
 		}
 
 		$response['success']  = true;
@@ -224,7 +285,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		// When we have success we clear the cart.
 		tribe( Cart::class )->clear_cart();
 
-		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $paypal_order_id ], tribe( Success::class )->get_url() );
+		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $order_id ], tribe( Success::class )->get_url() );
 
 		return new WP_REST_Response( $response );
 	}
@@ -417,6 +478,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'canceled-creating-order' => __( 'Your PayPal order was cancelled.', 'event-tickets' ),
 			'nonexistent-order-id'    => __( 'Provided Order id is not valid.', 'event-tickets' ),
 			'failed-capture'          => __( 'There was a problem while processing your payment, please try again.', 'event-tickets' ),
+			'capture-declined'        => __( 'Your payment was declined.', 'event-tickets' ),
 			'invalid-capture-status'  => __( 'There was a problem with the Order status change, please try again.', 'event-tickets' ),
 		];
 
@@ -428,5 +490,42 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		 * @param array $messages Array of error messages.
 		 */
 		return apply_filters( 'tec_tickets_commerce_order_endpoint_error_messages', $messages );
+	}
+
+	/**
+	 * Formats the order item name by truncating it to a specified length.
+	 * If the text exceeds the maximum character length, it is truncated at the last space
+	 * within the limit and an ellipsis is added at the end.
+	 *
+	 * @since 5.6.5
+	 *
+	 * @param string $text The original order item name text.
+	 *
+	 * @return string The formatted order item name text.
+	 */
+	public function format_order_item_name( string $text ): string {
+		$max_character_length = 127;
+		$ellipsis             = '...';
+		$truncate_length      = $max_character_length - strlen( $ellipsis );
+
+		if ( strlen( $text ) <= $max_character_length ) {
+			return $text;
+		}
+
+		// Cut the text to the desired length
+		$truncated_text = substr( $text, 0, $truncate_length );
+
+		// Find the last space within the truncated text
+		$last_space = strrpos( $truncated_text, ' ' );
+
+		// Cut the text at the last space to avoid cutting in the middle of a word
+		if ( $last_space !== false ) {
+			$truncated_text = substr( $truncated_text, 0, $last_space );
+		}
+
+		// Add an ellipsis at the end
+		$truncated_text .= $ellipsis;
+
+		return $truncated_text;
 	}
 }

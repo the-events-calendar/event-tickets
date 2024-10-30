@@ -19,9 +19,7 @@ exports[`Tooltip Element renders a tooltip 1`] = `
     <span>
       <button
         aria-label="here is the tooltip text"
-        className="tribe-editor__button tribe-editor__tooltip-label tribe-editor__label-with-tooltip__tooltip-label"
-        onClick={[Function]}
-        type="button"
+        className="tribe-editor__tooltip-label tribe-editor__label-with-tooltip__tooltip-label"
       >
         tooltip label
       </button>

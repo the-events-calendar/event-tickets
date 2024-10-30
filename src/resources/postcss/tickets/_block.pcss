@@ -50,15 +50,15 @@
 		display: grid;
 		-ms-grid-columns: 10fr 1fr;
 		-ms-grid-rows: 1fr 1.5fr;
-		grid-template-columns: 10fr 1fr;
+		grid-template-columns: auto 1fr auto;
 		grid-template-rows: auto;
 		margin: 0;
 		padding: 12px 0 16px;
 
 		@media (--viewport-medium) {
-			-ms-grid-columns: 6.5fr 2fr;
+			-ms-grid-columns: 1fr auto auto;
 			-ms-grid-rows: 1fr 1.5fr 1fr;
-			grid-template-columns: 6.5fr 2fr;
+			grid-template-columns: 1fr auto auto;
 		}
 
 		&[data-available="false"] {
@@ -95,7 +95,7 @@
 		display: none;
 	}
 
-	.tribe-tickets__tickets-item-content-title {
+	.tribe-tickets__tickets-item-content-title-container {
 		align-self: end;
 		-ms-grid-column: 1;
 		grid-column: 1;
@@ -114,6 +114,22 @@
 				padding-top: 0;
 			}
 		}
+	}
+
+	.tribe-tickets__tickets-item-content-sale-label-container {
+		display: flex;
+	}
+
+	.tribe-tickets__tickets-item-content-sale-label {
+		background-color: #eaf1ff;
+		border-radius: var(--tec-spacer-2);
+		color: var(--tec-color-icon-focus);
+		display: inline-block;
+		font-family: var(--tec-font-family-sans-serif);
+		font-size: var(--tec-font-size-0);
+		font-weight: var(--tec-font-weight-bold);
+		margin-bottom: 5px;
+		padding: 4px 6px;
 	}
 
 	.tribe-tickets-attendees-list-optout--wrapper {
@@ -154,6 +170,12 @@
 		.tribe-tickets__tickets-item-quantity-number-input {
 			color: var(--tec-color-text-disabled);
 			color: var(--tec-color-scroll-bar);
+		}
+	}
+
+	.tribe-tickets__tickets-item--on-sale {
+		.tribe-tickets__tickets-item-quantity {
+			padding-top: 10px;
 		}
 	}
 }

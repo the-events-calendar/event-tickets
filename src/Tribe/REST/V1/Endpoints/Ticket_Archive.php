@@ -113,8 +113,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 			'attendees_max' => 'attendees_max',
 			'checkedin_min' => 'checkedin_min',
 			'checkedin_max' => 'checkedin_max',
-			'capacity_min' => 'capacity_min',
-			'capacity_max' => 'capacity_max',
+			'capacity_min'  => 'capacity_min',
+			'capacity_max'  => 'capacity_max',
 		);
 
 		foreach ( $supported_args as $request_arg => $query_arg ) {
@@ -123,7 +123,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 			}
 		}
 
-		$has_manage_access = current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' );
+		$has_manage_access = tribe( 'tickets.rest-v1.main' )->request_has_manage_access();
 
 		$attendess_btwn = $checkedin_btwn = $capacity_btwn = null;
 
@@ -192,9 +192,11 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 
 		$found = $query->found();
 
+		$total_pages = (int) ceil( $found / $per_page );
+
 		if ( 0 === $found && 1 === $page ) {
 			$tickets = array();
-		} elseif ( 1 !== $page && $page * $per_page > $found ) {
+		} elseif ( 1 !== $page && $page > $total_pages ) {
 			return new WP_Error( 'invalid-page-number', $this->messages->get_message( 'invalid-page-number' ), array( 'status' => 400 ) );
 		} else {
 			$tickets = $query
@@ -216,7 +218,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 
 		$data['rest_url']    = add_query_arg( $query_args, $main->get_url( '/tickets/' ) );
 		$data['total']       = $found;
-		$data['total_pages'] = (int) ceil( $found / $per_page );
+		$data['total_pages'] = $total_pages;
 		$data['tickets']     = $tickets;
 
 		$headers = array(

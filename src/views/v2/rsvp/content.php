@@ -14,8 +14,9 @@
  * @var string|null $step The step the views are on.
  *
  * @since 4.12.3
+ * @since 5.7.0 Add list of attendees that confirmed RSVP.
  *
- * @version 4.12.3
+ * @version 5.7.0
  */
 
 ?>
@@ -41,4 +42,7 @@
 		<?php $this->template( 'v2/rsvp/actions', [ 'rsvp' => $rsvp ] ); ?>
 
 	</div>
+
+	<?php $this->template( 'v2/rsvp/attendees' ); ?>
+
 <?php endif; ?>

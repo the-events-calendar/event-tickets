@@ -1,18 +1,16 @@
 <?php
+/**
+ * @var string                     $multiple_providers_notice The notice to display when there are multiple ticket providers.
+ * @var array<array<string,mixed>> $active_providers          The active ticket providers, not including RSVP.
+ * @var string                     $default_module_class      The default ticket provider class.
+ */
+
 $post_id = get_the_ID();
 
-/** @var Tribe__Tickets__Editor__Configuration $editor_config */
-$editor_config = tribe( 'tickets.editor.configuration' );
-
-// Get list of providers (excluding RSVP).
-$active_providers = $editor_config->get_providers();
-
 $multiple_providers = 1 < count( $active_providers );
-
+$current_provider   = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $post_id );
 // We use 'screen-reader-text' to hide it if there really aren't any choices.
 $fieldset_class = $multiple_providers ? 'input_block' : 'screen-reader-text';
-
-$default_module_class = (string) Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
 ?>
 
 <?php if ( tribe_is_truthy( tribe_get_request_var( 'is_admin', true ) ) ) : ?>
@@ -38,29 +36,20 @@ $default_module_class = (string) Tribe__Tickets__Tickets::get_event_ticket_provi
 						)
 					);
 					?></legend>
-				<p class="ticket_form_right"><?php
-					echo esc_attr( sprintf(
-						__( 'It looks like you have multiple ecommerce plugins active. We recommend running only one at a time. However, if you need to run multiple, please select which one to use to sell %s for this event.', 'event-tickets' ),
-						tribe_get_ticket_label_plural_lowercase( 'multiple_providers' )
-					) );
-					?>
-					<em><?php
-					echo esc_attr( sprintf(
-						__( 'Note: adjusting this setting will only impact new %1$s. Existing %1$s will not change. We highly recommend that all %1$s for one event use the same ecommerce plugin.', 'event-tickets' ),
-						tribe_get_ticket_label_plural_lowercase( 'multiple_providers' )
-					) );
-					?></em>
+				<p class="ticket_form_right">
+                    <?php echo wp_kses_post( $multiple_providers_notice); ?>
 				</p>
 				<?php foreach ( $active_providers as $active_provider ) : ?>
 					<label class="ticket_form_right" for="provider_<?php echo esc_attr( $active_provider['html_safe_class'] . '_radio' ); ?>">
 						<input
-							<?php checked( $default_module_class, $active_provider['class'] ); ?>
+							<?php checked( $current_provider->class_name, $active_provider['class'] ); ?>
 							type="radio"
 							name="tribe-tickets[settings][default_provider]"
 							id="provider_<?php echo esc_attr( $active_provider['html_safe_class'] . '_radio' ); ?>"
 							value="<?php echo esc_attr( $active_provider['class'] ); ?>"
 							class="tribe-ticket-editor-field-default_provider settings_field ticket_field"
 							aria-labelledby="default_ticket_provider_legend"
+							<?php disabled( $active_provider['disabled'] ?? false, true ); ?>
 						>
 						<?php
 						/**

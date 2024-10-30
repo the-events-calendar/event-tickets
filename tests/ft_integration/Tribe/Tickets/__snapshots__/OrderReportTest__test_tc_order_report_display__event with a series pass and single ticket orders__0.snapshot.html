@@ -1,0 +1,170 @@
+
+<div class="wrap tribe-report-page tec-tc-report-page">
+		<div id="icon-edit" class="icon32 icon32-tickets-orders"><br></div>
+
+	<div id="tribe-order-summary" class="welcome-panel tribe-report-panel">
+	<div class="welcome-panel-content">
+		<div class="welcome-panel-column-container">
+			<div class="welcome-panel-column welcome-panel-first">
+				<h3>
+				Event Details				</h3>
+				<ul>
+					
+				<li>
+					<strong>Event Date:</strong>
+					January 1, 2021
+				</li>
+			
+			<li class="post-type">
+				<strong>Post type: </strong>
+				event
+			</li>
+		<li class="event-actions"><a href="http://wordpress.test/wp-admin/post.php?post={{ID}}&#038;action=edit" title="Edit">Edit Event</a> | <a href="http://wordpress.test/?tribe_events=test-event-with-a-series-pass-and-single-ticket-orders" title="View">View Event</a></li>
+<li class="post-type series-summary">
+	<strong>Series: </strong>
+	<a href="http://wordpress.test/wp-admin/post.php?post={{ID}}&#038;action=edit" target="_blank">Test event with a series pass and single ticket orders</a></li>
+<li class="series-actions">
+	<a href="http://wordpress.test/wp-admin/post.php?post={{ID}}&#038;action=edit" target="_blank">Edit Series</a> | <a href="http://wordpress.test/?tribe_event_series=test-event-with-a-series-pass-and-single-ticket-orders" target="_blank">View Series</a> | <a href="http://wordpress.test/wp-admin/admin.php?post_type=tribe_event_series&#038;page=tickets-commerce-orders&#038;post_id={{ID}}" target="_blank">Series Orders</a></li>
+				</ul>
+
+				
+			</div>
+			<div class="welcome-panel-column welcome-panel-middle">
+				<h3 class="tec-tickets__admin-orders-report-overview-title">
+					Sales by Ticket				</h3>
+									<div class="tec-tickets__admin-orders-report-overview-ticket-type">
+						<div class="tec-tickets__admin-orders-report-overview-ticket-type-icon tec-tickets__admin-orders-report-overview-ticket-type-icon--default"></div>
+						<div class="tec-tickets__admin-orders-report-overview-ticket-type-label">
+							Standard Tickets						</div>
+						<div class="tec-tickets__admin-orders-report-overview--border"></div>
+				</div>
+				<ul class="tec-tickets__admin-orders-report-overview-ticket-type-list">
+										<li class="tec-tickets__admin-orders-report-overview-ticket-type-list-item">
+						<div class="tec-tickets__admin-orders-report-overview-ticket-type-list-item-ticket-name">
+							Test TC ticket for {{ID}} &#x24;10.00						</div>
+						<div class="tec-tickets__admin-orders-report-overview-ticket-type-list-item-stat">
+							1 completed | 99 available						</div>
+					</li>
+									</ul>
+									<div class="tec-tickets__admin-orders-report-overview-ticket-type">
+						<div class="tec-tickets__admin-orders-report-overview-ticket-type-icon tec-tickets__admin-orders-report-overview-ticket-type-icon--series_pass"></div>
+						<div class="tec-tickets__admin-orders-report-overview-ticket-type-label">
+							Series Passes						</div>
+						<div class="tec-tickets__admin-orders-report-overview--border"></div>
+				</div>
+				<ul class="tec-tickets__admin-orders-report-overview-ticket-type-list">
+										<li class="tec-tickets__admin-orders-report-overview-ticket-type-list-item">
+						<div class="tec-tickets__admin-orders-report-overview-ticket-type-list-item-ticket-name">
+							Test TC ticket for {{ID}} &#x24;55.00						</div>
+						<div class="tec-tickets__admin-orders-report-overview-ticket-type-list-item-stat">
+							1 completed | 100 available						</div>
+					</li>
+									</ul>
+								</div>
+			<div class="welcome-panel-column welcome-panel-last alternate">
+				<div class="tec-tickets__admin-orders-report__sales-overview__title">
+					<h3>Sales Totals</h3>
+				</div>
+				<div class="tec-tickets__admin-orders-report__sales-overview__data">
+					<div class="tec-tickets__admin-orders-report__sales-overview__by-status">
+													<div class="tec-tickets__admin-orders-report__sales-overview__list__item">
+								<div class="tec-tickets__admin-orders-report__sales-overview__list__item-label">Completed</div>
+								<div class="tec-tickets__admin-orders-report__sales-overview__list__item-amount">&#x24;10.00 (1)</div>
+							</div>
+											</div>
+					<div class="tec-tickets__admin-orders-report-overview--border"></div>
+					<div class="tec-tickets__admin-orders-report__sales-overview__total">
+						<div class="tec-tickets__admin-orders-report__sales-overview__list__item">
+							<div class="tec-tickets__admin-orders-report__sales-overview__list__item-label">
+								<div class="tec-tickets__admin-orders-report__sales-overview__total-label">Total Tickets Ordered</div>
+							</div>
+							<div class="tec-tickets__admin-orders-report__sales-overview__list__item-amount">&#x24;10.00 (1)</div>
+						</div>
+						<div class="tec-tickets__admin-orders-report__sales-overview__list__item">
+							<div class="tec-tickets__admin-orders-report__sales-overview__list__item-label">
+								<div class="tec-tickets__admin-orders-report__sales-overview__total-label">Total Ticket Sales</div>
+							</div>
+							<div class="tec-tickets__admin-orders-report__sales-overview__list__item-amount">&#x24;10.00 (1)</div>
+						</div>
+					</div>
+									</div>
+			</div>
+		</div>
+	</div>
+</div>
+	<form id="topics-filter" method="get">
+		<input
+			type="hidden" name="tribe[page]"
+			value=""
+		/>
+		<input
+			type="hidden" name="tribe[event_id]"
+			id="event_id"
+			value="{{ID}}"
+		/>
+		<input
+			type="hidden" name="tribe[post_type]"
+			value="tribe_events"
+		/>
+		<p class="search-box">
+	<label class="screen-reader-text" for="tc-orders-search-input">Search Orders:</label>
+	<input type="search" id="tc-orders-search-input" name="search" value="" />
+		<select name="tec_tc_order_search_type" class="tec_tc_order_search_type">
+			<option value="purchaser_full_name" selected='selected'>
+			Search by Purchaser Name		</option>
+			<option value="purchaser_email">
+			Search by Purchaser Email		</option>
+			<option value="gateway">
+			Search by Gateway		</option>
+			<option value="gateway_order_id">
+			Search by Gateway ID		</option>
+			<option value="id">
+			Search by Order ID		</option>
+	</select><input type="submit" id="search-submit" class="button" value="Search Orders"  /></p>
+		<input type="hidden" id="_wpnonce" name="_wpnonce" value="1234567890" /><input type="hidden" name="_wp_http_referer" value="" />	<div class="tablenav top">
+
+				<div class="alignleft actions bulkactions">
+					</div>
+					<div class="alignleft actions attendees-actions"><input type="button" name="print" class="print button action" value="Print"><a target="_blank" href="?orders_csv=1&#038;orders_csv_nonce=1234567890" class="export action button" rel="noopener noreferrer">Export</a></div>
+		<div class="alignright attendees-filter"></div>
+		<div class='tablenav-pages one-page'><span class="displaying-num">1 item</span>
+<span class='pagination-links'><span class="tablenav-pages-navspan button disabled" aria-hidden="true">&laquo;</span>
+<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&lsaquo;</span>
+<span class="paging-input"><label for="current-page-selector" class="screen-reader-text">Current Page</label><input class='current-page' id='current-page-selector' type='text'
+					name='paged' value='1' size='1' aria-describedby='table-paging' /><span class='tablenav-paging-text'> of <span class='total-pages'>1</span></span></span>
+<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&rsaquo;</span>
+<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&raquo;</span></span></div>
+		<br class="clear" />
+	</div>
+		<table class="wp-list-table widefat striped tribe-tickets-commerce-report-orders">
+			<thead>
+	<tr>
+		<th scope="col" id='order' class='manage-column column-order column-primary sortable desc'  ><a href="http://wordpress.test?orderby=order_id&#038;order=asc"><span>Order</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col" id='purchaser' class='manage-column column-purchaser sortable desc'  ><a href="http://wordpress.test?orderby=purchaser_full_name&#038;order=asc"><span>Purchaser</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col" id='email' class='manage-column column-email sortable desc'  ><a href="http://wordpress.test?orderby=purchaser_email&#038;order=asc"><span>Email</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col" id='purchased' class='manage-column column-purchased'  >Purchased</th><th scope="col" id='date' class='manage-column column-date sortable desc'  ><a href="http://wordpress.test?orderby=purchase_time&#038;order=asc"><span>Date</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col" id='gateway' class='manage-column column-gateway sortable desc'  ><a href="http://wordpress.test?orderby=gateway&#038;order=asc"><span>Gateway</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col" id='gateway_order_id' class='manage-column column-gateway_order_id sortable desc'  ><a href="http://wordpress.test?orderby=gateway_id&#038;order=asc"><span>Gateway ID</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col" id='status' class='manage-column column-status sortable desc'  ><a href="http://wordpress.test?orderby=status&#038;order=asc"><span>Status</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col" id='total' class='manage-column column-total sortable desc'  ><a href="http://wordpress.test?orderby=total_value&#038;order=asc"><span>Total</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th>	</tr>
+	</thead>
+
+	<tbody id="the-list"
+		 data-wp-lists='list:order'		>
+		<tr class="tec-tc-completed"><td class='order column-order has-row-actions column-primary' data-colname="Order">{{ID}} <div class="order-status order-status-completed">Completed</div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='purchaser column-purchaser' data-colname="Purchaser">Test Purchaser</td><td class='email column-email' data-colname="Email">purchaser@test.com</td><td class='purchased column-purchased' data-colname="Purchased"><div class='tribe-line-item'>1 - Test TC ticket for {{ID}}</div></td><td class='date column-date' data-colname="Date">{{order_date}}</td><td class='gateway column-gateway' data-colname="Gateway">PayPal</td><td class='gateway_order_id column-gateway_order_id' data-colname="Gateway ID"></td><td class='status column-status' data-colname="Status">Completed</td><td class='total column-total' data-colname="Total">&#x24;10.00</td></tr>	</tbody>
+
+	<tfoot>
+	<tr>
+		<th scope="col"  class='manage-column column-order column-primary sortable desc'  ><a href="http://wordpress.test?orderby=order_id&#038;order=asc"><span>Order</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col"  class='manage-column column-purchaser sortable desc'  ><a href="http://wordpress.test?orderby=purchaser_full_name&#038;order=asc"><span>Purchaser</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col"  class='manage-column column-email sortable desc'  ><a href="http://wordpress.test?orderby=purchaser_email&#038;order=asc"><span>Email</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col"  class='manage-column column-purchased'  >Purchased</th><th scope="col"  class='manage-column column-date sortable desc'  ><a href="http://wordpress.test?orderby=purchase_time&#038;order=asc"><span>Date</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col"  class='manage-column column-gateway sortable desc'  ><a href="http://wordpress.test?orderby=gateway&#038;order=asc"><span>Gateway</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col"  class='manage-column column-gateway_order_id sortable desc'  ><a href="http://wordpress.test?orderby=gateway_id&#038;order=asc"><span>Gateway ID</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col"  class='manage-column column-status sortable desc'  ><a href="http://wordpress.test?orderby=status&#038;order=asc"><span>Status</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col"  class='manage-column column-total sortable desc'  ><a href="http://wordpress.test?orderby=total_value&#038;order=asc"><span>Total</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th>	</tr>
+	</tfoot>
+
+</table>
+			<div class="tablenav bottom">
+
+				<div class="alignleft actions bulkactions">
+					</div>
+					<div class="alignleft actions attendees-actions"><input type="button" name="print" class="print button action" value="Print"><a target="_blank" href="?orders_csv=1&#038;orders_csv_nonce=1234567890" class="export action button" rel="noopener noreferrer">Export</a></div>
+		<div class="alignright attendees-filter"></div>
+		<div class='tablenav-pages one-page'><span class="displaying-num">1 item</span>
+<span class='pagination-links'><span class="tablenav-pages-navspan button disabled" aria-hidden="true">&laquo;</span>
+<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&lsaquo;</span>
+<span class="screen-reader-text">Current Page</span><span id="table-paging" class="paging-input"><span class="tablenav-paging-text">1 of <span class='total-pages'>1</span></span></span>
+<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&rsaquo;</span>
+<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&raquo;</span></span></div>
+		<br class="clear" />
+	</div>
+			</form>
+</div>

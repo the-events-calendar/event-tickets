@@ -8,9 +8,9 @@
 
 namespace TEC\Tickets\Commerce;
 
-use tad_DI52_ServiceProvider;
+use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\Gateways;
-use \Tribe__Tickets__Main as Tickets_Plugin;
+use Tribe__Tickets__Main as Tickets_Plugin;
 
 
 /**
@@ -19,7 +19,7 @@ use \Tribe__Tickets__Main as Tickets_Plugin;
  * @since   5.1.6
  * @package TEC\Tickets\Commerce
  */
-class Provider extends tad_DI52_ServiceProvider {
+class Provider extends Service_Provider {
 
 	/**
 	 * Register the provider singletons.
@@ -27,19 +27,14 @@ class Provider extends tad_DI52_ServiceProvider {
 	 * @since 5.1.6
 	 */
 	public function register() {
-
-		$this->container->register( Payments_Tab::class );
-		$this->register_assets();
-
 		// Specifically prevents anything else from loading.
 		if ( ! tec_tickets_commerce_is_enabled() ) {
 			return;
 		}
 
+		$this->register_assets();
 		$this->register_hooks();
-
 		$this->load_functions();
-
 		$this->register_legacy_compat();
 
 		// Register the SP on the container.
@@ -80,9 +75,20 @@ class Provider extends tad_DI52_ServiceProvider {
 		$this->container->register( Gateways\Stripe\Provider::class );
 		$this->container->register( Gateways\PayPal\Provider::class );
 		$this->container->register( Gateways\Manual\Provider::class );
+		$this->container->register( Gateways\Free\Provider::class );
 
 		// Register and add hooks for admin notices.
 		$this->container->register( Admin\Notices::class );
+
+		$this->container->register( Admin\Singular_Order_Page::class );
+
+		$this->container->register_on_action(
+			'tec_events_pro_custom_tables_v1_fully_activated',
+			Custom_Tables\V1\Provider::class
+		);
+
+		// Cache invalidation.
+		add_filter( 'tec_cache_listener_save_post_types', [ $this, 'filter_cache_listener_save_post_types' ] );
 	}
 
 	/**
@@ -136,5 +142,23 @@ class Provider extends tad_DI52_ServiceProvider {
 
 		$this->container->singleton( Legacy_Compat::class, $v1_compat );
 		$this->container->singleton( 'tickets.commerce.legacy-compat', $v1_compat );
+	}
+
+	/**
+	 * Filters the list of post types that should trigger a cache invalidation on `save_post` to add
+	 * all the ones modeling Commerce Tickets, Attendees and Orders.
+	 *
+	 * @since 5.6.7
+	 *
+	 * @param string[] $post_types The list of post types that should trigger a cache invalidation on `save_post`.
+	 *
+	 * @return string[] The filtered list of post types that should trigger a cache invalidation on `save_post`.
+	 */
+	public function filter_cache_listener_save_post_types( array $post_types = [] ): array {
+		$post_types[] = Ticket::POSTTYPE;
+		$post_types[] = Attendee::POSTTYPE;
+		$post_types[] = Order::POSTTYPE;
+
+		return $post_types;
 	}
 }

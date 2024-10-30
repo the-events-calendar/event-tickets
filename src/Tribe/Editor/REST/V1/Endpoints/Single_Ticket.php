@@ -202,9 +202,11 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	/**
 	 * Add ticket callback executed to update / add a new ticket.
 	 *
-	 * @since  4.9
-	 * @since  4.10.9 Use customizable ticket name functions.
-	 * @since  4.12.3 Update detecting ticket provider to account for possibly inactive provider.
+	 * @since 4.9
+	 * @since 4.10.9 Use customizable ticket name functions.
+	 * @since 4.12.3 Update detecting ticket provider to account for possibly inactive provider.
+	 * @since 5.6.5  Validates if price is greater than 0 when provider is PayPal or Tickets Commerce
+	 * @since 5.9.0    Added support for sale price for Tickets Commerce.
 	 *
 	 * @param  WP_REST_Request $request
 	 * @param  $nonce_action
@@ -254,6 +256,25 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 			);
 		}
 
+		// If price field is left blank, we create a free ticket.
+		if ( isset( $body['price'] ) && '' === trim( $body['price'] ) ) {
+			$body['price'] = '0';
+		}
+
+		$is_paypal_ticket = $provider instanceof Tribe__Tickets__Commerce__PayPal__Main || $provider instanceof \TEC\Tickets\Commerce\Module;
+		$is_invalid_price = ! is_numeric( $body['price'] ) || (float) $body['price'] < 0;
+
+		if (
+			$is_paypal_ticket
+			&& $is_invalid_price
+		) {
+			return new WP_Error(
+				'tec-tickets-rest-invalid_price',
+				__( 'Invalid price', 'event-tickets' ),
+				[ 'status' => 400 ]
+			);
+		}
+
 		$ticket_args = $this->ticket_args();
 
 		$ticket_data = [
@@ -273,6 +294,17 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 
 		if ( null !== $ticket_id ) {
 			$ticket_data['ticket_id'] = $ticket_id;
+		}
+
+		if ( $is_paypal_ticket && isset( $body['ticket']['sale_price'] ) ) {
+			$sale_price_data                      = $body['ticket']['sale_price'];
+			$ticket_data['ticket_add_sale_price'] = Tribe__Utils__Array::get( $sale_price_data, 'checked', false );
+
+			if ( tribe_is_truthy( $ticket_data['ticket_add_sale_price'] ) ) {
+				$ticket_data['ticket_sale_price']      = Tribe__Utils__Array::get( $sale_price_data, 'price', '' );
+				$ticket_data['ticket_sale_start_date'] = Tribe__Utils__Array::get( $sale_price_data, 'start_date', '' );
+				$ticket_data['ticket_sale_end_date']   = Tribe__Utils__Array::get( $sale_price_data, 'end_date', '' );
+			}
 		}
 
 		// Get the Ticket Object

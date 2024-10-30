@@ -7,5 +7,7 @@
   "readme.txt",
   "src/**/*",
   "vendor/autoload.php",
-  "vendor/composer/*"
+  "vendor/composer/*",
+  "vendor/phpqrcode/**/*",
+  "build/**/*"
 ]

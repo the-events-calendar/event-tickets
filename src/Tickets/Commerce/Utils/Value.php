@@ -57,12 +57,12 @@ class Value extends Abstract_Currency {
 
 		$position = 'prefix' === $this->get_currency_symbol_position() ? 'prefix' : 'postfix';
 
-		$html[] = "<span class'tribe-formatted-currency-wrap tribe-currency-{$position}'>";
+		$html[] = "<span class='tribe-formatted-currency-wrap tribe-currency-{$position}'>";
 		$html[] = '<span class="tribe-currency-symbol">%1$s</span>';
 		$html[] = '<span class="tribe-amount">%2$s</span>';
 		$html[] = '</span>';
 
-		if ( $position !== 'prefix' ) {
+		if ( 'prefix' !== $position ) {
 			// If position is not prefix, swap the symbol and amount span tags.
 			$hold    = $html[1];
 			$html[1] = $html[2];
@@ -74,5 +74,30 @@ class Value extends Abstract_Currency {
 			esc_html( $this->get_string() )
 		);
 
+	}
+
+	/**
+	 * Get the display currency.
+	 *
+	 * @since 5.10.0
+	 *
+	 * @return string The display text for this value.
+	 */
+	public function get_currency_display() {
+		$currency_display = $this->get_currency();
+
+		if ( $this->get_decimal() == 0 ) {
+			$currency_display = _x( 'Free', 'No cost', 'event-tickets' );
+		}
+
+		/**
+		 * Filter the currency display.
+		 *
+		 * @since 5.10.0
+		 *
+		 * @param string $currency_display The currency display.
+		 * @param Value  $value            The value object.
+		 */
+		return apply_filters( 'tec_tickets_commerce_value_get_currency_display', $currency_display, $this );
 	}
 }

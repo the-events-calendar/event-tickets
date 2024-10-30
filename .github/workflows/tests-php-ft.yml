@@ -1,0 +1,278 @@
+name: 'FT Codeception Tests'
+on:
+  pull_request:
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        suite:
+          - ft_smoketest
+          - ft_integration
+          - ft_ct1_migration
+    runs-on: ubuntu-latest
+    steps:
+      # ------------------------------------------------------------------------------
+      # Checkout the repo
+      # ------------------------------------------------------------------------------
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1000
+          token: ${{ secrets.GH_BOT_TOKEN }}
+          submodules: recursive
+      # ------------------------------------------------------------------------------
+      # Check if any PHP files have changed
+      # ------------------------------------------------------------------------------
+      - name: Check changed files
+        id: skip
+        run: |
+          num_php_files=$(git diff ${{ github.event.pull_request.base.sha }} HEAD --name-only | grep -P "\.php" | wc -l)
+          if [[ -z "$num_php_files" ]]; then
+            echo "value=1" >> $GITHUB_OUTPUT
+            echo "## No PHP Files changed, PHP tests automatically pass." >> $GITHUB_STEP_SUMMARY
+          elif [[ "$num_php_files" == "0" || "$num_php_files" == "" ]]; then
+            echo "value=1" >> $GITHUB_OUTPUT
+            echo "## No PHP Files changed, PHP tests automatically pass." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "value=0" >> $GITHUB_OUTPUT
+            echo "## Found PHP file changes, running PHP tests." >> $GITHUB_STEP_SUMMARY
+          fi
+      # ------------------------------------------------------------------------------
+      # Checkout slic
+      # ------------------------------------------------------------------------------
+      - name: Checkout slic
+        uses: actions/checkout@v4
+        if: steps.skip.outputs.value != 1
+        with:
+          repository: stellarwp/slic
+          ref: main
+          path: slic
+          fetch-depth: 1
+      # ------------------------------------------------------------------------------
+      # Prepare our composer cache directory
+      # ------------------------------------------------------------------------------
+      - name: Get Composer Cache Directory
+        id: get-composer-cache-dir
+        if: steps.skip.outputs.value != 1
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)-${{ secrets.COMPOSER_CACHE_KEY }}"
+      - uses: actions/cache@v2
+        id: composer-cache
+        if: steps.skip.outputs.value != 1
+        with:
+          path: ${{ steps.get-composer-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ secrets.COMPOSER_CACHE_KEY }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+      # ------------------------------------------------------------------------------
+      # Initialize slic
+      # ------------------------------------------------------------------------------
+      - name: Set up slic env vars
+        if: steps.skip.outputs.value != 1
+        run: |
+          echo "SLIC_BIN=${GITHUB_WORKSPACE}/slic/slic" >> $GITHUB_ENV
+          echo "SLIC_WP_DIR=${GITHUB_WORKSPACE}/slic/_wordpress" >> $GITHUB_ENV
+          echo "SLIC_WORDPRESS_DOCKERFILE=Dockerfile.base" >> $GITHUB_ENV
+      - name: Set run context for slic
+        if: steps.skip.outputs.value != 1
+        run: echo "SLIC=1" >> $GITHUB_ENV && echo "CI=1" >> $GITHUB_ENV
+      - name: Start ssh-agent
+        if: steps.skip.outputs.value != 1
+        run: |
+          mkdir -p "${HOME}/.ssh";
+          ssh-agent -a /tmp/ssh_agent.sock;
+      - name: Export SSH_AUTH_SOCK env var
+        if: steps.skip.outputs.value != 1
+        run: echo "SSH_AUTH_SOCK=/tmp/ssh_agent.sock" >> $GITHUB_ENV
+      - name: Set up slic for CI
+        if: steps.skip.outputs.value != 1
+        run: |
+          cd ${GITHUB_WORKSPACE}/..
+          ${SLIC_BIN} here
+          ${SLIC_BIN} interactive off
+          ${SLIC_BIN} build-prompt off
+          ${SLIC_BIN} build-subdir off
+          ${SLIC_BIN} xdebug off
+          ${SLIC_BIN} composer-cache set /home/runner/.cache/composer
+          ${SLIC_BIN} debug on
+          ${SLIC_BIN} info
+          ${SLIC_BIN} config
+      # ------------------------------------------------------------------------------
+      # Start the Chrome container
+      # ------------------------------------------------------------------------------
+      - name: Start the Chrome container
+        if: steps.skip.outputs.value != 1 && matrix.suite == 'acceptance'
+        run: ${SLIC_BIN} up chrome
+      # ------------------------------------------------------------------------------
+      # Fetch branches for dependent repos
+      # ------------------------------------------------------------------------------
+      - name: Fetch head branch from TEC
+        uses: octokit/request-action@v2.x
+        if: steps.skip.outputs.value != 1
+        id: fetch-tec-head-branch
+        with:
+          route: GET /repos/the-events-calendar/the-events-calendar/branches/${{ github.head_ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+        continue-on-error: true
+      - name: Fetch base branch from TEC
+        uses: octokit/request-action@v2.x
+        id: fetch-tec-base-branch
+        if: steps.skip.outputs.value != 1 && steps.fetch-tec-head-branch.outcome != 'success'
+        with:
+          route: GET /repos/the-events-calendar/the-events-calendar/branches/${{ github.base_ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+        continue-on-error: true
+      - name: Fetch head branch from ECP
+        uses: octokit/request-action@v2.x
+        if: steps.skip.outputs.value != 1
+        id: fetch-ecp-head-branch
+        with:
+          route: GET /repos/the-events-calendar/events-pro/branches/${{ github.head_ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+        continue-on-error: true
+      - name: Fetch base branch from ECP
+        uses: octokit/request-action@v2.x
+        id: fetch-ecp-base-branch
+        if: steps.skip.outputs.value != 1 && steps.fetch-ecp-head-branch.outcome != 'success'
+        with:
+          route: GET /repos/the-events-calendar/events-pro/branches/${{ github.base_ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+        continue-on-error: true
+      # ------------------------------------------------------------------------------
+      # Set TEC branch
+      # ------------------------------------------------------------------------------
+      - name: Set TEC with head branch
+        if: steps.skip.outputs.value != 1 && steps.fetch-tec-head-branch.outcome == 'success'
+        run: echo "TEC_BRANCH=${{ github.head_ref }}" >> $GITHUB_ENV
+      - name: Set TEC with base branch
+        if: steps.skip.outputs.value != 1 && steps.fetch-tec-head-branch.outcome != 'success' && steps.fetch-tec-base-branch.outcome == 'success'
+        run: echo "TEC_BRANCH=${{ github.base_ref }}" >> $GITHUB_ENV
+      - name: Set TEC with master branch
+        if: steps.skip.outputs.value != 1 && steps.fetch-tec-head-branch.outcome != 'success' && steps.fetch-tec-base-branch.outcome != 'success'
+        run: echo "TEC_BRANCH=master" >> $GITHUB_ENV
+      # ------------------------------------------------------------------------------
+      # Clone and init TEC
+      # ------------------------------------------------------------------------------
+      - name: Clone TEC
+        uses: actions/checkout@v4
+        if: steps.skip.outputs.value != 1
+        with:
+          fetch-depth: 1
+          repository: the-events-calendar/the-events-calendar
+          ref: ${{ env.TEC_BRANCH }}
+          token: ${{ secrets.GH_BOT_TOKEN }}
+          path: the-events-calendar
+          submodules: recursive
+      - name: Init TEC
+        if: steps.skip.outputs.value != 1
+        run: |
+          mv ${GITHUB_WORKSPACE}/the-events-calendar ${GITHUB_WORKSPACE}/../the-events-calendar
+          ${SLIC_BIN} use the-events-calendar
+          ${SLIC_BIN} composer install --no-dev
+      - name: Set up TEC Common
+        if: steps.skip.outputs.value != 1
+        run: |
+          ${SLIC_BIN} use the-events-calendar/common
+          ${SLIC_BIN} composer install --no-dev
+      # ------------------------------------------------------------------------------
+      # Set ECP branch
+      # ------------------------------------------------------------------------------
+      - name: Set ECP with head branch
+        if: steps.skip.outputs.value != 1 && steps.fetch-ecp-head-branch.outcome == 'success'
+        run: echo "ECP_BRANCH=${{ github.head_ref }}" >> $GITHUB_ENV
+      - name: Set ECP with base branch
+        if: steps.skip.outputs.value != 1 && steps.fetch-ecp-head-branch.outcome != 'success' && steps.fetch-ecp-base-branch.outcome == 'success'
+        run: echo "ECP_BRANCH=${{ github.base_ref }}" >> $GITHUB_ENV
+      - name: Set ECP with master branch
+        if: steps.skip.outputs.value != 1 && steps.fetch-ecp-head-branch.outcome != 'success' && steps.fetch-ecp-base-branch.outcome != 'success'
+        run: echo "ECP_BRANCH=master" >> $GITHUB_ENV
+      # ------------------------------------------------------------------------------
+      # Clone and init ECP
+      # ------------------------------------------------------------------------------
+      - name: Clone ECP
+        uses: actions/checkout@v4
+        if: steps.skip.outputs.value != 1
+        with:
+          fetch-depth: 1
+          repository: the-events-calendar/events-pro
+          ref: ${{ env.ECP_BRANCH }}
+          token: ${{ secrets.GH_BOT_TOKEN }}
+          path: events-pro
+          submodules: recursive
+      - name: Init ECP
+        if: steps.skip.outputs.value != 1
+        run: |
+          mv ${GITHUB_WORKSPACE}/events-pro ${GITHUB_WORKSPACE}/../events-pro
+          ${SLIC_BIN} use events-pro
+          ${SLIC_BIN} composer install --no-dev
+      # ------------------------------------------------------------------------------
+      # Set up ET Common
+      # ------------------------------------------------------------------------------
+      - name: Set up ET Common
+        if: steps.skip.outputs.value != 1
+        run: |
+          ${SLIC_BIN} use event-tickets/common
+          ${SLIC_BIN} composer install --no-dev
+      # ------------------------------------------------------------------------------
+      # Set up ET Common (npm install and build)
+      # ------------------------------------------------------------------------------
+      - name: Set up ET Common (npm)
+        if: steps.skip.outputs.value != 1 && matrix.suite == 'acceptance'
+        run: |
+          ${SLIC_BIN} nvm use
+          ${SLIC_BIN} npm install
+          ${SLIC_BIN} npm run build
+      # ------------------------------------------------------------------------------
+      # Set up ET
+      # ------------------------------------------------------------------------------
+      - name: Set up ET
+        if: steps.skip.outputs.value != 1
+        run: |
+          ${SLIC_BIN} use event-tickets
+          ${SLIC_BIN} composer install
+      # ------------------------------------------------------------------------------
+      # Set up ET (npm install and build)
+      # ------------------------------------------------------------------------------
+      - name: Set up ET (npm)
+        if: steps.skip.outputs.value != 1 && matrix.suite == 'acceptance'
+        run: |
+          ${SLIC_BIN} nvm use
+          ${SLIC_BIN} npm install
+          ${SLIC_BIN} npm run build
+      # ------------------------------------------------------------------------------
+      # Init WordPress container
+      # ------------------------------------------------------------------------------
+      - name: Init the WordPress container
+        if: steps.skip.outputs.value != 1
+        run: |
+          ${SLIC_BIN} up wordpress
+          ${SLIC_BIN} wp core version
+          ${SLIC_BIN} wp core update --force --version=6.4.1
+          ${SLIC_BIN} wp core version
+      # ------------------------------------------------------------------------------
+      # Install and activate TwentyTwenty
+      # ------------------------------------------------------------------------------
+      - name: Install and activate TwentyTwenty
+        if: steps.skip.outputs.value != 1
+        run:  ${SLIC_BIN} wp theme install twentytwenty --activate
+      # ------------------------------------------------------------------------------
+      # Run tests
+      # ------------------------------------------------------------------------------
+      - name: Run suite tests
+        if: steps.skip.outputs.value != 1
+        run: ${SLIC_BIN} run ${{ matrix.suite }} --ext DotReporter
+      # ------------------------------------------------------------------------------
+      # Upload artifacts (On failure)
+      # ------------------------------------------------------------------------------
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        if: steps.skip.outputs.value != 1 && failure()
+        with:
+          name: output ${{ matrix.suite }}
+          path: tests/_output/
+          retention-days: 7

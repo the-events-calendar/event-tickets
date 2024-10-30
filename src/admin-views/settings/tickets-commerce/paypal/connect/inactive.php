@@ -6,6 +6,7 @@
  *
  * @since   5.1.10
  * @since   5.3.0 Using generic CSS classes for gateway instead of PayPal.
+ * @since   5.6.4   Move signup link into its own partial and add non-ssl notice.
  *
  * @var Tribe__Tickets__Admin__Views                  $this                  [Global] Template object.
  * @var string                                        $plugin_url            [Global] The plugin URL.
@@ -29,10 +30,7 @@ if ( ! empty( $is_merchant_connected ) ) {
 	<p>
 		<?php esc_html_e( 'Start selling tickets to your events today with PayPal. Attendees can purchase tickets directly on your site using debit or credit cards with no additional fees.', 'event-tickets' ); ?>
 	</p>
-
-	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-signup-links">
-		<?php echo $signup->get_link_html(); // phpcs:ignore ?>
-	</div>
-
+	<?php $this->template( 'settings/tickets-commerce/paypal/connect/signup-link' ); ?>
+	<?php $this->template( 'settings/tickets-commerce/paypal/connect/non-ssl-notice' ); ?>
 	<?php $this->template( 'settings/tickets-commerce/paypal/connect/help-links' ); ?>
 </div>

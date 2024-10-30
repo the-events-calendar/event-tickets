@@ -216,6 +216,9 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 					'name' => 'TribeRsvp',
 					'data' => [
 						'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
+						'nonces'  => [
+							'rsvpHandle' => wp_create_nonce( 'tribe_tickets_rsvp_handle' )
+						],
 					],
 				],
 			]
@@ -238,6 +241,15 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 			[
 				'groups'       => 'tribe-tickets-rsvp',
 				'conditionals' => [ $this, 'should_enqueue_ari' ],
+				'localize' => [
+					'name' => 'TribeRsvp',
+					'data' => [
+						'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
+						'nonces'  => [
+							'rsvpHandle' => wp_create_nonce( 'tribe_tickets_rsvp_handle' )
+						],
+					],
+				],
 			]
 		);
 
@@ -415,7 +427,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 				continue;
 			}
 
-			$has_tickets |= $rsvp->generate_tickets_for( $product_id, $ticket_qty, $attendee_details );
+			$has_tickets = ! is_wp_error( $rsvp->generate_tickets_for( $product_id, $ticket_qty, $attendee_details ) );
 		}
 
 		$order_id              = $attendee_details['order_id'];

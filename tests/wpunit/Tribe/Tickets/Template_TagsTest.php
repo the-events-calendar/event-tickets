@@ -9,6 +9,7 @@ use Tribe\Tickets\Test\Commerce\Attendee_Maker as Attendee_Maker;
 use Tribe__Tickets__Data_API as Data_API;
 use Tribe__Tickets__RSVP as RSVP;
 use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
+use Tribe__Events__Main as TEC;
 
 class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
@@ -33,6 +34,13 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 		// Reset Data_API object so it sees Tribe Commerce.
 		tribe_singleton( 'tickets.data_api', new Data_API );
+	}
+
+	/**
+	 * @before
+	 */
+	public function ensure_ticketable_post_types_default_status(): void {
+		tribe_update_option( 'ticket-enabled-post-types', [ TEC::POSTTYPE ] );
 	}
 
 	public function tearDown() {

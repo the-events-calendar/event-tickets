@@ -2,11 +2,7 @@
 
 namespace Tribe\Tickets;
 
-use Tribe\Events\Test\Factories\Event;
 use Tribe\Tickets\Test\Testcases\Ticket_Object_TestCase;
-use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
-use Tribe__Tickets__Data_API as Data_API;
-use Tribe__Tickets__Ticket_Object as RSVP;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 class Ticket_ObjectTest extends Ticket_Object_TestCase {

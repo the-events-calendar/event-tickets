@@ -47,10 +47,11 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * Setup the context
 	 *
 	 * @since 4.9
+	 * @since 5.9.1 changed page parameters and added page to the cache.
 	 *
 	 * @param WP_Post[] $posts Post data objects.
 	 *
-	 * @return void
+	 * @return array
 	 */
 	public function setup_context( $posts ) {
 		global $wp, $wp_query;
@@ -77,17 +78,25 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		$posts = null;
 
 		// Create a fake virtual page.
-		$posts[] = $this->spoofed_page();
+		$spoofed_page = $this->spoofed_page();
+		$posts[]      = $spoofed_page;
+		$wp_post      = new WP_Post( $this->spoofed_page() );
+		wp_cache_add( $spoofed_page->ID, $wp_post, 'posts' );
 
 		// Don't tell wp_query we're anything in particular - then we don't run into issues with defaults.
-		$wp_query->is_page        = false;
-		$wp_query->is_singular    = false;
-		$wp_query->is_home        = false;
-		$wp_query->is_archive     = false;
-		$wp_query->is_category    = false;
-		$wp_query->is_404         = false;
-		$wp_query->found_posts    = 1;
-		$wp_query->posts_per_page = 1;
+		$wp_query->found_posts       = 1;
+		$wp_query->is_404            = false;
+		$wp_query->is_archive        = false;
+		$wp_query->is_category       = false;
+		$wp_query->is_home           = false;
+		$wp_query->is_page           = false;
+		$wp_query->is_singular       = true;
+		$wp_query->max_num_pages     = 1;
+		$wp_query->post              = $this->spoofed_page();
+		$wp_query->post_count        = 1;
+		$wp_query->posts             = [ $wp_post ];
+		$wp_query->queried_object    = $wp_post;
+		$wp_query->queried_object_id = $spoofed_page->ID;
 
 		return $posts;
 
@@ -101,7 +110,11 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @return boolean
 	 */
 	public function is_on_ar_page() {
-		return tribe( 'tickets.attendee_registration' )->is_on_page();
+		try {
+			return tribe( 'tickets.attendee_registration' )->is_on_page();
+		} catch ( \Exception $e ) {
+			return false;
+		}
 	}
 
 	/**
@@ -112,9 +125,11 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @return bool Whether the Attendee Registration shortcode is being used.
 	 */
 	public function is_using_shortcode() {
-		/* @var $ar Tribe__Tickets__Attendee_Registration__Main */
-		$ar = tribe( 'tickets.attendee_registration' );
-		return $ar->is_using_shortcode();
+		try {
+			return tribe( 'tickets.attendee_registration' )->is_using_shortcode();
+		} catch ( \Exception $e ) {
+			return false;
+		}
 	}
 
 	/**
@@ -396,7 +411,11 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 */
 	public function get_page_title() {
 		$title = __( 'Attendee Registration', 'event-tickets' );
-		$page  = tribe( 'tickets.attendee_registration' )->get_attendee_registration_page();
+		try {
+			$page  = tribe( 'tickets.attendee_registration' )->get_attendee_registration_page();
+		} catch( Exception $e ) {
+			$page = null;
+		}
 
 		$title = $page ? $page->post_title : $title;
 
@@ -442,6 +461,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			'ping_status'           => '',
 			'comment_status'        => 'closed',
 			'comment_count'         => 0,
+			'filter'                => 'raw',
 		];
 
 		return (object) $spoofed_page;

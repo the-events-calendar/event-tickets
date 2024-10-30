@@ -1,0 +1,42 @@
+/**
+ * Event Tickets - Tickets Stylesheet - My Tickets -> Flexible Tickets
+ *
+ * @since 5.8.0
+ */
+.tec-tickets__my-tickets-list-title-container.type-series_pass {
+	@media (--viewport-medium) {
+		display: inline-block;
+	}
+}
+
+.tec-tickets__my-tickets-list__series-link {
+	font-size: var(--tec-font-size-3);
+	font-weight: var(--tec-font-weight-regular);
+	line-height: var(--tec-line-height-3);
+
+	@media (--viewport-medium) {
+		float: right;
+		position: relative;
+		top: 1.3em;
+	}
+}
+
+.single-tribe_event_series {
+	.tribe_event_series-title {
+		display: none;
+	}
+
+	.tribe-events-schedule h2 {
+		font-size: var(--tec-font-size-3);
+		font-weight: var(--tec-font-weight-regular);
+		line-height: var(--tec-line-height-3);
+	}
+
+	.tribe-events-cost {
+		color: var(--tec-color-text-primary);
+		font-size: var(--tec-font-size-3);
+		font-weight: var(--tec-font-weight-bold);
+		line-height: var(--tec-line-height-2);
+		text-transform: uppercase;
+	}
+}

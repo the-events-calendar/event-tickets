@@ -1,5 +1,22 @@
+
+.tribe-tickets__tickets-page-wrapper {
+	border-top: 1px solid var(--tec-color-border-default);
+	padding-top: var(--tec-spacer-5);
+ }
+
 .tribe-rsvp {
-	padding: 20px 0;
+	padding: 0;
+
+	.tec-tickets__my-tickets-list-title-container {
+		padding: var(--tec-spacer-2) 0;
+	}
+
+	.tec-tickets__my-tickets-list-title {
+		font-family: var(--tec-font-family-sans-serif);
+		font-size: var(--tec-font-size-7);
+		font-weight: var(--tec-font-weight-regular);
+		line-height: var(--tec-line-height-3);
+	}
 }
 
 .tribe-tickets-attendee {
@@ -51,20 +68,31 @@
 	font-style: italic;
 }
 
+div.tec__tickets-my-tickets-rsvp-attendee-list-wrapper {
+	margin: 0 0 var(--tec-spacer-8);
+}
+
 .tribe-rsvp-list {
 	list-style: none;
+	margin: 0 0 var(--tec-spacer-2);
 	padding: 0;
-	margin: 0;
 
 	> .tribe-item {
-		min-height: 105px;
-		padding: 20px;
-		border: 1px solid #ededed;
+		align-items: flex-start;
+		background-color: var(--tec-color-background);
+		border: 1px solid var(--tec-color-border-default);
 		border-bottom: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--tec-spacer-4);
+		justify-content: space-between;
+		margin: 0;
+		min-height: 105px;
+		padding: var(--tec-spacer-5);
 
 		&:last-child {
-			border-bottom: 1px solid #ededed;
-			margin-bottom: 20px;
+			border-bottom: 1px solid var(--tec-color-border-default);
+			margin-bottom: var(--tec-spacer-4);
 		}
 
 		&.tribe-disabled {
@@ -75,11 +103,10 @@
 			&:last-child {
 				border-bottom-color: #ddd;
 			}
-		}
 
-		.tribe-answer {
-			float: right;
-			display: inline-block;
+			label {
+				color: #717171;
+			}
 		}
 
 		table {
@@ -90,14 +117,63 @@
 		td {
 			border: 0;
 		}
+
+		& > div {
+			flex: 1 0 100%;
+		}
+
+		@media(--viewport-medium) {
+			align-items: center;
+			flex-direction: row;
+
+			& > div {
+				flex: 0 1 auto;
+				order: 2;
+			}
+
+			& > div.list-attendee {
+				flex: 1 0 auto;
+				order: 1;
+			}
+
+			& > div.tribe-answer {
+				flex: 0 1 100%;
+				order: 3;
+			}
+
+			& > div:last-child {
+				flex: 0 1 auto;
+				order: 2;
+			}
+		}
+
+		@media(--viewport-full) {
+
+			& > div {
+				flex: 0 1 auto;
+				order: 3;
+			}
+
+			& > div.list-attendee {
+				flex: 0 1 auto;
+				order: 1;
+			}
+
+			& > div.tribe-answer {
+				flex: 0 1 auto;
+				order: 2;
+			}
+		}
 	}
 }
 
 .list-attendee {
-	color: #999;
 	display: inline-block;
+	font-family: var(--tec-font-family-sans-serif);
+	font-size: var(--tec-font-size-3);
+	font-weight: var(--tec-font-weight-regular);
+	line-height: var(--tec-line-height-0);
 	letter-spacing: 1px;
-	text-transform: uppercase;
 }
 
 .tribe-submit-tickets-form {
@@ -105,15 +181,22 @@
 }
 
 .user-details {
-	margin: 0 0 1.5em;
+	font-family: var(--tec-font-family-sans-serif);
+	font-size: var(--tec-font-size-3);
+	font-weight: var(--tec-font-weight-regular);
+	line-height: 1.75;
+	margin: 0;
 
 	p {
 		margin: 0 0 0.5em;
 	}
 }
 
-.tribe-answer {
-	line-height: 2;
+.tribe-tickets__form .tribe-answer {
+	font-family: var(--tec-font-family-sans-serif);
+	font-size: var(--tec-font-size-3);
+	font-weight: var(--tec-font-weight-regular);
+	line-height: var(--tec-line-height-0);
 
 	.type-label {
 		margin-bottom: 0;
@@ -122,16 +205,24 @@
 
 	label {
 		display: block;
+		font-family: var(--tec-font-family-sans-serif);
+		font-size: var(--tec-font-size-3);
+		font-weight: var(--tec-font-weight-regular);
+		line-height: var(--tec-line-height-0);
 	}
 
-	select {
+	select.tribe-answer-select {
 		background-color: white;
 		border: 1px solid #ddd;
+		font-family: var(--tec-font-family-sans-serif);
+		font-size: var(--tec-font-size-3);
+		font-weight: var(--tec-font-weight-regular);
 		height: 30px;
-		line-height: 1;
+		line-height: var(--tec-line-height-0);
 		margin-left: 5px;
 		padding-bottom: 0;
 		padding-top: 0;
+		width: auto;
 	}
 }
 
@@ -290,15 +381,26 @@
 		font-size: 11px;
 	}
 
+
 	.tribe-tickets-attendees-list-optout {
+		align-items: center;
+		display: flex;
+		flex-flow: row wrap;
+
 		label {
 			color: var(--tec-color-text-secondary);
-			font-size: 13px;
 		}
 
 		input[type='radio'] + label,
 		input[type='checkbox'] + label {
 			display: inline-block;
+			font-size: var(--tec-font-size-2);
+			margin: 0;
+		}
+
+		input[type='checkbox'] {
+			height: var(--tec-spacer-3);
+			width: var(--tec-spacer-3);
 		}
 	}
 

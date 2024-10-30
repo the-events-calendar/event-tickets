@@ -7,7 +7,7 @@ namespace Tribe\Tickets\Events\Views\V2;
  * @since   4.10.9
  * @package Tribe\Tickets\Events\Views\V2
  */
-class Service_Provider extends \tad_DI52_ServiceProvider {
+class Service_Provider extends \TEC\Common\Contracts\Service_Provider {
 
 	/**
 	 * Binds and sets up implementations.

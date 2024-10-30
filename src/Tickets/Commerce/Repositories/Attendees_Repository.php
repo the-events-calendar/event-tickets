@@ -5,6 +5,7 @@ namespace TEC\Tickets\Commerce\Repositories;
 
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Event;
 use \Tribe__Repository;
 use TEC\Tickets\Commerce\Attendee;
 use Tribe__Repository__Usage_Error as Usage_Error;
@@ -170,6 +171,8 @@ class Attendees_Repository extends Tribe__Repository {
 	 */
 	protected function clean_post_ids( $posts ) {
 		return array_unique( array_filter( array_map( static function ( $post ) {
+			$post = Event::filter_event_id( $post );
+
 			if ( is_numeric( $post ) ) {
 				return $post;
 			}

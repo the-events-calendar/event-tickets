@@ -19,7 +19,6 @@ const ContainerPanel = ( {
 	className,
 	content,
 	header,
-	icon,
 	layout,
 } ) => {
 	const headerAndContent = (
@@ -53,9 +52,6 @@ const ContainerPanel = ( {
 				className,
 			) }
 		>
-			<div className="tribe-editor__container-panel__icon">
-				{ icon }
-			</div>
 			{ getHeaderAndContent() }
 		</div>
 	);
@@ -65,7 +61,6 @@ ContainerPanel.propTypes = {
 	className: PropTypes.string,
 	content: PropTypes.node,
 	header: PropTypes.node,
-	icon: PropTypes.node,
 	layout: PropTypes.oneOf( Object.keys( LAYOUT ) ).isRequired,
 };
 

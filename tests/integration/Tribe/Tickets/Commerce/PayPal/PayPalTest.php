@@ -1,6 +1,10 @@
 <?php
+
 namespace Tribe\Tickets\Commerce\PayPal;
 
+use Codeception\TestCase\WPTestCase;
+use ReflectionClass;
+use ReflectionException;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker;
 use Tribe__Post_Transient as Post_Transient;
@@ -11,7 +15,7 @@ use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Commerce__PayPal__Tickets_View as Tickets_View;
 use Tribe__Tickets__Data_API as Data_API;
 
-class PayPalTest extends \Codeception\TestCase\WPTestCase {
+class PayPalTest extends WPTestCase {
 
 	use Attendee_Maker;
 	use Ticket_Maker;
@@ -20,6 +24,17 @@ class PayPalTest extends \Codeception\TestCase\WPTestCase {
 	 * @var Tickets_View
 	 */
 	protected $tickets_view;
+
+	/**
+	 * @param array<class-string,string> $modules
+	 *
+	 * @return array<class-string,string>
+	 */
+	public function enable_paypal_module( array $modules ): array {
+		$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( 'tickets.commerce.paypal' )->plugin_name;
+
+		return $modules;
+	}
 
 	public function setUp() {
 		// before
@@ -43,13 +58,10 @@ class PayPalTest extends \Codeception\TestCase\WPTestCase {
 
 		// Enable Tribe Commerce.
 		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
-		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
-			$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( 'tickets.commerce.paypal' )->plugin_name;
+		add_filter( 'tec_tickets_emails_is_enabled', '__return_false' );
+		add_filter( 'tribe_tickets_get_modules', [ $this, 'enable_paypal_module' ] );
 
-			return $modules;
-		} );
-
-		// Reset Data_API object so it sees Tribe Commerce.
+		// Reset Data_API object so it sees PayPal.
 		tribe_singleton( 'tickets.data_api', new Data_API );
 	}
 
@@ -58,9 +70,13 @@ class PayPalTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function tearDown() {
-		// your tear down methods here
+		// Reset Data_API object so it will pull modules without filters.
+		remove_filter( 'tribe_tickets_get_modules', [ $this, 'enable_paypal_module' ] );
+		tribe_singleton( 'tickets.data_api', new Data_API );
 
-		// then
+		// Deactivate the PayPal module so it doesn't interfere with other tests.
+		tribe( PayPal::class )->deactivate();
+
 		parent::tearDown();
 	}
 
@@ -206,11 +222,11 @@ EOT;
 
 	/**
 	 * @return PayPal
-	 * @throws \ReflectionException
+	 * @throws ReflectionException
 	 */
 	private function make_instance() {
 		/** @var PayPal $instance */
-		$instance = ( new \ReflectionClass( PayPal::class ) )->newInstance();
+		$instance = ( new ReflectionClass( PayPal::class ) )->newInstance();
 		$instance->set_tickets_view( $this->tickets_view );
 
 		return $instance;
@@ -297,7 +313,7 @@ EOT;
 	}
 
 	public function order_filter_set_was_pending( $order ) {
-		$reflection = new \ReflectionClass( get_class( $order ) );
+		$reflection = new ReflectionClass( get_class( $order ) );
 
 		$property = $reflection->getProperty( 'was_pending' );
 		$property->setAccessible( true );
@@ -311,7 +327,7 @@ EOT;
 	 * @param array $attendee_details An array containing the details for the attendees
 	 *                                that should be generated.
 	 *
-	 * @throws \ReflectionException
+	 * @throws ReflectionException
 	 */
 	protected function generate_tickets_for( $post_id, $ticket_id, $ticket_qty ) {
 		$this->create_many_attendees_for_ticket( $ticket_qty, $ticket_id, $post_id );

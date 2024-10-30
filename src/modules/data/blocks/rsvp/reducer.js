@@ -15,6 +15,7 @@ export const DEFAULT_STATE = {
 	created: false,
 	settingsOpen: false,
 	hasChanges: false,
+	isAddEditOpen: false,
 	isLoading: false,
 	isSettingsLoading: false,
 	isModalOpen: false,
@@ -44,6 +45,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				settingsOpen: action.payload.settingsOpen,
+			};
+		case types.SET_RSVP_IS_ADD_EDIT_OPEN:
+			return {
+				...state,
+				isAddEditOpen: action.payload.isAddEditOpen,
 			};
 		case types.SET_RSVP_HAS_CHANGES:
 			return {

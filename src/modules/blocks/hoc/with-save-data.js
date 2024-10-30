@@ -28,7 +28,7 @@ const blockRegister = {};
  * the ones specified as attributes params otherwise will fallback to the property attributes of the
  * component to extract the keys of those to do the comparision.
  *
- * @param {object} selectedAttributes Set of attributes to only update fallback to this.props.attributes
+ * @param {Object} selectedAttributes Set of attributes to only update fallback to this.props.attributes
  * @returns {Function} Return a new HOC
  */
 export default ( selectedAttributes = null ) => ( WrappedComponent ) => {

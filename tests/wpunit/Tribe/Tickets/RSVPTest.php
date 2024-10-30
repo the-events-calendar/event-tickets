@@ -11,12 +11,16 @@ use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe__Tickets__RSVP as RSVP;
 use Tribe__Tickets__Tickets_Handler as Handler;
 use Tribe__Tickets__Tickets_View as Tickets_View;
+use Generator;
+use Closure;
+use Tribe\Tests\Traits\With_Uopz;
 
 class RSVPTest extends \Codeception\TestCase\WPTestCase {
 
 	use MatchesSnapshots;
 	use Attendee_Maker;
 	use RSVP_Ticket_Maker;
+	use With_Uopz;
 
 	/**
 	 * @var Tickets_View
@@ -610,7 +614,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			[
 				'success' => false,
 				'errors'  => [
-					'Your RSVP was unsuccessful, please try again.',
+					'Invalid data! Missing required attendee details!',
 				],
 			],
 		];
@@ -787,6 +791,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			[
 				'success'     => true,
 				'errors'      => [],
+				'attendees'   => [ 'FAKE_ATTENDEE_ID' ],
 				'opt_in_args' => [
 					'is_going' => true,
 					'checked' => false,
@@ -804,7 +809,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			[
 				'success' => false,
 				'errors'  => [
-					'Your RSVP was unsuccessful, please try again.',
+					'Invalid data! Missing required attendee details!',
 				],
 			],
 		];
@@ -869,6 +874,124 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
+	 * Provider for fake attendee data.
+	 *
+	 * @return Generator
+	 */
+	public function fake_attendee_provider(): Generator {
+		yield 'happy path' => [
+			function () {
+				$_POST['attendee'] = $this->fake_attendee_details();
+			},
+			$this->fake_attendee_details( [ 'optout' => false ]),
+		];
+
+		yield 'trying to expose both email and full name with hex' => [
+			function () {
+				$_POST['attendee'] = $this->fake_attendee_details(
+					[
+						'full_name' => '&#x46;&#x69;&#x72;&#x73;&#x74;&#x20;&#x4e;&#x61;&#x6d;&#x65;&#x20;&#x4c;&#x61;&#x73;&#x74',
+						'email'     => '&#x46;&#x69;&#x72;&#x73;&#x74;&#x20;&#x4e;&#x61;&#x6d;&#x65;&#x20;&#x4c;&#x61;&#x73;@test.com',
+					],
+				);
+			},
+			$this->fake_attendee_details([
+				'optout' => false,
+				'full_name' => 'First Name Las&amp;#x74',
+				'email' => 'FirstNameLas@test.com',
+			])
+		];
+
+		yield 'trying to expose only full name with hex' => [
+			function () {
+				$_POST['attendee'] = $this->fake_attendee_details(
+					[
+						'full_name' => '&#x46;&#x69;&#x72;&#x73;&#x74;&#x20;&#x4e;&#x61;&#x6d;&#x65;&#x20;&#x4c;&#x61;&#x73;&#x74',
+					],
+				);
+			},
+			$this->fake_attendee_details([
+				'optout' => false,
+				'full_name' => 'First Name Las&amp;#x74',
+			])
+		];
+
+		yield 'trying to expose only email with hex' => [
+			function () {
+				$_POST['attendee'] = $this->fake_attendee_details(
+					[
+						'email' => '&#x46;&#x69;&#x72;&#x73;&#x74;&#x20;&#x4e;&#x61;&#x6d;&#x65;&#x20;&#x4c;&#x61;&#x73;@test.com',
+					],
+				);
+			},
+			$this->fake_attendee_details([
+				'optout' => false,
+				'email' => 'FirstNameLas@test.com',
+			])
+		];
+
+
+		yield 'trying to expose both email and full name with markup' => [
+			function () {
+				$_POST['attendee'] = $this->fake_attendee_details(
+					[
+						'full_name' => 'Little<script>alert(\'hello\');</script>Test',
+						'email'     => '<script>alert(\'hello\');</script>@test.com',
+					],
+				);
+			},
+			$this->fake_attendee_details([
+				'optout' => false,
+				'full_name' => 'LittleTest',
+				'email' => 'scriptalert\'hello\'/script@test.com',
+			])
+		];
+
+		yield 'trying to expose only full name with markup' => [
+			function () {
+				$_POST['attendee'] = $this->fake_attendee_details(
+					[
+						'full_name' => 'Little<script>alert(\'hello\');</script>Test',
+					],
+				);
+			},
+			$this->fake_attendee_details([
+				'optout' => false,
+				'full_name' => 'LittleTest',
+			])
+		];
+
+		yield 'trying to expose only email with markup' => [
+			function () {
+				$_POST['attendee'] = $this->fake_attendee_details(
+					[
+						'email' => '<script>alert(\'hello\');</script>@test.com',
+					],
+				);
+			},
+			$this->fake_attendee_details([
+				'optout' => false,
+				'email' => 'scriptalert\'hello\'/script@test.com',
+			])
+		];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider fake_attendee_provider
+	 *
+	 * @param Closure $fixture
+	 * @param array   $expected
+	 */
+	public function it_should_parse_attendee_details( Closure $fixture, $expected ) {
+		$fixture();
+		$sut = $this->make_instance();
+		$this->set_class_fn_return( get_class( $sut ), 'generate_order_id', $expected['order_id'] );
+		$attendee = $sut->parse_attendee_details();
+		$this->assertEquals( $expected, $attendee );
+	}
+
+	/**
 	 * It should process the RSVP step.
 	 *
 	 * @test
@@ -918,6 +1041,10 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		];
 
 		$process_result = $sut->process_rsvp_step( $args );
+
+		if ( ! empty( $expected_response['attendees'] ) ) {
+			$process_result['attendees'] = [ 'FAKE_ATTENDEE_ID' ];
+		}
 
 		if ( isset( $expected_response['opt_in_args'], $process_result['opt_in_args'] ) ) {
 			$process_result['opt_in_args'] = array_merge( $process_result['opt_in_args'], $expected_response['opt_in_args'] );
@@ -1087,5 +1214,37 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			'optout'       => 'no',
 			'order_id'     => RSVP::generate_order_id(),
 		], $overrides );
+	}
+
+	/**
+	 * It should set context correctly when getting tickets
+	 *
+	 * @test
+	 */
+	public function should_set_context_correctly_when_getting_tickets(): void {
+		$post_id = tribe_events()->set_args( [
+			'title'      => 'Test Event',
+			'status'     => 'publish',
+			'start_date' => '2020-01-01 00:00:00',
+			'duration'   => 2 * HOUR_IN_SECONDS,
+		] )->create()->ID;
+
+		$rsvp = RSVP::get_instance();
+
+		$request_context = '';
+		add_filter( 'tribe_repository_tickets_query_args', function ( $query_args, $query, $repository ) use ( &$request_context ) {
+			$request_context = $repository->get_request_context();
+
+			return $query_args;
+		}, 10, 3 );
+
+		$rsvp->get_tickets( $post_id );
+
+		$this->assertNull( $request_context );
+
+		// Run another query, this time setting the context.
+		$rsvp->get_tickets( $post_id, 'some-context' );
+
+		$this->assertEquals( 'some-context', $request_context );
 	}
 }

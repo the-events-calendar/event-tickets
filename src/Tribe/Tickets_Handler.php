@@ -43,6 +43,15 @@ class Tribe__Tickets__Tickets_Handler {
 	public $key_start_date = '_ticket_start_date';
 
 	/**
+	 * Post meta key for the ticket start time
+	 *
+	 * @since 5.4.1
+	 *
+	 * @var    string
+	 */
+	public $key_start_time = '_ticket_start_time';
+
+	/**
 	 * Post meta key for the ticket end date
 	 *
 	 * @since  4.6
@@ -50,6 +59,15 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @var    string
 	 */
 	public $key_end_date = '_ticket_end_date';
+
+	/**
+	 * Post meta key for the ticket end time
+	 *
+	 * @since 5.4.1
+	 *
+	 * @var    string
+	 */
+	public $key_end_time = '_ticket_end_time';
 
 	/**
 	 * Post meta key for the manual updated meta keys
@@ -80,6 +98,11 @@ class Tribe__Tickets__Tickets_Handler {
 	public $unlimited_term = 'Unlimited';
 
 	/**
+	 * @var string
+	 */
+	public $path;
+
+	/**
 	 *    Class constructor.
 	 */
 	public function __construct() {
@@ -87,7 +110,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		$this->add_hooks();
 
-		$this->path = trailingslashit(  dirname( dirname( dirname( __FILE__ ) ) ) );
+		$this->path = trailingslashit( dirname( dirname( dirname( __FILE__ ) ) ) );
 	}
 
 	/**
@@ -99,14 +122,14 @@ class Tribe__Tickets__Tickets_Handler {
 		$main = Tribe__Tickets__Main::instance();
 
 		foreach ( $main->post_types() as $post_type ) {
-			add_action( 'save_post_' . $post_type, array( $this, 'save_post' ) );
+			add_action( 'save_post_' . $post_type, [ $this, 'save_post' ] );
 		}
 
-		add_filter( 'get_post_metadata', array( $this, 'filter_capacity_support' ), 15, 4 );
-		add_filter( 'updated_postmeta', array( $this, 'update_shared_tickets_capacity' ), 15, 4 );
+		add_filter( 'get_post_metadata', [ $this, 'filter_capacity_support' ], 15, 4 );
+		add_filter( 'updated_postmeta', [ $this, 'update_shared_tickets_capacity' ], 15, 4 );
 
-		add_filter( 'updated_postmeta', array( $this, 'update_meta_date' ), 15, 4 );
-		add_action( 'wp_insert_post', array( $this, 'update_start_date' ), 15, 3 );
+		add_filter( 'updated_postmeta', [ $this, 'update_meta_date' ], 15, 4 );
+		add_action( 'wp_insert_post', [ $this, 'update_start_date' ], 15, 3 );
 
 		add_filter( 'tribe_tickets_my_tickets_allow_email_resend_on_attendee_email_update', [ $this, 'maybe_disable_email_resend' ], 9, 3 );
 
@@ -124,14 +147,14 @@ class Tribe__Tickets__Tickets_Handler {
 		$main = Tribe__Tickets__Main::instance();
 
 		foreach ( $main->post_types() as $post_type ) {
-			remove_action( 'save_post_' . $post_type, array( $this, 'save_post' ) );
+			remove_action( 'save_post_' . $post_type, [ $this, 'save_post' ] );
 		}
 
-		remove_filter( 'get_post_metadata', array( $this, 'filter_capacity_support' ), 15 );
-		remove_filter( 'updated_postmeta', array( $this, 'update_shared_tickets_capacity' ), 15 );
+		remove_filter( 'get_post_metadata', [ $this, 'filter_capacity_support' ], 15 );
+		remove_filter( 'updated_postmeta', [ $this, 'update_shared_tickets_capacity' ], 15 );
 
-		remove_filter( 'updated_postmeta', array( $this, 'update_meta_date' ), 15 );
-		remove_action( 'wp_insert_post', array( $this, 'update_start_date' ), 15 );
+		remove_filter( 'updated_postmeta', [ $this, 'update_meta_date' ], 15 );
+		remove_action( 'wp_insert_post', [ $this, 'update_start_date' ], 15 );
 	}
 
 	/**
@@ -140,18 +163,18 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since  4.6
 	 *
-	 * @param  int     $meta_id         MID
-	 * @param  int     $object_id       Which Post we are dealing with
-	 * @param  string  $meta_key        Which meta key we are fetching
-	 * @param  int     $event_capacity  To which value the event Capacity was update to
+	 * @param  int    $meta_id         MID
+	 * @param  int    $object_id       Which Post we are dealing with
+	 * @param  string $meta_key        Which meta key we are fetching
+	 * @param  int    $event_capacity  To which value the event Capacity was update to
 	 *
 	 * @return int
 	 */
 	public function flag_manual_update( $meta_id, $object_id, $meta_key, $date ) {
-		$keys = array(
+		$keys = [
 			$this->key_start_date,
 			$this->key_end_date,
-		);
+		];
 
 		// Bail on not Date meta updates
 		if ( ! in_array( $meta_key, $keys ) ) {
@@ -176,8 +199,8 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since  4.6
 	 *
-	 * @param  int|WP_Post  $ticket  Which ticket/post we are dealing with here
-	 * @param  string|null  $for     If we are looking for one specific key or any
+	 * @param  int|WP_Post $ticket  Which ticket/post we are dealing with here
+	 * @param  string|null $for     If we are looking for one specific key or any
 	 *
 	 * @return boolean
 	 */
@@ -204,15 +227,15 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since   4.6
 	 *
-	 * @param   boolean  $toggle  Should activate or not?
+	 * @param   boolean $toggle  Should activate or not?
 	 *
 	 * @return  void
 	 */
 	public function toggle_manual_update_flag( $toggle = true ) {
 		if ( true === (bool) $toggle ) {
-			add_filter( 'updated_postmeta', array( $this, 'flag_manual_update' ), 15, 4 );
+			add_filter( 'updated_postmeta', [ $this, 'flag_manual_update' ], 15, 4 );
 		} else {
-			remove_filter( 'updated_postmeta', array( $this, 'flag_manual_update' ), 15 );
+			remove_filter( 'updated_postmeta', [ $this, 'flag_manual_update' ], 15 );
 		}
 	}
 
@@ -222,17 +245,17 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since  4.6
 	 *
-	 * @param  int     $meta_id    MID
-	 * @param  int     $object_id  Which Post we are dealing with
-	 * @param  string  $meta_key   Which meta key we are fetching
-	 * @param  string  $date       Value save on the DB
+	 * @param  int    $meta_id    MID
+	 * @param  int    $object_id  Which Post we are dealing with
+	 * @param  string $meta_key   Which meta key we are fetching
+	 * @param  string $date       Value save on the DB
 	 *
 	 * @return boolean
 	 */
 	public function update_meta_date( $meta_id, $object_id, $meta_key, $date ) {
-		$meta_map = array(
+		$meta_map = [
 			'_EventStartDate' => $this->key_end_date,
-		);
+		];
 
 		// Bail when it's not on the Map Meta
 		if ( ! isset( $meta_map[ $meta_key ] ) ) {
@@ -240,7 +263,7 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		$event_types = Tribe__Tickets__Main::instance()->post_types();
-		$post_type = get_post_type( $object_id );
+		$post_type   = get_post_type( $object_id );
 
 		// Bail on non event like post type
 		if ( ! in_array( $post_type, $event_types ) ) {
@@ -248,7 +271,7 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		$update_meta = $meta_map[ $meta_key ];
-		$tickets = $this->get_tickets_ids( $object_id );
+		$tickets     = $this->get_tickets_ids( $object_id );
 
 		foreach ( $tickets as $ticket ) {
 			// Skip tickets with manual updates to that meta
@@ -267,9 +290,9 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since  4.6
 	 *
-	 * @param  int      $post_id  Which post we are updating here
-	 * @param  WP_Post  $post     Object of the current post updating
-	 * @param  boolean  $update   If we are updating or creating a post
+	 * @param  int     $post_id  Which post we are updating here
+	 * @param  WP_Post $post     Object of the current post updating
+	 * @param  boolean $update   If we are updating or creating a post
 	 *
 	 * @return boolean
 	 */
@@ -285,7 +308,7 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		$meta_key = $this->key_start_date;
-		$tickets = $this->get_tickets_ids( $post_id );
+		$tickets  = $this->get_tickets_ids( $post_id );
 
 		foreach ( $tickets as $ticket_id ) {
 			// Skip tickets with manual updates to that meta
@@ -306,9 +329,9 @@ class Tribe__Tickets__Tickets_Handler {
 			}
 			// Convert to seconds
 			$round *= MINUTE_IN_SECONDS;
-			$date = strtotime( $post->post_date );
-			$date = round( $date / $round ) * $round;
-			$date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, $date );
+			$date   = strtotime( $post->post_date );
+			$date   = round( $date / $round ) * $round;
+			$date   = date( Tribe__Date_Utils::DBDATETIMEFORMAT, $date );
 
 			update_post_meta( $ticket_id, $meta_key, $date );
 		}
@@ -480,29 +503,30 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since  4.6
 	 *
-	 * @param  int|WP_Post  $post
+	 * @param  int|WP_Post $post
 	 * @return array
 	 */
 	public function get_tickets_ids( $post = null ) {
 		$modules = Tribe__Tickets__Tickets::modules();
-		$args = array(
-			'post_type'      => array(),
+		$args    = [
+			'post_type'      => [],
 			'posts_per_page' => -1,
 			'fields'         => 'ids',
 			'post_status'    => 'publish',
 			'order_by'       => 'menu_order',
 			'order'          => 'ASC',
-			'meta_query'     => array(
+			'meta_query'     => [
 				'relation' => 'OR',
-			),
-		);
+			],
+		];
 
 		foreach ( $modules as $provider_class => $name ) {
-			$provider = call_user_func( array( $provider_class, 'get_instance' ) );
-			$module_args = $provider->get_tickets_query_args( $post );
+			$provider    = call_user_func( [ $provider_class, 'get_instance' ] );
+			$module_args = $provider->set_tickets_query_args( $post )->get_query();
+			$module_args = $module_args->query_vars;
 
-			$args['post_type'] = array_merge( $args['post_type'], $module_args['post_type'] );
-			$args['meta_query'] = array_merge( $args['meta_query'], $module_args['meta_query'] );
+			$args['post_type']  = array_merge( (array) $args['post_type'], (array) $module_args['post_type'] );
+			$args['meta_query'] = array_merge( (array) $args['meta_query'], (array) $module_args['meta_query'] );
 		}
 
 		$query = new WP_Query( $args );
@@ -518,10 +542,10 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since  4.6
 	 *
-	 * @param  int     $meta_id         MID
-	 * @param  int     $object_id       Which Post we are dealing with
-	 * @param  string  $meta_key        Which meta key we are fetching
-	 * @param  int     $event_capacity  To which value the event Capacity was update to
+	 * @param  int    $meta_id         MID
+	 * @param  int    $object_id       Which Post we are dealing with
+	 * @param  string $meta_key        Which meta key we are fetching
+	 * @param  int    $event_capacity  To which value the event Capacity was update to
 	 *
 	 * @return boolean
 	 */
@@ -566,13 +590,26 @@ class Tribe__Tickets__Tickets_Handler {
 
 		$completes = [];
 
+		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $object_id );
 		// Get all Tickets.
-		$tickets = $this->get_tickets_ids( $object_id );
-
-		// If no tickets are available and capacity is set then it should be true.
-		$has_shared_cap_tickets = empty( $tickets );
+		$tickets = $provider->get_tickets_ids( $object_id );
 
 		foreach ( $tickets as $ticket ) {
+			/**
+			 * Filters whether a ticket should be edited in the context of a post.
+			 *
+			 * @since 5.8.0
+			 *
+			 * @param bool $editable  Whether the ticket is editable in the context of this post or not.
+			 * @param int  $ticket_id The Ticket ID.
+			 * @param int  $object_id The Post ID.
+			 */
+			$editable = apply_filters( 'tec_tickets_is_ticket_editable_from_post', true, (int) $ticket, (int) $object_id );
+
+			if ( ! $editable ) {
+				continue;
+			}
+
 			$mode = get_post_meta( $ticket, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 
 			// Skip any tickets that are not Shared.
@@ -583,44 +620,38 @@ class Tribe__Tickets__Tickets_Handler {
 				continue;
 			}
 
-			$has_shared_cap_tickets = true;
+			$new_capacity = $existing_capacity = tribe_tickets_get_capacity( $ticket );
 
-			$capacity = tribe_tickets_get_capacity( $ticket );
-
-			// When Global Capacity is higher than local ticket one's we bail.
+			// Update the ticket capacity only if the event capacity is lower while capped, or ticket capacity is global.
 			if (
-				Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode
+				( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode && $event_capacity < $existing_capacity )
+				|| Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $mode
 			) {
-				$capped_capacity = $capacity;
-				if ( $event_capacity < $capacity ) {
-					$capped_capacity = $event_capacity;
-				}
-
-				// Otherwise we update tickets required.
-				tribe_tickets_update_capacity( $ticket, $capped_capacity );
+				$new_capacity = $event_capacity;
 			}
 
-			$totals = $this->get_ticket_totals( $ticket );
+			// update tickets capacity to new value as required.
+			tribe_tickets_update_capacity( $ticket, $new_capacity );
+
+			$totals      = $this->get_ticket_totals( $ticket );
 			$completes[] = $complete = $totals['pending'] + $totals['sold'];
 
-			$stock = $event_capacity - $complete;
+			$stock = $new_capacity - $complete;
 			update_post_meta( $ticket, '_stock', $stock );
 
 			// Makes sure we mark it as in Stock for the status.
 			if ( 0 !== $stock ) {
 				update_post_meta( $ticket, '_stock_status', 'instock' );
 			}
+
+			clean_post_cache( $ticket );
 		}
 
 		// Setup the Stock level.
 		$new_object_stock = $event_capacity - array_sum( $completes );
 		$object_stock->set_stock_level( $new_object_stock );
 
-		if ( ! $has_shared_cap_tickets ) {
-			$object_stock->disable();
-			$object_stock->set_stock_level( 0 );
-			tribe_tickets_delete_capacity( $object_id );
-		}
+		clean_post_cache( (int) $object_id );
 
 		return true;
 	}
@@ -638,7 +669,12 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function trigger_shared_cap_sync( $post_id, $ticket, $raw_data ) {
 		$ticket_capacity_data = Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', [] );
-		$ticket_capacity      = Tribe__Utils__Array::get( $ticket_capacity_data, 'capacity', false );
+		$ticket_capacity      = Tribe__Utils__Array::get( $ticket_capacity_data, 'event_capacity', false );
+		$capacity_mode        = Tribe__Utils__Array::get( $ticket_capacity_data, 'mode', false );
+
+		if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $capacity_mode ) {
+			return false;
+		}
 
 		if ( empty( $ticket_capacity_data ) || ! $ticket_capacity ) {
 			return new WP_Error( 'invalid_capacity', __( 'Invalid ticket capacity data.', 'event-tickets' ), $raw_data );
@@ -656,9 +692,9 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since  4.6
 	 *
-	 * @param  mixed   $value      Previous value set
-	 * @param  int     $object_id  Which Post we are dealing with
-	 * @param  string  $meta_key   Which meta key we are fetching
+	 * @param  mixed  $value      Previous value set
+	 * @param  int    $object_id  Which Post we are dealing with
+	 * @param  string $meta_key   Which meta key we are fetching
 	 *
 	 * @return int
 	 */
@@ -674,7 +710,7 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		// We remove the Check to allow a fair usage of `metadata_exists`
-		remove_filter( 'get_post_metadata', array( $this, 'filter_capacity_support' ), 15 );
+		remove_filter( 'get_post_metadata', [ $this, 'filter_capacity_support' ], 15 );
 
 		// Bail when we already have the MetaKey saved
 		if ( metadata_exists( 'post', $object_id, $meta_key ) ) {
@@ -691,7 +727,7 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		// Hook it back up
-		add_filter( 'get_post_metadata', array( $this, 'filter_capacity_support' ), 15, 4 );
+		add_filter( 'get_post_metadata', [ $this, 'filter_capacity_support' ], 15, 4 );
 
 		// This prevents get_post_meta without single param to break
 		if ( ! $single ) {
@@ -706,7 +742,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since  4.6
 	 *
-	 * @param  int|WP_Post  $object  Which Post ID
+	 * @param  int|WP_Post $object  Which Post ID
 	 *
 	 * @return bool|int
 	 */
@@ -747,8 +783,8 @@ class Tribe__Tickets__Tickets_Handler {
 		} else {
 
 			// In here we deal with Tickets migration from legacy
-			$mode = get_post_meta( $object->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
-			$totals = $this->get_ticket_totals( $object->ID );
+			$mode        = get_post_meta( $object->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
+			$totals      = $this->get_ticket_totals( $object->ID );
 			$connections = $this->get_object_connections( $object );
 
 			// When migrating we might get Tickets/RSVP without a mode so we set it to Indy Ticket
@@ -757,7 +793,7 @@ class Tribe__Tickets__Tickets_Handler {
 			}
 
 			if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode ) {
-				$capacity = (int) trim( get_post_meta( $object->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP, true ) );
+				$capacity  = (int) trim( get_post_meta( $object->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP, true ) );
 				$capacity += $totals['sold'] + $totals['pending'];
 			} elseif ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $mode ) {
 				// When using Global we don't set a ticket cap
@@ -811,7 +847,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since  4.6
 	 *
-	 * @param  int|WP_Post  $ticket  Which ticket
+	 * @param  int|WP_Post $ticket  Which ticket
 	 *
 	 * @return array
 	 */
@@ -844,7 +880,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		$totals = array_map( 'intval', $totals );
 
-		// Remove Pending from total
+		// Remove Pending from total.
 		$totals['sold'] -= $totals['pending'];
 
 		return $totals;
@@ -872,7 +908,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $post->ID );
 		$global  = new Tribe__Tickets__Global_Stock( $post->ID );
 
-		$totals  = [
+		$totals = [
 			'has_unlimited' => false,
 			'has_shared'    => $global->is_enabled(),
 			'tickets'       => count( $tickets ),
@@ -883,8 +919,8 @@ class Tribe__Tickets__Tickets_Handler {
 		];
 
 		foreach ( $tickets as $ticket ) {
-			$ticket_totals = $this->get_ticket_totals( $ticket->ID );
-			$totals['sold'] += $ticket_totals['sold'];
+			$ticket_totals      = $this->get_ticket_totals( $ticket->ID );
+			$totals['sold']    += $ticket_totals['sold'];
 			$totals['pending'] += $ticket_totals['pending'];
 
 			if ( ! $this->has_shared_capacity( $ticket ) && ! $this->is_unlimited_ticket( $ticket ) ) {
@@ -899,7 +935,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		// We only want to do this once per event.
 		if ( $totals['has_shared'] ) {
-			$totals['stock'] += $global->get_stock_level();
+			$totals['stock']     += $global->get_stock_level();
 			$totals['has_shared'] = true;
 		}
 
@@ -915,7 +951,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since   4.6
 	 *
-	 * @param   int|WP_Post|object  $ticket
+	 * @param   int|WP_Post|object $ticket
 	 *
 	 * @return  bool
 	 */
@@ -944,7 +980,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since   4.6
 	 *
-	 * @param   int|WP_Post|object  $ticket
+	 * @param   int|WP_Post|object $ticket
 	 *
 	 * @return  bool
 	 */
@@ -957,7 +993,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since   4.6
 	 *
-	 * @param   int|WP_Post|object  $ticket
+	 * @param   int|WP_Post|object $ticket
 	 *
 	 * @return  bool
 	 */
@@ -997,7 +1033,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		$provider = Tribe__Tickets__Tickets::get_ticket_provider_instance( $provider );
 
-		if( empty( $provider ) ) {
+		if ( empty( $provider ) ) {
 			return false;
 		}
 
@@ -1037,13 +1073,13 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6
 	 *
-	 * @param int|object (null) $post Post or Post ID tickets are attached to
+	 * @param int|object (null)                                 $post Post or Post ID tickets are attached to
 	 * @param string (null) the stock mode we're concerned with
-	 *			can be one of the following:
-	 *				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE ('global')
-	 *				Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE ('capped')
-	 *				Tribe__Tickets__Global_Stock::OWN_STOCK_MODE ('own')
-	 * @param string (null) $provider_class the ticket provider class ex: Tribe__Tickets__RSVP
+	 *          can be one of the following:
+	 *              Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE ('global')
+	 *              Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE ('capped')
+	 *              Tribe__Tickets__Global_Stock::OWN_STOCK_MODE ('own')
+	 * @param string (null)                                     $provider_class the ticket provider class ex: Tribe__Tickets__RSVP
 	 * @return boolean whether there is a ticket (within the provided parameters) with an unlimited stock
 	 */
 	public function has_unlimited_stock( $post = null, $stock_mode = null, $provider_class = null ) {
@@ -1423,7 +1459,6 @@ class Tribe__Tickets__Tickets_Handler {
 		 * @param string 'global'
 		 *
 		 * @return string ('global','capped','own','')
-		 *
 		 */
 		return apply_filters( 'tribe_tickets_default_ticket_capacity_type', 'global' );
 	}
@@ -1436,7 +1471,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since  4.6.2
 	 *
-	 * @param  int  $post  Post that will be saved
+	 * @param  int $post  Post that will be saved
 	 *
 	 * @return string
 	 */
@@ -1497,7 +1532,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		// If we didn't get any Ticket data we fetch from the $_POST
 		if ( is_null( $data ) ) {
-			$data = tribe_get_request_var( array( 'tribe-tickets', 'settings' ), null );
+			$data = tribe_get_request_var( [ 'tribe-tickets', 'settings' ], null );
 		}
 
 		if ( empty( $data ) ) {
@@ -1553,7 +1588,6 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @since 4.6
 	 *
 	 * @param int $post
-	 *
 	 */
 	public function save_order( $post, $tickets = null ) {
 		// We're calling this during post save, so the save nonce has already been checked.
@@ -1574,7 +1608,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		// If we didn't get any Ticket data we fetch from the $_POST
 		if ( is_null( $tickets ) ) {
-			$tickets = tribe_get_request_var( array( 'tribe-tickets', 'list' ), null );
+			$tickets = tribe_get_request_var( [ 'tribe-tickets', 'list' ], null );
 		}
 
 		if ( empty( $tickets ) ) {
@@ -1586,10 +1620,10 @@ class Tribe__Tickets__Tickets_Handler {
 				continue;
 			}
 
-			$args = array(
+			$args = [
 				'ID'         => absint( $id ),
 				'menu_order' => (int) $ticket['order'],
-			);
+			];
 
 			$updated[] = wp_update_post( $args );
 		}
@@ -1603,8 +1637,8 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since  4.6
 	 *
-	 * @param  object  $a  First  Compare item
-	 * @param  object  $b  Second Compare item
+	 * @param  object $a  First  Compare item
+	 * @param  object $b  Second Compare item
 	 *
 	 * @return array
 	 */
@@ -1628,7 +1662,7 @@ class Tribe__Tickets__Tickets_Handler {
 			$ticket->menu_order = $orderpost->menu_order;
 		}
 
-		usort( $tickets, array( $this, 'sort_by_menu_order' ) );
+		usort( $tickets, [ $this, 'sort_by_menu_order' ] );
 
 		return $tickets;
 	}
@@ -1647,19 +1681,19 @@ class Tribe__Tickets__Tickets_Handler {
 		$ticket_post = get_post( $ticket_id );
 
 		if ( ! $ticket_post instanceof WP_Post ) {
-			return new WP_Error( 'ticket-not-found', 'ticket-not-found', array( 'status' => 404 ) );
+			return new WP_Error( 'ticket-not-found', 'ticket-not-found', [ 'status' => 404 ] );
 		}
 
 		$ticket_post_type_object = get_post_type_object( $ticket_post->post_type );
 
 		if ( null === $ticket_post_type_object ) {
-			return new WP_Error( 'ticket-provider-not-found', 'ticket-provider-not-found', array( 'status' => 500 ) );
+			return new WP_Error( 'ticket-provider-not-found', 'ticket-provider-not-found', [ 'status' => 500 ] );
 		}
 
 		$read_cap = $ticket_post_type_object->cap->read_post;
 
 		if ( ! ( 'publish' === $ticket_post->post_status || current_user_can( $read_cap, $ticket_id ) ) ) {
-			return new WP_Error( 'ticket-not-accessible', 'ticket-not-accessible', array( 'status' => 401 ) );
+			return new WP_Error( 'ticket-not-accessible', 'ticket-not-accessible', [ 'status' => 401 ] );
 		}
 
 		/**
@@ -1668,14 +1702,14 @@ class Tribe__Tickets__Tickets_Handler {
 		$event = tribe_events_get_ticket_event( $ticket_id );
 
 		if ( ! $event instanceof WP_Post ) {
-			return new WP_Error( 'ticket-not-accessible', 'ticket-not-accessible', array( 'status' => 401 ) );
+			return new WP_Error( 'ticket-not-accessible', 'ticket-not-accessible', [ 'status' => 401 ] );
 		}
 
 		$event_post_type_object = get_post_type_object( $event->post_type );
 		$read_cap               = $event_post_type_object->cap->read_post;
 
 		if ( ! ( 'publish' === $event->post_status || current_user_can( $read_cap, $event->ID ) ) ) {
-			return new WP_Error( 'ticket-not-accessible', 'ticket-not-accessible', array( 'status' => 401 ) );
+			return new WP_Error( 'ticket-not-accessible', 'ticket-not-accessible', [ 'status' => 401 ] );
 		}
 
 		return true;

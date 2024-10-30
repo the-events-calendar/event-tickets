@@ -9,7 +9,11 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 * {@inheritdoc}
 	 */
 	public function get_documentation() {
-		$GET_defaults = array( 'in' => 'query', 'default' => '', 'type' => 'string' );
+		$GET_defaults = [
+			'in'      => 'query',
+			'default' => '',
+			'type'    => 'string',
+		];
 
 		return array(
 			'get' => array(
@@ -64,8 +68,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 * {@inheritdoc}
 	 */
 	public function READ_args() {
-		return array(
-			'id' => array(
+		return [
+			'id' => [
 				'type'              => 'integer',
 				'in'                => 'path',
 				'description'       => __( 'The attendee post ID', 'event-tickets' ),
@@ -74,9 +78,9 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 				 * Here we check for a positive int, not an attendee ID to properly
 				 * return 404 for missing post in place of 400.
 				 */
-				'validate_callback' => array( $this->validator, 'is_positive_int' ),
-			),
-		);
+				'validate_callback' => [ $this->validator, 'is_positive_int' ],
+			],
+		];
 	}
 
 	/**
@@ -85,11 +89,6 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 * @since 4.12.0 Returns 401 Unauthorized if Event Tickets Plus is not loaded.
 	 */
 	public function get( WP_REST_Request $request ) {
-		// Early bail: ET Plus must be active to use this endpoint.
-		if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
-			return new WP_REST_Response( __( 'Sorry, Event Tickets Plus must be active to use this endpoint.', 'event-tickets' ), 401 );
-		}
-
 		return tribe_attendees( 'restv1' )->by_primary_key( $request['id'] );
 	}
 
@@ -117,7 +116,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 			return new WP_Error( 'attendee-creation-failed', __( 'Something went wrong! Attendee creation failed.', 'event-tickets' ) );
 		}
 
-		$attendee = $post_data['provider']->get_attendee( $attendee_object->ID );
+		$attendee = tribe_attendees( 'restv1' )->by_primary_key( $attendee_object->ID );
 		$response = new WP_REST_Response( $attendee );
 		$response->set_status( 201 );
 
@@ -155,6 +154,11 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 				'required'          => false,
 				'type'              => 'string',
 				'description'       => __( 'Order Status for the attendee.', 'event-tickets' ),
+			],
+			'check_in'              => [
+				'required'          => false,
+				'type'              => 'bool',
+				'description'       => __( 'Check in value for the attendee.', 'event-tickets' ),
 			],
 
 		];
@@ -194,7 +198,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 			return new WP_Error( 'attendee-update-failed', __( 'Something went wrong! Attendee update failed.', 'event-tickets' ) );
 		}
 
-		$attendee = $provider->get_attendee( $post_data['attendee_id'] );
+		$attendee = tribe_attendees( 'restv1' )->by_primary_key( $post_data['attendee_id'] );
 		$response = new WP_REST_Response( $attendee );
 		$response->set_status( 201 );
 
@@ -216,6 +220,11 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 				'in'                => 'path',
 				'description'       => __( 'The attendee post ID', 'event-tickets' ),
 				'required'          => true,
+			],
+			'check_in'              => [
+				'required'          => false,
+				'type'              => 'bool',
+				'description'       => __( 'Check in value for the attendee.', 'event-tickets' ),
 			],
 		];
 
@@ -304,6 +313,13 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 			return $validate_status;
 		}
 
+		// validate if trying to update the check_in data.
+		if ( ! empty( $updated_data['check_in'] ) ) {
+			$validate_check_in = $this->validate_check_in( $attendee, $updated_data['check_in'] );
+			if ( is_wp_error( $validate_check_in ) ) {
+				return $validate_check_in;
+			}
+		}
 		/**
 		 * Filter REST API attendee data before creating an attendee.
 		 *
@@ -343,7 +359,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 				$error_message  = sprintf(
 					// Translators: %s - List of valid statuses.
 					__( 'Supported statuses for this attendee are: %s', 'event-tickets' ),
-					implode( $statuses, ' | ' )
+					implode( ' | ', $statuses )
 				);
 				return new WP_Error( 'invalid-attendee-status', $error_message, [ 'status' => 400 ] );
 			}
@@ -356,10 +372,43 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 * Validates the user permission.
 	 *
 	 * @since 5.3.2
+	 * @since 5.5.0 check the REST API permission via centralized method.
 	 *
 	 * @return bool
 	 */
 	public function validate_user_permission() {
-		return current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' );
+		return tribe( 'tickets.rest-v1.main' )->request_has_manage_access();
+	}
+
+	/**
+	 * Validate whether the check_in value is valid for this attendee.
+	 *
+	 * @since 5.6.5 Validate check-in data before allowing check-in.
+	 *
+	 * @param $attendee array Attendee data.
+	 * @param $check_in bool Check in value.
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function validate_check_in( array $attendee, bool $check_in ) {
+		if ( ! tribe_is_truthy( $check_in ) ) {
+			return true;
+		}
+
+		// check if attendee already checked in.
+		if ( tribe_is_truthy( $attendee['check_in'] ) ) {
+			return new WP_Error( 'tec-et-attendee-already-checked-in', __( 'Attendee is already checked in.', 'event-tickets' ), [ 'status' => 400 ] );
+		}
+
+		$provider = $attendee['provider'] ?? tribe_tickets_get_ticket_provider( $attendee['attendee_id'] );
+
+		/** @var Tribe__Tickets__Status__Manager $status */
+		$status = tribe( 'tickets.status' );
+		$complete_statuses = (array) $status->get_completed_status_by_provider_name( $provider );
+		if ( ! in_array( $attendee['order_status'], $complete_statuses, true ) ) {
+			return new WP_Error( 'tec-et-attendee-invalid-check-in', __( 'Attendee Order status is not authorized for check-in.', 'event-tickets' ), [ 'status' => 400 ] );
+		}
+
+		return $check_in;
 	}
 }

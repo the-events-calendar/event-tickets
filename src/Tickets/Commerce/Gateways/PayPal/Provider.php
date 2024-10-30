@@ -8,7 +8,7 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal;
  * @since   5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
-class Provider extends \tad_DI52_ServiceProvider {
+class Provider extends \TEC\Common\Contracts\Service_Provider {
 
 	/**
 	 * Register the provider singletons.

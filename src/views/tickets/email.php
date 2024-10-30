@@ -3,7 +3,7 @@
  * Tickets Email Template
  * The template for the email with the purchased tickets when using ticketing plugins (Like WooTickets)
  *
- * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/email.php
+ * Override this template in your own theme by creating a file at [your-theme]/tribe/tickets/email.php
  *
  * This file is being included in events/lib/tickets/Tickets.php
  *  in the function generate_tickets_email_content. Each ticket provider class has a get_attendee() method returning an
@@ -47,8 +47,9 @@
  * @since   4.10.9 Use function for text.
  * @since   5.0.3 Update comments for single ticket array.
  * @since   5.1.7 Changed the word `Purchaser` to `Attendee` in the ticket details.
+ * @since   5.9.1 Corrected template override filepath
  *
- * @version 5.1.7
+ * @version 5.9.1
  *
  * @var array $tickets An array of tickets in the format documented above.
  */
@@ -443,8 +444,8 @@
 													<h6 style="color:#909090 !important; margin:0 0 10px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php
 														echo esc_html(
 															sprintf(
-																_x( '%s Type', 'ticket type email heading', 'event-tickets' ),
-																tribe_get_ticket_label_singular( 'ticket_type_email_heading' )
+																_x( '%s Name', 'ticket name email heading', 'event-tickets' ),
+																tribe_get_ticket_label_singular( 'ticket_name_email_heading' )
 															)
 														); ?>
 													</h6>

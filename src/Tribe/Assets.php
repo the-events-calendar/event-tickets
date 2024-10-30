@@ -1,6 +1,7 @@
 <?php
 
 use Tribe__Utils__Array as Arr;
+use Tribe\Tickets\Admin\Settings;
 
 class Tribe__Tickets__Assets {
 	/**
@@ -15,10 +16,7 @@ class Tribe__Tickets__Assets {
 		/** @var Tribe__Tickets__Main $tickets_main */
 		$tickets_main = tribe( 'tickets.main' );
 
-		$tickets_deps = [
-			'dashicons',
-			'event-tickets-reset-css',
-		];
+		$tickets_deps = [ 'dashicons' ];
 
 		if ( $this->should_enqueue_common_full() ) {
 			$tickets_deps[] = 'tribe-common-full-style';
@@ -32,11 +30,9 @@ class Tribe__Tickets__Assets {
 		tribe_assets(
 			$tickets_main,
 			[
-				[ 'event-tickets-reset-css', 'reset.css' ],
 				[ 'event-tickets-tickets-css', $tickets_stylesheet, $tickets_deps ],
 				[ 'event-tickets-tickets-rsvp-css', 'rsvp-v1.css', [ 'tec-variables-full' ] ],
 				[ 'event-tickets-tickets-rsvp-js', 'rsvp.js', [ 'jquery' ] ],
-				[ 'event-tickets-attendees-list-js', 'attendees-list.js', [ 'jquery' ] ],
 				[ 'event-tickets-details-js', 'ticket-details.js', [] ],
 			],
 			'wp_enqueue_scripts',
@@ -105,7 +101,10 @@ class Tribe__Tickets__Assets {
 			$tickets_main,
 			'tribe-tickets-orders-style',
 			'my-tickets.css',
-			[ 'tec-variables-full' ],
+			[
+				'tec-variables-full',
+				'tribe-tickets-forms-style',
+			],
 			null,
 			[
 				'groups' => [
@@ -218,20 +217,12 @@ class Tribe__Tickets__Assets {
 			'ajaxurl'                => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
 		];
 
-		$ticket_js_deps = [ 'jquery-ui-datepicker', 'tribe-bumpdown', 'tribe-attrchange', 'tribe-moment', 'underscore', 'tribe-validation', 'event-tickets-admin-accordion-js', 'tribe-timepicker' ];
-
-		// While TEC is active, make sure we are loading TEC admin JS as dependency.
-		if ( class_exists( 'Tribe__Events__Main' ) ) {
-			$ticket_js_deps[] = 'tribe-events-admin';
-		}
+		$ticket_js_deps = [ 'jquery-ui-datepicker', 'tribe-bumpdown', 'tribe-attrchange', 'underscore', 'tribe-validation', 'event-tickets-admin-accordion-js', 'tribe-timepicker' ];
 
 		$assets = [
 			[ 'event-tickets-admin-css', 'tickets-admin.css', [ 'tribe-validation-style', 'tribe-jquery-timepicker-css', 'tribe-common-admin' ] ],
-			[ 'event-tickets-admin-refresh-css', 'tickets-refresh.css', [ 'event-tickets-admin-css', 'tribe-common-admin' ] ],
-			[ 'event-tickets-admin-tables-css', 'tickets-tables.css', [  'tec-variables-full', 'event-tickets-admin-css' ] ],
-			[ 'event-tickets-attendees-list-js', 'attendees-list.js', [ 'jquery' ] ],
+			[ 'event-tickets-admin-tables-css', 'tickets-tables.css', [ 'tec-variables-full', 'event-tickets-admin-css' ] ],
 			[ 'event-tickets-admin-accordion-js', 'accordion.js', [] ],
-			[ 'event-tickets-admin-accordion-css', 'accordion.css', [] ],
 			[ 'event-tickets-admin-js', 'tickets.js', $ticket_js_deps ],
 		];
 
@@ -348,6 +339,108 @@ class Tribe__Tickets__Assets {
 				'conditionals' => [ $this, 'should_enqueue_admin_settings_assets' ],
 			]
 		);
+
+		tribe_asset(
+			$tickets_main,
+			'tribe-tickets-admin-attendees',
+			'tickets-admin-attendees.css',
+			[ 'tec-variables-full', 'tribe-common-skeleton-style', 'wp-components' ],
+			null,
+			[
+				'groups' => [
+					'event-tickets-admin-attendees',
+				],
+			]
+		);
+
+		tribe_asset(
+			$tickets_main,
+			'tickets-report-css',
+			'tickets-report.css',
+			[],
+			null,
+			[
+				'groups' => [
+					'event-tickets-admin-attendees',
+				],
+			]
+		);
+
+		tribe_asset(
+			$tickets_main,
+			'tickets-report-print-css',
+			'tickets-report-print.css',
+			[],
+			null,
+			[
+				'media'  => 'print',
+				'groups' => [
+					'event-tickets-admin-attendees',
+				],
+			]
+		);
+
+		$move_url_args = [
+			'dialog'    => \Tribe__Tickets__Main::instance()->move_tickets()->dialog_name(),
+			'check'     => wp_create_nonce( 'move_tickets' ),
+			'TB_iframe' => 'true',
+		];
+
+		$config_data = [
+			'nonce'                 => wp_create_nonce( 'email-attendee-list' ),
+			'required'              => esc_html__( 'You need to select a user or type a valid email address', 'event-tickets' ),
+			'sending'               => esc_html__( 'Sending...', 'event-tickets' ),
+			'ajaxurl'               => admin_url( 'admin-ajax.php' ),
+			'checkin_nonce'         => wp_create_nonce( 'checkin' ),
+			'uncheckin_nonce'       => wp_create_nonce( 'uncheckin' ),
+			'cannot_move'           => esc_html__( 'You must first select one or more tickets before you can move them!', 'event-tickets' ),
+			'move_url'              => add_query_arg( $move_url_args ),
+			'confirmation_singular' => esc_html__( 'Please confirm that you would like to delete this attendee.', 'event-tickets' ),
+			'confirmation_plural'   => esc_html__( 'Please confirm that you would like to delete these attendees.', 'event-tickets' ),
+		];
+
+		/**
+		 * Allow filtering the configuration data for the Attendee objects on Attendees report page.
+		 *
+		 * @since 5.2.0
+		 *
+		 * @param array $config_data List of configuration data to be localized.
+		 */
+		$config_data = apply_filters( 'tribe_tickets_attendees_report_js_config', $config_data );
+
+		tribe_asset(
+			$tickets_main,
+			'tickets-attendees-js',
+			'tickets-attendees.js',
+			[ 'jquery' ],
+			null,
+			[
+				'localize' => [
+					[
+						'name' => 'Attendees',
+						'data' => $config_data,
+					],
+				],
+				'groups' => [
+					'event-tickets-admin-attendees',
+				],
+			]
+		);
+
+		// WP Admin and admin bar.
+		tribe_asset(
+			$tickets_main,
+			'tec-tickets-admin-wp',
+			'tickets-admin-wp.css',
+			[ 'dashicons' ],
+			[
+				'admin_enqueue_scripts',
+				'wp_enqueue_scripts',
+			],
+			[
+				'conditionals' => [ $this, 'should_enqueue_admin_wp' ],
+			]
+		);
 	}
 
 	/**
@@ -363,7 +456,7 @@ class Tribe__Tickets__Assets {
 		global $post;
 
 		// Should enqueue if Ticket settings page.
-		if ( 'tribe-common' === tribe_get_request_var( 'page' ) && 'event-tickets' === tribe_get_request_var( 'tab' ) ) {
+		if ( tribe( Settings::class )->is_tec_tickets_settings() ) {
 			return true;
 		}
 
@@ -390,18 +483,12 @@ class Tribe__Tickets__Assets {
 	 * @return bool
 	 */
 	public function should_enqueue_admin_settings_assets() {
-
 		$admin_helpers = Tribe__Admin__Helpers::instance();
-
-		// The list of admin tabs that the plugin hooks into.
-		$admin_tabs = [
-			'event-tickets',
-			'event-tickets-commerce',
-			'payments',
-		];
+		$admin_pages   = tribe( 'admin.pages' );
+		$admin_page    = $admin_pages->get_current_page();
 
 		// Load specifically on Ticket Settings page only.
-		$should_enqueue = $admin_helpers->is_screen() && in_array( tribe_get_request_var( 'tab' ), $admin_tabs, true );
+		$should_enqueue = $admin_helpers->is_screen() && Settings::$settings_page_id === $admin_page;
 
 		/**
 		 * Allow filtering of whether the base Admin Settings Assets should be loaded.
@@ -532,6 +619,17 @@ class Tribe__Tickets__Assets {
 
 		// If views V2 are in place, we respect the skeleton setting.
 		return ! tribe( Tribe\Events\Views\V2\Assets::class )->is_skeleton_style();
+	}
+
+	/**
+	 * Check if we should enqueue the Event Tickets WP admin assets.
+	 *
+	 * @since 5.5.10
+	 *
+	 * @return bool True if we should enqueue the assets, false otherwise.
+	 */
+	public function should_enqueue_admin_wp(): bool {
+		return is_admin() || is_admin_bar_showing();
 	}
 
 }

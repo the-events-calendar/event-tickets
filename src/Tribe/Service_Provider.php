@@ -1,4 +1,8 @@
 <?php
+
+use TEC\Tickets\Commerce\Custom_Tables\V1\Provider as ET_CT1_Provider;
+use TEC\Tickets\Admin\Upsell as Ticket_Upsell;
+
 /**
  * Class Tribe__Tickets__Service_Provider
  *
@@ -9,22 +13,19 @@
  *
  * @since 4.6
  */
-class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
+class Tribe__Tickets__Service_Provider extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Binds and sets up implementations.
 	 *
+	 * @since 5.6.4 Added `register_on_action` for `tec_events_custom_tables_v1_fully_activated` to activate ET CT1 logic when TEC CT1 is fully activated.
 	 * @since 4.6
 	 */
 	public function register() {
-		$this->container->singleton( 'tickets.assets', new Tribe__Tickets__Assets() );
+		$this->container->singleton( 'tickets.assets', Tribe__Tickets__Assets::class );
 		$this->container->singleton( 'tickets.handler', 'Tribe__Tickets__Tickets_Handler' );
 		$this->container->singleton( 'tickets.attendees', 'Tribe__Tickets__Attendees', [ 'hook' ] );
 		$this->container->singleton( 'tickets.version', 'Tribe__Tickets__Version', [ 'hook' ] );
 		$this->container->singleton( 'tickets.metabox', 'Tribe__Tickets__Metabox', [ 'hook' ] );
-
-		// Caching
-		$this->container->singleton( 'tickets.cache-central', 'Tribe__Tickets__Cache__Central', [ 'hook' ] );
-		$this->container->singleton( 'tickets.cache', tribe( 'tickets.cache-central' )->get_cache() );
 
 		// Query Vars
 		$this->container->singleton( 'tickets.query', 'Tribe__Tickets__Query', [ 'hook' ] );
@@ -49,11 +50,17 @@ class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
 
 		$this->container->singleton( 'tickets.admin.notices', 'Tribe__Tickets__Admin__Notices', [ 'hook' ] );
 
+		// Upsell
+		$this->container->singleton( Ticket_Upsell::class, Ticket_Upsell::class, [ 'hooks' ] );
+
 		// Attendees Table
 		$this->container->singleton( 'tickets.admin.attendees_table', 'Tribe__Tickets__Attendees_Table' );
 
 		// Migration queues.
 		$this->container->singleton( 'tickets.migration.queue_4_12', \Tribe\Tickets\Migration\Queue_4_12::class, [ 'hooks' ] );
+
+		// Enabled ET CT1 when TEC CT1 is fully activated.
+		$this->container->register_on_action( 'tec_events_custom_tables_v1_fully_activated', ET_CT1_Provider::class );
 
 		$this->load();
 	}
@@ -84,14 +91,5 @@ class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
 			tribe( 'tickets.admin.notices' );
 			tribe( 'tickets.admin.settings.display' );
 		}
-	}
-
-	/**
-	 * Binds and sets up implementations at boot time.
-	 *
-	 * @since 4.6
-	 */
-	public function boot() {
-		// no ops
 	}
 }

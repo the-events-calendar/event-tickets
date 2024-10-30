@@ -35,6 +35,10 @@ class Tribe__Tickets__REST__V1__Documentation__Capacity_Details_Definition_Provi
 					'type'        => 'integer',
 					'description' => esc_html( sprintf( __( 'The %s pending count', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'capacity_details_documentation_pending' ) ) ),
 				],
+				'global_stock_mode' => [
+					'type'        => 'string',
+					'description' => esc_html( sprintf( __( 'The %s global stock mode', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'capacity_details_documentation_global_stock_mode' ) ) ),
+				],
 			],
 		];
 

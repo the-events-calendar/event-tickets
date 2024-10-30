@@ -10,6 +10,7 @@ namespace TEC\Tickets\Commerce\Reports;
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Admin_Tables;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Event;
 
 /**
  * Class Reports for Attendees
@@ -83,7 +84,7 @@ class Attendees extends Report_Abstract {
 
 		$page_title           = __( 'Tickets Commerce Attendees', 'event-tickets' );
 		$this->attendees_page = add_submenu_page(
-			null,
+			'',
 			$page_title,
 			$page_title,
 			$cap,
@@ -155,13 +156,27 @@ class Attendees extends Report_Abstract {
 			// Use iFrame Header -- WP Method.
 			iframe_header();
 
-			// Check if we need to send an Email!
-			$status = false;
-			if ( isset( $_POST['tribe-send-email'] ) && $_POST['tribe-send-email'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-				$status = tribe( \Tribe__Tickets__Attendees::class )->send_mail_list();
+			$event_id          = tribe_get_request_var( 'event_id' );
+			$event_id          = ! is_numeric( $event_id ) ? null : absint( $event_id );
+			$nonce             = tribe_get_request_var( '_wpnonce' );
+			$email_address     = tribe_get_request_var( 'email_to_address' );
+			$user_id           = tribe_get_request_var( 'email_to_user' );
+			$should_send_email = (bool) tribe_get_request_var( 'tribe-send-email', false );
+			$type              = $email_address ? 'email' : 'user';
+			$send_to           = $type === 'email' ? $email_address : $user_id;
+
+			$status = tribe( \Tribe__Tickets__Attendees::class )->has_attendees_list_access(
+				$event_id,
+				$nonce,
+				$type,
+				$send_to
+			);
+
+			if ( $should_send_email ) {
+				$status = tribe( \Tribe__Tickets__Attendees::class )->send_mail_list( $event_id, $email_address, $send_to, $status );
 			}
 
-			tribe( 'tickets.admin.views' )->template( 'attendees-email', [ 'status' => $status ] );
+			tribe( 'tickets.admin.views' )->template( 'attendees/attendees-email', [ 'status' => $status ] );
 
 			// Use iFrame Footer -- WP Method.
 			iframe_footer();
@@ -228,7 +243,7 @@ class Attendees extends Report_Abstract {
 					$event_data['total_by_status'][ $status_slug ] = [];
 				}
 
-				$status_value = Commerce\Utils\Value::create( $ticket->price );
+				$status_value                                    = Commerce\Utils\Value::create( $ticket->price );
 				$total_by_status[ $status_slug ]                 = $status_value->sub_total( $status_count );
 				$event_data['total_by_status'][ $status_slug ][] = $total_by_status[ $status_slug ];
 
@@ -363,6 +378,8 @@ class Attendees extends Report_Abstract {
 
 		$event_id = absint( $_GET['event_id'] );
 
+		$event_id = Event::filter_event_id( $event_id, 'attendee-csv-report' );
+
 		// Verify event ID is a valid integer and the nonce is accepted.
 		if ( empty( $event_id ) || ! wp_verify_nonce( $_GET['attendees_csv_nonce'], 'attendees_csv_nonce' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			return;
@@ -454,7 +471,7 @@ class Attendees extends Report_Abstract {
 		add_filter( $filter_name, [ $this->attendees_table, 'get_columns' ], 15 );
 
 		$tickets_class = tribe( \Tribe__Tickets__Tickets::class );
-		$items = $tickets_class::get_event_attendees( $event_id );
+		$items         = $tickets_class::get_event_attendees( $event_id );
 
 		// Add Handler for Community Tickets to Prevent Notices in Exports.
 		if ( ! is_admin() ) {

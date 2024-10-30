@@ -13,11 +13,11 @@ class SingleAttendeeCest extends BaseRestCest {
 	use Attendee_Maker;
 
 	/**
-	 * It should return an error if ET+ is not loaded.
+	 * It should return the attendee response.
 	 *
 	 * @test
 	 */
-	public function should_return_error_if_etplus_not_loaded( Restv1Tester $I ) {
+	public function should_return_attendee_response( Restv1Tester $I ) {
 		$post_id = $I->havePostInDatabase( [ 'post_content' => '[tribe_attendees_list]' ] );
 
 		$I->havePostmetaInDatabase( $post_id, '_tribe_hide_attendees_list', '1' );
@@ -30,13 +30,14 @@ class SingleAttendeeCest extends BaseRestCest {
 				'_capacity'   => 30,
 			],
 		] );
-		$attendees_id    = $this->create_many_attendees_for_ticket( $attendees_count, $ticket_id, $post_id );
+		$attendees       = $this->create_many_attendees_for_ticket( $attendees_count, $ticket_id, $post_id );
 
-		$ticket_rest_url = $this->attendees_url . "/{$ticket_id}";
+		$attendee_id     = $attendees[ 0 ]['attendee_id'];
+		$ticket_rest_url = $this->attendees_url . "/{$attendee_id}";
 
 		$I->sendGET( $ticket_rest_url );
 
-		$I->seeResponseCodeIs( 401 );
+		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
 	}
 }

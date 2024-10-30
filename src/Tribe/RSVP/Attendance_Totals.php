@@ -46,6 +46,7 @@ class Tribe__Tickets__RSVP__Attendance_Totals extends Tribe__Tickets__Abstract_A
 
 		// Note this now uses the `attendees-totals-list` template, so the array values don't quite logically line up
 		$args = [
+			'total_type_label'        => tribe_get_rsvp_label_plural( 'total_type_label' ),
 			'total_sold_label'        => esc_html( sprintf( _x( 'Total %s:', 'attendee summary', 'event-tickets' ), tribe_get_rsvp_label_plural( 'total_sold_label' ) ) ),
 			'total_complete_label'    => _x( 'Going:', 'attendee summary', 'event-tickets' ),
 			'total_cancelled_label'   => _x( 'Not Going:', 'attendee summary', 'event-tickets' ),
@@ -59,7 +60,7 @@ class Tribe__Tickets__RSVP__Attendance_Totals extends Tribe__Tickets__Abstract_A
 			'total_refunded_tooltip'  => '',
 		];
 
-		$html = tribe( 'tickets.admin.views' )->template( 'attendees-totals-list', $args, false );
+		$html = tribe( 'tickets.admin.views' )->template( 'attendees/attendees-event/totals-list', $args, false );
 
 		/**
 		 * Filters the HTML that should be printed to display RSVP attendance lines.

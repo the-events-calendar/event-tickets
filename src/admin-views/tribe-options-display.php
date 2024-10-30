@@ -3,36 +3,15 @@
  * @var array $settings List of display settings.
  */
 
-/** @var Tribe__Dependency $dep */
-$dep = tribe( Tribe__Dependency::class );
-
-$etp_active = $dep->is_plugin_active( 'Tribe__Tickets_Plus__Main' );
+$rsvp_new_views_upgrade_option_available    = tribe_installed_before( 'Tribe__Tickets__Main', '5.0' );
+$tickets_new_views_upgrade_option_available = tribe_installed_before( 'Tribe__Tickets__Main', '5.0.3' );
 
 // Don't display this section if ET is a newer install and ETP is inactive or ETP is active but a newer install.
-if (
-	(
-		! $etp_active
-		&& ! tribe_installed_before( 'Tribe__Tickets__Main', '5.0' )
-	)
-	|| (
-		$etp_active
-		&& ! tribe_installed_before( 'Tribe__Tickets_Plus__Main', '5.1' )
-	)
-) {
+if ( ! $rsvp_new_views_upgrade_option_available && ! $tickets_new_views_upgrade_option_available ) {
 	return;
 }
 
-$tickets_rsvp_display_title = esc_html(
-	sprintf(
-	// Translators: %1$s: dynamic "RSVP" text.
-		_x(
-			'%1$s Display Settings',
-			'title of settings section',
-			'event-tickets'
-		),
-		tribe_get_rsvp_label_singular( 'tickets_rsvp_display_title' )
-	)
-);
+$tickets_rsvp_display_title = esc_html__( 'Display', 'event-tickets' );
 
 $tickets_rsvp_display_description = esc_html(
 	sprintf(
@@ -46,23 +25,10 @@ $tickets_rsvp_display_description = esc_html(
 	)
 );
 
-if ( $etp_active ) {
-	$tickets_rsvp_display_title = esc_html(
-		sprintf(
-		// Translators: %1$s: dynamic "Ticket" text, %2$s: dynamic "RSVP" text.
-			_x(
-				'%1$s and %2$s Display Settings',
-				'title of settings section',
-				'event-tickets'
-			),
-			esc_html( tribe_get_ticket_label_singular( 'tickets_rsvp_display_title' ) ),
-			tribe_get_rsvp_label_singular( 'tickets_rsvp_display_title' )
-		)
-	);
-
+if ( $tickets_new_views_upgrade_option_available ) {
 	$tickets_rsvp_display_description = esc_html(
 		sprintf(
-		// Translators: %1$s: dynamic "Tickets" text, %2$s: dynamic "RSVPs" text.
+			// Translators: %1$s: dynamic "Tickets" text, %2$s: dynamic "RSVPs" text.
 			_x(
 				'The settings below control the display of your %1$s and %2$s.',
 				'description of settings section',
@@ -86,7 +52,7 @@ $et_options_display = [
 ];
 
 // Only show this option to older installs, as newer installs default to new views.
-if ( tribe_installed_before( 'Tribe__Tickets__Main', '5.0' ) ) {
+if ( $rsvp_new_views_upgrade_option_available ) {
 	$et_options_display['tickets_rsvp_use_new_views'] = [
 		'type'            => 'checkbox_bool',
 		'label'           => esc_html(
@@ -117,10 +83,7 @@ if ( tribe_installed_before( 'Tribe__Tickets__Main', '5.0' ) ) {
 }
 
 // Only show this option to older installs, as newer installs default to new views.
-if (
-	$etp_active
-	&& tribe_installed_before( 'Tribe__Tickets_Plus__Main', '5.1' )
-) {
+if ( $tickets_new_views_upgrade_option_available ) {
 	$et_options_display['tickets_use_new_views'] = [
 		'type'            => 'checkbox_bool',
 		'label'           => esc_html(

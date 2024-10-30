@@ -13,8 +13,9 @@ exports[`Action Dashboard Element renders action dashboard 1`] = `
       type="button"
     />
     <button
-      className="tribe-editor__button tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm"
+      className="tribe-editor__button tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm tribe-common-c-btn"
       onClick={[Function]}
+      onMouseDown={[Function]}
       type="button"
     />
   </div>
@@ -48,8 +49,9 @@ exports[`Action Dashboard Element renders action dashboard with actions 1`] = `
       type="button"
     />
     <button
-      className="tribe-editor__button tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm"
+      className="tribe-editor__button tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm tribe-common-c-btn"
       onClick={[Function]}
+      onMouseDown={[Function]}
       type="button"
     />
   </div>
@@ -70,8 +72,9 @@ exports[`Action Dashboard Element renders action dashboard with cancel button di
       type="button"
     />
     <button
-      className="tribe-editor__button tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm"
+      className="tribe-editor__button tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm tribe-common-c-btn"
       onClick={[Function]}
+      onMouseDown={[Function]}
       type="button"
     />
   </div>
@@ -86,8 +89,9 @@ exports[`Action Dashboard Element renders action dashboard with cancel button hi
     className="tribe-editor__action-dashboard__group-right"
   >
     <button
-      className="tribe-editor__button tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm"
+      className="tribe-editor__button tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm tribe-common-c-btn"
       onClick={[Function]}
+      onMouseDown={[Function]}
       type="button"
     />
   </div>
@@ -107,8 +111,9 @@ exports[`Action Dashboard Element renders action dashboard with cancel click han
       type="button"
     />
     <button
-      className="tribe-editor__button tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm"
+      className="tribe-editor__button tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm tribe-common-c-btn"
       onClick={[Function]}
+      onMouseDown={[Function]}
       type="button"
     />
   </div>
@@ -130,8 +135,9 @@ exports[`Action Dashboard Element renders action dashboard with cancel label 1`]
       Cancel
     </button>
     <button
-      className="tribe-editor__button tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm"
+      className="tribe-editor__button tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm tribe-common-c-btn"
       onClick={[Function]}
+      onMouseDown={[Function]}
       type="button"
     />
   </div>
@@ -151,8 +157,9 @@ exports[`Action Dashboard Element renders action dashboard with class 1`] = `
       type="button"
     />
     <button
-      className="tribe-editor__button tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm"
+      className="tribe-editor__button tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm tribe-common-c-btn"
       onClick={[Function]}
+      onMouseDown={[Function]}
       type="button"
     />
   </div>
@@ -172,9 +179,10 @@ exports[`Action Dashboard Element renders action dashboard with confirm button d
       type="button"
     />
     <button
-      className="tribe-editor__button tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm"
+      className="tribe-editor__button tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm tribe-common-c-btn"
       disabled={true}
       onClick={[Function]}
+      onMouseDown={[Function]}
       type="button"
     />
   </div>
@@ -210,8 +218,9 @@ exports[`Action Dashboard Element renders action dashboard with confirm click ha
       type="button"
     />
     <button
-      className="tribe-editor__button tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm"
-      onClick={[MockFunction]}
+      className="tribe-editor__button tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm tribe-common-c-btn"
+      onClick={[Function]}
+      onMouseDown={[MockFunction]}
       type="button"
     />
   </div>
@@ -231,8 +240,9 @@ exports[`Action Dashboard Element renders action dashboard with confirm label 1`
       type="button"
     />
     <button
-      className="tribe-editor__button tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm"
+      className="tribe-editor__button tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm tribe-common-c-btn"
       onClick={[Function]}
+      onMouseDown={[Function]}
       type="button"
     >
       Confirm

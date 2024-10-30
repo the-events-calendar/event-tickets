@@ -2,6 +2,7 @@
 
 namespace Tribe\Tickets;
 
+use TEC\Tickets\Commerce\Module;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
@@ -25,9 +26,11 @@ class TicketsTest extends \Codeception\TestCase\WPTestCase {
 			return [ 'post' ];
 		} );
 
-		// Enable Tribe Commerce.
+		// Enable Tribe Commerce (PayPal).
 		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
+		// Ensure PayPal is the only commerce provider active.
 		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
+			unset( $modules[ Module::class ] );
 			$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( 'tickets.commerce.paypal' )->plugin_name;
 
 			return $modules;
@@ -467,4 +470,37 @@ class TicketsTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertInstanceOf( 'Tribe__Tickets__Commerce__PayPal__Main', $active_providers['Tribe__Tickets__Commerce__PayPal__Main'] );
 	}
 
+	/**
+	 * It should set context correctly when getting tickets
+	 *
+	 * Using Tickets Commerce for the test, but this is a generic test for all providers.
+	 *
+	 * @test
+	 */
+	public function should_set_context_correctly_when_getting_tickets(): void {
+		$post_id = tribe_events()->set_args( [
+			'title'      => 'Test Event',
+			'status'     => 'publish',
+			'start_date' => '2020-01-01 00:00:00',
+			'duration'   => 2 * HOUR_IN_SECONDS,
+		] )->create()->ID;
+
+		$tickets = call_user_func( [ Tickets::get_event_ticket_provider($post_id), 'get_instance' ] );
+
+		$request_context = '';
+		add_filter( 'tribe_repository_tickets_query_args', function ( $query_args, $query, $repository ) use ( &$request_context ) {
+			$request_context = $repository->get_request_context();
+
+			return $query_args;
+		}, 10, 3 );
+
+		$tickets->get_tickets( $post_id );
+
+		$this->assertNull( $request_context );
+
+		// Run another query, this time setting the context.
+		$tickets->get_tickets( $post_id, 'some-context' );
+
+		$this->assertEquals( 'some-context', $request_context );
+	}
 }

@@ -1,0 +1,24 @@
+array (
+  'during_panel_rendering' => 
+  array (
+    'ticket_label_plural_lowercase_no_context' => 'tickets',
+    'ticket_label_singular_lowercase_no_context' => 'ticket',
+    'ticket_label_plural_no_context' => 'Tickets',
+    'ticket_label_singular_no_context' => 'Ticket',
+    'ticket_label_plural_lowercase_metabox_capacity' => 'Series Passes',
+    'ticket_label_singular_lowercase_metabox_capacity' => 'Series Pass',
+    'ticket_label_plural_metabox_capacity' => 'Series Passes',
+    'ticket_label_singular_metabox_capacity' => 'Series Pass',
+  ),
+  'after_panel_rendering' => 
+  array (
+    'ticket_label_plural_lowercase_no_context' => 'tickets',
+    'ticket_label_singular_lowercase_no_context' => 'ticket',
+    'ticket_label_plural_no_context' => 'Tickets',
+    'ticket_label_singular_no_context' => 'Ticket',
+    'ticket_label_plural_lowercase_metabox_capacity' => 'tickets',
+    'ticket_label_singular_lowercase_metabox_capacity' => 'ticket',
+    'ticket_label_plural_metabox_capacity' => 'Tickets',
+    'ticket_label_singular_metabox_capacity' => 'Ticket',
+  ),
+)

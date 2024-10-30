@@ -8,7 +8,7 @@
 		data-provider="Tribe__Tickets__Commerce__PayPal__Main"
 		autocomplete="off"
 		data-provider-id="tribe-commerce"
-		data-post-id="19"
+		data-post-id="5344"
 		novalidate
 	>
 
@@ -34,17 +34,18 @@
 </div>
 
 		<div
-	id="tribe-modal-tickets-item-20"
-	 class="tribe-tickets__tickets-item post-20 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="20" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
+	id="tribe-modal-tickets-item-5345"
+	 class="tribe-tickets__tickets-item post-5345 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="5345" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
 
-	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
-		Test ticket for 19</div>
-
+	<div class="tribe-tickets__tickets-item-content-title-container">
+		<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
+				Test ticket for 5344	</div>
+</div>
 <div class="tribe-tickets__tickets-item-details-summary">
 	<button
 		type="button"
 		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--more"
-		aria-controls="tribe__details__content__modal--20"
+		aria-controls="tribe__details__content__modal--5345"
 		tabindex="0"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">Open the ticket description.</span>
@@ -52,7 +53,7 @@
 	<button
 		type="button"
 		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--less"
-		aria-controls="tribe__details__content__modal--20"
+		aria-controls="tribe__details__content__modal--5345"
 		tabindex="0"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">Close the ticket description.</span>
@@ -60,9 +61,9 @@
 </div>
 
 <div
-	id="tribe__details__content__modal--20"
+	id="tribe__details__content__modal--5345"
 	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content tribe-common-a11y-hidden" >
-	Test ticket description for 19</div>
+	Test ticket description for 5344</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >
@@ -94,17 +95,18 @@
 	
 </div>
 <div
-	id="tribe-modal-tickets-item-21"
-	 class="tribe-tickets__tickets-item post-21 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="21" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
+	id="tribe-modal-tickets-item-5346"
+	 class="tribe-tickets__tickets-item post-5346 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="5346" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
 
-	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
-		Test ticket for 19</div>
-
+	<div class="tribe-tickets__tickets-item-content-title-container">
+		<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
+				Test ticket for 5344	</div>
+</div>
 <div class="tribe-tickets__tickets-item-details-summary">
 	<button
 		type="button"
 		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--more"
-		aria-controls="tribe__details__content__modal--21"
+		aria-controls="tribe__details__content__modal--5346"
 		tabindex="0"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">Open the ticket description.</span>
@@ -112,7 +114,7 @@
 	<button
 		type="button"
 		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--less"
-		aria-controls="tribe__details__content__modal--21"
+		aria-controls="tribe__details__content__modal--5346"
 		tabindex="0"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">Close the ticket description.</span>
@@ -120,9 +122,9 @@
 </div>
 
 <div
-	id="tribe__details__content__modal--21"
+	id="tribe__details__content__modal--5346"
 	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content tribe-common-a11y-hidden" >
-	Test ticket description for 19</div>
+	Test ticket description for 5344</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >

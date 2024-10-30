@@ -1,6 +1,4 @@
-( function ( $, obj ) {
-	'use strict';
-
+( function( $, obj ) {
 	obj.$window = $( window );
 
 	obj.selectors = {
@@ -15,9 +13,9 @@
 	obj.onResize = function() {
 		// resize the video embed to keep the right aspect ratio
 		$( obj.selectors.adminVideo ).each( function() {
-			var $video = $( this );
-			var w = $video.width();
-			var newHeight;
+			const $video = $( this );
+			const w = $video.width();
+			let newHeight = 0;
 
 			// 16:9 ratio
 			newHeight = w * 0.5625;
@@ -27,13 +25,13 @@
 		} );
 
 		// find window size to adjust the thickbox links
-		var height = parseInt( obj.$window.height() * 0.9, 10 );
-		var width = parseInt( obj.$window.width() * 0.9, 10 );
+		const height = parseInt( obj.$window.height() * 0.9, 10 );
+		const width = parseInt( obj.$window.width() * 0.9, 10 );
 
 		// adjust thickbox links height and width to be 90% of the browser height and width
 		$( obj.selectors.thickbox ).each( function() {
-			var $link = $( this );
-			var href = new URL( $link.prop( 'href' ) );
+			const $link = $( this );
+			const href = new URL( $link.prop( 'href' ) );
 
 			href.searchParams.set( 'height', height );
 			href.searchParams.set( 'width', width );

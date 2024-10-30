@@ -13,6 +13,14 @@ use Tribe__Utils__Array as Arr;
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
 class Merchant extends Abstract_Merchant {
+	/**
+	 * Stores the nonce action for disconnecting Stripe.
+	 *
+	 * @since 5.11.0.5
+	 *
+	 * @var string
+	 */
+	protected string $disconnect_action = 'stripe-disconnect';
 
 	/**
 	 * List of countries that are unauthorized to work with the TEC Provider for regulatory reasons.
@@ -21,6 +29,7 @@ class Merchant extends Abstract_Merchant {
 	 */
 	const UNAUTHORIZED_COUNTRIES = [
 		'BR',
+		'IN',
 		'MX',
 	];
 
@@ -119,7 +128,7 @@ class Merchant extends Abstract_Merchant {
 	}
 
 	/**
-	 * Returns the stripe client secret stored for server-side transactions.
+	 * Returns the Stripe client secret stored for server-side transactions.
 	 *
 	 * @since 5.3.0
 	 *
@@ -153,7 +162,7 @@ class Merchant extends Abstract_Merchant {
 	}
 
 	/**
-	 * Returns the stripe client id stored for server-side transactions.
+	 * Returns the Stripe client id stored for server-side transactions.
 	 *
 	 * @since 5.3.0
 	 *
@@ -323,7 +332,7 @@ class Merchant extends Abstract_Merchant {
 	}
 
 	/**
-	 * Determine if a stripe account is listed in an unauthorized country.
+	 * Determine if a Stripe account is listed in an unauthorized country.
 	 *
 	 * @since 5.3.0
 	 *

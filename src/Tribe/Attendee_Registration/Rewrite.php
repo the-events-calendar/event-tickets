@@ -64,7 +64,13 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 	 * @param Tribe__Tickets__Attendee_Registration__Rewrite $rewrite The rewrite instance.
 	 */
 	public function generate_core_rules( Tribe__Tickets__Attendee_Registration__Rewrite $rewrite ) {
-		$rewrite->add( [ '{{ ' . tribe( 'tickets.attendee_registration' )->key_query_var . ' }}' ], [ tribe( 'tickets.attendee_registration' )->key_query_var => 1 ] );
+		try {
+			$attendee_registration = tribe( 'tickets.attendee_registration' );
+		} catch ( \Exception $e ) {
+			return;
+		}
+
+		$rewrite->add( [ '{{ ' . $attendee_registration->key_query_var . ' }}' ], [ $attendee_registration->key_query_var => 1 ] );
 	}
 
 	/**
@@ -73,7 +79,13 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 	 * @since 4.9
 	 */
 	public function add_rewrite_tags() {
-		add_rewrite_tag( '%' . tribe( 'tickets.attendee_registration' )->key_query_var . '%', '([^&]+)' );
+		try {
+			$attendee_registration = tribe( 'tickets.attendee_registration' );
+		} catch ( \Exception $e ) {
+			return;
+		}
+
+		add_rewrite_tag( '%' . $attendee_registration->key_query_var . '%', '([^&]+)' );
 	}
 
 	/**
@@ -88,6 +100,14 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 	 */
 	public function get_bases( $method = 'regex' ) {
 		$tickets = tribe( 'tickets.main' );
+
+		try {
+			$base_slugs_default = [
+				'attendee-registration' => [ tribe( 'tickets.attendee_registration' )->get_slug() ],
+			];
+		} catch ( \Exception $e ) {
+			$base_slugs_default = [];
+		}
 
 		/**
 		 * If you want to modify the base slugs before the i18n happens, use this filter
@@ -107,9 +127,7 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 		 *
 		 * @var array $bases
 		 */
-		$bases = apply_filters( 'tribe_tickets_rewrite_base_slugs', array(
-			'attendee-registration' => array( tribe( 'tickets.attendee_registration' )->get_slug() ),
-		) );
+		$bases = apply_filters( 'tribe_tickets_rewrite_base_slugs', $base_slugs_default );
 
 		// Remove duplicates (no need to have 'month' twice if no translations are in effect, etc)
 		$bases = array_map( 'array_unique', $bases );

@@ -27,4 +27,4 @@ if ( empty( $sections ) ) {
 		id="<?php echo esc_attr( Payments_Tab::$key_current_section ); ?>"
 		value="<?php echo esc_attr( $selected_section ); ?>"
 	/>
-<?php endif; ?>
+<?php endif;

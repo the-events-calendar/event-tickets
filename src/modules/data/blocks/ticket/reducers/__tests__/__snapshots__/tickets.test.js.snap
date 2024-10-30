@@ -20,9 +20,13 @@ exports[`Tickets reducer byClientId should register ticket block 1`] = `
 Object {
   "tribe": Object {
     "available": 0,
+    "currencyDecimalPoint": ".",
+    "currencyNumberOfDecimals": 2,
     "currencyPosition": "prefix",
     "currencySymbol": undefined,
+    "currencyThousandsSep": ",",
     "details": Object {
+      "attendeeInfoFields": Array [],
       "capacity": "",
       "capacityType": "unlimited",
       "description": "",

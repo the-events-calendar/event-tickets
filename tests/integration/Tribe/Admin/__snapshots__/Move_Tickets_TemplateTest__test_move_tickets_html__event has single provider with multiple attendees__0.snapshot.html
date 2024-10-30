@@ -1,0 +1,65 @@
+<div id="tribe-dialog-wrapper">
+	<div id="heading">
+		<h1> Move Attendees </h1>
+	</div>
+
+	<div id="main">
+
+		
+		
+		<div id="move-where" class="stage">
+			<p> 
+			You have selected <strong>2</strong> attendees for <strong>Moving Attendee - Test Event</strong>. You can move them to a different ticket within the same event, or to a different event.			</p>
+
+			<p>
+				<label for="move-where-this">
+					<input type="radio" value="this-post" name="move-where" id="move-where-this"/>
+					Move attendee to a different ticket within the same event				</label>
+				<label for="move-where-other">
+					<input type="radio" value="other" name="move-where" id="move-where-other"/>
+					Move attendee to a different event				</label>
+			</p>
+		</div>
+
+		<div id="choose-event" class="stage">
+			<p>
+				<label for="post-type"> You can optionally focus on a specific post type: </label>
+				<select name="post-type" id="post-type"></select>
+			</p>
+
+			<p>
+				<label for="search-terms"> You can also enter keywords to help find the target event by title or description: </label>
+				<input type="text" name="search-terms" id="search-terms" value="" />
+			</p>
+
+			<p>
+				<label for="post-choice"> Select the post you wish to move the attendee to: </label>
+			</p>
+			<div id="post-choice" class="select-single-container"></div>
+
+		</div>
+
+		<div id="choose-ticket-type" class="stage">
+			<p>
+				<label for="ticket-type-choice"> Select the ticket that the attendees should be transferred to:</label>
+			</p>
+			<div id="ticket-type-choice" class="select-single-container"></div>
+
+		</div>
+
+		<div id="processing" style="aligncenter">
+			<p>
+				Please be patient while your request is processed&hellip;				<img src="http://wordpress.test/wp-admin/images/spinner.gif" />
+			</p>
+		</div>
+
+		<div id="back-next">
+			<p>
+				<a href="#" class="button alignleft" id="back">&laquo; Back</a>
+				<a href="#" class="button alignright" id="next" data-final-text="Finish!">
+					Next &raquo;				</a>
+			</p>
+		</div>
+
+	</div>
+</div>

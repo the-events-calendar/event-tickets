@@ -2,6 +2,7 @@
 
 exports[`Details reducer should set the capacity 1`] = `
 Object {
+  "attendeeInfoFields": Array [],
   "capacity": 20,
   "capacityType": "unlimited",
   "description": "",
@@ -24,6 +25,7 @@ Object {
 
 exports[`Details reducer should set the capacity type 1`] = `
 Object {
+  "attendeeInfoFields": Array [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -46,6 +48,7 @@ Object {
 
 exports[`Details reducer should set the description 1`] = `
 Object {
+  "attendeeInfoFields": Array [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "new description",
@@ -68,6 +71,7 @@ Object {
 
 exports[`Details reducer should set the end date 1`] = `
 Object {
+  "attendeeInfoFields": Array [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -90,6 +94,7 @@ Object {
 
 exports[`Details reducer should set the end date moment 1`] = `
 Object {
+  "attendeeInfoFields": Array [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -114,6 +119,7 @@ Object {
 
 exports[`Details reducer should set the end time 1`] = `
 Object {
+  "attendeeInfoFields": Array [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -136,6 +142,7 @@ Object {
 
 exports[`Details reducer should set the end time input 1`] = `
 Object {
+  "attendeeInfoFields": Array [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -158,6 +165,7 @@ Object {
 
 exports[`Details reducer should set the iac setting 1`] = `
 Object {
+  "attendeeInfoFields": Array [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -180,6 +188,7 @@ Object {
 
 exports[`Details reducer should set the price 1`] = `
 Object {
+  "attendeeInfoFields": Array [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -202,6 +211,7 @@ Object {
 
 exports[`Details reducer should set the sku 1`] = `
 Object {
+  "attendeeInfoFields": Array [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -224,6 +234,7 @@ Object {
 
 exports[`Details reducer should set the start date 1`] = `
 Object {
+  "attendeeInfoFields": Array [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -246,6 +257,7 @@ Object {
 
 exports[`Details reducer should set the start date moment 1`] = `
 Object {
+  "attendeeInfoFields": Array [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -270,6 +282,7 @@ Object {
 
 exports[`Details reducer should set the start time 1`] = `
 Object {
+  "attendeeInfoFields": Array [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -292,6 +305,7 @@ Object {
 
 exports[`Details reducer should set the start time input 1`] = `
 Object {
+  "attendeeInfoFields": Array [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -314,6 +328,7 @@ Object {
 
 exports[`Details reducer should set the title 1`] = `
 Object {
+  "attendeeInfoFields": Array [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",

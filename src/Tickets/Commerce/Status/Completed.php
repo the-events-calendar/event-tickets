@@ -36,13 +36,15 @@ class Completed extends Status_Abstract {
 		'complete',
 		'backfill_purchaser',
 		'attendee_dispatch',
+		'end_duplicated_pending_orders',
 		'stock_reduced',
 		'send_email',
+		'send_email_completed_order',
+		'send_email_purchase_receipt',
 		'count_attendee',
 		'count_completed',
 		'count_sales',
 		'increase_sales',
-		'end_duplicated_pending_orders',
 	];
 
 	/**
@@ -55,4 +57,13 @@ class Completed extends Status_Abstract {
 		'show_in_admin_status_list' => true,
 	];
 
+	/**
+	 * {@inheritdoc}
+	 */
+	public function can_be_updated_to(): array {
+		return [
+			tribe( Voided::class ),
+			tribe( Refunded::class ),
+		];
+	}
 }

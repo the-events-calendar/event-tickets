@@ -63,11 +63,11 @@ class WhoDat extends Abstract_WhoDat {
 	}
 
 	/**
-	 * Register a newly connected stripe account to the website.
+	 * Register a newly connected Stripe account to the website.
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param array $account_data array of data returned from stripe after a successful connection.
+	 * @param array $account_data array of data returned from Stripe after a successful connection.
 	 */
 	public function onboard_account( $account_data ) {
 

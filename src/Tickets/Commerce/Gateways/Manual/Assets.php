@@ -17,7 +17,7 @@ namespace TEC\Tickets\Commerce\Gateways\Manual;
  *
  * @package TEC\Tickets\Commerce\Gateways\Manual
  */
-class Assets extends \tad_DI52_ServiceProvider {
+class Assets extends \TEC\Common\Contracts\Service_Provider {
 
 	/**
 	 * Binds and sets up implementations.

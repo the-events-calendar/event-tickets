@@ -10,7 +10,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	 *
 	 * While the structure must conform to that used by v2.0 of Swagger the structure can be that of a full document
 	 * or that of a document part.
-	 * The intelligence lies in the "gatherer" of informations rather than in the single "providers" implementing this
+	 * The intelligence lies in the "gatherer" of information rather than in the single "providers" implementing this
 	 * interface.
 	 *
 	 * @link http://swagger.io/
@@ -86,18 +86,13 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
 	 */
 	public function get( WP_REST_Request $request ) {
-		// Early bail: ET Plus must be active to use this endpoint.
-		if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
-			return new WP_REST_Response( __( 'Sorry, Event Tickets Plus must be active to use this endpoint.', 'event-tickets' ), 401 );
-		}
-
 		$query_args = $request->get_query_params();
-		$page  = $request['page'];
-		$per_page = $request['per_page'];
+		$page       = $request['page'];
+		$per_page   = $request['per_page'];
 
-		$fetch_args = array();
+		$fetch_args = [];
 
-		$supported_args = array(
+		$supported_args = [
 			'provider'                       => 'provider',
 			'search'                         => 's',
 			'post_id'                        => 'event',
@@ -110,7 +105,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 			'before'                         => 'before_date',
 			'include'                        => 'post__in',
 			'exclude'                        => 'post__not_in',
-			'order'                          => 'order',
+			'order_id'                       => 'order',
 			'post_status'                    => 'event_status',
 			'status'                         => 'post_status',
 			'order_status'                   => 'order_status',
@@ -119,7 +114,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 			'price_min'                      => 'price_min',
 			'price_max'                      => 'price_max',
 			'attendee_information_available' => 'has_attendee_meta',
-		);
+		];
 
 		foreach ( $supported_args as $request_arg => $query_arg ) {
 			if ( isset( $request[ $request_arg ] ) ) {
@@ -127,7 +122,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 			}
 		}
 
-		if ( current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' ) ) {
+		if ( tribe( 'tickets.rest-v1.main' )->request_has_manage_access() ) {
 			$permission                 = Tribe__Tickets__REST__V1__Attendee_Repository::PERMISSION_EDITABLE;
 			$fetch_args['post_status']  = Tribe__Utils__Array::get( $fetch_args, 'post_status', 'any' );
 			$fetch_args['event_status'] = Tribe__Utils__Array::get( $fetch_args, 'event_status', 'any' );
@@ -143,26 +138,29 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 			->by_args( $fetch_args )
 			->permission( $permission );
 
-		if ( $request['order'] ) {
-			$query->order( $request['order'] );
-		}
-
 		if ( $request['orderby'] ) {
 			$query->order_by( $request['orderby'] );
+		}
+
+		if ( $request['order'] ) {
+			$query->order( $request['order'] );
 		}
 
 		if ( $request['offset'] ) {
 			$query->offset( $request['offset'] );
 		}
 
-		$query_args = array_intersect_key( $query_args, $this->READ_args() );
+		$query = $this->process_search( $query_args, $query );
 
-		$found = $query->found();
+		$query_args = array_intersect_key( $query_args, $this->READ_args() );
+		$found      = $query->found();
+
+		$total_pages = (int) ceil( $found / $per_page );
 
 		if ( 0 === $found && 1 === $page ) {
-			$attendees = array();
-		} elseif ( 1 !== $page && $page * $per_page > $found ) {
-			return new WP_Error( 'invalid-page-number', $this->messages->get_message( 'invalid-page-number' ), array( 'status' => 400 ) );
+			$attendees = [];
+		} elseif ( 1 !== $page && $page > $total_pages ) {
+			return new WP_Error( 'invalid-page-number', $this->messages->get_message( 'invalid-page-number' ), [ 'status' => 400 ] );
 		} else {
 			$attendees = $query
 				->per_page( $per_page )
@@ -173,7 +171,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 		/** @var Tribe__Tickets__REST__V1__Main $main */
 		$main = tribe( 'tickets.rest-v1.main' );
 
-		// make sure all arrays are formatted to by CSV lists
+		// Make sure all arrays are formatted to by CSV lists.
 		foreach ( $query_args as $key => &$value ) {
 			if ( is_array( $value ) ) {
 				$value = Tribe__Utils__Array::to_list( $value );
@@ -182,15 +180,41 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 
 		$data['rest_url']    = add_query_arg( $query_args, $main->get_url( '/attendees/' ) );
 		$data['total']       = $found;
-		$data['total_pages'] = (int) ceil( $found / $per_page );
+		$data['total_pages'] = $total_pages;
 		$data['attendees']   = $attendees;
 
-		$headers = array(
+		$headers = [
 			'X-ET-TOTAL'       => $data['total'],
 			'X-ET-TOTAL-PAGES' => $data['total_pages'],
-		);
+		];
 
 		return new WP_REST_Response( $data, 200, $headers );
+	}
+
+	/**
+	 * Process the search terms for attendees.
+	 *
+	 * @since 5.5.2
+	 *
+	 * @param array $request_args Array of request args.
+	 * @param Tribe__Tickets__REST__V1__Attendee_Repository $query The query object.
+	 *
+	 * @return Tribe__Tickets__REST__V1__Attendee_Repository $query The query object.
+	 */
+	protected function process_search( array $request_args, Tribe__Tickets__REST__V1__Attendee_Repository $query ) {
+
+		$search_keys = [
+			'name'  => 'holder_name__like',
+			'email' => 'holder_email__like',
+		];
+
+		foreach ( $search_keys as $key => $search_term ) {
+			if ( isset( $request_args[ $key ] ) ) {
+				$query->by( $search_term, '%' . sanitize_text_field( $request_args[ $key ] ) . '%' );
+			}
+		}
+
+		return $query;
 	}
 
 	/**
@@ -426,9 +450,19 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 				),
 			),
 			'attendee_information_available' => array(
-				'description'       => __( 'Limit results to attendees for tickets that provide attendees the possibility to fill in additional information or not; requires ET+.', 'event-tickets' ),
-				'required'          => false,
-				'type'           => 'boolean',
+				'description' => __( 'Limit results to attendees for tickets that provide attendees the possibility to fill in additional information or not; requires ET+.', 'event-tickets' ),
+				'required'    => false,
+				'type'        => 'boolean',
+			),
+			'name' => array(
+				'description' => __( 'Limit results to attendees by name. It will search for names that are like the specified value', 'event-tickets' ),
+				'required'    => false,
+				'type'        => 'string',
+			),
+			'email' => array(
+				'description' => __( 'Limit results to attendees by email. It will search for emails that are like the specified value', 'event-tickets' ),
+				'required'    => false,
+				'type'        => 'string',
 			),
 		);
 	}

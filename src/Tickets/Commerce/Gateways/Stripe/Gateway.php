@@ -3,9 +3,11 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
+use TEC\Tickets\Commerce\Gateways\Contracts\Traits\Paid_Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\Return_Endpoint;
 use TEC\Tickets\Commerce\Payments_Tab;
 use TEC\Tickets\Commerce\Settings as TC_Settings;
+use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Utils\Currency;
 use \Tribe__Tickets__Main;
 use Tribe__Utils__Array as Arr;
@@ -18,6 +20,7 @@ use Tribe__Utils__Array as Arr;
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
 class Gateway extends Abstract_Gateway {
+	use Paid_Gateway;
 
 	/**
 	 * @inheritDoc
@@ -33,6 +36,11 @@ class Gateway extends Abstract_Gateway {
 	 * @inheritDoc
 	 */
 	protected static $merchant = Merchant::class;
+
+	/**
+	 * @inheritDoc
+	 */
+	protected string $order_controller_class = Order::class;
 
 	/**
 	 * @inheritDoc
@@ -103,7 +111,7 @@ class Gateway extends Abstract_Gateway {
 				'slug'    => 'tc-stripe-account-disconnected',
 				'content' => sprintf(
 					// Translators: %1$s is the opening <a> tag for the Payments Tab page link. %2$s is the closing <a> tag.
-					__( 'Your stripe account was disconnected from the Stripe dashboard. If you believe this is an error, you can re-connect in the %1$sPayments Tab of the Settings Page%2$s.', 'event-tickets' ),
+					__( 'Your Stripe account was disconnected from the Stripe dashboard. If you believe this is an error, you can re-connect in the %1$sPayments Tab of the Settings Page%2$s.', 'event-tickets' ),
 					'<a href="' . tribe( Payments_Tab::class )->get_url( [ 'tc-section' => Gateway::get_key() ] ) . '">',
 					'</a>' ),
 				'type'    => 'error',

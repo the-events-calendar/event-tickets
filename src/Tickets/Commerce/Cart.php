@@ -151,7 +151,7 @@ class Cart {
 	 * @return string
 	 */
 	public static function get_transient_name( $id ) {
-		return Commerce::ABBR . '-cart-' . md5( $id );
+		return Commerce::ABBR . '-cart-' . md5( $id ?? '' );
 	}
 
 	/**
@@ -194,6 +194,31 @@ class Cart {
 	}
 
 	/**
+	 * Generates a unique version of the cart hash, used to enforce idempotency in REST API requests.
+	 *
+	 * @since 5.4.0.2
+	 *
+	 * @param string $salt An optional value to make sure the generated hash is not directly translatable to the cart
+	 *                     hash.
+	 *
+	 * @return string
+	 */
+	public function generate_cart_order_hash( $salt = '' ): string {
+		$cart_hash = $this->get_cart_hash();
+
+		/**
+		 * Allows modifications to the cart/order hash for Tickets Commerce.
+		 *
+		 * @since 5.4.0.2
+		 *
+		 * @param string $cart_order_hash The md5-hashed cart hash.
+		 * @param string $cart_hash       The current cart hash.
+		 * @param string $salt            The salt value.
+		 */
+		return (string) apply_filters( 'tec_tickets_commerce_cart_order_hash', md5( $cart_hash . $salt ), $cart_hash, $salt );
+	}
+
+	/**
 	 * Reads the cart hash from the cookies.
 	 *
 	 * @since 5.1.9
@@ -222,7 +247,6 @@ class Cart {
 			$tries     = 1;
 			$max_tries = 20;
 
-			$this->clear_cart();
 			// While we dont find an empty transient to store this cart we loop, but avoid more than 20 tries.
 			while (
 				( ! empty( $cart_hash_transient ) || empty( $cart_hash ) )
@@ -291,23 +315,18 @@ class Cart {
 		 * @param int $expires The expiry time, as passed to setcookie().
 		 */
 		$expire  = apply_filters( 'tec_tickets_commerce_cart_expiration', time() + 1 * HOUR_IN_SECONDS );
-		$referer = wp_get_referer();
-
-		if ( $referer ) {
-			$secure = ( 'https' === parse_url( $referer, PHP_URL_SCHEME ) );
-		} else {
-			$secure = false;
-		}
 
 		// When null means we are deleting.
 		if ( null === $value ) {
 			$expire = 1;
 		}
 
-		$is_cookie_set = setcookie( static::$cart_hash_cookie_name, $value, $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, $secure );
+		$is_cookie_set = setcookie( static::$cart_hash_cookie_name, $value ?? '', $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, is_ssl(), true );
 
-		// Overwrite local variable so we can use it right away.
-		$_COOKIE[ static::$cart_hash_cookie_name ] = $value;
+		if ( $is_cookie_set ) {
+			// Overwrite local variable, so we can use it right away.
+			$_COOKIE[ static::$cart_hash_cookie_name ] = $value;
+		}
 
 		return $is_cookie_set;
 	}
@@ -322,33 +341,7 @@ class Cart {
 	 * @return array List of items.
 	 */
 	public function get_items_in_cart( $full_item_params = false ) {
-		$cart  = $this->get_repository();
-		$items = $cart->get_items();
-
-		// When Items is empty in any capacity return an empty array.
-		if ( empty( $items ) ) {
-			return [];
-		}
-
-		if ( $full_item_params ) {
-			$items = array_map( static function ( $item ) {
-				$item['obj']       = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
-				// If it's an invalid ticket we just remove it.
-				if ( ! $item['obj'] instanceof \Tribe__Tickets__Ticket_Object ) {
-					return null;
-				}
-
-				$sub_total_value = Commerce\Utils\Value::create();
-				$sub_total_value->set_value( $item['obj']->price );
-
-				$item['event_id']  = $item['obj']->get_event_id();
-				$item['sub_total'] = $sub_total_value->sub_total( $item['quantity'] );
-
-				return $item;
-			}, $items );
-		}
-
-		return array_filter( $items );
+		return $this->get_repository()->get_items_in_cart( $full_item_params );
 	}
 
 	/**
@@ -641,4 +634,14 @@ class Cart {
 		return $this->get_repository()->process( $data );
 	}
 
+	/**
+	 * Get the total of the cart.
+	 *
+	 * @since 5.10.0
+	 *
+	 * @return null|float
+	 */
+	public function get_cart_total() {
+		return $this->get_repository()->get_cart_total();
+	}
 }

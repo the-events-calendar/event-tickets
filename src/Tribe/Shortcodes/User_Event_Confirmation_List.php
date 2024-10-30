@@ -52,6 +52,18 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 		if ( ! is_user_logged_in() ) {
 			include Tribe__Tickets__Templates::get_template_hierarchy( 'shortcodes/my-attendance-list-logged-out' );
 		} else {
+			/** @var Tribe__Tickets__Attendees $attendees */
+			$attendees = tribe( 'tickets.attendees' );
+			$current_user_id = get_current_user_id();
+
+			if (
+				$this->params['user'] !== $current_user_id
+				&& ! $attendees->user_can_manage_attendees( $current_user_id )
+			) {
+				return '';
+			}
+
+
 			$this->generate_attendance_list();
 		}
 

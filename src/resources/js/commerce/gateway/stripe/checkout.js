@@ -3,7 +3,7 @@
 /**
  * Path to this script in the global tribe Object.
  *
- * @since TBD
+ * @since 5.3.0
  *
  * @type   {Object}
  */
@@ -12,7 +12,7 @@ tribe.tickets.commerce.gateway.stripe = tribe.tickets.commerce.gateway.stripe ||
 /**
  * This script Object for public usage of the methods.
  *
- * @since TBD
+ * @since 5.3.0
  *
  * @type   {Object}
  */
@@ -24,7 +24,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Pull the variables from the PHP backend.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @type {Object}
 	 */
@@ -33,7 +33,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Checkout Selectors.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @type {Object}
 	 */
@@ -46,6 +46,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		cardErrors: '#tec-tc-gateway-stripe-errors',
 		paymentElement: '#tec-tc-gateway-stripe-payment-element',
 		paymentMessage: '#tec-tc-gateway-stripe-payment-message',
+		infoForm: '.tribe-tickets__commerce-checkout-purchaser-info-wrapper',
+		renderButton: '#tec-tc-gateway-stripe-render-payment',
 		submitButton: '#tec-tc-gateway-stripe-checkout-button',
 		hiddenElement: '.tribe-common-a11y-hidden'
 	};
@@ -53,7 +55,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Stripe JS library.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @type {Object|null}
 	 */
@@ -62,7 +64,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Stripe Elements API instance.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @type {Object|null}
 	 */
@@ -71,7 +73,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Loader container.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @type {Object|null}
 	 */
@@ -90,7 +92,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Get the request arguments to setup the calls.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param data
 	 * @param headers
@@ -128,7 +130,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Preventing errors to be thrown when using Ky
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param {Object} error
 	 *
@@ -143,7 +145,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Preventing errors to be thrown when using Ky
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param {Object} error
 	 *
@@ -158,12 +160,12 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Builds the wallets object to use when creating a Payment Element
 	 *
-	 * @returns {{apple_pay: string, google_pay: string}}
+	 * @returns {{applePay: string, googlePay: string}}
 	 */
 	obj.getWallets = () => {
 		const settings = {
-			apple_pay: 'never',
-			google_pay: 'never',
+			applePay: 'never',
+			googlePay: 'never',
 		};
 
 		if ( ! obj.checkout.wallet_settings ) {
@@ -173,11 +175,11 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		const wallet = obj.checkout.wallet_settings;
 
 		if ( wallet.apple_pay === true ) {
-			settings.apple_pay = 'auto';
+			settings.applePay = 'auto';
 		}
 
 		if ( wallet.google_pay === true ) {
-			settings.google_pay = 'auto';
+			settings.googlePay = 'auto';
 		}
 
 		return settings;
@@ -186,7 +188,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Handles the changing of the card field.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param {Object} error Which error we are dealing with.
 	 */
@@ -212,7 +214,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Receive the Payment from Stripe.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param {Object} result Result from the payment request.
 	 *
@@ -232,7 +234,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * When a successful request is completed to our Approval endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param {Object} data Data returning from our endpoint.
 	 *
@@ -254,7 +256,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * When a successful request is completed to our Approval endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param {Object} data Data returning from our endpoint.
 	 *
@@ -291,7 +293,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Updates the Order based on a paymentIntent from Stripe.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param {Object} paymentIntent Payment intent Object from Stripe.
 	 *
@@ -317,19 +319,41 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Submit the payment to Stripe for Payment Element.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param {String} order The order object returned from the server.
 	 *
 	 * @return {Promise<*>}
 	 */
 	obj.submitMultiPayment = async ( order ) => {
+		// Only if we don't have the address fields to collect
+		if ( 0 === $('#tec-tc-gateway-stripe-render-payment').length ) {
+			return obj.stripeLib.confirmPayment( {
+				elements: obj.stripeElements,
+				redirect: 'if_required',
+				confirmParams: {
+					return_url: order.redirect_url
+				}
+			} ).then( obj.handleConfirmPayment );
+		}
 
 		return obj.stripeLib.confirmPayment( {
 			elements: obj.stripeElements,
 			redirect: 'if_required',
 			confirmParams: {
-				return_url: order.redirect_url
+				return_url: order.redirect_url,
+				shipping: {
+					name: obj.getPurchaserData().name,
+					phone: obj.getPurchaserData().phone,
+					address: {
+						line1: $('#tec-tc-purchaser-address1').val(),
+						line2: $('#tec-tc-purchaser-address2').val(),
+						city: $('#tec-tc-purchaser-city').val(),
+						state: $('#tec-tc-purchaser-state').val(),
+						postal_code: $('#tec-tc-purchaser-zip').val(),
+						country: $('#tec-tc-purchaser-country').val()
+					}
+				}
 			}
 		} ).then( obj.handleConfirmPayment );
 	};
@@ -337,7 +361,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Handle the confirmation of the Payment on PaymentElement.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param result
 	 */
@@ -358,7 +382,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Submit the Card Element payment to Stripe.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @returns {Promise<*>}
 	 */
@@ -374,7 +398,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Handle the confirmation of the Payment on CardElement.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param result
 	 */
@@ -394,7 +418,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Create an order and start the payment process.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return {Promise<*>}
 	 */
@@ -420,7 +444,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Starts the process to submit a payment.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param {Event} event The Click event from the payment.
 	 */
@@ -455,7 +479,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @link https://stripe.com/docs/js/elements_object/create_element?type=cardNumber#elements_create-options
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	obj.setupSeparateCardElement = () => {
 		// Instantiate the CardElement with individual fields.
@@ -485,43 +509,114 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @link https://stripe.com/docs/js/elements_object/create_element?type=card#elements_create-options
 	 *
-	 * @since TBD
+	 * @since 5.3.0
+	 * @since 5.13.4 Pulled out `options` variable to allow filtering using `tec_tickets_commerce_stripe_checkout_localized_data`.
 	 */
 	obj.setupCompactCardElement = () => {
-		// Instantiate the CardElement with a single field combo.
-		obj.cardElement = obj.stripeElements.create( 'card', {
-			style: obj.checkout.cardElementStyle,
-		} );
+		const options = obj.checkout.cardElementOptions;
+
+		// If there are no customized style options being added, use the previously defined default.
+		if( ! options.style ){
+			options.style = obj.checkout.cardElementStyle;
+		}
+
+		// Instantiate the CardElement with the options.
+		obj.cardElement = obj.stripeElements.create( 'card', options );
 		obj.cardElement.mount( obj.selectors.cardElement );
 		obj.cardElement.on( 'change', obj.onCardChange );
 	};
+
 
 	/**
 	 * Configure the PaymentElement with separate fields.
 	 *
 	 * @link https://stripe.com/docs/js/element/payment_element
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	obj.setupPaymentElement = () => {
-		const wallets = obj.getWallets();
-		// Instantiate the PaymentElement
+		// Only if we don't have the address fields to collect
+		if ( 0 === $('#tec-tc-gateway-stripe-render-payment').length ) {
+			const walletSettings = obj.getWallets();
+			// Instantiate the PaymentElement
+			obj.paymentElement = obj.stripeElements.create( 'payment', {
+				fields: {
+					name: 'auto',
+					email: 'auto',
+					phone: 'auto',
+					address: 'auto'
+				},
+				wallets: walletSettings
+			} );
+			obj.paymentElement.mount( obj.selectors.paymentElement );
+		}
+	};
+
+	obj.renderPayment = () => {
+		const form = $( obj.selectors.infoForm );
+		const fields = form.find('input, select');
+		let valid = true;
+		fields.each((index, field) => {
+			field.classList.remove('error');
+			field.nextElementSibling.classList.add( obj.selectors.hiddenElement.className() );
+			if (field.required && field.value === '') {
+				valid = false;
+				field.classList.add('error');
+				field.nextElementSibling.classList.remove( obj.selectors.hiddenElement.className() );
+			}
+		});
+
+		if (!valid) {
+			return;
+		}
+
+		$( obj.selectors.renderButton ).addClass( obj.selectors.hiddenElement.className() );
+		form.children('select, input').prop( 'disabled', true );
+		form.addClass( 'disabled' );
+		const walletSettings = obj.getWallets();
 		obj.paymentElement = obj.stripeElements.create( 'payment', {
-			fields: {
-				name: 'auto',
-				email: 'auto',
-				phone: 'auto',
-				address: 'auto'
+			defaultValues: {
+				billingDetails: {
+					name: $('#tec-tc-purchaser-name').val(),
+					email: $('#tec-tc-purchaser-email').val(),
+					phone: '',
+					address: {
+						line1: $('#tec-tc-purchaser-address1').val(),
+						line2: $('#tec-tc-purchaser-address2').val(),
+						city: $('#tec-tc-purchaser-city').val(),
+						state: $('#tec-tc-purchaser-state').val(),
+						country: $('#tec-tc-purchaser-country').val(),
+						postal_code: $('#tec-tc-purchaser-zip').val()
+					}
+				},
+				shippingDetails: {
+					name: $('#tec-tc-purchaser-name').val(),
+					email: $('#tec-tc-purchaser-email').val(),
+					phone: '',
+					address: {
+						line1: $('#tec-tc-purchaser-address1').val(),
+						line2: $('#tec-tc-purchaser-address2').val(),
+						city: $('#tec-tc-purchaser-city').val(),
+						state: $('#tec-tc-purchaser-state').val(),
+						country: $('#tec-tc-purchaser-country').val(),
+						postal_code: $('#tec-tc-purchaser-zip').val()
+					}
+				},
 			},
-			wallets
+			wallets: walletSettings
 		} );
 		obj.paymentElement.mount( obj.selectors.paymentElement );
-	};
+		setTimeout(() => {
+			$('.tribe-tickets__commerce-checkout-gateways').get(0).scrollIntoView({behavior: 'smooth'});
+			$( obj.selectors.submitButton ).removeClass( obj.selectors.hiddenElement.className() );
+			$('.tribe-tickets__commerce-checkout-section-header').removeClass( obj.selectors.hiddenElement.className() )
+		}, 2000);
+	}
 
 	/**
 	 * Setup and initialize Stripe API.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return {Promise<void>}
 	 */
@@ -557,7 +652,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Get purchaser form data.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return {Object}
 	 */
@@ -566,7 +661,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Shows the notice for the checkout container for Stripe.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param {jQuery} $container Parent container of notice element.
 	 * @param {string} title Notice Title.
@@ -585,7 +680,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Hides the notice for the checkout container for Stripe.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param {jQuery} $container Parent container of notice element.
 	 */
@@ -601,16 +696,17 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Bind script loader to trigger script dependent methods.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	obj.bindEvents = () => {
-		$( obj.selectors.submitButton ).on( 'click', obj.handlePayment );
+		$( document ).on( 'click', obj.selectors.renderButton, obj.renderPayment );
+		$( document ).on( 'click', obj.selectors.submitButton, obj.handlePayment );
 	};
 
 	/**
 	 * When the page is ready.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	obj.ready = () => {
 		obj.setupStripe();

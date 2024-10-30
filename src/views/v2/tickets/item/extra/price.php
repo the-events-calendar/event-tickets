@@ -11,8 +11,9 @@
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since   5.0.3
+ * @since   5.9.0   Updated class for original price element.
  *
- * @version 5.0.3
+ * @version 5.9.0
  *
  * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
  * @var int                                $post_id                     [Global] The current Post ID to which tickets are attached.
@@ -56,7 +57,7 @@ $has_suffix = ! empty( $ticket->price_suffix );
 ?>
 <div <?php tribe_classes( $classes ); ?>>
 	<?php if ( ! empty( $ticket->on_sale ) ) : ?>
-		<span class="tribe-common-b2 tribe-tickets__tickets-original-price">
+		<span class="tribe-common-b3 tribe-tickets__tickets-original-price">
 			<?php echo $currency->get_formatted_currency_with_symbol( $ticket->regular_price, $post_id, $provider->class_name ); ?>
 		</span>
 	<?php endif; ?>

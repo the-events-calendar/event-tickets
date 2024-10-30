@@ -3,8 +3,11 @@
  */
 import * as types from '@moderntribe/tickets/data/blocks/ticket/types';
 import {
-	getDefaultProviderCurrency,
 	getDefaultCurrencyPosition,
+	getDefaultProviderCurrency,
+	getDefaultProviderCurrencyDecimalPoint,
+	getDefaultProviderCurrencyNumberOfDecimals,
+	getDefaultProviderCurrencyThousandsSep,
 } from '@moderntribe/tickets/data/blocks/ticket/utils';
 import details, { DEFAULT_STATE as DETAILS_DEFAULT_STATE } from './ticket/details';
 import tempDetails, { DEFAULT_STATE as TEMP_DETAILS_DEFAULT_STATE } from './ticket/temp-details';
@@ -15,8 +18,11 @@ export const DEFAULT_STATE = {
 	sold: 0,
 	available: 0,
 	ticketId: 0,
-	currencySymbol: getDefaultProviderCurrency(),
+	currencyDecimalPoint: getDefaultProviderCurrencyDecimalPoint(),
+	currencyNumberOfDecimals: getDefaultProviderCurrencyNumberOfDecimals(),
 	currencyPosition: getDefaultCurrencyPosition(),
+	currencySymbol: getDefaultProviderCurrency(),
+	currencyThousandsSep: getDefaultProviderCurrencyThousandsSep(),
 	provider: '',
 	hasAttendeeInfoFields: false,
 	isLoading: false,
@@ -29,9 +35,11 @@ export const DEFAULT_STATE = {
 
 export default ( state = DEFAULT_STATE, action ) => {
 	switch ( action.type ) {
+		case types.SET_TICKET_ATTENDEE_INFO_FIELDS:
 		case types.SET_TICKET_TITLE:
 		case types.SET_TICKET_DESCRIPTION:
 		case types.SET_TICKET_PRICE:
+		case types.SET_TICKET_ON_SALE:
 		case types.SET_TICKET_SKU:
 		case types.SET_TICKET_IAC_SETTING:
 		case types.SET_TICKET_START_DATE:
@@ -46,6 +54,18 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_END_TIME_INPUT:
 		case types.SET_TICKET_CAPACITY_TYPE:
 		case types.SET_TICKET_CAPACITY:
+		case types.SET_TICKET_TYPE:
+		case types.SET_TICKET_TYPE_DESCRIPTION:
+		case types.SET_TICKET_TYPE_ICON_URL:
+		case types.SET_TICKET_TYPE_NAME:
+		case types.SET_TICKET_SALE_PRICE_CHECK:
+		case types.SET_TICKET_SALE_PRICE:
+		case types.SET_TICKET_SALE_START_DATE:
+		case types.SET_TICKET_SALE_START_DATE_INPUT:
+		case types.SET_TICKET_SALE_START_DATE_MOMENT:
+		case types.SET_TICKET_SALE_END_DATE:
+		case types.SET_TICKET_SALE_END_DATE_INPUT:
+		case types.SET_TICKET_SALE_END_DATE_MOMENT:
 			return {
 				...state,
 				details: details( state.details, action ),
@@ -67,6 +87,14 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_TEMP_END_TIME_INPUT:
 		case types.SET_TICKET_TEMP_CAPACITY_TYPE:
 		case types.SET_TICKET_TEMP_CAPACITY:
+		case types.SET_TICKET_TEMP_SALE_PRICE_CHECK:
+		case types.SET_TICKET_TEMP_SALE_PRICE:
+		case types.SET_TICKET_TEMP_SALE_START_DATE:
+		case types.SET_TICKET_TEMP_SALE_START_DATE_INPUT:
+		case types.SET_TICKET_TEMP_SALE_START_DATE_MOMENT:
+		case types.SET_TICKET_TEMP_SALE_END_DATE:
+		case types.SET_TICKET_TEMP_SALE_END_DATE_INPUT:
+		case types.SET_TICKET_TEMP_SALE_END_DATE_MOMENT:
 			return {
 				...state,
 				tempDetails: tempDetails( state.tempDetails, action ),

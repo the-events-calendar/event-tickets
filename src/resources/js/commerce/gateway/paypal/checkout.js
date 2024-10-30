@@ -33,7 +33,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * The document element
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @type {jQuery|HTMLElement}
 	 */
@@ -69,7 +69,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Flag to check if the current error is generic or not.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @type {boolean}
 	 */
@@ -95,6 +95,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 			nameField: '#tec-tc-card-holder-name',
 			expirationField: '#tec-tc-expiration-date',
 		},
+		hiddenElement: '.tribe-common-a11y-hidden',
 	};
 
 	/**
@@ -242,6 +243,46 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	};
 
 	/**
+	 * Handles checking if a purchase was really successful or was late-declined.
+	 *
+	 * @since 5.4.0.2
+	 *
+	 * @param {Object} data PayPal data passed to this method.
+	 * @param {Object} actions PayPal actions available on approve.
+	 * @param {jQuery} $container jQuery object of the tickets container.
+	 *
+	 * @return {void}
+	 */
+	obj.handleCheckSuccess = function ( data, actions, $container ) {
+		tribe.tickets.debug.log( 'handleCheckSuccess', arguments );
+
+		const body = {
+			'recheck': true
+		};
+
+		return fetch(
+			obj.orderEndpointUrl + '/' + data.order_id,
+			{
+				method: 'POST',
+				headers: {
+					'X-WP-Nonce': $container.find( tribe.tickets.commerce.selectors.nonce ).val(),
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify( body ),
+			}
+		)
+			.then( response => response.json() )
+			.then( data => {
+				if ( data.success ) {
+					return obj.handleApproveSuccess( data, actions, $container );
+				} else {
+					return obj.handleApproveFail( data, actions, $container );
+				}
+			} )
+			.catch( obj.handleApproveError );
+	};
+
+	/**
 	 * Handles the Approval of the orders via PayPal.
 	 *
 	 * @since 5.1.9
@@ -277,7 +318,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 			.then( response => response.json() )
 			.then( data => {
 				if ( data.success ) {
-					return obj.handleApproveSuccess( data, actions, $container );
+					return obj.handleCheckSuccess( data, actions, $container );
 				} else {
 					return obj.handleApproveFail( data, actions, $container );
 				}
@@ -321,6 +362,8 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 			} else {
 				obj.showNotice( $container, '', data.message );
 			}
+		} else {
+			obj.showNotice( $container, '', data.message );
 		}
 
 		tribe.tickets.loader.hide( $container );
@@ -497,10 +540,12 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * Handle actions when checkout buttons are loaded.
 	 *
 	 * @since 5.1.10
+	 * @since 5.13.0.2 Replaced DOMNodeInserted with animationstart event.
+	 * @since 5.13.0.3 Added MutationObserver to handle the checkout container.
 	 */
 	obj.buttonsLoaded = function () {
 		$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
-		$( tribe.tickets.commerce.selectors.checkoutContainer ).off( 'DOMNodeInserted', obj.selectors.buttons, obj.buttonsLoaded );
+		obj.stopCheckoutObserving();
 	};
 
 	/**
@@ -543,6 +588,8 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * Setup the triggers for Ticket Commerce loader view.
 	 *
 	 * @since 5.1.10
+	 * @since 5.13.0.2 Replaced DOMNodeInserted with animationstart event.
+	 * @since 5.13.0.3 Added MutationObserver to handle the checkout container.
 	 *
 	 * @return {void}
 	 */
@@ -550,7 +597,52 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		$document.trigger( tribe.tickets.commerce.customEvents.showLoader );
 
 		// Hide loader when Paypal buttons are added.
-		$( tribe.tickets.commerce.selectors.checkoutContainer ).on( 'DOMNodeInserted', obj.selectors.buttons, obj.buttonsLoaded );
+		obj.startCheckoutObserving();
+	};
+
+	/**
+	 * Setup the MutationObserver omn the checkout container.
+	 *
+	 * @since 5.13.0.3
+	 *
+	 * @return {void}
+	 */
+	obj.startCheckoutObserving = () => {
+		const targetNode = $( tribe.tickets.commerce.selectors.checkoutContainer )[ 0 ];
+
+		obj.checkoutContainerObserver = new MutationObserver( ( mutationsList ) => {
+			for ( const mutation of mutationsList ) {
+				if ( mutation.type !== 'childList' || mutation.addedNodes.length === 0 ) {
+					continue;
+				}
+
+				for ( const node of mutation.addedNodes ) {
+					if ( $( obj.selectors.buttons ).find( 'iframe' ).length <= 0 ) {
+						continue;
+					}
+
+					obj.buttonsLoaded.call( node );
+				}
+			}
+		} );
+
+		const config = { childList: true, subtree: true };
+		obj.checkoutContainerObserver.observe(targetNode, config);
+	};
+
+	/**
+	 * Stop the MutationObserver on the checkout container.
+	 *
+	 * @since 5.13.0.3
+	 *
+	 * @return {void}
+	 */
+	obj.stopCheckoutObserving = () => {
+		if ( ! obj.checkoutContainerObserver) {
+			return;
+		}
+
+		obj.checkoutContainerObserver.disconnect();
 	};
 
 	/**
@@ -562,7 +654,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 
 		const $script = $( obj.selectors.checkoutScript );
 		const $paypalGateway = $( obj.selectors.paypalGatewayContainer );
-		
+
 		// Check to see if PayPal gateway is present.
 		if ( $paypalGateway.length === 0 ) {
 			$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
@@ -608,11 +700,11 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	obj.setupAdvancedPayments = ( event, $container ) => {
 		// If this returns false or the card fields aren't visible, see Step #1.
 		if ( ! paypal.HostedFields.isEligible() ) {
-			// Hides card fields if the merchant isn't eligible
-			$container.find( obj.selectors.advancedPayments.form ).hide();
-
+			// Card fields aren't shown if the merchant isn't eligible.
 			return;
 		}
+
+		$container.find( obj.selectors.advancedPayments.container ).removeClass( obj.selectors.hiddenElement.className() );
 
 		/**
 		 * See references on how to use:
@@ -780,7 +872,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 			.then( data => {
 				tribe.tickets.debug.log( data );
 				if ( data.success ) {
-					return obj.handleHostedApproveSuccess( data, actions, $container );
+					return obj.handleCheckSuccess( data, actions, $container );
 				} else {
 					return obj.handleHostedApproveFail( data, actions, $container );
 				}

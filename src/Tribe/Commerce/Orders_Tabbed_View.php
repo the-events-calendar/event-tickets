@@ -21,6 +21,7 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 	/**
 	 * Renders the tabbed view for the current post.
 	 *
+	 * @since 5.6.2 Moved the Page Title logic into a separate method.
 	 * @since 4.7
 	 * @since 4.12.1 Added Post ID to page title.
 	 */
@@ -31,29 +32,12 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 			return;
 		}
 
-		$view_title = sprintf(
-			// Translators: %1$s: the post/event title, %2$d: the post/event ID.
-			_x( 'Attendees for: %1$s [#%2$d]', 'attendees report screen heading', 'event-tickets' ),
-			get_the_title( $post_id ),
-			$post_id
-		);
 
-		/**
-		 * Whether we should display the "Attendees for: %s [#%d]" view title.
-		 *
-		 * @since 5.0.1
-		 *
-		 * @param boolean $show_title Whether to show the view title.
-		 * @param int     $post_id    The post ID.
-		 */
-		$show_title = apply_filters( 'tribe_tickets_attendees_show_view_title', true, $post_id );
 
-		if ( ! $show_title ) {
-			$view_title = '';
-		}
+
 
 		$tabbed_view = new Tribe__Tabbed_View();
-		$tabbed_view->set_label( $view_title );
+		$tabbed_view->set_label( $this->get_title( $post_id ) );
 		$query_string = empty( $_SERVER['QUERY_STRING'] ) ? '' : '?' . $_SERVER['QUERY_STRING'];
 		$request_uri  = 'edit.php' . $query_string;
 		$tabbed_view->set_url( remove_query_arg( 'tab', $request_uri ) );
@@ -117,6 +101,63 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 		}
 
 		echo $tabbed_view->render();
+	}
+
+	/**
+	 * Generates the title based on the page type and post ID.
+	 *
+	 * @since 5.6.2
+	 *
+	 * @param int $post_id The post ID.
+	 *
+	 * @return string The generated title.
+	 */
+	public function get_title( int $post_id ): string {
+		/**
+		 * Filters whether to show the view title.
+		 *
+		 * @since 5.0.1
+		 *
+		 * @deprecated 5.7.2
+		 *
+		 * @param bool 	$show_title Whether to show the view title.
+		 * @param int 	$post_id The post ID.
+		 */
+		$show_title = apply_filters_deprecated( 'tribe_tickets_attendees_show_view_title', [ true, $post_id ], '5.6.2' );
+
+		if ( ! $show_title ) {
+			return '';
+		}
+
+		$page_type = tribe_get_request_var( 'page' );
+
+		// List of Order pages to display the 'Orders For...' heading.
+		$order_pages = [
+			'tickets-orders',
+			'edd-orders'
+		];
+		// Check $page_type to confirm if we are on Order or Attendees page.
+		if ( in_array( $page_type, $order_pages ) ) {
+			// Translators: %1$s: the post/event title, %2$d: the post/event ID.
+			$title = _x( 'Orders for: %1$s [#%2$d]', 'orders report screen heading', 'event-tickets' );
+		} else {
+			// Translators: %1$s: the post/event title, %2$d: the post/event ID.
+			$title = _x( 'Attendees for: %1$s [#%2$d]', 'attendees report screen heading', 'event-tickets' );
+		}
+
+		$view_title = sprintf( $title, get_the_title( $post_id ), $post_id );
+
+		/**
+		 * Filters the title on the Attendees, and Order list page.
+		 *
+		 * @since 5.6.2
+		 *
+		 * @param string 	$view_title The view title.
+		 * @param int 		$post_id The post ID.
+		 * @param string 	$page_type Possible values `tickets-attendees` or `tickets-orders`.
+		 */
+		return apply_filters( 'tec_tickets_attendees_order_view_title', $view_title, $post_id, $page_type );
+
 	}
 
 	/**

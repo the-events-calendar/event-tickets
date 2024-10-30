@@ -1,5 +1,6 @@
 name: 'Codeception Tests'
-on: [ pull_request ]
+on:
+  pull_request:
 jobs:
   test:
     strategy:
@@ -9,19 +10,17 @@ jobs:
           # - acceptance
           - functional
           - integration
-          - restv1 --group="capacity"
-          - restv1 --skip-group="capacity"
+          - restv1
           - views_integration
           - commerce_integration
-          - wpunit --group="capacity"
-          - wpunit --skip-group="capacity"
+          - wpunit
     runs-on: ubuntu-latest
     steps:
       # ------------------------------------------------------------------------------
-      # Checkout the repo and tric
+      # Checkout the repo
       # ------------------------------------------------------------------------------
       - name: Checkout the repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1000
           token: ${{ secrets.GH_BOT_TOKEN }}
@@ -34,22 +33,25 @@ jobs:
         run: |
           num_php_files=$(git diff ${{ github.event.pull_request.base.sha }} HEAD --name-only | grep -P "\.php" | wc -l)
           if [[ -z "$num_php_files" ]]; then
-            echo "::set-output name=value::1"
+            echo "value=1" >> $GITHUB_OUTPUT
+            echo "## No PHP Files changed, PHP tests automatically pass." >> $GITHUB_STEP_SUMMARY
           elif [[ "$num_php_files" == "0" || "$num_php_files" == "" ]]; then
-            echo "::set-output name=value::1"
+            echo "value=1" >> $GITHUB_OUTPUT
+            echo "## No PHP Files changed, PHP tests automatically pass." >> $GITHUB_STEP_SUMMARY
           else
-            echo "::set-output name=value::0"
+            echo "value=0" >> $GITHUB_OUTPUT
+            echo "## Found PHP file changes, running PHP tests." >> $GITHUB_STEP_SUMMARY
           fi
       # ------------------------------------------------------------------------------
-      # Checkout tric
+      # Checkout slic
       # ------------------------------------------------------------------------------
-      - name: Checkout tric
-        uses: actions/checkout@v2
+      - name: Checkout slic
+        uses: actions/checkout@v4
         if: steps.skip.outputs.value != 1
         with:
-          repository: the-events-calendar/tric
+          repository: stellarwp/slic
           ref: main
-          path: tric
+          path: slic
           fetch-depth: 1
       # ------------------------------------------------------------------------------
       # Prepare our composer cache directory
@@ -68,17 +70,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-composer-
       # ------------------------------------------------------------------------------
-      # Initialize tric
+      # Initialize slic
       # ------------------------------------------------------------------------------
-      - name: Set up tric env vars
+      - name: Set up slic env vars
         if: steps.skip.outputs.value != 1
         run: |
-          echo "TRIC_BIN=${GITHUB_WORKSPACE}/tric/tric" >> $GITHUB_ENV
-          echo "TRIC_WP_DIR=${GITHUB_WORKSPACE}/tric/_wordpress" >> $GITHUB_ENV
-          echo "TRIC_WORDPRESS_DOCKERFILE=Dockerfile.base" >> $GITHUB_ENV
-      - name: Set run context for tric
+          echo "SLIC_BIN=${GITHUB_WORKSPACE}/slic/slic" >> $GITHUB_ENV
+          echo "SLIC_WP_DIR=${GITHUB_WORKSPACE}/slic/_wordpress" >> $GITHUB_ENV
+          echo "SLIC_WORDPRESS_DOCKERFILE=Dockerfile.base" >> $GITHUB_ENV
+      - name: Set run context for slic
         if: steps.skip.outputs.value != 1
-        run: echo "TRIC=1" >> $GITHUB_ENV && echo "CI=1" >> $GITHUB_ENV
+        run: echo "SLIC=1" >> $GITHUB_ENV && echo "CI=1" >> $GITHUB_ENV
       - name: Start ssh-agent
         if: steps.skip.outputs.value != 1
         run: |
@@ -87,25 +89,25 @@ jobs:
       - name: Export SSH_AUTH_SOCK env var
         if: steps.skip.outputs.value != 1
         run: echo "SSH_AUTH_SOCK=/tmp/ssh_agent.sock" >> $GITHUB_ENV
-      - name: Set up tric for CI
+      - name: Set up slic for CI
         if: steps.skip.outputs.value != 1
         run: |
           cd ${GITHUB_WORKSPACE}/..
-          ${TRIC_BIN} here
-          ${TRIC_BIN} interactive off
-          ${TRIC_BIN} build-prompt off
-          ${TRIC_BIN} build-subdir off
-          ${TRIC_BIN} xdebug off
-          ${TRIC_BIN} composer-cache set /home/runner/.cache/composer
-          ${TRIC_BIN} debug on
-          ${TRIC_BIN} info
-          ${TRIC_BIN} config
+          ${SLIC_BIN} here
+          ${SLIC_BIN} interactive off
+          ${SLIC_BIN} build-prompt off
+          ${SLIC_BIN} build-subdir off
+          ${SLIC_BIN} xdebug off
+          ${SLIC_BIN} composer-cache set /home/runner/.cache/composer
+          ${SLIC_BIN} debug on
+          ${SLIC_BIN} info
+          ${SLIC_BIN} config
       # ------------------------------------------------------------------------------
       # Start the Chrome container
       # ------------------------------------------------------------------------------
       - name: Start the Chrome container
         if: steps.skip.outputs.value != 1 && matrix.suite == 'acceptance'
-        run: ${TRIC_BIN} up chrome
+        run: ${SLIC_BIN} up chrome
       # ------------------------------------------------------------------------------
       # Fetch branches for dependent repos
       # ------------------------------------------------------------------------------
@@ -114,9 +116,7 @@ jobs:
         if: steps.skip.outputs.value != 1
         id: fetch-tec-head-branch
         with:
-          route: GET /repos/{owner}/{repo}/branches/${{ github.head_ref }}
-          owner: the-events-calendar
-          repo: the-events-calendar
+          route: GET /repos/the-events-calendar/the-events-calendar/branches/${{ github.head_ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
         continue-on-error: true
@@ -125,9 +125,7 @@ jobs:
         id: fetch-tec-base-branch
         if: steps.skip.outputs.value != 1 && steps.fetch-tec-head-branch.outcome != 'success'
         with:
-          route: GET /repos/{owner}/{repo}/branches/${{ github.base_ref }}
-          owner: the-events-calendar
-          repo: the-events-calendar
+          route: GET /repos/the-events-calendar/the-events-calendar/branches/${{ github.base_ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
         continue-on-error: true
@@ -147,7 +145,7 @@ jobs:
       # Clone and init TEC
       # ------------------------------------------------------------------------------
       - name: Clone TEC
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         if: steps.skip.outputs.value != 1
         with:
           fetch-depth: 1
@@ -161,14 +159,14 @@ jobs:
         run: |
           mv ${GITHUB_WORKSPACE}/the-events-calendar ${GITHUB_WORKSPACE}/../the-events-calendar
           docker network prune -f
-          ${TRIC_BIN} use the-events-calendar
-          ${TRIC_BIN} composer install --no-dev
+          ${SLIC_BIN} use the-events-calendar
+          ${SLIC_BIN} composer install --no-dev
       - name: Set up TEC Common
         if: steps.skip.outputs.value != 1
         run: |
           docker network prune -f
-          ${TRIC_BIN} use the-events-calendar/common
-          ${TRIC_BIN} composer install --no-dev
+          ${SLIC_BIN} use the-events-calendar/common
+          ${SLIC_BIN} composer install --no-dev
       # ------------------------------------------------------------------------------
       # Set up ET Common
       # ------------------------------------------------------------------------------
@@ -176,59 +174,61 @@ jobs:
         if: steps.skip.outputs.value != 1
         run: |
           docker network prune -f
-          ${TRIC_BIN} use event-tickets/common
-          ${TRIC_BIN} composer install --no-dev
+          ${SLIC_BIN} use event-tickets/common
+          ${SLIC_BIN} composer install --no-dev
       # ------------------------------------------------------------------------------
       # Set up ET Common (npm install and build)
       # ------------------------------------------------------------------------------
       - name: Set up ET Common (npm)
         if: steps.skip.outputs.value != 1 && matrix.suite == 'acceptance'
         run: |
-          ${TRIC_BIN} nvm use
-          ${TRIC_BIN} npm install
-          ${TRIC_BIN} npm run build
+          ${SLIC_BIN} nvm use
+          ${SLIC_BIN} npm install
+          ${SLIC_BIN} npm run build
       # ------------------------------------------------------------------------------
       # Set up ET
       # ------------------------------------------------------------------------------
       - name: Set up ET
         if: steps.skip.outputs.value != 1
         run: |
-          ${TRIC_BIN} use event-tickets
-          ${TRIC_BIN} composer install
+          ${SLIC_BIN} use event-tickets
+          ${SLIC_BIN} composer install
       # ------------------------------------------------------------------------------
       # Set up ET (npm install and build)
       # ------------------------------------------------------------------------------
       - name: Set up ET (npm)
         if: steps.skip.outputs.value != 1 && matrix.suite == 'acceptance'
         run: |
-          ${TRIC_BIN} nvm use
-          ${TRIC_BIN} npm install
-          ${TRIC_BIN} npm run build
+          ${SLIC_BIN} nvm use
+          ${SLIC_BIN} npm install
+          ${SLIC_BIN} npm run build
       # ------------------------------------------------------------------------------
       # Init WordPress container
       # ------------------------------------------------------------------------------
       - name: Init the WordPress container
         if: steps.skip.outputs.value != 1
         run: |
-          ${TRIC_BIN} up wordpress
-          ${TRIC_BIN} site-cli core version
+          ${SLIC_BIN} up wordpress
+          ${SLIC_BIN} wp core version
+          ${SLIC_BIN} wp core update --force --version=6.4.1
+          ${SLIC_BIN} wp core version
       # ------------------------------------------------------------------------------
       # Install and activate TwentyTwenty
       # ------------------------------------------------------------------------------
       - name: Install and activate TwentyTwenty
         if: steps.skip.outputs.value != 1 && matrix.suite == 'acceptance'
-        run:  ${TRIC_BIN} site-cli theme install twentytwenty --activate
+        run:  ${SLIC_BIN} wp theme install twentytwenty --activate
       # ------------------------------------------------------------------------------
       # Run tests
       # ------------------------------------------------------------------------------
       - name: Run suite tests
         if: steps.skip.outputs.value != 1
-        run: ${TRIC_BIN} run ${{ matrix.suite }} --ext DotReporter
+        run: ${SLIC_BIN} run ${{ matrix.suite }} --ext DotReporter
       # ------------------------------------------------------------------------------
       # Upload artifacts (On failure)
       # ------------------------------------------------------------------------------
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: steps.skip.outputs.value != 1 && failure()
         with:
           name: output ${{ matrix.suite }}

@@ -1,0 +1,194 @@
+/**
+ * Event Tickets - Admin Orders Page
+ *
+ * @since 5.13.0
+ */
+
+@import "_svgs.pcss";
+
+body.wp-admin.post-type-tec_tc_order {
+
+	div.tablenav.top {
+		.tribe-datepicker {
+			margin-right: var(--tec-spacer-1);
+		}
+
+		[for="tec_tc_data-range-to"] {
+			color: #333;
+			font-size: var(--tec-font-size-2);
+			font-weight: var(--tec-font-weight-regular);
+			line-height: 1.23;
+			margin-left: calc(-1 * var(--tec-spacer-0));
+			margin-right: var(--tec-spacer-0);
+			text-align: left;
+		}
+
+		div.actions.tribe-validation {
+			.select2-container {
+				margin-left: var(--tec-spacer-3);
+				min-width: 180px !important;
+
+				.selection {
+					display: inline-block;
+					width: 100%;
+
+					.select2-selection {
+						width: 100%;
+					}
+				}
+			}
+		}
+
+		#post-query-submit {
+			margin-left: var(--tec-spacer-3);
+		}
+	}
+
+	table.tribe-tickets-commerce-orders {
+		@media screen and (max-width: 780px) {
+			background: none;
+			border: none;
+
+			thead,
+			tfoot {
+				display: none;
+			}
+
+			tr.is-expanded {
+				display: block;
+				padding: var(--tec-spacer-3) var(--tec-spacer-5);
+			}
+		}
+
+		#the-list {
+			@media screen and (max-width: 780px) {
+				td {
+					padding-bottom: var(--tec-spacer-0);
+					padding-top: var(--tec-spacer-0);
+				}
+
+				/* we hates important, my precious, but we musts override it. */
+				.column-gateway {
+					display: none !important;
+				}
+			}
+
+			@media screen and (min-width: 780px) {
+				.column-order {
+					min-width: 240px;
+				}
+
+				.column-status {
+					width: 10ch;
+				}
+
+				.column-items {
+					width: 18ch;
+				}
+
+				.column-total {
+					width: 14ch;
+				}
+
+				.column-date {
+					width: 15ch;
+				}
+
+				.column-post_parent {
+					width: 20ch;
+				}
+
+				.column-gateway {
+					display: table-cell;
+					width: 20ch;
+				}
+			}
+		}
+	}
+}
+
+.tribe-dashicons {
+	&--code {
+		font-family: monospace;
+	}
+
+	.dashicons {
+		height: 16px;
+		padding-left: var(--tec-spacer-0);
+		width: 16px;
+	}
+
+	.tribe-icon-trash {
+		background-image: svg-inline(tec-order-management-trash-icon-red);
+		background-repeat: no-repeat;
+		background-size: contain;
+	}
+}
+
+.tribe-tickets-commerce-order-status {
+	align-items: center;
+	background: #c3c4c7;
+	border: 1px solid rgba(0, 0, 0, 0.05);
+	border-radius: var(--tec-border-radius-default);
+	color: #2c3338;
+	cursor: inherit !important;
+	display: inline-flex;
+	flex-flow: row nowrap;
+	justify-content: center;
+	line-height: 2.5em;
+	margin: calc(-1 * var(--tec-spacer-0)) 0;
+	max-width: 100%;
+	white-space: nowrap;
+
+	> span {
+		margin-right: var(--tec-spacer-3);
+		overflow: hidden;
+		text-overflow: ellipsis;
+
+		&:first-child {
+			margin-left: var(--tec-spacer-3);
+			margin-right: var(--tec-spacer-0);
+		}
+	}
+
+	&.status-pending {
+		background: #f5e6ab;
+		border-color: #f0c33c;
+	}
+
+	&.status-completed {
+		background: #b8e6bf;
+		border-color: #00a32a;
+	}
+
+	&.status-denied {
+		border-color: #646970;
+	}
+
+	&.status-voided,
+	&.status-refunded {
+		background: #fff;
+		border-color: #c3c4c7;
+	}
+
+	&.status-trash {
+		background: #eba3a3;
+		color: #761919;
+	}
+}
+
+.tec-tickets-commerce-price-container {
+	align-items: center;
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+
+	@media screen and (max-width: 780px) {
+		margin-bottom: 0;
+	}
+
+	ins {
+		margin-right: var(--tec-spacer-1);
+		text-decoration: none;
+	}
+}

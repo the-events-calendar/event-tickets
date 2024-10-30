@@ -1,4 +1,5 @@
 actor: Tester
+bootstrap: _bootstrap.php
 paths:
     tests: tests
     log: tests/_output
@@ -6,13 +7,14 @@ paths:
     helpers: tests/_support
     wp_root: "%WP_ROOT_FOLDER%"
 settings:
-    bootstrap: _bootstrap.php
     colors: true
     memory_limit: 1024M
 params:
   # read dynamic configuration parameters from the .env file
   - .env
 extensions:
+    enabled:
+      - tad\WPBrowser\Extension\Events
     commands:
         - 'Codeception\Command\GenerateWPUnit'
         - 'Codeception\Command\GenerateWPRestApi'
@@ -21,9 +23,5 @@ extensions:
         - 'Codeception\Command\GenerateWPAjax'
         - 'Codeception\Command\GenerateWPCanonical'
         - 'Codeception\Command\GenerateWPXMLRPC'
-    enabled:
-      - Tribe\Test\Codeception\Extensions\Function_Mocker
-    config:
-      Tribe\Test\Codeception\Extensions\Function_Mocker:
-        suites: [ 'views_integration', 'wpunit' ]
-        initFile: tests/_function-mocker-bootstrap.php
+snapshot:
+  refresh: true

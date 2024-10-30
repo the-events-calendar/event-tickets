@@ -8,8 +8,8 @@
  */
 class Tribe__Tickets__Data_API {
 
-	protected $ticket_types = array();
-	protected $ticket_class = array();
+	protected $ticket_types = [];
+	protected $ticket_class = [];
 
 	/**
 	 * Class constructor
@@ -62,13 +62,13 @@ class Tribe__Tickets__Data_API {
 	/**
 	 * Detect what is available in the custom post type by the id passed to it
 	 *
-	 * @param null $post id or post object
+	 * @param null $post id or post object.
 	 *
 	 * @return array|bool An array of available information about the object and the tribe_tickets_tickets class to use
 	 */
 	public function detect_by_id( $post = null ) {
 
-		// only the rsvp order key is non numeric
+		// only the rsvp order key is non numeric.
 		if ( is_object( $post ) && ! empty( $post->ID ) ) {
 			$cpt  = get_post_type( $post->ID );
 			$post = (int) $post->ID;
@@ -80,12 +80,12 @@ class Tribe__Tickets__Data_API {
 			$cpt  = get_post_type( $post );
 		}
 
-		// if no custom post type
+		// If no custom post type.
 		if ( ! $cpt ) {
 			return false;
 		}
 
-		$cpt_arr              = array();
+		$cpt_arr              = [];
 		$cpt_arr['post_type'] = $cpt;
 
 		foreach ( $this->ticket_types as $type => $cpts ) {

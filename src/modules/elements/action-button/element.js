@@ -45,11 +45,12 @@ const ActionButton = ( {
 		const elemProps = { ...props };
 
 		if ( asLink && ! disabled ) {
-			elemProps.href = href;
-			elemProps.target = target;
+			elemProps.onMouseDown = () => {
+				window.open( href, target );
+			};
 		} else {
 			elemProps.disabled = disabled;
-			elemProps.onClick = onClick;
+			elemProps.onMouseDown = onClick;
 		}
 
 		return elemProps;

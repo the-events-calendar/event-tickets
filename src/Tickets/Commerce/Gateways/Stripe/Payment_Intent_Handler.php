@@ -100,6 +100,7 @@ class Payment_Intent_Handler {
 	 * Updates an existing payment intent to add any necessary data before confirming the purchase.
 	 *
 	 * @since 5.3.0
+	 * @since 5.8.1   Added customer's name / event name to the payment intent description
 	 *
 	 * @param array    $data  The purchase data received from the front-end.
 	 * @param \WP_Post $order The order object.
@@ -112,12 +113,7 @@ class Payment_Intent_Handler {
 
 		$stripe_receipt_emails = tribe_get_option( Settings::$option_stripe_receipt_emails );
 		$payment_intent        = Payment_Intent::get( $payment_intent_id );
-
-		// Add the Order ID as metadata to the Payment Intent
-		$metadata               = $payment_intent['metadata'];
-		$metadata['order_id']   = $order->ID;
-		$metadata['return_url'] = tribe( Webhook_Endpoint::class )->get_route_url();
-		$body['metadata']       = $metadata;
+		$body['metadata']      = $this->get_updated_metadata( $order, $payment_intent );
 
 		if ( $stripe_receipt_emails ) {
 			if ( is_user_logged_in() ) {
@@ -128,6 +124,8 @@ class Payment_Intent_Handler {
 			if ( ! empty( $data['purchaser']['email'] ) ) {
 				$body['receipt_email'] = $data['purchaser']['email'];
 			}
+
+			$body['description'] = $this->get_payment_intent_description( $order, $data, $body, $payment_intent );
 		}
 
 		return Payment_Intent::update( $payment_intent_id, $body );
@@ -214,5 +212,101 @@ class Payment_Intent_Handler {
 	 */
 	public function store_payment_intent( $payment_intent ) {
 		set_transient( $this->get_payment_intent_transient_name(), $payment_intent, 6 * HOUR_IN_SECONDS );
+	}
+
+	/**
+	 * Get the additional metadata for the payment intent.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @param \WP_Post $order The Order data.
+	 * @param array $payment_intent The Payment intent.
+	 *
+	 * @return array
+	 */
+	protected function get_updated_metadata( \WP_Post $order, array $payment_intent ) {
+		// Add the Order ID as metadata to the Payment Intent.
+		$metadata               = $payment_intent['metadata'];
+		$metadata['order_id']   = $order->ID;
+		$metadata['return_url'] = tribe( Webhook_Endpoint::class )->get_route_url();
+
+		$events_in_order  = array_unique( array_filter( wp_list_pluck( $order->items, 'event_id' ) ) );
+		$tickets_in_order = array_unique( array_filter( wp_list_pluck( $order->items, 'ticket_id' ) ) );
+		$ticket_names     = array_map(
+			static function ( $item ) {
+				return get_the_title( $item );
+			},
+			$tickets_in_order
+		);
+
+		$metadata['purchaser_name']  = $order->purchaser_name;
+		$metadata['purchaser_email'] = $order->purchaser_email;
+		$metadata['event_name']      = get_post( current( $events_in_order ) )->post_title;
+		$metadata['event_url']       = get_post_permalink( current( $events_in_order ) );
+		$metadata['ticket_names']    = implode( ', ', $ticket_names );
+
+		/**
+		 * Filter the updated metadata for a completed order's payment intent.
+		 *
+		 * @since 5.5.0
+		 *
+		 * @param \WP_Post $order The Order data.
+		 * @param array $payment_intent The Payment intent.
+		 */
+		return apply_filters( 'tec_tickets_commerce_stripe_update_payment_intent_metadata', $metadata, $order, $payment_intent );
+	}
+
+	/**
+	 * Get the description for the payment intent.
+	 *
+	 * @since 5.8.1
+	 *
+	 * @param \WP_Post $order The Order data.
+	 * @param array    $data The purchase data received from the front-end.
+	 * @param array    $body The body used to update the payment intent.
+	 * @param array    $payment_intent The Payment intent.
+	 *
+	 * @return array
+	 */
+	protected function get_payment_intent_description( \WP_Post $order, $data, $body, array $payment_intent ) {
+		$purchaser_name = $order->purchaser_name;
+
+		if ( is_user_logged_in() ) {
+			$user           = wp_get_current_user();
+			$purchaser_name = $user->get( 'first_name' ) ? $user->get( 'first_name' ) . ' ' . $user->get( 'last_name' ) : $user->get( 'display_name' );
+		}
+
+		$tickets_in_order           = implode( ', ', array_unique( array_filter( wp_list_pluck( $order->items, 'ticket_id' ) ) ) );
+		$events_in_order            = array_unique( array_filter( wp_list_pluck( $order->items, 'event_id' ) ) );
+		$post_id                    = current( $events_in_order );
+		$post                       = get_post( $post_id );
+		$post_labels                = get_post_type_labels( get_post_type_object( $post->post_type ) );
+		$payment_intent_description = sprintf(
+			'[%1$s: %2$s] [%3$s: %4$s] [%5$s: %6$s] %7$s - %8$s - %9$s',
+			$post_labels->singular_name,
+			$post_id,
+			tribe_get_ticket_label_singular( 'stripe_payment_intent_description' ),
+			$tickets_in_order,
+			__( 'Order', 'event-tickets' ),
+			$order->ID,
+			$body['metadata']['event_name'],
+			$body['metadata']['ticket_names'],
+			$purchaser_name
+		);
+
+		/**
+		 * Filters the payment intent description
+		 *
+		 * @since 5.8.1
+		 *
+		 * @param string   $payment_intent_description Default payment intent description.
+		 * @param \WP_Post $order The Order data.
+		 * @param array    $data The purchase data received from the front-end.
+		 * @param array    $body The body used to update the payment intent.
+		 * @param array    $payment_intent The Payment intent.
+		 */
+		$payment_intent_description = apply_filters( 'tec_tickets_commerce_stripe_update_payment_description', $payment_intent_description, $order, $data, $body, $payment_intent );
+
+		return $payment_intent_description;
 	}
 }

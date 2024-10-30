@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
+use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\PayPal\REST\Webhook_Endpoint;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Events;
 use Tribe__Utils__Array as Arr;
@@ -89,7 +90,6 @@ class Client {
 			'merchant-id'     => $merchant->get_merchant_id_in_paypal(),
 			'components'      => 'hosted-fields,buttons',
 			'intent'          => 'capture',
-			'locale'          => $merchant->get_locale(),
 			'disable-funding' => 'credit',
 			'currency'        => tribe_get_option( \TEC\Tickets\Commerce\Settings::$option_currency_code, 'USD' ),
 		], $query_args );
@@ -111,10 +111,16 @@ class Client {
 	 *
 	 * @since 5.1.6
 	 *
+	 * @param bool|null $sandbox Whether we are using the sandbox or not.
+	 *
 	 * @return string
 	 */
-	public function get_home_page_url() {
-		$subdomain = tribe( Merchant::class )->is_sandbox() ? 'sandbox.' : '';
+	public function get_home_page_url( $sandbox = null ) {
+		if ( null === $sandbox ) {
+			$sandbox = tribe( Merchant::class )->is_sandbox();
+		}
+
+		$subdomain = $sandbox ? 'sandbox.' : '';
 
 		return sprintf(
 			'https://%1$spaypal.com/',
@@ -517,12 +523,43 @@ class Client {
 		$args = [
 			'headers' => [
 				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
+				'PayPal-Request-Id'             => tribe( Cart::class )->generate_cart_order_hash(),
 				'Prefer'                        => 'return=representation',
 			],
 			'body'    => $body,
 		];
 
 		$response = $this->post( '/v2/checkout/orders', $query_args, $args );
+
+		return $response;
+	}
+
+	/**
+	 * Retrieves an order object for a given ID in PayPal.
+	 *
+	 * @since 5.4.0.2
+	 *
+	 * @param string $order_id Order ID to retrieve.
+	 *
+	 * @return array|null
+	 */
+	public function get_order( $order_id ) {
+		$query_args = [];
+		$body       = [];
+
+		$args = [
+			'headers' => [
+				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
+				'PayPal-Request-Id'             => tribe( Cart::class )->generate_cart_order_hash(),
+				'Prefer'                        => 'return=representation',
+			],
+			'body'    => $body,
+		];
+
+		$order_id = urlencode( $order_id );
+		$url        = '/v2/checkout/orders/{order_id}';
+		$url        = str_replace( '{order_id}', $order_id, $url );
+		$response   = $this->get( $url, $query_args, $args );
 
 		return $response;
 	}
@@ -556,6 +593,7 @@ class Client {
 		$args = [
 			'headers' => [
 				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
+				'PayPal-Request-Id'             => tribe( Cart::class )->generate_cart_order_hash(),
 				'Prefer'                        => 'return=representation',
 			],
 			'body'    => $body,

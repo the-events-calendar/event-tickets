@@ -1,0 +1,27 @@
+.tribe-editor__ticket__content-row--move-delete {
+	bottom: var(--tec-spacer-6);
+	padding-left: var(--tec-spacer-4);
+	position: absolute;
+	z-index: 1;
+
+
+	& > button {
+		font-size: 15px !important;
+		line-height: 18px;
+		padding: 0;
+
+		&:first-child {
+			color: var(--tec-color-icon-error);
+
+			&:after {
+				color: #8d949b;
+				content: '|';
+				margin: 0 10px;
+			}
+		}
+
+		&:last-child {
+			color: var(--tec-color-button-primary);
+		}
+	}
+}

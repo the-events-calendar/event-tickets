@@ -60,7 +60,7 @@ $message = $is_sale_past
 	/* translators: %s: Tickets label */
 	? sprintf( __( '%s are no longer available', 'event-tickets' ), tribe_get_ticket_label_plural( 'event-tickets' ) )
 	/* translators: %s: Tickets label */
-	: sprintf( __( '%s are not yet available', 'event-tickets' ), tribe_get_ticket_label_plural( 'event-tickets' ) );
+	: $provider->get_tickets_unavailable_message( $tickets );
 ?>
 <div <?php tribe_classes( $classes ); ?>>
 	<div

@@ -23,70 +23,6 @@
 	}
 }
 
-.tec-tickets__admin-settings-tickets-commerce-toggle-wrapper {
-	margin-bottom: 20px;
-	margin-top: 45px;
-}
-
-.tec-tickets__admin-settings-tickets-commerce-toggle {
-	cursor: pointer;
-	display: flex;
-}
-
-.tec-tickets__admin-settings-tickets-commerce-toggle-switch {
-	background: #ccc;
-	border-radius: 16px;
-	display: inline-block;
-	height: 22px;
-	position: relative;
-	transition: background 0.4s;
-	vertical-align: middle;
-	width: 40px;
-
-	&:before,
-	&:after {
-		content: "";
-	}
-
-	&:before {
-		background: linear-gradient(to bottom, #fff 0%, #eee 100%);
-		border-radius: 50%;
-		display: block;
-		height: 16px;
-		left: 3px;
-		position: absolute;
-		top: 3px;
-		transition: left 0.4s;
-		width: 16px;
-	}
-
-	.tec-tickets__admin-settings-tickets-commerce-toggle:hover &:before {
-		background: linear-gradient(to bottom, #fff 0%, #fff 100%);
-	}
-
-	.tec-tickets__admin-settings-tickets-commerce-toggle-checkbox:checked + & {
-		background: #278dbc;
-
-		&:before {
-			left: 20px;
-		}
-	}
-}
-
-.tec-tickets__admin-settings-tickets-commerce-toggle-checkbox {
-	position: absolute;
-	visibility: hidden;
-}
-
-.tec-tickets__admin-settings-tickets-commerce-toggle-label {
-	color: #1d2327;
-	font-size: 20px;
-	font-weight: 600;
-	line-height: 23px;
-	margin-left: 15px;
-	position: relative;
-}
-
 .tec-tickets__admin-settings-tickets-commerce-description {
 	font-size: 13px;
 	font-weight: normal;
@@ -118,7 +54,7 @@
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-description {
-	align-items: start;
+	align-items: flex-start;
 	display: flex;
 	flex-direction: column;
 	flex-grow: 1;
@@ -355,7 +291,7 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-connected-webhook-error {
-	color: var(--color-icon-error);
+	color: var(--tec-color-icon-error);
 	margin-left: 8px;
 }
 
@@ -499,6 +435,7 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 
 .tec-tickets__admin-settings-featured-link {
 	align-items: center;
+	color: var(--tec-color-text-primary);
 	display: flex;
 }
 
@@ -583,17 +520,17 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 	}
 }
 
-.tec-tickets__admin-settings-tickets-commerce-gateways-item-toggle .tec-tickets__admin-settings-tickets-commerce-toggle-checkbox:checked + .tec-tickets__admin-settings-tickets-commerce-toggle-switch {
+.tec-tickets__admin-settings-tickets-commerce-gateways-item-toggle .tec-tickets__admin-settings-toggle-large-checkbox:checked + .tec-tickets__admin-settings-toggle-large-switch {
 	background: #50b078;
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-group-header {
 	background: #f9f9f9;
 	color: #23282d;
-	font-size: var(--tec-font-size-4);
+	display: flex;
+	font-size: var(--tec-font-size-2);
 	font-weight: var(--tec-font-weight-bold);
 	padding: var(--tec-spacer-1) var(--tec-spacer-2);
-	width: 100%;
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-group-header:first-of-type {
@@ -611,4 +548,54 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 .tec-tickets__admin-settings-tickets-commerce-gateways-item-status--enabled {
 	color: #50b078;
 	font-weight: var(--tec-font-weight-bold);
+}
+
+.tec-tickets__admin-after-pay-promo-container {
+	align-items: center;
+	background: #f6f7f7;
+	border: 1px solid #c3c4c7;
+	border-radius: 6px;
+	display: flex;
+	margin-bottom: 32px;
+	padding: 20px;
+}
+
+.tec-tickets__admin-after-pay-promo-icon-container {
+	display: none;
+	padding: 10px;
+
+	@media (--viewport-small) {
+		display: block;
+	}
+}
+
+.tec-tickets__admin-after-pay-promo-icon {
+	height: 48px;
+	width: 48px;
+}
+
+.tec-tickets__admin-after-pay-promo-content-container {
+	padding: 10px;
+}
+
+.tec-tickets__admin-after-pay-promo-content-title {
+	font-size: 20px;
+	font-weight: 400;
+	margin-bottom: 12px;
+}
+
+.tec-tickets__admin-after-pay-promo-description {
+	font-size: 14px;
+	margin-bottom: 6px;
+}
+
+.tec-tickets__admin-after-pay-promo-links-container {
+	display: flex;
+	flex-wrap: wrap;
+	font-size: 14px;
+}
+
+.tec-tickets__admin-after-pay-promo-link {
+	display: inline-block;
+	margin-right: 12px;
 }

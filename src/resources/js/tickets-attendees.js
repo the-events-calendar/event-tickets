@@ -60,7 +60,19 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 		});
 
 		$( 'span.trash a' ).on( 'click', function ( e ) {
-			return confirm( Attendees.confirmation );
+			const ticketType = $( this ).closest( 'tr' ).data( 'ticket-type');
+			// Set the confirmation message to the default one.
+			let confirmationMessage = Attendees.confirmation_singular;
+
+
+			if(
+				Attendees.confirmation
+				&& Attendees.confirmation[ticketType]
+				&& Attendees.confirmation[ticketType].singular
+			) {
+				confirmationMessage = Attendees.confirmation[ticketType].singular || confirmationMessage;
+			}
+			return confirm( confirmationMessage );
 		});
 
 		$( '.event-tickets__attendees-admin-form' ).on( 'submit', function ( e ) {
@@ -71,17 +83,39 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			}
 
 			// If no attendee was selected, bail out.
-			if ( ! $( this ).serialize().includes( '&attendee' ) )  {
+			if ( ! $( this ).serialize().includes( '&attendee' ) ) {
 				return;
 			}
 
-			return confirm( Attendees.bulk_confirmation );
+			const selectedAttendees = this.querySelectorAll('tr:has(input[name="attendee[]"]:checked)');
+			const ticketTypes = Array.from( selectedAttendees ).map( attendee => attendee.dataset.ticketType );
+			const multipleTicketTypes = new Set( ticketTypes ).size > 1;
+			const multipleAttendees = selectedAttendees.length > 1;
+			const ticketType = ticketTypes[0];
+
+			let confirmationMessage = multipleAttendees ? Attendees.confirmation_plural
+				: Attendees.confirmation_singular;
+
+			if( ! multipleTicketTypes
+				&& Attendees.confirmation
+				&& Attendees.confirmation[ticketType]
+			) {
+				// If there is only one ticket type, use the confirmation message for that ticket type, if available.
+				if( multipleAttendees  ) {
+					confirmationMessage = Attendees.confirmation[ticketType].plural || confirmationMessage;
+				} else {
+					confirmationMessage = Attendees.confirmation[ticketType].singular || confirmationMessage;
+				}
+			}
+
+			return confirm( confirmationMessage );
 		} );
 
 		$( '.tickets_checkin' ).on( 'click', function( e ) {
-
 			var obj = jQuery( this );
 			obj.prop( 'disabled', true );
+			obj.addClass( 'is-busy' );
+
 
 			var params = {
 				action  : 'tribe-ticket-checkin',
@@ -101,11 +135,20 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 				function( response ) {
 					if ( response.success ) {
 						obj.closest( 'tr' ).addClass( 'tickets_checked' );
+						var total_attendees    = parseInt( $( '#percent_checkedin' ).data( 'total-attendees' ) );
+						var total_checked_in   = parseInt( $( '#total_checkedin' ).text() ) + 1;
+						var percent_checked_in = Math.round( ( total_checked_in / total_attendees ) * 100 ).toString() + '%';
 
-						$( '#total_checkedin' ).text( parseInt( $( '#total_checkedin' ).text() ) + 1 );
+						$( '#total_checkedin' ).text( total_checked_in );
+						$( '#percent_checkedin' ).text( percent_checked_in );
+
+						if ( response?.data?.reload ) {
+							window.location.reload()
+						}
 					}
 
 					obj.prop( 'disabled', false );
+					obj.removeClass( 'is-busy' );
 				},
 				'json'
 			);
@@ -114,9 +157,10 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 		} );
 
 		$( '.tickets_uncheckin' ).on( 'click', function( e ) {
-
 			var obj = jQuery( this );
 			obj.prop( 'disabled', true );
+			obj.addClass( 'is-busy' );
+
 
 			var params = {
 				action  : 'tribe-ticket-uncheckin',
@@ -125,7 +169,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 				nonce   : Attendees.uncheckin_nonce
 			};
 
-			// add event_ID information if available
+			// Add event_ID information if available.
 			if ( obj.attr( 'data-event-id' ) ) {
 				params.event_ID = obj.attr( 'data-event-id' );
 			}
@@ -137,9 +181,14 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 					if ( response.success ) {
 						obj.closest( 'tr' ).removeClass( 'tickets_checked' );
 						$( '#total_checkedin' ).text( parseInt( $( '#total_checkedin' ).text() ) - 1 );
+
+						if ( response?.data?.reload ) {
+							window.location.reload()
+						}
 					}
 
 					obj.prop( 'disabled', false );
+					obj.removeClass( 'is-busy' );
 				},
 				'json'
 			);
@@ -151,10 +200,11 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 		 * Handle "move" requests for individual rows.
 		 */
 		$( 'table.wp-list-table' ).on( 'click', '.row-actions .move-ticket', function( event ) {
-			var ticket_id = $( this ).parents( 'tr' ).find( 'input[name="attendee[]"]' ).val().match( /^[0-9]+/ );
+			const ticketId = $( this ).data( 'attendee-id' );
+			const eventId = $( this ).data( 'event-id' );
 
-			if ( ticket_id ) {
-				create_move_ticket_modal( ticket_id );
+			if ( ticketId ) {
+				create_move_ticket_modal( ticketId, eventId );
 			}
 
 			event.stopPropagation();
@@ -210,9 +260,10 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 		 * Triggers the creation of the move tickets dialog, passing the
 		 * provided ticket IDs across in the process.
 		 *
-		 * @param ticket_ids
+		 * @param ticket_ids - A single ticket ID or an array of ticket IDs.
+		 * @param eventId - The event ID to add to the modal URL.
 		 */
-		function create_move_ticket_modal( ticket_ids ) {
+		function create_move_ticket_modal( ticket_ids, eventId = null ) {
 			if ( ! $.isArray( ticket_ids ) ) {
 				ticket_ids = [ ticket_ids ];
 			}
@@ -223,8 +274,15 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			var target_height = parseInt( $( window ).height() * 0.9, 10 );
 			target_height = target_height > 800 ? 800 : target_height;
 
-			var params = '&ticket_ids=' + ticket_ids.join( '|' )
+			let params = '&ticket_ids=' + ticket_ids.join( '|' )
 				+ '&width=' + target_width + '&height=' + target_height;
+
+			if ( eventId ) {
+				params += '&event_id=' + eventId;
+			} else if ( ! Attendees.move_url.includes( 'event_id' ) ) {
+				// @todo: Add a notice to the user that the move action is not available from the general attendees page.
+				return;
+			}
 
 			/* We need to add our list of ticket IDs and other params *before* the "TB_*"
 			 * param otherwise they will be discarded by Thickbox.
@@ -233,8 +291,8 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			 * style, again due to Thickbox oddities which would otherwise discard all but
 			 * the first value.
 			 */
-			var request_url = Attendees.move_url.replace( '&TB_', params + '&TB_' )
-			tb_show( null, request_url, false );
+			const requestUrl = Attendees.move_url.replace( '&TB_', params + '&TB_' )
+			tb_show( null, requestUrl, false );
 		}
 
 		/**

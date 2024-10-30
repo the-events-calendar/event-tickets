@@ -2,6 +2,7 @@
  * External dependencies
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * WordPress dependencies
@@ -25,7 +26,7 @@ const tooltipLabel = (
 const RSVPDurationLabel = ( { tooltipDisabled } ) => (
 	<LabelWithTooltip
 		className="tribe-editor__rsvp-duration__duration-label"
-		label={ __( 'Duration', 'event-tickets' ) }
+		label={ __( 'RSVP Duration', 'event-tickets' ) }
 		tooltipDisabled={ tooltipDisabled }
 		tooltipLabel={ tooltipLabel }
 		// @TODO: get tooltip text based on post type
@@ -35,5 +36,9 @@ const RSVPDurationLabel = ( { tooltipDisabled } ) => (
 		) }
 	/>
 );
+
+RSVPDurationLabel.propTypes = {
+	tooltipDisabled: PropTypes.bool,
+};
 
 export default RSVPDurationLabel;

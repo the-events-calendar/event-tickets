@@ -21,6 +21,24 @@ interface Merchant_Interface {
 	public function get_account_key();
 
 	/**
+	 * Gets the disconnect action for merchant.
+	 *
+	 * @since 5.11.0.5
+	 *
+	 * @return string
+	 */
+	public function get_disconnect_action(): string;
+
+	/**
+	 * Gets the disconnect url for merchant.
+	 *
+	 * @since 5.11.0.5
+	 *
+	 * @return string
+	 */
+	public function get_disconnect_url(): string;
+
+	/**
 	 * Save merchant data.
 	 *
 	 * @since 5.3.0

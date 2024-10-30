@@ -4,29 +4,59 @@
  * @since 5.2.0
  */
 
+.tribe-tickets__tickets-page-wrapper {
+	border-top: 1px solid var(--tec-color-border-default);
+	padding-top: var(--tec-spacer-5);
+}
+
 .tribe-tickets {
+
+	.tec-tickets__my-tickets-list-title-container {
+		padding: var(--tec-spacer-2) 0;
+	}
+
+	.tec-tickets__my-tickets-list-title {
+		font-family: var(--tec-font-family-sans-serif);
+		font-size: var(--tec-font-size-7);
+		font-weight: var(--tec-font-weight-regular);
+		line-height: var(--tec-line-height-3);
+	}
+
 	ul.tribe-orders-list {
 		list-style: none;
 		margin: 0;
 		padding: 0;
 
 		> .tribe-item {
-			margin-top: 20px;
+			container-type: inline-size;
+			margin: 0;
+			padding: 0;
+		}
+
+		.tec__tickets-my-tickets-order-tickets-list-wrapper {
+			margin: 0 0 var(--tec-spacer-8);
 		}
 
 		.tribe-tickets-list {
 			list-style: none;
-			margin: 0;
+			margin: 0 0 var(--tec-spacer-2);
 			padding: 0;
 
 			> .tribe-item {
+				align-items: center;
 				background-color: var(--tec-color-background);
-				border: 1px solid #ededed;
+				border: 1px solid var(--tec-color-border-default);
 				border-bottom: 0;
-				padding: 20px;
+				display: flex;
+				flex-wrap: wrap;
+				gap: var(--tec-spacer-4);
+				justify-content: space-between;
+				margin: 0;
+				min-height: 105px;
+				padding: var(--tec-spacer-5);
 
 				&:last-child {
-					border-bottom: 1px solid #ededed;
+					border-bottom: 1px solid var(--tec-color-border-default);
 				}
 
 				&.tribe-disabled {
@@ -40,13 +70,10 @@
 				}
 
 				.tribe-ticket-information {
-					display: inline-block;
-					float: right;
-				}
-
-				.tribe-answer {
-					display: block;
-					float: right;
+					font-family: var(--tec-font-family-sans-serif);
+					font-size: var(--tec-font-size-3);
+					font-weight: var(--tec-font-weight-regular);
+					line-height: var(--tec-line-height-0);
 				}
 
 				table {
@@ -56,6 +83,55 @@
 
 				td {
 					border: 0;
+				}
+
+				& > div {
+					flex: 1 0 100%;
+				}
+
+				@media (--viewport-medium) {
+					align-items: center;
+					flex-direction: row;
+
+					& > div {
+						flex: 0 1 auto;
+						order: 2;
+						white-space: nowrap;
+					}
+
+					& > div.list-attendee {
+						flex: 1 0 auto;
+						order: 1;
+					}
+
+					& > div.tribe-ticket-information {
+						flex: 0 1 100%;
+						order: 3;
+						white-space: wrap;
+					}
+
+					& > div:last-child {
+						flex: 0 1 auto;
+						order: 2;
+					}
+				}
+
+				@media (--viewport-full) {
+
+					& > div {
+						flex: 0 1 auto;
+						order: 3;
+					}
+
+					& > div.list-attendee {
+						flex: 0 1 auto;
+						order: 1;
+					}
+
+					& > div.tribe-ticket-information {
+						flex: 0 1 auto;
+						order: 2;
+					}
 				}
 			}
 		}

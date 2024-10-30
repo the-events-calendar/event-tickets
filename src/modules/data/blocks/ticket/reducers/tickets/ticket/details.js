@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import moment from 'moment/moment';
+import moment from 'moment';
 
 /**
  * Internal dependencies
@@ -31,9 +31,11 @@ const iac = globals.iacVars().iacDefault
 	: 'none';
 
 export const DEFAULT_STATE = {
+	attendeeInfoFields: [],
 	title: '',
 	description: '',
 	price: '',
+	on_sale: false,
 	sku: '',
 	iac: iac,
 	startDate: momentUtil.toDatabaseDate( currentMoment ),
@@ -48,6 +50,15 @@ export const DEFAULT_STATE = {
 	endTimeInput: momentUtil.toTime( endMoment ),
 	capacityType: constants.TICKET_TYPES[ constants.UNLIMITED ],
 	capacity: '',
+	type: 'default',
+	salePriceChecked: false,
+	salePrice: '',
+	saleStartDate: '',
+	saleStartDateInput: '',
+	saleStartDateMoment: '',
+	saleEndDate: '',
+	saleEndDateInput: '',
+	saleEndDateMoment: '',
 };
 
 export default ( state = DEFAULT_STATE, action ) => {
@@ -66,6 +77,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				price: action.payload.price,
+			};
+		case types.SET_TICKET_ON_SALE:
+			return {
+				...state,
+				on_sale: action.payload.onSale,
 			};
 		case types.SET_TICKET_SKU:
 			return {
@@ -136,6 +152,56 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				capacity: action.payload.capacity,
+			};
+		case types.SET_TICKET_ATTENDEE_INFO_FIELDS:
+			return {
+				...state,
+				attendeeInfoFields: action.payload.attendeeInfoFields,
+			};
+		case types.SET_TICKET_TYPE:
+			return {
+				...state,
+				type: action.payload.type,
+			};
+		case types.SET_TICKET_SALE_PRICE_CHECK:
+			return {
+				...state,
+				salePriceChecked: action.payload.checked,
+			};
+		case types.SET_TICKET_SALE_PRICE:
+			return {
+				...state,
+				salePrice: action.payload.salePrice,
+			};
+		case types.SET_TICKET_SALE_START_DATE:
+			return {
+				...state,
+				saleStartDate: action.payload.startDate,
+			};
+		case types.SET_TICKET_SALE_START_DATE_INPUT:
+			return {
+				...state,
+				saleStartDateInput: action.payload.startDateInput,
+			};
+		case types.SET_TICKET_SALE_START_DATE_MOMENT:
+			return {
+				...state,
+				saleStartDateMoment: action.payload.startDateMoment,
+			};
+		case types.SET_TICKET_SALE_END_DATE:
+			return {
+				...state,
+				saleEndDate: action.payload.endDate,
+			};
+		case types.SET_TICKET_SALE_END_DATE_INPUT:
+			return {
+				...state,
+				saleEndDateInput: action.payload.endDateInput,
+			};
+		case types.SET_TICKET_SALE_END_DATE_MOMENT:
+			return {
+				...state,
+				saleEndDateMoment: action.payload.endDateMoment,
 			};
 		default:
 			return state;

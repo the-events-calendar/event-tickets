@@ -11,7 +11,6 @@ namespace TEC\Tickets\Commerce\Gateways\Contracts;
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Payments_Tab;
-use Tribe__Settings;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -58,7 +57,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	protected static $supported_currencies = [];
 
 	/**
-	 * The option name prefix that configured whether or not a gateway is enabled.
+	 * The option name prefix that configured whether a gateway is enabled.
 	 * It is followed by the gateway 'key'
 	 *
 	 * @since 5.3.0
@@ -75,6 +74,15 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 * @var string
 	 */
 	public static $checkout_container_template_name = 'container';
+
+	/**
+	 * Class used to manage the Orders for this Gateway
+	 *
+	 * @since 5.6.0
+	 *
+	 * @var string
+	 */
+	protected string $order_controller_class = Commerce\Order::class;
 
 	/**
 	 * @inheritDoc
@@ -147,6 +155,17 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	}
 
 	/**
+	 * Fetches the Gateway Order Controller.
+	 *
+	 * @since 5.6.0
+	 *
+	 * @return Commerce\Abstract_Order
+	 */
+	public function get_order_controller(): Commerce\Abstract_Order {
+		return tribe( $this->order_controller_class );
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public function get_settings() {
@@ -173,7 +192,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 		$body    = (array) json_decode( wp_remote_retrieve_body( $response ) );
 
 		$error         = isset( $body['error'] ) ? $body['error'] : __( 'Something went wrong!', 'event-tickets' );
-		$error_message = isset( $body['error_description'] ) ? $body['error_description'] : __( 'Unexpected response recieved.', 'event-tickets' );
+		$error_message = $body['error_description'] ?? __( 'Unexpected response received.', 'event-tickets' );
 
 		$notices->trigger_admin(
 			$slug,

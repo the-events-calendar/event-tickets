@@ -1,32 +1,15 @@
 <?php
 
+_deprecated_file( __FILE__, '5.8.0', 'TEC\Tickets\Blocks\Ticket\Block' );
+
+use TEC\Tickets\Blocks\Ticket\Block;
+
 /**
  * Tickets block Setup
+ *
+ * @deprecated 5.8.0 Use TEC\Tickets\Blocks\Ticket\Block instead.
+ * @since      5.8.0 Moved to TEC\Tickets\Blocks\Ticket\Block
+ * @since      4.9
  */
-class Tribe__Tickets__Editor__Blocks__Tickets_Item extends Tribe__Editor__Blocks__Abstract {
-
-	/**
-	 * Which is the name/slug of this block
-	 *
-	 * @since 4.9.2
-	 *
-	 * @return string
-	 */
-	public function slug() {
-		return 'tickets-item';
-	}
-
-	/**
-	 * Since we are dealing with a Dynamic type of Block we need a PHP method to render it
-	 *
-	 * @since 4.9.2
-	 *
-	 * @param  array $attributes
-	 *
-	 * @return string
-	 */
-	public function render( $attributes = [] ) {
-		// This block has no render.
-		return '';
-	}
+class Tribe__Tickets__Editor__Blocks__Tickets_Item extends Block {
 }

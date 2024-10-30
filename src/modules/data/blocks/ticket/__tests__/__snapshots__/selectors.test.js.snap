@@ -48,9 +48,13 @@ Object {
     "byClientId": Object {
       "modern-tribe": Object {
         "available": 0,
+        "currencyDecimalPoint": ".",
+        "currencyNumberOfDecimals": 2,
         "currencyPosition": "prefix",
         "currencySymbol": undefined,
+        "currencyThousandsSep": ",",
         "details": Object {
+          "attendeeInfoFields": Array [],
           "capacity": "",
           "capacityType": "unlimited",
           "description": "",
@@ -160,6 +164,7 @@ exports[`Ticket block selectors Ticket details selectors getTicketDescription 1`
 
 exports[`Ticket block selectors Ticket details selectors getTicketDetails 1`] = `
 Object {
+  "attendeeInfoFields": Array [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -229,9 +234,13 @@ exports[`Ticket block selectors Ticket details selectors isUnlimitedTicket 1`] =
 exports[`Ticket block selectors Ticket selectors getTicket 1`] = `
 Object {
   "available": 0,
+  "currencyDecimalPoint": ".",
+  "currencyNumberOfDecimals": 2,
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
+  "currencyThousandsSep": ",",
   "details": Object {
+    "attendeeInfoFields": Array [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -388,9 +397,13 @@ Object {
   "byClientId": Object {
     "modern-tribe": Object {
       "available": 0,
+      "currencyDecimalPoint": ".",
+      "currencyNumberOfDecimals": 2,
       "currencyPosition": "prefix",
       "currencySymbol": undefined,
+      "currencyThousandsSep": ",",
       "details": Object {
+        "attendeeInfoFields": Array [],
         "capacity": "",
         "capacityType": "unlimited",
         "description": "",
@@ -453,9 +466,13 @@ exports[`Ticket block selectors Tickets selectors getTicketsArray 1`] = `
 Array [
   Object {
     "available": 0,
+    "currencyDecimalPoint": ".",
+    "currencyNumberOfDecimals": 2,
     "currencyPosition": "prefix",
     "currencySymbol": undefined,
+    "currencyThousandsSep": ",",
     "details": Object {
+      "attendeeInfoFields": Array [],
       "capacity": "",
       "capacityType": "unlimited",
       "description": "",
@@ -511,9 +528,13 @@ exports[`Ticket block selectors Tickets selectors getTicketsByClientId 1`] = `
 Object {
   "modern-tribe": Object {
     "available": 0,
+    "currencyDecimalPoint": ".",
+    "currencyNumberOfDecimals": 2,
     "currencyPosition": "prefix",
     "currencySymbol": undefined,
+    "currencyThousandsSep": ",",
     "details": Object {
+      "attendeeInfoFields": Array [],
       "capacity": "",
       "capacityType": "unlimited",
       "description": "",
@@ -573,9 +594,13 @@ exports[`Ticket block selectors Tickets selectors getUnlimitedTickets 1`] = `
 Array [
   Object {
     "available": 0,
+    "currencyDecimalPoint": ".",
+    "currencyNumberOfDecimals": 2,
     "currencyPosition": "prefix",
     "currencySymbol": undefined,
+    "currencyThousandsSep": ",",
     "details": Object {
+      "attendeeInfoFields": Array [],
       "capacity": "",
       "capacityType": "unlimited",
       "description": "",

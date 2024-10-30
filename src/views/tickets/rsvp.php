@@ -3,7 +3,7 @@
  * This template renders the RSVP ticket form.
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe-events/tickets/rsvp.php
+ * [your-theme]/tribe/tickets/rsvp.php
  *
  * @since   4.0
  * @since   4.10.8 More similar display format to that of other ticket types, including better checking of max quantity available.
@@ -12,8 +12,9 @@
  * @since   4.11.1 Corrected amount of available/remaining tickets when threshold is empty.
  * @since   4.11.5 Display total available separately from setting max allowed to purchase at once.
  * @since   5.1.5 Add label to the quantity input to improve accessibility.
+ * @since   5.9.1 Corrected template override filepath
  *
- * @version 5.1.5
+ * @version 5.9.1
  *
  * @var Tribe__Tickets__RSVP $this
  * @var bool                 $must_login

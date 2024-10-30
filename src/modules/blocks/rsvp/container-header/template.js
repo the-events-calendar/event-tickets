@@ -1,9 +1,8 @@
 /**
  * External dependencies
  */
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import TextareaAutosize from 'react-textarea-autosize';
 
 /**
  * WordPress dependencies
@@ -14,73 +13,17 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import RSVPCounters from '@moderntribe/tickets/blocks/rsvp/counters/container';
-import { NumericLabel } from '@moderntribe/tickets/elements';
-import { Tooltip } from '@moderntribe/common/elements';
-import { Clipboard } from '@moderntribe/common/icons';
+import { NumericLabel, SplitContainer } from '@moderntribe/tickets/elements';
+import {
+	SettingsActionButton,
+	AttendeesActionButton,
+} from '@moderntribe/tickets/blocks/rsvp/action-buttons';
+
 import './style.pcss';
-
-const clipboard = (
-	<Tooltip
-		labelClassName="tribe-editor__ticket__container-header-clipboard-tooltip"
-		label={ <Clipboard /> }
-		text={ __(
-			'This ticket has Attendee Information Fields configured.',
-			'event-tickets',
-		) }
-	/>
-);
-
-const getTitle = (
-	hasAttendeeInfoFields,
-	isDisabled,
-	isSelected,
-	onTempTitleChange,
-	tempTitle,
-	title,
-) => (
-	isSelected
-		? (
-			<div className="tribe-editor__rsvp-container-header__title-input-wrapper">
-				<TextareaAutosize
-					className="tribe-editor__rsvp-container-header__title-input"
-					value={ tempTitle }
-					placeholder={ __( 'RSVP Title', 'event-tickets' ) }
-					onChange={ onTempTitleChange }
-					disabled={ isDisabled }
-				/>
-				{ hasAttendeeInfoFields && clipboard }
-			</div>
-		)
-		: <h2 className="tribe-editor__rsvp-container-header__title">{ title }</h2>
-);
-
-const getDescription = (
-	isDisabled,
-	isSelected,
-	onTempDescriptionChange,
-	tempDescription,
-	description,
-) => (
-	isSelected
-		? (
-			<TextareaAutosize
-				className="tribe-editor__rsvp-container-header__description-input"
-				value={ tempDescription }
-				placeholder={ __( 'RSVP description', 'event-tickets' ) }
-				onChange={ onTempDescriptionChange }
-				disabled={ isDisabled }
-			/>
-		)
-		: description && (
-			<span className="tribe-editor__rsvp-container-header__description">
-				{ description }
-			</span>
-		)
-);
 
 const getCapacityLabel = ( capacity ) => {
 	// todo: should use _n to be translator friendly
-	const singular = __( '%d available', 'event-tickets' );
+	const singular = __( '%d Remaining', 'event-tickets' );
 	const plural = singular;
 	const fallback = (
 		<span className="tribe-editor__rsvp-container-header__capacity-label-fallback">
@@ -102,53 +45,61 @@ const getCapacityLabel = ( capacity ) => {
 
 const RSVPContainerHeader = ( {
 	description,
-	hasAttendeeInfoFields,
+	isAddEditOpen,
 	isCreated,
-	isDisabled,
-	isSelected,
-	onTempDescriptionChange,
-	onTempTitleChange,
-	tempDescription,
-	tempTitle,
 	title,
 	available,
+	setAddEditOpen,
 } ) => {
-	return (
-		<Fragment>
-			<div className="tribe-editor__rsvp-container-header__header-details">
-				{ getTitle(
-					hasAttendeeInfoFields,
-					isDisabled,
-					isSelected,
-					onTempTitleChange,
-					tempTitle,
-					title,
-				) }
-				{ getDescription(
-					isDisabled,
-					isSelected,
-					onTempDescriptionChange,
-					tempDescription,
-					description,
-				) }
-				{ isCreated && getCapacityLabel( available ) }
+	if ( isAddEditOpen ) {
+		return null;
+	}
+
+	/* eslint-disable max-len */
+	const leftColumn = (
+		<>
+			<h3 className="tribe-editor__rsvp-title tribe-common-h2 tribe-common-h4--min-medium">
+				{ title }
+			</h3>
+
+			<div className="tribe-editor__rsvp-description tribe-common-h6 tribe-common-h--alt tribe-common-b3--min-medium">
+				{ description }
+				<RSVPCounters />
 			</div>
-			<RSVPCounters />
-		</Fragment>
+
+			{ isCreated && getCapacityLabel( available ) }
+		</>
 	);
+
+	const rightColumn = (
+		<>
+			<button id="edit-rsvp" className="tribe-common-c-btn tribe-common-b1 tribe-common-b2--min-medium" onClick={ setAddEditOpen }>
+				{ __( 'Edit RSVP', 'event-tickets' )}
+			</button>
+			<SettingsActionButton />
+			<AttendeesActionButton />
+		</>
+	);
+
+	return (
+		<>
+			<div className="tribe-common tribe-editor__inactive-block--rsvp tribe-editor__rsvp-container-header">
+				<SplitContainer
+					leftColumn={ leftColumn }
+					rightColumn={ rightColumn }
+				/>
+			</div>
+		</>
+	);
+	/* eslint-enable max-len */
 };
 
 RSVPContainerHeader.propTypes = {
 	available: PropTypes.number,
 	description: PropTypes.string,
-	hasAttendeeInfoFields: PropTypes.bool,
+	isAddEditOpen: PropTypes.bool,
 	isCreated: PropTypes.bool,
-	isDisabled: PropTypes.bool.isRequired,
-	isSelected: PropTypes.bool.isRequired,
-	onTempDescriptionChange: PropTypes.func,
-	onTempTitleChange: PropTypes.func,
-	tempDescription: PropTypes.string,
-	tempTitle: PropTypes.string,
+	setAddEditOpen: PropTypes.func,
 	title: PropTypes.string,
 };
 

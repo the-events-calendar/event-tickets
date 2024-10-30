@@ -29,7 +29,7 @@
 		}
 
 		td {
-			padding: 10px;
+			padding: var(--tec-spacer-2);
 			vertical-align: middle;
 
 			div.ticket_controls {
@@ -299,7 +299,7 @@
 .tribe-button-icon {
 
 	&:before {
-		font-family: 'dashicons';
+		font-family: 'dashicons', sans-serif;
 		font-size: 1.25em;
 		left: -0.25em;
 		position: relative;
@@ -353,11 +353,54 @@
 
 /* Styles for Initial View */
 .ticket_table_intro {
+	display: flex;
+	justify-content: flex-start;
+
 	.button-secondary {
-		float: right;
-		margin-bottom: 15px;
-		margin-left: 5px;
+		height: 35px;
+		margin-left: var(--tec-spacer-3);
+
+		&:first-of-type {
+			margin-left: 0;
+		}
 	}
+
+	#settings_form_toggle {
+		/* If the intro contains the Settings button, then move it to the end of the flex row. */
+		margin-left: auto;
+	}
+
+	.tec_ticket-panel__helper_link__wrap {
+		margin-left: auto;
+	}
+}
+
+.ticket_table_intro__warnings {
+	display: flex;
+	flex-wrap: wrap;
+
+	/* Assume each warning will be wrapped in a dedicated div. */
+	div {
+		width: 100%;
+	}
+}
+
+.tribe_ticket_list_table {
+	.table-header .ticket_name {
+		align-items: center;
+		display: flex;
+		justify-content: flex-start;
+
+		.tribe-tickets-svgicon {
+			margin-right: var(--tec-spacer-0);
+		}
+	}
+}
+
+.tribe-ticket-control-wrap {
+	display: flex;
+	font-size: 13px;
+	justify-content: space-between;
 
 	#ticket_form_total_capacity {
 		display: inline-block;
@@ -383,6 +426,34 @@
 				transform: none;
 				width: 100%;
 			}
+		}
+	}
+
+	.tribe-ticket-control-wrap__ctas {
+		align-items: center;
+		display: flex;
+		justify-content: flex-start;
+
+		a:not(:first-of-type):before {
+			color: #2c3338;
+			content: '|';
+			margin-left: 2px;
+			margin-right: 2px;
+			text-decoration: none;
+		}
+	}
+
+	.tribe-ticket-control-wrap__settings {
+		align-items: center;
+		display: flex;
+		justify-content: flex-end;
+
+		& > * {
+			margin-right: var(--tec-spacer-1);
+		}
+
+		&:last-child {
+			margin-right: 0;
 		}
 	}
 }
@@ -426,12 +497,21 @@
 		display: block;
 		margin-top: 0;
 
+		&.ticket_form_right--flex {
+			align-items: center;
+			display: flex;
+		}
+
 		@media (min-width: 782px) {
 			margin-left: 132px;
 		}
 
 		&:last-child {
 			margin-bottom: 0;
+		}
+
+		.ticket-type__text {
+			margin-left: var(--tec-spacer-0);
 		}
 	}
 
@@ -613,10 +693,14 @@ p.description {
 	padding: 10px;
 
 	&.info {
-		background-color: #edf6fc;
-
 		.dashicons {
 			color: #2a709d;
+			margin-right: var(--tec-spacer-0);
+		}
+
+		&.info--background {
+			background-color: #f0f6fc;
+			border: 1px solid #c5d9ed;
 		}
 	}
 
@@ -634,8 +718,123 @@ p.description {
 		margin-right: 2px;
 		width: 20px;
 	}
+
+	&.table-stick--before {
+		margin-top: 16px;
+	}
+
+	.ticket-editor-notice_warning--message {
+		margin-top: 0;
+	}
 }
 
 .tribe_events_page_tickets-attendees .search-box .button {
 	text-transform: capitalize;
+}
+
+.tec-admin__upsell-tec-tickets-capacity-arf {
+	margin-bottom: var(--tec-spacer-5);
+
+	.tec-admin__upsell-content {
+		padding: var(--tec-spacer-1) 0;
+	}
+}
+
+.tec-tickets__series_attached_ticket-types {
+	padding: 10px 0;
+
+	.tec-tickets__series_attached_ticket-type {
+		align-items: center;
+		display: flex;
+		margin-bottom: var(--tec-spacer-2);
+	}
+
+	.tec-tickets__series_attached_ticket-type__icon {
+		background-repeat: no-repeat;
+		display: inline-block;
+		height: 20px;
+		margin-right: var(--tec-spacer-0);
+		width: 20px;
+	}
+
+	.tec-tickets__series_attached_ticket-type__icon--rsvp {
+		background-image: url('../icons/ticket-rsvp-icon.svg');
+		margin-top: 5px;
+	}
+
+	.tec-tickets__series_attached_ticket-type__icon--ticket {
+		background-image: url('../icons/ticket-default-icon.svg');
+	}
+
+	.tec-tickets__series_attached_ticket-type__icon--series-pass {
+		background-image: url('../icons/ticket-series-pass-icon.svg');
+	}
+
+	.tickets__series_attached_ticket-type__title {
+		font-size: var(--tec-font-size-2);
+	}
+}
+
+.tec_tickets_editor__header__ticket-type-upsell-notice {
+	align-items: center;
+	color: var(--tec-color-text-primary);
+	display: flex;
+	font-size: 13px;
+	font-weight: var(--tec-font-weight-regular);
+	margin-bottom: var(--tec-spacer-3);
+	margin-left: 132px;
+
+	img {
+		height: 12px;
+		margin-right: 4px;
+		width: 12px;
+	}
+}
+
+.tickets_page_tec-tickets-settings {
+	p.description,
+	.tribe-field-checkbox_list label {
+		color: var(--tec-color-text-primary);
+	}
+}
+
+.ticket_sale_price_wrapper {
+	padding: 10px 0;
+
+	input#ticket_add_sale_price {
+		margin-top: 0;
+	}
+
+	.ticket_sale_price {
+		div.ticket_sale_price-field {
+			margin-top: 10px;
+
+			input#ticket_sale_price {
+				margin-left: 20px;
+			}
+
+			input#ticket_sale_start_date {
+				margin-left: 4px;
+			}
+
+			#ticket_sale_start_date,
+			#ticket_sale_end_date {
+				width: 100px;
+			}
+		}
+	}
+}
+
+.tec-tickets-price {
+	ins {
+		text-decoration: none;
+	}
+
+	del {
+		text-decoration-color: #999;
+	}
+
+	.tec-tickets-price__regular-price {
+		color: #999;
+	}
 }

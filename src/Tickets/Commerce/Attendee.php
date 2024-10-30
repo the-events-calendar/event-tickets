@@ -277,6 +277,8 @@ class Attendee {
 	 *
 	 * @since 5.2.1
 	 *
+	 * @since 5.5.10 Avoid force delete of WP_Post objects and integrate stock management.
+	 *
 	 * @param int     $attendee_id The Attendee ID.
 	 * @param boolean $force       Force the deletion.
 	 */
@@ -291,6 +293,8 @@ class Attendee {
 		 */
 		$attendee_id = apply_filters( 'tec_tickets_commerce_attendee_to_delete', $attendee_id, $force );
 
+		$event_id = (int) get_post_meta( $attendee_id, static::$event_relation_meta_key, true );
+
 		/**
 		 * Allows actions to run right before deleting an attendee.
 		 *
@@ -301,7 +305,7 @@ class Attendee {
 		 */
 		do_action( 'tec_tickets_commerce_attendee_before_delete', $attendee_id, $force );
 
-		$result = wp_delete_post( $attendee_id, true );
+		$result = wp_delete_post( $attendee_id );
 
 		/**
 		 * Allows actions to run right after deleting an attendee.
@@ -365,6 +369,7 @@ class Attendee {
 
 		if ( ! empty( $args['full_name'] ) ) {
 			$create_args['full_name'] = $args['full_name'];
+			$create_args['title']     = $args['full_name'];
 		}
 
 		if (
@@ -372,6 +377,7 @@ class Attendee {
 			&& ! empty( $order->purchaser['full_name'] )
 		) {
 			$create_args['full_name'] = $order->purchaser['full_name'];
+			$create_args['title']     = $order->purchaser['full_name'];
 		}
 
 		$fields = Arr::get( $args, 'fields', [] );
@@ -431,8 +437,8 @@ class Attendee {
 	}
 
 	/**
-	 * If the post that was moved to the trash was an PayPal Ticket attendee post type, redirect to
-	 * the Attendees Report rather than the PayPal Ticket attendees post list (because that's kind of
+	 * If the post that was moved to the trash was a Tickets Commerce attendee post type, redirect to
+	 * the Attendees Report rather than the Tickets Commerce attendees post list (because that's kind of
 	 * confusing)
 	 *
 	 * @todo  @backend this should probably be moved to the Archive Attendees flag action and handled from there.
@@ -442,6 +448,11 @@ class Attendee {
 	 * @param int $post_id WP_Post ID.
 	 */
 	public function maybe_redirect_to_attendees_report( $post_id ) {
+		if ( ! tribe_context()->is_editing_post( $post_id ) ) {
+			// If the context of the trashing is not an edit request to trash this post (i.e. it's programmatic), bail.
+			return;
+		}
+
 		$post = get_post( $post_id );
 
 		if ( static::POSTTYPE !== $post->post_type ) {
@@ -528,7 +539,7 @@ class Attendee {
 	}
 
 	/**
-	 * Triggers the sending of ticket emails after PayPal Ticket information is updated.
+	 * Triggers the sending of ticket emails after Tickets Commerce information is updated.
 	 *
 	 * This is useful if a user initially suggests they will not be attending
 	 * an event (in which case we do not send tickets out) but where they
@@ -655,6 +666,37 @@ class Attendee {
 		}
 
 		return $attendee;
+	}
+
+	/**
+	 * Get attendees by ticket ID.
+	 *
+	 * @since 5.14.0
+	 *
+	 * @param int    $ticket_id    Ticket ID.
+	 * @param string $orm_provider ORM provider string.
+	 *
+	 * @return array List of attendees.
+	 */
+	public function get_attendees_by_ticket_id( $ticket_id, $orm_provider ) {
+		// Check cache.
+		$cache                  = tribe_cache();
+		$attendees_by_ticket_id = $cache->get( 'tec_tickets_attendees_by_ticket_id' );
+		if ( ! is_array( $attendees_by_ticket_id ) ) {
+			$attendees_by_ticket_id = [];
+		}
+
+		if ( ! isset( $attendees_by_ticket_id[ $ticket_id ] ) ) {
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tec_tc_attendees( $orm_provider );
+			$attendees  = $repository->by( 'ticket_id', $ticket_id )->all();
+
+			// Store in cache.
+			$attendees_by_ticket_id[ $ticket_id ] = $attendees;
+			$cache->set( 'tec_tickets_attendees_by_ticket_id', $attendees_by_ticket_id );
+		}
+
+		return tribe( Module::class )->get_attendees_from_module( $attendees_by_ticket_id[ $ticket_id ] );
 	}
 
 	/**

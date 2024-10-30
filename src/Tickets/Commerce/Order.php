@@ -3,8 +3,11 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Gateway_Interface;
+use TEC\Tickets\Commerce\Status\Refunded;
+use TEC\Tickets\Commerce\Status\Reversed;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Date_Utils as Dates;
+use WP_Post;
 
 /**
  * Class Order
@@ -190,13 +193,58 @@ class Order extends Abstract_Order {
 		$post_type_args = [
 			'label'           => __( 'Orders', 'event-tickets' ),
 			'public'          => false,
-			'show_ui'         => false,
+			'show_ui'         => true,
 			'show_in_menu'    => false,
 			'query_var'       => false,
 			'rewrite'         => false,
-			'capability_type' => 'post',
+			'capability_type' => 'order',
+			'map_meta_cap'    => true,
+			'capabilities'    => [
+				// Meta capabilities.
+				'edit_post'          => 'edit_post',
+				'read_post'          => 'read_post',
+				'delete_post'        => 'delete_post',
+				// Primitive capabilities used outside of map_meta_cap().
+				'edit_posts'         => 'edit_posts',
+				'create_posts'       => 'edit_tc-orders',
+				'edit_others_posts'  => 'edit_others_posts',
+				'delete_posts'       => 'delete_posts',
+				'publish_posts'      => 'publish_tc-orders', // 'publish_posts',
+				'read_private_posts' => 'read_private_posts',
+			],
 			'has_archive'     => false,
 			'hierarchical'    => false,
+			'supports'        => [ 'title' ],
+			'labels'          => [
+				'name'                     => __( 'Orders', 'event-tickets' ),
+				'singular_name'            => __( 'Order', 'event-tickets' ),
+				'add_new'                  => __( 'Add New Order', 'event-tickets' ),
+				'add_new_item'             => __( 'Add New Order', 'event-tickets' ),
+				'edit_item'                => __( 'Edit Order', 'event-tickets' ),
+				'new_item'                 => __( 'New Order', 'event-tickets' ),
+				'view_item'                => __( 'View Order', 'event-tickets' ),
+				'view_items'               => __( 'View Orders', 'event-tickets' ),
+				'search_items'             => __( 'Search Orders', 'event-tickets' ),
+				'not_found'                => __( 'No orders found.', 'event-tickets' ),
+				'not_found_in_trash'       => __( 'No orders found in Trash.', 'event-tickets' ),
+				'all_items'                => __( 'All Orders', 'event-tickets' ),
+				'archives'                 => __( 'Order Archives', 'event-tickets' ),
+				'attributes'               => __( 'Order Attributes', 'event-tickets' ),
+				'insert_into_item'         => __( 'Insert into order', 'event-tickets' ),
+				'uploaded_to_this_item'    => __( 'Uploaded to this order', 'event-tickets' ),
+				'filter_items_list'        => __( 'Filter orders list', 'event-tickets' ),
+				'filter_by_date'           => __( 'Filter by date', 'event-tickets' ),
+				'items_list_navigation'    => __( 'Orders list navigation', 'event-tickets' ),
+				'items_list'               => __( 'Orders list', 'event-tickets' ),
+				'item_published'           => __( 'Order published.', 'event-tickets' ),
+				'item_published_privately' => __( 'Order published privately.', 'event-tickets' ),
+				'item_reverted_to_draft'   => __( 'Order reverted to draft.', 'event-tickets' ),
+				'item_trashed'             => __( 'Order trashed.', 'event-tickets' ),
+				'item_scheduled'           => __( 'Order scheduled.', 'event-tickets' ),
+				'item_updated'             => __( 'Order updated.', 'event-tickets' ),
+				'item_link'                => _x( 'Order Link', 'navigation link block title', 'event-tickets' ),
+				'item_link_description'    => _x( 'A link to an order.', 'navigation link block description', 'event-tickets' ),
+			],
 		];
 
 		/**
@@ -333,16 +381,17 @@ class Order extends Abstract_Order {
 	 *
 	 * @throws \Tribe__Repository__Usage_Error
 	 *
-	 * @return false|\WP_Post
+	 * @return false|WP_Post
 	 */
 	public function create_from_cart( Gateway_Interface $gateway, $purchaser = null ) {
 		$cart = tribe( Cart::class );
 
 		$items      = $cart->get_items_in_cart();
-		$items      = array_map(
+		$items      = array_filter( array_map(
 			static function ( $item ) {
 				/** @var Value $ticket_value */
-				$ticket_value = tribe( Ticket::class )->get_price_value( $item['ticket_id'] );
+				$ticket_value         = tribe( Ticket::class )->get_price_value( $item['ticket_id'] );
+				$ticket_regular_value = tribe( Ticket::class )->get_price_value( $item['ticket_id'], true );
 
 				if ( null === $ticket_value ) {
 					return null;
@@ -350,11 +399,15 @@ class Order extends Abstract_Order {
 
 				$item['price']     = $ticket_value->get_decimal();
 				$item['sub_total'] = $ticket_value->sub_total( $item['quantity'] )->get_decimal();
+				$item['event_id']  = tribe( Ticket::class )->get_related_event_id( $item['ticket_id'] );
+
+				$item['regular_price']     = $ticket_regular_value->get_decimal();
+				$item['regular_sub_total'] = $ticket_regular_value->sub_total( $item['quantity'] )->get_decimal();
 
 				return $item;
 			},
 			$items
-		);
+		) );
 		$total = $this->get_value_total( array_filter( $items ) );
 
 		$order_args = [
@@ -391,7 +444,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @throws \Tribe__Repository__Usage_Error
 	 *
-	 * @return false|\WP_Post
+	 * @return false|WP_Post
 	 */
 	public function create( Gateway_Interface $gateway, $args ) {
 		$gateway_key = $gateway::get_key();
@@ -446,7 +499,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param int|\WP_Post $order Order Object.
+	 * @param int|WP_Post $order Order Object.
 	 *
 	 * @return string
 	 */
@@ -455,13 +508,16 @@ class Order extends Abstract_Order {
 			$order = tec_tc_get_order( $order );
 		}
 
-		if ( ! $order instanceof \WP_Post ) {
+		if ( empty( $order->gateway ) ) {
 			return null;
 		}
 
 		$gateway = tribe( Gateways\Manager::class )->get_gateway_by_key( $order->gateway );
+		if ( empty( $gateway ) ) {
+			return null;
+		}
 
-		return $gateway ? $gateway::get_label() : null;
+		return $gateway::get_label();
 	}
 
 	/**
@@ -493,11 +549,11 @@ class Order extends Abstract_Order {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param \WP_Post $order the order object.
+	 * @param WP_Post $order the order object.
 	 *
-	 * @return \WP_Post|\WP_Post[]
+	 * @return WP_Post|WP_Post[]
 	 */
-	public function get_attendees( \WP_Post $order ) {
+	public function get_attendees( WP_Post $order ) {
 		$order->attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
 
 		if ( empty( $order->attendees ) ) {
@@ -510,7 +566,103 @@ class Order extends Abstract_Order {
 		}
 
 		return $order;
+	}
 
+	/**
+	 * Returns the events associated with the order.
+	 *
+	 * @since 5.13.3
+	 *
+	 * @param WP_Post|int $order The order object or ID.
+	 *
+	 * @return WP_Post[]
+	 */
+	public function get_events( $order ): array {
+		$order = tec_tc_get_order( $order );
+
+		if ( ! $order instanceof WP_Post ) {
+			return [];
+		}
+
+		$events = $order->events_in_order ?? [];
+
+		if ( empty( $events ) ) {
+			return [];
+		}
+
+		return array_filter(
+			array_map( 'get_post', $events ),
+			function ( $event ) {
+				return $event instanceof WP_Post;
+			}
+		);
+	}
+
+	/**
+	 * Returns the total value of the order.
+	 *
+	 * @since 5.13.3
+	 *
+	 * @param WP_Post|int $order    The order object or ID.
+	 * @param bool        $original Whether to get the original value or the current value.
+	 *
+	 * @return ?string
+	 */
+	public function get_value( $order, $original = false ): ?string {
+		$order = tec_tc_get_order( $order );
+
+		if ( ! $order instanceof WP_Post ) {
+			return null;
+		}
+
+		$reversed = tribe( Reversed::class )->get_wp_slug();
+		$refunded = tribe( Refunded::class )->get_wp_slug();
+		if ( ! in_array( $order->post_status, [ $reversed, $refunded ], true ) ) {
+			$regular = 0;
+			$total   = 0;
+
+			foreach ( $order->items as $cart_item ) {
+				$regular += $cart_item['regular_sub_total'] ?? 0;
+				$total   += $cart_item['sub_total'] ?? 0;
+			}
+
+			// Backwards compatible. We didn't use to store regular, so in most installs this is going to be diff cause regular is gonna be 0 mostly.
+			if ( $total !== $regular && $regular > $total ) {
+				return Value::create( $original ? $regular : $total )->get_currency();
+			}
+
+			return $order->total_value->get_currency();
+		}
+
+		if ( empty( $order->gateway_payload['refunded'] ) ) {
+			// The item was refunded but we don't know anything about it.
+			return $order->total_value->get_currency();
+		}
+
+		$refunds  = $order->gateway_payload['refunded'];
+		$refunded = max( wp_list_pluck( $refunds, 'amount_refunded' ) );
+		$total    = max( wp_list_pluck( $refunds, 'amount_captured' ) );
+
+		$total_value = $total - $refunded;
+
+		return Value::create( ( $original ? $total : $total_value ) / 100 )->get_currency();
+	}
+
+	/**
+	 * Returns the total value of an order item.
+	 *
+	 * @since 5.13.3
+	 *
+	 * @param array $item     The order object or ID.
+	 * @param bool  $original Whether to get the original value or the current value.
+	 *
+	 * @return ?string
+	 */
+	public function get_item_value( $item, $original = false ): ?string {
+		$current = $item['price'];
+		$regular = $item['regular_price'] ?? $current;
+
+		return $original ? Value::create( $regular )->get_currency() : Value::create( $current )->get_currency();
 	}
 
 	/**
@@ -518,11 +670,11 @@ class Order extends Abstract_Order {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param \WP_Post $attendee the attendee object.
+	 * @param WP_Post $attendee the attendee object.
 	 *
 	 * @return mixed
 	 */
-	public function get_ticket_id( \WP_Post $attendee ) {
+	public function get_ticket_id( WP_Post $attendee ) {
 		return get_post_meta( $attendee->ID, static::$tickets_in_order_meta_key, true );
 	}
 
@@ -531,7 +683,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param int|\WP_Post $order The Order object to check.
+	 * @param int|WP_Post $order The Order object to check.
 	 *
 	 * @return bool
 	 */
@@ -549,13 +701,16 @@ class Order extends Abstract_Order {
 	 * Get the order associated with a given gateway order id.
 	 *
 	 * @since 5.3.0
+	 * @since 5.14.0 Update to fetch latest order in the case of multiple orders with the same gateway order id.
 	 *
 	 * @param string $gateway_order_id The gateway order id.
 	 *
-	 * @return mixed|\WP_Post|null
+	 * @return mixed|WP_Post|null
 	 */
-	public function get_from_gateway_order_id( string $gateway_order_id ) {
+	public function get_from_gateway_order_id( $gateway_order_id ) {
 		return tec_tc_orders()->by_args( [
+			'order_by'         => 'ID',
+			'order'            => 'DESC',
 			'status'           => 'any',
 			'gateway_order_id' => $gateway_order_id,
 		] )->first();

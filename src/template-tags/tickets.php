@@ -488,12 +488,13 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 	 *
 	 * @since 4.10.9 Use customizable ticket name functions.
 	 * @since 4.11.5 Correct the sprintf placeholders that were forcing the readable amount to an integer.
+	 * @since 5.6.5    Added `$sold_label_override` parameter.
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket to analyze.
 	 *
 	 * @return string
 	 */
-	function tribe_tickets_get_ticket_stock_message( Tribe__Tickets__Ticket_Object $ticket ) {
+	function tribe_tickets_get_ticket_stock_message( Tribe__Tickets__Ticket_Object $ticket, string $sold_label_override = '' ) {
 		$event        = Tribe__Tickets__Tickets::find_matching_event( $ticket );
 		$global_stock = new Tribe__Tickets__Global_Stock( $event->ID );
 
@@ -529,6 +530,9 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		$sold_label = __( 'issued', 'event-tickets' );
 		if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
 			$sold_label = sprintf( _x( "%s'd going", 'RSVPs going', 'event-tickets' ), tribe_get_rsvp_label_singular() );
+		}
+		if ( ! empty( $sold_label_override ) ) {
+			$sold_label = $sold_label_override;
 		}
 
 		// Message for how many remain available.
@@ -1144,7 +1148,16 @@ if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 
 		$value = (int) $rsvp_cap + (int) $tickets_cap;
 
-		return (int) $value;
+		/**
+		 * Filters the event capacity.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param int $value The event capacity.
+		 * @param int $post_id The event ID.
+		 * @param bool|Tribe__Tickets__Tickets $provider The ticket provider.
+		 */
+		return apply_filters( 'tec_tickets_get_event_capacity', (int) $value, $post_id, $provider );
 	}
 }
 
@@ -1834,4 +1847,126 @@ function tribe_tickets_get_provider_query_slug() {
 	 * @param string  String for which the slug should be named.
 	 */
 	return apply_filters( 'tribe_tickets_get_provider_query_slug', 'tickets_provider' );
+}
+
+/**
+ * Return if `The Events Calendar` is active.
+ *
+ * By checking if `tribe_events` function exists we avoid fatal errors when there are
+ * version dependencies mismatches.
+ *
+ * @since 5.5.2
+ *
+ * @return bool True if The Events Calendar is active.
+ */
+function tec_tickets_tec_events_is_active() : bool {
+	return function_exists( 'tribe_events' );
+}
+
+if ( ! function_exists( 'tec_tickets_get_default_ticket_type_label' ) ) {
+	/**
+	 * Returns the filtered default Ticket Type label.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+	 *
+	 * @return string The Ticket type label.
+	 */
+	function tec_tickets_get_default_ticket_type_label( string $context = '' ): string {
+		/**
+		 * Allows customization of the default ticket type label.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param string $label   The default ticket type label, defaults to "Standard Ticket".
+		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+		 */
+		return apply_filters(
+			'tec_tickets_get_default_ticket_type_label',
+			_x( 'Standard Ticket', 'default ticket type label', 'event-tickets' ),
+			$context
+		);
+	}
+}
+
+if ( ! function_exists( 'tec_tickets_get_default_ticket_type_label_lowercase' ) ) {
+	/**
+	 * Returns the filtered default Ticket Type label in lowercase.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+	 *
+	 * @return string The lowercase version of default ticket type label.
+	 */
+	function tec_tickets_get_default_ticket_type_label_lowercase( string $context = '' ): string {
+		/**
+		 * Allows customization of the default ticket type label lowercase.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param string $label   The default ticket type label, defaults to "standard ticket".
+		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+		 */
+		return apply_filters(
+			'tec_tickets_get_default_ticket_type_label_lowercase',
+			_x( 'standard ticket', 'default ticket type label in lowercase', 'event-tickets' ),
+			$context
+		);
+	}
+}
+
+if ( ! function_exists( 'tec_tickets_get_default_ticket_type_label_plural' ) ) {
+	/**
+	 * Returns the filtered default Ticket Type label in plural.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+	 *
+	 * @return string The plural version of default ticket type label.
+	 */
+	function tec_tickets_get_default_ticket_type_label_plural( string $context = '' ): string {
+		/**
+		 * Allows customization of the default ticket type label plural.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param string $label   The default ticket type label, defaults to "Standard Tickets".
+		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+		 */
+		return apply_filters(
+			'tec_tickets_get_default_ticket_type_label_plural',
+			_x( 'Standard Tickets', 'default ticket type label in plural', 'event-tickets' ),
+			$context
+		);
+	}
+}
+
+if ( ! function_exists( 'tec_tickets_get_default_ticket_type_label_plural_lowercase' ) ) {
+	/**
+	 * Returns the filtered default Ticket Type label in plural and lowercase.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+	 *
+	 * @return string The plural and lowercase version of default ticket type label.
+	 */
+	function tec_tickets_get_default_ticket_type_label_plural_lowercase( string $context = '' ): string {
+		/**
+		 * Allows customization of the default ticket type label plural and lowercase.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param string $label   The default ticket type label, defaults to "standard tickets".
+		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+		 */
+		return apply_filters(
+			'tec_tickets_get_default_ticket_type_label_plural_lowercase',
+			_x( 'standard tickets', 'default ticket type label in plural and lowercase', 'event-tickets' ),
+			$context
+		);
+	}
 }

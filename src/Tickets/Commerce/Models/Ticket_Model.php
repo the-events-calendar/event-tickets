@@ -44,7 +44,8 @@ class Ticket_Model extends Base {
 //			$total_value = isset( $post_meta[ Ticket::$total_value_meta_key ][0] ) ? $post_meta[ Ticket::$total_value_meta_key ][0] : null;
 
 			$properties = [
-				'price' => Arr::get( $post_meta, [ Ticket::$price_meta_key, 0 ] ),
+				'price'      => Arr::get( $post_meta, [ Ticket::$price_meta_key, 0 ] ),
+				'sale_price' => get_post_meta( $post_id, Ticket::$sale_price_key, true ),
 			];
 		} catch ( \Exception $e ) {
 			return [];
@@ -64,12 +65,38 @@ class Ticket_Model extends Base {
 	 * Returns the Value object representing this Ticket price.
 	 *
 	 * @since 5.2.3
+	 * @deprecated 5.9.0 Use get_price_value | get_sale_price_value instead.
 	 *
 	 * @return Value
 	 */
 	public function get_value() {
+		_deprecated_function( __METHOD__, '5.9.0', 'get_price_value' );
 		$props = $this->get_properties( 'raw' );
 
 		return Value::create( $props['price'] );
+	}
+
+	/**
+	 * Returns the Value object representing this Ticket price.
+	 *
+	 * @since 5.9.0
+	 *
+	 * @return Value
+	 */
+	public function get_price_value() {
+		$props = $this->get_properties( 'raw' );
+		return Value::create( $props['price'] );
+	}
+
+	/**
+	 * Returns the Value object representing this Ticket sale price.
+	 *
+	 * @since 5.9.0
+	 *
+	 * @return Value
+	 */
+	public function get_sale_price_value() {
+		$props = $this->get_properties( 'raw' );
+		return $props['sale_price'] instanceof Value ? $props['sale_price'] : Value::create( $props['sale_price'] );
 	}
 }

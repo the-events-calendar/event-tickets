@@ -95,4 +95,60 @@ class UpdateTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( $updated_attendee_data['email'], get_post_meta( $attendee->ID, $provider->email, true ) );
 		$this->assertEquals( $updated_attendee_data['user_id'], (int) get_post_meta( $attendee->ID, $provider->attendee_user_id, true ) );
 	}
+
+	/**
+	 * It should allow updating an attendee for an RSVP ticket with check in data.
+	 *
+	 * @test
+	 */
+	public function should_allow_updating_an_attendee_with_check_in_data() {
+		/** @var \Tribe__Tickets__Repositories__Attendee__RSVP $attendees */
+		$attendees = tribe_attendees( 'rsvp' );
+
+		$post_id = $this->factory->post->create();
+
+		$attendee_data = [
+			'full_name' => 'A test attendee',
+			'email'     => 'attendee@test.com',
+			'user_id'   => 1234,
+		];
+
+		$ticket_id = $this->create_rsvp_ticket( $post_id );
+
+		/** @var \Tribe__Tickets__RSVP $provider */
+		$provider = tribe( 'tickets.rsvp' );
+
+		$ticket = $provider->get_ticket( $post_id, $ticket_id );
+
+		$attendee = $attendees->create_attendee_for_ticket( $ticket, $attendee_data );
+
+		$updated_attendee_data = [
+			'attendee_id' => $attendee->ID,
+			'full_name'   => 'New full name',
+			'email'       => 'new@email.com',
+			'user_id'     => 1235,
+			'check_in'    => true,
+		];
+
+		$updated = $attendees->update_attendee( $updated_attendee_data );
+		$updated_attendee = $provider->get_attendee( $attendee->ID );
+
+		// Confirm the attendee was updated as intended.
+		$this->assertEquals( [ $attendee->ID => true ], $updated );
+		$this->assertEquals( 1, $updated_attendee['check_in'] );
+		$this->assertEquals( 1, get_post_meta( $attendee->ID, $provider->checkin_key, true ) );
+
+		// Let's update check in to false now.
+		$updated_attendee_data = [
+			'attendee_id' => $attendee->ID,
+			'check_in'    => false,
+		];
+
+		$updated = $attendees->update_attendee( $updated_attendee_data );
+		$updated_attendee = $provider->get_attendee( $attendee->ID );
+		// Confirm the attendee was updated as intended.
+		$this->assertEquals( [ $attendee->ID => true ], $updated );
+		$this->assertEmpty( $updated_attendee['check_in'] );
+		$this->assertEmpty( get_post_meta( $attendee->ID, $provider->checkin_key, true ) );
+	}
 }

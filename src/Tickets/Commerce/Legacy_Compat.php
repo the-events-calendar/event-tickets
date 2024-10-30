@@ -9,7 +9,7 @@
 
 namespace TEC\Tickets\Commerce;
 
-use \tad_DI52_ServiceProvider;
+use \TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\Utils\Value;
 
 /**
@@ -19,7 +19,7 @@ use TEC\Tickets\Commerce\Utils\Value;
  *
  * @package TEC\Tickets\Commerce
  */
-class Legacy_Compat extends tad_DI52_ServiceProvider {
+class Legacy_Compat extends Service_Provider {
 
 	/**
 	 * Binds and sets up implementations.
@@ -47,12 +47,12 @@ class Legacy_Compat extends tad_DI52_ServiceProvider {
 	 */
 	protected function add_filters() {
 		add_filter( 'tribe_events_tickets_module_name', [ $this, 'set_legacy_module_name' ] );
-		add_filter( 'tribe_currency_formatted', [ $this, 'maybe_reset_cost_format' ], 99, 2 );
-		add_filter( 'tribe_events_cost_unformatted', [ $this, 'maybe_reset_cost_format' ], 99, 2 );
 	}
 
 	/**
 	 * In some instances, the cost format is still handled by legacy code. This replaces it for Tickets Commerce code.
+	 *
+	 * @deprecated 5.5.11
 	 *
 	 * @since 5.2.3
 	 *
@@ -62,6 +62,9 @@ class Legacy_Compat extends tad_DI52_ServiceProvider {
 	 * @return string
 	 */
 	public function maybe_reset_cost_format( $cost, $post_id ) {
+
+		_deprecated_function( __METHOD__, '5.5.11', 'Deprecated in favor of the default handling of cost format in Tickets Commerce.' );
+
 		$provider = tribe_get_event_meta( $post_id, tribe( 'tickets.handler' )->key_provider_field );
 
 		if ( Module::class === $provider ) {

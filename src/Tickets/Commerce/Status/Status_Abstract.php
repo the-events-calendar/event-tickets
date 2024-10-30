@@ -129,11 +129,16 @@ abstract class Status_Abstract implements Status_Interface {
 	 * {@inheritdoc}
 	 */
 	public function can_apply_to( $order, $new_status ) {
-		$order = tec_tc_get_order( $order );
+		$order = tec_tc_get_order( $order, OBJECT, 'raw', true );
+		if ( ! $order instanceof \WP_Post ) {
+			return false;
+		}
+
 		$current_status = tribe( Status_Handler::class )->get_by_wp_slug( $order->post_status );
 
 		if ( $current_status->get_wp_slug() === $new_status->get_wp_slug() ) {
-			return false;
+			// Allow from refunded to refunded in order to support multiple refunds.
+			return 'refunded' === $current_status->get_slug();
 		}
 
 		if ( $current_status->is_final() ) {
@@ -187,7 +192,6 @@ abstract class Status_Abstract implements Status_Interface {
 		 * @param static $status    Which status these arguments are associated with.
 		 */
 		return apply_filters( "tec_tickets_commerce_order_status_{$this->get_slug()}_get_wp_arguments", $arguments, $this );
-
 	}
 
 	/**
@@ -195,10 +199,16 @@ abstract class Status_Abstract implements Status_Interface {
 	 * the ones that will require a translation.
 	 *
 	 * @since 5.1.9
-	 *
 	 */
 	protected function setup_wp_arguments() {
 		$this->wp_arguments['label']       = $this->get_name();
 		$this->wp_arguments['label_count'] = _n_noop( $this->get_name() . ' <span class="count">(%s)</span>', $this->get_name() . ' <span class="count">(%s)</span>', 'event-tickets' );
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function can_be_updated_to(): array {
+		return [];
 	}
 }

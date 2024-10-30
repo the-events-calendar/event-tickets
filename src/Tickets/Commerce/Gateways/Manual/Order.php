@@ -36,7 +36,8 @@ class Order extends Abstract_Order {
 			static function ( $item ) {
 
 				/** @var Value $ticket_value */
-				$ticket_value = tribe( Ticket::class )->get_price_value( $item['ticket_id'] );
+				$ticket_value         = tribe( Ticket::class )->get_price_value( $item['ticket_id'] );
+				$ticket_regular_value = tribe( Ticket::class )->get_price_value( $item['ticket_id'], true );
 
 				if ( null === $ticket_value ) {
 					return null;
@@ -45,6 +46,11 @@ class Order extends Abstract_Order {
 				// Price should be 0 for Manual attendee orders.
 				$item['price']     = 0;
 				$item['sub_total'] = 0;
+
+				if ( null !== $ticket_regular_value ) {
+					$item['regular_price']     = $ticket_regular_value->get_decimal();
+					$item['regular_sub_total'] = $ticket_regular_value->sub_total( $item['quantity'] )->get_decimal();
+				}
 
 				return $item;
 			},

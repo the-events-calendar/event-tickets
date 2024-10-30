@@ -57,8 +57,12 @@ if ( empty( $events ) ) {
 	<?php
 	foreach ( $events as $event_id => $tickets ) :
 
-		// Remove an event/post tickets if none have attendee registration.
-		$show_tickets = tribe( 'tickets.attendee_registration' )->has_attendee_registration_enabled_in_array_of_tickets( $tickets );
+		try {
+			// Remove an event/post tickets if none have attendee registration.
+			$show_tickets = tribe( 'tickets.attendee_registration' )->has_attendee_registration_enabled_in_array_of_tickets( $tickets );
+		} catch ( \Exception $exception ) {
+			$show_tickets = true;
+		}
 
 		/**
 		 * Filter to show an event/post tickets on Attendee Registration page regardless if they are enabled.

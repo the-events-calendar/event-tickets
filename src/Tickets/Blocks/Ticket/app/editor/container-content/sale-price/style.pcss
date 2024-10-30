@@ -1,0 +1,67 @@
+.tribe-editor__ticket__sale-price-wrapper {
+	margin: 10px 0 10px 140px;
+
+	.tribe-editor__ticket__sale-price__input-wrapper, .tribe-editor__ticket__sale-price--dates {
+		display: flex;
+		margin: 10px 0;
+	}
+
+	.tribe-editor__ticket__sale-price-input {
+		width: 120px;
+	}
+	.tribe-editor__ticket__sale-price--dates {
+		span {
+			font-size: var(--tec-font-size-3);
+			padding: 5px 10px;
+		}
+	}
+
+	.tribe-editor__ticket__sale-price--fields {
+		.tribe-editor__labeled-item {
+			width: 100px;
+			padding-top: 5px;
+		}
+		.tribe-editor__ticket__sale-price__dates--label {
+			span {
+				display: contents;
+			}
+		}
+		.tribe-editor__labeled-item__label {
+			font-size: 15px;
+			font-weight: 400;
+			line-height: var(--tec-line-height-0);
+		}
+
+		.tribe-editor__ticket__sale-price--start-date, .tribe-editor__ticket__sale-price--end-date {
+			max-width: 120px;
+			.tribe-editor__day-picker-input.DayPickerInput input {
+				border-radius: var(--tec-spacer-0);
+			}
+		}
+	}
+
+	.tribe-editor__ticket__sale-price-checkbox {
+		font-size: var(--tec-font-size-2);
+		line-height: var(--tec-line-height-2);
+	}
+
+	.tribe-editor__checkbox__input {
+		margin-top: 0;
+	}
+
+	.tribe-editor__ticket__sale-price--label:after {
+		color: var(--tec-color-icon-error);
+		content: "*";
+		margin-left: var(--tec-spacer-0);
+	}
+}
+
+.tribe-editor__input.tribe-editor__ticket__sale-price-input.tribe-editor__ticket__sale-price--error,
+.tribe-editor__input.tribe-editor__ticket__sale-price-input.tribe-editor__ticket__sale-price--error:focus {
+	border-color: var(--tec-color-icon-error);
+}
+
+.tribe-editor__ticket__sale-price__error-message {
+	color: var(--tec-color-icon-error);
+	font-size: 13px;
+}

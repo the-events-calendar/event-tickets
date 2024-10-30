@@ -28,7 +28,7 @@ use Tribe__Template;
  *
  * @package Tribe\Tickets\Events\Views\V2
  */
-class Hooks extends \tad_DI52_ServiceProvider {
+class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Binds and sets up implementations.
 	 *

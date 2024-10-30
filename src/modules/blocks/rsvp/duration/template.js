@@ -2,6 +2,7 @@
  * External dependencies
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * WordPress dependencies
@@ -29,5 +30,9 @@ const RSVPDuration = ( { hasDurationError } ) => (
 		) }
 	</div>
 );
+
+RSVPDuration.propTypes = {
+	hasDurationError: PropTypes.bool,
+};
 
 export default RSVPDuration;

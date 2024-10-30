@@ -26,6 +26,7 @@ import {
 import { withStore } from '@moderntribe/common/hoc';
 import withSaveData from '@moderntribe/tickets/blocks/hoc/with-save-data';
 import { moment as momentUtil, time } from '@moderntribe/common/utils';
+import { hasRecurrenceRules, noRsvpsOnRecurring } from '@moderntribe/common/utils/recurrence';
 
 const getIsInactive = ( state ) => {
 	const startDateMoment = selectors.getRSVPStartDateMoment( state );
@@ -72,9 +73,13 @@ const mapStateToProps = ( state ) => {
 
 	return {
 		created: selectors.getRSVPCreated( state ),
+		isAddEditOpen: selectors.getRSVPIsAddEditOpen( state ),
 		isInactive: getIsInactive( state ),
 		isLoading: selectors.getRSVPIsLoading( state ),
 		isModalShowing: isModalShowing( state ) && getModalTicketId( state ) === rsvpId,
+		isSettingsOpen: selectors.getRSVPSettingsOpen( state ),
+		hasRecurrenceRules: hasRecurrenceRules( state ),
+		noRsvpsOnRecurring: noRsvpsOnRecurring(),
 		rsvpId,
 	};
 };
@@ -83,6 +88,7 @@ const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 	initializeRSVP: () => dispatch( actions.initializeRSVP() ),
 	onBlockRemoved: () => dispatch( actions.deleteRSVP() ),
 	setInitialState: setInitialState( dispatch, ownProps ),
+	setAddEditClosed: () => dispatch( actions.setRSVPIsAddEditOpen( false ) ),
 } );
 
 export default compose(
