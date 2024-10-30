@@ -46,8 +46,6 @@ class Checkout_Test extends WPTestCase {
 	 * @test
 	 */
 	public function ticket_without_fees_in_checkout() {
-		$this->markTestSkipped( 'This test does not fully function yet.' );
-
 		// Create the fee and set the application.
 		$fee = $this->create_fee( [ 'display_name' => __METHOD__ ] );
 		$this->set_fee_application( $fee, 'per' );
@@ -72,6 +70,8 @@ class Checkout_Test extends WPTestCase {
 	 * @test
 	 */
 	public function ticket_with_fees_in_checkout() {
+		$this->markTestSkipped( 'This test does not fully function yet.' );
+
 		// Create the fee and set the application.
 		$fee = $this->create_fee( [ 'display_name' => __METHOD__ ] );
 		$this->set_fee_application( $fee, 'all' );
