@@ -121,11 +121,13 @@ if ( $has_shared_cap ) {
  * Filter the ticket data attributes.
  *
  * @since 5.1.1
+ * @since 5.16.0 Added $event_id parameter.
  *
- * @param array $attributes A list of data attributes with their values.
+ * @param array                         $attributes A list of data attributes with their values.
  * @param Tribe__Tickets__Ticket_Object $ticket The ticket object.
+ * @param int                           $post_id The current event ID.
  */
-$attributes = apply_filters( 'tribe_tickets_block_ticket_html_attributes', $attributes, $ticket );
+$attributes = apply_filters( 'tribe_tickets_block_ticket_html_attributes', $attributes, $ticket, $post_id );
 ?>
 <div
 	id="<?php echo esc_attr( $ticket_item_id ); ?>"

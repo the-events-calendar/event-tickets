@@ -1,0 +1,8 @@
+{
+    "service": {
+        "baseUrl": "https://seating.theeventscalendar.com",
+        "mapsHomeUrl": "http://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&tab=maps",
+        "layoutsHomeUrl": "http://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&tab=layouts",
+        "associatedEventsUrl": "http://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating-events"
+    }
+}

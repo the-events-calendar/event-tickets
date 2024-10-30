@@ -1134,7 +1134,22 @@ class Hooks extends Service_Provider {
 	}
 
 	/**
-	 * Filters the options for the provider select in the All Tickets table.
+	 * Runs the callbacks registered by the Hooks object on the `init` action.
+	 *
+	 * This method is useful for a late registration of the Commerce functionality after the `init` action has already
+	 * been fired.
+	 *
+	 * @since 5.16.0
+	 */
+	public function run_init_hooks(): void {
+		$this->register_post_types();
+		$this->register_order_statuses();
+		$this->register_order_reports();
+		$this->register_attendee_reports();
+		$this->register_event_compatibility_hooks();
+	}
+
+	/*** Filters the options for the provider select in the All Tickets table.
 	 *
 	 * @since 5.14.0
 	 *

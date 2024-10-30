@@ -1261,7 +1261,7 @@ class Tribe__Tickets__Attendees {
 			$ticket_totals['available'] += array_sum( $available_contributors );
 		}
 
-		return [
+		$render_context = [
 			'attendees'         => $this,
 			'event_id'          => $post_id,
 			'tickets_by_type'   => $tickets_by_type,
@@ -1275,6 +1275,17 @@ class Tribe__Tickets__Attendees {
 				'rsvp'    => tribe_get_rsvp_label_plural( 'attendee overview' ),
 			],
 		];
+
+		/**
+		 * Filters the context used to render the Attendee Report page.
+		 *
+		 * @since 5.16.0
+		 *
+		 * @param array $render_context The context used to render the Attendee Report page.
+		 * @param int $post_id The post ID of the post to retrieve tickets for.
+		 * @param array $tickets The tickets to display on the page.
+		 */
+		return apply_filters( 'tec_tickets_attendees_page_render_context', $render_context, $post_id, $tickets );
 	}
 
 	/**

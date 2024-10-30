@@ -709,6 +709,10 @@ class Tribe__Tickets__Tickets_Handler {
 			return $value;
 		}
 
+		if ( wp_is_post_autosave( $object_id ) || wp_is_post_revision( $object_id ) ) {
+			return $value;
+		}
+
 		// We remove the Check to allow a fair usage of `metadata_exists`
 		remove_filter( 'get_post_metadata', [ $this, 'filter_capacity_support' ], 15 );
 

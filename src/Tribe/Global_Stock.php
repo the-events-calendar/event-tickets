@@ -241,7 +241,7 @@ class Tribe__Tickets__Global_Stock {
 	 * @see Tribe__Tickets__Admin__Move_Tickets::move_tickets()
 	 * @see Tribe__Tickets__Admin__Move_Ticket_Types::move_ticket_type()
 	 *
-	 * @since  TBD
+	 * @since  5.16.0
 	 *
 	 * @param int $source_id The ID of the source event/post.
 	 * @param int $target_id The ID of the destination event/post.

@@ -1,4 +1,4 @@
-const envFilePath = __dirname + '/../../../.env.testing.tric';
+const envFilePath = __dirname + '/../../../.env.testing.slic';
 
 // Just requiring the file will load the environment variables in it in the current process.
 require('dotenv').config({

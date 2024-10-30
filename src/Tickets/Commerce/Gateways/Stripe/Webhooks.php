@@ -309,7 +309,7 @@ class Webhooks extends Abstract_Webhooks {
 	 * @return bool
 	 */
 	public function disable_webhook(): bool {
-		if ( ! tec_tickets_commerce_is_enabled() ) {
+		if ( ! ( function_exists( 'tec_tickets_commerce_is_enabled' ) && tec_tickets_commerce_is_enabled() ) ) {
 			return false;
 		}
 

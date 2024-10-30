@@ -8,6 +8,7 @@ import { compose } from 'redux';
  * WordPress dependencies
  */
 import { dispatch as wpDispatch } from '@wordpress/data';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -16,12 +17,39 @@ import Template from './template';
 import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
 
-const getIsConfirmDisabled = ( state, ownProps ) => (
-	! selectors.isTicketValid( state, ownProps ) ||
-		! selectors.getTicketHasChanges( state, ownProps ) ||
-		selectors.isTicketDisabled( state, ownProps ) ||
-		selectors.getTicketHasDurationError( state, ownProps )
-);
+/**
+ * Whether the confirm button should be disabled.
+ *
+ * @since 5.16.0
+ *
+ * @param {Object} state    The state of the store.
+ * @param {Object} ownProps The own props of the component.
+ *
+ * @return {boolean} Whether the confirm button should be disabled.
+ */
+const getIsConfirmDisabled = (state, ownProps) => {
+	const shouldConfirmBeDisabled =
+		selectors.isTicketDisabled(state, ownProps) ||
+		selectors.getTicketHasDurationError(state, ownProps) ||
+		!selectors.getTicketHasChanges(state, ownProps) ||
+		!selectors.isTicketValid(state, ownProps);
+
+	/**
+	 * Filters whether the confirm button should be disabled.
+	 *
+	 * @since 5.16.0
+	 *
+	 * @param {boolean} isDisabled Whether the button is disabled.
+	 * @param {Object}  state      The state of the store.
+	 * @param {Object}  ownProps   The own props of the component.
+	 */
+	return applyFilters(
+		'tec.tickets.blocks.confirmButton.isDisabled',
+		shouldConfirmBeDisabled,
+		state,
+		ownProps
+	);
+};
 
 const onCancelClick = ( state, dispatch, ownProps ) => () => {
 	if ( selectors.getTicketHasBeenCreated( state, ownProps ) ) {

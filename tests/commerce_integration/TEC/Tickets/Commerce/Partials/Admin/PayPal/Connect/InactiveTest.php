@@ -22,11 +22,14 @@ class InactiveTest extends Html_Partial_Test_Case {
 	 * @test
 	 */
 	public function should_render_signup_link() {
-
 		$this->set_fn_return( 'is_ssl', true );
 
 		$merchant = tribe( Merchant::class );
-		$signup   = tribe( SignUp::class );
+		$signup   = tribe( Signup::class );
+		set_transient(
+			Signup::$signup_data_meta_key,
+			[ 'links' => [ 1 => [ 'href' => 'https://www.paypal.com/bizsignup/partner/entry?referralToken=[PAYPAL_TOKEN_STRING]' ] ] ]
+		);
 
 		$html = $this->get_partial_html( [
 				'plugin_url'            => Tribe__Tickets__Main::instance()->plugin_url,
@@ -36,26 +39,25 @@ class InactiveTest extends Html_Partial_Test_Case {
 			]
 		);
 
-		$html = str_replace( $signup->generate_url( Country::DEFAULT_COUNTRY_CODE, true ), 'http://thepaypalsandboxlink.tec.com/hash', $html );
-
-		$html = preg_replace( '/referralToken=([^&]+)/', 'referralToken=[PAYPAL_TOKEN_STRING]', $html );
-		$html = preg_replace( '/token=([^&]+)/', 'token=[PAYPAL_TOKEN_STRING]', $html );
+		$html = str_replace(
+			esc_url( $signup->generate_url( Country::DEFAULT_COUNTRY_CODE, true ) ),
+			'http://thepaypalsandboxlink.tec.com/hash',
+			$html
+		);
 
 		$this->assertMatchesHtmlSnapshot( $html );
-
 	}
 
 	/**
 	 * Should render non-ssl notice.
-	 * 
+	 *
 	 * @test
 	 */
 	public function should_render_non_ssl_notice() {
-
 		$this->set_fn_return( 'is_ssl', false );
 
 		$merchant = tribe( Merchant::class );
-		$signup   = tribe( SignUp::class );
+		$signup   = tribe( Signup::class );
 
 		$html = $this->get_partial_html( [
 				'plugin_url'            => Tribe__Tickets__Main::instance()->plugin_url,
@@ -71,7 +73,6 @@ class InactiveTest extends Html_Partial_Test_Case {
 		$html = preg_replace( '/token=([^&]+)/', 'token=[PAYPAL_TOKEN_STRING]', $html );
 
 		$this->assertMatchesHtmlSnapshot( $html );
-
 	}
 
 	public function test_should_render_empty() {

@@ -118,7 +118,7 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 	 * Checks if the payment intent contained in the event received has already been processed.
 	 *
 	 * @since      5.3.0
-	 * @since      TBD Remove deprecation notice.
+	 * @since      5.16.0 Remove deprecation notice.
 	 *
 	 * @param array   $payment_intent_received The payment intent data received
 	 * @param array[] $payment_intents_stored  The payment intent data stored from each update, keyed by status.

@@ -1,0 +1,47 @@
+{
+    "links": {
+        "layouts": "http://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&tab=layouts",
+        "layout-edit": ""
+    },
+    "localizedStrings": {
+        "capacity-form": {
+            "general-admission-label": "General Admission",
+            "seat-option-label": "Assigned Seating",
+            "event-layouts-select-placeholder": "Choose Seat Layout",
+            "view-layouts-link-label": "View layouts",
+            "seat-types-select-placeholder": "Choose seat type",
+            "seat-types-loading-msg": "Loading seat types",
+            "event-layouts-capacity-info": "Capacity is defined by seat layout options.",
+            "seat-layout-label": "Seat Layout",
+            "no-layouts-available": "No active Seat Layouts.",
+            "no-layouts-available-info": "You must create a Seat Layout to use this feature.",
+            "no-layouts-available-link-label": "Go to Seat Layouts"
+        },
+        "capacity-table": {
+            "seats-row-label": "Assigned Seating"
+        },
+        "dashboard": {
+            "seats-action-label": "Seats"
+        },
+        "maps": {
+            "delete-confirmation": "Are you sure you want to delete this map?",
+            "delete-failed": "Failed to delete the map."
+        },
+        "layouts": {
+            "add-failed": "Failed to add the new layout.",
+            "edit-confirmation": "This layout is associated with {count} events. Changes will impact all existing events and may affect the seating assignment of active ticket holders.",
+            "delete-confirmation": "Are you sure you want to delete this layout? This cannot be undone.",
+            "delete-failed": "Failed to delete the layout."
+        },
+        "service-errors": {
+            "bad-service-response": "Bad service response",
+            "missing-request-parameters": "Missing request parameters",
+            "invalid-site-parameter": "Invalid site parameter",
+            "invalid-expire-time-parameter": "Invalid expire time parameter",
+            "missing-ephemeral-token": "Ephemeral token not found in response",
+            "site-not-found": "Site not found",
+            "ephemeral-token-store-error": "Ephemeral token store error",
+            "site-not-authorized": "Site not authorized"
+        }
+    }
+}
