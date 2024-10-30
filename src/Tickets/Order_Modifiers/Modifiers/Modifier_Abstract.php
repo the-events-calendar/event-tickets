@@ -37,7 +37,6 @@ use TEC\Tickets\Order_Modifiers\Values\Float_Value;
 use TEC\Tickets\Order_Modifiers\Values\Percent_Value;
 use TEC\Tickets\Order_Modifiers\Values\Positive_Integer_Value;
 use TEC\Tickets\Order_Modifiers\Values\Precision_Value;
-use TEC\Tickets\Order_Modifiers\Values\Value_Interface;
 
 /**
  * Class Modifier_Abstract
@@ -620,31 +619,29 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return bool True if the deletion of the modifier was successful, false otherwise.
 	 */
 	public function delete_modifier( int $modifier_id ): bool {
+		// Check if the modifier exists before attempting to delete it.
 		try {
-			// Check if the modifier exists before attempting to delete it.
 			$modifier = $this->repository->find_by_id( $modifier_id );
 		} catch ( Exception $e ) {
 			// Return false if the modifier does not exist.
 			return false;
 		}
 
-		// Begin deletion process.
-		$data = [
-			'id' => $modifier_id,
-		];
-
-		$relationship_data = [
-			'modifier_id' => $modifier_id,
-		];
-
 		// Clear relationships associated with the modifier (optional).
-		$this->order_modifiers_relationship_repository->clear_relationships( new Order_Modifier_Relationships( $relationship_data ) );
+		$this->delete_relationship_by_modifier( $modifier_id );
 
 		// Delete associated meta data (optional).
-		$this->order_modifiers_meta_repository->delete( new Order_Modifier_Meta( $data ) );
+		$this->order_modifiers_meta_repository->delete( new Order_Modifier_Meta( [ 'id' => $modifier_id ] ) );
 
 		// Delete the modifier itself (mandatory).
-		$delete_modifier = $this->repository->delete( new Order_Modifier( $data ) );
+		$delete_modifier = $this->repository->delete(
+			new Order_Modifier(
+				[
+					'id'            => $modifier_id,
+					'modifier_type' => $this->modifier_type,
+				]
+			)
+		);
 
 		// Check if the modifier deletion was successful.
 		if ( $delete_modifier ) {
