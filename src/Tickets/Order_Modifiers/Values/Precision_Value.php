@@ -10,6 +10,7 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Order_Modifiers\Values;
 
 use InvalidArgumentException;
+use TEC\Tickets\Order_Modifiers\Traits\Stringify;
 use TEC\Tickets\Order_Modifiers\Values\Positive_Integer_Value as Positive_Int;
 
 /**
@@ -22,6 +23,8 @@ use TEC\Tickets\Order_Modifiers\Values\Positive_Integer_Value as Positive_Int;
  * @since TBD
  */
 class Precision_Value implements Value_Interface {
+
+	use Stringify;
 
 	/**
 	 * The value.

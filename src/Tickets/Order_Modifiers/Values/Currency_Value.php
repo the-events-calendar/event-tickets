@@ -9,12 +9,16 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Order_Modifiers\Values;
 
+use TEC\Tickets\Order_Modifiers\Traits\Stringify;
+
 /**
  * Class Currency_Value
  *
  * @since TBD
  */
 class Currency_Value implements Value_Interface {
+
+	use Stringify;
 
 	/**
 	 * The value.
@@ -124,17 +128,6 @@ class Currency_Value implements Value_Interface {
 	 */
 	public function get_raw_value(): Precision_Value {
 		return clone $this->value;
-	}
-
-	/**
-	 * The __toString method allows a class to decide how it will react when it is converted to a string.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	public function __toString(): string {
-		return $this->get();
 	}
 
 	/**
