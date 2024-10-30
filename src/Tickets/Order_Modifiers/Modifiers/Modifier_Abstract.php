@@ -297,7 +297,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	public function display_amount_field( float $value, string $type = 'flat' ): string {
 		switch ( $type ) {
 			case 'percent':
-				$formatted_amount = ( new Percent_Value( $value ) )->__toString();
+				$formatted_amount = ( new Percent_Value( $value ) )->get_as_string();
 				break;
 
 			case 'flat':

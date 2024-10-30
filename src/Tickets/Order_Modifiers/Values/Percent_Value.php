@@ -67,6 +67,19 @@ class Percent_Value extends Precision_Value {
 	}
 
 	/**
+	 * Get the value as a string.
+	 *
+	 * This includes formatting the value with the % symbol and a specific amount of precision.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_as_string(): string {
+		return sprintf( '%02.2F%%', $this->get_as_percent() );
+	}
+
+	/**
 	 * The __toString method allows a class to decide how it will react when it is converted to a string.
 	 *
 	 * @todo: Allow for locale-specific formatting.
@@ -76,7 +89,7 @@ class Percent_Value extends Precision_Value {
 	 * @return string The value as a string.
 	 */
 	public function __toString() {
-		return sprintf( '%02.2F%%', $this->get_as_percent() );
+		return $this->get_as_string();
 	}
 
 	/**
