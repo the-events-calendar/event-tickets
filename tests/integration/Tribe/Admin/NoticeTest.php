@@ -1,6 +1,5 @@
 <?php
 
-use phpDocumentor\Reflection\PseudoTypes\True_;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Admin\Settings;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
