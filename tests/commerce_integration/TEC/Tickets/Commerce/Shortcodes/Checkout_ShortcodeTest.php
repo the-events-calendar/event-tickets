@@ -3,7 +3,6 @@
 namespace TEC\Tickets\Commerce\Shortcodes;
 
 use Codeception\TestCase\WPTestCase;
-use Illuminate\Support\Arr;
 use Spatie\Snapshots\MatchesSnapshots;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Cart\Unmanaged_Cart;
@@ -14,6 +13,8 @@ use Tribe\Shortcode\Manager;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
+use Tribe__Main as Common_Plugin;
+use Tribe__Tickets__Main as Tickets_Plugin;
 
 class Checkout_ShortcodeTest extends WPTestCase {
 	use MatchesSnapshots;
@@ -104,12 +105,16 @@ class Checkout_ShortcodeTest extends WPTestCase {
 				$this->ticket_id1,
 				$this->ticket_id2,
 				'wp-content/plugins/the-events-calendar/common',
+				'ver=' . Common_Plugin::VERSION,
+				'ver=' . Tickets_Plugin::VERSION,
 			],
 			[
 				'{{page_id}}',
 				'{{ticket_id1}}',
 				'{{ticket_id2}}',
 				'wp-content/plugins/event-tickets/common',
+				'ver={{COMMON_VERSION}}',
+				'ver={{ET_VERSION}}',
 			],
 			$html
 		);
