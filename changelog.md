@@ -1,5 +1,9 @@
 # Changelog
 
+### [5.16.1] 2024-10-31
+
+* Fix - Attendee Registration page will work with FSE Themes. [ET-2261]
+
 ### [5.16.0.1] 2024-10-30
 
 * Fix - Resolved a fatal error that prevented the Sessions table from being set up on some databases with stricter settings. [ET-2262]
