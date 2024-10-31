@@ -1,0 +1,15 @@
+{
+    "rsvp": {
+        "count": 0,
+        "stock": 0,
+        "unlimited": 0,
+        "available": 0
+    },
+    "tickets": {
+        "count": 2,
+        "stock": 90,
+        "global": 1,
+        "unlimited": 0,
+        "available": 90
+    }
+}

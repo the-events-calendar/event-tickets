@@ -1,0 +1,18 @@
+[
+    [
+        {
+            "label": "Your site cannot communicate with the Seating Builder SaaS",
+            "completed": false,
+            "status": "critical",
+            "badge": {
+                "label": "Seating",
+                "color": "red"
+            },
+            "description": "The Seating Builder is a SaaS tool that provides the functionality for creating Seating Maps, Seat Layouts, and tickets with assigned seating. Your site must be connected to the Seating Builder in order to use these features.",
+            "actions": "<p><a href=\u0022https://evnt.is/1be2\u0022 target=\u0022_blank\u0022 rel=\u0022noopener noreferrer\u0022>Learn more about connecting to the Seating Builder</a> or <a href=\u0022https://evnt.is/1be4\u0022 target=\u0022_blank\u0022 rel=\u0022noopener noreferrer\u0022>contact support</a>.</p>",
+            "test": "slr-can-see-sass"
+        },
+        null,
+        0
+    ]
+]

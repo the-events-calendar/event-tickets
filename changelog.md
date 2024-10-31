@@ -1,4 +1,28 @@
 # Changelog
+
+### [5.16.0.1] 2024-10-30
+
+* Fix - Resolved a fatal error that prevented the Sessions table from being set up on some databases with stricter settings. [ET-2262]
+
+### [5.16.0] 2024-10-30
+
+* Version - Event Tickets 5.16.0 is only compatible with Event Tickets Plus 6.1.0 or higher.
+* Version - Event Tickets 5.16.0 is only compatible with The Events Calendar 6.8.0 or higher.
+* Feature - Added per-event Seats tab for managing attendees with assigned seating.
+* Feature - Integrate with the new premium Seating Builder SaaS to create Seat Maps and Layouts for assigned seating.
+* Feature - Introduced new premium Seating option for selling tickets with assigned seating.
+* Tweak - Added actions: `tec_tickets_seating_tab_{$tab}`, `tec_tickets_seating_session_interrupt`, `tec_tickets_seating_invalidate_layouts_cache`, `tec_tickets_seating_invalidate_maps_layouts_cache`, `tec_tickets_seating_delete_reservations_from_attendees`, `tec_tickets_seating_deleted_reservations_from_attendees`, `tec_tickets_seating_reservations_updated`, `tec_tickets_seating_seat_selection_timer`
+* Tweak - Added filters: `tec_tickets_seating_active`, `tec_tickets_seating_service_base_url`, `tec_tickets_seating_service_frontend_url`, `tec_tickets_seating_tickets_block_html`, `tec_tickets_seating_session_cookie_expiration_time`, `tec_tickets_seating_selection_timeout`, `tec_tickets_seat_selection_timer_expired_data`, `tec_tickets_seating_fetch_attendees_per_page`, `tec_tickets_seating_ephemeral_token`, `tec_tickets_seating_ephemeral_token_site_url`, `tec_tickets_attendees_page_render_context`, `tec_tickets_attendees_table_sortable_columns`, `tribe_tickets_ticket_inventory`
+* Tweak - Added license key field and SaaS connection UI for premium Seating tool.
+* Tweak - Added Seat column to Attendees tab and page for attendees with assigned seating.
+* Tweak - Added Seat Layout setting to per-event Ticket Settings
+* Tweak - Added two new Site Health checks for Seating.
+* Tweak - Changed views: `emails/template-parts/header/head/styles`, `seating/iframe-view`, `seating/seat-selection-timer`, `seating/tickets-block-error`, `seating/tickets-block`, `v2/tickets/item`
+* Tweak - New compact frontend ticket display for events with assigned seating tickets.
+* Tweak - Removed superfluous tool tip from capacity options in block editor.
+* Tweak - Show seat assignment on My Tickets page for attendees with assigned seating.
+* Tweak - Show seat assignment on tickets for attendees with assigned seating.
+
 ### [5.15.0] 2024-10-21
 
 * Fix - Tickets Commerce orders through Stripe no longer will create duplicate attendees. [ET-2256]
@@ -25,17 +49,17 @@
 * Tweak - Added actions: `tec_tickets_editor_list_table_title_icon_`, `tec_tickets_ticket_duplicated`, `tec_tickets_tickets_duplicated`
 * Language - 1 new strings added, 73 updated, 1 fuzzied, and 2 obsoleted
 
-### [5.13.4] 2024-09-26 =
+### [5.13.4] 2024-09-26
 
 * Fix - Load the full Payment Element if we have Wallets enabled. [ETP-942]
 * Language - 0 new strings added, 0 updated, 0 fuzzied, and 0 obsoleted
 
-### [5.13.3.1] 2024-09-16 =
+### [5.13.3.1] 2024-09-16
 
 * Security - Improve sanitization and escaping for Administration screens of ticket purchases.
 * Security - Improve general escaping for ORM queries to prevent legacy Events methods to be used for SQL injections.
 
-### [5.13.3] 2024-09-11 =
+### [5.13.3] 2024-09-11
 
 * Feature - Added Individual Order Screen in the Admin to improve the Order Management for Tickets Commerce. [ET-2150]
 * Tweak - Tweaked `setupCompactCardElement` method to allow filtering of options using the existing `tec_tickets_commerce_stripe_checkout_localized_data` filter. [TECTRIA-295]

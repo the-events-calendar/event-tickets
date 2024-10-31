@@ -220,7 +220,7 @@ class Attendees_Test extends WPTestCase {
 
 		yield 'legit id, unregistered post type' => [
 			function () {
-				$post_id = static::factory()->post->create( [ 'post_type' => 'not_registered_post_type' ] );
+				$post_id = static::factory()->post->create( [ 'post_type' => '_unregistered_' ] );
 
 				return [ $post_id, false ];
 			}

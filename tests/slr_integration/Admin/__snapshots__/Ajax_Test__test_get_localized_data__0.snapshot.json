@@ -1,0 +1,20 @@
+{
+    "ajaxUrl": "http://wordpress.test/wp-admin/admin-ajax.php",
+    "ajaxNonce": "88b1a4b166",
+    "ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE": "tec_tickets_seating_service_invalidate_maps_layouts_cache",
+    "ACTION_INVALIDATE_LAYOUTS_CACHE": "tec_tickets_seating_service_invalidate_layouts_cache",
+    "ACTION_DELETE_MAP": "tec_tickets_seating_service_delete_map",
+    "ACTION_DELETE_LAYOUT": "tec_tickets_seating_service_delete_layout",
+    "ACTION_ADD_NEW_LAYOUT": "tec_tickets_seating_service_add_layout",
+    "ACTION_POST_RESERVATIONS": "tec_tickets_seating_post_reservations",
+    "ACTION_CLEAR_RESERVATIONS": "tec_tickets_seating_clear_reservations",
+    "ACTION_DELETE_RESERVATIONS": "tec_tickets_seating_delete_reservations",
+    "ACTION_FETCH_ATTENDEES": "tec_tickets_seating_fetch_attendees",
+    "ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID": "tec_tickets_seating_get_seat_types_by_layout_id",
+    "ACTION_SEAT_TYPES_UPDATED": "tec_tickets_seating_seat_types_updated",
+    "ACTION_SEAT_TYPE_DELETED": "tec_tickets_seating_seat_type_deleted",
+    "ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES": "tec_tickets_seating_reservations_updated_from_seat_types",
+    "ACTION_RESERVATION_CREATED": "tec_tickets_seating_reservation_created",
+    "ACTION_RESERVATION_UPDATED": "tec_tickets_seating_reservation_updated",
+    "ACTION_EVENT_LAYOUT_UPDATED": "tec_tickets_seating_event_layout_updated"
+}

@@ -1,0 +1,100 @@
+.event-tickets .tec-tickets-seating__timer {
+	&.tec-tickets-seating__timer--hidden {
+		display: none;
+	}
+
+	box-sizing: border-box;
+	background: var(--tec-color-background-primary-multiday);
+	border-radius: 6px;
+	padding: var(--tec-spacer-1) var(--tec-spacer-2) var(--tec-spacer-1) var(--tec-spacer-2);
+	display: flex;
+	flex-direction: row;
+	gap: var(--tec-spacer-1);
+	align-items: center;
+	justify-content: flex-start;
+	align-self: stretch;
+	flex-shrink: 0;
+	position: relative;
+
+	.dashicons.dashicons-clock {
+		color: var(--tec-color-text-primary);
+	}
+
+	.tec-tickets-seating__message {
+		text-align: left;
+		font-size: 12px;
+		line-height: 17px;
+		font-weight: var(--tec-font-weight-bold);
+		font-family: var(--tec-font-family-sans-serif);
+
+		.tec-tickets-seating__message-text {
+			color: var(--tec-color-text-primary);
+		}
+
+		.tec-tickets-seating__message-time {
+			color: var(--tec-color-accent-primary);
+		}
+	}
+
+	@media screen and  (max-width: 960px) {
+		border-radius: 50px;
+	}
+}
+
+.event-tickets .tec-tickets-seating__back-to-event {
+	margin-top: var(--tec-spacer-2);
+
+	&--link{
+		font-size: var(--tec-font-size-2);
+		line-height: var(--tec-line-height-2);
+		text-decoration: underline !important;
+	}
+}
+
+.tribe-common .tribe-dialog__wrapper.tribe-tickets-seating__interrupt-wrapper {
+	padding: 20px;
+	width: auto;
+	min-width: 360px;
+
+	.tribe-tickets-seating__interrupt-dialog {
+		width: 100%;
+	}
+
+	.tribe-tickets-seating__interrupt-header {
+		align-items: center;
+		display: flex;
+		flex-direction: row;
+		font-size: var(--tec-font-size-6);
+		line-height: var(--tec-line-height-0);
+
+		.dashicons {
+			margin-right: var(--tec-spacer-1);
+			color: var(--tec-color-icon-error);
+		}
+
+		.tribe-tickets-seating__interrupt-title {
+			font-family: var(--tec-font-family-sans-serif);
+		}
+	}
+
+	.tribe-tickets-seating__interrupt-content {
+		font-family: var(--tec-font-family-sans-serif);
+		font-size: var(--tec-font-size-2);
+		font-weight: var(--tec-font-weight-regular);
+		line-height: var(--tec-line-height-2);
+		margin-bottom: var(--tec-spacer-3);
+	}
+
+	.tribe-tickets-seating__interrupt-footer {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-end;
+
+		button {
+			width: auto;
+			font-size: var(--tec-font-size-2);
+			font-weight: var(--tec-font-weight-bold);
+			line-height: var(--tec-line-height-3);
+		}
+	}
+}

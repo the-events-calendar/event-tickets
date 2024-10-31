@@ -1,8 +1,0 @@
-- use version `1.5.2` of `slic` to get the `nvm` working env
-- `slic use` and `slic shell` into the plugin
-- `nvm use`, with optional `nvm install` to install the node version required by the plugin
-- `npm init playwright@latest` in the plugin root directory
-- setup the project for Javascript, not Typescript, in the `tests/blocks` directory
-- do not install Playwright browsers
-- in the `playwright.config.js` file change the `use.baseUrl`  to `http://wordpress.test`
-- run `npx playwright install` a first time to install the required browser; Playwright requires its own binaries to work correctly; this should be required once per container spin-up
