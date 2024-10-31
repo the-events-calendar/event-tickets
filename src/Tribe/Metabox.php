@@ -646,9 +646,14 @@ class Tribe__Tickets__Metabox {
 			/**
 			 * Fire action when a ticket has been added.
 			 *
+			 * @since 5.2.3
+			 * @since 5.16.0 Added the `$ticket_id` and `$data` parameters.
+			 *
 			 * @param int $post_id ID of parent "event" post.
+			 * @param int $ticket_id ID of ticket post
+			 * @param array<string,mixed> $data The ticket data, empty in this case.
 			 */
-			do_action( 'tribe_tickets_ticket_added', $post_id );
+			do_action( 'tribe_tickets_ticket_added', $post_id, $ticket_id, [] );
 		} else {
 			/* Translators: %1$s - singular ticket term */
 			$output = esc_html( sprintf( __( 'Failed to duplicate the %1$s', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_duplicate_error' ) ) );

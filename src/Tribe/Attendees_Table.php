@@ -526,7 +526,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		}
 
 		if ( is_admin() ) {
-			$default_actions[] = sprintf(
+			$default_actions['move-attendee'] = sprintf(
 				'<span
 					class="inline move-ticket tec-tickets__admin-table-action-button--attendee-move"
 					data-attendee-id="%1$d" data-event-id="%2$d"
@@ -717,7 +717,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			$parent = untrailingslashit( $wp->request ) . '/';
 		}
 
-		$email_link = Tribe__Settings::instance()->get_url( [
+		$email_link = tribe( 'settings' )->get_url( [
 			'page'      => 'tickets-attendees',
 			'action'    => 'email',
 			'event_id'  => $event_id,
@@ -1301,16 +1301,26 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * Return list of sortable columns.
 	 *
 	 * @since 5.5.0
+	 * @since 5.16.0 Make sortable columns filterable.
 	 *
 	 * @return array
 	 */
 	public function get_sortable_columns() {
-		return [
-				'ticket'   => 'id',
-				'security' => 'security_code',
-				'check_in' => 'check_in',
-				'status'   => $this->is_status_sortable()
+		$columns = [
+			'ticket'   => 'id',
+			'security' => 'security_code',
+			'check_in' => 'check_in',
+			'status'   => $this->is_status_sortable(),
 		];
+
+		/**
+		 * Filter list of sortable columns.
+		 *
+		 * @since 5.16.0
+		 *
+		 * @param array<string,string> $columns List of sortable columns.
+		 */
+		return apply_filters( 'tec_tickets_attendees_table_sortable_columns', $columns );
 	}
 
 	/**

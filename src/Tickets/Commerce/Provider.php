@@ -20,6 +20,14 @@ use Tribe__Tickets__Main as Tickets_Plugin;
  * @package TEC\Tickets\Commerce
  */
 class Provider extends Service_Provider {
+	/**
+	 * A reference to the Hooks object.
+	 *
+	 * @since 5.16.0
+	 *
+	 * @var Hooks|null
+	 */
+	private ?Hooks $hooks;
 
 	/**
 	 * Register the provider singletons.
@@ -124,6 +132,7 @@ class Provider extends Service_Provider {
 	 */
 	protected function register_hooks() {
 		$hooks = new Hooks( $this->container );
+		$this->hooks = $hooks;
 		$hooks->register();
 
 		// Allow Hooks to be removed, by having the them registered to the container
@@ -160,5 +169,20 @@ class Provider extends Service_Provider {
 		$post_types[] = Order::POSTTYPE;
 
 		return $post_types;
+	}
+
+	/**
+	 * Runs the init hooks managed by the Hooks object.
+	 *
+	 * @since 5.16.0
+	 *
+	 * @return void
+	 */
+	public function run_init_hooks(): void {
+		if ( $this->hooks === null ) {
+			return;
+		}
+
+		$this->hooks->run_init_hooks();
 	}
 }

@@ -17,6 +17,7 @@ import './style.pcss';
 import TicketContainer from './container/container';
 import TicketDashboard from './dashboard/container';
 import MoveModal from '@moderntribe/tickets/elements/move-modal';
+import { applyFilters } from '@wordpress/hooks';
 
 class Ticket extends PureComponent {
 	static propTypes = {
@@ -32,12 +33,12 @@ class Ticket extends PureComponent {
 	};
 
 	componentDidMount() {
-		this.props.onBlockUpdate( this.props.isSelected );
+		this.props.onBlockUpdate(this.props.isSelected);
 	}
 
-	componentDidUpdate( prevProps ) {
-		if ( prevProps.isSelected !== this.props.isSelected ) {
-			this.props.onBlockUpdate( this.props.isSelected );
+	componentDidUpdate(prevProps) {
+		if (prevProps.isSelected !== this.props.isSelected) {
+			this.props.onBlockUpdate(this.props.isSelected);
 		}
 	}
 
@@ -52,26 +53,57 @@ class Ticket extends PureComponent {
 			showTicket,
 		} = this.props;
 
-		return (
-			showTicket
-				? (
-					<Fragment>
-						<article className={ classNames(
-							'tribe-editor__ticket',
-							{ 'tribe-editor__ticket--disabled': isDisabled },
-							{ 'tribe-editor__ticket--selected': isSelected },
-							{ 'tribe-editor__ticket--has-tickets-plus': hasTicketsPlus },
-						) }
-						>
-							<TicketContainer clientId={ clientId } isSelected={ isSelected } />
-							<TicketDashboard clientId={ clientId } isSelected={ isSelected } />
-							{ isLoading && <Spinner /> }
-						</article>
-						{ isModalShowing && <MoveModal /> }
-					</Fragment>
-				)
-				: null
+		/**
+		 * Filters the ticket `isSelected` property. The property comes fron the Block Editor,
+		 * and it's a proxy to many of the interactivity properties of the ticket.
+		 *
+		 * @since 5.16.0
+		 *
+		 * @param {boolean} isSelected The ticket `isSelected` property.
+		 * @param {Object}  props      The Ticket component props.
+		 */
+		const filteredIsSelected = applyFilters(
+			'tec.tickets.blocks.Ticket.isSelected',
+			isSelected,
+			this.props
 		);
+
+		return showTicket ? (
+			<Fragment>
+				<article
+					className={classNames(
+						'tribe-editor__ticket',
+						{ 'tribe-editor__ticket--disabled': isDisabled },
+						{
+							'tribe-editor__ticket--selected':
+								filteredIsSelected,
+						},
+						{
+							'tribe-editor__ticket--has-tickets-plus':
+								hasTicketsPlus,
+						},
+						{
+							'tribe-editor__ticket--is-asc': applyFilters(
+								'tribe.editor.ticket.isAsc',
+								false,
+								clientId
+							),
+						}
+					)}
+				>
+					<TicketContainer
+						clientId={clientId}
+						isSelected={filteredIsSelected}
+					/>
+					<TicketDashboard
+						clientId={clientId}
+						isSelected={filteredIsSelected}
+					/>
+					{isLoading && <Spinner />}
+				</article>
+				{isModalShowing && <MoveModal />}
+			</Fragment>
+		) : null;
 	}
 }
 

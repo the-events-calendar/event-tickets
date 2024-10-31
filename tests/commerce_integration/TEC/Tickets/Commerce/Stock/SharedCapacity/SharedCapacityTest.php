@@ -44,8 +44,6 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
-		// Set the Event shared capacity to 50.
-		update_post_meta( Tickets_Handler::instance()->key_capacity, 50, $event_id );
 		// Set the Event global stock level to 50.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 50 );
 
@@ -132,8 +130,6 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
-		// Set the Event shared capacity to 20.
-		update_post_meta( Tickets_Handler::instance()->key_capacity, 20, $event_id );
 		// Set the Event global stock level to 20.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 20 );
 
@@ -196,8 +192,6 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
-		// Set the Event shared capacity to 20.
-		update_post_meta( Tickets_Handler::instance()->key_capacity, 20, $event_id );
 		// Set the Event global stock level to 20.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 20 );
 
@@ -258,8 +252,6 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
-		// Set the Event shared capacity to 30.
-		update_post_meta( Tickets_Handler::instance()->key_capacity, 30, $event_id );
 		// Set the Event global stock level to 30.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 30 );
 
@@ -365,8 +357,6 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
-		// Set the Event shared capacity to 30.
-		update_post_meta( Tickets_Handler::instance()->key_capacity, 30, $event_id );
 		// Set the Event global stock level to 30.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 30 );
 
@@ -457,8 +447,6 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
-		// Set the Event shared capacity to 20.
-		update_post_meta( Tickets_Handler::instance()->key_capacity, 20, $event_id );
 		// Set the Event global stock level to 20.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 20 );
 

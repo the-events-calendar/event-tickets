@@ -67,6 +67,7 @@ function tec_tc_get_order( $order = null, $output = OBJECT, $filter = 'raw', $fo
 			get_option( 'timezone_string' ),
 			get_option( 'gmt_offset' )
 		] ),
+		$cache_post->post_status,
 		$output,
 		$filter,
 	];

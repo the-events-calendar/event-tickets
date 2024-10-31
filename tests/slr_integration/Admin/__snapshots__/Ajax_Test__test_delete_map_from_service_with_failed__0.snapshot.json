@@ -1,0 +1,7 @@
+{
+    "success": false,
+    "data": {
+        "error": "Failed to delete the map."
+    },
+    "code": 500
+}

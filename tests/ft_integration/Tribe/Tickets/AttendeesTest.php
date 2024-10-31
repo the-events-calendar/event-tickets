@@ -82,9 +82,9 @@ class AttendeesTest extends WPTestCase {
 					'duration'   => 2 * HOUR_IN_SECONDS,
 				] )->create()->ID;
 				$ticket_id = $this->create_tc_ticket( $event_id );
-				$this->create_order( [ $ticket_id => 3 ] );
+				$order = $this->create_order( [ $ticket_id => 3 ] );
 
-				return [ $event_id, [ $event_id, $ticket_id ] ];
+				return [ $event_id, [ $event_id, $ticket_id, $order->ID ] ];
 			}
 		];
 
@@ -97,6 +97,7 @@ class AttendeesTest extends WPTestCase {
 					'duration'   => 2 * HOUR_IN_SECONDS,
 				] )->create()->ID;
 				$ticket_id = $this->create_rsvp_ticket( $event_id );
+
 				$this->create_many_attendees_for_ticket( 3, $ticket_id, $event_id );
 
 				return [ $event_id, [ $event_id, $ticket_id ] ];
@@ -112,11 +113,11 @@ class AttendeesTest extends WPTestCase {
 					'duration'   => 2 * HOUR_IN_SECONDS,
 				] )->create()->ID;
 				$ticket_id = $this->create_tc_ticket( $event_id );
-				$this->create_order( [ $ticket_id => 3 ] );
+				$order = $this->create_order( [ $ticket_id => 3 ] );
 				$rsvp_ticket_id = $this->create_rsvp_ticket( $event_id );
 				$this->create_many_attendees_for_ticket( 3, $rsvp_ticket_id, $event_id );
 
-				return [ $event_id, [ $event_id, $ticket_id, $rsvp_ticket_id ] ];
+				return [ $event_id, [ $event_id, $ticket_id, $rsvp_ticket_id, $order->ID ] ];
 			}
 		];
 
@@ -137,8 +138,8 @@ class AttendeesTest extends WPTestCase {
 				wp_update_post( [ 'ID' => $ticket_1_id, 'menu_order' => 1 ] );
 				wp_update_post( [ 'ID' => $ticket_2_id, 'menu_order' => 0 ] );
 
-				$this->create_order( [ $ticket_1_id => 3 ] );
-				$this->create_order( [ $ticket_2_id => 2 ] );
+				$order_1 = $this->create_order( [ $ticket_1_id => 3 ] );
+				$order_2 = $this->create_order( [ $ticket_2_id => 2 ] );
 
 				$rsvp_1_ticket_id = $this->create_rsvp_ticket( $event_id );
 				$rsvp_2_ticket_id = $this->create_rsvp_ticket( $event_id );
@@ -158,8 +159,8 @@ class AttendeesTest extends WPTestCase {
 				wp_update_post( [ 'ID' => $series_pass_1_id, 'menu_order' => 5 ] );
 				wp_update_post( [ 'ID' => $series_pass_2_id, 'menu_order' => 4 ] );
 
-				$this->create_order( [ $series_pass_1_id => 3 ] );
-				$this->create_order( [ $series_pass_2_id => 3 ] );
+				$order_3 = $this->create_order( [ $series_pass_1_id => 3 ] );
+				$order_4 = $this->create_order( [ $series_pass_2_id => 3 ] );
 
 				return [
 					$event_id,
@@ -172,7 +173,11 @@ class AttendeesTest extends WPTestCase {
 						$rsvp_2_ticket_id,
 						$series_pass_1_id,
 						$series_pass_2_id,
-						$series_id
+						$series_id,
+						$order_1->ID,
+						$order_2->ID,
+						$order_3->ID,
+						$order_4->ID,
 					]
 				];
 			}

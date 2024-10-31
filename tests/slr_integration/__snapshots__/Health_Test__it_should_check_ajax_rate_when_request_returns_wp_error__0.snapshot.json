@@ -1,0 +1,18 @@
+[
+    [
+        {
+            "label": "Site serves AJAX requests at the required rate",
+            "completed": false,
+            "status": "critical",
+            "badge": {
+                "label": "Seating",
+                "color": "red"
+            },
+            "description": "Your site cannot serve AJAX requests at the rate required for Seating and the WordPress block editor.",
+            "actions": "<p>Some plugins and hosts enforce a rate limit which interferes with other WordPress functionality including Seating.</p><p>If your site uses any security plugins, check if they are enforcing a limit on AJAX requests.</p><p>Contact your host provider and ask how to remove or raise the rate limit for your site.</p><p><a href=\u0022https://developer.wordpress.org/plugins/javascript/ajax/\u0022 target=\u0022_blank\u0022 rel=\u0022noopener noreferrer\u0022>Learn more about AJAX</a> or <a href=\u0022https://evnt.is/1be4\u0022 target=\u0022_blank\u0022 rel=\u0022noopener noreferrer\u0022>contact support</a>.</p>",
+            "test": "slr-ajax-rate"
+        },
+        null,
+        0
+    ]
+]

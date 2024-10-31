@@ -32,6 +32,7 @@ const mapStateToProps = (state, ownProps) => {
 		showNotSupportedMessage: isRecurring && isBlockSelected,
 		showConfirm: true,
 		disableSettings: false,
+		clientId: ownProps.clientId,
 		onConfirmClick: () => {
 			// eslint-disable-line wpcalypso/redux-no-bound-selectors
 			const { clientId } = ownProps;
@@ -42,6 +43,7 @@ const mapStateToProps = (state, ownProps) => {
 			const block = createBlock('tribe/tickets-item', {});
 			insertBlock(block, nextChildPosition, clientId);
 		},
+		isConfirmDisabled: false,
 	};
 
 	/**

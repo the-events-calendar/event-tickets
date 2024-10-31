@@ -1,0 +1,27 @@
+[
+    {
+        "id": "seat-type-uuid-5",
+        "name": "5guys",
+        "seats": "50"
+    },
+    {
+        "id": "seat-type-uuid-3",
+        "name": "apple",
+        "seats": "30"
+    },
+    {
+        "id": "seat-type-uuid-2",
+        "name": "Banana",
+        "seats": "20"
+    },
+    {
+        "id": "seat-type-uuid-1",
+        "name": "Mangoe",
+        "seats": "10"
+    },
+    {
+        "id": "seat-type-uuid-4",
+        "name": "wolves",
+        "seats": "40"
+    }
+]

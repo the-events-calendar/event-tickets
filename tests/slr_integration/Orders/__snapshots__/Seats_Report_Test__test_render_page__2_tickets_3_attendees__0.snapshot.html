@@ -1,0 +1,29 @@
+
+	<div class="tabbed-view-wrap wrap">
+					<h1>
+				Attendees for: The Event [#{{ID}}]							</h1>
+		
+		<h2 class="nav-tab-wrapper">
+							<a id="tickets-commerce-orders-report"
+					class="nav-tab nav-tab-active"
+					href="http://wordpress.test/wp-admin/edit.php?post_type=post&#038;page=tickets-commerce-orders&#038;post_id={{ID}}">Orders				</a>
+							<a id="tickets-attendees"
+					class="nav-tab"
+					href="http://wordpress.test/wp-admin/edit.php?post_type=post&#038;page=tickets-attendees&#038;event_id={{ID}}">Attendees				</a>
+					</h2>
+	</div>
+<div class="tec-tickets__seating-tab-wrapper wrap">
+	<div id="tec-tickets-seating-notice" class="notice" style="display: none;"></div>
+	<div
+		class="tec-tickets-seating__iframe-container"
+		data-token="some-ephemeral-token"
+		data-error=""
+	>
+		<iframe
+			data-src="https://seating.theeventscalendar.com/embed/seat-assignment?token=some-ephemeral-token&#038;eventId=some-post-uuid&#038;layoutId=layout-uuid"
+			id="tec-tickets-seating-iframe-layout-edit"
+			class="tec-tickets-seating__iframe tec-tickets-seating__iframe--layout-edit"
+			title="Seats Assignment">
+		</iframe>
+	</div>
+</div>

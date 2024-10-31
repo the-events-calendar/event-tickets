@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
@@ -24,13 +24,27 @@ const CapacityTable = ({
 	unlimitedTicketItems,
 	rowsAfter,
 }) => {
-	const sharedInput = (
+	let sharedCapacityInput = (
 		<NumberInput
 			onChange={onSharedCapacityChange}
 			value={sharedCapacity}
 			disabled={isSettingsLoading}
 			min={0}
 		/>
+	);
+
+	/**
+	 * Filters the shared capacity input component.
+	 *
+	 * @since 5.16.0
+	 *
+	 * @param {React.Node} sharedCapacityInput The shared capacity input component.
+	 * @param {number}     sharedCapacity      The shared capacity current value.
+	 */
+	sharedCapacityInput = applyFilters(
+		'tec.tickets.blocks.Tickets.CapacityTable.sharedCapacityInput',
+		sharedCapacityInput,
+		sharedCapacity,
 	);
 
 	return (
@@ -41,7 +55,7 @@ const CapacityTable = ({
 			<Row
 				label={__('Shared capacity', 'event-tickets')}
 				items={sharedTicketItems}
-				right={sharedInput}
+				right={sharedCapacityInput}
 			/>
 			<Row
 				label={__('Independent capacity', 'event-tickets')}
