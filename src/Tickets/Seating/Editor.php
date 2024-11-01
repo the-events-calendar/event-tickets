@@ -87,6 +87,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 		$service_status = $service->get_status();
 
 		return [
+			// isUsingAssignedSeating should never be true when there is no license. The ASC controls are hidden when no license is there.
 			'isUsingAssignedSeating' => ! $service_status->has_no_license() && $is_using_assigned_seating,
 			'layouts'                => $service->get_layouts_in_option_format(),
 			'seatTypes'              => $layout_id ? $service->get_seat_types_by_layout( $layout_id ) : [],
