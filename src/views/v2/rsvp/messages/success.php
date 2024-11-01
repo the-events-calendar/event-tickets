@@ -22,7 +22,7 @@ if ( ! in_array( $step, [ 'success', 'opt-in' ], true ) ) {
 	return;
 }
 ?>
-<div class="tribe-tickets__rsvp-message tribe-tickets__rsvp-message--success tribe-common-b3">
+<div class="tribe-tickets__rsvp-message tribe-tickets__rsvp-message--success tribe-common-b3" role="alert">
 	<?php $this->template( 'v2/components/icons/paper-plane', [ 'classes' => [ 'tribe-tickets__rsvp-message--success-icon' ] ] ); ?>
 
 	<?php $this->template( 'v2/rsvp/messages/success/going' ); ?>
