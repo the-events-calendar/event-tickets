@@ -1,10 +1,24 @@
 <?php
+/**
+ * Seating settings.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Seating
+ */
 
 namespace TEC\Tickets\Seating;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Arrays\Arr;
 
+/**
+ * Class Settings.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Seating
+ */
 class Settings extends Controller_Contract {
 	/**
 	 * The action that will be fired when this Controller registers.
@@ -16,7 +30,7 @@ class Settings extends Controller_Contract {
 	}
 	
 	/**
-	 * Unregisters the Controller by unsubscribing from WordPress hooks.
+	 * Unregisters the Controller.
 	 *
 	 * @since TBD
 	 */
