@@ -141,6 +141,8 @@ class Controller extends Controller_Contract {
 		 * AJAX will power both frontend and backend, always register it.
 		 */
 		$this->container->register( Admin\Ajax::class );
+		
+		$this->container->register( Settings::class );
 
 		if ( is_admin() ) {
 			$this->container->register( Admin::class );
