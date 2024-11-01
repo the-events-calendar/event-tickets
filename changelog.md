@@ -1,8 +1,9 @@
 # Changelog
 
-### [5.16.1] 2024-10-31
+### [5.16.1] 2024-11-04
 
 * Fix - Attendee Registration page will work with FSE Themes. [ET-2261]
+* Fix - Issue preventing ticket creation on an unsaved ticket-able post type, while no Seating license is present. [ET-2264]
 
 ### [5.16.0.1] 2024-10-30
 

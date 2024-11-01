@@ -59,7 +59,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	 */
 	public function get_store_data(): array {
 		if ( tribe_context()->is_new_post() ) {
-			// New posts will always use assigned seating.
+			// New posts will always use assigned seating as long as license exists.
 			$is_using_assigned_seating = true;
 			$layout_id                 = null;
 			$seat_types_by_post_id     = [];
@@ -87,7 +87,8 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 		$service_status = $service->get_status();
 
 		return [
-			'isUsingAssignedSeating' => $is_using_assigned_seating,
+			// isUsingAssignedSeating should never be true when there is no license. The ASC controls are hidden when no license is there.
+			'isUsingAssignedSeating' => ! $service_status->has_no_license() && $is_using_assigned_seating,
 			'layouts'                => $service->get_layouts_in_option_format(),
 			'seatTypes'              => $layout_id ? $service->get_seat_types_by_layout( $layout_id ) : [],
 			'currentLayoutId'        => $layout_id,

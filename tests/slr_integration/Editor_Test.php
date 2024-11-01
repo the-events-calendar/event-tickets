@@ -410,6 +410,81 @@ class Editor_Test extends Controller_Test_Case {
 			}
 		];
 
+		yield 'service down - new' => [
+			function (): array {
+				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
+					return new Service_Status( $backend_base_url, Service_Status::SERVICE_DOWN );
+				}, 1000, 2 );
+				global $pagenow, $post;
+				$pagenow = 'post-new.php';
+				$this->given_many_layouts_in_db( 3 );
+				$this->given_layouts_just_updated();
+				$post    = get_post( static::factory()->post->create() );
+
+				return [];
+			}
+		];
+
+		yield 'service not connected - new' => [
+			function (): array {
+				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
+					return new Service_Status( $backend_base_url, Service_Status::NOT_CONNECTED );
+				}, 1000, 2 );
+				global $pagenow, $post;
+				$pagenow = 'post-new.php';
+				$this->given_many_layouts_in_db( 3 );
+				$this->given_layouts_just_updated();
+				$post    = get_post( static::factory()->post->create() );
+
+				return [];
+			}
+		];
+
+		yield 'no license - new' => [
+			function (): array {
+				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
+					return new Service_Status( $backend_base_url, Service_Status::NO_LICENSE );
+				}, 1000, 2 );
+				global $pagenow, $post;
+				$pagenow = 'post-new.php';
+				$this->given_many_layouts_in_db( 3 );
+				$this->given_layouts_just_updated();
+				$post    = get_post( static::factory()->post->create() );
+
+				return [];
+			}
+		];
+
+		yield 'invalid license - new' => [
+			function (): array {
+				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
+					return new Service_Status( $backend_base_url, Service_Status::INVALID_LICENSE );
+				}, 1000, 2 );
+				global $pagenow, $post;
+				$pagenow = 'post-new.php';
+				$this->given_many_layouts_in_db( 3 );
+				$this->given_layouts_just_updated();
+				$post    = get_post( static::factory()->post->create() );
+
+				return [];
+			}
+		];
+
+		yield 'expired license - new' => [
+			function (): array {
+				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
+					return new Service_Status( $backend_base_url, Service_Status::EXPIRED_LICENSE );
+				}, 1000, 2 );
+				global $pagenow, $post;
+				$pagenow = 'post-new.php';
+				$this->given_many_layouts_in_db( 3 );
+				$this->given_layouts_just_updated();
+				$post    = get_post( static::factory()->post->create() );
+
+				return [];
+			}
+		];
+
 		yield 'existing event, not using meta set or layout set, with tickets' => [
 			function (): array {
 				$id = tribe_events()->set_args( [
