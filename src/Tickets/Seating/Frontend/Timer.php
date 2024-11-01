@@ -333,6 +333,8 @@ class Timer extends Controller_Contract {
 	 * @return int The seat-selection timeout for a post in seconds.
 	 */
 	public function get_timeout( $post_id ): int {
+		$limit_in_minutes = (int) tribe_get_option( 'ticket-seating-frontend-timer', 15 );
+		
 		/**
 		 * Filters the seat selection timeout, default is 15 minutes.
 		 *
@@ -341,7 +343,7 @@ class Timer extends Controller_Contract {
 		 * @param int $timeout The timeout in seconds.
 		 * @param int $post_id The post ID the iframe is for.
 		 */
-		return apply_filters( 'tec_tickets_seating_selection_timeout', 15 * 60, $post_id );
+		return apply_filters( 'tec_tickets_seating_selection_timeout', $limit_in_minutes * 60, $post_id );
 	}
 
 	/**
