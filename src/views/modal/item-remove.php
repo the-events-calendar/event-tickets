@@ -18,6 +18,7 @@
 	<button
 		type="button"
 		class="tribe-tickets__item__remove"
+		aria-label="Remove item"
 	>
 	</button>
 </div>
