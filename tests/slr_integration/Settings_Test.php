@@ -24,7 +24,7 @@ class Settings_Test extends Controller_Test_Case {
 			] 
 		);
 		
-		$this->assertArrayHasKey( 'ticket-seating-frontend-timer', $settings );
+		$this->assertArrayHasKey( Settings::FRONTEND_TIMER_OPTION, $settings );
 		$this->assertMatchesJsonSnapshot( wp_json_encode( $settings, JSON_SNAPSHOT_OPTIONS ) );
 	}
 	
@@ -36,7 +36,7 @@ class Settings_Test extends Controller_Test_Case {
 		$this->assertEquals( 15 * 60, $timeout );
 		
 		// Update the value to 30 minutes.
-		tribe_update_option( 'ticket-seating-frontend-timer', 30 );
+		tribe_update_option( Settings::FRONTEND_TIMER_OPTION, 30 );
 		$timeout = tribe( Timer::class )->get_timeout( 0 );
 		
 		$this->assertEquals( 30 * 60, $timeout );
