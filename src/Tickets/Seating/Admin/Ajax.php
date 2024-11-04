@@ -604,22 +604,22 @@ class Ajax extends Controller_Contract {
 
 		$duplicated_layout_id = $this->layouts->duplicate_layout( $layout_id );
 
-		if ( ! empty( $duplicated_layout_id ) ) {
-			$edit_url = add_query_arg(
-				[
-					'page'     => Admin::get_menu_slug(),
-					'tab'      => Layout_Edit::get_id(),
-					'layoutId' => $duplicated_layout_id,
-					'isNew'    => 1,
-				],
-				admin_url( 'admin.php' )
-			);
-
-			wp_send_json_success( $edit_url );
+		if ( empty( $duplicated_layout_id ) ) {
+			wp_send_json_error( [ 'error' => __( 'Failed to duplicate layout.', 'event-tickets' ) ], 500 );
 			return;
 		}
 
-		wp_send_json_error( [ 'error' => __( 'Failed to duplicate layout.', 'event-tickets' ) ], 500 );
+		$edit_url = add_query_arg(
+			[
+				'page'     => Admin::get_menu_slug(),
+				'tab'      => Layout_Edit::get_id(),
+				'layoutId' => $duplicated_layout_id,
+				'isNew'    => 1,
+			],
+			admin_url( 'admin.php' )
+		);
+
+		wp_send_json_success( $edit_url );
 	}
 
 	/**
