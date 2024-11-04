@@ -62,30 +62,51 @@ class Admin_Test extends Controller_Test_Case {
 
 	public function license_states_data_provider() {
 		return [
-			'no tab - expired license'          => [
-				'fixture' => function(){
-					add_filter( 'tec_tickets_seating_service_status', static fn( $_status, $backend_base_url ) => new Service_Status( $backend_base_url, Service_Status::EXPIRED_LICENSE ), 10, 2 );
+			'no tab - expired license' => [
+				'fixture' => function () {
+					add_filter( 'tec_tickets_seating_service_status',
+						static fn( $_status, $backend_base_url ) => new Service_Status( $backend_base_url,
+							Service_Status::EXPIRED_LICENSE ),
+						10,
+						2 );
 				},
 			],
-			'no tab - no license'          => [
-				'fixture' => function(){
-					add_filter( 'tec_tickets_seating_service_status', static fn( $_status, $backend_base_url ) => new Service_Status( $backend_base_url, Service_Status::NO_LICENSE ), 10, 2 );
+			'no tab - no license'      => [
+				'fixture'           => function () {
+					add_filter( 'tec_tickets_seating_service_status',
+						static fn( $_status, $backend_base_url ) => new Service_Status( $backend_base_url,
+							Service_Status::NO_LICENSE ),
+						10,
+						2 );
+					test_remove_seating_license_key_callback();
 				},
 				'should_menu_exist' => false,
 			],
-			'no tab - invalid license'          => [
-				'fixture' => function(){
-					add_filter( 'tec_tickets_seating_service_status', static fn( $_status, $backend_base_url ) => new Service_Status( $backend_base_url, Service_Status::INVALID_LICENSE ), 10, 2 );
+			'no tab - invalid license' => [
+				'fixture' => function () {
+					add_filter( 'tec_tickets_seating_service_status',
+						static fn( $_status, $backend_base_url ) => new Service_Status( $backend_base_url,
+							Service_Status::INVALID_LICENSE ),
+						10,
+						2 );
 				}
 			],
-			'no tab - service down'          => [
-				'fixture' => function(){
-					add_filter( 'tec_tickets_seating_service_status', static fn( $_status, $backend_base_url ) => new Service_Status( $backend_base_url, Service_Status::SERVICE_DOWN ), 10, 2 );
+			'no tab - service down'    => [
+				'fixture' => function () {
+					add_filter( 'tec_tickets_seating_service_status',
+						static fn( $_status, $backend_base_url ) => new Service_Status( $backend_base_url,
+							Service_Status::SERVICE_DOWN ),
+						10,
+						2 );
 				}
 			],
-			'no tab - not connected'          => [
-				'fixture' => function(){
-					add_filter( 'tec_tickets_seating_service_status', static fn( $_status, $backend_base_url ) => new Service_Status( $backend_base_url, Service_Status::NOT_CONNECTED ), 10, 2 );
+			'no tab - not connected'   => [
+				'fixture' => function () {
+					add_filter( 'tec_tickets_seating_service_status',
+						static fn( $_status, $backend_base_url ) => new Service_Status( $backend_base_url,
+							Service_Status::NOT_CONNECTED ),
+						10,
+						2 );
 				}
 			],
 		];

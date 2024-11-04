@@ -101,6 +101,7 @@ class Uplink_Test extends Controller_Test_Case {
 	 * @param bool   $valid Whether the license key should be considered valid.
 	 */
 	private function set_license_key( string $key, bool $valid ): void {
+		test_remove_seating_license_key_callback();
 		$this->resource->set_license_key( $key );
 		$this->assertEquals( $key, $this->resource->get_license_key() );
 		$this->assertEquals( $key, get_option( $this->resource->get_license_object()->get_key_option_name() ) );
