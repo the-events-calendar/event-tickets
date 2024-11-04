@@ -111,6 +111,8 @@ describe('Seat Selection Session', () => {
 		expect(getCountdownTimeoutId()).toBe(null);
 		expect(getHealthcheckTimeoutId()).toBe(null);
 		expect(getResumeTimeoutId()).toBe(102);
+		// Let's make sure it will set up to resume in 1 minute.
+		expect(setTimeout).toHaveBeenCalledWith(resume, 60000);
 	});
 
 	it('should pause the timer on checkout control submit', async () => {
@@ -153,6 +155,8 @@ describe('Seat Selection Session', () => {
 		expect(getCountdownTimeoutId()).toBe(null);
 		expect(getHealthcheckTimeoutId()).toBe(null);
 		expect(getResumeTimeoutId()).toBe(102);
+		// Let's make sure it will set up to resume in 1 minute.
+		expect(setTimeout).toHaveBeenCalledWith(resume, 60000);
 	});
 
 	it('should interrupt on page close', async () => {
