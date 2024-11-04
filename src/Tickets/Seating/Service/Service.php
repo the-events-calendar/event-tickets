@@ -425,7 +425,8 @@ class Service {
 	 */
 	public function get_status( bool $force = false ): Service_Status {
 		if ( $force || ! $this->status instanceof Service_Status ) {
-			$this->status = new Service_Status( $this->backend_base_url );
+			$context      = is_admin() ? 'admin' : 'frontend';
+			$this->status = new Service_Status( $this->backend_base_url, null, $context);
 		}
 
 		/**

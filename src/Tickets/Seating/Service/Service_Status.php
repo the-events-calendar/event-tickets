@@ -94,17 +94,29 @@ class Service_Status {
 	private ?int $status = null;
 
 	/**
+	 * The context of the status check.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private string $context;
+
+	/**
 	 * Service_Status constructor.
 	 *
 	 * @since 5.16.0
+	 * @since TBD Added the `$context` argument.
 	 *
-	 * @param string   $backend_base_url The base URL of the service from the site backend.
-	 * @param int|null $status           The status of the service.
+	 * @param string      $backend_base_url The base URL of the service from the site backend.
+	 * @param int|null    $status           The status of the service.
+	 * @param string|null $context          The context of the service status check.
 	 *
 	 * @throws \InvalidArgumentException If the status is not one of the valid statuses.
 	 */
-	public function __construct( string $backend_base_url, int $status = null ) {
+	public function __construct( string $backend_base_url, int $status = null, string $context = 'admin' ) {
 		$this->backend_base_url = $backend_base_url;
+		$this->context ??= is_admin() ? 'admin' : 'frontend';
 
 		if (
 			null !== $status
@@ -132,10 +144,29 @@ class Service_Status {
 			return;
 		}
 
+		$transient = 'tec_tickets_seating_service_status_' . $this->context;
+		$expiration = $this->context === 'admin' ? 600 : 60;
+
+		$cached = get_transient( $transient );
+
+		if ( in_array( $cached, [
+			self::OK,
+			self::SERVICE_DOWN,
+			self::NOT_CONNECTED,
+			self::INVALID_LICENSE,
+			self::EXPIRED_LICENSE,
+			self::NO_LICENSE
+		], true ) ) {
+			$this->status = $cached;
+
+			return;
+		}
+
 		$resource = get_resource( 'tec-seating' );
 
 		if ( $this->has_no_license() ) {
 			$this->status = self::NO_LICENSE;
+			set_transient( $transient, $this->status, $expiration );
 
 			return;
 		}
@@ -144,12 +175,14 @@ class Service_Status {
 			if ( $resource->get_license_object()->is_expired() ) {
 				// There is a license key, but it is expired.
 				$this->status = self::EXPIRED_LICENSE;
+				set_transient( $transient, $this->status, $expiration );
 
 				return;
 			}
 
 			// There is a license key, but it is invalid and NOT expired.
 			$this->status = self::INVALID_LICENSE;
+			set_transient( $transient, $this->status, $expiration );
 
 			return;
 		}
@@ -158,9 +191,17 @@ class Service_Status {
 
 		if ( empty( $token ) ) {
 			$this->status = self::NOT_CONNECTED;
+			set_transient( $transient, $this->status, $expiration );
 
 			return;
 
+		}
+
+		if ( $this->context === 'admin' ) {
+			// Do not run the HEAD check in admin context.
+			set_transient( $transient, self::OK, $expiration );
+
+			return;
 		}
 
 		// Check if the service is running with a quick HEAD request.
@@ -168,6 +209,7 @@ class Service_Status {
 
 		if ( is_wp_error( $response ) ) {
 			$this->status = self::SERVICE_DOWN;
+			set_transient( $transient, $this->status, $expiration );
 
 			return;
 		}
