@@ -326,7 +326,7 @@ class Session {
 	 *
 	 * @return bool Whether the reservations were confirmed or not.
 	 */
-	public function confirm_all_reservations(bool $delete_token_session = true): bool {
+	public function confirm_all_reservations( bool $delete_token_session = true ): bool {
 		$confirmed = true;
 
 		foreach ( $this->get_entries() as $post_id => $token ) {
