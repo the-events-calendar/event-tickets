@@ -4,6 +4,7 @@
 
 * Fix - Attendee Registration page will work with FSE Themes. [ET-2261]
 * Fix - Issue preventing ticket creation on an unsaved ticket-able post type, while no Seating license is present. [ET-2264]
+* Fix - Include backwards compatibility for deprecated proprieties in the Settings class used in The Events Calendar and Event Tickets [TEC-5312]
 
 ### [5.16.0.1] 2024-10-30
 
