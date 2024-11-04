@@ -134,7 +134,7 @@ class Service_Status {
 
 		$resource = get_resource( 'tec-seating' );
 
-		if ( ! $resource->get_license_object()->get_key() ) {
+		if ( $this->has_no_license() ) {
 			$this->status = self::NO_LICENSE;
 
 			return;
@@ -209,9 +209,7 @@ class Service_Status {
 	 * @return bool Whether the service status is Not Connected or not.
 	 */
 	public function has_no_license(): bool {
-		$this->update();
-
-		return $this->status === self::NO_LICENSE;
+		return ! get_resource( 'tec-seating' )->get_license_object()->get_key();
 	}
 
 	/**
