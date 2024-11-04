@@ -198,8 +198,6 @@ async function duplicateLayout( layoutId ) {
 	url.searchParams.set('action', ACTION_DUPLICATE_LAYOUT);
 	const response = await fetch(url.toString(), { method: 'POST' });
 
-	console.log('response', response);
-
 	if ( response.status === 200 ) {
 		return await response.json();
 	}
