@@ -471,6 +471,7 @@ class Controller extends Controller_Contract {
 	 * If the order status is complete, it will also delete the token session.
 	 *
 	 * @since 5.16.0
+	 * @since TBD - Refactored to pass a bool variable to confirm_all_reservations.
 	 *
 	 * @param array<Attendee>          $attendees  The generated attendees, unused.
 	 * @param \Tribe__Tickets__Tickets $ticket     The ticket the attendee is generated for, unused.
