@@ -1,6 +1,7 @@
 <?php
 
 use TEC\Tickets\Commerce\Utils\Currency;
+use Tribe\Tickets\Admin\Settings;
 
 /**
  * Class Tribe__Tickets__Admin__Notices
@@ -28,6 +29,7 @@ class Tribe__Tickets__Admin__Notices {
 		add_action( 'admin_init', [ $this, 'maybe_display_plus_commerce_notice' ] );
 		add_action( 'admin_init', [ $this, 'maybe_display_unsupported_currency_notice' ] );
 		add_action( 'admin_init', [ $this, 'maybe_display_paystack_notice' ] );
+		add_action( 'admin_init', [ $this, 'maybe_display_fse_ar_page_notice' ] );
 	}
 
 	/**
@@ -328,5 +330,61 @@ class Tribe__Tickets__Admin__Notices {
 			]
 		);
 
+	}
+
+	/**
+	 * Display AR Page notice for FSE theme detected.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function maybe_display_fse_ar_page_notice() {
+		// Bail if we aren't in Tickets > Settings.
+		if ( Settings::$settings_page_id !== tec_get_request_var( 'page' ) ) {
+			return;
+		}
+
+		// Bail if Tickets Plus is not active.
+		if ( ! has_action( 'tribe_common_loaded', 'tribe_register_event_tickets_plus' ) ) {
+			return;
+		}
+
+		// Bail if not using block theme.
+		if ( ! wp_is_block_theme() ) {
+			return;
+		}
+
+		// Bail if the attendee registration page is already set or does not exist.
+		$id = Tribe__Settings_Manager::get_option( 'ticket-attendee-page-id', false );
+		if ( ! empty( $id ) && get_post_status( $id ) ) {
+			return;
+		}
+
+		$settings_link = sprintf(
+			'<a href="%s">%s</a>',
+			esc_url( tribe( Settings::class )->get_url( [ 'tab' => 'attendee-registration' ] ) ),
+			esc_html__( 'Attendee Registration settings', 'event-tickets' )
+		);
+
+		$message_text = sprintf(
+			// Translators: %s: The "Attendee Registration settings" link.
+			esc_html__( 'We detected that you are using a Full Site Editing theme. In order for the Attendee Registration Page to function properly, you will need to set up a page, using the [tribe_attendee_registration] shortcode in the %s.', 'event-tickets' ),
+			$settings_link
+		);
+
+		$message = sprintf(
+			'<p>%s</p>',
+			$message_text
+		);
+
+		tribe_notice(
+			'tec-tickets-ar-page-with-fse-theme',
+			$message,
+			[
+				'dismiss' => false,
+				'type'    => 'error',
+			]
+		);
 	}
 }
