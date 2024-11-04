@@ -160,6 +160,8 @@ exports[`add-new-modal should match the snapshot should load proper extractor sn
 		<div class=\\"tec-tickets__seating-tab__card-actions\\">
 			<a class=\\"button button-secondary edit-layout\\" href=\\"http://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&amp;tab=layout-edit&amp;layoutId=layout-uuid-1\\" data-event-count=\\"0\\">
 				Edit			</a>
+			<button class=\\"button button-secondary duplicate-layout\\" data-layout-id=\\"layout-uuid-1\\">
+				Duplicate			</button>
 						<a class=\\"delete-layout\\" data-layout-id=\\"layout-uuid-1\\" data-map-id=\\"map-uuid-1\\" href=\\"#\\">
 				Delete			</a>
 					</div>
@@ -176,6 +178,8 @@ exports[`add-new-modal should match the snapshot should load proper extractor sn
 		<div class=\\"tec-tickets__seating-tab__card-actions\\">
 			<a class=\\"button button-secondary edit-layout\\" href=\\"http://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&amp;tab=layout-edit&amp;layoutId=layout-uuid-2\\" data-event-count=\\"1\\">
 				Edit			</a>
+			<button class=\\"button button-secondary duplicate-layout\\" data-layout-id=\\"layout-uuid-2\\">
+				Duplicate			</button>
 					</div>
 	</div>
 </div>
@@ -190,10 +194,13 @@ exports[`add-new-modal should match the snapshot should load proper extractor sn
 		<div class=\\"tec-tickets__seating-tab__card-actions\\">
 			<a class=\\"button button-secondary edit-layout\\" href=\\"http://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&amp;tab=layout-edit&amp;layoutId=layout-uuid-3\\" data-event-count=\\"2\\">
 				Edit			</a>
+			<button class=\\"button button-secondary duplicate-layout\\" data-layout-id=\\"layout-uuid-3\\">
+				Duplicate			</button>
 					</div>
 	</div>
 </div>
-</div></div>
+</div>
+</div>
 		<div class=\\"tribe-dialog__content tribe-modal__content\\">
 		<div class=\\"tec-tickets-seating__new-layout-wrapper\\">
 	<label class=\\"tec-tickets-seating__new-layout-header\\" for=\\"tec-tickets-seating__select-map\\">
@@ -304,6 +311,8 @@ exports[`add-new-modal should match the snapshot should load the proper snapshot
 		<div class=\\"tec-tickets__seating-tab__card-actions\\">
 			<a class=\\"button button-secondary edit-layout\\" href=\\"http://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&amp;tab=layout-edit&amp;layoutId=layout-uuid-1\\" data-event-count=\\"0\\">
 				Edit			</a>
+			<button class=\\"button button-secondary duplicate-layout\\" data-layout-id=\\"layout-uuid-1\\">
+				Duplicate			</button>
 						<a class=\\"delete-layout\\" data-layout-id=\\"layout-uuid-1\\" data-map-id=\\"map-uuid-1\\" href=\\"#\\">
 				Delete			</a>
 					</div>
@@ -320,6 +329,8 @@ exports[`add-new-modal should match the snapshot should load the proper snapshot
 		<div class=\\"tec-tickets__seating-tab__card-actions\\">
 			<a class=\\"button button-secondary edit-layout\\" href=\\"http://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&amp;tab=layout-edit&amp;layoutId=layout-uuid-2\\" data-event-count=\\"1\\">
 				Edit			</a>
+			<button class=\\"button button-secondary duplicate-layout\\" data-layout-id=\\"layout-uuid-2\\">
+				Duplicate			</button>
 					</div>
 	</div>
 </div>
@@ -334,9 +345,12 @@ exports[`add-new-modal should match the snapshot should load the proper snapshot
 		<div class=\\"tec-tickets__seating-tab__card-actions\\">
 			<a class=\\"button button-secondary edit-layout\\" href=\\"http://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&amp;tab=layout-edit&amp;layoutId=layout-uuid-3\\" data-event-count=\\"2\\">
 				Edit			</a>
+			<button class=\\"button button-secondary duplicate-layout\\" data-layout-id=\\"layout-uuid-3\\">
+				Duplicate			</button>
 					</div>
 	</div>
 </div>
-</div></div>
+</div>
+</div>
 "
 `;
