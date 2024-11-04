@@ -1,0 +1,29 @@
+{
+    "ticket-authentication-requirements": {
+        "type": "checkbox",
+        "label": "Require Login"
+    },
+    "ticket-seating-options-heading": {
+        "type": "html",
+        "html": "<h3>Seating</h3>"
+    },
+    "ticket-seating-frontend-timer": {
+        "type": "text",
+        "label": "Reservation Time Limit",
+        "tooltip": "The number of minutes a customer has to choose seats and complete checkout.",
+        "validation_type": "positive_int",
+        "size": "small",
+        "default": 15
+    },
+    "ticket-telemetry-optin-heading": {
+        "type": "html",
+        "html": "<h3 id=\"event-tickets-telemetry-settings\">Telemetry</h3>"
+    },
+    "opt-in-status": {
+        "type": "checkbox_bool",
+        "label": "Opt in to Telemetry",
+        "tooltip": "Enable this option to share usage data with Event Tickets and StellarWP. <a href=\" https://evnt.is/1bcl \">What permissions are being granted?</a> <a href=\" https://evnt.is/1bcm \">Read our Terms of Service</a> <a href=\" https://evnt.is/1bcn \">Read our Privacy Policy</a>",
+        "default": false,
+        "validation_type": "boolean"
+    }
+}
