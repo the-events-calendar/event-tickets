@@ -21,6 +21,15 @@ use TEC\Common\StellarWP\Arrays\Arr;
  */
 class Settings extends Controller_Contract {
 	/**
+	 * The option name for the frontend timer setting.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const FRONTEND_TIMER_OPTION = 'ticket-seating-frontend-timer';
+	
+	/**
 	 * The action that will be fired when this Controller registers.
 	 *
 	 * @since TBD
@@ -53,7 +62,7 @@ class Settings extends Controller_Contract {
 				'type' => 'html',
 				'html' => '<h3>' . __( 'Seating', 'event-tickets' ) . '</h3>',
 			],
-			'ticket-seating-frontend-timer'  => [
+			self::FRONTEND_TIMER_OPTION      => [
 				'type'            => 'text',
 				'label'           => __( 'Reservation Time Limit', 'event-tickets' ),
 				'tooltip'         => __( 'The number of minutes a customer has to choose seats and complete checkout.', 'event-tickets' ),
