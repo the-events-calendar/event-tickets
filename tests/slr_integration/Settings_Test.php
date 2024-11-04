@@ -4,6 +4,7 @@ namespace Tec\Tickets\Seating;
 
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use TEC\Tickets\Seating\Frontend\Timer;
 
 class Settings_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -25,5 +26,19 @@ class Settings_Test extends Controller_Test_Case {
 		
 		$this->assertArrayHasKey( 'ticket-seating-frontend-timer', $settings );
 		$this->assertMatchesJsonSnapshot( wp_json_encode( $settings, JSON_SNAPSHOT_OPTIONS ) );
+	}
+	
+	public function test_saved_reservation_timer_is_used() {
+		$this->make_controller()->register();
+		
+		// Default value is 15 minutes.
+		$timeout = tribe( Timer::class )->get_timeout( 0 );
+		$this->assertEquals( 15 * 60, $timeout );
+		
+		// Update the value to 30 minutes.
+		tribe_update_option( 'ticket-seating-frontend-timer', 30 );
+		$timeout = tribe( Timer::class )->get_timeout( 0 );
+		
+		$this->assertEquals( 30 * 60, $timeout );
 	}
 }
