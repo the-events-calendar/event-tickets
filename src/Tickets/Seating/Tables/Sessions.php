@@ -115,7 +115,7 @@ class Sessions extends Table {
 
 		return "
 			CREATE TABLE `{$table_name}` (
-				`token` varchar(255) NOT NULL,
+				`token` varchar(150) NOT NULL,
 				`object_id` bigint(20) NOT NULL,
 				`expiration` int(11) NOT NULL,
 				`reservations` longblob DEFAULT '',

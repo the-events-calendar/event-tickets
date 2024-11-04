@@ -715,8 +715,8 @@ export function pause() {
 		countdownTimeoutId = null;
 	}
 
-	// Postpone the healthcheck for 30 seconds.
-	resumeTimeoutId = setTimeout(resume, 30000);
+	// Postpone the healthcheck for 60 seconds.
+	resumeTimeoutId = setTimeout(resume, 60000);
 }
 
 /**
