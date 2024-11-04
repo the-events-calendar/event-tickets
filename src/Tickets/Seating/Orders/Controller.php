@@ -479,7 +479,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	public function confirm_all_reservations($attendees, $ticket, $order, $new_status): void {
+	public function confirm_all_reservations( $attendees, $ticket, $order, $new_status ): void {
 		$incomplete_flags = array_intersect( $new_status->get_flags(), [ 'incomplete', 'count_incomplete' ] );
 		$delete_session   = count( $incomplete_flags ) === 0;
 		$this->session->confirm_all_reservations( $delete_session );
