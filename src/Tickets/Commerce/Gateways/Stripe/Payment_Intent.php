@@ -7,7 +7,6 @@ use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Commerce\Utils\Value;
-use Tribe__Settings as Settings;
 use TEC\Tickets\Commerce\Gateways\Stripe\Settings as Stripe_Settings;
 
 /**
@@ -301,13 +300,13 @@ class Payment_Intent {
 			return $value;
 		}
 
-		$checkout_type   = tribe_get_request_var( Settings::$option_checkout_element );
+		$checkout_type   = tribe_get_request_var( Stripe_Settings::$option_checkout_element );
 		$payment_methods = tribe_get_request_var( $field_id );
 		$current_methods = tribe_get_option( $field_id, [] );
 
 		if ( empty( $payment_methods ) ) {
-			if ( $checkout_type === Settings::PAYMENT_ELEMENT_SLUG ) {
-				Settings::instance()->errors[] = esc_html__( 'Payment methods accepted cannot be empty', 'event-tickets' );
+			if ( $checkout_type === Stripe_Settings::PAYMENT_ELEMENT_SLUG ) {
+				tribe( 'settings' )->errors[] = esc_html__( 'Payment methods accepted cannot be empty', 'event-tickets' );
 			}
 
 			// Revert value to the previous configuration.
@@ -330,7 +329,7 @@ class Payment_Intent {
 		}
 
 		// Payment attempt failed. Provide an alert in the Dashboard.
-		Settings::instance()->errors[] = $payment_intent_test->get_error_message();
+		tribe( 'settings' )->errors[] = $payment_intent_test->get_error_message();
 
 		// Revert value to the previous configuration.
 		return tribe_get_option( $field_id, [] );
