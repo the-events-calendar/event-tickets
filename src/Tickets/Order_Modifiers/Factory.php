@@ -59,7 +59,7 @@ class Factory {
 				 *
 				 * @param string $class The order modifiers repository class.
 				 */
-				$class = apply_filters( 'tec_tickets_order_modifiers_repository_class', $class, $type );
+				$class = apply_filters( 'tec_tickets_commerce_order_modifiers_repository_class', $class, $type );
 
 				if ( ! class_exists( $class ) ) {
 					throw new InvalidArgumentException( 'The order modifiers repository class does not exist.' );
@@ -111,7 +111,7 @@ class Factory {
 				 *
 				 * @param string $class The order modifiers model class.
 				 */
-				$class = apply_filters( 'tec_tickets_order_modifiers_model_class', $class, $type );
+				$class = apply_filters( 'tec_tickets_commerce_order_modifiers_model_class', $class, $type );
 
 				if ( ! class_exists( $class ) ) {
 					throw new InvalidArgumentException( 'The order modifiers model class does not exist.' );

@@ -87,7 +87,7 @@ class Fees extends Abstract_Fees implements Registerable {
 			return $value;
 		}
 
-		// Convert each fee_amount to an integer using get_integer() and filter out negative values.
+		// Convert each fee_amount to a float using get_decimal() and filter out negative values.
 		$combined_fees = array_filter(
 			array_map(
 				function ( $fee ) {
@@ -102,8 +102,9 @@ class Fees extends Abstract_Fees implements Registerable {
 			)
 		);
 
+		// Return early if all fees are invalid or zero.
 		if ( empty( $combined_fees ) ) {
-			return $value; // Return early if all fees are invalid or zero.
+			return $value;
 		}
 
 		// Calculate the total fees based on the subtotal and combined fees.

@@ -304,7 +304,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		 * @param float  $value            The raw float value.
 		 * @param string $type             The type of the amount (e.g., 'percent', 'flat').
 		 */
-		return apply_filters( 'tec_tickets_order_modifier_display_amount', $formatted_amount, $value, $type );
+		return apply_filters( 'tec_tickets_commerce_order_modifier_display_amount', $formatted_amount, $value, $type );
 	}
 
 	/**
@@ -339,7 +339,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 			 * @param string $slug The generated slug.
 			 * @param string $modifier_type The type of modifier (e.g., 'coupon', 'fee').
 			 */
-			$random_string = apply_filters( 'tec_tickets_order_modifier_generate_slug', $random_string, $this->modifier_type );
+			$random_string = apply_filters( 'tec_tickets_commerce_order_modifier_generate_slug', $random_string, $this->modifier_type );
 
 		} while ( ! $this->is_slug_unique( $random_string ) );
 
@@ -419,7 +419,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		 * @param string $raw_status The raw status from the database (e.g., 'active', 'draft').
 		 * @param string $modifier_type The type of the modifier (e.g., 'coupon', 'fee').
 		 */
-		$statuses = apply_filters( 'tec_tickets_order_modifier_status_display', $statuses, $status, $this->modifier_type );
+		$statuses = apply_filters( 'tec_tickets_commerce_order_modifier_status_display', $statuses, $status, $this->modifier_type );
 
 		return $statuses[ $status ] ?? ucfirst( $status );
 	}

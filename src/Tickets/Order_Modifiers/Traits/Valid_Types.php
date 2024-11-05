@@ -59,7 +59,7 @@ trait Valid_Types {
 		 *
 		 * @param array $types The valid order modifier types.
 		 */
-		return (array) apply_filters( 'tec_tickets_order_modifier_types', $types );
+		return (array) apply_filters( 'tec_tickets_commerce_order_modifier_types', $types );
 	}
 
 	/**
@@ -114,7 +114,7 @@ trait Valid_Types {
 		 *
 		 * @param array $modifiers An array of default modifiers, each containing 'display_name', 'slug', and 'class'.
 		 */
-		$modifiers = (array) apply_filters( 'tec_tickets_order_modifiers', $modifiers );
+		$modifiers = (array) apply_filters( 'tec_tickets_commerce_order_modifiers', $modifiers );
 
 		// Validate modifiers after the filter.
 		$required_keys = [
@@ -159,6 +159,6 @@ trait Valid_Types {
 		 *
 		 * @param string $default_modifier The default modifier to use.
 		 */
-		return (string) apply_filters( 'tec_tickets_order_modifier_default_type', $default_modifier );
+		return (string) apply_filters( 'tec_tickets_commerce_order_modifier_default_type', $default_modifier );
 	}
 }

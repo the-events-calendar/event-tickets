@@ -73,7 +73,7 @@ class Fees extends Base_API {
 		 *
 		 * @param bool $add_fees_to_ticket_data Whether to add the fee data to the ticket data. Default false.
 		 */
-		if ( ! apply_filters( 'tec_tickets_add_fees_to_ticket_data', false ) ) {
+		if ( ! apply_filters( 'tec_tickets_commerce_add_fees_to_ticket_data', false ) ) {
 			return;
 		}
 

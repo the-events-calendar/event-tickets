@@ -52,7 +52,7 @@ if ( ! array_key_exists( 'wp_filter', $GLOBALS ) ) {
 	$GLOBALS['wp_filter'] = [];
 }
 
-$GLOBALS['wp_filter']['tec_tickets_order_modifiers_coupons_enabled'] = [
+$GLOBALS['wp_filter']['tec_tickets_commerce_order_modifiers_coupons_enabled'] = [
 	10 => [
 		[
 			'function'      => '__return_true',

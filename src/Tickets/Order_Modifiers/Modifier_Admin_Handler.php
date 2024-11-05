@@ -119,7 +119,7 @@ class Modifier_Admin_Handler implements Registerable {
 		 *
 		 * @param string $url The URL to the Order Modifiers page.
 		 */
-		return apply_filters( 'tec_tickets_order_modifiers_page_url', $url );
+		return apply_filters( 'tec_tickets_commerce_order_modifiers_page_url', $url );
 	}
 
 	/**

@@ -50,7 +50,7 @@ final class Provider extends ServiceProvider {
 		 *
 		 * @param Provider $this The provider instance.
 		 */
-		do_action( 'tec_tickets_order_modifiers_register', $this );
+		do_action( 'tec_tickets_commerce_order_modifiers_register', $this );
 
 		// Register the common classes.
 		$this->register_common_classes();
@@ -67,7 +67,7 @@ final class Provider extends ServiceProvider {
 		 *
 		 * @param bool $enabled Whether the coupons are enabled.
 		 */
-		if ( apply_filters( 'tec_tickets_order_modifiers_coupons_enabled', false ) ) {
+		if ( apply_filters( 'tec_tickets_commerce_order_modifiers_coupons_enabled', false ) ) {
 			$this->register_couopon_classes();
 		} else {
 			$this->filter_out_coupons();
@@ -163,7 +163,7 @@ final class Provider extends ServiceProvider {
 			return $items;
 		};
 
-		add_filter( 'tec_tickets_order_modifiers', $remove_coupon_array_key );
-		add_filter( 'tec_tickets_order_modifier_types', $remove_coupon_array_key );
+		add_filter( 'tec_tickets_commerce_order_modifiers', $remove_coupon_array_key );
+		add_filter( 'tec_tickets_commerce_order_modifier_types', $remove_coupon_array_key );
 	}
 }
