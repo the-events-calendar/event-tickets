@@ -123,7 +123,10 @@ class Ephemeral_Token {
 					__( 'Ephemeral token request failed (%s).', 'event-tickets' ),
 					$error
 				),
-				[ 'code' => $error_code, 'error' => $error ]
+				[
+					'code'  => $error_code,
+					'error' => $error,
+				]
 			);
 		}
 
