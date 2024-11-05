@@ -9,7 +9,7 @@
  *
  * @var $this
  * @var $context array Context data passed to the template.
- * @var $order_modifier_table \TEC\Tickets\Order_Modifiers\Table_Views\Order_Modifier_Table The table instance for
+ * @var $order_modifier_table \TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Order_Modifier_Table The table instance for
  *      rendering.
  */
 

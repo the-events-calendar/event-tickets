@@ -4,8 +4,8 @@ namespace TEC\Tickets\Tests\Integration\Order_Modifiers\Models;
 
 use Codeception\TestCase\WPTestCase;
 use stdClass;
-use TEC\Tickets\Order_Modifiers\Models\Fee;
-use TEC\Tickets\Order_Modifiers\Values\Float_Value;
+use TEC\Tickets\Commerce\Order_Modifiers\Models\Fee;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Float_Value;
 
 class Fee_Test extends WPTestCase {
 

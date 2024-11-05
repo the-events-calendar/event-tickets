@@ -3,7 +3,7 @@
  * Main plugin class.
  */
 
-use TEC\Tickets\Order_Modifiers\Provider as Order_Modifier_Provider;
+use TEC\Tickets\Commerce\Order_Modifiers\Provider as Order_Modifier_Provider;
 use Tribe\Tickets\Admin\Provider;
 use Tribe\Tickets\Events\Service_Provider as Events_Service_Provider;
 use Tribe\Tickets\Promoter\Service_Provider as Promoter_Service_Provider;

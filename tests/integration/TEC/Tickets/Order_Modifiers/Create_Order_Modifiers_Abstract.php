@@ -4,9 +4,9 @@ namespace TEC\Tickets\Tests\Integration\Order_Modifiers;
 
 use Codeception\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
-use TEC\Tickets\Order_Modifiers\Modifier_Admin_Handler;
-use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Abstract;
-use TEC\Tickets\Order_Modifiers\Table_Views\Order_Modifier_Table;
+use TEC\Tickets\Commerce\Order_Modifiers\Modifier_Admin_Handler;
+use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Abstract;
+use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Order_Modifier_Table;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Traits\Order_Modifiers;
 

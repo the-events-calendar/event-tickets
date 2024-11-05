@@ -8,10 +8,10 @@ use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Cart\Unmanaged_Cart;
 use TEC\Tickets\Commerce\Module as Commerce;
-use TEC\Tickets\Order_Modifiers\Models\Fee;
-use TEC\Tickets\Order_Modifiers\Models\Order_Modifier_Meta;
-use TEC\Tickets\Order_Modifiers\Repositories\Order_Modifiers_Meta as Repository;
-use TEC\Tickets\Order_Modifiers\Values\Float_Value;
+use TEC\Tickets\Commerce\Order_Modifiers\Models\Fee;
+use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Meta;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta as Repository;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Float_Value;
 use Tribe\Tickets\Test\Commerce\Ticket_Maker;
 
 class Checkout_Test extends WPTestCase {

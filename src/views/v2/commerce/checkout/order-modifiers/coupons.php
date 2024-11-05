@@ -3,7 +3,7 @@
  * Logic for handling coupons during the checkout process.
  *
  * @since   TBD
- * @package TEC\Tickets\Order_Modifiers\Checkout
+ * @package TEC\Tickets\Commerce\Order_Modifiers\Checkout
  *
  * @private Still a work in progress.
  *

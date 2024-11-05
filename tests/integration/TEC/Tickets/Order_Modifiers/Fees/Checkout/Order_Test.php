@@ -9,11 +9,11 @@ use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Module as Commerce;
 use TEC\Tickets\Commerce\Order;
-use TEC\Tickets\Order_Modifiers\Controller;
-use TEC\Tickets\Order_Modifiers\Modifiers\Modifier_Manager;
+use TEC\Tickets\Commerce\Order_Modifiers\Controller;
+use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
 use Tribe\Tickets\Test\Commerce\Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
-use TEC\Tickets\Order_Modifiers\Checkout\Fees;
+use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Fees;
 use Tribe\Tickets\Test\Traits\Order_Modifiers;
 
 class Order_Test extends WPTestCase {

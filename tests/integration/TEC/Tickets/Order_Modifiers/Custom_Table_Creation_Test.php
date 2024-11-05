@@ -4,9 +4,9 @@ namespace TTEC\Tickets\Tests\Integration\Order_Modifiers;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Common\StellarWP\DB\DB;
-use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers;
-use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
-use TEC\Tickets\Order_Modifiers\Custom_Tables\Order_Modifier_Relationships;
+use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifiers;
+use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
+use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifier_Relationships;
 
 /**
  * Class Custom_Table_Creation_Test

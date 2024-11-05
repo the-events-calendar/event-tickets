@@ -5,8 +5,8 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Tests\Unit\Order_Modifiers\Values;
 
 use Codeception\TestCase\WPTestCase;
-use TEC\Tickets\Order_Modifiers\Values\Currency_Value;
-use TEC\Tickets\Order_Modifiers\Values\Precision_Value;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Currency_Value;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
 
 class Currency_Value_Test extends WPTestCase {
 

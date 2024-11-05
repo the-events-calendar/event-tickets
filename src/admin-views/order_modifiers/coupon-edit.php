@@ -15,7 +15,7 @@
  * @var string $order_modifier_status           The status of the coupon (active, inactive, draft).
  * @var int    $order_modifier_coupon_limit     The coupon limit.
  *
- * @package TEC\Tickets\Order_Modifiers
+ * @package TEC\Tickets\Commerce\Order_Modifiers
  * @phpcs:disable WordPress.WP.GlobalVariablesOverride
  */
 
