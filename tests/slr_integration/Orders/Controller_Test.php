@@ -13,6 +13,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Shortcodes\Success_Shortcode;
+use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Frontend\Session;
@@ -358,20 +359,20 @@ class Controller_Test extends Controller_Test_Case {
 		$controller = $this->make_controller();
 		$controller->register();
 
-		$controller->confirm_all_reservations();
+		$controller->confirm_all_reservations( [], 'ticket', 'tickets_event', tribe( Completed::class ) );
 
 		$this->assertEquals( 1, $service_confirmations );
 		$this->assertEquals( [], $sessions->get_reservations_for_token( 'test-token' ) );
 
 		// Calling it a second time in the context of the same request should not send a new request.
 		// This will be called for each Attendee created, there might be many calls to the service in the same request.
-		$controller->confirm_all_reservations();
+		$controller->confirm_all_reservations( [], 'ticket', 'tickets_event', tribe( Completed::class ) );
 
 		$this->assertEquals( 1, $service_confirmations );
 		$this->assertEquals( [], $sessions->get_reservations_for_token( 'test-token' ) );
 
 		// Calling it a third time in the context of the same request should not send a new request.
-		$controller->confirm_all_reservations();
+		$controller->confirm_all_reservations( [], 'ticket', 'tickets_event', tribe( Completed::class ) );
 
 		$this->assertEquals( 1, $service_confirmations );
 		$this->assertEquals( [], $sessions->get_reservations_for_token( 'test-token' ) );
