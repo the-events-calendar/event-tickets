@@ -187,24 +187,24 @@ async function handleDuplicateAction(event) {
  *
  * @since TBD
  *
- * @param {string} mapId The map ID.
+ * @param {string} layoutId The layout ID.
  *
  * @return {Promise<boolean|object>} A promise with an object of the duplicated layout, or false otherwise.
  */
-async function duplicateLayout( layoutId ) {
+async function duplicateLayout(layoutId) {
 	const url = new URL(ajaxUrl);
 	url.searchParams.set('_ajax_nonce', ajaxNonce);
 	url.searchParams.set('layoutId', layoutId);
 	url.searchParams.set('action', ACTION_DUPLICATE_LAYOUT);
 	const response = await fetch(url.toString(), { method: 'POST' });
+	const data = await response.json();
 
-	if ( response.status === 200 ) {
-		return await response.json();
+	if (!data?.success) {
+		return false;
 	}
 
-	return false;
+	return data;
 }
-
 
 export { handleDelete, deleteLayout };
 
