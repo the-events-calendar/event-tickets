@@ -65,7 +65,7 @@ trait Valid_Types {
 	/**
 	 * Validate the modifier type.
 	 *
-	 * @param string $type
+	 * @param string $type The order modifier type.
 	 *
 	 * @return void
 	 * @throws InvalidArgumentException If the type is invalid.

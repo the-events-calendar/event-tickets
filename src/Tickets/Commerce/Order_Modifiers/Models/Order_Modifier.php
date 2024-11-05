@@ -43,7 +43,9 @@ use TEC\Tickets\Commerce\Order_Modifiers\Values\Value_Interface;
 class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderObject {
 
 	/**
-	 * @inheritDoc
+	 * The model properties assigned to their types.
+	 *
+	 * @var array<string,string>
 	 */
 	protected $properties = [
 		'id'            => 'int',
@@ -157,7 +159,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 *
 	 * @return static
 	 */
-	public static function fromQueryBuilderObject( $object ) {
+	public static function fromQueryBuilderObject( $object ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames
 		return Order_Modifier_DTO::fromObject( $object )->toModel();
 	}
 
