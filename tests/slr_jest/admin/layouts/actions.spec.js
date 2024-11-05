@@ -5,6 +5,12 @@ import {
 	registerDuplicateLayoutAction,
 } from '@tec/tickets/seating/admin/layouts/actions';
 
+jest.mock( '@tec/tickets/seating/utils', () => ({
+	redirectTo: jest.fn(),
+	onReady: jest.fn(),
+	getLocalizedString: () => 'string',
+	// getLocalizedString: jest.fn(),
+}));
 import { redirectTo } from "@tec/tickets/seating/utils";
 
 require('jest-fetch-mock').enableMocks();
@@ -101,24 +107,17 @@ function getTestDocument() {
 	);
 }
 
-jest.mock( '@tec/tickets/seating/utils', () => ({
-	redirectTo: jest.fn(),
-	onReady: jest.fn(),
-	// getLocalizedString: () => 'string',
-	getLocalizedString: jest.fn(),
-}))
-
 describe('layouts actions', () => {
 	beforeEach(() => {
 		fetch.resetMocks();
-		jest.resetModules();
+		// jest.resetModules();
 		jest.resetAllMocks();
 		mockWindowLocation();
 	});
 
 	afterEach(() => {
 		fetch.resetMocks();
-		jest.resetModules();
+		// jest.resetModules();
 		jest.resetAllMocks();
 		window.location = locationBackup;
 	});
@@ -266,13 +265,13 @@ describe('layouts actions', () => {
 	describe('edit action', () => {
 		beforeEach(() => {
 			fetch.resetMocks();
-			jest.resetModules();
+			// jest.resetModules();
 			jest.resetAllMocks();
 		});
 
 		afterEach(() => {
 			fetch.resetMocks();
-			jest.resetModules();
+			// jest.resetModules();
 			jest.resetAllMocks();
 		});
 
@@ -327,7 +326,8 @@ describe('layouts actions', () => {
 				}
 			);
 			// expect(window.location.href).toBe('https://wordpress.test/wp-admin/layout-page/?layoutId=duplicated-layout-id-1');
-			expect(redirectTo).toHaveBeenCalledWith( 'https://wordpress.test/wp-admin/layout-page/?layoutId=duplicated-layout-id-1' );
+			expect(redirectTo).toHaveBeenCalled();
+			expect(redirectTo).toHaveBeenCalledWith("https://wordpress.test/wp-admin/layout-page/?layoutId=duplicated-layout-id-1");
 
 			fetch.resetMocks();
 
