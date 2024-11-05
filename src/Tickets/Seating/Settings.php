@@ -27,7 +27,7 @@ class Settings extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	public const FRONTEND_TIMER_OPTION = 'ticket-seating-frontend-timer';
+	private const TIMER_LIMIT_OPTION = 'tickets-seating-timer-limit';
 	
 	/**
 	 * The action that will be fired when this Controller registers.
@@ -62,7 +62,7 @@ class Settings extends Controller_Contract {
 				'type' => 'html',
 				'html' => '<h3>' . __( 'Seating', 'event-tickets' ) . '</h3>',
 			],
-			self::FRONTEND_TIMER_OPTION      => [
+			self::TIMER_LIMIT_OPTION         => [
 				'type'            => 'text',
 				'label'           => __( 'Reservation Time Limit', 'event-tickets' ),
 				'tooltip'         => __( 'The number of minutes a customer has to choose seats and complete checkout.', 'event-tickets' ),
