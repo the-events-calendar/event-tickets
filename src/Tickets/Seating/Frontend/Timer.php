@@ -333,7 +333,7 @@ class Timer extends Controller_Contract {
 	 * @return int The seat-selection timeout for a post in seconds.
 	 */
 	public function get_timeout( $post_id ): int {
-		$limit_in_minutes = (int) tribe_get_option( Settings::FRONTEND_TIMER_OPTION, 15 );
+		$limit_in_minutes = tribe( Settings::class )->get_reservation_time_limit();
 		
 		/**
 		 * Filters the seat selection timeout, default is 15 minutes.
