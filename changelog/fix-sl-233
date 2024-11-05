@@ -1,4 +1,4 @@
 Significance: patch
 Type: tweak
 
-Increase payment failure correction timer to 60 seconds. [SL-233]
+Cache Seating service status checks. [SL-239]
