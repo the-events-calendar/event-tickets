@@ -6,6 +6,7 @@ use lucatume\WPBrowser\TestCase\WPTestCase;
 use PHPUnit\Framework\Assert;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tests\Traits\WP_Remote_Mocks;
+use WP_Error;
 
 class Ephemeral_Token_Test extends WPTestCase {
 	use With_Uopz;
@@ -142,9 +143,40 @@ class Ephemeral_Token_Test extends WPTestCase {
 
 		$token = $ephemeral_token->get_ephemeral_token( 900, 'custom' );
 
-		$this->assertInstanceOf( \WP_Error::class, $token );
+		$this->assertInstanceOf( WP_Error::class, $token );
 		$this->assertEquals( 'ephemeral_token_request_failed', $token->get_error_code() );
 		$this->assertEquals( 400, $token->get_error_data()['code'] );
+	}
+
+	public function test_get_ephemeral_token_fails_if_request_fails():void{
+		$ephemeral_token = new Ephemeral_Token( 'http://test.com' );
+		$this->set_oauth_token( 'test-oauth-token' );
+		$response = new WP_Error();
+		$response->add(0,'cURL error 6: Could not resolve host: test.com');
+
+		$this->mock_wp_remote(
+			'post',
+			add_query_arg( [
+				'site'       => urlencode_deep('http://wordpress.test'),
+				'expires_in' => 900 * 1000,
+				'scope'      => 'custom',
+			],
+				'http://test.com/api/v1/ephemeral-token' ),
+			[
+				'headers' => [
+					'Accept'        => 'application/json',
+					'Authorization' => 'Bearer test-oauth-token',
+				],
+			],
+			$response
+		);
+
+		$token = $ephemeral_token->get_ephemeral_token( 900, 'custom' );
+
+		$this->assertInstanceOf( WP_Error::class, $token );
+		$this->assertEquals( 'ephemeral_token_request_failed', $token->get_error_code() );
+		$this->assertEquals( 0, $token->get_error_data()['code'] );
+		$this->assertEquals( 'cURL error 6: Could not resolve host: test.com', $token->get_error_data()['error'] );
 	}
 
 	public function test_get_ephemeral_token_fails_if_response_body_is_empty(): void {
@@ -177,7 +209,7 @@ class Ephemeral_Token_Test extends WPTestCase {
 
 		$token = $ephemeral_token->get_ephemeral_token( 900, 'custom' );
 
-		$this->assertInstanceOf( \WP_Error::class, $token );
+		$this->assertInstanceOf( WP_Error::class, $token );
 		$this->assertEquals( 'ephemeral_token_response_invalid', $token->get_error_code() );
 	}
 
@@ -211,7 +243,7 @@ class Ephemeral_Token_Test extends WPTestCase {
 
 		$token = $ephemeral_token->get_ephemeral_token( 900, 'custom' );
 
-		$this->assertInstanceOf( \WP_Error::class, $token );
+		$this->assertInstanceOf( WP_Error::class, $token );
 		$this->assertEquals( 'ephemeral_token_response_invalid', $token->get_error_code() );
 		$this->assertEquals( '{"data":{"foo":"bar"}}', $token->get_error_data()['body'] );
 	}
