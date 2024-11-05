@@ -68,7 +68,7 @@ class Coupons implements Registerable {
 	public function display_coupon_section( WP_Post $post, array $items, Tribe__Template $template ): void {
 		// Display the coupon section template.
 		$template->template(
-			'checkout/order-modifiers/Coupons',
+			'checkout/order-modifiers/coupons',
 			[
 				// Additional data if needed.
 			]

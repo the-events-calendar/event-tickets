@@ -13,14 +13,22 @@
 
 ?>
 <div class="tribe-tickets__commerce-checkout-cart-coupons">
-	<label for="coupon_input" class="tribe-tickets__commerce-checkout-cart-coupons__label">Enter Coupon Code</label>
+	<label for="coupon_input" class="tribe-tickets__commerce-checkout-cart-coupons__label">
+		<?php esc_html_e( 'Enter Coupon Code', 'event-tickets' ); ?>
+	</label>
 	<input type="text" class="tribe-tickets__commerce-checkout-cart-coupons__input" id="coupon_input" name="coupons" aria-describedby="coupon_error">
-	<button id="coupon_apply" class="tribe-tickets__commerce-checkout-cart-coupons__apply-button">Apply</button>
-	<p id="coupon_error" class="tribe-tickets__commerce-checkout-cart-coupons__error" style="display: none; color: red;" aria-live="polite" role="alert">Invalid Coupon Code</p>
+	<button id="coupon_apply" class="tribe-tickets__commerce-checkout-cart-coupons__apply-button">
+		<?php esc_html_e( 'Apply', 'event-tickets' ); ?>
+	</button>
+	<p id="coupon_error" class="tribe-tickets__commerce-checkout-cart-coupons__error" style="display: none; color: red;" aria-live="polite" role="alert">
+		<?php esc_html_e( 'Invalid Coupon Code', 'event-tickets' ); ?>
+	</p>
 </div>
 <div class="tribe-tickets__commerce-checkout-cart-coupons__applied" style="display: none;">
 	<span class="tribe-tickets__commerce-checkout-cart-coupons__applied-text">
-		Coupon: <span class="tribe-tickets__commerce-checkout-cart-coupons__applied-value"></span> - Discount: <span class="tribe-tickets__commerce-checkout-cart-coupons__applied-discount"></span>
+		<?php esc_html_e( 'Coupon:', 'event-tickets' ); ?> <span class="tribe-tickets__commerce-checkout-cart-coupons__applied-value"></span> - <?php esc_html_e( 'Discount:', 'event-tickets' ); ?> <span class="tribe-tickets__commerce-checkout-cart-coupons__applied-discount"></span>
 	</span>
-	<button class="tribe-tickets__commerce-checkout-cart-coupons__remove-button" type="button">X</button>
+	<button class="tribe-tickets__commerce-checkout-cart-coupons__remove-button" type="button">
+		<?php esc_html_x( 'X', 'text for button to remove an applied coupon', 'event-tickets' ); ?>
+	</button>
 </div>
