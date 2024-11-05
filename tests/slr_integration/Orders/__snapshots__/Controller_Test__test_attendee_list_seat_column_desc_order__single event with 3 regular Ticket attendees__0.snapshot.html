@@ -1,0 +1,314 @@
+<div  class="wrap tribe-report-page tec-tickets__admin-attendees tec-tickets__admin-attendees--event tec-tickets__admin-attendees--front-end" >
+	
+
+<div id="tribe-attendees-summary" class="welcome-panel tribe-report-panel">
+	<div class="welcome-panel-content">
+		<div class="welcome-panel-column-container">
+
+			
+			<div class="welcome-panel-column welcome-panel-first">
+				<h3>
+					Event Details				</h3>
+
+				<ul class="tec-tickets__admin-attendees-attendance-type-list">
+					
+				<li>
+					<strong>Event Date:</strong>
+					January 1, 2020
+				</li>
+			
+			<li class="post-type">
+				<strong>Post type: </strong>
+				event
+			</li>
+		<li class="event-actions"><a href="http://wordpress.test/wp-admin/post.php?post=POST_ID&#038;action=edit" title="Edit">Edit Event</a> | <a href="http://wordpress.test/?tribe_events=event-with-single-attendee" title="View">View Event</a></li>				</ul>
+				
+			</div>
+
+			
+<div class="welcome-panel-column welcome-panel-middle">
+	<h3 class="tec-tickets__admin-attendees-overview-title">
+		Ticket Overview	</h3>
+
+	
+					
+		<div class="tec-tickets__admin-attendees-overview-ticket-type">
+			<div
+				class="tec-tickets__admin-attendees-overview-ticket-type-icon tec-tickets__admin-attendees-overview-ticket-type-icon--ticket"></div>
+			<div class="tec-tickets__admin-attendees-overview-ticket-type-label">
+				Standard Tickets			</div>
+			<div class="tec-tickets__admin-attendees-overview-ticket-type-border"></div>
+		</div>
+		<ul class="tec-tickets__admin-attendees-overview-ticket-type-list" >
+							<li class="tec-tickets__admin-attendees-overview-ticket-type-list-item">
+					<div>
+						<span class="tec-tickets__admin-attendees-overview-ticket-type-list-item-ticket-name">
+							TICKET_NAME						</span>
+						<span class="tec-tickets__admin-attendees-overview-ticket-type-list-item-ticket-id">
+							#POST_ID						</span>
+					</div>
+					<div class="tec-tickets__admin-attendees-overview-ticket-type-list-item-stat">
+						3 issued (97 available)					</div>
+				</li>
+					</ul>
+		<div class="tec-tickets__admin-attendees-overview-ticket-totals">
+		<div class="tec-tickets__admin-attendees-overview-ticket-totals-title">
+			Total		</div>
+		<div class="tec-tickets__admin-attendees-overview-ticket-totals-stat">
+			<span>
+				3 issued			</span>
+			<span>
+				(97 available)			</span>
+		</div>
+	</div>
+
+	</div>			<div class="welcome-panel-column welcome-panel-last alternate">
+	<h3>Attendance Overview</h3>
+		<div class="tec-tickets__admin-attendees-attendance-type-list">
+		<div class="tec-tickets__admin-attendees-attendance-type">
+	<div class="tec-tickets__admin-attendees-attendance-type-heading">
+		<div class="tec-tickets__admin-attendees-attendance-type-heading-label">
+			Tickets		</div>
+		<div class="tec-tickets__admin-attendees-attendance-type-heading-border"></div>
+		<div class="tec-tickets__admin-attendees-attendance-type-heading-total">
+			<span class="tec-tickets__admin-attendees-attendance-type-heading-total-label">
+				Total			</span>
+			<span class="tec-tickets__admin-attendees-attendance-type-heading-total-amount">
+				6			</span>
+		</div>
+	</div>
+	<div class="tec-tickets__admin-attendees-attendance-type-complete">
+		<div class="tec-tickets__admin-attendees-attendance-type-complete-label">
+			Complete:		</div>
+		<div class="tec-tickets__admin-attendees-attendance-type-complete-amount">
+			6		</div>
+	</div>
+	<div class="tec-tickets__admin-attendees-attendance-type-cancelled">
+		<div class="tec-tickets__admin-attendees-attendance-type-cancelled-label">
+			Cancelled:		</div>
+		<div class="tec-tickets__admin-attendees-attendance-type-cancelled-amount">
+			0		</div>
+	</div>
+</div>
+
+			<ul>
+				
+			</ul>
+			</div>
+	<div class="tec-tickets__admin-attendees-attendance-totals-row">
+	<div class="tec-tickets__admin-attendees-attendance-totals-title">
+		Total	</div>
+	<div class="tec-tickets__admin-attendees-attendance-totals-amount">
+		Checked in <span id="total_checkedin">0</span> (<span id="percent_checkedin" data-total-attendees="3">0%</span>)
+	</div>
+</div></div>					</div>
+	</div>
+</div>
+
+<form
+	id="event-tickets__attendees-admin-form"
+	 class="topics-filter event-tickets__attendees-admin-form" 	method="post"
+>
+	<input type="hidden" name="tribe[page]" value="tickets-attendees" />
+
+	<input
+	type="hidden"
+	name="tribe[event_id]"
+	id="event_id"
+	value="POST_ID"
+/>
+<input
+	type="hidden"
+	name="tribe[post_type]"
+	value="tribe_events"
+/>
+
+	<p class="search-box">
+	<label class="screen-reader-text" for="attendees-search-search-input">Search attendees:</label>
+	
+<select name="tribe_attendee_search_type" class="tribe-admin-search-type">
+			<option value="purchaser_name" selected='selected'>
+			Search by Purchaser Name		</option>
+			<option value="purchaser_email">
+			Search by Purchaser Email		</option>
+			<option value="holder_name">
+			Search by Ticket Holder Name		</option>
+			<option value="holder_email">
+			Search by Ticket Holder Email		</option>
+			<option value="user">
+			Search by User ID		</option>
+			<option value="order_status">
+			Search by Order Status		</option>
+			<option value="order">
+			Search by Order ID		</option>
+			<option value="security_code">
+			Search by Security Code		</option>
+			<option value="ID">
+			Search by Ticket ID		</option>
+			<option value="product_id">
+			Search by Product ID		</option>
+	</select>
+<input type="search" id="attendees-search-search-input" name="search" value="" />
+		<input type="submit" id="search-submit" class="button" value="Search attendees"  /></p>
+			<input type="hidden" id="_wpnonce" name="_wpnonce" value="1234567890" /><input type="hidden" name="_wp_http_referer" value="" />	<div class="tablenav top">
+
+				<div class="alignleft actions bulkactions">
+			<label for="bulk-action-selector-top" class="screen-reader-text">Select bulk action</label><select name="action" id="bulk-action-selector-top">
+<option value="-1">Bulk actions</option>
+	<option value="delete_attendee">Delete</option>
+	<option value="check_in">Check in</option>
+	<option value="uncheck_in">Undo Check in</option>
+</select>
+<input type="submit" id="doaction" class="button action" value="Apply"  />
+		</div>
+					<div class="alignleft actions attendees-actions"><input type="button" name="print" class="print button action" value="Print"><a target="_blank" href="?attendees_csv=1&#038;attendees_csv_nonce=1234567890&#038;event_id=POST_ID" class="export button action" rel="noopener noreferrer">Export</a><a class="email button action thickbox" href="http://wordpress.test/wp-admin/admin.php?page=tickets-attendees&#038;action=email&#038;event_id=POST_ID&#038;_wpnonce=1234567890&#038;TB_iframe=1&#038;width=410&#038;height=300&#038;post_type=tribe_events">Email</a></div>
+		<div class="alignright attendees-filter"></div>
+		<div class='tablenav-pages one-page'><span class="displaying-num">3 items</span>
+<span class='pagination-links'><span class="tablenav-pages-navspan button disabled" aria-hidden="true">&laquo;</span>
+<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&lsaquo;</span>
+<span class="paging-input"><label for="current-page-selector" class="screen-reader-text">Current Page</label><input class='current-page' id='current-page-selector' type='text'
+					name='paged' value='1' size='1' aria-describedby='table-paging' /><span class='tablenav-paging-text'> of <span class='total-pages'>1</span></span></span>
+<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&rsaquo;</span>
+<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&raquo;</span></span></div>
+		<br class="clear" />
+	</div>
+		<table class="wp-list-table widefat striped attendees tribe-attendees">
+			<thead>
+	<tr>
+		<td  id='cb' class='manage-column column-cb check-column'  ><input id="cb-select-all-7" type="checkbox" />
+			<label for="cb-select-all-7"><span class="screen-reader-text">Select All</span></label></td><th scope="col" id='primary_info' class='manage-column column-primary_info column-primary'  >Attendee Information</th><th scope="col" id='ticket' class='manage-column column-ticket sortable desc'  ><a href="http://wordpress.test?orderby=id&#038;order=asc"><span>Ticket</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col" id='seat' class='manage-column column-seat sorted desc'  aria-sort="descending" ><a href="http://wordpress.test?orderby=seat&#038;order=asc"><span>Seat</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span></a></th><th scope="col" id='status' class='manage-column column-status'  >Status</th><th scope="col" id='check_in' class='manage-column column-check_in sortable desc'  ><a href="http://wordpress.test?orderby=check_in&#038;order=asc"><span>Check in</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th>	</tr>
+	</thead>
+
+	<tbody id="the-list"
+		 data-wp-lists='list:attendee'		>
+		<tr class="Completed" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='primary_info column-primary_info has-row-actions column-primary' data-colname="Attendee Information">
+				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">
+					<span class="row-title">HOLDER_NAME</span>
+				</div>
+				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
+					#TICKET_ID &mdash;
+					<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:PURCHASER_EMAIL">PURCHASER_EMAIL</a>
+				</div>
+			<div class="row-actions"><span class="inline">
+					<a href="#" class="tickets_checkin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Check In</a>
+					<a href="#" class="tickets_uncheckin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Undo Check In</a>
+				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='ticket column-ticket' data-colname="Ticket">		<div class="tec-tickets__admin-table-attendees-ticket-name event-tickets-ticket-name">
+			TICKET_NAME		</div>
+
+		</td><td class='seat column-seat' data-colname="Seat"></td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed"><a href="http://wordpress.test/wp-admin/post.php?post=ORDER_ID&#038;action=edit" title="View or edit order #ORDER_ID">Completed</a></span></div></td><td class='check_in column-check_in' data-colname="Check in">
+<button
+	data-attendee-id="TICKET_ID"
+	data-provider="TEC\Tickets\Commerce\Module"
+	data-event-id="POST_ID"
+	class="components-button is-primary tickets_checkin tec-tickets__admin-table-attendees-check-in-button "
+	title="Check In attendee"
+	 >
+		Check In</button>
+
+<span class="delete">
+	<button
+		data-attendee-id="TICKET_ID"
+		data-provider="TEC\Tickets\Commerce\Module"
+		title="Undo Check In"
+		data-event-id="POST_ID"
+		class="components-button is-secondary tickets_uncheckin tec-tickets__admin-table-attendees-undo-check-in-button">
+			Undo Check In	</button>
+</span>
+</td></tr><tr class="Completed" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='primary_info column-primary_info has-row-actions column-primary' data-colname="Attendee Information">
+				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">
+					<span class="row-title">HOLDER_NAME</span>
+				</div>
+				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
+					#TICKET_ID &mdash;
+					<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:PURCHASER_EMAIL">PURCHASER_EMAIL</a>
+				</div>
+			<div class="row-actions"><span class="inline">
+					<a href="#" class="tickets_checkin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Check In</a>
+					<a href="#" class="tickets_uncheckin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Undo Check In</a>
+				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='ticket column-ticket' data-colname="Ticket">		<div class="tec-tickets__admin-table-attendees-ticket-name event-tickets-ticket-name">
+			TICKET_NAME		</div>
+
+		</td><td class='seat column-seat' data-colname="Seat"></td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed"><a href="http://wordpress.test/wp-admin/post.php?post=ORDER_ID&#038;action=edit" title="View or edit order #ORDER_ID">Completed</a></span></div></td><td class='check_in column-check_in' data-colname="Check in">
+<button
+	data-attendee-id="TICKET_ID"
+	data-provider="TEC\Tickets\Commerce\Module"
+	data-event-id="POST_ID"
+	class="components-button is-primary tickets_checkin tec-tickets__admin-table-attendees-check-in-button "
+	title="Check In attendee"
+	 >
+		Check In</button>
+
+<span class="delete">
+	<button
+		data-attendee-id="TICKET_ID"
+		data-provider="TEC\Tickets\Commerce\Module"
+		title="Undo Check In"
+		data-event-id="POST_ID"
+		class="components-button is-secondary tickets_uncheckin tec-tickets__admin-table-attendees-undo-check-in-button">
+			Undo Check In	</button>
+</span>
+</td></tr><tr class="Completed" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='primary_info column-primary_info has-row-actions column-primary' data-colname="Attendee Information">
+				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">
+					<span class="row-title">HOLDER_NAME</span>
+				</div>
+				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
+					#TICKET_ID &mdash;
+					<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:PURCHASER_EMAIL">PURCHASER_EMAIL</a>
+				</div>
+			<div class="row-actions"><span class="inline">
+					<a href="#" class="tickets_checkin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Check In</a>
+					<a href="#" class="tickets_uncheckin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Undo Check In</a>
+				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='ticket column-ticket' data-colname="Ticket">		<div class="tec-tickets__admin-table-attendees-ticket-name event-tickets-ticket-name">
+			TICKET_NAME		</div>
+
+		</td><td class='seat column-seat' data-colname="Seat"></td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed"><a href="http://wordpress.test/wp-admin/post.php?post=ORDER_ID&#038;action=edit" title="View or edit order #ORDER_ID">Completed</a></span></div></td><td class='check_in column-check_in' data-colname="Check in">
+<button
+	data-attendee-id="TICKET_ID"
+	data-provider="TEC\Tickets\Commerce\Module"
+	data-event-id="POST_ID"
+	class="components-button is-primary tickets_checkin tec-tickets__admin-table-attendees-check-in-button "
+	title="Check In attendee"
+	 >
+		Check In</button>
+
+<span class="delete">
+	<button
+		data-attendee-id="TICKET_ID"
+		data-provider="TEC\Tickets\Commerce\Module"
+		title="Undo Check In"
+		data-event-id="POST_ID"
+		class="components-button is-secondary tickets_uncheckin tec-tickets__admin-table-attendees-undo-check-in-button">
+			Undo Check In	</button>
+</span>
+</td></tr>	</tbody>
+
+	<tfoot>
+	<tr>
+		<td   class='manage-column column-cb check-column'  ><input id="cb-select-all-8" type="checkbox" />
+			<label for="cb-select-all-8"><span class="screen-reader-text">Select All</span></label></td><th scope="col"  class='manage-column column-primary_info column-primary'  >Attendee Information</th><th scope="col"  class='manage-column column-ticket sortable desc'  ><a href="http://wordpress.test?orderby=id&#038;order=asc"><span>Ticket</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col"  class='manage-column column-seat sorted desc'  aria-sort="descending" ><a href="http://wordpress.test?orderby=seat&#038;order=asc"><span>Seat</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span></a></th><th scope="col"  class='manage-column column-status'  >Status</th><th scope="col"  class='manage-column column-check_in sortable desc'  ><a href="http://wordpress.test?orderby=check_in&#038;order=asc"><span>Check in</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th>	</tr>
+	</tfoot>
+
+</table>
+			<div class="tablenav bottom">
+
+				<div class="alignleft actions bulkactions">
+			<label for="bulk-action-selector-bottom" class="screen-reader-text">Select bulk action</label><select name="action2" id="bulk-action-selector-bottom">
+<option value="-1">Bulk actions</option>
+	<option value="delete_attendee">Delete</option>
+	<option value="check_in">Check in</option>
+	<option value="uncheck_in">Undo Check in</option>
+</select>
+<input type="submit" id="doaction2" class="button action" value="Apply"  />
+		</div>
+					<div class="alignleft actions attendees-actions"><input type="button" name="print" class="print button action" value="Print"><a target="_blank" href="?attendees_csv=1&#038;attendees_csv_nonce=1234567890&#038;event_id=POST_ID" class="export button action" rel="noopener noreferrer">Export</a><a class="email button action thickbox" href="http://wordpress.test/wp-admin/admin.php?page=tickets-attendees&#038;action=email&#038;event_id=POST_ID&#038;_wpnonce=1234567890&#038;TB_iframe=1&#038;width=410&#038;height=300&#038;post_type=tribe_events">Email</a></div>
+		<div class="alignright attendees-filter"></div>
+		<div class='tablenav-pages one-page'><span class="displaying-num">3 items</span>
+<span class='pagination-links'><span class="tablenav-pages-navspan button disabled" aria-hidden="true">&laquo;</span>
+<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&lsaquo;</span>
+<span class="screen-reader-text">Current Page</span><span id="table-paging" class="paging-input"><span class="tablenav-paging-text">1 of <span class='total-pages'>1</span></span></span>
+<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&rsaquo;</span>
+<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&raquo;</span></span></div>
+		<br class="clear" />
+	</div>
+		</form>
+</div>

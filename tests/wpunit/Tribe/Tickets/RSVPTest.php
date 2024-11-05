@@ -11,12 +11,16 @@ use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe__Tickets__RSVP as RSVP;
 use Tribe__Tickets__Tickets_Handler as Handler;
 use Tribe__Tickets__Tickets_View as Tickets_View;
+use Generator;
+use Closure;
+use Tribe\Tests\Traits\With_Uopz;
 
 class RSVPTest extends \Codeception\TestCase\WPTestCase {
 
 	use MatchesSnapshots;
 	use Attendee_Maker;
 	use RSVP_Ticket_Maker;
+	use With_Uopz;
 
 	/**
 	 * @var Tickets_View
@@ -867,6 +871,124 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 				],
 			],
 		];
+	}
+
+	/**
+	 * Provider for fake attendee data.
+	 *
+	 * @return Generator
+	 */
+	public function fake_attendee_provider(): Generator {
+		yield 'happy path' => [
+			function () {
+				$_POST['attendee'] = $this->fake_attendee_details();
+			},
+			$this->fake_attendee_details( [ 'optout' => false ]),
+		];
+
+		yield 'trying to expose both email and full name with hex' => [
+			function () {
+				$_POST['attendee'] = $this->fake_attendee_details(
+					[
+						'full_name' => '&#x46;&#x69;&#x72;&#x73;&#x74;&#x20;&#x4e;&#x61;&#x6d;&#x65;&#x20;&#x4c;&#x61;&#x73;&#x74',
+						'email'     => '&#x46;&#x69;&#x72;&#x73;&#x74;&#x20;&#x4e;&#x61;&#x6d;&#x65;&#x20;&#x4c;&#x61;&#x73;@test.com',
+					],
+				);
+			},
+			$this->fake_attendee_details([
+				'optout' => false,
+				'full_name' => 'First Name Las&amp;#x74',
+				'email' => 'FirstNameLas@test.com',
+			])
+		];
+
+		yield 'trying to expose only full name with hex' => [
+			function () {
+				$_POST['attendee'] = $this->fake_attendee_details(
+					[
+						'full_name' => '&#x46;&#x69;&#x72;&#x73;&#x74;&#x20;&#x4e;&#x61;&#x6d;&#x65;&#x20;&#x4c;&#x61;&#x73;&#x74',
+					],
+				);
+			},
+			$this->fake_attendee_details([
+				'optout' => false,
+				'full_name' => 'First Name Las&amp;#x74',
+			])
+		];
+
+		yield 'trying to expose only email with hex' => [
+			function () {
+				$_POST['attendee'] = $this->fake_attendee_details(
+					[
+						'email' => '&#x46;&#x69;&#x72;&#x73;&#x74;&#x20;&#x4e;&#x61;&#x6d;&#x65;&#x20;&#x4c;&#x61;&#x73;@test.com',
+					],
+				);
+			},
+			$this->fake_attendee_details([
+				'optout' => false,
+				'email' => 'FirstNameLas@test.com',
+			])
+		];
+
+
+		yield 'trying to expose both email and full name with markup' => [
+			function () {
+				$_POST['attendee'] = $this->fake_attendee_details(
+					[
+						'full_name' => 'Little<script>alert(\'hello\');</script>Test',
+						'email'     => '<script>alert(\'hello\');</script>@test.com',
+					],
+				);
+			},
+			$this->fake_attendee_details([
+				'optout' => false,
+				'full_name' => 'LittleTest',
+				'email' => 'scriptalert\'hello\'/script@test.com',
+			])
+		];
+
+		yield 'trying to expose only full name with markup' => [
+			function () {
+				$_POST['attendee'] = $this->fake_attendee_details(
+					[
+						'full_name' => 'Little<script>alert(\'hello\');</script>Test',
+					],
+				);
+			},
+			$this->fake_attendee_details([
+				'optout' => false,
+				'full_name' => 'LittleTest',
+			])
+		];
+
+		yield 'trying to expose only email with markup' => [
+			function () {
+				$_POST['attendee'] = $this->fake_attendee_details(
+					[
+						'email' => '<script>alert(\'hello\');</script>@test.com',
+					],
+				);
+			},
+			$this->fake_attendee_details([
+				'optout' => false,
+				'email' => 'scriptalert\'hello\'/script@test.com',
+			])
+		];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider fake_attendee_provider
+	 *
+	 * @param Closure $fixture
+	 * @param array   $expected
+	 */
+	public function it_should_parse_attendee_details( Closure $fixture, $expected ) {
+		$fixture();
+		$sut = $this->make_instance();
+		$this->set_class_fn_return( get_class( $sut ), 'generate_order_id', $expected['order_id'] );
+		$attendee = $sut->parse_attendee_details();
+		$this->assertEquals( $expected, $attendee );
 	}
 
 	/**

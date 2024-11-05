@@ -2,6 +2,7 @@ const { adminUser, adminPassword } = require('../_constants/env');
 const { expect } = require('@playwright/test');
 const { TicketsSettingsPage } = require('./tickets-settings-page');
 const { Db } = require('./../_fixtures/db');
+const fs = require('node:fs');
 
 exports.WPAdmin = class WPAdmin {
 	/**

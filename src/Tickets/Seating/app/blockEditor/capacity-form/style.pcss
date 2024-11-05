@@ -1,0 +1,80 @@
+.tec-tickets-seating__capacity-form {
+	flex: auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	gap: 12px;
+	padding-top: 13px;
+
+	.tec-tickets-seating__capacity-radio {
+		.components-flex {
+			flex-direction: row;
+			gap: 20px;
+			justify-content: flex-start;
+		}
+	}
+
+	.tribe-editor__ticket__capacity-input {
+		align-self: flex-end;
+	}
+
+	.tribe-editor__labeled-select-input--nested {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+
+		.tribe-editor__labeled-item__label {
+			flex-basis: 25%;
+			margin: 0 7px 0 0;
+		}
+
+		.tribe-editor__select {
+			flex-basis: 75%;
+			font-size: 75%;
+		}
+
+	}
+
+	.button-link.button-link--nested {
+		color: var(--tec-color-link-accent);
+		font-family: var(--tec-font-family-sans-serif);
+		font-size: var(--tec-font-size-2);
+		font-style: normal;
+		font-weight: var(--tec-font-weight-regular);
+		line-height: normal;
+		text-decoration: underline;
+	}
+
+	.tec-tickets-seating-layouts-info {
+		display: flex;
+		flex-direction: row;
+		gap: 5px;
+
+		.tec-tickets-seating-layouts-info-text {
+			color: #8e8e8e;
+			font-size: var(--tec-font-size-2);
+			font-style: normal;
+			font-weight: var(--tec-font-weight-regular);
+			line-height: normal;
+		}
+	}
+
+	.tec-tickets-seating__capacity-locked-info, .tec-tickets-seating-layouts-locked-info {
+		font-size: var(--tec-font-size-2);
+		line-height: var(--tec-line-height-2);
+	}
+
+	.tec-tickets-seating-layouts-empty-info {
+		display: flex;
+		flex-direction: column;
+		gap: 3px;
+		font-size: var(--tec-font-size-2);
+		line-height: var(--tec-line-height-0);
+
+		.alert {
+			color: var(--tec-color-icon-error);
+		}
+	}
+}
+
+

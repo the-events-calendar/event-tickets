@@ -701,13 +701,16 @@ class Order extends Abstract_Order {
 	 * Get the order associated with a given gateway order id.
 	 *
 	 * @since 5.3.0
+	 * @since 5.14.0 Update to fetch latest order in the case of multiple orders with the same gateway order id.
 	 *
 	 * @param string $gateway_order_id The gateway order id.
 	 *
 	 * @return mixed|WP_Post|null
 	 */
-	public function get_from_gateway_order_id( string $gateway_order_id ) {
+	public function get_from_gateway_order_id( $gateway_order_id ) {
 		return tec_tc_orders()->by_args( [
+			'order_by'         => 'ID',
+			'order'            => 'DESC',
 			'status'           => 'any',
 			'gateway_order_id' => $gateway_order_id,
 		] )->first();

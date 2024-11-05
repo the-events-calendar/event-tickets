@@ -1,0 +1,52 @@
+[
+    {
+        "id": "seat-type-1",
+        "name": "Test seat type 1",
+        "seats": "1"
+    },
+    {
+        "id": "seat-type-10",
+        "name": "Test seat type 10",
+        "seats": "0"
+    },
+    {
+        "id": "seat-type-2",
+        "name": "Test seat type 2",
+        "seats": "2"
+    },
+    {
+        "id": "seat-type-3",
+        "name": "Test seat type 3",
+        "seats": "3"
+    },
+    {
+        "id": "seat-type-4",
+        "name": "Test seat type 4",
+        "seats": "4"
+    },
+    {
+        "id": "seat-type-5",
+        "name": "Test seat type 5",
+        "seats": "5"
+    },
+    {
+        "id": "seat-type-6",
+        "name": "Test seat type 6",
+        "seats": "6"
+    },
+    {
+        "id": "seat-type-7",
+        "name": "Test seat type 7",
+        "seats": "7"
+    },
+    {
+        "id": "seat-type-8",
+        "name": "Test seat type 8",
+        "seats": "8"
+    },
+    {
+        "id": "seat-type-9",
+        "name": "Test seat type 9",
+        "seats": "9"
+    }
+]

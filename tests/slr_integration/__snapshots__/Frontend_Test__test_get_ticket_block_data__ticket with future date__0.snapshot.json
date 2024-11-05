@@ -1,0 +1,28 @@
+{
+    "objectName": "dialog_obj_tec-tickets-seating-seat-selection-modal",
+    "modalId": "tec-tickets-seating-seat-selection-modal",
+    "seatTypeMap": {
+        "uuid-seat-type-0": {
+            "id": "uuid-seat-type-0",
+            "tickets": [
+                {
+                    "ticketId": {{ticket_1}},
+                    "name": "Test TC ticket for {{post_id}}",
+                    "price": "20",
+                    "description": "Test TC ticket description for {{post_id}}",
+                    "dateInRange": false
+                }
+            ]
+        }
+    },
+    "labels": {
+        "oneTicket": "1 Ticket",
+        "multipleTickets": "{count} Tickets"
+    },
+    "providerClass": "TEC\\Tickets\\Commerce\\Module",
+    "postId": {{post_id}},
+    "ajaxUrl": "http://wordpress.test/wp-admin/admin-ajax.php",
+    "ajaxNonce": "1111111111",
+    "ACTION_POST_RESERVATIONS": "tec_tickets_seating_post_reservations",
+    "ACTION_CLEAR_RESERVATIONS": "tec_tickets_seating_clear_reservations"
+}

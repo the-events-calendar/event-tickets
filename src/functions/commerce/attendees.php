@@ -121,6 +121,15 @@ function tec_tc_get_attendee( $attendee = null, $output = OBJECT, $filter = 'raw
 	 */
 	$post = apply_filters( 'tec_tickets_commerce_get_attendee_after', $post, $attendee, $output, $filter );
 
+	$attendee_id       = is_object( $attendee ) ? $attendee->ID : $post->ID;
+	$provider          = tribe_tickets_get_ticket_provider( $attendee_id );
+	$post->provider    = $provider->class_name;
+	$post->attendee_id = $attendee_id;
+
+	if ( ! property_exists( $post, 'product_id' ) ) {
+		$post->product_id = get_post_meta( $attendee_id, TEC\Tickets\Commerce\Module::ATTENDEE_PRODUCT_KEY, true );
+	}
+
 	if ( OBJECT !== $output ) {
 		$post = ARRAY_A === $output ? (array) $post : array_values( (array) $post );
 	}

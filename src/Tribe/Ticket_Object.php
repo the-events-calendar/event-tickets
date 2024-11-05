@@ -294,7 +294,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @param bool $as_timestamp Flag to disable the default behavior and use DateTime object instead.
 		 *
-		 * @return string
+		 * @return string|DateTime|false|int
 		 */
 		public function start_date( $as_timestamp = true ) {
 			$start_date = null;
@@ -317,7 +317,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @param bool $as_timestamp Flag to disable the default behavior and use DateTime object instead.
 		 *
-		 * @return string
+		 * @return string|DateTime|false|int
 		 */
 		public function end_date( $as_timestamp = true ) {
 			$end_date = null;
@@ -626,7 +626,17 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			// If we don't have the provider, get the result from inventory.
 			if ( empty( $provider ) ) {
-				$inventory = $capacity - $this->qty_sold() - $this->qty_pending();
+				/**
+				 * Filters the inventory of the ticket.
+				 *
+				 * @since 5.16.0
+				 *
+				 * @param int $inventory The inventory of the ticket.
+				 * @param Tribe__Tickets__Ticket_Object $ticket The ticket object.
+				 * @param array<string,mixed>           $event_attendees The event attendees.
+				 * @param array<string,mixed>           $attendees       The ticket attendees.
+				 */
+				$inventory = apply_filters( 'tribe_tickets_ticket_inventory', $capacity - $this->qty_sold() - $this->qty_pending(), $this, [], [] );
 
 				if ( $is_ticket_cache_enabled ) {
 					$cache->set( $cache_key, $inventory, 0, Cache::TRIGGER_SAVE_POST );
@@ -669,7 +679,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			// Do the math!
 			$inventory[] = $capacity - $attendees_count;
-			
+
 			// Calculate and verify the Event Inventory
 			if (
 				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $this->global_stock_mode()
@@ -708,6 +718,24 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$inventory = min( $inventory );
 			// Prevents Negative
 			$inventory = max( $inventory, 0 );
+
+			/**
+			 * Filters the inventory of the ticket.
+			 *
+			 * @since 5.16.0
+			 *
+			 * @param int                           $inventory       The inventory of the ticket.
+			 * @param Tribe__Tickets__Ticket_Object $ticket          The ticket object.
+			 * @param array<string,mixed>           $event_attendees The event attendees.
+			 * @param array<string,mixed>           $attendees       The ticket attendees.
+			 */
+			$inventory = apply_filters(
+				'tribe_tickets_ticket_inventory',
+				$inventory,
+				$this,
+				$event_attendees ?? [],
+				$attendees ?? []
+			);
 
 			if ( $is_ticket_cache_enabled ) {
 				$cache->set( $cache_key, $inventory, 0, Cache::TRIGGER_SAVE_POST );

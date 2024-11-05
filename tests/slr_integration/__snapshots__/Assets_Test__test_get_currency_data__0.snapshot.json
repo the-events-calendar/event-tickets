@@ -1,0 +1,7 @@
+{
+    "symbol": "$",
+    "position": "prefix",
+    "decimalSeparator": ".",
+    "decimalNumbers": 2,
+    "thousandSeparator": ","
+}

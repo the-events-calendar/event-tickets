@@ -142,6 +142,7 @@ class Events {
 	 * Returns the handle to be used for each webhook event.
 	 *
 	 * @since 5.3.0
+	 * @since 5.14.0 Removed Charge events that can be replaced by Payment Intent events.
 	 *
 	 * @return array
 	 */
@@ -175,6 +176,7 @@ class Events {
 	 * If it converts directly to a TC status it will be the status Class name, otherwise it will be callable.
 	 *
 	 * @since 5.3.0
+	 * @since 5.14.0 Removed Charge events that can be replaced by Payment Intent events.
 	 *
 	 * @return callable[]|Commerce_Status\Status_Interface[]
 	 */
@@ -186,7 +188,7 @@ class Events {
 			static::CHARGE_SUCCEEDED               => Commerce_Status\Completed::class,
 			static::PAYMENT_INTENT_CANCELED        => Commerce_Status\Denied::class,
 			static::PAYMENT_INTENT_CREATED         => Commerce_Status\Created::class,
-			static::PAYMENT_INTENT_PAYMENT_FAILED  => Commerce_Status\Not_Completed::class,
+			static::PAYMENT_INTENT_PAYMENT_FAILED  => Commerce_Status\Denied::class,
 			static::PAYMENT_INTENT_PROCESSING      => Commerce_Status\Pending::class,
 			static::PAYMENT_INTENT_REQUIRES_ACTION => Commerce_Status\Action_Required::class,
 			static::PAYMENT_INTENT_SUCCEEDED       => Commerce_Status\Completed::class,
@@ -279,5 +281,4 @@ class Events {
 
 		return tribe( Commerce_Status\Status_Handler::class )->get_by_class( $events[ $event_name ] );
 	}
-
 }

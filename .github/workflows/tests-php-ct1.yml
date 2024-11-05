@@ -1,14 +1,6 @@
 name: 'CT1 Codeception Tests'
 on:
   pull_request:
-    paths:
-      - 'tests/**.php'
-      - 'src/**.php'
-      - '*.php'
-      - 'composer.json'
-      - 'composer.lock'
-      - 'codeception.dist.yml'
-      - '.github/**/*'
 jobs:
   test:
     strategy:
@@ -16,6 +8,7 @@ jobs:
       matrix:
         suite:
           - ct1_integration
+          - slr_ecp_integration
     runs-on: ubuntu-latest
     steps:
       # ------------------------------------------------------------------------------
@@ -118,9 +111,7 @@ jobs:
         if: steps.skip.outputs.value != 1
         id: fetch-tec-head-branch
         with:
-          route: GET /repos/{owner}/{repo}/branches/${{ github.head_ref }}
-          owner: the-events-calendar
-          repo: the-events-calendar
+          route: GET /repos/the-events-calendar/the-events-calendar/branches/${{ github.head_ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
         continue-on-error: true
@@ -129,9 +120,7 @@ jobs:
         id: fetch-tec-base-branch
         if: steps.skip.outputs.value != 1 && steps.fetch-tec-head-branch.outcome != 'success'
         with:
-          route: GET /repos/{owner}/{repo}/branches/${{ github.base_ref }}
-          owner: the-events-calendar
-          repo: the-events-calendar
+          route: GET /repos/the-events-calendar/the-events-calendar/branches/${{ github.base_ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
         continue-on-error: true
@@ -140,9 +129,7 @@ jobs:
         if: steps.skip.outputs.value != 1
         id: fetch-ecp-head-branch
         with:
-          route: GET /repos/{owner}/{repo}/branches/${{ github.head_ref }}
-          owner: the-events-calendar
-          repo: events-pro
+          route: GET /repos/the-events-calendar/events-pro/branches/${{ github.head_ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
         continue-on-error: true
@@ -151,9 +138,7 @@ jobs:
         id: fetch-ecp-base-branch
         if: steps.skip.outputs.value != 1 && steps.fetch-ecp-head-branch.outcome != 'success'
         with:
-          route: GET /repos/{owner}/{repo}/branches/${{ github.base_ref }}
-          owner: the-events-calendar
-          repo: events-pro
+          route: GET /repos/the-events-calendar/events-pro/branches/${{ github.base_ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
         continue-on-error: true
@@ -238,7 +223,6 @@ jobs:
       - name: Set up ET Common (npm)
         if: steps.skip.outputs.value != 1 && matrix.suite == 'acceptance'
         run: |
-          ${SLIC_BIN} nvm use
           ${SLIC_BIN} npm install
           ${SLIC_BIN} npm run build
       # ------------------------------------------------------------------------------
@@ -255,7 +239,6 @@ jobs:
       - name: Set up ET (npm)
         if: steps.skip.outputs.value != 1 && matrix.suite == 'acceptance'
         run: |
-          ${SLIC_BIN} nvm use
           ${SLIC_BIN} npm install
           ${SLIC_BIN} npm run build
       # ------------------------------------------------------------------------------

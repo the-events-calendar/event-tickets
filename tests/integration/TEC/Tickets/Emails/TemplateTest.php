@@ -38,15 +38,16 @@ class TemplateTest extends WPTestCase {
 	 */
 	public function it_should_match_snapshot( $email, $is_free = false ): void {
 		$preview_context = [
-			'is_preview' => true,
-			'ticket_bg_color' => '#000000',
-			'footer_content' => '',
-			'footer_credit' => true,
-			'header_bg_color' => '#000000',
-			'header_image_url' => '',
+			'is_preview'             => true,
+			'ticket_bg_color'        => '#000000',
+			'footer_content'         => '',
+			'footer_credit'          => true,
+			'header_bg_color'        => '#000000',
+			'header_image_url'       => '',
 			'header_image_alignment' => 'center',
-			'heading' => '',
-			'additional_content' => '',
+			'heading'                => '',
+			'additional_content'     => '',
+			'add_event_links'        => true,
 		];
 
 		if ( $is_free ) {
