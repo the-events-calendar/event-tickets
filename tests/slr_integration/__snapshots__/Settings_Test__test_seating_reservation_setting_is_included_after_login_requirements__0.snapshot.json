@@ -7,7 +7,7 @@
         "type": "html",
         "html": "<h3>Seating</h3>"
     },
-    "ticket-seating-frontend-timer": {
+    "tickets-seating-timer-limit": {
         "type": "text",
         "label": "Reservation Time Limit",
         "tooltip": "The number of minutes a customer has to choose seats and complete checkout.",
