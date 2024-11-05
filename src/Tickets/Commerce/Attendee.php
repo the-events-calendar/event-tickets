@@ -291,8 +291,13 @@ class Attendee {
 		 * @param int     $attendee_id The Attendee ID
 		 * @param boolean $force       Force the deletion.
 		 */
-		$attendee_id = apply_filters( 'tec_tickets_commerce_attendee_to_delete', $attendee_id, $force );
+		$attendee_id = (int) apply_filters( 'tec_tickets_commerce_attendee_to_delete', $attendee_id, $force );
 
+		// Bail if we don't have a valid ID.
+		if ( ! $attendee_id ) {
+			return false;
+		}
+		
 		$event_id = (int) get_post_meta( $attendee_id, static::$event_relation_meta_key, true );
 
 		/**
@@ -666,6 +671,37 @@ class Attendee {
 		}
 
 		return $attendee;
+	}
+
+	/**
+	 * Get attendees by ticket ID.
+	 *
+	 * @since 5.14.0
+	 *
+	 * @param int    $ticket_id    Ticket ID.
+	 * @param string $orm_provider ORM provider string.
+	 *
+	 * @return array List of attendees.
+	 */
+	public function get_attendees_by_ticket_id( $ticket_id, $orm_provider ) {
+		// Check cache.
+		$cache                  = tribe_cache();
+		$attendees_by_ticket_id = $cache->get( 'tec_tickets_attendees_by_ticket_id' );
+		if ( ! is_array( $attendees_by_ticket_id ) ) {
+			$attendees_by_ticket_id = [];
+		}
+
+		if ( ! isset( $attendees_by_ticket_id[ $ticket_id ] ) ) {
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tec_tc_attendees( $orm_provider );
+			$attendees  = $repository->by( 'ticket_id', $ticket_id )->all();
+
+			// Store in cache.
+			$attendees_by_ticket_id[ $ticket_id ] = $attendees;
+			$cache->set( 'tec_tickets_attendees_by_ticket_id', $attendees_by_ticket_id );
+		}
+
+		return tribe( Module::class )->get_attendees_from_module( $attendees_by_ticket_id[ $ticket_id ] );
 	}
 
 	/**

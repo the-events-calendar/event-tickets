@@ -205,7 +205,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 		if ( $ticket['has_shared'] ) {
 			$shared_capacity_obj = new Tribe__Tickets__Global_Stock( $post_id );
 			$global_stock        = $shared_capacity_obj->get_stock_level();
-			$stock               = $global_stock;
+			$stock               = $global_stock >= $ticket['stock'] ? $global_stock : $ticket['stock'];
 		}
 
 		if ( 1 > $total || 0 === $ticket['capacity'] ) {

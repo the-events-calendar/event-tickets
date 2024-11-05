@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Service API should generate proper getassociatedeventsurl with layout ID 1`] = `"https://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating-events&layout=layout-1"`;
+
+exports[`Service API should return original getassociatedeventsurl without layout ID 1`] = `"https://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating-events"`;

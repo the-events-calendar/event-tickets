@@ -48,13 +48,14 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 *
 	 * @since 4.9
 	 * @since 5.9.1 changed page parameters and added page to the cache.
+	 * @since TBD Update the check for the custom AR page.
 	 *
 	 * @param WP_Post[] $posts Post data objects.
 	 *
 	 * @return array
 	 */
 	public function setup_context( $posts ) {
-		global $wp, $wp_query;
+		global $wp_query;
 
 		// Bail if we're not on the attendee info page.
 		if ( ! $this->is_on_ar_page() ) {
@@ -63,15 +64,11 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 
 		/*
 		 * Early bail:
-		 * We are on the AR page, but we have the shortcode in the content,
+		 * We are on the AR page, and we have the shortcode in the content,
 		 * so we don't want to spoof this page.
 		 */
-		if ( is_array( $posts ) && ! empty( $posts ) ) {
-			if ( $posts[0] instanceof WP_Post ) {
-				if ( has_shortcode( $posts[0]->post_content, 'tribe_attendee_registration' ) ) {
-					return $posts;
-				}
-			}
+		if ( $this->is_on_custom_ar_page() ) {
+			return $posts;
 		}
 
 		// Empty posts.
@@ -100,6 +97,39 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 
 		return $posts;
 
+	}
+
+	/**
+	 * Returns whether or not the user is on a custom attendee registration page.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_on_custom_ar_page() {
+		global $wp_query, $post;
+
+		$ar_page_slug = tribe( 'tickets.attendee_registration' )->get_slug();
+
+		// Check for custom AR page by page slug.
+		$on_custom_page = ! empty( $wp_query->query_vars['pagename'] )
+			&& $ar_page_slug === $wp_query->query_vars['pagename'];
+
+		if ( ! $on_custom_page ) {
+			return false;
+		}
+
+		$uses_shortcode = ! empty( $post->post_content )
+			&& has_shortcode( $post->post_content, 'tribe_attendee_registration' );
+
+		if ( $uses_shortcode ) {
+			return true;
+		}
+
+		// If the post doesn't have the shortcode, check if the queried object does.
+		$queried_object = get_queried_object();
+		return ! empty( $queried_object->post_content )
+			&& has_shortcode( $queried_object->post_content, 'tribe_attendee_registration' );
 	}
 
 	/**
@@ -136,6 +166,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * Set the theme page template we're going to use for the attendee-registration page
 	 *
 	 * @since 4.9
+	 * @since TBD Added check for custom AR page to return the pages template.
 	 *
 	 * @param string $template The AR template.
 	 * @return void
@@ -144,6 +175,11 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 
 		// Bail if we're not on the attendee info page.
 		if ( ! $this->is_on_ar_page() ) {
+			return $template;
+		}
+
+		if ( $this->is_on_custom_ar_page() ) {
+			$template = get_page_template();
 			return $template;
 		}
 

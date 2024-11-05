@@ -3,6 +3,8 @@ if ( 'undefined' === typeof window.tribe ) {
 	window.tribe = {};
 }
 
+const { applyFilters } = wp.hooks;
+
 window.tribe.tickets = window.tribe.tickets || {};
 window.tribe.dialogs = window.tribe.dialogs || {};
 window.tribe.dialogs.events = window.tribe.dialogs.events || {};
@@ -368,16 +370,28 @@ window.tribe.tickets.block = {
 	 *
 	 * @since 4.9
 	 *
-	 * @returns {array} - Array of tickets.
+	 * @returns {number[]} Array of tickets IDs.
 	 */
 	obj.getTickets = function() {
-		const $tickets = $( obj.selector.item ).map(
+		let tickets = $( obj.selector.item ).map(
 			function() {
 				return $( this ).data( 'ticket-id' );
 			}
 		).get();
 
-		return $tickets;
+		/**
+		 * Filters the tickets IDs to check availability for.
+		 *
+		 * @since 5.16.0
+		 *
+		 * @param {number[]} tickets The tickets IDs to check availability for.
+		 */
+		tickets = applyFilters(
+			'tec.tickets.tickets-block.getTickets',
+			tickets,
+		);
+
+		return tickets;
 	};
 
 	/**
@@ -541,10 +555,16 @@ window.tribe.tickets.block = {
 	 * @since 4.9
 	 */
 	obj.checkAvailability = function() {
+		const tickets = obj.getTickets();
+
+		if (tickets.length === 0) {
+			return;
+		}
+
 		// We're checking availability for all the tickets at once.
 		const params = {
 			action: 'ticket_availability_check',
-			tickets: obj.getTickets(),
+			tickets,
 		};
 
 		$.post(

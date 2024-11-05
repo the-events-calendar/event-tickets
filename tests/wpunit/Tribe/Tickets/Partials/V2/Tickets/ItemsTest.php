@@ -85,6 +85,9 @@ class ItemsTest extends V2TestCase {
 
 		$driver->setTolerableDifferences( $this->tolerables );
 
+		rsort( $this->tolerables );
+		$html = str_replace( $this->tolerables, '{{TICKET_POST_ID}}', $html );
+
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
 }

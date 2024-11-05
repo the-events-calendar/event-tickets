@@ -1,0 +1,93 @@
+<div  class="wrap tec-tickets__admin-tickets" >
+	<h1>
+	All Tickets</h1>
+<form id="tec-tickets-admin-tickets-form" method="get">
+	<input type="hidden" name="page" value="tec-tickets-admin-tickets" />
+	<input type="hidden" id="_wpnonce" name="_wpnonce" value="WP_NONCE" /><input type="hidden" name="_wp_http_referer" value="" />	<div class="tablenav top">
+
+				<div class="alignleft actions bulkactions">
+					</div>
+			<div class="alignleft actions">
+	<select name="status-filter" id="tec-tickets-admin-tickets-status-filter">
+			<option value="active" >
+			Active Tickets		</option>
+			<option value="past" >
+			Past Tickets		</option>
+			<option value="upcoming" >
+			Upcoming Tickets		</option>
+			<option value="discounted" >
+			Discounted Tickets		</option>
+			<option value="all"  selected='selected'>
+			All Tickets		</option>
+	</select>
+		<input
+	type="search"
+	placeholder="Ticket or Event Name"
+	id="tec-tickets-admin-tickets-search-input"
+	name="s"
+	value=""
+	/>
+	<input type="submit" id="tec-tickets-admin-tickets-select-filter" class="button" value="Show Tickets"  /></div>
+<div class='tablenav-pages one-page'><span class="displaying-num">4 items</span>
+<span class='pagination-links'><span class="tablenav-pages-navspan button disabled" aria-hidden="true">&laquo;</span>
+<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&lsaquo;</span>
+<span class="paging-input"><label for="current-page-selector" class="screen-reader-text">Current Page</label><input class='current-page' id='current-page-selector' type='text'
+					name='paged' value='1' size='1' aria-describedby='table-paging' /><span class='tablenav-paging-text'> of <span class='total-pages'>1</span></span></span>
+<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&rsaquo;</span>
+<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&raquo;</span></span></div>
+		<br class="clear" />
+	</div>
+		<table class="wp-list-table widefat fixed striped table-view-list tickets">
+			<thead>
+	<tr>
+		<th scope="col" id='name' class='manage-column column-name column-primary sortable asc'  ><a href="http://wordpress.test?orderby=name&#038;order=desc"><span>Ticket Name</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort descending.</span></a></th><th scope="col" id='id' class='manage-column column-id hidden sortable asc'  ><a href="http://wordpress.test?orderby=id&#038;order=desc"><span>Ticket ID</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort descending.</span></a></th><th scope="col" id='event' class='manage-column column-event'  >Event</th><th scope="col" id='start' class='manage-column column-start hidden sortable asc'  ><a href="http://wordpress.test?orderby=start&#038;order=desc"><span>Sale Starts</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort descending.</span></a></th><th scope="col" id='end' class='manage-column column-end sortable asc'  ><a href="http://wordpress.test?orderby=end&#038;order=desc"><span>Sale Ends</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort descending.</span></a></th><th scope="col" id='days_left' class='manage-column column-days_left hidden sortable asc'  ><a href="http://wordpress.test?orderby=days_left&#038;order=desc"><span>Days Left</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort descending.</span></a></th><th scope="col" id='price' class='manage-column column-price sortable asc'  ><a href="http://wordpress.test?orderby=price&#038;order=desc"><span>Price</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort descending.</span></a></th><th scope="col" id='sold' class='manage-column column-sold sortable asc'  ><a href="http://wordpress.test?orderby=sold&#038;order=desc"><span>Sold</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort descending.</span></a></th><th scope="col" id='remaining' class='manage-column column-remaining'  >Remaining</th><th scope="col" id='sales' class='manage-column column-sales hidden'  >Sales</th>	</tr>
+	</thead>
+
+	<tbody id="the-list"
+		 data-wp-lists='list:ticket'		>
+		<tr><td class='name column-name has-row-actions column-primary' data-colname="Ticket Name"><div class="tec-tickets-admin-tickets-table-column-header-name">
+	<div class="tec-tickets-admin-tickets-table-column-header-name-icon">
+		
+<img class="tribe-tickets-svgicon tec-tickets-icon tec-tickets-icon__ticket-type" src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/icons/ticket-default-icon.svg" alt="Ticket" />
+	</div>
+	<div class="tec-tickets-admin-tickets-table-column-header-name-ticket-name">
+		<a href="" class="tec-tickets-admin-tickets-table-event-link" target="_blank" rel="nofollow noopener">Test TC ticket for EVENT_ID</a>	</div>
+</div>
+<button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='id column-id hidden' data-colname="Ticket ID">TICKET_ID</td><td class='event column-event' data-colname="Event"><a href="" class="tec-tickets-admin-tickets-table-event-link" target="_blank" rel="nofollow noopener">Event EVENT_NUMBER</a> <div class="row-actions"><span class='orders'><a href="http://wordpress.test/wp-admin/edit.php?post_type=tribe_events&#038;page=tickets-commerce-orders&#038;event_id=EVENT_ID" class="tec-tickets-admin-tickets-table-event-link" target="_blank" rel="nofollow noopener">Orders</a> | </span><span class='attendees'><a href="http://wordpress.test/wp-admin/edit.php?post_type=tribe_events&#038;page=tickets-attendees&#038;event_id=EVENT_ID" class="tec-tickets-admin-tickets-table-event-link" target="_blank" rel="nofollow noopener">Attendees</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='start column-start hidden' data-colname="Sale Starts"><time datetime="2020-01-02T08:00:00+00:00" title="January 2, 2020 8:00 am">January 2, 2020</time></td><td class='end column-end' data-colname="Sale Ends"><time datetime="2050-03-01T20:00:00+00:00" title="March 1, 2050 8:00 pm">March 1, 2050</time></td><td class='days_left column-days_left hidden' data-colname="Days Left">999</td><td class='price column-price' data-colname="Price">&#x24;1.00</td><td class='sold column-sold' data-colname="Sold">0</td><td class='remaining column-remaining' data-colname="Remaining">100</td><td class='sales column-sales hidden' data-colname="Sales">&#x24;0.00</td></tr><tr><td class='name column-name has-row-actions column-primary' data-colname="Ticket Name"><div class="tec-tickets-admin-tickets-table-column-header-name">
+	<div class="tec-tickets-admin-tickets-table-column-header-name-icon">
+		
+<img class="tribe-tickets-svgicon tec-tickets-icon tec-tickets-icon__ticket-type" src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/icons/ticket-default-icon.svg" alt="Ticket" />
+	</div>
+	<div class="tec-tickets-admin-tickets-table-column-header-name-ticket-name">
+		<a href="" class="tec-tickets-admin-tickets-table-event-link" target="_blank" rel="nofollow noopener">Test TC ticket for EVENT_ID</a>	</div>
+</div>
+<button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='id column-id hidden' data-colname="Ticket ID">TICKET_ID</td><td class='event column-event' data-colname="Event"><a href="" class="tec-tickets-admin-tickets-table-event-link" target="_blank" rel="nofollow noopener">Event EVENT_NUMBER</a> <div class="row-actions"><span class='orders'><a href="http://wordpress.test/wp-admin/edit.php?post_type=tribe_events&#038;page=tickets-commerce-orders&#038;event_id=EVENT_ID" class="tec-tickets-admin-tickets-table-event-link" target="_blank" rel="nofollow noopener">Orders</a> | </span><span class='attendees'><a href="http://wordpress.test/wp-admin/edit.php?post_type=tribe_events&#038;page=tickets-attendees&#038;event_id=EVENT_ID" class="tec-tickets-admin-tickets-table-event-link" target="_blank" rel="nofollow noopener">Attendees</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='start column-start hidden' data-colname="Sale Starts"><time datetime="2020-01-02T08:00:00+00:00" title="January 2, 2020 8:00 am">January 2, 2020</time></td><td class='end column-end' data-colname="Sale Ends"><time datetime="2050-03-01T20:00:00+00:00" title="March 1, 2050 8:00 pm">March 1, 2050</time></td><td class='days_left column-days_left hidden' data-colname="Days Left">999</td><td class='price column-price' data-colname="Price">&#x24;1.00</td><td class='sold column-sold' data-colname="Sold">0</td><td class='remaining column-remaining' data-colname="Remaining">100</td><td class='sales column-sales hidden' data-colname="Sales">&#x24;0.00</td></tr><tr><td class='name column-name has-row-actions column-primary' data-colname="Ticket Name"><div class="tec-tickets-admin-tickets-table-column-header-name">
+	<div class="tec-tickets-admin-tickets-table-column-header-name-icon">
+		
+<img class="tribe-tickets-svgicon tec-tickets-icon tec-tickets-icon__ticket-type" src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/icons/ticket-default-icon.svg" alt="Ticket" />
+	</div>
+	<div class="tec-tickets-admin-tickets-table-column-header-name-ticket-name">
+		<a href="" class="tec-tickets-admin-tickets-table-event-link" target="_blank" rel="nofollow noopener">Test TC ticket for EVENT_ID</a>	</div>
+</div>
+<button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='id column-id hidden' data-colname="Ticket ID">TICKET_ID</td><td class='event column-event' data-colname="Event"><a href="" class="tec-tickets-admin-tickets-table-event-link" target="_blank" rel="nofollow noopener">Event EVENT_NUMBER</a> <div class="row-actions"><span class='orders'><a href="http://wordpress.test/wp-admin/edit.php?post_type=tribe_events&#038;page=tickets-commerce-orders&#038;event_id=EVENT_ID" class="tec-tickets-admin-tickets-table-event-link" target="_blank" rel="nofollow noopener">Orders</a> | </span><span class='attendees'><a href="http://wordpress.test/wp-admin/edit.php?post_type=tribe_events&#038;page=tickets-attendees&#038;event_id=EVENT_ID" class="tec-tickets-admin-tickets-table-event-link" target="_blank" rel="nofollow noopener">Attendees</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='start column-start hidden' data-colname="Sale Starts"><time datetime="2020-01-02T08:00:00+00:00" title="January 2, 2020 8:00 am">January 2, 2020</time></td><td class='end column-end' data-colname="Sale Ends"><time datetime="2050-03-01T20:00:00+00:00" title="March 1, 2050 8:00 pm">March 1, 2050</time></td><td class='days_left column-days_left hidden' data-colname="Days Left">999</td><td class='price column-price' data-colname="Price">&#x24;1.00</td><td class='sold column-sold' data-colname="Sold">0</td><td class='remaining column-remaining' data-colname="Remaining">100</td><td class='sales column-sales hidden' data-colname="Sales">&#x24;0.00</td></tr><tr><td class='name column-name has-row-actions column-primary' data-colname="Ticket Name">Test TC ticket for EVENT_ID<button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='id column-id hidden' data-colname="Ticket ID">TICKET_ID</td><td class='event column-event' data-colname="Event">No associated event</td><td class='start column-start hidden' data-colname="Sale Starts"><time datetime="2020-01-02T08:00:00+00:00" title="January 2, 2020 8:00 am">January 2, 2020</time></td><td class='end column-end' data-colname="Sale Ends"><time datetime="2050-03-01T20:00:00+00:00" title="March 1, 2050 8:00 pm">March 1, 2050</time></td><td class='days_left column-days_left hidden' data-colname="Days Left">999</td><td class='price column-price' data-colname="Price">&#x24;1.00</td><td class='sold column-sold' data-colname="Sold">0</td><td class='remaining column-remaining' data-colname="Remaining">0</td><td class='sales column-sales hidden' data-colname="Sales">&#x24;0.00</td></tr>	</tbody>
+
+	<tfoot>
+	<tr>
+		<th scope="col"  class='manage-column column-name column-primary sortable asc'  ><a href="http://wordpress.test?orderby=name&#038;order=desc"><span>Ticket Name</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort descending.</span></a></th><th scope="col"  class='manage-column column-id hidden sortable asc'  ><a href="http://wordpress.test?orderby=id&#038;order=desc"><span>Ticket ID</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort descending.</span></a></th><th scope="col"  class='manage-column column-event'  >Event</th><th scope="col"  class='manage-column column-start hidden sortable asc'  ><a href="http://wordpress.test?orderby=start&#038;order=desc"><span>Sale Starts</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort descending.</span></a></th><th scope="col"  class='manage-column column-end sortable asc'  ><a href="http://wordpress.test?orderby=end&#038;order=desc"><span>Sale Ends</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort descending.</span></a></th><th scope="col"  class='manage-column column-days_left hidden sortable asc'  ><a href="http://wordpress.test?orderby=days_left&#038;order=desc"><span>Days Left</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort descending.</span></a></th><th scope="col"  class='manage-column column-price sortable asc'  ><a href="http://wordpress.test?orderby=price&#038;order=desc"><span>Price</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort descending.</span></a></th><th scope="col"  class='manage-column column-sold sortable asc'  ><a href="http://wordpress.test?orderby=sold&#038;order=desc"><span>Sold</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort descending.</span></a></th><th scope="col"  class='manage-column column-remaining'  >Remaining</th><th scope="col"  class='manage-column column-sales hidden'  >Sales</th>	</tr>
+	</tfoot>
+
+</table>
+			<div class="tablenav bottom">
+
+				<div class="alignleft actions bulkactions">
+					</div>
+			<div class='tablenav-pages one-page'><span class="displaying-num">4 items</span>
+<span class='pagination-links'><span class="tablenav-pages-navspan button disabled" aria-hidden="true">&laquo;</span>
+<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&lsaquo;</span>
+<span class="screen-reader-text">Current Page</span><span id="table-paging" class="paging-input"><span class="tablenav-paging-text">1 of <span class='total-pages'>1</span></span></span>
+<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&rsaquo;</span>
+<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&raquo;</span></span></div>
+		<br class="clear" />
+	</div>
+		</form>
+</div>

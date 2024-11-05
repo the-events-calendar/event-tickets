@@ -2,12 +2,11 @@
 
 namespace TEC\Tickets\Commerce\Admin;
 
+use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Order;
-use Tribe\Tickets\Test\Traits\With_Globals;
 use WP_Screen;
 use Tribe\Tickets\Admin\Settings;
 use Tribe\Admin\Pages;
-use WP_User;
 use WP_Query;
 use TEC\Tickets\Commerce\Admin_Tables\Orders_Table;
 use TEC\Tickets\Commerce\Status\Pending;
@@ -18,16 +17,14 @@ use TEC\Tickets\Commerce\Status\Voided;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Hooks;
 
-class Orders_PageTest extends \Codeception\TestCase\WPTestCase {
-
-	use With_Globals;
-
+class Orders_PageTest extends WPTestCase {
 	/**
 	 * @before
 	 */
-	public function set_up() {
-		$this->set_global_value( 'current_screen', WP_Screen::get( 'edit-' . Order::POSTTYPE ) );
-		$this->set_global_value( 'typenow', Order::POSTTYPE );
+	public function set_up_test_case() {
+		global $current_screen, $typenow;
+		$current_screen = WP_Screen::get( 'edit-' . Order::POSTTYPE );
+		$typenow        = Order::POSTTYPE;
 	}
 
 	/**
@@ -52,10 +49,10 @@ class Orders_PageTest extends \Codeception\TestCase\WPTestCase {
 		global $submenu;
 
 		if ( ! is_array( $submenu ) ) {
-			$this->set_global_value( 'submenu', array( Orders_Page::$parent_slug => [] ) );
+			$submenu = [ Orders_Page::$parent_slug => [] ];
 		}
 
-		$this->set_global_value( 'current_user', new WP_User( 1 ) );
+		wp_set_current_user( 1 );
 
 		$new_sub_menu = array( $orders_page->get_menu_title(), $orders_page->get_capability(), $orders_page->get_menu_slug(), $orders_page->get_page_title() );
 
@@ -77,10 +74,11 @@ class Orders_PageTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_locate_the_orders_page() {
 		$orders_page = new Orders_Page();
 
-		$this->set_global_value( 'current_screen', WP_Screen::get( 'edit' ) );
+		global $current_screen;
+		$current_screen = WP_Screen::get( 'edit' );
 		$this->assertFalse( $orders_page->is_admin_orders_page() );
 
-		$this->set_global_value( 'current_screen', WP_Screen::get( 'edit-' . Order::POSTTYPE ) );
+		$current_screen = WP_Screen::get( 'edit-' . Order::POSTTYPE );
 		$this->assertTrue( $orders_page->is_admin_orders_page() );
 	}
 
@@ -90,10 +88,12 @@ class Orders_PageTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_locate_the_singular_order_page() {
 		$orders_page = new Orders_Page();
 
-		$this->set_global_value( 'current_screen', WP_Screen::get( 'edit' ) );
+		global $current_screen;
+
+		$current_screen = WP_Screen::get( 'edit' );
 		$this->assertFalse( $orders_page->is_admin_single_page() );
 
-		$this->set_global_value( 'current_screen', WP_Screen::get( Order::POSTTYPE ) );
+		$current_screen = WP_Screen::get( Order::POSTTYPE );
 		$this->assertTrue( $orders_page->is_admin_single_page() );
 	}
 
@@ -103,13 +103,15 @@ class Orders_PageTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_locate_the_orders_or_the_singular_order_page() {
 		$orders_page = new Orders_Page();
 
-		$this->set_global_value( 'current_screen', WP_Screen::get( 'edit' ) );
+		global $current_screen;
+
+		$current_screen = WP_Screen::get( 'edit' );
 		$this->assertFalse( $orders_page->is_admin_orders_page_or_admin_single_page() );
 
-		$this->set_global_value( 'current_screen', WP_Screen::get( Order::POSTTYPE ) );
+		$current_screen = WP_Screen::get( Order::POSTTYPE );
 		$this->assertTrue( $orders_page->is_admin_orders_page_or_admin_single_page() );
 
-		$this->set_global_value( 'current_screen', WP_Screen::get( 'edit-' . Order::POSTTYPE ) );
+		$current_screen = WP_Screen::get( 'edit-' . Order::POSTTYPE );
 		$this->assertTrue( $orders_page->is_admin_orders_page_or_admin_single_page() );
 	}
 
@@ -140,7 +142,7 @@ class Orders_PageTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertEmpty( $query->get( 'meta_query' ) );
 
-		$this->set_global_value( '_GET', 'free', 'tec_tc_gateway' );
+		$_GET['tec_tc_gateway'] = 'free';
 
 		$new_query = tribe( Hooks::class )->pre_filter_admin_order_table( $query );
 
@@ -159,8 +161,8 @@ class Orders_PageTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertEmpty( $query->get( 'meta_query' ) );
 
-		$this->set_global_value( '_GET', 'stripe', 'tec_tc_gateway' );
-		$this->set_global_value( '_GET', '6', 'tec_tc_events' );
+		$_GET['tec_tc_gateway'] = 'stripe';
+		$_GET['tec_tc_events']  = 6;
 
 		$new_query = tribe( Hooks::class )->pre_filter_admin_order_table( $query );
 
@@ -185,7 +187,7 @@ class Orders_PageTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertEmpty( $query->get( 'meta_query' ) );
 
-		$this->set_global_value( '_GET', '1', 'tec_tc_customers' );
+		$_GET['tec_tc_customers'] = 1;
 
 		$new_query = tribe( Hooks::class )->pre_filter_admin_order_table( $query );
 
@@ -213,8 +215,8 @@ class Orders_PageTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertEmpty( $new_query->get( 'date_query' ) );
 
-		$this->set_global_value( '_GET', '2024-06-18', 'tec_tc_date_range_from' );
-		$this->set_global_value( '_GET', '2024-06-20', 'tec_tc_date_range_to' );
+		$_GET['tec_tc_date_range_from'] = '2024-06-18';
+		$_GET['tec_tc_date_range_to']   = '2024-06-20';
 
 		$new_query = tribe( Hooks::class )->pre_filter_admin_order_table( $query );
 
@@ -258,10 +260,12 @@ class Orders_PageTest extends \Codeception\TestCase\WPTestCase {
 	protected function overwrite_global_wp_query( $args ) {
 		$overwrite_query = new WP_Query( $args );
 
-		$this->set_global_value( 'wp_query', $overwrite_query );
+		global $wp_query;
+		$wp_query = $overwrite_query;
 
 		// Set it as main Query.
-		$this->set_global_value( 'wp_the_query', $overwrite_query );
+		global $wp_the_query;
+		$wp_the_query = $overwrite_query;
 
 		return $overwrite_query;
 	}

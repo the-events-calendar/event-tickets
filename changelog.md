@@ -1,5 +1,79 @@
 # Changelog
 
+### [5.16.1] 2024-11-04
+
+* Fix - Attendee Registration page will work with FSE Themes. [ET-2261]
+* Fix - Issue preventing ticket creation on an unsaved ticket-able post type, while no Seating license is present. [ET-2264]
+* Fix - Include backwards compatibility for deprecated proprieties in the Settings class used in The Events Calendar and Event Tickets [TEC-5312]
+
+### [5.16.0.1] 2024-10-30
+
+* Fix - Resolved a fatal error that prevented the Sessions table from being set up on some databases with stricter settings. [ET-2262]
+
+### [5.16.0] 2024-10-30
+
+* Version - Event Tickets 5.16.0 is only compatible with Event Tickets Plus 6.1.0 or higher.
+* Version - Event Tickets 5.16.0 is only compatible with The Events Calendar 6.8.0 or higher.
+* Feature - Added per-event Seats tab for managing attendees with assigned seating.
+* Feature - Integrate with the new premium Seating Builder SaaS to create Seat Maps and Layouts for assigned seating.
+* Feature - Introduced new premium Seating option for selling tickets with assigned seating.
+* Tweak - Added actions: `tec_tickets_seating_tab_{$tab}`, `tec_tickets_seating_session_interrupt`, `tec_tickets_seating_invalidate_layouts_cache`, `tec_tickets_seating_invalidate_maps_layouts_cache`, `tec_tickets_seating_delete_reservations_from_attendees`, `tec_tickets_seating_deleted_reservations_from_attendees`, `tec_tickets_seating_reservations_updated`, `tec_tickets_seating_seat_selection_timer`
+* Tweak - Added filters: `tec_tickets_seating_active`, `tec_tickets_seating_service_base_url`, `tec_tickets_seating_service_frontend_url`, `tec_tickets_seating_tickets_block_html`, `tec_tickets_seating_session_cookie_expiration_time`, `tec_tickets_seating_selection_timeout`, `tec_tickets_seat_selection_timer_expired_data`, `tec_tickets_seating_fetch_attendees_per_page`, `tec_tickets_seating_ephemeral_token`, `tec_tickets_seating_ephemeral_token_site_url`, `tec_tickets_attendees_page_render_context`, `tec_tickets_attendees_table_sortable_columns`, `tribe_tickets_ticket_inventory`
+* Tweak - Added license key field and SaaS connection UI for premium Seating tool.
+* Tweak - Added Seat column to Attendees tab and page for attendees with assigned seating.
+* Tweak - Added Seat Layout setting to per-event Ticket Settings
+* Tweak - Added two new Site Health checks for Seating.
+* Tweak - Changed views: `emails/template-parts/header/head/styles`, `seating/iframe-view`, `seating/seat-selection-timer`, `seating/tickets-block-error`, `seating/tickets-block`, `v2/tickets/item`
+* Tweak - New compact frontend ticket display for events with assigned seating tickets.
+* Tweak - Removed superfluous tool tip from capacity options in block editor.
+* Tweak - Show seat assignment on My Tickets page for attendees with assigned seating.
+* Tweak - Show seat assignment on tickets for attendees with assigned seating.
+
+### [5.15.0] 2024-10-21
+
+* Fix - Tickets Commerce orders through Stripe no longer will create duplicate attendees. [ET-2256]
+* Fix - Order Completed page will no longer throw a fatal when visiting it directly. [ET-2253]
+* Fix - If users added an index to the `post_meta` table on `meta_value` using `CONCAT()` should speed up queries for them. [GTRIA-1236]
+* Fix - Possible miscounted ticketed or un-ticketed events in the events admin list [ET-2221]
+* Fix - Some dates in admin screens were not translated [TEC-4873]
+* Fix - Wrong ticket stock when attendeed were moved between tickets [ET-2098]
+* Fix - Fix issue with svg display in settings page. [TEC-5282]
+* Tweak - Modify language around ticket capacity on "Tickets" block to improve clarity.
+* Tweak - Added filters: `tec_tickets_admin_tickets_table_default_status`, `tec_tickets_admin_tickets_table_default_sort_by`, `tec_tickets_admin_tickets_table_default_sort_order`, `tec_tickets_admin_tickets_table_columns`, `tec_tickets_admin_tickets_table_default_hidden_columns`, `tec_tickets_admin_tickets_table_sortable_columns`, `tec_tickets_admin_tickets_table_column_default`, `tec_tickets_admin_tickets_table_column_default_{$column_name}`, `tec_tickets_admin_tickets_table_column_name`, `tec_tickets_admin_tickets_table_column_id`, `tec_tickets_admin_tickets_table_event_actions`, `tec_tickets_admin_tickets_table_column_event`, `tec_tickets_admin_tickets_table_column_start_date`, `tec_tickets_admin_tickets_table_column_end_date`, `tec_tickets_admin_tickets_table_column_days_left`, `tec_tickets_admin_tickets_table_column_price`, `tec_tickets_admin_tickets_table_column_sold`, `tec_tickets_admin_tickets_table_column_remaining`, `tec_tickets_admin_tickets_table_column_sales`, `tec_tickets_admin_tickets_table_query_args`, `tec_tickets_admin_tickets_table_status_options`, `tec_tickets_admin_tickets_table_provider_info`, `tec_tickets_admin_tickets_page_url`, `tec_tickets_admin_tickets_screen_options_show_screen`, `tec_tickets_attendees_user_can_export_csv`, `tec_tickets_attendees_table_cache_key`, `tec_tickets_search_attendees_default`
+* Tweak - Added actions: `tec_tickets_editor_list_table_title_icon_`, `tec_tickets_ticket_duplicated`, `tec_tickets_tickets_duplicated`
+* Language - 0 new strings added, 61 updated, 0 fuzzied, and 0 obsoleted
+
+### [5.14.0] 2024-10-09
+
+* Feature - Added new Tickets Home page to view and manage all tickets in a central location. [ET-2173]
+* Fix - Fix attendee search caching, and add search-related filters. [ET-2218]
+* Fix - Allow Admin and Editor roles to export Attendees CSV. [ET-2226]
+* Fix - Handle duplicating Tickets during event duplication [ECP-1826].
+* Fix - Send attendees by email feature will now function correctly. [ET-2223]
+* Fix - Event's ticket availability calculations. Total event's availability could be miscalculated depending on the order of the tickets. [ET-2222].
+* Tweak - Added filters: `tec_tickets_admin_tickets_table_default_status`, `tec_tickets_admin_tickets_table_default_sort_by`, `tec_tickets_admin_tickets_table_default_sort_order`, `tec_tickets_admin_tickets_table_columns`, `tec_tickets_admin_tickets_table_default_hidden_columns`, `tec_tickets_admin_tickets_table_sortable_columns`, `tec_tickets_admin_tickets_table_column_default`, `tec_tickets_admin_tickets_table_column_default_{$column_name}`, `tec_tickets_admin_tickets_table_column_name`, `tec_tickets_admin_tickets_table_column_id`, `tec_tickets_admin_tickets_table_event_actions`, `tec_tickets_admin_tickets_table_column_event`, `tec_tickets_admin_tickets_table_column_start_date`, `tec_tickets_admin_tickets_table_column_end_date`, `tec_tickets_admin_tickets_table_column_days_left`, `tec_tickets_admin_tickets_table_column_price`, `tec_tickets_admin_tickets_table_column_sold`, `tec_tickets_admin_tickets_table_column_remaining`, `tec_tickets_admin_tickets_table_column_sales`, `tec_tickets_admin_tickets_table_query_args`, `tec_tickets_admin_tickets_table_status_options`, `tec_tickets_admin_tickets_table_provider_info`, `tec_tickets_admin_tickets_page_url`, `tec_tickets_admin_tickets_screen_options_show_screen`, `tec_tickets_attendees_user_can_export_csv`, `tec_tickets_attendees_table_cache_key`, `tec_tickets_search_attendees_default`
+* Tweak - Added actions: `tec_tickets_editor_list_table_title_icon_`, `tec_tickets_ticket_duplicated`, `tec_tickets_tickets_duplicated`
+* Language - 1 new strings added, 73 updated, 1 fuzzied, and 2 obsoleted
+
+### [5.13.4] 2024-09-26
+
+* Fix - Load the full Payment Element if we have Wallets enabled. [ETP-942]
+* Language - 0 new strings added, 0 updated, 0 fuzzied, and 0 obsoleted
+
+### [5.13.3.1] 2024-09-16
+
+* Security - Improve sanitization and escaping for Administration screens of ticket purchases.
+* Security - Improve general escaping for ORM queries to prevent legacy Events methods to be used for SQL injections.
+
+### [5.13.3] 2024-09-11
+
+* Feature - Added Individual Order Screen in the Admin to improve the Order Management for Tickets Commerce. [ET-2150]
+* Tweak - Tweaked `setupCompactCardElement` method to allow filtering of options using the existing `tec_tickets_commerce_stripe_checkout_localized_data` filter. [TECTRIA-295]
+* Tweak - Made a string translatable in `getting-started.php` file. (props to @DAnn2012) [ET-2215]
+* Tweak - Added filters: `post_updated_messages`
+* Tweak - Added actions: `tribe_tickets_commerce_order_actions_box_start`
+* Language - 44 new strings added, 39 updated, 1 fuzzied, and 0 obsoleted
+
 ### [5.13.2] 2024-08-16
 
 * Tweak - Start Sale and End Sale date will autopopulate when creating a new ticket. [ET-2103]

@@ -12,7 +12,8 @@ use Tribe__Utils__Array as Arr;
 /**
  * Webhook for Payment_Intent operations
  *
- * @since   5.3.0
+ * @since 5.3.0
+ * @since 5.14.0 Remove check if payment intent should be updated.
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\Webhooks
  */
@@ -67,7 +68,7 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 			$response->set_status( 200 );
 			$response->set_data(
 				sprintf(
-				// Translators: %s is the payment intent id
+					// Translators: %s is the payment intent id.
 					__( 'Payment Intent %s does not require an update or is a duplicate of a past event.', 'event-tickets' ),
 					esc_html( $payment_intent_id )
 				)
@@ -116,7 +117,8 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 	/**
 	 * Checks if the payment intent contained in the event received has already been processed.
 	 *
-	 * @since 5.3.0
+	 * @since      5.3.0
+	 * @since      5.16.0 Remove deprecation notice.
 	 *
 	 * @param array   $payment_intent_received The payment intent data received
 	 * @param array[] $payment_intents_stored  The payment intent data stored from each update, keyed by status.

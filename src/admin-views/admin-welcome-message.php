@@ -5,6 +5,7 @@
 
 use TEC\Tickets\Commerce\Payments_Tab;
 use Tribe\Tickets\Admin\Settings;
+use TEC\Common\Admin\Conditional_Content\Black_Friday;
 
 $main     = Tribe__Main::instance();
 $has_plus = class_exists( 'Tribe__Tickets_Plus__Main' );
@@ -120,6 +121,8 @@ if ( $has_tec ) {
 			<?php endif; ?>
 		</ul>
 	</div>
+
+	<?php tribe( Black_Friday::class )->render_narrow_banner_html(); ?>
 
 	<h3 class="tribe-events-admin-section-header"><?php esc_html_e( 'Helpful Resources', 'event-tickets' ); ?></h3>
 

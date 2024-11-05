@@ -21,6 +21,7 @@ import { LabeledItem, NumberInput, Select } from '@moderntribe/common/elements';
 import { LabelWithTooltip } from '@moderntribe/tickets/elements';
 import { ReactSelectOption } from '@moderntribe/common/data/plugins/proptypes';
 import './style.pcss';
+import {applyFilters} from '@wordpress/hooks';
 
 const { INDEPENDENT, SHARED, TICKET_TYPES, TICKET_LABELS } = constants;
 const { CAPACITY_TYPE_OPTIONS } = options;
@@ -64,6 +65,7 @@ class Capacity extends PureComponent {
 		onTempCapacityNoPlusChange: PropTypes.func,
 		onTempCapacityTypeChange: PropTypes.func,
 		onTempSharedCapacityChange: PropTypes.func,
+		ticketProvider: PropTypes.string,
 	};
 
 	constructor( props ) {
@@ -229,6 +231,24 @@ class Capacity extends PureComponent {
 
 	render() {
 		const { hasTicketsPlus } = this.props;
+		let renderForm = hasTicketsPlus ? this.getCapacityForm : this.getNoPlusCapacityForm;
+
+		/**
+		 * Filters the function used to render the capacity form.
+		 *
+		 * By default, the function to render the form is the one used to render the
+		 * capacity form depending on Event Tickets Plus being active or not.
+		 *
+		 * @since 5.16.0
+		 *
+		 * @param {Function} renderForm The function used to render the capacity form.
+		 * @param {Object}   props      The props used to render the Capacity component.
+		 */
+		renderForm = applyFilters(
+			'tec.tickets.blocks.Ticket.Capacity.renderForm',
+			renderForm,
+			this.props
+		);
 
 		return (
 			<div className={ classNames(
@@ -246,24 +266,9 @@ class Capacity extends PureComponent {
 						__('%s Capacity', 'event-tickets'),
 						TICKET_LABELS.ticket.singular
 					)}
-					tooltipText={sprintf(
-						/* Translators: %1$s - the singular label for a ticket; %2$s - the singular, lowercase label for a ticket. */
-						__(
-							'%1$s capacity will only be used by attendees buying this %2$s type',
-							'event-tickets'
-						),
-						TICKET_LABELS.ticket.singular,
-						TICKET_LABELS.ticket.singularLowercase
-					)}
-					tooltipLabel={
-						<Dashicon
-							className="tribe-editor__ticket__tooltip-label"
-							icon="info-outline"
-						/>
-					}
 				/>
 				<div className="tribe-editor__ticket__capacity-form">
-					{ hasTicketsPlus ? this.getCapacityForm() : this.getNoPlusCapacityForm() }
+					{ renderForm && renderForm() }
 				</div>
 			</div>
 		);

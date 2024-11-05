@@ -1,10 +1,24 @@
 <?php
+/**
+ * Class Tribe__Tickets__REST__V1__Endpoints__QR
+ *
+ * @since 5.7.0
+ *
+ * @package Tribe\Tickets\REST\V1\Endpoints\QR
+ */
 
 use Tribe__Tickets__Tickets as Tickets;
+use Tribe__Events__Main as TEC;
 
-class Tribe__Tickets__REST__V1__Endpoints__QR
-extends Tribe__Tickets__REST__V1__Endpoints__Base
-implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation__Swagger__Provider_Interface {
+
+/**
+ * Class Tribe__Tickets__REST__V1__Endpoints__QR.
+ *
+ * @since 5.7.0
+ *
+ * @package Tribe\Tickets\REST\V1\Endpoints\QR
+ */
+class Tribe__Tickets__REST__V1__Endpoints__QR extends Tribe__Tickets__REST__V1__Endpoints__Base implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation__Swagger__Provider_Interface {
 
 	/**
 	 * @var Tribe__REST__Main
@@ -89,7 +103,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 	 * @return array An array description of a Swagger supported component.
 	 */
 	public function get_documentation() {
-		$POST_defaults = [
+		$post_defaults = [
 			'in'      => 'formData',
 			'default' => '',
 			'type'    => 'string',
@@ -99,7 +113,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 		return [
 			'post' => [
 				'consumes'   => [ 'application/x-www-form-urlencoded' ],
-				'parameters' => $this->swaggerize_args( $post_args, $POST_defaults ),
+				'parameters' => $this->swaggerize_args( $post_args, $post_defaults ),
 				'responses'  => [
 					'201' => [
 						'description' => __( 'Returns successful check in', 'event-tickets' ),
@@ -247,7 +261,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 		}
 
 		$event_id      = (int) $qr_arr['event_id'];
-		$attendee_id     = (int) $qr_arr['ticket_id'];
+		$attendee_id   = (int) $qr_arr['ticket_id'];
 		$security_code = (string) $qr_arr['security_code'];
 
 		/** @var Tribe__Tickets__Data_API $data_api */
@@ -286,6 +300,24 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 
 		// Get the attendee data to populate the response.
 		$attendee_data = tribe( 'tickets.rest-v1.attendee-repository' )->format_item( $attendee_id );
+
+		/**
+		 * Filters the Attendee data for the QR check-in.
+		 *
+		 * @since 5.16.0
+		 *
+		 * @param array<string,mixed> $attendee_data The Attendee data.
+		 * @param int                 $attendee_id   The Attendee ID.
+		 * @param int                 $event_id      The ID of the post this Attendee is being checked into.
+		 * @param Tickets             $ticket_provider The Ticket provider.
+		 */
+		$attendee_data = apply_filters(
+			'tec_tickets_qr_checkin_attendee_data',
+			$attendee_data,
+			$attendee_id,
+			$event_id,
+			$ticket_provider
+		);
 
 		/** @var Tribe__Tickets__Status__Manager $status */
 		$status = tribe( 'tickets.status' );
@@ -347,7 +379,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 			}
 		}
 
-		$checked = $this->_check_in( $attendee_id, $event_id, $ticket_provider );
+		$checked = $this->do_check_in( $attendee_id, $event_id, $ticket_provider );
 
 		if ( ! $checked ) {
 			$msg_arr = [
@@ -419,7 +451,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 
 		// Bail if `tribe_events` CPT is not enabled to have tickets.
 		$enabled_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
-		if ( ! in_array( Tribe__Events__Main::POSTTYPE, $enabled_post_types, true ) ) {
+		if ( ! in_array( TEC::POSTTYPE, $enabled_post_types, true ) ) {
 			return false;
 		}
 
@@ -470,7 +502,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 		$event = tribe_get_event( $event_id );
 
 		// Bail if it's empty or if the ticket is from a page/post or any other CPT with tickets.
-		if ( empty( $event ) || $event->post_type !== Tribe__Events__Main::POSTTYPE ) {
+		if ( empty( $event ) || TEC::POSTTYPE !== $event->post_type ) {
 			return true;
 		}
 
@@ -540,7 +572,6 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 		}
 
 		return true;
-
 	}
 
 	/**
@@ -593,14 +624,15 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 	 * Check in attendee and on first success return
 	 *
 	 * @since 5.7.0
+	 * @since 5.16.0 Changed method name from `_check_in` to `do_check_in`.
 	 *
-	 * @param int $attendee_id The attendee ID.
-	 * @param int $event_id The ID of the ticketable post the Attendee is being checked into.
-	 * @param Tickets $ticket_provider The Attendee ticket provider
+	 * @param int     $attendee_id The attendee ID.
+	 * @param int     $event_id The ID of the ticketable post the Attendee is being checked into.
+	 * @param Tickets $ticket_provider The Attendee ticket provider.
 	 *
-	 * @return boolean
+	 * @return boolean Whether the check in was successful or not.
 	 */
-	private function _check_in( $attendee_id, $event_id ,$ticket_provider ) {
+	private function do_check_in( $attendee_id, $event_id, $ticket_provider ) {
 		if ( empty( $ticket_provider ) ) {
 			return false;
 		}
