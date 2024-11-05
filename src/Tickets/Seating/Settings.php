@@ -74,4 +74,15 @@ class Settings extends Controller_Contract {
 		
 		return Arr::insert_after_key( 'ticket-authentication-requirements', $settings, $timer_settings );
 	}
+	
+	/**
+	 * Get the reservation time limit in minutes.
+	 *
+	 * @since TBD
+	 *
+	 * @return int
+	 */
+	public function get_reservation_time_limit(): int {
+		return (int) tribe_get_option( self::TIMER_LIMIT_OPTION, 15 );
+	}
 }
