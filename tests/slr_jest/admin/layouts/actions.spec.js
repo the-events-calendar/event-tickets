@@ -305,24 +305,32 @@ describe('layouts actions', () => {
 			const editButtons = dom.querySelectorAll('.edit-layout');
 			global.confirm = jest.fn(() => true);
 
+			const mockEvent = {
+				target: editButtons[0],
+				preventDefault: () => jest.fn(),
+			};
+
 			// Click the first edit button.
-			await handleDestructiveEdit(editButtons[0]);
+			await handleDestructiveEdit(mockEvent);
 
 			expect(confirm).toHaveBeenCalledWith(
 				getString('edit-confirmation').replace('{count}', 1)
 			);
 			confirm.mockClear();
 
+			mockEvent.target = editButtons[1];
 			// Click the second edit button.
-			await handleDestructiveEdit(editButtons[1]);
+			await handleDestructiveEdit(mockEvent);
 
 			expect(confirm).toHaveBeenCalledWith(
 				getString('edit-confirmation').replace('{count}', 3)
 			);
 			confirm.mockClear();
 
+			mockEvent.target = editButtons[2];
+
 			// Click the third edit button, the layout has no events associated with it.
-			await handleDestructiveEdit(editButtons[2]);
+			await handleDestructiveEdit(mockEvent);
 
 			expect(confirm).not.toHaveBeenCalled();
 		});

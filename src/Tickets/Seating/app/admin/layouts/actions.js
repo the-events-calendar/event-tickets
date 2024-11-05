@@ -122,8 +122,7 @@ export function registerDestructiveEditAction(dom) {
  * @param {Event} event The click event.
  */
 async function destructiveEditActionListener(event) {
-	event.preventDefault();
-	await handleDestructiveEdit(event.target);
+	await handleDestructiveEdit(event);
 }
 
 /**
@@ -135,11 +134,11 @@ async function destructiveEditActionListener(event) {
  *
  * @return {Promise<void>}
  */
-async function handleDestructiveEdit(target) {
-	const associatedEvents = target.getAttribute('data-event-count');
+async function handleDestructiveEdit(event) {
+	const associatedEvents = event.target.getAttribute('data-event-count');
 
 	if ( Number(associatedEvents) > 0 ) {
-		const card = target.closest('.tec-tickets__seating-tab__card');
+		const card = event.target.closest('.tec-tickets__seating-tab__card');
 		card.style.opacity = 0.5;
 
 		if (
@@ -151,6 +150,7 @@ async function handleDestructiveEdit(target) {
 			)
 		) {
 			card.style.opacity = 1;
+			event.preventDefault();
 		}
 	}
 }
