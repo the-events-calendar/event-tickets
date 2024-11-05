@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Seating\Service;
 
+use InvalidArgumentException;
 use function TEC\Common\StellarWP\Uplink\get_resource;
 
 /**
@@ -112,11 +113,11 @@ class Service_Status {
 	 * @param int|null    $status           The status of the service.
 	 * @param string|null $context          The context of the service status check.
 	 *
-	 * @throws \InvalidArgumentException If the status is not one of the valid statuses.
+	 * @throws InvalidArgumentException If the status is not one of the valid statuses.
 	 */
 	public function __construct( string $backend_base_url, int $status = null, string $context = 'admin' ) {
 		$this->backend_base_url = $backend_base_url;
-		$this->context ??= is_admin() ? 'admin' : 'frontend';
+		$this->context          = $context;
 
 		if (
 			null !== $status
@@ -144,19 +145,23 @@ class Service_Status {
 			return;
 		}
 
-		$transient = 'tec_tickets_seating_service_status_' . $this->context;
+		$transient  = $this->get_transient_name();
 		$expiration = $this->context === 'admin' ? 600 : 60;
 
 		$cached = get_transient( $transient );
 
-		if ( in_array( $cached, [
-			self::OK,
-			self::SERVICE_DOWN,
-			self::NOT_CONNECTED,
-			self::INVALID_LICENSE,
-			self::EXPIRED_LICENSE,
-			self::NO_LICENSE
-		], true ) ) {
+		if ( in_array(
+			$cached,
+			[
+				self::OK,
+				self::SERVICE_DOWN,
+				self::NOT_CONNECTED,
+				self::INVALID_LICENSE,
+				self::EXPIRED_LICENSE,
+				self::NO_LICENSE,
+			],
+			true 
+		) ) {
 			$this->status = $cached;
 
 			return;
@@ -199,13 +204,14 @@ class Service_Status {
 
 		if ( $this->context === 'admin' ) {
 			// Do not run the HEAD check in admin context.
+			$this->status = self::OK;
 			set_transient( $transient, self::OK, $expiration );
 
 			return;
 		}
 
 		// Check if the service is running with a quick HEAD request.
-		$response = wp_remote_head( $this->backend_base_url );
+		$response = wp_remote_head( $this->backend_base_url, [] );
 
 		if ( is_wp_error( $response ) ) {
 			$this->status = self::SERVICE_DOWN;
@@ -315,5 +321,27 @@ class Service_Status {
 	 */
 	public function get_connect_url(): string {
 		return admin_url( 'admin.php?page=tec-tickets-settings&tab=licenses' );
+	}
+
+	/**
+	 * Returns the service status transient name, depending on the context.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The service status transient name, depending on the context.
+	 */
+	public function get_transient_name(): string {
+		return 'tec_tickets_seating_service_status_' . $this->context;
+	}
+
+	/**
+	 * Returns the context of this service status check.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The context of this service status check.
+	 */
+	public function get_context(): string {
+		return $this->context;
 	}
 }
