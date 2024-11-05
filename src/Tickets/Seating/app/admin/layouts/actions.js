@@ -26,11 +26,20 @@ export function registerDeleteAction(dom) {
 	dom = dom || document;
 	// Add click listener to all links with class 'delete'.
 	dom.querySelectorAll('.delete-layout').forEach(function (link) {
-		link.addEventListener('click', async function (event) {
-			event.preventDefault();
-			await handleDelete(event.target);
-		});
+		link.addEventListener('click', deleteListener);
 	});
+}
+
+/**
+ * Bind the delete action.
+ *
+ * @since TBD
+ *
+ * @param {Event} event The click event.
+ */
+async function deleteListener(event) {
+	event.preventDefault();
+	await handleDelete(event.target);
 }
 
 /**
@@ -101,10 +110,20 @@ export function registerDestructiveEditAction(dom) {
 	dom = dom || document;
 	// Add click listener to all links with class 'delete'.
 	dom.querySelectorAll('.edit-layout').forEach(function (link) {
-		link.addEventListener('click', async function (event) {
-			handleDestructiveEdit(event);
-		});
+		link.addEventListener('click', destructiveEditActionListener);
 	});
+}
+
+/**
+ * Bind the destructive edit action.
+ *
+ * @since TBD
+ *
+ * @param {Event} event The click event.
+ */
+async function destructiveEditActionListener(event) {
+	event.preventDefault();
+	await handleDestructiveEdit(event.target);
 }
 
 /**
@@ -112,15 +131,15 @@ export function registerDestructiveEditAction(dom) {
  *
  * @since 5.16.0
  *
- * @param {ClickEvent} event The click event.
+ * @param {Event} event The click event.
  *
  * @return {Promise<void>}
  */
-async function handleDestructiveEdit(event) {
-	const associatedEvents = event.target.getAttribute('data-event-count');
+async function handleDestructiveEdit(target) {
+	const associatedEvents = target.getAttribute('data-event-count');
 
 	if ( Number(associatedEvents) > 0 ) {
-		const card = event.target.closest('.tec-tickets__seating-tab__card');
+		const card = target.closest('.tec-tickets__seating-tab__card');
 		card.style.opacity = 0.5;
 
 		if (
@@ -132,7 +151,6 @@ async function handleDestructiveEdit(event) {
 			)
 		) {
 			card.style.opacity = 1;
-			event.preventDefault();
 		}
 	}
 }
@@ -148,8 +166,20 @@ export function registerDuplicateLayoutAction(dom) {
 	dom = dom || document;
 
 	dom.querySelectorAll('.duplicate-layout').forEach(function (btn) {
-		btn.addEventListener('click', handleDuplicateAction);
+		btn.addEventListener('click', duplicateListener);
 	});
+}
+
+/**
+ * Bind the duplicate action.
+ *
+ * @since TBD
+ *
+ * @param {Event} event The click event.
+ */
+async function duplicateListener(event) {
+	event.preventDefault();
+	await handleDuplicateAction(event.target);
 }
 
 /**
@@ -157,29 +187,31 @@ export function registerDuplicateLayoutAction(dom) {
  *
  * @since TBD
  *
- * @param {ClickEvent} event The click event.
+ * @param {HTMLButtonElement} target The target button.
  *
  * @return {Promise<void>}
  */
-async function handleDuplicateAction(event) {
-	const layoutId = event.target.getAttribute('data-layout-id');
-	if(!layoutId) {
-		alert( getLocalizedString( 'duplicate-failed', 'layouts' ) );
+async function handleDuplicateAction(target) {
+	const layoutId = target.getAttribute('data-layout-id');
+	if (!layoutId) {
+		alert(getLocalizedString('duplicate-failed', 'layouts'));
+		return;
 	}
 
-	event.target.disabled = false;
-	const card = event.target.closest('.tec-tickets__seating-tab__card');
+	target.disabled = false;
+	const card = target.closest('.tec-tickets__seating-tab__card');
 	card.style.opacity = 0.5;
 
 	const result = await duplicateLayout(layoutId);
 
-	if ( result ) {
-		redirectTo(result.data);
-	} else {
-		alert( getLocalizedString( 'duplicate-failed', 'layouts' ) );
+	if (!result?.success) {
+		alert(getLocalizedString('duplicate-failed', 'layouts' ));
 		card.style.opacity = 1;
-		event.target.disabled = false;
+		target.disabled = false;
+		return;
 	}
+
+	redirectTo(result.data);
 }
 
 /**
@@ -197,16 +229,17 @@ async function duplicateLayout(layoutId) {
 	url.searchParams.set('layoutId', layoutId);
 	url.searchParams.set('action', ACTION_DUPLICATE_LAYOUT);
 	const response = await fetch(url.toString(), { method: 'POST' });
-	const data = await response.json();
-
-	if (!data?.success) {
-		return false;
-	}
-
-	return data;
+	return await response.json();
 }
 
-export { handleDelete, deleteLayout };
+export {
+	handleDelete,
+	deleteListener,
+	handleDuplicateAction,
+	duplicateListener,
+	handleDestructiveEdit,
+	destructiveEditActionListener,
+};
 
 onReady(() => registerDeleteAction(document));
 onReady(() => registerDestructiveEditAction(document));

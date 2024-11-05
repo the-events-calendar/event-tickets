@@ -1,16 +1,22 @@
 import {
 	getString,
 	registerDeleteAction,
+	handleDelete,
+	deleteListener,
 	registerDestructiveEditAction,
+	handleDestructiveEdit,
+	destructiveEditActionListener,
 	registerDuplicateLayoutAction,
+	handleDuplicateAction,
+	duplicateListener
 } from '@tec/tickets/seating/admin/layouts/actions';
 
 jest.mock( '@tec/tickets/seating/utils', () => ({
 	redirectTo: jest.fn(),
 	onReady: jest.fn(),
-	getLocalizedString: () => 'string',
-	// getLocalizedString: jest.fn(),
+	getLocalizedString: ( slug, group ) => slug,
 }));
+
 import { redirectTo } from "@tec/tickets/seating/utils";
 
 require('jest-fetch-mock').enableMocks();
@@ -21,7 +27,6 @@ function mockWindowLocation() {
 	delete window.location;
 	window.location = {
 		reload: jest.fn(),
-		href: '',
 	};
 }
 
@@ -123,6 +128,22 @@ describe('layouts actions', () => {
 	});
 
 	describe('delete action', () => {
+		it('should register delete layout action', async () => {
+			const dom = getTestDocument();
+			const deleteButtons = dom.querySelectorAll('.delete-layout');
+
+			// Mock the window.addEventListener function.
+			deleteButtons.forEach((button) => {
+				button.addEventListener = jest.fn();
+			});
+
+			registerDeleteAction(dom);
+
+			deleteButtons.forEach((button) => {
+				expect(button.addEventListener).toHaveBeenCalledWith('click', deleteListener);
+			});
+		});
+
 		it('should handle delete request correctly', async () => {
 			const dom = getTestDocument();
 			const deleteButtons = dom.querySelectorAll('.delete-layout');
@@ -132,10 +153,8 @@ describe('layouts actions', () => {
 				JSON.stringify({ success: true })
 			);
 
-			registerDeleteAction(dom);
-
-			// Click the first delete button, the double await is needed to make sure we wait for the fetch to complete.
-			await await deleteButtons[0].click();
+			// Click the first delete button.
+			await handleDelete(deleteButtons[0]);
 
 			expect(confirm).toHaveBeenCalledWith(
 				getString('delete-confirmation')
@@ -151,11 +170,9 @@ describe('layouts actions', () => {
 			fetch.resetMocks();
 
 			// Click the second delete button.
-			await await deleteButtons[1].click();
+			await handleDelete(deleteButtons[1]);
 
-			expect(confirm).toHaveBeenCalledWith(
-				getString('delete-confirmation')
-			);
+			expect(confirm).toHaveBeenCalledWith(getString('delete-confirmation'));
 			expect(fetch).toBeCalledWith(
 				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&layoutId=layout-2-uuid&mapId=map-1-uuid&action=tec_tickets_seating_service_delete_layout',
 				{
@@ -167,11 +184,9 @@ describe('layouts actions', () => {
 			fetch.resetMocks();
 
 			// Click the third delete button.
-			await await deleteButtons[2].click();
+			await handleDelete(deleteButtons[2]);
 
-			expect(confirm).toHaveBeenCalledWith(
-				getString('delete-confirmation')
-			);
+			expect(confirm).toHaveBeenCalledWith(getString('delete-confirmation'));
 			expect(fetch).toBeCalledWith(
 				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&layoutId=layout-3-uuid&mapId=map-2-uuid&action=tec_tickets_seating_service_delete_layout',
 				{
@@ -194,10 +209,8 @@ describe('layouts actions', () => {
 				JSON.stringify({ success: true })
 			);
 
-			registerDeleteAction(dom);
-
 			// Click the first delete button.
-			await await deleteButtons[0].click();
+			await handleDelete(deleteButtons[0]);
 
 			expect(confirm).not.toHaveBeenCalled();
 			expect(fetch).not.toHaveBeenCalled();
@@ -205,7 +218,7 @@ describe('layouts actions', () => {
 			fetch.resetMocks();
 
 			// Click the second delete button.
-			await await deleteButtons[1].click();
+			await handleDelete(deleteButtons[1]);
 
 			expect(confirm).not.toHaveBeenCalled();
 			expect(fetch).not.toHaveBeenCalled();
@@ -221,10 +234,8 @@ describe('layouts actions', () => {
 				JSON.stringify({ success: true })
 			);
 
-			registerDeleteAction(dom);
-
 			// Click the first delete button.
-			await await deleteButtons[0].click();
+			await handleDelete(deleteButtons[0]);
 
 			expect(confirm).toHaveBeenCalledWith(
 				getString('delete-confirmation')
@@ -243,10 +254,8 @@ describe('layouts actions', () => {
 			);
 			global.alert = jest.fn();
 
-			registerDeleteAction(dom);
-
 			// Click the first delete button, the double await is needed to make sure we wait for the fetch to complete.
-			await await deleteButtons[0].click();
+			await handleDelete(deleteButtons[0]);
 
 			expect(confirm).toHaveBeenCalledWith(
 				getString('delete-confirmation')
@@ -275,37 +284,67 @@ describe('layouts actions', () => {
 			jest.resetAllMocks();
 		});
 
+		it('should register edit layout action', async () => {
+			const dom = getTestDocument();
+			const editButtons = dom.querySelectorAll('.edit-layout');
+
+			// Mock the window.addEventListener function.
+			editButtons.forEach((button) => {
+				button.addEventListener = jest.fn();
+			});
+
+			registerDestructiveEditAction(dom);
+
+			editButtons.forEach((button) => {
+				expect(button.addEventListener).toHaveBeenCalledWith('click', destructiveEditActionListener);
+			});
+		});
+
 		it('should handle edit request correctly', async () => {
 			const dom = getTestDocument();
 			const editButtons = dom.querySelectorAll('.edit-layout');
 			global.confirm = jest.fn(() => true);
 
-			registerDestructiveEditAction(dom);
-
-			// Click the first delete buttgon, the double await is needed to make sure we wait for the fetch to complete.
-			await await editButtons[0].click();
+			// Click the first edit button.
+			await handleDestructiveEdit(editButtons[0]);
 
 			expect(confirm).toHaveBeenCalledWith(
 				getString('edit-confirmation').replace('{count}', 1)
 			);
 			confirm.mockClear();
 
-			// Click the second delete button.
-			await await editButtons[1].click();
+			// Click the second edit button.
+			await handleDestructiveEdit(editButtons[1]);
 
 			expect(confirm).toHaveBeenCalledWith(
 				getString('edit-confirmation').replace('{count}', 3)
 			);
 			confirm.mockClear();
 
-			// Click the third delete button, the layout has no events associated with it.
-			await await editButtons[2].click();
+			// Click the third edit button, the layout has no events associated with it.
+			await handleDestructiveEdit(editButtons[2]);
 
 			expect(confirm).not.toHaveBeenCalled();
 		});
 	});
 
 	describe('duplicate action', () => {
+		it('should register duplicate layout action', async () => {
+			const dom = getTestDocument();
+			const duplicateButtons = dom.querySelectorAll('.duplicate-layout');
+
+			// Mock the window.addEventListener function.
+			duplicateButtons.forEach((button) => {
+				button.addEventListener = jest.fn();
+			});
+
+			registerDuplicateLayoutAction(dom);
+
+			duplicateButtons.forEach((button) => {
+				expect(button.addEventListener).toHaveBeenCalledWith('click', duplicateListener);
+			});
+		});
+
 		it('should handle duplicate request correctly', async () => {
 			const dom = getTestDocument();
 			const duplicateButtons = dom.querySelectorAll('.duplicate-layout');
@@ -314,10 +353,8 @@ describe('layouts actions', () => {
 				JSON.stringify({ success: true, data: 'https://wordpress.test/wp-admin/layout-page/?layoutId=duplicated-layout-id-1' })
 			);
 
-			registerDuplicateLayoutAction(dom);
-
-			// Click the first duplicate button, the double await is needed to make sure we wait for the fetch to complete.
-			await await duplicateButtons[0].click();
+			// Mock clicking the first duplicate button.
+			await handleDuplicateAction(duplicateButtons[0]);
 
 			expect(fetch).toBeCalledWith(
 				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&layoutId=layout-1-uuid&action=tec_tickets_seating_service_duplicate_layout',
@@ -325,14 +362,10 @@ describe('layouts actions', () => {
 					method: 'POST',
 				}
 			);
-			// expect(window.location.href).toBe('https://wordpress.test/wp-admin/layout-page/?layoutId=duplicated-layout-id-1');
 			expect(redirectTo).toHaveBeenCalled();
-			expect(redirectTo).toHaveBeenCalledWith("https://wordpress.test/wp-admin/layout-page/?layoutId=duplicated-layout-id-1");
 
-			fetch.resetMocks();
-
-			// Click the second duplicate button.
-			await await duplicateButtons[1].click();
+			// Mock clicking the second duplicate button.
+			await handleDuplicateAction(duplicateButtons[1]);
 
 			expect(fetch).toBeCalledWith(
 				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&layoutId=layout-2-uuid&action=tec_tickets_seating_service_duplicate_layout',
@@ -342,10 +375,8 @@ describe('layouts actions', () => {
 			);
 			expect(redirectTo).toHaveBeenCalledWith( 'https://wordpress.test/wp-admin/layout-page/?layoutId=duplicated-layout-id-1' );
 
-			fetch.resetMocks();
-
-			// Click the third duplicate button.
-			await await duplicateButtons[2].click();
+			// Mock clicking the third duplicate button.
+			await handleDuplicateAction(duplicateButtons[2]);
 
 			expect(fetch).toBeCalledWith(
 				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&layoutId=layout-3-uuid&action=tec_tickets_seating_service_duplicate_layout',
@@ -356,84 +387,46 @@ describe('layouts actions', () => {
 			expect(redirectTo).toHaveBeenCalledWith('https://wordpress.test/wp-admin/layout-page/?layoutId=duplicated-layout-id-1');
 		});
 
-		// it('should not issue delete confirmation or request on missing information', async () => {
-		// 	const dom = getTestDocument();
-		// 	// Delete the layout ID information from the first delete card.
-		// 	dom.querySelectorAll('.delete-layout')[0].dataset.layoutId = '';
-		// 	// Delete the map ID information from the second delete card.
-		// 	dom.querySelectorAll('.delete-layout')[1].dataset.mapId = '';
-		// 	const deleteButtons = dom.querySelectorAll('.delete-layout');
-		// 	global.confirm = jest.fn(() => true);
-		// 	fetch.mockIf(
-		// 		/^https:\/\/wordpress\.test\/wp-admin\/admin-ajax\.php?.*$/,
-		// 		JSON.stringify({ success: true })
-		// 	);
+		it('should not duplicate or request on missing information', async () => {
+			const dom = getTestDocument();
+			// Delete the layout ID information from the first card.
+			dom.querySelectorAll('.duplicate-layout')[0].dataset.layoutId = '';
+			const duplicateButtons = dom.querySelectorAll('.duplicate-layout');
+			fetch.mockIf(
+				/^https:\/\/wordpress\.test\/wp-admin\/admin-ajax\.php?.*$/,
+				JSON.stringify({ success: true, data: 'https://wordpress.test/wp-admin/layout-page/?layoutId=duplicated-layout-id-1' })
+			);
 
-		// 	registerDuplicateLayoutAction(dom);
+			// Click the first duplicate button.
+			await handleDuplicateAction(duplicateButtons[0]);
 
-		// 	// Click the first delete button.
-		// 	await await deleteButtons[0].click();
+			expect(fetch).not.toHaveBeenCalled();
+			expect(redirectTo).not.toHaveBeenCalled();
+		});
 
-		// 	expect(confirm).not.toHaveBeenCalled();
-		// 	expect(fetch).not.toHaveBeenCalled();
+		it('should fail on backend fail to duplicate layout', async () => {
+			const dom = getTestDocument();
+			const duplicateButtons = dom.querySelectorAll('.duplicate-layout');
+			global.confirm = jest.fn(() => true);
+			fetch.mockIf(
+				/^https:\/\/wordpress\.test\/wp-admin\/admin-ajax\.php?.*$/,
+				JSON.stringify({ success: false }),
+				{ status: 400 }
+			);
+			global.alert = jest.fn();
 
-		// 	fetch.resetMocks();
+			// Click the first duplicate button.
+			await handleDuplicateAction(duplicateButtons[0]);
 
-		// 	// Click the second delete button.
-		// 	await await deleteButtons[1].click();
-
-		// 	expect(confirm).not.toHaveBeenCalled();
-		// 	expect(fetch).not.toHaveBeenCalled();
-		// });
-
-		// it('should not delete on backend if not confirmed', async () => {
-		// 	const dom = getTestDocument();
-		// 	const deleteButtons = dom.querySelectorAll('.delete-layout');
-		// 	// Do not confirm the delete request.
-		// 	global.confirm = jest.fn(() => false);
-		// 	fetch.mockIf(
-		// 		/^https:\/\/wordpress\.test\/wp-admin\/admin-ajax\.php?.*$/,
-		// 		JSON.stringify({ success: true })
-		// 	);
-
-		// 	registerDuplicateLayoutAction(dom);
-
-		// 	// Click the first delete button.
-		// 	await await deleteButtons[0].click();
-
-		// 	expect(confirm).toHaveBeenCalledWith(
-		// 		getString('delete-confirmation')
-		// 	);
-		// 	expect(fetch).not.toHaveBeenCalled();
-		// });
-
-		// it('should fail on backend fail to delete layout', async () => {
-		// 	const dom = getTestDocument();
-		// 	const deleteButtons = dom.querySelectorAll('.delete-layout');
-		// 	global.confirm = jest.fn(() => true);
-		// 	fetch.mockIf(
-		// 		/^https:\/\/wordpress\.test\/wp-admin\/admin-ajax\.php?.*$/,
-		// 		JSON.stringify({ success: false }),
-		// 		{ status: 400 }
-		// 	);
-		// 	global.alert = jest.fn();
-
-		// 	registerDuplicateLayoutAction(dom);
-
-		// 	// Click the first delete button, the double await is needed to make sure we wait for the fetch to complete.
-		// 	await await deleteButtons[0].click();
-
-		// 	expect(confirm).toHaveBeenCalledWith(
-		// 		getString('delete-confirmation')
-		// 	);
-		// 	expect(fetch).toBeCalledWith(
-		// 		'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&layoutId=layout-1-uuid&mapId=map-1-uuid&action=tec_tickets_seating_service_delete_layout',
-		// 		{
-		// 			method: 'POST',
-		// 		}
-		// 	);
-		// 	expect(window.location.reload).not.toHaveBeenCalled();
-		// 	expect(alert).toHaveBeenCalledWith(getString('delete-failed'));
-		// });
+			expect(alert).toHaveBeenCalledWith(getString('duplicate-failed'));
+			expect(fetch).toBeCalledWith(
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&layoutId=layout-1-uuid&action=tec_tickets_seating_service_duplicate_layout',
+				{
+					method: 'POST',
+				}
+			);
+			expect(redirectTo).not.toHaveBeenCalled();
+			expect(alert).toHaveBeenCalledWith(getString('duplicate-failed'));
+		});
 	});
 });
