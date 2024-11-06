@@ -146,7 +146,7 @@ class Service_Status {
 		}
 
 		$transient  = $this->get_transient_name();
-		$expiration = $this->context === 'admin' ? 600 : 60;
+		$expiration = 60;
 
 		$cached = get_transient( $transient );
 
@@ -160,7 +160,7 @@ class Service_Status {
 				self::EXPIRED_LICENSE,
 				self::NO_LICENSE,
 			],
-			true 
+			true
 		) ) {
 			$this->status = $cached;
 
@@ -324,14 +324,14 @@ class Service_Status {
 	}
 
 	/**
-	 * Returns the service status transient name, depending on the context.
+	 * Returns the service status transient name, independent of the context.
 	 *
 	 * @since TBD
 	 *
-	 * @return string The service status transient name, depending on the context.
+	 * @return string The service status transient name.
 	 */
 	public function get_transient_name(): string {
-		return 'tec_tickets_seating_service_status_' . $this->context;
+		return 'tec_tickets_seating_service_status';
 	}
 
 	/**

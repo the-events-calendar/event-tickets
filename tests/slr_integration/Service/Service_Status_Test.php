@@ -40,7 +40,7 @@ class Service_Status_Test extends WPTestCase {
 		$this->assertEquals( 'admin', $status->get_context() );
 	}
 
-	public function test_status_is_cached_for_five_minutes_in_admin_context(): void {
+	public function test_status_is_cached_for_one_minutes_in_admin_context(): void {
 		$status         = new Service_Status( 'https://example.com', null, 'admin' );
 		$transient_name = $status->get_transient_name();
 
@@ -54,7 +54,7 @@ class Service_Status_Test extends WPTestCase {
 		$this->assertNotEmpty( get_transient( $transient_name ) );
 		// The transient expiration should be 5 minutes in admin context.
 		$this->assertEqualsWithDelta(
-			time() + 600,
+			time() + 60,
 			get_option( '_transient_timeout_' . $transient_name ),
 			10
 		);
