@@ -14,11 +14,11 @@ use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Tickets\Seating\Built_Assets;
 use TEC\Tickets\Seating\Service\Reservations;
+use TEC\Tickets\Seating\Settings;
 use TEC\Tickets\Seating\Tables\Sessions;
 use TEC\Tickets\Seating\Frontend;
 use TEC\Tickets\Seating\Template;
 use Tribe__Tickets__Main as ET;
-use Tribe__Tickets__Attendee_Registration__Main as Attendee_Registration;
 
 /**
  * Class Cookie.
@@ -333,6 +333,8 @@ class Timer extends Controller_Contract {
 	 * @return int The seat-selection timeout for a post in seconds.
 	 */
 	public function get_timeout( $post_id ): int {
+		$limit_in_minutes = tribe( Settings::class )->get_reservation_time_limit();
+		
 		/**
 		 * Filters the seat selection timeout, default is 15 minutes.
 		 *
@@ -341,7 +343,7 @@ class Timer extends Controller_Contract {
 		 * @param int $timeout The timeout in seconds.
 		 * @param int $post_id The post ID the iframe is for.
 		 */
-		return apply_filters( 'tec_tickets_seating_selection_timeout', 15 * 60, $post_id );
+		return apply_filters( 'tec_tickets_seating_selection_timeout', $limit_in_minutes * 60, $post_id );
 	}
 
 	/**
