@@ -202,8 +202,8 @@ class Service_Status {
 
 		}
 
-		if ( $this->context === 'admin' ) {
-			// Do not run the HEAD check in admin context.
+		if ( in_array( $this->context, [ 'admin', 'rest' ], true ) ) {
+			// Do not run the HEAD check in admin and REST context.
 			$this->status = self::OK;
 			set_transient( $transient, self::OK, $expiration );
 

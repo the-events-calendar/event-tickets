@@ -60,8 +60,39 @@ class Service_Status_Test extends WPTestCase {
 		);
 	}
 
+	public function test_status_is_cached_for_one_minutes_in_rest_context(): void {
+		$status         = new Service_Status( 'https://example.com', null, 'rest');
+		$transient_name = $status->get_transient_name();
+
+		delete_transient( $transient_name );
+		$this->assertEmpty( get_transient( $transient_name ) );
+
+		// This will run an update that should cache the result.
+		$status->get_status();
+
+		// We do not care about the particular cached value here, only that it's cached.
+		$this->assertNotEmpty( get_transient( $transient_name ) );
+		// The transient expiration should be 5 minutes in admin context.
+		$this->assertEqualsWithDelta(
+			time() + 60,
+			get_option( '_transient_timeout_' . $transient_name ),
+			10
+		);
+	}
+
 	public function test_status_update_in_admin_context_will_not_fire_HEAD_request(): void {
 		$status         = new Service_Status( 'https://example.com', null, 'admin' );
+		$wp_remote_head = $this->mock_wp_remote( 'head', 'https://example.com', [], [] );
+		// Set a valid license key and token to ensure the code will get to the point where it would ping the service.
+		$this->set_valid_license_key_token();
+
+		$status->get_status();
+
+		$this->assertFalse( $wp_remote_head->was_called() );
+	}
+
+	public function test_status_update_in_REST_context_will_not_fire_HEAD_request(): void {
+		$status         = new Service_Status( 'https://example.com', null, 'rest' );
 		$wp_remote_head = $this->mock_wp_remote( 'head', 'https://example.com', [], [] );
 		// Set a valid license key and token to ensure the code will get to the point where it would ping the service.
 		$this->set_valid_license_key_token();
