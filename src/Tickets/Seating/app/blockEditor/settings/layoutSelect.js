@@ -151,13 +151,16 @@ const LayoutSelect = ({
 
 		return (
 			<Fragment>
-				<Select
-					id="tec-tickets-seating__settings_layout-select"
-					className="tec-tickets-seating__settings_layout--select"
-					value={activeLayout}
-					options={layouts}
-					onChange={handleLayoutChange}
-				/>
+				<div className="tec-tickets-seating__settings_layout--select-container">
+					<Select
+						id="tec-tickets-seating__settings_layout-select"
+						className="tec-tickets-seating__settings_layout--select"
+						value={activeLayout}
+						options={layouts}
+						onChange={handleLayoutChange}
+					/>
+					<RemoveLayoutLink />
+				</div>
 				<span className="tec-tickets-seating__settings_layout--description">
 					Changing the event’s layout will impact all existing tickets.
 					Attendees will lose their seat assignments.
