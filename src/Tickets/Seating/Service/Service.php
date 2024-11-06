@@ -425,7 +425,7 @@ class Service {
 	 */
 	public function get_status( bool $force = false ): Service_Status {
 		if ( $force || ! $this->status instanceof Service_Status ) {
-			$context      = is_admin() ? 'admin' : 'frontend';
+			$context = is_admin() ? 'admin' : 'frontend';
 
 			if ( defined( 'REST_REQUEST' ) ) {
 				// This might be a REST request from the frontend or the editor. User logged in or not.
