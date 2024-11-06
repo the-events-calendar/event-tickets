@@ -10,6 +10,8 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Commerce\Order_Modifiers\API;
 
 use TEC\Tickets\Registerable;
+use WP_Error;
+use WP_REST_Response as Response;
 
 /**
  * Class Base_API
@@ -61,6 +63,19 @@ abstract class Base_API implements Registerable {
 		/*
 		 * Override this method in a child class to register additional hooks.
 		 */
+	}
+
+	/**
+	 * Convert a WP_Error object to a response.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Error $error The error object.
+	 *
+	 * @return Response
+	 */
+	protected function convert_error_to_response( WP_Error $error ): Response {
+		return rest_convert_error_to_response( $error );
 	}
 
 	/**

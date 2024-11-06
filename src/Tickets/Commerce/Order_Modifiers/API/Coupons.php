@@ -520,19 +520,6 @@ class Coupons extends Base_API {
 	}
 
 	/**
-	 * Convert a WP_Error object to a response.
-	 *
-	 * @since TBD
-	 *
-	 * @param WP_Error $error The error object.
-	 *
-	 * @return Response
-	 */
-	protected function convert_error_to_response( WP_Error $error ): Response {
-		return rest_convert_error_to_response( $error );
-	}
-
-	/**
 	 * Get the purchaser information.
 	 *
 	 * @since TBD
