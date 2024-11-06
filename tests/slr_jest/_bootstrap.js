@@ -20,6 +20,7 @@ global.tec.tickets.seating = {
 		ACTION_FETCH_ATTENDEES: 'tec_tickets_seating_fetch_attendees',
 		ACTION_ADD_NEW_LAYOUT: 'tec_tickets_seating_service_add_layout',
 		ACTION_SEAT_TYPE_DELETED: 'tec_tickets_seating_seat_type_deleted',
+		ACTION_DUPLICATE_LAYOUT: 'tec_tickets_seating_service_duplicate_layout',
 		ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID:
 			'tec_tickets_seating_get_seat_types_by_layout_id',
 	},
