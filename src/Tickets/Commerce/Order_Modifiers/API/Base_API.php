@@ -35,8 +35,17 @@ abstract class Base_API implements Registerable {
 	 * @return callable The permission callback.
 	 */
 	protected function get_permission_callback() {
-		return static function () {
-			return current_user_can( 'manage_options' );
+		/**
+		 * Filters the role required to access the API.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $role The role required to access the API.
+		 */
+		$role = apply_filters( 'tec_tickets_commerce_order_modifiers_api_role', 'manage_options' );
+
+		return static function () use ( $role ) {
+			return current_user_can( $role );
 		};
 	}
 
