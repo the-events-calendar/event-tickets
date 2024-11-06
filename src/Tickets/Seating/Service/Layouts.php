@@ -476,6 +476,7 @@ class Layouts {
 
 		self::invalidate_cache();
 		Maps::invalidate_cache();
+
 		return $layout_id;
 	}
 
