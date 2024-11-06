@@ -38,7 +38,7 @@ class Service_Status {
 	 *
 	 * @var int
 	 */
-	public const SERVICE_DOWN = 2;
+	public const SERVICE_UNREACHABLE = 2;
 
 	/**
 	 * A constant representing the fact that the site is not connected to the service.
@@ -121,7 +121,7 @@ class Service_Status {
 
 		if (
 			null !== $status
-			&& ! in_array( $status, [ self::OK, self::SERVICE_DOWN, self::NOT_CONNECTED, self::INVALID_LICENSE, self::EXPIRED_LICENSE ], true )
+			&& ! in_array( $status, [ self::OK, self::SERVICE_UNREACHABLE, self::NOT_CONNECTED, self::INVALID_LICENSE, self::EXPIRED_LICENSE ], true )
 		) {
 			/*
 			 * While it should not be cached directly, the status could be built from client code during a cache read,
@@ -154,7 +154,7 @@ class Service_Status {
 			$cached,
 			[
 				self::OK,
-				self::SERVICE_DOWN,
+				self::SERVICE_UNREACHABLE,
 				self::NOT_CONNECTED,
 				self::INVALID_LICENSE,
 				self::EXPIRED_LICENSE,
@@ -214,7 +214,7 @@ class Service_Status {
 		$response = wp_remote_head( $this->backend_base_url, [] );
 
 		if ( is_wp_error( $response ) ) {
-			$this->status = self::SERVICE_DOWN;
+			$this->status = self::SERVICE_UNREACHABLE;
 			set_transient( $transient, $this->status, $expiration );
 
 			return;
@@ -297,7 +297,7 @@ class Service_Status {
 		$this->update();
 
 		switch ( $this->status ) {
-			case self::SERVICE_DOWN:
+			case self::SERVICE_UNREACHABLE:
 				return 'down';
 			case self::NOT_CONNECTED:
 				return 'not-connected';

@@ -64,9 +64,9 @@ class Error_Content {
 				// upsell ?
 				return;
 			default:
-			case Service_Status::SERVICE_DOWN:
+			case Service_Status::SERVICE_UNREACHABLE:
 				$message = __(
-					'The Seating Builder service is down. We are working to restore functionality.',
+					'Your site cannot connect to the seating service.',
 					'event-tickets'
 				);
 				break;
@@ -121,9 +121,9 @@ class Error_Content {
 		switch ( $status->get_status() ) {
 			default:
 				break;
-			case Service_Status::SERVICE_DOWN:
+			case Service_Status::SERVICE_UNREACHABLE:
 				$message = __(
-					'The Seating Builder service is down and assigned seating is not available. We are working to restore functionality.',
+					'Your site cannot connect to the Seating service and assigned seating is not available.',
 					'event-tickets'
 				);
 				break;

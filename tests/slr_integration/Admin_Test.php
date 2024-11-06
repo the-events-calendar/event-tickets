@@ -95,7 +95,7 @@ class Admin_Test extends Controller_Test_Case {
 				'fixture' => function () {
 					add_filter( 'tec_tickets_seating_service_status',
 						static fn( $_status, $backend_base_url ) => new Service_Status( $backend_base_url,
-							Service_Status::SERVICE_DOWN ),
+							Service_Status::SERVICE_UNREACHABLE ),
 						10,
 						2 );
 				}

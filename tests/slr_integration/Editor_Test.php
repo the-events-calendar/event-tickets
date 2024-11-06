@@ -348,7 +348,7 @@ class Editor_Test extends Controller_Test_Case {
 		yield 'service down' => [
 			function (): array {
 				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
-					return new Service_Status( $backend_base_url, Service_Status::SERVICE_DOWN );
+					return new Service_Status( $backend_base_url, Service_Status::SERVICE_UNREACHABLE );
 				}, 1000, 2 );
 				global $pagenow, $post;
 				$pagenow = 'edit.php';
@@ -414,7 +414,7 @@ class Editor_Test extends Controller_Test_Case {
 		yield 'service down - new' => [
 			function (): array {
 				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
-					return new Service_Status( $backend_base_url, Service_Status::SERVICE_DOWN );
+					return new Service_Status( $backend_base_url, Service_Status::SERVICE_UNREACHABLE );
 				}, 1000, 2 );
 				global $pagenow, $post;
 				$pagenow = 'post-new.php';
