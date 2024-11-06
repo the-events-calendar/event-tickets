@@ -66,7 +66,7 @@ class Error_Content {
 			default:
 			case Service_Status::SERVICE_UNREACHABLE:
 				$message = __(
-					'Your site cannot connect to the seating service.',
+					'Your site cannot connect to the Seating Builder service.',
 					'event-tickets'
 				);
 				break;
@@ -123,7 +123,7 @@ class Error_Content {
 				break;
 			case Service_Status::SERVICE_UNREACHABLE:
 				$message = __(
-					'Your site cannot connect to the Seating service and assigned seating is not available.',
+					'Your site cannot connect to the Seating Builder service and assigned seating is not available.',
 					'event-tickets'
 				);
 				break;
