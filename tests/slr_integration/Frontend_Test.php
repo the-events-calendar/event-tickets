@@ -468,7 +468,7 @@ class Frontend_Test extends Controller_Test_Case {
 		yield 'service down' => [
 			function () {
 				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
-					return new Service_Status( $backend_base_url, Service_Status::SERVICE_DOWN );
+					return new Service_Status( $backend_base_url, Service_Status::SERVICE_UNREACHABLE );
 				}, 1000, 2 );
 				$post_id = static::factory()->post->create(
 					[

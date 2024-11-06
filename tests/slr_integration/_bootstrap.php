@@ -4,13 +4,13 @@
 use Codeception\Util\Autoload;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Provider as Commerce_Provider;
+use TEC\Tickets\Seating\Commerce\Controller as Seating_Commerce_Controller;
 use TEC\Tickets\Seating\Service\Service_Status;
 use TEC\Tickets\Seating\Tables\Layouts;
 use TEC\Tickets\Seating\Tables\Maps;
 use TEC\Tickets\Seating\Tables\Seat_Types;
 use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe\Tickets\Promoter\Triggers\Dispatcher;
-use TEC\Tickets\Seating\Commerce\Controller as Seating_Commerce_Controller;
 
 $tec_support = dirname( __DIR__, 3 ) . '/the-events-calendar/tests/_support';
 Codeception\Util\Autoload::addNamespace( 'Tribe\Events\Test', $tec_support );
@@ -52,17 +52,31 @@ if ( ! defined( 'SECURE_AUTH_KEY' ) ) {
 
 function test_return_ok_service_status( $_status, $backend_base_url ) {
 	return new Service_Status( $backend_base_url, Service_Status::OK );
-};
+}
+
+function test_return_seating_license_key(): string {
+	return 'valid-license-key';
+}
+
+function test_add_seating_license_key_callback(): void {
+	add_filter( 'stellarwp/uplink/tec/license_get_key', 'test_return_seating_license_key' );
+}
+
+function test_remove_seating_license_key_callback(): void {
+	remove_filter( 'stellarwp/uplink/tec/license_get_key', 'test_return_seating_license_key' );
+}
 
 function test_add_service_status_ok_callback() {
 	add_filter( 'tec_tickets_seating_service_status', 'test_return_ok_service_status', 10, 2 );
 }
+
 function test_remove_service_status_ok_callback() {
 	remove_filter( 'tec_tickets_seating_service_status', 'test_return_ok_service_status' );
 }
 
 // In the contest of tests, assume the Service connection is OK.
 test_add_service_status_ok_callback();
+test_add_seating_license_key_callback();
 
 // The Seating Commerce controller might not be registered yet: do it now.
 tribe_register_provider( Seating_Commerce_Controller::class );

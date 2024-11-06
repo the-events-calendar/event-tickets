@@ -38,16 +38,43 @@ function ticketSelectionModalExtractor(html) {
 }
 
 describe('Seat Selection Modal', () => {
+	let originalLocation;
+
 	beforeEach(() => {
 		fetch.resetMocks();
 		jest.resetModules();
 		jest.resetAllMocks();
+
+		originalLocation = window.location;
+		delete window.location;
+		window.location = { reload: jest.fn() };
 	});
 
 	afterEach(() => {
 		fetch.resetMocks();
 		jest.resetModules();
 		jest.resetAllMocks();
+		window.location = originalLocation;
+	});
+
+	it('should reload the page on failure to establish readiness', async () => {
+		const dom = getTestDocument(
+			'seats-selection',
+			ticketSelectionModalExtractor
+		);
+		setToken('test-ephemeral-token');
+		fetch.mockIf(
+			/^https:\/\/wordpress\.test\/wp-admin\/admin-ajax\.php?.*$/,
+			JSON.stringify({ success: true })
+		);
+		iframeModule.initServiceIframe = jest.fn(() => {
+			throw new Error('readiness issue');
+		});
+
+		const bootstrapped = await bootstrapIframe(dom);
+
+		expect(bootstrapped).toBe(false);
+		expect(window.location.reload).toHaveBeenCalled();
 	});
 
 	describe('reservation cancellation', () => {

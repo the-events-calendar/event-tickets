@@ -1,0 +1,4 @@
+Significance: patch
+Type: tweak
+
+Cache Seating service status checks; better messaging. [SL-239]
