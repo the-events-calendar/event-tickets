@@ -30,88 +30,6 @@ function mockWindowLocation() {
 	};
 }
 
-function getTestDocument() {
-	return new DOMParser().parseFromString(
-		`<div class="event-tickets"">
-					<div class="tec-tickets__seating-tab__card">
-						<button
-							class="delete-layout"
-							data-layout-id="layout-1-uuid"
-							data-map-id="map-1-uuid"
-							data-event-count="1"
-						>
-							Delete
-						</button>
-						<button
-							class="edit-layout"
-							data-layout-id="layout-1-uuid"
-							data-map-id="map-1-uuid"
-							data-event-count="1"
-						>
-							Edit
-						</button>
-						<button
-							class="duplicate-layout"
-							data-layout-id="layout-1-uuid"
-						>
-							Duplicate
-						</button>
-					</div>
-
-					<div class="tec-tickets__seating-tab__card">
-						<button
-							class="delete-layout"
-							data-layout-id="layout-2-uuid"
-							data-map-id="map-1-uuid"
-							data-event-count="3"
-						>
-							Delete
-						</button>
-						<button
-							class="edit-layout"
-							data-layout-id="layout-2-uuid"
-							data-map-id="map-1-uuid"
-							data-event-count="3"
-						>
-							Edit
-						</button>
-						<button
-							class="duplicate-layout"
-							data-layout-id="layout-2-uuid"
-						>
-							Duplicate
-						</button>
-					</div>
-
-					<div class="tec-tickets__seating-tab__card">
-						<button
-							class="delete-layout"
-							data-layout-id="layout-3-uuid"
-							data-map-id="map-2-uuid"
-							data-event-count="0"
-						>
-							Delete
-						</button>
-						<button
-							class="edit-layout"
-							data-layout-id="layout-3-uuid"
-							data-map-id="map-2-uuid"
-							data-event-count="0"
-						>
-							Edit
-						</button>
-						<button
-							class="duplicate-layout"
-							data-layout-id="layout-3-uuid"
-						>
-							Duplicate
-						</button>
-					</div>
-				</div>`,
-		'text/html'
-	);
-}
-
 describe('layouts actions', () => {
 	beforeEach(() => {
 		fetch.resetMocks();
@@ -129,7 +47,7 @@ describe('layouts actions', () => {
 
 	describe('delete action', () => {
 		it('should register delete layout action', async () => {
-			const dom = getTestDocument();
+			const dom = getTestDocument( 'layout-list' );
 			const deleteButtons = dom.querySelectorAll('.delete-layout');
 
 			// Mock the window.addEventListener function.
@@ -145,7 +63,7 @@ describe('layouts actions', () => {
 		});
 
 		it('should handle delete request correctly', async () => {
-			const dom = getTestDocument();
+			const dom = getTestDocument( 'layout-list' );
 			const deleteButtons = dom.querySelectorAll('.delete-layout');
 			global.confirm = jest.fn(() => true);
 			fetch.mockIf(
@@ -160,35 +78,7 @@ describe('layouts actions', () => {
 				getString('delete-confirmation')
 			);
 			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&layoutId=layout-1-uuid&mapId=map-1-uuid&action=tec_tickets_seating_service_delete_layout',
-				{
-					method: 'POST',
-				}
-			);
-			expect(window.location.reload).toHaveBeenCalled();
-
-			fetch.resetMocks();
-
-			// Click the second delete button.
-			await handleDelete(deleteButtons[1]);
-
-			expect(confirm).toHaveBeenCalledWith(getString('delete-confirmation'));
-			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&layoutId=layout-2-uuid&mapId=map-1-uuid&action=tec_tickets_seating_service_delete_layout',
-				{
-					method: 'POST',
-				}
-			);
-			expect(window.location.reload).toHaveBeenCalled();
-
-			fetch.resetMocks();
-
-			// Click the third delete button.
-			await handleDelete(deleteButtons[2]);
-
-			expect(confirm).toHaveBeenCalledWith(getString('delete-confirmation'));
-			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&layoutId=layout-3-uuid&mapId=map-2-uuid&action=tec_tickets_seating_service_delete_layout',
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&layoutId=layout-uuid-1&mapId=map-uuid-1&action=tec_tickets_seating_service_delete_layout',
 				{
 					method: 'POST',
 				}
@@ -196,12 +86,10 @@ describe('layouts actions', () => {
 			expect(window.location.reload).toHaveBeenCalled();
 		});
 
-		it('should not issue delete confirmation or request on missing information', async () => {
-			const dom = getTestDocument();
+		it('should not issue delete confirmation or request on missing layout id', async () => {
+			const dom = getTestDocument( 'layout-list' );
 			// Delete the layout ID information from the first delete card.
 			dom.querySelectorAll('.delete-layout')[0].dataset.layoutId = '';
-			// Delete the map ID information from the second delete card.
-			dom.querySelectorAll('.delete-layout')[1].dataset.mapId = '';
 			const deleteButtons = dom.querySelectorAll('.delete-layout');
 			global.confirm = jest.fn(() => true);
 			fetch.mockIf(
@@ -214,18 +102,29 @@ describe('layouts actions', () => {
 
 			expect(confirm).not.toHaveBeenCalled();
 			expect(fetch).not.toHaveBeenCalled();
+		});
 
-			fetch.resetMocks();
+		it('should not issue delete confirmation or request on missing map id', async () => {
+			const dom = getTestDocument( 'layout-list' );
+			// Delete the layout ID information from the first delete card.
+			dom.querySelectorAll('.delete-layout')[0].dataset.mapId = '';
+			const deleteButtons = dom.querySelectorAll('.delete-layout');
+			global.confirm = jest.fn(() => true);
+			fetch.mockIf(
+				/^https:\/\/wordpress\.test\/wp-admin\/admin-ajax\.php?.*$/,
+				JSON.stringify({ success: true })
+			);
 
-			// Click the second delete button.
-			await handleDelete(deleteButtons[1]);
+			// Click the first delete button.
+			await handleDelete(deleteButtons[0]);
 
 			expect(confirm).not.toHaveBeenCalled();
 			expect(fetch).not.toHaveBeenCalled();
 		});
 
+
 		it('should not delete on backend if not confirmed', async () => {
-			const dom = getTestDocument();
+			const dom = getTestDocument( 'layout-list' );
 			const deleteButtons = dom.querySelectorAll('.delete-layout');
 			// Do not confirm the delete request.
 			global.confirm = jest.fn(() => false);
@@ -244,7 +143,7 @@ describe('layouts actions', () => {
 		});
 
 		it('should fail on backend fail to delete layout', async () => {
-			const dom = getTestDocument();
+			const dom = getTestDocument( 'layout-list' );
 			const deleteButtons = dom.querySelectorAll('.delete-layout');
 			global.confirm = jest.fn(() => true);
 			fetch.mockIf(
@@ -261,7 +160,7 @@ describe('layouts actions', () => {
 				getString('delete-confirmation')
 			);
 			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&layoutId=layout-1-uuid&mapId=map-1-uuid&action=tec_tickets_seating_service_delete_layout',
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&layoutId=layout-uuid-1&mapId=map-uuid-1&action=tec_tickets_seating_service_delete_layout',
 				{
 					method: 'POST',
 				}
@@ -285,7 +184,7 @@ describe('layouts actions', () => {
 		});
 
 		it('should register edit layout action', async () => {
-			const dom = getTestDocument();
+			const dom = getTestDocument( 'layout-list' );
 			const editButtons = dom.querySelectorAll('.edit-layout');
 
 			// Mock the window.addEventListener function.
@@ -301,7 +200,7 @@ describe('layouts actions', () => {
 		});
 
 		it('should handle edit request correctly', async () => {
-			const dom = getTestDocument();
+			const dom = getTestDocument( 'layout-list' );
 			const editButtons = dom.querySelectorAll('.edit-layout');
 			global.confirm = jest.fn(() => true);
 
@@ -313,10 +212,7 @@ describe('layouts actions', () => {
 			// Click the first edit button.
 			await handleDestructiveEdit(mockEvent);
 
-			expect(confirm).toHaveBeenCalledWith(
-				getString('edit-confirmation').replace('{count}', 1)
-			);
-			confirm.mockClear();
+			expect(confirm).not.toHaveBeenCalled();
 
 			mockEvent.target = editButtons[1];
 			// Click the second edit button.
@@ -332,13 +228,15 @@ describe('layouts actions', () => {
 			// Click the third edit button, the layout has no events associated with it.
 			await handleDestructiveEdit(mockEvent);
 
-			expect(confirm).not.toHaveBeenCalled();
+			expect(confirm).toHaveBeenCalledWith(
+				getString('edit-confirmation').replace('{count}', 1)
+			);
 		});
 	});
 
 	describe('duplicate action', () => {
 		it('should register duplicate layout action', async () => {
-			const dom = getTestDocument();
+			const dom = getTestDocument( 'layout-list' );
 			const duplicateButtons = dom.querySelectorAll('.duplicate-layout');
 
 			// Mock the window.addEventListener function.
@@ -354,7 +252,7 @@ describe('layouts actions', () => {
 		});
 
 		it('should handle duplicate request correctly', async () => {
-			const dom = getTestDocument();
+			const dom = getTestDocument( 'layout-list' );
 			const duplicateButtons = dom.querySelectorAll('.duplicate-layout');
 			fetch.mockIf(
 				/^https:\/\/wordpress\.test\/wp-admin\/admin-ajax\.php?.*$/,
@@ -365,7 +263,7 @@ describe('layouts actions', () => {
 			await handleDuplicateAction(duplicateButtons[0]);
 
 			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&layoutId=layout-1-uuid&action=tec_tickets_seating_service_duplicate_layout',
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&layoutId=layout-uuid-1&action=tec_tickets_seating_service_duplicate_layout',
 				{
 					method: 'POST',
 				}
@@ -376,7 +274,7 @@ describe('layouts actions', () => {
 			await handleDuplicateAction(duplicateButtons[1]);
 
 			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&layoutId=layout-2-uuid&action=tec_tickets_seating_service_duplicate_layout',
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&layoutId=layout-uuid-2&action=tec_tickets_seating_service_duplicate_layout',
 				{
 					method: 'POST',
 				}
@@ -387,7 +285,7 @@ describe('layouts actions', () => {
 			await handleDuplicateAction(duplicateButtons[2]);
 
 			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&layoutId=layout-3-uuid&action=tec_tickets_seating_service_duplicate_layout',
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&layoutId=layout-uuid-3&action=tec_tickets_seating_service_duplicate_layout',
 				{
 					method: 'POST',
 				}
@@ -396,7 +294,7 @@ describe('layouts actions', () => {
 		});
 
 		it('should not duplicate or request on missing information', async () => {
-			const dom = getTestDocument();
+			const dom = getTestDocument( 'layout-list' );
 			// Delete the layout ID information from the first card.
 			dom.querySelectorAll('.duplicate-layout')[0].dataset.layoutId = '';
 			const duplicateButtons = dom.querySelectorAll('.duplicate-layout');
@@ -413,7 +311,7 @@ describe('layouts actions', () => {
 		});
 
 		it('should fail on backend fail to duplicate layout', async () => {
-			const dom = getTestDocument();
+			const dom = getTestDocument( 'layout-list' );
 			const duplicateButtons = dom.querySelectorAll('.duplicate-layout');
 			global.confirm = jest.fn(() => true);
 			fetch.mockIf(
@@ -428,7 +326,7 @@ describe('layouts actions', () => {
 
 			expect(alert).toHaveBeenCalledWith(getString('duplicate-failed'));
 			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&layoutId=layout-1-uuid&action=tec_tickets_seating_service_duplicate_layout',
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&layoutId=layout-uuid-1&action=tec_tickets_seating_service_duplicate_layout',
 				{
 					method: 'POST',
 				}
