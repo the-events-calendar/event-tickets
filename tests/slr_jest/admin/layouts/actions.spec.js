@@ -33,14 +33,12 @@ function mockWindowLocation() {
 describe('layouts actions', () => {
 	beforeEach(() => {
 		fetch.resetMocks();
-		// jest.resetModules();
 		jest.resetAllMocks();
 		mockWindowLocation();
 	});
 
 	afterEach(() => {
 		fetch.resetMocks();
-		// jest.resetModules();
 		jest.resetAllMocks();
 		window.location = locationBackup;
 	});
