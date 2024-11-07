@@ -171,6 +171,23 @@ const LayoutSelect = ({
 		);
 	}
 
+	function handleRemoveLayout() {
+		return async () => {
+			setIsLoading(true);
+			const url = new URL(ajaxUrl);
+			url.searchParams.set('_ajax_nonce', ajaxNonce);
+			url.searchParams.set('postId', postId);
+			url.searchParams.set('action', ACTION_REMOVE_EVENT_LAYOUT);
+			const response = await fetch(url.toString(), { method: 'POST' });
+
+			if ( response.status === 200 ) {
+				setIsLoading(false);
+				setRemoveModalOpen(false);
+				window.location.reload();
+			}
+		}
+	}
+
 	function RemoveLayoutLink() {
 		if (currentLayout === null || currentLayout.length === 0 || layouts.length === 0 ) {
 			return null;
@@ -211,7 +228,7 @@ const LayoutSelect = ({
 
 						<div className="tec-tickets-seating__settings--actions">
 							<Button
-								onClick={handleRemoveLayout()}
+								onClick={handleRemoveLayout}
 								disabled={!isChecked}
 								isPrimary={isChecked}
 							>
