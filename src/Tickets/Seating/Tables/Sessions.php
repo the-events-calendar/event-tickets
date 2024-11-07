@@ -215,10 +215,9 @@ class Sessions extends Table {
 	 *     reservation_id: string,
 	 *     seat_type_id: string,
 	 *     seat_label: string,
-	 * }> The list of reservations for the given object ID. A map from ticket ID to a list of reservations for it.
+	 * }> The list of reservations for the given token.
 	 */
 	public function get_reservations_for_token( string $token ) {
-
 		try {
 			$query        = DB::prepare(
 				'SELECT reservations FROM %i WHERE token = %s ',

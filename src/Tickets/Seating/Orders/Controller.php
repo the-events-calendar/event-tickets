@@ -837,6 +837,9 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function confirm_all_reservations_on_completion(): void {
+		// Attendees needing the session information will likely be generated after, warmup the session cache now.
+		$this->cart->warmup_caches();
+
 		$this->session->confirm_all_reservations();
 	}
 }
