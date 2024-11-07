@@ -3,8 +3,9 @@
  * The start and end dates field for the ticket editor.
  *
  * @since 5.8.0
+ * @since TBD Removed start and end date tooltips.
  *
- * @version 5.8.0
+ * @version TBD
  *
  * @var string $ticket_start_date The start date of the ticket.
  * @var string $ticket_end_date The end date of the ticket.
@@ -12,8 +13,6 @@
  * @var string $ticket_end_time The end time of the ticket.
  * @var string $ticket_start_date_aria_label The aria label for the start date.
  * @var string $ticket_end_date_aria_label The aria label for the end date.
- * @var string $ticket_start_date_help_text The help text for the start date.
- * @var string $ticket_end_date_help_text The help text for the end date.
  * @var array  $start_date_errors The errors for the start date.
  * @var array  $end_date_errors The errors for the end date.
  * @var string $timepicker_step The timepicker step.
