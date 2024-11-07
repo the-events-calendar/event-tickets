@@ -1,0 +1,4 @@
+Significance: minor
+Type: tweak
+
+Removed outdated ticket duration tooltips. [ET-2263]

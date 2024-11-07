@@ -26,7 +26,6 @@
  * @var string                             $ticket_form_save_text            The ticket form save text.
  * @var string                             $ticket_name                      The ticket name.
  * @var string                             $ticket_start_date_aria_label     The ticket start date ARIA attribute.
- * @var string                             $ticket_start_date_help_text      The ticket start date help text.
  * @var string                             $ticket_start_time                The ticket start time.
  * @var string                             $timepicker_round                 The timepicker round.
  * @var string                             $ticket_type                      The type of Ticket the form is for.
