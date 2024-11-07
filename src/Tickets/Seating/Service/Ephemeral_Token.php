@@ -120,7 +120,7 @@ class Ephemeral_Token {
 				'ephemeral_token_request_failed',
 				sprintf(
 					// translators: 1: failure reason.
-					__( 'Ephemeral token request failed. Your site cannot connect to the Seating service (%s).', 'event-tickets' ),
+					__( 'Ephemeral token request failed. Your site cannot connect to the Seating Builder service (%s).', 'event-tickets' ),
 					$error
 				),
 				[
