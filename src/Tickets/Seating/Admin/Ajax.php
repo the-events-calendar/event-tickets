@@ -204,6 +204,15 @@ class Ajax extends Controller_Contract {
 	 * @var string
 	 */
 	public const ACTION_EVENT_LAYOUT_UPDATED = 'tec_tickets_seating_event_layout_updated';
+	
+	/**
+	 * The action to update the layout for an event.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const ACTION_REMOVE_EVENT_LAYOUT = 'tec_tickets_seating_remove_event_layout';
 
 	/**
 	 * A reference to the Seat Types service object.
@@ -307,6 +316,7 @@ class Ajax extends Controller_Contract {
 		);
 		add_action( 'wp_ajax_' . self::ACTION_SEAT_TYPE_DELETED, [ $this, 'handle_seat_type_deleted' ] );
 		add_action( 'wp_ajax_' . self::ACTION_EVENT_LAYOUT_UPDATED, [ $this, 'update_event_layout' ] );
+		add_action( 'wp_ajax_' . self::ACTION_REMOVE_EVENT_LAYOUT, [ $this, 'remove_event_layout' ] );
 
 		add_action( 'tec_tickets_seating_session_interrupt', [ $this, 'clear_commerce_cart_cookie' ] );
 	}
@@ -343,6 +353,7 @@ class Ajax extends Controller_Contract {
 
 		remove_action( 'wp_ajax_' . self::ACTION_SEAT_TYPE_DELETED, [ $this, 'handle_seat_type_deleted' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_EVENT_LAYOUT_UPDATED, [ $this, 'update_event_layout' ] );
+		remove_action( 'wp_ajax_' . self::ACTION_REMOVE_EVENT_LAYOUT, [ $this, 'remove_event_layout' ] );
 	}
 
 	/**
@@ -373,6 +384,7 @@ class Ajax extends Controller_Contract {
 			'ACTION_RESERVATION_CREATED'                  => self::ACTION_RESERVATION_CREATED,
 			'ACTION_RESERVATION_UPDATED'                  => self::ACTION_RESERVATION_UPDATED,
 			'ACTION_EVENT_LAYOUT_UPDATED'                 => self::ACTION_EVENT_LAYOUT_UPDATED,
+			'REMOVE_EVENT_LAYOUT'                         => self::ACTION_REMOVE_EVENT_LAYOUT,
 		];
 	}
 
@@ -1232,5 +1244,52 @@ class Ajax extends Controller_Contract {
 				'updatedAttendees' => $updated_attendees,
 			]
 		);
+	}
+	
+	/**
+	 * Removes the layout from an event.
+	 *
+	 * @since TBD
+	 *
+	 * @return void The function does not return a value but will echo the JSON response.
+	 */
+	public function remove_event_layout() {
+		$post_id = tribe_get_request_var( 'postId' );
+
+		if ( empty( $post_id ) ) {
+			wp_send_json_error(
+				[
+					'error' => __( 'No post ID provided', 'event-tickets' ),
+				],
+				400
+			);
+
+			return;
+		}
+
+		if ( ! $this->check_current_ajax_user_can( 'edit_posts', $post_id ) ) {
+			wp_send_json_error(
+				[
+					'error' => __( 'User has no permission.', 'event-tickets' ),
+				],
+				403
+			);
+
+			return;
+		}
+		
+		$layout_id = get_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, true );
+		
+		if ( empty( $layout_id ) ) {
+			wp_send_json_error(
+				[
+					'error' => __( 'No valid layout ID found.', 'event-tickets' ),
+				],
+				403
+			);
+			
+			return;
+		}
+
 	}
 }
