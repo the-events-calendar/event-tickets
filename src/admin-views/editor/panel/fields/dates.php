@@ -65,7 +65,6 @@ $default_end_time = '00:00:00';
 			aria-label="<?php echo esc_attr( $ticket_start_date_aria_label ); ?>"
 		/>
 		<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ); ?></span>
-		<span class="dashicons dashicons-editor-help" title="<?php echo esc_attr( $ticket_start_date_help_text ); ?>"></span>
 	</div>
 </div>
 <div class="input_block">
@@ -96,6 +95,5 @@ $default_end_time = '00:00:00';
 			aria-label="<?php echo esc_attr( $ticket_end_date_aria_label ); ?>"
 		/>
 		<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ); ?></span>
-		<span class="dashicons dashicons-editor-help" title="<?php echo esc_attr( $ticket_end_date_help_text ); ?>"></span>
 	</div>
 </div>
