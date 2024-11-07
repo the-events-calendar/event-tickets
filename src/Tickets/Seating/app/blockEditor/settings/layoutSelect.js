@@ -1,6 +1,11 @@
 import {Select} from '@moderntribe/common/elements';
 import {Fragment, useState} from 'react';
-import {ACTION_EVENT_LAYOUT_UPDATED, ajaxNonce, ajaxUrl} from '@tec/tickets/seating/ajax';
+import {
+	ACTION_REMOVE_EVENT_LAYOUT,
+	ACTION_EVENT_LAYOUT_UPDATED,
+	ajaxNonce,
+	ajaxUrl
+} from '@tec/tickets/seating/ajax';
 import {getLink, getLocalizedString} from '@tec/tickets/seating/utils';
 import {Modal, Dashicon, CheckboxControl, Button, Spinner } from '@wordpress/components';
 import {useSelect} from '@wordpress/data';
