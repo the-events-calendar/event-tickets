@@ -9,7 +9,7 @@
 
 namespace TEC\Tickets\Seating;
 
-use TEC\Common\StellarWP\Assets\Asset;
+use TEC\Common\Asset;
 use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Tickets\Seating\Service\Service;
 use Tribe__Tickets__Main as Tickets;
