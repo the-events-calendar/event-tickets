@@ -31,8 +31,6 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
  * @package TEC\Controller;
  */
 class Frontend extends Controller_Contract {
-	use Built_Assets;
-
 	/**
 	 * The ID of the modal used to display the seat selection modal.
 	 *
@@ -312,9 +310,11 @@ class Frontend extends Controller_Contract {
 		// Register the front-end JS.
 		Asset::add(
 			'tec-tickets-seating-frontend',
-			$this->built_asset_url( 'frontend/ticketsBlock.js' ),
+			'frontend/ticketsBlock.js',
 			ET::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
+			->prefix_asset_directory( false )
 			->set_dependencies(
 				'tribe-dialog-js',
 				'tec-tickets-seating-service-bundle',
@@ -334,9 +334,11 @@ class Frontend extends Controller_Contract {
 		// Register the front-end CSS.
 		Asset::add(
 			'tec-tickets-seating-frontend-style',
-			$this->built_asset_url( 'frontend/ticketsBlock.css' ),
+			'frontend/ticketsBlock.css',
 			ET::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
+			->prefix_asset_directory( false )
 			->enqueue_on( 'wp_enqueue_scripts' )
 			->add_to_group( 'tec-tickets-seating-frontend' )
 			->add_to_group( 'tec-tickets-seating' )
