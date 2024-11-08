@@ -436,7 +436,7 @@ class Sessions extends Table {
 	public function set_token_expiration_timestamp( string $token, int $timestamp ) {
 		try {
 			$query = DB::prepare(
-				"UPDATE %i SET expiration = %d WHERE token = %s",
+				'UPDATE %i SET expiration = %d WHERE token = %s',
 				self::table_name(),
 				$timestamp,
 				$token
