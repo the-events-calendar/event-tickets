@@ -31,8 +31,6 @@ use WP_Post;
  * @package TEC\Controller\Admin;
  */
 class Admin extends Controller_Contract {
-	use Built_Assets;
-
 	/**
 	 * A reference to the object representing the service.
 	 *
@@ -312,9 +310,11 @@ class Admin extends Controller_Contract {
 		$action = 'tec_tickets_seating_tab_' . Maps::get_id();
 		Asset::add(
 			'tec-tickets-seating-admin-maps',
-			$this->built_asset_url( 'admin/maps.js' ),
+			'admin/maps.js',
 			Tickets::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
+			->prefix_asset_directory( false )
 			->add_dependency( 'tec-tickets-seating-service-bundle' )
 			->add_to_group( 'tec-tickets-seating-admin' )
 			->add_to_group( 'tec-tickets-seating' )
@@ -323,9 +323,11 @@ class Admin extends Controller_Contract {
 
 		Asset::add(
 			'tec-tickets-seating-admin-maps-style',
-			$this->built_asset_url( 'admin/maps.css' ),
+			'admin/maps.css',
 			Tickets::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
+			->prefix_asset_directory( false )
 			->add_to_group( 'tec-tickets-seating-admin' )
 			->add_to_group( 'tec-tickets-seating' )
 			->enqueue_on( $action )
@@ -347,9 +349,11 @@ class Admin extends Controller_Contract {
 
 		Asset::add(
 			'tec-tickets-seating-admin-layouts',
-			$this->built_asset_url( 'admin/layouts.js' ),
+			'admin/layouts.js',
 			Tickets::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
+			->prefix_asset_directory( false )
 			->set_dependencies( 'tec-tickets-seating-service-bundle', 'tribe-dialog-js' )
 			->add_localize_script( 'tec.tickets.seating.layouts', $data )
 			->add_to_group( 'tec-tickets-seating-admin' )
@@ -359,9 +363,11 @@ class Admin extends Controller_Contract {
 
 		Asset::add(
 			'tec-tickets-seating-admin-layouts-style',
-			$this->built_asset_url( 'admin/layouts.css' ),
+			'admin/layouts.css',
 			Tickets::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
+			->prefix_asset_directory( false )
 			->set_dependencies( 'tribe-dialog' )
 			->add_to_group( 'tec-tickets-seating-admin' )
 			->add_to_group( 'tec-tickets-seating' )
@@ -380,9 +386,11 @@ class Admin extends Controller_Contract {
 		$action = 'tec_tickets_seating_tab_' . Map_Edit::get_id();
 		Asset::add(
 			'tec-tickets-seating-admin-map-edit',
-			$this->built_asset_url( 'admin/mapEdit.js' ),
+			'admin/mapEdit.js',
 			Tickets::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
+			->prefix_asset_directory( false )
 			->add_dependency( 'tec-tickets-seating-service-bundle' )
 			->enqueue_on( $action )
 			->add_to_group( 'tec-tickets-seating-admin' )
@@ -391,9 +399,11 @@ class Admin extends Controller_Contract {
 
 		Asset::add(
 			'tec-tickets-seating-admin-map-edit-style',
-			$this->built_asset_url( 'admin/mapEdit.css' ),
+			'admin/mapEdit.css',
 			Tickets::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
+			->prefix_asset_directory( false )
 			->add_to_group( 'tec-tickets-seating-admin' )
 			->add_to_group( 'tec-tickets-seating' )
 			->enqueue_on( $action )
@@ -412,9 +422,11 @@ class Admin extends Controller_Contract {
 		$action = 'tec_tickets_seating_tab_' . Layout_Edit::get_id();
 		Asset::add(
 			'tec-tickets-seating-admin-layout-edit',
-			$this->built_asset_url( 'admin/layoutEdit.js' ),
+			'admin/layoutEdit.js',
 			Tickets::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
+			->prefix_asset_directory( false )
 			->add_dependency( 'tec-tickets-seating-service-bundle' )
 			->enqueue_on( $action )
 			->add_to_group( 'tec-tickets-seating-admin' )
@@ -423,9 +435,11 @@ class Admin extends Controller_Contract {
 
 		Asset::add(
 			'tec-tickets-seating-admin-layout-edit-style',
-			$this->built_asset_url( 'admin/layoutEdit.css' ),
+			'admin/layoutEdit.css',
 			Tickets::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
+			->prefix_asset_directory( false )
 			->add_to_group( 'tec-tickets-seating-admin' )
 			->add_to_group( 'tec-tickets-seating' )
 			->enqueue_on( $action )
