@@ -28,6 +28,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use Tribe__Tickets__Global_Stock as Global_Stock;
+use TEC\Common\StellarWP\Assets\Assets;
 
 class Ajax_Test extends Controller_Test_Case {
 	use SnapshotAssertions;

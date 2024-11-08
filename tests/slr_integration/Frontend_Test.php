@@ -25,6 +25,7 @@ use Tribe__Date_Utils as Dates;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 use Tribe__Tickets__Tickets as Tickets;
+use TEC\Common\StellarWP\Assets\Assets;
 
 class Frontend_Test extends Controller_Test_Case {
 	use SnapshotAssertions;

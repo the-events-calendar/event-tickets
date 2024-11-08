@@ -13,8 +13,8 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Global_Stock as Global_Stock;
-use Tribe__Tickets__REST__V1__Endpoints__Single_Ticket as Single_Ticket_Rest;
 use WP_REST_Request;
+use TEC\Common\StellarWP\Assets\Assets;
 
 class Editor_Test extends Controller_Test_Case {
 	use Layouts_Factory;

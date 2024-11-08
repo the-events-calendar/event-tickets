@@ -4,7 +4,7 @@ namespace TEC\Tickets\Seating;
 
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
-use TEC\Common\StellarWP\Assets\Assets;
+use TEC\Common\StellarWP\Assets\Assets as AssetsLibrary;
 use TEC\Tickets\Commerce\Module;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe__Tickets__Data_API as Data_API;
@@ -50,10 +50,10 @@ class Assets_Test extends Controller_Test_Case {
 	public function it_should_locate_assets_where_expected( $slug, $path ) {
 		$this->make_controller()->register();
 
-		$this->assertTrue( Assets::init()->exists( $slug ) );
+		$this->assertTrue( AssetsLibrary::init()->exists( $slug ) );
 
 		// We use false, because in CI mode the assets are not build so min aren't available. Its enough to check that the non-min is as expected.
-		$asset_url = Assets::init()->get( $slug )->get_url( false );
+		$asset_url = AssetsLibrary::init()->get( $slug )->get_url( false );
 		$this->assertEquals( plugins_url( $path, EVENT_TICKETS_MAIN_PLUGIN_FILE ), $asset_url );
 	}
 
