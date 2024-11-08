@@ -2781,5 +2781,16 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertEquals( 30 - 5, $ticket_2->stock() );
 		$this->assertEquals( 1, $ticket_2->available() );
 		$this->assertEquals( 1, $ticket_2->inventory() );
+		
+		// Confirm the global stock is removed.
+		$this->assertFalse( $global_stock->is_enabled() );
+		$this->assertEquals( 0, $global_stock->get_stock_level() );
+		
+		// Check event capacity.
+		$this->assertEquals( 2, tribe_get_event_capacity( $post_id ) );
+		
+		$stock_data = \Tribe__Tickets__Tickets::get_ticket_counts( $post_id );
+		
+		$this->assertMatchesJsonSnapshot( wp_json_encode( $stock_data, JSON_SNAPSHOT_OPTIONS ) );
 	}
 }
