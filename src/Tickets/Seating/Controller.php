@@ -21,8 +21,6 @@ use TEC\Tickets\Seating\Frontend\Session;
  * @package TEC/Controller
  */
 class Controller extends Controller_Contract {
-	use Built_Assets;
-
 	/**
 	 * The name of the constant that will be used to disable the feature.
 	 * Setting it to a truthy value will disable the feature.
