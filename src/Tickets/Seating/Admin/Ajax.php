@@ -384,7 +384,7 @@ class Ajax extends Controller_Contract {
 			'ACTION_RESERVATION_CREATED'                  => self::ACTION_RESERVATION_CREATED,
 			'ACTION_RESERVATION_UPDATED'                  => self::ACTION_RESERVATION_UPDATED,
 			'ACTION_EVENT_LAYOUT_UPDATED'                 => self::ACTION_EVENT_LAYOUT_UPDATED,
-			'REMOVE_EVENT_LAYOUT'                         => self::ACTION_REMOVE_EVENT_LAYOUT,
+			'ACTION_REMOVE_EVENT_LAYOUT'                  => self::ACTION_REMOVE_EVENT_LAYOUT,
 		];
 	}
 
