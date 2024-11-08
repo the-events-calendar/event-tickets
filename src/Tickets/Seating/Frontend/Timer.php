@@ -28,8 +28,6 @@ use Tribe__Tickets__Main as ET;
  * @package TEC\Tickets\Seating\Frontend;
  */
 class Timer extends Controller_Contract {
-	use Built_Assets;
-
 	/**
 	 * The AJAX action used from the JS code to start the timer.
 	 *
@@ -203,9 +201,11 @@ class Timer extends Controller_Contract {
 
 		Asset::add(
 			'tec-tickets-seating-session',
-			$this->built_asset_url( 'frontend/session.js' ),
+			'frontend/session.js',
 			ET::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
+			->prefix_asset_directory( false )
 			->set_dependencies(
 				'tribe-dialog-js',
 				'wp-hooks',
@@ -220,9 +220,11 @@ class Timer extends Controller_Contract {
 
 		Asset::add(
 			'tec-tickets-seating-session-style',
-			$this->built_asset_url( 'frontend/session.css' ),
+			'frontend/session.css',
 			ET::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
+			->prefix_asset_directory( false )
 			->set_dependencies( 'tribe-dialog' )
 			->enqueue_on( 'tec_tickets_seating_seat_selection_timer' )
 			->add_to_group( 'tec-tickets-seating-frontend' )
