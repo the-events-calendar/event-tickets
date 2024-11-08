@@ -1291,5 +1291,67 @@ class Ajax extends Controller_Contract {
 			return;
 		}
 
+		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler   = tribe( 'tickets.handler' );
+		$capacity_meta_key = $tickets_handler->key_capacity;
+
+		$updated_tickets   = 0;
+		$updated_attendees = 0;
+
+		// Get tickets by post id.
+		$tickets = tribe_tickets()->where( 'event', $post_id )->get_ids( true );
+
+		// We're handling the update of the ticket meta ourselves.
+		remove_filter( 'update_post_metadata', [ tribe( Controller::class ), 'handle_ticket_meta_update' ], 10 );
+
+		foreach ( $tickets as $ticket_id ) {
+			// Skip non-seated tickets.
+			if ( empty( get_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true ) ) ) {
+				continue;
+			}
+			
+			// Switch ticket to own stock mode.
+			update_post_meta( $ticket_id, Global_Stock::TICKET_STOCK_MODE, Global_Stock::OWN_STOCK_MODE );
+			
+			// Set ticket capacity to 1.
+			update_post_meta( $ticket_id, $capacity_meta_key, 1 );
+			
+			// Remove slr meta.
+			delete_post_meta( $ticket_id, Meta::META_KEY_ENABLED );
+			delete_post_meta( $ticket_id, Meta::META_KEY_LAYOUT_ID );
+			delete_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE );
+
+			++$updated_tickets;
+			clean_post_cache( $ticket_id );
+		}
+		
+		add_filter( 'update_post_metadata', [ tribe( Controller::class ), 'handle_ticket_meta_update' ], 10, 4 );
+
+		// Attendees by post id.
+		$attendees = tribe_attendees()
+			->where( 'event', $post_id )
+			->where( 'meta_equals', Meta::META_KEY_LAYOUT_ID, $layout_id )
+			->get_ids( true );
+
+		foreach ( $attendees as $attendee_id ) {
+			delete_post_meta( $attendee_id, Meta::META_KEY_SEAT_TYPE );
+			delete_post_meta( $attendee_id, Meta::META_KEY_ATTENDEE_SEAT_LABEL );
+			delete_post_meta( $attendee_id, Meta::META_KEY_LAYOUT_ID );
+
+			clean_post_cache( $attendee_id );
+			++$updated_attendees;
+		}
+
+		// Finally update post data.
+		delete_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID );
+		delete_post_meta( $post_id, Meta::META_KEY_ENABLED );
+		clean_post_cache( $post_id );
+		
+		wp_send_json_success(
+			[
+				'updatedTickets'   => $updated_tickets,
+				'updatedAttendees' => $updated_attendees,
+			]
+		);
 	}
 }
