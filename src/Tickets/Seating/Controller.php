@@ -101,6 +101,7 @@ class Controller extends Controller_Contract {
 	protected function do_register(): void {
 		require_once __DIR__ . '/template-tags.php';
 
+		$this->container->register( AssetGroupPath::class );
 		$this->container->singleton( Template::class );
 		$this->container->singleton( Localization::class );
 		$this->container->singleton( Session::class );
@@ -141,7 +142,7 @@ class Controller extends Controller_Contract {
 		 * AJAX will power both frontend and backend, always register it.
 		 */
 		$this->container->register( Admin\Ajax::class );
-		
+
 		$this->container->register( Settings::class );
 
 		if ( is_admin() ) {
