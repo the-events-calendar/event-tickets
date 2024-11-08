@@ -40,7 +40,6 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
  */
 class Ajax extends Controller_Contract {
 	use Ajax_Methods;
-	use Built_Assets;
 	use Logging;
 
 	/**
@@ -384,9 +383,11 @@ class Ajax extends Controller_Contract {
 	private function register_assets(): void {
 		Asset::add(
 			'tec-tickets-seating-ajax',
-			$this->built_asset_url( 'ajax.js' ),
+			'ajax.js',
 			Tickets_Main::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
+			->prefix_asset_directory( false )
 			->add_localize_script( 'tec.tickets.seating.ajax', [ $this, 'get_ajax_data' ] )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
