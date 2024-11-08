@@ -11,7 +11,7 @@ namespace TEC\Tickets\Seating;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
-use TEC\Common\StellarWP\Assets\Asset;
+use TEC\Common\Asset;
 use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Layouts;
