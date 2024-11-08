@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Seating\Admin;
 
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Seating\Admin;
 use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
@@ -28,6 +29,37 @@ class Admin_Test extends Controller_Test_Case {
 	public function mock_admin_context(): void {
 		$this->set_fn_return( 'is_admin', true );
 		wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
+	}
+
+	public function asset_data_provider() {
+		$assets = [
+			'tec-tickets-seating-admin-maps'              => '/build/Seating/admin/maps.js',
+			'tec-tickets-seating-admin-maps-style'        => '/build/Seating/admin/maps.css',
+			'tec-tickets-seating-admin-layouts'           => '/build/Seating/admin/layouts.js',
+			'tec-tickets-seating-admin-layouts-style'     => '/build/Seating/admin/layouts.css',
+			'tec-tickets-seating-admin-map-edit'          => '/build/Seating/admin/mapEdit.js',
+			'tec-tickets-seating-admin-map-edit-style'    => '/build/Seating/admin/mapEdit.css',
+			'tec-tickets-seating-admin-layout-edit'       => '/build/Seating/admin/layoutEdit.js',
+			'tec-tickets-seating-admin-layout-edit-style' => '/build/Seating/admin/layoutEdit.css',
+		];
+
+		foreach ( $assets as $slug => $path ) {
+			yield $slug => [ $slug, $path ];
+		}
+	}
+
+	/**
+	 * @test
+	 * @dataProvider asset_data_provider
+	 */
+	public function it_should_locate_assets_where_expected( $slug, $path ) {
+		$this->make_controller()->register();
+
+		$this->assertTrue( Assets::init()->exists( $slug ) );
+
+		// We use false, because in CI mode the assets are not build so min aren't available. Its enough to check that the non-min is as expected.
+		$asset_url = Assets::init()->get( $slug )->get_url( false );
+		$this->assertEquals( plugins_url( $path, EVENT_TICKETS_MAIN_PLUGIN_FILE ), $asset_url );
 	}
 
 	public function tabs_data_provider(): array {
