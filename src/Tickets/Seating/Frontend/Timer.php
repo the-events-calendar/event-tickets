@@ -58,6 +58,15 @@ class Timer extends Controller_Contract {
 	const ACTION_INTERRUPT_GET_DATA = 'tec_tickets_seating_timer_interrupt_get_data';
 
 	/**
+	 * The AJAX action used from the JS code to signal the timer should pause to allow the user to checkout.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const ACTION_PAUSE_TO_CHECKOUT = 'tec_tickets_seating_timer_pause_to_checkout';
+
+	/**
 	 * A reference to the template object.
 	 *
 	 * @since 5.16.0
@@ -165,6 +174,8 @@ class Timer extends Controller_Contract {
 		add_action( 'wp_ajax_' . self::ACTION_SYNC, [ $this, 'ajax_sync' ] );
 		add_action( 'wp_ajax_nopriv_' . self::ACTION_INTERRUPT_GET_DATA, [ $this, 'ajax_interrupt' ] );
 		add_action( 'wp_ajax_' . self::ACTION_INTERRUPT_GET_DATA, [ $this, 'ajax_interrupt' ] );
+		add_action( 'wp_ajax_nopriv_' . self::ACTION_PAUSE_TO_CHECKOUT, [ $this, 'ajax_pause_to_checkout' ] );
+		add_action( 'wp_ajax_' . self::ACTION_PAUSE_TO_CHECKOUT, [ $this, 'ajax_pause_to_checkout' ] );
 
 		// Tickets Commerce checkout page: here the timer should be hydrated from the cookie, no arguments are needed.
 		add_action(
@@ -234,6 +245,8 @@ class Timer extends Controller_Contract {
 		remove_action( 'wp_ajax_' . self::ACTION_SYNC, [ $this, 'ajax_sync' ] );
 		remove_action( 'wp_ajax_nopriv_' . self::ACTION_INTERRUPT_GET_DATA, [ $this, 'ajax_interrupt' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_INTERRUPT_GET_DATA, [ $this, 'ajax_interrupt' ] );
+		remove_action( 'wp_ajax_nopriv_' . self::ACTION_PAUSE_TO_CHECKOUT, [ $this, 'ajax_pause_to_checkout' ] );
+		remove_action( 'wp_ajax_' . self::ACTION_PAUSE_TO_CHECKOUT, [ $this, 'ajax_pause_to_checkout' ] );
 
 		// Tickets Commerce checkout page: here the timer should be hydrated from the cookie, no arguments are needed.
 		remove_action(
@@ -334,7 +347,7 @@ class Timer extends Controller_Contract {
 	 */
 	public function get_timeout( $post_id ): int {
 		$limit_in_minutes = tribe( Settings::class )->get_reservation_time_limit();
-		
+
 		/**
 		 * Filters the seat selection timeout, default is 15 minutes.
 		 *
@@ -354,19 +367,23 @@ class Timer extends Controller_Contract {
 	 * @return array{
 	 *     ajaxUrl: string,
 	 *     ajaxNonce: string,
+	 *     checkoutGraceTime: int,
 	 *     ACTION_START: string,
 	 *     ACTION_TIME_LEFT: string,
 	 *     ACTION_REDIRECT: string,
 	 *     ACTION_INTERRUPT_GET_DATA: string,
+	 *     ACTION_PAUSE_TO_CHECKOUT: string,
 	 * } The data to be localized on the timer frontend.
 	 */
 	public function get_localized_data(): array {
 		return [
 			'ajaxUrl'                   => admin_url( 'admin-ajax.php' ),
 			'ajaxNonce'                 => wp_create_nonce( Session::COOKIE_NAME ),
+			'checkoutGraceTime'         => $this->get_checkout_grace_time(),
 			'ACTION_START'              => self::ACTION_START,
 			'ACTION_SYNC'               => self::ACTION_SYNC,
 			'ACTION_INTERRUPT_GET_DATA' => self::ACTION_INTERRUPT_GET_DATA,
+			'ACTION_PAUSE_TO_CHECKOUT'  => self::ACTION_PAUSE_TO_CHECKOUT,
 		];
 	}
 
@@ -610,5 +627,61 @@ class Timer extends Controller_Contract {
 	 */
 	public function get_current_post_id(): ?int {
 		return $this->current_post_id;
+	}
+
+	/**
+	 * Returns the filtered checkout grace time given to a user to complete the checkout process.
+	 *
+	 * @since TBD
+	 *
+	 * @return int The filtered checkout grace time.
+	 */
+	public function get_checkout_grace_time(): int {
+		/**
+		 * Filters the grace time given to a user to complete the checkout process.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $grace_time The grace time allowed to a user to complete the checkout process.
+		 */
+		return (int) apply_filters( 'tec_tickets_seating_checkout_grace_time', 60 );
+	}
+
+	/**
+	 * Handles the action from the backend signaling the user is checking out.
+	 *
+	 * @since TBD
+	 *
+	 * @return void  The AJAX response is sent back to the browser.
+	 */
+	public function ajax_pause_to_checkout(): void {
+		[ $token, $post_id ] = $this->ajax_check_request();
+
+		$has_tickets_available = $this->frontend->get_events_ticket_capacity_for_seating( $post_id );
+
+		if ( ! $has_tickets_available ) {
+			wp_send_json_success(
+				[
+					'secondsLeft' => 0,
+					'timestamp'   => microtime( true ),
+				]
+			);
+
+			return;
+		}
+
+		// From this moment, give the user about 60 seconds to complete the checkout flow.
+		$grace_time         = $this->get_checkout_grace_time();
+		$updated_expiration = $this->sessions->set_token_expiration_timestamp( $token, time() + $grace_time );
+
+		// If no tickets are available or the timestamp expiration update failed, the users should be interrupted.
+		$seconds_left = $updated_expiration !== false ? $this->sessions->get_seconds_left( $token ) : 0;
+
+		wp_send_json_success(
+			[
+				'secondsLeft' => $seconds_left,
+				'timestamp'   => microtime( true ),
+			]
+		);
 	}
 }
