@@ -176,21 +176,23 @@ const LayoutSelect = ({
 		);
 	}
 
-	function handleRemoveLayout() {
-		return async () => {
-			setIsLoading(true);
-			const url = new URL(ajaxUrl);
-			url.searchParams.set('_ajax_nonce', ajaxNonce);
-			url.searchParams.set('postId', postId);
-			url.searchParams.set('action', ACTION_REMOVE_EVENT_LAYOUT);
-			const response = await fetch(url.toString(), { method: 'POST' });
-
-			if ( response.status === 200 ) {
-				setIsLoading(false);
-				setRemoveModalOpen(false);
-				window.location.reload();
-			}
+	async function handleRemoveLayout() {
+		setIsLoading(true);
+		if ( await removeLayout() ) {
+			setIsLoading(false);
+			setRemoveModalOpen(false);
+			window.location.reload();
 		}
+	}
+
+	async function removeLayout() {
+		const url = new URL(ajaxUrl);
+		url.searchParams.set('_ajax_nonce', ajaxNonce);
+		url.searchParams.set('postId', postId);
+		url.searchParams.set('action', ACTION_REMOVE_EVENT_LAYOUT);
+		const response = await fetch(url.toString(), { method: 'POST' });
+
+		return response.status === 200;
 	}
 
 	function RemoveLayoutLink() {
