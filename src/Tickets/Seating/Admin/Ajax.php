@@ -18,7 +18,6 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Admin;
 use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Ajax_Methods;
-use TEC\Tickets\Seating\Built_Assets;
 use TEC\Tickets\Seating\Commerce\Controller;
 use TEC\Tickets\Seating\Logging;
 use TEC\Tickets\Seating\Meta;

@@ -12,7 +12,6 @@ namespace TEC\Tickets\Seating\Frontend;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\StellarWP\Assets\Asset;
-use TEC\Tickets\Seating\Built_Assets;
 use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Settings;
 use TEC\Tickets\Seating\Tables\Sessions;

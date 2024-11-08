@@ -14,11 +14,9 @@ use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Admin\Attendees\Page as Attendee_Page;
-use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
 use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Ajax_Methods;
-use TEC\Tickets\Seating\Built_Assets;
 use TEC\Tickets\Seating\Frontend;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Meta;
@@ -42,7 +40,6 @@ use TEC\Tickets\Commerce\Status\Status_Interface;
  * @package TEC/Tickets/Seating/Orders
  */
 class Controller extends Controller_Contract {
-	use Built_Assets;
 	use Ajax_Methods;
 
 	/**
@@ -531,9 +528,11 @@ class Controller extends Controller_Contract {
 	private function register_assets(): void {
 		Asset::add(
 			'tec-tickets-seating-admin-seats-report',
-			$this->built_asset_url( 'admin/seatsReport.js' ),
+			'admin/seatsReport.js',
 			Tickets_Main::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
+			->prefix_asset_directory( false )
 			->add_dependency( 'tec-tickets-seating-service-bundle' )
 			->enqueue_on( Seats_Report::$asset_action )
 			->add_localize_script(
@@ -546,9 +545,11 @@ class Controller extends Controller_Contract {
 
 		Asset::add(
 			'tec-tickets-seating-admin-seats-report-style',
-			$this->built_asset_url( 'admin/seatsReport.css' ),
+			'admin/seatsReport.css',
 			Tickets_Main::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
+			->prefix_asset_directory( false )
 			->add_to_group( 'tec-tickets-seating-admin' )
 			->add_to_group( 'tec-tickets-seating' )
 			->enqueue_on( Seats_Report::$asset_action )

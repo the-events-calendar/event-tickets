@@ -91,6 +91,31 @@ class Controller_Test extends Controller_Test_Case {
 		);
 	}
 
+	public function asset_data_provider() {
+		$assets = [
+			'tec-tickets-seating-admin-seats-report'       => '/build/Seating/admin/seatsReport.js',
+			'tec-tickets-seating-admin-seats-report-style' => '/build/Seating/admin/seatsReport.css',
+		];
+
+		foreach ( $assets as $slug => $path ) {
+			yield $slug => [ $slug, $path ];
+		}
+	}
+
+	/**
+	 * @test
+	 * @dataProvider asset_data_provider
+	 */
+	public function it_should_locate_assets_where_expected( $slug, $path ) {
+		$this->make_controller()->register();
+
+		$this->assertTrue( Assets::init()->exists( $slug ) );
+
+		// We use false, because in CI mode the assets are not build so min aren't available. Its enough to check that the non-min is as expected.
+		$asset_url = Assets::init()->get( $slug )->get_url( false );
+		$this->assertEquals( plugins_url( $path, EVENT_TICKETS_MAIN_PLUGIN_FILE ), $asset_url );
+	}
+
 	public function attendee_data_provider(): Generator {
 		yield 'single event with 3 seated ticket attendee' => [
 			function (): array {
