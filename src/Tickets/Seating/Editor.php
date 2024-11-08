@@ -25,8 +25,6 @@ use WP_REST_Request;
  * @package TEC\Controller;
  */
 class Editor extends \TEC\Common\Contracts\Provider\Controller {
-	use Built_Assets;
-
 	/**
 	 * Unregisters the Controller by unsubscribing from WordPress hooks.
 	 *
@@ -209,9 +207,11 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	private function register_block_editor_assets(): void {
 		Asset::add(
 			'tec-tickets-seating-block-editor',
-			$this->built_asset_url( 'blockEditor.js' ),
+			'blockEditor.js',
 			Tickets::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
+			->prefix_asset_directory( false )
 			->set_dependencies(
 				'wp-hooks',
 				'react',
@@ -236,9 +236,11 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 
 		Asset::add(
 			'tec-tickets-seating-block-editor-style',
-			$this->built_asset_url( 'blockEditor.css' ),
+			'blockEditor.css',
 			Tickets::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
+			->prefix_asset_directory( false )
 			->enqueue_on( 'enqueue_block_editor_assets' )
 			->add_to_group( 'tec-tickets-seating-editor' )
 			->add_to_group( 'tec-tickets-seating' )

@@ -42,6 +42,31 @@ class Editor_Test extends Controller_Test_Case {
 		$pagenow = '';
 	}
 
+	public function asset_data_provider() {
+		$assets = [
+			'tec-tickets-seating-block-editor'       => '/build/Seating/blockEditor.js',
+			'tec-tickets-seating-block-editor-style' => '/build/Seating/blockEditor.css',
+		];
+
+		foreach ( $assets as $slug => $path ) {
+			yield $slug => [ $slug, $path ];
+		}
+	}
+
+	/**
+	 * @test
+	 * @dataProvider asset_data_provider
+	 */
+	public function it_should_locate_assets_where_expected( $slug, $path ) {
+		$this->make_controller()->register();
+
+		$this->assertTrue( Assets::init()->exists( $slug ) );
+
+		// We use false, because in CI mode the assets are not build so min aren't available. Its enough to check that the non-min is as expected.
+		$asset_url = Assets::init()->get( $slug )->get_url( false );
+		$this->assertEquals( plugins_url( $path, EVENT_TICKETS_MAIN_PLUGIN_FILE ), $asset_url );
+	}
+
 	/**
 	 * @test
 	 */

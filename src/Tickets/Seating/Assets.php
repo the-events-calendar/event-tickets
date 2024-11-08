@@ -13,7 +13,6 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Tickets\Seating\Admin\Events\Associated_Events;
 use TEC\Tickets\Seating\Admin\Maps_Layouts_Home_Page;
-use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Layouts;
 use TEC\Tickets\Seating\Orders\Seats_Report;
 use Tribe__Tickets__Main as ET;
@@ -27,8 +26,6 @@ use Tribe__Tickets__Tickets as Tickets;
  * @package TEC\Tickets\Seating;
  */
 class Assets extends Controller_Contract {
-	use Built_Assets;
-
 	/**
 	 * Unregisters the controller by unsubscribing from WordPress hooks.
 	 *
