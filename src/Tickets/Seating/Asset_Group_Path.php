@@ -14,13 +14,13 @@ use TEC\Common\StellarWP\Assets\Config;
 use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
- * Class AssetGroupPath.
+ * Class Asset_Group_Path.
  *
  * @since TBD
  *
  * @package TEC\Controller;
  */
-class AssetGroupPath extends Controller_Contract {
+class Asset_Group_Path extends Controller_Contract {
 
 	/**
 	 * Unsubscribes from WordPress hooks.
@@ -30,8 +30,7 @@ class AssetGroupPath extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
-		remove_action( 'tec_tickets_seating_tables_cron', [ Sessions::class, 'remove_expired_sessions' ] );
-		wp_clear_scheduled_hook( 'tec_tickets_seating_tables_cron' );
+		// Nothing to do here.
 	}
 
 	/**

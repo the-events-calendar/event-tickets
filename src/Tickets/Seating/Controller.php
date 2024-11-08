@@ -101,7 +101,7 @@ class Controller extends Controller_Contract {
 	protected function do_register(): void {
 		require_once __DIR__ . '/template-tags.php';
 
-		$this->container->register( AssetGroupPath::class );
+		$this->container->register( Asset_Group_Path::class );
 		$this->container->singleton( Template::class );
 		$this->container->singleton( Localization::class );
 		$this->container->singleton( Session::class );
