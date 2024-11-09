@@ -2773,12 +2773,12 @@ class Ajax_Test extends Controller_Test_Case {
 		
 		// Confirm the tickets have no layout set.
 		$this->assertEquals( 1, $ticket_1->capacity() );
-		$this->assertEquals( 70 - 5, $ticket_1->stock() );
+		$this->assertEquals( 1, $ticket_1->stock() );
 		$this->assertEquals( 1, $ticket_1->available() );
 		$this->assertEquals( 1, $ticket_1->inventory() );
 		
 		$this->assertEquals( 1, $ticket_2->capacity() );
-		$this->assertEquals( 30 - 5, $ticket_2->stock() );
+		$this->assertEquals( 1, $ticket_2->stock() );
 		$this->assertEquals( 1, $ticket_2->available() );
 		$this->assertEquals( 1, $ticket_2->inventory() );
 		
