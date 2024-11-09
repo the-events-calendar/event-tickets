@@ -1307,17 +1307,20 @@ class Ajax extends Controller_Contract {
 				continue;
 			}
 			
-			// Switch ticket to own stock mode.
-			update_post_meta( $ticket_id, Global_Stock::TICKET_STOCK_MODE, Global_Stock::OWN_STOCK_MODE );
-			
 			// Remove slr meta.
 			delete_post_meta( $ticket_id, Meta::META_KEY_ENABLED );
 			delete_post_meta( $ticket_id, Meta::META_KEY_LAYOUT_ID );
 			delete_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE );
 			
+			// Switch ticket to own stock mode.
+			update_post_meta( $ticket_id, Global_Stock::TICKET_STOCK_MODE, Global_Stock::OWN_STOCK_MODE );
+			
 			// Set ticket capacity to 1.
 			tribe_tickets_delete_capacity( $ticket_id );
 			tribe_tickets_update_capacity( $ticket_id, 1 );
+			
+			// Update ticket stock.
+			update_post_meta( $ticket_id, '_stock', 1 );
 			
 			++$updated_tickets;
 			clean_post_cache( $ticket_id );
