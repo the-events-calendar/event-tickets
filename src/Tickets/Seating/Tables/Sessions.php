@@ -449,7 +449,7 @@ class Sessions extends Table {
 				'UPDATE %i SET expiration = %d, expiration_lock = %d WHERE token = %s AND expiration_lock = 0',
 				self::table_name(),
 				$timestamp,
-				(int)$lock,
+				(int) $lock,
 				$token
 			);
 
