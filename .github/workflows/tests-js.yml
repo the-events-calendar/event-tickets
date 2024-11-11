@@ -7,7 +7,7 @@ jobs:
       fail-fast: false
       matrix:
         suite:
-          - slr_jest
+          - tests/slr_jest
           - src/resources/js
           - src/modules
     runs-on: ubuntu-latest
@@ -34,4 +34,4 @@ jobs:
       - name: Install node modules
         run: npm ci
       - name: Run jest task
-        run: npx jest tests/${{ matrix.suite }}/
+        run: npx jest ${{ matrix.suite }}/
