@@ -54,7 +54,8 @@
     ],
     "jest": [
       "src/modules/**/__tests__/**/*.js",
-      "src/resources/js/**/__tests__/**/*.js"
+      "src/resources/js/**/__tests__/**/*.js",
+      "tests/**/*.spec.js"
     ]
   },
   "scripts": {
