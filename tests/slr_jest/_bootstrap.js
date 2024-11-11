@@ -93,11 +93,14 @@ global.tec.tickets.seating = {
 		session: {
 			ajaxUrl: 'https://wordpress.test/wp-admin/admin-ajax.php',
 			ajaxNonce: '1234567890',
+			checkoutGraceTime: 60,
 			ACTION_START: 'tec_tickets_seating_session_start',
 			ACTION_SYNC: 'tec_tickets_seating_session_sync',
 			ACTION_INTERRUPT_GET_DATA:
 				'tec_tickets_seating_session_interrupt_get_data',
 			ACTION_INTERRUPT: 'tec_tickets_seating_session_interrupt',
+			ACTION_PAUSE_TO_CHECKOUT:
+				'tec_tickets_seating_timer_pause_to_checkout',
 		},
 	},
 	currency: {

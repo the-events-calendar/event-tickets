@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Seating\Tables;
 
+use Exception;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
 use TEC\Tickets\Seating\Logging;
@@ -85,7 +86,7 @@ class Sessions extends Table {
 			);
 
 			return (int) DB::query( $query );
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			( new self() )->log_error(
 				'Failed to remove expired sessions.',
 				[
@@ -149,7 +150,7 @@ class Sessions extends Table {
 			);
 
 			return DB::query( $query ) !== false;
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			$this->log_error(
 				'Failed to upsert the session.',
 				[
@@ -182,7 +183,7 @@ class Sessions extends Table {
 				$token
 			);
 			$expiration = DB::get_var( $query );
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			$this->log_error(
 				'Failed to get the seconds left for the token.',
 				[
@@ -225,7 +226,7 @@ class Sessions extends Table {
 				$token
 			);
 			$reservations = DB::get_var( $query );
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			$this->log_error(
 				'Failed to get the reservations for the token.',
 				[
@@ -340,7 +341,7 @@ class Sessions extends Table {
 			}
 
 			return $updated !== false;
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			$this->log_error(
 				'Failed to update the reservations for the token.',
 				[
@@ -374,7 +375,7 @@ class Sessions extends Table {
 			);
 
 			return DB::query( $query ) !== false;
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			$this->log_error(
 				'Failed to delete the sessions for the token.',
 				[
@@ -396,9 +397,9 @@ class Sessions extends Table {
 	 *
 	 * @param string $token The token to clear the reservations for.
 	 *
-	 * @return bool Whether the reservations were cleared or not.
+	 * @return bool|false Whether the reservations were cleared or not.
 	 */
-	public function clear_token_reservations( string $token ): bool {
+	public function clear_token_reservations( string $token ) {
 		try {
 			$query = DB::prepare(
 				"UPDATE %i SET reservations = '' WHERE token = %s",
@@ -407,9 +408,44 @@ class Sessions extends Table {
 			);
 
 			return DB::query( $query ) !== false;
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			$this->log_error(
 				'Failed to clear the reservations for the token.',
+				[
+					'source' => __METHOD__,
+					'code'   => $e->getCode(),
+					'token'  => $token,
+					'error'  => $e->getMessage(),
+				]
+			);
+
+			return false;
+		}
+	}
+
+	/**
+	 * Updates a session expiration timestamp by its token.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $token The token to update the session for.
+	 * @param int    $timestamp The UNIX timestamp to update the expiration to.
+	 *
+	 * @return bool|false Either the number of rows updated, or `false` on failure.
+	 */
+	public function set_token_expiration_timestamp( string $token, int $timestamp ) {
+		try {
+			$query = DB::prepare(
+				'UPDATE %i SET expiration = %d WHERE token = %s',
+				self::table_name(),
+				$timestamp,
+				$token
+			);
+
+			return DB::query( $query ) !== false;
+		} catch ( Exception $e ) {
+			$this->log_error(
+				'Failed to update the expiration timestamp for the token.',
 				[
 					'source' => __METHOD__,
 					'code'   => $e->getCode(),
