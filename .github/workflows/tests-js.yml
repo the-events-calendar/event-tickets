@@ -1,4 +1,4 @@
-name: 'Jest JS Tests'
+name: 'JS Tests'
 on:
   pull_request:
 jobs:
