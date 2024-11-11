@@ -32,7 +32,7 @@ class Sessions extends Table {
 	 *
 	 * @var string
 	 */
-	const SCHEMA_VERSION = '1.0.0';
+	const SCHEMA_VERSION = '1.1.0';
 
 	/**
 	 * The base table name, without the table prefix.
@@ -120,6 +120,7 @@ class Sessions extends Table {
 				`object_id` bigint(20) NOT NULL,
 				`expiration` int(11) NOT NULL,
 				`reservations` longblob DEFAULT '',
+				`expiration_lock` int(1) DEFAULT 0,
 				PRIMARY KEY (`token`)
 			) {$charset_collate};
 		";
@@ -426,19 +427,29 @@ class Sessions extends Table {
 	/**
 	 * Updates a session expiration timestamp by its token.
 	 *
+	 * Note the expiration will not be updated if the lock is set.
+	 *
 	 * @since TBD
 	 *
-	 * @param string $token The token to update the session for.
+	 * @param string $token     The token to update the session for.
 	 * @param int    $timestamp The UNIX timestamp to update the expiration to.
+	 * @param bool   $lock      Whether to lock the expiration timestamp or not. Locking the expiration timestamp
+	 *                          will prevent further changes until unlocked.
 	 *
-	 * @return bool|false Either the number of rows updated, or `false` on failure.
+	 * @return bool Whether the expiration timestamp was updated or not. If a lock is set previously to this call,
+	 *              then the method will return `false`.
 	 */
-	public function set_token_expiration_timestamp( string $token, int $timestamp ) {
+	public function set_token_expiration_timestamp( string $token, int $timestamp, bool $lock = false ) {
+		if ( $this->is_locked( $token ) ) {
+			return false;
+		}
+
 		try {
 			$query = DB::prepare(
-				'UPDATE %i SET expiration = %d WHERE token = %s',
+				'UPDATE %i SET expiration = %d, expiration_lock = %d WHERE token = %s AND expiration_lock = 0',
 				self::table_name(),
 				$timestamp,
+				(int)$lock,
 				$token
 			);
 
@@ -446,6 +457,39 @@ class Sessions extends Table {
 		} catch ( Exception $e ) {
 			$this->log_error(
 				'Failed to update the expiration timestamp for the token.',
+				[
+					'source' => __METHOD__,
+					'code'   => $e->getCode(),
+					'token'  => $token,
+					'error'  => $e->getMessage(),
+				]
+			);
+
+			return false;
+		}
+	}
+
+	/**
+	 * Returns whether the expiration lock for a token is set or not.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $token The token to check the expiration lock for.
+	 *
+	 * @return bool Whether the expiration lock for a token is set or not.
+	 */
+	public function is_locked( string $token ): bool {
+		try {
+			$query = DB::prepare(
+				'SELECT expiration_lock FROM %i WHERE token = %s',
+				self::table_name(),
+				$token
+			);
+
+			return (bool) DB::get_var( $query );
+		} catch ( Exception $e ) {
+			$this->log_error(
+				'Failed to get the expiration lock status for the token.',
 				[
 					'source' => __METHOD__,
 					'code'   => $e->getCode(),
