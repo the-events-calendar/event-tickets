@@ -314,7 +314,6 @@ class Admin extends Controller_Contract {
 			Tickets::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->prefix_asset_directory( false )
 			->add_dependency( 'tec-tickets-seating-service-bundle' )
 			->add_to_group( 'tec-tickets-seating-admin' )
 			->add_to_group( 'tec-tickets-seating' )
@@ -327,7 +326,6 @@ class Admin extends Controller_Contract {
 			Tickets::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->prefix_asset_directory( false )
 			->add_to_group( 'tec-tickets-seating-admin' )
 			->add_to_group( 'tec-tickets-seating' )
 			->enqueue_on( $action )
@@ -353,7 +351,6 @@ class Admin extends Controller_Contract {
 			Tickets::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->prefix_asset_directory( false )
 			->set_dependencies( 'tec-tickets-seating-service-bundle', 'tribe-dialog-js' )
 			->add_localize_script( 'tec.tickets.seating.layouts', $data )
 			->add_to_group( 'tec-tickets-seating-admin' )
@@ -367,7 +364,6 @@ class Admin extends Controller_Contract {
 			Tickets::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->prefix_asset_directory( false )
 			->set_dependencies( 'tribe-dialog' )
 			->add_to_group( 'tec-tickets-seating-admin' )
 			->add_to_group( 'tec-tickets-seating' )
@@ -390,7 +386,6 @@ class Admin extends Controller_Contract {
 			Tickets::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->prefix_asset_directory( false )
 			->add_dependency( 'tec-tickets-seating-service-bundle' )
 			->enqueue_on( $action )
 			->add_to_group( 'tec-tickets-seating-admin' )
@@ -403,7 +398,6 @@ class Admin extends Controller_Contract {
 			Tickets::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->prefix_asset_directory( false )
 			->add_to_group( 'tec-tickets-seating-admin' )
 			->add_to_group( 'tec-tickets-seating' )
 			->enqueue_on( $action )
@@ -426,7 +420,6 @@ class Admin extends Controller_Contract {
 			Tickets::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->prefix_asset_directory( false )
 			->add_dependency( 'tec-tickets-seating-service-bundle' )
 			->enqueue_on( $action )
 			->add_to_group( 'tec-tickets-seating-admin' )
@@ -439,7 +432,6 @@ class Admin extends Controller_Contract {
 			Tickets::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->prefix_asset_directory( false )
 			->add_to_group( 'tec-tickets-seating-admin' )
 			->add_to_group( 'tec-tickets-seating' )
 			->enqueue_on( $action )

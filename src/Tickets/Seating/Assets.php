@@ -131,7 +131,6 @@ class Assets extends Controller_Contract {
 			ET::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->prefix_asset_directory( false )
 			->add_localize_script( 'tec.tickets.seating.utils', [ $this, 'get_utils_data' ] )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
@@ -178,7 +177,6 @@ class Assets extends Controller_Contract {
 			ET::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->prefix_asset_directory( false )
 			->set_dependencies(
 				'tec-tickets-vendor-babel',
 				'wp-i18n',
@@ -204,7 +202,6 @@ class Assets extends Controller_Contract {
 			ET::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->prefix_asset_directory( false )
 			->add_localize_script( 'tec.tickets.seating.currency', [ $this, 'get_currency_data' ] )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();

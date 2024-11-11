@@ -204,7 +204,6 @@ class Timer extends Controller_Contract {
 			ET::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->prefix_asset_directory( false )
 			->set_dependencies(
 				'tribe-dialog-js',
 				'wp-hooks',
@@ -223,7 +222,6 @@ class Timer extends Controller_Contract {
 			ET::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->prefix_asset_directory( false )
 			->set_dependencies( 'tribe-dialog' )
 			->enqueue_on( 'tec_tickets_seating_seat_selection_timer' )
 			->add_to_group( 'tec-tickets-seating-frontend' )

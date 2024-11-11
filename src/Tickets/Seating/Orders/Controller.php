@@ -532,7 +532,6 @@ class Controller extends Controller_Contract {
 			Tickets_Main::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->prefix_asset_directory( false )
 			->add_dependency( 'tec-tickets-seating-service-bundle' )
 			->enqueue_on( Seats_Report::$asset_action )
 			->add_localize_script(
@@ -549,7 +548,6 @@ class Controller extends Controller_Contract {
 			Tickets_Main::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->prefix_asset_directory( false )
 			->add_to_group( 'tec-tickets-seating-admin' )
 			->add_to_group( 'tec-tickets-seating' )
 			->enqueue_on( Seats_Report::$asset_action )
