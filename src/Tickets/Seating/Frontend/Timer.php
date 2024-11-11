@@ -672,7 +672,7 @@ class Timer extends Controller_Contract {
 
 		// From this moment, give the user about 60 seconds to complete the checkout flow.
 		$grace_time         = $this->get_checkout_grace_time();
-		$updated_expiration = $this->sessions->set_token_expiration_timestamp( $token, time() + $grace_time );
+		$updated_expiration = $this->sessions->set_token_expiration_timestamp( $token, time() + $grace_time, true );
 
 		// If no tickets are available or the timestamp expiration update failed, the users should be interrupted.
 		$seconds_left = $updated_expiration !== false ? $this->sessions->get_seconds_left( $token ) : 0;

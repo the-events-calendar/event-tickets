@@ -1067,9 +1067,10 @@ class Timer_Test extends Controller_Test_Case {
 		] ) );
 		$assert = $this;
 		$this->test_services->bind( Sessions::class, $this->makeEmpty( Sessions::class, [
-			'set_token_expiration_timestamp' => function ( string $token, int $timestamp ) use ( $grace_time, $assert ) {
+			'set_token_expiration_timestamp' => function ( string $token, int $timestamp, bool $lock ) use ( $grace_time, $assert ) {
 				$assert->assertEquals( $token, 'test-token' );
 				$assert->assertEqualsWithDelta( time() + $grace_time, $timestamp, 5);
+				$assert->assertTrue($lock);
 
 				return true;
 			},
