@@ -114,7 +114,7 @@ class Error_Content {
 					$settings_link,
 					$login_link
 				);
-			
+				break;
 			default:
 		}
 
