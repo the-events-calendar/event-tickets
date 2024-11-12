@@ -10,10 +10,9 @@
 namespace TEC\Tickets\Seating;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Common\StellarWP\Assets\Asset;
+use TEC\Common\Asset;
 use TEC\Tickets\Seating\Admin\Events\Associated_Events;
 use TEC\Tickets\Seating\Admin\Maps_Layouts_Home_Page;
-use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Layouts;
 use TEC\Tickets\Seating\Orders\Seats_Report;
 use Tribe__Tickets__Main as ET;
@@ -27,8 +26,6 @@ use Tribe__Tickets__Tickets as Tickets;
  * @package TEC\Tickets\Seating;
  */
 class Assets extends Controller_Contract {
-	use Built_Assets;
-
 	/**
 	 * Unregisters the controller by unsubscribing from WordPress hooks.
 	 *
@@ -130,9 +127,10 @@ class Assets extends Controller_Contract {
 	private function register_utils_asset(): void {
 		Asset::add(
 			'tec-tickets-seating-utils',
-			$this->built_asset_url( 'utils.js' ),
+			'utils.js',
 			ET::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
 			->add_localize_script( 'tec.tickets.seating.utils', [ $this, 'get_utils_data' ] )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
@@ -175,9 +173,10 @@ class Assets extends Controller_Contract {
 	private function register_service_bundle(): void {
 		Asset::add(
 			'tec-tickets-seating-service-bundle',
-			$this->built_asset_url( 'service.js' ),
+			'service.js',
 			ET::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
 			->set_dependencies(
 				'tec-tickets-vendor-babel',
 				'wp-i18n',
@@ -199,9 +198,10 @@ class Assets extends Controller_Contract {
 	private function register_currency_asset(): void {
 		Asset::add(
 			'tec-tickets-seating-currency',
-			$this->built_asset_url( 'currency.js' ),
+			'currency.js',
 			ET::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
 			->add_localize_script( 'tec.tickets.seating.currency', [ $this, 'get_currency_data' ] )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();

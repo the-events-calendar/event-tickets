@@ -22,7 +22,7 @@ use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Data_API as Data_API;
 use Tribe__Tickets__Global_Stock as Global_Stock;
-
+use TEC\Common\StellarWP\Assets\Assets;
 class Timer_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
 	use With_Uopz;
@@ -67,6 +67,31 @@ class Timer_Test extends Controller_Test_Case {
 	 */
 	public function reset_cookie(): void {
 		unset( $_COOKIE[ Session::COOKIE_NAME ] );
+	}
+
+	public function asset_data_provider() {
+		$assets = [
+			'tec-tickets-seating-session'       => '/build/Seating/frontend/session.js',
+			'tec-tickets-seating-session-style' => '/build/Seating/frontend/session.css',
+		];
+
+		foreach ( $assets as $slug => $path ) {
+			yield $slug => [ $slug, $path ];
+		}
+	}
+
+	/**
+	 * @test
+	 * @dataProvider asset_data_provider
+	 */
+	public function it_should_locate_assets_where_expected( $slug, $path ) {
+		$this->make_controller()->register();
+
+		$this->assertTrue( Assets::init()->exists( $slug ) );
+
+		// We use false, because in CI mode the assets are not build so min aren't available. Its enough to check that the non-min is as expected.
+		$asset_url = Assets::init()->get( $slug )->get_url( false );
+		$this->assertEquals( plugins_url( $path, EVENT_TICKETS_MAIN_PLUGIN_FILE ), $asset_url );
 	}
 
 	public function test_render_with_args(): void {
@@ -1067,9 +1092,10 @@ class Timer_Test extends Controller_Test_Case {
 		] ) );
 		$assert = $this;
 		$this->test_services->bind( Sessions::class, $this->makeEmpty( Sessions::class, [
-			'set_token_expiration_timestamp' => function ( string $token, int $timestamp ) use ( $grace_time, $assert ) {
+			'set_token_expiration_timestamp' => function ( string $token, int $timestamp, bool $lock ) use ( $grace_time, $assert ) {
 				$assert->assertEquals( $token, 'test-token' );
 				$assert->assertEqualsWithDelta( time() + $grace_time, $timestamp, 5);
+				$assert->assertTrue($lock);
 
 				return true;
 			},
