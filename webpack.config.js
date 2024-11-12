@@ -242,6 +242,16 @@ const targets = [
 				'build/Seating/frontend/session.css',
 		},
 	},
+	{
+		name: 'order-modifiers-rest',
+		entry: './src/Tickets/Commerce/Order_Modifiers/app/rest/index.js',
+		outputScript: './build/OrderModifiers/rest.min.js',
+		outputStyle: `build/OrderModifiers/rest.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/order-modifiers-rest.js': 'build/OrderModifiers/rest.js',
+			'src/resources/css/app/order-modifiers-rest.css': 'build/OrderModifiers/rest.css',
+		},
+	}
 ];
 
 // A function cannot be spread directly, we need this temporary variable.
@@ -273,6 +283,7 @@ const config = merge(common, {
 			'@tec/tickets/seating/currency': 'tec.tickets.seating.currency',
 			'@tec/tickets/seating/frontend/session':
 				'tec.tickets.seating.frontend.session',
+			'@tec/tickets/order-modifiers/rest': 'tec.tickets.orderModifiers.rest',
 		},
 	],
 	// Configure multiple entry points.

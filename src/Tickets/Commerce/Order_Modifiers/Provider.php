@@ -12,6 +12,7 @@ namespace TEC\Tickets\Commerce\Order_Modifiers;
 
 use TEC\Common\lucatume\DI52\ServiceProvider;
 use TEC\Tickets\Commerce\Order_Modifiers\Admin\Order_Modifier_Fee_Metabox;
+use TEC\Tickets\Commerce\Order_Modifiers\API\Localization;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Paypal\Fees as Paypal_Checkout_Fees;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe\Fees as Stripe_Checkout_Fees;
@@ -77,7 +78,7 @@ final class Provider extends ServiceProvider {
 		$this->container->tag( $this->tagged_classes, 'order_modifiers' );
 
 		foreach ( $this->container->tagged( 'order_modifiers' ) as $class_instance ) {
-			if ( $class_instance instanceof Registerable ) {
+			if ( $class_instance instanceof Registerable || method_exists( $class_instance, 'register' ) ) {
 				$class_instance->register();
 			}
 		}
@@ -98,6 +99,7 @@ final class Provider extends ServiceProvider {
 		$this->tagged_classes = array_merge(
 			$this->tagged_classes,
 			[
+				Localization::class,
 				Modifier_Admin_Handler::class,
 			]
 		);
