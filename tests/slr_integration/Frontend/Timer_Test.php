@@ -22,8 +22,7 @@ use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Data_API as Data_API;
 use Tribe__Tickets__Global_Stock as Global_Stock;
-use T
-EC\Common\StellarWP\Assets\Assets;
+use TEC\Common\StellarWP\Assets\Assets;
 class Timer_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
 	use With_Uopz;
