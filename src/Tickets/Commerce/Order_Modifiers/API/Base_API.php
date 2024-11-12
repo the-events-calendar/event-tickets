@@ -20,12 +20,7 @@ use WP_REST_Response as Response;
  */
 abstract class Base_API implements Registerable {
 
-	/**
-	 * The namespace for the API.
-	 *
-	 * @var string
-	 */
-	protected string $namespace = 'tribe/tickets/v1';
+	use Namespace_Trait;
 
 	/**
 	 * Get the permission callback.
