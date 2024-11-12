@@ -12,6 +12,8 @@ namespace TEC\Tickets\Seating;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\Seating\Frontend\Session;
+use TEC\Common\StellarWP\Assets\Config;
+use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
  * Class Controller
@@ -98,6 +100,9 @@ class Controller extends Controller_Contract {
 	 */
 	protected function do_register(): void {
 		require_once __DIR__ . '/template-tags.php';
+
+		// Add the group path for the seating assets.
+		Config::add_group_path( 'tec-seating', Tickets_Plugin::instance()->plugin_path . 'build/', 'Seating/' );
 
 		$this->container->register( Asset_Group_Path::class );
 		$this->container->singleton( Template::class );
