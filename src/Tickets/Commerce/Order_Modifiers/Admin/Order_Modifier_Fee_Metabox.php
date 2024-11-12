@@ -13,6 +13,7 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Admin;
 
+use stdClass;
 use TEC\Tickets\Commerce\Order_Modifiers\Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Factory;
@@ -216,7 +217,16 @@ class Order_Modifier_Fee_Metabox implements Registerable {
 		$ticket_order_modifier_fees = array_merge( $raw_data['ticket_order_modifier_fees'], $automatic_fee_ids );
 
 		// Ensure IDs are integers.
-		$fee_ids = array_map( 'absint', $ticket_order_modifier_fees );
+		$fee_ids = array_map(
+			function ( $fee ) {
+				if ( $fee instanceof stdClass ) {
+					return (int) $fee->id;
+				} else {
+					return (int) $fee;
+				}
+			},
+			$ticket_order_modifier_fees
+		);
 
 		// Sync the relationships between the selected fees and the ticket.
 		$this->manager->sync_modifier_relationships( $fee_ids, [ $ticket->ID ] );
