@@ -12,7 +12,7 @@ namespace TEC\Tickets\Seating;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
-use TEC\Common\StellarWP\Assets\Asset;
+use TEC\Common\Asset;
 use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Frontend\Timer;
@@ -31,8 +31,6 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
  * @package TEC\Controller;
  */
 class Frontend extends Controller_Contract {
-	use Built_Assets;
-
 	/**
 	 * The ID of the modal used to display the seat selection modal.
 	 *
@@ -312,9 +310,10 @@ class Frontend extends Controller_Contract {
 		// Register the front-end JS.
 		Asset::add(
 			'tec-tickets-seating-frontend',
-			$this->built_asset_url( 'frontend/ticketsBlock.js' ),
+			'frontend/ticketsBlock.js',
 			ET::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
 			->set_dependencies(
 				'tribe-dialog-js',
 				'tec-tickets-seating-service-bundle',
@@ -334,9 +333,10 @@ class Frontend extends Controller_Contract {
 		// Register the front-end CSS.
 		Asset::add(
 			'tec-tickets-seating-frontend-style',
-			$this->built_asset_url( 'frontend/ticketsBlock.css' ),
+			'frontend/ticketsBlock.css',
 			ET::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
 			->enqueue_on( 'wp_enqueue_scripts' )
 			->add_to_group( 'tec-tickets-seating-frontend' )
 			->add_to_group( 'tec-tickets-seating' )

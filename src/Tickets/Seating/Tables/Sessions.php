@@ -120,7 +120,7 @@ class Sessions extends Table {
 				`object_id` bigint(20) NOT NULL,
 				`expiration` int(11) NOT NULL,
 				`reservations` longblob DEFAULT '',
-				`expiration_lock` int(1) DEFAULT 0,
+				`expiration_lock` boolean DEFAULT 0,
 				PRIMARY KEY (`token`)
 			) {$charset_collate};
 		";
@@ -449,7 +449,7 @@ class Sessions extends Table {
 				'UPDATE %i SET expiration = %d, expiration_lock = %d WHERE token = %s AND expiration_lock = 0',
 				self::table_name(),
 				$timestamp,
-				(int)$lock,
+				(int) $lock,
 				$token
 			);
 

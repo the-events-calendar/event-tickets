@@ -2,9 +2,7 @@
 
 namespace TEC\Tickets\Seating\Tables;
 
-use Exception;
 use lucatume\WPBrowser\TestCase\WPTestCase;
-use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Seating\Tests\Integration\Truncates_Custom_Tables;
 use Tribe\Tests\Traits\With_Uopz;
 
