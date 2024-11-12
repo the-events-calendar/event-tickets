@@ -28,6 +28,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use Tribe__Tickets__Global_Stock as Global_Stock;
+use TEC\Common\StellarWP\Assets\Assets;
 
 class Ajax_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -60,6 +61,30 @@ class Ajax_Test extends Controller_Test_Case {
 		Seat_Types_Table::truncate();
 		Layouts_Table::truncate();
 		Sessions::truncate();
+	}
+
+	public function asset_data_provider() {
+		$assets = [
+			'tec-tickets-seating-ajax' => '/build/Seating/ajax.js',
+		];
+
+		foreach ( $assets as $slug => $path ) {
+			yield $slug => [ $slug, $path ];
+		}
+	}
+
+	/**
+	 * @test
+	 * @dataProvider asset_data_provider
+	 */
+	public function it_should_locate_assets_where_expected( $slug, $path ) {
+		$this->make_controller()->register();
+
+		$this->assertTrue( Assets::init()->exists( $slug ) );
+
+		// We use false, because in CI mode the assets are not build so min aren't available. Its enough to check that the non-min is as expected.
+		$asset_url = Assets::init()->get( $slug )->get_url( false );
+		$this->assertEquals( plugins_url( $path, EVENT_TICKETS_MAIN_PLUGIN_FILE ), $asset_url );
 	}
 
 	public function test_get_localized_data(): void {

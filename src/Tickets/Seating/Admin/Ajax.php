@@ -11,14 +11,13 @@ namespace TEC\Tickets\Seating\Admin;
 
 use TEC\Common\Contracts\Container;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Common\StellarWP\Assets\Asset;
+use TEC\Common\Asset;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Admin;
 use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Ajax_Methods;
-use TEC\Tickets\Seating\Built_Assets;
 use TEC\Tickets\Seating\Commerce\Controller;
 use TEC\Tickets\Seating\Logging;
 use TEC\Tickets\Seating\Meta;
@@ -40,7 +39,6 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
  */
 class Ajax extends Controller_Contract {
 	use Ajax_Methods;
-	use Built_Assets;
 	use Logging;
 
 	/**
@@ -384,9 +382,10 @@ class Ajax extends Controller_Contract {
 	private function register_assets(): void {
 		Asset::add(
 			'tec-tickets-seating-ajax',
-			$this->built_asset_url( 'ajax.js' ),
+			'ajax.js',
 			Tickets_Main::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
 			->add_localize_script( 'tec.tickets.seating.ajax', [ $this, 'get_ajax_data' ] )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
