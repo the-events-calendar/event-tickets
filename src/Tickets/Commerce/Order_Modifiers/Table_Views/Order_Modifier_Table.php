@@ -207,6 +207,10 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 			if ( strtolower( $action_label ) === 'edit' ) {
 				$label_html = sprintf( '<a href="%s">%s</a>', $url, esc_html( $label ) );
 			}
+
+			if ( strtolower( $action_label ) === 'delete' ) {
+				$label_html = sprintf( '<span class="trash"><a href="%s">%s</a></span>', $url, esc_html( $label ) );
+			}
 		}
 
 		// Join the action links and append them to the label with the row actions.
