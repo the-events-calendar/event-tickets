@@ -104,7 +104,6 @@ class Controller extends Controller_Contract {
 		// Add the group path for the seating assets.
 		Config::add_group_path( 'tec-seating', Tickets_Plugin::instance()->plugin_path . 'build/', 'Seating/' );
 
-		$this->container->register( Asset_Group_Path::class );
 		$this->container->singleton( Template::class );
 		$this->container->singleton( Localization::class );
 		$this->container->singleton( Session::class );
