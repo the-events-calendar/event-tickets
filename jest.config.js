@@ -11,5 +11,8 @@ module.exports = {
 		// Seating feature.
 		'^@tec/tickets/seating/tests/(.*)': '<rootDir>/tests/slr_jest/$1',
 		'^@tec/tickets/seating/(.*)': '<rootDir>/src/Tickets/Seating/app/$1',
+		// Waitlist feature.
+		'^@tec/tickets/waitlist/tests/(.*)': '<rootDir>/tests/slr_jest/$1',
+		'^@tec/tickets/waitlist/(.*)': '<rootDir>/src/Tickets/Seating/app/$1',
 	},
 };
