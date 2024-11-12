@@ -11,8 +11,8 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\API;
 
 use TEC\Common\Contracts\Provider\Controller;
 use TEC\Common\lucatume\DI52\Container;
-use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Common\StellarWP\Assets\Assets;
+use TEC\Tickets\Commerce\Order_Modifiers\Traits\Asset_Build;
 use Tribe__Tickets__Main as Tickets;
 
 /**
@@ -22,17 +22,13 @@ use Tribe__Tickets__Main as Tickets;
  */
 class Localization extends Controller {
 
+	use Asset_Build;
 	use Namespace_Trait;
 
 	/**
-	 * The Tickets plugin instance.
-	 *
-	 * @var Tickets
-	 */
-	protected Tickets $plugin;
-
-	/**
 	 * ServiceProvider constructor.
+	 *
+	 * @since TBD
 	 *
 	 * @param Container $container The DI container.
 	 */
@@ -68,31 +64,18 @@ class Localization extends Controller {
 	/**
 	 * Register the assets for the Order Modifiers feature.
 	 *
+	 * @since TBD
+	 *
 	 * @return void
 	 */
 	protected function register_assets() {
-		Asset::add(
+		$this->add_asset(
 			'tec-tickets-order-modifiers-rest-localization',
-			$this->get_built_asset_url( 'rest.js' ),
-			Tickets::VERSION
+			'rest.js',
 		)
 			->add_localize_script( 'tec.tickets.orderModifiers.rest', fn() => $this->get_rest_data() )
-			->add_to_group( 'tec-tickets-order-modifiers' )
 			->enqueue_on( 'admin_enqueue_scripts' )
 			->register();
-	}
-
-	/**
-	 * Get the built asset URL for the Order Modifiers feature.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $path The file path from the `/build/OrderModifiers` directory of the plugin.
-	 */
-	protected function get_built_asset_url( string $path ): string {
-		$path = ltrim( $path, '/' );
-
-		return "{$this->plugin->plugin_url}build/OrderModifiers/{$path}";
 	}
 
 	/**
