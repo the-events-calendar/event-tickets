@@ -94,6 +94,7 @@ final class Provider extends ServiceProvider {
 	protected function register_common_classes(): void {
 		// Register the custom table controller.
 		$this->container->register( Controller::class );
+		$this->container->bind( Editor_Config::class, fn() => new Editor_Config() );
 
 		// Add to the tag class array.
 		$this->tagged_classes = array_merge(
