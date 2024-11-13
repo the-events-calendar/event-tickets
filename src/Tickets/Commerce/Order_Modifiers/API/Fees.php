@@ -98,6 +98,15 @@ class Fees extends Base_API {
 			10,
 			2
 		);
+
+		add_action(
+			'tribe_tickets_ticket_added',
+			function ( $post_id, $ticket_id, $ticket_data ) {
+				$this->save_fees_for_ticket( $ticket_id, $ticket_data );
+			},
+			10,
+			3
+		);
 	}
 
 	/**
@@ -269,32 +278,7 @@ class Fees extends Base_API {
 			$ticket_id = (int) $request->get_param( 'id' );
 			$fees      = $request->get_param( 'selected_fees' );
 
-			// Validate that the fees are actually selectable.
-			$all_fees        = $this->get_all_fees();
-			$selectable_fees = wp_list_pluck( $this->get_selectable_fees( $all_fees ), 'id', 'id' );
-			$invalid_fees    = [];
-			foreach ( $fees as $fee ) {
-				if ( ! array_key_exists( $fee, $selectable_fees ) ) {
-					$invalid_fees[] = $fee;
-				}
-			}
-
-			if ( ! empty( $invalid_fees ) ) {
-				throw new Exception(
-					sprintf(
-						/* translators: %s: The invalid fees. */
-						__( 'The following fees are not selectable: %s', 'event-tickets' ),
-						implode( ', ', $invalid_fees )
-					),
-					400
-				);
-			}
-
-			$this->manager->delete_relationships_by_post( $ticket_id );
-
-			$fee_ids = array_map( 'absint', $fees );
-
-			$this->manager->sync_modifier_relationships( $fee_ids, [ $ticket_id ] );
+			$this->update_fees_for_ticket( $ticket_id, $fees );
 
 			return rest_ensure_response( $this->get_fees_for_ticket( $ticket_id ) );
 		} catch ( Exception $e ) {
@@ -306,5 +290,74 @@ class Fees extends Base_API {
 				)
 			);
 		}
+	}
+
+	/**
+	 * Save the fees for a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $ticket_id   The ticket ID.
+	 * @param array $ticket_data The ticket data.
+	 *
+	 * @return void
+	 */
+	protected function save_fees_for_ticket( $ticket_id, $ticket_data ) {
+		if ( ! array_key_exists( 'fees', $ticket_data ) ) {
+			return;
+		}
+
+		$fees = $ticket_data['fees'];
+		if ( ! is_array( $fees ) ) {
+			return;
+		}
+
+		try {
+			$fee_ids = array_map( 'absint', $fees['selected_fees'] ?? [] );
+			$this->update_fees_for_ticket( $ticket_id, $fee_ids );
+		} catch ( Exception $e ) {
+			// @todo: Log the error?
+		}
+	}
+
+	/**
+	 * Update the fees for a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $ticket_id The ticket ID.
+	 * @param int[] $fees      The fees to update.
+	 *
+	 * @return void
+	 *
+	 * @throws Exception If the fees are not selectable.
+	 */
+	protected function update_fees_for_ticket( $ticket_id, $fees ) {
+		// Validate that the fees are actually selectable.
+		$all_fees        = $this->get_all_fees();
+		$selectable_fees = wp_list_pluck( $this->get_selectable_fees( $all_fees ), 'id', 'id' );
+		$invalid_fees    = [];
+		foreach ( $fees as $fee ) {
+			if ( ! array_key_exists( $fee, $selectable_fees ) ) {
+				$invalid_fees[] = $fee;
+			}
+		}
+
+		if ( ! empty( $invalid_fees ) ) {
+			throw new Exception(
+				sprintf(
+					/* translators: %s: The invalid fees. */
+					__( 'The following fees are not selectable: %s', 'event-tickets' ),
+					implode( ', ', $invalid_fees )
+				),
+				400
+			);
+		}
+
+		// Ensure that the fees are integers.
+		$fee_ids = array_map( 'absint', $fees );
+
+		$this->manager->delete_relationships_by_post( $ticket_id );
+		$this->manager->sync_modifier_relationships( $fee_ids, [ $ticket_id ] );
 	}
 }
