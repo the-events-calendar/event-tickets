@@ -44,9 +44,9 @@ class Editor_Config implements Registerable {
 	 *
 	 * @since TBD
 	 *
-	 * @param ?Modifiers     $modifiers
-	 * @param ?Relationships $relationships
-	 * @param ?Manager       $manager
+	 * @param ?Modifiers     $modifiers     The repository for interacting with the order modifiers.
+	 * @param ?Relationships $relationships The repository for interacting with the order modifiers relationships.
+	 * @param ?Manager       $manager       The manager for the order modifiers.
 	 */
 	public function __construct(
 		?Modifiers $modifiers = null,

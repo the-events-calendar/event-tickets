@@ -315,7 +315,7 @@ class Fees extends Base_API {
 		try {
 			$fee_ids = array_map( 'absint', $fees['selected_fees'] ?? [] );
 			$this->update_fees_for_ticket( $ticket_id, $fee_ids );
-		} catch ( Exception $e ) {
+		} catch ( Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement
 			// @todo: Log the error?
 		}
 	}

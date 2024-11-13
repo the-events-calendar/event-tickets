@@ -27,7 +27,7 @@ class Editor extends Controller {
 	/**
 	 * ServiceProvider constructor.
 	 *
-	 * @param Container $container
+	 * @param Container $container The DI container.
 	 */
 	public function __construct( Container $container ) {
 		parent::__construct( $container );
