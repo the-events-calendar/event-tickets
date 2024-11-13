@@ -7,7 +7,7 @@ import { createReduxStore, register } from '@wordpress/data';
  * Internal dependencies
  */
 import { getTicketIdFromCommonStore } from './common-store-bridge';
-// import {defaultState} from './default-state';
+import { defaultState } from './default-state';
 import { controls } from './controls';
 // import {actions} from './actions';
 // import {reducer} from './reducer';
@@ -15,12 +15,6 @@ import { controls } from './controls';
 import { localizedData } from './localized-data';
 
 const storeName = 'tec-tickets-fees';
-
-const defaultState = {
-	...localizedData,
-	feesAvailable: [],
-	feesAutomatic: [],
-};
 
 const reducer = ( state = defaultState, action ) => {
 	switch ( action.type ) {
