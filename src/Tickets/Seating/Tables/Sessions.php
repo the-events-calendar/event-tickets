@@ -11,7 +11,7 @@ namespace TEC\Tickets\Seating\Tables;
 
 use Exception;
 use TEC\Common\StellarWP\DB\DB;
-use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
+use TEC\Common\Integrations\Custom_Table_Abstract as Table;
 use TEC\Tickets\Seating\Logging;
 
 /**
@@ -22,7 +22,6 @@ use TEC\Tickets\Seating\Logging;
  * @package TEC\Tickets\Seating\Tables;
  */
 class Sessions extends Table {
-	use Truncate_Methods;
 	use Logging;
 
 	/**
