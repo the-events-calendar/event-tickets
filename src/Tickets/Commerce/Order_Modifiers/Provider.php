@@ -100,6 +100,7 @@ final class Provider extends ServiceProvider {
 		$this->tagged_classes = array_merge(
 			$this->tagged_classes,
 			[
+				Editor_Config::class,
 				Localization::class,
 				Modifier_Admin_Handler::class,
 			]
