@@ -5,7 +5,7 @@ const restNonce = '';
 import {
 	nonce,
 	baseUrl
-} from '@tec/tickets/orderModifiers/rest';
+} from '@tec/tickets/order-modifiers/rest';
 
 export async function fetchFeesFromAPI() {
 	const url = new URL( `${baseUrl}/fees` );
