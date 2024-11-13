@@ -119,7 +119,7 @@ class Sessions extends Table {
 				`token` varchar(150) NOT NULL,
 				`object_id` bigint(20) NOT NULL,
 				`expiration` int(11) NOT NULL,
-				`reservations` longblob DEFAULT '',
+				`reservations` longblob,
 				`expiration_lock` boolean DEFAULT 0,
 				PRIMARY KEY (`token`)
 			) {$charset_collate};
