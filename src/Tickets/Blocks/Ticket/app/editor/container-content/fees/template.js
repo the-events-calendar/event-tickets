@@ -70,7 +70,7 @@ class FeeItem extends PureComponent {
 			<Checkbox
 				checked={ isSelected }
 				className={ classes.join( ' ' ) }
-				disabled={ false }
+				disabled={ isDisabled }
 				id={ name }
 				name={ name }
 				label={ label }
