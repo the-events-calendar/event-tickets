@@ -216,6 +216,25 @@ class Cart {
 	}
 
 	/**
+	 * Checks if the cart has seating tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public static function cart_has_seating_tickets(): bool {
+		$cart = tribe( TicketsCommerce_Cart::class );
+
+		foreach ( $cart->get_items_in_cart() as $ticket_id => $item ) {
+			if ( get_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Fetches the token reservations either from the cache or from the database.
 	 *
 	 * @since TBD

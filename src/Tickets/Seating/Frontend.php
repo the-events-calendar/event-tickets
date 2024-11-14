@@ -314,6 +314,7 @@ class Frontend extends Controller_Contract {
 			ET::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
+			->set_condition( static fn() => is_singular( (array) tribe_get_option( 'ticket-enabled-post-types', [] ) ) && tec_tickets_seating_enabled( get_the_ID() ) )
 			->set_dependencies(
 				'tribe-dialog-js',
 				'tec-tickets-seating-service-bundle',
@@ -337,6 +338,7 @@ class Frontend extends Controller_Contract {
 			ET::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
+			->set_condition( static fn() => is_singular( (array) tribe_get_option( 'ticket-enabled-post-types', [] ) ) && tec_tickets_seating_enabled( get_the_ID() ) )
 			->enqueue_on( 'wp_enqueue_scripts' )
 			->add_to_group( 'tec-tickets-seating-frontend' )
 			->add_to_group( 'tec-tickets-seating' )
