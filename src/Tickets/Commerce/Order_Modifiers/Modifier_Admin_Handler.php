@@ -265,14 +265,14 @@ class Modifier_Admin_Handler implements Registerable {
 	protected function handle_form_submission(): void {
 		// Check if the form was submitted and verify nonce.
 
-		if ( empty( tribe_get_request_var( 'order_modifier_form_save' ) ) || ! check_admin_referer( 'order_modifier_save_action', 'order_modifier_save_action' ) ) {
+		if ( empty( tec_get_request_var( 'order_modifier_form_save' ) ) || ! check_admin_referer( 'order_modifier_save_action', 'order_modifier_save_action' ) ) {
 			return;
 		}
 
 		// Get and sanitize request vars for modifier and modifier_id.
-		$modifier_type = sanitize_key( tribe_get_request_var( 'modifier', $this->get_default_type() ) );
-		$modifier_id   = absint( tribe_get_request_var( 'modifier_id', '0' ) );
-		$is_edit       = tribe_is_truthy( tribe_get_request_var( 'edit', '0' ) );
+		$modifier_type = sanitize_key( tec_get_request_var( 'modifier', $this->get_default_type() ) );
+		$modifier_id   = absint( tec_get_request_var( 'modifier_id', '0' ) );
+		$is_edit       = tribe_is_truthy( tec_get_request_var( 'edit', '0' ) );
 
 		// Prepare the context for the page.
 		$context = [
@@ -320,7 +320,7 @@ class Modifier_Admin_Handler implements Registerable {
 		}
 
 		// Show success message for updating an existing modifier.
-		$this->render_success_message( __( 'Modifier saved successfully!', 'event-tickets' ) );
+		add_action( 'admin_notices', fn() => $this->render_success_message( __( 'Modifier saved successfully!', 'event-tickets' ) ) );
 	}
 
 	/**
