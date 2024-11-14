@@ -72,8 +72,14 @@ class Fee_Table extends Order_Modifier_Table {
 		);
 
 		$actions = [
-			__( 'Edit', 'event-tickets' )   => $edit_link,
-			__( 'Delete', 'event-tickets' ) => $delete_link,
+			'edit'   => [
+				'label' => __( 'Edit', 'event-tickets' ),
+				'url'   => $edit_link,
+			],
+			'delete' => [
+				'label' => __( 'Delete', 'event-tickets' ),
+				'url'   => $delete_link,
+			],
 		];
 
 		return $this->render_actions( $item->display_name, $actions );

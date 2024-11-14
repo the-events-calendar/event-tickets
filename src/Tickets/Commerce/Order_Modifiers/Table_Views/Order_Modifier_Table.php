@@ -199,9 +199,8 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		$label_html   = esc_html( $label );
 
 		// Loop through the actions and build both the label and action links.
-		foreach ( $actions as $action_label => $url ) {
-			$url            = esc_url( $url );
-			$action_links[] = sprintf( '<a href="%s">%s</a>', $url, esc_html( $action_label ) );
+		foreach ( $actions as $action_label => $data ) {
+			$action_links[ $action_label ] = sprintf( '<a href="%s">%s</a>', esc_url( $data['url'] ), esc_html( $data['label'] ) );
 
 			// If 'Edit' is found, also make the label a link to the edit action.
 			if ( strtolower( $action_label ) === 'edit' ) {
@@ -212,6 +211,10 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 				$label_html = sprintf( '<span class="trash"><a href="%s">%s</a></span>', $url, esc_html( $label ) );
 			}
 		}
+
+		$label_html = isset( $action_links['edit'] ) ?
+			sprintf( '<a href="%s">%s</a>', esc_url( $action_links['edit']['url'] ), esc_html( $action_links['edit']['url'] ) ) :
+			sprintf( '<span class="trash"><a href="%s">%s</a></span>', esc_url( array_values( $action_links )[0]['url'] ?? '#' ), esc_html( array_values( $action_links )[0]['label'] ?? '' ) );
 
 		// Join the action links and append them to the label with the row actions.
 		return sprintf( '%1$s %2$s', $label_html, $this->row_actions( $action_links ) );
