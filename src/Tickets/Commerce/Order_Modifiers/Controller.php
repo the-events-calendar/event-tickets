@@ -29,7 +29,7 @@ use TEC\Tickets\Registerable;
  *
  * @since TBD
  */
-final class Provider extends Controller_Contract {
+final class Controller extends Controller_Contract {
 
 	/**
 	 * The classes to register with a tag.
@@ -53,7 +53,7 @@ final class Provider extends Controller_Contract {
 		 *
 		 * @since TBD
 		 *
-		 * @param Provider $this The provider instance.
+		 * @param Controller $this The provider instance.
 		 */
 		do_action( 'tec_tickets_commerce_order_modifiers_register', $this );
 
