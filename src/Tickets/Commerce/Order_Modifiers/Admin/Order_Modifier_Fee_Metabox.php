@@ -22,7 +22,8 @@ use TEC\Tickets\Registerable;
 use Tribe__Tickets__Admin__Views as Admin_Views;
 use Tribe__Tickets__Main as Main;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
-use Tribe__Tickets__Tickets;
+use Tribe__Tickets__Tickets as Tickets;
+use TEC\Tickets\Commerce\Module;
 
 /**
  * Class Order_Modifier_Fee_Metabox
@@ -150,9 +151,9 @@ class Order_Modifier_Fee_Metabox implements Registerable {
 	 * @return void
 	 */
 	public function add_fee_section( int $post_id, ?int $ticket_id ): void {
-		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+		$provider = Tickets::get_event_ticket_provider( $post_id );
 
-		if ( 'TEC\Tickets\Commerce\Module' !== $provider ) {
+		if ( Module::class !== $provider ) {
 			return;
 		}
 
