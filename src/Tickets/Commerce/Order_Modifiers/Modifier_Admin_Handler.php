@@ -76,6 +76,8 @@ class Modifier_Admin_Handler implements Registerable {
 		add_action( 'admin_menu', fn() => $this->add_tec_tickets_order_modifiers_page(), 15 );
 		add_action( 'admin_init', fn() => $this->handle_delete_modifier() );
 		add_action( 'admin_init', fn() => $this->handle_form_submission() );
+
+		add_action( 'admin_notices', [ $this, 'handle_notices' ] );
 	}
 
 	/**
@@ -313,38 +315,42 @@ class Modifier_Admin_Handler implements Registerable {
 			return;
 		}
 
-		// If a new modifier was created, redirect to the edit page of the new modifier.
-		if ( empty( $context['modifier_id'] ) || 0 === (int) $context['modifier_id'] ) {
-			$this->redirect_to_table_page( $result->id, $context );
+		$edit_link = add_query_arg(
+			[
+				'page'        => rawurlencode( $modifier_strategy->get_page_slug() ),
+				'modifier'    => rawurlencode( $modifier_strategy->get_modifier_type() ),
+				'edit'        => 1,
+				'modifier_id' => $result->id,
+				'updated'     => 1,
+			],
+			admin_url( '/admin.php' )
+		);
+
+		wp_safe_redirect( $edit_link );
+	}
+
+	public function handle_notices() {
+		if ( (int) tec_get_request_var_raw( 'updated' ) !== 1 ) {
 			return;
 		}
 
-		// Show success message for updating an existing modifier.
-		add_action( 'admin_notices', fn() => $this->render_success_message( __( 'Modifier saved successfully!', 'event-tickets' ) ) );
-	}
+		if ( (int) tec_get_request_var_raw( 'edit' ) !== 1 ) {
+			return;
+		}
 
-	/**
-	 * Redirects to the table page after creating the modifier.
-	 *
-	 * @since TBD
-	 *
-	 * @param int   $modifier_id The ID of the new modifier.
-	 * @param array $context     The context for rendering the page.
-	 *
-	 * @return void
-	 */
-	protected function redirect_to_table_page( int $modifier_id, array $context ): void {
-		// Manually build the URL.
-		$new_url = add_query_arg(
-			[
-				'page'     => self::$slug,
-				'modifier' => $context['modifier'],
-			],
-			admin_url( 'admin.php' )
-		);
+		$modifier_type = sanitize_key( tec_get_request_var( 'modifier', $this->get_default_type() ) );
 
-		wp_safe_redirect( esc_url_raw( html_entity_decode( $new_url ) ) );
-		exit;
+		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
+
+		if ( ! $modifier_strategy ) {
+			return;
+		}
+
+		if ( tec_get_request_var( 'page' ) !== rawurldecode( $modifier_strategy->get_page_slug() ) ) {
+			return;
+		}
+
+		$this->render_success_message( __( 'Modifier saved successfully!', 'event-tickets' ) );
 	}
 
 	/**
