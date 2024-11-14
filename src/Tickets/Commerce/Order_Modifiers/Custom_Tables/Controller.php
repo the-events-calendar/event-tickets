@@ -7,19 +7,16 @@
  * @package TEC\Tickets\Commerce\Order_Modifiers;
  */
 
-namespace TEC\Tickets\Commerce\Order_Modifiers;
+namespace TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables;
 
 use InvalidArgumentException;
-use TEC\Common\lucatume\DI52\Container;
-use TEC\Common\StellarWP\Schema\Register as Schema_Register;
-use TEC\Common\StellarWP\Schema\Config as Schema_Config;
-use TEC\Common\StellarWP\DB\DB;
-use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifier_Relationships;
-use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
-use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifiers;
-use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
-use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Common\lucatume\DI52\Container;
+use TEC\Common\StellarWP\DB\DB;
+use TEC\Common\StellarWP\Schema\Config as Schema_Config;
+use TEC\Common\StellarWP\Schema\Register as Schema_Register;
+use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
+use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 
 /**

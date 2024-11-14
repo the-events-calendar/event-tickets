@@ -13,14 +13,15 @@ namespace TEC\Tickets\Commerce\Order_Modifiers;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\Commerce\Order_Modifiers\Admin\Editor;
 use TEC\Tickets\Commerce\Order_Modifiers\Admin\Order_Modifier_Fee_Metabox;
-use TEC\Tickets\Commerce\Order_Modifiers\API\Localization;
-use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee;
-use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Paypal\Fees as Paypal_Checkout_Fees;
-use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe\Fees as Stripe_Checkout_Fees;
-use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Fees as Agnostic_Checkout_Fees;
 use TEC\Tickets\Commerce\Order_Modifiers\API\Coupons;
 use TEC\Tickets\Commerce\Order_Modifiers\API\Fees;
+use TEC\Tickets\Commerce\Order_Modifiers\API\Localization;
+use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Fees as Agnostic_Checkout_Fees;
+use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Paypal\Fees as Paypal_Checkout_Fees;
+use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe\Fees as Stripe_Checkout_Fees;
+use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Controller as Table_Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon;
+use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee;
 use TEC\Tickets\Registerable;
 
 /**
@@ -96,7 +97,7 @@ final class Provider extends Controller_Contract {
 	 */
 	protected function register_common_classes(): void {
 		// Register the custom table controller.
-		$this->container->register( Controller::class );
+		$this->container->register( Table_Controller::class );
 
 		// Bind classes.
 		$this->container->bind( Editor_Config::class, fn() => new Editor_Config() );

@@ -14,7 +14,7 @@
 namespace TEC\Tickets\Commerce\Order_Modifiers\Admin;
 
 use stdClass;
-use TEC\Tickets\Commerce\Order_Modifiers\Controller;
+use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Factory;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship;
