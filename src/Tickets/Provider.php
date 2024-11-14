@@ -102,7 +102,7 @@ class Provider extends Service_Provider {
 		$this->container->register( Seating\Controller::class );
 
 		// Order Modifiers.
-		$this->container->register( Order_Modifiers_Controller::class);
+		$this->container->register( Order_Modifiers_Controller::class );
 
 		$this->has_registered = true;
 

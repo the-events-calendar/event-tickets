@@ -103,7 +103,7 @@ final class Controller extends Controller_Contract {
 		$this->container->bind( Editor_Config::class, fn() => new Editor_Config() );
 
 		// Build the array of classes.
-		$classes =[
+		$classes = [
 			Editor_Config::class,
 			Localization::class,
 			Modifier_Admin_Handler::class,
