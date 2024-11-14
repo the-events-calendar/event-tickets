@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Commerce\Order_Modifiers;
 
 use InvalidArgumentException;
+use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 use TEC\Tickets\Registerable;
