@@ -72,6 +72,7 @@ class Editor extends Controller {
 		)
 			->set_dependencies(
 				'wp-hooks',
+				'wp-data',
 				'react',
 				'react-dom',
 				'tec-tickets-order-modifiers-rest-localization',
