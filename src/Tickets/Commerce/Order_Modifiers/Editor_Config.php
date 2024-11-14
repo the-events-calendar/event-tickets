@@ -66,11 +66,18 @@ class Editor_Config implements Registerable {
 	 * @return void The method does not return any value.
 	 */
 	public function register(): void {
-		add_filter(
-			'tribe_editor_config',
-			fn( array $config ) => $this->filter_editor_config( $config ),
-			20
-		);
+		add_filter( 'tribe_editor_config', $this->get_filter_editor_config_callback(), 20 );
+	}
+
+	/**
+	 * Removes the filters and actions hooks added by the controller.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function unregister(): void {
+		remove_filter( 'tribe_editor_config', $this->get_filter_editor_config_callback(), 20 );
 	}
 
 	/**
@@ -97,5 +104,21 @@ class Editor_Config implements Registerable {
 		$config['tickets'] = $tickets;
 
 		return $config;
+	}
+
+	/**
+	 * Gets the callback for filtering the editor configuration.
+	 *
+	 * @since TBD
+	 *
+	 * @return callable The callback for filtering the editor configuration.
+	 */
+	protected function get_filter_editor_config_callback(): callable {
+		static $callback = null;
+		if ( null === $callback ) {
+			$callback = fn( array $config ) => $this->filter_editor_config( $config );
+		}
+
+		return $callback;
 	}
 }

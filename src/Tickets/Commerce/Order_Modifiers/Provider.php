@@ -10,7 +10,8 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Commerce\Order_Modifiers;
 
-use TEC\Common\lucatume\DI52\ServiceProvider;
+use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Tickets\Commerce\Order_Modifiers\Admin\Editor;
 use TEC\Tickets\Commerce\Order_Modifiers\Admin\Order_Modifier_Fee_Metabox;
 use TEC\Tickets\Commerce\Order_Modifiers\API\Localization;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee;
@@ -27,7 +28,7 @@ use TEC\Tickets\Registerable;
  *
  * @since TBD
  */
-final class Provider extends ServiceProvider {
+final class Provider extends Controller_Contract {
 
 	/**
 	 * The classes to register with a tag.
@@ -37,11 +38,13 @@ final class Provider extends ServiceProvider {
 	protected array $tagged_classes = [];
 
 	/**
-	 * Registers the service provider bindings.
+	 * Registers the filters and actions hooks added by the controller.
 	 *
-	 * @return void The method does not return any value.
+	 * @since 5.0.17
+	 *
+	 * @return void
 	 */
-	public function register() {
+	protected function do_register(): void {
 		$this->container->singleton( self::class, $this );
 
 		/**
@@ -94,17 +97,23 @@ final class Provider extends ServiceProvider {
 	protected function register_common_classes(): void {
 		// Register the custom table controller.
 		$this->container->register( Controller::class );
+
+		// Bind classes.
 		$this->container->bind( Editor_Config::class, fn() => new Editor_Config() );
 
+		// Build the array of classes.
+		$classes =[
+			Editor_Config::class,
+			Localization::class,
+			Modifier_Admin_Handler::class,
+		];
+
+		if ( is_admin() ) {
+			$classes[] = Editor::class;
+		}
+
 		// Add to the tag class array.
-		$this->tagged_classes = array_merge(
-			$this->tagged_classes,
-			[
-				Editor_Config::class,
-				Localization::class,
-				Modifier_Admin_Handler::class,
-			]
-		);
+		$this->tagged_classes = array_merge( $this->tagged_classes, $classes );
 	}
 
 	/**
@@ -169,5 +178,22 @@ final class Provider extends ServiceProvider {
 
 		add_filter( 'tec_tickets_commerce_order_modifiers', $remove_coupon_array_key );
 		add_filter( 'tec_tickets_commerce_order_modifier_types', $remove_coupon_array_key );
+	}
+
+	/**
+	 * Removes the filters and actions hooks added by the controller.
+	 *
+	 * Bound implementations should not be removed in this method!
+	 *
+	 * @since TBD
+	 *
+	 * @return void Filters and actions hooks added by the controller are be removed.
+	 */
+	public function unregister(): void {
+		foreach ( $this->container->tagged( 'order_modifiers' ) as $class_instance ) {
+			if ( $class_instance instanceof Registerable || method_exists( $class_instance, 'unregister' ) ) {
+				$class_instance->unregister();
+			}
+		}
 	}
 }
