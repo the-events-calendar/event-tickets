@@ -1,14 +1,17 @@
-// @todo: set separate file to manage these variables.
-const restUrl = 'https://stellarwp.test/wp-json/tribe/tickets/v1/fees/';
-const restNonce = '';
-
 import {
 	nonce,
 	baseUrl
 } from '@tec/tickets/order-modifiers/rest';
 
+/**
+ * Fetches fees from the API.
+ *
+ * @since TBD
+ *
+ * @return {Promise<{feesSelectable: (*|*[]), feesAvailable: (*|*[])}>}
+ */
 export async function fetchFeesFromAPI() {
-	const url = new URL( `${baseUrl}/fees` );
+	const url = new URL( `${ baseUrl }/fees` );
 	url.searchParams.set( '_wpnonce', nonce );
 
 	const response = await fetch( url.toString(), {
@@ -26,9 +29,12 @@ export async function fetchFeesFromAPI() {
 
 	const json = await response.json();
 
+	const feesAutomatic = 'object' === typeof json?.automatic_fees ? Object.values( json.automatic_fees ) : [];
+	const feesAvailable = 'object' === typeof json?.selectable_fees ? Object.values( json.selectable_fees ) : [];
+
 	return {
-		feesAutomatic: json?.data?.automatic_fees || [],
-		feesSelectable: json?.data?.selectable_fees || [],
+		feesAutomatic: feesAutomatic,
+		feesAvailable: feesAvailable,
 	};
 }
 

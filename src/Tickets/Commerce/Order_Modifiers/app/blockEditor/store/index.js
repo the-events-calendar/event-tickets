@@ -17,15 +17,22 @@ import { localizedData } from './localized-data';
 const storeName = 'tec-tickets-fees';
 
 const resolvers = {
-	* getFees() {
+
+	* getAutomaticFees() {
 		const allFees = yield actions.fetchFeesFromAPI();
+		return actions.setAutomaticFees( allFees.feesAutomatic );
+	},
+
+	* getAvailableFees() {
+		const allFees = yield actions.fetchFeesFromAPI();
+		return actions.setAvailableFees( allFees.feesAvailable );
 	},
 };
 
 
 // @see: https://developer.wordpress.org/block-editor/reference-guides/packages/packages-data/
 const store = createReduxStore( storeName, {
-	reducer: reducer,
+	reducer,
 	actions: actions,
 	selectors: selectors,
 	controls: controls,

@@ -17,10 +17,6 @@ export const selectors = {
 	},
 
 	getSelectedFees( state, clientId ) {
-		if ( ! state.shouldShowFees() ) {
-			return [];
-		}
-
 		const ticketPostId = getTicketIdFromCommonStore( clientId );
 
 		return (
