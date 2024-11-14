@@ -99,19 +99,13 @@ class Order_Modifiers_Meta extends Abstract_Custom_Table {
 			return $results;
 		}
 
-		global $wpdb;
-		$table_name        = self::table_name();
-		$parent_table_name = Order_Modifiers::table_name();
-		$parent_table_uid  = Order_Modifiers::uid_column();
-
-		// Add the foreign key constraint using the method from the abstract class.
-		$this->add_foreign_key( $table_name, 'fk_order_modifier', 'order_modifier_id', $parent_table_name, $parent_table_uid );
+		$table_name = self::table_name();
 
 		// Helper method to check and add indexes.
-		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_meta_inx_order_modifier_id', 'order_modifier_id' );
-		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_meta_inx_meta_key', 'meta_key' );
-		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_meta_inx_order_modifier_id_meta_key', 'order_modifier_id, meta_key' );
-		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_meta_inx_meta_key_meta_value', 'meta_key,meta_value(255)' );
+		$results = $this->check_and_add_index( $results, $table_name, 'tec_order_modifier_meta_inx_order_modifier_id', 'order_modifier_id' );
+		$results = $this->check_and_add_index( $results, $table_name, 'tec_order_modifier_meta_inx_meta_key', 'meta_key' );
+		$results = $this->check_and_add_index( $results, $table_name, 'tec_order_modifier_meta_inx_order_modifier_id_meta_key', 'order_modifier_id, meta_key' );
+		$results = $this->check_and_add_index( $results, $table_name, 'tec_order_modifier_meta_inx_meta_key_meta_value', 'meta_key,meta_value(255)' );
 
 		return $results;
 	}
