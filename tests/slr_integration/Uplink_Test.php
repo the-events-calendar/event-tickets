@@ -7,6 +7,10 @@ use TEC\Common\StellarWP\Uplink\Auth\Token\Contracts\Token_Manager;
 use TEC\Common\StellarWP\Uplink\Resources\Collection;
 use TEC\Common\StellarWP\Uplink\Storage\Contracts\Storage;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use TEC\Tickets\Seating\Service\Layouts as Layouts_Service;
+use TEC\Tickets\Seating\Service\Maps as Maps_Service;
+use TEC\Tickets\Seating\Tables\Layouts;
+use TEC\Tickets\Seating\Tables\Seat_Types;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tests\Traits\WP_Remote_Mocks;
 
@@ -202,5 +206,83 @@ class Uplink_Test extends Controller_Test_Case {
 		$fields['stellarwp-uplink_tec-seating']['html']  = 'tested in JSON snapshot';
 		$this->assertMatchesJsonSnapshot( wp_json_encode( $fields, JSON_SNAPSHOT_OPTIONS ) );
 		$this->assertMatchesHtmlSnapshot( $connect_html );
+	}
+	
+	public function test_reset_data_on_new_connection() {
+		Maps_Service::insert_rows_from_service(
+			[
+				[
+					'id'            => 'some-map-1',
+					'name'          => 'Some Map 1',
+					'seats'         => 10,
+					'screenshotUrl' => 'https://example.com/some-map-1.png',
+				],
+				[
+					'id'            => 'some-map-2',
+					'name'          => 'Some Map 2',
+					'seats'         => 20,
+					'screenshotUrl' => 'https://example.com/some-map-2.png',
+				],
+			]
+		);
+		set_transient( Maps_Service::update_transient_name(), time() );
+		
+		Layouts_Service::insert_rows_from_service(
+			[
+				[
+					'id'            => 'some-layout-1',
+					'name'          => 'Some Layout 1',
+					'seats'         => 10,
+					'createdDate'   => time() * 1000,
+					'mapId'         => 'some-map-1',
+					'screenshotUrl' => 'https://example.com/some-layouts-1.png',
+				],
+				[
+					'id'            => 'some-layout-2',
+					'name'          => 'Some Layout 2',
+					'seats'         => 20,
+					'createdDate'   => time() * 1000,
+					'mapId'         => 'some-map-2',
+					'screenshotUrl' => 'https://example.com/some-layouts-2.png',
+				],
+			]
+		);
+		set_transient( Layouts_Service::update_transient_name(), time() );
+		
+		Seat_Types::insert_many(
+			[
+				[
+					'id'     => 'some-seat-type-1',
+					'name'   => 'Some Seat Type 1',
+					'seats'  => 10,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+				[
+					'id'     => 'some-seat-type-2',
+					'name'   => 'Some Seat Type 2',
+					'seats'  => 20,
+					'map'    => 'some-map-2',
+					'layout' => 'some-layout-2',
+				],
+			]
+		);
+		set_transient( Service\Seat_Types::update_transient_name(), time() );
+		
+		$this->assertCount( 2, iterator_to_array( Tables\Maps::fetch_all() ) );
+		$this->assertCount( 2, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 2, iterator_to_array( Seat_Types::fetch_all() ) );
+		
+		$this->make_controller()->register();
+		
+		do_action( 'stellarwp/uplink/tec/tec-seating/connected' );
+		
+		$this->assertEmpty( get_transient( Maps_Service::update_transient_name() ) );
+		$this->assertEmpty( get_transient( Layouts_Service::update_transient_name() ) );
+		$this->assertEmpty( get_transient( Service\Seat_Types::update_transient_name() ) );
+		
+		$this->assertEmpty( iterator_to_array( Tables\Maps::fetch_all() ) );
+		$this->assertEmpty( iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertEmpty( iterator_to_array( Seat_Types::fetch_all() ) );
 	}
 }
