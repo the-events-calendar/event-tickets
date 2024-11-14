@@ -10,9 +10,24 @@ import {
 	Select
 } from '@moderntribe/common/elements';
 import { __ } from '@wordpress/i18n';
+import {
+	withSelect,
+	withDispatch
+} from '@wordpress/data';
+
+const storeName = 'tec-tickets-fees';
+
+const onFeeChecked = ( onChange ) => {
+	return ( event ) => {
+		const feeId = event.target.value;
+		const isChecked = event.target.checked;
+
+		onChange( feeId, isChecked );
+	};
+}
 
 
-const mapFeeToItem = ( isDisabled ) => {
+const mapFeeToItem = ( isDisabled, onChange ) => {
 	return ( fee ) => {
 		// We shouldn't have these here, but just in case skip anything not active.
 		if ( fee.status !== 'active' ) {
@@ -128,7 +143,7 @@ class FeesSection extends PureComponent {
 					) : null }
 
 					{ feesAvailable.length > 0 ? (
-						feesAvailable.map( mapFeeToItem( { isDisabled: false } ) )
+						feesAvailable.map( mapFeeToItem( { isDisabled: false, onChange: onSelectedFeesChange } ) )
 					) : null }
 
 					{ ! hasItemsToDisplay ? (
@@ -139,5 +154,7 @@ class FeesSection extends PureComponent {
 		);
 	}
 }
+
+
 
 export default FeesSection;
