@@ -1,8 +1,6 @@
 /**
  * External dependencies
  */
-import { connect } from 'react-redux';
-import { compose } from 'redux';
 import {
 	select,
 	withDispatch,
