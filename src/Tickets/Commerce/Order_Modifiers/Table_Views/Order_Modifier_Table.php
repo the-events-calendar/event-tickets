@@ -201,15 +201,6 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		// Loop through the actions and build both the label and action links.
 		foreach ( $actions as $action_label => $data ) {
 			$action_links[ $action_label ] = sprintf( '<a href="%s">%s</a>', esc_url( $data['url'] ), esc_html( $data['label'] ) );
-
-			// If 'Edit' is found, also make the label a link to the edit action.
-			if ( strtolower( $action_label ) === 'edit' ) {
-				$label_html = sprintf( '<a href="%s">%s</a>', $url, esc_html( $label ) );
-			}
-
-			if ( ! $label_html && strtolower( $action_label ) === 'delete' ) {
-				$label_html = sprintf( '<span class="trash"><a href="%s">%s</a></span>', $url, esc_html( $label ) );
-			}
 		}
 
 		$label_html = isset( $action_links['edit'] ) ?
