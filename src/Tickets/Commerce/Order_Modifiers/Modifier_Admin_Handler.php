@@ -327,8 +327,16 @@ class Modifier_Admin_Handler implements Registerable {
 		);
 
 		wp_safe_redirect( $edit_link );
+		exit;
 	}
 
+	/**
+	 * Handles the display of notices.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
 	public function handle_notices() {
 		if ( (int) tec_get_request_var_raw( 'updated' ) !== 1 ) {
 			return;
