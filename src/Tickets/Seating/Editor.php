@@ -211,6 +211,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 			Tickets::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
+			->set_condition( fn() => $this->is_block_editor_with_tickets() )
 			->set_dependencies(
 				'wp-hooks',
 				'react',
@@ -239,10 +240,24 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 			Tickets::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
+			->set_condition( fn() => $this->is_block_editor_with_tickets() )
 			->enqueue_on( 'enqueue_block_editor_assets' )
 			->add_to_group( 'tec-tickets-seating-editor' )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
+	}
+
+	/**
+	 * Checks if the current context is the Block Editor and the post type is ticket-enabled.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_block_editor_with_tickets() {
+		global $post;
+
+		return is_admin() && in_array( $post->post_type, (array) tribe_get_option( 'ticket-enabled-post-types', [] ), true );
 	}
 
 	/**
