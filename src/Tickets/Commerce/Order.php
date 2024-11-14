@@ -651,6 +651,10 @@ class Order extends Abstract_Order {
 			$total   = 0;
 
 			foreach ( $order->items as $cart_item ) {
+				if ( 'ticket' !== $cart_item['type'] ) {
+					continue;
+				}
+
 				$regular += $cart_item['regular_sub_total'] ?? 0;
 				$total   += $cart_item['sub_total'] ?? 0;
 			}
