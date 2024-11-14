@@ -204,7 +204,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 
 		$label_html = isset( $actions['edit'] ) ?
 			sprintf( '<a href="%s">%s</a>', esc_url( $actions['edit']['url'] ), esc_html( $label ) ) :
-			sprintf( '<span class="trash"><a href="%s">%s</a></span>', esc_url( array_values( $actions )[0]['url'] ?? '#' ), esc_html( $label ) );
+			sprintf( '<a href="%s">%s</a>', esc_url( array_values( $actions )[0]['url'] ?? '#' ), esc_html( $label ) );
 
 		// Join the action links and append them to the label with the row actions.
 		return sprintf( '%1$s %2$s', $label_html, $this->row_actions( $action_links ) );
