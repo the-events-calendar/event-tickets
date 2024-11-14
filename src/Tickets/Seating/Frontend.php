@@ -12,7 +12,7 @@ namespace TEC\Tickets\Seating;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
-use TEC\Common\StellarWP\Assets\Asset;
+use TEC\Common\Asset;
 use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Frontend\Timer;
@@ -31,8 +31,6 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
  * @package TEC\Controller;
  */
 class Frontend extends Controller_Contract {
-	use Built_Assets;
-
 	/**
 	 * The ID of the modal used to display the seat selection modal.
 	 *
@@ -204,16 +202,16 @@ class Frontend extends Controller_Contract {
 	 *
 	 * @since 5.16.0
 	 *
-	 * @param int $event_id The event ID.
+	 * @param int $post_id The event ID.
 	 *
-	 * @return int
+	 * @return int The number of available ASC tickets for the post.
 	 */
-	public function get_events_ticket_capacity_for_seating( int $event_id ): int {
-		if ( ! tec_tickets_seating_enabled( $event_id ) ) {
+	public function get_events_ticket_capacity_for_seating( int $post_id ): int {
+		if ( ! tec_tickets_seating_enabled( $post_id ) ) {
 			return 0;
 		}
 
-		$provider = Tickets::get_event_ticket_provider_object( $event_id );
+		$provider = Tickets::get_event_ticket_provider_object( $post_id );
 
 		if ( ! $provider ) {
 			return 0;
@@ -221,8 +219,8 @@ class Frontend extends Controller_Contract {
 
 		$available = [];
 
-		foreach ( tribe_tickets()->where( 'event', $event_id )->get_ids( true ) as $ticket_id ) {
-			$ticket = $provider->get_ticket( $event_id, $ticket_id );
+		foreach ( tribe_tickets()->where( 'event', $post_id )->get_ids( true ) as $ticket_id ) {
+			$ticket = $provider->get_ticket( $post_id, $ticket_id );
 
 			if ( ! $ticket ) {
 				continue;
@@ -312,9 +310,10 @@ class Frontend extends Controller_Contract {
 		// Register the front-end JS.
 		Asset::add(
 			'tec-tickets-seating-frontend',
-			$this->built_asset_url( 'frontend/ticketsBlock.js' ),
+			'frontend/ticketsBlock.js',
 			ET::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
 			->set_dependencies(
 				'tribe-dialog-js',
 				'tec-tickets-seating-service-bundle',
@@ -334,9 +333,10 @@ class Frontend extends Controller_Contract {
 		// Register the front-end CSS.
 		Asset::add(
 			'tec-tickets-seating-frontend-style',
-			$this->built_asset_url( 'frontend/ticketsBlock.css' ),
+			'frontend/ticketsBlock.css',
 			ET::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
 			->enqueue_on( 'wp_enqueue_scripts' )
 			->add_to_group( 'tec-tickets-seating-frontend' )
 			->add_to_group( 'tec-tickets-seating' )

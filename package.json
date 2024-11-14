@@ -1,6 +1,6 @@
 {
   "name": "event-tickets",
-  "version": "5.16.0",
+  "version": "5.16.1",
   "repository": "git@github.com:the-events-calendar/event-tickets.git",
   "_zipname": "event-tickets",
   "_zipfoldername": "event-tickets",
@@ -55,7 +55,7 @@
     "jest": [
       "src/modules/**/__tests__/**/*.js",
       "src/resources/js/**/__tests__/**/*.js",
-      "tests/slr_jest/**/*.spec.js"
+      "tests/**/*.spec.js"
     ]
   },
   "scripts": {

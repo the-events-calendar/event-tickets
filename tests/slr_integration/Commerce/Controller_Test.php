@@ -734,7 +734,7 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertEquals( 22, get_post_meta( $ticket_id, '_stock', true ) );
 
 		$service_statuses = [
-			Service_Status::SERVICE_DOWN,
+			Service_Status::SERVICE_UNREACHABLE,
 			Service_Status::NOT_CONNECTED,
 			Service_Status::INVALID_LICENSE,
 			Service_Status::EXPIRED_LICENSE,

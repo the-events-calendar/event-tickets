@@ -13,8 +13,8 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Global_Stock as Global_Stock;
-use Tribe__Tickets__REST__V1__Endpoints__Single_Ticket as Single_Ticket_Rest;
 use WP_REST_Request;
+use TEC\Common\StellarWP\Assets\Assets;
 
 class Editor_Test extends Controller_Test_Case {
 	use Layouts_Factory;
@@ -40,6 +40,31 @@ class Editor_Test extends Controller_Test_Case {
 	public function restore_pagenow(): void {
 		global $pagenow;
 		$pagenow = '';
+	}
+
+	public function asset_data_provider() {
+		$assets = [
+			'tec-tickets-seating-block-editor'       => '/build/Seating/blockEditor.js',
+			'tec-tickets-seating-block-editor-style' => '/build/Seating/blockEditor.css',
+		];
+
+		foreach ( $assets as $slug => $path ) {
+			yield $slug => [ $slug, $path ];
+		}
+	}
+
+	/**
+	 * @test
+	 * @dataProvider asset_data_provider
+	 */
+	public function it_should_locate_assets_where_expected( $slug, $path ) {
+		$this->make_controller()->register();
+
+		$this->assertTrue( Assets::init()->exists( $slug ) );
+
+		// We use false, because in CI mode the assets are not build so min aren't available. Its enough to check that the non-min is as expected.
+		$asset_url = Assets::init()->get( $slug )->get_url( false );
+		$this->assertEquals( plugins_url( $path, EVENT_TICKETS_MAIN_PLUGIN_FILE ), $asset_url );
 	}
 
 	/**
@@ -348,7 +373,7 @@ class Editor_Test extends Controller_Test_Case {
 		yield 'service down' => [
 			function (): array {
 				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
-					return new Service_Status( $backend_base_url, Service_Status::SERVICE_DOWN );
+					return new Service_Status( $backend_base_url, Service_Status::SERVICE_UNREACHABLE );
 				}, 1000, 2 );
 				global $pagenow, $post;
 				$pagenow = 'edit.php';
@@ -376,6 +401,7 @@ class Editor_Test extends Controller_Test_Case {
 				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
 					return new Service_Status( $backend_base_url, Service_Status::NO_LICENSE );
 				}, 1000, 2 );
+				test_remove_seating_license_key_callback();
 				global $pagenow, $post;
 				$pagenow = 'edit.php';
 				$post    = get_post( static::factory()->post->create() );
@@ -404,6 +430,82 @@ class Editor_Test extends Controller_Test_Case {
 				}, 1000, 2 );
 				global $pagenow, $post;
 				$pagenow = 'edit.php';
+				$post    = get_post( static::factory()->post->create() );
+
+				return [];
+			}
+		];
+
+		yield 'service down - new' => [
+			function (): array {
+				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
+					return new Service_Status( $backend_base_url, Service_Status::SERVICE_UNREACHABLE );
+				}, 1000, 2 );
+				global $pagenow, $post;
+				$pagenow = 'post-new.php';
+				$this->given_many_layouts_in_db( 3 );
+				$this->given_layouts_just_updated();
+				$post    = get_post( static::factory()->post->create() );
+
+				return [];
+			}
+		];
+
+		yield 'service not connected - new' => [
+			function (): array {
+				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
+					return new Service_Status( $backend_base_url, Service_Status::NOT_CONNECTED );
+				}, 1000, 2 );
+				global $pagenow, $post;
+				$pagenow = 'post-new.php';
+				$this->given_many_layouts_in_db( 3 );
+				$this->given_layouts_just_updated();
+				$post    = get_post( static::factory()->post->create() );
+
+				return [];
+			}
+		];
+
+		yield 'no license - new' => [
+			function (): array {
+				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
+					return new Service_Status( $backend_base_url, Service_Status::NO_LICENSE );
+				}, 1000, 2 );
+				test_remove_seating_license_key_callback();
+				global $pagenow, $post;
+				$pagenow = 'post-new.php';
+				$this->given_many_layouts_in_db( 3 );
+				$this->given_layouts_just_updated();
+				$post    = get_post( static::factory()->post->create() );
+
+				return [];
+			}
+		];
+
+		yield 'invalid license - new' => [
+			function (): array {
+				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
+					return new Service_Status( $backend_base_url, Service_Status::INVALID_LICENSE );
+				}, 1000, 2 );
+				global $pagenow, $post;
+				$pagenow = 'post-new.php';
+				$this->given_many_layouts_in_db( 3 );
+				$this->given_layouts_just_updated();
+				$post    = get_post( static::factory()->post->create() );
+
+				return [];
+			}
+		];
+
+		yield 'expired license - new' => [
+			function (): array {
+				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
+					return new Service_Status( $backend_base_url, Service_Status::EXPIRED_LICENSE );
+				}, 1000, 2 );
+				global $pagenow, $post;
+				$pagenow = 'post-new.php';
+				$this->given_many_layouts_in_db( 3 );
+				$this->given_layouts_just_updated();
 				$post    = get_post( static::factory()->post->create() );
 
 				return [];

@@ -25,6 +25,7 @@ use Tribe__Date_Utils as Dates;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 use Tribe__Tickets__Tickets as Tickets;
+use TEC\Common\StellarWP\Assets\Assets;
 
 class Frontend_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -468,7 +469,7 @@ class Frontend_Test extends Controller_Test_Case {
 		yield 'service down' => [
 			function () {
 				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
-					return new Service_Status( $backend_base_url, Service_Status::SERVICE_DOWN );
+					return new Service_Status( $backend_base_url, Service_Status::SERVICE_UNREACHABLE );
 				}, 1000, 2 );
 				$post_id = static::factory()->post->create(
 					[
@@ -640,6 +641,31 @@ class Frontend_Test extends Controller_Test_Case {
 		);
 
 		$this->assertMatchesHtmlSnapshot( $html );
+	}
+
+	public function asset_data_provider() {
+		$assets = [
+			'tec-tickets-seating-frontend'       => '/build/Seating/frontend/ticketsBlock.js',
+			'tec-tickets-seating-frontend-style' => '/build/Seating/frontend/ticketsBlock.css',
+		];
+
+		foreach ( $assets as $slug => $path ) {
+			yield $slug => [ $slug, $path ];
+		}
+	}
+
+	/**
+	 * @test
+	 * @dataProvider asset_data_provider
+	 */
+	public function it_should_locate_assets_where_expected( $slug, $path ) {
+		$this->make_controller()->register();
+
+		$this->assertTrue( Assets::init()->exists( $slug ) );
+
+		// We use false, because in CI mode the assets are not build so min aren't available. Its enough to check that the non-min is as expected.
+		$asset_url = Assets::init()->get( $slug )->get_url( false );
+		$this->assertEquals( plugins_url( $path, EVENT_TICKETS_MAIN_PLUGIN_FILE ), $asset_url );
 	}
 
 	/**
