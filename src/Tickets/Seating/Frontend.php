@@ -314,7 +314,7 @@ class Frontend extends Controller_Contract {
 			ET::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->set_condition( static fn() => is_singular( (array) tribe_get_option( 'ticket-enabled-post-types', [] ) ) && tec_tickets_seating_enabled( get_the_ID() ) )
+			->set_condition( fn() => $this->is_singular_with_seating() )
 			->set_dependencies(
 				'tribe-dialog-js',
 				'tec-tickets-seating-service-bundle',
@@ -338,11 +338,22 @@ class Frontend extends Controller_Contract {
 			ET::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->set_condition( static fn() => is_singular( (array) tribe_get_option( 'ticket-enabled-post-types', [] ) ) && tec_tickets_seating_enabled( get_the_ID() ) )
+			->set_condition( fn() => $this->is_singular_with_seating() )
 			->enqueue_on( 'wp_enqueue_scripts' )
 			->add_to_group( 'tec-tickets-seating-frontend' )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
+	}
+
+	/**
+	 * Checks if the current context is the Block Editor and the post type is ticket-enabled.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_singular_with_seating() {
+		return is_singular( (array) tribe_get_option( 'ticket-enabled-post-types', [] ) ) && tec_tickets_seating_enabled( get_the_ID() );
 	}
 
 	/**
