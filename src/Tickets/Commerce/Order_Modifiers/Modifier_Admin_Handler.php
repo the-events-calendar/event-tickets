@@ -13,6 +13,7 @@ use InvalidArgumentException;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 use TEC\Tickets\Registerable;
+use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
  * Class Modifier_Settings.
@@ -78,6 +79,26 @@ class Modifier_Admin_Handler implements Registerable {
 		add_action( 'admin_init', fn() => $this->handle_form_submission() );
 
 		add_action( 'admin_notices', [ $this, 'handle_notices' ] );
+
+		$this->register_assets();
+	}
+
+	/**
+	 * Register the assets for the Order Modifiers page.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function register_assets() {
+		tribe_asset(
+			Tickets_Plugin::instance(),
+			'tec-tickets-order-modifiers-table',
+			'admin/order-modifiers/table.js',
+			[ 'jquery', 'wp-util' ],
+			'admin_enqueue_scripts',
+			[ 'conditionals' => fn () => $this->is_on_page() ],
+		);
 	}
 
 	/**
