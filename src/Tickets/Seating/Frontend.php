@@ -23,6 +23,8 @@ use Tribe__Tickets__Tickets as Tickets;
 use WP_Error;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Main as Common;
+use TEC\Tickets\Commerce\Checkout;
+use TEC\Tickets\Seating\Orders\Cart;
 
 /**
  * Class Controller.
@@ -360,8 +362,7 @@ class Frontend extends Controller_Contract {
 			return false;
 		}
 
-		return is_singular( $ticketable_post_types )
-				&& tec_tickets_seating_enabled( Common::post_id_helper() );
+		return ( tribe( Checkout::class )->is_current_page() && tribe( Cart::class )->cart_has_seating_tickets() ) || ( is_singular( $ticketable_post_types ) && tec_tickets_seating_enabled( Common::post_id_helper() ) );
 	}
 
 	/**
