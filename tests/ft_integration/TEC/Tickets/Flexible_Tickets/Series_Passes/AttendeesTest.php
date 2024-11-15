@@ -2316,11 +2316,11 @@ class AttendeesTest extends Controller_Test_Case {
 			$single_event,
 			$attendee_email,
 		], [
-			'{{attendee_email}}',
 			'{{cloned_attendee_id}}',
 			'{{series_pass_id}}',
 			'{{series_id}}',
 			'{{event_id}}',
+			'{{attendee_email}}',
 		],
 			$attendee_table->column_primary_info( $cloned_attendee_item )
 		);
