@@ -17,11 +17,13 @@ use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Frontend\Timer;
 use TEC\Tickets\Seating\Service\Service;
+use Tribe\Utils\Post_ID_HelperTest;
 use Tribe__Template as Base_Template;
 use Tribe__Tickets__Main as ET;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_Error;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use Tribe__Main as Common;
 
 /**
  * Class Controller.
@@ -314,7 +316,7 @@ class Frontend extends Controller_Contract {
 			ET::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->set_condition( fn() => $this->is_singular_with_seating() )
+			->set_condition( [ $this, 'should_enqueue_assets' ] )
 			->set_dependencies(
 				'tribe-dialog-js',
 				'tec-tickets-seating-service-bundle',
@@ -338,7 +340,7 @@ class Frontend extends Controller_Contract {
 			ET::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->set_condition( fn() => $this->is_singular_with_seating() )
+			->set_condition( [ $this, 'should_enqueue_assets' ] )
 			->enqueue_on( 'wp_enqueue_scripts' )
 			->add_to_group( 'tec-tickets-seating-frontend' )
 			->add_to_group( 'tec-tickets-seating' )
@@ -350,10 +352,17 @@ class Frontend extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @return bool
+	 * @return bool Whether the assets should be enqueued or not.
 	 */
-	public function is_singular_with_seating() {
-		return is_singular( (array) tribe_get_option( 'ticket-enabled-post-types', [] ) ) && tec_tickets_seating_enabled( get_the_ID() );
+	public function should_enqueue_assets() {
+		$ticketable_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+
+		if ( empty( $ticketable_post_types ) ) {
+			return false;
+		}
+
+		return is_singular( $ticketable_post_types )
+		       && tec_tickets_seating_enabled( Common::post_id_helper() );
 	}
 
 	/**

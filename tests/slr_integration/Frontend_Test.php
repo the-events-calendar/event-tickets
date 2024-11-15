@@ -41,69 +41,60 @@ class Frontend_Test extends Controller_Test_Case {
 
 	protected string $controller_class = Frontend::class;
 
-	public function is_singular_with_tickets_data_provider(): Generator {
+	public function should_enqueue_assets_data_provider(): Generator {
+		yield 'empty ticketable post types' => [
+			function (): bool {
+				tribe_update_option( 'ticket-enabled-post-types', [] );
+
+				return false;
+			}
+		];
+
 		yield 'not singular' => [
 			function () {
+				tribe_update_option( 'ticket-enabled-post-types', ['post', 'page'] );
+				$this->set_fn_return( 'is_singular', false );
+
 				return false;
 			},
 		];
+
 		yield 'not ticket-able' => [
 			function () {
-				$post_id = static::factory()->post->create(
+				tribe_update_option( 'ticket-enabled-post-types', [ 'post'] );
+				$page_id = static::factory()->post->create(
 					[
 						'post_type' => 'page',
 					]
 				);
-
-				$query = new WP_Query( [ 'p' => $post_id ] );
-
-				global $wp_query;
-
-				$wp_query = $query;
-
-				tribe_update_option( 'ticket-enabled-post-types', 'string' );
-
-				return false;
-			},
-		];
-		yield 'ticket-able - not seating' => [
-			function () {
-				$post_id = static::factory()->post->create(
-					[
-						'post_type' => 'page',
-					]
-				);
-
-				$query = new WP_Query( [ 'p' => $post_id ] );
-
-				global $wp_query;
-
-				$wp_query = $query;
-
-				tribe_update_option( 'ticket-enabled-post-types', [ 'page' ] );
+				$this->set_fn_return( 'is_singular', true );
 
 				return false;
 			},
 		];
 
-		yield 'ticket-able - seating' => [
+		yield 'ticket-able, not seating' => [
 			function () {
+				tribe_update_option( 'ticket-enabled-post-types', [ 'page', 'post' ] );
+				$post_id = static::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				$this->set_fn_return( 'is_singular', true );
+
+				return false;
+			},
+		];
+
+		yield 'ticket-able, seating' => [
+			function () {
+				tribe_update_option( 'ticket-enabled-post-types', [ 'page', 'post' ] );
 				$post_id = static::factory()->post->create();
-
 				update_post_meta( $post_id, Meta::META_KEY_ENABLED, '1' );
 				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
-
-				$query = new WP_Query();
-
-				$query->get_posts( [ 'p' => $post_id, 'post_status' => 'any' ] );
-
-				$query->is_singular = true;
-				$query->is_single = true;
-
-				$GLOBALS['wp_query'] = $query;
-				$GLOBALS['post'] = get_post( $post_id );
-
-				tribe_update_option( 'ticket-enabled-post-types', [ 'page' ] );
+				$GLOBALS['post'] = $post_id;
+				$this->set_fn_return( 'is_singular', true );
 
 				return true;
 			},
@@ -111,15 +102,14 @@ class Frontend_Test extends Controller_Test_Case {
 	}
 
 	/**
-	 * @test
-	 * @dataProvider is_singular_with_tickets_data_provider
+	 * @dataProvider should_enqueue_assets_data_provider
 	 */
-	public function it_should_determine_is_singular_with_seating( Closure $fixture ): void {
-		$is_singular_with_seating = $fixture();
+	public function test_should_enqueue_assets( Closure $fixture ): void {
+		$should_enqueue_assets = $fixture();
 
 		$controller = $this->make_controller();
 
-		$this->assertEquals( $is_singular_with_seating, $controller->is_singular_with_seating() );
+		$this->assertEquals( $should_enqueue_assets, $controller->should_enqueue_assets() );
 	}
 
 	/**

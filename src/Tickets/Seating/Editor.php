@@ -15,6 +15,7 @@ use TEC\Tickets\Seating\Service\Service;
 use Tribe__Tickets__Main as Tickets;
 use TEC\Tickets\Commerce\Ticket;
 use Tribe__Tickets__Tickets as Tribe_Tickets;
+use WP_Post;
 use WP_REST_Request;
 
 /**
@@ -211,7 +212,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 			Tickets::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->set_condition( fn() => $this->is_block_editor_with_tickets() )
+			->set_condition( [ $this, 'should_enqueue_assets' ] )
 			->set_dependencies(
 				'wp-hooks',
 				'react',
@@ -240,7 +241,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 			Tickets::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->set_condition( fn() => $this->is_block_editor_with_tickets() )
+			->set_condition( [ $this, 'should_enqueue_assets' ] )
 			->enqueue_on( 'enqueue_block_editor_assets' )
 			->add_to_group( 'tec-tickets-seating-editor' )
 			->add_to_group( 'tec-tickets-seating' )
@@ -252,12 +253,23 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @return bool
+	 * @return bool Whether the assets should be enqueued or not.
 	 */
-	public function is_block_editor_with_tickets() {
-		global $post;
+	public function should_enqueue_assets() {
+		$ticketable_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
 
-		return is_admin() && in_array( $post->post_type, (array) tribe_get_option( 'ticket-enabled-post-types', [] ), true );
+		if ( empty( $ticketable_post_types ) ) {
+			return false;
+		}
+
+		$post = get_post();
+
+		if ( ! $post instanceof WP_Post ) {
+			return false;
+		}
+
+		return is_admin()
+		       && in_array( $post->post_type, $ticketable_post_types, true );
 	}
 
 	/**
