@@ -269,7 +269,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 		}
 
 		return is_admin()
-		       && in_array( $post->post_type, $ticketable_post_types, true );
+				&& in_array( $post->post_type, $ticketable_post_types, true );
 	}
 
 	/**

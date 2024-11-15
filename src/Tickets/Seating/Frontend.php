@@ -17,7 +17,6 @@ use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Frontend\Timer;
 use TEC\Tickets\Seating\Service\Service;
-use Tribe\Utils\Post_ID_HelperTest;
 use Tribe__Template as Base_Template;
 use Tribe__Tickets__Main as ET;
 use Tribe__Tickets__Tickets as Tickets;
@@ -362,7 +361,7 @@ class Frontend extends Controller_Contract {
 		}
 
 		return is_singular( $ticketable_post_types )
-		       && tec_tickets_seating_enabled( Common::post_id_helper() );
+				&& tec_tickets_seating_enabled( Common::post_id_helper() );
 	}
 
 	/**
