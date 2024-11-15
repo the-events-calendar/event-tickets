@@ -104,22 +104,29 @@ class Ephemeral_Token {
 		$code = wp_remote_retrieve_response_code( $response );
 
 		if ( 200 !== $code ) {
+			$error_code = $response instanceof WP_Error ? $response->get_error_code() : $code;
+			$error      = $response instanceof WP_Error ? $response->get_error_message() : 'n/a';
+
 			$this->log_error(
 				'Fetching ephemeral token from service.',
 				[
 					'source' => __METHOD__,
-					'code'   => $code,
+					'code'   => $error_code,
+					'error'  => $error,
 				]
 			);
 
 			return new \WP_Error(
 				'ephemeral_token_request_failed',
 				sprintf(
-					// translators: 1: HTTP status code.
-					__( 'Ephemeral token request failed (%d).', 'event-tickets' ),
-					$code
+					// translators: 1: failure reason.
+					__( 'Ephemeral token request failed. Your site cannot connect to the Seating Builder service (%s).', 'event-tickets' ),
+					$error
 				),
-				[ 'code' => $code ]
+				[
+					'code'  => $error_code,
+					'error' => $error,
+				]
 			);
 		}
 

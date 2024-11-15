@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Avoid enqueue seating assets where they are not required. [SL-250]

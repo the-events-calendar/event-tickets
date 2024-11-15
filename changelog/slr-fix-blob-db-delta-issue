@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Remove default value from sessions table column to avoid database update issues. [n/a]

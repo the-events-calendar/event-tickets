@@ -55,7 +55,7 @@
     "jest": [
       "src/modules/**/__tests__/**/*.js",
       "src/resources/js/**/__tests__/**/*.js",
-      "tests/slr_jest/**/*.spec.js"
+      "tests/**/*.spec.js"
     ]
   },
   "scripts": {

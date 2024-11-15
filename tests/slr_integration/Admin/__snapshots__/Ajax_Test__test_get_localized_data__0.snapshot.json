@@ -6,6 +6,7 @@
     "ACTION_DELETE_MAP": "tec_tickets_seating_service_delete_map",
     "ACTION_DELETE_LAYOUT": "tec_tickets_seating_service_delete_layout",
     "ACTION_ADD_NEW_LAYOUT": "tec_tickets_seating_service_add_layout",
+    "ACTION_DUPLICATE_LAYOUT": "tec_tickets_seating_service_duplicate_layout",
     "ACTION_POST_RESERVATIONS": "tec_tickets_seating_post_reservations",
     "ACTION_CLEAR_RESERVATIONS": "tec_tickets_seating_clear_reservations",
     "ACTION_DELETE_RESERVATIONS": "tec_tickets_seating_delete_reservations",
