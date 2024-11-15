@@ -89,7 +89,7 @@ const getMessage = (serviceStatus, serviceConnectUrl) => {
 					}{' '}
 					<a
 						style={anchorStyle}
-						href="https://evnt.is/1bdu"
+						href="https://evnt.is/1be1"
 						target="_blank"
 						rel="noreferrer noopener"
 					>
