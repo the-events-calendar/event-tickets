@@ -26,6 +26,7 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 use Tribe__Tickets__Tickets as Tickets;
 use TEC\Common\StellarWP\Assets\Assets;
+use WP_Query;
 
 class Frontend_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -39,6 +40,77 @@ class Frontend_Test extends Controller_Test_Case {
 	use Reservations_Maker;
 
 	protected string $controller_class = Frontend::class;
+
+	public function should_enqueue_assets_data_provider(): Generator {
+		yield 'empty ticketable post types' => [
+			function (): bool {
+				tribe_update_option( 'ticket-enabled-post-types', [] );
+
+				return false;
+			}
+		];
+
+		yield 'not singular' => [
+			function () {
+				tribe_update_option( 'ticket-enabled-post-types', ['post', 'page'] );
+				$this->set_fn_return( 'is_singular', false );
+
+				return false;
+			},
+		];
+
+		yield 'not ticket-able' => [
+			function () {
+				tribe_update_option( 'ticket-enabled-post-types', [ 'post'] );
+				$page_id = static::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				$this->set_fn_return( 'is_singular', true );
+
+				return false;
+			},
+		];
+
+		yield 'ticket-able, not seating' => [
+			function () {
+				tribe_update_option( 'ticket-enabled-post-types', [ 'page', 'post' ] );
+				$post_id = static::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				$this->set_fn_return( 'is_singular', true );
+
+				return false;
+			},
+		];
+
+		yield 'ticket-able, seating' => [
+			function () {
+				tribe_update_option( 'ticket-enabled-post-types', [ 'page', 'post' ] );
+				$post_id = static::factory()->post->create();
+				update_post_meta( $post_id, Meta::META_KEY_ENABLED, '1' );
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+				$GLOBALS['post'] = $post_id;
+				$this->set_fn_return( 'is_singular', true );
+
+				return true;
+			},
+		];
+	}
+
+	/**
+	 * @dataProvider should_enqueue_assets_data_provider
+	 */
+	public function test_should_enqueue_assets( Closure $fixture ): void {
+		$should_enqueue_assets = $fixture();
+
+		$controller = $this->make_controller();
+
+		$this->assertEquals( $should_enqueue_assets, $controller->should_enqueue_assets() );
+	}
 
 	/**
 	 * it should_display_ticket_block_when_seating_is_enabled
