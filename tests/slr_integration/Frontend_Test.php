@@ -26,7 +26,8 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 use Tribe__Tickets__Tickets as Tickets;
 use TEC\Common\StellarWP\Assets\Assets;
-use WP_Query;
+use TEC\Tickets\Commerce\Checkout;
+use TEC\Tickets\Seating\Orders\Cart;
 
 class Frontend_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -56,6 +57,27 @@ class Frontend_Test extends Controller_Test_Case {
 				$this->set_fn_return( 'is_singular', false );
 
 				return false;
+			},
+		];
+
+		yield 'in checkout but no seating tickets' => [
+			function () {
+				tribe_update_option( 'ticket-enabled-post-types', ['post', 'page'] );
+				$this->set_fn_return( 'is_singular', false );
+				$this->set_class_fn_return( Checkout::class, 'is_current_page', true );
+
+				return false;
+			},
+		];
+
+		yield 'in checkout with seating tickets' => [
+			function () {
+				tribe_update_option( 'ticket-enabled-post-types', ['post', 'page'] );
+				$this->set_fn_return( 'is_singular', false );
+				$this->set_class_fn_return( Checkout::class, 'is_current_page', true );
+				$this->set_class_fn_return( Cart::class, 'cart_has_seating_tickets', true );
+
+				return true;
 			},
 		];
 
