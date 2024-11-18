@@ -2,13 +2,11 @@ import defaultState from './default-state';
 import { getTicketIdFromCommonStore } from "./common-store-bridge";
 
 export const reducer = ( state = defaultState, action ) => {
-	switch ( action.type ) {
-		case 'SET_TICKET_FEES':
-			return {
-				...state,
-				ticketFees: action.ticketFees,
-			};
+	const clientId = action?.clientId;
+	let ticketFees = [];
+	let ticketPostId;
 
+	switch ( action.type ) {
 		case 'SET_AUTOMATIC_FEES':
 			return {
 				...state,
@@ -21,8 +19,46 @@ export const reducer = ( state = defaultState, action ) => {
 				feesAvailable: action.feesAvailable,
 			};
 
+		case 'ADD_FEE_TO_TICKET':
+			ticketPostId = getTicketIdFromCommonStore( clientId )
+			ticketFees = state.selectedFeesByClientId[ clientId ] || [];
+			ticketFees.push( action.feeId );
+
+			return {
+				...state,
+				selectedFeesByClientId: {
+					...state.selectedFeesByClientId,
+					[ clientId ]: ticketFees,
+				},
+				selectedFeesByPostId: {
+					...state.selectedFeesByPostId,
+					[ ticketPostId ]: ticketFees,
+				},
+			};
+
+		case 'REMOVE_FEE_FROM_TICKET':
+			ticketPostId = getTicketIdFromCommonStore( clientId )
+			ticketFees = state.selectedFeesByClientId[ clientId ] || [];
+
+			const index = ticketFees.indexOf( action.feeId );
+			if ( index > -1 ) {
+				ticketFees.splice( index, 1 );
+			}
+
+			return {
+				...state,
+				selectedFeesByClientId: {
+					...state.selectedFeesByClientId,
+					[ clientId ]: ticketFees,
+				},
+				selectedFeesByPostId: {
+					...state.selectedFeesByPostId,
+					[ ticketPostId ]: ticketFees,
+				},
+			};
+
 		case 'SET_SELECTED_FEES':
-			const ticketPostId = getTicketIdFromCommonStore( action.clientId );
+			ticketPostId = getTicketIdFromCommonStore( action.clientId );
 
 			// If null or empty array, remmove the selected fees.
 			if ( ! action.feesSelected || ! action.feesSelected.length ) {

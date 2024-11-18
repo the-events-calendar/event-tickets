@@ -1,7 +1,6 @@
 import { getTicketIdFromCommonStore } from './common-store-bridge';
 import { currentProviderSupportsFees } from './compatibility';
 
-
 export const selectors = {
 
 	shouldShowFees( state ) {
