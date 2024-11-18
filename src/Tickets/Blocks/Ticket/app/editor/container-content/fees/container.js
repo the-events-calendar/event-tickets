@@ -6,28 +6,14 @@ import {
 	withDispatch,
 	withSelect
 } from '@wordpress/data';
+import { compose } from 'redux';
 
 /**
  * Internal dependencies
  */
 import Template from './template';
-import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
 
 const storeName = 'tec-tickets-fees';
-
-const mapDispatchToProps = ( dispatch, ownProps ) => ( {
-
-	onSelectedFeesChange: ( selected ) => {
-		const { clientId } = ownProps;
-		const store = select( storeName );
-		const previousSelected = store.getSelectedFees( clientId );
-
-		dispatch( actions.setTicketFees( clientId, selected ) );
-		dispatch( actions.setTicketHasChanges( clientId, true ) );
-	},
-
-	// Optionally, you can add other actions if needed for active fees or other features
-} );
 
 const FeeDisplay = withSelect( ( select, ownProps ) => {
 	const store = select( storeName );
@@ -37,8 +23,12 @@ const FeeDisplay = withSelect( ( select, ownProps ) => {
 		feesAutomatic: store.getAutomaticFees(),
 		feesAvailable: store.getAvailableFees(),
 		shouldDisplay: store.shouldShowFees(),
+		clientId: ownProps.clientId,
 	};
-} )( Template );
+} );
 
 
-export default FeeDisplay;
+// export default FeeDisplay;
+export default compose(
+	FeeDisplay
+)( Template );

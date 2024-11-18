@@ -17,6 +17,7 @@ import {
 	useDispatch,
 } from '@wordpress/data';
 
+
 const storeName = 'tec-tickets-fees';
 
 
@@ -67,13 +68,28 @@ const mapFeeToItem = ( { isDisabled, onChange, isChecked } ) => {
 
 function FeesSection( props ) {
 	// If we shouldn't display this component, return null.
-	const shouldDisplay = useSelect( ( select ) => select( storeName ).shouldShowFees() );
+	const shouldDisplay = useSelect(
+		( select ) => select( storeName ).shouldShowFees(),
+		[]
+	);
 	if ( ! shouldDisplay ) {
 		return null;
 	}
 
-	const feesAvailable = useSelect( ( select ) => select( storeName ).getAvailableFees() );
-	const feesAutomatic = useSelect( ( select ) => select( storeName ).getAutomaticFees() );
+	const feesAvailable = useSelect(
+		( select ) => select( storeName ).getAvailableFees(),
+		[]
+	);
+	const feesAutomatic = useSelect(
+		( select ) => select( storeName ).getAutomaticFees(),
+		[]
+	);
+
+	// If there are no fees to display, return null.
+	const hasItemsToDisplay = feesAutomatic.length > 0 || feesAvailable.length > 0;
+	if ( ! hasItemsToDisplay ) {
+		return null;
+	}
 
 	const { addFeeToTicket, removeFeeFromTicket } = useDispatch( storeName );
 	const {
@@ -99,7 +115,7 @@ function FeesSection( props ) {
 		}
 	}
 
-	const hasItemsToDisplay = feesAutomatic.length > 0 || feesAvailable.length > 0;
+
 
 	return (
 		<div
