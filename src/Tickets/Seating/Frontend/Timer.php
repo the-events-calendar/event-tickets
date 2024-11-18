@@ -57,7 +57,7 @@ class Timer extends Controller_Contract {
 	/**
 	 * The AJAX action used from the JS code to signal the timer should pause to allow the user to checkout.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 *
 	 * @var string
 	 */
@@ -631,7 +631,7 @@ class Timer extends Controller_Contract {
 	/**
 	 * Returns the filtered checkout grace time given to a user to complete the checkout process.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 *
 	 * @return int The filtered checkout grace time.
 	 */
@@ -639,7 +639,7 @@ class Timer extends Controller_Contract {
 		/**
 		 * Filters the grace time given to a user to complete the checkout process.
 		 *
-		 * @since TBD
+		 * @since 5.17.0
 		 *
 		 * @param int $grace_time The grace time allowed to a user to complete the checkout process.
 		 */
@@ -649,7 +649,7 @@ class Timer extends Controller_Contract {
 	/**
 	 * Handles the action from the backend signaling the user is checking out.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 *
 	 * @return void  The AJAX response is sent back to the browser.
 	 */

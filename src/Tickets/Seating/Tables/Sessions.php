@@ -429,7 +429,7 @@ class Sessions extends Table {
 	 *
 	 * Note the expiration will not be updated if the lock is set.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 *
 	 * @param string $token     The token to update the session for.
 	 * @param int    $timestamp The UNIX timestamp to update the expiration to.
@@ -472,7 +472,7 @@ class Sessions extends Table {
 	/**
 	 * Returns whether the expiration lock for a token is set or not.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 *
 	 * @param string $token The token to check the expiration lock for.
 	 *

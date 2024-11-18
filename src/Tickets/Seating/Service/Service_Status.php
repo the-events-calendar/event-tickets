@@ -97,7 +97,7 @@ class Service_Status {
 	/**
 	 * The context of the status check.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 *
 	 * @var string
 	 */
@@ -107,7 +107,7 @@ class Service_Status {
 	 * Service_Status constructor.
 	 *
 	 * @since 5.16.0
-	 * @since TBD Added the `$context` argument.
+	 * @since 5.17.0 Added the `$context` argument.
 	 *
 	 * @param string      $backend_base_url The base URL of the service from the site backend.
 	 * @param int|null    $status           The status of the service.
@@ -326,7 +326,7 @@ class Service_Status {
 	/**
 	 * Returns the service status transient name, independent of the context.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 *
 	 * @return string The service status transient name.
 	 */
@@ -337,7 +337,7 @@ class Service_Status {
 	/**
 	 * Returns the context of this service status check.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 *
 	 * @return string The context of this service status check.
 	 */
