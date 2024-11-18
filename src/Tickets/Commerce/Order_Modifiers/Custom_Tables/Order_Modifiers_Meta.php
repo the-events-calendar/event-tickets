@@ -23,7 +23,7 @@ class Order_Modifiers_Meta extends Abstract_Custom_Table {
 	 *
 	 * @var string|null The version number for this schema definition.
 	 */
-	public const SCHEMA_VERSION = '1.0.0';
+	public const SCHEMA_VERSION = '0.1.0-dev';
 
 	/**
 	 * @since TBD
