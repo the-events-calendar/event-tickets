@@ -216,7 +216,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Increase payment failure correction timer to 60 seconds. [SL-233]
 * Fix - Avoid enqueue seating assets where they are not required. [SL-250]
 * Fix - Fixed styling issues for modals and dropdowns. [SL-202][SL-203]
-* Fix - Remove default value from sessions table column to avoid database update issues. [n/a]
+* Fix - Remove default value from sessions table column to avoid database update issues.
 * Language - 71 new strings added, 143 updated, 11 fuzzied, and 2 obsoleted.
 
 = [5.16.1] 2024-11-04 =
