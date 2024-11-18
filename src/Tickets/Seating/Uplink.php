@@ -147,11 +147,11 @@ class Uplink extends Controller_Contract {
 			esc_html_x( 'License Key', 'Legend for the license key field', 'event-tickets' ) .
 			'</legend>';
 	}
-	
+
 	/**
 	 * Reset data on new connection.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 */
 	public function reset_data_on_new_connection() {
 		// Truncate tables.
@@ -159,7 +159,7 @@ class Uplink extends Controller_Contract {
 		tribe( Layouts::class )->truncate();
 		tribe( Seat_Types::class )->truncate();
 		tribe( Sessions::class )->truncate();
-		
+
 		// Clear cache.
 		tribe( Service\Maps::class )->invalidate_cache();
 		tribe( Service\Layouts::class )->invalidate_cache();

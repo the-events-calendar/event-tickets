@@ -2,7 +2,7 @@
 /**
  * Seating settings.
  *
- * @since TBD
+ * @since 5.17.0
  *
  * @package TEC\Tickets\Seating
  */
@@ -15,7 +15,7 @@ use TEC\Common\StellarWP\Arrays\Arr;
 /**
  * Class Settings.
  *
- * @since TBD
+ * @since 5.17.0
  *
  * @package TEC\Tickets\Seating
  */
@@ -23,34 +23,34 @@ class Settings extends Controller_Contract {
 	/**
 	 * The option name for the frontend timer setting.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 *
 	 * @var string
 	 */
 	private const TIMER_LIMIT_OPTION = 'tickets-seating-timer-limit';
-	
+
 	/**
 	 * The action that will be fired when this Controller registers.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 */
 	protected function do_register(): void {
 		add_filter( 'tribe_tickets_settings_tab_fields', [ $this, 'add_frontend_timer_settings' ] );
 	}
-	
+
 	/**
 	 * Unregisters the Controller.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 */
 	public function unregister(): void {
 		remove_filter( 'tribe_tickets_settings_tab_fields', [ $this, 'add_frontend_timer_settings' ] );
 	}
-	
+
 	/**
 	 * Add display settings for Event Tickets.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 *
 	 * @param array $settings List of display settings.
 	 *
@@ -71,14 +71,14 @@ class Settings extends Controller_Contract {
 				'default'         => 15,
 			],
 		];
-		
+
 		return Arr::insert_after_key( 'ticket-authentication-requirements', $settings, $timer_settings );
 	}
-	
+
 	/**
 	 * Get the reservation time limit in minutes.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 *
 	 * @return int
 	 */

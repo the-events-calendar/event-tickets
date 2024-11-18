@@ -218,7 +218,7 @@ class Cart {
 	/**
 	 * Determines if the cart has seating tickets.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 *
 	 * @return bool
 	 */
@@ -237,7 +237,7 @@ class Cart {
 	/**
 	 * Fetches the token reservations either from the cache or from the database.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 *
 	 * @param string $token The token to fetch the reservations for.
 	 *
@@ -263,7 +263,7 @@ class Cart {
 	/**
 	 * Warms up the session caches that might be needed later.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 *
 	 * @return void The method does not return a valued, the cache is warmed up.
 	 */

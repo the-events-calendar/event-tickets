@@ -335,7 +335,7 @@ class Tribe__Tickets__Admin__Notices {
 	/**
 	 * Display AR Page notice for FSE theme detected.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 *
 	 * @return void
 	 */

@@ -321,7 +321,7 @@ class Session {
 	 * Confirms all the reservations contained in the cookie.
 	 *
 	 * @since 5.16.0
-	 * @since TBD Added the `$delete_token_session` parameter.
+	 * @since 5.17.0 Added the `$delete_token_session` parameter.
 	 *
 	 * @param bool $delete_token_session Whether to delete the token session after confirming the reservations.
 	 *

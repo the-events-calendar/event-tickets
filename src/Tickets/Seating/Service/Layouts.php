@@ -420,7 +420,7 @@ class Layouts {
 	/**
 	 * Returns the URL to add a new layout.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 *
 	 * @param string $layout_id The ID of the map to add the layout to.
 	 *
@@ -438,7 +438,7 @@ class Layouts {
 	/**
 	 * Duplicates a layout in the service.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 *
 	 * @param string $layout_id The ID of the layout to duplicate.
 	 *

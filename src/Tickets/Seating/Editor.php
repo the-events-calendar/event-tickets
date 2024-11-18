@@ -251,7 +251,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	/**
 	 * Checks if the current context is the Block Editor and the post type is ticket-enabled.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 *
 	 * @return bool Whether the assets should be enqueued or not.
 	 */
