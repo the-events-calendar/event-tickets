@@ -12,6 +12,7 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe;
 
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Abstract_Fees;
 use TEC\Tickets\Registerable;
@@ -91,8 +92,8 @@ class Fees extends Abstract_Fees implements Registerable {
 		$combined_fees = array_filter(
 			array_map(
 				function ( $fee ) {
-					if ( isset( $fee['fee_amount'] ) && $fee['fee_amount'] instanceof Value ) {
-						$fee['fee_amount'] = $fee['fee_amount']->get_decimal();
+					if ( isset( $fee['fee_amount'] ) && $fee['fee_amount'] instanceof Precision_Value ) {
+						$fee['fee_amount'] = $fee['fee_amount']->get();
 					}
 
 					// Return the fee only if the amount is non-negative.
