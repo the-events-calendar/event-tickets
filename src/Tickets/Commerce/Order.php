@@ -88,6 +88,15 @@ class Order extends Abstract_Order {
 	/**
 	 * Which meta holds the cart items used to setup this order.
 	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $subtotal_value_meta_key = '_tec_tc_order_subtotal_value';
+
+	/**
+	 * Which meta holds the cart items used to setup this order.
+	 *
 	 * @since 5.1.9
 	 *
 	 * @var string
@@ -441,7 +450,7 @@ class Order extends Abstract_Order {
 		$order_args = [
 			'title'                => $this->generate_order_title( $original_cart_items, $cart->get_cart_hash() ),
 			'total_value'          => $total->get_decimal(),
-			'subtotal'             => $subtotal,
+			'subtotal'             => $subtotal->get_decimal(),
 			'items'                => $items,
 			'gateway'              => $gateway::get_key(),
 			'hash'                 => $cart->get_cart_hash(),
@@ -651,7 +660,8 @@ class Order extends Abstract_Order {
 			$total   = 0;
 
 			foreach ( $order->items as $cart_item ) {
-				if ( 'ticket' !== $cart_item['type'] ) {
+				$cart_item_type = $cart_item['type'] ?? 'ticket';
+				if ( 'ticket' !== $cart_item_type ) {
 					continue;
 				}
 

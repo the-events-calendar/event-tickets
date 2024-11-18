@@ -319,8 +319,8 @@ abstract class Abstract_Fees {
 			// @todo - Review what needs to be sent. Some of these are used so wp_pluck doesn't cause a warning.
 			$items[] = [
 				'id'           => "fee_{$fee['id']}",
-				'price'        => $fee['fee_amount'],
-				'sub_total'    => $fee['fee_amount'],
+				'price'        => $fee['fee_amount']->get(),
+				'sub_total'    => $fee['fee_amount']->get(),
 				'type'         => 'fee',
 				'fee_id'       => $fee['id'],
 				'display_name' => $fee['display_name'],

@@ -61,6 +61,7 @@ class Order_Repository extends Tribe__Repository {
 				'gateway_order_id'     => Order::$gateway_order_id_meta_key,
 				'items'                => Order::$items_meta_key,
 				'total_value'          => Order::$total_value_meta_key,
+				'subtotal'             => Order::$subtotal_value_meta_key,
 				'currency'             => Order::$currency_meta_key,
 				'purchaser_user_id'    => Order::$purchaser_user_id_meta_key,
 				'purchaser_full_name'  => Order::$purchaser_full_name_meta_key,
