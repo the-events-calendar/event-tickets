@@ -1,5 +1,13 @@
-import { storeName } from './store';
+/**
+ * External dependencies.
+ */
 import { select, dispatch } from '@wordpress/data';
+
+/**
+ * Internal dependencies.
+ */
+import Fees from "./fees";
+import { storeName } from './store';
 
 /**
  * Filters the body details of the ticket to add the seating details.
@@ -18,3 +26,19 @@ export const filterSetBodyDetails = ( body, clientId ) => {
 
 	return body;
 };
+
+/**
+ * Filters the ticket container items.
+ *
+ * @since TBD
+ *
+ * @param {Array}  items    The ticket container items.
+ * @param {string} clientId The client ID.
+ * @return {Array} The filtered ticket container items.
+ */
+export const filterTicketContainerItems = ( items, clientId ) => {
+	// @todo: put this in the correct place in the array of items.
+	items.push( <Fees clientId={ clientId }/> );
+
+	return items;
+}
