@@ -1,6 +1,6 @@
 # Changelog
 
-### [5.17.0] 2024-11-18
+### [5.17.0] 2024-11-19
 
 * Version - Event Tickets 5.17.0 is only compatible with Event Tickets Plus 6.1.1 or higher.
 * Feature - Add Reservation timer settings for seating tickets. [Sl-213]
