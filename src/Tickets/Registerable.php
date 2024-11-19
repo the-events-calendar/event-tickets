@@ -24,4 +24,13 @@ interface Registerable {
 	 * @return void The method does not return any value.
 	 */
 	public function register(): void;
+
+	/**
+	 * Removes the filters and actions hooks added by the controller.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function unregister(): void;
 }

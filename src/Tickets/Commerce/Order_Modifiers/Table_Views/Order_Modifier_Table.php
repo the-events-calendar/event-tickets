@@ -19,7 +19,7 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Table_Views;
 
-use TEC\Tickets\Commerce\Order_Modifiers\Controller;
+use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use TEC\Tickets\Commerce\Order_Modifiers\Factory;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship;

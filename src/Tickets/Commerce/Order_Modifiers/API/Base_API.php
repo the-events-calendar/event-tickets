@@ -20,12 +20,7 @@ use WP_REST_Response as Response;
  */
 abstract class Base_API implements Registerable {
 
-	/**
-	 * The namespace for the API.
-	 *
-	 * @var string
-	 */
-	protected string $namespace = 'tribe/tickets/v1';
+	use Namespace_Trait;
 
 	/**
 	 * Get the permission callback.
@@ -57,8 +52,20 @@ abstract class Base_API implements Registerable {
 	 * @return void The method does not return any value.
 	 */
 	public function register(): void {
-		add_action( 'rest_api_init', fn() => $this->register_routes() );
+		add_action( 'rest_api_init', $this->get_register_routes_callback() );
 		$this->register_additional_hooks();
+	}
+
+	/**
+	 * Removes the filters and actions hooks added by the controller.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function unregister(): void {
+		remove_action( 'rest_api_init', $this->get_register_routes_callback() );
+		$this->unregister_additional_hooks();
 	}
 
 	/**
@@ -75,6 +82,19 @@ abstract class Base_API implements Registerable {
 	}
 
 	/**
+	 * Removes additional methods/logic from WordPress hooks.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function unregister_additional_hooks(): void {
+		/*
+		 * Override this method in a child class to unregister additional hooks.
+		 */
+	}
+
+	/**
 	 * Convert a WP_Error object to a response.
 	 *
 	 * @since TBD
@@ -85,6 +105,22 @@ abstract class Base_API implements Registerable {
 	 */
 	protected function convert_error_to_response( WP_Error $error ): Response {
 		return rest_convert_error_to_response( $error );
+	}
+
+	/**
+	 * Get the register routes callback.
+	 *
+	 * @since TBD
+	 *
+	 * @return callable The register routes callback.
+	 */
+	protected function get_register_routes_callback(): callable {
+		static $callbacks = [];
+		if ( ! array_key_exists( static::class, $callbacks ) ) {
+			$callbacks[ static::class ] = fn() => $this->register_routes();
+		}
+
+		return $callbacks[ static::class ];
 	}
 
 	/**

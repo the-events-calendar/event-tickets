@@ -55,7 +55,7 @@ trait Fee_Types {
 	protected function get_selectable_fees( array $all_fees ) {
 		return array_filter(
 			$all_fees,
-			fn( $fee ) => ! empty( $fee->meta_value ) && $fee->meta_value !== 'all'
+			fn( $fee ) => ! empty( $fee->meta_value ) && $fee->meta_value === 'per'
 		);
 	}
 

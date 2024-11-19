@@ -12,7 +12,7 @@
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
 
 use TEC\Tickets\Commerce\Utils\Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Controller;
+use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Fees as Fee_Repository;
@@ -29,16 +29,6 @@ use Tribe__Template as Template;
  * @since TBD
  */
 abstract class Abstract_Fees {
-
-	/**
-	 * The default priority and number of arguments for hooks.
-	 *
-	 * @var array
-	 */
-	protected array $hook_args = [
-		'ten_three' => [ 10, 3 ],
-		'ten_two'   => [ 10, 2 ],
-	];
 
 	/**
 	 * The modifier type used for fees.
@@ -335,5 +325,21 @@ abstract class Abstract_Fees {
 		self::$fees_appended = true;
 
 		return $items;
+	}
+
+	/**
+	 * Get the callback for appending fees to the cart.
+	 *
+	 * @since TBD
+	 *
+	 * @return callable The callback for appending fees to the cart.
+	 */
+	protected function get_fee_append_callback(): callable {
+		static $callback = null;
+		if ( null === $callback ) {
+			$callback = fn( $items, $subtotal ) => $this->append_fees_to_cart( $items, $subtotal );
+		}
+
+		return $callback;
 	}
 }

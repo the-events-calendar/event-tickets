@@ -1,220 +1,200 @@
 <?php
 /**
- * Handles the registration of all the Order Modifiers managed by the plugin.
+ * Event Tickets Order Modifiers Provider.
  *
  * @since   TBD
- *
- * @package TEC\Tickets\Commerce\Order_Modifiers;
+ * @package TEC\Tickets\Commerce\Order_Modifiers
  */
+
+declare( strict_types=1 );
 
 namespace TEC\Tickets\Commerce\Order_Modifiers;
 
-use InvalidArgumentException;
-use TEC\Common\lucatume\DI52\Container;
-use TEC\Common\StellarWP\Schema\Register as Schema_Register;
-use TEC\Common\StellarWP\Schema\Config as Schema_Config;
-use TEC\Common\StellarWP\DB\DB;
-use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifier_Relationships;
-use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
-use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifiers;
-use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
-use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
+use TEC\Tickets\Commerce\Order_Modifiers\Admin\Editor;
+use TEC\Tickets\Commerce\Order_Modifiers\Admin\Order_Modifier_Fee_Metabox;
+use TEC\Tickets\Commerce\Order_Modifiers\API\Coupons;
+use TEC\Tickets\Commerce\Order_Modifiers\API\Fees;
+use TEC\Tickets\Commerce\Order_Modifiers\API\Localization;
+use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Fees as Agnostic_Checkout_Fees;
+use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Paypal\Fees as Paypal_Checkout_Fees;
+use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe\Fees as Stripe_Checkout_Fees;
+use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Controller as Table_Controller;
+use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon;
+use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee;
+use TEC\Tickets\Registerable;
 
 /**
- * Class Controller.
+ * Class Provider
  *
- * @since   TBD
- *
- * @package TEC\Tickets\Commerce\Order_Modifiers;
+ * @since TBD
  */
-class Controller extends Controller_Contract {
-
-	use Valid_Types;
+final class Controller extends Controller_Contract {
 
 	/**
-	 * The callback to register the tables.
+	 * The classes to register with a tag.
 	 *
-	 * @since TBD
-	 *
-	 * @var callable
+	 * @var array
 	 */
-	protected $register_callback;
+	protected array $tagged_classes = [];
 
 	/**
-	 * List of custom tables to register.
+	 * Registers the filters and actions hooks added by the controller.
 	 *
-	 * @var Table[]
+	 * @since 5.0.17
+	 *
+	 * @return void
 	 */
-	protected $custom_tables = [
-		Order_Modifiers::class,
-		Order_Modifiers_Meta::class,
-		Order_Modifier_Relationships::class,
-	];
+	protected function do_register(): void {
+		$this->container->singleton( self::class, $this );
 
-	/**
-	 * ServiceProvider constructor.
-	 *
-	 * @since TBD
-	 *
-	 * @param Container $container The DI container instance.
-	 */
-	public function __construct( Container $container ) {
-		parent::__construct( $container );
+		/**
+		 * Fires when the provider is registered.
+		 *
+		 * @since TBD
+		 *
+		 * @param Controller $this The provider instance.
+		 */
+		do_action( 'tec_tickets_commerce_order_modifiers_register', $this );
 
-		// Set up the callback function to register the tables.
-		$this->register_callback = function () {
-			$this->register_tables();
-		};
+		// Register the common classes.
+		$this->register_common_classes();
+
+		// Register the Fee classes.
+		$this->register_fee_classes();
+
+		/**
+		 * Filters whether the coupons are enabled.
+		 *
+		 * This filter will be removed when the Coupon functionality is ready for production.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $enabled Whether the coupons are enabled.
+		 */
+		if ( apply_filters( 'tec_tickets_commerce_order_modifiers_coupons_enabled', false ) ) {
+			$this->register_couopon_classes();
+		} else {
+			$this->filter_out_coupons();
+		}
+
+		// Tag our classes that have their own registration needs.
+		$this->container->tag( $this->tagged_classes, 'order_modifiers' );
+
+		foreach ( $this->container->tagged( 'order_modifiers' ) as $class_instance ) {
+			if ( $class_instance instanceof Registerable || method_exists( $class_instance, 'register' ) ) {
+				$class_instance->register();
+			}
+		}
 	}
 
 	/**
-	 * Binds and sets up implementations.
+	 * Register the common classes.
 	 *
 	 * @since TBD
+	 *
+	 * @return void
 	 */
-	public function do_register(): void {
-		Schema_Config::set_container( $this->container );
-		Schema_Config::set_db( DB::class );
+	protected function register_common_classes(): void {
+		// Register the custom table controller.
+		$this->container->register( Table_Controller::class );
 
-		add_action( 'tribe_plugins_loaded', $this->register_callback );
+		// Bind classes.
+		$this->container->bind( Editor_Config::class, fn() => new Editor_Config() );
+
+		// Build the array of classes.
+		$classes = [
+			Editor_Config::class,
+			Localization::class,
+			Modifier_Admin_Handler::class,
+		];
+
+		if ( is_admin() ) {
+			$classes[] = Editor::class;
+		}
+
+		// Add to the tag class array.
+		$this->tagged_classes = array_merge( $this->tagged_classes, $classes );
+	}
+
+	/**
+	 * Register the Fee classes.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function register_fee_classes(): void {
+		$this->container->singleton( Fee::class );
+		$this->container->bind( Fees::class, fn() => new Fees() );
+
+		// Add to the tag class array.
+		$this->tagged_classes = array_merge(
+			$this->tagged_classes,
+			[
+				Order_Modifier_Fee_Metabox::class,
+				Paypal_Checkout_Fees::class,
+				Stripe_Checkout_Fees::class,
+				Agnostic_Checkout_Fees::class,
+				Fees::class,
+			]
+		);
+	}
+
+	/**
+	 * Register the Coupon classes.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function register_couopon_classes(): void {
+		$this->container->singleton( Coupon::class );
+		$this->container->bind( Coupons::class, fn() => new Coupons() );
+
+		// Add to the tag class array.
+		$this->tagged_classes = array_merge(
+			$this->tagged_classes,
+			[
+				Coupons::class,
+			]
+		);
+	}
+
+	/**
+	 * Filter out the coupons.
+	 *
+	 * This will be removed when the Coupon functionality is ready for production.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	private function filter_out_coupons() {
+		$remove_coupon_array_key = function ( array $items ): array {
+			unset( $items['coupon'] );
+
+			return $items;
+		};
+
+		add_filter( 'tec_tickets_commerce_order_modifiers', $remove_coupon_array_key );
+		add_filter( 'tec_tickets_commerce_order_modifier_types', $remove_coupon_array_key );
 	}
 
 	/**
 	 * Removes the filters and actions hooks added by the controller.
 	 *
+	 * Bound implementations should not be removed in this method!
+	 *
 	 * @since TBD
 	 *
-	 * @return void
+	 * @return void Filters and actions hooks added by the controller are be removed.
 	 */
 	public function unregister(): void {
-		remove_action( 'tribe_plugins_loaded', $this->register_callback );
-	}
-
-	/**
-	 * Registers the custom tables and makes them available in the container as singletons.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	protected function register_tables(): void {
-		foreach ( $this->custom_tables as $table ) {
-			$this->container->singleton( $table, Schema_Register::table( $table ) );
+		foreach ( $this->container->tagged( 'order_modifiers' ) as $class_instance ) {
+			if ( $class_instance instanceof Registerable || method_exists( $class_instance, 'unregister' ) ) {
+				$class_instance->unregister();
+			}
 		}
-	}
-
-	/**
-	 * Get a specific modifier strategy.
-	 *
-	 * Retrieves the appropriate strategy class based on the provided modifier type.
-	 * The strategy class must implement the Modifier_Strategy_Interface interface.
-	 *
-	 * If the class is not found or does not implement the required interface, an exception will be thrown.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $modifier The modifier type to retrieve (e.g., 'coupon', 'fee').
-	 *
-	 * @return Modifier_Strategy_Interface The strategy class if found.
-	 * @throws InvalidArgumentException If the modifier strategy class is not found or does not implement Modifier_Strategy_Interface.
-	 */
-	public function get_modifier( string $modifier ): Modifier_Strategy_Interface {
-		// Sanitize the modifier parameter to ensure it's a valid string.
-		$modifier = sanitize_key( $modifier );
-
-		$modifiers = $this->get_modifiers();
-
-		// Ensure the requested modifier exists in the whitelist and the class implements the correct interface.
-		if ( isset( $modifiers[ $modifier ] ) && is_subclass_of( $modifiers[ $modifier ]['class'], Modifier_Strategy_Interface::class ) ) {
-			// Instantiate and return the strategy class.
-			$strategy_class = $modifiers[ $modifier ]['class'];
-			return new $strategy_class();
-		}
-
-		// Throw an exception if the modifier class is not found or does not implement the required interface.
-		throw new InvalidArgumentException( sprintf( 'Modifier strategy class for "%s" not found or does not implement Modifier_Strategy_Interface.', $modifier ) );
-	}
-
-	/**
-	 * Drop all custom tables.
-	 *
-	 * @since TBD
-	 *
-	 * @return int The number of tables dropped.
-	 */
-	public function drop_tables(): int {
-		return $this->table_helper( 'drop' );
-	}
-
-	/**
-	 * Truncate all custom tables.
-	 *
-	 * @since TBD
-	 *
-	 * @return int The number of tables truncated.
-	 */
-	public function truncate_tables(): int {
-		return $this->table_helper( 'truncate' );
-	}
-
-	/**
-	 * Helper method to drop or truncate custom tables.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $action The action to perform on the tables. Either 'drop' or 'truncate'.
-	 *
-	 * @return int The number of tables affected.
-	 * @throws InvalidArgumentException If an invalid action is provided.
-	 */
-	protected function table_helper( string $action ): int {
-		switch ( $action ) {
-			case 'drop':
-				$query = 'DROP TABLE IF EXISTS `%s`';
-				break;
-			case 'truncate':
-				$query = 'TRUNCATE TABLE `%s`';
-				break;
-			default:
-				throw new InvalidArgumentException( 'Invalid action provided.' );
-		}
-
-		DB::query( 'SET FOREIGN_KEY_CHECKS = 0' );
-
-		$affected = 0;
-		foreach ( $this->custom_tables as $table ) {
-			$affected += DB::query(
-				sprintf(
-					$query,
-					esc_sql( $table::table_name() )
-				)
-			);
-		}
-
-		DB::query( 'SET FOREIGN_KEY_CHECKS = 1' );
-
-		return $affected;
-	}
-
-	/**
-	 * Get the display name for a specific modifier.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $modifier The slug of the modifier (e.g., 'coupon', 'fee').
-	 *
-	 * @return string|null The display name of the modifier or null if not found.
-	 */
-	public static function get_modifier_display_name( string $modifier ): ?string {
-		$modifiers = self::get_modifiers();
-
-		// Return the display name if the modifier exists in the array.
-		if ( isset( $modifiers[ $modifier ]['display_name'] ) ) {
-			return $modifiers[ $modifier ]['display_name'];
-		}
-
-		return null;
 	}
 }
