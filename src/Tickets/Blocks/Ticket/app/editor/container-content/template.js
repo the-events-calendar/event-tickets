@@ -16,6 +16,7 @@ import Description from './description/container';
 import Price from './price/container';
 import Title from './title/container';
 import Type from './type/container';
+import Fees from './fees/container';
 import './style.pcss';
 
 const TicketContainerContent = ({ clientId, hasTicketsPlus, hasIacVars }) => (
@@ -26,6 +27,7 @@ const TicketContainerContent = ({ clientId, hasTicketsPlus, hasIacVars }) => (
 		<Type clientId={clientId} />
 		<Capacity clientId={clientId} />
 		<Duration clientId={clientId} />
+		<Fees clientID={clientId} />
 		<AdvancedOptions clientId={clientId} />
 		{hasTicketsPlus && hasIacVars && (
 			<AttendeeCollection clientId={clientId} />

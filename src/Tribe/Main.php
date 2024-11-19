@@ -3,6 +3,8 @@
  * Main plugin class.
  */
 
+use TEC\Tickets\Order_Modifiers\Provider as Order_Modifier_Provider;
+use Tribe\Tickets\Admin\Provider;
 use Tribe\Tickets\Events\Service_Provider as Events_Service_Provider;
 use Tribe\Tickets\Promoter\Service_Provider as Promoter_Service_Provider;
 use Tribe\Tickets\Admin\Settings;
@@ -172,27 +174,33 @@ class Tribe__Tickets__Main {
 	 * Class constructor
 	 */
 	protected function __construct() {
-		/* Set up some parent's vars */
+		// Set up some of the plugin's properties.
 		$this->plugin_name = esc_html_x( 'Tickets', 'provider_plugin_name', 'event-tickets' );
 		$this->plugin_slug = 'tickets';
 		$this->plugin_path = trailingslashit( EVENT_TICKETS_DIR );
-		$this->plugin_dir = trailingslashit( basename( $this->plugin_path ) );
+		$this->plugin_dir  = trailingslashit( basename( $this->plugin_path ) );
 
-		$dir_prefix = '';
-
-		if ( false !== strstr( EVENT_TICKETS_DIR, '/vendor/' ) ) {
-			$dir_prefix = basename( dirname( dirname( EVENT_TICKETS_DIR ) ) ) . '/vendor/';
-		}
-
-		add_filter( 'tribe_events_integrations_should_load_freemius', '__return_false' );
+		$dir_prefix = str_contains( EVENT_TICKETS_DIR, '/vendor/' )
+			? basename( dirname( EVENT_TICKETS_DIR, 2 ) ) . '/vendor/'
+			: '';
 
 		$this->plugin_url = trailingslashit( plugins_url( $dir_prefix . $this->plugin_dir ) );
+	}
+
+	/**
+	 * Attach our initial hooks and filters
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function do_hooks() {
+		add_filter( 'tribe_events_integrations_should_load_freemius', '__return_false' );
 
 		$this->maybe_set_common_lib_info();
 
 		add_action( 'plugins_loaded', [ $this, 'should_autoload' ], -1 );
 		add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ], 0 );
-
 
 		register_activation_hook( EVENT_TICKETS_MAIN_PLUGIN_FILE, [ $this, 'on_activation' ] );
 		register_deactivation_hook( EVENT_TICKETS_MAIN_PLUGIN_FILE, [ $this, 'on_deactivation' ] );
@@ -495,7 +503,10 @@ class Tribe__Tickets__Main {
 		tribe_register_provider( Promoter_Service_Provider::class );
 
 		// Admin provider.
-		tribe_register_provider( \Tribe\Tickets\Admin\Provider::class );
+		tribe_register_provider( Provider::class );
+
+		// Order Modifiers.
+		tribe_register_provider( Order_Modifier_Provider::class );
 	}
 
 	/**
