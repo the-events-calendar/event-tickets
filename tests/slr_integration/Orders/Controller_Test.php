@@ -13,6 +13,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Shortcodes\Success_Shortcode;
+use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Frontend\Session;
@@ -38,6 +39,7 @@ use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 use TEC\Tickets\Seating\Tables\Seat_Types;
 use TEC\Tickets\Seating\Tests\Integration\Truncates_Custom_Tables;
+use TEC\Common\StellarWP\Assets\Assets;
 
 class Controller_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -88,6 +90,31 @@ class Controller_Test extends Controller_Test_Case {
 			},
 			[]
 		);
+	}
+
+	public function asset_data_provider() {
+		$assets = [
+			'tec-tickets-seating-admin-seats-report'       => '/build/Seating/admin/seatsReport.js',
+			'tec-tickets-seating-admin-seats-report-style' => '/build/Seating/admin/seatsReport.css',
+		];
+
+		foreach ( $assets as $slug => $path ) {
+			yield $slug => [ $slug, $path ];
+		}
+	}
+
+	/**
+	 * @test
+	 * @dataProvider asset_data_provider
+	 */
+	public function it_should_locate_assets_where_expected( $slug, $path ) {
+		$this->make_controller()->register();
+
+		$this->assertTrue( Assets::init()->exists( $slug ) );
+
+		// We use false, because in CI mode the assets are not build so min aren't available. Its enough to check that the non-min is as expected.
+		$asset_url = Assets::init()->get( $slug )->get_url( false );
+		$this->assertEquals( plugins_url( $path, EVENT_TICKETS_MAIN_PLUGIN_FILE ), $asset_url );
 	}
 
 	public function attendee_data_provider(): Generator {
@@ -358,20 +385,20 @@ class Controller_Test extends Controller_Test_Case {
 		$controller = $this->make_controller();
 		$controller->register();
 
-		$controller->confirm_all_reservations();
+		$controller->confirm_all_reservations( [], 'ticket', 'tickets_event', tribe( Completed::class ) );
 
 		$this->assertEquals( 1, $service_confirmations );
 		$this->assertEquals( [], $sessions->get_reservations_for_token( 'test-token' ) );
 
 		// Calling it a second time in the context of the same request should not send a new request.
 		// This will be called for each Attendee created, there might be many calls to the service in the same request.
-		$controller->confirm_all_reservations();
+		$controller->confirm_all_reservations( [], 'ticket', 'tickets_event', tribe( Completed::class ) );
 
 		$this->assertEquals( 1, $service_confirmations );
 		$this->assertEquals( [], $sessions->get_reservations_for_token( 'test-token' ) );
 
 		// Calling it a third time in the context of the same request should not send a new request.
-		$controller->confirm_all_reservations();
+		$controller->confirm_all_reservations( [], 'ticket', 'tickets_event', tribe( Completed::class ) );
 
 		$this->assertEquals( 1, $service_confirmations );
 		$this->assertEquals( [], $sessions->get_reservations_for_token( 'test-token' ) );

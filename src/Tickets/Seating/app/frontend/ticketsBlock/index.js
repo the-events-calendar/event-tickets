@@ -464,7 +464,14 @@ export async function bootstrapIframe(dom) {
 	// Register the actions before initializing the iframe to avoid race conditions.
 	registerActions(iframe);
 
-	await initServiceIframe(iframe);
+	try {
+		await initServiceIframe(iframe);
+	} catch (err) {
+		// Reload the page: the server will render a tickets block explaining what is happening.
+		window.location.reload();
+		return false;
+	}
+
 	toggleMobileSidebarOpen(dom);
 	setupMobileTicketsDrawer(dom);
 

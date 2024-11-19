@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Seating;
 
+use Closure;
+use Generator;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Seating\Service\Service_Status;
@@ -9,12 +11,13 @@ use TEC\Tickets\Seating\Tables\Layouts;
 use TEC\Tickets\Seating\Tables\Seat_Types;
 use TEC\Tickets\Seating\Tests\Integration\Layouts_Factory;
 use TEC\Tickets\Seating\Tests\Integration\Truncates_Custom_Tables;
+use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Global_Stock as Global_Stock;
-use Tribe__Tickets__REST__V1__Endpoints__Single_Ticket as Single_Ticket_Rest;
 use WP_REST_Request;
+use TEC\Common\StellarWP\Assets\Assets;
 
 class Editor_Test extends Controller_Test_Case {
 	use Layouts_Factory;
@@ -22,6 +25,7 @@ class Editor_Test extends Controller_Test_Case {
 	use Ticket_Maker;
 	use Order_Maker;
 	use Truncates_Custom_Tables;
+	use With_Uopz;
 
 	protected string $controller_class = Editor::class;
 
@@ -40,6 +44,31 @@ class Editor_Test extends Controller_Test_Case {
 	public function restore_pagenow(): void {
 		global $pagenow;
 		$pagenow = '';
+	}
+
+	public function asset_data_provider() {
+		$assets = [
+			'tec-tickets-seating-block-editor'       => '/build/Seating/blockEditor.js',
+			'tec-tickets-seating-block-editor-style' => '/build/Seating/blockEditor.css',
+		];
+
+		foreach ( $assets as $slug => $path ) {
+			yield $slug => [ $slug, $path ];
+		}
+	}
+
+	/**
+	 * @test
+	 * @dataProvider asset_data_provider
+	 */
+	public function it_should_locate_assets_where_expected( $slug, $path ) {
+		$this->make_controller()->register();
+
+		$this->assertTrue( Assets::init()->exists( $slug ) );
+
+		// We use false, because in CI mode the assets are not build so min aren't available. Its enough to check that the non-min is as expected.
+		$asset_url = Assets::init()->get( $slug )->get_url( false );
+		$this->assertEquals( plugins_url( $path, EVENT_TICKETS_MAIN_PLUGIN_FILE ), $asset_url );
 	}
 
 	/**
@@ -68,7 +97,7 @@ class Editor_Test extends Controller_Test_Case {
 				],
 			]
 		);
-		set_transient( \TEC\Tickets\Seating\Service\Seat_Types::update_transient_name(), time() );
+		set_transient( Service\Seat_Types::update_transient_name(), time() );
 
 		$ticket_id_1 = $this->create_tc_ticket(
 			$post_id,
@@ -160,7 +189,7 @@ class Editor_Test extends Controller_Test_Case {
 		$this->assertEquals( $totals_3, $response_3['totals'] );
 	}
 
-	public function get_store_data_provider(): \Generator {
+	public function get_store_data_provider(): Generator {
 		yield 'new post' => [
 			function (): array {
 				global $pagenow;
@@ -348,7 +377,7 @@ class Editor_Test extends Controller_Test_Case {
 		yield 'service down' => [
 			function (): array {
 				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
-					return new Service_Status( $backend_base_url, Service_Status::SERVICE_DOWN );
+					return new Service_Status( $backend_base_url, Service_Status::SERVICE_UNREACHABLE );
 				}, 1000, 2 );
 				global $pagenow, $post;
 				$pagenow = 'edit.php';
@@ -376,6 +405,7 @@ class Editor_Test extends Controller_Test_Case {
 				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
 					return new Service_Status( $backend_base_url, Service_Status::NO_LICENSE );
 				}, 1000, 2 );
+				test_remove_seating_license_key_callback();
 				global $pagenow, $post;
 				$pagenow = 'edit.php';
 				$post    = get_post( static::factory()->post->create() );
@@ -413,7 +443,7 @@ class Editor_Test extends Controller_Test_Case {
 		yield 'service down - new' => [
 			function (): array {
 				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
-					return new Service_Status( $backend_base_url, Service_Status::SERVICE_DOWN );
+					return new Service_Status( $backend_base_url, Service_Status::SERVICE_UNREACHABLE );
 				}, 1000, 2 );
 				global $pagenow, $post;
 				$pagenow = 'post-new.php';
@@ -445,6 +475,7 @@ class Editor_Test extends Controller_Test_Case {
 				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
 					return new Service_Status( $backend_base_url, Service_Status::NO_LICENSE );
 				}, 1000, 2 );
+				test_remove_seating_license_key_callback();
 				global $pagenow, $post;
 				$pagenow = 'post-new.php';
 				$this->given_many_layouts_in_db( 3 );
@@ -509,7 +540,7 @@ class Editor_Test extends Controller_Test_Case {
 	/**
 	 * @dataProvider get_store_data_provider
 	 */
-	public function test_get_store_data( \Closure $fixture ): void {
+	public function test_get_store_data( Closure $fixture ): void {
 		$ticket_ids = $fixture();
 
 		$store_data = $this->make_controller()->get_store_data();
@@ -599,5 +630,64 @@ class Editor_Test extends Controller_Test_Case {
 		tribe( 'tickets.handler' )->filter_capacity_support( null, $autosave_id, tribe( 'tickets.handler' )->key_capacity, true );
 
 		$this->assertEquals( 100, get_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, true ) );
+	}
+
+	public function should_enqueue_assets_data_provider(): Generator {
+		yield 'no ticket-able post types' => [
+			function (): bool {
+				tribe_update_option( 'ticket-able-post-types', [] );
+
+				return false;
+			}
+		];
+
+		yield 'get_post does not return post' => [
+			function()	:bool{
+				tribe_update_option( 'ticket-enabled-post-types', ['post', 'page'] );
+				$this->set_fn_return( 'get_post', null );
+
+				return false;
+			}
+		];
+
+		yield 'get_post returns non ticket-able post' => [
+			function (): bool {
+				tribe_update_option( 'ticket-enabled-post-types', [ 'page' ] );
+				$this->set_fn_return( 'get_post', self::factory()->post->create_and_get() );
+
+				return false;
+			}
+		];
+
+		yield 'ticket-able post, not admin context' => [
+			function (): bool {
+				tribe_update_option( 'ticket-enabled-post-types', [ 'post', 'page' ] );
+				$this->set_fn_return( 'get_post', self::factory()->post->create_and_get() );
+				$this->set_fn_return( 'is_admin', false );
+
+				return false;
+			}
+		];
+
+		yield 'ticket-able post, admin context' => [
+			function (): bool {
+				tribe_update_option( 'ticket-enabled-post-types', [ 'post', 'page' ] );
+				$this->set_fn_return( 'get_post', self::factory()->post->create_and_get() );
+				$this->set_fn_return( 'is_admin', true );
+
+				return true;
+			}
+		];
+	}
+
+	/**
+	 * @dataProvider should_enqueue_assets_data_provider
+	 */
+	public function test_should_enqueue_assets( Closure $fixture ): void {
+		$should_enqueue_assets = $fixture();
+
+		$controller = $this->make_controller();
+
+		$this->assertEquals( $should_enqueue_assets, $controller->should_enqueue_assets() );
 	}
 }

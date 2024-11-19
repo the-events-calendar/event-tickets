@@ -12,6 +12,8 @@ namespace TEC\Tickets\Seating;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\Seating\Frontend\Session;
+use TEC\Common\StellarWP\Assets\Config;
+use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
  * Class Controller
@@ -21,8 +23,6 @@ use TEC\Tickets\Seating\Frontend\Session;
  * @package TEC/Controller
  */
 class Controller extends Controller_Contract {
-	use Built_Assets;
-
 	/**
 	 * The name of the constant that will be used to disable the feature.
 	 * Setting it to a truthy value will disable the feature.
@@ -101,6 +101,9 @@ class Controller extends Controller_Contract {
 	protected function do_register(): void {
 		require_once __DIR__ . '/template-tags.php';
 
+		// Add the group path for the seating assets.
+		Config::add_group_path( 'tec-seating', Tickets_Plugin::instance()->plugin_path . 'build/', 'Seating/' );
+
 		$this->container->singleton( Template::class );
 		$this->container->singleton( Localization::class );
 		$this->container->singleton( Session::class );
@@ -141,6 +144,8 @@ class Controller extends Controller_Contract {
 		 * AJAX will power both frontend and backend, always register it.
 		 */
 		$this->container->register( Admin\Ajax::class );
+
+		$this->container->register( Settings::class );
 
 		if ( is_admin() ) {
 			$this->container->register( Admin::class );

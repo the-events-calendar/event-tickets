@@ -28,6 +28,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use Tribe__Tickets__Global_Stock as Global_Stock;
+use TEC\Common\StellarWP\Assets\Assets;
 
 class Ajax_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -60,6 +61,30 @@ class Ajax_Test extends Controller_Test_Case {
 		Seat_Types_Table::truncate();
 		Layouts_Table::truncate();
 		Sessions::truncate();
+	}
+
+	public function asset_data_provider() {
+		$assets = [
+			'tec-tickets-seating-ajax' => '/build/Seating/ajax.js',
+		];
+
+		foreach ( $assets as $slug => $path ) {
+			yield $slug => [ $slug, $path ];
+		}
+	}
+
+	/**
+	 * @test
+	 * @dataProvider asset_data_provider
+	 */
+	public function it_should_locate_assets_where_expected( $slug, $path ) {
+		$this->make_controller()->register();
+
+		$this->assertTrue( Assets::init()->exists( $slug ) );
+
+		// We use false, because in CI mode the assets are not build so min aren't available. Its enough to check that the non-min is as expected.
+		$asset_url = Assets::init()->get( $slug )->get_url( false );
+		$this->assertEquals( plugins_url( $path, EVENT_TICKETS_MAIN_PLUGIN_FILE ), $asset_url );
 	}
 
 	public function test_get_localized_data(): void {
@@ -1747,6 +1772,127 @@ class Ajax_Test extends Controller_Test_Case {
 			$wp_send_json_success->was_called_times_with(
 				1,
 				'http://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&tab=layout-edit&layoutId=new-layout-1&isNew=1',
+			)
+		);
+		$this->assertCount( 0, iterator_to_array( Maps::fetch_all() ) );
+		$this->assertCount( 0, iterator_to_array( Layouts_Table::fetch_all() ) );
+		$this->assertTrue( $wp_remote->was_called() );
+		$this->reset_wp_send_json_mocks();
+		$wp_remote->tear_down();
+	}
+
+	/**
+	 * @covers Ajax::duplicate_layout_in_service
+	 */
+	public function test_duplicate_layout_in_service(): void {
+		$this->set_up_ajax_request_context();
+		$this->given_maps_layouts_and_seat_types_in_db();
+		$layouts_service = $this->test_services->get( Layouts_Service::class );
+		$this->set_oauth_token( 'some-token' );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Layout ID is missing from request context.
+		unset( $_REQUEST['layoutId'] );
+
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_DUPLICATE_LAYOUT );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[ 'error' => 'No layout ID provided for duplication' ],
+				400
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->assertCount( 4, iterator_to_array( Maps::fetch_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
+		$this->reset_wp_send_json_mocks();
+
+		$_REQUEST['layoutId'] = 'some-layout-2';
+
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+		$wp_remote          = $this->mock_wp_remote(
+			'request',
+			$layouts_service->get_duplicate_url( $_REQUEST['layoutId'] ),
+			[
+				'method'  => 'POST',
+				'headers' => [
+					'Authorization' => 'Bearer some-token',
+					'Content-Type'  => 'application/json',
+				],
+			],
+			function () {
+				return [
+					'response' => [
+						'code' => 500,
+					],
+					'body'     => wp_json_encode(
+						[
+							'success' => false,
+						]
+					),
+				];
+			}
+		);
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_DUPLICATE_LAYOUT );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[ 'error' => 'Failed to duplicate layout.' ],
+				500
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+
+		$this->assertCount( 4, iterator_to_array( Maps::fetch_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
+		$this->assertTrue( $wp_remote->was_called() );
+		$this->reset_wp_send_json_mocks();
+		$wp_remote->tear_down();
+
+		// Duplicating layout succeeds.
+		$_REQUEST['layoutId'] = 'some-layout-2';
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		$wp_remote            = $this->mock_wp_remote(
+			'request',
+			$layouts_service->get_duplicate_url( $_REQUEST['layoutId'] ),
+			[
+				'method'  => 'POST',
+				'headers' => [
+					'Authorization' => 'Bearer some-token',
+					'Content-Type'  => 'application/json',
+				],
+			],
+			function () {
+				return [
+					'response' => [
+						'code' => 200,
+					],
+					'body'     => wp_json_encode(
+						[
+							'data' => [
+								'items' => [
+									[ 'id' => 'duplicated-layout-1' ],
+								],
+							],
+						]
+					),
+				];
+			}
+		);
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_DUPLICATE_LAYOUT );
+
+		$this->assertTrue(
+			$wp_send_json_success->was_called_times_with(
+				1,
+				'http://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&tab=layout-edit&layoutId=duplicated-layout-1&isNew=1',
 			)
 		);
 		$this->assertCount( 0, iterator_to_array( Maps::fetch_all() ) );

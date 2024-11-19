@@ -219,10 +219,10 @@ export async function establishReadiness(iframe) {
 		registerAction(INBOUND_APP_READY, acknowledge);
 	});
 
-	// Seat a 10s timeout to reject the promise if the connection is not established.
+	// Seat a 3s timeout to reject the promise if the connection is not established.
 	const timeoutId = setTimeout(() => {
 		promiseReject(new Error('Connection to service timed out'));
-	}, 10000);
+	}, 3000);
 
 	// Finally start loading the service in the iframe and wait for its ready message.
 	iframe.src = iframe.dataset.src;
