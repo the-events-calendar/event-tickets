@@ -320,17 +320,18 @@ class Fees extends Base_API {
 	 * @return void
 	 */
 	protected function save_fees_for_ticket( $ticket_id, $ticket_data ) {
-		if ( ! array_key_exists( 'fees', $ticket_data ) ) {
-			return;
-		}
-
-		$fees = $ticket_data['fees'];
-		if ( ! is_array( $fees ) ) {
+		if ( ! isset( $ticket_data['fees']['selected_fees'] ) ) {
 			return;
 		}
 
 		try {
-			$fee_ids = array_map( 'absint', (array) $fees['selected_fees'] ?? [] );
+			// Map the comma-separated string of fees to an array of integers.
+			$fee_string = (string) $ticket_data['fees']['selected_fees'];
+			$fees       = explode( ',', $fee_string );
+			$fee_ids    = array_map( 'absint', $fees );
+			$fee_ids    = array_filter( $fee_ids );
+
+			// Update the fees for the ticket.
 			$this->update_fees_for_ticket( $ticket_id, $fee_ids );
 		} catch ( Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement
 			// @todo: Log the error?
