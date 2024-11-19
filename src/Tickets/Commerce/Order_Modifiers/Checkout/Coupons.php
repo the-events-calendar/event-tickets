@@ -7,12 +7,13 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
 
+use TEC\Common\Contracts\Container;
 use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon;
-use TEC\Tickets\Registerable;
 use Tribe__Assets;
 use Tribe__Template;
 use WP_Post;
+use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 
 /**
  * Class Coupons
@@ -21,7 +22,7 @@ use WP_Post;
  *
  * @since TBD
  */
-class Coupons implements Registerable {
+class Coupons extends Controller_Contract {
 
 	/**
 	 * @var Coupon
@@ -31,8 +32,9 @@ class Coupons implements Registerable {
 	/**
 	 * Constructor
 	 */
-	public function __construct() {
-		$this->coupon = new Coupon();
+	public function __construct( Container $container, Coupon $coupon ) {
+		parent::__construct( $container );
+		$this->coupon = $coupon;
 	}
 
 	/**
@@ -40,7 +42,7 @@ class Coupons implements Registerable {
 	 *
 	 * @since TBD
 	 */
-	public function register(): void {
+	public function do_register(): void {
 		// Hook for displaying coupons in the checkout.
 		add_action(
 			'tec_tickets_commerce_checkout_cart_before_footer_quantity',
@@ -53,7 +55,25 @@ class Coupons implements Registerable {
 		);
 
 		// Add asset localization to ensure the script has the necessary data.
-		add_action( 'init', fn() => $this->localize_assets() );
+		add_action( 'init', $this->get_localize_assets_callback() );
+	}
+
+	/**
+	 * Removes the filters and actions hooks added by the controller.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function unregister(): void {
+		remove_action(
+			'tec_tickets_commerce_checkout_cart_before_footer_quantity',
+			[ $this, 'display_coupon_section' ],
+			40
+		);
+
+		// Remove asset localization.
+		remove_action( 'init', $this->get_localize_assets_callback() );
 	}
 
 	/**
@@ -89,5 +109,21 @@ class Coupons implements Registerable {
 				'restUrl' => tribe_tickets_rest_url(),
 			]
 		);
+	}
+
+	/**
+	 * Get the callback for localizing assets.
+	 *
+	 * @since TBD
+	 *
+	 * @return callable The callback for localizing assets.
+	 */
+	protected function get_localize_assets_callback(): callable {
+		static $callback = null;
+		if ( null === $callback ) {
+			$callback = fn() => $this->localize_assets();
+		}
+
+		return $callback;
 	}
 }

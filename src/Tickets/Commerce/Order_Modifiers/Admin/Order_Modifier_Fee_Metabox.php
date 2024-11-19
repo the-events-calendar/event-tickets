@@ -13,17 +13,19 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Admin;
 
+use stdClass;
 use TEC\Tickets\Commerce\Order_Modifiers\Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Factory;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Fee_Types;
-use TEC\Tickets\Registerable;
 use Tribe__Tickets__Admin__Views as Admin_Views;
 use Tribe__Tickets__Main as Main;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
 use TEC\Tickets\Commerce\Module;
+use TEC\Common\Contracts\Container;
+use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 
 /**
  * Class Order_Modifier_Fee_Metabox
@@ -34,7 +36,7 @@ use TEC\Tickets\Commerce\Module;
  *
  * @since TBD
  */
-class Order_Modifier_Fee_Metabox implements Registerable {
+class Order_Modifier_Fee_Metabox extends Controller_Contract {
 
 	use Fee_Types;
 
@@ -75,9 +77,10 @@ class Order_Modifier_Fee_Metabox implements Registerable {
 	 *
 	 * @since TBD
 	 */
-	public function __construct() {
+	public function __construct( Container $container, Controller $controller ) {
+		parent::__construct( $container );
 		// Set up the modifier strategy and manager for handling fees.
-		$this->modifier_strategy = tribe( Controller::class )->get_modifier( $this->modifier_type );
+		$this->modifier_strategy = $controller->get_modifier( $this->modifier_type );
 		$this->manager           = new Modifier_Manager( $this->modifier_strategy );
 
 		// Set up the order modifiers repository for accessing fee data.
@@ -93,23 +96,25 @@ class Order_Modifier_Fee_Metabox implements Registerable {
 	 *
 	 * @since TBD
 	 */
-	public function register(): void {
+	public function do_register(): void {
 		add_action( 'tribe_events_tickets_metabox_edit_main', [ $this, 'add_fee_section' ], 30, 2 );
-		add_action(
-			'tec_tickets_commerce_after_save_ticket',
-			function ( $post_id, $ticket, array $raw_data ) {
-				// Ensure the ticket is a Ticket_Object instance.
-				if ( ! $ticket instanceof Ticket_Object ) {
-					return;
-				}
-
-				$this->save_ticket_fee( $ticket, $raw_data );
-			},
-			10,
-			3
-		);
+		add_action( 'tec_tickets_commerce_after_save_ticket', $this->get_after_save_ticket_callback(), 10, 3 );
 		add_action( 'tec_tickets_commerce_ticket_deleted', [ $this, 'delete_ticket_fee' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_order_modifiers_fee_scripts' ] );
+	}
+
+	/**
+	 * Removes the filters and actions hooks added by the controller.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function unregister(): void {
+		remove_action( 'tribe_events_tickets_metabox_edit_main', [ $this, 'add_fee_section' ], 30 );
+		remove_action( 'tec_tickets_commerce_after_save_ticket', $this->get_after_save_ticket_callback() );
+		remove_action( 'tec_tickets_commerce_ticket_deleted', [ $this, 'delete_ticket_fee' ] );
+		remove_action( 'admin_enqueue_scripts', [ $this, 'enqueue_order_modifiers_fee_scripts' ] );
 	}
 
 	/**
@@ -222,13 +227,16 @@ class Order_Modifier_Fee_Metabox implements Registerable {
 		// Merge the automatic fee IDs into the ticket_order_modifier_fees array.
 		$ticket_order_modifier_fees = array_merge( $raw_data['ticket_order_modifier_fees'], $automatic_fee_ids );
 
-		$fee_ids = [];
-		// Ensure IDs are integers.
-		foreach ( $ticket_order_modifier_fees as $item ) {
-			if ( is_object( $item ) && property_exists( $item, 'id' ) ) {
-				$fee_ids[] = absint( $item->id );
-			}
-		}
+		$fee_ids = array_map(
+			function ( $fee ) {
+				if ( $fee instanceof stdClass ) {
+					return (int) $fee->id;
+				} else {
+					return (int) $fee;
+				}
+			},
+			$ticket_order_modifier_fees
+		);
 
 		// Sync the relationships between the selected fees and the ticket.
 		$this->manager->sync_modifier_relationships( $fee_ids, [ $ticket->ID ] );
@@ -247,5 +255,28 @@ class Order_Modifier_Fee_Metabox implements Registerable {
 	 */
 	public function delete_ticket_fee( int $ticket_id ): void {
 		$this->manager->delete_relationships_by_post( $ticket_id );
+	}
+
+	/**
+	 * Get the callback to run after saving a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @return callable The callback to run after saving a ticket.
+	 */
+	protected function get_after_save_ticket_callback(): callable {
+		static $callback = null;
+		if ( null === $callback ) {
+			$callback = function ( $post_id, $ticket, array $raw_data ) {
+				// Ensure the ticket is a Ticket_Object instance.
+				if ( ! $ticket instanceof Ticket_Object ) {
+					return;
+				}
+
+				$this->save_ticket_fee( $ticket, $raw_data );
+			};
+		}
+
+		return $callback;
 	}
 }

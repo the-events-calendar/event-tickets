@@ -15,7 +15,6 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Abstract_Fees;
-use TEC\Tickets\Registerable;
 use WP_Post;
 
 /**
@@ -27,7 +26,7 @@ use WP_Post;
  *
  * @since TBD
  */
-class Fees extends Abstract_Fees implements Registerable {
+class Fees extends Abstract_Fees {
 
 	/**
 	 * Registers the necessary hooks for adding and managing fees in Stripe checkout.
@@ -37,24 +36,51 @@ class Fees extends Abstract_Fees implements Registerable {
 	 *
 	 * @since TBD
 	 */
-	public function register(): void {
+	public function do_register(): void {
 		// Hook for appending fees to the cart for Stripe processing.
 		add_filter(
 			'tec_tickets_commerce_create_order_from_cart_items',
-			fn( $items, $subtotal ) => $this->append_fees_to_cart( $items, $subtotal ),
-			...$this->hook_args['ten_two']
+			$this->get_fee_append_callback(),
+			10,
+			2
 		);
 
 		add_filter(
 			'tec_tickets_commerce_stripe_create_from_cart',
-			fn( $value, $items ) => $this->append_fees_to_cart_stripe( $value, $items ),
-			...$this->hook_args['ten_two']
+			$this->get_fee_data_stripe_callback(),
+			10,
+			2
 		);
 
 		add_filter(
 			'tec_tickets_commerce_stripe_update_payment_intent_metadata',
-			fn( $metadata, $order ) => $this->add_meta_data_to_stripe( $metadata, $order ),
-			...$this->hook_args['ten_two']
+			$this->get_fee_meta_stripe_callback(),
+			10,
+			2
+		);
+	}
+
+	/**
+	 * Removes the filters and actions hooks added by the controller.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function unregister(): void {
+		remove_filter(
+			'tec_tickets_commerce_create_order_from_cart_items',
+			$this->get_fee_append_callback()
+		);
+
+		remove_filter(
+			'tec_tickets_commerce_stripe_create_from_cart',
+			$this->get_fee_data_stripe_callback()
+		);
+
+		remove_filter(
+			'tec_tickets_commerce_stripe_update_payment_intent_metadata',
+			$this->get_fee_meta_stripe_callback()
 		);
 	}
 
@@ -155,5 +181,37 @@ class Fees extends Abstract_Fees implements Registerable {
 		}
 
 		return $metadata;
+	}
+
+	/**
+	 * Get the callback for appending fees to the cart for Stripe processing.
+	 *
+	 * @since TBD
+	 *
+	 * @return callable The callback for appending fees to the cart for Stripe processing.
+	 */
+	protected function get_fee_data_stripe_callback(): callable {
+		static $callback = null;
+		if ( null === $callback ) {
+			$callback = fn( $value, $items ) => $this->append_fees_to_cart_stripe( $value, $items );
+		}
+
+		return $callback;
+	}
+
+	/**
+	 * Get the callback for adding fee metadata to the Stripe payment intent.
+	 *
+	 * @since TBD
+	 *
+	 * @return callable The callback for adding fee metadata to the Stripe payment intent.
+	 */
+	protected function get_fee_meta_stripe_callback(): callable {
+		static $callback = null;
+		if ( null === $callback ) {
+			$callback = fn( $metadata, $order ) => $this->add_meta_data_to_stripe( $metadata, $order );
+		}
+
+		return $callback;
 	}
 }

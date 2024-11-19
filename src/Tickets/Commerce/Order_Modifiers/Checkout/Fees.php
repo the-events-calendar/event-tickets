@@ -12,8 +12,6 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
 
-use TEC\Tickets\Registerable;
-
 /**
  * Class Fees
  *
@@ -23,7 +21,7 @@ use TEC\Tickets\Registerable;
  *
  * @since TBD
  */
-class Fees extends Abstract_Fees implements Registerable {
+class Fees extends Abstract_Fees {
 
 	/**
 	 * Registers the necessary hooks for adding and managing fees during the checkout process.
@@ -34,20 +32,73 @@ class Fees extends Abstract_Fees implements Registerable {
 	 *
 	 * @since TBD
 	 */
-	public function register(): void {
+	public function do_register(): void {
 		// Hook for calculating total values, setting subtotal, and modifying the total value.
 		add_filter(
 			'tec_tickets_commerce_get_cart_total_value',
-			fn( $values, $items, $subtotal ) => $this->calculate_fees( $values, $items, $subtotal ),
-			...$this->hook_args['ten_three']
+			$this->get_calculate_fees_callback(),
+			10,
+			3
 		);
 
 		// Hook for displaying fees in the checkout.
 		add_action(
 			'tec_tickets_commerce_checkout_cart_before_footer_quantity',
-			fn( $post, $items, $template ) => $this->display_fee_section( $items, $template ),
+			$this->get_footer_quantity_callback(),
 			30,
 			3
 		);
+	}
+
+	/**
+	 * Removes the filters and actions hooks added by the controller.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function unregister(): void {
+		remove_filter(
+			'tec_tickets_commerce_get_cart_total_value',
+			$this->get_calculate_fees_callback()
+		);
+
+		remove_action(
+			'tec_tickets_commerce_checkout_cart_before_footer_quantity',
+			$this->get_footer_quantity_callback(),
+			30
+		);
+	}
+
+	/**
+	 * Get the callback for calculating fees.
+	 *
+	 * @since TBD
+	 *
+	 * @return callable The callback for calculating fees.
+	 */
+	protected function get_calculate_fees_callback(): callable {
+		static $callback = null;
+		if ( null === $callback ) {
+			$callback = fn( $values, $items, $subtotal ) => $this->calculate_fees( $values, $items, $subtotal );
+		}
+
+		return $callback;
+	}
+
+	/**
+	 * Get the callback for displaying the fee section in the checkout.
+	 *
+	 * @since TBD
+	 *
+	 * @return callable The callback for displaying the fee section in the checkout.
+	 */
+	protected function get_footer_quantity_callback(): callable {
+		static $callback = null;
+		if ( null === $callback ) {
+			$callback = fn( $post, $items, $template ) => $this->display_fee_section( $items, $template );
+		}
+
+		return $callback;
 	}
 }
