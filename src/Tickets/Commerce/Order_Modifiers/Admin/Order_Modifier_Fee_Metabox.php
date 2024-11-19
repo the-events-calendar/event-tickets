@@ -222,8 +222,13 @@ class Order_Modifier_Fee_Metabox implements Registerable {
 		// Merge the automatic fee IDs into the ticket_order_modifier_fees array.
 		$ticket_order_modifier_fees = array_merge( $raw_data['ticket_order_modifier_fees'], $automatic_fee_ids );
 
+		$fee_ids = [];
 		// Ensure IDs are integers.
-		$fee_ids = array_map( 'absint', $ticket_order_modifier_fees );
+		foreach ( $ticket_order_modifier_fees as $item ) {
+			if ( is_object( $item ) && property_exists( $item, 'id' ) ) {
+				$fee_ids[] = absint( $item->id );
+			}
+		}
 
 		// Sync the relationships between the selected fees and the ticket.
 		$this->manager->sync_modifier_relationships( $fee_ids, [ $ticket->ID ] );
