@@ -2,19 +2,20 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.16.1\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
+"Project-Id-Version: Event Tickets 5.17.0\n"
+"Report-Msgid-Bugs-To: https://evnt.is/191x\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-10-31T12:10:43-07:00\n"
-"PO-Revision-Date: 2024-10-31 19:10\n"
-"X-Generator: WP-CLI 2.7.1\n"
+"POT-Creation-Date: 2024-11-18T16:45:29+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: event-tickets\n"
 
 #. Plugin Name of the plugin
+#: event-tickets.php
 #: event-tickets.php:66
 #: src/admin-views/admin-welcome-message.php:74
 #: src/Tickets/Site_Health/Info_Section.php:73
@@ -26,18 +27,22 @@ msgid "Event Tickets"
 msgstr ""
 
 #. Plugin URI of the plugin
+#: event-tickets.php
 msgid "https://evnt.is/1acb"
 msgstr ""
 
 #. Description of the plugin
+#: event-tickets.php
 msgid "Event Tickets allows you to sell basic tickets and collect RSVPs from any post, page, or event."
 msgstr ""
 
 #. Author of the plugin
+#: event-tickets.php
 msgid "The Events Calendar"
 msgstr ""
 
 #. Author URI of the plugin
+#: event-tickets.php
 msgid "https://evnt.is/1aor"
 msgstr ""
 
@@ -142,6 +147,7 @@ msgid "Install The Events Calendar"
 msgstr ""
 
 #: src/admin-views/admin-welcome-message.php:109
+#: src/modules/blocks/rsvp/action-dashboard/template.js:22
 msgid "Create RSVP"
 msgstr ""
 
@@ -294,6 +300,7 @@ msgstr ""
 
 #: src/admin-views/attendees/attendees-email.php:37
 #: src/views/modal/registration-js.php:129
+#: src/Tickets/Seating/app/blockEditor/capacity-form/service-error.js:88
 msgid "or"
 msgstr ""
 
@@ -391,6 +398,7 @@ msgstr ""
 #: src/Tribe/Attendees.php:295
 #: src/Tribe/Commerce/PayPal/Main.php:479
 #: src/Tribe/Tabbed_View/Attendee_Report_Tab.php:22
+#: src/Tickets/Blocks/Tickets/app/editor/action-buttons/attendees/template.js:25
 msgid "Attendees"
 msgstr ""
 
@@ -427,6 +435,7 @@ msgstr ""
 
 #: src/admin-views/attendees/modal/attendee/attendee-info/rsvp-going.php:25
 #: src/Tribe/RSVP/Status/Going.php:31
+#: src/modules/blocks/rsvp/counters/template.js:27
 msgid "Going"
 msgstr ""
 
@@ -487,6 +496,7 @@ msgstr ""
 #: src/admin-views/commerce/metabox/capacity.php:25
 #: src/admin-views/rsvp-metabox-capacity.php:19
 #: src/admin-views/tpp-metabox-capacity.php:25
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/capacity/template.js:226
 msgid "Leave blank for unlimited"
 msgstr ""
 
@@ -579,6 +589,8 @@ msgstr ""
 #: src/admin-views/list.php:31
 #: src/admin-views/seating/components/layouts/card.php:59
 #: src/admin-views/seating/components/maps/card.php:38
+#: src/modules/blocks/rsvp/attendee-registration/template.js:19
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/attendees-registration/template.js:20
 msgid "Edit"
 msgstr ""
 
@@ -596,7 +608,7 @@ msgstr ""
 
 #: src/admin-views/commerce/orders/single/order-items-metabox-item.php:43
 #: src/admin-views/list.php:41
-#: src/admin-views/seating/components/layouts/card.php:67
+#: src/admin-views/seating/components/layouts/card.php:73
 #: src/admin-views/seating/components/maps/card.php:46
 #: src/Tribe/Attendees_Table.php:782
 msgid "Delete"
@@ -698,8 +710,9 @@ msgid "Seating Icon"
 msgstr ""
 
 #: src/admin-views/commerce/reports/seats-upsell.php:26
-#: src/Tickets/Seating/Admin.php:116
+#: src/Tickets/Seating/Admin.php:114
 #: src/Tickets/Seating/Health.php:280
+#: src/Tickets/Seating/Settings.php:63
 msgid "Seating"
 msgstr ""
 
@@ -797,6 +810,7 @@ msgid "Sell %s using:"
 msgstr ""
 
 #: src/admin-views/editor/icons/rsvp.php:12
+#: src/modules/blocks/rsvp/index.js:27
 msgid "RSVP"
 msgstr ""
 
@@ -827,6 +841,7 @@ msgstr ""
 
 #: src/admin-views/editor/list-table.php:58
 #: src/Tribe/Status/Abstract_Commerce.php:332
+#: src/Tickets/Blocks/Tickets/app/editor/capacity-table/template.js:53
 msgid "Capacity"
 msgstr ""
 
@@ -913,12 +928,15 @@ msgid "You have unsaved changes to your tickets. Discard those changes?"
 msgstr ""
 
 #: src/admin-views/editor/panel/list.php:156
+#: src/modules/blocks/rsvp/action-buttons/attendees-action-button/template.js:28
 msgid "View Attendees"
 msgstr ""
 
 #: src/admin-views/editor/panel/settings-button.php:11
 #: src/Tickets/Admin/Plugin_Action_Links.php:44
 #: src/Tribe/Admin/Settings.php:222
+#: src/modules/blocks/rsvp/action-buttons/settings-action-button/template.js:27
+#: src/Tickets/Blocks/Tickets/app/editor/action-buttons/settings/template.js:20
 msgid "Settings"
 msgstr ""
 
@@ -938,6 +956,8 @@ msgstr ""
 #: src/views/seating/iframe-view.php:79
 #: src/views/v2/rsvp/ari/form/buttons.php:22
 #: src/views/v2/rsvp/form/fields/cancel.php:23
+#: src/modules/blocks/rsvp/action-dashboard/template.js:25
+#: src/Tickets/Blocks/Ticket/app/editor/dashboard/template.js:36
 msgid "Cancel"
 msgstr ""
 
@@ -1139,6 +1159,7 @@ msgid "Move attendee to a different event"
 msgstr ""
 
 #: src/admin-views/move-tickets.php:62
+#: src/modules/elements/move-modal/template.js:76
 msgid "You can optionally focus on a specific post type:"
 msgstr ""
 
@@ -1165,6 +1186,7 @@ msgid "&laquo; Back"
 msgstr ""
 
 #: src/admin-views/move-tickets.php:96
+#: src/modules/elements/move-modal/template.js:111
 msgid "Finish!"
 msgstr ""
 
@@ -1317,6 +1339,10 @@ msgid "%d associated event"
 msgid_plural "%d associated events"
 msgstr[0] ""
 msgstr[1] ""
+
+#: src/admin-views/seating/components/layouts/card.php:65
+msgid "Duplicate"
+msgstr ""
 
 #: src/admin-views/seating/components/layouts/empty.php:12
 msgid "No seat layouts to show."
@@ -1765,7 +1791,9 @@ msgstr ""
 msgid "Click to hide history"
 msgstr ""
 
+#. Translators: %s - the singular, lowercase label for a ticket.
 #: src/admin-views/tpp-metabox-sku.php:33
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/advanced-options/sku/template.js:56
 msgid "A unique identifying code for each %s type you're selling"
 msgstr ""
 
@@ -2075,6 +2103,22 @@ msgstr ""
 #: src/admin-views/tribe-options-tickets.php:183
 msgctxt "ticket authentication requirements"
 msgid "You can require that users log into your site before they are able to %1$s (or buy %2$s). Please review your WordPress Membership option (via the %3$sGeneral Settings admin screen%4$s) before adjusting this setting."
+msgstr ""
+
+#: src/deprecated/Tribe__Tickets__Integrations__Freemius.php:357
+msgid "We hope you love %1$s"
+msgstr ""
+
+#: src/deprecated/Tribe__Tickets__Integrations__Freemius.php:362
+msgid "Hi, %1$s! This is an invitation to help our %2$s community. If you opt-in, some data about your usage of %2$s will be shared with our teams (so they can work their butts off to improve). We will also share some helpful info on events management, WordPress, and our products from time to time."
+msgstr ""
+
+#: src/deprecated/Tribe__Tickets__Integrations__Freemius.php:366
+msgid "And if you skip this, that's okay! %1$s will still work just fine."
+msgstr ""
+
+#: src/deprecated/Tribe__Tickets__Integrations__Freemius.php:370
+msgid "Powered by"
 msgstr ""
 
 #: src/functions/php-min-version.php:51
@@ -2410,6 +2454,7 @@ msgstr ""
 #: src/Tickets/Commerce/Reports/Orders.php:235
 #: src/Tickets/Commerce/Reports/Orders_Tab.php:33
 #: src/Tribe/Commerce/PayPal/Main.php:491
+#: src/Tickets/Blocks/Tickets/app/editor/action-buttons/orders/template.js:25
 msgid "Orders"
 msgstr ""
 
@@ -7746,6 +7791,12 @@ msgstr ""
 #: src/Tribe/Tickets_Handler.php:109
 #: src/views/blocks/tickets/extra-available-unlimited.php:19
 #: src/views/v2/tickets/item/extra/available/unlimited.php:56
+#: src/modules/blocks/rsvp/container-header/template.js:30
+#: src/modules/data/blocks/ticket/options.js:19
+#: src/Tickets/Blocks/Tickets/app/editor/capacity-table/container.js:41
+#: src/Tickets/Blocks/Tickets/app/editor/capacity-table/template.js:69
+#: src/Tickets/Flexible_Tickets/app/block-editor/hooks/filters.js:369
+#: src/Tickets/Flexible_Tickets/app/block-editor/hooks/filters.js:395
 msgid "Unlimited"
 msgstr ""
 
@@ -9116,7 +9167,6 @@ msgctxt "Series pass email additional content header"
 msgid "Additional Information"
 msgstr ""
 
-#. translators: %s: The lowercase events label, e.g. 'events'.
 #: src/Tickets/Flexible_Tickets/Series_Passes/Emails/Upcoming_Series_Events_List.php:106
 msgctxt "Series Pass Email upcoming events list title"
 msgid "Upcoming %s in this Series"
@@ -9251,40 +9301,48 @@ msgid "The ticket with ID %s was checked in."
 msgstr ""
 
 #. Translators: %1$s and %2$s are opening/closing p tags, %3$s and %4$s are opening/closing a tags.
-#: src/Tickets/Seating/Admin.php:267
+#: src/Tickets/Seating/Admin.php:265
 msgid "%1$sTickets with assigned seating can only be created when selling with %3$sTickets Commerce%4$s. Support for WooCommerce sales will be included in a future release.%2$s"
 msgstr ""
 
-#: src/Tickets/Seating/Admin/Ajax.php:471
-#: src/Tickets/Seating/Admin/Ajax.php:540
+#: src/Tickets/Seating/Admin/Ajax.php:482
+#: src/Tickets/Seating/Admin/Ajax.php:551
 msgid "No map ID provided"
 msgstr ""
 
-#: src/Tickets/Seating/Admin/Ajax.php:485
+#: src/Tickets/Seating/Admin/Ajax.php:496
 msgid "Failed to delete the map."
 msgstr ""
 
-#: src/Tickets/Seating/Admin/Ajax.php:506
+#: src/Tickets/Seating/Admin/Ajax.php:517
 msgid "No layout ID or map ID provided"
 msgstr ""
 
-#: src/Tickets/Seating/Admin/Ajax.php:520
+#: src/Tickets/Seating/Admin/Ajax.php:531
 msgid "Failed to delete the layout."
 msgstr ""
 
-#: src/Tickets/Seating/Admin/Ajax.php:565
+#: src/Tickets/Seating/Admin/Ajax.php:576
 msgid "Failed to Add new layout."
 msgstr ""
 
-#: src/Tickets/Seating/Admin/Ajax.php:686
+#: src/Tickets/Seating/Admin/Ajax.php:596
+msgid "No layout ID provided for duplication"
+msgstr ""
+
+#: src/Tickets/Seating/Admin/Ajax.php:607
+msgid "Failed to duplicate layout."
+msgstr ""
+
+#: src/Tickets/Seating/Admin/Ajax.php:742
 msgid "Invalid request parameters"
 msgstr ""
 
-#: src/Tickets/Seating/Admin/Ajax.php:700
+#: src/Tickets/Seating/Admin/Ajax.php:756
 msgid "Failed to clear the reservations"
 msgstr ""
 
-#: src/Tickets/Seating/Admin/Ajax.php:1122
+#: src/Tickets/Seating/Admin/Ajax.php:1178
 msgid "No primary seat type found for the layout."
 msgstr ""
 
@@ -9360,99 +9418,107 @@ msgstr ""
 msgid "You do not have permission to perform this action."
 msgstr ""
 
-#: src/Tickets/Seating/Assets.php:63
+#: src/Tickets/Seating/Assets.php:60
 msgctxt "Capacity table row label for assigned seating tickets"
 msgid "Assigned Seating"
 msgstr ""
 
-#: src/Tickets/Seating/Assets.php:64
+#: src/Tickets/Seating/Assets.php:61
 msgctxt "Ticket Dashboard actions"
 msgid "Seats"
 msgstr ""
 
-#: src/Tickets/Seating/Assets.php:66
+#: src/Tickets/Seating/Assets.php:63
 msgctxt "Confirmation message for deleting a map"
 msgid "Are you sure you want to delete this map?"
 msgstr ""
 
-#: src/Tickets/Seating/Assets.php:67
+#: src/Tickets/Seating/Assets.php:64
 msgctxt "Error message for deleting a map"
 msgid "Failed to delete the map."
 msgstr ""
 
-#: src/Tickets/Seating/Assets.php:70
+#: src/Tickets/Seating/Assets.php:67
 msgctxt "Error message for adding a layout"
 msgid "Failed to add the new layout."
 msgstr ""
 
-#: src/Tickets/Seating/Assets.php:71
+#: src/Tickets/Seating/Assets.php:68
 msgctxt "Confirmation message for editing a layout with events"
 msgid "This layout is associated with {count} events. Changes will impact all existing events and may affect the seating assignment of active ticket holders."
 msgstr ""
 
-#: src/Tickets/Seating/Assets.php:72
+#: src/Tickets/Seating/Assets.php:69
+msgctxt "Error message for duplicating a layout"
+msgid "Failed to duplicate this layout."
+msgstr ""
+
+#: src/Tickets/Seating/Assets.php:70
 msgctxt "Confirmation message for deleting a layout"
 msgid "Are you sure you want to delete this layout? This cannot be undone."
 msgstr ""
 
-#: src/Tickets/Seating/Assets.php:73
+#: src/Tickets/Seating/Assets.php:71
 msgctxt "Error message for deleting a layout"
 msgid "Failed to delete the layout."
 msgstr ""
 
-#: src/Tickets/Seating/Frontend.php:282
+#: src/Tickets/Seating/Frontend.php:283
 msgctxt "Seat selection modal initial total string"
 msgid "0 Tickets"
 msgstr ""
 
-#: src/Tickets/Seating/Frontend.php:290
+#: src/Tickets/Seating/Frontend.php:291
 msgctxt "Find seats button text"
 msgid "Find Seats"
 msgstr ""
 
-#: src/Tickets/Seating/Frontend.php:409
+#: src/Tickets/Seating/Frontend.php:431
 msgctxt "Seat selection modal total string"
 msgid "1 Ticket"
 msgstr ""
 
-#: src/Tickets/Seating/Frontend.php:411
+#: src/Tickets/Seating/Frontend.php:433
 msgctxt "Seat selection modal total string"
 msgid "{count} Tickets"
 msgstr ""
 
-#: src/Tickets/Seating/Frontend/Timer.php:504
+#: src/Tickets/Seating/Frontend/Timer.php:522
+#: src/Tickets/Seating/app/frontend/session/index.js:317
 msgctxt "Seat selection expired timer content"
 msgid "Your seat selections are no longer reserved, but tickets are still available."
 msgstr ""
 
-#: src/Tickets/Seating/Frontend/Timer.php:509
+#: src/Tickets/Seating/Frontend/Timer.php:527
+#: src/Tickets/Seating/app/frontend/session/index.js:322
 msgctxt "Seat selection expired timer button label"
 msgid "Find Seats"
 msgstr ""
 
 #. Translators: %s: The post type singular name.
-#: src/Tickets/Seating/Frontend/Timer.php:520
+#: src/Tickets/Seating/Frontend/Timer.php:538
 msgctxt "Seat selection expired timer content"
 msgid "This %s is now sold out."
 msgstr ""
 
 #. Translators: %s: The post type singular name.
-#: src/Tickets/Seating/Frontend/Timer.php:527
+#: src/Tickets/Seating/Frontend/Timer.php:545
 msgctxt "Seat selection expired timer button label"
 msgid "Find Another %s"
 msgstr ""
 
-#: src/Tickets/Seating/Frontend/Timer.php:533
+#: src/Tickets/Seating/Frontend/Timer.php:551
 msgctxt "Seat selection expired timer button label"
 msgid "Return to Home Page"
 msgstr ""
 
-#: src/Tickets/Seating/Frontend/Timer.php:568
+#: src/Tickets/Seating/Frontend/Timer.php:586
 msgctxt "Seat selection sold out timer title"
 msgid "Sold Out"
 msgstr ""
 
-#: src/Tickets/Seating/Frontend/Timer.php:568
+#: src/Tickets/Seating/Frontend/Timer.php:586
+#: src/Tickets/Seating/app/frontend/session/index.js:312
 msgctxt "Seat selection expired timer title"
 msgid "Time limit expired"
 msgstr ""
@@ -9627,7 +9693,7 @@ msgid "Unknown"
 msgstr ""
 
 #. Translators: %1$s: the post/event title, %2$d: the post/event ID.
-#: src/Tickets/Seating/Orders/Controller.php:295
+#: src/Tickets/Seating/Orders/Controller.php:302
 msgctxt "seat report screen heading"
 msgid "Seats for: %1$s [#%2$d]"
 msgstr ""
@@ -9643,84 +9709,105 @@ msgstr ""
 msgid "See seats purchased for this %s"
 msgstr ""
 
-#. translators: 1: HTTP status code.
-#: src/Tickets/Seating/Service/Ephemeral_Token.php:119
-msgid "Ephemeral token request failed (%d)."
+#. translators: 1: failure reason.
+#: src/Tickets/Seating/Service/Ephemeral_Token.php:123
+msgid "Ephemeral token request failed. Your site cannot connect to the Seating Builder service (%s)."
 msgstr ""
 
-#: src/Tickets/Seating/Service/Ephemeral_Token.php:138
+#: src/Tickets/Seating/Service/Ephemeral_Token.php:145
 msgid "Ephemeral token response from service is empty."
 msgstr ""
 
-#: src/Tickets/Seating/Service/Ephemeral_Token.php:156
+#: src/Tickets/Seating/Service/Ephemeral_Token.php:163
 msgid "Ephemeral token response from service is invalid."
 msgstr ""
 
-#: src/Tickets/Seating/Service/Error_Content.php:68
-msgid "The Seating Builder service is down. We are working to restore functionality."
+#: src/Tickets/Seating/Service/Error_Content.php:67
+msgid "Your site cannot connect to the Seating Builder service."
 msgstr ""
 
-#: src/Tickets/Seating/Service/Error_Content.php:74
+#: src/Tickets/Seating/Service/Error_Content.php:73
 msgid "You need to connect your site to the Seating Builder in order to create Seating Maps and Seat Layouts."
 msgstr ""
 
-#: src/Tickets/Seating/Service/Error_Content.php:78
+#: src/Tickets/Seating/Service/Error_Content.php:77
 msgctxt "Connect to the Seating Builder button label"
 msgid "Connect"
 msgstr ""
 
-#. translators: %s is the renew link label.
-#: src/Tickets/Seating/Service/Error_Content.php:86
+#: src/Tickets/Seating/Service/Error_Content.php:84
 msgctxt "link label for renewing the license"
 msgid "renew your license"
 msgstr ""
 
 #. translators: %s is the renew link.
-#: src/Tickets/Seating/Service/Error_Content.php:90
+#: src/Tickets/Seating/Service/Error_Content.php:88
 msgid "Your license for Seating has expired. You need to %s to continue using Seating for Event Tickets."
 msgstr ""
 
-#: src/Tickets/Seating/Service/Error_Content.php:125
-msgid "The Seating Builder service is down and assigned seating is not available. We are working to restore functionality."
+#: src/Tickets/Seating/Service/Error_Content.php:99
+msgctxt "License settings link label"
+msgid "Check your license key settings"
 msgstr ""
 
-#: src/Tickets/Seating/Service/Error_Content.php:136
+#: src/Tickets/Seating/Service/Error_Content.php:105
+msgctxt "Login link label"
+msgid "log into your account"
+msgstr ""
+
+#. translators: %1$s is the settings link, %2$s is the login link.
+#: src/Tickets/Seating/Service/Error_Content.php:110
+msgid "Your license for Seating is invalid. %1$s or %2$s."
+msgstr ""
+
+#: src/Tickets/Seating/Service/Error_Content.php:147
+msgid "Your site cannot connect to the Seating Builder service and assigned seating is not available."
+msgstr ""
+
+#: src/Tickets/Seating/Service/Error_Content.php:158
 msgctxt "Connect to the Seating Builder link label"
 msgid "Connect"
 msgstr ""
 
 #. translators: %s is the connect link.
-#: src/Tickets/Seating/Service/Error_Content.php:140
+#: src/Tickets/Seating/Service/Error_Content.php:162
 msgid "Your site is not connected to the Seating Builder service. You need to connect your site to use assigned seating. %s"
 msgstr ""
 
-#. translators: %s is the renew link label.
-#: src/Tickets/Seating/Service/Error_Content.php:152
+#: src/Tickets/Seating/Service/Error_Content.php:174
 msgctxt "link label for renewing the license"
 msgid "Renew your license"
 msgstr ""
 
 #. translators: %s is the renew link.
-#: src/Tickets/Seating/Service/Error_Content.php:156
+#: src/Tickets/Seating/Service/Error_Content.php:178
 msgid "Your license for Seating has expired. %s to continue using Seating for Event Tickets."
 msgstr ""
 
-#: src/Tickets/Seating/Uplink.php:57
+#: src/Tickets/Seating/Settings.php:67
+msgid "Reservation Time Limit"
+msgstr ""
+
+#: src/Tickets/Seating/Settings.php:68
+msgid "The number of minutes a customer has to choose seats and complete checkout."
+msgstr ""
+
+#: src/Tickets/Seating/Uplink.php:61
 msgctxt "Header of the connection controls"
 msgid "Seating"
 msgstr ""
 
-#: src/Tickets/Seating/Uplink.php:124
+#: src/Tickets/Seating/Uplink.php:130
 msgctxt "Button text for the Seating Builder connection button"
 msgid "Disconnect from Seating Builder"
 msgstr ""
 
-#: src/Tickets/Seating/Uplink.php:125
+#: src/Tickets/Seating/Uplink.php:131
 msgctxt "Button text for the Seating Builder connection button"
 msgid "Connect to Seating Builder"
 msgstr ""
 
-#: src/Tickets/Seating/Uplink.php:141
+#: src/Tickets/Seating/Uplink.php:147
 msgctxt "Legend for the license key field"
 msgid "License Key"
 msgstr ""
@@ -9976,8 +10063,10 @@ msgstr ""
 msgid "This ticket was moved to %1$s from %2$s"
 msgstr ""
 
+#. Translators: %s - the singular label for a ticket.
 #: src/Tribe/Admin/Move_Ticket_Types.php:28
 #: src/Tribe/Tickets.php:571
+#: src/Tickets/Blocks/Ticket/app/editor/dashboard/move-delete/template.js:26
 msgid "Move %s"
 msgstr ""
 
@@ -10505,7 +10594,9 @@ msgstr ""
 msgid "%s Stock"
 msgstr ""
 
+#. Translators: %s - the singular label for a ticket.
 #: src/Tribe/CSV_Importer/Column_Names.php:43
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/capacity/template.js:266
 msgid "%s Capacity"
 msgstr ""
 
@@ -11674,6 +11765,8 @@ msgid "Not Going:"
 msgstr ""
 
 #: src/Tribe/RSVP/Status/Not_Going.php:25
+#: src/modules/blocks/rsvp/counters/template.js:33
+#: src/modules/blocks/rsvp/not-going/template.js:37
 msgid "Not going"
 msgstr ""
 
@@ -11684,6 +11777,7 @@ msgstr ""
 #: src/Tribe/Status/Abstract_Commerce.php:217
 #: src/views/blocks/tickets/extra-available-quantity.php:31
 #: src/views/seating/tickets-block.php:27
+#: src/Tickets/Blocks/Ticket/app/editor/container-header/price/template.js:40
 msgid "available"
 msgstr ""
 
@@ -11721,6 +11815,7 @@ msgid "Shared capacity with other tickets"
 msgstr ""
 
 #: src/Tribe/Tickets.php:1957
+#: src/modules/data/blocks/ticket/options.js:16
 msgid "Set capacity for this ticket only"
 msgstr ""
 
@@ -11741,9 +11836,11 @@ msgid "%s will be available on "
 msgstr ""
 
 #. translators: %s: Tickets label
+#. Translators: %s - the plural label for a ticket.
 #: src/Tribe/Tickets.php:3420
 #: src/views/blocks/tickets/content-inactive.php:19
 #: src/views/v2/tickets/item/content/inactive.php:53
+#: src/Tickets/Blocks/Tickets/app/editor/inactive/template.js:111
 msgid "%s are not yet available"
 msgstr ""
 
@@ -11777,7 +11874,6 @@ msgctxt "fallback post type singular name"
 msgid "Post"
 msgstr ""
 
-#. Translators: 1: number of tickets, 2: ticket type label singular, 3: ticket type label plural.
 #: src/Tribe/Tickets_View.php:1427
 msgid "%1$d %2$s"
 msgid_plural "%1$d %3$s"
@@ -11791,7 +11887,6 @@ msgstr[1] ""
 msgid "View %s"
 msgstr ""
 
-#. Translators: 1: singular or plural label for ticket type on My Tickets page link label.
 #: src/Tribe/Tickets_View.php:1441
 msgid "View all"
 msgstr ""
@@ -12229,6 +12324,7 @@ msgid "You have not indicated your attendance for any upcoming events."
 msgstr ""
 
 #: src/views/tickets/attendees-email.php:26
+#: src/modules/blocks/attendees/index.js:22
 msgid "Attendee List"
 msgstr ""
 
@@ -12330,7 +12426,9 @@ msgctxt "notice if user does not have rsvps"
 msgid "You don't have %s for this event"
 msgstr ""
 
+#. Translators: %s - the singular label for a ticket.
 #: src/views/tickets/orders.php:180
+#: src/Tickets/Blocks/Ticket/app/editor/dashboard/template.js:25
 msgid "Update %s"
 msgstr ""
 
@@ -12848,6 +12946,544 @@ msgstr ""
 #: src/views/v2/tickets/item/extra/available/quantity.php:59
 msgctxt "Tickets available"
 msgid "%1$s %2$s %3$s available"
+msgstr ""
+
+#: src/modules/blocks/attendees/index.js:23
+msgid "Show the gravatars of people coming to this event."
+msgstr ""
+
+#: src/modules/blocks/attendees/index.js:39
+#: src/modules/blocks/attendees/template.js:29
+msgid "Who's Attending?"
+msgstr ""
+
+#: src/modules/blocks/attendees/template.js:30
+msgid "(X) people are attending this event"
+msgstr ""
+
+#: src/modules/blocks/attendees/template.js:119
+msgid "Attendees Settings"
+msgstr ""
+
+#: src/modules/blocks/attendees/template.js:121
+msgid "Display Title"
+msgstr ""
+
+#: src/modules/blocks/attendees/template.js:126
+msgid "Display Subtitle"
+msgstr ""
+
+#: src/modules/blocks/rsvp/action-dashboard/template.js:21
+msgid "Update RSVP"
+msgstr ""
+
+#: src/modules/blocks/rsvp/action-dashboard/template.js:84
+msgid "This is a recurring event. If you add tickets they will only show up on the next upcoming event in the recurrence pattern. The same ticket form will appear across all events in the series. Please configure your events accordingly."
+msgstr ""
+
+#: src/modules/blocks/rsvp/advanced-options/template.js:44
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/advanced-options/template.js:41
+msgid "Advanced Options"
+msgstr ""
+
+#: src/modules/blocks/rsvp/attendee-registration/template.js:18
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/attendees-registration/template.js:19
+msgid "+ Add"
+msgstr ""
+
+#: src/modules/blocks/rsvp/attendee-registration/template.js:35
+msgid "Save your RSVP to enable attendee information fields"
+msgstr ""
+
+#: src/modules/blocks/rsvp/attendee-registration/template.js:39
+#: src/modules/blocks/rsvp/attendee-registration/template.js:41
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/attendees-registration/template.js:48
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/attendees-registration/template.js:50
+msgid "Attendee Information"
+msgstr ""
+
+#: src/modules/blocks/rsvp/capacity/template.js:37
+msgid "RSVP Capacity"
+msgstr ""
+
+#: src/modules/blocks/rsvp/capacity/template.js:49
+msgid "Leave blank if unlimited"
+msgstr ""
+
+#: src/modules/blocks/rsvp/container-header/template.js:26
+msgid "%d Remaining"
+msgstr ""
+
+#: src/modules/blocks/rsvp/container-header/template.js:77
+msgid "Edit RSVP"
+msgstr ""
+
+#: src/modules/blocks/rsvp/description/template.js:37
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/description/template.js:49
+#: src/Tickets/Blocks/Ticket/app/editor/container-header/description/template.js:30
+msgid "Description"
+msgstr ""
+
+#: src/modules/blocks/rsvp/duration-label/template.js:29
+msgid "RSVP Duration"
+msgstr ""
+
+#: src/modules/blocks/rsvp/duration-label/template.js:33
+msgid "By default, sales will begin as soon as you save the ticket and end when the event begins"
+msgstr ""
+
+#: src/modules/blocks/rsvp/duration/template.js:25
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/duration/template.js:49
+msgid "There is an error with the selected sales duration. Please fix the issue before saving."
+msgstr ""
+
+#: src/modules/blocks/rsvp/header-image/template.js:24
+msgid "Select an image from your Media Library to display on emailed tickets and RSVPs. For best results, use a .jpg, .png, or .gif at least 1160px wide."
+msgstr ""
+
+#: src/modules/blocks/rsvp/header-image/template.js:31
+msgid "Ticket Header Image"
+msgstr ""
+
+#: src/modules/blocks/rsvp/header-image/template.js:35
+msgid "Upload Image"
+msgstr ""
+
+#: src/modules/blocks/rsvp/inactive-block/template.js:19
+msgid "RSVP is not currently active"
+msgstr ""
+
+#: src/modules/blocks/rsvp/inactive-block/template.js:20
+msgid "Add an RSVP"
+msgstr ""
+
+#: src/modules/blocks/rsvp/inactive-block/template.js:23
+msgid "Edit this block to change RSVP settings."
+msgstr ""
+
+#: src/modules/blocks/rsvp/inactive-block/template.js:24
+msgid "Allow users to confirm their attendance."
+msgstr ""
+
+#: src/modules/blocks/rsvp/inactive-block/template.js:42
+msgid "Add RSVP"
+msgstr ""
+
+#: src/modules/blocks/rsvp/index.js:28
+msgid "Find out who is planning to attend!"
+msgstr ""
+
+#: src/modules/blocks/rsvp/move-delete/container.js:44
+msgid "Are you sure you want to delete this RSVP? It cannot be undone."
+msgstr ""
+
+#: src/modules/blocks/rsvp/move-delete/template.js:18
+msgid "Remove RSVP"
+msgstr ""
+
+#: src/modules/blocks/rsvp/move-delete/template.js:21
+msgid "Move RSVP"
+msgstr ""
+
+#: src/modules/blocks/rsvp/not-going/template.js:45
+msgid "Enable \"Not Going\" responses"
+msgstr ""
+
+#: src/modules/blocks/rsvp/not-going/template.js:49
+msgid "Receive notification of people who will not attend."
+msgstr ""
+
+#: src/modules/blocks/rsvp/settings-dashboard/template.js:39
+msgid "RSVP Settings"
+msgstr ""
+
+#: src/modules/blocks/rsvp/template.js:97
+msgid "RSVPs are not yet supported on recurring events."
+msgstr ""
+
+#: src/modules/blocks/rsvp/template.js:105
+msgid "Read about our plans for future features."
+msgstr ""
+
+#: src/modules/blocks/rsvp/template.js:111
+msgid "Remove block"
+msgstr ""
+
+#: src/modules/blocks/rsvp/title/template.js:42
+msgid "RSVP name"
+msgstr ""
+
+#: src/modules/data/blocks/ticket/options.js:13
+msgid "Share capacity with other tickets"
+msgstr ""
+
+#: src/modules/data/blocks/ticket/sagas.js:856
+msgid "Are you sure you want to delete this ticket? It cannot be undone."
+msgstr ""
+
+#: src/modules/elements/attendees-registration/element.js:62
+#: src/Tickets/Blocks/Ticket/app/editor/container-header/title/attendee-registration-icons/template.js:38
+msgid "Attendee registration"
+msgstr ""
+
+#: src/modules/elements/move-modal/template.js:31
+msgid "Move Ticket Types"
+msgstr ""
+
+#: src/modules/elements/move-modal/template.js:60
+msgid "No posts found"
+msgstr ""
+
+#: src/modules/elements/move-modal/template.js:86
+msgid "You can also enter keywords to help find the target event by title or description"
+msgstr ""
+
+#: src/modules/elements/move-modal/template.js:99
+msgid "Select the post you wish to move the ticket type to:"
+msgstr ""
+
+#: src/modules/elements/settings-dashboard/element.js:60
+msgid "close"
+msgstr ""
+
+#: src/modules/elements/settings-dashboard/element.js:68
+msgid "Ticket Settings"
+msgstr ""
+
+#. Translators: %s - the singular label for a ticket.
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/advanced-options/ecommerce-options/template.js:39
+msgid "Edit %s in Easy Digital Downloads"
+msgstr ""
+
+#. Translators: %s - the singular label for a ticket.
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/advanced-options/ecommerce-options/template.js:46
+msgid "Edit %s in WooCommerce"
+msgstr ""
+
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/advanced-options/ecommerce-options/template.js:61
+msgid "View Sales Report"
+msgstr ""
+
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/advanced-options/ecommerce-options/template.js:88
+msgid "Ecommerce"
+msgstr ""
+
+#. Translators: %s - the singular label for a ticket.
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/advanced-options/sku/template.js:50
+msgid "%s SKU"
+msgstr ""
+
+#. Translators: %1$s - the plural, lowercase label for a ticket;  %2$s - the singular, lowercase label for a ticket.
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/attendee-collection/iac-setting/template.js:46
+msgid "Select the default way to sell %1$s. Enabling Individual Attendee Collection will allow purchasers to enter a name and email for each %2$s."
+msgstr ""
+
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/attendee-collection/template.js:40
+msgid "Attendee Collection"
+msgstr ""
+
+#. Translators: %s - the singular, lowercase label for a ticket.
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/attendees-registration/template.js:39
+msgid "Save your %s to enable attendee information fields"
+msgstr ""
+
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/capacity/template.js:119
+msgid "Set shared capacity:"
+msgstr ""
+
+#. Translators: %s - the singular, lowercase label for a ticket.
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/capacity/template.js:153
+msgid "Limit sales of this %s to:"
+msgstr ""
+
+#. Translators: %s - the plural, lowercase label for a ticket.
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/capacity/template.js:159
+msgid "Number of %s available"
+msgstr ""
+
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/duration/template.js:31
+msgid "Sale Duration"
+msgstr ""
+
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/duration/template.js:32
+msgid "If you do not set a start sale date, tickets will be available immediately."
+msgstr ""
+
+#. Translators: %s - the singular label for a ticket.
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/price/template.js:83
+msgid "%s price"
+msgstr ""
+
+#. Translators: %s - the singular label for a ticket.
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/title/template.js:53
+msgid "%s name"
+msgstr ""
+
+#. Translators: %s - the singular label for a ticket.
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/type/container.js:30
+msgctxt "Default ticket type label."
+msgid "Standard %s"
+msgstr ""
+
+#. translators: %s is the post type name in human readable form.
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/type/container.js:35
+msgctxt "Default ticket type description."
+msgid "A standard ticket is specific to this %s."
+msgstr ""
+
+#. Translators: %s - the singular label for a ticket.
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/type/container.js:52
+msgctxt "Default ticket type upsell description."
+msgid "For more %s types, <a href=\"https://evnt.is/tt-ecp\" target=\"_blank\" rel=\"noopener noreferrer\">upgrade</a> to Events Calendar Pro"
+msgstr ""
+
+#. Translators: %s - the singular label for a ticket.
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/type/template.js:43
+msgctxt "Block Editor Ticket type label"
+msgid "%s type"
+msgstr ""
+
+#: src/Tickets/Blocks/Ticket/app/editor/container-header/price/template.js:34
+#: src/Tickets/Blocks/Ticket/app/editor/container-header/quantity/template.js:38
+msgid "unlimited"
+msgstr ""
+
+#: src/Tickets/Blocks/Ticket/app/editor/container-header/quantity/quantity-bar/element.js:37
+msgid "cap"
+msgstr ""
+
+#: src/Tickets/Blocks/Ticket/app/editor/container-header/quantity/template.js:31
+msgid "%d sold"
+msgstr ""
+
+#: src/Tickets/Blocks/Ticket/app/editor/container-header/quantity/template.js:59
+msgid "This pertains to Orders that have been marked Completed."
+msgstr ""
+
+#: src/Tickets/Blocks/Ticket/app/editor/container-header/title/attendee-registration-icons/container.js:33
+msgid "Scheduled"
+msgstr ""
+
+#: src/Tickets/Blocks/Ticket/app/editor/container-header/title/attendee-registration-icons/container.js:34
+msgid "Expired"
+msgstr ""
+
+#: src/Tickets/Blocks/Ticket/app/editor/container-header/title/attendee-registration-icons/container.js:35
+msgid "On sale"
+msgstr ""
+
+#: src/Tickets/Blocks/Ticket/app/editor/container-header/title/attendee-registration-icons/template.js:30
+msgid "%s - %s"
+msgstr ""
+
+#. Translators: %s - the singular label for a ticket.
+#: src/Tickets/Blocks/Ticket/app/editor/dashboard/move-delete/template.js:16
+msgid "Remove %s"
+msgstr ""
+
+#. Translators: %s - the singular label for a ticket.
+#: src/Tickets/Blocks/Ticket/app/editor/dashboard/template.js:31
+msgid "Create %s"
+msgstr ""
+
+#. Translators: %s - the singular label for a ticket.
+#: src/Tickets/Blocks/Tickets/app/editor/action-dashboard/template.js:30
+msgid "Add a %s"
+msgstr ""
+
+#. Translators: %s - ticket singular label, lowercase
+#. Translators: %s - ticket plural label, lowercase
+#: src/Tickets/Blocks/Tickets/app/editor/availability/template.js:38
+#: src/Tickets/Blocks/Tickets/app/editor/availability/template.js:47
+msgid "%s available"
+msgstr ""
+
+#: src/Tickets/Blocks/Tickets/app/editor/availability/template.js:61
+#: src/Tickets/Blocks/Tickets/app/editor/availability/template.js:62
+msgid "total capacity"
+msgstr ""
+
+#. Translators: %s - the singular label for a ticket.
+#: src/Tickets/Blocks/Tickets/app/editor/availability/template.js:75
+msgid "%s availability is based on the lowest number of inventory, stock, and capacity."
+msgstr ""
+
+#: src/Tickets/Blocks/Tickets/app/editor/capacity-table/template.js:56
+msgid "Shared capacity"
+msgstr ""
+
+#: src/Tickets/Blocks/Tickets/app/editor/capacity-table/template.js:61
+msgid "Independent capacity"
+msgstr ""
+
+#: src/Tickets/Blocks/Tickets/app/editor/capacity-table/template.js:67
+msgid "Unlimited capacity"
+msgstr ""
+
+#: src/Tickets/Blocks/Tickets/app/editor/capacity-table/template.js:86
+msgid "Total Capacity"
+msgstr ""
+
+#. Translators: %s - the plural, lowercase label for a ticket.
+#: src/Tickets/Blocks/Tickets/app/editor/controls/container.js:29
+msgid "It looks like you have multiple ecommerce plugins active. We recommend running only one at a time. However, if you need to run multiple, please select which one to use to sell %s for this event. "
+msgstr ""
+
+#. Translators: %1$s - the plural, lowercase label for a ticket; %2$s - the plural, lowercase label for a ticket; %3$s - the plural, lowercase label for a ticket.
+#: src/Tickets/Blocks/Tickets/app/editor/controls/container.js:39
+msgid "Note: adjusting this setting will only impact new %1$s. Existing %2$s will not change. We highly recommend that all %3$s for one event use the same ecommerce plugin."
+msgstr ""
+
+#. Translators: %s - Ticket plural label.
+#: src/Tickets/Blocks/Tickets/app/editor/controls/template.js:61
+msgid "%s Settings"
+msgstr ""
+
+#. Translators: %s - Ticket plural label.
+#: src/Tickets/Blocks/Tickets/app/editor/controls/template.js:72
+msgid "Sell %s using"
+msgstr ""
+
+#. Translators: %s - Ticket plural label.
+#: src/Tickets/Blocks/Tickets/app/editor/header-image/template.js:30
+msgid "Select an image from your Media Library to display on emailed %s and RSVPs. For best results, use a .jpg, .png, or .gif at least 1160px wide."
+msgstr ""
+
+#. Translators: %s - Ticket singular label.
+#: src/Tickets/Blocks/Tickets/app/editor/header-image/template.js:42
+msgid "%s Header Image"
+msgstr ""
+
+#: src/Tickets/Blocks/Tickets/app/editor/header-image/template.js:48
+msgid "Set Header Image"
+msgstr ""
+
+#. Translators: %1$s the plural, lowercase label for a ticket; %2$s is the post type name in human readable form.
+#: src/Tickets/Blocks/Tickets/app/editor/inactive/template.js:22
+msgctxt "The message displayed when there are no tickets."
+msgid "Create standard %1$s for this %2$s. "
+msgstr ""
+
+#. Translators: %s - the singular, lowercase label for a ticket.
+#: src/Tickets/Blocks/Tickets/app/editor/inactive/template.js:38
+msgid "Learn more about %s management"
+msgstr ""
+
+#. Translators: %s - the plural label for a ticket.
+#: src/Tickets/Blocks/Tickets/app/editor/inactive/template.js:61
+msgid "There is no ecommerce available. To create %s, you'll need to enable an ecommerce solution."
+msgstr ""
+
+#. Translators: %1$s - the plural label for a ticket; %2$s - the plural label for a ticket.
+#: src/Tickets/Blocks/Tickets/app/editor/inactive/template.js:94
+msgid "There are no active %1$s. Adjust sale duration to make %2$s available"
+msgstr ""
+
+#. Translators: %s - the plural, lowercase label for a ticket.
+#: src/Tickets/Blocks/Tickets/app/editor/not-supported-message/container.js:27
+msgid "Standard %s are not yet supported on recurring events. "
+msgstr ""
+
+#: src/Tickets/Blocks/Tickets/app/editor/not-supported-message/container.js:40
+msgid "Read about our plans for future features"
+msgstr ""
+
+#: src/Tickets/Flexible_Tickets/app/block-editor/components/series-pass-notice/template.js:26
+msgid "Create and manage Series Passes from the %s Series admin."
+msgstr ""
+
+#: src/Tickets/Flexible_Tickets/app/block-editor/hooks/filters.js:376
+msgid "Series Pass shared capacity"
+msgstr ""
+
+#: src/Tickets/Flexible_Tickets/app/block-editor/hooks/filters.js:385
+msgid "Series Pass independent capacity"
+msgstr ""
+
+#: src/Tickets/Flexible_Tickets/app/block-editor/hooks/filters.js:393
+msgid "Series Pass unlimited capacity"
+msgstr ""
+
+#. Translators: %s is a link to Series Passes knowledge base that reads "Series Passes".
+#: src/Tickets/Flexible_Tickets/app/block-editor/hooks/filters.js:439
+msgctxt "Block editor not supported notice"
+msgid "Once you save this event, you'll be able to add %s from the Series admin."
+msgstr ""
+
+#: src/Tickets/Seating/app/blockEditor/capacity-form/series-notice.js:9
+msgid "Assigned seating is not yet supported for events that are in series."
+msgstr ""
+
+#: src/Tickets/Seating/app/blockEditor/capacity-form/service-error.js:20
+msgid "The Seating Builder service is down and assigned seating is not available. We are working to restore functionality."
+msgstr ""
+
+#: src/Tickets/Seating/app/blockEditor/capacity-form/service-error.js:29
+msgid "Your site is not connected to the Seating Builder service."
+msgstr ""
+
+#: src/Tickets/Seating/app/blockEditor/capacity-form/service-error.js:39
+msgctxt "Connect to the Seating Builder link label"
+msgid "You need to connect your site to use assigned seating."
+msgstr ""
+
+#: src/Tickets/Seating/app/blockEditor/capacity-form/service-error.js:50
+msgid "Your license for Seating has expired."
+msgstr ""
+
+#: src/Tickets/Seating/app/blockEditor/capacity-form/service-error.js:60
+msgctxt "link label for renewing the license"
+msgid "Renew your license to continue using Seating for Event Tickets."
+msgstr ""
+
+#: src/Tickets/Seating/app/blockEditor/capacity-form/service-error.js:71
+msgid "Your license for Seating is invalid."
+msgstr ""
+
+#: src/Tickets/Seating/app/blockEditor/capacity-form/service-error.js:81
+msgctxt "link label for checking the license"
+msgid "Check your license key settings"
+msgstr ""
+
+#: src/Tickets/Seating/app/blockEditor/capacity-form/service-error.js:96
+msgctxt "link label for account login"
+msgid "log into your account."
+msgstr ""
+
+#: src/Tickets/Seating/app/blockEditor/settings/outage.js:27
+#: src/Tickets/Seating/app/blockEditor/settings/upsell.js:12
+msgctxt "Seat layout upsell title"
+msgid "Seat Layout"
+msgstr ""
+
+#: src/Tickets/Seating/app/blockEditor/settings/outage.js:33
+msgctxt "Seating service outage message"
+msgid "The Seating Builder service is down. We are working to restore the functionality."
+msgstr ""
+
+#: src/Tickets/Seating/app/blockEditor/settings/upsell.js:19
+msgctxt "Seat layout upsell description start"
+msgid "Allow purchasers to select seats with"
+msgstr ""
+
+#: src/Tickets/Seating/app/blockEditor/settings/upsell.js:31
+msgctxt "Seat layout upsell link label"
+msgid "Seating"
+msgstr ""
+
+#: src/Tickets/Seating/app/blockEditor/settings/upsell.js:34
+msgctxt "Seat layout upsell description end"
+msgid "for Event Tickets."
+msgstr ""
+
+#: src/Tickets/Seating/app/service/errors.js:13
+msgctxt "Error message"
+msgid "Unknown error"
+msgstr ""
+
+#: src/Tickets/Seating/app/service/iframe.js:26
+msgctxt "Error message"
+msgid "Ephemeral token not found in iframe element."
 msgstr ""
 
 #: src/Tickets/Blocks/Ticket/block.json

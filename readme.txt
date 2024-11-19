@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.16.1
+Stable tag: 5.17.0
 Requires at least: 6.3
 Tested up to: 6.6.2
 Requires PHP: 7.4
@@ -202,6 +202,22 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.17.0] 2024-11-18 =
+
+* Version - Event Tickets 5.17.0 is only compatible with Event Tickets Plus 6.1.1 or higher.
+* Feature - Add Reservation timer settings for seating tickets. [Sl-213]
+* Feature - Enable duplicate layout funcitonality for seating. [SL-65]
+* Feature - Reset Seat Layouts data when a new license is connected.
+* Feature - Update Seating assets into using Group Paths. [SL-246]
+* Tweak - Added filters: `tec_tickets_seating_checkout_grace_time`
+* Tweak - Added proper notice for invalid seating license. [SL-208]
+* Tweak - Cache Seating service status checks; better messaging. [SL-239]
+* Tweak - Increase payment failure correction timer to 60 seconds. [SL-233]
+* Fix - Avoid enqueue seating assets where they are not required. [SL-250]
+* Fix - Fixed styling issues for modals and dropdowns. [SL-202][SL-203]
+* Fix - Remove default value from sessions table column to avoid database update issues.
+* Language - 71 new strings added, 143 updated, 11 fuzzied, and 2 obsoleted.
 
 = [5.16.1] 2024-11-04 =
 

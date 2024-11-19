@@ -22,6 +22,9 @@ use Tribe__Tickets__Main as ET;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_Error;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use Tribe__Main as Common;
+use TEC\Tickets\Commerce\Checkout;
+use TEC\Tickets\Seating\Orders\Cart;
 
 /**
  * Class Controller.
@@ -314,6 +317,7 @@ class Frontend extends Controller_Contract {
 			ET::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
+			->set_condition( [ $this, 'should_enqueue_assets' ] )
 			->set_dependencies(
 				'tribe-dialog-js',
 				'tec-tickets-seating-service-bundle',
@@ -337,10 +341,28 @@ class Frontend extends Controller_Contract {
 			ET::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
+			->set_condition( [ $this, 'should_enqueue_assets' ] )
 			->enqueue_on( 'wp_enqueue_scripts' )
 			->add_to_group( 'tec-tickets-seating-frontend' )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
+	}
+
+	/**
+	 * Checks if the current context is the Block Editor and the post type is ticket-enabled.
+	 *
+	 * @since 5.17.0
+	 *
+	 * @return bool Whether the assets should be enqueued or not.
+	 */
+	public function should_enqueue_assets() {
+		$ticketable_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+
+		if ( empty( $ticketable_post_types ) ) {
+			return false;
+		}
+
+		return ( tribe( Checkout::class )->is_current_page() && tribe( Cart::class )->cart_has_seating_tickets() ) || ( is_singular( $ticketable_post_types ) && tec_tickets_seating_enabled( Common::post_id_helper() ) );
 	}
 
 	/**

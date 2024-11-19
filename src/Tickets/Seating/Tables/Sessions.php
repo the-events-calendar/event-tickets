@@ -119,7 +119,7 @@ class Sessions extends Table {
 				`token` varchar(150) NOT NULL,
 				`object_id` bigint(20) NOT NULL,
 				`expiration` int(11) NOT NULL,
-				`reservations` longblob DEFAULT '',
+				`reservations` longblob,
 				`expiration_lock` boolean DEFAULT 0,
 				PRIMARY KEY (`token`)
 			) {$charset_collate};
@@ -429,7 +429,7 @@ class Sessions extends Table {
 	 *
 	 * Note the expiration will not be updated if the lock is set.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 *
 	 * @param string $token     The token to update the session for.
 	 * @param int    $timestamp The UNIX timestamp to update the expiration to.
@@ -472,7 +472,7 @@ class Sessions extends Table {
 	/**
 	 * Returns whether the expiration lock for a token is set or not.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 *
 	 * @param string $token The token to check the expiration lock for.
 	 *

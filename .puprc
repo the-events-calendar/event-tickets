@@ -27,6 +27,11 @@
 			"textdomain": "event-tickets",
 			"url": "https://translate.wordpress.org",
 			"slug": "wp-plugins/event-tickets/stable"
+		},
+		{
+			"textdomain": "event-tickets",
+			"url": "https://translations.stellarwp.com",
+			"slug": "event-tickets"
 		}
 	],
 	"paths": {

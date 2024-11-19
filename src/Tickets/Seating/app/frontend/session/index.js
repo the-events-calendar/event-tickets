@@ -703,7 +703,7 @@ export function reset() {
  * Postpones the healthcheck that will sync with the backend resetting its timer.
  *
  * @since 5.16.0
- * @since TBD Added the `resumeInSeconds` parameter.
+ * @since 5.17.0 Added the `resumeInSeconds` parameter.
  *
  * @param {number} resumeInSeconds The amount of seconds after which the timer should resume. `0` to not resume.
  *
@@ -739,7 +739,7 @@ export function pause(resumeInSeconds) {
  * Postpones the healthcheck that will sync with the backend resetting its timer for the purpose of
  * giving the user time to checkout.
  *
- * @since TBD
+ * @since 5.17.0
  *
  * @return {Promise<void>} A promise that will resolve when the backend received the signal and the timer paused.
  */

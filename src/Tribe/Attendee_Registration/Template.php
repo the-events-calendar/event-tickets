@@ -48,7 +48,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 *
 	 * @since 4.9
 	 * @since 5.9.1 changed page parameters and added page to the cache.
-	 * @since TBD Update the check for the custom AR page.
+	 * @since 5.17.0 Update the check for the custom AR page.
 	 *
 	 * @param WP_Post[] $posts Post data objects.
 	 *
@@ -102,7 +102,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	/**
 	 * Returns whether or not the user is on a custom attendee registration page.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 *
 	 * @return bool
 	 */
@@ -166,7 +166,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * Set the theme page template we're going to use for the attendee-registration page
 	 *
 	 * @since 4.9
-	 * @since TBD Added check for custom AR page to return the pages template.
+	 * @since 5.17.0 Added check for custom AR page to return the pages template.
 	 *
 	 * @param string $template The AR template.
 	 * @return void

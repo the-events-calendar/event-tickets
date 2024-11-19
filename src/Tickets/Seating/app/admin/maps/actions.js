@@ -27,7 +27,7 @@ export function registerDeleteAction(dom) {
 /**
  * Bind the delete action.
  *
- * @since TBD
+ * @since 5.17.0
  *
  * @param {Event} event The click event.
  */

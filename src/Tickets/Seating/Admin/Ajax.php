@@ -98,7 +98,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * The action to duplicate a layout.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 *
 	 * @var string
 	 */
@@ -591,7 +591,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Duplicates a layout in the service.
 	 *
-	 * @since TBD
+	 * @since 5.17.0
 	 *
 	 * @return void The function does not return a value but will send the JSON response.
 	 */

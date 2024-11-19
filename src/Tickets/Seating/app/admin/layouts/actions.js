@@ -33,7 +33,7 @@ export function registerDeleteAction(dom) {
 /**
  * Bind the delete action.
  *
- * @since TBD
+ * @since 5.17.0
  *
  * @param {Event} event The click event.
  */
@@ -117,7 +117,7 @@ export function registerDestructiveEditAction(dom) {
 /**
  * Bind the destructive edit action.
  *
- * @since TBD
+ * @since 5.17.0
  *
  * @param {Event} event The click event.
  */
@@ -158,7 +158,7 @@ async function handleDestructiveEdit(event) {
 /**
  * Register a duplicate action on all the duplicate layout buttons.
  *
- * @since TBD
+ * @since 5.17.0
  *
  * @param {HTMLDocument|null} dom The document to use to search for the duplicate buttons.
  */
@@ -173,7 +173,7 @@ export function registerDuplicateLayoutAction(dom) {
 /**
  * Bind the duplicate action.
  *
- * @since TBD
+ * @since 5.17.0
  *
  * @param {Event} event The click event.
  */
@@ -185,7 +185,7 @@ async function duplicateListener(event) {
 /**
  * Handle the duplicate layout action.
  *
- * @since TBD
+ * @since 5.17.0
  *
  * @param {HTMLButtonElement} target The target button.
  *
@@ -217,7 +217,7 @@ async function handleDuplicateAction(target) {
 /**
  * Duplicate a layout by layout ID.
  *
- * @since TBD
+ * @since 5.17.0
  *
  * @param {string} layoutId The layout ID.
  *

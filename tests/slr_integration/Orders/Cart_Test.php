@@ -234,6 +234,46 @@ class Cart_Test extends WPTestCase {
 		$this->assertContains( 'tribe-tickets__commerce-checkout-cart-empty', $html );
 	}
 
+	public function test_cart_has_seating_tickets(): void {
+		$post = self::factory()->post->create();
+		update_post_meta( $post, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $post, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		$asc_ticket = $this->create_tc_ticket( $post, 10 );
+		update_post_meta( $asc_ticket, Meta::META_KEY_ENABLED, true );
+		$gac_ticket = $this->create_tc_ticket( $post, 10 );
+
+		$tc_cart = tribe( TicketsCommerce_Cart::class );
+		$cart = tribe( Cart::class );
+
+		// Empty cart.
+		$this->assertFalse( $cart->cart_has_seating_tickets() );
+
+		$tc_cart->add_ticket( $gac_ticket, 3 );
+
+		// 3 GAC tickets.
+		$this->assertFalse( $cart->cart_has_seating_tickets() );
+
+		$tc_cart->add_ticket( $asc_ticket, 2 );
+
+		// 3 GAC tickets and 2 ASC tickets.
+		$this->assertTrue( $cart->cart_has_seating_tickets() );
+
+		$tc_cart->remove_ticket( $gac_ticket, 3 );
+
+		// 2 ASC tickets.
+		$this->assertTrue( $cart->cart_has_seating_tickets() );
+
+		$tc_cart->remove_ticket( $asc_ticket, 1 );
+
+		// 1 ASC ticket.
+		$this->assertTrue( $cart->cart_has_seating_tickets() );
+
+		$tc_cart->remove_ticket( $asc_ticket, 1 );
+
+		// Empty Cart.
+		$this->assertFalse( $cart->cart_has_seating_tickets() );
+	}
+
 	/**
 	 * @test
 	 *
