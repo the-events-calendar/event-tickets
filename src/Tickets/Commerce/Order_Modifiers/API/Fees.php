@@ -11,14 +11,16 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\API;
 
 use Exception;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee;
-use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager as Manager;
+use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee_Modifier_Manager as Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship as Relationships;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers as Modifiers;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Fee_Types;
 use WP_Error;
+use TEC\Common\Contracts\Container;
 use WP_REST_Request as Request;
 use WP_REST_Response as Response;
 use WP_REST_Server as Server;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Fees as Fee_Modifiers;
 
 /**
  * Class Fees
@@ -46,18 +48,21 @@ class Fees extends Base_API {
 	/**
 	 * Fees constructor.
 	 *
-	 * @param ?Modifiers     $modifiers     The repository for interacting with the order modifiers.
-	 * @param ?Relationships $relationships The repository for interacting with the order modifiers relationships.
-	 * @param ?Manager       $manager       The manager for the order modifiers.
+	 * @param Container     $container     The DI container.
+	 * @param Fee_Modifiers $fee_modifiers The repository for interacting with the order modifiers.
+	 * @param Relationships $relationships The repository for interacting with the order modifiers relationships.
+	 * @param Manager       $manager       The manager for the order modifiers.
 	 */
 	public function __construct(
-		?Modifiers $modifiers = null,
-		?Relationships $relationships = null,
-		?Manager $manager = null
+		Container $container,
+		Fee_Modifiers $fee_modifiers,
+		Relationships $relationships,
+		Manager $manager
 	) {
-		$this->modifiers_repository = $modifiers ?? new Modifiers( 'fee' );
-		$this->relationships        = $relationships ?? new Relationships();
-		$this->manager              = $manager ?? new Manager( new Fee() );
+		parent::__construct( $container );
+		$this->modifiers_repository = $fee_modifiers;
+		$this->relationships        = $relationships;
+		$this->manager              = $manager;
 	}
 
 	/**

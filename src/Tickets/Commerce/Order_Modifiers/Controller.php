@@ -76,9 +76,9 @@ final class Controller extends Controller_Contract {
 		$this->container->register( Tables::class );
 		$this->container->register( Editor::class );
 		$this->container->register( Localization::class );
+		$this->container->register( Fees::class );
 
 		$this->container->singleton( Fee::class );
-		$this->container->singleton( Fees::class );
 
 		/**
 		 * Filters whether the coupons are enabled.
