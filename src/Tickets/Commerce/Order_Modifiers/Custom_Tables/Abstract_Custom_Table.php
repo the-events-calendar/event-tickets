@@ -28,25 +28,26 @@ abstract class Abstract_Custom_Table extends Table {
 	 * @since TBD
 	 *
 	 * @param array  $results    The results array to track changes.
-	 * @param string $table_name The name of the table.
 	 * @param string $index_name The name of the index.
 	 * @param string $columns    The columns to index.
 	 *
 	 * @return array The updated results array.
 	 */
-	protected function check_and_add_index( array $results, string $table_name, string $index_name, string $columns ): array {
-		$table_name = esc_sql( $table_name );
+	protected function check_and_add_index( array $results, string $index_name, string $columns ): array {
+		$table_name = esc_sql( static::table_name( true ) );
 		$columns    = esc_sql( $columns );
+		$index_name = esc_sql( $index_name );
 
 		// Add index only if it does not exist.
 		if ( $this->has_index( $index_name ) ) {
 			return $results;
 		}
 
-		$sql = "ALTER TABLE `{$table_name}` ADD INDEX `{$index_name}` ( {$columns} )";
+		$sql = "ALTER TABLE %i ADD INDEX `{$index_name}` ( {$columns} )";
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared
-		$updated = DB::query( $sql );
+		$updated = DB::query(
+			DB::prepare( $sql, $table_name )
+		);
 
 		$message = $updated ?
 			sprintf( 'Added index to the %s table on %s.', $table_name, $columns ) :

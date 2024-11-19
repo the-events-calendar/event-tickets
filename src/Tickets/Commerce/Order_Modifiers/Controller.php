@@ -26,7 +26,6 @@ use InvalidArgumentException;
 
 use TEC\Tickets\Commerce\Order_Modifiers\Admin\Editor;
 use TEC\Tickets\Commerce\Order_Modifiers\API\Localization;
-use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Controller as Table_Controller;
 
 /**
  * Main Order Modifiers Controller.

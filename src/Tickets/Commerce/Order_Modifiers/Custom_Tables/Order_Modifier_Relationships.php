@@ -93,12 +93,10 @@ class Order_Modifier_Relationships extends Abstract_Custom_Table {
 			return $results;
 		}
 
-		$table_name = self::table_name();
-
 		// Helper method to check and add indexes.
-		$results = $this->check_and_add_index( $results, $table_name, 'tec_order_modifier_relationship_indx_modifier_id', 'modifier_id' );
-		$results = $this->check_and_add_index( $results, $table_name, 'tec_order_modifier_relationship_indx_post_type', 'post_id,post_type' );
-		$results = $this->check_and_add_index( $results, $table_name, 'tec_order_modifier_relationship_indx_composite_join', 'modifier_id, post_id, post_type' );
+		$results = $this->check_and_add_index( $results, 'tec_order_modifier_relationship_indx_modifier_id', 'modifier_id' );
+		$results = $this->check_and_add_index( $results, 'tec_order_modifier_relationship_indx_post_type', 'post_id,post_type' );
+		$results = $this->check_and_add_index( $results, 'tec_order_modifier_relationship_indx_composite_join', 'modifier_id, post_id, post_type' );
 
 		return $results;
 	}
