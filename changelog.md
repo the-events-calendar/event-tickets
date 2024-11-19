@@ -1,5 +1,21 @@
 # Changelog
 
+### [5.17.0] 2024-11-19
+
+* Version - Event Tickets 5.17.0 is only compatible with Event Tickets Plus 6.1.1 or higher.
+* Feature - Add Reservation timer settings for seating tickets. [Sl-213]
+* Feature - Enable duplicate layout funcitonality for seating. [SL-65]
+* Feature - Reset Seat Layouts data when a new license is connected.
+* Feature - Update Seating assets into using Group Paths. [SL-246]
+* Tweak - Added filters: `tec_tickets_seating_checkout_grace_time`
+* Tweak - Added proper notice for invalid seating license. [SL-208]
+* Tweak - Cache Seating service status checks; better messaging. [SL-239]
+* Tweak - Increase payment failure correction timer to 60 seconds. [SL-233]
+* Fix - Avoid enqueue seating assets where they are not required. [SL-250]
+* Fix - Fixed styling issues for modals and dropdowns. [SL-202][SL-203]
+* Fix - Remove default value from sessions table column to avoid database update issues.
+* Language - 71 new strings added, 143 updated, 11 fuzzied, and 2 obsoleted.
+
 ### [5.16.1] 2024-11-04
 
 * Fix - Attendee Registration page will work with FSE Themes. [ET-2261]
