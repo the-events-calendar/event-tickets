@@ -25,6 +25,7 @@ use WP_Error;
 use WP_REST_Request as Request;
 use WP_REST_Response as Response;
 use WP_REST_Server as Server;
+use TEC\Common\Contracts\Container;
 
 /**
  * Class Coupons
@@ -56,7 +57,8 @@ class Coupons extends Base_API {
 	 *
 	 * @param ?Coupons_Repository $repository The coupons repository.
 	 */
-	public function __construct( ?Coupons_Repository $repository = null ) {
+	public function __construct( Container $container, ?Coupons_Repository $repository = null ) {
+		parent::__construct( $container );
 		$this->repo    = $repository ?? new Coupons_Repository();
 
 		// todo: add this as a constructor arg, in a way that the Container will play nicely with.

@@ -9,8 +9,8 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Admin;
 
-use TEC\Common\Contracts\Provider\Controller;
-use TEC\Common\lucatume\DI52\Container;
+use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Common\Contracts\Container;
 use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Asset_Build;
 use Tribe__Tickets__Main as Tickets;
@@ -20,7 +20,7 @@ use Tribe__Tickets__Main as Tickets;
  *
  * @since TBD
  */
-class Editor extends Controller {
+class Editor extends Controller_Contract {
 
 	use Asset_Build;
 

@@ -30,7 +30,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
  *
  * @since TBD
  */
-abstract class Abstract_Fees extends Controller_Contract{
+abstract class Abstract_Fees extends Controller_Contract {
 
 	/**
 	 * The modifier type used for fees.

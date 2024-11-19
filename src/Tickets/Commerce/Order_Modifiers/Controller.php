@@ -22,8 +22,6 @@ use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use InvalidArgumentException;
-
-
 use TEC\Tickets\Commerce\Order_Modifiers\Admin\Editor;
 use TEC\Tickets\Commerce\Order_Modifiers\API\Localization;
 
@@ -51,14 +49,17 @@ final class Controller extends Controller_Contract {
 		$this->container->get( Paypal_Checkout_Fees::class )->unregister();
 		$this->container->get( Stripe_Checkout_Fees::class )->unregister();
 		$this->container->get( Agnostic_Checkout_Fees::class )->unregister();
-		$this->container->get( Fees::class )->unregister();
 		$this->container->get( Tables::class )->unregister();
 		$this->container->get( Editor::class )->unregister();
 		$this->container->get( Localization::class )->unregister();
 
-	if ( $this->container->isBound( Coupons::class ) ) {
+		if ( $this->container->isBound( Coupons::class ) ) {
 			$this->container->get( Coupons::class )->unregister();
+			return;
 		}
+
+		remove_filter( 'tec_tickets_commerce_order_modifiers', [ $this, 'filter_out_coupons' ] );
+		remove_filter( 'tec_tickets_commerce_order_modifier_types', [ $this, 'filter_out_coupons' ] );
 	}
 
 	/**
@@ -68,16 +69,16 @@ final class Controller extends Controller_Contract {
 	 */
 	public function do_register(): void {
 		$this->container->register( Modifier_Admin_Handler::class );
-		$this->container->singleton( Fee::class );
-
 		$this->container->register( Order_Modifier_Fee_Metabox::class );
 		$this->container->register( Paypal_Checkout_Fees::class );
 		$this->container->register( Stripe_Checkout_Fees::class );
 		$this->container->register( Agnostic_Checkout_Fees::class );
-		$this->container->singleton( Fees::class );
 		$this->container->register( Tables::class );
 		$this->container->register( Editor::class );
 		$this->container->register( Localization::class );
+
+		$this->container->singleton( Fee::class );
+		$this->container->singleton( Fees::class );
 
 		/**
 		 * Filters whether the coupons are enabled.
@@ -91,10 +92,11 @@ final class Controller extends Controller_Contract {
 		if ( apply_filters( 'tec_tickets_commerce_order_modifiers_coupons_enabled', false ) ) {
 			$this->container->singleton( Coupon::class );
 			$this->container->register( Coupons::class );
-		} else {
-			add_filter( 'tec_tickets_commerce_order_modifiers', [ $this, 'filter_out_coupons' ] );
-			add_filter( 'tec_tickets_commerce_order_modifier_types', [ $this, 'filter_out_coupons' ] );
+			return;
 		}
+
+		add_filter( 'tec_tickets_commerce_order_modifiers', [ $this, 'filter_out_coupons' ] );
+		add_filter( 'tec_tickets_commerce_order_modifier_types', [ $this, 'filter_out_coupons' ] );
 	}
 
 	/**
