@@ -1,6 +1,6 @@
 {
   "name": "event-tickets",
-  "version": "5.16.1",
+  "version": "5.17.0",
   "repository": "git@github.com:the-events-calendar/event-tickets.git",
   "_zipname": "event-tickets",
   "_zipfoldername": "event-tickets",
@@ -55,7 +55,7 @@
     "jest": [
       "src/modules/**/__tests__/**/*.js",
       "src/resources/js/**/__tests__/**/*.js",
-      "tests/slr_jest/**/*.spec.js"
+      "tests/**/*.spec.js"
     ]
   },
   "scripts": {
@@ -66,7 +66,6 @@
     "build:webpack:inspect": "export NODE_OPTIONS=--openssl-legacy-provider && cross-env NODE_ENV=production node --inspect node_modules/webpack/bin/webpack.js -p",
     "build:gulp": "cross-env NODE_ENV=production gulp",
     "build:common": "cd common && npm run build",
-    "prebuild": "node node_modules/@the-events-calendar/product-taskmaster/scripts/syncBrowserslistConfig.js",
     "build": "export NODE_OPTIONS=--openssl-legacy-provider && npm run build:webpack && npm run build:gulp",
     "build:inspect": "export NODE_OPTIONS=--openssl-legacy-provider && export COMPILE_SOURCE_MAPS=1 && npm run build:webpack && npm run build:gulp",
     "dev": "nodemon --exec \"COMPILE_SOURCE_MAPS=1 NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=development npm run build\" --watch src --ignore src/resources -e \"js pcss css\"",
@@ -148,17 +147,5 @@
     "validator": "^13.7.0",
     "whatwg-fetch": "^2.0.4",
     "zero-fill": "^2.2.3"
-  },
-  "browserslist": [
-    "last 2 Chrome versions",
-    "last 2 Firefox versions",
-    "last 2 Safari versions",
-    "last 2 Edge versions",
-    "last 2 Opera versions",
-    "last 2 iOS versions",
-    "last 1 Android version",
-    "last 1 ChromeAndroid version",
-    "last 1 FirefoxAndroid version",
-    "> 1%, not op_mini all, not ie <= 11, not ie_mob <= 11"
-  ]
+  }
 }

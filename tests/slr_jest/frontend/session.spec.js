@@ -9,12 +9,13 @@ import {
 	getCountdownTimeoutId,
 	getResumeTimeoutId,
 	pause,
+	pauseToCheckout,
 	resume,
 	getWatchedCheckoutControls,
 	beaconInterrupt,
 } from '@tec/tickets/seating/frontend/session';
 import { watchCheckoutControls } from '../../../src/Tickets/Seating/app/frontend/session';
-import {addFilter} from '@wordpress/hooks';
+import { addFilter } from '@wordpress/hooks';
 
 require('jest-fetch-mock').enableMocks();
 
@@ -66,21 +67,30 @@ describe('Seat Selection Session', () => {
 		expect(isExpired()).toBe(false);
 		expect(getCountdownTimeoutId()).toBe(null);
 		expect(getHealthcheckTimeoutId()).toBe(null);
-		expect(getResumeTimeoutId()).toBe(102);
+		expect(getResumeTimeoutId()).toBe(null);
 
 		await resume();
 
 		expect(isInterruptable()).toBe(true);
 		expect(isStarted()).toBe(true);
 		expect(isExpired()).toBe(false);
-		expect(getCountdownTimeoutId()).toBe(103);
-		expect(getHealthcheckTimeoutId()).toBe(104);
+		expect(getCountdownTimeoutId()).toBe(102);
+		expect(getHealthcheckTimeoutId()).toBe(103);
 		expect(getResumeTimeoutId()).toBe(null);
 	});
 
-	it('should pause the timer on checkout control click', async () => {
+	it('should watch checkout button click', async () => {
+		const actions = [
+			'tec_tickets_seating_session_sync',
+			'tec_tickets_seating_timer_pause_to_checkout',
+		];
+		const urlRegex = RegExp(
+			`https://wordpress.test/wp-admin/admin-ajax\\.php\\?_ajaxNonce=1234567890&action=(${actions.join(
+				'|'
+			)})&token=test-token&postId=23`
+		);
 		fetch.mockIf(
-			'https://wordpress.test/wp-admin/admin-ajax.php?_ajaxNonce=1234567890&action=tec_tickets_seating_session_sync&token=test-token&postId=23',
+			urlRegex,
 			JSON.stringify({
 				success: true,
 				data: { secondsLeft: 30, timestamp: Date.now() / 1000 },
@@ -99,23 +109,35 @@ describe('Seat Selection Session', () => {
 		setTargetDom(dom);
 
 		await syncOnLoad();
+
+		const element = dom.querySelector('#button-1');
+		element.addEventListener = jest.fn();
+
 		await watchCheckoutControls();
 
 		expect(getWatchedCheckoutControls()).toHaveLength(1);
-
-		dom.querySelector('#button-1').click();
-
-		expect(isInterruptable()).toBe(false);
-		expect(isStarted()).toBe(true);
-		expect(isExpired()).toBe(false);
-		expect(getCountdownTimeoutId()).toBe(null);
-		expect(getHealthcheckTimeoutId()).toBe(null);
-		expect(getResumeTimeoutId()).toBe(102);
+		expect(element.addEventListener).toHaveBeenCalledWith(
+			'click',
+			pauseToCheckout
+		);
+		expect(element.addEventListener).toHaveBeenCalledWith(
+			'submit',
+			pauseToCheckout
+		);
 	});
 
-	it('should pause the timer on checkout control submit', async () => {
+	it('should watch checkout form submit', async () => {
+		const actions = [
+			'tec_tickets_seating_session_sync',
+			'tec_tickets_seating_timer_pause_to_checkout',
+		];
+		const urlRegex = RegExp(
+			`https://wordpress.test/wp-admin/admin-ajax\\.php\\?_ajaxNonce=1234567890&action=(${actions.join(
+				'|'
+			)})&token=test-token&postId=23`
+		);
 		fetch.mockIf(
-			'https://wordpress.test/wp-admin/admin-ajax.php?_ajaxNonce=1234567890&action=tec_tickets_seating_session_sync&token=test-token&postId=23',
+			urlRegex,
 			JSON.stringify({
 				success: true,
 				data: { secondsLeft: 30, timestamp: Date.now() / 1000 },
@@ -141,11 +163,61 @@ describe('Seat Selection Session', () => {
 		);
 
 		await syncOnLoad();
+
+		const element = dom.querySelector('#my-custom-checkout-form');
+		element.addEventListener = jest.fn();
+
 		await watchCheckoutControls();
 
 		expect(getWatchedCheckoutControls()).toHaveLength(1);
+		expect(element.addEventListener).toHaveBeenCalledWith(
+			'click',
+			pauseToCheckout
+		);
+		expect(element.addEventListener).toHaveBeenCalledWith(
+			'submit',
+			pauseToCheckout
+		);
+	});
 
-		dom.querySelector('#my-custom-checkout-form').submit();
+	it('pauseToCheckout', async () => {
+		const actions = [
+			'tec_tickets_seating_session_sync',
+			'tec_tickets_seating_timer_pause_to_checkout',
+		];
+		const urlRegex = RegExp(
+			`https://wordpress.test/wp-admin/admin-ajax\\.php\\?_ajaxNonce=1234567890&action=(${actions.join(
+				'|'
+			)})&token=test-token&postId=23`
+		);
+		fetch.mockIf(
+			urlRegex,
+			JSON.stringify({
+				success: true,
+				data: { secondsLeft: 30, timestamp: Date.now() / 1000 },
+			})
+		);
+		let timeoutId = 100;
+		global.setTimeout = jest.fn(() => timeoutId++);
+		dom = getTestDocument(
+			'timer',
+			(html) =>
+				html
+					.replaceAll('{{post_id}}', 23)
+					.replaceAll('{{token}}', 'test-token') +
+				'<form id="my-custom-checkout-form">' +
+				'<button>Checkout</button>' +
+				'</form>'
+		);
+		setTargetDom(dom);
+		addFilter(
+			'tec.tickets.seating.frontend.session.checkoutControls',
+			'test',
+			(selector) => selector + ', #my-custom-checkout-form'
+		);
+
+		await syncOnLoad();
+		await pauseToCheckout();
 
 		expect(isInterruptable()).toBe(false);
 		expect(isStarted()).toBe(true);
@@ -153,6 +225,8 @@ describe('Seat Selection Session', () => {
 		expect(getCountdownTimeoutId()).toBe(null);
 		expect(getHealthcheckTimeoutId()).toBe(null);
 		expect(getResumeTimeoutId()).toBe(102);
+		// Let's make sure it will set up to resume in 1 minute.
+		expect(setTimeout).toHaveBeenCalledWith(resume, 60000);
 	});
 
 	it('should interrupt on page close', async () => {
@@ -170,14 +244,17 @@ describe('Seat Selection Session', () => {
 
 		dom = getTestDocument('timer', (html) =>
 			html
-			.replaceAll('{{post_id}}', 23)
-			.replaceAll('{{token}}', 'test-token')
+				.replaceAll('{{post_id}}', 23)
+				.replaceAll('{{token}}', 'test-token')
 		);
 		setTargetDom(dom);
 
 		await syncOnLoad();
 
-		expect(window.addEventListener).toHaveBeenCalledWith('beforeunload', beaconInterrupt);
+		expect(window.addEventListener).toHaveBeenCalledWith(
+			'beforeunload',
+			beaconInterrupt
+		);
 
 		beaconInterrupt();
 

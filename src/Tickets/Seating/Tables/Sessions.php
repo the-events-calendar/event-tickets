@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Seating\Tables;
 
+use Exception;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
 use TEC\Tickets\Seating\Logging;
@@ -31,7 +32,7 @@ class Sessions extends Table {
 	 *
 	 * @var string
 	 */
-	const SCHEMA_VERSION = '1.0.0';
+	const SCHEMA_VERSION = '1.1.0';
 
 	/**
 	 * The base table name, without the table prefix.
@@ -85,7 +86,7 @@ class Sessions extends Table {
 			);
 
 			return (int) DB::query( $query );
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			( new self() )->log_error(
 				'Failed to remove expired sessions.',
 				[
@@ -118,7 +119,8 @@ class Sessions extends Table {
 				`token` varchar(150) NOT NULL,
 				`object_id` bigint(20) NOT NULL,
 				`expiration` int(11) NOT NULL,
-				`reservations` longblob DEFAULT '',
+				`reservations` longblob,
+				`expiration_lock` boolean DEFAULT 0,
 				PRIMARY KEY (`token`)
 			) {$charset_collate};
 		";
@@ -149,7 +151,7 @@ class Sessions extends Table {
 			);
 
 			return DB::query( $query ) !== false;
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			$this->log_error(
 				'Failed to upsert the session.',
 				[
@@ -182,7 +184,7 @@ class Sessions extends Table {
 				$token
 			);
 			$expiration = DB::get_var( $query );
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			$this->log_error(
 				'Failed to get the seconds left for the token.',
 				[
@@ -215,10 +217,9 @@ class Sessions extends Table {
 	 *     reservation_id: string,
 	 *     seat_type_id: string,
 	 *     seat_label: string,
-	 * }> The list of reservations for the given object ID. A map from ticket ID to a list of reservations for it.
+	 * }> The list of reservations for the given token.
 	 */
 	public function get_reservations_for_token( string $token ) {
-
 		try {
 			$query        = DB::prepare(
 				'SELECT reservations FROM %i WHERE token = %s ',
@@ -226,7 +227,7 @@ class Sessions extends Table {
 				$token
 			);
 			$reservations = DB::get_var( $query );
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			$this->log_error(
 				'Failed to get the reservations for the token.',
 				[
@@ -341,7 +342,7 @@ class Sessions extends Table {
 			}
 
 			return $updated !== false;
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			$this->log_error(
 				'Failed to update the reservations for the token.',
 				[
@@ -375,7 +376,7 @@ class Sessions extends Table {
 			);
 
 			return DB::query( $query ) !== false;
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			$this->log_error(
 				'Failed to delete the sessions for the token.',
 				[
@@ -397,9 +398,9 @@ class Sessions extends Table {
 	 *
 	 * @param string $token The token to clear the reservations for.
 	 *
-	 * @return bool Whether the reservations were cleared or not.
+	 * @return bool|false Whether the reservations were cleared or not.
 	 */
-	public function clear_token_reservations( string $token ): bool {
+	public function clear_token_reservations( string $token ) {
 		try {
 			$query = DB::prepare(
 				"UPDATE %i SET reservations = '' WHERE token = %s",
@@ -408,9 +409,87 @@ class Sessions extends Table {
 			);
 
 			return DB::query( $query ) !== false;
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			$this->log_error(
 				'Failed to clear the reservations for the token.',
+				[
+					'source' => __METHOD__,
+					'code'   => $e->getCode(),
+					'token'  => $token,
+					'error'  => $e->getMessage(),
+				]
+			);
+
+			return false;
+		}
+	}
+
+	/**
+	 * Updates a session expiration timestamp by its token.
+	 *
+	 * Note the expiration will not be updated if the lock is set.
+	 *
+	 * @since 5.17.0
+	 *
+	 * @param string $token     The token to update the session for.
+	 * @param int    $timestamp The UNIX timestamp to update the expiration to.
+	 * @param bool   $lock      Whether to lock the expiration timestamp or not. Locking the expiration timestamp
+	 *                          will prevent further changes until unlocked.
+	 *
+	 * @return bool Whether the expiration timestamp was updated or not. If a lock is set previously to this call,
+	 *              then the method will return `false`.
+	 */
+	public function set_token_expiration_timestamp( string $token, int $timestamp, bool $lock = false ) {
+		if ( $this->is_locked( $token ) ) {
+			return false;
+		}
+
+		try {
+			$query = DB::prepare(
+				'UPDATE %i SET expiration = %d, expiration_lock = %d WHERE token = %s AND expiration_lock = 0',
+				self::table_name(),
+				$timestamp,
+				(int) $lock,
+				$token
+			);
+
+			return DB::query( $query ) !== false;
+		} catch ( Exception $e ) {
+			$this->log_error(
+				'Failed to update the expiration timestamp for the token.',
+				[
+					'source' => __METHOD__,
+					'code'   => $e->getCode(),
+					'token'  => $token,
+					'error'  => $e->getMessage(),
+				]
+			);
+
+			return false;
+		}
+	}
+
+	/**
+	 * Returns whether the expiration lock for a token is set or not.
+	 *
+	 * @since 5.17.0
+	 *
+	 * @param string $token The token to check the expiration lock for.
+	 *
+	 * @return bool Whether the expiration lock for a token is set or not.
+	 */
+	public function is_locked( string $token ): bool {
+		try {
+			$query = DB::prepare(
+				'SELECT expiration_lock FROM %i WHERE token = %s',
+				self::table_name(),
+				$token
+			);
+
+			return (bool) DB::get_var( $query );
+		} catch ( Exception $e ) {
+			$this->log_error(
+				'Failed to get the expiration lock status for the token.',
 				[
 					'source' => __METHOD__,
 					'code'   => $e->getCode(),
