@@ -23,6 +23,11 @@ use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use InvalidArgumentException;
 
+
+use TEC\Tickets\Commerce\Order_Modifiers\Admin\Editor;
+use TEC\Tickets\Commerce\Order_Modifiers\API\Localization;
+use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Controller as Table_Controller;
+
 /**
  * Main Order Modifiers Controller.
  *
@@ -35,9 +40,11 @@ final class Controller extends Controller_Contract {
 	/**
 	 * Unregisters the Controller by unsubscribing from WordPress hooks.
 	 *
+	 * Bound implementations should not be removed in this method!
+	 *
 	 * @since TBD
 	 *
-	 * @return void
+	 * @return void Filters and actions hooks added by the controller are be removed.
 	 */
 	public function unregister(): void {
 		$this->container->get( Modifier_Admin_Handler::class )->unregister();

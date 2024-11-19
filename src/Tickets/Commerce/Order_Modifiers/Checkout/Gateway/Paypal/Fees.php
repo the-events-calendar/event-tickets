@@ -39,15 +39,36 @@ class Fees extends Abstract_Fees implements Registerable {
 		// Hook for appending fees to the cart for PayPal processing.
 		add_filter(
 			'tec_tickets_commerce_create_order_from_cart_items',
-			fn( $items, $subtotal ) => $this->append_fees_to_cart( $items, $subtotal ),
-			...$this->hook_args['ten_two']
+			$this->get_fee_append_callback(),
+			10,
+			2
 		);
 
 		// Hook for adding fee unit data to PayPal order.
 		add_action(
 			'tec_commerce_paypal_order_get_unit_data_fee',
-			fn( $item, $order ) => $this->add_fee_unit_data_to_paypal( $item, $order ),
-			...$this->hook_args['ten_two']
+			$this->get_fee_unit_data_paypal_callback(),
+			10,
+			2
+		);
+	}
+
+	/**
+	 * Removes the filters and actions hooks added by the controller.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function unregister(): void {
+		remove_filter(
+			'tec_tickets_commerce_create_order_from_cart_items',
+			$this->get_fee_append_callback()
+		);
+
+		remove_action(
+			'tec_commerce_paypal_order_get_unit_data_fee',
+			$this->get_fee_unit_data_paypal_callback()
 		);
 	}
 
@@ -80,5 +101,21 @@ class Fees extends Abstract_Fees implements Registerable {
 			],
 			'sku'         => "fee-{$item['fee_id']}",
 		];
+	}
+
+	/**
+	 * Get the callback for adding fee unit data to PayPal orders.
+	 *
+	 * @since TBD
+	 *
+	 * @return callable The callback for adding fee unit data to PayPal orders.
+	 */
+	protected function get_fee_unit_data_paypal_callback(): callable {
+		static $callback = null;
+		if ( null === $callback ) {
+			$callback = fn( $item, $order ) => $this->add_fee_unit_data_to_paypal( $item, $order );
+		}
+
+		return $callback;
 	}
 }

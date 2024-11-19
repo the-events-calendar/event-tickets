@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Commerce\Order_Modifiers;
 
 use InvalidArgumentException;
+use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 use TEC\Tickets\Registerable;
@@ -465,5 +466,53 @@ class Modifier_Admin_Handler implements Registerable {
 		// Redirect to the original page to avoid resubmitting the form upon refresh.
 		wp_safe_redirect( $redirect_url );
 		exit;
+	}
+
+	/**
+	 * Retrieves the callback for adding the Event Tickets Order Modifiers page.
+	 *
+	 * @since TBD
+	 *
+	 * @return callable The callback for adding the Order Modifiers page.
+	 */
+	protected function get_admin_menu_action(): callable {
+		static $callback = null;
+		if ( null === $callback ) {
+			$callback = fn() => $this->add_tec_tickets_order_modifiers_page();
+		}
+
+		return $callback;
+	}
+
+	/**
+	 * Retrieves the callback for handling the deletion of a modifier.
+	 *
+	 * @since TBD
+	 *
+	 * @return callable The callback for handling the deletion of a modifier.
+	 */
+	protected function get_delete_modifier_action(): callable {
+		static $callback = null;
+		if ( null === $callback ) {
+			$callback = fn() => $this->handle_delete_modifier();
+		}
+
+		return $callback;
+	}
+
+	/**
+	 * Retrieves the callback for handling the form submission.
+	 *
+	 * @since TBD
+	 *
+	 * @return callable The callback for handling the form submission.
+	 */
+	protected function get_form_submission_action(): callable {
+		static $callback = null;
+		if ( null === $callback ) {
+			$callback = fn() => $this->handle_form_submission();
+		}
+
+		return $callback;
 	}
 }

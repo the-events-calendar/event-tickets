@@ -13,7 +13,8 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Admin;
 
-use TEC\Tickets\Commerce\Order_Modifiers\Controller;
+use stdClass;
+use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Factory;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship;
@@ -95,21 +96,23 @@ class Order_Modifier_Fee_Metabox implements Registerable {
 	 */
 	public function register(): void {
 		add_action( 'tribe_events_tickets_metabox_edit_main', [ $this, 'add_fee_section' ], 30, 2 );
-		add_action(
-			'tec_tickets_commerce_after_save_ticket',
-			function ( $post_id, $ticket, array $raw_data ) {
-				// Ensure the ticket is a Ticket_Object instance.
-				if ( ! $ticket instanceof Ticket_Object ) {
-					return;
-				}
-
-				$this->save_ticket_fee( $ticket, $raw_data );
-			},
-			10,
-			3
-		);
+		add_action( 'tec_tickets_commerce_after_save_ticket', $this->get_after_save_ticket_callback(), 10, 3 );
 		add_action( 'tec_tickets_commerce_ticket_deleted', [ $this, 'delete_ticket_fee' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_order_modifiers_fee_scripts' ] );
+	}
+
+	/**
+	 * Removes the filters and actions hooks added by the controller.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function unregister(): void {
+		remove_action( 'tribe_events_tickets_metabox_edit_main', [ $this, 'add_fee_section' ], 30 );
+		remove_action( 'tec_tickets_commerce_after_save_ticket', $this->get_after_save_ticket_callback() );
+		remove_action( 'tec_tickets_commerce_ticket_deleted', [ $this, 'delete_ticket_fee' ] );
+		remove_action( 'admin_enqueue_scripts', [ $this, 'enqueue_order_modifiers_fee_scripts' ] );
 	}
 
 	/**
@@ -247,5 +250,28 @@ class Order_Modifier_Fee_Metabox implements Registerable {
 	 */
 	public function delete_ticket_fee( int $ticket_id ): void {
 		$this->manager->delete_relationships_by_post( $ticket_id );
+	}
+
+	/**
+	 * Get the callback to run after saving a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @return callable The callback to run after saving a ticket.
+	 */
+	protected function get_after_save_ticket_callback(): callable {
+		static $callback = null;
+		if ( null === $callback ) {
+			$callback = function ( $post_id, $ticket, array $raw_data ) {
+				// Ensure the ticket is a Ticket_Object instance.
+				if ( ! $ticket instanceof Ticket_Object ) {
+					return;
+				}
+
+				$this->save_ticket_fee( $ticket, $raw_data );
+			};
+		}
+
+		return $callback;
 	}
 }
