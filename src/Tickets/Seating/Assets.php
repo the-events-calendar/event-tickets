@@ -10,10 +10,9 @@
 namespace TEC\Tickets\Seating;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Common\StellarWP\Assets\Asset;
+use TEC\Common\Asset;
 use TEC\Tickets\Seating\Admin\Events\Associated_Events;
 use TEC\Tickets\Seating\Admin\Maps_Layouts_Home_Page;
-use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Layouts;
 use TEC\Tickets\Seating\Orders\Seats_Report;
 use Tribe__Tickets__Main as ET;
@@ -27,8 +26,6 @@ use Tribe__Tickets__Tickets as Tickets;
  * @package TEC\Tickets\Seating;
  */
 class Assets extends Controller_Contract {
-	use Built_Assets;
-
 	/**
 	 * Unregisters the controller by unsubscribing from WordPress hooks.
 	 *
@@ -69,6 +66,7 @@ class Assets extends Controller_Contract {
 				'layouts'        => [
 					'add-failed'          => _x( 'Failed to add the new layout.', 'Error message for adding a layout', 'event-tickets' ),
 					'edit-confirmation'   => _x( 'This layout is associated with {count} events. Changes will impact all existing events and may affect the seating assignment of active ticket holders.', 'Confirmation message for editing a layout with events', 'event-tickets' ),
+					'duplicate-failed'    => _x( 'Failed to duplicate this layout.', 'Error message for duplicating a layout', 'event-tickets' ),
 					'delete-confirmation' => _x( 'Are you sure you want to delete this layout? This cannot be undone.', 'Confirmation message for deleting a layout', 'event-tickets' ),
 					'delete-failed'       => _x( 'Failed to delete the layout.', 'Error message for deleting a layout', 'event-tickets' ),
 				],
@@ -129,9 +127,10 @@ class Assets extends Controller_Contract {
 	private function register_utils_asset(): void {
 		Asset::add(
 			'tec-tickets-seating-utils',
-			$this->built_asset_url( 'utils.js' ),
+			'utils.js',
 			ET::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
 			->add_localize_script( 'tec.tickets.seating.utils', [ $this, 'get_utils_data' ] )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
@@ -174,9 +173,10 @@ class Assets extends Controller_Contract {
 	private function register_service_bundle(): void {
 		Asset::add(
 			'tec-tickets-seating-service-bundle',
-			$this->built_asset_url( 'service.js' ),
+			'service.js',
 			ET::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
 			->set_dependencies(
 				'tec-tickets-vendor-babel',
 				'wp-i18n',
@@ -198,9 +198,10 @@ class Assets extends Controller_Contract {
 	private function register_currency_asset(): void {
 		Asset::add(
 			'tec-tickets-seating-currency',
-			$this->built_asset_url( 'currency.js' ),
+			'currency.js',
 			ET::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
 			->add_localize_script( 'tec.tickets.seating.currency', [ $this, 'get_currency_data' ] )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
