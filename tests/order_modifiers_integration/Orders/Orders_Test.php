@@ -21,6 +21,7 @@ use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe\Fees as Stripe_Fees;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal\Fees as PayPal_Fees;
 use WP_Post;
+use TEC\Common\Contracts\Container;
 
 class Orders_Test extends WPTestCase {
 	use Ticket_Maker;
@@ -53,8 +54,8 @@ class Orders_Test extends WPTestCase {
 		$this->cart->clear();
 		$this->repository              ??= new Repository();
 		$this->relationship_repository ??= new Relationship_Repository();
-		$this->stripe_fees             = new Stripe_Fees();
-		$this->paypal_fees             = new PayPal_Fees();
+		$this->stripe_fees               = tribe( Container::class )->get( Stripe_Fees::class );
+		$this->paypal_fees               = tribe( Container::class )->get( PayPal_Fees::class );
 	}
 
 	/**
