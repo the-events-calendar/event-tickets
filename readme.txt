@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, raf
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Stable tag: 5.17.0
 Requires at least: 6.3
-Tested up to: 6.6.2
+Tested up to: 6.7
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -203,7 +203,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.17.0] 2024-11-18 =
+= [5.17.0] 2024-11-19 =
 
 * Version - Event Tickets 5.17.0 is only compatible with Event Tickets Plus 6.1.1 or higher.
 * Feature - Add Reservation timer settings for seating tickets. [Sl-213]
