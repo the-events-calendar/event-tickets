@@ -8,6 +8,7 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Meta;
+use TEC\Tickets\Seating\Tables\Sessions;
 use TEC\Tickets\Seating\Tables\Sessions as Sessions_Table;
 use Tribe\Shortcode\Manager;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
@@ -157,7 +158,7 @@ class Cart_Test extends WPTestCase {
 		$this->assertEquals( 'seat-type-id-1', get_post_meta( $attendee_4, Meta::META_KEY_SEAT_TYPE, true ) );
 		$this->assertEquals( 'layout-uuid-1', get_post_meta( $attendee_4, Meta::META_KEY_LAYOUT_ID, true ) );
 	}
-	
+
 	/**
 	 * @test
 	 *
@@ -173,29 +174,29 @@ class Cart_Test extends WPTestCase {
 		$ticket_2 = $this->create_tc_ticket( $post, 20 );
 		update_post_meta( $ticket_2, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
 		update_post_meta( $ticket_2, Meta::META_KEY_ENABLED, 1 );
-		
+
 		// Create the expired session information.
 		$session = tribe( Session::class );
 		$session->add_entry( $post, 'test-token' );
 		$sessions_table = tribe( Sessions_Table::class );
 		$sessions_table->upsert( 'test-token', $post, time() + 100 );
 		$sessions_table->update_reservations( 'test-token', $this->create_mock_reservations_data( [ $ticket_1, $ticket_2 ], 2 ) );
-		
+
 		$tc_cart = tribe( TicketsCommerce_Cart::class );
-		
+
 		$tc_cart->add_ticket( $ticket_1, 2 );
 		$tc_cart->add_ticket( $ticket_2, 2 );
-		
+
 		$shortcode_manager = new Manager();
 		$shortcode_manager->add_shortcodes();
-		
+
 		$html = do_shortcode( '[tec_tickets_checkout]' );
-		
+
 		// The cart HTML should be showing session timer, items and not be empty.
 		$this->assertContains( 'tribe-tickets__commerce-checkout-cart-items', $html );
 		$this->assertNotContains( 'tribe-tickets__commerce-checkout-cart-empty', $html );
 	}
-	
+
 	/**
 	 * @test
 	 *
@@ -211,28 +212,68 @@ class Cart_Test extends WPTestCase {
 		$ticket_2 = $this->create_tc_ticket( $post, 20 );
 		update_post_meta( $ticket_2, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
 		update_post_meta( $ticket_2, Meta::META_KEY_ENABLED, 1 );
-		
+
 		// Create the expired session information.
 		$session = tribe( Session::class );
 		$session->add_entry( $post, 'test-token' );
 		$sessions_table = tribe( Sessions_Table::class );
 		$sessions_table->upsert( 'test-token', $post, time() - 100 );
 		$sessions_table->update_reservations( 'test-token', $this->create_mock_reservations_data( [ $ticket_1, $ticket_2 ], 2 ) );
-		
+
 		$tc_cart = tribe( TicketsCommerce_Cart::class );
-		
+
 		$tc_cart->add_ticket( $ticket_1, 2 );
 		$tc_cart->add_ticket( $ticket_2, 2 );
-		
+
 		$shortcode_manager = new Manager();
 		$shortcode_manager->add_shortcodes();
-		
+
 		$html = do_shortcode( '[tec_tickets_checkout]' );
-		
+
 		// As the session info is expired the cart should be empty.
 		$this->assertContains( 'tribe-tickets__commerce-checkout-cart-empty', $html );
 	}
-	
+
+	public function test_cart_has_seating_tickets(): void {
+		$post = self::factory()->post->create();
+		update_post_meta( $post, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $post, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		$asc_ticket = $this->create_tc_ticket( $post, 10 );
+		update_post_meta( $asc_ticket, Meta::META_KEY_ENABLED, true );
+		$gac_ticket = $this->create_tc_ticket( $post, 10 );
+
+		$tc_cart = tribe( TicketsCommerce_Cart::class );
+		$cart = tribe( Cart::class );
+
+		// Empty cart.
+		$this->assertFalse( $cart->cart_has_seating_tickets() );
+
+		$tc_cart->add_ticket( $gac_ticket, 3 );
+
+		// 3 GAC tickets.
+		$this->assertFalse( $cart->cart_has_seating_tickets() );
+
+		$tc_cart->add_ticket( $asc_ticket, 2 );
+
+		// 3 GAC tickets and 2 ASC tickets.
+		$this->assertTrue( $cart->cart_has_seating_tickets() );
+
+		$tc_cart->remove_ticket( $gac_ticket, 3 );
+
+		// 2 ASC tickets.
+		$this->assertTrue( $cart->cart_has_seating_tickets() );
+
+		$tc_cart->remove_ticket( $asc_ticket, 1 );
+
+		// 1 ASC ticket.
+		$this->assertTrue( $cart->cart_has_seating_tickets() );
+
+		$tc_cart->remove_ticket( $asc_ticket, 1 );
+
+		// Empty Cart.
+		$this->assertFalse( $cart->cart_has_seating_tickets() );
+	}
+
 	/**
 	 * @test
 	 *
@@ -248,18 +289,54 @@ class Cart_Test extends WPTestCase {
 		$ticket_2 = $this->create_tc_ticket( $post, 20 );
 		update_post_meta( $ticket_2, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
 		update_post_meta( $ticket_2, Meta::META_KEY_ENABLED, 1 );
-		
+
 		$tc_cart = tribe( TicketsCommerce_Cart::class );
-		
+
 		$tc_cart->add_ticket( $ticket_1, 2 );
 		$tc_cart->add_ticket( $ticket_2, 2 );
-		
+
 		$shortcode_manager = new Manager();
 		$shortcode_manager->add_shortcodes();
-		
+
 		$html = do_shortcode( '[tec_tickets_checkout]' );
-		
+
 		// As we only have added seated tickets but no session data was added, the cart should be empty.
 		$this->assertContains( 'tribe-tickets__commerce-checkout-cart-empty', $html );
+	}
+
+	public function test_cache_warmup(): void {
+		$post = self::factory()->post->create();
+		update_post_meta( $post, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $post, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		$ticket = $this->create_tc_ticket( $post, 10 );
+		update_post_meta( $ticket, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		// Create the session information.
+		$session = tribe( Session::class );
+		$session->add_entry( $post, 'test-token' );
+		$sessions_table = tribe( Sessions_Table::class );
+		$sessions_table->upsert( 'test-token', $post, time() + 100 );
+		$sessions_table->update_reservations( 'test-token', $this->create_mock_reservations_data( [ $ticket ], 1 ) );
+		$attendee                    = $this->create_attendee_for_ticket( $ticket, $post );
+		$attendee_object             = get_post( $attendee );
+		$attendee_object->event_id   = $post;
+		$attendee_object->product_id = $ticket;
+		$ticket_object               = tribe( Module::class )->get_ticket( $post, $ticket );
+
+		$cart = tribe( Cart::class );
+
+		// Warm-up the caches.
+		$cart->warmup_caches();
+
+		// Now clear the sessions.
+		$sessions = tribe( Sessions::class );
+		$sessions->delete_token_session( 'test-token' );
+		$this->assertEmpty( $sessions->get_reservations_for_token( 'test-token' ) );
+
+		$cart->save_seat_data_for_attendee( $attendee_object, $ticket_object );
+
+		$this->assertEquals( 'reservation-id-1', get_post_meta( $attendee, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( 'seat-label-0-1', get_post_meta( $attendee, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true ) );
+		$this->assertEquals( 'seat-type-id-0', get_post_meta( $attendee, Meta::META_KEY_SEAT_TYPE, true ) );
+		$this->assertEquals( 'layout-uuid-1', get_post_meta( $attendee, Meta::META_KEY_LAYOUT_ID, true ) );
 	}
 }

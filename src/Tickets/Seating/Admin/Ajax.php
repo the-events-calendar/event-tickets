@@ -11,14 +11,13 @@ namespace TEC\Tickets\Seating\Admin;
 
 use TEC\Common\Contracts\Container;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Common\StellarWP\Assets\Asset;
+use TEC\Common\Asset;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Admin;
 use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Ajax_Methods;
-use TEC\Tickets\Seating\Built_Assets;
 use TEC\Tickets\Seating\Commerce\Controller;
 use TEC\Tickets\Seating\Logging;
 use TEC\Tickets\Seating\Meta;
@@ -40,7 +39,6 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
  */
 class Ajax extends Controller_Contract {
 	use Ajax_Methods;
-	use Built_Assets;
 	use Logging;
 
 	/**
@@ -96,6 +94,15 @@ class Ajax extends Controller_Contract {
 	 * @var string
 	 */
 	public const ACTION_DELETE_LAYOUT = 'tec_tickets_seating_service_delete_layout';
+
+	/**
+	 * The action to duplicate a layout.
+	 *
+	 * @since 5.17.0
+	 *
+	 * @var string
+	 */
+	public const ACTION_DUPLICATE_LAYOUT = 'tec_tickets_seating_service_duplicate_layout';
 
 	/**
 	 * The action to add a layout.
@@ -285,6 +292,7 @@ class Ajax extends Controller_Contract {
 		add_action( 'wp_ajax_' . self::ACTION_DELETE_MAP, [ $this, 'delete_map_from_service' ] );
 		add_action( 'wp_ajax_' . self::ACTION_DELETE_LAYOUT, [ $this, 'delete_layout_from_service' ] );
 		add_action( 'wp_ajax_' . self::ACTION_ADD_NEW_LAYOUT, [ $this, 'add_new_layout_to_service' ] );
+		add_action( 'wp_ajax_' . self::ACTION_DUPLICATE_LAYOUT, [ $this, 'duplicate_layout_in_service' ] );
 		add_action( 'wp_ajax_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
 		add_action( 'wp_ajax_nopriv_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
 		add_action( 'wp_ajax_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
@@ -318,6 +326,7 @@ class Ajax extends Controller_Contract {
 		remove_action( 'wp_ajax_' . self::ACTION_DELETE_MAP, [ $this, 'delete_map_from_service' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_DELETE_LAYOUT, [ $this, 'delete_layout_from_service' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_ADD_NEW_LAYOUT, [ $this, 'add_new_layout_to_service' ] );
+		remove_action( 'wp_ajax_' . self::ACTION_DUPLICATE_LAYOUT, [ $this, 'duplicate_layout_in_service' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
 		remove_action( 'wp_ajax_nopriv_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
@@ -350,6 +359,7 @@ class Ajax extends Controller_Contract {
 			'ACTION_DELETE_MAP'                           => self::ACTION_DELETE_MAP,
 			'ACTION_DELETE_LAYOUT'                        => self::ACTION_DELETE_LAYOUT,
 			'ACTION_ADD_NEW_LAYOUT'                       => self::ACTION_ADD_NEW_LAYOUT,
+			'ACTION_DUPLICATE_LAYOUT'                     => self::ACTION_DUPLICATE_LAYOUT,
 			'ACTION_POST_RESERVATIONS'                    => self::ACTION_POST_RESERVATIONS,
 			'ACTION_CLEAR_RESERVATIONS'                   => self::ACTION_CLEAR_RESERVATIONS,
 			'ACTION_DELETE_RESERVATIONS'                  => self::ACTION_DELETE_RESERVATIONS,
@@ -372,9 +382,10 @@ class Ajax extends Controller_Contract {
 	private function register_assets(): void {
 		Asset::add(
 			'tec-tickets-seating-ajax',
-			$this->built_asset_url( 'ajax.js' ),
+			'ajax.js',
 			Tickets_Main::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
 			->add_localize_script( 'tec.tickets.seating.ajax', [ $this, 'get_ajax_data' ] )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
@@ -563,6 +574,51 @@ class Ajax extends Controller_Contract {
 		}
 
 		wp_send_json_error( [ 'error' => __( 'Failed to Add new layout.', 'event-tickets' ) ], 500 );
+	}
+
+	/**
+	 * Duplicates a layout in the service.
+	 *
+	 * @since 5.17.0
+	 *
+	 * @return void The function does not return a value but will send the JSON response.
+	 */
+	public function duplicate_layout_in_service(): void {
+		if ( ! $this->check_current_ajax_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$layout_id = (string) tribe_get_request_var( 'layoutId' );
+
+		if ( empty( $layout_id ) ) {
+			wp_send_json_error(
+				[
+					'error' => __( 'No layout ID provided for duplication', 'event-tickets' ),
+				],
+				400
+			);
+
+			return;
+		}
+
+		$duplicated_layout_id = $this->layouts->duplicate_layout( $layout_id );
+
+		if ( empty( $duplicated_layout_id ) ) {
+			wp_send_json_error( [ 'error' => __( 'Failed to duplicate layout.', 'event-tickets' ) ], 500 );
+			return;
+		}
+
+		$edit_url = add_query_arg(
+			[
+				'page'     => Admin::get_menu_slug(),
+				'tab'      => Layout_Edit::get_id(),
+				'layoutId' => $duplicated_layout_id,
+				'isNew'    => 1,
+			],
+			admin_url( 'admin.php' )
+		);
+
+		wp_send_json_success( $edit_url );
 	}
 
 	/**

@@ -59,3 +59,9 @@ lang/*.po
 
 .vscode
 *.code-workspace
+
+# GitHub Actions
+DOCKER_ENV
+docker_tag
+output.log
+Dockerfile-php-build
