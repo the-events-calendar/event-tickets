@@ -55,7 +55,7 @@ class Coupons extends Base_API {
 	 *
 	 * @since TBD
 	 *
-	 * @param Container $container The DI container.
+	 * @param Container           $container The DI container.
 	 * @param ?Coupons_Repository $repository The coupons repository.
 	 */
 	public function __construct( Container $container, ?Coupons_Repository $repository = null ) {
