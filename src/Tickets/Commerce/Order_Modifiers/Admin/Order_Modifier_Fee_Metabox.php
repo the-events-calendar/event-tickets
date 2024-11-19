@@ -227,13 +227,16 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 		// Merge the automatic fee IDs into the ticket_order_modifier_fees array.
 		$ticket_order_modifier_fees = array_merge( $raw_data['ticket_order_modifier_fees'], $automatic_fee_ids );
 
-		$fee_ids = [];
-		// Ensure IDs are integers.
-		foreach ( $ticket_order_modifier_fees as $item ) {
-			if ( is_object( $item ) && property_exists( $item, 'id' ) ) {
-				$fee_ids[] = absint( $item->id );
-			}
-		}
+		$fee_ids = array_map(
+			function ( $fee ) {
+				if ( $fee instanceof stdClass ) {
+					return (int) $fee->id;
+				} else {
+					return (int) $fee;
+				}
+			},
+			$ticket_order_modifier_fees
+		);
 
 		// Sync the relationships between the selected fees and the ticket.
 		$this->manager->sync_modifier_relationships( $fee_ids, [ $ticket->ID ] );
