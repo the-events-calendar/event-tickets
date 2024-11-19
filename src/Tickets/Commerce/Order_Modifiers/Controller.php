@@ -53,8 +53,10 @@ final class Controller extends Controller_Contract {
 		$this->container->get( Agnostic_Checkout_Fees::class )->unregister();
 		$this->container->get( Fees::class )->unregister();
 		$this->container->get( Tables::class )->unregister();
+		$this->container->get( Editor::class )->unregister();
+		$this->container->get( Localization::class )->unregister();
 
-		if ( $this->container->isBound( Coupons::class ) ) {
+	if ( $this->container->isBound( Coupons::class ) ) {
 			$this->container->get( Coupons::class )->unregister();
 		}
 	}
@@ -72,8 +74,10 @@ final class Controller extends Controller_Contract {
 		$this->container->register( Paypal_Checkout_Fees::class );
 		$this->container->register( Stripe_Checkout_Fees::class );
 		$this->container->register( Agnostic_Checkout_Fees::class );
-		$this->container->register( Fees::class );
+		$this->container->singleton( Fees::class );
 		$this->container->register( Tables::class );
+		$this->container->register( Editor::class );
+		$this->container->register( Localization::class );
 
 		/**
 		 * Filters whether the coupons are enabled.

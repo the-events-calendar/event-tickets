@@ -12,8 +12,6 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
 
-use TEC\Tickets\Registerable;
-
 /**
  * Class Fees
  *
@@ -23,7 +21,7 @@ use TEC\Tickets\Registerable;
  *
  * @since TBD
  */
-class Fees extends Abstract_Fees implements Registerable {
+class Fees extends Abstract_Fees {
 
 	/**
 	 * Registers the necessary hooks for adding and managing fees during the checkout process.
@@ -34,7 +32,7 @@ class Fees extends Abstract_Fees implements Registerable {
 	 *
 	 * @since TBD
 	 */
-	public function register(): void {
+	public function do_register(): void {
 		// Hook for calculating total values, setting subtotal, and modifying the total value.
 		add_filter(
 			'tec_tickets_commerce_get_cart_total_value',

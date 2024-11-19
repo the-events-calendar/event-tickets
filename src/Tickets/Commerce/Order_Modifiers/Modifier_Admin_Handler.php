@@ -10,10 +10,10 @@
 namespace TEC\Tickets\Commerce\Order_Modifiers;
 
 use InvalidArgumentException;
-use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Controller;
+use TEC\Tickets\Commerce\Order_Modifiers\Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
-use TEC\Tickets\Registerable;
+use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
@@ -23,7 +23,7 @@ use Tribe__Tickets__Main as Tickets_Plugin;
  *
  * @since TBD
  */
-class Modifier_Admin_Handler implements Registerable {
+class Modifier_Admin_Handler extends Controller_Contract {
 
 	use Valid_Types;
 
@@ -68,16 +68,31 @@ class Modifier_Admin_Handler implements Registerable {
 	}
 
 	/**
+	 * Un-registers hooks and actions.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function unregister():void {
+		remove_action( 'admin_menu', [ $this, 'add_tec_tickets_order_modifiers_page' ], 15 );
+		remove_action( 'admin_init', [ $this, 'handle_delete_modifier' ] );
+		remove_action( 'admin_init', [ $this, 'handle_form_submission' ] );
+
+		remove_action( 'admin_notices', [ $this, 'handle_notices' ] );
+	}
+
+	/**
 	 * Register hooks and actions.
 	 *
 	 * @since TBD
 	 *
 	 * @return void
 	 */
-	public function register(): void {
-		add_action( 'admin_menu', fn() => $this->add_tec_tickets_order_modifiers_page(), 15 );
-		add_action( 'admin_init', fn() => $this->handle_delete_modifier() );
-		add_action( 'admin_init', fn() => $this->handle_form_submission() );
+	public function do_register(): void {
+		add_action( 'admin_menu', [ $this, 'add_tec_tickets_order_modifiers_page' ], 15 );
+		add_action( 'admin_init', [ $this, 'handle_delete_modifier' ] );
+		add_action( 'admin_init', [ $this, 'handle_form_submission' ] );
 
 		add_action( 'admin_notices', [ $this, 'handle_notices' ] );
 
@@ -151,7 +166,7 @@ class Modifier_Admin_Handler implements Registerable {
 	 *
 	 * @since TBD
 	 */
-	protected function add_tec_tickets_order_modifiers_page(): void {
+	public function add_tec_tickets_order_modifiers_page(): void {
 		$admin_pages = tribe( 'admin.pages' );
 
 		$admin_pages->register_page(
@@ -286,7 +301,7 @@ class Modifier_Admin_Handler implements Registerable {
 	 *
 	 * @return void
 	 */
-	protected function handle_form_submission(): void {
+	public function handle_form_submission(): void {
 		// Check if the form was submitted and verify nonce.
 
 		if ( empty( tec_get_request_var( 'order_modifier_form_save' ) ) || ! check_admin_referer( 'order_modifier_save_action', 'order_modifier_save_action' ) ) {
@@ -426,7 +441,7 @@ class Modifier_Admin_Handler implements Registerable {
 	 *
 	 * @return void
 	 */
-	protected function handle_delete_modifier(): void {
+	public function handle_delete_modifier(): void {
 		// Check if the action is 'delete_modifier' and nonce is set.
 		$action        = tribe_get_request_var( 'action', '' );
 		$modifier_id   = absint( tribe_get_request_var( 'modifier_id', '' ) );
@@ -466,53 +481,5 @@ class Modifier_Admin_Handler implements Registerable {
 		// Redirect to the original page to avoid resubmitting the form upon refresh.
 		wp_safe_redirect( $redirect_url );
 		exit;
-	}
-
-	/**
-	 * Retrieves the callback for adding the Event Tickets Order Modifiers page.
-	 *
-	 * @since TBD
-	 *
-	 * @return callable The callback for adding the Order Modifiers page.
-	 */
-	protected function get_admin_menu_action(): callable {
-		static $callback = null;
-		if ( null === $callback ) {
-			$callback = fn() => $this->add_tec_tickets_order_modifiers_page();
-		}
-
-		return $callback;
-	}
-
-	/**
-	 * Retrieves the callback for handling the deletion of a modifier.
-	 *
-	 * @since TBD
-	 *
-	 * @return callable The callback for handling the deletion of a modifier.
-	 */
-	protected function get_delete_modifier_action(): callable {
-		static $callback = null;
-		if ( null === $callback ) {
-			$callback = fn() => $this->handle_delete_modifier();
-		}
-
-		return $callback;
-	}
-
-	/**
-	 * Retrieves the callback for handling the form submission.
-	 *
-	 * @since TBD
-	 *
-	 * @return callable The callback for handling the form submission.
-	 */
-	protected function get_form_submission_action(): callable {
-		static $callback = null;
-		if ( null === $callback ) {
-			$callback = fn() => $this->handle_form_submission();
-		}
-
-		return $callback;
 	}
 }

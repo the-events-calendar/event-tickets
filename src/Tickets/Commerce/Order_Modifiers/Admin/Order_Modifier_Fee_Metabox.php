@@ -14,17 +14,18 @@
 namespace TEC\Tickets\Commerce\Order_Modifiers\Admin;
 
 use stdClass;
-use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Controller;
+use TEC\Tickets\Commerce\Order_Modifiers\Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Factory;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Fee_Types;
-use TEC\Tickets\Registerable;
 use Tribe__Tickets__Admin__Views as Admin_Views;
 use Tribe__Tickets__Main as Main;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
 use TEC\Tickets\Commerce\Module;
+use TEC\Common\Contracts\Container;
+use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 
 /**
  * Class Order_Modifier_Fee_Metabox
@@ -35,7 +36,7 @@ use TEC\Tickets\Commerce\Module;
  *
  * @since TBD
  */
-class Order_Modifier_Fee_Metabox implements Registerable {
+class Order_Modifier_Fee_Metabox extends Controller_Contract {
 
 	use Fee_Types;
 
@@ -76,9 +77,10 @@ class Order_Modifier_Fee_Metabox implements Registerable {
 	 *
 	 * @since TBD
 	 */
-	public function __construct() {
+	public function __construct( Container $container, Controller $controller ) {
+		parent::__construct( $container );
 		// Set up the modifier strategy and manager for handling fees.
-		$this->modifier_strategy = tribe( Controller::class )->get_modifier( $this->modifier_type );
+		$this->modifier_strategy = $controller->get_modifier( $this->modifier_type );
 		$this->manager           = new Modifier_Manager( $this->modifier_strategy );
 
 		// Set up the order modifiers repository for accessing fee data.
@@ -94,7 +96,7 @@ class Order_Modifier_Fee_Metabox implements Registerable {
 	 *
 	 * @since TBD
 	 */
-	public function register(): void {
+	public function do_register(): void {
 		add_action( 'tribe_events_tickets_metabox_edit_main', [ $this, 'add_fee_section' ], 30, 2 );
 		add_action( 'tec_tickets_commerce_after_save_ticket', $this->get_after_save_ticket_callback(), 10, 3 );
 		add_action( 'tec_tickets_commerce_ticket_deleted', [ $this, 'delete_ticket_fee' ] );

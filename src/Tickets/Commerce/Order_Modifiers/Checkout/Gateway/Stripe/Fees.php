@@ -15,7 +15,6 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Abstract_Fees;
-use TEC\Tickets\Registerable;
 use WP_Post;
 
 /**
@@ -27,7 +26,7 @@ use WP_Post;
  *
  * @since TBD
  */
-class Fees extends Abstract_Fees implements Registerable {
+class Fees extends Abstract_Fees {
 
 	/**
 	 * Registers the necessary hooks for adding and managing fees in Stripe checkout.
@@ -37,7 +36,7 @@ class Fees extends Abstract_Fees implements Registerable {
 	 *
 	 * @since TBD
 	 */
-	public function register(): void {
+	public function do_register(): void {
 		// Hook for appending fees to the cart for Stripe processing.
 		add_filter(
 			'tec_tickets_commerce_create_order_from_cart_items',

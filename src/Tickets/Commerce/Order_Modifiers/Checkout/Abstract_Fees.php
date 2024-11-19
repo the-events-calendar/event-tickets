@@ -11,8 +11,9 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
 
+use TEC\Common\Contracts\Container;
 use TEC\Tickets\Commerce\Utils\Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Controller;
+use TEC\Tickets\Commerce\Order_Modifiers\Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Fees as Fee_Repository;
@@ -20,6 +21,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationshi
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Currency_Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
 use Tribe__Template as Template;
+use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 
 /**
  * Class Fees
@@ -28,7 +30,7 @@ use Tribe__Template as Template;
  *
  * @since TBD
  */
-abstract class Abstract_Fees {
+abstract class Abstract_Fees extends Controller_Contract{
 
 	/**
 	 * The modifier type used for fees.
@@ -96,19 +98,27 @@ abstract class Abstract_Fees {
 	/**
 	 * Constructor
 	 */
-	public function __construct() {
-		$this->modifier_strategy                       = tribe( Controller::class )->get_modifier( $this->modifier_type );
+	public function __construct( Container $container, Controller $controller, Fee_Repository $fee_repository, Order_Modifier_Relationship $order_modifier_relationship ) {
+		parent::__construct( $container );
+		$this->modifier_strategy                       = $controller->get_modifier( $this->modifier_type );
 		$this->manager                                 = new Modifier_Manager( $this->modifier_strategy );
-		$this->order_modifiers_repository              = new Fee_Repository();
-		$this->order_modifiers_relationship_repository = new Order_Modifier_Relationship();
+		$this->order_modifiers_repository              = $fee_repository;
+		$this->order_modifiers_relationship_repository = $order_modifier_relationship;
 	}
+
+	/**
+	 * Un-registers the necessary hooks for adding fees to the checkout process.
+	 *
+	 * @since TBD
+	 */
+	abstract public function unregister() : void;
 
 	/**
 	 * Registers the necessary hooks for adding fees to the checkout process.
 	 *
 	 * @since TBD
 	 */
-	abstract public function register();
+	abstract public function do_register() : void;
 
 	/**
 	 * Calculates the fees and modifies the total value in the checkout process.
