@@ -56,8 +56,8 @@ class Orders_Test extends WPTestCase {
 		$this->relationship_repository ??= new Relationship_Repository();
 		$this->stripe_fees               = tribe( Container::class )->get( Stripe_Fees::class );
 		$this->paypal_fees               = tribe( Container::class )->get( PayPal_Fees::class );
-		$this->stripe_fees->reset_fees_and_subtotal();
-		$this->paypal_fees->reset_fees_and_subtotal();
+		Stripe_Fees::reset_fees_and_subtotal_static();
+		PayPal_Fees::reset_fees_and_subtotal_static();
 	}
 
 	/**
@@ -65,8 +65,8 @@ class Orders_Test extends WPTestCase {
 	 * @return void
 	 */
 	public function breakdown() {
-		$this->stripe_fees->reset_fees_and_subtotal();
-		$this->paypal_fees->reset_fees_and_subtotal();
+		Stripe_Fees::reset_fees_and_subtotal_static();
+		PayPal_Fees::reset_fees_and_subtotal_static();
 	}
 
 	/**
