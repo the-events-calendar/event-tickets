@@ -10,7 +10,6 @@ namespace TEC\Tickets\Commerce;
 
 use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\Gateways;
-use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier;
 use Tribe__Tickets__Main as Tickets_Plugin;
 
 

@@ -11,7 +11,6 @@ namespace TEC\Tickets;
 
 use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\Custom_Tables\V1\Provider as ET_CT1_Provider;
-use TEC\Tickets\Commerce\Order_Modifiers\Controller as Order_Modifiers_Controller;
 use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
@@ -100,9 +99,6 @@ class Provider extends Service_Provider {
 
 		// Seating.
 		$this->container->register( Seating\Controller::class );
-
-		// Order Modifiers.
-		$this->container->register( Order_Modifiers_Controller::class );
 
 		$this->has_registered = true;
 
