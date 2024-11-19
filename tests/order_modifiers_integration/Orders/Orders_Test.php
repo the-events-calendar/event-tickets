@@ -3,25 +3,25 @@
 namespace TEC\Tickets\Commerce\Order_Modifiers;
 
 use Codeception\TestCase\WPTestCase;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Common\Contracts\Container;
 use TEC\Tickets\Commerce\Cart\Unmanaged_Cart;
-use TEC\Tickets\Commerce\Gateways\Stripe\Gateway as StripeGateway;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway as PayPalGateway;
+use TEC\Tickets\Commerce\Gateways\Stripe\Gateway as StripeGateway;
+use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal\Fees as PayPal_Fees;
+use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe\Fees as Stripe_Fees;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Fee;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Meta;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Relationships as Relationships_Model;
-use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta as Repository;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship as Relationship_Repository;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta as Repository;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Float_Value;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
-use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe\Fees as Stripe_Fees;
-use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal\Fees as PayPal_Fees;
 use WP_Post;
-use TEC\Common\Contracts\Container;
+use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 
 class Orders_Test extends WPTestCase {
 	use Ticket_Maker;
@@ -56,6 +56,8 @@ class Orders_Test extends WPTestCase {
 		$this->relationship_repository ??= new Relationship_Repository();
 		$this->stripe_fees               = tribe( Container::class )->get( Stripe_Fees::class );
 		$this->paypal_fees               = tribe( Container::class )->get( PayPal_Fees::class );
+		$this->stripe_fees->reset_fees_and_subtotal();
+		$this->paypal_fees->reset_fees_and_subtotal();
 	}
 
 	/**
