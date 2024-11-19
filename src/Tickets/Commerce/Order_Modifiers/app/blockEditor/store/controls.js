@@ -32,6 +32,10 @@ export async function fetchFeesFromAPI() {
 	const feesAutomatic = 'object' === typeof json?.automatic_fees ? Object.values( json.automatic_fees ) : [];
 	const feesAvailable = 'object' === typeof json?.selectable_fees ? Object.values( json.selectable_fees ) : [];
 
+	// Ensure the ids are integers.
+	feesAutomatic.forEach( ( fee ) => fee.id = parseInt( fee.id ) );
+	feesAvailable.forEach( ( fee ) => fee.id = parseInt( fee.id ) );
+
 	return {
 		feesAutomatic: feesAutomatic,
 		feesAvailable: feesAvailable,
