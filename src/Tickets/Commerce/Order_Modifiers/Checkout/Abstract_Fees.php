@@ -111,14 +111,14 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 *
 	 * @since TBD
 	 */
-	abstract public function unregister() : void;
+	abstract public function unregister(): void;
 
 	/**
 	 * Registers the necessary hooks for adding fees to the checkout process.
 	 *
 	 * @since TBD
 	 */
-	abstract public function do_register() : void;
+	abstract public function do_register(): void;
 
 	/**
 	 * Calculates the fees and modifies the total value in the checkout process.

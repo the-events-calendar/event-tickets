@@ -74,7 +74,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	public function unregister():void {
+	public function unregister(): void {
 		remove_action( 'admin_menu', [ $this, 'add_tec_tickets_order_modifiers_page' ], 15 );
 		remove_action( 'admin_init', [ $this, 'handle_delete_modifier' ] );
 		remove_action( 'admin_init', [ $this, 'handle_form_submission' ] );
