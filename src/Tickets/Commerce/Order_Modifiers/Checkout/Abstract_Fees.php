@@ -326,6 +326,7 @@ abstract class Abstract_Fees {
 				'display_name' => $fee['display_name'],
 				'ticket_id'    => '0',
 				'event_id'     => '0',
+				'quantity'     => 1,
 			];
 
 			// Add the fee ID to the tracking array.
