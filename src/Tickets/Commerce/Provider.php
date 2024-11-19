@@ -10,6 +10,7 @@ namespace TEC\Tickets\Commerce;
 
 use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\Gateways;
+use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier;
 use Tribe__Tickets__Main as Tickets_Plugin;
 
 
@@ -89,6 +90,9 @@ class Provider extends Service_Provider {
 		$this->container->register( Admin\Notices::class );
 
 		$this->container->register( Admin\Singular_Order_Page::class );
+
+		// Register Order modifiers main controller.
+		$this->container->register( Order_Modifiers\Controller::class );;
 
 		$this->container->register_on_action(
 			'tec_events_pro_custom_tables_v1_fully_activated',
