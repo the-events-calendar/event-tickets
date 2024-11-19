@@ -8,6 +8,7 @@ import { select, dispatch } from '@wordpress/data';
  */
 import Fees from "./fees";
 import { storeName } from './store';
+import { currentProviderSupportsFees } from './store/compatibility';
 
 /**
  * Filters the body details of the ticket to add the seating details.
@@ -37,6 +38,11 @@ export const filterSetBodyDetails = ( body, clientId ) => {
  * @return {Array} The filtered ticket container items.
  */
 export const filterTicketContainerItems = ( items, clientId ) => {
+	// Don't add fees if the provider doesn't support them.
+	if ( ! currentProviderSupportsFees() ) {
+		return items;
+	}
+
 	// @todo: put this in the correct place in the array of items.
 	items.push( <Fees clientId={ clientId }/> );
 

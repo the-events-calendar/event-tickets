@@ -6,13 +6,10 @@ import { createReduxStore, register } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import { getTicketIdFromCommonStore } from './common-store-bridge';
-import { defaultState } from './default-state';
 import { controls } from './controls';
 import { actions } from './actions';
 import { reducer } from './reducer';
 import { selectors } from './selectors';
-import { localizedData } from './localized-data';
 
 const storeName = 'tec-tickets-fees';
 
