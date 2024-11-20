@@ -10,6 +10,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { setTicketHasChangesInCommonStore } from '../store/common-store-bridge';
 import mapFeeToItem from './map-fee-to-item';
 
 // The name of the store for fees.
@@ -88,6 +89,7 @@ function FeesSection( props ) {
 				[ feeId ]: isChecked,
 			} );
 
+			setTicketHasChangesInCommonStore( clientId );
 		},
 		[ clientId, checkedFees ]
 	);
