@@ -2,67 +2,18 @@
  * External dependencies
  */
 import classNames from 'classnames';
-import { Checkbox, LabeledItem, } from '@moderntribe/common/elements';
+import { LabeledItem, } from '@moderntribe/common/elements';
 import { useSelect, useDispatch, } from '@wordpress/data';
 import { useCallback, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
+/**
+ * Internal dependencies
+ */
+import mapFeeToItem from './map-fee-to-item';
+
 // The name of the store for fees.
 const storeName = 'tec-tickets-fees';
-
-/**
- * @typedef {Object} Fee
- * @property {int} id
- * @property {string} display_name
- * @property {string} raw_amount
- * @property {string} status
- * @property {string} sub_type
- * @property {string} meta_value
- */
-
-/**
- * Maps a fee to a checkbox item.
- *
- * @param {Fee} fee The fee object to map.
- * @param {boolean} isDisabled Whether the fee is disabled.
- * @param {function} onChange The change handler for the fee.
- * @param {boolean} isChecked Whether the fee is checked.
- * @param {string} clientId The client ID of the ticket.
- * @return {JSX.Element|null} The checkbox item, or null if the fee is not active.
- */
-const mapFeeToItem = ( { fee, isDisabled, onChange, isChecked, clientId } ) => {
-	// We shouldn't have these here, but just in case skip anything not active.
-	if ( fee.status !== 'active' ) {
-		return null;
-	}
-
-	// Todo: the precision should be determined by settings.
-	const amount = Number.parseFloat( fee.raw_amount ).toFixed( 2 );
-
-	let feeLabel;
-	if ( fee.sub_type === 'percent' ) {
-		feeLabel = `${ fee.display_name } (${ amount }%)`;
-	} else {
-		feeLabel = `${ fee.display_name } ($${ amount })`;
-	}
-
-	const classes = [ 'tribe-editor__ticket__fee-checkbox' ];
-	const name = `tec-ticket-fee-${ fee.id }-${ clientId }`;
-
-	return (
-		<Checkbox
-			checked={ isChecked }
-			className={ classNames( classes ) }
-			disabled={ isDisabled }
-			id={ name }
-			label={ feeLabel }
-			onChange={ onChange }
-			name={ name }
-			value={ fee.id }
-			key={ fee.id }
-		/>
-	);
-};
 
 /**
  * The fees section component for the ticket editor.
@@ -115,8 +66,6 @@ function FeesSection( props ) {
 
 	const [ checkedFees, setCheckedFees ] = useState( feeIdSelectedMap );
 	const { addFeeToTicket, removeFeeFromTicket } = useDispatch( storeName );
-
-	console.log( checkedFees );
 
 	/**
 	 * Handles the change event for the selected fees.
