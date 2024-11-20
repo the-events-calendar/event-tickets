@@ -325,7 +325,7 @@ class Fees extends Base_API {
 			$fee_string = (string) $ticket_data['fees']['selected_fees'];
 			$fees       = explode( ',', $fee_string );
 			$fee_ids    = array_map( 'absint', $fees );
-			$fee_ids    = array_filter( $fee_ids );
+			$fee_ids    = array_unique( array_filter( $fee_ids ) );
 
 			// Update the fees for the ticket.
 			$this->update_fees_for_ticket( $ticket_id, $fee_ids );
