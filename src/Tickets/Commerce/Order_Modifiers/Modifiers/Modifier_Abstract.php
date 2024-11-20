@@ -436,9 +436,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return string The page slug, or empty if not applicable.
 	 */
 	public function get_page_slug() {
-		// @todo redscar - Does this logic make sense? Should we alter this?
-		$modifier_settings = new Modifier_Admin_Handler();
-		return $modifier_settings->get_page_slug();
+		return Modifier_Admin_Handler::get_page_slug();
 	}
 
 	/**

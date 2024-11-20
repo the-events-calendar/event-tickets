@@ -103,8 +103,9 @@ $modifier_statuses = [
 					<label for="order_modifier_amount">
 						<?php esc_html_e( 'Amount', 'event-tickets' ); ?>
 					</label>
-					<input type="text" name="order_modifier_amount" id="order_modifier_amount" class="tribe-field tec_order_modifier_amount_field"
+					<input type="number" name="order_modifier_amount" id="order_modifier_amount" class="tribe-field tec_order_modifier_amount_field"
 						maxlength="9"
+						step="0.01"
 						data-validation-required="true"
 						data-validation-is-greater-than="0"
 						data-validation-error="<?php echo esc_attr( $get_validation_error_attr( __( 'Amount', 'event-tickets' ) ) ); ?>"
