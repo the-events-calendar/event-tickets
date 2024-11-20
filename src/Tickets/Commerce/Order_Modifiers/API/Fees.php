@@ -74,17 +74,6 @@ class Fees extends Base_API {
 	 * @return void The method does not return any value.
 	 */
 	protected function register_additional_hooks(): void {
-		/**
-		 * Filter whether the fee data is added to the ticket API response.
-		 *
-		 * @since TBD
-		 *
-		 * @param bool $add_fees_to_ticket_data Whether to add the fee data to the ticket data. Default true.
-		 */
-		if ( ! apply_filters( 'tec_tickets_commerce_add_fees_to_ticket_data', true ) ) {
-			return;
-		}
-
 		add_filter(
 			'tec_tickets_commerce_rest_ticket_archive_data',
 			[ $this, 'add_fees_to_ticket_data' ],
