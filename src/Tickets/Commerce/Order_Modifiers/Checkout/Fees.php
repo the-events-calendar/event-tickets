@@ -36,7 +36,7 @@ class Fees extends Abstract_Fees {
 		// Hook for calculating total values, setting subtotal, and modifying the total value.
 		add_filter(
 			'tec_tickets_commerce_get_cart_total_value',
-			$this->get_calculate_fees_callback(),
+			[ $this, 'calculate_fees' ],
 			10,
 			3
 		);
@@ -44,7 +44,7 @@ class Fees extends Abstract_Fees {
 		// Hook for displaying fees in the checkout.
 		add_action(
 			'tec_tickets_commerce_checkout_cart_before_footer_quantity',
-			$this->get_footer_quantity_callback(),
+			[ $this, 'display_fee_section' ],
 			30,
 			3
 		);
@@ -60,45 +60,13 @@ class Fees extends Abstract_Fees {
 	public function unregister(): void {
 		remove_filter(
 			'tec_tickets_commerce_get_cart_total_value',
-			$this->get_calculate_fees_callback()
+			[ $this, 'calculate_fees' ]
 		);
 
 		remove_action(
 			'tec_tickets_commerce_checkout_cart_before_footer_quantity',
-			$this->get_footer_quantity_callback(),
+			[ $this, 'display_fee_section' ],
 			30
 		);
-	}
-
-	/**
-	 * Get the callback for calculating fees.
-	 *
-	 * @since TBD
-	 *
-	 * @return callable The callback for calculating fees.
-	 */
-	protected function get_calculate_fees_callback(): callable {
-		static $callback = null;
-		if ( null === $callback ) {
-			$callback = fn( $values, $items, $subtotal ) => $this->calculate_fees( $values, $items, $subtotal );
-		}
-
-		return $callback;
-	}
-
-	/**
-	 * Get the callback for displaying the fee section in the checkout.
-	 *
-	 * @since TBD
-	 *
-	 * @return callable The callback for displaying the fee section in the checkout.
-	 */
-	protected function get_footer_quantity_callback(): callable {
-		static $callback = null;
-		if ( null === $callback ) {
-			$callback = fn( $post, $items, $template ) => $this->display_fee_section( $items, $template );
-		}
-
-		return $callback;
 	}
 }
