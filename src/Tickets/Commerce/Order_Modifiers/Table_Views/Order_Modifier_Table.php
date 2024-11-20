@@ -305,7 +305,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 */
 	public function render_title(): void {
 		// Get the display name of the current modifier type.
-		$modifier = tribe( Controller::class )->get_modifier_display_name( $this->modifier->get_modifier_type() );
+		$modifier = Controller::get_modifier_display_name( $this->modifier->get_modifier_type() );
 
 		// Create the URL for the "Add New" button.
 		$add_new_url = add_query_arg(

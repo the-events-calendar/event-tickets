@@ -35,7 +35,7 @@ final class Controller extends Controller_Contract {
 	use Valid_Types;
 
 	/**
-	 * Unregisters the Controller by unsubscribing from WordPress hooks.
+	 * Un-registers the Controller by unsubscribing from WordPress hooks.
 	 *
 	 * Bound implementations should not be removed in this method!
 	 *
