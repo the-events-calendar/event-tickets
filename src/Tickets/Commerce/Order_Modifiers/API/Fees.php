@@ -10,6 +10,7 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Commerce\Order_Modifiers\API;
 
 use Exception;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee_Modifier_Manager as Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship as Relationships;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Fees as Fee_Repository;
@@ -19,6 +20,8 @@ use TEC\Common\Contracts\Container;
 use WP_REST_Request as Request;
 use WP_REST_Response as Response;
 use WP_REST_Server as Server;
+use Tribe__Tickets__Tickets as Tickets;
+use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Relationships as Relationship_Model;
 
 /**
  * Class Fees
@@ -76,29 +79,29 @@ class Fees extends Base_API {
 		 *
 		 * @since TBD
 		 *
-		 * @param bool $add_fees_to_ticket_data Whether to add the fee data to the ticket data. Default false.
+		 * @param bool $add_fees_to_ticket_data Whether to add the fee data to the ticket data. Default true.
 		 */
-		if ( ! apply_filters( 'tec_tickets_commerce_add_fees_to_ticket_data', false ) ) {
+		if ( ! apply_filters( 'tec_tickets_commerce_add_fees_to_ticket_data', true ) ) {
 			return;
 		}
 
 		add_filter(
-			'tribe_rest_single_ticket_data',
-			$this->get_single_ticket_data_callback(),
-			20,
+			'tec_tickets_commerce_rest_ticket_archive_data',
+			[ $this, 'add_fees_to_ticket_data' ],
+			10,
 			2
 		);
 
 		add_filter(
-			'tec_tickets_commerce_rest_ticket_archive_data',
-			$this->get_tickets_archive_data_callback(),
-			10,
+			'tribe_rest_single_ticket_data',
+			[ $this, 'add_fees_to_ticket_data' ],
+			20,
 			2
 		);
 
 		add_action(
 			'tribe_tickets_ticket_added',
-			$this->get_after_ticket_added_callback(),
+			[ $this, 'save_fees_for_ticket' ],
 			10,
 			3
 		);
@@ -113,19 +116,19 @@ class Fees extends Base_API {
 	 */
 	protected function unregister_additional_hooks(): void {
 		remove_filter(
-			'tribe_rest_single_ticket_data',
-			$this->get_single_ticket_data_callback(),
-			20
+			'tec_tickets_commerce_rest_ticket_archive_data',
+			[ $this, 'add_fees_to_ticket_data' ]
 		);
 
 		remove_filter(
-			'tec_tickets_commerce_rest_ticket_archive_data',
-			$this->get_tickets_archive_data_callback()
+			'tribe_rest_single_ticket_data',
+			[ $this, 'add_fees_to_ticket_data' ],
+			20
 		);
 
 		remove_action(
 			'tribe_tickets_ticket_added',
-			$this->get_after_ticket_added_callback()
+			[ $this, 'save_fees_for_ticket' ]
 		);
 	}
 
@@ -256,6 +259,44 @@ class Fees extends Base_API {
 	}
 
 	/**
+	 * Get the selected fees for a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket ID.
+	 *
+	 * @return array[Relationship_Model] The selected fees for the ticket.
+	 */
+	public function get_selected_fees_for_ticket( int $ticket_id ) {
+		return $this->get_fees_for_ticket( $ticket_id )['selected_fees'];
+	}
+
+	/**
+	 * Get the selected fees for a post by ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post ID.
+	 *
+	 * @return array<int, array> The selected fees for the post by ticket.
+	 */
+	public function get_selected_fees_for_post_by_ticket( int $post_id ) {
+		$provider = Tickets::get_event_ticket_provider( $post_id );
+
+		if ( Module::class !== $provider ) {
+			return [];
+		}
+
+		$fees_for_post_by_ticket = [];
+
+		foreach ( tribe_tickets()->where( 'event', $post_id )->get_ids( true ) as $ticket_id ) {
+			$fees_for_post_by_ticket[ $ticket_id ] = $this->get_selected_fees_for_ticket( $ticket_id );
+		}
+
+		return $fees_for_post_by_ticket;
+	}
+
+	/**
 	 * Add fees to the ticket data.
 	 *
 	 * @since TBD
@@ -265,7 +306,7 @@ class Fees extends Base_API {
 	 *
 	 * @return array The ticket data with fees.
 	 */
-	protected function add_fees_to_ticket_data( array $data, Request $request ): array {
+	public function add_fees_to_ticket_data( array $data, Request $request ): array {
 		// Only add fees to the default ticket type.
 		if ( array_key_exists( 'type', $data ) && 'default' !== $data['type'] ) {
 			return $data;
@@ -313,19 +354,20 @@ class Fees extends Base_API {
 	 *
 	 * @since TBD
 	 *
+	 * @param int   $post_id     The post ID.
 	 * @param int   $ticket_id   The ticket ID.
 	 * @param array $ticket_data The ticket data.
 	 *
 	 * @return void
 	 */
-	protected function save_fees_for_ticket( $ticket_id, $ticket_data ) {
-		if ( ! isset( $ticket_data['fees']['selected_fees'] ) ) {
+	public function save_fees_for_ticket( $post_id, $ticket_id, $ticket_data ) {
+		if ( ! isset( $ticket_data['tribe-ticket']['fees']['selected_fees'] ) ) {
 			return;
 		}
 
 		try {
 			// Map the comma-separated string of fees to an array of integers.
-			$fee_string = (string) $ticket_data['fees']['selected_fees'];
+			$fee_string = (string) $ticket_data['tribe-ticket']['fees']['selected_fees'];
 			$fees       = explode( ',', $fee_string );
 			$fee_ids    = array_map( 'absint', $fees );
 			$fee_ids    = array_unique( array_filter( $fee_ids ) );
@@ -376,61 +418,5 @@ class Fees extends Base_API {
 
 		$this->manager->delete_relationships_by_post( $ticket_id );
 		$this->manager->sync_modifier_relationships( $fee_ids, [ $ticket_id ] );
-	}
-
-	/**
-	 * Get the callback for adding fees to the ticket data.
-	 *
-	 * @since TBD
-	 *
-	 * @return callable The callback for adding fees to the ticket data.
-	 */
-	protected function get_single_ticket_data_callback(): callable {
-		static $callback = null;
-		if ( null === $callback ) {
-			$callback = fn( array $data, Request $request ) => $this->add_fees_to_ticket_data( $data, $request );
-		}
-
-		return $callback;
-	}
-
-	/**
-	 * Get the callback for adding fees to the ticket data archive.
-	 *
-	 * @since TBD
-	 *
-	 * @return callable The callback for adding fees to the ticket data archive.
-	 */
-	protected function get_tickets_archive_data_callback(): callable {
-		static $callback = null;
-		if ( null === $callback ) {
-			$callback = function ( array $tickets, Request $request ) {
-				foreach ( $tickets as $key => $ticket ) {
-					$tickets[ $key ] = $this->add_fees_to_ticket_data( $ticket, $request );
-				}
-
-				return $tickets;
-			};
-		}
-
-		return $callback;
-	}
-
-	/**
-	 * Get the callback to run after saving a ticket.
-	 *
-	 * @since TBD
-	 *
-	 * @return callable The callback to run after saving a ticket.
-	 */
-	protected function get_after_ticket_added_callback(): callable {
-		static $callback = null;
-		if ( null === $callback ) {
-			$callback = function ( $post_id, $ticket_id, $ticket_data ) {
-				$this->save_fees_for_ticket( $ticket_id, $ticket_data['tribe-ticket'] ?? [] );
-			};
-		}
-
-		return $callback;
 	}
 }

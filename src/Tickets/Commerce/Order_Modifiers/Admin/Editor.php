@@ -14,6 +14,8 @@ use TEC\Common\Contracts\Container;
 use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Asset_Build;
 use Tribe__Tickets__Main as Tickets;
+use Tribe__Main as Common;
+use TEC\Tickets\Commerce\Order_Modifiers\API\Fees;
 
 /**
  * Class Editor
@@ -59,6 +61,23 @@ class Editor extends Controller_Contract {
 	}
 
 	/**
+	 * Returns the store data used to hydrate the store in Block Editor context.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{
+	 *     selectedFeesByPostId: array<int, string>,
+	 * }
+	 */
+	public function get_store_data(): array {
+		$post_id = Common::post_id_helper();
+
+		return [
+			'selectedFeesByPostId' => tribe( Fees::class )->get_selected_fees_for_post_by_ticket( $post_id ),
+		];
+	}
+
+	/**
 	 * Registers the block editor assets.
 	 *
 	 * @since TBD
@@ -77,6 +96,7 @@ class Editor extends Controller_Contract {
 				'react-dom',
 				'tec-tickets-order-modifiers-rest-localization',
 			)
+			->add_localize_script( 'tec.tickets.orderModifiers.blockEditor', [ $this, 'get_store_data' ] )
 			->enqueue_on( 'enqueue_block_editor_assets' )
 			->register();
 	}
