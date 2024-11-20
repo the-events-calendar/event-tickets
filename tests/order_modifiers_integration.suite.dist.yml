@@ -14,7 +14,7 @@ modules:
       tablePrefix: test_
       domain: %WP_DOMAIN%
       adminEmail: admin@%WP_DOMAIN%
-      title: 'Event Tickets SLR Tests'
+      title: 'Event Tickets Order Modifier Tests'
       plugins:
         - the-events-calendar/the-events-calendar.php
         - event-tickets/event-tickets.php
