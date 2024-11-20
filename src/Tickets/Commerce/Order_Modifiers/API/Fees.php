@@ -259,19 +259,6 @@ class Fees extends Base_API {
 	}
 
 	/**
-	 * Get the selected fees for a ticket.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $ticket_id The ticket ID.
-	 *
-	 * @return array[Relationship_Model] The selected fees for the ticket.
-	 */
-	public function get_selected_fees_for_ticket( int $ticket_id ) {
-		return $this->get_fees_for_ticket( $ticket_id )['selected_fees'];
-	}
-
-	/**
 	 * Get the selected fees for a post by ticket.
 	 *
 	 * @since TBD
@@ -290,7 +277,7 @@ class Fees extends Base_API {
 		$fees_for_post_by_ticket = [];
 
 		foreach ( tribe_tickets()->where( 'event', $post_id )->get_ids( true ) as $ticket_id ) {
-			$fees_for_post_by_ticket[ $ticket_id ] = $this->get_selected_fees_for_ticket( $ticket_id );
+			$fees_for_post_by_ticket[ $ticket_id ] = $this->get_selected_fees( $ticket_id );
 		}
 
 		return $fees_for_post_by_ticket;
