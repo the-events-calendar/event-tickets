@@ -113,8 +113,10 @@ function FeesSection( props ) {
 		feeIdSelectedMap[ feeId ] = true;
 	} );
 
-	const [ state, setState ] = useState( feeIdSelectedMap );
+	const [ checkedFees, setCheckedFees ] = useState( feeIdSelectedMap );
 	const { addFeeToTicket, removeFeeFromTicket } = useDispatch( storeName );
+
+	console.log( checkedFees );
 
 	/**
 	 * Handles the change event for the selected fees.
@@ -124,7 +126,7 @@ function FeesSection( props ) {
 	const onSelectedFeesChange = useCallback(
 		( event ) => {
 			const feeId = Number.parseInt( event.target.value );
-			const isChecked = ! state[ feeId ];
+			const isChecked = ! checkedFees[ feeId ];
 
 			if ( isChecked ) {
 				addFeeToTicket( clientId, feeId );
@@ -132,13 +134,13 @@ function FeesSection( props ) {
 				removeFeeFromTicket( clientId, feeId );
 			}
 
-			setState( {
-				...state,
+			setCheckedFees( {
+				...checkedFees,
 				[ feeId ]: isChecked,
 			} );
 
 		},
-		[ clientId, state ]
+		[ clientId, checkedFees ]
 	);
 
 	const hasItemsToDisplay = feesAutomatic.length > 0 || feesAvailable.length > 0;
@@ -170,7 +172,7 @@ function FeesSection( props ) {
 					feesAvailable.map( ( fee ) => mapFeeToItem( {
 						isDisabled: false,
 						onChange: onSelectedFeesChange,
-						isChecked: state?.[ fee.id ] || false,
+						isChecked: checkedFees[fee.id],
 						fee: fee,
 						clientId: clientId,
 					} ) )

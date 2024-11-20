@@ -10,6 +10,7 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Commerce\Order_Modifiers\API;
 
 use Exception;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager as Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship as Relationships;
@@ -19,6 +20,8 @@ use WP_Error;
 use WP_REST_Request as Request;
 use WP_REST_Response as Response;
 use WP_REST_Server as Server;
+use Tribe__Tickets__Tickets as Tickets;
+use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Relationships as Relationship_Model;
 
 /**
  * Class Fees
@@ -95,10 +98,12 @@ class Fees extends Base_API {
 
 		add_action(
 			'tribe_tickets_ticket_added',
-			$this->get_after_ticket_added_callback(),
+			[ $this, 'save_fees_for_ticket' ],
 			10,
 			3
 		);
+
+		add_action( 'tribe_tickets_ticket_added', [ $this, 'save_ticket_seat_type' ], 10, 3 );
 	}
 
 	/**
@@ -122,7 +127,7 @@ class Fees extends Base_API {
 
 		remove_action(
 			'tribe_tickets_ticket_added',
-			$this->get_after_ticket_added_callback()
+			[ $this, 'save_fees_for_ticket' ]
 		);
 	}
 
@@ -257,6 +262,44 @@ class Fees extends Base_API {
 	}
 
 	/**
+	 * Get the selected fees for a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket ID.
+	 *
+	 * @return array[Relationship_Model] The selected fees for the ticket.
+	 */
+	public function get_selected_fees_for_ticket( int $ticket_id ) {
+		return $this->get_fees_for_ticket( $ticket_id )['selected_fees'];
+	}
+
+	/**
+	 * Get the selected fees for a post by ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post ID.
+	 *
+	 * @return array<int, array> The selected fees for the post by ticket.
+	 */
+	public function get_selected_fees_for_post_by_ticket( int $post_id ) {
+		$provider = Tickets::get_event_ticket_provider( $post_id );
+
+		if ( Module::class !== $provider ) {
+			return [];
+		}
+
+		$fees_for_post_by_ticket = [];
+
+		foreach ( tribe_tickets()->where( 'event', $post_id )->get_ids( true ) as $ticket_id ) {
+			$fees_for_post_by_ticket[ $ticket_id ] = array_map( static fn ( $modifier_model ) => $modifier_model->to_array()['modifier_id'], $this->get_selected_fees_for_ticket( $ticket_id ) );
+		}
+
+		return $fees_for_post_by_ticket;
+	}
+
+	/**
 	 * Add fees to the ticket data.
 	 *
 	 * @since TBD
@@ -314,12 +357,13 @@ class Fees extends Base_API {
 	 *
 	 * @since TBD
 	 *
+	 * @param int   $post_id     The post ID.
 	 * @param int   $ticket_id   The ticket ID.
 	 * @param array $ticket_data The ticket data.
 	 *
 	 * @return void
 	 */
-	protected function save_fees_for_ticket( $ticket_id, $ticket_data ) {
+	public function save_fees_for_ticket( $post_id, $ticket_id, $ticket_data ) {
 		if ( ! isset( $ticket_data['fees']['selected_fees'] ) ) {
 			return;
 		}
@@ -411,24 +455,6 @@ class Fees extends Base_API {
 				}
 
 				return $tickets;
-			};
-		}
-
-		return $callback;
-	}
-
-	/**
-	 * Get the callback to run after saving a ticket.
-	 *
-	 * @since TBD
-	 *
-	 * @return callable The callback to run after saving a ticket.
-	 */
-	protected function get_after_ticket_added_callback(): callable {
-		static $callback = null;
-		if ( null === $callback ) {
-			$callback = function ( $post_id, $ticket_id, $ticket_data ) {
-				$this->save_fees_for_ticket( $ticket_id, $ticket_data['tribe-ticket'] ?? [] );
 			};
 		}
 
