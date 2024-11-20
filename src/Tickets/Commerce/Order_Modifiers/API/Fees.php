@@ -81,7 +81,7 @@ class Fees extends Base_API {
 		 *
 		 * @param bool $add_fees_to_ticket_data Whether to add the fee data to the ticket data. Default false.
 		 */
-		if ( ! apply_filters( 'tec_tickets_commerce_add_fees_to_ticket_data', false ) ) {
+		if ( ! apply_filters( 'tec_tickets_commerce_add_fees_to_ticket_data', true ) ) {
 			return;
 		}
 
@@ -105,8 +105,6 @@ class Fees extends Base_API {
 			10,
 			3
 		);
-
-		add_action( 'tribe_tickets_ticket_added', [ $this, 'save_ticket_seat_type' ], 10, 3 );
 	}
 
 	/**
@@ -292,7 +290,7 @@ class Fees extends Base_API {
 		$fees_for_post_by_ticket = [];
 
 		foreach ( tribe_tickets()->where( 'event', $post_id )->get_ids( true ) as $ticket_id ) {
-			$fees_for_post_by_ticket[ $ticket_id ] = array_map( static fn ( $modifier_model ) => $modifier_model->to_array()['modifier_id'], $this->get_selected_fees_for_ticket( $ticket_id ) );
+			$fees_for_post_by_ticket[ $ticket_id ] = $this->get_selected_fees_for_ticket( $ticket_id );
 		}
 
 		return $fees_for_post_by_ticket;
@@ -363,13 +361,13 @@ class Fees extends Base_API {
 	 * @return void
 	 */
 	public function save_fees_for_ticket( $post_id, $ticket_id, $ticket_data ) {
-		if ( ! isset( $ticket_data['fees']['selected_fees'] ) ) {
+		if ( ! isset( $ticket_data['tribe-ticket']['fees']['selected_fees'] ) ) {
 			return;
 		}
 
 		try {
 			// Map the comma-separated string of fees to an array of integers.
-			$fee_string = (string) $ticket_data['fees']['selected_fees'];
+			$fee_string = (string) $ticket_data['tribe-ticket']['fees']['selected_fees'];
 			$fees       = explode( ',', $fee_string );
 			$fee_ids    = array_map( 'absint', $fees );
 			$fee_ids    = array_unique( array_filter( $fee_ids ) );
