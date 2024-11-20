@@ -38,7 +38,7 @@ $classes = [
 	<?php
 
 	// Trigger an action before the footer quantity.
-	do_action( 'tec_tickets_commerce_checkout_cart_before_footer_quantity', $post, $items, $this );
+	do_action( 'tec_tickets_commerce_checkout_cart_before_footer_quantity', is_numeric( $post ) ? get_post( $post ) : $post, $items, $this );
 
 	// Do the footer templates.
 	$this->template( 'checkout/cart/footer/quantity' );

@@ -79,9 +79,9 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 * This represents the total amount used as a basis for calculating applicable fees.
 	 *
 	 * @since TBD
-	 * @var Value
+	 * @var null|Value
 	 */
-	protected Value $subtotal;
+	protected ?Value $subtotal = null;
 
 	/**
 	 * Tracks whether the fees have already been appended to the cart.
@@ -166,6 +166,10 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 * @param Template $template The template object for rendering.
 	 */
 	public function display_fee_section( WP_Post $post, array $items, Template $template ): void {
+		if ( ! $this->subtotal ) {
+			return;
+		}
+
 		// Fetch the combined fees for the items in the cart.
 		$combined_fees = $this->get_combined_fees_for_items( $items );
 
