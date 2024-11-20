@@ -4,7 +4,6 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Orders;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Common\Contracts\Container;
-use TEC\Tickets\Commerce\Cart\Unmanaged_Cart;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway as PayPalGateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\Gateway as StripeGateway;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal\Fees as PayPal_Fees;
@@ -31,9 +30,6 @@ class Orders_Test extends WPTestCase {
 	use SnapshotAssertions;
 	use Order_Maker;
 
-	/** @var ?Unmanaged_Cart */
-	protected ?Unmanaged_Cart $cart;
-
 	/** @var ?Repository */
 	protected ?Repository $repository;
 
@@ -50,12 +46,20 @@ class Orders_Test extends WPTestCase {
 	 * @before
 	 */
 	public function set_up() {
-		$this->cart ??= new Unmanaged_Cart();
-		$this->cart->clear();
 		$this->repository              = tribe( tribe( Repository::class ) );
 		$this->relationship_repository = tribe( Relationship_Repository::class );
-		$this->stripe_fees             = tribe( Container::class )->get( Stripe_Fees::class );
-		$this->paypal_fees             = tribe( Container::class )->get( PayPal_Fees::class );
+		tribe()->register( Stripe_Fees::class );
+		tribe()->register( PayPal_Fees::class );
+		$this->stripe_fees = tribe( Container::class )->get( Stripe_Fees::class );
+		$this->paypal_fees = tribe( Container::class )->get( PayPal_Fees::class );
+	}
+
+	/**
+	 * @after
+	 */
+	public function breakdown() {
+		tribe( Container::class )->get( Stripe_Fees::class )->unregister();
+		tribe( Container::class )->get( PayPal_Fees::class )->unregister();
 	}
 
 	/**
