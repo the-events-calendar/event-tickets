@@ -363,4 +363,17 @@ abstract class Abstract_Fees extends Controller_Contract {
 
 		return $callback;
 	}
+
+	/**
+	 * Resets the fees state and recalculates the subtotal to zero.
+	 *
+	 * This method clears the flag indicating that fees have been appended
+	 * and resets the subtotal to its default value of zero.
+	 *
+	 * @return void
+	 */
+	public function reset_fees_and_subtotal(): void {
+		self::$fees_appended = false;
+		$this->subtotal      = Value::create( 0 );
+	}
 }

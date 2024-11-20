@@ -3,14 +3,17 @@
 namespace TEC\Tickets\Commerce\Order_Modifiers\Orders;
 
 use Codeception\TestCase\WPTestCase;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Common\Contracts\Container;
 use TEC\Tickets\Commerce\Cart\Unmanaged_Cart;
+use TEC\Tickets\Commerce\Gateways\PayPal\Gateway as PayPalGateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\Gateway as StripeGateway;
+use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal\Fees as PayPal_Fees;
+use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe\Fees as Stripe_Fees;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Fee;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Meta;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Relationships as Relationships_Model;
-use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta as Repository;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship as Relationship_Repository;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta as Repository;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Float_Value;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
@@ -18,6 +21,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use WP_Post;
+use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 
 class Orders_Test extends WPTestCase {
 	use Ticket_Maker;
@@ -33,29 +37,78 @@ class Orders_Test extends WPTestCase {
 	/** @var ?Repository */
 	protected ?Repository $repository;
 
+	/** @var ?Relationship_Repository */
 	protected ?Relationship_Repository $relationship_repository;
+
+	/** @var Stripe_Fees */
+	protected Stripe_Fees $stripe_fees;
+
+	/** @var PayPal_Fees */
+	protected PayPal_Fees $paypal_fees;
 
 	/**
 	 * @before
 	 */
 	public function set_up() {
-		$this->cart = $this->cart ?? new Unmanaged_Cart();
+		$this->cart ??= new Unmanaged_Cart();
 		$this->cart->clear();
-		$this->repository              = $this->repository ?? new Repository();
-		$this->relationship_repository = $this->relationship_repository ?? new Relationship_Repository();
+		$this->repository              = tribe( tribe( Repository::class ) );
+		$this->relationship_repository = tribe( Relationship_Repository::class );
+		$this->stripe_fees             = tribe( Container::class )->get( Stripe_Fees::class );
+		$this->paypal_fees             = tribe( Container::class )->get( PayPal_Fees::class );
 	}
 
 	/**
 	 * @test
 	 * @dataProvider order_totals_data_provider
-	 * Ensures the order totals are calculated correctly for tickets and fees.
+	 * Ensures the order totals are calculated correctly for tickets and fees using the Stripe gateway.
 	 */
-	public function it_calculates_order_totals_with_various_inputs(
+	public function it_calculates_order_totals_with_stripe_gateway(
 		Float_Value $ticket_price,
 		Float_Value $fee_raw_amount,
 		string $fee_application,
 		Float_Value $expected_total,
 		Float_Value $expected_subtotal
+	): void {
+		$this->stripe_fees->reset_fees_and_subtotal();
+		$this->run_order_totals_test( $ticket_price, $fee_raw_amount, $fee_application, $expected_total, $expected_subtotal, StripeGateway::class );
+	}
+
+	/**
+	 * @test
+	 * @dataProvider order_totals_data_provider
+	 * Ensures the order totals are calculated correctly for tickets and fees using the PayPal gateway.
+	 */
+	public function it_calculates_order_totals_with_paypal_gateway(
+		Float_Value $ticket_price,
+		Float_Value $fee_raw_amount,
+		string $fee_application,
+		Float_Value $expected_total,
+		Float_Value $expected_subtotal
+	): void {
+		$this->paypal_fees->reset_fees_and_subtotal();
+		$this->run_order_totals_test( $ticket_price, $fee_raw_amount, $fee_application, $expected_total, $expected_subtotal, PayPalGateway::class );
+	}
+
+	/**
+	 * Runs the order totals test for a given gateway.
+	 *
+	 * @param Float_Value $ticket_price
+	 * @param Float_Value $fee_raw_amount
+	 * @param string      $fee_application
+	 * @param Float_Value $expected_total
+	 * @param Float_Value $expected_subtotal
+	 * @param string      $gateway_class
+	 *
+	 * @return void
+	 */
+	protected function run_order_totals_test(
+		Float_Value $ticket_price,
+		Float_Value $fee_raw_amount,
+		string $fee_application,
+		Float_Value $expected_total,
+		Float_Value $expected_subtotal,
+		string $gateway_class
 	): void {
 		// Create an event post.
 		$event_id = self::factory()->post->create(
@@ -68,22 +121,22 @@ class Orders_Test extends WPTestCase {
 		$fee = $this->create_fee( [ 'raw_amount' => $fee_raw_amount ] );
 		$this->set_fee_application( $fee, $fee_application );
 
+		// Create a ticket for the event with the specified price.
+		$ticket = $this->create_tc_ticket( $event_id, $ticket_price->get() );
+
 		// Associate the fee with the event.
-		$this->relationship_repository->insert(
+		$model = $this->relationship_repository->insert(
 			new Relationships_Model(
 				[
 					'modifier_id' => $fee->id,
-					'post_id'     => $event_id,
+					'post_id'     => $ticket,
 					'post_type'   => 'post',
 				]
 			)
 		);
 
-		// Create a ticket for the event with the specified price.
-		$ticket = $this->create_tc_ticket( $event_id, $ticket_price->get() );
-
-		// Set up overrides with the Stripe gateway.
-		$overrides['gateway'] = tribe( StripeGateway::class );
+		// Set up overrides with the specified gateway.
+		$overrides['gateway'] = tribe( $gateway_class );
 
 		// Create an order with 1 ticket.
 		$order = $this->create_order( [ $ticket => 1 ], $overrides );
@@ -185,7 +238,7 @@ class Orders_Test extends WPTestCase {
 				[
 					'order_modifier_id' => $fee->id,
 					'meta_key'          => 'fee_applied_to',
-					'meta_value'        => $applied_to,
+					'meta_value'        => $applied_to, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 					'priority'          => 0,
 				]
 			)
