@@ -243,16 +243,12 @@ class Fees extends Base_API {
 	 * @return array The fees for the ticket.
 	 */
 	protected function get_fees_for_ticket( int $ticket_id ) {
-		$all_fees    = $this->get_all_fees();
-		$ticket_fees = $this->relationships->find_by_post_id( $ticket_id );
-		$ticket_fees ??= [];
-
-		$automatic_fees = $this->get_automatic_fees( $all_fees );
+		$all_fees = $this->get_all_fees();
 
 		return [
 			'available_fees' => $this->get_selectable_fees( $all_fees ),
-			'selected_fees'  => $ticket_fees,
-			'automatic_fees' => $automatic_fees,
+			'automatic_fees' => $this->get_automatic_fees( $all_fees ),
+			'selected_fees'  => $this->get_selected_fees( $ticket_id ),
 		];
 	}
 
