@@ -26,6 +26,3 @@ DB::query( "ALTER TABLE $wpdb->posts AUTO_INCREMENT = 5096" );
 
 // Disconnect Promoter to avoid license-related notices.
 remove_action( 'tribe_tickets_promoter_trigger', [ tribe( Dispatcher::class ), 'trigger' ] );
-
-//forcing debug on for tests.
-$_SERVER['argv'][] = '--debug';

@@ -56,8 +56,6 @@ class Orders_Test extends WPTestCase {
 		$this->relationship_repository = tribe( Relationship_Repository::class );
 		$this->stripe_fees             = tribe( Container::class )->get( Stripe_Fees::class );
 		$this->paypal_fees             = tribe( Container::class )->get( PayPal_Fees::class );
-		$this->stripe_fees->reset_fees_and_subtotal();
-		$this->paypal_fees->reset_fees_and_subtotal();
 	}
 
 	/**
@@ -72,6 +70,7 @@ class Orders_Test extends WPTestCase {
 		Float_Value $expected_total,
 		Float_Value $expected_subtotal
 	): void {
+		$this->stripe_fees->reset_fees_and_subtotal();
 		$this->run_order_totals_test( $ticket_price, $fee_raw_amount, $fee_application, $expected_total, $expected_subtotal, StripeGateway::class );
 	}
 
@@ -87,6 +86,7 @@ class Orders_Test extends WPTestCase {
 		Float_Value $expected_total,
 		Float_Value $expected_subtotal
 	): void {
+		$this->paypal_fees->reset_fees_and_subtotal();
 		$this->run_order_totals_test( $ticket_price, $fee_raw_amount, $fee_application, $expected_total, $expected_subtotal, PayPalGateway::class );
 	}
 
