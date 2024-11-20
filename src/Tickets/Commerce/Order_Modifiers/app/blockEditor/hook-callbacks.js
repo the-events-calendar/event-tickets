@@ -55,3 +55,34 @@ export const filterTicketContainerItems = ( items, clientId ) => {
 
 	return items;
 }
+
+/**
+ * Sets the fees for the ticket.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ * @param {object} ticket   The ticket object.
+ */
+export const setFeesForTicket = ( clientId, ticket ) => {
+	// Get the fees from the ticket object.
+	const { fees } = ticket;
+	if ( ! fees ) {
+		return;
+	}
+
+	const feesSelected = fees?.selected_fees || [];
+
+	dispatch( storeName ).setTicketFees( clientId, feesSelected );
+}
+
+/**
+ * Updates the fees for the ticket.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ */
+export const updateFeesForTicket = ( clientId ) => {
+	dispatch( storeName ).setFeesByPostId( clientId );
+}
