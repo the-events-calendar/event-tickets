@@ -38,7 +38,7 @@ class Fees extends Abstract_Fees {
 		// Hook for appending fees to the cart for PayPal processing.
 		add_filter(
 			'tec_tickets_commerce_create_order_from_cart_items',
-			$this->get_fee_append_callback(),
+			[ $this, 'append_fees_to_cart' ],
 			10,
 			2
 		);
@@ -46,7 +46,7 @@ class Fees extends Abstract_Fees {
 		// Hook for adding fee unit data to PayPal order.
 		add_action(
 			'tec_commerce_paypal_order_get_unit_data_fee',
-			$this->get_fee_unit_data_paypal_callback(),
+			[ $this, 'add_fee_unit_data_to_paypal' ],
 			10,
 			2
 		);
@@ -62,12 +62,12 @@ class Fees extends Abstract_Fees {
 	public function unregister(): void {
 		remove_filter(
 			'tec_tickets_commerce_create_order_from_cart_items',
-			$this->get_fee_append_callback()
+			[ $this, 'append_fees_to_cart' ],
 		);
 
 		remove_action(
 			'tec_commerce_paypal_order_get_unit_data_fee',
-			$this->get_fee_unit_data_paypal_callback()
+			[ $this, 'add_fee_unit_data_to_paypal' ],
 		);
 	}
 
@@ -85,7 +85,7 @@ class Fees extends Abstract_Fees {
 	 *
 	 * @return array The structured unit data for the fee item to be sent to PayPal.
 	 */
-	protected function add_fee_unit_data_to_paypal( array $item, WP_Post $order ) {
+	public function add_fee_unit_data_to_paypal( array $item, WP_Post $order ) {
 		return [
 			'name'        => $item['display_name'],
 			'unit_amount' => [
@@ -100,21 +100,5 @@ class Fees extends Abstract_Fees {
 			],
 			'sku'         => "fee-{$item['fee_id']}",
 		];
-	}
-
-	/**
-	 * Get the callback for adding fee unit data to PayPal orders.
-	 *
-	 * @since TBD
-	 *
-	 * @return callable The callback for adding fee unit data to PayPal orders.
-	 */
-	protected function get_fee_unit_data_paypal_callback(): callable {
-		static $callback = null;
-		if ( null === $callback ) {
-			$callback = fn( $item, $order ) => $this->add_fee_unit_data_to_paypal( $item, $order );
-		}
-
-		return $callback;
 	}
 }

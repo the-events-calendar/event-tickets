@@ -295,7 +295,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 *
 	 * @return array Updated list of items with fees added.
 	 */
-	protected function append_fees_to_cart( array $items, Value $subtotal ) {
+	public function append_fees_to_cart( array $items, Value $subtotal ) {
 		if ( self::$fees_appended ) {
 			return $items;
 		}
@@ -346,22 +346,6 @@ abstract class Abstract_Fees extends Controller_Contract {
 		self::$fees_appended = true;
 
 		return $items;
-	}
-
-	/**
-	 * Get the callback for appending fees to the cart.
-	 *
-	 * @since TBD
-	 *
-	 * @return callable The callback for appending fees to the cart.
-	 */
-	protected function get_fee_append_callback(): callable {
-		static $callback = null;
-		if ( null === $callback ) {
-			$callback = fn( $items, $subtotal ) => $this->append_fees_to_cart( $items, $subtotal );
-		}
-
-		return $callback;
 	}
 
 	/**
