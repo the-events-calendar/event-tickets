@@ -543,7 +543,6 @@ export function* fetchTicket( action ) {
 			 * Fires after the ticket has been fetched.
 			 *
 			 * @since TBD
-			 *
 			 * @param {string} clientId The ticket's client ID.
 			 * @param {Object} ticket The ticket object.
 			 * @param {Object} details The ticket details.

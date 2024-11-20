@@ -13,15 +13,12 @@
  * @since TBD
  */
 
-(function ( $, tribe_dropdowns ) {
-	'use strict';
-
+( function( $ ) {
 	/**
 	 * Initializes the Select2 dropdown for ticket order modifier fees.
 	 * Ensures the dropdown is initialized only if it exists and hasn't already been initialized.
 	 *
 	 * @since TBD
-	 *
 	 * @return void
 	 */
 	const initFeesDropdown = () => {
@@ -41,7 +38,7 @@
 	document.addEventListener( 'DOMContentLoaded',
 		() => {
 			initFeesDropdown();
-		}
+		},
 	);
 
 	/**
@@ -58,7 +55,7 @@
 					initFeesDropdown(); // Initialize the dropdown when added to the DOM.
 				}
 			}
-		}
+		},
 	);
 
 	/**
@@ -69,8 +66,6 @@
 	 */
 	observer.observe( document.body, {
 		childList: true,
-		subtree: true
-		}
-	);
-
-})( jQuery, window.tribe_dropdowns );
+		subtree: true,
+	} );
+} )( jQuery );
