@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\Tickets\Tests\Integration\Order_Modifiers\Fees\Checkout;
+namespace TEC\Tickets\Commerce\Order_Modifiers\Fees\Checkout;
 
 use Closure;
 use Codeception\TestCase\WPTestCase;
@@ -9,7 +9,7 @@ use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Module as Commerce;
 use TEC\Tickets\Commerce\Order;
-use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Controller;
+use TEC\Tickets\Commerce\Order_Modifiers\Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
 use Tribe\Tickets\Test\Commerce\Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;

@@ -4,6 +4,5 @@ export default {
 	...localizedData,
 	feesAvailable: [],
 	feesAutomatic: [],
-	selectedFeesByPostId: {},
 	selectedFeesByClientId: {},
 };

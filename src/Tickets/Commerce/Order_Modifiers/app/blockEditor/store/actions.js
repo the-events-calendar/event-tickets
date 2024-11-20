@@ -46,4 +46,11 @@ export const actions = {
 			type: 'FETCH_FEES_FROM_API',
 		};
 	},
+
+	setFeesByPostId( clientId ) {
+		return {
+			type: 'SET_SELECTED_FEES_BY_POST_ID',
+			clientId,
+		}
+	},
 };

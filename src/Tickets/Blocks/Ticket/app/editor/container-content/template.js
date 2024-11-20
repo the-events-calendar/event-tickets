@@ -30,22 +30,49 @@ import './style.pcss';
  * @return {*}
  */
 const getTicketContainerItems = ( clientId, hasTicketsPlus, hasIacVars ) => {
-	const items = [
-		<Title clientId={ clientId }/>,
-		<Description clientId={ clientId }/>,
-		<Price clientId={ clientId }/>,
-		<Type clientId={ clientId }/>,
-		<Capacity clientId={ clientId }/>,
-		<Duration clientId={ clientId }/>,
-		<AdvancedOptions clientId={ clientId }/>,
+	let items = [
+		{
+			item: <Title clientId={ clientId }/>,
+			key: 'title',
+		},
+		{
+			item: <Description clientId={ clientId }/>,
+			key: 'description',
+		},
+		{
+			item: <Price clientId={ clientId }/>,
+			key: 'price',
+		},
+		{
+			item: <Type clientId={ clientId }/>,
+			key: 'type',
+		},
+		{
+			item: <Capacity clientId={ clientId }/>,
+			key: 'capacity',
+		},
+		{
+			item: <Duration clientId={ clientId }/>,
+			key: 'duration',
+		},
+		{
+			item: <AdvancedOptions clientId={ clientId }/>,
+			key: 'advancedOptions',
+		},
 	];
 
 	if ( hasTicketsPlus && hasIacVars ) {
-		items.push( <AttendeeCollection clientId={ clientId }/> );
+		items.push( {
+			item: <AttendeeCollection clientId={ clientId }/>,
+			key: 'attendeeCollection',
+		} );
 	}
 
 	if ( hasTicketsPlus ) {
-		items.push( <AttendeesRegistration clientId={ clientId }/> );
+		items.push( {
+			item: <AttendeesRegistration clientId={ clientId }/>,
+			key: 'attendeesRegistration',
+		} );
 	}
 
 	/**
@@ -53,19 +80,21 @@ const getTicketContainerItems = ( clientId, hasTicketsPlus, hasIacVars ) => {
 	 *
 	 * @since TBD
 	 *
-	 * @param {Array}  items    The ticket container items.
-	 * @param {string} clientId The client ID.
+	 * @param {object[]} items    The ticket container items.
+	 * @param {string}   clientId The client ID.
 	 */
-	return Array.from( applyFilters(
+	items = applyFilters(
 		'tec.ticket.container.items',
 		items,
 		clientId,
-	) );
+	);
+
+	return items;
 }
 
 const TicketContainerContent = ( { clientId, hasTicketsPlus, hasIacVars } ) => (
 	<Fragment>
-		{ getTicketContainerItems( clientId, hasTicketsPlus, hasIacVars ).map( ( item ) => ( item ) ) }
+		{ getTicketContainerItems( clientId, hasTicketsPlus, hasIacVars ).map( ( item ) => ( item.item ) ) }
 	</Fragment>
 );
 

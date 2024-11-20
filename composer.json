@@ -77,7 +77,6 @@
   "autoload-dev": {
     "psr-4": {
       "TEC\\Tickets\\Flexible_Tickets\\Test\\": "tests/_support/Flexible_Tickets",
-      "TEC\\Tickets\\Tests\\Integration\\Order_Modifiers\\": "tests/integration/TEC/Tickets/Order_Modifiers",
       "TEC\\Tickets\\Tests\\Unit\\Order_Modifiers\\": "tests/wpunit/TEC/Tickets/Order_Modifiers",
       "Tribe\\Tests\\Modules\\Tickets\\": "tests/_support/Modules",
       "Tribe\\Tests\\Tickets\\": "tests/_support",

@@ -22,6 +22,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Values\Currency_Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
 use Tribe__Template as Template;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use WP_Post;
 
 /**
  * Class Fees
@@ -78,9 +79,9 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 * This represents the total amount used as a basis for calculating applicable fees.
 	 *
 	 * @since TBD
-	 * @var Value
+	 * @var null|Value
 	 */
-	protected Value $subtotal;
+	protected ?Value $subtotal = null;
 
 	/**
 	 * Tracks whether the fees have already been appended to the cart.
@@ -131,7 +132,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 *
 	 * @return array The updated total values, including the fees.
 	 */
-	protected function calculate_fees( array $values, array $items, Value $subtotal ): array {
+	public function calculate_fees( array $values, array $items, Value $subtotal ): array {
 		// Store the subtotal as a class property for later use, encapsulated as a Value object.
 		$this->subtotal = $subtotal;
 
@@ -160,10 +161,15 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
+	 * @param WP_Post  $post     The post object for the current event.
 	 * @param array    $items    The items in the cart.
 	 * @param Template $template The template object for rendering.
 	 */
-	protected function display_fee_section( array $items, Template $template ): void {
+	public function display_fee_section( WP_Post $post, array $items, Template $template ): void {
+		if ( ! $this->subtotal ) {
+			return;
+		}
+
 		// Fetch the combined fees for the items in the cart.
 		$combined_fees = $this->get_combined_fees_for_items( $items );
 
@@ -187,6 +193,10 @@ abstract class Abstract_Fees extends Controller_Contract {
 			},
 			$combined_fees
 		);
+
+		if ( empty( $combined_fees ) ) {
+			return;
+		}
 
 		// Pass the fees to the template for display.
 		$template->template(

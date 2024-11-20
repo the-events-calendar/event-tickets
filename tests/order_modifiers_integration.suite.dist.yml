@@ -2,7 +2,8 @@ actor: IntegrationTester
 bootstrap: _bootstrap.php
 modules:
   enabled:
-    - WPLoader
+    - \Helper\Integration
+    - WPLoader:
   config:
     WPLoader:
       wpRootFolder: %WP_ROOT_FOLDER%
@@ -13,10 +14,8 @@ modules:
       tablePrefix: test_
       domain: %WP_DOMAIN%
       adminEmail: admin@%WP_DOMAIN%
-      title: 'Event Tickets Tests'
+      title: 'Event Tickets SLR Tests'
       plugins:
         - the-events-calendar/the-events-calendar.php
         - event-tickets/event-tickets.php
-      activatePlugins:
-        - the-events-calendar/the-events-calendar.php
-        - event-tickets/event-tickets.php
+      theme: twentytwenty

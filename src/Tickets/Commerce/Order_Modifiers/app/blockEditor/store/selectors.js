@@ -19,8 +19,8 @@ export const selectors = {
 		const ticketPostId = getTicketIdFromCommonStore( clientId );
 
 		return (
-			state?.selectedFeesByPostId?.[ ticketPostId ] ||
 			state?.selectedFeesByClientId?.[ clientId ] ||
+			state?.selectedFeesByPostId?.[ ticketPostId ] ||
 			[]
 		);
 	},
