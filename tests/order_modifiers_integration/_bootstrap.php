@@ -4,6 +4,7 @@ use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Provider as Commerce_Provider;
 use Tribe\Tickets\Promoter\Triggers\Dispatcher;
 
+
 $tec_support = dirname( __DIR__, 3 ) . '/the-events-calendar/tests/_support';
 Codeception\Util\Autoload::addNamespace( 'Tribe\Events\Test', $tec_support );
 
@@ -16,6 +17,8 @@ tribe_register_provider( Commerce_Provider::class );
 $ticketable   = tribe_get_option( 'ticket-enabled-post-types', [] );
 $ticketable[] = 'post';
 tribe_update_option( 'ticket-enabled-post-types', array_values( array_unique( $ticketable ) ) );
+
+define( 'JSON_SNAPSHOT_OPTIONS', JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
 
 // Start the posts auto-increment from a high number to make it easier to replace the post IDs in HTML snapshots.
 global $wpdb;

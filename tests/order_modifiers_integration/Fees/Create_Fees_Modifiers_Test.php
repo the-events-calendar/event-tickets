@@ -1,10 +1,10 @@
 <?php
 
-namespace TEC\Tickets\Tests\Integration\Order_Modifiers\Fees;
+namespace TEC\Tickets\Commerce\Order_Modifiers\Fees;
 
-use TEC\Tickets\Tests\Integration\Order_Modifiers\Create_Order_Modifiers_Abstract;
+use Tribe\Tickets\Test\Testcases\Order_Modifiers_TestCase;
 
-class Create_Fees_Modifiers_Test extends Create_Order_Modifiers_Abstract {
+class Create_Fees_Modifiers_Test extends Order_Modifiers_TestCase {
 
 	/**
 	 * The type of order modifier being tested (fee).
