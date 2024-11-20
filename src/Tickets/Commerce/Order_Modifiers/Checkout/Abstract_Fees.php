@@ -376,13 +376,4 @@ abstract class Abstract_Fees extends Controller_Contract {
 		self::$fees_appended = false;
 		$this->subtotal      = Value::create( 0 );
 	}
-
-	/**
-	 * This method is a test to see if this is the issue in Github.
-	 * @todo - Maybe remove this?
-	 * @return void
-	 */
-	public static function reset_fees_and_subtotal_static(): void {
-		self::$fees_appended = false;
-	}
 }

@@ -52,21 +52,12 @@ class Orders_Test extends WPTestCase {
 	public function set_up() {
 		$this->cart ??= new Unmanaged_Cart();
 		$this->cart->clear();
-		$this->repository              ??= new Repository();
-		$this->relationship_repository ??= new Relationship_Repository();
-		$this->stripe_fees               = tribe( Container::class )->get( Stripe_Fees::class );
-		$this->paypal_fees               = tribe( Container::class )->get( PayPal_Fees::class );
-		Stripe_Fees::reset_fees_and_subtotal_static();
-		PayPal_Fees::reset_fees_and_subtotal_static();
-	}
-
-	/**
-	 * @after
-	 * @return void
-	 */
-	public function breakdown() {
-		Stripe_Fees::reset_fees_and_subtotal_static();
-		PayPal_Fees::reset_fees_and_subtotal_static();
+		$this->repository              = tribe( tribe( Repository::class ) );
+		$this->relationship_repository = tribe( Relationship_Repository::class );
+		$this->stripe_fees             = tribe( Container::class )->get( Stripe_Fees::class );
+		$this->paypal_fees             = tribe( Container::class )->get( PayPal_Fees::class );
+		$this->stripe_fees->reset_fees_and_subtotal();
+		$this->paypal_fees->reset_fees_and_subtotal();
 	}
 
 	/**
