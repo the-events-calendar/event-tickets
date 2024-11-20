@@ -15,6 +15,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use Tribe__Tickets__Main as Tickets_Plugin;
+use TEC\Common\StellarWP\Assets\Assets;
 
 /**
  * Class Modifier_Settings.
@@ -80,6 +81,8 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		remove_action( 'admin_init', [ $this, 'handle_form_submission' ] );
 
 		remove_action( 'admin_notices', [ $this, 'handle_notices' ] );
+
+		Assets::instance()->remove( 'tec-tickets-order-modifiers-table' );
 	}
 
 	/**
@@ -303,7 +306,6 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	 */
 	public function handle_form_submission(): void {
 		// Check if the form was submitted and verify nonce.
-
 		if ( empty( tec_get_request_var( 'order_modifier_form_save' ) ) || ! check_admin_referer( 'order_modifier_save_action', 'order_modifier_save_action' ) ) {
 			return;
 		}

@@ -44,14 +44,17 @@ final class Controller extends Controller_Contract {
 	 * @return void Filters and actions hooks added by the controller are be removed.
 	 */
 	public function unregister(): void {
-		$this->container->get( Modifier_Admin_Handler::class )->unregister();
-		$this->container->get( Order_Modifier_Fee_Metabox::class )->unregister();
 		$this->container->get( Paypal_Checkout_Fees::class )->unregister();
 		$this->container->get( Stripe_Checkout_Fees::class )->unregister();
 		$this->container->get( Agnostic_Checkout_Fees::class )->unregister();
 		$this->container->get( Tables::class )->unregister();
 		$this->container->get( Editor::class )->unregister();
 		$this->container->get( Localization::class )->unregister();
+
+		if ( is_admin() ) {
+			$this->container->get( Modifier_Admin_Handler::class )->unregister();
+			$this->container->get( Order_Modifier_Fee_Metabox::class )->unregister();
+		}
 
 		if ( $this->container->isBound( Coupons::class ) ) {
 			$this->container->get( Coupons::class )->unregister();
@@ -68,15 +71,18 @@ final class Controller extends Controller_Contract {
 	 * @return void The method does not return any value.
 	 */
 	public function do_register(): void {
-		$this->container->register( Modifier_Admin_Handler::class );
-		$this->container->register( Order_Modifier_Fee_Metabox::class );
+		$this->container->register( Tables::class );
 		$this->container->register( Paypal_Checkout_Fees::class );
 		$this->container->register( Stripe_Checkout_Fees::class );
 		$this->container->register( Agnostic_Checkout_Fees::class );
-		$this->container->register( Tables::class );
 		$this->container->register( Editor::class );
 		$this->container->register( Localization::class );
 		$this->container->register( Fees::class );
+
+		if ( is_admin() ) {
+			$this->container->register( Modifier_Admin_Handler::class );
+			$this->container->register( Order_Modifier_Fee_Metabox::class );
+		}
 
 		$this->container->singleton( Fee::class );
 
