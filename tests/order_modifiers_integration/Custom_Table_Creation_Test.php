@@ -1,6 +1,6 @@
 <?php
 
-namespace TTEC\Tickets\Tests\Integration\Order_Modifiers;
+namespace TEC\Tickets\Commerce\Order_Modifiers;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Common\StellarWP\DB\DB;

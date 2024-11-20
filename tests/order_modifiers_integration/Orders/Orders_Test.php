@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\Tickets\Commerce\Order_Modifiers;
+namespace TEC\Tickets\Commerce\Order_Modifiers\Orders;
 
 use Codeception\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;

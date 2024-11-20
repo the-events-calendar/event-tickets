@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\Tickets\Tests\Integration\Order_Modifiers;
+namespace Tribe\Tickets\Test\Testcases;
 
 use Codeception\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
@@ -10,7 +10,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Order_Modifier_Table;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Traits\Order_Modifiers;
 
-abstract class Create_Order_Modifiers_Abstract extends WPTestCase {
+abstract class Order_Modifiers_TestCase extends WPTestCase {
 	use Order_Modifiers;
 	use With_Uopz;
 	use SnapshotAssertions;
@@ -240,7 +240,7 @@ abstract class Create_Order_Modifiers_Abstract extends WPTestCase {
 	}
 
 	public function does_edit_form_display_properly_with_no_data() {
-		$modifier_admin_handler = new Modifier_Admin_Handler();
+		$modifier_admin_handler = tribe( Modifier_Admin_Handler::class );
 		$_POST                  = [
 			'modifier'    => $this->modifier_type,
 			'modifier_id' => 0,
@@ -261,7 +261,7 @@ abstract class Create_Order_Modifiers_Abstract extends WPTestCase {
 		$post_data['modifier_id'] = $inserted_modifier->id;
 
 		// Initialize the Modifier Admin Handler.
-		$modifier_admin_handler = new Modifier_Admin_Handler();
+		$modifier_admin_handler = tribe( Modifier_Admin_Handler::class );
 
 		// Set the $_POST data for the request.
 		$_POST = $post_data;
@@ -386,7 +386,7 @@ abstract class Create_Order_Modifiers_Abstract extends WPTestCase {
 			$this->upsert_order_modifier_for_test( $insert_data );
 		}
 
-		$modifier_admin_handler = new Modifier_Admin_Handler();
+		$modifier_admin_handler = tribe( Modifier_Admin_Handler::class );
 		$_POST = [
 			'modifier' => $this->modifier_type,
 		];
