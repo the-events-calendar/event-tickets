@@ -79,23 +79,23 @@ class Fees extends Base_API {
 		 *
 		 * @since TBD
 		 *
-		 * @param bool $add_fees_to_ticket_data Whether to add the fee data to the ticket data. Default false.
+		 * @param bool $add_fees_to_ticket_data Whether to add the fee data to the ticket data. Default true.
 		 */
 		if ( ! apply_filters( 'tec_tickets_commerce_add_fees_to_ticket_data', true ) ) {
 			return;
 		}
 
 		add_filter(
-			'tribe_rest_single_ticket_data',
-			$this->get_single_ticket_data_callback(),
-			20,
+			'tec_tickets_commerce_rest_ticket_archive_data',
+			[ $this, 'add_fees_to_ticket_data' ],
+			10,
 			2
 		);
 
 		add_filter(
-			'tec_tickets_commerce_rest_ticket_archive_data',
-			$this->get_tickets_archive_data_callback(),
-			10,
+			'tribe_rest_single_ticket_data',
+			[ $this, 'add_fees_to_ticket_data' ],
+			20,
 			2
 		);
 
@@ -116,14 +116,14 @@ class Fees extends Base_API {
 	 */
 	protected function unregister_additional_hooks(): void {
 		remove_filter(
-			'tribe_rest_single_ticket_data',
-			$this->get_single_ticket_data_callback(),
-			20
+			'tec_tickets_commerce_rest_ticket_archive_data',
+			[ $this, 'add_fees_to_ticket_data' ]
 		);
 
 		remove_filter(
-			'tec_tickets_commerce_rest_ticket_archive_data',
-			$this->get_tickets_archive_data_callback()
+			'tribe_rest_single_ticket_data',
+			[ $this, 'add_fees_to_ticket_data' ],
+			20
 		);
 
 		remove_action(
@@ -306,7 +306,7 @@ class Fees extends Base_API {
 	 *
 	 * @return array The ticket data with fees.
 	 */
-	protected function add_fees_to_ticket_data( array $data, Request $request ): array {
+	public function add_fees_to_ticket_data( array $data, Request $request ): array {
 		// Only add fees to the default ticket type.
 		if ( array_key_exists( 'type', $data ) && 'default' !== $data['type'] ) {
 			return $data;
@@ -418,43 +418,5 @@ class Fees extends Base_API {
 
 		$this->manager->delete_relationships_by_post( $ticket_id );
 		$this->manager->sync_modifier_relationships( $fee_ids, [ $ticket_id ] );
-	}
-
-	/**
-	 * Get the callback for adding fees to the ticket data.
-	 *
-	 * @since TBD
-	 *
-	 * @return callable The callback for adding fees to the ticket data.
-	 */
-	protected function get_single_ticket_data_callback(): callable {
-		static $callback = null;
-		if ( null === $callback ) {
-			$callback = fn( array $data, Request $request ) => $this->add_fees_to_ticket_data( $data, $request );
-		}
-
-		return $callback;
-	}
-
-	/**
-	 * Get the callback for adding fees to the ticket data archive.
-	 *
-	 * @since TBD
-	 *
-	 * @return callable The callback for adding fees to the ticket data archive.
-	 */
-	protected function get_tickets_archive_data_callback(): callable {
-		static $callback = null;
-		if ( null === $callback ) {
-			$callback = function ( array $tickets, Request $request ) {
-				foreach ( $tickets as $key => $ticket ) {
-					$tickets[ $key ] = $this->add_fees_to_ticket_data( $ticket, $request );
-				}
-
-				return $tickets;
-			};
-		}
-
-		return $callback;
 	}
 }
