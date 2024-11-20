@@ -93,22 +93,10 @@ class Order_Modifier_Relationships extends Abstract_Custom_Table {
 			return $results;
 		}
 
-		global $wpdb;
-		$table_name        = self::table_name();
-		$parent_table_name = Order_Modifiers::table_name();
-		$parent_table_uid  = Order_Modifiers::uid_column();
-		$wp_posts_table    = $wpdb->posts;
-
-		// Add foreign key for `modifier_id`.
-		$this->add_foreign_key( $table_name, 'fk_modifier_id', 'modifier_id', $parent_table_name, $parent_table_uid );
-
-		// Add foreign key for `post_id`.
-		$this->add_foreign_key( $table_name, 'fk_post_id', 'post_id', $wp_posts_table, 'ID' );
-
 		// Helper method to check and add indexes.
-		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_relationship_indx_modifier_id', 'modifier_id' );
-		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_relationship_indx_post_type', 'post_id,post_type' );
-		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_relationship_indx_composite_join', 'modifier_id, post_id, post_type' );
+		$results = $this->check_and_add_index( $results, 'tec_order_modifier_relationship_indx_modifier_id', 'modifier_id' );
+		$results = $this->check_and_add_index( $results, 'tec_order_modifier_relationship_indx_post_type', 'post_id,post_type' );
+		$results = $this->check_and_add_index( $results, 'tec_order_modifier_relationship_indx_composite_join', 'modifier_id, post_id, post_type' );
 
 		return $results;
 	}

@@ -19,7 +19,7 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Table_Views;
 
-use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Controller;
+use TEC\Tickets\Commerce\Order_Modifiers\Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use TEC\Tickets\Commerce\Order_Modifiers\Factory;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship;
@@ -196,22 +196,15 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 */
 	protected function render_actions( string $label, array $actions ): string {
 		$action_links = [];
-		$label_html   = esc_html( $label );
 
 		// Loop through the actions and build both the label and action links.
-		foreach ( $actions as $action_label => $url ) {
-			$url            = esc_url( $url );
-			$action_links[] = sprintf( '<a href="%s">%s</a>', $url, esc_html( $action_label ) );
-
-			// If 'Edit' is found, also make the label a link to the edit action.
-			if ( strtolower( $action_label ) === 'edit' ) {
-				$label_html = sprintf( '<a href="%s">%s</a>', $url, esc_html( $label ) );
-			}
-
-			if ( strtolower( $action_label ) === 'delete' ) {
-				$label_html = sprintf( '<span class="trash"><a href="%s">%s</a></span>', $url, esc_html( $label ) );
-			}
+		foreach ( $actions as $action_label => $data ) {
+			$action_links[ $action_label ] = sprintf( '<a href="%s">%s</a>', esc_url( $data['url'] ), esc_html( $data['label'] ) );
 		}
+
+		$label_html = isset( $actions['edit'] ) ?
+			sprintf( '<a href="%s">%s</a>', esc_url( $actions['edit']['url'] ), esc_html( $label ) ) :
+			sprintf( '<a href="%s">%s</a>', esc_url( array_values( $actions )[0]['url'] ?? '#' ), esc_html( $label ) );
 
 		// Join the action links and append them to the label with the row actions.
 		return sprintf( '%1$s %2$s', $label_html, $this->row_actions( $action_links ) );

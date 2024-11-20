@@ -33,9 +33,9 @@ export const filterSetBodyDetails = ( body, clientId ) => {
  *
  * @since TBD
  *
- * @param {Array}  items    The ticket container items.
+ * @param {object[]}  items    The ticket container items.
  * @param {string} clientId The client ID.
- * @return {Array} The filtered ticket container items.
+ * @return {object[]} The filtered ticket container items.
  */
 export const filterTicketContainerItems = ( items, clientId ) => {
 	// Don't add fees if the provider doesn't support them.
@@ -43,8 +43,46 @@ export const filterTicketContainerItems = ( items, clientId ) => {
 		return items;
 	}
 
-	// @todo: put this in the correct place in the array of items.
-	items.push( <Fees clientId={ clientId }/> );
+	// Define our fee object.
+	const feeObject = {
+		item: <Fees clientId={ clientId } />,
+		key: 'fees',
+	};
+
+	// Add the fee object after the "duration" item.
+	const durationIndex = items.findIndex( ( item ) => item.key === 'duration' );
+	items.splice( durationIndex + 1, 0, feeObject );
 
 	return items;
+}
+
+/**
+ * Sets the fees for the ticket.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ * @param {object} ticket   The ticket object.
+ */
+export const setFeesForTicket = ( clientId, ticket ) => {
+	// Get the fees from the ticket object.
+	const { fees } = ticket;
+	if ( ! fees ) {
+		return;
+	}
+
+	const feesSelected = fees?.selected_fees || [];
+
+	dispatch( storeName ).setTicketFees( clientId, feesSelected );
+}
+
+/**
+ * Updates the fees for the ticket.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ */
+export const updateFeesForTicket = ( clientId ) => {
+	dispatch( storeName ).setFeesByPostId( clientId );
 }

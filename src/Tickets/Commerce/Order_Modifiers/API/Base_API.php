@@ -9,16 +9,16 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\API;
 
-use TEC\Tickets\Registerable;
 use WP_Error;
 use WP_REST_Response as Response;
+use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 
 /**
  * Class Base_API
  *
  * @since TBD
  */
-abstract class Base_API implements Registerable {
+abstract class Base_API extends Controller_Contract {
 
 	use Namespace_Trait;
 
@@ -51,7 +51,7 @@ abstract class Base_API implements Registerable {
 	 *
 	 * @return void The method does not return any value.
 	 */
-	public function register(): void {
+	public function do_register(): void {
 		add_action( 'rest_api_init', $this->get_register_routes_callback() );
 		$this->register_additional_hooks();
 	}

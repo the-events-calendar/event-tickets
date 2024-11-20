@@ -74,6 +74,41 @@ trait Fee_Types {
 			'all'
 		);
 
-		return $available_fees ?? [];
+		// If no fees were found, return an empty array.
+		if ( null === $available_fees ) {
+			return [];
+		}
+
+		// Convert the return value to an array keyed by the fee ID.
+		return array_combine(
+			wp_list_pluck( $available_fees, 'id' ),
+			$available_fees
+		);
+	}
+
+	/**
+	 * Get the selected fees for a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket ID.
+	 *
+	 * @return int[] The selected fees.
+	 */
+	protected function get_selected_fees( int $ticket_id ): array {
+		$ticket_fees   = [];
+		$relationships = $this->relationships->find_by_post_id( $ticket_id );
+
+		// If no relationships were found, return an empty array.
+		if ( null === $relationships ) {
+			return [];
+		}
+
+		// Convert the Fee relationships to Fee objects.
+		foreach ( $relationships as $relationship ) {
+			$ticket_fees[] = (int) $relationship->modifier_id;
+		}
+
+		return $ticket_fees;
 	}
 }

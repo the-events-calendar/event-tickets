@@ -10,10 +10,11 @@
 namespace TEC\Tickets\Commerce\Order_Modifiers;
 
 use InvalidArgumentException;
-use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Controller;
+use TEC\Tickets\Commerce\Order_Modifiers\Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
-use TEC\Tickets\Registerable;
+use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
  * Class Modifier_Settings.
@@ -22,7 +23,7 @@ use TEC\Tickets\Registerable;
  *
  * @since TBD
  */
-class Modifier_Admin_Handler implements Registerable {
+class Modifier_Admin_Handler extends Controller_Contract {
 
 	use Valid_Types;
 
@@ -67,29 +68,53 @@ class Modifier_Admin_Handler implements Registerable {
 	}
 
 	/**
-	 * Register hooks and actions.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function register(): void {
-		add_action( 'admin_menu', $this->get_admin_menu_action(), 15 );
-		add_action( 'admin_init', $this->get_delete_modifier_action() );
-		add_action( 'admin_init', $this->get_form_submission_action() );
-	}
-
-	/**
-	 * Removes the filters and actions hooks added by the controller.
+	 * Un-registers hooks and actions.
 	 *
 	 * @since TBD
 	 *
 	 * @return void
 	 */
 	public function unregister(): void {
-		remove_action( 'admin_menu', $this->get_admin_menu_action(), 15 );
-		remove_action( 'admin_init', $this->get_delete_modifier_action() );
-		remove_action( 'admin_init', $this->get_form_submission_action() );
+		remove_action( 'admin_menu', [ $this, 'add_tec_tickets_order_modifiers_page' ], 15 );
+		remove_action( 'admin_init', [ $this, 'handle_delete_modifier' ] );
+		remove_action( 'admin_init', [ $this, 'handle_form_submission' ] );
+
+		remove_action( 'admin_notices', [ $this, 'handle_notices' ] );
+	}
+
+	/**
+	 * Register hooks and actions.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function do_register(): void {
+		add_action( 'admin_menu', [ $this, 'add_tec_tickets_order_modifiers_page' ], 15 );
+		add_action( 'admin_init', [ $this, 'handle_delete_modifier' ] );
+		add_action( 'admin_init', [ $this, 'handle_form_submission' ] );
+
+		add_action( 'admin_notices', [ $this, 'handle_notices' ] );
+
+		$this->register_assets();
+	}
+
+	/**
+	 * Register the assets for the Order Modifiers page.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function register_assets() {
+		tribe_asset(
+			Tickets_Plugin::instance(),
+			'tec-tickets-order-modifiers-table',
+			'admin/order-modifiers/table.js',
+			[ 'jquery', 'wp-util' ],
+			'admin_enqueue_scripts',
+			[ 'conditionals' => fn () => $this->is_on_page() ],
+		);
 	}
 
 	/**
@@ -141,7 +166,7 @@ class Modifier_Admin_Handler implements Registerable {
 	 *
 	 * @since TBD
 	 */
-	protected function add_tec_tickets_order_modifiers_page(): void {
+	public function add_tec_tickets_order_modifiers_page(): void {
 		$admin_pages = tribe( 'admin.pages' );
 
 		$admin_pages->register_page(
@@ -276,17 +301,17 @@ class Modifier_Admin_Handler implements Registerable {
 	 *
 	 * @return void
 	 */
-	protected function handle_form_submission(): void {
+	public function handle_form_submission(): void {
 		// Check if the form was submitted and verify nonce.
 
-		if ( empty( tribe_get_request_var( 'order_modifier_form_save' ) ) || ! check_admin_referer( 'order_modifier_save_action', 'order_modifier_save_action' ) ) {
+		if ( empty( tec_get_request_var( 'order_modifier_form_save' ) ) || ! check_admin_referer( 'order_modifier_save_action', 'order_modifier_save_action' ) ) {
 			return;
 		}
 
 		// Get and sanitize request vars for modifier and modifier_id.
-		$modifier_type = sanitize_key( tribe_get_request_var( 'modifier', $this->get_default_type() ) );
-		$modifier_id   = absint( tribe_get_request_var( 'modifier_id', '0' ) );
-		$is_edit       = tribe_is_truthy( tribe_get_request_var( 'edit', '0' ) );
+		$modifier_type = sanitize_key( tec_get_request_var( 'modifier', $this->get_default_type() ) );
+		$modifier_id   = absint( tec_get_request_var( 'modifier_id', '0' ) );
+		$is_edit       = tribe_is_truthy( tec_get_request_var( 'edit', '0' ) );
 
 		// Prepare the context for the page.
 		$context = [
@@ -327,38 +352,50 @@ class Modifier_Admin_Handler implements Registerable {
 			return;
 		}
 
-		// If a new modifier was created, redirect to the edit page of the new modifier.
-		if ( empty( $context['modifier_id'] ) || 0 === (int) $context['modifier_id'] ) {
-			$this->redirect_to_table_page( $result->id, $context );
-			return;
-		}
+		$edit_link = add_query_arg(
+			[
+				'page'        => rawurlencode( $modifier_strategy->get_page_slug() ),
+				'modifier'    => rawurlencode( $modifier_strategy->get_modifier_type() ),
+				'edit'        => 1,
+				'modifier_id' => $result->id,
+				'updated'     => 1,
+			],
+			admin_url( '/admin.php' )
+		);
 
-		// Show success message for updating an existing modifier.
-		$this->render_success_message( __( 'Modifier saved successfully!', 'event-tickets' ) );
+		wp_safe_redirect( $edit_link );
+		exit;
 	}
 
 	/**
-	 * Redirects to the table page after creating the modifier.
+	 * Handles the display of notices.
 	 *
 	 * @since TBD
 	 *
-	 * @param int   $modifier_id The ID of the new modifier.
-	 * @param array $context     The context for rendering the page.
-	 *
 	 * @return void
 	 */
-	protected function redirect_to_table_page( int $modifier_id, array $context ): void {
-		// Manually build the URL.
-		$new_url = add_query_arg(
-			[
-				'page'     => self::$slug,
-				'modifier' => $context['modifier'],
-			],
-			admin_url( 'admin.php' )
-		);
+	public function handle_notices() {
+		if ( (int) tec_get_request_var_raw( 'updated' ) !== 1 ) {
+			return;
+		}
 
-		wp_safe_redirect( esc_url_raw( html_entity_decode( $new_url ) ) );
-		exit;
+		if ( (int) tec_get_request_var_raw( 'edit' ) !== 1 ) {
+			return;
+		}
+
+		$modifier_type = sanitize_key( tec_get_request_var( 'modifier', $this->get_default_type() ) );
+
+		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
+
+		if ( ! $modifier_strategy ) {
+			return;
+		}
+
+		if ( tec_get_request_var( 'page' ) !== rawurldecode( $modifier_strategy->get_page_slug() ) ) {
+			return;
+		}
+
+		$this->render_success_message( __( 'Modifier saved successfully!', 'event-tickets' ) );
 	}
 
 	/**
@@ -404,7 +441,7 @@ class Modifier_Admin_Handler implements Registerable {
 	 *
 	 * @return void
 	 */
-	protected function handle_delete_modifier(): void {
+	public function handle_delete_modifier(): void {
 		// Check if the action is 'delete_modifier' and nonce is set.
 		$action        = tribe_get_request_var( 'action', '' );
 		$modifier_id   = absint( tribe_get_request_var( 'modifier_id', '' ) );
@@ -444,53 +481,5 @@ class Modifier_Admin_Handler implements Registerable {
 		// Redirect to the original page to avoid resubmitting the form upon refresh.
 		wp_safe_redirect( $redirect_url );
 		exit;
-	}
-
-	/**
-	 * Retrieves the callback for adding the Event Tickets Order Modifiers page.
-	 *
-	 * @since TBD
-	 *
-	 * @return callable The callback for adding the Order Modifiers page.
-	 */
-	protected function get_admin_menu_action(): callable {
-		static $callback = null;
-		if ( null === $callback ) {
-			$callback = fn() => $this->add_tec_tickets_order_modifiers_page();
-		}
-
-		return $callback;
-	}
-
-	/**
-	 * Retrieves the callback for handling the deletion of a modifier.
-	 *
-	 * @since TBD
-	 *
-	 * @return callable The callback for handling the deletion of a modifier.
-	 */
-	protected function get_delete_modifier_action(): callable {
-		static $callback = null;
-		if ( null === $callback ) {
-			$callback = fn() => $this->handle_delete_modifier();
-		}
-
-		return $callback;
-	}
-
-	/**
-	 * Retrieves the callback for handling the form submission.
-	 *
-	 * @since TBD
-	 *
-	 * @return callable The callback for handling the form submission.
-	 */
-	protected function get_form_submission_action(): callable {
-		static $callback = null;
-		if ( null === $callback ) {
-			$callback = fn() => $this->handle_form_submission();
-		}
-
-		return $callback;
 	}
 }

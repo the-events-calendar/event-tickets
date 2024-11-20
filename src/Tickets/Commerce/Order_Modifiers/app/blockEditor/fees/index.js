@@ -49,10 +49,6 @@ const mapFeeToItem = ( { fee, isDisabled, onChange, isChecked, clientId } ) => {
 	const classes = [ 'tribe-editor__ticket__fee-checkbox' ];
 	const name = `tec-ticket-fee-${ fee.id }-${ clientId }`;
 
-	const testOnChange = ( props ) => {
-		console.log( 'testOnChange', props );
-	}
-
 	return (
 		<Checkbox
 			checked={ isChecked }
@@ -94,6 +90,10 @@ function FeesSection( props ) {
 		},
 		[]
 	);
+
+	const hasAutomaticFees = feesAutomatic.length > 0;
+	const hasAvailableFees = feesAvailable.length > 0;
+	const hasItemsToDisplay = hasAutomaticFees || hasAvailableFees;
 
 	// Set up the state for the selected fees.
 	const feesSelected = useSelect(
@@ -143,8 +143,6 @@ function FeesSection( props ) {
 		[ clientId, checkedFees ]
 	);
 
-	const hasItemsToDisplay = feesAutomatic.length > 0 || feesAvailable.length > 0;
-
 	return (
 		<div
 			className={ classNames(
@@ -159,7 +157,7 @@ function FeesSection( props ) {
 			/>
 
 			<div className="tribe-editor__ticket__order_modifier_fees">
-				{ feesAutomatic.length > 0 ? (
+				{ hasAutomaticFees ? (
 					feesAutomatic.map( ( fee ) => mapFeeToItem( {
 						isDisabled: true,
 						isChecked: true,
@@ -168,7 +166,7 @@ function FeesSection( props ) {
 					} ) )
 				) : null }
 
-				{ feesAvailable.length > 0 ? (
+				{ hasAvailableFees ? (
 					feesAvailable.map( ( fee ) => mapFeeToItem( {
 						isDisabled: false,
 						onChange: onSelectedFeesChange,

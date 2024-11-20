@@ -86,6 +86,23 @@ export const reducer = ( state = defaultState, action ) => {
 				},
 			};
 
+		case 'SET_SELECTED_FEES_BY_POST_ID':
+			ticketPostId = getTicketIdFromCommonStore( clientId );
+
+			const { selectedFeesByPostId, selectedFeesByClientId } = state;
+
+			const feesSelected = selectedFeesByClientId[ clientId ] || selectedFeesByPostId[ ticketPostId ];
+
+			delete selectedFeesByPostId[ clientId ];
+
+			return {
+				...state,
+				selectedFeesByPostId: {
+					...selectedFeesByPostId,
+					[ ticketPostId ]: feesSelected,
+				},
+			};
+
 		default:
 			return state;
 	}

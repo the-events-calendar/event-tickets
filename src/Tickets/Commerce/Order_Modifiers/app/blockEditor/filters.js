@@ -8,7 +8,9 @@ import { addFilter, addAction } from '@wordpress/hooks';
  */
 import {
 	filterSetBodyDetails,
-	filterTicketContainerItems
+	filterTicketContainerItems,
+	setFeesForTicket,
+	updateFeesForTicket,
 } from './hook-callbacks';
 
 // The namespace for the filters.
@@ -26,4 +28,23 @@ addFilter(
 	'tec.ticket.container.items',
 	namespace,
 	filterTicketContainerItems
+);
+
+// Set the fees for the ticket.
+addAction(
+	'tec.tickets.blocks.fetchTicket',
+	namespace,
+	setFeesForTicket
+);
+
+addAction(
+	'tec.tickets.blocks.ticketUpdated',
+	namespace,
+	updateFeesForTicket
+);
+
+addAction(
+	'tec.tickets.blocks.ticketCreated',
+	namespace,
+	updateFeesForTicket
 );

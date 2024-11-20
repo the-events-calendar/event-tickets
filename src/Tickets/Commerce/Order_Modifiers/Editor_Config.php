@@ -9,19 +9,19 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Commerce\Order_Modifiers;
 
-use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee;
-use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager as Manager;
+use TEC\Common\Contracts\Container;
+use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee_Modifier_Manager as Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship as Relationships;
-use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers as Modifiers;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Fees as Modifiers;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Fee_Types;
-use TEC\Tickets\Registerable;
+use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 
 /**
  * Class Editor_Config
  *
  * @since TBD
  */
-class Editor_Config implements Registerable {
+class Editor_Config extends Controller_Contract {
 
 	use Fee_Types;
 
@@ -44,18 +44,21 @@ class Editor_Config implements Registerable {
 	 *
 	 * @since TBD
 	 *
-	 * @param ?Modifiers     $modifiers     The repository for interacting with the order modifiers.
-	 * @param ?Relationships $relationships The repository for interacting with the order modifiers relationships.
-	 * @param ?Manager       $manager       The manager for the order modifiers.
+	 * @param Container     $container     The DI container.
+	 * @param Modifiers     $modifiers     The repository for interacting with the order modifiers.
+	 * @param Relationships $relationships The repository for interacting with the order modifiers relationships.
+	 * @param Manager       $manager       The manager for the order modifiers.
 	 */
 	public function __construct(
-		?Modifiers $modifiers = null,
-		?Relationships $relationships = null,
-		?Manager $manager = null
+		Container $container,
+		Modifiers $modifiers,
+		Relationships $relationships,
+		Manager $manager
 	) {
-		$this->modifiers_repository = $modifiers ?? new Modifiers( 'fee' );
-		$this->relationships        = $relationships ?? new Relationships();
-		$this->manager              = $manager ?? new Manager( new Fee() );
+		parent::__construct( $container );
+		$this->modifiers_repository = $modifiers;
+		$this->relationships        = $relationships;
+		$this->manager              = $manager;
 	}
 
 	/**
@@ -65,7 +68,7 @@ class Editor_Config implements Registerable {
 	 *
 	 * @return void The method does not return any value.
 	 */
-	public function register(): void {
+	public function do_register(): void {
 		add_filter( 'tribe_editor_config', $this->get_filter_editor_config_callback(), 20 );
 	}
 

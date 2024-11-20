@@ -100,18 +100,15 @@ class Order_Modifiers extends Abstract_Custom_Table {
 			return $results;
 		}
 
-		global $wpdb;
-		$table_name = self::table_name( true );
-
 		// Check if the table exists first.
 		if ( ! $this->exists() ) {
 			return $results;
 		}
 
 		// Helper method to check and add indexes.
-		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_indx_slug', 'slug' );
-		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_indx_status_modifier_type_slug', 'status, modifier_type, slug' );
-		$results = $this->check_and_add_index( $wpdb, $results, $table_name, 'tec_order_modifier_indx_type_display_name', 'modifier_type, display_name' );
+		$results = $this->check_and_add_index( $results, 'tec_order_modifier_indx_slug', 'slug' );
+		$results = $this->check_and_add_index( $results, 'tec_order_modifier_indx_status_modifier_type_slug', 'status, modifier_type, slug' );
+		$results = $this->check_and_add_index( $results, 'tec_order_modifier_indx_type_display_name', 'modifier_type, display_name' );
 
 		return $results;
 	}
