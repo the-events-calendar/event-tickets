@@ -11,7 +11,9 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { setTicketHasChangesInCommonStore } from '../store/common-store-bridge';
+import AddFee from './add-fee';
 import mapFeeToItem from './map-fee-to-item';
+import './style.pcss';
 
 // The name of the store for fees.
 const storeName = 'tec-tickets-fees';
@@ -103,11 +105,17 @@ function FeesSection( props ) {
 			) }
 		>
 			<LabeledItem
-				className="tribe-editor__ticket__active-fees-label"
+				className={ classNames(
+					'tribe-editor__labeled-item',
+					'tribe-editor__ticket__active-fees-label'
+				) }
 				label={ __( 'Ticket Fees', 'event-tickets' ) }
 			/>
 
 			<div className="tribe-editor__ticket__order_modifier_fees">
+
+				<AddFee />
+
 				{ hasAutomaticFees ? (
 					feesAutomatic.map( ( fee ) => mapFeeToItem( {
 						isDisabled: true,

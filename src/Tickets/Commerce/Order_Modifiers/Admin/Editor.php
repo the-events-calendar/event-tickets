@@ -105,6 +105,7 @@ class Editor extends Controller_Contract {
 	 * @return void
 	 */
 	private function register_block_editor_assets() {
+		// Register the main block editor script.
 		$this->add_asset(
 			'tec-tickets-order-modifiers-rest-localization',
 			'rest.js',
@@ -126,6 +127,14 @@ class Editor extends Controller_Contract {
 			->add_localize_script( 'tec.tickets.orderModifiers.blockEditor', [ $this, 'get_store_data' ] )
 			->enqueue_on( 'enqueue_block_editor_assets' )
 			->set_condition( [ $this, 'should_enqueue_assets' ] )
+			->register();
+
+		// Register the block editor styles.
+		$this->add_asset(
+			'tec-tickets-order-modifiers-block-editor-css',
+			'block-editor.css',
+		)
+			->enqueue_on( 'enqueue_block_editor_assets' )
 			->register();
 	}
 
