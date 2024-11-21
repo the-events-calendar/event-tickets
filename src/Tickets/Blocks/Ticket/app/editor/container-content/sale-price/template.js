@@ -5,6 +5,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { NumericFormat } from 'react-number-format';
+import { formatDate, parse as parseDate } from 'date-fns';
 
 /**
  * Wordpress dependencies
@@ -17,7 +18,6 @@ import uniqid from 'uniqid';
 import { PREFIX, SUFFIX, SALE_PRICE_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import { Checkbox, DayPickerInput, LabeledItem } from '@moderntribe/common/elements';
 import './style.pcss';
-import { formatDate, parseDate } from "react-day-picker/moment";
 
 /**
  * SalePrice component.
