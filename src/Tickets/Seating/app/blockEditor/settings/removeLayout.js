@@ -1,15 +1,27 @@
-import React, { Fragment, useState } from 'react';
-import { Modal, Dashicon, CheckboxControl, Button } from '@wordpress/components';
+import React, {Fragment, useState} from 'react';
+import {Modal, Dashicon, CheckboxControl, Button} from '@wordpress/components';
+import {__} from '@wordpress/i18n';
 import {
 	ACTION_REMOVE_EVENT_LAYOUT,
 	ajaxNonce,
 	ajaxUrl
 } from '@tec/tickets/seating/ajax';
+import { globals } from '@moderntribe/common/utils';
 
-const RemoveLayout =  React.memo(({ postId }) => {
+/**
+ * The Remove Layout link component.
+ *
+ * @since TBD
+ */
+const RemoveLayout = React.memo(({postId}) => {
 	const [isChecked, setChecked] = useState(false);
 	const [removeModalOpen, setRemoveModalOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+	const exportUrl = globals.adminUrl() + `edit.php?post_type=tribe_events&page=tickets-attendees&event_id=${postId}`;
+
+	const textUnderline = {
+		textDecoration: 'underline'
+	};
 
 	/**
 	 * Close the modal.
@@ -23,7 +35,6 @@ const RemoveLayout =  React.memo(({ postId }) => {
 		setChecked(false);
 		setIsLoading(false);
 	};
-
 
 	/**
 	 * Handle the removal of the layout.
@@ -57,8 +68,7 @@ const RemoveLayout =  React.memo(({ postId }) => {
 
 		return response.status === 200;
 	}
-
-
+	
 	return (
 		<Fragment>
 			<a
@@ -66,22 +76,24 @@ const RemoveLayout =  React.memo(({ postId }) => {
 				className="tec-tickets-seating__settings_layout--remove"
 				onClick={() => setRemoveModalOpen(true)}
 			>
-				Remove Layout
+				{__('Remove Seat Layout', 'event-tickets')}
 			</a>
 
 			{removeModalOpen && (
 				<Modal
 					className="tec-tickets-seating__settings--layout-modal"
-					title="Confirm Seat Layout removal"
+					title={__('Confirm Seat Layout removal', 'event-tickets')}
 					isDismissible={true}
 					onRequestClose={closeModal}
 					size="medium"
 				>
 					<div className="tec-tickets-seating__settings-intro">
-						<Dashicon icon="warning" />
-						<span className="icon-text">Caution</span>
+						<Dashicon icon="warning"/>
+						<span className="icon-text">{ __( 'Caution', 'event-tickets' ) }</span>
 						<p className="warning-text">
-							All attendees will lose their seat assignments. All seated tickets will switch to 1 capacity. This action cannot be undone.
+							{__('All attendees will lose their seat assignments. All seated tickets will switch to 1 capacity.', 'event-tickets')}
+							{' '}
+							<span style={textUnderline}>{__('This action cannot be undone.', 'event-tickets')}</span>
 						</p>
 					</div>
 
@@ -93,7 +105,13 @@ const RemoveLayout =  React.memo(({ postId }) => {
 						name="tec-tickets-seating__settings--switched-layout"
 					/>
 
-					<p>You may want to export attendee data first as a record of current seat assignments.</p>
+					<p>
+						{__('You may want to', 'event-tickets')}{' '}
+						<a href={exportUrl} target="_blank" rel="noopener noreferrer">
+							{__('export attendee', 'event-tickets')}
+						</a>{' '}
+						{__('data first as a record of current seat assignments.', 'event-tickets')}
+					</p>
 
 					<div className="tec-tickets-seating__settings--actions">
 						<Button
@@ -101,13 +119,13 @@ const RemoveLayout =  React.memo(({ postId }) => {
 							disabled={!isChecked}
 							isPrimary={isChecked}
 						>
-							Remove Seat Layout
+							{__('Remove Seat Layout', 'event-tickets')}
 						</Button>
 						<Button
 							onClick={closeModal}
 							isSecondary={true}
 						>
-							Cancel
+							{__('Cancel', 'event-tickets')}
 						</Button>
 					</div>
 				</Modal>
