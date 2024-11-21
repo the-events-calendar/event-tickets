@@ -16,7 +16,7 @@ import { mapFeeToOption } from './map-fee-object';
  * @param {Fee[]} feesAvailable
  * @param {function} onChange
  */
-const FeeSelect = ( { feesAvailable, onSelect, onCancel } ) => {
+const SelectFee = ( { feesAvailable, onConfirm, onCancel } ) => {
 	// Set up options for the select control.
 	const options = [
 		{
@@ -61,7 +61,7 @@ const FeeSelect = ( { feesAvailable, onSelect, onCancel } ) => {
 					'aria-label for confirming adding selected fee to ticket',
 					'event-tickets'
 				) }
-				onClick={ () => onSelect( selectedFee ) }
+				onClick={ () => onConfirm( Number.parseInt( selectedFee ) ) }
 			>
 				{ __( 'Add fee', 'event-tickets' ) }
 			</Button>
@@ -83,4 +83,4 @@ const FeeSelect = ( { feesAvailable, onSelect, onCancel } ) => {
 	)
 };
 
-export default FeeSelect;
+export default SelectFee;

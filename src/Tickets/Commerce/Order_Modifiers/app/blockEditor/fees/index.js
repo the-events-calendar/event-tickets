@@ -13,7 +13,7 @@ import { __ } from '@wordpress/i18n';
 import { setTicketHasChangesInCommonStore } from '../store/common-store-bridge';
 import { mapFeeToItem } from './map-fee-object';
 import AddFee from './add-fee';
-import FeeSelect from './select-fee';
+import SelectFee from './select-fee';
 import './style.pcss';
 
 // The name of the store for fees.
@@ -21,6 +21,19 @@ const storeName = 'tec-tickets-fees';
 
 /**
  * The fees section component for the ticket editor.
+ *
+ * The fees section needs logic to handle the selection of fees. The default
+ * view is to show the "+ Add fee" button. Any previously-selected fees should
+ * be displayed as checked above the button.
+ *
+ * When the "+ Add fee" button is clicked, the user should be able to select
+ * from a list of available fees. They can then confirm the selection with the
+ * "Add fee" button, or cancel with the "Cancel" button.
+ *
+ * The selected fees should be displayed as checked above the "+ Add fee" button.
+ * Once a fee has been displayed, it should not be hidden even if it is un-checked
+ * again. It should only be hidden after it is unchecked AND the page has been
+ * reloaded.
  *
  * @since TBD
  *
@@ -57,6 +70,7 @@ function FeesSection( props ) {
 	);
 
 	const feeIdSelectedMap = {};
+	const displayedFees = [];
 
 	// Initialize the selected fees map with the available fees.
 	feesAvailable.forEach( ( fee ) => {
@@ -66,9 +80,16 @@ function FeesSection( props ) {
 	// Set the selected fees to true.
 	feesSelected.forEach( ( feeId ) => {
 		feeIdSelectedMap[ feeId ] = true;
+		let fee = feesAvailable.find( ( fee ) => fee.id === feeId );
+		if ( fee ) {
+			displayedFees.push( fee );
+		}
 	} );
 
+	// Set up the state for the selected fees.
 	const [ checkedFees, setCheckedFees ] = useState( feeIdSelectedMap );
+
+	// Set up the dispatch functions for adding and removing fees.
 	const { addFeeToTicket, removeFeeFromTicket } = useDispatch( storeName );
 
 	/**
@@ -96,15 +117,6 @@ function FeesSection( props ) {
 		},
 		[ clientId, checkedFees ]
 	);
-
-	/*
-	 * The fees section needs logic to handle the selection of fees. The default
-	 * view is to show the "+ Add fee" button. Any selected fees should be displayed
-	 * as checked above the button.
-	 *
-	 * When the "+ Add fee" button is clicked, the user should be able to select
-	 * from a list of available fees.
-	 */
 
 	// Set up the state for the fee selection.
 	const [ isSelectingFee, setIsSelectingFee ] = useState( false );
@@ -140,6 +152,12 @@ function FeesSection( props ) {
 		[ clientId, checkedFees, feesAvailable ]
 	)
 
+	// Set up the fees that are available to be selected.
+	const selectableFees = feesAvailable.filter( ( fee ) => {
+		// The fee should not be selectable if it's already in the display fees.
+		return ! displayedFees.some( ( displayedFee ) => displayedFee.id === fee.id );
+	} );
+
 	return (
 		<div
 			className={ classNames(
@@ -167,24 +185,23 @@ function FeesSection( props ) {
 					} ) )
 				) : null }
 
-				{ isSelectingFee
-					? <FeeSelect
-						feesAvailable={ feesAvailable}
-						onCancel={ onCancelFeeSelect }
-						onConfirm={ onConfirmFeeSelect }
-					/>
-					: <AddFee onClick={ onAddFeeClick }/>
-				}
-
-				{ hasAvailableFees ? (
-					feesAvailable.map( ( fee ) => mapFeeToItem( {
+				{ displayedFees.length > 0 ? (
+					displayedFees.map( ( fee ) => mapFeeToItem( {
 						isDisabled: false,
 						onChange: onSelectedFeesChange,
-						isChecked: checkedFees[fee.id],
+						isChecked: checkedFees[ fee.id ],
 						fee: fee,
 						clientId: clientId,
 					} ) )
 				) : null }
+
+				{ isSelectingFee
+					? <SelectFee
+						feesAvailable={ selectableFees }
+						onCancel={ onCancelFeeSelect }
+						onConfirm={ onConfirmFeeSelect }
+					/>
+					: <AddFee onClick={ onAddFeeClick }/> }
 
 				{ ! hasItemsToDisplay ? (
 					<p>{ __( 'No available fees.', 'event-tickets' ) }</p>
