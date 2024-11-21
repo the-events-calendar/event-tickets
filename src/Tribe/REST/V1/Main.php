@@ -91,9 +91,6 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 		$ticket_validator = tribe( 'tickets.rest-v1.validator' );
 
 		foreach ( $tickets as $offset => $ticket ) {
-			if ( 1392 === (int) $ticket['id'] ) {
-				$breakpoint = true;
-			}
 			if ( $ticket_validator->should_see_ticket( $ticket['post_id'] ?? 0, $request ) ) {
 				continue;
 			}
