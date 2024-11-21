@@ -30,7 +30,7 @@ class Stripe_Orders_Test extends Controller_Test_Case {
 	 * @after
 	 */
 	public function breakdown() {
-		tribe( $this->controller_class )->reset_fees_and_subtotal();
+		$this->make_controller()->reset_fees_and_subtotal();
 	}
 
 	/**
