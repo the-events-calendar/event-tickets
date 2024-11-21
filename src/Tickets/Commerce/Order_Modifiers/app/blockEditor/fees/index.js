@@ -108,18 +108,36 @@ function FeesSection( props ) {
 
 	// Set up the state for the fee selection.
 	const [ isSelectingFee, setIsSelectingFee ] = useState( false );
-	const onAddFeeClick = useCallback( () => { setIsSelectingFee( true ); } );
+	const onAddFeeClick = useCallback(
+		() => {
+			setIsSelectingFee( true );
+		},
+		[ clientId ]
+	);
 
 	// Set up the functions for the fee selection.
-	const onCancelFeeSelect = useCallback( () => { setIsSelectingFee( false ); } );
+	const onCancelFeeSelect = useCallback(
+		() => {
+			setIsSelectingFee( false );
+		},
+		[ clientId ]
+	);
+
 	const onConfirmFeeSelect = useCallback(
 		( feeId ) => {
+			// We're done selecting a fee.
 			setIsSelectingFee( false );
+
+			// Update the list of checked fees.
 			setCheckedFees( {
 				...checkedFees,
 				[ feeId ]: true,
 			} );
-		}
+
+			// Dispatch the action to add the fee to the ticket.
+			addFeeToTicket( clientId, feeId );
+		},
+		[ clientId, checkedFees, feesAvailable ]
 	)
 
 	return (
