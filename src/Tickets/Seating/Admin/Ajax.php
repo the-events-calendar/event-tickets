@@ -1346,7 +1346,6 @@ class Ajax extends Controller_Contract {
 		
 		// Remove global stock.
 		tribe_tickets_delete_capacity( $post_id );
-		tribe_tickets_update_capacity( $post_id, $updated_tickets );
 		
 		clean_post_cache( $post_id );
 		
