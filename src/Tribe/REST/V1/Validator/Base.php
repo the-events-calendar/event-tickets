@@ -47,7 +47,11 @@ class Tribe__Tickets__REST__V1__Validator__Base
 		 *
 		 * @return bool Whether the ticket should be seen by the current user.
 		 */
-		public function should_see_ticket( int $parent_id = 0, WP_REST_Request $request ): bool {
+		public function should_see_ticket( int $parent_id, WP_REST_Request $request ): bool {
+			if ( empty( $parent_id ) ) {
+				$parent_id = 0;
+			}
+
 			$parent = get_post( $parent_id );
 
 			if ( ! ( $parent instanceof WP_Post && $parent->ID ) ) {
