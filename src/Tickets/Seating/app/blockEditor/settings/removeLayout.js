@@ -68,7 +68,7 @@ const RemoveLayout = React.memo(({postId}) => {
 
 		return response.status === 200;
 	}
-	
+
 	return (
 		<Fragment>
 			<a
