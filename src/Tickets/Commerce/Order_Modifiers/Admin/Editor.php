@@ -20,7 +20,6 @@ use TEC\Tickets\Commerce\Order_Modifiers\API\Fees;
 /**
  * Class Editor
  *
- *
  * @since TBD
  */
 class Editor extends Controller_Contract {
