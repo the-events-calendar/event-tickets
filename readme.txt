@@ -203,6 +203,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.17.0.1] 2024-11-21 =
+
+* Tweak - Introduced filter `tec_tickets_rest_api_archive_results` that gives the ability to filter out the tickets being provided to the REST API archive.
+* Security - Prevent Tickets from showing through REST API to unauthorized requests. [SVUL-9]
+
 = [5.17.0] 2024-11-19 =
 
 * Version - Event Tickets 5.17.0 is only compatible with Event Tickets Plus 6.1.1 or higher.
