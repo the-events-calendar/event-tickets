@@ -22,14 +22,14 @@ const components = {
 };
 
 const ActionButton = ( {
-	asLink,
+	asLink = false,
 	children,
 	className,
 	disabled,
 	href,
 	icon,
 	onClick,
-	position,
+	position = positions.left,
 	target,
 	...props
 } ) => {
@@ -77,11 +77,6 @@ ActionButton.propTypes = {
 	onClick: PropTypes.func,
 	position: PropTypes.oneOf( Object.keys( positions ) ),
 	target: PropTypes.string,
-};
-
-ActionButton.defaultProps = {
-	asLink: false,
-	position: positions.left,
 };
 
 export default ActionButton;
