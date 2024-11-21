@@ -129,11 +129,6 @@ trait Valid_Types {
 			if ( ! empty( $missing ) ) {
 				unset( $modifiers[ $key ] );
 			}
-
-			// If the class doesn't exist, then remove the modifier.
-			if ( ! class_exists( $modifier['class'] ) ) {
-				unset( $modifiers[ $key ] );
-			}
 		}
 
 		return $modifiers;

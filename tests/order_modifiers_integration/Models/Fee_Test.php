@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\Tickets\Tests\Integration\Order_Modifiers\Models;
+namespace TEC\Tickets\Commerce\Order_Modifiers\Models;
 
 use Codeception\TestCase\WPTestCase;
 use stdClass;

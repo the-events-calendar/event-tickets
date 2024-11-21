@@ -15,7 +15,7 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Modifiers;
 use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Fee_Table;
 use Tribe__Tickets__Admin__Views;
-
+	
 /**
  * Concrete Strategy for fee Modifiers.
  *

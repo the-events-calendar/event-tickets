@@ -2,7 +2,7 @@
 
 declare( strict_types=1 );
 
-namespace TEC\Tickets\Tests\Integration\Order_Modifiers\Fees\Checkout;
+namespace TEC\Tickets\Commerce\Order_Modifiers\Fees\Checkout;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Cart;

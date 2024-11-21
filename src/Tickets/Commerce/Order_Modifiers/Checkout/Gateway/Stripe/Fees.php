@@ -40,21 +40,21 @@ class Fees extends Abstract_Fees {
 		// Hook for appending fees to the cart for Stripe processing.
 		add_filter(
 			'tec_tickets_commerce_create_order_from_cart_items',
-			$this->get_fee_append_callback(),
+			[ $this, 'append_fees_to_cart' ],
 			10,
 			2
 		);
 
 		add_filter(
 			'tec_tickets_commerce_stripe_create_from_cart',
-			$this->get_fee_data_stripe_callback(),
+			[ $this, 'append_fees_to_cart_stripe' ],
 			10,
 			2
 		);
 
 		add_filter(
 			'tec_tickets_commerce_stripe_update_payment_intent_metadata',
-			$this->get_fee_meta_stripe_callback(),
+			[ $this, 'add_meta_data_to_stripe' ],
 			10,
 			2
 		);
@@ -70,17 +70,17 @@ class Fees extends Abstract_Fees {
 	public function unregister(): void {
 		remove_filter(
 			'tec_tickets_commerce_create_order_from_cart_items',
-			$this->get_fee_append_callback()
+			[ $this, 'append_fees_to_cart' ],
 		);
 
 		remove_filter(
 			'tec_tickets_commerce_stripe_create_from_cart',
-			$this->get_fee_data_stripe_callback()
+			[ $this, 'append_fees_to_cart_stripe' ]
 		);
 
 		remove_filter(
 			'tec_tickets_commerce_stripe_update_payment_intent_metadata',
-			$this->get_fee_meta_stripe_callback()
+			[ $this, 'add_meta_data_to_stripe' ],
 		);
 	}
 
@@ -97,7 +97,7 @@ class Fees extends Abstract_Fees {
 	 *
 	 * @return Value Updated value including fees, or the original value if no fees exist.
 	 */
-	protected function append_fees_to_cart_stripe( Value $value, array $items ): Value {
+	public function append_fees_to_cart_stripe( Value $value, array $items ): Value {
 		// Set the class-level subtotal to the current cart value.
 		$this->subtotal = $value;
 
@@ -154,7 +154,7 @@ class Fees extends Abstract_Fees {
 	 *
 	 * @return array Updated metadata including the fees as a string.
 	 */
-	protected function add_meta_data_to_stripe( array $metadata, WP_Post $order ) {
+	public function add_meta_data_to_stripe( array $metadata, WP_Post $order ) {
 		// Filter out the fee items from the order's items.
 		$fee_items = array_filter(
 			$order->items,
@@ -181,37 +181,5 @@ class Fees extends Abstract_Fees {
 		}
 
 		return $metadata;
-	}
-
-	/**
-	 * Get the callback for appending fees to the cart for Stripe processing.
-	 *
-	 * @since TBD
-	 *
-	 * @return callable The callback for appending fees to the cart for Stripe processing.
-	 */
-	protected function get_fee_data_stripe_callback(): callable {
-		static $callback = null;
-		if ( null === $callback ) {
-			$callback = fn( $value, $items ) => $this->append_fees_to_cart_stripe( $value, $items );
-		}
-
-		return $callback;
-	}
-
-	/**
-	 * Get the callback for adding fee metadata to the Stripe payment intent.
-	 *
-	 * @since TBD
-	 *
-	 * @return callable The callback for adding fee metadata to the Stripe payment intent.
-	 */
-	protected function get_fee_meta_stripe_callback(): callable {
-		static $callback = null;
-		if ( null === $callback ) {
-			$callback = fn( $metadata, $order ) => $this->add_meta_data_to_stripe( $metadata, $order );
-		}
-
-		return $callback;
 	}
 }
