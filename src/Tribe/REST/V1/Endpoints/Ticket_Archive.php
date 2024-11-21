@@ -223,7 +223,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 		/**
 		 * Filters the tickets returned by the REST API.
 		 *
-		 * @since TBD
+		 * @since 5.17.0.1
 		 *
 		 * @param array           $tickets The tickets returned by the REST API.
 		 * @param WP_REST_Request $request The request object.

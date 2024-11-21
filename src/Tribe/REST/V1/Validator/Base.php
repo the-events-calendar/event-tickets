@@ -8,7 +8,7 @@ class Tribe__Tickets__REST__V1__Validator__Base
 		/**
 		 * Remove all the ticket data from ticket in rest response by authorized user.
 		 *
-		 * @since TBD
+		 * @since 5.17.0.1
 		 *
 		 * @param array $ticket The ticket data.
 		 *

@@ -53,7 +53,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Filters out single ticket data that unauthorized users should not see.
 	 *
-	 * @since TBD
+	 * @since 5.17.0.1
 	 *
 	 * @param array $ticket_data
 	 * @param WP_REST_Request $request
@@ -76,7 +76,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Filters out tickets that unauthorized users should not see.
 	 *
-	 * @since TBD
+	 * @since 5.17.0.1
 	 *
 	 * @param array           $tickets The tickets to filter.
 	 * @param WP_REST_Request $request The request object.
