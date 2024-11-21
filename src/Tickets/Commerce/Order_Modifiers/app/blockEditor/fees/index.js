@@ -13,6 +13,7 @@ import { __ } from '@wordpress/i18n';
 import { setTicketHasChangesInCommonStore } from '../store/common-store-bridge';
 import { mapFeeToItem } from './map-fee-object';
 import AddFee from './add-fee';
+import FeeSelect from './select-fee';
 import './style.pcss';
 
 // The name of the store for fees.
@@ -96,6 +97,31 @@ function FeesSection( props ) {
 		[ clientId, checkedFees ]
 	);
 
+	/*
+	 * The fees section needs logic to handle the selection of fees. The default
+	 * view is to show the "+ Add fee" button. Any selected fees should be displayed
+	 * as checked above the button.
+	 *
+	 * When the "+ Add fee" button is clicked, the user should be able to select
+	 * from a list of available fees.
+	 */
+
+	// Set up the state for the fee selection.
+	const [ isSelectingFee, setIsSelectingFee ] = useState( false );
+	const onAddFeeClick = useCallback( () => { setIsSelectingFee( true ); } );
+
+	// Set up the functions for the fee selection.
+	const onCancelFeeSelect = useCallback( () => { setIsSelectingFee( false ); } );
+	const onConfirmFeeSelect = useCallback(
+		( feeId ) => {
+			setIsSelectingFee( false );
+			setCheckedFees( {
+				...checkedFees,
+				[ feeId ]: true,
+			} );
+		}
+	)
+
 	return (
 		<div
 			className={ classNames(
@@ -114,8 +140,6 @@ function FeesSection( props ) {
 
 			<div className="tribe-editor__ticket__order_modifier_fees">
 
-				<AddFee />
-
 				{ hasAutomaticFees ? (
 					feesAutomatic.map( ( fee ) => mapFeeToItem( {
 						isDisabled: true,
@@ -124,6 +148,15 @@ function FeesSection( props ) {
 						clientId: clientId,
 					} ) )
 				) : null }
+
+				{ isSelectingFee
+					? <FeeSelect
+						feesAvailable={ feesAvailable}
+						onCancel={ onCancelFeeSelect }
+						onConfirm={ onConfirmFeeSelect }
+					/>
+					: <AddFee onClick={ onAddFeeClick }/>
+				}
 
 				{ hasAvailableFees ? (
 					feesAvailable.map( ( fee ) => mapFeeToItem( {
