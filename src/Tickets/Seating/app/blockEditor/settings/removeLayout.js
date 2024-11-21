@@ -1,5 +1,5 @@
 import React, {Fragment, useState} from 'react';
-import {Modal, Dashicon, CheckboxControl, Button} from '@wordpress/components';
+import {Modal, Dashicon, CheckboxControl, Button, Spinner} from '@wordpress/components';
 import {__} from '@wordpress/i18n';
 import {
 	ACTION_REMOVE_EVENT_LAYOUT,
@@ -97,37 +97,42 @@ const RemoveLayout = React.memo(({postId}) => {
 						</p>
 					</div>
 
-					<CheckboxControl
-						className="tec-tickets-seating__settings--checkbox"
-						label="I Understand"
-						checked={isChecked}
-						onChange={setChecked}
-						name="tec-tickets-seating__settings--switched-layout"
-					/>
+					{ ! isLoading && (
+						<Fragment>
+							<CheckboxControl
+								className="tec-tickets-seating__settings--checkbox"
+								label="I Understand"
+								checked={isChecked}
+								onChange={setChecked}
+								name="tec-tickets-seating__settings--switched-layout"
+							/>
 
-					<p>
-						{__('You may want to', 'event-tickets')}{' '}
-						<a href={exportUrl} target="_blank" rel="noopener noreferrer">
-							{__('export attendee', 'event-tickets')}
-						</a>{' '}
-						{__('data first as a record of current seat assignments.', 'event-tickets')}
-					</p>
+							<p>
+								{__('You may want to', 'event-tickets')}{' '}
+								<a href={exportUrl} target="_blank" rel="noopener noreferrer">
+									{__('export attendee', 'event-tickets')}
+								</a>{' '}
+								{__('data first as a record of current seat assignments.', 'event-tickets')}
+							</p>
 
-					<div className="tec-tickets-seating__settings--actions">
-						<Button
-							onClick={handleRemoveLayout}
-							disabled={!isChecked}
-							isPrimary={isChecked}
-						>
-							{__('Remove Seat Layout', 'event-tickets')}
-						</Button>
-						<Button
-							onClick={closeModal}
-							isSecondary={true}
-						>
-							{__('Cancel', 'event-tickets')}
-						</Button>
-					</div>
+							<div className="tec-tickets-seating__settings--actions">
+								<Button
+									onClick={handleRemoveLayout}
+									disabled={!isChecked}
+									isPrimary={isChecked}
+								>
+									{__('Remove Seat Layout', 'event-tickets')}
+								</Button>
+								<Button
+									onClick={closeModal}
+									isSecondary={true}
+								>
+									{__('Cancel', 'event-tickets')}
+								</Button>
+							</div>
+						</Fragment>
+					) }
+					{isLoading && <Spinner/>}
 				</Modal>
 			)}
 		</Fragment>
