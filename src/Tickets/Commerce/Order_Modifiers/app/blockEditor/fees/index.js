@@ -11,8 +11,8 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { setTicketHasChangesInCommonStore } from '../store/common-store-bridge';
+import { mapFeeToItem } from './map-fee-object';
 import AddFee from './add-fee';
-import mapFeeToItem from './map-fee-to-item';
 import './style.pcss';
 
 // The name of the store for fees.

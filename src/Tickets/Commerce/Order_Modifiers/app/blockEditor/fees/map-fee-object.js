@@ -15,6 +15,25 @@ import classNames from "classnames";
  */
 
 /**
+ * Returns the fee label.
+ *
+ * @param {Fee} fee The fee object.
+ * @returns {string} The fee label.
+ */
+const getFeeLabel = ( fee ) => {
+	const amount = Number.parseFloat( fee.raw_amount ).toFixed( 2 );
+
+	let feeLabel;
+	if ( fee.sub_type === "percent" ) {
+		feeLabel = `${fee.display_name} (${amount}%)`;
+	} else {
+		feeLabel = `${fee.display_name} ($${amount})`;
+	}
+
+	return feeLabel;
+}
+
+/**
  * Maps a fee to a checkbox item.
  *
  * @param {string} clientId The client ID of the ticket.
@@ -39,13 +58,6 @@ const mapFeeToItem = ( {
 	// Todo: the precision should be determined by settings.
 	const amount = Number.parseFloat( fee.raw_amount ).toFixed( 2 );
 
-	let feeLabel;
-	if ( fee.sub_type === 'percent' ) {
-		feeLabel = `${ fee.display_name } (${ amount }%)`;
-	} else {
-		feeLabel = `${ fee.display_name } ($${ amount })`;
-	}
-
 	const classes = [ 'tribe-editor__ticket__fee-checkbox' ];
 	const name = `tec-ticket-fee-${ fee.id }-${ clientId }`;
 
@@ -55,7 +67,7 @@ const mapFeeToItem = ( {
 			className={ classNames( classes ) }
 			disabled={ isDisabled }
 			id={ name }
-			label={ feeLabel }
+			label={ getFeeLabel( fee ) }
 			onChange={ onChange }
 			name={ name }
 			value={ fee.id }
@@ -64,4 +76,22 @@ const mapFeeToItem = ( {
 	);
 };
 
-export default mapFeeToItem;
+/**
+ * Maps a fee to a select option.
+ *
+ * @since TBD
+ *
+ * @param {Fee} fee
+ * @returns {{label: string, value}}
+ */
+const mapFeeToOption = ( fee ) => {
+	return {
+		label: getFeeLabel( fee ),
+		value: fee.id,
+	};
+};
+
+export {
+	mapFeeToItem,
+	mapFeeToOption,
+}
