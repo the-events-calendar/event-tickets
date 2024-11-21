@@ -10,6 +10,7 @@ import {getLink, getLocalizedString} from '@tec/tickets/seating/utils';
 import {Modal, Dashicon, CheckboxControl, Button, Spinner } from '@wordpress/components';
 import {useSelect} from '@wordpress/data';
 import './style.pcss';
+import RemoveLayout from "./removeLayout";
 
 /**
  * Returns the string from the settings localization.
@@ -66,7 +67,6 @@ const LayoutSelect = ({
 	const [ newLayout, setNewLayout ] = useState(null);
 	const [ isChecked, setChecked ] = useState(false);
 	const [ isLoading, setIsLoading ] = useState(false);
-	const [ removeModalOpen, setRemoveModalOpen ] = useState(false);
 
 	/**
 	 * Handles the layout change.
@@ -91,7 +91,6 @@ const LayoutSelect = ({
 	 */
 	const closeModal = () => {
 		setIsModalOpen(false);
-		setRemoveModalOpen(false);
 		setChecked(false);
 		setIsLoading(false);
 	}
@@ -166,7 +165,7 @@ const LayoutSelect = ({
 						options={layouts}
 						onChange={handleLayoutChange}
 					/>
-					<RemoveLayoutLink />
+					<RemoveLayout postId={postId} />
 				</div>
 				<span className="tec-tickets-seating__settings_layout--description">
 					Changing the event’s layout will impact all existing tickets.
@@ -176,90 +175,12 @@ const LayoutSelect = ({
 		);
 	}
 
-	async function handleRemoveLayout() {
-		setIsLoading(true);
-		if ( await removeLayout() ) {
-			setIsLoading(false);
-			setRemoveModalOpen(false);
-			window.location.reload();
-		}
-	}
-
-	async function removeLayout() {
-		const url = new URL(ajaxUrl);
-		url.searchParams.set('_ajax_nonce', ajaxNonce);
-		url.searchParams.set('postId', postId);
-		url.searchParams.set('action', ACTION_REMOVE_EVENT_LAYOUT);
-		const response = await fetch(url.toString(), { method: 'POST' });
-
-		return response.status === 200;
-	}
-
-	function RemoveLayoutLink() {
-		if (currentLayout === null || currentLayout.length === 0 || layouts.length === 0 ) {
-			return null;
-		}
-
-		return (
-			<Fragment>
-				<a href
-				   className="tec-tickets-seating__settings_layout--remove"
-				   onClick={ () => setRemoveModalOpen(true) }
-				>
-					Remove Layout
-				</a>
-
-				{ removeModalOpen && (
-					<Modal
-						className="tec-tickets-seating__settings--layout-modal"
-						title="Confirm Seat Layout removal"
-						isDismissible={true}
-						onRequestClose={() => closeModal(false)}
-						size="medium"
-					>
-						<div className="tec-tickets-seating__settings-intro">
-							<Dashicon icon="warning"/>
-							<span className="icon-text">Caution</span>
-							<p className="warning-text">All attendees will lose their seat assignments. All seated tickets will switch to 1 capacity. This action cannot be undone.</p>
-						</div>
-
-						<CheckboxControl
-							className="tec-tickets-seating__settings--checkbox"
-							label="I Understand"
-							checked={isChecked}
-							onChange={setChecked}
-							name="tec-tickets-seating__settings--switched-layout"
-						/>
-
-						<p>You may want to export attendee data first as a record of current seat assignments.</p>
-
-						<div className="tec-tickets-seating__settings--actions">
-							<Button
-								onClick={handleRemoveLayout}
-								disabled={!isChecked}
-								isPrimary={isChecked}
-							>
-								Remove Seat Layout
-							</Button>
-							<Button
-								onClick={() => setRemoveModalOpen(false)}
-								isSecondary={true}
-							>
-								Cancel
-							</Button>
-						</div>
-					</Modal>
-				)}
-			</Fragment>
-
-		);
-	}
-
+	const MemoizedRenderSelect = React.memo(RenderSelect);
 	return (
 		<div className="tec-tickets-seating__settings_layout--wrapper">
 			<span className="tec-tickets-seating__settings_layout--title">Seat Layout</span>
 			<NoLayouts />
-			<RenderSelect />
+			<MemoizedRenderSelect />
 			{ isModalOpen && (
 				<Modal
 					className="tec-tickets-seating__settings--layout-modal"
