@@ -64,8 +64,8 @@ class Order_Modifiers_Meta extends Abstract_Custom_Table {
 	 */
 	protected function get_definition() {
 		global $wpdb;
-		$table_name        = self::table_name( true );
-		$charset_collate   = $wpdb->get_charset_collate();
+		$table_name      = self::table_name( true );
+		$charset_collate = $wpdb->get_charset_collate();
 
 		return "
 				CREATE TABLE `$table_name` (
