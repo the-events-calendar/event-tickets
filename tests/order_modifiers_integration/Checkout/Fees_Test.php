@@ -95,7 +95,7 @@ class Fees_Test extends Controller_Test_Case {
 		$cart->add_item( $ticket, 1 );
 
 		// Assert the total value matches the expected total.
-		$this->assertMatchesHtmlSnapshot( tribe( Checkout_Shortcode::class )->get_html() );
+		$this->assertMatchesHtmlSnapshot( preg_replace( '#<link rel=(.*)/>#', '', str_replace( [ $event_id, $ticket ], [ '{POST_ID}', '{TICKET_ID}' ], tribe( Checkout_Shortcode::class )->get_html() ) ) );
 	}
 
 	/**
