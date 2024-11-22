@@ -332,10 +332,8 @@ class Modifier_Admin_Handler extends Controller_Contract {
 			return;
 		}
 
-		// Get the raw POST data, and set the modifier ID.
-		$raw_data                      = tribe_get_request_vars();
+		$raw_data                      = tribe_get_request_vars( true );
 		$raw_data['order_modifier_id'] = $context['modifier_id'];
-
 
 		try {
 			// Use the Modifier Manager to sanitize and save the data.

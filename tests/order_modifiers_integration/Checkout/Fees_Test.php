@@ -1,10 +1,8 @@
 <?php
 
-namespace TEC\Tickets\Commerce\Order_Modifiers\Orders;
+namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
 
 use TEC\Common\Tests\Provider\Controller_Test_Case;
-use TEC\Tickets\Commerce\Gateways\PayPal\Gateway as PayPalGateway;
-use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal\Fees as Paypal_Fees;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Float_Value;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\OrderModifiers\Fee_Creator;
@@ -14,8 +12,10 @@ use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use WP_Post;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Tickets\Commerce\Cart\Unmanaged_Cart as Cart;
+use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
 
-class PayPal_Orders_Test extends Controller_Test_Case {
+class Fees_Test extends Controller_Test_Case {
 	use Ticket_Maker;
 	use Attendee_Maker;
 	use With_Tickets_Commerce;
@@ -24,29 +24,18 @@ class PayPal_Orders_Test extends Controller_Test_Case {
 	use Order_Maker;
 	use Fee_Creator;
 
-	protected string $controller_class = Paypal_Fees::class;
-
-	/**
-	 * @after
-	 */
-	public function breakdown() {
-		$this->make_controller()->reset_fees_and_subtotal();
-	}
+	protected string $controller_class = Fees::class;
 
 	/**
 	 * @test
-	 * @dataProvider order_totals_data_provider
-	 * Ensures the order totals are calculated correctly for tickets and fees using the Stripe gateway.
+	 * @dataProvider cart_totals_data_provider
 	 */
-	public function it_calculates_order_totals_with_stripe_gateway(
+	public function it_should_calculate_fees(
 		Float_Value $ticket_price,
 		Float_Value $fee_raw_amount,
 		string $fee_application,
-		Float_Value $expected_total,
-		Float_Value $expected_subtotal
-	): void {
-		$this->make_controller()->register();
-		// Create an event post.
+		Float_Value $expected_total
+	) {
 		$event_id = self::factory()->post->create(
 			[
 				'post_title' => 'The Event',
@@ -63,29 +52,50 @@ class PayPal_Orders_Test extends Controller_Test_Case {
 		// Associate the fee with the event.
 		$this->create_fee_relationship( $fee, $ticket, get_post_type( $ticket ) );
 
-		// Set up overrides with the specified gateway.
-		$overrides['gateway'] = tribe( PayPalGateway::class );
-
-		// Create an order with 1 ticket.
-		$order = $this->create_order( [ $ticket => 1 ], $overrides );
-
-		// Assertions: Ensure the order totals are calculated correctly.
-		$this->assertInstanceOf( WP_Post::class, $order, 'Order should be a valid WP_Post object.' );
-		$this->assertEquals( 'tec_tc_order', $order->post_type, 'Order post type should be tec_tc_order.' );
+		$this->make_controller()->register();
+		$cart = tribe( Cart::class );
+		$cart->add_item( $ticket, 1 );
 
 		// Assert the total value matches the expected total.
 		$this->assertEquals(
 			$expected_total->get(),
-			$order->total_value->get_float(),
-			'Order total_value should correctly include ticket price and fee.'
+			$cart->get_cart_total(),
+			'Cart total should correctly include ticket price and fee.'
+		);
+	}
+
+	/**
+	 * @test
+	 * @dataProvider cart_totals_data_provider
+	 */
+	public function it_should_display_fee_section(
+		Float_Value $ticket_price,
+		Float_Value $fee_raw_amount,
+		string $fee_application,
+		Float_Value $expected_total
+	) {
+		$event_id = self::factory()->post->create(
+			[
+				'post_title' => 'The Event',
+			]
 		);
 
-		// Assert the subtotal matches the expected subtotal.
-		$this->assertEquals(
-			$expected_subtotal->get(),
-			$order->subtotal->get_float(),
-			'Order subtotal should only include the ticket price.'
-		);
+		// Create a fee with the specified raw amount.
+		$fee = $this->create_fee( [ 'raw_amount' => $fee_raw_amount ] );
+		$this->set_fee_application( $fee, $fee_application );
+
+		// Create a ticket for the event with the specified price.
+		$ticket = $this->create_tc_ticket( $event_id, $ticket_price->get() );
+
+		// Associate the fee with the event.
+		$this->create_fee_relationship( $fee, $ticket, get_post_type( $ticket ) );
+
+		$this->make_controller()->register();
+		$cart = tribe( Cart::class );
+		$cart->add_item( $ticket, 1 );
+
+		// Assert the total value matches the expected total.
+		$this->assertMatchesHtmlSnapshot( tribe( Checkout_Shortcode::class )->get_html() );
 	}
 
 	/**
@@ -93,13 +103,12 @@ class PayPal_Orders_Test extends Controller_Test_Case {
 	 *
 	 * @return \Generator
 	 */
-	public function order_totals_data_provider(): \Generator {
+	public function cart_totals_data_provider(): \Generator {
 		yield 'Ticket $10, Fee $5, Application All' => [
 			'ticket_price'      => Float_Value::from_number( 10 ),
 			'fee_raw_amount'    => Float_Value::from_number( 5 ),
 			'fee_application'   => 'all',
 			'expected_total'    => Float_Value::from_number( 15 ),
-			'expected_subtotal' => Float_Value::from_number( 10 ),
 		];
 
 		yield 'Ticket $20, Fee $3, Application All' => [
@@ -107,7 +116,6 @@ class PayPal_Orders_Test extends Controller_Test_Case {
 			'fee_raw_amount'    => Float_Value::from_number( 3 ),
 			'fee_application'   => 'all',
 			'expected_total'    => Float_Value::from_number( 23 ),
-			'expected_subtotal' => Float_Value::from_number( 20 ),
 		];
 
 		yield 'Ticket $15, Fee $2, Application Per' => [
@@ -115,7 +123,6 @@ class PayPal_Orders_Test extends Controller_Test_Case {
 			'fee_raw_amount'    => Float_Value::from_number( 2 ),
 			'fee_application'   => 'per',
 			'expected_total'    => Float_Value::from_number( 17 ),
-			'expected_subtotal' => Float_Value::from_number( 15 ),
 		];
 
 		yield 'Ticket $50, Fee $10, Application Per' => [
@@ -123,7 +130,6 @@ class PayPal_Orders_Test extends Controller_Test_Case {
 			'fee_raw_amount'    => Float_Value::from_number( 10 ),
 			'fee_application'   => 'per',
 			'expected_total'    => Float_Value::from_number( 60 ),
-			'expected_subtotal' => Float_Value::from_number( 50 ),
 		];
 	}
 }

@@ -156,4 +156,71 @@ trait Valid_Types {
 		 */
 		return (string) apply_filters( 'tec_tickets_commerce_order_modifier_default_type', $default_modifier );
 	}
+
+	/**
+	 * Determine if a subtype is valid.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $subtype The subtype.
+	 *
+	 * @return bool
+	 */
+	protected static function is_valid_subtype( string $subtype ): bool {
+		return array_key_exists( $subtype, self::get_valid_subtypes() );
+	}
+
+	/**
+	 * Get the valid order modifier subtypes.
+	 *
+	 * @since TBD
+	 *
+	 * @return array The valid order modifier subtypes.
+	 */
+	protected static function get_valid_subtypes(): array {
+		return [
+			'percent' => 1,
+			'flat'    => 1,
+		];
+	}
+
+	/**
+	 * Determine if a status is valid.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $status The status.
+	 *
+	 * @return bool
+	 */
+	protected static function is_valid_status( string $status ): bool {
+		return array_key_exists( $status, self::get_valid_status() );
+	}
+
+	/**
+	 * Get the valid order modifier status.
+	 *
+	 * @since TBD
+	 *
+	 * @return array The valid order modifier status.
+	 */
+	protected static function get_valid_status(): array {
+		$status = [
+			'active'   => 1,
+			'inactive' => 1,
+			'draft'    => 1,
+		];
+
+		/**
+		 *
+		 *  Get the valid order modifier statuses.
+		 *
+		 *  Retrieves the list of valid statuses for an order modifier.
+		 *
+		 * @since TBD
+		 *
+		 * @return array The valid order modifier statuses. Keys are the status names, and values are integer flags.
+		 */
+		return (array) apply_filters( 'tec_tickets_commerce_order_modifier_status_flags', $status );
+	}
 }
