@@ -31,6 +31,11 @@ class Coupons extends Controller_Contract {
 
 	/**
 	 * Constructor
+	 *
+	 * @since TBD
+	 *
+	 * @param Container $container The DI container.
+	 * @param Coupon    $coupon    The coupon modifier.
 	 */
 	public function __construct( Container $container, Coupon $coupon ) {
 		parent::__construct( $container );

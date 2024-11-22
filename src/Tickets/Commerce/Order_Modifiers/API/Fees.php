@@ -21,7 +21,6 @@ use WP_REST_Request as Request;
 use WP_REST_Response as Response;
 use WP_REST_Server as Server;
 use Tribe__Tickets__Tickets as Tickets;
-use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Relationships as Relationship_Model;
 
 /**
  * Class Fees
