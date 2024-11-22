@@ -2818,4 +2818,66 @@ class Ajax_Test extends Controller_Test_Case {
 		
 		$this->assertMatchesJsonSnapshot( wp_json_encode( $stock_data, JSON_SNAPSHOT_OPTIONS ) );
 	}
+	
+	public function test_remove_event_layout_fails() {
+		$this->make_controller()->register();
+		
+		$admin_id = $this->set_up_ajax_request_context();
+		$this->reset_wp_send_json_mocks();
+		
+		// Missing post ID.
+		unset( $_REQUEST['postId'] );
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+		
+		do_action( 'wp_ajax_' . Ajax::ACTION_REMOVE_EVENT_LAYOUT );
+		
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[
+					'error' => 'No post ID provided',
+				],
+				400
+			)
+		);
+		$this->reset_wp_send_json_mocks();
+		
+		// User cannot edit post.
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'subscriber' ] ) );
+		$_REQUEST['postId'] = static::factory()->post->create();
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+		
+		do_action( 'wp_ajax_' . Ajax::ACTION_REMOVE_EVENT_LAYOUT );
+		
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[
+					'error' => 'User has no permission.',
+				],
+				403
+			)
+		);
+		$this->reset_wp_send_json_mocks();
+		
+		wp_set_current_user( $admin_id );
+		
+		// No layout set for the post.
+		$_REQUEST['postId'] = static::factory()->post->create();
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+		
+		do_action( 'wp_ajax_' . Ajax::ACTION_REMOVE_EVENT_LAYOUT );
+		
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[
+					'error' => 'Layout not found.',
+				],
+				403
+			)
+		);
+		
+		$this->reset_wp_send_json_mocks();
+	}
 }

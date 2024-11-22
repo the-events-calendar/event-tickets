@@ -1282,17 +1282,13 @@ class Ajax extends Controller_Contract {
 		if ( empty( $layout_id ) ) {
 			wp_send_json_error(
 				[
-					'error' => __( 'No valid layout ID found.', 'event-tickets' ),
+					'error' => __( 'Layout not found.', 'event-tickets' ),
 				],
 				403
 			);
 			
 			return;
 		}
-
-		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
-		$tickets_handler   = tribe( 'tickets.handler' );
-		$capacity_meta_key = $tickets_handler->key_capacity;
 
 		$updated_tickets   = 0;
 		$updated_attendees = 0;
