@@ -1,10 +1,9 @@
 <?php
 
-namespace TEC\Tickets\Commerce\Order_Modifiers\Orders;
+namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe;
 
 use TEC\Common\Tests\Provider\Controller_Test_Case;
-use TEC\Tickets\Commerce\Gateways\PayPal\Gateway as PayPalGateway;
-use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal\Fees as Paypal_Fees;
+use TEC\Tickets\Commerce\Gateways\Stripe\Gateway as StripeGateway;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Float_Value;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\OrderModifiers\Fee_Creator;
@@ -15,7 +14,7 @@ use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use WP_Post;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 
-class PayPal_Orders_Test extends Controller_Test_Case {
+class Stripe_Fees_Test extends Controller_Test_Case {
 	use Ticket_Maker;
 	use Attendee_Maker;
 	use With_Tickets_Commerce;
@@ -24,7 +23,7 @@ class PayPal_Orders_Test extends Controller_Test_Case {
 	use Order_Maker;
 	use Fee_Creator;
 
-	protected string $controller_class = Paypal_Fees::class;
+	protected string $controller_class = Fees::class;
 
 	/**
 	 * @after
@@ -60,11 +59,13 @@ class PayPal_Orders_Test extends Controller_Test_Case {
 		// Create a ticket for the event with the specified price.
 		$ticket = $this->create_tc_ticket( $event_id, $ticket_price->get() );
 
+
 		// Associate the fee with the event.
 		$this->create_fee_relationship( $fee, $ticket, get_post_type( $ticket ) );
 
+
 		// Set up overrides with the specified gateway.
-		$overrides['gateway'] = tribe( PayPalGateway::class );
+		$overrides['gateway'] = tribe( StripeGateway::class );
 
 		// Create an order with 1 ticket.
 		$order = $this->create_order( [ $ticket => 1 ], $overrides );
