@@ -10,10 +10,8 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Commerce\Order_Modifiers\API;
 
 use TEC\Common\Contracts\Provider\Controller;
-use TEC\Common\Contracts\Container;
 use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Asset_Build;
-use Tribe__Tickets__Main as Tickets;
 
 /**
  * Class Localization
@@ -24,18 +22,6 @@ class Localization extends Controller {
 
 	use Asset_Build;
 	use Namespace_Trait;
-
-	/**
-	 * ServiceProvider constructor.
-	 *
-	 * @since TBD
-	 *
-	 * @param Container $container The DI container.
-	 */
-	public function __construct( Container $container ) {
-		parent::__construct( $container );
-		$this->plugin = Tickets::instance();
-	}
 
 	/**
 	 * Registers the filters and actions hooks added by the controller.
