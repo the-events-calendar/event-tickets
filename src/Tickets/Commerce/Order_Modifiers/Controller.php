@@ -24,6 +24,8 @@ use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use InvalidArgumentException;
 use TEC\Tickets\Commerce\Order_Modifiers\Admin\Editor;
 use TEC\Tickets\Commerce\Order_Modifiers\API\Localization;
+use TEC\Common\StellarWP\Assets\Config;
+use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
  * Main Order Modifiers Controller.
@@ -71,6 +73,9 @@ final class Controller extends Controller_Contract {
 	 * @return void The method does not return any value.
 	 */
 	public function do_register(): void {
+		// Add the group path for the order-modifiers assets.
+		Config::add_group_path( 'et-order-modifiers', Tickets_Plugin::instance()->plugin_path . 'build/', 'OrderModifiers/' );
+
 		$this->container->register( Tables::class );
 		$this->container->register( Paypal_Checkout_Fees::class );
 		$this->container->register( Stripe_Checkout_Fees::class );
