@@ -1,6 +1,6 @@
 === Event Tickets and Registration ===
 
-Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
+Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Stable tag: 5.17.0.1
 Requires at least: 6.3
@@ -92,14 +92,10 @@ Our Premium Plugins and Services:
 ⚡ [Events Calendar Pro](https://evnt.is/18wi)
 ↪️ [Event Aggregator](https://evnt.is/197u) (service)
 🎟️ [Event Tickets Plus](https://evnt.is/18wk)
-📱 [Wallet Plus](https://evnt.is/etwp)
 ✉️ [Promoter](https://evnt.is/1ajt)
-👥 [Community Events](https://evnt.is/2g)
-🎟️ [Community Tickets](https://evnt.is/18wl)
+👥 [Community](https://evnt.is/2g)
 ✏️ [Filter Bar](https://evnt.is/fa)
 🗓️ [Eventbrite Tickets](https://evnt.is/2e)
-📡 [Virtual Events](https://evnt.is/1aky)
-🔄 [Event Automator](https://evnt.is/1bdk)
 
 == Help ==
 
