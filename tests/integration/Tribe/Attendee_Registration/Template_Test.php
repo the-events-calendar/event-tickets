@@ -1,7 +1,7 @@
 <?php
 
-use Tribe__Tickets__Attendee_Registration__Template;
-use Tribe__Tickets__Attendee_Registration__Main;
+use Tribe__Tickets__Attendee_Registration__Template as Template;
+use Tribe__Tickets__Attendee_Registration__Main as Main;
 use Tribe\Tests\Traits\With_Uopz;
 
 class Template_Test extends \Codeception\TestCase\WPTestCase {
@@ -11,7 +11,7 @@ class Template_Test extends \Codeception\TestCase\WPTestCase {
 	 * @before
 	 */
 	public function setup_singletons() {
-		tribe()->singleton( 'tickets.attendee_registration.template', new Tribe__Tickets__Attendee_Registration__Template() );
+		tribe()->singleton( 'tickets.attendee_registration.template', new Template() );
 		tribe()->singleton( 'tickets.attendee_registration', new Tribe__Tickets__Attendee_Registration__Main() );
 	}
 
@@ -24,7 +24,7 @@ class Template_Test extends \Codeception\TestCase\WPTestCase {
 		global $wp_query, $post, $shortcode_tags;
 
 		uopz_set_return( 'get_queried_object', $wp_query_update->queried_object );
-		uopz_set_return( Tribe__Tickets__Attendee_Registration__Main::class, 'get_slug', 'attendee-registration' );
+		uopz_set_return( Main::class, 'get_slug', 'attendee-registration' );
 
 		$template = tribe( 'tickets.attendee_registration.template' );
 
