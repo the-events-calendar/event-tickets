@@ -766,4 +766,129 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 		}
 	}
 
+	/**
+	 * @test
+	 */
+	public function it_should_handle_modifier_lifecycle_correctly(): void {
+		// Mock wp_safe_redirect to capture the redirect URL.
+		$redirect_url = null;
+		$this->set_fn_return(
+			'wp_safe_redirect',
+			function ( $url ) use ( &$redirect_url ) {
+				$redirect_url = $url;
+			},
+			true
+		);
+
+		// Prevent exit.
+		uopz_allow_exit( false );
+
+		// Step 1: Create a new modifier.
+		$_POST = [
+			'order_modifier_sub_type'     => 'flat',
+			'order_modifier_amount'       => '1000',
+			'order_modifier_slug'         => 'test-slug',
+			'order_modifier_display_name' => 'Test Modifier',
+			'order_modifier_status'       => 'active',
+			'order_modifier_form_save'    => true,
+			'modifier'                    => 'fee',
+		];
+		$_REQUEST                            = $_POST; // phpcs:ignore WordPress.Security.NonceVerification
+		$_POST['order_modifier_save_action'] = wp_create_nonce( 'order_modifier_save_action' );
+
+		// Mock nonce verification.
+		$this->set_fn_return(
+			'check_admin_referer',
+			function () {
+				return true;
+			},
+			true
+		);
+
+		$controller = $this->make_controller();
+		$controller->handle_form_submission();
+
+		// Extract the modifier ID from the redirect URL.
+		parse_str( wp_parse_url( $redirect_url, PHP_URL_QUERY ), $query_params );
+		$modifier_id = $query_params['modifier_id'] ?? null;
+
+		// Ensure the modifier ID is valid.
+		$this->assertNotNull( $modifier_id, 'Modifier ID should not be null.' );
+		$this->assertGreaterThan( 0, intval( $modifier_id ), 'Modifier ID should be greater than 0.' );
+
+		// Step 2: Confirm the modifier exists in the repository.
+		$modifier_repository = new Order_Modifier_Repository( 'fee' );
+		$created_modifier    = $modifier_repository->find_by_id( $modifier_id );
+
+		$this->assertNotNull( $created_modifier, 'Created modifier should exist in the repository.' );
+		$this->assertEquals( 'flat', $created_modifier->sub_type, 'Sub-type should match the created value.' );
+		$this->assertEquals( 1000, $created_modifier->raw_amount, 'Amount should match the created value.' );
+		$this->assertEquals( 'test-slug', $created_modifier->slug, 'Slug should match the created value.' );
+		$this->assertEquals( 'Test Modifier', $created_modifier->display_name, 'Display name should match the created value.' );
+		$this->assertEquals( 'active', $created_modifier->status, 'Status should match the created value.' );
+
+		// Step 3: Edit the modifier.
+		$_POST = [
+			'order_modifier_sub_type'     => 'percent',
+			'order_modifier_amount'       => '500',
+			'order_modifier_slug'         => 'edited-slug',
+			'order_modifier_display_name' => 'Edited Modifier',
+			'order_modifier_status'       => 'inactive',
+			'order_modifier_form_save'    => true,
+			'modifier'                    => 'fee',
+			'modifier_id'                 => $modifier_id,
+			'edit'                        => true,
+		];
+		$_REQUEST                            = $_POST; // phpcs:ignore WordPress.Security.NonceVerification
+		$_POST['order_modifier_save_action'] = wp_create_nonce( 'order_modifier_save_action' );
+
+		$controller->handle_form_submission();
+
+		// Extract the updated modifier ID from the redirect URL.
+		parse_str( wp_parse_url( $redirect_url, PHP_URL_QUERY ), $query_params );
+		$updated_modifier_id = $query_params['modifier_id'] ?? null;
+
+		// Ensure the updated modifier ID matches the original.
+		$this->assertEquals( $modifier_id, $updated_modifier_id, 'Updated modifier ID should match the original.' );
+
+		// Step 4: Confirm the modifier was updated.
+		$updated_modifier = $modifier_repository->find_by_id( $modifier_id );
+
+		$this->assertNotNull( $updated_modifier, 'Updated modifier should exist in the repository.' );
+		$this->assertEquals( 'percent', $updated_modifier->sub_type, 'Sub-type should match the updated value.' );
+		$this->assertEquals( 500, $updated_modifier->raw_amount, 'Amount should match the updated value.' );
+		$this->assertEquals( 'edited-slug', $updated_modifier->slug, 'Slug should match the updated value.' );
+		$this->assertEquals( 'Edited Modifier', $updated_modifier->display_name, 'Display name should match the updated value.' );
+		$this->assertEquals( 'inactive', $updated_modifier->status, 'Status should match the updated value.' );
+
+		// Step 5: Delete the modifier.
+		$_GET = [
+			'action'      => 'delete_modifier',
+			'modifier_id' => $modifier_id,
+			'modifier'    => 'fee',
+			'_wpnonce'    => wp_create_nonce( 'delete_modifier_' . $modifier_id ),
+		];
+		$_REQUEST = $_GET; // phpcs:ignore WordPress.Security.NonceVerification
+
+		$controller->handle_delete_modifier();
+
+		// Validate the redirection URL after deletion.
+		$this->assertNotNull( $redirect_url, 'Redirect URL should not be null after deletion.' );
+		parse_str( wp_parse_url( $redirect_url, PHP_URL_QUERY ), $query_params );
+		$this->assertEquals( 'success', $query_params['deleted'] ?? null, 'Modifier should be successfully deleted.' );
+
+		// Step 6: Confirm the modifier was deleted.
+		try {
+			$deleted_modifier = $modifier_repository->find_by_id( $modifier_id );
+			$this->fail( 'Expected Not_Found_Exception was not thrown.' );
+		} catch ( Not_Found_Exception $exception ) {
+			$this->assertEquals(
+				'Order Modifier not found.',
+				$exception->getMessage(),
+				'Expected exception message does not match.'
+			);
+		}
+	}
+
+
 }
