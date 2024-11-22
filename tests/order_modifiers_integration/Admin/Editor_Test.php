@@ -1,9 +1,8 @@
 <?php
 
-namespace TEC\Tickets\Commerce\Order_Modifiers;
+namespace TEC\Tickets\Commerce\Order_Modifiers\Admin;
 
 use TEC\Common\Tests\Provider\Controller_Test_Case;
-use TEC\Tickets\Commerce\Order_Modifiers\Admin\Editor;
 use Tribe\Tests\Traits\With_Uopz;
 use TEC\Common\StellarWP\Assets\Assets;
 use Closure;
