@@ -129,7 +129,7 @@ class Fees extends Base_API {
 	 */
 	protected function register_routes(): void {
 		register_rest_route(
-			$this->namespace,
+			static::NAMESPACE,
 			'/fees',
 			[
 				'methods'             => Server::READABLE,
@@ -139,7 +139,7 @@ class Fees extends Base_API {
 		);
 
 		register_rest_route(
-			$this->namespace,
+			static::NAMESPACE,
 			'/tickets/(?P<id>\\d+)/fees',
 			[
 				'methods'             => Server::READABLE,
@@ -149,7 +149,7 @@ class Fees extends Base_API {
 		);
 
 		register_rest_route(
-			$this->namespace,
+			static::NAMESPACE,
 			'/tickets/(?P<id>\\d+)/fees',
 			[
 				'methods'             => Server::EDITABLE,

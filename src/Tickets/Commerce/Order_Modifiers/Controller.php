@@ -23,7 +23,6 @@ use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use InvalidArgumentException;
 use TEC\Tickets\Commerce\Order_Modifiers\Admin\Editor;
-use TEC\Tickets\Commerce\Order_Modifiers\API\Localization;
 use TEC\Common\StellarWP\Assets\Config;
 use Tribe__Tickets__Main as Tickets_Plugin;
 
@@ -51,7 +50,6 @@ final class Controller extends Controller_Contract {
 		$this->container->get( Agnostic_Checkout_Fees::class )->unregister();
 		$this->container->get( Tables::class )->unregister();
 		$this->container->get( Editor::class )->unregister();
-		$this->container->get( Localization::class )->unregister();
 
 		if ( is_admin() ) {
 			$this->container->get( Modifier_Admin_Handler::class )->unregister();
@@ -81,7 +79,6 @@ final class Controller extends Controller_Contract {
 		$this->container->register( Stripe_Checkout_Fees::class );
 		$this->container->register( Agnostic_Checkout_Fees::class );
 		$this->container->register( Editor::class );
-		$this->container->register( Localization::class );
 		$this->container->register( Fees::class );
 
 		if ( is_admin() ) {

@@ -15,6 +15,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Traits\Asset_Build;
 use Tribe__Main as Common;
 use TEC\Tickets\Commerce\Order_Modifiers\API\Fees;
 use WP_Post;
+use TEC\Tickets\Commerce\Order_Modifiers\API\Base_API;
 
 /**
  * Class Editor
@@ -33,6 +34,31 @@ class Editor extends Controller_Contract {
 	 * @return void
 	 */
 	protected function do_register(): void {
+		/*
+		 * This is a workaround to avoid the following error:
+		 *
+		 * ReferenceError: Can't find variable: tec
+		 *
+		 * This error is caused by webpack trying to map the tec.tickets.orderModifiers.rest object
+		 * before is has been initialized in the browser. It's not yet known why this is happening.
+		 *
+		 * @todo: remove this workaround once the issue is fixed.
+		 */
+		add_action(
+			'admin_enqueue_scripts',
+			function () {
+				?>
+				<script type="text/javascript">
+					(function () {
+						window.tec = window.tec || {};
+						window.tec.tickets = window.tec.tickets || {};
+						window.tec.tickets.orderModifiers = window.tec.tickets.orderModifiers || {};
+						window.tec.tickets.orderModifiers.rest = window.tec.tickets.orderModifiers.rest || {};
+					})();
+				</script>
+				<?php
+			}
+		);
 		$this->register_block_editor_assets();
 	}
 
@@ -46,7 +72,8 @@ class Editor extends Controller_Contract {
 	 * @return void Filters and actions hooks added by the controller are be removed.
 	 */
 	public function unregister(): void {
-		Assets::instance()->remove( 'tec-tickets-order-modifiers-block-editor' );
+		Assets::init()->remove( 'tec-tickets-order-modifiers-rest-localization' );
+		Assets::init()->remove( 'tec-tickets-order-modifiers-block-editor' );
 	}
 
 	/**
@@ -78,6 +105,13 @@ class Editor extends Controller_Contract {
 	 * @return void
 	 */
 	private function register_block_editor_assets() {
+		$this->add_asset(
+			'tec-tickets-order-modifiers-rest-localization',
+			'rest.js',
+		)
+			->add_localize_script( 'tec.tickets.orderModifiers.rest', fn() => $this->get_rest_data() )
+			->register();
+
 		$this->add_asset(
 			'tec-tickets-order-modifiers-block-editor',
 			'block-editor.js',
@@ -116,5 +150,19 @@ class Editor extends Controller_Contract {
 		}
 
 		return is_admin() && in_array( $post->post_type, $ticketable_post_types, true );
+	}
+
+	/**
+	 * Get the REST data for the Order Modifiers feature.
+	 *
+	 * @since TBD
+	 *
+	 * @return array The REST data for the Order Modifiers feature.
+	 */
+	protected function get_rest_data(): array {
+		return [
+			'nonce'   => wp_create_nonce( 'wp_rest' ),
+			'baseUrl' => rest_url( Base_API::NAMESPACE ),
+		];
 	}
 }

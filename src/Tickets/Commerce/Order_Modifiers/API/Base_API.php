@@ -20,7 +20,12 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
  */
 abstract class Base_API extends Controller_Contract {
 
-	use Namespace_Trait;
+	/**
+	 * The namespace for the API.
+	 *
+	 * @var string
+	 */
+	public const NAMESPACE = 'tribe/tickets/v1';
 
 	/**
 	 * Get the permission callback.

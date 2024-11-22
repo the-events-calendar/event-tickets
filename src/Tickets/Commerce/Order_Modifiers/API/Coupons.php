@@ -75,7 +75,7 @@ class Coupons extends Base_API {
 	 */
 	protected function register_routes(): void {
 		register_rest_route(
-			$this->namespace,
+			static::NAMESPACE,
 			'/coupons',
 			[
 				[
@@ -95,7 +95,7 @@ class Coupons extends Base_API {
 		);
 
 		register_rest_route(
-			$this->namespace,
+			static::NAMESPACE,
 			'/coupons/validate',
 			[
 				'methods'             => Server::CREATABLE,
@@ -106,7 +106,7 @@ class Coupons extends Base_API {
 		);
 
 		register_rest_route(
-			$this->namespace,
+			static::NAMESPACE,
 			'/coupons/apply',
 			[
 				[
@@ -120,7 +120,7 @@ class Coupons extends Base_API {
 		);
 
 		register_rest_route(
-			$this->namespace,
+			static::NAMESPACE,
 			'/coupons/remove',
 			[
 				[

@@ -170,57 +170,62 @@ class Editor_Test extends Controller_Test_Case {
 		}
 	}
 
-	public function should_enqueue_block_editor_assets_data_provider(): Generator {
-		yield 'Assets should not enqueue on incorrect action' => [
+	public function should_enqueue_assets_data_provider(): Generator {
+		yield 'no ticket-able post types' => [
 			function (): bool {
-				// Simulate an action where the assets should NOT enqueue.
-				do_action( 'some_other_action' );
+				tribe_update_option( 'ticket-able-post-types', [] );
 
 				return false;
-			},
+			}
 		];
 
-		yield 'Assets should enqueue on block editor action' => [
+		yield 'get_post does not return post' => [
+			function()	:bool{
+				tribe_update_option( 'ticket-enabled-post-types', ['post', 'page'] );
+				$this->set_fn_return( 'get_post', null );
+
+				return false;
+			}
+		];
+
+		yield 'get_post returns non ticket-able post' => [
 			function (): bool {
-				// Simulate the block editor action.
-				do_action( 'enqueue_block_editor_assets' );
+				tribe_update_option( 'ticket-enabled-post-types', [ 'page' ] );
+				$this->set_fn_return( 'get_post', self::factory()->post->create_and_get() );
+
+				return false;
+			}
+		];
+
+		yield 'ticket-able post, not admin context' => [
+			function (): bool {
+				tribe_update_option( 'ticket-enabled-post-types', [ 'post', 'page' ] );
+				$this->set_fn_return( 'get_post', self::factory()->post->create_and_get() );
+				$this->set_fn_return( 'is_admin', false );
+
+				return false;
+			}
+		];
+
+		yield 'ticket-able post, admin context' => [
+			function (): bool {
+				tribe_update_option( 'ticket-enabled-post-types', [ 'post', 'page' ] );
+				$this->set_fn_return( 'get_post', self::factory()->post->create_and_get() );
+				$this->set_fn_return( 'is_admin', true );
 
 				return true;
-			},
+			}
 		];
 	}
 
 	/**
-	 * @dataProvider should_enqueue_block_editor_assets_data_provider
+	 * @dataProvider should_enqueue_assets_data_provider
 	 */
-	public function test_should_enqueue_block_editor_assets( Closure $fixture ): void {
-		$this->make_controller()->register();
-		// Setup: Mock WordPress enqueue functions to capture enqueued scripts.
-		$enqueued_assets = [];
-		$this->set_fn_return(
-			'wp_enqueue_script',
-			function ( $handle ) use ( &$enqueued_assets ) {
-				$enqueued_assets[] = $handle;
-			},
-			true
-		);
-
-		// Execute the fixture to simulate the action.
+	public function test_should_enqueue_assets( Closure $fixture ): void {
 		$should_enqueue_assets = $fixture();
 
-		// Assert whether the asset is enqueued based on the condition.
-		if ( $should_enqueue_assets ) {
-			$this->assertContains(
-				'tec-tickets-order-modifiers-block-editor',
-				$enqueued_assets,
-				'The block editor asset should be enqueued.'
-			);
-		} else {
-			$this->assertNotContains(
-				'tec-tickets-order-modifiers-block-editor',
-				$enqueued_assets,
-				'The block editor asset should not be enqueued.'
-			);
-		}
+		$controller = $this->make_controller();
+
+		$this->assertEquals( $should_enqueue_assets, $controller->should_enqueue_assets() );
 	}
 }
