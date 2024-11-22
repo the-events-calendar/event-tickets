@@ -72,6 +72,10 @@ class Editor extends Controller_Contract {
 	public function get_store_data(): array {
 		$post_id = Common::post_id_helper();
 
+		if ( ! $post_id ) {
+			return [];
+		}
+
 		return [
 			'selectedFeesByPostId' => tribe( Fees::class )->get_selected_fees_for_post_by_ticket( $post_id ),
 		];
