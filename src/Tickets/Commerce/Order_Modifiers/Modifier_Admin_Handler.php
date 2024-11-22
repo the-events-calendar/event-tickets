@@ -338,7 +338,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		try {
 			// Use the Modifier Manager to sanitize and save the data.
 			$manager       = new Modifier_Manager( $modifier_strategy );
-			$modifier_data = $modifier_strategy->map_form_data_to_model($raw_data);
+			$modifier_data = $modifier_strategy->map_form_data_to_model( $raw_data );
 
 			$result = $manager->save_modifier( $modifier_data );
 		} catch ( InvalidArgumentException $exception ) {
