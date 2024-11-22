@@ -387,9 +387,12 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 		}
 
 		$modifier_admin_handler = tribe( Modifier_Admin_Handler::class );
-		$_POST = [
+		$_REQUEST               = [
 			'modifier' => $this->modifier_type,
-		];
+			'orderby'  => 'modifier_id',
+			'order'    => 'desc',
+		]; // phpcs:ignore WordPress.Security.NonceVerification
+
 		ob_start();
 		$modifier_admin_handler->render_tec_order_modifiers_page();
 		$test = ob_get_contents();

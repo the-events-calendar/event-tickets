@@ -17,10 +17,8 @@ class Create_Fees_Modifiers_Test extends Order_Modifiers_TestCase {
 	 * @test
 	 *
 	 * @return void
-	 * @throws \Gajus\Dindent\Exception\InvalidArgumentException
 	 */
 	public function does_table_render_correctly() {
-		// @todo redscar - Test sometimes fails randomly due to race conditions.
 		$this->assertMatchesHtmlSnapshot( $this->get_table_display() );
 	}
 
@@ -36,7 +34,6 @@ class Create_Fees_Modifiers_Test extends Order_Modifiers_TestCase {
 	/**
 	 * @test
 	 * @return void
-	 * @throws \Gajus\Dindent\Exception\InvalidArgumentException
 	 */
 	public function does_edit_screen_render_with_no_data() {
 		$snapshot = $this->does_edit_form_display_properly_with_no_data();
