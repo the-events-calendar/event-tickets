@@ -338,10 +338,40 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 		);
 
 		// Assert `modifier_id` is greater than 0.
-		$this->assertGreaterThan(
-			0,
-			intval( $query_params['modifier_id'] ?? 0 ),
-			'The "modifier_id" parameter should be greater than 0.'
+		$modifier_id = intval( $query_params['modifier_id'] ?? 0 );
+		$this->assertGreaterThan( 0, $modifier_id, 'The "modifier_id" parameter should be greater than 0.' );
+
+		// Validate data stored in the repository.
+		$modifier_repository = new Order_Modifier_Repository( $data['post_data']['modifier'] );
+		$stored_modifier     = $modifier_repository->find_by_id( $modifier_id );
+
+		$this->assertNotNull( $stored_modifier, 'The stored modifier should exist in the repository.' );
+
+		// Validate specific fields in the stored modifier.
+		$this->assertEquals(
+			$data['post_data']['order_modifier_display_name'],
+			$stored_modifier->display_name,
+			'The "display_name" field does not match the stored value.'
+		);
+		$this->assertEquals(
+			$data['post_data']['order_modifier_amount'],
+			$stored_modifier->raw_amount,
+			'The "amount" field does not match the stored value.'
+		);
+		$this->assertEquals(
+			$data['post_data']['order_modifier_sub_type'],
+			$stored_modifier->sub_type,
+			'The "sub_type" field does not match the stored value.'
+		);
+		$this->assertEquals(
+			$data['post_data']['order_modifier_status'],
+			$stored_modifier->status,
+			'The "status" field does not match the stored value.'
+		);
+		$this->assertEquals(
+			$data['post_data']['order_modifier_slug'],
+			$stored_modifier->slug,
+			'The "slug" field does not match the stored value.'
 		);
 	}
 
