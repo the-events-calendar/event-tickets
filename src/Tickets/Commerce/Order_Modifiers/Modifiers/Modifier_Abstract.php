@@ -23,6 +23,7 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Modifiers;
 use Exception;
 use InvalidArgumentException;
 use TEC\Common\StellarWP\Models\Contracts\Model;
+use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Exceptions\Not_Found_Exception;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier;
@@ -46,6 +47,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
  * @since TBD
  */
 abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
+	use Valid_Types;
 
 	/**
 	 * The modifier type for the concrete strategy (e.g., 'coupon', 'fee').
@@ -226,22 +228,54 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	public function validate_data( array $data ): bool {
 		$errors = [];
 
-		// Step 1: Validate that required fields are present.
+		// Check for missing fields.
 		$missing_fields = array_diff_key( $this->required_fields, $data );
 		if ( ! empty( $missing_fields ) ) {
-			$errors[] = 'The following required fields are missing: ' . implode( ', ', array_keys( $missing_fields ) );
+			$errors[] = sprintf(
+			/* translators: %s: List of missing fields. */
+				__( 'The following required fields are missing: %s', 'event-tickets' ),
+				implode( ', ', array_keys( $missing_fields ) )
+			);
 		}
 
-		// Step 2: Validate that required fields are not empty (allow '0' as a valid value).
+		// Validate required fields are not empty.
 		foreach ( $this->required_fields as $field => $required ) {
 			if ( $required && ( ! isset( $data[ $field ] ) || ( is_string( $data[ $field ] ) && trim( $data[ $field ] ) === '' ) ) ) {
-				$errors[] = "The field '{$field}' is required and cannot be empty.";
+				$errors[] = sprintf(
+				/* translators: %s: Field name. */
+					__( 'The field "%s" is required and cannot be empty.', 'event-tickets' ),
+					$field
+				);
 			}
 		}
 
-		// Step 6: Check for accumulated errors and throw exception if any.
+		// Validate the sub_type field, if present.
+		if ( ! empty( $data['sub_type'] ) && ! $this->is_valid_subtype( $data['sub_type'] ) ) {
+			$errors[] = sprintf(
+			/* translators: %s: Invalid sub-type value. */
+				__( 'The provided sub-type "%s" is invalid. Please use a valid sub-type.', 'event-tickets' ),
+				$data['sub_type']
+			);
+		}
+
+		// Validate the status field, if present.
+		if ( ! empty( $data['status'] ) && ! $this->is_valid_status( $data['status'] ) ) {
+			$errors[] = sprintf(
+			/* translators: %s: Invalid status value. */
+				__( 'The provided status "%s" is invalid. Please use a valid status.', 'event-tickets' ),
+				$data['status']
+			);
+		}
+
+		// Throw exception if there are errors.
 		if ( ! empty( $errors ) ) {
-			throw new InvalidArgumentException( 'Validation failed: ' . implode( '; ', $errors ) );
+			throw new InvalidArgumentException(
+				sprintf(
+				/* translators: %s: Validation error messages. */
+					__( 'Validation failed: %s', 'event-tickets' ),
+					implode( '; ', $errors )
+				)
+			);
 		}
 
 		return true;

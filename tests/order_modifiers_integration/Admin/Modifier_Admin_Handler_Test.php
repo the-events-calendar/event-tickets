@@ -526,7 +526,7 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 					],
 					'nonce'          => 'valid_nonce',
 					'valid_nonce'    => true,
-					'expected_error' => 'The field \'slug\' is required and cannot be empty.',
+					'expected_error' => 'The field "slug" is required and cannot be empty.',
 				];
 			},
 		];
@@ -544,7 +544,7 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 					],
 					'nonce'          => 'valid_nonce',
 					'valid_nonce'    => true,
-					'expected_error' => 'The field \'sub_type\' is required and cannot be empty.',
+					'expected_error' => 'The field "sub_type" is required and cannot be empty.',
 				];
 			},
 		];
@@ -561,7 +561,7 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 					],
 					'nonce'          => 'valid_nonce',
 					'valid_nonce'    => true,
-					'expected_error' => 'The field \'display_name\' is required and cannot be empty.',
+					'expected_error' => 'The field "display_name" is required and cannot be empty.',
 				];
 			},
 		];
@@ -579,7 +579,7 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 					],
 					'nonce'          => 'valid_nonce',
 					'valid_nonce'    => true,
-					'expected_error' => 'The field \'status\' is required and cannot be empty.',
+					'expected_error' => 'The field "status" is required and cannot be empty.',
 				];
 			},
 		];
