@@ -98,6 +98,13 @@ abstract class Abstract_Fees extends Controller_Contract {
 
 	/**
 	 * Constructor
+	 *
+	 * @since TBD
+	 *
+	 * @param Container                   $container The DI container.
+	 * @param Controller                  $controller The order modifiers controller.
+	 * @param Fee_Repository              $fee_repository The repository for interacting with the order modifiers.
+	 * @param Order_Modifier_Relationship $order_modifier_relationship The repository for interacting with the order modifiers relationships.
 	 */
 	public function __construct( Container $container, Controller $controller, Fee_Repository $fee_repository, Order_Modifier_Relationship $order_modifier_relationship ) {
 		parent::__construct( $container );
