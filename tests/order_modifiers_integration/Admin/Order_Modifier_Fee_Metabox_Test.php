@@ -117,4 +117,21 @@ class Order_Modifier_Fee_Metabox_Test extends Controller_Test_Case {
 
 		$this->assertEquals( $should_enqueue_assets, $controller->should_enqueue_assets() );
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_add_fee_section() {
+		$post_id = self::factory()->post->create();
+
+		$ticket = $this->create_tc_ticket( $post_id, 10.0 );
+
+		$fee_id = $this->create_fee_for_ticket( $ticket, [ 'raw_amount' => 5.27 ] );
+
+		$this->make_controller()->register();
+
+		ob_start();
+		do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, $ticket );
+		$this->assertMatchesHtmlSnapshot( ob_get_clean() );
+	}
 }
