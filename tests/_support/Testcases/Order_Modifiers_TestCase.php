@@ -26,7 +26,6 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 	 * @before
 	 */
 	public function set_up(): void {
-		$this->clear_all_modifiers( $this->modifier_type );
 		$this->set_fn_return( 'wp_create_nonce', '1234567890' );
 		$this->set_class_fn_return(
 			Modifier_Abstract::class,
@@ -48,8 +47,8 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 	}
 
 	/**
+	 * @before
 	 * @after
-	 * @return void
 	 */
 	public function tear_down() {
 		$this->clear_all_modifiers( $this->modifier_type );
@@ -241,7 +240,7 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 
 	public function does_edit_form_display_properly_with_no_data() {
 		$modifier_admin_handler = tribe( Modifier_Admin_Handler::class );
-		$_POST                  = [
+		$_REQUEST                  = [
 			'modifier'    => $this->modifier_type,
 			'modifier_id' => 0,
 			'edit'        => 1,
@@ -374,6 +373,7 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 
 
 	protected function get_table_display() {
+		$modifier_ids = [];
 		for ( $i = 0; $i < 20; $i++ ) {
 			// Step 1: Insert a new modifier.
 			$insert_data = [
@@ -383,8 +383,10 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 				'order_modifier_slug'         => sprintf( 'test_%1$s_%2$02d', $this->modifier_type, $i ),
 				'order_modifier_display_name' => "Test {$this->modifier_type} Insert",
 			];
-			$this->upsert_order_modifier_for_test( $insert_data );
+			$modifier_ids[] = $this->upsert_order_modifier_for_test( $insert_data )->id;
 		}
+
+		unset( $_REQUEST['modifier_id'], $_REQUEST['edit'], $_POST['modifier_id'], $_POST['edit'] );
 
 		$modifier_admin_handler = tribe( Modifier_Admin_Handler::class );
 		$_REQUEST               = [
@@ -395,9 +397,7 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 
 		ob_start();
 		$modifier_admin_handler->render_tec_order_modifiers_page();
-		$test = ob_get_contents();
-		ob_end_flush();
 
-		return $test;
+		return ob_get_clean();
 	}
 }
