@@ -13,7 +13,6 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Admin;
 
-use stdClass;
 use TEC\Tickets\Commerce\Order_Modifiers\Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Factory;
@@ -257,14 +256,16 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 
 		$fee_ids = array_map(
 			function ( $fee ) {
-				if ( $fee instanceof stdClass ) {
-					return (int) $fee->id;
+				if ( is_object( $fee ) && ! empty( $fee->id ) && is_numeric( $fee->id ) ) {
+					return (int) filter_var( $fee->id, FILTER_VALIDATE_INT, [ 'options' => [ 'min_range' => 0 ] ] );
 				} else {
-					return (int) $fee;
+					return ! is_numeric( $fee ) ? false : (int) filter_var( $fee, FILTER_VALIDATE_INT, [ 'options' => [ 'min_range' => 0 ] ] );
 				}
 			},
 			$ticket_order_modifier_fees
 		);
+
+		$fee_ids = array_filter( array_unique( $fee_ids ), static fn ( $fee_id ) => $fee_id && is_int( $fee_id ) && $fee_id > 0 );
 
 		// Sync the relationships between the selected fees and the ticket.
 		$this->manager->sync_modifier_relationships( $fee_ids, [ $ticket->ID ] );

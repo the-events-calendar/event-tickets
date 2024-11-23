@@ -11,6 +11,9 @@ use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use Tribe\Tickets\Test\Commerce\OrderModifiers\Fee_Creator;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use WP_Screen;
+use Tribe__Tickets__Tickets as Tickets;
+use TEC\Tickets\Commerce\Order_Modifiers\API\Fees;
+use TEC\Common\StellarWP\DB\DB;
 
 class Order_Modifier_Fee_Metabox_Test extends Controller_Test_Case {
 	use With_Uopz;
@@ -133,5 +136,80 @@ class Order_Modifier_Fee_Metabox_Test extends Controller_Test_Case {
 		ob_start();
 		do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, $ticket );
 		$this->assertMatchesHtmlSnapshot( str_replace( $fee_id, '{FEE_ID}', ob_get_clean() ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_save_ticket_fee() {
+		$post = self::factory()->post->create();
+		$ticket = $this->create_tc_ticket( $post, 10.0 );
+		$fee_1 = $this->create_fee( [ 'raw_amount' => 5.24 ] );
+		$fee_2 = $this->create_fee( [ 'raw_amount' => 3.26 ] );
+
+		$controller = $this->make_controller();
+
+		// IMPORTANT! We do save the values marked as saved even though they dont match a fee.
+		$raw_data = [
+			'ticket_order_modifier_fees' => [
+				$fee_1->id,
+				$fee_2,
+				12, //saved
+				9567654, //saved
+				'string',
+				false,
+				null,
+				true,
+				-1,
+				-127485,
+				314135.27,
+				'sdasdsa123456831sdasdsa',
+				[ 90 ],
+				[ '67', 'asdsa' ],
+				[ 'asffa', 78 ],
+				[ true ],
+			],
+		];
+
+		$controller->save_ticket_fee( $post, Tickets::load_ticket_object( $ticket ), $raw_data );
+
+		$this->assertMatchesJsonSnapshot(
+			str_replace(
+				[
+					$fee_1->id,
+					$fee_2->id,
+					$ticket,
+				],
+				[
+					'{FEE_ID_1}',
+					'{FEE_ID_2}',
+					'{TICKET_ID}',
+				],
+				// WE DO NOT RETURN THEM though by this method.
+				wp_json_encode( $this->make_controller( Fees::class )->get_selected_fees_for_post_by_ticket( $post ), JSON_SNAPSHOT_OPTIONS )
+			)
+		);
+
+		$results = DB::get_results(
+			DB::prepare(
+				'SELECT modifier_id FROM %i WHERE post_id = %d',
+				DB::prefix( 'tec_order_modifier_relationships' ),
+				$ticket
+			)
+		);
+
+		$this->assertMatchesStringSnapshot(
+			str_replace(
+				[
+					$fee_1->id,
+					$fee_2->id,
+				],
+				[
+					'{FEE_ID_1}',
+					'{FEE_ID_2}',
+				],
+				wp_json_encode( $results, JSON_SNAPSHOT_OPTIONS )
+			)
+		);
 	}
 }

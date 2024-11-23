@@ -1,0 +1,14 @@
+[
+    {
+        "modifier_id": "{FEE_ID_1}"
+    },
+    {
+        "modifier_id": "{FEE_ID_2}"
+    },
+    {
+        "modifier_id": "12"
+    },
+    {
+        "modifier_id": "9567654"
+    }
+]
