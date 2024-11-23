@@ -132,6 +132,6 @@ class Order_Modifier_Fee_Metabox_Test extends Controller_Test_Case {
 
 		ob_start();
 		do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, $ticket );
-		$this->assertMatchesHtmlSnapshot( ob_get_clean() );
+		$this->assertMatchesHtmlSnapshot( str_replace( $fee_id, '{FEE_ID}', ob_get_clean() ) );
 	}
 }
