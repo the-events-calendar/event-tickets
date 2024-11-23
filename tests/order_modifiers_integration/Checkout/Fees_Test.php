@@ -14,6 +14,7 @@ use WP_Post;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Tickets\Commerce\Cart\Unmanaged_Cart as Cart;
 use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
+use Tribe\Tests\Traits\With_Uopz;
 
 class Fees_Test extends Controller_Test_Case {
 	use Ticket_Maker;
@@ -23,6 +24,7 @@ class Fees_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
 	use Order_Maker;
 	use Fee_Creator;
+	use With_Uopz;
 
 	protected string $controller_class = Fees::class;
 
@@ -94,6 +96,7 @@ class Fees_Test extends Controller_Test_Case {
 		$cart = tribe( Cart::class );
 		$cart->add_item( $ticket, 1 );
 
+		$this->set_fn_return( 'wp_create_nonce', '0987654321' );
 		// Assert the total value matches the expected total.
 		$this->assertMatchesHtmlSnapshot( preg_replace( '#<link rel=(.*)/>#', '', str_replace( [ $event_id, $ticket ], [ '{POST_ID}', '{TICKET_ID}' ], tribe( Checkout_Shortcode::class )->get_html() ) ) );
 	}
