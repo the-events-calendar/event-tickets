@@ -14,6 +14,7 @@ use WP_Screen;
 use Tribe__Tickets__Tickets as Tickets;
 use TEC\Tickets\Commerce\Order_Modifiers\API\Fees;
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Tickets\Commerce\Ticket;
 
 class Order_Modifier_Fee_Metabox_Test extends Controller_Test_Case {
 	use With_Uopz;
@@ -209,6 +210,82 @@ class Order_Modifier_Fee_Metabox_Test extends Controller_Test_Case {
 					'{FEE_ID_2}',
 				],
 				wp_json_encode( $results, JSON_SNAPSHOT_OPTIONS )
+			)
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_delete_fees_replationship_along_with_tickets() {
+		$post = self::factory()->post->create();
+		$ticket = $this->create_tc_ticket( $post, 10.0 );
+		$fee_1 = $this->create_fee_for_ticket( $ticket, [ 'raw_amount' => 5.24 ] );
+		$fee_2 = $this->create_fee_for_ticket( $ticket, [ 'raw_amount' => 3.26 ] );
+
+		$this->make_controller()->register();
+
+		$current = $this->make_controller( Fees::class )->get_selected_fees_for_post_by_ticket( $post );
+
+		$this->assertEquals(
+			[
+				$ticket => [
+					$fee_1,
+					$fee_2,
+				]
+			],
+			$current
+		);
+
+		$this->assertEquals(
+			2,
+			DB::get_var(
+				DB::prepare(
+					'SELECT count(*) FROM %i WHERE id IN ( %d, %d )',
+					DB::prefix( 'tec_order_modifiers' ),
+					$fee_1,
+					$fee_2
+				)
+			)
+		);
+		$this->assertEquals(
+			2,
+			DB::get_var(
+				DB::prepare(
+					'SELECT count(*) FROM %i WHERE post_id = %d',
+					DB::prefix( 'tec_order_modifier_relationships' ),
+					$ticket
+				)
+			)
+		);
+
+		tribe( Ticket::class )->delete( $post, $ticket );
+
+		$current = $this->make_controller( Fees::class )->get_selected_fees_for_post_by_ticket( $post );
+
+		$this->assertEmpty( $current );
+
+		// Modifiers are not deleted!
+		$this->assertEquals(
+			2,
+			DB::get_var(
+				DB::prepare(
+					'SELECT count(*) FROM %i WHERE id IN ( %d, %d )',
+					DB::prefix( 'tec_order_modifiers' ),
+					$fee_1,
+					$fee_2
+				)
+			)
+		);
+		// Relationships are deleted though!
+		$this->assertEquals(
+			0,
+			DB::get_var(
+				DB::prepare(
+					'SELECT count(*) FROM %i WHERE post_id = %d',
+					DB::prefix( 'tec_order_modifier_relationships' ),
+					$ticket
+				)
 			)
 		);
 	}
