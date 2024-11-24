@@ -150,7 +150,7 @@ class Order_Modifier_Fee_Metabox_Test extends Controller_Test_Case {
 
 		$controller = $this->make_controller();
 
-		// IMPORTANT! We do save the values marked as saved even though they dont match a fee.
+		// IMPORTANT! We do save the values marked with the comment //saved even though they don't match a fee.
 		$raw_data = [
 			'ticket_order_modifier_fees' => [
 				$fee_1->id,
