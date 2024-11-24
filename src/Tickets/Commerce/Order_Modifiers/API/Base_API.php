@@ -44,9 +44,7 @@ abstract class Base_API extends Controller_Contract {
 		 */
 		$role = apply_filters( 'tec_tickets_commerce_order_modifiers_api_role', 'manage_options' );
 
-		return static function () use ( $role ) {
-			return current_user_can( $role );
-		};
+		return static fn() => current_user_can( $role );
 	}
 
 	/**
