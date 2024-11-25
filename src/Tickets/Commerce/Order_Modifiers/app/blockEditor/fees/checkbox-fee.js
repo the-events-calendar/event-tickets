@@ -71,6 +71,61 @@ const CheckboxFee = ( {
 	);
 };
 
+/**
+ * CheckboxFeeWithTooltip component.
+ *
+ * @param {string} clientId
+ * @param {Fee} fee
+ * @param {boolean} isChecked
+ * @param {boolean} isDisabled
+ * @param {function} onChange
+ * @param {string} tooltipText
+ * @param {string} tooltipPosition
+ * @returns {JSX.Element}
+ */
+const CheckboxFeeWithTooltip = ( {
+	clientId,
+	fee,
+	isChecked,
+	isDisabled,
+	onChange,
+	tooltipText,
+} ) => {
+	if ( undefined === typeof onChange ) {
+		onChange = () => {
+		};
+	}
+
+	const name = getCheckboxName( clientId, fee );
+
+	return (
+		<div className={ classNames( 'tribe-editor__checkbox', getContainerClasses() ) }>
+			<CheckboxInput
+				checked={ isChecked }
+				className="tribe-editor__checkbox__input"
+				disabled={ isDisabled }
+				id={ name }
+				name={ name }
+				onChange={ onChange }
+				value={ fee.id }
+			/>
+			<LabelWithTooltip
+				forId={ name }
+				isLabel={ true }
+				label={ getFeeLabel( fee ) }
+				tooltipText={ tooltipText }
+				tooltipLabel={
+					<Dashicon
+						className="tribe-editor__ticket__tooltip-label"
+						icon="info-outline"
+					/>
+				}
+			/>
+		</div>
+	);
+}
+
 export {
 	CheckboxFee,
+	CheckboxFeeWithTooltip,
 };
