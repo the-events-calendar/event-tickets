@@ -11,8 +11,8 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { setTicketHasChangesInCommonStore } from '../store/common-store-bridge';
-import { mapFeeToItem } from './map-fee-object';
 import AddFee from './add-fee';
+import { CheckboxFee, CheckboxFeeWithTooltip } from './checkbox-fee';
 import SelectFee from './select-fee';
 import './style.pcss';
 
@@ -55,18 +55,22 @@ function FeesSection( props ) {
 		[]
 	);
 
-	const hasAutomaticFees = feesAutomatic.length > 0;
-	const hasAvailableFees = feesAvailable.length > 0;
-	const hasItemsToDisplay = hasAutomaticFees || hasAvailableFees;
-
 	// Set up the state for the selected fees.
-	const feesSelected = useSelect(
-		( select ) => select( storeName ).getSelectedFees( clientId ),
+	const { feesSelected, feesDisplayed } = useSelect(
+		( select ) => {
+			return {
+				feesSelected: select( storeName ).getSelectedFees( clientId ),
+				feesDisplayed: select( storeName ).getDisplayedFees( clientId ),
+			}
+		},
 		[ clientId ]
 	);
 
+	const hasAutomaticFees = feesAutomatic.length > 0;
+	const hasDisplayedFees = feesDisplayed.length > 0;
+	const hasItemsToDisplay = hasAutomaticFees || hasDisplayedFees;
+
 	const feeIdSelectedMap = {};
-	const displayedFees = [];
 
 	// Initialize the selected fees map with the available fees.
 	feesAvailable.forEach( ( fee ) => {
@@ -76,17 +80,17 @@ function FeesSection( props ) {
 	// Set the selected fees to true.
 	feesSelected.forEach( ( feeId ) => {
 		feeIdSelectedMap[ feeId ] = true;
-		let fee = feesAvailable.find( ( fee ) => fee.id === feeId );
-		if ( fee ) {
-			displayedFees.push( fee );
-		}
 	} );
 
 	// Set up the state for the selected fees.
 	const [ checkedFees, setCheckedFees ] = useState( feeIdSelectedMap );
 
-	// Set up the dispatch functions for adding and removing fees.
-	const { addFeeToTicket, removeFeeFromTicket } = useDispatch( storeName );
+	// Set up the dispatch functions for working with the data store.
+	const {
+		addFeeToTicket,
+		removeFeeFromTicket,
+		addDisplayedFee,
+	} = useDispatch( storeName );
 
 	/**
 	 * Handles the change event for the selected fees.
@@ -142,17 +146,21 @@ function FeesSection( props ) {
 				[ feeId ]: true,
 			} );
 
-			// Dispatch the action to add the fee to the ticket.
+			// Dispatch the necessary actions to the store.
 			addFeeToTicket( clientId, feeId );
+			addDisplayedFee( clientId, feeId );
 		},
-		[ clientId, checkedFees, feesAvailable ]
+		[ clientId, checkedFees ]
 	)
 
 	// Set up the fees that are available to be selected.
 	const selectableFees = feesAvailable.filter( ( fee ) => {
 		// The fee should not be selectable if it's already in the display fees.
-		return ! displayedFees.some( ( displayedFee ) => displayedFee.id === fee.id );
+		return ! feesDisplayed.some( ( displayedFee ) => displayedFee.id === fee.id );
 	} );
+
+	// Tooltip text for automatic fees.
+	const toolTipText = __( 'This fee is automatically added to the ticket.', 'event-tickets' );
 
 	return (
 		<div
@@ -173,22 +181,29 @@ function FeesSection( props ) {
 			<div className="tribe-editor__ticket__order_modifier_fees">
 
 				{ hasAutomaticFees ? (
-					feesAutomatic.map( ( fee ) => mapFeeToItem( {
-						isDisabled: true,
-						isChecked: true,
-						fee: fee,
-						clientId: clientId,
-					} ) )
+					feesAutomatic.map(
+						( fee ) => (
+							<CheckboxFeeWithTooltip
+								clientId={ clientId }
+								fee={ fee }
+								isChecked={ true }
+								isDisabled={ true }
+								onChange={ () => {} }
+								tooltipText={ toolTipText }
+							/>
+						) )
 				) : null }
 
-				{ displayedFees.length > 0 ? (
-					displayedFees.map( ( fee ) => mapFeeToItem( {
-						isDisabled: false,
-						onChange: onSelectedFeesChange,
-						isChecked: checkedFees[ fee.id ],
-						fee: fee,
-						clientId: clientId,
-					} ) )
+				{ hasDisplayedFees ? (
+					feesDisplayed.map( ( fee ) => (
+						<CheckboxFee
+							isDisabled={ false }
+							onChange={ onSelectedFeesChange }
+							isChecked={ checkedFees[ fee.id ] }
+							fee={ fee }
+							clientId={ clientId }
+						/>
+					) )
 				) : null }
 
 				{ isSelectingFee
