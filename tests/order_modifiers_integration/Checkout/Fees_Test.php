@@ -15,6 +15,7 @@ use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Tickets\Commerce\Cart\Unmanaged_Cart as Cart;
 use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
 use Tribe\Tests\Traits\With_Uopz;
+use TEC\Tickets\Commerce\Cart as Commerce_Cart;
 
 class Fees_Test extends Controller_Test_Case {
 	use Ticket_Maker;
@@ -36,7 +37,8 @@ class Fees_Test extends Controller_Test_Case {
 		Float_Value $ticket_price,
 		Float_Value $fee_raw_amount,
 		string $fee_application,
-		Float_Value $expected_total
+		Float_Value $expected_total,
+		int $quantity
 	) {
 		$event_id = self::factory()->post->create(
 			[
@@ -56,11 +58,11 @@ class Fees_Test extends Controller_Test_Case {
 
 		$this->make_controller()->register();
 		$cart = tribe( Cart::class );
-		$cart->add_item( $ticket, 1 );
+		$cart->add_item( $ticket, $quantity );
 
 		// Assert the total value matches the expected total.
 		$this->assertEquals(
-			$expected_total->get(),
+			$quantity * $expected_total->get(),
 			$cart->get_cart_total(),
 			'Cart total should correctly include ticket price and fee.'
 		);
@@ -73,8 +75,7 @@ class Fees_Test extends Controller_Test_Case {
 	public function it_should_display_fee_section(
 		Float_Value $ticket_price,
 		Float_Value $fee_raw_amount,
-		string $fee_application,
-		Float_Value $expected_total
+		string $fee_application
 	) {
 		$event_id = self::factory()->post->create(
 			[
@@ -112,6 +113,7 @@ class Fees_Test extends Controller_Test_Case {
 			'fee_raw_amount'    => Float_Value::from_number( 5 ),
 			'fee_application'   => 'all',
 			'expected_total'    => Float_Value::from_number( 15 ),
+			'quantity'          => 3,
 		];
 
 		yield 'Ticket $20, Fee $3, Application All' => [
@@ -119,6 +121,7 @@ class Fees_Test extends Controller_Test_Case {
 			'fee_raw_amount'    => Float_Value::from_number( 3 ),
 			'fee_application'   => 'all',
 			'expected_total'    => Float_Value::from_number( 23 ),
+			'quantity'          => 2,
 		];
 
 		yield 'Ticket $15, Fee $2, Application Per' => [
@@ -126,6 +129,7 @@ class Fees_Test extends Controller_Test_Case {
 			'fee_raw_amount'    => Float_Value::from_number( 2 ),
 			'fee_application'   => 'per',
 			'expected_total'    => Float_Value::from_number( 17 ),
+			'quantity'          => 3,
 		];
 
 		yield 'Ticket $50, Fee $10, Application Per' => [
@@ -133,6 +137,85 @@ class Fees_Test extends Controller_Test_Case {
 			'fee_raw_amount'    => Float_Value::from_number( 10 ),
 			'fee_application'   => 'per',
 			'expected_total'    => Float_Value::from_number( 60 ),
+			'quantity'          => 2,
 		];
+	}
+
+	/**
+	 * @test
+	 */
+	public function ticket_without_fees_in_checkout() {
+		$post_id         = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		$ticket_id = $this->create_tc_ticket( $post_id, 15 );
+		// Create the fee and set the application.
+		$fee = $this->create_fee( [ 'display_name' => __METHOD__ ] );
+		$this->set_fee_application( $fee, 'per' );
+
+		$this->make_controller()->register();
+
+		// Step 2: Create a cart with the tickets.
+		$quantity = 10;
+		$cart     = $this->get_cart_with_tickets( $ticket_id, $quantity );
+
+		// Step 3: Get the cart total and subtotal.
+		$cart_total    = $cart->get_cart_total();
+		$cart_subtotal = $cart->get_cart_subtotal();
+
+		// Clear the cart for the next test.
+		$cart->clear_cart();
+
+		// Step 4: Verify that the cart total and subtotal are correct.
+		$this->assertEquals( 15 * $quantity, $cart_subtotal );
+		$this->assertEquals( 15 * $quantity, $cart_total );
+	}
+
+	/**
+	 * @test
+	 */
+	public function ticket_with_fees_in_checkout() {
+		$post_id         = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		$ticket_id = $this->create_tc_ticket( $post_id, 15 );
+
+		// Create the fee and set the application.
+		$fee = $this->create_fee( [ 'display_name' => __METHOD__ ] );
+		$this->set_fee_application( $fee, 'all' );
+
+		$this->make_controller()->register();
+
+		// Step 2: Create a cart with the tickets.
+		$quantity = 2;
+		$cart     = $this->get_cart_with_tickets( $ticket_id, $quantity );
+
+		// Make sure we have the number of items we expect in the cart.
+		$items = $cart->get_items_in_cart();
+		$count = 0;
+		foreach ( $items as $item ) {
+			$count += $item['quantity'];
+		}
+
+		$this->assertEquals( $quantity, $count );
+
+		// Step 3: Get the cart total and subtotal.
+		$cart_total    = $cart->get_cart_total();
+		$cart_subtotal = $cart->get_cart_subtotal();
+
+		// Step 4: Verify that the cart total and subtotal are correct.
+		$this->assertEquals( 15 * $quantity, $cart_subtotal );
+		$this->assertEquals( ( 15 + 5 ) * $quantity, $cart_total );
+	}
+
+	/**
+	 * Get a cart with the tickets.
+	 *
+	 * @param ?int $quantity The quantity of tickets to add to the cart.
+	 *
+	 * @return Commerce_Cart
+	 */
+	protected function get_cart_with_tickets( int $ticket_id, ?int $quantity = null ) {
+		$cart     = tribe( Commerce_Cart::class );
+		$quantity = $quantity ?? 1;
+		$cart->add_ticket( $ticket_id, $quantity );
+
+		return $cart;
 	}
 }
