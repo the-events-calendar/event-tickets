@@ -29,7 +29,7 @@ const LabelWithTooltip = ( {
 		isLabel={ isLabel }
 		label={ label }
 	>
-		<Tooltip text={ tooltipText } position={ tooltipPosition }>
+		<Tooltip text={ tooltipText } placement={ tooltipPosition }>
 			<button
 				aria-label={ tooltipText }
 				className={ classNames( 'tribe-editor__tooltip-label', 'tribe-editor__label-with-tooltip__tooltip-label' ) }
