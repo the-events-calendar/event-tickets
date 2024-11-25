@@ -865,8 +865,8 @@ export function* deleteTicket( action ) {
 
 		yield put( actions.setTicketIsSelected( clientId, false ) );
 		yield put( actions.removeTicketBlock( clientId ) );
-		yield call( [ wpDispatch( 'core/editor' ), 'clearSelectedBlock' ] );
-		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ clientId ] );
+		yield call( [ wpDispatch( 'core/block-editor' ), 'clearSelectedBlock' ] );
+		yield call( [ wpDispatch( 'core/block-editor' ), 'removeBlocks' ], [ clientId ] );
 
 		if ( hasBeenCreated ) {
 			const { remove_ticket_nonce = '' } = restNonce(); // eslint-disable-line camelcase
@@ -1457,7 +1457,7 @@ export function* handleTicketMove() {
 	if ( ticketClientIds.includes( modalClientId ) ) {
 		yield put( actions.setTicketIsSelected( modalClientId, false ) );
 		yield put( actions.removeTicketBlock( modalClientId ) );
-		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ modalClientId ] );
+		yield call( [ wpDispatch( 'core/block-editor' ), 'removeBlocks' ], [ modalClientId ] );
 	}
 }
 
