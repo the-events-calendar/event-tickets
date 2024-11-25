@@ -60,7 +60,6 @@ class Coupons extends Controller_Contract {
 
 		// Add asset localization to ensure the script has the necessary data.
 		add_action( 'init', [ $this, 'localize_asset' ] );
-
 	}
 
 	/**
