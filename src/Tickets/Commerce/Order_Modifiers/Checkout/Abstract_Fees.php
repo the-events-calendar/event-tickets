@@ -23,6 +23,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
 use Tribe__Template as Template;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use WP_Post;
+use Tribe__Tickets__Tickets as Tickets;
 
 /**
  * Class Fees
@@ -252,7 +253,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 			$ticket_fees = $this->order_modifiers_repository->find_relationship_by_post_ids( [ $item['ticket_id'] ], $this->modifier_type );
 
 			$fees_per_item[ $item['ticket_id'] ] = [
-				'fees'  => $this->extract_and_combine_fees( $ticket_fees, $automatic_fees, new Value( $item['obj']->price ) ),
+				'fees'  => $this->extract_and_combine_fees( $ticket_fees, $automatic_fees, new Value( Tickets::load_ticket_object( $item['ticket_id'] )->price ) ),
 				'times' => $item['quantity'] ?? 1,
 			];
 		}
