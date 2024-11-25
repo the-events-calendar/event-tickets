@@ -76,8 +76,8 @@ class Fees extends Base_API {
 	 */
 	protected function register_additional_hooks(): void {
 		add_filter(
-			'tec_tickets_commerce_rest_ticket_archive_data',
-			[ $this, 'add_fees_to_ticket_data' ],
+			'tec_tickets_rest_api_archive_results',
+			[ $this, 'add_fees_to_ticket_data_archive' ],
 			10,
 			2
 		);
@@ -106,8 +106,8 @@ class Fees extends Base_API {
 	 */
 	protected function unregister_additional_hooks(): void {
 		remove_filter(
-			'tec_tickets_commerce_rest_ticket_archive_data',
-			[ $this, 'add_fees_to_ticket_data' ]
+			'tec_tickets_rest_api_archive_results',
+			[ $this, 'add_fees_to_ticket_data_archive' ]
 		);
 
 		remove_filter(
@@ -284,6 +284,13 @@ class Fees extends Base_API {
 	 * @return array The ticket data with fees.
 	 */
 	public function add_fees_to_ticket_data( array $data, Request $request ): array {
+		/** @var \Tribe__Tickets__REST__V1__Main */
+		$ticket_rest = tribe( 'tickets.rest-v1.main' );
+
+		if ( ! $ticket_rest->request_has_manage_access() ) {
+			return $data;
+		}
+
 		// Only add fees to the default ticket type.
 		if ( array_key_exists( 'type', $data ) && 'default' !== $data['type'] ) {
 			return $data;
@@ -296,6 +303,37 @@ class Fees extends Base_API {
 		} finally {
 			return $data;
 		}
+	}
+
+	/**
+	 * Add fees to the tickets archive.
+	 *
+	 * @since TBD
+	 *
+	 * @param array   $data    The ticket data.
+	 * @param Request $request The request object.
+	 *
+	 * @return array The ticket data with fees.
+	 */
+	public function add_fees_to_ticket_data_archive( array $tickets, Request $request ): array {
+		/** @var \Tribe__Tickets__REST__V1__Main */
+		$ticket_rest = tribe( 'tickets.rest-v1.main' );
+
+		if ( ! $ticket_rest->request_has_manage_access() ) {
+			return $tickets;
+		}
+
+		foreach ( $tickets as &$ticket ) {
+			// Only add fees to the default ticket type.
+			if ( array_key_exists( 'type', $ticket ) && 'default' !== $ticket['type'] ) {
+				continue;
+			}
+
+			$ticket_id    = (int) $ticket['id'];
+			$ticket['fees'] = $this->get_fees_for_ticket( $ticket_id );
+		}
+
+		return $tickets;
 	}
 
 	/**
