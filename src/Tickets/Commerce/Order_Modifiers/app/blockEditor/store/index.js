@@ -15,14 +15,9 @@ const storeName = 'tec-tickets-fees';
 
 const resolvers = {
 
-	* getAutomaticFees() {
-		const allFees = yield actions.fetchFeesFromAPI();
-		return actions.setAutomaticFees( allFees.feesAutomatic );
-	},
-
-	* getAvailableFees() {
-		const allFees = yield actions.fetchFeesFromAPI();
-		return actions.setAvailableFees( allFees.feesAvailable );
+	* getAllFees() {
+		const { feesAvailable, feesAutomatic } = yield actions.fetchFeesFromAPI();
+		return actions.setAllFees( feesAvailable, feesAutomatic );
 	},
 };
 

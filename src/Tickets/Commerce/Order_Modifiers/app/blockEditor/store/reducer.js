@@ -7,6 +7,13 @@ export const reducer = ( state = defaultState, action ) => {
 	let ticketPostId;
 
 	switch ( action.type ) {
+		case 'SET_ALL_FEES':
+			return {
+				...state,
+				feesAvailable: action.feesAvailable,
+				feesAutomatic: action.feesAutomatic,
+			}
+
 		case 'SET_AUTOMATIC_FEES':
 			return {
 				...state,

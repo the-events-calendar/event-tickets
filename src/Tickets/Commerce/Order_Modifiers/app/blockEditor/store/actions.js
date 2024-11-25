@@ -1,5 +1,20 @@
 export const actions = {
-	// Actions that have to do with fees for a ticket.
+
+	/**
+	 * Set all the fees.
+	 *
+	 * @param {Fee[]} feesAvailable
+	 * @param {Fee[]} feesAutomatic
+	 * @return {{allFees, type: string}}
+	 */
+	setAllFees( feesAvailable, feesAutomatic ) {
+		return {
+			type: 'SET_ALL_FEES',
+			feesAvailable,
+			feesAutomatic,
+		};
+	},
+
 	setTicketFees( clientId, feesSelected ) {
 		return {
 			type: 'SET_SELECTED_FEES',

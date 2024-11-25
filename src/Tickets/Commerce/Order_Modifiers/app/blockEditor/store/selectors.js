@@ -1,18 +1,12 @@
 import { getTicketIdFromCommonStore } from './common-store-bridge';
-import { currentProviderSupportsFees } from './compatibility';
 
 export const selectors = {
 
-	shouldShowFees( state ) {
-		return currentProviderSupportsFees();
-	},
-
-	getAvailableFees( state ) {
-		return state.feesAvailable;
-	},
-
-	getAutomaticFees( state ) {
-		return state.feesAutomatic;
+	getAllFees( state ) {
+		return {
+			feesAvailable: state.feesAvailable,
+			feesAutomatic: state.feesAutomatic,
+		};
 	},
 
 	getSelectedFees( state, clientId ) {

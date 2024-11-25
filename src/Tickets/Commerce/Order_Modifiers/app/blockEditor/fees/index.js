@@ -16,8 +16,7 @@ import AddFee from './add-fee';
 import SelectFee from './select-fee';
 import './style.pcss';
 
-// The name of the store for fees.
-const storeName = 'tec-tickets-fees';
+const { storeName } = require( '../store' );
 
 /**
  * The fees section component for the ticket editor.
@@ -51,10 +50,7 @@ function FeesSection( props ) {
 		feesAutomatic,
 	} = useSelect(
 		( select ) => {
-			return {
-				feesAvailable: select( storeName ).getAvailableFees(),
-				feesAutomatic: select( storeName ).getAutomaticFees(),
-			};
+			return select( storeName ).getAllFees();
 		},
 		[]
 	);
