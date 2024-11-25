@@ -14,7 +14,7 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
 use TEC\Common\Contracts\Container;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Controller;
-use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
+use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee_Modifier_Manager as Modifier_Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Fees as Fee_Repository;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship;
@@ -105,11 +105,12 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 * @param Controller                  $controller The order modifiers controller.
 	 * @param Fee_Repository              $fee_repository The repository for interacting with the order modifiers.
 	 * @param Order_Modifier_Relationship $order_modifier_relationship The repository for interacting with the order modifiers relationships.
+	 * @param Modifier_Manager            $manager The manager for handling modifier calculations and logic.
 	 */
-	public function __construct( Container $container, Controller $controller, Fee_Repository $fee_repository, Order_Modifier_Relationship $order_modifier_relationship ) {
+	public function __construct( Container $container, Controller $controller, Fee_Repository $fee_repository, Order_Modifier_Relationship $order_modifier_relationship, Modifier_Manager $manager ) {
 		parent::__construct( $container );
 		$this->modifier_strategy                       = $controller->get_modifier( $this->modifier_type );
-		$this->manager                                 = new Modifier_Manager( $this->modifier_strategy );
+		$this->manager                                 = $manager;
 		$this->order_modifiers_repository              = $fee_repository;
 		$this->order_modifiers_relationship_repository = $order_modifier_relationship;
 	}
