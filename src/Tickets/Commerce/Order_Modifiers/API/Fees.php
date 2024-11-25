@@ -236,7 +236,7 @@ class Fees extends Base_API {
 	 *
 	 * @return array The fees for the ticket.
 	 */
-	protected function get_fees_for_ticket( int $ticket_id ) {
+	public function get_fees_for_ticket( int $ticket_id ) {
 		$all_fees = $this->get_all_fees();
 
 		return [
