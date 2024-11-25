@@ -252,8 +252,14 @@ abstract class Abstract_Fees extends Controller_Contract {
 
 			$ticket_fees = $this->order_modifiers_repository->find_relationship_by_post_ids( [ $item['ticket_id'] ], $this->modifier_type );
 
+			$ticket_object = Tickets::load_ticket_object( $item['ticket_id'] );
+
+			if ( ! $ticket_object ) {
+				continue;
+			}
+
 			$fees_per_item[ $item['ticket_id'] ] = [
-				'fees'  => $this->extract_and_combine_fees( $ticket_fees, $automatic_fees, new Value( Tickets::load_ticket_object( $item['ticket_id'] )->price ) ),
+				'fees'  => $this->extract_and_combine_fees( $ticket_fees, $automatic_fees, new Value( $ticket_object->price ) ),
 				'times' => $item['quantity'] ?? 1,
 			];
 		}
