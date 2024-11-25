@@ -92,8 +92,8 @@ class Fees extends Abstract_Fees {
 				'value'         => (string) $item['price'],
 				'currency_code' => $order->currency,
 			],
-			// Fees always have a quantity of 1, and they need to be a string for the API.
-			'quantity'    => '1',
+			// Fees should be added as many times as the items.
+			'quantity'    => $item['quantity'] ?? 1,
 			'item_total'  => [
 				'value'         => (string) $item['sub_total'],
 				'currency_code' => $order->currency,

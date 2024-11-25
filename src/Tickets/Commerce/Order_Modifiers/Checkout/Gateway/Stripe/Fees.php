@@ -114,11 +114,6 @@ class Fees extends Abstract_Fees {
 			return $value;
 		}
 
-		// Return early if all fees are invalid or zero.
-		if ( empty( $combined_fees ) ) {
-			return $value;
-		}
-
 		// Calculate the total fees based on the subtotal and combined fees.
 		$sum_of_fees = $this->manager->calculate_total_fees( $combined_fees );
 
@@ -158,7 +153,7 @@ class Fees extends Abstract_Fees {
 			}
 
 			// Format the fee metadata as "FeeName: Price".
-			$fee_metadata[] = sprintf( '%s: %.2f', $fee_item['display_name'], $fee_item['price'] );
+			$fee_metadata[] = sprintf( '%s: %.2f', $fee_item['display_name'], $fee_item['price'] * ( $fee_item['quantity'] ?? 1 ) );
 		}
 
 		if ( ! empty( $fee_metadata ) ) {
