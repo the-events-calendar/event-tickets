@@ -205,16 +205,6 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 				->all();
 		}
 
-		/**
-		 * Filters the tickets data before it is returned through the REST API.
-		 *
-		 * @since TBD
-		 *
-		 * @param array           $tickets The tickets data.
-		 * @param WP_REST_Request $request The request object.
-		 */
-		$tickets = apply_filters( 'tec_tickets_commerce_rest_ticket_archive_data', $tickets, $request );
-
 		/** @var Tribe__Tickets__REST__V1__Main $main */
 		$main = tribe( 'tickets.rest-v1.main' );
 
