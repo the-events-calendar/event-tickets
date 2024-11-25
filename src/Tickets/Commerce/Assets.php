@@ -77,12 +77,6 @@ class Assets extends Service_Provider {
 					'tribe-tickets-commerce',
 					'tribe-tickets-commerce-checkout',
 				],
-				'localize' => [
-					'name' => 'tecTicketsCommerce',
-					'data' => [
-						'restUrl' => tribe_tickets_rest_url(),
-					],
-				],
 			]
 		);
 

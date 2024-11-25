@@ -12,6 +12,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon;
 use Tribe__Template;
 use WP_Post;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Common\StellarWP\Assets\Assets;
 
 /**
  * Class Coupons
@@ -56,6 +57,10 @@ class Coupons extends Controller_Contract {
 			40,
 			3
 		);
+
+		// Add asset localization to ensure the script has the necessary data.
+		add_action( 'init', [ $this, 'localize_asset' ] );
+
 	}
 
 	/**
@@ -71,6 +76,18 @@ class Coupons extends Controller_Contract {
 			[ $this, 'display_coupon_section' ],
 			40
 		);
+
+		// Remove asset localization.
+		remove_action( 'init', [ $this, 'localize_asset' ] );
+	}
+
+	/**
+	 * Localizes the asset script.
+	 *
+	 * @since TBD
+	 */
+	public function localize_asset(): void {
+		Assets::init()->get( 'tribe-tickets-commerce-js' )->add_localize_script( 'tecTicketsCommerce', [ 'restUrl' => tribe_tickets_rest_url() ] );
 	}
 
 	/**
