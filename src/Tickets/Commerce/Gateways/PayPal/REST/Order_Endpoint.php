@@ -111,6 +111,10 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
 
+		if ( ! $order ) {
+			return new WP_Error( 'tec-tc-gateway-paypal-failed-creating-order', $messages['failed-creating-order'], $order );
+		}
+
 		$unit = [
 			'reference_id' => $order->ID,
 			'value'        => (string) $order->total_value->get_decimal(),
@@ -161,14 +165,14 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since TBD
 	 *
-	 * @param array         $item The cart item for which to retrieve unit data.
-	 * @param WP_Post|false $order The order from the items in the cart.
+	 * @param array   $item The cart item for which to retrieve unit data.
+	 * @param WP_Post $order The order from the items in the cart.
 	 *
 	 * @return array The structured data for the item, including 'name', 'unit_amount', 'quantity', 'item_total', and
 	 *     'sku'.
 	 */
-	public function get_unit_data( array $item, $order ) {
-		if ( empty( $order ) ) {
+	public function get_unit_data( array $item, WP_Post $order ) {
+		if ( ! $order->ID ) {
 			return [];
 		}
 
@@ -214,12 +218,16 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since TBD
 	 *
-	 * @param array         $item The cart item (representing the ticket).
-	 * @param WP_Post|false $order The order from the items in the cart.
+	 * @param array   $item The cart item (representing the ticket).
+	 * @param WP_Post $order The order from the items in the cart.
 	 *
 	 * @return array The structured data for the ticket item.
 	 */
-	protected function get_unit_data_for_ticket( array $item, $order ) {
+	protected function get_unit_data_for_ticket( array $item, WP_Post $order ) {
+		if ( ! $order->ID ) {
+			return [];
+		}
+
 		// Default ticket logic.
 		$ticket     = Tickets::load_ticket_object( $item['ticket_id'] );
 		$post_title = get_the_title( $item['event_id'] );
