@@ -40,23 +40,3 @@ if ( isset( $_SERVER['argv'] ) && in_array( '--debug', $_SERVER['argv'], true ) 
 // By default, do not enable the Custom Tables v1 implementation in tests.
 putenv( 'TEC_CUSTOM_TABLES_V1_DISABLED=1' );
 $_ENV['TEC_CUSTOM_TABLES_V1_DISABLED'] = 1;
-
-/**
- * Ensure coupons are loaded in the order modifiers.
- *
- * Modify the global variable directly, because WordPress hasn't loaded at this point.
- *
- * @see WP_Hook::build_preinitialized_hooks()
- */
-if ( ! array_key_exists( 'wp_filter', $GLOBALS ) ) {
-	$GLOBALS['wp_filter'] = [];
-}
-
-$GLOBALS['wp_filter']['tec_tickets_commerce_order_modifiers_coupons_enabled'] = [
-	10 => [
-		[
-			'function'      => '__return_true',
-			'accepted_args' => 1,
-		],
-	],
-];
