@@ -340,8 +340,6 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		?string $default_meta_key = null,
 		?string $default_meta_value = null
 	): ?array {
-		global $wpdb;
-
 		// Generate a cache key based on the arguments.
 		$cache_key = 'modifier_type_meta_' . md5(
 				wp_json_encode(
@@ -355,9 +353,11 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 				)
 			);
 
+		$tribe_cache = tribe( 'cache' );
+
 		// Try to get the results from the cache.
-		$cached_results = wp_cache_get( $cache_key, 'order_modifiers' );
-		if ( false !== $cached_results ) {
+		$cached_results = $tribe_cache[ $cache_key ] ?? false;
+		if ( $cached_results && is_array( $cached_results ) ) {
 			return $cached_results;
 		}
 
@@ -401,13 +401,12 @@ SQL;
 		$params = array_merge( $params, $meta_values );
 
 		// Prepare and execute the query.
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
-		$results = $wpdb->get_results(
-			$wpdb->prepare( implode( ' ', $sql ), ...$params ) // phpcs:ignore WordPress.DB.PreparedSQL, WordPress.DB.PreparedSQLPlaceholders
+		$results = DB::get_results(
+			DB::prepare( implode( ' ', $sql ), ...$params )
 		);
 
 		// Cache the results for future use.
-		wp_cache_set( $cache_key, $results, 'order_modifiers', HOUR_IN_SECONDS );
+		$tribe_cache[ $cache_key ] = $results;
 
 		return $results;
 	}
