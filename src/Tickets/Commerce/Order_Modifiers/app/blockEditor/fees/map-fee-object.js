@@ -21,6 +21,7 @@ import classNames from "classnames";
  * @returns {string} The fee label.
  */
 const getFeeLabel = ( fee ) => {
+	// Todo: the precision should be determined by settings.
 	const amount = Number.parseFloat( fee.raw_amount ).toFixed( 2 );
 
 	let feeLabel;
@@ -93,5 +94,6 @@ const mapFeeToOption = ( fee ) => {
 
 export {
 	mapFeeToItem,
+	getFeeLabel,
 	mapFeeToOption,
 }
