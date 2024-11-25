@@ -150,7 +150,68 @@ class Order_Modifier_Fee_Metabox_Test extends Controller_Test_Case {
 
 		$controller = $this->make_controller();
 
-		// IMPORTANT! We do save the values marked with the comment //saved even though they don't match a fee.
+		// IMPORTANT! We do NOT save the values if the dataset is invalid.
+		$raw_data = [
+			'ticket_order_modifier_fees' => [
+				$fee_1->id,
+				$fee_2,
+			],
+		];
+
+		$controller->save_ticket_fee( $post, Tickets::load_ticket_object( $ticket ), $raw_data );
+
+		$this->assertMatchesJsonSnapshot(
+			str_replace(
+				[
+					$fee_1->id,
+					$fee_2->id,
+					$ticket,
+				],
+				[
+					'{FEE_ID_1}',
+					'{FEE_ID_2}',
+					'{TICKET_ID}',
+				],
+				// WE DO NOT RETURN THEM though by this method.
+				wp_json_encode( $this->make_controller( Fees::class )->get_selected_fees_for_post_by_ticket( $post ), JSON_SNAPSHOT_OPTIONS )
+			)
+		);
+
+		$results = DB::get_results(
+			DB::prepare(
+				'SELECT modifier_id FROM %i WHERE post_id = %d',
+				DB::prefix( 'tec_order_modifier_relationships' ),
+				$ticket
+			)
+		);
+
+		$this->assertMatchesStringSnapshot(
+			str_replace(
+				[
+					$fee_1->id,
+					$fee_2->id,
+				],
+				[
+					'{FEE_ID_1}',
+					'{FEE_ID_2}',
+				],
+				wp_json_encode( $results, JSON_SNAPSHOT_OPTIONS )
+			)
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_save_ticket_fee_when_invalid_dataset() {
+		$post = self::factory()->post->create();
+		$ticket = $this->create_tc_ticket( $post, 10.0 );
+		$fee_1 = $this->create_fee( [ 'raw_amount' => 5.24 ] );
+		$fee_2 = $this->create_fee( [ 'raw_amount' => 3.26 ] );
+
+		$controller = $this->make_controller();
+
+		// IMPORTANT! We do NOT save the values if the dataset is invalid.
 		$raw_data = [
 			'ticket_order_modifier_fees' => [
 				$fee_1->id,
@@ -212,6 +273,8 @@ class Order_Modifier_Fee_Metabox_Test extends Controller_Test_Case {
 				wp_json_encode( $results, JSON_SNAPSHOT_OPTIONS )
 			)
 		);
+
+		$this->assertEquals( 1, did_action( 'tribe_log' ) );
 	}
 
 	/**
