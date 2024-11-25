@@ -7,6 +7,7 @@ use Tribe\Tickets\Admin\Provider;
 use Tribe\Tickets\Events\Service_Provider as Events_Service_Provider;
 use Tribe\Tickets\Promoter\Service_Provider as Promoter_Service_Provider;
 use Tribe\Tickets\Admin\Settings;
+use TEC\Common\StellarWP\Assets\Config;
 
 /**
  * Class Tribe__Tickets__Main.
@@ -428,6 +429,8 @@ class Tribe__Tickets__Main {
 	 * @since 4.10
 	 */
 	public function bootstrap() {
+		// Add the group path for the ET core assets.
+		Config::add_group_path( 'et-core', $this->plugin_path, 'src/resources/', true );
 		$this->hooks();
 
 		$this->register_active_plugin();

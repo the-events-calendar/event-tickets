@@ -220,11 +220,12 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $items The items in the cart.
+	 * @param array $items    The items in the cart.
+	 * @param bool  $per_item Whether to return calculated fees per item or all together in a single dimension array.
 	 *
 	 * @return array The combined fees.
 	 */
-	protected function get_combined_fees_for_items( array $items ): array {
+	protected function get_combined_fees_for_items( array $items, bool $per_item = false ): array {
 		if ( empty( $items ) ) {
 			return [];
 		}
@@ -232,29 +233,55 @@ abstract class Abstract_Fees extends Controller_Contract {
 		// Generate a cache key based on the items.
 		$cache_key = 'combined_fees_' . md5( wp_json_encode( $items ) );
 
+		$tribe_cache = tribe_cache();
+
 		// Check if the combined fees are already cached.
-		$cached_fees = wp_cache_get( $cache_key, 'combined_fees' );
-		if ( false !== $cached_fees ) {
-			return $cached_fees;
+		if ( isset( $tribe_cache[ $cache_key ] ) && is_array( $tribe_cache[ $cache_key ] ) ) {
+			return $per_item ? $tribe_cache[ $cache_key ] : $this->combine_fees( $tribe_cache[ $cache_key ] );
 		}
 
-		// Extract ticket IDs from the items.
-		$ticket_ids = array_map(
-			function ( $item ) {
-				return $item['ticket_id'];
-			},
-			$items
-		);
+		$automatic_fees = $this->order_modifiers_repository->get_all_automatic_fees();
 
-		// Fetch related ticket fees and automatic fees.
-		$related_ticket_fees = $this->order_modifiers_repository->find_relationship_by_post_ids( $ticket_ids, $this->modifier_type );
-		$automatic_fees      = $this->order_modifiers_repository->get_all_automatic_fees();
+		$fees_per_item = [];
+		foreach ( $items as $item ) {
+			if ( ! isset( $item['ticket_id'] ) ) {
+				continue;
+			}
 
-		// Combine the fees and remove duplicates.
-		$combined_fees = $this->extract_and_combine_fees( $related_ticket_fees, $automatic_fees );
+			$ticket_fees = $this->order_modifiers_repository->find_relationship_by_post_ids( [ $item['ticket_id'] ], $this->modifier_type );
+
+			$fees_per_item[ $item['ticket_id'] ] = [
+				'fees'  => $this->extract_and_combine_fees( $ticket_fees, $automatic_fees ),
+				'times' => $item['quantity'] ?? 1,
+			];
+		}
 
 		// Cache the combined fees for future use.
-		wp_cache_set( $cache_key, $combined_fees, 'combined_fees', 120 );
+		$tribe_cache[ $cache_key ] = $fees_per_item;
+
+		if ( $per_item ) {
+			return $fees_per_item;
+		}
+
+		return $this->combine_fees( $fees_per_item );
+	}
+
+	/**
+	 * Combines the fees for each item in the cart.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $fees_per_item The fees per item.
+	 *
+	 * @return array The combined fees.
+	 */
+	protected function combine_fees( array $fees_per_item ): array {
+		$combined_fees = [];
+		foreach ( $fees_per_item as $item_fees ) {
+			foreach ( range( 1, $item_fees['times'] ) as $i ) {
+				$combined_fees = array_merge( $combined_fees, $item_fees['fees'] );
+			}
+		}
 
 		return $combined_fees;
 	}
@@ -365,6 +392,6 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 */
 	public function reset_fees_and_subtotal(): void {
 		self::$fees_appended = false;
-		$this->subtotal      = Value::create( 0 );
+		$this->subtotal      = null;
 	}
 }

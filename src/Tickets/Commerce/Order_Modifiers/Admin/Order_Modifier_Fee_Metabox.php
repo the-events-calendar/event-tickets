@@ -13,7 +13,6 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Admin;
 
-use stdClass;
 use TEC\Tickets\Commerce\Order_Modifiers\Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Factory;
@@ -26,6 +25,11 @@ use Tribe__Tickets__Tickets as Tickets;
 use TEC\Tickets\Commerce\Module;
 use TEC\Common\Contracts\Container;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Common\Asset;
+use TEC\Common\StellarWP\Assets\Assets;
+use WP_Post;
+use Exception;
+use TEC\Tickets\Seating\Logging;
 
 /**
  * Class Order_Modifier_Fee_Metabox
@@ -39,6 +43,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 class Order_Modifier_Fee_Metabox extends Controller_Contract {
 
 	use Fee_Types;
+	use Logging;
 
 	/**
 	 * The modifier type for this metabox handler.
@@ -76,6 +81,9 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	 * Constructor to initialize dependencies and set up the modifier strategy and manager.
 	 *
 	 * @since TBD
+	 *
+	 * @param Container  $container The DI container.
+	 * @param Controller $controller The order modifiers controller.
 	 */
 	public function __construct( Container $container, Controller $controller ) {
 		parent::__construct( $container );
@@ -98,9 +106,9 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	 */
 	public function do_register(): void {
 		add_action( 'tribe_events_tickets_metabox_edit_main', [ $this, 'add_fee_section' ], 30, 2 );
-		add_action( 'tec_tickets_commerce_after_save_ticket', $this->get_after_save_ticket_callback(), 10, 3 );
+		add_action( 'tec_tickets_commerce_after_save_ticket', [ $this, 'save_ticket_fee' ], 10, 3 );
 		add_action( 'tec_tickets_commerce_ticket_deleted', [ $this, 'delete_ticket_fee' ] );
-		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_order_modifiers_fee_scripts' ] );
+		$this->register_assets();
 	}
 
 	/**
@@ -112,9 +120,9 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_action( 'tribe_events_tickets_metabox_edit_main', [ $this, 'add_fee_section' ], 30 );
-		remove_action( 'tec_tickets_commerce_after_save_ticket', $this->get_after_save_ticket_callback() );
+		remove_action( 'tec_tickets_commerce_after_save_ticket', [ $this, 'save_ticket_fee' ] );
 		remove_action( 'tec_tickets_commerce_ticket_deleted', [ $this, 'delete_ticket_fee' ] );
-		remove_action( 'admin_enqueue_scripts', [ $this, 'enqueue_order_modifiers_fee_scripts' ] );
+		Assets::init()->remove( 'order-modifiers-fees-js' );
 	}
 
 	/**
@@ -124,22 +132,43 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	public function enqueue_order_modifiers_fee_scripts() {
-		/** @var Main $tickets_main */
-		$tickets_main = tribe( 'tickets.main' );
+	protected function register_assets() {
+		Asset::add(
+			'order-modifiers-fees-js',
+			'admin/order-modifiers/fees.js',
+			Main::VERSION
+		)
+			->add_to_group_path( 'et-core' )
+			->set_condition( [ $this, 'should_enqueue_assets' ] )
+			->set_dependencies( 'jquery', 'tribe-dropdowns', 'tribe-select2' )
+			->enqueue_on( 'admin_enqueue_scripts' )
+			->add_to_group( 'tec-tickets-order-modifiers' )
+			->register();
+	}
 
-		// Define the path to your JS files.
-		$assets = [
-			[
-				'order-modifiers-fees-js',
-				'admin/order-modifiers/fees.js',
-				[ 'jquery', 'tribe-dropdowns', 'tribe-select2' ],
-				'admin_enqueue_scripts',
-			],
-		];
+	/**
+	 * Checks if the current context is NOT Block Editor and the post type is ticket-enabled.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the assets should be enqueued or not.
+	 */
+	public function should_enqueue_assets() {
+		$ticketable_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
 
-		// Use tribe_assets to register and enqueue the JS file.
-		tribe_assets( $tickets_main, $assets );
+		if ( empty( $ticketable_post_types ) ) {
+			return false;
+		}
+
+		$post = get_post();
+
+		if ( ! $post instanceof WP_Post ) {
+			return false;
+		}
+
+		return is_admin() &&
+				in_array( $post->post_type, $ticketable_post_types, true ) &&
+				! get_current_screen()->is_block_editor();
 	}
 
 	/**
@@ -206,12 +235,13 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
+	 * @param int           $post_id  The post ID of the ticket.
 	 * @param Ticket_Object $ticket   The ticket object.
 	 * @param array         $raw_data The raw form data.
 	 *
 	 * @return void
 	 */
-	protected function save_ticket_fee( Ticket_Object $ticket, array $raw_data ): void {
+	public function save_ticket_fee( int $post_id, Ticket_Object $ticket, array $raw_data ): void {
 		// Delete existing relationships for the ticket.
 		$this->manager->delete_relationships_by_post( $ticket->ID );
 
@@ -229,17 +259,30 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 
 		$fee_ids = array_map(
 			function ( $fee ) {
-				if ( $fee instanceof stdClass ) {
-					return (int) $fee->id;
+				if ( is_object( $fee ) && ! empty( $fee->id ) && is_numeric( $fee->id ) ) {
+					return (int) filter_var( $fee->id, FILTER_VALIDATE_INT, [ 'options' => [ 'min_range' => 0 ] ] );
 				} else {
-					return (int) $fee;
+					return ! is_numeric( $fee ) ? false : (int) filter_var( $fee, FILTER_VALIDATE_INT, [ 'options' => [ 'min_range' => 0 ] ] );
 				}
 			},
 			$ticket_order_modifier_fees
 		);
 
-		// Sync the relationships between the selected fees and the ticket.
-		$this->manager->sync_modifier_relationships( $fee_ids, [ $ticket->ID ] );
+		$fee_ids = array_filter( array_unique( $fee_ids ), static fn ( $fee_id ) => $fee_id && is_int( $fee_id ) && $fee_id > 0 );
+
+		try {
+			$this->update_fees_for_ticket( $ticket->ID, $fee_ids );
+		} catch ( Exception $e ) {
+			$this->log_error(
+				'Unrecognized fee id was given for a relationship with ticket.',
+				[
+					'source'    => __METHOD__,
+					'error'     => $e->getMessage(),
+					'fee_ids'   => $fee_ids,
+					'ticket_id' => $ticket->ID,
+				]
+			);
+		}
 	}
 
 	/**
@@ -255,28 +298,5 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	 */
 	public function delete_ticket_fee( int $ticket_id ): void {
 		$this->manager->delete_relationships_by_post( $ticket_id );
-	}
-
-	/**
-	 * Get the callback to run after saving a ticket.
-	 *
-	 * @since TBD
-	 *
-	 * @return callable The callback to run after saving a ticket.
-	 */
-	protected function get_after_save_ticket_callback(): callable {
-		static $callback = null;
-		if ( null === $callback ) {
-			$callback = function ( $post_id, $ticket, array $raw_data ) {
-				// Ensure the ticket is a Ticket_Object instance.
-				if ( ! $ticket instanceof Ticket_Object ) {
-					return;
-				}
-
-				$this->save_ticket_fee( $ticket, $raw_data );
-			};
-		}
-
-		return $callback;
 	}
 }

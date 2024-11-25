@@ -13,12 +13,35 @@ use TEC\Common\StellarWP\Models\Contracts\Model;
 trait Fee_Creator {
 
 	/**
+	 * Creates a fee for a ticket.
+	 *
+	 * This method creates a fee with the provided arguments and associates it with a ticket.
+	 * The fee is created with a default sub_type of 'flat' and a raw_amount of 5.
+	 *
+	 * @param int   $ticket_id The ticket ID to associate the fee with.
+	 * @param array $args      The arguments to use when creating the fee.
+	 *
+	 * @return int The ID of the created fee.
+	 */
+	protected function create_fee_for_ticket( int $ticket_id, array $args = [] ): int {
+		$fee = $this->create_fee( $args );
+		$this->set_fee_application( $fee, 'per' );
+		$this->create_fee_relationship( $fee, $ticket_id, get_post_type( $ticket_id ) );
+
+		return $fee->id;
+	}
+
+	/**
 	 * @param array $args The arguments to use when creating the fee.
 	 *
 	 * @return Fee The created fee.
 	 *
 	 */
 	protected function create_fee( array $args = [] ): Fee {
+		if ( isset( $args['raw_amount'] ) && is_numeric( $args['raw_amount'] ) ) {
+			$args['raw_amount'] = Float_Value::from_number( $args['raw_amount'] );
+		}
+
 		$args = array_merge(
 			[
 				'sub_type'     => 'flat',

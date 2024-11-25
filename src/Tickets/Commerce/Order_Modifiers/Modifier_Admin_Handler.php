@@ -196,9 +196,9 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		tribe_asset_enqueue_group( 'event-tickets-admin-order-modifiers' );
 
 		// Get and sanitize request vars for modifier and modifier_id.
-		$modifier_type = sanitize_key( tribe_get_request_var( 'modifier', $this->get_default_type() ) );
-		$modifier_id   = absint( tribe_get_request_var( 'modifier_id', '0' ) );
-		$is_edit       = tribe_is_truthy( tribe_get_request_var( 'edit', '0' ) );
+		$modifier_type = sanitize_key( tec_get_request_var( 'modifier', $this->get_default_type() ) );
+		$modifier_id   = absint( tec_get_request_var( 'modifier_id', '0' ) );
+		$is_edit       = tribe_is_truthy( tec_get_request_var( 'edit', '0' ) );
 
 		// Prepare the context for the page.
 		$context = [

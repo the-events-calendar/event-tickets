@@ -17,8 +17,7 @@ use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon as Modifier;
-use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee;
-use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager as Manager;
+use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon_Modifier_Manager as Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Coupons as Coupons_Repository;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Coupons as CouponsTrait;
 use WP_Error;
@@ -37,13 +36,6 @@ class Coupons extends Base_API {
 	use CouponsTrait;
 
 	/**
-	 * The namespace for the API.
-	 *
-	 * @var string
-	 */
-	protected string $namespace = 'tribe/tickets/v1';
-
-	/**
 	 * TThe modifier manager instance to handle relationship updates.
 	 *
 	 * @var Manager
@@ -55,15 +47,14 @@ class Coupons extends Base_API {
 	 *
 	 * @since TBD
 	 *
-	 * @param Container           $container The DI container.
-	 * @param ?Coupons_Repository $repository The coupons repository.
+	 * @param Container          $container The DI container.
+	 * @param Coupons_Repository $repository The coupons repository.
+	 * @param Manager            $manager The manager for the order modifiers.
 	 */
-	public function __construct( Container $container, ?Coupons_Repository $repository = null ) {
+	public function __construct( Container $container, Coupons_Repository $repository, Manager $manager ) {
 		parent::__construct( $container );
-		$this->repo    = $repository ?? new Coupons_Repository();
-
-		// todo: add this as a constructor arg, in a way that the Container will play nicely with.
-		$this->manager = new Manager( new Fee() );
+		$this->repo    = $repository;
+		$this->manager = $manager;
 	}
 
 	/**
@@ -75,7 +66,7 @@ class Coupons extends Base_API {
 	 */
 	protected function register_routes(): void {
 		register_rest_route(
-			$this->namespace,
+			static::NAMESPACE,
 			'/coupons',
 			[
 				[
@@ -95,7 +86,7 @@ class Coupons extends Base_API {
 		);
 
 		register_rest_route(
-			$this->namespace,
+			static::NAMESPACE,
 			'/coupons/validate',
 			[
 				'methods'             => Server::CREATABLE,
@@ -106,7 +97,7 @@ class Coupons extends Base_API {
 		);
 
 		register_rest_route(
-			$this->namespace,
+			static::NAMESPACE,
 			'/coupons/apply',
 			[
 				[
@@ -120,7 +111,7 @@ class Coupons extends Base_API {
 		);
 
 		register_rest_route(
-			$this->namespace,
+			static::NAMESPACE,
 			'/coupons/remove',
 			[
 				[
@@ -139,9 +130,11 @@ class Coupons extends Base_API {
 	 *
 	 * @since TBD
 	 *
+	 * @param Request $request The request object.
+	 *
 	 * @return Response
 	 */
-	protected function get_coupons( Request $request ) {
+	protected function get_coupons( Request $request ): Response {
 		$coupons  = $this->repo->get_all();
 		$response = array_map(
 			fn( Order_Modifier $coupon ) => $this->prepare_coupon_for_response( $coupon ),
