@@ -37,7 +37,7 @@ class Paypal_Fees_Test extends Controller_Test_Case {
 	 * @dataProvider order_totals_data_provider
 	 * Ensures the order totals are calculated correctly for tickets and fees using the Stripe gateway.
 	 */
-	public function it_calculates_order_totals_with_stripe_gateway(
+	public function it_calculates_order_totals_with_paypal_gateway(
 		Float_Value $ticket_price,
 		Float_Value $fee_raw_amount,
 		string $fee_application,
