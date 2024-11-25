@@ -68,4 +68,34 @@ export const actions = {
 			clientId,
 		}
 	},
+
+	/**
+	 * Set the fees to be displayed.
+	 *
+	 * @param {string} clientId
+	 * @param {Fee[]} fees
+	 * @return {{fees, clientId, type: string}}
+	 */
+	setDisplayedFees( clientId, fees ) {
+		return {
+			type: 'SET_DISPLAYED_FEES',
+			clientId,
+			fees,
+		}
+	},
+
+	/**
+	 * Add a fee to the displayed fees.
+	 *
+	 * @param {string} clientId
+	 * @param {int} feeId
+	 * @return {{clientId, feeId, type: string}}
+	 */
+	addDisplayedFee( clientId, feeId ) {
+		return {
+			type: 'ADD_DISPLAYED_FEE',
+			clientId,
+			feeId,
+		}
+	}
 };
