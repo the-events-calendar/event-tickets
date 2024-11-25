@@ -81,8 +81,8 @@ class Assets extends Service_Provider {
 					'name' => 'tecTicketsCommerce',
 					'data' => [
 						'restUrl' => tribe_tickets_rest_url(),
-					]
-				]
+					],
+				],
 			]
 		);
 
