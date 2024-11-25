@@ -392,6 +392,6 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 */
 	public function reset_fees_and_subtotal(): void {
 		self::$fees_appended = false;
-		$this->subtotal      = Value::create( 0 );
+		$this->subtotal      = null;
 	}
 }
