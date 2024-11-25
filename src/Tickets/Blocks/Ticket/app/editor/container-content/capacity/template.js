@@ -68,8 +68,16 @@ class Capacity extends PureComponent {
 		ticketProvider: PropTypes.string,
 	};
 
+	static defaultProps = {
+		tempCapacityTypeOption: {
+			label: '',
+			value: ''
+		}
+	}
+
 	constructor( props ) {
 		super( props );
+		console.log('Capacity props',props?.tempCapacityTypeOption);
 		this.ids = {
 			select: uniqid( 'capacity-type-' ),
 			capacity: uniqid( 'capacity-' ),
@@ -117,7 +125,7 @@ class Capacity extends PureComponent {
 					) }
 					id={ this.ids.sharedCapacity }
 					label={ __( 'Set shared capacity:', 'event-tickets' ) }
-					value={ tempSharedCapacity }
+					value={ tempSharedCapacity ?? '' }
 					onChange={ handleTempSharedCapacityChange }
 					disabled={ isDisabled }
 					min={ 0 }
@@ -169,7 +177,7 @@ class Capacity extends PureComponent {
 						`tribe-editor__ticket__capacity-input-row--capacity-${ ticketType }`,
 					) }
 					id={ this.ids.capacity }
-					value={ tempCapacity }
+					value={ tempCapacity ?? '' }
 					onChange={ ( e ) => handleTempCapacityChange( e, extraProps?.max ) }
 					disabled={ isDisabled }
 					min={ 0 }
@@ -217,7 +225,7 @@ class Capacity extends PureComponent {
 				<NumberInput
 					className="tribe-editor__ticket__capacity-input"
 					id={ this.ids.capacity }
-					value={ tempCapacity }
+					value={ tempCapacity ?? '' }
 					onChange={ onTempCapacityNoPlusChange }
 					disabled={ isDisabled }
 					min={ 0 }
