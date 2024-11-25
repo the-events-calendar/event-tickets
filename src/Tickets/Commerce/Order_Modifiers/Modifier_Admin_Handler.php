@@ -16,6 +16,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use Tribe__Tickets__Main as Tickets_Plugin;
 use TEC\Common\StellarWP\Assets\Assets;
+use TEC\Common\Asset;
 
 /**
  * Class Modifier_Settings.
@@ -110,14 +111,17 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	 * @return void
 	 */
 	protected function register_assets() {
-		tribe_asset(
-			Tickets_Plugin::instance(),
+		Asset::add(
 			'tec-tickets-order-modifiers-table',
 			'admin/order-modifiers/table.js',
-			[ 'jquery', 'wp-util' ],
-			'admin_enqueue_scripts',
-			[ 'conditionals' => fn () => $this->is_on_page() ],
-		);
+			Tickets_Plugin::VERSION
+		)
+		->add_to_group_path( 'et-core' )
+		->set_condition( fn () => $this->is_on_page() )
+		->set_dependencies( 'jquery', 'wp-util' )
+		->enqueue_on( 'admin_enqueue_scripts' )
+		->add_to_group( 'tec-tickets-order-modifiers' )
+		->register();
 	}
 
 	/**
@@ -192,9 +196,6 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	 * @return void
 	 */
 	public function render_tec_order_modifiers_page(): void {
-		// Enqueue required assets for the page.
-		tribe_asset_enqueue_group( 'event-tickets-admin-order-modifiers' );
-
 		// Get and sanitize request vars for modifier and modifier_id.
 		$modifier_type = sanitize_key( tec_get_request_var( 'modifier', $this->get_default_type() ) );
 		$modifier_id   = absint( tec_get_request_var( 'modifier_id', '0' ) );
