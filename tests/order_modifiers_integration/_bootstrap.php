@@ -6,7 +6,9 @@ use Tribe\Tickets\Promoter\Triggers\Dispatcher;
 
 
 $tec_support = dirname( __DIR__, 3 ) . '/the-events-calendar/tests/_support';
+$ea_support  = dirname( __DIR__, 2 ) . '/common/tests/_support/Traits';
 Codeception\Util\Autoload::addNamespace( 'Tribe\Events\Test', $tec_support );
+Codeception\Util\Autoload::addNamespace( 'TEC\Event_Automator\Tests\Traits', $ea_support );
 
 
 putenv( 'TEC_TICKETS_COMMERCE=1' );
