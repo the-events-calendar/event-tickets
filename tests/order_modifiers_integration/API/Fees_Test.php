@@ -12,6 +12,7 @@ use WP_REST_Request;
 use WP_Error;
 use Generator;
 use Closure;
+use TEC\Tickets\Commerce\Hooks;
 use Tribe\Tests\Traits\With_Clock_Mock;
 use WP_REST_Response;
 use Tribe__Date_Utils as Dates;
@@ -25,6 +26,36 @@ class Fees_Test extends Controller_Test_Case {
 	use With_Clock_Mock;
 
 	protected string $controller_class = Fees::class;
+
+	public function pre_existing_rest_endpoints_data_provider(): Generator {
+		yield 'tickets archive - authorized' => [
+			function () {
+				wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
+				[ $post_ids, $ticket_ids, $fee_ids ] = $this->create_data();
+				return [ '/tickets', $post_ids, $ticket_ids, $fee_ids ];
+			},
+		];
+		yield 'tickets archive - unauthorized' => [
+			function () {
+				[ $post_ids, $ticket_ids, $fee_ids ] = $this->create_data();
+				return [ '/tickets', $post_ids, $ticket_ids, $fee_ids ];
+			},
+		];
+		yield 'single ticket - authorized' => [
+			function () {
+				wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
+				[ $post_ids, $ticket_ids, $fee_ids ] = $this->create_data();
+				return [ '/tickets/{TICKET_ID}', $post_ids, $ticket_ids, $fee_ids ];
+			},
+		];
+		yield 'single ticket - unauthorized' => [
+			function () {
+				wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
+				[ $post_ids, $ticket_ids, $fee_ids ] = $this->create_data();
+				return [ '/tickets/{TICKET_ID}', $post_ids, $ticket_ids, $fee_ids ];
+			},
+		];
+	}
 
 	public function rest_endpoints_data_provider(): Generator {
 		yield 'fees archive- authorized' => [
@@ -97,10 +128,86 @@ class Fees_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * @test
+	 * @dataProvider pre_existing_rest_endpoints_data_provider
+	 */
+	public function it_should_add_fees_fields_as_expected( Closure $fixture ) {
+		tribe( Hooks::class )->register_post_types();
+		$this->freeze_time( Dates::immutable( '2022-06-13 17:25:32' ) );
+		[ $path, $post_ids, $ticket_ids, $fee_ids ] = $fixture();
+
+		wp_update_post( [
+			'ID' => $post_ids[1],
+			'post_password' => 'password',
+		] );
+
+		wp_update_post( [
+			'ID' => $post_ids[3],
+			'post_password' => 'password',
+		] );
+
+		$this->make_controller()->register();
+
+		if ( strstr( $path, '{TICKET_ID}') ) {
+			$data_array = [];
+			foreach ( $ticket_ids as $ticket_id ) {
+				$data_array[] = $this->assert_endpoint( str_replace( '{TICKET_ID}', $ticket_id, $path ), 'GET', false, [] );
+			}
+
+			$this->assertCount( count( $ticket_ids ), $data_array );
+		} else {
+			$data_array = $this->assert_endpoint( $path, 'GET', false, [] );
+		}
+
+		$json = wp_json_encode( $data_array, JSON_PRETTY_PRINT );
+		$json = str_replace(
+			array_map( static fn( $id ) => '"id": ' . $id, $ticket_ids ),
+			'"id": "{TICKET_ID}"',
+			$json
+		);
+		$json = str_replace(
+			array_map( static fn( $id ) => '"post_id": ' . $id, $post_ids ),
+			'"post_id": "{EVENT_ID}"',
+			$json
+		);
+		$json = str_replace(
+			array_map( static fn( $id ) => '?id=' . $id, $post_ids ),
+			'?id={EVENT_ID}',
+			$json
+		);
+		$json = str_replace(
+			array_map( static fn( $id ) => 'for ' . $id, $post_ids ),
+			'for {EVENT_ID}',
+			$json
+		);
+		$json = str_replace(
+			array_map( static fn( $id ) => '&id=' . $id, $ticket_ids ),
+			'&id={TICKET_ID}',
+			$json
+		);
+		$json = str_replace(
+			array_map( static fn( $id ) => '\/events\/' . $id, $post_ids ),
+			'\/events\/{EVENT_ID}',
+			$json
+		);
+		$json = str_replace(
+			array_map( static fn( $id ) => '\/tickets\/' . $id, $ticket_ids ),
+			'\/events\/{TICKET_ID}',
+			$json
+		);
+		$json = str_replace(
+			$fee_ids,
+			'{FEE_ID}',
+			$json
+		);
+		$this->assertMatchesJsonSnapshot( $json );
+	}
+
+	/**
 	 * @dataProvider rest_endpoints_data_provider
 	 * @test
 	 */
-	public function it_should_provide_expected_responses( Closure $fixture, $error_code = 401 ) {
+	public function it_should_provide_expected_responses( Closure $fixture, int $error_code = 401 ) {
 		$this->freeze_time( Dates::immutable( '2022-06-13 17:25:32' ) );
 		[ $path, $should_fail, $method, $post_ids, $ticket_ids, $fee_ids, $selected_fees ] = $fixture();
 		$controller = $this->make_controller();
