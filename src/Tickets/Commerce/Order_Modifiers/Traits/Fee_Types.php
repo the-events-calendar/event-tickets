@@ -33,7 +33,7 @@ trait Fee_Types {
 	 *
 	 * @since TBD
 	 *
-	 * @param object[] $all_fees
+	 * @param object[] $all_fees The fees.
 	 *
 	 * @return array The automatic fees.
 	 */
@@ -49,7 +49,7 @@ trait Fee_Types {
 	 *
 	 * @since TBD
 	 *
-	 * @param object[] $all_fees
+	 * @param object[] $all_fees The fees.
 	 *
 	 * @return array The selectable fees.
 	 */
