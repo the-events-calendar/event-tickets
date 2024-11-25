@@ -67,21 +67,17 @@ class Gateway extends Abstract_Gateway {
 	 * Determine whether the gateway should be shown as an available gateway.
 	 *
 	 * @since 5.1.6
-	 * @since TBD Prevented the cart totals from being recalculated multiple times.
 	 *
 	 * @return bool Whether the gateway should be shown as an available gateway.
 	 */
 	public static function should_show(): bool {
-		static $cart_total = null;
 		if ( is_admin() ) {
 			return false;
 		}
 
-		if ( null === $cart_total ) {
-			$cart_total = tribe( Cart::class )->get_cart_total();
-		}
+		$cart_total = tribe( Cart::class )->get_cart_total();
 
-		return 0 == $cart_total;
+		return 0 === (int) $cart_total;
 	}
 
 	/**
