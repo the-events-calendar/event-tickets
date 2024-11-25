@@ -310,7 +310,7 @@ class Fees extends Base_API {
 	 *
 	 * @since TBD
 	 *
-	 * @param array   $data    The ticket data.
+	 * @param array   $tickets The tickets data.
 	 * @param Request $request The request object.
 	 *
 	 * @return array The ticket data with fees.
@@ -329,7 +329,7 @@ class Fees extends Base_API {
 				continue;
 			}
 
-			$ticket_id    = (int) $ticket['id'];
+			$ticket_id      = (int) $ticket['id'];
 			$ticket['fees'] = $this->get_fees_for_ticket( $ticket_id );
 		}
 
