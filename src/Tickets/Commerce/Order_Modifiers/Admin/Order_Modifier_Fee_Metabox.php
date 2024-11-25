@@ -245,18 +245,6 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 		// Delete existing relationships for the ticket.
 		$this->manager->delete_relationships_by_post( $ticket->ID );
 
-		// Get available fees with specific meta values.
-		$fees = $this->get_all_fees();
-
-		// Filter fees into those automatically applied ('all') and extract their IDs.
-		$automatic_fee_ids = $this->get_automatic_fees( $fees );
-
-		// Assuming $raw_data['ticket_order_modifier_fees'] is an array (if not, initialize it).
-		$raw_data['ticket_order_modifier_fees'] = (array) ( $raw_data['ticket_order_modifier_fees'] ?? [] );
-
-		// Merge the automatic fee IDs into the ticket_order_modifier_fees array.
-		$ticket_order_modifier_fees = array_merge( $raw_data['ticket_order_modifier_fees'], $automatic_fee_ids );
-
 		$fee_ids = array_map(
 			function ( $fee ) {
 				if ( is_object( $fee ) && ! empty( $fee->id ) && is_numeric( $fee->id ) ) {
@@ -265,7 +253,7 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 					return ! is_numeric( $fee ) ? false : (int) filter_var( $fee, FILTER_VALIDATE_INT, [ 'options' => [ 'min_range' => 0 ] ] );
 				}
 			},
-			$ticket_order_modifier_fees
+			(array) ( $raw_data['ticket_order_modifier_fees'] ?? [] )
 		);
 
 		$fee_ids = array_filter( array_unique( $fee_ids ), static fn ( $fee_id ) => $fee_id && is_int( $fee_id ) && $fee_id > 0 );

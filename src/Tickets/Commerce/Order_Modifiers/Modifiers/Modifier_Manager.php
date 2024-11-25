@@ -158,17 +158,16 @@ class Modifier_Manager {
 	 *
 	 * @since TBD
 	 *
-	 * @param Value $base_price The base price of the item.
-	 * @param array $items      The items in the cart (tickets).
+	 * @param array $items The items in the cart (tickets).
 	 *
 	 * @return Value The total amount after fees are applied.
 	 */
-	public function calculate_total_fees( Value $base_price, array $items ): Value {
+	public function calculate_total_fees( array $items ): Value {
 		$total_fees = new Precision_Value( 0.0 );
 
 		$all_fees = [];
 		foreach ( $items as $item ) {
-			$all_fees[] = $this->apply_fees_to_item( $base_price, $item );
+			$all_fees[] = $item['fee_amount'];
 		}
 
 		return Legacy_Value_Factory::to_legacy_value( $total_fees->sum( ...$all_fees ) );

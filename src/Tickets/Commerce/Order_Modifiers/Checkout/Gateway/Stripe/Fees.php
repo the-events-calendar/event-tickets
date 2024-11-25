@@ -114,28 +114,13 @@ class Fees extends Abstract_Fees {
 			return $value;
 		}
 
-		// Convert each fee_amount to a float using get_decimal() and filter out negative values.
-		$combined_fees = array_filter(
-			array_map(
-				function ( $fee ) {
-					if ( isset( $fee['fee_amount'] ) && $fee['fee_amount'] instanceof Precision_Value ) {
-						$fee['fee_amount'] = $fee['fee_amount']->get();
-					}
-
-					// Return the fee only if the amount is non-negative.
-					return $fee['fee_amount'] >= 0 ? $fee : null;
-				},
-				$combined_fees
-			)
-		);
-
 		// Return early if all fees are invalid or zero.
 		if ( empty( $combined_fees ) ) {
 			return $value;
 		}
 
 		// Calculate the total fees based on the subtotal and combined fees.
-		$sum_of_fees = $this->manager->calculate_total_fees( $this->subtotal, $combined_fees );
+		$sum_of_fees = $this->manager->calculate_total_fees( $combined_fees );
 
 		// Return the total value by adding the subtotal and the fees.
 		return Value::create()->total( [ $value, $sum_of_fees ] );

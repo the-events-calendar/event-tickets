@@ -156,7 +156,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 		}
 
 		// Calculate the total fees based on the subtotal using Value objects.
-		$sum_of_fees = $this->manager->calculate_total_fees( $this->subtotal, $combined_fees );
+		$sum_of_fees = $this->manager->calculate_total_fees( $combined_fees );
 
 		// Add the calculated fees to the total value.
 		$values[] = $sum_of_fees;
@@ -182,7 +182,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 		$combined_fees = $this->get_combined_fees_for_items( $items );
 
 		// Use the stored subtotal for fee calculations.
-		$sum_of_fees = $this->manager->calculate_total_fees( $this->subtotal, $combined_fees )->get_decimal();
+		$sum_of_fees = $this->manager->calculate_total_fees( $combined_fees )->get_decimal();
 
 		// Convert each fee_amount to an integer using get_integer().
 		$combined_fees = array_map(
@@ -252,7 +252,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 			$ticket_fees = $this->order_modifiers_repository->find_relationship_by_post_ids( [ $item['ticket_id'] ], $this->modifier_type );
 
 			$fees_per_item[ $item['ticket_id'] ] = [
-				'fees'  => $this->extract_and_combine_fees( $ticket_fees, $automatic_fees ),
+				'fees'  => $this->extract_and_combine_fees( $ticket_fees, $automatic_fees, new Value( $item['obj']->price ) ),
 				'times' => $item['quantity'] ?? 1,
 			];
 		}
@@ -294,10 +294,11 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 *
 	 * @param array $related_ticket_fees The related ticket fees.
 	 * @param array $automatic_fees The automatic fees.
+	 * @param Value $ticket_base_price The base price of the ticket.
 	 *
 	 * @return array The combined array of fees.
 	 */
-	protected function extract_and_combine_fees( array $related_ticket_fees, array $automatic_fees ): array {
+	protected function extract_and_combine_fees( array $related_ticket_fees, array $automatic_fees, Value $ticket_base_price ): array {
 		$all_fees = array_merge( $related_ticket_fees, $automatic_fees );
 
 		$unique_fees = [];
@@ -313,7 +314,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 				];
 
 				// Use the stored subtotal in the fee calculation.
-				$unique_fees[ $id ]['fee_amount'] = $this->manager->apply_fees_to_item( $this->subtotal, $unique_fees[ $id ] );
+				$unique_fees[ $id ]['fee_amount'] = $this->manager->apply_fees_to_item( $ticket_base_price, $unique_fees[ $id ] );
 			}
 		}
 
