@@ -26,7 +26,7 @@ const IconWithTooltip = ( {
 	return (
 		<Tooltip
 			text={ text }
-			position={ position }
+			placement={ position }
 		>
 			<span>{ icon }</span>
 		</Tooltip>
