@@ -79,12 +79,12 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * @since TBD Refactored logic, to include a new filter.
 	 * @since 5.10.0
 	 *
-	 * @return float|null The total value of the cart, or null if there are no items.
+	 * @return float The total value of the cart, or null if there are no items.
 	 */
-	public function get_cart_total(): ?float {
+	public function get_cart_total(): float {
 		$subtotal = $this->get_cart_subtotal();
-		if ( null === $subtotal ) {
-			return null;
+		if ( ! $subtotal ) {
+			return 0.0;
 		}
 
 		$items = $this->get_items_in_cart( true );
@@ -125,9 +125,9 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 *
 	 * @since TBD Refactored to avoid cumulative calculations.
 	 *
-	 * @return float|null The subtotal of the cart.
+	 * @return float The subtotal of the cart.
 	 */
-	public function get_cart_subtotal(): ?float {
+	public function get_cart_subtotal(): float {
 		// Reset cart_total to ensure it's not cumulative across calls.
 		$this->cart_total = 0.0;
 
@@ -135,7 +135,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 
 		// If no items in the cart, return null.
 		if ( empty( $items ) ) {
-			return null;
+			return 0.0;
 		}
 
 		// Calculate the total from the subtotals of each item.

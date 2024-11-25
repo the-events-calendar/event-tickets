@@ -650,7 +650,7 @@ class Cart {
 	 *
 	 * @since TBD
 	 *
-	 * @return null|float
+	 * @return float
 	 */
 	public function get_cart_subtotal() {
 		return $this->get_repository()->get_cart_subtotal();
