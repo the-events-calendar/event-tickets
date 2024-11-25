@@ -59,7 +59,8 @@ class Capacity extends PureComponent {
 		sharedCapacity: PropTypes.string,
 		tempCapacity: PropTypes.string,
 		tempCapacityType: PropTypes.string,
-		tempCapacityTypeOption: ReactSelectOption,
+		// Default value, when the Ticket has just been created is an empty object: take that into account.
+		tempCapacityTypeOption: PropTypes.oneOfType([ ReactSelectOption, PropTypes.object ]),
 		tempSharedCapacity: PropTypes.string,
 		onTempCapacityChange: PropTypes.func,
 		onTempCapacityNoPlusChange: PropTypes.func,
@@ -69,15 +70,11 @@ class Capacity extends PureComponent {
 	};
 
 	static defaultProps = {
-		tempCapacityTypeOption: {
-			label: '',
-			value: ''
-		}
+		tempCapacityTypeOption: []
 	}
 
 	constructor( props ) {
 		super( props );
-		console.log('Capacity props',props?.tempCapacityTypeOption);
 		this.ids = {
 			select: uniqid( 'capacity-type-' ),
 			capacity: uniqid( 'capacity-' ),
