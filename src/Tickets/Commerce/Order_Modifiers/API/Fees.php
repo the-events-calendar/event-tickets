@@ -17,6 +17,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Fees as Fee_Repository;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Fee_Types;
 use WP_Error;
 use TEC\Common\Contracts\Container;
+use TEC\Tickets\Seating\Logging;
 use WP_REST_Request as Request;
 use WP_REST_Response as Response;
 use WP_REST_Server as Server;
@@ -30,6 +31,7 @@ use Tribe__Tickets__Tickets as Tickets;
 class Fees extends Base_API {
 
 	use Fee_Types;
+	use Logging;
 
 	/**
 	 * TThe modifier manager instance to handle relationship updates.
@@ -350,48 +352,15 @@ class Fees extends Base_API {
 			// Update the fees for the ticket.
 			$this->update_fees_for_ticket( $ticket_id, $fee_ids );
 		} catch ( Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement
-			// @todo: Log the error?
-		}
-	}
-
-	/**
-	 * Update the fees for a ticket.
-	 *
-	 * @since TBD
-	 *
-	 * @param int   $ticket_id The ticket ID.
-	 * @param int[] $fees      The fees to update.
-	 *
-	 * @return void
-	 *
-	 * @throws Exception If the fees are not selectable.
-	 */
-	protected function update_fees_for_ticket( $ticket_id, $fees ) {
-		// Validate that the fees are actually selectable.
-		$all_fees        = $this->get_all_fees();
-		$selectable_fees = wp_list_pluck( $this->get_selectable_fees( $all_fees ), 'id', 'id' );
-		$invalid_fees    = [];
-		foreach ( $fees as $fee ) {
-			if ( ! array_key_exists( $fee, $selectable_fees ) ) {
-				$invalid_fees[] = $fee;
-			}
-		}
-
-		if ( ! empty( $invalid_fees ) ) {
-			throw new Exception(
-				sprintf(
-					/* translators: %s: The invalid fees. */
-					__( 'The following fees are not selectable: %s', 'event-tickets' ),
-					implode( ', ', $invalid_fees )
-				),
-				400
+			$this->log_error(
+				'Unrecognized fee id was given for a relationship with ticket.',
+				[
+					'source'    => __METHOD__,
+					'error'     => $e->getMessage(),
+					'fee_ids'   => $fee_ids,
+					'ticket_id' => $ticket_id,
+				]
 			);
 		}
-
-		// Ensure that the fees are integers.
-		$fee_ids = array_map( 'absint', $fees );
-
-		$this->manager->delete_relationships_by_post( $ticket_id );
-		$this->manager->sync_modifier_relationships( $fee_ids, [ $ticket_id ] );
 	}
 }

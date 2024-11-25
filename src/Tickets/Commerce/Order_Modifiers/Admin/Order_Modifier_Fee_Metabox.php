@@ -28,6 +28,8 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\Asset;
 use TEC\Common\StellarWP\Assets\Assets;
 use WP_Post;
+use Exception;
+use TEC\Tickets\Seating\Logging;
 
 /**
  * Class Order_Modifier_Fee_Metabox
@@ -41,6 +43,7 @@ use WP_Post;
 class Order_Modifier_Fee_Metabox extends Controller_Contract {
 
 	use Fee_Types;
+	use Logging;
 
 	/**
 	 * The modifier type for this metabox handler.
@@ -267,8 +270,19 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 
 		$fee_ids = array_filter( array_unique( $fee_ids ), static fn ( $fee_id ) => $fee_id && is_int( $fee_id ) && $fee_id > 0 );
 
-		// Sync the relationships between the selected fees and the ticket.
-		$this->manager->sync_modifier_relationships( $fee_ids, [ $ticket->ID ] );
+		try {
+			$this->update_fees_for_ticket( $ticket->ID, $fee_ids );
+		} catch ( Exception $e ) {
+			$this->log_error(
+				'Unrecognized fee id was given for a relationship with ticket.',
+				[
+					'source'    => __METHOD__,
+					'error'     => $e->getMessage(),
+					'fee_ids'   => $fee_ids,
+					'ticket_id' => $ticket->ID,
+				]
+			);
+		}
 	}
 
 	/**
