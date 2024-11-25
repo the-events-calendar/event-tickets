@@ -10,6 +10,7 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Commerce\Order_Modifiers\Traits;
 
 use Exception;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship as Relationships;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers;
 
 /**
@@ -27,6 +28,13 @@ trait Fee_Types {
 	 * @var Order_Modifiers
 	 */
 	protected Order_Modifiers $modifiers_repository;
+
+	/**
+	 * The repository for interacting with the order modifiers relationships.
+	 *
+	 * @var Relationships
+	 */
+	protected Relationships $relationships;
 
 	/**
 	 * Get the automatic fees.
@@ -105,7 +113,7 @@ trait Fee_Types {
 			return [];
 		}
 
-		// Convert the Fee relationships to Fee objects.
+		// Grab the IDs from the relationships.
 		foreach ( $relationships as $relationship ) {
 			$ticket_fees[] = (int) $relationship->modifier_id;
 		}
