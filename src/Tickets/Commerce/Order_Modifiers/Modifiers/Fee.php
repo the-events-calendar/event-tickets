@@ -15,7 +15,7 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Modifiers;
 use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Fee_Table;
 use Tribe__Tickets__Admin__Views;
-	
+
 /**
  * Concrete Strategy for fee Modifiers.
  *
@@ -264,7 +264,7 @@ class Fee extends Modifier_Abstract {
 	 * @return void
 	 */
 	public function render_table( array $context ): void {
-		$fee_table = new Fee_Table( $this );
+		$fee_table = tribe( Fee_Table::class );
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 

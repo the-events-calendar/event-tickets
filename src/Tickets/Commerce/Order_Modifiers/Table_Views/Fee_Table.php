@@ -13,12 +13,29 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Table_Views;
 
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta;
+use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Fees;
+
 /**
  * Class for displaying Fee data in the table.
  *
  * @since TBD
  */
 class Fee_Table extends Order_Modifier_Table {
+
+	/**
+	 * Fee_Table constructor.
+	 *
+	 * @param Fee                         $modifier       The modifier strategy instance.
+	 * @param Fees                        $order_modifier The order modifier repository.
+	 * @param Order_Modifiers_Meta        $order_modifier_meta_repository The order modifier meta repository.
+	 * @param Order_Modifier_Relationship $order_modifier_relationship The order modifier relationship repository.
+	 */
+	public function __construct( Fee $modifier, Fees $order_modifier, Order_Modifiers_Meta $order_modifier_meta_repository, Order_Modifier_Relationship $order_modifier_relationship ) {
+		parent::__construct( $modifier, $order_modifier, $order_modifier_meta_repository, $order_modifier_relationship );
+	}
 
 	/**
 	 * Define the columns for the table.

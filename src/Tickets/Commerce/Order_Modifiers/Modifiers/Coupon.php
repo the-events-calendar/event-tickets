@@ -120,7 +120,7 @@ class Coupon extends Modifier_Abstract {
 	 * @return void
 	 */
 	public function render_table( array $context ): void {
-		$coupon_table = new Coupon_Table( $this );
+		$coupon_table = tribe( Coupon_Table::class );
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 

@@ -12,12 +12,29 @@
  */
 namespace TEC\Tickets\Commerce\Order_Modifiers\Table_Views;
 
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta;
+use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Coupons;
+
 /**
  * Class for displaying Coupon data in the table.
  *
  * @since TBD
  */
 class Coupon_Table extends Order_Modifier_Table {
+
+	/**
+	 * Coupon_Table constructor.
+	 *
+	 * @param Coupon                      $modifier       The modifier strategy instance.
+	 * @param Coupons                     $order_modifier The order modifier repository.
+	 * @param Order_Modifiers_Meta        $order_modifier_meta_repository The order modifier meta repository.
+	 * @param Order_Modifier_Relationship $order_modifier_relationship The order modifier relationship repository.
+	 */
+	public function __construct( Coupon $modifier, Coupons $order_modifier, Order_Modifiers_Meta $order_modifier_meta_repository, Order_Modifier_Relationship $order_modifier_relationship ) {
+		parent::__construct( $modifier, $order_modifier, $order_modifier_meta_repository, $order_modifier_relationship );
+	}
 
 	/**
 	 * Define the columns for the table.
