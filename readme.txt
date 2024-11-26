@@ -1,10 +1,10 @@
 === Event Tickets and Registration ===
 
-Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
+Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.17.0
+Stable tag: 5.17.0.1
 Requires at least: 6.3
-Tested up to: 6.7
+Tested up to: 6.7.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -92,14 +92,10 @@ Our Premium Plugins and Services:
 ⚡ [Events Calendar Pro](https://evnt.is/18wi)
 ↪️ [Event Aggregator](https://evnt.is/197u) (service)
 🎟️ [Event Tickets Plus](https://evnt.is/18wk)
-📱 [Wallet Plus](https://evnt.is/etwp)
 ✉️ [Promoter](https://evnt.is/1ajt)
-👥 [Community Events](https://evnt.is/2g)
-🎟️ [Community Tickets](https://evnt.is/18wl)
+👥 [Community](https://evnt.is/2g)
 ✏️ [Filter Bar](https://evnt.is/fa)
 🗓️ [Eventbrite Tickets](https://evnt.is/2e)
-📡 [Virtual Events](https://evnt.is/1aky)
-🔄 [Event Automator](https://evnt.is/1bdk)
 
 == Help ==
 
@@ -202,6 +198,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.17.0.1] 2024-11-21 =
+
+* Tweak - Introduced filter `tec_tickets_rest_api_archive_results` that gives the ability to filter out the tickets being provided to the REST API archive.
+* Security - Prevent Tickets from showing through REST API to unauthorized requests. [SVUL-9]
 
 = [5.17.0] 2024-11-19 =
 
