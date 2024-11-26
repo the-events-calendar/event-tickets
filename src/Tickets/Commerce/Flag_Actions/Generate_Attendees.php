@@ -9,6 +9,7 @@ use TEC\Tickets\Commerce\Settings;
 use TEC\Tickets\Commerce\Status\Status_Abstract;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
+use TEC\Tickets\Commerce\Traits\Is_Ticket;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -19,6 +20,9 @@ use Tribe__Utils__Array as Arr;
  * @package TEC\Tickets\Commerce\Flag_Actions
  */
 class Generate_Attendees extends Flag_Action_Abstract {
+
+	use Is_Ticket;
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -91,7 +95,11 @@ class Generate_Attendees extends Flag_Action_Abstract {
 
 		$default_currency = tribe_get_option( Settings::$option_currency_code, 'USD' );
 
-		foreach ( $order->items as $ticket_id => $item ) {
+		foreach ( $order->items as $item ) {
+			if ( ! $this->is_ticket( $item ) ) {
+				continue;
+			}
+
 			$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
 			if ( null === $ticket ) {
 				continue;
