@@ -103,11 +103,11 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param Container                   $container The DI container.
-	 * @param Controller                  $controller The order modifiers controller.
-	 * @param Fee_Repository              $fee_repository The repository for interacting with the order modifiers.
+	 * @param Container                   $container                   The DI container.
+	 * @param Controller                  $controller                  The order modifiers controller.
+	 * @param Fee_Repository              $fee_repository              The repository for interacting with the order modifiers.
 	 * @param Order_Modifier_Relationship $order_modifier_relationship The repository for interacting with the order modifiers relationships.
-	 * @param Modifier_Manager            $manager The manager for handling modifier calculations and logic.
+	 * @param Modifier_Manager            $manager                     The manager for handling modifier calculations and logic.
 	 */
 	public function __construct( Container $container, Controller $controller, Fee_Repository $fee_repository, Order_Modifier_Relationship $order_modifier_relationship, Modifier_Manager $manager ) {
 		parent::__construct( $container );
@@ -136,8 +136,8 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $values The existing values being passed through the filter.
-	 * @param array $items The items in the cart.
+	 * @param array $values   The existing values being passed through the filter.
+	 * @param array $items    The items in the cart.
 	 * @param Value $subtotal The list of subtotals from the items.
 	 *
 	 * @return array The updated total values, including the fees.
@@ -301,8 +301,8 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 * @since TBD
 	 *
 	 * @param array $related_ticket_fees The related ticket fees.
-	 * @param array $automatic_fees The automatic fees.
-	 * @param Value $ticket_base_price The base price of the ticket.
+	 * @param array $automatic_fees      The automatic fees.
+	 * @param Value $ticket_base_price   The base price of the ticket.
 	 *
 	 * @return array The combined array of fees.
 	 */
