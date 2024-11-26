@@ -178,6 +178,22 @@ class Precision_Value implements Value_Interface {
 	}
 
 	/**
+	 * Multiply this value by another value.
+	 *
+	 * @param Integer_Value $value The value to multiply by.
+	 *
+	 * @return Precision_Value The new value object.
+	 */
+	public function multiply_by_integer( Integer_Value $value ): Precision_Value {
+		$new_value = $this->value * $value->get();
+
+		return new static(
+			(float) ( $new_value / ( 10 ** $this->precision->get() ) ),
+			$this->precision->get()
+		);
+	}
+
+	/**
 	 * Convert this object to an object with a new precision level.
 	 *
 	 * @since TBD

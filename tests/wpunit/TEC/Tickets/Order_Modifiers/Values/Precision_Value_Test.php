@@ -7,6 +7,7 @@ namespace TEC\Tickets\Tests\Unit\Order_Modifiers\Values;
 use Codeception\TestCase\WPTestCase;
 use InvalidArgumentException;
 use stdClass;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Integer_Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value as PV;
 
 class Precision_Value_Test extends WPTestCase {
@@ -81,6 +82,14 @@ class Precision_Value_Test extends WPTestCase {
 		$this->assertEquals( $expected_difference, $a->subtract( $b )->get() );
 	}
 
+	/**
+	 * @dataProvider multiply_by_integer_data_provider
+	 * @test
+	 */
+	public function multiplication_by_integer_with_objects( PV $value, int $multiplier, $expected_product ) {
+		$object = new Integer_Value( $multiplier );
+		$this->assertEquals( $expected_product, $value->multiply_by_integer( $object )->get() );
+	}
 
 	public function get_data_provider() {
 		// raw value, precision, expected value
@@ -153,5 +162,16 @@ class Precision_Value_Test extends WPTestCase {
 		yield 'Subtraction of zero from zero' => [ new PV( 0.0 ), new PV( 0.0 ), 0.00 ];
 		yield 'Subtraction of two negative values' => [ new PV( -1.21 ), new PV( -1.2 ), -0.01 ];
 		yield 'Subtraction of very small values with 6 decimal precision' => [ new PV( 0.000010, 6 ), new PV( 0.000001, 6 ), 0.000009 ];
+	}
+
+	public function multiply_by_integer_data_provider() {
+		// Test cases for multiplying a PV (present value) object by an integer
+		yield 'Simple multiplication by 2' => [ new PV( 1.23 ), 2, 2.46 ];
+		yield 'Multiplication by 0' => [ new PV( 1.23 ), 0, 0.00 ];
+		yield 'Multiplication by 1' => [ new PV( 1.23 ), 1, 1.23 ];
+		yield 'Multiplication by -1' => [ new PV( 1.23 ), -1, -1.23 ];
+		yield 'Multiplication by 10' => [ new PV( 1.23 ), 10, 12.30 ];
+		yield 'Multiplication by -10' => [ new PV( 1.23 ), -10, -12.30 ];
+		yield 'Multiplication by 3' => [ new PV( 1.23 ), 3, 3.69 ];
 	}
 }
