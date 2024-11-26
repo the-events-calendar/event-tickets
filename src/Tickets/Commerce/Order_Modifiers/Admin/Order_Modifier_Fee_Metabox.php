@@ -88,7 +88,13 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	 * @param Order_Modifier_Relationship $order_modifier_relationship The repository for order modifier relationships.
 	 * @param FeesRepository              $fees_repository             The repository for order modifiers of type 'fee'.
 	 */
-	public function __construct( Container $container, Controller $controller, Modifier_Manager $manager, Order_Modifier_Relationship $order_modifier_relationship, FeesRepository $fees_repository ) {
+	public function __construct(
+		Container $container,
+		Controller $controller,
+		Modifier_Manager $manager,
+		Order_Modifier_Relationship $order_modifier_relationship,
+		FeesRepository $fees_repository
+	) {
 		parent::__construct( $container );
 		// Set up the modifier strategy and manager for handling fees.
 		$this->modifier_strategy = $controller->get_modifier( $this->modifier_type );
