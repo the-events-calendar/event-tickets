@@ -13,6 +13,8 @@ Codeception\Util\Autoload::addNamespace( 'TEC\Event_Automator\Tests\Traits', $ea
 
 putenv( 'TEC_TICKETS_COMMERCE=1' );
 putenv( 'TEC_DISABLE_LOGGING=1' );
+// Load Coupons for the tests.
+add_filter( 'tec_tickets_commerce_order_modifiers_coupons_enabled', '__return_true' );
 tribe_register_provider( Commerce_Provider::class );
 
 // Ensure `post` is a ticketable post type.
@@ -28,5 +30,3 @@ DB::query( "ALTER TABLE $wpdb->posts AUTO_INCREMENT = 5096" );
 
 // Disconnect Promoter to avoid license-related notices.
 remove_action( 'tribe_tickets_promoter_trigger', [ tribe( Dispatcher::class ), 'trigger' ] );
-
-add_filter( 'tec_tickets_commerce_order_modifiers_coupons_enabled', '__return_true' );
