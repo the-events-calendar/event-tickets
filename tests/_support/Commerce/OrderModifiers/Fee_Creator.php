@@ -2,6 +2,7 @@
 
 namespace Tribe\Tickets\Test\Commerce\OrderModifiers;
 
+use Exception;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Fee;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Meta;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Relationships as Relationships_Model;
@@ -40,7 +41,11 @@ trait Fee_Creator {
 	protected function create_fee_for_ticket( int $ticket_id, array $args = [] ): int {
 		$fee = $this->create_fee( $args );
 		$this->set_fee_application( $fee, 'per' );
-		$this->create_fee_relationship( $fee, $ticket_id, get_post_type( $ticket_id ) );
+		$model = $this->create_fee_relationship( $fee, $ticket_id, get_post_type( $ticket_id ) );
+
+		$this->assertEquals( $fee->id, $model->modifier_id );
+		$this->assertEquals( $ticket_id, $model->post_id );
+		$this->assertEquals( get_post_type( $ticket_id ), $model->post_type );
 
 		return $fee->id;
 	}
@@ -55,7 +60,11 @@ trait Fee_Creator {
 	 */
 	protected function add_fee_to_ticket( int $fee_id, int $ticket_id ) {
 		$fee = Fee::find( $fee_id );
-		$this->create_fee_relationship( $fee, $ticket_id, get_post_type( $ticket_id ) );
+		$model = $this->create_fee_relationship( $fee, $ticket_id, get_post_type( $ticket_id ) );
+
+		$this->assertEquals( $fee_id, $model->modifier_id );
+		$this->assertEquals( $ticket_id, $model->post_id );
+		$this->assertEquals( get_post_type( $ticket_id ), $model->post_type );
 	}
 
 	/**
@@ -136,6 +145,12 @@ trait Fee_Creator {
 	 * @return bool True if the relationship was successfully created; false otherwise.
 	 */
 	protected function create_fee_relationship( Fee $fee, int $ticket, string $post_type = 'post' ): Model {
+		$meta = tribe( Meta_Repository::class )->find_by_order_modifier_id( $fee->id );
+
+		if ( $meta->meta_key === 'fee_applied_to' && $meta->meta_value !== 'per' ) {
+			throw new Exception( 'You can only use this method to create relationships for fees that apply per ticket.' );
+		}
+
 		// Create the relationship model with the provided data.
 		$relationship = new Relationships_Model(
 			[
