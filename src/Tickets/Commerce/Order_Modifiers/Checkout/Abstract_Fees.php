@@ -109,7 +109,13 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 * @param Order_Modifier_Relationship $order_modifier_relationship The repository for interacting with the order modifiers relationships.
 	 * @param Modifier_Manager            $manager                     The manager for handling modifier calculations and logic.
 	 */
-	public function __construct( Container $container, Controller $controller, Fee_Repository $fee_repository, Order_Modifier_Relationship $order_modifier_relationship, Modifier_Manager $manager ) {
+	public function __construct(
+		Container $container,
+		Controller $controller,
+		Fee_Repository $fee_repository,
+		Order_Modifier_Relationship $order_modifier_relationship,
+		Modifier_Manager $manager
+	) {
 		parent::__construct( $container );
 		$this->modifier_strategy                       = $controller->get_modifier( $this->modifier_type );
 		$this->manager                                 = $manager;

@@ -33,10 +33,15 @@ class Fee_Table extends Order_Modifier_Table {
 	 * @param Order_Modifiers_Meta        $order_modifier_meta_repository The order modifier meta repository.
 	 * @param Order_Modifier_Relationship $order_modifier_relationship The order modifier relationship repository.
 	 */
-	public function __construct( Fee $modifier, Fees $order_modifier, Order_Modifiers_Meta $order_modifier_meta_repository, Order_Modifier_Relationship $order_modifier_relationship ) {
+	public function __construct(
+		Fee $modifier,
+		Fees $order_modifier,
+		Order_Modifiers_Meta $order_modifier_meta_repository,
+		Order_Modifier_Relationship $order_modifier_relationship
+	) {
 		$this->modifier                  = $modifier;
 		$this->order_modifier_repository = $order_modifier;
-		parent::__construct( $modifier, $order_modifier, $order_modifier_meta_repository, $order_modifier_relationship );
+		parent::__construct( $modifier, $order_modifier_meta_repository, $order_modifier_relationship );
 	}
 
 	/**
