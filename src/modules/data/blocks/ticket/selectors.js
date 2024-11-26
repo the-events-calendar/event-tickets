@@ -814,20 +814,6 @@ export const getIndependentAndSharedTicketsAvailable = createSelector(
 );
 
 //
-// ─── FEES SELECTORS ─────────────────────────────────────────────────────────────
-//
-
-export const getSelectedFees = (state, ownProps) => {
-	const ticket = getTicket(state, ownProps.clientId);
-	return ticket?.selectedFees || [];
-};
-
-export const getActiveFees = (state, ownProps) => {
-	const ticket = getTicket(state, ownProps.clientId);
-	return ticket?.activeFees || [];
-};
-
-//
 // ─── MISC SELECTORS ─────────────────────────────────────────────────────────────
 //
 

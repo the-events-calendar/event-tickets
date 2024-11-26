@@ -9,7 +9,7 @@
  *
  * @var $this
  * @var $context array Context data passed to the template.
- * @var $order_modifier_table \TEC\Tickets\Order_Modifiers\Table_Views\Order_Modifier_Table The table instance for
+ * @var $order_modifier_table \TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Order_Modifier_Table The table instance for
  *      rendering.
  */
 
@@ -21,9 +21,10 @@ $form_classes = [
 	'topics-filter',
 	'event-tickets__order-modifiers-admin-form',
 ];
+
 ?>
 <div class="wrap">
-	<h1><?php echo esc_html__( 'Coupons &amp; Fees', 'event-tickets' ); ?></h1>
+	<h1><?php echo esc_html__( 'Booking Fees', 'event-tickets' ); ?></h1>
 	<form
 		id="event-tickets__order-modifiers-admin-form"
 		<?php tribe_classes( $form_classes ); ?>
@@ -35,18 +36,13 @@ $form_classes = [
 
 		// Render the title for the current modifier type (e.g., 'Coupons', 'Fees') with the "Add New" button.
 		$order_modifier_table->render_title();
-		?>
 
-		<?php
 		// Render the explanation text about the order modifier you are currently viewing.
 		echo wp_kses_post( $order_modifier_table->render_table_explain_text() );
-		?>
-		<?php
+
 		// Render the search box with a placeholder for searching through modifiers (e.g., Coupons, Fees).
 		$order_modifier_table->search_box( __( 'Search', 'event-tickets' ), 'order-modifier-search' );
-		?>
 
-		<?php
 		// Finally, render the table itself.
 		$order_modifier_table->display();
 		?>

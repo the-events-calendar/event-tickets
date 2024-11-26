@@ -25,8 +25,6 @@ if ( ! $option_value && ! $constant_value ) {
  * Ideally, this sould make use of objects directly. Due to the way the plugin
  * is structured, we are using the global $wpdb object directly for simplicity.
  *
- * For example, the custom tables should be dropped by using \TEC\Tickets\Order_Modifiers\Controller::drop_tables().
- *
  * @todo Refactor to use objects directly.
  * @todo Run other uninstallation tasks unrelated to Order Modifiers.
  */
@@ -42,3 +40,4 @@ global $wpdb;
 // Drop our custom tables.
 $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tec_order_modifiers" );
 $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tec_order_modifiers_meta" );
+$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tec_order_modifier_relationships" );

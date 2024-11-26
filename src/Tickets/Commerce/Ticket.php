@@ -268,6 +268,10 @@ class Ticket {
 		}
 
 		foreach ( $order->items as $item ) {
+			$type = $item['type'] ?? 'ticket';
+			if ( 'ticket' !== $type ) {
+				continue;
+			}
 			$ticket_id              = $item['ticket_id'];
 			$new_status_meta_key    = static::get_status_count_meta_key( $new_status );
 			$current_new_status_qty = get_post_meta( $ticket_id, $new_status_meta_key, true );

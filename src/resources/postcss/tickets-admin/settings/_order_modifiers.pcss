@@ -1,0 +1,38 @@
+.tec-settings-order_modifier {
+	width: 30%;
+
+	label {
+		font-weight: bold;
+	}
+
+	input[type="date"],
+	input[type="datetime-local"],
+	input[type="datetime"],
+	input[type="email"],
+	input[type="month"],
+	input[type="number"],
+	input[type="password"],
+	input[type="search"],
+	input[type="tel"],
+	input[type="text"],
+	input[type="time"],
+	input[type="url"],
+	input[type="week"],
+	select {
+		width: 25em;
+	}
+
+	input.tec_order_modifier_amount_field {
+		width: 7em;
+	}
+
+	/* Tablet view (between 768px and 1024px) */
+	@media (max-width: 1024px) {
+		width: 50%;
+	}
+
+	/* Phone view (less than 768px) */
+	@media (max-width: 768px) {
+		width: 100%;
+	}
+}

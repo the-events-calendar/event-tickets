@@ -12,8 +12,13 @@ namespace TEC\Tickets\Commerce\Gateways\Contracts\Traits;
 use TEC\Tickets\Commerce\Cart;
 
 trait Paid_Gateway {
+
 	/**
-	 * @inheritDoc
+	 * Determine whether the gateway should be shown as an available gateway.
+	 *
+	 * @since 5.1.6
+	 *
+	 * @return bool Whether the gateway should be shown as an available gateway.
 	 */
 	public static function should_show() {
 		if ( is_admin() ) {
@@ -21,6 +26,7 @@ trait Paid_Gateway {
 		}
 
 		$cart_total = tribe( Cart::class )->get_cart_total();
+
 		return $cart_total > 0;
 	}
 }
