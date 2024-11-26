@@ -54,7 +54,7 @@ const { wpREST } = api;
 
 export function* createMissingTicketBlocks( tickets ) {
 	const { insertBlock, updateBlockListSettings } = yield call( wpDispatch, 'core/block-editor' );
-	const { getBlockCount, getBlocks } = yield call( wpSelect, 'core/editor' );
+	const { getBlockCount, getBlocks } = yield call( wpSelect, 'core/block-editor' );
 	const ticketsBlocks = yield call(
 		[ getBlocks(), 'filter' ],
 		( block ) => block.name === 'tribe/tickets',
