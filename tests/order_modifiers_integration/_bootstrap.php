@@ -27,6 +27,9 @@ define( 'JSON_SNAPSHOT_OPTIONS', JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JS
 // Start the posts auto-increment from a high number to make it easier to replace the post IDs in HTML snapshots.
 global $wpdb;
 DB::query( "ALTER TABLE $wpdb->posts AUTO_INCREMENT = 5096" );
+DB::query( DB::prepare( "ALTER TABLE %i AUTO_INCREMENT = 9687", DB::prefix( 'tec_order_modifiers' )) );
+DB::query( DB::prepare( "ALTER TABLE %i AUTO_INCREMENT = 9687", DB::prefix( 'tec_order_modifiers_meta' )) );
+DB::query( DB::prepare( "ALTER TABLE %i AUTO_INCREMENT = 9687", DB::prefix( 'tec_order_modifier_relationships' )) );
 
 // Disconnect Promoter to avoid license-related notices.
 remove_action( 'tribe_tickets_promoter_trigger', [ tribe( Dispatcher::class ), 'trigger' ] );
