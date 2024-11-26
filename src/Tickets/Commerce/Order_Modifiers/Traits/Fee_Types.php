@@ -150,7 +150,6 @@ trait Fee_Types {
 		// Ensure that the fees are integers.
 		$fee_ids = array_map( 'absint', $fees );
 
-		$this->manager->delete_relationships_by_post( $ticket_id );
 		$this->manager->sync_modifier_relationships( $fee_ids, [ $ticket_id ] );
 	}
 }

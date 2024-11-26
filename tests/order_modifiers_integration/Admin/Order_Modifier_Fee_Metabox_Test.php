@@ -203,6 +203,121 @@ class Order_Modifier_Fee_Metabox_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function it_should_save_same_fee_to_multiple_tickets() {
+		$post = self::factory()->post->create();
+
+		$ticket_1 = $this->create_tc_ticket( $post, 10.0 );
+		$ticket_2 = $this->create_tc_ticket( $post, 20.0 );
+
+		$fee_1 = $this->create_fee_for_ticket( $ticket_1, [ 'raw_amount' => 5.24 ] );
+		$fee_2 = $this->create_fee_for_ticket( $ticket_2, [ 'raw_amount' => 3.26 ] );
+		$fee_3 = $this->create_fee_for_all( [ 'raw_amount' => 7.24 ] );
+
+		$controller = $this->make_controller();
+
+		$raw_data = [
+			'ticket_order_modifier_fees' => [
+				$fee_1,
+				$fee_2,
+			],
+		];
+
+		// Save the fees to both tickets.
+		$controller->save_ticket_fee( $post, Tickets::load_ticket_object( $ticket_1 ), $raw_data );
+		$controller->save_ticket_fee( $post, Tickets::load_ticket_object( $ticket_2 ), $raw_data );
+
+		$ticket_1_fees = $this->make_controller( Fees::class )->get_fees_for_ticket( $ticket_1 );
+		$ticket_2_fees = $this->make_controller( Fees::class )->get_fees_for_ticket( $ticket_2 );
+
+		$this->assertCount( 2, $ticket_1_fees['selected_fees'] );
+		$this->assertCount( 1, $ticket_1_fees['automatic_fees'] );
+		$this->assertCount( 2, $ticket_1_fees['available_fees'] );
+		$this->assertEquals( $ticket_1_fees, $ticket_2_fees );
+
+		$results_1 = DB::get_results(
+			DB::prepare(
+				'SELECT modifier_id FROM %i WHERE post_id = %d',
+				DB::prefix( 'tec_order_modifier_relationships' ),
+				$ticket_1
+			)
+		);
+
+		$results_2 = DB::get_results(
+			DB::prepare(
+				'SELECT modifier_id FROM %i WHERE post_id = %d',
+				DB::prefix( 'tec_order_modifier_relationships' ),
+				$ticket_2
+			)
+		);
+
+		$this->assertEquals( $results_1, $results_2 );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_save_same_fee_to_multiple_tickets_one_by_one() {
+		$post = self::factory()->post->create();
+
+		$ticket_1 = $this->create_tc_ticket( $post, 10.0 );
+		$ticket_2 = $this->create_tc_ticket( $post, 20.0 );
+
+		$fee_1 = $this->create_fee_for_ticket( $ticket_1, [ 'raw_amount' => 5.24 ] );
+		$fee_2 = $this->create_fee_for_ticket( $ticket_2, [ 'raw_amount' => 3.26 ] );
+		$fee_3 = $this->create_fee_for_all( [ 'raw_amount' => 7.24 ] );
+
+		$controller = $this->make_controller();
+
+		$raw_data = [
+			'ticket_order_modifier_fees' => [
+				$fee_1,
+			],
+		];
+
+		// Save the fees to both tickets.
+		$controller->save_ticket_fee( $post, Tickets::load_ticket_object( $ticket_1 ), $raw_data );
+		$controller->save_ticket_fee( $post, Tickets::load_ticket_object( $ticket_2 ), $raw_data );
+
+		$raw_data = [
+			'ticket_order_modifier_fees' => [
+				$fee_2,
+			],
+		];
+
+		// Save the fees to both tickets.
+		$controller->save_ticket_fee( $post, Tickets::load_ticket_object( $ticket_1 ), $raw_data );
+		$controller->save_ticket_fee( $post, Tickets::load_ticket_object( $ticket_2 ), $raw_data );
+
+		$ticket_1_fees = $this->make_controller( Fees::class )->get_fees_for_ticket( $ticket_1 );
+		$ticket_2_fees = $this->make_controller( Fees::class )->get_fees_for_ticket( $ticket_2 );
+
+		$this->assertCount( 1, $ticket_1_fees['selected_fees'] );
+		$this->assertCount( 1, $ticket_1_fees['automatic_fees'] );
+		$this->assertCount( 2, $ticket_1_fees['available_fees'] );
+		$this->assertEquals( $ticket_1_fees, $ticket_2_fees );
+
+		$results_1 = DB::get_results(
+			DB::prepare(
+				'SELECT modifier_id FROM %i WHERE post_id = %d',
+				DB::prefix( 'tec_order_modifier_relationships' ),
+				$ticket_1
+			)
+		);
+
+		$results_2 = DB::get_results(
+			DB::prepare(
+				'SELECT modifier_id FROM %i WHERE post_id = %d',
+				DB::prefix( 'tec_order_modifier_relationships' ),
+				$ticket_2
+			)
+		);
+
+		$this->assertEquals( $results_1, $results_2 );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_not_save_ticket_fee_when_invalid_dataset() {
 		$post = self::factory()->post->create();
 		$ticket = $this->create_tc_ticket( $post, 10.0 );

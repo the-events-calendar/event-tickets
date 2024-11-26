@@ -14,8 +14,8 @@
 namespace TEC\Tickets\Commerce\Order_Modifiers\Admin;
 
 use TEC\Tickets\Commerce\Order_Modifiers\Controller;
-use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
-use TEC\Tickets\Commerce\Order_Modifiers\Factory;
+use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee_Modifier_Manager as Modifier_Manager;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Fees as FeesRepository;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Fee_Types;
 use Tribe__Tickets__Admin__Views as Admin_Views;
@@ -82,18 +82,21 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param Container  $container The DI container.
-	 * @param Controller $controller The order modifiers controller.
+	 * @param Container                   $container                   The DI container.
+	 * @param Controller                  $controller                  The order modifiers controller.
+	 * @param Modifier_Manager            $manager                     The modifier manager instance.
+	 * @param Order_Modifier_Relationship $order_modifier_relationship The repository for order modifier relationships.
+	 * @param FeesRepository              $fees_repository             The repository for order modifiers of type 'fee'.
 	 */
-	public function __construct( Container $container, Controller $controller ) {
+	public function __construct( Container $container, Controller $controller, Modifier_Manager $manager, Order_Modifier_Relationship $order_modifier_relationship, FeesRepository $fees_repository ) {
 		parent::__construct( $container );
 		// Set up the modifier strategy and manager for handling fees.
 		$this->modifier_strategy = $controller->get_modifier( $this->modifier_type );
-		$this->manager           = new Modifier_Manager( $this->modifier_strategy );
+		$this->manager           = $manager;
 
 		// Set up the order modifiers repository for accessing fee data.
-		$this->modifiers_repository                    = Factory::get_repository_for_type( $this->modifier_type );
-		$this->order_modifiers_relationship_repository = new Order_Modifier_Relationship();
+		$this->modifiers_repository                    = $fees_repository;
+		$this->order_modifiers_relationship_repository = $order_modifier_relationship;
 	}
 
 	/**
@@ -242,9 +245,6 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	 * @return void
 	 */
 	public function save_ticket_fee( int $post_id, Ticket_Object $ticket, array $raw_data ): void {
-		// Delete existing relationships for the ticket.
-		$this->manager->delete_relationships_by_post( $ticket->ID );
-
 		$fee_ids = array_map(
 			function ( $fee ) {
 				if ( is_object( $fee ) && ! empty( $fee->id ) && is_numeric( $fee->id ) ) {
