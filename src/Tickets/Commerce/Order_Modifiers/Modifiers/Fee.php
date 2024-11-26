@@ -170,7 +170,7 @@ class Fee extends Modifier_Abstract {
 	 * @return void
 	 */
 	public function handle_relationship_update( array $modifier_ids, array $new_post_ids ): void {
-		// If no posts to update we should bail
+		// If no posts to update we should bail.
 		if ( count( $new_post_ids ) === 0 ) {
 			return; // Bail out if there's no data to process.
 		}
