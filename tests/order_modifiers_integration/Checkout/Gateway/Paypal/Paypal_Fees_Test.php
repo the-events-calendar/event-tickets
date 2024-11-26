@@ -59,8 +59,10 @@ class Paypal_Fees_Test extends Controller_Test_Case {
 		// Create a ticket for the event with the specified price.
 		$ticket = $this->create_tc_ticket( $event_id, $ticket_price->get() );
 
-		// Associate the fee with the event.
-		$this->create_fee_relationship( $fee, $ticket, get_post_type( $ticket ) );
+		if ( 'per' === $fee_application ) {
+			// Associate the fee with the ticket.
+			$this->create_fee_relationship( $fee, $ticket, get_post_type( $ticket ) );
+		}
 
 		// Set up overrides with the specified gateway.
 		$overrides['gateway'] = tribe( PayPalGateway::class );
