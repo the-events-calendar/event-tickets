@@ -212,12 +212,14 @@ class Order_Modifier_Fee_Metabox_Test extends Controller_Test_Case {
 		$controller = $this->make_controller();
 
 		// IMPORTANT! We do NOT save the values if the dataset is invalid.
+		// We only accept numeric or objects with the property id set and being numeric.
+		// They should only be existing fees in order to save them and selectable! Not automatic for example.
 		$raw_data = [
 			'ticket_order_modifier_fees' => [
 				$fee_1->id,
 				$fee_2,
-				12, //saved
-				9567654, //saved
+				12,
+				9567654,
 				'string',
 				false,
 				null,

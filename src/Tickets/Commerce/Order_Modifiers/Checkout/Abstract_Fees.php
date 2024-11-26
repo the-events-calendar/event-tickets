@@ -157,7 +157,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 			return $values;
 		}
 
-		// Calculate the total fees based on the subtotal using Value objects.
+		// Calculate the total fees based on each individual fee.
 		$sum_of_fees = $this->manager->calculate_total_fees( $combined_fees );
 
 		// Add the calculated fees to the total value.
@@ -183,7 +183,6 @@ abstract class Abstract_Fees extends Controller_Contract {
 		// Fetch the combined fees for the items in the cart.
 		$combined_fees = $this->get_combined_fees_for_items( $items );
 
-		// Use the stored subtotal for fee calculations.
 		$sum_of_fees = $this->manager->calculate_total_fees( $combined_fees )->get_decimal();
 
 		// Convert each fee_amount to an integer using get_integer().
