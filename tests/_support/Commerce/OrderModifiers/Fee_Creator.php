@@ -12,6 +12,20 @@ use TEC\Common\StellarWP\Models\Contracts\Model;
 
 trait Fee_Creator {
 
+	protected static $fee_counter = 0;
+
+	/**
+	 * Resets the fee counter.
+	 *
+	 * This method resets the fee counter to 0.
+	 *
+	 * @before
+	 * @after
+	 */
+	public function reset_counter() {
+		self::$fee_counter = 0;
+	}
+
 	/**
 	 * Creates a fee for a ticket.
 	 *
@@ -42,12 +56,14 @@ trait Fee_Creator {
 			$args['raw_amount'] = Float_Value::from_number( $args['raw_amount'] );
 		}
 
+		self::$fee_counter ++;
+
 		$args = array_merge(
 			[
 				'sub_type'     => 'flat',
 				'raw_amount'   => Float_Value::from_number( 5 ),
-				'slug'         => 'test-fee',
-				'display_name' => 'test fee',
+				'slug'         => 'test-fee-' . self::$fee_counter,
+				'display_name' => 'test fee ' . self::$fee_counter,
 				'status'       => 'active',
 				'start_time'   => null,
 				'end_time'     => null,
@@ -56,6 +72,23 @@ trait Fee_Creator {
 		);
 
 		return Fee::create( $args );
+	}
+
+	/**
+	 * Creates a fee that applies to all tickets.
+	 *
+	 * This method creates a fee with the provided arguments and associates it with all tickets.
+	 * The fee is created with a default sub_type of 'flat' and a raw_amount of 5.
+	 *
+	 * @param array $args The arguments to use when creating the fee.
+	 *
+	 * @return int The ID of the created fee.
+	 */
+	protected function create_fee_for_all( array $args = [] ): int {
+		$fee = $this->create_fee( $args );
+		$this->set_fee_application( $fee, 'all' );
+
+		return $fee->id;
 	}
 
 	/**
