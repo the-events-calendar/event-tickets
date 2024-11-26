@@ -13,6 +13,7 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
 
 use TEC\Common\Contracts\Container;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Integer_Value;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Legacy_Value_Factory;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee_Modifier_Manager as Modifier_Manager;
@@ -187,31 +188,70 @@ abstract class Abstract_Fees extends Controller_Contract {
 		}
 
 		// Fetch the combined fees for the items in the cart.
-		$combined_fees = $this->get_combined_fees_for_items( $items );
+		$per_item_fees = $this->get_combined_fees_for_items( $items, true );
 
-		$sum_of_fees = $this->manager->calculate_total_fees( $combined_fees )->get_decimal();
+		// Process the fees for each item into a single array.
+		$combined_fees = [];
+		foreach ( $per_item_fees as $item_id => $fee_data ) {
+			$quantity = $fee_data['times'] ?? 1;
 
-		// Convert each fee_amount to an integer using get_integer().
-		$combined_fees = array_map(
+			foreach ( $fee_data['fees'] as $fee ) {
+				/** @var Precision_Value $amount */
+				$amount = $fee['fee_amount'];
+
+				// If the fee exists, update the quantity and recalculate the subtotal.
+				if ( array_key_exists( $fee['id'], $combined_fees ) ) {
+					// Set the new quantity.
+					$quantity += $combined_fees[ $fee['id'] ]['quantity'];
+
+					// Update the quantity and recalculate the subtotal.
+					$combined_fees[ $fee['id'] ]['quantity']  = $quantity;
+					$combined_fees[ $fee['id'] ]['sub_total'] = $amount->multiply_by_integer( new Integer_Value( $quantity ) );
+					continue;
+				}
+
+				$combined_fees[ $fee['id'] ] = [
+					'id'           => "fee_{$fee['id']}_{$item_id}",
+					'display_name' => $fee['display_name'],
+					'quantity'     => $quantity,
+					'subtotal'     => $amount->multiply_by_integer( new Integer_Value( $quantity ) ),
+				];
+			}
+		}
+
+		// Return early if there are no fees to display.
+		if ( empty( $combined_fees ) ) {
+			return;
+		}
+
+		// Use the stored subtotal for fee calculations.
+		$total  = new Precision_Value( 0.0 );
+		$subtotals = array_map(
 			function ( $fee ) {
-				if ( ! array_key_exists( 'fee_amount', $fee ) ) {
-					return $fee;
-				}
-
-				if ( $fee['fee_amount'] instanceof Value ) {
-					$fee['fee_amount'] = $fee['fee_amount']->get_currency();
-				} elseif ( $fee['fee_amount'] instanceof Precision_Value ) {
-					$fee['fee_amount'] = new Currency_Value( $fee['fee_amount'] );
-				}
-
-				return $fee;
+				return $fee['subtotal'];
 			},
 			$combined_fees
 		);
 
-		if ( empty( $combined_fees ) ) {
-			return;
-		}
+		$sum_of_fees = Legacy_Value_Factory::to_legacy_value( $total->sum( ...$subtotals ) )->get_decimal();
+
+		// Ensure each fee subtotal is able to display currency.
+//		$combined_fees = array_map(
+//			function ( $fee ) {
+//				if ( ! array_key_exists( 'fee_amount', $fee ) ) {
+//					return $fee;
+//				}
+//
+//				if ( $fee['fee_amount'] instanceof Value ) {
+//					$fee['fee_amount'] = $fee['fee_amount']->get_currency();
+//				} elseif ( $fee['fee_amount'] instanceof Precision_Value ) {
+//					$fee['fee_amount'] = new Currency_Value( $fee['fee_amount'] );
+//				}
+//
+//				return $fee;
+//			},
+//			$combined_fees
+//		);
 
 		// Pass the fees to the template for display.
 		$template->template(

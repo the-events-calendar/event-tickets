@@ -9,6 +9,7 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Values;
 
+use BadMethodCallException;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Stringify;
 
 /**
@@ -176,5 +177,29 @@ class Currency_Value implements Value_Interface {
 			'decimal_separator'        => $decimal_separator ?? '.',
 			'currency_symbol_position' => $currency_symbol_position ?? 'before',
 		];
+	}
+
+	/**
+	 * Wrap the methods of the Precision_Value class.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $name The method name.
+	 * @param array  $arguments The method arguments.
+	 *
+	 * @return mixed The result of the method.
+	 */
+	public function __call( $name, $arguments ) {
+		if ( ! method_exists( $this->value, $name ) ) {
+			throw new BadMethodCallException( "Method {$name} does not exist." );
+		}
+
+		// Some methods may return a new instance of the class.
+		$result = $this->value->{$name}( ...$arguments );
+		if ( $result instanceof Precision_Value ) {
+			$this->value = $result;
+		}
+
+		return $result;
 	}
 }
