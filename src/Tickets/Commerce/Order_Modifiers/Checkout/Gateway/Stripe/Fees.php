@@ -114,28 +114,8 @@ class Fees extends Abstract_Fees {
 			return $value;
 		}
 
-		// Convert each fee_amount to a float using get_decimal() and filter out negative values.
-		$combined_fees = array_filter(
-			array_map(
-				function ( $fee ) {
-					if ( isset( $fee['fee_amount'] ) && $fee['fee_amount'] instanceof Precision_Value ) {
-						$fee['fee_amount'] = $fee['fee_amount']->get();
-					}
-
-					// Return the fee only if the amount is non-negative.
-					return $fee['fee_amount'] >= 0 ? $fee : null;
-				},
-				$combined_fees
-			)
-		);
-
-		// Return early if all fees are invalid or zero.
-		if ( empty( $combined_fees ) ) {
-			return $value;
-		}
-
 		// Calculate the total fees based on the subtotal and combined fees.
-		$sum_of_fees = $this->manager->calculate_total_fees( $this->subtotal, $combined_fees );
+		$sum_of_fees = $this->manager->calculate_total_fees( $combined_fees );
 
 		// Return the total value by adding the subtotal and the fees.
 		return Value::create()->total( [ $value, $sum_of_fees ] );
@@ -165,15 +145,19 @@ class Fees extends Abstract_Fees {
 
 		$fee_metadata = [];
 
-		// Loop through the fee items and format each one as "FeeName: Price".
+		// Loop through the fee items and format each one as "Fee Name (quantity): Subtotal".
 		foreach ( $fee_items as $fee_item ) {
 			// Skip the fee if it lacks required data or has an invalid price.
 			if ( ! isset( $fee_item['display_name'], $fee_item['price'] ) || $fee_item['price'] < 0 ) {
 				continue;
 			}
 
-			// Format the fee metadata as "FeeName: Price".
-			$fee_metadata[] = sprintf( '%s: %.2f', $fee_item['display_name'], $fee_item['price'] );
+			$fee_metadata[] = sprintf(
+				'%s (%s): %.2f',
+				$fee_item['display_name'],
+				$fee_item['quantity'],
+				$fee_item['subtotal']
+			);
 		}
 
 		if ( ! empty( $fee_metadata ) ) {

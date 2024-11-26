@@ -21,7 +21,6 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Table_Views;
 
 use TEC\Tickets\Commerce\Order_Modifiers\Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
-use TEC\Tickets\Commerce\Order_Modifiers\Factory;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta;
@@ -79,12 +78,16 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 * @since TBD
 	 *
 	 * @param Modifier_Strategy_Interface $modifier The modifier class to use for data fetching and logic.
+	 * @param Order_Modifiers_Meta        $order_modifier_meta_repository The repository for order modifier meta data.
+	 * @param Order_Modifier_Relationship $order_modifier_relationship The repository for order modifier relationships.
 	 */
-	public function __construct( Modifier_Strategy_Interface $modifier ) {
-		$this->modifier                       = $modifier;
-		$this->order_modifier_repository      = Factory::get_repository_for_type( $modifier->get_modifier_type() );
-		$this->order_modifier_meta_repository = new Order_Modifiers_Meta();
-		$this->order_modifier_relationship    = new Order_Modifier_Relationship();
+	public function __construct(
+		Modifier_Strategy_Interface $modifier,
+		Order_Modifiers_Meta $order_modifier_meta_repository,
+		Order_Modifier_Relationship $order_modifier_relationship
+	) {
+		$this->order_modifier_meta_repository = $order_modifier_meta_repository;
+		$this->order_modifier_relationship    = $order_modifier_relationship;
 
 		parent::__construct(
 			[

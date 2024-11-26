@@ -42,10 +42,10 @@ class Factory {
 
 		switch ( $type ) {
 			case 'fee':
-				return new FeesRepository();
+				return tribe( FeesRepository::class );
 
 			case 'coupon':
-				return new CouponsRepository();
+				return tribe( CouponsRepository::class );
 
 			default:
 				$class = ModifiersRepository::class;

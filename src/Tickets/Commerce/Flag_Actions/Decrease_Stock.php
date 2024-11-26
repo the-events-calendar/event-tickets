@@ -2,8 +2,6 @@
 
 namespace TEC\Tickets\Commerce\Flag_Actions;
 
-use TEC\Tickets\Commerce\Attendee;
-use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Settings;
 use TEC\Tickets\Commerce\Status\Pending;
@@ -11,6 +9,7 @@ use TEC\Tickets\Commerce\Status\Status_Abstract;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Ticket;
+use TEC\Tickets\Commerce\Traits\Is_Ticket;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -21,6 +20,9 @@ use Tribe__Utils__Array as Arr;
  * @package TEC\Tickets\Commerce\Flag_Actions
  */
 class Decrease_Stock extends Flag_Action_Abstract {
+
+	use Is_Ticket;
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -88,7 +90,11 @@ class Decrease_Stock extends Flag_Action_Abstract {
 			return;
 		}
 
-		foreach ( $post->items as $ticket_id => $item ) {
+		foreach ( $post->items as $item ) {
+			if ( ! $this->is_ticket( $item ) ) {
+				continue;
+			}
+
 			$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
 			if ( null === $ticket ) {
 				continue;

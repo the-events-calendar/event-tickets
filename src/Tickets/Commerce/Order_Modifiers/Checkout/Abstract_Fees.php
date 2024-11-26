@@ -12,6 +12,7 @@
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
 
 use TEC\Common\Contracts\Container;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Integer_Value;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee_Modifier_Manager as Modifier_Manager;
@@ -23,6 +24,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
 use Tribe__Template as Template;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use WP_Post;
+use Tribe__Tickets__Tickets as Tickets;
 
 /**
  * Class Fees
@@ -101,13 +103,19 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param Container                   $container The DI container.
-	 * @param Controller                  $controller The order modifiers controller.
-	 * @param Fee_Repository              $fee_repository The repository for interacting with the order modifiers.
+	 * @param Container                   $container                   The DI container.
+	 * @param Controller                  $controller                  The order modifiers controller.
+	 * @param Fee_Repository              $fee_repository              The repository for interacting with the order modifiers.
 	 * @param Order_Modifier_Relationship $order_modifier_relationship The repository for interacting with the order modifiers relationships.
-	 * @param Modifier_Manager            $manager The manager for handling modifier calculations and logic.
+	 * @param Modifier_Manager            $manager                     The manager for handling modifier calculations and logic.
 	 */
-	public function __construct( Container $container, Controller $controller, Fee_Repository $fee_repository, Order_Modifier_Relationship $order_modifier_relationship, Modifier_Manager $manager ) {
+	public function __construct(
+		Container $container,
+		Controller $controller,
+		Fee_Repository $fee_repository,
+		Order_Modifier_Relationship $order_modifier_relationship,
+		Modifier_Manager $manager
+	) {
 		parent::__construct( $container );
 		$this->modifier_strategy                       = $controller->get_modifier( $this->modifier_type );
 		$this->manager                                 = $manager;
@@ -134,8 +142,8 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $values The existing values being passed through the filter.
-	 * @param array $items The items in the cart.
+	 * @param array $values   The existing values being passed through the filter.
+	 * @param array $items    The items in the cart.
 	 * @param Value $subtotal The list of subtotals from the items.
 	 *
 	 * @return array The updated total values, including the fees.
@@ -155,8 +163,8 @@ abstract class Abstract_Fees extends Controller_Contract {
 			return $values;
 		}
 
-		// Calculate the total fees based on the subtotal using Value objects.
-		$sum_of_fees = $this->manager->calculate_total_fees( $this->subtotal, $combined_fees );
+		// Calculate the total fees based on each individual fee.
+		$sum_of_fees = $this->manager->calculate_total_fees( $combined_fees );
 
 		// Add the calculated fees to the total value.
 		$values[] = $sum_of_fees;
@@ -181,8 +189,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 		// Fetch the combined fees for the items in the cart.
 		$combined_fees = $this->get_combined_fees_for_items( $items );
 
-		// Use the stored subtotal for fee calculations.
-		$sum_of_fees = $this->manager->calculate_total_fees( $this->subtotal, $combined_fees )->get_decimal();
+		$sum_of_fees = $this->manager->calculate_total_fees( $combined_fees )->get_decimal();
 
 		// Convert each fee_amount to an integer using get_integer().
 		$combined_fees = array_map(
@@ -251,8 +258,14 @@ abstract class Abstract_Fees extends Controller_Contract {
 
 			$ticket_fees = $this->order_modifiers_repository->find_relationship_by_post_ids( [ $item['ticket_id'] ], $this->modifier_type );
 
+			$ticket_object = Tickets::load_ticket_object( $item['ticket_id'] );
+
+			if ( ! $ticket_object ) {
+				continue;
+			}
+
 			$fees_per_item[ $item['ticket_id'] ] = [
-				'fees'  => $this->extract_and_combine_fees( $ticket_fees, $automatic_fees ),
+				'fees'  => $this->extract_and_combine_fees( $ticket_fees, $automatic_fees, new Value( $ticket_object->price ) ),
 				'times' => $item['quantity'] ?? 1,
 			];
 		}
@@ -293,11 +306,12 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 * @since TBD
 	 *
 	 * @param array $related_ticket_fees The related ticket fees.
-	 * @param array $automatic_fees The automatic fees.
+	 * @param array $automatic_fees      The automatic fees.
+	 * @param Value $ticket_base_price   The base price of the ticket.
 	 *
 	 * @return array The combined array of fees.
 	 */
-	protected function extract_and_combine_fees( array $related_ticket_fees, array $automatic_fees ): array {
+	protected function extract_and_combine_fees( array $related_ticket_fees, array $automatic_fees, Value $ticket_base_price ): array {
 		$all_fees = array_merge( $related_ticket_fees, $automatic_fees );
 
 		$unique_fees = [];
@@ -313,7 +327,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 				];
 
 				// Use the stored subtotal in the fee calculation.
-				$unique_fees[ $id ]['fee_amount'] = $this->manager->apply_fees_to_item( $this->subtotal, $unique_fees[ $id ] );
+				$unique_fees[ $id ]['fee_amount'] = $this->manager->apply_fees_to_item( $ticket_base_price, $unique_fees[ $id ] );
 			}
 		}
 
@@ -342,41 +356,44 @@ abstract class Abstract_Fees extends Controller_Contract {
 		$this->subtotal = $subtotal;
 
 		// Get all the combined fees for the items in the cart.
-		$fees = $this->get_combined_fees_for_items( $items );
+		$raw_fees = $this->get_combined_fees_for_items( $items, true );
 
-		// Track the fee_ids that have already been added to prevent duplication.
-		$existing_fee_ids = [];
+		// Set up the array of fee items.
+		$fee_items = [];
+		foreach ( $raw_fees as $item_id => $fee_data ) {
+			$quantity = $fee_data['times'] ?? 1;
 
-		foreach ( $items as $item ) {
-			if ( isset( $item['fee_id'] ) ) {
-				$existing_fee_ids[ $item['fee_id'] ] = 1;
+			foreach ( $fee_data['fees'] as $fee ) {
+				/** @var Precision_Value $amount */
+				$amount = $fee['fee_amount'];
+
+				// If the fee exists, update the quantity and recalculate the subtotal.
+				if ( array_key_exists( $fee['id'], $fee_items ) ) {
+					// Set the new quantity.
+					$total_quantity = $quantity + $fee_items[ $fee['id'] ]['quantity'];
+
+					// Update the quantity and recalculate the subtotal.
+					$fee_items[ $fee['id'] ]['quantity']   = $total_quantity;
+					$fee_items[ $fee['id'] ]['sub_total'] += $amount->multiply_by_integer( new Integer_Value( $quantity ) )->get();
+					continue;
+				}
+
+				$fee_items[ $fee['id'] ] = [
+					'id'           => "fee_{$fee['id']}_{$item_id}",
+					'type'         => 'fee',
+					'price'        => $amount->get(),
+					'sub_total'    => $amount->multiply_by_integer( new Integer_Value( $quantity ) )->get(),
+					'fee_id'       => $fee['id'],
+					'display_name' => $fee['display_name'],
+					'ticket_id'    => $item_id,
+					'event_id'     => '0',
+					'quantity'     => $quantity,
+				];
 			}
 		}
 
-		// Loop through each fee and append it to the $items array if it's not already added.
-		foreach ( $fees as $fee ) {
-			// Skip if this fee has already been added to the cart.
-			if ( array_key_exists( $fee['id'], $existing_fee_ids ) ) {
-				continue;
-			}
-
-			// Append the fee to the cart.
-			// @todo - Review what needs to be sent. Some of these are used so wp_pluck doesn't cause a warning.
-			$items[] = [
-				'id'           => "fee_{$fee['id']}",
-				'price'        => $fee['fee_amount']->get(),
-				'sub_total'    => $fee['fee_amount']->get(),
-				'type'         => 'fee',
-				'fee_id'       => $fee['id'],
-				'display_name' => $fee['display_name'],
-				'ticket_id'    => '0',
-				'event_id'     => '0',
-				'quantity'     => 1,
-			];
-
-			// Add the fee ID to the tracking array.
-			$existing_fee_ids[ $fee['id'] ] = 1;
-		}
+		// Add the fee items to the other cart items.
+		$items = array_merge( $items, $fee_items );
 
 		self::$fees_appended = true;
 

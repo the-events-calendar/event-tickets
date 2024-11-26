@@ -75,4 +75,18 @@ interface Modifier_Strategy_Interface {
 	 * @return string The page slug, or empty string if not applicable.
 	 */
 	public function get_page_slug();
+
+	/**
+	 * Retrieves the display name for the modifier.
+	 *
+	 * This method returns the display name for the modifier, which is used in various
+	 * contexts to identify the modifier to the user.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $plural Whether to return the plural form of the display name.
+	 *
+	 * @return string The display name for the modifier.
+	 */
+	public function get_modifier_display_name( bool $plural = false ): string;
 }
