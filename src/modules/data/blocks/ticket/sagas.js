@@ -332,7 +332,7 @@ export function* setBodyDetails( clientId ) {
 	let body = new FormData();
 	const props = { clientId };
 	const rootClientId = yield call(
-		[ wpSelect( 'core/editor' ), 'getBlockRootClientId' ],
+		[ wpSelect( 'core/block-editor' ), 'getBlockRootClientId' ],
 		clientId,
 	);
 	const ticketProvider = yield select( selectors.getTicketProvider, props );
@@ -350,7 +350,7 @@ export function* setBodyDetails( clientId ) {
 	body.append( 'sku', yield select( selectors.getTicketTempSku, props ) );
 	body.append( 'iac', yield select( selectors.getTicketTempIACSetting, props ) );
 	body.append( 'menu_order', yield call(
-		[ wpSelect( 'core/editor' ), 'getBlockIndex' ],
+		[ wpSelect( 'core/block-editor' ), 'getBlockIndex' ],
 		clientId,
 		rootClientId,
 	) );
