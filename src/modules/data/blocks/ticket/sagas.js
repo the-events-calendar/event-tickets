@@ -1386,7 +1386,7 @@ export function* handleTicketStartDate( action ) {
 	const startDateMoment = yield date ? call( momentUtil.toMoment, date ) : undefined;
 	const startDate = yield date ? call( momentUtil.toDatabaseDate, startDateMoment ) : '';
 	yield put( actions.setTicketTempStartDate( clientId, startDate ) );
-	yield put( actions.setTicketTempStartDateInput( clientId, dayPickerInput.state.value ) );
+	yield put( actions.setTicketTempStartDateInput( clientId, dayPickerInput ) );
 	yield put( actions.setTicketTempStartDateMoment( clientId, startDateMoment ) );
 }
 
@@ -1395,7 +1395,7 @@ export function* handleTicketEndDate( action ) {
 	const endDateMoment = yield date ? call( momentUtil.toMoment, date ) : undefined;
 	const endDate = yield date ? call( momentUtil.toDatabaseDate, endDateMoment ) : '';
 	yield put( actions.setTicketTempEndDate( clientId, endDate ) );
-	yield put( actions.setTicketTempEndDateInput( clientId, dayPickerInput.state.value ) );
+	yield put( actions.setTicketTempEndDateInput( clientId, dayPickerInput ) );
 	yield put( actions.setTicketTempEndDateMoment( clientId, endDateMoment ) );
 }
 
@@ -1405,7 +1405,7 @@ export function* handleTicketSaleStartDate( action ) {
 	const startDate = yield date ? call( momentUtil.toDatabaseDate, startDateMoment ) : '';
 
 	yield put( actions.setTicketTempSaleStartDate( clientId, startDate ) );
-	yield put( actions.setTicketTempSaleStartDateInput( clientId, dayPickerInput.state.value ) );
+	yield put( actions.setTicketTempSaleStartDateInput( clientId, dayPickerInput ) );
 	yield put( actions.setTicketTempSaleStartDateMoment( clientId, startDateMoment ) );
 }
 
@@ -1414,7 +1414,7 @@ export function* handleTicketSaleEndDate( action ) {
 	const endDateMoment = yield date ? call( momentUtil.toMoment, date ) : undefined;
 	const endDate = yield date ? call( momentUtil.toDatabaseDate, endDateMoment ) : '';
 	yield put( actions.setTicketTempSaleEndDate( clientId, endDate ) );
-	yield put( actions.setTicketTempSaleEndDateInput( clientId, dayPickerInput.state.value ) );
+	yield put( actions.setTicketTempSaleEndDateInput( clientId, dayPickerInput ) );
 	yield put( actions.setTicketTempSaleEndDateMoment( clientId, endDateMoment ) );
 }
 export function* handleTicketStartTime( action ) {
