@@ -145,15 +145,19 @@ class Fees extends Abstract_Fees {
 
 		$fee_metadata = [];
 
-		// Loop through the fee items and format each one as "FeeName: Price".
+		// Loop through the fee items and format each one as "Fee Name (quantity): Subtotal".
 		foreach ( $fee_items as $fee_item ) {
 			// Skip the fee if it lacks required data or has an invalid price.
 			if ( ! isset( $fee_item['display_name'], $fee_item['price'] ) || $fee_item['price'] < 0 ) {
 				continue;
 			}
 
-			// Format the fee metadata as "FeeName: Price".
-			$fee_metadata[] = sprintf( '%s: %.2f', $fee_item['display_name'], $fee_item['price'] * ( $fee_item['quantity'] ?? 1 ) );
+			$fee_metadata[] = sprintf(
+				'%s (%s): %.2f',
+				$fee_item['display_name'],
+				$fee_item['quantity'],
+				$fee_item['subtotal']
+			);
 		}
 
 		if ( ! empty( $fee_metadata ) ) {

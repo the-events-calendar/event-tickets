@@ -12,6 +12,7 @@
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
 
 use TEC\Common\Contracts\Container;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Integer_Value;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee_Modifier_Manager as Modifier_Manager;
@@ -350,41 +351,44 @@ abstract class Abstract_Fees extends Controller_Contract {
 		$this->subtotal = $subtotal;
 
 		// Get all the combined fees for the items in the cart.
-		$fees = $this->get_combined_fees_for_items( $items );
+		$raw_fees = $this->get_combined_fees_for_items( $items, true );
 
-		// Track the fee_ids that have already been added to prevent duplication.
-		$existing_fee_ids = [];
+		// Set up the array of fee items.
+		$fee_items = [];
+		foreach ( $raw_fees as $item_id => $fee_data ) {
+			$quantity = $fee_data['times'] ?? 1;
 
-		foreach ( $items as $item ) {
-			if ( isset( $item['fee_id'] ) ) {
-				$existing_fee_ids[ $item['fee_id'] ] = 1;
+			foreach ( $fee_data['fees'] as $fee ) {
+				/** @var Precision_Value $amount */
+				$amount = $fee['fee_amount'];
+
+				// If the fee exists, update the quantity and recalculate the subtotal.
+				if ( array_key_exists( $fee['id'], $fee_items ) ) {
+					// Set the new quantity.
+					$quantity += $fee_items[ $fee['id'] ]['quantity'];
+
+					// Update the quantity and recalculate the subtotal.
+					$fee_items[ $fee['id'] ]['quantity']  = $quantity;
+					$fee_items[ $fee['id'] ]['sub_total'] = $amount->multiply_by_integer( new Integer_Value( $quantity ) )->get();
+					continue;
+				}
+
+				$fee_items[ $fee['id'] ] = [
+					'id'           => "fee_{$fee['id']}_{$item_id}",
+					'type'         => 'fee',
+					'price'        => $amount->get(),
+					'sub_total'    => $amount->multiply_by_integer( new Integer_Value( $quantity ) )->get(),
+					'fee_id'       => $fee['id'],
+					'display_name' => $fee['display_name'],
+					'ticket_id'    => $item_id,
+					'event_id'     => '0',
+					'quantity'     => $quantity,
+				];
 			}
 		}
 
-		// Loop through each fee and append it to the $items array if it's not already added.
-		foreach ( $fees as $fee ) {
-			// Skip if this fee has already been added to the cart.
-			if ( array_key_exists( $fee['id'], $existing_fee_ids ) ) {
-				continue;
-			}
-
-			// Append the fee to the cart.
-			// @todo - Review what needs to be sent. Some of these are used so wp_pluck doesn't cause a warning.
-			$items[] = [
-				'id'           => "fee_{$fee['id']}",
-				'price'        => $fee['fee_amount']->get(),
-				'sub_total'    => $fee['fee_amount']->get(),
-				'type'         => 'fee',
-				'fee_id'       => $fee['id'],
-				'display_name' => $fee['display_name'],
-				'ticket_id'    => '0',
-				'event_id'     => '0',
-				'quantity'     => 1,
-			];
-
-			// Add the fee ID to the tracking array.
-			$existing_fee_ids[ $fee['id'] ] = 1;
-		}
+		// Add the fee items to the other cart items.
+		$items = array_merge( $items, $fee_items );
 
 		self::$fees_appended = true;
 
