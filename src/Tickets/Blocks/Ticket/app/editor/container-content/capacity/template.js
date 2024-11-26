@@ -56,8 +56,8 @@ class Capacity extends PureComponent {
 	static propTypes = {
 		hasTicketsPlus: PropTypes.bool,
 		isDisabled: PropTypes.bool,
-		sharedCapacity: PropTypes.string,
-		tempCapacity: PropTypes.string,
+		sharedCapacity: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+		tempCapacity: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 		tempCapacityType: PropTypes.string,
 		// Default value, when the Ticket has just been created is an empty object: take that into account.
 		tempCapacityTypeOption: PropTypes.oneOfType([ ReactSelectOption, PropTypes.object ]),

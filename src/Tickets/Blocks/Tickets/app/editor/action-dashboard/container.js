@@ -37,7 +37,7 @@ const mapStateToProps = (state, ownProps) => {
 			// eslint-disable-line wpcalypso/redux-no-bound-selectors
 			const { clientId } = ownProps;
 			const { getBlockCount } = select('core/block-editor');
-			const { insertBlock } = dispatch('core/editor');
+			const { insertBlock } = dispatch('core/block-editor');
 
 			const nextChildPosition = getBlockCount(clientId);
 			const block = createBlock('tribe/tickets-item', {});
