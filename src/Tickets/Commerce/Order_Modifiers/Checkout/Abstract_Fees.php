@@ -364,11 +364,11 @@ abstract class Abstract_Fees extends Controller_Contract {
 				// If the fee exists, update the quantity and recalculate the subtotal.
 				if ( array_key_exists( $fee['id'], $fee_items ) ) {
 					// Set the new quantity.
-					$quantity += $fee_items[ $fee['id'] ]['quantity'];
+					$total_quantity = $quantity + $fee_items[ $fee['id'] ]['quantity'];
 
 					// Update the quantity and recalculate the subtotal.
-					$fee_items[ $fee['id'] ]['quantity']  = $quantity;
-					$fee_items[ $fee['id'] ]['sub_total'] = $amount->multiply_by_integer( new Integer_Value( $quantity ) )->get();
+					$fee_items[ $fee['id'] ]['quantity']   = $total_quantity;
+					$fee_items[ $fee['id'] ]['sub_total'] += $amount->multiply_by_integer( new Integer_Value( $quantity ) )->get();
 					continue;
 				}
 
