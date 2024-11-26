@@ -46,6 +46,19 @@ trait Fee_Creator {
 	}
 
 	/**
+	 * Adds a fee to a ticket.
+	 *
+	 * This method adds a fee to a ticket by creating a relationship between the fee and the ticket.
+	 *
+	 * @param int $fee_id    The ID of the fee to add to the ticket.
+	 * @param int $ticket_id The ID of the ticket to add the fee to.
+	 */
+	protected function add_fee_to_ticket( int $fee_id, int $ticket_id ) {
+		$fee = Fee::find( $fee_id );
+		$this->create_fee_relationship( $fee, $ticket_id, get_post_type( $ticket_id ) );
+	}
+
+	/**
 	 * @param array $args The arguments to use when creating the fee.
 	 *
 	 * @return Fee The created fee.
