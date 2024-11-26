@@ -83,8 +83,6 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 * @param Order_Modifier_Relationship $order_modifier_relationship The repository for order modifier relationships.
 	 */
 	public function __construct( Modifier_Strategy_Interface $modifier, Order_Modifiers $order_modifier_repository, Order_Modifiers_Meta $order_modifier_meta_repository, Order_Modifier_Relationship $order_modifier_relationship ) {
-		$this->modifier                       = $modifier;
-		$this->order_modifier_repository      = $order_modifier_repository;
 		$this->order_modifier_meta_repository = $order_modifier_meta_repository;
 		$this->order_modifier_relationship    = $order_modifier_relationship;
 
