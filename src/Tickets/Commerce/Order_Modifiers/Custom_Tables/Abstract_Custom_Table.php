@@ -60,6 +60,10 @@ abstract class Abstract_Custom_Table extends Table {
 	/**
 	 * Empties the custom table in a way that is not causing an implicit commit.
 	 *
+	 * Even though the method is called truncate it doesn't use TRUNCATE.
+	 * Thats because we want to avoid implicit commits in the DB making this method suitable for using during a testcase.
+	 * If you want to use TRUNCATE you can use the `empty_table` method instead.
+	 *
 	 * @since TBD
 	 *
 	 * @return bool Whether it was emptied or not.
