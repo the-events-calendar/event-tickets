@@ -249,7 +249,6 @@ const targets = [
 		outputStyle: `build/OrderModifiers/rest.${postfix}`,
 		moveFromTo: {
 			'src/resources/js/app/order-modifiers-rest.js': 'build/OrderModifiers/rest.js',
-			'src/resources/css/app/order-modifiers-rest.css': 'build/OrderModifiers/rest.css',
 		},
 	},
 	{
@@ -262,6 +261,17 @@ const targets = [
 				'build/OrderModifiers/block-editor.js',
 			'src/resources/css/app/order-modifiers-block-editor-bundle.css':
 				'build/OrderModifiers/block-editor.css',
+		},
+	},
+	{
+		name: 'order-modifiers-block-editor-bundle-css',
+		entry: './src/Tickets/Commerce/Order_Modifiers/app/blockEditor/fees/style.pcss',
+		outputStyle: `build/OrderModifiers/block-editor.${postfix}`,
+		moveFromTo: {
+			'src/resources/css/app/order-modifiers-block-editor-bundle-css.css':
+				'build/OrderModifiers/block-editor.css',
+			'src/resources/css/app/order-modifiers-block-editor-bundle-css.min.css':
+				'build/OrderModifiers/block-editor.min.css',
 		},
 	},
 ];
