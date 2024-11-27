@@ -14,6 +14,7 @@ import { setTicketHasChangesInCommonStore } from '../store/common-store-bridge';
 import AddFee from './add-fee';
 import { CheckboxFee, CheckboxFeeWithTooltip } from './checkbox-fee';
 import SelectFee from './select-fee';
+import './style.pcss';
 
 const { storeName } = require( '../store' );
 
