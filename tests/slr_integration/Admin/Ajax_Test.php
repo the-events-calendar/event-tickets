@@ -2755,7 +2755,7 @@ class Ajax_Test extends Controller_Test_Case {
 		$_REQUEST['postId'] = $post_id;
 		
 		$wp_send_json_success = $this->mock_wp_send_json_success();
-		do_action( 'wp_ajax_' . Ajax::ACTION_REMOVE_EVENT_LAYOUT );
+		do_action( 'wp_ajax_' . Ajax::ACTION_EVENT_LAYOUT_REMOVE );
 		
 		$success = $wp_send_json_success->was_called_times_with(
 			1,
@@ -2829,7 +2829,7 @@ class Ajax_Test extends Controller_Test_Case {
 		unset( $_REQUEST['postId'] );
 		$wp_send_json_error = $this->mock_wp_send_json_error();
 		
-		do_action( 'wp_ajax_' . Ajax::ACTION_REMOVE_EVENT_LAYOUT );
+		do_action( 'wp_ajax_' . Ajax::ACTION_EVENT_LAYOUT_REMOVE );
 		
 		$this->assertTrue(
 			$wp_send_json_error->was_called_times_with(
@@ -2847,7 +2847,7 @@ class Ajax_Test extends Controller_Test_Case {
 		$_REQUEST['postId'] = static::factory()->post->create();
 		$wp_send_json_error = $this->mock_wp_send_json_error();
 		
-		do_action( 'wp_ajax_' . Ajax::ACTION_REMOVE_EVENT_LAYOUT );
+		do_action( 'wp_ajax_' . Ajax::ACTION_EVENT_LAYOUT_REMOVE );
 		
 		$this->assertTrue(
 			$wp_send_json_error->was_called_times_with(
@@ -2866,7 +2866,7 @@ class Ajax_Test extends Controller_Test_Case {
 		$_REQUEST['postId'] = static::factory()->post->create();
 		$wp_send_json_error = $this->mock_wp_send_json_error();
 		
-		do_action( 'wp_ajax_' . Ajax::ACTION_REMOVE_EVENT_LAYOUT );
+		do_action( 'wp_ajax_' . Ajax::ACTION_EVENT_LAYOUT_REMOVE );
 		
 		$this->assertTrue(
 			$wp_send_json_error->was_called_times_with(

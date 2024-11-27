@@ -210,7 +210,7 @@ class Ajax extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	public const ACTION_REMOVE_EVENT_LAYOUT = 'tec_tickets_seating_remove_event_layout';
+	public const ACTION_EVENT_LAYOUT_REMOVE = 'tec_tickets_seating_event_layout_removal';
 
 	/**
 	 * A reference to the Seat Types service object.
@@ -314,7 +314,7 @@ class Ajax extends Controller_Contract {
 		);
 		add_action( 'wp_ajax_' . self::ACTION_SEAT_TYPE_DELETED, [ $this, 'handle_seat_type_deleted' ] );
 		add_action( 'wp_ajax_' . self::ACTION_EVENT_LAYOUT_UPDATED, [ $this, 'update_event_layout' ] );
-		add_action( 'wp_ajax_' . self::ACTION_REMOVE_EVENT_LAYOUT, [ $this, 'remove_event_layout' ] );
+		add_action( 'wp_ajax_' . self::ACTION_EVENT_LAYOUT_REMOVE, [ $this, 'remove_event_layout' ] );
 
 		add_action( 'tec_tickets_seating_session_interrupt', [ $this, 'clear_commerce_cart_cookie' ] );
 	}
@@ -351,7 +351,7 @@ class Ajax extends Controller_Contract {
 
 		remove_action( 'wp_ajax_' . self::ACTION_SEAT_TYPE_DELETED, [ $this, 'handle_seat_type_deleted' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_EVENT_LAYOUT_UPDATED, [ $this, 'update_event_layout' ] );
-		remove_action( 'wp_ajax_' . self::ACTION_REMOVE_EVENT_LAYOUT, [ $this, 'remove_event_layout' ] );
+		remove_action( 'wp_ajax_' . self::ACTION_EVENT_LAYOUT_REMOVE, [ $this, 'remove_event_layout' ] );
 	}
 
 	/**
@@ -382,7 +382,7 @@ class Ajax extends Controller_Contract {
 			'ACTION_RESERVATION_CREATED'                  => self::ACTION_RESERVATION_CREATED,
 			'ACTION_RESERVATION_UPDATED'                  => self::ACTION_RESERVATION_UPDATED,
 			'ACTION_EVENT_LAYOUT_UPDATED'                 => self::ACTION_EVENT_LAYOUT_UPDATED,
-			'ACTION_REMOVE_EVENT_LAYOUT'                  => self::ACTION_REMOVE_EVENT_LAYOUT,
+			'ACTION_REMOVE_EVENT_LAYOUT'                  => self::ACTION_EVENT_LAYOUT_REMOVE,
 		];
 	}
 
