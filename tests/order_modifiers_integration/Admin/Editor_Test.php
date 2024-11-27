@@ -2,15 +2,15 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Admin;
 
+use Closure;
+use Generator;
+use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use Tribe\Tests\Traits\With_Uopz;
-use TEC\Common\StellarWP\Assets\Assets;
-use Closure;
-use Tribe__Events__Main as TEC;
-use Generator;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use Tribe\Tickets\Test\Commerce\OrderModifiers\Fee_Creator;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe__Events__Main as TEC;
+use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 
 class Editor_Test extends Controller_Test_Case {
 	use With_Uopz;
@@ -26,31 +26,32 @@ class Editor_Test extends Controller_Test_Case {
 				global $pagenow;
 				$pagenow = 'post-new.php';
 
-				return [[], []];
-			}
+				return [ [], [] ];
+			},
 		];
 
 		yield 'existing post with tickets' => [
 			function (): array {
 				$id = self::factory()->post->create();
 				global $pagenow, $post;
-				$pagenow = 'edit.php';
-				$post    = get_post( $id );
+				$pagenow  = 'edit.php';
+				$post     = get_post( $id );
 				$ticket_1 = $this->create_tc_ticket( $id, 10.10 );
 				$ticket_2 = $this->create_tc_ticket( $id, 20.30 );
 				$ticket_3 = $this->create_tc_ticket( $id, 30.40 );
 				$ticket_4 = $this->create_tc_ticket( $id, 40.50 );
 				$ticket_5 = $this->create_tc_ticket( $id, 50.60 );
 
-				return [[$ticket_1, $ticket_2, $ticket_3, $ticket_4, $ticket_5], []];
-			}
+				return [ [ $ticket_1, $ticket_2, $ticket_3, $ticket_4, $ticket_5 ], [] ];
+			},
 		];
+
 		yield 'existing post with tickets with fees' => [
 			function (): array {
 				$id = self::factory()->post->create();
 				global $pagenow, $post;
-				$pagenow = 'edit.php';
-				$post    = get_post( $id );
+				$pagenow  = 'edit.php';
+				$post     = get_post( $id );
 				$ticket_1 = $this->create_tc_ticket( $id, 10.10 );
 				$ticket_2 = $this->create_tc_ticket( $id, 20.30 );
 				$ticket_3 = $this->create_tc_ticket( $id, 30.40 );
@@ -61,8 +62,11 @@ class Editor_Test extends Controller_Test_Case {
 				$fee_id_4 = $this->create_fee_for_ticket( $ticket_4, [ 'raw_amount' => 5.50 ] );
 				$fee_id_5 = $this->create_fee_for_ticket( $ticket_5, [ 'raw_amount' => 7.77 ] );
 
-				return [[$ticket_1, $ticket_2, $ticket_3, $ticket_4, $ticket_5], [$fee_id_2, $fee_id_4, $fee_id_5]];
-			}
+				return [
+					[ $ticket_1, $ticket_2, $ticket_3, $ticket_4, $ticket_5 ],
+					[ $fee_id_2, $fee_id_4, $fee_id_5 ],
+				];
+			},
 		];
 
 		yield 'new event' => [
@@ -72,17 +76,19 @@ class Editor_Test extends Controller_Test_Case {
 				$pagenow               = 'post-new.php';
 				$_REQUEST['post_type'] = $post_type;
 
-				return [[], []];
-			}
+				return [ [], [] ];
+			},
 		];
 
 		yield 'existing event with tickets' => [
 			function (): array {
-				$id = tribe_events()->set_args( [
-					'title'      => 'Test Event',
-					'start_date' => '+1 week',
-					'duration'   => 3 * HOUR_IN_SECONDS,
-				] )->create()->ID;
+				$id = tribe_events()->set_args(
+					[
+						'title'      => 'Test Event',
+						'start_date' => '+1 week',
+						'duration'   => 3 * HOUR_IN_SECONDS,
+					]
+				)->create()->ID;
 				global $pagenow, $post;
 				$pagenow = 'edit.php';
 				$post    = get_post( $id );
@@ -93,17 +99,19 @@ class Editor_Test extends Controller_Test_Case {
 				$ticket_4 = $this->create_tc_ticket( $id, 40.50 );
 				$ticket_5 = $this->create_tc_ticket( $id, 50.60 );
 
-				return [[$ticket_1, $ticket_2, $ticket_3, $ticket_4, $ticket_5], []];
-			}
+				return [ [ $ticket_1, $ticket_2, $ticket_3, $ticket_4, $ticket_5 ], [] ];
+			},
 		];
 
 		yield 'existing event with tickets with fees' => [
 			function (): array {
-				$id = tribe_events()->set_args( [
-					'title'      => 'Test Event',
-					'start_date' => '+1 week',
-					'duration'   => 3 * HOUR_IN_SECONDS,
-				] )->create()->ID;
+				$id = tribe_events()->set_args(
+					[
+						'title'      => 'Test Event',
+						'start_date' => '+1 week',
+						'duration'   => 3 * HOUR_IN_SECONDS,
+					]
+				)->create()->ID;
 				global $pagenow, $post;
 				$pagenow = 'edit.php';
 				$post    = get_post( $id );
@@ -118,8 +126,11 @@ class Editor_Test extends Controller_Test_Case {
 				$fee_id_4 = $this->create_fee_for_ticket( $ticket_4, [ 'raw_amount' => 5.50 ] );
 				$fee_id_5 = $this->create_fee_for_ticket( $ticket_5, [ 'raw_amount' => 7.77 ] );
 
-				return [[$ticket_1, $ticket_2, $ticket_3, $ticket_4, $ticket_5], [$fee_id_2, $fee_id_4, $fee_id_5]];
-			}
+				return [
+					[ $ticket_1, $ticket_2, $ticket_3, $ticket_4, $ticket_5 ],
+					[ $fee_id_2, $fee_id_4, $fee_id_5 ],
+				];
+			},
 		];
 	}
 
@@ -127,11 +138,19 @@ class Editor_Test extends Controller_Test_Case {
 	 * @dataProvider get_store_data_provider
 	 */
 	public function test_get_store_data( Closure $fixture ): void {
-		[$ticket_ids, $fee_ids] = $fixture();
+		[ $ticket_ids, $fee_ids ] = $fixture();
 
-		$store_data = $this->make_controller()->get_store_data();
+		/** @var Editor $controller */
+		$controller     = $this->make_controller();
+		$get_store_data = Closure::bind(
+			function () {
+				return $this->get_store_data();
+			},
+			$controller,
+			$controller
+		);
 
-		$json = wp_json_encode( $store_data, JSON_SNAPSHOT_OPTIONS );
+		$json = wp_json_encode( $get_store_data(), JSON_SNAPSHOT_OPTIONS );
 
 		$json = str_replace(
 			$ticket_ids,
@@ -146,6 +165,7 @@ class Editor_Test extends Controller_Test_Case {
 		);
 		$this->assertMatchesJsonSnapshot( $json );
 	}
+
 	/**
 	 * @test
 	 * @dataProvider asset_data_provider
@@ -178,16 +198,16 @@ class Editor_Test extends Controller_Test_Case {
 				tribe_update_option( 'ticket-able-post-types', [] );
 
 				return false;
-			}
+			},
 		];
 
 		yield 'get_post does not return post' => [
-			function()	:bool{
-				tribe_update_option( 'ticket-enabled-post-types', ['post', 'page'] );
+			function (): bool {
+				tribe_update_option( 'ticket-enabled-post-types', [ 'post', 'page' ] );
 				$this->set_fn_return( 'get_post', null );
 
 				return false;
-			}
+			},
 		];
 
 		yield 'get_post returns non ticket-able post' => [
@@ -196,7 +216,7 @@ class Editor_Test extends Controller_Test_Case {
 				$this->set_fn_return( 'get_post', self::factory()->post->create_and_get() );
 
 				return false;
-			}
+			},
 		];
 
 		yield 'ticket-able post, not admin context' => [
@@ -206,7 +226,7 @@ class Editor_Test extends Controller_Test_Case {
 				$this->set_fn_return( 'is_admin', false );
 
 				return false;
-			}
+			},
 		];
 
 		yield 'ticket-able post, admin context' => [
@@ -216,7 +236,7 @@ class Editor_Test extends Controller_Test_Case {
 				$this->set_fn_return( 'is_admin', true );
 
 				return true;
-			}
+			},
 		];
 	}
 
@@ -224,10 +244,16 @@ class Editor_Test extends Controller_Test_Case {
 	 * @dataProvider should_enqueue_assets_data_provider
 	 */
 	public function test_should_enqueue_assets( Closure $fixture ): void {
-		$should_enqueue_assets = $fixture();
+		/** @var Editor $controller */
+		$controller            = $this->make_controller();
+		$should_enqueue_assets = Closure::bind(
+			function () {
+				return $this->should_enqueue_assets();
+			},
+			$controller,
+			$controller
+		);
 
-		$controller = $this->make_controller();
-
-		$this->assertEquals( $should_enqueue_assets, $controller->should_enqueue_assets() );
+		$this->assertEquals( $fixture(), $should_enqueue_assets() );
 	}
 }
