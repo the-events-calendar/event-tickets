@@ -48,12 +48,12 @@
                 "available": 100
             },
             "is_available": true,
-            "cost": "$10.00",
+            "cost": "$100.00",
             "cost_details": {
                 "currency_symbol": "$",
                 "currency_position": "prefix",
                 "values": [
-                    "10"
+                    "100"
                 ],
                 "suffix": null,
                 "currency_decimal_separator": ".",
@@ -115,12 +115,12 @@
                 "available": 100
             },
             "is_available": true,
-            "cost": "$20.00",
+            "cost": "$200.00",
             "cost_details": {
                 "currency_symbol": "$",
                 "currency_position": "prefix",
                 "values": [
-                    "20"
+                    "200"
                 ],
                 "suffix": null,
                 "currency_decimal_separator": ".",
@@ -182,12 +182,12 @@
                 "available": 100
             },
             "is_available": true,
-            "cost": "$30.00",
+            "cost": "$300.00",
             "cost_details": {
                 "currency_symbol": "$",
                 "currency_position": "prefix",
                 "values": [
-                    "30"
+                    "300"
                 ],
                 "suffix": null,
                 "currency_decimal_separator": ".",
@@ -450,12 +450,12 @@
                 "available": 100
             },
             "is_available": true,
-            "cost": "$30.00",
+            "cost": "$300.00",
             "cost_details": {
                 "currency_symbol": "$",
                 "currency_position": "prefix",
                 "values": [
-                    "30"
+                    "300"
                 ],
                 "suffix": null,
                 "currency_decimal_separator": ".",
@@ -517,12 +517,12 @@
                 "available": 100
             },
             "is_available": true,
-            "cost": "$60.00",
+            "cost": "$600.00",
             "cost_details": {
                 "currency_symbol": "$",
                 "currency_position": "prefix",
                 "values": [
-                    "60"
+                    "600"
                 ],
                 "suffix": null,
                 "currency_decimal_separator": ".",
@@ -584,12 +584,12 @@
                 "available": 100
             },
             "is_available": true,
-            "cost": "$90.00",
+            "cost": "$900.00",
             "cost_details": {
                 "currency_symbol": "$",
                 "currency_position": "prefix",
                 "values": [
-                    "90"
+                    "900"
                 ],
                 "suffix": null,
                 "currency_decimal_separator": ".",
