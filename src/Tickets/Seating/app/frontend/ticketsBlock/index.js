@@ -78,6 +78,7 @@ const confirmSelector =
  * @property {string} name        The ticket name.
  * @property {number} price       The ticket price.
  * @property {string} description The ticket description.
+ * @property {number} maxLimit    The maximum number of tickets that can be selected.
  */
 
 /**
@@ -300,8 +301,21 @@ function updateTicketsSelection(parentElement, items) {
 	parentElement.querySelector('.tec-tickets-seating__ticket-rows').innerHTML =
 		'';
 
+	let ticketCount = {};
+
 	items.forEach((item) => {
 		addTicketToSelection(parentElement, item);
+
+		// Count if the item id is already in the ticketCount object.
+		const maxLimit = tickets[item.ticketId].maxLimit;
+		ticketCount[item.ticketId] = ticketCount[item.ticketId] || 0;
+		ticketCount[item.ticketId]++;
+
+		if ( ticketCount[item.ticketId] >= maxLimit ) {
+			parentElement.querySelector('.tec-tickets-seating__tickets-wrapper')
+				.prepend( '<div> Max number of tickets are selected. </div>' );
+			// send disable message to iframe
+		}
 	});
 
 	const reservations = items.reduce((acc, item) => {
