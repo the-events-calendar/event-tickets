@@ -72,9 +72,9 @@ abstract class Abstract_Custom_Table extends Table {
 
 		$this_table = static::table_name( true );
 
-		DB::query( "SET foreign_key_checks = 0" );
+		DB::query( 'SET foreign_key_checks = 0' );
 		$result = DB::query( "DELETE FROM {$this_table}" );
-		DB::query( "SET foreign_key_checks = 1" );
+		DB::query( 'SET foreign_key_checks = 1' );
 
 		return is_numeric( $result );
 	}
