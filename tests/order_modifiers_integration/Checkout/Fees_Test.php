@@ -345,7 +345,7 @@ class Fees_Test extends Controller_Test_Case {
 		$cart->add_item( $ticket, $quantity );
 
 		$this->assertEquals( $quantity * $expected_total->get(), $cart->get_cart_total() );
-		$this->set_fn_return( 'wp_create_nonce', '0987654321' );
+		$this->set_fn_return( 'wp_create_nonce', '1029384756' );
 		// Assert the total value matches the expected total.
 		$this->assertMatchesHtmlSnapshot( preg_replace( '#<link rel=(.*)/>#', '', str_replace( [ $event_id, $ticket ], [ '{POST_ID}', '{TICKET_ID}' ], tribe( Checkout_Shortcode::class )->get_html() ) ) );
 	}

@@ -16,6 +16,7 @@ use TEC\Tickets\Commerce\Hooks;
 use Tribe\Tests\Traits\With_Clock_Mock;
 use WP_REST_Response;
 use Tribe__Date_Utils as Dates;
+use TEC\Common\StellarWP\DB\DB;
 
 class Fees_Test extends Controller_Test_Case {
 	use With_Uopz;
@@ -50,7 +51,6 @@ class Fees_Test extends Controller_Test_Case {
 		];
 		yield 'single ticket - unauthorized' => [
 			function () {
-				wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
 				[ $post_ids, $ticket_ids, $fee_ids ] = $this->create_data();
 				return [ '/tickets/{TICKET_ID}', $post_ids, $ticket_ids, $fee_ids ];
 			},
@@ -129,12 +129,45 @@ class Fees_Test extends Controller_Test_Case {
 
 	/**
 	 * @test
+	 */
+	public function it_should_produce_test_data_as_designed() {
+		$controller = $this->make_controller();
+		[ $post_ids, $ticket_ids, $fee_ids, $fee_ids_per_ticket ] = $this->create_data();
+
+		$this->assertCount( 4, $post_ids );
+		$this->assertCount( 12, $ticket_ids );
+		$this->assertCount( 21, $fee_ids );
+
+		foreach ( $ticket_ids as $k => $ticket_id ) {
+			$k = (int) $k;
+			$ticket_fees = $controller->get_fees_for_ticket( $ticket_id );
+			$this->assertCount( 20, $ticket_fees['available_fees'] );
+			$this->assertCount( 1, $ticket_fees['automatic_fees'] );
+			$this->assertCount( 1 === $k || 7 === $k ? 0 : 2, $ticket_fees['selected_fees'], $k );
+			$this->assertEquals( $fee_ids_per_ticket[ $ticket_id ], $ticket_fees['selected_fees'] );
+		}
+	}
+
+	/**
+	 * @test
 	 * @dataProvider pre_existing_rest_endpoints_data_provider
 	 */
 	public function it_should_add_fees_fields_as_expected( Closure $fixture ) {
 		tribe( Hooks::class )->register_post_types();
 		$this->freeze_time( Dates::immutable( '2022-06-13 17:25:32' ) );
+		$controller = $this->make_controller();
+
 		[ $path, $post_ids, $ticket_ids, $fee_ids ] = $fixture();
+
+		$controller->register();
+
+		// Check that the fees are as expected before the request.
+		foreach ( $ticket_ids as $k => $ticket_id ) {
+			$ticket_fees = $controller->get_fees_for_ticket( $ticket_id );
+			$this->assertCount( 1 === (int) $k || 7 === (int) $k ? 0 : 2, $ticket_fees['selected_fees'], $k );
+			$this->assertCount( 1, $ticket_fees['automatic_fees'] );
+			$this->assertCount( count( $fee_ids ) - 1, $ticket_fees['available_fees'] ); // All are available except the one that is applied to all tickets!
+		}
 
 		wp_update_post( [
 			'ID' => $post_ids[1],
@@ -145,8 +178,6 @@ class Fees_Test extends Controller_Test_Case {
 			'ID' => $post_ids[3],
 			'post_password' => 'password',
 		] );
-
-		$this->make_controller()->register();
 
 		if ( strstr( $path, '{TICKET_ID}') ) {
 			$data_array = [];
@@ -186,6 +217,11 @@ class Fees_Test extends Controller_Test_Case {
 			$json
 		);
 		$json = str_replace(
+			array_map( static fn( $id ) => 'TEST-TKT-' . $id, $post_ids ),
+			'TEST-TKT-{EVENT_ID}',
+			$json
+		);
+		$json = str_replace(
 			array_map( static fn( $id ) => '\/events\/' . $id, $post_ids ),
 			'\/events\/{EVENT_ID}',
 			$json
@@ -212,18 +248,27 @@ class Fees_Test extends Controller_Test_Case {
 		[ $path, $should_fail, $method, $post_ids, $ticket_ids, $fee_ids, $selected_fees ] = $fixture();
 		$controller = $this->make_controller();
 		$controller->register();
+
+		// Check that the fees are as expected before the request.
+		foreach ( $ticket_ids as $k => $ticket_id ) {
+			$ticket_fees = $controller->get_fees_for_ticket( $ticket_id );
+			$this->assertCount( 1 === (int) $k || 7 === (int) $k ? 0 : 2, $ticket_fees['selected_fees'], $k );
+			$this->assertCount( 1, $ticket_fees['automatic_fees'] );
+			$this->assertCount( count( $fee_ids ) - 1, $ticket_fees['available_fees'] ); // All are available except the one that is applied to all tickets!
+		}
+
 		if ( strstr( $path, '{TICKET_ID}' ) ) {
 			$data = [];
 			foreach ( $ticket_ids as $ticket_id ) {
 				$data[] = $this->assert_endpoint( str_replace( '{TICKET_ID}', $ticket_id, $path ), $method, $should_fail, $selected_fees, $error_code );
 			}
 
-			if ( ! empty( $selected_fees ) ) {
-				foreach ( $ticket_ids as $ticket_id ) {
+			if ( ! empty( $selected_fees ) && ! $should_fail ) {
+				foreach ( $ticket_ids as $k => $ticket_id ) {
 					$ticket_fees = $controller->get_fees_for_ticket( $ticket_id );
 					$this->assertCount( 2, $ticket_fees['selected_fees'] );
 					$this->assertCount( 1, $ticket_fees['automatic_fees'] );
-					$this->assertCount( count( $fee_ids ) - 1, $ticket_fees['available_fees'] );
+					$this->assertCount( count( $fee_ids ) - 1, $ticket_fees['available_fees'] ); // All are available except the one that is applied to all tickets!
 				}
 			}
 		} else {
@@ -256,25 +301,53 @@ class Fees_Test extends Controller_Test_Case {
 		$post_ids = self::factory()->post->create_many( 2 );
 		$post_ids = array_merge( $post_ids, array_map( static fn( $e ) => $e->ID, $this->generate_multiple_events( '2021-01-01', 2 ) ) );
 
+		// 4 post ids, 2 events and 2 tickets.
+
 		$ticket_ids = [];
 		foreach ( $post_ids as $k => $post_id ) {
 			foreach ( range( 1, 3 ) as $i ) {
-				$ticket_ids[] = $this->create_tc_ticket( $post_id, ( $k + 1 ) * ( $i * 10 ) );
+				$ticket_ids[] = $this->create_tc_ticket( $post_id, ( $k + 1 ) * ( $i * 100 ) );
 			}
 		}
+
+		// 12 ticket ids, 3 tickets for each event.
 
 		$fee_ids = [];
+		$fee_ids_per_ticket = [];
+		$queries = [];
 		foreach ( $ticket_ids as $k => $ticket_id ) {
-			foreach ( [ 1, 3 ] as $i ) {
-				$fee_ids[] = $this->create_fee_for_ticket( $ticket_id, [ 'raw_amount' => ( $k + 1 ) * ( $i * 10 ) ] );
+			if ( 1 === (int) $k || 7 === (int) $k ) {
+				$fee_ids_per_ticket[ $ticket_id ] = [];
+				continue;
 			}
+
+			$ticket_fees = [];
+
+			foreach ( [ 1, 3 ] as $i ) { // Careful here! Only 2 fees are created and the second and eighth tickets are ignored by the continue statement above.
+				$ticket_fees[] = $this->create_fee_for_ticket( $ticket_id, [ 'raw_amount' => ( $k + 1 ) * ( $i * 10 ) ] );
+			}
+
+			$fee_ids_per_ticket[ $ticket_id ] = $ticket_fees;
+
+			$query = DB::prepare( "SELECT modifier_id FROM %i WHERE post_id = %d", DB::prefix( 'tec_order_modifier_relationships' ), $ticket_id );
+			$results = wp_list_pluck( DB::get_results( $query ), 'modifier_id' );
+			$this->assertEquals( $ticket_fees, $results );
+			$queries[] = [ 'query' => $query, 'results' => $results ];
+			$fee_ids = array_merge( $fee_ids, $ticket_fees );
 		}
 
-		$fee_id_for_all = $this->create_fee( [ 'raw_amount' => 100 ] );
-		$this->set_fee_application( $fee_id_for_all, 'all' );
-		$fee_ids[] = $fee_id_for_all->id;
+		foreach ( $queries as $query ) {
+			$results = wp_list_pluck( DB::get_results( $query['query'] ), 'modifier_id' );
+			$this->assertEquals( $query['results'], $results );
+		}
 
-		return [ $post_ids, $ticket_ids, $fee_ids ];
+		// 20 fee ids, 2 fees for each ticket except the second and the eight ticket.
+
+		$fee_ids[] = $this->create_fee_for_all( [ 'raw_amount' => 100 ] );
+
+		// 21 fee ids, 1 fee for all tickets.
+
+		return [ $post_ids, $ticket_ids, $fee_ids, $fee_ids_per_ticket ];
 	}
 
 	protected function assert_endpoint( string $path, string $method = 'GET', bool $should_fail = false, array $selected_fees = [], int $error_code = 401 ) {
