@@ -10,6 +10,9 @@ use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta as Me
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship as Relationship_Repository;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Float_Value;
 use TEC\Common\StellarWP\Models\Contracts\Model;
+use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifier_Relationships as Relationships_Table;
+use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta as Meta_Table;
+use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifiers as Modifiers_Table;
 
 trait Fee_Creator {
 
@@ -25,6 +28,20 @@ trait Fee_Creator {
 	 */
 	public function reset_counter() {
 		self::$fee_counter = 0;
+	}
+
+	/**
+	 * Truncates the custom tables.
+	 *
+	 * This method truncates the custom tables used by the order modifiers.
+	 *
+	 * @before
+	 * @after
+	 */
+	public function truncate_custom_tables() {
+		$this->assertTrue( tribe( Relationships_Table::class )->truncate() );
+		$this->assertTrue( tribe( Meta_Table::class )->truncate() );
+		$this->assertTrue( tribe( Modifiers_Table::class )->truncate() );
 	}
 
 	/**
