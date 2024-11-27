@@ -1294,14 +1294,12 @@ class Ajax extends Controller_Contract {
 		$updated_attendees = 0;
 
 		// Get tickets by post id.
-		$tickets = tribe_tickets()->where( 'event', $post_id )->get_ids( true );
+		$tickets = tribe_tickets()
+					->where( 'event', $post_id )
+					->where( 'meta_exists', Meta::META_KEY_SEAT_TYPE )
+					->get_ids( true );
 		
 		foreach ( $tickets as $ticket_id ) {
-			// Skip non-seated tickets.
-			if ( empty( get_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true ) ) ) {
-				continue;
-			}
-			
 			// Remove slr meta.
 			delete_post_meta( $ticket_id, Meta::META_KEY_ENABLED );
 			delete_post_meta( $ticket_id, Meta::META_KEY_LAYOUT_ID );
