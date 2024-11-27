@@ -204,7 +204,7 @@ class Ajax extends Controller_Contract {
 	public const ACTION_EVENT_LAYOUT_UPDATED = 'tec_tickets_seating_event_layout_updated';
 	
 	/**
-	 * The action to update the layout for an event.
+	 * The action to remove the post layout.
 	 *
 	 * @since TBD
 	 *
