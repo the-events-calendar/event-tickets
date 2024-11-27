@@ -8,7 +8,7 @@ import {
  *
  * @since TBD
  *
- * @return {Promise<{feesSelectable: (*|*[]), feesAvailable: (*|*[])}>}
+ * @return {Promise<{feesAutomatic: (*|*[]), feesAvailable: (*|*[])}>}
  */
 export async function fetchFeesFromAPI() {
 	const url = new URL( `${ baseUrl }/fees` );

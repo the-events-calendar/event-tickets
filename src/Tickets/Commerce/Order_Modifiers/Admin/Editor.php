@@ -11,18 +11,18 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Admin;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Assets\Assets;
+use TEC\Tickets\Commerce\Order_Modifiers\API\Base_API;
+use TEC\Tickets\Commerce\Order_Modifiers\API\Fees;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Asset_Build;
 use Tribe__Main as Common;
-use TEC\Tickets\Commerce\Order_Modifiers\API\Fees;
 use WP_Post;
-use TEC\Tickets\Commerce\Order_Modifiers\API\Base_API;
 
 /**
  * Class Editor
  *
  * @since TBD
  */
-class Editor extends Controller_Contract {
+final class Editor extends Controller_Contract {
 
 	use Asset_Build;
 
@@ -49,12 +49,12 @@ class Editor extends Controller_Contract {
 			function () {
 				?>
 				<script type="text/javascript">
-					(function () {
+					( function () {
 						window.tec = window.tec || {};
 						window.tec.tickets = window.tec.tickets || {};
 						window.tec.tickets.orderModifiers = window.tec.tickets.orderModifiers || {};
 						window.tec.tickets.orderModifiers.rest = window.tec.tickets.orderModifiers.rest || {};
-					})();
+					} )();
 				</script>
 				<?php
 			}
@@ -85,9 +85,8 @@ class Editor extends Controller_Contract {
 	 *     selectedFeesByPostId: array<int, string>,
 	 * }
 	 */
-	public function get_store_data(): array {
+	private function get_store_data(): array {
 		$post_id = Common::post_id_helper();
-
 		if ( ! $post_id ) {
 			return [];
 		}
@@ -105,17 +104,22 @@ class Editor extends Controller_Contract {
 	 * @return void
 	 */
 	private function register_block_editor_assets() {
-		$this->add_asset(
-			'tec-tickets-order-modifiers-rest-localization',
-			'rest.js',
-		)
+		// Register the REST script.
+		$this
+			->add_asset(
+				'tec-tickets-order-modifiers-rest-localization',
+				'rest.js',
+			)
 			->add_localize_script( 'tec.tickets.orderModifiers.rest', fn() => $this->get_rest_data() )
+			->set_condition( fn() => $this->should_enqueue_assets() )
 			->register();
 
-		$this->add_asset(
-			'tec-tickets-order-modifiers-block-editor',
-			'block-editor.js',
-		)
+		// Register the main block editor script.
+		$this
+			->add_asset(
+				'tec-tickets-order-modifiers-block-editor',
+				'block-editor.js',
+			)
 			->set_dependencies(
 				'wp-hooks',
 				'wp-data',
@@ -123,9 +127,22 @@ class Editor extends Controller_Contract {
 				'react-dom',
 				'tec-tickets-order-modifiers-rest-localization',
 			)
-			->add_localize_script( 'tec.tickets.orderModifiers.blockEditor', [ $this, 'get_store_data' ] )
+			->add_localize_script(
+				'tec.tickets.orderModifiers.blockEditor',
+				fn() => $this->get_store_data()
+			)
 			->enqueue_on( 'enqueue_block_editor_assets' )
-			->set_condition( [ $this, 'should_enqueue_assets' ] )
+			->set_condition( fn() => $this->should_enqueue_assets() )
+			->register();
+
+		// Register the block editor styles.
+		$this
+			->add_asset(
+				'tec-tickets-order-modifiers-block-editor-css',
+				'block-editor.css',
+			)
+			->enqueue_on( 'enqueue_block_editor_assets' )
+			->set_condition( fn() => $this->should_enqueue_assets() )
 			->register();
 	}
 
@@ -136,20 +153,23 @@ class Editor extends Controller_Contract {
 	 *
 	 * @return bool Whether the assets should be enqueued or not.
 	 */
-	public function should_enqueue_assets() {
-		$ticketable_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+	private function should_enqueue_assets() {
+		// We shouldn't enqueue on the frontend.
+		if ( ! is_admin() ) {
+			return false;
+		}
 
+		$ticketable_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
 		if ( empty( $ticketable_post_types ) ) {
 			return false;
 		}
 
 		$post = get_post();
-
 		if ( ! $post instanceof WP_Post ) {
 			return false;
 		}
 
-		return is_admin() && in_array( $post->post_type, $ticketable_post_types, true );
+		return in_array( $post->post_type, $ticketable_post_types, true );
 	}
 
 	/**
@@ -159,7 +179,7 @@ class Editor extends Controller_Contract {
 	 *
 	 * @return array The REST data for the Order Modifiers feature.
 	 */
-	protected function get_rest_data(): array {
+	private function get_rest_data(): array {
 		return [
 			'nonce'   => wp_create_nonce( 'wp_rest' ),
 			'baseUrl' => rest_url( Base_API::NAMESPACE ),

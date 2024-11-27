@@ -7,6 +7,13 @@ export const reducer = ( state = defaultState, action ) => {
 	let ticketPostId;
 
 	switch ( action.type ) {
+		case 'SET_ALL_FEES':
+			return {
+				...state,
+				feesAvailable: action.feesAvailable,
+				feesAutomatic: action.feesAutomatic,
+			}
+
 		case 'SET_AUTOMATIC_FEES':
 			return {
 				...state,
@@ -90,7 +97,6 @@ export const reducer = ( state = defaultState, action ) => {
 			ticketPostId = getTicketIdFromCommonStore( clientId );
 
 			const { selectedFeesByPostId, selectedFeesByClientId } = state;
-
 			const feesSelected = selectedFeesByClientId[ clientId ] || selectedFeesByPostId[ ticketPostId ];
 
 			delete selectedFeesByPostId[ clientId ];
@@ -100,6 +106,36 @@ export const reducer = ( state = defaultState, action ) => {
 				selectedFeesByPostId: {
 					...selectedFeesByPostId,
 					[ ticketPostId ]: feesSelected,
+				},
+			};
+
+		case 'SET_DISPLAYED_FEES':
+			return {
+				...state,
+				displayedFeesByClientId: {
+					...state.displayedFeesByClientId,
+					[ clientId ]: action.fees,
+				},
+			};
+
+		case 'ADD_DISPLAYED_FEE':
+			const displayedFees = state.displayedFeesByClientId[ clientId ] || [];
+			const availableFeeIndex = state.feesAvailable.findIndex(
+				( fee ) => fee.id === action.feeId
+			);
+
+			if ( availableFeeIndex === -1 ) {
+				console.log( 'Fee not found in available fees.' );
+				return state;
+			}
+
+			displayedFees.push( state.feesAvailable[ availableFeeIndex ] );
+
+			return {
+				...state,
+				displayedFeesByClientId: {
+					...state.displayedFeesByClientId,
+					[ clientId ]: displayedFees,
 				},
 			};
 
