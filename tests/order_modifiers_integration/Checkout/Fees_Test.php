@@ -149,7 +149,9 @@ class Fees_Test extends Controller_Test_Case {
 	 * @test
 	 */
 	public function it_should_calculate_fees_and_store_them_correctly_simple_math() {
-		$post = static::factory()->post->create();
+		$post = static::factory()->post->create(
+			[ 'post_title' => 'The Event' ],
+		);
 		$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
 		$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
 		$ticket_id_3 = $this->create_tc_ticket( $post, 30 );
@@ -189,6 +191,19 @@ class Fees_Test extends Controller_Test_Case {
 
 		$cart_total    = $cart->get_cart_total();
 		$cart_subtotal = $cart->get_cart_subtotal();
+
+		$this->set_fn_return( 'wp_create_nonce', '1029384756' );
+		$this->assertMatchesHtmlSnapshot(
+			preg_replace(
+				'#<link rel=(.*)/>#',
+				'',
+				str_replace(
+					[ $post, $ticket_id_1, $ticket_id_2, $ticket_id_3, $ticket_id_4, $ticket_id_5 ],
+					[ '{POST_ID}', '{TICKET_ID_1}', '{TICKET_ID_2}', '{TICKET_ID_3}', '{TICKET_ID_4}', '{TICKET_ID_5}' ],
+					tribe( Checkout_Shortcode::class )->get_html()
+				)
+			)
+		);
 
 		$cart->clear_cart();
 
@@ -232,7 +247,9 @@ class Fees_Test extends Controller_Test_Case {
 	 * @test
 	 */
 	public function it_should_calculate_fees_and_store_them_correctly_complex_math() {
-		$post = static::factory()->post->create();
+		$post = static::factory()->post->create(
+			[ 'post_title' => 'The Event' ],
+		);
 		$ticket_id_1 = $this->create_tc_ticket( $post, 11.28 );
 		$ticket_id_2 = $this->create_tc_ticket( $post, 22.56 );
 		$ticket_id_3 = $this->create_tc_ticket( $post, 33.84 );
@@ -272,6 +289,19 @@ class Fees_Test extends Controller_Test_Case {
 
 		$cart_total    = $cart->get_cart_total();
 		$cart_subtotal = $cart->get_cart_subtotal();
+
+		$this->set_fn_return( 'wp_create_nonce', '1029384756' );
+		$this->assertMatchesHtmlSnapshot(
+			preg_replace(
+				'#<link rel=(.*)/>#',
+				'',
+				str_replace(
+					[ $post, $ticket_id_1, $ticket_id_2, $ticket_id_3, $ticket_id_4, $ticket_id_5 ],
+					[ '{POST_ID}', '{TICKET_ID_1}', '{TICKET_ID_2}', '{TICKET_ID_3}', '{TICKET_ID_4}', '{TICKET_ID_5}' ],
+					tribe( Checkout_Shortcode::class )->get_html()
+				)
+			)
+		);
 
 		$cart->clear_cart();
 
