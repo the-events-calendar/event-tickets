@@ -380,8 +380,10 @@ abstract class Abstract_Fees extends Controller_Contract {
 					$total_quantity = $quantity + $fee_items[ $fee['id'] ]['quantity'];
 
 					// Update the quantity and recalculate the subtotal.
-					$fee_items[ $fee['id'] ]['quantity']  = $total_quantity;
-					$fee_items[ $fee['id'] ]['sub_total'] = $amount->multiply_by_integer(
+					$fee_items[ $fee['id'] ]['quantity'] = $total_quantity;
+
+					// DO NOT REMOVE the `+=` operator here. It is necessary for the calculation.
+					$fee_items[ $fee['id'] ]['sub_total'] += $amount->multiply_by_integer(
 						new Integer_Value( $quantity )
 					)->get();
 					continue;
