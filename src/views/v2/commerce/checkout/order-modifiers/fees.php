@@ -25,10 +25,20 @@
 		<?php foreach ( $active_fees as $fee ) : ?>
 			<li>
 				<span class="tribe-tickets__commerce-checkout-cart-footer-quantity-label">
-					<?php echo esc_html( $fee['display_name'] ); ?>:
+					<?php
+					echo esc_html( $fee['display_name'] );
+					if ( $fee['quantity'] > 1 ) {
+						printf(
+							/* translators: %s: Quantity of a fee */
+							' ' . esc_html_x( '(%sx)', 'Quantity of a fee with "x" after it, eg. "2x"', 'event-tickets' ),
+							esc_html( $fee['quantity'] )
+						);
+					}
+					echo ':';
+					?>
 				</span>
 				<span class="tribe-tickets__commerce-checkout-cart-footer-quantity-number">
-					<?php echo esc_html( $fee['fee_amount'] ); ?>
+					<?php echo esc_html( $fee['subtotal'] ); ?>
 				</span>
 			</li>
 		<?php endforeach; ?>

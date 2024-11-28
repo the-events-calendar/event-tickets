@@ -288,7 +288,7 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 		);
 
 		// Prevent `exit` from terminating the test.
-		uopz_allow_exit( false );
+		$this->set_fn_return( 'tribe_exit', null );
 
 		// Setup the fixture.
 		$data = $fixture();
@@ -394,7 +394,7 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 		);
 
 		// Prevent `exit` from terminating the test.
-		uopz_allow_exit( false );
+		$this->set_fn_return( 'tribe_exit', null );
 
 		// Setup the fixture.
 		$data = $fixture();
@@ -728,7 +728,7 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 		);
 
 		// Prevent exit.
-		uopz_allow_exit( false );
+		$this->set_fn_return( 'tribe_exit', null );
 
 		// Step 1: Use `handle_form_submission` to create a modifier.
 		$_POST                               = [
@@ -811,7 +811,7 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 		);
 
 		// Prevent exit.
-		uopz_allow_exit( false );
+		$this->set_fn_return( 'tribe_exit', null );
 
 		// Step 1: Create a new modifier.
 		$_POST = [
@@ -919,6 +919,4 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 			);
 		}
 	}
-
-
 }

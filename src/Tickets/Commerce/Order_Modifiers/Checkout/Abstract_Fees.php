@@ -5,26 +5,28 @@
  * This class is responsible for managing fees, calculating them, and appending them
  * to the cart. It integrates with various filters and hooks during the checkout process.
  *
- * @since TBD
+ * @since   TBD
  * @package TEC\Tickets\Commerce\Order_Modifiers\Checkout
  */
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
 
 use TEC\Common\Contracts\Container;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Integer_Value;
-use TEC\Tickets\Commerce\Utils\Value;
+use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\Commerce\Order_Modifiers\Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee_Modifier_Manager as Modifier_Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Fees as Fee_Repository;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship;
+use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Currency_Value;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Integer_Value;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Legacy_Value_Factory;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
+use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Template as Template;
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use WP_Post;
 use Tribe__Tickets__Tickets as Tickets;
+use WP_Post;
 
 /**
  * Class Fees
@@ -34,6 +36,8 @@ use Tribe__Tickets__Tickets as Tickets;
  * @since TBD
  */
 abstract class Abstract_Fees extends Controller_Contract {
+
+	use Valid_Types;
 
 	/**
 	 * The modifier type used for fees.
@@ -105,9 +109,12 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 *
 	 * @param Container                   $container                   The DI container.
 	 * @param Controller                  $controller                  The order modifiers controller.
-	 * @param Fee_Repository              $fee_repository              The repository for interacting with the order modifiers.
-	 * @param Order_Modifier_Relationship $order_modifier_relationship The repository for interacting with the order modifiers relationships.
-	 * @param Modifier_Manager            $manager                     The manager for handling modifier calculations and logic.
+	 * @param Fee_Repository              $fee_repository              The repository for interacting with the order
+	 *                                                                 modifiers.
+	 * @param Order_Modifier_Relationship $order_modifier_relationship The repository for interacting with the order
+	 *                                                                 modifiers relationships.
+	 * @param Modifier_Manager            $manager                     The manager for handling modifier calculations
+	 *                                                                 and logic.
 	 */
 	public function __construct(
 		Container $container,
@@ -149,6 +156,13 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 * @return array The updated total values, including the fees.
 	 */
 	public function calculate_fees( array $values, array $items, Value $subtotal ): array {
+		$cache_key = 'calculate_fees_' . md5( wp_json_encode( $items ) );
+		$cache     = tribe_cache();
+
+		if ( ! empty( $cache[ $cache_key ] ) && is_array( $cache[ $cache_key ] ) ) {
+			return $cache[ $cache_key ];
+		}
+
 		// Store the subtotal as a class property for later use, encapsulated as a Value object.
 		$this->subtotal = $subtotal;
 
@@ -169,7 +183,9 @@ abstract class Abstract_Fees extends Controller_Contract {
 		// Add the calculated fees to the total value.
 		$values[] = $sum_of_fees;
 
-		return $values;
+		$cache[ $cache_key ] = $values;
+
+		return $cache[ $cache_key ];
 	}
 
 	/**
@@ -186,32 +202,18 @@ abstract class Abstract_Fees extends Controller_Contract {
 			return;
 		}
 
-		// Fetch the combined fees for the items in the cart.
-		$combined_fees = $this->get_combined_fees_for_items( $items );
+		// Process the fees for each item into a single array.
+		$combined_fees = $this->prepare_fees_for_frontend_display( $items );
 
-		$sum_of_fees = $this->manager->calculate_total_fees( $combined_fees )->get_decimal();
-
-		// Convert each fee_amount to an integer using get_integer().
-		$combined_fees = array_map(
-			function ( $fee ) {
-				if ( ! array_key_exists( 'fee_amount', $fee ) ) {
-					return $fee;
-				}
-
-				if ( $fee['fee_amount'] instanceof Value ) {
-					$fee['fee_amount'] = $fee['fee_amount']->get_currency();
-				} elseif ( $fee['fee_amount'] instanceof Precision_Value ) {
-					$fee['fee_amount'] = new Currency_Value( $fee['fee_amount'] );
-				}
-
-				return $fee;
-			},
-			$combined_fees
-		);
-
+		// Return early if there are no fees to display.
 		if ( empty( $combined_fees ) ) {
 			return;
 		}
+
+		// Use the stored subtotal for fee calculations.
+		$subtotals   = array_values( wp_list_pluck( $combined_fees, 'subtotal' ) );
+		$total       = Currency_Value::sum( ...$subtotals );
+		$sum_of_fees = Legacy_Value_Factory::to_legacy_value( $total->get_raw_value() )->get_decimal();
 
 		// Pass the fees to the template for display.
 		$template->template(
@@ -256,7 +258,10 @@ abstract class Abstract_Fees extends Controller_Contract {
 				continue;
 			}
 
-			$ticket_fees = $this->order_modifiers_repository->find_relationship_by_post_ids( [ $item['ticket_id'] ], $this->modifier_type );
+			$ticket_fees = $this->order_modifiers_repository->find_relationship_by_post_ids(
+				[ $item['ticket_id'] ],
+				$this->modifier_type
+			);
 
 			$ticket_object = Tickets::load_ticket_object( $item['ticket_id'] );
 
@@ -265,7 +270,11 @@ abstract class Abstract_Fees extends Controller_Contract {
 			}
 
 			$fees_per_item[ $item['ticket_id'] ] = [
-				'fees'  => $this->extract_and_combine_fees( $ticket_fees, $automatic_fees, new Value( $ticket_object->price ) ),
+				'fees'  => $this->extract_and_combine_fees(
+					$ticket_fees,
+					$automatic_fees,
+					new Value( $ticket_object->price )
+				),
 				'times' => $item['quantity'] ?? 1,
 			];
 		}
@@ -311,7 +320,11 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 *
 	 * @return array The combined array of fees.
 	 */
-	protected function extract_and_combine_fees( array $related_ticket_fees, array $automatic_fees, Value $ticket_base_price ): array {
+	protected function extract_and_combine_fees(
+		array $related_ticket_fees,
+		array $automatic_fees,
+		Value $ticket_base_price
+	): array {
 		$all_fees = array_merge( $related_ticket_fees, $automatic_fees );
 
 		$unique_fees = [];
@@ -327,7 +340,10 @@ abstract class Abstract_Fees extends Controller_Contract {
 				];
 
 				// Use the stored subtotal in the fee calculation.
-				$unique_fees[ $id ]['fee_amount'] = $this->manager->apply_fees_to_item( $ticket_base_price, $unique_fees[ $id ] );
+				$unique_fees[ $id ]['fee_amount'] = $this->manager->apply_fees_to_item(
+					$ticket_base_price,
+					$unique_fees[ $id ]
+				);
 			}
 		}
 
@@ -373,8 +389,13 @@ abstract class Abstract_Fees extends Controller_Contract {
 					$total_quantity = $quantity + $fee_items[ $fee['id'] ]['quantity'];
 
 					// Update the quantity and recalculate the subtotal.
-					$fee_items[ $fee['id'] ]['quantity']   = $total_quantity;
-					$fee_items[ $fee['id'] ]['sub_total'] += $amount->multiply_by_integer( new Integer_Value( $quantity ) )->get();
+					$fee_items[ $fee['id'] ]['quantity'] = $total_quantity;
+
+					// DO NOT REMOVE the `+=` operator here. It is necessary for the calculation.
+					$fee_items[ $fee['id'] ]['sub_total'] += $amount->multiply_by_integer(
+						new Integer_Value( $quantity )
+					)->get();
+
 					continue;
 				}
 
@@ -398,6 +419,85 @@ abstract class Abstract_Fees extends Controller_Contract {
 		self::$fees_appended = true;
 
 		return $items;
+	}
+
+	/**
+	 * Prepares the fees for display in the frontend.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $items The items in the cart.
+	 *
+	 * @return array The fees prepared for display.
+	 */
+	protected function prepare_fees_for_frontend_display( array $items ): array {
+		// Get the combined fees for the items in the cart.
+		$fees_by_item = $this->get_combined_fees_for_items( $items, true );
+
+		// Combine the fees for display.
+		$combined_fees = [];
+		foreach ( $fees_by_item as $item_id => $fee_data ) {
+			$quantity = $fee_data['times'] ?? 1;
+
+			foreach ( $fee_data['fees'] as $fee ) {
+				$amount  = Currency_Value::create( $fee['fee_amount'] );
+				$subtype = $fee['sub_type'];
+				$id      = $fee['id'];
+				$name    = $fee['display_name'];
+
+				// Skip fees that are not a valid subtype.
+				if ( ! $this->is_valid_subtype( $subtype ) ) {
+					continue;
+				}
+
+				$subtotal = $quantity > 1
+					? $amount->multiply_by_integer( new Integer_Value( $quantity ) )
+					: $amount;
+
+				/*
+				 * Because of how the items are grouped, we need to combine the fees differentlyl
+				 * based on whether they are flat or a percentage. Flat fees will be the same price
+				 * regardless of what item they are attached to. Percent fees will be calculated
+				 * based on the price of the item they are attached to. Therefore, we need to index
+				 * the percentage fees using the fee ID and the item ID.
+				 */
+
+				$index = 'percent' === $subtype
+					? "{$fee['id']}-{$item_id}"
+					: $fee['id'];
+
+				if ( array_key_exists( $index, $combined_fees ) ) {
+					// Merge the important parts of the fee.
+					$existing_fee              = $combined_fees[ $index ];
+					$existing_fee['quantity'] += $quantity;
+					$existing_fee['subtotal']  = $existing_fee['subtotal']->add( $subtotal );
+					$existing_fee['for_items'] = array_unique(
+						array_merge( $existing_fee['for_items'], [ $item_id ] )
+					);
+
+					// Update the combined fee.
+					$combined_fees[ $index ] = $existing_fee;
+				} else {
+					$combined_fees[ $index ] = [
+						'id'           => $id,
+						'display_name' => $name,
+						'quantity'     => $quantity,
+						'subtotal'     => $subtotal,
+						'for_items'    => [ $item_id ],
+					];
+				}
+			}
+		}
+
+		// Sort the array alphabetically by display name.
+		usort(
+			$combined_fees,
+			static function ( $a, $b ) {
+				return strcasecmp( $a['display_name'], $b['display_name'] );
+			}
+		);
+
+		return $combined_fees;
 	}
 
 	/**

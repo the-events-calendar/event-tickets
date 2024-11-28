@@ -365,7 +365,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		);
 
 		wp_safe_redirect( $edit_link );
-		exit;
+		tribe_exit();
 	}
 
 	/**
@@ -481,6 +481,6 @@ class Modifier_Admin_Handler extends Controller_Contract {
 
 		// Redirect to the original page to avoid resubmitting the form upon refresh.
 		wp_safe_redirect( $redirect_url );
-		exit;
+		tribe_exit();
 	}
 }
