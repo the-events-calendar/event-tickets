@@ -302,21 +302,8 @@ function updateTicketsSelection(parentElement, items) {
 	parentElement.querySelector('.tec-tickets-seating__ticket-rows').innerHTML =
 		'';
 
-	let ticketCount = {};
-
 	items.forEach((item) => {
 		addTicketToSelection(parentElement, item);
-
-		// Count if the item id is already in the ticketCount object.
-		const maxLimit = tickets[item.ticketId].maxLimit;
-		ticketCount[item.ticketId] = ticketCount[item.ticketId] || 0;
-		ticketCount[item.ticketId]++;
-
-		if ( ticketCount[item.ticketId] >= maxLimit ) {
-			parentElement.querySelector('.tec-tickets-seating__tickets-wrapper')
-				.prepend( '<div> Max number of tickets are selected. </div>' );
-			// send disable message to iframe
-		}
 	});
 
 	const reservations = items.reduce((acc, item) => {
@@ -394,8 +381,35 @@ function registerActions(iframe) {
 			items.filter((item) => validateSelectionItemFromService(item))
 		);
 
+		checkTicketLimit(iframe, items);
 		updateEmptyTicketsMessage(items.length);
 	});
+}
+
+/**
+ * Checks if the ticket limit has been reached.
+ *
+ * @since TBD
+ *
+ * @param {HTMLElement} iframe The iframe element.
+ * @param {Object[]} items The items to check the limit for.
+ */
+function checkTicketLimit(iframe, items) {
+	const ticketCount = {};
+	const ticketLimitReached = {};
+
+	items.forEach((item) => {
+		const ticketId = item.ticketId;
+		const maxLimit = tickets[ticketId].maxLimit;
+
+		ticketCount[ticketId] = (ticketCount[ticketId] || 0) + 1;
+
+		if (ticketCount[ticketId] >= maxLimit) {
+			ticketLimitReached[ticketId] = tickets[ticketId].name;
+		}
+	});
+
+	sendPostMessage(iframe, OUTBOUND_TICKET_LIMIT_REACHED, ticketLimitReached);
 }
 
 /**
