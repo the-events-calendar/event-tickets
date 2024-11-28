@@ -386,6 +386,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 					$fee_items[ $fee['id'] ]['sub_total'] += $amount->multiply_by_integer(
 						new Integer_Value( $quantity )
 					)->get();
+
 					continue;
 				}
 
@@ -459,7 +460,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 				if ( array_key_exists( $index, $combined_fees ) ) {
 					// Merge the important parts of the fee.
 					$existing_fee              = $combined_fees[ $index ];
-					$existing_fee['quantity']  += $quantity;
+					$existing_fee['quantity'] += $quantity;
 					$existing_fee['subtotal']  = $existing_fee['subtotal']->add( $subtotal );
 					$existing_fee['for_items'] = array_unique(
 						array_merge( $existing_fee['for_items'], [ $item_id ] )
