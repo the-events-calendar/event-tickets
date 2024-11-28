@@ -12,7 +12,6 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe;
 
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Abstract_Fees;
 use WP_Post;
@@ -143,6 +142,14 @@ class Fees extends Abstract_Fees {
 			}
 		);
 
+		// Sort the array alphabetically by display name.
+		usort(
+			$fee_items,
+			static function ( $a, $b ) {
+				return strcasecmp( $a['display_name'], $b['display_name'] );
+			}
+		);
+
 		$fee_metadata = [];
 
 		// Loop through the fee items and format each one as "Fee Name (quantity): Subtotal".
@@ -156,7 +163,7 @@ class Fees extends Abstract_Fees {
 				'%s (%s): %.2f',
 				$fee_item['display_name'],
 				$fee_item['quantity'],
-				$fee_item['subtotal']
+				$fee_item['sub_total']
 			);
 		}
 
