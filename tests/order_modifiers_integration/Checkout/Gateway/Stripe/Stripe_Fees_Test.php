@@ -29,6 +29,38 @@ class Stripe_Fees_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function it_should_send_fees_to_stripe() {
+		$controller = $this->make_controller();
+
+		$post = static::factory()->post->create();
+		$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
+		$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
+
+		$fee_for_all_1 = $this->create_fee_for_all( [ 'raw_amount' => 10, 'sub_type' => 'percent' ] );
+		$fee_for_all_2 = $this->create_fee_for_all( [ 'raw_amount' => 3, 'sub_type' => 'flat' ] );
+
+		$fee_per_ticket_1 = $this->create_fee_for_ticket( $ticket_id_1, [ 'raw_amount' => 2, 'sub_type' => 'percent' ] );
+
+		$controller->register();
+
+		$overrides['gateway'] = tribe( StripeGateway::class );
+
+		$order = $this->create_order( [
+			$ticket_id_1 => 2,
+			$ticket_id_2 => 3,
+		], $overrides );
+
+		$this->assertEquals(
+			[
+				'fees' => 'test fee 1 (5): 8.00, test fee 2 (5): 15.00, test fee 3 (2): 0.40',
+			],
+			$controller->add_meta_data_to_stripe( [], tec_tc_get_order( $order->ID ) ),
+		);
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_calculate_fees_and_store_them_correctly_simple_math() {
 		$post = static::factory()->post->create();
 		$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
