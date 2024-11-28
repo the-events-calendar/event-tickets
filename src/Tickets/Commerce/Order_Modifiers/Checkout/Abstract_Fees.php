@@ -157,7 +157,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 */
 	public function calculate_fees( array $values, array $items, Value $subtotal ): array {
 		$cache_key = 'calculate_fees_' . md5( wp_json_encode( $items ) );
-		$cache = tribe_cache();
+		$cache     = tribe_cache();
 
 		if ( ! empty( $cache[ $cache_key ] ) && is_array( $cache[ $cache_key ] ) ) {
 			return $cache[ $cache_key ];
