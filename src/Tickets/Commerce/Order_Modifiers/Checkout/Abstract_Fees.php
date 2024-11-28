@@ -381,7 +381,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 
 					// Update the quantity and recalculate the subtotal.
 					$fee_items[ $fee['id'] ]['quantity']  = $total_quantity;
-					$fee_items[ $fee['id'] ]['sub_total'] += $amount->multiply_by_integer(
+					$fee_items[ $fee['id'] ]['sub_total'] = $amount->multiply_by_integer(
 						new Integer_Value( $quantity )
 					)->get();
 					continue;
@@ -420,7 +420,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 */
 	protected function prepare_fees_for_frontend_display( array $items ): array {
 		// Get the combined fees for the items in the cart.
-		$fees_by_item  = $this->get_combined_fees_for_items( $items, true );
+		$fees_by_item = $this->get_combined_fees_for_items( $items, true );
 
 		// Combine the fees for display.
 		$combined_fees = [];
