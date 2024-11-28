@@ -156,6 +156,13 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 * @return array The updated total values, including the fees.
 	 */
 	public function calculate_fees( array $values, array $items, Value $subtotal ): array {
+		$cache_key = 'calculate_fees_' . md5( wp_json_encode( $items ) );
+		$cache = tribe_cache();
+
+		if ( ! empty( $cache[ $cache_key ] ) && is_array( $cache[ $cache_key ] ) ) {
+			return $cache[ $cache_key ];
+		}
+
 		// Store the subtotal as a class property for later use, encapsulated as a Value object.
 		$this->subtotal = $subtotal;
 
@@ -176,7 +183,9 @@ abstract class Abstract_Fees extends Controller_Contract {
 		// Add the calculated fees to the total value.
 		$values[] = $sum_of_fees;
 
-		return $values;
+		$cache[ $cache_key ] = $values;
+
+		return $cache[ $cache_key ];
 	}
 
 	/**
@@ -479,6 +488,14 @@ abstract class Abstract_Fees extends Controller_Contract {
 				}
 			}
 		}
+
+		// Sort the array alphabetically by display name.
+		usort(
+			$combined_fees,
+			static function ( $a, $b ) {
+				return strcasecmp( $a['display_name'], $b['display_name'] );
+			}
+		);
 
 		return $combined_fees;
 	}
