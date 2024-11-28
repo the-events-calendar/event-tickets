@@ -9,7 +9,6 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Values;
 
-use BadMethodCallException;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Stringify;
 
 /**
@@ -180,26 +179,84 @@ class Currency_Value implements Value_Interface {
 	}
 
 	/**
-	 * Wrap the methods of the Precision_Value class.
+	 * Add a value to the current value.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $name The method name.
-	 * @param array  $arguments The method arguments.
+	 * @param Currency_Value $value The value to add.
 	 *
-	 * @return mixed The result of the method.
+	 * @return Currency_Value The new value object.
 	 */
-	public function __call( $name, $arguments ) {
-		if ( ! method_exists( $this->value, $name ) ) {
-			throw new BadMethodCallException( "Method {$name} does not exist." );
+	public function add( Currency_Value $value ): Currency_Value {
+		$result = $this->value->add( $value->get_raw_value() );
+
+		return new self(
+			$result,
+			$this->currency_symbol,
+			$this->thousands_separator,
+			$this->decimal_separator,
+			$this->currency_symbol_position
+		);
+	}
+
+	/**
+	 * Subtract a value from the current value.
+	 *
+	 * @since TBD
+	 *
+	 * @param Currency_Value $value The value to subtract.
+	 *
+	 * @return Currency_Value The new value object.
+	 */
+	public function subtract( Currency_Value $value ): Currency_Value {
+		$result = $this->value->subtract( $value->get_raw_value() );
+
+		return new self(
+			$result,
+			$this->currency_symbol,
+			$this->thousands_separator,
+			$this->decimal_separator,
+			$this->currency_symbol_position
+		);
+	}
+
+	/**
+	 * Add multiple values together.
+	 *
+	 * @since TBD
+	 *
+	 * @param Currency_Value ...$values The values to add.
+	 *
+	 * @return Currency_Value The new value object.
+	 */
+	public static function sum( Currency_Value ...$values ): Currency_Value {
+		$sum = new Precision_Value( 0 );
+
+		foreach ( $values as $value ) {
+			$sum = $sum->add( $value->get_raw_value() );
 		}
 
-		// Some methods may return a new instance of the class.
-		$result = $this->value->{$name}( ...$arguments );
-		if ( $result instanceof Precision_Value ) {
-			$this->value = $result;
-		}
+		return static::create( $sum );
+	}
 
-		return $result;
+	/**
+	 * Multiply the current value by an integer.
+	 *
+	 * @since TBD
+	 *
+	 * @param Integer_Value $value The value to multiply by.
+	 *
+	 * @return Currency_Value The new value object.
+	 */
+	public function multiply_by_integer( Integer_Value $value ): Currency_Value {
+		$new_value = $this->value->multiply_by_integer( $value );
+
+		return new self(
+			$new_value,
+			$this->currency_symbol,
+			$this->thousands_separator,
+			$this->decimal_separator,
+			$this->currency_symbol_position
+		);
 	}
 }
