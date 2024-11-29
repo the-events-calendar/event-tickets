@@ -148,6 +148,99 @@ class Fees_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function it_should_not_calculate_fees_for_free_tickets() {
+		$post = static::factory()->post->create(
+			[ 'post_title' => 'The Event' ],
+		);
+		$ticket_id_1 = $this->create_tc_ticket( $post, 0 );
+		$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
+		$ticket_id_3 = $this->create_tc_ticket( $post, 30 );
+		$ticket_id_4 = $this->create_tc_ticket( $post, 0 );
+
+		$fee_for_all_1 = $this->create_fee_for_all( [ 'raw_amount' => 10, 'sub_type' => 'percent' ] );
+		$fee_for_all_2 = $this->create_fee_for_all( [ 'raw_amount' => 3, 'sub_type' => 'flat' ] );
+
+		$fee_per_ticket_1 = $this->create_fee_for_ticket( $ticket_id_1, [ 'raw_amount' => 2, 'sub_type' => 'percent' ] );
+		$this->add_fee_to_ticket( $fee_per_ticket_1, $ticket_id_3 );
+
+		$fee_per_ticket_2 = $this->create_fee_for_ticket( $ticket_id_2, [ 'raw_amount' => 2.5, 'sub_type' => 'flat' ] );
+		$this->add_fee_to_ticket( $fee_per_ticket_2, $ticket_id_3 );
+
+		$fee_per_ticket_3 = $this->create_fee_for_ticket( $ticket_id_3, [ 'raw_amount' => 5, 'sub_type' => 'percent' ] );
+
+		// Math time!
+		// Ticket 1: 0
+		// Ticket 2: 20 + 10% + 3 + 2.5 = 20 + 2 + 3 + 2.5 = 27.50 // 9 fees
+		// Ticket 3: 30 + 10% + 3 + 2% + 2.5 + 5% = 30 + 3 + 3 + 0.6 + 2.5 + 1.5 = 40.60 // 20 fees
+		// Ticket 4: 0
+		// Calculated each ticket's price with fees applied.
+		// Now lets create an cart with different quantities of each ticket.
+
+		$this->make_controller()->register();
+
+		$cart = tribe( Commerce_Cart::class );
+
+		$cart->add_ticket( $ticket_id_1, 2 );
+		$cart->add_ticket( $ticket_id_2, 3 );
+		$cart->add_ticket( $ticket_id_3, 4 );
+		$cart->add_ticket( $ticket_id_4, 5 );
+
+		$cart_total    = $cart->get_cart_total();
+		$cart_subtotal = $cart->get_cart_subtotal();
+
+		$this->set_fn_return( 'wp_create_nonce', '1029384756' );
+		$this->assertMatchesHtmlSnapshot(
+			preg_replace(
+				'#<link rel=(.*)/>#',
+				'',
+				str_replace(
+					[ $post, $ticket_id_1, $ticket_id_2, $ticket_id_3, $ticket_id_4 ],
+					[ '{POST_ID}', '{TICKET_ID_1}', '{TICKET_ID_2}', '{TICKET_ID_3}', '{TICKET_ID_4}' ],
+					tribe( Checkout_Shortcode::class )->get_html()
+				)
+			)
+		);
+
+		$cart->clear_cart();
+
+		$this->assertEquals(
+			2 * 0 + 3 * 20 + 4 * 30 + 5 * 0, // 180
+			$cart_subtotal,
+			'Cart subtotal should correctly include only ticket price.'
+		);
+
+		// Assert the total value matches the expected total.
+		$this->assertEquals(
+			(float) number_format(2 * 0 + 3 * 27.5 + 4 * 40.6 + 5 * 0, 2, '.', '' ), // 244.9
+			$cart_total,
+			'Cart total should correctly include ticket price and fee.'
+		);
+
+		$order = $this->create_order( [
+			$ticket_id_1 => 2,
+			$ticket_id_2 => 3,
+			$ticket_id_3 => 4,
+			$ticket_id_4 => 5,
+		] );
+
+		$refreshed_order = tec_tc_get_order( $order->ID );
+
+		$this->assertEquals(
+			$cart_total,
+			$refreshed_order->total_value->get_decimal(),
+			'Order total should correctly include ticket price and fee.'
+		);
+
+		$this->assertEquals(
+			$cart_subtotal,
+			$refreshed_order->subtotal->get_decimal(),
+			'Order subtotal should correctly include ticket price and fee.'
+		);
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_calculate_fees_and_store_them_correctly_simple_math() {
 		$post = static::factory()->post->create(
 			[ 'post_title' => 'The Event' ],
