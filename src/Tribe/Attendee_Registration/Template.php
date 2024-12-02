@@ -71,6 +71,16 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			return $posts;
 		}
 
+		if ( wp_is_block_theme() ) {
+			error_log(
+				esc_html__(
+					'We detected that you are using a Full Site Editing theme. In order for the Attendee Registration Page to function properly, you will need to set up a page, using the [tribe_attendee_registration] shortcode in the attendee registration Attendee Registration settings.',
+					'event-tickets'
+				)
+			);
+			wp_die( 'A configuration error has occurred.' );
+		}
+
 		// Empty posts.
 		$posts = null;
 
