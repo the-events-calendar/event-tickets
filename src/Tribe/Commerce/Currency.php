@@ -170,7 +170,7 @@ class Tribe__Tickets__Commerce__Currency {
 			$cost = number_format_i18n( $cost, 2 );
 		} else {
 			$cost = number_format(
-				$cost,
+				(float) $cost,
 				2,
 				$this->get_currency_locale( 'decimal_point' ),
 				$this->get_currency_locale( 'thousands_sep' )
@@ -831,7 +831,7 @@ class Tribe__Tickets__Commerce__Currency {
 			$amount = 0;
 		}
 
-		$formatted = number_format( $amount, $currency['number_of_decimals'], $currency['decimal_point'], $currency['thousands_sep'] );
+		$formatted = number_format( (float) $amount, $currency['number_of_decimals'], $currency['decimal_point'], $currency['thousands_sep'] );
 
 		/**
 		 * Filter the Formatted Currency.
