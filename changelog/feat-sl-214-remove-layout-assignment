@@ -1,0 +1,4 @@
+Significance: minor
+Type: feat
+
+Added option to detach assigned seating tickets from layout and revert them to regular tickets. [SL-214]
