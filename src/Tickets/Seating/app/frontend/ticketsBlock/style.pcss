@@ -178,9 +178,13 @@
 						transition: transform .15s ease-in-out;
 						height: 34px;
 						width: 34px;
-						display: flex;
+						display: none;
 						justify-content: center;
 						align-items: center;
+
+						@media screen and  (max-width: 960px) {
+							display: flex;
+						}
 
 						.dashicons.dashicons-arrow-up-alt2 {
 							color: var(--tec-color-text-primary-light);

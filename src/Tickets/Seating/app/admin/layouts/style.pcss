@@ -61,7 +61,26 @@
 }
 .tec-tickets-seating-modal-wrapper {
 	.tribe-modal__wrapper{
-		max-width: 500px;
+		width: 380px;
+		padding: var(--tec-spacer-4) var(--tec-spacer-5);
+	}
+
+	select.tec-tickets-seating__select-map {
+		color: #1D2327;
+		max-width: 100%;
+		&:focus {
+			border-color: #1D2327;
+			box-shadow: none;
+		}
+	}
+
+	.tribe-dialog__wrapper {
+		.tribe-dialog__close-button {
+			display: none;
+		}
+		.tribe-dialog__content, .tribe-modal__content{
+			padding: 0;
+		}
 	}
 }
 .tec-tickets-seating__new-layout-wrapper {

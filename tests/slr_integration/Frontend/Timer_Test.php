@@ -2,11 +2,12 @@
 
 namespace TEC\Tickets\Seating\Frontend;
 
+use PHPUnit\Framework\Assert;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Module;
-use TEC\Tickets\Seating\Frontend\Session;
+use TEC\Tickets\Seating\Frontend;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Reservations;
@@ -21,8 +22,7 @@ use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Data_API as Data_API;
 use Tribe__Tickets__Global_Stock as Global_Stock;
-use Tribe__Tickets__Attendee_Registration__Main as Attendee_Registration;
-
+use TEC\Common\StellarWP\Assets\Assets;
 class Timer_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
 	use With_Uopz;
@@ -67,6 +67,31 @@ class Timer_Test extends Controller_Test_Case {
 	 */
 	public function reset_cookie(): void {
 		unset( $_COOKIE[ Session::COOKIE_NAME ] );
+	}
+
+	public function asset_data_provider() {
+		$assets = [
+			'tec-tickets-seating-session'       => '/build/Seating/frontend/session.js',
+			'tec-tickets-seating-session-style' => '/build/Seating/frontend/session.css',
+		];
+
+		foreach ( $assets as $slug => $path ) {
+			yield $slug => [ $slug, $path ];
+		}
+	}
+
+	/**
+	 * @test
+	 * @dataProvider asset_data_provider
+	 */
+	public function it_should_locate_assets_where_expected( $slug, $path ) {
+		$this->make_controller()->register();
+
+		$this->assertTrue( Assets::init()->exists( $slug ) );
+
+		// We use false, because in CI mode the assets are not build so min aren't available. Its enough to check that the non-min is as expected.
+		$asset_url = Assets::init()->get( $slug )->get_url( false );
+		$this->assertEquals( plugins_url( $path, EVENT_TICKETS_MAIN_PLUGIN_FILE ), $asset_url );
 	}
 
 	public function test_render_with_args(): void {
@@ -961,5 +986,132 @@ class Timer_Test extends Controller_Test_Case {
 		);
 		$this->assertEmpty( $controller->get_current_token() );
 		$this->assertEmpty( $controller->get_current_post_id() );
+	}
+
+	public function test_ajax_pause_to_checkout_interrupts_if_no_tickets_capacity(): void {
+		// Create a previous session.
+		$session      = tribe( Session::class );
+		$sessions     = tribe( Sessions::class );
+		$session->add_entry( 23, 'test-token' );
+		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
+		$sessions->upsert( 'test-token', 23, time() + 100 );
+		$sessions->update_reservations( 'test-token', $this->create_mock_reservations_data( [ 23 ], 2 ) );
+
+		// Set up the request context.
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Session::COOKIE_NAME );
+		$_REQUEST['token']       = 'test-token';
+		$_REQUEST['postId']      = 23;
+		$this->set_oauth_token( 'auth-token' );
+
+		// Mock the wp_send_json_success response.
+		$wp_send_json_success_data = null;
+		$this->set_fn_return( 'wp_send_json_success',
+			function ( $data ) use ( &$wp_send_json_success_data ) {
+				$wp_send_json_success_data = $data;
+			},
+			true );
+		$this->test_services->bind( Frontend::class, $this->makeEmpty( Frontend::class, [
+			'get_events_ticket_capacity_for_seating' => 0
+		] ) );
+
+		$timer = $this->make_controller();
+		$timer->register();
+
+		do_action( 'wp_ajax_nopriv_' . Timer::ACTION_PAUSE_TO_CHECKOUT );
+
+		$this->assertEquals( 0, $wp_send_json_success_data['secondsLeft'] );
+		$this->assertEqualsWithDelta( time(), (int) $wp_send_json_success_data['timestamp'], 5 );
+	}
+
+	public function test_ajax_pause_to_checkout_interrupts_if_token_expiration_cannot_be_updated(): void {
+		// Create a previous session.
+		$session      = tribe( Session::class );
+		$sessions     = tribe( Sessions::class );
+		$session->add_entry( 23, 'test-token' );
+		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
+		$sessions->upsert( 'test-token', 23, time() + 100 );
+		$sessions->update_reservations( 'test-token', $this->create_mock_reservations_data( [ 23 ], 2 ) );
+
+		// Set up the request context.
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Session::COOKIE_NAME );
+		$_REQUEST['token']       = 'test-token';
+		$_REQUEST['postId']      = 23;
+		$this->set_oauth_token( 'auth-token' );
+
+		// Mock the wp_send_json_success response.
+		$wp_send_json_success_data = null;
+		$this->set_fn_return( 'wp_send_json_success',
+			function ( $data ) use ( &$wp_send_json_success_data ) {
+				$wp_send_json_success_data = $data;
+			},
+			true );
+		$this->test_services->bind( Frontend::class, $this->makeEmpty( Frontend::class, [
+			'get_events_ticket_capacity_for_seating' => 2
+		] ) );
+		$this->test_services->bind( Sessions::class, $this->makeEmpty( Sessions::class, [
+			'set_token_expiration_timestamp' => false
+		] ) );
+
+		$timer = $this->make_controller();
+		$timer->register();
+
+		do_action( 'wp_ajax_nopriv_' . Timer::ACTION_PAUSE_TO_CHECKOUT );
+
+		$this->assertEquals( 0, $wp_send_json_success_data['secondsLeft'] );
+		$this->assertEqualsWithDelta( time(), (int) $wp_send_json_success_data['timestamp'], 5 );
+	}
+
+	public function test_ajax_pause_to_checkout_expires_token_in_grace_time():void{
+		// Create a previous session.
+		$session      = tribe( Session::class );
+		$sessions     = tribe( Sessions::class );
+		$session->add_entry( 23, 'test-token' );
+		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
+		$sessions->upsert( 'test-token', 23, time() + 100 );
+		$sessions->update_reservations( 'test-token', $this->create_mock_reservations_data( [ 23 ], 2 ) );
+
+		// Set up the request context.
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Session::COOKIE_NAME );
+		$_REQUEST['token']       = 'test-token';
+		$_REQUEST['postId']      = 23;
+		$this->set_oauth_token( 'auth-token' );
+
+		// Filter the checkout grace time.
+		$grace_time = 23;
+		add_filter( 'tec_tickets_seating_checkout_grace_time', fn() => $grace_time );
+
+		// Mock the wp_send_json_success response.
+		$wp_send_json_success_data = null;
+		$this->set_fn_return( 'wp_send_json_success',
+			function ( $data ) use ( &$wp_send_json_success_data ) {
+				$wp_send_json_success_data = $data;
+			},
+			true );
+		$this->test_services->bind( Frontend::class, $this->makeEmpty( Frontend::class, [
+			'get_events_ticket_capacity_for_seating' => 2
+		] ) );
+		$assert = $this;
+		$this->test_services->bind( Sessions::class, $this->makeEmpty( Sessions::class, [
+			'set_token_expiration_timestamp' => function ( string $token, int $timestamp, bool $lock ) use ( $grace_time, $assert ) {
+				$assert->assertEquals( $token, 'test-token' );
+				$assert->assertEqualsWithDelta( time() + $grace_time, $timestamp, 5);
+				$assert->assertTrue($lock);
+
+				return true;
+			},
+			'get_seconds_left'               => function ( string $token ) {
+				Assert::assertEquals( 'test-token', $token );
+
+				return 23;
+			}
+		] ) );
+
+		$timer = $this->make_controller();
+		$timer->register();
+
+		do_action( 'wp_ajax_nopriv_' . Timer::ACTION_PAUSE_TO_CHECKOUT );
+
+		$this->assertEquals( 23, $wp_send_json_success_data['secondsLeft'] );
+		$this->assertEqualsWithDelta( time(), (int) $wp_send_json_success_data['timestamp'], 5 );
 	}
 }

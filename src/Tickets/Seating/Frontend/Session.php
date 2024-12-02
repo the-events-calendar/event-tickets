@@ -321,10 +321,13 @@ class Session {
 	 * Confirms all the reservations contained in the cookie.
 	 *
 	 * @since 5.16.0
+	 * @since 5.17.0 Added the `$delete_token_session` parameter.
+	 *
+	 * @param bool $delete_token_session Whether to delete the token session after confirming the reservations.
 	 *
 	 * @return bool Whether the reservations were confirmed or not.
 	 */
-	public function confirm_all_reservations(): bool {
+	public function confirm_all_reservations( bool $delete_token_session = true ): bool {
 		$confirmed = true;
 
 		foreach ( $this->get_entries() as $post_id => $token ) {
@@ -334,8 +337,11 @@ class Session {
 				continue;
 			}
 
-			$confirmed &= $this->reservations->confirm( $post_id, $reservation_uuids )
-							&& $this->sessions->delete_token_session( $token );
+			$confirmed = $this->reservations->confirm( $post_id, $reservation_uuids );
+
+			if ( $confirmed && $delete_token_session ) {
+				$confirmed &= $this->sessions->delete_token_session( $token );
+			}
 		}
 
 		return $confirmed;

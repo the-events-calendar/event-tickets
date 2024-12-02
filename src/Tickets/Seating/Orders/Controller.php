@@ -11,13 +11,12 @@ namespace TEC\Tickets\Seating\Orders;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
-use TEC\Common\StellarWP\Assets\Asset;
+use TEC\Common\Asset;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Admin\Attendees\Page as Attendee_Page;
 use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
 use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Ajax_Methods;
-use TEC\Tickets\Seating\Built_Assets;
 use TEC\Tickets\Seating\Frontend;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Meta;
@@ -31,6 +30,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_Post;
 use WP_Query;
+use TEC\Tickets\Commerce\Status\Status_Interface;
 
 /**
  * Class Controller
@@ -40,7 +40,6 @@ use WP_Query;
  * @package TEC/Tickets/Seating/Orders
  */
 class Controller extends Controller_Contract {
-	use Built_Assets;
 	use Ajax_Methods;
 
 	/**
@@ -166,7 +165,11 @@ class Controller extends Controller_Contract {
 		// Attendee delete handler.
 		add_filter( 'tec_tickets_commerce_attendee_to_delete', [ $this, 'handle_attendee_delete' ] );
 
-		add_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
+		add_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ], 10, 4 );
+		add_action(
+			'tec_tickets_commerce_order_status_flag_complete',
+			[ $this, 'confirm_all_reservations_on_completion' ]
+		);
 		add_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_post' ] );
 		add_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_CREATED, [ $this, 'update_reservation' ] );
 		add_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_UPDATED, [ $this, 'update_reservation' ] );
@@ -248,6 +251,10 @@ class Controller extends Controller_Contract {
 		remove_filter( 'post_row_actions', [ $this, 'add_seats_row_action' ] );
 
 		remove_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
+		remove_action(
+			'tec_tickets_commerce_order_status_flag_complete',
+			[ $this, 'confirm_all_reservations_on_completion' ]
+		);
 		remove_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_post' ] );
 		remove_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_CREATED, [ $this, 'update_reservation' ] );
 		remove_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_UPDATED, [ $this, 'update_reservation' ] );
@@ -457,14 +464,23 @@ class Controller extends Controller_Contract {
 	}
 
 	/**
-	 * Confirms all the reservations contained in the Session cookie.
+	 * Confirms all the reservations contained in the Session cookie on generation of an Attendee.
+	 * If the order status is complete, it will also delete the token session.
 	 *
 	 * @since 5.16.0
+	 * @since 5.17.0 - Refactored to pass a bool variable to confirm_all_reservations.
+	 *
+	 * @param array<Attendee>          $attendees  The generated attendees, unused.
+	 * @param \Tribe__Tickets__Tickets $ticket     The ticket the attendee is generated for, unused.
+	 * @param \WP_Post                 $order      The order the attendee is generated for, unused.
+	 * @param Status_Interface         $new_status New post status.
 	 *
 	 * @return void
 	 */
-	public function confirm_all_reservations(): void {
-		$this->session->confirm_all_reservations();
+	public function confirm_all_reservations( $attendees, $ticket, $order, $new_status ): void {
+		$incomplete_flags = array_intersect( $new_status->get_flags(), [ 'incomplete', 'count_incomplete' ] );
+		$delete_session   = count( $incomplete_flags ) === 0;
+		$this->session->confirm_all_reservations( $delete_session );
 	}
 
 	/**
@@ -512,9 +528,10 @@ class Controller extends Controller_Contract {
 	private function register_assets(): void {
 		Asset::add(
 			'tec-tickets-seating-admin-seats-report',
-			$this->built_asset_url( 'admin/seatsReport.js' ),
+			'admin/seatsReport.js',
 			Tickets_Main::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
 			->add_dependency( 'tec-tickets-seating-service-bundle' )
 			->enqueue_on( Seats_Report::$asset_action )
 			->add_localize_script(
@@ -527,9 +544,10 @@ class Controller extends Controller_Contract {
 
 		Asset::add(
 			'tec-tickets-seating-admin-seats-report-style',
-			$this->built_asset_url( 'admin/seatsReport.css' ),
+			'admin/seatsReport.css',
 			Tickets_Main::VERSION
 		)
+			->add_to_group_path( 'tec-seating' )
 			->add_to_group( 'tec-tickets-seating-admin' )
 			->add_to_group( 'tec-tickets-seating' )
 			->enqueue_on( Seats_Report::$asset_action )
@@ -808,5 +826,19 @@ class Controller extends Controller_Contract {
 		}
 
 		return $this->attendee->adjust_attendee_page_render_context_for_seating( $render_context, (int) $post_id, $tickets );
+	}
+
+	/**
+	 * On completion of a TC Order, confirm all the reservations and clear the session.
+	 *
+	 * @since 5.17.0
+	 *
+	 * @return void
+	 */
+	public function confirm_all_reservations_on_completion(): void {
+		// Attendees needing the session information will likely be generated after, warmup the session cache now.
+		$this->cart->warmup_caches();
+
+		$this->session->confirm_all_reservations();
 	}
 }
