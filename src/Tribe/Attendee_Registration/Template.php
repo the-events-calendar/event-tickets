@@ -55,7 +55,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @return array
 	 */
 	public function setup_context( $posts ) {
-		global $wp_query;
+		global $wp_query, $post;
 
 		// Bail if we're not on the attendee info page.
 		if ( ! $this->is_on_ar_page() ) {
@@ -71,15 +71,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			return $posts;
 		}
 
-		if ( wp_is_block_theme() ) {
-			error_log(
-				esc_html__(
-					'We detected that you are using a Full Site Editing theme. In order for the Attendee Registration Page to function properly, you will need to set up a page, using the [tribe_attendee_registration] shortcode in the attendee registration Attendee Registration settings.',
-					'event-tickets'
-				)
-			);
-			wp_die( 'A configuration error has occurred.' );
-		}
+		remove_filter( 'the_posts', [ $this, 'setup_context' ], -10 );
 
 		// Empty posts.
 		$posts = null;
@@ -90,20 +82,24 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		$wp_post      = new WP_Post( $this->spoofed_page() );
 		wp_cache_add( $spoofed_page->ID, $wp_post, 'posts' );
 
-		// Don't tell wp_query we're anything in particular - then we don't run into issues with defaults.
+		// Update global $wp_query properties.
 		$wp_query->found_posts       = 1;
 		$wp_query->is_404            = false;
 		$wp_query->is_archive        = false;
 		$wp_query->is_category       = false;
 		$wp_query->is_home           = false;
-		$wp_query->is_page           = false;
+		$wp_query->is_page           = true;
 		$wp_query->is_singular       = true;
 		$wp_query->max_num_pages     = 1;
-		$wp_query->post              = $this->spoofed_page();
+		$wp_query->post              = $wp_post;
 		$wp_query->post_count        = 1;
 		$wp_query->posts             = [ $wp_post ];
 		$wp_query->queried_object    = $wp_post;
 		$wp_query->queried_object_id = $spoofed_page->ID;
+
+		// Update global $post to match the spoofed page.
+		$post = $wp_post;
+		setup_postdata( $post ); // Ensure all globals are updated correctly.
 
 		return $posts;
 
@@ -123,14 +119,14 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 
 		// Check for custom AR page by page slug.
 		$on_custom_page = ! empty( $wp_query->query_vars['pagename'] )
-			&& $ar_page_slug === $wp_query->query_vars['pagename'];
+		                  && $ar_page_slug === $wp_query->query_vars['pagename'];
 
 		if ( ! $on_custom_page ) {
 			return false;
 		}
 
 		$uses_shortcode = ! empty( $post->post_content )
-			&& has_shortcode( $post->post_content, 'tribe_attendee_registration' );
+		                  && has_shortcode( $post->post_content, 'tribe_attendee_registration' );
 
 		if ( $uses_shortcode ) {
 			return true;
@@ -139,7 +135,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		// If the post doesn't have the shortcode, check if the queried object does.
 		$queried_object = get_queried_object();
 		return ! empty( $queried_object->post_content )
-			&& has_shortcode( $queried_object->post_content, 'tribe_attendee_registration' );
+		       && has_shortcode( $queried_object->post_content, 'tribe_attendee_registration' );
 	}
 
 	/**
@@ -179,7 +175,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @since 5.17.0 Added check for custom AR page to return the pages template.
 	 *
 	 * @param string $template The AR template.
-	 * @return void
+	 * @return string
 	 */
 	public function set_page_template( $template ) {
 
@@ -222,6 +218,8 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			$template = 'index.php';
 		}
 
+		$this->render_custom_template_for_blocks();
+
 		$template = locate_template( $template );
 
 		/**
@@ -235,6 +233,54 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 
 		return $template;
 	}
+
+	/**
+	 * Render the custom attendee registration page template when a FSE theme is enabled.
+	 *
+	 * @since TBD
+	 */
+	public function render_custom_template_for_blocks() {
+		if ( ! wp_is_block_theme() ) {
+			return;
+		}
+
+		// Locate the `page.html` template from the block theme.
+		$template_path = locate_template( 'templates/page.html' );
+
+		if ( ! $template_path ) {
+			wp_die( 'Page template not found in the active theme.' );
+		}
+
+		// Load the contents of the `page.html` file and process the block content.
+		$template_content = file_get_contents( $template_path );
+
+		if ( ! $template_content ) {
+			wp_die( 'Unable to load page template content.' );
+		}
+
+		// Process blocks in the template.
+		$processed_content = do_blocks( $template_content );
+
+		// Output the full HTML structure with processed content.
+		echo '<!DOCTYPE html>';
+		echo '<html ' . get_language_attributes() . '>';
+		echo '<head>';
+		echo '<meta charset="' . esc_attr( get_bloginfo( 'charset' ) ) . '">';
+		echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
+		wp_head(); // WordPress head hooks.
+		echo '</head>';
+		echo '<body class="' . join( ' ', get_body_class() ) . '">';
+		echo '<div id="attendee-registration">';
+		echo $processed_content; // Output the processed template content.
+		echo '</div>';
+		wp_footer(); // WordPress footer hooks.
+		echo '</body>';
+		echo '</html>';
+
+		// Ensure script execution stops here.
+		tribe_exit();
+	}
+
 
 	/**
 	 * Ensure we enqueue the frontend styles and scripts from our plugins on the AR page.
@@ -483,6 +529,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 */
 	public function spoofed_page() {
 
+
 		$spoofed_page = [
 			'ID'                    => -1,
 			'post_status'           => 'draft',
@@ -493,7 +540,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			'post_date_gmt'         => 0,
 			'post_modified'         => 0,
 			'post_modified_gmt'     => 0,
-			'post_content'          => '',
+			'post_content'          => do_shortcode( '[tribe_attendee_registration]'),
 			'post_title'            => $this->get_page_title(),
 			'post_excerpt'          => '',
 			'post_content_filtered' => '',
