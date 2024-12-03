@@ -316,7 +316,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		// If user can't edit the post, add some extra checks.
-		if ( ! current_user_can('edit_post', $post_id ) ) {
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
 
 			// Check password if one exists.
 			if ( post_password_required( $post_id ) ) {
