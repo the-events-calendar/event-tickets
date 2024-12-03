@@ -315,13 +315,16 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return '';
 		}
 
+		// Get post status.
+		$post_status = get_post_status( $post_id );
+
 		// Check if the post is private and the user can't read it.
-		if ( 'private' === get_post_status( $post_id ) && ! current_user_can( 'read_private_posts' ) ) {
+		if ( 'private' === $post_status && ! current_user_can( 'read_private_posts' ) ) {
 			return '';
 		}
 
 		// If post is anything other than private or published, return empty.
-		if ( ! in_array( get_post_status( $post_id ), [ 'publish', 'private' ] ) ) {
+		if ( ! in_array( $post_status, [ 'publish', 'private' ] ) ) {
 			return '';
 		}
 
