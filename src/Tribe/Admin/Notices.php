@@ -14,6 +14,7 @@ class Tribe__Tickets__Admin__Notices {
 	 * Hooks the actions and filters used by the class
 	 *
 	 * @since 4.7
+	 * @since TBD Removed FSE AR Page notice.
 	 */
 	public function hook() {
 		// Bail if some missing component does not exist.
@@ -29,7 +30,6 @@ class Tribe__Tickets__Admin__Notices {
 		add_action( 'admin_init', [ $this, 'maybe_display_plus_commerce_notice' ] );
 		add_action( 'admin_init', [ $this, 'maybe_display_unsupported_currency_notice' ] );
 		add_action( 'admin_init', [ $this, 'maybe_display_paystack_notice' ] );
-		add_action( 'admin_init', [ $this, 'maybe_display_fse_ar_page_notice' ] );
 	}
 
 	/**
@@ -336,10 +336,13 @@ class Tribe__Tickets__Admin__Notices {
 	 * Display AR Page notice for FSE theme detected.
 	 *
 	 * @since 5.17.0
+	 * @deprecated TBD - This method will be removed in a future release.
 	 *
 	 * @return void
 	 */
 	public function maybe_display_fse_ar_page_notice() {
+		_deprecated_function( __METHOD__, 'TBD' );
+
 		// Bail if we aren't in Tickets > Settings.
 		if ( Settings::$settings_page_id !== tec_get_request_var( 'page' ) ) {
 			return;
