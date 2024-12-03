@@ -28,6 +28,7 @@ class Tables_Test extends Controller_Test_Case {
 		$this->assertTrue( tribe( Custom_Tables\Order_Modifier_Relationships::class )->exists() );
 
 		$this->assertTrue( tribe( Custom_Tables\Order_Modifiers::class )->has_index( 'tec_order_modifier_indx_slug' ) );
+		$this->assertTrue( tribe( Custom_Tables\Order_Modifiers::class )->has_index( 'tec_order_modifier_indx_modifier_type' ) );
 		$this->assertTrue( tribe( Custom_Tables\Order_Modifiers::class )->has_index( 'tec_order_modifier_indx_status_modifier_type' ) );
 		$this->assertTrue( tribe( Custom_Tables\Order_Modifiers_Meta::class )->has_index( 'tec_order_modifier_meta_inx_order_modifier_id' ) );
 		$this->assertTrue( tribe( Custom_Tables\Order_Modifiers_Meta::class )->has_index( 'tec_order_modifier_meta_inx_meta_key' ) );
