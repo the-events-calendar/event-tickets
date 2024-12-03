@@ -315,10 +315,18 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return '';
 		}
 
-		// Check to make sure post is not deleted, trashed or draft.
-		$post_status = get_post_status( $post_id );
-		if ( 'publish' !== $post_status ) {
-			return '';
+		// If user can't edit the post, add some extra checks.
+		if ( ! current_user_can('edit_post', $post_id ) ) {
+
+			// Check password if one exists.
+			if ( post_password_required( $post_id ) ) {
+				return '';
+			}
+
+			// Check if the post is unpublished.
+			if ( 'publish' !== get_post_status( $post_id ) ) {
+				return '';
+			}
 		}
 
 		/** @var \Tribe__Tickets__Editor__Blocks__Rsvp $blocks_rsvp */
