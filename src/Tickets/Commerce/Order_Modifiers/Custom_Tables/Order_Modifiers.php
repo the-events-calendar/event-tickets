@@ -107,6 +107,7 @@ class Order_Modifiers extends Abstract_Custom_Table {
 
 		// Helper method to check and add indexes.
 		$results = $this->check_and_add_index( $results, 'tec_order_modifier_indx_slug', 'slug' );
+		$results = $this->check_and_add_index( $results, 'tec_order_modifier_indx_modifier_type', 'modifier_type' );
 		$results = $this->check_and_add_index( $results, 'tec_order_modifier_indx_status_modifier_type', 'status, modifier_type' );
 
 		return $results;
