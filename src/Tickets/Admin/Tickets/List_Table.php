@@ -718,7 +718,7 @@ class List_Table extends WP_List_Table {
 		$currency        = tribe( 'tickets.commerce.currency' );
 		$currency_symbol = $currency->get_provider_symbol( Page::get_current_provider(), $event_id );
 		$symbol_position = $currency->get_provider_symbol_position( Page::get_current_provider(), $event_id );
-		$formatted_price = $currency->get_formatted_currency( number_format( $price, 2 ), $event_id, Page::get_current_provider() );
+		$formatted_price = $currency->get_formatted_currency( number_format( (float) $price, 2 ), $event_id, Page::get_current_provider() );
 
 		return 'prefix' === $symbol_position ? $currency_symbol . $formatted_price : $formatted_price . $currency_symbol;
 	}

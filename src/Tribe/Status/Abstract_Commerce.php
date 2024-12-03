@@ -169,7 +169,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 		$sold_message = sprintf( '%s %d', esc_attr__( 'Sold', 'event-tickets' ), esc_html( $sold ) );
 
 		$price = $ticket_sold['ticket']->price ?
-			' (' . tribe_format_currency( number_format( $ticket_sold['ticket']->price, 2 ), $post_id ) . ')' :
+			' (' . tribe_format_currency( number_format( (float) $ticket_sold['ticket']->price, 2 ), $post_id ) . ')' :
 			'';
 
 		$sku = $ticket_sold['sku'] ?
