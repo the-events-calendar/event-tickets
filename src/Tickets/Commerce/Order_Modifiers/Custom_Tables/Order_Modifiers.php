@@ -20,7 +20,7 @@ class Order_Modifiers extends Abstract_Custom_Table {
 	 *
 	 * @var string|null The version number for this schema definition.
 	 */
-	public const SCHEMA_VERSION = '0.1.0-dev';
+	public const SCHEMA_VERSION = '1.0.0';
 
 	/**
 	 * @since TBD
@@ -67,10 +67,10 @@ class Order_Modifiers extends Abstract_Custom_Table {
 		return "
 			CREATE TABLE `$table_name` (
 				`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-				`modifier_type` VARCHAR(255) NOT NULL,
+				`modifier_type` VARCHAR(150) NOT NULL,
 				`sub_type` VARCHAR(255) NOT NULL,
 				`raw_amount` DECIMAL(18,6) NOT NULL,
-				`slug` VARCHAR(255) NOT NULL,
+				`slug` VARCHAR(150) NOT NULL,
 				`display_name` VARCHAR(255) NOT NULL,
 				`status` VARCHAR(20) NOT NULL DEFAULT 'draft',
 				`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -107,8 +107,7 @@ class Order_Modifiers extends Abstract_Custom_Table {
 
 		// Helper method to check and add indexes.
 		$results = $this->check_and_add_index( $results, 'tec_order_modifier_indx_slug', 'slug' );
-		$results = $this->check_and_add_index( $results, 'tec_order_modifier_indx_status_modifier_type_slug', 'status, modifier_type, slug' );
-		$results = $this->check_and_add_index( $results, 'tec_order_modifier_indx_type_display_name', 'modifier_type, display_name' );
+		$results = $this->check_and_add_index( $results, 'tec_order_modifier_indx_status_modifier_type', 'status, modifier_type' );
 
 		return $results;
 	}
