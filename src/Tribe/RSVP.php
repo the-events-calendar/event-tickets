@@ -320,8 +320,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return '';
 		}
 
-		// Check if the post is unpublished.
-		if ( 'publish' !== get_post_status( $post_id ) ) {
+		// If post is anything other than private or published, return empty.
+		if ( ! in_array( get_post_status( $post_id ), [ 'publish', 'private' ] ) ) {
 			return '';
 		}
 
