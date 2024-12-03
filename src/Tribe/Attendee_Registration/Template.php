@@ -10,7 +10,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	public function hook() {
 
 		// Spoof the context.
-		add_filter( 'the_posts', [ $this, 'setup_context' ], -10 );
+		add_filter( 'the_posts', [ $this, 'setup_context' ], -10, 2 );
 
 		// Set and remove the required body classes.
 		add_action( 'wp', [ $this, 'set_body_classes' ] );
@@ -19,7 +19,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		 * Choose the theme template to use. It has to have a higher priority than the
 		 * TEC filters (at 10) to ensure they do not usurp our rewrite here.
 		 */
-		add_filter( 'template_include', [ $this, 'set_page_template' ], 15 );
+		add_filter( 'singular_template', [ $this, 'set_page_template' ], 15, 3 );
 
 		add_action( 'tribe_events_editor_assets_should_enqueue_frontend', [ $this, 'should_enqueue_frontend' ] );
 		add_action( 'tribe_events_views_v2_assets_should_enqueue_frontend', [ $this, 'should_enqueue_frontend' ] );
@@ -55,8 +55,10 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 *
 	 * @return array
 	 */
-	public function setup_context( $posts ) {
-		global $wp_query;
+	public function setup_context( $posts, WP_Query $query ) {
+		if ( ! $query->is_main_query() ) {
+			return $posts;
+		}
 
 		// Bail if we're not on the attendee info page.
 		if ( ! $this->is_on_ar_page() ) {
@@ -72,12 +74,6 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			return $posts;
 		}
 
-		remove_filter( 'the_posts', [ $this, 'setup_context' ], -10 );
-
-		if ( wp_is_block_theme() ) {
-			wp_die( 'A configuration error has occurred.' );
-		}
-
 		// Empty posts.
 		$posts = null;
 
@@ -85,26 +81,21 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		$spoofed_page = $this->spoofed_page();
 		$posts[]      = $spoofed_page;
 		$wp_post      = new WP_Post( $spoofed_page );
-		$wp_post      = wp_cache_get( $spoofed_page->ID, 'posts' );
-		if ( false === $wp_post ) {
-			$wp_post = new WP_Post( $this->spoofed_page() );
-			wp_cache_add( $spoofed_page->ID, $wp_post, 'posts' );
-		}
 
 		// Don't tell wp_query we're anything in particular - then we don't run into issues with defaults.
-		$wp_query->found_posts       = 1;
-		$wp_query->is_404            = false;
-		$wp_query->is_archive        = false;
-		$wp_query->is_category       = false;
-		$wp_query->is_home           = false;
-		$wp_query->is_page           = false;
-		$wp_query->is_singular       = true;
-		$wp_query->max_num_pages     = 1;
-		$wp_query->post              = $spoofed_page;
-		$wp_query->post_count        = 1;
-		$wp_query->posts             = [ $wp_post ];
-		$wp_query->queried_object    = $wp_post;
-		$wp_query->queried_object_id = $spoofed_page->ID;
+		$query->found_posts       = 1;
+		$query->is_404            = false;
+		$query->is_archive        = false;
+		$query->is_category       = false;
+		$query->is_home           = false;
+		$query->is_page           = false;
+		$query->is_singular       = true;
+		$query->max_num_pages     = 1;
+		$query->post              = $spoofed_page;
+		$query->post_count        = 1;
+		$query->posts             = [ $wp_post ];
+		$query->queried_object    = $wp_post;
+		$query->queried_object_id = $spoofed_page->ID;
 
 		return $posts;
 	}
@@ -181,7 +172,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @param string $template The AR template.
 	 * @return void
 	 */
-	public function set_page_template( $template ) {
+	public function set_page_template( string $template, string $type, array $templates ) {
 
 		// Bail if we're not on the attendee info page.
 		if ( ! $this->is_on_ar_page() ) {
@@ -191,6 +182,14 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		if ( $this->is_on_custom_ar_page() ) {
 			$template = get_page_template();
 			return $template;
+		}
+
+		if ( $template ) {
+			return $template;
+		}
+
+		if ( wp_is_block_theme() ) {
+			return locate_block_template( 'templates/page.html', 'page', [] );
 		}
 
 		// Use the template option set in the admin.
