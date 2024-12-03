@@ -606,9 +606,31 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			],
 		];
 
-		// They complete the RSVP process.
+		// They complete the RSVP process on a post in draft status.
 		yield 'success with failure because of draft post' => [
 			'draft',
+			[
+				'attendee'   => $this->fake_attendee_details(),
+				'product_id' => 0,
+				'quantity'   => 2,
+			],
+			'',
+		];
+
+		// They complete the RSVP process on a post in private status.
+		yield 'success with failure because of private post' => [
+			'private',
+			[
+				'attendee'   => $this->fake_attendee_details(),
+				'product_id' => 0,
+				'quantity'   => 2,
+			],
+			'',
+		];
+
+		// They complete the RSVP process on a post in private status.
+		yield 'success with failure because of password-protected post' => [
+			'pw',
 			[
 				'attendee'   => $this->fake_attendee_details(),
 				'product_id' => 0,
@@ -674,13 +696,27 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 
 		$base_data = $this->make_base_data();
 
-		$post_id         = $base_data['post_id'];
-		$ticket_id       = $base_data['ticket_id'];
-		$draft_ticket_id = $base_data['draft_ticket_id'];
+		$post_id           = $base_data['post_id'];
+		$ticket_id         = $base_data['ticket_id'];
+		$draft_ticket_id   = $base_data['draft_ticket_id'];
+		$private_ticket_id = $base_data['private_ticket_id'];
+		$pw_ticket_id      = $base_data['private_ticket_id'];
 
 		// This is to test the draft ticket ID.
 		if ( 'draft' === $step ) {
 			$ticket_id = $draft_ticket_id;
+			$step      = 'success';
+		}
+
+		// This is to test the private ticket ID.
+		if ( 'private' === $step ) {
+			$ticket_id = $private_ticket_id;
+			$step      = 'success';
+		}
+
+		// This is to test the password ticket ID.
+		if ( 'pw' === $step ) {
+			$ticket_id = $pw_ticket_id;
 			$step      = 'success';
 		}
 
@@ -1175,8 +1211,10 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	protected function make_base_data( $sales = 0, $stock = 10 ) {
-		$post_id = $this->factory()->post->create();
-		$draft_post_id = $this->factory()->post->create();
+		$post_id         = $this->factory()->post->create();
+		$draft_post_id   = $this->factory()->post->create();
+		$private_post_id = $this->factory()->post->create();
+		$pw_post_id      = $this->factory()->post->create();
 
 		$ticket_id = $this->create_rsvp_ticket( $post_id, [
 			'meta_input' => [
@@ -1194,19 +1232,47 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			],
 		] );
 
+		$private_ticket_id = $this->create_rsvp_ticket( $private_post_id, [
+			'meta_input' => [
+				'total_sales' => $sales,
+				'_stock'      => $stock,
+				'_capacity'   => $stock + $sales,
+			],
+		] );
+
+		$pw_ticket_id = $this->create_rsvp_ticket( $pw_post_id, [
+			'meta_input' => [
+				'total_sales' => $sales,
+				'_stock'      => $stock,
+				'_capacity'   => $stock + $sales,
+			],
+		] );
+
 		wp_update_post( [
 			'ID'          => $draft_post_id,
 			'post_status' => 'draft',
 		] );
 
+		wp_update_post( [
+			'ID'          => $private_post_id,
+			'post_status' => 'private',
+		] );
+
+		wp_update_post( [
+			'ID'            => $pw_post_id,
+			'post_password' => 'password',
+		] );
+
 		$user_id = $this->factory()->user->create();
 
 		return [
-			'post_id'         => $post_id,
-			'ticket_id'       => $ticket_id,
-			'user_id'         => $user_id,
-			'draft_post_id'   => $draft_post_id,
-			'draft_ticket_id' => $draft_ticket_id,
+			'post_id'           => $post_id,
+			'ticket_id'         => $ticket_id,
+			'user_id'           => $user_id,
+			'draft_post_id'     => $draft_post_id,
+			'draft_ticket_id'   => $draft_ticket_id,
+			'private_ticket_id' => $private_ticket_id,
+			'pw_ticket_id'      => $pw_ticket_id,
 		];
 	}
 
