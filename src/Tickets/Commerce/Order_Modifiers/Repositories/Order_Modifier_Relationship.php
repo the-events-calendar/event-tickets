@@ -57,7 +57,7 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 			]
 		);
 
-		$model->object_id = DB::last_insert_id();
+		$model->id = DB::last_insert_id();
 
 		return $model;
 	}
@@ -79,7 +79,7 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 				'post_id'     => $model->post_id,
 				'post_type'   => $model->post_type,
 			],
-			[ 'object_id' => $model->object_id ],
+			[ 'id' => $model->id ],
 			[
 				'%d',
 				'%d',
@@ -221,7 +221,7 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 		$order_modifiers_table = Order_Modifiers::base_table_name();
 
 		return $this->prepareQuery()
-			->select( 'r.object_id,m.id as modifier_id', 'p.ID as post_id', 'p.post_type', 'p.post_title' )
+			->select( 'r.id,m.id as modifier_id', 'p.ID as post_id', 'p.post_type', 'p.post_title' )
 			->innerJoin( "$order_modifiers_table as m", 'r.modifier_id', 'm.id' )
 			->innerJoin( "$posts_table as p", 'r.post_id', 'p.ID' );
 	}

@@ -28,7 +28,7 @@ class Order_Modifier_Relationships_DTO extends DataTransferObject {
 	 *
 	 * @var int
 	 */
-	protected int $object_id;
+	protected int $id;
 
 	/**
 	 * The modifier ID.
@@ -78,7 +78,7 @@ class Order_Modifier_Relationships_DTO extends DataTransferObject {
 	public static function fromObject( $object ): self {
 		$self = new self();
 
-		$self->object_id   = $object->object_id;
+		$self->id          = $object->id;
 		$self->modifier_id = $object->modifier_id;
 		$self->post_id     = $object->post_id;
 		$self->post_type   = $object->post_type;

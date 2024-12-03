@@ -48,7 +48,7 @@ class Order_Modifier_Relationships extends Abstract_Custom_Table {
 	 *
 	 * @var string The field that uniquely identifies a row in the table.
 	 */
-	protected static $uid_column = 'object_id';
+	protected static $uid_column = 'id';
 
 	/**
 	 * Returns the table creation SQL in the format supported
@@ -66,11 +66,11 @@ class Order_Modifier_Relationships extends Abstract_Custom_Table {
 
 		return "
 			CREATE TABLE `$table_name` (
-				`object_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+				`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
 				`modifier_id` BIGINT UNSIGNED NOT NULL,
 				`post_id` BIGINT UNSIGNED NOT NULL,
 				`post_type` VARCHAR(20) NOT NULL,
-				PRIMARY KEY (`object_id`)
+				PRIMARY KEY (`id`)
 			) $charset_collate;
 		";
 	}
