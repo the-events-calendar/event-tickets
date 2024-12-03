@@ -306,6 +306,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		$builder               = new ModelQueryBuilder( $this->get_valid_types()[ $modifier_type ] );
 
 		$results = $builder->from( Table::table_name( false ) . ' as m' )
+			->select( 'm.*' )
 			->innerJoin( "{$order_modifiers_table} as r", 'm.id', 'r.modifier_id' )
 			->whereIn( 'r.post_id', $post_ids )
 			->where( 'modifier_type', $modifier_type )
