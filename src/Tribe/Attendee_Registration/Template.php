@@ -49,6 +49,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @since 4.9
 	 * @since 5.9.1 changed page parameters and added page to the cache.
 	 * @since 5.17.0 Update the check for the custom AR page.
+	 * @since TBD Removed filter after running once, added `wp_die` message if using a block theme.
 	 *
 	 * @param WP_Post[] $posts Post data objects.
 	 *
@@ -71,13 +72,9 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			return $posts;
 		}
 
+		remove_filter( 'the_posts', [ $this, 'setup_context' ], -10 );
+
 		if ( wp_is_block_theme() ) {
-			error_log(
-				esc_html__(
-					'We detected that you are using a Full Site Editing theme. In order for the Attendee Registration Page to function properly, you will need to set up a page, using the [tribe_attendee_registration] shortcode in the attendee registration Attendee Registration settings.',
-					'event-tickets'
-				)
-			);
 			wp_die( 'A configuration error has occurred.' );
 		}
 
@@ -87,7 +84,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		// Create a fake virtual page.
 		$spoofed_page = $this->spoofed_page();
 		$posts[]      = $spoofed_page;
-		$wp_post      = new WP_Post( $this->spoofed_page() );
+		$wp_post      = new WP_Post( $spoofed_page );
 		wp_cache_add( $spoofed_page->ID, $wp_post, 'posts' );
 
 		// Don't tell wp_query we're anything in particular - then we don't run into issues with defaults.
@@ -99,14 +96,13 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		$wp_query->is_page           = false;
 		$wp_query->is_singular       = true;
 		$wp_query->max_num_pages     = 1;
-		$wp_query->post              = $this->spoofed_page();
+		$wp_query->post              = $spoofed_page;
 		$wp_query->post_count        = 1;
 		$wp_query->posts             = [ $wp_post ];
 		$wp_query->queried_object    = $wp_post;
 		$wp_query->queried_object_id = $spoofed_page->ID;
 
 		return $posts;
-
 	}
 
 	/**

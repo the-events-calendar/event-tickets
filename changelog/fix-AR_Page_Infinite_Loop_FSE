@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+The Attendee Registration page will no longer infinitely load when using a Block Theme, which occurred only when the Attendee Registration page modal was disabled. [ET-2266]
