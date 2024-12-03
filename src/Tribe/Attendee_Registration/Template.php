@@ -85,7 +85,11 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		$spoofed_page = $this->spoofed_page();
 		$posts[]      = $spoofed_page;
 		$wp_post      = new WP_Post( $spoofed_page );
-		wp_cache_add( $spoofed_page->ID, $wp_post, 'posts' );
+		$wp_post      = wp_cache_get( $spoofed_page->ID, 'posts' );
+		if ( false === $wp_post ) {
+			$wp_post = new WP_Post( $this->spoofed_page() );
+			wp_cache_add( $spoofed_page->ID, $wp_post, 'posts' );
+		}
 
 		// Don't tell wp_query we're anything in particular - then we don't run into issues with defaults.
 		$wp_query->found_posts       = 1;
