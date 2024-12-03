@@ -20,7 +20,7 @@ class Order_Modifier_Relationships extends Abstract_Custom_Table {
 	 *
 	 * @var string|null The version number for this schema definition.
 	 */
-	public const SCHEMA_VERSION = '0.1.0-dev';
+	public const SCHEMA_VERSION = '1.0.0';
 
 	/**
 	 * @since TBD
@@ -48,7 +48,7 @@ class Order_Modifier_Relationships extends Abstract_Custom_Table {
 	 *
 	 * @var string The field that uniquely identifies a row in the table.
 	 */
-	protected static $uid_column = 'object_id';
+	protected static $uid_column = 'id';
 
 	/**
 	 * Returns the table creation SQL in the format supported
@@ -66,11 +66,11 @@ class Order_Modifier_Relationships extends Abstract_Custom_Table {
 
 		return "
 			CREATE TABLE `$table_name` (
-				`object_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+				`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
 				`modifier_id` BIGINT UNSIGNED NOT NULL,
-				`post_id`  BIGINT UNSIGNED NOT NULL,
+				`post_id` BIGINT UNSIGNED NOT NULL,
 				`post_type` VARCHAR(20) NOT NULL,
-				PRIMARY KEY (`object_id`)
+				PRIMARY KEY (`id`)
 			) $charset_collate;
 		";
 	}
@@ -94,9 +94,8 @@ class Order_Modifier_Relationships extends Abstract_Custom_Table {
 		}
 
 		// Helper method to check and add indexes.
-		$results = $this->check_and_add_index( $results, 'tec_order_modifier_relationship_indx_modifier_id', 'modifier_id' );
-		$results = $this->check_and_add_index( $results, 'tec_order_modifier_relationship_indx_post_type', 'post_id,post_type' );
-		$results = $this->check_and_add_index( $results, 'tec_order_modifier_relationship_indx_composite_join', 'modifier_id, post_id, post_type' );
+		$results = $this->check_and_add_index( $results, 'tec_order_modifier_relationship_index_modifier_id', 'modifier_id' );
+		$results = $this->check_and_add_index( $results, 'tec_order_modifier_relationship_index_post_id', 'post_id' );
 
 		return $results;
 	}

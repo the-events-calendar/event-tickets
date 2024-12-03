@@ -25,7 +25,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationshi
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Models;
  *
- * @property int    $object_id     The primary key of the relationship.
+ * @property int    $id            The primary key of the relationship.
  * @property int    $modifier_id   The Order Modifier ID.
  * @property int    $post_id       The related post ID.
  * @property string $post_type     The post type.
@@ -43,7 +43,7 @@ class Order_Modifier_Relationships extends Model implements ModelCrud, ModelFrom
 	 * @inheritDoc
 	 */
 	protected $properties = [
-		'object_id'   => 'int',
+		'id'          => 'int',
 		'modifier_id' => 'int',
 		'post_id'     => 'int',
 		'post_type'   => 'string',
@@ -88,11 +88,11 @@ class Order_Modifier_Relationships extends Model implements ModelCrud, ModelFrom
 	 * @return static
 	 */
 	public function save(): self {
-		if ( $this->object_id ) {
+		if ( $this->id ) {
 			return tribe( Order_Modifier_Relationships_Repository::class )->update( $this );
 		}
 
-		$this->object_id = tribe( Order_Modifier_Relationships_Repository::class )->insert( $this )->object_id;
+		$this->id = tribe( Order_Modifier_Relationships_Repository::class )->insert( $this )->id;
 
 		return $this;
 	}

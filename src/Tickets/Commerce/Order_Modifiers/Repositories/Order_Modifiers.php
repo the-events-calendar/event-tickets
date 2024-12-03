@@ -176,7 +176,6 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	public function find_by_id( int $id ): Order_Modifier {
 		$result = $this->prepareQuery()
 			->where( 'id', $id )
-			->where( 'modifier_type', $this->modifier_type )
 			->get();
 
 		return $this->normalize_return_result( $result );
@@ -307,10 +306,11 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		$builder               = new ModelQueryBuilder( $this->get_valid_types()[ $modifier_type ] );
 
 		$results = $builder->from( Table::table_name( false ) . ' as m' )
+			->select( 'm.*' )
 			->innerJoin( "{$order_modifiers_table} as r", 'm.id', 'r.modifier_id' )
 			->whereIn( 'r.post_id', $post_ids )
-			->where( 'modifier_type', $modifier_type )
-			->where( 'status', $status )
+			->where( 'm.modifier_type', $modifier_type )
+			->where( 'm.status', $status )
 			->getAll();
 
 		return $results ?? [];

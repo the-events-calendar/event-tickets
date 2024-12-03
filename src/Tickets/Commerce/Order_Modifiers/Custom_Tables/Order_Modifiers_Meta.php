@@ -23,7 +23,7 @@ class Order_Modifiers_Meta extends Abstract_Custom_Table {
 	 *
 	 * @var string|null The version number for this schema definition.
 	 */
-	public const SCHEMA_VERSION = '0.1.0-dev';
+	public const SCHEMA_VERSION = '1.0.0';
 
 	/**
 	 * @since TBD
@@ -100,10 +100,8 @@ class Order_Modifiers_Meta extends Abstract_Custom_Table {
 		}
 
 		// Helper method to check and add indexes.
-		$results = $this->check_and_add_index( $results, 'tec_order_modifier_meta_inx_order_modifier_id', 'order_modifier_id' );
-		$results = $this->check_and_add_index( $results, 'tec_order_modifier_meta_inx_meta_key', 'meta_key' );
-		$results = $this->check_and_add_index( $results, 'tec_order_modifier_meta_inx_order_modifier_id_meta_key', 'order_modifier_id, meta_key' );
-		$results = $this->check_and_add_index( $results, 'tec_order_modifier_meta_inx_meta_key_meta_value', 'meta_key,meta_value(255)' );
+		$results = $this->check_and_add_index( $results, 'tec_order_modifier_meta_index_order_modifier_id', 'order_modifier_id' );
+		$results = $this->check_and_add_index( $results, 'tec_order_modifier_meta_index_meta_key', 'meta_key' );
 
 		return $results;
 	}
