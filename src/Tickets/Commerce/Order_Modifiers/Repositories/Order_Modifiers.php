@@ -309,8 +309,8 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 			->select( 'm.*' )
 			->innerJoin( "{$order_modifiers_table} as r", 'm.id', 'r.modifier_id' )
 			->whereIn( 'r.post_id', $post_ids )
-			->where( 'modifier_type', $modifier_type )
-			->where( 'status', $status )
+			->where( 'm.modifier_type', $modifier_type )
+			->where( 'm.status', $status )
 			->getAll();
 
 		return $results ?? [];
