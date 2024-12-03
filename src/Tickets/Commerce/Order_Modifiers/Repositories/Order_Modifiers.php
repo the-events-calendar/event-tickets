@@ -176,7 +176,6 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	public function find_by_id( int $id ): Order_Modifier {
 		$result = $this->prepareQuery()
 			->where( 'id', $id )
-			->where( 'modifier_type', $this->modifier_type )
 			->get();
 
 		return $this->normalize_return_result( $result );
