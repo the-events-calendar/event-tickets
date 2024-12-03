@@ -315,18 +315,19 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return '';
 		}
 
-		// If user can't edit the post, add some extra checks.
-		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		// Check if the post is private and the user can't read it.
+		if ( 'private' === get_post_status( $post_id ) && ! current_user_can( 'read_private_posts' ) ) {
+			return '';
+		}
 
-			// Check password if one exists.
-			if ( post_password_required( $post_id ) ) {
-				return '';
-			}
+		// Check if the post is unpublished.
+		if ( 'publish' !== get_post_status( $post_id ) ) {
+			return '';
+		}
 
-			// Check if the post is unpublished.
-			if ( 'publish' !== get_post_status( $post_id ) ) {
-				return '';
-			}
+		// Check password if one exists.
+		if ( post_password_required( $post_id ) ) {
+			return '';
 		}
 
 		/** @var \Tribe__Tickets__Editor__Blocks__Rsvp $blocks_rsvp */
