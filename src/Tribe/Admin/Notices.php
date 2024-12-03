@@ -336,7 +336,7 @@ class Tribe__Tickets__Admin__Notices {
 	 * Display AR Page notice for FSE theme detected.
 	 *
 	 * @since 5.17.0
-	 * @deprecated TBD - This method will be removed in a future release.
+	 * @deprecated TBD This method will be removed in a future release.
 	 *
 	 * @return void
 	 */
