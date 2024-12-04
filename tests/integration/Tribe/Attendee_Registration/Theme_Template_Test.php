@@ -27,9 +27,8 @@ class Theme_Template_Test extends WPTestCase {
 	}
 
 	/**
-	 * Ensure the necessary themes are available before each test.
-	 *
-	 * @before
+	 * Ensure the necessary themes are available.
+	 * @test
 	 */
 	public function ensure_themes_exist(): void {
 		$this->assertTrue(
