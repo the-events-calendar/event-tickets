@@ -202,6 +202,11 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			$template_slug = str_replace( [ get_template_directory(), DIRECTORY_SEPARATOR ], '', $template );
 			$template      = get_template_directory() . DIRECTORY_SEPARATOR . $template_slug . '.html';
 
+			/**
+			 * The params being passed to locate_block_template may not work for all the templates of all the themes out there.
+			 *
+			 * It is supposed to default to the templates/page.html if we fail to found the one specified though so keeping a working AR page.
+			 */
 			return locate_block_template( $template, 'page', [ $template_slug, 'page' ] );
 		}
 
