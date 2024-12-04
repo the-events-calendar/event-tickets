@@ -1,6 +1,6 @@
 <?php
 
-use \Codeception\TestCase\WPTestCase;
+use Codeception\TestCase\WPTestCase;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe__Tickets__Attendee_Registration__Template as Template;
 use Tribe__Tickets__Attendee_Registration__Main as Attendee_Registration_Main;
