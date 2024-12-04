@@ -8,7 +8,6 @@ import {
 	INBOUND_SEATS_SELECTED,
 	OUTBOUND_SEAT_TYPE_TICKETS,
 	OUTBOUND_REMOVE_RESERVATIONS,
-	OUTBOUND_TICKET_LIMIT_REACHED,
 	removeAction,
 	registerAction,
 	sendPostMessage,
@@ -381,35 +380,8 @@ function registerActions(iframe) {
 			items.filter((item) => validateSelectionItemFromService(item))
 		);
 
-		checkTicketLimit(iframe, items);
 		updateEmptyTicketsMessage(items.length);
 	});
-}
-
-/**
- * Checks if the ticket limit has been reached.
- *
- * @since TBD
- *
- * @param {HTMLElement} iframe The iframe element.
- * @param {Object[]} items The items to check the limit for.
- */
-function checkTicketLimit(iframe, items) {
-	const ticketCount = {};
-	const ticketLimitReached = {};
-
-	items.forEach((item) => {
-		const ticketId = item.ticketId;
-		const maxLimit = tickets[ticketId].maxLimit;
-
-		ticketCount[ticketId] = (ticketCount[ticketId] || 0) + 1;
-
-		if (ticketCount[ticketId] >= maxLimit) {
-			ticketLimitReached[ticketId] = tickets[ticketId].name;
-		}
-	});
-
-	sendPostMessage(iframe, OUTBOUND_TICKET_LIMIT_REACHED, ticketLimitReached);
 }
 
 /**
