@@ -16,13 +16,6 @@ class Theme_Template_Test extends WPTestCase {
 	protected $original_theme;
 
 	/**
-	 * Reusable Post
-	 *
-	 * @var WP_Post
-	 */
-	protected $reusable_post;
-
-	/**
 	 * Store the current theme before each test.
 	 *
 	 * @before
@@ -31,32 +24,6 @@ class Theme_Template_Test extends WPTestCase {
 		$this->original_theme = get_option( 'stylesheet' );
 		tribe()->singleton( 'tickets.attendee_registration.template', new Template() );
 		tribe()->singleton( 'tickets.attendee_registration', new Attendee_Registration_Main() );
-	}
-
-	/**
-	 * Setup the Post
-	 *
-	 * @before
-	 */
-	public function setup_reusable_post(): void {
-		$post_id             = wp_insert_post(
-			[
-				'post_title'   => 'Test Post',
-				'post_content' => 'Content of the test post.',
-				'post_status'  => 'publish',
-				'post_type'    => 'post',
-			]
-		);
-		$this->reusable_post = get_post( $post_id );
-	}
-
-	/**
-	 * Clean up reusable Post
-	 *
-	 * @after
-	 */
-	public function teardown_reusable_post(): void {
-		wp_delete_post( $this->reusable_post->ID, true );
 	}
 
 	/**
@@ -267,6 +234,9 @@ class Theme_Template_Test extends WPTestCase {
 
 		// Assert the result matches the expectation.
 		$this->assertEquals( $expected, $result, 'setup_context result should match the expected output.' );
+
+		// Delete the test post.
+		wp_delete_post( $posts[0]->ID, true );
 	}
 
 	/**
@@ -277,51 +247,80 @@ class Theme_Template_Test extends WPTestCase {
 	public function setup_context_provider(): Generator {
 		yield 'Not the main query' => [
 			function () {
+				$post_id = self::factory()->post->create();
+				$post    = get_post( $post_id );
+
 				return [
-					[ $this->reusable_post ], // Posts.
+					[ $post ], // Posts.
 					new WP_Query(), // Query object.
 					false, // is_main_query.
 					false, // is_on_ar_page.
 					false, // is_on_custom_ar_page.
-					[ $this->reusable_post ], // Expected result (unchanged).
+					[ $post ], // Expected result (unchanged).
 				];
 			},
 		];
 
 		yield 'Main query, not on AR page' => [
 			function () {
+				$post_id = self::factory()->post->create();
+				$post    = get_post( $post_id );
+
 				return [
-					[ $this->reusable_post ], // Posts.
+					[ $post ], // Posts.
 					new WP_Query(), // Query object.
 					true, // is_main_query.
 					false, // is_on_ar_page.
 					false, // is_on_custom_ar_page.
-					[ $this->reusable_post ], // Expected result (unchanged).
+					[ $post ], // Expected result (unchanged).
 				];
 			},
 		];
 
+		yield 'Main query, not on AR page, multiple posts' => [
+			function () {
+				// Create 5 posts.
+				$posts = [];
+				for ( $i = 0; $i < 5; $i++ ) {
+					$post_id = self::factory()->post->create();
+					$posts[] = get_post( $post_id );
+				}
+
+				return [
+					$posts, // Posts array.
+					new WP_Query(), // Query object.
+					true, // is_main_query.
+					false, // is_on_ar_page.
+					false, // is_on_custom_ar_page.
+					$posts, // Expected result (unchanged).
+				];
+			},
+		];
+
+
 		yield 'On AR page, on custom AR page' => [
 			function () {
+				$post_id = self::factory()->post->create();
+				$post    = get_post( $post_id );
+
 				return [
-					[ $this->reusable_post ], // Posts.
+					[ $post ], // Posts.
 					new WP_Query(), // Query object.
 					true, // is_main_query.
 					true, // is_on_ar_page.
 					true, // is_on_custom_ar_page.
-					[ $this->reusable_post ], // Expected result (unchanged).
+					[ $post ], // Expected result (unchanged).
 				];
 			},
 		];
 
 		yield 'On AR page, not on custom AR page' => [
 			function () {
-				$template = new Tribe__Tickets__Attendee_Registration__Template();
-				// Grab our Spoofed Page.
+				$template     = new Template();
 				$spoofed_page = $template->spoofed_page();
 
 				return [
-					[ $this->reusable_post ], // Posts.
+					[ $spoofed_page ], // Posts.
 					new WP_Query(), // Query object.
 					true, // is_main_query.
 					true, // is_on_ar_page.
@@ -333,19 +332,18 @@ class Theme_Template_Test extends WPTestCase {
 
 		yield 'Not main query, on AR page, not on custom AR page' => [
 			function () {
-				// Create a reusable post (already handled by your setup_reusable_post).
-				$template = new Tribe__Tickets__Attendee_Registration__Template();
+				$post_id = self::factory()->post->create();
+				$post    = get_post( $post_id );
 
 				return [
-					[ $this->reusable_post ], // Posts.
+					[ $post ], // Posts.
 					new WP_Query(), // Query object.
-					false, // is_main_query (not the main query).
+					false, // is_main_query.
 					true, // is_on_ar_page.
 					false, // is_on_custom_ar_page.
-					[ $this->reusable_post ], // Expected result remains unchanged.
+					[ $post ], // Expected result (unchanged).
 				];
 			},
 		];
 	}
-
 }
