@@ -35,9 +35,29 @@ if ( ! $option_value && ! $constant_value ) {
  * phpcs:disable WordPress.DB.DirectDatabaseQuery
  */
 
+/** @global wpdb $wpdb */
 global $wpdb;
+
+// Remove the option for this uninstall process, so it must manually be set again.
+delete_option( 'event_tickets_uninstall' );
+
+// Remove the options that indicate what version of the DB tables are installed.
+delete_option( 'stellar_schema_version_tec-order-modifiers' );
+delete_option( 'stellar_schema_version_tec-order-modifiers-meta' );
+delete_option( 'stellar_schema_version_tec-order-modifiers-relationships' );
+
+// Remove the options that indicate the previous version of the DB tables.
+delete_option( 'stellar_schema_previous_version_tec-order-modifiers' );
+delete_option( 'stellar_schema_previous_version_tec-order-modifiers-meta' );
+delete_option( 'stellar_schema_previous_version_tec-order-modifiers-relationships' );
+
+// Disable foreign key checks.
+$wpdb->query( 'SET FOREIGN_KEY_CHECKS = 0' );
 
 // Drop our custom tables.
 $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tec_order_modifiers" );
 $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tec_order_modifiers_meta" );
 $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tec_order_modifier_relationships" );
+
+// Re-enable foreign key checks.
+$wpdb->query( 'SET FOREIGN_KEY_CHECKS = 1' );
