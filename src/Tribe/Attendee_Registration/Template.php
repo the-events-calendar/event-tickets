@@ -19,7 +19,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		 * Choose the theme template to use. It has to have a higher priority than the
 		 * TEC filters (at 10) to ensure they do not usurp our rewrite here.
 		 */
-		add_filter( 'singular_template', [ $this, 'set_page_template' ], 15, 3 );
+		add_filter( 'singular_template', [ $this, 'set_page_template' ], 15 );
 
 		add_action( 'tribe_events_editor_assets_should_enqueue_frontend', [ $this, 'should_enqueue_frontend' ] );
 		add_action( 'tribe_events_views_v2_assets_should_enqueue_frontend', [ $this, 'should_enqueue_frontend' ] );
@@ -49,7 +49,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @since 4.9
 	 * @since 5.9.1 changed page parameters and added page to the cache.
 	 * @since 5.17.0 Update the check for the custom AR page.
-	 * @since TBD Removed filter after running once, added `wp_die` message if using a block theme.
+	 * @since TBD Added second parameter to the function to pass the query object. Bail if we're not on the main query.
 	 *
 	 * @param WP_Post[] $posts Post data objects.
 	 *
@@ -168,11 +168,12 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 *
 	 * @since 4.9
 	 * @since 5.17.0 Added check for custom AR page to return the pages template.
+	 * @since TBD Changed the hook this is being fired to from `template_include` to `singular_template`. Made it compatible with block themes.
 	 *
 	 * @param string $template The AR template.
 	 * @return void
 	 */
-	public function set_page_template( string $template, string $type, array $templates ) {
+	public function set_page_template( string $template ) {
 
 		// Bail if we're not on the attendee info page.
 		if ( ! $this->is_on_ar_page() ) {
