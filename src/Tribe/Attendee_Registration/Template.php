@@ -75,6 +75,9 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			return $posts;
 		}
 
+		// Since we are spoofing the actual content of the page providing a fake post object, we need to remove the shortlink to prevent warnings.
+		add_filter( 'pre_get_shortlink', '__return_empty_string' );
+
 		// Empty posts.
 		$posts = null;
 
