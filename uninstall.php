@@ -38,6 +38,9 @@ if ( ! $option_value && ! $constant_value ) {
 /** @global wpdb $wpdb */
 global $wpdb;
 
+// Remove the option for this uninstall process, so it must manually be set again.
+delete_option( 'event_tickets_uninstall' );
+
 // Remove the options that indicate what version of the DB tables are installed.
 delete_option( 'stellar_schema_version_tec-order-modifiers' );
 delete_option( 'stellar_schema_version_tec-order-modifiers-meta' );
