@@ -185,14 +185,6 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			return $template;
 		}
 
-		if ( $template ) {
-			return $template;
-		}
-
-		if ( wp_is_block_theme() ) {
-			return locate_block_template( 'templates/page.html', 'page', [] );
-		}
-
 		// Use the template option set in the admin.
 		$template = tribe_get_option( 'ticket-attendee-info-template' );
 
@@ -202,6 +194,15 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		} elseif ( 'same' === $template ) {
 			// Note this could be an empty string...because.
 			$template = tribe_get_option( 'tribeEventsTemplate', 'default' );
+		}
+
+		if ( wp_is_block_theme() ) {
+			// Archive events appears in the list of template for FSE themes but its not valid. So we ignore it to prevent customers from breaking their AR page.
+			$template      = $template && ! in_array( trim( $template ), [ '', 'default', 'archive-events' ], true ) ? $template : 'page';
+			$template_slug = str_replace( [ get_template_directory(), DIRECTORY_SEPARATOR ], '', $template );
+			$template      = get_template_directory() . DIRECTORY_SEPARATOR . $template_slug . '.html';
+
+			return locate_block_template( $template, 'page', [ $template_slug, 'page' ] );
 		}
 
 		if ( in_array( $template, [ '', 'default' ], true ) ) {
