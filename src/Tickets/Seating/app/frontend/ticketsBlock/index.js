@@ -78,6 +78,7 @@ const confirmSelector =
  * @property {string} name        The ticket name.
  * @property {number} price       The ticket price.
  * @property {string} description The ticket description.
+ * @property {number} maxLimit    The maximum number of tickets that can be selected.
  */
 
 /**

@@ -25,6 +25,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Main as Common;
 use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Seating\Orders\Cart;
+use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 
 /**
  * Class Controller.
@@ -455,7 +456,8 @@ class Frontend extends Controller_Contract {
 	 *         ticketId: string,
 	 *         name: string,
 	 *         price: string,
-	 *         description: string
+	 *         description: string,
+	 *         maxLimit: int
 	 *     }>
 	 * } The Seat Type map.
 	 */
@@ -489,13 +491,17 @@ class Frontend extends Controller_Contract {
 					'tickets' => [],
 				];
 			}
-
+			
+			/** @var Tickets_Handler $tickets_handler */
+			$tickets_handler = tribe( 'tickets.handler' );
+			
 			$seat_type_map[ $seat_type ]['tickets'][] = [
 				'ticketId'    => $ticket_id,
 				'name'        => $ticket->name,
 				'price'       => $ticket->price,
 				'description' => $ticket->description,
 				'dateInRange' => $ticket->date_in_range(),
+				'maxLimit'    => $tickets_handler->get_ticket_max_purchase( $ticket_id ),
 			];
 		}
 
