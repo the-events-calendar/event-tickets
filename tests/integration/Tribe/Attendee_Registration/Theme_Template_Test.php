@@ -3,7 +3,7 @@
 use \Codeception\TestCase\WPTestCase;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe__Tickets__Attendee_Registration__Template as Template;
-use Tribe__Tickets__Attendee_Registration__Main as Main;
+use Tribe__Tickets__Attendee_Registration__Main as Attendee_Registration_Main;
 
 class Theme_Template_Test extends WPTestCase {
 	use With_Uopz;
@@ -16,6 +16,13 @@ class Theme_Template_Test extends WPTestCase {
 	protected $original_theme;
 
 	/**
+	 * Reusable Post
+	 *
+	 * @var WP_Post
+	 */
+	protected $reusable_post;
+
+	/**
 	 * Store the current theme before each test.
 	 *
 	 * @before
@@ -23,11 +30,38 @@ class Theme_Template_Test extends WPTestCase {
 	public function store_current_theme(): void {
 		$this->original_theme = get_option( 'stylesheet' );
 		tribe()->singleton( 'tickets.attendee_registration.template', new Template() );
-		tribe()->singleton( 'tickets.attendee_registration', new Tribe__Tickets__Attendee_Registration__Main() );
+		tribe()->singleton( 'tickets.attendee_registration', new Attendee_Registration_Main() );
+	}
+
+	/**
+	 * Setup the Post
+	 *
+	 * @before
+	 */
+	public function setup_reusable_post(): void {
+		$post_id             = wp_insert_post(
+			[
+				'post_title'   => 'Test Post',
+				'post_content' => 'Content of the test post.',
+				'post_status'  => 'publish',
+				'post_type'    => 'post',
+			]
+		);
+		$this->reusable_post = get_post( $post_id );
+	}
+
+	/**
+	 * Clean up reusable Post
+	 *
+	 * @after
+	 */
+	public function teardown_reusable_post(): void {
+		wp_delete_post( $this->reusable_post->ID, true );
 	}
 
 	/**
 	 * Ensure the necessary themes are available.
+	 *
 	 * @test
 	 */
 	public function ensure_themes_exist(): void {
@@ -63,9 +97,9 @@ class Theme_Template_Test extends WPTestCase {
 		[ $theme, $is_block_theme, $singular_template, $is_on_ar_page, $is_on_custom_ar_page, $expected_template ] = $fixture();
 
 		// Overwrite the `is_on_ar_page` method using uopz.
-		$this->set_class_fn_return( Tribe__Tickets__Attendee_Registration__Template::class, 'is_on_ar_page', $is_on_ar_page );
+		$this->set_class_fn_return( Template::class, 'is_on_ar_page', $is_on_ar_page );
 		// Overwrite the `is_on_custom_ar_page` method using uopz.
-		$this->set_class_fn_return( Tribe__Tickets__Attendee_Registration__Template::class, 'is_on_custom_ar_page', $is_on_custom_ar_page );
+		$this->set_class_fn_return( Template::class, 'is_on_custom_ar_page', $is_on_custom_ar_page );
 
 		// Assert that the active theme is correct.
 		$this->assertEquals(
@@ -82,7 +116,7 @@ class Theme_Template_Test extends WPTestCase {
 		);
 
 		// Mock the Tribe__Tickets__Attendee_Registration__Template instance.
-		$template_instance = new Tribe__Tickets__Attendee_Registration__Template();
+		$template_instance = new Template();
 
 		$this->assertEquals( $is_on_ar_page, $template_instance->is_on_ar_page(), 'is_on_ar_page should match' );
 
@@ -208,4 +242,110 @@ class Theme_Template_Test extends WPTestCase {
 			},
 		];
 	}
+
+	/**
+	 * Test `setup_context` behavior with various scenarios.
+	 *
+	 * @test
+	 * @dataProvider setup_context_provider
+	 */
+	public function should_setup_context_correctly( Closure $fixture ): void {
+		[ $posts, $query, $is_main_query, $is_on_ar_page, $is_on_custom_ar_page, $expected ] = $fixture();
+
+		// Overwrite the `is_main_query` method using uopz.
+		$this->set_class_fn_return( WP_Query::class, 'is_main_query', $is_main_query );
+
+		// Mock `is_on_ar_page` and `is_on_custom_ar_page`.
+		$this->set_class_fn_return( Template::class, 'is_on_ar_page', $is_on_ar_page );
+		$this->set_class_fn_return( Template::class, 'is_on_custom_ar_page', $is_on_custom_ar_page );
+
+		// Create an instance of the class to test.
+		$template_instance = new Template();
+
+		// Run the method under test.
+		$result = $template_instance->setup_context( $posts, $query );
+
+		// Assert the result matches the expectation.
+		$this->assertEquals( $expected, $result, 'setup_context result should match the expected output.' );
+	}
+
+	/**
+	 * Data provider for `setup_context`.
+	 *
+	 * @return Generator
+	 */
+	public function setup_context_provider(): Generator {
+		yield 'Not the main query' => [
+			function () {
+				return [
+					[ $this->reusable_post ], // Posts.
+					new WP_Query(), // Query object.
+					false, // is_main_query.
+					false, // is_on_ar_page.
+					false, // is_on_custom_ar_page.
+					[ $this->reusable_post ], // Expected result (unchanged).
+				];
+			},
+		];
+
+		yield 'Main query, not on AR page' => [
+			function () {
+				return [
+					[ $this->reusable_post ], // Posts.
+					new WP_Query(), // Query object.
+					true, // is_main_query.
+					false, // is_on_ar_page.
+					false, // is_on_custom_ar_page.
+					[ $this->reusable_post ], // Expected result (unchanged).
+				];
+			},
+		];
+
+		yield 'On AR page, on custom AR page' => [
+			function () {
+				return [
+					[ $this->reusable_post ], // Posts.
+					new WP_Query(), // Query object.
+					true, // is_main_query.
+					true, // is_on_ar_page.
+					true, // is_on_custom_ar_page.
+					[ $this->reusable_post ], // Expected result (unchanged).
+				];
+			},
+		];
+
+		yield 'On AR page, not on custom AR page' => [
+			function () {
+				$template = new Tribe__Tickets__Attendee_Registration__Template();
+				// Grab our Spoofed Page.
+				$spoofed_page = $template->spoofed_page();
+
+				return [
+					[ $this->reusable_post ], // Posts.
+					new WP_Query(), // Query object.
+					true, // is_main_query.
+					true, // is_on_ar_page.
+					false, // is_on_custom_ar_page.
+					[ $spoofed_page ], // Expected spoofed post.
+				];
+			},
+		];
+
+		yield 'Not main query, on AR page, not on custom AR page' => [
+			function () {
+				// Create a reusable post (already handled by your setup_reusable_post).
+				$template = new Tribe__Tickets__Attendee_Registration__Template();
+
+				return [
+					[ $this->reusable_post ], // Posts.
+					new WP_Query(), // Query object.
+					false, // is_main_query (not the main query).
+					true, // is_on_ar_page.
+					false, // is_on_custom_ar_page.
+					[ $this->reusable_post ], // Expected result remains unchanged.
+				];
+			},
+		];
+	}
+
 }
