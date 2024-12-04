@@ -218,7 +218,7 @@ jobs:
         if: steps.skip.outputs.value != 1
         run: ${SLIC_BIN} wp theme install twentytwenty --activate
       # ------------------------------------------------------------------------------
-      # Install and activate TwentyTwentyFour
+      # Install but NOT activate TwentyTwentyFour
       # ------------------------------------------------------------------------------
       - name: Install and activate TwentyTwentyFour
         if: steps.skip.outputs.value != 1
