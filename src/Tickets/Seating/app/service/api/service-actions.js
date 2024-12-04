@@ -31,4 +31,3 @@ export const OUTBOUND_REMOVE_RESERVATIONS =
 // Seats report action.
 export const OUTBOUND_EVENT_ATTENDEES = 'host_postmessage_event_attendees';
 export const OUTBOUND_ATTENDEE_UPDATE = 'host_postmessage_attendee_update';
-export const OUTBOUND_TICKET_LIMIT_REACHED = 'host_postmessage_ticket_limit_reached';
