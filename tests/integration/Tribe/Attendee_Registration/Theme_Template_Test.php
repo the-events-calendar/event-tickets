@@ -234,9 +234,6 @@ class Theme_Template_Test extends WPTestCase {
 
 		// Assert the result matches the expectation.
 		$this->assertEquals( $expected, $result, 'setup_context result should match the expected output.' );
-
-		// Delete the test post.
-		wp_delete_post( $posts[0]->ID, true );
 	}
 
 	/**
@@ -319,8 +316,34 @@ class Theme_Template_Test extends WPTestCase {
 				$template     = new Template();
 				$spoofed_page = $template->spoofed_page();
 
+				$post_id = self::factory()->post->create();
+				$post    = get_post( $post_id );
+
 				return [
-					[ $spoofed_page ], // Posts.
+					[ $post ], // Posts.
+					new WP_Query(), // Query object.
+					true, // is_main_query.
+					true, // is_on_ar_page.
+					false, // is_on_custom_ar_page.
+					[ $spoofed_page ], // Expected spoofed post.
+				];
+			},
+		];
+
+		yield 'On AR page, not on custom AR page, multiple posts' => [
+			function () {
+				$template     = new Template();
+				$spoofed_page = $template->spoofed_page();
+
+				// Create 5 posts.
+				$posts = [];
+				for ( $i = 0; $i < 5; $i++ ) {
+					$post_id = self::factory()->post->create();
+					$posts[] = get_post( $post_id );
+				}
+
+				return [
+					[ $posts ], // Posts.
 					new WP_Query(), // Query object.
 					true, // is_main_query.
 					true, // is_on_ar_page.
