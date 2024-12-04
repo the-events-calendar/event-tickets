@@ -57,6 +57,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 */
 	public function setup_context( $posts, WP_Query $query ) {
 		if ( ! $query->is_main_query() ) {
+			// Only run for the main query and not any other possible sub queries!
 			return $posts;
 		}
 
