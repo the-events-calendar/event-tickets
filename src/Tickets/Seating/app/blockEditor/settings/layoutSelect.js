@@ -1,21 +1,16 @@
 import {Select} from '@moderntribe/common/elements';
-import {Fragment, useState} from 'react';
-import {ACTION_EVENT_LAYOUT_UPDATED, ajaxNonce, ajaxUrl} from '@tec/tickets/seating/ajax';
-import {getLink, getLocalizedString} from '@tec/tickets/seating/utils';
-import {Modal, Dashicon, CheckboxControl, Button, Spinner } from '@wordpress/components';
+import React, {Fragment, useState} from 'react';
+import {
+	ACTION_EVENT_LAYOUT_UPDATED,
+	ajaxNonce,
+	ajaxUrl
+} from '@tec/tickets/seating/ajax';
+import {Modal, Dashicon, CheckboxControl, Button, Spinner} from '@wordpress/components';
 import {useSelect} from '@wordpress/data';
+import {__} from '@wordpress/i18n';
+import {globals} from '@moderntribe/common/utils';
 import './style.pcss';
-
-/**
- * Returns the string from the settings localization.
- *
- * @since 5.16.0
- *
- * @param {string} key The key to get the string for.
- *
- * @return {string}
- */
-const getString = (key) => getLocalizedString(key, 'settings');
+import RemoveLayout from "./removeLayout";
 
 /**
  * The layout select component.
@@ -38,7 +33,7 @@ const LayoutSelect = ({
 	 *
 	 * @return {Object|null}
 	 */
-	const getCurrentLayoutOption = (layoutId, layouts)=> {
+	const getCurrentLayoutOption = (layoutId, layouts) => {
 		return layouts && layoutId
 			? layouts.find((layoutOption) => layoutOption.value === layoutId)
 			: null;
@@ -58,9 +53,10 @@ const LayoutSelect = ({
 
 	const [activeLayout, setActiveLayout] = useState(getCurrentLayoutOption(currentLayout, layouts));
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [ newLayout, setNewLayout ] = useState(null);
-	const [ isChecked, setChecked ] = useState(false);
-	const [ isLoading, setIsLoading ] = useState(false);
+	const [newLayout, setNewLayout] = useState(null);
+	const [isChecked, setChecked] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+	const exportUrl = globals.adminUrl() + `edit.php?post_type=tribe_events&page=tickets-attendees&event_id=${postId}`;
 
 	/**
 	 * Handles the layout change.
@@ -70,7 +66,7 @@ const LayoutSelect = ({
 	 * @param {Object} selectedLayout The selected layout.
 	 */
 	const handleLayoutChange = (selectedLayout) => {
-		if ( selectedLayout === activeLayout ) {
+		if (selectedLayout === activeLayout) {
 			return;
 		}
 
@@ -97,7 +93,7 @@ const LayoutSelect = ({
 	const handleModalConfirm = async () => {
 		setActiveLayout(newLayout);
 		setIsLoading(true);
-		if ( await saveNewLayout() ) {
+		if (await saveNewLayout()) {
 			setIsLoading(false);
 			setIsModalOpen(false);
 			window.location.reload();
@@ -117,7 +113,7 @@ const LayoutSelect = ({
 		url.searchParams.set('newLayout', newLayout.value);
 		url.searchParams.set('postId', postId);
 		url.searchParams.set('action', ACTION_EVENT_LAYOUT_UPDATED);
-		const response = await fetch(url.toString(), { method: 'POST' });
+		const response = await fetch(url.toString(), {method: 'POST'});
 
 		return response.status === 200;
 	}
@@ -128,10 +124,10 @@ const LayoutSelect = ({
 	 * @since 5.16.0
 	 */
 	function NoLayouts() {
-		if ( currentLayout === null || currentLayout.length === 0 || layouts.length === 0 ) {
+		if (currentLayout === null || currentLayout.length === 0 || layouts.length === 0) {
 			return (
 				<span className="tec-tickets-seating__settings_layout--description">
-					The event is not using assigned seating.
+					{__('The event is not using assigned seating.', 'event-tickets')}
 				</span>
 			);
 		}
@@ -144,34 +140,40 @@ const LayoutSelect = ({
 	 *
 	 * @return {JSX.Element|null}
 	 */
-	function RenderSelect () {
-		if (currentLayout === null || currentLayout.length === 0 || layouts.length === 0 ) {
+	function RenderSelect() {
+		if (currentLayout === null || currentLayout.length === 0 || layouts.length === 0) {
 			return null;
 		}
 
 		return (
 			<Fragment>
-				<Select
-					id="tec-tickets-seating__settings_layout-select"
-					className="tec-tickets-seating__settings_layout--select"
-					value={activeLayout}
-					options={layouts}
-					onChange={handleLayoutChange}
-				/>
+				<div className="tec-tickets-seating__settings_layout--select-container">
+					<Select
+						id="tec-tickets-seating__settings_layout-select"
+						className="tec-tickets-seating__settings_layout--select"
+						value={activeLayout}
+						options={layouts}
+						onChange={handleLayoutChange}
+					/>
+					<RemoveLayout postId={postId}/>
+				</div>
 				<span className="tec-tickets-seating__settings_layout--description">
-					Changing the event’s layout will impact all existing tickets.
-					Attendees will lose their seat assignments.
+					{__(
+						'Changing the event’s layout will impact all existing tickets. Attendees will lose their seat assignments.',
+						'event-tickets'
+					)}
 				</span>
 			</Fragment>
 		);
 	}
 
+	const MemoizedRenderSelect = React.memo(RenderSelect);
 	return (
 		<div className="tec-tickets-seating__settings_layout--wrapper">
-			<span className="tec-tickets-seating__settings_layout--title">Seat Layout</span>
-			<NoLayouts />
-			<RenderSelect />
-			{ isModalOpen && (
+			<span className="tec-tickets-seating__settings_layout--title">{__('Seat Layout', 'event-tickets')}</span>
+			<NoLayouts/>
+			<MemoizedRenderSelect/>
+			{isModalOpen && (
 				<Modal
 					className="tec-tickets-seating__settings--layout-modal"
 					title="Confirm Seat Layout Change"
@@ -179,13 +181,17 @@ const LayoutSelect = ({
 					onRequestClose={closeModal}
 					size="medium"
 				>
-					{ !isLoading && (
+					{!isLoading && (
 						<Fragment>
 							<div className="tec-tickets-seating__settings-intro">
 								<Dashicon icon="warning"/>
-								<span className="icon-text">Caution</span>
-								<p className="warning-text">All attendees will lose their seat assignments. All existing
-									tickets will be assigned to a default seat type. This action cannot be undone.</p>
+								<span className="icon-text">{__('Caution', 'event-tickets')}</span>
+								<p className="warning-text">
+									{__('All attendees will lose their seat assignments. All existing tickets will be assigned to a default seat type.', 'event-tickets')}
+									{' '}
+									<span
+										style={{textDecoration: 'underline'}}>{__('This action cannot be undone.', 'event-tickets')}</span>
+								</p>
 							</div>
 
 							<CheckboxControl
@@ -196,7 +202,13 @@ const LayoutSelect = ({
 								name="tec-tickets-seating__settings--switched-layout"
 							/>
 
-							<p>You may want to export attendee data first as a record of current seat assignments.</p>
+							<p>
+								{__('You may want to', 'event-tickets')}{' '}
+								<a href={exportUrl} target="_blank" rel="noopener noreferrer">
+									{__('export attendee', 'event-tickets')}
+								</a>{' '}
+								{__('data first as a record of current seat assignments.', 'event-tickets')}
+							</p>
 
 							<div className="tec-tickets-seating__settings--actions">
 								<Button
@@ -204,13 +216,13 @@ const LayoutSelect = ({
 									disabled={!isChecked}
 									isPrimary={isChecked}
 								>
-									Change Seat Layout
+									{__('Change Seat Layout', 'event-tickets')}
 								</Button>
 								<Button
 									onClick={closeModal}
 									isSecondary={true}
 								>
-									Cancel
+									{__('Cancel', 'event-tickets')}
 								</Button>
 							</div>
 						</Fragment>

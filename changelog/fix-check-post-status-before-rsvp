@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Users will not be able to RSVP for unpublished events or posts. [ET-2267]
