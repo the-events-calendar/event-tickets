@@ -99,12 +99,6 @@ class Coupons extends Controller_Contract {
 	 * @param Tribe__Template $template The template object for rendering.
 	 */
 	public function display_coupon_section( WP_Post $post, array $items, Tribe__Template $template ): void {
-		// Display the coupon section template.
-		$template->template(
-			'checkout/order-modifiers/coupons',
-			[
-				// Additional data if needed.
-			]
-		);
+		$template->template( 'checkout/order-modifiers/coupons' );
 	}
 }
