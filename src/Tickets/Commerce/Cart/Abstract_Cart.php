@@ -81,7 +81,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 *
 	 * @return float The total value of the cart, or null if there are no items.
 	 */
-	public function get_cart_total(): float {
+	public function get_cart_total() {
 		$subtotal = $this->get_cart_subtotal();
 		if ( ! $subtotal ) {
 			return 0.0;
