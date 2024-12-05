@@ -10,14 +10,16 @@
                     "name": "Test TC ticket for {{post_id}}",
                     "price": "20",
                     "description": "Test TC ticket description for {{post_id}}",
-                    "dateInRange": true
+                    "dateInRange": true,
+                    "maxLimit": 100
                 },
                 {
                     "ticketId": {{ticket_4}},
                     "name": "Test TC ticket for {{post_id}}",
                     "price": "30",
                     "description": "Test TC ticket description for {{post_id}}",
-                    "dateInRange": true
+                    "dateInRange": true,
+                    "maxLimit": 100
                 }
             ]
         },
@@ -29,14 +31,16 @@
                     "name": "Test TC ticket for {{post_id}}",
                     "price": "50",
                     "description": "Test TC ticket description for {{post_id}}",
-                    "dateInRange": true
+                    "dateInRange": true,
+                    "maxLimit": 100
                 },
                 {
                     "ticketId": {{ticket_5}},
                     "name": "Test TC ticket for {{post_id}}",
                     "price": "10",
                     "description": "Test TC ticket description for {{post_id}}",
-                    "dateInRange": true
+                    "dateInRange": true,
+                    "maxLimit": 100
                 }
             ]
         },
@@ -48,7 +52,8 @@
                     "name": "Test TC ticket for {{post_id}}",
                     "price": "10",
                     "description": "Test TC ticket description for {{post_id}}",
-                    "dateInRange": true
+                    "dateInRange": true,
+                    "maxLimit": 100
                 }
             ]
         }
