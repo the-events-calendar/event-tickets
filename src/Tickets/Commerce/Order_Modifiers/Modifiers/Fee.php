@@ -59,7 +59,7 @@ class Fee extends Modifier_Abstract {
 	}
 
 	/**
-	 * Retrieves the display name of the modifier in singular or plural form.
+	 * Retrieves the display name of the modifier in plural form.
 	 *
 	 * @since TBD
 	 *
