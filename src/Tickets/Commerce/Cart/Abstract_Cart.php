@@ -74,7 +74,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * Get the total value of the cart, including additional values such as fees or discounts.
 	 *
 	 * This method calculates the total by first computing the subtotal from all items in the cart,
-	 * and then applying any additional values (e.g., fees or discounts) provided via the `tec_tickets_commerce_get_cart_total_value` filter.
+	 * and then applying any additional values (e.g., fees or discounts) provided via the `tec_tickets_commerce_get_cart_additional_values` filter.
 	 *
 	 * @since TBD Refactored logic, to include a new filter.
 	 * @since 5.10.0
@@ -93,7 +93,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 		$sub_totals = array_filter( wp_list_pluck( $items, 'sub_total' ) );
 
 		/**
-		 * Filters the total value in the cart to add additional fees or discounts.
+		 * Filters the additional values in the cart in order to add additional fees or discounts.
 		 *
 		 * Additional values must be instances of the `Value` class to ensure consistent behavior.
 		 *
@@ -104,7 +104,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 		 * @param Value   $sub_totals The total of the subtotals from the items.
 		 */
 		$additional_values = apply_filters(
-			'tec_tickets_commerce_get_cart_total_value',
+			'tec_tickets_commerce_get_cart_additional_values',
 			[],
 			$items,
 			Value::create()->total( $sub_totals )
