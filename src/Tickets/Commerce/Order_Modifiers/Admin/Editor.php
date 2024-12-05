@@ -78,7 +78,7 @@ final class Editor extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	private function register_block_editor_assets() {
+	private function register_block_editor_assets(): void {
 		// Register the REST script.
 		$this
 			->add_asset(
@@ -128,7 +128,7 @@ final class Editor extends Controller_Contract {
 	 *
 	 * @return bool Whether the assets should be enqueued or not.
 	 */
-	private function should_enqueue_assets() {
+	private function should_enqueue_assets(): bool {
 		// We shouldn't enqueue on the frontend.
 		if ( ! is_admin() ) {
 			return false;
