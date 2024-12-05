@@ -52,8 +52,6 @@ class Fee extends Modifier_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @param bool $plural Whether to return the plural form. Defaults to false (singular).
-	 *
 	 * @return string The display name of the modifier.
 	 */
 	public function get_singular_name(): string {
