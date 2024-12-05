@@ -57,17 +57,23 @@ const CheckboxFee = ( {
 	const name = getCheckboxName( clientId, fee );
 
 	return (
-		<Checkbox
-			checked={ isChecked }
-			className={ classNames( getContainerClasses() ) }
-			disabled={ isDisabled }
-			id={ name }
-			label={ getFeeLabel( fee ) }
-			onChange={ onChange }
-			name={ name }
-			value={ fee.id }
-			key={ fee.id }
-		/>
+		<div className={ classNames( 'tribe-editor__checkbox', getContainerClasses() ) }>
+			<CheckboxInput
+				checked={ isChecked }
+				className="tribe-editor__checkbox__input"
+				disabled={ isDisabled }
+				id={ name }
+				name={ name }
+				onChange={ onChange }
+				value={ fee.id }
+				key={ fee.id }
+			/>
+			<LabelWithTooltip
+				forId={ name }
+				isLabel={ true }
+				label={ getFeeLabel( fee ) }
+			/>
+		</div>
 	);
 };
 
@@ -114,7 +120,7 @@ const CheckboxFeeWithTooltip = ( {
 				isLabel={ true }
 				label={ getFeeLabel( fee ) }
 				tooltipText={ tooltipText }
-				tooltipLabel={
+				tooltipLabel={ tooltipText &&
 					<Dashicon
 						className="tribe-editor__ticket__tooltip-label"
 						icon="info-outline"
