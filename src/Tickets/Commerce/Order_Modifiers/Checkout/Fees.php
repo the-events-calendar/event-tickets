@@ -35,7 +35,7 @@ class Fees extends Abstract_Fees {
 	public function do_register(): void {
 		// Hook for calculating total values, setting subtotal, and modifying the total value.
 		add_filter(
-			'tec_tickets_commerce_get_cart_total_value',
+			'tec_tickets_commerce_get_cart_additional_values',
 			[ $this, 'calculate_fees' ],
 			10,
 			3
@@ -59,7 +59,7 @@ class Fees extends Abstract_Fees {
 	 */
 	public function unregister(): void {
 		remove_filter(
-			'tec_tickets_commerce_get_cart_total_value',
+			'tec_tickets_commerce_get_cart_additional_values',
 			[ $this, 'calculate_fees' ]
 		);
 

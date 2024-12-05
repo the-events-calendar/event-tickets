@@ -48,14 +48,25 @@ class Fee extends Modifier_Abstract {
 	];
 
 	/**
-	 * Constructor for the fee strategy.
+	 * Retrieves the display name of the modifier in singular form.
 	 *
 	 * @since TBD
+	 *
+	 * @return string The display name of the modifier.
 	 */
-	public function __construct() {
-		parent::__construct( $this->modifier_type );
-		$this->modifier_display_name        = __( 'Fee', 'event-tickets' );
-		$this->modifier_display_name_plural = __( 'Fees', 'event-tickets' );
+	public function get_singular_name(): string {
+		return __( 'Fee', 'event-tickets' );
+	}
+
+	/**
+	 * Retrieves the display name of the modifier in plural form.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The display name of the modifier.
+	 */
+	public function get_plural_name(): string {
+		return __( 'Fees', 'event-tickets' );
 	}
 
 	/**
@@ -96,11 +107,8 @@ class Fee extends Modifier_Abstract {
 				break;
 		}
 
-		// Ensure that $apply_to_post_id is an array for consistency.
-		$apply_to_post_ids = $apply_to_post_id ? [ $apply_to_post_id ] : [];
-
 		// Handle the relationship update, passing the relevant data.
-		$this->handle_relationship_update( [ $modifier->id ], $apply_to_post_ids );
+		$this->handle_relationship_update( [ $modifier->id ], (array) $apply_to_post_id );
 
 		return $modifier;
 	}
@@ -150,7 +158,7 @@ class Fee extends Modifier_Abstract {
 		}
 
 		// Ensure that $apply_to_post_id is an array for consistency.
-		$apply_to_post_ids = is_array( $apply_to_post_ids ) ? $apply_to_post_ids : [ $apply_to_post_ids ];
+		$apply_to_post_ids = (array) $apply_to_post_ids;
 
 		// Handle the relationship update, passing the relevant data.
 		$this->handle_relationship_update( [ $modifier->id ], $apply_to_post_ids );

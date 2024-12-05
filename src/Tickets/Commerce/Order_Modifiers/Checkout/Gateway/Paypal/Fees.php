@@ -45,7 +45,7 @@ class Fees extends Abstract_Fees {
 
 		// Hook for adding fee unit data to PayPal order.
 		add_action(
-			'tec_commerce_paypal_order_get_unit_data_fee',
+			'tec_tickets_commerce_paypal_order_get_unit_data_fee',
 			[ $this, 'add_fee_unit_data_to_paypal' ],
 			10,
 			2
@@ -66,7 +66,7 @@ class Fees extends Abstract_Fees {
 		);
 
 		remove_action(
-			'tec_commerce_paypal_order_get_unit_data_fee',
+			'tec_tickets_commerce_paypal_order_get_unit_data_fee',
 			[ $this, 'add_fee_unit_data_to_paypal' ],
 		);
 	}

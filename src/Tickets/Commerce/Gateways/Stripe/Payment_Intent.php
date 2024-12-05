@@ -169,6 +169,10 @@ class Payment_Intent {
 		 */
 		$value = apply_filters( 'tec_tickets_commerce_stripe_create_from_cart', $value, $items );
 
+		if ( ! $value instanceof Value && is_numeric( $value ) ) {
+			$value = Value::create( $value );
+		}
+
 		// Ensure we have a Value object returned from the filters.
 		if ( ! $value instanceof Value ) {
 			throw new RuntimeException( esc_html__( 'Value object not returned from filter', 'event-tickets' ) );

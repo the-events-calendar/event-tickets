@@ -652,7 +652,7 @@ class Cart {
 	 *
 	 * @return float
 	 */
-	public function get_cart_subtotal() {
+	public function get_cart_subtotal(): float {
 		return $this->get_repository()->get_cart_subtotal();
 	}
 }

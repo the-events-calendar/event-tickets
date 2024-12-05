@@ -501,7 +501,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 	}
 
 	/**
-	 * Resets the fees state and recalculates the subtotal to zero.
+	 * Resets the fees state and resets the subtotal to zero.
 	 *
 	 * This method clears the flag indicating that fees have been appended
 	 * and resets the subtotal to its default value of zero.

@@ -141,7 +141,7 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	protected function register_assets() {
+	protected function register_assets(): void {
 		Asset::add(
 			'order-modifiers-fees-js',
 			'admin/order-modifiers/fees.js',

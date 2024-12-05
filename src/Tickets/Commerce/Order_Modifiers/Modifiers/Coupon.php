@@ -48,14 +48,25 @@ class Coupon extends Modifier_Abstract {
 	];
 
 	/**
-	 * Constructor for the Coupon strategy.
+	 * Retrieves the display name of the modifier in singular form.
 	 *
 	 * @since TBD
+	 *
+	 * @return string The display name of the modifier.
 	 */
-	public function __construct() {
-		parent::__construct( $this->modifier_type );
-		$this->modifier_display_name        = __( 'Coupon', 'event-tickets' );
-		$this->modifier_display_name_plural = __( 'Coupons', 'event-tickets' );
+	public function get_singular_name(): string {
+		return __( 'Coupon', 'event-tickets' );
+	}
+
+	/**
+	 * Retrieves the display name of the modifier in plural form.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The display name of the modifier.
+	 */
+	public function get_plural_name(): string {
+		return __( 'Coupons', 'event-tickets' );
 	}
 
 	/**

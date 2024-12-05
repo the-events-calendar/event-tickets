@@ -91,39 +91,12 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	protected array $required_fields = [];
 
 	/**
-	 * The human-readable display name of the modifier.
-	 *
-	 * This is used to represent the modifier in UI elements or other
-	 * contexts where a readable name is required.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public string $modifier_display_name = '';
-
-	/**
-	 * The human-readable plural display name of the modifier.
-	 *
-	 * This is used to represent the modifier in UI elements or other
-	 * contexts where a plural readable name is required.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public string $modifier_display_name_plural = '';
-
-	/**
 	 * Constructor to set up the repository and modifier type.
 	 *
 	 * @since TBD
-	 *
-	 * @param string $modifier_type The modifier type (e.g., 'coupon', 'fee').
 	 */
-	public function __construct( string $modifier_type ) {
-		$this->modifier_type                           = $modifier_type;
-		$this->repository                              = new Order_Modifiers_Repository( $modifier_type );
+	public function __construct() {
+		$this->repository                              = new Order_Modifiers_Repository( $this->modifier_type );
 		$this->order_modifiers_meta_repository         = new Order_Modifiers_Meta_Repository();
 		$this->order_modifiers_relationship_repository = new Order_Modifier_Relationship_Repository();
 	}
@@ -588,14 +561,32 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return string The display name of the modifier.
 	 */
 	public function get_modifier_display_name( bool $plural = false ): string {
-		// If plural is requested and a plural form is set, return the plural display name.
-		if ( $plural && ! empty( $this->modifier_display_name_plural ) ) {
-			return $this->modifier_display_name_plural;
-		}
-
-		// Return singular form by default.
-		return $this->modifier_display_name;
+		return $plural ? $this->get_plural_name() : $this->get_singular_name();
 	}
+
+	/**
+	 * Retrieves the singular name of the modifier.
+	 *
+	 * This method should be implemented by concrete classes to provide the singular name
+	 * of the modifier (e.g., 'Coupon', 'Fee').
+	 *
+	 * @since TBD
+	 *
+	 * @return string The singular name of the modifier.
+	 */
+	abstract protected function get_singular_name(): string;
+
+	/**
+	 * Retrieves the plural name of the modifier.
+	 *
+	 * This method should be implemented by concrete classes to provide the plural name
+	 * of the modifier (e.g., 'Coupons', 'Fees').
+	 *
+	 * @since TBD
+	 *
+	 * @return string The plural name of the modifier.
+	 */
+	abstract protected function get_plural_name(): string;
 
 	/**
 	 * Clears relationships if the apply_type has changed.

@@ -202,12 +202,20 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				 *
 				 * @return array The unit data for the item.
 				 */
-				$unit_data = apply_filters( "tec_commerce_paypal_order_get_unit_data_{$type}", $item, $order );
+				$unit_data = apply_filters( "tec_tickets_commerce_paypal_order_get_unit_data_{$type}", $item, $order );
 				break;
 		}
 
-		// Apply overarching filter for any further customization of the returned data.
-		return apply_filters( 'tec_commerce_paypal_order_get_unit_data', $unit_data, $item, $order );
+		/**
+		 * Filters the unit data for an item in REST context.
+		 *
+		 * @since TBD
+		 *
+		 * @param array   $unit_data The structured data for the item.
+		 * @param array   $item      The order item for which the unit data is being generated.
+		 * @param WP_Post $order     The current order object.
+		 */
+		return apply_filters( 'tec_tickets_commerce_paypal_order_get_unit_data', $unit_data, $item, $order );
 	}
 
 	/**

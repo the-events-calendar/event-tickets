@@ -124,7 +124,7 @@ class Fees extends Abstract_Fees {
 	 * Adds fee metadata to the Stripe payment intent.
 	 *
 	 * This method processes the fee items in the order and adds them as a string
-	 * to the 'fees' metadata field for Stripe. The format of the string is "FeeName: Price".
+	 * to the 'fees' metadata field for Stripe. The format of the string is "Fee Name (Quantity): Price".
 	 *
 	 * @since TBD
 	 *
