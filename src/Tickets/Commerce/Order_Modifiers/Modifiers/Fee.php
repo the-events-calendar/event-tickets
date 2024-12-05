@@ -56,8 +56,19 @@ class Fee extends Modifier_Abstract {
 	 *
 	 * @return string The display name of the modifier.
 	 */
-	public function get_modifier_display_name( bool $plural = false ): string {
-		return _n( 'Fee', 'Fees', ( (int) $plural ) + 1, 'event-tickets' );
+	public function get_singular_name(): string {
+		return __( 'Fee', 'event-tickets' );
+	}
+
+	/**
+	 * Retrieves the display name of the modifier in singular or plural form.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The display name of the modifier.
+	 */
+	public function get_plural_name(): string {
+		return __( 'Fees', 'event-tickets' );
 	}
 
 	/**

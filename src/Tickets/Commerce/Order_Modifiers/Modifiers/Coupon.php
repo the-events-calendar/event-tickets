@@ -56,8 +56,19 @@ class Coupon extends Modifier_Abstract {
 	 *
 	 * @return string The display name of the modifier.
 	 */
-	public function get_modifier_display_name( bool $plural = false ): string {
-		return _n( 'Coupon', 'Coupons', ( (int) $plural ) + 1, 'event-tickets' );
+	public function get_singular_name(): string {
+		return __( 'Coupon', 'event-tickets' );
+	}
+
+	/**
+	 * Retrieves the display name of the modifier in singular or plural form.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The display name of the modifier.
+	 */
+	public function get_plural_name(): string {
+		return __( 'Coupons', 'event-tickets' );
 	}
 
 	/**
