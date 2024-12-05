@@ -1036,7 +1036,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * @return bool
 			 */
-			return apply_filters( 'tec_tickets_attendee_decreases_inventory', (bool) $this->attendee_decreases_inventory( $attendee ), $attendee );
+			return (bool) apply_filters( 'tec_tickets_attendee_decreases_inventory', $this->attendee_decreases_inventory( $attendee ), $attendee );
 		}
 
 		/**
