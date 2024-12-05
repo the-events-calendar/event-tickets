@@ -670,7 +670,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				}
 
 				// allow providers to decide if an attendee will count toward inventory decrease or not
-				if ( ! $provider->attendee_decreases_inventory( $attendee ) ) {
+				if ( ! $provider->should_attendee_decrease_inventory( $attendee ) ) {
 					continue;
 				}
 
@@ -702,7 +702,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 					if (
 						! $attendee_ticket_stock->is_enabled()
 						|| empty( $attendee_ticket_stock_mode )
-						|| ! $provider->attendee_decreases_inventory( $attendee )
+						|| ! $provider->should_attendee_decrease_inventory( $attendee )
 						|| Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $attendee_ticket_stock_mode
 					) {
 						continue;
