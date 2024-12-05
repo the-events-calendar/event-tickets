@@ -52,7 +52,7 @@ const {
 jest.mock( '@wordpress/data', () => {
 	return {
 		select: ( key ) => {
-			if ( key === 'core/editor' ) {
+			if ( key === 'core/block-editor' ) {
 				return {
 					getBlockCount: () => {},
 					getBlockIndex: () => 0,
@@ -327,7 +327,7 @@ describe( 'Ticket Block sagas', () => {
 				call( wpDispatch, 'core/editor' ),
 			);
 			expect( gen.next( wpDispatchCoreEditor ).value ).toEqual(
-				call( wpSelect, 'core/editor' ),
+				call( wpSelect, 'core/block-editor' ),
 			);
 			expect( gen.next( wpSelectCoreEditor ).value ).toMatchSnapshot();
 			expect( gen.next( [] ).done ).toEqual( true );

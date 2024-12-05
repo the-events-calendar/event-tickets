@@ -28,9 +28,9 @@ class Price extends PureComponent {
 		currencySymbol: PropTypes.string,
 		currencyThousandsSep: PropTypes.string,
 		isDisabled: PropTypes.bool,
-		minDefaultPrice: PropTypes.string,
+		minDefaultPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 		onTempPriceChange: PropTypes.func.isRequired,
-		tempPrice: PropTypes.string,
+		tempPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 		showSalePrice: PropTypes.bool,
 		clientId: PropTypes.string,
 	};

@@ -25,10 +25,24 @@ import './style.pcss';
 const SettingsDashboard = ( {
 	className,
 	closeButtonDisabled,
-	closeButtonLabel,
+	closeButtonLabel = (
+		<Fragment>
+			<CloseIcon />
+			<span className="tribe-editor__settings-dashboard__close-button-text">
+				{ __( 'close', 'event-tickets' ) }
+			</span>
+		</Fragment>
+	),
 	content,
-	headerLeft,
-	onCloseClick,
+	headerLeft = (
+		<Fragment>
+			<SettingsIcon />
+			<span className="tribe-editor__settings-dashboard__header-left-text">
+				{ __( 'Ticket Settings', 'event-tickets' ) }
+			</span>
+		</Fragment>
+	),
+	onCloseClick = noop,
 } ) => (
 	<Card className={ classNames(
 		'tribe-editor__settings-dashboard',
@@ -51,26 +65,6 @@ const SettingsDashboard = ( {
 		</div>
 	</Card>
 );
-
-SettingsDashboard.defaultProps = {
-	closeButtonLabel: (
-		<Fragment>
-			<CloseIcon />
-			<span className="tribe-editor__settings-dashboard__close-button-text">
-				{ __( 'close', 'event-tickets' ) }
-			</span>
-		</Fragment>
-	),
-	headerLeft: (
-		<Fragment>
-			<SettingsIcon />
-			<span className="tribe-editor__settings-dashboard__header-left-text">
-				{ __( 'Ticket Settings', 'event-tickets' ) }
-			</span>
-		</Fragment>
-	),
-	onCloseClick: noop,
-};
 
 SettingsDashboard.propTypes = {
 	className: PropTypes.string,

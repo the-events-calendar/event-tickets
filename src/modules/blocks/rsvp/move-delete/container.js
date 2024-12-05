@@ -47,7 +47,7 @@ const mergeProps = ( stateProps, dispatchProps, ownProps ) => {
 				if ( stateProps.created && stateProps.rsvpId ) {
 					dispatch( thunks.deleteRSVP( stateProps.rsvpId ) );
 				}
-				wpDispatch( 'core/editor' ).removeBlocks( [ ownProps.clientId ] );
+				wpDispatch( 'core/block-editor' ).removeBlocks( [ ownProps.clientId ] );
 			}
 		},
 		moveRSVP: () => dispatchProps.moveRSVP( stateProps.rsvpId ),

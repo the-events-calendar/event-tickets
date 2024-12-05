@@ -18,6 +18,12 @@ import { Input, LabeledItem } from '@moderntribe/common/elements';
 import './styles.pcss';
 
 class Description extends PureComponent {
+	static defaultProps = {
+		isDisabled: false,
+		onTempDescriptionChange: () => {},
+		tempDescription: '',
+	};
+
 	static propTypes = {
 		isDisabled: PropTypes.bool,
 		onTempDescriptionChange: PropTypes.func.isRequired,

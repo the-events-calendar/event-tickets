@@ -56,10 +56,11 @@ class Capacity extends PureComponent {
 	static propTypes = {
 		hasTicketsPlus: PropTypes.bool,
 		isDisabled: PropTypes.bool,
-		sharedCapacity: PropTypes.string,
-		tempCapacity: PropTypes.string,
+		sharedCapacity: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+		tempCapacity: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 		tempCapacityType: PropTypes.string,
-		tempCapacityTypeOption: ReactSelectOption,
+		// Default value, when the Ticket has just been created is an empty object: take that into account.
+		tempCapacityTypeOption: PropTypes.oneOfType([ ReactSelectOption, PropTypes.object ]),
 		tempSharedCapacity: PropTypes.string,
 		onTempCapacityChange: PropTypes.func,
 		onTempCapacityNoPlusChange: PropTypes.func,
@@ -67,6 +68,10 @@ class Capacity extends PureComponent {
 		onTempSharedCapacityChange: PropTypes.func,
 		ticketProvider: PropTypes.string,
 	};
+
+	static defaultProps = {
+		tempCapacityTypeOption: []
+	}
 
 	constructor( props ) {
 		super( props );
@@ -117,7 +122,7 @@ class Capacity extends PureComponent {
 					) }
 					id={ this.ids.sharedCapacity }
 					label={ __( 'Set shared capacity:', 'event-tickets' ) }
-					value={ tempSharedCapacity }
+					value={ tempSharedCapacity ?? '' }
 					onChange={ handleTempSharedCapacityChange }
 					disabled={ isDisabled }
 					min={ 0 }
@@ -169,7 +174,7 @@ class Capacity extends PureComponent {
 						`tribe-editor__ticket__capacity-input-row--capacity-${ ticketType }`,
 					) }
 					id={ this.ids.capacity }
-					value={ tempCapacity }
+					value={ tempCapacity ?? '' }
 					onChange={ ( e ) => handleTempCapacityChange( e, extraProps?.max ) }
 					disabled={ isDisabled }
 					min={ 0 }
@@ -217,7 +222,7 @@ class Capacity extends PureComponent {
 				<NumberInput
 					className="tribe-editor__ticket__capacity-input"
 					id={ this.ids.capacity }
-					value={ tempCapacity }
+					value={ tempCapacity ?? '' }
 					onChange={ onTempCapacityNoPlusChange }
 					disabled={ isDisabled }
 					min={ 0 }

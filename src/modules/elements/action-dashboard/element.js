@@ -19,10 +19,10 @@ const ActionDashboard = ( {
 	confirmLabel,
 	isCancelDisabled,
 	isConfirmDisabled,
-	onCancelClick,
-	onConfirmClick,
-	showCancel,
-	showConfirm,
+	onCancelClick = noop,
+	onConfirmClick = noop,
+	showCancel = true,
+	showConfirm = true,
 } ) => {
 	const actionsList = ( actions && !! actions.length ) && (
 		<div className="tribe-editor__action-dashboard__group-left">
@@ -81,13 +81,6 @@ const ActionDashboard = ( {
 			{ groupRight }
 		</section>
 	);
-};
-
-ActionDashboard.defaultProps = {
-	showCancel: true,
-	showConfirm: true,
-	onCancelClick: noop,
-	onConfirmClick: noop,
 };
 
 ActionDashboard.propTypes = {

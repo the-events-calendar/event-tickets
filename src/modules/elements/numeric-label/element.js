@@ -26,13 +26,13 @@ import classNames from 'classnames';
  * @returns {*} return fallback if count is zero or negative otherwise singular or plural
  */
 const NumericLabel = ( {
-	className,
-	count,
-	includeZero,
-	singular,
-	plural,
-	fallback,
-	useFallback,
+	className = '',
+	count = 0,
+	includeZero = false,
+	singular = '',
+	plural = '',
+	fallback = null,
+	useFallback = true,
 } ) => {
 	if (
 		useFallback &&
@@ -67,16 +67,6 @@ NumericLabel.propTypes = {
 	plural: PropTypes.string,
 	useFallback: PropTypes.any,
 	fallback: PropTypes.any,
-};
-
-NumericLabel.defaultProps = {
-	count: 0,
-	includeZero: false,
-	singular: '',
-	plural: '',
-	className: '',
-	fallback: null,
-	useFallback: true,
 };
 
 export default NumericLabel;

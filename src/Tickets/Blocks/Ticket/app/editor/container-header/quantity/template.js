@@ -21,10 +21,10 @@ const TicketContainerHeaderDescription = ( {
 	isSelected,
 	isShared,
 	isUnlimited,
-	sold,
-	capacity,
+	sold = 0,
+	capacity = 0,
 	sharedSold,
-	sharedCapacity,
+	sharedCapacity = 0,
 } ) => {
 	const total = isShared ? sharedCapacity : capacity;
 
@@ -74,12 +74,6 @@ TicketContainerHeaderDescription.propTypes = {
 	capacity: PropTypes.number,
 	sharedSold: PropTypes.number,
 	sharedCapacity: PropTypes.number,
-};
-
-TicketContainerHeaderDescription.defaultProps = {
-	sold: 0,
-	sharedCapacity: 0,
-	capacity: 0,
 };
 
 export default TicketContainerHeaderDescription;

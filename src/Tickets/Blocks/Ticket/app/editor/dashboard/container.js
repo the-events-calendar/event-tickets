@@ -86,10 +86,9 @@ const onCancelClick = ( state, dispatch, ownProps ) => () => {
 		dispatch( actions.setTicketHasChanges( ownProps.clientId, false ) );
 	} else {
 		dispatch( actions.removeTicketBlock( ownProps.clientId ) );
-		wpDispatch( 'core/editor' ).removeBlocks( ownProps.clientId );
+		wpDispatch( 'core/block-editor' ).removeBlocks( ownProps.clientId );
 	}
-	wpDispatch( 'core/editor' ).clearSelectedBlock();
-};
+	wpDispatch( 'core/block-editor' ).clearSelectedBlock(); };
 
 const onConfirmClick = ( state, dispatch, ownProps ) => () => (
 	selectors.getTicketHasBeenCreated( state, ownProps )
