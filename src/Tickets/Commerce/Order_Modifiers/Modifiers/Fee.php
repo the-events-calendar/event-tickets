@@ -48,14 +48,16 @@ class Fee extends Modifier_Abstract {
 	];
 
 	/**
-	 * Constructor for the fee strategy.
+	 * Retrieves the display name of the modifier in singular or plural form.
 	 *
 	 * @since TBD
+	 *
+	 * @param bool $plural Whether to return the plural form. Defaults to false (singular).
+	 *
+	 * @return string The display name of the modifier.
 	 */
-	public function __construct() {
-		parent::__construct( $this->modifier_type );
-		$this->modifier_display_name        = __( 'Fee', 'event-tickets' );
-		$this->modifier_display_name_plural = __( 'Fees', 'event-tickets' );
+	public function get_modifier_display_name( bool $plural = false ): string {
+		return _n( 'Fee', 'Fees', ( (int) $plural ) + 1, 'event-tickets' );
 	}
 
 	/**
