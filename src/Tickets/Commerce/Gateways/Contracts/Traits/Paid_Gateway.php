@@ -20,7 +20,7 @@ trait Paid_Gateway {
 	 *
 	 * @return bool Whether the gateway should be shown as an available gateway.
 	 */
-	public static function should_show():bool {
+	public static function should_show(): bool {
 		if ( is_admin() ) {
 			return true;
 		}
