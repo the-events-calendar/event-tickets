@@ -48,7 +48,7 @@ class Coupon extends Modifier_Abstract {
 	];
 
 	/**
-	 * Retrieves the display name of the modifier in singular or plural form.
+	 * Retrieves the display name of the modifier in singular form.
 	 *
 	 * @since TBD
 	 *
