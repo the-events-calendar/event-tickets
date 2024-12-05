@@ -34,31 +34,6 @@ final class Editor extends Controller_Contract {
 	 * @return void
 	 */
 	protected function do_register(): void {
-		/*
-		 * This is a workaround to avoid the following error:
-		 *
-		 * ReferenceError: Can't find variable: tec
-		 *
-		 * This error is caused by webpack trying to map the tec.tickets.orderModifiers.rest object
-		 * before is has been initialized in the browser. It's not yet known why this is happening.
-		 *
-		 * @todo: remove this workaround once the issue is fixed.
-		 */
-		add_action(
-			'admin_enqueue_scripts',
-			function () {
-				?>
-				<script type="text/javascript">
-					( function () {
-						window.tec = window.tec || {};
-						window.tec.tickets = window.tec.tickets || {};
-						window.tec.tickets.orderModifiers = window.tec.tickets.orderModifiers || {};
-						window.tec.tickets.orderModifiers.rest = window.tec.tickets.orderModifiers.rest || {};
-					} )();
-				</script>
-				<?php
-			}
-		);
 		$this->register_block_editor_assets();
 	}
 
