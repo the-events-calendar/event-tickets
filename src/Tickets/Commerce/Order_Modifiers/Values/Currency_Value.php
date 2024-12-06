@@ -16,10 +16,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Traits\Stringify;
  *
  * @since TBD
  */
-class Currency_Value implements Value_Interface {
-
-	use Stringify;
-
+class Currency_Value extends Base_Value {
 	/**
 	 * The value.
 	 *
@@ -259,4 +256,9 @@ class Currency_Value implements Value_Interface {
 			$this->currency_symbol_position
 		);
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	protected function validate( $value ): void {}
 }

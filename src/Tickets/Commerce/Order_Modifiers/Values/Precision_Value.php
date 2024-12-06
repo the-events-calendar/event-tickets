@@ -22,10 +22,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Values\Positive_Integer_Value as Positi
  *
  * @since TBD
  */
-class Precision_Value implements Value_Interface {
-
-	use Stringify;
-
+class Precision_Value extends Base_Value {
 	/**
 	 * The value.
 	 *
@@ -222,5 +219,12 @@ class Precision_Value implements Value_Interface {
 		if ( $this->precision->get() > $this->max_precision ) {
 			throw new InvalidArgumentException( sprintf( 'Precision cannot be greater than %d', $this->max_precision ) );
 		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	protected function validate( $value ): void {
+		$this->validate_precision();
 	}
 }
