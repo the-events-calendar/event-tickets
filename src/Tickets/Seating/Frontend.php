@@ -232,13 +232,14 @@ class Frontend extends Controller_Contract {
 
 			$seat_type = get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true );
 
+			$stock = $ticket->stock();
 			if ( empty( $available[ $seat_type ] ) ) {
 				// The array's keys are the seating types. In order for us to calculate the stock per type and NOT per ticket.
-				$available[ $seat_type ] = $ticket->stock();
+				$available[ $seat_type ] = $stock;
 				continue;
 			}
 
-			$available[ $seat_type ] = $available[ $seat_type ] < $ticket->stock() ? $available[ $seat_type ] : $ticket->stock();
+			$available[ $seat_type ] = $available[ $seat_type ] < $stock ? $available[ $seat_type ] : $stock;
 		}
 
 		if ( empty( $available ) ) {
