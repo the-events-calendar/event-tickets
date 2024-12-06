@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Emails\JSON_LD;
 
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Traits\Is_Ticket;
 use TEC\Tickets\Emails\Email_Abstract;
 
 /**
@@ -13,6 +14,8 @@ use TEC\Tickets\Emails\Email_Abstract;
  * @pacakge TEC\Tickets\Emails\JSON_LD
  */
 class Order_Schema extends JSON_LD_Abstract {
+
+	use Is_Ticket;
 
 	/**
 	 * The type of the schema.
@@ -76,7 +79,12 @@ class Order_Schema extends JSON_LD_Abstract {
 		];
 
 		// Add order items.
-		foreach ( $order->items as $ticket_id => $item ) {
+		foreach ( $order->items as $item ) {
+			if ( ! $this->is_ticket( $item ) ) {
+				continue;
+			}
+
+			$ticket_id               = $item['ticket_id'];
 			$ticket                  = tec_tc_get_ticket( $ticket_id );
 			$data['acceptedOffer'][] = [
 				'@type'            => 'Offer',

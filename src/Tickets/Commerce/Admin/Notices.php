@@ -20,6 +20,9 @@ class Notices extends Service_Provider {
 	 * @inheritdoc
 	 */
 	public function register() {
+		if ( ! is_admin() ) {
+			return;
+		}
 
 		$notices = [
 			[

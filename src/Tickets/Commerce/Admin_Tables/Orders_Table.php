@@ -13,14 +13,12 @@ use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Gateways\Free\Gateway as Free_Gateway;
 use TEC\Tickets\Commerce\Order;
-use TEC\Tickets\Commerce\Status\Refunded;
-use TEC\Tickets\Commerce\Status\Reversed;
+use TEC\Tickets\Commerce\Traits\Is_Ticket;
 use Tribe__Date_Utils;
 use WP_Post;
 use WP_User;
 use Tribe__Tickets__Tickets;
 use WP_Posts_List_Table;
-use TEC\Tickets\Commerce\Utils\Value;
 
 if ( ! class_exists( 'WP_List_Table' ) || ! class_exists( 'WP_Posts_List_Table' ) ) {
 	require_once ABSPATH . 'wp-admin/includes/screen.php';
@@ -34,6 +32,8 @@ if ( ! class_exists( 'WP_List_Table' ) || ! class_exists( 'WP_Posts_List_Table' 
  * @since 5.13.0
  */
 class Orders_Table extends WP_Posts_List_Table {
+
+	use Is_Ticket;
 
 	/**
 	 * The current post ID
@@ -449,6 +449,11 @@ class Orders_Table extends WP_Posts_List_Table {
 		}
 
 		foreach ( $item->items as $cart_item ) {
+			// Check if 'type' exists and proceed only if it's empty or equals 'ticket'.
+			if ( ! $this->is_ticket( $cart_item ) ) {
+				continue;
+			}
+
 			$ticket   = Tribe__Tickets__Tickets::load_ticket_object( $cart_item['ticket_id'] );
 			$quantity = esc_html( (int) $cart_item['quantity'] );
 

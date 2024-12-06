@@ -1,0 +1,230 @@
+[
+    {
+        "code": "rest_invalid_param",
+        "message": "Invalid parameter(s): selected_fees",
+        "data": {
+            "status": 400,
+            "params": {
+                "selected_fees": "selected_fees[2] is not of type integer."
+            },
+            "details": {
+                "selected_fees": {
+                    "code": "rest_invalid_type",
+                    "message": "selected_fees[2] is not of type integer.",
+                    "data": {
+                        "param": "selected_fees[2]"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "code": "rest_invalid_param",
+        "message": "Invalid parameter(s): selected_fees",
+        "data": {
+            "status": 400,
+            "params": {
+                "selected_fees": "selected_fees[2] is not of type integer."
+            },
+            "details": {
+                "selected_fees": {
+                    "code": "rest_invalid_type",
+                    "message": "selected_fees[2] is not of type integer.",
+                    "data": {
+                        "param": "selected_fees[2]"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "code": "rest_invalid_param",
+        "message": "Invalid parameter(s): selected_fees",
+        "data": {
+            "status": 400,
+            "params": {
+                "selected_fees": "selected_fees[2] is not of type integer."
+            },
+            "details": {
+                "selected_fees": {
+                    "code": "rest_invalid_type",
+                    "message": "selected_fees[2] is not of type integer.",
+                    "data": {
+                        "param": "selected_fees[2]"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "code": "rest_invalid_param",
+        "message": "Invalid parameter(s): selected_fees",
+        "data": {
+            "status": 400,
+            "params": {
+                "selected_fees": "selected_fees[2] is not of type integer."
+            },
+            "details": {
+                "selected_fees": {
+                    "code": "rest_invalid_type",
+                    "message": "selected_fees[2] is not of type integer.",
+                    "data": {
+                        "param": "selected_fees[2]"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "code": "rest_invalid_param",
+        "message": "Invalid parameter(s): selected_fees",
+        "data": {
+            "status": 400,
+            "params": {
+                "selected_fees": "selected_fees[2] is not of type integer."
+            },
+            "details": {
+                "selected_fees": {
+                    "code": "rest_invalid_type",
+                    "message": "selected_fees[2] is not of type integer.",
+                    "data": {
+                        "param": "selected_fees[2]"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "code": "rest_invalid_param",
+        "message": "Invalid parameter(s): selected_fees",
+        "data": {
+            "status": 400,
+            "params": {
+                "selected_fees": "selected_fees[2] is not of type integer."
+            },
+            "details": {
+                "selected_fees": {
+                    "code": "rest_invalid_type",
+                    "message": "selected_fees[2] is not of type integer.",
+                    "data": {
+                        "param": "selected_fees[2]"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "code": "rest_invalid_param",
+        "message": "Invalid parameter(s): selected_fees",
+        "data": {
+            "status": 400,
+            "params": {
+                "selected_fees": "selected_fees[2] is not of type integer."
+            },
+            "details": {
+                "selected_fees": {
+                    "code": "rest_invalid_type",
+                    "message": "selected_fees[2] is not of type integer.",
+                    "data": {
+                        "param": "selected_fees[2]"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "code": "rest_invalid_param",
+        "message": "Invalid parameter(s): selected_fees",
+        "data": {
+            "status": 400,
+            "params": {
+                "selected_fees": "selected_fees[2] is not of type integer."
+            },
+            "details": {
+                "selected_fees": {
+                    "code": "rest_invalid_type",
+                    "message": "selected_fees[2] is not of type integer.",
+                    "data": {
+                        "param": "selected_fees[2]"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "code": "rest_invalid_param",
+        "message": "Invalid parameter(s): selected_fees",
+        "data": {
+            "status": 400,
+            "params": {
+                "selected_fees": "selected_fees[2] is not of type integer."
+            },
+            "details": {
+                "selected_fees": {
+                    "code": "rest_invalid_type",
+                    "message": "selected_fees[2] is not of type integer.",
+                    "data": {
+                        "param": "selected_fees[2]"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "code": "rest_invalid_param",
+        "message": "Invalid parameter(s): selected_fees",
+        "data": {
+            "status": 400,
+            "params": {
+                "selected_fees": "selected_fees[2] is not of type integer."
+            },
+            "details": {
+                "selected_fees": {
+                    "code": "rest_invalid_type",
+                    "message": "selected_fees[2] is not of type integer.",
+                    "data": {
+                        "param": "selected_fees[2]"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "code": "rest_invalid_param",
+        "message": "Invalid parameter(s): selected_fees",
+        "data": {
+            "status": 400,
+            "params": {
+                "selected_fees": "selected_fees[2] is not of type integer."
+            },
+            "details": {
+                "selected_fees": {
+                    "code": "rest_invalid_type",
+                    "message": "selected_fees[2] is not of type integer.",
+                    "data": {
+                        "param": "selected_fees[2]"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "code": "rest_invalid_param",
+        "message": "Invalid parameter(s): selected_fees",
+        "data": {
+            "status": 400,
+            "params": {
+                "selected_fees": "selected_fees[2] is not of type integer."
+            },
+            "details": {
+                "selected_fees": {
+                    "code": "rest_invalid_type",
+                    "message": "selected_fees[2] is not of type integer.",
+                    "data": {
+                        "param": "selected_fees[2]"
+                    }
+                }
+            }
+        }
+    }
+]

@@ -1,0 +1,99 @@
+<div class="wrap">
+	<h1>New Coupon</h1>
+	<div class="form-wrap">
+		<form method="post" action="" id="tec-settings-form" class="tribe-validation tec-settings-order_modifier">
+			<div class="tribe-settings-form-wrap">
+
+				<input type="hidden" id="order_modifier_save_action" name="order_modifier_save_action" value="1234567890" /><input type="hidden" name="_wp_http_referer" value="" />
+				<div class="form-field form-required">
+					<label for="order_modifier_coupon_name">
+						Coupon Name					</label>
+					<input
+						type="text"
+						name="order_modifier_coupon_name"
+						id="order_modifier_coupon_name"
+						maxlength="255"
+						data-validation-required="true"
+						data-validation-error="Fee Name is required"
+						value="" />
+				</div>
+
+				<div class="form-field form-required">
+					<label for="order_modifier_slug">
+						Coupon Code					</label>
+					<input
+						type="text"
+						name="order_modifier_slug"
+						id="order_modifier_slug"
+						class="tribe-field"
+						maxlength="255"
+						data-validation-required="true"
+						data-validation-error="Coupon Code is required"
+						value="fixed_slug" />
+					<p>
+						A unique code has been created for this coupon. You can override this code by replacing it with your own unique code (ex. SUMMERSAVINGS24).					</p>
+				</div>
+
+				<div class="form-field form-required">
+					<label for="order_modifier_sub_type">
+						Discount Type					</label>
+					<select name="order_modifier_sub_type" id="order_modifier_sub_type">
+						<option value="percent" >
+							Percent Off						</option>
+						<option value="flat" >
+							Flat						</option>
+					</select>
+				</div>
+
+				<div class="form-field form-required">
+					<label for="order_modifier_amount">
+						Amount					</label>
+					<input type="number" name="order_modifier_amount" id="order_modifier_amount" class="tribe-field tec_order_modifier_amount_field"
+						maxlength="9"
+						step="0.01"
+						data-validation-required="true"
+						data-validation-is-greater-than="0"
+						data-validation-error="Amount is required"
+						value="0.00" />
+				</div>
+
+				<div class="form-field form-required">
+					<label for="order_modifier_status">
+						Status					</label>
+					<select name="order_modifier_status" id="order_modifier_status">
+													<option value="active" >
+								Active							</option>
+													<option value="inactive" >
+								Inactive							</option>
+													<option value="draft" >
+								Draft							</option>
+											</select>
+				</div>
+
+				<div class="form-field form-required">
+					<label for="order_modifier_coupon_limit">
+						Coupon Limit					</label>
+					<input
+						type="number"
+						name="order_modifier_coupon_limit"
+						id="order_modifier_coupon_limit"
+						maxlength="15"
+						class="tribe-field tec_order_modifier_amount_field"
+						value="" />
+					<p>
+						Leave field blank to allow for unlimited coupon redemption.					</p>
+				</div>
+
+				<p class="submit">
+					<input
+						type="submit"
+						id="order_modifier_form_save"
+						class="button-primary"
+						name="order_modifier_form_save"
+						value="Save Coupon"
+					/>
+				</p>
+			</div>
+		</form>
+	</div>
+</div>

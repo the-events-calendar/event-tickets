@@ -119,7 +119,7 @@ class Checkout_ShortcodeTest extends WPTestCase {
 			$html
 		);
 
-		$this->assertMatchesSnapshot( $html );
+		$this->assertMatchesSnapshot( str_replace( '.min.css', '.css', $html ) );
 	}
 
 	/**

@@ -351,7 +351,7 @@ class OrderReportTest extends WPTestCase {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 
 		[ $post_id, $post_ids ] = $fixture();
-		$this->set_fn_return( 'wp_create_nonce', '1234567890' );
+		$this->set_fn_return( 'wp_create_nonce', '0987654321' );
 
 		$_GET['event_id'] = $post_id;
 		$_GET['search']   = '';
