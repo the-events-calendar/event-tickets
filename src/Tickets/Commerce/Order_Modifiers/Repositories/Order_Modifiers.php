@@ -57,7 +57,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	}
 
 	/**
-	 * Inserts a model record.
+	 * Deletes a model record.
 	 *
 	 * @since TBD
 	 *
@@ -121,7 +121,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	}
 
 	/**
-	 * Inserts a model record.
+	 * Updates a model record.
 	 *
 	 * @since TBD
 	 *
