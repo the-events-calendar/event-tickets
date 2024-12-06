@@ -114,7 +114,7 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	 * @since TBD
 	 */
 	public function do_register(): void {
-		add_action( 'tribe_events_tickets_metabox_edit_main', [ $this, 'add_fee_section' ], 30, 2 );
+		add_action( 'tribe_events_tickets_metabox_edit_main', [ $this, 'add_fee_section' ], 30, 3 );
 		add_action( 'tec_tickets_commerce_after_save_ticket', [ $this, 'save_ticket_fee' ], 10, 3 );
 		add_action( 'tec_tickets_commerce_ticket_deleted', [ $this, 'delete_ticket_fee' ] );
 		$this->register_assets();
@@ -190,10 +190,16 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	 *
 	 * @param int      $post_id The post ID of the ticket.
 	 * @param int|null $ticket_id The ticket ID.
+	 * @param string   $ticket_type The ticket type.
 	 *
 	 * @return void
 	 */
-	public function add_fee_section( int $post_id, ?int $ticket_id ): void {
+	public function add_fee_section( int $post_id, ?int $ticket_id, string $ticket_type ): void {
+		// Bail if no ticket!
+		if ( ! in_array( $ticket_type, [ 'default', 'ticket' ], true ) ) {
+			return;
+		}
+
 		$provider = Tickets::get_event_ticket_provider( $post_id );
 
 		if ( Module::class !== $provider ) {

@@ -11,7 +11,7 @@
 			name="ticket_price"
 			class="ticket_field ticket_form_right"
 			size="7"
-			value="10"
+			value=""
 								/>
 					<p class="description ticket_form_right">
 				Leave blank for free Ticket			</p>
@@ -93,7 +93,7 @@
 		name='tribe-ticket[capacity]'
 		class="ticket_field tribe-rsvp-field-capacity ticket_form_right"
 		size='7'
-		value='100'
+		value=''
 	/>
 	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
 </div>
@@ -133,47 +133,7 @@
 		name='tribe-ticket[capacity]'
 		class="ticket_field tribe-tpp-field-capacity ticket_form_right"
 		size='7'
-		value='100'
+		value=''
 	/>
 	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
 </div>
-
-<div class="input_block" id="ticket_order_modifier_ticket_fees">
-	<label class="ticket_form_label ticket_form_left" for="ticket_fees">
-		Ticket Fees:	</label>
-	<div class="ticket_form_right">
-
-		
-			<!-- Display automatically applied fees if meta_value is 'all' or empty -->
-							<div class="automatic-fees">
-					<strong>The following fees will be automatically applied:</strong>
-					<ul>
-													<li>test fee 2</li>
-											</ul>
-				</div>
-			
-			<!-- Display checkboxes for fees that are not 'all' -->
-							<div class="selectable-fees">
-					<select
-						class="tribe-dropdown"
-						name="ticket_order_modifier_fees[]"
-						id="ticket_order_modifier_fees"
-						multiple
-						data-placeholder="Select fees..."
-						data-search-placeholder="Search fees..."
-						data-allow-clear="true"
-						data-width="resolve"
-					>
-						<option value="">Select fees</option>
-
-													<option
-								value="{FEE_ID}"  selected='selected'>
-								test fee 1							</option>
-											</select>
-				</div>
-			
-		
-	</div>
-</div>
-
-

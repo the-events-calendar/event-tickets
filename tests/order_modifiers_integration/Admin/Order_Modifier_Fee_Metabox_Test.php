@@ -132,11 +132,43 @@ class Order_Modifier_Fee_Metabox_Test extends Controller_Test_Case {
 
 		$fee_id = $this->create_fee_for_ticket( $ticket, [ 'raw_amount' => 5.27 ] );
 
+		$this->create_fee_for_all( [ 'raw_amount' => 3.26 ] );
+
 		$this->make_controller()->register();
 
 		ob_start();
-		do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, $ticket );
+		do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, $ticket, 'default' );
 		$this->assertMatchesHtmlSnapshot( str_replace( $fee_id, '{FEE_ID}', ob_get_clean() ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_add_fee_section_for_fresh_ticket() {
+		$post_id = self::factory()->post->create();
+
+		$this->create_fee_for_all( [ 'raw_amount' => 3.26 ] );
+
+		$this->make_controller()->register();
+
+		ob_start();
+		do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, null, 'ticket' );
+		$this->assertMatchesHtmlSnapshot( ob_get_clean() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_add_fee_section_for_anything_other_than_ticket() {
+		$post_id = self::factory()->post->create();
+
+		$this->create_fee_for_all( [ 'raw_amount' => 3.26 ] );
+
+		$this->make_controller()->register();
+
+		ob_start();
+		do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, null, 'rsvp' );
+		$this->assertMatchesHtmlSnapshot( ob_get_clean() );
 	}
 
 	/**
