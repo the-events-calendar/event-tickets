@@ -22,6 +22,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
  */
 class Ticket {
 	use Is_Ticket;
+
 	/**
 	 * Tickets Commerce Ticket Post Type slug.
 	 *

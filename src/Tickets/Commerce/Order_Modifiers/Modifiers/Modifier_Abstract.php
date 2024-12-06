@@ -38,7 +38,6 @@ use TEC\Tickets\Commerce\Order_Modifiers\Values\Float_Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Percent_Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Positive_Integer_Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
-use Tribe__Tickets__Commerce__Currency as Currency;
 
 /**
  * Class Modifier_Abstract

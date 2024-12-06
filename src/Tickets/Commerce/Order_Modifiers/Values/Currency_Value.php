@@ -251,7 +251,14 @@ class Currency_Value extends Base_Value {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Validate that the value is valid.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $value The value to validate.
+	 *
+	 * @return void
+	 * @throws InvalidArgumentException When the value is not valid.
 	 */
 	protected function validate( $value ): void {}
 }
