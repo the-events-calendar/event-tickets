@@ -249,7 +249,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 * @return void
 	 */
 	public function render_tabs(): void {
-		$modifiers = $this->get_modifiers();
+		$modifiers = self::get_modifier_types();
 
 		// If we don't have multiple modifiers, don't render tabs.
 		if ( count( $modifiers ) < 2 ) {

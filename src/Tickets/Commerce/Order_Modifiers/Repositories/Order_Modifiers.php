@@ -210,7 +210,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 
 		// Add search functionality (search in display_name or slug).
 		if ( ! empty( $args['search_term'] ) ) {
-			$query = $query->whereLike( 'display_name', $args['search_term'] );
+			$query = $query->whereLike( 'display_name', DB::esc_like( $args['search_term'] ) );
 		}
 
 		// Add ordering.

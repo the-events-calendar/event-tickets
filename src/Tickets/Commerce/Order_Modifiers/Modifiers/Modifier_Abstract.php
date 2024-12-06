@@ -147,22 +147,22 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	}
 
 	/**
-	 * Retrieves the modifier by its ID.
+	 * Retrieves modifier data by ID.
 	 *
 	 * @since TBD
 	 *
 	 * @param int    $modifier_id The modifier ID.
-	 * @param string $modifier_type The modifier type.
+	 *
 	 *
 	 * @return array|null The modifier data or null if not found.
 	 */
-	public function get_modifier_by_id( int $modifier_id, string $modifier_type ): ?array {
+	public function get_modifier_by_id( int $modifier_id ): ?array {
 		$modifier_data = $this->repository->find_by_id( $modifier_id );
 		return $modifier_data ? $modifier_data->to_array() : null;
 	}
 
 	/**
-	 * Finds a modifier by its slug.
+	 * Finds a modifier by its display name.
 	 *
 	 * @since TBD
 	 *
@@ -399,9 +399,9 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	public function get_status_display( string $status ): string {
 		// Default conversion.
 		$statuses = [
-			'active'   => __( 'Active', 'event-tickets' ),
-			'inactive' => __( 'Inactive', 'event-tickets' ),
-			'draft'    => __( 'Draft', 'event-tickets' ),
+			'active'   => _x( 'Active', 'Order modifier status', 'event-tickets' ),
+			'inactive' => _x( 'Inactive', 'Order modifier status', 'event-tickets' ),
+			'draft'    => _x( 'Draft', 'Order modifier status', 'event-tickets' ),
 		];
 
 		/**
@@ -417,7 +417,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		 */
 		$statuses = apply_filters( 'tec_tickets_commerce_order_modifier_status_display', $statuses, $status, $this->modifier_type );
 
-		return $statuses[ $status ] ?? ucfirst( $status );
+		return $statuses[ $status ] ?? $status;
 	}
 
 	/**
@@ -617,10 +617,10 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 			return false;
 		}
 
-		// Clear relationships associated with the modifier (optional).
+		// Clear relationships associated with the modifier.
 		$this->delete_relationship_by_modifier( $modifier_id );
 
-		// Delete associated meta data (optional).
+		// Delete associated meta data.
 		$this->order_modifiers_meta_repository->delete( new Order_Modifier_Meta( [ 'id' => $modifier_id ] ) );
 
 		// Delete the modifier itself (mandatory).
