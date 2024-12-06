@@ -313,7 +313,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 			'<h3>%s <a href="%s" class="page-title-action button">%s</a></h3>',
 			esc_html( $modifier ),
 			esc_url( $add_new_url ),
-			esc_html__( 'Add New', 'event-tickets' )
+			esc_html_x( 'Add New', 'Add New Order modifier link text', 'event-tickets' )
 		);
 	}
 
