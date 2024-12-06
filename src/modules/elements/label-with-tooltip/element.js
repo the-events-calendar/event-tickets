@@ -22,6 +22,7 @@ const LabelWithTooltip = ( {
 	tooltipLabel,
 	tooltipPosition,
 	tooltipText,
+	delay,
 } ) => (
 	<LabeledItem
 		className={ classNames( 'tribe-editor__label-with-tooltip', className ) }
@@ -29,7 +30,7 @@ const LabelWithTooltip = ( {
 		isLabel={ isLabel }
 		label={ label }
 	>
-		<Tooltip text={ tooltipText } position={ tooltipPosition }>
+		<Tooltip text={ tooltipText } placement={ tooltipPosition } delay={ delay }>
 			<button
 				aria-label={ tooltipText }
 				className={ classNames( 'tribe-editor__tooltip-label', 'tribe-editor__label-with-tooltip__tooltip-label' ) }
@@ -45,6 +46,7 @@ const LabelWithTooltip = ( {
 LabelWithTooltip.defaultProps = {
 	label: '',
 	tooltipPosition: 'top right',
+	delay: 200,
 };
 
 LabelWithTooltip.propTypes = {
@@ -63,6 +65,7 @@ LabelWithTooltip.propTypes = {
 		'bottom right',
 	] ),
 	tooltipText: PropTypes.string,
+	delay: PropTypes.number,
 };
 
 export default LabelWithTooltip;
