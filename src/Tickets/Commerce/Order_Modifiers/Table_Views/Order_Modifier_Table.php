@@ -164,7 +164,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		$method = 'render_' . $column_name . '_column';
 
 		// If a specific method exists for the column, call it.
-		if ( method_exists( $this, $method ) ) {
+		if ( method_exists( $this, $method ) && is_callable( [ $this, $method ] ) ) {
 			return $this->$method( $item );
 		}
 
@@ -205,12 +205,9 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 			$action_links[ $action_label ] = sprintf( '<a href="%s">%s</a>', esc_url( $data['url'] ), esc_html( $data['label'] ) );
 		}
 
-		$label_html = isset( $actions['edit'] ) ?
-			sprintf( '<a href="%s">%s</a>', esc_url( $actions['edit']['url'] ), esc_html( $label ) ) :
-			sprintf( '<a href="%s">%s</a>', esc_url( array_values( $actions )[0]['url'] ?? '#' ), esc_html( $label ) );
+		$url = isset( $actions['edit'] ) ? $actions['edit']['url'] : ( array_values( $actions )[0]['url'] ?? '#' );
 
-		// Join the action links and append them to the label with the row actions.
-		return sprintf( '%1$s %2$s', $label_html, $this->row_actions( $action_links ) );
+		return sprintf( '<a href="%s">%s</a> %s', esc_url( $url ), esc_html( $label ), $this->row_actions( $action_links ) );
 	}
 
 	/**
@@ -225,13 +222,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 * @return void
 	 */
 	public function search_box( $text, $input_id, $placeholder = '' ) {
-		// Check if nonce is valid. The nonce value does not need sanitization, as wp_verify_nonce handles it.
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		$maybe_nonce = tribe_get_request_var( '_wpnonce' );
-		$nonce_valid = ! empty( $maybe_nonce ) && wp_verify_nonce( $maybe_nonce, 'search_order_modifier' );
-
-		// If nonce is invalid, set search term to empty; otherwise, get the value from the request.
-		$search_value = $nonce_valid ? sanitize_text_field( tribe_get_request_var( 's', '' ) ) : '';
+		$search_value = sanitize_text_field( tribe_get_request_var( 's', '' ) );
 
 		// Set the input ID.
 		$input_id = $input_id . '-search-input';
@@ -245,9 +236,6 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		echo '<p class="search-box">';
 		echo '<label class="screen-reader-text" for="' . esc_attr( $input_id ) . '">' . esc_html( $text ) . '</label>';
 		echo '<input type="search" id="' . esc_attr( $input_id ) . '" name="s" value="' . esc_attr( $search_value ) . '" placeholder="' . esc_attr( $placeholder ) . '" />';
-
-		// Output the nonce field for verification.
-		wp_nonce_field( 'search_order_modifier', '_wpnonce' );
 
 		submit_button( $text, '', '', false );
 		echo '</p>';
