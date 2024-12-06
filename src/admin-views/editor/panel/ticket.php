@@ -223,7 +223,8 @@ $ticket_type = $ticket_type ?? 'default';
 				 * @param int Ticket ID
 				 * @param string Ticket Type Whether this is a request for a ticket or an RSVP or something else.
 				 */
-				do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, $ticket_id, $ticket_type ); ?>
+				do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, $ticket_id, $ticket_type );
+				?>
 			</section>
 			<div class="accordion">
 				<?php
