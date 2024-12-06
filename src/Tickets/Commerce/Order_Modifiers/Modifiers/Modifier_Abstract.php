@@ -125,13 +125,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		// Ensure the modifier_type is set to the expected one.
 		$data['modifier_type'] = $this->modifier_type;
 
-		try {
-			$this->validate_data( $data );
-		} catch ( InvalidArgumentException $exception ) {
-			new Order_Modifier( [] );
-		}
-
-		// Use the repository to insert the data into the `order_modifiers` table.
+		$this->validate_data( $data );
 		return $this->repository->insert( new Order_Modifier( $data ) );
 	}
 
@@ -148,13 +142,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		// Ensure the modifier_type is set to the expected one.
 		$data['modifier_type'] = $this->modifier_type;
 
-		try {
-			$this->validate_data( $data );
-		} catch ( InvalidArgumentException $exception ) {
-			new Order_Modifier( [] );
-		}
-
-		// Use the repository to update the data in the `order_modifiers` table.
+		$this->validate_data( $data );
 		return $this->repository->update( new Order_Modifier( $data ) );
 	}
 
