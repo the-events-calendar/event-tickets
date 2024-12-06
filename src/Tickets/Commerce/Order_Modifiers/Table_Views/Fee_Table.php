@@ -195,7 +195,7 @@ class Fee_Table extends Order_Modifier_Table {
 
 		// Early return if no organizer is found or if post_id is missing.
 		if ( empty( $get_relationship ) || empty( $get_relationship->post_id ) ) {
-			return ''; // Early return if there's no organizer.
+			return '';
 		}
 
 		// Retrieve the organizer name using the post ID.
@@ -203,7 +203,7 @@ class Fee_Table extends Order_Modifier_Table {
 
 		// Early return if the organizer name is not available.
 		if ( empty( $organizer_name ) ) {
-			return ''; // Early return if there's no organizer name.
+			return '';
 		}
 
 		// Return the translated message displaying the organizer's name.
@@ -233,7 +233,7 @@ class Fee_Table extends Order_Modifier_Table {
 
 		// Early return if no organizer is found or if post_id is missing.
 		if ( empty( $get_relationship ) || empty( $get_relationship->post_id ) ) {
-			return ''; // Early return if there's no venue.
+			return '';
 		}
 
 		// Retrieve the organizer name using the post ID.
@@ -241,7 +241,7 @@ class Fee_Table extends Order_Modifier_Table {
 
 		// Early return if the venue name is not available.
 		if ( empty( $venue_name ) ) {
-			return ''; // Early return if there's no organizer name.
+			return '';
 		}
 
 		// Return the translated message displaying the organizer's name.
