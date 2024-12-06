@@ -77,7 +77,7 @@ class Gateway extends Abstract_Gateway {
 
 		$cart_total = tribe( Cart::class )->get_cart_total();
 
-		return 0 === (int) $cart_total;
+		return 0 == $cart_total;
 	}
 
 	/**
