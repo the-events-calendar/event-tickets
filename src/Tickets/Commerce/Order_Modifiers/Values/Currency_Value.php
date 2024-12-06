@@ -18,13 +18,6 @@ use TEC\Tickets\Commerce\Order_Modifiers\Traits\Stringify;
  */
 class Currency_Value extends Base_Value {
 	/**
-	 * The value.
-	 *
-	 * @var Precision_Value
-	 */
-	protected Precision_Value $value;
-
-	/**
 	 * The currency symbol.
 	 *
 	 * @var string

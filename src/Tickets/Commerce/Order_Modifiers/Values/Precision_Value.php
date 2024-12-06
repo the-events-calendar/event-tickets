@@ -24,16 +24,6 @@ use TEC\Tickets\Commerce\Order_Modifiers\Values\Positive_Integer_Value as Positi
  */
 class Precision_Value extends Base_Value {
 	/**
-	 * The value.
-	 *
-	 * This is stored as an integer to prevent floating point errors. When the value
-	 * is retrieved, it will be converted back to a float.
-	 *
-	 * @var int
-	 */
-	protected int $value;
-
-	/**
 	 * The precision (how many decimal places).
 	 *
 	 * @var Positive_Int
