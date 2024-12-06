@@ -279,20 +279,22 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		// Get modifier ID from the context.
 		$modifier_id = (int) $context['modifier_id'];
 
-		// Merge the modifier data into the context to be passed to the form rendering logic.
-		// If a valid modifier ID is provided, fetch the data to populate the form.
-		if ( $modifier_id > 0 ) {
-			$modifier_data = $this->get_modifier_data_by_id( $modifier_id );
-
-			// Only merge if modifier data is not null.
-			if ( ! is_null( $modifier_data ) ) {
-				$context = array_merge( $context, $modifier_data );
-			} else {
-				// @todo redscar - If a modifier ID is sent, and we are unable to find the data, do we display a message?
-				echo '<div class="notice notice-error"><p>' . esc_html__( 'We are unable to find that Modifier.', 'event-tickets' ) . '</p></div>';
-				return;
-			}
+		if ( 0 >= $modifier_id ) {
+			// @todo redscar - If no modifier ID is sent, do we display a message?
+			echo '<div class="notice notice-error"><p>' . esc_html__( 'Invalid Modifier ID provided.', 'event-tickets' ) . '</p></div>';
+			return;
 		}
+
+		// Merge the modifier data into the context to be passed to the form rendering logic.
+		$modifier_data = $this->get_modifier_data_by_id( $modifier_id );
+
+		if ( null === $modifier_data ) {
+			// @todo redscar - If a modifier ID is sent, and we are unable to find the data, do we display a message?
+			echo '<div class="notice notice-error"><p>' . esc_html__( 'We are unable to find that Modifier.', 'event-tickets' ) . '</p></div>';
+			return;
+		}
+
+		$context = array_merge( $context, $modifier_data );
 
 		// Render the edit screen, passing the populated context.
 		$manager->render_edit_screen( $context );
