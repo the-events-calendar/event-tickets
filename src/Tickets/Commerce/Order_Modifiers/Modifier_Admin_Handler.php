@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Commerce\Order_Modifiers;
 
 use InvalidArgumentException;
+use Exception;
 use TEC\Tickets\Commerce\Order_Modifiers\Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
@@ -279,25 +280,26 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		// Get modifier ID from the context.
 		$modifier_id = (int) $context['modifier_id'];
 
-		if ( 0 >= $modifier_id ) {
+		if ( 0 > $modifier_id ) {
 			// @todo redscar - If no modifier ID is sent, do we display a message?
 			echo '<div class="notice notice-error"><p>' . esc_html__( 'Invalid Modifier ID provided.', 'event-tickets' ) . '</p></div>';
 			return;
 		}
 
-		// Merge the modifier data into the context to be passed to the form rendering logic.
-		$modifier_data = $this->get_modifier_data_by_id( $modifier_id );
-
-		if ( null === $modifier_data ) {
-			// @todo redscar - If a modifier ID is sent, and we are unable to find the data, do we display a message?
-			echo '<div class="notice notice-error"><p>' . esc_html__( 'We are unable to find that Modifier.', 'event-tickets' ) . '</p></div>';
+		if ( ! $modifier_id ) {
+			$manager->render_edit_screen( $context );
 			return;
 		}
 
-		$context = array_merge( $context, $modifier_data );
+		try {
+			$modifier_data = $this->get_modifier_data_by_id( $modifier_id );
+		} catch ( Exception $e ) {
+			echo '<div class="notice notice-error"><p>' . esc_html__( 'Error retrieving modifier data.', 'event-tickets' ) . '</p></div>';
+			return;
+		}
 
 		// Render the edit screen, passing the populated context.
-		$manager->render_edit_screen( $context );
+		$manager->render_edit_screen( array_merge( $context, $modifier_data ) );
 	}
 
 	/**

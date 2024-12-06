@@ -23,7 +23,6 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Modifiers;
 use Exception;
 use InvalidArgumentException;
 use TEC\Common\StellarWP\Models\Contracts\Model;
-use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Exceptions\Not_Found_Exception;
