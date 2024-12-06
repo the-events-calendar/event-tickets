@@ -23,6 +23,7 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Modifiers;
 use Exception;
 use InvalidArgumentException;
 use TEC\Common\StellarWP\Models\Contracts\Model;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Exceptions\Not_Found_Exception;
@@ -38,6 +39,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Values\Float_Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Percent_Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Positive_Integer_Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
+use Tribe__Tickets__Commerce__Currency as Currency;
 
 /**
  * Class Modifier_Abstract
@@ -521,10 +523,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return void
 	 */
 	public function delete_relationship_by_modifier( int $modifier_id ): void {
-		$data = [
-			'modifier_id' => $modifier_id,
-		];
-		$this->order_modifiers_relationship_repository->clear_relationships_by_modifier_id( new Order_Modifier_Relationships( $data ) );
+		$this->order_modifiers_relationship_repository->clear_relationships_by_modifier_id( $modifier_id );
 	}
 
 	/**
@@ -605,12 +604,8 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 
 		// If the apply_type has changed, clear all relationships.
 		if ( $current_apply_type !== $new_apply_type ) {
-			$data = [
-				'modifier_id' => $modifier_id,
-			];
-
 			// Clear the relationships for this modifier.
-			$this->order_modifiers_relationship_repository->clear_relationships_by_modifier_id( new Order_Modifier_Relationships( $data ) );
+			$this->order_modifiers_relationship_repository->clear_relationships_by_modifier_id( $modifier_id );
 		}
 	}
 
