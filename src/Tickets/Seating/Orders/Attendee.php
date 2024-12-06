@@ -425,4 +425,35 @@ class Attendee {
 
 		return $render_context;
 	}
+	
+	/**
+	 * Check if the attendee has a seating ticket and valid reservation.
+	 * If it's a seating ticket without reservation, the inventory should not be decreased.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool                $decrease_inventory Whether to decrease inventory.
+	 * @param array<string,mixed> $attendee The attendee data.
+	 *
+	 * @return bool Whether to decrease inventory.
+	 */
+	public function should_decrease_inventory( $decrease_inventory, $attendee ): bool {
+		if ( ! $decrease_inventory ) {
+			return $decrease_inventory;
+		}
+
+		$ticket_seat_type = get_post_meta( $attendee['product_id'], Meta::META_KEY_SEAT_TYPE, true );
+		
+		if ( empty( $ticket_seat_type ) ) {
+			return $decrease_inventory;
+		}
+		
+		$has_reservation = get_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, true );
+
+		if ( empty( $has_reservation ) ) {
+			return false;
+		}
+		
+		return $decrease_inventory;
+	}
 }
