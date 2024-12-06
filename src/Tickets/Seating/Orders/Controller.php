@@ -196,6 +196,8 @@ class Controller extends Controller_Contract {
 		);
 		add_filter( 'pre_do_shortcode_tag', [ $this, 'filter_pre_do_shortcode_tag' ], 10, 4 );
 		add_filter( 'tec_tickets_attendees_page_render_context', [ $this, 'adjust_attendee_page_render_context_for_seating' ], 10, 3 );
+		
+		add_filter( 'tec_tickets_attendee_decreases_inventory', [ $this, 'filter_attendee_decreases_inventory' ], 10, 2 );
 
 		$this->register_assets();
 	}
@@ -281,6 +283,7 @@ class Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_commerce_attendee_to_delete', [ $this, 'handle_attendee_delete' ] );
 		remove_filter( 'pre_do_shortcode_tag', [ $this, 'filter_pre_do_shortcode_tag' ] );
 		remove_filter( 'tec_tickets_attendees_page_render_context', [ $this, 'adjust_attendee_page_render_context_for_seating' ] );
+		remove_filter( 'tec_tickets_attendee_decreases_inventory', [ $this, 'filter_attendee_decreases_inventory' ] );
 	}
 
 	/**
@@ -840,5 +843,19 @@ class Controller extends Controller_Contract {
 		$this->cart->warmup_caches();
 
 		$this->session->confirm_all_reservations();
+	}
+	
+	/**
+	 * Filter to determine if the attendee decreases inventory.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool                $decreases_inventory Whether the attendee decreases inventory.
+	 * @param array<string,mixed> $attendee The attendee array data.
+	 *
+	 * @return bool Whether the attendee decreases inventory.
+	 */
+	public function filter_attendee_decreases_inventory( $decreases_inventory, $attendee ): bool {
+		return $this->attendee->should_decrease_inventory( $decreases_inventory, $attendee );
 	}
 }
