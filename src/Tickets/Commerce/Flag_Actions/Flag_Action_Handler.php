@@ -93,7 +93,7 @@ class Flag_Action_Handler extends \TEC\Common\Contracts\Service_Provider {
 			return $order;
 		}
 
-		$order->items = array_filter( $order->items, fn ( $item ) => $this->is_ticket( $item['product_id'] ) );
+		$order->items = array_filter( $order->items, fn ( $item ) => $this->is_ticket( $item ) );
 
 		return $order;
 	}
