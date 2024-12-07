@@ -164,7 +164,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		$method = 'render_' . $column_name . '_column';
 
 		// If a specific method exists for the column, call it.
-		if ( is_callable( [ $this, $method ] ) ) {
+		if ( method_exists( $this, $method ) && is_callable( [ $this, $method ] ) ) {
 			return $this->$method( $item );
 		}
 
