@@ -16,7 +16,7 @@ use InvalidArgumentException;
  *
  * @since TBD
  */
-abstract class Base_Value implements Value_Interface {
+abstract class Base_Value {
 	/**
 	 * The value.
 	 *
@@ -58,4 +58,13 @@ abstract class Base_Value implements Value_Interface {
 	 * @throws InvalidArgumentException When the value is not valid.
 	 */
 	abstract protected function validate( $value ): void;
+
+	/**
+	 * Get the value.
+	 *
+	 * @since TBD
+	 *
+	 * @return mixed The value.
+	 */
+	abstract public function get();
 }
