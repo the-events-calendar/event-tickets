@@ -11,7 +11,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
-use Tribe\Tickets\Test\Traits\With_No_Object_storage;
+use Tribe\Tickets\Test\Traits\With_No_Object_Storage;
 use WP_Post;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Tickets\Commerce\Cart as Commerce_Cart;

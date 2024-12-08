@@ -4,7 +4,7 @@ namespace Tribe\Tickets\Test\Traits;
 
 use PHPUnit\Framework\Assert;
 
-trait With_No_Object_storage {
+trait With_No_Object_Storage {
 	protected function assert_no_object_stored( array $stored ) {
 		foreach ( $stored as $key => $meta ) {
 			if ( is_array( $meta ) ) {

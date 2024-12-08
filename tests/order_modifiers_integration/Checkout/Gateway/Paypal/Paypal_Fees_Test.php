@@ -14,7 +14,7 @@ use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use WP_Post;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Tickets\Commerce\Cart as Commerce_Cart;
-use Tribe\Tickets\Test\Traits\With_No_Object_storage;
+use Tribe\Tickets\Test\Traits\With_No_Object_Storage;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Fees as BaseFees;
 
 class Paypal_Fees_Test extends Controller_Test_Case {
