@@ -229,7 +229,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @param array   $item The cart item (representing the ticket).
 	 * @param WP_Post $order The order from the items in the cart.
 	 *
-	 * @return array The structured data for the ticket item.
+	 * @return array<string,mixed> The structured data for the ticket item.
 	 */
 	protected function get_unit_data_for_ticket( array $item, WP_Post $order ) {
 		if ( ! $order->ID ) {

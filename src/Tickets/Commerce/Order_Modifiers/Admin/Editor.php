@@ -56,7 +56,7 @@ final class Editor extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @return array{
+	 * @return array {
 	 *     selectedFeesByPostId: array<int, string>,
 	 * }
 	 */

@@ -2222,16 +2222,16 @@ class AttendeesTest extends Controller_Test_Case {
 		$column_primary_info = $attendee_table->column_primary_info( $attendee_item );
 		$this->assertMatchesHtmlSnapshot(
 			str_replace( [
+					$attendee_email,
 					$series_attendee_id,
 					$series_pass_id,
 					$series_id,
-					$attendee_email,
 				]
 				, [
+					'{{attendee_email}}',
 					'{{attendee_id}}',
 					'{{series_pass_id}}',
 					'{{series_id}}',
-					'{{attendee_email}}',
 				],
 				$column_primary_info )
 		);

@@ -50,7 +50,7 @@ $modifier_statuses = [
 	<h1><?php echo esc_html( $heading ); ?></h1>
 	<div class="form-wrap">
 
-		<form method="post" action="" id="tec-settings-form" class="tribe-validation tec-settings-order_modifier">
+		<form method="post" class="tribe-validation tec-settings-order_modifier">
 			<div class="tribe-settings-form-wrap">
 
 				<?php wp_nonce_field( 'order_modifier_save_action', 'order_modifier_save_action' ); ?>

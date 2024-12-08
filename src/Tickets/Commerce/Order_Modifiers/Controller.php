@@ -143,7 +143,7 @@ final class Controller extends Controller_Contract {
 		// Sanitize the modifier parameter to ensure it's a valid string.
 		$modifier = sanitize_key( $modifier );
 
-		$modifiers = self::get_modifiers();
+		$modifiers = self::get_modifier_types();
 
 		// Ensure the requested modifier exists in the whitelist and the class implements the correct interface.
 		if ( isset( $modifiers[ $modifier ] ) && is_subclass_of( $modifiers[ $modifier ]['class'], Modifier_Strategy_Interface::class ) ) {
@@ -166,7 +166,7 @@ final class Controller extends Controller_Contract {
 	 * @return string|null The display name of the modifier or null if not found.
 	 */
 	public static function get_modifier_display_name( string $modifier ): ?string {
-		$modifiers = self::get_modifiers();
+		$modifiers = self::get_modifier_types();
 
 		// Return the display name if the modifier exists in the array.
 		if ( isset( $modifiers[ $modifier ]['display_name'] ) ) {

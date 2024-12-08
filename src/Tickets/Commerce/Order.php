@@ -433,9 +433,13 @@ class Order extends Abstract_Order {
 		 * @param array             $items     The items in the cart.
 		 * @param Value             $subtotal  The calculated subtotal of the cart items.
 		 * @param Gateway_Interface $gateway   The payment gateway used for the order.
-		 * @param array|null        $purchaser An array of purchaser information including purchaser_user_id,
-		 *                                     purchaser_full_name, purchaser_first_name, purchaser_last_name,
-		 *                                     and purchaser_email.
+		 * @param ?array            $purchaser { Purchaser details.
+		 *    @type ?int    $purchaser_user_id    The purchaser user ID.
+		 *    @type ?string $purchaser_full_name  The purchaser full name.
+		 *    @type ?string $purchaser_first_name The purchaser first name.
+		 *    @type ?string $purchaser_last_name  The purchaser last name.
+		 *    @type ?string $purchaser_email      The purchaser email.
+		 * }
 		 */
 		$items = apply_filters(
 			'tec_tickets_commerce_create_order_from_cart_items',

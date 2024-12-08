@@ -10,7 +10,6 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Commerce\Order_Modifiers\Values;
 
 use InvalidArgumentException;
-use TEC\Tickets\Commerce\Order_Modifiers\Traits\Stringify;
 
 /**
  * Class Base_Value
@@ -18,9 +17,6 @@ use TEC\Tickets\Commerce\Order_Modifiers\Traits\Stringify;
  * @since TBD
  */
 abstract class Base_Value implements Value_Interface {
-
-	use Stringify;
-
 	/**
 	 * The value.
 	 *
@@ -38,6 +34,17 @@ abstract class Base_Value implements Value_Interface {
 	public function __construct( $value ) {
 		$this->validate( $value );
 		$this->value = $value;
+	}
+
+	/**
+	 * Get the value as a string.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The value as a string.
+	 */
+	public function __toString() {
+		return (string) $this->get();
 	}
 
 	/**
