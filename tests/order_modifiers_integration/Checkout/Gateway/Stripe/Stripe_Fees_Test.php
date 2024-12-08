@@ -15,6 +15,7 @@ use Tribe\Tickets\Test\Traits\With_No_Object_storage;
 use WP_Post;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Tickets\Commerce\Cart as Commerce_Cart;
+use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Fees as BaseFees;
 
 class Stripe_Fees_Test extends Controller_Test_Case {
 	use Ticket_Maker;
@@ -188,6 +189,7 @@ class Stripe_Fees_Test extends Controller_Test_Case {
 		// Calculated each ticket's price with fees applied.
 		// Now lets create an cart with different quantities of each ticket.
 
+		$this->test_services->register( BaseFees::class );
 		$this->make_controller()->register();
 
 		$cart = tribe( Commerce_Cart::class );
@@ -273,6 +275,7 @@ class Stripe_Fees_Test extends Controller_Test_Case {
 		// Calculated each ticket's price with fees applied.
 		// Now lets create an cart with different quantities of each ticket.
 
+		$this->test_services->register( BaseFees::class );
 		$this->make_controller()->register();
 
 		$cart = tribe( Commerce_Cart::class );
