@@ -30,6 +30,7 @@ use TEC\Common\StellarWP\Assets\Assets;
 use WP_Post;
 use Exception;
 use TEC\Tickets\Seating\Logging;
+use Tribe__Tickets__Commerce__Currency as Currency;
 
 /**
  * Class Order_Modifier_Fee_Metabox
@@ -236,10 +237,30 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 				'post_id'         => $post_id,
 				'ticket_id'       => $ticket_id,
 				'related_fee_ids' => $related_fee_ids,
-				'automatic_fees'  => $automatic_fees,
-				'selectable_fees' => $selectable_fees,
+				'automatic_fees'  => array_map( [ $this, 'format_fee_for_display' ], $automatic_fees ),
+				'selectable_fees' => array_map( [ $this, 'format_fee_for_display' ], $selectable_fees ),
 			]
 		);
+	}
+
+	/**
+	 * Formats the fees' amount for display based on TicketsCommerce Currency Settings.
+	 *
+	 * @since TBD
+	 *
+	 * @param object $fee The fee object.
+	 *
+	 * @return object The formatted fee object.
+	 */
+	public function format_fee_for_display( Object $fee ): Object {
+		if ( ! isset( $fee->raw_amount ) ) {
+			return $fee;
+		}
+
+		// Format the amount based on the Currency settings for the Tickets Commerce module.
+		$fee->raw_amount = tribe( Currency::class )->get_formatted_currency( (string) $fee->raw_amount, null, Module::class );
+
+		return $fee;
 	}
 
 	/**
