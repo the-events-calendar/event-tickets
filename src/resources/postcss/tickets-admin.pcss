@@ -828,23 +828,26 @@ p.description {
 #ticket_order_modifier_ticket_fees {
 	width: 70%;
 
-	.automatic-fees {
-		ul {
-			display: flex;
-			flex-wrap: wrap;
-			gap: var(--tec-spacer-0);
-			list-style-type: none;
-			padding: 0;
-		}
-
-		li {
-			flex: 1 0 30%;
-			margin: 0;
-		}
+	.ticket_form_right {
+		max-width: 324px;
 	}
 
-	.selectable-fees {
-		width: 100%;
+	.automatic-fees, .selectable-fees {
+		margin-bottom: var(--tec-spacer-1);
+
+		strong {
+			display: inline-block;
+			margin-bottom: var(--tec-spacer-1);
+		}
+
+		.tribe-dropdown .select2-selection--multiple .select2-selection__rendered {
+			border: none;
+		}
+
+		.select2-container--default.select2-container--open.select2-container--below .select2-selection--multiple {
+			border-bottom-left-radius: 0;
+			border-bottom-right-radius: 0
+		}
 	}
 }
 
