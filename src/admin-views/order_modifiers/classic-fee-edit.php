@@ -28,7 +28,7 @@ if ( empty( $automatic_fees ) && empty( $selectable_fees ) ) {
 				<div class="automatic-fees">
 					<strong><?php esc_html_e( 'The fees below automatically apply to all tickets.', 'event-tickets' ); ?></strong>
 					<?php foreach ( $automatic_fees as $fee ) : ?>
-						<div class="ticket_order_modifier_fee_automatic">
+						<div class="ticket_order_modifier_fees ticket_order_modifier_fees--single ticket_order_modifier_fees--automatic">
 							<input id="tec-ticket-fees-<?php echo esc_attr( $post_id ); ?>-<?php echo esc_attr( $fee->id ); ?>" value="<?php echo esc_attr( $fee->id ); ?>" type="checkbox" disabled="true" checked="true">
 							<label for="tec-ticket-fees-<?php echo esc_attr( $post_id ); ?>-<?php echo esc_attr( $fee->id ); ?>">
 								<?php echo esc_html( $fee->display_name . ' (' . $fee->raw_amount . ( $fee->sub_type === 'percent' ? '%' : '' ) . ')' ); ?>
@@ -41,25 +41,28 @@ if ( empty( $automatic_fees ) && empty( $selectable_fees ) ) {
 			<?php if ( ! empty( $selectable_fees ) ) : ?>
 				<div class="selectable-fees">
 					<strong><?php esc_html_e( 'Below you can configure specific fees for this ticket.', 'event-tickets' ); ?></strong>
-					<select
-						class="tribe-dropdown"
-						name="ticket_order_modifier_fees[]"
-						id="ticket_order_modifier_fees"
-						multiple
-						data-placeholder="<?php esc_attr_e( 'Select fees...', 'event-tickets' ); ?>"
-						data-search-placeholder="<?php esc_attr_e( 'Search fees...', 'event-tickets' ); ?>"
-						data-allow-clear="true"
-						data-width="resolve"
-					>
-						<option value=""><?php esc_html_e( 'Select fees', 'event-tickets' ); ?></option>
+					<div class="ticket_order_modifier_fees ticket_order_modifier_fees--selectable">
+						<select
+							class="tribe-dropdown"
+							name="ticket_order_modifier_fees[]"
+							id="ticket_order_modifier_fees"
+							multiple
+							data-placeholder="<?php esc_attr_e( 'Select fees...', 'event-tickets' ); ?>"
+							data-search-placeholder="<?php esc_attr_e( 'Search fees...', 'event-tickets' ); ?>"
+							data-allow-clear="true"
+							data-dropdown-css-width="false"
+							style="width: 100%;"
+						>
+							<option value=""><?php esc_html_e( 'Select fees', 'event-tickets' ); ?></option>
 
-						<?php foreach ( $selectable_fees as $fee ) : ?>
-							<option
-								value="<?php echo esc_attr( $fee->id ); ?>" <?php selected( in_array( $fee->id, $related_fee_ids ) ); ?>>
-								<?php echo esc_html( $fee->display_name . ' (' . $fee->raw_amount . ( $fee->sub_type === 'percent' ? '%' : '' ) . ')' ); ?>
-							</option>
-						<?php endforeach; ?>
-					</select>
+							<?php foreach ( $selectable_fees as $fee ) : ?>
+								<option
+									value="<?php echo esc_attr( $fee->id ); ?>" <?php selected( in_array( $fee->id, $related_fee_ids ) ); ?>>
+									<?php echo esc_html( $fee->display_name . ' (' . $fee->raw_amount . ( $fee->sub_type === 'percent' ? '%' : '' ) . ')' ); ?>
+								</option>
+							<?php endforeach; ?>
+						</select>
+					</div>
 				</div>
 			<?php endif; ?>
 
