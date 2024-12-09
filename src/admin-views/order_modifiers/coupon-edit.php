@@ -20,18 +20,6 @@
  * phpcs:disable WordPress.WP.GlobalVariablesOverride
  */
 
-/**
- * Util function to display the validation error according to the field name.
- *
- * @param string $field_label Field label.
- *
- * @return string
- */
-$get_validation_error_attr = function ( string $field_label ): string {
-	// translators: %s is the field label.
-	return sprintf( __( '%s is required', 'event-tickets' ), $field_label );
-};
-
 if ( ! empty( $order_modifier_display_name ) ) {
 	$heading = __( 'Edit Coupon', 'event-tickets' );
 } else {
@@ -39,16 +27,16 @@ if ( ! empty( $order_modifier_display_name ) ) {
 }
 
 $modifier_statuses = [
-	'active'   => __( 'Active', 'event-tickets' ),
-	'inactive' => __( 'Inactive', 'event-tickets' ),
-	'draft'    => __( 'Draft', 'event-tickets' ),
+	'active'   => _x( 'Active', 'Modifier Status', 'event-tickets' ),
+	'inactive' => _x( 'Inactive', 'Modifier Status', 'event-tickets' ),
+	'draft'    => _x( 'Draft', 'Modifier Status', 'event-tickets' ),
 ];
 
 ?>
 <div class="wrap">
 	<h1><?php echo esc_html( $heading ); ?></h1>
 	<div class="form-wrap">
-		<form method="post" action="" id="tec-settings-form" class="tribe-validation tec-settings-order_modifier">
+		<form method="post" class="tribe-validation tec-settings-order_modifier">
 			<div class="tribe-settings-form-wrap">
 
 				<?php wp_nonce_field( 'order_modifier_save_action', 'order_modifier_save_action' ); ?>
@@ -63,7 +51,7 @@ $modifier_statuses = [
 						id="order_modifier_coupon_name"
 						maxlength="255"
 						data-validation-required="true"
-						data-validation-error="<?php echo esc_attr( $get_validation_error_attr( __( 'Fee Name', 'event-tickets' ) ) ); ?>"
+						data-validation-error="<?php esc_attr_e( 'Fee Name is required', 'event-tickets' ); ?>"
 						value="<?php echo esc_attr( $order_modifier_display_name ?? '' ); ?>" />
 				</div>
 
@@ -78,7 +66,7 @@ $modifier_statuses = [
 						class="tribe-field"
 						maxlength="255"
 						data-validation-required="true"
-						data-validation-error="<?php echo esc_attr( $get_validation_error_attr( __( 'Coupon Code', 'event-tickets' ) ) ); ?>"
+						data-validation-error="<?php esc_attr_e( 'Coupon Code is required', 'event-tickets' ); ?>"
 						value="<?php echo esc_attr( $order_modifier_slug ?? '' ); ?>" />
 					<p>
 						<?php esc_html_e( 'A unique code has been created for this coupon. You can override this code by replacing it with your own unique code (ex. SUMMERSAVINGS24).', 'event-tickets' ); ?>
@@ -108,7 +96,7 @@ $modifier_statuses = [
 						step="0.01"
 						data-validation-required="true"
 						data-validation-is-greater-than="0"
-						data-validation-error="<?php echo esc_attr( $get_validation_error_attr( __( 'Amount', 'event-tickets' ) ) ); ?>"
+						data-validation-error="<?php esc_attr_e( 'Amount is required', 'event-tickets' ); ?>"
 						value="<?php echo esc_attr( $order_modifier_fee_amount_cents ); ?>" />
 				</div>
 

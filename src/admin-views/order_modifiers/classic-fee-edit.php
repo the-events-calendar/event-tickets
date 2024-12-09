@@ -17,14 +17,13 @@ if ( empty( $automatic_fees ) && empty( $selectable_fees ) ) {
 ?>
 
 <div class="input_block" id="ticket_order_modifier_ticket_fees">
-	<label class="ticket_form_label ticket_form_left" for="ticket_fees">
+	<label class="ticket_form_label ticket_form_left" for="ticket_order_modifier_fees">
 		<?php esc_html_e( 'Ticket Fees:', 'event-tickets' ); ?>
 	</label>
 	<div class="ticket_form_right">
 
 		<?php if ( ! empty( $automatic_fees ) || ! empty( $selectable_fees ) ) : ?>
 
-			<!-- Display automatically applied fees if meta_value is 'all' or empty -->
 			<?php if ( ! empty( $automatic_fees ) ) : ?>
 				<div class="automatic-fees">
 					<strong><?php esc_html_e( 'The following fees will be automatically applied:', 'event-tickets' ); ?></strong>
@@ -36,7 +35,6 @@ if ( empty( $automatic_fees ) && empty( $selectable_fees ) ) {
 				</div>
 			<?php endif; ?>
 
-			<!-- Display checkboxes for fees that are not 'all' -->
 			<?php if ( ! empty( $selectable_fees ) ) : ?>
 				<div class="selectable-fees">
 					<select

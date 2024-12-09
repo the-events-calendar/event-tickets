@@ -3,7 +3,7 @@
  * Main plugin class.
  */
 
-use Tribe\Tickets\Admin\Provider;
+use Tribe\Tickets\Admin\Provider as Admin_Provider;
 use Tribe\Tickets\Events\Service_Provider as Events_Service_Provider;
 use Tribe\Tickets\Promoter\Service_Provider as Promoter_Service_Provider;
 use Tribe\Tickets\Admin\Settings;
@@ -505,7 +505,7 @@ class Tribe__Tickets__Main {
 		tribe_register_provider( Promoter_Service_Provider::class );
 
 		// Admin provider.
-		tribe_register_provider( Provider::class );
+		tribe_register_provider( Admin_Provider::class );
 	}
 
 	/**

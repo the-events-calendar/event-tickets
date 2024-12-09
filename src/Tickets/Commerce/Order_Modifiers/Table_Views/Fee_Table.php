@@ -195,7 +195,7 @@ class Fee_Table extends Order_Modifier_Table {
 
 		// Early return if no organizer is found or if post_id is missing.
 		if ( empty( $get_relationship ) || empty( $get_relationship->post_id ) ) {
-			return ''; // Early return if there's no organizer.
+			return '';
 		}
 
 		// Retrieve the organizer name using the post ID.
@@ -203,7 +203,7 @@ class Fee_Table extends Order_Modifier_Table {
 
 		// Early return if the organizer name is not available.
 		if ( empty( $organizer_name ) ) {
-			return ''; // Early return if there's no organizer name.
+			return '';
 		}
 
 		// Return the translated message displaying the organizer's name.
@@ -215,36 +215,36 @@ class Fee_Table extends Order_Modifier_Table {
 	}
 
 	/**
-	 * Displays a message indicating the modifier is applied to a specific organizer.
+	 * Displays a message indicating the modifier is applied to a specific venue.
 	 *
-	 * This method retrieves the first organizer related to the given modifier and returns
-	 * a translated message indicating the organizer's name. If no organizer is found, it returns early.
+	 * This method retrieves the first venue related to the given modifier and returns
+	 * a translated message indicating the venue's name. If no venue is found, it returns early.
 	 *
 	 * @since TBD
 	 *
 	 * @param int $modifier_id The ID of the order modifier.
 	 *
-	 * @return string A message displaying the organizer's name or an empty string if no organizer is found.
+	 * @return string A message displaying the venue's name or an empty string if no venue is found.
 	 */
 	protected function display_venues( int $modifier_id ): string {
-		// Get the relationships associated with the modifier for organizers.
+		// Get the relationships associated with the modifier for venues.
 		// @todo redscar - We shouldn't make the post-type hard coded.
 		$get_relationship = $this->order_modifier_relationship->find_by_modifier_and_post_type( $modifier_id, 'tribe_venue' );
 
-		// Early return if no organizer is found or if post_id is missing.
+		// Early return if no venue is found or if post_id is missing.
 		if ( empty( $get_relationship ) || empty( $get_relationship->post_id ) ) {
-			return ''; // Early return if there's no venue.
+			return '';
 		}
 
-		// Retrieve the organizer name using the post ID.
+		// Retrieve the venue name using the post ID.
 		$venue_name = get_the_title( $get_relationship->post_id );
 
 		// Early return if the venue name is not available.
 		if ( empty( $venue_name ) ) {
-			return ''; // Early return if there's no organizer name.
+			return '';
 		}
 
-		// Return the translated message displaying the organizer's name.
+		// Return the translated message displaying the venue's name.
 		return sprintf(
 		/* translators: %s is the venue's name */
 			__( 'Venue: %s', 'event-tickets' ),

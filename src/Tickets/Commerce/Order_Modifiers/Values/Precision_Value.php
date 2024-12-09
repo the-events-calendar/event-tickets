@@ -22,20 +22,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Values\Positive_Integer_Value as Positi
  *
  * @since TBD
  */
-class Precision_Value implements Value_Interface {
-
-	use Stringify;
-
-	/**
-	 * The value.
-	 *
-	 * This is stored as an integer to prevent floating point errors. When the value
-	 * is retrieved, it will be converted back to a float.
-	 *
-	 * @var int
-	 */
-	protected int $value;
-
+class Precision_Value extends Base_Value {
 	/**
 	 * The precision (how many decimal places).
 	 *
@@ -222,5 +209,19 @@ class Precision_Value implements Value_Interface {
 		if ( $this->precision->get() > $this->max_precision ) {
 			throw new InvalidArgumentException( sprintf( 'Precision cannot be greater than %d', $this->max_precision ) );
 		}
+	}
+
+	/**
+	 * Validate that the value is valid.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $value The value to validate.
+	 *
+	 * @return void
+	 * @throws InvalidArgumentException When the value is not valid.
+	 */
+	protected function validate( $value ): void {
+		$this->validate_precision();
 	}
 }

@@ -83,7 +83,7 @@ trait Valid_Types {
 	 *
 	 * @return array The available order modifier types.
 	 */
-	protected static function get_modifiers(): array {
+	protected static function get_modifier_types(): array {
 		static $modifiers = null;
 
 		// Return cached modifiers if available.

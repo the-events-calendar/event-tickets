@@ -86,7 +86,7 @@ class Order_Modifiers_Meta extends Repository implements Insertable, Updatable, 
 	}
 
 	/**
-	 * Inserts a model record.
+	 * Updates a model record.
 	 *
 	 * @since TBD
 	 *

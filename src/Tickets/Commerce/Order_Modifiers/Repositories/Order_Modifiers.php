@@ -57,7 +57,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	}
 
 	/**
-	 * Inserts a model record.
+	 * Deletes a model record.
 	 *
 	 * @since TBD
 	 *
@@ -121,11 +121,11 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	}
 
 	/**
-	 * Inserts a model record.
+	 * Updates a model record.
 	 *
 	 * @since TBD
 	 *
-	 * @param Model $model The model to insert.
+	 * @param Model $model The model to update.
 	 *
 	 * @return Model
 	 * @throws RuntimeException If the model type is invalid.
@@ -210,7 +210,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 
 		// Add search functionality (search in display_name or slug).
 		if ( ! empty( $args['search_term'] ) ) {
-			$query = $query->whereLike( 'display_name', $args['search_term'] );
+			$query = $query->whereLike( 'display_name', DB::esc_like( $args['search_term'] ) );
 		}
 
 		// Add ordering.
@@ -250,7 +250,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	}
 
 	/**
-	 * Finds an Order Modifier by its slug and modifier_type.
+	 * Finds an Order Modifier of the current type by its slug.
 	 *
 	 * @since TBD
 	 *

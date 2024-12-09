@@ -16,17 +16,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Traits\Stringify;
  *
  * @since TBD
  */
-class Currency_Value implements Value_Interface {
-
-	use Stringify;
-
-	/**
-	 * The value.
-	 *
-	 * @var Precision_Value
-	 */
-	protected Precision_Value $value;
-
+class Currency_Value extends Base_Value {
 	/**
 	 * The currency symbol.
 	 *
@@ -259,4 +249,16 @@ class Currency_Value implements Value_Interface {
 			$this->currency_symbol_position
 		);
 	}
+
+	/**
+	 * Validate that the value is valid.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $value The value to validate.
+	 *
+	 * @return void
+	 * @throws InvalidArgumentException When the value is not valid.
+	 */
+	protected function validate( $value ): void {}
 }
