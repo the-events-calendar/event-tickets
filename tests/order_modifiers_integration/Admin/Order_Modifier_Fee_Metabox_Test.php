@@ -130,15 +130,21 @@ class Order_Modifier_Fee_Metabox_Test extends Controller_Test_Case {
 
 		$ticket = $this->create_tc_ticket( $post_id, 10.0 );
 
-		$fee_id = $this->create_fee_for_ticket( $ticket, [ 'raw_amount' => 5.27 ] );
+		$fee_id_1 = $this->create_fee_for_ticket( $ticket, [ 'raw_amount' => 5.27 ] );
 
-		$this->create_fee_for_all( [ 'raw_amount' => 3.26 ] );
+		$fee_id_2 = $this->create_fee_for_all( [ 'raw_amount' => 3.26 ] );
 
 		$this->make_controller()->register();
 
 		ob_start();
 		do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, $ticket, 'default' );
-		$this->assertMatchesHtmlSnapshot( str_replace( $fee_id, '{FEE_ID}', ob_get_clean() ) );
+		$this->assertMatchesHtmlSnapshot(
+			str_replace(
+				[ $post_id, $fee_id_1, $fee_id_2 ],
+				[ '{EVENT_ID}', '{FEE_ID_1}', '{FEE_ID_2}' ],
+				ob_get_clean()
+			)
+		);
 	}
 
 	/**
@@ -147,13 +153,19 @@ class Order_Modifier_Fee_Metabox_Test extends Controller_Test_Case {
 	public function it_should_add_fee_section_for_fresh_ticket() {
 		$post_id = self::factory()->post->create();
 
-		$this->create_fee_for_all( [ 'raw_amount' => 3.26 ] );
+		$fee_id_1 = $this->create_fee_for_all( [ 'raw_amount' => 3.26 ] );
 
 		$this->make_controller()->register();
 
 		ob_start();
 		do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, null, 'ticket' );
-		$this->assertMatchesHtmlSnapshot( ob_get_clean() );
+		$this->assertMatchesHtmlSnapshot(
+			str_replace(
+				[ $post_id, $fee_id_1 ],
+				[ '{EVENT_ID}', '{FEE_ID_1}' ],
+				ob_get_clean()
+			)
+		);
 	}
 
 	/**
@@ -162,13 +174,19 @@ class Order_Modifier_Fee_Metabox_Test extends Controller_Test_Case {
 	public function it_should_add_fee_section_for_series() {
 		$post_id = self::factory()->post->create();
 
-		$this->create_fee_for_all( [ 'raw_amount' => 3.26 ] );
+		$fee_id_1 = $this->create_fee_for_all( [ 'raw_amount' => 3.26 ] );
 
 		$this->make_controller()->register();
 
 		ob_start();
 		do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, null, 'series_pass' );
-		$this->assertMatchesHtmlSnapshot( ob_get_clean() );
+		$this->assertMatchesHtmlSnapshot(
+			str_replace(
+				[ $post_id, $fee_id_1 ],
+				[ '{EVENT_ID}', '{FEE_ID_1}' ],
+				ob_get_clean()
+			)
+		);
 	}
 
 	/**
