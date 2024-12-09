@@ -873,6 +873,6 @@ class Fees_Test extends Controller_Test_Case {
 	 * @after
 	 */
 	public function reset_fees() {
-		$this->make_controller( PayPalFees::class )->reset_fees_and_subtotal();
+		$this->test_services->get( PayPalFees::class )->reset_fees_and_subtotal();
 	}
 }

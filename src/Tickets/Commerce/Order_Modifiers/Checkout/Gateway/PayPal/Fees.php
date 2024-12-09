@@ -7,7 +7,7 @@
  * and hooks specific to PayPal's order and payment flow.
  *
  * @since TBD
- * @package TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal
+ * @package TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Paypal
  */
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal;
