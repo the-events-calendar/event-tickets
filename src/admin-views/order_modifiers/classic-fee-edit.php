@@ -26,17 +26,21 @@ if ( empty( $automatic_fees ) && empty( $selectable_fees ) ) {
 
 			<?php if ( ! empty( $automatic_fees ) ) : ?>
 				<div class="automatic-fees">
-					<strong><?php esc_html_e( 'The following fees will be automatically applied:', 'event-tickets' ); ?></strong>
-					<ul>
-						<?php foreach ( $automatic_fees as $automatic_fee ) : ?>
-							<li><?php echo esc_html( $automatic_fee->display_name ); ?></li>
-						<?php endforeach; ?>
-					</ul>
+					<strong><?php esc_html_e( 'The fees below automatically apply to all tickets.', 'event-tickets' ); ?></strong>
+					<?php foreach ( $automatic_fees as $fee ) : ?>
+						<div class="ticket_order_modifier_fee_automatic">
+							<input id="tec-ticket-fees-<?php echo esc_attr( $post_id ); ?>-<?php echo esc_attr( $fee->id ); ?>" value="<?php echo esc_attr( $fee->id ); ?>" type="checkbox" disabled="true" checked="true">
+							<label for="tec-ticket-fees-<?php echo esc_attr( $post_id ); ?>-<?php echo esc_attr( $fee->id ); ?>">
+								<?php echo esc_html( $fee->display_name . ' (' . $fee->raw_amount . ( $fee->sub_type === 'percent' ? '%' : '' ) . ')' ); ?>
+							</label>
+						</div>
+					<?php endforeach; ?>
 				</div>
 			<?php endif; ?>
 
 			<?php if ( ! empty( $selectable_fees ) ) : ?>
 				<div class="selectable-fees">
+					<strong><?php esc_html_e( 'Below you can configure specific fees for this ticket.', 'event-tickets' ); ?></strong>
 					<select
 						class="tribe-dropdown"
 						name="ticket_order_modifier_fees[]"
@@ -52,7 +56,7 @@ if ( empty( $automatic_fees ) && empty( $selectable_fees ) ) {
 						<?php foreach ( $selectable_fees as $fee ) : ?>
 							<option
 								value="<?php echo esc_attr( $fee->id ); ?>" <?php selected( in_array( $fee->id, $related_fee_ids ) ); ?>>
-								<?php echo esc_html( $fee->display_name ); ?>
+								<?php echo esc_html( $fee->display_name . ' (' . $fee->raw_amount . ( $fee->sub_type === 'percent' ? '%' : '' ) . ')' ); ?>
 							</option>
 						<?php endforeach; ?>
 					</select>
