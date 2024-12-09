@@ -98,7 +98,6 @@ class Controller extends Controller_Contract {
 			'tec_tickets_seating_timer_token_object_id_entries',
 			[ $this, 'filter_timer_token_object_id_entries' ],
 		);
-		add_filter( 'get_post_metadata', [ $this, 'filter_stock_meta_value' ], 10, 4 );
 		add_filter( 'tribe_tickets_ticket_inventory', [ $this, 'get_seated_ticket_inventory' ], 10, 3 );
 		add_filter( 'tec_tickets_get_ticket_counts', [ $this, 'set_event_stock_counts' ], 10, 2 );
 		add_filter( 'update_post_metadata', [ $this, 'prevent_capacity_saves_without_service' ], 1, 4 );
@@ -125,20 +124,6 @@ class Controller extends Controller_Contract {
 		remove_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ], 10 );
 		remove_action( 'before_delete_post', [ $this, 'restock_ticket_on_attendee_deletion' ] );
 		remove_action( 'wp_trash_post', [ $this, 'restock_ticket_on_attendee_trash' ] );
-	
-	public function filter_stock_meta_value( $meta, $object_id, $meta_key, $single ) {
-		if ( $meta_key !== Ticket::$stock_meta_key ) {
-			return $meta;
-		}
-		
-		$seat_type = get_post_meta( $object_id, Meta::META_KEY_SEAT_TYPE, true );
-		
-		if ( ! $seat_type ) {
-			return $meta;
-		}
-		
-		return $meta;
-	}
 	}
 
 	/**
