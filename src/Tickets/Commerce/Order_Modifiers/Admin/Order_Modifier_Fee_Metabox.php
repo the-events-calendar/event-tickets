@@ -252,7 +252,7 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	 *
 	 * @return object The formatted fee object.
 	 */
-	public function format_fee_for_display( Object $fee ): Object {
+	public function format_fee_for_display( object $fee ): object {
 		if ( ! isset( $fee->raw_amount ) ) {
 			return $fee;
 		}
