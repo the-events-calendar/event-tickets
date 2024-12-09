@@ -45,6 +45,60 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 
 		add_filter( 'tribe_rest_event_data', [ $this, 'rest_event_data_add_attendance' ], 10, 2 );
 		add_filter( 'tribe_rest_events_archive_data', [ $this, 'rest_events_archive_add_attendance' ], 10, 2 );
+
+		add_filter( 'tec_tickets_rest_api_archive_results', [ $this, 'filter_out_tickets_on_unauthorized' ], 10, 2 );
+		add_filter( 'tribe_rest_single_ticket_data', [ $this, 'filter_out_single_ticket_data_on_unauthorized' ], 10, 2 );
+	}
+
+	/**
+	 * Filters out single ticket data that unauthorized users should not see.
+	 *
+	 * @since 5.17.0.1
+	 *
+	 * @param array $ticket_data
+	 * @param WP_REST_Request $request
+	 *
+	 * @return array
+	 */
+	public function filter_out_single_ticket_data_on_unauthorized( array $ticket_data, WP_REST_Request $request ): array {
+		if ( $this->request_has_manage_access() ) {
+			return $ticket_data;
+		}
+
+		$ticket_validator = tribe( 'tickets.rest-v1.validator' );
+
+		if ( $ticket_validator->should_see_ticket( $ticket_data['post_id'] ?? 0, $request ) ) {
+			return $ticket_data;
+		}
+
+		return $ticket_validator->remove_ticket_data( $ticket_data );
+	}
+	/**
+	 * Filters out tickets that unauthorized users should not see.
+	 *
+	 * @since 5.17.0.1
+	 *
+	 * @param array           $tickets The tickets to filter.
+	 * @param WP_REST_Request $request The request object.
+	 *
+	 * @return array The filtered tickets.
+	 */
+	public function filter_out_tickets_on_unauthorized( array $tickets, WP_REST_Request $request ) : array {
+		if ( $this->request_has_manage_access() ) {
+			return $tickets;
+		}
+
+		$ticket_validator = tribe( 'tickets.rest-v1.validator' );
+
+		foreach ( $tickets as $offset => $ticket ) {
+			if ( $ticket_validator->should_see_ticket( $ticket['post_id'] ?? 0, $request ) ) {
+				continue;
+			}
+
+			$tickets[ $offset ] = $ticket_validator->remove_ticket_data( $ticket );
+		}
+
+		return $tickets;
 	}
 
 	/**

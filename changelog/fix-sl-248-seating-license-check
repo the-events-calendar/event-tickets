@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Hide seating reservation settings when seating license is not valid. [SL-248]

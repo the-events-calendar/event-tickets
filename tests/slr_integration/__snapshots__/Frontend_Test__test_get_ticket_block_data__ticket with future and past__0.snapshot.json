@@ -10,7 +10,8 @@
                     "name": "Test TC ticket for {{post_id}}",
                     "price": "20",
                     "description": "Test TC ticket description for {{post_id}}",
-                    "dateInRange": false
+                    "dateInRange": false,
+                    "maxLimit": 100
                 }
             ]
         },
@@ -22,7 +23,8 @@
                     "name": "Test TC ticket for {{post_id}}",
                     "price": "10",
                     "description": "Test TC ticket description for {{post_id}}",
-                    "dateInRange": false
+                    "dateInRange": false,
+                    "maxLimit": 100
                 }
             ]
         }

@@ -219,7 +219,16 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 		$data['rest_url']    = add_query_arg( $query_args, $main->get_url( '/tickets/' ) );
 		$data['total']       = $found;
 		$data['total_pages'] = $total_pages;
-		$data['tickets']     = $tickets;
+
+		/**
+		 * Filters the tickets returned by the REST API.
+		 *
+		 * @since 5.17.0.1
+		 *
+		 * @param array           $tickets The tickets returned by the REST API.
+		 * @param WP_REST_Request $request The request object.
+		 */
+		$data['tickets'] = apply_filters( 'tec_tickets_rest_api_archive_results', $tickets, $request );
 
 		$headers = array(
 			'X-ET-TOTAL'       => $data['total'],

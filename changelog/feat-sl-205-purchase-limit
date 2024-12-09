@@ -1,0 +1,4 @@
+Significance: minor
+Type: feat
+
+Add support for max ticket purchase limit filter with seating tickets. [SL-205]
