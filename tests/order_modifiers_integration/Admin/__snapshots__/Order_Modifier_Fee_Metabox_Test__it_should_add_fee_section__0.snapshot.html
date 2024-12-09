@@ -145,13 +145,16 @@
 
 		
 							<div class="automatic-fees">
-					<strong>The following fees will be automatically applied:</strong>
-					<ul>
-													<li>test fee 2</li>
-											</ul>
-				</div>
+					<strong>The fees below automatically apply to all tickets.</strong>
+											<div class="ticket_order_modifier_fee_automatic">
+							<input id="tec-ticket-fees-{EVENT_ID}-{FEE_ID_2}" value="{FEE_ID_2}" type="checkbox" disabled="true" checked="true">
+							<label for="tec-ticket-fees-{EVENT_ID}-{FEE_ID_2}">
+								test fee 2 (3.26)							</label>
+						</div>
+									</div>
 			
 							<div class="selectable-fees">
+					<strong>Below you can configure specific fees for this ticket.</strong>
 					<select
 						class="tribe-dropdown"
 						name="ticket_order_modifier_fees[]"
@@ -165,8 +168,8 @@
 						<option value="">Select fees</option>
 
 													<option
-								value="{FEE_ID}"  selected='selected'>
-								test fee 1							</option>
+								value="{FEE_ID_1}"  selected='selected'>
+								test fee 1 (5.27)							</option>
 											</select>
 				</div>
 			
