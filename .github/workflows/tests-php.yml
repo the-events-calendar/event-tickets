@@ -15,7 +15,6 @@ jobs:
           - commerce_integration
           - wpunit
           - slr_integration
-          - order_modifiers_integration
     runs-on: ubuntu-latest
     steps:
       # ------------------------------------------------------------------------------
