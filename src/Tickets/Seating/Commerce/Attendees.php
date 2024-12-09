@@ -77,6 +77,8 @@ class Attendees {
 					AND attendee_for_event.meta_key in ({$attendee_to_event_meta_keys_in})
 				JOIN %i AS attendee_for_ticket ON attendee.ID = attendee_for_ticket.post_id
 					AND attendee_for_ticket.meta_key in ({$attendee_to_ticket_meta_keys_in})
+				JOIN %i AS attendee_reservation_meta ON attendee.ID = attendee_reservation_meta.post_id
+					AND attendee_reservation_meta.meta_key = %s
 				WHERE attendee.post_type IN ({$attendee_types_in})
 				AND attendee.post_status != 'trash'
 				AND attendee_for_event.meta_value = %d
@@ -93,6 +95,8 @@ class Attendees {
 				$wpdb->posts,
 				$wpdb->postmeta,
 				$wpdb->postmeta,
+				$wpdb->postmeta,
+				Meta::META_KEY_RESERVATION_ID,
 				$post_id,
 				$wpdb->posts,
 				$wpdb->postmeta,
