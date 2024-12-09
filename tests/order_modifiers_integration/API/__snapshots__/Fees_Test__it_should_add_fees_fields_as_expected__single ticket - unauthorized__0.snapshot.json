@@ -1,0 +1,873 @@
+[
+    {
+        "description": "Test TC ticket description for {EVENT_ID}",
+        "capacity": 100,
+        "on_sale": false,
+        "iac": "none",
+        "price_suffix": null,
+        "post_id": "{EVENT_ID}",
+        "provider": "tc",
+        "id": "{TICKET_ID}",
+        "type": "default",
+        "global_id": "wordpress.test?type=tc&id={TICKET_ID}",
+        "global_id_lineage": [
+            "wordpress.test?type=tc&id={TICKET_ID}"
+        ],
+        "author": "0",
+        "status": "publish",
+        "date": "2022-06-13 13:25:32",
+        "date_utc": "2022-06-13 17:25:32",
+        "modified": "2022-06-13 13:25:32",
+        "modified_utc": "2022-06-13 17:25:32",
+        "title": "Test TC ticket for {EVENT_ID}",
+        "image": false,
+        "available_from": "2020-01-02 08:00:00",
+        "available_from_details": {
+            "year": "2020",
+            "month": "01",
+            "day": "02",
+            "hour": "08",
+            "minutes": "00",
+            "seconds": "00"
+        },
+        "available_until": "2050-03-01 20:00:00",
+        "available_until_details": {
+            "year": "2050",
+            "month": "03",
+            "day": "01",
+            "hour": "20",
+            "minutes": "00",
+            "seconds": "00"
+        },
+        "capacity_details": {
+            "available_percentage": 100,
+            "available": 100
+        },
+        "is_available": true,
+        "cost": "$100.00",
+        "cost_details": {
+            "currency_symbol": "$",
+            "currency_position": "prefix",
+            "values": [
+                "100"
+            ],
+            "suffix": null,
+            "currency_decimal_separator": ".",
+            "currency_decimal_numbers": 2,
+            "currency_thousand_separator": ","
+        },
+        "sale_price_data": {
+            "enabled": "",
+            "sale_price": "",
+            "start_date": "",
+            "end_date": ""
+        },
+        "supports_attendee_information": false,
+        "attendees": [],
+        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}"
+    },
+    {
+        "description": "Test TC ticket description for {EVENT_ID}",
+        "capacity": 100,
+        "on_sale": false,
+        "iac": "none",
+        "price_suffix": null,
+        "post_id": "{EVENT_ID}",
+        "provider": "tc",
+        "id": "{TICKET_ID}",
+        "type": "default",
+        "global_id": "wordpress.test?type=tc&id={TICKET_ID}",
+        "global_id_lineage": [
+            "wordpress.test?type=tc&id={TICKET_ID}"
+        ],
+        "author": "0",
+        "status": "publish",
+        "date": "2022-06-13 13:25:32",
+        "date_utc": "2022-06-13 17:25:32",
+        "modified": "2022-06-13 13:25:32",
+        "modified_utc": "2022-06-13 17:25:32",
+        "title": "Test TC ticket for {EVENT_ID}",
+        "image": false,
+        "available_from": "2020-01-02 08:00:00",
+        "available_from_details": {
+            "year": "2020",
+            "month": "01",
+            "day": "02",
+            "hour": "08",
+            "minutes": "00",
+            "seconds": "00"
+        },
+        "available_until": "2050-03-01 20:00:00",
+        "available_until_details": {
+            "year": "2050",
+            "month": "03",
+            "day": "01",
+            "hour": "20",
+            "minutes": "00",
+            "seconds": "00"
+        },
+        "capacity_details": {
+            "available_percentage": 100,
+            "available": 100
+        },
+        "is_available": true,
+        "cost": "$200.00",
+        "cost_details": {
+            "currency_symbol": "$",
+            "currency_position": "prefix",
+            "values": [
+                "200"
+            ],
+            "suffix": null,
+            "currency_decimal_separator": ".",
+            "currency_decimal_numbers": 2,
+            "currency_thousand_separator": ","
+        },
+        "sale_price_data": {
+            "enabled": "",
+            "sale_price": "",
+            "start_date": "",
+            "end_date": ""
+        },
+        "supports_attendee_information": false,
+        "attendees": [],
+        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}"
+    },
+    {
+        "description": "Test TC ticket description for {EVENT_ID}",
+        "capacity": 100,
+        "on_sale": false,
+        "iac": "none",
+        "price_suffix": null,
+        "post_id": "{EVENT_ID}",
+        "provider": "tc",
+        "id": "{TICKET_ID}",
+        "type": "default",
+        "global_id": "wordpress.test?type=tc&id={TICKET_ID}",
+        "global_id_lineage": [
+            "wordpress.test?type=tc&id={TICKET_ID}"
+        ],
+        "author": "0",
+        "status": "publish",
+        "date": "2022-06-13 13:25:32",
+        "date_utc": "2022-06-13 17:25:32",
+        "modified": "2022-06-13 13:25:32",
+        "modified_utc": "2022-06-13 17:25:32",
+        "title": "Test TC ticket for {EVENT_ID}",
+        "image": false,
+        "available_from": "2020-01-02 08:00:00",
+        "available_from_details": {
+            "year": "2020",
+            "month": "01",
+            "day": "02",
+            "hour": "08",
+            "minutes": "00",
+            "seconds": "00"
+        },
+        "available_until": "2050-03-01 20:00:00",
+        "available_until_details": {
+            "year": "2050",
+            "month": "03",
+            "day": "01",
+            "hour": "20",
+            "minutes": "00",
+            "seconds": "00"
+        },
+        "capacity_details": {
+            "available_percentage": 100,
+            "available": 100
+        },
+        "is_available": true,
+        "cost": "$300.00",
+        "cost_details": {
+            "currency_symbol": "$",
+            "currency_position": "prefix",
+            "values": [
+                "300"
+            ],
+            "suffix": null,
+            "currency_decimal_separator": ".",
+            "currency_decimal_numbers": 2,
+            "currency_thousand_separator": ","
+        },
+        "sale_price_data": {
+            "enabled": "",
+            "sale_price": "",
+            "start_date": "",
+            "end_date": ""
+        },
+        "supports_attendee_information": false,
+        "attendees": [],
+        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}"
+    },
+    {
+        "description": "No Access",
+        "capacity": 0,
+        "on_sale": null,
+        "iac": "No Access",
+        "price_suffix": "No Access",
+        "post_id": 0,
+        "provider": "No Access",
+        "id": 0,
+        "type": "No Access",
+        "global_id": "No Access",
+        "global_id_lineage": [
+            "No Access"
+        ],
+        "author": 0,
+        "status": "No Access",
+        "date": "No Access",
+        "date_utc": "No Access",
+        "modified": "No Access",
+        "modified_utc": "No Access",
+        "title": "No Access",
+        "image": null,
+        "available_from": "No Access",
+        "available_from_details": {
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minutes": 0,
+            "seconds": 0
+        },
+        "available_until": "No Access",
+        "available_until_details": {
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minutes": 0,
+            "seconds": 0
+        },
+        "capacity_details": {
+            "available_percentage": 0,
+            "available": 0
+        },
+        "is_available": null,
+        "cost": "No Access",
+        "cost_details": {
+            "currency_symbol": "No Access",
+            "currency_position": "No Access",
+            "values": [
+                0
+            ],
+            "suffix": "No Access",
+            "currency_decimal_separator": "No Access",
+            "currency_decimal_numbers": 0,
+            "currency_thousand_separator": "No Access"
+        },
+        "sale_price_data": {
+            "enabled": "No Access",
+            "sale_price": "No Access",
+            "start_date": "No Access",
+            "end_date": "No Access"
+        },
+        "supports_attendee_information": null,
+        "attendees": [],
+        "rest_url": "No Access"
+    },
+    {
+        "description": "No Access",
+        "capacity": 0,
+        "on_sale": null,
+        "iac": "No Access",
+        "price_suffix": "No Access",
+        "post_id": 0,
+        "provider": "No Access",
+        "id": 0,
+        "type": "No Access",
+        "global_id": "No Access",
+        "global_id_lineage": [
+            "No Access"
+        ],
+        "author": 0,
+        "status": "No Access",
+        "date": "No Access",
+        "date_utc": "No Access",
+        "modified": "No Access",
+        "modified_utc": "No Access",
+        "title": "No Access",
+        "image": null,
+        "available_from": "No Access",
+        "available_from_details": {
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minutes": 0,
+            "seconds": 0
+        },
+        "available_until": "No Access",
+        "available_until_details": {
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minutes": 0,
+            "seconds": 0
+        },
+        "capacity_details": {
+            "available_percentage": 0,
+            "available": 0
+        },
+        "is_available": null,
+        "cost": "No Access",
+        "cost_details": {
+            "currency_symbol": "No Access",
+            "currency_position": "No Access",
+            "values": [
+                0
+            ],
+            "suffix": "No Access",
+            "currency_decimal_separator": "No Access",
+            "currency_decimal_numbers": 0,
+            "currency_thousand_separator": "No Access"
+        },
+        "sale_price_data": {
+            "enabled": "No Access",
+            "sale_price": "No Access",
+            "start_date": "No Access",
+            "end_date": "No Access"
+        },
+        "supports_attendee_information": null,
+        "attendees": [],
+        "rest_url": "No Access"
+    },
+    {
+        "description": "No Access",
+        "capacity": 0,
+        "on_sale": null,
+        "iac": "No Access",
+        "price_suffix": "No Access",
+        "post_id": 0,
+        "provider": "No Access",
+        "id": 0,
+        "type": "No Access",
+        "global_id": "No Access",
+        "global_id_lineage": [
+            "No Access"
+        ],
+        "author": 0,
+        "status": "No Access",
+        "date": "No Access",
+        "date_utc": "No Access",
+        "modified": "No Access",
+        "modified_utc": "No Access",
+        "title": "No Access",
+        "image": null,
+        "available_from": "No Access",
+        "available_from_details": {
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minutes": 0,
+            "seconds": 0
+        },
+        "available_until": "No Access",
+        "available_until_details": {
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minutes": 0,
+            "seconds": 0
+        },
+        "capacity_details": {
+            "available_percentage": 0,
+            "available": 0
+        },
+        "is_available": null,
+        "cost": "No Access",
+        "cost_details": {
+            "currency_symbol": "No Access",
+            "currency_position": "No Access",
+            "values": [
+                0
+            ],
+            "suffix": "No Access",
+            "currency_decimal_separator": "No Access",
+            "currency_decimal_numbers": 0,
+            "currency_thousand_separator": "No Access"
+        },
+        "sale_price_data": {
+            "enabled": "No Access",
+            "sale_price": "No Access",
+            "start_date": "No Access",
+            "end_date": "No Access"
+        },
+        "supports_attendee_information": null,
+        "attendees": [],
+        "rest_url": "No Access"
+    },
+    {
+        "description": "Test TC ticket description for {EVENT_ID}",
+        "capacity": 100,
+        "on_sale": false,
+        "iac": "none",
+        "price_suffix": null,
+        "post_id": "{EVENT_ID}",
+        "provider": "tc",
+        "id": "{TICKET_ID}",
+        "type": "default",
+        "global_id": "wordpress.test?type=tc&id={TICKET_ID}",
+        "global_id_lineage": [
+            "wordpress.test?type=tc&id={TICKET_ID}"
+        ],
+        "author": "0",
+        "status": "publish",
+        "date": "2022-06-13 13:25:32",
+        "date_utc": "2022-06-13 17:25:32",
+        "modified": "2022-06-13 13:25:32",
+        "modified_utc": "2022-06-13 17:25:32",
+        "title": "Test TC ticket for {EVENT_ID}",
+        "image": false,
+        "available_from": "2020-01-02 08:00:00",
+        "available_from_details": {
+            "year": "2020",
+            "month": "01",
+            "day": "02",
+            "hour": "08",
+            "minutes": "00",
+            "seconds": "00"
+        },
+        "available_until": "2050-03-01 20:00:00",
+        "available_until_details": {
+            "year": "2050",
+            "month": "03",
+            "day": "01",
+            "hour": "20",
+            "minutes": "00",
+            "seconds": "00"
+        },
+        "capacity_details": {
+            "available_percentage": 100,
+            "available": 100
+        },
+        "is_available": true,
+        "cost": "$300.00",
+        "cost_details": {
+            "currency_symbol": "$",
+            "currency_position": "prefix",
+            "values": [
+                "300"
+            ],
+            "suffix": null,
+            "currency_decimal_separator": ".",
+            "currency_decimal_numbers": 2,
+            "currency_thousand_separator": ","
+        },
+        "sale_price_data": {
+            "enabled": "",
+            "sale_price": "",
+            "start_date": "",
+            "end_date": ""
+        },
+        "supports_attendee_information": false,
+        "attendees": [],
+        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}"
+    },
+    {
+        "description": "Test TC ticket description for {EVENT_ID}",
+        "capacity": 100,
+        "on_sale": false,
+        "iac": "none",
+        "price_suffix": null,
+        "post_id": "{EVENT_ID}",
+        "provider": "tc",
+        "id": "{TICKET_ID}",
+        "type": "default",
+        "global_id": "wordpress.test?type=tc&id={TICKET_ID}",
+        "global_id_lineage": [
+            "wordpress.test?type=tc&id={TICKET_ID}"
+        ],
+        "author": "0",
+        "status": "publish",
+        "date": "2022-06-13 13:25:32",
+        "date_utc": "2022-06-13 17:25:32",
+        "modified": "2022-06-13 13:25:32",
+        "modified_utc": "2022-06-13 17:25:32",
+        "title": "Test TC ticket for {EVENT_ID}",
+        "image": false,
+        "available_from": "2020-01-02 08:00:00",
+        "available_from_details": {
+            "year": "2020",
+            "month": "01",
+            "day": "02",
+            "hour": "08",
+            "minutes": "00",
+            "seconds": "00"
+        },
+        "available_until": "2050-03-01 20:00:00",
+        "available_until_details": {
+            "year": "2050",
+            "month": "03",
+            "day": "01",
+            "hour": "20",
+            "minutes": "00",
+            "seconds": "00"
+        },
+        "capacity_details": {
+            "available_percentage": 100,
+            "available": 100
+        },
+        "is_available": true,
+        "cost": "$600.00",
+        "cost_details": {
+            "currency_symbol": "$",
+            "currency_position": "prefix",
+            "values": [
+                "600"
+            ],
+            "suffix": null,
+            "currency_decimal_separator": ".",
+            "currency_decimal_numbers": 2,
+            "currency_thousand_separator": ","
+        },
+        "sale_price_data": {
+            "enabled": "",
+            "sale_price": "",
+            "start_date": "",
+            "end_date": ""
+        },
+        "supports_attendee_information": false,
+        "attendees": [],
+        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}"
+    },
+    {
+        "description": "Test TC ticket description for {EVENT_ID}",
+        "capacity": 100,
+        "on_sale": false,
+        "iac": "none",
+        "price_suffix": null,
+        "post_id": "{EVENT_ID}",
+        "provider": "tc",
+        "id": "{TICKET_ID}",
+        "type": "default",
+        "global_id": "wordpress.test?type=tc&id={TICKET_ID}",
+        "global_id_lineage": [
+            "wordpress.test?type=tc&id={TICKET_ID}"
+        ],
+        "author": "0",
+        "status": "publish",
+        "date": "2022-06-13 13:25:32",
+        "date_utc": "2022-06-13 17:25:32",
+        "modified": "2022-06-13 13:25:32",
+        "modified_utc": "2022-06-13 17:25:32",
+        "title": "Test TC ticket for {EVENT_ID}",
+        "image": false,
+        "available_from": "2020-01-02 08:00:00",
+        "available_from_details": {
+            "year": "2020",
+            "month": "01",
+            "day": "02",
+            "hour": "08",
+            "minutes": "00",
+            "seconds": "00"
+        },
+        "available_until": "2050-03-01 20:00:00",
+        "available_until_details": {
+            "year": "2050",
+            "month": "03",
+            "day": "01",
+            "hour": "20",
+            "minutes": "00",
+            "seconds": "00"
+        },
+        "capacity_details": {
+            "available_percentage": 100,
+            "available": 100
+        },
+        "is_available": true,
+        "cost": "$900.00",
+        "cost_details": {
+            "currency_symbol": "$",
+            "currency_position": "prefix",
+            "values": [
+                "900"
+            ],
+            "suffix": null,
+            "currency_decimal_separator": ".",
+            "currency_decimal_numbers": 2,
+            "currency_thousand_separator": ","
+        },
+        "sale_price_data": {
+            "enabled": "",
+            "sale_price": "",
+            "start_date": "",
+            "end_date": ""
+        },
+        "supports_attendee_information": false,
+        "attendees": [],
+        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}"
+    },
+    {
+        "description": "No Access",
+        "capacity": 0,
+        "on_sale": null,
+        "iac": "No Access",
+        "price_suffix": "No Access",
+        "post_id": 0,
+        "provider": "No Access",
+        "id": 0,
+        "type": "No Access",
+        "global_id": "No Access",
+        "global_id_lineage": [
+            "No Access"
+        ],
+        "author": 0,
+        "status": "No Access",
+        "date": "No Access",
+        "date_utc": "No Access",
+        "modified": "No Access",
+        "modified_utc": "No Access",
+        "title": "No Access",
+        "image": null,
+        "available_from": "No Access",
+        "available_from_details": {
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minutes": 0,
+            "seconds": 0
+        },
+        "available_until": "No Access",
+        "available_until_details": {
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minutes": 0,
+            "seconds": 0
+        },
+        "capacity_details": {
+            "available_percentage": 0,
+            "available": 0
+        },
+        "is_available": null,
+        "cost": "No Access",
+        "cost_details": {
+            "currency_symbol": "No Access",
+            "currency_position": "No Access",
+            "values": [
+                0
+            ],
+            "suffix": "No Access",
+            "currency_decimal_separator": "No Access",
+            "currency_decimal_numbers": 0,
+            "currency_thousand_separator": "No Access"
+        },
+        "sale_price_data": {
+            "enabled": "No Access",
+            "sale_price": "No Access",
+            "start_date": "No Access",
+            "end_date": "No Access"
+        },
+        "supports_attendee_information": null,
+        "attendees": [],
+        "rest_url": "No Access"
+    },
+    {
+        "description": "No Access",
+        "capacity": 0,
+        "on_sale": null,
+        "iac": "No Access",
+        "price_suffix": "No Access",
+        "post_id": 0,
+        "provider": "No Access",
+        "id": 0,
+        "type": "No Access",
+        "global_id": "No Access",
+        "global_id_lineage": [
+            "No Access"
+        ],
+        "author": 0,
+        "status": "No Access",
+        "date": "No Access",
+        "date_utc": "No Access",
+        "modified": "No Access",
+        "modified_utc": "No Access",
+        "title": "No Access",
+        "image": null,
+        "available_from": "No Access",
+        "available_from_details": {
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minutes": 0,
+            "seconds": 0
+        },
+        "available_until": "No Access",
+        "available_until_details": {
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minutes": 0,
+            "seconds": 0
+        },
+        "capacity_details": {
+            "available_percentage": 0,
+            "available": 0
+        },
+        "is_available": null,
+        "cost": "No Access",
+        "cost_details": {
+            "currency_symbol": "No Access",
+            "currency_position": "No Access",
+            "values": [
+                0
+            ],
+            "suffix": "No Access",
+            "currency_decimal_separator": "No Access",
+            "currency_decimal_numbers": 0,
+            "currency_thousand_separator": "No Access"
+        },
+        "sale_price_data": {
+            "enabled": "No Access",
+            "sale_price": "No Access",
+            "start_date": "No Access",
+            "end_date": "No Access"
+        },
+        "supports_attendee_information": null,
+        "attendees": [],
+        "rest_url": "No Access"
+    },
+    {
+        "description": "No Access",
+        "capacity": 0,
+        "on_sale": null,
+        "iac": "No Access",
+        "price_suffix": "No Access",
+        "post_id": 0,
+        "provider": "No Access",
+        "id": 0,
+        "type": "No Access",
+        "global_id": "No Access",
+        "global_id_lineage": [
+            "No Access"
+        ],
+        "author": 0,
+        "status": "No Access",
+        "date": "No Access",
+        "date_utc": "No Access",
+        "modified": "No Access",
+        "modified_utc": "No Access",
+        "title": "No Access",
+        "image": null,
+        "available_from": "No Access",
+        "available_from_details": {
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minutes": 0,
+            "seconds": 0
+        },
+        "available_until": "No Access",
+        "available_until_details": {
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minutes": 0,
+            "seconds": 0
+        },
+        "capacity_details": {
+            "available_percentage": 0,
+            "available": 0
+        },
+        "is_available": null,
+        "cost": "No Access",
+        "cost_details": {
+            "currency_symbol": "No Access",
+            "currency_position": "No Access",
+            "values": [
+                0
+            ],
+            "suffix": "No Access",
+            "currency_decimal_separator": "No Access",
+            "currency_decimal_numbers": 0,
+            "currency_thousand_separator": "No Access"
+        },
+        "sale_price_data": {
+            "enabled": "No Access",
+            "sale_price": "No Access",
+            "start_date": "No Access",
+            "end_date": "No Access"
+        },
+        "supports_attendee_information": null,
+        "attendees": [],
+        "rest_url": "No Access"
+    },
+    {
+        "description": "Test TC ticket description for {EVENT_ID}",
+        "capacity": 100,
+        "on_sale": false,
+        "iac": "none",
+        "price_suffix": null,
+        "post_id": "{EVENT_ID}",
+        "provider": "tc",
+        "id": "{TICKET_ID}",
+        "type": "series_pass",
+        "global_id": "wordpress.test?type=tc&id={TICKET_ID}",
+        "global_id_lineage": [
+            "wordpress.test?type=tc&id={TICKET_ID}"
+        ],
+        "author": "0",
+        "status": "publish",
+        "date": "2022-06-13 13:25:32",
+        "date_utc": "2022-06-13 17:25:32",
+        "modified": "2022-06-13 13:25:32",
+        "modified_utc": "2022-06-13 17:25:32",
+        "title": "Test TC ticket for {EVENT_ID}",
+        "image": false,
+        "available_from": "2020-01-02 08:00:00",
+        "available_from_details": {
+            "year": "2020",
+            "month": "01",
+            "day": "02",
+            "hour": "08",
+            "minutes": "00",
+            "seconds": "00"
+        },
+        "available_until": "2050-03-01 20:00:00",
+        "available_until_details": {
+            "year": "2050",
+            "month": "03",
+            "day": "01",
+            "hour": "20",
+            "minutes": "00",
+            "seconds": "00"
+        },
+        "capacity_details": {
+            "available_percentage": 100,
+            "available": 100
+        },
+        "is_available": true,
+        "cost": "$1.00",
+        "cost_details": {
+            "currency_symbol": "$",
+            "currency_position": "prefix",
+            "values": [
+                "1"
+            ],
+            "suffix": null,
+            "currency_decimal_separator": ".",
+            "currency_decimal_numbers": 2,
+            "currency_thousand_separator": ","
+        },
+        "sale_price_data": {
+            "enabled": "",
+            "sale_price": "",
+            "start_date": "",
+            "end_date": ""
+        },
+        "supports_attendee_information": false,
+        "attendees": [],
+        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}"
+    }
+]

@@ -825,6 +825,33 @@ p.description {
 	}
 }
 
+#ticket_order_modifier_ticket_fees {
+	width: 70%;
+
+	.ticket_form_right {
+		max-width: 324px;
+	}
+
+	.automatic-fees,
+	.selectable-fees {
+		margin-bottom: var(--tec-spacer-1);
+
+		strong {
+			display: inline-block;
+			margin-bottom: var(--tec-spacer-1);
+		}
+
+		.tribe-dropdown .select2-selection--multiple .select2-selection__rendered {
+			border: 0;
+		}
+
+		.select2-container--default.select2-container--open.select2-container--below .select2-selection--multiple {
+			border-bottom-left-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+	}
+}
+
 .tec-tickets-price {
 	ins {
 		text-decoration: none;

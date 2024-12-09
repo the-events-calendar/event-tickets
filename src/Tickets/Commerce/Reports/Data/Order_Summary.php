@@ -12,6 +12,7 @@ namespace TEC\Tickets\Commerce\Reports\Data;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Ticket;
+use TEC\Tickets\Commerce\Traits\Is_Ticket;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets;
@@ -24,6 +25,9 @@ use Tribe__Tickets__Tickets;
  * @package TEC\Tickets\Commerce\Reports\Data
  */
 class Order_Summary {
+
+	use Is_Ticket;
+
 	/**
 	 * @since 5.6.7
 	 *
@@ -184,8 +188,8 @@ class Order_Summary {
 		$orders = tec_tc_orders()->by_args( $args )->all();
 
 		foreach ( $orders as $order ) {
-			foreach ( $order->items as $ticket_id => $item ) {
-				$this->process_order_sales_data( $order->status_slug, $ticket_id, $item );
+			foreach ( $order->items as $item ) {
+				$this->process_order_sales_data( $order->status_slug, $item );
 			}
 		}
 	}
@@ -196,11 +200,15 @@ class Order_Summary {
 	 * @since 5.9.0
 	 *
 	 * @param string            $status_slug The status slug.
-	 * @param int               $ticket_id   The ticket ID.
 	 * @param array<string,int> $item The ticket item data.
 	 */
-	protected function process_order_sales_data( string $status_slug, int $ticket_id, $item ): void {
-		$tickets = $this->get_tickets();
+	protected function process_order_sales_data( string $status_slug, $item ): void {
+		if ( ! $this->is_ticket( $item ) ) {
+			return;
+		}
+
+		$ticket_id = $item['ticket_id'];
+		$tickets   = $this->get_tickets();
 
 		if ( ! isset( $tickets[ $ticket_id ] ) || ! $this->should_include_event_sales_data( $tickets[ $ticket_id ], $item ) ) {
 			return;

@@ -39,6 +39,7 @@ class Order_Model extends Base {
 
 			$items               = maybe_unserialize( Arr::get( $post_meta, [ Order::$items_meta_key, 0 ] ) );
 			$total_value         = Arr::get( $post_meta, [ Order::$total_value_meta_key, 0 ] );
+			$subtotal            = Arr::get( $post_meta, [ Order::$subtotal_value_meta_key, 0 ] );
 			$hash                = Arr::get( $post_meta, [ Order::$hash_meta_key, 0 ] );
 			$currency            = Arr::get( $post_meta, [ Order::$currency_meta_key, 0 ], 'USD' );
 			$gateway_slug        = Arr::get( $post_meta, [ Order::$gateway_meta_key, 0 ] );
@@ -69,6 +70,7 @@ class Order_Model extends Base {
 				'gateway_order_id'    => $gateway_order_id,
 				'gateway_payload'     => $gateway_payload,
 				'total_value'         => Commerce\Utils\Value::create( $total_value ),
+				'subtotal'            => Commerce\Utils\Value::create( $subtotal ),
 				'total'               => $total_value,
 				'currency'            => $currency,
 				'purchaser'           => [

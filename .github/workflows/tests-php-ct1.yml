@@ -9,6 +9,7 @@ jobs:
         suite:
           - ct1_integration
           - slr_ecp_integration
+          - order_modifiers_integration
     runs-on: ubuntu-latest
     steps:
       # ------------------------------------------------------------------------------
