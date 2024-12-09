@@ -17,5 +17,6 @@ modules:
       title: 'Event Tickets Order Modifier Tests'
       plugins:
         - the-events-calendar/the-events-calendar.php
+        - events-pro/events-calendar-pro.php
         - event-tickets/event-tickets.php
       theme: twentytwenty

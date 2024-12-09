@@ -10,7 +10,7 @@
  * @package TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Paypal
  */
 
-namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Paypal;
+namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal;
 
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Abstract_Fees;
 use WP_Post;

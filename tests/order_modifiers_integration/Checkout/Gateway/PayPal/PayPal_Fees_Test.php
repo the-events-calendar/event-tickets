@@ -16,8 +16,10 @@ use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Tickets\Commerce\Cart as Commerce_Cart;
 use Tribe\Tickets\Test\Traits\With_No_Object_Storage;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Fees as BaseFees;
+use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
+use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 
-class Paypal_Fees_Test extends Controller_Test_Case {
+class PayPal_Fees_Test extends Controller_Test_Case {
 	use Ticket_Maker;
 	use Attendee_Maker;
 	use With_Tickets_Commerce;
@@ -26,6 +28,7 @@ class Paypal_Fees_Test extends Controller_Test_Case {
 	use Order_Maker;
 	use Fee_Creator;
 	use With_No_Object_Storage;
+	use Series_Pass_Factory;
 
 	protected string $controller_class = Fees::class;
 
@@ -35,7 +38,7 @@ class Paypal_Fees_Test extends Controller_Test_Case {
 	 * @after
 	 */
 	public function breakdown() {
-		$this->make_controller()->reset_fees_and_subtotal();
+		$this->test_services->get( $this->controller_class )->reset_fees_and_subtotal();
 	}
 
 	/**
@@ -130,6 +133,104 @@ class Paypal_Fees_Test extends Controller_Test_Case {
 		$this->assertCount( 3, $email_completed_listener_after);
 		$this->assertCount( 6, $email_purchase_listener_before);
 		$this->assertCount( 3, $email_purchase_listener_after);
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_calculate_fees_and_store_them_correctly_with_series() {
+		$series_id = static::factory()->post->create(
+			[
+				'post_type' => Series_Post_Type::POSTTYPE,
+			]
+		);
+
+		$series_pass_id = $this->create_tc_series_pass( $series_id, 60 )->ID;
+
+		$post = static::factory()->post->create();
+		$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
+		$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
+		$ticket_id_3 = $this->create_tc_ticket( $post, 30 );
+		$ticket_id_4 = $this->create_tc_ticket( $post, 40 );
+		$ticket_id_5 = $this->create_tc_ticket( $post, 50 );
+
+		$fee_for_all_1 = $this->create_fee_for_all( [ 'raw_amount' => 10, 'sub_type' => 'percent' ] );
+		$fee_for_all_2 = $this->create_fee_for_all( [ 'raw_amount' => 3, 'sub_type' => 'flat' ] );
+
+		$fee_per_ticket_1 = $this->create_fee_for_ticket( $ticket_id_1, [ 'raw_amount' => 2, 'sub_type' => 'percent' ] );
+		$this->add_fee_to_ticket( $fee_per_ticket_1, $ticket_id_3 );
+		$this->add_fee_to_ticket( $fee_per_ticket_1, $ticket_id_5 );
+
+		$fee_per_ticket_2 = $this->create_fee_for_ticket( $ticket_id_2, [ 'raw_amount' => 2.5, 'sub_type' => 'flat' ] );
+		$this->add_fee_to_ticket( $fee_per_ticket_2, $ticket_id_3 );
+		$this->add_fee_to_ticket( $fee_per_ticket_2, $series_pass_id );
+
+		$fee_per_ticket_3 = $this->create_fee_for_ticket( $ticket_id_3, [ 'raw_amount' => 5, 'sub_type' => 'percent' ] );
+
+		// Math time!
+		// Ticket 1: 10 + 10% + 3 + 2% = 10 + 1 + 3 + 0.2 = 14.20 // 6 fees
+		// Ticket 2: 20 + 10% + 3 + 2.5 = 20 + 2 + 3 + 2.5 = 27.50 // 9 fees
+		// Ticket 3: 30 + 10% + 3 + 2% + 2.5 + 5% = 30 + 3 + 3 + 0.6 + 2.5 + 1.5 = 40.60 // 20 fees
+		// Ticket 4: 40 + 10% + 3 = 40 + 4 + 3 = 47 // 10 fees
+		// Ticket 5: 50 + 10% + 3 + 2% = 50 + 5 + 3 + 1 = 59 // 18 fees
+		// Series  : 60 + 10% + 3 + 2.5 = 60 + 6 + 3 + 2.5 = 71.50 // 21 fees
+		// Calculated each ticket's price with fees applied.
+		// Now lets create an cart with different quantities of each ticket.
+
+		$this->test_services->register( BaseFees::class );
+		$this->make_controller()->register();
+
+		$cart = tribe( Commerce_Cart::class );
+
+		$cart->add_ticket( $ticket_id_1, 2 );
+		$cart->add_ticket( $ticket_id_2, 3 );
+		$cart->add_ticket( $ticket_id_3, 4 );
+		$cart->add_ticket( $ticket_id_4, 5 );
+		$cart->add_ticket( $ticket_id_5, 6 );
+		$cart->add_ticket( $series_pass_id, 7 );
+
+		$cart_total    = $cart->get_cart_total();
+		$cart_subtotal = $cart->get_cart_subtotal();
+
+		$cart->clear_cart();
+
+		$this->assertEquals(
+			2 * 10 + 3 * 20 + 4 * 30 + 5 * 40 + 6 * 50 + 7 * 60, // 1120
+			$cart_subtotal,
+			'Cart subtotal should correctly include only ticket price.'
+		);
+
+		// Assert the total value matches the expected total.
+		$this->assertEquals(
+			(float) number_format(2 * 14.2 + 3 * 27.5 + 4 * 40.6 + 5 * 47 + 6 * 59 + 7 * 71.50, 2, '.', '' ), // 1362.80
+			$cart_total,
+			'Cart total should correctly include ticket price and fee.'
+		);
+
+		$overrides['gateway'] = tribe( $this->gateway_class );
+
+		$order = $this->create_order( [
+			$ticket_id_1    => 2,
+			$ticket_id_2    => 3,
+			$ticket_id_3    => 4,
+			$ticket_id_4    => 5,
+			$ticket_id_5    => 6,
+			$series_pass_id => 7,
+		], $overrides );
+
+		$refreshed_order = tec_tc_get_order( $order->ID );
+
+		$this->assertEquals(
+			$cart_total,
+			$refreshed_order->total_value->get_decimal(),
+			'Order total should correctly include ticket price and fee.'
+		);
+
+		$this->assertEquals(
+			$cart_subtotal,
+			$refreshed_order->subtotal->get_decimal(),
+			'Order subtotal should correctly include ticket price and fee.'
+		);
 	}
 
 	/**

@@ -196,7 +196,7 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	 */
 	public function add_fee_section( int $post_id, ?int $ticket_id, string $ticket_type ): void {
 		// Bail if no ticket!
-		if ( ! in_array( $ticket_type, [ 'default', 'ticket' ], true ) ) {
+		if ( ! in_array( $ticket_type, [ 'default', 'ticket', 'series_pass' ], true ) ) {
 			return;
 		}
 
