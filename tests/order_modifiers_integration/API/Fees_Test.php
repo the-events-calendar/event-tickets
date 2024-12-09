@@ -17,6 +17,8 @@ use Tribe\Tests\Traits\With_Clock_Mock;
 use WP_REST_Response;
 use Tribe__Date_Utils as Dates;
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
+use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 
 class Fees_Test extends Controller_Test_Case {
 	use With_Uopz;
@@ -25,6 +27,7 @@ class Fees_Test extends Controller_Test_Case {
 	use Ticket_Maker;
 	use Create_Events;
 	use With_Clock_Mock;
+	use Series_Pass_Factory;
 
 	protected string $controller_class = Fees::class;
 
@@ -134,14 +137,14 @@ class Fees_Test extends Controller_Test_Case {
 		$controller = $this->make_controller();
 		[ $post_ids, $ticket_ids, $fee_ids, $fee_ids_per_ticket ] = $this->create_data();
 
-		$this->assertCount( 4, $post_ids );
-		$this->assertCount( 12, $ticket_ids );
-		$this->assertCount( 21, $fee_ids );
+		$this->assertCount( 5, $post_ids );
+		$this->assertCount( 13, $ticket_ids );
+		$this->assertCount( 23, $fee_ids );
 
 		foreach ( $ticket_ids as $k => $ticket_id ) {
 			$k = (int) $k;
 			$ticket_fees = $controller->get_fees_for_ticket( $ticket_id );
-			$this->assertCount( 20, $ticket_fees['available_fees'] );
+			$this->assertCount( 22, $ticket_fees['available_fees'] );
 			$this->assertCount( 1, $ticket_fees['automatic_fees'] );
 			$this->assertCount( 1 === $k || 7 === $k ? 0 : 2, $ticket_fees['selected_fees'], $k );
 			$this->assertEquals( $fee_ids_per_ticket[ $ticket_id ], $ticket_fees['selected_fees'] );
@@ -301,7 +304,13 @@ class Fees_Test extends Controller_Test_Case {
 		$post_ids = self::factory()->post->create_many( 2 );
 		$post_ids = array_merge( $post_ids, array_map( static fn( $e ) => $e->ID, $this->generate_multiple_events( '2021-01-01', 2 ) ) );
 
-		// 4 post ids, 2 events and 2 tickets.
+		$series_id = static::factory()->post->create(
+			[
+				'post_type' => Series_Post_Type::POSTTYPE,
+			]
+		);
+
+		// 4 post ids, 2 events and 2 posts.
 
 		$ticket_ids = [];
 		foreach ( $post_ids as $k => $post_id ) {
@@ -309,8 +318,13 @@ class Fees_Test extends Controller_Test_Case {
 				$ticket_ids[] = $this->create_tc_ticket( $post_id, ( $k + 1 ) * ( $i * 100 ) );
 			}
 		}
-
 		// 12 ticket ids, 3 tickets for each event.
+
+		// 5 post ids, 2 events, 2 posts and 1 series.
+		$post_ids = array_merge( $post_ids, [ $series_id ] );
+
+		// 13 tickets ids, +1 series pass.
+		$ticket_ids[] = $this->create_tc_series_pass( $series_id )->ID;
 
 		$fee_ids = [];
 		$fee_ids_per_ticket = [];
@@ -341,11 +355,11 @@ class Fees_Test extends Controller_Test_Case {
 			$this->assertEquals( $query['results'], $results );
 		}
 
-		// 20 fee ids, 2 fees for each ticket except the second and the eight ticket.
+		// 22 fee ids, 2 fees for each ticket except the second and the eight ticket.
 
 		$fee_ids[] = $this->create_fee_for_all( [ 'raw_amount' => 100 ] );
 
-		// 21 fee ids, 1 fee for all tickets.
+		// 23 fee ids, 1 fee for all tickets.
 
 		return [ $post_ids, $ticket_ids, $fee_ids, $fee_ids_per_ticket ];
 	}
@@ -354,13 +368,13 @@ class Fees_Test extends Controller_Test_Case {
 		$response = $this->do_rest_api_request( $path, $method, $selected_fees );
 
 		if ( $should_fail ) {
-			$this->assertTrue( $response->is_error() );
+			$this->assertTrue( $response->is_error(), 'Response should be an error for path: ' . $path );
 			$this->assertInstanceof( WP_Error::class, $response->as_error() );
 			$this->assertEquals( $error_code, $response->get_status() );
 			return $response->get_data();
 		}
 
-		$this->assertFalse( $response->is_error() );
+		$this->assertFalse( $response->is_error(), 'Response should not be an error for path: ' . $path );
 		$this->assertEquals( 200, $response->get_status() );
 		return $response->get_data();
 	}
