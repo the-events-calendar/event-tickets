@@ -245,7 +245,9 @@ class Controller extends Controller_Contract {
 			$total_sold = count(
 				array_filter(
 					$event_attendees,
-					static fn( array $attendee ): bool => in_array( (int) $attendee['product_id'], $ticket_ids, true )
+					static fn( array $attendee ): bool =>
+						in_array( (int) $attendee['product_id'], $ticket_ids, true )
+						&& ! empty( get_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, true ) )
 				)
 			);
 		}
