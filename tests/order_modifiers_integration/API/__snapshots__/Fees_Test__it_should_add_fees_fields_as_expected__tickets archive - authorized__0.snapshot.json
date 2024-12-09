@@ -1,6 +1,6 @@
 {
     "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=%2Ftribe%2Ftickets%2Fv1%2Ftickets%2F",
-    "total": 12,
+    "total": 13,
     "total_pages": 2,
     "tickets": [
         {
@@ -360,6 +360,34 @@
                         "end_time": null,
                         "updated_at": null,
                         "meta_value": "per"
+                    },
+                    "{FEE_ID}": {
+                        "id": "{FEE_ID}",
+                        "modifier_type": "fee",
+                        "sub_type": "flat",
+                        "raw_amount": "130.000000",
+                        "slug": "test-fee-21",
+                        "display_name": "test fee 21",
+                        "status": "active",
+                        "created_at": "2022-06-13 13:25:32",
+                        "start_time": null,
+                        "end_time": null,
+                        "updated_at": null,
+                        "meta_value": "per"
+                    },
+                    "{FEE_ID}": {
+                        "id": "{FEE_ID}",
+                        "modifier_type": "fee",
+                        "sub_type": "flat",
+                        "raw_amount": "390.000000",
+                        "slug": "test-fee-22",
+                        "display_name": "test fee 22",
+                        "status": "active",
+                        "created_at": "2022-06-13 13:25:32",
+                        "start_time": null,
+                        "end_time": null,
+                        "updated_at": null,
+                        "meta_value": "per"
                     }
                 },
                 "automatic_fees": {
@@ -368,8 +396,8 @@
                         "modifier_type": "fee",
                         "sub_type": "flat",
                         "raw_amount": "100.000000",
-                        "slug": "test-fee-21",
-                        "display_name": "test fee 21",
+                        "slug": "test-fee-23",
+                        "display_name": "test fee 23",
                         "status": "active",
                         "created_at": "2022-06-13 13:25:32",
                         "start_time": null,
@@ -741,6 +769,34 @@
                         "end_time": null,
                         "updated_at": null,
                         "meta_value": "per"
+                    },
+                    "{FEE_ID}": {
+                        "id": "{FEE_ID}",
+                        "modifier_type": "fee",
+                        "sub_type": "flat",
+                        "raw_amount": "130.000000",
+                        "slug": "test-fee-21",
+                        "display_name": "test fee 21",
+                        "status": "active",
+                        "created_at": "2022-06-13 13:25:32",
+                        "start_time": null,
+                        "end_time": null,
+                        "updated_at": null,
+                        "meta_value": "per"
+                    },
+                    "{FEE_ID}": {
+                        "id": "{FEE_ID}",
+                        "modifier_type": "fee",
+                        "sub_type": "flat",
+                        "raw_amount": "390.000000",
+                        "slug": "test-fee-22",
+                        "display_name": "test fee 22",
+                        "status": "active",
+                        "created_at": "2022-06-13 13:25:32",
+                        "start_time": null,
+                        "end_time": null,
+                        "updated_at": null,
+                        "meta_value": "per"
                     }
                 },
                 "automatic_fees": {
@@ -749,8 +805,8 @@
                         "modifier_type": "fee",
                         "sub_type": "flat",
                         "raw_amount": "100.000000",
-                        "slug": "test-fee-21",
-                        "display_name": "test fee 21",
+                        "slug": "test-fee-23",
+                        "display_name": "test fee 23",
                         "status": "active",
                         "created_at": "2022-06-13 13:25:32",
                         "start_time": null,
@@ -1119,6 +1175,34 @@
                         "end_time": null,
                         "updated_at": null,
                         "meta_value": "per"
+                    },
+                    "{FEE_ID}": {
+                        "id": "{FEE_ID}",
+                        "modifier_type": "fee",
+                        "sub_type": "flat",
+                        "raw_amount": "130.000000",
+                        "slug": "test-fee-21",
+                        "display_name": "test fee 21",
+                        "status": "active",
+                        "created_at": "2022-06-13 13:25:32",
+                        "start_time": null,
+                        "end_time": null,
+                        "updated_at": null,
+                        "meta_value": "per"
+                    },
+                    "{FEE_ID}": {
+                        "id": "{FEE_ID}",
+                        "modifier_type": "fee",
+                        "sub_type": "flat",
+                        "raw_amount": "390.000000",
+                        "slug": "test-fee-22",
+                        "display_name": "test fee 22",
+                        "status": "active",
+                        "created_at": "2022-06-13 13:25:32",
+                        "start_time": null,
+                        "end_time": null,
+                        "updated_at": null,
+                        "meta_value": "per"
                     }
                 },
                 "automatic_fees": {
@@ -1127,8 +1211,8 @@
                         "modifier_type": "fee",
                         "sub_type": "flat",
                         "raw_amount": "100.000000",
-                        "slug": "test-fee-21",
-                        "display_name": "test fee 21",
+                        "slug": "test-fee-23",
+                        "display_name": "test fee 23",
                         "status": "active",
                         "created_at": "2022-06-13 13:25:32",
                         "start_time": null,
@@ -1500,6 +1584,34 @@
                         "end_time": null,
                         "updated_at": null,
                         "meta_value": "per"
+                    },
+                    "{FEE_ID}": {
+                        "id": "{FEE_ID}",
+                        "modifier_type": "fee",
+                        "sub_type": "flat",
+                        "raw_amount": "130.000000",
+                        "slug": "test-fee-21",
+                        "display_name": "test fee 21",
+                        "status": "active",
+                        "created_at": "2022-06-13 13:25:32",
+                        "start_time": null,
+                        "end_time": null,
+                        "updated_at": null,
+                        "meta_value": "per"
+                    },
+                    "{FEE_ID}": {
+                        "id": "{FEE_ID}",
+                        "modifier_type": "fee",
+                        "sub_type": "flat",
+                        "raw_amount": "390.000000",
+                        "slug": "test-fee-22",
+                        "display_name": "test fee 22",
+                        "status": "active",
+                        "created_at": "2022-06-13 13:25:32",
+                        "start_time": null,
+                        "end_time": null,
+                        "updated_at": null,
+                        "meta_value": "per"
                     }
                 },
                 "automatic_fees": {
@@ -1508,8 +1620,8 @@
                         "modifier_type": "fee",
                         "sub_type": "flat",
                         "raw_amount": "100.000000",
-                        "slug": "test-fee-21",
-                        "display_name": "test fee 21",
+                        "slug": "test-fee-23",
+                        "display_name": "test fee 23",
                         "status": "active",
                         "created_at": "2022-06-13 13:25:32",
                         "start_time": null,
@@ -1881,6 +1993,34 @@
                         "end_time": null,
                         "updated_at": null,
                         "meta_value": "per"
+                    },
+                    "{FEE_ID}": {
+                        "id": "{FEE_ID}",
+                        "modifier_type": "fee",
+                        "sub_type": "flat",
+                        "raw_amount": "130.000000",
+                        "slug": "test-fee-21",
+                        "display_name": "test fee 21",
+                        "status": "active",
+                        "created_at": "2022-06-13 13:25:32",
+                        "start_time": null,
+                        "end_time": null,
+                        "updated_at": null,
+                        "meta_value": "per"
+                    },
+                    "{FEE_ID}": {
+                        "id": "{FEE_ID}",
+                        "modifier_type": "fee",
+                        "sub_type": "flat",
+                        "raw_amount": "390.000000",
+                        "slug": "test-fee-22",
+                        "display_name": "test fee 22",
+                        "status": "active",
+                        "created_at": "2022-06-13 13:25:32",
+                        "start_time": null,
+                        "end_time": null,
+                        "updated_at": null,
+                        "meta_value": "per"
                     }
                 },
                 "automatic_fees": {
@@ -1889,8 +2029,8 @@
                         "modifier_type": "fee",
                         "sub_type": "flat",
                         "raw_amount": "100.000000",
-                        "slug": "test-fee-21",
-                        "display_name": "test fee 21",
+                        "slug": "test-fee-23",
+                        "display_name": "test fee 23",
                         "status": "active",
                         "created_at": "2022-06-13 13:25:32",
                         "start_time": null,
@@ -2262,6 +2402,34 @@
                         "end_time": null,
                         "updated_at": null,
                         "meta_value": "per"
+                    },
+                    "{FEE_ID}": {
+                        "id": "{FEE_ID}",
+                        "modifier_type": "fee",
+                        "sub_type": "flat",
+                        "raw_amount": "130.000000",
+                        "slug": "test-fee-21",
+                        "display_name": "test fee 21",
+                        "status": "active",
+                        "created_at": "2022-06-13 13:25:32",
+                        "start_time": null,
+                        "end_time": null,
+                        "updated_at": null,
+                        "meta_value": "per"
+                    },
+                    "{FEE_ID}": {
+                        "id": "{FEE_ID}",
+                        "modifier_type": "fee",
+                        "sub_type": "flat",
+                        "raw_amount": "390.000000",
+                        "slug": "test-fee-22",
+                        "display_name": "test fee 22",
+                        "status": "active",
+                        "created_at": "2022-06-13 13:25:32",
+                        "start_time": null,
+                        "end_time": null,
+                        "updated_at": null,
+                        "meta_value": "per"
                     }
                 },
                 "automatic_fees": {
@@ -2270,8 +2438,8 @@
                         "modifier_type": "fee",
                         "sub_type": "flat",
                         "raw_amount": "100.000000",
-                        "slug": "test-fee-21",
-                        "display_name": "test fee 21",
+                        "slug": "test-fee-23",
+                        "display_name": "test fee 23",
                         "status": "active",
                         "created_at": "2022-06-13 13:25:32",
                         "start_time": null,
@@ -2643,6 +2811,34 @@
                         "end_time": null,
                         "updated_at": null,
                         "meta_value": "per"
+                    },
+                    "{FEE_ID}": {
+                        "id": "{FEE_ID}",
+                        "modifier_type": "fee",
+                        "sub_type": "flat",
+                        "raw_amount": "130.000000",
+                        "slug": "test-fee-21",
+                        "display_name": "test fee 21",
+                        "status": "active",
+                        "created_at": "2022-06-13 13:25:32",
+                        "start_time": null,
+                        "end_time": null,
+                        "updated_at": null,
+                        "meta_value": "per"
+                    },
+                    "{FEE_ID}": {
+                        "id": "{FEE_ID}",
+                        "modifier_type": "fee",
+                        "sub_type": "flat",
+                        "raw_amount": "390.000000",
+                        "slug": "test-fee-22",
+                        "display_name": "test fee 22",
+                        "status": "active",
+                        "created_at": "2022-06-13 13:25:32",
+                        "start_time": null,
+                        "end_time": null,
+                        "updated_at": null,
+                        "meta_value": "per"
                     }
                 },
                 "automatic_fees": {
@@ -2651,8 +2847,8 @@
                         "modifier_type": "fee",
                         "sub_type": "flat",
                         "raw_amount": "100.000000",
-                        "slug": "test-fee-21",
-                        "display_name": "test fee 21",
+                        "slug": "test-fee-23",
+                        "display_name": "test fee 23",
                         "status": "active",
                         "created_at": "2022-06-13 13:25:32",
                         "start_time": null,
@@ -3024,6 +3220,34 @@
                         "end_time": null,
                         "updated_at": null,
                         "meta_value": "per"
+                    },
+                    "{FEE_ID}": {
+                        "id": "{FEE_ID}",
+                        "modifier_type": "fee",
+                        "sub_type": "flat",
+                        "raw_amount": "130.000000",
+                        "slug": "test-fee-21",
+                        "display_name": "test fee 21",
+                        "status": "active",
+                        "created_at": "2022-06-13 13:25:32",
+                        "start_time": null,
+                        "end_time": null,
+                        "updated_at": null,
+                        "meta_value": "per"
+                    },
+                    "{FEE_ID}": {
+                        "id": "{FEE_ID}",
+                        "modifier_type": "fee",
+                        "sub_type": "flat",
+                        "raw_amount": "390.000000",
+                        "slug": "test-fee-22",
+                        "display_name": "test fee 22",
+                        "status": "active",
+                        "created_at": "2022-06-13 13:25:32",
+                        "start_time": null,
+                        "end_time": null,
+                        "updated_at": null,
+                        "meta_value": "per"
                     }
                 },
                 "automatic_fees": {
@@ -3032,8 +3256,8 @@
                         "modifier_type": "fee",
                         "sub_type": "flat",
                         "raw_amount": "100.000000",
-                        "slug": "test-fee-21",
-                        "display_name": "test fee 21",
+                        "slug": "test-fee-23",
+                        "display_name": "test fee 23",
                         "status": "active",
                         "created_at": "2022-06-13 13:25:32",
                         "start_time": null,
@@ -3402,6 +3626,34 @@
                         "end_time": null,
                         "updated_at": null,
                         "meta_value": "per"
+                    },
+                    "{FEE_ID}": {
+                        "id": "{FEE_ID}",
+                        "modifier_type": "fee",
+                        "sub_type": "flat",
+                        "raw_amount": "130.000000",
+                        "slug": "test-fee-21",
+                        "display_name": "test fee 21",
+                        "status": "active",
+                        "created_at": "2022-06-13 13:25:32",
+                        "start_time": null,
+                        "end_time": null,
+                        "updated_at": null,
+                        "meta_value": "per"
+                    },
+                    "{FEE_ID}": {
+                        "id": "{FEE_ID}",
+                        "modifier_type": "fee",
+                        "sub_type": "flat",
+                        "raw_amount": "390.000000",
+                        "slug": "test-fee-22",
+                        "display_name": "test fee 22",
+                        "status": "active",
+                        "created_at": "2022-06-13 13:25:32",
+                        "start_time": null,
+                        "end_time": null,
+                        "updated_at": null,
+                        "meta_value": "per"
                     }
                 },
                 "automatic_fees": {
@@ -3410,8 +3662,8 @@
                         "modifier_type": "fee",
                         "sub_type": "flat",
                         "raw_amount": "100.000000",
-                        "slug": "test-fee-21",
-                        "display_name": "test fee 21",
+                        "slug": "test-fee-23",
+                        "display_name": "test fee 23",
                         "status": "active",
                         "created_at": "2022-06-13 13:25:32",
                         "start_time": null,
@@ -3783,6 +4035,34 @@
                         "end_time": null,
                         "updated_at": null,
                         "meta_value": "per"
+                    },
+                    "{FEE_ID}": {
+                        "id": "{FEE_ID}",
+                        "modifier_type": "fee",
+                        "sub_type": "flat",
+                        "raw_amount": "130.000000",
+                        "slug": "test-fee-21",
+                        "display_name": "test fee 21",
+                        "status": "active",
+                        "created_at": "2022-06-13 13:25:32",
+                        "start_time": null,
+                        "end_time": null,
+                        "updated_at": null,
+                        "meta_value": "per"
+                    },
+                    "{FEE_ID}": {
+                        "id": "{FEE_ID}",
+                        "modifier_type": "fee",
+                        "sub_type": "flat",
+                        "raw_amount": "390.000000",
+                        "slug": "test-fee-22",
+                        "display_name": "test fee 22",
+                        "status": "active",
+                        "created_at": "2022-06-13 13:25:32",
+                        "start_time": null,
+                        "end_time": null,
+                        "updated_at": null,
+                        "meta_value": "per"
                     }
                 },
                 "automatic_fees": {
@@ -3791,8 +4071,8 @@
                         "modifier_type": "fee",
                         "sub_type": "flat",
                         "raw_amount": "100.000000",
-                        "slug": "test-fee-21",
-                        "display_name": "test fee 21",
+                        "slug": "test-fee-23",
+                        "display_name": "test fee 23",
                         "status": "active",
                         "created_at": "2022-06-13 13:25:32",
                         "start_time": null,

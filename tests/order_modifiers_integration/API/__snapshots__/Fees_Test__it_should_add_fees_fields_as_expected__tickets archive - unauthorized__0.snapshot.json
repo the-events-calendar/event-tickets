@@ -1,6 +1,6 @@
 {
     "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=%2Ftribe%2Ftickets%2Fv1%2Ftickets%2F",
-    "total": 12,
+    "total": 13,
     "total_pages": 2,
     "tickets": [
         {
