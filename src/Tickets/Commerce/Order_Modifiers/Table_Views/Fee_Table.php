@@ -308,15 +308,6 @@ class Fee_Table extends Order_Modifier_Table {
 	 * @return string The explanation text with a clickable "Learn More" link.
 	 */
 	public function render_table_explain_text(): string {
-		$learn_more_link = sprintf(
-			'<a href="%s">%s</a>',
-			'#', // @todo redscar - need to get the KB article link.
-			__( 'Learn More', 'event-tickets' )
-		);
-
-		return sprintf(
-			'Fees will be applied to the cart at checkout. Fees can only be used with Tickets Commerce transactions. %s',
-			$learn_more_link
-		);
+		return esc_html__( 'Fees will be applied to the cart at checkout. Fees can only be used with Tickets Commerce transactions.', 'event-tickets' );
 	}
 }
