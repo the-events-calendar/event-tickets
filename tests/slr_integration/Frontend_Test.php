@@ -684,6 +684,28 @@ class Frontend_Test extends Controller_Test_Case {
 				return [ $post_id, $ticket ];
 			}
 		];
+
+		yield 'different timeout settings' => [
+			function () {
+				// Set the timeout to 89 seconds.
+				add_filter( 'tec_tickets_seating_selection_timeout', fn() => 89 );
+				$post_id = static::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+				/**
+				 * @var Tickets_Handler $tickets_handler
+				 */
+				$tickets_handler   = tribe( 'tickets.handler' );
+				$capacity_meta_key = $tickets_handler->key_capacity;
+				update_post_meta( $post_id, $capacity_meta_key, 100 );
+				$ticket = $this->create_tc_ticket( $post_id, 20 );
+
+				return [ $post_id, $ticket ];
+			}
+		];
 	}
 
 	/**
@@ -693,16 +715,18 @@ class Frontend_Test extends Controller_Test_Case {
 	 * @dataProvider seating_enabled_fixtures
 	 */
 	public function should_replace_ticket_block_when_seating_is_enabled( Closure $fixture ) {
+		$ids     = $fixture();
+		$post_id = array_shift( $ids );
 		$this->test_services->singleton(
 			Service::class,
-			function () {
+			function ()use( $post_id ) {
 				return $this->make(
 					Service::class,
 					[
 						'frontend_base_url'   => 'https://service.test.local',
 						'backend_base_url'   => 'https://service.test.local',
-						'get_ephemeral_token' => function ( $expiration, $scope ) {
-							Assert::assertEquals( HOUR_IN_SECONDS, $expiration );
+						'get_ephemeral_token' => function ( $expiration, $scope ) use( $post_id ) {
+							Assert::assertEquals( tribe(Timer::class)->get_timeout( $post_id ) * 4, $expiration );
 							Assert::assertEquals( 'visitor', $scope );
 
 							return 'test-ephemeral-token';
@@ -712,8 +736,6 @@ class Frontend_Test extends Controller_Test_Case {
 				);
 			}
 		);
-		$ids     = $fixture();
-		$post_id = array_shift( $ids );
 
 		$this->make_controller()->register();
 
