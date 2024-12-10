@@ -227,7 +227,7 @@ class Controller extends Controller_Contract {
 		$return_false = static fn() => false;
 		add_filter( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', $return_false );
 
-		$ticket_ids = [ $ticket->ID ];
+		$ticket_ids = [ (int) $ticket->ID ];
 
 		// Pull the inventory from the other tickets with the same seat type.
 		foreach (
