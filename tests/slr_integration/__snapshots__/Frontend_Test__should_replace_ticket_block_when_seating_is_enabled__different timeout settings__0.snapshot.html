@@ -1,0 +1,104 @@
+
+<div class="tribe-common event-tickets tribe-tickets__tickets-wrapper">
+	<div class="tribe-tickets__tickets-form tec-tickets-seating__tickets-block">
+		<h2 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__tickets-title">
+			Tickets		</h2>
+		<div class="tec-tickets-seating__information">
+			<span>&#x24;20.00</span>
+			<span class="tec-tickets-seating__inventory">
+				100 available			</span>
+		</div>
+		<div class="tec-tickets-seating__action">
+			<button
+	class="tribe-common-c-btn tribe-common-c-btn--small"
+		data-content="dialog-content-tec-tickets-seating-seat-selection-modal"
+	data-js="trigger-dialog-tec-tickets-seating-seat-selection-modal"
+					>Find Seats</button>
+<script data-js="dialog-content-tec-tickets-seating-seat-selection-modal" type="text/template">
+		<div  class="tribe-dialog__content tribe-modal__content" >
+		
+<div
+	class="tec-tickets-seating__iframe-container"
+	data-token="test-ephemeral-token"
+	data-error=""
+>
+	<iframe
+		data-src="https://service.test.local/embed/purchasing?token=test-ephemeral-token&#038;eventId=test-post-uuid&#038;layoutId=some-layout-uuid&#038;timeout=356"
+		id="tec-tickets-seating-iframe-tickets-block"
+		class="tec-tickets-seating__iframe tec-tickets-seating__iframe--tickets-block"
+		title="Seat selection"
+	>
+	</iframe>
+</div>
+
+<div class="tec-tickets-seating__modal-sidebar_container">
+	<aside class="tec-tickets-seating__modal-sidebar">
+
+		<div class="tec-tickets-seating__sidebar-header">
+			<h4 class="tribe-common-h4 tec-tickets-seating__title">
+				Tickets			</h4>
+
+			
+<div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
+	data-token="test-ephemeral-token"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
+	data-post-id="{{post_id}}"
+	>
+	<div class="dashicons dashicons-clock"></div>
+	<div class="tec-tickets-seating__message">
+		<span>
+			<span class="tec-tickets-seating__message-text">
+				Seats reserved for 			</span>
+			<span class="tec-tickets-seating__message-time">
+				<span class="tec-tickets-seating__time-minutes">
+					<!-- This will be set by JS. -->
+				</span>:<span class="tec-tickets-seating__time-seconds">
+					<!-- This will be set by JS. -->
+				</span>
+			</span>
+		</span>
+	</div>
+	<div class="tec-tickets-seating__dialog-append-target"></div>
+</div>
+			<div class="tec-tickets-seating__sidebar-arrow">
+				<span class="dashicons dashicons-arrow-up-alt2"></span>
+			</div>
+		</div>
+
+		<div class="tec-tickets-seating__empty-tickets-message">
+			Select a seat from the map to add seated tickets		</div>
+		<div class="tec-tickets-seating__tickets-wrapper">
+			<div class="tec-tickets-seating__ticket-rows"></div>
+		</div>
+
+		<div class="tec-tickets-seating__sidebar-footer">
+			<div class="tec-tickets-seating__total tec-tickets-seating__total-hidden">
+				<div class="tec-tickets-seating__total-text">
+					0 Tickets				</div>
+				<div class="tec-tickets-seating__total-price">
+					&#x24;0.00				</div>
+			</div>
+
+			<div class="tec-tickets-seating__sidebar-controls">
+				<button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel">
+					Cancel				</button>
+				<button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm">
+					Continue				</button>
+			</div>
+		</div>
+	</aside>
+</div>
+	</div>
+</script>
+
+		<script>
+			var tribe = tribe || {};
+			tribe.dialogs = tribe.dialogs || [];
+			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
+
+			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+
+					</script>
+							</div>
+	</div>
+</div>

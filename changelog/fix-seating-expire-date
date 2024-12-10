@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Correctly calculate and set the session expiration date in the seat selection modal. [n/a]

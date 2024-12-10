@@ -440,6 +440,7 @@ class Frontend extends Controller_Contract {
 			'ajaxNonce'                 => wp_create_nonce( Ajax::NONCE_ACTION ),
 			'ACTION_POST_RESERVATIONS'  => Ajax::ACTION_POST_RESERVATIONS,
 			'ACTION_CLEAR_RESERVATIONS' => Ajax::ACTION_CLEAR_RESERVATIONS,
+			'sessionTimeout'            => tribe(Timer::class)->get_timeout( $post_id ),
 		];
 	}
 
