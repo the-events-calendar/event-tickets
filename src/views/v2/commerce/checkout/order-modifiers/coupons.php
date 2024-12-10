@@ -29,6 +29,6 @@
 		<?php esc_html_e( 'Coupon:', 'event-tickets' ); ?> <span class="tribe-tickets__commerce-checkout-cart-coupons__applied-value"></span> - <?php esc_html_e( 'Discount:', 'event-tickets' ); ?> <span class="tribe-tickets__commerce-checkout-cart-coupons__applied-discount"></span>
 	</span>
 	<button class="tribe-tickets__commerce-checkout-cart-coupons__remove-button" type="button">
-		<?php esc_html_x( 'X', 'text for button to remove an applied coupon', 'event-tickets' ); ?>
+		<?php esc_html_x( 'X', 'text for button to remove an applied coupon', 'event-tickets' ); // @todo use an ICON instead. @see https://github.com/the-events-calendar/event-tickets/pull/3430#discussion_r1872545653 ?>
 	</button>
 </div>

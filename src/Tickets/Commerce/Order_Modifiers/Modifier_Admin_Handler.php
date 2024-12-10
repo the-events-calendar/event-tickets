@@ -101,7 +101,22 @@ class Modifier_Admin_Handler extends Controller_Contract {
 
 		add_action( 'admin_notices', [ $this, 'handle_notices' ] );
 
+		add_filter( 'event_tickets_should_enqueue_admin_settings_assets', [ $this, 'enqueue_tec_tickets_settings_css_' ] );
+
 		$this->register_assets();
+	}
+
+	/**
+	 * Enqueues the admin settings CSS when on the Order Modifiers page.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $should_enqueue Whether the CSS should be enqueued.
+	 *
+	 * @return bool
+	 */
+	public function enqueue_tec_tickets_settings_css_( bool $should_enqueue ): bool {
+		return $should_enqueue ? $should_enqueue : $this->is_on_page();
 	}
 
 	/**
@@ -281,7 +296,6 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		$modifier_id = (int) $context['modifier_id'];
 
 		if ( 0 > $modifier_id ) {
-			// @todo redscar - If no modifier ID is sent, do we display a message?
 			echo '<div class="notice notice-error"><p>' . esc_html__( 'Invalid Modifier ID provided.', 'event-tickets' ) . '</p></div>';
 			return;
 		}

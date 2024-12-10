@@ -169,7 +169,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 *
 	 * @param int $id The ID of the Order Modifier to find.
 	 *
-	 * @return Order_Modifier The Order Modifier model instance, or null if not found.
+	 * @return Order_Modifier The Order Modifier model instance.
 	 * @throws Not_Found_Exception If the Order Modifier is not found.
 	 * @throws RuntimeException If we didn't get an Order_Modifier object.
 	 */
@@ -256,7 +256,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 *
 	 * @param string $slug The slug of the Order Modifier to find.
 	 *
-	 * @return Order_Modifier The Order Modifier model instance, or null if not found.
+	 * @return Order_Modifier The Order Modifier model instance.
 	 * @throws Not_Found_Exception If the Order Modifier is not found.
 	 */
 	public function find_by_slug( string $slug ): Order_Modifier {
