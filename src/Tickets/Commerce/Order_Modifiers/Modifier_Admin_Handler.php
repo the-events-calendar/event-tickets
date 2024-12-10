@@ -84,6 +84,8 @@ class Modifier_Admin_Handler extends Controller_Contract {
 
 		remove_action( 'admin_notices', [ $this, 'handle_notices' ] );
 
+		remove_filter( 'event_tickets_should_enqueue_admin_settings_assets', [ $this, 'enqueue_tec_tickets_settings_css_' ] );
+
 		Assets::instance()->remove( 'tec-tickets-order-modifiers-table' );
 	}
 
