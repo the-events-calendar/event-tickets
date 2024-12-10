@@ -130,11 +130,9 @@ class Fee_Table extends Order_Modifier_Table {
 			case '':
 				return $this->display_all_tickets();
 			case 'per':
-				return $this->display_per_tickets( $item->id );
+				return $this->display_per_tickets();
 			case 'venue':
-				return $this->display_venues( $item->id );
 			case 'organizer':
-				return $this->display_organizers( $item->id );
 			default:
 				return '-';
 		}
@@ -154,26 +152,14 @@ class Fee_Table extends Order_Modifier_Table {
 	}
 
 	/**
-	 * Displays a list of posts where the modifier is applied on a per-ticket basis.
-	 *
-	 * This method retrieves the post titles where the modifier is applied and displays them as a comma-separated list.
+	 * Displays a message indicating the modifier is applied at a per ticket level.
 	 *
 	 * @since TBD
 	 *
-	 * @param int $modifier_id The ID of the order modifier.
-	 *
-	 * @return string A comma-separated list of post titles where the modifier is applied, or a dash if none found.
+	 * @return string
 	 */
-	protected function display_per_tickets( int $modifier_id ): string {
-		$active_posts = $this->modifier->get_active_on( $modifier_id );
-		$linked_posts = [];
-
-		foreach ( $active_posts as $active_post ) {
-			$post_title     = get_the_title( $active_post->post_id );
-			$linked_posts[] = esc_html( $post_title );
-		}
-
-		return ! empty( $linked_posts ) ? implode( ', ', $linked_posts ) : '-';
+	protected function display_per_tickets(): string {
+		return __( 'Per ticket', 'event-tickets' );
 	}
 
 	/**
