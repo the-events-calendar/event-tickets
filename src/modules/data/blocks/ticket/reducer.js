@@ -147,6 +147,7 @@ export default ( state = DEFAULT_STATE, action ) => {
 				...state,
 				uneditableTicketsLoading: false,
 			};
+
 		default:
 			return state;
 	}

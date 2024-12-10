@@ -76,14 +76,12 @@
 </article>
 	</div>
 
-	<footer  class="tribe-tickets__commerce-checkout-cart-footer tribe-common-b1" >
-
+	
+<footer  class="tribe-tickets__commerce-checkout-cart-footer tribe-common-b1" >
 	<div class="tribe-tickets__commerce-checkout-cart-footer-quantity">
 	<span class="tribe-tickets__commerce-checkout-cart-footer-quantity-label">Quantity: </span><span class="tribe-tickets__commerce-checkout-cart-footer-quantity-number">1</span></div>
-
-	<div class="tribe-tickets__commerce-checkout-cart-footer-total">
+<div class="tribe-tickets__commerce-checkout-cart-footer-total">
 	<span class="tribe-tickets__commerce-checkout-cart-footer-total-label">Total: </span><span class="tribe-tickets__commerce-checkout-cart-footer-total-wrap">&#x24;10.00</span></div>
-
 </footer>
 
 </div>

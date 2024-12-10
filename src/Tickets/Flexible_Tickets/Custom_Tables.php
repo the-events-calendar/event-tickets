@@ -13,11 +13,7 @@ use TEC\Common\Contracts\Provider\Controller;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Common\StellarWP\Schema\Config as Schema_Config;
 use TEC\Common\StellarWP\Schema\Register as Schema_Register;
-use TEC\Tickets\Flexible_Tickets\Custom_Tables\Capacities;
-use TEC\Tickets\Flexible_Tickets\Custom_Tables\Capacities_Relationships;
-use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Posts;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Ticket_Groups;
-use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Users;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Ticket_Groups;
 use TEC\Common\StellarWP\Models\Config as Model_Config;
 

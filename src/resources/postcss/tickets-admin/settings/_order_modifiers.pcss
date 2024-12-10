@@ -1,0 +1,28 @@
+.tec-settings-order_modifier {
+	width: 100%;
+
+	label {
+		font-weight: bold;
+	}
+
+	input[type="number"],
+	input[type="text"],
+	select {
+		max-width: 95%;
+		width: 25em;
+	}
+
+	input.tec_order_modifier_amount_field {
+		width: 7em;
+	}
+
+	/* Tablet view (between 768px and 1024px) */
+	@media (--viewport-medium) {
+		width: 50%;
+	}
+
+	/* Phone view (less than 768px) */
+	@media (min-width: 1024px) {
+		width: 30%;
+	}
+}
