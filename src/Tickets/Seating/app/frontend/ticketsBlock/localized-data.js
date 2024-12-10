@@ -19,6 +19,7 @@
  * @property {string}                ajaxNonce                  The AJAX nonce.
  * @property {string}                ACTION_POST_RESERVATIONS   The AJAX action to post the reservations to the backend.
  * @property {string}                ACTION_CLEAR_RESERVATIONS  The AJAX action to clear the reservations from the backend.
+ * @property {number}                sessionTimeout             The session timeout in ms.
  */
 
 /**

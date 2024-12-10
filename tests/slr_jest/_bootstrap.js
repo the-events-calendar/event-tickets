@@ -89,6 +89,7 @@ global.tec.tickets.seating = {
 				'tec_tickets_seating_reservation_created',
 			ACTION_RESERVATION_UPDATED:
 				'tec_tickets_seating_reservation_updated',
+			sessionTimeout: 893,
 		},
 		session: {
 			ajaxUrl: 'https://wordpress.test/wp-admin/admin-ajax.php',
