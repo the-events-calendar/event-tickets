@@ -84,7 +84,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 
 		remove_action( 'admin_notices', [ $this, 'handle_notices' ] );
 
-		remove_filter( 'event_tickets_should_enqueue_admin_settings_assets', [ $this, 'enqueue_tec_tickets_settings_css_' ] );
+		remove_filter( 'event_tickets_should_enqueue_admin_settings_assets', [ $this, 'enqueue_tec_tickets_settings_css' ] );
 
 		Assets::instance()->remove( 'tec-tickets-order-modifiers-table' );
 	}
@@ -103,7 +103,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 
 		add_action( 'admin_notices', [ $this, 'handle_notices' ] );
 
-		add_filter( 'event_tickets_should_enqueue_admin_settings_assets', [ $this, 'enqueue_tec_tickets_settings_css_' ] );
+		add_filter( 'event_tickets_should_enqueue_admin_settings_assets', [ $this, 'enqueue_tec_tickets_settings_css' ] );
 
 		$this->register_assets();
 	}
@@ -117,7 +117,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	 *
 	 * @return bool
 	 */
-	public function enqueue_tec_tickets_settings_css_( bool $should_enqueue ): bool {
+	public function enqueue_tec_tickets_settings_css( bool $should_enqueue ): bool {
 		return $should_enqueue ? $should_enqueue : $this->is_on_page();
 	}
 
