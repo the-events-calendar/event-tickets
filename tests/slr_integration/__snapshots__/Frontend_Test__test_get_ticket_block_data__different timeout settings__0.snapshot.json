@@ -13,18 +13,6 @@
                     "dateInRange": true
                 }
             ]
-        },
-        "uuid-seat-type-1": {
-            "id": "uuid-seat-type-1",
-            "tickets": [
-                {
-                    "ticketId": {{ticket_2}},
-                    "name": "Test TC ticket for {{post_id}}",
-                    "price": "50",
-                    "description": "Test TC ticket description for {{post_id}}",
-                    "dateInRange": true
-                }
-            ]
         }
     },
     "labels": {
@@ -37,5 +25,5 @@
     "ajaxNonce": "1111111111",
     "ACTION_POST_RESERVATIONS": "tec_tickets_seating_post_reservations",
     "ACTION_CLEAR_RESERVATIONS": "tec_tickets_seating_clear_reservations",
-    "sessionTimeout": 900
+    "sessionTimeout": 89
 }
