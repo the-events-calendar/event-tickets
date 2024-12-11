@@ -129,6 +129,16 @@ class Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_ticket_stock', [ $this, 'filter_ticket_stock_value' ] );
 	}
 	
+	/**
+	 * Filters the stock value for a ticket to match the seated ticket inventory.
+	 *
+	 * @since TBD
+	 *
+	 * @param int          $stock  The stock value.
+	 * @param Ticket_Object $ticket The ticket object.
+	 *
+	 * @return int The filtered stock value.
+	 */
 	public function filter_ticket_stock_value( $stock, $ticket ) {
 		$seat_type = get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true );
 		if ( ! $seat_type ) {
