@@ -688,7 +688,7 @@ export function setExpireDate(dialogElement) {
 		return;
 	}
 
-	// If the session timeout is not set, then use 15', the default value.
+	// If the session timeout is not set then use the default value of 15 minutes.
 	const sessionTimeoutInSeconds = sessionTimeout ? Number(sessionTimeout) : 15 * 60;
 
 	iframe.src = iframe.src + '&expireDate=' + (Date.now() + sessionTimeoutInSeconds * 1000);

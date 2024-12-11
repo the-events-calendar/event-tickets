@@ -719,13 +719,13 @@ class Frontend_Test extends Controller_Test_Case {
 		$post_id = array_shift( $ids );
 		$this->test_services->singleton(
 			Service::class,
-			function ()use( $post_id ) {
+			function () use ( $post_id ) {
 				return $this->make(
 					Service::class,
 					[
 						'frontend_base_url'   => 'https://service.test.local',
 						'backend_base_url'   => 'https://service.test.local',
-						'get_ephemeral_token' => function ( $expiration, $scope ) use( $post_id ) {
+						'get_ephemeral_token' => function ( $expiration, $scope ) use ( $post_id ) {
 							Assert::assertEquals( tribe(Timer::class)->get_timeout( $post_id ) * 4, $expiration );
 							Assert::assertEquals( 'visitor', $scope );
 
