@@ -23,6 +23,7 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Modifiers;
 use Exception;
 use InvalidArgumentException;
 use TEC\Common\StellarWP\Models\Contracts\Model;
+use TEC\Tickets\Commerce\Order_Modifiers\Traits\Status;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Exceptions\Not_Found_Exception;
@@ -47,6 +48,8 @@ use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
  * @since 5.18.0
  */
 abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
+
+	use Status;
 	use Valid_Types;
 
 	/**
@@ -380,43 +383,6 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 			// Slug does not exist, so it is unique.
 			return true;
 		}
-	}
-
-	/**
-	 * Convert the status to a human-readable format.
-	 *
-	 * This method converts the internal status values ('active', 'inactive', 'draft')
-	 * into human-readable strings ('Active', 'Inactive', 'Draft').
-	 * It also provides a filter to allow for customizing the status labels if necessary.
-	 *
-	 * @since 5.18.0
-	 *
-	 * @param string $status The raw status from the database.
-	 *
-	 * @return string The human-readable status.
-	 */
-	public function get_status_display( string $status ): string {
-		// Default conversion.
-		$statuses = [
-			'active'   => _x( 'Active', 'Order modifier status', 'event-tickets' ),
-			'inactive' => _x( 'Inactive', 'Order modifier status', 'event-tickets' ),
-			'draft'    => _x( 'Draft', 'Order modifier status', 'event-tickets' ),
-		];
-
-		/**
-		 * Filters the human-readable status label for an order modifier.
-		 *
-		 * This allows developers to modify the status labels (e.g., changing 'Draft' to 'Pending').
-		 *
-		 * @since 5.18.0
-		 *
-		 * @param string[] $statuses The array of default status labels.
-		 * @param string $raw_status The raw status from the database (e.g., 'active', 'draft').
-		 * @param string $modifier_type The type of the modifier (e.g., 'coupon', 'fee').
-		 */
-		$statuses = apply_filters( 'tec_tickets_commerce_order_modifier_status_display', $statuses, $status, $this->modifier_type );
-
-		return $statuses[ $status ] ?? $status;
 	}
 
 	/**

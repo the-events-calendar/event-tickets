@@ -21,6 +21,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifier_Relationsh
 use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifiers as Table;
 use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier;
+use TEC\Tickets\Commerce\Order_Modifiers\Traits\Status;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 use TEC\Tickets\Exceptions\Not_Found_Exception;
 
@@ -33,6 +34,7 @@ use TEC\Tickets\Exceptions\Not_Found_Exception;
  */
 class Order_Modifiers extends Repository implements Insertable, Updatable, Deletable {
 
+	use Status;
 	use Valid_Types;
 
 	/**
