@@ -292,7 +292,14 @@ class Controller_Test extends Controller_Test_Case {
 				$ticket_id5 => 5, // Group C total 5!
 			]
 		);
-
+		
+		$attendees = tribe( Module::class )->get_event_attendees( $event_id );
+		
+		// Mock the reservation ID to do proper stock calculation.
+		foreach ( $attendees as $key => $attendee ) {
+			update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+		}
+		
 		// Refresh the ticket objects.
 		$ticket_1 = tribe( Module::class )->get_ticket( $event_id, $ticket_id1 );
 		$ticket_2 = tribe( Module::class )->get_ticket( $event_id, $ticket_id2 );
