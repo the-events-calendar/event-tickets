@@ -23,6 +23,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 use WP_Post;
+use Tribe__Cache_Listener as Triggers;
 
 /**
  * Class Controller.
@@ -130,13 +131,27 @@ class Controller extends Controller_Contract {
 	
 	public function filter_ticket_stock_value( $stock, $ticket ) {
 		$seat_type = get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true );
-		
 		if ( ! $seat_type ) {
 			return $stock;
 		}
 		
+		$cache_key = sprintf( 'seating_filter_ticket_stock_value_%d_%s', $stock, $ticket->ID );
+		
+		$cache = tribe_cache();
+		
+		// This cached value will be invalidated by the save of any Ticket, Attendee or Order.
+		$cached = $cache->get( $cache_key, Triggers::TRIGGER_SAVE_POST, null, DAY_IN_SECONDS );
+		
+		if ( is_int( $cached ) ) {
+			return $cached;
+		}
+		
 		$attendees = $ticket->get_provider()->get_attendees_by_id( $ticket->get_event()->ID );
-		return $this->get_seated_ticket_inventory( $stock, $ticket, $attendees );
+		$stock     = $this->get_seated_ticket_inventory( $stock, $ticket, $attendees );
+		
+		$cache->set( $cache_key, $stock, Triggers::TRIGGER_SAVE_POST, DAY_IN_SECONDS );
+	
+		return $stock;
 	}
 
 	/**
