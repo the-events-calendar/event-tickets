@@ -104,6 +104,7 @@ class Controller extends Controller_Contract {
 		add_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ], 10, 4 );
 		add_action( 'before_delete_post', [ $this, 'restock_ticket_on_attendee_deletion' ], 10, 2 );
 		add_action( 'wp_trash_post', [ $this, 'restock_ticket_on_attendee_trash' ] );
+		add_filter( 'tec_tickets_ticket_stock', [ $this, 'filter_ticket_stock_value' ], 10, 2 );
 	}
 
 	/**
@@ -124,6 +125,18 @@ class Controller extends Controller_Contract {
 		remove_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ], 10 );
 		remove_action( 'before_delete_post', [ $this, 'restock_ticket_on_attendee_deletion' ] );
 		remove_action( 'wp_trash_post', [ $this, 'restock_ticket_on_attendee_trash' ] );
+		remove_filter( 'tec_tickets_ticket_stock', [ $this, 'filter_ticket_stock_value' ] );
+	}
+	
+	public function filter_ticket_stock_value( $stock, $ticket ) {
+		$seat_type = get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true );
+		
+		if ( ! $seat_type ) {
+			return $stock;
+		}
+		
+		$attendees = $ticket->get_provider()->get_attendees_by_id( $ticket->get_event()->ID );
+		return $this->get_seated_ticket_inventory( $stock, $ticket, $attendees );
 	}
 
 	/**
