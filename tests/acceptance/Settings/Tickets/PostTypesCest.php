@@ -11,7 +11,7 @@ class PostTypesCest {
 		$I->haveOptionInDatabase( 'active_plugins', [ 'event-tickets/event-tickets.php' ] );
 		$I->loginAsAdmin();
 		// the Tickets page in Settings
-		$I->amOnAdminPage( '/admin.php?page=tribe-common&tab=event-tickets' );
+		$I->amOnAdminPage( '/admin.php?page=tec-tickets-settings' );
 		// the `id` attribute of the section dedicated to ticket-able post types
 		$I->seeElement( '#tribe-field-ticket-enabled-post-types' );
 		// the ticket-able post types inputs should be 2, checked or not
