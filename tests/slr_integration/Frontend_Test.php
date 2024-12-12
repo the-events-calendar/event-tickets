@@ -7,6 +7,7 @@ use Generator;
 use PHPUnit\Framework\Assert;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Tickets_View;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use TEC\Tickets\Seating\Frontend;
@@ -555,6 +556,11 @@ class Frontend_Test extends Controller_Test_Case {
 						$ticket => 5,
 					]
 				);
+				
+				$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+				foreach ( $order_attendees as $key => $attendee ) {
+					update_post_meta( $attendee->ID, Meta::META_KEY_RESERVATION_ID, 'reservation-' . $key );
+				}
 
 				return [ $post_id, $ticket ];
 			},
