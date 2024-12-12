@@ -15,6 +15,7 @@ use TEC\Tickets\Seating\Tables\Maps;
 use TEC\Tickets\Seating\Tables\Seat_Types;
 use TEC\Tickets\Seating\Tables\Sessions;
 use TEC\Tickets\Seating\Tests\Integration\Truncates_Custom_Tables;
+use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe__Tickets__Data_API as Data_API;
@@ -28,6 +29,7 @@ class Controller_Test extends Controller_Test_Case {
 	use Ticket_Maker;
 	use Order_Maker;
 	use Truncates_Custom_Tables;
+	use With_Uopz;
 
 	protected string $controller_class = Controller::class;
 
@@ -600,6 +602,9 @@ class Controller_Test extends Controller_Test_Case {
 		$attendees = tribe( Module::class )->get_event_attendees( $event_id );
 
 		$this->assertEquals( 5, count( $attendees ) );
+		
+		// Mock service reservation deletion.
+		$this->set_class_fn_return( Attendee::class, 'handle_attendee_delete', $attendees[0]['ID'] );
 
 		$deleted = tribe( Module::class )->delete_ticket( $event_id, $attendees[0]['ID'] );
 
