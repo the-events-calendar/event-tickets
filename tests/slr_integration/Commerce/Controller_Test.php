@@ -462,7 +462,14 @@ class Controller_Test extends Controller_Test_Case {
 				$vip => 5,
 			]
 		);
-
+		
+		$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		
+		// Mock the reservation ID to do proper stock calculation.
+		foreach ( $order_attendees as $key => $attendee ) {
+			update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+		}
+		
 		// Stock should be reduced for `vip` ticket.
 		$counts = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
 
@@ -474,6 +481,13 @@ class Controller_Test extends Controller_Test_Case {
 				$general => 15,
 			]
 		);
+		
+		$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		
+		// Mock the reservation ID to do proper stock calculation.
+		foreach ( $order_attendees as $key => $attendee ) {
+			update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+		}
 
 		// Stock should be reduced for `general` ticket and no tickets should be available.
 		$counts = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
