@@ -210,21 +210,26 @@ class Controller extends Controller_Contract {
 			if ( empty( $seat_type ) ) {
 				continue;
 			}
-
-			$capacity = $ticket->capacity();
-			$stock    = $ticket->stock();
-			$sold_qty = $ticket->qty_sold();
-
+			
+			$sold_qty   = [];
+			$capacity   = $ticket->capacity();
+			$stock      = $ticket->stock();
+			$sold_qty[] = $ticket->qty_sold();
+			
+			if ( $stock ) {
+				$sold_qty[] = $capacity - $stock;
+			}
+			
 			if ( ! isset( $capacity_by_type[ $seat_type ] ) ) {
 				$capacity_by_type[ $seat_type ] = $capacity;
 			}
-
+			
 			if ( ! isset( $total_sold_by_type[ $seat_type ] ) ) {
-				$total_sold_by_type[ $seat_type ] = $sold_qty;
+				$total_sold_by_type[ $seat_type ] = min( $sold_qty );
 			} else {
-				$total_sold_by_type[ $seat_type ] += $sold_qty;
+				$total_sold_by_type[ $seat_type ] += min( $sold_qty );
 			}
-
+			
 			++$types['tickets']['count'];
 		}
 
