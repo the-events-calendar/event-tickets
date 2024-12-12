@@ -912,11 +912,16 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertEquals( 2, tribe_attendees()->where( 'ticket', $ticket_3 )->count() );
 		$this->assertEquals( 0, tribe_attendees()->where( 'ticket', $ticket_4 )->count() );
 
+		$ticket_1_obj = tribe( Module::class )->get_ticket( $event_id, $ticket_1 );
+		$ticket_2_obj = tribe( Module::class )->get_ticket( $event_id, $ticket_2 );
+		$ticket_3_obj = tribe( Module::class )->get_ticket( $event_id, $ticket_3 );
+		$ticket_4_obj = tribe( Module::class )->get_ticket( $event_id, $ticket_4 );
+		
 		// Check after order creation.
-		$this->assertEquals( 2, (int) get_post_meta( $ticket_1, '_stock', true ) );
-		$this->assertEquals( 2, (int) get_post_meta( $ticket_2, '_stock', true ) );
-		$this->assertEquals( 13, (int) get_post_meta( $ticket_3, '_stock', true ) );
-		$this->assertEquals( 13, (int) get_post_meta( $ticket_4, '_stock', true ) );
+		$this->assertEquals( 2, $ticket_1_obj->stock() );
+		$this->assertEquals( 2, $ticket_2_obj->stock() );
+		$this->assertEquals( 13, $ticket_3_obj->stock() );
+		$this->assertEquals( 13, $ticket_4_obj->stock() );
 
 		// Delete an Attendee from Ticket 1.
 		$ticket_1_attendee_1 = tribe_attendees()->where('ticket', $ticket_1)->first_id();
@@ -927,12 +932,17 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertEquals( 0, tribe_attendees()->where( 'ticket', $ticket_2 )->count() );
 		$this->assertEquals( 2, tribe_attendees()->where( 'ticket', $ticket_3 )->count() );
 		$this->assertEquals( 0, tribe_attendees()->where( 'ticket', $ticket_4 )->count() );
-
-		// Check stock after Attendee deletion.
-		$this->assertEquals( 3, (int) get_post_meta( $ticket_1, '_stock', true ) );
-		$this->assertEquals( 3, (int) get_post_meta( $ticket_2, '_stock', true ) );
-		$this->assertEquals( 13, (int) get_post_meta( $ticket_3, '_stock', true ) );
-		$this->assertEquals( 13, (int) get_post_meta( $ticket_4, '_stock', true ) );
+		
+		$ticket_1_obj = tribe( Module::class )->get_ticket( $event_id, $ticket_1 );
+		$ticket_2_obj = tribe( Module::class )->get_ticket( $event_id, $ticket_2 );
+		$ticket_3_obj = tribe( Module::class )->get_ticket( $event_id, $ticket_3 );
+		$ticket_4_obj = tribe( Module::class )->get_ticket( $event_id, $ticket_4 );
+		
+		// Check after order creation.
+		$this->assertEquals( 3, $ticket_1_obj->stock() );
+		$this->assertEquals( 3, $ticket_2_obj->stock() );
+		$this->assertEquals( 13, $ticket_3_obj->stock() );
+		$this->assertEquals( 13, $ticket_4_obj->stock() );
 
 		// Trash an Attendee from Ticket 1.
 		$ticket_1_attendee_2 = tribe_attendees()->where('ticket', $ticket_1)->first_id();
@@ -943,11 +953,16 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertEquals( 0, tribe_attendees()->where( 'ticket', $ticket_2 )->count() );
 		$this->assertEquals( 2, tribe_attendees()->where( 'ticket', $ticket_3 )->count() );
 		$this->assertEquals( 0, tribe_attendees()->where( 'ticket', $ticket_4 )->count() );
-
+		
+		$ticket_1_obj = tribe( Module::class )->get_ticket( $event_id, $ticket_1 );
+		$ticket_2_obj = tribe( Module::class )->get_ticket( $event_id, $ticket_2 );
+		$ticket_3_obj = tribe( Module::class )->get_ticket( $event_id, $ticket_3 );
+		$ticket_4_obj = tribe( Module::class )->get_ticket( $event_id, $ticket_4 );
+		
 		// Check stock after Attendee deletion.
-		$this->assertEquals( 4, (int) get_post_meta( $ticket_1, '_stock', true ) );
-		$this->assertEquals( 4, (int) get_post_meta( $ticket_2, '_stock', true ) );
-		$this->assertEquals( 13, (int) get_post_meta( $ticket_3, '_stock', true ) );
-		$this->assertEquals( 13, (int) get_post_meta( $ticket_4, '_stock', true ) );
+		$this->assertEquals( 4, $ticket_1_obj->stock() );
+		$this->assertEquals( 4, $ticket_2_obj->stock() );
+		$this->assertEquals( 13, $ticket_3_obj->stock() );
+		$this->assertEquals( 13, $ticket_4_obj->stock() );
 	}
 }
