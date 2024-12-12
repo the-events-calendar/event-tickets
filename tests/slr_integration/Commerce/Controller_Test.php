@@ -9,6 +9,7 @@ use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Seating\Meta;
+use TEC\Tickets\Seating\Orders\Attendee;
 use TEC\Tickets\Seating\Tables\Layouts;
 use TEC\Tickets\Seating\Tables\Maps;
 use TEC\Tickets\Seating\Tables\Seat_Types;
@@ -482,7 +483,7 @@ class Controller_Test extends Controller_Test_Case {
 			]
 		);
 		
-		$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order_2->ID );
 		
 		// Mock the reservation ID to do proper stock calculation.
 		foreach ( $order_attendees as $key => $attendee ) {
