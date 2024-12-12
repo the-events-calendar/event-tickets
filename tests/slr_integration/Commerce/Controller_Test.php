@@ -582,6 +582,13 @@ class Controller_Test extends Controller_Test_Case {
 				$vip => 5,
 			]
 		);
+		
+		$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		
+		// Mock the reservation ID to do proper stock calculation.
+		foreach ( $order_attendees as $key => $attendee ) {
+			update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+		}
 
 		$count = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
 
@@ -699,6 +706,13 @@ class Controller_Test extends Controller_Test_Case {
 				$vip => 5,
 			]
 		);
+		
+		$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		
+		// Mock the reservation ID to do proper stock calculation.
+		foreach ( $order_attendees as $key => $attendee ) {
+			update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+		}
 
 		$count = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
 
@@ -713,6 +727,13 @@ class Controller_Test extends Controller_Test_Case {
 				$child   => 10,
 			]
 		);
+		
+		$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order_2->ID );
+		
+		// Mock the reservation ID to do proper stock calculation.
+		foreach ( $order_attendees as $key => $attendee ) {
+			update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+		}
 
 		$count = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
 
@@ -877,6 +898,13 @@ class Controller_Test extends Controller_Test_Case {
 				$ticket_3 => 2,
 			]
 		);
+		
+		$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order_1->ID );
+		
+		// Mock the reservation ID to do proper stock calculation.
+		foreach ( $order_attendees as $key => $attendee ) {
+			update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+		}
 
 		// Check Attendees.
 		$this->assertEquals( 3, tribe_attendees()->where( 'ticket', $ticket_1 )->count() );
