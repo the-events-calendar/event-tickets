@@ -182,8 +182,10 @@ jobs:
       - name: Set up ET Common (npm)
         if: steps.skip.outputs.value != 1 && matrix.suite == 'acceptance'
         run: |
-          ${SLIC_BIN} npm install
-          ${SLIC_BIN} npm run build
+          ${SLIC_BIN} ssh
+          npm install
+          npm run build
+          exit
       # ------------------------------------------------------------------------------
       # Set up ET
       # ------------------------------------------------------------------------------
@@ -197,8 +199,10 @@ jobs:
       - name: Set up ET (npm)
         if: steps.skip.outputs.value != 1 && matrix.suite == 'acceptance'
         run: |
-          ${SLIC_BIN} npm install
-          ${SLIC_BIN} npm run build
+          ${SLIC_BIN} ssh
+          npm install
+          npm run build
+          exit
       # ------------------------------------------------------------------------------
       # Init WordPress container
       # ------------------------------------------------------------------------------
