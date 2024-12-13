@@ -1,0 +1,4 @@
+Significance: minor
+Type: tweak
+
+Changed views: `v2/commerce/checkout/cart/footer`, `v2/commerce/checkout/cart/footer/total`, `v2/commerce/checkout/order-modifiers/coupons`, `v2/commerce/checkout/order-modifiers/fees`
