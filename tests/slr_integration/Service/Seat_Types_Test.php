@@ -294,7 +294,7 @@ class Seat_Types_Test extends WPTestCase {
 					'seats'    => 20,
 					'mapId'    => 'map-uuid-1',
 					'layoutId' => 'layout-uuid-1',
-				]
+				],
 			]
 		);
 
@@ -306,64 +306,130 @@ class Seat_Types_Test extends WPTestCase {
 			$post_id_3,
 			$post_id_4,
 		] = static::factory()->post->create_many( 4 );
+		
+		// Update all posts with the layout ID.
+		update_post_meta( $post_id_1, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		update_post_meta( $post_id_2, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		update_post_meta( $post_id_3, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		update_post_meta( $post_id_4, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
 
 		// Post 1 set up.
-		$post_1_ticket_1 = $this->create_tc_ticket( $post_id_1, 10 );
-		$post_1_ticket_2 = $this->create_tc_ticket( $post_id_1, 20 );
-
-		update_post_meta( $post_id_1, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
 		update_post_meta( $post_id_1, $capacity_meta_key, 30 );
 		update_post_meta( $post_id_1, Global_Stock::GLOBAL_STOCK_LEVEL, 30 );
-
+		
+		$post_1_ticket_1 = $this->create_tc_ticket(
+			$post_id_1,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 10,
+				],
+			]
+		);
+		
 		update_post_meta( $post_1_ticket_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
-		update_post_meta( $post_1_ticket_1, $capacity_meta_key, 10 );
-		update_post_meta( $post_1_ticket_1, '_stock', 10 );
-
+		
+		$post_1_ticket_2 = $this->create_tc_ticket(
+			$post_id_1,
+			20,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 20,
+				],
+			]
+		);
+		
 		update_post_meta( $post_1_ticket_2, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-2' );
-		update_post_meta( $post_1_ticket_2, $capacity_meta_key, 20 );
-		update_post_meta( $post_1_ticket_2, '_stock', 20 );
-
+		
 		// Post 2 set up.
-		$post_2_ticket_1 = $this->create_tc_ticket( $post_id_2, 20 );
-
-		update_post_meta( $post_id_2, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
 		update_post_meta( $post_id_2, $capacity_meta_key, 20 );
 		update_post_meta( $post_id_2, Global_Stock::GLOBAL_STOCK_LEVEL, 20 );
+		
+		$post_2_ticket_1 = $this->create_tc_ticket(
+			$post_id_2,
+			20,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 20,
+				],
+			]
+		);
 
 		update_post_meta( $post_2_ticket_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-2' );
-		update_post_meta( $post_2_ticket_1, $capacity_meta_key, 20 );
-		update_post_meta( $post_2_ticket_1, '_stock', 20 );
 
 		// Post 3 set up.
-		$post_3_ticket_1 = $this->create_tc_ticket( $post_id_3, 10 );
-		$post_3_ticket_2 = $this->create_tc_ticket( $post_id_3, 20 );
-
-		update_post_meta( $post_id_3, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
 		update_post_meta( $post_id_3, $capacity_meta_key, 30 );
-		update_post_meta( $post_id_3, Global_Stock::GLOBAL_STOCK_LEVEL, 24 );
-
+		update_post_meta( $post_id_3, Global_Stock::GLOBAL_STOCK_LEVEL, 30 );
+		
+		$post_3_ticket_1 = $this->create_tc_ticket(
+			$post_id_3,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 10,
+				],
+			]
+		);
 		update_post_meta( $post_3_ticket_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
-		update_post_meta( $post_3_ticket_1, $capacity_meta_key, 10 );
-		update_post_meta( $post_3_ticket_1, '_stock', 8 );
-		$this->create_order( [ $post_3_ticket_1 => 2 ] );
-
+		
+		$order           = $this->create_order( [ $post_3_ticket_1 => 4 ] );
+		$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		
+		// Mock the reservation ID to do proper stock calculation.
+		foreach ( $order_attendees as $key => $attendee ) {
+			update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+		}
+		
+		// global stock at 26
+		$post_3_ticket_2 = $this->create_tc_ticket(
+			$post_id_3,
+			20,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 20,
+				],
+			]
+		);
+		
 		update_post_meta( $post_3_ticket_2, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-2' );
-		update_post_meta( $post_3_ticket_2, $capacity_meta_key, 20 );
-		update_post_meta( $post_3_ticket_2, '_stock', 16 );
-		$this->create_order( [ $post_3_ticket_2 => 4 ] );
+
+		$order           = $this->create_order( [ $post_3_ticket_2 => 2 ] );
+		$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		
+		// Mock the reservation ID to do proper stock calculation.
+		foreach ( $order_attendees as $key => $attendee ) {
+			update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+		}
 
 		// Post 4 set up.
-		$post_4_ticket_1 = $this->create_tc_ticket( $post_id_4, 10 );
-
-		update_post_meta( $post_id_4, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
 		update_post_meta( $post_id_4, $capacity_meta_key, 20 );
-		update_post_meta( $post_id_4, Global_Stock::GLOBAL_STOCK_LEVEL, 16 );
-
+		update_post_meta( $post_id_4, Global_Stock::GLOBAL_STOCK_LEVEL, 20 );
+		
+		$post_4_ticket_1 = $this->create_tc_ticket(
+			$post_id_4,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 20,
+				],
+			]
+		);
 		update_post_meta( $post_4_ticket_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-2' );
-		update_post_meta( $post_4_ticket_1, $capacity_meta_key, 20 );
-		update_post_meta( $post_4_ticket_1, '_stock', 16 );
-		$this->create_order( [ $post_4_ticket_1 => 4 ] );
-
+		
+		$order           = $this->create_order( [ $post_4_ticket_1 => 4 ] );
+		$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		
+		// Mock the reservation ID to do proper stock calculation.
+		foreach ( $order_attendees as $key => $attendee ) {
+			update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+		}
+		
 		// Start testing!
 		// We need to mock the update of seat type 2 to simulate the deletion of the seat type.
 		update_post_meta( $post_1_ticket_2, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
@@ -372,7 +438,7 @@ class Seat_Types_Test extends WPTestCase {
 		update_post_meta( $post_4_ticket_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
 
 		// There should be 6 updated tickets because of seat-type-uuid-2 seat type deletion.
-		$this->assertEquals( 6, $seat_types->update_tickets_with_calculated_stock_and_capacity( 'seat-type-uuid-1', 30, [ $post_1_ticket_1, $post_3_ticket_1] ) );
+		$this->assertEquals( 6, $seat_types->update_tickets_with_calculated_stock_and_capacity( 'seat-type-uuid-1', 30, [ $post_1_ticket_1, $post_3_ticket_1 ] ) );
 
 		// Post 1 checks
 		$this->assertEquals( 30, get_post_meta( $post_id_1, $capacity_meta_key, true ) );
@@ -394,18 +460,25 @@ class Seat_Types_Test extends WPTestCase {
 		// Post 3 checks
 		$this->assertEquals( 30, get_post_meta( $post_id_3, $capacity_meta_key, true ) );
 		$this->assertEquals( 24, get_post_meta( $post_id_3, Global_Stock::GLOBAL_STOCK_LEVEL, true ) );
-		$this->assertEquals( 30, get_post_meta( $post_3_ticket_1, $capacity_meta_key, true ) );
-		$this->assertEquals( 24, get_post_meta( $post_3_ticket_1, '_stock', true ) );
-		$this->assertEquals( 30, get_post_meta( $post_3_ticket_2, $capacity_meta_key, true ) );
-		$this->assertEquals( 24, get_post_meta( $post_3_ticket_2, '_stock', true ) );
-		$this->assertEquals( 'seat-type-uuid-1', get_post_meta( $post_3_ticket_1, Meta::META_KEY_SEAT_TYPE, true ) );
-		$this->assertEquals( 'seat-type-uuid-1', get_post_meta( $post_3_ticket_2, Meta::META_KEY_SEAT_TYPE, true ) );
+		
+		$post_3_ticket_1 = tribe( Module::class )->get_ticket( $post_id_3, $post_3_ticket_1 );
+		$this->assertEquals( 30, $post_3_ticket_1->capacity() );
+		$this->assertEquals( 24, $post_3_ticket_1->stock() );
+		
+		$post_3_ticket_2 = tribe( Module::class )->get_ticket( $post_id_3, $post_3_ticket_2 );
+		
+		$this->assertEquals( 30, $post_3_ticket_2->capacity() );
+		$this->assertEquals( 24, $post_3_ticket_2->stock() );
+		$this->assertEquals( 'seat-type-uuid-1', get_post_meta( $post_3_ticket_1->ID, Meta::META_KEY_SEAT_TYPE, true ) );
+		$this->assertEquals( 'seat-type-uuid-1', get_post_meta( $post_3_ticket_2->ID, Meta::META_KEY_SEAT_TYPE, true ) );
 
 		// Post 4 checks
 		$this->assertEquals( 30, get_post_meta( $post_id_4, $capacity_meta_key, true ) );
 		$this->assertEquals( 26, get_post_meta( $post_id_4, Global_Stock::GLOBAL_STOCK_LEVEL, true ) );
-		$this->assertEquals( 30, get_post_meta( $post_4_ticket_1, $capacity_meta_key, true ) );
-		$this->assertEquals( 26, get_post_meta( $post_4_ticket_1, '_stock', true ) );
+		
+		$post_4_ticket_1 = tribe( Module::class )->get_ticket( $post_id_4, $post_4_ticket_1 );
+		$this->assertEquals( 30, $post_4_ticket_1->capacity() );
+		$this->assertEquals( 26, $post_4_ticket_1->stock() );
 		$this->assertEquals( 'seat-type-uuid-1', get_post_meta( $post_2_ticket_1, Meta::META_KEY_SEAT_TYPE, true ) );
 	}
 
