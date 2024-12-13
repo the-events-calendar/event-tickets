@@ -2,7 +2,7 @@
 /**
  * Order modifiers factory.
  *
- * @since TBD
+ * @since 5.18.0
  */
 
 declare( strict_types=1 );
@@ -21,7 +21,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 /**
  * Class Order_Modifiers_Factory
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Factory {
 
@@ -30,7 +30,7 @@ class Factory {
 	/**
 	 * Get the repository for a given type.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param string $type The type.
 	 *
@@ -55,7 +55,7 @@ class Factory {
 				 *
 				 * The class must be a child of the Repositories\Order_Modifiers class.
 				 *
-				 * @since TBD
+				 * @since 5.18.0
 				 *
 				 * @param string $class The order modifiers repository class.
 				 */
@@ -81,7 +81,7 @@ class Factory {
 	/**
 	 * Get the model for a given type.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param string $type       The type.
 	 * @param array  $attributes The attributes.
@@ -107,7 +107,7 @@ class Factory {
 				 *
 				 * The class must be a child of the Models\Order_Modifiers class.
 				 *
-				 * @since TBD
+				 * @since 5.18.0
 				 *
 				 * @param string $class The order modifiers model class.
 				 */

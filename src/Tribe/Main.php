@@ -190,7 +190,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Attach our initial hooks and filters
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */

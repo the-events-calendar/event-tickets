@@ -1,7 +1,7 @@
 /**
  * Order Modifier Fees Table
  *
- * @since TBD
+ * @since 5.18.0
  */
 
 ( function( $ ) {

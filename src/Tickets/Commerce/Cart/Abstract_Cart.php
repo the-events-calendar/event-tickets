@@ -76,7 +76,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * This method calculates the total by first computing the subtotal from all items in the cart,
 	 * and then applying any additional values (e.g., fees or discounts) provided via the `tec_tickets_commerce_get_cart_additional_values` filter.
 	 *
-	 * @since TBD Refactored logic, to include a new filter.
+	 * @since 5.18.0 Refactored logic, to include a new filter.
 	 * @since 5.10.0
 	 *
 	 * @return float The total value of the cart, or null if there are no items.
@@ -97,7 +97,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 		 *
 		 * Additional values must be instances of the `Value` class to ensure consistent behavior.
 		 *
-		 * @since TBD
+		 * @since 5.18.0
 		 *
 		 * @param Value[] $values     An array of `Value` instances representing additional fees or discounts.
 		 * @param array   $items      The items currently in the cart.
@@ -123,7 +123,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 *
 	 * The subtotal is the sum of all item subtotals without additional values like fees or discounts.
 	 *
-	 * @since TBD Refactored to avoid cumulative calculations.
+	 * @since 5.18.0 Refactored to avoid cumulative calculations.
 	 *
 	 * @return float The subtotal of the cart.
 	 */

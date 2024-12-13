@@ -2,7 +2,7 @@
 /**
  * The custom tables' controller.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Controller;
  */
@@ -18,7 +18,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifier_Relationsh
 /**
  * Class Tables.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Controller;
  */
@@ -27,7 +27,7 @@ class Tables extends Controller_Contract {
 	/**
 	 * Unsubscribes from WordPress hooks.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */
@@ -38,7 +38,7 @@ class Tables extends Controller_Contract {
 	/**
 	 * Registers the tables and the bindings required to use them.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void The tables are registered.
 	 */

@@ -6,7 +6,7 @@
  * The form includes fields for Fee name, code, discount type, amount, status, and Fee limit.
  * It also includes a nonce field for security.
  *
- * @since   TBD
+ * @since   5.18.0
  *
  * @var string $order_modifier_display_name     The Fee name (display name).
  * @var string $order_modifier_slug             The Fee code (slug).

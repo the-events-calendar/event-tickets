@@ -5,7 +5,7 @@
  * This class is responsible for managing fees, calculating them, and appending them
  * to the cart. It integrates with various filters and hooks during the checkout process.
  *
- * @since   TBD
+ * @since   5.18.0
  * @package TEC\Tickets\Commerce\Order_Modifiers\Checkout
  */
 
@@ -33,7 +33,7 @@ use WP_Post;
  *
  * Handles fees logic in the checkout process.
  *
- * @since TBD
+ * @since 5.18.0
  */
 abstract class Abstract_Fees extends Controller_Contract {
 
@@ -42,7 +42,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 	/**
 	 * The modifier type used for fees.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 * @var string
 	 */
 	protected string $modifier_type = 'fee';
@@ -50,7 +50,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 	/**
 	 * The modifier strategy for applying fees.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 * @var Modifier_Strategy_Interface
 	 */
 	protected Modifier_Strategy_Interface $modifier_strategy;
@@ -58,7 +58,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 	/**
 	 * Manager for handling modifier calculations and logic.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 * @var Modifier_Manager
 	 */
 	protected Modifier_Manager $manager;
@@ -66,7 +66,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 	/**
 	 * Repository for accessing order modifiers.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 * @var Fee_Repository
 	 */
 	protected Fee_Repository $order_modifiers_repository;
@@ -74,7 +74,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 	/**
 	 * Repository for accessing and managing relationships between order modifiers.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 * @var Order_Modifier_Relationship
 	 */
 	protected Order_Modifier_Relationship $order_modifiers_relationship_repository;
@@ -84,7 +84,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 *
 	 * This represents the total amount used as a basis for calculating applicable fees.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 * @var null|Value
 	 */
 	protected ?Value $subtotal = null;
@@ -97,7 +97,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 * method `append_fees_to_cart` will not add the fees again. The default is `false`,
 	 * indicating the fees have not yet been appended.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 * @var bool
 	 */
 	protected static bool $fees_appended = false;
@@ -105,7 +105,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 	/**
 	 * Constructor
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Container                   $container                   The DI container.
 	 * @param Controller                  $controller                  The order modifiers controller.
@@ -133,21 +133,21 @@ abstract class Abstract_Fees extends Controller_Contract {
 	/**
 	 * Un-registers the necessary hooks for adding fees to the checkout process.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 */
 	abstract public function unregister(): void;
 
 	/**
 	 * Registers the necessary hooks for adding fees to the checkout process.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 */
 	abstract public function do_register(): void;
 
 	/**
 	 * Calculates the fees and modifies the total value in the checkout process.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $values   The existing values being passed through the filter.
 	 * @param array $items    The items in the cart.
@@ -191,7 +191,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 	/**
 	 * Displays the fee section in the checkout.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param WP_Post  $post     The post object for the current event.
 	 * @param array    $items    The items in the cart.
@@ -228,7 +228,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 	/**
 	 * Retrieves and combines the fees for the given cart items.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $items    The items in the cart.
 	 * @param bool  $per_item Whether to return calculated fees per item or all together in a single dimension array.
@@ -292,7 +292,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 	/**
 	 * Combines the fees for each item in the cart.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $fees_per_item The fees per item.
 	 *
@@ -312,7 +312,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 	/**
 	 * Extracts and combines fees from related ticket fees and automatic fees, removing duplicates.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $related_ticket_fees The related ticket fees.
 	 * @param array $automatic_fees      The automatic fees.
@@ -353,7 +353,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 	/**
 	 * Adds fees as separate items in the cart.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $items    The current items in the cart.
 	 * @param Value $subtotal The calculated subtotal of the cart items.
@@ -424,7 +424,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 	/**
 	 * Prepares the fees for display in the frontend.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $items The items in the cart.
 	 *

@@ -13,7 +13,7 @@ import { currentProviderSupportsFees } from './store/compatibility';
 /**
  * Filters the body details of the ticket to add the seating details.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @param {Object} body     The body of the request.
  * @param {string} clientId The client ID of the ticket block.
@@ -31,7 +31,7 @@ export const filterSetBodyDetails = ( body, clientId ) => {
 /**
  * Filters the ticket container items.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @param {object[]}  items    The ticket container items.
  * @param {string} clientId The client ID.
@@ -59,7 +59,7 @@ export const filterTicketContainerItems = ( items, clientId ) => {
 /**
  * Sets the fees for the ticket.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @param {string} clientId The client ID of the ticket block.
  * @param {object} ticket   The ticket object.
@@ -79,7 +79,7 @@ export const setFeesForTicket = ( clientId, ticket ) => {
 /**
  * Updates the fees for the ticket.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @param {string} clientId The client ID of the ticket block.
  */

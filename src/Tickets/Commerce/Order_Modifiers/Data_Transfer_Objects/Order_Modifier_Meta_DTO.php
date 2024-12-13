@@ -2,7 +2,7 @@
 /**
  * The data transfer object for the Order Modifier Meta model.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Data_Transfer_Objects;
  */
@@ -15,7 +15,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Meta;
 /**
  * Class Order_Modifier_Meta_DTO.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Data_Transfer_Objects;
  */
@@ -24,7 +24,7 @@ class Order_Modifier_Meta_DTO extends DataTransferObject {
 	/**
 	 * The Order Modifier Meta ID.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var int
 	 */
@@ -33,7 +33,7 @@ class Order_Modifier_Meta_DTO extends DataTransferObject {
 	/**
 	 * The associated Order Modifier ID.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var int
 	 */
@@ -42,7 +42,7 @@ class Order_Modifier_Meta_DTO extends DataTransferObject {
 	/**
 	 * The meta key.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string
 	 */
@@ -51,7 +51,7 @@ class Order_Modifier_Meta_DTO extends DataTransferObject {
 	/**
 	 * The meta value.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string
 	 */
@@ -60,7 +60,7 @@ class Order_Modifier_Meta_DTO extends DataTransferObject {
 	/**
 	 * The priority of the meta entry.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var int
 	 */
@@ -69,7 +69,7 @@ class Order_Modifier_Meta_DTO extends DataTransferObject {
 	/**
 	 * The creation timestamp.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string
 	 */
@@ -78,7 +78,7 @@ class Order_Modifier_Meta_DTO extends DataTransferObject {
 	/**
 	 * Builds a new DTO from an object.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param object $object The object to build the DTO from.
 	 *
@@ -100,7 +100,7 @@ class Order_Modifier_Meta_DTO extends DataTransferObject {
 	/**
 	 * Builds a model instance from the DTO.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return Order_Modifier_Meta The model instance.
 	 */

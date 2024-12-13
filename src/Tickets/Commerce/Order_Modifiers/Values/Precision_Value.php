@@ -2,7 +2,7 @@
 /**
  * Precision Value
  *
- * @since TBD
+ * @since 5.18.0
  */
 
 declare( strict_types=1 );
@@ -20,7 +20,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Values\Positive_Integer_Value as Positi
  * It will store the value as an integer to prevent floating point errors, and when
  * the value is retrieved, it will be converted back to a float.
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Precision_Value extends Base_Value {
 	/**
@@ -40,7 +40,7 @@ class Precision_Value extends Base_Value {
 	/**
 	 * Currency_Value constructor.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param float|int|string $value     The value to store. Can be a float, int, or numeric string.
 	 * @param ?int             $precision The precision (how many decimal places).
@@ -79,7 +79,7 @@ class Precision_Value extends Base_Value {
 	/**
 	 * Get the value.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return float
 	 */
@@ -92,7 +92,7 @@ class Precision_Value extends Base_Value {
 	 *
 	 * This returns a clone of the precision value to prevent mutation.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return int The precision.
 	 */
@@ -103,7 +103,7 @@ class Precision_Value extends Base_Value {
 	/**
 	 * Add a value to this value.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Precision_Value $value The value to add.
 	 *
@@ -130,7 +130,7 @@ class Precision_Value extends Base_Value {
 	/**
 	 * Subtract a value from this value.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Precision_Value $value The value to subtract.
 	 *
@@ -148,7 +148,7 @@ class Precision_Value extends Base_Value {
 	/**
 	 * Add multiple values together.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Precision_Value ...$values The values to add.
 	 *
@@ -183,7 +183,7 @@ class Precision_Value extends Base_Value {
 	/**
 	 * Convert this object to an object with a new precision level.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $precision The new precision level.
 	 *
@@ -201,7 +201,7 @@ class Precision_Value extends Base_Value {
 	/**
 	 * Validate that the precision is valid.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @throws InvalidArgumentException If the precision is greater than the max precision.
 	 */
@@ -214,7 +214,7 @@ class Precision_Value extends Base_Value {
 	/**
 	 * Validate that the value is valid.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param mixed $value The value to validate.
 	 *

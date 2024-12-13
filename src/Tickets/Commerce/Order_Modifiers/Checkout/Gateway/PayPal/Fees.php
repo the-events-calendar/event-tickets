@@ -6,7 +6,7 @@
  * during the PayPal checkout process. It integrates with various filters
  * and hooks specific to PayPal's order and payment flow.
  *
- * @since TBD
+ * @since 5.18.0
  * @package TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Paypal
  */
 
@@ -22,7 +22,7 @@ use WP_Post;
  * This class manages the addition and calculation of fees within the
  * PayPal gateway workflow.
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Fees extends Abstract_Fees {
 
@@ -32,7 +32,7 @@ class Fees extends Abstract_Fees {
 	 * This includes calculating total fees, modifying cart values, and displaying
 	 * fee sections during the PayPal checkout process.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 */
 	public function do_register(): void {
 		// Hook for appending fees to the cart for PayPal processing.
@@ -55,7 +55,7 @@ class Fees extends Abstract_Fees {
 	/**
 	 * Removes the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */
@@ -78,7 +78,7 @@ class Fees extends Abstract_Fees {
 	 * API. It includes details like the display name, price, currency, quantity,
 	 * and SKU.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array   $item The cart item representing the fee.
 	 * @param WP_Post $order The current order object associated with the PayPal transaction.

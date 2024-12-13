@@ -6,7 +6,7 @@
  * ticket metabox in WordPress. It allows the user to select applicable fees
  * for a ticket and saves the relationships between the ticket and the fees.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Admin
  */
@@ -39,7 +39,7 @@ use Tribe__Tickets__Commerce__Currency as Currency;
  * This class handles the UI for displaying fee options, processing form submissions,
  * and managing relationships between tickets and their selected fees.
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Order_Modifier_Fee_Metabox extends Controller_Contract {
 
@@ -49,7 +49,7 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	/**
 	 * The modifier type for this metabox handler.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 * @var string
 	 */
 	protected string $modifier_type = 'fee';
@@ -57,7 +57,7 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	/**
 	 * The modifier strategy instance for handling fee-specific logic.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 * @var object
 	 */
 	protected $modifier_strategy;
@@ -65,7 +65,7 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	/**
 	 * The modifier manager instance to handle relationship updates.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 * @var Modifier_Manager
 	 */
 	protected Modifier_Manager $manager;
@@ -73,7 +73,7 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	/**
 	 * The repository for interacting with the order modifiers relationships.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 * @var Order_Modifier_Relationship
 	 */
 	protected Order_Modifier_Relationship $order_modifiers_relationship_repository;
@@ -81,7 +81,7 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	/**
 	 * Constructor to initialize dependencies and set up the modifier strategy and manager.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Container                   $container                   The DI container.
 	 * @param Controller                  $controller                  The order modifiers controller.
@@ -112,7 +112,7 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	 * This method hooks into WordPress actions to add the fee section in the ticket metabox
 	 * and to save the selected fees when a ticket is saved.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 */
 	public function do_register(): void {
 		add_action( 'tribe_events_tickets_metabox_edit_main', [ $this, 'add_fee_section' ], 30, 3 );
@@ -124,7 +124,7 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	/**
 	 * Removes the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */
@@ -138,7 +138,7 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	/**
 	 * Enqueue custom JS for the Order Modifiers Fee functionality.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */
@@ -159,7 +159,7 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	/**
 	 * Checks if the current context is NOT Block Editor and the post type is ticket-enabled.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return bool Whether the assets should be enqueued or not.
 	 */
@@ -187,7 +187,7 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	 * This method retrieves available fees and displays them as checkboxes in the ticket metabox,
 	 * allowing users to select applicable fees for the current ticket.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int      $post_id The post ID of the ticket.
 	 * @param int|null $ticket_id The ticket ID.
@@ -246,7 +246,7 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	/**
 	 * Formats the fees' amount for display based on TicketsCommerce Currency Settings.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param object $fee The fee object.
 	 *
@@ -269,7 +269,7 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	 * This method handles the saving of selected fee modifiers when a ticket is saved.
 	 * It updates the relationships between the ticket and the selected fees.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int           $post_id  The post ID of the ticket.
 	 * @param Ticket_Object $ticket   The ticket object.
@@ -311,7 +311,7 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	 *
 	 * This method removes all relationships between the deleted ticket and its associated fees.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 *

@@ -51,7 +51,7 @@ class Send_Email_Completed_Order extends Flag_Action_Abstract {
 		/**
 		 * Filter the order before sending the email about the completed order.
 		 *
-		 * @since TBD
+		 * @since 5.18.0
 		 *
 		 * @param \WP_Post $order The order.
 		 */

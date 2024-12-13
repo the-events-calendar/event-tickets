@@ -648,7 +648,7 @@ class Cart {
 	/**
 	 * Get the subtotal of the cart.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return float
 	 */

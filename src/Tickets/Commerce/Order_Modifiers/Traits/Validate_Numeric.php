@@ -2,7 +2,7 @@
 /**
  * Validate Numeric trait.
  *
- * @since TBD
+ * @since 5.18.0
  */
 
 declare( strict_types=1 );
@@ -14,14 +14,14 @@ use InvalidArgumentException;
 /**
  * Trait Validate_Numeric
  *
- * @since TBD
+ * @since 5.18.0
  */
 trait Validate_Numeric {
 
 	/**
 	 * Validate that the value is a number, is not NAN, and is not INF.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param mixed $value The value to validate.
 	 *

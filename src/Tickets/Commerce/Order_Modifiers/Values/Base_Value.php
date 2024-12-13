@@ -2,7 +2,7 @@
 /**
  * Base Value for implementing Value_Interface.
  *
- * @since TBD
+ * @since 5.18.0
  */
 
 declare( strict_types=1 );
@@ -14,7 +14,7 @@ use InvalidArgumentException;
 /**
  * Class Base_Value
  *
- * @since TBD
+ * @since 5.18.0
  */
 abstract class Base_Value implements Value_Interface {
 	/**
@@ -27,7 +27,7 @@ abstract class Base_Value implements Value_Interface {
 	/**
 	 * Base_Value constructor.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param mixed $value The value to store.
 	 */
@@ -39,7 +39,7 @@ abstract class Base_Value implements Value_Interface {
 	/**
 	 * Get the value as a string.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return string The value as a string.
 	 */
@@ -50,7 +50,7 @@ abstract class Base_Value implements Value_Interface {
 	/**
 	 * Validate that the value is valid.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param mixed $value The value to validate.
 	 *

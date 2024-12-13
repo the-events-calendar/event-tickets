@@ -2,7 +2,7 @@
 /**
  * The data transfer object for the Order Modifier model.
  *
- * @since   TBD
+ * @since   5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Data_Transfer_Objects;
  */
@@ -23,7 +23,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Values\Value_Interface;
 /**
  * Class Order_Modifier_DTO.
  *
- * @since   TBD
+ * @since   5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Data_Transfer_Objects;
  */
@@ -34,7 +34,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 	/**
 	 * The Order Modifier ID.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var int
 	 */
@@ -43,7 +43,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 	/**
 	 * The modifier type (coupon, fee).
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string
 	 */
@@ -52,7 +52,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 	/**
 	 * The sub-type (percentage, flat).
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string
 	 */
@@ -61,7 +61,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 	/**
 	 * The fee amount in cents.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var float|Value_Interface
 	 */
@@ -70,7 +70,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 	/**
 	 * The slug (coupon code).
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string
 	 */
@@ -79,7 +79,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 	/**
 	 * The user-friendly display name.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string
 	 */
@@ -88,7 +88,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 	/**
 	 * The status (active, draft, inactive).
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string
 	 */
@@ -97,7 +97,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 	/**
 	 * The created timestamp.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string
 	 */
@@ -106,7 +106,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 	/**
 	 * The start time when the modifier becomes active (nullable).
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string|null
 	 */
@@ -115,7 +115,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 	/**
 	 * The end time when the modifier expires (nullable).
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string|null
 	 */
@@ -124,7 +124,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 	/**
 	 * Builds a new DTO from an object.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param object $object The object to build the DTO from.
 	 *
@@ -155,7 +155,7 @@ class Order_Modifier_DTO extends DataTransferObject {
 	/**
 	 * Builds a model instance from the DTO.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return Order_Modifier The model instance.
 	 */

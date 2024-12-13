@@ -2,7 +2,7 @@
 /**
  * The data transfer object for the Order Modifier Relationship model.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Data_Transfer_Objects;
  */
@@ -15,7 +15,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Relationships;
 /**
  * Class Order_Modifier_Relationships_DTO.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Data_Transfer_Objects;
  */
@@ -24,7 +24,7 @@ class Order_Modifier_Relationships_DTO extends DataTransferObject {
 	/**
 	 * The primary key of the relationship.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var int
 	 */
@@ -33,7 +33,7 @@ class Order_Modifier_Relationships_DTO extends DataTransferObject {
 	/**
 	 * The modifier ID.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var int
 	 */
@@ -42,7 +42,7 @@ class Order_Modifier_Relationships_DTO extends DataTransferObject {
 	/**
 	 * The post ID.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var int
 	 */
@@ -51,7 +51,7 @@ class Order_Modifier_Relationships_DTO extends DataTransferObject {
 	/**
 	 * The post type.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string
 	 */
@@ -60,7 +60,7 @@ class Order_Modifier_Relationships_DTO extends DataTransferObject {
 	/**
 	 * The post title (optional, for clarity when rendering data).
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string|null
 	 */
@@ -69,7 +69,7 @@ class Order_Modifier_Relationships_DTO extends DataTransferObject {
 	/**
 	 * Builds a new DTO from an object.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param object $object The object to build the DTO from.
 	 *
@@ -90,7 +90,7 @@ class Order_Modifier_Relationships_DTO extends DataTransferObject {
 	/**
 	 * Builds a model instance from the DTO.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return Order_Modifier_Relationships The model instance.
 	 */

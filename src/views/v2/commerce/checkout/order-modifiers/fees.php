@@ -9,9 +9,9 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   TBD
+ * @since   5.18.0
  *
- * @version TBD
+ * @version 5.18.0
  *
  * @var Tribe__Template $this        [Global] Template object.
  * @var array[]         $active_fees [Global] List of active fees to be displayed, where each fee contains:

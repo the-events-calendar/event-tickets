@@ -82,7 +82,7 @@ class Flag_Action_Handler extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Prepare the order for email.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param WP_Post $order The order to prepare.
 	 *

@@ -7,7 +7,7 @@
  * It interacts with the custom `Order_Modifier_Relationships` table and uses WordPress database functions
  * for CRUD operations.
  *
- * @since   TBD
+ * @since   5.18.0
  * @package TEC\Tickets\Commerce\Order_Modifiers\Repositories
  */
 
@@ -29,14 +29,14 @@ use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Relationships as 
  *
  * Repository for managing the relationship between Order Modifiers and wp_posts.
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Order_Modifier_Relationship extends Repository implements Insertable, Updatable, Deletable {
 
 	/**
 	 * Inserts a new relationship record.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Model $model The model instance to insert.
 	 *
@@ -65,7 +65,7 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 	/**
 	 * Updates an existing relationship record.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Model $model The model instance to update.
 	 *
@@ -94,7 +94,7 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 	/**
 	 * Deletes a relationship record.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Model $model The model instance to delete.
 	 *
@@ -117,7 +117,7 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 	/**
 	 * Clears all relationships associated with a given modifier id.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $modifier_id The ID of the Order Modifier.
 	 *
@@ -139,7 +139,7 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 	 * This method deletes all records in the relationships table for the provided post
 	 * based on the `post_id`.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Model $model The model representing the post for which relationships should be cleared.
 	 *
@@ -158,7 +158,7 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 	/**
 	 * Finds a relationship by `modifier_id`, and returns the full modifier and post data.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $modifier_id The ID of the Order Modifier.
 	 *
@@ -175,7 +175,7 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 	/**
 	 * Finds all posts related to a specific `modifier_id` and `post_type`.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int    $modifier_id The ID of the Order Modifier.
 	 * @param string $post_type   The post type.
@@ -192,7 +192,7 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 	/**
 	 * Finds a post and its related modifiers.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $post_id The ID of the post.
 	 *
@@ -209,7 +209,7 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 	 *
 	 * This method centralizes the JOIN logic so that it can be reused in other query-building methods.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return ModelQueryBuilder The query builder with the necessary joins.
 	 */
@@ -226,7 +226,7 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 	/**
 	 * Prepares a query for the repository.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return ModelQueryBuilder
 	 */

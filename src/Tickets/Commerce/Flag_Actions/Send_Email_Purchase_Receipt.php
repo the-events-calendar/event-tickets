@@ -55,7 +55,7 @@ class Send_Email_Purchase_Receipt extends Flag_Action_Abstract {
 		/**
 		 * Filter the order before sending the email about the purchase receipt of the order.
 		 *
-		 * @since TBD
+		 * @since 5.18.0
 		 *
 		 * @param \WP_Post $order The order.
 		 */

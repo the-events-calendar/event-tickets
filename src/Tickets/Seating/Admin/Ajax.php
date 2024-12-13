@@ -202,11 +202,11 @@ class Ajax extends Controller_Contract {
 	 * @var string
 	 */
 	public const ACTION_EVENT_LAYOUT_UPDATED = 'tec_tickets_seating_event_layout_updated';
-	
+
 	/**
 	 * The action to remove the post layout.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string
 	 */
@@ -1244,11 +1244,11 @@ class Ajax extends Controller_Contract {
 			]
 		);
 	}
-	
+
 	/**
 	 * Removes the layout from an event.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void The function does not return a value but will echo the JSON response.
 	 */
@@ -1276,9 +1276,9 @@ class Ajax extends Controller_Contract {
 
 			return;
 		}
-		
+
 		$layout_id = get_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, true );
-		
+
 		if ( empty( $layout_id ) ) {
 			wp_send_json_error(
 				[
@@ -1286,7 +1286,7 @@ class Ajax extends Controller_Contract {
 				],
 				403
 			);
-			
+
 			return;
 		}
 
@@ -1298,27 +1298,27 @@ class Ajax extends Controller_Contract {
 					->where( 'event', $post_id )
 					->where( 'meta_exists', Meta::META_KEY_SEAT_TYPE )
 					->get_ids( true );
-		
+
 		foreach ( $tickets as $ticket_id ) {
 			// Remove slr meta.
 			delete_post_meta( $ticket_id, Meta::META_KEY_ENABLED );
 			delete_post_meta( $ticket_id, Meta::META_KEY_LAYOUT_ID );
 			delete_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE );
-			
+
 			// Switch ticket to own stock mode.
 			update_post_meta( $ticket_id, Global_Stock::TICKET_STOCK_MODE, Global_Stock::OWN_STOCK_MODE );
-			
+
 			// Set ticket capacity to 1.
 			tribe_tickets_delete_capacity( $ticket_id );
 			tribe_tickets_update_capacity( $ticket_id, 1 );
-			
+
 			// Update ticket stock.
 			update_post_meta( $ticket_id, '_stock', 1 );
-			
+
 			++$updated_tickets;
 			clean_post_cache( $ticket_id );
 		}
-		
+
 		// Attendees by post id.
 		$attendees = tribe_attendees()
 			->where( 'event', $post_id )
@@ -1337,12 +1337,12 @@ class Ajax extends Controller_Contract {
 		// Finally update post data.
 		delete_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID );
 		delete_post_meta( $post_id, Meta::META_KEY_ENABLED );
-		
+
 		// Remove global stock.
 		tribe_tickets_delete_capacity( $post_id );
-		
+
 		clean_post_cache( $post_id );
-		
+
 		wp_send_json_success(
 			[
 				'updatedTickets'   => $updated_tickets,

@@ -2,7 +2,7 @@
 /**
  * Editor class.
  *
- * @since TBD
+ * @since 5.18.0
  */
 
 declare( strict_types=1 );
@@ -20,7 +20,7 @@ use WP_Post;
 /**
  * Class Editor
  *
- * @since TBD
+ * @since 5.18.0
  */
 final class Editor extends Controller_Contract {
 
@@ -29,7 +29,7 @@ final class Editor extends Controller_Contract {
 	/**
 	 * Registers the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */
@@ -42,7 +42,7 @@ final class Editor extends Controller_Contract {
 	 *
 	 * Bound implementations should not be removed in this method!
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void Filters and actions hooks added by the controller are be removed.
 	 */
@@ -54,7 +54,7 @@ final class Editor extends Controller_Contract {
 	/**
 	 * Returns the store data used to hydrate the store in Block Editor context.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return array {
 	 *     selectedFeesByPostId: array<int, string>,
@@ -74,7 +74,7 @@ final class Editor extends Controller_Contract {
 	/**
 	 * Registers the block editor assets.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */
@@ -124,7 +124,7 @@ final class Editor extends Controller_Contract {
 	/**
 	 * Checks if the current context is the Block Editor and the post type is ticket-enabled.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return bool Whether the assets should be enqueued or not.
 	 */
@@ -150,7 +150,7 @@ final class Editor extends Controller_Contract {
 	/**
 	 * Get the REST data for the Order Modifiers feature.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return array The REST data for the Order Modifiers feature.
 	 */
