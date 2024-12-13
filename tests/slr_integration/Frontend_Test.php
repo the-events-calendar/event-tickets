@@ -559,7 +559,7 @@ class Frontend_Test extends Controller_Test_Case {
 				
 				$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
 				foreach ( $order_attendees as $key => $attendee ) {
-					update_post_meta( $attendee->ID, Meta::META_KEY_RESERVATION_ID, 'reservation-' . $key );
+					update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'reservation-' . $key );
 				}
 
 				return [ $post_id, $ticket ];
