@@ -485,12 +485,27 @@ class Timer_Test extends Controller_Test_Case {
 		update_post_meta( $post_id, Meta::META_KEY_ENABLED, 1 );
 		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-id' );
 
-		$post_1_ticket_1 = $this->create_tc_ticket( $post_id, 10 );
+		$post_1_ticket_1 = $this->create_tc_ticket(
+			$post_id,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 1,
+				],
+			]
+		);
 
 		update_post_meta( $post_1_ticket_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
-		update_post_meta( $post_1_ticket_1, tribe( 'tickets.handler' )->key_capacity, 10 );
-		update_post_meta( $post_1_ticket_1, '_stock', 0 );
 
+		$order           = $this->create_order( [ $post_1_ticket_1 => 1 ] );
+		$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		
+		// Mock the reservation ID to do proper stock calculation.
+		foreach ( $order_attendees as $key => $attendee ) {
+			update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+		}
+		
 		$this->make_controller()->register();
 
 		$session->add_entry( $post_id, 'test-token' );
@@ -532,13 +547,27 @@ class Timer_Test extends Controller_Test_Case {
 				update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
 				update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, 0 );
 
-				$ticket_id = $this->create_tc_ticket( $post_id, 10 );
-				$this->create_order( [ $ticket_id => 2 ] );
+				$ticket_id = $this->create_tc_ticket(
+					$post_id,
+					10,
+					[
+						'tribe-ticket' => [
+							'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+							'capacity' => 2,
+						],
+					]
+				);
 				update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
-				update_post_meta( $ticket_id, '_stock', 0 );
-
+				
+				$order           = $this->create_order( [ $ticket_id => 2 ] );
+				$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+				// Mock the reservation ID to do proper stock calculation.
+				foreach ( $order_attendees as $key => $attendee ) {
+					update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+				}
+				
 				return $post_id;
-			}
+			},
 		];
 
 		yield 'post with tickets available' => [
@@ -571,13 +600,28 @@ class Timer_Test extends Controller_Test_Case {
 				update_post_meta( $event_id, Meta::META_KEY_UUID, 'test-post-uuid' );
 				update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 0 );
 
-				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
-				$this->create_order( [ $ticket_id => 2 ] );
+				$ticket_id = $this->create_tc_ticket(
+					$event_id,
+					10,
+					[
+						'tribe-ticket' => [
+							'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+							'capacity' => 2,
+						],
+					]
+				);
 				update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
-				update_post_meta( $ticket_id, '_stock', 0 );
+				
+				$order           = $this->create_order( [ $ticket_id => 2 ] );
+				$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+				
+				// Mock the reservation ID to do proper stock calculation.
+				foreach ( $order_attendees as $key => $attendee ) {
+					update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+				}
 
 				return $event_id;
-			}
+			},
 		];
 
 		yield 'event with no tickets available and custom calendar slug' => [
@@ -596,13 +640,28 @@ class Timer_Test extends Controller_Test_Case {
 				update_post_meta( $event_id, Meta::META_KEY_UUID, 'test-post-uuid' );
 				update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 0 );
 
-				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
-				$this->create_order( [ $ticket_id => 2 ] );
+				$ticket_id = $this->create_tc_ticket(
+					$event_id,
+					10,
+					[
+						'tribe-ticket' => [
+							'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+							'capacity' => 2,
+						],
+					]
+				);
+				$order     = $this->create_order( [ $ticket_id => 2 ] );
 				update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
-				update_post_meta( $ticket_id, '_stock', 0 );
+				
+				$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+				
+				// Mock the reservation ID to do proper stock calculation.
+				foreach ( $order_attendees as $key => $attendee ) {
+					update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+				}
 
 				return $event_id;
-			}
+			},
 		];
 
 		yield 'event with tickets available' => [
