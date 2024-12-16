@@ -11,7 +11,7 @@
  * Each concrete modifier strategy (like Coupon or Fee) will extend this class and provide its own implementations
  * for sanitizing and validating data.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Modifiers
  */
@@ -44,7 +44,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
  *
  * Provides a base class for order modifier strategies like Coupon and Fee.
  *
- * @since TBD
+ * @since 5.18.0
  */
 abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	use Valid_Types;
@@ -52,7 +52,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	/**
 	 * The modifier type for the concrete strategy (e.g., 'coupon', 'fee').
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 * @var string
 	 */
 	protected string $modifier_type;
@@ -60,7 +60,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	/**
 	 * The repository for interacting with the order modifiers table.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 * @var Order_Modifiers_Repository
 	 */
 	protected Order_Modifiers_Repository $repository;
@@ -68,7 +68,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	/**
 	 * The repository for interacting with the order modifiers meta table.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 * @var Order_Modifiers_Meta_Repository Repository
 	 */
 	protected Order_Modifiers_Meta_Repository $order_modifiers_meta_repository;
@@ -76,7 +76,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	/**
 	 * The repository for interacting with the order modifier relationship table.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 * @var Order_Modifier_Relationship_Repository Repository
 	 */
 	protected Order_Modifier_Relationship_Repository $order_modifiers_relationship_repository;
@@ -85,7 +85,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * Fields required by this modifier.
 	 * The required field should be the key name.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 * @var array
 	 */
 	protected array $required_fields = [];
@@ -93,7 +93,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	/**
 	 * Constructor to set up the repository and modifier type.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 */
 	public function __construct() {
 		$this->repository                              = new Order_Modifiers_Repository( $this->modifier_type );
@@ -104,7 +104,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	/**
 	 * Gets the modifier type.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 * @return string The modifier type.
 	 */
 	public function get_modifier_type(): string {
@@ -114,7 +114,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	/**
 	 * Inserts a new Modifier.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $data The data to insert.
 	 *
@@ -131,7 +131,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	/**
 	 * Updates an existing Modifier.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $data The data to update.
 	 *
@@ -148,7 +148,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	/**
 	 * Retrieves modifier data by ID.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int    $modifier_id The modifier ID.
 	 *
@@ -163,7 +163,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	/**
 	 * Finds a modifier by its display name.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $search Parameters to search Order Modifiers by.
 	 *
@@ -179,7 +179,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * This base logic checks if all required fields are present, and not empty.
 	 * Specific strategies can define additional validation logic.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $data The data to validate.
 	 *
@@ -247,7 +247,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * This method is used to convert an integer amount in cents (e.g., 2300) into a string with two decimal points (e.g., 23.00).
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $raw_amount The amount in cents.
 	 *
@@ -267,7 +267,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * it will format the value accordingly. For percentages, it appends the '%' symbol,
 	 * and for flat fees, it formats the value as currency.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param float  $value The raw amount value (e.g., in cents for flat fees).
 	 * @param string $type  The type of the fee ('percent' for percentage-based, 'flat' for fixed value).
@@ -293,7 +293,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		 * This allows other developers to modify how amounts (whether percentages or flat fees)
 		 * are displayed. For example, a developer could add a custom suffix or change the formatting.
 		 *
-		 * @since TBD
+		 * @since 5.18.0
 		 *
 		 * @param string $formatted_amount The formatted amount string (e.g., '10%', '$10.00').
 		 * @param float  $value            The raw float value.
@@ -307,7 +307,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * The slug will be checked for uniqueness in the database before being returned.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return string The unique slug.
 	 * @throws Exception If random_bytes fails.
@@ -329,7 +329,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 			 * This allows developers to modify the way slugs are generated or impose additional
 			 * uniqueness checks before a slug is considered valid.
 			 *
-			 * @since TBD
+			 * @since 5.18.0
 			 *
 			 * @param string $slug The generated slug.
 			 * @param string $modifier_type The type of modifier (e.g., 'coupon', 'fee').
@@ -344,7 +344,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	/**
 	 * Randomizes the case of each character in a string, alternating between upper and lowercase.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param string $input The input string.
 	 *
@@ -366,7 +366,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	/**
 	 * Checks whether a slug is unique in the database.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param string $slug The slug to check for uniqueness.
 	 *
@@ -389,7 +389,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * into human-readable strings ('Active', 'Inactive', 'Draft').
 	 * It also provides a filter to allow for customizing the status labels if necessary.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param string $status The raw status from the database.
 	 *
@@ -408,7 +408,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		 *
 		 * This allows developers to modify the status labels (e.g., changing 'Draft' to 'Pending').
 		 *
-		 * @since TBD
+		 * @since 5.18.0
 		 *
 		 * @param string[] $statuses The array of default status labels.
 		 * @param string $raw_status The raw status from the database (e.g., 'active', 'draft').
@@ -426,7 +426,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * It is used in cases where the slug is required for rendering or processing actions
 	 * related to the specific modifier.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return string The page slug, or empty if not applicable.
 	 */
@@ -441,7 +441,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * creating/updating meta data. It passes default values which can be overwritten by the passed $args.
 	 * A 'meta_key' is mandatory; if it is missing, an exception will be thrown.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int   $modifier_id The ID of the modifier.
 	 * @param array $args The metadata arguments. Expects 'meta_key', 'meta_value', and can override 'priority'.
@@ -480,7 +480,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * This method inserts a new relationship into the database, linking the modifier to
 	 * the provided post ID with the specified post type.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $modifier_id The ID of the modifier.
 	 * @param int $post_id The ID of the post being linked to the modifier.
@@ -502,7 +502,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * This method removes all relationships associated with the specified modifier ID
 	 * from the database, unlinking the modifier from any posts it was related to.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $modifier_id The ID of the modifier whose relationships will be deleted.
 	 *
@@ -518,7 +518,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * This method clears all records in the relationships table for the provided post
 	 * by calling the repository method to delete relationships based on the `post_id`.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $post_id The ID of the post for which relationships should be deleted.
 	 *
@@ -539,7 +539,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * which can be used for rendering or displaying the modifier name in UI elements.
 	 * The method allows fetching either the singular or plural form.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param bool $plural Whether to return the plural form. Defaults to false (singular).
 	 *
@@ -555,7 +555,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * This method should be implemented by concrete classes to provide the singular name
 	 * of the modifier (e.g., 'Coupon', 'Fee').
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return string The singular name of the modifier.
 	 */
@@ -567,7 +567,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * This method should be implemented by concrete classes to provide the plural name
 	 * of the modifier (e.g., 'Coupons', 'Fees').
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return string The plural name of the modifier.
 	 */
@@ -601,7 +601,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * This method deletes the modifier from the repository and also attempts to remove any associated meta data,
 	 * relationships, and other related information. The existence of meta and relationships is optional.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $modifier_id The ID of the modifier to delete.
 	 *
@@ -646,7 +646,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * This method fetches the meta data associated with the given order modifier ID and meta key.
 	 * It queries the `order_modifiers_meta` table to find the relevant meta data for the modifier.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int    $order_modifier_id The ID of the order modifier to retrieve meta for.
 	 * @param string $meta_key          The meta key to look up (e.g., 'fee_applied_to').
@@ -660,7 +660,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	/**
 	 * Maps and sanitizes raw form data into model-ready data.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $raw_data The raw form data, typically from $_POST.
 	 *
@@ -683,7 +683,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * This method prepares the context for rendering the edit form.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $context The raw model data.
 	 *
@@ -697,7 +697,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * This method must be implemented in child classes to handle the specific logic for
 	 * updating relationships between modifiers and posts, depending on the modifier type.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $modifier_ids An array of modifier IDs to update.
 	 * @param array $new_post_ids An array of new post IDs to be associated with the fee.

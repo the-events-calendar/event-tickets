@@ -2,7 +2,7 @@
 /**
  * Event Tickets uninstall script.
  *
- * @since TBD
+ * @since 5.18.0
  */
 
 declare( strict_types=1 );

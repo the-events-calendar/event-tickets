@@ -2,7 +2,7 @@
 /**
  * Fee Types trait.
  *
- * @since TBD
+ * @since 5.18.0
  */
 
 declare( strict_types=1 );
@@ -16,14 +16,14 @@ use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers;
 /**
  * Trait Fee_Types
  *
- * @since TBD
+ * @since 5.18.0
  */
 trait Fee_Types {
 
 	/**
 	 * The repository for interacting with the order modifiers table.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var Order_Modifiers
 	 */
@@ -39,7 +39,7 @@ trait Fee_Types {
 	/**
 	 * Get the automatic fees.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param object[] $all_fees The fees.
 	 *
@@ -55,7 +55,7 @@ trait Fee_Types {
 	/**
 	 * Get the selectable fees.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param object[] $all_fees The fees.
 	 *
@@ -71,7 +71,7 @@ trait Fee_Types {
 	/**
 	 * Get all fees.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return array The fees.
 	 */
@@ -98,7 +98,7 @@ trait Fee_Types {
 	/**
 	 * Get the selected fees for a ticket.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 *
@@ -124,7 +124,7 @@ trait Fee_Types {
 	/**
 	 * Update the fees for a ticket.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int   $ticket_id The ticket ID.
 	 * @param int[] $fees      The fees to update.

@@ -163,7 +163,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * for 'ticket' and a default behavior for other item types.
 	 * An overarching filter allows for customization of the final returned data.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array   $item The cart item for which to retrieve unit data.
 	 * @param WP_Post $order The order from the items in the cart.
@@ -195,7 +195,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				 *
 				 * Example: If `$type` is 'fee', the filter will be `tec_commerce_get_unit_data_fee`.
 				 *
-				 * @since TBD
+				 * @since 5.18.0
 				 *
 				 * @param array   $item   The cart item for which the unit data is being generated.
 				 * @param WP_Post $order  The current order object.
@@ -209,7 +209,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		/**
 		 * Filters the unit data for an item in REST context.
 		 *
-		 * @since TBD
+		 * @since 5.18.0
 		 *
 		 * @param array   $unit_data The structured data for the item.
 		 * @param array   $item      The order item for which the unit data is being generated.
@@ -224,7 +224,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * This method is used when the item type is 'ticket', and it structures the data
 	 * for a ticket item, including details such as name, price, quantity, and SKU.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array   $item The cart item (representing the ticket).
 	 * @param WP_Post $order The order from the items in the cart.

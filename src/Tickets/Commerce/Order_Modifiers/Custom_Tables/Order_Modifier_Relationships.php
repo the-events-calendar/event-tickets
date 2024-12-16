@@ -10,41 +10,41 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables;
 /**
  * Class Order_Modifier_Relationships.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables;
  */
 class Order_Modifier_Relationships extends Abstract_Custom_Table {
 	/**
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string|null The version number for this schema definition.
 	 */
 	public const SCHEMA_VERSION = '1.0.0';
 
 	/**
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string The base table name.
 	 */
 	protected static $base_table_name = 'tec_order_modifier_relationships';
 
 	/**
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string The organizational group this table belongs to.
 	 */
 	protected static $group = 'tec_order_modifiers_group';
 
 	/**
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string|null The slug used to identify the custom table.
 	 */
 	protected static $schema_slug = 'tec-order-modifiers-relationships';
 
 	/**
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string The field that uniquely identifies a row in the table.
 	 */
@@ -54,7 +54,7 @@ class Order_Modifier_Relationships extends Abstract_Custom_Table {
 	 * Returns the table creation SQL in the format supported
 	 * by the `dbDelta` function.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return string The table creation SQL, in the format supported
 	 *                by the `dbDelta` function.
@@ -79,7 +79,7 @@ class Order_Modifier_Relationships extends Abstract_Custom_Table {
 	 * Allows extending classes that require it to run some methods
 	 * immediately after the table creation or update.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array<string,string> $results A map of results in the format
 	 *                                      returned by the `dbDelta` function.

@@ -7,7 +7,7 @@ import { getTicketProviderFromCommonStore } from './common-store-bridge';
  * will be able to change the ticket provider live, while the post, or Ticket,
  * editing is happening.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @return {boolean} Whether the current ticket provider supports fees or not.
  */

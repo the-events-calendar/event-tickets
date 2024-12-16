@@ -5,7 +5,7 @@
  * This class serves as a context that interacts with different modifier strategies (such as Coupons or Booking Fees).
  * It handles the saving (insert/update) of modifiers and delegates rendering tasks to the appropriate strategy.
  *
- * @since   TBD
+ * @since   5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Modifiers
  */
@@ -25,14 +25,14 @@ use TEC\Tickets\Commerce\Order_Modifiers\Values\Percent_Value;
  * of order modifiers (such as Coupons and Booking Fees) by delegating
  * these operations to the strategy provided (e.g., Coupon strategy).
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Modifier_Manager {
 
 	/**
 	 * The modifier strategy being used (e.g., Coupon, Booking_Fee).
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var Modifier_Strategy_Interface
 	 */
@@ -44,7 +44,7 @@ class Modifier_Manager {
 	 * Sets the modifier strategy that will handle the insertion, updating,
 	 * and validation of order modifiers.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Modifier_Strategy_Interface $strategy The modifier strategy to use.
 	 */
@@ -58,7 +58,7 @@ class Modifier_Manager {
 	 * Validates the data before proceeding. If an ID is present in the data, the
 	 * modifier will be updated; otherwise, a new modifier will be inserted.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $data The data to save the modifier.
 	 *
@@ -81,7 +81,7 @@ class Modifier_Manager {
 	/**
 	 * Renders the table for the current modifier strategy.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $context The context data for rendering the table.
 	 *
@@ -94,7 +94,7 @@ class Modifier_Manager {
 	/**
 	 * Renders the edit screen for the current modifier strategy.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $context The context data for rendering the edit screen.
 	 */
@@ -109,7 +109,7 @@ class Modifier_Manager {
 	 * modifier IDs and the new post IDs, delegating the actual update process to the strategy.
 	 * It ensures that the correct relationships are either inserted or deleted based on the input.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $modifier_ids The array of modifier IDs to sync.
 	 * @param array $new_post_ids The array of new post IDs to associate with the modifiers.
@@ -125,7 +125,7 @@ class Modifier_Manager {
 	 *
 	 * This method allows the manager to clear relationships based on the modifier ID.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $modifier_id The ID of the modifier for which relationships should be deleted.
 	 *
@@ -140,7 +140,7 @@ class Modifier_Manager {
 	 *
 	 * This method allows the manager to clear relationships based on the post ID.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $post_id The ID of the post for which relationships should be deleted.
 	 *
@@ -156,7 +156,7 @@ class Modifier_Manager {
 	 * This method loops through the items (tickets) in the cart and calculates
 	 * the total fees (both percentage and flat) based on the associated modifiers.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $items The items in the cart (tickets).
 	 *
@@ -178,7 +178,7 @@ class Modifier_Manager {
 	 *
 	 * This method applies all relevant percentage and flat fees to the provided base price.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Value $base_price The base price of the item.
 	 * @param array $item       The fee data for a single item (percentage or flat).

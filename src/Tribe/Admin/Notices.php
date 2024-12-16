@@ -14,7 +14,7 @@ class Tribe__Tickets__Admin__Notices {
 	 * Hooks the actions and filters used by the class
 	 *
 	 * @since 4.7
-	 * @since TBD Removed FSE AR Page notice.
+	 * @since 5.18.0 Removed FSE AR Page notice.
 	 */
 	public function hook() {
 		// Bail if some missing component does not exist.
@@ -336,11 +336,11 @@ class Tribe__Tickets__Admin__Notices {
 	 * Will be removed. Doing nothing other than triggering a deprecation notice.
 	 *
 	 * @since 5.17.0
-	 * @deprecated TBD This method will be removed in a future release.
+	 * @deprecated 5.18.0 This method will be removed in a future release.
 	 *
 	 * @return void
 	 */
 	public function maybe_display_fse_ar_page_notice() {
-		_deprecated_function( __METHOD__, 'TBD' );
+		_deprecated_function( __METHOD__, '5.18.0' );
 	}
 }

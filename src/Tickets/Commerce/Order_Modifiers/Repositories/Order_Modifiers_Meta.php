@@ -2,7 +2,7 @@
 /**
  * Order Modifiers Meta repository.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Repositories;
  */
@@ -21,14 +21,14 @@ use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Meta;
 /**
  * Class Order_Modifiers_Meta.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Repositories;
  */
 class Order_Modifiers_Meta extends Repository implements Insertable, Updatable, Deletable {
 
 	/**
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Model $model The model.
 	 *
@@ -41,7 +41,7 @@ class Order_Modifiers_Meta extends Repository implements Insertable, Updatable, 
 	/**
 	 * Inserts a model record.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Model $model The model.
 	 *
@@ -75,7 +75,7 @@ class Order_Modifiers_Meta extends Repository implements Insertable, Updatable, 
 	/**
 	 * Prepare a query builder for the repository.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return ModelQueryBuilder
 	 */
@@ -88,7 +88,7 @@ class Order_Modifiers_Meta extends Repository implements Insertable, Updatable, 
 	/**
 	 * Updates a model record.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Model $model The model.
 	 *
@@ -122,7 +122,7 @@ class Order_Modifiers_Meta extends Repository implements Insertable, Updatable, 
 	 * `order_modifier_id` and `meta_key`. If it exists, it updates the record;
 	 * otherwise, it inserts a new record.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Order_Modifier_Meta $meta_data The metadata object containing the
 	 *                                       order_modifier_id, meta_key, and meta_value.
@@ -149,7 +149,7 @@ class Order_Modifiers_Meta extends Repository implements Insertable, Updatable, 
 	/**
 	 * Finds metadata by `order_modifier_id`.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $order_modifier_id The ID of the Order Modifier to find metadata for.
 	 *
@@ -164,7 +164,7 @@ class Order_Modifiers_Meta extends Repository implements Insertable, Updatable, 
 	/**
 	 * Finds metadata by `order_modifier_id` and `meta_key`.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int    $order_modifier_id The ID of the Order Modifier.
 	 * @param string $meta_key The meta key to search by.

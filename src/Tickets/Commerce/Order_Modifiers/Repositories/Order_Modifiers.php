@@ -2,7 +2,7 @@
 /**
  * Order Modifiers repository.
  *
- * @since   TBD
+ * @since   5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Repositories;
  */
@@ -27,7 +27,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 /**
  * Class Order_Modifiers.
  *
- * @since   TBD
+ * @since   5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Repositories;
  */
@@ -45,7 +45,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	/**
 	 * Order_Modifiers constructor.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param string $modifier_type The modifier type for queries.
 	 *
@@ -59,7 +59,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	/**
 	 * Deletes a model record.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Model $model The model to delete.
 	 *
@@ -79,7 +79,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	/**
 	 * Inserts a model record.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Model $model The model to insert.
 	 *
@@ -123,7 +123,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	/**
 	 * Updates a model record.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Model $model The model to update.
 	 *
@@ -165,7 +165,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	/**
 	 * Finds an Order Modifier by its ID.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $id The ID of the Order Modifier to find.
 	 *
@@ -236,7 +236,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	/**
 	 * Finds all active Order Modifiers of the current type.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return Order_Modifier[] Array of active Order Modifier model instances, or null if not found.
 	 */
@@ -252,7 +252,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	/**
 	 * Finds an Order Modifier of the current type by its slug.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param string $slug The slug of the Order Modifier to find.
 	 *
@@ -272,7 +272,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	/**
 	 * Finds Order Modifiers by modifier_type.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return Order_Modifier[] Array of Order Modifier model instances.
 	 */
@@ -291,7 +291,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 * match the specified modifier type, and have the specified status. It joins the Order Modifier
 	 * and Relationship tables to fetch the related modifiers.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array  $post_ids      The array of post IDs to look up in the relationship table.
 	 * @param string $modifier_type The type of modifier to filter by.
@@ -325,7 +325,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 *
 	 * Caches the results for identical query arguments to improve performance.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param string      $meta_key           The meta key to filter by (e.g., 'fee_applied_to').
 	 * @param array       $meta_values        The meta values to filter by (e.g., ['per', 'all']).
@@ -414,7 +414,7 @@ SQL;
 	/**
 	 * Prepare a query builder for the repository.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return ModelQueryBuilder
 	 */
@@ -453,7 +453,7 @@ SQL;
 	/**
 	 * Validate the model type.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Model $model The model to validate.
 	 *

@@ -2,7 +2,7 @@
 /**
  * Fees repository.
  *
- * @since TBD
+ * @since 5.18.0
  */
 
 declare( strict_types=1 );
@@ -14,14 +14,14 @@ use stdClass;
 /**
  * Class Fees
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Fees extends Order_Modifiers {
 
 	/**
 	 * Fees constructor.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 */
 	public function __construct() {
 		parent::__construct( 'fee' );
@@ -30,7 +30,7 @@ class Fees extends Order_Modifiers {
 	/**
 	 * Get all automatic fees.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return stdClass[] The array of fee objects from the database.
 	 */

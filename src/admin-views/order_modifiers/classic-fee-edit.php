@@ -2,7 +2,7 @@
 /**
  * Template for displaying the ticket fees section in the ticket metabox.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @var int   $post_id The event the ticket is associated to.
  * @var int   $ticket_id The ID of the current ticket (nullable).
@@ -72,5 +72,3 @@ if ( empty( $automatic_fees ) && empty( $selectable_fees ) ) {
 
 	</div>
 </div>
-
-

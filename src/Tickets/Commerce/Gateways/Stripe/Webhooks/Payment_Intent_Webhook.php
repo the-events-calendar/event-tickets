@@ -121,7 +121,7 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 	 *
 	 * @since 5.3.0
 	 * @since 5.16.0 Remove deprecation notice.
-	 * @since TBD    Only check matching payment intent ids if they are not pending or action required.
+	 * @since 5.18.0    Only check matching payment intent ids if they are not pending or action required.
 	 *
 	 * @param array   $payment_intent_received The payment intent data received
 	 * @param array[] $payment_intents_stored  The payment intent data stored from each update, keyed by status.

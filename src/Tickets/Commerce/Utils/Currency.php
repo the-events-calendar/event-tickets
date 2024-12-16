@@ -406,7 +406,7 @@ class Currency {
 	/**
 	 * Returns the raw currency map.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 * @return array
 	 */
 	protected static function get_raw_currency_map(): array {

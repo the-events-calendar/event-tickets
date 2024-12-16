@@ -48,7 +48,7 @@ class Ticket_Panel_Data {
 	 * Dumps the data to array format.
 	 *
 	 * @since 5.8.0
-	 * @since TBD Removed start and end date help text.
+	 * @since 5.18.0 Removed start and end date help text.
 	 *
 	 * @return array<string,mixed> The data in array format.
 	 */

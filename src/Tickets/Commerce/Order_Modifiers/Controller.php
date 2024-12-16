@@ -2,7 +2,7 @@
 /**
  * Event Tickets Order Modifiers Controller.
  *
- * @since   TBD
+ * @since   5.18.0
  * @package TEC\Tickets\Commerce\Order_Modifiers
  */
 
@@ -29,7 +29,7 @@ use Tribe__Tickets__Main as Tickets_Plugin;
 /**
  * Main Order Modifiers Controller.
  *
- * @since TBD
+ * @since 5.18.0
  */
 final class Controller extends Controller_Contract {
 
@@ -40,7 +40,7 @@ final class Controller extends Controller_Contract {
 	 *
 	 * Bound implementations should not be removed in this method!
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void Filters and actions hooks added by the controller are be removed.
 	 */
@@ -93,7 +93,7 @@ final class Controller extends Controller_Contract {
 		 *
 		 * This filter will be removed when the Coupon functionality is ready for production.
 		 *
-		 * @since TBD
+		 * @since 5.18.0
 		 *
 		 * @param bool $enabled Whether the coupons are enabled.
 		 */
@@ -112,7 +112,7 @@ final class Controller extends Controller_Contract {
 	 *
 	 * This will be removed when the Coupon functionality is ready for production.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $items The items to filter.
 	 *
@@ -132,7 +132,7 @@ final class Controller extends Controller_Contract {
 	 *
 	 * If the class is not found or does not implement the required interface, an exception will be thrown.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param string $modifier The modifier type to retrieve (e.g., 'coupon', 'fee').
 	 *
@@ -159,7 +159,7 @@ final class Controller extends Controller_Contract {
 	/**
 	 * Get the display name for a specific modifier.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param string $modifier The slug of the modifier (e.g., 'coupon', 'fee').
 	 *

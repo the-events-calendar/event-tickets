@@ -2,7 +2,7 @@
 /**
  * Fees API.
  *
- * @since TBD
+ * @since 5.18.0
  */
 
 declare( strict_types=1 );
@@ -26,7 +26,7 @@ use Tribe__Tickets__Tickets as Tickets;
 /**
  * Class Fees
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Fees extends Base_API {
 
@@ -70,7 +70,7 @@ class Fees extends Base_API {
 	/**
 	 * Registers additional methods/logic with WordPress hooks.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void The method does not return any value.
 	 */
@@ -100,7 +100,7 @@ class Fees extends Base_API {
 	/**
 	 * Removes additional methods/logic from WordPress hooks.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */
@@ -125,7 +125,7 @@ class Fees extends Base_API {
 	/**
 	 * Register the routes.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */
@@ -176,7 +176,7 @@ class Fees extends Base_API {
 	 *
 	 * This method returns all fees, automatic fees, and selectable fees.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Request $request The request object.
 	 *
@@ -207,7 +207,7 @@ class Fees extends Base_API {
 	/**
 	 * Get the fees for a specific ticket.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Request $request The request object.
 	 *
@@ -232,7 +232,7 @@ class Fees extends Base_API {
 	/**
 	 * Get the fees for a specific ticket.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 *
@@ -251,7 +251,7 @@ class Fees extends Base_API {
 	/**
 	 * Get the selected fees for a post by ticket.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $post_id The post ID.
 	 *
@@ -276,7 +276,7 @@ class Fees extends Base_API {
 	/**
 	 * Add fees to the ticket data.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array   $data    The ticket data.
 	 * @param Request $request The request object.
@@ -308,7 +308,7 @@ class Fees extends Base_API {
 	/**
 	 * Add fees to the tickets archive.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array   $tickets The tickets data.
 	 * @param Request $request The request object.
@@ -339,7 +339,7 @@ class Fees extends Base_API {
 	/**
 	 * Update the fees for a ticket.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Request $request The request object.
 	 *
@@ -367,7 +367,7 @@ class Fees extends Base_API {
 	/**
 	 * Save the fees for a ticket.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int   $post_id     The post ID.
 	 * @param int   $ticket_id   The ticket ID.

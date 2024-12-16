@@ -88,7 +88,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Which meta holds the cart items used to setup this order.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string
 	 */
@@ -428,7 +428,7 @@ class Order extends Abstract_Order {
 		 * Allows modification of the cart items array before creating an order,
 		 * passing the current subtotal, payment gateway, and purchaser details.
 		 *
-		 * @since TBD
+		 * @since 5.18.0
 		 *
 		 * @param array             $items     The items in the cart.
 		 * @param Value             $subtotal  The calculated subtotal of the cart items.

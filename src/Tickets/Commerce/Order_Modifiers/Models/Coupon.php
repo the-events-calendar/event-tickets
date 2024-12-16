@@ -2,7 +2,7 @@
 /**
  * Coupon model.
  *
- * @since TBD
+ * @since 5.18.0
  */
 
 declare( strict_types=1 );
@@ -12,7 +12,7 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Models;
 /**
  * Class Coupon
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Coupon extends Order_Modifier {
 

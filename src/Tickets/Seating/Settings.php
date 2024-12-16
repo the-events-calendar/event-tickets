@@ -52,7 +52,7 @@ class Settings extends Controller_Contract {
 	 * Add display settings for Event Tickets.
 	 *
 	 * @since 5.17.0
-	 * @since TBD Only add settings if the seating service has a valid license.
+	 * @since 5.18.0 Only add settings if the seating service has a valid license.
 	 *
 	 * @param array $settings List of display settings.
 	 *
@@ -64,7 +64,7 @@ class Settings extends Controller_Contract {
 		if ( $service_status->has_no_license() || $service_status->is_license_invalid() ) {
 			return $settings;
 		}
-		
+
 		$timer_settings = [
 			'ticket-seating-options-heading' => [
 				'type' => 'html',

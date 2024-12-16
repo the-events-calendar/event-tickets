@@ -2,7 +2,7 @@
 /**
  * The Order Modifier Meta model.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Models;
  */
@@ -19,7 +19,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta;
 /**
  * Class Order_Modifier_Meta.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Models;
  *
@@ -47,7 +47,7 @@ class Order_Modifier_Meta extends Model implements ModelCrud, ModelFromQueryBuil
 	/**
 	 * Finds a model by its ID.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $id The model ID.
 	 *
@@ -60,7 +60,7 @@ class Order_Modifier_Meta extends Model implements ModelCrud, ModelFromQueryBuil
 	/**
 	 * Creates a new model and saves it to the database.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array<string,mixed> $attributes The model attributes.
 	 *
@@ -76,7 +76,7 @@ class Order_Modifier_Meta extends Model implements ModelCrud, ModelFromQueryBuil
 	/**
 	 * Saves the model to the database.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return Order_Modifier_Meta The model instance.
 	 */
@@ -93,7 +93,7 @@ class Order_Modifier_Meta extends Model implements ModelCrud, ModelFromQueryBuil
 	/**
 	 * Deletes the model from the database.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return bool Whether the model was deleted.
 	 */
@@ -104,7 +104,7 @@ class Order_Modifier_Meta extends Model implements ModelCrud, ModelFromQueryBuil
 	/**
 	 * Returns the query builder for the model.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return ModelQueryBuilder The query builder instance.
 	 */
@@ -115,7 +115,7 @@ class Order_Modifier_Meta extends Model implements ModelCrud, ModelFromQueryBuil
 	/**
 	 * Builds a new model from a query builder object.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param object $object The object to build the model from.
 	 *

@@ -199,6 +199,23 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.18.0] 2024-12-16 =
+
+* Feature - Added option to detach assigned seating tickets from layout and revert them to regular tickets. [SL-214]
+* Feature - Add support for max ticket purchase limit filter with seating tickets. [SL-205]
+* Feature - Introducing Booking Fees. A way to set up Fees for your Tickets being sold through TicketsCommerce. [ET-2189]
+* Tweak - Added actions: `tec_tickets_commerce_checkout_cart_before_footer_quantity`
+* Tweak - Added filters: `tec_tickets_commerce_prepare_order_for_email_send_email_completed_order`, `tec_tickets_commerce_prepare_order_for_email_send_email_purchase_receipt`, `tec_tickets_commerce_paypal_order_get_unit_data_{$type}`, `tec_tickets_commerce_paypal_order_get_unit_data`, `tec_tickets_commerce_stripe_create_from_cart`, `tec_tickets_commerce_order_modifiers_api_role`, `tec_tickets_commerce_order_modifiers_coupons_enabled`, `tec_tickets_commerce_order_modifiers_repository_class`, `tec_tickets_commerce_order_modifiers_model_class`, `tec_tickets_commerce_order_modifiers_page_url`, `tec_tickets_commerce_order_modifier_display_amount`, `tec_tickets_commerce_order_modifier_generate_slug`, `tec_tickets_commerce_order_modifier_status_display`, `tec_tickets_commerce_order_modifier_types`, `tec_tickets_commerce_order_modifiers`, `tec_tickets_commerce_order_modifier_default_type`, `tec_tickets_commerce_order_modifier_status_flags`, `tec_tickets_commerce_single_orders_items_item_should_be_displayed`
+* Tweak - Changed views: `v2/commerce/checkout/cart/footer`, `v2/commerce/checkout/cart/footer/total`, `v2/commerce/checkout/order-modifiers/coupons`, `v2/commerce/checkout/order-modifiers/fees`
+* Tweak - Removed outdated ticket duration tooltips. [ET-2263]
+* Fix - Correctly calculate and set the session expiration date in the seat selection modal. [n/a]
+* Fix - Ensure that number_format is used with a float value to prevent issues with PHP 8.0+. [ETP-962]
+* Fix - Hide seating reservation settings when seating license is not valid. [SL-248]
+* Fix - Order updates for asynchronous payment methods in Stripe will update correctly. [ET-2082]
+* Fix - The Attendee Registration page is now compatible with Full Site Editor themes. [ET-2266]
+* Fix - Users will not be able to RSVP for unpublished events or posts. [ET-2267]
+* Language - 127 new strings added, 353 updated, 2 fuzzied, and 5 obsoleted.
+
 = [5.17.0.1] 2024-11-21 =
 
 * Tweak - Introduced filter `tec_tickets_rest_api_archive_results` that gives the ability to filter out the tickets being provided to the REST API archive.

@@ -295,7 +295,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.12.3
 	 * @since 5.5.10 Added `going` to the $args variable.
-	 * @since TBD Added check for valid post status.
+	 * @since 5.18.0 Added check for valid post status.
 	 *
 	 * @param int         $ticket_id The ticket ID.
 	 * @param null|string $step      Which step to render.

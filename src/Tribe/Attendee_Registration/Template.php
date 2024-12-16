@@ -49,7 +49,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @since 4.9
 	 * @since 5.9.1 changed page parameters and added page to the cache.
 	 * @since 5.17.0 Update the check for the custom AR page.
-	 * @since TBD Added second parameter to the function to pass the query object. Bail if we're not on the main query.
+	 * @since 5.18.0 Added second parameter to the function to pass the query object. Bail if we're not on the main query.
 	 *
 	 * @param WP_Post[] $posts Post data objects.
 	 *
@@ -172,7 +172,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 *
 	 * @since 4.9
 	 * @since 5.17.0 Added check for custom AR page to return the pages template.
-	 * @since TBD Changed the hook this is being fired to from `template_include` to `singular_template`. Made it compatible with block themes.
+	 * @since 5.18.0 Changed the hook this is being fired to from `template_include` to `singular_template`. Made it compatible with block themes.
 	 *
 	 * @param string $template The AR template.
 	 * @return void

@@ -2,7 +2,7 @@
 /**
  * Fee model.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @phpcs:disable Generic.CodeAnalysis.UselessOverridingMethod
  */
@@ -14,14 +14,14 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Models;
 /**
  * Class Fee
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Fee extends Order_Modifier {
 
 	/**
 	 * The modifier type.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string
 	 */

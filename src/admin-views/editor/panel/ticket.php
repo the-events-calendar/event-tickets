@@ -217,7 +217,7 @@ $ticket_type = $ticket_type ?? 'default';
 				 * Allows for the insertion of additional content into the ticket edit form - main section
 				 *
 				 * @since 4.6
-				 * @since TBD Added the $ticket_type parameter.
+				 * @since 5.18.0 Added the $ticket_type parameter.
 				 *
 				 * @param int Post ID
 				 * @param int Ticket ID

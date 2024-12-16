@@ -5,7 +5,7 @@
  * This template is responsible for rendering the order modifiers table (Coupons, Fees, etc.)
  * including the search box, tabs, title, and the table itself.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @var $this
  * @var $context array Context data passed to the template.

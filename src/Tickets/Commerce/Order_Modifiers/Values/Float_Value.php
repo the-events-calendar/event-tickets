@@ -2,7 +2,7 @@
 /**
  * Float Value.
  *
- * @since TBD
+ * @since 5.18.0
  */
 
 declare( strict_types=1 );
@@ -15,7 +15,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Traits\Validate_Numeric;
 /**
  * Class Float_Value
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Float_Value extends Base_Value {
 
@@ -24,7 +24,7 @@ class Float_Value extends Base_Value {
 	/**
 	 * Get the value.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return float
 	 */
@@ -49,7 +49,7 @@ class Float_Value extends Base_Value {
 	/**
 	 * Validate that the value is valid.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param mixed $value The value to validate.
 	 *
