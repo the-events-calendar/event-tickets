@@ -134,7 +134,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int          $stock  The stock value.
+	 * @param int           $stock  The stock value.
 	 * @param Ticket_Object $ticket The ticket object.
 	 *
 	 * @return int The filtered stock value.
