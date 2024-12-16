@@ -398,7 +398,6 @@ class Controller extends Controller_Contract {
 		$updated_stock             = $seat_type_seats - $seat_type_attendees_count + $stock_modifier;
 
 		$updated = update_post_meta( $ticket_id, Ticket::$stock_meta_key, $updated_stock );
-		$update_total_sold = update_post_meta( $ticket_id, Ticket::$sales_meta_key, $seat_type_attendees_count );
 
 		// Trigger the save post cache invalidation for this ticket.
 		$cache_listener    = tribe( Cache_Listener::class );
