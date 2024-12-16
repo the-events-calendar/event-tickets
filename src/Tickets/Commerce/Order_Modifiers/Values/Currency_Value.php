@@ -2,7 +2,7 @@
 /**
  * Currency Value
  *
- * @since TBD
+ * @since 5.18.0
  */
 
 declare( strict_types=1 );
@@ -14,7 +14,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Traits\Stringify;
 /**
  * Class Currency_Value
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Currency_Value extends Base_Value {
 	/**
@@ -60,7 +60,7 @@ class Currency_Value extends Base_Value {
 	/**
 	 * Currency_Value constructor.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Precision_Value $value                    The value to store.
 	 * @param string          $currency_symbol          The currency symbol.
@@ -85,7 +85,7 @@ class Currency_Value extends Base_Value {
 	/**
 	 * Get the formatted value.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return string The value.
 	 */
@@ -112,7 +112,7 @@ class Currency_Value extends Base_Value {
 	 *
 	 * This returns a clone of the value to prevent mutation.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return Precision_Value The raw value.
 	 */
@@ -123,7 +123,7 @@ class Currency_Value extends Base_Value {
 	/**
 	 * Create a new instance of the class.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Precision_Value $value The value to store.
 	 *
@@ -145,7 +145,7 @@ class Currency_Value extends Base_Value {
 	 * Use this to allow for setting default values for all instances of this class
 	 * that are created with the create() method.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param ?string $currency_symbol          The currency symbol.
 	 * @param ?string $thousands_separator      The thousands separator.
@@ -171,7 +171,7 @@ class Currency_Value extends Base_Value {
 	/**
 	 * Add a value to the current value.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Currency_Value $value The value to add.
 	 *
@@ -192,7 +192,7 @@ class Currency_Value extends Base_Value {
 	/**
 	 * Subtract a value from the current value.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Currency_Value $value The value to subtract.
 	 *
@@ -213,7 +213,7 @@ class Currency_Value extends Base_Value {
 	/**
 	 * Add multiple values together.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Currency_Value ...$values The values to add.
 	 *
@@ -232,7 +232,7 @@ class Currency_Value extends Base_Value {
 	/**
 	 * Multiply the current value by an integer.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Integer_Value $value The value to multiply by.
 	 *
@@ -253,7 +253,7 @@ class Currency_Value extends Base_Value {
 	/**
 	 * Validate that the value is valid.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param mixed $value The value to validate.
 	 *

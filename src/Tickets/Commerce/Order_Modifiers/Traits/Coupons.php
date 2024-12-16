@@ -2,7 +2,7 @@
 /**
  * Coupons trait.
  *
- * @since TBD
+ * @since 5.18.0
  */
 
 declare( strict_types=1 );
@@ -17,14 +17,14 @@ use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Coupons as Coupons_Reposit
 /**
  * Trait Coupons
  *
- * @since TBD
+ * @since 5.18.0
  */
 trait Coupons {
 
 	/**
 	 * The repository for interacting with the order modifiers table.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var Coupons_Repository
 	 */

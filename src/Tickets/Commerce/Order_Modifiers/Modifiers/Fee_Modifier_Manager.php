@@ -2,7 +2,7 @@
 /**
  * Fee_Modifier_Manager class
  *
- * @since   TBD
+ * @since   5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Modifiers
  */
@@ -14,7 +14,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee;
 /**
  * Fee_Modifier_Manager class
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Fee_Modifier_Manager extends Modifier_Manager {
 

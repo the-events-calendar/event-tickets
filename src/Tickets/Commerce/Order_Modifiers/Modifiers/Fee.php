@@ -5,7 +5,7 @@
  * Handles the specific logic for fee modifiers, including inserting, updating,
  * rendering, and validating fee data.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Modifiers;
  */
@@ -19,14 +19,14 @@ use Tribe__Tickets__Admin__Views;
 /**
  * Concrete Strategy for fee Modifiers.
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Fee extends Modifier_Abstract {
 
 	/**
 	 * The modifier type for fees.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ class Fee extends Modifier_Abstract {
 	/**
 	 * Required fields for fees.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 * @var array
 	 */
 	protected array $required_fields = [
@@ -50,7 +50,7 @@ class Fee extends Modifier_Abstract {
 	/**
 	 * Retrieves the display name of the modifier in singular form.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return string The display name of the modifier.
 	 */
@@ -61,7 +61,7 @@ class Fee extends Modifier_Abstract {
 	/**
 	 * Retrieves the display name of the modifier in plural form.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return string The display name of the modifier.
 	 */
@@ -72,7 +72,7 @@ class Fee extends Modifier_Abstract {
 	/**
 	 * Inserts a new modifier and handles related metadata.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $data The data to insert.
 	 *
@@ -116,7 +116,7 @@ class Fee extends Modifier_Abstract {
 	/**
 	 * Updates an existing modifier and handles related metadata.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $data The data to update.
 	 *
@@ -170,7 +170,7 @@ class Fee extends Modifier_Abstract {
 	 * Handles relationships update.
 	 *
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $modifier_ids An array of modifier IDs to update.
 	 * @param array $new_post_ids An array of post IDs to associate with the modifier(s).
@@ -197,7 +197,7 @@ class Fee extends Modifier_Abstract {
 	 * This method updates the relationships for a single post, ensuring the
 	 * `post_id` is associated with the correct set of `modifier_ids`.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int   $post_id          The ID of the post to update.
 	 * @param array $new_modifier_ids An array of new modifier IDs to associate with the post.
@@ -220,7 +220,7 @@ class Fee extends Modifier_Abstract {
 	/**
 	 * Renders the fee table.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $context The context data for rendering the table.
 	 *
@@ -243,7 +243,7 @@ class Fee extends Modifier_Abstract {
 	/**
 	 * Renders the fee edit screen.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $context The context data for rendering the edit screen.
 	 *
@@ -262,7 +262,7 @@ class Fee extends Modifier_Abstract {
 	 *
 	 * This method prepares the context for rendering the fee edit form.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $context The raw model data.
 	 *
@@ -288,7 +288,7 @@ class Fee extends Modifier_Abstract {
 	 * It uses the order modifiers relationship repository to look up the relationship
 	 * between the modifier and the post (such as tickets, venues, or organizers).
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $modifier_id The ID of the modifier to find active posts for.
 	 *

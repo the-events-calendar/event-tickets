@@ -2,7 +2,7 @@
 /**
  * Is Ticket trait.
  *
- * @since TBD
+ * @since 5.18.0
  */
 
 namespace TEC\Tickets\Commerce\Traits;
@@ -10,7 +10,7 @@ namespace TEC\Tickets\Commerce\Traits;
 /**
  * Trait Is_Ticket
  *
- * @since TBD
+ * @since 5.18.0
  */
 trait Is_Ticket {
 
@@ -21,7 +21,7 @@ trait Is_Ticket {
 	 * "ticket". If the type key is not set, or if it is set to something other
 	 * than "ticket", this will return false.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $thing The thing to check.
 	 *

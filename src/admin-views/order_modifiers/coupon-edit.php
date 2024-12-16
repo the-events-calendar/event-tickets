@@ -6,7 +6,7 @@
  * The form includes fields for coupon name, code, discount type, amount, status, and coupon limit.
  * It also includes a nonce field for security.
  *
- * @since   TBD
+ * @since   5.18.0
  *
  * @var string $order_modifier_display_name     The coupon name (display name).
  * @var string $order_modifier_slug             The coupon code (slug).

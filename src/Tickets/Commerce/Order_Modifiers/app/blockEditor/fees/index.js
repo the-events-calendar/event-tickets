@@ -34,7 +34,7 @@ const { storeName } = require( '../store' );
  * again. It should only be hidden after it is unchecked AND the page has been
  * reloaded.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @param {string} props.clientId The client ID of the ticket.
  * @return {JSX.Element}

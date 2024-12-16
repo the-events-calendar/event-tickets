@@ -4,7 +4,7 @@
  *
  * This model represents the relationship between an Order Modifier and a Post.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Models;
  */
@@ -21,7 +21,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationshi
 /**
  * Class Order_Modifier_Relationship.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Models;
  *
@@ -54,7 +54,7 @@ class Order_Modifier_Relationships extends Model implements ModelCrud, ModelFrom
 	/**
 	 * Finds a model by its ID.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $id The model ID.
 	 *
@@ -67,7 +67,7 @@ class Order_Modifier_Relationships extends Model implements ModelCrud, ModelFrom
 	/**
 	 * Creates a new relationship and saves it to the database.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array<string,mixed> $attributes The model attributes.
 	 *
@@ -83,7 +83,7 @@ class Order_Modifier_Relationships extends Model implements ModelCrud, ModelFrom
 	/**
 	 * Saves the relationship to the database.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return static
 	 */
@@ -100,7 +100,7 @@ class Order_Modifier_Relationships extends Model implements ModelCrud, ModelFrom
 	/**
 	 * Deletes the relationship from the database.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return bool Whether the relationship was deleted.
 	 */
@@ -111,7 +111,7 @@ class Order_Modifier_Relationships extends Model implements ModelCrud, ModelFrom
 	/**
 	 * Returns the query builder for the model.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return ModelQueryBuilder The query builder instance.
 	 */
@@ -122,7 +122,7 @@ class Order_Modifier_Relationships extends Model implements ModelCrud, ModelFrom
 	/**
 	 * Builds a new model from a query builder object.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param object $object The object to build the model from.
 	 *
@@ -135,7 +135,7 @@ class Order_Modifier_Relationships extends Model implements ModelCrud, ModelFrom
 	/**
 	 * Converts the Order_Modifier_Relationship object to an array.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return array The object properties as an array.
 	 */

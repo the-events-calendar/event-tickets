@@ -6,7 +6,7 @@
  * including columns for fee name, code, amount, usage, and status. It extends the Order_Modifier_Table
  * class and provides specific logic for handling fee-specific data display.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Table_Views
  */
@@ -21,7 +21,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Fees;
 /**
  * Class for displaying Fee data in the table.
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Fee_Table extends Order_Modifier_Table {
 
@@ -47,7 +47,7 @@ class Fee_Table extends Order_Modifier_Table {
 	/**
 	 * Define the columns for the table.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return array An array of columns.
 	 */
@@ -67,7 +67,7 @@ class Fee_Table extends Order_Modifier_Table {
 	 * they can edit the specific modifier, passing the necessary parameters for the page,
 	 * modifier type, modifier ID, and a nonce for security.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param object $item The current item from the table, typically an Order_Modifier object.
 	 *
@@ -115,7 +115,7 @@ class Fee_Table extends Order_Modifier_Table {
 	 * This method determines where the modifier is active (e.g., on all tickets, per ticket, specific venues, or
 	 * organizers) and delegates the rendering logic to the corresponding method based on the modifier's application.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param object $item The current item from the table, typically an Order_Modifier object.
 	 *
@@ -143,7 +143,7 @@ class Fee_Table extends Order_Modifier_Table {
 	 *
 	 * This method is used when the modifier is applied across all tickets without specific conditions.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return string A message indicating the modifier applies to all tickets.
 	 */
@@ -154,7 +154,7 @@ class Fee_Table extends Order_Modifier_Table {
 	/**
 	 * Displays a message indicating the modifier is applied at a per ticket level.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return string
 	 */
@@ -168,7 +168,7 @@ class Fee_Table extends Order_Modifier_Table {
 	 * This method retrieves the first organizer related to the given modifier and returns
 	 * a translated message indicating the organizer's name. If no organizer is found, it returns early.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $modifier_id The ID of the order modifier.
 	 *
@@ -206,7 +206,7 @@ class Fee_Table extends Order_Modifier_Table {
 	 * This method retrieves the first venue related to the given modifier and returns
 	 * a translated message indicating the venue's name. If no venue is found, it returns early.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $modifier_id The ID of the order modifier.
 	 *
@@ -241,7 +241,7 @@ class Fee_Table extends Order_Modifier_Table {
 	/**
 	 * Render the "status" column.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param object $item The current item.
 	 *
@@ -258,7 +258,7 @@ class Fee_Table extends Order_Modifier_Table {
 	 * based on the sub_type (e.g., 'flat' or 'percent'). The fee amount is passed in cents and is converted
 	 * accordingly.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param object $item The current item being rendered. This should contain `raw_amount` and `sub_type`
 	 *     fields.
@@ -272,7 +272,7 @@ class Fee_Table extends Order_Modifier_Table {
 	/**
 	 * Define sortable columns.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return array An array of sortable columns.
 	 */
@@ -289,7 +289,7 @@ class Fee_Table extends Order_Modifier_Table {
 	 * This method returns a description related to the current table context, providing users with information
 	 * about the functionality of the modifiers they are viewing or editing.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return string The explanation text with a clickable "Learn More" link.
 	 */

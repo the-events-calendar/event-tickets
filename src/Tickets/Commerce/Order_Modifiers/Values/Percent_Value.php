@@ -2,7 +2,7 @@
 /**
  * Percent Value.
  *
- * @since TBD
+ * @since 5.18.0
  */
 
 declare( strict_types=1 );
@@ -14,7 +14,7 @@ use InvalidArgumentException;
 /**
  * Class Percent_Value
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Percent_Value extends Precision_Value {
 
@@ -31,7 +31,7 @@ class Percent_Value extends Precision_Value {
 	 * Numbers passed into this class should be written as a percent, and not a decimal. For
 	 * example, for 10% you would pass in 10, not 0.1. For 5% you would pass in 5, not 0.05.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param float|int|string $value The value to store. Can be a float, int, or numeric string. The
 	 *                                value will be divided by 100 to convert it to a percentage.
@@ -45,7 +45,7 @@ class Percent_Value extends Precision_Value {
 	/**
 	 * Get the value as a percentage.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return float
 	 */
@@ -58,7 +58,7 @@ class Percent_Value extends Precision_Value {
 	 *
 	 * Just an alias for get().
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return float
 	 */
@@ -71,7 +71,7 @@ class Percent_Value extends Precision_Value {
 	 *
 	 * This includes formatting the value with the % symbol and a specific amount of precision.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return string
 	 */
@@ -84,7 +84,7 @@ class Percent_Value extends Precision_Value {
 	 *
 	 * @todo: Allow for locale-specific formatting.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return string The value as a string.
 	 */
@@ -95,7 +95,7 @@ class Percent_Value extends Precision_Value {
 	/**
 	 * Validate that the percentage value is not below the allowed threshold.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @throws InvalidArgumentException If the percentage value is smaller than the minimum allowed.
 	 */

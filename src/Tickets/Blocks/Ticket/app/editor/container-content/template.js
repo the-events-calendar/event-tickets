@@ -22,7 +22,7 @@ import './style.pcss';
 /**
  * Get the ticket container items.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @param {string} clientId       The client ID.
  * @param {bool}   hasTicketsPlus Whether the site has Tickets Plus.
@@ -78,7 +78,7 @@ const getTicketContainerItems = ( clientId, hasTicketsPlus, hasIacVars ) => {
 	/**
 	 * Filters the ticket container items.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param {object[]} items    The ticket container items.
 	 * @param {string}   clientId The client ID.

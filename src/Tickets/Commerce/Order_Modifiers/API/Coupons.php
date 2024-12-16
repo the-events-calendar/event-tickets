@@ -2,7 +2,7 @@
 /**
  * Coupons API.
  *
- * @since TBD
+ * @since 5.18.0
  */
 
 declare( strict_types=1 );
@@ -29,7 +29,7 @@ use TEC\Common\Contracts\Container;
 /**
  * Class Coupons
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Coupons extends Base_API {
 
@@ -45,7 +45,7 @@ class Coupons extends Base_API {
 	/**
 	 * Coupons constructor.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Container          $container The DI container.
 	 * @param Coupons_Repository $repository The coupons repository.
@@ -60,7 +60,7 @@ class Coupons extends Base_API {
 	/**
 	 * Register the routes.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */
@@ -128,7 +128,7 @@ class Coupons extends Base_API {
 	/**
 	 * Get the coupons.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Request $request The request object.
 	 *
@@ -147,7 +147,7 @@ class Coupons extends Base_API {
 	/**
 	 * Create a coupon.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Request $request The request object.
 	 *
@@ -185,7 +185,7 @@ class Coupons extends Base_API {
 	/**
 	 * Validate a coupon.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Request $request The request object.
 	 *
@@ -204,7 +204,7 @@ class Coupons extends Base_API {
 	/**
 	 * Apply a coupon.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Request $request The request object.
 	 *
@@ -272,7 +272,7 @@ class Coupons extends Base_API {
 	/**
 	 * Remove a coupon.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Request $request The request object.
 	 *
@@ -335,7 +335,7 @@ class Coupons extends Base_API {
 	/**
 	 * Prepare a coupon for the response.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Order_Modifier $coupon The coupon.
 	 *
@@ -360,7 +360,7 @@ class Coupons extends Base_API {
 	/**
 	 * Get the schema for the API.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return array The schema.
 	 */
@@ -412,7 +412,7 @@ class Coupons extends Base_API {
 	/**
 	 * Get the arguments for an endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param string $endpoint
 	 *
@@ -518,7 +518,7 @@ class Coupons extends Base_API {
 	/**
 	 * Get the purchaser information.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Request $request The request object.
 	 *

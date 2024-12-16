@@ -10,7 +10,7 @@
  * - jQuery
  * - tribe_dropdowns.js
  *
- * @since TBD
+ * @since 5.18.0
  */
 
 ( function( $ ) {
@@ -18,7 +18,7 @@
 	 * Initializes the Select2 dropdown for ticket order modifier fees.
 	 * Ensures the dropdown is initialized only if it exists and hasn't already been initialized.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 * @return void
 	 */
 	const initFeesDropdown = () => {
@@ -33,7 +33,7 @@
 	/**
 	 * Initializes the dropdown when the document is fully loaded and ready.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 */
 	document.addEventListener( 'DOMContentLoaded',
 		() => {
@@ -45,7 +45,7 @@
 	 * MutationObserver to detect when elements (such as the dropdown) are dynamically added to the DOM.
 	 * If new nodes are added that include the fee dropdown, initialize Select2 on them.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 */
 	const observer = new MutationObserver(
 		( mutationsList ) => {
@@ -62,7 +62,7 @@
 	 * Observe the document body for added child nodes and run the observer on the entire subtree.
 	 * This ensures dynamically added elements are captured and initialized.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 */
 	observer.observe( document.body, {
 		childList: true,

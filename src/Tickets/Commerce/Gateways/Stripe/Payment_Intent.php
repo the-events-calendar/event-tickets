@@ -162,7 +162,7 @@ class Payment_Intent {
 		/**
 		 * Filters the value and items before creating a Payment Intent.
 		 *
-		 * @since TBD
+		 * @since 5.18.0
 		 *
 		 * @param Value $value The total value of the cart.
 		 * @param array $items The items in the cart

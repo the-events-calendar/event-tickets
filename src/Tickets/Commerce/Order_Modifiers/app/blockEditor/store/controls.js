@@ -6,7 +6,7 @@ import {
 /**
  * Fetches fees from the API.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @return {Promise<{feesAutomatic: (*|*[]), feesAvailable: (*|*[])}>}
  */

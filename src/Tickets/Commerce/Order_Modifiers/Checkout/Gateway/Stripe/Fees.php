@@ -6,7 +6,7 @@
  * during the Stripe checkout process. It integrates with various filters
  * and hooks specific to Stripe's order and payment flow.
  *
- * @since   TBD
+ * @since   5.18.0
  * @package TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe
  */
 
@@ -23,7 +23,7 @@ use WP_Post;
  * This class manages the addition and calculation of fees within the
  * Stripe gateway workflow.
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Fees extends Abstract_Fees {
 
@@ -33,7 +33,7 @@ class Fees extends Abstract_Fees {
 	 * This includes calculating total fees, modifying cart values, and displaying
 	 * fee sections during the Stripe checkout process.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 */
 	public function do_register(): void {
 		// Hook for appending fees to the cart for Stripe processing.
@@ -62,7 +62,7 @@ class Fees extends Abstract_Fees {
 	/**
 	 * Removes the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */
@@ -89,7 +89,7 @@ class Fees extends Abstract_Fees {
 	 * This method modifies the value passed in by adding the total fees calculated
 	 * from the items in the cart. If no fees exist, the original value is returned.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Value $value The current value (subtotal) in the cart.
 	 * @param array $items The items currently in the cart.
@@ -126,7 +126,7 @@ class Fees extends Abstract_Fees {
 	 * This method processes the fee items in the order and adds them as a string
 	 * to the 'fees' metadata field for Stripe. The format of the string is "Fee Name (Quantity): Price".
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array   $metadata       The metadata array to add fees information to.
 	 * @param WP_Post $order          The order containing the fee items.

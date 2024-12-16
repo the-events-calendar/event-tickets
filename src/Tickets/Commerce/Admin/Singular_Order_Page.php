@@ -69,7 +69,7 @@ class Singular_Order_Page extends Service_Provider {
 	/**
 	 * Checks if the item is a ticket and so it should be displayed.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param bool  $should_display The current value.
 	 * @param array $item           The current item.

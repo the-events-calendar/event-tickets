@@ -2,7 +2,7 @@
 /**
  * Positive Integer Value.
  *
- * @since TBD
+ * @since 5.18.0
  */
 
 declare( strict_types=1 );
@@ -14,14 +14,14 @@ use InvalidArgumentException;
 /**
  * Class Positive_Integer_Value
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Positive_Integer_Value extends Integer_Value {
 
 	/**
 	 * Validate the value.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param mixed $value The value to validate.
 	 *

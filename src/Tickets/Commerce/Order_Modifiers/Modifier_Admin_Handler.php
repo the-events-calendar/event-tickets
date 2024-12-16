@@ -2,7 +2,7 @@
 /**
  * Handles hooking all the actions and filters used by the admin area.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers
  */
@@ -24,7 +24,7 @@ use TEC\Common\Asset;
  *
  * Manages the admin settings UI in relation to Order Modifiers.
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Modifier_Admin_Handler extends Controller_Contract {
 
@@ -33,7 +33,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	/**
 	 * Event Tickets menu page slug.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string
 	 */
@@ -42,7 +42,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	/**
 	 * Event Tickets Order Modifiers page slug.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string
 	 */
@@ -51,7 +51,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	/**
 	 * Event Tickets Order Modifiers page hook suffix.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string
 	 */
@@ -62,7 +62,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	 *
 	 * This method returns the page slug.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return string The page slug for the modifier settings.
 	 */
@@ -73,7 +73,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	/**
 	 * Un-registers hooks and actions.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */
@@ -92,7 +92,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	/**
 	 * Register hooks and actions.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */
@@ -111,7 +111,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	/**
 	 * Enqueues the admin settings CSS when on the Order Modifiers page.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param bool $should_enqueue Whether the CSS should be enqueued.
 	 *
@@ -124,7 +124,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	/**
 	 * Register the assets for the Order Modifiers page.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */
@@ -145,7 +145,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	/**
 	 * Defines whether the current page is the Event Tickets Order Modifiers page.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return bool True if on the Order Modifiers page, false otherwise.
 	 */
@@ -159,7 +159,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	/**
 	 * Returns the main admin order modifiers URL.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $args Arguments to pass to the URL.
 	 *
@@ -179,7 +179,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		/**
 		 * Filters the URL to the Event Tickets Order Modifiers page.
 		 *
-		 * @since TBD
+		 * @since 5.18.0
 		 *
 		 * @param string $url The URL to the Order Modifiers page.
 		 */
@@ -189,7 +189,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	/**
 	 * Adds the Event Tickets Order Modifiers page.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 */
 	public function add_tec_tickets_order_modifiers_page(): void {
 		$admin_pages = tribe( 'admin.pages' );
@@ -209,7 +209,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	/**
 	 * Render the `Order Modifiers` page for the selected strategy.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */
@@ -249,7 +249,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	/**
 	 * Retrieves the modifier data by ID.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $modifier_id The ID of the modifier to retrieve.
 	 *
@@ -272,7 +272,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	/**
 	 * Render the table view for the selected modifier.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Modifier_Manager $manager The modifier manager.
 	 * @param array            $context The context for rendering the table.
@@ -286,7 +286,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	/**
 	 * Render the edit view for the selected modifier.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Modifier_Manager $manager The modifier manager.
 	 * @param array            $context The context for rendering the edit screen.
@@ -321,7 +321,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	/**
 	 * Handles the form submission and saves the modifier data.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */
@@ -391,7 +391,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	/**
 	 * Handles the display of notices.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */
@@ -422,7 +422,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	/**
 	 * Shows a success message.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param string $message The success message to display.
 	 *
@@ -438,7 +438,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	/**
 	 * Shows an error message.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param string $message The error message to display.
 	 *
@@ -458,7 +458,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	 * deletes the modifier if the nonce is valid. It also redirects the user back to the referring page after
 	 * performing the deletion to avoid form resubmission.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */

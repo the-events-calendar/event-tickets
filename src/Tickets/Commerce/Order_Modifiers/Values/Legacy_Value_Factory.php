@@ -2,7 +2,7 @@
 /**
  * Legacy Value Factory.
  *
- * @since TBD
+ * @since 5.18.0
  */
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Values;
@@ -12,14 +12,14 @@ use TEC\Tickets\Commerce\Utils\Value as LegacyValue;
 /**
  * Class Legacy_Value_Factory
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Legacy_Value_Factory {
 
 	/**
 	 * Convert a value object to a legacy value object.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Value_Interface $value The value to convert.
 	 *

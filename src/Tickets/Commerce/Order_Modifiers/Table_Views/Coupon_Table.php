@@ -6,7 +6,7 @@
  * including columns for coupon name, code, amount, usage, and status. It extends the Order_Modifier_Table
  * class and provides specific logic for handling coupon-specific data display.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Table_Views
  */
@@ -20,7 +20,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Coupons;
 /**
  * Class for displaying Coupon data in the table.
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Coupon_Table extends Order_Modifier_Table {
 
@@ -46,7 +46,7 @@ class Coupon_Table extends Order_Modifier_Table {
 	/**
 	 * Define the columns for the table.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return array An array of columns.
 	 */
@@ -69,7 +69,7 @@ class Coupon_Table extends Order_Modifier_Table {
 	 * they can edit the specific modifier, passing the necessary parameters for the page,
 	 * modifier type, modifier ID, and a nonce for security.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param object $item The current item from the table, typically an Order_Modifier object.
 	 *
@@ -114,7 +114,7 @@ class Coupon_Table extends Order_Modifier_Table {
 	/**
 	 * Render the "status" column.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param object $item The current item.
 	 *
@@ -127,7 +127,7 @@ class Coupon_Table extends Order_Modifier_Table {
 	/**
 	 * Retrieves the number of coupons available for a given order modifier.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $order_modifier_id The ID of the order modifier.
 	 *
@@ -149,7 +149,7 @@ class Coupon_Table extends Order_Modifier_Table {
 	 * Displays the number of remaining coupons by subtracting the number used from the available coupons.
 	 * If the coupons_available is empty or 0, returns '-'.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param object $item The order modifier item.
 	 *
@@ -179,7 +179,7 @@ class Coupon_Table extends Order_Modifier_Table {
 	 *
 	 * Displays the number of used coupons. If coupons_available is 0 (unlimited), returns '-'.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param object $item The order modifier item.
 	 *
@@ -210,7 +210,7 @@ class Coupon_Table extends Order_Modifier_Table {
 	 * based on the sub_type (e.g., 'flat' or 'percent'). The fee amount is passed in cents and is converted
 	 * accordingly.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param object $item The current item being rendered. This should contain `raw_amount` and `sub_type`
 	 *     fields.
@@ -224,7 +224,7 @@ class Coupon_Table extends Order_Modifier_Table {
 	/**
 	 * Define sortable columns.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return array An array of sortable columns.
 	 */
@@ -245,7 +245,7 @@ class Coupon_Table extends Order_Modifier_Table {
 	 * This method returns a description related to the current table context, providing users with information
 	 * about the functionality of modifiers they are viewing or editing.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return string The explanation text with a clickable "Learn More" link.
 	 */

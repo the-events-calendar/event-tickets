@@ -2,7 +2,7 @@
 /**
  * Abstract Custom Table class for handling common operations on custom tables, such as adding indexes.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables
  */
@@ -16,7 +16,7 @@ use TEC\Common\StellarWP\DB\DB;
  * Abstract class that provides utility methods for managing custom table schemas,
  * including adding indexes.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables
  */
@@ -25,7 +25,7 @@ abstract class Abstract_Custom_Table extends Table {
 	/**
 	 * Helper method to check and add an index to a table.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array  $results    The results array to track changes.
 	 * @param string $index_name The name of the index.
@@ -64,7 +64,7 @@ abstract class Abstract_Custom_Table extends Table {
 	 * Thats because we want to avoid implicit commits in the DB making this method suitable for using during a testcase.
 	 * If you want to use TRUNCATE you can use the `empty_table` method instead.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return bool Whether it was emptied or not.
 	 */

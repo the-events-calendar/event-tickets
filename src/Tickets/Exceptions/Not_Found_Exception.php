@@ -2,7 +2,7 @@
 /**
  * Exception when something is not found
  *
- * @since TBD
+ * @since 5.18.0
  */
 
 declare( strict_types=1 );
@@ -14,6 +14,6 @@ use Exception;
 /**
  * Class Not_Found_Exception
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Not_Found_Exception extends Exception {}

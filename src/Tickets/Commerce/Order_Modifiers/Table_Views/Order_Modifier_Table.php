@@ -12,7 +12,7 @@
  * The class also includes methods for rendering specific columns like the "status" column and
  * allows for the inclusion of search boxes and filters for modifier data.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Table_Views
  */
@@ -30,7 +30,7 @@ use WP_List_Table;
 /**
  * Abstract class for Order Modifier Table (Coupons/Fees).
  *
- * @since TBD
+ * @since 5.18.0
  */
 abstract class Order_Modifier_Table extends WP_List_Table {
 
@@ -39,7 +39,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	/**
 	 * Modifier class for the table (e.g., Coupon or Fee).
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var Modifier_Strategy_Interface
 	 */
@@ -48,7 +48,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	/**
 	 * Repository for handling operations related to the `order_modifiers` table.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var Order_Modifiers
 	 */
@@ -57,7 +57,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	/**
 	 * Repository for handling operations related to the `order_modifiers_meta` table.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var Order_Modifiers_Meta
 	 */
@@ -66,7 +66,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	/**
 	 * Repository for handling operations related to the `order_modifier_relationship_repository` table.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var Order_Modifier_Relationship
 	 */
@@ -75,7 +75,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	/**
 	 * Constructor for the Order Modifier Table.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Modifier_Strategy_Interface $modifier The modifier class to use for data fetching and logic.
 	 * @param Order_Modifiers_Meta        $order_modifier_meta_repository The repository for order modifier meta data.
@@ -101,7 +101,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	/**
 	 * Prepares the items for display in the table.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 */
 	public function prepare_items() {
 		$columns               = $this->get_columns();
@@ -152,7 +152,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 * This method dynamically calls a dedicated method to render the specific column.
 	 * If no specific method exists for the column, it falls back to a generic column handler.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param object $item The current item.
 	 * @param string $column_name The column name.
@@ -175,7 +175,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	/**
 	 * Fallback method for rendering generic columns.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param object $item The current item.
 	 * @param string $column_name The column name.
@@ -189,7 +189,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	/**
 	 * Helper to render actions for a column. The `edit` action is used for the label link as well.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param string $label The display label for the item (e.g., the name of the coupon or fee).
 	 * @param array  $actions Array of actions, where the key is a readable action label (e.g., 'Edit', 'Delete')
@@ -213,7 +213,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	/**
 	 * Adds a search box with a custom placeholder to the table.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param string $text The text to display in the submit button.
 	 * @param string $input_id The input ID.
@@ -244,7 +244,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	/**
 	 * Render the navigation tabs for available modifiers dynamically.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */
@@ -290,7 +290,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 * This method displays the title of the current modifier (e.g., 'Coupons', 'Fees') and an "Add New" button
 	 * to allow users to create a new modifier.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */
@@ -325,7 +325,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 * It can be overridden by subclasses to provide specific content
 	 * based on the modifier type or context.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */

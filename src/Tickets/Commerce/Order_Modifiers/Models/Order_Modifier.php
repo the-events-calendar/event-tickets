@@ -2,7 +2,7 @@
 /**
  * The Order Modifier model.
  *
- * @since   TBD
+ * @since   5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Models;
  */
@@ -25,7 +25,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Values\Value_Interface;
 /**
  * Class Order_Modifier.
  *
- * @since   TBD
+ * @since   5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Models;
  *
@@ -65,7 +65,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 *
 	 * This will be defined in child classes.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 * @var string
 	 */
 	protected static string $order_modifier_type;
@@ -73,7 +73,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	/**
 	 * Finds a model by its ID.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param int $id The model ID.
 	 *
@@ -90,7 +90,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	/**
 	 * Creates a new model and saves it to the database.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array<string,mixed> $attributes The model attributes.
 	 *
@@ -111,7 +111,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	/**
 	 * Saves the model to the database.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return static
 	 */
@@ -131,7 +131,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	/**
 	 * Deletes the model from the database.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return bool Whether the model was deleted.
 	 */
@@ -142,7 +142,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	/**
 	 * Returns the query builder for the model.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return ModelQueryBuilder The query builder instance.
 	 */
@@ -153,7 +153,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	/**
 	 * Builds a new model from a query builder object.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param object $object The object to build the model from.
 	 *
@@ -166,7 +166,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	/**
 	 * Converts the Order_Modifier object to an array.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return array The object properties as an array.
 	 */
@@ -184,7 +184,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	/**
 	 * Validates an attribute to a PHP type.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param string $key   Property name.
 	 * @param mixed  $value Property value.
@@ -207,7 +207,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	/**
 	 * Sets an attribute on the model.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param string $key   Attribute name.
 	 * @param mixed  $value Attribute value.
@@ -246,7 +246,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	/**
 	 * Returns an attribute from the model.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param string $key     Attribute name.
 	 * @param mixed  $default Default value. Default is null.
@@ -276,7 +276,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	/**
 	 * Validates a property value based on a dedicated method.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param string $key   Property name.
 	 * @param mixed  $value Property value.

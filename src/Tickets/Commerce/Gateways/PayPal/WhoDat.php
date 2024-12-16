@@ -72,7 +72,7 @@ class WhoDat extends Abstract_WhoDat {
 	 * Verify if the seller was successfully onboarded.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Added runtime cache.
+	 * @since 5.18.0 Added runtime cache.
 	 *
 	 * @param string $saved_merchant_id The ID we are looking at Paypal with.
 	 *

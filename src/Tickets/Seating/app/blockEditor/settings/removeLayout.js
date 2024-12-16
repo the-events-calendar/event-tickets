@@ -11,7 +11,7 @@ import { globals } from '@moderntribe/common/utils';
 /**
  * The Remove Layout link component.
  *
- * @since TBD
+ * @since 5.18.0
  */
 const RemoveLayout = React.memo(({postId}) => {
 	const [isChecked, setChecked] = useState(false);
@@ -26,7 +26,7 @@ const RemoveLayout = React.memo(({postId}) => {
 	/**
 	 * Close the modal.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return {void}
 	 */
@@ -39,7 +39,7 @@ const RemoveLayout = React.memo(({postId}) => {
 	/**
 	 * Handle the removal of the layout.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return {Promise<void>}
 	 */
@@ -55,7 +55,7 @@ const RemoveLayout = React.memo(({postId}) => {
 	/**
 	 * Remove the layout.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return {Promise<boolean>}
 	 */
@@ -72,7 +72,7 @@ const RemoveLayout = React.memo(({postId}) => {
 	/**
 	 * The content of the modal.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return {JSX.Element}
 	 */

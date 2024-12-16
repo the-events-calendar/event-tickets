@@ -2,7 +2,7 @@
 /**
  * Asset build trait.
  *
- * @since TBD
+ * @since 5.18.0
  */
 
 declare( strict_types=1 );
@@ -15,7 +15,7 @@ use Tribe__Tickets__Main as Tickets;
 /**
  * Trait Asset_Build
  *
- * @since TBD
+ * @since 5.18.0
  */
 trait Asset_Build {
 
@@ -29,7 +29,7 @@ trait Asset_Build {
 	/**
 	 * Add an asset to the list of registered assets.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param string  $handle  The asset handle.
 	 * @param string  $path    The asset path, relative to the build/OrderModifiers/ directory.

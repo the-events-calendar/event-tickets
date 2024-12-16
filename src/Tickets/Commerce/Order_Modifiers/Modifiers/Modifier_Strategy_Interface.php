@@ -10,7 +10,7 @@ use TEC\Common\StellarWP\Models\Contracts\Model;
  * Defines the methods that concrete strategies (such as Coupon or Booking Fee)
  * must implement for inserting, updating, and validating order modifiers.
  *
- * @since TBD
+ * @since 5.18.0
  */
 interface Modifier_Strategy_Interface {
 
@@ -21,7 +21,7 @@ interface Modifier_Strategy_Interface {
 	 * its modifier type, allowing the system to identify and handle
 	 * different modifier types correctly.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return string The modifier type (e.g., 'coupon', 'fee').
 	 */
@@ -30,7 +30,7 @@ interface Modifier_Strategy_Interface {
 	/**
 	 * Inserts a new Order Modifier into the system.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $data The data for the order modifier to insert.
 	 *
@@ -41,7 +41,7 @@ interface Modifier_Strategy_Interface {
 	/**
 	 * Updates an existing Order Modifier in the system.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $data The data for the order modifier to update.
 	 *
@@ -55,7 +55,7 @@ interface Modifier_Strategy_Interface {
 	 * This method ensures that the data contains all required fields and
 	 * that the values are valid before insertion or update.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $data The data to validate.
 	 *
@@ -70,7 +70,7 @@ interface Modifier_Strategy_Interface {
 	 * It is used in cases where the slug is required for rendering or processing actions
 	 * related to the specific modifier.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return string The page slug, or empty string if not applicable.
 	 */
@@ -82,7 +82,7 @@ interface Modifier_Strategy_Interface {
 	 * This method returns the display name for the modifier, which is used in various
 	 * contexts to identify the modifier to the user.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param bool $plural Whether to return the plural form of the display name.
 	 *

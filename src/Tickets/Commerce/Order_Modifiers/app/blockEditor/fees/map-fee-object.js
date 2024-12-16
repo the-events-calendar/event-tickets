@@ -37,7 +37,7 @@ const getFeeLabel = ( fee ) => {
 /**
  * Maps a fee to a select option.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @param {Fee} fee
  * @returns {{label: string, value}}

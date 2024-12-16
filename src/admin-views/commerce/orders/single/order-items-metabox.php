@@ -30,7 +30,7 @@ use TEC\Tickets\Commerce\Order;
 				/**
 				 * Filters whether the item should be displayed in the single order items metabox.
 				 *
-				 * @since TBD
+				 * @since 5.18.0
 				 *
 				 * @param bool    $should_display Whether the item should be displayed.
 				 * @param array   $item           The item data.

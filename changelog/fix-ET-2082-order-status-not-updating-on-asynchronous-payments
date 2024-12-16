@@ -1,4 +1,0 @@
-Significance: minor
-Type: fix
-
-Order updates for asynchronous payment methods in Stripe will update correctly. [ET-2082]

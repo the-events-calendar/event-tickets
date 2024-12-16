@@ -2,7 +2,7 @@
 /**
  * Valid Types trait.
  *
- * @since TBD
+ * @since 5.18.0
  */
 
 declare( strict_types=1 );
@@ -18,14 +18,14 @@ use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee;
 /**
  * Trait Valid_Types
  *
- * @since TBD
+ * @since 5.18.0
  */
 trait Valid_Types {
 
 	/**
 	 * Determine if a type is valid.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param string $type The type.
 	 *
@@ -38,7 +38,7 @@ trait Valid_Types {
 	/**
 	 * Get the valid order modifier types.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return array The valid order modifier types.
 	 */
@@ -55,7 +55,7 @@ trait Valid_Types {
 		 * key is used to determine whether a type is valid or not. The value
 		 * is used to instantiate the model.
 		 *
-		 * @since TBD
+		 * @since 5.18.0
 		 *
 		 * @param array $types The valid order modifier types.
 		 */
@@ -79,7 +79,7 @@ trait Valid_Types {
 	/**
 	 * Get the available order modifier types.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return array The available order modifier types.
 	 */
@@ -110,7 +110,7 @@ trait Valid_Types {
 		 *
 		 * This allows developers to add or modify the default list of order modifiers.
 		 *
-		 * @since TBD
+		 * @since 5.18.0
 		 *
 		 * @param array $modifiers An array of default modifiers, each containing 'display_name', 'slug', and 'class'.
 		 */
@@ -137,7 +137,7 @@ trait Valid_Types {
 	/**
 	 * Get the default order modifier type.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return string The default order modifier type.
 	 */
@@ -150,7 +150,7 @@ trait Valid_Types {
 		 * This filter allows you to set a different default modifier for the order modifiers table. The
 		 * default is to use the first key from the array of available modifiers.
 		 *
-		 * @since TBD
+		 * @since 5.18.0
 		 *
 		 * @param string $default_modifier The default modifier to use.
 		 */
@@ -160,7 +160,7 @@ trait Valid_Types {
 	/**
 	 * Determine if a subtype is valid.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param string $subtype The subtype.
 	 *
@@ -173,7 +173,7 @@ trait Valid_Types {
 	/**
 	 * Get the valid order modifier subtypes.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return array The valid order modifier subtypes.
 	 */
@@ -187,7 +187,7 @@ trait Valid_Types {
 	/**
 	 * Determine if a status is valid.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param string $status The status.
 	 *
@@ -200,7 +200,7 @@ trait Valid_Types {
 	/**
 	 * Get the valid order modifier status.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return array The valid order modifier status.
 	 */
@@ -217,7 +217,7 @@ trait Valid_Types {
 		 *
 		 *  Retrieves the list of valid statuses for an order modifier.
 		 *
-		 * @since TBD
+		 * @since 5.18.0
 		 *
 		 * @return array The valid order modifier statuses. Keys are the status names, and values are integer flags.
 		 */

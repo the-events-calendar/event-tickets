@@ -19,7 +19,7 @@ use TEC\Common\StellarWP\Assets\Assets;
  *
  * Handles coupon logic in the checkout process.
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Coupons extends Controller_Contract {
 
@@ -31,7 +31,7 @@ class Coupons extends Controller_Contract {
 	/**
 	 * Constructor
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param Container $container The DI container.
 	 * @param Coupon    $coupon    The coupon modifier.
@@ -44,7 +44,7 @@ class Coupons extends Controller_Contract {
 	/**
 	 * Registers hooks and AJAX actions.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 */
 	public function do_register(): void {
 		// Hook for displaying coupons in the checkout.
@@ -65,7 +65,7 @@ class Coupons extends Controller_Contract {
 	/**
 	 * Removes the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */
@@ -83,7 +83,7 @@ class Coupons extends Controller_Contract {
 	/**
 	 * Localizes the asset script.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 */
 	public function localize_asset(): void {
 		Assets::init()->get( 'tribe-tickets-commerce-js' )->add_localize_script( 'tecTicketsCommerce', [ 'restUrl' => tribe_tickets_rest_url() ] );
@@ -92,7 +92,7 @@ class Coupons extends Controller_Contract {
 	/**
 	 * Displays the coupon section in the checkout.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param WP_Post         $post     The current post object.
 	 * @param array           $items    The items in the cart.

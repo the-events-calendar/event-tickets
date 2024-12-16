@@ -2,7 +2,7 @@
 /**
  * Base API.
  *
- * @since TBD
+ * @since 5.18.0
  */
 
 declare( strict_types=1 );
@@ -16,7 +16,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 /**
  * Class Base_API
  *
- * @since TBD
+ * @since 5.18.0
  */
 abstract class Base_API extends Controller_Contract {
 
@@ -30,7 +30,7 @@ abstract class Base_API extends Controller_Contract {
 	/**
 	 * Get the permission callback.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return callable The permission callback.
 	 */
@@ -38,7 +38,7 @@ abstract class Base_API extends Controller_Contract {
 		/**
 		 * Filters the role required to access the API.
 		 *
-		 * @since TBD
+		 * @since 5.18.0
 		 *
 		 * @param string $role The role required to access the API.
 		 */
@@ -50,7 +50,7 @@ abstract class Base_API extends Controller_Contract {
 	/**
 	 * Registers the class with WordPress hooks.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void The method does not return any value.
 	 */
@@ -62,7 +62,7 @@ abstract class Base_API extends Controller_Contract {
 	/**
 	 * Removes the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */
@@ -74,7 +74,7 @@ abstract class Base_API extends Controller_Contract {
 	/**
 	 * Registers additional methods/logic with WordPress hooks.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void The method does not return any value.
 	 */
@@ -87,7 +87,7 @@ abstract class Base_API extends Controller_Contract {
 	/**
 	 * Removes additional methods/logic from WordPress hooks.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */
@@ -100,7 +100,7 @@ abstract class Base_API extends Controller_Contract {
 	/**
 	 * Convert a WP_Error object to a response.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param WP_Error $error The error object.
 	 *
@@ -113,7 +113,7 @@ abstract class Base_API extends Controller_Contract {
 	/**
 	 * Get the register routes callback.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return callable The register routes callback.
 	 */
@@ -129,7 +129,7 @@ abstract class Base_API extends Controller_Contract {
 	/**
 	 * Register the routes.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */

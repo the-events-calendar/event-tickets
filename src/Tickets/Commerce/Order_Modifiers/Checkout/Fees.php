@@ -6,7 +6,7 @@
  * independent of the payment gateway in use. It integrates with various filters and hooks during
  * the checkout process to ensure consistent fee handling.
  *
- * @since   TBD
+ * @since   5.18.0
  * @package TEC\Tickets\Commerce\Order_Modifiers\Checkout
  */
 
@@ -19,7 +19,7 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
  * is applied across different gateways. The fees are calculated and displayed independently of the gateway
  * and integrated into the cart total.
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Fees extends Abstract_Fees {
 
@@ -30,7 +30,7 @@ class Fees extends Abstract_Fees {
 	 * and modifies the total values accordingly, ensuring that the fee logic is applied agnostically
 	 * across different payment gateways.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 */
 	public function do_register(): void {
 		// Hook for calculating total values, setting subtotal, and modifying the total value.
@@ -53,7 +53,7 @@ class Fees extends Abstract_Fees {
 	/**
 	 * Removes the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return void
 	 */

@@ -5,7 +5,7 @@
  * Handles the specific logic for Coupon modifiers, including inserting, updating,
  * rendering, and validating coupon data.
  *
- * @since TBD
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Modifiers;
  */
@@ -19,14 +19,14 @@ use Tribe__Tickets__Admin__Views;
 /**
  * Concrete Strategy for Coupon Modifiers.
  *
- * @since TBD
+ * @since 5.18.0
  */
 class Coupon extends Modifier_Abstract {
 
 	/**
 	 * The modifier type for coupons.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ class Coupon extends Modifier_Abstract {
 	/**
 	 * Required fields for Coupons.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 * @var array
 	 */
 	protected array $required_fields = [
@@ -50,7 +50,7 @@ class Coupon extends Modifier_Abstract {
 	/**
 	 * Retrieves the display name of the modifier in singular form.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return string The display name of the modifier.
 	 */
@@ -61,7 +61,7 @@ class Coupon extends Modifier_Abstract {
 	/**
 	 * Retrieves the display name of the modifier in plural form.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @return string The display name of the modifier.
 	 */
@@ -72,7 +72,7 @@ class Coupon extends Modifier_Abstract {
 	/**
 	 * Inserts a new modifier and handles related metadata.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $data The data to insert.
 	 *
@@ -98,7 +98,7 @@ class Coupon extends Modifier_Abstract {
 	/**
 	 * Updates an existing modifier and handles related metadata.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $data The data to update.
 	 *
@@ -124,7 +124,7 @@ class Coupon extends Modifier_Abstract {
 	/**
 	 * Renders the coupon table.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $context The context data for rendering the table.
 	 *
@@ -147,7 +147,7 @@ class Coupon extends Modifier_Abstract {
 	/**
 	 * Renders the coupon edit screen.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $context The context data for rendering the edit screen.
 	 *
@@ -166,7 +166,7 @@ class Coupon extends Modifier_Abstract {
 	 *
 	 * This method prepares the context for rendering the coupon edit form.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $context The raw model data.
 	 *
@@ -189,7 +189,7 @@ class Coupon extends Modifier_Abstract {
 	 *
 	 * Coupons do not currently use relationships.
 	 *
-	 * @since TBD
+	 * @since 5.18.0
 	 *
 	 * @param array $modifier_ids An array of modifier IDs to update.
 	 * @param array $new_post_ids An array of new post IDs to be associated with the fee.
