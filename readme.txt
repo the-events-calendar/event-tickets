@@ -214,6 +214,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Order updates for asynchronous payment methods in Stripe will update correctly. [ET-2082]
 * Fix - The Attendee Registration page is now compatible with Full Site Editor themes. [ET-2266]
 * Fix - Users will not be able to RSVP for unpublished events or posts. [ET-2267]
+* Language - 127 new strings added, 353 updated, 2 fuzzied, and 5 obsoleted.
 
 = [5.17.0.1] 2024-11-21 =
 
