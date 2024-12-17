@@ -211,13 +211,12 @@ class Controller extends Controller_Contract {
 				continue;
 			}
 			
-			$sold_qty   = [];
-			$capacity   = $ticket->capacity();
-			$stock      = $ticket->stock();
-			$sold_qty[] = $ticket->qty_sold();
+			$capacity = $ticket->capacity();
+			$stock    = $ticket->stock();
+			$sold_qty = $ticket->qty_sold();
 			
 			if ( $stock ) {
-				$sold_qty[] = $capacity - $stock;
+				$sold_qty = min( $capacity - $stock, $sold_qty );
 			}
 			
 			if ( ! isset( $capacity_by_type[ $seat_type ] ) ) {
@@ -225,9 +224,9 @@ class Controller extends Controller_Contract {
 			}
 			
 			if ( ! isset( $total_sold_by_type[ $seat_type ] ) ) {
-				$total_sold_by_type[ $seat_type ] = min( $sold_qty );
+				$total_sold_by_type[ $seat_type ] = $sold_qty;
 			} else {
-				$total_sold_by_type[ $seat_type ] += min( $sold_qty );
+				$total_sold_by_type[ $seat_type ] += $sold_qty;
 			}
 			
 			++$types['tickets']['count'];
