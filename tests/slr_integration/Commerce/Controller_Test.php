@@ -968,4 +968,152 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertEquals( 13, $ticket_3_obj->stock() );
 		$this->assertEquals( 13, $ticket_4_obj->stock() );
 	}
+	
+	public function test_stock_count_for_seated_tickets_replenished_on_attendee_reservation_removal() {
+		$this->make_controller()->register();
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event with',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 12:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		
+		Seat_Types::insert_many(
+			[
+				[
+					'id'     => 'seat-type-general',
+					'name'   => 'A',
+					'seats'  => 30,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+				[
+					'id'     => 'seat-type-vip',
+					'name'   => 'B',
+					'seats'  => 10,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+			]
+		);
+		set_transient( \TEC\Tickets\Seating\Service\Seat_Types::update_transient_name(), time() );
+		
+		// Ticket 1 and 2 use the same seat type A.
+		$general_ticket = $this->create_tc_ticket(
+			$event_id,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 30,
+				],
+			]
+		);
+		update_post_meta( $general_ticket, Meta::META_KEY_SEAT_TYPE, 'seat-type-general' );
+		
+		$child_ticket = $this->create_tc_ticket(
+			$event_id,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 30,
+				],
+			]
+		);
+		update_post_meta( $child_ticket, Meta::META_KEY_SEAT_TYPE, 'seat-type-general' );
+		
+		$vip_ticket = $this->create_tc_ticket(
+			$event_id,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 10,
+				],
+			]
+		);
+		update_post_meta( $vip_ticket, Meta::META_KEY_SEAT_TYPE, 'seat-type-vip' );
+		
+		$order = $this->create_order(
+			[
+				$general_ticket => 1,
+				$child_ticket   => 1,
+				$vip_ticket     => 1,
+			]
+		);
+		
+		$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		
+		// Mock the reservation ID to do proper stock calculation.
+		foreach ( $order_attendees as $key => $attendee ) {
+			update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+		}
+		
+		$general_ticket = tribe( Module::class )->get_ticket( $event_id, $general_ticket );
+		$child_ticket   = tribe( Module::class )->get_ticket( $event_id, $child_ticket );
+		$vip_ticket     = tribe( Module::class )->get_ticket( $event_id, $vip_ticket );
+		
+		// Check after order creation.
+		$this->assertEquals( 28, $general_ticket->stock() );
+		$this->assertEquals( 28, $child_ticket->stock() );
+		$this->assertEquals( 9, $vip_ticket->stock() );
+		
+		// Delete a reservation from General ticket.
+		$general_ticket_attendee = tribe_attendees()->where( 'ticket', $general_ticket->ID )->first_id();
+		delete_post_meta( $general_ticket_attendee, Meta::META_KEY_RESERVATION_ID );
+		
+		// Check after reservation deletion.
+		$general_ticket = tribe( Module::class )->get_ticket( $event_id, $general_ticket->ID );
+		$child_ticket   = tribe( Module::class )->get_ticket( $event_id, $child_ticket->ID );
+		
+		$this->assertEquals( 29, $general_ticket->stock() );
+		$this->assertEquals( 29, $child_ticket->stock() );
+		
+		$child_ticket_attendee = tribe_attendees()->where( 'ticket', $child_ticket->ID )->first_id();
+		delete_post_meta( $child_ticket_attendee, Meta::META_KEY_RESERVATION_ID );
+		
+		// Check after reservation deletion.
+		$child_ticket   = tribe( Module::class )->get_ticket( $event_id, $child_ticket->ID );
+		$general_ticket = tribe( Module::class )->get_ticket( $event_id, $general_ticket->ID );
+		
+		$this->assertEquals( 30, $child_ticket->stock() );
+		$this->assertEquals( 30, $general_ticket->stock() );
+		
+		// Delete a reservation from VIP ticket.
+		$vip_ticket_attendee = tribe_attendees()->where( 'ticket', $vip_ticket->ID )->first_id();
+		delete_post_meta( $vip_ticket_attendee, Meta::META_KEY_RESERVATION_ID );
+		
+		// Check after reservation deletion.
+		$vip_ticket = tribe( Module::class )->get_ticket( $event_id, $vip_ticket->ID );
+		
+		$this->assertEquals( 10, $vip_ticket->stock() );
+		
+		// Let's create the same order again and check the stock.
+		$order = $this->create_order(
+			[
+				$general_ticket->ID => 1,
+				$child_ticket->ID   => 1,
+				$vip_ticket->ID     => 1,
+			]
+		);
+		
+		$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		
+		// Mock the reservation ID to do proper stock calculation.
+		foreach ( $order_attendees as $key => $attendee ) {
+			update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+		}
+		
+		$general_ticket = tribe( Module::class )->get_ticket( $event_id, $general_ticket->ID );
+		$child_ticket   = tribe( Module::class )->get_ticket( $event_id, $child_ticket->ID );
+		$vip_ticket     = tribe( Module::class )->get_ticket( $event_id, $vip_ticket->ID );
+		
+		// Check after order creation.
+		$this->assertEquals( 28, $general_ticket->stock() );
+		$this->assertEquals( 28, $child_ticket->stock() );
+		$this->assertEquals( 9, $vip_ticket->stock() );
+	}
 }
