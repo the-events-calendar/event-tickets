@@ -1,12 +1,12 @@
-<?php return '<link rel=\'stylesheet\' id=\'tec-variables-skeleton-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/src/resources/css/variables-skeleton.min.css?ver={{COMMON_VERSION}}\' type=\'text/css\' media=\'all\' />
-<link rel=\'stylesheet\' id=\'tribe-common-skeleton-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/src/resources/css/common-skeleton.min.css?ver={{COMMON_VERSION}}\' type=\'text/css\' media=\'all\' />
-<link rel=\'stylesheet\' id=\'tec-variables-full-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/src/resources/css/variables-full.min.css?ver={{COMMON_VERSION}}\' type=\'text/css\' media=\'all\' />
-<link rel=\'stylesheet\' id=\'tribe-common-full-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/src/resources/css/common-full.min.css?ver={{COMMON_VERSION}}\' type=\'text/css\' media=\'all\' />
-<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-paypal-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/src/resources/css/tickets-commerce/gateway/paypal.min.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />
-<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-stripe-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/src/resources/css/tickets-commerce/gateway/stripe.min.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />
-<link rel=\'stylesheet\' id=\'tribe-common-responsive-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/src/resources/css/common-responsive.min.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />
-<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/src/resources/css/tickets-commerce.min.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />
-<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-free-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/src/resources/css/tickets-commerce/gateway/free.min.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />
+<?php return '<link rel=\'stylesheet\' id=\'tec-variables-skeleton-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/src/resources/css/variables-skeleton.css?ver={{COMMON_VERSION}}\' type=\'text/css\' media=\'all\' />\n
++<link rel=\'stylesheet\' id=\'tribe-common-skeleton-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/src/resources/css/common-skeleton.css?ver={{COMMON_VERSION}}\' type=\'text/css\' media=\'all\' />\n
++<link rel=\'stylesheet\' id=\'tec-variables-full-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/src/resources/css/variables-full.css?ver={{COMMON_VERSION}}\' type=\'text/css\' media=\'all\' />\n
++<link rel=\'stylesheet\' id=\'tribe-common-full-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/src/resources/css/common-full.css?ver={{COMMON_VERSION}}\' type=\'text/css\' media=\'all\' />\n
++<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-paypal-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/src/resources/css/tickets-commerce/gateway/paypal.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />\n
++<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-stripe-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/src/resources/css/tickets-commerce/gateway/stripe.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />\n
++<link rel=\'stylesheet\' id=\'tribe-common-responsive-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/src/resources/css/common-responsive.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />\n
++<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/src/resources/css/tickets-commerce.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />\n
++<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-free-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/src/resources/css/tickets-commerce/gateway/free.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />
 <div class="tribe-common event-tickets">
 	<section
 		class="tribe-tickets__commerce-checkout"
@@ -107,12 +107,12 @@
 </footer>
 
 </div>
-				<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden" >
+				<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden tec-tickets__admin-settings-tickets-commerce-gateway-connected-resync-button-icon" >
 	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--first"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
 	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--second"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
 	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--third"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
 </div>
-		<div id=""  class="tribe-tickets__notice tribe-tickets__notice--error tribe-tickets__commerce-checkout-notice" >
+		<div id="tribe-tickets__commerce-checkout-footer-notice-error--no-gateway"  class="tribe-tickets__notice tribe-tickets__notice--error tribe-tickets__commerce-checkout-notice" >
 			<h3 class="tribe-common-h7 tribe-tickets-notice__title">Checkout Error!</h3>
 	
 	<div  class="tribe-common-b2 tribe-tickets-notice__content tribe-tickets__commerce-checkout-notice-content" >
