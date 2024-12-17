@@ -1,6 +1,6 @@
 # Changelog
 
-### [5.18.0] 2024-12-16
+### [5.18.0] 2024-12-17
 
 * Feature - Added option to detach assigned seating tickets from layout and revert them to regular tickets. [SL-214]
 * Feature - Add support for max ticket purchase limit filter with seating tickets. [SL-205]
@@ -10,7 +10,7 @@
 * Tweak - Changed views: `v2/commerce/checkout/cart/footer`, `v2/commerce/checkout/cart/footer/total`, `v2/commerce/checkout/order-modifiers/coupons`, `v2/commerce/checkout/order-modifiers/fees`
 * Tweak - Removed outdated ticket duration tooltips. [ET-2263]
 * Fix - Correctly calculate and set the session expiration date in the seat selection modal. [n/a]
-* Fix - Ensure that number_format is used with a float value to prevent issues with PHP 8.0+. [ETP-962]
+* Fix - Ensure that `number_format` is used with a float value to prevent issues with PHP 8.0+. [ETP-962]
 * Fix - Hide seating reservation settings when seating license is not valid. [SL-248]
 * Fix - Order updates for asynchronous payment methods in Stripe will update correctly. [ET-2082]
 * Fix - The Attendee Registration page is now compatible with Full Site Editor themes. [ET-2266]
@@ -26,7 +26,7 @@
 
 * Version - Event Tickets 5.17.0 is only compatible with Event Tickets Plus 6.1.1 or higher.
 * Feature - Add Reservation timer settings for seating tickets. [Sl-213]
-* Feature - Enable duplicate layout funcitonality for seating. [SL-65]
+* Feature - Enable duplicate layout functionality for seating. [SL-65]
 * Feature - Reset Seat Layouts data when a new license is connected.
 * Feature - Update Seating assets into using Group Paths. [SL-246]
 * Tweak - Added filters: `tec_tickets_seating_checkout_grace_time`
@@ -74,7 +74,7 @@
 * Fix - If users added an index to the `post_meta` table on `meta_value` using `CONCAT()` should speed up queries for them. [GTRIA-1236]
 * Fix - Possible miscounted ticketed or un-ticketed events in the events admin list [ET-2221]
 * Fix - Some dates in admin screens were not translated [TEC-4873]
-* Fix - Wrong ticket stock when attendeed were moved between tickets [ET-2098]
+* Fix - Wrong ticket stock when attendees were moved between tickets [ET-2098]
 * Fix - Fix issue with svg display in settings page. [TEC-5282]
 * Tweak - Modify language around ticket capacity on "Tickets" block to improve clarity.
 * Tweak - Added filters: `tec_tickets_admin_tickets_table_default_status`, `tec_tickets_admin_tickets_table_default_sort_by`, `tec_tickets_admin_tickets_table_default_sort_order`, `tec_tickets_admin_tickets_table_columns`, `tec_tickets_admin_tickets_table_default_hidden_columns`, `tec_tickets_admin_tickets_table_sortable_columns`, `tec_tickets_admin_tickets_table_column_default`, `tec_tickets_admin_tickets_table_column_default_{$column_name}`, `tec_tickets_admin_tickets_table_column_name`, `tec_tickets_admin_tickets_table_column_id`, `tec_tickets_admin_tickets_table_event_actions`, `tec_tickets_admin_tickets_table_column_event`, `tec_tickets_admin_tickets_table_column_start_date`, `tec_tickets_admin_tickets_table_column_end_date`, `tec_tickets_admin_tickets_table_column_days_left`, `tec_tickets_admin_tickets_table_column_price`, `tec_tickets_admin_tickets_table_column_sold`, `tec_tickets_admin_tickets_table_column_remaining`, `tec_tickets_admin_tickets_table_column_sales`, `tec_tickets_admin_tickets_table_query_args`, `tec_tickets_admin_tickets_table_status_options`, `tec_tickets_admin_tickets_table_provider_info`, `tec_tickets_admin_tickets_page_url`, `tec_tickets_admin_tickets_screen_options_show_screen`, `tec_tickets_attendees_user_can_export_csv`, `tec_tickets_attendees_table_cache_key`, `tec_tickets_search_attendees_default`
@@ -106,7 +106,7 @@
 ### [5.13.3] 2024-09-11
 
 * Feature - Added Individual Order Screen in the Admin to improve the Order Management for Tickets Commerce. [ET-2150]
-* Tweak - Tweaked `setupCompactCardElement` method to allow filtering of options using the existing `tec_tickets_commerce_stripe_checkout_localized_data` filter. [TECTRIA-295]
+* Tweak - Tweaked `setupCompactCardElement` method to allow filtering of options using the existing `tec_tickets_commerce_stripe_checkout_localized_data` filter. [ET-2259]
 * Tweak - Made a string translatable in `getting-started.php` file. (props to @DAnn2012) [ET-2215]
 * Tweak - Added filters: `post_updated_messages`
 * Tweak - Added actions: `tribe_tickets_commerce_order_actions_box_start`
@@ -114,7 +114,7 @@
 
 ### [5.13.2] 2024-08-16
 
-* Tweak - Start Sale and End Sale date will autopopulate when creating a new ticket. [ET-2103]
+* Tweak - Start Sale and End Sale date will auto-populate when creating a new ticket. [ET-2103]
 * Tweak - Update legacy Wallet Plus plugin notices to the new Tickets Plus plugin.
 * Fix - Exporting all Attendees as a CSV file in the new Tickets Attendees Page. [ET-2094]
 * Fix - Shared capacity will no longer be affected by any of the unlimited sales tickets on the same event. [ETP-920]
@@ -1618,7 +1618,7 @@
 * Fix - Active tab logic for Attendees in Tribe Commerce, thanks Luc [107897]
 * Fix - Fixed default currency symbol inconsistency. Thanks Uwe and Zé for pointing this out! [104093]
 * Tweak - Tribe Commerce Orders Sales by Ticket section to remove duplicate data [110034]
-* Tweak - Attendees section to clarify infomation [110038]
+* Tweak - Attendees section to clarify information [110038]
 
 ### [4.7.6] 2018-08-01
 
@@ -1659,7 +1659,7 @@
 * Fix - Make sure the PayPal orders are being recorded. Thanks @burlingtonbytes for flagging this! [108436]
 * Tweak - Added new action, `tribe_tickets_ticket_email_ticket_top`, to the tickets email template [79878]
 * Tweak - Changed `tribe_tickets_email_include_event_date` filter default value to true. Now event date shows by default in RSVP ticket emails. Thanks @melvidge for the feedback [102309]
-* Tweak - Replaced start date in the RSVP non-attendace email template with full event schedule details [87686]
+* Tweak - Replaced start date in the RSVP non-attendance email template with full event schedule details [87686]
 * Tweak - Changed shortlinks to use https in Event Tickets welcome screen [75647]
 * Language - 2 new strings added, 66 updated, 0 fuzzied, and 1 obsoleted
 
@@ -1854,7 +1854,7 @@
 ### [4.5] 2017-06-22
 
 * Feature - Show remaining ticket count, buy now or rsvp now buttons in list views of The Events Calendar [71092 & 71094]
-* Feature - An API to get ticket, attendee, event, and order infomation from a post id for RSVP, EDD, and WooCommerce Tickets [74363]
+* Feature - An API to get ticket, attendee, event, and order information from a post id for RSVP, EDD, and WooCommerce Tickets [74363]
 * Fix - Resolved issue where the Meta Chunker attempted to inappropriately chunk meta for post post_types [80857]
 * Fix - Resolve Thunderbird for Windows rendering of Tickets email
 * Tweak - Added filters: `tribe_tickets_buy_button`
@@ -1895,7 +1895,7 @@
 
 ### [4.4.4] 2017-03-08
 
-* Fix - Fixed a bug that casued an inconsistency with the check-in/undo check-in button (thanks to @joe for the report in the forums) [68414]
+* Fix - Fixed a bug that caused an inconsistency with the check-in/undo check-in button (thanks to @joe for the report in the forums) [68414]
 * Fix - Fixed a bug that displayed an error message even for successful check-ins via QR code [68416]
 
 ### [4.4.3] 2017-02-22
@@ -1908,7 +1908,7 @@
 
 * Tweak - Print styles for the attendees report are now more efficient (props @ajuliano) [72772]
 * Fix - Email template file: link event title to event single page, add state/province and postal code to venue information, link venue address to Google Map link if the event's Show Google Maps Link option is checked [72475]
-* Fix - Resolved an issue where attendees would always attempt to be fetched and set in tranients - even when an un-expired transient held an empty attendee list. (props to nichestudio on our forums) [70485]
+* Fix - Resolved an issue where attendees would always attempt to be fetched and set in transients - even when an un-expired transient held an empty attendee list. (props to nichestudio on our forums) [70485]
 
 ### [4.4.1] 2017-01-26
 
@@ -1925,7 +1925,7 @@
 ### [4.4] 2017-01-09
 
 * Fix - Help page is now accessible even if The Events Calendar is not active on the site [69248]
-* Tweak - Added a tabbed view support for Attendeees and Ticket Orders [66015]
+* Tweak - Added a tabbed view support for Attendees and Ticket Orders [66015]
 * Tweak - Added the "Attendees" report column in admin lists of posts supporting tickets [67176]
 * Tweak - Improve the Attendee Report header with improved layout and better labels [66003]
 * Tweak - Adjust the layout of the attendee report screen [66004, 65887]
