@@ -46,8 +46,8 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 		add_filter( 'tribe_rest_event_data', [ $this, 'rest_event_data_add_attendance' ], 10, 2 );
 		add_filter( 'tribe_rest_events_archive_data', [ $this, 'rest_events_archive_add_attendance' ], 10, 2 );
 
-		add_filter( 'tec_tickets_rest_api_archive_results', [ $this, 'filter_out_tickets_on_unauthorized' ], 10, 2 );
-		add_filter( 'tribe_rest_single_ticket_data', [ $this, 'filter_out_single_ticket_data_on_unauthorized' ], 10, 2 );
+		add_filter( 'tec_tickets_rest_api_archive_results', [ $this, 'filter_out_tickets_on_unauthorized' ], 100, 2 );
+		add_filter( 'tribe_rest_single_ticket_data', [ $this, 'filter_out_single_ticket_data_on_unauthorized' ], 100, 2 );
 	}
 
 	/**

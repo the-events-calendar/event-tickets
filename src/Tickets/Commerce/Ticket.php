@@ -6,6 +6,7 @@ use TEC\Tickets\Commerce\Status\Denied;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
+use TEC\Tickets\Commerce\Traits\Is_Ticket;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Tickets__Global_Stock as Event_Stock;
 use Tribe__Utils__Array as Arr;
@@ -20,6 +21,8 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
  * @package TEC\Tickets\Commerce
  */
 class Ticket {
+	use Is_Ticket;
+
 	/**
 	 * Tickets Commerce Ticket Post Type slug.
 	 *
@@ -268,6 +271,10 @@ class Ticket {
 		}
 
 		foreach ( $order->items as $item ) {
+			if ( ! $this->is_ticket( $item ) ) {
+				continue;
+			}
+
 			$ticket_id              = $item['ticket_id'];
 			$new_status_meta_key    = static::get_status_count_meta_key( $new_status );
 			$current_new_status_qty = get_post_meta( $ticket_id, $new_status_meta_key, true );

@@ -3,9 +3,9 @@
  * The start and end dates field for the ticket editor.
  *
  * @since 5.8.0
- * @since TBD Removed start and end date tooltips.
+ * @since 5.18.0 Removed start and end date tooltips.
  *
- * @version TBD
+ * @version 5.18.0
  *
  * @var string $ticket_start_date The start date of the ticket.
  * @var string $ticket_end_date The end date of the ticket.

@@ -217,11 +217,14 @@ $ticket_type = $ticket_type ?? 'default';
 				 * Allows for the insertion of additional content into the ticket edit form - main section
 				 *
 				 * @since 4.6
+				 * @since 5.18.0 Added the $ticket_type parameter.
 				 *
 				 * @param int Post ID
 				 * @param int Ticket ID
+				 * @param string Ticket Type Whether this is a request for a ticket or an RSVP or something else.
 				 */
-				do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, $ticket_id ); ?>
+				do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, $ticket_id, $ticket_type );
+				?>
 			</section>
 			<div class="accordion">
 				<?php
