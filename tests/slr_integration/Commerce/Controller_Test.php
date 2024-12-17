@@ -10,10 +10,7 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Orders\Attendee;
-use TEC\Tickets\Seating\Tables\Layouts;
-use TEC\Tickets\Seating\Tables\Maps;
 use TEC\Tickets\Seating\Tables\Seat_Types;
-use TEC\Tickets\Seating\Tables\Sessions;
 use TEC\Tickets\Seating\Tests\Integration\Truncates_Custom_Tables;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -930,7 +927,7 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertEquals( 13, $ticket_4_obj->stock() );
 
 		// Delete an Attendee from Ticket 1.
-		$ticket_1_attendee_1 = tribe_attendees()->where('ticket', $ticket_1)->first_id();
+		$ticket_1_attendee_1 = tribe_attendees()->where( 'ticket', $ticket_1 )->first_id();
 		$this->assertInstanceOf( WP_Post::class, wp_delete_post( $ticket_1_attendee_1 ) );
 
 		// Check Attendees after Attendee deletion.
@@ -951,7 +948,7 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertEquals( 13, $ticket_4_obj->stock() );
 
 		// Trash an Attendee from Ticket 1.
-		$ticket_1_attendee_2 = tribe_attendees()->where('ticket', $ticket_1)->first_id();
+		$ticket_1_attendee_2 = tribe_attendees()->where( 'ticket', $ticket_1 )->first_id();
 		wp_trash_post( $ticket_1_attendee_2 );
 
 		// Check Attendees after Attendee deletion.
