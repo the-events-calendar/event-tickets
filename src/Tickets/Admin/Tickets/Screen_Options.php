@@ -55,7 +55,7 @@ class Screen_Options {
 	 */
 	public function filter_screen_options_show_screen( $show, $screen ) {
 		// Only show the screen options on the Tickets screen, otherwise bail.
-		if ( empty( $screen )  || Page::$hook_suffix !== $screen->id ) {
+		if ( empty( $screen ) || Page::$hook_suffix !== $screen->id ) {
 			return $show;
 		}
 
