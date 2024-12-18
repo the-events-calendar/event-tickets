@@ -92,7 +92,7 @@ const mapStateToProps = ( state, ownProps ) => {
 	const fromDate = startDateMoment && startDateMoment.format( dateFormat );
 	const toDate = endDateMoment && endDateMoment.format( dateFormat );
 
-	const selectedBlock = select( 'core/editor' ).getSelectedBlock();
+	const selectedBlock = select( 'core/block-editor' ).getSelectedBlock();
 
 	return {
 		attendeeInfoFieldsLabel,

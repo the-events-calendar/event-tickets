@@ -54,7 +54,7 @@ const { wpREST } = api;
 
 export function* createMissingTicketBlocks( tickets ) {
 	const { insertBlock, updateBlockListSettings } = yield call( wpDispatch, 'core/block-editor' );
-	const { getBlockCount, getBlocks } = yield call( wpSelect, 'core/editor' );
+	const { getBlockCount, getBlocks } = yield call( wpSelect, 'core/block-editor' );
 	const ticketsBlocks = yield call(
 		[ getBlocks(), 'filter' ],
 		( block ) => block.name === 'tribe/tickets',
@@ -332,7 +332,7 @@ export function* setBodyDetails( clientId ) {
 	let body = new FormData();
 	const props = { clientId };
 	const rootClientId = yield call(
-		[ wpSelect( 'core/editor' ), 'getBlockRootClientId' ],
+		[ wpSelect( 'core/block-editor' ), 'getBlockRootClientId' ],
 		clientId,
 	);
 	const ticketProvider = yield select( selectors.getTicketProvider, props );
@@ -350,7 +350,7 @@ export function* setBodyDetails( clientId ) {
 	body.append( 'sku', yield select( selectors.getTicketTempSku, props ) );
 	body.append( 'iac', yield select( selectors.getTicketTempIACSetting, props ) );
 	body.append( 'menu_order', yield call(
-		[ wpSelect( 'core/editor' ), 'getBlockIndex' ],
+		[ wpSelect( 'core/block-editor' ), 'getBlockIndex' ],
 		clientId,
 		rootClientId,
 	) );
@@ -875,8 +875,8 @@ export function* deleteTicket( action ) {
 
 		yield put( actions.setTicketIsSelected( clientId, false ) );
 		yield put( actions.removeTicketBlock( clientId ) );
-		yield call( [ wpDispatch( 'core/editor' ), 'clearSelectedBlock' ] );
-		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ clientId ] );
+		yield call( [ wpDispatch( 'core/block-editor' ), 'clearSelectedBlock' ] );
+		yield call( [ wpDispatch( 'core/block-editor' ), 'removeBlocks' ], [ clientId ] );
 
 		if ( hasBeenCreated ) {
 			const { remove_ticket_nonce = '' } = restNonce(); // eslint-disable-line camelcase
@@ -1396,7 +1396,7 @@ export function* handleTicketStartDate( action ) {
 	const startDateMoment = yield date ? call( momentUtil.toMoment, date ) : undefined;
 	const startDate = yield date ? call( momentUtil.toDatabaseDate, startDateMoment ) : '';
 	yield put( actions.setTicketTempStartDate( clientId, startDate ) );
-	yield put( actions.setTicketTempStartDateInput( clientId, dayPickerInput.state.value ) );
+	yield put( actions.setTicketTempStartDateInput( clientId, dayPickerInput ) );
 	yield put( actions.setTicketTempStartDateMoment( clientId, startDateMoment ) );
 }
 
@@ -1405,7 +1405,7 @@ export function* handleTicketEndDate( action ) {
 	const endDateMoment = yield date ? call( momentUtil.toMoment, date ) : undefined;
 	const endDate = yield date ? call( momentUtil.toDatabaseDate, endDateMoment ) : '';
 	yield put( actions.setTicketTempEndDate( clientId, endDate ) );
-	yield put( actions.setTicketTempEndDateInput( clientId, dayPickerInput.state.value ) );
+	yield put( actions.setTicketTempEndDateInput( clientId, dayPickerInput ) );
 	yield put( actions.setTicketTempEndDateMoment( clientId, endDateMoment ) );
 }
 
@@ -1415,7 +1415,7 @@ export function* handleTicketSaleStartDate( action ) {
 	const startDate = yield date ? call( momentUtil.toDatabaseDate, startDateMoment ) : '';
 
 	yield put( actions.setTicketTempSaleStartDate( clientId, startDate ) );
-	yield put( actions.setTicketTempSaleStartDateInput( clientId, dayPickerInput.state.value ) );
+	yield put( actions.setTicketTempSaleStartDateInput( clientId, dayPickerInput ) );
 	yield put( actions.setTicketTempSaleStartDateMoment( clientId, startDateMoment ) );
 }
 
@@ -1424,7 +1424,7 @@ export function* handleTicketSaleEndDate( action ) {
 	const endDateMoment = yield date ? call( momentUtil.toMoment, date ) : undefined;
 	const endDate = yield date ? call( momentUtil.toDatabaseDate, endDateMoment ) : '';
 	yield put( actions.setTicketTempSaleEndDate( clientId, endDate ) );
-	yield put( actions.setTicketTempSaleEndDateInput( clientId, dayPickerInput.state.value ) );
+	yield put( actions.setTicketTempSaleEndDateInput( clientId, dayPickerInput ) );
 	yield put( actions.setTicketTempSaleEndDateMoment( clientId, endDateMoment ) );
 }
 export function* handleTicketStartTime( action ) {
@@ -1467,7 +1467,7 @@ export function* handleTicketMove() {
 	if ( ticketClientIds.includes( modalClientId ) ) {
 		yield put( actions.setTicketIsSelected( modalClientId, false ) );
 		yield put( actions.removeTicketBlock( modalClientId ) );
-		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ modalClientId ] );
+		yield call( [ wpDispatch( 'core/block-editor' ), 'removeBlocks' ], [ modalClientId ] );
 	}
 }
 

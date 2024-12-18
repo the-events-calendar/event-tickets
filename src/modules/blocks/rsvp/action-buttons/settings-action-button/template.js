@@ -16,7 +16,7 @@ import { __ } from '@wordpress/i18n';
 import { ActionButton } from '@moderntribe/tickets/elements';
 import { Settings as SettingsIcon } from '@moderntribe/tickets/icons';
 
-const SettingsActionButton = ( { isDisabled, onClick } ) => (
+const SettingsActionButton = ( { isDisabled, onClick = noop } ) => (
 	<ActionButton
 		className="tribe-editor__rsvp__action-button tribe-editor__rsvp__action-button--settings"
 		disabled={ isDisabled }
@@ -27,10 +27,6 @@ const SettingsActionButton = ( { isDisabled, onClick } ) => (
 		{ __( 'Settings', 'event-tickets' ) }
 	</ActionButton>
 );
-
-SettingsActionButton.defaultProps = {
-	onClick: noop,
-};
 
 SettingsActionButton.propTypes = {
 	isDisabled: PropTypes.bool,

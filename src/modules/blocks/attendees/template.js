@@ -121,11 +121,13 @@ const Controls = ( {
 					label={ __( 'Display Title', 'event-tickets' ) }
 					checked={ displayTitle }
 					onChange={ onSetDisplayTitleChange }
+					__nextHasNoMarginBottom={true}
 				/>
 				<ToggleControl
 					label={ __( 'Display Subtitle', 'event-tickets' ) }
 					checked={ displaySubtitle }
 					onChange={ onSetDisplaySubtitleChange }
+					__nextHasNoMarginBottom={true}
 				/>
 			</PanelBody>
 		</InspectorControls>

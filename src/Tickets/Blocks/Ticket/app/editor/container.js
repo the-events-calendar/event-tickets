@@ -16,9 +16,6 @@ import {
 	isModalShowing,
 	getModalTicketId,
 } from '@moderntribe/tickets/data/shared/move/selectors';
-import { initHook } from './hooks';
-
-initHook();
 
 const getShowTicket = ( state, ownProps ) => (
 	selectors.getTicketsIsSelected( state ) ||

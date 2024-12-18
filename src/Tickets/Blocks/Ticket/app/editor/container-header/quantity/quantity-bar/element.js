@@ -11,8 +11,13 @@ import { __ } from '@wordpress/i18n';
 import './style.pcss';
 import Bar from './bar';
 
-// todo: add tooltip into the capacity bar
-const QuantityBar = ( { sharedSold, sold, capacity, total, isDisabled } ) => {
+const QuantityBar = ( {
+	sharedSold = 0,
+	sold = 0,
+	capacity = 0,
+	total = 0,
+	isDisabled = false
+} ) => {
 	return (
 		<div className="tribe-editor__quantity-bar">
 			{ ! isDisabled && (
@@ -50,14 +55,6 @@ QuantityBar.propTypes = {
 	sold: PropTypes.number,
 	total: PropTypes.number,
 	isDisabled: PropTypes.bool,
-};
-
-QuantityBar.defaultProps = {
-	sharedSold: 0,
-	capacity: 0,
-	sold: 0,
-	total: 0,
-	isDisabled: false,
 };
 
 export default QuantityBar;
