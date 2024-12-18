@@ -14,6 +14,16 @@
 			width: 16px;
 		}
 	}
+
+	.tec-tickets-seating__settings_layout--select-container {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+
+		a.tec-tickets-seating__settings_layout--remove {
+			cursor: pointer;
+		}
+	}
 }
 
 .block-editor-block-list__block.wp-block.wp-block-tribe-tickets {
@@ -67,5 +77,11 @@
 	.warning-text {
 		font-size: var(--tec-font-size-2);
 		line-height: var(--tec-line-height-0);
+	}
+}
+
+.tribe-editor__select__input input{
+	&:focus {
+		box-shadow: none;
 	}
 }

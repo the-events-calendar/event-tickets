@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Utils;
 
 use TEC\Tickets\Commerce\Settings;
+use Tribe__Cache;
 
 /**
  * Class Currency Utils
@@ -368,6 +369,12 @@ class Currency {
 	 *
 	 */
 	public static function get_default_currency_map() {
+		static $currency_map = null;
+
+		// Generate the default currency map only once.
+		if ( null === $currency_map ) {
+			$currency_map = self::get_raw_currency_map();
+		}
 
 		/**
 		 * Filter the default currency map before returning. This filter can be used to add or remove or modify how
@@ -379,7 +386,31 @@ class Currency {
 		 *
 		 * @return array
 		 */
-		$default_map = apply_filters( 'tec_tickets_commerce_default_currency_map', [
+		$default_map = apply_filters( 'tec_tickets_commerce_default_currency_map', $currency_map );
+
+		/** @var Tribe__Cache $cache */
+		$cache     = tribe( 'cache' );
+		$cache_key = 'tec_tc_stripe_default_currency_map';
+		$map       = $cache[ $cache_key ] ?? false;
+
+		// If not cached or the count is different, store the map in alpha order.
+		if ( ! $map || ! is_array( $map ) || count( $map ) != count( $default_map ) ) {
+			ksort( $default_map );
+			$map                 = $default_map;
+			$cache[ $cache_key ] = $map;
+		}
+
+		return $map;
+	}
+
+	/**
+	 * Returns the raw currency map.
+	 *
+	 * @since 5.18.0
+	 * @return array
+	 */
+	protected static function get_raw_currency_map(): array {
+		return [
 			'AUD' => [
 				'name'                  => __( 'Australian Dollar (AUD)', 'event-tickets' ),
 				'symbol'                => '&#x41;&#x24;',
@@ -485,22 +516,6 @@ class Currency {
 				'decimal_precision'     => 0,
 				'stripe_minimum_charge' => 50,
 			],
-			'MYR' => [
-				'name'                  => __( 'Malaysian Ringgit (MYR)', 'event-tickets' ),
-				'symbol'                => '&#82;&#77;',
-				'decimal_point'         => '.',
-				'thousands_sep'         => ',',
-				'decimal_precision'     => 2,
-				'stripe_minimum_charge' => 2.00,
-			],
-			'MXN' => [
-				'name'                  => __( 'Mexican Peso (MXN)', 'event-tickets' ),
-				'symbol'                => '&#x24;',
-				'decimal_point'         => '.',
-				'thousands_sep'         => ',',
-				'decimal_precision'     => 2,
-				'stripe_minimum_charge' => 10.00,
-			],
 			'NOK' => [
 				'name'                  => __( 'Norwegian Krone (NOK)', 'event-tickets' ),
 				'symbol'                => '',
@@ -516,14 +531,6 @@ class Currency {
 				'thousands_sep'         => ',',
 				'decimal_precision'     => 2,
 				'stripe_minimum_charge' => 0.50,
-			],
-			'PHP' => [
-				'name'                  => __( 'Philippine Peso (PHP)', 'event-tickets' ),
-				'symbol'                => '&#x20b1;',
-				'decimal_point'         => '.',
-				'thousands_sep'         => ',',
-				'decimal_precision'     => 2,
-				'stripe_minimum_charge' => null,
 			],
 			'PLN' => [
 				'name'                  => __( 'Polish Zloty (PLN)', 'event-tickets' ),
@@ -1461,21 +1468,7 @@ class Currency {
 				'decimal_precision'     => 2,
 				'stripe_minimum_charge' => 19,
 			]
-		] );
-
-		/** @var \Tribe__Cache $cache */
-		$cache = tribe( 'cache' );
-		$cache_key = 'tec_tc_stripe_default_currency_map';
-		$map = isset( $cache[ $cache_key ] ) ? $cache[ $cache_key ] : false;
-
-		// If not cached or the count is different, store the map in alpha order.
-		if ( ! $map || ! is_array( $map ) || count( $map ) != count( $default_map ) ) {
-			ksort( $default_map );
-			$map = $default_map;
-			$cache[ $cache_key ] = $map;
-		}
-
-		return $map;
+		];
 	}
 
 	/**

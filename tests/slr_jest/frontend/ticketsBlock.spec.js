@@ -2,6 +2,7 @@ import {
 	addModalEventListeners,
 	bootstrapIframe,
 	cancelReservations,
+	setExpireDate,
 } from '@tec/tickets/seating/frontend/ticketsBlock';
 import {
 	INBOUND_SEATS_SELECTED,
@@ -38,16 +39,43 @@ function ticketSelectionModalExtractor(html) {
 }
 
 describe('Seat Selection Modal', () => {
+	let originalLocation;
+
 	beforeEach(() => {
 		fetch.resetMocks();
 		jest.resetModules();
 		jest.resetAllMocks();
+
+		originalLocation = window.location;
+		delete window.location;
+		window.location = { reload: jest.fn() };
 	});
 
 	afterEach(() => {
 		fetch.resetMocks();
 		jest.resetModules();
 		jest.resetAllMocks();
+		window.location = originalLocation;
+	});
+
+	it('should reload the page on failure to establish readiness', async () => {
+		const dom = getTestDocument(
+			'seats-selection',
+			ticketSelectionModalExtractor
+		);
+		setToken('test-ephemeral-token');
+		fetch.mockIf(
+			/^https:\/\/wordpress\.test\/wp-admin\/admin-ajax\.php?.*$/,
+			JSON.stringify({ success: true })
+		);
+		iframeModule.initServiceIframe = jest.fn(() => {
+			throw new Error('readiness issue');
+		});
+
+		const bootstrapped = await bootstrapIframe(dom);
+
+		expect(bootstrapped).toBe(false);
+		expect(window.location.reload).toHaveBeenCalled();
 	});
 
 	describe('reservation cancellation', () => {
@@ -809,6 +837,25 @@ describe('Seat Selection Modal', () => {
 			);
 
 			expect(sidebar.style.position).not.toEqual('absolute');
+		});
+	});
+
+	describe('iframe hydration', ()=>{
+		it('should append the correct expireDate to thhe iframe src',()=>{
+			const dom = getTestDocument(
+				'seats-selection',
+				ticketSelectionModalExtractor
+			);
+			const mockDialogElement = { node: dom }
+			const iframe = dom.querySelector(
+				'.tec-tickets-seating__iframe-container iframe.tec-tickets-seating__iframe'
+			);
+			const mockNow = 1692748800000; // August 23, 2023 00:00:00 UTC
+			jest.spyOn(Date, "now").mockImplementation(() => mockNow);
+
+			setExpireDate(mockDialogElement)
+
+			expect(iframe.src).toContain('&expireDate=' + (mockNow + 893000))
 		});
 	});
 });

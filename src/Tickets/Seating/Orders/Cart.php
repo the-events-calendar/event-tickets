@@ -116,8 +116,7 @@ class Cart {
 	 */
 	private function get_session_stack( string $token, int $object_id, int $ticket_id ): Generator {
 		if ( ! isset( $this->session_stacks[ $object_id ][ $ticket_id ] ) ) {
-			$reservations = $this->sessions->get_reservations_for_token( $token );
-			foreach ( $reservations as $reservation_ticket_id => $reservation_data ) {
+			foreach ( $this->get_token_reservations( $token ) as $reservation_ticket_id => $reservation_data ) {
 				$generator = static fn(): Generator => yield from $reservation_data;
 				$this->session_stacks[ $object_id ][ $reservation_ticket_id ] = $generator();
 			}
@@ -214,5 +213,68 @@ class Cart {
 				break;
 			}
 		}
+	}
+
+	/**
+	 * Determines if the cart has seating tickets.
+	 *
+	 * @since 5.17.0
+	 *
+	 * @return bool
+	 */
+	public function cart_has_seating_tickets(): bool {
+		$cart = tribe( TicketsCommerce_Cart::class );
+
+		foreach ( $cart->get_items_in_cart() as $ticket_id => $item ) {
+			if ( get_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Fetches the token reservations either from the cache or from the database.
+	 *
+	 * @since 5.17.0
+	 *
+	 * @param string $token The token to fetch the reservations for.
+	 *
+	 * @return array<int,array{
+	 *     reservation_id: string,
+	 *     seat_type_id: string,
+	 *     seat_label: string,
+	 * }> The list of reservations for the given token.
+	 */
+	private function get_token_reservations( string $token ): array {
+		$cache        = tribe_cache();
+		$memo_key     = 'tec_tc_session_token_reservations';
+		$reservations = $cache[ $memo_key ] ?? null;
+
+		if ( ! is_array( $reservations ) ) {
+			$reservations       = $this->sessions->get_reservations_for_token( $token );
+			$cache[ $memo_key ] = $reservations;
+		}
+
+		return $reservations;
+	}
+
+	/**
+	 * Warms up the session caches that might be needed later.
+	 *
+	 * @since 5.17.0
+	 *
+	 * @return void The method does not return a valued, the cache is warmed up.
+	 */
+	public function warmup_caches(): void {
+		[ $token ] = $this->get_session_token_object_id();
+
+		if ( empty( $token ) ) {
+			return;
+		}
+
+		/** @noinspection UnusedFunctionResultInspection */
+		$this->get_token_reservations( $token );
 	}
 }

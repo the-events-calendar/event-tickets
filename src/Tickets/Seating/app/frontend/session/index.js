@@ -8,9 +8,11 @@ import { onReady } from '@tec/tickets/seating/utils';
 const {
 	ajaxUrl,
 	ajaxNonce,
+	checkoutGraceTime,
 	ACTION_START,
 	ACTION_SYNC,
 	ACTION_INTERRUPT_GET_DATA,
+	ACTION_PAUSE_TO_CHECKOUT,
 } = localizedData;
 
 /**
@@ -575,7 +577,11 @@ async function requestToBackend(action) {
 		return false;
 	}
 
-	if ([ACTION_START, ACTION_SYNC].indexOf(action) === -1) {
+	if (
+		[ACTION_START, ACTION_SYNC, ACTION_PAUSE_TO_CHECKOUT].indexOf(
+			action
+		) === -1
+	) {
 		return false;
 	}
 
@@ -697,10 +703,16 @@ export function reset() {
  * Postpones the healthcheck that will sync with the backend resetting its timer.
  *
  * @since 5.16.0
+ * @since 5.17.0 Added the `resumeInSeconds` parameter.
+ *
+ * @param {number} resumeInSeconds The amount of seconds after which the timer should resume. `0` to not resume.
  *
  * @return {void}
  */
-export function pause() {
+export function pause(resumeInSeconds) {
+	// By default, do not resume.
+	resumeInSeconds = resumeInSeconds || 0;
+
 	setIsInterruptable(false);
 
 	if (healthCheckTimeoutId) {
@@ -715,8 +727,31 @@ export function pause() {
 		countdownTimeoutId = null;
 	}
 
-	// Postpone the healthcheck for 30 seconds.
-	resumeTimeoutId = setTimeout(resume, 30000);
+	if (!resumeInSeconds) {
+		return;
+	}
+
+	// Postpone the healthcheck for 60 seconds.
+	resumeTimeoutId = setTimeout(resume, resumeInSeconds * 1000);
+}
+
+/**
+ * Postpones the healthcheck that will sync with the backend resetting its timer for the purpose of
+ * giving the user time to checkout.
+ *
+ * @since 5.17.0
+ *
+ * @return {Promise<void>} A promise that will resolve when the backend received the signal and the timer paused.
+ */
+export async function pauseToCheckout() {
+	const secondsLeft = await requestToBackend(ACTION_PAUSE_TO_CHECKOUT);
+
+	if (secondsLeft <= 0) {
+		interrupt();
+		return;
+	}
+
+	pause(checkoutGraceTime);
 }
 
 /**
@@ -801,8 +836,8 @@ export function watchCheckoutControls() {
 
 	checkoutControlElements.forEach((checkoutControlElement) => {
 		watchedCheckoutControls.push(checkoutControlElement);
-		checkoutControlElement.addEventListener('click', pause);
-		checkoutControlElement.addEventListener('submit', pause);
+		checkoutControlElement.addEventListener('click', pauseToCheckout);
+		checkoutControlElement.addEventListener('submit', pauseToCheckout);
 	});
 }
 
@@ -815,8 +850,8 @@ export function watchCheckoutControls() {
  */
 function stopWatchingCheckoutControls() {
 	watchedCheckoutControls.forEach((checkoutControlElement) => {
-		checkoutControlElement.removeEventListener('click', pause);
-		checkoutControlElement.removeEventListener('submit', pause);
+		checkoutControlElement.removeEventListener('click', pauseToCheckout);
+		checkoutControlElement.removeEventListener('submit', pauseToCheckout);
 	});
 
 	watchedCheckoutControls = [];

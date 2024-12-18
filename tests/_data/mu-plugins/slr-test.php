@@ -175,7 +175,7 @@ add_filter( 'tec_tickets_seating_service_base_url', 'slr_test_filter_service_bas
  * This URL is the one used from within the plugin to make requests to the service on the Browser/client side.
  * You should be able to access the same URL using a browser on your machine.
  *
- * @since TBD
+ * @since 5.17.0
  *
  * @return string The base URL of the service for frontend requests.
  */

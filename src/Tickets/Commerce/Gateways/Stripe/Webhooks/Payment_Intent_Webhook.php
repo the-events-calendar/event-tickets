@@ -6,6 +6,8 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Webhook_Event_Interface;
 use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
 use TEC\Tickets\Commerce\Gateways\Stripe\Status;
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Status\Action_Required;
+use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use Tribe__Utils__Array as Arr;
 
@@ -117,8 +119,9 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 	/**
 	 * Checks if the payment intent contained in the event received has already been processed.
 	 *
-	 * @since      5.3.0
-	 * @since      5.16.0 Remove deprecation notice.
+	 * @since 5.3.0
+	 * @since 5.16.0 Remove deprecation notice.
+	 * @since 5.18.0    Only check matching payment intent ids if they are not pending or action required.
 	 *
 	 * @param array   $payment_intent_received The payment intent data received
 	 * @param array[] $payment_intents_stored  The payment intent data stored from each update, keyed by status.
@@ -132,6 +135,11 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 		}
 
 		foreach ( $payment_intents_stored as $status => $intents ) {
+			// Skip if the status is pending or action required.
+			if ( in_array( $status, [ Pending::SLUG, Action_Required::SLUG ], true ) ) {
+				continue;
+			}
+
 			foreach( $intents as $intent ) {
 				// This payment intent has already been processed and updated.
 				if ( $payment_intent_received['id'] === $intent['id'] ) {

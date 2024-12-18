@@ -129,7 +129,7 @@ interface Cart_Interface {
 	public function remove_item( $item_id, $quantity = null );
 
 	/**
-	 * Removes an item from the cart.
+	 * Process the items in the cart.
 	 *
 	 * @since 5.1.10
 	 *

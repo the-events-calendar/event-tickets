@@ -418,6 +418,69 @@ class Layouts {
 	}
 
 	/**
+	 * Returns the URL to add a new layout.
+	 *
+	 * @since 5.17.0
+	 *
+	 * @param string $layout_id The ID of the map to add the layout to.
+	 *
+	 * @return string The URL for a layout duplication request.
+	 */
+	public function get_duplicate_url( string $layout_id ): string {
+		return add_query_arg(
+			[
+				'layout' => $layout_id,
+			],
+			$this->service_fetch_url . '/duplicate'
+		);
+	}
+
+	/**
+	 * Duplicates a layout in the service.
+	 *
+	 * @since 5.17.0
+	 *
+	 * @param string $layout_id The ID of the layout to duplicate.
+	 *
+	 * @return string|bool Layout ID on success, false on failure.
+	 */
+	public function duplicate_layout( string $layout_id ) {
+		$url = $this->get_duplicate_url( $layout_id );
+
+		$args = [
+			'method'  => 'POST',
+			'headers' => [
+				'Authorization' => 'Bearer ' . $this->get_oauth_token(),
+				'Content-Type'  => 'application/json',
+			],
+		];
+
+		$response = wp_remote_request( $url, $args );
+		$code     = wp_remote_retrieve_response_code( $response );
+
+		if ( is_wp_error( $response ) || 200 !== $code ) {
+			$this->log_error(
+				'Failed to duplicate layout in the service.',
+				[
+					'source'   => __METHOD__,
+					'code'     => $code,
+					'url'      => $url,
+					'response' => $response,
+				]
+			);
+			return false;
+		}
+
+		$body      = json_decode( wp_remote_retrieve_body( $response ), true );
+		$layout_id = Arr::get( $body, [ 'data', 'items', 0, 'id' ] );
+
+		self::invalidate_cache();
+		Maps::invalidate_cache();
+
+		return $layout_id;
+	}
+
+	/**
 	 * Updates the capacity of all posts for the given layout IDs.
 	 *
 	 * @since 5.16.0

@@ -538,6 +538,16 @@ export function* fetchTicket( action ) {
 				put( actions.setTicketHasAttendeeInfoFields( clientId, supports_attendee_information ) ),
 				put( actions.setTicketHasBeenCreated( clientId, true ) ),
 			] );
+
+			/**
+			 * Fires after the ticket has been fetched.
+			 *
+			 * @since 5.18.0
+			 * @param {string} clientId The ticket's client ID.
+			 * @param {Object} ticket The ticket object.
+			 * @param {Object} details The ticket details.
+			 */
+			yield doAction( 'tec.tickets.blocks.fetchTicket', clientId, ticket, details );
 		}
 	} catch ( e ) {
 		console.error( e );

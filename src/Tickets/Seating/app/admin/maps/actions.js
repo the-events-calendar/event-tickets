@@ -20,11 +20,20 @@ export function getString(key) {
 export function registerDeleteAction(dom) {
 	// Add click listener to all links with class 'delete'.
 	dom.querySelectorAll('.delete-map').forEach(function (link) {
-		link.addEventListener('click', async function (event) {
-			event.preventDefault();
-			await handleDelete(event.target);
-		});
+		link.addEventListener('click', deleteListener);
 	});
+}
+
+/**
+ * Bind the delete action.
+ *
+ * @since 5.17.0
+ *
+ * @param {Event} event The click event.
+ */
+async function deleteListener(event) {
+	event.preventDefault();
+	await handleDelete(event.target);
 }
 
 /**
@@ -74,6 +83,6 @@ async function deleteMap(mapId) {
 	return response.status === 200;
 }
 
-export { handleDelete, deleteMap };
+export { handleDelete, deleteListener };
 
 onReady(() => registerDeleteAction(document));

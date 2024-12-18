@@ -20,6 +20,7 @@ global.tec.tickets.seating = {
 		ACTION_FETCH_ATTENDEES: 'tec_tickets_seating_fetch_attendees',
 		ACTION_ADD_NEW_LAYOUT: 'tec_tickets_seating_service_add_layout',
 		ACTION_SEAT_TYPE_DELETED: 'tec_tickets_seating_seat_type_deleted',
+		ACTION_DUPLICATE_LAYOUT: 'tec_tickets_seating_service_duplicate_layout',
 		ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID:
 			'tec_tickets_seating_get_seat_types_by_layout_id',
 	},
@@ -88,15 +89,19 @@ global.tec.tickets.seating = {
 				'tec_tickets_seating_reservation_created',
 			ACTION_RESERVATION_UPDATED:
 				'tec_tickets_seating_reservation_updated',
+			sessionTimeout: 893,
 		},
 		session: {
 			ajaxUrl: 'https://wordpress.test/wp-admin/admin-ajax.php',
 			ajaxNonce: '1234567890',
+			checkoutGraceTime: 60,
 			ACTION_START: 'tec_tickets_seating_session_start',
 			ACTION_SYNC: 'tec_tickets_seating_session_sync',
 			ACTION_INTERRUPT_GET_DATA:
 				'tec_tickets_seating_session_interrupt_get_data',
 			ACTION_INTERRUPT: 'tec_tickets_seating_session_interrupt',
+			ACTION_PAUSE_TO_CHECKOUT:
+				'tec_tickets_seating_timer_pause_to_checkout',
 		},
 	},
 	currency: {

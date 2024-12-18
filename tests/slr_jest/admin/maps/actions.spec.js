@@ -1,6 +1,8 @@
 import {
 	getString,
-	registerDeleteAction
+	registerDeleteAction,
+	deleteListener,
+	handleDelete,
 } from '@tec/tickets/seating/admin/maps/actions';
 
 require('jest-fetch-mock').enableMocks();
@@ -30,6 +32,22 @@ describe('map actions', () => {
 	});
 
 	describe('delete action', () => {
+		it('should register delete map action', async () => {
+			const dom = getTestDocument( 'maps-list' );
+			const deleteButtons = dom.querySelectorAll('.delete-map');
+
+			// Mock the window.addEventListener function.
+			deleteButtons.forEach((button) => {
+				button.addEventListener = jest.fn();
+			});
+
+			registerDeleteAction(dom);
+
+			deleteButtons.forEach((button) => {
+				expect(button.addEventListener).toHaveBeenCalledWith('click', deleteListener);
+			});
+		});
+
 		it('should handle delete request correctly', async () => {
 			const dom = getTestDocument( 'maps-list' );
 			const deleteButtons = dom.querySelectorAll('.delete-map');
@@ -39,10 +57,8 @@ describe('map actions', () => {
 				JSON.stringify({ success: true })
 			);
 
-			registerDeleteAction(dom);
-
-			// Click the first delete button, the double await is needed to make sure we wait for the fetch to complete.
-			await await deleteButtons[0].click();
+			// Click the first delete button.
+			await handleDelete(deleteButtons[0]);
 
 			expect(confirm).toHaveBeenCalledWith(
 				getString('delete-confirmation')
@@ -58,7 +74,7 @@ describe('map actions', () => {
 			fetch.resetMocks();
 
 			// Click the second delete button.
-			await await deleteButtons[1].click();
+			await handleDelete(deleteButtons[1]);
 
 			expect(confirm).toHaveBeenCalledWith(
 				getString('delete-confirmation')
@@ -74,7 +90,7 @@ describe('map actions', () => {
 			fetch.resetMocks();
 
 			// Click the third delete button.
-			await await deleteButtons[2].click();
+			await handleDelete(deleteButtons[2]);
 
 			expect(confirm).toHaveBeenCalledWith(
 				getString('delete-confirmation')
@@ -98,10 +114,8 @@ describe('map actions', () => {
 				JSON.stringify({ success: true })
 			);
 
-			registerDeleteAction(dom);
-
 			// Click the first delete button.
-			await await deleteButtons[0].click();
+			await handleDelete(deleteButtons[0]);
 
 			expect(confirm).toHaveBeenCalledWith(
 				getString('delete-confirmation')
@@ -120,10 +134,8 @@ describe('map actions', () => {
 			);
 			global.alert = jest.fn();
 
-			registerDeleteAction(dom);
-
 			// Click the first delete button, the double await is needed to make sure we wait for the fetch to complete.
-			await await deleteButtons[0].click();
+			await handleDelete(deleteButtons[0]);
 
 			expect(confirm).toHaveBeenCalledWith(
 				getString('delete-confirmation')

@@ -6,6 +6,7 @@
     "ACTION_DELETE_MAP": "tec_tickets_seating_service_delete_map",
     "ACTION_DELETE_LAYOUT": "tec_tickets_seating_service_delete_layout",
     "ACTION_ADD_NEW_LAYOUT": "tec_tickets_seating_service_add_layout",
+    "ACTION_DUPLICATE_LAYOUT": "tec_tickets_seating_service_duplicate_layout",
     "ACTION_POST_RESERVATIONS": "tec_tickets_seating_post_reservations",
     "ACTION_CLEAR_RESERVATIONS": "tec_tickets_seating_clear_reservations",
     "ACTION_DELETE_RESERVATIONS": "tec_tickets_seating_delete_reservations",
@@ -16,5 +17,6 @@
     "ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES": "tec_tickets_seating_reservations_updated_from_seat_types",
     "ACTION_RESERVATION_CREATED": "tec_tickets_seating_reservation_created",
     "ACTION_RESERVATION_UPDATED": "tec_tickets_seating_reservation_updated",
-    "ACTION_EVENT_LAYOUT_UPDATED": "tec_tickets_seating_event_layout_updated"
+    "ACTION_EVENT_LAYOUT_UPDATED": "tec_tickets_seating_event_layout_updated",
+    "ACTION_REMOVE_EVENT_LAYOUT": "tec_tickets_seating_event_layout_removal"
 }

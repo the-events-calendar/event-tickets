@@ -25,6 +25,9 @@ use Tribe__Date_Utils as Dates;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 use Tribe__Tickets__Tickets as Tickets;
+use TEC\Common\StellarWP\Assets\Assets;
+use TEC\Tickets\Commerce\Checkout;
+use TEC\Tickets\Seating\Orders\Cart;
 
 class Frontend_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -38,6 +41,98 @@ class Frontend_Test extends Controller_Test_Case {
 	use Reservations_Maker;
 
 	protected string $controller_class = Frontend::class;
+
+	public function should_enqueue_assets_data_provider(): Generator {
+		yield 'empty ticketable post types' => [
+			function (): bool {
+				tribe_update_option( 'ticket-enabled-post-types', [] );
+
+				return false;
+			}
+		];
+
+		yield 'not singular' => [
+			function () {
+				tribe_update_option( 'ticket-enabled-post-types', ['post', 'page'] );
+				$this->set_fn_return( 'is_singular', false );
+
+				return false;
+			},
+		];
+
+		yield 'in checkout but no seating tickets' => [
+			function () {
+				tribe_update_option( 'ticket-enabled-post-types', ['post', 'page'] );
+				$this->set_fn_return( 'is_singular', false );
+				$this->set_class_fn_return( Checkout::class, 'is_current_page', true );
+
+				return false;
+			},
+		];
+
+		yield 'in checkout with seating tickets' => [
+			function () {
+				tribe_update_option( 'ticket-enabled-post-types', ['post', 'page'] );
+				$this->set_fn_return( 'is_singular', false );
+				$this->set_class_fn_return( Checkout::class, 'is_current_page', true );
+				$this->set_class_fn_return( Cart::class, 'cart_has_seating_tickets', true );
+
+				return true;
+			},
+		];
+
+		yield 'not ticket-able' => [
+			function () {
+				tribe_update_option( 'ticket-enabled-post-types', [ 'post'] );
+				$page_id = static::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				$this->set_fn_return( 'is_singular', true );
+
+				return false;
+			},
+		];
+
+		yield 'ticket-able, not seating' => [
+			function () {
+				tribe_update_option( 'ticket-enabled-post-types', [ 'page', 'post' ] );
+				$post_id = static::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				$this->set_fn_return( 'is_singular', true );
+
+				return false;
+			},
+		];
+
+		yield 'ticket-able, seating' => [
+			function () {
+				tribe_update_option( 'ticket-enabled-post-types', [ 'page', 'post' ] );
+				$post_id = static::factory()->post->create();
+				update_post_meta( $post_id, Meta::META_KEY_ENABLED, '1' );
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+				$GLOBALS['post'] = $post_id;
+				$this->set_fn_return( 'is_singular', true );
+
+				return true;
+			},
+		];
+	}
+
+	/**
+	 * @dataProvider should_enqueue_assets_data_provider
+	 */
+	public function test_should_enqueue_assets( Closure $fixture ): void {
+		$should_enqueue_assets = $fixture();
+
+		$controller = $this->make_controller();
+
+		$this->assertEquals( $should_enqueue_assets, $controller->should_enqueue_assets() );
+	}
 
 	/**
 	 * it should_display_ticket_block_when_seating_is_enabled
@@ -468,7 +563,7 @@ class Frontend_Test extends Controller_Test_Case {
 		yield 'service down' => [
 			function () {
 				add_filter( 'tec_tickets_seating_service_status', function ( $_status, $backend_base_url ) {
-					return new Service_Status( $backend_base_url, Service_Status::SERVICE_DOWN );
+					return new Service_Status( $backend_base_url, Service_Status::SERVICE_UNREACHABLE );
 				}, 1000, 2 );
 				$post_id = static::factory()->post->create(
 					[
@@ -589,6 +684,28 @@ class Frontend_Test extends Controller_Test_Case {
 				return [ $post_id, $ticket ];
 			}
 		];
+
+		yield 'different timeout settings' => [
+			function () {
+				// Set the timeout to 89 seconds.
+				add_filter( 'tec_tickets_seating_selection_timeout', fn() => 89 );
+				$post_id = static::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+				/**
+				 * @var Tickets_Handler $tickets_handler
+				 */
+				$tickets_handler   = tribe( 'tickets.handler' );
+				$capacity_meta_key = $tickets_handler->key_capacity;
+				update_post_meta( $post_id, $capacity_meta_key, 100 );
+				$ticket = $this->create_tc_ticket( $post_id, 20 );
+
+				return [ $post_id, $ticket ];
+			}
+		];
 	}
 
 	/**
@@ -598,16 +715,18 @@ class Frontend_Test extends Controller_Test_Case {
 	 * @dataProvider seating_enabled_fixtures
 	 */
 	public function should_replace_ticket_block_when_seating_is_enabled( Closure $fixture ) {
+		$ids     = $fixture();
+		$post_id = array_shift( $ids );
 		$this->test_services->singleton(
 			Service::class,
-			function () {
+			function () use ( $post_id ) {
 				return $this->make(
 					Service::class,
 					[
 						'frontend_base_url'   => 'https://service.test.local',
 						'backend_base_url'   => 'https://service.test.local',
-						'get_ephemeral_token' => function ( $expiration, $scope ) {
-							Assert::assertEquals( HOUR_IN_SECONDS, $expiration );
+						'get_ephemeral_token' => function ( $expiration, $scope ) use ( $post_id ) {
+							Assert::assertEquals( tribe(Timer::class)->get_timeout( $post_id ) * 4, $expiration );
 							Assert::assertEquals( 'visitor', $scope );
 
 							return 'test-ephemeral-token';
@@ -617,8 +736,6 @@ class Frontend_Test extends Controller_Test_Case {
 				);
 			}
 		);
-		$ids     = $fixture();
-		$post_id = array_shift( $ids );
 
 		$this->make_controller()->register();
 
@@ -640,6 +757,31 @@ class Frontend_Test extends Controller_Test_Case {
 		);
 
 		$this->assertMatchesHtmlSnapshot( $html );
+	}
+
+	public function asset_data_provider() {
+		$assets = [
+			'tec-tickets-seating-frontend'       => '/build/Seating/frontend/ticketsBlock.js',
+			'tec-tickets-seating-frontend-style' => '/build/Seating/frontend/ticketsBlock.css',
+		];
+
+		foreach ( $assets as $slug => $path ) {
+			yield $slug => [ $slug, $path ];
+		}
+	}
+
+	/**
+	 * @test
+	 * @dataProvider asset_data_provider
+	 */
+	public function it_should_locate_assets_where_expected( $slug, $path ) {
+		$this->make_controller()->register();
+
+		$this->assertTrue( Assets::init()->exists( $slug ) );
+
+		// We use false, because in CI mode the assets are not build so min aren't available. Its enough to check that the non-min is as expected.
+		$asset_url = Assets::init()->get( $slug )->get_url( false );
+		$this->assertEquals( plugins_url( $path, EVENT_TICKETS_MAIN_PLUGIN_FILE ), $asset_url );
 	}
 
 	/**
