@@ -13,9 +13,11 @@ use TEC\Tickets\Commerce\Status\Denied;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Success;
+use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Utils__Array as Arr;
 
 use WP_Error;
+use WP_Post;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
@@ -109,6 +111,10 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
 
+		if ( ! $order ) {
+			return new WP_Error( 'tec-tc-gateway-paypal-failed-creating-order', $messages['failed-creating-order'], $order );
+		}
+
 		$unit = [
 			'reference_id' => $order->ID,
 			'value'        => (string) $order->total_value->get_decimal(),
@@ -119,16 +125,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		];
 
 		foreach ( $order->items as $item ) {
-			$ticket          = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
-			$post_title      = get_the_title( $item['event_id'] );
-			$item_name       = sprintf( '%s - %s', $ticket->name, $post_title );
-			$unit['items'][] = [
-				'name'        => $this->format_order_item_name( $item_name ),
-				'unit_amount' => [ 'value' => (string) $item['price'], 'currency_code' => $order->currency ],
-				'quantity'    => $item['quantity'],
-				'item_total'  => [ 'value' => (string) $item['sub_total'], 'currency_code' => $order->currency ],
-				'sku'         => $ticket->sku,
-			];
+			$unit['items'][] = $this->get_unit_data( $item, $order );
 		}
 
 		$paypal_order = tribe( Client::class )->create_order( $unit );
@@ -156,6 +153,107 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$response['id']      = $paypal_order['id'];
 
 		return new WP_REST_Response( $response );
+	}
+
+	/**
+	 * Retrieves the unit data for an item in the cart.
+	 *
+	 * By default, the item type will be considered a 'ticket' if not specified.
+	 * This method handles different item types with a switch case, providing custom logic
+	 * for 'ticket' and a default behavior for other item types.
+	 * An overarching filter allows for customization of the final returned data.
+	 *
+	 * @since 5.18.0
+	 *
+	 * @param array   $item The cart item for which to retrieve unit data.
+	 * @param WP_Post $order The order from the items in the cart.
+	 *
+	 * @return array The structured data for the item, including 'name', 'unit_amount', 'quantity', 'item_total', and
+	 *     'sku'.
+	 */
+	public function get_unit_data( array $item, WP_Post $order ) {
+		if ( ! $order->ID ) {
+			return [];
+		}
+
+		$type = $item['type'] ?? 'ticket';
+
+		switch ( $type ) {
+			case 'ticket':
+				$unit_data = $this->get_unit_data_for_ticket( $item, $order );
+				break;
+
+			default:
+				/**
+				 * Filters the unit data for custom item types in the cart.
+				 *
+				 * This filter allows external developers to generate and customize the unit data
+				 * for items in the cart based on the item type (other than 'ticket').
+				 *
+				 * The filter name is dynamic and uses the item type (`$type`) to provide flexibility for
+				 * different item categories.
+				 *
+				 * Example: If `$type` is 'fee', the filter will be `tec_commerce_get_unit_data_fee`.
+				 *
+				 * @since 5.18.0
+				 *
+				 * @param array   $item   The cart item for which the unit data is being generated.
+				 * @param WP_Post $order  The current order object.
+				 *
+				 * @return array The unit data for the item.
+				 */
+				$unit_data = apply_filters( "tec_tickets_commerce_paypal_order_get_unit_data_{$type}", $item, $order );
+				break;
+		}
+
+		/**
+		 * Filters the unit data for an item in REST context.
+		 *
+		 * @since 5.18.0
+		 *
+		 * @param array   $unit_data The structured data for the item.
+		 * @param array   $item      The order item for which the unit data is being generated.
+		 * @param WP_Post $order     The current order object.
+		 */
+		return apply_filters( 'tec_tickets_commerce_paypal_order_get_unit_data', $unit_data, $item, $order );
+	}
+
+	/**
+	 * Retrieves the default unit data for a ticket in the cart.
+	 *
+	 * This method is used when the item type is 'ticket', and it structures the data
+	 * for a ticket item, including details such as name, price, quantity, and SKU.
+	 *
+	 * @since 5.18.0
+	 *
+	 * @param array   $item The cart item (representing the ticket).
+	 * @param WP_Post $order The order from the items in the cart.
+	 *
+	 * @return array<string,mixed> The structured data for the ticket item.
+	 */
+	protected function get_unit_data_for_ticket( array $item, WP_Post $order ) {
+		if ( ! $order->ID ) {
+			return [];
+		}
+
+		// Default ticket logic.
+		$ticket     = Tickets::load_ticket_object( $item['ticket_id'] );
+		$post_title = get_the_title( $item['event_id'] );
+		$item_name  = "{$ticket->name} - {$post_title}";
+
+		return [
+			'name'        => $this->format_order_item_name( $item_name ),
+			'unit_amount' => [
+				'value'         => (string) $item['price'],
+				'currency_code' => $order->currency,
+			],
+			'quantity'    => (string) $item['quantity'],
+			'item_total'  => [
+				'value'         => (string) $item['sub_total'],
+				'currency_code' => $order->currency,
+			],
+			'sku'         => $ticket->sku,
+		];
 	}
 
 	/**
@@ -223,7 +321,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @since 5.4.0.2
 	 *
 	 * @param string   $order_id The PayPal order ID.
-	 * @param \WP_Post $order    The TC Order object.
+	 * @param WP_Post $order    The TC Order object.
 	 *
 	 * @return bool|WP_Error|WP_REST_Response
 	 */

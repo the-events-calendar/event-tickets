@@ -10,7 +10,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	public function hook() {
 
 		// Spoof the context.
-		add_filter( 'the_posts', [ $this, 'setup_context' ], -10 );
+		add_filter( 'the_posts', [ $this, 'setup_context' ], -10, 2 );
 
 		// Set and remove the required body classes.
 		add_action( 'wp', [ $this, 'set_body_classes' ] );
@@ -19,7 +19,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		 * Choose the theme template to use. It has to have a higher priority than the
 		 * TEC filters (at 10) to ensure they do not usurp our rewrite here.
 		 */
-		add_filter( 'template_include', [ $this, 'set_page_template' ], 15 );
+		add_filter( 'singular_template', [ $this, 'set_page_template' ], 15 );
 
 		add_action( 'tribe_events_editor_assets_should_enqueue_frontend', [ $this, 'should_enqueue_frontend' ] );
 		add_action( 'tribe_events_views_v2_assets_should_enqueue_frontend', [ $this, 'should_enqueue_frontend' ] );
@@ -49,13 +49,17 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @since 4.9
 	 * @since 5.9.1 changed page parameters and added page to the cache.
 	 * @since 5.17.0 Update the check for the custom AR page.
+	 * @since 5.18.0 Added second parameter to the function to pass the query object. Bail if we're not on the main query.
 	 *
 	 * @param WP_Post[] $posts Post data objects.
 	 *
 	 * @return array
 	 */
-	public function setup_context( $posts ) {
-		global $wp_query;
+	public function setup_context( $posts, WP_Query $query ) {
+		if ( ! $query->is_main_query() ) {
+			// Only run for the main query and not any other possible sub queries!
+			return $posts;
+		}
 
 		// Bail if we're not on the attendee info page.
 		if ( ! $this->is_on_ar_page() ) {
@@ -71,32 +75,33 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			return $posts;
 		}
 
+		// Since we are spoofing the actual content of the page providing a fake post object, we need to remove the shortlink to prevent warnings.
+		add_filter( 'pre_get_shortlink', '__return_empty_string' );
+
 		// Empty posts.
 		$posts = null;
 
 		// Create a fake virtual page.
 		$spoofed_page = $this->spoofed_page();
 		$posts[]      = $spoofed_page;
-		$wp_post      = new WP_Post( $this->spoofed_page() );
-		wp_cache_add( $spoofed_page->ID, $wp_post, 'posts' );
+		$wp_post      = new WP_Post( $spoofed_page );
 
 		// Don't tell wp_query we're anything in particular - then we don't run into issues with defaults.
-		$wp_query->found_posts       = 1;
-		$wp_query->is_404            = false;
-		$wp_query->is_archive        = false;
-		$wp_query->is_category       = false;
-		$wp_query->is_home           = false;
-		$wp_query->is_page           = false;
-		$wp_query->is_singular       = true;
-		$wp_query->max_num_pages     = 1;
-		$wp_query->post              = $this->spoofed_page();
-		$wp_query->post_count        = 1;
-		$wp_query->posts             = [ $wp_post ];
-		$wp_query->queried_object    = $wp_post;
-		$wp_query->queried_object_id = $spoofed_page->ID;
+		$query->found_posts       = 1;
+		$query->is_404            = false;
+		$query->is_archive        = false;
+		$query->is_category       = false;
+		$query->is_home           = false;
+		$query->is_page           = false;
+		$query->is_singular       = true;
+		$query->max_num_pages     = 1;
+		$query->post              = $spoofed_page;
+		$query->post_count        = 1;
+		$query->posts             = [ $wp_post ];
+		$query->queried_object    = $wp_post;
+		$query->queried_object_id = $spoofed_page->ID;
 
 		return $posts;
-
 	}
 
 	/**
@@ -167,11 +172,12 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 *
 	 * @since 4.9
 	 * @since 5.17.0 Added check for custom AR page to return the pages template.
+	 * @since 5.18.0 Changed the hook this is being fired to from `template_include` to `singular_template`. Made it compatible with block themes.
 	 *
 	 * @param string $template The AR template.
 	 * @return void
 	 */
-	public function set_page_template( $template ) {
+	public function set_page_template( string $template ) {
 
 		// Bail if we're not on the attendee info page.
 		if ( ! $this->is_on_ar_page() ) {
@@ -192,6 +198,20 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		} elseif ( 'same' === $template ) {
 			// Note this could be an empty string...because.
 			$template = tribe_get_option( 'tribeEventsTemplate', 'default' );
+		}
+
+		if ( wp_is_block_theme() ) {
+			// Archive events appears in the list of template for FSE themes but its not valid. So we ignore it to prevent customers from breaking their AR page.
+			$template      = $template && ! in_array( trim( $template ), [ '', 'default', 'archive-events' ], true ) ? $template : 'page';
+			$template_slug = str_replace( [ get_template_directory(), DIRECTORY_SEPARATOR ], '', $template );
+			$template      = get_template_directory() . DIRECTORY_SEPARATOR . $template_slug . '.html';
+
+			/**
+			 * The params being passed to locate_block_template may not work for all the templates of all the themes out there.
+			 *
+			 * It is supposed to default to the templates/page.html if we fail to found the one specified though so keeping a working AR page.
+			 */
+			return locate_block_template( $template, 'page', [ $template_slug, 'page' ] );
 		}
 
 		if ( in_array( $template, [ '', 'default' ], true ) ) {

@@ -11,6 +11,7 @@ namespace TEC\Tickets\Seating;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Arrays\Arr;
+use TEC\Tickets\Seating\Service\Service;
 
 /**
  * Class Settings.
@@ -51,12 +52,19 @@ class Settings extends Controller_Contract {
 	 * Add display settings for Event Tickets.
 	 *
 	 * @since 5.17.0
+	 * @since 5.18.0 Only add settings if the seating service has a valid license.
 	 *
 	 * @param array $settings List of display settings.
 	 *
 	 * @return array List of display settings.
 	 */
 	public function add_frontend_timer_settings( array $settings ): array {
+		$service_status = tribe( Service::class )->get_status();
+
+		if ( $service_status->has_no_license() || $service_status->is_license_invalid() ) {
+			return $settings;
+		}
+
 		$timer_settings = [
 			'ticket-seating-options-heading' => [
 				'type' => 'html',

@@ -193,15 +193,31 @@
 		align-items: baseline;
 		border-top: 1px solid var(--tec-color-border-secondary);
 		display: flex;
-		flex-flow: row nowrap;
+		flex-direction: row;
+		flex-wrap: wrap;
 		justify-content: flex-end;
 		padding: var(--tec-spacer-4) 0;
 	}
 
+	.tribe-tickets__commerce-checkout-cart-footer > div:first-child {
+		flex: 0 1 100%;
+	}
+
+	.tribe-tickets__commerce-checkout-cart-footer-order-modifier-fees {
+		text-align: right;
+	}
+
 	.tribe-tickets__commerce-checkout-cart-footer-total,
 	.tribe-tickets__commerce-checkout-cart-footer-quantity {
-		color: var(--tec-color-text-primary-light);
+		flex: 0 1 auto;
+		margin-top: var(--tec-spacer-1);
 		text-align: center;
+	}
+
+	.tribe-tickets__commerce-checkout-cart-footer-total,
+	.tribe-tickets__commerce-checkout-cart-footer-quantity,
+	.tribe-tickets__commerce-checkout-cart-footer-order-modifier-fees {
+		color: var(--tec-color-text-primary-light);
 	}
 
 	.tribe-tickets__commerce-checkout-cart-footer-total {
@@ -210,6 +226,14 @@
 		@media (--viewport-medium) {
 			margin-left: var(--tec-spacer-5);
 		}
+	}
+
+	.tribe-tickets__commerce-checkout-cart-footer-order-modifier-fees ul li {
+		margin-top: var(--tec-spacer-0);
+	}
+
+	.tribe-tickets__commerce-checkout-cart-footer-quantity-label {
+		margin-right: var(--tec-spacer-2);
 	}
 
 	.tribe-tickets__commerce-checkout-cart-footer-total-wrap,

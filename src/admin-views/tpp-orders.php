@@ -136,7 +136,7 @@ if ( $total_sold ) {
 							$totals_header = sprintf(
 								'%1$s: %2$s (%3$s)',
 								$text_total_sales,
-								tribe_format_currency( number_format( $completed_status->get_line_total(), 2 ), $post_id ),
+								tribe_format_currency( number_format( (float) $completed_status->get_line_total(), 2 ), $post_id ),
 								$completed_status->get_qty()
 							);
 							echo esc_html( $totals_header );
@@ -154,7 +154,7 @@ if ( $total_sold ) {
 							$totals_header = sprintf(
 								'%1$s: %2$s (%3$s)',
 								$text_total_ordered,
-								tribe_format_currency( number_format( $order_overview->get_line_total(), 2 ), $post_id ),
+								tribe_format_currency( number_format( (float) $order_overview->get_line_total(), 2 ), $post_id ),
 								$order_overview->get_qty()
 							);
 							echo esc_html( $totals_header );
@@ -171,7 +171,7 @@ if ( $total_sold ) {
 						?>
 						<li>
 							<strong><?php esc_html_e( 'Completed', 'event-tickets' ); ?>:</strong>
-							<?php echo esc_html( tribe_format_currency( number_format( $completed_status->get_line_total(), 2 ), $post_id ) ); ?>
+							<?php echo esc_html( tribe_format_currency( number_format( (float) $completed_status->get_line_total(), 2 ), $post_id ) ); ?>
 							<span id="total_issued">(<?php echo esc_html( $completed_status->get_qty() ); ?>)</span>
 						</li>
 
@@ -189,7 +189,7 @@ if ( $total_sold ) {
 							?>
 							<li>
 								<strong><?php esc_html_e( $status->name, 'event-tickets' ); ?>:</strong>
-								<?php echo esc_html( tribe_format_currency( number_format( $status->get_line_total(), 2 ), $post_id ) ); ?>
+								<?php echo esc_html( tribe_format_currency( number_format( (float) $status->get_line_total(), 2 ), $post_id ) ); ?>
 								<span id="total_issued">(<?php echo esc_html( $status->get_qty() ); ?>)</span>
 							</li>
 							<?php

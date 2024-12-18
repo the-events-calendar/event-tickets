@@ -21,7 +21,7 @@
     "codeception/module-webdriver": "^1.0",
     "codeception/util-universalframework": "^1.0",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
-    "fzaninotto/faker": "^1.8",
+    "fakerphp/faker": "^1.23",
     "lucatume/wp-browser": "^3.1.4",
     "lucatume/wp-snaphot-assertions": "^1.1.0",
     "phpunit/phpunit": "^6.5.14",
@@ -76,10 +76,11 @@
   },
   "autoload-dev": {
     "psr-4": {
+      "TEC\\Tickets\\Flexible_Tickets\\Test\\": "tests/_support/Flexible_Tickets",
+      "TEC\\Tickets\\Tests\\Unit\\Order_Modifiers\\": "tests/wpunit/TEC/Tickets/Order_Modifiers",
       "Tribe\\Tests\\Modules\\Tickets\\": "tests/_support/Modules",
       "Tribe\\Tests\\Tickets\\": "tests/_support",
-      "Tribe\\Tickets\\Events\\Views\\": "tests/views_integration/Tribe/Tickets/Events/Views",
-      "TEC\\Tickets\\Flexible_Tickets\\Test\\": "tests/_support/Flexible_Tickets"
+      "Tribe\\Tickets\\Events\\Views\\": "tests/views_integration/Tribe/Tickets/Events/Views"
     }
   }
 }

@@ -33,6 +33,7 @@ const {
 	ajaxNonce,
 	ACTION_POST_RESERVATIONS,
 	ACTION_CLEAR_RESERVATIONS,
+	sessionTimeout
 } = localizedData;
 
 /**
@@ -78,6 +79,7 @@ const confirmSelector =
  * @property {string} name        The ticket name.
  * @property {number} price       The ticket price.
  * @property {string} description The ticket description.
+ * @property {number} maxLimit    The maximum number of tickets that can be selected.
  */
 
 /**
@@ -675,7 +677,7 @@ async function proceedToCheckout() {
  *
  * @param {A11yDialog} dialogElement The A11y dialog element.
  */
-function setExpireDate(dialogElement) {
+export function setExpireDate(dialogElement) {
 	const iframe = dialogElement
 		? dialogElement?.node?.querySelector(
 				'.tec-tickets-seating__iframe-container iframe.tec-tickets-seating__iframe'
@@ -686,7 +688,10 @@ function setExpireDate(dialogElement) {
 		return;
 	}
 
-	iframe.src = iframe.src + '&expireDate=' + new Date().getTime();
+	// If the session timeout is not set then use the default value of 15 minutes.
+	const sessionTimeoutInSeconds = sessionTimeout ? Number(sessionTimeout) : 15 * 60;
+
+	iframe.src = iframe.src + '&expireDate=' + (Date.now() + sessionTimeoutInSeconds * 1000);
 }
 
 /**

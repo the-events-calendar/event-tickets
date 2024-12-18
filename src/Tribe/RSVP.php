@@ -295,6 +295,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.12.3
 	 * @since 5.5.10 Added `going` to the $args variable.
+	 * @since 5.18.0 Added check for valid post status.
 	 *
 	 * @param int         $ticket_id The ticket ID.
 	 * @param null|string $step      Which step to render.
@@ -311,6 +312,24 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		// No post found, something went wrong.
 		if ( 0 === $post_id ) {
+			return '';
+		}
+
+		// Get post status.
+		$post_status = get_post_status( $post_id );
+
+		// Check if the post is private and the user can't read it.
+		if ( 'private' === $post_status && ! current_user_can( 'read_private_posts' ) ) {
+			return '';
+		}
+
+		// If post is anything other than private or published, return empty.
+		if ( ! in_array( $post_status, [ 'publish', 'private' ] ) ) {
+			return '';
+		}
+
+		// Check password if one exists.
+		if ( post_password_required( $post_id ) ) {
 			return '';
 		}
 

@@ -2,6 +2,7 @@ import {
 	addModalEventListeners,
 	bootstrapIframe,
 	cancelReservations,
+	setExpireDate,
 } from '@tec/tickets/seating/frontend/ticketsBlock';
 import {
 	INBOUND_SEATS_SELECTED,
@@ -836,6 +837,25 @@ describe('Seat Selection Modal', () => {
 			);
 
 			expect(sidebar.style.position).not.toEqual('absolute');
+		});
+	});
+
+	describe('iframe hydration', ()=>{
+		it('should append the correct expireDate to thhe iframe src',()=>{
+			const dom = getTestDocument(
+				'seats-selection',
+				ticketSelectionModalExtractor
+			);
+			const mockDialogElement = { node: dom }
+			const iframe = dom.querySelector(
+				'.tec-tickets-seating__iframe-container iframe.tec-tickets-seating__iframe'
+			);
+			const mockNow = 1692748800000; // August 23, 2023 00:00:00 UTC
+			jest.spyOn(Date, "now").mockImplementation(() => mockNow);
+
+			setExpireDate(mockDialogElement)
+
+			expect(iframe.src).toContain('&expireDate=' + (mockNow + 893000))
 		});
 	});
 });
