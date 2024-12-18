@@ -2,10 +2,12 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
+use RuntimeException;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Commerce\Utils\Value;
+use TEC\Tickets\Commerce\Gateways\Stripe\Settings as Stripe_Settings;
 
 /**
  * Stripe orders aka Payment Intents class.
@@ -124,7 +126,7 @@ class Payment_Intent {
 			],
 		];
 
-		$stripe_statement_descriptor = tribe_get_option( Settings::$option_statement_descriptor );
+		$stripe_statement_descriptor = tribe_get_option( Stripe_Settings::$option_statement_descriptor );
 
 		if ( ! empty( $stripe_statement_descriptor ) ) {
 			$body['statement_descriptor'] = substr( $stripe_statement_descriptor, 0, 22 );
@@ -151,12 +153,30 @@ class Payment_Intent {
 	 */
 	public static function create_from_cart( Cart $cart, $retry = false ) {
 		$items = tribe( Order::class )->prepare_cart_items_for_order( $cart );
-
 		if ( empty( $items ) ) {
 			return [];
 		}
 
 		$value = tribe( Order::class )->get_value_total( array_filter( $items ) );
+
+		/**
+		 * Filters the value and items before creating a Payment Intent.
+		 *
+		 * @since 5.18.0
+		 *
+		 * @param Value $value The total value of the cart.
+		 * @param array $items The items in the cart
+		 */
+		$value = apply_filters( 'tec_tickets_commerce_stripe_create_from_cart', $value, $items );
+
+		if ( ! $value instanceof Value && is_numeric( $value ) ) {
+			$value = Value::create( $value );
+		}
+
+		// Ensure we have a Value object returned from the filters.
+		if ( ! $value instanceof Value ) {
+			throw new RuntimeException( esc_html__( 'Value object not returned from filter', 'event-tickets' ) );
+		}
 
 		return static::create( $value, $retry );
 	}
@@ -284,12 +304,12 @@ class Payment_Intent {
 			return $value;
 		}
 
-		$checkout_type   = tribe_get_request_var( Settings::$option_checkout_element );
+		$checkout_type   = tribe_get_request_var( Stripe_Settings::$option_checkout_element );
 		$payment_methods = tribe_get_request_var( $field_id );
 		$current_methods = tribe_get_option( $field_id, [] );
 
 		if ( empty( $payment_methods ) ) {
-			if ( $checkout_type === Settings::PAYMENT_ELEMENT_SLUG ) {
+			if ( $checkout_type === Stripe_Settings::PAYMENT_ELEMENT_SLUG ) {
 				tribe( 'settings' )->errors[] = esc_html__( 'Payment methods accepted cannot be empty', 'event-tickets' );
 			}
 
@@ -318,5 +338,4 @@ class Payment_Intent {
 		// Revert value to the previous configuration.
 		return tribe_get_option( $field_id, [] );
 	}
-
 }
