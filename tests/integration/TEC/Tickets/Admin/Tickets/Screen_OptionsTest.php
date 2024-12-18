@@ -36,7 +36,7 @@ class Screen_OptionsTest extends \Codeception\TestCase\WPTestCase {
 
 	// test
 	public function test_filter_screen_options_show_screen() {
-		// Correct screen should always returb true.
+		// Correct screen should always return true.
 		$screen = (object) [
 			'id' => Page::$hook_suffix,
 		];
