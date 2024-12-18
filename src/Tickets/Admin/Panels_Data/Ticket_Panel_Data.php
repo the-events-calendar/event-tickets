@@ -48,6 +48,7 @@ class Ticket_Panel_Data {
 	 * Dumps the data to array format.
 	 *
 	 * @since 5.8.0
+	 * @since 5.18.0 Removed start and end date help text.
 	 *
 	 * @return array<string,mixed> The data in array format.
 	 */
@@ -117,16 +118,6 @@ class Ticket_Panel_Data {
 			tribe_get_ticket_label_singular( 'input_start_time_aria_label' )
 		);
 
-		$ticket_start_date_help_text = sprintf(
-		// Translators: %s: dynamic 'tickets' text.
-			_x(
-				'If you do not set a start sale date, %s will be available immediately.',
-				'input start time help text title',
-				'event-tickets'
-			),
-			tribe_get_ticket_label_plural_lowercase( 'input_start_time_help_text_title' )
-		);
-
 		$ticket_end_date_aria_label = sprintf(
 		// Translators: %s: dynamic 'Ticket' text.
 			_x(
@@ -136,29 +127,6 @@ class Ticket_Panel_Data {
 			),
 			tribe_get_ticket_label_singular( 'input_end_time_aria_label' )
 		);
-
-		$is_event = class_exists( TEC::class ) && TEC::POSTTYPE === get_post_type( $this->post_id );
-		if ( $is_event ) {
-			$ticket_end_date_help_text = sprintf(
-			// Translators: %s: dynamic 'tickets' text.
-				_x(
-					'If you do not set an end sale date, %s will be available until the event begins.',
-					'input end time help text title',
-					'event-tickets'
-				),
-				tribe_get_ticket_label_plural_lowercase( 'input_end_time_help_text_title' )
-			);
-		} else {
-			$ticket_end_date_help_text = sprintf(
-			// Translators: %s: dynamic 'tickets' text.
-				_x(
-					'If you do not set an end sale date, %s will be available forever.',
-					'input end time help text title',
-					'event-tickets'
-				),
-				tribe_get_ticket_label_plural_lowercase( 'input_end_time_help_text_title' )
-			);
-		}
 
 		$ticket_form_save_text = sprintf(
 		// Translators: %s: dynamic 'tickets' text.
@@ -208,13 +176,11 @@ class Ticket_Panel_Data {
 			'ticket'                           => $ticket,
 			'ticket_description'               => $ticket->description ?? '',
 			'ticket_end_date_aria_label'       => $ticket_end_date_aria_label,
-			'ticket_end_date_help_text'        => $ticket_end_date_help_text,
 			'ticket_end_time'                  => $ticket->end_time ?? '',
 			'ticket_form_save_text'            => $ticket_form_save_text,
 			'ticket_id'                        => $ticket_id,
 			'ticket_name'                      => $ticket->name ?? '',
 			'ticket_start_date_aria_label'     => $ticket_start_date_aria_label,
-			'ticket_start_date_help_text'      => $ticket_start_date_help_text,
 			'ticket_start_time'                => $ticket->start_time ?? '',
 			'timepicker_round'                 => '00:00:00',
 			'timepicker_step'                  => $timepicker_step,

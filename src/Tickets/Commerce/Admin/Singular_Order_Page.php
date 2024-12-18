@@ -15,6 +15,7 @@ use Tribe__Template;
 use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Gateways\Free\Gateway as Free_Gateway;
 use TEC\Tickets\Commerce\Status\Status_Handler;
+use TEC\Tickets\Commerce\Traits\Is_Ticket;
 use Tribe__Tickets__Main;
 use WP_Post;
 
@@ -26,6 +27,8 @@ use WP_Post;
  * @package TEC\Tickets\Commerce\Admin
  */
 class Singular_Order_Page extends Service_Provider {
+
+	use Is_Ticket;
 
 	/**
 	 * Stores the instance of the template engine that we will use for rendering the metaboxes.
@@ -59,7 +62,26 @@ class Singular_Order_Page extends Service_Provider {
 		add_filter( 'admin_body_class', [ $this, 'add_body_class' ] );
 		if ( is_admin() ) {
 			add_action( 'current_screen', [ $this, 'breadcrumb_order_edit_screen' ] );
+			add_filter( 'tec_tickets_commerce_single_orders_items_item_should_be_displayed', [ $this, 'should_display_item' ], 10, 2 );
 		}
+	}
+
+	/**
+	 * Checks if the item is a ticket and so it should be displayed.
+	 *
+	 * @since 5.18.0
+	 *
+	 * @param bool  $should_display The current value.
+	 * @param array $item           The current item.
+	 *
+	 * @return bool
+	 */
+	public function should_display_item( bool $should_display, array $item ): bool {
+		if ( ! $should_display ) {
+			return $should_display;
+		}
+
+		return $this->is_ticket( $item );
 	}
 
 	/**

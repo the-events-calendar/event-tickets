@@ -10,7 +10,8 @@
                     "name": "Test TC ticket for {{post_id}}",
                     "price": "20",
                     "description": "Test TC ticket description for {{post_id}}",
-                    "dateInRange": true
+                    "dateInRange": true,
+                    "maxLimit": 100
                 }
             ]
         },
@@ -22,7 +23,8 @@
                     "name": "Test TC ticket for {{post_id}}",
                     "price": "50",
                     "description": "Test TC ticket description for {{post_id}}",
-                    "dateInRange": true
+                    "dateInRange": true,
+                    "maxLimit": 100
                 }
             ]
         }
@@ -36,5 +38,6 @@
     "ajaxUrl": "http://wordpress.test/wp-admin/admin-ajax.php",
     "ajaxNonce": "1111111111",
     "ACTION_POST_RESERVATIONS": "tec_tickets_seating_post_reservations",
-    "ACTION_CLEAR_RESERVATIONS": "tec_tickets_seating_clear_reservations"
+    "ACTION_CLEAR_RESERVATIONS": "tec_tickets_seating_clear_reservations",
+    "sessionTimeout": 900
 }

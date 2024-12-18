@@ -204,6 +204,15 @@ class Ajax extends Controller_Contract {
 	public const ACTION_EVENT_LAYOUT_UPDATED = 'tec_tickets_seating_event_layout_updated';
 
 	/**
+	 * The action to remove the post layout.
+	 *
+	 * @since 5.18.0
+	 *
+	 * @var string
+	 */
+	public const ACTION_EVENT_LAYOUT_REMOVE = 'tec_tickets_seating_event_layout_removal';
+
+	/**
 	 * A reference to the Seat Types service object.
 	 *
 	 * @since 5.16.0
@@ -305,6 +314,7 @@ class Ajax extends Controller_Contract {
 		);
 		add_action( 'wp_ajax_' . self::ACTION_SEAT_TYPE_DELETED, [ $this, 'handle_seat_type_deleted' ] );
 		add_action( 'wp_ajax_' . self::ACTION_EVENT_LAYOUT_UPDATED, [ $this, 'update_event_layout' ] );
+		add_action( 'wp_ajax_' . self::ACTION_EVENT_LAYOUT_REMOVE, [ $this, 'remove_event_layout' ] );
 
 		add_action( 'tec_tickets_seating_session_interrupt', [ $this, 'clear_commerce_cart_cookie' ] );
 	}
@@ -341,6 +351,7 @@ class Ajax extends Controller_Contract {
 
 		remove_action( 'wp_ajax_' . self::ACTION_SEAT_TYPE_DELETED, [ $this, 'handle_seat_type_deleted' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_EVENT_LAYOUT_UPDATED, [ $this, 'update_event_layout' ] );
+		remove_action( 'wp_ajax_' . self::ACTION_EVENT_LAYOUT_REMOVE, [ $this, 'remove_event_layout' ] );
 	}
 
 	/**
@@ -371,6 +382,7 @@ class Ajax extends Controller_Contract {
 			'ACTION_RESERVATION_CREATED'                  => self::ACTION_RESERVATION_CREATED,
 			'ACTION_RESERVATION_UPDATED'                  => self::ACTION_RESERVATION_UPDATED,
 			'ACTION_EVENT_LAYOUT_UPDATED'                 => self::ACTION_EVENT_LAYOUT_UPDATED,
+			'ACTION_REMOVE_EVENT_LAYOUT'                  => self::ACTION_EVENT_LAYOUT_REMOVE,
 		];
 	}
 
@@ -1224,6 +1236,112 @@ class Ajax extends Controller_Contract {
 		update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, $layout->seats );
 
 		add_filter( 'update_post_metadata', [ tribe( Controller::class ), 'handle_ticket_meta_update' ], 10, 4 );
+
+		wp_send_json_success(
+			[
+				'updatedTickets'   => $updated_tickets,
+				'updatedAttendees' => $updated_attendees,
+			]
+		);
+	}
+
+	/**
+	 * Removes the layout from an event.
+	 *
+	 * @since 5.18.0
+	 *
+	 * @return void The function does not return a value but will echo the JSON response.
+	 */
+	public function remove_event_layout() {
+		$post_id = tribe_get_request_var( 'postId' );
+
+		if ( empty( $post_id ) ) {
+			wp_send_json_error(
+				[
+					'error' => __( 'No post ID provided', 'event-tickets' ),
+				],
+				400
+			);
+
+			return;
+		}
+
+		if ( ! $this->check_current_ajax_user_can( 'edit_posts', $post_id ) ) {
+			wp_send_json_error(
+				[
+					'error' => __( 'User has no permission.', 'event-tickets' ),
+				],
+				403
+			);
+
+			return;
+		}
+
+		$layout_id = get_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, true );
+
+		if ( empty( $layout_id ) ) {
+			wp_send_json_error(
+				[
+					'error' => __( 'Layout not found.', 'event-tickets' ),
+				],
+				403
+			);
+
+			return;
+		}
+
+		$updated_tickets   = 0;
+		$updated_attendees = 0;
+
+		// Get tickets by post id.
+		$tickets = tribe_tickets()
+					->where( 'event', $post_id )
+					->where( 'meta_exists', Meta::META_KEY_SEAT_TYPE )
+					->get_ids( true );
+
+		foreach ( $tickets as $ticket_id ) {
+			// Remove slr meta.
+			delete_post_meta( $ticket_id, Meta::META_KEY_ENABLED );
+			delete_post_meta( $ticket_id, Meta::META_KEY_LAYOUT_ID );
+			delete_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE );
+
+			// Switch ticket to own stock mode.
+			update_post_meta( $ticket_id, Global_Stock::TICKET_STOCK_MODE, Global_Stock::OWN_STOCK_MODE );
+
+			// Set ticket capacity to 1.
+			tribe_tickets_delete_capacity( $ticket_id );
+			tribe_tickets_update_capacity( $ticket_id, 1 );
+
+			// Update ticket stock.
+			update_post_meta( $ticket_id, '_stock', 1 );
+
+			++$updated_tickets;
+			clean_post_cache( $ticket_id );
+		}
+
+		// Attendees by post id.
+		$attendees = tribe_attendees()
+			->where( 'event', $post_id )
+			->where( 'meta_equals', Meta::META_KEY_LAYOUT_ID, $layout_id )
+			->get_ids( true );
+
+		foreach ( $attendees as $attendee_id ) {
+			delete_post_meta( $attendee_id, Meta::META_KEY_SEAT_TYPE );
+			delete_post_meta( $attendee_id, Meta::META_KEY_ATTENDEE_SEAT_LABEL );
+			delete_post_meta( $attendee_id, Meta::META_KEY_LAYOUT_ID );
+
+			clean_post_cache( $attendee_id );
+			++$updated_attendees;
+		}
+
+		// Finally update post data.
+		delete_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID );
+		delete_post_meta( $post_id, Meta::META_KEY_ENABLED );
+
+		// Remove global stock.
+		tribe_tickets_delete_capacity( $post_id );
+
+		clean_post_cache( $post_id );
 
 		wp_send_json_success(
 			[

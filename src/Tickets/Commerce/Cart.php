@@ -644,4 +644,15 @@ class Cart {
 	public function get_cart_total() {
 		return $this->get_repository()->get_cart_total();
 	}
+
+	/**
+	 * Get the subtotal of the cart.
+	 *
+	 * @since 5.18.0
+	 *
+	 * @return float
+	 */
+	public function get_cart_subtotal(): float {
+		return $this->get_repository()->get_cart_subtotal();
+	}
 }

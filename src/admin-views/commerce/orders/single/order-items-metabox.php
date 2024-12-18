@@ -12,7 +12,6 @@
 
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
-
 ?>
 <div class="tec-tickets-commerce-single-order--items">
 	<table class="tec-tickets-commerce-single-order--items--table widefat fixed">
@@ -28,6 +27,19 @@ use TEC\Tickets\Commerce\Order;
 		<tbody>
 			<?php
 			foreach ( $order->items as $item ) {
+				/**
+				 * Filters whether the item should be displayed in the single order items metabox.
+				 *
+				 * @since 5.18.0
+				 *
+				 * @param bool    $should_display Whether the item should be displayed.
+				 * @param array   $item           The item data.
+				 * @param WP_Post $order          The order object.
+				 */
+				if ( ! apply_filters( 'tec_tickets_commerce_single_orders_items_item_should_be_displayed', true, $item, $order ) ) {
+					continue;
+				}
+
 				$ticket_id = $item['ticket_id'];
 
 				$ticket = tribe( Module::class )->get_ticket( 0, $ticket_id );

@@ -52,6 +52,15 @@ class Send_Email_Purchase_Receipt extends Flag_Action_Abstract {
 			return;
 		}
 
+		/**
+		 * Filter the order before sending the email about the purchase receipt of the order.
+		 *
+		 * @since 5.18.0
+		 *
+		 * @param \WP_Post $order The order.
+		 */
+		$order = apply_filters( 'tec_tickets_commerce_prepare_order_for_email_send_email_purchase_receipt', $order );
+
 		$provider  = tribe( $order->provider );
 		$attendees = $provider->get_attendees_by_order_id( $order->ID );
 

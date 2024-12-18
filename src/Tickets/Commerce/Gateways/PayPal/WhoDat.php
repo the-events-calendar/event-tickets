@@ -72,18 +72,30 @@ class WhoDat extends Abstract_WhoDat {
 	 * Verify if the seller was successfully onboarded.
 	 *
 	 * @since 5.1.9
+	 * @since 5.18.0 Added runtime cache.
 	 *
 	 * @param string $saved_merchant_id The ID we are looking at Paypal with.
 	 *
 	 * @return array
 	 */
 	public function get_seller_status( $saved_merchant_id ) {
+		$cache = tribe_cache();
+
+		$cache_key = 'paypal_seller_status_' . md5( $saved_merchant_id );
+
+		// Adding cache changed my checkout page from 12s to 2s. Lets keep it!
+		if ( isset( $cache[ $cache_key ] ) && is_array( $cache[ $cache_key ] ) ) {
+			return $cache[ $cache_key ];
+		}
+
 		$query_args = [
 			'mode'        => tribe( Merchant::class )->get_mode(),
 			'merchant_id' => $saved_merchant_id,
 		];
 
-		return $this->post( 'seller/status', $query_args );
+		$cache[ $cache_key ] = $this->post( 'seller/status', $query_args );
+
+		return $cache[ $cache_key ];
 	}
 
 	/**

@@ -88,6 +88,15 @@ class Order extends Abstract_Order {
 	/**
 	 * Which meta holds the cart items used to setup this order.
 	 *
+	 * @since 5.18.0
+	 *
+	 * @var string
+	 */
+	public static $subtotal_value_meta_key = '_tec_tc_order_subtotal_value';
+
+	/**
+	 * Which meta holds the cart items used to setup this order.
+	 *
 	 * @since 5.1.9
 	 *
 	 * @var string
@@ -408,11 +417,44 @@ class Order extends Abstract_Order {
 			},
 			$items
 		) );
+
+		$subtotal = $this->get_value_total( $items );
+
+		$original_cart_items = $items;
+
+		/**
+		 * Filters the cart items before creating an order.
+		 *
+		 * Allows modification of the cart items array before creating an order,
+		 * passing the current subtotal, payment gateway, and purchaser details.
+		 *
+		 * @since 5.18.0
+		 *
+		 * @param array             $items     The items in the cart.
+		 * @param Value             $subtotal  The calculated subtotal of the cart items.
+		 * @param Gateway_Interface $gateway   The payment gateway used for the order.
+		 * @param ?array            $purchaser { Purchaser details.
+		 *    @type ?int    $purchaser_user_id    The purchaser user ID.
+		 *    @type ?string $purchaser_full_name  The purchaser full name.
+		 *    @type ?string $purchaser_first_name The purchaser first name.
+		 *    @type ?string $purchaser_last_name  The purchaser last name.
+		 *    @type ?string $purchaser_email      The purchaser email.
+		 * }
+		 */
+		$items = apply_filters(
+			'tec_tickets_commerce_create_order_from_cart_items',
+			$items,
+			$subtotal,
+			$gateway,
+			$purchaser
+		);
+
 		$total = $this->get_value_total( array_filter( $items ) );
 
 		$order_args = [
-			'title'                => $this->generate_order_title( $items, $cart->get_cart_hash() ),
+			'title'                => $this->generate_order_title( $original_cart_items, $cart->get_cart_hash() ),
 			'total_value'          => $total->get_decimal(),
+			'subtotal'             => $subtotal->get_decimal(),
 			'items'                => $items,
 			'gateway'              => $gateway::get_key(),
 			'hash'                 => $cart->get_cart_hash(),
@@ -622,6 +664,11 @@ class Order extends Abstract_Order {
 			$total   = 0;
 
 			foreach ( $order->items as $cart_item ) {
+				$cart_item_type = $cart_item['type'] ?? 'ticket';
+				if ( 'ticket' !== $cart_item_type ) {
+					continue;
+				}
+
 				$regular += $cart_item['regular_sub_total'] ?? 0;
 				$total   += $cart_item['sub_total'] ?? 0;
 			}

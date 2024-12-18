@@ -40,7 +40,7 @@ class Tribe__Tickets__REST__V1__Validator__Base
 		/**
 		 * Check if the ticket should be seen by the current request.
 		 *
-		 * @since TBD
+		 * @since 5.18.0
 		 *
 		 * @param int             $parent_id The parent's ID.
 		 * @param WP_REST_Request $request   The request object.

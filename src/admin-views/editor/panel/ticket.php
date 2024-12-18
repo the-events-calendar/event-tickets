@@ -26,7 +26,6 @@
  * @var string                             $ticket_form_save_text            The ticket form save text.
  * @var string                             $ticket_name                      The ticket name.
  * @var string                             $ticket_start_date_aria_label     The ticket start date ARIA attribute.
- * @var string                             $ticket_start_date_help_text      The ticket start date help text.
  * @var string                             $ticket_start_time                The ticket start time.
  * @var string                             $timepicker_round                 The timepicker round.
  * @var string                             $ticket_type                      The type of Ticket the form is for.
@@ -218,11 +217,14 @@ $ticket_type = $ticket_type ?? 'default';
 				 * Allows for the insertion of additional content into the ticket edit form - main section
 				 *
 				 * @since 4.6
+				 * @since 5.18.0 Added the $ticket_type parameter.
 				 *
 				 * @param int Post ID
 				 * @param int Ticket ID
+				 * @param string Ticket Type Whether this is a request for a ticket or an RSVP or something else.
 				 */
-				do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, $ticket_id ); ?>
+				do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, $ticket_id, $ticket_type );
+				?>
 			</section>
 			<div class="accordion">
 				<?php
