@@ -23,6 +23,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 use WP_Post;
+use Tribe__Cache_Listener as Triggers;
 
 /**
  * Class Controller.
@@ -104,6 +105,7 @@ class Controller extends Controller_Contract {
 		add_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ], 10, 4 );
 		add_action( 'before_delete_post', [ $this, 'restock_ticket_on_attendee_deletion' ], 10, 2 );
 		add_action( 'wp_trash_post', [ $this, 'restock_ticket_on_attendee_trash' ] );
+		add_filter( 'tec_tickets_ticket_stock', [ $this, 'filter_ticket_stock_value' ], 10, 2 );
 	}
 
 	/**
@@ -124,6 +126,42 @@ class Controller extends Controller_Contract {
 		remove_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ], 10 );
 		remove_action( 'before_delete_post', [ $this, 'restock_ticket_on_attendee_deletion' ] );
 		remove_action( 'wp_trash_post', [ $this, 'restock_ticket_on_attendee_trash' ] );
+		remove_filter( 'tec_tickets_ticket_stock', [ $this, 'filter_ticket_stock_value' ] );
+	}
+	
+	/**
+	 * Filters the stock value for a ticket to match the seated ticket inventory.
+	 *
+	 * @since TBD
+	 *
+	 * @param int           $stock  The stock value.
+	 * @param Ticket_Object $ticket The ticket object.
+	 *
+	 * @return int The filtered stock value.
+	 */
+	public function filter_ticket_stock_value( $stock, $ticket ) {
+		$seat_type = get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true );
+		if ( ! $seat_type ) {
+			return $stock;
+		}
+		
+		$cache_key = sprintf( 'seating_filter_ticket_stock_value_%d_%s', $stock, $ticket->ID );
+		
+		$cache = tribe_cache();
+		
+		// This cached value will be invalidated by the save of any Ticket, Attendee or Order.
+		$cached = $cache->get( $cache_key, Triggers::TRIGGER_SAVE_POST, null, DAY_IN_SECONDS );
+		
+		if ( is_int( $cached ) ) {
+			return $cached;
+		}
+		
+		$attendees = $ticket->get_provider()->get_attendees_by_id( $ticket->get_event()->ID );
+		$stock     = $this->get_seated_ticket_inventory( $stock, $ticket, $attendees );
+		
+		$cache->set( $cache_key, $stock, Triggers::TRIGGER_SAVE_POST, DAY_IN_SECONDS );
+	
+		return $stock;
 	}
 
 	/**
@@ -172,21 +210,25 @@ class Controller extends Controller_Contract {
 			if ( empty( $seat_type ) ) {
 				continue;
 			}
-
+			
 			$capacity = $ticket->capacity();
 			$stock    = $ticket->stock();
 			$sold_qty = $ticket->qty_sold();
-
+			
+			if ( $stock ) {
+				$sold_qty = min( $capacity - $stock, $sold_qty );
+			}
+			
 			if ( ! isset( $capacity_by_type[ $seat_type ] ) ) {
 				$capacity_by_type[ $seat_type ] = $capacity;
 			}
-
+			
 			if ( ! isset( $total_sold_by_type[ $seat_type ] ) ) {
 				$total_sold_by_type[ $seat_type ] = $sold_qty;
 			} else {
 				$total_sold_by_type[ $seat_type ] += $sold_qty;
 			}
-
+			
 			++$types['tickets']['count'];
 		}
 
@@ -227,7 +269,7 @@ class Controller extends Controller_Contract {
 		$return_false = static fn() => false;
 		add_filter( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', $return_false );
 
-		$ticket_ids = [ $ticket->ID ];
+		$ticket_ids = [ (int) $ticket->ID ];
 
 		// Pull the inventory from the other tickets with the same seat type.
 		foreach (
@@ -245,7 +287,9 @@ class Controller extends Controller_Contract {
 			$total_sold = count(
 				array_filter(
 					$event_attendees,
-					static fn( array $attendee ): bool => in_array( (int) $attendee['product_id'], $ticket_ids, true )
+					static fn( array $attendee ): bool =>
+						in_array( (int) $attendee['product_id'], $ticket_ids, true )
+						&& ! empty( get_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, true ) )
 				)
 			);
 		}
