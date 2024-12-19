@@ -1,0 +1,4 @@
+Significance: patch
+Type: tweak
+
+Moved abstract class for custom tables into TCMN.

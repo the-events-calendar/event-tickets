@@ -7,6 +7,8 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables;
 
+use TEC\Common\Integrations\Custom_Table_Abstract as Table;
+
 /**
  * Class Order_Modifier_Relationships.
  *
@@ -14,7 +16,7 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables;
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables;
  */
-class Order_Modifier_Relationships extends Abstract_Custom_Table {
+class Order_Modifier_Relationships extends Table {
 	/**
 	 * @since 5.18.0
 	 *
