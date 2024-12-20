@@ -379,6 +379,10 @@ class Frontend extends Controller_Contract {
 	 */
 	public function add_seat_selected_labels_per_ticket_attribute( array $attributes, Ticket_Object $ticket ): array {
 		$event_id = $ticket->get_event_id();
+		if ( ! $event_id ) {
+			return $attributes;
+		}
+
 		if ( ! tec_tickets_seating_enabled( $event_id ) ) {
 			return $attributes;
 		}
