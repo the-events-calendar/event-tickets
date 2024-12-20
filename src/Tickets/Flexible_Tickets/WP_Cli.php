@@ -71,7 +71,7 @@ class WP_Cli extends Controller {
 	 * @return bool Whether the foreign key checks were disabled or not.
 	 */
 	public function maybe_disable_foreign_key_checks( array $args = [] ): bool {
-		if ( empty( $args[0] ) || empty( $args[1] ) || ! ( 'site' === $args[0] && 'empty' === $args[1] ) ) {
+		if ( empty( $args[0] ) || 'site' !== $args[0] || empty( $args[1] ) || 'empty' !== $args[1] ) {
 			return false;
 		}
 
