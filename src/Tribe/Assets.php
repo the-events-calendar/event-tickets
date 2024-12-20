@@ -125,7 +125,7 @@ class Tribe__Tickets__Assets {
 				],
 				null,
 				[
-					'groups' => [
+					'groups'   => [
 						'tribe-tickets-block-assets',
 						'tribe-tickets-rsvp',
 						'tribe-tickets-registration-page',
@@ -244,9 +244,9 @@ class Tribe__Tickets__Assets {
 					],
 					[
 						'name' => 'tribe_ticket_vars',
-						'data' => static function() {
+						'data' => static function () {
 							/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
-							$tickets_handler = tribe( 'tickets.handler' );
+							$tickets_handler   = tribe( 'tickets.handler' );
 							$global_stock_mode = $tickets_handler->get_default_capacity_mode();
 
 							return [ 'stock_mode' => $global_stock_mode ];
@@ -266,7 +266,7 @@ class Tribe__Tickets__Assets {
 					],
 					[
 						'name' => 'price_format',
-						'data' => static function() {
+						'data' => static function () {
 							$locale  = localeconv();
 							$decimal = Arr::get( $locale, 'decimal_point', '.' );
 
@@ -399,15 +399,6 @@ class Tribe__Tickets__Assets {
 			'confirmation_plural'   => esc_html__( 'Please confirm that you would like to delete these attendees.', 'event-tickets' ),
 		];
 
-		/**
-		 * Allow filtering the configuration data for the Attendee objects on Attendees report page.
-		 *
-		 * @since 5.2.0
-		 *
-		 * @param array $config_data List of configuration data to be localized.
-		 */
-		$config_data = apply_filters( 'tribe_tickets_attendees_report_js_config', $config_data );
-
 		tribe_asset(
 			$tickets_main,
 			'tickets-attendees-js',
@@ -418,10 +409,19 @@ class Tribe__Tickets__Assets {
 				'localize' => [
 					[
 						'name' => 'Attendees',
-						'data' => $config_data,
+						'data' => function () use ( $config_data ) {
+							/**
+							 * Allow filtering the configuration data for the Attendee objects on Attendees report page.
+							 *
+							 * @since 5.2.0
+							 *
+							 * @param array $config_data List of configuration data to be localized.
+							 */
+							return apply_filters( 'tribe_tickets_attendees_report_js_config', $config_data );
+						},
 					],
 				],
-				'groups' => [
+				'groups'   => [
 					'event-tickets-admin-attendees',
 				],
 			]
@@ -631,5 +631,4 @@ class Tribe__Tickets__Assets {
 	public function should_enqueue_admin_wp(): bool {
 		return is_admin() || is_admin_bar_showing();
 	}
-
 }
