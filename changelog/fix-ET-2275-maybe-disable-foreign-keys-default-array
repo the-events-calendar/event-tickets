@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Added a default empty array to `maybe_disable_foreign_key_checks`. [ET-2275]
