@@ -928,13 +928,13 @@ class Frontend_Test extends Controller_Test_Case {
 
 		$ticket = Tickets::load_ticket_object( $ticket_id );
 
-		$attributes = apply_filters( 'tribe_tickets_block_ticket_html_attributes', [], $ticket, $event_id );
+		$attributes = apply_filters( 'tribe_tickets_block_ticket_html_attributes', [], $ticket );
 
 		$this->assertEmpty( $attributes );
 
 		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
 
-		$attributes = apply_filters( 'tribe_tickets_block_ticket_html_attributes', [], $ticket, $event_id );
+		$attributes = apply_filters( 'tribe_tickets_block_ticket_html_attributes', [], $ticket );
 
 		$this->assertEquals( esc_attr( implode( ',', [ 'seat-label-0-1' , 'seat-label-0-2' ] ) ), $attributes['data-seat-labels'] );
 	}
