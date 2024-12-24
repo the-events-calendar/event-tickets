@@ -304,15 +304,24 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	public function find_relationship_by_post_ids( array $post_ids, string $modifier_type, string $status = 'active' ): array {
 		$this->validate_type( $modifier_type );
 
-		$order_modifiers_table = Relationship_Table::base_table_name();
-		$builder               = new ModelQueryBuilder( $this->get_valid_types()[ $modifier_type ] );
+		$builder = $this->prepareQuery();
 
-		$results = $builder->from( Table::table_name( false ) . ' as m' )
-			->select( 'm.*' )
-			->innerJoin( "{$order_modifiers_table} as r", 'm.id', 'r.modifier_id' )
-			->whereIn( 'r.post_id', $post_ids )
-			->where( 'm.modifier_type', $modifier_type )
-			->where( 'm.status', $status )
+		// Table aliases for the query.
+		$modifiers     = 'm';
+		$relationships = 'r';
+
+		$results = $builder
+			->from( $this->get_table_name( false ), $modifiers )
+			->select( "{$modifiers}.*" )
+			->innerJoin(
+				Relationship_Table::base_table_name(),
+				"{$modifiers}.id",
+				"{$relationships}.modifier_id",
+				$relationships
+			)
+			->whereIn( "{$relationships}.post_id", $post_ids )
+			->where( "{$modifiers}.modifier_type", $modifier_type )
+			->where( "{$modifiers}.status", $status )
 			->getAll();
 
 		return $results ?? [];
