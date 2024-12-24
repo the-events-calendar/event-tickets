@@ -72,7 +72,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		$this->validate_model_type( $model );
 
 		return (bool) DB::delete(
-			Table::table_name(),
+			$this->get_table_name(),
 			[ 'id' => $model->id ],
 			[ '%d' ]
 		);
@@ -92,7 +92,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		$this->validate_model_type( $model );
 
 		DB::insert(
-			Table::table_name(),
+			$this->get_table_name(),
 			[
 				'modifier_type' => $model->modifier_type,
 				'sub_type'      => $model->sub_type,
@@ -136,7 +136,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		$this->validate_model_type( $model );
 
 		DB::update(
-			Table::table_name(),
+			$this->get_table_name(),
 			[
 				'modifier_type' => $model->modifier_type,
 				'sub_type'      => $model->sub_type,
@@ -364,8 +364,8 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		}
 
 		// Get the table names dynamically.
-		$order_modifiers_table      = Table::table_name();
-		$order_modifiers_meta_table = Order_Modifiers_Meta::table_name();
+		$order_modifiers_table      = $this->get_table_name();
+		$order_modifiers_meta_table = $this->get_meta_table_name();
 
 		// Initialize the SQL query with the base WHERE clause for modifier_type.
 		$sql   = [];
@@ -427,7 +427,37 @@ SQL;
 
 		$builder = new ModelQueryBuilder( $class );
 
-		return $builder->from( Table::table_name( false ) );
+		return $builder->from( $this->get_table_name( false ) );
+	}
+
+	/**
+	 * Wrapper for getting the table name.
+	 *
+	 * This allows for easy interpolation in strings.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $with_prefix Whether to include the table prefix. Default is true.
+	 *
+	 * @return string The table name.
+	 */
+	protected function get_table_name( bool $with_prefix = true ): string {
+		return Table::table_name( $with_prefix );
+	}
+
+	/**
+	 * Wrapper for getting the meta table name.
+	 *
+	 * This allows for easy interpolation in strings.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $with_prefix Whether to include the table prefix. Default is true.
+	 *
+	 * @return string The meta table name.
+	 */
+	protected function get_meta_table_name( bool $with_prefix = true ): string {
+		return Order_Modifiers_Meta::table_name( $with_prefix );
 	}
 
 	/**
