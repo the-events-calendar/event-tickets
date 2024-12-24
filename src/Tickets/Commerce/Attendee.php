@@ -628,11 +628,16 @@ class Attendee {
 	 *
 	 * @since 5.1.9
 	 *
+	 * @param bool  $decreases_inventory Whether the attendee decreases inventory or not.
 	 * @param array $attendee array of attendee information.
 	 *
 	 * @return bool
 	 */
-	public function decreases_inventory( $attendee ) {
+	public function decreases_inventory( $decreases_inventory, $attendee ) {
+		if ( Module::class !== $attendee['provider'] ) {
+			return $decreases_inventory;
+		}
+		
 		$attendee = tec_tc_get_attendee( $attendee['ID'] );
 		$order    = tec_tc_get_order( $attendee->post_parent );
 		$statuses = array_unique(
