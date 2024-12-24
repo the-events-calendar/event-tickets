@@ -176,7 +176,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 * @throws RuntimeException If we didn't get an Order_Modifier object.
 	 */
 	public function find_by_id( int $id ): Order_Modifier {
-		$result = $this->prepareQuery()
+		$result = $this->get_query_builder_with_from()
 			->where( 'id', $id )
 			->get();
 
@@ -208,7 +208,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		$args = array_merge( $defaults, $args );
 
 		// Start building the query.
-		$query = $this->prepareQuery();
+		$query = $this->get_query_builder_with_from();
 
 		// Add search functionality (search in display_name or slug).
 		if ( ! empty( $args['search_term'] ) ) {
@@ -243,7 +243,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 * @return Order_Modifier[] Array of active Order Modifier model instances, or null if not found.
 	 */
 	public function find_active(): array {
-		$result = $this->prepareQuery()
+		$result = $this->get_query_builder_with_from()
 			->where( 'modifier_type', $this->modifier_type )
 			->where( 'status', 'active' )
 			->getAll();
@@ -262,7 +262,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 * @throws Not_Found_Exception If the Order Modifier is not found.
 	 */
 	public function find_by_slug( string $slug ): Order_Modifier {
-		$result = $this->prepareQuery()
+		$result = $this->get_query_builder_with_from()
 			->where( 'modifier_type', $this->modifier_type )
 			->where( 'slug', $slug )
 			->where( 'status', 'active' )
@@ -279,7 +279,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 * @return Order_Modifier[] Array of Order Modifier model instances.
 	 */
 	public function get_all(): array {
-		$results = $this->prepareQuery()
+		$results = $this->get_query_builder_with_from()
 			->where( 'modifier_type', $this->modifier_type )
 			->getAll();
 
@@ -418,14 +418,28 @@ SQL;
 	 *
 	 * @since 5.18.0
 	 *
-	 * @return ModelQueryBuilder
+	 * @return ModelQueryBuilder The query builder object.
 	 */
 	public function prepareQuery(): ModelQueryBuilder {
 		// Determine the model class based on the modifier type.
 		$this->validate_type( $this->modifier_type );
 		$class = $this->get_valid_types()[ $this->modifier_type ];
 
-		$builder = new ModelQueryBuilder( $class );
+		return new ModelQueryBuilder( $class );
+	}
+
+	/**
+	 * Wrapper for getting the query builder with table name as the FROM clause.
+	 *
+	 * This will call ->from() on the query builder with the table name before
+	 * the object is returned.
+	 *
+	 * @since TBD
+	 *
+	 * @return ModelQueryBuilder The query builder object.
+	 */
+	protected function get_query_builder_with_from(): ModelQueryBuilder {
+		$builder = $this->prepareQuery();
 
 		return $builder->from( $this->get_table_name( false ) );
 	}
