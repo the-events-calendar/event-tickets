@@ -22,6 +22,7 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Modifiers;
 
 use Exception;
 use InvalidArgumentException;
+use RuntimeException;
 use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Factory;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier;
@@ -154,14 +155,13 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @since 5.18.0
 	 *
-	 * @param int    $modifier_id The modifier ID.
+	 * @param int $modifier_id The modifier ID.
 	 *
-	 *
-	 * @return array|null The modifier data or null if not found.
+	 * @return array The modifier data as an array.
+	 * @throws RuntimeException If the modifier is not found.
 	 */
 	public function get_modifier_by_id( int $modifier_id ): ?array {
-		$modifier_data = $this->repository->find_by_id( $modifier_id );
-		return $modifier_data ? $modifier_data->to_array() : null;
+		return $this->repository->find_by_id( $modifier_id )->to_array();
 	}
 
 	/**
