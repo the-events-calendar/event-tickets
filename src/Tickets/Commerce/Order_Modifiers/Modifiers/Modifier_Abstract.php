@@ -197,17 +197,17 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		$missing_fields = array_diff_key( $this->required_fields, $data );
 		if ( ! empty( $missing_fields ) ) {
 			$errors[] = sprintf(
-			/* translators: %s: List of missing fields. */
+				/* translators: %s: List of missing fields. */
 				__( 'The following required fields are missing: %s', 'event-tickets' ),
 				implode( ', ', array_keys( $missing_fields ) )
 			);
 		}
 
 		// Validate required fields are not empty.
-		foreach ( $this->required_fields as $field => $required ) {
-			if ( $required && ( ! isset( $data[ $field ] ) || ( is_string( $data[ $field ] ) && trim( $data[ $field ] ) === '' ) ) ) {
+		foreach ( $this->required_fields as $field => $r ) {
+			if ( ! is_string( $data[ $field ] ) || trim( $data[ $field ] ) === '' ) {
 				$errors[] = sprintf(
-				/* translators: %s: Field name. */
+					/* translators: %s: Field name. */
 					__( 'The field "%s" is required and cannot be empty.', 'event-tickets' ),
 					$field
 				);
@@ -217,7 +217,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		// Validate the sub_type field, if present.
 		if ( ! empty( $data['sub_type'] ) && ! $this->is_valid_subtype( $data['sub_type'] ) ) {
 			$errors[] = sprintf(
-			/* translators: %s: Invalid sub-type value. */
+				/* translators: %s: Invalid sub-type value. */
 				__( 'The provided sub-type "%s" is invalid. Please use a valid sub-type.', 'event-tickets' ),
 				$data['sub_type']
 			);
@@ -226,7 +226,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		// Validate the status field, if present.
 		if ( ! empty( $data['status'] ) && ! $this->is_valid_status( $data['status'] ) ) {
 			$errors[] = sprintf(
-			/* translators: %s: Invalid status value. */
+				/* translators: %s: Invalid status value. */
 				__( 'The provided status "%s" is invalid. Please use a valid status.', 'event-tickets' ),
 				$data['status']
 			);
@@ -236,7 +236,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		if ( ! empty( $errors ) ) {
 			throw new InvalidArgumentException(
 				sprintf(
-				/* translators: %s: Validation error messages. */
+					/* translators: %s: Validation error messages. */
 					__( 'Validation failed: %s', 'event-tickets' ),
 					implode( '; ', $errors )
 				)
