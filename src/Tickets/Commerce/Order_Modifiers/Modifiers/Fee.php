@@ -269,7 +269,7 @@ class Fee extends Modifier_Abstract {
 	 * @return array The context data ready for rendering the form.
 	 */
 	public function map_context_to_template( array $context ): array {
-		$order_modifier_fee_applied_to = $this->order_modifiers_meta_repository->find_by_order_modifier_id_and_meta_key( $context['modifier_id'], 'fee_applied_to' )->meta_value ?? '';
+		$order_modifier_fee_applied_to = $this->meta_repository->find_by_order_modifier_id_and_meta_key( $context['modifier_id'], 'fee_applied_to' )->meta_value ?? '';
 		return [
 			'order_modifier_display_name'     => $context['display_name'] ?? '',
 			'order_modifier_slug'             => $context['slug'] ?? $this->generate_unique_slug(),
@@ -295,6 +295,6 @@ class Fee extends Modifier_Abstract {
 	 * @return array The list of posts related to the modifier.
 	 */
 	public function get_active_on( $modifier_id ) {
-		return $this->order_modifiers_relationship_repository->find_by_modifier_id( $modifier_id );
+		return $this->relationship_repository->find_by_modifier_id( $modifier_id );
 	}
 }

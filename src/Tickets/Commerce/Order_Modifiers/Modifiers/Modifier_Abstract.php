@@ -23,22 +23,23 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Modifiers;
 use Exception;
 use InvalidArgumentException;
 use TEC\Common\StellarWP\Models\Contracts\Model;
-use TEC\Tickets\Commerce\Order_Modifiers\Traits\Status;
-use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
-use TEC\Tickets\Commerce\Utils\Value;
-use TEC\Tickets\Exceptions\Not_Found_Exception;
+use TEC\Tickets\Commerce\Order_Modifiers\Factory;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Meta;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Relationships;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifier_Admin_Handler;
-use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers as Order_Modifiers_Repository;
-use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta as Order_Modifiers_Meta_Repository;
-use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship as Order_Modifier_Relationship_Repository;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship as Relationship_Repo;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers as Modifiers_Repo;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta as Meta_Repo;
+use TEC\Tickets\Commerce\Order_Modifiers\Traits\Status;
+use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Currency_Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Float_Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Percent_Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Positive_Integer_Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
+use TEC\Tickets\Commerce\Utils\Value;
+use TEC\Tickets\Exceptions\Not_Found_Exception;
 
 /**
  * Class Modifier_Abstract
@@ -64,25 +65,25 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * The repository for interacting with the order modifiers table.
 	 *
 	 * @since 5.18.0
-	 * @var Order_Modifiers_Repository
+	 * @var Modifiers_Repo
 	 */
-	protected Order_Modifiers_Repository $repository;
+	protected Modifiers_Repo $repository;
 
 	/**
 	 * The repository for interacting with the order modifiers meta table.
 	 *
 	 * @since 5.18.0
-	 * @var Order_Modifiers_Meta_Repository Repository
+	 * @var Meta_Repo Repository
 	 */
-	protected Order_Modifiers_Meta_Repository $order_modifiers_meta_repository;
+	protected Meta_Repo $meta_repository;
 
 	/**
 	 * The repository for interacting with the order modifier relationship table.
 	 *
 	 * @since 5.18.0
-	 * @var Order_Modifier_Relationship_Repository Repository
+	 * @var Relationship_Repo Repository
 	 */
-	protected Order_Modifier_Relationship_Repository $order_modifiers_relationship_repository;
+	protected Relationship_Repo $relationship_repository;
 
 	/**
 	 * Fields required by this modifier.
@@ -99,9 +100,9 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @since 5.18.0
 	 */
 	public function __construct() {
-		$this->repository                              = new Order_Modifiers_Repository( $this->modifier_type );
-		$this->order_modifiers_meta_repository         = new Order_Modifiers_Meta_Repository();
-		$this->order_modifiers_relationship_repository = new Order_Modifier_Relationship_Repository();
+		$this->repository              = Factory::get_repository_for_type( $this->modifier_type );
+		$this->meta_repository         = new Meta_Repo();
+		$this->relationship_repository = new Relationship_Repo();
 	}
 
 	/**
@@ -436,7 +437,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		}
 
 		// Upsert the metadata using the repository.
-		return $this->order_modifiers_meta_repository->upsert_meta( new Order_Modifier_Meta( $meta_data ) );
+		return $this->meta_repository->upsert_meta( new Order_Modifier_Meta( $meta_data ) );
 	}
 
 
@@ -459,7 +460,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 			'post_id'     => $post_id,
 			'post_type'   => get_post_type( $post_id ),
 		];
-		$this->order_modifiers_relationship_repository->insert( new Order_Modifier_Relationships( $data ) );
+		$this->relationship_repository->insert( new Order_Modifier_Relationships( $data ) );
 	}
 
 	/**
@@ -475,7 +476,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return void
 	 */
 	public function delete_relationship_by_modifier( int $modifier_id ): void {
-		$this->order_modifiers_relationship_repository->clear_relationships_by_modifier_id( $modifier_id );
+		$this->relationship_repository->clear_relationships_by_modifier_id( $modifier_id );
 	}
 
 	/**
@@ -495,7 +496,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 			'post_id'   => $post_id,
 			'post_type' => get_post_type( $post_id ),
 		];
-		$this->order_modifiers_relationship_repository->clear_relationships_by_post_id( new Order_Modifier_Relationships( $data ) );
+		$this->relationship_repository->clear_relationships_by_post_id( new Order_Modifier_Relationships( $data ) );
 	}
 
 	/**
@@ -552,12 +553,12 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 */
 	public function maybe_clear_relationships( int $modifier_id, string $new_apply_type ): void {
 		// Retrieve the current apply_type from the metadata.
-		$current_apply_type = $this->order_modifiers_meta_repository->find_by_order_modifier_id_and_meta_key( $modifier_id, 'fee_applied_to' )->meta_value ?? null;
+		$current_apply_type = $this->meta_repository->find_by_order_modifier_id_and_meta_key( $modifier_id, 'fee_applied_to' )->meta_value ?? null;
 
 		// If the apply_type has changed, clear all relationships.
 		if ( $current_apply_type !== $new_apply_type ) {
 			// Clear the relationships for this modifier.
-			$this->order_modifiers_relationship_repository->clear_relationships_by_modifier_id( $modifier_id );
+			$this->relationship_repository->clear_relationships_by_modifier_id( $modifier_id );
 		}
 	}
 
@@ -586,7 +587,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		$this->delete_relationship_by_modifier( $modifier_id );
 
 		// Delete associated meta data.
-		$this->order_modifiers_meta_repository->delete( new Order_Modifier_Meta( [ 'id' => $modifier_id ] ) );
+		$this->meta_repository->delete( new Order_Modifier_Meta( [ 'id' => $modifier_id ] ) );
 
 		// Delete the modifier itself (mandatory).
 		$delete_modifier = $this->repository->delete(
@@ -620,7 +621,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return mixed|null The meta data found, or null if no matching record is found.
 	 */
 	public function get_order_modifier_meta_by_key( int $order_modifier_id, string $meta_key ) {
-		return $this->order_modifiers_meta_repository->find_by_order_modifier_id_and_meta_key( $order_modifier_id, $meta_key );
+		return $this->meta_repository->find_by_order_modifier_id_and_meta_key( $order_modifier_id, $meta_key );
 	}
 
 	/**
