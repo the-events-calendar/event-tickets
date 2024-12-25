@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Repositories;
 
 use RuntimeException;
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Common\StellarWP\DB\QueryBuilder\QueryBuilder;
 use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Common\StellarWP\Models\ModelQueryBuilder;
 use TEC\Common\StellarWP\Models\Repositories\Contracts\Deletable;
@@ -423,6 +424,92 @@ SQL;
 	}
 
 	/**
+	 * Finds Order Modifiers by applied_to value.
+	 *
+	 * @since TBD
+	 *
+	 * @param string[] $applied_to The value(s) to filter the query by.
+	 * @param array  $params { Optional. Parameters to filter the query.
+	 *     @type string[] $status The status of the modifiers to filter by. Default 'active'.
+	 *     @type int      $limit  The number of results to return. Default 10.
+	 *     @type string   $order  The order of the results. Default 'DESC'.
+	 * }
+	 *
+	 * @return array
+	 */
+	public function get_modifier_by_applied_to( array $applied_to, array $params = [] ): array {
+		// Set up default query parameters.
+		$params = wp_parse_args( $params, $this->get_default_query_params() );
+
+		// Validate the parameters before using them in the query.
+		$valid_params = $this->get_valid_params( $params );
+
+		// Filter out empty and duplicate values.
+		$applied_to = array_unique( array_filter( array_map( 'trim', $applied_to ) ) );
+
+		// Generate a cache key based on the arguments.
+		$cache_key = 'modifier_type_applied_to_' . md5(
+				wp_json_encode(
+					[
+						$this->modifier_type,
+						$applied_to,
+						$valid_params,
+					]
+				)
+			);
+
+		$tribe_cache = tribe( 'cache' );
+
+		// Try to get the results from the cache.
+		$cached_results = $tribe_cache[ $cache_key ] ?? false;
+		if ( $cached_results && is_array( $cached_results ) ) {
+			return $cached_results;
+		}
+
+		// Table aliases for the query.
+		$modifiers = 'o';
+		$meta      = 'm';
+
+		// Initialize the query builder and construct the query.
+		$builder = new QueryBuilder();
+		$builder
+			->from( $this->get_table_name( false ), $modifiers)
+			->select( "{$modifiers}.*", "{$meta}.meta_value" )
+			->innerJoin(
+				$this->get_meta_table_name( false ),
+				"{$modifiers}.id",
+				"{$meta}.order_modifier_id",
+				$meta
+			)
+			->where( "{$modifiers}.modifier_type", $this->modifier_type )
+			->where( "{$meta}.meta_key", $this->get_applied_to_key() )
+			->whereIn( "{$meta}.meta_value", $applied_to )
+		;
+
+		// Add the status params to the pieces.
+		if ( array_key_exists( 'status', $valid_params ) ) {
+			$builder->whereIn( "{$modifiers}.status", $valid_params['status'] );
+		}
+
+		// Add the order param to the pieces.
+		if ( array_key_exists( 'order', $valid_params ) ) {
+			$builder->orderBy( "{$modifiers}.id", $valid_params['order'] );
+		}
+
+		// Add the limit param to the pieces.
+		if ( array_key_exists( 'limit', $valid_params ) ) {
+			$builder->limit( $valid_params['limit'] );
+		}
+
+		$results = $builder->getAll() ?? [];
+
+		// Cache the results for future use.
+		$tribe_cache[ $cache_key ] = $results;
+
+		return $results;
+	}
+
+	/**
 	 * Prepare a query builder for the repository.
 	 *
 	 * @since 5.18.0
@@ -481,6 +568,85 @@ SQL;
 	 */
 	protected function get_meta_table_name( bool $with_prefix = true ): string {
 		return Order_Modifiers_Meta::table_name( $with_prefix );
+	}
+
+	/**
+	 * Get the default query parameters.
+	 *
+	 * @since TBD
+	 *
+	 * @return array The default query parameters.
+	 */
+	protected function get_default_query_params(): array {
+		return [
+			'status' => [ 'active' ],
+			'limit'  => 10,
+			'order'  => 'ASC',
+		];
+	}
+
+	/**
+	 * Get the valid parameters for the query.
+	 *
+	 * This will remove any parameters that we don't handle from the query and do basic
+	 * validation of the value of each query parameter.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $params The parameters to validate.
+	 *
+	 * @return array The valid parameters.
+	 */
+	protected function get_valid_params( array $params ): array {
+		$valid_params = [];
+		foreach ( $params as $key => $value ) {
+			switch ( $key ) {
+				case 'status':
+					$valid_params[ $key ] = array_filter(
+						(array) $value,
+						fn( $status ) => $this->is_valid_status( $status )
+					);
+					break;
+
+				case 'order':
+					$value = strtoupper( $value );
+					$valid_params[ $key ] = 'ASC' === $value ? 'ASC' : 'DESC';
+					break;
+
+				case 'limit':
+					 $valid_params[ $key ] = absint( $value );
+					break;
+
+				// Default is to skip adding the parameter.
+				default:
+					break;
+			}
+		}
+
+		return $valid_params;
+	}
+
+	/**
+	 * Get the key used to store the applied to value in the meta table.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The key used to store the applied to value in the meta table.
+	 */
+	protected function get_applied_to_key(): string {
+		$default_key = "{$this->modifier_type}_applied_to";
+
+		/**
+		 * Filters the key used to store the applied to value in the meta table.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $result        The key used to store the applied to value in the meta table.
+		 * @param string $modifier_type The type of the modifier (e.g., 'coupon', 'fee').
+		 */
+		$result = (string) apply_filters( 'tec_tickets_commerce_order_modifier_applied_to_key', $default_key, $this->modifier_type );
+
+		return ( ! empty( $result ) ) ? $result : $default_key;
 	}
 
 	/**
