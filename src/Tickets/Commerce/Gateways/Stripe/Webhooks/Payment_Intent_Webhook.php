@@ -135,11 +135,6 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 		}
 
 		foreach ( $payment_intents_stored as $status => $intents ) {
-			// Skip if the status is pending or action required.
-			if ( in_array( $status, [ Pending::SLUG, Action_Required::SLUG ], true ) ) {
-				continue;
-			}
-
 			foreach( $intents as $intent ) {
 				// This payment intent has already been processed and updated.
 				if ( $payment_intent_received['id'] === $intent['id'] ) {
