@@ -605,12 +605,7 @@ class Order extends Abstract_Order {
 		 */
 		$update_args = apply_filters( 'tec_tickets_commerce_order_update_args', $update_args, $gateway );
 
-		$updated = tec_tc_orders()->by_args(
-			[
-				'status' => 'any',
-				'id'     => $existing_order_id,
-			]
-		)->set_args( $update_args )->save();
+		$updated = tec_tc_orders()->where( 'id', $existing_order_id )->set_args( $update_args )->save();
 
 		if ( empty( $updated[ $existing_order_id ] ) ) {
 			/**
