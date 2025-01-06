@@ -525,7 +525,13 @@ class Attendee {
 		 */
 		do_action( 'tec_tickets_commerce_attendee_before_update', $update_args, $order, $ticket, $args );
 
-		$attendee = tec_tc_attendees()->where( 'id', $existing )->set_args( $update_args )->save();
+		$updated = tec_tc_attendees()->where( 'id', $existing )->set_args( $update_args )->save();
+
+		if ( empty( $updated[ $existing ] ) ) {
+			return $this->create( $order, $ticket, $args );
+		}
+
+		$attendee = tec_tc_attendees()->where( 'id', $existing )->first();
 
 		/**
 		 * Allow the actions after updating the attendee.
