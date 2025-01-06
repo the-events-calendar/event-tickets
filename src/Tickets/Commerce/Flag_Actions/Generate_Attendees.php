@@ -138,7 +138,13 @@ class Generate_Attendees extends Flag_Action_Abstract {
 				 */
 				$args = apply_filters( 'tec_tickets_commerce_flag_action_generate_attendee_args', $args, $ticket, $order, $new_status, $old_status, $item, $i );
 
-				$attendee = tribe( Attendee::class )->create( $order, $ticket, $args );
+				$existing = tec_tc_attendees()->by_args( $args )->offset( $i )->first_id();
+
+				if ( ! $existing || ! is_int( $existing ) ) {
+					$existing = null;
+				}
+
+				$attendee = tribe( Attendee::class )->upsert( $order, $ticket, $args, $existing );
 
 				/**
 				 * Fires after an attendee is generated for an order.
