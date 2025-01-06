@@ -486,7 +486,7 @@ class Order extends Abstract_Order {
 
 		$order_args['id'] = $existing_order_id;
 
-		$order = $this->upsert( $gateway, $order_args, $existing_order_id );
+		$order = $this->upsert( $gateway, $order_args );
 
 		// We were unable to create the order bail from here.
 		if ( ! $order ) {
