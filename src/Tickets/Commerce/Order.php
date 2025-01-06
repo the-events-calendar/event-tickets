@@ -484,6 +484,8 @@ class Order extends Abstract_Order {
 			}
 		}
 
+		$order_args['id'] = $existing_order_id;
+
 		$order = $this->upsert( $gateway, $order_args, $existing_order_id );
 
 		// We were unable to create the order bail from here.
@@ -541,12 +543,14 @@ class Order extends Abstract_Order {
 	 *
 	 * @param Gateway_Interface $gateway           The gateway to use to create the order.
 	 * @param array             $args              The arguments to create the order.
-	 * @param ?int              $existing_order_id The ID of an existing order to update.
 	 *
-	 * @return false|WP_Post
+	 * @return false|WP_Post WP_Post instance on success or false on failure.
 	 */
-	public function upsert( Gateway_Interface $gateway, array $args, ?int $existing_order_id = null ) {
+	public function upsert( Gateway_Interface $gateway, array $args ) {
 		$gateway_key = $gateway::get_key();
+
+		$existing_order_id = (int) $args['id'] ?? 0;
+		unset( $args['id'] );
 
 		/**
 		 * Allows filtering of the order upsert arguments for all orders created via Tickets Commerce.
@@ -577,7 +581,7 @@ class Order extends Abstract_Order {
 		 */
 		$existing_order_id = (int) apply_filters( 'tec_tickets_commerce_order_upsert_existing_order_id', $existing_order_id );
 
-		if ( ! $existing_order_id ) {
+		if ( ! $existing_order_id || 0 > $existing_order_id ) {
 			return $this->create( $gateway, $args );
 		}
 
@@ -617,7 +621,13 @@ class Order extends Abstract_Order {
 			return $this->create( $gateway, $args );
 		}
 
-		return tec_tc_get_order( $existing_order_id );
+		$order = tec_tc_get_order( $existing_order_id );
+
+		if ( ! $order instanceof WP_Post ) {
+			return false;
+		}
+
+		return $order;
 	}
 
 	/**
