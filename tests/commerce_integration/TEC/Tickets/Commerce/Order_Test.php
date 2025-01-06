@@ -7,14 +7,22 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
 use Tribe\Tests\Traits\With_Uopz;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use WP_Post;
+use TEC\Tickets\Commerce\Status\Pending;
+use TEC\Tickets\Commerce\Status\Completed;
 
 class Order_Test extends WPTestCase {
 	use Ticket_Maker;
 	use With_Uopz;
+	use Order_Maker;
 
 	public function test_it_does_not_create_multiple_orders_for_single_cart() {
-		$post = self::factory()->post->create();
+		$post = self::factory()->post->create(
+			[
+				'post_type' => 'page',
+			]
+		);
 		$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
 		$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
 
@@ -77,6 +85,36 @@ class Order_Test extends WPTestCase {
 		$this->assertSame( 10.0, $order_4->total_value->get_decimal() );
 		$this->assertSame( 20.0, $order_5->total_value->get_decimal() );
 		$this->assertSame( 60.0, $order_6->total_value->get_decimal() );
+	}
+
+	public function test_attendees_are_not_created_multiple_times() {
+		$post = self::factory()->post->create(
+			[
+				'post_type' => 'page',
+			]
+		);
+		$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
+		$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
+
+		$order = $this->create_order( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ] );
+
+		tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
+
+		$attendees = tec_tc_attendees()->by( 'parent', $order->ID )->by( 'status', 'any' )->all();
+
+		$this->assertCount( 3, $attendees );
+
+		tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
+
+		$attendees = tec_tc_attendees()->by( 'parent', $order->ID )->by( 'status', 'any' )->all();
+
+		$this->assertCount( 3, $attendees );
+
+		tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
+
+		$attendees = tec_tc_attendees()->by( 'parent', $order->ID )->by( 'status', 'any' )->all();
+
+		$this->assertCount( 3, $attendees );
 	}
 
 	protected function create_order_from_cart( array $items, array $overrides = [] ) {
