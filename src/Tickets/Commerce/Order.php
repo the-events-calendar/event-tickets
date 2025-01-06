@@ -8,6 +8,7 @@ use TEC\Tickets\Commerce\Status\Reversed;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Date_Utils as Dates;
 use WP_Post;
+use TEC\Tickets\Commerce\Status\Pending;
 
 /**
  * Class Order
@@ -387,6 +388,7 @@ class Order extends Abstract_Order {
 	 * Creates a order from the items in the cart.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Now it will only create one order per cart hash. Every next time it will update the existing order.
 	 *
 	 * @throws \Tribe__Repository__Usage_Error
 	 *
@@ -451,13 +453,16 @@ class Order extends Abstract_Order {
 
 		$total = $this->get_value_total( array_filter( $items ) );
 
+		$hash              = $cart->get_cart_hash();
+		$existing_order_id = null;
+
 		$order_args = [
-			'title'                => $this->generate_order_title( $original_cart_items, $cart->get_cart_hash() ),
+			'title'                => $this->generate_order_title( $original_cart_items, $hash ),
 			'total_value'          => $total->get_decimal(),
 			'subtotal'             => $subtotal->get_decimal(),
 			'items'                => $items,
 			'gateway'              => $gateway::get_key(),
-			'hash'                 => $cart->get_cart_hash(),
+			'hash'                 => $hash,
 			'currency'             => Utils\Currency::get_currency_code(),
 			'purchaser_user_id'    => $purchaser['purchaser_user_id'],
 			'purchaser_full_name'  => $purchaser['purchaser_full_name'],
@@ -466,7 +471,20 @@ class Order extends Abstract_Order {
 			'purchaser_email'      => $purchaser['purchaser_email'],
 		];
 
-		$order = $this->create( $gateway, $order_args );
+		if ( $hash ) {
+			$existing_order_id = tec_tc_orders()->by_args(
+				[
+					'status' => tribe( Pending::class )->get_wp_slug(),
+					'hash'   => $hash,
+				]
+			)->first_id();
+
+			if ( ! $existing_order_id || ! is_int( $existing_order_id ) ) {
+				$existing_order_id = null;
+			}
+		}
+
+		$order = $this->upsert( $gateway, $order_args, $existing_order_id );
 
 		// We were unable to create the order bail from here.
 		if ( ! $order ) {
@@ -512,6 +530,92 @@ class Order extends Abstract_Order {
 		$args = apply_filters( 'tec_tickets_commerce_order_create_args', $args, $gateway );
 
 		return tec_tc_orders()->set_args( $args )->create();
+	}
+
+	/**
+	 * Filters the values and creates a new Order with Tickets Commerce or updates an existing one.
+	 *
+	 * @since TBD
+	 *
+	 * @param Gateway_Interface $gateway           The gateway to use to create the order.
+	 * @param array             $args              The arguments to create the order.
+	 * @param ?int              $existing_order_id The ID of an existing order to update.
+	 *
+	 * @return false|WP_Post
+	 */
+	public function upsert( Gateway_Interface $gateway, array $args, ?int $existing_order_id = null ) {
+		$gateway_key = $gateway::get_key();
+
+		/**
+		 * Allows filtering of the order upsert arguments for all orders created via Tickets Commerce.
+		 *
+		 * @since TBD
+		 *
+		 * @param array             $args    The arguments to create the order.
+		 * @param Gateway_Interface $gateway The gateway to use to create the order.
+		 */
+		$args = apply_filters( "tec_tickets_commerce_order_{$gateway_key}_upsert_args", $args, $gateway );
+
+		/**
+		 * Allows filtering of the order upsert arguments for all orders created via Tickets Commerce.
+		 *
+		 * @since TBD
+		 *
+		 * @param array             $args    The arguments to create the order.
+		 * @param Gateway_Interface $gateway The gateway to use to create the order.
+		 */
+		$args = apply_filters( 'tec_tickets_commerce_order_upsert_args', $args, $gateway );
+
+		/**
+		 * Allows filtering of the existing order ID before "upserting" an order.
+		 *
+		 * @since TDB
+		 *
+		 * @param int $existing_order_id The existing order ID.
+		 */
+		$existing_order_id = (int) apply_filters( 'tec_tickets_commerce_order_upsert_existing_order_id', $existing_order_id );
+
+		if ( ! $existing_order_id ) {
+			return $this->create( $gateway, $args );
+		}
+
+		/**
+		 * Allows filtering of the order update arguments for all orders created via Tickets Commerce.
+		 *
+		 * @since TBD
+		 *
+		 * @param array             $args
+		 * @param Gateway_Interface $gateway
+		 */
+		$update_args = apply_filters( "tec_tickets_commerce_order_{$gateway_key}_update_args", $args, $gateway );
+
+		/**
+		 * Allows filtering of the order update arguments for all orders created via Tickets Commerce.
+		 *
+		 * @since TBD
+		 *
+		 * @param array             $args
+		 * @param Gateway_Interface $gateway
+		 */
+		$update_args = apply_filters( 'tec_tickets_commerce_order_update_args', $update_args, $gateway );
+
+		$updated = tec_tc_orders()->by_args(
+			[
+				'status' => 'any',
+				'id'     => $existing_order_id,
+			]
+		)->set_args( $update_args )->save();
+
+		if ( empty( $updated[ $existing_order_id ] ) ) {
+			/**
+			 * It seems like the $existing_order_id no longer exists or failed to be updated. Let's create a new one instead.
+			 *
+			 * BE AWARE: THe variable $args here is not passed through the update filters since its going to pass through the create filters.
+			 */
+			return $this->create( $gateway, $args );
+		}
+
+		return tec_tc_get_order( $existing_order_id );
 	}
 
 	/**
