@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Prevent duplicate orders and as a result duplicated attendees when a payment would initially fail at least once. [ET-2279]
