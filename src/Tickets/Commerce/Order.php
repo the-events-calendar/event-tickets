@@ -499,6 +499,8 @@ class Order extends Abstract_Order {
 	 *
 	 * @since 5.2.0
 	 *
+	 * @internal Use `upsert` instead.
+	 *
 	 * @param Gateway_Interface $gateway
 	 * @param array             $args
 	 *
