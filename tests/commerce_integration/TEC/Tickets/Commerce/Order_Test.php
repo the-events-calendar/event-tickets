@@ -2,17 +2,14 @@
 
 namespace TEC\Tickets\Commerce;
 
-use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Cart;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Codeception\TestCase\WPTestCase;
-use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
 use WP_Post;
 
 class Order_Test extends WPTestCase {
 	use Ticket_Maker;
-	use Order_Maker;
 
 	public function test_it_does_not_create_multiple_orders_for_single_cart() {
 		$post = self::factory()->post->create();
@@ -49,6 +46,10 @@ class Order_Test extends WPTestCase {
 		$cart->clear_cart();
 		$order_6 = $this->create_order_from_cart( [ $ticket_id_1 => 2, $ticket_id_2 => 2 ] );
 		$cart->clear_cart();
+
+		$this->assertInstanceof( WP_Post::class, $order_4 );
+		$this->assertInstanceof( WP_Post::class, $order_5 );
+		$this->assertInstanceof( WP_Post::class, $order_6 );
 
 		// They should NOT be the same order!
 		$this->assertTrue( $order_4->ID !== $order_5->ID );
