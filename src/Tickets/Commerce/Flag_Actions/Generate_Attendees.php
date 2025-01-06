@@ -115,6 +115,8 @@ class Generate_Attendees extends Flag_Action_Abstract {
 
 			$attendees = [];
 
+			$found = [];
+
 			for ( $i = 0; $i < $quantity; $i ++ ) {
 				$args = [
 					'opt_out'       => Arr::get( $extra, 'optout' ),
@@ -143,6 +145,12 @@ class Generate_Attendees extends Flag_Action_Abstract {
 				if ( ! $existing || ! is_int( $existing ) ) {
 					$existing = null;
 				}
+
+				$found[] = $existing;
+
+				$found = array_filter( $found );
+
+				$existing = in_array( $existing, $found, true ) ? null : $existing;
 
 				$attendee = tribe( Attendee::class )->upsert( $order, $ticket, $args, $existing );
 
