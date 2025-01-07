@@ -201,7 +201,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.18.0.1] 2025-01-07 =
 
-* Fix - Fixed duplication of attendees while using Stripe webhooks with TicketsCommerce. [ET-2279]
+* Fix - Resolves problem related to duplication of attendees while using Stripe webhooks with Tickets Commerce. [ET-2279]
 
 = [5.18.0] 2024-12-17 =
 
