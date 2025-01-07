@@ -123,8 +123,12 @@ class Generate_Attendees extends Flag_Action_Abstract {
 						'ticket_id' => $ticket->ID,
 						'event_id'  => $ticket->get_event_id(),
 					]
-				)->fields( 'ids' )->all( true ) as $attendee_id
+				)->get_ids( true ) as $attendee_id
 			) {
+				if ( ! is_int( $attendee_id ) || 0 >= $attendee_id ) {
+					$existing[] = null;
+					continue;
+				}
 				$existing[] = $attendee_id;
 			}
 
