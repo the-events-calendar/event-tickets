@@ -1,4 +1,0 @@
-Significance: minor
-Type: fix
-
-Fixed duplication of attendees while using Stripe webhooks with TicketsCommerce. [ET-2279]
