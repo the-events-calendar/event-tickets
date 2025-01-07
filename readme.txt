@@ -199,6 +199,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.18.0.1] 2025-01-07 =
+
+* Fix - Fixed duplication of attendees while using Stripe webhooks with TicketsCommerce. [ET-2279]
+
 = [5.18.0] 2024-12-17 =
 
 * Feature - Added option to detach assigned seating tickets from layout and revert them to regular tickets. [SL-214]
