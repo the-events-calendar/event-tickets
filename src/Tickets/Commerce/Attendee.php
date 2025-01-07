@@ -501,6 +501,9 @@ class Attendee {
 			$update_args['fields'] = $fields;
 		}
 
+		// No need to update the security code.
+		unset( $update_args['security_code'] );
+
 		/**
 		 * Allow the filtering of the update arguments for attendee.
 		 *
