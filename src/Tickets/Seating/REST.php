@@ -18,8 +18,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
  *
  * @package TEC\Tickets\Seating;
  */
-class REST extends Controller_Contract{
-
+class REST extends Controller_Contract {
 	/**
 	 * Subscribes the controller to relevant hooks, binds implementations.
 	 *
@@ -47,9 +46,9 @@ class REST extends Controller_Contract{
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string,mixed> $data The Attendee archcive REST API response data.
+	 * @param array<string,mixed> $data The Attendee archive REST API response data.
 	 *
-	 * @return array<string,mixed> The Attendee archcive REST API response data modified to include ASC related data.
+	 * @return array<string,mixed> The Attendee archive REST API response data modified to include ASC related data.
 	 */
 	public function inject_attendee_data( $data ) {
 		if ( ! is_array( $data ) ) {
@@ -60,30 +59,32 @@ class REST extends Controller_Contract{
 			return $data;
 		}
 
-
 		$attendees = $data['attendees'] ?? [];
 
 		if ( ! is_array( $attendees ) ) {
 			return $data;
 		}
 
-		array_walk( $attendees, function ( &$attendee ) {
-			if ( ! ( is_array( $attendee ) && isset( $attendee['id'], $attendee['ticket_id'] ) ) ) {
-				return;
+		array_walk(
+			$attendees,
+			function ( &$attendee ) {
+				if ( ! ( is_array( $attendee ) && isset( $attendee['id'], $attendee['ticket_id'] ) ) ) {
+					return;
+				}
+
+				// Let's check the ticket of this Attendee is an ASC one.
+				$ticket_id             = $attendee['ticket_id'];
+				$uses_assigned_seating = get_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
+
+				if ( ! $uses_assigned_seating ) {
+					return;
+				}
+
+				$seat_label             = get_post_meta( $attendee['id'], Meta::META_KEY_ATTENDEE_SEAT_LABEL, true );
+				$attendee['asc_ticket'] = true;
+				$attendee['seat_label'] = $seat_label ?: '';
 			}
-
-			// Let's check the ticket of this Attendee is an ASC one.
-			$ticket_id             = $attendee['ticket_id'];
-			$uses_assigned_seating = get_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
-
-			if ( ! $uses_assigned_seating ) {
-				return;
-			}
-
-			$seat_label             = get_post_meta( $attendee['id'], Meta::META_KEY_ATTENDEE_SEAT_LABEL, true );
-			$attendee['asc_ticket'] = true;
-			$attendee['seat_label'] = $seat_label ?: '';
-		} );
+		);
 
 		$data['attendees'] = $attendees;
 

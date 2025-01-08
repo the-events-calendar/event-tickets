@@ -198,7 +198,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 		 */
 		$data = apply_filters( 'tec_tickets_rest_attendee_archive_data', $data, $request );
 
-		return  new WP_REST_Response( $data, 200, $headers );
+		return new WP_REST_Response( $data, 200, $headers );
 	}
 
 	/**
