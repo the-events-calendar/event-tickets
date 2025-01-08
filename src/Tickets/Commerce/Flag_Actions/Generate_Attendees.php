@@ -119,9 +119,8 @@ class Generate_Attendees extends Flag_Action_Abstract {
 			foreach (
 				tec_tc_attendees()->by_args(
 					[
-						'order_id'  => $order->ID,
-						'ticket_id' => $ticket->ID,
-						'event_id'  => $ticket->get_event_id(),
+						'post_parent' => $order->ID,
+						'ticket_id'   => $ticket->ID,
 					]
 				)->get_ids( true ) as $attendee_id
 			) {
