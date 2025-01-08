@@ -1,0 +1,4 @@
+Significance: minor
+Type: tweak
+
+Lazy load attendees report page asset filter to properly localize asset data [ET-2274]
