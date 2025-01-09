@@ -131,6 +131,12 @@ class Provider extends Service_Provider {
 			return;
 		}
 
+		// We have retried too many times, lets fail.
+		if ( $current_try > 9 ) {
+			// AS catches exception and uses them as the fail message in the action management screen.
+			throw new Exception( __( 'Action failed after too many retries.', 'event-tickets' ) );
+		}
+
 		// The order is no longer where it was... that could be dangerous, lets bail with reschedule?
 		if ( $order->post_status !== $old_status_wp_slug ) {
 			// Reschedule logic hides that another async action may have to be processed first ?
@@ -178,12 +184,6 @@ class Provider extends Service_Provider {
 
 		++$current_try;
 
-		// We have retried too many times, lets fail.
-		if ( $current_try > 9 ) {
-			// AS catches exception and uses them as the fail message in the action management screen.
-			throw new Exception( __( 'Action failed after too many retries.', 'event-tickets' ) );
-		}
-
 		// Reschedule...
 		as_enqueue_async_action(
 			'tec_tickets_commerce_async_webhook_process',
@@ -192,7 +192,7 @@ class Provider extends Service_Provider {
 				'new_status' => $new_status_wp_slug,
 				'metadata'   => $metadata,
 				'old_status' => $old_status_wp_slug,
-				'try'        => $current_try,
+				'try'        => ++$current_try,
 			],
 			'tec-tickets-commerce-stripe-webhooks'
 		);

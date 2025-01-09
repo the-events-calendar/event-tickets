@@ -140,6 +140,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		);
 
 		if ( is_wp_error( $updated ) ) {
+			$orders->checkout_completed( $order->ID );
 			return $updated;
 		}
 
@@ -148,6 +149,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$response['order_id']      = $order->ID;
 		$response['client_secret'] = $payment_intent['client_secret'];
 		$response['redirect_url']  = add_query_arg( [ 'tc-order-id' => $payment_intent['id'] ], tribe( Success::class )->get_url() );
+
+		$orders->checkout_completed( $order->ID );
 
 		return new WP_REST_Response( $response );
 	}
