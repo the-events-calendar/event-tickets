@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Attendee generation during order status transition becomes aware if attendees have been already generated. [ET-2282]
