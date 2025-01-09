@@ -6,7 +6,7 @@ use TEC\Common\Tests\Provider\Controller_Test_Case;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
-class QR_Test extends Controller_Test_Case {
+class REST_Test extends Controller_Test_Case {
 	use Ticket_Maker;
 	use Attendee_Maker;
 
