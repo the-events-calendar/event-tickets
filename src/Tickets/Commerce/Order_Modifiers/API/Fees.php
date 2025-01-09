@@ -62,9 +62,8 @@ class Fees extends Base_API {
 		Manager $manager
 	) {
 		parent::__construct( $container );
-		$this->modifiers_repository = $fee_repository;
-		$this->relationships        = $relationships;
-		$this->manager              = $manager;
+		$this->relationships = $relationships;
+		$this->manager       = $manager;
 	}
 
 	/**
