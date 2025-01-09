@@ -11,7 +11,9 @@ namespace TEC\Tickets\Commerce;
 use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\Gateways;
 use Tribe__Tickets__Main as Tickets_Plugin;
-
+use WP_Post;
+use Exception;
+use TEC\Tickets\Commerce\Status\Status_Handler;
 
 /**
  * Service provider for the Tickets Commerce.
@@ -100,6 +102,100 @@ class Provider extends Service_Provider {
 
 		// Cache invalidation.
 		add_filter( 'tec_cache_listener_save_post_types', [ $this, 'filter_cache_listener_save_post_types' ] );
+
+		add_action( 'tec_tickets_commerce_async_webhook_process', [ $this, 'process_async_stripe_webhook' ], 10, 5 );
+	}
+
+	/**
+	 * Process the async stripe webhook.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $order_id           The order ID.
+	 * @param string $new_status_wp_slug The new status WP slug.
+	 * @param array  $metadata           The metadata.
+	 * @param string $old_status_wp_slug The old status WP slug.
+	 * @param int    $current_try        The try.
+	 *
+	 * @throws Exception If the action fails after too many retries.
+	 */
+	public function process_async_stripe_webhook( int $order_id, string $new_status_wp_slug, array $metadata = [], string $old_status_wp_slug = '', int $current_try = 1 ): void {
+		$order = tec_tc_get_order( $order_id );
+
+		if ( ! $order || ! $order instanceof WP_Post || ! $order->ID ) {
+			return;
+		}
+
+		// The order is already there!
+		if ( $order->post_status === $new_status_wp_slug ) {
+			return;
+		}
+
+		// The order is no longer where it was... that could be dangerous, lets bail with reschedule?
+		if ( $order->post_status !== $old_status_wp_slug ) {
+			// Reschedule logic hides that another async action may have to be processed first ?
+			as_enqueue_async_action(
+				'tec_tickets_commerce_async_webhook_process',
+				[
+					'order_id'   => $order->ID,
+					'new_status' => $new_status_wp_slug,
+					'metadata'   => $metadata,
+					'old_status' => $old_status_wp_slug,
+					'try'        => ++$current_try,
+				],
+				'tec-tickets-commerce-stripe-webhooks'
+			);
+
+			return;
+		}
+
+		if ( tribe( Order::class )->is_order_locked( $order->ID ) || ! tribe( Order::class )->is_checkout_completed( $order->ID ) ) {
+			// Reschedule...
+			as_enqueue_async_action(
+				'tec_tickets_commerce_async_webhook_process',
+				[
+					'order_id'   => $order->ID,
+					'new_status' => $new_status_wp_slug,
+					'metadata'   => $metadata,
+					'old_status' => $old_status_wp_slug,
+					'try'        => ++$current_try,
+				],
+				'tec-tickets-commerce-stripe-webhooks'
+			);
+
+			return;
+		}
+
+		$result = tribe( Order::class )->modify_status(
+			$order->ID,
+			tribe( Status_Handler::class )->get_by_wp_slug( $new_status_wp_slug )->get_slug(),
+			$metadata
+		);
+
+		if ( $result && ! is_wp_error( $result ) ) {
+			return;
+		}
+
+		++$current_try;
+
+		// We have retried too many times, lets fail.
+		if ( $current_try > 10 ) {
+			// AS catches exception and uses them as the fail message in the action management screen.
+			throw new Exception( __( 'Action failed after too many retries.', 'event-tickets' ) );
+		}
+
+		// Reschedule...
+		as_enqueue_async_action(
+			'tec_tickets_commerce_async_webhook_process',
+			[
+				'order_id'   => $order->ID,
+				'new_status' => $new_status_wp_slug,
+				'metadata'   => $metadata,
+				'old_status' => $old_status_wp_slug,
+				'try'        => $current_try,
+			],
+			'tec-tickets-commerce-stripe-webhooks'
+		);
 	}
 
 	/**
