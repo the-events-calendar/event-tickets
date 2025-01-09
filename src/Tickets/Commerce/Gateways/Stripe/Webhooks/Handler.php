@@ -129,7 +129,31 @@ class Handler {
 	 * @return bool|WP_Error|null
 	 */
 	public static function update_order_status( \WP_Post $order, Commerce_Status\Status_Interface $status, array $metadata = [] ) {
-		// Lock checks and if locked => reschedule.
+		if ( tribe( Order::class )->is_order_locked( $order->ID ) || ! tribe( Order::class )->is_checkout_completed( $order->ID ) ) {
+
+			if ( function_exists( 'as_enqueue_async_action' ) ) {
+				as_enqueue_async_action(
+					'tec_tickets_commerce_async_webhook_process',
+					[
+						'order_id'   => $order->ID,
+						'new_status' => $status->get_wp_slug(),
+						'metadata'   => $metadata,
+						'old_status' => $order->post_status,
+						'try'        => 1,
+					],
+					'tec-tickets-commerce-stripe-webhooks'
+				);
+			}
+
+			/**
+			 * We can't return WP_Error because that will make Stripe think that
+			 * we failed to process the Webhook and as a result will resend it.
+			 *
+			 * Returning bool is the best option here. False since we didn't update, but we will!
+			 */
+			return false;
+		}
+
 		return tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), $metadata );
 	}
 }
