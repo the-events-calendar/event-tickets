@@ -957,7 +957,7 @@ class Order extends Abstract_Order {
 
 			$lock_key = self::ORDER_LOCK_KEY;
 
-			DB::query(
+			$result = DB::query(
 				DB::prepare(
 					"UPDATE %i set $lock_key = %s where ID = $order_id and $lock_key = ''",
 					DB::prefix( 'posts' ),
@@ -965,7 +965,9 @@ class Order extends Abstract_Order {
 				)
 			);
 
-			return (bool) DB::query( 'COMMIT' );
+			DB::commit();
+
+			return (bool) $result;
 		} catch ( DatabaseQueryException $e ) {
 			DB::rollback();
 
