@@ -370,39 +370,20 @@ class Order extends Abstract_Order {
 
 		$args = array_merge( $extra_args, [ 'status' => $status->get_wp_slug() ] );
 
-		if ( ! $this->is_order_locked( $order_id ) ) {
-			// During this operations - the order should be locked!
-			$locked = $this->lock_order( $order_id );
+		// During this operations - the order should be locked!
+		$locked = $this->lock_order( $order_id );
 
-			// If we were unable to lock the order, bail.
-			if ( ! $locked ) {
-				return false;
-			}
-		}
-
-		if ( ! $this->is_order_locked_by_current_request( $order_id ) ) {
-			// We are not the ones who locked this order, bail.
+		// If we were unable to lock the order, bail.
+		if ( ! $locked ) {
 			return false;
 		}
 
-		DB::beginTransaction();
+		$updated = tec_tc_orders()
+			->where( 'id', $order_id )
+			->where( 'post_content_filtered', $this->get_lock_id() )
+			->set_args( $args )->save();
 
-		$updated = tec_tc_orders()->by_args(
-			[
-				'status' => 'any',
-				'id'     => $order_id,
-			]
-		)->set_args( $args )->save();
-
-		$unlocked = $this->unlock_order( $order_id );
-
-		if ( ! $unlocked ) {
-			DB::rollback();
-
-			return false;
-		}
-
-		DB::commit();
+		$this->unlock_order( $order_id );
 
 		// After modifying the status we add a meta to flag when it was modified.
 		if ( $updated ) {
@@ -642,16 +623,9 @@ class Order extends Abstract_Order {
 			return $this->create( $gateway, $args );
 		}
 
-		if ( ! $this->is_order_locked( $existing_order_id ) ) {
-			$locked = $this->lock_order( $existing_order_id );
+		$locked = $this->lock_order( $existing_order_id );
 
-			if ( ! $locked ) {
-				return false;
-			}
-		}
-
-		if ( ! $this->is_order_locked_by_current_request( $existing_order_id ) ) {
-			// We are not the ones who locked this order, bail.
+		if ( ! $locked ) {
 			return false;
 		}
 
@@ -675,19 +649,13 @@ class Order extends Abstract_Order {
 		 */
 		$update_args = apply_filters( 'tec_tickets_commerce_order_update_args', $update_args, $gateway );
 
-		DB::beginTransaction();
+		$updated = tec_tc_orders()
+			->where( 'id', $existing_order_id )
+			->where( 'post_content_filtered', $this->get_lock_id() )
+			->set_args( $update_args )
+			->save();
 
-		$updated = tec_tc_orders()->where( 'id', $existing_order_id )->set_args( $update_args )->save();
-
-		$unlocked = $this->unlock_order( $existing_order_id );
-
-		if ( ! $unlocked ) {
-			DB::rollback();
-
-			return false;
-		}
-
-		DB::commit();
+		$this->unlock_order( $existing_order_id );
 
 		if ( empty( $updated[ $existing_order_id ] ) ) {
 			/**
@@ -966,17 +934,19 @@ class Order extends Abstract_Order {
 	 * @return bool Whether the order was locked.
 	 */
 	public function lock_order( int $order_id ): bool {
-		if ( $this->is_order_locked_by_current_request( $order_id ) ) {
-			return true;
-		}
-
-		if ( $this->is_order_locked( $order_id ) ) {
-			return false;
-		}
-
 		$this->generate_lock_id();
 
-		return (bool) update_post_meta( $order_id, static::ORDER_LOCK_META, $this->get_lock_id() );
+		DB::beginTransaction();
+
+		DB::query(
+			DB::prepare(
+				"UPDATE %i set post_content_filtered = %s where ID = $order_id and post_content_filtered = ''",
+				DB::prefix( 'posts' ),
+				$this->get_lock_id()
+			)
+		);
+
+		return (bool) DB::query( 'COMMIT' );
 	}
 
 	/**
@@ -989,54 +959,13 @@ class Order extends Abstract_Order {
 	 * @return bool Whether the order was unlocked.
 	 */
 	public function unlock_order( int $order_id ): bool {
-		if ( ! $this->is_order_locked( $order_id ) ) {
-			return delete_post_meta( $order_id, static::ORDER_LOCK_META );
-		}
-
-		if ( ! $this->is_order_locked_by_current_request( $order_id ) ) {
-			return false;
-		}
-
-		return delete_post_meta( $order_id, static::ORDER_LOCK_META );
-	}
-
-	/**
-	 * Get whether the order is locked.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $order_id The order ID.
-	 *
-	 * @return bool Whether the order is locked.
-	 */
-	public function is_order_locked( int $order_id ): bool {
-		$fingerprint = $this->get_orders_lock_fingerprint( $order_id );
-
-		if ( ! $fingerprint ) {
-			return false;
-		}
-
-		if ( ! strstr( $fingerprint, '||' ) ) {
-			// Invalid format ? Let's bail.
-			return false;
-		}
-
-		[ $id, $ts ] = explode( '||', $fingerprint, 2 );
-
-		return time() < (int) $ts;
-	}
-
-	/**
-	 * Get whether the order is locked by the current request.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $order_id The order ID.
-	 *
-	 * @return bool Whether the order is locked by the current request.
-	 */
-	protected function is_order_locked_by_current_request( int $order_id ): bool {
-		return self::$lock_id === $this->get_orders_lock_fingerprint( $order_id );
+		return (bool) DB::query(
+			DB::prepare(
+				"UPDATE %i set post_content_filtered = '' where ID = $order_id and post_content_filtered = %s",
+				DB::prefix( 'posts' ),
+				$this->get_lock_id()
+			)
+		);
 	}
 
 	/**
@@ -1058,29 +987,25 @@ class Order extends Abstract_Order {
 	 * @return string The lock ID.
 	 */
 	protected function generate_lock_id(): string {
-		$expire_at     = (string) ( time() + ( HOUR_IN_SECONDS / 4 ) );
-		self::$lock_id = md5( wp_rand() . microtime() ) . '||' . $expire_at;
+		self::$lock_id = uniqid( '_order_lock', true );
 
 		return self::$lock_id;
 	}
 
 	/**
-	 * Get the lock fingerprint for an order.
+	 * Get whether the order is locked.
 	 *
 	 * @since TBD
 	 *
 	 * @param int $order_id The order ID.
 	 *
-	 * @return string The lock fingerprint.
+	 * @return bool Whether the order is locked.
 	 */
-	protected function get_orders_lock_fingerprint( int $order_id ): string {
-		// Direct query to overcome object cache.
-		return (string) DB::get_var(
+	public function is_order_locked( int $order_id ): bool {
+		return (bool) DB::get_var(
 			DB::prepare(
-				"SELECT meta_value FROM %i WHERE post_id = %d AND meta_key = %s",
-				DB::prefix( 'postmeta' ),
-				$order_id,
-				static::ORDER_LOCK_META
+				"SELECT post_content_filtered FROM %i WHERE ID = $order_id",
+				DB::prefix( 'posts' )
 			)
 		);
 	}
@@ -1098,7 +1023,7 @@ class Order extends Abstract_Order {
 		// Direct query to overcome object cache.
 		return (bool) DB::get_var(
 			DB::prepare(
-				"SELECT meta_value FROM %i WHERE post_id = %d AND meta_key = %s",
+				'SELECT meta_value FROM %i WHERE post_id = %d AND meta_key = %s',
 				DB::prefix( 'postmeta' ),
 				$order_id,
 				static::CHECKOUT_COMPLETED_META
@@ -1116,35 +1041,6 @@ class Order extends Abstract_Order {
 	 * @return bool Whether the checkout was marked as completed.
 	 */
 	public function checkout_completed( int $order_id ): bool {
-		if ( ! $this->is_order_locked( $order_id ) ) {
-			// During this operations - the order should be locked!
-			$locked = $this->lock_order( $order_id );
-
-			// If we were unable to lock the order, bail.
-			if ( ! $locked ) {
-				return false;
-			}
-		}
-
-		if ( ! $this->is_order_locked_by_current_request( $order_id ) ) {
-			// We are not the ones who locked this order, bail.
-			return false;
-		}
-
-		DB::beginTransaction();
-
-		$result = (bool) update_post_meta( $order_id, static::CHECKOUT_COMPLETED_META, true );
-
-		$unlocked = $this->unlock_order( $order_id );
-
-		if ( ! $unlocked ) {
-			DB::rollback();
-
-			return false;
-		}
-
-		DB::commit();
-
-		return $result;
+		return (bool) update_post_meta( $order_id, static::CHECKOUT_COMPLETED_META, true );
 	}
 }
