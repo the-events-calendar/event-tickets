@@ -581,7 +581,7 @@ class Order extends Abstract_Order {
 		 */
 		$existing_order_id = (int) apply_filters( 'tec_tickets_commerce_order_upsert_existing_order_id', $existing_order_id );
 
-		if ( ! $existing_order_id || 0 > $existing_order_id ) {
+		if ( ! $existing_order_id || 0 >= $existing_order_id ) {
 			return $this->create( $gateway, $args );
 		}
 
