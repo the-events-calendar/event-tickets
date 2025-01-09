@@ -231,11 +231,12 @@ class Cart {
 
 		$cart_hash = $this->get_repository()->get_hash();
 
+		$hash_from_cookie = sanitize_key( $_COOKIE[ static::get_cart_hash_cookie_name() ] ) ?? '';
+
 		if (
-			! empty( $_COOKIE[ static::get_cart_hash_cookie_name() ] )
-			&& strlen( sanitize_key( $_COOKIE[ static::get_cart_hash_cookie_name() ] ) ) === $cart_hash_length
+			strlen( $hash_from_cookie ) === $cart_hash_length
 		) {
-			$cart_hash = sanitize_key( $_COOKIE[ static::get_cart_hash_cookie_name() ] );
+			$cart_hash = $hash_from_cookie;
 
 			$cart_hash_transient = get_transient( static::get_transient_name( $cart_hash ) );
 
@@ -299,7 +300,7 @@ class Cart {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @parem string $value Value used for the cookie or empty to purge the cookie.
+	 * @param string $value Value used for the cookie or empty to purge the cookie.
 	 *
 	 * @return boolean
 	 */
