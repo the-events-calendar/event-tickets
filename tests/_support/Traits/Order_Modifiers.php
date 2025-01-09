@@ -4,9 +4,9 @@ namespace Tribe\Tickets\Test\Traits;
 
 use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Controller;
+use TEC\Tickets\Commerce\Order_Modifiers\Factory;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
-use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers as Order_Modifiers_Repository;
 
 trait Order_Modifiers {
 
@@ -57,14 +57,14 @@ trait Order_Modifiers {
 	 * @return Order_Modifier The retrieved order modifier.
 	 */
 	protected function get_order_modifier_for_test( int $modifier_id, $type = 'coupon' ) {
-		$order_modifier_repository = new Order_Modifiers_Repository( $type );
+		$order_modifier_repository = Factory::get_repository_for_type( $type );
 
 		// Retrieve the modifier by ID.
 		return $order_modifier_repository->find_by_id( $modifier_id );
 	}
 
 	protected function clear_all_modifiers( $type = 'coupon' ) {
-		$order_modifier_repository = new Order_Modifiers_Repository( $type );
+		$order_modifier_repository = Factory::get_repository_for_type( $type );
 
 		$all_modifiers = $order_modifier_repository->get_all();
 
