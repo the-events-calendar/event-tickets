@@ -69,11 +69,11 @@ class Attendee {
 			return $value;
 		}
 
-		if ( ! isset( $item['ID'] ) ) {
+		if ( ! isset( $item['attendee_id'] ) ) {
 			return '-';
 		}
 
-		$seat_label = get_post_meta( $item['ID'], Meta::META_KEY_ATTENDEE_SEAT_LABEL, true );
+		$seat_label = get_post_meta( $item['attendee_id'], Meta::META_KEY_ATTENDEE_SEAT_LABEL, true );
 
 		if ( ! empty( $seat_label ) ) {
 			return $seat_label;
