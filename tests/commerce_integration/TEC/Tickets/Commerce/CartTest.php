@@ -183,7 +183,7 @@ class CartTest extends \Codeception\TestCase\WPTestCase {
 		$original_cookie_name = Cart::get_cart_hash_cookie_name();
 		$this->assertEquals( Cart::$cart_hash_cookie_name, $original_cookie_name );
 
-		add_filter( 'tribe_tickets_commerce_cart_hash_cookie_name', function() {
+		add_filter( 'tec_tickets_commerce_cart_hash_cookie_name', function() {
 			return 'different_cookie_name';
 		} );
 
