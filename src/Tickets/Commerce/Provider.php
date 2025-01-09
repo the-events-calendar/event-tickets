@@ -179,7 +179,7 @@ class Provider extends Service_Provider {
 		++$current_try;
 
 		// We have retried too many times, lets fail.
-		if ( $current_try > 10 ) {
+		if ( $current_try > 9 ) {
 			// AS catches exception and uses them as the fail message in the action management screen.
 			throw new Exception( __( 'Action failed after too many retries.', 'event-tickets' ) );
 		}
