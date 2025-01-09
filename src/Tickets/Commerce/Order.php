@@ -611,7 +611,7 @@ class Order extends Abstract_Order {
 			/**
 			 * It seems like the $existing_order_id no longer exists or failed to be updated. Let's create a new one instead.
 			 *
-			 * BE AWARE: THe variable $args here is not passed through the update filters since its going to pass through the create filters.
+			 * BE AWARE: The `$args` variable is not passed through the update filters here since it's going to pass through the create filters.
 			 */
 			return $this->create( $gateway, $args );
 		}
