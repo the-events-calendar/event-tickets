@@ -115,6 +115,22 @@ class Generate_Attendees extends Flag_Action_Abstract {
 
 			$attendees = [];
 
+			$existing = [];
+			foreach (
+				tec_tc_attendees()->by_args(
+					[
+						'post_parent' => $order->ID,
+						'ticket_id'   => $ticket->ID,
+					]
+				)->get_ids( true ) as $attendee_id
+			) {
+				if ( ! is_int( $attendee_id ) || 0 >= $attendee_id ) {
+					$existing[] = null;
+					continue;
+				}
+				$existing[] = $attendee_id;
+			}
+
 			for ( $i = 0; $i < $quantity; $i ++ ) {
 				$args = [
 					'opt_out'       => Arr::get( $extra, 'optout' ),
@@ -138,7 +154,7 @@ class Generate_Attendees extends Flag_Action_Abstract {
 				 */
 				$args = apply_filters( 'tec_tickets_commerce_flag_action_generate_attendee_args', $args, $ticket, $order, $new_status, $old_status, $item, $i );
 
-				$attendee = tribe( Attendee::class )->create( $order, $ticket, $args );
+				$attendee = tribe( Attendee::class )->upsert( $order, $ticket, $args, $existing[ $i ] ?? null );
 
 				/**
 				 * Fires after an attendee is generated for an order.
