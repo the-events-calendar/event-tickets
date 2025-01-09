@@ -137,13 +137,10 @@ class Order_Modifiers_Meta extends Repository implements Insertable, Updatable, 
 			$meta_data->meta_key
 		);
 
-		if ( $existing_meta ) {
-			// If the record exists, update it with the new data.
-			return $this->update( $meta_data );
-		}
-
-		// If no existing record is found, insert a new one.
-		return $this->insert( $meta_data );
+		// If the record exists, update it with the new data, otherwise insert a new one.
+		return $existing_meta
+			? $this->update( $meta_data )
+			: $this->insert( $meta_data );
 	}
 
 	/**
@@ -157,8 +154,8 @@ class Order_Modifiers_Meta extends Repository implements Insertable, Updatable, 
 	 */
 	public function find_by_order_modifier_id( int $order_modifier_id ): Model {
 		return $this->prepareQuery()
-						->where( 'order_modifier_id', $order_modifier_id )
-						->get();
+			->where( 'order_modifier_id', $order_modifier_id )
+			->get();
 	}
 
 	/**
@@ -173,9 +170,9 @@ class Order_Modifiers_Meta extends Repository implements Insertable, Updatable, 
 	 */
 	public function find_by_order_modifier_id_and_meta_key( int $order_modifier_id, string $meta_key ): ?Order_Modifier_Meta {
 		return $this->prepareQuery()
-					->where( 'order_modifier_id', $order_modifier_id )
-					->where( 'meta_key', $meta_key )
-					->limit( 1 )
-					->get();
+			->where( 'order_modifier_id', $order_modifier_id )
+			->where( 'meta_key', $meta_key )
+			->limit( 1 )
+			->get();
 	}
 }
