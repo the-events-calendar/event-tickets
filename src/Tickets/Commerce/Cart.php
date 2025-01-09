@@ -231,7 +231,7 @@ class Cart {
 
 		$cart_hash = $this->get_repository()->get_hash();
 
-		$hash_from_cookie = sanitize_key( $_COOKIE[ static::get_cart_hash_cookie_name() ] ?? '' );
+		$hash_from_cookie = sanitize_text_field( $_COOKIE[ static::get_cart_hash_cookie_name() ] ?? '' );
 
 		if (
 			strlen( $hash_from_cookie ) === $cart_hash_length
