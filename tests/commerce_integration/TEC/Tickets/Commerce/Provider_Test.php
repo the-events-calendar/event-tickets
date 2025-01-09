@@ -160,6 +160,6 @@ class Provider_Test extends WPTestCase {
 
 		$this->expectException( Exception::class );
 		$this->expectExceptionMessage( 'Action failed after too many retries.' );
-		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID, $wp_status_slug_from_slug( Completed::SLUG ), [], $wp_status_slug_from_slug( Created::SLUG ), 9 );
+		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID, $wp_status_slug_from_slug( Completed::SLUG ), [], $wp_status_slug_from_slug( Created::SLUG ), 10 );
 	}
 }
