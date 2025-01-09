@@ -104,16 +104,16 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 * @since 5.18.0
 	 */
 	public function prepare_items() {
-		$columns               = $this->get_columns();
-		$hidden                = [];
-		$sortable              = $this->get_sortable_columns();
-		$this->_column_headers = [ $columns, $hidden, $sortable ];
+		$this->_column_headers = [
+			$this->get_columns(),
+			$this->get_hidden_columns(),
+			$this->get_sortable_columns(),
+		];
 
 		// Handle search.
 		$search = tribe_get_request_var( 's', '' );
 
 		// Capture sorting parameters.
-
 		$orderby = sanitize_text_field( tribe_get_request_var( 'orderby', 'display_name' ) );
 		$order   = sanitize_text_field( tribe_get_request_var( 'order', 'asc' ) );
 
@@ -329,6 +329,16 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 *
 	 * @return void
 	 */
-	public function render_table_explain_text() {
+	public function render_table_explain_text() {}
+
+	/**
+	 * Retrieves hidden columns for the table.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	protected function get_hidden_columns(): array {
+		return [];
 	}
 }
