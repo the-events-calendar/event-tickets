@@ -1,4 +1,5 @@
 <?php
+// phpcs:disable WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE, WordPressVIPMinimum.Functions.RestrictedFunctions.cookies_setcookie
 
 namespace TEC\Tickets\Commerce;
 
@@ -232,9 +233,9 @@ class Cart {
 
 		if (
 			! empty( $_COOKIE[ static::get_cart_hash_cookie_name() ] )
-			&& strlen( esc_html( $_COOKIE[ static::get_cart_hash_cookie_name() ] ) ) === $cart_hash_length
+			&& strlen( sanitize_key( $_COOKIE[ static::get_cart_hash_cookie_name() ] ) ) === $cart_hash_length
 		) {
-			$cart_hash = esc_html( $_COOKIE[ static::get_cart_hash_cookie_name() ] );
+			$cart_hash = sanitize_key( $_COOKIE[ static::get_cart_hash_cookie_name() ] );
 
 			$cart_hash_transient = get_transient( static::get_transient_name( $cart_hash ) );
 
