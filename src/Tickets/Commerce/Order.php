@@ -941,7 +941,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Lock an order to prevent it from being modified.
 	 *
-	 * When this method changes you need to change the uopz_set_return method in the tests in file tests/_bootstrap.php.
+	 * When this method changes you need to adjust the function `tests_et_enable_fake_lock_mechanism` in file tests/_bootstrap.php.
 	 *
 	 * @since TBD
 	 *
@@ -976,7 +976,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Unlock an order to allow it to be modified.
 	 *
-	 * When this method changes you need to change the uopz_set_return method in the tests in file tests/_bootstrap.php.
+	 * When this method changes you need to adjust the function `tests_et_enable_fake_lock_mechanism` in file tests/_bootstrap.php.
 	 *
 	 * @since TBD
 	 *
@@ -989,9 +989,8 @@ class Order extends Abstract_Order {
 		try {
 			return (bool) DB::query(
 				DB::prepare(
-					"UPDATE %i set $lock_key = '' where ID = $order_id and $lock_key = %s",
-					DB::prefix( 'posts' ),
-					$this->get_lock_id()
+					"UPDATE %i set $lock_key = '' where ID = $order_id",
+					DB::prefix( 'posts' )
 				)
 			);
 		} catch ( DatabaseQueryException $e ) {

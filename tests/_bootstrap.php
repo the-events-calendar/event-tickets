@@ -43,27 +43,43 @@ if ( isset( $_SERVER['argv'] ) && in_array( '--debug', $_SERVER['argv'], true ) 
 putenv( 'TEC_CUSTOM_TABLES_V1_DISABLED=1' );
 $_ENV['TEC_CUSTOM_TABLES_V1_DISABLED'] = 1;
 
-// Fake Order Instance's lock mechanism without actually using DB transactions to avoid leaking in tests.
-$lock_key = 'post_content_filtered';
+/**
+ * Fake Order Instance's lock mechanism without actually using DB transactions to avoid leaking in tests.
+ *
+ * @return void
+ */
+function tests_et_enable_fake_lock_mechanism() {
+	$lock_key = 'post_content_filtered';
+	uopz_set_return( Order::class, 'lock_order', function ( int $order_id ) use ( $lock_key ) {
+		tribe( Order::class )->generate_lock_id();
 
-uopz_set_return( Order::class, 'lock_order', function ( int $order_id ) use ( $lock_key ) {
-	tribe( Order::class )->generate_lock_id();
+		return (bool) DB::query(
+			DB::prepare(
+				"UPDATE %i set $lock_key = %s where ID = $order_id and $lock_key = ''",
+				DB::prefix( 'posts' ),
+				tribe( Order::class )->get_lock_id()
+			)
+		);
+	}, true );
 
-	return (bool) DB::query(
-		DB::prepare(
-			"UPDATE %i set $lock_key = %s where ID = $order_id and $lock_key = ''",
-			DB::prefix( 'posts' ),
-			tribe( Order::class )->get_lock_id()
-		)
-	);
-}, true );
+	uopz_set_return( Order::class, 'unlock_order', function ( int $order_id ) use ( $lock_key ) {
+		return (bool) DB::query(
+			DB::prepare(
+				"UPDATE %i set $lock_key = '' where ID = $order_id",
+				DB::prefix( 'posts' )
+			)
+		);
+	}, true );
+}
 
-uopz_set_return( Order::class, 'unlock_order', function ( int $order_id ) use ( $lock_key ){
-	return (bool) DB::query(
-		DB::prepare(
-			"UPDATE %i set $lock_key = '' where ID = $order_id and $lock_key = %s",
-			DB::prefix( 'posts' ),
-			tribe( Order::class )->get_lock_id()
-		)
-	);
-}, true );
+/**
+ * Disable the fake lock mechanism for Order instances.
+ *
+ * @return void
+ */
+function tests_et_disable_fake_lock_mechanism() {
+	uopz_unset_return( Order::class, 'lock_order' );
+	uopz_unset_return( Order::class, 'unlock_order' );
+}
+
+tests_et_enable_fake_lock_mechanism();
