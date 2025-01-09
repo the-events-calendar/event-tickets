@@ -1,4 +1,11 @@
 <?php
+/**
+ * Tickets Commerce Order
+ *
+ * @since 5.1.9
+ *
+ * @package TEC\Tickets\Commerce
+ */
 
 namespace TEC\Tickets\Commerce;
 
@@ -10,6 +17,7 @@ use Tribe__Date_Utils as Dates;
 use WP_Post;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 
 /**
  * Class Order
@@ -379,9 +387,15 @@ class Order extends Abstract_Order {
 		}
 
 		$updated = tec_tc_orders()
-			->where( 'id', $order_id )
-			->where( self::ORDER_LOCK_KEY, $this->get_lock_id() )
-			->set_args( $args )->save();
+			->by_args(
+				[
+					'id'                 => $order_id,
+					'status'             => 'any',
+					self::ORDER_LOCK_KEY => $this->get_lock_id(),
+				]
+			)
+			->set_args( $args )
+			->save();
 
 		$this->unlock_order( $order_id );
 
@@ -927,6 +941,8 @@ class Order extends Abstract_Order {
 	/**
 	 * Lock an order to prevent it from being modified.
 	 *
+	 * When this method changes you need to change the uopz_set_return method in the tests in file tests/_bootstrap.php.
+	 *
 	 * @since TBD
 	 *
 	 * @param int $order_id The order ID.
@@ -936,23 +952,31 @@ class Order extends Abstract_Order {
 	public function lock_order( int $order_id ): bool {
 		$this->generate_lock_id();
 
-		DB::beginTransaction();
+		try {
+			DB::beginTransaction();
 
-		$lock_key = self::ORDER_LOCK_KEY;
+			$lock_key = self::ORDER_LOCK_KEY;
 
-		DB::query(
-			DB::prepare(
-				"UPDATE %i set $lock_key = %s where ID = $order_id and $lock_key = ''",
-				DB::prefix( 'posts' ),
-				$this->get_lock_id()
-			)
-		);
+			DB::query(
+				DB::prepare(
+					"UPDATE %i set $lock_key = %s where ID = $order_id and $lock_key = ''",
+					DB::prefix( 'posts' ),
+					$this->get_lock_id()
+				)
+			);
 
-		return (bool) DB::query( 'COMMIT' );
+			return (bool) DB::query( 'COMMIT' );
+		} catch ( DatabaseQueryException $e ) {
+			DB::rollback();
+
+			return false;
+		}
 	}
 
 	/**
 	 * Unlock an order to allow it to be modified.
+	 *
+	 * When this method changes you need to change the uopz_set_return method in the tests in file tests/_bootstrap.php.
 	 *
 	 * @since TBD
 	 *
@@ -962,13 +986,17 @@ class Order extends Abstract_Order {
 	 */
 	public function unlock_order( int $order_id ): bool {
 		$lock_key = self::ORDER_LOCK_KEY;
-		return (bool) DB::query(
-			DB::prepare(
-				"UPDATE %i set $lock_key = '' where ID = $order_id and $lock_key = %s",
-				DB::prefix( 'posts' ),
-				$this->get_lock_id()
-			)
-		);
+		try {
+			return (bool) DB::query(
+				DB::prepare(
+					"UPDATE %i set $lock_key = '' where ID = $order_id and $lock_key = %s",
+					DB::prefix( 'posts' ),
+					$this->get_lock_id()
+				)
+			);
+		} catch ( DatabaseQueryException $e ) {
+			return false;
+		}
 	}
 
 	/**
@@ -989,7 +1017,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @return string The lock ID.
 	 */
-	protected function generate_lock_id(): string {
+	public function generate_lock_id(): string {
 		self::$lock_id = uniqid( '_order_lock', true );
 
 		return self::$lock_id;
@@ -1007,12 +1035,16 @@ class Order extends Abstract_Order {
 	public function is_order_locked( int $order_id ): bool {
 		$lock_key = self::ORDER_LOCK_KEY;
 
-		return (bool) DB::get_var(
-			DB::prepare(
-				"SELECT $lock_key FROM %i WHERE ID = $order_id",
-				DB::prefix( 'posts' )
-			)
-		);
+		try {
+			return (bool) DB::get_var(
+				DB::prepare(
+					"SELECT $lock_key FROM %i WHERE ID = $order_id",
+					DB::prefix( 'posts' )
+				)
+			);
+		} catch ( DatabaseQueryException $e ) {
+			return false;
+		}
 	}
 
 	/**
@@ -1025,15 +1057,19 @@ class Order extends Abstract_Order {
 	 * @return bool Whether the checkout is completed.
 	 */
 	public function is_checkout_completed( int $order_id ): bool {
-		// Direct query to overcome object cache.
-		return (bool) DB::get_var(
-			DB::prepare(
-				'SELECT meta_value FROM %i WHERE post_id = %d AND meta_key = %s',
-				DB::prefix( 'postmeta' ),
-				$order_id,
-				static::CHECKOUT_COMPLETED_META
-			)
-		);
+		try {
+			// Direct query to overcome object cache.
+			return (bool) DB::get_var(
+				DB::prepare(
+					'SELECT meta_value FROM %i WHERE post_id = %d AND meta_key = %s',
+					DB::prefix( 'postmeta' ),
+					$order_id,
+					static::CHECKOUT_COMPLETED_META
+				)
+			);
+		} catch ( DatabaseQueryException $e ) {
+			return false;
+		}
 	}
 
 	/**
