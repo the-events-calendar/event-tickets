@@ -129,6 +129,7 @@ class Handler {
 	 * @return bool|WP_Error|null
 	 */
 	public static function update_order_status( \WP_Post $order, Commerce_Status\Status_Interface $status, array $metadata = [] ) {
+		// Lock checks and if locked => reschedule.
 		return tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), $metadata );
 	}
 }

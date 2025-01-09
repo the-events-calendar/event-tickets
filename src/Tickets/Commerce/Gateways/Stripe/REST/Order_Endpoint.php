@@ -108,15 +108,16 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'success' => false,
 		];
 
+		$orders    = tribe( Order::class );
 		$messages  = $this->get_error_messages();
 		$data      = $request->get_json_params();
-		$purchaser = tribe( Order::class )->get_purchaser_data( $data );
+		$purchaser = $orders->get_purchaser_data( $data );
 
 		if ( is_wp_error( $purchaser ) ) {
 			return $purchaser;
 		}
 
-		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
+		$order = $orders->create_from_cart( tribe( Gateway::class ), $purchaser );
 
 		$payment_intent = tribe( Payment_Intent_Handler::class )->update_payment_intent( $data, $order );
 
@@ -129,10 +130,14 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		// Orders need to pass the Pending status always.
-		$updated = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG, [
-			'gateway_payload'  => $payment_intent,
-			'gateway_order_id' => $payment_intent['id'],
-		] );
+		$updated = $orders->modify_status(
+			$order->ID,
+			Pending::SLUG,
+			[
+				'gateway_payload'  => $payment_intent,
+				'gateway_order_id' => $payment_intent['id'],
+			]
+		);
 
 		if ( is_wp_error( $updated ) ) {
 			return $updated;
@@ -233,12 +238,19 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-stripe-invalid-payment-intent-status', $messages['invalid-payment-intent-status'], $payment_intent_status );
 		}
 
-		$updated = tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), [
-			'gateway_payload'  => $payment_intent,
-			'gateway_order_id' => $payment_intent['id'],
-		] );
+		$orders = tribe( Order::class );
+
+		$updated = $orders->modify_status(
+			$order->ID,
+			$status->get_slug(),
+			[
+				'gateway_payload'  => $payment_intent,
+				'gateway_order_id' => $payment_intent['id'],
+			]
+		);
 
 		if ( is_wp_error( $updated ) ) {
+			$orders->checkout_completed( $order->ID );
 			return $updated;
 		}
 
@@ -252,6 +264,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		tribe( Cart::class )->clear_cart();
 
 		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $gateway_order_id ], tribe( Success::class )->get_url() );
+
+		$orders->checkout_completed( $order->ID );
 
 		return new WP_REST_Response( $response );
 	}
