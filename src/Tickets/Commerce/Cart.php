@@ -673,6 +673,8 @@ class Cart {
 		 *
 		 * @return string
 		 */
-		return apply_filters( 'tec_tickets_commerce_cart_hash_cookie_name', static::$cart_hash_cookie_name );
+		$filtered_cookie_name = apply_filters( 'tec_tickets_commerce_cart_hash_cookie_name', static::$cart_hash_cookie_name );
+
+		return sanitize_title( $filtered_cookie_name );
 	}
 }
