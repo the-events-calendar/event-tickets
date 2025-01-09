@@ -45,7 +45,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @var string
 	 */
-	protected const ORDER_LOCK_META = '_tec_tc_order_lock';
+	protected const ORDER_LOCK_KEY = 'post_content_filtered';
 
 	/**
 	 * Keeping track of the lock id generated during a request.
@@ -380,7 +380,7 @@ class Order extends Abstract_Order {
 
 		$updated = tec_tc_orders()
 			->where( 'id', $order_id )
-			->where( 'post_content_filtered', $this->get_lock_id() )
+			->where( self::ORDER_LOCK_KEY, $this->get_lock_id() )
 			->set_args( $args )->save();
 
 		$this->unlock_order( $order_id );
@@ -651,7 +651,7 @@ class Order extends Abstract_Order {
 
 		$updated = tec_tc_orders()
 			->where( 'id', $existing_order_id )
-			->where( 'post_content_filtered', $this->get_lock_id() )
+			->where( self::ORDER_LOCK_KEY, $this->get_lock_id() )
 			->set_args( $update_args )
 			->save();
 
@@ -938,9 +938,11 @@ class Order extends Abstract_Order {
 
 		DB::beginTransaction();
 
+		$lock_key = self::ORDER_LOCK_KEY;
+
 		DB::query(
 			DB::prepare(
-				"UPDATE %i set post_content_filtered = %s where ID = $order_id and post_content_filtered = ''",
+				"UPDATE %i set $lock_key = %s where ID = $order_id and $lock_key = ''",
 				DB::prefix( 'posts' ),
 				$this->get_lock_id()
 			)
@@ -959,9 +961,10 @@ class Order extends Abstract_Order {
 	 * @return bool Whether the order was unlocked.
 	 */
 	public function unlock_order( int $order_id ): bool {
+		$lock_key = self::ORDER_LOCK_KEY;
 		return (bool) DB::query(
 			DB::prepare(
-				"UPDATE %i set post_content_filtered = '' where ID = $order_id and post_content_filtered = %s",
+				"UPDATE %i set $lock_key = '' where ID = $order_id and $lock_key = %s",
 				DB::prefix( 'posts' ),
 				$this->get_lock_id()
 			)
@@ -1002,9 +1005,11 @@ class Order extends Abstract_Order {
 	 * @return bool Whether the order is locked.
 	 */
 	public function is_order_locked( int $order_id ): bool {
+		$lock_key = self::ORDER_LOCK_KEY;
+
 		return (bool) DB::get_var(
 			DB::prepare(
-				"SELECT post_content_filtered FROM %i WHERE ID = $order_id",
+				"SELECT $lock_key FROM %i WHERE ID = $order_id",
 				DB::prefix( 'posts' )
 			)
 		);
