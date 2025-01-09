@@ -232,9 +232,9 @@ class Cart {
 
 		if (
 			! empty( $_COOKIE[ static::get_cart_hash_cookie_name() ] )
-			&& strlen( $_COOKIE[ static::get_cart_hash_cookie_name() ] ) === $cart_hash_length
+			&& strlen( esc_html( $_COOKIE[ static::get_cart_hash_cookie_name() ] ) ) === $cart_hash_length
 		) {
-			$cart_hash = $_COOKIE[ static::get_cart_hash_cookie_name() ];
+			$cart_hash = esc_html( $_COOKIE[ static::get_cart_hash_cookie_name() ] );
 
 			$cart_hash_transient = get_transient( static::get_transient_name( $cart_hash ) );
 
