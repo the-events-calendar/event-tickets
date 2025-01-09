@@ -373,49 +373,50 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 			return $cached_results;
 		}
 
-		// Get the table names dynamically.
-		$order_modifiers_table      = $this->get_table_name();
-		$order_modifiers_meta_table = $this->get_meta_table_name();
+		// Aliases for the tables.
+		$modifiers = 'o';
+		$meta      = 'm';
 
 		// Initialize the SQL query with the base WHERE clause for modifier_type.
-		$sql   = [];
-		$sql[] = <<<SQL
-        SELECT o.*,m.meta_value
-        FROM {$order_modifiers_table} o
-        LEFT JOIN {$order_modifiers_meta_table} m
-        ON o.id = m.order_modifier_id
-        WHERE o.modifier_type = %s
-        AND o.status = 'active'
-SQL;
-
-		$params = [ $this->modifier_type ];
+		$builder = new QueryBuilder();
+		$builder
+			->select( "{$modifiers}.*", "{$meta}.meta_value" )
+			->from( $this->get_table_name( false ), $modifiers )
+			->leftJoin(
+				$this->get_meta_table_name( false ),
+				"{$modifiers}.id",
+				"{$meta}.order_modifier_id",
+				$meta
+			)
+			->where( "{$modifiers}.modifier_type", $this->modifier_type )
+			->where( "{$modifiers}.status", 'active' )
+		;
 
 		// Handle the meta_key condition: Use IFNULL if a default_meta_key is provided, otherwise check for meta_key directly.
 		if ( $default_meta_key ) {
-			$sql[]    = 'AND (IFNULL(m.meta_key, %s) = %s)';
-			$params[] = $default_meta_key;
+			$builder->whereRaw(
+				"IFNULL({$meta}.meta_key, %s) = %s",
+				$default_meta_key,
+				$meta_key
+			);
 		} else {
-			$sql[] = 'AND m.meta_key = %s';
+			$builder->where( "{$meta}.meta_key", $meta_key );
 		}
-
-		// Add the meta key to the params.
-		$params[] = $meta_key;
 
 		// Handle the meta_value condition: Use IFNULL if a default_meta_value is provided, otherwise check directly.
-		$meta_params_string = implode( ',', array_fill( 0, count( $meta_values ), '%s' ) );
 		if ( $default_meta_value ) {
-			$sql[]    = "AND (IFNULL(m.meta_value, %s) IN ({$meta_params_string}))";
-			$params[] = $default_meta_value;
+			$meta_params_string = implode( ',', array_fill( 0, count( $meta_values ), '%s' ) );
+			$builder->whereRaw(
+				"IFNULL({$meta}.meta_value, %s) IN ({$meta_params_string})",
+				$default_meta_value,
+				...$meta_values
+			);
 		} else {
-			$sql[] = "AND m.meta_value IN ({$meta_params_string})";
+			$builder->whereIn( "{$meta}.meta_value", $meta_values );
 		}
 
-		$params = array_merge( $params, $meta_values );
-
 		// Prepare and execute the query.
-		$results = DB::get_results(
-			DB::prepare( implode( ' ', $sql ), ...$params )
-		);
+		$results = $builder->getAll() ?? [];
 
 		// Cache the results for future use.
 		$tribe_cache[ $cache_key ] = $results;
