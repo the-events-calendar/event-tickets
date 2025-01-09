@@ -1759,4 +1759,60 @@ class Controller_Test extends Controller_Test_Case {
 			)
 		);
 	}
+
+	public function test_get_localized_data():void{
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$post_id = static::factory()->post->create();
+		$_GET['post_id'] = $post_id;
+		$ticket_1_id = $this->create_tc_ticket( $post_id, 10 );
+		update_post_meta( $ticket_1_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_1_id, meta::META_KEY_SEAT_TYPE, 'some-seat-type-uuid' );
+		$ticket_2_id = $this->create_tc_ticket( $post_id, 23 );
+		update_post_meta( $ticket_2_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_2_id, meta::META_KEY_SEAT_TYPE, 'some-seat-type-uuid' );
+		$ticket_3_id = $this->create_tc_ticket( $post_id, 89 );
+		update_post_meta( $ticket_3_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_3_id, meta::META_KEY_SEAT_TYPE, 'some-seat-type-uuid' );
+
+		$expected = [
+			'postId'      => $post_id,
+			'seatTypeMap' =>
+				[
+					'some-seat-type-uuid' =>
+						[
+							'id'      => 'some-seat-type-uuid',
+							'tickets' =>
+								[
+									[
+										'ticketId'    => $ticket_1_id,
+										'name'        => 'Test TC ticket for 5096',
+										'price'       => '&#x24;10.00',
+										'description' => 'Test TC ticket description for 5096',
+										'dateInRange' => true,
+										'maxLimit'    => 100,
+									],
+									[
+										'ticketId'    => $ticket_2_id,
+										'name'        => 'Test TC ticket for 5096',
+										'price'       => '&#x24;23.00',
+										'description' => 'Test TC ticket description for 5096',
+										'dateInRange' => true,
+										'maxLimit'    => 100,
+									],
+									[
+										'ticketId'    => $ticket_3_id,
+										'name'        => 'Test TC ticket for 5096',
+										'price'       => '&#x24;89.00',
+										'description' => 'Test TC ticket description for 5096',
+										'dateInRange' => true,
+										'maxLimit'    => 100,
+									],
+								],
+						],
+				],
+		];
+		$this->assertEquals($expected,$controller->get_localized_data());
+	}
 }

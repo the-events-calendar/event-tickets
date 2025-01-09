@@ -1,0 +1,4 @@
+Significance: patch
+Type: tweak
+
+Modify price field in seat report information to include formatted price, not just value. [n/a]
