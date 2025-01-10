@@ -353,7 +353,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 			return;
 		}
 
-		$raw_data                      = tec_get_request_vars( true );
+		$raw_data                      = tribe_get_request_vars( true );
 		$raw_data['order_modifier_id'] = $context['modifier_id'];
 
 		try {
