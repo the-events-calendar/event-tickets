@@ -1,0 +1,4 @@
+Significance: patch
+Type: feat
+
+Include Seating information in Attendee archive REST API response.
