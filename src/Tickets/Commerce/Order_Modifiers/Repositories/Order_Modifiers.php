@@ -580,9 +580,12 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 */
 	protected function get_default_query_params(): array {
 		return [
-			'status' => [ 'active' ],
-			'limit'  => 10,
-			'order'  => 'ASC',
+			'limit'       => 10,
+			'order'       => 'ASC',
+			'orderby'     => 'id',
+			'page'        => 1,
+			'search_term' => '',
+			'status'      => [ 'active' ],
 		];
 	}
 
@@ -602,11 +605,10 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		$valid_params = [];
 		foreach ( $params as $key => $value ) {
 			switch ( $key ) {
-				case 'status':
-					$valid_params[ $key ] = array_filter(
-						(array) $value,
-						fn( $status ) => $this->is_valid_status( $status )
-					);
+				case 'limit':
+				case 'offset':
+				case 'page':
+					$valid_params[ $key ] = absint( $value );
 					break;
 
 				case 'order':
@@ -628,14 +630,26 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 					}
 					break;
 
-				case 'limit':
-					 $valid_params[ $key ] = absint( $value );
+				case 'search_term':
+					$valid_params[ $key ] = DB::esc_like( $value );
+					break;
+
+				case 'status':
+					$valid_params[ $key ] = array_filter(
+						(array) $value,
+						fn( $status ) => $this->is_valid_status( $status )
+					);
 					break;
 
 				// Default is to skip adding the parameter.
 				default:
 					break;
 			}
+		}
+
+		// If the page parameter is passed, set the offset based on the page and limit.
+		if ( array_key_exists( 'page', $valid_params ) && array_key_exists( 'limit', $valid_params ) ) {
+			$valid_params['offset'] = ( $valid_params['page'] - 1 ) * $valid_params['limit'];
 		}
 
 		return $valid_params;
