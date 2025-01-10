@@ -97,7 +97,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		$pending_webhooks = $webhooks->get_pending_webhooks( $order->ID );
 
 		// On multiple checkout completes, make sure we dont process the same webhook twice.
-		$webhooks->delete_pending_webhooks();
+		$webhooks->delete_pending_webhooks( $order->ID );
 
 		foreach ( $pending_webhooks as $pending_webhook ) {
 			if ( ! ( is_array( $pending_webhook ) ) ) {
