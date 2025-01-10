@@ -206,7 +206,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		];
 
 		// Merge passed arguments with defaults.
-		$args = array_merge( $defaults, $args );
+		$args = wp_parse_args( $args, $defaults );
 
 		// Start building the query.
 		$query = $this->get_query_builder_with_from();
@@ -612,6 +612,20 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 				case 'order':
 					$value = strtoupper( $value );
 					$valid_params[ $key ] = 'ASC' === $value ? 'ASC' : 'DESC';
+					break;
+
+				case 'orderby':
+					$valid_orderby = [
+						'display_name' => 1,
+						'slug'         => 1,
+						'raw_amount'   => 1,
+						'used'         => 1,
+						'remaining'    => 1,
+						'status'       => 1,
+					];
+					if ( array_key_exists( $value, $valid_orderby ) ) {
+						$valid_params[ $key ] = $value;
+					}
 					break;
 
 				case 'limit':
