@@ -37,15 +37,7 @@ class Hooks_Test extends WPTestCase {
 
 		$this->assertTrue( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-stripe-webhooks' ) );
 
-		add_post_meta(
-			$order->ID,
-			'_tec_tickets_commerce_stripe_webhook_pending',
-			[
-				'new_status' => $wp_status_slug_from_slug( Completed::SLUG ),
-				'metadata'   => [],
-				'old_status' => $wp_status_slug_from_slug( Created::SLUG ),
-			]
-		);
+		tribe( Webhooks::class )->add_pending_webhook( $order->ID, $wp_status_slug_from_slug( Completed::SLUG ), $wp_status_slug_from_slug( Created::SLUG ) );
 
 		$this->assertSame( $wp_status_slug_from_slug( Created::SLUG ), $order->post_status );
 		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID );
@@ -54,33 +46,17 @@ class Hooks_Test extends WPTestCase {
 
 		$this->assertSame( $wp_status_slug_from_slug( Completed::SLUG ), $refreshed_order->post_status );
 
-		$this->assertEmpty( get_post_meta( $order->ID, '_tec_tickets_commerce_stripe_webhook_pending' ) );
+		$this->assertEmpty( tribe( Webhooks::class )->get_pending_webhooks( $order->ID ) );
 
-		add_post_meta(
-			$order->ID,
-			'_tec_tickets_commerce_stripe_webhook_pending',
-			[
-				'new_status' => $wp_status_slug_from_slug( Completed::SLUG ),
-				'metadata'   => [],
-				'old_status' => $wp_status_slug_from_slug( Created::SLUG ),
-			]
-		);
+		tribe( Webhooks::class )->add_pending_webhook( $order->ID, $wp_status_slug_from_slug( Completed::SLUG ), $wp_status_slug_from_slug( Created::SLUG ) );
 
-		add_post_meta(
-			$order->ID,
-			'_tec_tickets_commerce_stripe_webhook_pending',
-			[
-				'new_status' => $wp_status_slug_from_slug( Pending::SLUG ),
-				'metadata'   => [],
-				'old_status' => $wp_status_slug_from_slug( Completed::SLUG ),
-			]
-		);
+		tribe( Webhooks::class )->add_pending_webhook( $order->ID, $wp_status_slug_from_slug( Pending::SLUG ), $wp_status_slug_from_slug( Completed::SLUG ) );
 
 		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID );
 
 		$refreshed_order = tec_tc_get_order( $order->ID );
 
-		$this->assertEmpty( get_post_meta( $order->ID, '_tec_tickets_commerce_stripe_webhook_pending' ) );
+		$this->assertEmpty( tribe( Webhooks::class )->get_pending_webhooks( $order->ID ) );
 
 		$this->assertSame( $wp_status_slug_from_slug( Pending::SLUG ), $refreshed_order->post_status );
 	}
@@ -106,19 +82,11 @@ class Hooks_Test extends WPTestCase {
 
 		$this->assertSame( $wp_status_slug_from_slug( Created::SLUG ), $refreshed_order->post_status );
 
-		add_post_meta(
-			$order->ID,
-			'_tec_tickets_commerce_stripe_webhook_pending',
-			[
-				'new_status' => $wp_status_slug_from_slug( Completed::SLUG ),
-				'metadata'   => [],
-				'old_status' => $wp_status_slug_from_slug( Pending::SLUG ),
-			]
-		);
+		tribe( Webhooks::class )->add_pending_webhook( $order->ID, $wp_status_slug_from_slug( Completed::SLUG ), $wp_status_slug_from_slug( Pending::SLUG ) );
 
 		// Issue is encountered here - Different old status
 		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID );
-		$this->assertEmpty( get_post_meta( $order->ID, '_tec_tickets_commerce_stripe_webhook_pending' ) );
+		$this->assertEmpty( tribe( Webhooks::class )->get_pending_webhooks( $order->ID ) );
 
 		$refreshed_order = tec_tc_get_order( $order->ID );
 
@@ -126,19 +94,11 @@ class Hooks_Test extends WPTestCase {
 
 		tribe( Order::class )->lock_order( $order->ID );
 
-		add_post_meta(
-			$order->ID,
-			'_tec_tickets_commerce_stripe_webhook_pending',
-			[
-				'new_status' => $wp_status_slug_from_slug( Completed::SLUG ),
-				'metadata'   => [],
-				'old_status' => $wp_status_slug_from_slug( Pending::SLUG ),
-			]
-		);
+		tribe( Webhooks::class )->add_pending_webhook( $order->ID, $wp_status_slug_from_slug( Completed::SLUG ), $wp_status_slug_from_slug( Pending::SLUG ) );
 
 		// Issue is encountered here - Order is locked.
 		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID );
-		$this->assertEmpty( get_post_meta( $order->ID, '_tec_tickets_commerce_stripe_webhook_pending' ) );
+		$this->assertEmpty( tribe( Webhooks::class )->get_pending_webhooks( $order->ID ) );
 
 		$refreshed_order = tec_tc_get_order( $order->ID );
 
@@ -148,18 +108,11 @@ class Hooks_Test extends WPTestCase {
 
 		$this->set_class_fn_return( Order::class, 'modify_status', false );
 
-		add_post_meta(
-			$order->ID,
-			'_tec_tickets_commerce_stripe_webhook_pending',
-			[
-				'new_status' => $wp_status_slug_from_slug( Completed::SLUG ),
-				'metadata'   => [],
-				'old_status' => $wp_status_slug_from_slug( Pending::SLUG ),
-			]
-		);
+		tribe( Webhooks::class )->add_pending_webhook( $order->ID, $wp_status_slug_from_slug( Completed::SLUG ), $wp_status_slug_from_slug( Pending::SLUG ) );
+
 		// Issue is encountered here - Modify status will fail.
 		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID );
-		$this->assertEmpty( get_post_meta( $order->ID, '_tec_tickets_commerce_stripe_webhook_pending' ) );
+		$this->assertEmpty( tribe( Webhooks::class )->get_pending_webhooks( $order->ID ) );
 
 		$refreshed_order = tec_tc_get_order( $order->ID );
 
@@ -167,20 +120,13 @@ class Hooks_Test extends WPTestCase {
 
 		uopz_unset_return( Order::class, 'modify_status' );
 
-		add_post_meta(
-			$order->ID,
-			'_tec_tickets_commerce_stripe_webhook_pending',
-			[
-				'new_status' => $wp_status_slug_from_slug( Completed::SLUG ),
-				'metadata'   => [],
-				'old_status' => $wp_status_slug_from_slug( Created::SLUG ),
-			]
-		);
+		tribe( Webhooks::class )->add_pending_webhook( $order->ID, $wp_status_slug_from_slug( Completed::SLUG ), $wp_status_slug_from_slug( Created::SLUG ) );
+
 		// Issue is encountered here - Success
 		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID );
 
 		$refreshed_order = tec_tc_get_order( $order->ID );
-		$this->assertEmpty( get_post_meta( $order->ID, '_tec_tickets_commerce_stripe_webhook_pending' ) );
+		$this->assertEmpty( tribe( Webhooks::class )->get_pending_webhooks( $order->ID ) );
 
 		$this->assertSame( $wp_status_slug_from_slug( Completed::SLUG ), $refreshed_order->post_status );
 	}
@@ -204,15 +150,7 @@ class Hooks_Test extends WPTestCase {
 
 		$this->assertTrue( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-stripe-webhooks' ) );
 
-		add_post_meta(
-			$order->ID,
-			'_tec_tickets_commerce_stripe_webhook_pending',
-			[
-				'new_status' => $wp_status_slug_from_slug( Completed::SLUG ),
-				'metadata'   => [],
-				'old_status' => $wp_status_slug_from_slug( Pending::SLUG ),
-			]
-		);
+		tribe( Webhooks::class )->add_pending_webhook( $order->ID, $wp_status_slug_from_slug( Completed::SLUG ), $wp_status_slug_from_slug( Pending::SLUG ) );
 
 		$refreshed_order = tec_tc_get_order( $order->ID );
 
@@ -223,6 +161,6 @@ class Hooks_Test extends WPTestCase {
 
 		$this->assertSame( $wp_status_slug_from_slug( Completed::SLUG ), $refreshed_order->post_status );
 
-		$this->assertEmpty( get_post_meta( $order->ID, '_tec_tickets_commerce_stripe_webhook_pending' ) );
+		$this->assertEmpty( tribe( Webhooks::class )->get_pending_webhooks( $order->ID ) );
 	}
 }

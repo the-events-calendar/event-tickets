@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
 
+use Codeception\Lib\Interfaces\Web;
 use TEC\Tickets\Commerce\Status as Commerce_Status;
 use TEC\Tickets\Commerce\Order;
 
@@ -10,6 +11,7 @@ use Tribe__Utils__Array as Arr;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
+use TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
 
 /**
  * Class Handler
@@ -131,15 +133,7 @@ class Handler {
 	public static function update_order_status( \WP_Post $order, Commerce_Status\Status_Interface $status, array $metadata = [] ) {
 		if ( ! tribe( Order::class )->is_checkout_completed( $order->ID ) ) {
 
-			add_post_meta(
-				$order->ID,
-				'_tec_tickets_commerce_stripe_webhook_pending',
-				[
-					'new_status' => $status->get_wp_slug(),
-					'metadata'   => $metadata,
-					'old_status' => $order->post_status,
-				]
-			);
+			tribe( Webhooks::class )->add_pending_webhook( $order->ID, $status->get_wp_slug(), $order->post_status, $metadata );
 
 			/**
 			 * We can't return WP_Error because that will make Stripe think that

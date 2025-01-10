@@ -11,6 +11,7 @@ use WP_Post;
 use Exception;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Status_Handler;
+use TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
 
 /**
  * Class Hooks
@@ -79,17 +80,31 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	public function process_async_stripe_webhook( int $order_id ): void {
 		$order = tec_tc_get_order( $order_id );
 
-		if ( ! $order || ! $order instanceof WP_Post || ! $order->ID ) {
+		if ( ! $order ) {
 			return;
 		}
 
-		$pending_webhooks = get_post_meta( $order->ID, '_tec_tickets_commerce_stripe_webhook_pending' );
+		if ( ! $order instanceof WP_Post ) {
+			return;
+		}
+
+		if ( ! $order->ID ) {
+			return;
+		}
+
+		$webhooks = tribe( Webhooks::class );
+
+		$pending_webhooks = $webhooks->get_pending_webhooks( $order->ID );
 
 		// On multiple checkout completes, make sure we dont process the same webhook twice.
-		delete_post_meta( $order->ID, '_tec_tickets_commerce_stripe_webhook_pending' );
+		$webhooks->delete_pending_webhooks();
 
 		foreach ( $pending_webhooks as $pending_webhook ) {
-			if ( ! ( is_array( $pending_webhook ) && isset( $pending_webhook['new_status'], $pending_webhook['metadata'], $pending_webhook['old_status'] ) ) ) {
+			if ( ! ( is_array( $pending_webhook ) ) ) {
+				continue;
+			}
+
+			if ( ! isset( $pending_webhook['new_status'], $pending_webhook['metadata'], $pending_webhook['old_status'] ) ) {
 				continue;
 			}
 
