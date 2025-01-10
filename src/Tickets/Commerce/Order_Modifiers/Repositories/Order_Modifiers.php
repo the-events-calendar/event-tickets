@@ -494,7 +494,8 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 
 		// Add the order param to the pieces.
 		if ( array_key_exists( 'order', $valid_params ) ) {
-			$builder->orderBy( "{$modifiers}.id", $valid_params['order'] );
+			$orderby = array_key_exists( 'orderby', $valid_params ) ? $valid_params['orderby'] : 'id';
+			$builder->orderBy( "{$modifiers}.{$orderby}", $valid_params['order'] );
 		}
 
 		// Add the limit param to the pieces.
