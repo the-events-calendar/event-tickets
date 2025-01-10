@@ -10,7 +10,7 @@ use Tribe\Tickets\Test\Testcases\Order_Modifiers_TestCase;
  *
  * @since TBD
  */
-class Fees extends Order_Modifiers_TestCase {
+class Fees_Test extends Order_Modifiers_TestCase {
 
 	protected string $modifier_type = 'fee';
 
@@ -41,6 +41,66 @@ class Fees extends Order_Modifiers_TestCase {
 				'amount'   => '20',
 				'sub_type' => 'flat',
 			],
+			[
+				'amount'   => '15',
+				'sub_type' => 'percentage',
+			],
+			[
+				'amount'   => '25',
+				'sub_type' => 'percentage',
+			],
+			[
+				'amount'   => '30',
+				'sub_type' => 'flat',
+			],
+			[
+				'amount'   => '50',
+				'sub_type' => 'percentage',
+			],
+			[
+				'amount'   => '75',
+				'sub_type' => 'percentage',
+			],
+			[
+				'amount'   => '100',
+				'sub_type' => 'flat',
+			],
+			[
+				'amount'   => '200',
+				'sub_type' => 'percentage',
+			],
+			[
+				'amount'   => '500',
+				'sub_type' => 'percentage',
+			],
+			[
+				'amount'   => '750',
+				'sub_type' => 'flat',
+			],
+			[
+				'amount'   => '1000',
+				'sub_type' => 'percentage',
+			],
+			[
+				'amount'   => '1500',
+				'sub_type' => 'percentage',
+			],
+			[
+				'amount'   => '2000',
+				'sub_type' => 'flat',
+			],
+			[
+				'amount'   => '2500',
+				'sub_type' => 'percentage',
+			],
+			[
+				'amount'   => '3000',
+				'sub_type' => 'percentage',
+			],
+			[
+				'amount'   => '5000',
+				'sub_type' => 'flat',
+			]
 		];
 
 		foreach ( $samples as $index => $sample ) {
@@ -71,7 +131,7 @@ class Fees extends Order_Modifiers_TestCase {
 
 		// Test that we get the correct count of all fees.
 		$count = $repo->get_search_count();
-		$this->assertEquals( 20, $count );
+		$this->assertEquals( 40, $count );
 
 		// Test that we get the correct number of fees with a limit.
 		$results = $repo->search_modifiers( [ 'limit' => 5 ] );
