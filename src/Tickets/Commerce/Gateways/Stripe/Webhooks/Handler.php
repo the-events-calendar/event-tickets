@@ -2,7 +2,6 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
 
-use Codeception\Lib\Interfaces\Web;
 use TEC\Tickets\Commerce\Status as Commerce_Status;
 use TEC\Tickets\Commerce\Order;
 
