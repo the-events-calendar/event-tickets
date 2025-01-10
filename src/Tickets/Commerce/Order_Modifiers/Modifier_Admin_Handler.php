@@ -257,7 +257,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	 */
 	protected function get_modifier_data_by_id( int $modifier_id ): ?array {
 		// Get the modifier type from the request or use the default.
-		$modifier_type = tribe_get_request_var( 'modifier', $this->get_default_type() );
+		$modifier_type = tec_get_request_var( 'modifier', $this->get_default_type() );
 
 		// Get the appropriate strategy for the selected modifier type.
 		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
@@ -353,7 +353,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 			return;
 		}
 
-		$raw_data                      = tribe_get_request_vars( true );
+		$raw_data                      = tec_get_request_vars( true );
 		$raw_data['order_modifier_id'] = $context['modifier_id'];
 
 		try {
@@ -464,10 +464,10 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	 */
 	public function handle_delete_modifier(): void {
 		// Check if the action is 'delete_modifier' and nonce is set.
-		$action        = tribe_get_request_var( 'action', '' );
-		$modifier_id   = absint( tribe_get_request_var( 'modifier_id', '' ) );
-		$nonce         = tribe_get_request_var( '_wpnonce', '' );
-		$modifier_type = sanitize_key( tribe_get_request_var( 'modifier', '' ) );
+		$action        = tec_get_request_var( 'action', '' );
+		$modifier_id   = absint( tec_get_request_var( 'modifier_id', '' ) );
+		$nonce         = tec_get_request_var( '_wpnonce', '' );
+		$modifier_type = sanitize_key( tec_get_request_var( 'modifier', '' ) );
 
 		// Early bail if the action is not 'delete_modifier'.
 		if ( 'delete_modifier' !== $action ) {

@@ -88,7 +88,7 @@ class Coupon extends Modifier_Abstract {
 			[
 				'meta_key'   => 'coupons_available',
 				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
-				'meta_value' => tribe_get_request_var( 'order_modifier_coupon_limit', '' ),
+				'meta_value' => tec_get_request_var( 'order_modifier_coupon_limit', '' ),
 			]
 		);
 
@@ -114,7 +114,7 @@ class Coupon extends Modifier_Abstract {
 			[
 				'meta_key'   => 'coupons_available',
 				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
-				'meta_value' => tribe_get_request_var( 'order_modifier_coupon_limit', '' ),
+				'meta_value' => tec_get_request_var( 'order_modifier_coupon_limit', '' ),
 			]
 		);
 

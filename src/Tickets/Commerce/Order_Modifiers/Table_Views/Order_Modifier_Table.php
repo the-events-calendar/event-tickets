@@ -111,7 +111,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		];
 
 		// Handle search.
-		$search = tribe_get_request_var( 's', '' );
+		$search = tec_get_request_var( 's', '' );
 
 		// Pagination parameters.
 		$per_page     = $this->get_items_per_page( "{$this->modifier->get_modifier_type()}_per_page", 10 );
@@ -121,8 +121,8 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		$this->items = $this->modifier->find_by_search(
 			[
 				'search_term' => $search,
-				'orderby'     => sanitize_text_field( tribe_get_request_var( 'orderby', 'display_name' ) ),
-				'order'       => sanitize_text_field( tribe_get_request_var( 'order', 'asc' ) ),
+				'orderby'     => tec_get_request_var( 'orderby', 'display_name' ),
+				'order'       => tec_get_request_var( 'order', 'asc' ),
 				'limit'       => $per_page,
 				'page'        => $current_page,
 			]
@@ -217,10 +217,10 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 * @return void
 	 */
 	public function search_box( $text, $input_id, $placeholder = '' ) {
-		$search_value = sanitize_text_field( tribe_get_request_var( 's', '' ) );
+		$search_value = tec_get_request_var( 's', '' );
 
 		// Set the input ID.
-		$input_id = $input_id . '-search-input';
+		$input_id = "{$input_id}-search-input";
 
 		// If no placeholder is provided, default to the display_name column.
 		if ( empty( $placeholder ) ) {
@@ -252,7 +252,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		}
 
 		// Determine the current modifier, falling back to the default.
-		$current_modifier = tribe_get_request_var( 'modifier', $this->get_default_type() );
+		$current_modifier = tec_get_request_var( 'modifier', $this->get_default_type() );
 
 		echo '<h2 class="nav-tab-wrapper">';
 		foreach ( $modifiers as $modifier_slug => $modifier_data ) {
