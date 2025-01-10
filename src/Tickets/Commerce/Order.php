@@ -953,8 +953,6 @@ class Order extends Abstract_Order {
 		$this->generate_lock_id();
 
 		try {
-			DB::beginTransaction();
-
 			$lock_key = self::ORDER_LOCK_KEY;
 
 			$result = DB::query(
@@ -965,12 +963,8 @@ class Order extends Abstract_Order {
 				)
 			);
 
-			DB::commit();
-
 			return (bool) $result;
 		} catch ( DatabaseQueryException $e ) {
-			DB::rollback();
-
 			return false;
 		}
 	}
@@ -1080,9 +1074,19 @@ class Order extends Abstract_Order {
 	 *
 	 * @param int $order_id The order ID.
 	 *
-	 * @return bool Whether the checkout was marked as completed.
+	 * @return bool Whether the checkout was marked as completed and the async action was scheduled.
 	 */
 	public function checkout_completed( int $order_id ): bool {
-		return (bool) update_post_meta( $order_id, static::CHECKOUT_COMPLETED_META, true );
+		$result = (bool) update_post_meta( $order_id, static::CHECKOUT_COMPLETED_META, true );
+
+		if ( ! $result ) {
+			return false;
+		}
+
+		return (bool) as_enqueue_async_action(
+			'tec_tickets_commerce_async_webhook_process',
+			[ 'order_id' => $order_id ],
+			'tec-tickets-commerce-stripe-webhooks'
+		);
 	}
 }

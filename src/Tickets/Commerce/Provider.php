@@ -111,91 +111,57 @@ class Provider extends Service_Provider {
 	 *
 	 * @since TBD
 	 *
-	 * @param int    $order_id           The order ID.
-	 * @param string $new_status_wp_slug The new status WP slug.
-	 * @param array  $metadata           The metadata.
-	 * @param string $old_status_wp_slug The old status WP slug.
-	 * @param int    $current_try        The try.
+	 * @param int $order_id The order ID.
 	 *
 	 * @throws Exception If the action fails after too many retries.
 	 */
-	public function process_async_stripe_webhook( int $order_id, string $new_status_wp_slug, array $metadata = [], string $old_status_wp_slug = '', int $current_try = 1 ): void {
+	public function process_async_stripe_webhook( int $order_id ): void {
 		$order = tec_tc_get_order( $order_id );
 
 		if ( ! $order || ! $order instanceof WP_Post || ! $order->ID ) {
 			return;
 		}
 
-		// The order is already there!
-		if ( $order->post_status === $new_status_wp_slug ) {
-			return;
+		$pending_webhooks = get_post_meta( $order->ID, '_tec_tickets_commerce_stripe_webhook_pending' );
+
+		$failed = false;
+
+		foreach ( $pending_webhooks as $pending_webhook ) {
+			if ( ! ( is_array( $pending_webhook ) && isset( $pending_webhook['new_status'], $pending_webhook['metadata'], $pending_webhook['old_status'] ) ) ) {
+				continue;
+			}
+
+			$new_status_wp_slug = $pending_webhook['new_status'];
+			$metadata           = $pending_webhook['metadata'];
+			$old_status_wp_slug = $pending_webhook['old_status'];
+
+			// The order is already there!
+			if ( $order->post_status === $new_status_wp_slug ) {
+				return;
+			}
+
+			// The order is no longer where it was... that could be dangerous, lets bail with reschedule?
+			if ( $order->post_status !== $old_status_wp_slug ) {
+				return;
+			}
+
+			$result = tribe( Order::class )->modify_status(
+				$order->ID,
+				tribe( Status_Handler::class )->get_by_wp_slug( $new_status_wp_slug )->get_slug(),
+				$metadata
+			);
+
+			if ( $result && ! is_wp_error( $result ) ) {
+				return;
+			}
+
+			$failed = true;
 		}
 
-		// We have retried too many times, lets fail.
-		if ( $current_try > 9 ) {
+		if ( $failed ) {
 			// AS catches exception and uses them as the fail message in the action management screen.
 			throw new Exception( __( 'Action failed after too many retries.', 'event-tickets' ) );
 		}
-
-		// The order is no longer where it was... that could be dangerous, lets bail with reschedule?
-		if ( $order->post_status !== $old_status_wp_slug ) {
-			// Reschedule logic hides that another async action may have to be processed first ?
-			as_enqueue_async_action(
-				'tec_tickets_commerce_async_webhook_process',
-				[
-					'order_id'   => $order->ID,
-					'new_status' => $new_status_wp_slug,
-					'metadata'   => $metadata,
-					'old_status' => $old_status_wp_slug,
-					'try'        => ++$current_try,
-				],
-				'tec-tickets-commerce-stripe-webhooks'
-			);
-
-			return;
-		}
-
-		if ( tribe( Order::class )->is_order_locked( $order->ID ) || ! tribe( Order::class )->is_checkout_completed( $order->ID ) ) {
-			// Reschedule...
-			as_enqueue_async_action(
-				'tec_tickets_commerce_async_webhook_process',
-				[
-					'order_id'   => $order->ID,
-					'new_status' => $new_status_wp_slug,
-					'metadata'   => $metadata,
-					'old_status' => $old_status_wp_slug,
-					'try'        => ++$current_try,
-				],
-				'tec-tickets-commerce-stripe-webhooks'
-			);
-
-			return;
-		}
-
-		$result = tribe( Order::class )->modify_status(
-			$order->ID,
-			tribe( Status_Handler::class )->get_by_wp_slug( $new_status_wp_slug )->get_slug(),
-			$metadata
-		);
-
-		if ( $result && ! is_wp_error( $result ) ) {
-			return;
-		}
-
-		++$current_try;
-
-		// Reschedule...
-		as_enqueue_async_action(
-			'tec_tickets_commerce_async_webhook_process',
-			[
-				'order_id'   => $order->ID,
-				'new_status' => $new_status_wp_slug,
-				'metadata'   => $metadata,
-				'old_status' => $old_status_wp_slug,
-				'try'        => ++$current_try,
-			],
-			'tec-tickets-commerce-stripe-webhooks'
-		);
 	}
 
 	/**

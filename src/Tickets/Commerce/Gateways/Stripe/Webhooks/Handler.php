@@ -129,21 +129,17 @@ class Handler {
 	 * @return bool|WP_Error|null
 	 */
 	public static function update_order_status( \WP_Post $order, Commerce_Status\Status_Interface $status, array $metadata = [] ) {
-		if ( tribe( Order::class )->is_order_locked( $order->ID ) || ! tribe( Order::class )->is_checkout_completed( $order->ID ) ) {
+		if ( ! tribe( Order::class )->is_checkout_completed( $order->ID ) ) {
 
-			if ( function_exists( 'as_enqueue_async_action' ) ) {
-				as_enqueue_async_action(
-					'tec_tickets_commerce_async_webhook_process',
-					[
-						'order_id'   => $order->ID,
-						'new_status' => $status->get_wp_slug(),
-						'metadata'   => $metadata,
-						'old_status' => $order->post_status,
-						'try'        => 1,
-					],
-					'tec-tickets-commerce-stripe-webhooks'
-				);
-			}
+			add_post_meta(
+				$order->ID,
+				'_tec_tickets_commerce_stripe_webhook_pending',
+				[
+					'new_status' => $status->get_wp_slug(),
+					'metadata'   => $metadata,
+					'old_status' => $order->post_status,
+				]
+			);
 
 			/**
 			 * We can't return WP_Error because that will make Stripe think that
