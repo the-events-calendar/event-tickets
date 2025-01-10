@@ -113,30 +113,25 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		// Handle search.
 		$search = tribe_get_request_var( 's', '' );
 
-		// Capture sorting parameters.
-		$orderby = sanitize_text_field( tribe_get_request_var( 'orderby', 'display_name' ) );
-		$order   = sanitize_text_field( tribe_get_request_var( 'order', 'asc' ) );
+		// Pagination parameters.
+		$per_page     = $this->get_items_per_page( "{$this->modifier->get_modifier_type()}_per_page", 10 );
+		$current_page = $this->get_pagenum();
 
 		// Fetch the data from the modifier class, including sorting.
-		$data = $this->modifier->find_by_search(
+		$this->items = $this->modifier->find_by_search(
 			[
-				'search_term'   => $search,
-				'orderby'       => $orderby,
-				'order'         => $order,
-				'modifier_type' => $this->modifier->get_modifier_type(),
+				'search_term' => $search,
+				'orderby'     => sanitize_text_field( tribe_get_request_var( 'orderby', 'display_name' ) ),
+				'order'       => sanitize_text_field( tribe_get_request_var( 'order', 'asc' ) ),
+				'limit'       => $per_page,
+				'page'        => $current_page,
 			]
 		);
 
-		// Pagination.
-		$per_page     = $this->get_items_per_page( $this->modifier->get_modifier_type() . '_per_page', 10 );
-		$current_page = $this->get_pagenum();
-		$total_items  = count( $data );
+		// Get the total number of items.
+		$total_items = $this->modifier->find_count_by_search( [ 'search_term' => $search ] );
 
-		$data = array_slice( $data, ( $current_page - 1 ) * $per_page, $per_page );
-
-		// Set the items for the table.
-		$this->items = $data;
-
+		// Set the pagination args.
 		$this->set_pagination_args(
 			[
 				'total_items' => $total_items,
