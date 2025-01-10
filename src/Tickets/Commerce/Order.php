@@ -941,8 +941,6 @@ class Order extends Abstract_Order {
 	/**
 	 * Lock an order to prevent it from being modified.
 	 *
-	 * When this method changes you need to adjust the function `tests_et_enable_fake_lock_mechanism` in file tests/_bootstrap.php.
-	 *
 	 * @since TBD
 	 *
 	 * @param int $order_id The order ID.
@@ -971,8 +969,6 @@ class Order extends Abstract_Order {
 
 	/**
 	 * Unlock an order to allow it to be modified.
-	 *
-	 * When this method changes you need to adjust the function `tests_et_enable_fake_lock_mechanism` in file tests/_bootstrap.php.
 	 *
 	 * @since TBD
 	 *
