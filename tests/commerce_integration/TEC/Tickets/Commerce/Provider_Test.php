@@ -32,14 +32,58 @@ class Provider_Test extends WPTestCase {
 
 		$order = $this->create_order( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ], [ 'order_status' => Created::SLUG ] );
 
+		$this->assertFalse( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-stripe-webhooks' ) );
+
 		tribe( Order::class )->checkout_completed( $order->ID );
 
+		$this->assertTrue( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-stripe-webhooks' ) );
+
+		add_post_meta(
+			$order->ID,
+			'_tec_tickets_commerce_stripe_webhook_pending',
+			[
+				'new_status' => $wp_status_slug_from_slug( Completed::SLUG ),
+				'metadata'   => [],
+				'old_status' => $wp_status_slug_from_slug( Created::SLUG ),
+			]
+		);
+
 		$this->assertSame( $wp_status_slug_from_slug( Created::SLUG ), $order->post_status );
-		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID, $wp_status_slug_from_slug( Completed::SLUG ), [], $wp_status_slug_from_slug( Created::SLUG ), 1 );
+		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID );
 
 		$refreshed_order = tec_tc_get_order( $order->ID );
 
 		$this->assertSame( $wp_status_slug_from_slug( Completed::SLUG ), $refreshed_order->post_status );
+
+		$this->assertEmpty( get_post_meta( $order->ID, '_tec_tickets_commerce_stripe_webhook_pending' ) );
+
+		add_post_meta(
+			$order->ID,
+			'_tec_tickets_commerce_stripe_webhook_pending',
+			[
+				'new_status' => $wp_status_slug_from_slug( Completed::SLUG ),
+				'metadata'   => [],
+				'old_status' => $wp_status_slug_from_slug( Created::SLUG ),
+			]
+		);
+
+		add_post_meta(
+			$order->ID,
+			'_tec_tickets_commerce_stripe_webhook_pending',
+			[
+				'new_status' => $wp_status_slug_from_slug( Pending::SLUG ),
+				'metadata'   => [],
+				'old_status' => $wp_status_slug_from_slug( Completed::SLUG ),
+			]
+		);
+
+		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID );
+
+		$refreshed_order = tec_tc_get_order( $order->ID );
+
+		$this->assertEmpty( get_post_meta( $order->ID, '_tec_tickets_commerce_stripe_webhook_pending' ) );
+
+		$this->assertSame( $wp_status_slug_from_slug( Pending::SLUG ), $refreshed_order->post_status );
 	}
 
 	public function test_it_reschedules_async_stripe_webhooks_when_encounter_issues() {
@@ -52,66 +96,94 @@ class Provider_Test extends WPTestCase {
 		$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
 
 		$wp_status_slug_from_slug = fn( $slug ) => tribe( Status_Handler::class )->get_by_slug( $slug )->get_wp_slug();
-		$has_scheduled_action = fn() => as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-stripe-webhooks' );
 
 		$order = $this->create_order( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ], [ 'order_status' => Created::SLUG ] );
 
-		$this->assertSame( $wp_status_slug_from_slug( Created::SLUG ), $order->post_status );
-		$this->assertFalse( $has_scheduled_action() );
+		$this->assertFalse( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-stripe-webhooks' ) );
+		tribe( Order::class )->checkout_completed( $order->ID );
+		$this->assertTrue( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-stripe-webhooks' ) );
+
+		$refreshed_order = tec_tc_get_order( $order->ID );
+
+		$this->assertSame( $wp_status_slug_from_slug( Created::SLUG ), $refreshed_order->post_status );
+
+		add_post_meta(
+			$order->ID,
+			'_tec_tickets_commerce_stripe_webhook_pending',
+			[
+				'new_status' => $wp_status_slug_from_slug( Completed::SLUG ),
+				'metadata'   => [],
+				'old_status' => $wp_status_slug_from_slug( Pending::SLUG ),
+			]
+		);
 
 		// Issue is encountered here - Different old status
-		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID, $wp_status_slug_from_slug( Completed::SLUG ), [], $wp_status_slug_from_slug( Pending::SLUG ), 1 );
+		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID );
+		$this->assertEmpty( get_post_meta( $order->ID, '_tec_tickets_commerce_stripe_webhook_pending' ) );
 
 		$refreshed_order = tec_tc_get_order( $order->ID );
 
 		$this->assertSame( $wp_status_slug_from_slug( Created::SLUG ), $refreshed_order->post_status );
-		$this->assertTrue( $has_scheduled_action() );
 
-		as_unschedule_all_actions( 'tec_tickets_commerce_async_webhook_process' );
-
-		$this->assertFalse( $has_scheduled_action() );
-
-		// Issue is encountered here - Order needs to have its checkout completed.
-		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID, $wp_status_slug_from_slug( Completed::SLUG ), [], $wp_status_slug_from_slug( Created::SLUG ), 1 );
-
-		$refreshed_order = tec_tc_get_order( $order->ID );
-
-		$this->assertSame( $wp_status_slug_from_slug( Created::SLUG ), $refreshed_order->post_status );
-		$this->assertTrue( $has_scheduled_action() );
-
-		as_unschedule_all_actions( 'tec_tickets_commerce_async_webhook_process' );
-
-		$this->assertFalse( $has_scheduled_action() );
-
-		tribe( Order::class )->checkout_completed( $order->ID );
 		tribe( Order::class )->lock_order( $order->ID );
 
+		add_post_meta(
+			$order->ID,
+			'_tec_tickets_commerce_stripe_webhook_pending',
+			[
+				'new_status' => $wp_status_slug_from_slug( Completed::SLUG ),
+				'metadata'   => [],
+				'old_status' => $wp_status_slug_from_slug( Pending::SLUG ),
+			]
+		);
+
 		// Issue is encountered here - Order is locked.
-		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID, $wp_status_slug_from_slug( Completed::SLUG ), [], $wp_status_slug_from_slug( Created::SLUG ), 1 );
+		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID );
+		$this->assertEmpty( get_post_meta( $order->ID, '_tec_tickets_commerce_stripe_webhook_pending' ) );
 
 		$refreshed_order = tec_tc_get_order( $order->ID );
 
 		$this->assertSame( $wp_status_slug_from_slug( Created::SLUG ), $refreshed_order->post_status );
-		$this->assertTrue( $has_scheduled_action() );
-
-		as_unschedule_all_actions( 'tec_tickets_commerce_async_webhook_process' );
-
-		$this->assertFalse( $has_scheduled_action() );
 
 		tribe( Order::class )->unlock_order( $order->ID );
 
 		$this->set_class_fn_return( Order::class, 'modify_status', false );
+
+		add_post_meta(
+			$order->ID,
+			'_tec_tickets_commerce_stripe_webhook_pending',
+			[
+				'new_status' => $wp_status_slug_from_slug( Completed::SLUG ),
+				'metadata'   => [],
+				'old_status' => $wp_status_slug_from_slug( Pending::SLUG ),
+			]
+		);
 		// Issue is encountered here - Modify status will fail.
-		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID, $wp_status_slug_from_slug( Completed::SLUG ), [], $wp_status_slug_from_slug( Created::SLUG ), 1 );
+		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID );
+		$this->assertEmpty( get_post_meta( $order->ID, '_tec_tickets_commerce_stripe_webhook_pending' ) );
 
 		$refreshed_order = tec_tc_get_order( $order->ID );
 
 		$this->assertSame( $wp_status_slug_from_slug( Created::SLUG ), $refreshed_order->post_status );
-		$this->assertTrue( $has_scheduled_action() );
 
-		as_unschedule_all_actions( 'tec_tickets_commerce_async_webhook_process' );
+		uopz_unset_return( Order::class, 'modify_status' );
 
-		$this->assertFalse( $has_scheduled_action() );
+		add_post_meta(
+			$order->ID,
+			'_tec_tickets_commerce_stripe_webhook_pending',
+			[
+				'new_status' => $wp_status_slug_from_slug( Completed::SLUG ),
+				'metadata'   => [],
+				'old_status' => $wp_status_slug_from_slug( Created::SLUG ),
+			]
+		);
+		// Issue is encountered here - Success
+		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID );
+
+		$refreshed_order = tec_tc_get_order( $order->ID );
+		$this->assertEmpty( get_post_meta( $order->ID, '_tec_tickets_commerce_stripe_webhook_pending' ) );
+
+		$this->assertSame( $wp_status_slug_from_slug( Completed::SLUG ), $refreshed_order->post_status );
 	}
 
 	public function test_it_should_bail_async_stripe_webhooks_when_end_result_is_done_already() {
@@ -127,39 +199,31 @@ class Provider_Test extends WPTestCase {
 
 		$order = $this->create_order( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ] );
 
+		$this->assertFalse( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-stripe-webhooks' ) );
+
 		tribe( Order::class )->checkout_completed( $order->ID );
 
-		$refreshed_order = tec_tc_get_order( $order->ID );
-		$this->assertSame( $wp_status_slug_from_slug( Completed::SLUG ), $refreshed_order->post_status );
-		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID, $wp_status_slug_from_slug( Completed::SLUG ), [], $wp_status_slug_from_slug( Created::SLUG ), 1 );
+		$this->assertTrue( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-stripe-webhooks' ) );
 
-		$refreshed_order = tec_tc_get_order( $order->ID );
-
-		$this->assertSame( $wp_status_slug_from_slug( Completed::SLUG ), $refreshed_order->post_status );
-
-		$this->assertFalse( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-stripe-webhooks' ) );
-	}
-
-	public function test_it_should_throw_exception_when_over_10_tries() {
-		$post = self::factory()->post->create(
+		add_post_meta(
+			$order->ID,
+			'_tec_tickets_commerce_stripe_webhook_pending',
 			[
-				'post_type' => 'page',
+				'new_status' => $wp_status_slug_from_slug( Completed::SLUG ),
+				'metadata'   => [],
+				'old_status' => $wp_status_slug_from_slug( Pending::SLUG ),
 			]
 		);
-		$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
-		$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
 
-		$wp_status_slug_from_slug = fn( $slug ) => tribe( Status_Handler::class )->get_by_slug( $slug )->get_wp_slug();
+		$refreshed_order = tec_tc_get_order( $order->ID );
 
-		$order = $this->create_order( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ], [ 'order_status' => Created::SLUG ] );
+		$this->assertSame( $wp_status_slug_from_slug( Completed::SLUG ), $refreshed_order->post_status );
+		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID );
 
-		tribe( Order::class )->checkout_completed( $order->ID );
+		$refreshed_order = tec_tc_get_order( $order->ID );
 
-		$this->assertSame( $wp_status_slug_from_slug( Created::SLUG ), $order->post_status );
-		$this->set_class_fn_return( Order::class, 'modify_status', false );
+		$this->assertSame( $wp_status_slug_from_slug( Completed::SLUG ), $refreshed_order->post_status );
 
-		$this->expectException( Exception::class );
-		$this->expectExceptionMessage( 'Action failed after too many retries.' );
-		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID, $wp_status_slug_from_slug( Completed::SLUG ), [], $wp_status_slug_from_slug( Created::SLUG ), 10 );
+		$this->assertEmpty( get_post_meta( $order->ID, '_tec_tickets_commerce_stripe_webhook_pending' ) );
 	}
 }
