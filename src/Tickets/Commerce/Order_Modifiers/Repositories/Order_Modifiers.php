@@ -199,7 +199,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 */
 	public function search_modifiers( array $args = [] ): array {
 		// Merge passed arguments with defaults.
-		$args = wp_parse_args( $args, $this->get_default_query_params() );
+		$args       = wp_parse_args( $args, $this->get_default_query_params() );
 		$valid_args = $this->get_valid_params( $args );
 
 		// Start building the query.
@@ -243,7 +243,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 */
 	public function get_search_count( array $args = [] ): int {
 		// Merge passed arguments with defaults.
-		$args = wp_parse_args( $args, $this->get_default_query_params() );
+		$args       = wp_parse_args( $args, $this->get_default_query_params() );
 		$valid_args = $this->get_valid_params( $args );
 
 		// Start building the query.
@@ -413,8 +413,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 				$meta
 			)
 			->where( "{$modifiers}.modifier_type", $this->modifier_type )
-			->where( "{$modifiers}.status", 'active' )
-		;
+			->where( "{$modifiers}.status", 'active' );
 
 		// Handle the meta_key condition: Use IFNULL if a default_meta_key is provided, otherwise check for meta_key directly.
 		if ( $default_meta_key ) {
@@ -454,7 +453,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 * @since TBD
 	 *
 	 * @param string[] $applied_to The value(s) to filter the query by.
-	 * @param array  $params { Optional. Parameters to filter the query.
+	 * @param array    $params { Optional. Parameters to filter the query.
 	 *     @type string[] $status The status of the modifiers to filter by. Default 'active'.
 	 *     @type int      $limit  The number of results to return. Default 10.
 	 *     @type string   $order  The order of the results. Default 'DESC'.
@@ -474,14 +473,14 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 
 		// Generate a cache key based on the arguments.
 		$cache_key = 'modifier_type_applied_to_' . md5(
-				wp_json_encode(
-					[
-						$this->modifier_type,
-						$applied_to,
-						$valid_params,
-					]
-				)
-			);
+			wp_json_encode(
+				[
+					$this->modifier_type,
+					$applied_to,
+					$valid_params,
+				]
+			)
+		);
 
 		$tribe_cache = tribe( 'cache' );
 
@@ -498,7 +497,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		// Initialize the query builder and construct the query.
 		$builder = new QueryBuilder();
 		$builder
-			->from( $this->get_table_name( false ), $modifiers)
+			->from( $this->get_table_name( false ), $modifiers )
 			->select( "{$modifiers}.*", "{$meta}.meta_value" )
 			->innerJoin(
 				$this->get_meta_table_name( false ),
@@ -508,8 +507,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 			)
 			->where( "{$modifiers}.modifier_type", $this->modifier_type )
 			->where( "{$meta}.meta_key", $this->get_applied_to_key() )
-			->whereIn( "{$meta}.meta_value", $applied_to )
-		;
+			->whereIn( "{$meta}.meta_value", $applied_to );
 
 		// Add the status params to the pieces.
 		if ( array_key_exists( 'status', $valid_params ) ) {
@@ -637,7 +635,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 					break;
 
 				case 'order':
-					$value = strtoupper( $value );
+					$value                = strtoupper( $value );
 					$valid_params[ $key ] = 'ASC' === $value ? 'ASC' : 'DESC';
 					break;
 
