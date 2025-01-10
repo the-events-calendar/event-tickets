@@ -16,6 +16,7 @@ class Fees_Test extends Order_Modifiers_TestCase {
 
 	/**
 	 * Helper method to create a set of modifiers for testing.
+	 *
 	 * @since TBD
 	 * @return void
 	 */
@@ -27,11 +28,11 @@ class Fees_Test extends Order_Modifiers_TestCase {
 			],
 			[
 				'amount'   => '10',
-				'sub_type' => 'percentage',
+				'sub_type' => 'percent',
 			],
 			[
 				'amount'   => '5',
-				'sub_type' => 'percentage',
+				'sub_type' => 'percent',
 			],
 			[
 				'amount'   => '1',
@@ -43,11 +44,11 @@ class Fees_Test extends Order_Modifiers_TestCase {
 			],
 			[
 				'amount'   => '15',
-				'sub_type' => 'percentage',
+				'sub_type' => 'percent',
 			],
 			[
 				'amount'   => '25',
-				'sub_type' => 'percentage',
+				'sub_type' => 'percent',
 			],
 			[
 				'amount'   => '30',
@@ -55,11 +56,11 @@ class Fees_Test extends Order_Modifiers_TestCase {
 			],
 			[
 				'amount'   => '50',
-				'sub_type' => 'percentage',
+				'sub_type' => 'percent',
 			],
 			[
 				'amount'   => '75',
-				'sub_type' => 'percentage',
+				'sub_type' => 'percent',
 			],
 			[
 				'amount'   => '100',
@@ -67,11 +68,11 @@ class Fees_Test extends Order_Modifiers_TestCase {
 			],
 			[
 				'amount'   => '200',
-				'sub_type' => 'percentage',
+				'sub_type' => 'percent',
 			],
 			[
 				'amount'   => '500',
-				'sub_type' => 'percentage',
+				'sub_type' => 'percent',
 			],
 			[
 				'amount'   => '750',
@@ -79,11 +80,11 @@ class Fees_Test extends Order_Modifiers_TestCase {
 			],
 			[
 				'amount'   => '1000',
-				'sub_type' => 'percentage',
+				'sub_type' => 'percent',
 			],
 			[
 				'amount'   => '1500',
-				'sub_type' => 'percentage',
+				'sub_type' => 'percent',
 			],
 			[
 				'amount'   => '2000',
@@ -91,16 +92,16 @@ class Fees_Test extends Order_Modifiers_TestCase {
 			],
 			[
 				'amount'   => '2500',
-				'sub_type' => 'percentage',
+				'sub_type' => 'percent',
 			],
 			[
 				'amount'   => '3000',
-				'sub_type' => 'percentage',
+				'sub_type' => 'percent',
 			],
 			[
 				'amount'   => '5000',
 				'sub_type' => 'flat',
-			]
+			],
 		];
 
 		foreach ( $samples as $index => $sample ) {
@@ -109,6 +110,7 @@ class Fees_Test extends Order_Modifiers_TestCase {
 				'order_modifier_sub_type'     => $sample['sub_type'],
 				'order_modifier_slug'         => "test_fee_{$index}_1",
 				'order_modifier_display_name' => "Test Fee {$index} – 1",
+				'modifier'                    => $this->modifier_type,
 			];
 
 			$this->upsert_order_modifier_for_test( $data );
