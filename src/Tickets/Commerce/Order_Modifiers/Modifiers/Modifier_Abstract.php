@@ -205,12 +205,26 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 
 		// Validate required fields are not empty.
 		foreach ( $this->required_fields as $field => $r ) {
-			if ( ! is_string( $data[ $field ] ) || trim( $data[ $field ] ) === '' ) {
-				$errors[] = sprintf(
-					/* translators: %s: Field name. */
-					__( 'The field "%s" is required and cannot be empty.', 'event-tickets' ),
-					$field
-				);
+			switch ( $field ) {
+				case 'raw_amount':
+					if ( ! is_float( $data[ $field ] ) ) {
+						$errors[] = sprintf(
+							/* translators: %s: Field name. */
+							__( 'The field "%s" must be a valid number.', 'event-tickets' ),
+							$field
+						);
+					}
+					break;
+
+				default:
+					if ( ! is_string( $data[ $field ] ) || trim( $data[ $field ] ) === '' ) {
+						$errors[] = sprintf(
+							/* translators: %s: Field name. */
+							__( 'The field "%s" is required and cannot be empty.', 'event-tickets' ),
+							$field
+						);
+					}
+					break;
 			}
 		}
 
