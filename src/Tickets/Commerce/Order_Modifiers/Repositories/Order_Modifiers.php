@@ -198,36 +198,32 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 * @return Order_Modifier[] An array of Order_Modifiers or an empty array if none found.
 	 */
 	public function search_modifiers( array $args = [] ): array {
-		// Define default arguments.
-		$defaults = [
-			'search_term' => '',
-			'orderby'     => 'display_name',
-			'order'       => 'asc',
-		];
-
 		// Merge passed arguments with defaults.
-		$args = wp_parse_args( $args, $defaults );
+		$args = wp_parse_args( $args, $this->get_default_query_params() );
+		$valid_args = $this->get_valid_params( $args );
 
 		// Start building the query.
 		$query = $this->get_query_builder_with_from();
 
 		// Add search functionality (search in display_name or slug).
-		if ( ! empty( $args['search_term'] ) ) {
-			$query = $query->whereLike( 'display_name', DB::esc_like( $args['search_term'] ) );
+		if ( ! empty( $valid_args['search_term'] ) ) {
+			$query->whereLike( 'display_name', $valid_args['search_term'] );
 		}
 
-		// Add ordering.
-		$valid_orderby = [
-			'display_name' => 1,
-			'slug'         => 1,
-			'raw_amount'   => 1,
-			'used'         => 1,
-			'remaining'    => 1,
-			'status'       => 1,
-		];
+		// Set the order and orderby parameters.
+		if ( ! empty( $valid_args['order'] ) ) {
+			$orderby = array_key_exists( 'orderby', $valid_args ) ? $valid_args['orderby'] : 'display_name';
+			$query->orderBy( $orderby, $valid_args['order'] );
+		}
 
-		if ( ! empty( $args['orderby'] ) && array_key_exists( $args['orderby'], $valid_orderby ) ) {
-			$query = $query->orderBy( $args['orderby'], $args['order'] );
+		// Add the query limit.
+		if ( ! empty( $valid_args['limit'] ) ) {
+			$query->limit( $valid_args['limit'] );
+		}
+
+		// Add the query offset.
+		if ( ! empty( $valid_args['offset'] ) ) {
+			$query->offset( $valid_args['offset'] );
 		}
 
 		// Set the modifier type.
