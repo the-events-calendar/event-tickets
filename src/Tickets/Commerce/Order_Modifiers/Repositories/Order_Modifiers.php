@@ -233,6 +233,34 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	}
 
 	/**
+	 * Get the count of Order Modifiers based on the given criteria.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $args Arguments for the query.
+	 *
+	 * @return int Number of Order Modifiers found.
+	 */
+	public function get_search_count( array $args = [] ): int {
+		// Merge passed arguments with defaults.
+		$args = wp_parse_args( $args, $this->get_default_query_params() );
+		$valid_args = $this->get_valid_params( $args );
+
+		// Start building the query.
+		$query = $this->get_query_builder_with_from();
+
+		// Add search functionality (search in display_name or slug).
+		if ( ! empty( $valid_args['search_term'] ) ) {
+			$query->whereLike( 'display_name', $valid_args['search_term'] );
+		}
+
+		// Set the modifier type.
+		$query = $query->where( 'modifier_type', $this->modifier_type );
+
+		return $query->count() ?? 0;
+	}
+
+	/**
 	 * Finds all active Order Modifiers of the current type.
 	 *
 	 * @since 5.18.0

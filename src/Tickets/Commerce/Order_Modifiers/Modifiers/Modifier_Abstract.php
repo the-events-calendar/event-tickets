@@ -178,6 +178,19 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	}
 
 	/**
+	 * Finds a modifier by the given search criteria and returns the count.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $search Parameters to search Order Modifiers by.
+	 *
+	 * @return int The count of the modifiers found.
+	 */
+	public function find_count_by_search( array $search ): int {
+		return $this->repository->get_search_count( $search );
+	}
+
+	/**
 	 * Validates the required fields for the modifier.
 	 *
 	 * This base logic checks if all required fields are present, and not empty.
