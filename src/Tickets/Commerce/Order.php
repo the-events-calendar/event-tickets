@@ -664,8 +664,13 @@ class Order extends Abstract_Order {
 		$update_args = apply_filters( 'tec_tickets_commerce_order_update_args', $update_args, $gateway );
 
 		$updated = tec_tc_orders()
-			->where( 'id', $existing_order_id )
-			->where( self::ORDER_LOCK_KEY, $this->get_lock_id() )
+			->by_args(
+				[
+					'id'                 => $existing_order_id,
+					'status'             => 'any',
+					self::ORDER_LOCK_KEY => $this->get_lock_id(),
+				]
+			)
 			->set_args( $update_args )
 			->save();
 
