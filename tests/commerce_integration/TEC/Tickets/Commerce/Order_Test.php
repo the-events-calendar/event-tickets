@@ -117,6 +117,62 @@ class Order_Test extends WPTestCase {
 		$this->assertCount( 3, $attendees );
 	}
 
+	public function test_checkout_completed_flag() {
+		$post = self::factory()->post->create(
+			[
+				'post_type' => 'page',
+			]
+		);
+		$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
+		$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
+
+		$order = $this->create_order_from_cart( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ] );
+		tribe( Cart::class )->clear_cart();
+
+		$this->assertFalse( tribe( Order::class )->is_checkout_completed( $order->ID ) );
+
+		$this->assertTrue( tribe( Order::class )->checkout_completed( $order->ID ) );
+
+		$this->assertTrue( tribe( Order::class )->is_checkout_completed( $order->ID ) );
+	}
+
+	public function test_orders_are_not_updated_while_locked() {
+		$post = self::factory()->post->create(
+			[
+				'post_type' => 'page',
+			]
+		);
+		$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
+		$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
+
+		$order = $this->create_order_from_cart( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ] );
+		tribe( Cart::class )->clear_cart();
+
+		$this->assertFalse( tribe( Order::class )->is_order_locked( $order->ID ) );
+
+		$result = tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
+
+		$this->assertTrue( $result );
+
+		tribe( Order::class )->lock_order( $order->ID );
+
+		$this->assertTrue( tribe( Order::class )->is_order_locked( $order->ID ) );
+
+		// Change the lock id so that the lock is not released.
+		tribe( Order::class )->generate_lock_id( $order->ID );
+		$result = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
+
+		$this->assertFalse( $result );
+
+		tribe( Order::class )->unlock_order( $order->ID );
+
+		$this->assertFalse( tribe( Order::class )->is_order_locked( $order->ID ) );
+
+		$result = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
+
+		$this->assertTrue( $result );
+	}
+
 	protected function create_order_from_cart( array $items, array $overrides = [] ) {
 		foreach ( $items as $id => $quantity ) {
 			tribe( Cart::class )->get_repository()->add_item( $id, $quantity );
