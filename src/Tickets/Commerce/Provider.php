@@ -11,9 +11,6 @@ namespace TEC\Tickets\Commerce;
 use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\Gateways;
 use Tribe__Tickets__Main as Tickets_Plugin;
-use WP_Post;
-use Exception;
-use TEC\Tickets\Commerce\Status\Status_Handler;
 
 /**
  * Service provider for the Tickets Commerce.
@@ -102,54 +99,6 @@ class Provider extends Service_Provider {
 
 		// Cache invalidation.
 		add_filter( 'tec_cache_listener_save_post_types', [ $this, 'filter_cache_listener_save_post_types' ] );
-
-		add_action( 'tec_tickets_commerce_async_webhook_process', [ $this, 'process_async_stripe_webhook' ], 10 );
-	}
-
-	/**
-	 * Process the async stripe webhook.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $order_id The order ID.
-	 *
-	 * @throws Exception If the action fails after too many retries.
-	 */
-	public function process_async_stripe_webhook( int $order_id ): void {
-		$order = tec_tc_get_order( $order_id );
-
-		if ( ! $order || ! $order instanceof WP_Post || ! $order->ID ) {
-			return;
-		}
-
-		$pending_webhooks = get_post_meta( $order->ID, '_tec_tickets_commerce_stripe_webhook_pending' );
-
-		// On multiple checkout completes, make sure we dont process the same webhook twice.
-		delete_post_meta( $order->ID, '_tec_tickets_commerce_stripe_webhook_pending' );
-
-		foreach ( $pending_webhooks as $pending_webhook ) {
-			if ( ! ( is_array( $pending_webhook ) && isset( $pending_webhook['new_status'], $pending_webhook['metadata'], $pending_webhook['old_status'] ) ) ) {
-				continue;
-			}
-
-			$new_status_wp_slug = $pending_webhook['new_status'];
-
-			// The order is already there!
-			if ( $order->post_status === $new_status_wp_slug ) {
-				continue;
-			}
-
-			// The order is no longer where it was... that could be dangerous, lets bail?
-			if ( $order->post_status !== $pending_webhook['old_status'] ) {
-				continue;
-			}
-
-			tribe( Order::class )->modify_status(
-				$order->ID,
-				tribe( Status_Handler::class )->get_by_wp_slug( $new_status_wp_slug )->get_slug(),
-				$pending_webhook['metadata']
-			);
-		}
 	}
 
 	/**
