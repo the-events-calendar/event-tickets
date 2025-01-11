@@ -129,7 +129,11 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		);
 
 		// Get the total number of items.
-		$total_items = $this->modifier->find_count_by_search( [ 'search_term' => $search ] );
+		if ( count( $this->items ) < $per_page && $current_page === 1 ) {
+			$total_items = count( $this->items );
+		} else {
+			$total_items = $this->modifier->find_count_by_search( [ 'search_term' => $search ] );
+		}
 
 		// Set the pagination args.
 		$this->set_pagination_args(

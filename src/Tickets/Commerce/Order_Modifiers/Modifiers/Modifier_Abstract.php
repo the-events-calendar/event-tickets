@@ -158,6 +158,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @param int $modifier_id The modifier ID.
 	 *
 	 * @return array The modifier data as an array.
+	 *
 	 * @throws RuntimeException If the modifier is not found.
 	 */
 	public function get_modifier_by_id( int $modifier_id ): ?array {
