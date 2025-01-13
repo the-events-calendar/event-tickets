@@ -175,7 +175,6 @@ class Tribe__Tickets__Main {
 	 */
 	protected function __construct() {
 		// Set up some of the plugin's properties.
-		$this->plugin_name = esc_html_x( 'Tickets', 'provider_plugin_name', 'event-tickets' );
 		$this->plugin_slug = 'tickets';
 		$this->plugin_path = trailingslashit( EVENT_TICKETS_DIR );
 		$this->plugin_dir  = trailingslashit( basename( $this->plugin_path ) );
@@ -188,13 +187,24 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
+	 * Set the plugin name.
+	 *
+	 * @since TBD
+	 */
+	public function set_plugin_name() {
+		$this->plugin_name = esc_html_x( 'Tickets', 'provider_plugin_name', 'event-tickets' );
+	}
+
+	/**
 	 * Attach our initial hooks and filters
 	 *
 	 * @since 5.18.0
+	 * @since TBD Called `set_plugin_name` on `init` hook.
 	 *
 	 * @return void
 	 */
 	public function do_hooks() {
+		add_filter( 'init', [ $this, 'set_plugin_name' ] );
 		add_filter( 'tribe_events_integrations_should_load_freemius', '__return_false' );
 
 		$this->maybe_set_common_lib_info();
