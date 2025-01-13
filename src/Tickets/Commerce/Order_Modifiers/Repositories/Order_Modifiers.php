@@ -188,11 +188,14 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 * Search for Order Modifiers based on the given criteria.
 	 *
 	 * @param array $args          {
-	 *                             Optional. Arguments to filter the query.
+	 *     Optional. Arguments to filter the query. See get_default_query_params() method for the full list of parameters.
 	 *
-	 *     @type string $search_term The term to search for (e.g., in display_name or slug).
-	 *     @type string $orderby     Column to order by. Default 'display_name'.
-	 *     @type string $order       Sorting order. Either 'asc' or 'desc'. Default 'asc'.
+	 *     @type string   $search_term The term to search for (e.g., in display_name or slug).
+	 *     @type string   $orderby     Column to order by. Default 'display_name'.
+	 *     @type string   $order       Sorting order. Either 'asc' or 'desc'. Default 'asc'.
+	 *     @type int      $limit       The number of results to return. Default 10. Using -1 disables the limit.
+	 *     @type int      $page        The page number to retrieve. Default 1.
+	 *     @type string[] $status      The status of the modifiers to filter by. Default 'active'.
 	 * }
 	 *
 	 * @return Order_Modifier[] An array of Order_Modifiers or an empty array if none found.
@@ -453,10 +456,15 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 * @since TBD
 	 *
 	 * @param string[] $applied_to The value(s) to filter the query by.
-	 * @param array    $params { Optional. Parameters to filter the query.
-	 *     @type string[] $status The status of the modifiers to filter by. Default 'active'.
-	 *     @type int      $limit  The number of results to return. Default 10.
-	 *     @type string   $order  The order of the results. Default 'DESC'.
+	 * @param array    $params     {
+	 *     Optional. Arguments to filter the query. See get_default_query_params() method for the full list of parameters.
+	 *
+	 *     @type string   $search_term The term to search for (e.g., in display_name or slug).
+	 *     @type string   $orderby     Column to order by. Default 'display_name'.
+	 *     @type string   $order       Sorting order. Either 'asc' or 'desc'. Default 'asc'.
+	 *     @type int      $limit       The number of results to return. Default 10. Using -1 disables the limit.
+	 *     @type int      $page        The page number to retrieve. Default 1.
+	 *     @type string[] $status      The status of the modifiers to filter by. Default 'active'.
 	 * }
 	 *
 	 * @return array
@@ -629,6 +637,12 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		foreach ( $params as $key => $value ) {
 			switch ( $key ) {
 				case 'limit':
+					// -1 means we should not limit the results, so skip adding to the params.
+					if ( -1 === $value ) {
+						break;
+					}
+					// NO break; Deliberately fall through to the next case.
+
 				case 'offset':
 				case 'page':
 					$valid_params[ $key ] = absint( $value );
