@@ -302,14 +302,6 @@ class Attendee {
 	public function format_many( array $attendees ): array {
 		$unknown_attendee_name = __( 'Unknown', 'event-tickets' );
 
-		// Filter out attendees that are not from the Commerce module.
-		$attendees = array_filter(
-			$attendees,
-			static function ( array $attendee ): bool {
-				return Module::class === $attendee['provider'];
-			}
-		);
-
 		$associated_attendees = array_reduce(
 			$attendees,
 			static function ( array $carry, array $attendee ): array {
