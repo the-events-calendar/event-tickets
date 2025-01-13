@@ -114,11 +114,12 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		$per_page     = $this->get_items_per_page( "{$this->modifier->get_modifier_type()}_per_page", 10 );
 		$current_page = $this->get_pagenum();
 
+		// Query parameters.
 		$parameters = [
 			'orderby' => tec_get_request_var( 'orderby', 'display_name' ),
-			'order' => tec_get_request_var( 'order', 'asc' ),
-			'limit' => $this->get_items_per_page( "{$this->modifier->get_modifier_type()}_per_page", 10 ),
-			'page' => $this->get_pagenum(),
+			'order'   => tec_get_request_var( 'order', 'asc' ),
+			'limit'   => $this->get_items_per_page( "{$this->modifier->get_modifier_type()}_per_page", 10 ),
+			'page'    => $this->get_pagenum(),
 		];
 
 		// Handle search, or run a normal query.
