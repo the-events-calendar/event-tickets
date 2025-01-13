@@ -189,7 +189,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	/**
 	 * Search for Order Modifiers based on the given criteria.
 	 *
-	 * @param array $args          {
+	 * @param array $params {
 	 *     Optional. Arguments to filter the query. See get_default_query_params() method for the full list of parameters.
 	 *
 	 *     @type string   $search_term The term to search for (e.g., in display_name or slug).
@@ -202,10 +202,10 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 *
 	 * @return Order_Modifier[] An array of Order_Modifiers or an empty array if none found.
 	 */
-	public function search_modifiers( array $args = [] ): array {
+	public function search_modifiers( array $params = [] ): array {
 		// Merge passed arguments with defaults.
-		$args       = wp_parse_args( $args, $this->get_default_query_params() );
-		$valid_args = $this->get_valid_params( $args );
+		$params     = wp_parse_args( $params, $this->get_default_query_params() );
+		$valid_args = $this->get_valid_params( $params );
 
 		// Start building the query.
 		$query = $this->get_query_builder_with_from();

@@ -19,6 +19,8 @@ trait Meta_Keys {
 	 *
 	 * @since TBD
 	 *
+	 * @param string $modifier_type The type of the modifier (e.g., 'coupon', 'fee').
+	 *
 	 * @return string The key used to store the applied to value in the meta table.
 	 */
 	protected function get_applied_to_key( string $modifier_type ): string {
