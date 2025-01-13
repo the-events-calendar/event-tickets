@@ -2,8 +2,8 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.18.0
-Requires at least: 6.3
+Stable tag: 5.18.0.1
+Requires at least: 6.5
 Tested up to: 6.7.1
 Requires PHP: 7.4
 License: GPLv2 or later
@@ -199,7 +199,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.18.0] 2024-12-16 =
+= [5.18.0.1] 2025-01-07 =
+
+* Fix - Resolves problem related to duplication of attendees while using Stripe webhooks with Tickets Commerce. [ET-2279]
+
+= [5.18.0] 2024-12-17 =
 
 * Feature - Added option to detach assigned seating tickets from layout and revert them to regular tickets. [SL-214]
 * Feature - Add support for max ticket purchase limit filter with seating tickets. [SL-205]
@@ -209,7 +213,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Changed views: `v2/commerce/checkout/cart/footer`, `v2/commerce/checkout/cart/footer/total`, `v2/commerce/checkout/order-modifiers/coupons`, `v2/commerce/checkout/order-modifiers/fees`
 * Tweak - Removed outdated ticket duration tooltips. [ET-2263]
 * Fix - Correctly calculate and set the session expiration date in the seat selection modal. [n/a]
-* Fix - Ensure that number_format is used with a float value to prevent issues with PHP 8.0+. [ETP-962]
+* Fix - Ensure that `number_format` is used with a float value to prevent issues with PHP 8.0+. [ETP-962]
 * Fix - Hide seating reservation settings when seating license is not valid. [SL-248]
 * Fix - Order updates for asynchronous payment methods in Stripe will update correctly. [ET-2082]
 * Fix - The Attendee Registration page is now compatible with Full Site Editor themes. [ET-2266]
@@ -225,7 +229,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Version - Event Tickets 5.17.0 is only compatible with Event Tickets Plus 6.1.1 or higher.
 * Feature - Add Reservation timer settings for seating tickets. [Sl-213]
-* Feature - Enable duplicate layout funcitonality for seating. [SL-65]
+* Feature - Enable duplicate layout functionality for seating. [SL-65]
 * Feature - Reset Seat Layouts data when a new license is connected.
 * Feature - Update Seating assets into using Group Paths. [SL-246]
 * Tweak - Added filters: `tec_tickets_seating_checkout_grace_time`
@@ -274,7 +278,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - If users added an index to the `post_meta` table on `meta_value` using `CONCAT()` should speed up queries for them. [GTRIA-1236]
 * Fix - Possible miscounted ticketed or un-ticketed events in the events admin list [ET-2221]
 * Fix - Some dates in admin screens were not translated [TEC-4873]
-* Fix - Wrong ticket stock when attendeed were moved between tickets [ET-2098]
+* Fix - Wrong ticket stock when attendees were moved between tickets [ET-2098]
 * Fix - Fix issue with svg display in settings page. [TEC-5282]
 * Tweak - Modify language around ticket capacity on "Tickets" block to improve clarity.
 * Language - 0 new strings added, 61 updated, 0 fuzzied, and 0 obsoleted
@@ -304,7 +308,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.13.3] 2024-09-11 =
 
 * Feature - Added Individual Order Screen in the Admin to improve the Order Management for Tickets Commerce. [ET-2150]
-* Tweak - Tweaked `setupCompactCardElement` method to allow filtering of options using the existing `tec_tickets_commerce_stripe_checkout_localized_data` filter. [TECTRIA-295]
+* Tweak - Tweaked `setupCompactCardElement` method to allow filtering of options using the existing `tec_tickets_commerce_stripe_checkout_localized_data` filter. [ET-2259]
 * Tweak - Made a string translatable in `getting-started.php` file. (props to @DAnn2012) [ET-2215]
 * Tweak - Added filters: `post_updated_messages`
 * Tweak - Added actions: `tribe_tickets_commerce_order_actions_box_start`
@@ -314,7 +318,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Fix - Exporting all Attendees as a CSV file in the new Tickets Attendees Page. [ET-2094]
 * Fix - Shared capacity will no longer be affected by any of the unlimited sales tickets on the same event. [ETP-920]
-* Tweak - Start Sale and End Sale date will autopopulate when creating a new ticket. [ET-2103]
+* Tweak - Start Sale and End Sale date will auto-populate when creating a new ticket. [ET-2103]
 * Tweak - Update legacy Wallet Plus plugin notices to the new Tickets Plus plugin.
 * Tweak - Changed views: `v2/commerce/checkout/gateways`, `v2/commerce/checkout/purchaser-info`, `v2/commerce/checkout/purchaser-info/address`, `v2/commerce/checkout/purchaser-info/city`, `v2/commerce/checkout/purchaser-info/country`, `v2/commerce/checkout/purchaser-info/email`, `v2/commerce/checkout/purchaser-info/name`, `v2/commerce/checkout/purchaser-info/state`, `v2/commerce/checkout/purchaser-info/zip`, `v2/commerce/gateway/stripe/payment-element`
 * Language - 2 new strings added, 33 updated, 0 fuzzied, and 0 obsoleted
