@@ -9,8 +9,6 @@
 
 namespace TEC\Tickets\Seating\Orders;
 
-use TEC\Tickets\Commerce\Module;
-use TEC\Tickets\Emails\Email\RSVP;
 use Tribe__Main as Common;
 use Tribe__Tickets__Attendee_Repository as Attendee_Repository;
 use Tribe__Utils__Array as Arr;
