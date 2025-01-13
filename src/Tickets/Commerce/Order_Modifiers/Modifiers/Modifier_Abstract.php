@@ -166,6 +166,20 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	}
 
 	/**
+	 * Get modifier based on what it applies to.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $applied_to The applied to value.
+	 * @param array $params    Additional parameters to filter the results.
+	 *
+	 * @return array The modifiers that were found.
+	 */
+	public function get_modifier_by_applied_to( array $applied_to, array $params = [] ): array {
+		return $this->repository->get_modifier_by_applied_to( $applied_to, $params );
+	}
+
+	/**
 	 * Finds a modifier by its display name.
 	 *
 	 * @since 5.18.0

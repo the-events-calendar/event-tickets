@@ -110,29 +110,24 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 			$this->get_sortable_columns(),
 		];
 
-		// Handle search.
-		$search = tec_get_request_var( 's', '' );
-
 		// Pagination parameters.
 		$per_page     = $this->get_items_per_page( "{$this->modifier->get_modifier_type()}_per_page", 10 );
 		$current_page = $this->get_pagenum();
 
-		// Fetch the data from the modifier class, including sorting.
-		$this->items = $this->modifier->find_by_search(
-			[
-				'search_term' => $search,
-				'orderby'     => tec_get_request_var( 'orderby', 'display_name' ),
-				'order'       => tec_get_request_var( 'order', 'asc' ),
-				'limit'       => $per_page,
-				'page'        => $current_page,
-			]
-		);
+		$parameters = [
+			'orderby' => tec_get_request_var( 'orderby', 'display_name' ),
+			'order' => tec_get_request_var( 'order', 'asc' ),
+			'limit' => $this->get_items_per_page( "{$this->modifier->get_modifier_type()}_per_page", 10 ),
+			'page' => $this->get_pagenum(),
+		];
 
-		// Get the total number of items.
-		if ( count( $this->items ) < $per_page && $current_page === 1 ) {
-			$total_items = count( $this->items );
+		// Handle search, or run a normal query.
+		$search = tec_get_request_var( 's', '' );
+
+		if ( ! empty( $search ) ) {
+			$total_items = $this->setup_items_with_search( $search, $parameters, $per_page, $current_page );
 		} else {
-			$total_items = $this->modifier->find_count_by_search( [ 'search_term' => $search ] );
+			$total_items = $this->setup_items( $parameters, $per_page, $current_page );
 		}
 
 		// Set the pagination args.
@@ -143,6 +138,63 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 				'total_pages' => ceil( $total_items / $per_page ),
 			]
 		);
+	}
+
+	/**
+	 * Setup items with a search term.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $search       The search term.
+	 * @param array  $params       The query parameters. The search term will be added to this array.
+	 * @param int    $per_page     The number of items to display per page.
+	 * @param int    $current_page The current page number.
+	 *
+	 * @return int The total number of items.
+	 */
+	protected function setup_items_with_search( string $search, array $params, int $per_page, int $current_page ): int {
+		// Fetch the data from the modifier class, including sorting.
+		$params['search_term'] = $search;
+		$this->items           = $this->modifier->find_by_search( $params );
+
+		// Get the total number of items.
+		if ( count( $this->items ) < $per_page && $current_page === 1 ) {
+			$total_items = count( $this->items );
+		} else {
+			$total_items = $this->modifier->find_count_by_search(
+				[
+					'search_term' => $search,
+					'limit'       => -1,
+				]
+			);
+		}
+
+		return $total_items;
+	}
+
+	/**
+	 * Setup the items for the table.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $params       The query parameters.
+	 * @param int   $per_page     The number of items to display per page.
+	 * @param int   $current_page The current page number.
+	 *
+	 * @return int The total number of items.
+	 */
+	protected function setup_items( array $params, int $per_page, int $current_page ): int {
+		$applied_to  = [ 'per', 'all' ];
+		$this->items = $this->modifier->get_modifier_by_applied_to( $applied_to, $params );
+
+		// Get the total number of items.
+		if ( count( $this->items ) < $per_page && $current_page === 1 ) {
+			$total_items = count( $this->items );
+		} else {
+			$total_items = count( $this->modifier->get_modifier_by_applied_to( $applied_to, [ 'limit' => -1 ] ) );
+		}
+
+		return $total_items;
 	}
 
 	/**
