@@ -116,7 +116,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 * @return static
 	 */
 	public function save(): self {
-		$repository = Factory::get_repository_for_type( $this->modifier_type );
+		$repository = Factory::get_repository_for_type( static::$order_modifier_type );
 		if ( $this->id ) {
 			$repository->update( $this );
 
@@ -136,7 +136,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 * @return bool Whether the model was deleted.
 	 */
 	public function delete(): bool {
-		return Factory::get_repository_for_type( $this->modifier_type )->delete( $this );
+		return Factory::get_repository_for_type( static::$order_modifier_type )->delete( $this );
 	}
 
 	/**
