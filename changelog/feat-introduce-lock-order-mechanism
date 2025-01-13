@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Introduce Order lock mechanism to ensure 2 or more action that could update the order, they dont so at the same time. [ET-2279]

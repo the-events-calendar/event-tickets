@@ -1,4 +1,11 @@
 <?php
+/**
+ * Tickets Commerce Order
+ *
+ * @since 5.1.9
+ *
+ * @package TEC\Tickets\Commerce
+ */
 
 namespace TEC\Tickets\Commerce;
 
@@ -9,6 +16,8 @@ use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Date_Utils as Dates;
 use WP_Post;
 use TEC\Tickets\Commerce\Status\Pending;
+use TEC\Common\StellarWP\DB\DB;
+use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 
 /**
  * Class Order
@@ -27,6 +36,35 @@ class Order extends Abstract_Order {
 	 * @var string
 	 */
 	const POSTTYPE = 'tec_tc_order';
+
+	/**
+	 * Meta key for the checkout status of the order.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected const CHECKOUT_COMPLETED_META = '_tec_tc_checkout_completed';
+
+	/**
+	 * Meta key for the order lock status.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected const ORDER_LOCK_KEY = 'post_content_filtered';
+
+	/**
+	 * Keeping track of the lock id generated during a request.
+	 *
+	 * Enables to determine if the order has also been locked by current request, so that we can allow edit operations while the order is locked.
+	 *
+	 * @since TBD
+	 *
+	 * @var string|null
+	 */
+	protected static ?string $lock_id = null;
 
 	/**
 	 * Which meta holds which gateway was used on this order.
@@ -340,12 +378,26 @@ class Order extends Abstract_Order {
 
 		$args = array_merge( $extra_args, [ 'status' => $status->get_wp_slug() ] );
 
-		$updated = tec_tc_orders()->by_args(
-			[
-				'status' => 'any',
-				'id'     => $order_id,
-			]
-		)->set_args( $args )->save();
+		// During this operations - the order should be locked!
+		$locked = $this->lock_order( $order_id );
+
+		// If we were unable to lock the order, bail.
+		if ( ! $locked ) {
+			return false;
+		}
+
+		$updated = tec_tc_orders()
+			->by_args(
+				[
+					'id'                 => $order_id,
+					'status'             => 'any',
+					self::ORDER_LOCK_KEY => $this->get_lock_id(),
+				]
+			)
+			->set_args( $args )
+			->save();
+
+		$this->unlock_order( $order_id );
 
 		// After modifying the status we add a meta to flag when it was modified.
 		if ( $updated ) {
@@ -585,6 +637,12 @@ class Order extends Abstract_Order {
 			return $this->create( $gateway, $args );
 		}
 
+		$locked = $this->lock_order( $existing_order_id );
+
+		if ( ! $locked ) {
+			return false;
+		}
+
 		/**
 		 * Allows filtering of the order update arguments for all orders created via Tickets Commerce.
 		 *
@@ -605,7 +663,18 @@ class Order extends Abstract_Order {
 		 */
 		$update_args = apply_filters( 'tec_tickets_commerce_order_update_args', $update_args, $gateway );
 
-		$updated = tec_tc_orders()->where( 'id', $existing_order_id )->set_args( $update_args )->save();
+		$updated = tec_tc_orders()
+			->by_args(
+				[
+					'id'                 => $existing_order_id,
+					'status'             => 'any',
+					self::ORDER_LOCK_KEY => $this->get_lock_id(),
+				]
+			)
+			->set_args( $update_args )
+			->save();
+
+		$this->unlock_order( $existing_order_id );
 
 		if ( empty( $updated[ $existing_order_id ] ) ) {
 			/**
@@ -872,5 +941,153 @@ class Order extends Abstract_Order {
 			'status'           => 'any',
 			'gateway_order_id' => $gateway_order_id,
 		] )->first();
+	}
+
+	/**
+	 * Lock an order to prevent it from being modified.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id The order ID.
+	 *
+	 * @return bool Whether the order was locked.
+	 */
+	public function lock_order( int $order_id ): bool {
+		$this->generate_lock_id();
+
+		try {
+			$lock_key = self::ORDER_LOCK_KEY;
+
+			$result = DB::query(
+				DB::prepare(
+					"UPDATE %i set $lock_key = %s where ID = $order_id and $lock_key = ''",
+					DB::prefix( 'posts' ),
+					$this->get_lock_id()
+				)
+			);
+
+			return (bool) $result;
+		} catch ( DatabaseQueryException $e ) {
+			return false;
+		}
+	}
+
+	/**
+	 * Unlock an order to allow it to be modified.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id The order ID.
+	 *
+	 * @return bool Whether the order was unlocked.
+	 */
+	public function unlock_order( int $order_id ): bool {
+		$lock_key = self::ORDER_LOCK_KEY;
+		try {
+			return (bool) DB::query(
+				DB::prepare(
+					"UPDATE %i set $lock_key = '' where ID = $order_id",
+					DB::prefix( 'posts' )
+				)
+			);
+		} catch ( DatabaseQueryException $e ) {
+			return false;
+		}
+	}
+
+	/**
+	 * Get the lock ID.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The lock ID.
+	 */
+	public function get_lock_id(): string {
+		return self::$lock_id;
+	}
+
+	/**
+	 * Generate a lock ID.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The lock ID.
+	 */
+	public function generate_lock_id(): string {
+		self::$lock_id = uniqid( '_order_lock', true );
+
+		return self::$lock_id;
+	}
+
+	/**
+	 * Get whether the order is locked.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id The order ID.
+	 *
+	 * @return bool Whether the order is locked.
+	 */
+	public function is_order_locked( int $order_id ): bool {
+		$lock_key = self::ORDER_LOCK_KEY;
+
+		try {
+			return (bool) DB::get_var(
+				DB::prepare(
+					"SELECT $lock_key FROM %i WHERE ID = $order_id",
+					DB::prefix( 'posts' )
+				)
+			);
+		} catch ( DatabaseQueryException $e ) {
+			return false;
+		}
+	}
+
+	/**
+	 * Get whether the order has its checkout completed.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id The order ID.
+	 *
+	 * @return bool Whether the checkout is completed.
+	 */
+	public function is_checkout_completed( int $order_id ): bool {
+		try {
+			// Direct query to overcome object cache.
+			return (bool) DB::get_var(
+				DB::prepare(
+					'SELECT meta_value FROM %i WHERE post_id = %d AND meta_key = %s',
+					DB::prefix( 'postmeta' ),
+					$order_id,
+					static::CHECKOUT_COMPLETED_META
+				)
+			);
+		} catch ( DatabaseQueryException $e ) {
+			return false;
+		}
+	}
+
+	/**
+	 * Mark an order's checkout as completed.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id The order ID.
+	 *
+	 * @return bool Whether the checkout was marked as completed and the async action was scheduled.
+	 */
+	public function checkout_completed( int $order_id ): bool {
+		$result = (bool) update_post_meta( $order_id, static::CHECKOUT_COMPLETED_META, true );
+
+		if ( ! $result ) {
+			return false;
+		}
+
+		return (bool) as_enqueue_async_action(
+			'tec_tickets_commerce_async_webhook_process',
+			[ 'order_id' => $order_id ],
+			'tec-tickets-commerce-stripe-webhooks'
+		);
 	}
 }
