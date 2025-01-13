@@ -308,7 +308,7 @@ class Attendee {
 		$attendees = array_filter(
 			$attendees,
 			static function ( array $attendee ): bool {
-				return RSVP::class !== $attendee['provider'];
+				return RSVP_Provider::class !== $attendee['provider'];
 			}
 		);
 
