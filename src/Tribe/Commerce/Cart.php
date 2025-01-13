@@ -20,7 +20,7 @@ class Tribe__Tickets__Commerce__Cart {
 	 * @since 4.11.0
 	 */
 	public function process_cart() {
-		$has_tickets = tribe_get_request_var( 'tribe_tickets_ar' );
+		$has_tickets = tec_get_request_var( 'tribe_tickets_ar' );
 		
 		if ( empty( $has_tickets ) ) {
 			return;
