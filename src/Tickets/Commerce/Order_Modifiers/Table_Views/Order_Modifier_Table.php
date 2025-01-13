@@ -190,12 +190,10 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 
 		// Get the total number of items.
 		if ( count( $this->items ) < $per_page && $current_page === 1 ) {
-			$total_items = count( $this->items );
-		} else {
-			$total_items = count( $this->modifier->get_modifier_by_applied_to( $applied_to, [ 'limit' => -1 ] ) );
+			return count( $this->items );
 		}
 
-		return $total_items;
+		return count( $this->modifier->get_modifier_by_applied_to( $applied_to, [ 'limit' => -1 ] ) );
 	}
 
 	/**
