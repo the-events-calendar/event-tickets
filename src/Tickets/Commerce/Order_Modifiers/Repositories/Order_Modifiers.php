@@ -22,6 +22,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifier_Relationsh
 use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifiers as Table;
 use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier;
+use TEC\Tickets\Commerce\Order_Modifiers\Traits\Meta_Keys;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Status;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 use TEC\Tickets\Exceptions\Not_Found_Exception;
@@ -35,6 +36,7 @@ use TEC\Tickets\Exceptions\Not_Found_Exception;
  */
 class Order_Modifiers extends Repository implements Insertable, Updatable, Deletable {
 
+	use Meta_Keys;
 	use Status;
 	use Valid_Types;
 
@@ -514,7 +516,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 				$meta
 			)
 			->where( "{$modifiers}.modifier_type", $this->modifier_type )
-			->where( "{$meta}.meta_key", $this->get_applied_to_key() )
+			->where( "{$meta}.meta_key", $this->get_applied_to_key( $this->modifier_type ) )
 			->whereIn( "{$meta}.meta_value", $applied_to );
 
 		// Add the status params to the pieces.
@@ -690,29 +692,6 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		}
 
 		return $valid_params;
-	}
-
-	/**
-	 * Get the key used to store the applied to value in the meta table.
-	 *
-	 * @since TBD
-	 *
-	 * @return string The key used to store the applied to value in the meta table.
-	 */
-	protected function get_applied_to_key(): string {
-		$default_key = "{$this->modifier_type}_applied_to";
-
-		/**
-		 * Filters the key used to store the applied to value in the meta table.
-		 *
-		 * @since TBD
-		 *
-		 * @param string $result        The key used to store the applied to value in the meta table.
-		 * @param string $modifier_type The type of the modifier (e.g., 'coupon', 'fee').
-		 */
-		$result = (string) apply_filters( 'tec_tickets_commerce_order_modifier_applied_to_key', $default_key, $this->modifier_type );
-
-		return ( ! empty( $result ) ) ? $result : $default_key;
 	}
 
 	/**

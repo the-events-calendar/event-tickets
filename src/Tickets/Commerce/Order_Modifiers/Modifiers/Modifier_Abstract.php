@@ -32,6 +32,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Modifier_Admin_Handler;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship as Relationship_Repo;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers as Modifiers_Repo;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta as Meta_Repo;
+use TEC\Tickets\Commerce\Order_Modifiers\Traits\Meta_Keys;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Status;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Currency_Value;
@@ -51,6 +52,7 @@ use TEC\Tickets\Exceptions\Not_Found_Exception;
  */
 abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 
+	use Meta_Keys;
 	use Status;
 	use Valid_Types;
 
@@ -595,7 +597,10 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 */
 	public function maybe_clear_relationships( int $modifier_id, string $new_apply_type ): void {
 		// Retrieve the current apply_type from the metadata.
-		$current_apply_type = $this->meta_repository->find_by_order_modifier_id_and_meta_key( $modifier_id, 'fee_applied_to' )->meta_value ?? null;
+		$current_apply_type = $this->meta_repository->find_by_order_modifier_id_and_meta_key(
+			$modifier_id,
+			$this->get_applied_to_key( $this->modifier_type )
+		)->meta_value ?? null;
 
 		// If the apply_type has changed, clear all relationships.
 		if ( $current_apply_type !== $new_apply_type ) {
