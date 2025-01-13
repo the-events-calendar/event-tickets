@@ -6,22 +6,28 @@ use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Factory;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier;
+use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Meta;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta;
+use TEC\Tickets\Commerce\Order_Modifiers\Traits\Meta_Keys;
 
 trait Order_Modifiers {
+
+	use Meta_Keys;
 
 	/**
 	 * Helper method to insert an Order Modifier for tests with assertions.
 	 *
-	 * @param array $data The data for creating the modifier.
+	 * @param array  $data       The data for creating the modifier.
+	 * @param string $applied_to The post type or product ID the modifier is applied to.
 	 *
 	 * @return Model The created or updated modifier.
 	 */
-	protected function upsert_order_modifier_for_test( array $data ): Model {
+	protected function upsert_order_modifier_for_test( array $data, string $applied_to = '' ): Model {
 		// Set default data for the modifier.
 		$default_data = [
 			'order_modifier_id'           => 0,
-			'order_modifier_amount'       => '0', // Default fee of 10.00 USD in cents.
+			'order_modifier_amount'       => '0',
 			'order_modifier_sub_type'     => 'flat',
 			'order_modifier_status'       => 'active',
 			'order_modifier_slug'         => 'test_modifier',
@@ -46,7 +52,39 @@ trait Order_Modifiers {
 		$mapped_data = $modifier_strategy->map_form_data_to_model( $modifier_data );
 
 		// Save the modifier and assert it's not null after saving.
-		return $manager->save_modifier( $mapped_data );
+		$modifier = $manager->save_modifier( $mapped_data );
+		$this->assertNotNull( $modifier );
+
+		// Add applied_to meta if provided.
+		if ( ! empty( $applied_to ) ) {
+			$this->add_applied_to_meta( $modifier->id, $applied_to, $modifier_type );
+		}
+
+		return $modifier;
+	}
+
+	/**
+	 * Helper method to add applied_to meta to an Order Modifier for tests.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $modifier_id The ID of the modifier to add the meta to.
+	 * @param string $applied_to  The applied_to value (e.g. 'per', 'all').
+	 * @param string $type        The type of the modifier (e.g. 'coupon', 'fee').
+	 *
+	 * @return void
+	 */
+	protected function add_applied_to_meta( int $modifier_id, string $applied_to, string $type ) {
+		$meta = new Order_Modifier_Meta(
+			[
+				'order_modifier_id' => $modifier_id,
+				'meta_key'          => $this->get_applied_to_key( $type ),
+				'meta_value'        => $applied_to,
+				'priority'          => 0,
+			]
+		);
+
+		( new Order_Modifiers_Meta() )->upsert_meta( $meta );
 	}
 
 	/**

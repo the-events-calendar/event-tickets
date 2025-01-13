@@ -375,7 +375,6 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 	protected function get_table_display() {
 		$modifier_ids = [];
 		for ( $i = 0; $i < 20; $i++ ) {
-			// Step 1: Insert a new modifier.
 			$insert_data = [
 				'modifier'                    => $this->modifier_type,
 				'order_modifier_amount'       => (float) $i,
@@ -383,9 +382,15 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 				'order_modifier_slug'         => sprintf( 'test_%1$s_%2$02d', $this->modifier_type, $i ),
 				'order_modifier_display_name' => "Test {$this->modifier_type} Insert",
 			];
-			$modifier_ids[] = $this->upsert_order_modifier_for_test( $insert_data )->id;
+
+			// Set up the applied_to value.
+			$applied_to = $i % 2 ? 'all' : 'per';
+
+			// Insert the modifier and store the ID.
+			$modifier_ids[] = $this->upsert_order_modifier_for_test( $insert_data, $applied_to )->id;
 		}
 
+		// Clear the request data to avoid conflicts with other tests.
 		unset( $_REQUEST['modifier_id'], $_REQUEST['edit'], $_POST['modifier_id'], $_POST['edit'] );
 
 		$modifier_admin_handler = tribe( Modifier_Admin_Handler::class );
