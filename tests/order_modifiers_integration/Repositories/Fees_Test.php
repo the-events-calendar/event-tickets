@@ -126,7 +126,7 @@ class Fees_Test extends Order_Modifiers_TestCase {
 	 * @test
 	 * @return void
 	 */
-	public function should_find_all_fees() {
+	public function should_find_all_fees_with_search() {
 		$this->create_modifiers();
 
 		$repo = Factory::get_repository_for_type( $this->modifier_type );
@@ -138,5 +138,49 @@ class Fees_Test extends Order_Modifiers_TestCase {
 		// Test that we get the correct number of fees with a limit.
 		$results = $repo->search_modifiers( [ 'limit' => 5 ] );
 		$this->assertCount( 5, $results );
+	}
+
+	/**
+	 * @test
+	 * @return void
+	 */
+	public function should_find_specific_fees_with_search_term() {
+		$this->create_modifiers();
+
+		$repo = Factory::get_repository_for_type( $this->modifier_type );
+
+		// Test that we get the correct count of all fees.
+		$count = $repo->get_search_count();
+		$this->assertEquals( 40, $count );
+
+		// Test that we get the correct number of fees with a limit.
+		$results = $repo->search_modifiers( [ 'limit' => 5, 'search_term' => 'Test Fee 1 ' ] );
+		$this->assertCount( 2, $results );
+	}
+
+	public function should_filter_by_status_when_searching() {
+		$this->create_modifiers();
+
+		$repo = Factory::get_repository_for_type( $this->modifier_type );
+
+		// Test that we get the correct count of all fees.
+		$count = $repo->get_search_count();
+		$this->assertEquals( 40, $count );
+
+		// Test that we get the correct number of fees with a limit.
+		$results = $repo->search_modifiers( [ 'limit' => 5 ] );
+		$this->assertCount( 4, $results );
+
+		$results = $repo->search_modifiers( [ 'status' => [ 'inactive' ] ] );
+		$this->assertCount( 0, $results );
+
+		$results = $repo->search_modifiers( [ 'status' => [ 'draft' ] ] );
+		$this->assertCount( 0, $results );
+
+		$results = $repo->search_modifiers( [ 'status' => [ 'any' ] ] );
+		$this->assertCount( 5, $results );
+
+		$results = $repo->search_modifiers( [ 'status' => [ 'fake_status' ] ] );
+		$this->assertCount( 0, $results );
 	}
 }
