@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Regression caused by 5.18.0.1 where order updates for asynchronous payment methods in Stripe would not update correctly. [ET-2281]
