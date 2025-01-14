@@ -104,39 +104,34 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 * @since 5.18.0
 	 */
 	public function prepare_items() {
-		$columns               = $this->get_columns();
-		$hidden                = [];
-		$sortable              = $this->get_sortable_columns();
-		$this->_column_headers = [ $columns, $hidden, $sortable ];
+		$this->_column_headers = [
+			$this->get_columns(),
+			$this->get_hidden_columns(),
+			$this->get_sortable_columns(),
+		];
 
-		// Handle search.
-		$search = tribe_get_request_var( 's', '' );
-
-		// Capture sorting parameters.
-
-		$orderby = sanitize_text_field( tribe_get_request_var( 'orderby', 'display_name' ) );
-		$order   = sanitize_text_field( tribe_get_request_var( 'order', 'asc' ) );
-
-		// Fetch the data from the modifier class, including sorting.
-		$data = $this->modifier->find_by_search(
-			[
-				'search_term'   => $search,
-				'orderby'       => $orderby,
-				'order'         => $order,
-				'modifier_type' => $this->modifier->get_modifier_type(),
-			]
-		);
-
-		// Pagination.
-		$per_page     = $this->get_items_per_page( $this->modifier->get_modifier_type() . '_per_page', 10 );
+		// Pagination parameters.
+		$per_page     = $this->get_items_per_page( "{$this->modifier->get_modifier_type()}_per_page", 10 );
 		$current_page = $this->get_pagenum();
-		$total_items  = count( $data );
 
-		$data = array_slice( $data, ( $current_page - 1 ) * $per_page, $per_page );
+		// Query parameters.
+		$parameters = [
+			'orderby' => tec_get_request_var( 'orderby', 'display_name' ),
+			'order'   => tec_get_request_var( 'order', 'asc' ),
+			'limit'   => $this->get_items_per_page( "{$this->modifier->get_modifier_type()}_per_page", 10 ),
+			'page'    => $this->get_pagenum(),
+		];
 
-		// Set the items for the table.
-		$this->items = $data;
+		// Handle search, or run a normal query.
+		$search = tec_get_request_var( 's', '' );
 
+		if ( ! empty( $search ) ) {
+			$total_items = $this->setup_items_with_search( $search, $parameters, $per_page, $current_page );
+		} else {
+			$total_items = $this->setup_items( $parameters, $per_page, $current_page );
+		}
+
+		// Set the pagination args.
 		$this->set_pagination_args(
 			[
 				'total_items' => $total_items,
@@ -144,6 +139,59 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 				'total_pages' => ceil( $total_items / $per_page ),
 			]
 		);
+	}
+
+	/**
+	 * Setup items with a search term.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $search       The search term.
+	 * @param array  $params       The query parameters. The search term will be added to this array.
+	 * @param int    $per_page     The number of items to display per page.
+	 * @param int    $current_page The current page number.
+	 *
+	 * @return int The total number of items.
+	 */
+	protected function setup_items_with_search( string $search, array $params, int $per_page, int $current_page ): int {
+		// Fetch the data from the modifier class, including sorting.
+		$params['search_term'] = $search;
+		$this->items           = $this->modifier->find_by_search( $params );
+
+		// Get the total number of items.
+		if ( count( $this->items ) < $per_page && $current_page === 1 ) {
+			return count( $this->items );
+		}
+
+		return $this->modifier->find_count_by_search(
+			[
+				'search_term' => $search,
+				'limit'       => -1,
+			]
+		);
+	}
+
+	/**
+	 * Setup the items for the table.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $params       The query parameters.
+	 * @param int   $per_page     The number of items to display per page.
+	 * @param int   $current_page The current page number.
+	 *
+	 * @return int The total number of items.
+	 */
+	protected function setup_items( array $params, int $per_page, int $current_page ): int {
+		$applied_to  = [ 'per', 'all' ];
+		$this->items = $this->modifier->get_modifier_by_applied_to( $applied_to, $params );
+
+		// Get the total number of items.
+		if ( count( $this->items ) < $per_page && $current_page === 1 ) {
+			return count( $this->items );
+		}
+
+		return count( $this->modifier->get_modifier_by_applied_to( $applied_to, [ 'limit' => -1 ] ) );
 	}
 
 	/**
@@ -222,10 +270,10 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 * @return void
 	 */
 	public function search_box( $text, $input_id, $placeholder = '' ) {
-		$search_value = sanitize_text_field( tribe_get_request_var( 's', '' ) );
+		$search_value = tec_get_request_var( 's', '' );
 
 		// Set the input ID.
-		$input_id = $input_id . '-search-input';
+		$input_id = "{$input_id}-search-input";
 
 		// If no placeholder is provided, default to the display_name column.
 		if ( empty( $placeholder ) ) {
@@ -257,7 +305,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		}
 
 		// Determine the current modifier, falling back to the default.
-		$current_modifier = tribe_get_request_var( 'modifier', $this->get_default_type() );
+		$current_modifier = tec_get_request_var( 'modifier', $this->get_default_type() );
 
 		echo '<h2 class="nav-tab-wrapper">';
 		foreach ( $modifiers as $modifier_slug => $modifier_data ) {
@@ -329,6 +377,16 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 *
 	 * @return void
 	 */
-	public function render_table_explain_text() {
+	public function render_table_explain_text() {}
+
+	/**
+	 * Retrieves hidden columns for the table.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	protected function get_hidden_columns(): array {
+		return [];
 	}
 }

@@ -102,7 +102,6 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 		$this->manager           = $manager;
 
 		// Set up the order modifiers repository for accessing fee data.
-		$this->modifiers_repository                    = $fees_repository;
 		$this->order_modifiers_relationship_repository = $order_modifier_relationship;
 	}
 
