@@ -827,7 +827,7 @@ export function* updateTicket( action ) {
 				saleEndDate,
 				saleEndDateInput,
 				saleEndDateMoment,
-			}
+			};
 
 			yield all( [
 				put( actions.setTicketDetails( clientId, ticketDetails ) ),
