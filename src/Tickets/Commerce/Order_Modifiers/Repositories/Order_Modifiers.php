@@ -618,7 +618,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 			'orderby'     => 'id',
 			'page'        => 1,
 			'search_term' => '',
-			'status'      => [ 'active' ],
+			'status'      => [ 'any' ],
 		];
 	}
 
