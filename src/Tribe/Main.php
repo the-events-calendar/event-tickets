@@ -204,7 +204,7 @@ class Tribe__Tickets__Main {
 	 * @return void
 	 */
 	public function do_hooks() {
-		add_filter( 'init', [ $this, 'set_plugin_name' ] );
+		add_action( 'init', [ $this, 'set_plugin_name' ] );
 		add_filter( 'tribe_events_integrations_should_load_freemius', '__return_false' );
 
 		$this->maybe_set_common_lib_info();
