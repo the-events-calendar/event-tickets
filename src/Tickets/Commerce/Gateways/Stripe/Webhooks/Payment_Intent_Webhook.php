@@ -66,19 +66,6 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 			) );
 		}
 
-		if ( ! static::should_payment_intent_be_updated( $payment_intent, $order->gateway_payload ) ) {
-			$response->set_status( 200 );
-			$response->set_data(
-				sprintf(
-					// Translators: %s is the payment intent id.
-					__( 'Payment Intent %s does not require an update or is a duplicate of a past event.', 'event-tickets' ),
-					esc_html( $payment_intent_id )
-				)
-			);
-
-			return $response;
-		}
-
 		$meta = [
 			'gateway_payload'  => $payment_intent,
 			'gateway_order_id' => $payment_intent_id,
@@ -123,7 +110,8 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 	 * @since 5.16.0   Remove deprecation notice.
 	 * @since 5.18.0   Only check matching payment intent ids if they are not pending or action required.
 	 * @since 5.18.0.1 Removed the check for the payment intent status for pending or action required.
-	 * @since TBD      Reintroduced the check for the payment intent status for pending or action required.
+	 *
+	 * @deprecated TBD
 	 *
 	 * @param array   $payment_intent_received The payment intent data received.
 	 * @param array[] $payment_intents_stored  The payment intent data stored from each update, keyed by status.
@@ -131,6 +119,7 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 	 * @return bool
 	 */
 	public static function should_payment_intent_be_updated( $payment_intent_received, $payment_intents_stored ) {
+		_deprecated_function( __METHOD__, 'TBD' );
 		// This payment intent was reset, or processing has re-started without invalidating.
 		if ( 1 < count( $payment_intents_stored ) && $payment_intent_received['status'] === Status::REQUIRES_PAYMENT_METHOD ) {
 			return true;
