@@ -1,0 +1,4 @@
+Significance: patch
+Type: deprecated
+
+Method `should_payment_intent_be_updated` since its no longer needed. [ET-2281]
