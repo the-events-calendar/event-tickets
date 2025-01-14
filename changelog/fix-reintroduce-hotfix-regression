@@ -1,4 +1,4 @@
 Significance: patch
-Type: fix
+Type: deprecated
 
-Regression caused by 5.18.0.1 where order updates for asynchronous payment methods in Stripe would not update correctly. [ET-2281]
+Method `should_payment_intent_be_updated` since its no longer needed. [ET-2281]
