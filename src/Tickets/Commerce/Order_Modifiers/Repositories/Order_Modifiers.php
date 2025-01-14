@@ -674,6 +674,11 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 					break;
 
 				case 'status':
+					// If 'any' is passed, skip the status.
+					if ( 'any' === $value || ( is_array( $value ) && in_array( 'any', $value, true ) ) ) {
+						break;
+					}
+
 					$valid_params[ $key ] = array_filter(
 						(array) $value,
 						fn( $status ) => $this->is_valid_status( $status )
