@@ -391,13 +391,13 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 		}
 
 		// Clear the request data to avoid conflicts with other tests.
-		unset( $_REQUEST['modifier_id'], $_REQUEST['edit'], $_POST['modifier_id'], $_POST['edit'] );
+		unset( $_REQUEST['id'], $_REQUEST['edit'], $_POST['modifier_id'], $_POST['edit'] );
 
 		$modifier_admin_handler = tribe( Modifier_Admin_Handler::class );
 		$_REQUEST               = [
 			'modifier' => $this->modifier_type,
-			'orderby'  => 'modifier_id',
-			'order'    => 'desc',
+			'orderby'  => 'id',
+			'order'    => 'asc',
 		]; // phpcs:ignore WordPress.Security.NonceVerification
 
 		ob_start();
