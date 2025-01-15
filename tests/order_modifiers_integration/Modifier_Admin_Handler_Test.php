@@ -13,7 +13,6 @@ use Closure;
 use Generator;
 use Tribe\Tickets\Test\Traits\Order_Modifiers;
 use TEC\Tickets\Exceptions\Not_Found_Exception;
-use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers as Order_Modifier_Repository;
 
 class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 	use With_Uopz;
@@ -342,7 +341,7 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 		$this->assertGreaterThan( 0, $modifier_id, 'The "modifier_id" parameter should be greater than 0.' );
 
 		// Validate data stored in the repository.
-		$modifier_repository = new Order_Modifier_Repository( $data['post_data']['modifier'] );
+		$modifier_repository = Factory::get_repository_for_type( $data['post_data']['modifier'] );
 		$stored_modifier     = $modifier_repository->find_by_id( $modifier_id );
 
 		$this->assertNotNull( $stored_modifier, 'The stored modifier should exist in the repository.' );
@@ -781,7 +780,7 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 		$this->assertEquals( 'success', $query_params['deleted'] ?? null, 'Modifier should be successfully deleted.' );
 
 		// Step 3: Confirm the modifier was deleted.
-		$modifier_repository = new Order_Modifier_Repository( 'fee' );
+		$modifier_repository = Factory::get_repository_for_type( 'fee' );
 
 		try {
 			$deleted_modifier = $modifier_repository->find_by_id( $modifier_id );
@@ -847,7 +846,7 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 		$this->assertGreaterThan( 0, intval( $modifier_id ), 'Modifier ID should be greater than 0.' );
 
 		// Step 2: Confirm the modifier exists in the repository.
-		$modifier_repository = new Order_Modifier_Repository( 'fee' );
+		$modifier_repository = Factory::get_repository_for_type( 'fee' );
 		$created_modifier    = $modifier_repository->find_by_id( $modifier_id );
 
 		$this->assertNotNull( $created_modifier, 'Created modifier should exist in the repository.' );
