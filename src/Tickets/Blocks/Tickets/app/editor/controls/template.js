@@ -107,6 +107,13 @@ function getTicketsBlockControls({
 		);
 	}
 
+	/**
+	 * Filters the controls for the Tickets block.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Array} controls The controls.
+	 */
 	return applyFilters('tec.tickets.blocks.Tickets.Controls', controls);
 }
 
