@@ -371,14 +371,14 @@ class Order extends Abstract_Order {
 			return false;
 		}
 
-		DB::beginTransaction();
+		$this->start_transaction();
 
 		// During this operations - the order should be locked!
 		$locked = $this->lock_order( $order_id );
 
 		// If we were unable to lock the order, bail.
 		if ( ! $locked ) {
-			DB::rollback();
+			$this->rollback_transaction();
 			return false;
 		}
 
@@ -395,14 +395,12 @@ class Order extends Abstract_Order {
 			);
 		} catch ( DatabaseQueryException $e ) {
 			// The query should be failing silently.
-			DB::rollback();
-
+			$this->rollback_transaction();
 			return false;
 		}
 
 		if ( ! $current_status_wp_slug ) {
-			DB::rollback();
-
+			$this->rollback_transaction();
 			return false;
 		}
 
@@ -410,7 +408,7 @@ class Order extends Abstract_Order {
 
 		$can_apply = $status->status_can_apply_to_status( $current_status, $status, $order_id );
 		if ( ! $can_apply || is_wp_error( $can_apply ) ) {
-			DB::rollback();
+			$this->rollback_transaction();
 			return $can_apply;
 		}
 
@@ -429,7 +427,7 @@ class Order extends Abstract_Order {
 
 		$this->unlock_order( $order_id );
 
-		DB::commit();
+		$this->commit_transaction();
 
 		// After modifying the status we add a meta to flag when it was modified.
 		if ( $updated ) {
@@ -1121,5 +1119,38 @@ class Order extends Abstract_Order {
 			[ 'order_id' => $order_id ],
 			'tec-tickets-commerce-stripe-webhooks'
 		);
+	}
+
+	/**
+	 * Wrap the transaction start method.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function start_transaction() {
+		DB::beginTransaction();
+	}
+
+	/**
+	 * Wrap the transaction rollback method.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function rollback_transaction() {
+		DB::rollback();
+	}
+
+	/**
+	 * Wrap the transaction commit method.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function commit_transaction() {
+		DB::commit();
 	}
 }
