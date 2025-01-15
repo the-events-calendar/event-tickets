@@ -28,7 +28,6 @@ import './style.pcss';
  * Get the block controls for the RSVP block.
  *
  * @since TBD
- * @param {Object} props The component properties.
  * @return {Array} The block controls.
  */
 function getRSVPBlockControls() {
@@ -52,7 +51,7 @@ function getRSVPBlockControls() {
 const RSVPControls = () => {
 	const controls = getRSVPBlockControls();
 
-	if ( !controls.length ) {
+	if ( ! controls.length ) {
 		return null;
 	}
 
