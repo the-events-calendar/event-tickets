@@ -3,6 +3,8 @@
  * @file Global bootstrap for all codeception tests
  */
 use Codeception\Util\Autoload;
+use TEC\Tickets\Commerce\Order;
+use TEC\Common\StellarWP\DB\DB;
 
 Autoload::addNamespace( 'Tribe__Events__WP_UnitTestCase', __DIR__ . '/_support' );
 Autoload::addNamespace( 'Tribe\Tickets\Test', __DIR__ . '/_support' );

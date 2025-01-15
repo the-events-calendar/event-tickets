@@ -1,4 +1,11 @@
 <?php
+/**
+ * Tickets Commerce Order
+ *
+ * @since 5.1.9
+ *
+ * @package TEC\Tickets\Commerce
+ */
 
 namespace TEC\Tickets\Commerce;
 
@@ -8,6 +15,9 @@ use TEC\Tickets\Commerce\Status\Reversed;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Date_Utils as Dates;
 use WP_Post;
+use TEC\Tickets\Commerce\Status\Pending;
+use TEC\Common\StellarWP\DB\DB;
+use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 
 /**
  * Class Order
@@ -26,6 +36,35 @@ class Order extends Abstract_Order {
 	 * @var string
 	 */
 	const POSTTYPE = 'tec_tc_order';
+
+	/**
+	 * Meta key for the checkout status of the order.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected const CHECKOUT_COMPLETED_META = '_tec_tc_checkout_completed';
+
+	/**
+	 * Meta key for the order lock status.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected const ORDER_LOCK_KEY = 'post_content_filtered';
+
+	/**
+	 * Keeping track of the lock id generated during a request.
+	 *
+	 * Enables to determine if the order has also been locked by current request, so that we can allow edit operations while the order is locked.
+	 *
+	 * @since TBD
+	 *
+	 * @var string|null
+	 */
+	protected static ?string $lock_id = null;
 
 	/**
 	 * Which meta holds which gateway was used on this order.
@@ -339,12 +378,26 @@ class Order extends Abstract_Order {
 
 		$args = array_merge( $extra_args, [ 'status' => $status->get_wp_slug() ] );
 
-		$updated = tec_tc_orders()->by_args(
-			[
-				'status' => 'any',
-				'id'     => $order_id,
-			]
-		)->set_args( $args )->save();
+		// During this operations - the order should be locked!
+		$locked = $this->lock_order( $order_id );
+
+		// If we were unable to lock the order, bail.
+		if ( ! $locked ) {
+			return false;
+		}
+
+		$updated = tec_tc_orders()
+			->by_args(
+				[
+					'id'                 => $order_id,
+					'status'             => 'any',
+					self::ORDER_LOCK_KEY => $this->get_lock_id(),
+				]
+			)
+			->set_args( $args )
+			->save();
+
+		$this->unlock_order( $order_id );
 
 		// After modifying the status we add a meta to flag when it was modified.
 		if ( $updated ) {
@@ -387,6 +440,7 @@ class Order extends Abstract_Order {
 	 * Creates a order from the items in the cart.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Now it will only create one order per cart hash. Every next time it will update the existing order.
 	 *
 	 * @throws \Tribe__Repository__Usage_Error
 	 *
@@ -451,13 +505,16 @@ class Order extends Abstract_Order {
 
 		$total = $this->get_value_total( array_filter( $items ) );
 
+		$hash              = $cart->get_cart_hash();
+		$existing_order_id = null;
+
 		$order_args = [
-			'title'                => $this->generate_order_title( $original_cart_items, $cart->get_cart_hash() ),
+			'title'                => $this->generate_order_title( $original_cart_items, $hash ),
 			'total_value'          => $total->get_decimal(),
 			'subtotal'             => $subtotal->get_decimal(),
 			'items'                => $items,
 			'gateway'              => $gateway::get_key(),
-			'hash'                 => $cart->get_cart_hash(),
+			'hash'                 => $hash,
 			'currency'             => Utils\Currency::get_currency_code(),
 			'purchaser_user_id'    => $purchaser['purchaser_user_id'],
 			'purchaser_full_name'  => $purchaser['purchaser_full_name'],
@@ -466,7 +523,22 @@ class Order extends Abstract_Order {
 			'purchaser_email'      => $purchaser['purchaser_email'],
 		];
 
-		$order = $this->create( $gateway, $order_args );
+		if ( $hash ) {
+			$existing_order_id = tec_tc_orders()->by_args(
+				[
+					'status' => tribe( Pending::class )->get_wp_slug(),
+					'hash'   => $hash,
+				]
+			)->first_id();
+
+			if ( ! $existing_order_id || ! is_int( $existing_order_id ) ) {
+				$existing_order_id = null;
+			}
+		}
+
+		$order_args['id'] = $existing_order_id;
+
+		$order = $this->upsert( $gateway, $order_args );
 
 		// We were unable to create the order bail from here.
 		if ( ! $order ) {
@@ -480,6 +552,8 @@ class Order extends Abstract_Order {
 	 * Filters the values and creates a new Order with Tickets Commerce.
 	 *
 	 * @since 5.2.0
+	 *
+	 * @internal Use `upsert` instead.
 	 *
 	 * @param Gateway_Interface $gateway
 	 * @param array             $args
@@ -512,6 +586,112 @@ class Order extends Abstract_Order {
 		$args = apply_filters( 'tec_tickets_commerce_order_create_args', $args, $gateway );
 
 		return tec_tc_orders()->set_args( $args )->create();
+	}
+
+	/**
+	 * Filters the values and creates a new Order with Tickets Commerce or updates an existing one.
+	 *
+	 * @since TBD
+	 *
+	 * @param Gateway_Interface $gateway           The gateway to use to create the order.
+	 * @param array             $args              The arguments to create the order.
+	 *
+	 * @return false|WP_Post WP_Post instance on success or false on failure.
+	 */
+	public function upsert( Gateway_Interface $gateway, array $args ) {
+		$gateway_key = $gateway::get_key();
+
+		$existing_order_id = (int) $args['id'] ?? 0;
+		unset( $args['id'] );
+
+		/**
+		 * Allows filtering of the order upsert arguments for all orders created via Tickets Commerce.
+		 *
+		 * @since TBD
+		 *
+		 * @param array             $args    The arguments to create the order.
+		 * @param Gateway_Interface $gateway The gateway to use to create the order.
+		 */
+		$args = apply_filters( "tec_tickets_commerce_order_{$gateway_key}_upsert_args", $args, $gateway );
+
+		/**
+		 * Allows filtering of the order upsert arguments for all orders created via Tickets Commerce.
+		 *
+		 * @since TBD
+		 *
+		 * @param array             $args    The arguments to create the order.
+		 * @param Gateway_Interface $gateway The gateway to use to create the order.
+		 */
+		$args = apply_filters( 'tec_tickets_commerce_order_upsert_args', $args, $gateway );
+
+		/**
+		 * Allows filtering of the existing order ID before "upserting" an order.
+		 *
+		 * @since TDB
+		 *
+		 * @param int $existing_order_id The existing order ID.
+		 */
+		$existing_order_id = (int) apply_filters( 'tec_tickets_commerce_order_upsert_existing_order_id', $existing_order_id );
+
+		if ( ! $existing_order_id || 0 >= $existing_order_id ) {
+			return $this->create( $gateway, $args );
+		}
+
+		$locked = $this->lock_order( $existing_order_id );
+
+		if ( ! $locked ) {
+			return false;
+		}
+
+		/**
+		 * Allows filtering of the order update arguments for all orders created via Tickets Commerce.
+		 *
+		 * @since TBD
+		 *
+		 * @param array             $args
+		 * @param Gateway_Interface $gateway
+		 */
+		$update_args = apply_filters( "tec_tickets_commerce_order_{$gateway_key}_update_args", $args, $gateway );
+
+		/**
+		 * Allows filtering of the order update arguments for all orders created via Tickets Commerce.
+		 *
+		 * @since TBD
+		 *
+		 * @param array             $args
+		 * @param Gateway_Interface $gateway
+		 */
+		$update_args = apply_filters( 'tec_tickets_commerce_order_update_args', $update_args, $gateway );
+
+		$updated = tec_tc_orders()
+			->by_args(
+				[
+					'id'                 => $existing_order_id,
+					'status'             => 'any',
+					self::ORDER_LOCK_KEY => $this->get_lock_id(),
+				]
+			)
+			->set_args( $update_args )
+			->save();
+
+		$this->unlock_order( $existing_order_id );
+
+		if ( empty( $updated[ $existing_order_id ] ) ) {
+			/**
+			 * It seems like the $existing_order_id no longer exists or failed to be updated. Let's create a new one instead.
+			 *
+			 * BE AWARE: The `$args` variable is not passed through the update filters here since it's going to pass through the create filters.
+			 */
+			return $this->create( $gateway, $args );
+		}
+
+		$order = tec_tc_get_order( $existing_order_id );
+
+		if ( ! $order instanceof WP_Post ) {
+			return false;
+		}
+
+		return $order;
 	}
 
 	/**
@@ -761,5 +941,153 @@ class Order extends Abstract_Order {
 			'status'           => 'any',
 			'gateway_order_id' => $gateway_order_id,
 		] )->first();
+	}
+
+	/**
+	 * Lock an order to prevent it from being modified.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id The order ID.
+	 *
+	 * @return bool Whether the order was locked.
+	 */
+	public function lock_order( int $order_id ): bool {
+		$this->generate_lock_id();
+
+		try {
+			$lock_key = self::ORDER_LOCK_KEY;
+
+			$result = DB::query(
+				DB::prepare(
+					"UPDATE %i set $lock_key = %s where ID = $order_id and $lock_key = ''",
+					DB::prefix( 'posts' ),
+					$this->get_lock_id()
+				)
+			);
+
+			return (bool) $result;
+		} catch ( DatabaseQueryException $e ) {
+			return false;
+		}
+	}
+
+	/**
+	 * Unlock an order to allow it to be modified.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id The order ID.
+	 *
+	 * @return bool Whether the order was unlocked.
+	 */
+	public function unlock_order( int $order_id ): bool {
+		$lock_key = self::ORDER_LOCK_KEY;
+		try {
+			return (bool) DB::query(
+				DB::prepare(
+					"UPDATE %i set $lock_key = '' where ID = $order_id",
+					DB::prefix( 'posts' )
+				)
+			);
+		} catch ( DatabaseQueryException $e ) {
+			return false;
+		}
+	}
+
+	/**
+	 * Get the lock ID.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The lock ID.
+	 */
+	public function get_lock_id(): string {
+		return self::$lock_id;
+	}
+
+	/**
+	 * Generate a lock ID.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The lock ID.
+	 */
+	public function generate_lock_id(): string {
+		self::$lock_id = uniqid( '_order_lock', true );
+
+		return self::$lock_id;
+	}
+
+	/**
+	 * Get whether the order is locked.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id The order ID.
+	 *
+	 * @return bool Whether the order is locked.
+	 */
+	public function is_order_locked( int $order_id ): bool {
+		$lock_key = self::ORDER_LOCK_KEY;
+
+		try {
+			return (bool) DB::get_var(
+				DB::prepare(
+					"SELECT $lock_key FROM %i WHERE ID = $order_id",
+					DB::prefix( 'posts' )
+				)
+			);
+		} catch ( DatabaseQueryException $e ) {
+			return false;
+		}
+	}
+
+	/**
+	 * Get whether the order has its checkout completed.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id The order ID.
+	 *
+	 * @return bool Whether the checkout is completed.
+	 */
+	public function is_checkout_completed( int $order_id ): bool {
+		try {
+			// Direct query to overcome object cache.
+			return (bool) DB::get_var(
+				DB::prepare(
+					'SELECT meta_value FROM %i WHERE post_id = %d AND meta_key = %s',
+					DB::prefix( 'postmeta' ),
+					$order_id,
+					static::CHECKOUT_COMPLETED_META
+				)
+			);
+		} catch ( DatabaseQueryException $e ) {
+			return false;
+		}
+	}
+
+	/**
+	 * Mark an order's checkout as completed.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id The order ID.
+	 *
+	 * @return bool Whether the checkout was marked as completed and the async action was scheduled.
+	 */
+	public function checkout_completed( int $order_id ): bool {
+		$result = (bool) update_post_meta( $order_id, static::CHECKOUT_COMPLETED_META, true );
+
+		if ( ! $result ) {
+			return false;
+		}
+
+		return (bool) as_enqueue_async_action(
+			'tec_tickets_commerce_async_webhook_process',
+			[ 'order_id' => $order_id ],
+			'tec-tickets-commerce-stripe-webhooks'
+		);
 	}
 }

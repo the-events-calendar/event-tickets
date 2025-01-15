@@ -1,0 +1,4 @@
+Significance: minor
+Type: performance
+
+Enhance the performance of order modifier database queries [ET-2268]
