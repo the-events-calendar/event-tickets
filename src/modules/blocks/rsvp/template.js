@@ -43,6 +43,12 @@ function getRSVPBlockControls() {
 	return applyFilters( 'tec.tickets.blocks.RSVP.Controls', controls );
 }
 
+/**
+ * The RSVP block controls.
+ *
+ * @since TBD
+ * @return {Node} The RSVP block controls.
+ */
 const RSVPControls = () => {
 	const controls = getRSVPBlockControls();
 
@@ -53,6 +59,12 @@ const RSVPControls = () => {
 	return <InspectorControls key="inspector">{controls}</InspectorControls>;
 };
 
+/**
+ * The RSVP block.
+ *
+ * @param {Object} props The component properties.
+ * @return {Node} The RSVP block.
+ */
 const RSVP = ( {
 	clientId,
 	created,
