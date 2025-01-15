@@ -97,14 +97,15 @@ final class Controller extends Controller_Contract {
 	 * @throws InvalidArgumentException If the method does not exist.
 	 */
 	public function __call( $name, $arguments ) {
+		$method = __CLASS__ . "::{$name}";
 		switch ( $name ) {
 			case 'filter_out_coupons':
-				_deprecated_function( __CLASS__ . "::{$name}", 'TBD', 'No replacement available.' );
+				_deprecated_function( esc_html( $method ), 'TBD', 'No replacement available.' );
 
 				return $arguments[0] ?? [];
 
 			default:
-				throw new InvalidArgumentException( sprintf( 'Method %s does not exist.', $name ) );
+				throw new InvalidArgumentException( sprintf( 'Method %s does not exist.', esc_html( $method ) ) );
 		}
 	}
 
