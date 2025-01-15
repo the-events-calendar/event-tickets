@@ -119,7 +119,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	 * @return bool
 	 */
 	public function enqueue_tec_tickets_settings_css( bool $should_enqueue ): bool {
-		return $should_enqueue ? $should_enqueue : $this->is_on_page();
+		return $should_enqueue ?: $this->is_on_page();
 	}
 
 	/**
