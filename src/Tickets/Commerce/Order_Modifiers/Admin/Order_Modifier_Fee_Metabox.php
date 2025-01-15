@@ -121,7 +121,7 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	 *
 	 * @since TBD
 	 */
-	public function set_modifier_strategy () {
+	public function set_modifier_strategy() {
 		$this->modifier_strategy = $this->controller->get_modifier( $this->modifier_type );
 	}
 
