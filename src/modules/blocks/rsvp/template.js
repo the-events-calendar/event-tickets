@@ -62,6 +62,19 @@ const RSVPControls = () => {
  * The RSVP block.
  *
  * @param {Object} props The component properties.
+ * @param {string} props.clientId The client ID of the block.
+ * @param {boolean} props.created Whether the RSVP was created or not.
+ * @param {boolean} props.hasRecurrenceRules Whether the event has recurrence rules.
+ * @param {Function} props.initializeRSVP The function to initialize the RSVP.
+ * @param {boolean} props.isAddEditOpen Whether the add/edit dashboard is open.
+ * @param {boolean} props.isInactive Whether the RSVP is inactive.
+ * @param {boolean} props.isLoading Whether the RSVP is loading.
+ * @param {boolean} props.isModalShowing Whether the move modal is showing.
+ * @param {boolean} props.isSelected Whether the RSVP is selected.
+ * @param {boolean} props.isSettingsOpen Whether the settings dashboard is open.
+ * @param {boolean} props.noRsvpsOnRecurring Whether there are no RSVPs on recurring events.
+ * @param {number} props.rsvpId The RSVP ID.
+ * @param {Function} props.setAddEditClosed The function to set the add/edit dashboard closed.
  * @return {Node} The RSVP block.
  */
 const RSVP = ( {
