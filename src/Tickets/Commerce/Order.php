@@ -371,20 +371,50 @@ class Order extends Abstract_Order {
 			return false;
 		}
 
-		$can_apply = $status->can_apply_to( $order_id, $status );
-		if ( ! $can_apply ) {
-			return $can_apply;
-		}
-
-		$args = array_merge( $extra_args, [ 'status' => $status->get_wp_slug() ] );
+		DB::beginTransaction();
 
 		// During this operations - the order should be locked!
 		$locked = $this->lock_order( $order_id );
 
 		// If we were unable to lock the order, bail.
 		if ( ! $locked ) {
+			DB::rollback();
 			return false;
 		}
+
+		$lock_key = self::ORDER_LOCK_KEY;
+
+		try {
+			$current_status_wp_slug = DB::get_var(
+				DB::prepare(
+					"SELECT post_status FROM %i WHERE ID = %d AND $lock_key=%s",
+					DB::prefix( 'posts' ),
+					$order_id,
+					$this->get_lock_id()
+				)
+			);
+		} catch ( DatabaseQueryException $e ) {
+			// The query should be failing silently.
+			DB::rollback();
+
+			return false;
+		}
+
+		if ( ! $current_status_wp_slug ) {
+			DB::rollback();
+
+			return false;
+		}
+
+		$current_status = tribe( Status\Status_Handler::class )->get_by_wp_slug( $current_status_wp_slug );
+
+		$can_apply = $status->status_can_apply_to_status( $current_status, $status, $order_id );
+		if ( ! $can_apply || is_wp_error( $can_apply ) ) {
+			DB::rollback();
+			return $can_apply;
+		}
+
+		$args = array_merge( $extra_args, [ 'status' => $status->get_wp_slug() ] );
 
 		$updated = tec_tc_orders()
 			->by_args(
@@ -398,6 +428,8 @@ class Order extends Abstract_Order {
 			->save();
 
 		$this->unlock_order( $order_id );
+
+		DB::commit();
 
 		// After modifying the status we add a meta to flag when it was modified.
 		if ( $updated ) {

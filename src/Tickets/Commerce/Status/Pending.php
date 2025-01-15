@@ -60,8 +60,31 @@ class Pending extends Status_Abstract {
 	 * {@inheritdoc}
 	 */
 	public function can_apply_to( $order, $new_status ) {
-		$status = parent::can_apply_to( $order, $new_status );
+		return $this->can_apply_to_pending_status( parent::can_apply_to( $order, $new_status ), $order );
+	}
 
+	/**
+	 * Whether a Status Interface can be applied on top of another Status Interface.
+	 *
+	 * @since TBD
+	 *
+	 * @param self $current_status The current status.
+	 * @param self $new_status     The new status.
+	 * @param ?int $order_id       Which order we are testing against.
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function status_can_apply_to_status( $current_status, $new_status, $order_id = null ) {
+		return $this->can_apply_to_pending_status( parent::status_can_apply_to_status( $current_status, $new_status, $order_id ), $order_id );
+	}
+
+	/**
+	 * Whether new status can be applied to the current status.
+	 *
+	 * @param bool|WP_Error $status Parent's method result.
+	 * @param int|\WP_Post  $order  Which order we are testing against.
+	 */
+	protected function can_apply_to_pending_status( $status, $order ) {
 		// If the parent status is final, don't run.
 		if ( ! $status ) {
 			return $status;
