@@ -46,7 +46,7 @@ function getRSVPBlockControls() {
 const RSVPControls = () => {
 	const controls = getRSVPBlockControls();
 
-	if ( !controls.length ) {
+	if ( ! controls.length ) {
 		return null;
 	}
 
