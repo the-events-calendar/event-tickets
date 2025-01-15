@@ -10,6 +10,8 @@ import classNames from 'classnames';
  */
 import { Spinner, Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+import { InspectorControls } from '@wordpress/editor';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -21,6 +23,38 @@ import RSVPInactiveBlock from './inactive-block/container';
 import MoveModal from '@moderntribe/tickets/elements/move-modal';
 import { Card } from '@moderntribe/tickets/elements';
 import './style.pcss';
+
+/**
+ * Get the block controls for the RSVP block.
+ *
+ * @since TBD
+ *
+ * @param {Object} props The component properties.
+ *
+ * @return {Array} The block controls.
+ */
+function getRSVPBlockControls(props) {
+	const controls = [];
+
+	/**
+	 * Filters the RSVP block controls.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Array} controls The existing controls.
+	 */
+	return applyFilters('tec.tickets.blocks.RSVP.Controls', controls);
+}
+
+const RSVPControls = (props) => {
+	const controls = getRSVPBlockControls(props);
+
+	if (!controls.length) {
+		return null;
+	}
+
+	return <InspectorControls key="inspector">{controls}</InspectorControls>;
+};
 
 const RSVP = ( {
 	clientId,
@@ -86,6 +120,7 @@ const RSVP = ( {
 				}
 				{ isSettingsOpen && <RSVPSettingsDashboard />}
 				{ isModalShowing && <MoveModal /> }
+				<RSVPControls />
 			</div>
 		);
 	};
