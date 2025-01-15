@@ -58,7 +58,6 @@ class Uplink extends Controller_Contract {
 	public function __construct( Container $container ) {
 		parent::__construct( $container );
 		$this->et_main            = Main::instance();
-		$this->et_slr_plugin_name = _x( 'Seating', 'Header of the connection controls', 'event-tickets' );
 	}
 
 	/**
@@ -67,6 +66,7 @@ class Uplink extends Controller_Contract {
 	 * @since 5.16.0
 	 */
 	public function do_register(): void {
+		add_action( 'init', [ $this, 'set_slr_plugin_name' ], 9 );
 		add_action( 'init', [ $this, 'register_plugin' ] );
 		add_filter(
 			'stellarwp/uplink/tec/tec-seating/view/authorize_button/link_text',
@@ -76,6 +76,15 @@ class Uplink extends Controller_Contract {
 		);
 		add_action( 'stellarwp/uplink/tec/license_field_before_input', [ $this, 'render_legend_before_input' ] );
 		add_action( 'stellarwp/uplink/tec/tec-seating/connected', [ $this, 'reset_data_on_new_connection' ] );
+	}
+
+	/**
+	 * Set the SLR plugin name.
+	 *
+	 * @since TBD
+	 */
+	public function set_slr_plugin_name(): void {
+		$this->et_slr_plugin_name = _x( 'Seating', 'Header of the connection controls', 'event-tickets' );
 	}
 
 	/**
