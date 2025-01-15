@@ -118,7 +118,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	 * @return bool
 	 */
 	public function enqueue_tec_tickets_settings_css( bool $should_enqueue ): bool {
-		return $should_enqueue ? $should_enqueue : $this->is_on_page();
+		return $should_enqueue ?: $this->is_on_page();
 	}
 
 	/**
@@ -134,12 +134,12 @@ class Modifier_Admin_Handler extends Controller_Contract {
 			'admin/order-modifiers/table.js',
 			Tickets_Plugin::VERSION
 		)
-		->add_to_group_path( 'et-core' )
-		->set_condition( fn () => $this->is_on_page() )
-		->set_dependencies( 'jquery', 'wp-util' )
-		->enqueue_on( 'admin_enqueue_scripts' )
-		->add_to_group( 'tec-tickets-order-modifiers' )
-		->register();
+			->add_to_group_path( 'et-core' )
+			->set_condition( fn() => $this->is_on_page() )
+			->set_dependencies( 'jquery', 'wp-util' )
+			->enqueue_on( 'admin_enqueue_scripts' )
+			->add_to_group( 'tec-tickets-order-modifiers' )
+			->register();
 	}
 
 	/**
