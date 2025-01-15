@@ -4,7 +4,6 @@
  */
 use Codeception\Util\Autoload;
 use TEC\Tickets\Commerce\Order;
-use TEC\Common\StellarWP\DB\DB;
 
 Autoload::addNamespace( 'Tribe__Events__WP_UnitTestCase', __DIR__ . '/_support' );
 Autoload::addNamespace( 'Tribe\Tickets\Test', __DIR__ . '/_support' );
@@ -42,3 +41,17 @@ if ( isset( $_SERVER['argv'] ) && in_array( '--debug', $_SERVER['argv'], true ) 
 // By default, do not enable the Custom Tables v1 implementation in tests.
 putenv( 'TEC_CUSTOM_TABLES_V1_DISABLED=1' );
 $_ENV['TEC_CUSTOM_TABLES_V1_DISABLED'] = 1;
+
+function tec_tickets_tests_fake_transactions_enable() {
+	uopz_set_return( Order::class, 'start_transaction', true, false );
+	uopz_set_return( Order::class, 'rollback_transaction', true, false );
+	uopz_set_return( Order::class, 'commit_transaction', true, false );
+}
+
+function tec_tickets_tests_fake_transactions_disable() {
+	uopz_unset_return( Order::class, 'start_transaction' );
+	uopz_unset_return( Order::class, 'rollback_transaction' );
+	uopz_unset_return( Order::class, 'commit_transaction' );
+}
+
+tec_tickets_tests_fake_transactions_enable();
