@@ -28,28 +28,25 @@ import './style.pcss';
  * Get the block controls for the RSVP block.
  *
  * @since TBD
- *
  * @param {Object} props The component properties.
- *
  * @return {Array} The block controls.
  */
-function getRSVPBlockControls(props) {
+function getRSVPBlockControls() {
 	const controls = [];
 
 	/**
 	 * Filters the RSVP block controls.
 	 *
 	 * @since TBD
-	 *
 	 * @param {Array} controls The existing controls.
 	 */
-	return applyFilters('tec.tickets.blocks.RSVP.Controls', controls);
+	return applyFilters( 'tec.tickets.blocks.RSVP.Controls', controls );
 }
 
-const RSVPControls = (props) => {
-	const controls = getRSVPBlockControls(props);
+const RSVPControls = () => {
+	const controls = getRSVPBlockControls();
 
-	if (!controls.length) {
+	if ( !controls.length ) {
 		return null;
 	}
 
