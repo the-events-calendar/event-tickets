@@ -28,7 +28,6 @@ import './style.pcss';
  * Get the block controls for the RSVP block.
  *
  * @since TBD
- * @param {Object} props The component properties.
  * @return {Array} The block controls.
  */
 function getRSVPBlockControls() {
