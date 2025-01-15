@@ -640,6 +640,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Hooked to the init action
 	 */
 	public function init() {
+		// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		$this->plugin_name = $this->pluginName = esc_html( tribe_get_rsvp_label_plural( 'provider_plugin_name' ) );
 		$this->register_types();
 	}
