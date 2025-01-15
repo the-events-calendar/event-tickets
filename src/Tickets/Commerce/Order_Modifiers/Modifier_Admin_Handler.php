@@ -199,7 +199,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 				'id'       => static::$slug,
 				'path'     => static::$slug,
 				'parent'   => static::$parent_slug,
-				'title'    => esc_html__( 'Booking Fees', 'event-tickets' ),
+				'title'    => esc_html__( 'Coupons &amp; Fees', 'event-tickets' ),
 				'position' => 1.5,
 				'callback' => [ $this, 'render_tec_order_modifiers_page' ],
 			]
