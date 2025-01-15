@@ -50,19 +50,12 @@ final class Controller extends Controller_Contract {
 		$this->container->get( Agnostic_Checkout_Fees::class )->unregister();
 		$this->container->get( Tables::class )->unregister();
 		$this->container->get( Editor::class )->unregister();
+		$this->container->get( Coupons::class )->unregister();
 
 		if ( is_admin() ) {
 			$this->container->get( Modifier_Admin_Handler::class )->unregister();
 			$this->container->get( Order_Modifier_Fee_Metabox::class )->unregister();
 		}
-
-		if ( $this->container->isBound( Coupons::class ) ) {
-			$this->container->get( Coupons::class )->unregister();
-			return;
-		}
-
-		remove_filter( 'tec_tickets_commerce_order_modifiers', [ $this, 'filter_out_coupons' ] );
-		remove_filter( 'tec_tickets_commerce_order_modifier_types', [ $this, 'filter_out_coupons' ] );
 	}
 
 	/**
@@ -88,40 +81,58 @@ final class Controller extends Controller_Contract {
 
 		$this->container->singleton( Fee::class );
 
+		$this->run_deprecated_coupon_filter();
+
+		$this->container->singleton( Coupon::class );
+		$this->container->register( Coupons::class );
+	}
+
+	/**
+	 * Magic method to handle dynamic method calls.
+	 *
+	 * @param string $name      The method name.
+	 * @param array  $arguments The method arguments.
+	 *
+	 * @return mixed The method return value.
+	 * @throws InvalidArgumentException If the method does not exist.
+	 */
+	public function __call( $name, $arguments ) {
+		switch ( $name ) {
+			case 'filter_out_coupons':
+				_deprecated_function( __CLASS__ . "::{$name}", 'TBD', 'No replacement available.' );
+
+				return $arguments[0] ?? [];
+
+			default:
+				throw new InvalidArgumentException( sprintf( 'Method %s does not exist.', $name ) );
+		}
+	}
+
+	/**
+	 * Run the deprecated coupon filter.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	private function run_deprecated_coupon_filter() {
 		/**
 		 * Filters whether the coupons are enabled.
 		 *
 		 * This filter will be removed when the Coupon functionality is ready for production.
 		 *
-		 * @since 5.18.0
+		 * @since      5.18.0
+		 * @deprecated TBD
 		 *
 		 * @param bool $enabled Whether the coupons are enabled.
 		 */
-		if ( apply_filters( 'tec_tickets_commerce_order_modifiers_coupons_enabled', false ) ) {
-			$this->container->singleton( Coupon::class );
-			$this->container->register( Coupons::class );
-			return;
-		}
-
-		add_filter( 'tec_tickets_commerce_order_modifiers', [ $this, 'filter_out_coupons' ] );
-		add_filter( 'tec_tickets_commerce_order_modifier_types', [ $this, 'filter_out_coupons' ] );
-	}
-
-	/**
-	 * Filter out the coupons.
-	 *
-	 * This will be removed when the Coupon functionality is ready for production.
-	 *
-	 * @since 5.18.0
-	 *
-	 * @param array $items The items to filter.
-	 *
-	 * @return array
-	 */
-	public function filter_out_coupons( array $items ): array {
-		unset( $items['coupon'] );
-
-		return $items;
+		apply_filters_deprecated(
+			'tec_tickets_commerce_order_modifiers_coupons_enabled',
+			[ false ],
+			'TBD',
+			'',
+			__( 'The coupon functionality is now included for all sites.', 'event-tickets' )
+		);
 	}
 
 	/**
@@ -149,6 +160,7 @@ final class Controller extends Controller_Contract {
 		if ( isset( $modifiers[ $modifier ] ) && is_subclass_of( $modifiers[ $modifier ]['class'], Modifier_Strategy_Interface::class ) ) {
 			// Instantiate and return the strategy class.
 			$strategy_class = $modifiers[ $modifier ]['class'];
+
 			return new $strategy_class();
 		}
 
