@@ -14,7 +14,6 @@ use Closure;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Common\StellarWP\DB\DB;
-use TEC\Tickets\Commerce\Attendee;
 
 class Order_Test extends WPTestCase {
 	use Ticket_Maker;
@@ -195,7 +194,7 @@ class Order_Test extends WPTestCase {
 
 				tribe( Order::class )->lock_order( $order->ID );
 
-				$post_ids = [ $order->ID, $ticket_id_1, $ticket_id_2, $post ];
+				$post_ids = array_merge( [ $order->ID, $ticket_id_1, $ticket_id_2, $post ], tribe_attendees()->where( 'event_id', $post )->get_ids() );
 
 				self::$clean_callbacks[] = function () use ( $post_ids ) {
 					foreach ( $post_ids as $post_id ) {
@@ -228,7 +227,7 @@ class Order_Test extends WPTestCase {
 				$callback = static fn() => DB::query( DB::prepare( "UPDATE %i SET post_content_filtered='12345678' where ID=%d", DB::prefix( 'posts' ), $order->ID ) );
 				add_action( 'tec_tickets_commerce_order_locked', $callback );
 
-				$post_ids = [ $order->ID, $ticket_id_1, $ticket_id_2, $post ];
+				$post_ids = array_merge( [ $order->ID, $ticket_id_1, $ticket_id_2, $post ], tribe_attendees()->where( 'event_id', $post )->get_ids() );
 
 				self::$clean_callbacks[] = function () use ( $post_ids, $callback ) {
 					foreach ( $post_ids as $post_id ) {
@@ -257,7 +256,7 @@ class Order_Test extends WPTestCase {
 
 				$order = $this->create_order( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ], [ 'order_status' => Pending::SLUG ] );
 
-				$post_ids = [ $order->ID, $ticket_id_1, $ticket_id_2, $post ];
+				$post_ids = array_merge( [ $order->ID, $ticket_id_1, $ticket_id_2, $post ], tribe_attendees()->where( 'event_id', $post )->get_ids() );
 
 				self::$clean_callbacks[] = function () use ( $post_ids ) {
 					foreach ( $post_ids as $post_id ) {
@@ -285,7 +284,7 @@ class Order_Test extends WPTestCase {
 
 				$order = $this->create_order( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ], [ 'order_status' => Pending::SLUG ] );
 
-				$post_ids = [ $order->ID, $ticket_id_1, $ticket_id_2, $post ];
+				$post_ids = array_merge( [ $order->ID, $ticket_id_1, $ticket_id_2, $post ], tribe_attendees()->where( 'event_id', $post )->get_ids() );
 
 				self::$clean_callbacks[] = function () use ( $post_ids ) {
 					foreach ( $post_ids as $post_id ) {
@@ -356,23 +355,6 @@ class Order_Test extends WPTestCase {
 
 		foreach ( self::$clean_callbacks as $callback ) {
 			$callback();
-			// and always clean attendees.
-			DB::query(
-				DB::prepare(
-					"DELETE FROM %i where post_id IN ( SELECT ID FROM %i WHERE post_type = %s )",
-					DB::prefix( 'postmeta' ),
-					DB::prefix( 'posts' ),
-					Attendee::POSTTYPE
-				)
-			);
-
-			DB::query(
-				DB::prepare(
-					"DELETE FROM %i where post_type = %s",
-					DB::prefix( 'posts' ),
-					Order::POSTTYPE
-				)
-			);
 		}
 
 		self::$clean_callbacks = [];
