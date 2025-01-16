@@ -17,7 +17,7 @@ class Order_Test extends WPTestCase {
 			[ Denied::SLUG, Denied::SLUG, false ],
 			[ Not_Completed::SLUG, Not_Completed::SLUG, false ],
 			[ Pending::SLUG, Pending::SLUG, false ],
-			[ Refunded::SLUG, Refunded::SLUG, true ],
+			[ Refunded::SLUG, Refunded::SLUG, true ], // Only status transition allowed from same to same to support multiple refunds. e.g. in stripe i can refund from X order total, Y at first and then Z where Z + Y <= X.
 			[ Reversed::SLUG, Reversed::SLUG, false ],
 			[ Trashed::SLUG, Trashed::SLUG, false ],
 			[ Undefined::SLUG, Undefined::SLUG, false ],
