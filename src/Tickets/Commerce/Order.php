@@ -2,22 +2,22 @@
 /**
  * Tickets Commerce Order
  *
- * @since 5.1.9
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce
  */
 
 namespace TEC\Tickets\Commerce;
 
+use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Gateways\Contracts\Gateway_Interface;
+use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Refunded;
 use TEC\Tickets\Commerce\Status\Reversed;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Date_Utils as Dates;
 use WP_Post;
-use TEC\Tickets\Commerce\Status\Pending;
-use TEC\Common\StellarWP\DB\DB;
-use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 
 /**
  * Class Order
@@ -291,18 +291,20 @@ class Order extends Abstract_Order {
 				'item_scheduled'           => __( 'Order scheduled.', 'event-tickets' ),
 				'item_updated'             => __( 'Order updated.', 'event-tickets' ),
 				'item_link'                => _x( 'Order Link', 'navigation link block title', 'event-tickets' ),
-				'item_link_description'    => _x( 'A link to an order.', 'navigation link block description', 'event-tickets' ),
+				'item_link_description'    => _x( 'A link to an order.',
+					'navigation link block description',
+					'event-tickets' ),
 			],
 		];
 
 		/**
 		 * Filter the arguments that craft the order post type.
 		 *
-		 * @see   register_post_type
 		 * @since 5.1.9
 		 *
 		 * @param array $post_type_args Post type arguments, passed to register_post_type()
 		 *
+		 * @see   register_post_type
 		 */
 		$post_type_args = apply_filters( 'tec_tickets_commerce_order_post_type_args', $post_type_args );
 
@@ -356,13 +358,13 @@ class Order extends Abstract_Order {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @throws \Tribe__Repository__Usage_Error
-	 *
 	 * @param int    $order_id    Which order ID will be updated.
 	 * @param string $status_slug Which Order Status we are modifying to.
 	 * @param array  $extra_args  Extra repository arguments.
 	 *
 	 * @return bool|\WP_Error
+	 * @throws \Tribe__Repository__Usage_Error
+	 *
 	 */
 	public function modify_status( $order_id, $status_slug, array $extra_args = [] ) {
 		$status = tribe( Status\Status_Handler::class )->get_by_slug( $status_slug );
@@ -371,14 +373,15 @@ class Order extends Abstract_Order {
 			return false;
 		}
 
-		$this->start_transaction();
+		DB::beginTransaction();
 
 		// During this operations - the order should be locked!
 		$locked = $this->lock_order( $order_id );
 
 		// If we were unable to lock the order, bail.
 		if ( ! $locked ) {
-			$this->rollback_transaction();
+			DB::rollback();
+
 			return false;
 		}
 
@@ -395,12 +398,14 @@ class Order extends Abstract_Order {
 			);
 		} catch ( DatabaseQueryException $e ) {
 			// The query should be failing silently.
-			$this->rollback_transaction();
+			DB::rollback();
+
 			return false;
 		}
 
 		if ( ! $current_status_wp_slug ) {
-			$this->rollback_transaction();
+			DB::rollback();
+
 			return false;
 		}
 
@@ -408,7 +413,8 @@ class Order extends Abstract_Order {
 
 		$can_apply = $status->status_can_apply_to_status( $current_status, $status, $order_id );
 		if ( ! $can_apply || is_wp_error( $can_apply ) ) {
-			$this->rollback_transaction();
+			DB::rollback();
+
 			return $can_apply;
 		}
 
@@ -427,7 +433,7 @@ class Order extends Abstract_Order {
 
 		$this->unlock_order( $order_id );
 
-		$this->commit_transaction();
+		DB::commit();
 
 		// After modifying the status we add a meta to flag when it was modified.
 		if ( $updated ) {
@@ -472,15 +478,15 @@ class Order extends Abstract_Order {
 	 * @since 5.1.9
 	 * @since TBD Now it will only create one order per cart hash. Every next time it will update the existing order.
 	 *
+	 * @return false|WP_Post
 	 * @throws \Tribe__Repository__Usage_Error
 	 *
-	 * @return false|WP_Post
 	 */
 	public function create_from_cart( Gateway_Interface $gateway, $purchaser = null ) {
 		$cart = tribe( Cart::class );
 
-		$items      = $cart->get_items_in_cart();
-		$items      = array_filter( array_map(
+		$items = $cart->get_items_in_cart();
+		$items = array_filter( array_map(
 			static function ( $item ) {
 				/** @var Value $ticket_value */
 				$ticket_value         = tribe( Ticket::class )->get_price_value( $item['ticket_id'] );
@@ -518,12 +524,12 @@ class Order extends Abstract_Order {
 		 * @param Value             $subtotal  The calculated subtotal of the cart items.
 		 * @param Gateway_Interface $gateway   The payment gateway used for the order.
 		 * @param ?array            $purchaser { Purchaser details.
-		 *    @type ?int    $purchaser_user_id    The purchaser user ID.
-		 *    @type ?string $purchaser_full_name  The purchaser full name.
-		 *    @type ?string $purchaser_first_name The purchaser first name.
-		 *    @type ?string $purchaser_last_name  The purchaser last name.
-		 *    @type ?string $purchaser_email      The purchaser email.
-		 * }
+		 * @type ?int $purchaser_user_id The purchaser user ID.
+		 * @type ?string $purchaser_full_name The purchaser full name.
+		 * @type ?string $purchaser_first_name The purchaser first name.
+		 * @type ?string $purchaser_last_name The purchaser last name.
+		 * @type ?string $purchaser_email The purchaser email.
+		 *                                     }
 		 */
 		$items = apply_filters(
 			'tec_tickets_commerce_create_order_from_cart_items',
@@ -581,16 +587,16 @@ class Order extends Abstract_Order {
 	/**
 	 * Filters the values and creates a new Order with Tickets Commerce.
 	 *
-	 * @since 5.2.0
-	 *
-	 * @internal Use `upsert` instead.
+	 * @since    5.2.0
 	 *
 	 * @param Gateway_Interface $gateway
 	 * @param array             $args
 	 *
+	 * @return false|WP_Post
 	 * @throws \Tribe__Repository__Usage_Error
 	 *
-	 * @return false|WP_Post
+	 * @internal Use `upsert` instead.
+	 *
 	 */
 	public function create( Gateway_Interface $gateway, $args ) {
 		$gateway_key = $gateway::get_key();
@@ -623,8 +629,8 @@ class Order extends Abstract_Order {
 	 *
 	 * @since TBD
 	 *
-	 * @param Gateway_Interface $gateway           The gateway to use to create the order.
-	 * @param array             $args              The arguments to create the order.
+	 * @param Gateway_Interface $gateway The gateway to use to create the order.
+	 * @param array             $args    The arguments to create the order.
 	 *
 	 * @return false|WP_Post WP_Post instance on success or false on failure.
 	 */
@@ -661,7 +667,8 @@ class Order extends Abstract_Order {
 		 *
 		 * @param int $existing_order_id The existing order ID.
 		 */
-		$existing_order_id = (int) apply_filters( 'tec_tickets_commerce_order_upsert_existing_order_id', $existing_order_id );
+		$existing_order_id = (int) apply_filters( 'tec_tickets_commerce_order_upsert_existing_order_id',
+			$existing_order_id );
 
 		if ( ! $existing_order_id || 0 >= $existing_order_id ) {
 			return $this->create( $gateway, $args );
@@ -775,18 +782,19 @@ class Order extends Abstract_Order {
 	/**
 	 * Redirects to the source post after a recoverable (logic) error.
 	 *
-	 * @todo  Determine if redirecting should be something relegated to some other method, and here we just actually
-	 *        generate the order/Attendees.
-	 *
-	 * @todo  Deprecate tpp_error
-	 *
-	 * @see   \Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
 	 * @since 5.1.9
 	 *
 	 * @param int  $post_id    A post ID.
 	 *
 	 * @param int  $error_code The current error code.
 	 * @param bool $redirect   Whether to really redirect or not.
+	 *
+	 * @todo  Deprecate tpp_error
+	 *
+	 * @see   \Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
+	 * @todo  Determine if redirecting should be something relegated to some other method, and here we just actually
+	 *        generate the order/Attendees.
+	 *
 	 */
 	protected function redirect_after_error( $error_code, $redirect, $post_id ) {
 		$url = add_query_arg( 'tpp_error', $error_code, get_permalink( $post_id ) );
@@ -1119,38 +1127,5 @@ class Order extends Abstract_Order {
 			[ 'order_id' => $order_id ],
 			'tec-tickets-commerce-stripe-webhooks'
 		);
-	}
-
-	/**
-	 * Wrap the transaction start method.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	protected function start_transaction() {
-		DB::beginTransaction();
-	}
-
-	/**
-	 * Wrap the transaction rollback method.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	protected function rollback_transaction() {
-		DB::rollback();
-	}
-
-	/**
-	 * Wrap the transaction commit method.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	protected function commit_transaction() {
-		DB::commit();
 	}
 }

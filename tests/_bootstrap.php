@@ -3,6 +3,7 @@
  * @file Global bootstrap for all codeception tests
  */
 use Codeception\Util\Autoload;
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Order;
 
 Autoload::addNamespace( 'Tribe__Events__WP_UnitTestCase', __DIR__ . '/_support' );
@@ -43,15 +44,13 @@ putenv( 'TEC_CUSTOM_TABLES_V1_DISABLED=1' );
 $_ENV['TEC_CUSTOM_TABLES_V1_DISABLED'] = 1;
 
 function tec_tickets_tests_fake_transactions_enable() {
-	uopz_set_return( Order::class, 'start_transaction', true, false );
-	uopz_set_return( Order::class, 'rollback_transaction', true, false );
-	uopz_set_return( Order::class, 'commit_transaction', true, false );
+	uopz_set_return( DB::class, 'beginTransaction', true, false );
+	uopz_set_return( DB::class, 'rollback', true, false );
+	uopz_set_return( DB::class, 'commit', true, false );
 }
 
 function tec_tickets_tests_fake_transactions_disable() {
-	uopz_unset_return( Order::class, 'start_transaction' );
-	uopz_unset_return( Order::class, 'rollback_transaction' );
-	uopz_unset_return( Order::class, 'commit_transaction' );
+	uopz_unset_return( DB::class, 'beginTransaction' );
+	uopz_unset_return( DB::class, 'rollback' );
+	uopz_unset_return( DB::class, 'commit' );
 }
-
-tec_tickets_tests_fake_transactions_enable();

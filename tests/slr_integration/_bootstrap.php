@@ -80,3 +80,5 @@ test_add_seating_license_key_callback();
 
 // The Seating Commerce controller might not be registered yet: do it now.
 tribe_register_provider( Seating_Commerce_Controller::class );
+
+tec_tickets_tests_fake_transactions_enable();
