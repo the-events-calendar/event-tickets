@@ -13,13 +13,13 @@ class Status_Test extends WPTestCase {
 
 	public function transitions_provider() {
 		return [
-			// [ Action_Required::SLUG, Action_Required::SLUG, false ],
-			// [ Approved::SLUG, Approved::SLUG, false ],
-			// [ Completed::SLUG, Completed::SLUG, false ],
-			// [ Created::SLUG, Created::SLUG, false ],
-			// [ Denied::SLUG, Denied::SLUG, false ],
-			// [ Not_Completed::SLUG, Not_Completed::SLUG, false ],
-			// [ Pending::SLUG, Pending::SLUG, false ],
+			[ Action_Required::SLUG, Action_Required::SLUG, false ],
+			[ Approved::SLUG, Approved::SLUG, false ],
+			[ Completed::SLUG, Completed::SLUG, false ],
+			[ Created::SLUG, Created::SLUG, false ],
+			[ Denied::SLUG, Denied::SLUG, false ],
+			[ Not_Completed::SLUG, Not_Completed::SLUG, false ],
+			[ Pending::SLUG, Pending::SLUG, false ],
 			[ Refunded::SLUG, Refunded::SLUG, true ], // Only status transition allowed from same to same to support multiple refunds. e.g. in stripe i can refund from X order total, Y at first and then Z where Z + Y <= X.
 			[ Reversed::SLUG, Reversed::SLUG, false ],
 			[ Trashed::SLUG, Trashed::SLUG, false ],

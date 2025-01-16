@@ -1065,6 +1065,8 @@ class Order extends Abstract_Order {
 			 */
 			do_action( 'tec_tickets_commerce_order_unlocked', $result, $order_id, $this->get_lock_id() );
 
+			$this->reset_lock_id();
+
 			return $result;
 		} catch ( DatabaseQueryException $e ) {
 			return false;
@@ -1080,6 +1082,17 @@ class Order extends Abstract_Order {
 	 */
 	public function get_lock_id(): string {
 		return self::$lock_id;
+	}
+
+	/**
+	 * Reset the lock ID.
+	 *
+	 * Usually after unlocking an order.
+	 *
+	 * @since TBD
+	 */
+	public function reset_lock_id(): void {
+		self::$lock_id = '';
 	}
 
 	/**
