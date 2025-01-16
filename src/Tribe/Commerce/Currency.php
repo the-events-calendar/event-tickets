@@ -21,7 +21,7 @@ class Tribe__Tickets__Commerce__Currency {
 		if ( did_action( 'init' ) || doing_action( 'init' ) ) {
 			$this->generate_default_currency_map();
 		} else {
-			add_action( 'init', array( $this, 'generate_default_currency_map' ), 1 );
+			add_action( 'init', [ $this, 'generate_default_currency_map' ], 1 );
 		}
 	}
 
