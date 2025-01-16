@@ -800,7 +800,6 @@ class Order extends Abstract_Order {
 	 * @since 5.1.9
 	 *
 	 * @param int  $post_id    A post ID.
-	 *
 	 * @param int  $error_code The current error code.
 	 * @param bool $redirect   Whether to really redirect or not.
 	 *
