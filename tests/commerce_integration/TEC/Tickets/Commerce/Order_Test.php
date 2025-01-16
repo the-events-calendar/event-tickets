@@ -14,6 +14,7 @@ use Closure;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Tickets\Commerce\Attendee;
 
 class Order_Test extends WPTestCase {
 	use Ticket_Maker;
@@ -355,6 +356,23 @@ class Order_Test extends WPTestCase {
 
 		foreach ( self::$clean_callbacks as $callback ) {
 			$callback();
+			// and always clean attendees.
+			DB::query(
+				DB::prepare(
+					"DELETE FROM %i where post_id IN ( SELECT ID FROM %i WHERE post_type = %s )",
+					DB::prefix( 'postmeta' ),
+					DB::prefix( 'posts' ),
+					Attendee::POSTTYPE
+				)
+			);
+
+			DB::query(
+				DB::prepare(
+					"DELETE FROM %i where post_type = %s",
+					DB::prefix( 'posts' ),
+					Order::POSTTYPE
+				)
+			);
 		}
 
 		self::$clean_callbacks = [];
