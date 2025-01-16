@@ -1146,7 +1146,7 @@ class Order extends Abstract_Order {
 			/**
 			 * Filters whether the checkout is completed.
 			 *
-			 * Direct query to overcome object cache.
+			 * Does a direct query to overcome object cache.
 			 *
 			 * @since TBD
 			 *
