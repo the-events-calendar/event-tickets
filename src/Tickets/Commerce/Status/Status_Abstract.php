@@ -153,19 +153,18 @@ abstract class Status_Abstract implements Status_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @param self $current_status The current status.
-	 * @param self $new_status     The new status.
-	 * @param ?int $order_id       Which order we are testing against.
+	 * @param self $new_status The new status.
+	 * @param ?int $order_id   Which order we are testing against.
 	 *
 	 * @return bool Whether the new status can be applied to the current status.
 	 */
-	public function status_can_apply_to_status( $current_status, $new_status, $order_id = null ) {
-		if ( $current_status->get_wp_slug() === $new_status->get_wp_slug() ) {
+	public function can_transition_to_status( $new_status, $order_id = null ) {
+		if ( $this->get_wp_slug() === $new_status->get_wp_slug() ) {
 			// Allow from refunded to refunded in order to support multiple refunds.
-			return 'refunded' === $current_status->get_slug();
+			return 'refunded' === $this->get_slug();
 		}
 
-		if ( $current_status->is_final() ) {
+		if ( $this->is_final() ) {
 			return false;
 		}
 
