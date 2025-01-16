@@ -15,6 +15,7 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Gateway_Interface;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Refunded;
 use TEC\Tickets\Commerce\Status\Reversed;
+use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Date_Utils as Dates;
 use WP_Post;
@@ -62,9 +63,9 @@ class Order extends Abstract_Order {
 	 *
 	 * @since TBD
 	 *
-	 * @var string|null
+	 * @var string
 	 */
-	protected static ?string $lock_id = null;
+	protected static string $lock_id = '';
 
 	/**
 	 * Which meta holds which gateway was used on this order.
@@ -355,17 +356,18 @@ class Order extends Abstract_Order {
 	 * Modify the status of a given order based on Slug.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Wrap status update in a transaction to prevent race conditions.
 	 *
-	 * @param int    $order_id    Which order ID will be updated.
-	 * @param string $status_slug Which Order Status we are modifying to.
-	 * @param array  $extra_args  Extra repository arguments.
+	 * @param int    $order_id        Which order ID will be updated.
+	 * @param string $new_status_slug Which Order Status we are modifying to.
+	 * @param array  $extra_args      Extra repository arguments.
 	 *
 	 * @return bool|\WP_Error
 	 */
-	public function modify_status( $order_id, $status_slug, array $extra_args = [] ) {
-		$status = tribe( Status\Status_Handler::class )->get_by_slug( $status_slug );
+	public function modify_status( $order_id, $new_status_slug, array $extra_args = [] ) {
+		$new_status = tribe( Status\Status_Handler::class )->get_by_slug( $new_status_slug );
 
-		if ( ! $status ) {
+		if ( ! $new_status ) {
 			return false;
 		}
 
@@ -381,40 +383,15 @@ class Order extends Abstract_Order {
 			return false;
 		}
 
-		$lock_key = self::ORDER_LOCK_KEY;
+		$can_transition = $this->can_transition_to( $new_status, $order_id );
 
-		try {
-			$current_status_wp_slug = DB::get_var(
-				DB::prepare(
-					"SELECT post_status FROM %i WHERE ID = %d AND $lock_key=%s",
-					DB::prefix( 'posts' ),
-					$order_id,
-					$this->get_lock_id()
-				)
-			);
-		} catch ( DatabaseQueryException $e ) {
-			// The query should be failing silently.
-			DB::rollback();
-
-			return false;
-		}
-
-		if ( ! $current_status_wp_slug ) {
-			DB::rollback();
-
-			return false;
-		}
-
-		$current_status = tribe( Status\Status_Handler::class )->get_by_wp_slug( $current_status_wp_slug );
-
-		$can_transition = $current_status->can_transition_to_status( $status, $order_id );
 		if ( ! $can_transition || is_wp_error( $can_transition ) ) {
 			DB::rollback();
 
 			return $can_transition;
 		}
 
-		$args = array_merge( $extra_args, [ 'status' => $status->get_wp_slug() ] );
+		$args = array_merge( $extra_args, [ 'status' => $new_status->get_wp_slug() ] );
 
 		$updated = tec_tc_orders()
 			->by_args(
@@ -434,10 +411,51 @@ class Order extends Abstract_Order {
 		// After modifying the status we add a meta to flag when it was modified.
 		if ( $updated ) {
 			$time = Dates::build_date_object()->format( Dates::DBDATETIMEFORMAT );
-			add_post_meta( $order_id, static::get_status_log_meta_key( $status ), $time );
+			add_post_meta( $order_id, static::get_status_log_meta_key( $new_status ), $time );
 		}
 
 		return (bool) $updated;
+	}
+
+	/**
+	 * Whether an order's status be transitioned to another status.
+	 *
+	 * @since TBD
+	 *
+	 * @param Status_Interface $new_status The new status to transition to.
+	 * @param int              $order_id   The order ID to check the transition for.
+	 *
+	 * @return bool
+	 */
+	public function can_transition_to( Status_Interface $new_status, int $order_id ): bool {
+		$lock_key = self::ORDER_LOCK_KEY;
+
+		try {
+			/**
+			 * We want to have the fresher current status supporting the lock system if enabled.
+			 *
+			 * Overcoming object cache and refreshing even if we had retrieved it already during the request.
+			 */
+			$current_status_wp_slug = DB::get_var(
+				DB::prepare(
+					"SELECT post_status FROM %i WHERE ID = %d AND $lock_key=%s",
+					DB::prefix( 'posts' ),
+					$order_id,
+					$this->get_lock_id()
+				)
+			);
+		} catch ( DatabaseQueryException $e ) {
+			// The query should be failing silently.
+			return false;
+		}
+
+		if ( ! $current_status_wp_slug ) {
+			return false;
+		}
+
+		$current_status = tribe( Status\Status_Handler::class )->get_by_wp_slug( $current_status_wp_slug );
+
+		return $current_status->can_change_to( $new_status );
 	}
 
 	/**

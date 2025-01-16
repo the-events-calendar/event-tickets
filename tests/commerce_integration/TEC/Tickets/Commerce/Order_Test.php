@@ -4,10 +4,10 @@ namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce\Cart;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
 use Tribe\Tests\Traits\With_Uopz;
-use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use WP_Post;
 use Generator;
 use Closure;

@@ -1,4 +1,4 @@
 Significance: patch
 Type: tweak
 
-Introduced method `can_transition_to_status` which is preferred over `can_apply_to` along with the order locking system to prevent race conditions. [ET-2281]
+Introduced methods `can_change_to` for Statuses and `can_transition_to` for Orders. [ET-2281]

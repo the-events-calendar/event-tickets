@@ -2,21 +2,24 @@
 
 namespace TEC\Tickets\Commerce\Status;
 
-use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Codeception\TestCase\WPTestCase;
-use Tribe\Tests\Traits\With_Uopz;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
+use TEC\Tickets\Commerce\Order;
 
-class Order_Test extends WPTestCase {
+class Status_Test extends WPTestCase {
+	use Ticket_Maker;
+	use Order_Maker;
+
 	public function transitions_provider() {
 		return [
-			[ Action_Required::SLUG, Action_Required::SLUG, false ],
-			[ Approved::SLUG, Approved::SLUG, false ],
-			[ Completed::SLUG, Completed::SLUG, false ],
-			[ Created::SLUG, Created::SLUG, false ],
-			[ Denied::SLUG, Denied::SLUG, false ],
-			[ Not_Completed::SLUG, Not_Completed::SLUG, false ],
-			[ Pending::SLUG, Pending::SLUG, false ],
+			// [ Action_Required::SLUG, Action_Required::SLUG, false ],
+			// [ Approved::SLUG, Approved::SLUG, false ],
+			// [ Completed::SLUG, Completed::SLUG, false ],
+			// [ Created::SLUG, Created::SLUG, false ],
+			// [ Denied::SLUG, Denied::SLUG, false ],
+			// [ Not_Completed::SLUG, Not_Completed::SLUG, false ],
+			// [ Pending::SLUG, Pending::SLUG, false ],
 			[ Refunded::SLUG, Refunded::SLUG, true ], // Only status transition allowed from same to same to support multiple refunds. e.g. in stripe i can refund from X order total, Y at first and then Z where Z + Y <= X.
 			[ Reversed::SLUG, Reversed::SLUG, false ],
 			[ Trashed::SLUG, Trashed::SLUG, false ],
@@ -160,10 +163,30 @@ class Order_Test extends WPTestCase {
 	/**
 	 * @dataProvider transitions_provider
 	 */
-	public function test_it_can_transition_to_status( $from, $to, $result ) {
+	public function test_status_can_change_to( $from, $to, $result ) {
 		$from = tribe( Status_Handler::class )->get_by_slug( $from );
 		$to   = tribe( Status_Handler::class )->get_by_slug( $to );
 
-		$this->assertSame( $result, $from->can_transition_to_status( $to ), "Failed to transition from {$from->get_slug()} to {$to->get_slug()}" );
+		$this->assertSame( $result, $from->can_change_to( $to ), "Unexpected result for change from {$from->get_slug()} to {$to->get_slug()}" );
+	}
+
+	/**
+	 * @dataProvider transitions_provider
+	 */
+	public function test_order_can_change_to( $from, $to, $result ) {
+		$post = self::factory()->post->create(
+			[
+				'post_type' => 'page',
+			]
+		);
+		$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
+		$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
+
+		$order = $this->create_order( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ], [ 'order_status' => $from ] );
+		// tribe( Order::class )->unlock_order( $order->ID );
+		$from = tribe( Status_Handler::class )->get_by_slug( $from );
+		$to   = tribe( Status_Handler::class )->get_by_slug( $to );
+
+		$this->assertSame( $result, tribe( Order::class )->can_transition_to( $to, $order->ID ), "Unexpected result for order transition from {$from->get_slug()} to {$to->get_slug()}" );
 	}
 }

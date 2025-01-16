@@ -45,7 +45,13 @@ $_ENV['TEC_CUSTOM_TABLES_V1_DISABLED'] = 1;
 
 function tec_tickets_tests_fake_transactions_enable() {
 	uopz_set_return( DB::class, 'beginTransaction', true, false );
-	uopz_set_return( DB::class, 'rollback', true, false );
+	uopz_set_return( DB::class, 'rollback', function () {
+		// On rollback we want to clear any locks and reset the lock id back to empty in runtime.
+		DB::query( DB::prepare( 'UPDATE %i SET post_content_filtered=""', DB::prefix( 'posts' ) ) );
+		uopz_set_return( 'uniqid', '', false );
+		tribe( Order::class )->generate_lock_id();
+		uopz_unset_return( 'uniqid' );
+	}, true );
 	uopz_set_return( DB::class, 'commit', true, false );
 }
 
