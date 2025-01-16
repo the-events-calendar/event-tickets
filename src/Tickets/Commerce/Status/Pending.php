@@ -72,7 +72,7 @@ class Pending extends Status_Abstract {
 	 * @param self $new_status     The new status.
 	 * @param ?int $order_id       Which order we are testing against.
 	 *
-	 * @return bool|WP_Error
+	 * @return bool|WP_Error Whether the new status can be applied to the current status.
 	 */
 	public function status_can_apply_to_status( $current_status, $new_status, $order_id = null ) {
 		return $this->can_apply_to_pending_status(
@@ -84,8 +84,12 @@ class Pending extends Status_Abstract {
 	/**
 	 * Whether new status can be applied to the current status.
 	 *
+	 * @since TBD
+	 *
 	 * @param bool|WP_Error $status Parent's method result.
 	 * @param int|\WP_Post  $order  Which order we are testing against.
+	 *
+	 * @return bool|WP_Error Whether the new status can be applied to the current status.
 	 */
 	protected function can_apply_to_pending_status( $status, $order ) {
 		// If the parent status is final, don't run.
