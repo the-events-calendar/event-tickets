@@ -62,7 +62,7 @@ class Refunded extends Status_Abstract {
 	 *
 	 * @return bool Whether the new status can be applied to the current status.
 	 */
-	public function can_change_to( $new_status ) {
+	public function can_change_to( $new_status ): bool {
 		if ( $this->get_wp_slug() === $new_status->get_wp_slug() ) {
 			// Refunded can be changed to Refunded to manage multiple refunds.
 			return true;
