@@ -75,7 +75,10 @@ class Pending extends Status_Abstract {
 	 * @return bool|WP_Error
 	 */
 	public function status_can_apply_to_status( $current_status, $new_status, $order_id = null ) {
-		return $this->can_apply_to_pending_status( parent::status_can_apply_to_status( $current_status, $new_status, $order_id ), $order_id );
+		return $this->can_apply_to_pending_status(
+			parent::status_can_apply_to_status( $current_status, $new_status, $order_id ),
+			$order_id
+		);
 	}
 
 	/**
