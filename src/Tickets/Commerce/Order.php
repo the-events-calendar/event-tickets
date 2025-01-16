@@ -291,9 +291,7 @@ class Order extends Abstract_Order {
 				'item_scheduled'           => __( 'Order scheduled.', 'event-tickets' ),
 				'item_updated'             => __( 'Order updated.', 'event-tickets' ),
 				'item_link'                => _x( 'Order Link', 'navigation link block title', 'event-tickets' ),
-				'item_link_description'    => _x( 'A link to an order.',
-					'navigation link block description',
-					'event-tickets' ),
+				'item_link_description'    => _x( 'A link to an order.', 'navigation link block description', 'event-tickets' ),
 			],
 		];
 
@@ -363,8 +361,6 @@ class Order extends Abstract_Order {
 	 * @param array  $extra_args  Extra repository arguments.
 	 *
 	 * @return bool|\WP_Error
-	 * @throws \Tribe__Repository__Usage_Error
-	 *
 	 */
 	public function modify_status( $order_id, $status_slug, array $extra_args = [] ) {
 		$status = tribe( Status\Status_Handler::class )->get_by_slug( $status_slug );
@@ -486,27 +482,29 @@ class Order extends Abstract_Order {
 		$cart = tribe( Cart::class );
 
 		$items = $cart->get_items_in_cart();
-		$items = array_filter( array_map(
-			static function ( $item ) {
-				/** @var Value $ticket_value */
-				$ticket_value         = tribe( Ticket::class )->get_price_value( $item['ticket_id'] );
-				$ticket_regular_value = tribe( Ticket::class )->get_price_value( $item['ticket_id'], true );
+		$items = array_filter(
+			array_map(
+				static function ( $item ) {
+					/** @var Value $ticket_value */
+					$ticket_value         = tribe( Ticket::class )->get_price_value( $item['ticket_id'] );
+					$ticket_regular_value = tribe( Ticket::class )->get_price_value( $item['ticket_id'], true );
 
-				if ( null === $ticket_value ) {
-					return null;
-				}
+					if ( null === $ticket_value ) {
+						return null;
+					}
 
-				$item['price']     = $ticket_value->get_decimal();
-				$item['sub_total'] = $ticket_value->sub_total( $item['quantity'] )->get_decimal();
-				$item['event_id']  = tribe( Ticket::class )->get_related_event_id( $item['ticket_id'] );
+					$item['price']     = $ticket_value->get_decimal();
+					$item['sub_total'] = $ticket_value->sub_total( $item['quantity'] )->get_decimal();
+					$item['event_id']  = tribe( Ticket::class )->get_related_event_id( $item['ticket_id'] );
 
-				$item['regular_price']     = $ticket_regular_value->get_decimal();
-				$item['regular_sub_total'] = $ticket_regular_value->sub_total( $item['quantity'] )->get_decimal();
+					$item['regular_price']     = $ticket_regular_value->get_decimal();
+					$item['regular_sub_total'] = $ticket_regular_value->sub_total( $item['quantity'] )->get_decimal();
 
-				return $item;
-			},
-			$items
-		) );
+					return $item;
+				},
+				$items
+			)
+		);
 
 		$subtotal = $this->get_value_total( $items );
 
@@ -667,8 +665,7 @@ class Order extends Abstract_Order {
 		 *
 		 * @param int $existing_order_id The existing order ID.
 		 */
-		$existing_order_id = (int) apply_filters( 'tec_tickets_commerce_order_upsert_existing_order_id',
-			$existing_order_id );
+		$existing_order_id = (int) apply_filters( 'tec_tickets_commerce_order_upsert_existing_order_id', $existing_order_id );
 
 		if ( ! $existing_order_id || 0 >= $existing_order_id ) {
 			return $this->create( $gateway, $args );
