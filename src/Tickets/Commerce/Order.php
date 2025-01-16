@@ -385,7 +385,7 @@ class Order extends Abstract_Order {
 
 		$can_transition = $this->can_transition_to( $new_status, $order_id );
 
-		if ( ! $can_transition || is_wp_error( $can_transition ) ) {
+		if ( ! $can_transition ) {
 			DB::rollback();
 
 			return $can_transition;
