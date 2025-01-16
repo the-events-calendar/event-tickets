@@ -424,7 +424,7 @@ class Frontend extends Controller_Contract {
 	public function get_ticket_block_data( $post_id ): array {
 		$service_ok = $this->service->get_status()->is_ok();
 
-		return [
+		$data = [
 			'objectName'                => 'dialog_obj_' . self::MODAL_ID,
 			'modalId'                   => self::MODAL_ID,
 			'seatTypeMap'               => $service_ok ? $this->build_seat_type_map( $post_id ) : [],
@@ -442,6 +442,16 @@ class Frontend extends Controller_Contract {
 			'ACTION_CLEAR_RESERVATIONS' => Ajax::ACTION_CLEAR_RESERVATIONS,
 			'sessionTimeout'            => tribe( Timer::class )->get_timeout( $post_id ),
 		];
+		
+		/**
+		 * Filters the data to be localized on the ticket block frontend.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<string,mixed> $data The data to be localized on the ticket block frontend.
+		 * @param int                 $post_id The post ID.
+		 */
+		return apply_filters( 'tec_tickets_seating_frontend_ticket_block_data', $data, $post_id );
 	}
 
 	/**
