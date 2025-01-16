@@ -1,5 +1,4 @@
 Significance: patch
 Type: tweak
-Comment: Changelog entry is already present for this issue - just working on top of it
 
-
+Introduced method `can_transition_to_status` which is preferred over `can_apply_to` along with the order locking system to prevent race conditions. [ET-2281]
