@@ -157,7 +157,7 @@ abstract class Status_Abstract implements Status_Interface {
 	 * @param self $new_status     The new status.
 	 * @param ?int $order_id       Which order we are testing against.
 	 *
-	 * @return bool
+	 * @return bool Whether the new status can be applied to the current status.
 	 */
 	public function status_can_apply_to_status( $current_status, $new_status, $order_id = null ) {
 		if ( $current_status->get_wp_slug() === $new_status->get_wp_slug() ) {
