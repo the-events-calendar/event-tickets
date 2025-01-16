@@ -1,0 +1,4 @@
+Significance: patch
+Type: tweak
+
+Introduced methods `can_change_to` for Statuses and `can_transition_to` for Orders. [ET-2281]

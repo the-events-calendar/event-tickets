@@ -1,0 +1,4 @@
+Significance: minor
+Type: tweak
+
+Introduced various hooks for the order lock system and order completed checkout actions. [ET-2281]
