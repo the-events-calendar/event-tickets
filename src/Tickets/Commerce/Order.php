@@ -789,7 +789,7 @@ class Order extends Abstract_Order {
 	 * @todo  Deprecate tpp_error
 	 *
 	 * @see   \Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
-	 * @todo  Determine if redirecting should be something relegated to some other method, and here we just actually
+	 * @todo  Determine if redirecting should be something relegated to some other method, and here we only generate
 	 *        generate the order/Attendees.
 	 *
 	 */
