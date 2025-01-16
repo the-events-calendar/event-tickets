@@ -993,7 +993,7 @@ class Order extends Abstract_Order {
 		try {
 			$lock_key = self::ORDER_LOCK_KEY;
 
-			$result = DB::query(
+			$result = (bool) DB::query(
 				DB::prepare(
 					"UPDATE %i set $lock_key = %s where ID = $order_id and $lock_key = ''",
 					DB::prefix( 'posts' ),
@@ -1001,7 +1001,18 @@ class Order extends Abstract_Order {
 				)
 			);
 
-			return (bool) $result;
+			/**
+			 * Fires after an order is attempted to be locked.
+			 *
+			 * @since TBD
+			 *
+			 * @param bool   $result   Whether the order was locked.
+			 * @param int    $order_id The order ID.
+			 * @param string $lock_id  The lock ID.
+			 */
+			do_action( 'tec_tickets_commerce_order_locked', $result, $order_id, $this->get_lock_id() );
+
+			return $result;
 		} catch ( DatabaseQueryException $e ) {
 			return false;
 		}
@@ -1019,12 +1030,25 @@ class Order extends Abstract_Order {
 	public function unlock_order( int $order_id ): bool {
 		$lock_key = self::ORDER_LOCK_KEY;
 		try {
-			return (bool) DB::query(
+			$result = (bool) DB::query(
 				DB::prepare(
 					"UPDATE %i set $lock_key = '' where ID = $order_id",
 					DB::prefix( 'posts' )
 				)
 			);
+
+			/**
+			 * Fires after an order is attempted to be unlocked.
+			 *
+			 * @since TBD
+			 *
+			 * @param bool   $result   Whether the order was unlocked.
+			 * @param int    $order_id The order ID.
+			 * @param string $lock_id  The lock ID.
+			 */
+			do_action( 'tec_tickets_commerce_order_unlocked', $result, $order_id, $this->get_lock_id() );
+
+			return $result;
 		} catch ( DatabaseQueryException $e ) {
 			return false;
 		}
@@ -1067,11 +1091,23 @@ class Order extends Abstract_Order {
 		$lock_key = self::ORDER_LOCK_KEY;
 
 		try {
-			return (bool) DB::get_var(
-				DB::prepare(
-					"SELECT $lock_key FROM %i WHERE ID = $order_id",
-					DB::prefix( 'posts' )
-				)
+			/**
+			 * Filters whether the order is locked.
+			 *
+			 * @since TBD
+			 *
+			 * @param bool $is_locked Whether the order is locked.
+			 * @param int  $order_id  The order ID.
+			 */
+			return apply_filters(
+				'tec_tickets_commerce_order_is_locked',
+				(bool) DB::get_var(
+					DB::prepare(
+						"SELECT $lock_key FROM %i WHERE ID = $order_id",
+						DB::prefix( 'posts' )
+					)
+				),
+				$order_id
 			);
 		} catch ( DatabaseQueryException $e ) {
 			return false;
@@ -1089,14 +1125,27 @@ class Order extends Abstract_Order {
 	 */
 	public function is_checkout_completed( int $order_id ): bool {
 		try {
-			// Direct query to overcome object cache.
-			return (bool) DB::get_var(
-				DB::prepare(
-					'SELECT meta_value FROM %i WHERE post_id = %d AND meta_key = %s',
-					DB::prefix( 'postmeta' ),
-					$order_id,
-					static::CHECKOUT_COMPLETED_META
-				)
+			/**
+			 * Filters whether the checkout is completed.
+			 *
+			 * Direct query to overcome object cache.
+			 *
+			 * @since TBD
+			 *
+			 * @param bool $is_completed Whether the checkout is completed.
+			 * @param int  $order_id     The order ID.
+			 */
+			return apply_filters(
+				'tec_tickets_commerce_order_is_checkout_completed',
+				(bool) DB::get_var(
+					DB::prepare(
+						'SELECT meta_value FROM %i WHERE post_id = %d AND meta_key = %s',
+						DB::prefix( 'postmeta' ),
+						$order_id,
+						static::CHECKOUT_COMPLETED_META
+					)
+				),
+				$order_id
 			);
 		} catch ( DatabaseQueryException $e ) {
 			return false;
@@ -1118,6 +1167,15 @@ class Order extends Abstract_Order {
 		if ( ! $result ) {
 			return false;
 		}
+
+		/**
+		 * Fires after an order's checkout is marked as completed.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $order_id The order ID.
+		 */
+		do_action( 'tec_tickets_commerce_order_checkout_completed', $order_id );
 
 		return (bool) as_enqueue_async_action(
 			'tec_tickets_commerce_async_webhook_process',
