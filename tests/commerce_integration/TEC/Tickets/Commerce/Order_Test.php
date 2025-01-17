@@ -8,12 +8,14 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
 use Tribe\Tests\Traits\With_Uopz;
+use Tribe__Tickets__Tickets as Tickets;
 use WP_Post;
 use Generator;
 use Closure;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Tickets\Commerce\Status\Action_Required;
 
 class Order_Test extends WPTestCase {
 	use Ticket_Maker;
@@ -176,6 +178,75 @@ class Order_Test extends WPTestCase {
 		$result = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
 
 		$this->assertTrue( $result );
+	}
+
+	public function test_double_order_transition_does_not_count_sales_twice() {
+		$post = self::factory()->post->create(
+			[
+				'post_type' => 'page',
+			]
+		);
+		$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
+		$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
+
+		// During action-req transition the action increase sales is fired.
+		$order = $this->create_order( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ], [ 'order_status' => Action_Required::SLUG ] );
+
+		$ticket_obj_1 = Tickets::load_ticket_object( $ticket_id_1 );
+		$ticket_obj_2 = Tickets::load_ticket_object( $ticket_id_2 );
+
+		// The sales should be counted once.
+		$this->assertSame( 1, $ticket_obj_1->qty_sold() );
+		$this->assertSame( 2, $ticket_obj_2->qty_sold() );
+
+		// During completed transition the action increase sales is fired again.
+		tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
+
+		// refresh objects.
+		$ticket_obj_1 = Tickets::load_ticket_object( $ticket_id_1 );
+		$ticket_obj_2 = Tickets::load_ticket_object( $ticket_id_2 );
+
+		// The sales should not be counted twice.
+		$this->assertSame( 1, $ticket_obj_1->qty_sold() );
+		$this->assertSame( 2, $ticket_obj_2->qty_sold() );
+
+		// manually modify item quantity - there is no API current for add_item to existing order.
+		$items = ( (array) get_post_meta( $order->ID, '_tec_tc_order_items', true ) );
+		if ( isset( $items[ $ticket_id_1 ] ) ) {
+			$items[ $ticket_id_1 ]['quantity'] = $items[ $ticket_id_1 ]['quantity'] + 1;
+		} else {
+			$items['0']['quantity'] = $items['0']['quantity'] + 1;
+		}
+
+		if ( isset( $items[ $ticket_id_2 ] ) ) {
+			$items[ $ticket_id_2 ]['quantity'] = $items[ $ticket_id_2 ]['quantity'] + 2;
+		} else {
+			$items['1']['quantity'] = $items['1']['quantity'] + 2;
+		}
+
+		update_post_meta( $order->ID, '_tec_tc_order_items', $items );
+
+		// During action-req transition the action increase sales is fired again.
+		tribe( Order::class )->modify_status( $order->ID, Action_Required::SLUG );
+
+		// refresh objects.
+		$ticket_obj_1 = Tickets::load_ticket_object( $ticket_id_1 );
+		$ticket_obj_2 = Tickets::load_ticket_object( $ticket_id_2 );
+
+		// The sales should be updated only for the new added tickets.
+		$this->assertSame( 2, $ticket_obj_1->qty_sold() );
+		$this->assertSame( 4, $ticket_obj_2->qty_sold() );
+
+		// Back to completed after adding new tickets.
+		tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
+
+		// refresh objects.
+		$ticket_obj_1 = Tickets::load_ticket_object( $ticket_id_1 );
+		$ticket_obj_2 = Tickets::load_ticket_object( $ticket_id_2 );
+
+		// The sales should not be counted again.
+		$this->assertSame( 2, $ticket_obj_1->qty_sold() );
+		$this->assertSame( 4, $ticket_obj_2->qty_sold() );
 	}
 
 	public function modify_status_provider(): Generator {
