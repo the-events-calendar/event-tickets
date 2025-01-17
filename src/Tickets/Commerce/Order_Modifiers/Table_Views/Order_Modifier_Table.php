@@ -125,9 +125,9 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 
 		// Query parameters.
 		$parameters = [
-			'orderby' => tec_get_request_var( 'orderby', 'display_name' ),
-			'order'   => tec_get_request_var( 'order', 'asc' ),
 			'limit'   => $this->get_items_per_page( "{$this->modifier->get_modifier_type()}_per_page", 10 ),
+			'order'   => tec_get_request_var( 'order', 'asc' ),
+			'orderby' => tec_get_request_var( 'orderby', 'display_name' ),
 			'page'    => $this->current_page,
 		];
 
@@ -142,9 +142,9 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		// Set the pagination args.
 		$this->set_pagination_args(
 			[
-				'total_items' => $total_items,
 				'per_page'    => $per_page,
-				'total_pages' => ceil( $total_items / $per_page ),
+				'total_items' => $total_items,
+				'total_pages' => (int) ceil( $total_items / $per_page ),
 			]
 		);
 	}
