@@ -535,6 +535,11 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 			$builder->limit( $valid_params['limit'] );
 		}
 
+		// Add the query offset.
+		if ( ! empty( $valid_params['offset'] ) ) {
+			$builder->offset( $valid_params['offset'] );
+		}
+
 		$results = $builder->getAll() ?? [];
 
 		// Cache the results for future use.
