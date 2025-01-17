@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Ticket sales will be counted correctly during status transitions of the orders they belong to. [ET-2286]
