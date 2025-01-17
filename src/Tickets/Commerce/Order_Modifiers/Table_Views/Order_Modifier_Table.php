@@ -133,7 +133,6 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 
 		// Handle search, or run a normal query.
 		$search = tec_get_request_var( 's', '' );
-
 		if ( ! empty( $search ) ) {
 			$total_items = $this->setup_items_with_search( $search, $parameters, $per_page );
 		} else {
@@ -164,11 +163,27 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	protected function setup_items_with_search( string $search, array $params, int $per_page ): int {
 		// Fetch the data from the modifier class, including sorting.
 		$params['search_term'] = $search;
-		$this->items           = $this->modifier->find_by_search( $params );
+		$items                 = $this->modifier->find_by_search( $params );
+
+		// If we have 0 items and we're not on the first page, we need to go back to the last page with results.
+		while ( count( $items ) === 0 ) {
+			// If we're on the first page, we can't go back any further.
+			if ( $this->current_page === 1 ) {
+				break;
+			}
+
+			// Go back a page and try again.
+			--$this->current_page;
+
+			// Get the new items query.
+			$params['page'] = $this->current_page;
+			$items          = $this->modifier->find_by_search( $params );
+		}
 
 		// Get the total number of items.
-		if ( count( $this->items ) < $per_page && $this->current_page === 1 ) {
-			return count( $this->items );
+		if ( count( $items ) < $per_page && $this->current_page === 1 ) {
+			$this->items = $items;
+			return count( $items );
 		}
 
 		return $this->modifier->find_count_by_search(
