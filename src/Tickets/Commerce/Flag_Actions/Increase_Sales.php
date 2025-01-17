@@ -42,7 +42,7 @@ class Increase_Sales extends Flag_Action_Abstract {
 	 *
 	 * @since 5.2.0
 	 * @since 5.13.3 Check shared capacity before sending to the `Ticket::increase_ticket_sales_by` method.
-	 * @since TBD
+	 * @since TBD    Making the action idempotent. Self aware of which tickets have already increased their sales and how many times.
 	 */
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $post ) {
 		if ( empty( $post->items ) ) {
