@@ -164,9 +164,10 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		// Fetch the data from the modifier class, including sorting.
 		$params['search_term'] = $search;
 		$items                 = $this->modifier->find_by_search( $params );
+		$item_count            = count( $items );
 
 		// If we have 0 items and we're not on the first page, we need to go back to the last page with results.
-		while ( count( $items ) === 0 ) {
+		while ( $item_count === 0 ) {
 			// If we're on the first page, we can't go back any further.
 			if ( $this->current_page === 1 ) {
 				break;
@@ -178,6 +179,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 			// Get the new items query.
 			$params['page'] = $this->current_page;
 			$items          = $this->modifier->find_by_search( $params );
+			$item_count     = count( $items );
 		}
 
 		// Get the total number of items.
