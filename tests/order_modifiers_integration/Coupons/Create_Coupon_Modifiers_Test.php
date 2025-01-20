@@ -26,8 +26,6 @@ class Create_Coupon_Modifiers_Test extends Order_Modifiers_TestCase {
 	 * @throws InvalidArgumentException
 	 */
 	public function does_table_render_correctly() {
-		// @todo redscar - Test sometimes fails randomly due to race conditions.
-		$this->markAsRisky();
 		$this->assertMatchesHtmlSnapshot( $this->get_table_display() );
 	}
 
