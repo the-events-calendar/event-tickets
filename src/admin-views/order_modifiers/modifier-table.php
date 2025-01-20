@@ -13,9 +13,6 @@
  *      rendering.
  */
 
-// Prepare the table items for rendering.
-$order_modifier_table->prepare_items();
-
 // Define form classes for the main form element.
 $form_classes = [
 	'topics-filter',
