@@ -49,7 +49,7 @@ class Increase_Sales extends Flag_Action_Abstract {
 			return;
 		}
 
-		$tickets_that_have_already_increased_their_sales_because_of_this_order = (array) get_post_meta( $post->ID, '_tribe_tickets_sales_increased', true );
+		$already_increased_tickets = (array) get_post_meta( $post->ID, '_tribe_tickets_sales_increased', true );
 
 		foreach ( $post->items as $item ) {
 			if ( ! $this->is_ticket( $item ) ) {
@@ -71,13 +71,13 @@ class Increase_Sales extends Flag_Action_Abstract {
 			$new_quantity = $quantity;
 
 			if (
-				! empty( $tickets_that_have_already_increased_their_sales_because_of_this_order[ $item['ticket_id'] ] ) &&
-				$tickets_that_have_already_increased_their_sales_because_of_this_order[ $item['ticket_id'] ] > 0
+				! empty( $already_increased_tickets[ $item['ticket_id'] ] ) &&
+				$already_increased_tickets[ $item['ticket_id'] ] > 0
 			) {
-				$new_quantity = $quantity - $tickets_that_have_already_increased_their_sales_because_of_this_order[ $item['ticket_id'] ];
+				$new_quantity = $quantity - $already_increased_tickets[ $item['ticket_id'] ];
 			}
 
-			$tickets_that_have_already_increased_their_sales_because_of_this_order[ $item['ticket_id'] ] = $quantity;
+			$already_increased_tickets[ $item['ticket_id'] ] = $quantity;
 
 			// Skip generating for zero-ed items.
 			if ( 0 >= $new_quantity ) {
@@ -93,6 +93,6 @@ class Increase_Sales extends Flag_Action_Abstract {
 			tribe( Ticket::class )->increase_ticket_sales_by( $ticket->ID, $new_quantity, $is_shared_capacity, $global_stock );
 		}
 
-		update_post_meta( $post->ID, '_tribe_tickets_sales_increased', $tickets_that_have_already_increased_their_sales_because_of_this_order );
+		update_post_meta( $post->ID, '_tribe_tickets_sales_increased', $already_increased_tickets );
 	}
 }
