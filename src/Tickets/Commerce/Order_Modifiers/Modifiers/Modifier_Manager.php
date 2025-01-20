@@ -224,6 +224,8 @@ class Modifier_Manager {
 	 * @since TBD
 	 *
 	 * @return Fee_Table|Coupon_Table The table class for the current strategy.
+	 *
+	 * @throws RuntimeException If the modifier type is invalid.
 	 */
 	public function get_table_class() {
 		$type = $this->strategy->get_modifier_type();

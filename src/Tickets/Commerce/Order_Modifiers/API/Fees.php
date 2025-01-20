@@ -21,8 +21,6 @@ use WP_REST_Request as Request;
 use WP_REST_Response as Response;
 use WP_REST_Server as Server;
 use Tribe__Tickets__Tickets as Tickets;
-use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Fee_Table;
-use TEC\Tickets\Commerce\Order_Modifiers\Modifier_Admin_Handler;
 
 /**
  * Class Fees
