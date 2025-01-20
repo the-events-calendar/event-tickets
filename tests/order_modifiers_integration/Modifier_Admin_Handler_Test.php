@@ -843,15 +843,6 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 			true
 		);
 
-		// Mock nonce verification.
-		$save_action_mock = $this->set_fn_return(
-			'wp_verify_nonce',
-			function ( $nonce, $action ) {
-				return $action === 'order_modifier_save_action' && $nonce === wp_create_nonce( 'order_modifier_save_action' );
-			},
-			true
-		);
-
 		$controller = $this->make_controller();
 		$controller->handle_form_submission();
 
@@ -890,7 +881,6 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 		$_POST['order_modifier_save_action'] = wp_create_nonce( 'order_modifier_save_action' );
 
 		$controller->handle_form_submission();
-		$save_action_mock();
 
 		// Extract the updated modifier ID from the redirect URL.
 		parse_str( wp_parse_url( $redirect_url, PHP_URL_QUERY ), $query_params );
