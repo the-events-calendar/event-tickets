@@ -133,6 +133,16 @@ class Fees extends Base_API {
 				'methods'             => Server::READABLE,
 				'callback'            => fn( Request $request ) => $this->get_fees_response( $request ),
 				'permission_callback' => $this->get_permission_callback(),
+				'args'                => [
+					'status' => [
+						'description' => __( 'The status of the fees to retrieve.', 'event-tickets' ),
+						'type'        => 'array',
+						'items'       => [
+							'type' => 'string',
+							'enum' => [ 'active', 'inactive', 'draft' ],
+						],
+					],
+				],
 			]
 		);
 
@@ -180,7 +190,9 @@ class Fees extends Base_API {
 	 */
 	protected function get_fees_response( Request $request ): Response {
 		try {
-			$all = $this->get_all_fees();
+			$status = $request->get_param( 'status' ) ?? [ 'active' ];
+
+			$all = $this->get_all_fees( [ 'status' => $status ] );
 
 			return rest_ensure_response(
 				[
