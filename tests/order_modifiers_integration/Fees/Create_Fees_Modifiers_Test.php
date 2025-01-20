@@ -2,9 +2,12 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Fees;
 
+use Closure;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifier_Admin_Handler;
+use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Fee_Table;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Testcases\Order_Modifiers_TestCase;
+use WP_List_Table;
 
 class Create_Fees_Modifiers_Test extends Order_Modifiers_TestCase {
 
@@ -67,41 +70,59 @@ class Create_Fees_Modifiers_Test extends Order_Modifiers_TestCase {
 		}
 
 		// Insert another modifier with a unique display name.
-		$ids[] = $this->upsert_order_modifier_for_test( [
-			'modifier'                    => $this->modifier_type,
-			'order_modifier_slug'         => 'test_fee_unique',
-			'order_modifier_display_name' => 'XXXX Unique Fee',
-		] )->id;
+		$ids[] = $this->upsert_order_modifier_for_test(
+			[
+				'modifier'                    => $this->modifier_type,
+				'order_modifier_slug'         => 'test_fee_unique',
+				'order_modifier_display_name' => 'XXXX Unique Fee',
+			]
+		)->id;
 
+		// Clear out any existing search terms and other args.
 		unset( $_REQUEST['s'], $_REQUEST['paged'], $_REQUEST['id'], $_REQUEST['edit'], $_POST['edit'] );
 
+		// Set up the request to search for the unique fee.
 		$_REQUEST = [
 			'modifier' => $this->modifier_type,
 			's'        => 'Unique Fee',
 			'paged'    => 3,
 		];
 
-		// We expect wp_redirect to be called.
-		$test  = $this;
-		$unset = $this->set_fn_return(
-			'wp_redirect',
-			function( $location ) use ( $test ) {
-				$test->assertEquals( '?paged=1', $location );
-				return true;
-			},
-			true
-		);
+		$fee_table = tribe( Fee_Table::class );
+		$set_args  = [];
 
-		// Prevent exit.
-		uopz_allow_exit( false );
+		// Set up an anon function to used in place of set_pagination_args().
+		$pagination_wrapper = Closure::bind(
+			function ( $args ) use ( &$set_args ) {
+				$set_args               = $args;
+				$this->_pagination_args = $args;
+			},
+			$fee_table,
+			$fee_table
+		);
 
 		ob_start();
 
-		tribe( Modifier_Admin_Handler::class )->render_tec_order_modifiers_page();
-		$unset();
+		// Execute the bound function instead of the original.
+		$this->set_class_fn_return(
+			WP_List_Table::class,
+			'set_pagination_args',
+			$pagination_wrapper,
+			true
+		);
 
-		// Allow exit again.
-		uopz_allow_exit( true );
+		// Render the table.
+		tribe( Modifier_Admin_Handler::class )->render_tec_order_modifiers_page();
+
+		// We should have 1 result, and therefore only 1 page.
+		$this->assertEquals(
+			$set_args,
+			[
+				'per_page'    => 10,
+				'total_items' => 1,
+				'total_pages' => 1,
+			]
+		);
 
 		return ob_get_clean();
 	}
