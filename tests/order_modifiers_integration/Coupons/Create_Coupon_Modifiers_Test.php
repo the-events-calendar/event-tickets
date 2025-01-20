@@ -51,7 +51,7 @@ class Create_Coupon_Modifiers_Test extends Order_Modifiers_TestCase {
 	}
 
 	protected function get_table_class_instance(): Order_Modifier_Table {
-		tribe()->singleton( Coupon_Table::class );
+		// tribe()->singleton( Coupon_Table::class );
 		return tribe( Coupon_Table::class );
 	}
 }

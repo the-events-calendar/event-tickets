@@ -86,10 +86,11 @@ final class Controller extends Controller_Contract {
 		if ( is_admin() ) {
 			$this->container->register( Modifier_Admin_Handler::class );
 			$this->container->register( Order_Modifier_Fee_Metabox::class );
-			$this->container->singleton( Fee_Table::class );
 		}
 
 		$this->container->singleton( Fee::class );
+		$this->container->singleton( Fee_Table::class );
+		$this->container->singleton( Coupon_Table::class );
 
 		/**
 		 * Filters whether the coupons are enabled.
@@ -103,7 +104,6 @@ final class Controller extends Controller_Contract {
 		if ( apply_filters( 'tec_tickets_commerce_order_modifiers_coupons_enabled', false ) ) {
 			$this->container->singleton( Coupon::class );
 			$this->container->register( Coupons::class );
-			$this->container->singleton( Coupon_Table::class );
 			return;
 		}
 
