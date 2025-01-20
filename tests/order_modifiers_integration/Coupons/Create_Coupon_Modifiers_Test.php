@@ -3,6 +3,8 @@
 namespace TEC\Tickets\Commerce\Order_Modifiers\Coupons;
 
 use Gajus\Dindent\Exception\InvalidArgumentException;
+use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Coupon_Table;
+use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Order_Modifier_Table;
 use Tribe\Tickets\Test\Testcases\Order_Modifiers_TestCase;
 
 /**
@@ -46,5 +48,9 @@ class Create_Coupon_Modifiers_Test extends Order_Modifiers_TestCase {
 	public function does_edit_screen_render_with_no_data() {
 		$snapshot = $this->does_edit_form_display_properly_with_no_data();
 		$this->assertMatchesHtmlSnapshot( $snapshot );
+	}
+
+	protected function get_table_class_instance(): Order_Modifier_Table {
+		return tribe( Coupon_Table::class );
 	}
 }

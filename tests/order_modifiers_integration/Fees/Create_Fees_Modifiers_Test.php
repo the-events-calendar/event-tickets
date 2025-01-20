@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Fees;
 
 use TEC\Tickets\Commerce\Order_Modifiers\Modifier_Admin_Handler;
 use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Fee_Table;
+use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Order_Modifier_Table;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Testcases\Order_Modifiers_TestCase;
 
@@ -87,9 +88,13 @@ class Create_Fees_Modifiers_Test extends Order_Modifiers_TestCase {
 
 		ob_start();
 
-		tribe( Fee_Table::class )->prepare_items();
+		$this->get_table_class_instance()->prepare_items();
 		tribe( Modifier_Admin_Handler::class )->render_tec_order_modifiers_page();
 
 		return ob_get_clean();
+	}
+
+	protected function get_table_class_instance(): Order_Modifier_Table {
+		return tribe( Fee_Table::class );
 	}
 }

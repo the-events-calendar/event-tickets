@@ -3,6 +3,8 @@
 namespace TEC\Tickets\Tests\Unit\Order_Modifiers\Repositories;
 
 use TEC\Tickets\Commerce\Order_Modifiers\Factory;
+use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Fee_Table;
+use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Order_Modifier_Table;
 use Tribe\Tickets\Test\Testcases\Order_Modifiers_TestCase;
 
 /**
@@ -182,5 +184,9 @@ class Fees_Test extends Order_Modifiers_TestCase {
 
 		$results = $repo->get_modifiers( [ 'status' => [ 'fake_status' ] ] );
 		$this->assertCount( 0, $results );
+	}
+
+	protected function get_table_class_instance(): Order_Modifier_Table {
+		return tribe( Fee_Table::class );
 	}
 }
