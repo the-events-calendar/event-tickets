@@ -196,21 +196,6 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	}
 
 	/**
-	 * Finds a modifier by its display name.
-	 *
-	 * @since 5.18.0
-	 * @deprecated TBD Use `get_modifiers` instead.
-	 *
-	 * @param array $search Parameters to search Order Modifiers by.
-	 *
-	 * @return array The modifier data.
-	 */
-	public function find_by_search( array $search ): array {
-		_deprecated_function( __METHOD__, 'TBD', 'get_modifiers' );
-		return $this->repository->get_modifiers( $search );
-	}
-
-	/**
 	 * Validates the required fields for the modifier.
 	 *
 	 * This base logic checks if all required fields are present, and not empty.

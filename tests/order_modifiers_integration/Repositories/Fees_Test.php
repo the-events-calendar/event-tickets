@@ -136,7 +136,7 @@ class Fees_Test extends Order_Modifiers_TestCase {
 		$this->assertEquals( 40, $count );
 
 		// Test that we get the correct number of fees with a limit.
-		$results = $repo->search_modifiers( [ 'limit' => 5 ] );
+		$results = $repo->get_modifiers( [ 'limit' => 5 ] );
 		$this->assertCount( 5, $results );
 	}
 
@@ -154,7 +154,7 @@ class Fees_Test extends Order_Modifiers_TestCase {
 		$this->assertEquals( 40, $count );
 
 		// Test that we get the correct number of fees with a limit.
-		$results = $repo->search_modifiers( [ 'limit' => 5, 'search_term' => 'Test Fee 1 ' ] );
+		$results = $repo->get_modifiers( [ 'limit' => 5, 'search_term' => 'Test Fee 1 ' ] );
 		$this->assertCount( 2, $results );
 	}
 
@@ -168,19 +168,19 @@ class Fees_Test extends Order_Modifiers_TestCase {
 		$this->assertEquals( 40, $count );
 
 		// Test that we get the correct number of fees with a limit.
-		$results = $repo->search_modifiers( [ 'limit' => 5 ] );
+		$results = $repo->get_modifiers( [ 'limit' => 5 ] );
 		$this->assertCount( 4, $results );
 
-		$results = $repo->search_modifiers( [ 'status' => [ 'inactive' ] ] );
+		$results = $repo->get_modifiers( [ 'status' => [ 'inactive' ] ] );
 		$this->assertCount( 0, $results );
 
-		$results = $repo->search_modifiers( [ 'status' => [ 'draft' ] ] );
+		$results = $repo->get_modifiers( [ 'status' => [ 'draft' ] ] );
 		$this->assertCount( 0, $results );
 
-		$results = $repo->search_modifiers( [ 'status' => [ 'any' ] ] );
+		$results = $repo->get_modifiers( [ 'status' => [ 'any' ] ] );
 		$this->assertCount( 5, $results );
 
-		$results = $repo->search_modifiers( [ 'status' => [ 'fake_status' ] ] );
+		$results = $repo->get_modifiers( [ 'status' => [ 'fake_status' ] ] );
 		$this->assertCount( 0, $results );
 	}
 }

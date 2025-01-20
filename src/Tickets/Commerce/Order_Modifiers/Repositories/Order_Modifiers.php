@@ -187,29 +187,6 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	}
 
 	/**
-	 * Search for Order Modifiers based on the given criteria.
-	 *
-	 * @deprecated TBD Use `get_modifiers` instead.
-	 *
-	 * @param array $params {
-	 *     Optional. Arguments to filter the query. See get_default_query_params() method for the full list of parameters.
-	 *
-	 *     @type string   $search_term The term to search for (e.g., in display_name or slug).
-	 *     @type string   $orderby     Column to order by. Default 'display_name'.
-	 *     @type string   $order       Sorting order. Either 'asc' or 'desc'. Default 'asc'.
-	 *     @type int      $limit       The number of results to return. Default 10. Using -1 disables the limit.
-	 *     @type int      $page        The page number to retrieve. Default 1.
-	 *     @type string[] $status      The status of the modifiers to filter by. Default 'active'.
-	 * }
-	 *
-	 * @return Order_Modifier[] An array of Order_Modifiers or an empty array if none found.
-	 */
-	public function search_modifiers( array $params = [] ): array {
-		_deprecated_function( __METHOD__, 'TBD', 'get_modifiers' );
-		return $this->get_modifiers( $params );
-	}
-
-	/**
 	 * Get the count of Order Modifiers based on the given criteria.
 	 *
 	 * @since TBD
