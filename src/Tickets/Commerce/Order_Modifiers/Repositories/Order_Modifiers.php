@@ -462,6 +462,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 *     @type int      $page        The page number to retrieve. Default 1.
 	 *     @type string[] $status      The status of the modifiers to filter by. Default 'active'.
 	 * }
+	 * @param bool          $with_applied_to_meta Whether to include the applied_to meta in the query.
 	 * @param callable|null $closure   Optional. A closure to modify the query builder.
 	 *
 	 * @return array
@@ -473,7 +474,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 				[
 					$this->modifier_type,
 					$params,
-					$with_applied_to_meta
+					$with_applied_to_meta,
 				]
 			)
 		);
@@ -529,7 +530,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		}
 
 		// Add the search term to the pieces.
-		if ( ! empty( $valid_params['search_term']) ) {
+		if ( ! empty( $valid_params['search_term'] ) ) {
 			$builder->whereLike( "{$modifiers}.display_name", $valid_params['search_term'] );
 		}
 
