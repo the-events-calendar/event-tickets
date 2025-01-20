@@ -167,12 +167,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		$item_count            = count( $items );
 
 		// If we have 0 items and we're not on the first page, we need to go back to the last page with results.
-		while ( $item_count === 0 ) {
-			// If we're on the first page, we can't go back any further.
-			if ( $this->current_page === 1 ) {
-				break;
-			}
-
+		while ( $item_count === 0 && $this->current_page > 1 ) {
 			// Go back a page and try again.
 			--$this->current_page;
 
