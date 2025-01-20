@@ -742,7 +742,7 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 		$_REQUEST                            = $_POST; // phpcs:ignore WordPress.Security.NonceVerification
 		$_POST['order_modifier_save_action'] = wp_create_nonce( 'order_modifier_save_action' );
 
-		// Mock nonce verification.
+		// Mock admin referer verification.
 		$this->set_fn_return(
 			'check_admin_referer',
 			function () {
@@ -770,6 +770,15 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 			'_wpnonce'    => wp_create_nonce( 'delete_modifier_' . $modifier_id ),
 		];
 		$_REQUEST = $_GET; // phpcs:ignore WordPress.Security.NonceVerification
+
+		// Mock nonce verification.
+		$this->set_fn_return(
+			'wp_verify_nonce',
+			function ( $nonce, $action ) use ( $modifier_id ) {
+				return $action === "delete_modifier_{$modifier_id}" && $nonce === wp_create_nonce( "delete_modifier_{$modifier_id}" );
+			},
+			true
+		);
 
 		// Call the delete method.
 		$controller->handle_delete_modifier();
@@ -825,11 +834,20 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 		$_REQUEST                            = $_POST; // phpcs:ignore WordPress.Security.NonceVerification
 		$_POST['order_modifier_save_action'] = wp_create_nonce( 'order_modifier_save_action' );
 
-		// Mock nonce verification.
+		// Mock admin referer verification.
 		$this->set_fn_return(
 			'check_admin_referer',
 			function () {
 				return true;
+			},
+			true
+		);
+
+		// Mock nonce verification.
+		$save_action_mock = $this->set_fn_return(
+			'wp_verify_nonce',
+			function ( $nonce, $action ) {
+				return $action === 'order_modifier_save_action' && $nonce === wp_create_nonce( 'order_modifier_save_action' );
 			},
 			true
 		);
@@ -872,6 +890,7 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 		$_POST['order_modifier_save_action'] = wp_create_nonce( 'order_modifier_save_action' );
 
 		$controller->handle_form_submission();
+		$save_action_mock();
 
 		// Extract the updated modifier ID from the redirect URL.
 		parse_str( wp_parse_url( $redirect_url, PHP_URL_QUERY ), $query_params );
@@ -898,6 +917,15 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 			'_wpnonce'    => wp_create_nonce( 'delete_modifier_' . $modifier_id ),
 		];
 		$_REQUEST = $_GET; // phpcs:ignore WordPress.Security.NonceVerification
+
+		// Mock nonce verification.
+		$this->set_fn_return(
+			'wp_verify_nonce',
+			function ( $nonce, $action ) use ( $modifier_id ) {
+				return $action === "delete_modifier_{$modifier_id}" && $nonce === wp_create_nonce( "delete_modifier_{$modifier_id}" );
+			},
+			true
+		);
 
 		$controller->handle_delete_modifier();
 
