@@ -75,10 +75,7 @@ trait Fee_Types {
 		);
 
 		$available_fees = Factory::get_repository_for_type( 'fee' )
-			->get_modifier_by_applied_to(
-				[ 'per', 'all' ],
-				$params
-			);
+			->get_modifiers( $params );
 
 		// Convert the return value to an array keyed by the fee ID.
 		return array_combine(

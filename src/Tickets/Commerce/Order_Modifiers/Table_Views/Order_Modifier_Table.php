@@ -37,6 +37,15 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	use Valid_Types;
 
 	/**
+	 * The current page number.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	protected int $current_page = 1;
+
+	/**
 	 * Modifier class for the table (e.g., Coupon or Fee).
 	 *
 	 * @since 5.18.0
@@ -111,62 +120,26 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		];
 
 		// Pagination parameters.
-		$per_page     = $this->get_items_per_page( "{$this->modifier->get_modifier_type()}_per_page", 10 );
-		$current_page = $this->get_pagenum();
+		$per_page           = $this->get_items_per_page( "{$this->modifier->get_modifier_type()}_per_page", 10 );
+		$this->current_page = $this->get_pagenum();
 
 		// Query parameters.
 		$parameters = [
-			'orderby' => tec_get_request_var( 'orderby', 'display_name' ),
-			'order'   => tec_get_request_var( 'order', 'asc' ),
-			'limit'   => $this->get_items_per_page( "{$this->modifier->get_modifier_type()}_per_page", 10 ),
-			'page'    => $this->get_pagenum(),
+			'limit'       => $this->get_items_per_page( "{$this->modifier->get_modifier_type()}_per_page", 10 ),
+			'order'       => tec_get_request_var( 'order', 'asc' ),
+			'orderby'     => tec_get_request_var( 'orderby', 'display_name' ),
+			'page'        => $this->current_page,
+			'search_term' => tec_get_request_var( 's', '' ),
 		];
 
-		// Handle search, or run a normal query.
-		$search = tec_get_request_var( 's', '' );
-
-		if ( ! empty( $search ) ) {
-			$total_items = $this->setup_items_with_search( $search, $parameters, $per_page, $current_page );
-		} else {
-			$total_items = $this->setup_items( $parameters, $per_page, $current_page );
-		}
+		$total_items = $this->setup_items( $parameters, $per_page );
 
 		// Set the pagination args.
 		$this->set_pagination_args(
 			[
-				'total_items' => $total_items,
 				'per_page'    => $per_page,
-				'total_pages' => ceil( $total_items / $per_page ),
-			]
-		);
-	}
-
-	/**
-	 * Setup items with a search term.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $search       The search term.
-	 * @param array  $params       The query parameters. The search term will be added to this array.
-	 * @param int    $per_page     The number of items to display per page.
-	 * @param int    $current_page The current page number.
-	 *
-	 * @return int The total number of items.
-	 */
-	protected function setup_items_with_search( string $search, array $params, int $per_page, int $current_page ): int {
-		// Fetch the data from the modifier class, including sorting.
-		$params['search_term'] = $search;
-		$this->items           = $this->modifier->find_by_search( $params );
-
-		// Get the total number of items.
-		if ( count( $this->items ) < $per_page && $current_page === 1 ) {
-			return count( $this->items );
-		}
-
-		return $this->modifier->find_count_by_search(
-			[
-				'search_term' => $search,
-				'limit'       => -1,
+				'total_items' => $total_items,
+				'total_pages' => (int) ceil( $total_items / $per_page ),
 			]
 		);
 	}
@@ -176,22 +149,22 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $params       The query parameters.
-	 * @param int   $per_page     The number of items to display per page.
-	 * @param int   $current_page The current page number.
+	 * @param array $params   The query parameters.
+	 * @param int   $per_page The number of items to display per page.
 	 *
 	 * @return int The total number of items.
 	 */
-	protected function setup_items( array $params, int $per_page, int $current_page ): int {
-		$applied_to  = [ 'per', 'all' ];
-		$this->items = $this->modifier->get_modifier_by_applied_to( $applied_to, $params );
+	protected function setup_items( array $params, int $per_page ): int {
+		$this->items = $this->modifier->get_modifiers( $params );
 
 		// Get the total number of items.
-		if ( count( $this->items ) < $per_page && $current_page === 1 ) {
+		if ( count( $this->items ) < $per_page && $this->current_page === 1 ) {
 			return count( $this->items );
 		}
 
-		return count( $this->modifier->get_modifier_by_applied_to( $applied_to, [ 'limit' => -1 ] ) );
+		unset( $params['limit'], $params['page'] );
+
+		return count( $this->modifier->get_modifiers( $params ) );
 	}
 
 	/**

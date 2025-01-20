@@ -182,29 +182,17 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	}
 
 	/**
-	 * Finds a modifier by its display name.
-	 *
-	 * @since 5.18.0
-	 *
-	 * @param array $search Parameters to search Order Modifiers by.
-	 *
-	 * @return array The modifier data.
-	 */
-	public function find_by_search( array $search ): array {
-		return $this->repository->search_modifiers( $search );
-	}
-
-	/**
-	 * Finds a modifier by the given search criteria and returns the count.
+	 * Get modifiers along with their applied to meta key.
 	 *
 	 * @since TBD
 	 *
-	 * @param array $search Parameters to search Order Modifiers by.
+	 * @param array $params               Additional parameters to filter the results.
+	 * @param bool  $with_applied_to_meta Whether to include the applied to meta key.
 	 *
-	 * @return int The count of the modifiers found.
+	 * @return array The modifiers that were found.
 	 */
-	public function find_count_by_search( array $search ): int {
-		return $this->repository->get_search_count( $search );
+	public function get_modifiers( array $params = [], bool $with_applied_to_meta = true ): array {
+		return $this->repository->get_modifiers( $params, $with_applied_to_meta );
 	}
 
 	/**
