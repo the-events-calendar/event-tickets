@@ -19,6 +19,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Fees as Agnostic_Checkout_Fees
 use TEC\Tickets\Commerce\Order_Modifiers\API\Coupons;
 use TEC\Tickets\Commerce\Order_Modifiers\API\Fees;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon;
+use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Coupon_Table;
 use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Fee_Table;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
@@ -81,11 +82,11 @@ final class Controller extends Controller_Contract {
 		$this->container->register( Agnostic_Checkout_Fees::class );
 		$this->container->register( Editor::class );
 		$this->container->register( Fees::class );
-		$this->container->singleton( Fee_Table::class );
 
 		if ( is_admin() ) {
 			$this->container->register( Modifier_Admin_Handler::class );
 			$this->container->register( Order_Modifier_Fee_Metabox::class );
+			$this->container->singleton( Fee_Table::class );
 		}
 
 		$this->container->singleton( Fee::class );
@@ -102,6 +103,7 @@ final class Controller extends Controller_Contract {
 		if ( apply_filters( 'tec_tickets_commerce_order_modifiers_coupons_enabled', false ) ) {
 			$this->container->singleton( Coupon::class );
 			$this->container->register( Coupons::class );
+			$this->container->singleton( Coupon_Table::class );
 			return;
 		}
 
