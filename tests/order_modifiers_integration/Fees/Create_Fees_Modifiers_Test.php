@@ -2,12 +2,10 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Fees;
 
-use Closure;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifier_Admin_Handler;
 use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Fee_Table;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Testcases\Order_Modifiers_TestCase;
-use WP_List_Table;
 
 class Create_Fees_Modifiers_Test extends Order_Modifiers_TestCase {
 
@@ -84,12 +82,12 @@ class Create_Fees_Modifiers_Test extends Order_Modifiers_TestCase {
 		// Set up the request to search for the unique fee.
 		$_REQUEST = [
 			'modifier' => $this->modifier_type,
-			's'        => 'Unique Fee',
-			'paged'    => 1,
+			'paged'    => 2,
 		];
 
 		ob_start();
 
+		tribe( Fee_Table::class )->prepare_items();
 		tribe( Modifier_Admin_Handler::class )->render_tec_order_modifiers_page();
 
 		return ob_get_clean();
