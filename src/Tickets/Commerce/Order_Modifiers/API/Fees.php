@@ -93,8 +93,6 @@ class Fees extends Base_API {
 			10,
 			3
 		);
-
-		add_action( 'current_screen', [ $this, 'prepare_items_for_table_view' ] );
 	}
 
 	/**
@@ -120,28 +118,6 @@ class Fees extends Base_API {
 			'tribe_tickets_ticket_added',
 			[ $this, 'save_fees_for_ticket' ]
 		);
-
-		remove_action( 'current_screen', [ $this, 'prepare_items_for_table_view' ] );
-	}
-
-	/**
-	 * Prepare the items for the table view on current_screen set.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function prepare_items_for_table_view(): void {
-		if ( ! tribe( Modifier_Admin_Handler::class )->is_on_page() ) {
-			return;
-		}
-
-		$singular_id = tec_get_request_var( 'modifier_id', false );
-		if ( $singular_id && is_numeric( $singular_id ) ) {
-			return;
-		}
-
-		tribe( Fee_Table::class )->prepare_items();
 	}
 
 	/**
