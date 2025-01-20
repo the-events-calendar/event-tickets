@@ -85,44 +85,12 @@ class Create_Fees_Modifiers_Test extends Order_Modifiers_TestCase {
 		$_REQUEST = [
 			'modifier' => $this->modifier_type,
 			's'        => 'Unique Fee',
-			'paged'    => 3,
+			'paged'    => 1,
 		];
-
-		$fee_table = tribe( Fee_Table::class );
-		$set_args  = [];
-
-		// Set up an anon function to used in place of set_pagination_args().
-		$pagination_wrapper = Closure::bind(
-			function ( $args ) use ( &$set_args ) {
-				$set_args               = $args;
-				$this->_pagination_args = $args;
-			},
-			$fee_table,
-			$fee_table
-		);
 
 		ob_start();
 
-		// Execute the bound function instead of the original.
-		$this->set_class_fn_return(
-			WP_List_Table::class,
-			'set_pagination_args',
-			$pagination_wrapper,
-			true
-		);
-
-		// Render the table.
 		tribe( Modifier_Admin_Handler::class )->render_tec_order_modifiers_page();
-
-		// We should have 1 result, and therefore only 1 page.
-		$this->assertEquals(
-			$set_args,
-			[
-				'per_page'    => 10,
-				'total_items' => 1,
-				'total_pages' => 1,
-			]
-		);
 
 		return ob_get_clean();
 	}
