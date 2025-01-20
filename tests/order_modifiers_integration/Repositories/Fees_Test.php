@@ -187,6 +187,7 @@ class Fees_Test extends Order_Modifiers_TestCase {
 	}
 
 	protected function get_table_class_instance(): Order_Modifier_Table {
+		tribe()->singleton( Fee_Table::class );
 		return tribe( Fee_Table::class );
 	}
 }
