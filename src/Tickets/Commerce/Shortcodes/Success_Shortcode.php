@@ -10,7 +10,6 @@ namespace TEC\Tickets\Commerce\Shortcodes;
 
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
-use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Success;
 
 /**
@@ -37,8 +36,8 @@ class Success_Shortcode extends Shortcode_Abstract {
 		$order_id = tribe_get_request_var( Success::$order_id_query_arg );
 		$order    = tribe( Order::class )->get_from_gateway_order_id( $order_id );
 
-		// If the order is not found or the user is not logged in, bail.
-		if ( empty( $order ) || ! is_user_logged_in() ) {
+		// If the order is not found, clear the template variables and bail.
+		if ( empty( $order ) ) {
 			$this->template_vars = [];
 
 			return;
@@ -63,38 +62,77 @@ class Success_Shortcode extends Shortcode_Abstract {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Get the HTML for the shortcode.
+	 *
+	 * Checks below conditions to determine whether the HTML should be rendered:
+	 * - If the order is a guest order and created less than 1 hour ago.
+	 * - If the current user matches the order's purchaser.
+	 * - If the current user has admin capabilities.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The rendered HTML or an empty string if conditions are not met.
 	 */
 	public function get_html() {
 		$context = tribe_context();
 
+		// Bail if in admin and not handling an AJAX request.
 		if ( is_admin() && ! $context->doing_ajax() ) {
 			return '';
 		}
 
-		// Bail if we're in the blocks editor context.
+		// Bail if in the blocks editor context.
 		if ( $context->doing_rest() ) {
 			return '';
 		}
 
 		$args = $this->get_template_vars();
 
-		$owner_id = $args['order']->purchaser['user_id'];
-
-		// If the user is not the owner of the order and is not an admin, bail.
-		if ( ! is_admin() && get_current_user_id() !== $owner_id ) {
+		// Bail if the order is not found.
+		if ( ! isset( $args['order'] ) ) {
 			return '';
 		}
 
-		// Add the rendering attributes into global context.
-		$this->get_template()->add_template_globals( $args );
+		// Get the purchaser's user ID or default to 0 for guests.
+		$owner_id = $args['order']->purchaser['user_id'] ?? 0;
 
-		$this->enqueue_assets();
+		// Show for guest orders created within the last hour.
+		if ( 0 === $owner_id ) {
+			$current = new \DateTime();
+			$order   = new \DateTime( $args['order']->post_date );
 
-		$html = $this->get_template()->template( 'success', $args, false );
+			if ( $current->getTimestamp() - $order->getTimestamp() < 3600 ) {
+				return $this->render_html( $args );
+			}
+		}
 
-		return $html;
+		// Show if the current user matches the order's purchaser.
+		if ( 0 !== $owner_id && get_current_user_id() === $owner_id ) {
+			return $this->render_html( $args );
+		}
+
+		// Show if the user has admin capabilities.
+		if ( current_user_can( 'manage_options' ) ) {
+			return $this->render_html( $args );
+		}
+
+		return '';
 	}
+
+	/**
+	 * Render the HTML for the shortcode.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $args The arguments for the shortcode.
+	 * @return string The rendered HTML.
+	 */
+	private function render_html( $args ) {
+		$this->get_template()->add_template_globals( $args );
+		$this->enqueue_assets();
+		return $this->get_template()->template( 'success', $args, false );
+	}
+
 
 	/**
 	 * Enqueue the assets related to this shortcode.
@@ -112,5 +150,4 @@ class Success_Shortcode extends Shortcode_Abstract {
 		// Enqueue assets.
 		tribe_asset_enqueue_group( 'tribe-tickets-commerce' );
 	}
-
 }
