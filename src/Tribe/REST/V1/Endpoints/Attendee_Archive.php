@@ -191,7 +191,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 		/**
 		 * Filters the data in the Attendee Archive REST response.
 		 *
-		 * @since TBD
+		 * @since 5.18.1
 		 *
 		 * @param array<string,mixed> $data The data in the Attendee Archive REST response.
 		 * @param WP_REST_Request $request The request object for this endpoint.

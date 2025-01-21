@@ -2,7 +2,7 @@
 /**
  * Modifies REST API responses as required by the Seating feature.
  *
- * @since   TBD
+ * @since   5.18.1
  *
  * @package TEC\Tickets\Seating;
  */
@@ -14,7 +14,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 /**
  * Class REST.
  *
- * @since   TBD
+ * @since   5.18.1
  *
  * @package TEC\Tickets\Seating;
  */
@@ -22,7 +22,7 @@ class REST extends Controller_Contract {
 	/**
 	 * Subscribes the controller to relevant hooks, binds implementations.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @return void
 	 */
@@ -33,7 +33,7 @@ class REST extends Controller_Contract {
 	/**
 	 * Unsubscribes the controller from all registered hooks.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @return void
 	 */
@@ -44,7 +44,7 @@ class REST extends Controller_Contract {
 	/**
 	 * Injects ASC related data in the Attendee REST response.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param array<string,mixed> $data The Attendee archive REST API response data.
 	 *

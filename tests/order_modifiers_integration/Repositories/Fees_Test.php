@@ -10,7 +10,7 @@ use Tribe\Tickets\Test\Testcases\Order_Modifiers_TestCase;
 /**
  * Class Fees
  *
- * @since TBD
+ * @since 5.18.1
  */
 class Fees_Test extends Order_Modifiers_TestCase {
 
@@ -19,7 +19,7 @@ class Fees_Test extends Order_Modifiers_TestCase {
 	/**
 	 * Helper method to create a set of modifiers for testing.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 * @return void
 	 */
 	protected function create_modifiers() {

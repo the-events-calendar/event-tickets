@@ -33,7 +33,7 @@ class Trashed extends Status_Abstract {
 	 *
 	 * Since this is a core status, we do need to match.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @return string
 	 */
