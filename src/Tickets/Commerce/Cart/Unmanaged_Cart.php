@@ -106,7 +106,7 @@ class Unmanaged_Cart extends Abstract_Cart {
 		$cart_hash = tribe( Cart::class )->get_cart_hash();
 
 		if ( false === $cart_hash ) {
-			return false;
+			return;
 		}
 
 		$this->set_hash( null );
@@ -222,7 +222,7 @@ class Unmanaged_Cart extends Abstract_Cart {
 	 *
 	 * @param array $data to be processed by the cart.
 	 *
-	 * @return array
+	 * @return array|bool
 	 */
 	public function process( array $data = [] ) {
 		if ( empty( $data ) ) {
