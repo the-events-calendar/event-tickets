@@ -187,57 +187,6 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	}
 
 	/**
-	 * Search for Order Modifiers based on the given criteria.
-	 *
-	 * @param array $params {
-	 *     Optional. Arguments to filter the query. See get_default_query_params() method for the full list of parameters.
-	 *
-	 *     @type string   $search_term The term to search for (e.g., in display_name or slug).
-	 *     @type string   $orderby     Column to order by. Default 'display_name'.
-	 *     @type string   $order       Sorting order. Either 'asc' or 'desc'. Default 'asc'.
-	 *     @type int      $limit       The number of results to return. Default 10. Using -1 disables the limit.
-	 *     @type int      $page        The page number to retrieve. Default 1.
-	 *     @type string[] $status      The status of the modifiers to filter by. Default 'active'.
-	 * }
-	 *
-	 * @return Order_Modifier[] An array of Order_Modifiers or an empty array if none found.
-	 */
-	public function search_modifiers( array $params = [] ): array {
-		// Merge passed arguments with defaults.
-		$params     = wp_parse_args( $params, $this->get_default_query_params() );
-		$valid_args = $this->get_valid_params( $params );
-
-		// Start building the query.
-		$query = $this->get_query_builder_with_from();
-
-		// Add search functionality (search in display_name or slug).
-		if ( ! empty( $valid_args['search_term'] ) ) {
-			$query->whereLike( 'display_name', $valid_args['search_term'] );
-		}
-
-		// Set the order and orderby parameters.
-		if ( ! empty( $valid_args['order'] ) ) {
-			$orderby = array_key_exists( 'orderby', $valid_args ) ? $valid_args['orderby'] : 'display_name';
-			$query->orderBy( $orderby, $valid_args['order'] );
-		}
-
-		// Add the query limit.
-		if ( ! empty( $valid_args['limit'] ) ) {
-			$query->limit( $valid_args['limit'] );
-		}
-
-		// Add the query offset.
-		if ( ! empty( $valid_args['offset'] ) ) {
-			$query->offset( $valid_args['offset'] );
-		}
-
-		// Set the modifier type.
-		$query = $query->where( 'modifier_type', $this->modifier_type );
-
-		return $query->getAll() ?? [];
-	}
-
-	/**
 	 * Get the count of Order Modifiers based on the given criteria.
 	 *
 	 * @since TBD
@@ -383,16 +332,16 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	): ?array {
 		// Generate a cache key based on the arguments.
 		$cache_key = 'modifier_type_meta_' . md5(
-				wp_json_encode(
-					[
-						$this->modifier_type,
-						$meta_key,
-						$meta_values,
-						$default_meta_key,
-						$default_meta_value,
-					]
-				)
-			);
+			wp_json_encode(
+				[
+					$this->modifier_type,
+					$meta_key,
+					$meta_values,
+					$default_meta_key,
+					$default_meta_value,
+				]
+			)
+		);
 
 		$tribe_cache = tribe( 'cache' );
 
@@ -472,22 +421,12 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 * @return array
 	 */
 	public function get_modifier_by_applied_to( array $applied_to, array $params = [] ): array {
-		// Set up default query parameters.
-		$params = wp_parse_args( $params, $this->get_default_query_params() );
-
-		// Validate the parameters before using them in the query.
-		$valid_params = $this->get_valid_params( $params );
-
-		// Filter out empty and duplicate values.
-		$applied_to = array_unique( array_filter( array_map( 'trim', $applied_to ) ) );
-
-		// Generate a cache key based on the arguments.
-		$cache_key = 'modifier_type_applied_to_' . md5(
+		$cache_key = 'cached_modifiers_by_applied_to_' . md5(
 			wp_json_encode(
 				[
 					$this->modifier_type,
+					$params,
 					$applied_to,
-					$valid_params,
 				]
 			)
 		);
@@ -500,6 +439,60 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 			return $cached_results;
 		}
 
+		$results = $this->get_modifiers( $params, true, fn( $builder, $modifiers, $meta ) => $builder->whereIn( "{$meta}.meta_value", $applied_to ) );
+
+		// Cache the results for future use.
+		$tribe_cache[ $cache_key ] = $results;
+
+		return $results;
+	}
+
+	/**
+	 * Finds Order Modifiers with applied_to meta value.
+	 *
+	 * @since TBD
+	 *
+	 * @param array         $params     {
+	 *     Optional. Arguments to filter the query. See get_default_query_params() method for the full list of parameters.
+	 *
+	 *     @type string   $search_term The term to search for (e.g., in display_name or slug).
+	 *     @type string   $orderby     Column to order by. Default 'display_name'.
+	 *     @type string   $order       Sorting order. Either 'asc' or 'desc'. Default 'asc'.
+	 *     @type int      $limit       The number of results to return. Default 10. Using -1 disables the limit.
+	 *     @type int      $page        The page number to retrieve. Default 1.
+	 *     @type string[] $status      The status of the modifiers to filter by. Default 'active'.
+	 * }
+	 * @param bool          $with_applied_to_meta Whether to include the applied_to meta in the query.
+	 * @param callable|null $closure   Optional. A closure to modify the query builder.
+	 *
+	 * @return array
+	 */
+	public function get_modifiers( array $params = [], bool $with_applied_to_meta = true, ?callable $closure = null ): array {
+		// Generate a cache key based on the arguments.
+		$cache_key = 'cached_modifiers_' . md5(
+			wp_json_encode(
+				[
+					$this->modifier_type,
+					$params,
+					$with_applied_to_meta,
+				]
+			)
+		);
+
+		$tribe_cache = tribe( 'cache' );
+
+		// Try to get the results from the cache.
+		$cached_results = $tribe_cache[ $cache_key ] ?? false;
+		if ( $cached_results && is_array( $cached_results ) && null === $closure ) {
+			return $cached_results;
+		}
+
+		// Set up default query parameters.
+		$params = wp_parse_args( $params, $this->get_default_query_params() );
+
+		// Validate the parameters before using them in the query.
+		$valid_params = $this->get_valid_params( $params );
+
 		// Table aliases for the query.
 		$modifiers = 'o';
 		$meta      = 'm';
@@ -509,15 +502,16 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		$builder
 			->from( $this->get_table_name( false ), $modifiers )
 			->select( "{$modifiers}.*", "{$meta}.meta_value" )
-			->innerJoin(
+			->where( "{$modifiers}.modifier_type", $this->modifier_type );
+
+		if ( $with_applied_to_meta ) {
+			$builder->innerJoin(
 				$this->get_meta_table_name( false ),
 				"{$modifiers}.id",
 				"{$meta}.order_modifier_id",
 				$meta
-			)
-			->where( "{$modifiers}.modifier_type", $this->modifier_type )
-			->where( "{$meta}.meta_key", $this->get_applied_to_key( $this->modifier_type ) )
-			->whereIn( "{$meta}.meta_value", $applied_to );
+			)->where( "{$meta}.meta_key", $this->get_applied_to_key( $this->modifier_type ) );
+		}
 
 		// Add the status params to the pieces.
 		if ( array_key_exists( 'status', $valid_params ) ) {
@@ -533,6 +527,21 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 		// Add the limit param to the pieces.
 		if ( array_key_exists( 'limit', $valid_params ) ) {
 			$builder->limit( $valid_params['limit'] );
+		}
+
+		// Add the search term to the pieces.
+		if ( ! empty( $valid_params['search_term'] ) ) {
+			$builder->whereLike( "{$modifiers}.display_name", $valid_params['search_term'] );
+		}
+
+		// Add the query offset.
+		if ( ! empty( $valid_params['offset'] ) ) {
+			$builder->offset( $valid_params['offset'] );
+		}
+
+		// Allow external modifications.
+		if ( is_callable( $closure ) ) {
+			$builder = $closure( $builder, $modifiers, $meta );
 		}
 
 		$results = $builder->getAll() ?? [];
@@ -613,10 +622,8 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 */
 	protected function get_default_query_params(): array {
 		return [
-			'limit'       => 10,
 			'order'       => 'ASC',
 			'orderby'     => 'id',
-			'page'        => 1,
 			'search_term' => '',
 			'status'      => [ 'any' ],
 		];
@@ -670,7 +677,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 					break;
 
 				case 'search_term':
-					$valid_params[ $key ] = DB::esc_like( $value );
+					$valid_params[ $key ] = ! empty( $value ) && is_string( $value ) ? DB::esc_like( $value ) : '';
 					break;
 
 				case 'status':

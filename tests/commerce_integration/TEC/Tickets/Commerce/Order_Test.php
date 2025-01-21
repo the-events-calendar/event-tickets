@@ -4,18 +4,25 @@ namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce\Cart;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
 use Tribe\Tests\Traits\With_Uopz;
-use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
+use Tribe__Tickets__Tickets as Tickets;
 use WP_Post;
+use Generator;
+use Closure;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Completed;
+use TEC\Common\StellarWP\DB\DB;
+use TEC\Tickets\Commerce\Status\Action_Required;
 
 class Order_Test extends WPTestCase {
 	use Ticket_Maker;
 	use With_Uopz;
 	use Order_Maker;
+
+	protected static array $clean_callbacks = [];
 
 	public function test_it_does_not_create_multiple_orders_for_single_cart() {
 		$post = self::factory()->post->create(
@@ -173,6 +180,206 @@ class Order_Test extends WPTestCase {
 		$this->assertTrue( $result );
 	}
 
+	public function test_double_order_transition_does_not_count_sales_twice() {
+		$post = self::factory()->post->create(
+			[
+				'post_type' => 'page',
+			]
+		);
+		$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
+		$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
+
+		// During action-req transition the action increase sales is fired.
+		$order = $this->create_order( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ], [ 'order_status' => Action_Required::SLUG ] );
+
+		$ticket_obj_1 = Tickets::load_ticket_object( $ticket_id_1 );
+		$ticket_obj_2 = Tickets::load_ticket_object( $ticket_id_2 );
+
+		// The sales should be counted once.
+		$this->assertSame( 1, $ticket_obj_1->qty_sold() );
+		$this->assertSame( 2, $ticket_obj_2->qty_sold() );
+
+		// During completed transition the action increase sales is fired again.
+		tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
+
+		// refresh objects.
+		$ticket_obj_1 = Tickets::load_ticket_object( $ticket_id_1 );
+		$ticket_obj_2 = Tickets::load_ticket_object( $ticket_id_2 );
+
+		// The sales should not be counted twice.
+		$this->assertSame( 1, $ticket_obj_1->qty_sold() );
+		$this->assertSame( 2, $ticket_obj_2->qty_sold() );
+
+		// manually modify item quantity - there is no API current for add_item to existing order.
+		$items = ( (array) get_post_meta( $order->ID, '_tec_tc_order_items', true ) );
+		if ( isset( $items[ $ticket_id_1 ] ) ) {
+			$items[ $ticket_id_1 ]['quantity'] = $items[ $ticket_id_1 ]['quantity'] + 1;
+		} else {
+			$items['0']['quantity'] = $items['0']['quantity'] + 1;
+		}
+
+		if ( isset( $items[ $ticket_id_2 ] ) ) {
+			$items[ $ticket_id_2 ]['quantity'] = $items[ $ticket_id_2 ]['quantity'] + 2;
+		} else {
+			$items['1']['quantity'] = $items['1']['quantity'] + 2;
+		}
+
+		update_post_meta( $order->ID, '_tec_tc_order_items', $items );
+
+		// During action-req transition the action increase sales is fired again.
+		tribe( Order::class )->modify_status( $order->ID, Action_Required::SLUG );
+
+		// refresh objects.
+		$ticket_obj_1 = Tickets::load_ticket_object( $ticket_id_1 );
+		$ticket_obj_2 = Tickets::load_ticket_object( $ticket_id_2 );
+
+		// The sales should be updated only for the new added tickets.
+		$this->assertSame( 2, $ticket_obj_1->qty_sold() );
+		$this->assertSame( 4, $ticket_obj_2->qty_sold() );
+
+		// Back to completed after adding new tickets.
+		tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
+
+		// refresh objects.
+		$ticket_obj_1 = Tickets::load_ticket_object( $ticket_id_1 );
+		$ticket_obj_2 = Tickets::load_ticket_object( $ticket_id_2 );
+
+		// The sales should not be counted again.
+		$this->assertSame( 2, $ticket_obj_1->qty_sold() );
+		$this->assertSame( 4, $ticket_obj_2->qty_sold() );
+	}
+
+	public function modify_status_provider(): Generator {
+		yield 'already locked order' => [
+			function () {
+				tec_tickets_tests_fake_transactions_disable();
+				$post = self::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
+				$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
+
+				$order = $this->create_order( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ], [ 'order_status' => Pending::SLUG ] );
+
+				tribe( Order::class )->lock_order( $order->ID );
+
+				$post_ids = array_merge( [ $order->ID, $ticket_id_1, $ticket_id_2, $post ], tribe_attendees()->where( 'event_id', $post )->get_ids() );
+
+				self::$clean_callbacks[] = function () use ( $post_ids ) {
+					foreach ( $post_ids as $post_id ) {
+						wp_delete_post( $post_id, true );
+					}
+					tec_tickets_tests_fake_transactions_enable();
+				};
+
+				tec_tickets_tests_fake_transactions_disable();
+
+				return [ $order->ID, Completed::SLUG, false ];
+			},
+		];
+
+		yield 'could not find order status' => [
+			function () {
+				tec_tickets_tests_fake_transactions_disable();
+				$post = self::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
+				$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
+
+				$order = $this->create_order( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ], [ 'order_status' => Pending::SLUG ] );
+
+				// current request locked the order at the same time as another request - as a result next request would have diff lock_id.
+				// modifying lock id to simulate this scenario.
+				$callback = static fn() => DB::query( DB::prepare( "UPDATE %i SET post_content_filtered='12345678' where ID=%d", DB::prefix( 'posts' ), $order->ID ) );
+				add_action( 'tec_tickets_commerce_order_locked', $callback );
+
+				$post_ids = array_merge( [ $order->ID, $ticket_id_1, $ticket_id_2, $post ], tribe_attendees()->where( 'event_id', $post )->get_ids() );
+
+				self::$clean_callbacks[] = function () use ( $post_ids, $callback ) {
+					foreach ( $post_ids as $post_id ) {
+						wp_delete_post( $post_id, true );
+					}
+					remove_action( 'tec_tickets_commerce_order_locked', $callback );
+					tec_tickets_tests_fake_transactions_enable();
+				};
+
+				tec_tickets_tests_fake_transactions_disable();
+
+				return [ $order->ID, Completed::SLUG, false ];
+			},
+		];
+
+		yield 'could not transition order status' => [
+			function () {
+				tec_tickets_tests_fake_transactions_disable();
+				$post = self::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
+				$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
+
+				$order = $this->create_order( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ], [ 'order_status' => Pending::SLUG ] );
+
+				$post_ids = array_merge( [ $order->ID, $ticket_id_1, $ticket_id_2, $post ], tribe_attendees()->where( 'event_id', $post )->get_ids() );
+
+				self::$clean_callbacks[] = function () use ( $post_ids ) {
+					foreach ( $post_ids as $post_id ) {
+						wp_delete_post( $post_id, true );
+					}
+					tec_tickets_tests_fake_transactions_enable();
+				};
+
+				tec_tickets_tests_fake_transactions_disable();
+
+				return [ $order->ID, Pending::SLUG, false ];
+			},
+		];
+
+		yield 'updated' => [
+			function () {
+				tec_tickets_tests_fake_transactions_disable();
+				$post = self::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
+				$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
+
+				$order = $this->create_order( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ], [ 'order_status' => Pending::SLUG ] );
+
+				$post_ids = array_merge( [ $order->ID, $ticket_id_1, $ticket_id_2, $post ], tribe_attendees()->where( 'event_id', $post )->get_ids() );
+
+				self::$clean_callbacks[] = function () use ( $post_ids ) {
+					foreach ( $post_ids as $post_id ) {
+						wp_delete_post( $post_id, true );
+					}
+					tec_tickets_tests_fake_transactions_enable();
+				};
+
+				return [ $order->ID, Completed::SLUG, true ];
+			},
+		];
+	}
+
+	/**
+	 * @dataProvider modify_status_provider
+	 */
+	public function test_modify_status( Closure $fixture ) {
+		[ $order_id, $status, $expected ] = $fixture();
+
+		$result = tribe( Order::class )->modify_status( $order_id, $status );
+
+		$this->assertSame( $expected, $result );
+	}
+
 	protected function create_order_from_cart( array $items, array $overrides = [] ) {
 		foreach ( $items as $id => $quantity ) {
 			tribe( Cart::class )->get_repository()->add_item( $id, $quantity );
@@ -205,5 +412,22 @@ class Order_Test extends WPTestCase {
 		remove_filter( 'tec_tickets_commerce_order_create_args', $feed_args_callback );
 
 		return $order;
+	}
+
+	/**
+	 * @after
+	 */
+	public function clear_commited_transactions() {
+		if ( empty( self::$clean_callbacks ) ) {
+			return;
+		}
+
+		self::$clean_callbacks = array_reverse( self::$clean_callbacks );
+
+		foreach ( self::$clean_callbacks as $callback ) {
+			$callback();
+		}
+
+		self::$clean_callbacks = [];
 	}
 }

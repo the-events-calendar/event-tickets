@@ -2,22 +2,23 @@
 /**
  * Tickets Commerce Order
  *
- * @since 5.1.9
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce
  */
 
 namespace TEC\Tickets\Commerce;
 
+use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Gateways\Contracts\Gateway_Interface;
+use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Refunded;
 use TEC\Tickets\Commerce\Status\Reversed;
+use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Date_Utils as Dates;
 use WP_Post;
-use TEC\Tickets\Commerce\Status\Pending;
-use TEC\Common\StellarWP\DB\DB;
-use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 
 /**
  * Class Order
@@ -62,9 +63,9 @@ class Order extends Abstract_Order {
 	 *
 	 * @since TBD
 	 *
-	 * @var string|null
+	 * @var string
 	 */
-	protected static ?string $lock_id = null;
+	protected static string $lock_id = '';
 
 	/**
 	 * Which meta holds which gateway was used on this order.
@@ -298,11 +299,11 @@ class Order extends Abstract_Order {
 		/**
 		 * Filter the arguments that craft the order post type.
 		 *
-		 * @see   register_post_type
 		 * @since 5.1.9
 		 *
 		 * @param array $post_type_args Post type arguments, passed to register_post_type()
 		 *
+		 * @see   register_post_type
 		 */
 		$post_type_args = apply_filters( 'tec_tickets_commerce_order_post_type_args', $post_type_args );
 
@@ -355,36 +356,42 @@ class Order extends Abstract_Order {
 	 * Modify the status of a given order based on Slug.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Wrap status update in a transaction to prevent race conditions.
 	 *
-	 * @throws \Tribe__Repository__Usage_Error
-	 *
-	 * @param int    $order_id    Which order ID will be updated.
-	 * @param string $status_slug Which Order Status we are modifying to.
-	 * @param array  $extra_args  Extra repository arguments.
+	 * @param int    $order_id        Which order ID will be updated.
+	 * @param string $new_status_slug Which Order Status we are modifying to.
+	 * @param array  $extra_args      Extra repository arguments.
 	 *
 	 * @return bool|\WP_Error
 	 */
-	public function modify_status( $order_id, $status_slug, array $extra_args = [] ) {
-		$status = tribe( Status\Status_Handler::class )->get_by_slug( $status_slug );
+	public function modify_status( $order_id, $new_status_slug, array $extra_args = [] ) {
+		$new_status = tribe( Status\Status_Handler::class )->get_by_slug( $new_status_slug );
 
-		if ( ! $status ) {
+		if ( ! $new_status ) {
 			return false;
 		}
 
-		$can_apply = $status->can_apply_to( $order_id, $status );
-		if ( ! $can_apply ) {
-			return $can_apply;
-		}
-
-		$args = array_merge( $extra_args, [ 'status' => $status->get_wp_slug() ] );
+		DB::beginTransaction();
 
 		// During this operations - the order should be locked!
 		$locked = $this->lock_order( $order_id );
 
 		// If we were unable to lock the order, bail.
 		if ( ! $locked ) {
+			DB::rollback();
+
 			return false;
 		}
+
+		$can_transition = $this->can_transition_to( $new_status, $order_id );
+
+		if ( ! $can_transition ) {
+			DB::rollback();
+
+			return $can_transition;
+		}
+
+		$args = array_merge( $extra_args, [ 'status' => $new_status->get_wp_slug() ] );
 
 		$updated = tec_tc_orders()
 			->by_args(
@@ -399,13 +406,56 @@ class Order extends Abstract_Order {
 
 		$this->unlock_order( $order_id );
 
+		DB::commit();
+
 		// After modifying the status we add a meta to flag when it was modified.
 		if ( $updated ) {
 			$time = Dates::build_date_object()->format( Dates::DBDATETIMEFORMAT );
-			add_post_meta( $order_id, static::get_status_log_meta_key( $status ), $time );
+			add_post_meta( $order_id, static::get_status_log_meta_key( $new_status ), $time );
 		}
 
 		return (bool) $updated;
+	}
+
+	/**
+	 * Whether an order's status be transitioned to another status.
+	 *
+	 * @since TBD
+	 *
+	 * @param Status_Interface $new_status The new status to transition to.
+	 * @param int              $order_id   The order ID to check the transition for.
+	 *
+	 * @return bool
+	 */
+	public function can_transition_to( Status_Interface $new_status, int $order_id ): bool {
+		$lock_key = self::ORDER_LOCK_KEY;
+
+		try {
+			/**
+			 * We want to have the fresher current status supporting the lock system if enabled.
+			 *
+			 * Overcoming object cache and refreshing even if we had retrieved it already during the request.
+			 */
+			$current_status_wp_slug = DB::get_var(
+				DB::prepare(
+					"SELECT post_status FROM %i WHERE ID = %d AND $lock_key=%s",
+					DB::prefix( 'posts' ),
+					$order_id,
+					$this->get_lock_id()
+				)
+			);
+		} catch ( DatabaseQueryException $e ) {
+			// The query should be failing silently.
+			return false;
+		}
+
+		if ( ! $current_status_wp_slug ) {
+			return false;
+		}
+
+		$current_status = tribe( Status\Status_Handler::class )->get_by_wp_slug( $current_status_wp_slug );
+
+		return $current_status->can_change_to( $new_status );
 	}
 
 	/**
@@ -442,35 +492,37 @@ class Order extends Abstract_Order {
 	 * @since 5.1.9
 	 * @since TBD Now it will only create one order per cart hash. Every next time it will update the existing order.
 	 *
+	 * @return false|WP_Post
 	 * @throws \Tribe__Repository__Usage_Error
 	 *
-	 * @return false|WP_Post
 	 */
 	public function create_from_cart( Gateway_Interface $gateway, $purchaser = null ) {
 		$cart = tribe( Cart::class );
 
-		$items      = $cart->get_items_in_cart();
-		$items      = array_filter( array_map(
-			static function ( $item ) {
-				/** @var Value $ticket_value */
-				$ticket_value         = tribe( Ticket::class )->get_price_value( $item['ticket_id'] );
-				$ticket_regular_value = tribe( Ticket::class )->get_price_value( $item['ticket_id'], true );
+		$items = $cart->get_items_in_cart();
+		$items = array_filter(
+			array_map(
+				static function ( $item ) {
+					/** @var Value $ticket_value */
+					$ticket_value         = tribe( Ticket::class )->get_price_value( $item['ticket_id'] );
+					$ticket_regular_value = tribe( Ticket::class )->get_price_value( $item['ticket_id'], true );
 
-				if ( null === $ticket_value ) {
-					return null;
-				}
+					if ( null === $ticket_value ) {
+						return null;
+					}
 
-				$item['price']     = $ticket_value->get_decimal();
-				$item['sub_total'] = $ticket_value->sub_total( $item['quantity'] )->get_decimal();
-				$item['event_id']  = tribe( Ticket::class )->get_related_event_id( $item['ticket_id'] );
+					$item['price']     = $ticket_value->get_decimal();
+					$item['sub_total'] = $ticket_value->sub_total( $item['quantity'] )->get_decimal();
+					$item['event_id']  = tribe( Ticket::class )->get_related_event_id( $item['ticket_id'] );
 
-				$item['regular_price']     = $ticket_regular_value->get_decimal();
-				$item['regular_sub_total'] = $ticket_regular_value->sub_total( $item['quantity'] )->get_decimal();
+					$item['regular_price']     = $ticket_regular_value->get_decimal();
+					$item['regular_sub_total'] = $ticket_regular_value->sub_total( $item['quantity'] )->get_decimal();
 
-				return $item;
-			},
-			$items
-		) );
+					return $item;
+				},
+				$items
+			)
+		);
 
 		$subtotal = $this->get_value_total( $items );
 
@@ -551,16 +603,16 @@ class Order extends Abstract_Order {
 	/**
 	 * Filters the values and creates a new Order with Tickets Commerce.
 	 *
-	 * @since 5.2.0
-	 *
-	 * @internal Use `upsert` instead.
+	 * @since    5.2.0
 	 *
 	 * @param Gateway_Interface $gateway
 	 * @param array             $args
 	 *
+	 * @return false|WP_Post
 	 * @throws \Tribe__Repository__Usage_Error
 	 *
-	 * @return false|WP_Post
+	 * @internal Use `upsert` instead.
+	 *
 	 */
 	public function create( Gateway_Interface $gateway, $args ) {
 		$gateway_key = $gateway::get_key();
@@ -593,8 +645,8 @@ class Order extends Abstract_Order {
 	 *
 	 * @since TBD
 	 *
-	 * @param Gateway_Interface $gateway           The gateway to use to create the order.
-	 * @param array             $args              The arguments to create the order.
+	 * @param Gateway_Interface $gateway The gateway to use to create the order.
+	 * @param array             $args    The arguments to create the order.
 	 *
 	 * @return false|WP_Post WP_Post instance on success or false on failure.
 	 */
@@ -745,18 +797,18 @@ class Order extends Abstract_Order {
 	/**
 	 * Redirects to the source post after a recoverable (logic) error.
 	 *
-	 * @todo  Determine if redirecting should be something relegated to some other method, and here we just actually
-	 *        generate the order/Attendees.
+	 * @since 5.1.9
+	 *
+	 * @param int  $error_code The current error code.
+	 * @param bool $redirect   Whether to really redirect or not.
+	 * @param int  $post_id    A post ID.
 	 *
 	 * @todo  Deprecate tpp_error
 	 *
 	 * @see   \Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
-	 * @since 5.1.9
+	 * @todo  Determine if redirecting should be something relegated to some other method, and here we only generate
+	 *        generate the order/Attendees.
 	 *
-	 * @param int  $post_id    A post ID.
-	 *
-	 * @param int  $error_code The current error code.
-	 * @param bool $redirect   Whether to really redirect or not.
 	 */
 	protected function redirect_after_error( $error_code, $redirect, $post_id ) {
 		$url = add_query_arg( 'tpp_error', $error_code, get_permalink( $post_id ) );
@@ -958,7 +1010,7 @@ class Order extends Abstract_Order {
 		try {
 			$lock_key = self::ORDER_LOCK_KEY;
 
-			$result = DB::query(
+			$result = (bool) DB::query(
 				DB::prepare(
 					"UPDATE %i set $lock_key = %s where ID = $order_id and $lock_key = ''",
 					DB::prefix( 'posts' ),
@@ -966,7 +1018,18 @@ class Order extends Abstract_Order {
 				)
 			);
 
-			return (bool) $result;
+			/**
+			 * Fires after an order is attempted to be locked.
+			 *
+			 * @since TBD
+			 *
+			 * @param bool   $result   Whether the order was locked.
+			 * @param int    $order_id The order ID.
+			 * @param string $lock_id  The lock ID.
+			 */
+			do_action( 'tec_tickets_commerce_order_locked', $result, $order_id, $this->get_lock_id() );
+
+			return $result;
 		} catch ( DatabaseQueryException $e ) {
 			return false;
 		}
@@ -984,12 +1047,27 @@ class Order extends Abstract_Order {
 	public function unlock_order( int $order_id ): bool {
 		$lock_key = self::ORDER_LOCK_KEY;
 		try {
-			return (bool) DB::query(
+			$result = (bool) DB::query(
 				DB::prepare(
 					"UPDATE %i set $lock_key = '' where ID = $order_id",
 					DB::prefix( 'posts' )
 				)
 			);
+
+			/**
+			 * Fires after an order is attempted to be unlocked.
+			 *
+			 * @since TBD
+			 *
+			 * @param bool   $result   Whether the order was unlocked.
+			 * @param int    $order_id The order ID.
+			 * @param string $lock_id  The lock ID.
+			 */
+			do_action( 'tec_tickets_commerce_order_unlocked', $result, $order_id, $this->get_lock_id() );
+
+			$this->reset_lock_id();
+
+			return $result;
 		} catch ( DatabaseQueryException $e ) {
 			return false;
 		}
@@ -1004,6 +1082,17 @@ class Order extends Abstract_Order {
 	 */
 	public function get_lock_id(): string {
 		return self::$lock_id;
+	}
+
+	/**
+	 * Reset the lock ID.
+	 *
+	 * Usually after unlocking an order.
+	 *
+	 * @since TBD
+	 */
+	public function reset_lock_id(): void {
+		self::$lock_id = '';
 	}
 
 	/**
@@ -1032,11 +1121,23 @@ class Order extends Abstract_Order {
 		$lock_key = self::ORDER_LOCK_KEY;
 
 		try {
-			return (bool) DB::get_var(
-				DB::prepare(
-					"SELECT $lock_key FROM %i WHERE ID = $order_id",
-					DB::prefix( 'posts' )
-				)
+			/**
+			 * Filters whether the order is locked.
+			 *
+			 * @since TBD
+			 *
+			 * @param bool $is_locked Whether the order is locked.
+			 * @param int  $order_id  The order ID.
+			 */
+			return apply_filters(
+				'tec_tickets_commerce_order_is_locked',
+				(bool) DB::get_var(
+					DB::prepare(
+						"SELECT $lock_key FROM %i WHERE ID = $order_id",
+						DB::prefix( 'posts' )
+					)
+				),
+				$order_id
 			);
 		} catch ( DatabaseQueryException $e ) {
 			return false;
@@ -1054,14 +1155,27 @@ class Order extends Abstract_Order {
 	 */
 	public function is_checkout_completed( int $order_id ): bool {
 		try {
-			// Direct query to overcome object cache.
-			return (bool) DB::get_var(
-				DB::prepare(
-					'SELECT meta_value FROM %i WHERE post_id = %d AND meta_key = %s',
-					DB::prefix( 'postmeta' ),
-					$order_id,
-					static::CHECKOUT_COMPLETED_META
-				)
+			/**
+			 * Filters whether the checkout is completed.
+			 *
+			 * Does a direct query to overcome object cache.
+			 *
+			 * @since TBD
+			 *
+			 * @param bool $is_completed Whether the checkout is completed.
+			 * @param int  $order_id     The order ID.
+			 */
+			return apply_filters(
+				'tec_tickets_commerce_order_is_checkout_completed',
+				(bool) DB::get_var(
+					DB::prepare(
+						'SELECT meta_value FROM %i WHERE post_id = %d AND meta_key = %s',
+						DB::prefix( 'postmeta' ),
+						$order_id,
+						static::CHECKOUT_COMPLETED_META
+					)
+				),
+				$order_id
 			);
 		} catch ( DatabaseQueryException $e ) {
 			return false;
@@ -1083,6 +1197,15 @@ class Order extends Abstract_Order {
 		if ( ! $result ) {
 			return false;
 		}
+
+		/**
+		 * Fires after an order's checkout is marked as completed.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $order_id The order ID.
+		 */
+		do_action( 'tec_tickets_commerce_order_checkout_completed', $order_id );
 
 		return (bool) as_enqueue_async_action(
 			'tec_tickets_commerce_async_webhook_process',

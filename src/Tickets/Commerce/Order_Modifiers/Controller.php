@@ -19,6 +19,8 @@ use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Fees as Agnostic_Checkout_Fees
 use TEC\Tickets\Commerce\Order_Modifiers\API\Coupons;
 use TEC\Tickets\Commerce\Order_Modifiers\API\Fees;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon;
+use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Coupon_Table;
+use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Fee_Table;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use InvalidArgumentException;
@@ -87,6 +89,8 @@ final class Controller extends Controller_Contract {
 		}
 
 		$this->container->singleton( Fee::class );
+		$this->container->singleton( Fee_Table::class );
+		$this->container->singleton( Coupon_Table::class );
 
 		/**
 		 * Filters whether the coupons are enabled.
