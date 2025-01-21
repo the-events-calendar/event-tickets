@@ -19,6 +19,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
  * @since 5.10.0
  */
 abstract class Abstract_Cart implements Cart_Interface {
+
 	/**
 	 * Cart total
 	 *
@@ -27,6 +28,11 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * @var null|float
 	 */
 	public $cart_total = null;
+
+	/**
+	 * @var string The Cart hash for this cart.
+	 */
+	protected $cart_hash;
 
 	/**
 	 * Get the tickets currently in the cart for a given provider.
@@ -144,5 +150,44 @@ abstract class Abstract_Cart implements Cart_Interface {
 		}
 
 		return $this->cart_total;
+	}
+
+	/**
+	 * Sets the cart hash.
+	 *
+	 * @since 5.1.9
+	 * @since 5.2.0 Renamed to set_hash instead of set_id
+	 *
+	 * @param string $hash
+	 */
+	public function set_hash( $hash ) {
+		/**
+		 * Filters the cart setting of a hash used for the Cart.
+		 *
+		 * @since 5.2.0
+		 *
+		 * @param string         $cart_hash Cart hash value.
+		 * @param Cart_Interface $cart      Which cart object we are using here.
+		 */
+		$this->cart_hash = apply_filters( 'tec_tickets_commerce_cart_set_hash', $hash, $this );
+	}
+
+	/**
+	 * Gets the cart hash.
+	 *
+	 * @since 5.2.0
+	 *
+	 * @return string
+	 */
+	public function get_hash() {
+		/**
+		 * Filters the cart hash used for the Cart.
+		 *
+		 * @since 5.2.0
+		 *
+		 * @param string         $cart_hash Cart hash value.
+		 * @param Cart_Interface $cart      Which cart object we are using here.
+		 */
+		return apply_filters( 'tec_tickets_commerce_cart_get_hash', $this->cart_hash, $this );
 	}
 }
