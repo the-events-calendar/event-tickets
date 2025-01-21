@@ -823,7 +823,7 @@ export function watchCheckoutControls() {
 	 *
 	 * @since 5.16.0
 	 *
-	 * @type {string} The `querySeelctorAll` selectors used to find the checkout controls on the page.
+	 * @type {string} The `querySelectorAll` selectors used to find the checkout controls on the page.
 	 */
 	const filteredCheckoutControls = applyFilters(
 		'tec.tickets.seating.frontend.session.checkoutControls',
