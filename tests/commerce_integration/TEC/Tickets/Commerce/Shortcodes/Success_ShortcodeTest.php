@@ -154,8 +154,13 @@ class Success_Shortcode_Test extends WPTestCase {
 				
 				wp_set_current_user( $user );
 				
+				$purchaser_data = tribe( Order::class )->get_purchaser_data(
+					[]
+				);
+				
 				$order = $this->create_order(
-					[ $ticket_id => 1 ]
+					[ $ticket_id => 1 ],
+					$purchaser_data,
 				);
 				
 				update_post_meta( $order->ID, Order::$gateway_order_id_meta_key, $order->ID );
@@ -180,9 +185,20 @@ class Success_Shortcode_Test extends WPTestCase {
 				
 				wp_set_current_user( 0 );
 				
-				$order = $this->create_order(
-					[ $ticket_id => 1 ]
+				$purchaser_data = tribe( Order::class )->get_purchaser_data(
+					[
+						'purchaser' => [
+							'name'  => 'Mr. Guest',
+							'email' => 'guest@test.com',
+						],
+					]
 				);
+				
+				$order = $this->create_order(
+					[ $ticket_id => 1 ],
+					$purchaser_data,
+				);
+				
 				update_post_meta( $order->ID, Order::$gateway_order_id_meta_key, $order->ID );
 				wp_set_current_user( 1 );
 				
@@ -202,5 +218,16 @@ class Success_Shortcode_Test extends WPTestCase {
 		
 		$shortcode = new Success_Shortcode();
 		$this->assertMatchesHtmlSnapshot( $shortcode->get_html() );
+	}
+		
+	/**
+	 * @test
+	 *
+	 * @dataProvider data_provider_test_render_success_shortcode
+	 */
+	public function test_order_data( Closure $fixture ) {
+		[ $order_id ] = $fixture();
+			
+		$this->assertMatchesJsonSnapshot( json_encode( tec_tc_get_order( $order_id, ARRAY_A ), JSON_PRETTY_PRINT ) );
 	}
 }
