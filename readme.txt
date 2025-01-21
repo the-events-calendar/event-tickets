@@ -210,7 +210,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Attendee generation during order status transition becomes aware if attendees have been already generated. [ET-2282]
 * Fix - Introduce Order lock mechanism to ensure 2 or more action that could update the order, they dont so at the same time. [ET-2279]
 * Fix - Prevent duplicate orders and as a result duplicated attendees when a payment would initially fail at least once. [ET-2280]
-* Fix - Reverts aggressive hook update, causing fatals on installtion with themes overwritting the template `Single Ticket Item`. [ET-2276]
+* Fix - Reverts aggressive hook update, causing fatals on installation with themes overwriting the template `Single Ticket Item`. [ET-2276]
 * Fix - Screen options will no longer be disabled when Event Tickets is active. [ET-2273]
 * Fix - Ticket sales will be counted correctly during status transitions of the orders they belong to. [ET-2286]
 * Performance - Enhance the performance of order modifier database queries [ET-2268]
