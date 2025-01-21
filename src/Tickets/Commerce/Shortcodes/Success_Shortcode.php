@@ -86,11 +86,12 @@ class Success_Shortcode extends Shortcode_Abstract {
 			return '';
 		}
 
-		$args = $this->get_template_vars();
+		$empty = '<div class="event-tickets">' . esc_html__( 'No order information is available.', 'event-tickets' ) . '</div>';
+		$args  = $this->get_template_vars();
 
 		// Bail if the order is not found.
 		if ( ! isset( $args['order'] ) ) {
-			return '';
+			return $empty;
 		}
 
 		// Get the purchaser's user ID or default to 0 for guests.
@@ -99,7 +100,7 @@ class Success_Shortcode extends Shortcode_Abstract {
 		// Show for guest orders created within the last hour.
 		if ( 0 === $owner_id ) {
 			$current = new \DateTime();
-			$order   = new \DateTime( $args['order']->post_date );
+			$order   = new \DateTime( $args['order']->post_date ?? null );
 
 			if ( $current->getTimestamp() - $order->getTimestamp() < 3600 ) {
 				return $this->render_html( $args );
@@ -116,7 +117,7 @@ class Success_Shortcode extends Shortcode_Abstract {
 			return $this->render_html( $args );
 		}
 
-		return '';
+		return $empty;
 	}
 
 	/**
