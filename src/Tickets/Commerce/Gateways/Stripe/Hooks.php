@@ -71,7 +71,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Process the async stripe webhook.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param int $order_id The order ID.
 	 *

@@ -444,7 +444,7 @@ class Attendee {
 	/**
 	 * Updates or creates an individual attendee given an Order and Ticket.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param \WP_Post      $order    Which order generated this attendee.
 	 * @param Ticket_Object $ticket   Which ticket generated this Attendee.
@@ -507,7 +507,7 @@ class Attendee {
 		/**
 		 * Allow the filtering of the update arguments for attendee.
 		 *
-		 * @since TBD
+		 * @since 5.18.1
 		 *
 		 * @param array         $update_args Which arguments we are going to use to update the attendee.
 		 * @param \WP_Post      $order       Which order generated this attendee.
@@ -519,7 +519,7 @@ class Attendee {
 		/**
 		 * Allow the actions before updating the attendee.
 		 *
-		 * @since TBD
+		 * @since 5.18.1
 		 *
 		 * @param array         $update_args Which arguments we are going to use to update the attendee.
 		 * @param \WP_Post      $order       Which order generated this attendee.
@@ -539,7 +539,7 @@ class Attendee {
 		/**
 		 * Allow the actions after updating the attendee.
 		 *
-		 * @since TBD
+		 * @since 5.18.1
 		 *
 		 * @param \WP_Post      $attendee Post object for the attendee.
 		 * @param \WP_Post      $order    Which order generated this attendee.
@@ -551,7 +551,7 @@ class Attendee {
 		/**
 		 * Allow the filtering of the attendee WP_Post after updating attendee.
 		 *
-		 * @since TBD
+		 * @since 5.18.1
 		 *
 		 * @param \WP_Post      $attendee Post object for the attendee.
 		 * @param \WP_Post      $order    Which order generated this attendee.

@@ -111,7 +111,7 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 	 * @since 5.18.0   Only check matching payment intent ids if they are not pending or action required.
 	 * @since 5.18.0.1 Removed the check for the payment intent status for pending or action required.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 5.18.1
 	 *
 	 * @param array   $payment_intent_received The payment intent data received.
 	 * @param array[] $payment_intents_stored  The payment intent data stored from each update, keyed by status.
@@ -119,7 +119,7 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 	 * @return bool
 	 */
 	public static function should_payment_intent_be_updated( $payment_intent_received, $payment_intents_stored ) {
-		_deprecated_function( __METHOD__, 'TBD' );
+		_deprecated_function( __METHOD__, '5.18.1' );
 		// This payment intent was reset, or processing has re-started without invalidating.
 		if ( 1 < count( $payment_intents_stored ) && $payment_intent_received['status'] === Status::REQUIRES_PAYMENT_METHOD ) {
 			return true;

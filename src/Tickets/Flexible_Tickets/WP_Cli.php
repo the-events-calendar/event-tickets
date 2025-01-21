@@ -62,9 +62,9 @@ class WP_Cli extends Controller {
 	 * checks will be re-enabled after the command is run, in the `truncate_custom_tables` method.
 	 *
 	 * @since 5.8.0
-	 * @since TBD Added default value and safeguards.
+	 * @since 5.18.1 Added default value and safeguards.
 	 *
-	 * @version TBD
+	 * @version 5.18.1
 	 *
 	 * @param array $args The arguments passed to the WP CLI command.
 	 *

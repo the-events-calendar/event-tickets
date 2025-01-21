@@ -247,7 +247,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	/**
 	 * Get the modifier manager instance.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param string $modifier_type The type of modifier to get the manager for.
 	 * @param bool   $render_error  Whether to render an error message if the manager is not found.
@@ -528,7 +528,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	/**
 	 * When we're on the table view page, prepare the items for the table view.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @return void
 	 */

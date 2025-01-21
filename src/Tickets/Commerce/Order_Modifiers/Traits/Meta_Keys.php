@@ -2,7 +2,7 @@
 /**
  * Meta_Keys trait.
  *
- * @since TBD
+ * @since 5.18.1
  */
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Traits;
@@ -10,14 +10,14 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Traits;
 /**
  * Trait Meta_Keys
  *
- * @since TBD
+ * @since 5.18.1
  */
 trait Meta_Keys {
 
 	/**
 	 * Get the key used to store the applied to value in the meta table.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param string $modifier_type The type of the modifier (e.g., 'coupon', 'fee').
 	 *
@@ -29,7 +29,7 @@ trait Meta_Keys {
 		/**
 		 * Filters the key used to store the applied to value in the meta table.
 		 *
-		 * @since TBD
+		 * @since 5.18.1
 		 *
 		 * @param string $result        The key used to store the applied to value in the meta table.
 		 * @param string $modifier_type The type of the modifier (e.g., 'coupon', 'fee').

@@ -661,7 +661,7 @@ class Cart {
 	/**
 	 * Get cart has cookie name.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @return string
 	 */
@@ -669,7 +669,7 @@ class Cart {
 		/**
 		 * Filters the cart hash cookie name.
 		 *
-		 * @since TBD
+		 * @since 5.18.1
 		 *
 		 * @param string $cart_hash_cookie_name The cart hash cookie name.
 		 *
