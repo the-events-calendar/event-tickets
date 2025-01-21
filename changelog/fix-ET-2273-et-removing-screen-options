@@ -1,4 +1,0 @@
-Significance: minor
-Type: fix
-
-Screen options will no longer be disabled when Event Tickets is active. [ET-2273]
