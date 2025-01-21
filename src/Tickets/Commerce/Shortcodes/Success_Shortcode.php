@@ -37,8 +37,8 @@ class Success_Shortcode extends Shortcode_Abstract {
 		$order_id = tribe_get_request_var( Success::$order_id_query_arg );
 		$order    = tribe( Order::class )->get_from_gateway_order_id( $order_id );
 
-		// If the order is not found, clear the template variables and bail.
-		if ( empty( $order ) ) {
+		// If the order is not found or the user is not logged in, bail.
+		if ( empty( $order ) || ! is_user_logged_in() ) {
 			$this->template_vars = [];
 
 			return;
@@ -78,6 +78,13 @@ class Success_Shortcode extends Shortcode_Abstract {
 		}
 
 		$args = $this->get_template_vars();
+
+		$owner_id = $args['order']->purchaser['user_id'];
+
+		// If the user is not the owner of the order and is not an admin, bail.
+		if ( ! is_admin() && get_current_user_id() !== $owner_id ) {
+			return '';
+		}
 
 		// Add the rendering attributes into global context.
 		$this->get_template()->add_template_globals( $args );
