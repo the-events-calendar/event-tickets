@@ -86,7 +86,7 @@ class Success_Shortcode extends Shortcode_Abstract {
 			return '';
 		}
 
-		$empty = '<div class="event-tickets">' . esc_html__( 'No order information is available.', 'event-tickets' ) . '</div>';
+		$empty = '<div class="has-text-align-center">' . esc_html__( 'No order information is available.', 'event-tickets' ) . '</div>';
 		$args  = $this->get_template_vars();
 
 		// Bail if the order is not found.
