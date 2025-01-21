@@ -97,16 +97,16 @@ New ticket</button><button
 </div>
 
 <div id="tribe_panel_edit" class="ticket_panel panel_edit tribe-validation" aria-hidden="true"
-	 data-default-provider="Tribe__Tickets__Commerce__PayPal__Main"
-     data-current-provider="Tribe__Tickets__Commerce__PayPal__Main"
+	 data-default-provider="TEC\Tickets\Commerce\Module"
+     data-current-provider="TEC\Tickets\Commerce\Module"
 >
 	
 	<div id="ticket_form" class="ticket_form tribe_sectionheader tribe-validation">
 		<div id="ticket_form_table" class="eventtable ticket_form">
 			<div
 					class="tribe-dependent"
-					data-depends="#Tribe__Tickets__RSVP_radio"
-					data-condition-is-not-checked
+					data-depends="#tec_tickets_ticket_provider"
+					data-condition-not="Tribe__Tickets__RSVP"
 			>
 				<h4
 						id="ticket_title_add"
@@ -125,8 +125,8 @@ New ticket</button><button
 			</div>
 			<div
 					class="tribe-dependent"
-					data-depends="#Tribe__Tickets__RSVP_radio"
-					data-condition-is-checked
+					data-depends="#tec_tickets_ticket_provider"
+					data-condition="Tribe__Tickets__RSVP"
 			>
 				<h4
 						id="rsvp_title_add"
@@ -169,14 +169,14 @@ New ticket</button><button
 	/>
 	<span
 		class="tribe_soft_note ticket_form_right"
-		data-depends="#Tribe__Tickets__RSVP_radio"
-		data-condition-not-checked
+		data-depends="#tec_tickets_ticket_provider"
+		data-condition-not="Tribe__Tickets__RSVP"
 	>
 	The ticket name is displayed on the frontend of your website and within ticket emails.	</span>
 	<span
 		class="tribe_soft_note ticket_form_right"
-		data-depends="#Tribe__Tickets__RSVP_radio"
-		data-condition-is-checked
+		data-depends="#tec_tickets_ticket_provider"
+		data-condition="Tribe__Tickets__RSVP"
 	>
 	The RSVP name is displayed on the frontend of your website and within RSVP emails.	</span>
 </div>
@@ -283,13 +283,12 @@ New ticket</button><button
 	</div>
 </div>
 
-				<fieldset id="tribe_ticket_provider_wrapper" class="input_block" aria-hidden="true">
-					<legend class="ticket_form_label">Sell using:</legend>
-									</fieldset>
+				<input type="hidden" id="tec_tickets_ticket_provider" name="ticket_provider" value="TEC\Tickets\Commerce\Module" />
+
 				<div
 	class="price tribe-dependent"
-		data-depends="#Tribe__Tickets__RSVP_radio"
-	data-condition-is-not-checked
+		data-depends="#tec_tickets_ticket_provider"
+	data-condition-not="Tribe__Tickets__RSVP"
 	>
 	<div class="input_block">
 		<label for="ticket_price" class="ticket_form_label ticket_form_left">Price:</label>
@@ -305,10 +304,11 @@ New ticket</button><button
 				Leave blank for free Ticket			</p>
 				</div>
 
-	</div><div
+	</div>
+<div
 	class="input_block ticket_advanced_Tribe__Tickets__RSVP tribe-dependent"
-	data-depends="#Tribe__Tickets__RSVP_radio"
-	data-condition-is-checked
+	data-depends="#tec_tickets_ticket_provider"
+	data-condition="Tribe__Tickets__RSVP"
 >
 	<label
 		for="Tribe__Tickets__RSVP_capacity"
@@ -327,8 +327,8 @@ New ticket</button><button
 
 <div
 	class="input_block ticket_advanced_Tribe__Tickets__RSVP tribe-dependent"
-	data-depends="#Tribe__Tickets__RSVP_radio"
-	data-condition-is-checked
+	data-depends="#tec_tickets_ticket_provider"
+	data-condition="Tribe__Tickets__RSVP"
 >
 	<label
 		for="tribe-tickets-rsvp-not-going"
@@ -346,7 +346,7 @@ New ticket</button><button
 </div>
 			</section>
 			<div class="accordion">
-				<div class="tribe-dependent" data-depends="#Tribe__Tickets__RSVP_radio" data-condition-is-not-checked>
+				<div class="tribe-dependent" data-depends="#tec_tickets_ticket_provider" data-condition-not="Tribe__Tickets__RSVP">
 	<button class="accordion-header tribe_advanced_meta">
 		Advanced	</button>
 	<section id="ticket_form_advanced" class="advanced accordion-content" data-datepicker_format="1">
@@ -371,8 +371,8 @@ New ticket</button><button
 						class="button-primary tribe-dependent tribe-validation-submit"
 						name="ticket_form_save"
 						value="Save ticket"
-						data-depends="#Tribe__Tickets__RSVP_radio"
-						data-condition-is-not-checked
+						data-depends="#tec_tickets_ticket_provider"
+						data-condition-not="Tribe__Tickets__RSVP"
 				/>
 				<input
 						type="button"
@@ -380,8 +380,8 @@ New ticket</button><button
 						class="button-primary tribe-dependent tribe-validation-submit"
 						name="ticket_form_save"
 						value="Save RSVP"
-						data-depends="#Tribe__Tickets__RSVP_radio"
-						data-condition-is-checked
+						data-depends="#tec_tickets_ticket_provider"
+						data-condition="Tribe__Tickets__RSVP"
 				/>
 				<input
 						type="button"
