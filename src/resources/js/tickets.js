@@ -145,7 +145,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			providerValue = 'Tribe__Tickets__RSVP';
 		} else {
 			// Allows default to WooCommerce
-			providerValue = 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main';
+			providerValue = 'TEC\\Tickets\\Commerce\\Module';
 		}
 
 		if ( ! force_rsvp && $checkedProvider.length > 0 ) {
