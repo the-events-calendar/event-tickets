@@ -12,6 +12,8 @@ use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use TEC\Tickets\Commerce\Module;
+use Closure;
+use Generator;
 
 class Success_Shortcode_Test extends WPTestCase {
 	use Ticket_Maker;
@@ -120,5 +122,85 @@ class Success_Shortcode_Test extends WPTestCase {
 				'order_id' => $order->ID,
 			] 
 		);
+	}
+	
+	public function data_provider_test_render_success_shortcode(): Generator {
+		yield 'order with logged in user' => [
+			function () {
+				$post_id   = $this->factory()->post->create();
+				$ticket_id = $this->create_tc_ticket(
+					$post_id,
+					10,
+					[
+						'ticket_name'        => 'Test TC ticket',
+						'ticket_description' => 'Test TC ticket description',
+					]
+				);
+				
+				$user = $this->factory()->user->create(
+					[
+						'user_login' => 'test_user_a',
+						'user_email' => 'test_user@test.com',
+					]
+				);
+				
+				wp_update_user(
+					[
+						'ID'         => $user,
+						'first_name' => 'Mr Test',
+						'last_name'  => 'Logged In',
+					]
+				);
+				
+				wp_set_current_user( $user );
+				
+				$order = $this->create_order(
+					[ $ticket_id => 1 ]
+				);
+				
+				update_post_meta( $order->ID, Order::$gateway_order_id_meta_key, $order->ID );
+				
+				wp_set_current_user( 1 );
+				
+				return [ $order->ID ];
+			},
+		];
+		
+		yield 'order with guest user' => [
+			function () {
+				$post_id   = $this->factory()->post->create();
+				$ticket_id = $this->create_tc_ticket(
+					$post_id,
+					10,
+					[
+						'ticket_name'        => 'Test TC ticket',
+						'ticket_description' => 'Test TC ticket description',
+					]
+				);
+				
+				wp_set_current_user( 0 );
+				
+				$order = $this->create_order(
+					[ $ticket_id => 1 ]
+				);
+				update_post_meta( $order->ID, Order::$gateway_order_id_meta_key, $order->ID );
+				wp_set_current_user( 1 );
+				
+				return [ $order->ID ];
+			},
+		];
+	}
+	
+	/**
+	 * @test
+	 *
+	 * @dataProvider data_provider_test_render_success_shortcode
+	 */
+	public function test_render_success_shortcode( Closure $fixture ) {
+		[ $id ]                               = $fixture();
+		$_GET[ Success::$order_id_query_arg ] = $id;
+		
+		$shortcode = new Success_Shortcode();
+		$this->assertMatchesHtmlSnapshot( $shortcode->get_html() );
 	}
 }
