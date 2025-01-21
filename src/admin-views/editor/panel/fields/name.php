@@ -28,7 +28,7 @@
 	<span
 		class="tribe_soft_note ticket_form_right"
 		data-depends="#tec_tickets_ticket_provider"
-		data-condition="Tribe__Tickets__RSVP"
+		data-condition-not="Tribe__Tickets__RSVP"
 	>
 	<?php
 		echo esc_html(

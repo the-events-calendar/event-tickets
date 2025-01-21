@@ -56,7 +56,7 @@ $ticket_type = $ticket_type ?? 'default';
 			<div
 					class="tribe-dependent"
 					data-depends="#tec_tickets_ticket_provider"
-					data-condition="Tribe__Tickets__RSVP"
+					data-condition-not="Tribe__Tickets__RSVP"
 			>
 				<h4
 						id="ticket_title_add"
@@ -258,7 +258,7 @@ $ticket_type = $ticket_type ?? 'default';
 						name="ticket_form_save"
 						value="<?php echo esc_attr( $ticket_form_save_text ); ?>"
 						data-depends="#tec_tickets_ticket_provider"
-						data-condition="Tribe__Tickets__RSVP"
+						data-condition-not="Tribe__Tickets__RSVP"
 				/>
 				<input
 						type="button"

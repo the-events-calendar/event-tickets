@@ -76,7 +76,7 @@ if ( ! empty( $ticket ) ) {
 	class="price <?php echo $disabled ? 'input_block' : 'tribe-dependent'; ?>"
 	<?php if ( ! $disabled ) : ?>
 	data-depends="#tec_tickets_ticket_provider"
-	data-condition="Tribe__Tickets__RSVP"
+	data-condition-not="Tribe__Tickets__RSVP"
 	<?php endif; ?>
 >
 	<div class="input_block">

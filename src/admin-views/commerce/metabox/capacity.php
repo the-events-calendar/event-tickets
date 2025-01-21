@@ -7,7 +7,7 @@
 <div
 	class="input_block ticket_advanced_TEC_Tickets_Commerce_Module tribe-dependent"
 	data-depends="#tec_tickets_ticket_provider"
-	data-condition="Tribe__Tickets__RSVP"
+	data-condition-not="Tribe__Tickets__RSVP"
 >
 	<label
 		for="TEC_Tickets_Commerce_Module_capacity"
