@@ -1,5 +1,23 @@
 # Changelog
 
+### [5.18.1] 2025-01-22
+
+* Feature - Include Seating information in Attendee archive REST API response.
+* Tweak - Add filter to customize the cart hash cookie name for Tickets Commerce. [ET-2269]
+* Tweak - Introduced methods `can_change_to` for Statuses and `can_transition_to` for Orders. [ET-2281]
+* Tweak - Introduced various hooks for the order lock system and order completed checkout actions. [ET-2281]
+* Tweak - Lazy load attendees report page asset filter to properly localize asset data [ET-2274]
+* Fix - Added a default empty array to `maybe_disable_foreign_key_checks`. [ET-2275]
+* Fix - Attendee generation during order status transition becomes aware if attendees have been already generated. [ET-2282]
+* Fix - Introduce Order lock mechanism to ensure 2 or more action that could update the order, they dont so at the same time. [ET-2279]
+* Fix - Prevent duplicate orders and as a result duplicated attendees when a payment would initially fail at least once. [ET-2280]
+* Fix - Reverts aggressive hook update, causing fatals on installtion with themes overwritting the template `Single Ticket Item`. [ET-2276]
+* Fix - Screen options will no longer be disabled when Event Tickets is active. [ET-2273]
+* Fix - Ticket sales will be counted correctly during status transitions of the orders they belong to. [ET-2286]
+* Performance - Enhance the performance of order modifier database queries [ET-2268]
+* Deprecated - Method `should_payment_intent_be_updated` since its no longer needed. [ET-2281]
+* Language - 3 new strings added, 111 updated, 2 fuzzied, and 2 obsoleted.
+
 ### [5.18.0.1] 2025-01-07
 
 * Fix - Resolves problem related to duplication of attendees while using Stripe webhooks with Tickets Commerce. [ET-2279]
