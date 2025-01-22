@@ -172,6 +172,7 @@ class Health extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
+		remove_action( 'init', [ $this, 'define_tests' ] );
 		remove_filter( 'site_status_tests', [ $this, 'add_site_status_tests' ] );
 
 		foreach ( $this->get_tests() as $callback => $test ) {

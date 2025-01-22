@@ -95,6 +95,7 @@ class Uplink extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
+		remove_action( 'init', [ $this, 'set_slr_plugin_name' ], 9 );
 		remove_action( 'init', [ $this, 'register_plugin' ] );
 		remove_filter(
 			'stellarwp/uplink/tec/tec-seating/view/authorize_button/link_text',
