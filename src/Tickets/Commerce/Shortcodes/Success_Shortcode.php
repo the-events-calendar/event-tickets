@@ -42,6 +42,12 @@ class Success_Shortcode extends Shortcode_Abstract {
 
 			return;
 		}
+		
+		if ( ! $this->can_view_order_details( $order ) ) {
+			$this->template_vars = [];
+
+			return;
+		}
 
 		$attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
 		// Sort the Attendees by ID.
@@ -86,54 +92,50 @@ class Success_Shortcode extends Shortcode_Abstract {
 			return '';
 		}
 
-		$empty = '<div class="has-text-align-center">' . esc_html__( 'No order information is available.', 'event-tickets' ) . '</div>';
-		$args  = $this->get_template_vars();
-
-		// Bail if the order is not found.
-		if ( ! isset( $args['order'] ) ) {
-			return $empty;
-		}
-
-		// Get the purchaser's user ID or default to 0 for guests.
-		$owner_id = $args['order']->purchaser['user_id'] ?? 0;
-
-		// Show for guest orders created within the last hour.
-		if ( 0 === $owner_id ) {
-			$current = new \DateTime();
-			$order   = new \DateTime( $args['order']->post_date ?? null );
-
-			if ( $current->getTimestamp() - $order->getTimestamp() < 3600 ) {
-				return $this->render_html( $args );
-			}
-		}
-
-		// Show if the current user matches the order's purchaser.
-		if ( 0 !== $owner_id && get_current_user_id() === $owner_id ) {
-			return $this->render_html( $args );
-		}
-
-		// Show if the user has admin capabilities.
-		if ( current_user_can( 'manage_options' ) ) {
-			return $this->render_html( $args );
-		}
-
-		return $empty;
+		$args = $this->get_template_vars();
+		
+		$this->get_template()->add_template_globals( $args );
+		
+		$this->enqueue_assets();
+		
+		return $this->get_template()->template( 'success', $args, false );
 	}
-
+	
 	/**
-	 * Render the HTML for the shortcode.
+	 * Determine if the current user can view the order details.
 	 *
 	 * @since TBD
 	 *
-	 * @param array $args The arguments for the shortcode.
-	 * @return string The rendered HTML.
+	 * @param \WP_Post $order The order object.
+	 *
+	 * @return bool Whether the current user can view the order details.
 	 */
-	private function render_html( $args ) {
-		$this->get_template()->add_template_globals( $args );
-		$this->enqueue_assets();
-		return $this->get_template()->template( 'success', $args, false );
+	public function can_view_order_details( \WP_Post $order ): bool {
+		// Show if the user has admin capabilities.
+		if ( current_user_can( 'manage_options' ) ) {
+			return true;
+		}
+		
+		// Get the purchaser's user ID or default to 0 for guests.
+		$owner_id = $order->purchaser['user_id'] ?? 0;
+		
+		// Show for guest orders created within the last hour.
+		if ( 0 === $owner_id ) {
+			$current    = new \DateTime();
+			$order_time = new \DateTime( $args['order']->post_date ?? null );
+			
+			if ( $current->getTimestamp() - $order_time->getTimestamp() < 3600 ) {
+				return true;
+			}
+		}
+		
+		// Show if the current user matches the order's purchaser.
+		if ( 0 !== $owner_id && get_current_user_id() === $owner_id ) {
+			return true;
+		}
+		
+		return false;
 	}
-
 
 	/**
 	 * Enqueue the assets related to this shortcode.
