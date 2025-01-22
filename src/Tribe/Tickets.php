@@ -383,7 +383,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since TBD
 		 *
-		 * @return string
+		 * @return void
 		 */
 		public function set_plugin_name() {}
 
@@ -1279,6 +1279,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			add_action( 'init', [ $this, 'add_admin_tickets_hooks' ] );
 		}
 
+		/**
+		 * Register module as active.
+		 *
+		 * @since TBD
+		 *
+		 * @return void
+		 */
 		public function register_active_module() {
 			self::$active_modules[ $this->class_name ] = $this->plugin_name;
 		}
