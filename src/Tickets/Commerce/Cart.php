@@ -143,19 +143,6 @@ class Cart {
 	}
 
 	/**
-	 * Returns the name of the transient used by the cart.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @param string $id
-	 *
-	 * @return string
-	 */
-	public static function get_transient_name( $id ) {
-		return Commerce::ABBR . '-cart-' . md5( $id ?? '' );
-	}
-
-	/**
 	 * Determine the Current cart Transient Key based on invoice number.
 	 *
 	 * @since 5.1.9
@@ -700,5 +687,18 @@ class Cart {
 		$filtered_cookie_name = apply_filters( 'tec_tickets_commerce_cart_hash_cookie_name', static::$cart_hash_cookie_name );
 
 		return sanitize_title( $filtered_cookie_name );
+	}
+
+	/**
+	 * Returns the name of the transient used by the cart.
+	 *
+	 * @since 5.1.9
+	 *
+	 * @param string $id The cart id.
+	 *
+	 * @return string The transient name.
+	 */
+	public static function get_transient_name( $id ) {
+		return Commerce::ABBR . '-cart-' . md5( $id ?? '' );
 	}
 }
