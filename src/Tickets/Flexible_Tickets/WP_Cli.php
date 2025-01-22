@@ -62,15 +62,19 @@ class WP_Cli extends Controller {
 	 * checks will be re-enabled after the command is run, in the `truncate_custom_tables` method.
 	 *
 	 * @since 5.8.0
+	 * @since 5.18.1 Added default value and safeguards.
+	 *
+	 * @version 5.18.1
 	 *
 	 * @param array $args The arguments passed to the WP CLI command.
 	 *
 	 * @return bool Whether the foreign key checks were disabled or not.
 	 */
-	public function maybe_disable_foreign_key_checks( array $args ): bool {
-		if ( ! ( $args[0] === 'site' && $args[1] === 'empty' ) ) {
+	public function maybe_disable_foreign_key_checks( array $args = [] ): bool {
+		if ( empty( $args[0] ) || 'site' !== $args[0] || empty( $args[1] ) || 'empty' !== $args[1] ) {
 			return false;
 		}
+
 		global $wpdb;
 		$wpdb->query( 'SET FOREIGN_KEY_CHECKS=0;' );
 

@@ -188,6 +188,16 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 			'X-ET-TOTAL-PAGES' => $data['total_pages'],
 		];
 
+		/**
+		 * Filters the data in the Attendee Archive REST response.
+		 *
+		 * @since 5.18.1
+		 *
+		 * @param array<string,mixed> $data The data in the Attendee Archive REST response.
+		 * @param WP_REST_Request $request The request object for this endpoint.
+		 */
+		$data = apply_filters( 'tec_tickets_rest_attendee_archive_data', $data, $request );
+
 		return new WP_REST_Response( $data, 200, $headers );
 	}
 

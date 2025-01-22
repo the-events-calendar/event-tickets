@@ -10,8 +10,8 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Commerce\Order_Modifiers\Traits;
 
 use Exception;
+use TEC\Tickets\Commerce\Order_Modifiers\Factory;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship as Relationships;
-use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers;
 
 /**
  * Trait Fee_Types
@@ -19,15 +19,6 @@ use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers;
  * @since 5.18.0
  */
 trait Fee_Types {
-
-	/**
-	 * The repository for interacting with the order modifiers table.
-	 *
-	 * @since 5.18.0
-	 *
-	 * @var Order_Modifiers
-	 */
-	protected Order_Modifiers $modifiers_repository;
 
 	/**
 	 * The repository for interacting with the order modifiers relationships.
@@ -75,18 +66,16 @@ trait Fee_Types {
 	 *
 	 * @return array The fees.
 	 */
-	protected function get_all_fees(): array {
-		$available_fees = $this->modifiers_repository->find_by_modifier_type_and_meta(
-			'fee_applied_to',
-			[ 'per', 'all' ],
-			'fee_applied_to',
-			'all'
+	protected function get_all_fees( array $params = [] ): array {
+		$params = wp_parse_args(
+			$params,
+			[
+				'limit' => 100,
+			]
 		);
 
-		// If no fees were found, return an empty array.
-		if ( null === $available_fees ) {
-			return [];
-		}
+		$available_fees = Factory::get_repository_for_type( 'fee' )
+			->get_modifiers( $params );
 
 		// Convert the return value to an array keyed by the fee ID.
 		return array_combine(

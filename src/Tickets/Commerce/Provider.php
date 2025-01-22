@@ -12,7 +12,6 @@ use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\Gateways;
 use Tribe__Tickets__Main as Tickets_Plugin;
 
-
 /**
  * Service provider for the Tickets Commerce.
  *
