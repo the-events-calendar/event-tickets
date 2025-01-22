@@ -16,8 +16,6 @@ use TEC\Tickets\Commerce\Communication\Email as Email_Communication;
 class Module extends \Tribe__Tickets__Tickets {
 
 	public function __construct() {
-		// This needs to happen before parent construct.
-		$this->plugin_name = __( 'Tickets Commerce', 'event-tickets' );
 
 		parent::__construct();
 
@@ -221,6 +219,15 @@ class Module extends \Tribe__Tickets__Tickets {
 	 */
 	public static function get_instance() {
 		return tribe( static::class );
+	}
+
+	/**
+	 * Set the plugin name.
+	 *
+	 * @since TBD
+	 */
+	public function set_plugin_name() {
+		$this->plugin_name = __( 'Tickets Commerce', 'event-tickets' );
 	}
 
 	/**

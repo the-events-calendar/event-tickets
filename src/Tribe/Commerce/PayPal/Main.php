@@ -298,7 +298,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @since 4.7
 	 */
 	public function hooks() {
-		add_action( 'init', [ $this, 'set_plugin_name' ], 9 );
 		// if the hooks have already been bound, don't do it again
 		if ( $this->is_loaded ) {
 			return false;

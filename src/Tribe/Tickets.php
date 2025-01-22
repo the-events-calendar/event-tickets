@@ -379,6 +379,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public function get_ticket_reports_link( $post_id_deprecated, $ticket_id ) {}
 
 		/**
+		 * Sets plugin name after init runs to avoid tranlsation issues.
+		 *
+		 * @since TBD
+		 *
+		 * @return string
+		 */
+		public function set_plugin_name() {}
+
+		/**
 		 * Returns a single ticket.
 		 *
 		 * @param int $post_id   ID of parent "event" post.
@@ -1244,8 +1253,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$this->parent_path = $this->parentPath = trailingslashit( dirname( dirname( dirname( __FILE__ ) ) ) );
 			$this->parent_url  = $this->parentUrl  = trailingslashit( plugins_url( '', $this->parent_path ) );
 
-			// Register all Tribe__Tickets__Tickets api consumers
-			self::$active_modules[ $this->class_name ] = $this->plugin_name;
+			add_action( 'init', [ $this, 'set_plugin_name' ] );
+			add_action( 'init', [ $this, 'register_active_module' ], 11 );
 
 			add_action( 'wp', [ $this, 'hook' ] );
 
@@ -1268,6 +1277,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			add_filter( 'tribe_currency_cost', [ $this, 'maybe_format_event_cost' ], 10, 2 );
 
 			add_action( 'init', [ $this, 'add_admin_tickets_hooks' ] );
+		}
+
+		public function register_active_module() {
+			self::$active_modules[ $this->class_name ] = $this->plugin_name;
 		}
 
 		/**
