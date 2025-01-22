@@ -126,18 +126,8 @@ class Success_Shortcode extends Shortcode_Abstract {
 			return true;
 		}
 		
-		// Show for guest orders created within the last hour.
-		if ( 0 === $owner_id ) {
-			$current    = new DateTime();
-			$order_time = new DateTime( $args['order']->post_date ?? null );
-			$diff       = $current->getTimestamp() - $order_time->getTimestamp();
-			
-			if ( $diff < HOUR_IN_SECONDS ) {
-				return true;
-			}
-		}
-		
-		return false;
+		// Show always for guest orders.
+		return 0 === $owner_id;
 	}
 
 	/**
