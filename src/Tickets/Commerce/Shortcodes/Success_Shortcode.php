@@ -8,7 +8,6 @@
 
 namespace TEC\Tickets\Commerce\Shortcodes;
 
-use DateTime;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Success;
@@ -46,8 +45,8 @@ class Success_Shortcode extends Shortcode_Abstract {
 		}
 		
 		if ( ! $this->can_view_order_details( $order ) ) {
-			$this->template_vars = [];
-
+			$this->template_vars          = [];
+			$this->template_vars['order'] = null;
 			return;
 		}
 

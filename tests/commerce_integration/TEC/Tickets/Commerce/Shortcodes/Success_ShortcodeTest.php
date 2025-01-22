@@ -170,8 +170,6 @@ class Success_Shortcode_Test extends WPTestCase {
 					),
 				);
 				
-				wp_set_current_user( 1 );
-				
 				return [ $order->ID, $post_id, $order->gateway_order_id ];
 			},
 		];
@@ -210,8 +208,58 @@ class Success_Shortcode_Test extends WPTestCase {
 					),
 				);
 				
-				wp_set_current_user( 1 );
+				return [ $order->ID, $post_id, $order->gateway_order_id ];
+			},
+			
+		];
+		
+		yield 'view order for someone else' => [
+			function () {
+				$post_id   = $this->factory()->post->create();
+				$ticket_id = $this->create_tc_ticket(
+					$post_id,
+					10,
+					[
+						'ticket_name'        => 'Test TC ticket',
+						'ticket_description' => 'Test TC ticket description',
+					]
+				);
+
+				$user = $this->factory()->user->create(
+					[
+						'user_login' => 'test_user_a',
+						'user_email' => 'test_user@test.com',
+					]
+				);
+
+				wp_update_user(
+					[
+						'ID'         => $user,
+						'first_name' => 'Mr Test',
+						'last_name'  => 'Logged In',
+					]
+				);
+
+				wp_set_current_user( $user );
+
+				$purchaser_data = tribe( Order::class )->get_purchaser_data(
+					[]
+				);
 				
+				// Set the purchaser user ID to a different user.
+				$purchaser_data['purchaser_user_id'] = 99;
+
+				$order = $this->create_order(
+					[ $ticket_id => 1 ],
+					array_merge(
+						[
+							'gateway'   => tribe( Free_Gateway::class ),
+							'post_date' => '2021-01-01 00:00:00',
+						],
+						$purchaser_data
+					),
+				);
+
 				return [ $order->ID, $post_id, $order->gateway_order_id ];
 			},
 		];
