@@ -8,9 +8,11 @@
 
 namespace TEC\Tickets\Commerce\Shortcodes;
 
+use DateTime;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Success;
+use WP_Post;
 
 /**
  * Class for Shortcode Tribe_Tickets_Checkout.
@@ -110,7 +112,7 @@ class Success_Shortcode extends Shortcode_Abstract {
 	 *
 	 * @return bool Whether the current user can view the order details.
 	 */
-	public function can_view_order_details( \WP_Post $order ): bool {
+	public function can_view_order_details( WP_Post $order ): bool {
 		// Show if the user has admin capabilities.
 		if ( current_user_can( 'manage_options' ) ) {
 			return true;
@@ -126,10 +128,11 @@ class Success_Shortcode extends Shortcode_Abstract {
 		
 		// Show for guest orders created within the last hour.
 		if ( 0 === $owner_id ) {
-			$current    = new \DateTime();
-			$order_time = new \DateTime( $args['order']->post_date ?? null );
+			$current    = new DateTime();
+			$order_time = new DateTime( $args['order']->post_date ?? null );
+			$diff       = $current->getTimestamp() - $order_time->getTimestamp();
 			
-			if ( $current->getTimestamp() - $order_time->getTimestamp() < 3600 ) {
+			if ( $diff < HOUR_IN_SECONDS ) {
 				return true;
 			}
 		}
