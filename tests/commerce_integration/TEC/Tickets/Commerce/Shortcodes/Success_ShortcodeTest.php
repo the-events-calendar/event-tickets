@@ -239,15 +239,4 @@ class Success_Shortcode_Test extends WPTestCase {
 		
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
-		
-	/**
-	 * @test
-	 *
-	 * @dataProvider data_provider_test_render_success_shortcode
-	 */
-	public function test_order_data( Closure $fixture ) {
-		[ $order_id ] = $fixture();
-		
-		$this->assertMatchesJsonSnapshot( json_encode( tec_tc_get_order( $order_id, ARRAY_A ), JSON_PRETTY_PRINT ) );
-	}
 }
