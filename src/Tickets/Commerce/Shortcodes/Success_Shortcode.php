@@ -119,6 +119,11 @@ class Success_Shortcode extends Shortcode_Abstract {
 		// Get the purchaser's user ID or default to 0 for guests.
 		$owner_id = $order->purchaser['user_id'] ?? 0;
 		
+		// Show if the current user matches the order's purchaser.
+		if ( 0 !== $owner_id && get_current_user_id() === $owner_id ) {
+			return true;
+		}
+		
 		// Show for guest orders created within the last hour.
 		if ( 0 === $owner_id ) {
 			$current    = new \DateTime();
@@ -127,11 +132,6 @@ class Success_Shortcode extends Shortcode_Abstract {
 			if ( $current->getTimestamp() - $order_time->getTimestamp() < 3600 ) {
 				return true;
 			}
-		}
-		
-		// Show if the current user matches the order's purchaser.
-		if ( 0 !== $owner_id && get_current_user_id() === $owner_id ) {
-			return true;
 		}
 		
 		return false;
