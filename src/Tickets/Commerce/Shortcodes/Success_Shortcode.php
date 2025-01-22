@@ -37,16 +37,9 @@ class Success_Shortcode extends Shortcode_Abstract {
 		$order_id = tribe_get_request_var( Success::$order_id_query_arg );
 		$order    = tribe( Order::class )->get_from_gateway_order_id( $order_id );
 
-		// If the order is not found, clear the template variables and bail.
-		if ( empty( $order ) ) {
-			$this->template_vars = [];
-
-			return;
-		}
-		
-		if ( ! $this->can_view_order_details( $order ) ) {
-			$this->template_vars          = [];
-			$this->template_vars['order'] = null;
+		// Bail early if the order is empty or the user cannot view its details.
+		if ( empty( $order ) || ! $this->can_view_order_details( $order ) ) {
+			$this->template_vars = [ 'order' => null ]; // Reset template variables.
 			return;
 		}
 
@@ -71,11 +64,6 @@ class Success_Shortcode extends Shortcode_Abstract {
 	/**
 	 * Get the HTML for the shortcode.
 	 *
-	 * Checks below conditions to determine whether the HTML should be rendered:
-	 * - If the order is a guest order and created less than 1 hour ago.
-	 * - If the current user matches the order's purchaser.
-	 * - If the current user has admin capabilities.
-	 *
 	 * @since TBD
 	 *
 	 * @return string The rendered HTML or an empty string if conditions are not met.
@@ -94,14 +82,14 @@ class Success_Shortcode extends Shortcode_Abstract {
 		}
 
 		$args = $this->get_template_vars();
-		
+
 		$this->get_template()->add_template_globals( $args );
-		
+
 		$this->enqueue_assets();
-		
+
 		return $this->get_template()->template( 'success', $args, false );
 	}
-	
+
 	/**
 	 * Determine if the current user can view the order details.
 	 *
@@ -112,21 +100,26 @@ class Success_Shortcode extends Shortcode_Abstract {
 	 * @return bool Whether the current user can view the order details.
 	 */
 	public function can_view_order_details( WP_Post $order ): bool {
-		// Show if the user has admin capabilities.
+		// Get the purchaser's user ID or default to 0 for guests.
+		$owner_id = (int) ( $order->purchaser['user_id'] ?? 0 );
+
+		// Show always for guest orders.
+		if ( 0 === $owner_id ) {
+			return true;
+		}
+
+		// Show if current user matches the purchaser.
+		if ( get_current_user_id() === $owner_id ) {
+			return true;
+		}
+
+		// Show if current user has admin capabilities.
 		if ( current_user_can( 'manage_options' ) ) {
 			return true;
 		}
-		
-		// Get the purchaser's user ID or default to 0 for guests.
-		$owner_id = $order->purchaser['user_id'] ?? 0;
-		
-		// Show if the current user matches the order's purchaser.
-		if ( 0 !== $owner_id && get_current_user_id() === $owner_id ) {
-			return true;
-		}
-		
-		// Show always for guest orders.
-		return 0 === $owner_id;
+
+		// The order is tied to a user, but current user is not the owner or admin.
+		return false;
 	}
 
 	/**
