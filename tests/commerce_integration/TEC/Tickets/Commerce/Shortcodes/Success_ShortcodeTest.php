@@ -172,7 +172,7 @@ class Success_Shortcode_Test extends WPTestCase {
 				
 				wp_set_current_user( 1 );
 				
-				return [ $order->ID, $post_id ];
+				return [ $order->ID, $post_id, $order->gateway_order_id ];
 			},
 		];
 		
@@ -212,7 +212,7 @@ class Success_Shortcode_Test extends WPTestCase {
 				
 				wp_set_current_user( 1 );
 				
-				return [ $order->ID, $post_id ];
+				return [ $order->ID, $post_id, $order->gateway_order_id ];
 			},
 		];
 	}
@@ -223,16 +223,16 @@ class Success_Shortcode_Test extends WPTestCase {
 	 * @dataProvider data_provider_test_render_success_shortcode
 	 */
 	public function test_render_success_shortcode( Closure $fixture ) {
-		[ $order_id, $post_id ] = $fixture();
+		[ $order_id, $post_id, $order_key ] = $fixture();
 		
-		$_GET[ Success::$order_id_query_arg ] = $order_id;
+		$_GET[ Success::$order_id_query_arg ] = $order_key;
 		
 		$shortcode = new Success_Shortcode();
 		
 		$html = $shortcode->get_html();
 		
 		$html = str_replace(
-			[ $post_id, $order_id ],
+			[ $post_id, $order_key ],
 			[ '{EVENT_ID}', '{ORDER_ID}' ],
 			$html
 		);
