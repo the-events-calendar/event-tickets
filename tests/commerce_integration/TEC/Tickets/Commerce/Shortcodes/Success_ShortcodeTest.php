@@ -34,7 +34,7 @@ class Success_Shortcode_Test extends WPTestCase {
 			'tribe_tickets_post_types',
 			function () {
 				return [ 'post' ];
-			} 
+			}
 		);
 
 		// Enable Tickets Commerce as the default provider.
@@ -43,7 +43,7 @@ class Success_Shortcode_Test extends WPTestCase {
 			function ( $modules ) {
 				$modules[ Module::class ] = Module::class;
 				return $modules;
-			} 
+			}
 		);
 
 		tribe_update_option( 'tickets-commerce-currency-code', 'USD' );
@@ -92,7 +92,7 @@ class Success_Shortcode_Test extends WPTestCase {
 			[
 				'ticket_name'        => 'Test TC ticket',
 				'ticket_description' => 'Test TC ticket description',
-			] 
+			]
 		);
 
 		// Create an order for one ticket.
@@ -100,7 +100,7 @@ class Success_Shortcode_Test extends WPTestCase {
 			[ $tickets_commerce_ticket_id => 1 ],
 			[
 				'purchaser_email' => 'purchaser_email@test.com',
-			] 
+			]
 		);
 
 		// Update order info for normalization.
@@ -113,7 +113,7 @@ class Success_Shortcode_Test extends WPTestCase {
 				'post_date_gmt'     => $fake_date,
 				'post_modified'     => $fake_date,
 				'post_modified_gmt' => $fake_date,
-			] 
+			]
 		);
 
 		$attendee_id = $this->create_attendee_for_ticket(
@@ -121,12 +121,12 @@ class Success_Shortcode_Test extends WPTestCase {
 			$post_id,
 			[
 				'order_id' => $order->ID,
-			] 
+			]
 		);
 	}
-	
+
 	public function data_provider_test_render_success_shortcode(): Generator {
-		yield 'order with logged in user' => [
+		yield 'order_with_logged_in_user' => [
 			function () {
 				$post_id   = $this->factory()->post->create();
 				$ticket_id = $this->create_tc_ticket(
@@ -137,14 +137,14 @@ class Success_Shortcode_Test extends WPTestCase {
 						'ticket_description' => 'Test TC ticket description',
 					]
 				);
-				
+
 				$user = $this->factory()->user->create(
 					[
 						'user_login' => 'test_user_a',
 						'user_email' => 'test_user@test.com',
 					]
 				);
-				
+
 				wp_update_user(
 					[
 						'ID'         => $user,
@@ -152,13 +152,13 @@ class Success_Shortcode_Test extends WPTestCase {
 						'last_name'  => 'Logged In',
 					]
 				);
-				
+
 				wp_set_current_user( $user );
-				
+
 				$purchaser_data = tribe( Order::class )->get_purchaser_data(
 					[]
 				);
-				
+
 				$order = $this->create_order(
 					[ $ticket_id => 1 ],
 					array_merge(
@@ -169,12 +169,12 @@ class Success_Shortcode_Test extends WPTestCase {
 						$purchaser_data
 					),
 				);
-				
+
 				return [ $order->ID, $post_id, $order->gateway_order_id ];
 			},
 		];
-		
-		yield 'order with guest user' => [
+
+		yield 'order_with_guest_user' => [
 			function () {
 				$post_id   = $this->factory()->post->create();
 				$ticket_id = $this->create_tc_ticket(
@@ -185,9 +185,9 @@ class Success_Shortcode_Test extends WPTestCase {
 						'ticket_description' => 'Test TC ticket description',
 					]
 				);
-				
+
 				wp_set_current_user( 0 );
-				
+
 				$purchaser_data = tribe( Order::class )->get_purchaser_data(
 					[
 						'purchaser' => [
@@ -196,7 +196,7 @@ class Success_Shortcode_Test extends WPTestCase {
 						],
 					]
 				);
-				
+
 				$order = $this->create_order(
 					[ $ticket_id => 1 ],
 					array_merge(
@@ -207,13 +207,13 @@ class Success_Shortcode_Test extends WPTestCase {
 						$purchaser_data
 					),
 				);
-				
+
 				return [ $order->ID, $post_id, $order->gateway_order_id ];
 			},
-			
+
 		];
-		
-		yield 'view order for someone else' => [
+
+		yield 'view_order_for_someone_else' => [
 			function () {
 				$post_id   = $this->factory()->post->create();
 				$ticket_id = $this->create_tc_ticket(
@@ -245,7 +245,7 @@ class Success_Shortcode_Test extends WPTestCase {
 				$purchaser_data = tribe( Order::class )->get_purchaser_data(
 					[]
 				);
-				
+
 				// Set the purchaser user ID to a different user.
 				$purchaser_data['purchaser_user_id'] = 99;
 
@@ -264,7 +264,7 @@ class Success_Shortcode_Test extends WPTestCase {
 			},
 		];
 	}
-	
+
 	/**
 	 * @test
 	 *
@@ -272,19 +272,19 @@ class Success_Shortcode_Test extends WPTestCase {
 	 */
 	public function test_render_success_shortcode( Closure $fixture ) {
 		[ $order_id, $post_id, $order_key ] = $fixture();
-		
+
 		$_GET[ Success::$order_id_query_arg ] = $order_key;
-		
+
 		$shortcode = new Success_Shortcode();
-		
+
 		$html = $shortcode->get_html();
-		
+
 		$html = str_replace(
 			[ $post_id, $order_key ],
 			[ '{EVENT_ID}', '{ORDER_ID}' ],
 			$html
 		);
-		
+
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
 }
