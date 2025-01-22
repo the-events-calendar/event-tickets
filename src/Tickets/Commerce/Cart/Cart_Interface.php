@@ -74,6 +74,8 @@ interface Cart_Interface {
 	 * @since 5.1.9
 	 *
 	 * @param array $criteria
+	 *
+	 * @return bool Whether the cart exists or not.
 	 */
 	public function exists( array $criteria = [] );
 

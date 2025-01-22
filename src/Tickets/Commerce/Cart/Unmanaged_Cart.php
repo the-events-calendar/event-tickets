@@ -124,6 +124,8 @@ class Unmanaged_Cart extends Abstract_Cart {
 	 * @since 5.1.9
 	 *
 	 * @param array $criteria The criteria to check for.
+	 *
+	 * @return bool Whether the cart exists or not.
 	 */
 	public function exists( array $criteria = [] ) {
 		$cart_hash = tribe( Cart::class )->get_cart_hash();
