@@ -572,7 +572,7 @@ class Order extends Abstract_Order {
 			'purchaser_first_name' => $purchaser['purchaser_first_name'],
 			'purchaser_last_name'  => $purchaser['purchaser_last_name'],
 			'purchaser_email'      => $purchaser['purchaser_email'],
-			'gateway_order_id'     => $this->generate_order_key( $hash, $purchaser['purchaser_email'] ),
+			'gateway_order_id'     => $this->generate_order_key( $hash ?? '', $purchaser['purchaser_email'] ),
 		];
 
 		if ( $hash ) {

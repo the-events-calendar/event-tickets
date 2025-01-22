@@ -170,8 +170,6 @@ class Success_Shortcode_Test extends WPTestCase {
 					),
 				);
 				
-				update_post_meta( $order->ID, Order::$gateway_order_id_meta_key, $order->ID );
-				
 				wp_set_current_user( 1 );
 				
 				return [ $order->ID, $post_id ];
@@ -212,7 +210,6 @@ class Success_Shortcode_Test extends WPTestCase {
 					),
 				);
 				
-				update_post_meta( $order->ID, Order::$gateway_order_id_meta_key, $order->ID );
 				wp_set_current_user( 1 );
 				
 				return [ $order->ID, $post_id ];
