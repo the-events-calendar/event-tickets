@@ -163,7 +163,8 @@ class Success_Shortcode_Test extends WPTestCase {
 					[ $ticket_id => 1 ],
 					array_merge(
 						[
-							'gateway' => tribe( Free_Gateway::class ),
+							'gateway'   => tribe( Free_Gateway::class ),
+							'post_date' => '2021-01-01 00:00:00',
 						],
 						$purchaser_data
 					),
@@ -173,7 +174,7 @@ class Success_Shortcode_Test extends WPTestCase {
 				
 				wp_set_current_user( 1 );
 				
-				return [ $order->ID ];
+				return [ $order->ID, $post_id ];
 			},
 		];
 		
@@ -204,7 +205,8 @@ class Success_Shortcode_Test extends WPTestCase {
 					[ $ticket_id => 1 ],
 					array_merge(
 						[
-							'gateway' => tribe( Free_Gateway::class ),
+							'gateway'   => tribe( Free_Gateway::class ),
+							'post_date' => '2021-01-02 00:00:00',
 						],
 						$purchaser_data
 					),
@@ -213,7 +215,7 @@ class Success_Shortcode_Test extends WPTestCase {
 				update_post_meta( $order->ID, Order::$gateway_order_id_meta_key, $order->ID );
 				wp_set_current_user( 1 );
 				
-				return [ $order->ID ];
+				return [ $order->ID, $post_id ];
 			},
 		];
 	}
@@ -224,11 +226,21 @@ class Success_Shortcode_Test extends WPTestCase {
 	 * @dataProvider data_provider_test_render_success_shortcode
 	 */
 	public function test_render_success_shortcode( Closure $fixture ) {
-		[ $id ]                               = $fixture();
-		$_GET[ Success::$order_id_query_arg ] = $id;
+		[ $order_id, $post_id ] = $fixture();
+		
+		$_GET[ Success::$order_id_query_arg ] = $order_id;
 		
 		$shortcode = new Success_Shortcode();
-		$this->assertMatchesHtmlSnapshot( $shortcode->get_html() );
+		
+		$html = $shortcode->get_html();
+		
+		$html = str_replace(
+			[ $post_id, $order_id ],
+			[ '{EVENT_ID}', '{ORDER_ID}' ],
+			$html
+		);
+		
+		$this->assertMatchesHtmlSnapshot( $html );
 	}
 		
 	/**
@@ -238,7 +250,7 @@ class Success_Shortcode_Test extends WPTestCase {
 	 */
 	public function test_order_data( Closure $fixture ) {
 		[ $order_id ] = $fixture();
-			
+		
 		$this->assertMatchesJsonSnapshot( json_encode( tec_tc_get_order( $order_id, ARRAY_A ), JSON_PRETTY_PRINT ) );
 	}
 }
