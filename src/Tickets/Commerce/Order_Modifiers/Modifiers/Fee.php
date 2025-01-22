@@ -83,13 +83,13 @@ class Fee extends Modifier_Abstract {
 		$modifier = parent::insert_modifier( $data );
 
 		// Handle metadata (e.g., order_modifier_apply_to).
-		$apply_fee_to = tribe_get_request_var( 'order_modifier_apply_to', '' );
+		$apply_fee_to = tec_get_request_var( 'order_modifier_apply_to', '' );
 
 		// Handle metadata (e.g., order_modifier_apply_to).
 		$this->handle_meta_data(
 			$modifier->id,
 			[
-				'meta_key'   => 'fee_applied_to',
+				'meta_key'   => $this->get_applied_to_key( $this->modifier_type ),
 				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 				'meta_value' => $apply_fee_to,
 			]
@@ -100,10 +100,10 @@ class Fee extends Modifier_Abstract {
 
 		switch ( $apply_fee_to ) {
 			case 'venue':
-				$apply_to_post_id = tribe_get_request_var( 'venue_list', null );
+				$apply_to_post_id = tec_get_request_var( 'venue_list', null );
 				break;
 			case 'organizer':
-				$apply_to_post_id = tribe_get_request_var( 'organizer_list', null );
+				$apply_to_post_id = tec_get_request_var( 'organizer_list', null );
 				break;
 		}
 
@@ -132,14 +132,14 @@ class Fee extends Modifier_Abstract {
 		}
 
 		// Handle metadata (e.g., order_modifier_apply_to).
-		$apply_fee_to = tribe_get_request_var( 'order_modifier_apply_to', '' );
+		$apply_fee_to = tec_get_request_var( 'order_modifier_apply_to', '' );
 
 		$this->maybe_clear_relationships( $modifier->id, $apply_fee_to );
 
 		$this->handle_meta_data(
 			$modifier->id,
 			[
-				'meta_key'   => 'fee_applied_to',
+				'meta_key'   => $this->get_applied_to_key( $this->modifier_type ),
 				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 				'meta_value' => $apply_fee_to,
 			]
@@ -150,10 +150,10 @@ class Fee extends Modifier_Abstract {
 
 		switch ( $apply_fee_to ) {
 			case 'venue':
-				$apply_to_post_ids = tribe_get_request_var( 'venue_list', [] );
+				$apply_to_post_ids = tec_get_request_var( 'venue_list', [] );
 				break;
 			case 'organizer':
-				$apply_to_post_ids = tribe_get_request_var( 'organizer_list', [] );
+				$apply_to_post_ids = tec_get_request_var( 'organizer_list', [] );
 				break;
 		}
 
@@ -269,7 +269,7 @@ class Fee extends Modifier_Abstract {
 	 * @return array The context data ready for rendering the form.
 	 */
 	public function map_context_to_template( array $context ): array {
-		$order_modifier_fee_applied_to = $this->order_modifiers_meta_repository->find_by_order_modifier_id_and_meta_key( $context['modifier_id'], 'fee_applied_to' )->meta_value ?? '';
+		$order_modifier_fee_applied_to = $this->meta_repository->find_by_order_modifier_id_and_meta_key( $context['modifier_id'], 'fee_applied_to' )->meta_value ?? '';
 		return [
 			'order_modifier_display_name'     => $context['display_name'] ?? '',
 			'order_modifier_slug'             => $context['slug'] ?? $this->generate_unique_slug(),
@@ -295,6 +295,6 @@ class Fee extends Modifier_Abstract {
 	 * @return array The list of posts related to the modifier.
 	 */
 	public function get_active_on( $modifier_id ) {
-		return $this->order_modifiers_relationship_repository->find_by_modifier_id( $modifier_id );
+		return $this->relationship_repository->find_by_modifier_id( $modifier_id );
 	}
 }

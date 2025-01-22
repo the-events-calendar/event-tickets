@@ -12,7 +12,10 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Modifiers;
 
+use RuntimeException;
 use TEC\Common\StellarWP\Models\Contracts\Model;
+use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Coupon_Table;
+use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Fee_Table;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Legacy_Value_Factory;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
@@ -211,5 +214,29 @@ class Modifier_Manager {
 			default:
 				return $zero_value;
 		}
+	}
+
+	/**
+	 * Get the table class for the current strategy.
+	 *
+	 * This method returns the appropriate table class based on the current strategy.
+	 *
+	 * @since 5.18.1
+	 *
+	 * @return Fee_Table|Coupon_Table The table class for the current strategy.
+	 *
+	 * @throws RuntimeException If the modifier type is invalid.
+	 */
+	public function get_table_class() {
+		$type = $this->strategy->get_modifier_type();
+		switch ( $type ) {
+			case 'fee':
+				return tribe( Fee_Table::class );
+
+			case 'coupon':
+				return tribe( Coupon_Table::class );
+		}
+
+		throw new RuntimeException( 'Invalid modifier type.' );
 	}
 }

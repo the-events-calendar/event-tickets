@@ -173,4 +173,23 @@ class CartTest extends \Codeception\TestCase\WPTestCase {
 		$assertion_msg = 'Cart->get_total() should return 0 when the cart contains only free tickets.';
 		$this->assertEquals( 0, $cart->get_cart_total(), $assertion_msg );
 	}
+
+	/**
+	 * @test
+	 *
+	 * @covers \TEC\Tickets\Commerce\Cart::get_cart_hash_cookie_name
+	 */
+	public function test_cart_hash_cookie_name() {
+		$original_cookie_name = Cart::get_cart_hash_cookie_name();
+		$this->assertEquals( Cart::$cart_hash_cookie_name, $original_cookie_name );
+
+		add_filter( 'tec_tickets_commerce_cart_hash_cookie_name', function() {
+			return 'different_cookie_name';
+		} );
+
+		$different_cookie_name = Cart::get_cart_hash_cookie_name();
+		$this->assertEquals( 'different_cookie_name', $different_cookie_name );
+
+		$this->assertNotEquals( $original_cookie_name, $different_cookie_name );
+	}
 }

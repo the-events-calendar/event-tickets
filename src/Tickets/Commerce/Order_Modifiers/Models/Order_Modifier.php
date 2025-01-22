@@ -16,7 +16,7 @@ use TEC\Common\StellarWP\Models\Contracts\ModelFromQueryBuilderObject;
 use TEC\Common\StellarWP\Models\Model;
 use TEC\Common\StellarWP\Models\ModelQueryBuilder;
 use TEC\Tickets\Commerce\Order_Modifiers\Data_Transfer_Objects\Order_Modifier_DTO;
-use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers as Repository;
+use TEC\Tickets\Commerce\Order_Modifiers\Factory;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Float_Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Percent_Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Positive_Integer_Value;
@@ -84,7 +84,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 			return null;
 		}
 
-		return ( new Repository( static::$order_modifier_type ) )->find_by_id( $id );
+		return Factory::get_repository_for_type( static::$order_modifier_type )->find_by_id( $id );
 	}
 
 	/**
@@ -116,7 +116,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 * @return static
 	 */
 	public function save(): self {
-		$repository = new Repository( $this->modifier_type );
+		$repository = Factory::get_repository_for_type( static::$order_modifier_type );
 		if ( $this->id ) {
 			$repository->update( $this );
 
@@ -136,7 +136,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 * @return bool Whether the model was deleted.
 	 */
 	public function delete(): bool {
-		return ( new Repository( $this->modifier_type ) )->delete( $this );
+		return Factory::get_repository_for_type( static::$order_modifier_type )->delete( $this );
 	}
 
 	/**
@@ -147,7 +147,7 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 * @return ModelQueryBuilder The query builder instance.
 	 */
 	public static function query(): ModelQueryBuilder {
-		return tribe( Repository::class )->query();
+		return Factory::get_repository_for_type( static::$order_modifier_type )->prepareQuery();
 	}
 
 	/**
