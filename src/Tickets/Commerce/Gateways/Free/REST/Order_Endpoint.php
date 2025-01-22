@@ -87,15 +87,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
 		
-		$hash = substr( md5( uniqid() ), 0, 10 ) . '-' . $order->ID;
-		$meta = [
-			'gateway_order_id' => $hash,
-		];
-
 		$created = tribe( Order::class )->modify_status(
 			$order->ID,
 			Pending::SLUG,
-			$meta
 		);
 
 		if ( is_wp_error( $created ) ) {
@@ -115,7 +109,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		$response['success']      = true;
 		$response['id']           = $order->ID;
-		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $hash ], tribe( Success::class )->get_url() );
+		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $order->gateway_order_id ], tribe( Success::class )->get_url() );
 
 		return new WP_REST_Response( $response );
 	}
