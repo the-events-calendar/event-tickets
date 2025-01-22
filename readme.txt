@@ -201,7 +201,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.18.1] 2025-01-22 =
 
-* Feature - Include Seating information in Attendee archive REST API response.
+* Feature - Include Seating information in Attendee archive REST API response. [SL-264]
 * Tweak - Add filter to customize the cart hash cookie name for Tickets Commerce. [ET-2269]
 * Tweak - Introduced methods `can_change_to` for Statuses and `can_transition_to` for Orders. [ET-2281]
 * Tweak - Introduced various hooks for the order lock system and order completed checkout actions. [ET-2281]
