@@ -494,7 +494,6 @@ class Order extends Abstract_Order {
 	 *
 	 * @return false|WP_Post
 	 * @throws \Tribe__Repository__Usage_Error
-	 *
 	 */
 	public function create_from_cart( Gateway_Interface $gateway, $purchaser = null ) {
 		$cart = tribe( Cart::class );
@@ -612,7 +611,6 @@ class Order extends Abstract_Order {
 	 * @throws \Tribe__Repository__Usage_Error
 	 *
 	 * @internal Use `upsert` instead.
-	 *
 	 */
 	public function create( Gateway_Interface $gateway, $args ) {
 		$gateway_key = $gateway::get_key();
@@ -808,7 +806,6 @@ class Order extends Abstract_Order {
 	 * @see   \Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
 	 * @todo  Determine if redirecting should be something relegated to some other method, and here we only generate
 	 *        generate the order/Attendees.
-	 *
 	 */
 	protected function redirect_after_error( $error_code, $redirect, $post_id ) {
 		$url = add_query_arg( 'tpp_error', $error_code, get_permalink( $post_id ) );
@@ -987,12 +984,14 @@ class Order extends Abstract_Order {
 	 * @return mixed|WP_Post|null
 	 */
 	public function get_from_gateway_order_id( $gateway_order_id ) {
-		return tec_tc_orders()->by_args( [
-			'order_by'         => 'ID',
-			'order'            => 'DESC',
-			'status'           => 'any',
-			'gateway_order_id' => $gateway_order_id,
-		] )->first();
+		return tec_tc_orders()->by_args(
+			[
+				'order_by'         => 'ID',
+				'order'            => 'DESC',
+				'status'           => 'any',
+				'gateway_order_id' => $gateway_order_id,
+			] 
+		)->first();
 	}
 
 	/**
