@@ -14,6 +14,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use TEC\Tickets\Commerce\Module;
 use Closure;
 use Generator;
+use TEC\Tickets\Commerce\Gateways\Free\Gateway as Free_Gateway;
 
 class Success_Shortcode_Test extends WPTestCase {
 	use Ticket_Maker;
@@ -160,7 +161,12 @@ class Success_Shortcode_Test extends WPTestCase {
 				
 				$order = $this->create_order(
 					[ $ticket_id => 1 ],
-					$purchaser_data,
+					array_merge(
+						[
+							'gateway' => tribe( Free_Gateway::class ),
+						],
+						$purchaser_data
+					),
 				);
 				
 				update_post_meta( $order->ID, Order::$gateway_order_id_meta_key, $order->ID );
@@ -196,7 +202,12 @@ class Success_Shortcode_Test extends WPTestCase {
 				
 				$order = $this->create_order(
 					[ $ticket_id => 1 ],
-					$purchaser_data,
+					array_merge(
+						[
+							'gateway' => tribe( Free_Gateway::class ),
+						],
+						$purchaser_data
+					),
 				);
 				
 				update_post_meta( $order->ID, Order::$gateway_order_id_meta_key, $order->ID );
