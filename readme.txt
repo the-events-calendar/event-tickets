@@ -206,6 +206,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Introduced methods `can_change_to` for Statuses and `can_transition_to` for Orders. [ET-2281]
 * Tweak - Introduced various hooks for the order lock system and order completed checkout actions. [ET-2281]
 * Tweak - Lazy load attendees report page asset filter to properly localize asset data [ET-2274]
+* Tweak - Added filters: `tec_tickets_commerce_attendee_update_args`, `tec_tickets_commerce_attendee_update`, `tec_tickets_commerce_cart_hash_cookie_name`, `tec_tickets_commerce_order_{$gateway_key}_upsert_args`, `tec_tickets_commerce_order_upsert_args`, `tec_tickets_commerce_order_upsert_existing_order_id`, `tec_tickets_commerce_order_{$gateway_key}_update_args`, `tec_tickets_commerce_order_update_args`, `tec_tickets_commerce_order_modifier_valid_statuses`, `tec_tickets_rest_attendee_archive_data`
+* Tweak - Removed filters: `tec_tickets_commerce_order_modifier_status_flags`
+* Tweak - Added actions: `tec_tickets_commerce_attendee_before_update`, `tec_tickets_commerce_attendee_after_update`, `tec_tickets_commerce_order_locked`, `tec_tickets_commerce_order_unlocked`, `tec_tickets_commerce_order_checkout_completed`
+* Tweak - Changed views: `v2/tickets/item`
 * Fix - Added a default empty array to `maybe_disable_foreign_key_checks`. [ET-2275]
 * Fix - Attendee generation during order status transition becomes aware if attendees have been already generated. [ET-2282]
 * Fix - Introduce Order lock mechanism to ensure 2 or more action that could update the order, they dont so at the same time. [ET-2279]
