@@ -214,13 +214,16 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 	 * @return ModelQueryBuilder The query builder with the necessary joins.
 	 */
 	protected function build_base_query(): ModelQueryBuilder {
-		$posts_table           = 'posts';
-		$order_modifiers_table = Order_Modifiers::base_table_name();
-
 		return $this->prepareQuery()
-			->select( 'r.id,m.id as modifier_id', 'p.ID as post_id', 'p.post_type', 'p.post_title' )
-			->innerJoin( "$order_modifiers_table as m", 'r.modifier_id', 'm.id' )
-			->innerJoin( "$posts_table as p", 'r.post_id', 'p.ID' );
+			->select(
+				'r.id',
+				[ 'm.id', 'modifier_id' ],
+				[ 'p.ID', 'post_id' ],
+				'p.post_type',
+				'p.post_title'
+			)
+			->innerJoin( Order_Modifiers::base_table_name(), 'r.modifier_id', 'm.id', 'm' )
+			->innerJoin( 'posts', 'r.post_id', 'p.ID', 'p' );
 	}
 
 	/**
@@ -233,6 +236,6 @@ class Order_Modifier_Relationship extends Repository implements Insertable, Upda
 	public function prepareQuery(): ModelQueryBuilder {
 		$builder = new ModelQueryBuilder( Relationship_Model::class );
 
-		return $builder->from( Table::table_name( false ) . ' as r' );
+		return $builder->from( Table::table_name( false ), 'r' );
 	}
 }

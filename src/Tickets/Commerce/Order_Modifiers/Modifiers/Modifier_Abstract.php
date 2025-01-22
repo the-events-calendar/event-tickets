@@ -22,22 +22,26 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Modifiers;
 
 use Exception;
 use InvalidArgumentException;
+use RuntimeException;
 use TEC\Common\StellarWP\Models\Contracts\Model;
-use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
-use TEC\Tickets\Commerce\Utils\Value;
-use TEC\Tickets\Exceptions\Not_Found_Exception;
+use TEC\Tickets\Commerce\Order_Modifiers\Factory;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Meta;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Relationships;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifier_Admin_Handler;
-use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers as Order_Modifiers_Repository;
-use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta as Order_Modifiers_Meta_Repository;
-use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship as Order_Modifier_Relationship_Repository;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship as Relationship_Repo;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers as Modifiers_Repo;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta as Meta_Repo;
+use TEC\Tickets\Commerce\Order_Modifiers\Traits\Meta_Keys;
+use TEC\Tickets\Commerce\Order_Modifiers\Traits\Status;
+use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Currency_Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Float_Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Percent_Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Positive_Integer_Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
+use TEC\Tickets\Commerce\Utils\Value;
+use TEC\Tickets\Exceptions\Not_Found_Exception;
 
 /**
  * Class Modifier_Abstract
@@ -47,6 +51,9 @@ use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
  * @since 5.18.0
  */
 abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
+
+	use Meta_Keys;
+	use Status;
 	use Valid_Types;
 
 	/**
@@ -61,25 +68,25 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * The repository for interacting with the order modifiers table.
 	 *
 	 * @since 5.18.0
-	 * @var Order_Modifiers_Repository
+	 * @var Modifiers_Repo
 	 */
-	protected Order_Modifiers_Repository $repository;
+	protected Modifiers_Repo $repository;
 
 	/**
 	 * The repository for interacting with the order modifiers meta table.
 	 *
 	 * @since 5.18.0
-	 * @var Order_Modifiers_Meta_Repository Repository
+	 * @var Meta_Repo Repository
 	 */
-	protected Order_Modifiers_Meta_Repository $order_modifiers_meta_repository;
+	protected Meta_Repo $meta_repository;
 
 	/**
 	 * The repository for interacting with the order modifier relationship table.
 	 *
 	 * @since 5.18.0
-	 * @var Order_Modifier_Relationship_Repository Repository
+	 * @var Relationship_Repo Repository
 	 */
-	protected Order_Modifier_Relationship_Repository $order_modifiers_relationship_repository;
+	protected Relationship_Repo $relationship_repository;
 
 	/**
 	 * Fields required by this modifier.
@@ -96,9 +103,9 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @since 5.18.0
 	 */
 	public function __construct() {
-		$this->repository                              = new Order_Modifiers_Repository( $this->modifier_type );
-		$this->order_modifiers_meta_repository         = new Order_Modifiers_Meta_Repository();
-		$this->order_modifiers_relationship_repository = new Order_Modifier_Relationship_Repository();
+		$this->repository              = Factory::get_repository_for_type( $this->modifier_type );
+		$this->meta_repository         = new Meta_Repo();
+		$this->relationship_repository = new Relationship_Repo();
 	}
 
 	/**
@@ -150,27 +157,42 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @since 5.18.0
 	 *
-	 * @param int    $modifier_id The modifier ID.
+	 * @param int $modifier_id The modifier ID.
 	 *
+	 * @return array The modifier data as an array.
 	 *
-	 * @return array|null The modifier data or null if not found.
+	 * @throws RuntimeException If the modifier is not found.
 	 */
 	public function get_modifier_by_id( int $modifier_id ): ?array {
-		$modifier_data = $this->repository->find_by_id( $modifier_id );
-		return $modifier_data ? $modifier_data->to_array() : null;
+		return $this->repository->find_by_id( $modifier_id )->to_array();
 	}
 
 	/**
-	 * Finds a modifier by its display name.
+	 * Get modifier based on what it applies to.
 	 *
-	 * @since 5.18.0
+	 * @since 5.18.1
 	 *
-	 * @param array $search Parameters to search Order Modifiers by.
+	 * @param array $applied_to The applied to value.
+	 * @param array $params    Additional parameters to filter the results.
 	 *
-	 * @return array The modifier data.
+	 * @return array The modifiers that were found.
 	 */
-	public function find_by_search( array $search ): array {
-		return $this->repository->search_modifiers( $search );
+	public function get_modifier_by_applied_to( array $applied_to, array $params = [] ): array {
+		return $this->repository->get_modifier_by_applied_to( $applied_to, $params );
+	}
+
+	/**
+	 * Get modifiers along with their applied to meta key.
+	 *
+	 * @since 5.18.1
+	 *
+	 * @param array $params               Additional parameters to filter the results.
+	 * @param bool  $with_applied_to_meta Whether to include the applied to meta key.
+	 *
+	 * @return array The modifiers that were found.
+	 */
+	public function get_modifiers( array $params = [], bool $with_applied_to_meta = true ): array {
+		return $this->repository->get_modifiers( $params, $with_applied_to_meta );
 	}
 
 	/**
@@ -193,27 +215,41 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		$missing_fields = array_diff_key( $this->required_fields, $data );
 		if ( ! empty( $missing_fields ) ) {
 			$errors[] = sprintf(
-			/* translators: %s: List of missing fields. */
+				/* translators: %s: List of missing fields. */
 				__( 'The following required fields are missing: %s', 'event-tickets' ),
 				implode( ', ', array_keys( $missing_fields ) )
 			);
 		}
 
 		// Validate required fields are not empty.
-		foreach ( $this->required_fields as $field => $required ) {
-			if ( $required && ( ! isset( $data[ $field ] ) || ( is_string( $data[ $field ] ) && trim( $data[ $field ] ) === '' ) ) ) {
-				$errors[] = sprintf(
-				/* translators: %s: Field name. */
-					__( 'The field "%s" is required and cannot be empty.', 'event-tickets' ),
-					$field
-				);
+		foreach ( $this->required_fields as $field => $r ) {
+			switch ( $field ) {
+				case 'raw_amount':
+					if ( ! is_float( $data[ $field ] ) ) {
+						$errors[] = sprintf(
+							/* translators: %s: Field name. */
+							__( 'The field "%s" must be a valid number.', 'event-tickets' ),
+							$field
+						);
+					}
+					break;
+
+				default:
+					if ( ! is_string( $data[ $field ] ) || trim( $data[ $field ] ) === '' ) {
+						$errors[] = sprintf(
+							/* translators: %s: Field name. */
+							__( 'The field "%s" is required and cannot be empty.', 'event-tickets' ),
+							$field
+						);
+					}
+					break;
 			}
 		}
 
 		// Validate the sub_type field, if present.
 		if ( ! empty( $data['sub_type'] ) && ! $this->is_valid_subtype( $data['sub_type'] ) ) {
 			$errors[] = sprintf(
-			/* translators: %s: Invalid sub-type value. */
+				/* translators: %s: Invalid sub-type value. */
 				__( 'The provided sub-type "%s" is invalid. Please use a valid sub-type.', 'event-tickets' ),
 				$data['sub_type']
 			);
@@ -222,7 +258,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		// Validate the status field, if present.
 		if ( ! empty( $data['status'] ) && ! $this->is_valid_status( $data['status'] ) ) {
 			$errors[] = sprintf(
-			/* translators: %s: Invalid status value. */
+				/* translators: %s: Invalid status value. */
 				__( 'The provided status "%s" is invalid. Please use a valid status.', 'event-tickets' ),
 				$data['status']
 			);
@@ -232,7 +268,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		if ( ! empty( $errors ) ) {
 			throw new InvalidArgumentException(
 				sprintf(
-				/* translators: %s: Validation error messages. */
+					/* translators: %s: Validation error messages. */
 					__( 'Validation failed: %s', 'event-tickets' ),
 					implode( '; ', $errors )
 				)
@@ -383,43 +419,6 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	}
 
 	/**
-	 * Convert the status to a human-readable format.
-	 *
-	 * This method converts the internal status values ('active', 'inactive', 'draft')
-	 * into human-readable strings ('Active', 'Inactive', 'Draft').
-	 * It also provides a filter to allow for customizing the status labels if necessary.
-	 *
-	 * @since 5.18.0
-	 *
-	 * @param string $status The raw status from the database.
-	 *
-	 * @return string The human-readable status.
-	 */
-	public function get_status_display( string $status ): string {
-		// Default conversion.
-		$statuses = [
-			'active'   => _x( 'Active', 'Order modifier status', 'event-tickets' ),
-			'inactive' => _x( 'Inactive', 'Order modifier status', 'event-tickets' ),
-			'draft'    => _x( 'Draft', 'Order modifier status', 'event-tickets' ),
-		];
-
-		/**
-		 * Filters the human-readable status label for an order modifier.
-		 *
-		 * This allows developers to modify the status labels (e.g., changing 'Draft' to 'Pending').
-		 *
-		 * @since 5.18.0
-		 *
-		 * @param string[] $statuses The array of default status labels.
-		 * @param string $raw_status The raw status from the database (e.g., 'active', 'draft').
-		 * @param string $modifier_type The type of the modifier (e.g., 'coupon', 'fee').
-		 */
-		$statuses = apply_filters( 'tec_tickets_commerce_order_modifier_status_display', $statuses, $status, $this->modifier_type );
-
-		return $statuses[ $status ] ?? $status;
-	}
-
-	/**
 	 * Retrieves the page slug for the current modifier context.
 	 *
 	 * This method provides the slug associated with the page where the modifier is being managed.
@@ -470,7 +469,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		}
 
 		// Upsert the metadata using the repository.
-		return $this->order_modifiers_meta_repository->upsert_meta( new Order_Modifier_Meta( $meta_data ) );
+		return $this->meta_repository->upsert_meta( new Order_Modifier_Meta( $meta_data ) );
 	}
 
 
@@ -493,7 +492,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 			'post_id'     => $post_id,
 			'post_type'   => get_post_type( $post_id ),
 		];
-		$this->order_modifiers_relationship_repository->insert( new Order_Modifier_Relationships( $data ) );
+		$this->relationship_repository->insert( new Order_Modifier_Relationships( $data ) );
 	}
 
 	/**
@@ -509,7 +508,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return void
 	 */
 	public function delete_relationship_by_modifier( int $modifier_id ): void {
-		$this->order_modifiers_relationship_repository->clear_relationships_by_modifier_id( $modifier_id );
+		$this->relationship_repository->clear_relationships_by_modifier_id( $modifier_id );
 	}
 
 	/**
@@ -529,7 +528,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 			'post_id'   => $post_id,
 			'post_type' => get_post_type( $post_id ),
 		];
-		$this->order_modifiers_relationship_repository->clear_relationships_by_post_id( new Order_Modifier_Relationships( $data ) );
+		$this->relationship_repository->clear_relationships_by_post_id( new Order_Modifier_Relationships( $data ) );
 	}
 
 	/**
@@ -586,12 +585,15 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 */
 	public function maybe_clear_relationships( int $modifier_id, string $new_apply_type ): void {
 		// Retrieve the current apply_type from the metadata.
-		$current_apply_type = $this->order_modifiers_meta_repository->find_by_order_modifier_id_and_meta_key( $modifier_id, 'fee_applied_to' )->meta_value ?? null;
+		$current_apply_type = $this->meta_repository->find_by_order_modifier_id_and_meta_key(
+			$modifier_id,
+			$this->get_applied_to_key( $this->modifier_type )
+		)->meta_value ?? null;
 
 		// If the apply_type has changed, clear all relationships.
 		if ( $current_apply_type !== $new_apply_type ) {
 			// Clear the relationships for this modifier.
-			$this->order_modifiers_relationship_repository->clear_relationships_by_modifier_id( $modifier_id );
+			$this->relationship_repository->clear_relationships_by_modifier_id( $modifier_id );
 		}
 	}
 
@@ -620,7 +622,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		$this->delete_relationship_by_modifier( $modifier_id );
 
 		// Delete associated meta data.
-		$this->order_modifiers_meta_repository->delete( new Order_Modifier_Meta( [ 'id' => $modifier_id ] ) );
+		$this->meta_repository->delete( new Order_Modifier_Meta( [ 'id' => $modifier_id ] ) );
 
 		// Delete the modifier itself (mandatory).
 		$delete_modifier = $this->repository->delete(
@@ -654,7 +656,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @return mixed|null The meta data found, or null if no matching record is found.
 	 */
 	public function get_order_modifier_meta_by_key( int $order_modifier_id, string $meta_key ) {
-		return $this->order_modifiers_meta_repository->find_by_order_modifier_id_and_meta_key( $order_modifier_id, $meta_key );
+		return $this->meta_repository->find_by_order_modifier_id_and_meta_key( $order_modifier_id, $meta_key );
 	}
 
 	/**

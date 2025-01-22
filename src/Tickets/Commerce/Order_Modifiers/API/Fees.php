@@ -13,7 +13,6 @@ use Exception;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee_Modifier_Manager as Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship as Relationships;
-use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Fees as Fee_Repository;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Fee_Types;
 use WP_Error;
 use TEC\Common\Contracts\Container;
@@ -50,21 +49,18 @@ class Fees extends Base_API {
 	/**
 	 * Fees constructor.
 	 *
-	 * @param Container      $container      The DI container.
-	 * @param Fee_Repository $fee_repository The repository for interacting with the order modifiers.
-	 * @param Relationships  $relationships  The repository for interacting with the order modifiers relationships.
-	 * @param Manager        $manager        The manager for the order modifiers.
+	 * @param Container     $container     The DI container.
+	 * @param Relationships $relationships The repository for interacting with the order modifiers relationships.
+	 * @param Manager       $manager       The manager for the order modifiers.
 	 */
 	public function __construct(
 		Container $container,
-		Fee_Repository $fee_repository,
 		Relationships $relationships,
 		Manager $manager
 	) {
 		parent::__construct( $container );
-		$this->modifiers_repository = $fee_repository;
-		$this->relationships        = $relationships;
-		$this->manager              = $manager;
+		$this->relationships = $relationships;
+		$this->manager       = $manager;
 	}
 
 	/**
@@ -137,6 +133,16 @@ class Fees extends Base_API {
 				'methods'             => Server::READABLE,
 				'callback'            => fn( Request $request ) => $this->get_fees_response( $request ),
 				'permission_callback' => $this->get_permission_callback(),
+				'args'                => [
+					'status' => [
+						'description' => __( 'The status of the fees to retrieve.', 'event-tickets' ),
+						'type'        => 'array',
+						'items'       => [
+							'type' => 'string',
+							'enum' => [ 'active', 'inactive', 'draft' ],
+						],
+					],
+				],
 			]
 		);
 
@@ -184,7 +190,9 @@ class Fees extends Base_API {
 	 */
 	protected function get_fees_response( Request $request ): Response {
 		try {
-			$all = $this->get_all_fees();
+			$status = $request->get_param( 'status' ) ?? [ 'active' ];
+
+			$all = $this->get_all_fees( [ 'status' => $status ] );
 
 			return rest_ensure_response(
 				[

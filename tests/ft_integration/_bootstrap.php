@@ -75,3 +75,5 @@ addListener( Events::TEST_BEFORE, function () use ( $custom_tables ) {
 // Deactivate logging.
 global $wp_filter;
 $wp_filter['tribe_log'] = new WP_Hook();
+
+tec_tickets_tests_fake_transactions_enable();

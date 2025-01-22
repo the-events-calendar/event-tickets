@@ -36,15 +36,19 @@ class Screen_OptionsTest extends \Codeception\TestCase\WPTestCase {
 
 	// test
 	public function test_filter_screen_options_show_screen() {
+		// Correct screen should always return true.
 		$screen = (object) [
 			'id' => Page::$hook_suffix,
 		];
 		$this->assertTrue( $this->screen_options->filter_screen_options_show_screen( true, $screen ) );
+		$this->assertTrue( $this->screen_options->filter_screen_options_show_screen( false, $screen ) );
 
+		// Wrong screen should always return what is passed.
 		$wrong_screen = (object) [
 			'id' => 'not_the_screen_id',
 		];
-		$this->assertFalse( $this->screen_options->filter_screen_options_show_screen( true, $wrong_screen ) );
+		$this->assertFalse( $this->screen_options->filter_screen_options_show_screen( false, $wrong_screen ) );
+		$this->assertTrue( $this->screen_options->filter_screen_options_show_screen( true, $wrong_screen ) );
 	}
 
 	// test

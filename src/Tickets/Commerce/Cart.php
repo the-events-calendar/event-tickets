@@ -1,4 +1,5 @@
 <?php
+// phpcs:disable WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE, WordPressVIPMinimum.Functions.RestrictedFunctions.cookies_setcookie
 
 namespace TEC\Tickets\Commerce;
 
@@ -230,11 +231,12 @@ class Cart {
 
 		$cart_hash = $this->get_repository()->get_hash();
 
+		$hash_from_cookie = sanitize_text_field( $_COOKIE[ static::get_cart_hash_cookie_name() ] ?? '' );
+
 		if (
-			! empty( $_COOKIE[ static::$cart_hash_cookie_name ] )
-			&& strlen( $_COOKIE[ static::$cart_hash_cookie_name ] ) === $cart_hash_length
+			strlen( $hash_from_cookie ) === $cart_hash_length
 		) {
-			$cart_hash = $_COOKIE[ static::$cart_hash_cookie_name ];
+			$cart_hash = $hash_from_cookie;
 
 			$cart_hash_transient = get_transient( static::get_transient_name( $cart_hash ) );
 
@@ -288,7 +290,7 @@ class Cart {
 		$this->set_cart_hash_cookie( null );
 		$this->get_repository()->clear();
 
-		unset( $_COOKIE[ static::$cart_hash_cookie_name ] );
+		unset( $_COOKIE[ static::get_cart_hash_cookie_name() ] );
 
 		return delete_transient( static::get_current_cart_transient() );
 	}
@@ -298,7 +300,7 @@ class Cart {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @parem string $value Value used for the cookie or empty to purge the cookie.
+	 * @param string $value Value used for the cookie or empty to purge the cookie.
 	 *
 	 * @return boolean
 	 */
@@ -321,11 +323,11 @@ class Cart {
 			$expire = 1;
 		}
 
-		$is_cookie_set = setcookie( static::$cart_hash_cookie_name, $value ?? '', $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, is_ssl(), true );
+		$is_cookie_set = setcookie( static::get_cart_hash_cookie_name(), $value ?? '', $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, is_ssl(), true );
 
 		if ( $is_cookie_set ) {
 			// Overwrite local variable, so we can use it right away.
-			$_COOKIE[ static::$cart_hash_cookie_name ] = $value;
+			$_COOKIE[ static::get_cart_hash_cookie_name() ] = $value;
 		}
 
 		return $is_cookie_set;
@@ -654,5 +656,27 @@ class Cart {
 	 */
 	public function get_cart_subtotal(): float {
 		return $this->get_repository()->get_cart_subtotal();
+	}
+
+	/**
+	 * Get cart has cookie name.
+	 *
+	 * @since 5.18.1
+	 *
+	 * @return string
+	 */
+	public static function get_cart_hash_cookie_name(): string {
+		/**
+		 * Filters the cart hash cookie name.
+		 *
+		 * @since 5.18.1
+		 *
+		 * @param string $cart_hash_cookie_name The cart hash cookie name.
+		 *
+		 * @return string
+		 */
+		$filtered_cookie_name = apply_filters( 'tec_tickets_commerce_cart_hash_cookie_name', static::$cart_hash_cookie_name );
+
+		return sanitize_title( $filtered_cookie_name );
 	}
 }
