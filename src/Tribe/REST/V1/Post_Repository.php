@@ -644,6 +644,10 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			$price = tribe( Ticket::class )->get_regular_price( $ticket_id );
 		} elseif ( ! empty( $ticket->regular_price ) ) {
 			$price = $ticket->regular_price;
+
+			if ( ! is_numeric( $price ) ) {
+				$price = 0; // free.
+			}
 		}
 
 		$formatted_price = html_entity_decode( $currency->format_currency( $price, $ticket_id ) );
