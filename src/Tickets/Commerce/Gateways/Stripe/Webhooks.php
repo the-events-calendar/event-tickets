@@ -69,7 +69,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Option name for the option to store pending webhooks.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @var string
 	 */
@@ -101,7 +101,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Add a pending webhook to the order.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param int    $order_id   Order ID.
 	 * @param string $new_status New status.
@@ -125,7 +125,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Get the pending webhooks for an order.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param int $order_id Order ID.
 	 *
@@ -138,7 +138,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Delete the pending webhooks for an order.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param int $order_id Order ID.
 	 *

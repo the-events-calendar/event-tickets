@@ -151,7 +151,7 @@ abstract class Status_Abstract implements Status_Interface {
 	/**
 	 * Whether a Status Interface can be changed to another Status Interface.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param self $new_status The new status.
 	 *

@@ -89,7 +89,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * Given a WP Rest request we determine if it has the correct Stripe signature.
 	 *
 	 * @since 5.3.0
-	 * @since TBD - Protect from fatal when header is missing.
+	 * @since 5.18.1 - Protect from fatal when header is missing.
 	 *
 	 * @param WP_REST_Request $request Which request we are validating.
 	 *

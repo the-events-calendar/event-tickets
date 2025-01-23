@@ -39,7 +39,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	/**
 	 * The current page number.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @var int
 	 */
@@ -147,7 +147,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	/**
 	 * Setup the items for the table.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param array $params   The query parameters.
 	 * @param int   $per_page The number of items to display per page.
@@ -355,7 +355,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	/**
 	 * Retrieves hidden columns for the table.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @return array
 	 */

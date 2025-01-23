@@ -189,7 +189,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	/**
 	 * Get the count of Order Modifiers based on the given criteria.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param array $args Arguments for the query.
 	 *
@@ -404,7 +404,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	/**
 	 * Finds Order Modifiers by applied_to value.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param string[] $applied_to The value(s) to filter the query by.
 	 * @param array    $params     {
@@ -450,7 +450,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	/**
 	 * Finds Order Modifiers with applied_to meta value.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param array         $params     {
 	 *     Optional. Arguments to filter the query. See get_default_query_params() method for the full list of parameters.
@@ -573,7 +573,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 * This will call ->from() on the query builder with the table name before
 	 * the object is returned.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @return ModelQueryBuilder The query builder object.
 	 */
@@ -588,7 +588,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 *
 	 * This allows for easy interpolation in strings.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param bool $with_prefix Whether to include the table prefix. Default is true.
 	 *
@@ -603,7 +603,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 *
 	 * This allows for easy interpolation in strings.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param bool $with_prefix Whether to include the table prefix. Default is true.
 	 *
@@ -616,7 +616,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	/**
 	 * Get the default query parameters.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @return array The default query parameters.
 	 */
@@ -635,7 +635,7 @@ class Order_Modifiers extends Repository implements Insertable, Updatable, Delet
 	 * This will remove any parameters that we don't handle from the query and do basic
 	 * validation of the value of each query parameter.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param array $params The parameters to validate.
 	 *
