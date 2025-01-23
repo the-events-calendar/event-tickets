@@ -1008,13 +1008,23 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Whether a specific attendee is valid toward inventory decrease or not.
 		 *
 		 * @since 4.7
+		 * @since TBD Added filter `tec_tickets_attendee_decreases_inventory`.
 		 *
-		 * @param array $attendee
+		 * @param array $attendee The attendee data.
 		 *
 		 * @return bool
 		 */
 		public function attendee_decreases_inventory( array $attendee ) {
-			return true;
+			/**
+			 * Filter whether a specific attendee is valid toward inventory decrease or not.
+			 *
+			 * @since TBD
+			 *
+			 * @param array<string,mixed> $attendee The attendee data.
+			 *
+			 * @return bool Whether the Attendee is valid toward inventory decrease or not.
+			 */
+			return (bool) apply_filters( 'tec_tickets_attendee_decreases_inventory', true, $attendee );
 		}
 
 		/**
