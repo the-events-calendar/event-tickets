@@ -15,10 +15,23 @@ import uniqid from 'uniqid';
 /**
  * Internal dependencies
  */
-import { PREFIX, SUFFIX, SALE_PRICE_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { PREFIX, SUFFIX, SALE_PRICE_LABELS, WOO_CLASS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import { Checkbox, DayPickerInput, LabeledItem } from '@moderntribe/common/elements';
+import {
+	getTicketsProvider,
+} from '@moderntribe/tickets/data/blocks/ticket/selectors';
 import './style.pcss';
 import { formatDate, parseDate } from "react-day-picker/moment";
+
+/**
+ * Get the ticket provider from the common store.
+ *
+ * @since TBD
+ * @return {string} The ticket provider.
+ */
+const getTicketProviderFromCommon = () => {
+	return getTicketsProvider( window.__tribe_common_store__.getState() );
+};
 
 /**
  * SalePrice component.
@@ -47,7 +60,6 @@ class SalePrice extends PureComponent {
 		onFromDateChange: PropTypes.func,
 		onToDateChange: PropTypes.func,
 		validSalePrice: PropTypes.bool,
-		provider: PropTypes.string,
 	};
 
 	constructor( props ) {
@@ -77,7 +89,6 @@ class SalePrice extends PureComponent {
 			onFromDateChange,
 			onToDateChange,
 			validSalePrice,
-			provider,
 		} = this.props;
 
 		/**
@@ -107,7 +118,7 @@ class SalePrice extends PureComponent {
 		);
 
 		// Check if the provider is WooCommerce.
-		const isWoo = provider === 'woo';
+		const isWoo = getTicketProviderFromCommon() === WOO_CLASS;
 
 		/**
 		 * Props for the FromDate input.
@@ -129,7 +140,7 @@ class SalePrice extends PureComponent {
 			},
 			onDayChange: onFromDateChange,
 			inputProps: {
-				disabled: isWoo || isDisabled,
+				disabled: isDisabled,
 			},
 		};
 
@@ -154,9 +165,11 @@ class SalePrice extends PureComponent {
 			},
 			onDayChange: onToDateChange,
 			inputProps: {
-				disabled: isWoo || isDisabled,
+				disabled: isDisabled,
 			},
 		};
+
+		console.log( 'isWoo', isWoo );
 
 		return (
 			<div className={"tribe-editor__ticket__sale-price-wrapper"}>
@@ -167,12 +180,12 @@ class SalePrice extends PureComponent {
 					label={ SALE_PRICE_LABELS.add_sale_price }
 					// eslint-disable-next-line no-undef
 					aria-label={ SALE_PRICE_LABELS.add_sale_price }
-					checked={salePriceChecked}
+					checked={! isWoo && salePriceChecked }
 					onChange={toggleSalePrice}
-					value={salePriceChecked}
-					disabled={isDisabled}
+					value={ ! isWoo && salePriceChecked }
+					disabled={ isWoo || isDisabled }
 				/>
-				{ salePriceChecked && (
+				{ ! isWoo && salePriceChecked && (
 					<div className={"tribe-editor__ticket__sale-price--fields"}>
 						<div className={"tribe-editor__ticket__sale-price__input-wrapper"}>
 							<LabeledItem
@@ -191,7 +204,6 @@ class SalePrice extends PureComponent {
 								thousandSeparator={currencyThousandsSep}
 								value={salePrice}
 								disabled={isDisabled}
-								readOnly={isWoo}
 							/>
 						</div>
 						{ ! validSalePrice && (
@@ -199,32 +211,31 @@ class SalePrice extends PureComponent {
 								{ SALE_PRICE_LABELS.invalid_price }
 							</div>
 						) }
-						{ isWoo && (
-							<div className={'tribe-editor__ticket__sale-price__error-message'}>
-								<p>
-									{ __( 'The sale price can be managed via the product editor.', 'event-tickets' ) }
-								</p>
+						<div className={"tribe-editor__ticket__sale-price--dates"}>
+							<LabeledItem
+								className="tribe-editor__ticket__sale-price__dates--label"
+								label={ SALE_PRICE_LABELS.on_sale_from }
+							/>
+							<div className={"tribe-editor__ticket__sale-price--start-date"}>
+								<DayPickerInput { ...FromDateProps }/>
 							</div>
-						) }
-						{ ! isWoo && (
-							<div className={"tribe-editor__ticket__sale-price--dates"}>
-								<LabeledItem
-									className="tribe-editor__ticket__sale-price__dates--label"
-									label={ SALE_PRICE_LABELS.on_sale_from }
-								/>
-								<div className={"tribe-editor__ticket__sale-price--start-date"}>
-									<DayPickerInput { ...FromDateProps }/>
-								</div>
-								<span>
-									{ SALE_PRICE_LABELS.to }
-								</span>
-								<div className={"tribe-editor__ticket__sale-price--end-date"}>
-									<DayPickerInput { ...ToDateProps }/>
-								</div>
+							<span>
+								{ SALE_PRICE_LABELS.to }
+							</span>
+							<div className={"tribe-editor__ticket__sale-price--end-date"}>
+								<DayPickerInput { ...ToDateProps }/>
 							</div>
-						) }
+						</div>
 					</div>
 				)}
+
+				{ isWoo && (
+					<div className={'tribe-editor__ticket__sale-price__error-message'}>
+						<p>
+							{ __( 'The sale price can be managed via WooCommerce\'s product editor.', 'event-tickets' ) }
+						</p>
+					</div>
+				) }
 			</div>
 		);
 	}

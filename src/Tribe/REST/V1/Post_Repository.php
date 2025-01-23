@@ -618,12 +618,11 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 * @param int  $ticket_id The ticket ID.
 	 * @param bool $get_details Whether to get just the ticket cost (`false`) or
 	 *                          the details too ('true').
-	 * @param bool $force_regular Whether to force the regular price or not.
 	 *
 	 * @return string|array|false The ticket formatted cost if `$get_details` is `false`, the
 	 *                            ticket cost details otherwise; `false` on failure.
 	 */
-	public function get_ticket_cost( $ticket_id, $get_details = false, $force_regular = true ) {
+	public function get_ticket_cost( $ticket_id, $get_details = false ) {
 		$ticket = $this->get_ticket_object( $ticket_id );
 
 		if ( $ticket instanceof WP_Error ) {
@@ -633,30 +632,18 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		/** @var Tribe__Tickets__Commerce__Currency $currency */
 		$currency = tribe( 'tickets.commerce.currency' );
 
-		/**
-		 * Filters the ticket price before it is formatted.
-		 *
-		 * @since TBD
-		 *
-		 * @param float  $price The ticket price.
-		 * @param int    $ticket_id The ticket ID.
-		 * @param string $provider_class The ticket provider class.
-		 * @param bool   $force_regular Whether to force the regular price or not.
-		 */
-		$price = apply_filters( 'tribe_tickets_rest_api_ticket_price', $ticket->price, $ticket_id, $ticket->provider_class, $force_regular );
-
 		$provider = $ticket->provider_class;
+
+		$price = $ticket->price;
 
 		if ( ! is_numeric( $price ) ) {
 			$price = 0; // free.
 		}
 
 		if ( Module::class === $provider ) {
-			if ( ! $force_regular && $ticket->on_sale ) {
-				$price = tribe( Ticket::class )->get_sale_price( $ticket_id );
-			} else {
-				$price = tribe( Ticket::class )->get_regular_price( $ticket_id );
-			}
+			$price = tribe( Ticket::class )->get_regular_price( $ticket_id );
+		} elseif ( ! empty( $ticket->regular_price ) ) {
+			$price = $ticket->regular_price;
 		}
 
 		$formatted_price = html_entity_decode( $currency->format_currency( $price, $ticket_id ) );

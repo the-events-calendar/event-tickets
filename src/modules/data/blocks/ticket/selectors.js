@@ -673,7 +673,7 @@ export const showSalePrice = createSelector(
 	( provider ) => {
 		return (
 			provider === constants.TICKETS_COMMERCE_MODULE_CLASS ||
-			provider === constants.WOOCOMMERCE_PROVIDER_CLASS
+			provider === constants.WOO_CLASS
 		);
 	},
 );

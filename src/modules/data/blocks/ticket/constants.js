@@ -5,7 +5,6 @@ export const RSVP = 'rsvp';
 
 export const RSVP_CLASS = 'Tribe__Tickets__RSVP';
 export const TICKETS_COMMERCE_MODULE_CLASS = 'TEC\\Tickets\\Commerce\\Module';
-export const WOOCOMMERCE_PROVIDER_CLASS = 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main';
 export const TC_CLASS = 'Tribe__Tickets__Commerce__PayPal__Main';
 export const EDD_CLASS = 'Tribe__Tickets_Plus__Commerce__EDD__Main';
 export const WOO_CLASS = 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main';
