@@ -169,8 +169,6 @@ class SalePrice extends PureComponent {
 			},
 		};
 
-		console.log( 'isWoo', isWoo );
-
 		return (
 			<div className={"tribe-editor__ticket__sale-price-wrapper"}>
 				<Checkbox
