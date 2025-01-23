@@ -215,16 +215,11 @@ class Cart {
 	 */
 	public function get_cart_hash( $generate = false ) {
 		$cart_hash_length = 12;
-
-		$cart_hash = $this->get_repository()->get_hash();
-
+		$cart_hash        = $this->get_repository()->get_hash();
 		$hash_from_cookie = sanitize_text_field( $_COOKIE[ static::get_cart_hash_cookie_name() ] ?? '' );
 
-		if (
-			strlen( $hash_from_cookie ) === $cart_hash_length
-		) {
-			$cart_hash = $hash_from_cookie;
-
+		if ( strlen( $hash_from_cookie ) === $cart_hash_length ) {
+			$cart_hash           = $hash_from_cookie;
 			$cart_hash_transient = get_transient( static::get_transient_name( $cart_hash ) );
 
 			if ( empty( $cart_hash_transient ) ) {
@@ -245,7 +240,7 @@ class Cart {
 				$cart_hash_transient = get_transient( static::get_transient_name( $cart_hash ) );
 
 				// Make sure we increment.
-				$tries ++;
+				$tries++;
 			}
 		}
 

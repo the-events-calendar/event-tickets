@@ -114,7 +114,7 @@ class Unmanaged_Cart extends Abstract_Cart {
 		tribe( Cart::class )->set_cart_hash_cookie( null );
 
 		// clear cart items data.
-		$this->items = [];
+		$this->items      = [];
 		$this->cart_total = null;
 	}
 
