@@ -99,7 +99,7 @@ const mapStateToProps = ( state, ownProps ) => {
 		fromDateInput: fromDateInput,
 		toDateInput: toDateInput,
 		validSalePrice: selectors.isTicketSalePriceValid( state, ownProps ),
-	}
+	};
 };
 
 /**
