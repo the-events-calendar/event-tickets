@@ -124,7 +124,7 @@ class Unmanaged_Cart extends Abstract_Cart {
 
 		$this->set_hash( null );
 		delete_transient( Commerce\Cart::get_transient_name( $cart_hash ) );
-		tribe( Commerce\Cart::class )->set_cart_hash_cookie( $cart_hash );
+		tribe( Commerce\Cart::class )->set_cart_hash_cookie( null );
 
 		// clear cart items data.
 		$this->items = [];

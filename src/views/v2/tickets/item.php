@@ -16,8 +16,10 @@
  * @since 5.1.9 Add the `data-ticket-price` attribute for each ticket to calculate the price precisely.
  * @since 5.1.10 Cast the `data-ticket-price` attribute value as string to avoid unwanted PHP errors.
  * @since 5.5.6 Add the `tribe-tickets__tickets-item--shared-capacity` wrapper class for tickets having shared capacity.
+ * @since 5.16.0 Introduced 3rd parameter to `tribe_tickets_block_ticket_html_attributes` filter.
+ * @since 5.18.1 Removed the `$event_id` parameter from the `tribe_tickets_block_ticket_html_attributes` filter.
  *
- * @version 5.5.6
+ * @version 5.18.1
  *
  * If RSVP:
  * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
@@ -122,12 +124,12 @@ if ( $has_shared_cap ) {
  *
  * @since 5.1.1
  * @since 5.16.0 Added $event_id parameter.
+ * @since 5.18.1    Removed $event_id parameter.
  *
  * @param array                         $attributes A list of data attributes with their values.
  * @param Tribe__Tickets__Ticket_Object $ticket The ticket object.
- * @param int                           $post_id The current event ID.
  */
-$attributes = apply_filters( 'tribe_tickets_block_ticket_html_attributes', $attributes, $ticket, $post_id );
+$attributes = apply_filters( 'tribe_tickets_block_ticket_html_attributes', $attributes, $ticket );
 ?>
 <div
 	id="<?php echo esc_attr( $ticket_item_id ); ?>"

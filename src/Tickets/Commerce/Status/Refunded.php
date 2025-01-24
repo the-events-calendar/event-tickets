@@ -54,6 +54,28 @@ class Refunded extends Status_Abstract {
 	}
 
 	/**
+	 * Whether a Status Interface can be changed to another Status Interface.
+	 *
+	 * @since 5.18.1
+	 *
+	 * @param self $new_status The new status.
+	 *
+	 * @return bool Whether the new status can be applied to the current status.
+	 */
+	public function can_change_to( $new_status ): bool {
+		if ( $this->get_wp_slug() === $new_status->get_wp_slug() ) {
+			// Refunded can be changed to Refunded to manage multiple refunds.
+			return true;
+		}
+
+		if ( $this->is_final() ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * {@inheritdoc}
 	 */
 	public function can_be_updated_to(): array {
