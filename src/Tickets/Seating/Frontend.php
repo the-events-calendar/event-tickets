@@ -372,7 +372,7 @@ class Frontend extends Controller_Contract {
 	 * Adds the seat selected labels to the ticket block.
 	 *
 	 * @since 5.16.0
-	 * @since TBD Removed the $event_id parameter.
+	 * @since 5.18.1 Removed the $event_id parameter.
 	 *
 	 * @param array         $attributes The attributes of the ticket block.
 	 * @param Ticket_Object $ticket     The ticket object.

@@ -2,7 +2,7 @@
 /**
  * Status trait.
  *
- * @since TBD
+ * @since 5.18.1
  */
 
 declare( strict_types=1 );
@@ -12,14 +12,14 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Traits;
 /**
  * Trait Status
  *
- * @since TBD
+ * @since 5.18.1
  */
 trait Status {
 
 	/**
 	 * The modifier type for the concrete strategy (e.g., 'coupon', 'fee').
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 * @var string
 	 */
 	protected string $modifier_type;
@@ -33,7 +33,7 @@ trait Status {
 	 *
 	 * If the $status provided is not a valid status, it will be returned as-is.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param string $status The raw status from the database.
 	 *
@@ -47,7 +47,7 @@ trait Status {
 		 *
 		 * This allows developers to modify the status labels (e.g., changing 'Draft' to 'Pending').
 		 *
-		 * @since TBD
+		 * @since 5.18.1
 		 *
 		 * @param string[] $statuses      The array of default status labels.
 		 * @param string   $raw_status    The raw status from the database (e.g., 'active', 'draft').
@@ -61,7 +61,7 @@ trait Status {
 	/**
 	 * Get the valid statuses for an order modifier.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @return array
 	 */
@@ -77,7 +77,7 @@ trait Status {
 		 *
 		 * This allows developers to modify the valid statuses for an order modifier.
 		 *
-		 * @since TBD
+		 * @since 5.18.1
 		 *
 		 * @param string[] $statuses      The array of default status labels.
 		 * @param string   $modifier_type The type of the modifier (e.g., 'coupon', 'fee').
@@ -88,7 +88,7 @@ trait Status {
 	/**
 	 * Check if a status is valid for an order modifier.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param string $status The status to check.
 	 *

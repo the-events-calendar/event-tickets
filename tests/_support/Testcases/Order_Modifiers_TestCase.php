@@ -401,8 +401,11 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 		]; // phpcs:ignore WordPress.Security.NonceVerification
 
 		ob_start();
+		$this->get_table_class_instance()->prepare_items();
 		$modifier_admin_handler->render_tec_order_modifiers_page();
 
 		return ob_get_clean();
 	}
+
+	abstract protected function get_table_class_instance(): Order_Modifier_Table;
 }

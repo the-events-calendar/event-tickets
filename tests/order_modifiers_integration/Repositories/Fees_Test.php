@@ -3,12 +3,14 @@
 namespace TEC\Tickets\Tests\Unit\Order_Modifiers\Repositories;
 
 use TEC\Tickets\Commerce\Order_Modifiers\Factory;
+use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Fee_Table;
+use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Order_Modifier_Table;
 use Tribe\Tickets\Test\Testcases\Order_Modifiers_TestCase;
 
 /**
  * Class Fees
  *
- * @since TBD
+ * @since 5.18.1
  */
 class Fees_Test extends Order_Modifiers_TestCase {
 
@@ -17,7 +19,7 @@ class Fees_Test extends Order_Modifiers_TestCase {
 	/**
 	 * Helper method to create a set of modifiers for testing.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 * @return void
 	 */
 	protected function create_modifiers() {
@@ -136,7 +138,7 @@ class Fees_Test extends Order_Modifiers_TestCase {
 		$this->assertEquals( 40, $count );
 
 		// Test that we get the correct number of fees with a limit.
-		$results = $repo->search_modifiers( [ 'limit' => 5 ] );
+		$results = $repo->get_modifiers( [ 'limit' => 5 ] );
 		$this->assertCount( 5, $results );
 	}
 
@@ -154,7 +156,7 @@ class Fees_Test extends Order_Modifiers_TestCase {
 		$this->assertEquals( 40, $count );
 
 		// Test that we get the correct number of fees with a limit.
-		$results = $repo->search_modifiers( [ 'limit' => 5, 'search_term' => 'Test Fee 1 ' ] );
+		$results = $repo->get_modifiers( [ 'limit' => 5, 'search_term' => 'Test Fee 1 ' ] );
 		$this->assertCount( 2, $results );
 	}
 
@@ -168,19 +170,23 @@ class Fees_Test extends Order_Modifiers_TestCase {
 		$this->assertEquals( 40, $count );
 
 		// Test that we get the correct number of fees with a limit.
-		$results = $repo->search_modifiers( [ 'limit' => 5 ] );
+		$results = $repo->get_modifiers( [ 'limit' => 5 ] );
 		$this->assertCount( 4, $results );
 
-		$results = $repo->search_modifiers( [ 'status' => [ 'inactive' ] ] );
+		$results = $repo->get_modifiers( [ 'status' => [ 'inactive' ] ] );
 		$this->assertCount( 0, $results );
 
-		$results = $repo->search_modifiers( [ 'status' => [ 'draft' ] ] );
+		$results = $repo->get_modifiers( [ 'status' => [ 'draft' ] ] );
 		$this->assertCount( 0, $results );
 
-		$results = $repo->search_modifiers( [ 'status' => [ 'any' ] ] );
+		$results = $repo->get_modifiers( [ 'status' => [ 'any' ] ] );
 		$this->assertCount( 5, $results );
 
-		$results = $repo->search_modifiers( [ 'status' => [ 'fake_status' ] ] );
+		$results = $repo->get_modifiers( [ 'status' => [ 'fake_status' ] ] );
 		$this->assertCount( 0, $results );
+	}
+
+	protected function get_table_class_instance(): Order_Modifier_Table {
+		return tribe( Fee_Table::class );
 	}
 }

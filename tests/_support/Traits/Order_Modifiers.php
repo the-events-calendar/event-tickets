@@ -66,7 +66,7 @@ trait Order_Modifiers {
 	/**
 	 * Helper method to add applied_to meta to an Order Modifier for tests.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param int    $modifier_id The ID of the modifier to add the meta to.
 	 * @param string $applied_to  The applied_to value (e.g. 'per', 'all').
