@@ -176,7 +176,7 @@ class SalePrice extends PureComponent {
 					label={ SALE_PRICE_LABELS.add_sale_price }
 					// eslint-disable-next-line no-undef
 					aria-label={ SALE_PRICE_LABELS.add_sale_price }
-					checked={! isWoo && salePriceChecked }
+					checked={ ! isWoo && salePriceChecked }
 					onChange={toggleSalePrice}
 					value={ ! isWoo && salePriceChecked }
 					disabled={ isWoo || isDisabled }
