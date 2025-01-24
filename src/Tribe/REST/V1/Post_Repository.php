@@ -646,7 +646,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			$price = $ticket->regular_price;
 
 			if ( ! is_numeric( $price ) ) {
-				$price = 0; // free.
+				$price = 0;
 			}
 		}
 
