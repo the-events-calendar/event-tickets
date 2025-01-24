@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+When updating a Ticket's price on block editor, while the ticket is on sale, won't overwrite the sale price in  WooCommerce. [ET-2100]
