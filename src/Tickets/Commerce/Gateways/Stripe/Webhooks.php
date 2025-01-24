@@ -67,6 +67,15 @@ class Webhooks extends Abstract_Webhooks {
 	public const OPTION_KNOWN_WEBHOOKS = 'tickets-commerce-stripe-known-webhooks';
 
 	/**
+	 * Option name for the option to store pending webhooks.
+	 *
+	 * @since 5.18.1
+	 *
+	 * @var string
+	 */
+	public const PENDING_WEBHOOKS_KEY = '_tec_tickets_commerce_stripe_webhook_pending';
+
+	/**
 	 * Nonce key for webhook on-demand set up.
 	 *
 	 * @since 5.11.0
@@ -87,6 +96,56 @@ class Webhooks extends Abstract_Webhooks {
 	 */
 	public function get_merchant(): Abstract_Merchant {
 		return tribe( Merchant::class );
+	}
+
+	/**
+	 * Add a pending webhook to the order.
+	 *
+	 * @since 5.18.1
+	 *
+	 * @param int    $order_id   Order ID.
+	 * @param string $new_status New status.
+	 * @param string $old_status Old status.
+	 * @param array  $metadata   Metadata.
+	 *
+	 * @return void
+	 */
+	public function add_pending_webhook( int $order_id, string $new_status, string $old_status, array $metadata = [] ): void {
+		add_post_meta(
+			$order_id,
+			self::PENDING_WEBHOOKS_KEY,
+			[
+				'new_status' => $new_status,
+				'metadata'   => $metadata,
+				'old_status' => $old_status,
+			]
+		);
+	}
+
+	/**
+	 * Get the pending webhooks for an order.
+	 *
+	 * @since 5.18.1
+	 *
+	 * @param int $order_id Order ID.
+	 *
+	 * @return array
+	 */
+	public function get_pending_webhooks( int $order_id ): array {
+		return (array) get_post_meta( $order_id, self::PENDING_WEBHOOKS_KEY );
+	}
+
+	/**
+	 * Delete the pending webhooks for an order.
+	 *
+	 * @since 5.18.1
+	 *
+	 * @param int $order_id Order ID.
+	 *
+	 * @return void
+	 */
+	public function delete_pending_webhooks( int $order_id ): void {
+		delete_post_meta( $order_id, self::PENDING_WEBHOOKS_KEY );
 	}
 
 	/**

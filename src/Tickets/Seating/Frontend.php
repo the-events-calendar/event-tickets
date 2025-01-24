@@ -309,7 +309,7 @@ class Frontend extends Controller_Contract {
 	protected function do_register(): void {
 		add_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ], 10, 5 );
 
-		add_filter( 'tribe_tickets_block_ticket_html_attributes', [ $this, 'add_seat_selected_labels_per_ticket_attribute' ], 10, 3 );
+		add_filter( 'tribe_tickets_block_ticket_html_attributes', [ $this, 'add_seat_selected_labels_per_ticket_attribute' ], 10, 2 );
 
 		// Register the front-end JS.
 		Asset::add(
@@ -370,14 +370,19 @@ class Frontend extends Controller_Contract {
 	 * Adds the seat selected labels to the ticket block.
 	 *
 	 * @since 5.16.0
+	 * @since 5.18.1 Removed the $event_id parameter.
 	 *
 	 * @param array         $attributes The attributes of the ticket block.
 	 * @param Ticket_Object $ticket     The ticket object.
-	 * @param int           $event_id    The post ID.
 	 *
 	 * @return array The attributes of the ticket block.
 	 */
-	public function add_seat_selected_labels_per_ticket_attribute( array $attributes, Ticket_Object $ticket, int $event_id ): array {
+	public function add_seat_selected_labels_per_ticket_attribute( array $attributes, Ticket_Object $ticket ): array {
+		$event_id = $ticket->get_event_id();
+		if ( ! $event_id ) {
+			return $attributes;
+		}
+
 		if ( ! tec_tickets_seating_enabled( $event_id ) ) {
 			return $attributes;
 		}
@@ -492,10 +497,10 @@ class Frontend extends Controller_Contract {
 					'tickets' => [],
 				];
 			}
-			
+
 			/** @var Tickets_Handler $tickets_handler */
 			$tickets_handler = tribe( 'tickets.handler' );
-			
+
 			$seat_type_map[ $seat_type ]['tickets'][] = [
 				'ticketId'    => $ticket_id,
 				'name'        => $ticket->name,
