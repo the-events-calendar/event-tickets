@@ -5,6 +5,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { NumericFormat } from 'react-number-format';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Wordpress dependencies
@@ -14,10 +15,21 @@ import uniqid from 'uniqid';
 /**
  * Internal dependencies
  */
-import { PREFIX, SUFFIX, SALE_PRICE_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { PREFIX, SUFFIX, SALE_PRICE_LABELS, WOO_CLASS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import { Checkbox, DayPickerInput, LabeledItem } from '@moderntribe/common/elements';
+import { getTicketsProvider } from '@moderntribe/tickets/data/blocks/ticket/selectors';
 import './style.pcss';
 import { formatDate, parseDate } from "react-day-picker/moment";
+
+/**
+ * Get the ticket provider from the common store.
+ *
+ * @since TBD
+ * @return {string} The ticket provider.
+ */
+const getTicketProviderFromCommon = () => {
+	return getTicketsProvider( window.__tribe_common_store__.getState() );
+};
 
 /**
  * SalePrice component.
@@ -103,6 +115,9 @@ class SalePrice extends PureComponent {
 			{ 'tribe-editor__ticket__sale-price--error': !validSalePrice }
 		);
 
+		// Check if the provider is WooCommerce.
+		const isWoo = getTicketProviderFromCommon() === WOO_CLASS;
+
 		/**
 		 * Props for the FromDate input.
 		 */
@@ -161,12 +176,12 @@ class SalePrice extends PureComponent {
 					label={ SALE_PRICE_LABELS.add_sale_price }
 					// eslint-disable-next-line no-undef
 					aria-label={ SALE_PRICE_LABELS.add_sale_price }
-					checked={salePriceChecked}
+					checked={ ! isWoo && salePriceChecked }
 					onChange={toggleSalePrice}
-					value={salePriceChecked}
-					disabled={isDisabled}
+					value={ ! isWoo && salePriceChecked }
+					disabled={ isWoo || isDisabled }
 				/>
-				{ salePriceChecked && (
+				{ ! isWoo && salePriceChecked && (
 					<div className={"tribe-editor__ticket__sale-price--fields"}>
 						<div className={"tribe-editor__ticket__sale-price__input-wrapper"}>
 							<LabeledItem
@@ -209,6 +224,14 @@ class SalePrice extends PureComponent {
 						</div>
 					</div>
 				)}
+
+				{ isWoo && (
+					<div className={'tribe-editor__ticket__sale-price__error-message'}>
+						<p>
+							{ __( 'The sale price can be managed via WooCommerce\'s product editor.', 'event-tickets' ) }
+						</p>
+					</div>
+				) }
 			</div>
 		);
 	}
