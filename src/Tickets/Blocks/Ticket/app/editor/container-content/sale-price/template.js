@@ -17,9 +17,7 @@ import uniqid from 'uniqid';
  */
 import { PREFIX, SUFFIX, SALE_PRICE_LABELS, WOO_CLASS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import { Checkbox, DayPickerInput, LabeledItem } from '@moderntribe/common/elements';
-import {
-	getTicketsProvider,
-} from '@moderntribe/tickets/data/blocks/ticket/selectors';
+import { getTicketsProvider } from '@moderntribe/tickets/data/blocks/ticket/selectors';
 import './style.pcss';
 import { formatDate, parseDate } from "react-day-picker/moment";
 
