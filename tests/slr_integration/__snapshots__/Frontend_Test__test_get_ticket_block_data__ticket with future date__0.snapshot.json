@@ -8,7 +8,7 @@
                 {
                     "ticketId": {{ticket_1}},
                     "name": "Test TC ticket for {{post_id}}",
-                    "price": "20",
+                    "price": "&#x24;20.00",
                     "description": "Test TC ticket description for {{post_id}}",
                     "dateInRange": false,
                     "maxLimit": 100
