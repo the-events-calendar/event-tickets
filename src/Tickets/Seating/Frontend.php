@@ -502,7 +502,7 @@ class Frontend extends Controller_Contract {
 
 			/** @var Tickets_Handler $tickets_handler */
 			$tickets_handler = tribe( 'tickets.handler' );
-			$formatted_ticket_price = Value::create($ticket->price)->get_currency();
+			$formatted_ticket_price = Value::create( $ticket->price )->get_currency();
 
 			$seat_type_map[ $seat_type ]['tickets'][] = [
 				'ticketId'    => $ticket_id,
