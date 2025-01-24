@@ -275,8 +275,8 @@ class Layouts {
 		$invalidated = true;
 
 		if ( $truncate ) {
-			$invalidated &= Layouts_Table::truncate() !== false &&
-							Seat_Types_Table::truncate() !== false;
+			$invalidated &= tribe( Layouts_Table::class )->truncate() !== false &&
+							tribe( Seat_Types_Table::class )->truncate() !== false;
 		}
 
 		/**

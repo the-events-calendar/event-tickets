@@ -30,7 +30,7 @@ class Cart_Test extends WPTestCase {
 	 * @after
 	 */
 	public function truncate_tables(): void {
-		Sessions_Table::truncate();
+		tribe( Sessions_Table::class )->truncate();
 	}
 
 	public function test_save_seat_data_for_attendee():void{
