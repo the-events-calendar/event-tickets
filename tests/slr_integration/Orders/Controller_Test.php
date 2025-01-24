@@ -1775,6 +1775,10 @@ class Controller_Test extends Controller_Test_Case {
 		$ticket_3_id = $this->create_tc_ticket( $post_id, 89 );
 		update_post_meta( $ticket_3_id, Meta::META_KEY_ENABLED, true );
 		update_post_meta( $ticket_3_id, meta::META_KEY_SEAT_TYPE, 'some-seat-type-uuid' );
+		// Sort the tickets by menu_order to stabilize the snapshot.
+		wp_update_post(['ID' => $ticket_1_id, 'menu_order' => 1]);
+		wp_update_post(['ID' => $ticket_2_id, 'menu_order' => 2]);
+		wp_update_post(['ID' => $ticket_3_id, 'menu_order' => 3]);
 
 		$expected = [
 			'postId'      => $post_id,
@@ -1787,25 +1791,25 @@ class Controller_Test extends Controller_Test_Case {
 								[
 									[
 										'ticketId'    => $ticket_1_id,
-										'name'        => 'Test TC ticket for 5096',
+										'name'        => "Test TC ticket for $post_id",
 										'price'       => '&#x24;10.00',
-										'description' => 'Test TC ticket description for 5096',
+										'description' => "Test TC ticket description for $post_id",
 										'dateInRange' => true,
 										'maxLimit'    => 100,
 									],
 									[
 										'ticketId'    => $ticket_2_id,
-										'name'        => 'Test TC ticket for 5096',
+										'name'        => "Test TC ticket for $post_id",
 										'price'       => '&#x24;23.00',
-										'description' => 'Test TC ticket description for 5096',
+										'description' => "Test TC ticket description for $post_id",
 										'dateInRange' => true,
 										'maxLimit'    => 100,
 									],
 									[
 										'ticketId'    => $ticket_3_id,
-										'name'        => 'Test TC ticket for 5096',
+										'name'        => "Test TC ticket for $post_id",
 										'price'       => '&#x24;89.00',
-										'description' => 'Test TC ticket description for 5096',
+										'description' => "Test TC ticket description for $post_id",
 										'dateInRange' => true,
 										'maxLimit'    => 100,
 									],
