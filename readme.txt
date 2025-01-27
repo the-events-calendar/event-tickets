@@ -221,6 +221,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Deprecated - Method `should_payment_intent_be_updated` since its no longer needed. [ET-2281]
 * Language - 3 new strings added, 111 updated, 2 fuzzied, and 2 obsoleted.
 
+= [TBD] 2025-01-27 =
+
+* Fix - Generate dynamic order id for Tickets Commerce Free gateway and validate order owner.
+
 = [5.18.0.1] 2025-01-07 =
 
 * Fix - Resolves problem related to duplication of attendees while using Stripe webhooks with Tickets Commerce. [ET-2279]
