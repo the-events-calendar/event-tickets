@@ -170,7 +170,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	/**
 	 * Get modifier based on what it applies to.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param array $applied_to The applied to value.
 	 * @param array $params    Additional parameters to filter the results.
@@ -184,7 +184,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	/**
 	 * Get modifiers along with their applied to meta key.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param array $params               Additional parameters to filter the results.
 	 * @param bool  $with_applied_to_meta Whether to include the applied to meta key.

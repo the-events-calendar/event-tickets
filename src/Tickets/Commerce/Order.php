@@ -41,7 +41,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Meta key for the checkout status of the order.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @var string
 	 */
@@ -50,7 +50,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Meta key for the order lock status.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @var string
 	 */
@@ -61,7 +61,7 @@ class Order extends Abstract_Order {
 	 *
 	 * Enables to determine if the order has also been locked by current request, so that we can allow edit operations while the order is locked.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @var string
 	 */
@@ -356,7 +356,7 @@ class Order extends Abstract_Order {
 	 * Modify the status of a given order based on Slug.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Wrap status update in a transaction to prevent race conditions.
+	 * @since 5.18.1 Wrap status update in a transaction to prevent race conditions.
 	 *
 	 * @param int    $order_id        Which order ID will be updated.
 	 * @param string $new_status_slug Which Order Status we are modifying to.
@@ -420,7 +420,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Whether an order's status be transitioned to another status.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param Status_Interface $new_status The new status to transition to.
 	 * @param int              $order_id   The order ID to check the transition for.
@@ -490,7 +490,7 @@ class Order extends Abstract_Order {
 	 * Creates a order from the items in the cart.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Now it will only create one order per cart hash. Every next time it will update the existing order.
+	 * @since 5.18.1 Now it will only create one order per cart hash. Every next time it will update the existing order.
 	 *
 	 * @return false|WP_Post
 	 * @throws \Tribe__Repository__Usage_Error
@@ -642,7 +642,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Filters the values and creates a new Order with Tickets Commerce or updates an existing one.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param Gateway_Interface $gateway The gateway to use to create the order.
 	 * @param array             $args    The arguments to create the order.
@@ -658,7 +658,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Allows filtering of the order upsert arguments for all orders created via Tickets Commerce.
 		 *
-		 * @since TBD
+		 * @since 5.18.1
 		 *
 		 * @param array             $args    The arguments to create the order.
 		 * @param Gateway_Interface $gateway The gateway to use to create the order.
@@ -668,7 +668,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Allows filtering of the order upsert arguments for all orders created via Tickets Commerce.
 		 *
-		 * @since TBD
+		 * @since 5.18.1
 		 *
 		 * @param array             $args    The arguments to create the order.
 		 * @param Gateway_Interface $gateway The gateway to use to create the order.
@@ -697,7 +697,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Allows filtering of the order update arguments for all orders created via Tickets Commerce.
 		 *
-		 * @since TBD
+		 * @since 5.18.1
 		 *
 		 * @param array             $args
 		 * @param Gateway_Interface $gateway
@@ -707,7 +707,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Allows filtering of the order update arguments for all orders created via Tickets Commerce.
 		 *
-		 * @since TBD
+		 * @since 5.18.1
 		 *
 		 * @param array             $args
 		 * @param Gateway_Interface $gateway
@@ -998,7 +998,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Lock an order to prevent it from being modified.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param int $order_id The order ID.
 	 *
@@ -1021,7 +1021,7 @@ class Order extends Abstract_Order {
 			/**
 			 * Fires after an order is attempted to be locked.
 			 *
-			 * @since TBD
+			 * @since 5.18.1
 			 *
 			 * @param bool   $result   Whether the order was locked.
 			 * @param int    $order_id The order ID.
@@ -1038,7 +1038,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Unlock an order to allow it to be modified.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param int $order_id The order ID.
 	 *
@@ -1057,7 +1057,7 @@ class Order extends Abstract_Order {
 			/**
 			 * Fires after an order is attempted to be unlocked.
 			 *
-			 * @since TBD
+			 * @since 5.18.1
 			 *
 			 * @param bool   $result   Whether the order was unlocked.
 			 * @param int    $order_id The order ID.
@@ -1076,7 +1076,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the lock ID.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @return string The lock ID.
 	 */
@@ -1089,7 +1089,7 @@ class Order extends Abstract_Order {
 	 *
 	 * Usually after unlocking an order.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 */
 	public function reset_lock_id(): void {
 		self::$lock_id = '';
@@ -1098,7 +1098,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Generate a lock ID.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @return string The lock ID.
 	 */
@@ -1111,7 +1111,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get whether the order is locked.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param int $order_id The order ID.
 	 *
@@ -1124,7 +1124,7 @@ class Order extends Abstract_Order {
 			/**
 			 * Filters whether the order is locked.
 			 *
-			 * @since TBD
+			 * @since 5.18.1
 			 *
 			 * @param bool $is_locked Whether the order is locked.
 			 * @param int  $order_id  The order ID.
@@ -1147,7 +1147,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get whether the order has its checkout completed.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param int $order_id The order ID.
 	 *
@@ -1160,7 +1160,7 @@ class Order extends Abstract_Order {
 			 *
 			 * Does a direct query to overcome object cache.
 			 *
-			 * @since TBD
+			 * @since 5.18.1
 			 *
 			 * @param bool $is_completed Whether the checkout is completed.
 			 * @param int  $order_id     The order ID.
@@ -1185,7 +1185,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Mark an order's checkout as completed.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param int $order_id The order ID.
 	 *
@@ -1201,7 +1201,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Fires after an order's checkout is marked as completed.
 		 *
-		 * @since TBD
+		 * @since 5.18.1
 		 *
 		 * @param int $order_id The order ID.
 		 */

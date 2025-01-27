@@ -221,7 +221,7 @@ class Modifier_Manager {
 	 *
 	 * This method returns the appropriate table class based on the current strategy.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @return Fee_Table|Coupon_Table The table class for the current strategy.
 	 *

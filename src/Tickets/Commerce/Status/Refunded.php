@@ -56,7 +56,7 @@ class Refunded extends Status_Abstract {
 	/**
 	 * Whether a Status Interface can be changed to another Status Interface.
 	 *
-	 * @since TBD
+	 * @since 5.18.1
 	 *
 	 * @param self $new_status The new status.
 	 *
