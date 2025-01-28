@@ -19,15 +19,17 @@ import './style.pcss';
 const linkTextAdd = __( '+ Add', 'event-tickets' );
 const linkTextEdit = __( 'Edit', 'event-tickets' );
 
+const noop = ()=>{};
+
 const AttendeesRegistration = ( {
 	attendeeRegistrationURL,
-	hasAttendeeInfoFields,
-	isCreated,
-	isDisabled,
-	isModalOpen,
-	onClick,
-	onClose,
-	onIframeLoad,
+	hasAttendeeInfoFields = false,
+	isCreated = false,
+	isDisabled = false,
+	isModalOpen = false,
+	onClick = noop,
+	onClose = noop,
+	onIframeLoad = noop,
 } ) => {
 	const linkText = hasAttendeeInfoFields ? linkTextEdit : linkTextAdd;
 
@@ -60,13 +62,13 @@ const AttendeesRegistration = ( {
 
 AttendeesRegistration.propTypes = {
 	attendeeRegistrationURL: PropTypes.string.isRequired,
-	hasAttendeeInfoFields: PropTypes.bool.isRequired,
-	isCreated: PropTypes.bool.isRequired,
-	isDisabled: PropTypes.bool.isRequired,
-	isModalOpen: PropTypes.bool.isRequired,
-	onClick: PropTypes.func.isRequired,
-	onClose: PropTypes.func.isRequired,
-	onIframeLoad: PropTypes.func.isRequired,
+	hasAttendeeInfoFields: PropTypes.bool,
+	isCreated: PropTypes.bool,
+	isDisabled: PropTypes.bool,
+	isModalOpen: PropTypes.bool,
+	onClick: PropTypes.func,
+	onClose: PropTypes.func,
+	onIframeLoad: PropTypes.func,
 };
 
 export default AttendeesRegistration;

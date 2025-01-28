@@ -130,8 +130,7 @@ const ServiceError = ({ status, serviceConnectUrl }) => {
 };
 
 ServiceError.propTypes = {
-	serviceStatus: PropTypes.oneOf(['down', 'not-connected', 'invalid-license'])
-		.isRequired,
+	status: PropTypes.oneOf(['down', 'not-connected', 'invalid-license']),
 };
 
 export default ServiceError;

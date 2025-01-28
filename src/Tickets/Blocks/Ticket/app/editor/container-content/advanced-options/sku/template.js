@@ -70,7 +70,7 @@ class SKU extends PureComponent {
 					className="tribe-editor__ticket__sku-input"
 					id={ this.id }
 					type="text"
-					value={ sku }
+					value={ sku ?? '' }
 					onChange={ onChange }
 					disabled={ isDisabled }
 				/>
