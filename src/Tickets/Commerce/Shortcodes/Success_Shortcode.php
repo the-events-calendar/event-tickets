@@ -10,8 +10,8 @@ namespace TEC\Tickets\Commerce\Shortcodes;
 
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
-use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Success;
+use WP_Post;
 
 /**
  * Class for Shortcode Tribe_Tickets_Checkout.
@@ -37,10 +37,9 @@ class Success_Shortcode extends Shortcode_Abstract {
 		$order_id = tribe_get_request_var( Success::$order_id_query_arg );
 		$order    = tribe( Order::class )->get_from_gateway_order_id( $order_id );
 
-		// If the order is not found, clear the template variables and bail.
-		if ( empty( $order ) ) {
-			$this->template_vars = [];
-
+		// Bail early if the order is empty or the user cannot view its details.
+		if ( empty( $order ) || ! $this->can_view_order_details( $order ) ) {
+			$this->template_vars = [ 'order' => null ]; // Reset template variables.
 			return;
 		}
 
@@ -63,30 +62,64 @@ class Success_Shortcode extends Shortcode_Abstract {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Get the HTML for the shortcode.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The rendered HTML or an empty string if conditions are not met.
 	 */
 	public function get_html() {
 		$context = tribe_context();
 
+		// Bail if in admin and not handling an AJAX request.
 		if ( is_admin() && ! $context->doing_ajax() ) {
 			return '';
 		}
 
-		// Bail if we're in the blocks editor context.
+		// Bail if in the blocks editor context.
 		if ( $context->doing_rest() ) {
 			return '';
 		}
 
 		$args = $this->get_template_vars();
 
-		// Add the rendering attributes into global context.
 		$this->get_template()->add_template_globals( $args );
 
 		$this->enqueue_assets();
 
-		$html = $this->get_template()->template( 'success', $args, false );
+		return $this->get_template()->template( 'success', $args, false );
+	}
 
-		return $html;
+	/**
+	 * Determine if the current user can view the order details.
+	 *
+	 * @since TBD
+	 *
+	 * @param \WP_Post $order The order object.
+	 *
+	 * @return bool Whether the current user can view the order details.
+	 */
+	public function can_view_order_details( WP_Post $order ): bool {
+		// Get the purchaser's user ID or default to 0 for guests.
+		$owner_id = (int) ( $order->purchaser['user_id'] ?? 0 );
+
+		// Show always for guest orders.
+		if ( 0 === $owner_id ) {
+			return true;
+		}
+
+		// Show if current user matches the purchaser.
+		if ( get_current_user_id() === $owner_id ) {
+			return true;
+		}
+
+		// Show if current user has admin capabilities.
+		if ( current_user_can( 'manage_options' ) ) {
+			return true;
+		}
+
+		// The order is tied to a user, but current user is not the owner or admin.
+		return false;
 	}
 
 	/**
@@ -105,5 +138,4 @@ class Success_Shortcode extends Shortcode_Abstract {
 		// Enqueue assets.
 		tribe_asset_enqueue_group( 'tribe-tickets-commerce' );
 	}
-
 }
