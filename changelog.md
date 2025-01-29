@@ -1,5 +1,9 @@
 # Changelog
 
+### [5.18.1.1] 2025-01-27
+
+* Security - Prevent bug where order ID spoofing for Tickets Commerce would potentially display order data publicly [SVUL-11]
+
 ### [5.18.1] 2025-01-22
 
 * Feature - Include Seating information in Attendee archive REST API response. [SL-264]
