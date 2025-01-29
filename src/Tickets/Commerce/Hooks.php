@@ -65,8 +65,6 @@ class Hooks extends Service_Provider {
 		// Compatibility Hooks
 		add_action( 'init', [ $this, 'register_event_compatibility_hooks' ] );
 
-		add_action( 'tribe_common_loaded', [ $this, 'load_commerce_module' ] );
-
 		add_action( 'template_redirect', [ $this, 'do_cart_parse_request' ] );
 		add_action( 'template_redirect', [ $this, 'do_checkout_parse_request' ] );
 
@@ -482,9 +480,11 @@ class Hooks extends Service_Provider {
 	 * Initializes the Module Class.
 	 *
 	 * @since 5.1.9
+	 *
+	 * @deprecated TBD
 	 */
 	public function load_commerce_module() {
-		$this->container->make( Module::class );
+		_deprecated_function( __METHOD__, 'TBD' );
 	}
 
 	/**
