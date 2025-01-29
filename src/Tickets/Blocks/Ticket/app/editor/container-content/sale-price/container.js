@@ -3,6 +3,7 @@
  */
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { isString } from 'lodash';
 
 /**
  * Internal dependencies
@@ -25,7 +26,10 @@ import { globals, moment as momentUtil } from "@moderntribe/common/utils";
 const onFromDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
 	const { clientId } = ownProps;
 
-	if ( dayPickerInput.input.value === '' ) {
+	if (
+		( isString( dayPickerInput ) && dayPickerInput === '' )
+		|| ( ! isString( dayPickerInput ) && dayPickerInput.input.value === '' )
+	) {
 		dispatch( actions.setTicketTempSaleStartDate( clientId, '' ) );
 		dispatch( actions.setTicketTempSaleStartDateMoment( clientId, '' ) );
 		dispatch( actions.setTicketTempSaleStartDateInput( clientId, '' ) );
@@ -49,7 +53,10 @@ const onFromDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerI
 const onToDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
 	const { clientId } = ownProps;
 
-	if ( dayPickerInput.input.value === '' ) {
+	if (
+		( isString( dayPickerInput ) && dayPickerInput === '' )
+		|| ( ! isString( dayPickerInput ) && dayPickerInput.input.value === '' )
+	) {
 		dispatch( actions.setTicketTempSaleEndDate( clientId, '' ) );
 		dispatch( actions.setTicketTempSaleEndDateMoment( clientId, '' ) );
 		dispatch( actions.setTicketTempSaleEndDateInput( clientId, '' ) );

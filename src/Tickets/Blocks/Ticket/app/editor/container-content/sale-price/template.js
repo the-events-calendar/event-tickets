@@ -18,6 +18,7 @@ import uniqid from 'uniqid';
 import { PREFIX, SUFFIX, SALE_PRICE_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import { Checkbox, DayPickerInput, LabeledItem } from '@moderntribe/common/elements';
 import './style.pcss';
+import {DateTimeRangePicker} from "@moderntribe/tickets/elements";
 
 /**
  * SalePrice component.
