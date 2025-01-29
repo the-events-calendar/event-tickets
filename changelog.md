@@ -1,5 +1,9 @@
 # Changelog
 
+### [5.18.1.1] 2025-01-30
+
+* Fix - Update asset, dependencies, customizations to align with WordPress 6.7 and React 18. [TEC-5322]
+
 ### [5.18.1] 2025-01-22
 
 * Feature - Include Seating information in Attendee archive REST API response. [SL-264]
