@@ -326,6 +326,20 @@ class OrderReportTest extends WPTestCase {
 					);
 				}
 
+				wp_update_post(
+					[
+						'ID'         => $ticket_id_a,
+						'menu_order' => 0,
+					]
+				);
+
+				wp_update_post(
+					[
+						'ID'         => $ticket_id_b,
+						'menu_order' => 1,
+					]
+				);
+
 				return [
 					$event_id,
 					[
