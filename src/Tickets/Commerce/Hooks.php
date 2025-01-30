@@ -158,6 +158,7 @@ class Hooks extends Service_Provider {
 	 * @return array<string,mixed>
 	 */
 	public function provide_events_results_to_ajax( $results, $search ) {
+		// phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped
 		_deprecated_function( __METHOD__, 'TBD', Tickets_Hooks::class . '::provide_events_results_to_ajax' );
 		return tribe( Tickets_Hooks::class )->provide_events_results_to_ajax( $results, $search );
 	}
