@@ -53,6 +53,22 @@ class Order_Modifier_Relationships extends Table {
 	protected static $uid_column = 'id';
 
 	/**
+	 * An array of all the columns in the table.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	public static function get_columns(): array {
+		return [
+			'id',
+			'modifier_id',
+			'post_id',
+			'post_type',
+		];
+	}
+
+	/**
 	 * Returns the table creation SQL in the format supported
 	 * by the `dbDelta` function.
 	 *

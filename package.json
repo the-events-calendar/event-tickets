@@ -10,10 +10,7 @@
   "_glotPressUrl": "https://translate.wordpress.org",
   "_glotPressSlug": "wp-plugins/event-tickets/stable",
   "_glotPressFileFormat": "%textdomain%-%wp_locale%.%format%",
-  "_glotPressFormats": [
-    "po",
-    "mo"
-  ],
+  "_glotPressFormats": ["po", "mo"],
   "_glotPressFilter": {
     "translation_sets": false,
     "minimum_percentage": 30,
@@ -83,10 +80,7 @@
     "glotpress": "gulp glotpress",
     "changelog": "./vendor/bin/changelogger add"
   },
-  "engines": {
-    "node": "18.13.0",
-    "npm": "8.19.3"
-  },
+  "engines": { "node": "18.13.0", "npm": "8.19.3" },
   "devDependencies": {
     "@playwright/test": "^1.44.0",
     "@the-events-calendar/product-taskmaster": "^3.0.0",

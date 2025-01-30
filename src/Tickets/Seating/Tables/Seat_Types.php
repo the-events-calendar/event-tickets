@@ -66,6 +66,23 @@ class Seat_Types extends Table {
 	protected static $uid_column = 'id';
 
 	/**
+	 * An array of all the columns in the table.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	public static function get_columns(): array {
+		return [
+			'id',
+			'name',
+			'map',
+			'layout',
+			'seats',
+		];
+	}
+
+	/**
 	 * Returns the number of seats for a given seat type.
 	 *
 	 * @since 5.16.0
