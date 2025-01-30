@@ -29,7 +29,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	const noTicketsOnRecurring = document.body.classList.contains( 'tec-no-tickets-on-recurring' );
 	const tickets_panel_helper_text_selector = '.tec_ticket-panel__helper_text__wrap';
 	const tickets_panel_hidden_recurrence_warning = '.tec_ticket-panel__recurring-unsupported-warning';
-	const ticket_provider_input_id = '#tec_tickets_ticket_provider';
+	const ticket_provider_input_id = 'tec_tickets_ticket_provider';
 	/*
 	 * Null or 'default' are the default ticket; 'rsvp' is the RSVP ticket.
 	 * The backend might use the value, sent over with AJAX panel requests, to modify panels
@@ -153,7 +153,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		}
 
 		const ticketProviderInput = $( document.getElementById( ticket_provider_input_id ) );
-		if ( ! ticketProviderInput.val() ) {
+		if ( force_rsvp || ! ticketProviderInput.val() ) {
 			ticketProviderInput.val( providerValue );
 		}
 		defaultTicketProviderModule = ticketProviderInput.val();
