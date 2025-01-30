@@ -100,6 +100,23 @@ class Sessions extends Table {
 	}
 
 	/**
+	 * An array of all the columns in the table.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	public static function get_columns(): array {
+		return [
+			'token',
+			'object_id',
+			'expiration',
+			'reservations',
+			'expiration_lock',
+		];
+	}
+
+	/**
 	 * Returns the table creation SQL in the format supported
 	 * by the `dbDelta` function.
 	 *

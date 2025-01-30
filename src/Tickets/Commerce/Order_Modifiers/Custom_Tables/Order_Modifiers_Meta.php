@@ -56,6 +56,25 @@ class Order_Modifiers_Meta extends Table {
 	protected static $uid_column = 'id';
 
 	/**
+	 * An array of all the columns in the table.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	public static function get_columns(): array {
+		return [
+			'id',
+			'order_modifier_id',
+			'meta_key',
+			'meta_value',
+			'priority',
+			'created_at',
+			'updated_at',
+		];
+	}
+
+	/**
 	 * Returns the table creation SQL in the format supported
 	 * by the `dbDelta` function.
 	 *

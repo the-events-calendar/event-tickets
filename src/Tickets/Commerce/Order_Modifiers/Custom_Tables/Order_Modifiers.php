@@ -53,6 +53,28 @@ class Order_Modifiers extends Table {
 	protected static $uid_column = 'id';
 
 	/**
+	 * An array of all the columns in the table.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	public static function get_columns(): array {
+		return [
+			'id',
+			'modifier_type',
+			'sub_type',
+			'raw_amount',
+			'display_name',
+			'status',
+			'created_at',
+			'start_time',
+			'end_time',
+			'updated_at',
+		];
+	}
+
+	/**
 	 * Returns the table creation SQL in the format supported
 	 * by the `dbDelta` function.
 	 *
