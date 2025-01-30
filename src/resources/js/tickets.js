@@ -152,8 +152,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			providerValue = $checkedProvider.val();
 		}
 
-		const ticketProviderInput = $( document.getElementById( ticket_provider_input_id ) );
-		if ( ! ticketProviderInput.val() ) {
+		const ticketProviderInput = $( ticket_provider_input_id );
+		if ( force_rsvp || ! ticketProviderInput.val() ) {
 			ticketProviderInput.val( providerValue );
 		}
 		defaultTicketProviderModule = ticketProviderInput.val();
