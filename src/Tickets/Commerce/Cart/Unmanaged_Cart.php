@@ -63,8 +63,10 @@ class Unmanaged_Cart extends Abstract_Cart {
 			return false;
 		}
 
-		set_transient( Cart::get_transient_name( $cart_hash ), $this->items, DAY_IN_SECONDS );
+		set_transient( $this->get_transient_key( $cart_hash ), $this->items, DAY_IN_SECONDS );
 		tribe( Cart::class )->set_cart_hash_cookie( $cart_hash );
+
+		return true;
 	}
 
 	/**
@@ -87,7 +89,7 @@ class Unmanaged_Cart extends Abstract_Cart {
 
 		$cart_hash = $this->get_hash();
 
-		$items = get_transient( Cart::get_transient_name( $cart_hash ) );
+		$items = get_transient( $this->get_transient_key( $cart_hash ) );
 
 		if ( is_array( $items ) && ! empty( $items ) ) {
 			$this->items = $items;
@@ -110,7 +112,7 @@ class Unmanaged_Cart extends Abstract_Cart {
 		}
 
 		$this->set_hash( null );
-		delete_transient( Cart::get_transient_name( $cart_hash ) );
+		delete_transient( $this->get_transient_key( $cart_hash ) );
 		tribe( Cart::class )->set_cart_hash_cookie( null );
 
 		// clear cart items data.
@@ -134,7 +136,7 @@ class Unmanaged_Cart extends Abstract_Cart {
 			return false;
 		}
 
-		return (bool) get_transient( Cart::get_transient_name( $cart_hash ) );
+		return (bool) get_transient( $this->get_transient_key( $cart_hash ) );
 	}
 
 	/**

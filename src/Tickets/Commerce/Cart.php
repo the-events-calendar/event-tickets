@@ -5,6 +5,7 @@ namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce;
 use \Tribe__Utils__Array as Arr;
+use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
 
 /**
  * Class Cart
@@ -14,6 +15,8 @@ use \Tribe__Utils__Array as Arr;
  * @package TEC\Tickets\Commerce
  */
 class Cart {
+
+	use Cart_Trait;
 
 	/**
 	 * Which URL param we use to identify a given page as the cart.
@@ -156,7 +159,7 @@ class Cart {
 			return null;
 		}
 
-		return static::get_transient_name( $cart_hash );
+		return $this->get_transient_key( $cart_hash );
 	}
 
 	/**
@@ -220,7 +223,7 @@ class Cart {
 
 		if ( strlen( $hash_from_cookie ) === $cart_hash_length ) {
 			$cart_hash           = $hash_from_cookie;
-			$cart_hash_transient = get_transient( static::get_transient_name( $cart_hash ) );
+			$cart_hash_transient = get_transient( $this->get_transient_key( $cart_hash ) );
 
 			if ( empty( $cart_hash_transient ) ) {
 				$cart_hash = null;
@@ -237,7 +240,7 @@ class Cart {
 				&& $max_tries >= $tries
 			) {
 				$cart_hash           = wp_generate_password( $cart_hash_length, false );
-				$cart_hash_transient = get_transient( static::get_transient_name( $cart_hash ) );
+				$cart_hash_transient = get_transient( $this->get_transient_key( $cart_hash ) );
 
 				// Make sure we increment.
 				$tries++;
@@ -688,12 +691,14 @@ class Cart {
 	 * Returns the name of the transient used by the cart.
 	 *
 	 * @since 5.1.9
+	 * @depecated Use `get_transient_key()` via the Cart trait instead.
 	 *
 	 * @param string $id The cart id.
 	 *
 	 * @return string The transient name.
 	 */
 	public static function get_transient_name( $id ) {
+		_deprecated_function( __METHOD__, 'TBD', 'TEC\Tickets\Commerce\Traits\Cart::get_transient_key' );
 		return Commerce::ABBR . '-cart-' . md5( $id ?? '' );
 	}
 }
