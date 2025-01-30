@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Commerce\Cart;
 
+use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
@@ -19,6 +20,8 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
  * @since 5.10.0
  */
 abstract class Abstract_Cart implements Cart_Interface {
+
+	use Cart_Trait;
 
 	/**
 	 * Cart total

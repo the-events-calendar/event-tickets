@@ -10,6 +10,7 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Commerce\Cart;
 
 use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
 
 /**
  * Class Agnostic_Cart
@@ -17,6 +18,8 @@ use TEC\Tickets\Commerce\Cart;
  * @since TBD
  */
 class Agnostic_Cart extends Abstract_Cart {
+
+	use Cart_Trait;
 
 	/**
 	 * @var array The list of items.
