@@ -59,7 +59,6 @@
     ]
   },
   "scripts": {
-    "preinstall": "if [ -d node_modules/@the-events-calendar/product-taskmaster ]; then node node_modules/@the-events-calendar/product-taskmaster/scripts/syncPackageJSON.js; fi",
     "analyze": "webpack-bundle-analyzer -m static stats.json",
     "bootstrap": "./scripts/linkDependencies",
     "build:webpack": "export NODE_OPTIONS=--openssl-legacy-provider && cross-env NODE_ENV=production webpack -p",
@@ -106,7 +105,7 @@
     "@moderntribe/tickets": "file:src/modules",
     "@nfen/redux-reducer-injector": "0.0.3",
     "@redux-devtools/extension": "^3.3.0",
-    "@the-events-calendar/product-taskmaster": "github:the-events-calendar/product-taskmaster#fix/TEC-5322-wp-67-packages",
+    "@the-events-calendar/product-taskmaster": "^4.0.0",
     "@wordpress/a11y": "^4.11.0",
     "@wordpress/data": "^10.11.0",
     "@wordpress/date": "^5.13.0",
