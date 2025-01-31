@@ -21,15 +21,15 @@ trait Cart {
 	/**
 	 * Get the name of the transient based on the cart ID.
 	 *
-	 * @param string $id The cart ID.
+	 * @param ?string $id The cart ID.
 	 *
 	 * @return string
 	 */
-	protected function get_transient_key( string $id ) {
+	protected function get_transient_key( ?string $id ): string {
 		return sprintf(
 			'%s-cart-%s',
 			Commerce::ABBR,
-			md5( $id )
+			md5( $id ?? '' )
 		);
 	}
 }
