@@ -185,13 +185,8 @@ class SalePrice extends PureComponent {
 					aria-label={ SALE_PRICE_LABELS.add_sale_price }
 					checked={ ! isWoo && salePriceChecked }
 					onChange={toggleSalePrice}
-<<<<<<< HEAD
-					value={ ! isWoo && salePriceChecked }
-					disabled={ isWoo || isDisabled }
-=======
 					value={salePriceChecked ? '1' : '0'}
 					disabled={isDisabled}
->>>>>>> release/T25.adamwarlock
 				/>
 				{ ! isWoo && salePriceChecked && (
 					<div className={"tribe-editor__ticket__sale-price--fields"}>
