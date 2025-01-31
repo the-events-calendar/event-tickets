@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { NumericFormat } from 'react-number-format';
 import { __ } from '@wordpress/i18n';
+import { formatDate, parse as parseDate } from 'date-fns';
 
 /**
  * Wordpress dependencies
@@ -19,7 +20,7 @@ import { PREFIX, SUFFIX, SALE_PRICE_LABELS, WOO_CLASS } from '@moderntribe/ticke
 import { Checkbox, DayPickerInput, LabeledItem } from '@moderntribe/common/elements';
 import { getTicketsProvider } from '@moderntribe/tickets/data/blocks/ticket/selectors';
 import './style.pcss';
-import { formatDate, parseDate } from "react-day-picker/moment";
+import {DateTimeRangePicker} from "@moderntribe/tickets/elements";
 
 /**
  * Get the ticket provider from the common store.
@@ -44,15 +45,21 @@ class SalePrice extends PureComponent {
 		currencyPosition: PropTypes.string,
 		currencySymbol: PropTypes.string,
 		currencyThousandsSep: PropTypes.string,
-		minDefaultPrice: PropTypes.string,
+		minDefaultPrice: PropTypes.oneOfType([ PropTypes.string, PropTypes.number]),
 		tempPrice: PropTypes.string,
 		toggleSalePrice: PropTypes.func,
 		salePriceChecked: PropTypes.bool,
 		salePrice: PropTypes.string,
 		updateSalePrice: PropTypes.func,
 		dateFormat: PropTypes.string,
-		fromDate: PropTypes.instanceOf(Date),
-		toDate: PropTypes.instanceOf(Date),
+		fromDate: PropTypes.oneOfType([
+			PropTypes.instanceOf(Date),
+			PropTypes.oneOf([''])
+		]),
+		toDate: PropTypes.oneOfType([
+			PropTypes.instanceOf(Date),
+			PropTypes.oneOf([''])
+		]),
 		fromDateInput: PropTypes.string,
 		toDateInput: PropTypes.string,
 		onFromDateChange: PropTypes.func,
@@ -76,7 +83,7 @@ class SalePrice extends PureComponent {
 			minDefaultPrice,
 			tempPrice,
 			toggleSalePrice,
-			salePriceChecked,
+			salePriceChecked = false,
 			salePrice,
 			updateSalePrice,
 			dateFormat,
@@ -178,8 +185,13 @@ class SalePrice extends PureComponent {
 					aria-label={ SALE_PRICE_LABELS.add_sale_price }
 					checked={ ! isWoo && salePriceChecked }
 					onChange={toggleSalePrice}
+<<<<<<< HEAD
 					value={ ! isWoo && salePriceChecked }
 					disabled={ isWoo || isDisabled }
+=======
+					value={salePriceChecked ? '1' : '0'}
+					disabled={isDisabled}
+>>>>>>> release/T25.adamwarlock
 				/>
 				{ ! isWoo && salePriceChecked && (
 					<div className={"tribe-editor__ticket__sale-price--fields"}>

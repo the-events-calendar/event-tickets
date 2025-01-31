@@ -1194,7 +1194,7 @@ describe( 'RSVP block sagas', () => {
 				put( actions.deleteRSVP() ),
 			);
 			expect( gen.next().value ).toEqual(
-				call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ '111111' ] ),
+				call( [ wpDispatch( 'core/block-editor' ), 'removeBlocks' ], [ '111111' ] ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );

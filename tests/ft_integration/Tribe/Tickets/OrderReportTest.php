@@ -175,6 +175,10 @@ class OrderReportTest extends WPTestCase {
 				$order_a = $this->create_order( [ $series_pass_id_a => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
 				$order_b = $this->create_order( [ $series_pass_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
 
+				// Impose an arbitrary sorting order for orders so we can verify ticket display order in report.
+				wp_update_post( [ 'ID' => $order_a->ID, 'menu_order' => 0 ] );
+				wp_update_post( [ 'ID' => $order_b->ID, 'menu_order' => 1 ] );
+
 				return [ $series_id, [ $series_id, $series_pass_id_a, $order_a->ID, $order_b->ID ] ];
 			}
 		];

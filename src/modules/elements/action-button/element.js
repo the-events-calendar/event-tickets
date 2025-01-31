@@ -8,7 +8,7 @@ import classNames from 'classnames';
 /**
  * Internal dependencies
  */
-import { Button, Link } from '@moderntribe/common/elements';
+import {Button, Link} from '@moderntribe/common/elements';
 import './style.pcss';
 
 export const positions = {
@@ -16,20 +16,15 @@ export const positions = {
 	left: 'left',
 };
 
-const components = {
-	button: Button,
-	link: Link,
-};
-
 const ActionButton = ( {
-	asLink,
+	asLink = false,
 	children,
 	className,
 	disabled,
-	href,
+	href = '#',
 	icon,
 	onClick,
-	position,
+	position = positions.left,
 	target,
 	...props
 } ) => {
@@ -38,8 +33,6 @@ const ActionButton = ( {
 		`tribe-editor__action-button--icon-${ position }`,
 		className,
 	);
-
-	const Element = asLink && ! disabled ? components.link : components.button;
 
 	const getProps = () => {
 		const elemProps = { ...props };
@@ -56,14 +49,26 @@ const ActionButton = ( {
 		return elemProps;
 	};
 
+	if( asLink && ! disabled){
+		return (
+			<Link
+				className={ containerClass }
+				{ ...({href: '#', ...getProps()}) }
+			>
+				{ icon }
+				<span className="tribe-editor__action-button__label">{ children }</span>
+			</Link>
+		);
+	}
+
 	return (
-		<Element
+		<Button
 			className={ containerClass }
 			{ ...getProps() }
 		>
 			{ icon }
 			<span className="tribe-editor__action-button__label">{ children }</span>
-		</Element>
+		</Button>
 	);
 };
 
@@ -77,11 +82,6 @@ ActionButton.propTypes = {
 	onClick: PropTypes.func,
 	position: PropTypes.oneOf( Object.keys( positions ) ),
 	target: PropTypes.string,
-};
-
-ActionButton.defaultProps = {
-	asLink: false,
-	position: positions.left,
 };
 
 export default ActionButton;

@@ -5,7 +5,7 @@ import React, { createRef, Component } from 'react';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 import classNames from 'classnames';
-import { formatDate, parseDate } from 'react-day-picker/moment';
+import { formatDate, parse as parseDate } from 'date-fns';
 
 /**
  * Internal dependencies

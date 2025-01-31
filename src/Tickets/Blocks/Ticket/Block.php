@@ -93,7 +93,7 @@ class Block extends Abstract_Block {
 		wp_register_script(
 			'tec-tickets-ticket-item-block-editor-script',
 			$plugin->plugin_url . "build/Tickets/Blocks/Ticket/editor.js",
-			[ 'tribe-common-gutenberg-vendor', 'tribe-tickets-gutenberg-vendor' ]
+			[ 'tribe-common-gutenberg-vendor', 'tribe-tickets-gutenberg-vendor', 'tec-common-php-date-formatter' ]
 		);
 
 		wp_register_style(
