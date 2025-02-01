@@ -303,7 +303,7 @@ class Cart {
 		 *
 		 * @param int $expires The expiry time, as passed to setcookie().
 		 */
-		$expire  = apply_filters( 'tec_tickets_commerce_cart_expiration', time() + 1 * HOUR_IN_SECONDS );
+		$expire  = apply_filters( 'tec_tickets_commerce_cart_expiration', time() + HOUR_IN_SECONDS );
 
 		// When null means we are deleting.
 		if ( null === $value ) {
