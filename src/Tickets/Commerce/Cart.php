@@ -7,6 +7,7 @@ use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
+use Tribe__Tickets_Plus__Meta__Storage as Meta_Storage;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -396,18 +397,18 @@ class Cart {
 			return;
 		}
 
-		$transient = get_transient( $transient_key );
+		// Bail if ET+ is not in place.
+		if ( ! class_exists( Meta_Storage::class ) ) {
+			return;
+		}
+
+		$storage = new Meta_Storage();
 
 		// Bail if we have no data to delete.
+		$transient = get_transient( $transient_key );
 		if ( empty( $transient ) ) {
 			return;
 		}
-
-		// Bail if ET+ is not in place.
-		if ( ! class_exists( 'Tribe__Tickets_Plus__Meta__Storage' ) ) {
-			return;
-		}
-		$storage = new \Tribe__Tickets_Plus__Meta__Storage();
 
 		foreach ( $transient as $ticket_id => $data ) {
 			$storage->delete_cookie( $ticket_id );
@@ -443,9 +444,6 @@ class Cart {
 			return [];
 		}
 
-		/** @var \Tribe__Tickets__Tickets_Handler $handler */
-		$handler = tribe( 'tickets.handler' );
-
 		$raw_data = $request_data['tribe_tickets_ar_data'];
 
 		// Attempt to JSON decode data if needed.
@@ -454,60 +452,20 @@ class Cart {
 			$raw_data = json_decode( $raw_data, true );
 		}
 
+		// Set up the raw data from the request.
 		$raw_data = array_merge( $request_data, $raw_data );
 
-		$data             = [];
-		$data['post_id']  = absint( Arr::get( $raw_data, 'tribe_tickets_post_id' ) );
-		$data['provider'] = sanitize_text_field( Arr::get( $raw_data, 'tribe_tickets_provider', Module::class ) );
-		$data['tickets']  = Arr::get( $raw_data, 'tribe_tickets_tickets' );
-		$data['meta']     = Arr::get( $raw_data, 'tribe_tickets_meta', [] );
-		$tickets_meta     = Arr::get( $raw_data, 'tribe_tickets', [] );
-
-		$default_ticket = [
-			'ticket_id' => 0,
-			'quantity'  => 0,
-			'optout'    => false,
-			'iac'       => 'none',
-			'extra'     => [],
+		// Set the initial data array.
+		$data = [
+			'post_id'  => absint( Arr::get( $raw_data, 'tribe_tickets_post_id' ) ),
+			'provider' => sanitize_text_field( Arr::get( $raw_data, 'tribe_tickets_provider', Module::class ) ),
+			'tickets'  => Arr::get( $raw_data, 'tribe_tickets_tickets' ),
+			'meta'     => Arr::get( $raw_data, 'tribe_tickets_meta', [] ),
 		];
 
-		/**
-		 * @todo Determine if this should be moved into the Ticket Controller.
-		 */
-		$data['tickets'] = array_map( static function ( $ticket ) use ( $default_ticket, $handler, $tickets_meta ) {
-			if ( empty( $ticket['quantity'] ) ) {
-				return false;
-			}
-
-			$ticket = array_merge( $default_ticket, $ticket );
-
-			$ticket['quantity'] = (int) $ticket['quantity'];
-
-			if ( $ticket['quantity'] < 0 ) {
-				return false;
-			}
-
-			if ( ! empty( $tickets_meta[ $ticket['ticket_id'] ]['attendees'] ) ) {
-				$ticket['extra']['attendees'] = $tickets_meta[ $ticket['ticket_id'] ]['attendees'];
-			}
-
-			$ticket['extra']['optout'] = tribe_is_truthy( $ticket['optout'] );
-			unset( $ticket['optout'] );
-
-			$ticket['extra']['iac'] = sanitize_text_field( $ticket['iac'] );
-			unset( $ticket['iac'] );
-
-			$ticket['obj'] = \Tribe__Tickets__Tickets::load_ticket_object( $ticket['ticket_id'] );
-
-			if ( ! $handler->is_ticket_readable( $ticket['ticket_id'] ) ) {
-				return false;
-			}
-
-			return $ticket;
-		}, $data['tickets'] );
-
-		// Remove empty items.
-		$data['tickets'] = array_filter( $data['tickets'] );
+		// Set up the ticket data and metadata.
+		$tickets_meta    = Arr::get( $raw_data, 'tribe_tickets', [] );
+		$data['tickets'] = array_filter( $this->map_ticket_data( $data['tickets'], $tickets_meta ) );
 
 		/**
 		 * Filters the Meta on the Data before processing.
@@ -515,7 +473,7 @@ class Cart {
 		 * @since 5.1.9
 		 *
 		 * @param array $meta Meta information on the cart.
-		 * @param array $data Data used for the cart.w
+		 * @param array $data Data used for the cart.
 		 */
 		$data['meta'] = apply_filters( 'tec_tickets_commerce_cart_prepare_data_meta', $data['meta'], $data );
 
@@ -526,7 +484,7 @@ class Cart {
 		 *
 		 * @param array $data The cart data after processing.
 		 */
-		return apply_filters( 'tec_tickets_commerce_cart_prepare_data', $this->get_repository()->prepare_data( $data ) );
+		return (array) apply_filters( 'tec_tickets_commerce_cart_prepare_data', $this->get_repository()->prepare_data( $data ) );
 	}
 
 	/**
