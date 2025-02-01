@@ -1,15 +1,15 @@
 <?php
 /**
- * Tickets Commerce: Checkout Cart Items
+ * Tickets Commerce: Checkout Cart Ticket Template
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/checkout/cart/items.php
+ * [your-theme]/tribe/tickets/v2/commerce/checkout/cart/ticket.php
  *
  * See more documentation about our views templating system.
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.1.10
+ * @since   TBD
  *
  * @version TBD
  *
@@ -25,32 +25,40 @@
  * @var int             $gateways_active  [Global] The number of active gateways.
  * @var int             $section          Which Section that we are going to render for this table.
  * @var WP_Post         $post             Which Section that we are going to render for this table.
+ * @var array           $item             Which item this row will be for.
  */
 
 use TEC\Tickets\Commerce\Module;
 
-if ( empty( $items ) ) {
+// Bail if there's no ticket id.
+if ( empty( $item['ticket_id'] ) ) {
 	return;
 }
 
+$classes = [
+	'tribe-tickets__commerce-checkout-cart-item',
+	get_post_class( '', $item['ticket_id'] ),
+	'tribe-common-b1',
+];
+
+$attributes = [
+	'data-ticket-id'       => (string) $item['ticket_id'],
+	'data-ticket-quantity' => (string) $item['quantity'],
+	'data-ticket-price'    => (string) $provider->get_price_value( $item['ticket_id'] )->get_string(),
+];
+
 ?>
-<div class="tribe-tickets__commerce-checkout-cart-items">
-	<?php
-	foreach ( $items as $item ) {
-		if ( $item['event_id'] !== $section ) {
-			continue;
-		}
+<article
+	<?php tribe_classes( $classes ); ?>
+	<?php tribe_attributes( $attributes ); ?>
+>
 
-		$item_type = $item['type'] ?? 'ticket';
+	<?php $this->template( 'checkout/cart/item/details', [ 'item' => $item ] ); ?>
 
-		switch ( $item_type ) {
-			case 'ticket':
-				$this->template( 'checkout/cart/ticket', [ 'section' => $section, 'post' => $post, 'item' => $item ] );
-				break;
+	<?php $this->template( 'checkout/cart/item/price', [ 'item' => $item ] ); ?>
 
-			default:
-				$this->template( 'checkout/cart/item', [ 'section' => $section, 'post' => $post, 'item' => $item ] );
-		}
-	}
-	?>
-</div>
+	<?php $this->template( 'checkout/cart/item/quantity', [ 'item' => $item ] ); ?>
+
+	<?php $this->template( 'checkout/cart/item/sub-total', [ 'item' => $item ] ); ?>
+
+</article>
