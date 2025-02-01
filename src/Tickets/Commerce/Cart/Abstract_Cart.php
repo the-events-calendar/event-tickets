@@ -78,25 +78,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 		}
 
 		if ( $full_item_params ) {
-			$items = array_map(
-				static function ( $item ) {
-					$item['obj'] = Tickets::load_ticket_object( $item['ticket_id'] );
-					// If it's an invalid ticket we just remove it.
-					if ( ! $item['obj'] instanceof Ticket_Object ) {
-						return null;
-					}
-
-					$sub_total_value = Value::create();
-					$sub_total_value->set_value( $item['obj']->price );
-
-					$item['event_id']  = $item['obj']->get_event_id();
-					$item['sub_total'] = $sub_total_value->sub_total( $item['quantity'] );
-					$item['type']      = 'ticket';
-
-					return $item;
-				},
-				$items
-			);
+			$items = $this->add_full_item_params( $items );
 		}
 
 		return array_filter( $items );
@@ -215,6 +197,36 @@ abstract class Abstract_Cart implements Cart_Interface {
 		 * @param Cart_Interface $cart      Which cart object we are using here.
 		 */
 		return apply_filters( 'tec_tickets_commerce_cart_get_hash', $this->cart_hash, $this );
+	}
+
+	/**
+	 * Add the full set of parameters to the items in the cart.
+	 *
+	 * @param array $items The items in the cart.
+	 *
+	 * @return array The items in the cart with the full set of parameters.
+	 */
+	protected function add_full_item_params( array $items ): array {
+		return array_map(
+			function ( $item ) {
+				// Try to get the ticket object, and if it's not valid, remove it from the cart.
+				$item['obj'] = Tickets::load_ticket_object( $item['ticket_id'] );
+				if ( ! $item['obj'] instanceof Ticket_Object ) {
+					return null;
+				}
+
+				$sub_total_value = Value::create();
+				$sub_total_value->set_value( $item['obj']->price );
+
+				$item['event_id']  = $item['obj']->get_event_id();
+				$item['sub_total'] = $sub_total_value->sub_total( $item['quantity'] );
+				$item['type']      = 'ticket';
+
+				return $item;
+			},
+			$items
+
+		);
 	}
 
 	/**
