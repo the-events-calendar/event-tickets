@@ -208,7 +208,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 */
 	protected function add_full_item_params( array $items ): array {
 		return array_map(
-			function ( $item ) {
+			static function ( $item ) {
 				// Try to get the ticket object, and if it's not valid, remove it from the cart.
 				$item['obj'] = Tickets::load_ticket_object( $item['ticket_id'] );
 				if ( ! $item['obj'] instanceof Ticket_Object ) {
