@@ -4,8 +4,10 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce;
-use \Tribe__Utils__Array as Arr;
 use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
+use Tribe__Tickets__Tickets as Tickets;
+use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
+use Tribe__Utils__Array as Arr;
 
 /**
  * Class Cart
@@ -663,6 +665,65 @@ class Cart {
 		$filtered_cookie_name = apply_filters( 'tec_tickets_commerce_cart_hash_cookie_name', static::$cart_hash_cookie_name );
 
 		return sanitize_title( $filtered_cookie_name );
+	}
+
+	/**
+	 * Map the ticket data to a more usable format.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $ticket_data  Array of raw ticket data.
+	 * @param array $tickets_meta Array of ticket meta data.
+	 *
+	 * @return array Array of mapped ticket data.
+	 */
+	protected function map_ticket_data( array $ticket_data, array $tickets_meta ): array {
+		/** @var Tickets_Handler $handler */
+		$handler = tribe( 'tickets.handler' );
+
+		return array_map(
+			static function ( $ticket ) use ( $handler, $tickets_meta ) {
+				// Merge the ticket data with the default ticket data.
+				$ticket = array_merge(
+					[
+						'ticket_id' => 0,
+						'quantity'  => 0,
+						'optout'    => false,
+						'iac'       => 'none',
+						'extra'     => [],
+					],
+					$ticket
+				);
+
+				// Normalize and validate the quantity.
+				$ticket['quantity'] = (int) $ticket['quantity'];
+				if ( $ticket['quantity'] < 1 ) {
+					return false;
+				}
+
+				// Normalize and validate the ticket ID.
+				$ticket['ticket_id'] = (int) $ticket['ticket_id'];
+				if ( true !== $handler->is_ticket_readable( $ticket['ticket_id'] ) ) {
+					return false;
+				}
+
+				// Add attendee data.
+				if ( ! empty( $tickets_meta[ $ticket['ticket_id'] ]['attendees'] ) ) {
+					$ticket['extra']['attendees'] = $tickets_meta[ $ticket['ticket_id'] ]['attendees'];
+				}
+
+				// Add the optout and IAC data.
+				$ticket['extra']['optout'] = tribe_is_truthy( $ticket['optout'] );
+				$ticket['extra']['iac']    = sanitize_text_field( $ticket['iac'] );
+				unset( $ticket['optout'], $ticket['iac'] );
+
+				// Add the ticket object.
+				$ticket['obj'] = Tickets::load_ticket_object( $ticket['ticket_id'] );
+
+				return $ticket;
+			},
+			$ticket_data
+		);
 	}
 
 	/**
