@@ -17,7 +17,7 @@ interface Cart_Interface {
 	 * @since 5.1.9
 	 * @since 5.2.0 Renamed to set_hash instead of set_id
 	 *
-	 * @param string $hash
+	 * @param string $hash The hash to set.
 	 */
 	public function set_hash( $hash );
 
@@ -26,7 +26,7 @@ interface Cart_Interface {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return string
+	 * @return string The hash.
 	 */
 	public function get_hash();
 
@@ -35,7 +35,7 @@ interface Cart_Interface {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @return string
+	 * @return string The mode.
 	 */
 	public function get_mode();
 
@@ -46,14 +46,14 @@ interface Cart_Interface {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @return array
+	 * @return array The items in the cart.
 	 */
 	public function get_items();
 
 	/**
 	 * Saves the cart.
 	 *
-	 * This method should include any persistence, request and redirection required
+	 * This method should include any persistence, request, and redirection required
 	 * by the cart implementation.
 	 *
 	 * @since 5.1.9
@@ -63,8 +63,10 @@ interface Cart_Interface {
 	/**
 	 * Clears the cart of its contents and persists its new state.
 	 *
-	 * This method should include any persistence, request and redirection required
+	 * This method should include any persistence, request, and redirection required
 	 * by the cart implementation.
+	 *
+	 * @since 5.1.9
 	 */
 	public function clear();
 
@@ -73,7 +75,7 @@ interface Cart_Interface {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param array $criteria
+	 * @param array $criteria Additional criteria to use when checking if the cart exists.
 	 *
 	 * @return bool Whether the cart exists or not.
 	 */
@@ -84,8 +86,7 @@ interface Cart_Interface {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @return bool|int The number of products in the cart (regardless of the products quantity) or `false`
-	 *
+	 * @return bool|int The number of products in the cart (regardless of the products quantity) or `false`.
 	 */
 	public function has_items();
 
@@ -94,7 +95,7 @@ interface Cart_Interface {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param string $item_id
+	 * @param string $item_id The item ID.
 	 *
 	 * @return bool|int Either the quantity in the cart for the item or `false`.
 	 */
@@ -116,7 +117,7 @@ interface Cart_Interface {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @return bool
+	 * @return bool Whether the cart has a public page or not.
 	 */
 	public function has_public_page();
 
@@ -133,22 +134,29 @@ interface Cart_Interface {
 	/**
 	 * Process the items in the cart.
 	 *
+	 * Data passed in to process should override anything else that is already
+	 * in the cart.
+	 *
 	 * @since 5.1.10
 	 *
 	 * @param array $data to be processed by the cart.
 	 *
-	 * @return array
+	 * @return array The processed data.
 	 */
 	public function process( array $data = [] );
 
 	/**
 	 * Prepare the data for cart processing.
 	 *
+	 * This method should be used to do any pre-processing of the data before
+	 * it is passed to the process() method. If no pre-processing is needed,
+	 * this method should return the data as-is.
+	 *
 	 * @since 5.1.10
 	 *
 	 * @param array $data To be processed by the cart.
 	 *
-	 * @return array
+	 * @return array The prepared data.
 	 */
 	public function prepare_data( array $data = [] );
 }
