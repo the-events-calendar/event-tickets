@@ -255,6 +255,18 @@ class Unmanaged_Cart extends Abstract_Cart {
 			$this->add_item( $ticket['ticket_id'], $ticket['quantity'], $ticket['extra'] );
 		}
 
+		/**
+		 * Fires after the ticket data has been processed.
+		 *
+		 * This allows for further processing of data within the $data array.
+		 *
+		 * @since TBD
+		 *
+		 * @param Unmanaged_Cart $cart The cart object.
+		 * @param array          $data The data to be processed by the cart.
+		 */
+		do_action( 'tec_tickets_commerce_cart_process', $this, $data );
+
 		// Saved added items to the cart.
 		$this->save();
 
