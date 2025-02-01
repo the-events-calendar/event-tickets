@@ -308,7 +308,7 @@ class Cart {
 		 *
 		 * @param int $expires The expiry time, as passed to setcookie().
 		 */
-		return (int) apply_filters( 'tec_tickets_commerce_cart_expiration', time() + ( 1 * HOUR_IN_SECONDS ) );
+		return (int) apply_filters( 'tec_tickets_commerce_cart_expiration', time() + HOUR_IN_SECONDS );
 	}
 
 	/**
