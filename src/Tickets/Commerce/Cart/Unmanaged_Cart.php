@@ -20,28 +20,6 @@ class Unmanaged_Cart extends Abstract_Cart {
 	protected $items = null;
 
 	/**
-	 * Determines if this instance of the cart has a public page.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @return bool
-	 */
-	public function has_public_page() {
-		return false;
-	}
-
-	/**
-	 * Gets the Cart mode based.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @return string
-	 */
-	public function get_mode() {
-		return Cart::REDIRECT_MODE;
-	}
-
-	/**
 	 * Saves the cart.
 	 *
 	 * This method should include any persistence, request and redirection required
@@ -273,18 +251,5 @@ class Unmanaged_Cart extends Abstract_Cart {
 		}
 
 		return true;
-	}
-
-	/**
-	 * Prepare the data for cart processing.
-	 *
-	 * @since 5.1.10
-	 *
-	 * @param array $data To be processed by the cart.
-	 *
-	 * @return array
-	 */
-	public function prepare_data( array $data = [] ) {
-		return $data;
 	}
 }

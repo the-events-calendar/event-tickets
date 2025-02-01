@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Commerce\Cart;
 
+use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Tickets__Tickets as Tickets;
@@ -36,6 +37,28 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * @var string The Cart hash for this cart.
 	 */
 	protected $cart_hash;
+
+	/**
+	 * Determines if this instance of the cart has a public page.
+	 *
+	 * @since 5.1.9
+	 *
+	 * @return bool
+	 */
+	public function has_public_page() {
+		return false;
+	}
+
+	/**
+	 * Gets the Cart mode based.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_mode() {
+		return Cart::REDIRECT_MODE;
+	}
 
 	/**
 	 * Get the tickets currently in the cart for a given provider.
@@ -192,5 +215,31 @@ abstract class Abstract_Cart implements Cart_Interface {
 		 * @param Cart_Interface $cart      Which cart object we are using here.
 		 */
 		return apply_filters( 'tec_tickets_commerce_cart_get_hash', $this->cart_hash, $this );
+	}
+
+	/**
+	 * Prepare the data for cart processing.
+	 *
+	 * This method should be used to do any pre-processing of the data before
+	 * it is passed to the process() method. If no pre-processing is needed,
+	 * this method should return the data as is.
+	 *
+	 * @since 5.1.10
+	 * @since TBD Moved to the abstract class.
+	 *
+	 * @param array $data To be processed by the cart.
+	 *
+	 * @return array
+	 */
+	public function prepare_data( array $data = [] ) {
+		/**
+		 * Filter the data before it is processed by the cart.
+		 *
+		 * @since TBD
+		 *
+		 * @param array          $data The data to be processed by the cart.
+		 * @param Cart_Interface $this The cart object.
+		 */
+		return (array) apply_filters( 'tec_tickets_commerce_cart_prepare_data', $data, $this );
 	}
 }
