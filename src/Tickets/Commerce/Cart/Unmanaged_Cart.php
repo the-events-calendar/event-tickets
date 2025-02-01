@@ -3,6 +3,8 @@
 namespace TEC\Tickets\Commerce\Cart;
 
 use TEC\Tickets\Commerce\Cart;
+use Tribe__Tickets__REST__V1__Messages as Messages;
+use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 
 /**
  * Class Unmanaged_Cart
@@ -83,7 +85,7 @@ class Unmanaged_Cart extends Abstract_Cart {
 	 * by the cart implementation.
 	 */
 	public function clear() {
-		$cart_hash = tribe( Cart::class )->get_cart_hash();
+		$cart_hash = tribe( Cart::class )->get_cart_hash() ?? '';
 
 		if ( false === $cart_hash ) {
 			return;
@@ -127,6 +129,11 @@ class Unmanaged_Cart extends Abstract_Cart {
 	 */
 	public function has_items() {
 		$items = $this->get_items();
+
+		// When we don't have items, return false.
+		if ( empty( $items ) ) {
+			return false;
+		}
 
 		return count( $items );
 	}
@@ -200,28 +207,33 @@ class Unmanaged_Cart extends Abstract_Cart {
 	/**
 	 * Process the items in the cart.
 	 *
+	 * Data passed in to process should override anything else that is already
+	 * in the cart.
+	 *
 	 * @since 5.1.10
 	 *
-	 * @param array $data to be processed by the cart.
+	 * @param array $data Data to be processed by the cart.
 	 *
-	 * @return array|bool
+	 * @return array|bool An array of WP_Error objects if there are errors, otherwise `true`.
 	 */
 	public function process( array $data = [] ) {
 		if ( empty( $data ) ) {
 			return false;
 		}
 
+		// Reset the contents of the cart.
 		$this->clear();
 
-		/** @var \Tribe__Tickets__REST__V1__Messages $messages */
+		/** @var Messages $messages */
 		$messages = tribe( 'tickets.rest-v1.messages' );
 
-		// Get the number of available tickets.
-		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
+		/** @var Tickets_Handler $tickets_handler */
 		$tickets_handler = tribe( 'tickets.handler' );
 
+		// Prepare the error message array.
 		$errors = [];
 
+		// Natively handle adding tickets as items to the cart.
 		foreach ( $data['tickets'] as $ticket ) {
 			$available = $tickets_handler->get_ticket_max_purchase( $ticket['ticket_id'] );
 
