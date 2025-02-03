@@ -16,6 +16,7 @@ use Tribe__Tickets__REST__V1__Messages as Messages;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
+use WP_Error;
 
 /**
  * Class Agnostic_Cart
@@ -113,7 +114,7 @@ class Agnostic_Cart extends Abstract_Cart {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $criteria
+	 * @param array $criteria Additional criteria to use when checking if the cart exists.
 	 *
 	 * @return bool Whether the cart exists or not.
 	 */
@@ -132,7 +133,6 @@ class Agnostic_Cart extends Abstract_Cart {
 	 * @since TBD
 	 *
 	 * @return bool|int The number of products in the cart (regardless of the products quantity) or `false`
-	 *
 	 */
 	public function has_items() {
 		$count = count( $this->get_items() );
@@ -145,7 +145,7 @@ class Agnostic_Cart extends Abstract_Cart {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $item_id
+	 * @param string $item_id The item ID.
 	 *
 	 * @return bool|int Either the quantity in the cart for the item or `false`.
 	 */
@@ -277,11 +277,16 @@ class Agnostic_Cart extends Abstract_Cart {
 			if ( ( -1 !== $available && $available < $ticket['quantity'] ) || ! $ticket['obj']->date_in_range() ) {
 				$error_code = 'ticket-capacity-not-available';
 
-				$errors[] = new \WP_Error(
-					$error_code, sprintf( $messages->get_message( $error_code ), $ticket['obj']->name ), [
-					'ticket'        => $ticket,
-					'max_available' => $available,
-				]
+				$errors[] = new WP_Error(
+					$error_code,
+					sprintf(
+						$messages->get_message( $error_code ),
+						$ticket['obj']->name
+					),
+					[
+						'ticket'        => $ticket,
+						'max_available' => $available,
+					]
 				);
 				continue;
 			}

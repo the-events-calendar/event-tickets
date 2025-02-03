@@ -166,7 +166,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * @since 5.1.9
 	 * @since 5.2.0 Renamed to set_hash instead of set_id
 	 *
-	 * @param string $hash
+	 * @param string $hash The hash to set.
 	 */
 	public function set_hash( $hash ) {
 		/**
@@ -185,7 +185,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return string
+	 * @return string The hash.
 	 */
 	public function get_hash() {
 		/**
@@ -225,7 +225,6 @@ abstract class Abstract_Cart implements Cart_Interface {
 				return $item;
 			},
 			$items
-
 		);
 	}
 

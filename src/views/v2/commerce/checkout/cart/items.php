@@ -45,11 +45,25 @@ if ( empty( $items ) ) {
 
 		switch ( $item_type ) {
 			case 'ticket':
-				$this->template( 'checkout/cart/ticket', [ 'section' => $section, 'post' => $post, 'item' => $item ] );
+				$this->template(
+					'checkout/cart/ticket',
+					[
+						'section' => $section,
+						'post'    => $post,
+						'item'    => $item,
+					]
+				);
 				break;
 
 			default:
-				$this->template( 'checkout/cart/item', [ 'section' => $section, 'post' => $post, 'item' => $item ] );
+				$this->template(
+					'checkout/cart/item',
+					[
+						'section' => $section,
+						'post'    => $post,
+						'item'    => $item,
+					]
+				);
 		}
 	}
 	?>

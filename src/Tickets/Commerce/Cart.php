@@ -246,7 +246,7 @@ class Cart {
 				$cart_hash_transient = get_transient( $this->get_transient_key( $cart_hash ) );
 
 				// Make sure we increment.
-				$tries++;
+				++$tries;
 			}
 		}
 
