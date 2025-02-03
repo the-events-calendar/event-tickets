@@ -143,7 +143,7 @@ class Unmanaged_Cart extends Abstract_Cart {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param string $item_id
+	 * @param string $item_id The item ID.
 	 *
 	 * @return bool|int Either the quantity in the cart for the item or `false`.
 	 */

@@ -246,7 +246,7 @@ class Cart {
 				$cart_hash_transient = get_transient( $this->get_transient_key( $cart_hash ) );
 
 				// Make sure we increment.
-				$tries++;
+				++$tries;
 			}
 		}
 
@@ -304,7 +304,7 @@ class Cart {
 		 *
 		 * @param int $expires The expiry time, as passed to setcookie().
 		 */
-		$expire  = apply_filters( 'tec_tickets_commerce_cart_expiration', time() + HOUR_IN_SECONDS );
+		$expire = apply_filters( 'tec_tickets_commerce_cart_expiration', time() + HOUR_IN_SECONDS );
 
 		// When null means we are deleting.
 		if ( null === $value ) {
