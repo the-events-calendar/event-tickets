@@ -4,6 +4,7 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Commerce\Cart;
 
+use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Cart;
 
 /**
@@ -11,7 +12,7 @@ use TEC\Tickets\Commerce\Cart;
  *
  * @since TBD
  */
-class Agnostic_CartTest extends \Codeception\TestCase\WPTestCase {
+class Agnostic_CartTest extends WPTestCase {
 
 	public function test_does_not_have_public_page() {
 		$cart = new Agnostic_Cart();
