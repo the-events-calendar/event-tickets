@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce;
+use TEC\Tickets\Commerce\Cart\Cart_Interface;
 use TEC\Tickets\Commerce\Cart\Unmanaged_Cart;
 use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -19,8 +20,8 @@ class CartTest extends WPTestCase {
 		$cart       = new Cart();
 		$repository = $cart->get_repository();
 
-		$assertion_msg = 'Cart->get_repository() should return an instance of Unmanaged_Cart';
-		$this->assertTrue( is_a( $repository, 'TEC\Tickets\Commerce\Cart\Unmanaged_Cart' ), $assertion_msg );
+		$assertion_msg = 'Cart->get_repository() should return an instance of Cart_Interface';
+		$this->assertTrue( is_a( $repository, Cart_Interface::class ), $assertion_msg );
 	}
 
 	public function test_does_not_process_empty_cart() {
