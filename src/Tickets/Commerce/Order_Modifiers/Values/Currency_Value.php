@@ -9,7 +9,7 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Values;
 
-use TEC\Tickets\Commerce\Order_Modifiers\Traits\Stringify;
+use InvalidArgumentException;
 
 /**
  * Class Currency_Value
@@ -17,6 +17,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Traits\Stringify;
  * @since 5.18.0
  */
 class Currency_Value extends Base_Value {
+
 	/**
 	 * The currency symbol.
 	 *
