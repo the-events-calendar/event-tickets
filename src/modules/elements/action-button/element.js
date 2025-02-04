@@ -8,7 +8,7 @@ import classNames from 'classnames';
 /**
  * Internal dependencies
  */
-import {Button, Link} from '@moderntribe/common/elements';
+import { Button, Link } from '@moderntribe/common/elements';
 import './style.pcss';
 
 export const positions = {
@@ -49,11 +49,11 @@ const ActionButton = ( {
 		return elemProps;
 	};
 
-	if( asLink && ! disabled){
+	if ( asLink && ! disabled ) {
 		return (
 			<Link
 				className={ containerClass }
-				{ ...({href: '#', ...getProps()}) }
+				{ ...( { href: '#', ...getProps() } ) }
 			>
 				{ icon }
 				<span className="tribe-editor__action-button__label">{ children }</span>
