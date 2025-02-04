@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Correct row and total calculation in the seat selection modal. [SL-266]
