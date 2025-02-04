@@ -9,6 +9,8 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Common\Contracts\Service_Provider;
+use TEC\Tickets\Commerce\Cart\Agnostic_Cart;
+use TEC\Tickets\Commerce\Cart\Cart_Interface;
 use TEC\Tickets\Commerce\Gateways;
 use Tribe__Tickets__Main as Tickets_Plugin;
 
@@ -66,6 +68,7 @@ class Provider extends Service_Provider {
 		$this->container->singleton( Ticket::class );
 		$this->container->singleton( Cart::class );
 		$this->container->singleton( Cart\Unmanaged_Cart::class );
+		$this->container->singleton( Cart_Interface::class, Agnostic_Cart::class );
 
 		$this->container->singleton( Checkout::class );
 		$this->container->singleton( Settings::class );
