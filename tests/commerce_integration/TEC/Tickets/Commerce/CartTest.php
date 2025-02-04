@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce;
+use TEC\Tickets\Commerce\Cart\Agnostic_Cart;
 use TEC\Tickets\Commerce\Cart\Cart_Interface;
 use TEC\Tickets\Commerce\Cart\Unmanaged_Cart;
 use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
@@ -161,7 +162,7 @@ class CartTest extends WPTestCase {
 		$ticket_a = $this->create_tc_ticket( $post_id, 10.10 );
 		$ticket_b = $this->create_tc_ticket( $post_id, 20.30 );
 
-		tribe_singleton( Unmanaged_Cart::class, new Unmanaged_Cart() );
+		tribe_singleton( Cart_Interface::class, Agnostic_Cart::class );
 		$cart = tribe( Cart::class );
 
 		$cart->add_ticket( $ticket_a, 3 );
