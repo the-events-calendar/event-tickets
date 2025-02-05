@@ -37,6 +37,15 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	use Valid_Types;
 
 	/**
+	 * The current page number.
+	 *
+	 * @since 5.18.1
+	 *
+	 * @var int
+	 */
+	protected int $current_page = 1;
+
+	/**
 	 * Modifier class for the table (e.g., Coupon or Fee).
 	 *
 	 * @since 5.18.0
@@ -104,46 +113,58 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 * @since 5.18.0
 	 */
 	public function prepare_items() {
-		$columns               = $this->get_columns();
-		$hidden                = [];
-		$sortable              = $this->get_sortable_columns();
-		$this->_column_headers = [ $columns, $hidden, $sortable ];
+		$this->_column_headers = [
+			$this->get_columns(),
+			$this->get_hidden_columns(),
+			$this->get_sortable_columns(),
+		];
 
-		// Handle search.
-		$search = tribe_get_request_var( 's', '' );
+		// Pagination parameters.
+		$per_page           = $this->get_items_per_page( "{$this->modifier->get_modifier_type()}_per_page", 10 );
+		$this->current_page = $this->get_pagenum();
 
-		// Capture sorting parameters.
+		// Query parameters.
+		$parameters = [
+			'limit'       => $this->get_items_per_page( "{$this->modifier->get_modifier_type()}_per_page", 10 ),
+			'order'       => tec_get_request_var( 'order', 'asc' ),
+			'orderby'     => tec_get_request_var( 'orderby', 'display_name' ),
+			'page'        => $this->current_page,
+			'search_term' => tec_get_request_var( 's', '' ),
+		];
 
-		$orderby = sanitize_text_field( tribe_get_request_var( 'orderby', 'display_name' ) );
-		$order   = sanitize_text_field( tribe_get_request_var( 'order', 'asc' ) );
+		$total_items = $this->setup_items( $parameters, $per_page );
 
-		// Fetch the data from the modifier class, including sorting.
-		$data = $this->modifier->find_by_search(
-			[
-				'search_term'   => $search,
-				'orderby'       => $orderby,
-				'order'         => $order,
-				'modifier_type' => $this->modifier->get_modifier_type(),
-			]
-		);
-
-		// Pagination.
-		$per_page     = $this->get_items_per_page( $this->modifier->get_modifier_type() . '_per_page', 10 );
-		$current_page = $this->get_pagenum();
-		$total_items  = count( $data );
-
-		$data = array_slice( $data, ( $current_page - 1 ) * $per_page, $per_page );
-
-		// Set the items for the table.
-		$this->items = $data;
-
+		// Set the pagination args.
 		$this->set_pagination_args(
 			[
-				'total_items' => $total_items,
 				'per_page'    => $per_page,
-				'total_pages' => ceil( $total_items / $per_page ),
+				'total_items' => $total_items,
+				'total_pages' => (int) ceil( $total_items / $per_page ),
 			]
 		);
+	}
+
+	/**
+	 * Setup the items for the table.
+	 *
+	 * @since 5.18.1
+	 *
+	 * @param array $params   The query parameters.
+	 * @param int   $per_page The number of items to display per page.
+	 *
+	 * @return int The total number of items.
+	 */
+	protected function setup_items( array $params, int $per_page ): int {
+		$this->items = $this->modifier->get_modifiers( $params );
+
+		// Get the total number of items.
+		if ( count( $this->items ) < $per_page && $this->current_page === 1 ) {
+			return count( $this->items );
+		}
+
+		unset( $params['limit'], $params['page'] );
+
+		return count( $this->modifier->get_modifiers( $params ) );
 	}
 
 	/**
@@ -222,10 +243,10 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 * @return void
 	 */
 	public function search_box( $text, $input_id, $placeholder = '' ) {
-		$search_value = sanitize_text_field( tribe_get_request_var( 's', '' ) );
+		$search_value = tec_get_request_var( 's', '' );
 
 		// Set the input ID.
-		$input_id = $input_id . '-search-input';
+		$input_id = "{$input_id}-search-input";
 
 		// If no placeholder is provided, default to the display_name column.
 		if ( empty( $placeholder ) ) {
@@ -257,7 +278,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		}
 
 		// Determine the current modifier, falling back to the default.
-		$current_modifier = tribe_get_request_var( 'modifier', $this->get_default_type() );
+		$current_modifier = tec_get_request_var( 'modifier', $this->get_default_type() );
 
 		echo '<h2 class="nav-tab-wrapper">';
 		foreach ( $modifiers as $modifier_slug => $modifier_data ) {
@@ -329,6 +350,16 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 *
 	 * @return void
 	 */
-	public function render_table_explain_text() {
+	public function render_table_explain_text() {}
+
+	/**
+	 * Retrieves hidden columns for the table.
+	 *
+	 * @since 5.18.1
+	 *
+	 * @return array
+	 */
+	protected function get_hidden_columns(): array {
+		return [];
 	}
 }

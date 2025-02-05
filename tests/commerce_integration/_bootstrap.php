@@ -22,3 +22,5 @@ update_option( 'stylesheet', 'twentytwenty' );
 // Start the posts auto-increment from a high number to make it easier to replace the post IDs in HTML snapshots.
 global $wpdb;
 $wpdb->query( "ALTER TABLE $wpdb->posts AUTO_INCREMENT = 5096" );
+
+tec_tickets_tests_fake_transactions_enable();
