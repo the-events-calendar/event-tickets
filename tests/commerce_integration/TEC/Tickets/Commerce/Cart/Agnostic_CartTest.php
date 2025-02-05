@@ -59,22 +59,30 @@ class Agnostic_CartTest extends WPTestCase {
 		$assertion_msg = 'Agnostic_Cart->has_items() should return zero if no items were added.';
 		$this->assertEquals( 0, $quantity, $assertion_msg );
 
+		$items_count = [];
+
 		foreach ( $items as $i => $item ) {
 			if ( ! is_numeric( $item[0] ) ) {
 				continue;
 			}
 
-			$quantity += $item[1];
+			$item_id                 = (int) $item[0];
+			$items_count[ $item_id ] ??= 0;
+			$items_count[ $item_id ] += $item[1];
+
 			$cart->add_item( $item[0], $item[1], $item[2] ?? [] );
 
 			// Update quantities as each item gets updated
-			$item[3][ $item[0] ]['quantity'] = $quantity;
+			$item[3][ $item[0] ]['quantity'] = $items_count[ $item_id ];
 
 			$assertion_msg = 'Adding items with an id already existing in the cart should not create new items in the cart.';
-			$this->assertEquals( 1, $cart->has_items(), $assertion_msg );
+			$this->assertEquals( count( $items_count ), $cart->has_items(), $assertion_msg );
+
+			$cart_items = $cart->get_items();
+			$this->assertArrayHasKey( $item_id, $cart_items, $assertion_msg );
 
 			$assertion_msg = "Adding items with an id already existing in the cart should change the quantity of that item in the cart. Item: {$i}";
-			$this->assertEquals( $item[3], $cart->get_items(), $assertion_msg );
+			$this->assertEquals( $item[3][ $item_id ], $cart_items[ $item_id ], $assertion_msg );
 		}
 	}
 
