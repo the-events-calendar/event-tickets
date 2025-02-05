@@ -308,10 +308,25 @@ class Cart {
 		 * Filters the life span of the Cart Cookie.
 		 *
 		 * @since 5.1.9
+		 * @since TBD Deprecated in favor of `tec_tickets_commerce_cart_cookie_expiration`.
 		 *
-		 * @param int $expires The expiry time, as passed to setcookie().
+		 * @param int $expire The expiry time, as passed to setcookie().
 		 */
-		return (int) apply_filters( 'tec_tickets_commerce_cart_expiration', time() + HOUR_IN_SECONDS );
+		$expire = (int) apply_filters_deprecated(
+			'tec_tickets_commerce_cart_expiration',
+			[ time() + HOUR_IN_SECONDS ],
+			'TBD',
+			'tec_tickets_commerce_cart_cookie_expiration'
+		);
+
+		/**
+		 * Filters the life span of the Cart Cookie.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $expire The expiry time, as passed to setcookie().
+		 */
+		return (int) apply_filters( 'tec_tickets_commerce_cart_cookie_expiration', $expire );
 	}
 
 	/**
