@@ -1,4 +1,0 @@
-Significance: minor
-Type: tweak
-
-Refactored a hidden ticket provider field within the classic editor for RSVPs and tickets. [ET-2287]
