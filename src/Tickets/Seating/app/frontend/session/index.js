@@ -121,10 +121,12 @@ let watchedCheckoutControls = [];
  *
  * @since 5.16.0
  *
- * @type {string}
+ * @type {string[]}
  */
-export const checkoutControlsSelectors =
-	'.tribe-tickets__commerce-checkout-form-submit-button, .tribe-tickets__commerce-checkout-paypal-buttons button';
+export const checkoutControlsSelectors = [
+	'.tribe-tickets__commerce-checkout-form-submit-button',
+	'.tribe-tickets__commerce-checkout-paypal-buttons button'
+];
 
 /**
  * Sets the interruptable flag.
@@ -815,7 +817,7 @@ export function watchCheckoutControls() {
 	 *
 	 * @since 5.16.0
 	 *
-	 * @type {string} The `querySelectorAll` selectors used to find the checkout controls on the page.
+	 * @type {string[]} The `querySelectorAll` selectors used to find the checkout controls on the page.
 	 */
 	const filteredCheckoutControls = applyFilters(
 		'tec.tickets.seating.frontend.session.checkoutControls',
@@ -823,7 +825,7 @@ export function watchCheckoutControls() {
 	);
 
 	const checkoutControlElements = targetDom.querySelectorAll(
-		filteredCheckoutControls
+		filteredCheckoutControls.join(', ')
 	);
 
 	checkoutControlElements.forEach((checkoutControlElement) => {
