@@ -17,7 +17,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin.
 	 */
-	const VERSION = '5.19.0';
+	const VERSION = '5.19.1';
 
 	/**
 	 * Used to store the version history.
@@ -189,7 +189,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Set the plugin name.
 	 *
-	 * @since TBD
+	 * @since 5.19.1
 	 */
 	public function set_plugin_name() {
 		$this->plugin_name = esc_html_x( 'Tickets', 'provider_plugin_name', 'event-tickets' );
@@ -199,7 +199,7 @@ class Tribe__Tickets__Main {
 	 * Attach our initial hooks and filters
 	 *
 	 * @since 5.18.0
-	 * @since TBD Called `set_plugin_name` on `init` hook.
+	 * @since 5.19.1 Called `set_plugin_name` on `init` hook.
 	 *
 	 * @return void
 	 */

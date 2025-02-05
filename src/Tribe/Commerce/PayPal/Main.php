@@ -376,7 +376,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Sets the RSVPs plugin name.
 	 *
-	 * @since TBD
+	 * @since 5.19.1
 	 */
 	public function set_plugin_name() {
 		$this->plugin_name = esc_html_x( 'Tribe Commerce', 'ticket provider', 'event-tickets' );

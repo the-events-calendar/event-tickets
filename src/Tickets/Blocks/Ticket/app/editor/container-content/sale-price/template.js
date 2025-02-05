@@ -25,7 +25,7 @@ import {DateTimeRangePicker} from "@moderntribe/tickets/elements";
 /**
  * Get the ticket provider from the common store.
  *
- * @since TBD
+ * @since 5.19.1
  * @return {string} The ticket provider.
  */
 const getTicketProviderFromCommon = () => {

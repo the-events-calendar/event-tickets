@@ -114,7 +114,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Set the unlimited term name
 	 *
-	 * @since TBD
+	 * @since 5.19.1
 	 */
 	public function set_unlimited_term_name() {
 		$this->unlimited_term = __( 'Unlimited', 'event-tickets' );
@@ -124,7 +124,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Add hooks for saving/meta.
 	 *
 	 * @since 4.11.4
-	 * @since TBD Added the `set_unlimited_term_name` method to set the unlimited term name.
+	 * @since 5.19.1 Added the `set_unlimited_term_name` method to set the unlimited term name.
 	 */
 	public function add_hooks() {
 		$main = Tribe__Tickets__Main::instance();

@@ -1217,7 +1217,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Generate a hashed key for the order for public view.
 	 *
-	 * @since TBD
+	 * @since 5.19.1
 	 *
 	 * @param string $hash The order cart hash.
 	 * @param string $email The email of the purchaser.

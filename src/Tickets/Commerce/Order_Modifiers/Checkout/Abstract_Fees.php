@@ -105,7 +105,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 	/**
 	 * The order modifiers controller.
 	 *
-	 * @since TBD
+	 * @since 5.19.1
 	 * @var Controller
 	 */
 	protected Controller $controller;
@@ -143,7 +143,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 	/**
 	 * Sets the modifier strategy for applying fees.
 	 *
-	 * @since TBD
+	 * @since 5.19.1
 	 */
 	public function set_modifier_strategy() {
 		$this->modifier_strategy = $this->controller->get_modifier( $this->modifier_type );

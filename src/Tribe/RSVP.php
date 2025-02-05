@@ -261,7 +261,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Sets the RSVPs plugin name.
 	 *
-	 * @since TBD
+	 * @since 5.19.1
 	 */
 	public function set_plugin_name() {
 		// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase, Squiz.PHP.DisallowMultipleAssignments.Found

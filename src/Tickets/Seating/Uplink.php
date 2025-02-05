@@ -81,7 +81,7 @@ class Uplink extends Controller_Contract {
 	/**
 	 * Set the SLR plugin name.
 	 *
-	 * @since TBD
+	 * @since 5.19.1
 	 */
 	public function set_slr_plugin_name(): void {
 		$this->et_slr_plugin_name = _x( 'Seating', 'Header of the connection controls', 'event-tickets' );

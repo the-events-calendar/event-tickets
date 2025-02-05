@@ -64,7 +64,7 @@ class Success_Shortcode extends Shortcode_Abstract {
 	/**
 	 * Get the HTML for the shortcode.
 	 *
-	 * @since TBD
+	 * @since 5.19.1
 	 *
 	 * @return string The rendered HTML or an empty string if conditions are not met.
 	 */
@@ -93,7 +93,7 @@ class Success_Shortcode extends Shortcode_Abstract {
 	/**
 	 * Determine if the current user can view the order details.
 	 *
-	 * @since TBD
+	 * @since 5.19.1
 	 *
 	 * @param \WP_Post $order The order object.
 	 *

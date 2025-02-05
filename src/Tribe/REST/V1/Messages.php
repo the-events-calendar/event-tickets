@@ -26,7 +26,7 @@ class Tribe__Tickets__REST__V1__Messages implements Tribe__REST__Messages_Interf
 	/**
 	 * Sets the messages handled by the class.
 	 *
-	 * @since TBD
+	 * @since 5.19.1
 	 *
 	 * @return void
 	 */

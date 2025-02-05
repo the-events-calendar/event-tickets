@@ -613,7 +613,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 * Returns a ticket cost or details.
 	 *
 	 * @since 4.8
-	 * @since TBD Use property regular_price if set.
+	 * @since 5.19.1 Use property regular_price if set.
 	 *
 	 * @param int  $ticket_id The ticket ID.
 	 * @param bool $get_details Whether to get just the ticket cost (`false`) or
@@ -805,7 +805,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 * Returns the sale price data for a ticket.
 	 *
 	 * @since 5.9.0
-	 * @since TBD If the provider has method `get_sale_price_details`, return that.
+	 * @since 5.19.1 If the provider has method `get_sale_price_details`, return that.
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 *

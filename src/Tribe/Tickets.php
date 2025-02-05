@@ -2402,7 +2402,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Returns the class name of the default module/provider.
 		 *
 		 * @since 4.6
-		 * @since TBD Update default to Tickets Commerce.
+		 * @since 5.19.1 Update default to Tickets Commerce.
 		 *
 		 * @return string
 		 */
