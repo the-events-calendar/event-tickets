@@ -25,7 +25,18 @@ abstract class Abstract_Cart implements Cart_Interface {
 	use Cart_Trait;
 
 	/**
-	 * Cart total
+	 * Cart subtotal.
+	 *
+	 * This should be the total of items in the cart without any additional calculations.
+	 *
+	 * @since TBD
+	 *
+	 * @var ?float
+	 */
+	protected ?float $cart_subtotal = null;
+
+	/**
+	 * Cart total.
 	 *
 	 * @since 5.10.0
 	 *
