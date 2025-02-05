@@ -196,9 +196,9 @@ class Agnostic_Cart extends Abstract_Cart {
 	 *
 	 * @param int|string $item_id    The item ID.
 	 * @param int        $quantity   The quantity to remove.
-	 * @param array      $extra_data Extra data to save to the item.
+	 * @param ?array     $extra_data Extra data to save to the item.
 	 */
-	public function add_item( $item_id, $quantity, array $extra_data = [] ) {
+	public function add_item( $item_id, $quantity, ?array $extra_data = null ) {
 		// Allow for the type of item to be passed in.
 		$type = $extra_data['type'] ?? 'ticket';
 		unset( $extra_data['type'] );
@@ -225,7 +225,7 @@ class Agnostic_Cart extends Abstract_Cart {
 				"{$type}_id" => $item_id,
 				'quantity'   => $new_quantity,
 				'type'       => $type,
-				'extra'      => $extra_data,
+				'extra'      => $extra_data ?? [],
 			]
 		);
 	}
@@ -235,11 +235,11 @@ class Agnostic_Cart extends Abstract_Cart {
 	 *
 	 * @param string $item_id    The item ID.
 	 * @param int    $quantity   The quantity to update.
-	 * @param array  $extra_data Extra data to save to the item.
+	 * @param ?array $extra_data Extra data to save to the item.
 	 *
 	 * @return void
 	 */
-	protected function update_item( $item_id, int $quantity, array $extra_data = [] ): void {
+	protected function update_item( $item_id, int $quantity, ?array $extra_data = null ): void {
 		$item_object  = $this->items[ $item_id ];
 		$new_quantity = $item_object->add_quantity( $quantity );
 
@@ -251,8 +251,8 @@ class Agnostic_Cart extends Abstract_Cart {
 		}
 
 		// Maybe update the extra data.
-		if ( ! empty( $extra_data ) ) {
-			$item_object['extra'] = array_merge( $item_object['extra'], $extra_data );
+		if ( null !== $extra_data ) {
+			$item_object['extra'] = $extra_data;
 		}
 	}
 
