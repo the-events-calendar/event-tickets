@@ -508,6 +508,7 @@ class Frontend extends Controller_Contract {
 				'ticketId'    => $ticket_id,
 				'name'        => $ticket->name,
 				'price'       => $formatted_ticket_price,
+				'priceValue'  => $ticket->price,
 				'description' => $ticket->description,
 				'dateInRange' => $ticket->date_in_range(),
 				'maxLimit'    => $tickets_handler->get_ticket_max_purchase( $ticket_id ),

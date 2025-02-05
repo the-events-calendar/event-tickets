@@ -9,6 +9,7 @@
                     "ticketId": {{ticket_1}},
                     "name": "Test TC ticket for {{post_id}}",
                     "price": "&#x24;20.00",
+                    "priceValue": "20",
                     "description": "Test TC ticket description for {{post_id}}",
                     "dateInRange": true,
                     "maxLimit": 0
