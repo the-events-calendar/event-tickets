@@ -28,7 +28,7 @@ class Agnostic_Cart extends Abstract_Cart {
 	use Cart_Trait;
 
 	/**
-	 * @var array The list of items.
+	 * @var Cart_Item[] The list of items.
 	 */
 	protected array $items = [];
 
@@ -43,7 +43,7 @@ class Agnostic_Cart extends Abstract_Cart {
 	 */
 	public function get_items() {
 		if ( ! empty( $this->items ) ) {
-			return $this->items;
+			return $this->get_items_plain();
 		}
 
 		if ( ! $this->exists() ) {
@@ -52,10 +52,38 @@ class Agnostic_Cart extends Abstract_Cart {
 
 		$items = get_transient( $this->get_transient_key( $this->get_hash() ) );
 		if ( is_array( $items ) && ! empty( $items ) ) {
-			$this->items = $items;
+			$this->set_items_plain( $items );
 		}
 
-		return $this->items;
+		return $this->get_items_plain();
+	}
+
+	/**
+	 * Gets the cart items as plain items instead of objects.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	protected function get_items_plain(): array {
+		return array_map(
+			fn( $item ) => $item->to_array(),
+			$this->items
+		);
+	}
+
+	/**
+	 * Sets the cart items from a plain items array.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $items The items to set.
+	 */
+	protected function set_items_plain( array $items ) {
+		$this->items = array_map(
+			fn( $item ) => new Cart_Item( $item ),
+			$items
+		);
 	}
 
 	/**
@@ -81,7 +109,7 @@ class Agnostic_Cart extends Abstract_Cart {
 			return false;
 		}
 
-		set_transient( $this->get_transient_key( $cart_hash ), $this->items, DAY_IN_SECONDS );
+		set_transient( $this->get_transient_key( $cart_hash ), $this->get_items_plain(), DAY_IN_SECONDS );
 		tribe( Cart::class )->set_cart_hash_cookie( $cart_hash );
 
 		return true;
@@ -172,29 +200,34 @@ class Agnostic_Cart extends Abstract_Cart {
 	 */
 	public function add_item( $item_id, $quantity, array $extra_data = [] ) {
 		// Allow for the type of item to be passed in.
-		if ( array_key_exists( 'type', $extra_data ) ) {
-			$type = $extra_data['type'];
-			unset( $extra_data['type'] );
-		} else {
-			$type = 'ticket';
-		}
+		$type = $extra_data['type'] ?? 'ticket';
+		unset( $extra_data['type'] );
 
-		// Set the ID key based on the type of item, defaulting to ticket types.
-		$id_key = "{$type}_id";
+		// Ensure the quantity is an integer.
+		$new_quantity = (int) $quantity;
 
 		// If the item is already in the cart, update the quantity.
 		$current_quantity = $this->has_item( $item_id );
 		if ( false !== $current_quantity ) {
-			$this->update_item( $item_id, $quantity, $extra_data );
+			$this->update_item( $item_id, $new_quantity, $extra_data );
 
 			return;
 		}
 
-		$this->items[ $item_id ] = [
-			$id_key    => $item_id,
-			'quantity' => $quantity,
-			'extra'    => $extra_data,
-		];
+		// If the quantity is zero or less, don't add the item.
+		if ( $new_quantity <= 0 ) {
+			return;
+		}
+
+		// Add the item to the array of items.
+		$this->items[ $item_id ] = new Cart_Item(
+			[
+				"{$type}_id" => $item_id,
+				'quantity'   => $new_quantity,
+				'type'       => $type,
+				'extra'      => $extra_data,
+			]
+		);
 	}
 
 	/**
@@ -207,8 +240,8 @@ class Agnostic_Cart extends Abstract_Cart {
 	 * @return void
 	 */
 	protected function update_item( $item_id, int $quantity, array $extra_data = [] ): void {
-		$item_data    = $this->items[ $item_id ];
-		$new_quantity = $item_data['quantity'] + $quantity;
+		$item_object  = $this->items[ $item_id ];
+		$new_quantity = $item_object->add_quantity( $quantity );
 
 		// If the quantity is less than 1, remove the item from the cart.
 		if ( $new_quantity < 1 ) {
@@ -219,10 +252,8 @@ class Agnostic_Cart extends Abstract_Cart {
 
 		// Maybe update the extra data.
 		if ( ! empty( $extra_data ) ) {
-			$item_data['extra'] = array_merge( $item_data['extra'], $extra_data );
+			$item_object['extra'] = array_merge( $item_object['extra'], $extra_data );
 		}
-
-		$this->items[ $item_id ] = $item_data;
 	}
 
 	/**
