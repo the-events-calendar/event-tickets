@@ -286,10 +286,11 @@ abstract class Abstract_Cart implements Cart_Interface {
 		switch ( $property ) {
 			case 'cart_total':
 				_doing_it_wrong(
-					sprintf( '%s::%s', __CLASS__, $property ),
+					sprintf( '%s::%s', __CLASS__, esc_html( $property ) ),
 					sprintf(
+						/* translators: %s: property name */
 						esc_html__( 'Accessing the %s property directly is deprecated.', 'event-tickets' ),
-						$property
+						esc_html( $property )
 					),
 					'TBD'
 				);

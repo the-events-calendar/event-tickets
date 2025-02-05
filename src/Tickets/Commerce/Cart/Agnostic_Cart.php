@@ -16,7 +16,6 @@ use Tribe__Tickets__REST__V1__Messages as Messages;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
-use WP_Error;
 
 /**
  * Class Agnostic_Cart
