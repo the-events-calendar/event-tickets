@@ -33,6 +33,20 @@ class Agnostic_Cart extends Abstract_Cart {
 	protected array $items = [];
 
 	/**
+	 * Whether the cart subtotal has been calculated.
+	 *
+	 * @var bool
+	 */
+	protected bool $subtotal_calculated = false;
+
+	/**
+	 * Whether the cart total has been calculated.
+	 *
+	 * @var bool
+	 */
+	protected bool $total_calculated = false;
+
+	/**
 	 * Gets the cart items from the cart.
 	 *
 	 * This method should include any persistence by the cart implementation.
@@ -84,6 +98,7 @@ class Agnostic_Cart extends Abstract_Cart {
 			fn( $item ) => new Cart_Item( $item ),
 			$items
 		);
+		$this->reset_calculations();
 	}
 
 	/**
@@ -132,9 +147,11 @@ class Agnostic_Cart extends Abstract_Cart {
 		delete_transient( $this->get_transient_key( $cart_hash ) );
 		tribe( Cart::class )->set_cart_hash_cookie( null );
 
-		// clear cart items data.
-		$this->items      = [];
-		$this->cart_total = null;
+		// Reset items and cart total.
+		$this->items         = [];
+		$this->cart_subtotal = null;
+		$this->cart_total    = null;
+		$this->reset_calculations();
 	}
 
 	/**
@@ -228,6 +245,8 @@ class Agnostic_Cart extends Abstract_Cart {
 				'extra'      => $extra_data ?? [],
 			]
 		);
+
+		$this->reset_calculations();
 	}
 
 	/**
@@ -254,6 +273,8 @@ class Agnostic_Cart extends Abstract_Cart {
 		if ( null !== $extra_data ) {
 			$item_object['extra'] = $extra_data;
 		}
+
+		$this->reset_calculations();
 	}
 
 	/**
@@ -267,6 +288,7 @@ class Agnostic_Cart extends Abstract_Cart {
 	public function remove_item( $item_id, $quantity = null ) {
 		if ( null === $quantity ) {
 			unset( $this->items[ $item_id ] );
+			$this->reset_calculations();
 
 			return;
 		}
@@ -418,12 +440,17 @@ class Agnostic_Cart extends Abstract_Cart {
 	 * This method calculates the total by first computing the subtotal from all items in the cart,
 	 * and then applying any additional values (e.g., fees or discounts) provided via the `tec_tickets_commerce_get_cart_additional_values` filter.
 	 *
-	 * @since 5.18.0 Refactored logic, to include a new filter.
 	 * @since 5.10.0
+	 * @since 5.18.0 Refactored logic, to include a new filter.
 	 *
 	 * @return float The total value of the cart, or null if there are no items.
 	 */
 	public function get_cart_total() {
+		// If the total has already been calculated, return it.
+		if ( $this->total_calculated ) {
+			return $this->cart_total;
+		}
+
 		$subtotal = $this->get_cart_subtotal();
 		if ( ! $subtotal ) {
 			return 0.0;
@@ -455,9 +482,11 @@ class Agnostic_Cart extends Abstract_Cart {
 		// Combine the subtotals and additional values.
 		$total_value = Value::create()->total( array_merge( $sub_totals, $additional_values ) );
 
-		$this->cart_total = $total_value->get_decimal();
+		// Set the total and mark it as calculated.
+		$this->cart_total       = $total_value->get_decimal();
+		$this->total_calculated = true;
 
-		return $total_value->get_decimal();
+		return $this->cart_total;
 	}
 
 	/**
@@ -470,21 +499,37 @@ class Agnostic_Cart extends Abstract_Cart {
 	 * @return float The subtotal of the cart.
 	 */
 	public function get_cart_subtotal(): float {
-		// Reset cart_total to ensure it's not cumulative across calls.
-		$this->cart_total = 0.0;
-
-		$items = $this->get_items_in_cart( true );
-
-		// If no items in the cart, return null.
-		if ( empty( $items ) ) {
-			return 0.0;
+		// If the subtotal has already been calculated, return it.
+		if ( $this->subtotal_calculated ) {
+			return (float) $this->cart_subtotal;
 		}
+
+		// Set the subtotal to 0 before calculating it.
+		$this->cart_subtotal = 0.0;
 
 		// Calculate the total from the subtotals of each item.
+		$items = $this->get_items_in_cart( true );
 		foreach ( $items as $item ) {
-			$this->cart_total += $item['sub_total']->get_decimal();
+			$this->cart_subtotal += $item['sub_total']->get_decimal();
 		}
 
-		return $this->cart_total;
+		// Set the subtotal as calculated.
+		$this->subtotal_calculated = true;
+
+		return $this->cart_subtotal;
+	}
+
+	/**
+	 * Reset the cart calculations.
+	 *
+	 * After calling this method, calculations will be performed again.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function reset_calculations() {
+		$this->subtotal_calculated = false;
+		$this->total_calculated    = false;
 	}
 }
