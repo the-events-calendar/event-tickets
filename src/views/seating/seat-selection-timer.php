@@ -16,17 +16,17 @@
  */
 
 ?>
-
-<div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
-	data-token="<?php echo esc_attr( $token ); ?>"
-	data-redirect-url="<?php echo esc_url( $redirect_url ); ?>"
-	data-post-id="<?php echo esc_attr( $post_id ); ?>"
-	<?php if ( $sync_on_load ) : ?>
-		data-sync-on-load
-	<?php endif; ?>
->
-	<div class="dashicons dashicons-clock"></div>
-	<div class="tec-tickets-seating__message">
+<div class="tribe-common">
+	<div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
+		 data-token="<?php echo esc_attr( $token ); ?>"
+		 data-redirect-url="<?php echo esc_url( $redirect_url ); ?>"
+		 data-post-id="<?php echo esc_attr( $post_id ); ?>"
+		<?php if ( $sync_on_load ) : ?>
+			data-sync-on-load
+		<?php endif; ?>
+	>
+		<div class="dashicons dashicons-clock"></div>
+		<div class="tec-tickets-seating__message">
 		<span>
 			<span class="tec-tickets-seating__message-text">
 				<?php echo esc_html_x( 'Seats reserved for ', 'Seat selection timer text', 'event-tickets' ); ?>
@@ -39,7 +39,8 @@
 				</span>
 			</span>
 		</span>
+		</div>
+		<div class="tec-tickets-seating__dialog-append-target"></div>
 	</div>
-	<div class="tec-tickets-seating__dialog-append-target"></div>
 </div>
 <?php
