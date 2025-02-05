@@ -11,7 +11,6 @@ namespace TEC\Tickets\Commerce;
 use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\Cart\Agnostic_Cart;
 use TEC\Tickets\Commerce\Cart\Cart_Interface;
-use TEC\Tickets\Commerce\Gateways;
 use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
