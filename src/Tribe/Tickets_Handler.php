@@ -112,7 +112,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		$this->add_hooks();
 
-		$this->path = trailingslashit( dirname( dirname( dirname( __FILE__ ) ) ) );
+		$this->path = trailingslashit( dirname( __FILE__, 3 ) );
 	}
 
 	/**
