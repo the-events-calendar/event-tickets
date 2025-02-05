@@ -324,31 +324,21 @@ class Agnostic_Cart extends Abstract_Cart {
 
 		// Natively handle adding tickets as items to the cart.
 		foreach ( $data['tickets'] as $ticket ) {
-			$available = $tickets_handler->get_ticket_max_purchase( $ticket['ticket_id'] );
+			// Enforces that the min to add is 1.
+			$quantity = max( 1, (int) $ticket['quantity'] );
 
-			// Bail if ticket does not have enough available capacity.
-			if ( ( -1 !== $available && $available < $ticket['quantity'] ) || ! $ticket['obj']->date_in_range() ) {
-				$error_code = 'ticket-capacity-not-available';
+			// Check if the ticket can be added to the cart.
+			$can_add_to_cart = $tickets_handler->ticket_has_capacity( $ticket['ticket_id'], $quantity, $ticket['obj'] );
 
-				$errors[] = new WP_Error(
-					$error_code,
-					sprintf(
-						$messages->get_message( $error_code ),
-						$ticket['obj']->name
-					),
-					[
-						'ticket'        => $ticket,
-						'max_available' => $available,
-					]
-				);
+			// Skip and add to the errors if the ticket can't be added to the cart.
+			if ( is_wp_error( $can_add_to_cart ) ) {
+				$errors[] = $can_add_to_cart;
+
 				continue;
 			}
 
-			// Enforces that the min to add is 1.
-			$ticket['quantity'] = max( 1, (int) $ticket['quantity'] );
-
 			// Add to / update quantity in cart.
-			$this->add_item( $ticket['ticket_id'], $ticket['quantity'], $ticket['extra'] );
+			$this->add_item( $ticket['ticket_id'], $quantity, $ticket['extra'] );
 		}
 
 		/**
