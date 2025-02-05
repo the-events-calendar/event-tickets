@@ -199,6 +199,13 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.19.1] 2025-02-06 =
+
+* Tweak - Modify price field in seat report information to include formatted price, not just value. [SL-266]
+* Tweak - Refactored a hidden ticket provider field within the classic editor for RSVPs and tickets. [ET-2287]
+* Fix - Correct row and total calculation in the seat selection modal. [SL-266]
+* Fix - When updating a Ticket's price on block editor, while the ticket is on sale, won't overwrite the sale price in  WooCommerce. [ET-2100]
+
 = [5.19.0] 2025-01-30 =
 
 * Fix - Update asset, dependencies, customizations to align with WordPress 6.7 and React 18. [TEC-5322]
