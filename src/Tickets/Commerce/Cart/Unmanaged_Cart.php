@@ -264,7 +264,7 @@ class Unmanaged_Cart extends Abstract_Cart {
 		 *
 		 * @since TBD
 		 *
-		 * @param Unmanaged_Cart $cart The cart object.
+		 * @param Cart_Interface $cart The cart object.
 		 * @param array          $data The data to be processed by the cart.
 		 */
 		do_action( 'tec_tickets_commerce_cart_process', $this, $data );
