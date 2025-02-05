@@ -9,5 +9,6 @@
   "vendor/autoload.php",
   "vendor/composer/*",
   "vendor/phpqrcode/**/*",
-  "build/**/*"
+  "build/**/*",
+  "node_modules/react-day-picker/moment/*"
 ]
