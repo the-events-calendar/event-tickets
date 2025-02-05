@@ -45,7 +45,10 @@ trait Ticket_Maker {
 		$tickets_handler = tribe( 'tickets.handler' );
 		update_post_meta( $post_id, $tickets_handler->key_provider_field, get_class( $provider_class ) );
 
-		return $provider_class->ticket_add( $post_id, $data );
+		$id = $provider_class->ticket_add( $post_id, $data );
+
+		wp_cache_flush_group( 'post-queries' );
+		return $id;
 	}
 
 	/**
