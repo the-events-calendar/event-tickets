@@ -417,10 +417,6 @@ async function getInterruptDialogElement() {
  * @return {void} The timer is interrupted.
  */
 async function interrupt() {
-	if (!isInterruptable()) {
-		return;
-	}
-
 	setIsInterruptable(true);
 
 	getTimerElements().forEach((timerElement) => {
@@ -482,10 +478,6 @@ export function beaconInterrupt() {
  * @return {void}
  */
 function startCountdownLoop(secondsLeft) {
-	if (!isInterruptable()) {
-		return;
-	}
-
 	if (secondsLeft <= 0) {
 		interrupt();
 
@@ -518,7 +510,7 @@ function startCountdownLoop(secondsLeft) {
  * @return {void}
  */
 function startHealthCheckLoop() {
-	if (isExpired() || !isInterruptable()) {
+	if (isExpired()) {
 		return;
 	}
 
@@ -538,7 +530,7 @@ function startHealthCheckLoop() {
  * @return {Promise<void>} A promise that will resolve when the request is completed.
  */
 export async function syncWithBackend() {
-	if (isExpired() || getTimerElements().length === 0 || !isInterruptable()) {
+	if (isExpired() || getTimerElements().length === 0 ) {
 		return;
 	}
 
