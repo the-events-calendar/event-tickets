@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Commerce\Cart;
 
+use InvalidArgumentException;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
 use TEC\Tickets\Commerce\Utils\Value;
@@ -19,6 +20,8 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
  * Class Abstract_Cart
  *
  * @since 5.10.0
+ *
+ * @property float $cart_total [Deprecated] The calculated cart total.
  */
 abstract class Abstract_Cart implements Cart_Interface {
 
@@ -38,11 +41,15 @@ abstract class Abstract_Cart implements Cart_Interface {
 	/**
 	 * Cart total.
 	 *
-	 * @since 5.10.0
+	 * This should be the total that will be paid by the customer after all calculations
+	 * have been done.
 	 *
-	 * @var null|float
+	 * @since 5.10.0
+	 * @since TBD Marked the property as protected.
+	 *
+	 * @var ?float
 	 */
-	public $cart_total = null;
+	protected ?float $cart_total = null;
 
 	/**
 	 * @var string The Cart hash for this cart.
@@ -263,5 +270,33 @@ abstract class Abstract_Cart implements Cart_Interface {
 		 * @param Cart_Interface $this The cart object.
 		 */
 		return (array) apply_filters( 'tec_tickets_commerce_cart_repo_prepare_data', $data, $this );
+	}
+
+	/**
+	 * Get a non-public property.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $property The property to get.
+	 *
+	 * @return mixed The property value.
+	 * @throws InvalidArgumentException If the property is not meant to be accessed.
+	 */
+	public function __get( $property ) {
+		switch ( $property ) {
+			case 'cart_total':
+				_doing_it_wrong(
+					sprintf( '%s::%s', __CLASS__, $property ),
+					sprintf(
+						esc_html__( 'Accessing the %s property directly is deprecated.', 'event-tickets' ),
+						$property
+					),
+					'TBD'
+				);
+				return $this->cart_total;
+
+			default:
+				throw new InvalidArgumentException( sprintf( 'Invalid property: %s', $property ) );
+		}
 	}
 }
