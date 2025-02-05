@@ -109,10 +109,8 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function __construct() {
 		$this->unlimited_term = __( 'Unlimited', 'event-tickets' );
-
 		$this->add_hooks();
-
-		$this->path = trailingslashit( dirname( __FILE__, 3 ) );
+		$this->path = trailingslashit( dirname( __DIR__, 2 ) );
 	}
 
 	/**
