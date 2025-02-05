@@ -124,7 +124,12 @@ class Agnostic_Cart extends Abstract_Cart {
 			return false;
 		}
 
-		set_transient( $this->get_transient_key( $cart_hash ), $this->get_items_plain(), DAY_IN_SECONDS );
+		set_transient(
+			$this->get_transient_key( $cart_hash ),
+			$this->get_items_plain(),
+			$this->get_transient_expiration()
+		);
+
 		tribe( Cart::class )->set_cart_hash_cookie( $cart_hash );
 
 		return true;

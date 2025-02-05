@@ -32,4 +32,22 @@ trait Cart {
 			md5( $id ?? '' )
 		);
 	}
+
+	/**
+	 * Get the expiration time for the cart transient.
+	 *
+	 * @since TBD
+	 *
+	 * @return int The expiration time in seconds.
+	 */
+	protected function get_transient_expiration(): int {
+		/**
+		 * Filters the expiration time for the cart transient.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $expire The expiration time in seconds. Should be relative time, not an absolute timestamp.
+		 */
+		return (int) apply_filters( 'tec_tickets_commerce_cart_transient_expiration', DAY_IN_SECONDS );
+	}
 }
