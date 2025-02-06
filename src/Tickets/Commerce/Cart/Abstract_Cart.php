@@ -82,13 +82,15 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * Get the tickets currently in the cart for a given provider.
 	 *
 	 * @since 5.10.0
+	 * @since TBD Added the $type parameter.
 	 *
-	 * @param bool $full_item_params Determines all the item params, including event_id, sub_total, and obj.
+	 * @param bool   $full_item_params Determines all the item params, including event_id, sub_total, and obj.
+	 * @param string $type             The type of item to get from the cart. Default is 'ticket'. Use 'all' to get all items.
 	 *
 	 * @return array<string, mixed> List of items.
 	 */
-	public function get_items_in_cart( $full_item_params = false ): array {
-		$items = $this->get_items();
+	public function get_items_in_cart( $full_item_params = false, string $type = 'ticket' ): array {
+		$items = $this->get_items_by_type( $type );
 
 		// When Items is empty in any capacity return an empty array.
 		if ( empty( $items ) ) {
@@ -299,5 +301,30 @@ abstract class Abstract_Cart implements Cart_Interface {
 			default:
 				throw new InvalidArgumentException( sprintf( 'Invalid property: %s', $property ) );
 		}
+	}
+
+	/**
+	 * Get items in the cart of a particular type.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $type The type of item to get from the cart. Use 'all' to get all items.
+	 *
+	 * @return array The items in the cart.
+	 */
+	protected function get_items_by_type( string $type ): array {
+		$items = $this->get_items();
+
+		// Filter the items if we have something other than 'all' as the type.
+		if ( 'all' !== $type ) {
+			$items = array_filter(
+				$items,
+				static function ( $item ) use ( $type ) {
+					return $type === ( $item['type'] ?? 'ticket' );
+				}
+			);
+		}
+
+		return $items;
 	}
 }
