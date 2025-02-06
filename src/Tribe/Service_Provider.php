@@ -79,7 +79,11 @@ class Tribe__Tickets__Service_Provider extends \TEC\Common\Contracts\Service_Pro
 		tribe( 'tickets.version' );
 		tribe( 'tickets.metabox' );
 		tribe( 'tickets.status' );
-		tribe( 'tickets.editor' );
+
+		if ( ! tec_using_new_editor() ) {
+			// Only register and hook the Legacy Blocks functionality if required.
+			tribe( 'tickets.editor' );
+		}
 
 		// Migration queues.
 		tribe( 'tickets.migration.queue_4_12' );
