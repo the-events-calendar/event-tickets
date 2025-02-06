@@ -62,6 +62,19 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	}
 
 	/**
+	 * Whether the Controller should activate or not.
+	 *
+	 * This controller will not activate if Legacy Block editor support should not be loaded.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the controller should activate or not.
+	 */
+	public function is_active(): bool {
+		return !tec_using_new_editor();
+	}
+
+	/**
 	 * Handle registration for blocks-functionality separately.
 	 *
 	 * @since 5.0.4
