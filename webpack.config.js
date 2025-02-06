@@ -297,9 +297,19 @@ const config = merge(common, {
 				'tec.tickets.seating.frontend.session',
 			'@tec/tickets/order-modifiers/rest': 'tec.tickets.orderModifiers.rest',
 		},
-	],
-	// Configure multiple entry points.
-	entry: targetEntries,
+		],
+		// Configure multiple entry points.
+		entry: targetEntries,
+		resolve: {
+			...common.resolve,
+			alias: {
+				...common.resolve?.alias,
+				'react-day-picker/moment': resolve(
+					__dirname,
+					'node_modules/moment'
+			  ),
+			},
+  },
 });
 
 // WebPack 4 does support multiple entry and output points, but the plugins used by the build do not.
