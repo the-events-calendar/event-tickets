@@ -364,13 +364,15 @@ class Cart {
 	 * Get the tickets currently in the cart for a given provider.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Added the $type parameter.
 	 *
-	 * @param bool $full_item_params Determines all the item params, including event_id, sub_total, and obj.
+	 * @param bool   $full_item_params Determines all the item params, including event_id, sub_total, and obj.
+	 * @param string $type             The type of item to get from the cart. Default is 'ticket'. Use 'all' to get all items.
 	 *
 	 * @return array List of items.
 	 */
-	public function get_items_in_cart( $full_item_params = false ) {
-		return $this->get_repository()->get_items_in_cart( $full_item_params );
+	public function get_items_in_cart( $full_item_params = false, string $type = 'ticket' ) {
+		return $this->get_repository()->get_items_in_cart( $full_item_params, $type );
 	}
 
 	/**
