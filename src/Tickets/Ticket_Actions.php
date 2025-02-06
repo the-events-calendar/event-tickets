@@ -160,9 +160,7 @@ class Ticket_Actions extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int    $meta_id   The meta ID.
 	 * @param int    $ticket_id The ticket id.
-	 * @param string $meta_key  The meta key.
 	 *
 	 * @return void
 	 */
@@ -223,7 +221,7 @@ class Ticket_Actions extends Controller_Contract {
 			$tickets_handler->key_start_date,
 			$tickets_handler->key_start_time,
 			$tickets_handler->key_end_date,
-			$tickets_handler->key_end_time
+			$tickets_handler->key_end_time,
 		];
 
 		if ( ! in_array( $meta_key, $keys_of_interest, true ) ) {
@@ -287,6 +285,7 @@ class Ticket_Actions extends Controller_Contract {
 	 * @param bool $is_start  Whether the action is for the start or end date.
 	 *
 	 * @return void
+	 * @throws Exception If the action fails.
 	 */
 	protected function fire_ticket_date_action( int $ticket_id, bool $is_start = true ): void {
 		$ticket = Tickets::load_ticket_object( $ticket_id );
