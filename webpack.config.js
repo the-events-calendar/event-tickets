@@ -297,9 +297,9 @@ const config = merge(common, {
 				'tec.tickets.seating.frontend.session',
 			'@tec/tickets/order-modifiers/rest': 'tec.tickets.orderModifiers.rest',
 		},
-		],
-		// Configure multiple entry points.
-		entry: targetEntries,
+	],
+	// Configure multiple entry points.
+	entry: targetEntries,
 });
 
 // WebPack 4 does support multiple entry and output points, but the plugins used by the build do not.
