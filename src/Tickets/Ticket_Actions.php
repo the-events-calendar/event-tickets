@@ -160,7 +160,7 @@ class Ticket_Actions extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int    $ticket_id The ticket id.
+	 * @param int $ticket_id The ticket id.
 	 *
 	 * @return void
 	 */
@@ -305,8 +305,8 @@ class Ticket_Actions extends Controller_Contract {
 		$its_happening = true;
 
 		$prefix = $is_start ? 'start' : 'end';
-
 		$method = "{$prefix}_date";
+
 		$timestamp = $ticket->$method();
 
 		if ( ! $timestamp ) {
