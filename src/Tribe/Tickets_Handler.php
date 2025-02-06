@@ -1814,7 +1814,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return true|WP_Error True if the ticket has the given capacity, or a `WP_Error` if not.
 	 */
 	public function ticket_has_capacity( $ticket_id, int $quantity = 1, ?Ticket_Object $ticket_object = null ) {
-		$max           = $this->get_ticket_max_purchase( $ticket_id );
+		$max             = $this->get_ticket_max_purchase( $ticket_id );
 		$ticket_object ??= Tribe__Tickets__Tickets::load_ticket_object( $ticket_id );
 
 		if ( ( -1 !== $max && $max < $quantity ) || ! $ticket_object->date_in_range() ) {
