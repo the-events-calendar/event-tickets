@@ -12,7 +12,6 @@ namespace TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
 use TEC\Tickets\Commerce\Utils\Value;
-use Tribe__Tickets__REST__V1__Messages as Messages;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
@@ -316,9 +315,6 @@ class Agnostic_Cart extends Abstract_Cart {
 
 		// Reset the contents of the cart.
 		$this->clear();
-
-		/** @var Messages $messages */
-		$messages = tribe( 'tickets.rest-v1.messages' );
 
 		/** @var Tickets_Handler $tickets_handler */
 		$tickets_handler = tribe( 'tickets.handler' );
