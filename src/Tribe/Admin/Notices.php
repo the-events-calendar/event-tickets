@@ -121,6 +121,11 @@ class Tribe__Tickets__Admin__Notices {
 			return;
 		}
 
+		if ( ! tribe()->isBound( 'tickets.editor.template.overwrite' ) ) {
+			// Depending on the Editor context, this might not be bound. In this case this functionality is not needed.
+			return;
+		}
+
 		// Warning: Changing this would invalidate all past dismissals.
 		$slug_prefix = 'tribe_notice_classic_editor_ecp_recurring_tickets';
 		$notice_slug = sprintf( '%s-%d', $slug_prefix, $post_id );
