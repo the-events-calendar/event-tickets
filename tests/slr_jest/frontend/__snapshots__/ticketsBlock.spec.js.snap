@@ -82,6 +82,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
 				Tickets			&lt;/h4&gt;
 
+<<<<<<< HEAD
 			&lt;div class="tribe-common"&gt;
 	&lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 		data-token="test-ephemeral-token"
@@ -103,6 +104,27 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 		&lt;/span&gt;
 		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
+=======
+			
+&lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
+	data-token="test-ephemeral-token"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
+	data-post-id="{{post_id}}"
+	&gt;
+	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
+	&lt;div class="tec-tickets-seating__message"&gt;
+	&lt;span&gt;
+		&lt;span class="tec-tickets-seating__message-text"&gt;
+			Seats reserved for 		&lt;/span&gt;
+		&lt;span class="tec-tickets-seating__message-time"&gt;
+			&lt;span class="tec-tickets-seating__time-minutes"&gt;
+				&lt;!-- This will be set by JS. --&gt;
+			&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
+				&lt;!-- This will be set by JS. --&gt;
+			&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/span&gt;
+>>>>>>> bucket/woo-seating-integration
 	&lt;/div&gt;
 &lt;/div&gt;
 			&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
@@ -224,6 +246,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               data-token="test-ephemeral-token"
             >
               
+<<<<<<< HEAD
 		
               <div
                 class="dashicons dashicons-clock"
@@ -284,6 +307,50 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               <div
                 class="tec-tickets-seating__dialog-append-target"
               />
+=======
+	
+              <span>
+                
+		
+                <span
+                  class="tec-tickets-seating__message-text"
+                >
+                  
+			Seats reserved for 		
+                </span>
+                
+		
+                <span
+                  class="tec-tickets-seating__message-time"
+                >
+                  
+			
+                  <span
+                    class="tec-tickets-seating__time-minutes"
+                  >
+                    
+				
+                    <!-- This will be set by JS. -->
+                    
+			
+                  </span>
+                  :
+                  <span
+                    class="tec-tickets-seating__time-seconds"
+                  >
+                    
+				
+                    <!-- This will be set by JS. -->
+                    
+			
+                  </span>
+                  
+		
+                </span>
+                
+	
+              </span>
+>>>>>>> bucket/woo-seating-integration
               
 	
             </div>
@@ -482,6 +549,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
 				Tickets			&lt;/h4&gt;
 
+<<<<<<< HEAD
 			&lt;div class="tribe-common"&gt;
 	&lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 		data-token="test-ephemeral-token"
@@ -503,6 +571,27 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 		&lt;/span&gt;
 		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
+=======
+			
+&lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
+	data-token="test-ephemeral-token"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
+	data-post-id="{{post_id}}"
+	&gt;
+	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
+	&lt;div class="tec-tickets-seating__message"&gt;
+	&lt;span&gt;
+		&lt;span class="tec-tickets-seating__message-text"&gt;
+			Seats reserved for 		&lt;/span&gt;
+		&lt;span class="tec-tickets-seating__message-time"&gt;
+			&lt;span class="tec-tickets-seating__time-minutes"&gt;
+				&lt;!-- This will be set by JS. --&gt;
+			&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
+				&lt;!-- This will be set by JS. --&gt;
+			&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/span&gt;
+>>>>>>> bucket/woo-seating-integration
 	&lt;/div&gt;
 &lt;/div&gt;
 			&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
@@ -624,6 +713,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               data-token="test-ephemeral-token"
             >
               
+<<<<<<< HEAD
 		
               <div
                 class="dashicons dashicons-clock"
@@ -684,6 +774,50 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               <div
                 class="tec-tickets-seating__dialog-append-target"
               />
+=======
+	
+              <span>
+                
+		
+                <span
+                  class="tec-tickets-seating__message-text"
+                >
+                  
+			Seats reserved for 		
+                </span>
+                
+		
+                <span
+                  class="tec-tickets-seating__message-time"
+                >
+                  
+			
+                  <span
+                    class="tec-tickets-seating__time-minutes"
+                  >
+                    
+				
+                    <!-- This will be set by JS. -->
+                    
+			
+                  </span>
+                  :
+                  <span
+                    class="tec-tickets-seating__time-seconds"
+                  >
+                    
+				
+                    <!-- This will be set by JS. -->
+                    
+			
+                  </span>
+                  
+		
+                </span>
+                
+	
+              </span>
+>>>>>>> bucket/woo-seating-integration
               
 	
             </div>
@@ -930,6 +1064,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
 				Tickets			&lt;/h4&gt;
 
+<<<<<<< HEAD
 			&lt;div class="tribe-common"&gt;
 	&lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 		data-token="test-ephemeral-token"
@@ -951,6 +1086,27 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 		&lt;/span&gt;
 		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
+=======
+			
+&lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
+	data-token="test-ephemeral-token"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
+	data-post-id="{{post_id}}"
+	&gt;
+	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
+	&lt;div class="tec-tickets-seating__message"&gt;
+	&lt;span&gt;
+		&lt;span class="tec-tickets-seating__message-text"&gt;
+			Seats reserved for 		&lt;/span&gt;
+		&lt;span class="tec-tickets-seating__message-time"&gt;
+			&lt;span class="tec-tickets-seating__time-minutes"&gt;
+				&lt;!-- This will be set by JS. --&gt;
+			&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
+				&lt;!-- This will be set by JS. --&gt;
+			&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/span&gt;
+>>>>>>> bucket/woo-seating-integration
 	&lt;/div&gt;
 &lt;/div&gt;
 			&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
@@ -1072,6 +1228,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               data-token="test-ephemeral-token"
             >
               
+<<<<<<< HEAD
 		
               <div
                 class="dashicons dashicons-clock"
@@ -1132,6 +1289,50 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               <div
                 class="tec-tickets-seating__dialog-append-target"
               />
+=======
+	
+              <span>
+                
+		
+                <span
+                  class="tec-tickets-seating__message-text"
+                >
+                  
+			Seats reserved for 		
+                </span>
+                
+		
+                <span
+                  class="tec-tickets-seating__message-time"
+                >
+                  
+			
+                  <span
+                    class="tec-tickets-seating__time-minutes"
+                  >
+                    
+				
+                    <!-- This will be set by JS. -->
+                    
+			
+                  </span>
+                  :
+                  <span
+                    class="tec-tickets-seating__time-seconds"
+                  >
+                    
+				
+                    <!-- This will be set by JS. -->
+                    
+			
+                  </span>
+                  
+		
+                </span>
+                
+	
+              </span>
+>>>>>>> bucket/woo-seating-integration
               
 	
             </div>
@@ -1425,6 +1626,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
 				Tickets			&lt;/h4&gt;
 
+<<<<<<< HEAD
 			&lt;div class="tribe-common"&gt;
 	&lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 		data-token="test-ephemeral-token"
@@ -1446,6 +1648,27 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 		&lt;/span&gt;
 		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
+=======
+			
+&lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
+	data-token="test-ephemeral-token"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
+	data-post-id="{{post_id}}"
+	&gt;
+	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
+	&lt;div class="tec-tickets-seating__message"&gt;
+	&lt;span&gt;
+		&lt;span class="tec-tickets-seating__message-text"&gt;
+			Seats reserved for 		&lt;/span&gt;
+		&lt;span class="tec-tickets-seating__message-time"&gt;
+			&lt;span class="tec-tickets-seating__time-minutes"&gt;
+				&lt;!-- This will be set by JS. --&gt;
+			&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
+				&lt;!-- This will be set by JS. --&gt;
+			&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/span&gt;
+>>>>>>> bucket/woo-seating-integration
 	&lt;/div&gt;
 &lt;/div&gt;
 			&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
@@ -1567,6 +1790,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               data-token="test-ephemeral-token"
             >
               
+<<<<<<< HEAD
 		
               <div
                 class="dashicons dashicons-clock"
@@ -1627,6 +1851,50 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               <div
                 class="tec-tickets-seating__dialog-append-target"
               />
+=======
+	
+              <span>
+                
+		
+                <span
+                  class="tec-tickets-seating__message-text"
+                >
+                  
+			Seats reserved for 		
+                </span>
+                
+		
+                <span
+                  class="tec-tickets-seating__message-time"
+                >
+                  
+			
+                  <span
+                    class="tec-tickets-seating__time-minutes"
+                  >
+                    
+				
+                    <!-- This will be set by JS. -->
+                    
+			
+                  </span>
+                  :
+                  <span
+                    class="tec-tickets-seating__time-seconds"
+                  >
+                    
+				
+                    <!-- This will be set by JS. -->
+                    
+			
+                  </span>
+                  
+		
+                </span>
+                
+	
+              </span>
+>>>>>>> bucket/woo-seating-integration
               
 	
             </div>
@@ -1967,6 +2235,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
 				Tickets			&lt;/h4&gt;
 
+<<<<<<< HEAD
 			&lt;div class="tribe-common"&gt;
 	&lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 		data-token="test-ephemeral-token"
@@ -1988,6 +2257,27 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 		&lt;/span&gt;
 		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
+=======
+			
+&lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
+	data-token="test-ephemeral-token"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
+	data-post-id="{{post_id}}"
+	&gt;
+	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
+	&lt;div class="tec-tickets-seating__message"&gt;
+	&lt;span&gt;
+		&lt;span class="tec-tickets-seating__message-text"&gt;
+			Seats reserved for 		&lt;/span&gt;
+		&lt;span class="tec-tickets-seating__message-time"&gt;
+			&lt;span class="tec-tickets-seating__time-minutes"&gt;
+				&lt;!-- This will be set by JS. --&gt;
+			&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
+				&lt;!-- This will be set by JS. --&gt;
+			&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/span&gt;
+>>>>>>> bucket/woo-seating-integration
 	&lt;/div&gt;
 &lt;/div&gt;
 			&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
@@ -2109,6 +2399,7 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               data-token="test-ephemeral-token"
             >
               
+<<<<<<< HEAD
 		
               <div
                 class="dashicons dashicons-clock"
@@ -2169,6 +2460,50 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
               <div
                 class="tec-tickets-seating__dialog-append-target"
               />
+=======
+	
+              <span>
+                
+		
+                <span
+                  class="tec-tickets-seating__message-text"
+                >
+                  
+			Seats reserved for 		
+                </span>
+                
+		
+                <span
+                  class="tec-tickets-seating__message-time"
+                >
+                  
+			
+                  <span
+                    class="tec-tickets-seating__time-minutes"
+                  >
+                    
+				
+                    <!-- This will be set by JS. -->
+                    
+			
+                  </span>
+                  :
+                  <span
+                    class="tec-tickets-seating__time-seconds"
+                  >
+                    
+				
+                    <!-- This will be set by JS. -->
+                    
+			
+                  </span>
+                  
+		
+                </span>
+                
+	
+              </span>
+>>>>>>> bucket/woo-seating-integration
               
 	
             </div>
@@ -2556,6 +2891,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
 				Tickets			&lt;/h4&gt;
 
+<<<<<<< HEAD
 			&lt;div class="tribe-common"&gt;
 	&lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 		data-token="test-ephemeral-token"
@@ -2577,6 +2913,27 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 		&lt;/span&gt;
 		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
+=======
+			
+&lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
+	data-token="test-ephemeral-token"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
+	data-post-id="{{post_id}}"
+	&gt;
+	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
+	&lt;div class="tec-tickets-seating__message"&gt;
+	&lt;span&gt;
+		&lt;span class="tec-tickets-seating__message-text"&gt;
+			Seats reserved for 		&lt;/span&gt;
+		&lt;span class="tec-tickets-seating__message-time"&gt;
+			&lt;span class="tec-tickets-seating__time-minutes"&gt;
+				&lt;!-- This will be set by JS. --&gt;
+			&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
+				&lt;!-- This will be set by JS. --&gt;
+			&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/span&gt;
+>>>>>>> bucket/woo-seating-integration
 	&lt;/div&gt;
 &lt;/div&gt;
 			&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
@@ -2698,6 +3055,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
               data-token="test-ephemeral-token"
             >
               
+<<<<<<< HEAD
 		
               <div
                 class="dashicons dashicons-clock"
@@ -2758,6 +3116,50 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
               <div
                 class="tec-tickets-seating__dialog-append-target"
               />
+=======
+	
+              <span>
+                
+		
+                <span
+                  class="tec-tickets-seating__message-text"
+                >
+                  
+			Seats reserved for 		
+                </span>
+                
+		
+                <span
+                  class="tec-tickets-seating__message-time"
+                >
+                  
+			
+                  <span
+                    class="tec-tickets-seating__time-minutes"
+                  >
+                    
+				
+                    <!-- This will be set by JS. -->
+                    
+			
+                  </span>
+                  :
+                  <span
+                    class="tec-tickets-seating__time-seconds"
+                  >
+                    
+				
+                    <!-- This will be set by JS. -->
+                    
+			
+                  </span>
+                  
+		
+                </span>
+                
+	
+              </span>
+>>>>>>> bucket/woo-seating-integration
               
 	
             </div>
@@ -3098,6 +3500,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
 				Tickets			&lt;/h4&gt;
 
+<<<<<<< HEAD
 			&lt;div class="tribe-common"&gt;
 	&lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 		data-token="test-ephemeral-token"
@@ -3119,6 +3522,27 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 		&lt;/span&gt;
 		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
+=======
+			
+&lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
+	data-token="test-ephemeral-token"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
+	data-post-id="{{post_id}}"
+	&gt;
+	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
+	&lt;div class="tec-tickets-seating__message"&gt;
+	&lt;span&gt;
+		&lt;span class="tec-tickets-seating__message-text"&gt;
+			Seats reserved for 		&lt;/span&gt;
+		&lt;span class="tec-tickets-seating__message-time"&gt;
+			&lt;span class="tec-tickets-seating__time-minutes"&gt;
+				&lt;!-- This will be set by JS. --&gt;
+			&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
+				&lt;!-- This will be set by JS. --&gt;
+			&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/span&gt;
+>>>>>>> bucket/woo-seating-integration
 	&lt;/div&gt;
 &lt;/div&gt;
 			&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
@@ -3240,6 +3664,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
               data-token="test-ephemeral-token"
             >
               
+<<<<<<< HEAD
 		
               <div
                 class="dashicons dashicons-clock"
@@ -3300,6 +3725,50 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
               <div
                 class="tec-tickets-seating__dialog-append-target"
               />
+=======
+	
+              <span>
+                
+		
+                <span
+                  class="tec-tickets-seating__message-text"
+                >
+                  
+			Seats reserved for 		
+                </span>
+                
+		
+                <span
+                  class="tec-tickets-seating__message-time"
+                >
+                  
+			
+                  <span
+                    class="tec-tickets-seating__time-minutes"
+                  >
+                    
+				
+                    <!-- This will be set by JS. -->
+                    
+			
+                  </span>
+                  :
+                  <span
+                    class="tec-tickets-seating__time-seconds"
+                  >
+                    
+				
+                    <!-- This will be set by JS. -->
+                    
+			
+                  </span>
+                  
+		
+                </span>
+                
+	
+              </span>
+>>>>>>> bucket/woo-seating-integration
               
 	
             </div>
@@ -3593,6 +4062,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
 				Tickets			&lt;/h4&gt;
 
+<<<<<<< HEAD
 			&lt;div class="tribe-common"&gt;
 	&lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 		data-token="test-ephemeral-token"
@@ -3614,6 +4084,27 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 		&lt;/span&gt;
 		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
+=======
+			
+&lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
+	data-token="test-ephemeral-token"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
+	data-post-id="{{post_id}}"
+	&gt;
+	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
+	&lt;div class="tec-tickets-seating__message"&gt;
+	&lt;span&gt;
+		&lt;span class="tec-tickets-seating__message-text"&gt;
+			Seats reserved for 		&lt;/span&gt;
+		&lt;span class="tec-tickets-seating__message-time"&gt;
+			&lt;span class="tec-tickets-seating__time-minutes"&gt;
+				&lt;!-- This will be set by JS. --&gt;
+			&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
+				&lt;!-- This will be set by JS. --&gt;
+			&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/span&gt;
+>>>>>>> bucket/woo-seating-integration
 	&lt;/div&gt;
 &lt;/div&gt;
 			&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
@@ -3735,6 +4226,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
               data-token="test-ephemeral-token"
             >
               
+<<<<<<< HEAD
 		
               <div
                 class="dashicons dashicons-clock"
@@ -3795,6 +4287,50 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
               <div
                 class="tec-tickets-seating__dialog-append-target"
               />
+=======
+	
+              <span>
+                
+		
+                <span
+                  class="tec-tickets-seating__message-text"
+                >
+                  
+			Seats reserved for 		
+                </span>
+                
+		
+                <span
+                  class="tec-tickets-seating__message-time"
+                >
+                  
+			
+                  <span
+                    class="tec-tickets-seating__time-minutes"
+                  >
+                    
+				
+                    <!-- This will be set by JS. -->
+                    
+			
+                  </span>
+                  :
+                  <span
+                    class="tec-tickets-seating__time-seconds"
+                  >
+                    
+				
+                    <!-- This will be set by JS. -->
+                    
+			
+                  </span>
+                  
+		
+                </span>
+                
+	
+              </span>
+>>>>>>> bucket/woo-seating-integration
               
 	
             </div>
@@ -4041,6 +4577,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 			&lt;h4 class="tribe-common-h4 tec-tickets-seating__title"&gt;
 				Tickets			&lt;/h4&gt;
 
+<<<<<<< HEAD
 			&lt;div class="tribe-common"&gt;
 	&lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
 		data-token="test-ephemeral-token"
@@ -4062,6 +4599,27 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 		&lt;/span&gt;
 		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
+=======
+			
+&lt;div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
+	data-token="test-ephemeral-token"
+	data-redirect-url="http://wordpress.test/?page_id={{post_id}}"
+	data-post-id="{{post_id}}"
+	&gt;
+	&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
+	&lt;div class="tec-tickets-seating__message"&gt;
+	&lt;span&gt;
+		&lt;span class="tec-tickets-seating__message-text"&gt;
+			Seats reserved for 		&lt;/span&gt;
+		&lt;span class="tec-tickets-seating__message-time"&gt;
+			&lt;span class="tec-tickets-seating__time-minutes"&gt;
+				&lt;!-- This will be set by JS. --&gt;
+			&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
+				&lt;!-- This will be set by JS. --&gt;
+			&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/span&gt;
+>>>>>>> bucket/woo-seating-integration
 	&lt;/div&gt;
 &lt;/div&gt;
 			&lt;div class="tec-tickets-seating__sidebar-arrow"&gt;
@@ -4183,6 +4741,7 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
               data-token="test-ephemeral-token"
             >
               
+<<<<<<< HEAD
 		
               <div
                 class="dashicons dashicons-clock"
@@ -4243,6 +4802,50 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
               <div
                 class="tec-tickets-seating__dialog-append-target"
               />
+=======
+	
+              <span>
+                
+		
+                <span
+                  class="tec-tickets-seating__message-text"
+                >
+                  
+			Seats reserved for 		
+                </span>
+                
+		
+                <span
+                  class="tec-tickets-seating__message-time"
+                >
+                  
+			
+                  <span
+                    class="tec-tickets-seating__time-minutes"
+                  >
+                    
+				
+                    <!-- This will be set by JS. -->
+                    
+			
+                  </span>
+                  :
+                  <span
+                    class="tec-tickets-seating__time-seconds"
+                  >
+                    
+				
+                    <!-- This will be set by JS. -->
+                    
+			
+                  </span>
+                  
+		
+                </span>
+                
+	
+              </span>
+>>>>>>> bucket/woo-seating-integration
               
 	
             </div>
