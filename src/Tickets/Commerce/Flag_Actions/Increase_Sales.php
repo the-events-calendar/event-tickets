@@ -42,11 +42,14 @@ class Increase_Sales extends Flag_Action_Abstract {
 	 *
 	 * @since 5.2.0
 	 * @since 5.13.3 Check shared capacity before sending to the `Ticket::increase_ticket_sales_by` method.
+	 * @since 5.18.1    Making the action idempotent. Self aware of which tickets have already increased their sales and how many times.
 	 */
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $post ) {
 		if ( empty( $post->items ) ) {
 			return;
 		}
+
+		$already_increased_tickets = (array) get_post_meta( $post->ID, '_tribe_tickets_sales_increased', true );
 
 		foreach ( $post->items as $item ) {
 			if ( ! $this->is_ticket( $item ) ) {
@@ -60,12 +63,24 @@ class Increase_Sales extends Flag_Action_Abstract {
 
 			$quantity = Arr::get( $item, 'quantity' );
 
-			if ( ! $quantity ) {
+			if ( ! $quantity || ! is_numeric( $quantity ) ) {
 				continue;
 			}
 
+			$quantity     = (int) $quantity;
+			$new_quantity = $quantity;
+
+			if (
+				! empty( $already_increased_tickets[ $item['ticket_id'] ] ) &&
+				$already_increased_tickets[ $item['ticket_id'] ] > 0
+			) {
+				$new_quantity = $quantity - $already_increased_tickets[ $item['ticket_id'] ];
+			}
+
+			$already_increased_tickets[ $item['ticket_id'] ] = $quantity;
+
 			// Skip generating for zero-ed items.
-			if ( 0 >= $quantity ) {
+			if ( 0 >= $new_quantity ) {
 				continue;
 			}
 
@@ -75,7 +90,9 @@ class Increase_Sales extends Flag_Action_Abstract {
 			$global_stock_mode  = $ticket->global_stock_mode();
 			$is_shared_capacity = ! empty( $global_stock_mode ) && 'own' !== $global_stock_mode;
 
-			tribe( Ticket::class )->increase_ticket_sales_by( $ticket->ID, $quantity, $is_shared_capacity, $global_stock );
+			tribe( Ticket::class )->increase_ticket_sales_by( $ticket->ID, $new_quantity, $is_shared_capacity, $global_stock );
 		}
+
+		update_post_meta( $post->ID, '_tribe_tickets_sales_increased', $already_increased_tickets );
 	}
 }

@@ -46,6 +46,7 @@ class Screen_Options {
 	 * Filters the screen options show screen.
 	 *
 	 * @since 5.14.0
+	 * @since 5.18.1 Fixed show screen options logic.
 	 *
 	 * @param boolean   $show   Whether to show the screen options.
 	 * @param WP_Screen $screen The current screen.
@@ -53,7 +54,10 @@ class Screen_Options {
 	 * @return boolean
 	 */
 	public function filter_screen_options_show_screen( $show, $screen ) {
-		$show = ! empty( $screen ) && Page::$hook_suffix === $screen->id;
+		// Only show the screen options on the Tickets screen, otherwise bail.
+		if ( empty( $screen ) || Page::$hook_suffix !== $screen->id ) {
+			return $show;
+		}
 
 		/**
 		 * Filter the screen options show screen.
@@ -62,7 +66,7 @@ class Screen_Options {
 		 *
 		 * @param boolean   $show   Whether to show the screen options.
 		 */
-		return apply_filters( 'tec_tickets_admin_tickets_screen_options_show_screen', $show );
+		return apply_filters( 'tec_tickets_admin_tickets_screen_options_show_screen', true );
 	}
 
 	/**

@@ -29,6 +29,19 @@ class Trashed extends Status_Abstract {
 	const SLUG = 'trash';
 
 	/**
+	 * Gets the slug of this status in WordPress.
+	 *
+	 * Since this is a core status, we do need to match.
+	 *
+	 * @since 5.18.1
+	 *
+	 * @return string
+	 */
+	public function get_wp_slug() {
+		return static::SLUG;
+	}
+
+	/**
 	 * {@inheritdoc}
 	 */
 	public function get_name() {

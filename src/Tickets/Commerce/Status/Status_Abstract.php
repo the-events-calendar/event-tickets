@@ -149,6 +149,27 @@ abstract class Status_Abstract implements Status_Interface {
 	}
 
 	/**
+	 * Whether a Status Interface can be changed to another Status Interface.
+	 *
+	 * @since 5.18.1
+	 *
+	 * @param self $new_status The new status.
+	 *
+	 * @return bool Whether the new status can be applied to the current status.
+	 */
+	public function can_change_to( $new_status ): bool {
+		if ( $this->get_wp_slug() === $new_status->get_wp_slug() ) {
+			return false;
+		}
+
+		if ( $this->is_final() ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public function is_final() {

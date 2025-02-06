@@ -2,7 +2,7 @@
 /**
  * Handles hooking all the actions and filters used by the admin area.
  *
- * @since 5.18.0
+ * @since   5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers
  */
@@ -11,7 +11,6 @@ namespace TEC\Tickets\Commerce\Order_Modifiers;
 
 use InvalidArgumentException;
 use Exception;
-use TEC\Tickets\Commerce\Order_Modifiers\Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
@@ -81,6 +80,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		remove_action( 'admin_menu', [ $this, 'add_tec_tickets_order_modifiers_page' ], 15 );
 		remove_action( 'admin_init', [ $this, 'handle_delete_modifier' ] );
 		remove_action( 'admin_init', [ $this, 'handle_form_submission' ] );
+		remove_action( 'current_screen', [ $this, 'prepare_items_for_table_view' ] );
 
 		remove_action( 'admin_notices', [ $this, 'handle_notices' ] );
 
@@ -100,6 +100,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		add_action( 'admin_menu', [ $this, 'add_tec_tickets_order_modifiers_page' ], 15 );
 		add_action( 'admin_init', [ $this, 'handle_delete_modifier' ] );
 		add_action( 'admin_init', [ $this, 'handle_form_submission' ] );
+		add_action( 'current_screen', [ $this, 'prepare_items_for_table_view' ] );
 
 		add_action( 'admin_notices', [ $this, 'handle_notices' ] );
 
@@ -134,12 +135,12 @@ class Modifier_Admin_Handler extends Controller_Contract {
 			'admin/order-modifiers/table.js',
 			Tickets_Plugin::VERSION
 		)
-		->add_to_group_path( 'et-core' )
-		->set_condition( fn () => $this->is_on_page() )
-		->set_dependencies( 'jquery', 'wp-util' )
-		->enqueue_on( 'admin_enqueue_scripts' )
-		->add_to_group( 'tec-tickets-order-modifiers' )
-		->register();
+			->add_to_group_path( 'et-core' )
+			->set_condition( fn() => $this->is_on_page() )
+			->set_dependencies( 'jquery', 'wp-util' )
+			->enqueue_on( 'admin_enqueue_scripts' )
+			->add_to_group( 'tec-tickets-order-modifiers' )
+			->register();
 	}
 
 	/**
@@ -228,22 +229,42 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		];
 
 		// Get the appropriate strategy for the selected modifier.
-		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
+		$manager = $this->get_manager_for_type( $modifier_type );
 
 		// If the strategy doesn't exist, show an error message.
-		if ( ! $modifier_strategy ) {
-			$this->render_error_message( __( 'Invalid modifier.', 'event-tickets' ) );
+		if ( false === $manager ) {
 			return;
 		}
-
-		// Create a Modifier Manager with the selected strategy.
-		$manager = new Modifier_Manager( $modifier_strategy );
 
 		if ( ! $is_edit ) {
 			$this->render_table_view( $manager, $context );
+
 			return;
 		}
 		$this->render_edit_view( $manager, $context );
+	}
+
+	/**
+	 * Get the modifier manager instance.
+	 *
+	 * @since 5.18.1
+	 *
+	 * @param string $modifier_type The type of modifier to get the manager for.
+	 * @param bool   $render_error  Whether to render an error message if the manager is not found.
+	 *
+	 * @return false|Modifier_Manager
+	 */
+	protected function get_manager_for_type( string $modifier_type, bool $render_error = true ) {
+		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
+
+		// If the strategy doesn't exist, show an error message.
+		if ( ! $modifier_strategy && $render_error ) {
+			$this->render_error_message( __( 'Invalid modifier.', 'event-tickets' ) );
+
+			return false;
+		}
+
+		return new Modifier_Manager( $modifier_strategy );
 	}
 
 	/**
@@ -257,7 +278,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	 */
 	protected function get_modifier_data_by_id( int $modifier_id ): ?array {
 		// Get the modifier type from the request or use the default.
-		$modifier_type = tribe_get_request_var( 'modifier', $this->get_default_type() );
+		$modifier_type = tec_get_request_var( 'modifier', $this->get_default_type() );
 
 		// Get the appropriate strategy for the selected modifier type.
 		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
@@ -464,10 +485,10 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	 */
 	public function handle_delete_modifier(): void {
 		// Check if the action is 'delete_modifier' and nonce is set.
-		$action        = tribe_get_request_var( 'action', '' );
-		$modifier_id   = absint( tribe_get_request_var( 'modifier_id', '' ) );
-		$nonce         = tribe_get_request_var( '_wpnonce', '' );
-		$modifier_type = sanitize_key( tribe_get_request_var( 'modifier', '' ) );
+		$action        = tec_get_request_var( 'action', '' );
+		$modifier_id   = absint( tec_get_request_var( 'modifier_id', '' ) );
+		$nonce         = tec_get_request_var( '_wpnonce', '' );
+		$modifier_type = sanitize_key( tec_get_request_var( 'modifier', '' ) );
 
 		// Early bail if the action is not 'delete_modifier'.
 		if ( 'delete_modifier' !== $action ) {
@@ -502,5 +523,28 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		// Redirect to the original page to avoid resubmitting the form upon refresh.
 		wp_safe_redirect( $redirect_url );
 		tribe_exit();
+	}
+
+	/**
+	 * When we're on the table view page, prepare the items for the table view.
+	 *
+	 * @since 5.18.1
+	 *
+	 * @return void
+	 */
+	public function prepare_items_for_table_view(): void {
+		if ( ! $this->is_on_page() ) {
+			return;
+		}
+
+		$singular_id = tec_get_request_var( 'modifier_id', false );
+		if ( $singular_id && is_numeric( $singular_id ) ) {
+			return;
+		}
+
+		// Prepare the items based on the modifier type.
+		$modifier_type = sanitize_key( tec_get_request_var( 'modifier', $this->get_default_type() ) );
+		$manager       = $this->get_manager_for_type( $modifier_type );
+		$manager->get_table_class()->prepare_items();
 	}
 }

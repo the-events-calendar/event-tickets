@@ -18,9 +18,9 @@
 ?>
 <div class="tribe-common">
 	<div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
-		 data-token="<?php echo esc_attr( $token ); ?>"
-		 data-redirect-url="<?php echo esc_url( $redirect_url ); ?>"
-		 data-post-id="<?php echo esc_attr( $post_id ); ?>"
+		data-token="<?php echo esc_attr( $token ); ?>"
+		data-redirect-url="<?php echo esc_url( $redirect_url ); ?>"
+		data-post-id="<?php echo esc_attr( $post_id ); ?>"
 		<?php if ( $sync_on_load ) : ?>
 			data-sync-on-load
 		<?php endif; ?>

@@ -297,7 +297,7 @@ class Attendee {
 		if ( ! $attendee_id ) {
 			return false;
 		}
-		
+
 		$event_id = (int) get_post_meta( $attendee_id, static::$event_relation_meta_key, true );
 
 		/**
@@ -439,6 +439,126 @@ class Attendee {
 		 * @param array         $args     Set of extra arguments used to populate the data for the attendee.
 		 */
 		return apply_filters( 'tec_tickets_commerce_attendee_create', $attendee, $order, $ticket, $args );
+	}
+
+	/**
+	 * Updates or creates an individual attendee given an Order and Ticket.
+	 *
+	 * @since 5.18.1
+	 *
+	 * @param \WP_Post      $order    Which order generated this attendee.
+	 * @param Ticket_Object $ticket   Which ticket generated this Attendee.
+	 * @param array         $args     Set of extra arguments used to populate the data for the attendee.
+	 * @param ?int          $existing The ID of the existing attendee.
+	 *
+	 * @return \WP_Error|\WP_Post
+	 */
+	public function upsert( \WP_Post $order, $ticket, array $args = [], ?int $existing = null ) {
+		if ( ! $existing ) {
+			return $this->create( $order, $ticket, $args );
+		}
+
+		$update_args = [
+			'order_id'      => $order->ID,
+			'ticket_id'     => $ticket->ID,
+			'event_id'      => $ticket->get_event_id(),
+			'security_code' => Arr::get( $args, 'security_code' ),
+			'opt_out'       => Arr::get( $args, 'opt_out' ),
+			'price_paid'    => Arr::get( $args, 'price_paid' ),
+			'currency'      => Arr::get( $args, 'currency' ),
+		];
+
+		if ( ! empty( $order->purchaser['user_id'] ) ) {
+			$update_args['user_id'] = $order->purchaser['user_id'];
+		}
+
+		if ( ! empty( $args['email'] ) ) {
+			$update_args['email'] = $args['email'];
+		}
+
+		if (
+			empty( $args['email'] )
+			&& ! empty( $order->purchaser['email'] )
+		) {
+			$update_args['email'] = $order->purchaser['email'];
+		}
+
+		if ( ! empty( $args['full_name'] ) ) {
+			$update_args['full_name'] = $args['full_name'];
+			$update_args['title']     = $args['full_name'];
+		}
+
+		if (
+			empty( $args['full_name'] )
+			&& ! empty( $order->purchaser['full_name'] )
+		) {
+			$update_args['full_name'] = $order->purchaser['full_name'];
+			$update_args['title']     = $order->purchaser['full_name'];
+		}
+
+		$fields = Arr::get( $args, 'fields', [] );
+		if ( ! empty( $fields ) ) {
+			$update_args['fields'] = $fields;
+		}
+
+		// No need to update the security code.
+		unset( $update_args['security_code'] );
+
+		/**
+		 * Allow the filtering of the update arguments for attendee.
+		 *
+		 * @since 5.18.1
+		 *
+		 * @param array         $update_args Which arguments we are going to use to update the attendee.
+		 * @param \WP_Post      $order       Which order generated this attendee.
+		 * @param Ticket_Object $ticket      Which ticket generated this Attendee.
+		 * @param array         $args        Set of extra arguments used to populate the data for the attendee.
+		 */
+		$update_args = apply_filters( 'tec_tickets_commerce_attendee_update_args', $update_args, $order, $ticket, $args );
+
+		/**
+		 * Allow the actions before updating the attendee.
+		 *
+		 * @since 5.18.1
+		 *
+		 * @param array         $update_args Which arguments we are going to use to update the attendee.
+		 * @param \WP_Post      $order       Which order generated this attendee.
+		 * @param Ticket_Object $ticket      Which ticket generated this Attendee.
+		 * @param array         $args        Set of extra arguments used to populate the data for the attendee.
+		 */
+		do_action( 'tec_tickets_commerce_attendee_before_update', $update_args, $order, $ticket, $args );
+
+		$updated = tec_tc_attendees()->where( 'id', $existing )->set_args( $update_args )->save();
+
+		if ( empty( $updated[ $existing ] ) ) {
+			return $this->create( $order, $ticket, $args );
+		}
+
+		$attendee = tec_tc_attendees()->where( 'id', $existing )->first();
+
+		/**
+		 * Allow the actions after updating the attendee.
+		 *
+		 * @since 5.18.1
+		 *
+		 * @param \WP_Post      $attendee Post object for the attendee.
+		 * @param \WP_Post      $order    Which order generated this attendee.
+		 * @param Ticket_Object $ticket   Which ticket generated this Attendee.
+		 * @param array         $args     Set of extra arguments used to populate the data for the attendee.
+		 */
+		do_action( 'tec_tickets_commerce_attendee_after_update', $attendee, $order, $ticket, $args );
+
+		/**
+		 * Allow the filtering of the attendee WP_Post after updating attendee.
+		 *
+		 * @since 5.18.1
+		 *
+		 * @param \WP_Post      $attendee Post object for the attendee.
+		 * @param \WP_Post      $order    Which order generated this attendee.
+		 * @param Ticket_Object $ticket   Which ticket generated this Attendee.
+		 * @param array         $args     Set of extra arguments used to populate the data for the attendee.
+		 */
+		return apply_filters( 'tec_tickets_commerce_attendee_update', $attendee, $order, $ticket, $args );
 	}
 
 	/**

@@ -1,15 +1,15 @@
-# Copyright (C) 2024 The Events Calendar
+# Copyright (C) 2025 The Events Calendar
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.18.0\n"
+"Project-Id-Version: Event Tickets 5.18.1\n"
 "Report-Msgid-Bugs-To: https://evnt.is/191x\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-12-13T19:58:01+00:00\n"
+"POT-Creation-Date: 2025-01-21T13:44:14+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: event-tickets\n"
@@ -594,7 +594,7 @@ msgstr ""
 #: src/admin-views/seating/components/layouts/card.php:59
 #: src/admin-views/seating/components/maps/card.php:38
 #: src/Tickets/Commerce/Order_Modifiers/Table_Views/Coupon_Table.php:102
-#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Fee_Table.php:100
+#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Fee_Table.php:103
 #: src/modules/blocks/rsvp/attendee-registration/template.js:19
 #: src/Tickets/Blocks/Ticket/app/editor/container-content/attendees-registration/template.js:20
 msgid "Edit"
@@ -617,7 +617,7 @@ msgstr ""
 #: src/admin-views/seating/components/layouts/card.php:73
 #: src/admin-views/seating/components/maps/card.php:46
 #: src/Tickets/Commerce/Order_Modifiers/Table_Views/Coupon_Table.php:106
-#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Fee_Table.php:104
+#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Fee_Table.php:107
 #: src/Tribe/Attendees_Table.php:782
 msgid "Delete"
 msgstr ""
@@ -680,7 +680,7 @@ msgstr ""
 #: src/admin-views/commerce/reports/attendees.php:52
 #: src/admin-views/commerce/reports/orders.php:36
 #: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:84
-#: src/Tickets/Commerce/Order.php:236
+#: src/Tickets/Commerce/Order.php:276
 #: src/Tribe/Commerce/PayPal/Orders/Report.php:326
 msgid "Search Orders"
 msgstr ""
@@ -741,7 +741,7 @@ msgid "Seats Assignment"
 msgstr ""
 
 #: src/admin-views/editor/button-view-orders.php:45
-#: src/Tickets/Commerce/Order.php:235
+#: src/Tickets/Commerce/Order.php:275
 msgid "View Orders"
 msgstr ""
 
@@ -1307,7 +1307,7 @@ msgstr ""
 #: src/admin-views/order_modifiers/fee-edit.php:106
 #: src/admin-views/order_modifiers/fee-edit.php:116
 #: src/Tickets/Commerce/Order_Modifiers/Table_Views/Coupon_Table.php:57
-#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Fee_Table.php:57
+#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Fee_Table.php:60
 msgid "Amount"
 msgstr ""
 
@@ -1354,7 +1354,7 @@ msgstr ""
 
 #: src/admin-views/order_modifiers/fee-edit.php:65
 #: src/admin-views/order_modifiers/fee-edit.php:74
-#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Fee_Table.php:56
+#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Fee_Table.php:59
 msgid "Fee Name"
 msgstr ""
 
@@ -1381,7 +1381,7 @@ msgid "Set per ticket"
 msgstr ""
 
 #: src/admin-views/order_modifiers/fee-edit.php:154
-#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Fee_Table.php:151
+#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Fee_Table.php:161
 msgid "All tickets"
 msgstr ""
 
@@ -1393,12 +1393,12 @@ msgstr ""
 msgid "Save Fee"
 msgstr ""
 
-#: src/admin-views/order_modifiers/modifier-table.php:27
-#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:202
+#: src/admin-views/order_modifiers/modifier-table.php:24
+#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:203
 msgid "Booking Fees"
 msgstr ""
 
-#: src/admin-views/order_modifiers/modifier-table.php:44
+#: src/admin-views/order_modifiers/modifier-table.php:41
 msgid "Search"
 msgstr ""
 
@@ -1908,7 +1908,7 @@ msgid "You will have to confirm that the payments methods you have selected to s
 msgstr ""
 
 #: src/admin-views/settings/tickets-commerce/stripe/modal/signup-complete/content.php:35
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:519
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:578
 msgid "Webhooks"
 msgstr ""
 
@@ -2636,8 +2636,8 @@ msgstr ""
 
 #: src/Tickets/Admin/Tickets/List_Table.php:549
 #: src/Tickets/Commerce/Admin/Orders_Page.php:108
-#: src/Tickets/Commerce/Order.php:203
-#: src/Tickets/Commerce/Order.php:228
+#: src/Tickets/Commerce/Order.php:243
+#: src/Tickets/Commerce/Order.php:268
 #: src/Tickets/Commerce/Reports/Orders.php:235
 #: src/Tickets/Commerce/Reports/Orders_Tab.php:33
 #: src/Tribe/Commerce/PayPal/Main.php:491
@@ -2938,7 +2938,7 @@ msgstr ""
 #: src/Tickets/Commerce/Admin_Tables/Orders.php:115
 #: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:162
 #: src/Tickets/Commerce/Gateways/Stripe/Payment_Intent_Handler.php:290
-#: src/Tickets/Commerce/Order.php:229
+#: src/Tickets/Commerce/Order.php:269
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:98
 msgid "Order"
 msgstr ""
@@ -3066,11 +3066,11 @@ msgstr ""
 msgid "Additional payment options"
 msgstr ""
 
-#: src/Tickets/Commerce/Attendee.php:947
+#: src/Tickets/Commerce/Attendee.php:1067
 msgid "Name not available"
 msgstr ""
 
-#: src/Tickets/Commerce/Attendee.php:966
+#: src/Tickets/Commerce/Attendee.php:1086
 msgid "Email not available"
 msgstr ""
 
@@ -7250,12 +7250,12 @@ msgid "Payer ID token from PayPal"
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:521
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:282
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:299
 msgid "To which status the failing should change this order to"
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:534
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:295
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:312
 msgid "Why this particular order has failed."
 msgstr ""
 
@@ -7292,7 +7292,7 @@ msgstr ""
 #. Translators: %s: The Stripe payment event.
 #: src/Tickets/Commerce/Gateways/PayPal/REST/Webhook_Endpoint.php:131
 #: src/Tickets/Commerce/Gateways/PayPal/Webhooks/Handler.php:53
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Handler.php:51
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Handler.php:52
 msgid "Invalid event type for webhook event: %s"
 msgstr ""
 
@@ -7474,11 +7474,11 @@ msgstr ""
 msgid "Unfortunately, Stripe doesn't support payments in %1$s. Please try using a different gateway or adjusting your Tickets Commerce currency setting. You can see a list of supported currencies %2$s."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:178
+#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:245
 msgid "Something went wrong with your Webhook Creation. Please reload the page and try again later."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:194
+#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:261
 msgid "Webhook successfully set up! The page will reload now."
 msgstr ""
 
@@ -7499,27 +7499,27 @@ msgstr ""
 msgid "There was an error enabling Stripe on your cart. More information is available in the Event Tickets settings dashboard. Please contact the site administrator for support."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:160
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:168
 msgid "Order ID (Payment Intent ID) in Stripe"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:173
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:181
 msgid "Client Secret from Stripe"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:269
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:286
 msgid "Order ID in Stripe"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:332
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:349
 msgid "Completing the Stripe PaymentIntent failed. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:333
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:350
 msgid "Creating new Stripe PaymentIntent failed. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:334
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:351
 msgid "Creating new Stripe order failed. Please try again."
 msgstr ""
 
@@ -7628,48 +7628,48 @@ msgstr ""
 msgid "Klarna"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:150
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:507
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:209
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:566
 msgid "Webhooks not validated yet."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:167
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:226
 msgid "Signing Secret cannot be empty."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:179
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:192
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:239
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:467
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:509
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:238
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:251
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:298
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:526
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:568
 msgid "Webhooks were properly validated for sales."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:213
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:272
 msgid "Could not connect to Stripe for validation. Please check your connection configuration."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:236
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:295
 msgid "We have not received any Stripe events yet. Please wait a few seconds and refresh the page."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:242
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:301
 msgid "This key has not been used in the latest events received. If you are setting up a new key, this status will be properly updated as soon as a new event is received."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:456
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:515
 msgid "The signing key appears to be invalid. Please check your webhook configuration in the Stripe Dashboard."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:527
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:586
 msgid "Webhooks URL"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:538
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:597
 msgid "Signing Secret"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:546
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:605
 msgid "Validating signing key with Stripe, please wait. This can take up to one minute."
 msgstr ""
 
@@ -7724,18 +7724,13 @@ msgid "Successful payments"
 msgstr ""
 
 #. Translators: %1$s is the event id and %2$s is the event type name.
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Handler.php:61
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Handler.php:62
 msgid "Event %1$s was received but events of type %2$s are not currently handled."
 msgstr ""
 
 #. Translators: %1$s is the event type name.
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Handler.php:107
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Handler.php:108
 msgid "Event was received but events of type %1$s are not currently handled."
-msgstr ""
-
-#. Translators: %s is the payment intent id.
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Payment_Intent_Webhook.php:74
-msgid "Payment Intent %s does not require an update or is a duplicate of a past event."
 msgstr ""
 
 #: src/Tickets/Commerce/Hooks.php:1102
@@ -7769,98 +7764,98 @@ msgstr ""
 msgid "(deleted)"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:230
-#: src/Tickets/Commerce/Order.php:231
+#: src/Tickets/Commerce/Order.php:270
+#: src/Tickets/Commerce/Order.php:271
 msgid "Add New Order"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:232
+#: src/Tickets/Commerce/Order.php:272
 msgid "Edit Order"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:233
+#: src/Tickets/Commerce/Order.php:273
 msgid "New Order"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:234
+#: src/Tickets/Commerce/Order.php:274
 #: src/Tickets/Emails/JSON_LD/Order_Schema.php:77
 msgid "View Order"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:237
+#: src/Tickets/Commerce/Order.php:277
 msgid "No orders found."
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:238
+#: src/Tickets/Commerce/Order.php:278
 msgid "No orders found in Trash."
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:239
+#: src/Tickets/Commerce/Order.php:279
 msgid "All Orders"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:240
+#: src/Tickets/Commerce/Order.php:280
 msgid "Order Archives"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:241
+#: src/Tickets/Commerce/Order.php:281
 msgid "Order Attributes"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:242
+#: src/Tickets/Commerce/Order.php:282
 msgid "Insert into order"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:243
+#: src/Tickets/Commerce/Order.php:283
 msgid "Uploaded to this order"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:244
+#: src/Tickets/Commerce/Order.php:284
 msgid "Filter orders list"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:245
+#: src/Tickets/Commerce/Order.php:285
 msgid "Filter by date"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:246
+#: src/Tickets/Commerce/Order.php:286
 msgid "Orders list navigation"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:247
+#: src/Tickets/Commerce/Order.php:287
 msgid "Orders list"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:248
+#: src/Tickets/Commerce/Order.php:288
 msgid "Order published."
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:249
+#: src/Tickets/Commerce/Order.php:289
 msgid "Order published privately."
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:250
+#: src/Tickets/Commerce/Order.php:290
 msgid "Order reverted to draft."
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:251
+#: src/Tickets/Commerce/Order.php:291
 msgid "Order trashed."
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:252
+#: src/Tickets/Commerce/Order.php:292
 msgid "Order scheduled."
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:253
+#: src/Tickets/Commerce/Order.php:293
 msgid "Order updated."
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:254
+#: src/Tickets/Commerce/Order.php:294
 msgctxt "navigation link block title"
 msgid "Order Link"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:255
+#: src/Tickets/Commerce/Order.php:295
 msgctxt "navigation link block description"
 msgid "A link to an order."
 msgstr ""
@@ -7944,7 +7939,11 @@ msgstr ""
 msgid "The coupon display name."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/API/Fees.php:162
+#: src/Tickets/Commerce/Order_Modifiers/API/Fees.php:138
+msgid "The status of the fees to retrieve."
+msgstr ""
+
+#: src/Tickets/Commerce/Order_Modifiers/API/Fees.php:168
 msgid "The selected fees for the ticket."
 msgstr ""
 
@@ -7967,76 +7966,66 @@ msgid "Fees"
 msgstr ""
 
 #. translators: %s: List of missing fields.
-#: src/Tickets/Commerce/Order_Modifiers/Modifiers/Modifier_Abstract.php:197
+#: src/Tickets/Commerce/Order_Modifiers/Modifiers/Modifier_Abstract.php:219
 msgid "The following required fields are missing: %s"
 msgstr ""
 
 #. translators: %s: Field name.
-#: src/Tickets/Commerce/Order_Modifiers/Modifiers/Modifier_Abstract.php:207
+#: src/Tickets/Commerce/Order_Modifiers/Modifiers/Modifier_Abstract.php:231
+msgid "The field \"%s\" must be a valid number."
+msgstr ""
+
+#. translators: %s: Field name.
+#: src/Tickets/Commerce/Order_Modifiers/Modifiers/Modifier_Abstract.php:241
 msgid "The field \"%s\" is required and cannot be empty."
 msgstr ""
 
 #. translators: %s: Invalid sub-type value.
-#: src/Tickets/Commerce/Order_Modifiers/Modifiers/Modifier_Abstract.php:217
+#: src/Tickets/Commerce/Order_Modifiers/Modifiers/Modifier_Abstract.php:253
 msgid "The provided sub-type \"%s\" is invalid. Please use a valid sub-type."
 msgstr ""
 
 #. translators: %s: Invalid status value.
-#: src/Tickets/Commerce/Order_Modifiers/Modifiers/Modifier_Abstract.php:226
+#: src/Tickets/Commerce/Order_Modifiers/Modifiers/Modifier_Abstract.php:262
 msgid "The provided status \"%s\" is invalid. Please use a valid status."
 msgstr ""
 
 #. translators: %s: Validation error messages.
-#: src/Tickets/Commerce/Order_Modifiers/Modifiers/Modifier_Abstract.php:236
+#: src/Tickets/Commerce/Order_Modifiers/Modifiers/Modifier_Abstract.php:272
 msgid "Validation failed: %s"
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Modifiers/Modifier_Abstract.php:401
-msgctxt "Order modifier status"
-msgid "Active"
-msgstr ""
-
-#: src/Tickets/Commerce/Order_Modifiers/Modifiers/Modifier_Abstract.php:402
-msgctxt "Order modifier status"
-msgid "Inactive"
-msgstr ""
-
-#: src/Tickets/Commerce/Order_Modifiers/Modifiers/Modifier_Abstract.php:403
-msgctxt "Order modifier status"
-msgid "Draft"
-msgstr ""
-
-#: src/Tickets/Commerce/Order_Modifiers/Modifiers/Modifier_Abstract.php:469
+#: src/Tickets/Commerce/Order_Modifiers/Modifiers/Modifier_Abstract.php:468
 msgid "Meta key is required to insert or update meta data."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:235
-#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:352
+#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:262
+#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:373
 msgid "Invalid modifier."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:301
+#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:322
 msgid "Invalid Modifier ID provided."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:313
+#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:334
 msgid "Error retrieving modifier data."
 msgstr ""
 
 #. translators: %s: error message
-#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:369
+#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:390
 msgid "Error saving modifier: %s"
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:419
+#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:440
 msgid "Modifier saved successfully!"
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:484
+#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:505
 msgid "Nonce verification failed."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:492
+#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:513
 msgid "Invalid modifier type."
 msgstr ""
 
@@ -8048,36 +8037,51 @@ msgstr ""
 msgid "Used"
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Fee_Table.php:58
+#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Fee_Table.php:61
 msgid "Active on"
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Fee_Table.php:162
+#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Fee_Table.php:172
 msgid "Per ticket"
 msgstr ""
 
 #. translators: %s is the organizer's name
-#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Fee_Table.php:198
+#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Fee_Table.php:208
 msgid "Organizer: %s"
 msgstr ""
 
 #. translators: %s is the venue's name
-#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Fee_Table.php:236
+#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Fee_Table.php:246
 msgid "Venue: %s"
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Fee_Table.php:297
+#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Fee_Table.php:307
 msgid "Fees will be applied to the cart at checkout. Fees can only be used with Tickets Commerce transactions."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Order_Modifier_Table.php:316
+#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Order_Modifier_Table.php:337
 msgctxt "Add New Order modifier link text"
 msgid "Add New"
 msgstr ""
 
 #. translators: %s: The invalid fees.
-#: src/Tickets/Commerce/Order_Modifiers/Traits/Fee_Types.php:151
+#: src/Tickets/Commerce/Order_Modifiers/Traits/Fee_Types.php:140
 msgid "The following fees are not selectable: %s"
+msgstr ""
+
+#: src/Tickets/Commerce/Order_Modifiers/Traits/Status.php:70
+msgctxt "Order modifier status label"
+msgid "Active"
+msgstr ""
+
+#: src/Tickets/Commerce/Order_Modifiers/Traits/Status.php:71
+msgctxt "Order modifier status label"
+msgid "Inactive"
+msgstr ""
+
+#: src/Tickets/Commerce/Order_Modifiers/Traits/Status.php:72
+msgctxt "Order modifier status label"
+msgid "Draft"
 msgstr ""
 
 #: src/Tickets/Commerce/Payments_Tab.php:113
@@ -8409,7 +8413,7 @@ msgstr ""
 msgid "Refunded"
 msgstr ""
 
-#: src/Tickets/Commerce/Status/Trashed.php:35
+#: src/Tickets/Commerce/Status/Trashed.php:48
 msgid "Trashed"
 msgstr ""
 
@@ -9877,12 +9881,12 @@ msgctxt "Find seats button text"
 msgid "Find Seats"
 msgstr ""
 
-#: src/Tickets/Seating/Frontend.php:432
+#: src/Tickets/Seating/Frontend.php:437
 msgctxt "Seat selection modal total string"
 msgid "1 Ticket"
 msgstr ""
 
-#: src/Tickets/Seating/Frontend.php:434
+#: src/Tickets/Seating/Frontend.php:439
 msgctxt "Seat selection modal total string"
 msgid "{count} Tickets"
 msgstr ""
@@ -11631,115 +11635,115 @@ msgstr ""
 msgid "The requested page was not found."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:229
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:239
 #: src/Tribe/REST/V1/Endpoints/Ticket_Archive.php:250
 msgid "The page of results to return; defaults to 1"
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:237
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:247
 msgid "How many attendees to return per results page; defaults to posts_per_page."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:246
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:256
 msgid "Limit results to attendees whose ticket is provided by one of the providers specified in the CSV list or array; defaults to all the available."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:259
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:269
 msgid "Limit results to attendees containing the specified string in the title or description."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:265
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:275
 #: src/Tribe/REST/V1/Endpoints/Ticket_Archive.php:271
 msgid "Offset the results by a specific number of items."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:271
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:281
 #: src/Tribe/REST/V1/Endpoints/Ticket_Archive.php:277
 msgid "Sort results in ASC or DESC order. Defaults to ASC."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:280
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:290
 msgid "Order the results by one of date, relevance, id, include, title or slug. Defaults to id."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:292
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:302
 msgid "Limit results to attendees by post the ticket is associated with."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:298
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:308
 msgid "Limit results to attendees associated with a ticket."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:304
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:314
 msgid "Limit results to attendees created after or on the specified UTC date or timestamp."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:310
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:320
 msgid "Limit results to attendees created before or on the specified UTC date or timestamp."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:316
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:326
 msgid "Limit results to a specific CSV list or array of attendee IDs."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:329
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:339
 msgid "Exclude a specific CSV list or array of attendee IDs from the results."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:342
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:352
 msgid "Limit results to attendees that paid tickets a price equal or below the specified value; if not specified no maximum price limit will be used."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:348
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:358
 msgid "Limit results to attendees that paid tickets a price equal or above the specified value; if not specified no minimum price limit will be used."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:354
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:364
 msgid "Limit results to attendees whose ticket is assigned to one of the posts specified in the CSV list or array."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:367
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:377
 msgid "Limit results to attendees whose tickets is not assigned to any of the posts specified in the CSV list or array.."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:380
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:390
 #: src/Tribe/REST/V1/Endpoints/Ticket_Archive.php:325
 msgid "Limit results to a specific CSV list or array of ticket IDs."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:392
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:402
 msgid "Exclude a specific CSV list or array of ticket IDs."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:404
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:414
 msgid "Limit results to attendees for posts that are in one of the post statuses specified in the CSV list or array; defaults to publish."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:415
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:425
 msgid "Limit results to attendees that are in one of post statuses specified in the CSV list or array; defaults to publish."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:426
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:436
 msgid "Limit results to attendees whose order status is in one of post statuses specified in the CSV list or array; defaults to public."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:437
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:447
 msgid "Limit results to attendees that are or not checked-in."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:442
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:452
 msgid "Limit results to RSVP Attendees that have one of the RSVP Going status specified in the CSV list or array."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:453
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:463
 msgid "Limit results to attendees for tickets that provide attendees the possibility to fill in additional information or not; requires ET+."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:458
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:468
 msgid "Limit results to attendees by name. It will search for names that are like the specified value"
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:463
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:473
 msgid "Limit results to attendees by email. It will search for emails that are like the specified value"
 msgstr ""
 

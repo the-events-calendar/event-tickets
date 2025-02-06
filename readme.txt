@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.18.0.1
+Stable tag: 5.18.1
 Requires at least: 6.5
 Tested up to: 6.7.1
 Requires PHP: 7.4
@@ -198,6 +198,28 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.18.1] 2025-01-22 =
+
+* Feature - Include Seating information in Attendee archive REST API response. [SL-264]
+* Tweak - Add filter to customize the cart hash cookie name for Tickets Commerce. [ET-2269]
+* Tweak - Introduced methods `can_change_to` for Statuses and `can_transition_to` for Orders. [ET-2281]
+* Tweak - Introduced various hooks for the order lock system and order completed checkout actions. [ET-2281]
+* Tweak - Lazy load attendees report page asset filter to properly localize asset data [ET-2274]
+* Tweak - Added filters: `tec_tickets_commerce_attendee_update_args`, `tec_tickets_commerce_attendee_update`, `tec_tickets_commerce_cart_hash_cookie_name`, `tec_tickets_commerce_order_{$gateway_key}_upsert_args`, `tec_tickets_commerce_order_upsert_args`, `tec_tickets_commerce_order_upsert_existing_order_id`, `tec_tickets_commerce_order_{$gateway_key}_update_args`, `tec_tickets_commerce_order_update_args`, `tec_tickets_commerce_order_modifier_valid_statuses`, `tec_tickets_rest_attendee_archive_data`
+* Tweak - Removed filters: `tec_tickets_commerce_order_modifier_status_flags`
+* Tweak - Added actions: `tec_tickets_commerce_attendee_before_update`, `tec_tickets_commerce_attendee_after_update`, `tec_tickets_commerce_order_locked`, `tec_tickets_commerce_order_unlocked`, `tec_tickets_commerce_order_checkout_completed`
+* Tweak - Changed views: `v2/tickets/item`
+* Fix - Added a default empty array to `maybe_disable_foreign_key_checks`. [ET-2275]
+* Fix - Attendee generation during order status transition becomes aware if attendees have been already generated. [ET-2282]
+* Fix - Introduce Order lock mechanism to ensure 2 or more action that could update the order, they dont so at the same time. [ET-2279]
+* Fix - Prevent duplicate orders and as a result duplicated attendees when a payment would initially fail at least once. [ET-2280]
+* Fix - Reverts aggressive hook update, causing fatals on installation with themes overwriting the template `Single Ticket Item`. [ET-2276]
+* Fix - Screen options will no longer be disabled when Event Tickets is active. [ET-2273]
+* Fix - Ticket sales will be counted correctly during status transitions of the orders they belong to. [ET-2286]
+* Performance - Enhance the performance of order modifier database queries [ET-2268]
+* Deprecated - Method `should_payment_intent_be_updated` since its no longer needed. [ET-2281]
+* Language - 3 new strings added, 111 updated, 2 fuzzied, and 2 obsoleted.
 
 = [5.18.0.1] 2025-01-07 =
 

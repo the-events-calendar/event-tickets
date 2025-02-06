@@ -35,11 +35,6 @@ class Fees extends Order_Modifiers {
 	 * @return stdClass[] The array of fee objects from the database.
 	 */
 	public function get_all_automatic_fees() {
-		return $this->find_by_modifier_type_and_meta(
-			'fee_applied_to',
-			[ 'all' ],
-			'fee_applied_to',
-			'all'
-		);
+		return $this->get_modifier_by_applied_to( [ 'all' ] );
 	}
 }
