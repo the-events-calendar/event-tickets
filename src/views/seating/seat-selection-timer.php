@@ -27,18 +27,18 @@
 >
 	<div class="dashicons dashicons-clock"></div>
 	<div class="tec-tickets-seating__message">
-		<span>
-			<span class="tec-tickets-seating__message-text">
-				<?php echo esc_html_x( 'Seats reserved for ', 'Seat selection timer text', 'event-tickets' ); ?>
-			</span>
-			<span class="tec-tickets-seating__message-time">
-				<span class="tec-tickets-seating__time-minutes">
-					<!-- This will be set by JS. -->
-				</span>:<span class="tec-tickets-seating__time-seconds">
-					<!-- This will be set by JS. -->
-				</span>
+	<span>
+		<span class="tec-tickets-seating__message-text">
+			<?php echo esc_html_x( 'Seats reserved for ', 'Seat selection timer text', 'event-tickets' ); ?>
+		</span>
+		<span class="tec-tickets-seating__message-time">
+			<span class="tec-tickets-seating__time-minutes">
+				<!-- This will be set by JS. -->
+			</span>:<span class="tec-tickets-seating__time-seconds">
+				<!-- This will be set by JS. -->
 			</span>
 		</span>
+	</span>
 	</div>
 	<div class="tec-tickets-seating__dialog-append-target"></div>
 </div>

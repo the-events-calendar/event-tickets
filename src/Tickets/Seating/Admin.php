@@ -72,7 +72,6 @@ class Admin extends Controller_Contract {
 		$assets->remove( 'tec-tickets-seating-admin-layout-edit-style' );
 
 		remove_action( 'admin_menu', [ $this, 'add_submenu_page' ], 15 );
-		remove_action( 'admin_init', [ $this, 'register_woo_incompatibility_notice' ] );
 		remove_filter( 'tec_tickets_find_ticket_type_host_posts_query_args', [ $this, 'exclude_asc_events_from_candidates_from_moving_tickets_to' ] );
 
 		// Remove the hooks related to the seating meta data duplication.
@@ -151,7 +150,6 @@ class Admin extends Controller_Contract {
 		$this->reqister_layout_edit_assets();
 
 		add_action( 'admin_menu', [ $this, 'add_submenu_page' ], 15 );
-		add_action( 'admin_init', [ $this, 'register_woo_incompatibility_notice' ] );
 		add_filter( 'tec_tickets_find_ticket_type_host_posts_query_args', [ $this, 'exclude_asc_events_from_candidates_from_moving_tickets_to' ] );
 
 		// Add the hooks related to the seating meta data duplication.
@@ -250,53 +248,6 @@ class Admin extends Controller_Contract {
 		}
 
 		return $query_args;
-	}
-
-	/**
-	 * Registers Seating incompatibility notice with WooCommerce.
-	 *
-	 * @since 5.16.0
-	 *
-	 * @return void The notice is registered.
-	 */
-	public function register_woo_incompatibility_notice() {
-		$message = sprintf(
-			// Translators: %1$s and %2$s are opening/closing p tags, %3$s and %4$s are opening/closing a tags.
-			esc_html__( '%1$sTickets with assigned seating can only be created when selling with %3$sTickets Commerce%4$s. Support for WooCommerce sales will be included in a future release.%2$s', 'event-tickets' ),
-			'<p>',
-			'</p>',
-			'<a href="' . esc_url( tribe( Settings::class )->get_url( [ 'tab' => 'payments' ] ) ) . '">',
-			'</a>'
-		);
-
-		$filter_callback = static fn() => [];
-		$add_filter      = static fn() => add_filter( 'tribe_is_post_type_screen_post_types', $filter_callback );
-		$remove_filter   = static fn() => remove_filter( 'tribe_is_post_type_screen_post_types', $filter_callback );
-
-		$screen_ids = [
-			'toplevel_page_tec-tickets',
-			'tickets_page_tec-tickets-attendees',
-			'edit-tec_tc_order',
-			'tickets_page_tec-tickets-settings',
-			'tickets_page_tec-tickets-help',
-			'tickets_page_tec-tickets-troubleshooting',
-			'edit-ticket-meta-fieldset',
-			'tickets_page_tec-tickets-seating',
-		];
-		tribe_notice(
-			'seating-incompatible-with-woo',
-			$message,
-			[
-				'dismiss' => true,
-				'type'    => 'warning',
-			],
-			static function () use ( $add_filter, $remove_filter, $screen_ids ) {
-				$add_filter();
-				$result = function_exists( 'WC' ) && Admin_Helper::instance()->is_screen( $screen_ids );
-				$remove_filter();
-				return $result;
-			}
-		);
 	}
 
 	/**
