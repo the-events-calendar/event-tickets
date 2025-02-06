@@ -206,6 +206,10 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	 * @return void
 	 */
 	private function register_block_editor_assets(): void {
+		if ( tec_using_new_editor() ) {
+			return;
+		}
+
 		Asset::add(
 			'tec-tickets-seating-block-editor',
 			'blockEditor.js',
