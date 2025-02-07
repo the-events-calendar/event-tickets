@@ -105,7 +105,7 @@
     "@moderntribe/tickets": "file:src/modules",
     "@nfen/redux-reducer-injector": "0.0.3",
     "@redux-devtools/extension": "^3.3.0",
-    "@the-events-calendar/product-taskmaster": "^4.0.0",
+    "@the-events-calendar/product-taskmaster": "github:the-events-calendar/product-taskmaster#tweak/remove_moment",
     "@wordpress/a11y": "^4.11.0",
     "@wordpress/data": "^10.11.0",
     "@wordpress/date": "^5.13.0",
