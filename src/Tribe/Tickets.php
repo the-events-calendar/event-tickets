@@ -4106,7 +4106,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$version->update( $ticket->ID );
 
 			/**
-			 * Fired once a ticket's details have been fully saved.
+			 * Fires once a ticket's data has been saved.
 			 *
 			 * @since TBD
 			 *
