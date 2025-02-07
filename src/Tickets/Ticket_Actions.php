@@ -137,7 +137,7 @@ class Ticket_Actions extends Controller_Contract {
 			return;
 		}
 
-		if ( ! in_array( $ticket->post, tribe_tickets()->ticket_types(), true ) ) {
+		if ( ! in_array( $ticket->post_type, tribe_tickets()->ticket_types(), true ) ) {
 			// Not a ticket.
 			return;
 		}
