@@ -60,6 +60,15 @@ class Ticket_Actions extends Controller_Contract {
 	protected static array $keys_of_interest = [];
 
 	/**
+	 * The RSVP IDs to sync.
+	 *
+	 * @since TBD
+	 *
+	 * @var array
+	 */
+	protected static array $rsvp_ids_to_sync = [];
+
+	/**
 	 * Ticket_Actions constructor.
 	 *
 	 * @param Container $container The DI container.
@@ -89,6 +98,7 @@ class Ticket_Actions extends Controller_Contract {
 		add_action( 'tec_tickets_ticket_upserted', [ $this, 'sync_ticket_dates_actions' ], 1000 );
 		add_action( 'added_post_meta', [ $this, 'meta_keys_listener' ], 1000, 3 );
 		add_action( 'updated_postmeta', [ $this, 'meta_keys_listener' ], 1000, 3 );
+		add_action( 'tec_shutdown', [ $this, 'sync_rsvp_dates_for_all' ] );
 		add_action( self::TICKET_START_SALES_HOOK, [ $this, 'fire_ticket_start_date_action' ], 10, 2 );
 		add_action( self::TICKET_END_SALES_HOOK, [ $this, 'fire_ticket_end_date_action' ], 10, 2 );
 	}
@@ -104,6 +114,7 @@ class Ticket_Actions extends Controller_Contract {
 		remove_action( 'tec_tickets_ticket_upserted', [ $this, 'sync_ticket_dates_actions' ], 1000 );
 		remove_action( 'added_post_meta', [ $this, 'meta_keys_listener' ], 1000 );
 		remove_action( 'updated_postmeta', [ $this, 'meta_keys_listener' ], 1000 );
+		remove_action( 'tec_shutdown', [ $this, 'sync_rsvp_dates_for_all' ] );
 		remove_action( self::TICKET_START_SALES_HOOK, [ $this, 'fire_ticket_start_date_action' ] );
 		remove_action( self::TICKET_END_SALES_HOOK, [ $this, 'fire_ticket_end_date_action' ] );
 	}
@@ -220,6 +231,31 @@ class Ticket_Actions extends Controller_Contract {
 	}
 
 	/**
+	 * Syncs the RSVP dates for all RSVPs that had an update to a related
+	 * meta during the request.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function sync_rsvp_dates_for_all() {
+		/**
+		 * Filters the RSVP IDs to sync.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $rsvp_ids The RSVP IDs to sync.
+		 */
+		self::$rsvp_ids_to_sync = (array) apply_filters( 'tec_tickets_rsvp_ids_to_sync', array_unique( self::$rsvp_ids_to_sync ) );
+
+		foreach ( self::$rsvp_ids_to_sync as $offset => $rsvp_id ) {
+			// Protect ourselves against multiple calls during the same request.
+			unset( self::$rsvp_ids_to_sync[ $offset ] );
+			$this->sync_ticket_dates_actions( $rsvp_id );
+		}
+	}
+
+	/**
 	 * Listens for changes to the _stock meta key.
 	 *
 	 * If a change is found and the change is for a Ticket Object, the event is fired.
@@ -268,34 +304,8 @@ class Ticket_Actions extends Controller_Contract {
 			return;
 		}
 
-		$cache     = tribe_cache();
-		$cache_key = __METHOD__ . $ticket_id;
-
-		/**
-		 * This is hooking into the save/update process of an RSVP ticket.
-		 *
-		 * More specifically we are hooking into the save/update of specific meta keys that are related to the rsvp's start and end date.
-		 *
-		 * During the request, these may be multiple and the most important issue is that they WILL be one by one.
-		 *
-		 * e.g.
-		 *
-		 * Save start date first, save end date second and so on.
-		 *
-		 * We don't want to fire the action multiple times. so if we reached this point we delegate the syncing to happen later.
-		 */
-		if ( ! empty( $cache[ $cache_key ] ) ) {
-			return;
-		}
-
-		$cache[ $cache_key ] = true;
-
-		add_action(
-			'tec_shutdown',
-			function () use ( $ticket_id ) {
-				$this->sync_ticket_dates_actions( $ticket_id );
-			}
-		);
+		// We avoid checking in_array multiple times and we will rather do array_unique once.
+		self::$rsvp_ids_to_sync[] = $ticket_id;
 	}
 
 	/**
