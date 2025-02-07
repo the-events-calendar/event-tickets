@@ -444,7 +444,7 @@ class Ticket_Actions extends Controller_Contract {
 		$minus_10_minutes = ( - 10 * MINUTE_IN_SECONDS );
 
 		if ( $now > $start_timestamp ) {
-			// The ticket has already started. Fire the action immediately.
+			// The ticket sale has already started. Fire the action immediately.
 			do_action( self::TICKET_START_SALES_HOOK, $ticket_id );
 			return;
 		}
