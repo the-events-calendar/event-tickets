@@ -215,6 +215,7 @@ class OrderReportTest extends WPTestCase {
 		$order_date = esc_html( \Tribe__Date_Utils::reformat( current_time( 'mysql' ), \Tribe__Date_Utils::DATEONLYFORMAT ) );
 
 		$html = str_replace( $order_date, '{{order_date}}', $html );
+		$html = preg_replace('/(<td[^>]*data-colname="Gateway ID"[^>]*>).*?(<\/td>)/', '$1$2', $html);
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
