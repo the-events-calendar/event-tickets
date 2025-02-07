@@ -222,6 +222,8 @@ abstract class Abstract_Cart implements Cart_Interface {
 	/**
 	 * Add the full set of parameters to the items in the cart.
 	 *
+	 * @since TBD
+	 *
 	 * @param array $items The items in the cart.
 	 *
 	 * @return array The items in the cart with the full set of parameters.
