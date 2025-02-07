@@ -63,6 +63,8 @@ final class Controller extends Controller_Contract {
 	/**
 	 * Registers the service provider bindings.
 	 *
+	 * @since 5.18.0
+	 *
 	 * @return void The method does not return any value.
 	 */
 	public function do_register(): void {
@@ -93,6 +95,8 @@ final class Controller extends Controller_Contract {
 
 	/**
 	 * Magic method to handle dynamic method calls.
+	 *
+	 * @since TBD
 	 *
 	 * @param string $name      The method name.
 	 * @param array  $arguments The method arguments.
