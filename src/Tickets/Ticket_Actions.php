@@ -9,7 +9,7 @@
 namespace TEC\Tickets;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-
+use TEC\Common\lucatume\DI52\Container;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use TEC\Tickets\Commerce\Ticket;
@@ -51,6 +51,34 @@ class Ticket_Actions extends Controller_Contract {
 	public const AS_TICKET_ACTIONS_GROUP = 'tec_tickets_ticket_actions';
 
 	/**
+	 * The keys of interest for syncing ticket dates actions.
+	 *
+	 * @since TBD
+	 *
+	 * @var array
+	 */
+	protected static array $keys_of_interest = [];
+
+	/**
+	 * Ticket_Actions constructor.
+	 *
+	 * @param Container $container The DI container.
+	 */
+	public function __construct( Container $container ) {
+		parent::__construct( $container );
+
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		self::$keys_of_interest = [
+			$tickets_handler->key_start_date,
+			$tickets_handler->key_start_time,
+			$tickets_handler->key_end_date,
+			$tickets_handler->key_end_time,
+		];
+	}
+
+	/**
 	 * Registers the controller by subscribing to front-end hooks and binding implementations.
 	 *
 	 * @since TBD
@@ -58,11 +86,9 @@ class Ticket_Actions extends Controller_Contract {
 	 * @return void
 	 */
 	protected function do_register(): void {
-		add_action( 'tec_tickets_ticket_upserted', [ $this, 'sync_ticket_dates_actions' ], PHP_INT_MAX );
-		add_action( 'added_post_meta', [ $this, 'sync_rsvp_dates_actions' ], PHP_INT_MAX, 3 );
-		add_action( 'updated_postmeta', [ $this, 'sync_rsvp_dates_actions' ], PHP_INT_MAX, 3 );
-		add_action( 'added_post_meta', [ $this, 'fire_stock_update_action' ], PHP_INT_MAX, 3 );
-		add_action( 'updated_postmeta', [ $this, 'fire_stock_update_action' ], PHP_INT_MAX, 3 );
+		add_action( 'tec_tickets_ticket_upserted', [ $this, 'sync_ticket_dates_actions' ], 1000 );
+		add_action( 'added_post_meta', [ $this, 'meta_keys_listener' ], 1000, 3 );
+		add_action( 'updated_postmeta', [ $this, 'meta_keys_listener' ], 1000, 3 );
 		add_action( self::TICKET_START_SALES_HOOK, [ $this, 'fire_ticket_start_date_action' ], 10, 2 );
 		add_action( self::TICKET_END_SALES_HOOK, [ $this, 'fire_ticket_end_date_action' ], 10, 2 );
 	}
@@ -75,11 +101,9 @@ class Ticket_Actions extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
-		remove_action( 'tec_tickets_ticket_upserted', [ $this, 'sync_ticket_dates_actions' ], PHP_INT_MAX );
-		remove_action( 'added_post_meta', [ $this, 'sync_rsvp_dates_actions' ], PHP_INT_MAX );
-		remove_action( 'updated_postmeta', [ $this, 'sync_rsvp_dates_actions' ], PHP_INT_MAX );
-		remove_action( 'added_post_meta', [ $this, 'fire_stock_update_action' ], PHP_INT_MAX );
-		remove_action( 'updated_postmeta', [ $this, 'fire_stock_update_action' ], PHP_INT_MAX );
+		remove_action( 'tec_tickets_ticket_upserted', [ $this, 'sync_ticket_dates_actions' ], 1000 );
+		remove_action( 'added_post_meta', [ $this, 'meta_keys_listener' ], 1000 );
+		remove_action( 'updated_postmeta', [ $this, 'meta_keys_listener' ], 1000 );
 		remove_action( self::TICKET_START_SALES_HOOK, [ $this, 'fire_ticket_start_date_action' ] );
 		remove_action( self::TICKET_END_SALES_HOOK, [ $this, 'fire_ticket_end_date_action' ] );
 	}
@@ -114,45 +138,6 @@ class Ticket_Actions extends Controller_Contract {
 	}
 
 	/**
-	 * Listens for changes to the _stock meta key.
-	 *
-	 * If a change is found and the change is for a Ticket Object, the event is fired.
-	 *
-	 * @since TBD
-	 *
-	 * @param int    $meta_id  The meta ID.
-	 * @param int    $ticket_id The ticket ID.
-	 * @param string $meta_key The meta key.
-	 */
-	public function fire_stock_update_action( int $meta_id, int $ticket_id, string $meta_key ): void {
-		if ( Ticket::$stock_meta_key !== $meta_key ) {
-			// Not a stock update.
-			return;
-		}
-
-		$ticket = get_post( $ticket_id );
-
-		if ( ! $ticket instanceof WP_Post || 1 > $ticket->ID ) {
-			// Deleted ?
-			return;
-		}
-
-		if ( ! in_array( $ticket->post_type, tribe_tickets()->ticket_types(), true ) ) {
-			// Not a ticket.
-			return;
-		}
-
-		/**
-		 * Fires when the stock of a ticket changes.
-		 *
-		 * @since TBD
-		 *
-		 * @param int $ticket_id The ticket id.
-		 */
-		do_action( 'tec_tickets_ticket_stock_changed', $ticket->ID );
-	}
-
-	/**
 	 * Syncs ticket dates actions.
 	 *
 	 * @since TBD
@@ -171,7 +156,7 @@ class Ticket_Actions extends Controller_Contract {
 
 		$event = $ticket->get_event();
 
-		if ( ! $event instanceof WP_Post || 1 > $event->ID ) {
+		if ( ! $event instanceof WP_Post || 0 === $event->ID ) {
 			// Parent event, no longer exists.
 			return;
 		}
@@ -179,7 +164,7 @@ class Ticket_Actions extends Controller_Contract {
 		$ticket_start_timestamp = $ticket->start_date();
 		$ticket_end_timestamp   = $ticket->end_date();
 
-		if ( ! $ticket_start_timestamp || ! $ticket_end_timestamp ) {
+		if ( ! ( $ticket_start_timestamp && $ticket_end_timestamp ) ) {
 			// No timestamps... we might be too early. Lets wait.
 			return;
 		}
@@ -200,35 +185,75 @@ class Ticket_Actions extends Controller_Contract {
 	}
 
 	/**
+	 * Listens for changes to the meta keys of interest.
+	 *
+	 * If a change is found and the change is for a ticket, an event is fired.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $meta_id  The meta ID.
+	 * @param int    $ticket_id The ticket ID.
+	 * @param string $meta_key  The meta key.
+	 */
+	public function meta_keys_listener( int $meta_id, int $ticket_id, string $meta_key ): void {
+		if ( ! in_array( $meta_key, array_merge( self::$keys_of_interest, [ Ticket::$stock_meta_key ] ), true ) ) {
+			return;
+		}
+
+		$ptype = get_post_type( $ticket_id );
+
+		if ( ! in_array( $ptype, tribe_tickets()->ticket_types(), true ) ) {
+			// Not a ticket.
+			return;
+		}
+
+		if ( Ticket::$stock_meta_key === $meta_key ) {
+			$this->fire_stock_update_action( $ticket_id );
+			return;
+		}
+
+		if ( 'tribe_rsvp_tickets' !== $ptype ) {
+			return;
+		}
+
+		$this->sync_rsvp_dates_actions( $ticket_id );
+	}
+
+	/**
+	 * Listens for changes to the _stock meta key.
+	 *
+	 * If a change is found and the change is for a Ticket Object, the event is fired.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket ID.
+	 */
+	protected function fire_stock_update_action( int $ticket_id ): void {
+		$ticket = get_post( $ticket_id );
+
+		if ( ! $ticket instanceof WP_Post || 0 === $ticket->ID ) {
+			// Deleted ?
+			return;
+		}
+
+		/**
+		 * Fires when the stock of a ticket changes.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $ticket_id The ticket id.
+		 */
+		do_action( 'tec_tickets_ticket_stock_changed', $ticket->ID );
+	}
+
+	/**
 	 * Syncs rsvp dates actions.
 	 *
 	 * @since TBD
 	 *
-	 * @param int    $meta_id   The meta ID.
-	 * @param int    $ticket_id The ticket id.
-	 * @param string $meta_key  The meta key.
-	 *
-	 * @return void
+	 * @param int $ticket_id The ticket id.
 	 */
-	public function sync_rsvp_dates_actions( int $meta_id, int $ticket_id, string $meta_key ): void {
-		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
-		$tickets_handler = tribe( 'tickets.handler' );
-
-		$keys_of_interest = [
-			$tickets_handler->key_start_date,
-			$tickets_handler->key_start_time,
-			$tickets_handler->key_end_date,
-			$tickets_handler->key_end_time,
-		];
-
-		if ( ! in_array( $meta_key, $keys_of_interest, true ) ) {
-			return;
-		}
-
-		if ( 'tribe_rsvp_tickets' !== get_post_type( $ticket_id ) ) {
-			return;
-		}
-
+	protected function sync_rsvp_dates_actions( int $ticket_id ): void {
 		$ticket = Tickets::load_ticket_object( $ticket_id );
 
 		if ( ! $ticket instanceof Ticket_Object ) {
@@ -238,7 +263,7 @@ class Ticket_Actions extends Controller_Contract {
 
 		$event = $ticket->get_event();
 
-		if ( ! $event instanceof WP_Post || 1 > $event->ID ) {
+		if ( ! $event instanceof WP_Post || 0 === $event->ID ) {
 			// Parent event, no longer exists.
 			return;
 		}
@@ -294,7 +319,7 @@ class Ticket_Actions extends Controller_Contract {
 
 		$event = $ticket->get_event();
 
-		if ( ! $event instanceof WP_Post || 1 > $event->ID ) {
+		if ( ! $event instanceof WP_Post || 0 === $event->ID ) {
 			// Parent event, no longer exists.
 			return;
 		}
@@ -380,7 +405,7 @@ class Ticket_Actions extends Controller_Contract {
 		as_unschedule_action( self::TICKET_END_SALES_HOOK, [ $ticket_id ], self::AS_TICKET_ACTIONS_GROUP );
 
 		if ( time() > $end_timestamp ) {
-			// The ticket has already ended. Do nothing.
+			// The ticket sale has already ended. Do nothing.
 			return;
 		}
 
