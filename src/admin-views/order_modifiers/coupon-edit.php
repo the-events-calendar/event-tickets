@@ -42,13 +42,13 @@ $modifier_statuses = [
 				<?php wp_nonce_field( 'order_modifier_save_action', 'order_modifier_save_action' ); ?>
 
 				<div class="form-field form-required">
-					<label for="order_modifier_coupon_name">
+					<label for="order_modifier_display_name">
 						<?php esc_html_e( 'Coupon Name', 'event-tickets' ); ?>
 					</label>
 					<input
 						type="text"
-						name="order_modifier_coupon_name"
-						id="order_modifier_coupon_name"
+						name="order_modifier_display_name"
+						id="order_modifier_display_name"
 						maxlength="255"
 						data-validation-required="true"
 						data-validation-error="<?php esc_attr_e( 'Fee Name is required', 'event-tickets' ); ?>"
