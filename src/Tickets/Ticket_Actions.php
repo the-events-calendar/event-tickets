@@ -130,17 +130,15 @@ class Ticket_Actions extends Controller_Contract {
 			return;
 		}
 
-		$ticket = Tickets::load_ticket_object( $ticket_id );
+		$ticket = get_post( $ticket_id );
 
-		if ( ! $ticket instanceof Ticket_Object ) {
-			// Not a ticket object.
+		if ( ! $ticket instanceof WP_Post || 1 > $ticket->ID ) {
+			// Deleted ?
 			return;
 		}
 
-		$event = $ticket->get_event();
-
-		if ( ! $event instanceof WP_Post || 1 > $event->ID ) {
-			// Parent event, no longer exists.
+		if ( ! in_array( $ticket->post, tribe_tickets()->ticket_types(), true ) ) {
+			// Not a ticket.
 			return;
 		}
 
@@ -149,10 +147,9 @@ class Ticket_Actions extends Controller_Contract {
 		 *
 		 * @since TBD
 		 *
-		 * @param Ticket_Object $ticket The ticket object.
-		 * @param WP_Post       $event  The event post object.
+		 * @param int $ticket_id The ticket id.
 		 */
-		do_action( 'tec_tickets_ticket_stock_changed', $ticket, $event );
+		do_action( 'tec_tickets_ticket_stock_changed', $ticket->ID );
 	}
 
 	/**
