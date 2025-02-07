@@ -336,11 +336,13 @@ class Ticket_Actions extends Controller_Contract {
 			return;
 		}
 
-		if ( time() + 30 < $timestamp ) {
+		$now = time();
+
+		if ( $now + 30 < $timestamp ) {
 			$its_happening = false;
 			$method        = "schedule_date_{$prefix}_action";
 			// The actual timestamp is not immediate. Lets reschedule closer to the actual event.
-			$this->$method( $ticket_id, $timestamp );
+			$this->$method( $ticket_id, $now, $timestamp );
 		}
 
 		try {
@@ -370,7 +372,7 @@ class Ticket_Actions extends Controller_Contract {
 					'prefix'        => $prefix,
 					'timestamp'     => $timestamp,
 					'its_happening' => $its_happening,
-					'now'           => time(),
+					'now'           => $now,
 				]
 			);
 
@@ -404,13 +406,15 @@ class Ticket_Actions extends Controller_Contract {
 		as_unschedule_action( self::TICKET_START_SALES_HOOK, [ $ticket_id ], self::AS_TICKET_ACTIONS_GROUP );
 		as_unschedule_action( self::TICKET_END_SALES_HOOK, [ $ticket_id ], self::AS_TICKET_ACTIONS_GROUP );
 
-		if ( time() > $end_timestamp ) {
+		$now = time();
+
+		if ( $now > $end_timestamp ) {
 			// The ticket sale has already ended. Do nothing.
 			return;
 		}
 
-		$this->schedule_date_start_action( $ticket_id, $start_timestamp );
-		$this->schedule_date_end_action( $ticket_id, $end_timestamp );
+		$this->schedule_date_start_action( $ticket_id, $now, $start_timestamp );
+		$this->schedule_date_end_action( $ticket_id, $now, $end_timestamp );
 	}
 
 	/**
@@ -423,8 +427,7 @@ class Ticket_Actions extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	protected function schedule_date_start_action( int $ticket_id, int $start_timestamp ): void {
-		$now              = time();
+	protected function schedule_date_start_action( int $ticket_id, int $now, int $start_timestamp ): void {
 		$minus_30_minutes = ( - 30 * MINUTE_IN_SECONDS );
 		$minus_20_minutes = ( - 20 * MINUTE_IN_SECONDS );
 		$minus_10_minutes = ( - 10 * MINUTE_IN_SECONDS );
@@ -463,8 +466,7 @@ class Ticket_Actions extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	protected function schedule_date_end_action( int $ticket_id, int $end_timestamp ): void {
-		$now              = time();
+	protected function schedule_date_end_action( int $ticket_id, int $now, int $end_timestamp ): void {
 		$minus_30_minutes = ( - 30 * MINUTE_IN_SECONDS );
 		$minus_20_minutes = ( - 20 * MINUTE_IN_SECONDS );
 		$minus_10_minutes = ( - 10 * MINUTE_IN_SECONDS );
