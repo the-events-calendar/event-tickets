@@ -433,6 +433,7 @@ class Ticket_Actions extends Controller_Contract {
 	 * @since TBD
 	 *
 	 * @param int $ticket_id       The ticket ID.
+	 * @param int $now             The current timestamp.
 	 * @param int $start_timestamp The ticket start date.
 	 *
 	 * @return void
@@ -472,6 +473,7 @@ class Ticket_Actions extends Controller_Contract {
 	 * @since TBD
 	 *
 	 * @param int $ticket_id     The ticket ID.
+	 * @param int $now           The current timestamp.
 	 * @param int $end_timestamp The ticket end date.
 	 *
 	 * @return void
