@@ -624,7 +624,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		$this->meta_repository->delete( new Meta( [ 'id' => $modifier_id ] ) );
 
 		// Delete the modifier itself (mandatory).
-		$delete_modifier = $this->repository->delete(
+		return $this->repository->delete(
 			new Order_Modifier(
 				[
 					'id'            => $modifier_id,
@@ -632,13 +632,6 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 				]
 			)
 		);
-
-		// Check if the modifier deletion was successful.
-		if ( $delete_modifier ) {
-			return true;
-		}
-
-		return false;
 	}
 
 	/**
