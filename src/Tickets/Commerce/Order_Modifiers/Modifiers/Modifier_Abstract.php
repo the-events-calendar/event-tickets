@@ -433,7 +433,6 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 */
 	protected function handle_meta_data( int $modifier_id, array $args = [] ): Model {
 		// Default structure for the metadata.
-
 		$defaults = [
 			'order_modifier_id' => $modifier_id,
 			'meta_key'          => '',
@@ -528,30 +527,6 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	public function get_modifier_display_name( bool $plural = false ): string {
 		return $plural ? $this->get_plural_name() : $this->get_singular_name();
 	}
-
-	/**
-	 * Retrieves the singular name of the modifier.
-	 *
-	 * This method should be implemented by concrete classes to provide the singular name
-	 * of the modifier (e.g., 'Coupon', 'Fee').
-	 *
-	 * @since 5.18.0
-	 *
-	 * @return string The singular name of the modifier.
-	 */
-	abstract protected function get_singular_name(): string;
-
-	/**
-	 * Retrieves the plural name of the modifier.
-	 *
-	 * This method should be implemented by concrete classes to provide the plural name
-	 * of the modifier (e.g., 'Coupons', 'Fees').
-	 *
-	 * @since 5.18.0
-	 *
-	 * @return string The plural name of the modifier.
-	 */
-	abstract protected function get_plural_name(): string;
 
 	/**
 	 * Clears relationships if the apply_type has changed.
@@ -682,6 +657,30 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 				throw new InvalidArgumentException( sprintf( 'Method %s does not exist.', esc_html( $method ) ) );
 		}
 	}
+
+	/**
+	 * Retrieves the singular name of the modifier.
+	 *
+	 * This method should be implemented by concrete classes to provide the singular name
+	 * of the modifier (e.g., 'Coupon', 'Fee').
+	 *
+	 * @since 5.18.0
+	 *
+	 * @return string The singular name of the modifier.
+	 */
+	abstract protected function get_singular_name(): string;
+
+	/**
+	 * Retrieves the plural name of the modifier.
+	 *
+	 * This method should be implemented by concrete classes to provide the plural name
+	 * of the modifier (e.g., 'Coupons', 'Fees').
+	 *
+	 * @since 5.18.0
+	 *
+	 * @return string The plural name of the modifier.
+	 */
+	abstract protected function get_plural_name(): string;
 
 	/**
 	 * Maps context data to the template context.
