@@ -26,7 +26,7 @@ use RuntimeException;
 use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Factory;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier;
-use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Meta;
+use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Meta as Meta;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Relationships;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifier_Admin_Handler;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship as Relationship_Repo;
@@ -464,11 +464,11 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 
 		// Ensure that a 'meta_key' is provided.
 		if ( empty( $meta_data['meta_key'] ) ) {
-			throw new \InvalidArgumentException( __( 'Meta key is required to insert or update meta data.', 'event-tickets' ) );
+			throw new InvalidArgumentException( __( 'Meta key is required to insert or update meta data.', 'event-tickets' ) );
 		}
 
 		// Upsert the metadata using the repository.
-		return $this->meta_repository->upsert_meta( new Order_Modifier_Meta( $meta_data ) );
+		return $this->meta_repository->upsert_meta( new Meta( $meta_data ) );
 	}
 
 
@@ -621,7 +621,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		$this->delete_relationship_by_modifier( $modifier_id );
 
 		// Delete associated meta data.
-		$this->meta_repository->delete( new Order_Modifier_Meta( [ 'id' => $modifier_id ] ) );
+		$this->meta_repository->delete( new Meta( [ 'id' => $modifier_id ] ) );
 
 		// Delete the modifier itself (mandatory).
 		$delete_modifier = $this->repository->delete(
