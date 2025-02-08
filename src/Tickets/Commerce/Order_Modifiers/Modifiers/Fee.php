@@ -90,7 +90,6 @@ class Fee extends Modifier_Abstract {
 			$modifier->id,
 			[
 				'meta_key'   => $this->get_applied_to_key( $this->modifier_type ),
-				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 				'meta_value' => $apply_fee_to,
 			]
 		);
@@ -140,7 +139,6 @@ class Fee extends Modifier_Abstract {
 			$modifier->id,
 			[
 				'meta_key'   => $this->get_applied_to_key( $this->modifier_type ),
-				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 				'meta_value' => $apply_fee_to,
 			]
 		);

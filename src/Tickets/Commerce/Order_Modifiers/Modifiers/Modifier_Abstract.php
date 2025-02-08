@@ -455,7 +455,6 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		$defaults = [
 			'order_modifier_id' => $modifier_id,
 			'meta_key'          => '',
-			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 			'meta_value'        => '',
 			'priority'          => 0,
 		];
