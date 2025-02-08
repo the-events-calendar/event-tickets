@@ -279,24 +279,6 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	}
 
 	/**
-	 * Converts an amount in cents to a formatted decimal string.
-	 *
-	 * This method is used to convert an integer amount in cents (e.g., 2300) into a string with two decimal points (e.g., 23.00).
-	 *
-	 * @since 5.18.0
-	 *
-	 * @param int $raw_amount The amount in cents.
-	 *
-	 * @return string The formatted decimal string representing the amount.
-	 */
-	public function convert_from_raw_amount( int $raw_amount ): string {
-		$amount       = $raw_amount / 100;
-		$amount_value = Value::create( $amount );
-
-		return number_format( $amount_value->get_decimal(), 2, '.', '' );
-	}
-
-	/**
 	 * Displays the formatted amount based on the type.
 	 *
 	 * Depending on whether the modifier is a percentage, flat fee, or any future type,
@@ -670,6 +652,35 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 			'display_name'  => sanitize_text_field( $raw_data['order_modifier_display_name'] ?? '' ),
 			'status'        => sanitize_text_field( $raw_data['order_modifier_status'] ?? '' ),
 		];
+	}
+
+	/**
+	 * Handle dynamic method calls.
+	 *
+	 * This should be used for deprecated methods that are no longer in use.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $name The method name.
+	 * @param array $arguments The method arguments.
+	 *
+	 * @return mixed The results of the method call.
+	 * @throws InvalidArgumentException If the method does not exist.
+	 */
+	public function __call( $name, $arguments ) {
+		$method = __CLASS__ . "::{$name}";
+		switch ( $name ) {
+			case 'convert_from_raw_amount':
+				_deprecated_function( esc_html( $method ), 'TBD', 'No replacement available.' );
+
+				$amount       = ( $arguments[0] ?? 0 ) / 100;
+				$amount_value = Value::create( $amount );
+
+				return number_format( $amount_value->get_decimal(), 2, '.', '' );
+
+			default:
+				throw new InvalidArgumentException( sprintf( 'Method %s does not exist.', esc_html( $method ) ) );
+		}
 	}
 
 	/**
