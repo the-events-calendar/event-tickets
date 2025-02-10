@@ -58,6 +58,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set up Git configuration
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "github-actions"
+
       - name: create and merge forward branch with ref and push
         run: |
           forwardBranch="${{ github.event.inputs.forward-branch }}"
