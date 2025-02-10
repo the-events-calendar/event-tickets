@@ -21,7 +21,7 @@
 			"pup package $(pup get-version)",
 			"pup clean"
 		]
-	],
+	},
 	"checks": {
 		"tbd": {
 			"dirs": [
