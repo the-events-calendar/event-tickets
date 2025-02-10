@@ -72,15 +72,6 @@ jobs:
           git merge --no-ff "${{ github.ref_name }}"
           git push origin "$HEAD_BRANCH"
 
-      - name: Check if there are commits to merge between new branch and forward branch
-        id: check-diff
-        run: |
-          if git diff --quiet "${{ github.event.inputs.forward-branch }}".."$HEAD_BRANCH"; then
-            echo "No new commits to merge forward. Skipping PR creation."
-            echo "skip_pr=true" >> $GITHUB_ENV
-          else
-            echo "skip_pr=false" >> $GITHUB_ENV
-
       - name: Create Pull Request using GitHub CLI
         id: create_pr
         env:
