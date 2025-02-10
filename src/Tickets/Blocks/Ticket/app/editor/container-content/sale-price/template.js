@@ -5,7 +5,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { NumericFormat } from 'react-number-format';
-import { formatDate, parse as parseDate } from 'date-fns';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Wordpress dependencies
@@ -15,10 +15,21 @@ import uniqid from 'uniqid';
 /**
  * Internal dependencies
  */
-import { PREFIX, SUFFIX, SALE_PRICE_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { PREFIX, SUFFIX, SALE_PRICE_LABELS, WOO_CLASS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import { Checkbox, DayPickerInput, LabeledItem } from '@moderntribe/common/elements';
+import { getTicketsProvider } from '@moderntribe/tickets/data/blocks/ticket/selectors';
 import './style.pcss';
-import {DateTimeRangePicker} from "@moderntribe/tickets/elements";
+import { formatDate, parseDate } from "react-day-picker/moment";
+
+/**
+ * Get the ticket provider from the common store.
+ *
+ * @since TBD
+ * @return {string} The ticket provider.
+ */
+const getTicketProviderFromCommon = () => {
+	return getTicketsProvider( window.__tribe_common_store__.getState() );
+};
 
 /**
  * SalePrice component.
@@ -33,21 +44,15 @@ class SalePrice extends PureComponent {
 		currencyPosition: PropTypes.string,
 		currencySymbol: PropTypes.string,
 		currencyThousandsSep: PropTypes.string,
-		minDefaultPrice: PropTypes.oneOfType([ PropTypes.string, PropTypes.number]),
+		minDefaultPrice: PropTypes.string,
 		tempPrice: PropTypes.string,
 		toggleSalePrice: PropTypes.func,
 		salePriceChecked: PropTypes.bool,
 		salePrice: PropTypes.string,
 		updateSalePrice: PropTypes.func,
 		dateFormat: PropTypes.string,
-		fromDate: PropTypes.oneOfType([
-			PropTypes.instanceOf(Date),
-			PropTypes.oneOf([''])
-		]),
-		toDate: PropTypes.oneOfType([
-			PropTypes.instanceOf(Date),
-			PropTypes.oneOf([''])
-		]),
+		fromDate: PropTypes.instanceOf(Date),
+		toDate: PropTypes.instanceOf(Date),
 		fromDateInput: PropTypes.string,
 		toDateInput: PropTypes.string,
 		onFromDateChange: PropTypes.func,
@@ -71,7 +76,7 @@ class SalePrice extends PureComponent {
 			minDefaultPrice,
 			tempPrice,
 			toggleSalePrice,
-			salePriceChecked = false,
+			salePriceChecked,
 			salePrice,
 			updateSalePrice,
 			dateFormat,
@@ -109,6 +114,9 @@ class SalePrice extends PureComponent {
 			'tribe-editor__input tribe-editor__ticket__sale-price-input',
 			{ 'tribe-editor__ticket__sale-price--error': !validSalePrice }
 		);
+
+		// Check if the provider is WooCommerce.
+		const isWoo = getTicketProviderFromCommon() === WOO_CLASS;
 
 		/**
 		 * Props for the FromDate input.
@@ -168,12 +176,12 @@ class SalePrice extends PureComponent {
 					label={ SALE_PRICE_LABELS.add_sale_price }
 					// eslint-disable-next-line no-undef
 					aria-label={ SALE_PRICE_LABELS.add_sale_price }
-					checked={salePriceChecked}
+					checked={ ! isWoo && salePriceChecked }
 					onChange={toggleSalePrice}
-					value={salePriceChecked ? '1' : '0'}
-					disabled={isDisabled}
+					value={ ! isWoo && salePriceChecked }
+					disabled={ isWoo || isDisabled }
 				/>
-				{ salePriceChecked && (
+				{ ! isWoo && salePriceChecked && (
 					<div className={"tribe-editor__ticket__sale-price--fields"}>
 						<div className={"tribe-editor__ticket__sale-price__input-wrapper"}>
 							<LabeledItem
@@ -216,6 +224,14 @@ class SalePrice extends PureComponent {
 						</div>
 					</div>
 				)}
+
+				{ isWoo && (
+					<div className={'tribe-editor__ticket__sale-price__error-message'}>
+						<p>
+							{ __( 'The sale price can be managed via WooCommerce\'s product editor.', 'event-tickets' ) }
+						</p>
+					</div>
+				) }
 			</div>
 		);
 	}
