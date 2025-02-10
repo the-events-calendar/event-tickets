@@ -63,16 +63,16 @@ jobs:
           git config --global user.email "actions@github.com"
           git config --global user.name "github-actions"
 
-      - name: create and merge forward branch with ref and push
+      - name: create new branch from forward branch and merge ref branch.
         run: |
           forwardBranch="${{ github.event.inputs.forward-branch }}"
           HEAD_BRANCH="task/merge-forward-${{ github.ref_name }}-to-$forwardBranch"
           git checkout "$forwardBranch"
           git checkout -b "$HEAD_BRANCH"
-          git merge "${{ github.ref_name }}"
+          git merge --no-ff "${{ github.ref_name }}"
           git push origin "$HEAD_BRANCH"
 
-      - name: Check if there are commits to merge
+      - name: Check if there are commits to merge between new branch and forward branch
         id: check-diff
         run: |
           if git diff --quiet "${{ github.event.inputs.forward-branch }}".."$HEAD_BRANCH"; then
