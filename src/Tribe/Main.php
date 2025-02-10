@@ -437,6 +437,7 @@ class Tribe__Tickets__Main {
 	 * Load Text Domain on tribe_common_loaded as it requires common
 	 *
 	 * @since 4.10
+	 * @since TBD Removed unnecessary call to load activation page.
 	 */
 	public function bootstrap() {
 		// Add the group path for the ET core assets.
@@ -449,7 +450,6 @@ class Tribe__Tickets__Main {
 		$this->user_event_confirmation_list_shortcode();
 		$this->move_tickets();
 		$this->move_ticket_types();
-		$this->activation_page();
 
 		Tribe__Tickets__JSON_LD__Order::hook();
 		Tribe__Tickets__JSON_LD__Type::hook();
