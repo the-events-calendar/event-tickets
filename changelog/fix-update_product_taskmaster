@@ -1,4 +1,0 @@
-Significance: minor
-Type: fix
-
-Added version number to the `editor.js` script to stop caching. [ET-2293]
