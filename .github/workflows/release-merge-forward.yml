@@ -1,5 +1,5 @@
 name: "Release: Merge Forward"
-
+# This workflow is triggered manually.
 on:
   workflow_dispatch:
     inputs:
