@@ -1,17 +1,17 @@
 <?php
 /**
- * Event Tickets Emails: Purchase Receipt Body template
+ * Tickets Commerce: Email Fees Section
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/emails/purchase-receipt/body.php
+ * [your-theme]/tribe/tickets/emails/template-parts/body/order/fees.php
  *
  * See more documentation about our views templating system.
  *
- * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
+ * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @version 5.5.11
+ * @since   TBD
  *
- * @since 5.5.11
+ * @version TBD
  *
  * @var Tribe__Template                    $this               Current template object.
  * @var \TEC\Tickets\Emails\Email_Abstract $email              The email object.
@@ -23,22 +23,25 @@
  * @var \WP_Post                           $order              The order object.
  */
 
-$this->template( 'template-parts/body/title' );
+$fees = $order->fees;
 
-$this->template( 'purchase-receipt/intro' );
+if ( empty( $fees ) ) {
+	return;
+}
+?>
 
-$this->template( 'template-parts/body/order/customer-purchaser-details' );
 
-$this->template( 'template-parts/body/order/post-title' );
-
-$this->template( 'template-parts/body/order/ticket-totals' );
-
-$this->template( 'template-parts/body/order/fees' );
-
-$this->template( 'template-parts/body/order/order-total' );
-
-$this->template( 'template-parts/body/order/payment-info' );
-
-$this->template( 'template-parts/body/order/attendees-table' );
-
-$this->template( 'template-parts/body/additional-content' );
+<tr>
+	<td class="tec-tickets__email-table-content-order-total-container" align="right">
+		<table class="tec-tickets__email-table-content-fees-total-table">
+			<tr>
+				<td class="tec-tickets__email-table-content-fees-total-left-cell">
+					<strong><?php esc_html_e( 'Booking Fees', 'event-tickets' ); ?></strong>
+				</td>
+				<td class="tec-tickets__email-table-content-fees-total-right-cell">
+					<?php echo esc_html( tribe_format_currency( 'Total Fees' ) ); ?>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
