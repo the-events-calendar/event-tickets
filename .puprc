@@ -12,10 +12,16 @@
 		"npm run build"
 	],
 	"workflows": {
-		"build-common": [
-			"cd common && pup build"
+		"tec-zip": [
+			"git submodule update --recursive --init",
+			"pup build",
+			"pup check",
+			"pup i18n",
+			"cd common && pup i18n",
+			"pup package $(pup get-version)",
+			"pup clean"
 		]
-	},
+	],
 	"checks": {
 		"tbd": {
 			"dirs": [
@@ -23,7 +29,10 @@
 				 "common/src" 
 			]
 		},
-		"version-conflict": {}
+		"version-conflict": {
+			"fail_method": "error",
+			"fail_method_dev": "warn"
+		}
 	},
 	"i18n": [
 		{
@@ -39,10 +48,15 @@
 	],
 	"paths": {
 		"changelog": "readme.txt",
-		"css": [ "src/resources/postcss" ],
+		"css": [ 
+			"src/resources/postcss",
+			"common/src/resources/postcss"
+		],
 		"js": [
 			"src/resources/js",
-			"src/modules"
+			"src/modules",
+			"common/src/resources/js",
+			"common/src/modules"
 		],
 		"sync_files": [
 			"common/.distfiles",
@@ -66,7 +80,10 @@
 				"regex": "(Stable tag: )(.+)"
 			}
 		],
-		"views": [ "src/views" ]
+		"views": [ 
+			"src/views",
+			"common/src/views" 
+		]
 	},
 	"zip_name": "event-tickets"
 }
