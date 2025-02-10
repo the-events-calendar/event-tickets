@@ -7,6 +7,8 @@
 * Fix - Added version number to the `editor.js` script to stop caching. [ET-2293]
 * Fix - Correct row and total calculation in the seat selection modal. [SL-266]
 * Fix - When updating a Ticket's price on block editor, while the ticket is on sale, won't overwrite the sale price in  WooCommerce. [ET-2100]
+* Tweak - Removed filters: `tribe_events_tickets_module_name`
+* Language - 7 new strings added, 133 updated, 0 fuzzied, and 0 obsoleted.
 
 ### [5.19.0] 2025-01-30
 
