@@ -116,7 +116,7 @@ jobs:
           fi
 
       # ------------------------------------------------------------------------------
-      # Get initial dev zip name - pup appends the '-dev' and version automagically
+      # Get initial zip name - pup appends the '-dev' and version automagically
       # ------------------------------------------------------------------------------
       - name: get initial zip name
         id: initial_zip_name
