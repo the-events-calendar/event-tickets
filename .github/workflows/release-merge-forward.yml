@@ -60,7 +60,9 @@ jobs:
 
       - name: create and merge forward branch with ref and push
         run: |
-          HEAD_BRANCH="task/merge-forward-${{ github.ref_name }}-to-${{ github.event.inputs.forward-branch }}"
+          forwardBranch="${{ github.event.inputs.forward-branch }}"
+          HEAD_BRANCH="task/merge-forward-${{ github.ref_name }}-to-$forwardBranch"
+          git checkout "$forwardBranch"
           git checkout -b "$HEAD_BRANCH"
           git merge "${{ github.ref_name }}"
           git push origin "$HEAD_BRANCH"
