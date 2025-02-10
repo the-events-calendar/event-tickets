@@ -108,12 +108,12 @@ jobs:
       # Get the version
       # ------------------------------------------------------------------------------
       - name: get version
-        if: ${{ env.PRODUCTION_ZIP == 'true' }}
-        run: echo "VERSION=$(composer -- pup get-version)" >> $GITHUB_ENV
-
-      - name: get dev version
-        if: ${{ env.PRODUCTION_ZIP == 'false' }}
-        run: echo "VERSION=$(composer -- pup get-version --dev)" >> $GITHUB_ENV
+        run: |
+          if [ "${{ env.PRODUCTION_ZIP }}" == "true" ]; then
+            echo "VERSION=$(composer -- pup get-version)" >> $GITHUB_ENV
+          else
+            echo "VERSION=$(composer -- pup get-version --dev)" >> $GITHUB_ENV
+          fi
 
       # ------------------------------------------------------------------------------
       # Get initial dev zip name - pup appends the '-dev' and version automagically
