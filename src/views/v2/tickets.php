@@ -80,7 +80,7 @@ $classes = [
 
 		<?php $this->template( 'v2/components/loader/loader' ); ?>
 
-		<?php $this->do_entry_point( 'waitlist' ) ?>
+		<?php $this->do_entry_point( 'waitlist' ); ?>
 	</form>
 
 	<?php
