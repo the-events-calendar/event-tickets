@@ -670,7 +670,12 @@ export const getTicketTempSaleEndDateMoment = createSelector(
 
 export const showSalePrice = createSelector(
 	[ getTicketsProvider ],
-	( provider ) => provider === constants.TICKETS_COMMERCE_MODULE_CLASS,
+	( provider ) => {
+		return (
+			provider === constants.TICKETS_COMMERCE_MODULE_CLASS ||
+			provider === constants.WOO_CLASS
+		);
+	},
 );
 
 export const isTicketSalePriceValid = createSelector(

@@ -202,7 +202,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$main = Tribe__Tickets__Main::instance();
 		$this->tickets_view = Tribe__Tickets__Tickets_View::instance();
 		/* Set up parent vars */
-		$this->plugin_name = $this->pluginName = esc_html( tribe_get_rsvp_label_plural( 'provider_plugin_name' ) );
 		$this->plugin_path = $this->pluginPath = $main->plugin_path;
 		$this->plugin_url  = $this->pluginUrl  = $main->plugin_url;
 
@@ -228,6 +227,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Registers all actions/filters
 	 */
 	public function hooks() {
+		add_action( 'init', [ $this, 'set_plugin_name' ], 9 );
 		add_action( 'wp_enqueue_scripts', [ $this, 'register_resources' ], 5 );
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_resources' ], 11 );
 		add_action( 'trashed_post', [ $this, 'maybe_redirect_to_attendees_report' ] );
@@ -256,6 +256,16 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		// Cache invalidation.
 		add_filter( 'tec_cache_listener_save_post_types', [ $this, 'filter_cache_listener_save_post_types' ] );
+	}
+
+	/**
+	 * Sets the RSVPs plugin name.
+	 *
+	 * @since 5.19.1
+	 */
+	public function set_plugin_name() {
+		// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase, Squiz.PHP.DisallowMultipleAssignments.Found
+		$this->plugin_name = $this->pluginName = esc_html( tribe_get_rsvp_label_plural( 'provider_plugin_name' ) );
 	}
 
 	/**

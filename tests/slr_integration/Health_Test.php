@@ -29,6 +29,7 @@ class Health_Test extends Controller_Test_Case {
 	public function it_should_add_slr_tests() {
 		$controller = $this->make_controller();
 		$controller->register();
+		$controller->define_tests();
 
 		$tests = $controller->get_tests();
 
@@ -56,6 +57,7 @@ class Health_Test extends Controller_Test_Case {
 
 		$controller = $this->make_controller();
 		$controller->register();
+		$controller->define_tests();
 
 		$this->expectException( \Exception::class );
 		// Fail because no nonce.
@@ -71,6 +73,7 @@ class Health_Test extends Controller_Test_Case {
 
 		$controller = $this->make_controller();
 		$controller->register();
+		$controller->define_tests();
 
 		$wp_send_json_error   = $this->mock_wp_send_json_error();
 		$wp_send_json_success = $this->mock_wp_send_json_success();
@@ -95,6 +98,7 @@ class Health_Test extends Controller_Test_Case {
 
 		$controller = $this->make_controller();
 		$controller->register();
+		$controller->define_tests();
 
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( self::NONCE_ACTION );
 
@@ -120,6 +124,7 @@ class Health_Test extends Controller_Test_Case {
 
 		$controller = $this->make_controller();
 		$controller->register();
+		$controller->define_tests();
 
 		$wp_send_json_error   = $this->mock_wp_send_json_error();
 		$wp_send_json_success = $this->mock_wp_send_json_success();
@@ -145,6 +150,7 @@ class Health_Test extends Controller_Test_Case {
 
 		$controller = $this->make_controller();
 		$controller->register();
+		$controller->define_tests();
 
 		$wp_send_json_error   = $this->mock_wp_send_json_error();
 		$wp_send_json_success = $this->mock_wp_send_json_success();
