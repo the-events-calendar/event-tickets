@@ -42,7 +42,7 @@
 
 		<?php $this->template( 'v2/rsvp/actions', [ 'rsvp' => $rsvp ] ); ?>
 
-		<?php $this->do_entry_point( 'waitlist' ); ?>
+		<?php $this->do_entry_point( 'etp-waitlist' ); ?>
 
 	</div>
 
