@@ -7,7 +7,7 @@ import { compose } from 'redux';
 /**
  * WordPress dependencies
  */
-import { dispatch as wpDispatch, select } from '@wordpress/data';
+import { dispatch, select } from '@wordpress/data';
 import { applyFilters } from '@wordpress/hooks';
 import { createBlock } from '@wordpress/blocks';
 
@@ -23,7 +23,7 @@ const mapStateToProps = (state, ownProps) => {
 	const provider = selectors.getTicketsProvider(state);
 	const page = constants.TICKET_ORDERS_PAGE_SLUG[provider];
 	const isRecurring = hasRecurrenceRules(state);
-	const selectedBlock = select('core/editor').getSelectedBlock();
+	const selectedBlock = select('core/block-editor').getSelectedBlock();
 	const isBlockSelected = selectedBlock?.name === 'tribe/tickets';
 
 	let mappedProps = {
@@ -36,8 +36,8 @@ const mapStateToProps = (state, ownProps) => {
 		onConfirmClick: () => {
 			// eslint-disable-line wpcalypso/redux-no-bound-selectors
 			const { clientId } = ownProps;
-			const { getBlockCount } = select('core/editor');
-			const { insertBlock } = wpDispatch('core/editor');
+			const { getBlockCount } = select('core/block-editor');
+			const { insertBlock } = dispatch('core/block-editor');
 
 			const nextChildPosition = getBlockCount(clientId);
 			const block = createBlock('tribe/tickets-item', {});

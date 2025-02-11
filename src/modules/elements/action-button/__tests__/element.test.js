@@ -22,7 +22,7 @@ describe( 'ActionButton', () => {
 
 	test( 'component rendered with the correct class when icon is on the right', () => {
 		const component = renderer.create(
-			<ActionButton icon={ <Icon /> } position={ positions.right }>Custom Action</ActionButton>,
+			<ActionButton icon={ <Icon /> } placement={ positions.right }>Custom Action</ActionButton>,
 		);
 		expect( component.toJSON() ).toMatchSnapshot();
 	} );

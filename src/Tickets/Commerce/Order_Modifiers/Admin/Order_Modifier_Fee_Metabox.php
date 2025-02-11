@@ -79,6 +79,14 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	protected Order_Modifier_Relationship $order_modifiers_relationship_repository;
 
 	/**
+	 * The order modifiers controller.
+	 *
+	 * @since 5.19.1
+	 * @var Controller
+	 */
+	protected Controller $controller;
+
+	/**
 	 * Constructor to initialize dependencies and set up the modifier strategy and manager.
 	 *
 	 * @since 5.18.0
@@ -98,11 +106,22 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 	) {
 		parent::__construct( $container );
 		// Set up the modifier strategy and manager for handling fees.
-		$this->modifier_strategy = $controller->get_modifier( $this->modifier_type );
+		$this->controller = $controller;
 		$this->manager           = $manager;
 
 		// Set up the order modifiers repository for accessing fee data.
 		$this->order_modifiers_relationship_repository = $order_modifier_relationship;
+
+		add_action( 'init', [ $this, 'set_modifier_strategy' ] );
+	}
+
+	/**
+	 * Sets the modifier strategy for applying fees.
+	 *
+	 * @since 5.19.1
+	 */
+	public function set_modifier_strategy() {
+		$this->modifier_strategy = $this->controller->get_modifier( $this->modifier_type );
 	}
 
 	/**

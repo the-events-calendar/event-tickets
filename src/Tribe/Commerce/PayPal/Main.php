@@ -185,7 +185,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$main = Tribe__Tickets__Main::instance();
 
 		/* Set up some parent's vars */
-		$this->plugin_name = esc_html_x( 'Tribe Commerce', 'ticket provider', 'event-tickets' );
 		$this->plugin_path = $main->plugin_path;
 		$this->plugin_url = $main->plugin_url;
 
@@ -299,6 +298,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @since 4.7
 	 */
 	public function hooks() {
+		add_action( 'init', [ $this, 'set_plugin_name' ], 9 );
 		// if the hooks have already been bound, don't do it again
 		if ( $this->is_loaded ) {
 			return false;
@@ -371,6 +371,15 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		// Cache invalidation.
 		add_filter( 'tec_cache_listener_save_post_types', [ $this, 'filter_cache_listener_save_post_types' ] );
+	}
+
+	/**
+	 * Sets the RSVPs plugin name.
+	 *
+	 * @since 5.19.1
+	 */
+	public function set_plugin_name() {
+		$this->plugin_name = esc_html_x( 'Tribe Commerce', 'ticket provider', 'event-tickets' );
 	}
 
 	/**

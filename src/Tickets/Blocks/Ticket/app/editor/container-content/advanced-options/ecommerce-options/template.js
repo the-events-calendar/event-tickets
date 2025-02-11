@@ -105,7 +105,8 @@ const EcommerceOptions = ( {
 EcommerceOptions.propTypes = {
 	editTicketLink: PropTypes.string,
 	isDisabled: PropTypes.bool,
-	provider: PropTypes.oneOf( [ ...PROVIDER_TYPES, '' ] ),
+	// Add the `tc` provider, short for Tickets Commerce and coming from some legacy blocks.
+	provider: PropTypes.oneOf( [ ...PROVIDER_TYPES, '', 'tc' ] ),
 	reportLink: PropTypes.string,
 	showEcommerceOptions: PropTypes.bool,
 };

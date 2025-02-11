@@ -2402,6 +2402,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Returns the class name of the default module/provider.
 		 *
 		 * @since 4.6
+		 * @since 5.19.1 Update default to Tickets Commerce.
 		 *
 		 * @return string
 		 */
@@ -2422,8 +2423,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					$sliced = array_slice( $modules, 0, 1 );
 					self::$default_module = reset( $sliced );
 				} else {
-					// use PayPal tickets
-					self::$default_module = 'Tribe__Tickets__Commerce__PayPal__Main';
+					// Set Tickets Commerce as the default module.
+					self::$default_module = 'TEC\\Tickets\\Commerce\\Module';
 				}
 			}
 
