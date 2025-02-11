@@ -6,8 +6,8 @@
 
 <div
 	class="input_block ticket_advanced_Tribe__Tickets__Commerce__PayPal__Main tribe-dependent"
-	data-depends="#Tribe__Tickets__Commerce__PayPal__Main_radio"
-	data-condition-is-checked
+	data-depends="#tec_tickets_ticket_provider"
+	data-condition="Tribe__Tickets__Commerce__PayPal__Main"
 >
 	<label
 		for="Tribe__Tickets__Commerce__PayPal__Main_capacity"

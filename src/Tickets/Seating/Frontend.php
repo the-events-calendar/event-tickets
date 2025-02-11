@@ -13,6 +13,8 @@ namespace TEC\Tickets\Seating;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\Asset;
+use TEC\Tickets\Commerce\Utils\Currency;
+use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Frontend\Timer;
@@ -499,12 +501,14 @@ class Frontend extends Controller_Contract {
 			}
 
 			/** @var Tickets_Handler $tickets_handler */
-			$tickets_handler = tribe( 'tickets.handler' );
+			$tickets_handler        = tribe( 'tickets.handler' );
+			$formatted_ticket_price = Value::create( $ticket->price )->get_currency();
 
 			$seat_type_map[ $seat_type ]['tickets'][] = [
 				'ticketId'    => $ticket_id,
 				'name'        => $ticket->name,
-				'price'       => $ticket->price,
+				'price'       => $formatted_ticket_price,
+				'priceValue'  => $ticket->price,
 				'description' => $ticket->description,
 				'dateInRange' => $ticket->date_in_range(),
 				'maxLimit'    => $tickets_handler->get_ticket_max_purchase( $ticket_id ),

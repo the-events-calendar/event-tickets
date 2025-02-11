@@ -613,6 +613,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 * Returns a ticket cost or details.
 	 *
 	 * @since 4.8
+	 * @since 5.19.1 Use property regular_price if set.
 	 *
 	 * @param int  $ticket_id The ticket ID.
 	 * @param bool $get_details Whether to get just the ticket cost (`false`) or
@@ -631,8 +632,9 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		/** @var Tribe__Tickets__Commerce__Currency $currency */
 		$currency = tribe( 'tickets.commerce.currency' );
 
-		$price    = $ticket->price;
 		$provider = $ticket->provider_class;
+
+		$price = $ticket->price;
 
 		if ( ! is_numeric( $price ) ) {
 			$price = 0; // free.
@@ -640,6 +642,12 @@ class Tribe__Tickets__REST__V1__Post_Repository
 
 		if ( Module::class === $provider ) {
 			$price = tribe( Ticket::class )->get_regular_price( $ticket_id );
+		} elseif ( ! empty( $ticket->regular_price ) ) {
+			$price = $ticket->regular_price;
+
+			if ( ! is_numeric( $price ) ) {
+				$price = 0;
+			}
 		}
 
 		$formatted_price = html_entity_decode( $currency->format_currency( $price, $ticket_id ) );
@@ -797,6 +805,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 * Returns the sale price data for a ticket.
 	 *
 	 * @since 5.9.0
+	 * @since 5.19.1 If the provider has method `get_sale_price_details`, return that.
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 *
@@ -804,6 +813,10 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 */
 	public function get_ticket_sale_price_data( int $ticket_id ): array {
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+
+		if ( method_exists( $provider, 'get_sale_price_details' ) ) {
+			return $provider->get_sale_price_details( $ticket_id );
+		}
 
 		if ( ! $provider instanceof Module ) {
 			return [];

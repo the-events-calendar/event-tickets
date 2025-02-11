@@ -42,7 +42,13 @@ class Provider extends \TEC\Common\Contracts\Service_Provider {
 	 */
 	protected function register_assets() {
 		$assets = new Assets( $this->container );
-		$assets->register();
+
+		// Register assets only after `init` hook has fired.
+		if ( did_action( 'init' ) || doing_action( 'init' ) ) {
+			$assets->register();
+		} else {
+			add_action( 'init', [ $assets, 'register' ] );
+		}
 
 		$this->container->singleton( Assets::class, $assets );
 	}
