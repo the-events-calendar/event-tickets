@@ -368,7 +368,7 @@ export function* handleRSVPStartDate( action ) {
 	const startDateMoment = yield date ? call( momentUtil.toMoment, date ) : undefined;
 	const startDate = yield date ? call( momentUtil.toDatabaseDate, startDateMoment ) : '';
 	yield put( actions.setRSVPTempStartDate( startDate ) );
-	yield put( actions.setRSVPTempStartDateInput( dayPickerInput.state.value ) );
+	yield put( actions.setRSVPTempStartDateInput( dayPickerInput ) );
 	yield put( actions.setRSVPTempStartDateMoment( startDateMoment ) );
 }
 
@@ -377,7 +377,7 @@ export function* handleRSVPEndDate( action ) {
 	const endDateMoment = yield date ? call( momentUtil.toMoment, date ) : undefined;
 	const endDate = yield date ? call( momentUtil.toDatabaseDate, endDateMoment ) : '';
 	yield put( actions.setRSVPTempEndDate( endDate ) );
-	yield put( actions.setRSVPTempEndDateInput( dayPickerInput.state.value ) );
+	yield put( actions.setRSVPTempEndDateInput( dayPickerInput ) );
 	yield put( actions.setRSVPTempEndDateMoment( endDateMoment ) );
 }
 
@@ -418,7 +418,7 @@ export function* handleRSVPMove() {
 	if ( rsvpId === modalTicketId ) {
 		const clientId = yield select( moveSelectors.getModalClientId );
 		yield put( actions.deleteRSVP() );
-		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ clientId ] );
+		yield call( [ wpDispatch( 'core/block-editor' ), 'removeBlocks' ], [ clientId ] );
 	}
 }
 

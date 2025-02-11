@@ -29,6 +29,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	const noTicketsOnRecurring = document.body.classList.contains( 'tec-no-tickets-on-recurring' );
 	const tickets_panel_helper_text_selector = '.tec_ticket-panel__helper_text__wrap';
 	const tickets_panel_hidden_recurrence_warning = '.tec_ticket-panel__recurring-unsupported-warning';
+	const ticket_provider_input_id = 'tec_tickets_ticket_provider';
 	/*
 	 * Null or 'default' are the default ticket; 'rsvp' is the RSVP ticket.
 	 * The backend might use the value, sent over with AJAX panel requests, to modify panels
@@ -124,36 +125,39 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	 * ticketing provider. Defaults to RSVP if something fails
 	 *
 	 * @since 4.6
-	 *
-	 * @param boolean force selection to RSVP
+	 * @since 5.19.1 Updated default provider handling.
+	 * @param {boolean} forceRsvp Whether to force the default provider to RSVP.
 	 * @return void
 	 */
 	function set_default_provider_radio( force_rsvp ) {
 		if ( 'undefined' === typeof force_rsvp ) {
 			force_rsvp = true;
 		}
-		var $checkedProvider = $tribe_tickets.find( '.tribe-ticket-editor-field-default_provider' );
+		let $checkedProvider = $tribe_tickets.find( '.tribe-ticket-editor-field-default_provider' );
 
 		if ( $checkedProvider.is( ':radio' ) ) {
 			$checkedProvider = $checkedProvider.filter( ':checked' );
 		}
 
-		var provider_id;
+		let providerValue;
 
 		if ( force_rsvp ) {
-			provider_id = 'Tribe__Tickets__RSVP_radio';
+			providerValue = 'Tribe__Tickets__RSVP';
 		} else {
-			// Allows default to WooCommerce
-			provider_id = 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main_radio';
+			// Default to Tickets Commerce.
+			providerValue = 'TEC\\Tickets\\Commerce\\Module';
 		}
 
 		if ( ! force_rsvp && $checkedProvider.length > 0 ) {
-			provider_id = $checkedProvider.val() + '_radio';
+			providerValue = $checkedProvider.val();
 		}
 
-		const ticketProviderInput = $( document.getElementById( provider_id ) );
+		const ticketProviderInput = $( document.getElementById( ticket_provider_input_id ) );
+		if ( force_rsvp || ! ticketProviderInput.val() ) {
+			ticketProviderInput.val( providerValue );
+		}
 		defaultTicketProviderModule = ticketProviderInput.val();
-		ticketProviderInput.prop( 'checked', true ).trigger( 'change' );
+		ticketProviderInput.trigger( 'change' );
 	}
 
 	/**

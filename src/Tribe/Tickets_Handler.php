@@ -106,20 +106,29 @@ class Tribe__Tickets__Tickets_Handler {
 	 *    Class constructor.
 	 */
 	public function __construct() {
-		$this->unlimited_term = __( 'Unlimited', 'event-tickets' );
-
 		$this->add_hooks();
 
 		$this->path = trailingslashit( dirname( dirname( dirname( __FILE__ ) ) ) );
 	}
 
 	/**
+	 * Set the unlimited term name
+	 *
+	 * @since 5.19.1
+	 */
+	public function set_unlimited_term_name() {
+		$this->unlimited_term = __( 'Unlimited', 'event-tickets' );
+	}
+
+	/**
 	 * Add hooks for saving/meta.
 	 *
 	 * @since 4.11.4
+	 * @since 5.19.1 Added the `set_unlimited_term_name` method to set the unlimited term name.
 	 */
 	public function add_hooks() {
 		$main = Tribe__Tickets__Main::instance();
+		add_action( 'init', [ $this, 'set_unlimited_term_name' ] );
 
 		foreach ( $main->post_types() as $post_type ) {
 			add_action( 'save_post_' . $post_type, [ $this, 'save_post' ] );

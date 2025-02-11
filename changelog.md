@@ -1,5 +1,24 @@
 # Changelog
 
+### [5.19.1] 2025-02-10
+
+* Tweak - Modify price field in seat report information to include formatted price, not just value. [SL-266]
+* Tweak - Refactored a hidden ticket provider field within the classic editor for RSVPs and tickets. [ET-2287]
+* Fix - Added version number to the `editor.js` script to stop caching. [ET-2293]
+* Fix - Correct row and total calculation in the seat selection modal. [SL-266]
+* Fix - When updating a Ticket's price on block editor, while the ticket is on sale, won't overwrite the sale price in  WooCommerce. [ET-2100]
+* Tweak - Removed filters: `tribe_events_tickets_module_name`
+* Language - 7 new strings added, 133 updated, 0 fuzzied, and 0 obsoleted.
+
+### [5.19.0] 2025-01-30
+
+* Fix - Update asset, dependencies, customizations to align with WordPress 6.7 and React 18. [TEC-5322]
+* Language - 0 new strings added, 12 updated, 0 fuzzied, and 0 obsoleted.
+
+### [5.18.1.1] 2025-01-27
+
+* Security - Prevent bug where order ID spoofing for Tickets Commerce would potentially display order data publicly [SVUL-11]
+
 ### [5.18.1] 2025-01-22
 
 * Feature - Include Seating information in Attendee archive REST API response. [SL-264]
