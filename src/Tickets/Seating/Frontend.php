@@ -13,7 +13,7 @@ namespace TEC\Tickets\Seating;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\Asset;
-use TEC\Tickets\Commerce\Utils\Currency;
+use Tribe__Tickets__Commerce__Currency;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Frontend\Session;
@@ -169,13 +169,15 @@ class Frontend extends Controller_Contract {
 		$prices = array_keys( $prices );
 
 		$inventory = $this->get_events_ticket_capacity_for_seating( $post_id );
-
-		$cost_range = count( $prices ) === 1 ?
-			tribe_format_currency( $prices[0], $post_id ) :
-			tribe_format_currency( min( $prices ), $post_id )
+		
+		/** @var Tribe__Tickets__Commerce__Currency $currency */
+		$currency = tribe( 'tickets.commerce.currency' );
+		$currency->get_formatted_currency_with_symbol( 0, $post_id, $provider, false );
+		
+		$cost_range = count( $prices ) === 1 ? $currency->get_formatted_currency_with_symbol( $prices[0], $post_id, $provider, false ) :
+			$currency->get_formatted_currency_with_symbol( min( $prices ), $post_id, $provider, false )
 			. ' - '
-			. tribe_format_currency( max( $prices ), $post_id );
-
+			. $currency->get_formatted_currency_with_symbol( max( $prices ), $post_id, $provider, false );
 
 		$timeout = $this->container->get( Timer::class )->get_timeout( $post_id );
 
@@ -275,7 +277,8 @@ class Frontend extends Controller_Contract {
 		/** @var \Tribe\Dialog\View $dialog_view */
 		$dialog_view = tribe( 'dialog.view' );
 		$provider    = Tickets::get_event_ticket_provider_object( $post_id );
-		/** @var \Tribe__Tickets__Commerce__Currency $currency */
+		
+		/** @var Tribe__Tickets__Commerce__Currency $currency */
 		$currency = tribe( 'tickets.commerce.currency' );
 		$content  = $this->template->template(
 			'iframe-view',
