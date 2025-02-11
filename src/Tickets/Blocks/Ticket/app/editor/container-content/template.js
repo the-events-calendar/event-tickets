@@ -92,11 +92,16 @@ const getTicketContainerItems = ( clientId, hasTicketsPlus, hasIacVars ) => {
 	return items;
 }
 
-const TicketContainerContent = ( { clientId, hasTicketsPlus, hasIacVars } ) => (
-	<Fragment>
-		{ getTicketContainerItems( clientId, hasTicketsPlus, hasIacVars ).map( ( item ) => ( item.item ) ) }
-	</Fragment>
-);
+const TicketContainerContent = ( { clientId, hasTicketsPlus, hasIacVars } ) => {
+	return (
+		<Fragment>
+			{getTicketContainerItems(clientId, hasTicketsPlus, hasIacVars).map((item) => (
+				<Fragment key={item.key}>
+					{item.item}
+				</Fragment>
+			))}
+		</Fragment>
+	);};
 
 TicketContainerContent.propTypes = {
 	clientId: PropTypes.string.isRequired,

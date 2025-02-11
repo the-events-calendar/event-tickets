@@ -224,5 +224,5 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 
 CapacityForm.propTypes = {
 	renderDefaultForm: PropTypes.func.isRequired,
-	ticketPostId: PropTypes.number.isRequired,
+	ticketPostId: PropTypes.number,
 };
