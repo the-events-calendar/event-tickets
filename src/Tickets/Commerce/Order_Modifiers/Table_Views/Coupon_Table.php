@@ -125,6 +125,19 @@ class Coupon_Table extends Order_Modifier_Table {
 	}
 
 	/**
+	 * Get the modifier items.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $params The query parameters.
+	 *
+	 * @return array The items that were retrieved.
+	 */
+	protected function get_items( array $params ): array {
+		return $this->modifier->get_modifiers( $params, false );
+	}
+
+	/**
 	 * Retrieves the number of coupons available for a given order modifier.
 	 *
 	 * @since 5.18.0
