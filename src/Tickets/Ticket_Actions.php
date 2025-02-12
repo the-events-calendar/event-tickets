@@ -15,6 +15,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use TEC\Tickets\Commerce\Ticket;
 use WP_Post;
 use Exception;
+use TEC\Common\StellarWP\DB\DB;
 
 /**
  * Class Ticket_Actions.
@@ -230,7 +231,8 @@ class Ticket_Actions extends Controller_Contract {
 			return;
 		}
 
-		self::$pre_update_stock[ $meta_id ] = (int) get_post_meta( $ticket_id, Ticket::$stock_meta_key, true );
+		// Direct DB query for performance and also to avoid triggering any hooks from get_post_meta.
+		self::$pre_update_stock[ $meta_id ] = (int) DB::get_var( DB::prepare( 'SELECT meta_value from %i WHERE meta_id = %d' ), DB::prefix( 'post_meta' ), $meta_id );
 	}
 
 	/**
@@ -312,14 +314,31 @@ class Ticket_Actions extends Controller_Contract {
 			return;
 		}
 
+		if ( null === $old_stock ) {
+			/**
+			 * Fires when the stock of a ticket added.
+			 *
+			 * @since TBD
+			 *
+			 * @param int $ticket_id The ticket id.
+			 * @param int $new_stock The new stock value.
+			 */
+			do_action( 'tec_tickets_ticket_stock_added', $ticket->ID, $new_stock );
+			return;
+		}
+
+		if ( $new_stock === $old_stock ) {
+			return;
+		}
+
 		/**
 		 * Fires when the stock of a ticket changes.
 		 *
 		 * @since TBD
 		 *
-		 * @param  int $ticket_id The ticket id.
-		 * @param  int $new_stock The new stock value.
-		 * @param ?int $old_stock The old stock value.
+		 * @param int $ticket_id The ticket id.
+		 * @param int $new_stock The new stock value.
+		 * @param int $old_stock The old stock value.
 		 */
 		do_action( 'tec_tickets_ticket_stock_changed', $ticket->ID, $new_stock, $old_stock );
 	}
