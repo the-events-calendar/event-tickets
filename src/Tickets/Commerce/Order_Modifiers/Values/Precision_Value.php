@@ -199,6 +199,19 @@ class Precision_Value extends Base_Value {
 	}
 
 	/**
+	 * Get the value as a string.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The value as a string.
+	 */
+	public function __toString() {
+		$precision = $this->precision->get();
+
+		return sprintf( "%02.{$precision}F", $this->get() );
+	}
+
+	/**
 	 * Validate that the precision is valid.
 	 *
 	 * @since 5.18.0
