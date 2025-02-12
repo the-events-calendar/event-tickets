@@ -27,8 +27,8 @@
 	/>
 	<span
 		class="tribe_soft_note ticket_form_right"
-		data-depends="#Tribe__Tickets__RSVP_radio"
-		data-condition-not-checked
+		data-depends="#tec_tickets_ticket_provider"
+		data-condition-not="Tribe__Tickets__RSVP"
 	>
 	<?php
 		echo esc_html(
@@ -46,8 +46,8 @@
 	</span>
 	<span
 		class="tribe_soft_note ticket_form_right"
-		data-depends="#Tribe__Tickets__RSVP_radio"
-		data-condition-is-checked
+		data-depends="#tec_tickets_ticket_provider"
+		data-condition="Tribe__Tickets__RSVP"
 	>
 	<?php
 		echo esc_html(

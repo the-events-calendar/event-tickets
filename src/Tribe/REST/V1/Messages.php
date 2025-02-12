@@ -20,6 +20,17 @@ class Tribe__Tickets__REST__V1__Messages implements Tribe__REST__Messages_Interf
 	 *
 	 */
 	public function __construct() {
+		add_action( 'init', [ $this, 'set_messages' ] );
+	}
+
+	/**
+	 * Sets the messages handled by the class.
+	 *
+	 * @since 5.19.1
+	 *
+	 * @return void
+	 */
+	public function set_messages() {
 		$this->messages = [
 			'missing-attendee-id'           => __( 'The attendee ID is missing from the request', 'event-tickets' ),
 			'attendee-not-found'            => __( 'The requested post ID does not exist or is not an attendee', 'event-tickets' ),

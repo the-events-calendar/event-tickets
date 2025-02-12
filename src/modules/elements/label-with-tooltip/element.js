@@ -17,10 +17,10 @@ const LabelWithTooltip = ( {
 	className,
 	forId,
 	isLabel,
-	label,
+	label = '',
 	tooltipDisabled,
 	tooltipLabel,
-	tooltipPosition,
+	tooltipPosition = 'top right',
 	tooltipText,
 	delay,
 } ) => (
@@ -42,12 +42,6 @@ const LabelWithTooltip = ( {
 	</LabeledItem>
 );
 /* eslint-enable max-len */
-
-LabelWithTooltip.defaultProps = {
-	label: '',
-	tooltipPosition: 'top right',
-	delay: 200,
-};
 
 LabelWithTooltip.propTypes = {
 	className: PropTypes.string,
