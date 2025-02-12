@@ -232,7 +232,7 @@ class Ticket_Actions extends Controller_Contract {
 		}
 
 		// Direct DB query for performance and also to avoid triggering any hooks from get_post_meta.
-		self::$pre_update_stock[ $meta_id ] = (int) DB::get_var( DB::prepare( 'SELECT meta_value from %i WHERE meta_id = %d' ), DB::prefix( 'post_meta' ), $meta_id );
+		self::$pre_update_stock[ $meta_id ] = (int) DB::get_var( DB::prepare( 'SELECT meta_value from %i WHERE meta_id = %d', DB::prefix( 'post_meta' ), $meta_id ) );
 	}
 
 	/**
