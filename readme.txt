@@ -199,6 +199,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.19.1.1] 2025-02-12 =
+
+* Fix - Updated common library to correct issues with notifications around licensing.
+* Language - 0 new strings added, 0 updated, 0 fuzzied, and 0 obsoleted.
+
 ### [5.19.1.1] 2025-02-12
 
 * Fix - Updated common library to correct issues with notifications around licensing.
