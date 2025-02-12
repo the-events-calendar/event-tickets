@@ -21,7 +21,7 @@
 		data-token="<?php echo esc_attr( $token ); ?>"
 		data-redirect-url="<?php echo esc_url( $redirect_url ); ?>"
 		data-post-id="<?php echo esc_attr( $post_id ); ?>"
-		<?php echo $sync_on_load ? 'data-sync-on-load' : ''; >
+		<?php echo $sync_on_load ? 'data-sync-on-load' : ''; ?>
 	>
 		<div class="dashicons dashicons-clock"></div>
 		<div class="tec-tickets-seating__message">
