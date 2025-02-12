@@ -142,7 +142,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 			->add_to_group( 'tec-tickets-order-modifiers' )
 			->add_localize_script(
 				'etOrderModifiersTable',
-				function() {
+				function () {
 					return [
 						'modifier' => $this->get_modifier_type_from_request(),
 					];

@@ -49,6 +49,8 @@ use TEC\Tickets\Exceptions\Not_Found_Exception;
  * Provides a base class for order modifier strategies like Coupon and Fee.
  *
  * @since 5.18.0
+ *
+ * @method string convert_from_raw_amount( int $amount ) [Deprecated] Converts a raw amount from cents to a decimal.
  */
 abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 
@@ -636,8 +638,8 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $name The method name.
-	 * @param array $arguments The method arguments.
+	 * @param string $name      The method name.
+	 * @param array  $arguments The method arguments.
 	 *
 	 * @return mixed The results of the method call.
 	 * @throws InvalidArgumentException If the method does not exist.
