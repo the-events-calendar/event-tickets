@@ -6,6 +6,7 @@ use Closure;
 use Generator;
 use Codeception\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Pending;
 use Tribe\Tests\Traits\With_Uopz;
 use TEC\Tickets\Commerce\Reports\Orders as Order_Report;
@@ -377,6 +378,13 @@ class OrderReportTest extends WPTestCase {
 
 		$order_report = tribe( Order_Report::class );
 		$order_report->attendees_page_screen_setup();
+		$gateway_order_ids = array_map(
+			fn( int $order_id ): string => get_post_meta( $order_id, Order::$gateway_order_id_meta_key, true ),
+			array_filter(
+				$post_ids,
+				fn( int $post_id ): bool => get_post_type( $post_id ) === Order::POSTTYPE
+			)
+		);
 
 		ob_start();
 		$order_report->render_page();
@@ -390,7 +398,11 @@ class OrderReportTest extends WPTestCase {
 		 */
 		$order_date = esc_html( \Tribe__Date_Utils::reformat( current_time( 'mysql' ), \Tribe__Date_Utils::DATEONLYFORMAT ) );
 
+		// Replace the order date with a placeholder.
 		$html = str_replace( $order_date, '{{order_date}}', $html );
+
+		// Replace the order gateway ID, a random hash, with a placeholder.
+		$html = str_replace( $gateway_order_ids, '{{gateway_order_id}}', $html );
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}

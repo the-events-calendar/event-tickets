@@ -55,12 +55,18 @@ const AttendeeRegistrationIcons = ( {
 AttendeeRegistrationIcons.propTypes = {
 	attendeeInfoFieldsLabel: PropTypes.string,
 	clientId: PropTypes.string,
-	fromDate: PropTypes.instanceOf( Date ),
+	fromDate: PropTypes.oneOfType([
+		PropTypes.instanceOf(Date),
+		PropTypes.string
+	]).isRequired,
 	hasAttendeeInfoFields: PropTypes.bool,
 	isBlockSelected: PropTypes.bool,
 	isSelected: PropTypes.bool,
 	saleWindowLabel: PropTypes.string,
-	toDate: PropTypes.instanceOf( Date ),
+	toDate: PropTypes.oneOfType([
+		PropTypes.instanceOf(Date),
+		PropTypes.string
+	]).isRequired,
 };
 
 export default AttendeeRegistrationIcons;

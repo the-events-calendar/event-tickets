@@ -43,7 +43,7 @@ const onCancelClick = ( state, dispatch ) => () => {
 	} ) );
 	dispatch( actions.setRSVPHasChanges( false ) );
 	dispatch( actions.setRSVPIsAddEditOpen( false ) );
-	wpDispatch( 'core/editor' ).clearSelectedBlock();
+	wpDispatch( 'core/block-editor' ).clearSelectedBlock();
 };
 
 const onConfirmClick = ( state, dispatch ) => () => {

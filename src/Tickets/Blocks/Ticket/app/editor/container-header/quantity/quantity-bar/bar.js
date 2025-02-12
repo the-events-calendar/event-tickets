@@ -13,7 +13,12 @@ import {
 	TribePropTypes,
 } from '@moderntribe/common/utils';
 
-const Bar = ( { children, className, value, total } ) => {
+const Bar = ( {
+	children,
+	className = null,
+	value = 0,
+	total = 0
+} ) => {
 	if ( value === 0 || total === 0 ) {
 		return null;
 	}
@@ -55,11 +60,4 @@ Bar.propTypes = {
 	value: PropTypes.number,
 	total: PropTypes.number,
 };
-
-Bar.defaultProps = {
-	className: null,
-	value: 0,
-	total: 0,
-};
-
 export default Bar;

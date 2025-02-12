@@ -77,7 +77,8 @@ const confirmSelector =
  * @typedef {Object} SeatMapTicketEntry
  * @property {string} ticketId    The ticket ID.
  * @property {string} name        The ticket name.
- * @property {number} price       The ticket price.
+ * @property {string} price       The ticket price localized and including the currency symbol.
+ * @property {number} priceValue       The ticket price as a float value.
  * @property {string} description The ticket description.
  * @property {number} maxLimit    The maximum number of tickets that can be selected.
  */
@@ -230,21 +231,22 @@ function updateTotals(parentElement) {
  */
 function addTicketToSelection(parentElement, props) {
 	parentElement = parentElement || document;
-	const ticketPrice = tickets?.[props.ticketId]?.price || null;
+	const priceValue = tickets?.[props.ticketId]?.priceValue || null;
+	const formattedPrice = tickets?.[props.ticketId]?.price || null;
 	const ticketName = tickets?.[props.ticketId].name || null;
 
-	if (!(ticketPrice && ticketName)) {
+	if (!(priceValue && ticketName)) {
 		return;
 	}
 
 	const ticketRowProps = {
 		seatTypeId: props.seatTypeId,
 		ticketId: props.ticketId,
-		price: ticketPrice,
+		price: priceValue,
 		color: props.seatColor,
 		ticketName,
 		seatLabel: props.seatLabel,
-		formattedPrice: formatWithCurrency(ticketPrice),
+		formattedPrice,
 	};
 
 	parentElement

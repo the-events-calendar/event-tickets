@@ -10,9 +10,9 @@ import PropTypes from 'prop-types';
 import { Tooltip } from '@wordpress/components';
 
 const IconWithTooltip = ( {
-	description,
+	description = '',
 	icon,
-	position,
+	position = 'top right',
 	propertyName,
 } ) => {
 	const text = (
@@ -26,16 +26,11 @@ const IconWithTooltip = ( {
 	return (
 		<Tooltip
 			text={ text }
-			position={ position }
+			placement={ position }
 		>
 			<span>{ icon }</span>
 		</Tooltip>
 	);
-};
-
-IconWithTooltip.defaultProps = {
-	description: '',
-	position: 'top right',
 };
 
 IconWithTooltip.propTypes = {
