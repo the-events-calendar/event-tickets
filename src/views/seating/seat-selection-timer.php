@@ -5,9 +5,10 @@
  * Override this template in your own theme by creating a file at
  * [your-theme]/tribe/tickets-seating/seat-selection-timer.php
  *
- * @since   5.16.0
+ * @since 5.16.0
+ * @since TBD Updated the template wrapper.
  *
- * @version 5.16.0
+ * @version TBD
  *
  * @var string $token        The token used to keep track of the seat selection timer.
  * @var string $redirect_url The URL to redirect the user to when the timer expires.
