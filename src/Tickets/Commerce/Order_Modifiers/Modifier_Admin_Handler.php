@@ -295,7 +295,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		}
 
 		// Use the strategy to retrieve the modifier data by ID.
-		return $modifier_strategy->get_modifier_by_id( $modifier_id, $modifier_type );
+		return $modifier_strategy->get_modifier_by_id( $modifier_id );
 	}
 
 	/**
