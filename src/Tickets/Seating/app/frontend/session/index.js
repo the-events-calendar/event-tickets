@@ -125,7 +125,7 @@ let watchedCheckoutControls = [];
  */
 export const checkoutControlsSelectors = [
 	'.tribe-tickets__commerce-checkout-form-submit-button',
-	'.tribe-tickets__commerce-checkout-paypal-buttons button'
+	'.tribe-tickets__commerce-checkout-paypal-buttons button',
 ];
 
 /**
@@ -512,7 +512,7 @@ function startCountdownLoop(secondsLeft) {
  * @return {void}
  */
 function startHealthCheckLoop() {
-	if (isExpired()) {
+	if ( isExpired() ) {
 		return;
 	}
 
@@ -532,7 +532,7 @@ function startHealthCheckLoop() {
  * @return {Promise<void>} A promise that will resolve when the request is completed.
  */
 export async function syncWithBackend() {
-	if (isExpired() || getTimerElements().length === 0 ) {
+	if ( isExpired() || getTimerElements().length === 0 ) {
 		return;
 	}
 

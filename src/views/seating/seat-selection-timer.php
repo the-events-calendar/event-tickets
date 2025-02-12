@@ -21,24 +21,22 @@
 		data-token="<?php echo esc_attr( $token ); ?>"
 		data-redirect-url="<?php echo esc_url( $redirect_url ); ?>"
 		data-post-id="<?php echo esc_attr( $post_id ); ?>"
-		<?php if ( $sync_on_load ) : ?>
-			data-sync-on-load
-		<?php endif; ?>
+		<?php echo $sync_on_load ? 'data-sync-on-load' : ''; >
 	>
 		<div class="dashicons dashicons-clock"></div>
 		<div class="tec-tickets-seating__message">
-		<span>
-			<span class="tec-tickets-seating__message-text">
-				<?php echo esc_html_x( 'Seats reserved for ', 'Seat selection timer text', 'event-tickets' ); ?>
-			</span>
-			<span class="tec-tickets-seating__message-time">
-				<span class="tec-tickets-seating__time-minutes">
-					<!-- This will be set by JS. -->
-				</span>:<span class="tec-tickets-seating__time-seconds">
-					<!-- This will be set by JS. -->
+			<span>
+				<span class="tec-tickets-seating__message-text">
+					<?php echo esc_html_x( 'Seats reserved for ', 'Seat selection timer text', 'event-tickets' ); ?>
+				</span>
+				<span class="tec-tickets-seating__message-time">
+					<span class="tec-tickets-seating__time-minutes">
+						<!-- This will be set by JS. -->
+					</span>:<span class="tec-tickets-seating__time-seconds">
+						<!-- This will be set by JS. -->
+					</span>
 				</span>
 			</span>
-		</span>
 		</div>
 		<div class="tec-tickets-seating__dialog-append-target"></div>
 	</div>
