@@ -15,6 +15,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use TEC\Tickets\Commerce\Ticket;
 use WP_Post;
 use Exception;
+use TEC\Common\StellarWP\DB\DB;
 
 /**
  * Class Ticket_Actions.
@@ -69,6 +70,15 @@ class Ticket_Actions extends Controller_Contract {
 	protected static array $rsvp_ids_to_sync = [];
 
 	/**
+	 * The pre-update stock.
+	 *
+	 * @since TBD
+	 *
+	 * @var array
+	 */
+	protected static array $pre_update_stock = [];
+
+	/**
 	 * Ticket_Actions constructor.
 	 *
 	 * @param Container $container The DI container.
@@ -96,8 +106,9 @@ class Ticket_Actions extends Controller_Contract {
 	 */
 	protected function do_register(): void {
 		add_action( 'tec_tickets_ticket_upserted', [ $this, 'sync_ticket_dates_actions' ], 1000 );
-		add_action( 'added_post_meta', [ $this, 'meta_keys_listener' ], 1000, 3 );
-		add_action( 'updated_postmeta', [ $this, 'meta_keys_listener' ], 1000, 3 );
+		add_action( 'update_post_meta', [ $this, 'pre_update_listener' ], 1000, 3 );
+		add_action( 'added_post_meta', [ $this, 'meta_keys_listener' ], 1000, 4 );
+		add_action( 'updated_postmeta', [ $this, 'meta_keys_listener' ], 1000, 4 );
 		add_action( 'tec_shutdown', [ $this, 'sync_rsvp_dates_for_all' ] );
 		add_action( self::TICKET_START_SALES_HOOK, [ $this, 'fire_ticket_start_date_action' ], 10, 2 );
 		add_action( self::TICKET_END_SALES_HOOK, [ $this, 'fire_ticket_end_date_action' ], 10, 2 );
@@ -112,6 +123,7 @@ class Ticket_Actions extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_action( 'tec_tickets_ticket_upserted', [ $this, 'sync_ticket_dates_actions' ], 1000 );
+		remove_action( 'update_post_meta', [ $this, 'pre_update_listener' ], 1000 );
 		remove_action( 'added_post_meta', [ $this, 'meta_keys_listener' ], 1000 );
 		remove_action( 'updated_postmeta', [ $this, 'meta_keys_listener' ], 1000 );
 		remove_action( 'tec_shutdown', [ $this, 'sync_rsvp_dates_for_all' ] );
@@ -196,6 +208,34 @@ class Ticket_Actions extends Controller_Contract {
 	}
 
 	/**
+	 * Listens for changes to the _stock meta keys.
+	 *
+	 * The method will store for the request's lifecycle the stock value before the update.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $meta_id  The meta ID.
+	 * @param int    $ticket_id The ticket ID.
+	 * @param string $meta_key  The meta key.
+	 */
+	public function pre_update_listener( int $meta_id, int $ticket_id, string $meta_key ): void {
+		if ( $meta_key !== Ticket::$stock_meta_key ) {
+			// We only care about _stock pre update!
+			return;
+		}
+
+		$ptype = get_post_type( $ticket_id );
+
+		if ( ! in_array( $ptype, tribe_tickets()->ticket_types(), true ) ) {
+			// Not a ticket.
+			return;
+		}
+
+		// Direct DB query for performance and also to avoid triggering any hooks from get_post_meta.
+		self::$pre_update_stock[ $meta_id ] = (int) DB::get_var( DB::prepare( 'SELECT meta_value from %i WHERE meta_id = %d', DB::prefix( 'postmeta' ), $meta_id ) );
+	}
+
+	/**
 	 * Listens for changes to the meta keys of interest.
 	 *
 	 * If a change is found and the change is for a ticket, an event is fired.
@@ -206,7 +246,7 @@ class Ticket_Actions extends Controller_Contract {
 	 * @param int    $ticket_id The ticket ID.
 	 * @param string $meta_key  The meta key.
 	 */
-	public function meta_keys_listener( int $meta_id, int $ticket_id, string $meta_key ): void {
+	public function meta_keys_listener( int $meta_id, int $ticket_id, string $meta_key, $meta_value ): void {
 		if ( ! in_array( $meta_key, array_merge( self::$keys_of_interest, [ Ticket::$stock_meta_key ] ), true ) ) {
 			return;
 		}
@@ -219,7 +259,7 @@ class Ticket_Actions extends Controller_Contract {
 		}
 
 		if ( Ticket::$stock_meta_key === $meta_key ) {
-			$this->fire_stock_update_action( $ticket_id );
+			$this->fire_stock_update_action( $ticket_id, (int) $meta_value, self::$pre_update_stock[ $meta_id ] ?? null );
 			return;
 		}
 
@@ -262,13 +302,32 @@ class Ticket_Actions extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $ticket_id The ticket ID.
+	 * @param int  $ticket_id The ticket ID.
+	 * @param int  $new_stock The new stock value.
+	 * @param ?int $old_stock The old stock value.
 	 */
-	protected function fire_stock_update_action( int $ticket_id ): void {
+	protected function fire_stock_update_action( int $ticket_id, int $new_stock, ?int $old_stock = null ): void {
 		$ticket = get_post( $ticket_id );
 
 		if ( ! $ticket instanceof WP_Post || 0 === $ticket->ID ) {
 			// Deleted ?
+			return;
+		}
+
+		if ( null === $old_stock ) {
+			/**
+			 * Fires when the stock of a ticket is added.
+			 *
+			 * @since TBD
+			 *
+			 * @param int $ticket_id The ticket id.
+			 * @param int $new_stock The new stock value that has just been set.
+			 */
+			do_action( 'tec_tickets_ticket_stock_added', $ticket->ID, $new_stock );
+			return;
+		}
+
+		if ( $new_stock === $old_stock ) {
 			return;
 		}
 
@@ -278,8 +337,10 @@ class Ticket_Actions extends Controller_Contract {
 		 * @since TBD
 		 *
 		 * @param int $ticket_id The ticket id.
+		 * @param int $new_stock The new stock value.
+		 * @param int $old_stock The old stock value.
 		 */
-		do_action( 'tec_tickets_ticket_stock_changed', $ticket->ID );
+		do_action( 'tec_tickets_ticket_stock_changed', $ticket->ID, $new_stock, $old_stock );
 	}
 
 	/**
