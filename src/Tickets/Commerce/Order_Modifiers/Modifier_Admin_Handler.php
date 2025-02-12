@@ -140,6 +140,14 @@ class Modifier_Admin_Handler extends Controller_Contract {
 			->set_dependencies( 'jquery', 'wp-util' )
 			->enqueue_on( 'admin_enqueue_scripts' )
 			->add_to_group( 'tec-tickets-order-modifiers' )
+			->add_localize_script(
+				'etOrderModifiersTable',
+				function() {
+					return [
+						'modifier' => $this->get_modifier_type_from_request(),
+					];
+				}
+			)
 			->register();
 	}
 
