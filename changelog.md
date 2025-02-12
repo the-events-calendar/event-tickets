@@ -1,5 +1,9 @@
 # Changelog
 
+### [5.19.1.1] 2025-02-12
+
+* Fix - Updated common library to correct issues with notifications around licensing.
+
 ### [5.19.1] 2025-02-10
 
 * Tweak - Modify price field in seat report information to include formatted price, not just value. [SL-266]
@@ -7,6 +11,7 @@
 * Fix - Added version number to the `editor.js` script to stop caching. [ET-2293]
 * Fix - Correct row and total calculation in the seat selection modal. [SL-266]
 * Fix - When updating a Ticket's price on block editor, while the ticket is on sale, won't overwrite the sale price in  WooCommerce. [ET-2100]
+* Fix - Changed the way translations are loaded to work with the latest WordPress language changes.
 * Tweak - Removed filters: `tribe_events_tickets_module_name`
 * Language - 7 new strings added, 133 updated, 0 fuzzied, and 0 obsoleted.
 
