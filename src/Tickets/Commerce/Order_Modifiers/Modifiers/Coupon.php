@@ -14,6 +14,7 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Modifiers;
 
 use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Coupon_Table;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
 use Tribe__Tickets__Admin__Views;
 
 /**
@@ -172,13 +173,15 @@ class Coupon extends Modifier_Abstract {
 	 */
 	public function map_context_to_template( array $context ): array {
 		$limit_value = $this->meta_repository->find_by_order_modifier_id_and_meta_key( $context['modifier_id'], 'coupons_available' )->meta_value ?? '';
+		$amount      = new Precision_Value( $context['raw_amount'] ?? 0 );
+
 		return [
-			'order_modifier_display_name'     => $context['display_name'] ?? '',
-			'order_modifier_slug'             => $context['slug'] ?? $this->generate_unique_slug(),
-			'order_modifier_sub_type'         => $context['sub_type'] ?? '',
-			'order_modifier_fee_amount_cents' => $context['raw_amount'] ?? 0,
-			'order_modifier_status'           => $context['status'] ?? '',
-			'order_modifier_coupon_limit'     => $limit_value ?? '',
+			'order_modifier_display_name' => $context['display_name'] ?? '',
+			'order_modifier_slug'         => $context['slug'] ?? $this->generate_unique_slug(),
+			'order_modifier_sub_type'     => $context['sub_type'] ?? '',
+			'order_modifier_amount'       => $amount,
+			'order_modifier_status'       => $context['status'] ?? '',
+			'order_modifier_coupon_limit' => $limit_value ?? '',
 		];
 	}
 
