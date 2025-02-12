@@ -171,7 +171,6 @@ class Frontend extends Controller_Contract {
 		
 		/** @var Tribe__Tickets__Commerce__Currency $currency */
 		$currency = tribe( 'tickets.commerce.currency' );
-		$currency->get_formatted_currency_with_symbol( 0, $post_id, $provider, false );
 		
 		$cost_range = count( $prices ) === 1 ? $currency->get_formatted_currency_with_symbol( $prices[0], $post_id, $provider, false ) :
 			$currency->get_formatted_currency_with_symbol( min( $prices ), $post_id, $provider, false )
