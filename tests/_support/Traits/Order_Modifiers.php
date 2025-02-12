@@ -27,7 +27,7 @@ trait Order_Modifiers {
 		// Set default data for the modifier.
 		$default_data = [
 			'order_modifier_id'           => 0,
-			'order_modifier_amount'       => '0',
+			'order_modifier_amount'       => 0.00,
 			'order_modifier_sub_type'     => 'flat',
 			'order_modifier_status'       => 'active',
 			'order_modifier_slug'         => 'test_modifier',
