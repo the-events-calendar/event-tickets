@@ -14,7 +14,6 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\Asset;
 use Tribe__Tickets__Commerce__Currency;
-use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Frontend\Timer;
