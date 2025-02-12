@@ -35,4 +35,6 @@ $this->template( 'template-parts/body/title' );
 
 $this->template( 'template-parts/body/additional-content' );
 
+$this->template( 'template-parts/body/unsubscribe' );
+
 $this->template( 'template-parts/footer' );
