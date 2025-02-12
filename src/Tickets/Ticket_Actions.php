@@ -316,12 +316,12 @@ class Ticket_Actions extends Controller_Contract {
 
 		if ( null === $old_stock ) {
 			/**
-			 * Fires when the stock of a ticket added.
+			 * Fires when the stock of a ticket is added.
 			 *
 			 * @since TBD
 			 *
 			 * @param int $ticket_id The ticket id.
-			 * @param int $new_stock The new stock value.
+			 * @param int $new_stock The new stock value that has just been set.
 			 */
 			do_action( 'tec_tickets_ticket_stock_added', $ticket->ID, $new_stock );
 			return;

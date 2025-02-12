@@ -125,6 +125,7 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 
 				$this->assertEquals( 0, did_action( 'tec_tickets_ticket_dates_updated' ) );
 				$this->assertEquals( 0, did_action( 'tec_tickets_ticket_stock_changed' ) );
+				$this->assertEquals( 0, did_action( 'tec_tickets_ticket_stock_added' ) );
 
 				$ticket_id = $this->create_tc_ticket( $post_id, 10, $data['tickets']['pre_sale'] );
 
@@ -139,6 +140,7 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 
 				$this->assertEquals( 0, did_action( 'tec_tickets_ticket_dates_updated' ) );
 				$this->assertEquals( 0, did_action( 'tec_tickets_ticket_stock_changed' ) );
+				$this->assertEquals( 0, did_action( 'tec_tickets_ticket_stock_added' ) );
 
 				$rsvp_id = $this->create_rsvp_ticket( $post_id, $data['rsvp']['pre_sale'] );
 
@@ -173,7 +175,8 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		[ $post_id, $ticket_id, $updater ] = $fixture();
 
 		$this->assertEquals( 1, did_action( 'tec_tickets_ticket_dates_updated' ) );
-		$this->assertEquals( 1, did_action( 'tec_tickets_ticket_stock_changed' ) );
+		$this->assertEquals( 0, did_action( 'tec_tickets_ticket_stock_changed' ) );
+		$this->assertEquals( 1, did_action( 'tec_tickets_ticket_stock_added' ) );
 
 		$this->assertEquals( $store['ticket_id'], $ticket_id );
 		$this->assertEquals( $store['new_stock'], 5 );
@@ -201,7 +204,8 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		update_post_meta( $ticket_id, '_stock', 6 );
 
 		$this->assertEquals( 2, did_action( 'tec_tickets_ticket_dates_updated' ) );
-		$this->assertEquals( 2, did_action( 'tec_tickets_ticket_stock_changed' ) );
+		$this->assertEquals( 1, did_action( 'tec_tickets_ticket_stock_changed' ) );
+		$this->assertEquals( 1, did_action( 'tec_tickets_ticket_stock_added' ) );
 
 		$this->assertEquals( $store['ticket_id'], $ticket_id );
 		$this->assertEquals( $store['new_stock'], 6 );
@@ -232,7 +236,8 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		$this->assertEquals( 1, did_action( $this->controller_class::TICKET_START_SALES_HOOK ) );
 
 		$this->assertEquals( 3, did_action( 'tec_tickets_ticket_dates_updated' ) );
-		$this->assertEquals( 3, did_action( 'tec_tickets_ticket_stock_changed' ) );
+		$this->assertEquals( 2, did_action( 'tec_tickets_ticket_stock_changed' ) );
+		$this->assertEquals( 1, did_action( 'tec_tickets_ticket_stock_added' ) );
 
 		$this->assertEquals( $store['ticket_id'], $ticket_id );
 		$this->assertEquals( $store['new_stock'], 5 );
@@ -382,6 +387,7 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 
 		$this->assertEquals( 0, did_action( 'tec_tickets_ticket_dates_updated' ) );
 		$this->assertEquals( 0, did_action( 'tec_tickets_ticket_stock_changed' ) );
+		$this->assertEquals( 0, did_action( 'tec_tickets_ticket_stock_added' ) );
 
 		$posts            = 10;
 		$tickets_per_post = 50;
@@ -401,6 +407,7 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 				$this->create_tc_ticket( $post_id, 10, self::set_up_data()['tickets']['pre_sale'] );
 				$this->assertEquals( $counter, did_action( 'tec_tickets_ticket_dates_updated' ) );
 				$this->assertEquals( $counter, did_action( 'tec_tickets_ticket_stock_changed' ) );
+				$this->assertEquals( 1, did_action( 'tec_tickets_ticket_stock_added' ) );
 				$this->assertEquals( $store['new_stock'], 5 );
 				$this->assertNull( $store['old_stock'] );
 			}
