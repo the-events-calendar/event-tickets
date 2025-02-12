@@ -171,6 +171,9 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		add_action( 'tec_tickets_ticket_stock_changed', function ( $ticket_id, $new_stock, $old_stock ) use ( &$store ) {
 			$store = compact( 'ticket_id', 'new_stock', 'old_stock' );
 		}, 10, 3 );
+		add_action( 'tec_tickets_ticket_stock_added', function ( $ticket_id, $new_stock ) use ( &$store ) {
+			$store = compact( 'ticket_id', 'new_stock' );
+		}, 10, 2 );
 
 		[ $post_id, $ticket_id, $updater ] = $fixture();
 
@@ -180,7 +183,7 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 
 		$this->assertEquals( $store['ticket_id'], $ticket_id );
 		$this->assertEquals( $store['new_stock'], 5 );
-		$this->assertNull( $store['old_stock'] );
+		$this->assertTrue( ! isset( $store['old_stock'] ) );
 
 		$this->assertCount(
 			1,
@@ -399,6 +402,9 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		add_action( 'tec_tickets_ticket_stock_changed', function ( $ticket_id, $new_stock, $old_stock ) use ( &$store ) {
 			$store = compact( 'ticket_id', 'new_stock', 'old_stock' );
 		}, 10, 3 );
+		add_action( 'tec_tickets_ticket_stock_added', function ( $ticket_id, $new_stock ) use ( &$store ) {
+			$store = compact( 'ticket_id', 'new_stock' );
+		}, 10, 2 );
 
 		for ( $i = 0; $i < $posts; $i++ ) {
 			$post_id = $this->factory()->post->create();
@@ -406,10 +412,10 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 				$counter++;
 				$this->create_tc_ticket( $post_id, 10, self::set_up_data()['tickets']['pre_sale'] );
 				$this->assertEquals( $counter, did_action( 'tec_tickets_ticket_dates_updated' ) );
-				$this->assertEquals( $counter, did_action( 'tec_tickets_ticket_stock_changed' ) );
-				$this->assertEquals( 1, did_action( 'tec_tickets_ticket_stock_added' ) );
+				$this->assertEquals( 0, did_action( 'tec_tickets_ticket_stock_changed' ) );
+				$this->assertEquals( $counter, did_action( 'tec_tickets_ticket_stock_added' ) );
 				$this->assertEquals( $store['new_stock'], 5 );
-				$this->assertNull( $store['old_stock'] );
+				$this->assertTrue( ! isset( $store['old_stock'] ) );
 			}
 		}
 
