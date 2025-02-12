@@ -4,6 +4,7 @@
  * @since 5.18.0
  */
 
+/* global wp */
 ( function( $, tableSettings ) {
 	$( document ).on( 'click', '.row-actions .delete a', ( e ) => {
 		let message;
