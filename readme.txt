@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.19.1
+Stable tag: 5.19.1.1
 Requires at least: 6.5
 Tested up to: 6.7.1
 Requires PHP: 7.4
@@ -199,11 +199,24 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.19.1.1] 2025-02-12 =
+
+* Fix - Updated common library to correct issues with notifications around licensing.
+* Fix - Add a callback to remove the `tribe_pue_key_notices` once on upgrade to version 6.5.1.1 [TEC-5384]
+* Fix - Adjustments were made to prevent a fatal error when tec_pue_checker_init was triggered too early, attempting to call tribe_is_truthy() before it was available. The license check and active plugin monitoring now run on admin_init to ensure proper loading. [TEC-5384]
+* Fix - Update the license checker to ignore empty licenses. [TEC-5385]
+* Language - 0 new strings added, 0 updated, 0 fuzzied, and 0 obsoleted.
+
+### [5.19.1.1] 2025-02-12
+
+* Fix - Updated common library to correct issues with notifications around licensing.
+
 = [5.19.1] 2025-02-10 =
 
 * Fix - Added version number to the `editor.js` script to stop caching. [ET-2293]
 * Fix - Correct row and total calculation in the seat selection modal. [SL-266]
 * Fix - When updating a Ticket's price on block editor, while the ticket is on sale, won't overwrite the sale price in  WooCommerce. [ET-2100]
+* Fix - Changed the way translations are loaded to work with the latest WordPress language changes.
 * Tweak - Modify price field in seat report information to include formatted price, not just value. [SL-266]
 * Tweak - Refactored a hidden ticket provider field within the classic editor for RSVPs and tickets. [ET-2287]
 * Tweak - Removed filters: `tribe_events_tickets_module_name`
