@@ -38,9 +38,9 @@ class Maps_Layout_Homepage_Test extends WPTestCase {
 	 * @after
 	 */
 	public function truncate_tables():void{
-		tribe( Maps_Table::class )->truncate();
-		tribe( Layouts_Table::class )->truncate();
-		tribe( Seat_Types_Table::class )->truncate();
+		tribe( Maps_Table::class )->empty_table();
+		tribe( Layouts_Table::class )->empty_table();
+		tribe( Seat_Types_Table::class )->empty_table();
 	}
 
 	public function test_empty_seating_configurations(): void {
