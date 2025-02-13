@@ -242,11 +242,12 @@ class Ticket_Actions extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int    $meta_id  The meta ID.
-	 * @param int    $ticket_id The ticket ID.
-	 * @param string $meta_key  The meta key.
+	 * @param int    $meta_id    The meta ID.
+	 * @param int    $ticket_id  The ticket ID.
+	 * @param string $meta_key   The meta key.
+	 * @param mixed  $meta_value The meta value.
 	 */
-	public function meta_keys_listener( int $meta_id, int $ticket_id, string $meta_key, $meta_value ): void {
+	public function meta_keys_listener( int $meta_id, int $ticket_id, string $meta_key, $meta_value = null ): void {
 		if ( ! in_array( $meta_key, array_merge( self::$keys_of_interest, [ Ticket::$stock_meta_key ] ), true ) ) {
 			return;
 		}
