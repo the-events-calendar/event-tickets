@@ -11,7 +11,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
-use TEC\Tickets\Commerce\Cart\Unmanaged_Cart as Cart;
+use TEC\Tickets\Commerce\Cart\Cart_Interface as Cart;
 use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
 use Tribe\Tests\Traits\With_Uopz;
 use TEC\Tickets\Commerce\Cart as Commerce_Cart;
@@ -660,7 +660,17 @@ class Fees_Test extends Controller_Test_Case {
 		$this->assertEquals( $quantity * $expected_total->get(), $cart->get_cart_total() );
 		$this->set_fn_return( 'wp_create_nonce', '1029384756' );
 		// Assert the total value matches the expected total.
-		$this->assertMatchesHtmlSnapshot( preg_replace( '#<link rel=(.*)/>#', '', str_replace( [ $event_id, $ticket ], [ '{POST_ID}', '{TICKET_ID}' ], tribe( Checkout_Shortcode::class )->get_html() ) ) );
+		$this->assertMatchesHtmlSnapshot(
+			preg_replace(
+				'#<link rel=(.*)/>#',
+				'',
+				str_replace(
+					[ $event_id, $ticket ],
+					[ '{POST_ID}', '{TICKET_ID}' ],
+					tribe( Checkout_Shortcode::class )->get_html()
+				)
+			)
+		);
 	}
 
 	/**

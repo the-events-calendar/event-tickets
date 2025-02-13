@@ -24,7 +24,7 @@
 </header>
 
 	<div class="tribe-tickets__commerce-checkout-cart-items">
-					<article
+	<article
 	 class="tribe-tickets__commerce-checkout-cart-item post-{{ticket_id1}} tec_tc_ticket type-tec_tc_ticket status-publish hentry tribe-common-b1" 	 data-ticket-id="{{ticket_id1}}" data-ticket-quantity="1" data-ticket-price="10.00" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details">
@@ -74,7 +74,7 @@
 	&#x24;10.00</div>
 
 </article>
-	</div>
+</div>
 
 	
 <footer  class="tribe-tickets__commerce-checkout-cart-footer tribe-common-b1" >
