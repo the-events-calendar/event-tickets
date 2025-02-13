@@ -83,6 +83,7 @@ class Flag_Action_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 * Prepare the order for email.
 	 *
 	 * @since 5.18.0
+	 * @since TBD Added ticket fees to the order object.
 	 *
 	 * @param WP_Post $order The order to prepare.
 	 *

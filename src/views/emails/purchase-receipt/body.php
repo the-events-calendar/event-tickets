@@ -12,6 +12,7 @@
  * @version 5.5.11
  *
  * @since 5.5.11
+ * @since TBD Added template for Booking Fees.
  *
  * @var Tribe__Template                    $this               Current template object.
  * @var \TEC\Tickets\Emails\Email_Abstract $email              The email object.
@@ -33,7 +34,7 @@ $this->template( 'template-parts/body/order/post-title' );
 
 $this->template( 'template-parts/body/order/ticket-totals' );
 
-$this->template( 'template-parts/body/order/fees' );
+$this->template( 'template-parts/body/order/order-fees' );
 
 $this->template( 'template-parts/body/order/order-total' );
 
