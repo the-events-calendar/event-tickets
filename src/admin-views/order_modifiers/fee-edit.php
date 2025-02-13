@@ -8,13 +8,13 @@
  *
  * @since   5.18.0
  *
- * @var string $order_modifier_display_name     The Fee name (display name).
- * @var string $order_modifier_slug             The Fee code (slug).
- * @var string $order_modifier_sub_type         The discount type (percentage/flat).
- * @var int    $order_modifier_fee_amount_cents The amount (in cents).
- * @var string $order_modifier_status           The status of the Fee (active, inactive, draft).
- * @var int    $order_modifier_fee_limit        The Fee limit.
- * @var string $order_modifier_apply_to         What the fee is applied to (All, Per, Organizer, Venue)
+ * @var string          $order_modifier_display_name The Fee name (display name).
+ * @var string          $order_modifier_slug         The Fee code (slug).
+ * @var string          $order_modifier_sub_type     The discount type (percentage/flat).
+ * @var Precision_Value $order_modifier_amount       The amount.
+ * @var string          $order_modifier_status       The status of the Fee (active, inactive, draft).
+ * @var int             $order_modifier_fee_limit    The Fee limit.
+ * @var string          $order_modifier_apply_to     What the fee is applied to (All, Per, Organizer, Venue)
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers
  *
@@ -28,6 +28,9 @@
  *
  * @return string
  */
+
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
+
 $get_validation_error_attr = function ( string $field_label ): string {
 	// translators: %s is the field label.
 	return sprintf( __( '%s is required', 'event-tickets' ), $field_label );
@@ -114,7 +117,7 @@ $modifier_statuses = [
 						data-validation-required="true"
 						data-validation-is-greater-than="0"
 						data-validation-error="<?php echo esc_attr( $get_validation_error_attr( __( 'Amount', 'event-tickets' ) ) ); ?>"
-						value="<?php echo esc_attr( $order_modifier_fee_amount_cents ); ?>" />
+						value="<?php echo esc_attr( $order_modifier_amount ); ?>" />
 				</div>
 
 				<div class="form-field form-required">

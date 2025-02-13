@@ -14,6 +14,7 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Modifiers;
 
 use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Fee_Table;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
 use Tribe__Tickets__Admin__Views;
 
 /**
@@ -90,7 +91,6 @@ class Fee extends Modifier_Abstract {
 			$modifier->id,
 			[
 				'meta_key'   => $this->get_applied_to_key( $this->modifier_type ),
-				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 				'meta_value' => $apply_fee_to,
 			]
 		);
@@ -140,7 +140,6 @@ class Fee extends Modifier_Abstract {
 			$modifier->id,
 			[
 				'meta_key'   => $this->get_applied_to_key( $this->modifier_type ),
-				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 				'meta_value' => $apply_fee_to,
 			]
 		);
@@ -269,15 +268,17 @@ class Fee extends Modifier_Abstract {
 	 * @return array The context data ready for rendering the form.
 	 */
 	public function map_context_to_template( array $context ): array {
-		$order_modifier_fee_applied_to = $this->meta_repository->find_by_order_modifier_id_and_meta_key( $context['modifier_id'], 'fee_applied_to' )->meta_value ?? '';
+		$applied_to = $this->meta_repository->find_by_order_modifier_id_and_meta_key( $context['modifier_id'], 'fee_applied_to' )->meta_value ?? '';
+		$amount     = new Precision_Value( $context['raw_amount'] ?? 0 );
+
 		return [
-			'order_modifier_display_name'     => $context['display_name'] ?? '',
-			'order_modifier_slug'             => $context['slug'] ?? $this->generate_unique_slug(),
-			'order_modifier_sub_type'         => $context['sub_type'] ?? '',
-			'order_modifier_fee_amount_cents' => $context['raw_amount'] ?? 0,
-			'order_modifier_status'           => $context['status'] ?? '',
-			'order_modifier_fee_limit'        => $context['fee_limit'] ?? '',
-			'order_modifier_apply_to'         => $order_modifier_fee_applied_to,
+			'order_modifier_display_name' => $context['display_name'] ?? '',
+			'order_modifier_slug'         => $context['slug'] ?? $this->generate_unique_slug(),
+			'order_modifier_sub_type'     => $context['sub_type'] ?? '',
+			'order_modifier_amount'       => $amount,
+			'order_modifier_status'       => $context['status'] ?? '',
+			'order_modifier_fee_limit'    => $context['fee_limit'] ?? '',
+			'order_modifier_apply_to'     => $applied_to,
 		];
 	}
 

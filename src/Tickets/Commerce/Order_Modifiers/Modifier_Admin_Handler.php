@@ -140,6 +140,14 @@ class Modifier_Admin_Handler extends Controller_Contract {
 			->set_dependencies( 'jquery', 'wp-util' )
 			->enqueue_on( 'admin_enqueue_scripts' )
 			->add_to_group( 'tec-tickets-order-modifiers' )
+			->add_localize_script(
+				'etOrderModifiersTable',
+				function () {
+					return [
+						'modifier' => $this->get_modifier_type_from_request(),
+					];
+				}
+			)
 			->register();
 	}
 
@@ -287,7 +295,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		}
 
 		// Use the strategy to retrieve the modifier data by ID.
-		return $modifier_strategy->get_modifier_by_id( $modifier_id, $modifier_type );
+		return $modifier_strategy->get_modifier_by_id( $modifier_id );
 	}
 
 	/**
@@ -543,8 +551,19 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		}
 
 		// Prepare the items based on the modifier type.
-		$modifier_type = sanitize_key( tec_get_request_var( 'modifier', $this->get_default_type() ) );
+		$modifier_type = $this->get_modifier_type_from_request();
 		$manager       = $this->get_manager_for_type( $modifier_type );
 		$manager->get_table_class()->prepare_items();
+	}
+
+	/**
+	 * Get the modifier type from the request variables.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The modifier type.
+	 */
+	protected function get_modifier_type_from_request(): string {
+		return sanitize_key( tec_get_request_var( 'modifier', $this->get_default_type() ) );
 	}
 }

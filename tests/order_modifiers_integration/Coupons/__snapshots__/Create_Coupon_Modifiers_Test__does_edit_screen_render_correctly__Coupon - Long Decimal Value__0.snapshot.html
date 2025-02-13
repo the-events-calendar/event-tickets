@@ -6,12 +6,12 @@
 
 				<input type="hidden" id="order_modifier_save_action" name="order_modifier_save_action" value="1234567890" /><input type="hidden" name="_wp_http_referer" value="" />
 				<div class="form-field form-required">
-					<label for="order_modifier_coupon_name">
+					<label for="order_modifier_display_name">
 						Coupon Name					</label>
 					<input
 						type="text"
-						name="order_modifier_coupon_name"
-						id="order_modifier_coupon_name"
+						name="order_modifier_display_name"
+						id="order_modifier_display_name"
 						maxlength="255"
 						data-validation-required="true"
 						data-validation-error="Fee Name is required"
@@ -48,13 +48,17 @@
 				<div class="form-field form-required">
 					<label for="order_modifier_amount">
 						Amount					</label>
-					<input type="number" name="order_modifier_amount" id="order_modifier_amount" class="tribe-field tec_order_modifier_amount_field"
+					<input
+						type="number"
+						name="order_modifier_amount"
+						id="order_modifier_amount"
+						class="tribe-field tec_order_modifier_amount_field"
 						maxlength="9"
 						step="0.01"
 						data-validation-required="true"
 						data-validation-is-greater-than="0"
 						data-validation-error="Amount is required"
-						value="1.00" />
+						value="1.01" />
 				</div>
 
 				<div class="form-field form-required">

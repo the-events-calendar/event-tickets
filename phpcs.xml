@@ -7,10 +7,6 @@
 	<rule ref="WordPress-Docs">
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
-	<!--exclude the rule for violation of direct DB calls as some have no alternative-->
-	<rule ref="WordPress.DB.DirectDatabaseQuery">
-		<exclude-pattern>src/Test.php</exclude-pattern>
-	</rule>
 
 	<rule ref="WordPress">
 		<exclude name="WordPress.Files.FileName"/>
@@ -27,8 +23,20 @@
 
 	<rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
 
+	<!-- Disable sniffs for certain directories instead of using inline comments -->
+
+	<!--exclude the rule for violation of direct DB calls as some have no alternative-->
+	<rule ref="WordPress.DB.DirectDatabaseQuery">
+		<exclude-pattern>src/Test.php</exclude-pattern>
+	</rule>
+
+	<!-- Exclude the rule for slow DB queries because we have our own meta tables and queries -->
+	<rule ref="WordPress.DB.SlowDBQuery">
+		<exclude-pattern>src/Tickets/Commerce/Order_Modifiers/*</exclude-pattern>
+	</rule>
+
+	<!-- General exclusions -->
 	<exclude-pattern>*/tests/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
-	<!-- Exclude the common directory -->
 	<exclude-pattern>*/common/*</exclude-pattern>
 </ruleset>

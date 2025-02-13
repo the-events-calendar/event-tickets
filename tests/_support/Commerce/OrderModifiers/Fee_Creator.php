@@ -141,7 +141,7 @@ trait Fee_Creator {
 				[
 					'order_modifier_id' => $fee->id,
 					'meta_key'          => 'fee_applied_to',
-					'meta_value'        => $applied_to, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+					'meta_value'        => $applied_to,
 					'priority'          => 0,
 				]
 			)

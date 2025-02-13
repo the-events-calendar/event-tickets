@@ -247,13 +247,13 @@ class Coupons extends Base_API {
 
 			return rest_ensure_response(
 				[
-					'discount' => Value::create( $modifier->convert_from_raw_amount( $coupon->raw_amount ) )->get_currency(),
+					'discount' => Value::create( $coupon->raw_amount )->get_currency(),
 					'message'  => sprintf(
 						/* translators: %s: the coupon code */
 						esc_html__( 'Coupon "%s" applied successfully.', 'event-tickets' ),
 						$coupon->slug
 					),
-					'amount'   => Value::create( $modifier->convert_from_raw_amount( $new_order_value ) )->get_currency(),
+					'amount'   => Value::create( $new_order_value )->get_currency(),
 				]
 			);
 		} catch ( Exception $e ) {
