@@ -18,7 +18,11 @@ class Tribe__Tickets__Commerce__Currency {
 	 * @since 4.7
 	 */
 	public function __construct() {
-		$this->generate_default_currency_map();
+		if ( did_action( 'init' ) || doing_action( 'init' ) ) {
+			$this->generate_default_currency_map();
+		} else {
+			add_action( 'init', [ $this, 'generate_default_currency_map' ], 1 );
+		}
 	}
 
 	/**

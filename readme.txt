@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.19.0
+Stable tag: 5.19.1
 Requires at least: 6.5
 Tested up to: 6.7.1
 Requires PHP: 7.4
@@ -199,6 +199,16 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.19.1] 2025-02-10 =
+
+* Fix - Added version number to the `editor.js` script to stop caching. [ET-2293]
+* Fix - Correct row and total calculation in the seat selection modal. [SL-266]
+* Fix - When updating a Ticket's price on block editor, while the ticket is on sale, won't overwrite the sale price in  WooCommerce. [ET-2100]
+* Tweak - Modify price field in seat report information to include formatted price, not just value. [SL-266]
+* Tweak - Refactored a hidden ticket provider field within the classic editor for RSVPs and tickets. [ET-2287]
+* Tweak - Removed filters: `tribe_events_tickets_module_name`
+* Language - 7 new strings added, 133 updated, 0 fuzzied, and 0 obsoleted.
+
 = [5.19.0] 2025-01-30 =
 
 * Fix - Update asset, dependencies, customizations to align with WordPress 6.7 and React 18. [TEC-5322]
@@ -229,10 +239,6 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Performance - Enhance the performance of order modifier database queries [ET-2268]
 * Deprecated - Method `should_payment_intent_be_updated` since its no longer needed. [ET-2281]
 * Language - 3 new strings added, 111 updated, 2 fuzzied, and 2 obsoleted.
-
-= [TBD] 2025-01-27 =
-
-* Fix - Generate dynamic order id for Tickets Commerce Free gateway and validate order owner.
 
 = [5.18.0.1] 2025-01-07 =
 

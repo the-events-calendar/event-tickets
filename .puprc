@@ -1,14 +1,14 @@
 {
 	"build": [
-		"pup do build-common",
+		"cd common && composer -- pup build",
 		"composer install --no-dev",
-		"npm ci",
+		"npm ci --no-audit --no-fund",
 		"npm run build"
 	],
 	"build_dev": [
-		"pup do build-common",
+		"cd common && composer -- pup build",
 		"composer install",
-		"npm ci",
+		"npm ci --no-audit --no-fund",
 		"npm run build"
 	],
 	"workflows": {
@@ -18,7 +18,10 @@
 	},
 	"checks": {
 		"tbd": {
-			"dirs": [ "src" ]
+			"dirs": [
+				 "src", 
+				 "common/src" 
+			]
 		},
 		"version-conflict": {}
 	},
@@ -30,7 +33,7 @@
 		},
 		{
 			"textdomain": "event-tickets",
-			"url": "https://translations.stellarwp.com",
+			"url": "https://translations.stellarwp.com/glotpress/",
 			"slug": "event-tickets"
 		}
 	],
@@ -41,7 +44,10 @@
 			"src/resources/js",
 			"src/modules"
 		],
-		"sync_files": [],
+		"sync_files": [
+			"common/.distfiles",
+			"common/.gitattributes"
+		],
 		"versions": [
 			{
 				"file": "src/Tribe/Main.php",

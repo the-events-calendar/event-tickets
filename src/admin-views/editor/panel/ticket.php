@@ -55,8 +55,8 @@ $ticket_type = $ticket_type ?? 'default';
 		<div id="ticket_form_table" class="eventtable ticket_form">
 			<div
 					class="tribe-dependent"
-					data-depends="#Tribe__Tickets__RSVP_radio"
-					data-condition-is-not-checked
+					data-depends="#tec_tickets_ticket_provider"
+					data-condition-not="Tribe__Tickets__RSVP"
 			>
 				<h4
 						id="ticket_title_add"
@@ -100,8 +100,8 @@ $ticket_type = $ticket_type ?? 'default';
 			</div>
 			<div
 					class="tribe-dependent"
-					data-depends="#Tribe__Tickets__RSVP_radio"
-					data-condition-is-checked
+					data-depends="#tec_tickets_ticket_provider"
+					data-condition="Tribe__Tickets__RSVP"
 			>
 				<h4
 						id="rsvp_title_add"
@@ -186,32 +186,8 @@ $ticket_type = $ticket_type ?? 'default';
 
 				<?php $this->template( 'editor/panel/fields/dates', get_defined_vars() ); ?>
 
-				<fieldset id="tribe_ticket_provider_wrapper" class="input_block" aria-hidden="true">
-					<legend class="ticket_form_label"><?php esc_html_e( 'Sell using:', 'event-tickets' ); ?></legend>
-					<?php foreach ( $modules as $class => $module ) : ?>
-						<input
-								type="radio"
-								name="ticket_provider"
-								id="<?php echo esc_attr( $class . '_radio' ); ?>"
-								value="<?php echo esc_attr( $class ); ?>"
-								class="ticket_field ticket_provider"
-								tabindex="-1"
-								<?php checked( true, $provider_class === $class ); ?>
-						>
-						<span>
-							<?php
-							/**
-							 * Allows for the editing of the module name before output
-							 *
-							 * @since 4.6
-							 *
-							 * @param string $module the module name
-							 */
-							echo esc_html( apply_filters( 'tribe_events_tickets_module_name', $module ) );
-							?>
-						</span>
-					<?php endforeach; ?>
-				</fieldset>
+				<input type="hidden" id="tec_tickets_ticket_provider" name="ticket_provider" value="<?php echo esc_attr( $provider_class ); ?>" />
+
 				<?php
 				/**
 				 * Allows for the insertion of additional content into the ticket edit form - main section
@@ -281,8 +257,8 @@ $ticket_type = $ticket_type ?? 'default';
 						class="button-primary tribe-dependent tribe-validation-submit"
 						name="ticket_form_save"
 						value="<?php echo esc_attr( $ticket_form_save_text ); ?>"
-						data-depends="#Tribe__Tickets__RSVP_radio"
-						data-condition-is-not-checked
+						data-depends="#tec_tickets_ticket_provider"
+						data-condition-not="Tribe__Tickets__RSVP"
 				/>
 				<input
 						type="button"
@@ -290,8 +266,8 @@ $ticket_type = $ticket_type ?? 'default';
 						class="button-primary tribe-dependent tribe-validation-submit"
 						name="ticket_form_save"
 						value="<?php echo esc_attr( $rsvp_form_save_text ); ?>"
-						data-depends="#Tribe__Tickets__RSVP_radio"
-						data-condition-is-checked
+						data-depends="#tec_tickets_ticket_provider"
+						data-condition="Tribe__Tickets__RSVP"
 				/>
 				<input
 						type="button"

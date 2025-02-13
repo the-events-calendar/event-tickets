@@ -127,7 +127,7 @@ jobs:
         id: get-composer-cache-dir
         run: |
           echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         if: steps.s3_zip.outcome != 'success'
         id: composer-cache
         with:

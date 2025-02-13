@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.18.1.1\n"
+"Project-Id-Version: Event Tickets 5.19.1\n"
 "Report-Msgid-Bugs-To: https://evnt.is/191x\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-01-29T21:06:52+00:00\n"
+"POT-Creation-Date: 2025-02-10T18:16:57+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: event-tickets\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: src/admin-views/admin-welcome-message.php:74
 #: src/Tickets/Site_Health/Info_Section.php:73
 #: src/Tribe/Admin/Notices.php:87
-#: src/Tribe/Main.php:809
+#: src/Tribe/Main.php:819
 #: src/Tribe/Privacy.php:59
 #: src/views/emails/template-parts/body/footer/credit.php:41
 msgid "Event Tickets"
@@ -112,7 +112,7 @@ msgstr ""
 #: src/admin-views/tribe-commerce-settings.php:4
 #: src/Tickets/Commerce/Payments_Tab.php:300
 #: src/Tribe/Admin/Notices.php:209
-#: src/Tribe/Main.php:784
+#: src/Tribe/Main.php:794
 msgid "Event Tickets Plus"
 msgstr ""
 
@@ -396,7 +396,7 @@ msgstr ""
 #: src/Tribe/Admin/Columns/Tickets.php:58
 #: src/Tribe/Admin/Manager/Service_Provider.php:173
 #: src/Tribe/Attendees.php:295
-#: src/Tribe/Commerce/PayPal/Main.php:479
+#: src/Tribe/Commerce/PayPal/Main.php:488
 #: src/Tribe/Tabbed_View/Attendee_Report_Tab.php:22
 #: src/Tickets/Blocks/Tickets/app/editor/action-buttons/attendees/template.js:25
 msgid "Attendees"
@@ -755,7 +755,7 @@ msgstr ""
 #: src/admin-views/editor/column-body-price.php:43
 #: src/Tickets/Commerce/Admin/Singular_Order_Page.php:332
 #: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:624
-#: src/Tribe/RSVP.php:1738
+#: src/Tribe/RSVP.php:1748
 msgid "Free"
 msgstr ""
 
@@ -958,7 +958,7 @@ msgid "Save settings"
 msgstr ""
 
 #: src/admin-views/editor/panel/settings.php:44
-#: src/admin-views/editor/panel/ticket.php:301
+#: src/admin-views/editor/panel/ticket.php:277
 #: src/admin-views/meta-box.php:304
 #: src/admin-views/seating/components/layouts/add-new.php:45
 #: src/views/seating/iframe-view.php:79
@@ -986,11 +986,6 @@ msgstr ""
 #: src/admin-views/editor/panel/ticket.php:136
 msgctxt "admin edit ticket panel heading"
 msgid "Edit %s"
-msgstr ""
-
-#: src/admin-views/editor/panel/ticket.php:190
-#: src/admin-views/meta-box.php:167
-msgid "Sell using:"
 msgstr ""
 
 #: src/admin-views/editor/ticket-type-default-header.php:14
@@ -1121,6 +1116,10 @@ msgstr ""
 
 #: src/admin-views/meta-box.php:162
 msgid "Edit ticket"
+msgstr ""
+
+#: src/admin-views/meta-box.php:167
+msgid "Sell using:"
 msgstr ""
 
 #: src/admin-views/meta-box.php:188
@@ -2640,7 +2639,7 @@ msgstr ""
 #: src/Tickets/Commerce/Order.php:268
 #: src/Tickets/Commerce/Reports/Orders.php:235
 #: src/Tickets/Commerce/Reports/Orders_Tab.php:33
-#: src/Tribe/Commerce/PayPal/Main.php:491
+#: src/Tribe/Commerce/PayPal/Main.php:500
 #: src/Tickets/Blocks/Tickets/app/editor/action-buttons/orders/template.js:25
 msgid "Orders"
 msgstr ""
@@ -2692,13 +2691,13 @@ msgid "A single configured ticket type."
 msgstr ""
 
 #: src/Tickets/Blocks/Tickets/Block.php:319
-#: src/Tribe/Tickets.php:4636
+#: src/Tribe/Tickets.php:4637
 msgctxt "Error message title, will be followed by the error code."
 msgid "API Error"
 msgstr ""
 
 #: src/Tickets/Blocks/Tickets/Block.php:320
-#: src/Tribe/Tickets.php:4637
+#: src/Tribe/Tickets.php:4638
 msgid "Refresh this page or wait a few minutes before trying again. If this happens repeatedly, please contact the Site Admin."
 msgstr ""
 
@@ -2708,14 +2707,14 @@ msgid "The %s for this event has sold out and has been removed from your cart."
 msgstr ""
 
 #: src/Tickets/Blocks/Tickets/Block.php:326
-#: src/Tribe/Tickets.php:4639
+#: src/Tribe/Tickets.php:4640
 #: src/views/v2/commerce/order/header/title-empty.php:28
 msgid "Whoops!"
 msgstr ""
 
 #. Translators: %s - the HTML of the number of tickets with validation errors.
 #: src/Tickets/Blocks/Tickets/Block.php:328
-#: src/Tribe/Tickets.php:4640
+#: src/Tribe/Tickets.php:4641
 msgctxt "The %s will change based on the error produced."
 msgid "You have %s ticket(s) with a field that requires information."
 msgstr ""
@@ -7357,40 +7356,40 @@ msgstr ""
 
 #. Translators: %1$s: The HTML <a> tag, %2$s: The closing HTML </a> tag.
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:77
-#: src/Tribe/Commerce/PayPal/Main.php:1965
-#: src/Tribe/RSVP.php:2502
+#: src/Tribe/Commerce/PayPal/Main.php:1974
+#: src/Tribe/RSVP.php:2512
 msgid "Return to the %1$sAttendees Report%2$s."
 msgstr ""
 
 #. Translators: %1$s: The return link.
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:84
-#: src/Tribe/Commerce/PayPal/Main.php:1972
-#: src/Tribe/RSVP.php:2510
+#: src/Tribe/Commerce/PayPal/Main.php:1981
+#: src/Tribe/RSVP.php:2520
 msgid "Post updated. %1$s"
 msgstr ""
 
 #. Translators: %1$s: The return link.
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:88
-#: src/Tribe/Commerce/PayPal/Main.php:1976
-#: src/Tribe/RSVP.php:2515
+#: src/Tribe/Commerce/PayPal/Main.php:1985
+#: src/Tribe/RSVP.php:2525
 msgid "Post published. %1$s"
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:91
-#: src/Tribe/Commerce/PayPal/Main.php:1979
-#: src/Tribe/RSVP.php:2518
+#: src/Tribe/Commerce/PayPal/Main.php:1988
+#: src/Tribe/RSVP.php:2528
 msgid "Post submitted."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:92
-#: src/Tribe/Commerce/PayPal/Main.php:1980
-#: src/Tribe/RSVP.php:2519
+#: src/Tribe/Commerce/PayPal/Main.php:1989
+#: src/Tribe/RSVP.php:2529
 msgid "Post scheduled."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:93
-#: src/Tribe/Commerce/PayPal/Main.php:1981
-#: src/Tribe/RSVP.php:2520
+#: src/Tribe/Commerce/PayPal/Main.php:1990
+#: src/Tribe/RSVP.php:2530
 msgid "Post draft updated."
 msgstr ""
 
@@ -7759,8 +7758,8 @@ msgid "Tribe Commerce ( Legacy PayPal, not recommended )"
 msgstr ""
 
 #: src/Tickets/Commerce/Models/Attendee_Model.php:62
-#: src/Tribe/Commerce/PayPal/Main.php:3018
-#: src/Tribe/RSVP.php:2160
+#: src/Tribe/Commerce/PayPal/Main.php:3027
+#: src/Tribe/RSVP.php:2170
 msgid "(deleted)"
 msgstr ""
 
@@ -8199,7 +8198,7 @@ msgid "Purchaser Email Address"
 msgstr ""
 
 #: src/Tickets/Commerce/Reports/Data/Order_Summary.php:148
-#: src/Tribe/Tickets_Handler.php:109
+#: src/Tribe/Tickets_Handler.php:120
 #: src/views/blocks/tickets/extra-available-unlimited.php:19
 #: src/views/v2/tickets/item/extra/available/unlimited.php:56
 #: src/modules/blocks/rsvp/container-header/template.js:30
@@ -8220,12 +8219,12 @@ msgid "Orders for: %1$s [#%2$d]"
 msgstr ""
 
 #: src/Tickets/Commerce/Reports/Orders.php:116
-#: src/Tribe/Commerce/PayPal/Main.php:1781
+#: src/Tribe/Commerce/PayPal/Main.php:1790
 msgid "Sales report"
 msgstr ""
 
 #: src/Tickets/Commerce/Reports/Orders.php:157
-#: src/Tribe/Commerce/PayPal/Main.php:1807
+#: src/Tribe/Commerce/PayPal/Main.php:1816
 msgid "Report"
 msgstr ""
 
@@ -8400,12 +8399,12 @@ msgid "%s will be available on %s at %s"
 msgstr ""
 
 #: src/Tickets/Commerce/Status/Pending.php:163
-#: src/Tribe/Tickets.php:3423
+#: src/Tribe/Tickets.php:3424
 msgid "%s are no longer available."
 msgstr ""
 
 #: src/Tickets/Commerce/Status/Pending.php:165
-#: src/Tribe/Tickets.php:3425
+#: src/Tribe/Tickets.php:3426
 msgid "There are no %s available at this time."
 msgstr ""
 
@@ -8434,7 +8433,7 @@ msgid "Tickets Commerce Success Page"
 msgstr ""
 
 #: src/Tickets/Commerce/Ticket.php:214
-#: src/Tribe/Commerce/PayPal/Main.php:463
+#: src/Tribe/Commerce/PayPal/Main.php:472
 #: src/views/seating/iframe-view.php:41
 msgid "Tickets"
 msgstr ""
@@ -8458,102 +8457,102 @@ msgid "unavailable"
 msgstr ""
 
 #: src/Tickets/Commerce/Utils/Currency.php:415
-#: src/Tribe/Commerce/Currency.php:197
+#: src/Tribe/Commerce/Currency.php:201
 msgid "Australian Dollar (AUD)"
 msgstr ""
 
 #: src/Tickets/Commerce/Utils/Currency.php:423
-#: src/Tribe/Commerce/Currency.php:203
+#: src/Tribe/Commerce/Currency.php:207
 msgid "Brazilian Real  (BRL)"
 msgstr ""
 
 #: src/Tickets/Commerce/Utils/Currency.php:431
-#: src/Tribe/Commerce/Currency.php:209
+#: src/Tribe/Commerce/Currency.php:213
 msgid "Canadian Dollar (CAD)"
 msgstr ""
 
 #: src/Tickets/Commerce/Utils/Currency.php:439
-#: src/Tribe/Commerce/Currency.php:215
+#: src/Tribe/Commerce/Currency.php:219
 msgid "Swiss Franc (CHF)"
 msgstr ""
 
 #: src/Tickets/Commerce/Utils/Currency.php:447
-#: src/Tribe/Commerce/Currency.php:221
+#: src/Tribe/Commerce/Currency.php:225
 msgid "Czech Koruna (CZK)"
 msgstr ""
 
 #: src/Tickets/Commerce/Utils/Currency.php:456
-#: src/Tribe/Commerce/Currency.php:228
+#: src/Tribe/Commerce/Currency.php:232
 msgid "Danish Krone (DKK)"
 msgstr ""
 
 #: src/Tickets/Commerce/Utils/Currency.php:464
-#: src/Tribe/Commerce/Currency.php:234
+#: src/Tribe/Commerce/Currency.php:238
 msgid "Euro (EUR)"
 msgstr ""
 
 #: src/Tickets/Commerce/Utils/Currency.php:472
-#: src/Tribe/Commerce/Currency.php:240
+#: src/Tribe/Commerce/Currency.php:244
 msgid "Pound Sterling (GBP)"
 msgstr ""
 
 #: src/Tickets/Commerce/Utils/Currency.php:480
-#: src/Tribe/Commerce/Currency.php:246
+#: src/Tribe/Commerce/Currency.php:250
 msgid "Hong Kong Dollar (HKD)"
 msgstr ""
 
 #: src/Tickets/Commerce/Utils/Currency.php:488
-#: src/Tribe/Commerce/Currency.php:252
+#: src/Tribe/Commerce/Currency.php:256
 msgid "Hungarian Forint (HUF)"
 msgstr ""
 
 #: src/Tickets/Commerce/Utils/Currency.php:496
-#: src/Tribe/Commerce/Currency.php:258
+#: src/Tribe/Commerce/Currency.php:262
 msgid "Israeli New Sheqel (ILS)"
 msgstr ""
 
 #: src/Tickets/Commerce/Utils/Currency.php:504
-#: src/Tribe/Commerce/Currency.php:264
+#: src/Tribe/Commerce/Currency.php:268
 msgid "Indian Rupee (INR)"
 msgstr ""
 
 #: src/Tickets/Commerce/Utils/Currency.php:512
-#: src/Tribe/Commerce/Currency.php:270
+#: src/Tribe/Commerce/Currency.php:274
 msgid "Japanese Yen (JPY)"
 msgstr ""
 
 #: src/Tickets/Commerce/Utils/Currency.php:520
-#: src/Tribe/Commerce/Currency.php:288
+#: src/Tribe/Commerce/Currency.php:292
 msgid "Norwegian Krone (NOK)"
 msgstr ""
 
 #: src/Tickets/Commerce/Utils/Currency.php:528
-#: src/Tribe/Commerce/Currency.php:294
+#: src/Tribe/Commerce/Currency.php:298
 msgid "New Zealand Dollar (NZD)"
 msgstr ""
 
 #: src/Tickets/Commerce/Utils/Currency.php:536
-#: src/Tribe/Commerce/Currency.php:306
+#: src/Tribe/Commerce/Currency.php:310
 msgid "Polish Zloty (PLN)"
 msgstr ""
 
 #: src/Tickets/Commerce/Utils/Currency.php:544
-#: src/Tribe/Commerce/Currency.php:312
+#: src/Tribe/Commerce/Currency.php:316
 msgid "Russian Ruble (RUB)"
 msgstr ""
 
 #: src/Tickets/Commerce/Utils/Currency.php:552
-#: src/Tribe/Commerce/Currency.php:318
+#: src/Tribe/Commerce/Currency.php:322
 msgid "Swedish Krona (SEK)"
 msgstr ""
 
 #: src/Tickets/Commerce/Utils/Currency.php:560
-#: src/Tribe/Commerce/Currency.php:324
+#: src/Tribe/Commerce/Currency.php:328
 msgid "Singapore Dollar (SGD)"
 msgstr ""
 
 #: src/Tickets/Commerce/Utils/Currency.php:568
-#: src/Tribe/Commerce/Currency.php:342
+#: src/Tribe/Commerce/Currency.php:346
 msgid "U.S. Dollar (USD)"
 msgstr ""
 
@@ -9871,22 +9870,22 @@ msgctxt "Error message for deleting a layout"
 msgid "Failed to delete the layout."
 msgstr ""
 
-#: src/Tickets/Seating/Frontend.php:284
+#: src/Tickets/Seating/Frontend.php:286
 msgctxt "Seat selection modal initial total string"
 msgid "0 Tickets"
 msgstr ""
 
-#: src/Tickets/Seating/Frontend.php:292
+#: src/Tickets/Seating/Frontend.php:294
 msgctxt "Find seats button text"
 msgid "Find Seats"
 msgstr ""
 
-#: src/Tickets/Seating/Frontend.php:437
+#: src/Tickets/Seating/Frontend.php:439
 msgctxt "Seat selection modal total string"
 msgid "1 Ticket"
 msgstr ""
 
-#: src/Tickets/Seating/Frontend.php:439
+#: src/Tickets/Seating/Frontend.php:441
 msgctxt "Seat selection modal total string"
 msgid "{count} Tickets"
 msgstr ""
@@ -9931,58 +9930,58 @@ msgctxt "Seat selection expired timer title"
 msgid "Time limit expired"
 msgstr ""
 
-#: src/Tickets/Seating/Health.php:76
+#: src/Tickets/Seating/Health.php:74
 msgid "Seating license is valid"
 msgstr ""
 
-#: src/Tickets/Seating/Health.php:81
+#: src/Tickets/Seating/Health.php:79
 msgid "Your license is valid."
 msgstr ""
 
 #. Translators: 1 is opening a element, 2 is closing of p element, 3 is opening of a element and 4 is closing of a element.
-#: src/Tickets/Seating/Health.php:84
+#: src/Tickets/Seating/Health.php:82
 msgctxt "Shown as an action result, when the test regarding Seating license in Site Health is successful."
 msgid "%1$sYou can check your license status on your account at %3$stheeventscalendar.com%4$s.%2$s"
 msgstr ""
 
-#: src/Tickets/Seating/Health.php:95
+#: src/Tickets/Seating/Health.php:93
 msgid "Seating license is invalid"
 msgstr ""
 
-#: src/Tickets/Seating/Health.php:96
+#: src/Tickets/Seating/Health.php:94
 msgid "You must have a valid license to use Seating for Event Tickets."
 msgstr ""
 
 #. Translators: 1 Opening p element, 2 closing p element, 3 is closing a element, 4, 5, 6 and 7 opening a elements.
-#: src/Tickets/Seating/Health.php:99
+#: src/Tickets/Seating/Health.php:97
 msgctxt "Shown as an action result, when the test regarding Seating license in Site Health has failed."
 msgid "%1$sYou may need to %4$spurchase a license%3$s or %5$srenew an existing license%3$s.%2$s%2$sOnce you have a valid license, enter it under %6$sTickets > Settings > Licenses%3$s and connect to the Seating Builder service.%2$s%1$s%7$sLearn more about about setting up Seating%3$s%2$s"
 msgstr ""
 
-#: src/Tickets/Seating/Health.php:118
+#: src/Tickets/Seating/Health.php:116
 msgid "Your site communicates with the Seating Builder SaaS"
 msgstr ""
 
-#: src/Tickets/Seating/Health.php:123
+#: src/Tickets/Seating/Health.php:121
 msgid "Your site is able to connect to the Seating Builder SaaS."
 msgstr ""
 
 #. Translators: 1 is opening p element, 2 is closing p element, 3 is opening a element and 4 is closing a element.
-#: src/Tickets/Seating/Health.php:126
+#: src/Tickets/Seating/Health.php:124
 msgctxt "Shown as an action result, when the test regarding Seating license in Site Health is successful."
 msgid "%1$sYou're ready to %3$suse Seating for Event Tickets%4$s.%2$s"
 msgstr ""
 
-#: src/Tickets/Seating/Health.php:137
+#: src/Tickets/Seating/Health.php:135
 msgid "Your site cannot communicate with the Seating Builder SaaS"
 msgstr ""
 
-#: src/Tickets/Seating/Health.php:138
+#: src/Tickets/Seating/Health.php:136
 msgid "The Seating Builder is a SaaS tool that provides the functionality for creating Seating Maps, Seat Layouts, and tickets with assigned seating. Your site must be connected to the Seating Builder in order to use these features."
 msgstr ""
 
 #. Translators: 1 Opening p element, 2 closing p element, 3 is closing a element, 4 and 5 opening a elements.
-#: src/Tickets/Seating/Health.php:141
+#: src/Tickets/Seating/Health.php:139
 msgctxt "Shown as an action result, when the test regarding Seating license in Site Health has failed."
 msgid "%1$s%4$sLearn more about connecting to the Seating Builder%3$s or %5$scontact support%3$s.%2$s"
 msgstr ""
@@ -10200,22 +10199,22 @@ msgstr ""
 msgid "The number of minutes a customer has to choose seats and complete checkout."
 msgstr ""
 
-#: src/Tickets/Seating/Uplink.php:61
+#: src/Tickets/Seating/Uplink.php:87
 msgctxt "Header of the connection controls"
 msgid "Seating"
 msgstr ""
 
-#: src/Tickets/Seating/Uplink.php:130
+#: src/Tickets/Seating/Uplink.php:140
 msgctxt "Button text for the Seating Builder connection button"
 msgid "Disconnect from Seating Builder"
 msgstr ""
 
-#: src/Tickets/Seating/Uplink.php:131
+#: src/Tickets/Seating/Uplink.php:141
 msgctxt "Button text for the Seating Builder connection button"
 msgid "Connect to Seating Builder"
 msgstr ""
 
-#: src/Tickets/Seating/Uplink.php:147
+#: src/Tickets/Seating/Uplink.php:157
 msgctxt "Legend for the license key field"
 msgid "License Key"
 msgstr ""
@@ -10388,7 +10387,7 @@ msgid "Includes ticketed attendees with orders marked Completed."
 msgstr ""
 
 #: src/Tribe/Admin/Home/Service_Provider.php:80
-#: src/Tribe/Main.php:944
+#: src/Tribe/Main.php:954
 msgid "Welcome to Event Tickets!"
 msgstr ""
 
@@ -10397,7 +10396,7 @@ msgid "Insecure request."
 msgstr ""
 
 #: src/Tribe/Admin/Manager/Service_Provider.php:89
-#: src/Tribe/RSVP.php:288
+#: src/Tribe/RSVP.php:298
 msgid "Something happened here."
 msgstr ""
 
@@ -10813,23 +10812,23 @@ msgstr ""
 msgid "Attendee Registration"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:276
+#: src/Tribe/Commerce/Currency.php:280
 msgid "Malaysian Ringgit (MYR)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:282
+#: src/Tribe/Commerce/Currency.php:286
 msgid "Mexican Peso (MXN)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:300
+#: src/Tribe/Commerce/Currency.php:304
 msgid "Philippine Peso (PHP)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:330
+#: src/Tribe/Commerce/Currency.php:334
 msgid "Thai Baht (THB)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:336
+#: src/Tribe/Commerce/Currency.php:340
 msgid "Taiwan New Dollar (TWD)"
 msgstr ""
 
@@ -10889,16 +10888,16 @@ msgstr ""
 msgid "Profile and Settings > My selling tools > Instant Payment Notification > Update"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:188
+#: src/Tribe/Commerce/PayPal/Main.php:382
 msgctxt "ticket provider"
 msgid "Tribe Commerce"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:465
+#: src/Tribe/Commerce/PayPal/Main.php:474
 msgid "Tribe Commerce Tickets"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:466
+#: src/Tribe/Commerce/PayPal/Main.php:475
 msgid "Tribe Commerce Ticket"
 msgstr ""
 
@@ -11057,6 +11056,36 @@ msgctxt "The note displayed when multiple ecommerce plugins are active in Block 
 msgid "Note: adjusting this setting will only impact new tickets. Existing tickets will not change. We highly recommend that all tickets for one event use the same ecommerce plugin."
 msgstr ""
 
+#: src/Tribe/Editor/Configuration.php:130
+msgctxt "Label for adding a sale price in the Ticket Block"
+msgid "Add Sale Price"
+msgstr ""
+
+#: src/Tribe/Editor/Configuration.php:131
+msgctxt "The label for the value of the sale price in the Ticket Block"
+msgid "Sale Price:"
+msgstr ""
+
+#: src/Tribe/Editor/Configuration.php:132
+msgctxt "Warning when sale price is invalid in the Ticket Block"
+msgid "Invalid price"
+msgstr ""
+
+#: src/Tribe/Editor/Configuration.php:133
+msgctxt "Label to select the start date of sale in the Ticket Block"
+msgid "On sale from:"
+msgstr ""
+
+#: src/Tribe/Editor/Configuration.php:134
+msgctxt "Label to select the end date of sale in the Ticket Block"
+msgid "to"
+msgstr ""
+
+#: src/Tribe/Editor/Configuration.php:135
+msgctxt "Label that is used for tickets that are on sale in the Ticket Block"
+msgid "On Sale"
+msgstr ""
+
 #: src/Tribe/Editor/Meta.php:142
 msgid "JSON object of all the post tickets"
 msgstr ""
@@ -11133,83 +11162,83 @@ msgctxt "list view buy now ticket button"
 msgid "Get %s"
 msgstr ""
 
-#: src/Tribe/Main.php:178
+#: src/Tribe/Main.php:195
 msgctxt "provider_plugin_name"
 msgid "Tickets"
 msgstr ""
 
 #. Translators: %1$s is the min required version of The Events Calendar. %2$s Is the update link opening `<a>`. %3$s Is the update link closing `</a>`.
-#: src/Tribe/Main.php:547
+#: src/Tribe/Main.php:557
 msgid "When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s"
 msgstr ""
 
-#: src/Tribe/Main.php:610
+#: src/Tribe/Main.php:620
 msgid "Sorry, Event Tickets requires WordPress %s or higher. Please upgrade your WordPress install."
 msgstr ""
 
-#: src/Tribe/Main.php:614
+#: src/Tribe/Main.php:624
 msgid "Sorry, Event Tickets requires PHP %s or higher. Talk to your Web host about moving you to a newer version of PHP."
 msgstr ""
 
-#: src/Tribe/Main.php:739
+#: src/Tribe/Main.php:749
 msgid "Support for Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:741
+#: src/Tribe/Main.php:751
 msgid "Settings overview"
 msgstr ""
 
-#: src/Tribe/Main.php:742
+#: src/Tribe/Main.php:752
 msgid "Features overview"
 msgstr ""
 
-#: src/Tribe/Main.php:743
+#: src/Tribe/Main.php:753
 msgid "Troubleshooting common problems"
 msgstr ""
 
-#: src/Tribe/Main.php:744
+#: src/Tribe/Main.php:754
 msgid "Customizing Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:761
+#: src/Tribe/Main.php:771
 msgid "New User Primer"
 msgstr ""
 
-#: src/Tribe/Main.php:763
+#: src/Tribe/Main.php:773
 msgctxt "help feature box section"
 msgid "We are committed to helping you sell %1$s for your event. Check out our handy %2$s to get started."
 msgstr ""
 
-#: src/Tribe/Main.php:780
+#: src/Tribe/Main.php:790
 msgid "open-source forum on WordPress.org"
 msgstr ""
 
-#: src/Tribe/Main.php:781
+#: src/Tribe/Main.php:791
 msgid "If you have tried the above steps and are still having trouble, you can post a new thread to our %s. Our support staff monitors these forums once a week and would be happy to assist you there."
 msgstr ""
 
-#: src/Tribe/Main.php:783
+#: src/Tribe/Main.php:793
 msgid "premium support on our website"
 msgstr ""
 
-#: src/Tribe/Main.php:785
+#: src/Tribe/Main.php:795
 msgid "Looking for more immediate support? We offer %1$s with the purchase of any of our premium plugins (like %2$s). Pick up a license and you can post there directly and expect a response within 24-48 hours during weekdays."
 msgstr ""
 
-#: src/Tribe/Main.php:787
-#: src/Tribe/Main.php:792
+#: src/Tribe/Main.php:797
+#: src/Tribe/Main.php:802
 msgid "post a thread"
 msgstr ""
 
-#: src/Tribe/Main.php:788
+#: src/Tribe/Main.php:798
 msgid "Already have Event Tickets Plus? You can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:793
+#: src/Tribe/Main.php:803
 msgid "If you have a valid license for one of our paid plugins, you can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:1120
+#: src/Tribe/Main.php:1130
 msgid "Buy"
 msgstr ""
 
@@ -12023,63 +12052,63 @@ msgstr ""
 msgid "Limit results to tickets that provide attendees the possibility to fill in additional information or not; requires ET+."
 msgstr ""
 
-#: src/Tribe/REST/V1/Messages.php:24
+#: src/Tribe/REST/V1/Messages.php:35
 msgid "The attendee ID is missing from the request"
 msgstr ""
 
-#: src/Tribe/REST/V1/Messages.php:25
+#: src/Tribe/REST/V1/Messages.php:36
 msgid "The requested post ID does not exist or is not an attendee"
 msgstr ""
 
-#: src/Tribe/REST/V1/Messages.php:26
+#: src/Tribe/REST/V1/Messages.php:37
 msgid "The requested attendee is not accessible"
 msgstr ""
 
-#: src/Tribe/REST/V1/Messages.php:27
+#: src/Tribe/REST/V1/Messages.php:38
 msgid "The requested attendee check in is not available"
 msgstr ""
 
-#: src/Tribe/REST/V1/Messages.php:28
+#: src/Tribe/REST/V1/Messages.php:39
 msgid "The requested ticket post could not be found"
 msgstr ""
 
-#: src/Tribe/REST/V1/Messages.php:29
+#: src/Tribe/REST/V1/Messages.php:40
 msgid "The ticket provider for the requested ticket is not available"
 msgstr ""
 
-#: src/Tribe/REST/V1/Messages.php:30
+#: src/Tribe/REST/V1/Messages.php:41
 msgid "The post associated with the requested ticket was not found"
 msgstr ""
 
-#: src/Tribe/REST/V1/Messages.php:31
+#: src/Tribe/REST/V1/Messages.php:42
 msgid "The requested ticket object could not be built or found"
 msgstr ""
 
-#: src/Tribe/REST/V1/Messages.php:32
+#: src/Tribe/REST/V1/Messages.php:43
 msgid "The requested ticket is not accessible"
 msgstr ""
 
-#: src/Tribe/REST/V1/Messages.php:33
+#: src/Tribe/REST/V1/Messages.php:44
 msgid "The ticket global id could not be generated"
 msgstr ""
 
-#: src/Tribe/REST/V1/Messages.php:34
+#: src/Tribe/REST/V1/Messages.php:45
 msgid "The ticket #%d does not exist."
 msgstr ""
 
-#: src/Tribe/REST/V1/Messages.php:35
+#: src/Tribe/REST/V1/Messages.php:46
 msgid "The ticket \"%s\" does not have that many available for purchase."
 msgstr ""
 
-#: src/Tribe/REST/V1/Messages.php:36
+#: src/Tribe/REST/V1/Messages.php:47
 msgid "Webhook not processed."
 msgstr ""
 
-#: src/Tribe/REST/V1/Messages.php:38
+#: src/Tribe/REST/V1/Messages.php:49
 msgid "There was a problem while fetching the requested ticket post"
 msgstr ""
 
-#: src/Tribe/REST/V1/Messages.php:39
+#: src/Tribe/REST/V1/Messages.php:50
 msgid "There was a problem while fetching the requested attendee post"
 msgstr ""
 
@@ -12091,81 +12120,81 @@ msgstr ""
 msgid "No Access"
 msgstr ""
 
-#: src/Tribe/RSVP.php:576
+#: src/Tribe/RSVP.php:586
 msgid "Unable to verify your opt-in request, please try again."
 msgstr ""
 
-#: src/Tribe/RSVP.php:682
+#: src/Tribe/RSVP.php:692
 msgctxt "Attendee number"
 msgid "Attendee %1$s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:721
+#: src/Tribe/RSVP.php:731
 msgid "RSVP Tickets"
 msgstr ""
 
-#: src/Tribe/RSVP.php:722
+#: src/Tribe/RSVP.php:732
 msgid "RSVP Ticket"
 msgstr ""
 
 #. translators: %s is the attendee field name.
-#: src/Tribe/RSVP.php:847
+#: src/Tribe/RSVP.php:857
 msgid "Attendee field \"%s\" is not set."
 msgstr ""
 
 #. translators: %s is the attendee field name.
-#: src/Tribe/RSVP.php:853
+#: src/Tribe/RSVP.php:863
 msgid "Attendee field \"%s\" is empty."
 msgstr ""
 
-#: src/Tribe/RSVP.php:891
+#: src/Tribe/RSVP.php:901
 msgid "Unable to process your request, invalid content resource."
 msgstr ""
 
-#: src/Tribe/RSVP.php:941
+#: src/Tribe/RSVP.php:951
 msgid "Unable to process your request, attendee creation failed."
 msgstr ""
 
-#: src/Tribe/RSVP.php:1140
+#: src/Tribe/RSVP.php:1150
 msgid "Invalid data! Missing required attendee details!"
 msgstr ""
 
 #. Translators: %1$s: The plural ticket label, %2$s: The site name.
-#: src/Tribe/RSVP.php:1365
+#: src/Tribe/RSVP.php:1375
 msgid "Your %1$s from %2$s"
 msgstr ""
 
 #. Translators: %s: Event name.
-#: src/Tribe/RSVP.php:1495
+#: src/Tribe/RSVP.php:1505
 msgid "You confirmed you will not be attending %s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:1858
+#: src/Tribe/RSVP.php:1868
 msgid "Your %1$s has been received! Check your email for your %1$s confirmation."
 msgstr ""
 
-#: src/Tribe/RSVP.php:1865
+#: src/Tribe/RSVP.php:1875
 msgid "You can't %1$s more than the total remaining %2$s."
 msgstr ""
 
-#: src/Tribe/RSVP.php:1873
+#: src/Tribe/RSVP.php:1883
 msgid "In order to %s, you must enter your name and a valid email address."
 msgstr ""
 
-#: src/Tribe/RSVP.php:2686
+#: src/Tribe/RSVP.php:2696
 msgid "Invalid parent ID provided!"
 msgstr ""
 
-#: src/Tribe/RSVP.php:2693
+#: src/Tribe/RSVP.php:2703
 msgid "Invalid Ticket ID provided!"
 msgstr ""
 
-#: src/Tribe/RSVP.php:2708
-#: src/Tribe/RSVP.php:2714
+#: src/Tribe/RSVP.php:2718
+#: src/Tribe/RSVP.php:2724
 msgid "Missing required RSVP field: %s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:2752
+#: src/Tribe/RSVP.php:2762
 msgid "Requested amount of Tickets are not available!"
 msgstr ""
 
@@ -12235,39 +12264,39 @@ msgid "Set capacity for this ticket only"
 msgstr ""
 
 #. translators: %1$s: The singular of "RSVP" or "ticket", %2$s: The plural of "RSVPs" or "tickets", %3$s: The site name.
-#: src/Tribe/Tickets.php:2640
+#: src/Tribe/Tickets.php:2641
 msgctxt "The default RSVP/ticket email subject"
 msgid "Your %1$s from %3$s"
 msgid_plural "Your %2$s from %3$s"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Tribe/Tickets.php:3375
+#: src/Tribe/Tickets.php:3376
 msgid "%s are not available as this %s has passed."
 msgstr ""
 
-#: src/Tribe/Tickets.php:3411
+#: src/Tribe/Tickets.php:3412
 msgid "%s will be available on "
 msgstr ""
 
 #. translators: %s: Tickets label
 #. Translators: %s - the plural label for a ticket.
-#: src/Tribe/Tickets.php:3420
+#: src/Tribe/Tickets.php:3421
 #: src/views/blocks/tickets/content-inactive.php:19
 #: src/views/v2/tickets/item/content/inactive.php:53
 #: src/Tickets/Blocks/Tickets/app/editor/inactive/template.js:111
 msgid "%s are not yet available"
 msgstr ""
 
-#: src/Tribe/Tickets.php:3872
+#: src/Tribe/Tickets.php:3873
 msgid "(copy)"
 msgstr ""
 
-#: src/Tribe/Tickets.php:4638
+#: src/Tribe/Tickets.php:4639
 msgid "The ticket for this event has sold out and has been removed from your cart."
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:680
+#: src/Tribe/Tickets_Handler.php:689
 msgid "Invalid ticket capacity data."
 msgstr ""
 
@@ -13662,6 +13691,10 @@ msgstr ""
 #. Translators: %s - the singular label for a ticket.
 #: src/Tickets/Blocks/Ticket/app/editor/container-content/price/template.js:83
 msgid "%s price"
+msgstr ""
+
+#: src/Tickets/Blocks/Ticket/app/editor/container-content/sale-price/template.js:238
+msgid "The sale price can be managed via WooCommerce's product editor."
 msgstr ""
 
 #. Translators: %s - the singular label for a ticket.

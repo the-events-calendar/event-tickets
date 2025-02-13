@@ -93,13 +93,15 @@ class Block extends Abstract_Block {
 		wp_register_script(
 			'tec-tickets-ticket-item-block-editor-script',
 			$plugin->plugin_url . "build/Tickets/Blocks/Ticket/editor.js",
-			[ 'tribe-common-gutenberg-vendor', 'tribe-tickets-gutenberg-vendor', 'tec-common-php-date-formatter' ]
+			[ 'tribe-common-gutenberg-vendor', 'tribe-tickets-gutenberg-vendor', 'tec-common-php-date-formatter' ],
+			Tickets_Main::VERSION
 		);
 
 		wp_register_style(
 			'tec-tickets-ticket-item-block-editor-style',
 			$plugin->plugin_url . "build/Tickets/Blocks/Ticket/editor{$min}.css",
-			[ 'tribe-tickets-gutenberg-main-styles' ]
+			[ 'tribe-tickets-gutenberg-main-styles' ],
+			Tickets_Main::VERSION
 		);
 	}
 }

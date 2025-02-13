@@ -103,6 +103,14 @@ abstract class Abstract_Fees extends Controller_Contract {
 	protected static bool $fees_appended = false;
 
 	/**
+	 * The order modifiers controller.
+	 *
+	 * @since 5.19.1
+	 * @var Controller
+	 */
+	protected Controller $controller;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 5.18.0
@@ -124,10 +132,21 @@ abstract class Abstract_Fees extends Controller_Contract {
 		Modifier_Manager $manager
 	) {
 		parent::__construct( $container );
-		$this->modifier_strategy                       = $controller->get_modifier( $this->modifier_type );
+		$this->controller                              = $controller;
 		$this->manager                                 = $manager;
 		$this->order_modifiers_repository              = $fee_repository;
 		$this->order_modifiers_relationship_repository = $order_modifier_relationship;
+
+		add_action( 'init', [ $this, 'set_modifier_strategy' ] );
+	}
+
+	/**
+	 * Sets the modifier strategy for applying fees.
+	 *
+	 * @since 5.19.1
+	 */
+	public function set_modifier_strategy() {
+		$this->modifier_strategy = $this->controller->get_modifier( $this->modifier_type );
 	}
 
 	/**

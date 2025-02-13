@@ -4,7 +4,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import AutosizeInput from 'react-input-autosize';
+import AutosizeInput from 'react-input-autosize'; // eslint-disable-line import/no-unresolved
 
 /**
  * WordPress dependencies
@@ -121,13 +121,13 @@ const Controls = ( {
 					label={ __( 'Display Title', 'event-tickets' ) }
 					checked={ displayTitle }
 					onChange={ onSetDisplayTitleChange }
-					__nextHasNoMarginBottom={true}
+					__nextHasNoMarginBottom={ true }
 				/>
 				<ToggleControl
 					label={ __( 'Display Subtitle', 'event-tickets' ) }
 					checked={ displaySubtitle }
 					onChange={ onSetDisplaySubtitleChange }
-					__nextHasNoMarginBottom={true}
+					__nextHasNoMarginBottom={ true }
 				/>
 			</PanelBody>
 		</InspectorControls>
