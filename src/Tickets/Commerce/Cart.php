@@ -76,6 +76,7 @@ class Cart {
 	 * parent class is the cookie handling.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Updated to use Cart_Interface instead of Unmanaged_Cart.
 	 *
 	 * @return Cart_Interface
 	 */
@@ -302,6 +303,7 @@ class Cart {
 		/**
 		 * Filters the life span of the Cart Cookie.
 		 *
+		 * @depecated
 		 * @since 5.1.9
 		 * @since TBD Deprecated in favor of `tec_tickets_commerce_cart_cookie_expiration`.
 		 *
