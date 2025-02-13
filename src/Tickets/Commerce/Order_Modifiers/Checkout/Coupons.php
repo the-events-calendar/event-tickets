@@ -8,11 +8,11 @@
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
 
 use TEC\Common\Contracts\Container;
+use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon;
 use Tribe__Template;
 use WP_Post;
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Common\StellarWP\Assets\Assets;
 
 /**
  * Class Coupons
@@ -50,10 +50,7 @@ class Coupons extends Controller_Contract {
 		// Hook for displaying coupons in the checkout.
 		add_action(
 			'tec_tickets_commerce_checkout_cart_before_footer_quantity',
-			[
-				$this,
-				'display_coupon_section',
-			],
+			[ $this, 'display_coupon_section' ],
 			40,
 			3
 		);
@@ -86,7 +83,12 @@ class Coupons extends Controller_Contract {
 	 * @since 5.18.0
 	 */
 	public function localize_asset(): void {
-		Assets::init()->get( 'tribe-tickets-commerce-js' )->add_localize_script( 'tecTicketsCommerce', [ 'restUrl' => tribe_tickets_rest_url() ] );
+		Assets::init()
+			->get( 'tribe-tickets-commerce-js' )
+			->add_localize_script(
+				'tecTicketsCommerce',
+				[ 'restUrl' => tribe_tickets_rest_url() ]
+			);
 	}
 
 	/**
