@@ -461,24 +461,6 @@ class Module extends \Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Whether a specific attendee is valid toward inventory decrease or not.
-	 *
-	 * By default only attendees generated as part of a Completed order will count toward
-	 * an inventory decrease but, if the option to reserve stock for Pending Orders is activated,
-	 * then those attendees generated as part of a Pending Order will, for a limited time after the
-	 * order creation, cause the inventory to be decreased.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @param array $attendee
-	 *
-	 * @return bool
-	 */
-	public function attendee_decreases_inventory( array $attendee ) {
-		return tribe( Attendee::class )->decreases_inventory( $attendee );
-	}
-
-	/**
 	 * {@inheritdoc}
 	 */
 	public function get_attendee( $attendee, $post_id = 0 ) {

@@ -146,6 +146,8 @@ class Hooks extends Service_Provider {
 
 		add_filter( 'tec_tickets_all_tickets_table_provider_options', [ $this, 'filter_all_tickets_table_provider_options' ] );
 		add_filter( 'tec_tickets_all_tickets_table_event_meta_keys', [ $this, 'filter_all_tickets_table_event_meta_keys' ] );
+		
+		add_filter( 'tec_tickets_attendee_decreases_inventory', [ $this, 'filter_attendee_decreases_inventory' ], 10, 2 );
 	}
 
 	/**
@@ -1176,5 +1178,19 @@ class Hooks extends Service_Provider {
 		$meta_keys[ Ticket::POSTTYPE ] = Module::ATTENDEE_EVENT_KEY;
 
 		return $meta_keys;
+	}
+	
+	/**
+	 * Filters if the attendee decreases inventory.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool  $decreases_inventory Whether the attendee decreases inventory.
+	 * @param array $attendee The attendee data.
+	 *
+	 * @return bool Whether the attendee decreases inventory.
+	 */
+	public function filter_attendee_decreases_inventory( $decreases_inventory, $attendee ): bool {
+		return tribe( Attendee::class )->decreases_inventory( $decreases_inventory, $attendee );
 	}
 }

@@ -41,14 +41,17 @@ class Timer_Test extends Controller_Test_Case {
 	public function ensure_tickets_commerce_active(): void {
 		// Ensure the Tickets Commerce module is active.
 		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
-		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
-			$modules[ Module::class ] = tribe( Module::class )->plugin_name;
+		add_filter(
+			'tribe_tickets_get_modules',
+			function ( $modules ) {
+				$modules[ Module::class ] = tribe( Module::class )->plugin_name;
 
-			return $modules;
-		} );
+				return $modules;
+			} 
+		);
 
 		// Reset Data_API object, so it sees Tribe Commerce.
-		tribe_singleton( 'tickets.data_api', new Data_API );
+		tribe_singleton( 'tickets.data_api', new Data_API() );
 	}
 
 	/**
@@ -108,7 +111,7 @@ class Timer_Test extends Controller_Test_Case {
 		$sessions->upsert( 'test-token', $post_id, time() + 100 );
 		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
 
-		$token   = 'test-token';
+		$token = 'test-token';
 
 		ob_start();
 		do_action( 'tec_tickets_seating_seat_selection_timer', $token, $post_id );
@@ -235,12 +238,14 @@ class Timer_Test extends Controller_Test_Case {
 		// Mock the wp_send_json_error response.
 		$wp_send_json_error_data = null;
 		$wp_send_json_error_code = null;
-		$this->set_fn_return( 'wp_send_json_error',
+		$this->set_fn_return(
+			'wp_send_json_error',
 			function ( $data, $code ) use ( &$wp_send_json_error_data, &$wp_send_json_error_code ) {
 				$wp_send_json_error_data = $data;
 				$wp_send_json_error_code = $code;
 			},
-			true );
+			true 
+		);
 
 		$timer = $this->make_controller();
 
@@ -249,9 +254,12 @@ class Timer_Test extends Controller_Test_Case {
 
 		$timer->ajax_start();
 
-		$this->assertEquals( [
-			'error' => 'Nonce verification failed',
-		], $wp_send_json_error_data );
+		$this->assertEquals(
+			[
+				'error' => 'Nonce verification failed',
+			],
+			$wp_send_json_error_data 
+		);
 		$this->assertEquals( 403, $wp_send_json_error_code );
 
 		// Send a wrong nonce.
@@ -259,9 +267,12 @@ class Timer_Test extends Controller_Test_Case {
 
 		$timer->ajax_start();
 
-		$this->assertEquals( [
-			'error' => 'Nonce verification failed',
-		], $wp_send_json_error_data );
+		$this->assertEquals(
+			[
+				'error' => 'Nonce verification failed',
+			],
+			$wp_send_json_error_data 
+		);
 		$this->assertEquals( 403, $wp_send_json_error_code );
 
 		// Send a correct nonce for another user.
@@ -271,9 +282,12 @@ class Timer_Test extends Controller_Test_Case {
 
 		$timer->ajax_start();
 
-		$this->assertEquals( [
-			'error' => 'Nonce verification failed',
-		], $wp_send_json_error_data );
+		$this->assertEquals(
+			[
+				'error' => 'Nonce verification failed',
+			],
+			$wp_send_json_error_data 
+		);
 		$this->assertEquals( 403, $wp_send_json_error_code );
 
 		// Send correct nonce, but no token.
@@ -282,9 +296,12 @@ class Timer_Test extends Controller_Test_Case {
 
 		$timer->ajax_start();
 
-		$this->assertEquals( [
-			'error' => 'Missing required parameters',
-		], $wp_send_json_error_data );
+		$this->assertEquals(
+			[
+				'error' => 'Missing required parameters',
+			],
+			$wp_send_json_error_data 
+		);
 		$this->assertEquals( 400, $wp_send_json_error_code );
 
 		// Send correct nonce and token, but no post ID.
@@ -294,9 +311,12 @@ class Timer_Test extends Controller_Test_Case {
 
 		$timer->ajax_start();
 
-		$this->assertEquals( [
-			'error' => 'Missing required parameters',
-		], $wp_send_json_error_data );
+		$this->assertEquals(
+			[
+				'error' => 'Missing required parameters',
+			],
+			$wp_send_json_error_data 
+		);
 		$this->assertEquals( 400, $wp_send_json_error_code );
 	}
 
@@ -322,7 +342,7 @@ class Timer_Test extends Controller_Test_Case {
 			'post',
 			$reservations->get_cancel_url(),
 			function () use ( &$service_cancellations ) {
-				$service_cancellations ++;
+				$service_cancellations++;
 
 				return [
 					'headers' => [
@@ -352,12 +372,14 @@ class Timer_Test extends Controller_Test_Case {
 		// Mock the wp_send_json_success response.
 		$wp_send_json_success_data = null;
 		$wp_send_json_success_code = null;
-		$this->set_fn_return( 'wp_send_json_success',
+		$this->set_fn_return(
+			'wp_send_json_success',
 			function ( $data, $code = 200 ) use ( &$wp_send_json_success_data, &$wp_send_json_success_code ) {
 				$wp_send_json_success_data = $data;
 				$wp_send_json_success_code = $code;
 			},
-			true );
+			true 
+		);
 
 		$timer = $this->make_controller();
 		$timer->register();
@@ -383,16 +405,24 @@ class Timer_Test extends Controller_Test_Case {
 		// Mock the wp_send_json_error response.
 		$wp_send_json_error_data = null;
 		$wp_send_json_error_code = null;
-		$this->set_fn_return( 'wp_send_json_error',
+		$this->set_fn_return(
+			'wp_send_json_error',
 			function ( $data, $code = 200 ) use ( &$wp_send_json_error_data, &$wp_send_json_error_code ) {
 				$wp_send_json_error_data = $data;
 				$wp_send_json_error_code = $code;
 			},
-			true );
+			true 
+		);
 		// Mock the Sessions table dependency of the service to return `false` on the `upsert` method.
-		$this->test_services->singleton( Sessions::class, $this->make( Sessions::class, [
-			'upsert' => false
-		] ) );
+		$this->test_services->singleton(
+			Sessions::class,
+			$this->make(
+				Sessions::class,
+				[
+					'upsert' => false,
+				] 
+			) 
+		);
 
 		$timer = $this->make_controller();
 		$timer->register();
@@ -400,9 +430,12 @@ class Timer_Test extends Controller_Test_Case {
 		do_action( 'wp_ajax_nopriv_' . Timer::ACTION_START );
 
 		$this->assertEquals( 500, $wp_send_json_error_code );
-		$this->assertEquals( [
-			'error' => 'Failed to start timer',
-		], $wp_send_json_error_data );
+		$this->assertEquals(
+			[
+				'error' => 'Failed to start timer',
+			],
+			$wp_send_json_error_data 
+		);
 	}
 
 	public function test_ajax_sync_with_stock(): void {
@@ -458,12 +491,14 @@ class Timer_Test extends Controller_Test_Case {
 		// Mock the wp_send_json_success response.
 		$wp_send_json_success_data = null;
 		$wp_send_json_success_code = null;
-		$this->set_fn_return( 'wp_send_json_success',
+		$this->set_fn_return(
+			'wp_send_json_success',
 			function ( $data, $code = 200 ) use ( &$wp_send_json_success_data, &$wp_send_json_success_code ) {
 				$wp_send_json_success_data = $data;
 				$wp_send_json_success_code = $code;
 			},
-			true );
+			true 
+		);
 
 		$timer = $this->make_controller();
 		$timer->register();
@@ -485,12 +520,27 @@ class Timer_Test extends Controller_Test_Case {
 		update_post_meta( $post_id, Meta::META_KEY_ENABLED, 1 );
 		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-id' );
 
-		$post_1_ticket_1 = $this->create_tc_ticket( $post_id, 10 );
+		$post_1_ticket_1 = $this->create_tc_ticket(
+			$post_id,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 1,
+				],
+			]
+		);
 
 		update_post_meta( $post_1_ticket_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
-		update_post_meta( $post_1_ticket_1, tribe( 'tickets.handler' )->key_capacity, 10 );
-		update_post_meta( $post_1_ticket_1, '_stock', 0 );
 
+		$order           = $this->create_order( [ $post_1_ticket_1 => 1 ] );
+		$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		
+		// Mock the reservation ID to do proper stock calculation.
+		foreach ( $order_attendees as $key => $attendee ) {
+			update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+		}
+		
 		$this->make_controller()->register();
 
 		$session->add_entry( $post_id, 'test-token' );
@@ -507,12 +557,14 @@ class Timer_Test extends Controller_Test_Case {
 		// Mock the wp_send_json_success response.
 		$wp_send_json_success_data = null;
 		$wp_send_json_success_code = null;
-		$this->set_fn_return( 'wp_send_json_success',
+		$this->set_fn_return(
+			'wp_send_json_success',
 			function ( $data, $code = 200 ) use ( &$wp_send_json_success_data, &$wp_send_json_success_code ) {
 				$wp_send_json_success_data = $data;
 				$wp_send_json_success_code = $code;
 			},
-			true );
+			true 
+		);
 
 		$timer = $this->make_controller();
 		$timer->register();
@@ -532,13 +584,27 @@ class Timer_Test extends Controller_Test_Case {
 				update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
 				update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, 0 );
 
-				$ticket_id = $this->create_tc_ticket( $post_id, 10 );
-				$this->create_order( [ $ticket_id => 2 ] );
+				$ticket_id = $this->create_tc_ticket(
+					$post_id,
+					10,
+					[
+						'tribe-ticket' => [
+							'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+							'capacity' => 2,
+						],
+					]
+				);
 				update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
-				update_post_meta( $ticket_id, '_stock', 0 );
-
+				
+				$order           = $this->create_order( [ $ticket_id => 2 ] );
+				$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+				// Mock the reservation ID to do proper stock calculation.
+				foreach ( $order_attendees as $key => $attendee ) {
+					update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+				}
+				
 				return $post_id;
-			}
+			},
 		];
 
 		yield 'post with tickets available' => [
@@ -554,7 +620,7 @@ class Timer_Test extends Controller_Test_Case {
 				update_post_meta( $ticket_id, '_stock', 2 );
 
 				return $post_id;
-			}
+			},
 		];
 
 		yield 'event with no tickets available' => [
@@ -571,13 +637,28 @@ class Timer_Test extends Controller_Test_Case {
 				update_post_meta( $event_id, Meta::META_KEY_UUID, 'test-post-uuid' );
 				update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 0 );
 
-				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
-				$this->create_order( [ $ticket_id => 2 ] );
+				$ticket_id = $this->create_tc_ticket(
+					$event_id,
+					10,
+					[
+						'tribe-ticket' => [
+							'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+							'capacity' => 2,
+						],
+					]
+				);
 				update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
-				update_post_meta( $ticket_id, '_stock', 0 );
+				
+				$order           = $this->create_order( [ $ticket_id => 2 ] );
+				$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+				
+				// Mock the reservation ID to do proper stock calculation.
+				foreach ( $order_attendees as $key => $attendee ) {
+					update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+				}
 
 				return $event_id;
-			}
+			},
 		];
 
 		yield 'event with no tickets available and custom calendar slug' => [
@@ -596,13 +677,28 @@ class Timer_Test extends Controller_Test_Case {
 				update_post_meta( $event_id, Meta::META_KEY_UUID, 'test-post-uuid' );
 				update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 0 );
 
-				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
-				$this->create_order( [ $ticket_id => 2 ] );
+				$ticket_id = $this->create_tc_ticket(
+					$event_id,
+					10,
+					[
+						'tribe-ticket' => [
+							'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+							'capacity' => 2,
+						],
+					]
+				);
+				$order     = $this->create_order( [ $ticket_id => 2 ] );
 				update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid' );
-				update_post_meta( $ticket_id, '_stock', 0 );
+				
+				$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+				
+				// Mock the reservation ID to do proper stock calculation.
+				foreach ( $order_attendees as $key => $attendee ) {
+					update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+				}
 
 				return $event_id;
-			}
+			},
 		];
 
 		yield 'event with tickets available' => [
@@ -624,7 +720,7 @@ class Timer_Test extends Controller_Test_Case {
 				update_post_meta( $ticket_id, '_stock', 2 );
 
 				return $event_id;
-			}
+			},
 		];
 	}
 
@@ -670,7 +766,7 @@ class Timer_Test extends Controller_Test_Case {
 			'post',
 			$reservations->get_cancel_url(),
 			function () use ( &$service_cancellations ) {
-				$service_cancellations ++;
+				$service_cancellations++;
 
 				return [
 					'headers' => [
@@ -700,12 +796,14 @@ class Timer_Test extends Controller_Test_Case {
 		// Mock the wp_send_json_success response.
 		$wp_send_json_success_data = null;
 		$wp_send_json_success_code = null;
-		$this->set_fn_return( 'wp_send_json_success',
+		$this->set_fn_return(
+			'wp_send_json_success',
 			function ( $data, $code = 200 ) use ( &$wp_send_json_success_data, &$wp_send_json_success_code ) {
 				$wp_send_json_success_data = $data;
 				$wp_send_json_success_code = $code;
 			},
-			true );
+			true 
+		);
 
 		$timer = $this->make_controller();
 		$timer->register();
@@ -718,7 +816,7 @@ class Timer_Test extends Controller_Test_Case {
 		$this->assertNull(
 			DB::get_row(
 				DB::prepare(
-					"SELECT * FROM %i WHERE token = %s",
+					'SELECT * FROM %i WHERE token = %s',
 					Sessions::table_name(),
 					'test-token'
 				)
@@ -762,7 +860,7 @@ class Timer_Test extends Controller_Test_Case {
 			'post',
 			$reservations->get_cancel_url(),
 			function () use ( &$service_cancellations ) {
-				$service_cancellations ++;
+				$service_cancellations++;
 
 				return [
 					'headers' => [
@@ -792,12 +890,14 @@ class Timer_Test extends Controller_Test_Case {
 		// Mock the wp_send_json_error response.
 		$wp_send_json_error_data = null;
 		$wp_send_json_error_code = null;
-		$this->set_fn_return( 'wp_send_json_error',
+		$this->set_fn_return(
+			'wp_send_json_error',
 			function ( $data, $code = 200 ) use ( &$wp_send_json_error_data, &$wp_send_json_error_code ) {
 				$wp_send_json_error_data = $data;
 				$wp_send_json_error_code = $code;
 			},
-			true );
+			true 
+		);
 
 		$timer = $this->make_controller();
 		$timer->register();
@@ -834,7 +934,7 @@ class Timer_Test extends Controller_Test_Case {
 			'post',
 			$reservations->get_cancel_url(),
 			function () use ( &$service_cancellations ) {
-				$service_cancellations ++;
+				$service_cancellations++;
 
 				return [
 					'headers' => [
@@ -864,17 +964,25 @@ class Timer_Test extends Controller_Test_Case {
 		// Mock the wp_send_json_error response.
 		$wp_send_json_error_data = null;
 		$wp_send_json_error_code = null;
-		$this->set_fn_return( 'wp_send_json_error',
+		$this->set_fn_return(
+			'wp_send_json_error',
 			function ( $data, $code = 200 ) use ( &$wp_send_json_error_data, &$wp_send_json_error_code ) {
 				$wp_send_json_error_data = $data;
 				$wp_send_json_error_code = $code;
 			},
-			true );
+			true 
+		);
 
 		// Mock the Sessions table dependency of the service to return `false` on the `clear_token_reservations` method.
-		$this->test_services->singleton( Sessions::class, $this->make( Sessions::class, [
-			'delete_token_session' => false
-		] ) );
+		$this->test_services->singleton(
+			Sessions::class,
+			$this->make(
+				Sessions::class,
+				[
+					'delete_token_session' => false,
+				] 
+			) 
+		);
 
 		$timer = $this->make_controller();
 		$timer->register();
@@ -990,8 +1098,8 @@ class Timer_Test extends Controller_Test_Case {
 
 	public function test_ajax_pause_to_checkout_interrupts_if_no_tickets_capacity(): void {
 		// Create a previous session.
-		$session      = tribe( Session::class );
-		$sessions     = tribe( Sessions::class );
+		$session  = tribe( Session::class );
+		$sessions = tribe( Sessions::class );
 		$session->add_entry( 23, 'test-token' );
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
 		$sessions->upsert( 'test-token', 23, time() + 100 );
@@ -1005,14 +1113,22 @@ class Timer_Test extends Controller_Test_Case {
 
 		// Mock the wp_send_json_success response.
 		$wp_send_json_success_data = null;
-		$this->set_fn_return( 'wp_send_json_success',
+		$this->set_fn_return(
+			'wp_send_json_success',
 			function ( $data ) use ( &$wp_send_json_success_data ) {
 				$wp_send_json_success_data = $data;
 			},
-			true );
-		$this->test_services->bind( Frontend::class, $this->makeEmpty( Frontend::class, [
-			'get_events_ticket_capacity_for_seating' => 0
-		] ) );
+			true 
+		);
+		$this->test_services->bind(
+			Frontend::class,
+			$this->makeEmpty(
+				Frontend::class,
+				[
+					'get_events_ticket_capacity_for_seating' => 0,
+				] 
+			) 
+		);
 
 		$timer = $this->make_controller();
 		$timer->register();
@@ -1025,8 +1141,8 @@ class Timer_Test extends Controller_Test_Case {
 
 	public function test_ajax_pause_to_checkout_interrupts_if_token_expiration_cannot_be_updated(): void {
 		// Create a previous session.
-		$session      = tribe( Session::class );
-		$sessions     = tribe( Sessions::class );
+		$session  = tribe( Session::class );
+		$sessions = tribe( Sessions::class );
 		$session->add_entry( 23, 'test-token' );
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
 		$sessions->upsert( 'test-token', 23, time() + 100 );
@@ -1040,17 +1156,31 @@ class Timer_Test extends Controller_Test_Case {
 
 		// Mock the wp_send_json_success response.
 		$wp_send_json_success_data = null;
-		$this->set_fn_return( 'wp_send_json_success',
+		$this->set_fn_return(
+			'wp_send_json_success',
 			function ( $data ) use ( &$wp_send_json_success_data ) {
 				$wp_send_json_success_data = $data;
 			},
-			true );
-		$this->test_services->bind( Frontend::class, $this->makeEmpty( Frontend::class, [
-			'get_events_ticket_capacity_for_seating' => 2
-		] ) );
-		$this->test_services->bind( Sessions::class, $this->makeEmpty( Sessions::class, [
-			'set_token_expiration_timestamp' => false
-		] ) );
+			true 
+		);
+		$this->test_services->bind(
+			Frontend::class,
+			$this->makeEmpty(
+				Frontend::class,
+				[
+					'get_events_ticket_capacity_for_seating' => 2,
+				] 
+			) 
+		);
+		$this->test_services->bind(
+			Sessions::class,
+			$this->makeEmpty(
+				Sessions::class,
+				[
+					'set_token_expiration_timestamp' => false,
+				] 
+			) 
+		);
 
 		$timer = $this->make_controller();
 		$timer->register();
@@ -1061,10 +1191,10 @@ class Timer_Test extends Controller_Test_Case {
 		$this->assertEqualsWithDelta( time(), (int) $wp_send_json_success_data['timestamp'], 5 );
 	}
 
-	public function test_ajax_pause_to_checkout_expires_token_in_grace_time():void{
+	public function test_ajax_pause_to_checkout_expires_token_in_grace_time(): void {
 		// Create a previous session.
-		$session      = tribe( Session::class );
-		$sessions     = tribe( Sessions::class );
+		$session  = tribe( Session::class );
+		$sessions = tribe( Sessions::class );
 		$session->add_entry( 23, 'test-token' );
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
 		$sessions->upsert( 'test-token', 23, time() + 100 );
@@ -1082,29 +1212,43 @@ class Timer_Test extends Controller_Test_Case {
 
 		// Mock the wp_send_json_success response.
 		$wp_send_json_success_data = null;
-		$this->set_fn_return( 'wp_send_json_success',
+		$this->set_fn_return(
+			'wp_send_json_success',
 			function ( $data ) use ( &$wp_send_json_success_data ) {
 				$wp_send_json_success_data = $data;
 			},
-			true );
-		$this->test_services->bind( Frontend::class, $this->makeEmpty( Frontend::class, [
-			'get_events_ticket_capacity_for_seating' => 2
-		] ) );
+			true 
+		);
+		$this->test_services->bind(
+			Frontend::class,
+			$this->makeEmpty(
+				Frontend::class,
+				[
+					'get_events_ticket_capacity_for_seating' => 2,
+				] 
+			) 
+		);
 		$assert = $this;
-		$this->test_services->bind( Sessions::class, $this->makeEmpty( Sessions::class, [
-			'set_token_expiration_timestamp' => function ( string $token, int $timestamp, bool $lock ) use ( $grace_time, $assert ) {
-				$assert->assertEquals( $token, 'test-token' );
-				$assert->assertEqualsWithDelta( time() + $grace_time, $timestamp, 5);
-				$assert->assertTrue($lock);
+		$this->test_services->bind(
+			Sessions::class,
+			$this->makeEmpty(
+				Sessions::class,
+				[
+					'set_token_expiration_timestamp' => function ( string $token, int $timestamp, bool $lock ) use ( $grace_time, $assert ) {
+						$assert->assertEquals( $token, 'test-token' );
+						$assert->assertEqualsWithDelta( time() + $grace_time, $timestamp, 5 );
+						$assert->assertTrue( $lock );
 
-				return true;
-			},
-			'get_seconds_left'               => function ( string $token ) {
-				Assert::assertEquals( 'test-token', $token );
+						return true;
+					},
+					'get_seconds_left'               => function ( string $token ) {
+						Assert::assertEquals( 'test-token', $token );
 
-				return 23;
-			}
-		] ) );
+						return 23;
+					},
+				] 
+			) 
+		);
 
 		$timer = $this->make_controller();
 		$timer->register();

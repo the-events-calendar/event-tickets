@@ -1717,45 +1717,66 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertEquals( 30, get_post_meta( $ticket_5, '_stock', true ) );
 
 		// Create an order.
-		$this->create_order(
+		$order = $this->create_order(
 			[
 				$ticket_2 => 2,
 				$ticket_4 => 4,
 				$ticket_5 => 5,
 			]
 		);
+		
+		$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		
+		// Mock the reservation ID to do proper stock calculation.
+		foreach ( $order_attendees as $key => $attendee ) {
+			update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+		}
 
 		$this->assertEquals( 49, get_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, true ) );
 		$this->assertEquals( 60, get_post_meta( $post_id, tribe( 'tickets.handler' )->key_capacity, true ) );
 
-		$this->assertEquals( 10, get_post_meta( $ticket_1, tribe( 'tickets.handler' )->key_capacity, true ) );
-		$this->assertEquals( 8, get_post_meta( $ticket_1, '_stock', true ) );
+		$ticket_1 = tribe( Module::class )->get_ticket( $post_id, $ticket_1 );
+		$this->assertEquals( 10, $ticket_1->capacity() );
+		$this->assertEquals( 8, $ticket_1->stock() );
+		
+		$ticket_2 = tribe( Module::class )->get_ticket( $post_id, $ticket_2 );
+		$this->assertEquals( 10, $ticket_2->capacity() );
+		$this->assertEquals( 8, $ticket_2->stock() );
+		
+		$ticket_3 = tribe( Module::class )->get_ticket( $post_id, $ticket_3 );
+		$this->assertEquals( 20, $ticket_3->capacity() );
+		$this->assertEquals( 16, $ticket_3->stock() );
+		
+		$ticket_4 = tribe( Module::class )->get_ticket( $post_id, $ticket_4 );
+		$this->assertEquals( 20, $ticket_4->capacity() );
+		$this->assertEquals( 16, $ticket_4->stock() );
 
-		$this->assertEquals( 10, get_post_meta( $ticket_2, tribe( 'tickets.handler' )->key_capacity, true ) );
-		$this->assertEquals( 8, get_post_meta( $ticket_2, '_stock', true ) );
-
-		$this->assertEquals( 20, get_post_meta( $ticket_3, tribe( 'tickets.handler' )->key_capacity, true ) );
-		$this->assertEquals( 16, get_post_meta( $ticket_3, '_stock', true ) );
-
-		$this->assertEquals( 20, get_post_meta( $ticket_4, tribe( 'tickets.handler' )->key_capacity, true ) );
-		$this->assertEquals( 16, get_post_meta( $ticket_4, '_stock', true ) );
-
-		$this->assertEquals( 30, get_post_meta( $ticket_5, tribe( 'tickets.handler' )->key_capacity, true ) );
-		$this->assertEquals( 25, get_post_meta( $ticket_5, '_stock', true ) );
-
+		$ticket_5 = tribe( Module::class )->get_ticket( $post_id, $ticket_5 );
+		$this->assertEquals( 30, $ticket_5->capacity() );
+		$this->assertEquals( 25, $ticket_5->stock() );
+		
 		$this->make_controller()->register();
 
 		$this->assertEquals(
 			[
 				'ticket_totals' => [
 					'available' => 8 + 16 + 25,
-				]
+				],
 			],
 			apply_filters(
 				'tec_tickets_attendees_page_render_context',
 				[],
 				$post_id,
-				array_map( [ Tickets::class, 'load_ticket_object' ], [ $ticket_1, $ticket_2, $ticket_3, $ticket_4, $ticket_5 ] )
+				array_map(
+					[ Tickets::class, 'load_ticket_object' ],
+					[
+						$ticket_1->ID,
+						$ticket_2->ID,
+						$ticket_3->ID,
+						$ticket_4->ID,
+						$ticket_5->ID,
+					]
+				)
 			)
 		);
 	}

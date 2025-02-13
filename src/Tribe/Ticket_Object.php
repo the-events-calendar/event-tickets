@@ -1,6 +1,7 @@
 <?php
 
 use Tribe__Cache_Listener as Cache;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 	/**
@@ -918,8 +919,15 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				$stock[] = (int) get_post_meta( $this->get_event()->ID, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL, true );
 			}
 
-			// return the new Stock
-			return min( $stock );
+			/**
+			 * Filters the stock level of the ticket.
+			 *
+			 * @since TBD
+			 *
+			 * @param int           $stock The stock level of the ticket.
+			 * @param Ticket_Object $ticket The ticket object.
+			 */
+			return apply_filters( 'tec_tickets_ticket_stock', min( $stock ), $this );
 		}
 
 		/**
