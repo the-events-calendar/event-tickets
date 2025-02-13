@@ -17,6 +17,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\API\Coupons;
 use TEC\Tickets\Commerce\Order_Modifiers\API\Fees;
 use TEC\Tickets\Commerce\Order_Modifiers\Admin\Editor;
 use TEC\Tickets\Commerce\Order_Modifiers\Admin\Order_Modifier_Fee_Metabox;
+use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Coupons as Coupons_Checkout;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Fees as Agnostic_Checkout_Fees;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal\Fees as Paypal_Checkout_Fees;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe\Fees as Stripe_Checkout_Fees;
@@ -47,12 +48,16 @@ final class Controller extends Controller_Contract {
 	 * @return void Filters and actions hooks added by the controller are be removed.
 	 */
 	public function unregister(): void {
+		$this->container->get( Tables::class )->unregister();
 		$this->container->get( Paypal_Checkout_Fees::class )->unregister();
 		$this->container->get( Stripe_Checkout_Fees::class )->unregister();
 		$this->container->get( Agnostic_Checkout_Fees::class )->unregister();
-		$this->container->get( Tables::class )->unregister();
 		$this->container->get( Editor::class )->unregister();
+		$this->container->get( Coupons_Checkout::class )->unregister();
+
+		// API classes.
 		$this->container->get( Coupons::class )->unregister();
+		$this->container->get( Fees::class )->unregister();
 
 		if ( is_admin() ) {
 			$this->container->get( Modifier_Admin_Handler::class )->unregister();
@@ -76,6 +81,10 @@ final class Controller extends Controller_Contract {
 		$this->container->register( Stripe_Checkout_Fees::class );
 		$this->container->register( Agnostic_Checkout_Fees::class );
 		$this->container->register( Editor::class );
+		$this->container->register( Coupons_Checkout::class );
+
+		// API classes.
+		$this->container->register( Coupons::class );
 		$this->container->register( Fees::class );
 
 		if ( is_admin() ) {
@@ -90,7 +99,7 @@ final class Controller extends Controller_Contract {
 		$this->run_deprecated_coupon_filter();
 
 		$this->container->singleton( Coupon::class );
-		$this->container->register( Coupons::class );
+
 	}
 
 	/**
