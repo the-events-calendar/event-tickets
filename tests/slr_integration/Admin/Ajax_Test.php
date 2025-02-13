@@ -57,10 +57,10 @@ class Ajax_Test extends Controller_Test_Case {
 	 * @after
 	 */
 	public function truncate_tables(): void {
-		tribe( Maps::class )->truncate();
-		tribe( Seat_Types_Table::class )->truncate();
-		tribe( Layouts_Table::class )->truncate();
-		tribe( Sessions::class )->truncate();
+		tribe( Maps::class )->empty_table();
+		tribe( Seat_Types_Table::class )->empty_table();
+		tribe( Layouts_Table::class )->empty_table();
+		tribe( Sessions::class )->empty_table();
 	}
 
 	public function asset_data_provider() {
