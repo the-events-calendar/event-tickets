@@ -23,7 +23,6 @@
  * @var \WP_Post                           $order              The order object.
  */
 
-
 if ( empty( $order ) || empty( $order->fees ) ) {
 	return;
 }
