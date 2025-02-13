@@ -39,9 +39,9 @@ trait Fee_Creator {
 	 * @after
 	 */
 	public function truncate_custom_tables() {
-		$this->assertTrue( tribe( Relationships_Table::class )->empty_table() );
-		$this->assertTrue( tribe( Meta_Table::class )->empty_table() );
-		$this->assertTrue( tribe( Modifiers_Table::class )->empty_table() );
+		$this->assertTrue( false !== tribe( Relationships_Table::class )->empty_table() );
+		$this->assertTrue( false !== tribe( Meta_Table::class )->empty_table() );
+		$this->assertTrue( false !== tribe( Modifiers_Table::class )->empty_table() );
 	}
 
 	/**
