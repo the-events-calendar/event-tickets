@@ -329,4 +329,23 @@ abstract class Abstract_Cart implements Cart_Interface {
 
 		return $items;
 	}
+
+	/**
+	 * Get the quantity of an item in the cart.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|string $item_id The item ID.
+	 *
+	 * @return int The quantity of the item in the cart.
+	 *
+	 * @throws InvalidArgumentException If the item is not in the cart.
+	 */
+	public function get_item_quantity( $item_id ): int {
+		if ( ! $this->has_item( $item_id ) ) {
+			throw new InvalidArgumentException( 'Item not found in cart.' );
+		}
+
+		return (int) $this->items[ $item_id ]['quantity'];
+	}
 }

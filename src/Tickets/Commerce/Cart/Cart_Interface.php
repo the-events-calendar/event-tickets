@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Commerce\Cart;
 
+use InvalidArgumentException;
+
 /**
  * Interface Cart_Interface
  *
@@ -159,4 +161,17 @@ interface Cart_Interface {
 	 * @return array The prepared data.
 	 */
 	public function prepare_data( array $data = [] );
+
+	/**
+	 * Get the quantity of an item in the cart.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|string $item_id The item ID.
+	 *
+	 * @return int The quantity of the item in the cart.
+	 *
+	 * @throws InvalidArgumentException If the item is not in the cart.
+	 */
+	public function get_item_quantity( $item_id ): int;
 }
