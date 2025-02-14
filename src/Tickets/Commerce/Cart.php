@@ -3,6 +3,7 @@
 
 namespace TEC\Tickets\Commerce;
 
+use InvalidArgumentException;
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Cart\Cart_Interface;
 use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
@@ -370,8 +371,8 @@ class Cart {
 	public function add_ticket( $ticket_id, $quantity = 1, array $extra_data = [] ) {
 		$cart = $this->get_repository();
 
-		// Enforces that the min to add is 1.
-		$quantity = max( 1, (int) $quantity );
+		// Ensure quantity is an integer.
+		$quantity = (int) $quantity;
 
 		// Add to / update quantity in cart.
 		$cart->upsert_item( $ticket_id, $quantity, $extra_data );
@@ -385,16 +386,26 @@ class Cart {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int $ticket_id Ticket ID.
-	 * @param int $quantity  Ticket quantity to remove.
+	 * @param int  $ticket_id Ticket ID.
+	 * @param ?int $quantity  Ticket quantity to remove. If null, the item will be removed.
 	 */
-	public function remove_ticket( $ticket_id, $quantity = 1 ) {
+	public function remove_ticket( $ticket_id, ?int $quantity = null ) {
 		$cart = $this->get_repository();
 
-		// Enforces that the min to remove is 1.
-		$quantity = max( 1, (int) $quantity );
+		// If the quantity is null, we remove the item.
+		if ( null === $quantity ) {
+			$cart->remove_item( $ticket_id );
+			return;
+		}
 
-		$cart->remove_item( $ticket_id, $quantity );
+		try {
+			$current_quantity = $cart->get_item_quantity( $ticket_id );
+			$new_quantity     = max( 0, $current_quantity - $quantity );
+
+			$cart->upsert_item( $ticket_id, $new_quantity );
+		} catch ( InvalidArgumentException $e ) {
+			// Do nothing.
+		}
 	}
 
 	/**
