@@ -2148,6 +2148,13 @@ class Ajax_Test extends Controller_Test_Case {
 				$ticket_id_2 => 5,
 			]
 		);
+		
+		$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		
+		// Mock the reservation ID to do proper stock calculation.
+		foreach ( $order_attendees as $key => $attendee ) {
+			update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+		}
 
 		$ticket_1 = tribe( Module::class )->get_ticket( $post_id, $ticket_id_1 );
 		$ticket_2 = tribe( Module::class )->get_ticket( $post_id, $ticket_id_2 );
@@ -2394,6 +2401,13 @@ class Ajax_Test extends Controller_Test_Case {
 				$ticket_id_2 => 5,
 			]
 		);
+		
+		$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		
+		// Mock the reservation ID to do proper stock calculation.
+		foreach ( $order_attendees as $key => $attendee ) {
+			update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+		}
 
 		$_REQUEST['postId']    = $post_id;
 		$_REQUEST['newLayout'] = 'some-layout-2';
@@ -2417,12 +2431,12 @@ class Ajax_Test extends Controller_Test_Case {
 		// Ticket 1 should have its seat type updated to 3 to match the new layout.
 		$this->assertEquals( 'some-seat-type-3', get_post_meta( $ticket_id_1, Meta::META_KEY_SEAT_TYPE, true ) );
 
-		// Ticket 1 should have its capacity updated to 50 to match the new default seat type 3.
+		// Ticket 1 should have its capacity updated to 50 to match the new default seat type 3
 		$this->assertEquals( 50, $ticket_1->capacity() );
-		$this->assertEquals( 50 - 5, $ticket_1->stock() );
-		// Two tickets, each with 5 sales, share the same seat type.
-		$this->assertEquals( 50 - 10, $ticket_1->available() );
-		$this->assertEquals( 50 - 10, $ticket_1->inventory() );
+		// Updating ticket type removes all reservation data from attendees therefore the stock should return to full capacity.
+		$this->assertEquals( 50, $ticket_1->stock() );
+		$this->assertEquals( 50, $ticket_1->available() );
+		$this->assertEquals( 50, $ticket_1->inventory() );
 
 		$ticket_2 = tribe( Module::class )->get_ticket( $post_id, $ticket_id_2 );
 
@@ -2430,11 +2444,11 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertEquals( 'some-seat-type-3', get_post_meta( $ticket_id_2, Meta::META_KEY_SEAT_TYPE, true ) );
 
 		// Ticket 2 should have its capacity updated to 50 to match the new default seat type 3.
+		// Updating ticket type removes all reservation data from attendees therefore the stock should return to full capacity.
 		$this->assertEquals( 50, $ticket_2->capacity() );
-		$this->assertEquals( 50 - 5, $ticket_2->stock() );
-		// Two tickets, each with 5 sales, share the same seat type.
-		$this->assertEquals( 50 - 10, $ticket_2->available() );
-		$this->assertEquals( 50 - 10, $ticket_2->inventory() );
+		$this->assertEquals( 50, $ticket_2->stock() );
+		$this->assertEquals( 50, $ticket_2->available() );
+		$this->assertEquals( 50, $ticket_2->inventory() );
 
 		$attendees = tribe_attendees()->where( 'event', $post_id )->get_ids( true );
 
@@ -2472,11 +2486,11 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertEquals( 'some-seat-type-5', get_post_meta( $ticket_id_1, Meta::META_KEY_SEAT_TYPE, true ) );
 
 		// Ticket 1 should have its capacity updated to 3 to match the new default seat type 5.
+		// As layout is updated, the stock and capacity will be reset to initial state.
 		$this->assertEquals( 3, $ticket_1->capacity() );
-		$this->assertEquals( 0, $ticket_1->stock() );
-		$this->assertEquals( 0, $ticket_1->available() );
-		// With 10 Attendees (5 sales for each ticket with this seat type), this ticket will be over-sold.
-		$this->assertEquals( -7, $ticket_1->inventory() );
+		$this->assertEquals( 3, $ticket_1->stock() );
+		$this->assertEquals( 3, $ticket_1->available() );
+		$this->assertEquals( 3, $ticket_1->inventory() );
 
 		$ticket_2 = tribe( Module::class )->get_ticket( $post_id, $ticket_id_2 );
 
@@ -2484,11 +2498,11 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertEquals( 'some-seat-type-5', get_post_meta( $ticket_id_2, Meta::META_KEY_SEAT_TYPE, true ) );
 
 		// Ticket 2 should have its capacity updated to 7 to match the new default seat type 5.
+		// As layout is updated, the stock and capacity will be reset to initial state.
 		$this->assertEquals( 3, $ticket_2->capacity() );
-		$this->assertEquals( 0, $ticket_2->stock() );
-		$this->assertEquals( 0, $ticket_2->available() );
-		// With 10 Attendees (5 sales for each ticket with this seat type), this ticket will be over-sold.
-		$this->assertEquals( -7, $ticket_2->inventory() );
+		$this->assertEquals( 3, $ticket_2->stock() );
+		$this->assertEquals( 3, $ticket_2->available() );
+		$this->assertEquals( 3, $ticket_2->inventory() );
 	}
 
 	public function test_update_event_layout_failures(): void {
@@ -2742,6 +2756,13 @@ class Ajax_Test extends Controller_Test_Case {
 				$ticket_id_2 => 5,
 			]
 		);
+		
+		$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		
+		// Mock the reservation ID to do proper stock calculation.
+		foreach ( $order_attendees as $key => $attendee ) {
+			update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+		}
 		
 		// Total attendees by layout should be 10.
 		$this->assertEquals(
