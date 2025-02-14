@@ -2,7 +2,7 @@
 /**
  * Add theme compatibility things here.
  *
- * @since   4.11.4
+ * @since 4.11.4
  *
  * @since 5.3.1 Make use of Common Theme_Compatibility class.
  */

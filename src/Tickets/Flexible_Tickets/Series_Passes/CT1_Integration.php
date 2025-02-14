@@ -3,7 +3,7 @@
  * Handles the integration with Custom Tables V1 of the Flexible Tickets project for features that are not
  * dependant on the ticket type.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
@@ -17,7 +17,7 @@ use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series;
 /**
  * Class CT1_Integration.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */

@@ -9,7 +9,7 @@ use Tribe__Tickets__Tickets as Tickets_Module;
  *
  * Mostly used to take over legacy methods of sending emails and using the new ones.w
  *
- * @since   5.6.0
+ * @since 5.6.0
  *
  * @package TEC\Tickets\Emails
  */

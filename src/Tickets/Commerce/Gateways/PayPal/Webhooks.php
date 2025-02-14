@@ -13,7 +13,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Webhooks
  *
- * @since   5.1.10
+ * @since 5.1.10
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */

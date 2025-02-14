@@ -2,7 +2,7 @@
 /**
  * The Post and Ticket Group relationship model.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Models;
  */
@@ -19,7 +19,7 @@ use TEC\Tickets\Flexible_Tickets\Repositories\Posts_And_Ticket_Groups;
 /**
  * Class Post_And_Ticket_Group.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Models;
  *

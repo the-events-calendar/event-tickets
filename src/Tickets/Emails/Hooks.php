@@ -10,7 +10,7 @@
  * remove_action( 'some_action', [ tribe( TEC\Tickets\Emails\Hooks::class ), 'some_method' ] );
  * remove_action( 'some_action', [ tribe( 'tickets.emails.hooks' ), 'some_method' ] );
  *
- * @since   5.5.6
+ * @since 5.5.6
  *
  * @package TEC\Tickets\Emails
  */
@@ -25,7 +25,7 @@ use Tribe__Tickets__Tickets as Tickets_Module;
 /**
  * Class Hooks.
  *
- * @since   5.5.6
+ * @since 5.5.6
  *
  * @package TEC\Tickets\Emails
  */

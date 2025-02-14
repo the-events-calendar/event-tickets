@@ -7,7 +7,7 @@ use \TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 /**
  * Class Controller.
  *
- * @since   5.6.7
+ * @since 5.6.7
  *
  * @package TEC\Tickets\QR
  */
@@ -27,7 +27,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Register the controller.
 	 *
-	 * @since   5.6.7
+	 * @since 5.6.7
 	 *
 	 * @uses  Notices::register_admin_notices()
 	 *
@@ -51,7 +51,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Unregister the controller.
 	 *
-	 * @since   5.6.
+	 * @since 5.6.
 	 *
 	 * @return void
 	 */

@@ -3,7 +3,7 @@
  * Handles the maintenance mode set during migration to prevent WRITE operations on Events
  * and related information.
  *
- * @since   5.5.0
+ * @since 5.5.0
  *
  * @package TEC\Tickets\Custom_Tables\V1\Migration\Maintenance_Mode;
  */
@@ -15,7 +15,7 @@ use TEC\Common\Contracts\Service_Provider;
 /**
  * Class Provider.
  *
- * @since   5.5.0
+ * @since 5.5.0
  *
  * @package TEC\Tickets\Custom_Tables\V1\Migration\Maintenance_Mode;
  */

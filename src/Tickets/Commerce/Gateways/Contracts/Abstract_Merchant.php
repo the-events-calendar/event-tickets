@@ -10,7 +10,7 @@ use TEC\Tickets\Commerce\Traits\Has_Mode;
 /**
  * Abstract Merchant Contract.
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Contracts
  */

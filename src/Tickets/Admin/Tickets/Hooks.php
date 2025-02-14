@@ -8,7 +8,7 @@
  * To remove an action:
  * remove_action( 'some_action', [ tribe( TEC\Tickets\Admin\Tickets\Hooks::class ), 'some_method' ] );
  *
- * @since   5.14.0
+ * @since 5.14.0
  *
  * @package TEC\Tickets\Admin
  */
@@ -20,7 +20,7 @@ use TEC\Common\Contracts\Service_Provider;
 /**
  * Class Hooks.
  *
- * @since   5.14.0
+ * @since 5.14.0
  *
  * @package TEC\Tickets\Admin
  */

@@ -186,8 +186,8 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 	/**
 	 * Echo remaining ticket count and purchase/rsvp buttons for a post.
 	 *
-	 * @since  4.5
-	 * @since  4.11.3 Now also displays for posts having only RSVPs. Also changed from <form> to <button>.
+	 * @since 4.5
+	 * @since 4.11.3 Now also displays for posts having only RSVPs. Also changed from <form> to <button>.
 	 *
 	 * @param bool $echo Whether or not we should print.
 	 *
@@ -302,7 +302,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 		/**
 		 * Filter the ticket count and purchase button
 		 *
-		 * @since  4.5
+		 * @since 4.5
 		 *
 		 * @param array $html     An array with the final HTML
 		 * @param array $parts    An array with all the possible parts of the HTMl button
@@ -880,7 +880,7 @@ if ( ! function_exists( 'tribe_tickets_delete_capacity' ) ) {
 	 * Note, you can pass an event/post to this function and it will merrily change the meta values
 	 * for the event - not for the tickets!
 	 *
-	 * @since  4.6.2
+	 * @since 4.6.2
 	 *
 	 * @param int|WP_Post $object WP_Post (or ID of post) We are trying to delete capacity from.
 	 *
@@ -928,7 +928,7 @@ if ( ! function_exists( 'tribe_tickets_update_capacity' ) ) {
 	 * Note, you can pass an event/post to this function and it will merrily change the meta values
 	 * for the event - not for the tickets!
 	 *
-	 * @since  4.6.2
+	 * @since 4.6.2
 	 *
 	 * @param int|WP_Post|Tribe__Tickets__Ticket_Object $object  Post We are trying to save capacity
 	 * @param int                                       $capacty What we are trying to update the capacity to.
@@ -965,7 +965,7 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 	 * Note while we can send a post/event we only store capacity on tickets/rsvps
 	 * so when provided an event it will hand off to tribe_get_event_capacity().
 	 *
-	 * @since  4.6
+	 * @since 4.6
 	 *
 	 * @param int|WP_Post $post Post (ticket!) we are trying to fetch capacity for.
 	 *
@@ -1051,7 +1051,7 @@ if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 	/**
 	 * Returns the capacity for a given Post/Event.
 	 *
-	 * @since  4.11.3
+	 * @since 4.11.3
 	 * @since 4.12.3 Use new helper method to account for possibly inactive ticket provider.
 	 *
 	 * @param int|WP_Post $post Post (event) we are trying to fetch capacity for.
@@ -1166,8 +1166,8 @@ if ( ! function_exists( 'tribe_tickets_get_readable_amount' ) ) {
 	/**
 	 * Turns a Stock, Remaining, or Capacity number into a human-readable format.
 	 *
-	 * @since  4.6
-	 * @since  4.10.11 Run number through formatting, such as commas to separate thousands.
+	 * @since 4.6
+	 * @since 4.10.11 Run number through formatting, such as commas to separate thousands.
 	 *
 	 * @param string|int $number  Which you are trying to convert.
 	 * @param string     $mode    Mode this post is on.

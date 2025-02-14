@@ -2,7 +2,7 @@
 /**
  * Event Tickets Order Modifiers Controller.
  *
- * @since   5.18.0
+ * @since 5.18.0
  * @package TEC\Tickets\Commerce\Order_Modifiers
  */
 

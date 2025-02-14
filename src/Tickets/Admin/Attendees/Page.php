@@ -2,7 +2,7 @@
 /**
  * Handles hooking all the actions and filters used by the admin area.
  *
- * @since   5.9.1
+ * @since 5.9.1
  *
  * @package TEC\Tickets\Admin
  */
@@ -12,7 +12,7 @@ namespace TEC\Tickets\Admin\Attendees;
 /**
  * Class Page.
  *
- * @since   5.9.1
+ * @since 5.9.1
  *
  * @package TEC\Tickets\Admin
  */

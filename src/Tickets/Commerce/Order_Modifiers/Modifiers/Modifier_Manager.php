@@ -5,7 +5,7 @@
  * This class serves as a context that interacts with different modifier strategies (such as Coupons or Booking Fees).
  * It handles the saving (insert/update) of modifiers and delegates rendering tasks to the appropriate strategy.
  *
- * @since   5.18.0
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Modifiers
  */

@@ -441,7 +441,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Enqueue the plugin admin stylesheet(s) and JS.
 	 *
-	 * @since  4.7
+	 * @since 4.7
 	 */
 	public function enqueue_resources() {
 		$post_types = Tribe__Tickets__Main::instance()->post_types();
@@ -1995,7 +1995,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Set the tickets view
 	 *
-	 * @since    4.7
+	 * @since 4.7
 	 *
 	 * @param Tribe__Tickets__Commerce__PayPal__Tickets_View $tickets_view
 	 *
@@ -2350,7 +2350,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @filter wp_loaded 0
 	 *
-	 * @since  4.9
+	 * @since 4.9
 	 */
 	public function maybe_delete_expired_products() {
 		$delete = tribe_get_request_var( 'clear_product_cache', null );
@@ -2390,7 +2390,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @filter wp_loaded 1
 	 *
-	 * @since  4.9
+	 * @since 4.9
 	 *
 	 * @param string   $redirect URL to redirect to.
 	 * @param null|int $post_id  Post ID for cart.
@@ -2760,7 +2760,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Gets the product price value
 	 *
-	 * @since  4.7
+	 * @since 4.7
 	 *
 	 * @param int|WP_Post $product
 	 *

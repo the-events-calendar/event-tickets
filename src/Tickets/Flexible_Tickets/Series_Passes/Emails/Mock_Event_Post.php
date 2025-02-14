@@ -2,7 +2,7 @@
 /**
  * Creates an Event mock for the purpose of the Series Pass Email preview.
  *
- * @since   5.8.4
+ * @since 5.8.4
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes;
  */
@@ -19,7 +19,7 @@ use WP_Post;
 /**
  * Class Mock_Event_Post.
  *
- * @since   5.8.4
+ * @since 5.8.4
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes;
  */

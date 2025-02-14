@@ -19,7 +19,7 @@ use Tribe__Tickets__Main;
 /**
  * Class Emails_Tab
  *
- * @since   5.5.6
+ * @since 5.5.6
  *
  * @package TEC\Tickets\Emails
  */
@@ -55,8 +55,8 @@ class Emails_Tab {
 	/**
 	 * Create the Tickets Commerce Emails Settings Tab.
 	 *
-	 * @since  5.5.6
-	 * @since  5.8.4 Return the registered tab.
+	 * @since 5.5.6
+	 * @since 5.8.4 Return the registered tab.
 	 *
 	 * @param string $admin_page Page ID of current admin page.
 	 *

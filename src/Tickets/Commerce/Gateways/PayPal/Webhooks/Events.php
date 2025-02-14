@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce\Status as Commerce_Status;
 /**
  * Class Events
  *
- * @since   5.1.10
+ * @since 5.1.10
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal\Webhooks
  */

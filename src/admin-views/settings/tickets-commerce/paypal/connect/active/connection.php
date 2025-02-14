@@ -4,9 +4,9 @@
  *
  * @version 5.4.0
  *
- * @since   5.1.10
- * @since   5.3.0 Using generic CSS classes for gateway instead of PayPal.
- * @since   5.4.0 Using the new tickets settings get_url() method.
+ * @since 5.1.10
+ * @since 5.3.0 Using generic CSS classes for gateway instead of PayPal.
+ * @since 5.4.0 Using the new tickets settings get_url() method.
  *
  * @var Tribe__Tickets__Admin__Views                  $this               [Global] Template object.
  * @var string                                        $plugin_url         [Global] The plugin URL.

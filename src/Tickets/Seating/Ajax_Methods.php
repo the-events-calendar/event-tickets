@@ -2,7 +2,7 @@
 /**
  * Provides common methods to check AJAX requests.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating;
  */
@@ -14,7 +14,7 @@ use TEC\Tickets\Seating\Admin\Ajax;
 /**
  * Class Ajax_Methods.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating;
  */

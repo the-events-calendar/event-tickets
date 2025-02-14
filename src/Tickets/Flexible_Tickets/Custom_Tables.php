@@ -2,7 +2,7 @@
 /**
  * The custom tables controller.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Recurring_Tickets;
  */
@@ -20,7 +20,7 @@ use TEC\Common\StellarWP\Models\Config as Model_Config;
 /**
  * Class Custom_Tables.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */

@@ -2,7 +2,7 @@
 /**
  * The Template for displaying the Tickets Commerce Stripe Settings, the PayPal logo specifically.
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @version 5.3.0
  *

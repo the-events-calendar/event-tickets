@@ -14,7 +14,7 @@
 /**
  * Whether we should display order report title.
  *
- * @since  4.10.7
+ * @since 4.10.7
  *
  * @param boolean $show_title (false) Whether to show the title.
  */
@@ -23,7 +23,7 @@ $show_title = apply_filters( 'tribe_tickets_order_report_show_title', false );
 /**
  * Whether we should display order report title for Tribe Commerce orders.
  *
- * @since  4.10.7
+ * @since 4.10.7
  *
  * @param boolean $show_title (false) Whether to show the title.
  */
@@ -34,7 +34,7 @@ $title = __( 'Orders Report', 'event-tickets' );
 /**
  * Allows filtering of the Tribe Commerce order report title
  *
- * @since  4.10.7
+ * @since 4.10.7
  *
  * @param string $title the title.
  */

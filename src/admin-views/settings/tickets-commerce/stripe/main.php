@@ -2,7 +2,7 @@
 /**
  * The Template for displaying the Tickets Commerce Stripe Settings.
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @todo FrontEnd needs to revisit all of these templates to make sure we're not missing anything
  *

@@ -2,7 +2,7 @@
 /**
  * Handles the registration of all the Blocks managed by the plugin.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Blocks;
  */
@@ -27,7 +27,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 /**
  * Class Controller.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Blocks;
  */

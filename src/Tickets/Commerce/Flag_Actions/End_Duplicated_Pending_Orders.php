@@ -12,7 +12,7 @@ use Tribe__Utils__Array as Arr;
  * Class End_Duplicated_Pending_Orders, normally triggered when a given order is completed it will modify the status of all the
  * other orders created with the same Hash cart key, which prevents leaving pending orders open when one was completed.
  *
- * @since    5.2.0
+ * @since 5.2.0
  *
  * @package  TEC\Tickets\Commerce\Flag_Actions
  */

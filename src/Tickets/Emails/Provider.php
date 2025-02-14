@@ -2,7 +2,7 @@
 /**
  * The main service provider for the Tickets Emails.
  *
- * @since   5.5.6
+ * @since 5.5.6
  * @package TEC\Tickets\Emails
  */
 
@@ -13,7 +13,7 @@ use TEC\Common\Contracts\Service_Provider;
 /**
  * Service provider for the Tickets Emails.
  *
- * @since   5.5.6
+ * @since 5.5.6
  * @package TEC\Tickets\Emails
  */
 class Provider extends Service_Provider {

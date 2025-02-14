@@ -11,7 +11,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Send_Email, normally triggered when an order is complete.
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */

@@ -11,7 +11,7 @@ use Tribe__Date_Utils as Dates;
 /**
  * Class Metabox.
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Editor
  */

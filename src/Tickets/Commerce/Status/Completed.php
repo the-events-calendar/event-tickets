@@ -6,7 +6,7 @@ namespace TEC\Tickets\Commerce\Status;
  *
  * This is the status we use to mark a given order as paid and delivered in our Tickets Commerce system.
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Status
  */

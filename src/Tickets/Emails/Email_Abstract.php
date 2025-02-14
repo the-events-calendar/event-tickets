@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Email abstract class.
  *
- * @since   5.5.9
+ * @since 5.5.9
  *
  * @package TEC\Tickets\Emails
  */
@@ -20,7 +20,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Email_Abstract.
  *
- * @since   5.5.9
+ * @since 5.5.9
  *
  * @package TEC\Tickets\Emails
  */

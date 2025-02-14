@@ -2,7 +2,7 @@
 /**
  * The Seating feature frontend timer handler.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Frontend;
  */
@@ -22,7 +22,7 @@ use Tribe__Tickets__Main as ET;
 /**
  * Class Cookie.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Frontend;
  */

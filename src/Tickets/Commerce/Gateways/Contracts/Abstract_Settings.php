@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * @since   5.1.6
+ * @since 5.1.6
  *
  * @package TEC\Tickets\Commerce
  */
@@ -11,7 +11,7 @@ namespace TEC\Tickets\Commerce\Gateways\Contracts;
 /**
  * Abstract Settings
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Contracts
  */

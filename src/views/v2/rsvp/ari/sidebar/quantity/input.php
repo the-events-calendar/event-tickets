@@ -13,8 +13,8 @@
  * @var bool $must_login Whether the user has to login to RSVP or not.
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  *
- * @since   4.12.3
- * @since   5.1.5 Add label to the input to improve accessibility.
+ * @since 4.12.3
+ * @since 5.1.5 Add label to the input to improve accessibility.
  *
  * @version 5.1.5
  */

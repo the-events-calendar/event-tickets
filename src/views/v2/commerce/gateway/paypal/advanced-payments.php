@@ -9,8 +9,8 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.2.0
- * @since   5.5.1 Hidden by default and shown using JS.
+ * @since 5.2.0
+ * @since 5.5.1 Hidden by default and shown using JS.
  *
  * @version 5.5.1
  *

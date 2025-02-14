@@ -2,7 +2,7 @@
 /**
  * Class that handles interfacing with core Site Health.
  *
- * @since   5.8.1
+ * @since 5.8.1
  *
  * @package TEC\Tickets\Site_Health
  */
@@ -20,7 +20,7 @@ use TEC\Tickets\Site_Health\Abstract_Info_Subsection;
 /**
  * Class Tickets_Commerce_Subsection
  *
- * @since   5.8.1
+ * @since 5.8.1
  * @package TEC\Tickets\Site_Health
  */
 class Tickets_Commerce_Subsection extends Abstract_Info_Subsection {

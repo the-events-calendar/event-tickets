@@ -8,7 +8,7 @@ use TEC\Tickets\Commerce\Gateways\Stripe\REST\Webhook_Endpoint;
 /**
  * Class Payment Intent Handler
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */

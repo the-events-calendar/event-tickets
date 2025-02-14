@@ -5,7 +5,7 @@ namespace TEC\Tickets\QR;
 /**
  * Class Admin_Notice
  *
- * @since   5.7.0
+ * @since 5.7.0
  *
  * @package TEC\Tickets\QR
  */

@@ -10,7 +10,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Signup
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */

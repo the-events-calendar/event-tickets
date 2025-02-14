@@ -2,7 +2,7 @@
 /**
  * Handles all the Country handling for PayPal Gateway.
  *
- * @since   5.2.0
+ * @since 5.2.0
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */

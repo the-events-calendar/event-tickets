@@ -2,7 +2,7 @@
 /**
  * The ticket group model.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Models;
  */
@@ -19,7 +19,7 @@ use TEC\Tickets\Flexible_Tickets\Repositories\Ticket_Groups;
 /**
  * Class Ticket_Group.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Models;
  *

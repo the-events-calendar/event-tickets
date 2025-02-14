@@ -2,7 +2,7 @@
 /**
  * Event Attendees Title template.
  *
- * @since  5.5.9
+ * @since 5.5.9
  *
  * @var \Tribe__Template          $this      Current template object.
  * @var int                       $event_id  The event/post/page id.
@@ -12,9 +12,9 @@
 /**
  * Whether we should display the "Attendees for: %s" title.
  *
- * @since  4.6.2
- * @since  4.12.1 Append the post ID to the Attendees page title and each Ticket's name.
- * @since  5.0.1 Change default to the result of `is_admin()`.
+ * @since 4.6.2
+ * @since 4.12.1 Append the post ID to the Attendees page title and each Ticket's name.
+ * @since 5.0.1 Change default to the result of `is_admin()`.
  *
  * @param boolean                   $show_title Whether to show the title.
  * @param Tribe__Tickets__Attendees $attendees  The attendees object.

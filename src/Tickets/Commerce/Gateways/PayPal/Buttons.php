@@ -9,7 +9,7 @@ use TEC\Tickets\Commerce\Cart;
 /**
  * Class Buttons
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */

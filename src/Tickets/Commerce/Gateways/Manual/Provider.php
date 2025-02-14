@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\Manual;
 /**
  * Service provider for the Tickets Commerce: Manual Gateway.
  *
- * @since   5.2.0
+ * @since 5.2.0
  * @package TEC\Tickets\Commerce\Gateways\Manual
  */
 class Provider extends \TEC\Common\Contracts\Service_Provider {

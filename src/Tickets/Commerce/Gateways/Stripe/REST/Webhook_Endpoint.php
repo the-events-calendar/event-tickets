@@ -13,7 +13,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Webhook Endpoint.
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\REST
  */

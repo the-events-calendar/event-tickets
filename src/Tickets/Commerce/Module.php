@@ -9,7 +9,7 @@ use TEC\Tickets\Commerce\Communication\Email as Email_Communication;
 /**
  * Class Tickets Provider class for Tickets Commerce
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce
  */
@@ -538,7 +538,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Generate and store all the attendees information for a new order.
 	 *
-	 * @since      5.1.9
+	 * @since 5.1.9
 	 * @deprecated 5.2.0
 	 *
 	 * @param string $payment_status The tickets payment status, defaults to completed.

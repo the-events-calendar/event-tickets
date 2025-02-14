@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce;
 /**
  * Class Status_Abstract
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Status
  */

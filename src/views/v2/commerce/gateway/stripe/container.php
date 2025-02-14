@@ -11,7 +11,7 @@
  *
  * @todo FrontEnd needs to revisit all of these templates to make sure we're not missing anything
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @version 5.3.0
  * @var bool $must_login      [Global] Whether login is required to buy tickets or not.

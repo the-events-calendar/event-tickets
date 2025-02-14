@@ -15,7 +15,7 @@ use Tribe__Tickets__Main;
 /**
  * Class Payments_Tab
  *
- * @since   5.2.0
+ * @since 5.2.0
  *
  * @package TEC\Tickets\Commerce
  */
@@ -166,7 +166,7 @@ class Payments_Tab extends Service_Provider {
 	/**
 	 * Returns the settings item for the section menu at the top of the Payments settings tab.
 	 *
-	 * @since  5.3.0
+	 * @since 5.3.0
 	 *
 	 * @return array[]
 	 */

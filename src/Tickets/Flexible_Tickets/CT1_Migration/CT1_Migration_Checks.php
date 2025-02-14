@@ -3,7 +3,7 @@
  * Provides methods for classes that have to run checks in the context of the integration of Flexible
  * Tickets with the Custom Tables v1 migration.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes\CT1_Migration;
  */
@@ -15,7 +15,7 @@ use Tribe__Tickets__RSVP as RSVP;
 /**
  * Class CT1_Migration_Checks.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes\CT1_Migration;
  */

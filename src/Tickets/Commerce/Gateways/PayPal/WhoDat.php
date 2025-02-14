@@ -8,7 +8,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\REST\On_Boarding_Endpoint;
 /**
  * Class Connect_Client
  *
- * @since   5.1.6
+ * @since 5.1.6
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */

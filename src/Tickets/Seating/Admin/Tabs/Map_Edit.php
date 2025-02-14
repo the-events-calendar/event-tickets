@@ -2,7 +2,7 @@
 /**
  * The pseudo-tab used to create or edit a Controller Configuration.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller\Admin\Tabs;
  */
@@ -16,7 +16,7 @@ use WP_Error;
 /**
  * Class Map_Edit.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller\Admin\Tabs;
  */

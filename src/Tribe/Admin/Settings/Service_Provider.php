@@ -10,7 +10,7 @@ use Tribe\Tickets\Admin\Settings;
  *
  * @package Tribe\Tickets\Admin\Settings
  *
- * @since   5.1.2
+ * @since 5.1.2
  */
 class Service_Provider extends Service_Provider_Contract {
 	/**

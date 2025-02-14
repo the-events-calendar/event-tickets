@@ -2,7 +2,7 @@
 /**
  * Handles the integration of the Seating feature with the QR code functionality.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating;
  */
@@ -14,7 +14,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 /**
  * Class QR.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating;
  */

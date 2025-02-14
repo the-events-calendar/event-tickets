@@ -9,8 +9,8 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.1.10
- * @since   5.7.0 Added attendee information list for the purchase.
+ * @since 5.1.10
+ * @since 5.7.0 Added attendee information list for the purchase.
  *
  * @version 5.7.0
  *

@@ -2,7 +2,7 @@
 /**
  * Shortcode [tec_tickets_success].
  *
- * @since   5.1.9
+ * @since 5.1.9
  * @package TEC\Tickets\Commerce
  */
 
@@ -16,7 +16,7 @@ use WP_Post;
 /**
  * Class for Shortcode Tribe_Tickets_Checkout.
  *
- * @since   5.1.9
+ * @since 5.1.9
  * @package Tribe\Tickets\Shortcodes
  */
 class Success_Shortcode extends Shortcode_Abstract {

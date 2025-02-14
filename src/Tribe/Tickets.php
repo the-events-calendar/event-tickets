@@ -23,7 +23,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 	 *     ATTENDEE_OBJECT
 	 *
 	 *
-	 * @since  4.5.0.1 Due to a fatal between Event Ticket Plus extending commerces and this class,
+	 * @since 4.5.0.1 Due to a fatal between Event Ticket Plus extending commerces and this class,
 	 *                 we changed this from an Abstract to a normal parent class.
 	 */
 	class Tribe__Tickets__Tickets {
@@ -393,8 +393,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Set the Query args to fetch all the Tickets.
 		 *
-		 * @since  5.5.0 refactored to use the tickets ORM.
-		 * @since  4.6
+		 * @since 5.5.0 refactored to use the tickets ORM.
+		 * @since 4.6
 		 * @since 5.5.2 Set default query args.
 		 * @since 5.8.0 Added the `$context` parameter.
 		 *
@@ -434,8 +434,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Retrieve the ID numbers of all tickets assigned to an event.
 		 *
-		 * @since  4.6
-		 * @since  5.5.0 refactored to use the tickets ORM.
+		 * @since 4.6
+		 * @since 5.5.0 refactored to use the tickets ORM.
 		 * @since 5.8.0 Added the `$context` parameter.
 		 *
 		 * @param int|WP_Post $post Only get tickets assigned to this post ID.
@@ -3378,7 +3378,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				/**
 				 * Allows inclusion of ticket start sale date in unavailability message
 				 *
-				 * @since  4.7.6
+				 * @since 4.7.6
 				 *
 				 * @param  bool	$display_date
 				 */
@@ -3387,7 +3387,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				/**
 				 * Allows inclusion of ticket start sale time in unavailability message
 				 *
-				 * @since  4.7.6
+				 * @since 4.7.6
 				 *
 				 * @param  bool	$display_time
 				 */

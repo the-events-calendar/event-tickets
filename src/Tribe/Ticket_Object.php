@@ -50,7 +50,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Ticket Capacity
 		 *
-		 * @since  4.6
+		 * @since 4.6
 		 *
 		 * @var    int
 		 */
@@ -600,8 +600,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Provides the Inventory of the Ticket which should match the Commerce Stock
 		 *
-		 * @since  4.6
-		 * @since  4.12.3 Account for possibly inactive ticket provider.
+		 * @since 4.6
+		 * @since 4.12.3 Account for possibly inactive ticket provider.
 		 *
 		 * @return int
 		 */
@@ -762,7 +762,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @see \Tribe__Tickets__Tickets_Handler::get_ticket_max_purchase() Use instead to get the front-end quantity.
 		 *
-		 * @since  4.6
+		 * @since 4.6
 		 *
 		 * @return int
 		 */
@@ -810,7 +810,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Gets the Capacity for the Ticket
 		 *
-		 * @since   4.6
+		 * @since 4.6
 		 *
 		 * @return  int
 		 */

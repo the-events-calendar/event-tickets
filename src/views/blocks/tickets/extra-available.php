@@ -10,9 +10,9 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   4.9.3
- * @since   4.11.1 Corrected amount of available/remaining tickets.
- * @since   4.11.5 Corrected the way to get the actual stock available.
+ * @since 4.9.3
+ * @since 4.11.1 Corrected amount of available/remaining tickets.
+ * @since 4.11.5 Corrected the way to get the actual stock available.
  *
  * @version 4.11.5
  *

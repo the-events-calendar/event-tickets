@@ -2,7 +2,7 @@
 /**
  * The Seat Selection reservations table schema.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Tables;
  */
@@ -17,7 +17,7 @@ use TEC\Tickets\Seating\Logging;
 /**
  * Class Sessions.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Tables;
  */

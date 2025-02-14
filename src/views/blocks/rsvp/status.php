@@ -10,8 +10,8 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   4.9
- * @since   5.0.3 Add docblock vars and remove duplicative variables.
+ * @since 4.9
+ * @since 5.0.3 Add docblock vars and remove duplicative variables.
  *
  * @version 5.0.3
  *

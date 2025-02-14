@@ -2,7 +2,7 @@
 /**
  * Handles registering Providers for the TEC\Events_Community\Custom_Tables\V1 (RBE) namespace.
  *
- * @since   5.5.0
+ * @since 5.5.0
  *
  * @package TEC\Events_Community\Custom_Tables\V1;
  */
@@ -17,7 +17,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Provider.
  *
- * @since   5.5.0
+ * @since 5.5.0
  *
  * @package TEC\Tickets\Custom_Tables\V1;
  */
@@ -98,7 +98,7 @@ class Provider extends Controller {
 		 * Filters whether tickets are allowed on recurring events or not.
 		 * By default, tickets are not allowed on Recurring Events.
 		 *
-		 * @since  5.8.0
+		 * @since 5.8.0
 		 *
 		 * @params bool $allow_tickets_on_recurring Whether tickets are allowed on recurring events or not.
 		 */
@@ -112,7 +112,7 @@ class Provider extends Controller {
 		 * Filters whether RSVPs are allowed on recurring events or not.
 		 * By default, RSVPs are not allowed on Recurring Events.
 		 *
-		 * @since  5.8.0
+		 * @since 5.8.0
 		 *
 		 * @params bool $allow_rsvps_on_recurring Whether RSVPs are allowed on recurring events or not.
 		 */

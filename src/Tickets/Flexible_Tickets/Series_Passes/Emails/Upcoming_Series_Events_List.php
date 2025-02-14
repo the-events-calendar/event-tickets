@@ -2,7 +2,7 @@
 /**
  * Displays a list of the Series Upcoming Events.
  *
- * @since   5.8.4
+ * @since 5.8.4
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes;
  */
@@ -14,7 +14,7 @@ use Tribe__Template as Template;
 /**
  * Class Upcoming_Series_Events_List.
  *
- * @since   5.8.4
+ * @since 5.8.4
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes;
  */

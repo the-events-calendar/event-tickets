@@ -2,7 +2,7 @@
 /**
  * Handles the queries required by Series Passes to integrate with Events Tickets.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
@@ -17,7 +17,7 @@ use Tribe__Events__Main as TEC;
 /**
  * Class Queries.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */

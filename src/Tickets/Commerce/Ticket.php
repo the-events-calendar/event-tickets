@@ -16,7 +16,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 /**
  * Class Ticket.
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce
  */
@@ -989,9 +989,9 @@ class Ticket {
 	/**
 	 * Gets the product price value object
 	 *
-	 * @since   5.1.9
-	 * @since   5.2.3 method signature changed to return an instance of Value instead of a string.
-	 * @since   5.13.0   added new param to force regular price value return.
+	 * @since 5.1.9
+	 * @since 5.2.3 method signature changed to return an instance of Value instead of a string.
+	 * @since 5.13.0   added new param to force regular price value return.
 	 *
 	 * @param int|\WP_Post $product       The ticket post ID or object.
 	 * @param bool         $force_regular Whether to force the regular price.

@@ -2,7 +2,7 @@
 /**
  * Handles the Series Passes integration at different levels.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes;
  */
@@ -28,7 +28,7 @@ use WP_Rewrite;
 /**
  * Class Repository.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes;
  */

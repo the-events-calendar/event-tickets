@@ -2,7 +2,7 @@
 /**
  * Maintains the relation between a Series ticket provider and the ticket provider of the Events part of the Series.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -14,7 +14,7 @@ use TEC\Events_Pro\Custom_Tables\V1\Models\Series_Relationship;
 /**
  * Class Ticket_Provider_Handler.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */

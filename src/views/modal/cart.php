@@ -51,7 +51,7 @@ $currency        = tribe( 'tickets.commerce.currency' );
 	/**
 	 * Allows filtering of text used in the loader
 	 *
-	 * @since  4.11.0
+	 * @since 4.11.0
 	 *
 	 * @param  string $value     The value that will be filtered.
 	 */
@@ -59,7 +59,7 @@ $currency        = tribe( 'tickets.commerce.currency' );
 	/**
 	 * Allows filtering of extra classes used on the modal loader
 	 *
-	 * @since  4.11.0
+	 * @since 4.11.0
 	 *
 	 * @param  array $classes The array of classes that will be filtered.
 	 */

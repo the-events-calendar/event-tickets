@@ -698,7 +698,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Enqueue the plugin stylesheet(s).
 	 *
 	 * @author caseypicker
-	 * @since  3.9
+	 * @since 3.9
 	 * @return void
 	 */
 	public function enqueue_resources() {

@@ -2,7 +2,7 @@
 /**
  * Attendees modal - Check-in details > Checked-in.
  *
- * @since  5.10.0
+ * @since 5.10.0
  *
  * @var Tribe_Template $this           Current template object.
  * @var \WP_Post       $attendee       The attendee object.

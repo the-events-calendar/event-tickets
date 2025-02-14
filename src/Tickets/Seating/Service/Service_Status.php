@@ -2,7 +2,7 @@
 /**
  * A value object representing the status of the Seating Service.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Service;
  */
@@ -15,7 +15,7 @@ use function TEC\Common\StellarWP\Uplink\get_resource;
 /**
  * Class Service_Status.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Service;
  */

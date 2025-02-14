@@ -14,7 +14,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Hook of the admin page for attendees
 	 *
-	 * @since  4.6.2
+	 * @since 4.6.2
 	 *
 	 * @var string
 	 */
@@ -23,7 +23,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * WP_Post_List children for Attendees
 	 *
-	 * @since  4.6.2
+	 * @since 4.6.2
 	 *
 	 * @var Tribe__Tickets__Attendees_Table
 	 */
@@ -910,8 +910,8 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Handles the "send to email" action for the attendees list.
 	 *
-	 * @since  4.6.2
-	 * @since  5.8.2 Included params $event_id, $type, $send_to and $error to allow for testing.
+	 * @since 4.6.2
+	 * @since 5.8.2 Included params $event_id, $type, $send_to and $error to allow for testing.
 	 *
 	 * @param ?int|?string $event_id   The event ID.
 	 * @param ?string      $type       The type of recipient.
@@ -1004,7 +1004,7 @@ class Tribe__Tickets__Attendees {
 	 * For example, if tickets are created for the banana post type, the generic capability
 	 * "edit_posts" will be mapped to "edit_bananas" or whatever is appropriate.
 	 *
-	 * @since    4.6.2
+	 * @since 4.6.2
 	 *
 	 * @param string $generic_cap
 	 * @param int    $event_id

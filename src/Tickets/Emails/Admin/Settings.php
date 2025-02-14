@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Settings class
  *
- * @since   5.5.6
+ * @since 5.5.6
  *
  * @package TEC\Tickets\Emails
  */

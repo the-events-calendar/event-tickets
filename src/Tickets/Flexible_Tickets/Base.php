@@ -2,7 +2,7 @@
 /**
  * Controls the basic, common, features of the Flexible Tickets project.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -17,7 +17,7 @@ use TEC\Events_Pro\Custom_Tables\V1\Series\Provider as Series_Provider;
 /**
  * Class Base.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */

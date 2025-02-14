@@ -2,7 +2,7 @@
 /**
  * Handles the integration between Flexible Tickets and the editors.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
@@ -21,7 +21,7 @@ use Tribe__Tickets__Tickets as Tickets;
 /**
  * Class Editor.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */

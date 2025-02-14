@@ -9,7 +9,7 @@ use Tribe__Date_Utils as Dates;
 /**
  * Class Merchant.
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */

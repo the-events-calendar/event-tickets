@@ -2,7 +2,7 @@
 /**
  * Handles displaying of orders page and sub menu.
  *
- * @since   5.13.0
+ * @since 5.13.0
  *
  * @package TEC\Tickets\Commerce\Admin
  */
@@ -15,7 +15,7 @@ use Tribe\Admin\Pages;
 /**
  * Class Orders_Page.
  *
- * @since   5.13.0
+ * @since 5.13.0
  *
  * @package TEC\Tickets\Commerce\Admin
  */

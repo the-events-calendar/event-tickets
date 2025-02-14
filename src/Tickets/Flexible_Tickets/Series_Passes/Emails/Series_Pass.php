@@ -2,7 +2,7 @@
 /**
  * Series Pass Email template.
  *
- * @since   5.8.4
+ * @since 5.8.4
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Emails;
  */
@@ -22,7 +22,7 @@ use TEC\Tickets\Emails\JSON_LD\Reservation_Schema;
 /**
  * Class Series_Pass.
  *
- * @since   5.8.4
+ * @since 5.8.4
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Emails;
  */

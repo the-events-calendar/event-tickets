@@ -142,7 +142,7 @@ class Tribe__Tickets__Privacy {
 	 *
 	 * @param     $email_address
 	 * @param int $page
-	 * @since     4.7.5
+	 * @since 4.7.5
 	 *
 	 * @return array
 	 */
@@ -226,7 +226,7 @@ class Tribe__Tickets__Privacy {
 	 *
 	 * @param     $email_address
 	 * @param int $page
-	 * @since     4.7.6
+	 * @since 4.7.6
 	 *
 	 * @return array
 	 */
@@ -290,7 +290,7 @@ class Tribe__Tickets__Privacy {
 	 *
 	 * @param     $email_address
 	 * @param int $page
-	 * @since     4.7.6
+	 * @since 4.7.6
 	 *
 	 * @return array
 	 */
@@ -354,7 +354,7 @@ class Tribe__Tickets__Privacy {
 	 *
 	 * @param     $email_address
 	 * @param int $page
-	 * @since     4.7.6
+	 * @since 4.7.6
 	 *
 	 * @return array
 	 */
@@ -423,7 +423,7 @@ class Tribe__Tickets__Privacy {
 	 *
 	 * @param     $email_address
 	 * @param int $page
-	 * @since     4.7.5
+	 * @since 4.7.5
 	 *
 	 * @return array
 	 */
@@ -507,7 +507,7 @@ class Tribe__Tickets__Privacy {
 	 *
 	 * @param     $email_address
 	 * @param int $page
-	 * @since     4.7.6
+	 * @since 4.7.6
 	 *
 	 * @return array
 	 */
