@@ -164,7 +164,7 @@ class Unmanaged_Cart extends Abstract_Cart {
 	 * @since 5.1.9
 	 *
 	 * @param int|string $item_id    The item ID.
-	 * @param int        $quantity   The quantity to remove.
+	 * @param int        $quantity   The quantity to add.
 	 * @param array      $extra_data Extra data to save to the item.
 	 */
 	public function add_item( $item_id, $quantity, array $extra_data = [] ) {
@@ -228,9 +228,6 @@ class Unmanaged_Cart extends Abstract_Cart {
 
 		// Reset the contents of the cart.
 		$this->clear();
-
-		/** @var Messages $messages */
-		$messages = tribe( 'tickets.rest-v1.messages' );
 
 		/** @var Tickets_Handler $tickets_handler */
 		$tickets_handler = tribe( 'tickets.handler' );

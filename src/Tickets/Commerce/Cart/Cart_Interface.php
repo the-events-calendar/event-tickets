@@ -7,7 +7,8 @@ use InvalidArgumentException;
 /**
  * Interface Cart_Interface
  *
- * @since   5.1.9
+ * @since 5.1.9
+ * @since TBD Updated the interface: remove add_item(), add upsert_item(), add get_item_quantity().
  *
  * @package TEC\Tickets\Commerce\Cart
  */
