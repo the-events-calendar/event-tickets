@@ -42,9 +42,9 @@ class Agnostic_CartTest extends WPTestCase {
 		$cart = new Agnostic_Cart();
 
 		if ( $extra ) {
-			$cart->add_item( $ticket_id, $quantity, $extra );
+			$cart->upsert_item( $ticket_id, $quantity, $extra );
 		} else {
-			$cart->add_item( $ticket_id, $quantity );
+			$cart->upsert_item( $ticket_id, $quantity );
 		}
 
 		$assertion_msg = 'Adding an item to the cart should sanitize and format it properly before storing.';
@@ -70,7 +70,7 @@ class Agnostic_CartTest extends WPTestCase {
 			$items_count[ $item_id ] ??= 0;
 			$items_count[ $item_id ] += $item[1];
 
-			$cart->add_item( $item[0], $item[1], $item[2] ?? [] );
+			$cart->upsert_item( $item[0], $item[1], $item[2] ?? [] );
 
 			// Update quantities as each item gets updated
 			$item[3][ $item[0] ]['quantity'] = $items_count[ $item_id ];
@@ -93,7 +93,7 @@ class Agnostic_CartTest extends WPTestCase {
 		while ( $i < 3 ) {
 			$i++;
 			$quantity = pow( $i, 2 );
-			$cart->add_item( $i, $quantity );
+			$cart->upsert_item( $i, $quantity );
 
 			switch ( $i ) {
 				case 1:
@@ -103,13 +103,14 @@ class Agnostic_CartTest extends WPTestCase {
 					$this->assertFalse( $cart->has_item( $i ), $assertion_msg );
 					break;
 				case 2:
-					$cart->remove_item( $i, $quantity / 2 );
+					$cart->remove_item( $i );
 
 					$assertion_msg = 'Removing fewer items than available should result in a positive amount.';
-					$this->assertEquals( $quantity / 2, $cart->has_item( $i ), $assertion_msg );
+					$this->assertTrue( $cart->has_item( $i ) );
+					$this->assertEquals( $quantity / 2, $cart->get_item_quantity( $i ), $assertion_msg );
 					break;
 				case 3:
-					$cart->remove_item( $i, pow( $quantity, 2 ) );
+					$cart->remove_item( $i );
 
 					$assertion_msg = 'Removing more items than available should remove the item.';
 					$this->assertEquals( 0, $cart->has_item( $i ), $assertion_msg );
@@ -125,7 +126,7 @@ class Agnostic_CartTest extends WPTestCase {
 
 		while ( $i < 2 ) {
 			$i++;
-			$cart->add_item( $i, $quantity[ $i - 1 ] );
+			$cart->upsert_item( $i, $quantity[ $i - 1 ] );
 		}
 
 		while ( $i > 0 ) {
@@ -146,7 +147,7 @@ class Agnostic_CartTest extends WPTestCase {
 			if ( is_numeric( $item[0] ) ) {
 				$count++;
 				// Add $count to the item_id so they count as different tickets
-				$cart->add_item( $item[0] + $count, $item[1] );
+				$cart->upsert_item( $item[0] + $count, $item[1] );
 
 				$assertion_msg = 'Adding items with unique ids should properly update the item count in the cart.';
 				$this->assertEquals( $count, $cart->has_items(), $assertion_msg );
@@ -159,7 +160,7 @@ class Agnostic_CartTest extends WPTestCase {
 		$items = $this->items_data_provider();
 		$item  = reset( $items );
 
-		$cart->add_item( $item[0], $item[1] );
+		$cart->upsert_item( $item[0], $item[1] );
 
 		$assertion_msg = '`Agnostic_Cart->has_item( $id )` should return the quantity of that item currently in the cart.';
 		$this->assertEquals( $item[1], $cart->has_item( $item[0] ), $assertion_msg );
