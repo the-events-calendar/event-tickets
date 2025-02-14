@@ -735,7 +735,7 @@ class Order_Test extends WPTestCase {
 
 	protected function create_order_from_cart( array $items, array $overrides = [] ) {
 		foreach ( $items as $id => $quantity ) {
-			tribe( Cart::class )->get_repository()->add_item( $id, $quantity );
+			tribe( Cart::class )->get_repository()->upsert_item( $id, $quantity );
 		}
 
 		$default_purchaser = [
