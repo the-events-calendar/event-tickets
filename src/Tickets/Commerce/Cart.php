@@ -3,7 +3,6 @@
 
 namespace TEC\Tickets\Commerce;
 
-use InvalidArgumentException;
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Cart\Cart_Interface;
 use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
@@ -398,14 +397,15 @@ class Cart {
 			return;
 		}
 
-		try {
-			$current_quantity = $cart->get_item_quantity( $ticket_id );
-			$new_quantity     = max( 0, $current_quantity - $quantity );
-
-			$cart->upsert_item( $ticket_id, $new_quantity );
-		} catch ( InvalidArgumentException $e ) {
-			// Do nothing.
+		// Make sure the cart actually has the item.
+		if ( ! $cart->has_item( $ticket_id ) ) {
+			return;
 		}
+
+		$current_quantity = $cart->get_item_quantity( $ticket_id );
+		$new_quantity     = max( 0, $current_quantity - $quantity );
+
+		$cart->upsert_item( $ticket_id, $new_quantity );
 	}
 
 	/**
