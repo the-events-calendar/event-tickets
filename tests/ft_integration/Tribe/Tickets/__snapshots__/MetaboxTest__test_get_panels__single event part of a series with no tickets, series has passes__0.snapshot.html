@@ -4,7 +4,7 @@
 	aria-hidden="false"
 	data-save-prompt="You have unsaved changes to your tickets. Discard those changes?"
 >
-	<div class="tribe_sectionheader ticket_list_container">
+	<div class="tribe_sectionheader ticket_list_container tribe_no_capacity">
 		<div class="ticket_table_intro">
 			<button
 	id="ticket_form_toggle"
@@ -18,6 +18,8 @@ New ticket</button><button
 	aria-label="Add a new RSVP"
 >
 	New RSVP</button>
+<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
+    Settings</button>
 		</div>
 
 		<div class="ticket_table_intro__warnings">
@@ -25,7 +27,7 @@ New ticket</button><button
 	<span class="dashicons dashicons-lightbulb"></span>
 	<div class="ticket-editor-notice_warning--messages">
 			<p class="ticket-editor-notice_warning--message recurring-warning-message">
-		This recurring event is part of a Series. Create and manage Series Passes for this event from the <a href="http://wordpress.test/wp-admin/post.php?post={{ID}}&#038;action=edit" target="_blank" rel="noreferrer noopener">Test series</a> Series admin. <a href="https://evnt.is/-series-passes" target="_blank" rel="noreferrer noopener">Learn more about Series Passes</a>		</p>
+		Once you save this event, you can add Series Passes to its parent Series. <a href="https://evnt.is/-series-passes" target="_blank" rel="noreferrer noopener">Learn more about Series Passes</a>.		</p>
 			<p class="ticket-editor-notice_warning--message et-warning">
 		Standard tickets are not yet supported on recurring events. <a href="https://evnt.is/1b7a" target="_blank" rel="noreferrer noopener">See our future planned features.</a>		</p>
 		</div>
@@ -34,158 +36,21 @@ New ticket</button><button
 	<span class="dashicons dashicons-lightbulb"></span>
 	<div class="ticket-editor-notice_warning--messages">
 			<p class="ticket-editor-notice_warning--message recurring-warning-message">
-		This recurring event is part of a Series. Create and manage Series Passes for this event from the <a href="http://wordpress.test/wp-admin/post.php?post={{ID}}&#038;action=edit" target="_blank" rel="noreferrer noopener">Test series</a> Series admin. <a href="https://evnt.is/-series-passes" target="_blank" rel="noreferrer noopener">Learn more about Series Passes</a>		</p>
+		Once you save this event, you can add Series Passes to its parent Series. <a href="https://evnt.is/-series-passes" target="_blank" rel="noreferrer noopener">Learn more about Series Passes</a>.		</p>
 			<p class="ticket-editor-notice_warning--message et-warning">
 		Standard tickets are not yet supported on recurring events. <a href="https://evnt.is/1b7a" target="_blank" rel="noreferrer noopener">See our future planned features.</a>		</p>
 		</div>
 </div>
 		</div>
 
-		
-<div class="ticket-editor-notice info info--background table-stick--before series-pass-link">
-	<span class="dashicons dashicons-lightbulb"></span>
-	<span class="message">
-		This event is part of a Series. Create and manage Series Passes from the <a href="http://wordpress.test/wp-admin/post.php?post={{ID}}&#038;action=edit" target="_blank">Test series</a> Series admin. <br> <a href="https://evnt.is/-series-passes" target="_blank">Learn more about Series Passes</a>	</span>
-</div>
-
-<div class="ticket_list_wrapper">
-	<table class="tribe_ticket_list_table tribe-tickets-editor-table eventtable ticket_list eventForm widefat fixed">
-		<thead>
-			<tr class="table-header">
-				<th class="ticket_name column-primary">
-					
-<img
-	class="tribe-tickets-svgicon tec-tickets-icon tec-tickets-icon__ticket-type"
-	src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/icons/ticket-series-pass-icon.svg"
-	alt="Series Pass"
-/>
-					Series Passes				</th>
-				
-<th class="ticket_price">Price</th>
-				<th class="ticket_capacity">Capacity</th>
-				<th class="ticket_available">Available</th>
-				<th class="ticket_edit"></th>
-			</tr>
-		</thead>
-				<tbody class="tribe-tickets-editor-table-tickets-body">
-		<tr class="TEC\Tickets\Commerce\Module is-expanded"
-	data-ticket-order-id="order_{{ID}}"
-	data-ticket-type-id="{{ID}}"
-	data-ticket-type="series_pass">
-	<td class="column-primary ticket_name TEC\Tickets\Commerce\Module" data-label="Ticket Type:">
-		<input
-			type="hidden"
-			class="tribe-ticket-field-order"
-			name="tribe-tickets[list][{{ID}}][order]"
-			value="1"
-					>
-		<div class="tribe-tickets__tickets-editor-ticket-name">
-			<div class="tribe-tickets__tickets-editor-ticket-name-sortable">
-				<span class="dashicons dashicons-screenoptions tribe-handle"></span>
 			</div>
-			<div class="tribe-tickets__tickets-editor-ticket-name-title">
-
-				
-				Test TC ticket for {{ID}}
-				<div  class="tribe-tickets__tickets-editor-ticket-available-dates dashicons-before dashicons-clock" >
-	January 2, 2020 - March 1, 2050</div>
-			</div>
-		</div>
-	</td>
-
-	<td class="ticket_price" data-label="Price:">
-	
-<span class="tec-tickets-price amount">
-	&#x24;23.00</span>
-</td>
-
-	<td class="ticket_capacity">
-		<span class='tribe-mobile-only'>Capacity:</span>
-		100	</td>
-
-	<td class="ticket_available">
-		<span class='tribe-mobile-only'>Available:</span>
-				100	</td>
-
-	<td class="ticket_edit">
-		
-<a href="http://wordpress.test/wp-admin/post.php?post={{ID}}&#038;action=edit" target="_blank">
-	Edit in Series</a>
-	</td>
-</tr>
-<tr class="TEC\Tickets\Commerce\Module is-expanded"
-	data-ticket-order-id="order_{{ID}}"
-	data-ticket-type-id="{{ID}}"
-	data-ticket-type="series_pass">
-	<td class="column-primary ticket_name TEC\Tickets\Commerce\Module" data-label="Ticket Type:">
-		<input
-			type="hidden"
-			class="tribe-ticket-field-order"
-			name="tribe-tickets[list][{{ID}}][order]"
-			value="2"
-					>
-		<div class="tribe-tickets__tickets-editor-ticket-name">
-			<div class="tribe-tickets__tickets-editor-ticket-name-sortable">
-				<span class="dashicons dashicons-screenoptions tribe-handle"></span>
-			</div>
-			<div class="tribe-tickets__tickets-editor-ticket-name-title">
-
-				
-				Test TC ticket for {{ID}}
-				<div  class="tribe-tickets__tickets-editor-ticket-available-dates dashicons-before dashicons-clock" >
-	January 2, 2020 - March 1, 2050</div>
-			</div>
-		</div>
-	</td>
-
-	<td class="ticket_price" data-label="Price:">
-	
-<span class="tec-tickets-price amount">
-	&#x24;89.00</span>
-</td>
-
-	<td class="ticket_capacity">
-		<span class='tribe-mobile-only'>Capacity:</span>
-		100	</td>
-
-	<td class="ticket_available">
-		<span class='tribe-mobile-only'>Available:</span>
-				100	</td>
-
-	<td class="ticket_edit">
-		
-<a href="http://wordpress.test/wp-admin/post.php?post={{ID}}&#038;action=edit" target="_blank">
-	Edit in Series</a>
-	</td>
-</tr>
-		</tbody>
-	</table>
-
-</div>
-	</div>
 	<div class="tribe-ticket-control-wrap">
 		<div class="tribe-ticket-control-wrap__ctas">
-							<a
-					href="http://wordpress.test/wp-admin/edit.php?post_type=tribe_events&#038;page=tickets-attendees&#038;event_id={{ID}}"
-				>
-					View Attendees				</a>
-
-				
-	<a
-		href="http://wordpress.test/wp-admin/edit.php?post_type=tribe_events&#038;page=tickets-commerce-orders&#038;event_id={{ID}}"
-	>
-		View Orders	</a>
 					</div>
 
 		<div class="tribe-ticket-control-wrap__settings">
-							<span id="ticket_form_total_capacity">
-	Total Event Capacity:	<span id="ticket_form_total_capacity_value" title="The total number of possible attendees for this event">
-		<a href="#" id="capacity_form_toggle">200</a>	</span>
-</span>
 			
-			<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
-    Settings</button>
-		</div>
+					</div>
 	</div>
 	
 </div>
@@ -372,7 +237,7 @@ New ticket</button><button
 	</div>
 
 	<span class="tribe_soft_note ticket_form_right tribe-active">
-		A standard ticket is specific to this event. You can add a Series Pass from the <a href="http://wordpress.test/wp-admin/post.php?post={{ID}}&amp;action=edit#tribetickets" target="_blank">Test series</a> Series page.	</span>
+		A standard ticket is specific to this event.	</span>
 </div>
 <div class="input_block">
 	<label class="ticket_form_label ticket_form_left" for="ticket_start_date">
