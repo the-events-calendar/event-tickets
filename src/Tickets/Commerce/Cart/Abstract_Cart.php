@@ -346,6 +346,6 @@ abstract class Abstract_Cart implements Cart_Interface {
 			throw new InvalidArgumentException( 'Item not found in cart.' );
 		}
 
-		return (int) $this->items[ $item_id ]['quantity'];
+		return (int) $this->get_items()[ $item_id ]['quantity'];
 	}
 }
