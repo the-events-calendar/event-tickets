@@ -396,7 +396,7 @@ class Cart {
 		$quantity = max( 1, (int) $quantity );
 
 		// Add to / update quantity in cart.
-		$cart->add_item( $ticket_id, $quantity, $extra_data );
+		$cart->upsert_item( $ticket_id, $quantity, $extra_data );
 	}
 
 	/**
