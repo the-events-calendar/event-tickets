@@ -51,11 +51,11 @@ class Agnostic_Cart extends Abstract_Cart {
 	 *
 	 * @since TBD
 	 *
-	 * @return array
+	 * @return array The items in the cart.
 	 */
 	public function get_items() {
 		if ( ! empty( $this->items ) ) {
-			return $this->get_items_plain();
+			return $this->get_items_as_array();
 		}
 
 		if ( ! $this->exists() ) {
@@ -64,10 +64,10 @@ class Agnostic_Cart extends Abstract_Cart {
 
 		$items = get_transient( $this->get_transient_key( $this->get_hash() ) );
 		if ( is_array( $items ) && ! empty( $items ) ) {
-			$this->set_items_plain( $items );
+			$this->set_items_from_array( $items );
 		}
 
-		return $this->get_items_plain();
+		return $this->get_items_as_array();
 	}
 
 	/**
@@ -75,9 +75,9 @@ class Agnostic_Cart extends Abstract_Cart {
 	 *
 	 * @since TBD
 	 *
-	 * @return array
+	 * @return array The items in the cart.
 	 */
-	protected function get_items_plain(): array {
+	protected function get_items_as_array(): array {
 		return array_map(
 			fn( $item ) => $item->to_array(),
 			$this->items
@@ -91,7 +91,7 @@ class Agnostic_Cart extends Abstract_Cart {
 	 *
 	 * @param array $items The items to set.
 	 */
-	protected function set_items_plain( array $items ) {
+	protected function set_items_from_array( array $items ) {
 		$this->items = array_map(
 			fn( $item ) => new Cart_Item( $item ),
 			$items
@@ -124,7 +124,7 @@ class Agnostic_Cart extends Abstract_Cart {
 
 		set_transient(
 			$this->get_transient_key( $cart_hash ),
-			$this->get_items_plain(),
+			$this->get_items_as_array(),
 			$this->get_transient_expiration()
 		);
 
