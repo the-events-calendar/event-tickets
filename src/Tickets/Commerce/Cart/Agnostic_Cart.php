@@ -162,11 +162,11 @@ class Agnostic_Cart extends Abstract_Cart {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $criteria Additional criteria to use when checking if the cart exists.
+	 * @param array $unused_criteria Unused extra criteria.
 	 *
 	 * @return bool Whether the cart exists or not.
 	 */
-	public function exists( array $criteria = [] ) {
+	public function exists( array $unused_criteria = [] ) {
 		$hash = tribe( Cart::class )->get_cart_hash();
 		if ( empty( $hash ) ) {
 			return false;
