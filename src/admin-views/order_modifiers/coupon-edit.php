@@ -71,7 +71,7 @@ $modifier_statuses = [
 						data-validation-error="<?php esc_attr_e( 'Coupon Code is required', 'event-tickets' ); ?>"
 						value="<?php echo esc_attr( $order_modifier_slug ?? '' ); ?>" />
 					<p>
-						<?php esc_html_e( 'A unique code has been created for this coupon. You can override this code by replacing it with your own unique code (ex. SUMMERSAVINGS24).', 'event-tickets' ); ?>
+						<?php esc_html_e( 'A unique code has been created for this coupon. You can override this code by replacing it with your own unique code (ex. SUMMERSAVINGS25).', 'event-tickets' ); ?>
 					</p>
 				</div>
 

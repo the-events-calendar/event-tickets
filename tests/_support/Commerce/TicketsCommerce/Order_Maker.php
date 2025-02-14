@@ -24,7 +24,7 @@ trait Order_Maker {
 		$cart = new Cart();
 
 		foreach ( $items as $id => $quantity ) {
-			$cart->get_repository()->add_item( $id, $quantity );
+			$cart->get_repository()->upsert_item( $id, $quantity );
 		}
 
 		$default_purchaser = [
@@ -39,16 +39,16 @@ trait Order_Maker {
 
 		$order_status = $overrides['order_status'] ?? Completed::SLUG;
 		$purchaser    = wp_parse_args( $overrides, $default_purchaser );
-		
+
 		$feed_args_callback = function ( $args ) use ( $overrides ) {
 			$args['post_date']     = $overrides['post_date'] ?? '';
 			$args['post_date_gmt'] = $overrides['post_date_gmt'] ?? $args['post_date'];
-			
+
 			return $args;
 		};
-		
+
 		add_filter( 'tec_tickets_commerce_order_create_args', $feed_args_callback );
-		
+
 		$orders = tribe( Order::class );
 		$order  = $orders->create_from_cart( $gateway, $purchaser );
 
@@ -61,7 +61,7 @@ trait Order_Maker {
 		}
 
 		clean_post_cache( $order->ID );
-		
+
 		remove_filter( 'tec_tickets_commerce_order_create_args', $feed_args_callback );
 
 		$cart->clear_cart();
