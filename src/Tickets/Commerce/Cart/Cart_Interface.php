@@ -104,17 +104,6 @@ interface Cart_Interface {
 	public function has_item( $item_id );
 
 	/**
-	 * Adds a specified quantity of the item to the cart.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @param int|string $item_id    The item ID.
-	 * @param int        $quantity   The quantity to remove.
-	 * @param array      $extra_data Extra data to save to the item.
-	 */
-	public function add_item( $item_id, $quantity, array $extra_data = [] );
-
-	/**
 	 * Determines if this instance of the cart has a public page.
 	 *
 	 * @since 5.1.9
