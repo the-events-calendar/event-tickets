@@ -152,6 +152,22 @@ interface Cart_Interface {
 	public function prepare_data( array $data = [] );
 
 	/**
+	 * Insert or update an item.
+	 *
+	 * Use this method to add a new item, or to update the quantity and extra data of an existing item.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|int $item_id    The item ID.
+	 * @param int        $quantity   The quantity of the item. If the item exists, this quantity will override
+	 *                               the previous quantity. Passing 0 will remove the item from the cart entirely.
+	 * @param array      $extra_data Extra data to save to the item.
+	 *
+	 * @return void
+	 */
+	public function upsert_item( $item_id, int $quantity, array $extra_data = [] );
+
+	/**
 	 * Get the quantity of an item in the cart.
 	 *
 	 * @since TBD
