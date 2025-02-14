@@ -3,7 +3,6 @@
 namespace TEC\Tickets\Commerce\Cart;
 
 use TEC\Tickets\Commerce\Cart;
-use Tribe__Tickets__REST__V1__Messages as Messages;
 use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 
 /**

@@ -217,7 +217,7 @@ class Agnostic_Cart extends Abstract_Cart {
 	public function upsert_item( $item_id, int $quantity, array $extra_data = [] ) {
 		$quantity = abs( $quantity );
 
-		// If the quantity is zero, just remove the item
+		// If the quantity is zero, just remove the item.
 		if ( $quantity === 0 ) {
 			$this->remove_item( $item_id );
 
@@ -240,11 +240,10 @@ class Agnostic_Cart extends Abstract_Cart {
 	 * @param int|string $item_id    The item ID.
 	 * @param int        $quantity   The quantity to add.
 	 * @param array      $extra_data Extra data to save to the item.
+	 *
+	 * @throws InvalidArgumentException If the quantity is less than 0.
 	 */
 	protected function add_item( $item_id, int $quantity, array $extra_data = [] ) {
-		// Ensure the quantity is an integer.
-		$quantity = (int) $quantity;
-
 		// If the quantity is 0, there's nothing to do.
 		if ( 0 === $quantity ) {
 			return;
