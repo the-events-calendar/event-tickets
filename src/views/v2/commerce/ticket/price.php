@@ -7,7 +7,7 @@
  *
  * See more documentation about our views templating system.
  *
- * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
+ * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since 5.2.3
  * @since 5.9.0 Add support to display the regular price when the ticket is on sale.

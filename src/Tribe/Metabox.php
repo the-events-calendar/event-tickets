@@ -39,7 +39,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @param  string $post_type Which post type we are trying to configure
+	 * @param string $post_type Which post type we are trying to configure
 	 *
 	 * @return void
 	 */
@@ -74,7 +74,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @param  int|WP_Post   $post_id  Which post we are dealing with by ID or post object.
+	 * @param int|WP_Post   $post_id  Which post we are dealing with by ID or post object.
 	 *
 	 * @return string|bool
 	 */
@@ -871,10 +871,10 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @see    tribe( 'tickets.attendees' )->user_can
+	 * @see tribe( 'tickets.attendees' )->user_can
 	 *
-	 * @param  string $generic_cap
-	 * @param  int    $attendee_id
+	 * @param string $generic_cap
+	 * @param int    $attendee_id
 	 *
 	 * @return boolean
 	 */
@@ -899,7 +899,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @param  string  $module  class name of module
+	 * @param string  $module  class name of module
 	 *
 	 * @return bool
 	 */
@@ -912,7 +912,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @param  string $msg Text for the notice
+	 * @param string $msg Text for the notice
 	 *
 	 * @return string Notice with markup
 	 */
@@ -923,7 +923,7 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Decimal Character Asset Localization (used on Community Tickets)
 	 *
-	 * @todo   We need to deprecate this
+	 * @todo We need to deprecate this
 	 *
 	 * @return void
 	 */

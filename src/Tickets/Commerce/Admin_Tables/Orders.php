@@ -251,7 +251,7 @@ class Orders extends WP_List_Table {
 	 * @since 5.2.0
 	 *
 	 * @param WP_Post $item
-	 * @param         $column
+	 * @param $column
 	 *
 	 * @return string
 	 */

@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce\Status as Commerce_Status;
 /**
  * Class Webhook Events.
  *
- * @link    https://stripe.com/docs/api/webhook_endpoints/create#create_webhook_endpoint-enabled_events
+ * @link https://stripe.com/docs/api/webhook_endpoints/create#create_webhook_endpoint-enabled_events
  *
  * @since 5.3.0
  *
@@ -18,8 +18,8 @@ class Events {
 	/**
 	 * Webhook Event name for when an application is deauthorized from the dashboard.
 	 *
-	 * @link  https://stripe.com/docs/api/payment_intents/object
-	 * @link  https://stripe.com/docs/api/events/types#event_types-account.application.deauthorized
+	 * @link https://stripe.com/docs/api/payment_intents/object
+	 * @link https://stripe.com/docs/api/events/types#event_types-account.application.deauthorized
 	 *
 	 * @since 5.3.0
 	 *
@@ -75,7 +75,7 @@ class Events {
 	/**
 	 * Webhook Event name for a payment intent that was canceled.
 	 *
-	 * @link  https://stripe.com/docs/api/payment_intents/object
+	 * @link https://stripe.com/docs/api/payment_intents/object
 	 *
 	 * @since 5.3.0
 	 *
@@ -86,7 +86,7 @@ class Events {
 	/**
 	 * Webhook Event name for a payment intent that was created.
 	 *
-	 * @link  https://stripe.com/docs/api/payment_intents/object
+	 * @link https://stripe.com/docs/api/payment_intents/object
 	 *
 	 * @since 5.3.0
 	 *
@@ -97,7 +97,7 @@ class Events {
 	/**
 	 * Webhook Event name for a payment intent that failed to create a charge.
 	 *
-	 * @link  https://stripe.com/docs/api/payment_intents/object
+	 * @link https://stripe.com/docs/api/payment_intents/object
 	 *
 	 * @since 5.3.0
 	 *
@@ -108,7 +108,7 @@ class Events {
 	/**
 	 * Webhook Event name for a payment intent that is in process.
 	 *
-	 * @link  https://stripe.com/docs/api/payment_intents/object
+	 * @link https://stripe.com/docs/api/payment_intents/object
 	 *
 	 * @since 5.3.0
 	 *
@@ -119,7 +119,7 @@ class Events {
 	/**
 	 * Webhook Event name for a payment intent that requires user action to complete a charge.
 	 *
-	 * @link  https://stripe.com/docs/api/payment_intents/object
+	 * @link https://stripe.com/docs/api/payment_intents/object
 	 *
 	 * @since 5.3.0
 	 *
@@ -130,7 +130,7 @@ class Events {
 	/**
 	 * Webhook Event name for a payment intent that has successfully completed.
 	 *
-	 * @link  https://stripe.com/docs/api/payment_intents/object
+	 * @link https://stripe.com/docs/api/payment_intents/object
 	 *
 	 * @since 5.3.0
 	 *

@@ -318,7 +318,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param      $post_id
+	 * @param $post_id
 	 * @param null $post_type
 	 *
 	 * @return array|mixed

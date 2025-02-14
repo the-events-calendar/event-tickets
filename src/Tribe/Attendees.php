@@ -375,7 +375,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Enqueues the JS and CSS for the attendees page in the admin
 	 *
-	 * @todo  this needs to use tribe_assets()
+	 * @todo this needs to use tribe_assets()
 	 *
 	 * @since 4.6.2
 	 *

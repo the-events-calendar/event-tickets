@@ -11,7 +11,7 @@ class Tribe__Tickets__Version {
 	 *
 	 * @since 4.6
 	 *
-	 * @var    string
+	 * @var string
 	 */
 	public $legacy = '4.5.6';
 
@@ -20,7 +20,7 @@ class Tribe__Tickets__Version {
 	 *
 	 * @since 4.6
 	 *
-	 * @var    string
+	 * @var string
 	 */
 	public $meta_key = '_tribe_ticket_version';
 
@@ -29,7 +29,7 @@ class Tribe__Tickets__Version {
 	 *
 	 * @since 4.6
 	 *
-	 * @param  int|WP_Post  $ticket  Which ticket
+	 * @param int|WP_Post  $ticket  Which ticket
 	 *
 	 * @return bool
 	 */
@@ -51,8 +51,8 @@ class Tribe__Tickets__Version {
 	 *
 	 * @since 4.6
 	 *
-	 * @param  int|WP_Post  $ticket   Which ticket
-	 * @param  null|string  $version  Version to update to (optional)
+	 * @param int|WP_Post  $ticket   Which ticket
+	 * @param null|string  $version  Version to update to (optional)
 	 *
 	 * @return bool
 	 */
@@ -80,7 +80,7 @@ class Tribe__Tickets__Version {
 	 *
 	 * @since 4.6
 	 *
-	 * @param  int|WP_Post  $ticket  Which ticket
+	 * @param int|WP_Post  $ticket  Which ticket
 	 *
 	 * @return bool
 	 */
@@ -113,9 +113,9 @@ class Tribe__Tickets__Version {
 	 *
 	 * @since 4.6
 	 *
-	 * @param  int|WP_Post  $ticket   Which ticket
-	 * @param  null|string  $version  Version to compare to
-	 * @param  string       $compare  What operator is passed to `version_compare()` (optional)
+	 * @param int|WP_Post  $ticket   Which ticket
+	 * @param null|string  $version  Version to compare to
+	 * @param string       $compare  What operator is passed to `version_compare()` (optional)
 	 *
 	 * @return bool
 	 */
@@ -130,7 +130,7 @@ class Tribe__Tickets__Version {
 	 *
 	 * @since 4.6
 	 *
-	 * @param  int|WP_Post  $ticket  Which ticket
+	 * @param int|WP_Post  $ticket  Which ticket
 	 *
 	 * @return bool
 	 */
@@ -143,7 +143,7 @@ class Tribe__Tickets__Version {
 	 *
 	 * @since 4.6
 	 *
-	 * @param  int|WP_Post  $ticket  Which ticket
+	 * @param int|WP_Post  $ticket  Which ticket
 	 *
 	 * @return bool
 	 */
@@ -156,7 +156,7 @@ class Tribe__Tickets__Version {
 	 *
 	 * @since 4.6
 	 *
-	 * @param  boolean  $add  Should add the Actions when false will remove actions
+	 * @param boolean  $add  Should add the Actions when false will remove actions
 	 *
 	 * @return void
 	 */

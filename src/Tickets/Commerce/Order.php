@@ -303,7 +303,7 @@ class Order extends Abstract_Order {
 		 *
 		 * @param array $post_type_args Post type arguments, passed to register_post_type()
 		 *
-		 * @see   register_post_type
+		 * @see register_post_type
 		 */
 		$post_type_args = apply_filters( 'tec_tickets_commerce_order_post_type_args', $post_type_args );
 
@@ -802,10 +802,10 @@ class Order extends Abstract_Order {
 	 * @param bool $redirect   Whether to really redirect or not.
 	 * @param int  $post_id    A post ID.
 	 *
-	 * @todo  Deprecate tpp_error
+	 * @todo Deprecate tpp_error
 	 *
-	 * @see   \Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
-	 * @todo  Determine if redirecting should be something relegated to some other method, and here we only generate
+	 * @see \Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
+	 * @todo Determine if redirecting should be something relegated to some other method, and here we only generate
 	 *        generate the order/Attendees.
 	 */
 	protected function redirect_after_error( $error_code, $redirect, $post_id ) {

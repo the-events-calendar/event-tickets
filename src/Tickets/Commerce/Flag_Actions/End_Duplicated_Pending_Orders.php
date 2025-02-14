@@ -14,7 +14,7 @@ use Tribe__Utils__Array as Arr;
  *
  * @since 5.2.0
  *
- * @package  TEC\Tickets\Commerce\Flag_Actions
+ * @package TEC\Tickets\Commerce\Flag_Actions
  */
 class End_Duplicated_Pending_Orders extends Flag_Action_Abstract {
 

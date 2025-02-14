@@ -211,7 +211,7 @@ class Attendee {
 		/**
 		 * Filter the arguments that craft the attendee post type.
 		 *
-		 * @see   register_post_type
+		 * @see register_post_type
 		 *
 		 * @since 5.1.9
 		 *
@@ -566,7 +566,7 @@ class Attendee {
 	 * the Attendees Report rather than the Tickets Commerce attendees post list (because that's kind of
 	 * confusing)
 	 *
-	 * @todo  @backend this should probably be moved to the Archive Attendees flag action and handled from there.
+	 * @todo @backend this should probably be moved to the Archive Attendees flag action and handled from there.
 	 *
 	 * @since 5.1.9
 	 *
@@ -609,7 +609,7 @@ class Attendee {
 	 * (it does not refer to an "order" in the sense of a transaction that may include
 	 * multiple tickets, as is the case in some other methods for instance).
 	 *
-	 * @todo  Adjust to the Ticket Commerce data.
+	 * @todo Adjust to the Ticket Commerce data.
 	 *
 	 * @since 5.1.9
 	 *
@@ -742,8 +742,8 @@ class Attendee {
 	 * then those attendees generated as part of a Pending Order will, for a limited time after the
 	 * order creation, cause the inventory to be decreased.
 	 *
-	 * @todo  TribeCommerceLegacy: Move this method a Flag action.
-	 * @todo  For some forsaken reason the calculation of inventory is happening on the fly instead of when orders
+	 * @todo TribeCommerceLegacy: Move this method a Flag action.
+	 * @todo For some forsaken reason the calculation of inventory is happening on the fly instead of when orders
 	 *        are modified we need to address that for performance reasons.
 	 *
 	 * @since 5.1.9
@@ -768,7 +768,7 @@ class Attendee {
 	/**
 	 * Hydrate attendee object with ticket data
 	 *
-	 * @todo  We should not be using this particular piece of the code until it's using `tec_tc_get_attendee`.
+	 * @todo We should not be using this particular piece of the code until it's using `tec_tc_get_attendee`.
 	 *
 	 * @since 5.2.0
 	 *
@@ -827,7 +827,7 @@ class Attendee {
 	/**
 	 * Loads event, ticket, order and other data into an attendee object
 	 *
-	 * @todo  We should not be using this particular piece of the code until it's using `tec_tc_get_attendee`.
+	 * @todo We should not be using this particular piece of the code until it's using `tec_tc_get_attendee`.
 	 *
 	 * @since 5.2.0
 	 *

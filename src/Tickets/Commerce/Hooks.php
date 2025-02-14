@@ -501,7 +501,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Register the Orders report.
 	 *
-	 * @todo  Currently this is attaching the hook method to the init, which is incorrect we should not be attaching
+	 * @todo Currently this is attaching the hook method to the init, which is incorrect we should not be attaching
 	 *        these filters from the orders class if we can avoid it.
 	 *
 	 * @since 5.2.0
@@ -595,7 +595,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Filters the array of statuses that will mark an ticket attendee as eligible for check-in.
 	 *
-	 * @todo  TribeCommerceLegacy: Move this into a Check In Handler class.
+	 * @todo TribeCommerceLegacy: Move this into a Check In Handler class.
 	 *
 	 * @since 5.1.9
 	 *
@@ -718,7 +718,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Redirect to the Attendees registration page when trying to add tickets.
 	 *
-	 * @todo  Needs to move to the Checkout page and out of the module.
+	 * @todo Needs to move to the Checkout page and out of the module.
 	 *
 	 * @since 5.1.9
 	 */
@@ -729,7 +729,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Delete expired cart items.
 	 *
-	 * @todo  Needs to move to the Cart page and out of the module.
+	 * @todo Needs to move to the Cart page and out of the module.
 	 *
 	 * @since 5.1.9
 	 */
@@ -740,7 +740,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Add the  HTML Classes to the registration form for this module.
 	 *
-	 * @todo  Determine what this is used for.
+	 * @todo Determine what this is used for.
 	 *
 	 * @since 5.1.9
 	 *
@@ -769,7 +769,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Register shortcodes.
 	 *
-	 * @see   \Tribe\Shortcode\Manager::get_registered_shortcodes()
+	 * @see \Tribe\Shortcode\Manager::get_registered_shortcodes()
 	 *
 	 * @since 5.1.6
 	 *
@@ -788,7 +788,7 @@ class Hooks extends Service_Provider {
 	 * If other modules are active, we should de prioritize this one (we want other commerce
 	 * modules to take priority over this one).
 	 *
-	 * @todo  Determine if this is still needed.
+	 * @todo Determine if this is still needed.
 	 *
 	 * @since 5.1.9
 	 *

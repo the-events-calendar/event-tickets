@@ -283,9 +283,9 @@ class Queue {
 		 *
 		 * @param string|null $interval Cron interval or null to disable it.
 		 *
-		 * @see   'cron_schedules'
+		 * @see 'cron_schedules'
 		 *
-		 * @see   wp_schedule_event()
+		 * @see wp_schedule_event()
 		 */
 		return apply_filters( "tribe_tickets_migration_queue_interval_{$this->queue_id}", 'hourly' );
 	}

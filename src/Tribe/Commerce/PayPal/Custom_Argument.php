@@ -63,14 +63,14 @@ class Tribe__Tickets__Commerce__PayPal__Custom_Argument {
 	 *
 	 * @since 4.7
 	 *
-	 * @param      string $encoded
+	 * @param string $encoded
 	 * @param bool        $assoc_array Same as `json_decode` argument; whether the returned value
 	 *                                 should be an object (`false`) or an associative array (`true`).
 	 *
 	 * @return array|stdClass The decoded object if a valid decoded string was passed or a empty
 	 *                        array/object if the passed string is invalid.
 	 *
-	 * @see   Tribe__Tickets__Commerce__PayPal__Custom_Argument::encode
+	 * @see Tribe__Tickets__Commerce__PayPal__Custom_Argument::encode
 	 */
 	public static function decode( $encoded, $assoc_array = false ) {
 		if ( strpos( $encoded, '\"' ) ) {

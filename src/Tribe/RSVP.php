@@ -2269,7 +2269,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Remove the Post Transients when a Shop Ticket is bought
 	 *
-	 * @param  int $attendee_id The attendee ID.
+	 * @param int $attendee_id The attendee ID.
 	 * @return void
 	 */
 	public function purge_attendees_transient( $attendee_id ) {

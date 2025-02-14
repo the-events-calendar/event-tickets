@@ -27,7 +27,7 @@ class Notice_Handler {
 	/**
 	 * Fetches the expiration in seconds for the transient notice.
 	 *
-	 * @see   tribe_transient_notice()
+	 * @see tribe_transient_notice()
 	 *
 	 * @since 5.2.0
 	 *

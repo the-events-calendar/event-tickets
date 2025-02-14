@@ -23,7 +23,7 @@ class Metabox {
 	 *
 	 * @since 4.7
 	 *
-	 * @param     $post_id   int id of the event post
+	 * @param $post_id   int id of the event post
 	 * @param int $ticket_id (null) id of the ticket
 	 *
 	 * @return void

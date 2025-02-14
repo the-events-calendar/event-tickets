@@ -9,7 +9,7 @@
  *
  * @version 5.9.1
  *
- * @var  int  $attendee_label  The label for the attendee.
+ * @var int  $attendee_label  The label for the attendee.
  */
 
 ?>

@@ -4,7 +4,7 @@
  *
  * @since 5.1.9
  *
- * @package  TEC\Tickets\Commerce\Models
+ * @package TEC\Tickets\Commerce\Models
  */
 
 namespace TEC\Tickets\Commerce\Models;
@@ -19,7 +19,7 @@ use Tribe__Utils__Array as Arr;
  *
  * @since 5.1.9
  *
- * @package  TEC\Tickets\Commerce\Models
+ * @package TEC\Tickets\Commerce\Models
  */
 class Attendee_Model extends Base {
 	/**

@@ -156,7 +156,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 * @since 5.5.11 Added caching and reorganized code to further optimize requests.
 	 *
 	 * @param int $post_id   The current post ID.
-	 * @param  null    $deprecated
+	 * @param null    $deprecated
 	 * @param int|null $total     Total attendees found for post (if already calculated).
 	 * @param int|null $not_going Total attendees not going for post (if already calculated).
 	 *

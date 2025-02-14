@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce\Status as Commerce_Status;
 /**
  * Class Status.
  *
- * @todo    Create a Contract between this and PayPal.
+ * @todo Create a Contract between this and PayPal.
  *
  * @since 5.3.0
  *
@@ -102,7 +102,7 @@ class Status {
 	 * This list MUST be kept in order of order Stripe status progression, from creation to completion/refusal, as
 	 * described in the link below:
 	 *
-	 * @link  https://stripe.com/docs/payments/intents
+	 * @link https://stripe.com/docs/payments/intents
 	 *
 	 * @since 5.3.0
 	 *

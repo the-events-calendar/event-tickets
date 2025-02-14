@@ -80,7 +80,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 		);
 
 		/**
-		 * @todo  move this into the `tickets.handler` class
+		 * @todo move this into the `tickets.handler` class
 		 */
 		register_meta(
 			'post',

@@ -52,7 +52,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @since 4.6
 		 *
-		 * @var    int
+		 * @var int
 		 */
 		public $capacity;
 
@@ -747,7 +747,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Provides the quantity of remaining tickets
 		 *
-		 * @deprecated   4.6  We are now using inventory as the new Remaining
+		 * @deprecated 4.6  We are now using inventory as the new Remaining
 		 *
 		 * @return int
 		 */
@@ -758,7 +758,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Provides the quantity of Available tickets based on the Attendees number
 		 *
-		 * @todo   Create a way to get the Available for an Event (currently impossible)
+		 * @todo Create a way to get the Available for an Event (currently impossible)
 		 *
 		 * @see \Tribe__Tickets__Tickets_Handler::get_ticket_max_purchase() Use instead to get the front-end quantity.
 		 *
@@ -812,7 +812,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @since 4.6
 		 *
-		 * @return  int
+		 * @return int
 		 */
 		public function capacity() {
 			if ( ! $this->managing_stock() ) {

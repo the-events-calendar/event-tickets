@@ -140,7 +140,7 @@ class Tribe__Tickets__Privacy {
 	/**
 	 * Exporter for Events Ticket RSVP Attendee
 	 *
-	 * @param     $email_address
+	 * @param $email_address
 	 * @param int $page
 	 * @since 4.7.5
 	 *
@@ -224,7 +224,7 @@ class Tribe__Tickets__Privacy {
 	/**
 	 * Eraser for Events Ticket RSVP Attendee
 	 *
-	 * @param     $email_address
+	 * @param $email_address
 	 * @param int $page
 	 * @since 4.7.6
 	 *
@@ -288,7 +288,7 @@ class Tribe__Tickets__Privacy {
 	/**
 	 * Eraser for Events Ticket Tribe Commerce Attendees
 	 *
-	 * @param     $email_address
+	 * @param $email_address
 	 * @param int $page
 	 * @since 4.7.6
 	 *
@@ -352,7 +352,7 @@ class Tribe__Tickets__Privacy {
 	/**
 	 * Eraser for Events Ticket Tribe Commerce Order
 	 *
-	 * @param     $email_address
+	 * @param $email_address
 	 * @param int $page
 	 * @since 4.7.6
 	 *
@@ -421,7 +421,7 @@ class Tribe__Tickets__Privacy {
 	/**
 	 * Exporter for Events Ticket Tribe Commerce Attendee
 	 *
-	 * @param     $email_address
+	 * @param $email_address
 	 * @param int $page
 	 * @since 4.7.5
 	 *
@@ -505,7 +505,7 @@ class Tribe__Tickets__Privacy {
 	/**
 	 * Exporter for Events Ticket Tribe Commerce Attendee
 	 *
-	 * @param     $email_address
+	 * @param $email_address
 	 * @param int $page
 	 * @since 4.7.6
 	 *

@@ -10,7 +10,7 @@ class Tribe__Tickets__Global_Stock {
 	 *
 	 * @since 4.1
 	 *
-	 * @var   string
+	 * @var string
 	 */
 	const GLOBAL_STOCK_ENABLED = '_tribe_ticket_use_global_stock';
 
@@ -19,7 +19,7 @@ class Tribe__Tickets__Global_Stock {
 	 *
 	 * @since 4.1
 	 *
-	 * @var   string
+	 * @var string
 	 */
 	const GLOBAL_STOCK_LEVEL = '_tribe_ticket_global_stock_level';
 
@@ -28,7 +28,7 @@ class Tribe__Tickets__Global_Stock {
 	 *
 	 * @since 4.1
 	 *
-	 * @var   string
+	 * @var string
 	 */
 	const GLOBAL_STOCK_MODE = 'global';
 
@@ -39,7 +39,7 @@ class Tribe__Tickets__Global_Stock {
 	 *
 	 * @since 4.1
 	 *
-	 * @var   string
+	 * @var string
 	 */
 	const CAPPED_STOCK_MODE = 'capped';
 
@@ -51,7 +51,7 @@ class Tribe__Tickets__Global_Stock {
 	 *
 	 * @since 4.1
 	 *
-	 * @var   string
+	 * @var string
 	 */
 	const OWN_STOCK_MODE = 'own';
 
@@ -70,7 +70,7 @@ class Tribe__Tickets__Global_Stock {
 	 *
 	 * @since 4.6
 	 *
-	 * @var   string
+	 * @var string
 	 */
 	const TICKET_STOCK_MODE = '_global_stock_mode';
 
@@ -79,7 +79,7 @@ class Tribe__Tickets__Global_Stock {
 	 *
 	 * @since 4.6
 	 *
-	 * @var   string
+	 * @var string
 	 */
 	const TICKET_STOCK_CAP = '_global_stock_cap';
 
@@ -88,7 +88,7 @@ class Tribe__Tickets__Global_Stock {
 	 *
 	 * @since 4.6
 	 *
-	 * @var   int $post_id
+	 * @var int $post_id
 	 */
 	public $post_id;
 
@@ -112,7 +112,7 @@ class Tribe__Tickets__Global_Stock {
 	 * @since 4.1
 	 * @since 4.6 Added a return so we can check if it was enabled correctly
 	 *
-	 * @param  bool $yes
+	 * @param bool $yes
 	 *
 	 * @return bool|int
 	 */
@@ -129,7 +129,7 @@ class Tribe__Tickets__Global_Stock {
 	 * @since 4.1
 	 * @since 4.6 Added a return so we can check if it was enabled correctly
 	 *
-	 * @param  bool $yes
+	 * @param bool $yes
 	 *
 	 * @return bool|int
 	 */
@@ -182,9 +182,9 @@ class Tribe__Tickets__Global_Stock {
 		 * @since 4.1
 		 * @since 4.6 Added $status param
 		 *
-		 * @param  int  $post_id
-		 * @param  int  $quantity
-		 * @param  bool $status
+		 * @param int  $post_id
+		 * @param int  $quantity
+		 * @param bool $status
 		 */
 		do_action( 'tribe_tickets_global_stock_level_changed', $this->post_id, $quantity, $status );
 
@@ -208,7 +208,7 @@ class Tribe__Tickets__Global_Stock {
 	 * @since 4.1
 	 * @since 4.6  Introduced $pending Param
 	 *
-	 * @param  bool  $pending  Includes Pending Tickets on the Sales total
+	 * @param bool  $pending  Includes Pending Tickets on the Sales total
 	 *
 	 * @return int
 	 */

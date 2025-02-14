@@ -120,7 +120,7 @@ class Settings {
 	 *
 	 * @since 5.5.6
 	 *
-	 * @param  array $fields Current array of Tickets Emails settings fields.
+	 * @param array $fields Current array of Tickets Emails settings fields.
 	 *
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
@@ -154,7 +154,7 @@ class Settings {
 	 *
 	 * @since 5.5.6
 	 *
-	 * @param  array $fields Current array of Tickets Emails settings fields.
+	 * @param array $fields Current array of Tickets Emails settings fields.
 	 *
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
@@ -243,7 +243,7 @@ class Settings {
 	 *
 	 * @since 5.5.6
 	 *
-	 * @param  array $fields Current array of Tickets Emails settings fields.
+	 * @param array $fields Current array of Tickets Emails settings fields.
 	 *
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
@@ -335,7 +335,7 @@ class Settings {
 	 *
 	 * @since 5.5.9
 	 *
-	 * @param  array $fields Current array of Tickets Emails settings fields.
+	 * @param array $fields Current array of Tickets Emails settings fields.
 	 *
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */

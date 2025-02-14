@@ -108,7 +108,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Verifies the Stripe-Signature against the stored Webhook Signing Secret to make sure it's authentic.
 	 *
-	 * @link  https://stripe.com/docs/webhooks/signatures
+	 * @link https://stripe.com/docs/webhooks/signatures
 	 *
 	 * @since 5.3.0
 	 *

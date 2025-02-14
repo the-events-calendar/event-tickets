@@ -208,8 +208,8 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	 * @since 5.6.5  Validates if price is greater than 0 when provider is PayPal or Tickets Commerce
 	 * @since 5.9.0    Added support for sale price for Tickets Commerce.
 	 *
-	 * @param  WP_REST_Request $request
-	 * @param  $nonce_action
+	 * @param WP_REST_Request $request
+	 * @param $nonce_action
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function add_ticket( WP_REST_Request $request, $nonce_action ) {

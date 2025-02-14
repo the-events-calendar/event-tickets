@@ -214,7 +214,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 *
 	 * @return Tribe__Tickets__Commerce__PayPal__Order
 	 *
-	 * @see   update
+	 * @see update
 	 */
 	public function hydrate_from_post( $order_post_id, $fields = null ) {
 		$order_post = get_post( $order_post_id );
@@ -287,7 +287,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 *
 	 * @return Tribe__Tickets__Commerce__PayPal__Order
 	 *
-	 * @see   update
+	 * @see update
 	 */
 	public function hydrate_from_transaction_data( array $transaction_data ) {
 		foreach ( $transaction_data as $key => $value ) {
@@ -505,7 +505,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 *
 	 * @return array An array of attendee information.
 	 *
-	 * @see   Tribe__Tickets__Commerce__PayPal__Main::get_attendee() for the attendee format.
+	 * @see Tribe__Tickets__Commerce__PayPal__Main::get_attendee() for the attendee format.
 	 */
 	public function get_attendees() {
 		return $this->attendees;
@@ -548,7 +548,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 * @param string $key
 	 * @param mixed  $value
 	 *
-	 * @see   update
+	 * @see update
 	 */
 	public function set_meta( $key, $value ) {
 		if ( 0 === strpos( $key, self::$meta_prefix ) ) {
@@ -838,7 +838,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 *
 	 * @return false|null|\WP_Post The delete operation exit status.
 	 *
-	 * @see   wp_delete_post()
+	 * @see wp_delete_post()
 	 */
 	public function delete( $delete_attendees = true, $force_delete = false ) {
 		/**

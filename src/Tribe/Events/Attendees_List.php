@@ -187,7 +187,7 @@ class Attendees_List {
 	 * @since 4.12.0
 	 *
 	 * @param WP_Post|int $post_id Post object or ID.
-	 * @param  int        $limit   Limit of attendees to be retrieved from database.
+	 * @param int        $limit   Limit of attendees to be retrieved from database.
 	 *
 	 * @return array List of public attendees for display.
 	 */

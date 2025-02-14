@@ -74,7 +74,7 @@ class Client {
 	 *
 	 * We use something like: https://www.paypal.com/sdk/js?client-id=sb&locale=en_US&components=buttons
 	 *
-	 * @link  https://developer.paypal.com/docs/checkout/reference/customize-sdk/#query-parameters
+	 * @link https://developer.paypal.com/docs/checkout/reference/customize-sdk/#query-parameters
 	 *
 	 * @since 5.1.9
 	 *
@@ -407,7 +407,7 @@ class Client {
 	/**
 	 * Retrieves a Client Token from the stored Access Token.
 	 *
-	 * @link  https://developer.paypal.com/docs/business/checkout/advanced-card-payments/
+	 * @link https://developer.paypal.com/docs/business/checkout/advanced-card-payments/
 	 *
 	 * @since 5.1.9
 	 *
@@ -426,8 +426,8 @@ class Client {
 	/**
 	 * Based on a Purchase Unit creates a PayPal order.
 	 *
-	 * @link  https://developer.paypal.com/docs/api/orders/v2/#orders_create
-	 * @link  https://developer.paypal.com/docs/api/orders/v2/#definition-purchase_unit_request
+	 * @link https://developer.paypal.com/docs/api/orders/v2/#orders_create
+	 * @link https://developer.paypal.com/docs/api/orders/v2/#definition-purchase_unit_request
 	 *
 	 * @since 5.1.9
 	 *
@@ -610,7 +610,7 @@ class Client {
 	/**
 	 * Gets the profile information from the customer in PayPal.
 	 *
-	 * @link  https://developer.paypal.com/docs/api/identity/v1/#userinfo_get
+	 * @link https://developer.paypal.com/docs/api/identity/v1/#userinfo_get
 	 *
 	 * @since 5.1.9
 	 *
@@ -682,7 +682,7 @@ class Client {
 	/**
 	 * Verify the identity of the Webhook request, to avoid any security problems.
 	 *
-	 * @link  https://developer.paypal.com/docs/api/webhooks/v1/#verify-webhook-signature_post
+	 * @link https://developer.paypal.com/docs/api/webhooks/v1/#verify-webhook-signature_post
 	 *
 	 * @since 5.1.10
 	 *
@@ -720,7 +720,7 @@ class Client {
 	/**
 	 * Get the list of webhooks.
 	 *
-	 * @see   https://developer.paypal.com/docs/api/webhooks/v1/#webhooks_list
+	 * @see https://developer.paypal.com/docs/api/webhooks/v1/#webhooks_list
 	 * @since 5.1.10
 	 *
 	 * @return array[] The list of PayPal webhooks.
@@ -750,7 +750,7 @@ class Client {
 	/**
 	 * Get the webhook data from a specific webhook ID.
 	 *
-	 * @see   https://developer.paypal.com/docs/api/webhooks/v1/#webhooks_get
+	 * @see https://developer.paypal.com/docs/api/webhooks/v1/#webhooks_get
 	 * @since 5.1.10
 	 *
 	 * @param string $webhook_id The webhook ID.
@@ -793,7 +793,7 @@ class Client {
 	/**
 	 * Creates a webhook with the given event types registered.
 	 *
-	 * @see   https://developer.paypal.com/docs/api/webhooks/v1/#webhooks_post
+	 * @see https://developer.paypal.com/docs/api/webhooks/v1/#webhooks_post
 	 * @since 5.1.10
 	 *
 	 * @return array|\WP_Error

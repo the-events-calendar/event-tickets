@@ -7,7 +7,7 @@
  *
  * See more documentation about our views templating system.
  *
- * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
+ * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since 5.0.3
  *
@@ -87,7 +87,7 @@ $classes = [
 	 *
 	 * @since 5.0.3
 	 *
-	 * @see  Tribe__Template\do_entry_point()
+	 * @see Tribe__Template\do_entry_point()
 	 * @link https://docs.theeventscalendar.com/reference/classes/tribe__template/do_entry_point/
 	 */
 	$this->do_entry_point( 'after_form' );

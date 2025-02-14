@@ -7,7 +7,7 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
+ * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since 4.9
  * @since 4.10.8  Updated loading logic for including a renamed template.
@@ -139,7 +139,7 @@ if ( ! $already_rendered ) {
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param  array $classes The array of classes that will be filtered.
+	 * @param array $classes The array of classes that will be filtered.
 	 */
 	$loader_classes = apply_filters( 'tribe_tickets_block_loader_classes', [ 'tribe-tickets-loader__tickets-block' ] );
 	include Tribe__Tickets__Templates::get_template_hierarchy( 'components/loader.php' );

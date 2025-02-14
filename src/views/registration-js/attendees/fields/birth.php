@@ -11,7 +11,7 @@
  *
  * @version 4.12.3
  *
- * @see     Tribe__Tickets_Plus__Meta__Field__Birth
+ * @see Tribe__Tickets_Plus__Meta__Field__Birth
  */
 
 $required    = isset( $field->required ) && 'on' === $field->required;

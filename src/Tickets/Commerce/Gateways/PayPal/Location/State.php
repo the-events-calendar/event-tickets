@@ -949,7 +949,7 @@ class State {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return      array
+	 * @return array
 	 */
 	public function get_us_list() {
 		$states = [
@@ -1030,7 +1030,7 @@ class State {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return      array
+	 * @return array
 	 */
 	public function get_provinces_list() {
 		$provinces = [

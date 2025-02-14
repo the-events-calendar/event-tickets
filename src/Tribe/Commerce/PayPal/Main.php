@@ -515,7 +515,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * @param array $ticket_post_args Post type arguments, passed to register_post_type()
 		 *
-		 * @see   register_post_type
+		 * @see register_post_type
 		 *
 		 */
 		$ticket_post_args = apply_filters( 'tribe_tickets_register_ticket_post_type_args', $ticket_post_args );
@@ -529,7 +529,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * @param array $attendee_post_args Post type arguments, passed to register_post_type()
 		 *
-		 * @see   register_post_type
+		 * @see register_post_type
 		 *
 		 */
 		$attendee_post_args = apply_filters( 'tribe_tickets_register_attendee_post_type_args', $attendee_post_args );
@@ -543,7 +543,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * @param array $attendee_post_args Post type arguments, passed to register_post_type()
 		 *
-		 * @see   register_post_type
+		 * @see register_post_type
 		 *
 		 */
 		$order_post_args = apply_filters( 'tribe_tickets_register_order_post_type_args', $order_post_args );
@@ -1622,7 +1622,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param      $post_id
+	 * @param $post_id
 	 * @param null $post_type
 	 *
 	 * @return array|mixed
@@ -1821,7 +1821,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param     $post_id   int id of the event post
+	 * @param $post_id   int id of the event post
 	 * @param int $ticket_id (null) id of the ticket
 	 *
 	 * @return void
@@ -1900,7 +1900,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param        $message
+	 * @param $message
 	 * @param string $type
 	 */
 	public function add_message( $message, $type = 'update' ) {
@@ -3142,7 +3142,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @return string
 	 *
-	 * @see   Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
+	 * @see Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
 	 */
 	protected function redirect_after_error( $error_code, $redirect, $post_id ) {
 		$url = add_query_arg( 'tpp_error', $error_code, get_permalink( $post_id ) );

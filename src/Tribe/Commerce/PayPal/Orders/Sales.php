@@ -98,7 +98,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 		 *
 		 * @since 4.7
 		 *
-		 * @param  array $revenue_generating_order_statuses
+		 * @param array $revenue_generating_order_statuses
 		 */
 		return apply_filters( 'tribe_tickets_commerce_paypal_revenue_generating_order_statuses', $revenue_generating_order_statuses );
 	}

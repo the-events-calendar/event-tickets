@@ -35,7 +35,7 @@ class Tribe__Tickets__Editor__Blocks__Attendees
 	 *
 	 * @since 4.9
 	 *
-	 * @param  array $attributes
+	 * @param array $attributes
 	 *
 	 * @return void
 	 */
@@ -56,7 +56,7 @@ class Tribe__Tickets__Editor__Blocks__Attendees
 	 *
 	 * @since 4.9
 	 *
-	 * @param  array $attributes
+	 * @param array $attributes
 	 *
 	 * @return string
 	 */

@@ -10,7 +10,7 @@ class Tribe__Tickets__Assets {
 	 * @since 4.6
 	 * @since 4.11.1 Only load if in a tickets-enabled post context.
 	 *
-	 * @see   \tribe_tickets_is_enabled_post_context()
+	 * @see \tribe_tickets_is_enabled_post_context()
 	 */
 	public function enqueue_scripts() {
 		/** @var Tribe__Tickets__Main $tickets_main */

@@ -17,7 +17,7 @@ if ( ! function_exists( 'tribe_get_php_min_version' ) ) :
  *
  * Normally we use Constant: PHP_VERSION
  *
- * @param  string  $version  Which PHP version we are checking against
+ * @param string  $version  Which PHP version we are checking against
  *
  * @since 4.10
  *

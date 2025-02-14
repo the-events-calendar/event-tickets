@@ -229,7 +229,7 @@ class Ticket {
 		/**
 		 * Filter the arguments that craft the ticket post type.
 		 *
-		 * @see   register_post_type
+		 * @see register_post_type
 		 *
 		 * @since 5.1.9
 		 *
@@ -329,7 +329,7 @@ class Ticket {
 	/**
 	 * Gets an individual ticket.
 	 *
-	 * @todo  TribeCommerceLegacy: This method needs to make use of the Ticket Model.
+	 * @todo TribeCommerceLegacy: This method needs to make use of the Ticket Model.
 	 *
 	 * @since 5.1.9
 	 *
@@ -435,7 +435,7 @@ class Ticket {
 	/**
 	 * Returns the total number of cancelled tickets.
 	 *
-	 * @todo  TribeCommerceLegacy: Move this method into the another place.
+	 * @todo TribeCommerceLegacy: Move this method into the another place.
 	 *
 	 * @since 5.1.9
 	 * @since 5.14.0 Added the $refresh parameter and use stored status counts and utilize new memoization class.
@@ -480,7 +480,7 @@ class Ticket {
 	/**
 	 * Returns the number of pending attendees by ticket.
 	 *
-	 * @todo  TribeCommerceLegacy: Move this method into the another place.
+	 * @todo TribeCommerceLegacy: Move this method into the another place.
 	 *
 	 * @since 5.1.9
 	 * @since 5.14.0 Utilize new memoization class.
@@ -527,12 +527,12 @@ class Ticket {
 	 * Legacy method ported from Tribe Commerce (TPP), we are specifically avoiding refactoring anything on the first
 	 * stage of Tickets Commerce
 	 *
-	 * @todo  TribeCommerceLegacy: This method needs to be split into `create` and `update`
+	 * @todo TribeCommerceLegacy: This method needs to be split into `create` and `update`
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param       $post_id
-	 * @param       $ticket
+	 * @param $post_id
+	 * @param $ticket
 	 * @param array $raw_data
 	 *
 	 * @return false|int|\WP_Error
@@ -788,7 +788,7 @@ class Ticket {
 		/**
 		 * Generic action fired after saving a ticket (by type)
 		 *
-		 * @todo  TribeCommerceLegacy
+		 * @todo TribeCommerceLegacy
 		 *
 		 * @since 5.2.0
 		 *
@@ -802,7 +802,7 @@ class Ticket {
 		/**
 		 * Generic action fired after saving a ticket.
 		 *
-		 * @todo  TribeCommerceLegacy
+		 * @todo TribeCommerceLegacy
 		 *
 		 * @since 5.2.0
 		 *
@@ -819,7 +819,7 @@ class Ticket {
 	/**
 	 * Deletes a given ticket.
 	 *
-	 * @todo  TribeCommerceLegacy: This method needs to be refactored to Tickets Commerce standards.
+	 * @todo TribeCommerceLegacy: This method needs to be refactored to Tickets Commerce standards.
 	 *
 	 * @since 5.1.9
 	 *
@@ -897,7 +897,7 @@ class Ticket {
 	/**
 	 * Update Global Stock.
 	 *
-	 * @todo  TribeCommerceLegacy: Not sure where this method fits, might just need to integrate it it into the
+	 * @todo TribeCommerceLegacy: Not sure where this method fits, might just need to integrate it it into the
 	 *        create/update methods and delete this.
 	 *
 	 * @since 5.1.9
@@ -921,7 +921,7 @@ class Ticket {
 	/**
 	 * Increase the sales for a ticket by a specific quantity.
 	 *
-	 * @todo  TribeCommerceLegacy: This should be moved into using a Flag Action.
+	 * @todo TribeCommerceLegacy: This should be moved into using a Flag Action.
 	 *
 	 * @since 5.1.9
 	 * @since 5.13.3 Modified logic when updating global stock.
@@ -959,7 +959,7 @@ class Ticket {
 	/**
 	 * Decrease the sales for a ticket by a specific quantity.
 	 *
-	 * @todo  TribeCommerceLegacy: This should be moved into using a Flag Action.
+	 * @todo TribeCommerceLegacy: This should be moved into using a Flag Action.
 	 *
 	 * @since 5.1.9
 	 *

@@ -1565,7 +1565,7 @@ if ( ! function_exists( 'tribe_tickets_is_enabled_post_context' ) ) {
 	 *
 	 * @since 4.11.1
 	 *
-	 * @see   \Tribe__Tickets__Main::post_types()
+	 * @see \Tribe__Tickets__Main::post_types()
 	 *
 	 * @param null|int|WP_Post $post Post ID or object, `null` to get the ID of the global/current post object.
 	 *

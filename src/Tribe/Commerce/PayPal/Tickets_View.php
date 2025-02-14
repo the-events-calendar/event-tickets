@@ -44,8 +44,8 @@ class Tribe__Tickets__Commerce__PayPal__Tickets_View extends Tribe__Tickets__Tic
 	 *
 	 * @since 4.7.1
 	 *
-	 * @param  int      $event_id The Event ID it relates to
-	 * @param  int|null $user_id  An Optional User ID
+	 * @param int      $event_id The Event ID it relates to
+	 * @param int|null $user_id  An Optional User ID
 	 *
 	 * @return array                   Array with the PayPal tickets attendees
 	 */
@@ -65,9 +65,9 @@ class Tribe__Tickets__Commerce__PayPal__Tickets_View extends Tribe__Tickets__Tic
 	 *
 	 * @since 4.7.1
 	 *
-	 * @param  int $event_id  The Event/Post ID (optional)
-	 * @param  int $ticket_id The Ticket/RSVP ID (optional)
-	 * @param  int $user_id   An User ID (optional)
+	 * @param int $event_id  The Event/Post ID (optional)
+	 * @param int $ticket_id The Ticket/RSVP ID (optional)
+	 * @param int $user_id   An User ID (optional)
 	 *
 	 * @return boolean
 	 */
@@ -82,10 +82,10 @@ class Tribe__Tickets__Commerce__PayPal__Tickets_View extends Tribe__Tickets__Tic
 		 *
 		 * @since 4.7.1
 		 *
-		 * @param  boolean $restricted Is this Event or Ticket Restricted?
-		 * @param  int     $event_id   The Event/Post ID (optional)
-		 * @param  int     $ticket_id  The Ticket/RSVP ID (optional)
-		 * @param  int     $user_id    An User ID (optional)
+		 * @param boolean $restricted Is this Event or Ticket Restricted?
+		 * @param int     $event_id   The Event/Post ID (optional)
+		 * @param int     $ticket_id  The Ticket/RSVP ID (optional)
+		 * @param int     $user_id    An User ID (optional)
 		 */
 		return apply_filters( 'event_tickets_is_tpp_ticket_restricted', false, $event_id, $ticket_id, $user_id );
 	}
@@ -95,8 +95,8 @@ class Tribe__Tickets__Commerce__PayPal__Tickets_View extends Tribe__Tickets__Tic
 	 *
 	 * @since 4.7.1
 	 *
-	 * @param  int $event_id  The Event/Post ID (optional)
-	 * @param  int $ticket_id The Ticket/RSVP ID (optional)
+	 * @param int $event_id  The Event/Post ID (optional)
+	 * @param int $ticket_id The Ticket/RSVP ID (optional)
 	 *
 	 * @return boolean
 	 */
@@ -114,7 +114,7 @@ class Tribe__Tickets__Commerce__PayPal__Tickets_View extends Tribe__Tickets__Tic
 	 *
 	 * @since 4.7.1
 	 *
-	 * @param  string $status The ticket order status
+	 * @param string $status The ticket order status
 	 *
 	 * @return void
 	 */

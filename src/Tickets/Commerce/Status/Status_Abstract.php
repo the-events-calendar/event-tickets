@@ -17,7 +17,7 @@ abstract class Status_Abstract implements Status_Interface {
 	 * Flags associated with this status, important to remember that the Flag Actions will be triggered in the order
 	 * that these flags are returned.
 	 *
-	 * @see   static::filter_get_flags
+	 * @see static::filter_get_flags
 	 *
 	 * List of pre-existing flags from TPP/Tribe Commerce:
 	 *

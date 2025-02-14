@@ -221,7 +221,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Hooks to the legacy modules and hijacks the sending of RSVP emails from the old system to Tickets Emails.
 	 *
-	 * @see   Legacy_Hijack::send_rsvp_email
+	 * @see Legacy_Hijack::send_rsvp_email
 	 *
 	 * @since 5.6.0
 	 *
@@ -237,7 +237,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Hooks to the legacy modules and hijacks the sending of Tickets emails from the old system to Tickets Emails.
 	 *
-	 * @see   Legacy_Hijack::send_tickets_email_for_attendee
+	 * @see Legacy_Hijack::send_tickets_email_for_attendee
 	 *
 	 * @since 5.6.0
 	 *
@@ -257,7 +257,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Hooks to the legacy module of RSVP and hijacks the sending of RSVP email for non-attendance confirmation from the old system to Tickets Emails.
 	 *
-	 * @see   Legacy_Hijack::send_rsvp_non_attendance_confirmation
+	 * @see Legacy_Hijack::send_rsvp_non_attendance_confirmation
 	 *
 	 * @since 5.6.0
 	 *

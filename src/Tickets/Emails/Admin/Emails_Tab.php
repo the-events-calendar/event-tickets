@@ -83,7 +83,7 @@ class Emails_Tab {
 	 *
 	 * @since 5.5.6
 	 *
-	 * @param  array $tabs Current array of tabs ids.
+	 * @param array $tabs Current array of tabs ids.
 	 *
 	 * @return array $tabs Filtered array of tabs ids.
 	 */
