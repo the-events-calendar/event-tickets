@@ -224,11 +224,11 @@ class Agnostic_Cart extends Abstract_Cart {
 			return;
 		}
 
-		// See if the item already exists.
-		if ( ! $this->has_item( $item_id ) ) {
-			$this->add_item( $item_id, $quantity, $extra_data );
-		} else {
+		// Update the item if it exists, otherwise add it.
+		if ( $this->has_item( $item_id ) ) {
 			$this->update_item( $item_id, $quantity, $extra_data );
+		} else {
+			$this->add_item( $item_id, $quantity, $extra_data );
 		}
 	}
 

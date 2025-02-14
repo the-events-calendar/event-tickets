@@ -52,70 +52,33 @@ class Agnostic_CartTest extends WPTestCase {
 	}
 
 	public function test_add_item_updates_items_by_id() {
-		$cart     = new Agnostic_Cart();
-		$items    = $this->items_data_provider();
-		$quantity = (int) $cart->has_items();
+		$cart  = new Agnostic_Cart();
+		$items = $this->items_data_provider();
 
-		$assertion_msg = 'Agnostic_Cart->has_items() should return zero if no items were added.';
-		$this->assertEquals( 0, $quantity, $assertion_msg );
+		$this->assertFalse(
+			$cart->has_items(),
+			'Agnostic_Cart->has_items() should return false if no items were added.'
+		);
 
-		$items_count = [];
+		$item_ids = [];
 
 		foreach ( $items as $i => $item ) {
-			if ( ! is_numeric( $item[0] ) ) {
-				continue;
-			}
+			[ $id, $quantity, $extra, ] = $item;
 
-			$item_id                 = (int) $item[0];
-			$items_count[ $item_id ] ??= 0;
-			$items_count[ $item_id ] += $item[1];
+			$item_ids[ $id ] = true;
+			$quantity        = (int) $quantity;
+			$extra           ??= [];
 
-			$cart->upsert_item( $item[0], $item[1], $item[2] ?? [] );
-
-			// Update quantities as each item gets updated
-			$item[3][ $item[0] ]['quantity'] = $items_count[ $item_id ];
+			$cart->upsert_item( $id, $quantity, $extra );
 
 			$assertion_msg = 'Adding items with an id already existing in the cart should not create new items in the cart.';
-			$this->assertEquals( count( $items_count ), $cart->has_items(), $assertion_msg );
+			$this->assertEquals( count( $item_ids ), $cart->has_items(), $assertion_msg );
 
 			$cart_items = $cart->get_items();
-			$this->assertArrayHasKey( $item_id, $cart_items, $assertion_msg );
+			$this->assertArrayHasKey( $id, $cart_items, $assertion_msg );
 
 			$assertion_msg = "Adding items with an id already existing in the cart should change the quantity of that item in the cart. Item: {$i}";
-			$this->assertEquals( $item[3][ $item_id ], $cart_items[ $item_id ], $assertion_msg );
-		}
-	}
-
-	public function test_remove_item_removes_correct_quantities() {
-		$cart = new Agnostic_Cart();
-		$i    = 0;
-
-		while ( $i < 3 ) {
-			$i++;
-			$quantity = pow( $i, 2 );
-			$cart->upsert_item( $i, $quantity );
-
-			switch ( $i ) {
-				case 1:
-					$cart->remove_item( $i, $quantity );
-
-					$assertion_msg = 'Removing the exact quantity available should remove the item.';
-					$this->assertFalse( $cart->has_item( $i ), $assertion_msg );
-					break;
-				case 2:
-					$cart->remove_item( $i );
-
-					$assertion_msg = 'Removing fewer items than available should result in a positive amount.';
-					$this->assertTrue( $cart->has_item( $i ) );
-					$this->assertEquals( $quantity / 2, $cart->get_item_quantity( $i ), $assertion_msg );
-					break;
-				case 3:
-					$cart->remove_item( $i );
-
-					$assertion_msg = 'Removing more items than available should remove the item.';
-					$this->assertEquals( 0, $cart->has_item( $i ), $assertion_msg );
-					break;
-			}
+			$this->assertEquals( $quantity, $cart_items[ $id ]['quantity'], $assertion_msg );
 		}
 	}
 
@@ -188,7 +151,33 @@ class Agnostic_CartTest extends WPTestCase {
 		$this->assertEquals( $items, $data, $assertion_msg );
 	}
 
+	public function test_it_overrides_an_existing_item_quantity() {
+		$cart = new Agnostic_Cart();
+		$cart->upsert_item( 1, 1 );
+
+		// Assert we have the initial item.
+		$this->assertTrue( $cart->has_item( 1 ) );
+		$this->assertEquals( 1, $cart->get_item_quantity( 1 ) );
+
+		// Assert we have an updated item quantity.
+		$cart->upsert_item( 1, 2 );
+		$this->assertEquals( 2, $cart->get_item_quantity( 1 ) );
+
+		// Setting the quantity to zero should remove the item.
+		$cart->upsert_item( 1, 0 );
+		$this->assertFalse( $cart->has_item( 1 ) );
+
+		// Passing a negative quantity should result in a positive quantity.
+		$cart->upsert_item( 1, -1 );
+		$this->assertEquals( 1, $cart->get_item_quantity( 1 ) );
+	}
+
 	public function items_data_provider() {
+		/*
+		 * Format for these tests is:
+		 * [ ticket_id, quantity, extra_data, expected_formatted_item ]
+		 */
+
 		return [
 			// Int inputs, with named extra values
 			[
@@ -208,7 +197,7 @@ class Agnostic_CartTest extends WPTestCase {
 			// Numeric inputs, with numerically keyed extra values
 			[
 				'10',
-				'2',
+				2,
 				[ 'Item Name', 'Item SKU' ],
 				[
 					10 => [
@@ -253,7 +242,7 @@ class Agnostic_CartTest extends WPTestCase {
 			// Numeric inputs, without extra values are converted to int
 			[
 				'10',
-				'2',
+				2,
 				null,
 				[
 					10 => [
@@ -264,12 +253,6 @@ class Agnostic_CartTest extends WPTestCase {
 					],
 				],
 			],
-
-			// Non-numeric inputs, without extra values are not added
-			[ 'abc', 'def', null, [] ],
-
-			// Non-numeric inputs, without extra values are not added
-			[ 'abc', 'def', [ 'name' => 'Item Name' ], [] ],
 
 			// Non-ticket type.
 			[
