@@ -52,7 +52,7 @@
 	<div class="tec-tickets__series_attached_ticket-type__icon tec-tickets__series_attached_ticket-type__icon--series-pass"></div>
 	<div class="tickets__series_attached_ticket-type__title">
 		Series Pass	</div>
-</div></div></td><td><a href="" target="_blank" rel="noreferrer noopener">Edit</a> - <a href="http://wordpress.test/?post_type=tribe_events&amp;p=10000342" target="_blank" rel="noreferrer noopener">View</a></td></tr>	</tbody>
+</div></div></td><td><a href="" target="_blank" rel="noreferrer noopener">Edit</a> - <a href="http://wordpress.test/?post_type=tribe_events&amp;p=10000001" target="_blank" rel="noreferrer noopener">View</a></td></tr>	</tbody>
 
 	<tfoot>
 	<tr>
