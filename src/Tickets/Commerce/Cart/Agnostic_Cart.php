@@ -243,22 +243,10 @@ class Agnostic_Cart extends Abstract_Cart {
 	 *
 	 * @throws InvalidArgumentException If the quantity is less than 0.
 	 */
-	protected function add_item( $item_id, int $quantity, array $extra_data = [] ) {
-		// If the quantity is 0, there's nothing to do.
-		if ( 0 === $quantity ) {
-			return;
-		}
-
-		// If the quantity is less than 0, remove the item.
-		if ( $quantity < 0 ) {
+	private function add_item( $item_id, int $quantity, array $extra_data = [] ) {
+		// If the quantity is zero or less, throw an exception.
+		if ( $quantity <= 0 ) {
 			throw new InvalidArgumentException( 'Quantity must be greater than 0.' );
-		}
-
-		// If the item is already in the cart, update the quantity.
-		if ( $this->has_item( $item_id ) ) {
-			$this->update_item( $item_id, $quantity, $extra_data );
-
-			return;
 		}
 
 		// Allow for the type of item to be passed in.
@@ -290,7 +278,7 @@ class Agnostic_Cart extends Abstract_Cart {
 	 * @return void
 	 * @throws InvalidArgumentException If the item does not exist in the cart.
 	 */
-	protected function update_item( $item_id, int $quantity, ?array $extra_data = null ): void {
+	private function update_item( $item_id, int $quantity, ?array $extra_data = null ): void {
 		// Nothing to do with no quantity.
 		if ( $quantity === 0 ) {
 			return;
@@ -362,8 +350,8 @@ class Agnostic_Cart extends Abstract_Cart {
 				continue;
 			}
 
-			// Add to / update quantity in cart.
-			$this->add_item( $ticket['ticket_id'], $quantity, $ticket['extra'] );
+			// Update quantity in cart.
+			$this->upsert_item( $ticket['ticket_id'], $quantity, $ticket['extra'] );
 		}
 
 		/**
