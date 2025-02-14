@@ -9,6 +9,7 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Commerce\Cart;
 
+use InvalidArgumentException;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
 use TEC\Tickets\Commerce\Utils\Value;
@@ -195,18 +196,40 @@ class Agnostic_Cart extends Abstract_Cart {
 	 *
 	 * @param string $item_id The item ID.
 	 *
-	 * @return bool|int Either the quantity in the cart for the item or `false`.
+	 * @return bool Either the quantity in the cart for the item or `false`.
 	 */
 	public function has_item( $item_id ) {
-		if ( empty( $this->items ) ) {
-			return false;
+		return array_key_exists( $item_id, $this->items );
+	}
+
+	/**
+	 * Insert or update an item.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|int $item_id    The item ID.
+	 * @param int        $quantity   The quantity of the item. If the item exists, this quantity will override
+	 *                               the previous quantity. Passing 0 will remove the item from the cart entirely.
+	 * @param array      $extra_data Extra data to save to the item.
+	 *
+	 * @return void
+	 */
+	public function upsert_item( $item_id, int $quantity, array $extra_data = [] ) {
+		$quantity = abs( $quantity );
+
+		// If the quantity is zero, just remove the item
+		if ( $quantity === 0 ) {
+			$this->remove_item( $item_id );
+
+			return;
 		}
 
-		if ( ! array_key_exists( $item_id, $this->items ) ) {
-			return false;
+		// See if the item already exists.
+		if ( ! $this->has_item( $item_id ) ) {
+			$this->add_item( $item_id, $quantity, $extra_data );
+		} else {
+			$this->update_item( $item_id, $quantity, $extra_data );
 		}
-
-		return $this->items[ $item_id ]['quantity'] ?? false;
 	}
 
 	/**
@@ -255,11 +278,14 @@ class Agnostic_Cart extends Abstract_Cart {
 	/**
 	 * Update an item in the cart.
 	 *
+	 * @since TBD
+	 *
 	 * @param string $item_id    The item ID.
 	 * @param int    $quantity   The quantity to update.
 	 * @param ?array $extra_data Extra data to save to the item.
 	 *
 	 * @return void
+	 * @throws InvalidArgumentException If the item does not exist in the cart.
 	 */
 	protected function update_item( $item_id, int $quantity, ?array $extra_data = null ): void {
 		$item_object  = $this->items[ $item_id ];
