@@ -157,7 +157,7 @@ class Fees_Test extends Controller_Test_Case {
 
 		$this->make_controller()->register();
 		$cart = tribe( Cart::class );
-		$cart->add_item( $ticket, $quantity );
+		$cart->upsert_item( $ticket, $quantity );
 
 		// Assert the total value matches the expected total.
 		$this->assertEquals(
@@ -655,7 +655,7 @@ class Fees_Test extends Controller_Test_Case {
 
 		$this->make_controller()->register();
 		$cart = tribe( Cart::class );
-		$cart->add_item( $ticket, $quantity );
+		$cart->upsert_item( $ticket, $quantity );
 
 		$this->assertEquals( $quantity * $expected_total->get(), $cart->get_cart_total() );
 		$this->set_fn_return( 'wp_create_nonce', '1029384756' );
