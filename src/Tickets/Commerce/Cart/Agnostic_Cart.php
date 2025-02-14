@@ -238,35 +238,39 @@ class Agnostic_Cart extends Abstract_Cart {
 	 * @since TBD
 	 *
 	 * @param int|string $item_id    The item ID.
-	 * @param int        $quantity   The quantity to remove.
-	 * @param ?array     $extra_data Extra data to save to the item.
+	 * @param int        $quantity   The quantity to add.
+	 * @param array      $extra_data Extra data to save to the item.
 	 */
-	public function add_item( $item_id, $quantity, ?array $extra_data = null ) {
+	protected function add_item( $item_id, int $quantity, array $extra_data = [] ) {
+		// Ensure the quantity is an integer.
+		$quantity = (int) $quantity;
+
+		// If the quantity is 0, there's nothing to do.
+		if ( 0 === $quantity ) {
+			return;
+		}
+
+		// If the quantity is less than 0, remove the item.
+		if ( $quantity < 0 ) {
+			throw new InvalidArgumentException( 'Quantity must be greater than 0.' );
+		}
+
+		// If the item is already in the cart, update the quantity.
+		if ( $this->has_item( $item_id ) ) {
+			$this->update_item( $item_id, $quantity, $extra_data );
+
+			return;
+		}
+
 		// Allow for the type of item to be passed in.
 		$type = $extra_data['type'] ?? 'ticket';
 		unset( $extra_data['type'] );
-
-		// Ensure the quantity is an integer.
-		$new_quantity = (int) $quantity;
-
-		// If the item is already in the cart, update the quantity.
-		$current_quantity = $this->has_item( $item_id );
-		if ( false !== $current_quantity ) {
-			$this->update_item( $item_id, $new_quantity, $extra_data );
-
-			return;
-		}
-
-		// If the quantity is zero or less, don't add the item.
-		if ( $new_quantity <= 0 ) {
-			return;
-		}
 
 		// Add the item to the array of items.
 		$this->items[ $item_id ] = new Cart_Item(
 			[
 				"{$type}_id" => $item_id,
-				'quantity'   => $new_quantity,
+				'quantity'   => $quantity,
 				'type'       => $type,
 				'extra'      => $extra_data ?? [],
 			]
@@ -288,15 +292,18 @@ class Agnostic_Cart extends Abstract_Cart {
 	 * @throws InvalidArgumentException If the item does not exist in the cart.
 	 */
 	protected function update_item( $item_id, int $quantity, ?array $extra_data = null ): void {
-		$item_object  = $this->items[ $item_id ];
-		$new_quantity = $item_object->add_quantity( $quantity );
-
-		// If the quantity is less than 1, remove the item from the cart.
-		if ( $new_quantity < 1 ) {
-			$this->remove_item( $item_id );
-
+		// Nothing to do with no quantity.
+		if ( $quantity === 0 ) {
 			return;
 		}
+
+		// Ensure the item exists.
+		if ( ! $this->has_item( $item_id ) ) {
+			throw new InvalidArgumentException( 'Item not found in cart.' );
+		}
+
+		$item_object             = $this->items[ $item_id ];
+		$item_object['quantity'] = $quantity;
 
 		// Maybe update the extra data.
 		if ( null !== $extra_data ) {
@@ -311,18 +318,11 @@ class Agnostic_Cart extends Abstract_Cart {
 	 *
 	 * @since TBD
 	 *
-	 * @param int|string $item_id  The item ID.
-	 * @param null|int   $quantity The quantity to remove.
+	 * @param int|string $item_id The item ID.
 	 */
-	public function remove_item( $item_id, $quantity = null ) {
-		if ( null === $quantity ) {
-			unset( $this->items[ $item_id ] );
-			$this->reset_calculations();
-
-			return;
-		}
-
-		$this->update_item( $item_id, -abs( (int) $quantity ) );
+	public function remove_item( $item_id ) {
+		unset( $this->items[ $item_id ] );
+		$this->reset_calculations();
 	}
 
 	/**
@@ -458,7 +458,8 @@ class Agnostic_Cart extends Abstract_Cart {
 	 * Get the total value of the cart, including additional values such as fees or discounts.
 	 *
 	 * This method calculates the total by first computing the subtotal from all items in the cart,
-	 * and then applying any additional values (e.g., fees or discounts) provided via the `tec_tickets_commerce_get_cart_additional_values` filter.
+	 * and then applying any additional values (e.g., fees or discounts) provided via the
+	 * `tec_tickets_commerce_get_cart_additional_values` filter.
 	 *
 	 * @since 5.10.0
 	 * @since 5.18.0 Refactored logic, to include a new filter.
