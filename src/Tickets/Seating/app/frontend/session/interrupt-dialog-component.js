@@ -28,7 +28,7 @@ export function InterruptDialogComponent(props) {
 		<div class="tribe-tickets-seating__interrupt-dialog" role="dialog">
 			<div class="tribe-tickets-seating__interrupt-header">
 				<div class="dashicons dashicons-clock"></div>
-				<p class="tribe-tickets-seating__interrupt-title">{title}</p>
+				<div class="tribe-tickets-seating__interrupt-title">{title}</div>
 			</div>
 			<div class="tribe-dialog__content tribe-modal__content tribe-tickets-seating__interrupt-content">{content}</div>
 			<div class="tribe-tickets-seating__interrupt-footer">
