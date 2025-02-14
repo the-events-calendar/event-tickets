@@ -116,11 +116,11 @@ interface Cart_Interface {
 	 * Removes an item from the cart.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Removed the $quantity parameter.
 	 *
-	 * @param int|string $item_id  The item ID.
-	 * @param null|int   $quantity The quantity to remove.
+	 * @param int|string $item_id The item ID.
 	 */
-	public function remove_item( $item_id, $quantity = null );
+	public function remove_item( $item_id );
 
 	/**
 	 * Process the items in the cart.
