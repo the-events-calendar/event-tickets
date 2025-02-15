@@ -25,6 +25,8 @@
  * @see     tribe_get_event for the augmented WP_Post object returned in the `$events` array.
  */
 
+use Tribe\Events\Virtual\Plugin;
+
 if ( ! $show_events_in_email ) {
 	return;
 }
@@ -60,6 +62,25 @@ if ( ! $show_events_in_email ) {
 						<?php echo esc_html( $event->post_title ); ?>
 					</td>
 				</tr>
+				<?php if ( ! empty( $event->virtual_url ) ) : ?>
+					<tr class="tec-tickets__email-table-content-upcoming-event-card__line-3">
+						<td class="tec-tickets__email-table-content-upcoming-event-card__virtual">
+                            <img
+								class="tec-tickets__email-table-content-virtual-event-alert"
+								width="15"
+								height="11"
+								src="<?php echo esc_url( tribe_resource_url( 'images/alert.png', false, null, tribe( Plugin::class ) ) ); ?>"
+                            />
+							<span>Virtual Event  -  </span>
+
+						</td>
+						<td class="tec-tickets__email-table-content-upcoming-event-card__virtual-link">
+							<a href="<?php echo esc_url( $event->virtual_url ); ?>" target="_blank" rel="noopener noreferrer">
+								<?php echo esc_html( $event->virtual_url ); ?>
+							</a>
+						</td>
+					</tr>
+				<?php endif; ?>
 			</table>
 		<?php endforeach; ?>
 
