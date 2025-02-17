@@ -65,14 +65,13 @@ if ( ! $show_events_in_email ) {
 				<?php if ( ! empty( $event->virtual_url ) ) : ?>
 					<tr class="tec-tickets__email-table-content-upcoming-event-card__line-3">
 						<td class="tec-tickets__email-table-content-upcoming-event-card__virtual">
-                            <img
+							<img
 								class="tec-tickets__email-table-content-virtual-event-alert"
 								width="15"
 								height="11"
 								src="<?php echo esc_url( tribe_resource_url( 'images/alert.png', false, null, tribe( Plugin::class ) ) ); ?>"
-                            />
+							/>
 							<span>Virtual Event  -  </span>
-
 						</td>
 						<td class="tec-tickets__email-table-content-upcoming-event-card__virtual-link">
 							<a href="<?php echo esc_url( $event->virtual_url ); ?>" target="_blank" rel="noopener noreferrer">
