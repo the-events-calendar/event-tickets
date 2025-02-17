@@ -35,6 +35,11 @@
 		<exclude-pattern>src/Tickets/Commerce/Order_Modifiers/*</exclude-pattern>
 	</rule>
 
+	<!-- Setting or modifying variables in templates is different than modifying WP globals elsewhere -->
+	<rule ref="WordPress.WP.GlobalVariablesOverride">
+		<exclude-pattern>src/views/v2/commerce/checkout/cart/*</exclude-pattern>
+	</rule>
+
 	<!-- General exclusions -->
 	<exclude-pattern>*/tests/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
