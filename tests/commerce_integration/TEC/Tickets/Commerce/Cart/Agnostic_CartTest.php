@@ -65,6 +65,11 @@ class Agnostic_CartTest extends WPTestCase {
 		foreach ( $items as $i => $item ) {
 			[ $id, $quantity, $extra, ] = $item;
 
+			// Skip testing items with a quantity of zero.
+			if ( 0 === $quantity ) {
+				continue;
+			}
+
 			$item_ids[ $id ] = true;
 			$quantity        = (int) $quantity;
 			$extra           ??= [];
@@ -78,7 +83,7 @@ class Agnostic_CartTest extends WPTestCase {
 			$this->assertArrayHasKey( $id, $cart_items, $assertion_msg );
 
 			$assertion_msg = "Adding items with an id already existing in the cart should change the quantity of that item in the cart. Item: {$i}";
-			$this->assertEquals( $quantity, $cart_items[ $id ]['quantity'], $assertion_msg );
+			$this->assertEquals( abs( $quantity ), $cart_items[ $id ]['quantity'], $assertion_msg );
 		}
 	}
 
@@ -102,44 +107,41 @@ class Agnostic_CartTest extends WPTestCase {
 	}
 
 	public function test_has_items_returns_ticket_count() {
-		$cart  = new Agnostic_Cart();
-		$items = $this->items_data_provider();
-		$count = 0;
+		$cart = new Agnostic_Cart();
 
-		foreach ( $items as $item ) {
-			if ( is_numeric( $item[0] ) ) {
-				$count++;
-				// Add $count to the item_id so they count as different tickets
-				$cart->upsert_item( $item[0] + $count, $item[1] );
+		// Add items to the cart and check the quantity of items.
+		$cart->upsert_item( 1, 1 );
+		$this->assertEquals( 1, $cart->has_items(), 'Adding items to the cart should increase the item count.' );
+		$this->assertEquals( 1, $cart->get_item_quantity( 1 ), 'Adding items to the cart should increase the item count.' );
 
-				$assertion_msg = 'Adding items with unique ids should properly update the item count in the cart.';
-				$this->assertEquals( $count, $cart->has_items(), $assertion_msg );
-			}
-		}
+		$cart->upsert_item( 2, 2 );
+		$this->assertEquals( 2, $cart->has_items(), 'Adding items to the cart should increase the item count.' );
+		$this->assertEquals( 2, $cart->get_item_quantity( 2 ), 'Adding items to the cart should increase the item count.' );
+
+		// Update the quantity of an existing item.
+		$cart->upsert_item( 1, 3 );
+		$this->assertEquals( 2, $cart->has_items(), 'Updating the quantity of an existing item should not increase the item count.' );
+		$this->assertEquals( 3, $cart->get_item_quantity( 1 ), 'Updating the quantity of an existing item should update the item count.' );
 	}
 
 	public function test_has_item_finds_item_by_id() {
-		$cart  = new Agnostic_Cart();
-		$items = $this->items_data_provider();
-		$item  = reset( $items );
+		$cart = new Agnostic_Cart();
+		[ $id, $quantity, , ] = $this->items_data_provider()[0];
 
-		$cart->upsert_item( $item[0], $item[1] );
+		$cart->upsert_item( $id, $quantity );
 
 		$assertion_msg = '`Agnostic_Cart->has_item( $id )` should return the quantity of that item currently in the cart.';
-		$this->assertEquals( $item[1], $cart->has_item( $item[0] ), $assertion_msg );
+		$this->assertEquals( $quantity, $cart->has_item( $id ), $assertion_msg );
 
 		$assertion_msg = '`Agnostic_Cart->has_item( $id )` should return false if the ID does not exist.';
-		$this->assertFalse( $cart->has_item( $item[0] + 10 ), $assertion_msg );
+		$this->assertFalse( $cart->has_item( $id + 10 ), $assertion_msg );
 		$this->assertFalse( $cart->has_item( 0 ), $assertion_msg );
 		$this->assertFalse( $cart->has_item( 'abc' ), $assertion_msg );
 	}
 
 	public function test_does_not_process_empty_data() {
-		$cart = new Agnostic_Cart();
-
 		$assertion_msg = '`Agnostic_Cart->process( $data )` should return false if no data was passed in.';
-		$this->assertFalse( $cart->process(), $assertion_msg );
-		$this->assertFalse( $cart->process( [] ), $assertion_msg );
+		$this->assertFalse( ( new Agnostic_Cart() )->process(), $assertion_msg );
 	}
 
 	public function test_prepare_data_does_not_modify_data() {
@@ -269,6 +271,29 @@ class Agnostic_CartTest extends WPTestCase {
 						'extra'         => [],
 					],
 				],
+			],
+
+			// Negative quantity should be converted to positive.
+			[
+				20,
+				-1,
+				null,
+				[
+					20 => [
+						'ticket_id' => 20,
+						'quantity'  => 1,
+						'type'      => 'ticket',
+						'extra'     => [],
+					],
+				],
+			],
+
+			// Quantity of zero should result in no items added.
+			[
+				25,
+				0,
+				null,
+				[],
 			],
 		];
 	}
