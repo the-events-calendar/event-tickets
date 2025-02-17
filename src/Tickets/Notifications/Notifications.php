@@ -43,7 +43,19 @@ class Notifications extends Integration_Abstract {
 	 * @inheritDoc
 	 */
 	protected function load(): void {
+		add_filter( 'tec_common_ian_allowed_pages', [ $this, 'add_allowed_pages' ] );
+
 		add_action( 'admin_footer', [ $this, 'render_icon' ] );
+	}
+
+	/**
+	 * Adds the Tickets settings page to the list of allowed pages for Notifications.
+	 *
+	 * @since TBD
+	 */
+	public function add_allowed_pages( $allowed ) {
+		$allowed[] = 'tickets_page_tec-tickets-settings';
+		return $allowed;
 	}
 
 	/**
