@@ -52,11 +52,13 @@ trait Order_Maker {
 		$orders = tribe( Order::class );
 		$order  = $orders->create_from_cart( $gateway, $purchaser );
 
+		// If the order can't be transitioned to pending, return false.
 		if ( ! $orders->modify_status( $order->ID, Pending::SLUG ) ) {
 			return false;
 		}
 
-		if ( ! $orders->modify_status( $order->ID, $order_status ) ) {
+		// If the requested status isn't pending, and the order can't be transitioned to the desired status, return the order.
+		if ( Pending::SLUG !== $order_status && ! $orders->modify_status( $order->ID, $order_status ) ) {
 			return $order;
 		}
 
