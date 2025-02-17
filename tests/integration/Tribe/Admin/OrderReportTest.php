@@ -26,14 +26,6 @@ class OrderReportTest extends WPTestCase {
 	use Ticket_Maker;
 	use Order_Maker;
 
-	public function placehold_post_ids( string $snapshot, array $ids ): string {
-		return str_replace(
-			$ids,
-			array_fill( 0, count( $ids ), '{{ID}}' ),
-			$snapshot
-		);
-	}
-
 	public function tc_order_report_data_provider(): Generator {
 		yield 'event with no orders' => [
 			function (): array {
@@ -368,7 +360,8 @@ class OrderReportTest extends WPTestCase {
 		$order_report->render_page();
 		$html = ob_get_clean();
 
-		$html = $this->placehold_post_ids( $html, $post_ids );
+		// Replace the post IDs with placeholders to avoid snapshot mismatches.
+		$html = str_replace( $post_ids, '{{ID}}', $html );
 
 		/**
 		 * Stabilize order dates column.
