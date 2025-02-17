@@ -82,23 +82,10 @@ class OrderReportTest extends WPTestCase {
 				);
 
 				// Manually set the `post_date` of each order in sequence to ensure the order is consistent in the snapshot.
-				global $wpdb;
-				foreach (
-					[
-						$order_a->ID => '2022-01-01 00:00:00',
-						$order_b->ID => '2022-01-02 00:00:00',
-					] as $order_id => $post_date
-				) {
-					$wpdb->query(
-						$wpdb->prepare(
-							"UPDATE {$wpdb->posts} SET post_date = %s WHERE ID = %d",
-							$post_date,
-							$order_id
-						)
-					);
-				}
+				$order_ids = wp_list_pluck( [ $order_a, $order_b ], 'ID' );
+				$this->set_sequential_post_dates( ...$order_ids );
 
-				return [ $event_id, [ $event_id, $ticket_id, $order_a->ID, $order_b->ID ] ];
+				return [ $event_id, [ $event_id, $ticket_id, ...$order_ids ] ];
 			},
 		];
 
@@ -116,20 +103,13 @@ class OrderReportTest extends WPTestCase {
 				$ticket_id_b = $this->create_tc_ticket( $event_id, 20.50 );
 
 				// Force ticket sorting order for display.
-				wp_update_post(
-					[
-						'ID'         => $ticket_id_a,
-						'menu_order' => 0,
-					]
-				);
-				wp_update_post(
-					[
-						'ID'         => $ticket_id_b,
-						'menu_order' => 1,
-					]
+				$this->set_sequential_menu_order_for_posts( $ticket_id_a, $ticket_id_b );
+
+				$order_a = $this->create_order(
+					[ $ticket_id_a => 2 ],
+					[ 'purchaser_email' => 'purchaser@test.com' ]
 				);
 
-				$order_a = $this->create_order( [ $ticket_id_a => 2 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
 				$order_b = $this->create_order(
 					[ $ticket_id_a => 3 ],
 					[
@@ -137,7 +117,12 @@ class OrderReportTest extends WPTestCase {
 						'order_status'    => Pending::SLUG,
 					]
 				);
-				$order_c = $this->create_order( [ $ticket_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+
+				$order_c = $this->create_order(
+					[ $ticket_id_b => 1 ],
+					[ 'purchaser_email' => 'purchaser@test.com' ]
+				);
+
 				$order_d = $this->create_order(
 					[ $ticket_id_b => 4 ],
 					[
@@ -147,25 +132,10 @@ class OrderReportTest extends WPTestCase {
 				);
 
 				// Manually set the `post_date` of each order in sequence to ensure the order is consistent in the snapshot.
-				global $wpdb;
-				foreach (
-					[
-						$order_a->ID => '2022-01-01 00:00:00',
-						$order_b->ID => '2022-01-02 00:00:00',
-						$order_c->ID => '2022-01-03 00:00:00',
-						$order_d->ID => '2022-01-04 00:00:00',
-					] as $order_id => $post_date
-				) {
-					$wpdb->query(
-						$wpdb->prepare(
-							"UPDATE {$wpdb->posts} SET post_date = %s WHERE ID = %d",
-							$post_date,
-							$order_id
-						)
-					);
-				}
+				$order_ids = wp_list_pluck( [ $order_a, $order_b, $order_c, $order_d ], 'ID' );
+				$this->set_sequential_post_dates( ...$order_ids );
 
-				return [ $event_id, [ $event_id, $ticket_id_a, $ticket_id_b, $order_a->ID, $order_b->ID, $order_c->ID, $order_d->ID ] ];
+				return [ $event_id, [ $event_id, $ticket_id_a, $ticket_id_b, ...$order_ids ] ];
 			},
 		];
 
@@ -193,26 +163,13 @@ class OrderReportTest extends WPTestCase {
 				);
 
 				// Force ticket sorting order for display.
-				wp_update_post(
-					[
-						'ID'         => $ticket_id_a,
-						'menu_order' => 0,
-					]
-				);
-				wp_update_post(
-					[
-						'ID'         => $ticket_id_b,
-						'menu_order' => 1,
-					]
-				);
-				wp_update_post(
-					[
-						'ID'         => $ticket_id_c,
-						'menu_order' => 2,
-					]
+				$this->set_sequential_menu_order_for_posts( $ticket_id_a, $ticket_id_b, $ticket_id_c );
+
+				$order_a = $this->create_order(
+					[ $ticket_id_a => 1 ],
+					[ 'purchaser_email' => 'purchaser@test.com' ]
 				);
 
-				$order_a = $this->create_order( [ $ticket_id_a => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
 				$order_b = $this->create_order(
 					[ $ticket_id_a => 1 ],
 					[
@@ -220,7 +177,12 @@ class OrderReportTest extends WPTestCase {
 						'order_status'    => Pending::SLUG,
 					]
 				);
-				$order_c = $this->create_order( [ $ticket_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+
+				$order_c = $this->create_order(
+					[ $ticket_id_b => 1 ],
+					[ 'purchaser_email' => 'purchaser@test.com' ]
+				);
+
 				$order_d = $this->create_order(
 					[ $ticket_id_b => 1 ],
 					[
@@ -228,6 +190,7 @@ class OrderReportTest extends WPTestCase {
 						'order_status'    => Pending::SLUG,
 					]
 				);
+
 				$order_e = $this->create_order(
 					[
 						$ticket_id_a => 1,
@@ -237,26 +200,10 @@ class OrderReportTest extends WPTestCase {
 				);
 
 				// Manually set the `post_date` of each order in sequence to ensure the order is consistent in the snapshot.
-				global $wpdb;
-				foreach (
-					[
-						$order_a->ID => '2022-01-01 00:00:00',
-						$order_b->ID => '2022-01-02 00:00:00',
-						$order_c->ID => '2022-01-03 00:00:00',
-						$order_d->ID => '2022-01-04 00:00:00',
-						$order_e->ID => '2022-01-05 00:00:00',
-					] as $order_id => $post_date
-				) {
-					$wpdb->query(
-						$wpdb->prepare(
-							"UPDATE {$wpdb->posts} SET post_date = %s WHERE ID = %d",
-							$post_date,
-							$order_id
-						)
-					);
-				}
+				$order_ids = wp_list_pluck( [ $order_a, $order_b, $order_c, $order_d, $order_e ], 'ID' );
+				$this->set_sequential_post_dates( ...$order_ids );
 
-				return [ $event_id, [ $event_id, $ticket_id_a, $ticket_id_b, $order_a->ID, $order_b->ID, $order_c->ID, $order_d->ID, $order_e->ID ] ];
+				return [ $event_id, [ $event_id, $ticket_id_a, $ticket_id_b, ...$order_ids ] ];
 			},
 		];
 
@@ -301,22 +248,8 @@ class OrderReportTest extends WPTestCase {
 				);
 
 				// Manually set the `post_date` of each order in sequence to ensure the order is consistent in the snapshot.
-				global $wpdb;
-				foreach (
-					[
-						$order_a->ID => '2022-01-01 00:00:00',
-						$order_b->ID => '2022-01-02 00:00:00',
-						$order_c->ID => '2022-01-03 00:00:00',
-					] as $order_id => $post_date
-				) {
-					$wpdb->query(
-						$wpdb->prepare(
-							"UPDATE {$wpdb->posts} SET post_date = %s WHERE ID = %d",
-							$post_date,
-							$order_id
-						)
-					);
-				}
+				$order_ids = wp_list_pluck( [ $order_a, $order_b, $order_c ], 'ID' );
+				$this->set_sequential_post_dates( ...$order_ids );
 
 				return [
 					$event_id,
@@ -324,9 +257,7 @@ class OrderReportTest extends WPTestCase {
 						$event_id,
 						$ticket_id_a,
 						$ticket_id_b,
-						$order_a->ID,
-						$order_b->ID,
-						$order_c->ID,
+						...$order_ids,
 					],
 				];
 			},
@@ -372,5 +303,32 @@ class OrderReportTest extends WPTestCase {
 		$html = str_replace( $order_date, '{{order_date}}', $html );
 
 		$this->assertMatchesHtmlSnapshot( $html );
+	}
+
+	protected function set_sequential_menu_order_for_posts( int ...$post_ids ) {
+		foreach ( $post_ids as $index => $post_id ) {
+			wp_update_post(
+				[
+					'ID'         => $post_id,
+					'menu_order' => $index,
+				]
+			);
+		}
+	}
+
+	protected function set_sequential_post_dates( int ... $post_ids ) {
+		global $wpdb;
+		foreach ( $post_ids as $index => $id ) {
+			$wpdb->query(
+				$wpdb->prepare(
+					"UPDATE {$wpdb->posts} SET post_date = %s WHERE ID = %d",
+					sprintf(
+						'2022-01-%02d 00:00:00',
+						$index + 1
+					),
+					$id
+				)
+			);
+		}
 	}
 }
