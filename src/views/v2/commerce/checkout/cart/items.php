@@ -41,30 +41,22 @@ if ( empty( $items ) ) {
 			continue;
 		}
 
+		// Use ticket as the default item type.
 		$item_type = $item['type'] ?? 'ticket';
 
-		switch ( $item_type ) {
-			case 'ticket':
-				$this->template(
-					'checkout/cart/ticket',
-					[
-						'section' => $section,
-						'post'    => $post,
-						'item'    => $item,
-					]
-				);
-				break;
+		// Set the path based on the item type.
+		$path = 'ticket' === $item_type
+			? 'checkout/cart/ticket'
+			: 'checkout/cart/item';
 
-			default:
-				$this->template(
-					'checkout/cart/item',
-					[
-						'section' => $section,
-						'post'    => $post,
-						'item'    => $item,
-					]
-				);
-		}
+		$this->template(
+			$path,
+			[
+				'section' => $section,
+				'post'    => $post,
+				'item'    => $item,
+			]
+		);
 	}
 	?>
 </div>
