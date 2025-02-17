@@ -3,8 +3,6 @@
 
 namespace Tribe\Tickets\Test\Commerce;
 
-
-use Tribe__Utils__Array as Arr;
 use Faker\Factory;
 use ReflectionClass;
 use RuntimeException;
@@ -79,20 +77,20 @@ trait Attendee_Maker {
 
 		$default_sku = $provider instanceof Tribe__Tickets__RSVP ? '' : 'test-attnd' . self::$generated;
 
-		$user_id = absint( Arr::get( $overrides, 'user_id', 0 ) );
+		$user_id = absint( $overrides['user_id'] ?? 0 );
 
 		$user_info = $this->get_data_for_name_props( $user_id, $overrides );
 
 		$meta = [
-			$provider->checkin_key              => (bool) Arr::get( $overrides, 'checkin', false ),
-			$provider->checkin_key . '_details' => Arr::get( $overrides, 'checkin_details', false ),
-			$provider->security_code            => Arr::get( $overrides, 'security_code', md5( uniqid() ) ),
-			$post_key                           => $post_id,
-			$product_key                        => $ticket_id,
-			$optout_key                         => Arr::get( $overrides, 'optout', false ),
-			$user_id_key                        => $user_id,
-			$ticket_sent_key                    => Arr::get( $overrides, 'ticket_sent', true ),
-			'_sku'                              => \Tribe__Utils__Array::get( $overrides, 'sku', $default_sku ),
+			$provider->checkin_key             => (bool) ( $overrides['checkin'] ?? false ),
+			"{$provider->checkin_key}_details" => $overrides['checkin_details'] ?? false,
+			$provider->security_code           => $overrides['security_code'] ?? md5( uniqid() ),
+			$post_key                          => $post_id,
+			$product_key                       => $ticket_id,
+			$optout_key                        => $overrides['optout'] ?? false,
+			$user_id_key                       => $user_id,
+			$ticket_sent_key                   => $overrides['ticket_sent'] ?? true,
+			'_sku'                             => $overrides['sku'] ?? $default_sku,
 		];
 
 		foreach ( $user_info as $key => $value ) {
@@ -188,7 +186,7 @@ trait Attendee_Maker {
 
 		$order = $provider instanceof Tribe__Tickets__RSVP
 			? $attendee_id
-			: \Tribe__Utils__Array::get( $overrides, 'order_id', md5( uniqid()) );
+			: $overrides['order_id'] ?? md5( uniqid() );
 
 		update_post_meta( $attendee_id, $order_key, $order );
 
