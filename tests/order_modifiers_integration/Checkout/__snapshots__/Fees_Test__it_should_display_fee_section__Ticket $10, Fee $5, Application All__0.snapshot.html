@@ -24,7 +24,7 @@
 </header>
 
 	<div class="tribe-tickets__commerce-checkout-cart-items">
-					<article
+	<article
 	 class="tribe-tickets__commerce-checkout-cart-item post-{TICKET_ID} tec_tc_ticket type-tec_tc_ticket status-publish hentry tribe-common-b1" 	 data-ticket-id="{TICKET_ID}" data-ticket-quantity="3" data-ticket-price="10.00" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details">
@@ -74,11 +74,38 @@
 	&#x24;30.00</div>
 
 </article>
-	</div>
+</div>
 
 	
 <footer  class="tribe-tickets__commerce-checkout-cart-footer tribe-common-b1" >
-	
+	<div class="tribe-tickets__form tribe-tickets__commerce-checkout-coupons-wrapper tribe-common-b2">
+	<div class="tec-tickets__commerce-checkout-cart-coupons">
+		<input
+			type="text"
+			class=" class="tribe-tickets__commerce-checkout-cart-coupons__input tribe-common-form-control-text__input tribe-tickets__form-field-input" "
+			id="coupon_input"
+			name="coupons"
+			aria-describedby="coupon_error"
+			aria-label="Enter coupon code"
+			placeholder="Enter coupon code"
+		/>
+		<button
+			id="coupon_apply"
+			class=" class="tec-tickets__commerce-checkout-cart-coupons__apply-button tribe-common-c-btn" "
+		>
+			Apply		</button>
+		<p id="coupon_error" class="tec-tickets__commerce-checkout-cart-coupons__error" style="display: none; color: red;" aria-live="polite" role="alert">
+			Invalid coupon code		</p>
+	</div>
+	<div class="tec-tickets__commerce-checkout-cart-coupons__applied" style="display: none;">
+	<span class="tec-tickets__commerce-checkout-cart-coupons__applied-text">
+		Coupon: <span class="tec-tickets__commerce-checkout-cart-coupons__applied-value"></span> - Discount: <span class="tec-tickets__commerce-checkout-cart-coupons__applied-discount"></span>
+	</span>
+		<button class="tec-tickets__commerce-checkout-cart-coupons__remove-button" type="button">
+			X		</button>
+	</div>
+</div>
+
 <div class="tribe-tickets__commerce-checkout-cart-footer-order-modifier-fees">
 	<ul>
 					<li>
