@@ -24,10 +24,14 @@ class Emails_Test extends WPTestCase {
 	 */
 	public function mock_wp_mail() {
 		$store = &self::$store;
-		$this->set_fn_return( 'wp_mail', function ( $to, $subject, $content, $headers, $attachments ) use ( &$store ) {
-			$store = compact( 'to', 'subject', 'content', 'headers', 'attachments' );
-			return true;
-		}, true );
+		$this->set_fn_return(
+			'wp_mail',
+			function ( $to, $subject, $content, $headers, $attachments ) use ( &$store ) {
+				$store = compact( 'to', 'subject', 'content', 'headers', 'attachments' );
+				return true;
+			},
+			true 
+		);
 	}
 
 	/**
@@ -45,14 +49,20 @@ class Emails_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_include_fees_in_purchase_receipt() {
-		$post = static::factory()->post->create( [ 'post_name' => 'Event post' ] );
+		$post      = static::factory()->post->create( [ 'post_name' => 'Event post' ] );
 		$ticket_id = $this->create_tc_ticket( $post, 50 );
 
-		$fee = $this->create_fee_for_ticket( $ticket_id, [ 'raw_amount' => 5, 'sub_type' => 'flat' ] );
+		$fee = $this->create_fee_for_ticket(
+			$ticket_id,
+			[
+				'raw_amount' => 5,
+				'sub_type'   => 'flat',
+			] 
+		);
 
 		$this->set_class_fn_return( Tickets::class, 'generate_security_code', 'attendee-security-code' );
 
-		$order = $this->create_order( [ $ticket_id => 2 ], [ 'purchaser_email' => 'sam@tec.com' ] );
+		$order           = $this->create_order( [ $ticket_id => 2 ], [ 'purchaser_email' => 'sam@tec.com' ] );
 		$refreshed_order = tec_tc_get_order( $order->ID );
 
 		// Trigger email generation
@@ -69,14 +79,20 @@ class Emails_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_include_fees_in_order_completed() {
-		$post = static::factory()->post->create( [ 'post_name' => 'Event post' ] );
+		$post      = static::factory()->post->create( [ 'post_name' => 'Event post' ] );
 		$ticket_id = $this->create_tc_ticket( $post, 50 );
 
-		$fee = $this->create_fee_for_ticket( $ticket_id, [ 'raw_amount' => 5, 'sub_type' => 'flat' ] );
+		$fee = $this->create_fee_for_ticket(
+			$ticket_id,
+			[
+				'raw_amount' => 5,
+				'sub_type'   => 'flat',
+			] 
+		);
 
 		$this->set_class_fn_return( Tickets::class, 'generate_security_code', 'attendee-security-code' );
 
-		$order = $this->create_order( [ $ticket_id => 2 ], [ 'purchaser_email' => 'sam@tec.com' ] );
+		$order           = $this->create_order( [ $ticket_id => 2 ], [ 'purchaser_email' => 'sam@tec.com' ] );
 		$refreshed_order = tec_tc_get_order( $order->ID );
 
 		// Trigger email generation
