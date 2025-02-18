@@ -54,9 +54,9 @@ tribe.tickets.commerce = {};
 		purchaserEmail: '.tribe-tickets__commerce-checkout-purchaser-info-form-field-email',
 
 		// Coupon related selectors.
-		couponInputLabel: '.tribe-tickets__commerce-checkout-cart-coupons__label',
-		couponInput: '.tribe-tickets__commerce-checkout-cart-coupons__input',
-		couponApplyButton: '.tribe-tickets__commerce-checkout-cart-coupons__apply-button',
+		couponInput: '#coupon_input',
+		couponError: '.tec-tickets__commerce-checkout-cart-coupons__error',
+		couponApplyButton: '#coupon_apply',
 		couponAppliedSection: '.tribe-tickets__commerce-checkout-cart-coupons__applied',
 		couponAppliedValue: '.tribe-tickets__commerce-checkout-cart-coupons__applied-value',
 		couponRemoveButton: '.tribe-tickets__commerce-checkout-cart-coupons__remove-button'
@@ -247,7 +247,8 @@ tribe.tickets.commerce = {};
 	obj.bindCouponApply = function() {
 		let ajaxInProgress = false;
 
-		$document.on( 'click', obj.selectors.couponApplyButton, applyCoupon );
+		// $document.on( 'click', obj.selectors.couponApplyButton, applyCoupon );
+		$document.on( 'click', '#coupon_apply', applyCoupon );
 		$document.on( 'keydown', obj.selectors.couponInput, function( e ) {
 			if ( e.key === 'Enter' ) {
 				e.preventDefault();
@@ -261,14 +262,16 @@ tribe.tickets.commerce = {};
 		 * @since TBD
 		 */
 		function applyCoupon() {
+			console.log( 'Applying coupon...' );
 			// Prevent multiple AJAX requests at once.
 			if ( ajaxInProgress ) {
+				console.log( 'AJAX request already in progress.' );
 				return;
 			}
 
 			const couponValue = $( obj.selectors.couponInput ).val().trim();
 			const nonce = $( obj.selectors.nonce ).val();
-			const $errorMessage = $( '.tribe-tickets__commerce-checkout-cart-coupons__error' );
+			const $errorMessage = $( obj.selectors.couponError );
 
 			// Hide the error message initially.
 			$errorMessage.hide();
@@ -282,23 +285,26 @@ tribe.tickets.commerce = {};
 			ajaxInProgress = true;
 			obj.loaderShow();
 
+			// Get the cart hash from the URL.
+			const cartHash = window.location.search.match( /tec-tc-cookie=([^&]*)/ );
+
+			const requestData = {
+				coupon: couponValue,
+				nonce: nonce,
+				XDEBUG_SESSION: true,
+				payment_intent_id: window.tecTicketsCommerceGatewayStripeCheckout.paymentIntentData.id,
+				purchaser_data: obj.getPurchaserData( $( obj.selectors.purchaserFormContainer ) ),
+				cart_hash: cartHash[1],
+			};
+
 			$.ajax({
-				url: ajaxurl,
+				url: `${window.tecTicketsCommerce.restUrl}coupons/apply`,
 				method: 'POST',
-				data: {
-					action: 'validate_coupon',
-					coupon: couponValue,
-					nonce: nonce,
-					data: window.tecTicketsCommerceGatewayStripeCheckout
-				},
-				beforeSend() {
-					obj.loaderShow();
-				},
+				data: requestData,
 				success( response ) {
 					if ( response.success ) {
 						// Hide input and button, show applied coupon.
 						$( obj.selectors.couponInput ).hide();
-						$( obj.selectors.couponInputLabel ).hide();
 						$( obj.selectors.couponApplyButton ).hide();
 
 						// Display coupon value and discount.
@@ -308,7 +314,6 @@ tribe.tickets.commerce = {};
 					} else {
 						$errorMessage.text( response.data.message || 'Invalid Coupon Code' ).show();
 						$( obj.selectors.couponInput ).show();
-						$( obj.selectors.couponInputLabel ).show();
 						$( obj.selectors.couponApplyButton ).show();
 					}
 				},
@@ -365,7 +370,6 @@ tribe.tickets.commerce = {};
 					if ( response.success ) {
 						// Show input and apply button again.
 						$( obj.selectors.couponInput ).val( '' ).show();
-						$( obj.selectors.couponInputLabel ).show();
 						$( obj.selectors.couponApplyButton ).show();
 
 						// Hide the applied coupon section.
