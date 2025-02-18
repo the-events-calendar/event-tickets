@@ -181,6 +181,33 @@ class Precision_Value extends Base_Value {
 	}
 
 	/**
+	 * Multiply this value by another value.
+	 *
+	 * This will multiply the values together and return a new value object with the product.
+	 * The precision of the new value will be determined by the precision of THIS object.
+	 *
+	 * @since TBD
+	 *
+	 * @param Precision_Value $value The value to multiply by.
+	 *
+	 * @return static The new value object.
+	 */
+	public function multiply( Precision_Value $value ): Precision_Value {
+		$common_precision = max( $this->get_precision(), $value->get_precision() );
+		$precision_product = $this->get_precision() * $value->get_precision();
+
+		$current_value = $this->convert_to_precision( $common_precision );
+		$value         = $value->convert_to_precision( $common_precision );
+
+		$new_value = $current_value->value * $value->value;
+
+		return new static(
+			(float) ( $new_value / ( 10 ** $precision_product ) ),
+			$this->get_precision()
+		);
+	}
+
+	/**
 	 * Convert this object to an object with a new precision level.
 	 *
 	 * @since 5.18.0
