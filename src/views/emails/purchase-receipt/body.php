@@ -9,7 +9,7 @@
  *
  * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
  *
- * @version 5.5.11
+ * @version TBD
  *
  * @since 5.5.11
  * @since TBD Added template for Booking Fees.
