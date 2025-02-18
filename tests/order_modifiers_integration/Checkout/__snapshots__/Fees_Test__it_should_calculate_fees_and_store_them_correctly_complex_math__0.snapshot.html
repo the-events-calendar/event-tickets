@@ -24,7 +24,7 @@
 </header>
 
 	<div class="tribe-tickets__commerce-checkout-cart-items">
-					<article
+	<article
 	 class="tribe-tickets__commerce-checkout-cart-item post-{TICKET_ID_1} tec_tc_ticket type-tec_tc_ticket status-publish hentry tribe-common-b1" 	 data-ticket-id="{TICKET_ID_1}" data-ticket-quantity="2" data-ticket-price="11.28" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details">
@@ -74,7 +74,7 @@
 	&#x24;22.56</div>
 
 </article>
-					<article
+<article
 	 class="tribe-tickets__commerce-checkout-cart-item post-{TICKET_ID_2} tec_tc_ticket type-tec_tc_ticket status-publish hentry tribe-common-b1" 	 data-ticket-id="{TICKET_ID_2}" data-ticket-quantity="3" data-ticket-price="22.56" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details">
@@ -124,7 +124,7 @@
 	&#x24;67.68</div>
 
 </article>
-					<article
+<article
 	 class="tribe-tickets__commerce-checkout-cart-item post-{TICKET_ID_3} tec_tc_ticket type-tec_tc_ticket status-publish hentry tribe-common-b1" 	 data-ticket-id="{TICKET_ID_3}" data-ticket-quantity="4" data-ticket-price="33.84" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details">
@@ -174,7 +174,7 @@
 	&#x24;135.36</div>
 
 </article>
-					<article
+<article
 	 class="tribe-tickets__commerce-checkout-cart-item post-{TICKET_ID_4} tec_tc_ticket type-tec_tc_ticket status-publish hentry tribe-common-b1" 	 data-ticket-id="{TICKET_ID_4}" data-ticket-quantity="5" data-ticket-price="45.12" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details">
@@ -224,7 +224,7 @@
 	&#x24;225.60</div>
 
 </article>
-					<article
+<article
 	 class="tribe-tickets__commerce-checkout-cart-item post-{TICKET_ID_5} tec_tc_ticket type-tec_tc_ticket status-publish hentry tribe-common-b1" 	 data-ticket-id="{TICKET_ID_5}" data-ticket-quantity="6" data-ticket-price="56.40" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details">
@@ -274,11 +274,38 @@
 	&#x24;338.40</div>
 
 </article>
-	</div>
+</div>
 
 	
 <footer  class="tribe-tickets__commerce-checkout-cart-footer tribe-common-b1" >
-	
+	<div class="tribe-tickets__form tribe-tickets__commerce-checkout-coupons-wrapper tribe-common-b2">
+	<div class="tec-tickets__commerce-checkout-cart-coupons">
+		<input
+			type="text"
+			class=" class="tribe-tickets__commerce-checkout-cart-coupons__input tribe-common-form-control-text__input tribe-tickets__form-field-input" "
+			id="coupon_input"
+			name="coupons"
+			aria-describedby="coupon_error"
+			aria-label="Enter coupon code"
+			placeholder="Enter coupon code"
+		/>
+		<button
+			id="coupon_apply"
+			class=" class="tec-tickets__commerce-checkout-cart-coupons__apply-button tribe-common-c-btn" "
+		>
+			Apply		</button>
+		<p id="coupon_error" class="tec-tickets__commerce-checkout-cart-coupons__error" style="display: none; color: red;" aria-live="polite" role="alert">
+			Invalid coupon code		</p>
+	</div>
+	<div class="tec-tickets__commerce-checkout-cart-coupons__applied" style="display: none;">
+	<span class="tec-tickets__commerce-checkout-cart-coupons__applied-text">
+		Coupon: <span class="tec-tickets__commerce-checkout-cart-coupons__applied-value"></span> - Discount: <span class="tec-tickets__commerce-checkout-cart-coupons__applied-discount"></span>
+	</span>
+		<button class="tec-tickets__commerce-checkout-cart-coupons__remove-button" type="button">
+			X		</button>
+	</div>
+</div>
+
 <div class="tribe-tickets__commerce-checkout-cart-footer-order-modifier-fees">
 	<ul>
 					<li>
