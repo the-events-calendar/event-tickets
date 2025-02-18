@@ -52,7 +52,7 @@ trait Coupons {
 	 *
 	 * @return bool
 	 */
-	protected function is_coupon_valid( Coupon $coupon ) {
+	protected function is_coupon_valid( Order_Modifier $coupon ) {
 		try {
 			// If it's not a coupon, it's invalid.
 			if ( ! $this->is_coupon( $coupon ) ) {
@@ -64,13 +64,16 @@ trait Coupons {
 				return false;
 			}
 
+			// Current time stamp for checking start and end dates.
+			$current_time = current_time( 'timestamp' );
+
 			// If the coupon end date has passed, it is invalid.
-			if ( null !== $coupon->end_date && strtotime( $coupon->end_date ) < current_time( 'timestamp' ) ) {
+			if ( null !== $coupon->end_time && strtotime( $coupon->end_time ) < $current_time ) {
 				return false;
 			}
 
 			// If the coupon start date is in the future, it is invalid.
-			if ( null !== $coupon->start_date && strtotime( $coupon->start_date ) > current_time( 'timestamp' ) ) {
+			if ( null !== $coupon->start_time && strtotime( $coupon->start_date ) > $current_time) {
 				return false;
 			}
 
