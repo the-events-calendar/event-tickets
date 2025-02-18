@@ -10,6 +10,7 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Commerce\Order_Modifiers\API;
 
 use Exception;
+use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
 use TEC\Tickets\Commerce\Order;
@@ -47,9 +48,9 @@ class Coupons extends Base_API {
 	 *
 	 * @since 5.18.0
 	 *
-	 * @param Container          $container The DI container.
+	 * @param Container          $container  The DI container.
 	 * @param Coupons_Repository $repository The coupons repository.
-	 * @param Manager            $manager The manager for the order modifiers.
+	 * @param Manager            $manager    The manager for the order modifiers.
 	 */
 	public function __construct( Container $container, Coupons_Repository $repository, Manager $manager ) {
 		parent::__construct( $container );
@@ -90,7 +91,7 @@ class Coupons extends Base_API {
 			'/coupons/validate',
 			[
 				'methods'             => Server::CREATABLE,
-				'callback'            => [ $this, 'validate_coupon' ],
+				'callback'            => fn( Request $request ) => $this->validate_coupon( $request ),
 				'permission_callback' => '__return_true',
 				'args'                => $this->get_endpoint_args( 'validate' ),
 			]
@@ -218,10 +219,15 @@ class Coupons extends Base_API {
 				throw new Exception( esc_html__( 'Invalid coupon.', 'event-tickets' ), 400 );
 			}
 
+			/** @var Coupon $coupon */
 			$coupon = $this->repo->find_by_slug( $coupon_slug );
 
 			// @todo: Use another method to get the Order class object.
 			$order_class = tribe( Order::class );
+
+			/** @var Cart $cart */
+			$cart = tribe( Cart::class );
+			$cart->set_cart_hash( $request->get_param( 'cart_hash' ) );
 
 			$purchaser_data    = $this->get_purchaser_information( $request );
 			$payment_intent_id = $request->get_param( 'payment_intent_id' );
@@ -232,8 +238,11 @@ class Coupons extends Base_API {
 				throw new Exception( esc_html__( 'Could not create order.', 'event-tickets' ), 500 );
 			}
 
-			$original_order_value = $order->total_value->get_integer();
-			$new_order_value      = max( 0, $original_order_value - $coupon->raw_amount );
+			/** @var Value $order_total */
+			$order_total = $order->total_value;
+
+			$original_order_value = $order_total->get_float();
+			$new_order_value      = max( 0, $original_order_value - $coupon->get_discount_amount( $original_order_value ) );
 
 			// Update the payment intent with the new value
 			Payment_Intent::update(
@@ -247,6 +256,7 @@ class Coupons extends Base_API {
 
 			return rest_ensure_response(
 				[
+					'success'  => true,
 					'discount' => Value::create( $coupon->raw_amount )->get_currency(),
 					'message'  => sprintf(
 						/* translators: %s: the coupon code */
@@ -262,7 +272,8 @@ class Coupons extends Base_API {
 					'tickets_apply_coupon_error',
 					$e->getMessage(),
 					[
-						'status' => $e->getCode() ?: 500,
+						'status'  => $e->getCode() ?: 500,
+						'success' => false,
 					]
 				)
 			);
@@ -429,6 +440,12 @@ class Coupons extends Base_API {
 		];
 
 		$common_args = [
+			'cart_hash'         => [
+				'description' => esc_html__( 'The cart hash.', 'event-tickets' ),
+				'type'        => 'string',
+				'format'      => 'text-field',
+				'required'    => true,
+			],
 			'payment_intent_id' => [
 				'description' => esc_html__( 'The payment intent to apply the coupon to.', 'event-tickets' ),
 				'type'        => 'string',
@@ -436,21 +453,24 @@ class Coupons extends Base_API {
 				'required'    => true,
 			],
 			'purchaser_data'    => [
-				'description' => esc_html__( 'The purchaser data.', 'event-tickets' ),
-				'type'        => 'object',
-				'required'    => true,
-				'properties'  => [
+				'description'       => esc_html__( 'The purchaser data.', 'event-tickets' ),
+				'type'              => 'object',
+				'sanitize_callback' => function ( $raw_value, Request $request, $key ) {
+					return [
+						'name'  => sanitize_text_field( $raw_value['name'] ?? '' ),
+						'email' => sanitize_email( $raw_value['email'] ?? '' ),
+					];
+				},
+				'properties'        => [
 					'name'  => [
 						'description' => esc_html__( 'The purchaser name.', 'event-tickets' ),
 						'type'        => 'string',
 						'format'      => 'text-field',
-						'required'    => true,
 					],
 					'email' => [
 						'description' => esc_html__( 'The purchaser email.', 'event-tickets' ),
 						'type'        => 'string',
 						'format'      => 'email',
-						'required'    => true,
 					],
 				],
 			],
