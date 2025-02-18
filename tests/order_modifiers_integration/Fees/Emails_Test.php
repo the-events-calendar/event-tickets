@@ -30,7 +30,7 @@ class Emails_Test extends WPTestCase {
 				$store = compact( 'to', 'subject', 'content', 'headers', 'attachments' );
 				return true;
 			},
-			true 
+			true
 		);
 	}
 
@@ -57,7 +57,7 @@ class Emails_Test extends WPTestCase {
 			[
 				'raw_amount' => 5,
 				'sub_type'   => 'flat',
-			] 
+			]
 		);
 
 		$this->set_class_fn_return( Tickets::class, 'generate_security_code', 'attendee-security-code' );
@@ -87,7 +87,7 @@ class Emails_Test extends WPTestCase {
 			[
 				'raw_amount' => 5,
 				'sub_type'   => 'flat',
-			] 
+			]
 		);
 
 		$this->set_class_fn_return( Tickets::class, 'generate_security_code', 'attendee-security-code' );
@@ -104,4 +104,38 @@ class Emails_Test extends WPTestCase {
 		// Ensure snapshot correctness
 		$this->assertMatchesHtmlSnapshot( str_replace( [ $post, $ticket_id, $order->ID ], [ '{POST_ID}', '{TICKET_ID}', '{ORDER_ID}' ], self::$store['content'] ) );
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_break_template_when_adding_multiple_fees_to_same_ticket() {
+		$post      = static::factory()->post->create( [ 'post_name' => 'Event post' ] );
+		$ticket_id = $this->create_tc_ticket( $post, 50 );
+
+		// Add 10 fees to the ticket
+		for ( $i = 0; $i < 10; $i++ ) {
+			$this->create_fee_for_ticket(
+				$ticket_id,
+				[
+					'raw_amount' => 5,
+					'sub_type'   => 'flat',
+				]
+			);
+		}
+
+		$this->set_class_fn_return( Tickets::class, 'generate_security_code', 'attendee-security-code' );
+
+		$order           = $this->create_order( [ $ticket_id => 2 ], [ 'purchaser_email' => 'sam@tec.com' ] );
+		$refreshed_order = tec_tc_get_order( $order->ID );
+
+		// Trigger email generation
+		do_action( 'tec_tickets_commerce_send_email_purchase_receipt', $refreshed_order );
+
+		// Ensure emails were sent
+		$this->assertEmailSent();
+
+		// Ensure snapshot correctness
+		$this->assertMatchesHtmlSnapshot( str_replace( [ $post, $ticket_id, $order->ID ], [ '{POST_ID}', '{TICKET_ID}', '{ORDER_ID}' ], self::$store['content'] ) );
+	}
+
 }
