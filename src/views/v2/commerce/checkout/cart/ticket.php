@@ -1,15 +1,15 @@
 <?php
 /**
- * Tickets Commerce: Checkout Cart Item
+ * Tickets Commerce: Checkout Cart Ticket Template
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/checkout/cart/item.php
+ * [your-theme]/tribe/tickets/v2/commerce/checkout/cart/ticket.php
  *
  * See more documentation about our views templating system.
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.1.9
+ * @since   TBD
  *
  * @version TBD
  *
@@ -28,9 +28,9 @@
  * @var array           $item             Which item this row will be for.
  */
 
-// Bail if there's no ticket id.
 use TEC\Tickets\Commerce\Module;
 
+// Bail if there's no ticket id.
 if ( empty( $item['ticket_id'] ) ) {
 	return;
 }

@@ -10,7 +10,6 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Commerce\Order_Modifiers\Values;
 
 use InvalidArgumentException;
-use TEC\Tickets\Commerce\Order_Modifiers\Traits\Stringify;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Positive_Integer_Value as Positive_Int;
 
 /**
@@ -23,6 +22,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Values\Positive_Integer_Value as Positi
  * @since 5.18.0
  */
 class Precision_Value extends Base_Value {
+
 	/**
 	 * The precision (how many decimal places).
 	 *
