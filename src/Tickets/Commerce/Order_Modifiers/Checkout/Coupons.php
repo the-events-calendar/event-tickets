@@ -55,6 +55,9 @@ class Coupons extends Controller_Contract {
 			3
 		);
 
+		// Register our own script on the frontend.
+		add_action( 'inti', [ $this, 'register_assets' ] );
+
 		// Add asset localization to ensure the script has the necessary data.
 		add_action( 'init', [ $this, 'localize_asset' ] );
 	}
@@ -73,8 +76,15 @@ class Coupons extends Controller_Contract {
 			20
 		);
 
+		// Remove asset registration.
+		remove_action( 'inti', [ $this, 'register_assets' ] );
+
 		// Remove asset localization.
 		remove_action( 'init', [ $this, 'localize_asset' ] );
+	}
+
+	public function register_assets() {
+
 	}
 
 	/**
@@ -83,7 +93,14 @@ class Coupons extends Controller_Contract {
 	 * @since 5.18.0
 	 */
 	public function localize_asset(): void {
-		Assets::init()->get( 'tribe-tickets-commerce-js' )->add_localize_script( 'tecTicketsCommerce', [ 'restUrl' => tribe_tickets_rest_url() ] );
+		Assets::init()
+			->get( 'tribe-tickets-commerce-js' )
+			->add_localize_script(
+				'tecTicketsCommerce',
+				[
+					'restUrl' => tribe_tickets_rest_url(),
+				]
+			);
 	}
 
 	/**
