@@ -20,10 +20,10 @@ const updateCouponDiscount = ( discount ) => {
 
 	// Update the coupon value element with the unescaped discount value
 	couponValueElement.textContent = parser.parseFromString(
-		`<!doctype html><body>${ discount }`,
+		`<!doctype html><body>${discount}`,
 		'text/html'
 	).body.textContent;
-}
+};
 
 const hideInput = () => {
 	const couponInputElement = document.querySelector( selectors.input );
@@ -33,7 +33,7 @@ const hideInput = () => {
 	couponInputElement.style.display = 'none';
 	couponInputLabelElement.style.display = 'none';
 	couponApplyButtonElement.style.display = 'none';
-}
+};
 
 const showInput = () => {
 	const couponInputElement = document.querySelector( selectors.input );
@@ -43,7 +43,7 @@ const showInput = () => {
 	couponInputElement.style.display = 'block';
 	couponInputLabelElement.style.display = 'block';
 	couponApplyButtonElement.style.display = 'block';
-}
+};
 
 const clearError = () => {
 	const couponErrorElement = document.querySelector( selectors.errorMessage );

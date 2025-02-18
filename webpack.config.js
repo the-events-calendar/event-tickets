@@ -248,8 +248,10 @@ const targets = [
 		outputScript: './build/OrderModifiers/rest.min.js',
 		outputStyle: `build/OrderModifiers/rest.${postfix}`,
 		moveFromTo: {
-			'src/resources/js/app/order-modifiers-rest.js': 'build/OrderModifiers/rest.js',
-			'src/resources/css/app/order-modifiers-rest.css': 'build/OrderModifiers/rest.css',
+			'src/resources/js/app/order-modifiers-rest.js':
+				'build/OrderModifiers/rest.js',
+			'src/resources/css/app/order-modifiers-rest.css':
+				'build/OrderModifiers/rest.css',
 		},
 	},
 	{
@@ -262,6 +264,18 @@ const targets = [
 				'build/OrderModifiers/block-editor.js',
 			'src/resources/css/app/order-modifiers-block-editor-bundle.css':
 				'build/OrderModifiers/block-editor.css',
+		},
+	},
+	{
+		name: 'order-modifiers-checkout-frontend',
+		entry: './src/Tickets/Commerce/Order_Modifiers/app/checkout/index.js',
+		outputScript: './build/OrderModifiers/checkout-frontend.min.js',
+		outputStyle: `build/OrderModifiers/checkout-frontend.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/order-modifiers-checkout-frontend.js':
+				'build/OrderModifiers/checkout-frontend.js',
+			'src/resources/css/app/order-modifiers-checkout-frontend.css':
+				'build/OrderModifiers/checkout-frontend.css',
 		},
 	},
 ];
