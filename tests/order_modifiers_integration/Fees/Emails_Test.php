@@ -138,4 +138,58 @@ class Emails_Test extends WPTestCase {
 		$this->assertMatchesHtmlSnapshot( str_replace( [ $post, $ticket_id, $order->ID ], [ '{POST_ID}', '{TICKET_ID}', '{ORDER_ID}' ], self::$store['content'] ) );
 	}
 
+	/**
+	 * @test
+	 */
+	public function it_should_allow_multiple_fees_of_different_types_on_the_same_ticket() {
+		$post      = static::factory()->post->create( [ 'post_name' => 'Event post' ] );
+		$ticket_id = $this->create_tc_ticket( $post, 50 );
+
+		// Add multiple fees of different types to the same ticket
+		$this->create_fee_for_ticket(
+			$ticket_id,
+			[
+				'raw_amount' => 5,
+				'sub_type'   => 'flat',
+			]
+		);
+
+		$this->create_fee_for_ticket(
+			$ticket_id,
+			[
+				'raw_amount' => 10,
+				'sub_type'   => 'percent',
+			]
+		);
+
+		$this->create_fee_for_ticket(
+			$ticket_id,
+			[
+				'raw_amount' => 2.5,
+				'sub_type'   => 'flat',
+			]
+		);
+
+		$this->create_fee_for_ticket(
+			$ticket_id,
+			[
+				'raw_amount' => 15,
+				'sub_type'   => 'percent',
+			]
+		);
+
+		$this->set_class_fn_return( Tickets::class, 'generate_security_code', 'attendee-security-code' );
+
+		$order           = $this->create_order( [ $ticket_id => 2 ], [ 'purchaser_email' => 'sam@tec.com' ] );
+		$refreshed_order = tec_tc_get_order( $order->ID );
+
+		// Trigger email generation
+		do_action( 'tec_tickets_commerce_send_email_purchase_receipt', $refreshed_order );
+
+		// Ensure emails were sent
+		$this->assertEmailSent();
+
+		// Ensure snapshot correctness
+		$this->assertMatchesHtmlSnapshot( str_replace( [ $post, $ticket_id, $order->ID ], [ '{POST_ID}', '{TICKET_ID}', '{ORDER_ID}' ], self::$store['content'] ) );
+	}
 }
