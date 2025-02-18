@@ -50,11 +50,8 @@ class Coupons extends Controller_Contract {
 		// Hook for displaying coupons in the checkout.
 		add_action(
 			'tec_tickets_commerce_checkout_cart_before_footer_quantity',
-			[
-				$this,
-				'display_coupon_section',
-			],
-			40,
+			[ $this, 'display_coupon_section' ],
+			20,
 			3
 		);
 
@@ -73,7 +70,7 @@ class Coupons extends Controller_Contract {
 		remove_action(
 			'tec_tickets_commerce_checkout_cart_before_footer_quantity',
 			[ $this, 'display_coupon_section' ],
-			40
+			20
 		);
 
 		// Remove asset localization.
