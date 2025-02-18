@@ -2,28 +2,32 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Fees;
 
-use TEC\Common\Tests\Provider\Controller_Test_Case;
 use Tribe\Tickets\Test\Commerce\OrderModifiers\Fee_Creator;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Codeception\TestCase\WPTestCase;
+use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_Uopz;
+use Tribe__Tickets__Tickets as Tickets;
 
-class Emails_Test extends Controller_Test_Case {
+class Emails_Test extends WPTestCase {
 	use Ticket_Maker;
 	use Order_Maker;
 	use Fee_Creator;
+	use With_Uopz;
+	use SnapshotAssertions;
 
-	protected string $controller_class = \TEC\Tickets\Commerce\Order_Modifiers\Checkout\Fees::class;
 	protected static array $store = [];
 
 	/**
 	 * @before
 	 */
 	public function mock_wp_mail() {
-//		$store = &self::$store;
-//		$this->set_fn_return( 'wp_mail', function ( $to, $subject, $content, $headers, $attachments ) use ( &$store ) {
-//			$store = compact( 'to', 'subject', 'content', 'headers', 'attachments' );
-//			return true;
-//		}, true );
+		$store = &self::$store;
+		$this->set_fn_return( 'wp_mail', function ( $to, $subject, $content, $headers, $attachments ) use ( &$store ) {
+			$store = compact( 'to', 'subject', 'content', 'headers', 'attachments' );
+			return true;
+		}, true );
 	}
 
 	/**
@@ -37,37 +41,51 @@ class Emails_Test extends Controller_Test_Case {
 		$this->assertNotEmpty( self::$store );
 	}
 
-	protected function assertEmailContains( string $text ) {
-		$this->assertStringContainsString( $text, self::$store['content'] );
-	}
-
 	/**
 	 * @test
 	 */
-	public function it_should_include_fees_in_emails() {
-		$post = static::factory()->post->create();
+	public function it_should_include_fees_in_purchase_receipt() {
+		$post = static::factory()->post->create( [ 'post_name' => 'Event post' ] );
 		$ticket_id = $this->create_tc_ticket( $post, 50 );
 
 		$fee = $this->create_fee_for_ticket( $ticket_id, [ 'raw_amount' => 5, 'sub_type' => 'flat' ] );
-		$this->add_fee_to_ticket( $fee, $ticket_id );
 
-		$this->make_controller()->register();
+		$this->set_class_fn_return( Tickets::class, 'generate_security_code', 'attendee-security-code' );
 
-		$order = $this->create_order( [ $ticket_id => 2 ] );
+		$order = $this->create_order( [ $ticket_id => 2 ], [ 'purchaser_email' => 'sam@tec.com' ] );
 		$refreshed_order = tec_tc_get_order( $order->ID );
 
 		// Trigger email generation
-		do_action( 'tec_tickets_commerce_send_email_completed_order', $refreshed_order );
 		do_action( 'tec_tickets_commerce_send_email_purchase_receipt', $refreshed_order );
 
 		// Ensure emails were sent
 		$this->assertEmailSent();
 
-		// Check if email contains fees
-		$this->assertEmailContains( 'Fee' );
-		$this->assertEmailContains( '$5' ); // Flat fee should be included
+		// Ensure snapshot correctness
+		$this->assertMatchesHtmlSnapshot( str_replace( [ $post, $ticket_id, $order->ID ], [ '{POST_ID}', '{TICKET_ID}', '{ORDER_ID}' ], self::$store['content'] ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_include_fees_in_order_completed() {
+		$post = static::factory()->post->create( [ 'post_name' => 'Event post' ] );
+		$ticket_id = $this->create_tc_ticket( $post, 50 );
+
+		$fee = $this->create_fee_for_ticket( $ticket_id, [ 'raw_amount' => 5, 'sub_type' => 'flat' ] );
+
+		$this->set_class_fn_return( Tickets::class, 'generate_security_code', 'attendee-security-code' );
+
+		$order = $this->create_order( [ $ticket_id => 2 ], [ 'purchaser_email' => 'sam@tec.com' ] );
+		$refreshed_order = tec_tc_get_order( $order->ID );
+
+		// Trigger email generation
+		do_action( 'tec_tickets_commerce_send_email_completed_order', $refreshed_order );
+
+		// Ensure emails were sent
+		$this->assertEmailSent();
 
 		// Ensure snapshot correctness
-		$this->assertMatchesHtmlSnapshot( str_replace( [ $post, $ticket_id ], [ '{POST_ID}', '{TICKET_ID}' ], self::$store['content'] ) );
+		$this->assertMatchesHtmlSnapshot( str_replace( [ $post, $ticket_id, $order->ID ], [ '{POST_ID}', '{TICKET_ID}', '{ORDER_ID}' ], self::$store['content'] ) );
 	}
 }
