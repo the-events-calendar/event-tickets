@@ -7,6 +7,7 @@ use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use Tribe\Tickets\Test\Commerce\Ticket_Maker as Ticket_Maker_Base;
+use WP_Post;
 
 trait Order_Maker {
 
@@ -15,16 +16,30 @@ trait Order_Maker {
 	/**
 	 * Takes a list of tickets and creates an order for them.
 	 *
-	 * @param array $items An array of ticket_id => quantity pairs.
+	 * @param array $items     An array with the item ID as the key, and data as value. If
+	 *                         the data is a number it will be treated as the quantity. If
+	 *                         the data is an array, it can contain the following keys:
+	 *                         'id': override the ID used for the item.
+	 *                         'quantity': the quantity of the item.
+	 *                         'extras': an array of extras to add to the item.
 	 * @param array $overrides An array of overrides for the purchaser.
 	 *
-	 * @return false|\WP_Post The order post object or false if the order could not be created.
+	 * @return false|WP_Post The order post object or false if the order could not be created.
 	 */
 	protected function create_order( array $items, array $overrides = [] ) {
 		$cart = new Cart();
 
-		foreach ( $items as $id => $quantity ) {
-			$cart->get_repository()->upsert_item( $id, $quantity );
+		// Individiaul items can be a simple quantity, or an array with more data.
+		foreach ( $items as $id => $data ) {
+			if ( is_array( $data ) ) {
+				$cart->get_repository()->upsert_item(
+					$data['id'] ?? $id,
+					$data['quantity'] ?? 1,
+					$data['extras'] ?? [],
+				);
+			} else {
+				$cart->get_repository()->upsert_item( $id, $data );
+			}
 		}
 
 		$default_purchaser = [
