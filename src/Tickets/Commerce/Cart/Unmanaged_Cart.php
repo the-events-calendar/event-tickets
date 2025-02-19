@@ -85,6 +85,8 @@ class Unmanaged_Cart extends Abstract_Cart {
 	/**
 	 * Clears the cart of its contents and persists its new state.
 	 *
+	 * @since TBD Added calculation caching reset.
+	 *
 	 * This method should include any persistence, request and redirection required
 	 * by the cart implementation.
 	 */
@@ -102,6 +104,7 @@ class Unmanaged_Cart extends Abstract_Cart {
 		// clear cart items data.
 		$this->items      = [];
 		$this->cart_total = null;
+		$this->reset_calculations();
 	}
 
 	/**
@@ -161,6 +164,7 @@ class Unmanaged_Cart extends Abstract_Cart {
 	 * Adds a specified quantity of the item to the cart.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Added calculation caching reset.
 	 *
 	 * @param int|string $item_id    The item ID.
 	 * @param int        $quantity   The quantity to add.
@@ -186,12 +190,15 @@ class Unmanaged_Cart extends Abstract_Cart {
 		} else {
 			$this->remove_item( $item_id );
 		}
+
+		$this->reset_calculations();
 	}
 
 	/**
 	 * Removes an item from the cart.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Added calculation caching reset.
 	 *
 	 * @param int|string $item_id  The item ID.
 	 * @param null|int   $quantity The quantity to remove.
@@ -199,6 +206,7 @@ class Unmanaged_Cart extends Abstract_Cart {
 	public function remove_item( $item_id, $quantity = null ) {
 		if ( null !== $quantity ) {
 			$this->add_item( $item_id, - abs( (int) $quantity ) );
+			$this->reset_calculations();
 
 			return;
 		}
@@ -206,6 +214,8 @@ class Unmanaged_Cart extends Abstract_Cart {
 		if ( $this->has_item( $item_id ) ) {
 			unset( $this->items[ $item_id ] );
 		}
+
+		$this->reset_calculations();
 	}
 
 	/**
