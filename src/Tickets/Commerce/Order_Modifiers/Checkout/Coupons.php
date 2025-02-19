@@ -74,6 +74,13 @@ class Coupons extends Controller_Contract {
 			3
 		);
 
+		add_filter(
+			'tec_tickets_checkout_should_skip_item',
+			[ $this, 'should_skip_item' ],
+			10,
+			2
+		);
+
 		// Add asset localization to ensure the script has the necessary data.
 		add_action( 'init', [ $this, 'localize_asset' ] );
 	}
@@ -100,6 +107,11 @@ class Coupons extends Controller_Contract {
 		remove_filter(
 			'tec_tickets_commerce_cart_add_full_item_params',
 			[ $this, 'add_coupon_item_params' ]
+		);
+
+		remove_filter(
+			'tec_tickets_checkout_should_skip_item',
+			[ $this, 'should_skip_item' ]
 		);
 
 		// Remove asset localization.
@@ -202,5 +214,19 @@ class Coupons extends Controller_Contract {
 		}
 
 		return $full_item;
+	}
+
+	/**
+	 * Filter whether an item should be skipped in the checkout display.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool  $should_skip Whether the item should be skipped or not.
+	 * @param array $item        The item to be checked.
+	 *
+	 * @return bool Whether the item should be skipped.
+	 */
+	public function should_skip_item( bool $should_skip, array $item ): bool {
+		return $should_skip || $this->is_coupon( $item );
 	}
 }
