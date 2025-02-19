@@ -19,6 +19,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon_Modifier_Manager as Ma
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Coupons as Coupons_Repository;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Coupons as CouponsTrait;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Currency_Value;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
 use TEC\Tickets\Commerce\Traits\Type;
 use WP_Error;
 use WP_REST_Request as Request;
@@ -225,7 +226,7 @@ class Coupons extends Base_API {
 			$cart_page->set_cart_hash( $request->get_param( 'cart_hash' ) );
 			$cart = $cart_page->get_repository();
 
-			$original_total = new Currency_Value( $cart->get_cart_total() );
+			$original_total = Currency_Value::create_from_float( $cart->get_cart_total() );
 
 			// Add the coupon to the cart.
 			$cart->upsert_item(
@@ -235,7 +236,7 @@ class Coupons extends Base_API {
 			);
 			$cart->save();
 
-			$cart_total = new Currency_Value( $cart->get_cart_total() );
+			$cart_total = Currency_Value::create_from_float( $cart->get_cart_total() );
 
 			// Update the payment intent with the new value
 			Payment_Intent::update(
@@ -295,7 +296,7 @@ class Coupons extends Base_API {
 			$cart->remove_item( $this->get_unique_type_id( $coupon->id, 'coupon' ) );
 			$cart->save();
 
-			$cart_total = new Currency_Value( $cart->get_cart_total() );
+			$cart_total = Currency_Value::create_from_float( $cart->get_cart_total() );
 
 			// Update the payment intent with the new value.
 			Payment_Intent::update(
