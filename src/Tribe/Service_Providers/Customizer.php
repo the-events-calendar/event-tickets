@@ -2,7 +2,7 @@
 /**
  * Handles the customizer CSS overrides from TEC
  *
- * @since   4.12.3
+ * @since 4.12.3
  * @package Tribe\Tickets\Service_Providers
  */
 

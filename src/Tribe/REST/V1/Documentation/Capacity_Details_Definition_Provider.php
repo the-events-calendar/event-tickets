@@ -49,7 +49,7 @@ class Tribe__Tickets__REST__V1__Documentation__Capacity_Details_Definition_Provi
 		 *
 		 * @param array $documentation An associative PHP array in the format supported by Swagger.
 		 *
-		 * @link  http://swagger.io/
+		 * @link http://swagger.io/
 		 */
 		$documentation = apply_filters( 'tribe_tickets_rest_swagger_capacity_details_documentation', $documentation );
 

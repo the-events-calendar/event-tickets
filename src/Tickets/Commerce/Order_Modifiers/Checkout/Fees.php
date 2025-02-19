@@ -6,7 +6,7 @@
  * independent of the payment gateway in use. It integrates with various filters and hooks during
  * the checkout process to ensure consistent fee handling.
  *
- * @since   5.18.0
+ * @since 5.18.0
  * @package TEC\Tickets\Commerce\Order_Modifiers\Checkout
  */
 

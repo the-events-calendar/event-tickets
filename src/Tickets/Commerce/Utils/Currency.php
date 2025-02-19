@@ -10,7 +10,7 @@ use Tribe__Cache;
  *
  * This class holds stateless methods used to properly set-up currencies in Tickets Commerce.
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce
  */
@@ -327,14 +327,14 @@ class Currency {
 	/**
 	 * Get and allow filtering of the currency symbol position.
 	 *
-	 * @since                                            4.7
-	 * @since                                            4.10.8 Set the default position of the Euro currency symbol to
+	 * @since 4.7
+	 * @since 4.10.8 Set the default position of the Euro currency symbol to
 	 *                                                   'suffix' if site language is not English.
 	 *
 	 * @param int|null $post_id
 	 *
 	 * @return string
-	 * @link                                             https://en.wikipedia.org/wiki/Euro_sign#Use EU guideline
+	 * @link https://en.wikipedia.org/wiki/Euro_sign#Use EU guideline
 	 *                                                   stating symbol should be placed in front of the amount in
 	 *                                                   English but after in most other languages.
 	 *
@@ -364,7 +364,7 @@ class Currency {
 	/**
 	 * Returns the default currency settings mapping.
 	 *
-	 * @see   https://en.wikipedia.org/wiki/Decimal_separator for separators informmation
+	 * @see https://en.wikipedia.org/wiki/Decimal_separator for separators informmation
 	 * @since 5.2.3
 	 *
 	 */

@@ -23,7 +23,7 @@ use WP_REST_Server;
 /**
  * Class Order Endpoint.
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\REST
  */

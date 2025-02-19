@@ -8,7 +8,7 @@ use TEC\Tickets\Settings;
 /**
  * Class Gateways Manager.
  *
- * @since   5.1.6
+ * @since 5.1.6
  *
  * @package TEC\Tickets\Commerce\Gateways
  */

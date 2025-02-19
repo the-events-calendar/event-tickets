@@ -2,7 +2,7 @@
 /**
  * A pseudo-repository to run CRUD operations on Series Passes.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Repositories;
  */
@@ -15,7 +15,7 @@ use WP_Post;
 /**
  * Class Repository.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Repositories;
  */

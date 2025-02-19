@@ -78,7 +78,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	 * @since 4.7
 	 *
 	 * @param array $actions
-	 * @param       $post
+	 * @param $post
 	 *
 	 * @return array
 	 */

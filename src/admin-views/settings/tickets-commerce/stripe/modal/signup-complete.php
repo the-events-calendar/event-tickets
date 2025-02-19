@@ -4,7 +4,7 @@
  *
  * @version 5.3.0
  *
- * @since   5.3.0
+ * @since 5.3.0
  */
 
 $request_vars = tribe_get_request_vars();

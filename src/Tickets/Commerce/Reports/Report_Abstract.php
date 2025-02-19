@@ -7,7 +7,7 @@ use Tribe__Template;
 /**
  * Class Report_Abstract
  *
- * @since   5.2.0
+ * @since 5.2.0
  *
  * @package TEC\Tickets\Commerce\Reports
  */

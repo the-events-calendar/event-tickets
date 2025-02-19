@@ -2,7 +2,7 @@
 /**
  * The tab used to display the current site Maps.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller\Admin\Tabs;
  */

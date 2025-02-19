@@ -2,7 +2,7 @@
 /**
  * The controller for the Seating Orders.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC/Tickets/Seating/Orders
  */
@@ -35,7 +35,7 @@ use TEC\Tickets\Commerce\Status\Status_Interface;
 /**
  * Class Controller
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC/Tickets/Seating/Orders
  */

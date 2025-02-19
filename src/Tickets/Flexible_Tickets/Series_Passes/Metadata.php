@@ -2,7 +2,7 @@
 /**
  * Handles CRUD operations on Series Passes metadata.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Repository;
  */
@@ -14,7 +14,7 @@ use Tribe__Cache_Listener as Cache_Listener;
 /**
  * Class Metadata.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Repository;
  */

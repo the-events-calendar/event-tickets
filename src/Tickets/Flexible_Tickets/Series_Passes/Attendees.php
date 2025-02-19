@@ -504,7 +504,7 @@ class Attendees extends Controller {
 	 *
 	 * The HTTP return code is 300 to indicate multiple choices.
 	 *
-	 * @see   https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages
 	 *
 	 * @since 5.8.2
 	 *

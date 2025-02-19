@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways
  */
@@ -16,7 +16,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Abstract Gateway Contract.
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Contracts
  */

@@ -230,7 +230,7 @@ class Tribe__Tickets__Data_API {
 	/**
 	 * Get attendee(s) by id
 	 *
-	 * @param      $post_id
+	 * @param $post_id
 	 * @param null $context
 	 *
 	 * @return mixed
@@ -242,7 +242,7 @@ class Tribe__Tickets__Data_API {
 	/**
 	 * Return if attendee(s) have meta fields with data
 	 *
-	 * @param      $post_id
+	 * @param $post_id
 	 * @param null $context
 	 *
 	 * @return bool
@@ -259,7 +259,7 @@ class Tribe__Tickets__Data_API {
 	/**
 	 * Return if tickets have meta fields
 	 *
-	 * @param      $post_id
+	 * @param $post_id
 	 * @param null $context
 	 *
 	 * @return bool
@@ -487,7 +487,7 @@ class Tribe__Tickets__Data_API {
 	/**
 	 * Query RSVP Orders by the Order Key
 	 *
-	 * @param        $order_key
+	 * @param $order_key
 	 * @param string $post_per_page
 	 *
 	 * @return WP_Query

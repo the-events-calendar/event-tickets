@@ -7,11 +7,11 @@
  *
  * See more documentation about our views templating system.
  *
- * @link    https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
+ * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
  *
  * @version 5.8.4
  *
- * @since   5.8.4
+ * @since 5.8.4
  */
 ?>
 

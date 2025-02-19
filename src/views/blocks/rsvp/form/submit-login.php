@@ -8,11 +8,11 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
+ * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   4.9.3
- * @since   4.10.8 Fixed text domain for string.
- * @since   5.0.3 Add docblock vars and use $ticket->ID instead of duplicative $ticket_id.
+ * @since 4.9.3
+ * @since 4.10.8 Fixed text domain for string.
+ * @since 5.0.3 Add docblock vars and use $ticket->ID instead of duplicative $ticket_id.
  *
  * @version 5.0.3
  *

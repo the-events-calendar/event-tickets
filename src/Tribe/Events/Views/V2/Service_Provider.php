@@ -4,7 +4,7 @@ namespace Tribe\Tickets\Events\Views\V2;
 /**
  * The main service provider for Event Tickets support and additions to the Views V2 functions.
  *
- * @since   4.10.9
+ * @since 4.10.9
  * @package Tribe\Tickets\Events\Views\V2
  */
 class Service_Provider extends \TEC\Common\Contracts\Service_Provider {

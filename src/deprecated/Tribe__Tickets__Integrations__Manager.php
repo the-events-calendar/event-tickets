@@ -8,7 +8,7 @@ _deprecated_file( __FILE__, '5.6.0', 'No direct replacement.' );
  *
  * @depreacated 5.6.0
  *
- * @since       4.11.5
+ * @since 4.11.5
  */
 class Tribe__Tickets__Integrations__Manager {
 
@@ -16,7 +16,7 @@ class Tribe__Tickets__Integrations__Manager {
 	 * The current instance of the object.
 	 *
 	 * @depreacated 5.6.0
-	 * @since       4.11.5
+	 * @since 4.11.5
 	 *
 	 * @var Tribe__Tickets__Integrations__Manager
 	 */
@@ -26,7 +26,7 @@ class Tribe__Tickets__Integrations__Manager {
 	 * The class singleton constructor.
 	 *
 	 * @depreacated 5.6.0
-	 * @since       4.11.5
+	 * @since 4.11.5
 	 *
 	 * @return Tribe__Tickets__Integrations__Manager
 	 */
@@ -45,7 +45,7 @@ class Tribe__Tickets__Integrations__Manager {
 	 * supported plugins are activated.
 	 *
 	 * @depreacated 5.6.0
-	 * @since       4.11.5
+	 * @since 4.11.5
 	 */
 	public function load_integrations() {
 		tribe_singleton( 'tickets.integrations.freemius', Tribe__Tickets__Integrations__Freemius::class, [ 'setup' ] );
@@ -56,7 +56,7 @@ class Tribe__Tickets__Integrations__Manager {
 	 * Loads our Freemius integration.
 	 *
 	 * @depreacated 5.6.0
-	 * @since       4.11.5
+	 * @since 4.11.5
 	 */
 	public function load_freemius() {
 		tribe( 'tickets.integrations.freemius' );
@@ -66,7 +66,7 @@ class Tribe__Tickets__Integrations__Manager {
 	 * Hooks for the integrations manager.
 	 *
 	 * @depreacated 5.6.0
-	 * @since       5.4.1
+	 * @since 5.4.1
 	 */
 	public function hook() {
 		add_action( 'init', [ $this, 'load_freemius' ], 15 );

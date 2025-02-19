@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce;
 /**
  * Class Success
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce
  */

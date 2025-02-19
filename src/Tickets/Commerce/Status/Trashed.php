@@ -14,7 +14,7 @@ namespace TEC\Tickets\Commerce\Status;
  *
  * An order that has been trashed.
  *
- * @since   5.13.0
+ * @since 5.13.0
  *
  * @package TEC\Tickets\Commerce\Status
  */

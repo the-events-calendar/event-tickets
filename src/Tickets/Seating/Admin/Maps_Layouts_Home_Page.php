@@ -2,7 +2,7 @@
 /**
  * Renders and manages the state of the Maps and Layouts Home page.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller\Admin;
  */
@@ -21,7 +21,7 @@ use TEC\Tickets\Seating\Service\Service;
 /**
  * Class Maps_Layouts_Home_Page.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller\Admin;
  */

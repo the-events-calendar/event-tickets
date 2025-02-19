@@ -2,7 +2,7 @@
 /**
  * Provides query methods common to all custom tables.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller\Tables;
  */
@@ -15,7 +15,7 @@ use TEC\Common\StellarWP\DB\DB;
 /**
  * Trait Custom_Table_Query_Methods.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller\Tables;
  */

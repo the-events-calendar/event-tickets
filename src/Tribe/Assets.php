@@ -10,7 +10,7 @@ class Tribe__Tickets__Assets {
 	 * @since 4.6
 	 * @since 4.11.1 Only load if in a tickets-enabled post context.
 	 *
-	 * @see   \tribe_tickets_is_enabled_post_context()
+	 * @see \tribe_tickets_is_enabled_post_context()
 	 */
 	public function enqueue_scripts() {
 		/** @var Tribe__Tickets__Main $tickets_main */
@@ -446,7 +446,7 @@ class Tribe__Tickets__Assets {
 	/**
 	 * Check if we should add the Admin Assets into a Page
 	 *
-	 * @since  4.6
+	 * @since 4.6
 	 *
 	 * @since 5.2.1 Always enqueue scripts for Ticket settings page.
 	 *
@@ -597,7 +597,7 @@ class Tribe__Tickets__Assets {
 	 * styles we need for our tickets blocks, AR, etc.
 	 * If V2 are active, we respect the style option.
 	 *
-	 * @since  4.11.4
+	 * @since 4.11.4
 	 *
 	 * @return bool
 	 */

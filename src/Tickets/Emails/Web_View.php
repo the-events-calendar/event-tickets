@@ -14,7 +14,7 @@ use WP_Error;
 /**
  * Class Web_View
  *
- * @since   5.5.9
+ * @since 5.5.9
  *
  * @package TEC\Tickets\Emails
  */

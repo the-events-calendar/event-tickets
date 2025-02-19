@@ -441,7 +441,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Enqueue the plugin admin stylesheet(s) and JS.
 	 *
-	 * @since  4.7
+	 * @since 4.7
 	 */
 	public function enqueue_resources() {
 		$post_types = Tribe__Tickets__Main::instance()->post_types();
@@ -515,7 +515,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * @param array $ticket_post_args Post type arguments, passed to register_post_type()
 		 *
-		 * @see   register_post_type
+		 * @see register_post_type
 		 *
 		 */
 		$ticket_post_args = apply_filters( 'tribe_tickets_register_ticket_post_type_args', $ticket_post_args );
@@ -529,7 +529,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * @param array $attendee_post_args Post type arguments, passed to register_post_type()
 		 *
-		 * @see   register_post_type
+		 * @see register_post_type
 		 *
 		 */
 		$attendee_post_args = apply_filters( 'tribe_tickets_register_attendee_post_type_args', $attendee_post_args );
@@ -543,7 +543,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * @param array $attendee_post_args Post type arguments, passed to register_post_type()
 		 *
-		 * @see   register_post_type
+		 * @see register_post_type
 		 *
 		 */
 		$order_post_args = apply_filters( 'tribe_tickets_register_order_post_type_args', $order_post_args );
@@ -1622,7 +1622,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param      $post_id
+	 * @param $post_id
 	 * @param null $post_type
 	 *
 	 * @return array|mixed
@@ -1821,7 +1821,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param     $post_id   int id of the event post
+	 * @param $post_id   int id of the event post
 	 * @param int $ticket_id (null) id of the ticket
 	 *
 	 * @return void
@@ -1900,7 +1900,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param        $message
+	 * @param $message
 	 * @param string $type
 	 */
 	public function add_message( $message, $type = 'update' ) {
@@ -1995,7 +1995,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Set the tickets view
 	 *
-	 * @since    4.7
+	 * @since 4.7
 	 *
 	 * @param Tribe__Tickets__Commerce__PayPal__Tickets_View $tickets_view
 	 *
@@ -2350,7 +2350,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @filter wp_loaded 0
 	 *
-	 * @since  4.9
+	 * @since 4.9
 	 */
 	public function maybe_delete_expired_products() {
 		$delete = tribe_get_request_var( 'clear_product_cache', null );
@@ -2390,7 +2390,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @filter wp_loaded 1
 	 *
-	 * @since  4.9
+	 * @since 4.9
 	 *
 	 * @param string   $redirect URL to redirect to.
 	 * @param null|int $post_id  Post ID for cart.
@@ -2760,7 +2760,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Gets the product price value
 	 *
-	 * @since  4.7
+	 * @since 4.7
 	 *
 	 * @param int|WP_Post $product
 	 *
@@ -3142,7 +3142,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @return string
 	 *
-	 * @see   Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
+	 * @see Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
 	 */
 	protected function redirect_after_error( $error_code, $redirect, $post_id ) {
 		$url = add_query_arg( 'tpp_error', $error_code, get_permalink( $post_id ) );

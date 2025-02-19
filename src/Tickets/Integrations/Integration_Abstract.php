@@ -9,7 +9,7 @@ use TEC\Common\Integrations\Integration_Abstract as Common_Integration_Abstract;
  *
  * @since 5.6.3
  *
- * @link    https://docs.theeventscalendar.com/apis/integrations/including-new-integrations/
+ * @link https://docs.theeventscalendar.com/apis/integrations/including-new-integrations/
  *
  * @package TEC\Tickets\Integrations
  */

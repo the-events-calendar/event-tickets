@@ -14,7 +14,7 @@ use WP_REST_Server;
 /**
  * Class Webhook Endpoint.
  *
- * @since   5.1.6
+ * @since 5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal\REST
  */
 class Webhook_Endpoint extends Abstract_REST_Endpoint {
