@@ -297,7 +297,7 @@ class Coupons extends Base_API {
 
 			$cart_total = new Currency_Value( $cart->get_cart_total() );
 
-			// Update the payment intent with the new value
+			// Update the payment intent with the new value.
 			Payment_Intent::update(
 				$request->get_param( 'payment_intent_id' ),
 				[ 'amount' => $cart_total->get_raw_value()->get_as_integer() ]
@@ -439,7 +439,7 @@ class Coupons extends Base_API {
 			'purchaser_data'    => [
 				'description'       => esc_html__( 'The purchaser data.', 'event-tickets' ),
 				'type'              => 'object',
-				'sanitize_callback' => function ( $raw_value, Request $request, $key ) {
+				'sanitize_callback' => function ( $raw_value ) {
 					return [
 						'name'  => sanitize_text_field( $raw_value['name'] ?? '' ),
 						'email' => sanitize_email( $raw_value['email'] ?? '' ),

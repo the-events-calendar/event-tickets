@@ -100,7 +100,7 @@ trait Coupons {
 		}
 
 		// If the coupon start date is in the future, it is invalid.
-		if ( null !== $coupon->start_time && strtotime( $coupon->start_date ) > $current_time) {
+		if ( null !== $coupon->start_time && strtotime( $coupon->start_date ) > $current_time ) {
 			throw new Exception( 'Coupon start date is in the future' );
 		}
 
