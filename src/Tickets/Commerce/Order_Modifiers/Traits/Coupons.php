@@ -13,6 +13,7 @@ use Exception;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Coupons as Coupons_Repository;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta;
 
 /**
  * Trait Coupons
@@ -48,42 +49,62 @@ trait Coupons {
 	/**
 	 * Determine if a coupon is valid.
 	 *
-	 * @param Coupon $coupon The coupon to check.
+	 * @param Coupon|Order_Modifier $maybe_coupon The coupon to check.
 	 *
 	 * @return bool
 	 */
-	protected function is_coupon_valid( Order_Modifier $coupon ) {
+	protected function is_coupon_valid( $maybe_coupon ): bool {
 		try {
 			// If it's not a coupon, it's invalid.
-			if ( ! $this->is_coupon( $coupon ) ) {
-				return false;
+			if ( ! $this->is_coupon( $maybe_coupon ) ) {
+				throw new Exception( 'Not a coupon' );
 			}
 
 			// If the status isn't active, the coupon is invalid.
-			if ( $coupon->status !== 'active' ) {
-				return false;
+			if ( $maybe_coupon->status !== 'active' ) {
+				throw new Exception( 'Coupon is not active' );
 			}
 
-			// Current time stamp for checking start and end dates.
-			$current_time = current_time( 'timestamp' );
+			// If the coupon is not within its date rante, it is invalid.
+			$this->is_coupon_within_date_ranage( $maybe_coupon );
 
-			// If the coupon end date has passed, it is invalid.
-			if ( null !== $coupon->end_time && strtotime( $coupon->end_time ) < $current_time ) {
-				return false;
+			// Whether the coupon is still within its usage limit.
+			if ( ! $this->coupon_has_uses_remaining( $maybe_coupon->id ) ) {
+				throw new Exception( 'Coupon has no uses remaining' );
 			}
-
-			// If the coupon start date is in the future, it is invalid.
-			if ( null !== $coupon->start_time && strtotime( $coupon->start_date ) > $current_time) {
-				return false;
-			}
-
-			// Check whether the coupon is still within its usage limit.
-			// @todo: Implement this.
 
 			return true;
 		} catch ( Exception $e ) {
 			return false;
 		}
+	}
+
+	/**
+	 * Determine if a coupon is within its start and end date range.
+	 *
+	 * @since TBD
+	 *
+	 * @param Coupon $coupon The coupon to check.
+	 *
+	 * @return bool Whether the coupon is within its start and end date range.
+	 *
+	 * @throws Exception If the coupon end date has passed or the coupon start date is in the future.
+	 */
+	protected function is_coupon_within_date_ranage( Coupon $coupon ): bool {
+		// Current time stamp for checking start and end dates.
+		$current_time = time();
+
+		// If the coupon end date has passed, it is invalid.
+		if ( null !== $coupon->end_time && strtotime( $coupon->end_time ) < $current_time ) {
+			throw new Exception( 'Coupon end date has passed' );
+		}
+
+		// If the coupon start date is in the future, it is invalid.
+		if ( null !== $coupon->start_time && strtotime( $coupon->start_date ) > $current_time) {
+			throw new Exception( 'Coupon start date is in the future' );
+		}
+
+		return true;
 	}
 
 	/**
@@ -94,6 +115,69 @@ trait Coupons {
 	 * @return bool
 	 */
 	protected function is_coupon( Order_Modifier $modifier ): bool {
+		if ( $modifier instanceof Coupon ) {
+			return true;
+		}
+
 		return $modifier->modifier_type === 'coupon';
+	}
+
+	/**
+	 * Get the usage limit for a coupon.
+	 *
+	 * @param int $coupon_id The coupon ID.
+	 *
+	 * @return int The usage limit for the coupon. -1 indicates there is no limit.
+	 */
+	protected function get_coupon_usgae_limit( int $coupon_id ): int {
+		/** @var Order_Modifiers_Meta $meta */
+		$meta = tribe( Order_Modifiers_Meta::class );
+
+		$available = $meta->find_by_order_modifier_id_and_meta_key( $coupon_id, 'coupons_available' );
+
+		// If we got null, the coupon is unlimited.
+		if ( null === $available ) {
+			return -1;
+		}
+
+		return (int) $available->meta_value;
+	}
+
+	/**
+	 * Get the number of times a coupon has been used.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $coupon_id The coupon ID.
+	 *
+	 * @return int The number of times the coupon has been used.
+	 */
+	protected function get_coupon_uses( int $coupon_id ): int {
+		/** @var Order_Modifiers_Meta $meta */
+		$meta = tribe( Order_Modifiers_Meta::class );
+
+		$uses = $meta->find_by_order_modifier_id_and_meta_key( $coupon_id, 'coupons_uses' );
+
+		return (int) $uses->meta_value;
+	}
+
+	/**
+	 * Determine if a coupon has uses remaining.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $coupon_id The coupon ID.
+	 *
+	 * @return bool Whether the coupon has uses remaining.
+	 */
+	protected function coupon_has_uses_remaining( int $coupon_id ): bool {
+		$limit = $this->get_coupon_usgae_limit( $coupon_id );
+
+		// If the limit is -1, the coupon is unlimited.
+		if ( -1 === $limit ) {
+			return true;
+		}
+
+		return $this->get_coupon_uses( $coupon_id ) < $limit;
 	}
 }
