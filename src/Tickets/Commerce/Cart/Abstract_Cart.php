@@ -59,12 +59,16 @@ abstract class Abstract_Cart implements Cart_Interface {
 	/**
 	 * Whether the cart subtotal has been calculated.
 	 *
+	 * @since TBD
+	 *
 	 * @var bool
 	 */
 	protected bool $subtotal_calculated = false;
 
 	/**
 	 * Whether the cart total has been calculated.
+	 *
+	 * @since TBD
 	 *
 	 * @var bool
 	 */
@@ -127,6 +131,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 *
 	 * @since 5.10.0
 	 * @since 5.18.0 Refactored logic, to include a new filter.
+	 * @since TBD Added internal caching for this method to prevent duplicate calculations.
 	 *
 	 * @return float The total value of the cart, or null if there are no items.
 	 */
@@ -178,6 +183,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * The subtotal is the sum of all item subtotals without additional values like fees or discounts.
 	 *
 	 * @since 5.18.0 Refactored to avoid cumulative calculations.
+	 * @since TBD Added internal caching for this method to prevent duplicate calculations.
 	 *
 	 * @return float The subtotal of the cart.
 	 */
