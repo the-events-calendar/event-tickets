@@ -56,7 +56,7 @@ class Coupons extends Controller_Contract {
 		);
 
 		// Register our own script on the frontend.
-		add_action( 'inti', [ $this, 'register_assets' ] );
+		add_action( 'init', [ $this, 'register_assets' ] );
 
 		// Add asset localization to ensure the script has the necessary data.
 		add_action( 'init', [ $this, 'localize_asset' ] );
@@ -77,15 +77,13 @@ class Coupons extends Controller_Contract {
 		);
 
 		// Remove asset registration.
-		remove_action( 'inti', [ $this, 'register_assets' ] );
+		remove_action( 'init', [ $this, 'register_assets' ] );
 
 		// Remove asset localization.
 		remove_action( 'init', [ $this, 'localize_asset' ] );
 	}
 
-	public function register_assets() {
-
-	}
+	public function register_assets() {}
 
 	/**
 	 * Localizes the asset script.
