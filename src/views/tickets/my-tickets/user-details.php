@@ -22,7 +22,7 @@
 			// Translators: 1: order number, 2: count of attendees in the order, 3: ticket label (dynamically singular or plural), 4: purchaser name, 5: linked purchaser email, 6: date of purchase.
 			esc_html__( 'Order #%1$s: %2$d %3$s reserved by %4$s (%5$s) on %6$s', 'event-tickets' ),
 			esc_html( (string) $order_id ),
-			count( $attendees ),2
+			count( $attendees ),
 			_n(
 				esc_html( tribe_get_ticket_label_singular( 'orders_tickets' ) ),
 				esc_html( tribe_get_ticket_label_plural( 'orders_tickets' ) ),
