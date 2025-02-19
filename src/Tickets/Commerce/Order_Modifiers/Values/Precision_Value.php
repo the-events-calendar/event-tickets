@@ -31,11 +31,18 @@ class Precision_Value extends Base_Value {
 	protected Positive_Int $precision;
 
 	/**
+	 * The default precision.
+	 *
+	 * @var int
+	 */
+	protected static int $default_precision = 2;
+
+	/**
 	 * The maximum precision allowed.
 	 *
 	 * @var int
 	 */
-	protected int $max_precision = 6;
+	protected static int $max_precision = 6;
 
 	/**
 	 * Currency_Value constructor.
@@ -47,7 +54,7 @@ class Precision_Value extends Base_Value {
 	 */
 	public function __construct( $value, ?int $precision = null ) {
 		$value           = Float_Value::from_number( $value )->get();
-		$this->precision = new Positive_Int( $precision ?? 2 );
+		$this->precision = new Positive_Int( $precision ?? self::$default_precision );
 
 		parent::__construct( $this->convert_value_to_integer( $value ) );
 	}
@@ -110,14 +117,18 @@ class Precision_Value extends Base_Value {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $precision The precision to use.
+	 * @param ?int $precision The precision to use. Passing null will use the default precision.
 	 *
 	 * @return int The value as an integer.
 	 */
-	public function get_as_integer( int $precision = 2 ): int {
-		$object = $this->convert_to_precision( $precision );
+	public function get_as_integer( ?int $precision = null ): int {
+		// If the precision is not set, use the precision already set in this object.
+		if ( null === $precision ) {
+			return $this->value;
+		}
 
-		return $object->value;
+		// Set up a new object with the desired precision.
+		return $this->convert_to_precision( $precision )->value;
 	}
 
 	/**
@@ -213,7 +224,7 @@ class Precision_Value extends Base_Value {
 	 * @return static The new value object.
 	 */
 	public function multiply( Precision_Value $value ): Precision_Value {
-		$common_precision = max( $this->get_precision(), $value->get_precision() );
+		$common_precision  = max( $this->get_precision(), $value->get_precision() );
 		$precision_product = $this->get_precision() * $value->get_precision();
 
 		$current_value = $this->convert_to_precision( $common_precision );
@@ -262,12 +273,13 @@ class Precision_Value extends Base_Value {
 	 * Validate that the precision is valid.
 	 *
 	 * @since 5.18.0
+	 * @since TBD Made the method static.
 	 *
 	 * @throws InvalidArgumentException If the precision is greater than the max precision.
 	 */
-	protected function validate_precision() {
-		if ( $this->precision->get() > $this->max_precision ) {
-			throw new InvalidArgumentException( sprintf( 'Precision cannot be greater than %d', $this->max_precision ) );
+	protected static function validate_precision( int $precision ) {
+		if ( $precision > self::$max_precision ) {
+			throw new InvalidArgumentException( sprintf( 'Precision cannot be greater than %d', self::$max_precision ) );
 		}
 	}
 
@@ -282,6 +294,19 @@ class Precision_Value extends Base_Value {
 	 * @throws InvalidArgumentException When the value is not valid.
 	 */
 	protected function validate( $value ): void {
-		$this->validate_precision();
+		$this->validate_precision( $this->precision->get() );
+	}
+
+	/**
+	 * Set the default precision.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $precision The default precision.
+	 */
+	public static function set_default_precision( int $precision ) {
+		$object = new Positive_Int( $precision );
+		self::validate_precision( $object->get() );
+		self::$default_precision = $object->get();
 	}
 }
