@@ -8,13 +8,35 @@
 namespace TEC\Tickets\Commerce\Traits;
 
 /**
- * Class Type
+ * Trait Type
  *
  * @since TBD
  */
-class Type {
+trait Type {
 
 	use Is_Ticket;
+
+	/**
+	 * Determine if a thing is a coupon.
+	 *
+	 * This looks to see whether the array of data has the "type" key set to
+	 * "coupon". If the type key is not set, or if it is set to something other
+	 * than "coupon", this will return false.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $thing The thing to check.
+	 *
+	 * @return bool Whether the thing is a coupon.
+	 */
+	protected function is_coupon( array $thing ): bool {
+		// Something without a type is not a coupon.
+		if ( ! array_key_exists( 'type', $thing ) ) {
+			return false;
+		}
+
+		return 'coupon' === $thing['type'];
+	}
 
 	/**
 	 * Get a unique ID for an item using its ID and type.
