@@ -352,20 +352,6 @@ class Ticket_Actions extends Controller_Contract {
 	 * @param int $ticket_id The ticket id.
 	 */
 	protected function sync_rsvp_dates_actions( int $ticket_id ): void {
-		$ticket = Tickets::load_ticket_object( $ticket_id );
-
-		if ( ! $ticket instanceof Ticket_Object ) {
-			// Not a ticket anymore...
-			return;
-		}
-
-		$event = $ticket->get_event();
-
-		if ( ! $event instanceof WP_Post || 0 === $event->ID ) {
-			// Parent event, no longer exists.
-			return;
-		}
-
 		// We avoid checking in_array multiple times and we will rather do array_unique once.
 		self::$rsvp_ids_to_sync[] = $ticket_id;
 	}
