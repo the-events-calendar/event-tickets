@@ -464,10 +464,8 @@ class Agnostic_Cart extends Abstract_Cart {
 			return 0.0;
 		}
 
-		$items = $this->get_items_in_cart( true );
-
-		// Extract subtotals from the cart items.
-		$sub_totals = array_filter( wp_list_pluck( $items, 'sub_total' ) );
+		$items          = $this->get_items_in_cart( true, 'all' );
+		$subtotal_value = Value::create( $subtotal );
 
 		/**
 		 * Filters the additional values in the cart in order to add additional fees or discounts.
@@ -484,11 +482,11 @@ class Agnostic_Cart extends Abstract_Cart {
 			'tec_tickets_commerce_get_cart_additional_values',
 			[],
 			$items,
-			Value::create()->total( $sub_totals )
+			$subtotal_value
 		);
 
 		// Combine the subtotals and additional values.
-		$total_value = Value::create()->total( array_merge( $sub_totals, $additional_values ) );
+		$total_value = Value::create()->total( [ $subtotal_value, ...$additional_values ] );
 
 		// Set the total and mark it as calculated.
 		$this->cart_total       = $total_value->get_decimal();
@@ -516,9 +514,25 @@ class Agnostic_Cart extends Abstract_Cart {
 		$this->cart_subtotal = 0.0;
 
 		// Calculate the total from the subtotals of each item.
-		$items = $this->get_items_in_cart( true );
+		$items = $this->get_items_in_cart( true, 'all' );
 		foreach ( $items as $item ) {
+			// Allow for callbacks as the subtotal. This is useful for items that have dynamic pricing.
+			if ( is_callable( $item['sub_total'] ) ) {
+				continue;
+			}
 			$this->cart_subtotal += $item['sub_total']->get_decimal();
+		}
+
+		// Now process any items that are callable.
+		$original_subtotal = $this->cart_subtotal;
+		foreach ( $items as &$item ) {
+			if ( is_callable( $item['sub_total'] ) ) {
+				$result = $item['sub_total']( $original_subtotal );
+				$this->cart_subtotal += $result;
+
+				// Update the item with a value object.
+				$item['sub_total'] = Value::create( $result );
+			}
 		}
 
 		// Set the subtotal as calculated.
