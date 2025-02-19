@@ -15,9 +15,9 @@
  * @var int    $post_id   The ID of the post the tickets are for.
  */
 
-$purchaser_name = $order && ! empty( $order['purchaser_name'] ) ? $order['purchaser_name'] : __( 'Unknown Name (invalid order)', 'event-tickets' );
+$purchaser_name  = $order && ! empty( $order['purchaser_name'] ) ? $order['purchaser_name'] : __( 'Unknown Name (invalid order)', 'event-tickets' );
 $purchaser_email = $order && ! empty( $order['purchaser_email'] ) ? $order['purchaser_email'] : __( 'Unknown Email (invalid order)', 'event-tickets' );
-$purchase_time = $order && ! empty( $order['purchase_time'] ) ? $order['purchase_time'] : null;
+$purchase_time   = $order && ! empty( $order['purchase_time'] ) ? $order['purchase_time'] : null;
 
  ?>
  <div class="user-details">
