@@ -1,6 +1,4 @@
-Your Series Pass to SERIES_TITLE
-
-<!DOCTYPE html>
+<!DOCTYPE html>
 	<html lang="" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
 	<head>
 		<meta charset="UTF-8">
@@ -17,7 +15,7 @@ Your Series Pass to SERIES_TITLE
 </noscript>
 <![endif]-->
 		<script type="application/ld+json">
-	[{"@context":"https:\/\/schema.org","@type":"EventReservation","reservationNumber":ORDER_ID,"reservationStatus":"https:\/\/schema.org\/Confirmed","underName":{"@type":"Person","name":"Test Purchaser","email":"attendee@example.com"},"reservationFor":{"@type":"Event","name":"Public Event 1","url":"http:\/\/wordpress.test\/?tribe_events=public-event-1","description":"","startDate":"PUBLIC_EVENT_1_START_DATE","endDate":"PUBLIC_EVENT_1_END_DATE"},"ticketToken":"SERIES_PASS_ATTENDEE_SECURITY","ticketNumber":SERIES_PASS_ATTENDEE_ID,"numSeats":"1"}]</script>
+	{"@context":"https:\/\/schema.org","@type":"Order","merchant":{"@type":"Organization","name":"Event Tickets Order Modifier Tests"},"orderNumber":{ORDER_ID},"priceCurrency":"USD","price":"110","orderStatus":"https:\/\/schema.org\/OrderDelivered","customer":{"@type":"Person","name":"Test Purchaser","email":"sam@tec.com"},"url":"http:\/\/wordpress.test\/wp-admin\/admin.php?post_type=post&page=tickets-commerce-orders&post_id={POST_ID}","potentialAction":{"@type":"ViewAction","url":"http:\/\/wordpress.test\/wp-admin\/admin.php?post_type=post&page=tickets-commerce-orders&post_id={POST_ID}","name":"View Order"},"acceptedOffer":[{"@type":"Offer","price":50,"priceCurrency":"USD","itemOffered":{"@type":"Ticket","name":"Test TC ticket for {POST_ID}"},"eligibleQuantity":{"@type":"QuantitativeValue","value":2}}]}</script>
 		<style type="text/css">
 	body {
 		color: #3C434A;
@@ -443,68 +441,6 @@ Your Series Pass to SERIES_TITLE
 		}
 	}
 </style>
-
-<style type="text/css">
-	td.tec-tickets__email-table-content-upcoming-events-list__title-container {
-		padding-top: 30px;
-	}
-
-	tr.tec-tickets__email-table-content-upcoming-events-list__cards-container {
-		display: block;
-		border: 1px solid #D5D5D5;
-		padding: 27px;
-	}
-
-	.tec-tickets__email-table-content-upcoming-event-card {
-		display: block;
-		width: 100%;
-	}
-
-	.tec-tickets__email-table-content-upcoming-event-card:not(:last-of-type) {
-		margin-bottom: 18px;
-	}
-
-	td.tec-tickets__email-table-content-upcoming-event-card__month {
-		font-size: 11px;
-		color: #727272;
-		text-align: center;
-	}
-
-	td.tec-tickets__email-table-content-upcoming-event-card__time {
-		font-size: 12px;
-		color: #141827;
-		padding: 0 0 0 14px;
-	}
-
-	td.tec-tickets__email-table-content-upcoming-event-card__day {
-		font-size: 24px;
-		color: #141827;
-		font-weight: bold;
-		text-align: center;
-	}
-
-	td.tec-tickets__email-table-content-upcoming-event-card__title {
-		font-size: 18px;
-		color: #141827;
-		font-weight: bold;
-		padding: 0 0 0 14px;
-	}
-
-	.tec-tickets__email-table-content-upcoming-event-card__link {
-		display: block;
-		padding: 18px 0 0 0 !important;
-	}
-
-	.tec-tickets__email-table-content-upcoming-event-card__virtual {
-		color: #141827;
-		font-size: 12px;
-	}
-
-	.tec-tickets__email-table-content-upcoming-event-card__link a {
-		color: #141827;
-		text-decoration: underline !important;
-	}
-</style>
 	</head>
 	<body class="tec-tickets__email-body">
 		
@@ -522,144 +458,127 @@ Your Series Pass to SERIES_TITLE
 <tr>
 	<td>
 		<h1 class="tec-tickets__email-table-content-title">
-			Here&#039;s your series pass, Test Purchaser!		</h1>
-	</td>
-</tr>
-
-<tr>
-	<td class="tec-tickets__email-table-content__series-date">
-		October 21, 2022 @ 10:00 am - October 26, 2022 @ 10:00 am	</td>
-</tr>
-<tr>
-	<td class="tec-tickets__email-table-content-post-title-container">
-		<h3 class="tec-tickets__email-table-content-post-title">
-			<a href="http://wordpress.test/?tribe_event_series=SERIES_NAME" target="_blank" rel="noopener noreferrer">
-				SERIES_TITLE			</a>
-		</h3>
+			Your purchase receipt for #{ORDER_ID}		</h1>
 	</td>
 </tr>
 <tr>
-	<td style="padding:0;">
-		<table class="tec-tickets__email-table-content-tickets" role="presentation">
-								<tr>
-				<td class="tec-tickets__email-table-content-ticket">
-					<table class="tec-tickets__email-table-content-ticket-table">
-						<tr>
-							<td class="tec-tickets__email-table-content-ticket-holder-name-container">
-	<h2 class="tec-tickets__email-table-content-ticket-holder-name">
-		Test Purchaser	</h2>
-								<div class="tec-tickets__email-table-content-ticket-type-name">
-		Test TC ticket for SERIES_ID	</div>
-</td>
-						</tr>
-						<tr>
-							<td class="tec-tickets__email-table-content-ticket-security-code-container">
-	<div class="tec-tickets__email-table-content-ticket-security-code">
-		SERIES_PASS_ATTENDEE_SECURITY	</div>
-</td>
-						</tr>
-					</table>
-									</td>
-			</tr>
-				</table>
+	<td class="tec-tickets__email-table-content-greeting-container">
+		<div>
+			Hi, Test Purchaser!		</div>
+		<div>&nbsp;</div>
+		<div>
+					</div>
 	</td>
 </tr>
 <tr>
-	<td class="tec-tickets__email-table-content-upcoming-events-list__title-container">
-		<header
-			class="tec-tickets__email-table-content__section-header tec-tickets__email-table-content__section-header--upcoming-events-list">
-			Upcoming Events in this Series		</header>
-	</td>
-</tr>
-
-<tr class="tec-tickets__email-table-content-upcoming-events-list__cards-container">
 	<td>
-					<table class="tec-tickets__email-table-content-upcoming-event-card">
-				<tr class="tec-tickets__email-table-content-upcoming-event-card__line-1">
-					<td class="tec-tickets__email-table-content-upcoming-event-card__month">
-						OCT					</td>
-					<td class="tec-tickets__email-table-content-upcoming-event-card__time">
-						10:00 am						-
-						1:00 pm					</td>
-				</tr>
-				<tr class="tec-tickets__email-table-content-upcoming-event-card__line-2">
-					<td class="tec-tickets__email-table-content-upcoming-event-card__day">
-						21					</td>
-					<td class="tec-tickets__email-table-content-upcoming-event-card__title">
-						Public Event 1					</td>
-				</tr>
-							</table>
-					<table class="tec-tickets__email-table-content-upcoming-event-card">
-				<tr class="tec-tickets__email-table-content-upcoming-event-card__line-1">
-					<td class="tec-tickets__email-table-content-upcoming-event-card__month">
-						OCT					</td>
-					<td class="tec-tickets__email-table-content-upcoming-event-card__time">
-						10:00 am						-
-						1:00 pm					</td>
-				</tr>
-				<tr class="tec-tickets__email-table-content-upcoming-event-card__line-2">
-					<td class="tec-tickets__email-table-content-upcoming-event-card__day">
-						22					</td>
-					<td class="tec-tickets__email-table-content-upcoming-event-card__title">
-						Public Event 2					</td>
-				</tr>
-							</table>
-					<table class="tec-tickets__email-table-content-upcoming-event-card">
-				<tr class="tec-tickets__email-table-content-upcoming-event-card__line-1">
-					<td class="tec-tickets__email-table-content-upcoming-event-card__month">
-						OCT					</td>
-					<td class="tec-tickets__email-table-content-upcoming-event-card__time">
-						10:00 am						-
-						1:00 pm					</td>
-				</tr>
-				<tr class="tec-tickets__email-table-content-upcoming-event-card__line-2">
-					<td class="tec-tickets__email-table-content-upcoming-event-card__day">
-						23					</td>
-					<td class="tec-tickets__email-table-content-upcoming-event-card__title">
-						Public Event 3					</td>
-				</tr>
-							</table>
-					<table class="tec-tickets__email-table-content-upcoming-event-card">
-				<tr class="tec-tickets__email-table-content-upcoming-event-card__line-1">
-					<td class="tec-tickets__email-table-content-upcoming-event-card__month">
-						OCT					</td>
-					<td class="tec-tickets__email-table-content-upcoming-event-card__time">
-						10:00 am						-
-						1:00 pm					</td>
-				</tr>
-				<tr class="tec-tickets__email-table-content-upcoming-event-card__line-2">
-					<td class="tec-tickets__email-table-content-upcoming-event-card__day">
-						24					</td>
-					<td class="tec-tickets__email-table-content-upcoming-event-card__title">
-						Public Event 4					</td>
-				</tr>
-							</table>
-					<table class="tec-tickets__email-table-content-upcoming-event-card">
-				<tr class="tec-tickets__email-table-content-upcoming-event-card__line-1">
-					<td class="tec-tickets__email-table-content-upcoming-event-card__month">
-						OCT					</td>
-					<td class="tec-tickets__email-table-content-upcoming-event-card__time">
-						10:00 am						-
-						1:00 pm					</td>
-				</tr>
-				<tr class="tec-tickets__email-table-content-upcoming-event-card__line-2">
-					<td class="tec-tickets__email-table-content-upcoming-event-card__day">
-						25					</td>
-					<td class="tec-tickets__email-table-content-upcoming-event-card__title">
-						Public Event 5					</td>
-				</tr>
-							</table>
-		
-					<div class="tec-tickets__email-table-content-upcoming-event-card__link">
-				<a href="http://wordpress.test/?tribe_event_series=SERIES_NAME" target="_blank" rel="noopener noreferrer">
-					View all 6 Events in this series				</a>
-			</div>
-			</td>
+		<table>
+			<tr>
+				<td class="tec-tickets__email-table-content-order-purchaser-details-top tec-tickets__email-table-content-align-left" align="left">
+	Order #{ORDER_ID}</td>
+				<td class="tec-tickets__email-table-content-order-purchaser-details-top tec-tickets__email-table-content-align-right" align="right">
+	Test Purchaser</td>
+			</tr>
+			<tr>
+				<td class="tec-tickets__email-table-content-order-purchaser-details-bottom tec-tickets__email-table-content-align-left" align="left">
+	February 18, 2025</td>
+				<td class="tec-tickets__email-table-content-order-purchaser-details-bottom tec-tickets__email-table-content-align-right" align="right">
+	sam@tec.com</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<td class="tec-tickets__email-table-content-order-post-title">
+		Post title 0000129	</td>
+</tr>
+<tr>
+	<td>
+		<table style="border-collapse:collapse;margin-top:10px">
+			<tr class="tec-tickets__email-table-content-order-ticket-totals-header-row">
+	<th style="width: 80%" class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-left" align="left">
+		Ticket	</th>
+	<th class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-center" align="center">
+		Qty	</th>
+	<th class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-right" align="right">
+		Price	</th>
+</tr>
+							<tr class="tec-tickets__email-table-content-order-ticket-totals-ticket-row">
+	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-left" align="left">
+	Test TC ticket for {POST_ID}</td>
+	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-center" align="center">
+	2</td>
+	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-right" align="right">
+	&#x24;100.00</td>
+</tr>
+					</table>
+	</td>
 </tr>
 
+
 <tr>
-	<td class="tec-tickets__email-table-content-post-description-container">
-				<p>SERIES_EXCERPT</p>
+	<td class="tec-tickets__email-table-content-order-fees-container" align="right">
+		<table class="tec-tickets__email-table-content-order-fees-table">
+							<tr>
+					<td class="tec-tickets__email-table-content-order-fees-name">
+						test fee 1 (2x)					</td>
+					<td class="tec-tickets__email-table-content-order-fees-right-cell">
+						&#x24;10					</td>
+				</tr>
+					</table>
+	</td>
+</tr>
+<tr>
+	<td class="tec-tickets__email-table-content-order-total-container" align="right">
+		<table class="tec-tickets__email-table-content-order-total-table">
+			<tr>
+				<td class="tec-tickets__email-table-content-order-total-left-cell">
+					Order Total				</td>
+				<td class="tec-tickets__email-table-content-order-total-right-cell">
+					&#x24;110.00				</td>
+			</tr>
+		</table>
+	</td>
+</tr><tr>
+	<td class="tec-tickets__email-table-content-order-payment-info-container" align="right">
+		Payment completed with PayPal	</td>
+</tr>
+<tr>
+	<td class="tec-tickets__email-table-content-order-attendees-table-container">
+		<table class="tec-tickets__email-table-content-order-attendees-table">
+			<tr class="tec-tickets__email-table-content-order-attendees-table-header-row">
+	<td class="tec-tickets__email-table-content-order-attendees-table-header-cell tec-tickets__email-table-content-align-left" align="left">
+		Attendee	</td>
+	<td class="tec-tickets__email-table-content-order-attendees-table-header-cell tec-tickets__email-table-content-align-center" align="center">
+		Name	</td>
+	<td class="tec-tickets__email-table-content-order-attendees-table-header-cell tec-tickets__email-table-content-align-right" align="right">
+		Ticket ID	</td>
+</tr>
+							<tr class="tec-tickets__email-table-content-order-attendee-info-row">
+	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-left" align="left">
+		<div>
+	Test Purchaser</div>
+		<div>
+	sam@tec.com</div>
+			</td>
+	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-center" align="center">
+	Test TC ticket for {POST_ID}</td>
+	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-right" align="right">
+	attendee-security-code</td>
+</tr>
+							<tr class="tec-tickets__email-table-content-order-attendee-info-row">
+	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-left" align="left">
+		<div>
+	Test Purchaser</div>
+		<div>
+	sam@tec.com</div>
+			</td>
+	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-center" align="center">
+	Test TC ticket for {POST_ID}</td>
+	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-right" align="right">
+	attendee-security-code</td>
+</tr>
+					</table>
 	</td>
 </tr>
 					</table>
@@ -670,7 +589,7 @@ Your Series Pass to SERIES_TITLE
 		<table role="presentation" class="tec-tickets__email-table-main-footer-table">
 						<tr>
 	<td class="tec-tickets__email-table-main-footer-credit-container" align="right">
-		<a href="http://wordpress.test" class="tec-tickets__email-table-main-footer-credit-link">Event Tickets Tests</a> tickets are powered by <a href="https://evnt.is/et-in-app-email-credit" class="tec-tickets__email-table-main-footer-credit-link">Event Tickets</a>	</td>
+		<a href="http://wordpress.test" class="tec-tickets__email-table-main-footer-credit-link">Event Tickets Order Modifier Tests</a> tickets are powered by <a href="https://evnt.is/et-in-app-email-credit" class="tec-tickets__email-table-main-footer-credit-link">Event Tickets</a>	</td>
 </tr>
 		</table>
 	</td>
