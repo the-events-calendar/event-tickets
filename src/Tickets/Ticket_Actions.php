@@ -109,7 +109,7 @@ class Ticket_Actions extends Controller_Contract {
 		add_action( 'update_post_meta', [ $this, 'pre_update_listener' ], 1000, 3 );
 		add_action( 'added_post_meta', [ $this, 'meta_keys_listener' ], 1000, 4 );
 		add_action( 'updated_postmeta', [ $this, 'meta_keys_listener' ], 1000, 4 );
-		add_action( 'tec_shutdown', [ $this, 'sync_rsvp_dates_for_all' ] );
+		add_action( 'tec_shutdown', [ $this, 'sync_rsvp_dates' ] );
 		add_action( self::TICKET_START_SALES_HOOK, [ $this, 'fire_ticket_start_date_action' ], 10, 2 );
 		add_action( self::TICKET_END_SALES_HOOK, [ $this, 'fire_ticket_end_date_action' ], 10, 2 );
 	}
@@ -126,7 +126,7 @@ class Ticket_Actions extends Controller_Contract {
 		remove_action( 'update_post_meta', [ $this, 'pre_update_listener' ], 1000 );
 		remove_action( 'added_post_meta', [ $this, 'meta_keys_listener' ], 1000 );
 		remove_action( 'updated_postmeta', [ $this, 'meta_keys_listener' ], 1000 );
-		remove_action( 'tec_shutdown', [ $this, 'sync_rsvp_dates_for_all' ] );
+		remove_action( 'tec_shutdown', [ $this, 'sync_rsvp_dates' ] );
 		remove_action( self::TICKET_START_SALES_HOOK, [ $this, 'fire_ticket_start_date_action' ] );
 		remove_action( self::TICKET_END_SALES_HOOK, [ $this, 'fire_ticket_end_date_action' ] );
 	}
@@ -268,7 +268,8 @@ class Ticket_Actions extends Controller_Contract {
 			return;
 		}
 
-		$this->sync_rsvp_dates_actions( $ticket_id );
+		// We avoid checking in_array multiple times and we will rather do array_unique once.
+		self::$rsvp_ids_to_sync[] = $ticket_id;
 	}
 
 	/**
@@ -279,7 +280,7 @@ class Ticket_Actions extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	public function sync_rsvp_dates_for_all() {
+	public function sync_rsvp_dates() {
 		/**
 		 * Filters the RSVP IDs to sync.
 		 *
@@ -342,18 +343,6 @@ class Ticket_Actions extends Controller_Contract {
 		 * @param int $old_stock The old stock value.
 		 */
 		do_action( 'tec_tickets_ticket_stock_changed', $ticket->ID, $new_stock, $old_stock );
-	}
-
-	/**
-	 * Syncs rsvp dates actions.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $ticket_id The ticket id.
-	 */
-	protected function sync_rsvp_dates_actions( int $ticket_id ): void {
-		// We avoid checking in_array multiple times and we will rather do array_unique once.
-		self::$rsvp_ids_to_sync[] = $ticket_id;
 	}
 
 	/**
