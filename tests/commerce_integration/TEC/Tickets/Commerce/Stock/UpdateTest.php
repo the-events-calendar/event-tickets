@@ -16,7 +16,7 @@ class UpdateTest extends \Codeception\TestCase\WPTestCase {
 	use RSVP_Ticket_Maker;
 
 	public function test_ticket_restock_after_attendee_deletion_with_individual_capacity() {
-		$maker = new Event();
+		$maker    = new Event();
 		$event_id = $maker->create();
 
 		// create ticket with default capacity of 100.
@@ -35,7 +35,7 @@ class UpdateTest extends \Codeception\TestCase\WPTestCase {
 
 		// delete attendee.
 		$attendee = $attendees[0];
-		$deleted = tribe( Attendee::class )->delete( $attendee->ID );
+		$deleted  = tribe( Attendee::class )->delete( $attendee->ID );
 
 		$new_count = tec_tc_attendees()->by( 'event_id', $event_id )->count();
 		$this->assertEquals( 1, $new_count, 'There should be 1 attendee' );
