@@ -6,14 +6,14 @@
 	<h3 class="tribe-common-h2 tribe-tickets__commerce-checkout-header-title">
 	Purchase Tickets</h3>
 	<div class="tribe-common-b2 tribe-tickets__commerce-checkout-header-links">
-	
+
 <a
 	class="tribe-common-anchor-alt tribe-tickets__commerce-checkout-header-link-back-to-event"
 	href="http://wordpress.test/?tribe_events=test-event"
 >back to event</a>
 </div>
 </header>
-					
+
 <div class="tribe-tickets__commerce-checkout-cart">
 
 	<header class="tribe-tickets__commerce-checkout-cart-header">
@@ -24,7 +24,7 @@
 </header>
 
 	<div class="tribe-tickets__commerce-checkout-cart-items">
-					<article
+	<article
 	 class="tribe-tickets__commerce-checkout-cart-item post-{{ID}} tec_tc_ticket type-tec_tc_ticket status-publish hentry tribe-common-b1" 	 data-ticket-id="{{ID}}" data-ticket-quantity="1" data-ticket-price="10.00" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details">
@@ -62,7 +62,7 @@
 </div>
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-price">
-	
+
 <span class="tec-tickets-price amount">
 	&#x24;10.00</span>
 </div>
@@ -74,11 +74,11 @@
 	&#x24;10.00</div>
 
 </article>
-			</div>
-
-	
 </div>
-					
+
+
+</div>
+
 <div class="tribe-tickets__commerce-checkout-cart">
 
 	<header class="tribe-tickets__commerce-checkout-cart-header">
@@ -89,7 +89,7 @@
 </header>
 
 	<div class="tribe-tickets__commerce-checkout-cart-items">
-							<article
+	<article
 	 class="tribe-tickets__commerce-checkout-cart-item post-{{ID}} tec_tc_ticket type-tec_tc_ticket status-publish hentry tribe-common-b1" 	 data-ticket-id="{{ID}}" data-ticket-quantity="1" data-ticket-price="20.00" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details">
@@ -127,7 +127,7 @@
 </div>
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-price">
-	
+
 <span class="tec-tickets-price amount">
 	&#x24;20.00</span>
 </div>
@@ -139,11 +139,42 @@
 	&#x24;20.00</div>
 
 </article>
-	</div>
+</div>
 
-	
+
 <footer  class="tribe-tickets__commerce-checkout-cart-footer tribe-common-b1" >
-	<div class="tribe-tickets__commerce-checkout-cart-footer-quantity">
+	<div class="tribe-tickets__form tribe-tickets__commerce-checkout-coupons-wrapper tribe-common-b2">
+	<div class="tec-tickets__commerce-checkout-cart-coupons" >
+		<input
+			type="text"
+			class=" class="tribe-tickets__commerce-checkout-cart-coupons__input tribe-common-form-control-text__input tribe-tickets__form-field-input" "
+			id="coupon_input"
+			name="coupons"
+			aria-describedby="coupon_error"
+			aria-label="Enter coupon code"
+			placeholder="Enter coupon code"
+			value=""
+		/>
+		<button
+			id="coupon_apply"
+			class=" class="tec-tickets__commerce-checkout-cart-coupons__apply-button tribe-common-c-btn" "
+		>
+			Apply		</button>
+	</div>
+	<p id="coupon_error" class="tec-tickets__commerce-checkout-cart-coupons__error" style="display: none; color: red;" aria-live="polite" role="alert">
+		Invalid coupon code	</p>
+	<div class="tec-tickets__commerce-checkout-cart-coupons__applied" style="display: none;">
+		<span class="tec-tickets__commerce-checkout-cart-coupons__applied-text">
+			Coupon:			<span class="tec-tickets__commerce-checkout-cart-coupons__applied-value">
+							</span>
+			- Discount:			<span class="tec-tickets__commerce-checkout-cart-coupons__applied-discount">
+							</span>
+		</span>
+		<button class="tec-tickets__commerce-checkout-cart-coupons__remove-button" type="button">
+			X		</button>
+	</div>
+</div>
+<div class="tribe-tickets__commerce-checkout-cart-footer-quantity">
 	<span class="tribe-tickets__commerce-checkout-cart-footer-quantity-label">Quantity: </span><span class="tribe-tickets__commerce-checkout-cart-footer-quantity-number">2</span></div>
 <div class="tribe-tickets__commerce-checkout-cart-footer-total">
 	<span class="tribe-tickets__commerce-checkout-cart-footer-total-label">Total: </span><span class="tribe-tickets__commerce-checkout-cart-footer-total-wrap">&#x24;30.00</span></div>
@@ -157,7 +188,7 @@
 </div>
 		<div id="tribe-tickets__commerce-checkout-footer-notice-error--no-gateway"  class="tribe-tickets__notice tribe-tickets__notice--error tribe-tickets__commerce-checkout-notice" >
 			<h3 class="tribe-common-h7 tribe-tickets-notice__title">Checkout Error!</h3>
-	
+
 	<div  class="tribe-common-b2 tribe-tickets-notice__content tribe-tickets__commerce-checkout-notice-content" >
 		Something went wrong!	</div>
 </div>
@@ -175,7 +206,7 @@
 			autocomplete="off"
 			placeholder="First and last name"
 			 class="tribe-tickets__commerce-checkout-purchaser-info-form-field tribe-tickets__commerce-checkout-purchaser-info-form-field-name tribe-common-form-control-text__input tribe-tickets__form-field-input" 			required
-					/>
+		/>
 		<div class="tribe-common-b3 tribe-tickets__form-field-description tribe-common-a11y-hidden error">
 			Your first and last names are required		</div>
 	</div>
@@ -191,7 +222,7 @@
 			name="purchaser-email"
 			autocomplete="off"
 			 class="tribe-common-b2 tribe-tickets__commerce-checkout-purchaser-info-form-field tribe-tickets__commerce-checkout-purchaser-info-form-field-email tribe-common-form-control-text__input tribe-tickets__form-field-input" 			required
-					/>
+		/>
 		<div class="tribe-common-b3 tribe-tickets__form-field-description tribe-common-a11y-hidden error">
 			Your email address is required		</div>
 		<div class="tribe-common-b3 tribe-tickets__form-field-description">
@@ -203,7 +234,7 @@
 				<footer class="tribe-tickets__commerce-checkout-footer">
 	<div id="tribe-tickets__commerce-checkout-footer-notice-error--no-gateway"  class="tribe-tickets__notice tribe-tickets__notice--error tribe-tickets__commerce-checkout-footer-notice-error--no-gateway" >
 			<h3 class="tribe-common-h7 tribe-tickets-notice__title">Checkout Unavailable!</h3>
-	
+
 	<div  class="tribe-common-b2 tribe-tickets-notice__content tribe-tickets__commerce-checkout-notice-content" >
 		Checkout is not available at this time because a payment method has not been set up. Please notify the site administrator.	</div>
 </div>
