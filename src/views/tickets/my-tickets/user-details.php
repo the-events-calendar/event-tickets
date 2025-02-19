@@ -15,13 +15,17 @@
  * @var int    $post_id   The ID of the post the tickets are for.
  */
 
+$purchaser_name = $order && ! empty( $order['purchaser_name'] ) ? $order['purchaser_name'] : __( 'Unknown Name (invalid order)', 'event-tickets' );
+$purchaser_email = $order && ! empty( $order['purchaser_email'] ) ? $order['purchaser_email'] : __( 'Unknown Email (invalid order)', 'event-tickets' );
+$purchase_time = $order && ! empty( $order['purchase_time'] ) ? $order['purchase_time'] : null;
+
  ?>
  <div class="user-details">
 	<?php
 		printf(
 			// Translators: 1: order number, 2: count of attendees in the order, 3: ticket label (dynamically singular or plural), 4: purchaser name, 5: linked purchaser email, 6: date of purchase.
 			esc_html__( 'Order #%1$s: %2$d %3$s reserved by %4$s (%5$s) on %6$s', 'event-tickets' ),
-			esc_html( (string) $order_id ),
+			esc_html( $order_id ),
 			count( $attendees ),
 			_n(
 				esc_html( tribe_get_ticket_label_singular( 'orders_tickets' ) ),
@@ -29,9 +33,9 @@
 				count( $attendees ),
 				'event-tickets'
 			),
-			esc_attr( (string) $order['purchaser_name'] ),
-			'<a href="mailto:' . esc_url( (string) $order['purchaser_email'] ) . '">' . esc_html( (string) $order['purchaser_email'] ) . '</a>',
-			date_i18n( tribe_get_date_format( true ), strtotime( esc_attr( (string) $order['purchase_time'] ) ) )
+			esc_attr( $purchaser_name ),
+			'<a href="mailto:' . esc_url( $purchaser_email ) . '">' . esc_html( $purchaser_email ) . '</a>',
+			 $purchase_time ? date_i18n( tribe_get_date_format( true ), strtotime( esc_attr( $purchase_time ) ) ) : __( 'Unknown Time (invalid order)', 'event-tickets' )
 		);
 
 		/**
