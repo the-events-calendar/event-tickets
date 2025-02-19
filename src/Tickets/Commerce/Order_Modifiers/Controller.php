@@ -28,6 +28,9 @@ use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Coupon_Table;
 use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Fee_Table;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Currency_Value;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
+use TEC\Tickets\Commerce\Utils\Currency;
 use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
@@ -65,6 +68,8 @@ final class Controller extends Controller_Contract {
 			$this->container->get( Modifier_Admin_Handler::class )->unregister();
 			$this->container->get( Order_Modifier_Fee_Metabox::class )->unregister();
 		}
+
+		remove_action( 'init', [ $this, 'set_currency_defaults' ] );
 	}
 
 	/**
@@ -98,11 +103,30 @@ final class Controller extends Controller_Contract {
 		$this->container->singleton( Fee::class );
 		$this->container->singleton( Fee_Table::class );
 		$this->container->singleton( Coupon_Table::class );
+		$this->container->singleton( Coupon::class );
 
 		$this->run_deprecated_coupon_filter();
 
-		$this->container->singleton( Coupon::class );
+		add_action( 'init', [ $this, 'set_currency_defaults' ] );
+	}
 
+	/**
+	 * Set up currency default values in the value classes.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function set_currency_defaults() {
+		$currency_code = Currency::get_currency_code();
+		Currency_Value::set_defaults(
+			Currency::get_currency_symbol( $currency_code ),
+			Currency::get_currency_separator_thousands( $currency_code ),
+			Currency::get_currency_separator_decimal( $currency_code ),
+			Currency::get_currency_symbol_position( $currency_code )
+		);
+
+		Precision_Value::set_default_precision( (int) Currency::get_currency_precision( $currency_code ) );
 	}
 
 	/**
