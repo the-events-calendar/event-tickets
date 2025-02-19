@@ -42,12 +42,11 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	 */
 	public function setup_template_vars() {
 		$cart          = tribe( Cart::class );
-		$items         = $cart->get_items_in_cart( true );
 		$cart_subtotal = Value::create( $cart->get_cart_subtotal() ?? 0 );
 		$cart_total    = Value::create( $cart->get_cart_total() ?? 0 );
+		$items         = $cart->get_repository()->update_items_with_subtotal( $cart->get_items_in_cart( true, 'all' ) );
 		$sections      = array_unique( array_filter( wp_list_pluck( $items, 'event_id' ) ) );
-
-		$gateways = tribe( Manager::class )->get_gateways();
+		$gateways      = tribe( Manager::class )->get_gateways();
 
 		$args = [
 			'provider_id'        => Module::class,
