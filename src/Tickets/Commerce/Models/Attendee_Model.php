@@ -41,7 +41,7 @@ class Attendee_Model extends Base {
 
 			$ticket = tec_tc_get_ticket( $ticket_id );
 			$order  = tec_tc_get_order( $this->post->post_parent );
-			$status = Undefined::SLUG;
+			$status = tribe( Undefined::class )->get_name();
 
 			$is_valid_order = Order::is_valid( $order );
 
