@@ -45,7 +45,7 @@ class Attendee_Model extends Base {
 
 			$is_valid_order = Order::is_valid( $order );
 
-			// Only when the order is valid we can get the status.
+			// We can only can get the status when the order is valid.
 			if ( $is_valid_order ) {
 				$status = $order->status_obj->get_name();
 			}
