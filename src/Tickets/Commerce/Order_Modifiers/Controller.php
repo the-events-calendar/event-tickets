@@ -21,6 +21,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Coupons as Coupons_Checkout;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Fees as Agnostic_Checkout_Fees;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal\Fees as Paypal_Checkout_Fees;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe\Fees as Stripe_Checkout_Fees;
+use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe\Coupons as Stripe_Checkout_Coupons;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
@@ -54,6 +55,7 @@ final class Controller extends Controller_Contract {
 		$this->container->get( Agnostic_Checkout_Fees::class )->unregister();
 		$this->container->get( Editor::class )->unregister();
 		$this->container->get( Coupons_Checkout::class )->unregister();
+		$this->container->get( Stripe_Checkout_Coupons::class )->unregister();
 
 		// API classes.
 		$this->container->get( Coupons::class )->unregister();
@@ -82,6 +84,7 @@ final class Controller extends Controller_Contract {
 		$this->container->register( Agnostic_Checkout_Fees::class );
 		$this->container->register( Editor::class );
 		$this->container->register( Coupons_Checkout::class );
+		$this->container->register( Stripe_Checkout_Coupons::class );
 
 		// API classes.
 		$this->container->register( Coupons::class );
