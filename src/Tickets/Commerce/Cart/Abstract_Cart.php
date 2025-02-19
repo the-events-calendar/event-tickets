@@ -348,4 +348,31 @@ abstract class Abstract_Cart implements Cart_Interface {
 
 		return (int) $this->get_items()[ $item_id ]['quantity'];
 	}
+
+	/**
+	 * Update dynamic items using a subtotal value.
+	 *
+	 * This will convert any callable items to a Value object using the given
+	 * subtotal as input.
+	 *
+	 * @since TBD
+	 *
+	 * @param array  $items    The items to update.
+	 * @param ?float $subtotal The subtotal to use for the calculation. If null, the cart subtotal will be used.
+	 *
+	 * @return array The updated items.
+	 */
+	public function update_items_with_subtotal( array $items, ?float $subtotal = null ): array {
+		$subtotal ??= $this->get_cart_subtotal();
+		foreach ( $items as &$item ) {
+			if ( is_callable( $item['sub_total'] ) ) {
+				$result = $item['sub_total']( $subtotal );
+
+				// Update the item with a value object.
+				$item['sub_total'] = Value::create( $result );
+			}
+		}
+
+		return $items;
+	}
 }
