@@ -46,6 +46,15 @@ class Coupons extends Base_API {
 	protected Manager $manager;
 
 	/**
+	 * The repository for interacting with the order modifiers table.
+	 *
+	 * @since 5.18.0
+	 *
+	 * @var Coupons_Repository
+	 */
+	protected Coupons_Repository $repo;
+
+	/**
 	 * Coupons constructor.
 	 *
 	 * @since 5.18.0
@@ -282,7 +291,10 @@ class Coupons extends Base_API {
 	protected function remove_coupon( Request $request ) {
 		try {
 			// Get and validate the coupon slug.
-			$coupon_slug = $this->get_and_validate_coupon_slug( $request );
+			$coupon_slug = $request->get_param( 'coupon' );
+			if ( ! $this->does_coupon_slug_exist( $coupon_slug ) ) {
+				throw new Exception( esc_html__( 'Invalid coupon.', 'event-tickets' ), 400 );
+			}
 
 			/** @var Coupon $coupon */
 			$coupon = $this->repo->find_by_slug( $coupon_slug );
