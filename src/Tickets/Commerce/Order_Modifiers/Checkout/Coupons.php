@@ -7,12 +7,16 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
 
+use Exception;
 use TEC\Common\Contracts\Container;
-use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon;
-use Tribe__Template;
-use WP_Post;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Assets\Assets;
+use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon as Coupon_Model;
+use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon;
+use TEC\Tickets\Commerce\Traits\Type;
+use TEC\Tickets\Commerce\Utils\Value;
+use Tribe__Template;
+use WP_Post;
 
 /**
  * Class Coupons
@@ -22,6 +26,8 @@ use TEC\Common\StellarWP\Assets\Assets;
  * @since 5.18.0
  */
 class Coupons extends Controller_Contract {
+
+	use Type;
 
 	/**
 	 * @var Coupon
@@ -55,6 +61,20 @@ class Coupons extends Controller_Contract {
 			3
 		);
 
+		// Calculate coupon values in the cart.
+		add_filter(
+			'tec_tickets_commerce_get_cart_additional_values',
+			[ $this, 'calculate_coupons' ],
+			20,
+			3
+		);
+
+		// Attach coupons to the order object.
+		add_filter(
+			'tribe_post_type_tc_orders_properties',
+			[ $this, 'attach_coupons_to_order_object' ]
+		);
+
 		// Register our own script on the frontend.
 		add_action( 'init', [ $this, 'register_assets' ] );
 
@@ -74,6 +94,17 @@ class Coupons extends Controller_Contract {
 			'tec_tickets_commerce_checkout_cart_before_footer_quantity',
 			[ $this, 'display_coupon_section' ],
 			20
+		);
+
+		remove_filter(
+			'tec_tickets_commerce_get_cart_additional_values',
+			[ $this, 'calculate_coupons' ],
+			20
+		);
+
+		remove_filter(
+			'tribe_post_type_tc_orders_properties',
+			[ $this, 'attach_coupons_to_order_object' ]
 		);
 
 		// Remove asset registration.
@@ -112,5 +143,83 @@ class Coupons extends Controller_Contract {
 	 */
 	public function display_coupon_section( WP_Post $post, array $items, Tribe__Template $template ): void {
 		$template->template( 'checkout/order-modifiers/coupons' );
+	}
+
+	/**
+	 * Calculate the coupons for the cart.
+	 *
+	 * @since TBD
+	 *
+	 * @param Value[] $values   An array of `Value` instances representing additional fees or discounts.
+	 * @param array   $items    The items currently in the cart.
+	 * @param Value   $subtotal The total of the subtotals from the items.
+	 *
+	 * @return Value[] The updated values.
+	 */
+	public function calculate_coupons( array $values, array $items, Value $subtotal ): array {
+		// If the cart is empty, return the values as is.
+		if ( empty( $items ) ) {
+			return $values;
+		}
+
+		// If the subtotal is already zero, return the values as is.
+		if ( 0 === $subtotal->get_decimal() ) {
+			return $values;
+		}
+
+		// Check the cache, and return the cached value if it exists.
+		$cache_key = 'calculate_coupons_' . md5( serialize( $items ) );
+		$cache     = tribe_cache();
+
+		if ( ! empty( $cache[ $cache_key ] ) && is_array( $cache[ $cache_key ] ) ) {
+			return $cache[ $cache_key ];
+		}
+
+		// Filter out coupon items.
+		$coupons = array_filter( $items, fn( $item ) => 'coupon' === $item['type'] );
+		if ( empty( $coupons ) ) {
+			return $values;
+		}
+
+		foreach ( $coupons as $coupon_item ) {
+			try {
+				$coupon   = Coupon_Model::find( $coupon_item['coupon_id'] );
+				$values[] = $coupon->get_discount_amount( $subtotal->get_decimal() );
+			} catch ( Exception $e ) {
+				continue;
+			}
+		}
+
+		// Cache the values.
+		$cache[ $cache_key ] = $values;
+
+		return $values;
+	}
+
+	/**
+	 * Filter the properties of the order object to add coupons.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $properties The properties of the order object.
+	 *
+	 * @return array The updated properties.
+	 */
+	public function attach_coupons_to_order_object( array $properties ): array {
+		// We shouldn't have an order with no items, but let's just be safe.
+		$items = $properties['items'] ?? [];
+		if ( empty ( $items ) ) {
+			return $properties;
+		}
+
+		// Separate coupons and non-coupons.
+		$coupons = array_filter( $items, fn( $item ) => $this->is_coupon( $item ) );
+		$items   = array_filter( $items, fn( $item ) => ! $this->is_coupon( $item ) );
+
+		// Store the items and coupons in the properties.
+		$properties['coupons'] = $coupons;
+		$properties['items']   = $items;
+
+		return $properties;
 	}
 }
