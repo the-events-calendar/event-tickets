@@ -54,12 +54,13 @@ tribe.tickets.commerce = {};
 		purchaserEmail: '.tribe-tickets__commerce-checkout-purchaser-info-form-field-email',
 
 		// Coupon related selectors.
+		couponInputContainer: '.tec-tickets__commerce-checkout-cart-coupons',
 		couponInput: '#coupon_input',
 		couponError: '.tec-tickets__commerce-checkout-cart-coupons__error',
 		couponApplyButton: '#coupon_apply',
-		couponAppliedSection: '.tribe-tickets__commerce-checkout-cart-coupons__applied',
-		couponAppliedValue: '.tribe-tickets__commerce-checkout-cart-coupons__applied-value',
-		couponRemoveButton: '.tribe-tickets__commerce-checkout-cart-coupons__remove-button'
+		couponAppliedSection: '.tec-tickets__commerce-checkout-cart-coupons__applied',
+		couponAppliedValue: '.tec-tickets__commerce-checkout-cart-coupons__applied-value',
+		couponRemoveButton: '.tec-tickets__commerce-checkout-cart-coupons__remove-button'
 	};
 
 	/**
@@ -304,23 +305,20 @@ tribe.tickets.commerce = {};
 				success( response ) {
 					if ( response.success ) {
 						// Hide input and button, show applied coupon.
-						$( obj.selectors.couponInput ).hide();
-						$( obj.selectors.couponApplyButton ).hide();
+						$( obj.selectors.couponInputContainer ).hide();
 
 						// Display coupon value and discount.
-						obj.updateCouponDiscount( response.data.discount );
-						obj.updateTotalPrice( response.data.amount );
+						obj.updateCouponDiscount( response.discount );
+						obj.updateTotalPrice( response.cart_amount );
 						$( obj.selectors.couponAppliedSection ).show();
 					} else {
-						$errorMessage.text( response.data.message || 'Invalid Coupon Code' ).show();
-						$( obj.selectors.couponInput ).show();
-						$( obj.selectors.couponApplyButton ).show();
+						$errorMessage.text( response.message || 'Invalid Coupon Code' ).show();
+						$( obj.selectors.couponInputContainer ).show();
 					}
 				},
 				error() {
 					$errorMessage.text( 'Error applying coupon. Please try again.' ).show();
-					$( obj.selectors.couponInput ).show();
-					$( obj.selectors.couponApplyButton ).show();
+					$( obj.selectors.couponInputContainer ).show();
 				},
 				complete() {
 					obj.loaderHide();
@@ -344,39 +342,50 @@ tribe.tickets.commerce = {};
 				return;
 			}
 
+			const couponValue = $( obj.selectors.couponInput ).val().trim();
 			const nonce = $( obj.selectors.nonce ).val();
-			const $errorMessage = $( '.tribe-tickets__commerce-checkout-cart-coupons__error' );
+			const $errorMessage = $( obj.selectors.couponError );
 
 			// Hide the error message initially.
 			$errorMessage.hide();
 
+			// Ensure the coupon is not empty.
+			if ( !couponValue ) {
+				$errorMessage.text( 'Unable to determine coupon to remove.' ).show();
+				return;
+			}
+
 			ajaxInProgress = true;
 			obj.loaderShow();
 
+			const cartHash = window.location.search.match( /tec-tc-cookie=([^&]*)/ );
+
+			const requestData = {
+				nonce: nonce,
+				coupon: couponValue,
+				payment_intent_id: window.tecTicketsCommerceGatewayStripeCheckout.paymentIntentData.id,
+				cart_hash: cartHash[1],
+			}
+
 			// Perform the AJAX request to remove the coupon.
 			$.ajax( {
-				url: ajaxurl,
+				url: `${window.tecTicketsCommerce.restUrl}coupons/remove`,
 				method: 'POST',
-				data: {
-					action: 'validate_coupon',
-					remove_coupon: true, // Send this flag to indicate coupon removal.
-					nonce: nonce,
-					data: window.tecTicketsCommerceGatewayStripeCheckout // Send all required checkout data.
-				},
+				data: requestData,
 				beforeSend() {
 					obj.loaderShow();
 				},
 				success( response ) {
 					if ( response.success ) {
 						// Show input and apply button again.
-						$( obj.selectors.couponInput ).val( '' ).show();
-						$( obj.selectors.couponApplyButton ).show();
+						$( obj.selectors.couponInputContainer ).show();
+						$( obj.selectors.couponInput ).val( '' );
 
 						// Hide the applied coupon section.
 						$( obj.selectors.couponAppliedSection ).hide();
-						obj.updateTotalPrice( response.data.amount );
+						obj.updateTotalPrice( response.cart_amount );
 					} else {
-						$errorMessage.text( response.data.message || 'Failed to remove coupon.' ).show();
+						$errorMessage.text( response.message || 'Failed to remove coupon.' ).show();
 					}
 				},
 				error() {
