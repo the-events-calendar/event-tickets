@@ -57,6 +57,20 @@ abstract class Abstract_Cart implements Cart_Interface {
 	protected $cart_hash;
 
 	/**
+	 * Whether the cart subtotal has been calculated.
+	 *
+	 * @var bool
+	 */
+	protected bool $subtotal_calculated = false;
+
+	/**
+	 * Whether the cart total has been calculated.
+	 *
+	 * @var bool
+	 */
+	protected bool $total_calculated = false;
+
+	/**
 	 * Determines if this instance of the cart has a public page.
 	 *
 	 * @since 5.1.9
@@ -108,23 +122,27 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * Get the total value of the cart, including additional values such as fees or discounts.
 	 *
 	 * This method calculates the total by first computing the subtotal from all items in the cart,
-	 * and then applying any additional values (e.g., fees or discounts) provided via the `tec_tickets_commerce_get_cart_additional_values` filter.
+	 * and then applying any additional values (e.g., fees or discounts) provided via the
+	 * `tec_tickets_commerce_get_cart_additional_values` filter.
 	 *
-	 * @since 5.18.0 Refactored logic, to include a new filter.
 	 * @since 5.10.0
+	 * @since 5.18.0 Refactored logic, to include a new filter.
 	 *
 	 * @return float The total value of the cart, or null if there are no items.
 	 */
 	public function get_cart_total() {
+		// If the total has already been calculated, return it.
+		if ( $this->total_calculated ) {
+			return $this->cart_total;
+		}
+
 		$subtotal = $this->get_cart_subtotal();
 		if ( ! $subtotal ) {
 			return 0.0;
 		}
 
-		$items = $this->get_items_in_cart( true );
-
-		// Extract subtotals from the cart items.
-		$sub_totals = array_filter( wp_list_pluck( $items, 'sub_total' ) );
+		$items          = $this->get_items_in_cart( true, 'all' );
+		$subtotal_value = Value::create( $subtotal );
 
 		/**
 		 * Filters the additional values in the cart in order to add additional fees or discounts.
@@ -141,15 +159,17 @@ abstract class Abstract_Cart implements Cart_Interface {
 			'tec_tickets_commerce_get_cart_additional_values',
 			[],
 			$items,
-			Value::create()->total( $sub_totals )
+			$subtotal_value
 		);
 
 		// Combine the subtotals and additional values.
-		$total_value = Value::create()->total( array_merge( $sub_totals, $additional_values ) );
+		$total_value = Value::create()->total( [ $subtotal_value, ...$additional_values ] );
 
-		$this->cart_total = $total_value->get_decimal();
+		// Set the total and mark it as calculated.
+		$this->cart_total       = $total_value->get_decimal();
+		$this->total_calculated = true;
 
-		return $total_value->get_decimal();
+		return $this->cart_total;
 	}
 
 	/**
@@ -162,22 +182,33 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * @return float The subtotal of the cart.
 	 */
 	public function get_cart_subtotal(): float {
-		// Reset cart_total to ensure it's not cumulative across calls.
-		$this->cart_total = 0.0;
-
-		$items = $this->get_items_in_cart( true );
-
-		// If no items in the cart, return null.
-		if ( empty( $items ) ) {
-			return 0.0;
+		// If the subtotal has already been calculated, return it.
+		if ( $this->subtotal_calculated ) {
+			return (float) $this->cart_subtotal;
 		}
+
+		// Set the subtotal to 0 before calculating it.
+		$this->cart_subtotal = 0.0;
 
 		// Calculate the total from the subtotals of each item.
-		foreach ( $items as $item ) {
-			$this->cart_total += $item['sub_total']->get_decimal();
+		$all_items     = $this->get_items_in_cart( true, 'all' );
+		$regular_items = array_filter( $all_items, static fn( $item ) => $item['sub_total'] instanceof Value );
+		foreach ( $regular_items as $item ) {
+			$this->cart_subtotal += $item['sub_total']->get_decimal();
 		}
 
-		return $this->cart_total;
+		// Now process any items that are callable.
+		$original_subtotal = $this->cart_subtotal;
+		$callable_items = array_filter( $all_items, static fn( $item ) => is_callable( $item['sub_total'] ) );
+		$callable_items = $this->update_items_with_subtotal( $callable_items, $original_subtotal );
+		foreach ( $callable_items as $item ) {
+			$this->cart_subtotal += $item['sub_total']->get_decimal();
+		}
+
+		// Set the subtotal as calculated.
+		$this->subtotal_calculated = true;
+
+		return $this->cart_subtotal;
 	}
 
 	/**
@@ -347,6 +378,20 @@ abstract class Abstract_Cart implements Cart_Interface {
 		}
 
 		return (int) $this->get_items()[ $item_id ]['quantity'];
+	}
+
+	/**
+	 * Reset the cart calculations.
+	 *
+	 * After calling this method, calculations will be performed again.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function reset_calculations() {
+		$this->subtotal_calculated = false;
+		$this->total_calculated    = false;
 	}
 
 	/**
