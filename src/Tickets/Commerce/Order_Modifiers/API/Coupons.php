@@ -233,6 +233,7 @@ class Coupons extends Base_API {
 				1,
 				[ 'type' => 'coupon' ]
 			);
+			$cart->save();
 
 			$cart_total = new Currency_Value( $cart->get_cart_total() );
 
@@ -292,6 +293,7 @@ class Coupons extends Base_API {
 
 			// Remove the item from the cart.
 			$cart->remove_item( $this->get_unique_type_id( $coupon->id, 'coupon' ) );
+			$cart->save();
 
 			$cart_total = new Currency_Value( $cart->get_cart_total() );
 
