@@ -61,18 +61,17 @@ class Coupons extends Controller_Contract {
 			3
 		);
 
-		// Calculate coupon values in the cart.
-		add_filter(
-			'tec_tickets_commerce_get_cart_additional_values',
-			[ $this, 'calculate_coupons' ],
-			20,
-			3
-		);
-
 		// Attach coupons to the order object.
 		add_filter(
 			'tribe_post_type_tc_orders_properties',
 			[ $this, 'attach_coupons_to_order_object' ]
+		);
+
+		add_filter(
+			'tec_tickets_commerce_cart_add_full_item_params',
+			[ $this, 'add_coupon_item_params' ],
+			10,
+			3
 		);
 
 		// Add asset localization to ensure the script has the necessary data.
@@ -94,14 +93,13 @@ class Coupons extends Controller_Contract {
 		);
 
 		remove_filter(
-			'tec_tickets_commerce_get_cart_additional_values',
-			[ $this, 'calculate_coupons' ],
-			20
+			'tribe_post_type_tc_orders_properties',
+			[ $this, 'attach_coupons_to_order_object' ]
 		);
 
 		remove_filter(
-			'tribe_post_type_tc_orders_properties',
-			[ $this, 'attach_coupons_to_order_object' ]
+			'tec_tickets_commerce_cart_add_full_item_params',
+			[ $this, 'add_coupon_item_params' ]
 		);
 
 		// Remove asset localization.
@@ -138,57 +136,6 @@ class Coupons extends Controller_Contract {
 	}
 
 	/**
-	 * Calculate the coupons for the cart.
-	 *
-	 * @since TBD
-	 *
-	 * @param Value[] $values   An array of `Value` instances representing additional fees or discounts.
-	 * @param array   $items    The items currently in the cart.
-	 * @param Value   $subtotal The total of the subtotals from the items.
-	 *
-	 * @return Value[] The updated values.
-	 */
-	public function calculate_coupons( array $values, array $items, Value $subtotal ): array {
-		// If the cart is empty, return the values as is.
-		if ( empty( $items ) ) {
-			return $values;
-		}
-
-		// If the subtotal is already zero, return the values as is.
-		if ( 0 === $subtotal->get_decimal() ) {
-			return $values;
-		}
-
-		// Check the cache, and return the cached value if it exists.
-		$cache_key = 'calculate_coupons_' . md5( wp_json_encode( $items ) );
-		$cache     = tribe_cache();
-
-		if ( ! empty( $cache[ $cache_key ] ) && is_array( $cache[ $cache_key ] ) ) {
-			return $cache[ $cache_key ];
-		}
-
-		// Filter out coupon items.
-		$coupons = array_filter( $items, fn( $item ) => 'coupon' === $item['type'] );
-		if ( empty( $coupons ) ) {
-			return $values;
-		}
-
-		foreach ( $coupons as $coupon_item ) {
-			try {
-				$coupon   = Coupon_Model::find( $coupon_item['coupon_id'] );
-				$values[] = $coupon->get_discount_amount( $subtotal->get_decimal() );
-			} catch ( Exception $e ) {
-				continue;
-			}
-		}
-
-		// Cache the values.
-		$cache[ $cache_key ] = $values;
-
-		return $values;
-	}
-
-	/**
 	 * Filter the properties of the order object to add coupons.
 	 *
 	 * @since TBD
@@ -213,5 +160,47 @@ class Coupons extends Controller_Contract {
 		$properties['items']   = $items;
 
 		return $properties;
+	}
+
+	/**
+	 * Add coupon item parameters to the cart item.
+	 *
+	 * @since TBD
+	 *
+	 * @param ?array $full_item The full item parameters, or null.
+	 * @param array  $item      The cart item details.
+	 * @param string $type      The item type.
+	 *
+	 * @return array
+	 */
+	public function add_coupon_item_params( $full_item, array $item, string $type ) {
+		if ( 'coupon' !== $type ) {
+			return $full_item;
+		}
+
+		try {
+			$coupon_id = (int) $this->get_id_from_unique_id( $item['coupon_id'] );
+
+			/** @var Coupon_Model $coupon */
+			$coupon = Coupon_Model::find( $coupon_id );
+
+			$full_item = [
+				'id'           => $coupon_id,
+				'type'         => 'coupon',
+				'coupon_id'    => $coupon->id,
+				'price'        => $coupon->raw_amount,
+				'sub_total'    => function ( $sub_total ) use ( $coupon ) {
+					return -1 * $coupon->get_discount_amount( $sub_total );
+				},
+				'display_name' => $coupon->display_name,
+				'quantity'     => 1,
+				'event_id'     => 0,
+				'ticket_id'    => 0,
+			];
+		} catch ( Exception $e ) {
+			return $full_item;
+		}
+
+		return $full_item;
 	}
 }
