@@ -54,6 +54,8 @@ class Controller extends Controller_Contract {
 		$this->container->get( Editor::class )->unregister();
 		$this->container->get( Frontend\Timer::class )->unregister();
 		$this->container->get( Admin\Ajax::class )->unregister();
+		
+		remove_action( 'init', [ $this, 'activate_seating' ] );
 	}
 
 	/**
@@ -116,52 +118,11 @@ class Controller extends Controller_Contract {
 				return $this->container->make( Service\Reservations::class );
 			}
 		);
-		$this->container->singleton( Meta::class );
-
-		$this->container->register( Tables::class );
-		$this->container->register( Assets::class );
-
 		$this->container->register( Uplink::class );
-
-		// Manage Order and Attendee data.
-		$this->container->register( Orders\Controller::class );
-
-		$this->container->register( Delete_Operations::class );
-
-		/*
-		 * The Timer will have to handle the AJAX and initial requests to handle and render the timer.
-		 * For this reason, it's always registered.
-		 */
-		$this->container->register( Frontend\Timer::class );
-
-		/*
-		 * The Editor will have to handle initial state requests, AJAX requests and REST requests from the Block Editor.
-		 * For this reason, it's always registered.
-		 */
-		$this->container->register( Editor::class );
-
-		/*
-		 * AJAX will power both frontend and backend, always register it.
-		 */
-		$this->container->register( Admin\Ajax::class );
-
-		$this->container->register( Settings::class );
-
-		if ( is_admin() ) {
-			$this->container->register( Admin::class );
-			$this->container->register( Admin\Events\Controller::class );
-		} else {
-			$this->container->register( Frontend::class );
-		}
-
-		if ( tec_tickets_commerce_is_enabled() ) {
-			$this->container->register( Commerce\Controller::class );
-		}
-
-		$this->container->register( QR::class );
-		$this->container->register( REST::class );
-
-		$this->container->register( Health::class );
+		$this->container->register( Assets::class );
+		
+		
+		add_action( 'init', [ $this, 'activate_seating' ] );
 	}
 
 	/**
@@ -222,5 +183,64 @@ class Controller extends Controller_Contract {
 		}
 
 		return $this->container->get( Service\Service::class );
+	}
+	
+	/**
+	 * Activates the Seating feature by registering the necessary controllers and services.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function activate_seating() {
+		$service_status = $this->container->get( Service\Service::class )->get_status();
+
+		if ( $service_status->has_no_license() || $service_status->is_license_invalid() ) {
+			return;
+		}
+		
+		$this->container->singleton( Meta::class );
+		
+		$this->container->register( Tables::class );
+		// Manage Order and Attendee data.
+		$this->container->register( Orders\Controller::class );
+		
+		$this->container->register( Delete_Operations::class );
+		
+		/*
+		 * The Timer will have to handle the AJAX and initial requests to handle and render the timer.
+		 * For this reason, it's always registered.
+		 */
+		$this->container->register( Frontend\Timer::class );
+		
+		/*
+		 * The Editor will have to handle initial state requests, AJAX requests and REST requests from the Block Editor.
+		 * For this reason, it's always registered.
+		 */
+		$this->container->register( Editor::class );
+		
+		/*
+		 * AJAX will power both frontend and backend, always register it.
+		 */
+		$this->container->register( Admin\Ajax::class );
+		
+		$this->container->register( Settings::class );
+		
+		if ( is_admin() ) {
+			$this->container->register( Admin::class );
+			$this->container->register( Admin\Events\Controller::class );
+		} else {
+			$this->container->register( Frontend::class );
+		}
+		
+		if ( tec_tickets_commerce_is_enabled() ) {
+			$this->container->register( Commerce\Controller::class );
+		}
+		
+		$this->container->register( QR::class );
+		$this->container->register( REST::class );
+		$this->container->register( Health::class );
+		
+		do_action( 'tec_tickets_seating_activated' );
 	}
 }
