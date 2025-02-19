@@ -23,15 +23,6 @@ use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta;
 trait Coupons {
 
 	/**
-	 * The repository for interacting with the order modifiers table.
-	 *
-	 * @since 5.18.0
-	 *
-	 * @var Coupons_Repository
-	 */
-	protected Coupons_Repository $repo;
-
-	/**
 	 * Determine if a coupon is valid.
 	 *
 	 * @param string $slug The coupon slug.
@@ -40,7 +31,27 @@ trait Coupons {
 	 */
 	protected function is_coupon_slug_valid( string $slug ): bool {
 		try {
-			return $this->is_coupon_valid( $this->repo->find_by_slug( $slug ) );
+			$repo = tribe( Coupons_Repository::class );
+			return $this->is_coupon_valid( $repo->find_by_slug( $slug ) );
+		} catch ( Exception $e ) {
+			return false;
+		}
+	}
+
+	/**
+	 * Determine if a coupon slug exists.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The coupon slug.
+	 *
+	 * @return bool
+	 */
+	protected function does_coupon_slug_exist( string $slug ): bool {
+		try {
+			$repo = tribe( Coupons_Repository::class );
+
+			return $repo->find_by_slug( $slug ) instanceof Coupon;
 		} catch ( Exception $e ) {
 			return false;
 		}
