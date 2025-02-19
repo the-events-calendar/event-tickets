@@ -104,9 +104,14 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 		if ( ! $post instanceof WP_Post ) {
 			return false;
 		}
-
-		return wp_verify_nonce( $nonce, $nonce_action )
-			&& current_user_can( get_post_type_object( $post->post_type )->cap->edit_posts );
+		
+		if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, $nonce_action ) ) {
+			return false;
+		}
+		
+		return current_user_can( 'edit_event_tickets' )
+				|| current_user_can( get_post_type_object( $post->post_type )->cap->edit_others_posts )
+				|| current_user_can( 'edit_post', $post->ID );
 	}
 
 	/**
