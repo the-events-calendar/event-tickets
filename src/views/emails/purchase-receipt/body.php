@@ -9,9 +9,10 @@
  *
  * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
  *
- * @version 5.5.11
+ * @version TBD
  *
  * @since 5.5.11
+ * @since TBD Added template for Booking Fees.
  *
  * @var Tribe__Template                    $this               Current template object.
  * @var \TEC\Tickets\Emails\Email_Abstract $email              The email object.
@@ -32,6 +33,8 @@ $this->template( 'template-parts/body/order/customer-purchaser-details' );
 $this->template( 'template-parts/body/order/post-title' );
 
 $this->template( 'template-parts/body/order/ticket-totals' );
+
+$this->template( 'template-parts/body/order/order-fees' );
 
 $this->template( 'template-parts/body/order/order-total' );
 
