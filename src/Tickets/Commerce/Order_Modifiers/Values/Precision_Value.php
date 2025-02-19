@@ -49,28 +49,30 @@ class Precision_Value extends Base_Value {
 		$value           = Float_Value::from_number( $value )->get();
 		$this->precision = new Positive_Int( $precision ?? 2 );
 
-		$this->validate_precision();
-
-		$this->value = $this->convert_value_to_integer( $value );
+		parent::__construct( $this->convert_value_to_integer( $value ) );
 	}
 
 	/**
 	 * Convert the value to an integer.
 	 *
+	 * @since 5.18.0
+	 *
 	 * @param float $value The value to convert.
 	 *
-	 * @return int
+	 * @return int The value as an integer.
 	 */
-	protected function convert_value_to_integer( $value ): int {
+	protected function convert_value_to_integer( float $value ): int {
 		return (int) round( $value * ( 10 ** $this->precision->get() ) );
 	}
 
 	/**
 	 * Convert the value to a float.
 	 *
+	 * @since 5.18.0
+	 *
 	 * @param int $value The value to convert.
 	 *
-	 * @return float
+	 * @return float The value as a float.
 	 */
 	protected function convert_value_to_float( int $value ): float {
 		return (float) ( $value / ( 10 ** $this->precision->get() ) );
@@ -98,6 +100,24 @@ class Precision_Value extends Base_Value {
 	 */
 	public function get_precision(): int {
 		return $this->precision->get();
+	}
+
+	/**
+	 * Get the value as an integer.
+	 *
+	 * Note that this is the RAW integer value. For example, a value of 1.23 with a precision of 2
+	 * would return 123.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $precision The precision to use.
+	 *
+	 * @return int The value as an integer.
+	 */
+	public function get_as_integer( int $precision = 2 ): int {
+		$object = $this->convert_to_precision( $precision );
+
+		return $object->value;
 	}
 
 	/**

@@ -99,6 +99,14 @@ class Precision_Value_Test extends WPTestCase {
 		$this->assertSame( $expected_product, (string) $value->multiply( $multiplier ) );
 	}
 
+	/**
+	 * @dataProvider raw_values_as_integers_provider
+	 * @test
+	 */
+	public function raw_values_as_integers( PV $value, int $expected, int $precision = 2 ) {
+		$this->assertSame( $expected, $value->get_as_integer( $precision ) );
+	}
+
 	public function get_data_provider() {
 		// raw value, precision, expected value
 		yield 'Normal float rounding down' => [ 1.234, 2, 1.23 ];
@@ -194,5 +202,12 @@ class Precision_Value_Test extends WPTestCase {
 		yield 'Multiplication by 3' => [ new PV( 1.23 ), new PV( 3 ), '3.69' ];
 		yield 'Multiply 10 by 10 with the same precision' => [ new PV( 10, 2 ), new PV( 10, 2 ), '100.00' ];
 		yield 'Multiply 10 by 10 with different precision' => [ new PV( 10, 2 ), new PV( 10, 3 ), '100.00' ];
+	}
+
+	public function raw_values_as_integers_provider() {
+		yield 'Simple integer value' => [ new PV( 1234.56 ), 123456 ];
+		yield 'Integer value with 4 decimal places' => [ new PV( 1234.5678 ), 123457 ];
+		yield 'Integer value with 4 decimal places and 4 precision' => [ new PV( 1234.5678 ), 12345700, 4 ];
+		yield 'Small value' => [ new PV( 1.23 ), 123 ];
 	}
 }
