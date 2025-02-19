@@ -205,6 +205,7 @@ class Coupons extends Controller_Contract {
 					return -1 * $coupon->get_discount_amount( $sub_total );
 				},
 				'display_name' => $coupon->display_name,
+				'slug'         => $coupon->slug,
 				'quantity'     => 1,
 				'event_id'     => 0,
 				'ticket_id'    => 0,
