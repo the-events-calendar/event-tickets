@@ -70,7 +70,7 @@ class Attendee_Model extends Base {
 			$ticket_title = ( ! $is_product_deleted ? $ticket->post_title : $deleted_ticket_title . ' ' . __( '(deleted)', 'event-tickets' ) );
 
 			$properties = [
-				'order_id'        => $is_valid_order ? $order_id : null,
+				'order_id'        => $this->post->post_parent,
 				'order_status'    => $status,
 				'optout'          => $opt_out,
 				'ticket'          => $ticket_title,
