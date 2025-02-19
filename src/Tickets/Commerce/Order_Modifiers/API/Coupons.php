@@ -19,7 +19,6 @@ use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon_Modifier_Manager as Ma
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Coupons as Coupons_Repository;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Coupons as CouponsTrait;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Currency_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
 use TEC\Tickets\Commerce\Traits\Type;
 use WP_Error;
 use WP_REST_Request as Request;
