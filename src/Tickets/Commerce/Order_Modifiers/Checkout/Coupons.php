@@ -160,7 +160,7 @@ class Coupons extends Controller_Contract {
 		}
 
 		// Check the cache, and return the cached value if it exists.
-		$cache_key = 'calculate_coupons_' . md5( serialize( $items ) );
+		$cache_key = 'calculate_coupons_' . md5( wp_json_encode( $items ) );
 		$cache     = tribe_cache();
 
 		if ( ! empty( $cache[ $cache_key ] ) && is_array( $cache[ $cache_key ] ) ) {
@@ -200,7 +200,7 @@ class Coupons extends Controller_Contract {
 	public function attach_coupons_to_order_object( array $properties ): array {
 		// We shouldn't have an order with no items, but let's just be safe.
 		$items = $properties['items'] ?? [];
-		if ( empty ( $items ) ) {
+		if ( empty( $items ) ) {
 			return $properties;
 		}
 
