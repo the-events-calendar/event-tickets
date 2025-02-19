@@ -238,7 +238,7 @@
 	
 <footer  class="tribe-tickets__commerce-checkout-cart-footer tribe-common-b1" >
 	<div class="tribe-tickets__form tribe-tickets__commerce-checkout-coupons-wrapper tribe-common-b2">
-	<div class="tec-tickets__commerce-checkout-cart-coupons">
+	<div class="tec-tickets__commerce-checkout-cart-coupons" >
 		<input
 			type="text"
 			class=" class="tribe-tickets__commerce-checkout-cart-coupons__input tribe-common-form-control-text__input tribe-tickets__form-field-input" "
@@ -247,19 +247,23 @@
 			aria-describedby="coupon_error"
 			aria-label="Enter coupon code"
 			placeholder="Enter coupon code"
+			value=""
 		/>
 		<button
 			id="coupon_apply"
 			class=" class="tec-tickets__commerce-checkout-cart-coupons__apply-button tribe-common-c-btn" "
 		>
 			Apply		</button>
-		<p id="coupon_error" class="tec-tickets__commerce-checkout-cart-coupons__error" style="display: none; color: red;" aria-live="polite" role="alert">
-			Invalid coupon code		</p>
 	</div>
+	<p id="coupon_error" class="tec-tickets__commerce-checkout-cart-coupons__error" style="display: none; color: red;" aria-live="polite" role="alert">
+		Invalid coupon code	</p>
 	<div class="tec-tickets__commerce-checkout-cart-coupons__applied" style="display: none;">
-	<span class="tec-tickets__commerce-checkout-cart-coupons__applied-text">
-		Coupon: <span class="tec-tickets__commerce-checkout-cart-coupons__applied-value"></span> - Discount: <span class="tec-tickets__commerce-checkout-cart-coupons__applied-discount"></span>
-	</span>
+		<span class="tec-tickets__commerce-checkout-cart-coupons__applied-text">
+			Coupon:			<span class="tec-tickets__commerce-checkout-cart-coupons__applied-value">
+							</span>
+			- Discount:			<span class="tec-tickets__commerce-checkout-cart-coupons__applied-discount">
+							</span>
+		</span>
 		<button class="tec-tickets__commerce-checkout-cart-coupons__remove-button" type="button">
 			X		</button>
 	</div>
