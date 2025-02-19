@@ -1,9 +1,4 @@
 <?php
-/**
- *
- *
- * @since TBD
- */
 
 declare( strict_types=1 );
 
@@ -12,7 +7,7 @@ namespace TEC\Tickets\Tests\Order_Modifiers_Integration\Checkout;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Coupons;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Legacy_Value_Factory;
+use TEC\Tickets\Commerce\Traits\Type;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use Tribe\Tests\Traits\With_Uopz;
@@ -33,6 +28,7 @@ class Coupons_Test extends Controller_Test_Case {
 	use Series_Pass_Factory;
 	use SnapshotAssertions;
 	use Ticket_Maker;
+	use Type;
 	use With_No_Object_Storage;
 	use With_Tickets_Commerce;
 	use With_Uopz;
@@ -77,6 +73,7 @@ class Coupons_Test extends Controller_Test_Case {
 			[
 				$ticket_id    => 1,
 				$coupon_1->id => [
+					'id'       => $this->get_unique_type_id( $coupon_1->id, 'coupon' ),
 					'quantity' => 1,
 					'extras'   => [ 'type' => 'coupon' ],
 				],
@@ -94,6 +91,7 @@ class Coupons_Test extends Controller_Test_Case {
 			[
 				$ticket_id    => 1,
 				$coupon_2->id => [
+					'id'       => $this->get_unique_type_id( $coupon_2->id, 'coupon' ),
 					'quantity' => 1,
 					'extras'   => [ 'type' => 'coupon' ],
 				],

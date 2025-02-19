@@ -11,9 +11,11 @@ use Exception;
 use TEC\Common\Contracts\Container;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Assets\Assets;
+use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon as Coupon_Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon;
 use TEC\Tickets\Commerce\Traits\Type;
+use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Template;
 use WP_Post;
 
@@ -80,6 +82,13 @@ class Coupons extends Controller_Contract {
 			2
 		);
 
+		add_filter(
+			'tec_tickets_commerce_create_order_from_cart_items',
+			[ $this, 'create_order_from_cart_items' ],
+			10,
+			2
+		);
+
 		// Add asset localization to ensure the script has the necessary data.
 		add_action( 'init', [ $this, 'localize_asset' ] );
 	}
@@ -111,6 +120,11 @@ class Coupons extends Controller_Contract {
 		remove_filter(
 			'tec_tickets_checkout_should_skip_item',
 			[ $this, 'should_skip_item' ]
+		);
+
+		remove_filter(
+			'tec_tickets_commerce_create_order_from_cart_items',
+			[ $this, 'create_order_from_cart_items' ]
 		);
 
 		// Remove asset localization.
@@ -190,7 +204,11 @@ class Coupons extends Controller_Contract {
 		}
 
 		try {
-			$coupon_id = (int) $this->get_id_from_unique_id( $item['coupon_id'] );
+			if ( is_int( $item['coupon_id'] ) ) {
+				$coupon_id = $item['coupon_id'];
+			} else {
+				$coupon_id = (int) $this->get_id_from_unique_id( $item['coupon_id'] );
+			}
 
 			/** @var Coupon_Model $coupon */
 			$coupon = Coupon_Model::find( $coupon_id );
@@ -228,5 +246,30 @@ class Coupons extends Controller_Contract {
 	 */
 	public function should_skip_item( bool $should_skip, array $item ): bool {
 		return $should_skip || $this->is_coupon( $item );
+	}
+
+	/**
+	 * Filter the cart items when creating an order to ensure coupons are included.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $items    The items in the cart.
+	 * @param Value $subtotal The calculated subtotal of the cart items.
+	 *
+	 * @return array Updated items.
+	 */
+	public function create_order_from_cart_items( $items, $subtotal ) {
+		$cart_page = tribe( Cart::class );
+		$cart      = $cart_page->get_repository();
+		$coupons   = $cart->update_items_with_subtotal(
+			$cart->get_items_in_cart( true, 'coupon' ),
+			$subtotal->get_float()
+		);
+
+		if ( empty( $coupons ) ) {
+			return $items;
+		}
+
+		return array_merge( $items, $coupons );
 	}
 }
