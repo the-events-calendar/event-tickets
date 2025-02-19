@@ -199,8 +199,8 @@ abstract class Abstract_Cart implements Cart_Interface {
 
 		// Now process any items that are callable.
 		$original_subtotal = $this->cart_subtotal;
-		$callable_items = array_filter( $all_items, static fn( $item ) => is_callable( $item['sub_total'] ) );
-		$callable_items = $this->update_items_with_subtotal( $callable_items, $original_subtotal );
+		$callable_items    = array_filter( $all_items, static fn( $item ) => is_callable( $item['sub_total'] ) );
+		$callable_items    = $this->update_items_with_subtotal( $callable_items, $original_subtotal );
 		foreach ( $callable_items as $item ) {
 			$this->cart_subtotal += $item['sub_total']->get_decimal();
 		}

@@ -34,7 +34,8 @@ if ( isset( $coupon['sub_total'] ) && $coupon['sub_total'] instanceof Value ) {
 	$discount = $coupon['sub_total']->get_currency();
 }
 
-$hide_input = ! empty( $coupon );
+// Sections that should be hidden based on the coupon state.
+$hide_input   = ! empty( $coupon );
 $hide_applied = empty( $coupon );
 
 ?>
