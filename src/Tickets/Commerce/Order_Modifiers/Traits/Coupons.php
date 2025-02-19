@@ -23,11 +23,13 @@ use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta;
 trait Coupons {
 
 	/**
-	 * Determine if a coupon is valid.
+	 * Determine if a coupon is valid, using the slug to look up the coupon.
+	 *
+	 * @since TBD
 	 *
 	 * @param string $slug The coupon slug.
 	 *
-	 * @return bool
+	 * @return bool Whether the coupon is valid.
 	 */
 	protected function is_coupon_slug_valid( string $slug ): bool {
 		try {
@@ -45,7 +47,7 @@ trait Coupons {
 	 *
 	 * @param string $slug The coupon slug.
 	 *
-	 * @return bool
+	 * @return bool Whether the coupon slug exists.
 	 */
 	protected function does_coupon_slug_exist( string $slug ): bool {
 		try {
@@ -60,9 +62,11 @@ trait Coupons {
 	/**
 	 * Determine if a coupon is valid.
 	 *
+	 * @since TBD
+	 *
 	 * @param Coupon|Order_Modifier $maybe_coupon The coupon to check.
 	 *
-	 * @return bool
+	 * @return bool Whether the coupon is valid.
 	 */
 	protected function is_coupon_valid( $maybe_coupon ): bool {
 		try {
@@ -121,6 +125,8 @@ trait Coupons {
 	/**
 	 * Determine if a modifier is a coupon.
 	 *
+	 * @since TBD
+	 *
 	 * @param Order_Modifier $modifier The modifier to check.
 	 *
 	 * @return bool
@@ -135,6 +141,8 @@ trait Coupons {
 
 	/**
 	 * Get the usage limit for a coupon.
+	 *
+	 * @since TBD
 	 *
 	 * @param int $coupon_id The coupon ID.
 	 *

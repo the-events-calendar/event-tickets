@@ -33,7 +33,12 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	public static $shortcode_id = 'checkout';
 
 	/**
-	 * {@inheritDoc}
+	 * Method used to save the template vars for this instance of shortcode.
+	 *
+	 * @since 5.1.9
+	 * @since TBD Updated the $items variable to retrieve all item types from the cart.
+	 *
+	 * @return void
 	 */
 	public function setup_template_vars() {
 		$cart          = tribe( Cart::class );
