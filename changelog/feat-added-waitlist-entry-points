@@ -1,0 +1,4 @@
+Significance: minor
+Type: feat
+
+Introduced Waitlist entry points in Ticket and RSVP templates. [ETP-944]

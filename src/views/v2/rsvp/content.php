@@ -15,8 +15,9 @@
  *
  * @since 4.12.3
  * @since 5.7.0 Add list of attendees that confirmed RSVP.
+ * @since TBD Added waitlist entry point.
  *
- * @version 5.7.0
+ * @version TBD
  */
 
 ?>
@@ -40,6 +41,8 @@
 		<?php $this->template( 'v2/rsvp/details', [ 'rsvp' => $rsvp ] ); ?>
 
 		<?php $this->template( 'v2/rsvp/actions', [ 'rsvp' => $rsvp ] ); ?>
+
+		<?php $this->do_entry_point( 'etp-waitlist' ); ?>
 
 	</div>
 

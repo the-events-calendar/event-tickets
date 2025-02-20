@@ -37,8 +37,8 @@
 	id="tribe-block-tickets-item-[TICKET_ID]"
 	 class="tribe-tickets__tickets-item tribe-tickets__tickets-item--shared-capacity post-[TICKET_ID] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="[TICKET_ID]" data-available="false" data-has-shared-cap="true" data-ticket-price="5" data-shared-cap="15" data-available-count="10" >
 
-	<div class="tribe-tickets__tickets-item-content-title-container">
-		<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
+	<div  class="tribe-tickets__tickets-item-content-title-container" >
+		<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title" >
 				Test PayPal ticket for [EVENT_ID]	</div>
 </div>
 
@@ -119,7 +119,7 @@
 	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--third"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
 </div>
 
-	</form>
+			</form>
 
 	</div>
 ';

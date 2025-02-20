@@ -10,6 +10,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tests\Traits\With_Uopz;
 use TEC\Tickets\Commerce\Hooks;
+use TEC\Tickets\Hooks as Tickets_Hooks;
 use WP_Screen;
 use WP_Query;
 use Tribe__Date_Utils as Dates;
@@ -235,7 +236,7 @@ class Orders_TableTest extends WPTestCase {
 		$this->prepare_test_data( true );
 
 		$test_events = function ( $term ) {
-			return tribe( Hooks::class )->provide_events_results_to_ajax( [], [ 'term' => $term ] );
+			return tribe( Tickets_Hooks::class )->provide_events_results_to_ajax( [], [ 'term' => $term ] );
 		};
 
 		$test_customers = function ( $term ) {

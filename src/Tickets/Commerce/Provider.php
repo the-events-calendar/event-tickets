@@ -61,6 +61,9 @@ class Provider extends Service_Provider {
 		$this->container->singleton( Notice_Handler::class );
 
 		$this->container->singleton( Module::class );
+		// We need to init for the registration as a module to take place early.
+		$this->container->get( Module::class );
+
 		$this->container->singleton( Attendee::class );
 		$this->container->singleton( Order::class );
 		$this->container->singleton( Ticket::class );

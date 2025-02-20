@@ -1,7 +1,6 @@
 <?php
 
 use \TEC\Tickets\Commerce\Provider as Commerce_Provider;
-use Tribe\Tickets\Promoter\Triggers\Dispatcher;
 
 $tec_support = dirname( __DIR__, 3 ) . '/the-events-calendar/tests/_support';
 Codeception\Util\Autoload::addNamespace( 'Tribe\Events\Test', $tec_support );
