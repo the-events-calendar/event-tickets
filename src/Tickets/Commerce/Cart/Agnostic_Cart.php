@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\Cart;
 
 use InvalidArgumentException;
 use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
 use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
@@ -139,8 +140,8 @@ class Agnostic_Cart extends Abstract_Cart {
 
 		// Reset items and cart total.
 		$this->items         = [];
-		$this->cart_subtotal = null;
-		$this->cart_total    = null;
+		$this->cart_subtotal = new Precision_Value( 0 );
+		$this->cart_total    = new Precision_Value( 0 );
 		$this->reset_calculations();
 	}
 
