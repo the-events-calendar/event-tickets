@@ -81,7 +81,7 @@ trait Coupons {
 			}
 
 			// If the coupon is not within its date rante, it is invalid.
-			$this->is_coupon_within_date_ranage( $maybe_coupon );
+			$this->is_coupon_within_date_range( $maybe_coupon );
 
 			// Whether the coupon is still within its usage limit.
 			if ( ! $this->coupon_has_uses_remaining( $maybe_coupon->id ) ) {
@@ -105,7 +105,7 @@ trait Coupons {
 	 *
 	 * @throws Exception If the coupon end date has passed or the coupon start date is in the future.
 	 */
-	protected function is_coupon_within_date_ranage( Coupon $coupon ): bool {
+	protected function is_coupon_within_date_range( Coupon $coupon ): bool {
 		// Current time stamp for checking start and end dates.
 		$current_time = time();
 
@@ -148,7 +148,7 @@ trait Coupons {
 	 *
 	 * @return int The usage limit for the coupon. -1 indicates there is no limit.
 	 */
-	protected function get_coupon_usgae_limit( int $coupon_id ): int {
+	protected function get_coupon_usage_limit( int $coupon_id ): int {
 		/** @var Order_Modifiers_Meta $meta */
 		$meta = tribe( Order_Modifiers_Meta::class );
 
@@ -190,7 +190,7 @@ trait Coupons {
 	 * @return bool Whether the coupon has uses remaining.
 	 */
 	protected function coupon_has_uses_remaining( int $coupon_id ): bool {
-		$limit = $this->get_coupon_usgae_limit( $coupon_id );
+		$limit = $this->get_coupon_usage_limit( $coupon_id );
 
 		// If the limit is -1, the coupon is unlimited.
 		if ( -1 === $limit ) {
