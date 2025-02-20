@@ -11,6 +11,8 @@ namespace TEC\Tickets\Commerce\Cart;
 
 use InvalidArgumentException;
 use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Legacy_Value_Factory as Factory;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
 use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Tickets__Tickets as Tickets;
@@ -34,9 +36,9 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @var ?float
+	 * @var Precision_Value
 	 */
-	protected ?float $cart_subtotal = null;
+	protected Precision_Value $cart_subtotal;
 
 	/**
 	 * Cart total.
@@ -45,11 +47,11 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * have been done.
 	 *
 	 * @since 5.10.0
-	 * @since TBD Marked the property as protected.
+	 * @since TBD Marked the property as protected, and changed to a Precision_Value.
 	 *
-	 * @var ?float
+	 * @var Precision_Value
 	 */
-	protected ?float $cart_total = null;
+	protected Precision_Value $cart_total;
 
 	/**
 	 * @var string The Cart hash for this cart.
@@ -73,6 +75,16 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * @var bool
 	 */
 	protected bool $total_calculated = false;
+
+	/**
+	 * Abstract_Cart constructor.
+	 *
+	 * @since TBD
+	 */
+	public function __construct() {
+		$this->cart_subtotal = new Precision_Value( 0.0 );
+		$this->cart_total    = new Precision_Value( 0.0 );
+	}
 
 	/**
 	 * Determines if this instance of the cart has a public page.
@@ -133,21 +145,21 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * @since 5.18.0 Refactored logic, to include a new filter.
 	 * @since TBD Added internal caching for this method to prevent duplicate calculations.
 	 *
-	 * @return float The total value of the cart, or null if there are no items.
+	 * @return float The total value of the cart.
 	 */
-	public function get_cart_total() {
+	public function get_cart_total(): float {
 		// If the total has already been calculated, return it.
 		if ( $this->total_calculated ) {
-			return $this->cart_total;
+			return $this->cart_total->get();
 		}
 
 		$subtotal = $this->get_cart_subtotal();
-		if ( ! $subtotal ) {
+		if ( $subtotal <= 0.0 ) {
+			$this->total_calculated = true;
 			return 0.0;
 		}
 
-		$items          = $this->get_items_in_cart( true, 'all' );
-		$subtotal_value = Value::create( $subtotal );
+		$subtotal_value = Factory::to_legacy_value( $this->cart_subtotal );
 
 		/**
 		 * Filters the additional values in the cart in order to add additional fees or discounts.
@@ -156,25 +168,29 @@ abstract class Abstract_Cart implements Cart_Interface {
 		 *
 		 * @since 5.18.0
 		 *
-		 * @param Value[] $values     An array of `Value` instances representing additional fees or discounts.
-		 * @param array   $items      The items currently in the cart.
-		 * @param Value   $sub_totals The total of the subtotals from the items.
+		 * @param Value[] $values         An array of `Value` instances representing additional fees or discounts.
+		 * @param array   $items          The items currently in the cart.
+		 * @param Value   $subtotal_value The total of the subtotals from the items.
+		 *
+		 * @var Value[] $additional_values
 		 */
 		$additional_values = apply_filters(
 			'tec_tickets_commerce_get_cart_additional_values',
 			[],
-			$items,
+			$this->get_items_in_cart( true, 'all' ),
 			$subtotal_value
 		);
 
-		// Combine the subtotals and additional values.
-		$total_value = Value::create()->total( [ $subtotal_value, ...$additional_values ] );
+		$additional_values = array_map(
+			static fn( $value ) => Factory::to_precision_value( $value ),
+			$additional_values
+		);
 
 		// Set the total and mark it as calculated.
-		$this->cart_total       = $total_value->get_decimal();
+		$this->cart_total       = Precision_Value::sum( $this->cart_subtotal, ...$additional_values );
 		$this->total_calculated = true;
 
-		return $this->cart_total;
+		return $this->cart_total->get();
 	}
 
 	/**
@@ -190,31 +206,39 @@ abstract class Abstract_Cart implements Cart_Interface {
 	public function get_cart_subtotal(): float {
 		// If the subtotal has already been calculated, return it.
 		if ( $this->subtotal_calculated ) {
-			return (float) $this->cart_subtotal;
+			return $this->cart_subtotal->get();
 		}
 
 		// Set the subtotal to 0 before calculating it.
-		$this->cart_subtotal = 0.0;
+		$this->cart_subtotal = new Precision_Value( 0.0 );
 
 		// Calculate the total from the subtotals of each item.
-		$all_items     = $this->get_items_in_cart( true, 'all' );
-		$regular_items = array_filter( $all_items, static fn( $item ) => $item['sub_total'] instanceof Value );
-		foreach ( $regular_items as $item ) {
-			$this->cart_subtotal += $item['sub_total']->get_decimal();
+		$all_items = $this->get_items_in_cart( true, 'all' );
+
+		// Process any items that have the subtotal as a simple float.
+		$float_items = array_filter( $all_items, static fn( $item ) => is_float( $item['sub_total'] ) );
+		foreach ( $float_items as $item ) {
+			$this->cart_subtotal->add( new Precision_Value( $item['sub_total'] ) );
+		}
+
+		// Process any items that have the subtotal as a Value object.
+		$value_items = array_filter( $all_items, static fn( $item ) => $item['sub_total'] instanceof Value );
+		foreach ( $value_items as $item ) {
+			$this->cart_subtotal->add( Factory::to_precision_value( $item['sub_total'] ) );
 		}
 
 		// Now process any items that are callable.
-		$original_subtotal = $this->cart_subtotal;
+		$original_subtotal = $this->cart_subtotal->get();
 		$callable_items    = array_filter( $all_items, static fn( $item ) => is_callable( $item['sub_total'] ) );
 		$callable_items    = $this->update_items_with_subtotal( $callable_items, $original_subtotal );
 		foreach ( $callable_items as $item ) {
-			$this->cart_subtotal += $item['sub_total']->get_decimal();
+			$this->cart_subtotal->add( Factory::to_precision_value( $item['sub_total'] ) );
 		}
 
 		// Set the subtotal as calculated.
 		$this->subtotal_calculated = true;
 
-		return $this->cart_subtotal;
+		return $this->cart_subtotal->get();
 	}
 
 	/**
