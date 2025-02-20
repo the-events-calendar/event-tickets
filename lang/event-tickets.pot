@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-02-12T17:17:57+00:00\n"
+"POT-Creation-Date: 2025-02-20T18:36:06+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: event-tickets\n"
@@ -201,7 +201,7 @@ msgid "Illustration of money turning into a ticket"
 msgstr ""
 
 #: src/admin-views/admin-welcome-message.php:164
-#: src/Tickets/Commerce/Module.php:20
+#: src/Tickets/Commerce/Module.php:21
 #: src/Tickets/Commerce/Payments_Tab.php:200
 msgid "Tickets Commerce"
 msgstr ""
@@ -9629,7 +9629,7 @@ msgstr ""
 
 #: src/Tickets/Integrations/Plugins/Yoast_Duplicate_Post/Duplicate_Post.php:75
 #: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:66
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:254
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:259
 #: src/Tribe/Metabox.php:324
 #: src/Tribe/Metabox.php:449
 #: src/Tribe/Metabox.php:538
@@ -10670,7 +10670,7 @@ msgid "It looks like you have modified your shared capacity setting but have not
 msgstr ""
 
 #: src/Tribe/Assets.php:284
-#: src/Tribe/Metabox.php:941
+#: src/Tribe/Metabox.php:943
 msgid "Please enter in without thousand separators and currency symbols."
 msgstr ""
 
@@ -11099,21 +11099,21 @@ msgid "No commerce providers available"
 msgstr ""
 
 #: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:17
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:135
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:140
 #: src/Tribe/REST/V1/Endpoints/Single_Ticket.php:72
 msgid "The ticket post ID"
 msgstr ""
 
 #: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:56
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:235
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:240
 msgid "Invalid nonce"
 msgstr ""
 
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:273
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:278
 msgid "Invalid price"
 msgstr ""
 
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:316
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:321
 msgid "%s was not able to be updated"
 msgstr ""
 
