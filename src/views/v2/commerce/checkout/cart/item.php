@@ -35,18 +35,6 @@ if ( empty( $item['ticket_id'] ) ) {
 	return;
 }
 
-/**
- * Filters whether the current item should be skipped in the checkout.
- *
- * @since TBD
- *
- * @param bool  $should_skip Whether the item should be skipped or not.
- * @param array $item        The item to be checked.
- */
-if ( apply_filters( 'tec_tickets_checkout_should_skip_item', false, $item ) ) {
-	return;
-}
-
 $classes = [
 	'tribe-tickets__commerce-checkout-cart-item',
 	get_post_class( '', $item['ticket_id'] ),

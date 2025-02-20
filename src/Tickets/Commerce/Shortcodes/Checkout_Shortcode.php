@@ -53,6 +53,22 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		$sections      = array_unique( array_filter( wp_list_pluck( $items, 'event_id' ) ) );
 		$gateways      = tribe( Manager::class )->get_gateways();
 
+		// Pass each item through a filter to determine if it should be skipped.
+		$items = array_filter(
+			$items,
+			function ( $item ) {
+				/**
+				 * Filters whether the current item should be skipped in the checkout items.
+				 *
+				 * @since TBD
+				 *
+				 * @param bool  $should_skip Whether the item should be skipped or not.
+				 * @param array $item        The item to be checked.
+				 */
+				return (bool) apply_filters( 'tec_tickets_checkout_should_skip_item', false, $item );
+			}
+		);
+
 		$args = [
 			'provider_id'        => Module::class,
 			'provider'           => tribe( Module::class ),
