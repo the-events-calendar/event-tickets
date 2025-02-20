@@ -39,7 +39,7 @@ class Coupon extends Order_Modifier {
 	 */
 	public function get_discount_amount( float $subtotal ): float {
 		if ( 'flat' === $this->sub_type ) {
-			return $this->getAttribute( 'raw_amount' );
+			return -1 * $this->raw_amount;
 		}
 
 		$base_price = new Precision_Value( $subtotal );
