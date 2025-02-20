@@ -253,7 +253,7 @@ class Coupons extends Base_API {
 			return rest_ensure_response(
 				[
 					'success'     => true,
-					'discount'    => $coupon->get_discount_amount( $original_total->get_raw_value()->get() ),
+					'discount'    => abs( $coupon->get_discount_amount( $original_total->get_raw_value()->get() ) ),
 					'message'     => sprintf(
 						/* translators: %s: the coupon code */
 						esc_html__( 'Coupon "%s" applied successfully.', 'event-tickets' ),

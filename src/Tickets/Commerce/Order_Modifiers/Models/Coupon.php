@@ -33,18 +33,18 @@ class Coupon extends Order_Modifier {
 	 *
 	 * @since TBD
 	 *
-	 * @param float $ticket_price The ticket price.
+	 * @param float $subtotal The price that should be used to calculate the discount.
 	 *
-	 * @return float The discount amount.
+	 * @return float The discount amount as a negative number.
 	 */
-	public function get_discount_amount( $ticket_price ): float {
+	public function get_discount_amount( float $subtotal ): float {
 		if ( 'flat' === $this->sub_type ) {
 			return $this->getAttribute( 'raw_amount' );
 		}
 
-		$base_price = new Precision_Value( $ticket_price );
+		$base_price = new Precision_Value( $subtotal );
 		$discount   = $base_price->multiply( $this->attributes['raw_amount'] );
 
-		return $discount->get();
+		return -1 * $discount->get();
 	}
 }

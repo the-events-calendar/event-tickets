@@ -218,8 +218,8 @@ class Coupons extends Controller_Contract {
 				'type'         => 'coupon',
 				'coupon_id'    => $coupon->id,
 				'price'        => $coupon->raw_amount,
-				'sub_total'    => function ( $sub_total ) use ( $coupon ) {
-					return -1 * $coupon->get_discount_amount( $sub_total );
+				'sub_total'    => static function ( float $sub_total ) use ( $coupon ): float {
+					return $coupon->get_discount_amount( $sub_total );
 				},
 				'display_name' => $coupon->display_name,
 				'slug'         => $coupon->slug,
