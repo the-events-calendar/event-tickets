@@ -65,7 +65,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 				 * @param bool  $should_skip Whether the item should be skipped or not.
 				 * @param array $item        The item to be checked.
 				 */
-				return (bool) apply_filters( 'tec_tickets_checkout_should_skip_item', false, $item );
+				return ! (bool) apply_filters( 'tec_tickets_checkout_should_skip_item', false, $item );
 			}
 		);
 
