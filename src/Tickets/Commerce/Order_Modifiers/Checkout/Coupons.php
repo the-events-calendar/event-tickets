@@ -143,6 +143,14 @@ class Coupons extends Controller_Contract {
 				'tecTicketsCommerce',
 				[
 					'restUrl' => tribe_tickets_rest_url(),
+					'i18n'    => [
+						'cantDetermineCoupon' => esc_html__( 'Unable to determine the coupon to remove.', 'event-tickets' ),
+						'couponApplyError'    => esc_html__( 'There was an error applying the coupon. Please try again.', 'event-tickets' ),
+						'couponCodeEmpty'     => esc_html__( 'Coupon code cannot be empty.', 'event-tickets' ),
+						'couponRemoveError'   => esc_html__( 'There was an error removing the coupon. Please try again.', 'event-tickets' ),
+						'couponRemoveFail'    => esc_html__( 'Failed to remove the coupon. Please try again.', 'event-tickets' ),
+						'invalidCoupon'       => esc_html__( 'Invalid coupon code.', 'event-tickets' ),
+					],
 				]
 			);
 	}

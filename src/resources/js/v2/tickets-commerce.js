@@ -22,7 +22,7 @@ tribe.tickets.commerce = {};
  * @param  {Object} obj tribe.tickets.commerce
  * @return {void}
  */
-( function( $, obj ) {
+( function( $, obj, tecTicketsCommerce ) {
 	const $document = $( document );
 
 	/**
@@ -281,7 +281,7 @@ tribe.tickets.commerce = {};
 
 			// Ensure the coupon is not empty.
 			if ( ! couponValue ) {
-				$errorMessage.text( 'Coupon code cannot be empty.' ).show();
+				$errorMessage.text( tecTicketsCommerce.i18n.couponCodeEmpty ).show();
 				return;
 			}
 
@@ -300,7 +300,7 @@ tribe.tickets.commerce = {};
 			};
 
 			$.ajax( {
-				url: `${ window.tecTicketsCommerce.restUrl }coupons/apply`,
+				url: `${ tecTicketsCommerce.restUrl }coupons/apply`,
 				method: 'POST',
 				data: requestData,
 				success( response ) {
@@ -313,12 +313,12 @@ tribe.tickets.commerce = {};
 						obj.updateTotalPrice( response.cart_amount );
 						$( obj.selectors.couponAppliedSection ).show();
 					} else {
-						$errorMessage.text( response.message || 'Invalid Coupon Code' ).show();
+						$errorMessage.text( response.message || tecTicketsCommerce.i18n.invalidCoupon ).show();
 						$( obj.selectors.couponInputContainer ).show();
 					}
 				},
 				error() {
-					$errorMessage.text( 'Error applying coupon. Please try again.' ).show();
+					$errorMessage.text( tecTicketsCommerce.i18n.couponApplyError ).show();
 					$( obj.selectors.couponInputContainer ).show();
 				},
 				complete() {
@@ -352,7 +352,7 @@ tribe.tickets.commerce = {};
 
 			// Ensure the coupon is not empty.
 			if ( ! couponValue ) {
-				$errorMessage.text( 'Unable to determine coupon to remove.' ).show();
+				$errorMessage.text( tecTicketsCommerce.i18n.cantDetermineCoupon ).show();
 				return;
 			}
 
@@ -386,11 +386,11 @@ tribe.tickets.commerce = {};
 						$( obj.selectors.couponAppliedSection ).hide();
 						obj.updateTotalPrice( response.cart_amount );
 					} else {
-						$errorMessage.text( response.message || 'Failed to remove coupon.' ).show();
+						$errorMessage.text( response.message || tecTicketsCommerce.i18n.couponRemoveFail ).show();
 					}
 				},
 				error() {
-					$errorMessage.text( 'Error removing coupon. Please try again.' ).show();
+					$errorMessage.text( tecTicketsCommerce.i18n.couponRemoveError ).show();
 				},
 				complete() {
 					obj.loaderHide();
@@ -401,4 +401,4 @@ tribe.tickets.commerce = {};
 	};
 
 	$( obj.ready );
-} )( jQuery, tribe.tickets.commerce );
+} )( jQuery, tribe.tickets.commerce, window.tecTicketsCommerce || {} );
