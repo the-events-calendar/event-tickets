@@ -71,7 +71,7 @@ trait Coupons {
 	protected function is_coupon_valid( $maybe_coupon ): bool {
 		try {
 			// If it's not a coupon, it's invalid.
-			if ( ! $this->is_coupon( $maybe_coupon ) ) {
+			if ( ! $this->is_coupon_modifier( $maybe_coupon ) ) {
 				throw new Exception( 'Not a coupon' );
 			}
 
@@ -131,7 +131,7 @@ trait Coupons {
 	 *
 	 * @return bool
 	 */
-	protected function is_coupon( Order_Modifier $modifier ): bool {
+	protected function is_coupon_modifier( Order_Modifier $modifier ): bool {
 		if ( $modifier instanceof Coupon ) {
 			return true;
 		}
