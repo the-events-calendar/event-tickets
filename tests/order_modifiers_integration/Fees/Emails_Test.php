@@ -9,6 +9,8 @@ use Codeception\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe__Tickets__Tickets as Tickets;
+use Tribe\Tests\Traits\With_Clock_Mock;
+use Tribe__Date_Utils as Dates;
 
 class Emails_Test extends WPTestCase {
 	use Ticket_Maker;
@@ -16,6 +18,7 @@ class Emails_Test extends WPTestCase {
 	use Fee_Creator;
 	use With_Uopz;
 	use SnapshotAssertions;
+	use With_Clock_Mock;
 
 	protected static array $store = [];
 
@@ -49,6 +52,7 @@ class Emails_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_include_fees_in_purchase_receipt() {
+		$this->freeze_time( Dates::immutable( '2025-02-20 10:00:00' ) );
 		$post      = static::factory()->post->create( [ 'post_name' => 'Event post' ] );
 		$ticket_id = $this->create_tc_ticket( $post, 50 );
 
@@ -79,6 +83,7 @@ class Emails_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_include_fees_in_order_completed() {
+		$this->freeze_time( Dates::immutable( '2025-02-20 10:00:00' ) );
 		$post      = static::factory()->post->create( [ 'post_name' => 'Event post' ] );
 		$ticket_id = $this->create_tc_ticket( $post, 50 );
 
@@ -109,6 +114,7 @@ class Emails_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_not_break_template_when_adding_multiple_fees_to_same_ticket() {
+		$this->freeze_time( Dates::immutable( '2025-02-20 10:00:00' ) );
 		$post      = static::factory()->post->create( [ 'post_name' => 'Event post' ] );
 		$ticket_id = $this->create_tc_ticket( $post, 50 );
 
