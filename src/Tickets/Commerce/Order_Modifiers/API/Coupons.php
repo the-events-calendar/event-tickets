@@ -33,9 +33,7 @@ use WP_REST_Server as Server;
 class Coupons extends Base_API {
 
 	use CouponsTrait;
-	use Type {
-		CouponsTrait::is_coupon insteadof Type;
-	}
+	use Type;
 
 	/**
 	 * TThe modifier manager instance to handle relationship updates.
