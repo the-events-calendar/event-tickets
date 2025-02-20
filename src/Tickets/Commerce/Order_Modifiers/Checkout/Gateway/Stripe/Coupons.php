@@ -92,7 +92,7 @@ class Coupons extends Controller_Contract {
 				'type'         => 'coupon',
 				'coupon_id'    => $coupon->id,
 				'price'        => $coupon->raw_amount,
-				'sub_total'    => -1 * $coupon->get_discount_amount( $subtotal->get_float() ),
+				'sub_total'    => $coupon->get_discount_amount( $subtotal->get_float() ),
 				'display_name' => $coupon->display_name,
 				'quantity'     => 1,
 				'event_id'     => 0,
