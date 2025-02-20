@@ -199,7 +199,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.19.1.3] 2025-02-20 =
+= [5.19.1.2] 2025-02-20 =
 
 * Security - Hardened the API around ticket and attendee creation, editing, and deletion. Props to "the sneaky squirrel" for the report! [SVUL-14]
 * Language - 0 new strings added, 7 updated, 0 fuzzied, and 0 obsoleted.
