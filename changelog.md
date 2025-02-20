@@ -1,6 +1,6 @@
 # Changelog
 
-### [5.19.1.1] 2025-02-20
+### [5.19.1.2] 2025-02-20
 
 * Security - Hardened the API around ticket and attendee creation, editing, and deletion. Props to "the sneaky squirrel" for the report! [SVUL-14]
 
