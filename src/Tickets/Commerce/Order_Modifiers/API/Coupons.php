@@ -222,7 +222,8 @@ class Coupons extends Base_API {
 	protected function apply_coupon( Request $request ): Response {
 		try {
 			// Get and validate the coupon slug.
-			$coupon_slug = $this->get_and_validate_coupon_slug( $request );
+			$coupon_slug = $request->get_param( 'coupon' );
+			$this->validate_coupon_slug( $coupon_slug );
 
 			/** @var Coupon $coupon */
 			$coupon = $this->repo->find_by_slug( $coupon_slug );
@@ -557,17 +558,13 @@ class Coupons extends Base_API {
 	 *
 	 * @since TBD
 	 *
-	 * @param Request $request The request object.
+	 * @param string $coupon_slug The coupon slug.
 	 *
-	 * @return string The coupon slug.
 	 * @throws Exception If the coupon slug is invalid.
 	 */
-	protected function get_and_validate_coupon_slug( Request $request ): string {
-		$coupon_slug = $request->get_param( 'coupon' );
+	protected function validate_coupon_slug( string $coupon_slug ): string {
 		if ( ! $this->is_coupon_slug_valid( $coupon_slug ) ) {
 			throw new Exception( esc_html__( 'Invalid coupon.', 'event-tickets' ), 400 );
 		}
-
-		return $coupon_slug;
 	}
 }
