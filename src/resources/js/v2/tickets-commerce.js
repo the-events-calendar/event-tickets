@@ -20,6 +20,7 @@ tribe.tickets.commerce = {};
  * @since 5.1.9
  * @param  {Object} $   jQuery
  * @param  {Object} obj tribe.tickets.commerce
+ * @param  {Object} tecTicketsCommerce The global object for the Tickets Commerce.
  * @return {void}
  */
 ( function( $, obj, tecTicketsCommerce ) {
@@ -386,7 +387,9 @@ tribe.tickets.commerce = {};
 						$( obj.selectors.couponAppliedSection ).hide();
 						obj.updateTotalPrice( response.cart_amount );
 					} else {
-						$errorMessage.text( response.message || tecTicketsCommerce.i18n.couponRemoveFail ).show();
+						$errorMessage
+							.text( response.message || tecTicketsCommerce.i18n.couponRemoveFail )
+							.show();
 					}
 				},
 				error() {
