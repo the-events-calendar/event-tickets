@@ -177,6 +177,10 @@ trait Coupons {
 
 		$uses = $meta->find_by_order_modifier_id_and_meta_key( $coupon_id, 'coupons_uses' );
 
+		if ( null === $uses || ! property_exists( $uses, 'meta_value' ) )  {
+			return 0;
+		}
+
 		return (int) $uses->meta_value;
 	}
 
