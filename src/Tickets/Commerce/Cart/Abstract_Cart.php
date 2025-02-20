@@ -416,12 +416,13 @@ abstract class Abstract_Cart implements Cart_Interface {
 	public function update_items_with_subtotal( array $items, ?float $subtotal = null ): array {
 		$subtotal ??= $this->get_cart_subtotal();
 		foreach ( $items as &$item ) {
-			if ( is_callable( $item['sub_total'] ) ) {
-				$result = $item['sub_total']( $subtotal );
-
-				// Update the item with a value object.
-				$item['sub_total'] = Value::create( $result );
+			if ( ! is_callable( $item['sub_total'] ) ) {
+				continue;
 			}
+
+			// Get the result and update the item with a value object.
+			$result            = $item['sub_total']( $subtotal );
+			$item['sub_total'] = Value::create( $result );
 		}
 
 		return $items;
