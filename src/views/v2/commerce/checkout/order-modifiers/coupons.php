@@ -12,8 +12,19 @@
 
 use TEC\Tickets\Commerce\Utils\Value;
 
+// Filter coupon items. If we have any coupons, always use the first one. There *shouldn't* be more than one.
+$coupon_items = array_filter( $items, fn( $item ) => 'coupon' === ( $item['type'] ?? '' ) );
+$coupon       = array_shift( $coupon_items ) ?? [];
+
+// Determine the discount to display.
+$discount = '';
+if ( isset( $coupon['sub_total'] ) && $coupon['sub_total'] instanceof Value ) {
+	$discount = $coupon['sub_total']->get_currency();
+}
+
+// Set up classes for all of the elements.
 $coupon_input_classes = [
-	'tribe-tickets__commerce-checkout-cart-coupons__input',
+	'tec-tickets__commerce-checkout-cart-coupons__input',
 	'tribe-common-form-control-text__input',
 	'tribe-tickets__form-field-input',
 ];
@@ -23,27 +34,22 @@ $apply_button_classes = [
 	'tribe-common-c-btn',
 ];
 
-$coupon_items = array_filter( $items, fn( $item ) => 'coupon' === ( $item['type'] ?? '' ) );
+$input_container_classes = [
+	'tec-tickets__commerce-checkout-cart-coupons' => true,
+	'tribe-hidden'                                => ! empty( $coupon ),
+];
 
-// If we have any coupons, always use the first one. There *shouldn't* be more than one.
-$coupon = ! empty( $coupon_items ) ? $coupon_items[ array_key_first( $coupon_items ) ] : [];
-
-// Determine the discount to display.
-$discount = '';
-if ( isset( $coupon['sub_total'] ) && $coupon['sub_total'] instanceof Value ) {
-	$discount = $coupon['sub_total']->get_currency();
-}
-
-// Sections that should be hidden based on the coupon state.
-$hide_input   = ! empty( $coupon );
-$hide_applied = empty( $coupon );
+$applied_container_classes = [
+	'tec-tickets__commerce-checkout-cart-coupons__applied' => true,
+	'tribe-hidden'                                         => empty( $coupon ),
+];
 
 ?>
-<div class="tribe-tickets__form tribe-tickets__commerce-checkout-coupons-wrapper tribe-common-b2">
-	<div class="tec-tickets__commerce-checkout-cart-coupons" <?php echo $hide_input ? 'style="display: none;"' : ''; ?>>
+<div class="tec-tickets__commerce-checkout-coupons-wrapper tribe-tickets__form tribe-common-b2">
+	<div <?php tribe_classes( $input_container_classes ); ?>>
 		<input
+			<?php tribe_classes( $coupon_input_classes ); ?>
 			type="text"
-			class="<?php tribe_classes( $coupon_input_classes ); ?>"
 			id="coupon_input"
 			name="coupons"
 			aria-describedby="coupon_error"
@@ -53,7 +59,7 @@ $hide_applied = empty( $coupon );
 		/>
 		<button
 			id="coupon_apply"
-			class="<?php tribe_classes( $apply_button_classes ); ?>"
+			<?php tribe_classes( $apply_button_classes ); ?>
 		>
 			<?php echo esc_html_x( 'Apply', 'button to apply a coupon code', 'event-tickets' ); ?>
 		</button>
@@ -61,7 +67,7 @@ $hide_applied = empty( $coupon );
 	<p id="coupon_error" class="tec-tickets__commerce-checkout-cart-coupons__error" style="display: none; color: red;" aria-live="polite" role="alert">
 		<?php esc_html_e( 'Invalid coupon code', 'event-tickets' ); ?>
 	</p>
-	<div class="tec-tickets__commerce-checkout-cart-coupons__applied" <?php echo $hide_applied ? 'style="display: none;"' : ''; ?>>
+	<div <?php tribe_classes( $applied_container_classes ); ?>>
 		<span class="tec-tickets__commerce-checkout-cart-coupons__applied-text">
 			<?php esc_html_e( 'Coupon:', 'event-tickets' ); ?>
 			<span class="tec-tickets__commerce-checkout-cart-coupons__applied-value">
@@ -73,7 +79,13 @@ $hide_applied = empty( $coupon );
 			</span>
 		</span>
 		<button class="tec-tickets__commerce-checkout-cart-coupons__remove-button" type="button">
-			<?php echo esc_html_x( 'X', 'text for button to remove an applied coupon', 'event-tickets' ); // @todo use an ICON instead. @see https://github.com/the-events-calendar/event-tickets/pull/3430#discussion_r1872545653 ?>
+			<img
+				src="<?php echo esc_url( tribe_resource_url( 'images/icons/close.svg', false, null, Tribe__Main::instance() ) ); ?>"
+				alt="<?php esc_attr_e( 'Close icon', 'event-tickets' ); ?>"
+				width="20"
+				height="20"
+				title="<?php esc_attr_e( 'Remove ticket', 'event-tickets' ); ?>"
+			>
 		</button>
 	</div>
 </div>
