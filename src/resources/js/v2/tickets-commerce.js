@@ -253,8 +253,7 @@ tribe.tickets.commerce = {};
 	obj.bindCouponApply = function() {
 		let ajaxInProgress = false;
 
-		// $document.on( 'click', obj.selectors.couponApplyButton, applyCoupon );
-		$document.on( 'click', '#coupon_apply', applyCoupon );
+		$document.on( 'click', obj.selectors.couponApplyButton, applyCoupon );
 		$document.on( 'keydown', obj.selectors.couponInput, function( e ) {
 			if ( e.key === 'Enter' ) {
 				e.preventDefault();
