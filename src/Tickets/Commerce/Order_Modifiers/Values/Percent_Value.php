@@ -35,6 +35,8 @@ class Percent_Value extends Precision_Value {
 	 *
 	 * @param float|int|string $value The value to store. Can be a float, int, or numeric string. The
 	 *                                value will be divided by 100 to convert it to a percentage.
+	 *
+	 * @throws InvalidArgumentException When the value is not numeric, or it is too small.
 	 */
 	public function __construct( $value ) {
 		$value = Float_Value::from_number( $value )->get() / 100;
