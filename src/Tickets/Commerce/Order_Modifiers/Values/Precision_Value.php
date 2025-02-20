@@ -51,6 +51,8 @@ class Precision_Value extends Base_Value {
 	 *
 	 * @param float|int|string $value     The value to store. Can be a float, int, or numeric string.
 	 * @param ?int             $precision The precision (how many decimal places).
+	 *
+	 * @throws InvalidArgumentException When the value is not numeric, or the precision is not a positive integer.
 	 */
 	public function __construct( $value, ?int $precision = null ) {
 		$value           = Float_Value::from_number( $value )->get();
