@@ -266,7 +266,7 @@ class Coupons extends Controller_Contract {
 	 *
 	 * @return array Updated items.
 	 */
-	public function create_order_from_cart_items( $items, $subtotal ) {
+	public function create_order_from_cart_items( array $items, Value $subtotal ): array {
 		$cart_page = tribe( Cart::class );
 		$cart      = $cart_page->get_repository();
 		$coupons   = $cart->update_items_with_subtotal(
