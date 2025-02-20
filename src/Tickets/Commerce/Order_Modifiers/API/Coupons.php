@@ -562,7 +562,7 @@ class Coupons extends Base_API {
 	 *
 	 * @throws Exception If the coupon slug is invalid.
 	 */
-	protected function validate_coupon_slug( string $coupon_slug ): string {
+	protected function validate_coupon_slug( string $coupon_slug ) {
 		if ( ! $this->is_coupon_slug_valid( $coupon_slug ) ) {
 			throw new Exception( esc_html__( 'Invalid coupon.', 'event-tickets' ), 400 );
 		}
