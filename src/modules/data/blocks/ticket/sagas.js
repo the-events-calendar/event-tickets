@@ -692,7 +692,6 @@ export function* createNewTicket( action ) {
 			 *
 			 * @since 5.16.0
 			 * @since TBD The `ticketId` and `ticketDetails` parameters were added.
-			 *
 			 * @param {string} clientId The ticket's client ID.
 			 * @param {number} ticketId The ticket's ID.
 			 * @param {Object} ticketDetails The ticket details.
@@ -849,7 +848,6 @@ export function* updateTicket( action ) {
 			 *
 			 * @since 5.16.0
 			 * @since TBD The `ticketId and `ticketDetails` parameters were added
-			 *
 			 * @param {string} clientId The ticket's client ID.
 			 * @param {number} ticketId The ticket's ID.
 			 * @param {Object} ticketDetails The ticket details.
@@ -920,7 +918,6 @@ export function* deleteTicket( action ) {
 				 * Fires after the ticket has been deleted.
 				 *
 				 * @since TBD
-				 *
 				 * @param {string} clientId The ticket's client ID.
 				 * @param {number} ticketId The ticket's ID.
 				 */
