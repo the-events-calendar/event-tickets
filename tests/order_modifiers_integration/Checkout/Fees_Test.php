@@ -66,6 +66,68 @@ class Fees_Test extends Controller_Test_Case {
 
 	/**
 	 * @test
+	 */
+	public function it_should_not_include_fees_in_emails() {
+		$post = static::factory()->post->create();
+		$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
+		$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
+		$ticket_id_3 = $this->create_tc_ticket( $post, 30 );
+
+		$fee_for_all_1 = $this->create_fee_for_all( [ 'raw_amount' => 10, 'sub_type' => 'percent' ] );
+
+		$fee_per_ticket_1 = $this->create_fee_for_ticket( $ticket_id_1, [ 'raw_amount' => 2, 'sub_type' => 'percent' ] );
+		$this->add_fee_to_ticket( $fee_per_ticket_1, $ticket_id_3 );
+
+		$fee_per_ticket_2 = $this->create_fee_for_ticket( $ticket_id_2, [ 'raw_amount' => 2.5, 'sub_type' => 'flat' ] );
+		$this->add_fee_to_ticket( $fee_per_ticket_2, $ticket_id_3 );
+
+		$email_completed_listener_before = null;
+		$email_completed_listener_after  = null;
+		add_filter( 'tec_tickets_commerce_prepare_order_for_email_send_email_completed_order', function ( $order ) use ( &$email_completed_listener_before ) {
+			$email_completed_listener_before = $order->items;
+			return $order;
+		}, 5 );
+		add_filter( 'tec_tickets_commerce_prepare_order_for_email_send_email_completed_order', function ( $order ) use ( &$email_completed_listener_after ) {
+			$email_completed_listener_after = $order->items;
+			return $order;
+		}, 15 );
+
+		$email_purchase_listener_before = null;
+		$email_purchase_listener_after  = null;
+		add_filter( 'tec_tickets_commerce_prepare_order_for_email_send_email_purchase_receipt', function ( $order ) use ( &$email_purchase_listener_before ) {
+			$email_purchase_listener_before = $order->items;
+			return $order;
+		}, 5 );
+		add_filter( 'tec_tickets_commerce_prepare_order_for_email_send_email_purchase_receipt', function ( $order ) use ( &$email_purchase_listener_after ) {
+			$email_purchase_listener_after = $order->items;
+			return $order;
+		}, 15 );
+
+		$this->make_controller()->register();
+
+		$order = $this->create_order( [
+			$ticket_id_1 => 2,
+			$ticket_id_2 => 3,
+			$ticket_id_3 => 4,
+		] );
+
+		$refreshed_order = tec_tc_get_order( $order->ID );
+
+		$this->assertTrue( tec_tickets_emails_is_enabled() );
+
+		$this->assertEquals( 1, did_filter( 'tec_tickets_commerce_prepare_order_for_email_send_email_completed_order' ) );
+		$this->assertEquals( 1, did_filter( 'tec_tickets_commerce_prepare_order_for_email_send_email_purchase_receipt' ) );
+		$this->assertNotNull( $email_purchase_listener_before );
+		$this->assertNotNull( $email_completed_listener_before );
+		$this->assertCount( 6, $refreshed_order->items );
+		$this->assertCount( 6, $email_completed_listener_before);
+		$this->assertCount( 3, $email_completed_listener_after);
+		$this->assertCount( 6, $email_purchase_listener_before);
+		$this->assertCount( 3, $email_purchase_listener_after);
+	}
+
+	/**
+	 * @test
 	 * @dataProvider cart_totals_data_provider
 	 */
 	public function it_should_calculate_fees(
