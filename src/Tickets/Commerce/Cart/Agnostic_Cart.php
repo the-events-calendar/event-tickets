@@ -128,12 +128,12 @@ class Agnostic_Cart extends Abstract_Cart {
 
 		// If we don't have a cart hash, generate one.
 		if ( empty( $cart_hash ) ) {
-			$cart_hash = $this->generate_and_set_cart_hash();
-
 			// If we still don't have a cart hash, bail.
-			if ( false === $cart_hash ) {
+			if ( false === $this->generate_and_set_cart_hash() ) {
 				return false;
 			}
+
+			$cart_hash = $this->get_hash();
 		}
 
 		// If we don't have any items, clear the cart and bail.
