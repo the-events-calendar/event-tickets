@@ -33,7 +33,7 @@ trait Coupons {
 	 */
 	protected function is_coupon_slug_valid( string $slug ): bool {
 		try {
-			$repo = tribe( Coupons_Repository::class );
+			$repo = Factory::get_repository_for_type( 'coupon' );
 			return $this->is_coupon_valid( $repo->find_by_slug( $slug ) );
 		} catch ( Exception $e ) {
 			return false;
@@ -155,7 +155,7 @@ trait Coupons {
 		$available = $meta->find_by_order_modifier_id_and_meta_key( $coupon_id, 'coupons_available' );
 
 		// If we got null, the coupon is unlimited.
-		if ( null === $available ) {
+		if ( ! property_exists( $available, 'meta_value' ) || empty( $available->meta_value ) ) {
 			return -1;
 		}
 
