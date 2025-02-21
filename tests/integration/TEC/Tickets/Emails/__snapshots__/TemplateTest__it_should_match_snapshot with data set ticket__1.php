@@ -298,7 +298,7 @@
 		margin: 0;
 		padding: 0;
 	}
-
+	
 	div.tec-tickets__email-table-content-ticket-seat-label {
 		color: #ffffff;
 		display: inline-block;
@@ -306,7 +306,7 @@
 		font-weight: 400;
 		margin-top: 8px;
 	}
-
+	
 	div.tec-tickets__email-table-content-ticket-seat-label-separator {
 		color: #ffffff;
 		display: inline-block;
@@ -437,28 +437,6 @@
 		font-size: 16px;
 		font-weight: 700;
 		padding-top:43px;
-	}
-
-	td.tec-tickets__email-table-content-order-fees-container {
-		padding-top: 20px;
-		text-align: right;
-	}
-
-	.tec-tickets__email-table-content-order-fees-table {
-		display: inline-block;
-		width: auto;
-	}
-
-	td.tec-tickets__email-table-content-order-fees-left-cell {
-		font-size: 14px;
-		font-weight: 400;
-		line-height: 24px;
-		padding-right: 10px;
-	}
-
-	.tec-tickets__email-table-content-order-fees-right-cell {
-		line-height: 24px;
-		padding: 0 6px;
 	}
 
 	td.tec-tickets__email-table-content-order-total-container {
