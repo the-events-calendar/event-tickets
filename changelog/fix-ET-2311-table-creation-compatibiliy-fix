@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Make sure a table creation script is compatible with MySQL Server version 8 and above. [ET-2311]
