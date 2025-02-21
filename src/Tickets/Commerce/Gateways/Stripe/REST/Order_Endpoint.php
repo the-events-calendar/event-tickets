@@ -175,7 +175,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$response['client_secret'] = $payment_intent['client_secret'];
 
 		if ( $status->get_slug() === Pending::SLUG ) {
-			$response['redirect_url']  = add_query_arg( [ 'tc-order-id' => $payment_intent['id'] ], tribe( Success::class )->get_url() );
+			$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $payment_intent['id'] ], tribe( Success::class )->get_url() );
 			$orders->checkout_completed( $order->ID );
 		}
 
@@ -237,10 +237,15 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$messages         = $this->get_error_messages();
 		$gateway_order_id = $request->get_param( 'order_id' );
 
-		$order = tec_tc_orders()->by_args( [
-			'status' => [ tribe( Created::class )->get_wp_slug(), tribe( Pending::class )->get_wp_slug() ], // Potentially change this to method that fetch all non-final statuses.
-			'gateway_order_id' => $gateway_order_id,
-		] )->first();
+		$order = tec_tc_orders()->by_args(
+			[
+				'status' => [
+					tribe( Created::class )->get_wp_slug(),
+					tribe( Pending::class )->get_wp_slug(),
+				], // Potentially change this to method that fetch all non-final statuses.
+				'gateway_order_id' => $gateway_order_id,
+			]
+		)->first();
 
 		if ( is_wp_error( $order ) || empty( $order ) ) {
 			return new WP_Error( 'tec-tc-gateway-stripe-order-not-found', $messages['order-not-found'], $order );

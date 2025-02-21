@@ -95,7 +95,7 @@ class Payment_Intent_Handler {
 	 * @return ?string
 	 */
 	public function get_payment_intent_cookie(): ?string {
-		return $_COOKIE[ $this->get_payment_intent_cookie_name() ] ?? null;
+		return $_COOKIE[ $this->get_payment_intent_cookie_name() ] ?? null; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
 	}
 
 	/**
