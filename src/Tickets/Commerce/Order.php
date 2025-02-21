@@ -359,22 +359,37 @@ class Order extends Abstract_Order {
 	 * @since 5.1.9
 	 * @since 5.18.1 Wrap status update in a transaction to prevent race conditions.
 	 *
-	 * @param int    $order_id        Which order ID will be updated.
-	 * @param string $new_status_slug Which Order Status we are modifying to.
-	 * @param array  $extra_args      Extra repository arguments.
+	 * @param int                     $order_id        Which order ID will be updated.
+	 * @param string|Status_Interface $new_status      Which Order Status we are modifying to.
+	 * @param array                   $extra_args      Extra repository arguments.
 	 *
-	 * @return bool|\WP_Error
+	 * @return bool
 	 */
-	public function modify_status( $order_id, $new_status_slug, array $extra_args = [] ) {
-		$new_status = tribe( Status\Status_Handler::class )->get_by_slug( $new_status_slug );
+	public function modify_status( $order_id, $new_status, array $extra_args = [] ): bool {
+		if ( ! $new_status instanceof Status\Status_Interface ) {
+			$new_status = tribe( Status\Status_Handler::class )->get_by_slug( (string) $new_status );
+		}
 
-		if ( ! $new_status ) {
+		if ( ! $new_status instanceof Status\Status_Interface ) {
 			return false;
+		}
+
+		$required_previous_status = $new_status->required_previous_status();
+		if ( $required_previous_status ) {
+			$order = tec_tc_get_order( $order_id );
+			foreach ( $required_previous_status as $required_status ) {
+				// If the required status is present we skip that status.
+				if ( isset( $order->status_log[ $required_status->get_slug() ] ) ) {
+					continue;
+				}
+
+				$this->modify_status( $order_id, $required_status, $extra_args );
+			}
 		}
 
 		DB::beginTransaction();
 
-		// During this operations - the order should be locked!
+		// During these operations - the order should be locked!
 		$locked = $this->lock_order( $order_id );
 
 		// If we were unable to lock the order, bail.

@@ -21,6 +21,7 @@ use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
+use WP_Post;
 
 /**
  * Class Order Endpoint.
@@ -121,7 +122,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		// If an order was created for this hash, we will attempt to update it, otherwise create a new one.
 		$order = $orders->create_from_cart( tribe( Gateway::class ), $purchaser );
-		if ( ! $order instanceof \WP_Post )  {
+		if ( ! $order instanceof WP_Post ) {
 			return new WP_Error(
 				'tec-tc-gateway-stripe-order-creation-failed',
 				$messages['failed-order-creation'],

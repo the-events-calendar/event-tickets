@@ -24,7 +24,7 @@ use Tribe__Utils__Array as Arr;
  *
  * @package  TEC\Tickets\Commerce\Models
  */
-class Order_Model extends Base {
+class  Order_Model extends Base {
 
 	/**
 	 * {@inheritDoc}
