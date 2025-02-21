@@ -244,6 +244,7 @@ class Coupons extends Base_API {
 			$cart->save();
 
 			$cart_total = Currency_Value::create_from_float( $cart->get_cart_total() );
+			$discount   = Currency_Value::create_from_float( $coupon->get_discount_amount( $original_total->get_raw_value()->get() ) );
 
 			// Update the payment intent with the new value
 			Payment_Intent::update(
@@ -254,7 +255,8 @@ class Coupons extends Base_API {
 			return rest_ensure_response(
 				[
 					'success'     => true,
-					'discount'    => abs( $coupon->get_discount_amount( $original_total->get_raw_value()->get() ) ),
+					'discount'    => $discount->get(),
+					'label'       => esc_html( $coupon->display_name ),
 					'message'     => sprintf(
 						/* translators: %s: the coupon code */
 						esc_html__( 'Coupon "%s" applied successfully.', 'event-tickets' ),
