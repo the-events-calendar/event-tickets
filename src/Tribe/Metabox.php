@@ -855,8 +855,10 @@ class Tribe__Tickets__Metabox {
 		if ( empty( $data['nonce'] ) || ! wp_verify_nonce( $data['nonce'], $nonce_action ) ) {
 			return false;
 		}
-
-		return current_user_can( 'edit_event_tickets' ) || current_user_can( get_post_type_object( $post->post_type )->cap->edit_posts );
+		
+		return current_user_can( 'edit_event_tickets' )
+				|| current_user_can( get_post_type_object( $post->post_type )->cap->edit_others_posts )
+				|| current_user_can( 'edit_post', $post->ID );
 	}
 
 	/**

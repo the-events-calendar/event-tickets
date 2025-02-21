@@ -412,7 +412,7 @@ class Tribe__Tickets__Status__Manager {
 		}
 
 		// Only scalar values are valid for `array_key_exists`.
-		if ( ! is_scalar( $module ) ) {
+		if ( ! $module || ! is_scalar( $module ) ) {
 			return false;
 		}
 
