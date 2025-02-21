@@ -30,7 +30,6 @@ if ( empty( $order ) || empty( $order->fees ) ) {
 $fees = $order->fees;
 ?>
 
-
 <tr>
 	<td class="tec-tickets__email-table-content-order-fees-container" align="right">
 		<table class="tec-tickets__email-table-content-order-fees-table">
