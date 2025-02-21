@@ -126,7 +126,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				$messages['empty-cart'],
 				[
 					'purchaser' => $purchaser,
-					'data' => $data,
+					'data'      => $data,
 				]
 			);
 		}
