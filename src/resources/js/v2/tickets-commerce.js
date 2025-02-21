@@ -55,13 +55,14 @@ tribe.tickets.commerce = {};
 		purchaserEmail: '.tribe-tickets__commerce-checkout-purchaser-info-form-field-email',
 
 		// Coupon related selectors.
-		couponInputContainer: '.tec-tickets__commerce-checkout-cart-coupons',
-		couponInput: '#coupon_input',
-		couponError: '.tec-tickets__commerce-checkout-cart-coupons__error',
-		couponApplyButton: '#coupon_apply',
-		couponAppliedSection: '.tec-tickets__commerce-checkout-cart-coupons__applied',
-		couponAppliedLabel: '.tec-tickets__commerce-checkout-cart-coupons__applied-label',
 		couponAppliedDiscount: '.tec-tickets__commerce-checkout-cart-coupons__applied-discount',
+		couponAppliedLabel: '.tec-tickets__commerce-checkout-cart-coupons__applied-label',
+		couponAppliedSection: '.tec-tickets__commerce-checkout-cart-coupons__applied',
+		couponApplyButton: '#coupon_apply',
+		couponError: '.tec-tickets__commerce-checkout-cart-coupons__error',
+		couponInput: '#coupon_input',
+		couponInputContainer: '.tec-tickets__commerce-checkout-cart-coupons',
+		couponInputErrorClass: 'tribe-tickets__form-field-input--error',
 		couponRemoveButton: '.tec-tickets__commerce-checkout-cart-coupons__remove-button',
 	};
 
@@ -299,7 +300,8 @@ tribe.tickets.commerce = {};
 				return;
 			}
 
-			const couponValue = $( obj.selectors.couponInput ).val().trim();
+			const $couponInput = $( obj.selectors.couponInput );
+			const couponValue = $couponInput.val().trim();
 			const nonce = $( obj.selectors.nonce ).val();
 			const $errorMessage = $( obj.selectors.couponError );
 
@@ -309,6 +311,7 @@ tribe.tickets.commerce = {};
 			// Ensure the coupon is not empty.
 			if ( ! couponValue ) {
 				$errorMessage.text( tecTicketsCommerce.i18n.couponCodeEmpty ).show();
+				$couponInput.addClass( obj.selectors.couponInputErrorClass );
 				return;
 			}
 
@@ -333,22 +336,24 @@ tribe.tickets.commerce = {};
 				success( response ) {
 					if ( response.success ) {
 						// Hide input and button, show applied coupon.
-						$( obj.selectors.couponInputContainer ).hide();
+						$couponInput.removeClass( obj.selectors.couponInputErrorClass );
+						$( obj.selectors.couponInputContainer ).addClass( 'tribe-hidden' );
 
 						// Display coupon value and discount.
 						obj.updateCouponDiscount( response.discount );
 						obj.updateCouponLabel( response.label );
 						obj.updateTotalPrice( response.cart_amount );
-						$( obj.selectors.couponAppliedSection ).show();
-						// $( obj.selectors.couponAppliedSection ).css( 'display', 'inline-block');
+						$( obj.selectors.couponAppliedSection ).removeClass( 'tribe-hidden' );
 					} else {
 						$errorMessage.text( response.message || tecTicketsCommerce.i18n.invalidCoupon ).show();
-						$( obj.selectors.couponInputContainer ).show();
+						$couponInput.addClass( obj.selectors.couponInputErrorClass );
+						$( obj.selectors.couponInputContainer ).removeClass( 'tribe-hidden' );
 					}
 				},
 				error() {
 					$errorMessage.text( tecTicketsCommerce.i18n.couponApplyError ).show();
-					$( obj.selectors.couponInputContainer ).show();
+					$couponInput.addClass( obj.selectors.couponInputErrorClass );
+					$( obj.selectors.couponInputContainer ).removeClass( 'tribe-hidden' );
 				},
 				complete() {
 					obj.loaderHide();
