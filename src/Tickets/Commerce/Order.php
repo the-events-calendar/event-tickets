@@ -12,6 +12,7 @@ namespace TEC\Tickets\Commerce;
 use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Gateways\Contracts\Gateway_Interface;
+use TEC\Tickets\Commerce\Status\Created;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Refunded;
 use TEC\Tickets\Commerce\Status\Reversed;
@@ -578,7 +579,7 @@ class Order extends Abstract_Order {
 		if ( $hash ) {
 			$existing_order_id = tec_tc_orders()->by_args(
 				[
-					'status' => tribe( Pending::class )->get_wp_slug(),
+					'status' => [ tribe( Pending::class )->get_wp_slug(), tribe( Created::class )->get_wp_slug() ],
 					'hash'   => $hash,
 				]
 			)->first_id();

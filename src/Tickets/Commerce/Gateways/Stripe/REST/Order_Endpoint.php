@@ -10,6 +10,8 @@ use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent_Handler;
 use TEC\Tickets\Commerce\Gateways\Stripe\Status;
 use TEC\Tickets\Commerce\Order;
 
+use TEC\Tickets\Commerce\Status\Completed;
+use TEC\Tickets\Commerce\Status\Created;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Success;
 
@@ -119,7 +121,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		// If an order was created for this hash, we will attempt to update it, otherwise create a new one.
 		$order = $orders->create_from_cart( tribe( Gateway::class ), $purchaser );
-
 		$payment_intent = tribe( Payment_Intent_Handler::class )->update_payment_intent( $data, $order );
 
 		if ( is_wp_error( $payment_intent ) ) {
@@ -130,9 +131,21 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-stripe-failed-creating-order', $messages['failed-creating-order'], $order );
 		}
 
+		tec_tc_orders()
+			->by_args(
+				[
+					'id' => $order->ID
+				]
+			)
+			->set_args( [
+				'gateway_payload' => $payment_intent,
+				'gateway_order_id' => $payment_intent['id'],
+			] )
+			->save();
+
 		$status = tribe( Status::class )->convert_to_commerce_status( $payment_intent['status'] );
 
-		// Orders need to pass the Pending status always.
+		// We will attempt to update the order status to the one returned by Stripe.
 		$updated = $orders->modify_status(
 			$order->ID,
 			$status->get_slug(),
@@ -142,17 +155,23 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			]
 		);
 
-		if ( ! $updated ) {
-			return new WP_Error( 'tec-tc-gateway-stripe-updating-order', $messages['failed-order-status-change'], $order );
+		if ( ! in_array( $status->get_slug(), [ Created::SLUG, Pending::SLUG ], true ) ) {
+			return new WP_Error( 'tec-tc-gateway-stripe-failed-payment', $messages['failed-payment'], [
+				'order_id'     => $order->ID,
+				'status'       => $status->get_slug(),
+				'payment_data' => $data,
+			] );
 		}
 
 		// Respond with the client_secret for Stripe Usage.
 		$response['success']       = true;
 		$response['order_id']      = $order->ID;
 		$response['client_secret'] = $payment_intent['client_secret'];
-		$response['redirect_url']  = add_query_arg( [ 'tc-order-id' => $payment_intent['id'] ], tribe( Success::class )->get_url() );
 
-		$orders->checkout_completed( $order->ID );
+		if ( $status->get_slug() === Pending::SLUG ) {
+			$response['redirect_url']  = add_query_arg( [ 'tc-order-id' => $payment_intent['id'] ], tribe( Success::class )->get_url() );
+			$orders->checkout_completed( $order->ID );
+		}
 
 		return new WP_REST_Response( $response );
 	}
@@ -213,7 +232,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$gateway_order_id = $request->get_param( 'order_id' );
 
 		$order = tec_tc_orders()->by_args( [
-			'status' => 'any',
+			'status' => [ tribe( Created::class )->get_wp_slug(), tribe( Pending::class )->get_wp_slug() ], // Potentially change this to method that fetch all non-final statuses.
 			'gateway_order_id' => $gateway_order_id,
 		] )->first();
 
@@ -229,18 +248,17 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		if ( empty( $payment_intent['id'] ) || $payment_intent['id'] !== $gateway_order_id ) {
-			return new WP_Error( 'tec-tc-gateway-stripe-failed-payment-intent-id', $messages['failed-payment-intent-id'], $order );
+			return new WP_Error( 'tec-tc-gateway-stripe-failed-payment-intent-id', $messages['failed-getting-payment-intent'], $order );
 		}
 
 		if ( $payment_intent['client_secret'] !== $client_secret ) {
 			return new WP_Error( 'tec-tc-gateway-stripe-failed-payment-intent-secret', $messages['failed-payment-intent-secret'], $order );
 		}
 
-		$payment_intent_status = Arr::get( $payment_intent, [ 'status' ] );
-		$status                = tribe( Status::class )->convert_to_commerce_status( $payment_intent_status );
+		$status = tribe( Status::class )->convert_payment_intent_to_commerce_status( $payment_intent );
 
 		if ( ! $status ) {
-			return new WP_Error( 'tec-tc-gateway-stripe-invalid-payment-intent-status', $messages['invalid-payment-intent-status'], $payment_intent_status );
+			return new WP_Error( 'tec-tc-gateway-stripe-invalid-payment-intent-status', $messages['invalid-payment-intent-status'], [ 'status' => $status ] );
 		}
 
 		$orders = tribe( Order::class );
@@ -254,9 +272,12 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			]
 		);
 
-		if ( is_wp_error( $updated ) ) {
-			$orders->checkout_completed( $order->ID );
-			return $updated;
+		if ( ! in_array( $status->get_slug(), [ Completed::SLUG, Pending::SLUG ], true ) ) {
+			return new WP_Error( 'tec-tc-gateway-stripe-failed-payment', $messages['failed-payment'], [
+				'order_id'     => $order->ID,
+				'status'       => $status->get_slug(),
+				'payment_data' => $payment_intent,
+			] );
 		}
 
 		// Respond with the client_secret for Stripe Usage.
@@ -351,9 +372,12 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'failed-completing-payment-intent' => __( 'Completing the Stripe PaymentIntent failed. Please try again.', 'event-tickets' ),
 			'failed-creating-payment-intent'   => __( 'Creating new Stripe PaymentIntent failed. Please try again.', 'event-tickets' ),
 			'failed-creating-order'            => __( 'Creating new Stripe order failed. Please try again.', 'event-tickets' ),
-			'failed-order-status-change'       => __( 'Failed to modify the order status. Please try again.', 'event-tickets' ),
+			'order-not-found'                  => __( 'Order not found, please restart your checkout process.', 'event-tickets' ),
+			'failed-getting-payment-intent'    => __( 'Your payment is invalid. Please try again.', 'event-tickets' ),
+			'failed-payment-intent-secret'     => __( 'Your payment failed security verification with Gateway. Please try again.', 'event-tickets' ),
+			'failed-payment'                   => __( 'Your payment method has failed. Please try again.', 'event-tickets' ),
+			'invalid-payment-intent-status'    => __( 'Your payment status was not recognized. Please try again.', 'event-tickets' ),
 		];
-
 		/**
 		 * Filter the error messages for Stripe checkout.
 		 *

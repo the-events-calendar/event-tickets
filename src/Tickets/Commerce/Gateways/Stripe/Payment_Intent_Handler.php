@@ -142,11 +142,16 @@ class Payment_Intent_Handler {
 	 * @return array|\WP_Error|null
 	 */
 	public function update_payment_intent( $data, \WP_Post $order ) {
-		$body              = [];
-		$payment_intent_id = $data['payment_intent']['id'];
+		$body           = [];
+
+		// Attempt to avoid an extra request by using the existing payment intent.
+		$payment_intent = $this->get();
+
+		if ( empty( $payment_intent['id'] ) || empty( $data['payment_intent']['id'] ) || $data['payment_intent']['id'] !== $payment_intent['id'] ) {
+			$payment_intent = Payment_Intent::get( $data['payment_intent']['id'] );
+		}
 
 		$stripe_receipt_emails = tribe_get_option( Settings::$option_stripe_receipt_emails );
-		$payment_intent        = Payment_Intent::get( $payment_intent_id );
 		$body['metadata']      = $this->get_updated_metadata( $order, $payment_intent );
 
 		if ( $stripe_receipt_emails ) {
@@ -162,7 +167,7 @@ class Payment_Intent_Handler {
 			$body['description'] = $this->get_payment_intent_description( $order, $data, $body, $payment_intent );
 		}
 
-		return Payment_Intent::update( $payment_intent_id, $body );
+		return Payment_Intent::update( $payment_intent['id'], $body );
 	}
 
 	/**

@@ -165,4 +165,33 @@ class Status {
 
 		return tribe( Commerce_Status\Status_Handler::class )->get_by_slug( $statuses[ $stripe_status ] );
 	}
+
+	/**
+	 * Converts a valid Stripe payment intent to a commerce status object.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $payment_intent A Stripe payment intent.
+	 *
+	 * @return false|Commerce_Status\Status_Interface|null
+	 */
+	public function convert_payment_intent_to_commerce_status( array $payment_intent ) {
+		if ( ! isset( $payment_intent['status'] ) ) {
+			return false;
+		}
+		$stripe_status = $payment_intent['status'];
+
+		if ( ! $this->is_valid_status( $stripe_status ) ) {
+			return false;
+		}
+		$statuses = $this->get_valid_statuses();
+
+		$last_payment_error = $payment_intent['last_payment_error'] ?? null;
+
+		if ( ! $last_payment_error || empty( $last_payment_error['decline_code'] ) ) {
+			return tribe( Commerce_Status\Status_Handler::class )->get_by_slug( $statuses[ $stripe_status ] );
+		}
+
+		return tribe( Commerce_Status\Denied::class );
+	}
 }
