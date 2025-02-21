@@ -60,7 +60,8 @@ tribe.tickets.commerce = {};
 		couponError: '.tec-tickets__commerce-checkout-cart-coupons__error',
 		couponApplyButton: '#coupon_apply',
 		couponAppliedSection: '.tec-tickets__commerce-checkout-cart-coupons__applied',
-		couponAppliedValue: '.tec-tickets__commerce-checkout-cart-coupons__applied-value',
+		couponAppliedLabel: '.tec-tickets__commerce-checkout-cart-coupons__applied-label',
+		couponAppliedDiscount: '.tec-tickets__commerce-checkout-cart-coupons__applied-discount',
 		couponRemoveButton: '.tec-tickets__commerce-checkout-cart-coupons__remove-button',
 	};
 
@@ -238,8 +239,14 @@ tribe.tickets.commerce = {};
 		$totalPriceElement.text( unescapedAmount );
 	};
 
+	/**
+	 * Updates the coupon discount displayed on the page.
+	 *
+	 * @since TBD
+	 * @param {string} discount The new discount to display.
+	 */
 	obj.updateCouponDiscount = function( discount ) {
-		const $couponValueElement = $( obj.selectors.couponAppliedValue );
+		const $couponValueElement = $( obj.selectors.couponAppliedDiscount );
 
 		// Use DOMParser to unescape the discount value
 		const parser = new DOMParser();
@@ -249,6 +256,25 @@ tribe.tickets.commerce = {};
 		).body.textContent;
 
 		$couponValueElement.text( unescapedDiscount );
+	};
+
+	/**
+	 * Updates the coupon label displayed on the page.
+	 *
+	 * @since TBD
+	 * @param {string} label The new label to display.
+	 */
+	obj.updateCouponLabel = function( label ) {
+		const $couponLabelElement = $( obj.selectors.couponAppliedLabel );
+
+		// Use DOMParser to unescape the discount value
+		const parser = new DOMParser();
+		const unescapedLabel = parser.parseFromString(
+			`<!doctype html><body>${ label }`,
+			'text/html',
+		).body.textContent;
+
+		$couponLabelElement.text( unescapedLabel );
 	};
 
 	obj.bindCouponApply = function() {
@@ -311,8 +337,10 @@ tribe.tickets.commerce = {};
 
 						// Display coupon value and discount.
 						obj.updateCouponDiscount( response.discount );
+						obj.updateCouponLabel( response.label );
 						obj.updateTotalPrice( response.cart_amount );
 						$( obj.selectors.couponAppliedSection ).show();
+						// $( obj.selectors.couponAppliedSection ).css( 'display', 'inline-block');
 					} else {
 						$errorMessage.text( response.message || tecTicketsCommerce.i18n.invalidCoupon ).show();
 						$( obj.selectors.couponInputContainer ).show();

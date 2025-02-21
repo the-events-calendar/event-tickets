@@ -7,6 +7,10 @@
 .tribe-common,
 .event-tickets {
 
+	.tribe-hidden {
+		display: none;
+	}
+
 	.tribe-tickets__commerce-checkout {
 		max-width: 600px;
 		position: relative;
@@ -203,10 +207,10 @@
 		flex-wrap: wrap;
 		justify-content: flex-end;
 		padding: var(--tec-spacer-4) 0;
-	}
 
-	.tribe-tickets__commerce-checkout-cart-footer > div:first-child {
-		flex: 0 1 100%;
+		& > div:not(:nth-last-child(-n + 2)) {
+			flex: 0 1 100%;
+		}
 	}
 
 	.tribe-tickets__commerce-checkout-cart-footer-order-modifier-fees,
@@ -225,6 +229,10 @@
 	.tribe-tickets__commerce-checkout-cart-footer-quantity,
 	.tribe-tickets__commerce-checkout-cart-footer-order-modifier-fees {
 		color: var(--tec-color-text-primary-light);
+	}
+
+	.tribe-tickets__commerce-checkout-cart-footer-order-modifier-fees {
+		text-align: right;
 	}
 
 	.tribe-tickets__commerce-checkout-cart-footer-total {
@@ -392,11 +400,52 @@
 		}
 	}
 
-	.tribe-tickets__commerce-checkout-coupons-wrapper {
+	.tec-tickets__commerce-checkout-coupons-wrapper {
+		text-align: right;
+
+		.tec-tickets__commerce-checkout-cart-coupons__input {
+			border: 1px solid var(--tec-color-border-default);
+			border-radius: var(--tec-border-radius-default);
+			padding: var(--tec-spacer-1) var(--tec-spacer-3);
+			width: auto;
+		}
+
 		.tec-tickets__commerce-checkout-cart-coupons__apply-button {
 			border: 0;
 			border-radius: var(--tec-border-radius-default);
 			color: var(--tec-color-background);
+			padding: 6px var(--tec-spacer-2);
+			width: auto;
+
+			&:hover {
+				padding: 6px var(--tec-spacer-2);
+			}
+		}
+
+		.tec-tickets__commerce-checkout-cart-coupons__applied {
+			font-size: var(--tec-font-size-3);
+
+			.tec-tickets__commerce-checkout-cart-coupons__applied-text {
+				background-color: #eaecff;
+				border-radius: 6px;
+				letter-spacing: 0.2px;
+				line-height: 26px;
+				padding: var(--tec-spacer-1) var(--tec-spacer-2);
+			}
+
+			&:not(.tribe-hidden) {
+				display: inline-block;
+			}
+		}
+
+		.tec-tickets__commerce-checkout-cart-coupons__remove-button {
+			margin-left: var(--tec-spacer-2);
+
+			& img {
+				height: 14px;
+				vertical-align: middle;
+				width: 14px;
+			}
 		}
 	}
 

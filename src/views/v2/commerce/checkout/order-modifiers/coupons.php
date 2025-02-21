@@ -23,12 +23,6 @@ if ( isset( $coupon['sub_total'] ) && $coupon['sub_total'] instanceof Value ) {
 }
 
 // Set up classes for all of the elements.
-$coupon_input_classes = [
-	'tec-tickets__commerce-checkout-cart-coupons__input',
-	'tribe-common-form-control-text__input',
-	'tribe-tickets__form-field-input',
-];
-
 $apply_button_classes = [
 	'tec-tickets__commerce-checkout-cart-coupons__apply-button',
 	'tribe-common-c-btn',
@@ -48,7 +42,7 @@ $applied_container_classes = [
 <div class="tec-tickets__commerce-checkout-coupons-wrapper tribe-tickets__form tribe-common-b2">
 	<div <?php tribe_classes( $input_container_classes ); ?>>
 		<input
-			<?php tribe_classes( $coupon_input_classes ); ?>
+			class="tec-tickets__commerce-checkout-cart-coupons__input"
 			type="text"
 			id="coupon_input"
 			name="coupons"
@@ -68,24 +62,24 @@ $applied_container_classes = [
 		<?php esc_html_e( 'Invalid coupon code', 'event-tickets' ); ?>
 	</p>
 	<div <?php tribe_classes( $applied_container_classes ); ?>>
-		<span class="tec-tickets__commerce-checkout-cart-coupons__applied-text">
-			<?php esc_html_e( 'Coupon:', 'event-tickets' ); ?>
-			<span class="tec-tickets__commerce-checkout-cart-coupons__applied-value">
-				<?php echo esc_html( $coupon['display_name'] ?? '' ); ?>
-			</span>
-			- <?php esc_html_e( 'Discount:', 'event-tickets' ); ?>
-			<span class="tec-tickets__commerce-checkout-cart-coupons__applied-discount">
-				<?php echo esc_html( $discount ); ?>
-			</span>
-		</span>
-		<button class="tec-tickets__commerce-checkout-cart-coupons__remove-button" type="button">
-			<img
-				src="<?php echo esc_url( tribe_resource_url( 'images/icons/close.svg', false, null, Tribe__Main::instance() ) ); ?>"
-				alt="<?php esc_attr_e( 'Close icon', 'event-tickets' ); ?>"
-				width="20"
-				height="20"
-				title="<?php esc_attr_e( 'Remove ticket', 'event-tickets' ); ?>"
-			>
-		</button>
+		<ul>
+			<li>
+				<span class="tec-tickets__commerce-checkout-cart-coupons__applied-text tribe-tickets__commerce-checkout-cart-footer-quantity-label">
+					<span class="tec-tickets__commerce-checkout-cart-coupons__applied-label">
+						<?php echo esc_html( $coupon['display_name'] ?? '' ); ?>
+					</span>
+					<button class="tec-tickets__commerce-checkout-cart-coupons__remove-button" type="button">
+						<img
+							src="<?php echo esc_url( tribe_resource_url( 'images/icons/close.svg', false, null, Tribe__Main::instance() ) ); ?>"
+							alt="<?php esc_attr_e( 'Close icon', 'event-tickets' ); ?>"
+							title="<?php esc_attr_e( 'Remove ticket', 'event-tickets' ); ?>"
+						>
+					</button>
+				</span>
+				<span class="tec-tickets__commerce-checkout-cart-coupons__applied-discount tribe-tickets__commerce-checkout-cart-footer-quantity-number">
+					<?php echo esc_html( $discount ); ?>
+				</span>
+			</li>
+		</ul>
 	</div>
 </div>
