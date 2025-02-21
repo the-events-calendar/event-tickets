@@ -300,6 +300,7 @@ tribe.tickets.commerce = {};
 				return;
 			}
 
+			const $inputContainer = $( obj.selectors.couponInputContainer );
 			const $couponInput = $( obj.selectors.couponInput );
 			const couponValue = $couponInput.val().trim();
 			const nonce = $( obj.selectors.nonce ).val();
@@ -337,23 +338,24 @@ tribe.tickets.commerce = {};
 					if ( response.success ) {
 						// Hide input and button, show applied coupon.
 						$couponInput.removeClass( obj.selectors.couponInputErrorClass );
-						$( obj.selectors.couponInputContainer ).addClass( 'tribe-hidden' );
+						$inputContainer.addClass( obj.selectors.hiddenElement.className() );
 
 						// Display coupon value and discount.
 						obj.updateCouponDiscount( response.discount );
 						obj.updateCouponLabel( response.label );
 						obj.updateTotalPrice( response.cart_amount );
-						$( obj.selectors.couponAppliedSection ).removeClass( 'tribe-hidden' );
+						$( obj.selectors.couponAppliedSection )
+							.removeClass( obj.selectors.hiddenElement.className() );
 					} else {
 						$errorMessage.text( response.message || tecTicketsCommerce.i18n.invalidCoupon ).show();
 						$couponInput.addClass( obj.selectors.couponInputErrorClass );
-						$( obj.selectors.couponInputContainer ).removeClass( 'tribe-hidden' );
+						$inputContainer.removeClass( obj.selectors.hiddenElement.className() );
 					}
 				},
 				error() {
 					$errorMessage.text( tecTicketsCommerce.i18n.couponApplyError ).show();
 					$couponInput.addClass( obj.selectors.couponInputErrorClass );
-					$( obj.selectors.couponInputContainer ).removeClass( 'tribe-hidden' );
+					$inputContainer.removeClass( obj.selectors.hiddenElement.className() );
 				},
 				complete() {
 					obj.loaderHide();
@@ -377,6 +379,7 @@ tribe.tickets.commerce = {};
 				return;
 			}
 
+			const $inputContainer = $( obj.selectors.couponInputContainer );
 			const couponValue = $( obj.selectors.couponInput ).val().trim();
 			const nonce = $( obj.selectors.nonce ).val();
 			const $errorMessage = $( obj.selectors.couponError );
@@ -413,7 +416,7 @@ tribe.tickets.commerce = {};
 				success( response ) {
 					if ( response.success ) {
 						// Show input and apply button again.
-						$( obj.selectors.couponInputContainer ).show();
+						$inputContainer.show();
 						$( obj.selectors.couponInput ).val( '' );
 
 						// Hide the applied coupon section.
