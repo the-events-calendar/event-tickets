@@ -128,11 +128,12 @@ class Fees_Test extends Controller_Test_Case {
 
 		$fee_per_ticket_3 = $this->create_fee_for_ticket( $ticket_id_3, [ 'raw_amount' => 5, 'sub_type' => 'percent' ] );
 
-		$ticket_1_fees = $this->make_controller( ApiFees::class )->get_fees_for_ticket( $ticket_id_1 );
-		$ticket_2_fees = $this->make_controller( ApiFees::class )->get_fees_for_ticket( $ticket_id_2 );
-		$ticket_3_fees = $this->make_controller( ApiFees::class )->get_fees_for_ticket( $ticket_id_3 );
-		$ticket_4_fees = $this->make_controller( ApiFees::class )->get_fees_for_ticket( $ticket_id_4 );
-		$ticket_5_fees = $this->make_controller( ApiFees::class )->get_fees_for_ticket( $ticket_id_5 );
+		$api_fees_controller = $this->make_controller( ApiFees::class );
+		$ticket_1_fees = $api_fees_controller->get_fees_for_ticket( $ticket_id_1 );
+		$ticket_2_fees = $api_fees_controller->get_fees_for_ticket( $ticket_id_2 );
+		$ticket_3_fees = $api_fees_controller->get_fees_for_ticket( $ticket_id_3 );
+		$ticket_4_fees = $api_fees_controller->get_fees_for_ticket( $ticket_id_4 );
+		$ticket_5_fees = $api_fees_controller->get_fees_for_ticket( $ticket_id_5 );
 
 		$available_fees = [ $fee_per_ticket_1, $fee_per_ticket_2, $fee_per_ticket_3 ];
 		$automatic_fees = [ $fee_for_all_1, $fee_for_all_2 ];

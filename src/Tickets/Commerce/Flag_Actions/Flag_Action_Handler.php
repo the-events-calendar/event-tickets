@@ -96,9 +96,18 @@ class Flag_Action_Handler extends \TEC\Common\Contracts\Service_Provider {
 
 		$items        = $order->items;
 		$order->items = array_filter( $items, fn( $item ) => $this->is_ticket( $item ) );
-		$order->fees  = array_filter( $items, fn( $item ) => array_key_exists( 'type', $item ) && 'fee' === $item['type'] );
 
-		return $order;
+		/**
+		 * Filter the order before sending the email.
+		 *
+		 * @since TBD
+		 *
+		 * @param WP_Post $order The order to prepare.
+		 * @param array   $items The original items in the order.
+		 *
+		 * @return WP_Post
+		 */
+		return apply_filters( 'tec_tickets_commerce_prepare_order_for_email', $order, $items );
 	}
 
 	/**
