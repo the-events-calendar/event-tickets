@@ -76,13 +76,6 @@ class Coupons extends Controller_Contract {
 		);
 
 		add_filter(
-			'tec_tickets_checkout_should_skip_item',
-			[ $this, 'should_skip_item' ],
-			10,
-			2
-		);
-
-		add_filter(
 			'tec_tickets_commerce_create_order_from_cart_items',
 			[ $this, 'create_order_from_cart_items' ],
 			10,
@@ -115,11 +108,6 @@ class Coupons extends Controller_Contract {
 		remove_filter(
 			'tec_tickets_commerce_cart_add_full_item_params',
 			[ $this, 'add_coupon_item_params' ]
-		);
-
-		remove_filter(
-			'tec_tickets_checkout_should_skip_item',
-			[ $this, 'should_skip_item' ]
 		);
 
 		remove_filter(
