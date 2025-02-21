@@ -262,7 +262,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 		 * @param string         $cart_hash Cart hash value.
 		 * @param Cart_Interface $cart      Which cart object we are using here.
 		 */
-		$this->cart_hash = apply_filters( 'tec_tickets_commerce_cart_set_hash', $hash, $this );
+		$this->cart_hash = (string) apply_filters( 'tec_tickets_commerce_cart_set_hash', $hash, $this );
 	}
 
 	/**
@@ -281,7 +281,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 		 * @param string         $cart_hash Cart hash value.
 		 * @param Cart_Interface $cart      Which cart object we are using here.
 		 */
-		return apply_filters( 'tec_tickets_commerce_cart_get_hash', $this->cart_hash, $this );
+		return (string) apply_filters( 'tec_tickets_commerce_cart_get_hash', $this->cart_hash, $this );
 	}
 
 	/**
