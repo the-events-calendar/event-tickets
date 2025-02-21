@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.19.1.1
+Stable tag: 5.19.1.2
 Requires at least: 6.5
 Tested up to: 6.7.1
 Requires PHP: 7.4
@@ -199,6 +199,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.19.1.2] 2025-02-20 =
+
+* Security - Hardened the API around ticket and attendee creation, editing, and deletion. Props to "the sneaky squirrel" for the report! [SVUL-14]
+* Language - 0 new strings added, 7 updated, 0 fuzzied, and 0 obsoleted.
+
 = [5.19.1.1] 2025-02-12 =
 
 * Fix - Updated common library to correct issues with notifications around licensing.
@@ -206,10 +211,6 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Adjustments were made to prevent a fatal error when tec_pue_checker_init was triggered too early, attempting to call tribe_is_truthy() before it was available. The license check and active plugin monitoring now run on admin_init to ensure proper loading. [TEC-5384]
 * Fix - Update the license checker to ignore empty licenses. [TEC-5385]
 * Language - 0 new strings added, 0 updated, 0 fuzzied, and 0 obsoleted.
-
-### [5.19.1.1] 2025-02-12
-
-* Fix - Updated common library to correct issues with notifications around licensing.
 
 = [5.19.1] 2025-02-10 =
 
