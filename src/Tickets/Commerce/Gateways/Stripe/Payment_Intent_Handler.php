@@ -95,7 +95,7 @@ class Payment_Intent_Handler {
 	 * @return ?string
 	 */
 	public function get_payment_intent_cookie(): ?string {
-		return $_COOKIE[ $this->get_payment_intent_cookie_name() ] ?? null; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
+		return ! empty( $_COOKIE[ $this->get_payment_intent_cookie_name() ] ) ? sanitize_key( $_COOKIE[ $this->get_payment_intent_cookie_name() ] ) : null; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
 	}
 
 	/**
@@ -123,7 +123,7 @@ class Payment_Intent_Handler {
 
 		if ( $is_cookie_set ) {
 			// Overwrite local variable, so we can use it right away.
-			$_COOKIE[ $this->get_payment_intent_cookie_name() ] = $payment_intent_id; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
+			$_COOKIE[ $this->get_payment_intent_cookie_name() ] = $payment_intent_id; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
 		}
 
 		return $is_cookie_set;

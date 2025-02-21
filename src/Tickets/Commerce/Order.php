@@ -383,10 +383,12 @@ class Order extends Abstract_Order {
 					continue;
 				}
 
+				// Recursively call the modify_status method to ensure all required statuses are met.
 				$this->modify_status( $order_id, $required_status, $extra_args );
 			}
 		}
 
+		// we specifically only lock the order transactions after the required statuses have been met.
 		DB::beginTransaction();
 
 		// During these operations - the order should be locked!

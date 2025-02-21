@@ -280,13 +280,24 @@ class Cart {
 	}
 
 	/**
+	 * Determine if the cart has items.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the cart has items.
+	 */
+	public function has_items(): bool {
+		return $this->get_repository()->has_items();
+	}
+
+	/**
 	 * Clear the cart.
 	 *
 	 * @since 5.1.9
 	 *
 	 * @return bool
 	 */
-	public function clear_cart() {
+	public function clear_cart(): bool {
 		$this->set_cart_hash_cookie( null );
 		$this->get_repository()->clear();
 

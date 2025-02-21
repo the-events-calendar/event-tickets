@@ -120,6 +120,10 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return $purchaser;
 		}
 
+		if ( ! tribe( Cart::class )->has_items() ) {
+			return new WP_Error( 'tec-tc-empty-cart', $messages['empty-cart'], [ 'purchaser' => $purchaser, 'data' => $data ] );
+		}
+
 		// If an order was created for this hash, we will attempt to update it, otherwise create a new one.
 		$order = $orders->create_from_cart( tribe( Gateway::class ), $purchaser );
 		if ( ! $order instanceof WP_Post ) {
@@ -128,8 +132,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				$messages['failed-order-creation'],
 				[
 					'cart_items'  => tribe( Cart::class )->get_items_in_cart(),
-					'order' => $order,
-					'purchaser' => $purchaser,
+					'order'       => $order,
+					'purchaser'   => $purchaser,
 				]
 			);
 		}
@@ -258,7 +262,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		$order = tec_tc_orders()->by_args(
 			[
-				'status' => [
+				'status'           => [
 					tribe( Created::class )->get_wp_slug(),
 					tribe( Pending::class )->get_wp_slug(),
 				], // Potentially change this to method that fetch all non-final statuses.
@@ -403,7 +407,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 */
 	public function get_error_messages() {
 		$messages = [
-			'failed-order-creation' 		   => __( 'Creating new order failed, please refresh your checkout page.', 'event-tickets' ),
+			'failed-order-creation'            => __( 'Creating new order failed, please refresh your checkout page.', 'event-tickets' ),
 			'failed-completing-payment-intent' => __( 'Completing the Stripe PaymentIntent failed. Please try again.', 'event-tickets' ),
 			'failed-creating-payment-intent'   => __( 'Creating new Stripe PaymentIntent failed. Please try again.', 'event-tickets' ),
 			'failed-creating-order'            => __( 'Creating new Stripe order failed. Please try again.', 'event-tickets' ),
@@ -412,6 +416,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'failed-payment-intent-secret'     => __( 'Your payment failed security verification with Gateway. Please try again.', 'event-tickets' ),
 			'failed-payment'                   => __( 'Your payment method has failed. Please try again.', 'event-tickets' ),
 			'invalid-payment-intent-status'    => __( 'Your payment status was not recognized. Please try again.', 'event-tickets' ),
+			'empty-cart'                       => __( 'Cannot generate an order for an empty cart, please select new items to checkout.', 'event-tickets' ),
 		];
 		/**
 		 * Filter the error messages for Stripe checkout.
