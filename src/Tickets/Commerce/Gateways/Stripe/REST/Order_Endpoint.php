@@ -121,7 +121,14 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		if ( ! tribe( Cart::class )->has_items() ) {
-			return new WP_Error( 'tec-tc-empty-cart', $messages['empty-cart'], [ 'purchaser' => $purchaser, 'data' => $data ] );
+			return new WP_Error(
+				'tec-tc-empty-cart',
+				$messages['empty-cart'],
+				[
+					'purchaser' => $purchaser,
+					'data' => $data,
+				]
+			);
 		}
 
 		// If an order was created for this hash, we will attempt to update it, otherwise create a new one.
@@ -131,9 +138,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'tec-tc-gateway-stripe-order-creation-failed',
 				$messages['failed-order-creation'],
 				[
-					'cart_items'  => tribe( Cart::class )->get_items_in_cart(),
-					'order'       => $order,
-					'purchaser'   => $purchaser,
+					'cart_items' => tribe( Cart::class )->get_items_in_cart(),
+					'order'      => $order,
+					'purchaser'  => $purchaser,
 				]
 			);
 		}
