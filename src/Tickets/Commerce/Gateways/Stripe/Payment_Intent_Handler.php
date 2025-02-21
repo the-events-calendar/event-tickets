@@ -28,10 +28,9 @@ class Payment_Intent_Handler {
 	 *
 	 * @since 5.3.0
 	 *
-	 *
 	 * @param mixed $_deprecated Deprecated.
 	 */
-	public function create_payment_intent_for_cart( $_deprecated = false ) {
+	public function create_payment_intent_for_cart( $_deprecated = false ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 		// Somehow we already have a payment intent.
 		if ( $this->get() ) {
 			return;
@@ -58,7 +57,7 @@ class Payment_Intent_Handler {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $payment_intent
+	 * @param array $payment_intent The Payment Intent.
 	 *
 	 * @return void
 	 */
@@ -120,11 +119,11 @@ class Payment_Intent_Handler {
 			$expire = 1;
 		}
 
-		$is_cookie_set = setcookie( $this->get_payment_intent_cookie_name(), $payment_intent_id ?? '', $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, is_ssl(), true );
+		$is_cookie_set = setcookie( $this->get_payment_intent_cookie_name(), $payment_intent_id ?? '', $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, is_ssl(), true ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.cookies_setcookie
 
 		if ( $is_cookie_set ) {
 			// Overwrite local variable, so we can use it right away.
-			$_COOKIE[ $this->get_payment_intent_cookie_name() ] = $payment_intent_id;
+			$_COOKIE[ $this->get_payment_intent_cookie_name() ] = $payment_intent_id; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
 		}
 
 		return $is_cookie_set;
@@ -142,7 +141,7 @@ class Payment_Intent_Handler {
 	 * @return array|\WP_Error|null
 	 */
 	public function update_payment_intent( $data, \WP_Post $order ) {
-		$body           = [];
+		$body = [];
 
 		// Attempt to avoid an extra request by using the existing payment intent.
 		$payment_intent = $this->get();
@@ -290,6 +289,7 @@ class Payment_Intent_Handler {
 		return $payment_intent_description;
 	}
 
+	// phpcs:disable
 	/**************************************
 	 *
 	 * Deprecated methods and Properties
@@ -416,4 +416,5 @@ class Payment_Intent_Handler {
 	public function store_payment_intent( $payment_intent ) {
 		set_transient( $this->get_payment_intent_transient_name(), $payment_intent, 6 * HOUR_IN_SECONDS );
 	}
+	// phpcs:enable
 }

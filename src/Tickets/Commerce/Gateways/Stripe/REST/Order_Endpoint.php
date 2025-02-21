@@ -134,13 +134,15 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		tec_tc_orders()
 			->by_args(
 				[
-					'id' => $order->ID
+					'id' => $order->ID,
 				]
 			)
-			->set_args( [
-				'gateway_payload' => $payment_intent,
-				'gateway_order_id' => $payment_intent['id'],
-			] )
+			->set_args(
+				[
+					'gateway_payload'  => $payment_intent,
+					'gateway_order_id' => $payment_intent['id'],
+				]
+			)
 			->save();
 
 		$status = tribe( Status::class )->convert_to_commerce_status( $payment_intent['status'] );
@@ -156,11 +158,15 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		);
 
 		if ( ! in_array( $status->get_slug(), [ Created::SLUG, Pending::SLUG ], true ) ) {
-			return new WP_Error( 'tec-tc-gateway-stripe-failed-payment', $messages['failed-payment'], [
-				'order_id'     => $order->ID,
-				'status'       => $status->get_slug(),
-				'payment_data' => $data,
-			] );
+			return new WP_Error(
+				'tec-tc-gateway-stripe-failed-payment',
+				$messages['failed-payment'],
+				[
+					'order_id'     => $order->ID,
+					'status'       => $status->get_slug(),
+					'payment_data' => $data,
+				]
+			);
 		}
 
 		// Respond with the client_secret for Stripe Usage.
@@ -273,11 +279,15 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		);
 
 		if ( ! in_array( $status->get_slug(), [ Completed::SLUG, Pending::SLUG ], true ) ) {
-			return new WP_Error( 'tec-tc-gateway-stripe-failed-payment', $messages['failed-payment'], [
-				'order_id'     => $order->ID,
-				'status'       => $status->get_slug(),
-				'payment_data' => $payment_intent,
-			] );
+			return new WP_Error(
+				'tec-tc-gateway-stripe-failed-payment',
+				$messages['failed-payment'],
+				[
+					'order_id'     => $order->ID,
+					'status'       => $status->get_slug(),
+					'payment_data' => $payment_intent,
+				]
+			);
 		}
 
 		// Respond with the client_secret for Stripe Usage.
