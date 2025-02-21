@@ -240,7 +240,8 @@
 	<div class="tec-tickets__commerce-checkout-coupons-wrapper tribe-tickets__form tribe-common-b2">
 	<div  class="tec-tickets__commerce-checkout-cart-coupons" >
 		<input
-			 class="tec-tickets__commerce-checkout-cart-coupons__input tribe-common-form-control-text__input tribe-tickets__form-field-input" 			type="text"
+			class="tec-tickets__commerce-checkout-cart-coupons__input"
+			type="text"
 			id="coupon_input"
 			name="coupons"
 			aria-describedby="coupon_error"
@@ -256,21 +257,23 @@
 	<p id="coupon_error" class="tec-tickets__commerce-checkout-cart-coupons__error" style="display: none; color: red;" aria-live="polite" role="alert">
 		Invalid coupon code	</p>
 	<div  class="tec-tickets__commerce-checkout-cart-coupons__applied tribe-hidden" >
-		<span class="tec-tickets__commerce-checkout-cart-coupons__applied-text">
-			Coupon:			<span class="tec-tickets__commerce-checkout-cart-coupons__applied-value">
-							</span>
-			- Discount:			<span class="tec-tickets__commerce-checkout-cart-coupons__applied-discount">
-							</span>
-		</span>
-		<button class="tec-tickets__commerce-checkout-cart-coupons__remove-button" type="button">
-			<img
-				src="http://wordpress.test/wp-content/plugins/event-tickets/common/src/resources/images/icons/close.svg"
-				alt="Close icon"
-				width="20"
-				height="20"
-				title="Remove ticket"
-			>
-		</button>
+		<ul>
+			<li>
+				<span class="tec-tickets__commerce-checkout-cart-coupons__applied-text tribe-tickets__commerce-checkout-cart-footer-quantity-label">
+					<span class="tec-tickets__commerce-checkout-cart-coupons__applied-label">
+											</span>
+					<button class="tec-tickets__commerce-checkout-cart-coupons__remove-button" type="button">
+						<img
+							src="http://wordpress.test/wp-content/plugins/event-tickets/common/src/resources/images/icons/close.svg"
+							alt="Close icon"
+							title="Remove ticket"
+						>
+					</button>
+				</span>
+				<span class="tec-tickets__commerce-checkout-cart-coupons__applied-discount tribe-tickets__commerce-checkout-cart-footer-quantity-number">
+									</span>
+			</li>
+		</ul>
 	</div>
 </div>
 
