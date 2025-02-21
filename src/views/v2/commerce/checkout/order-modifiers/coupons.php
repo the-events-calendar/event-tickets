@@ -30,12 +30,12 @@ $apply_button_classes = [
 
 $input_container_classes = [
 	'tec-tickets__commerce-checkout-cart-coupons' => true,
-	'tribe-hidden'                                => ! empty( $coupon ),
+	'tribe-common-a11y-hidden'                    => ! empty( $coupon ),
 ];
 
 $applied_container_classes = [
 	'tec-tickets__commerce-checkout-cart-coupons__applied' => true,
-	'tribe-hidden'                                         => empty( $coupon ),
+	'tribe-common-a11y-hidden'                             => empty( $coupon ),
 ];
 
 ?>
