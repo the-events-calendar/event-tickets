@@ -2,25 +2,25 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
 
+use Generator;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
+use TEC\Tickets\Commerce\Cart as Commerce_Cart;
+use TEC\Tickets\Commerce\Cart\Cart_Interface as Cart;
+use TEC\Tickets\Commerce\Order_Modifiers\API\Fees as ApiFees;
+use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal\Fees as PayPalFees;
 use TEC\Tickets\Commerce\Order_Modifiers\Values\Float_Value;
+use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
+use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
+use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\OrderModifiers\Fee_Creator;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
+use Tribe\Tickets\Test\Traits\With_No_Object_Storage;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
-use TEC\Tickets\Commerce\Cart\Cart_Interface as Cart;
-use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
-use Tribe\Tests\Traits\With_Uopz;
-use TEC\Tickets\Commerce\Cart as Commerce_Cart;
-use Generator;
-use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal\Fees as PayPalFees;
-use TEC\Tickets\Commerce\Order_Modifiers\API\Fees as ApiFees;
-use Tribe\Tickets\Test\Traits\With_No_Object_Storage;
-use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
-use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 
 class Fees_Test extends Controller_Test_Case {
 	use Ticket_Maker;

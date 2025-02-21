@@ -20,9 +20,10 @@ tribe.tickets.commerce = {};
  * @since 5.1.9
  * @param  {Object} $   jQuery
  * @param  {Object} obj tribe.tickets.commerce
+ * @param  {Object} tecTicketsCommerce The global object for the Tickets Commerce.
  * @return {void}
  */
-( function( $, obj ) {
+( function( $, obj, tecTicketsCommerce ) {
 	const $document = $( document );
 
 	/**
@@ -52,6 +53,17 @@ tribe.tickets.commerce = {};
 		purchaserFormContainer: '.tribe-tickets__commerce-checkout-purchaser-info-wrapper',
 		purchaserName: '.tribe-tickets__commerce-checkout-purchaser-info-form-field-name',
 		purchaserEmail: '.tribe-tickets__commerce-checkout-purchaser-info-form-field-email',
+
+		// Coupon related selectors.
+		couponAppliedDiscount: '.tec-tickets__commerce-checkout-cart-coupons__applied-discount',
+		couponAppliedLabel: '.tec-tickets__commerce-checkout-cart-coupons__applied-label',
+		couponAppliedSection: '.tec-tickets__commerce-checkout-cart-coupons__applied',
+		couponApplyButton: '#coupon_apply',
+		couponError: '.tec-tickets__commerce-checkout-cart-coupons__error',
+		couponInput: '#coupon_input',
+		couponInputContainer: '.tec-tickets__commerce-checkout-cart-coupons',
+		couponInputErrorClass: 'tribe-tickets__form-field-input--error',
+		couponRemoveButton: '.tec-tickets__commerce-checkout-cart-coupons__remove-button',
 	};
 
 	/**
@@ -161,6 +173,12 @@ tribe.tickets.commerce = {};
 	obj.bindCheckoutEvents = function( $container ) {
 		$document.trigger( 'beforeSetup.tecTicketsCommerce', [ $container ] );
 
+		// Bind coupon apply event.
+		obj.bindCouponApply();
+
+		// Bind coupon remove event.
+		obj.bindCouponRemove();
+
 		// Bind container based events.
 		obj.bindCheckoutItemDescriptionToggle( $container );
 
@@ -204,5 +222,222 @@ tribe.tickets.commerce = {};
 		} );
 	};
 
+	/**
+	 * Updates the total price displayed on the page.
+	 *
+	 * @since TBD
+	 * @param {string} newAmount The new total amount to display.
+	 */
+	obj.updateTotalPrice = function( newAmount ) {
+		const $totalPriceElement = $( '.tribe-tickets__commerce-checkout-cart-footer-total-wrap' );
+
+		const parser = new DOMParser();
+		const unescapedAmount = parser.parseFromString(
+			`<!doctype html><body>${ newAmount }`,
+			'text/html',
+		).body.textContent;
+
+		$totalPriceElement.text( unescapedAmount );
+	};
+
+	/**
+	 * Updates the coupon discount displayed on the page.
+	 *
+	 * @since TBD
+	 * @param {string} discount The new discount to display.
+	 */
+	obj.updateCouponDiscount = function( discount ) {
+		const $couponValueElement = $( obj.selectors.couponAppliedDiscount );
+
+		// Use DOMParser to unescape the discount value
+		const parser = new DOMParser();
+		const unescapedDiscount = parser.parseFromString(
+			`<!doctype html><body>${ discount }`,
+			'text/html',
+		).body.textContent;
+
+		$couponValueElement.text( unescapedDiscount );
+	};
+
+	/**
+	 * Updates the coupon label displayed on the page.
+	 *
+	 * @since TBD
+	 * @param {string} label The new label to display.
+	 */
+	obj.updateCouponLabel = function( label ) {
+		const $couponLabelElement = $( obj.selectors.couponAppliedLabel );
+
+		// Use DOMParser to unescape the discount value
+		const parser = new DOMParser();
+		const unescapedLabel = parser.parseFromString(
+			`<!doctype html><body>${ label }`,
+			'text/html',
+		).body.textContent;
+
+		$couponLabelElement.text( unescapedLabel );
+	};
+
+	obj.bindCouponApply = function() {
+		let ajaxInProgress = false;
+
+		$document.on( 'click', obj.selectors.couponApplyButton, applyCoupon );
+		$document.on( 'keydown', obj.selectors.couponInput, function( e ) {
+			if ( e.key === 'Enter' ) {
+				e.preventDefault();
+				applyCoupon();
+			}
+		} );
+
+		/**
+		 * Function to apply the coupon and handle AJAX request.
+		 *
+		 * @since TBD
+		 */
+		function applyCoupon() {
+			// Prevent multiple AJAX requests at once.
+			if ( ajaxInProgress ) {
+				return;
+			}
+
+			const $inputContainer = $( obj.selectors.couponInputContainer );
+			const $couponInput = $( obj.selectors.couponInput );
+			const couponValue = $couponInput.val().trim();
+			const nonce = $( obj.selectors.nonce ).val();
+			const $errorMessage = $( obj.selectors.couponError );
+
+			// Hide the error message initially.
+			$errorMessage.hide();
+
+			// Ensure the coupon is not empty.
+			if ( ! couponValue ) {
+				$errorMessage.text( tecTicketsCommerce.i18n.couponCodeEmpty ).show();
+				$couponInput.addClass( obj.selectors.couponInputErrorClass );
+				return;
+			}
+
+			ajaxInProgress = true;
+			obj.loaderShow();
+
+			// Get the cart hash from the URL.
+			const cartHash = window.location.search.match( /tec-tc-cookie=([^&]*)/ );
+
+			const requestData = {
+				coupon: couponValue,
+				nonce: nonce,
+				payment_intent_id: window.tecTicketsCommerceGatewayStripeCheckout.paymentIntentData.id,
+				purchaser_data: obj.getPurchaserData( $( obj.selectors.purchaserFormContainer ) ),
+				cart_hash: cartHash[ 1 ],
+			};
+
+			$.ajax( {
+				url: `${ tecTicketsCommerce.restUrl }coupons/apply`,
+				method: 'POST',
+				data: requestData,
+				success( response ) {
+					if ( response.success ) {
+						// Hide input and button, show applied coupon.
+						$couponInput.removeClass( obj.selectors.couponInputErrorClass );
+						$inputContainer.addClass( obj.selectors.hiddenElement.className() );
+
+						// Display coupon value and discount.
+						obj.updateCouponDiscount( response.discount );
+						obj.updateCouponLabel( response.label );
+						obj.updateTotalPrice( response.cart_amount );
+						$( obj.selectors.couponAppliedSection )
+							.removeClass( obj.selectors.hiddenElement.className() );
+					} else {
+						$errorMessage.text( response.message || tecTicketsCommerce.i18n.invalidCoupon ).show();
+						$couponInput.addClass( obj.selectors.couponInputErrorClass );
+						$inputContainer.removeClass( obj.selectors.hiddenElement.className() );
+					}
+				},
+				error() {
+					$errorMessage.text( tecTicketsCommerce.i18n.couponApplyError ).show();
+					$couponInput.addClass( obj.selectors.couponInputErrorClass );
+					$inputContainer.removeClass( obj.selectors.hiddenElement.className() );
+				},
+				complete() {
+					obj.loaderHide();
+					ajaxInProgress = false;
+				},
+			} );
+		}
+	};
+
+	/**
+	 * Bind the remove coupon button.
+	 *
+	 * @since TBD
+	 */
+	obj.bindCouponRemove = function() {
+		$document.on( 'click', obj.selectors.couponRemoveButton, function() {
+			let ajaxInProgress = false;
+
+			// Prevent multiple AJAX requests at once.
+			if ( ajaxInProgress ) {
+				return;
+			}
+
+			const $inputContainer = $( obj.selectors.couponInputContainer );
+			const couponValue = $( obj.selectors.couponInput ).val().trim();
+			const nonce = $( obj.selectors.nonce ).val();
+			const $errorMessage = $( obj.selectors.couponError );
+
+			// Hide the error message initially.
+			$errorMessage.hide();
+
+			// Ensure the coupon is not empty.
+			if ( ! couponValue ) {
+				$errorMessage.text( tecTicketsCommerce.i18n.cantDetermineCoupon ).show();
+				return;
+			}
+
+			ajaxInProgress = true;
+			obj.loaderShow();
+
+			const cartHash = window.location.search.match( /tec-tc-cookie=([^&]*)/ );
+
+			const requestData = {
+				nonce: nonce,
+				coupon: couponValue,
+				payment_intent_id: window.tecTicketsCommerceGatewayStripeCheckout.paymentIntentData.id,
+				cart_hash: cartHash[ 1 ],
+			};
+
+			// Perform the AJAX request to remove the coupon.
+			$.ajax( {
+				url: `${ window.tecTicketsCommerce.restUrl }coupons/remove`,
+				method: 'POST',
+				data: requestData,
+				beforeSend() {
+					obj.loaderShow();
+				},
+				success( response ) {
+					if ( response.success ) {
+						// Show input and apply button again.
+						$inputContainer.show();
+						$( obj.selectors.couponInput ).val( '' );
+
+						// Hide the applied coupon section.
+						$( obj.selectors.couponAppliedSection ).hide();
+						obj.updateTotalPrice( response.cart_amount );
+					} else {
+						$errorMessage
+							.text( response.message || tecTicketsCommerce.i18n.couponRemoveFail )
+							.show();
+					}
+				},
+				error() {
+					$errorMessage.text( tecTicketsCommerce.i18n.couponRemoveError ).show();
+				},
+				complete() {
+					obj.loaderHide();
+					ajaxInProgress = false;
+				},
+			} );
+		} );
+	};
+
 	$( obj.ready );
-} )( jQuery, tribe.tickets.commerce );
+} )( jQuery, tribe.tickets.commerce, window.tecTicketsCommerce || {} );

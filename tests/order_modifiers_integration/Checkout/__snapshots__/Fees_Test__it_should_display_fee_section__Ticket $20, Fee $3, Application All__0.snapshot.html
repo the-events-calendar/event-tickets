@@ -24,7 +24,7 @@
 </header>
 
 	<div class="tribe-tickets__commerce-checkout-cart-items">
-					<article
+	<article
 	 class="tribe-tickets__commerce-checkout-cart-item post-{TICKET_ID} tec_tc_ticket type-tec_tc_ticket status-publish hentry tribe-common-b1" 	 data-ticket-id="{TICKET_ID}" data-ticket-quantity="2" data-ticket-price="20.00" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details">
@@ -74,11 +74,50 @@
 	&#x24;40.00</div>
 
 </article>
-	</div>
+</div>
 
 	
 <footer  class="tribe-tickets__commerce-checkout-cart-footer tribe-common-b1" >
-	
+	<div class="tec-tickets__commerce-checkout-coupons-wrapper tribe-tickets__form tribe-common-b2">
+	<div  class="tec-tickets__commerce-checkout-cart-coupons" >
+		<input
+			class="tec-tickets__commerce-checkout-cart-coupons__input"
+			type="text"
+			id="coupon_input"
+			name="coupons"
+			aria-describedby="coupon_error"
+			aria-label="Enter coupon code"
+			placeholder="Enter coupon code"
+			value=""
+		/>
+		<button
+			id="coupon_apply"
+			 class="tec-tickets__commerce-checkout-cart-coupons__apply-button tribe-common-c-btn" 		>
+			Apply		</button>
+	</div>
+	<p id="coupon_error" class="tec-tickets__commerce-checkout-cart-coupons__error" style="display: none; color: red;" aria-live="polite" role="alert">
+		Invalid coupon code	</p>
+	<div  class="tec-tickets__commerce-checkout-cart-coupons__applied tribe-common-a11y-hidden" >
+		<ul>
+			<li>
+				<span class="tec-tickets__commerce-checkout-cart-coupons__applied-text tribe-tickets__commerce-checkout-cart-footer-quantity-label">
+					<span class="tec-tickets__commerce-checkout-cart-coupons__applied-label">
+											</span>
+					<button class="tec-tickets__commerce-checkout-cart-coupons__remove-button" type="button">
+						<img
+							src="http://wordpress.test/wp-content/plugins/event-tickets/common/src/resources/images/icons/close.svg"
+							alt="Close icon"
+							title="Remove ticket"
+						>
+					</button>
+				</span>
+				<span class="tec-tickets__commerce-checkout-cart-coupons__applied-discount tribe-tickets__commerce-checkout-cart-footer-quantity-number">
+									</span>
+			</li>
+		</ul>
+	</div>
+</div>
+
 <div class="tribe-tickets__commerce-checkout-cart-footer-order-modifier-fees">
 	<ul>
 					<li>
