@@ -120,12 +120,11 @@ const RSVP = ( {
 		 * Filters the components injected before the header of the RSVP block.
 		 *
 		 * @since TBD
-		 *
 		 * @return {Array} The injected components.
 		 */
 		const injectedComponentsTicketsBeforeHeader = applyFilters(
 			'tec.tickets.blocks.RSVP.ComponentsBeforeHeader',
-			[]
+			[],
 		);
 
 		return (
