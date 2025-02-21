@@ -50,12 +50,38 @@ class Agnostic_Cart extends Abstract_Cart {
 			return [];
 		}
 
+		$this->load_items_from_transient();
+
+		return $this->get_items_as_array();
+	}
+
+	/**
+	 * Loads the items from the transient.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function load_items_from_transient() {
 		$items = get_transient( $this->get_transient_key( $this->get_hash() ) );
 		if ( is_array( $items ) && ! empty( $items ) ) {
 			$this->set_items_from_array( $items );
 		}
 
-		return $this->get_items_as_array();
+		$this->reset_calculations();
+	}
+
+	/**
+	 * Sets the cart hash.
+	 *
+	 * @since 5.1.9
+	 * @since 5.2.0 Renamed to set_hash instead of set_id
+	 *
+	 * @param string $hash The hash to set.
+	 */
+	public function set_hash( $hash ) {
+		parent::set_hash( $hash );
+		$this->load_items_from_transient();
 	}
 
 	/**
@@ -94,16 +120,23 @@ class Agnostic_Cart extends Abstract_Cart {
 	 * by the cart implementation.
 	 *
 	 * @since TBD
+	 *
+	 * @return bool Whether the cart was saved.
 	 */
 	public function save() {
-		$cart_hash = tribe( Cart::class )->get_cart_hash( true );
+		$cart_hash = $this->get_hash();
 
-		if ( false === $cart_hash ) {
-			return false;
+		// If we don't have a cart hash, generate one.
+		if ( empty( $cart_hash ) ) {
+			$cart_hash = $this->generate_and_set_cart_hash();
+
+			// If we still don't have a cart hash, bail.
+			if ( false === $cart_hash ) {
+				return false;
+			}
 		}
 
-		$this->set_hash( $cart_hash );
-
+		// If we don't have any items, clear the cart and bail.
 		if ( ! $this->has_items() ) {
 			$this->clear();
 
@@ -117,6 +150,25 @@ class Agnostic_Cart extends Abstract_Cart {
 		);
 
 		tribe( Cart::class )->set_cart_hash_cookie( $cart_hash );
+
+		return true;
+	}
+
+	/**
+	 * Generates and sets the cart hash.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the cart hash was generated and set.
+	 */
+	protected function generate_and_set_cart_hash(): bool {
+		$cart_hash = tribe( Cart::class )->get_cart_hash( true );
+
+		if ( false === $cart_hash ) {
+			return false;
+		}
+
+		$this->set_hash( $cart_hash );
 
 		return true;
 	}
