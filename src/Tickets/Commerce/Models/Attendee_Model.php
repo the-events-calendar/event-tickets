@@ -9,9 +9,10 @@
 
 namespace TEC\Tickets\Commerce\Models;
 
+use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Status\Undefined;
 use Tribe\Models\Post_Types\Base;
 use TEC\Tickets\Commerce\Attendee;
-use Tribe\Tickets\Plus\Attendee_Registration\IAC;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -40,13 +41,20 @@ class Attendee_Model extends Base {
 
 			$ticket = tec_tc_get_ticket( $ticket_id );
 			$order  = tec_tc_get_order( $this->post->post_parent );
+			$status = tribe( Undefined::class )->get_name();
+
+			$is_valid_order = Order::is_valid( $order );
+
+			// We can only get the status when the order is valid.
+			if ( $is_valid_order ) {
+				$status = $order->status_obj->get_name();
+			}
 
 			$is_product_deleted = empty( $ticket ) && ! $ticket instanceof \WP_Post;
 
 			$checked_in           = Arr::get( $post_meta, [ Attendee::$checked_in_meta_key, 0 ] );
 			$security             = Arr::get( $post_meta, [ Attendee::$security_code_meta_key, 0 ] );
 			$opt_out              = tribe_is_truthy( Arr::get( $post_meta, [ Attendee::$optout_meta_key, 0 ] ) );
-			$status               = $order->status_obj->get_name();
 			$ticket_sent          = (int) Arr::get( $post_meta, [ Attendee::$ticket_sent_meta_key, 0 ] );
 			$deleted_ticket_title = Arr::get( $post_meta, [ Attendee::$deleted_ticket_meta_key, 0 ] );
 			$full_name            = Arr::get( $post_meta, [ Attendee::$full_name_meta_key, 0 ] );
@@ -60,8 +68,6 @@ class Attendee_Model extends Base {
 			$ticket_unique_id = empty( $ticket_unique_id ) ? $post_id : $ticket_unique_id;
 
 			$ticket_title = ( ! $is_product_deleted ? $ticket->post_title : $deleted_ticket_title . ' ' . __( '(deleted)', 'event-tickets' ) );
-
-			$is_purchaser = $email === $order->purchaser_email;
 
 			$properties = [
 				'order_id'        => $this->post->post_parent,
@@ -77,13 +83,13 @@ class Attendee_Model extends Base {
 				'currency'        => $currency,
 
 				// Provider.
-				'provider'        => $order->provider,
-				'provider_slug'   => $order->provider_slug,
+				'provider'        => null,
+				'provider_slug'   => null,
 
 				// Purchaser.
-				'purchaser_id'    => $order->purchaser['user_id'],
-				'purchaser_name'  => $order->purchaser['full_name'],
-				'purchaser_email' => $order->purchaser['email'],
+				'purchaser_id'    => null,
+				'purchaser_name'  => null,
+				'purchaser_email' => null,
 
 				// Fields for Email Tickets.
 				'event_id'        => $event_id,
@@ -97,8 +103,22 @@ class Attendee_Model extends Base {
 
 				// Handle initial Attendee flags.
 				'is_subscribed'   => $is_subscribed,
-				'is_purchaser'    => $is_purchaser,
+				'is_purchaser'    => false,
 			];
+
+			// Certain properties are only available when the order is valid.
+			if ( $is_valid_order ) {
+				// Provider.
+				$properties['provider']      = $order->provider;
+				$properties['provider_slug'] = $order->provider_slug;
+
+				// Purchaser.
+				$properties['purchaser_id']    = $order->purchaser['user_id'];
+				$properties['purchaser_name']  = $order->purchaser['full_name'];
+				$properties['purchaser_email'] = $order->purchaser['email'];
+
+				$properties['is_purchaser'] = $email === $order->purchaser_email;
+			}
 		} catch ( \Exception $e ) {
 			return [];
 		}
