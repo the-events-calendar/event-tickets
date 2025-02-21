@@ -117,6 +117,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return $purchaser;
 		}
 
+		// If an order was created for this hash, we will attempt to update it, otherwise create a new one.
 		$order = $orders->create_from_cart( tribe( Gateway::class ), $purchaser );
 
 		$payment_intent = tribe( Payment_Intent_Handler::class )->update_payment_intent( $data, $order );
@@ -129,19 +130,20 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-stripe-failed-creating-order', $messages['failed-creating-order'], $order );
 		}
 
+		$status = tribe( Status::class )->convert_to_commerce_status( $payment_intent['status'] );
+
 		// Orders need to pass the Pending status always.
 		$updated = $orders->modify_status(
 			$order->ID,
-			Pending::SLUG,
+			$status->get_slug(),
 			[
 				'gateway_payload'  => $payment_intent,
 				'gateway_order_id' => $payment_intent['id'],
 			]
 		);
 
-		if ( is_wp_error( $updated ) ) {
-			$orders->checkout_completed( $order->ID );
-			return $updated;
+		if ( ! $updated ) {
+			return new WP_Error( 'tec-tc-gateway-stripe-updating-order', $messages['failed-order-status-change'], $order );
 		}
 
 		// Respond with the client_secret for Stripe Usage.
@@ -349,6 +351,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'failed-completing-payment-intent' => __( 'Completing the Stripe PaymentIntent failed. Please try again.', 'event-tickets' ),
 			'failed-creating-payment-intent'   => __( 'Creating new Stripe PaymentIntent failed. Please try again.', 'event-tickets' ),
 			'failed-creating-order'            => __( 'Creating new Stripe order failed. Please try again.', 'event-tickets' ),
+			'failed-order-status-change'       => __( 'Failed to modify the order status. Please try again.', 'event-tickets' ),
 		];
 
 		/**

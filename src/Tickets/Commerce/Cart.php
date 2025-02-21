@@ -296,6 +296,24 @@ class Cart {
 	}
 
 	/**
+	 * Based on the current time when is the cart going to expire.
+	 *
+	 * @since TBD
+	 *
+	 * @return int
+	 */
+	public function get_cart_expiration(): int {
+		/**
+		 * Filters the life span of the Cart Cookie.
+		 *
+		 * @since 5.1.9
+		 *
+		 * @param int $expires The expiry time, as passed to setcookie().
+		 */
+		return (int) apply_filters( 'tec_tickets_commerce_cart_expiration', time() + ( 1 * HOUR_IN_SECONDS ) );
+	}
+
+	/**
 	 * Sets the cart hash cookie or resets the cookie.
 	 *
 	 * @since 5.1.9
@@ -309,14 +327,7 @@ class Cart {
 			return false;
 		}
 
-		/**
-		 * Filters the life span of the Cart Cookie.
-		 *
-		 * @since 5.1.9
-		 *
-		 * @param int $expires The expiry time, as passed to setcookie().
-		 */
-		$expire  = apply_filters( 'tec_tickets_commerce_cart_expiration', time() + 1 * HOUR_IN_SECONDS );
+		$expire = $this->get_cart_expiration();
 
 		// When null means we are deleting.
 		if ( null === $value ) {

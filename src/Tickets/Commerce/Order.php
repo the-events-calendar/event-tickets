@@ -558,7 +558,7 @@ class Order extends Abstract_Order {
 
 		$hash              = $cart->get_cart_hash();
 		$existing_order_id = null;
-		
+
 		$order_args = [
 			'title'                => $this->generate_order_title( $original_cart_items, $hash ),
 			'total_value'          => $total->get_decimal(),
@@ -991,7 +991,7 @@ class Order extends Abstract_Order {
 				'order'            => 'DESC',
 				'status'           => 'any',
 				'gateway_order_id' => $gateway_order_id,
-			] 
+			]
 		)->first();
 	}
 
@@ -1213,7 +1213,7 @@ class Order extends Abstract_Order {
 			'tec-tickets-commerce-stripe-webhooks'
 		);
 	}
-	
+
 	/**
 	 * Generate a hashed key for the order for public view.
 	 *
@@ -1228,7 +1228,7 @@ class Order extends Abstract_Order {
 		$time  = time();
 		$email = sanitize_email( $email );
 		$hash  = empty( $hash ) ? wp_generate_password() : $hash;
-		
+
 		return substr( md5( $hash . $email . $time ), 0, 12 );
 	}
 }

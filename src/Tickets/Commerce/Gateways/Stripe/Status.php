@@ -27,6 +27,8 @@ class Status {
 	/**
 	 * Order Status in Stripe for when the payment intent is first created or when payment is denied.
 	 *
+	 * Deprecated in favor of REQUIRES_PAYMENT_METHOD.
+	 *
 	 * @since 5.3.0
 	 *
 	 * @var string
