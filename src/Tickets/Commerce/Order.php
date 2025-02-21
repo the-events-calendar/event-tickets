@@ -692,6 +692,7 @@ class Order extends Abstract_Order {
 		$locked = $this->lock_order( $existing_order_id );
 
 		if ( ! $locked ) {
+			$this->unlock_order( $existing_order_id );
 			return false;
 		}
 

@@ -121,6 +121,18 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		// If an order was created for this hash, we will attempt to update it, otherwise create a new one.
 		$order = $orders->create_from_cart( tribe( Gateway::class ), $purchaser );
+		if ( ! $order instanceof \WP_Post )  {
+			return new WP_Error(
+				'tec-tc-gateway-stripe-order-creation-failed',
+				$messages['failed-order-creation'],
+				[
+					'cart_items'  => tribe( Cart::class )->get_items_in_cart(),
+					'order' => $order,
+					'purchaser' => $purchaser,
+				]
+			);
+		}
+
 		$payment_intent = tribe( Payment_Intent_Handler::class )->update_payment_intent( $data, $order );
 
 		if ( is_wp_error( $payment_intent ) ) {
@@ -158,6 +170,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		);
 
 		if ( ! in_array( $status->get_slug(), [ Created::SLUG, Pending::SLUG ], true ) ) {
+			// When the payment fails we unlock the order.
+			tribe( Order::class )->unlock_order( $order->ID );
+
 			return new WP_Error(
 				'tec-tc-gateway-stripe-failed-payment',
 				$messages['failed-payment'],
@@ -168,6 +183,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				]
 			);
 		}
+
+		// Ensure we unlock the order when the payment is successful.
+		tribe( Order::class )->unlock_order( $order->ID );
 
 		// Respond with the client_secret for Stripe Usage.
 		$response['success']       = true;
@@ -384,6 +402,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 */
 	public function get_error_messages() {
 		$messages = [
+			'failed-order-creation' 		   => __( 'Creating new order failed, please refresh your checkout page.', 'event-tickets' ),
 			'failed-completing-payment-intent' => __( 'Completing the Stripe PaymentIntent failed. Please try again.', 'event-tickets' ),
 			'failed-creating-payment-intent'   => __( 'Creating new Stripe PaymentIntent failed. Please try again.', 'event-tickets' ),
 			'failed-creating-order'            => __( 'Creating new Stripe order failed. Please try again.', 'event-tickets' ),
