@@ -11,11 +11,7 @@ use Tribe\Tests\Traits\With_Uopz;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe\Tests\Traits\With_Clock_Mock;
 use Tribe__Date_Utils as Dates;
-use TEC\Tickets\Commerce\Order_Modifiers\Controller as Order_Modifiers_Controller;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Fees as Checkout_Fees;
-use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal\Fees as Checkout_PayPal_Fees;
-use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe\Fees as Checkout_Stripe_Fees;
-use TEC\Tickets\Commerce\Order_Modifiers\API\Fees as API_Fees;
 use TEC\Tickets\Commerce\Order;
 
 class Emails_Test extends Controller_Test_Case {
@@ -62,6 +58,7 @@ class Emails_Test extends Controller_Test_Case {
 	public function it_should_include_fees_in_purchase_receipt() {
 		$this->freeze_time( Dates::immutable( '2025-02-20 10:00:00' ) );
 		$this->make_controller()->register();
+		$this->make_controller( Checkout_Fees::class )->register();
 		$post      = static::factory()->post->create( [ 'post_title' => 'Event post' ] );
 		$ticket_id = $this->create_tc_ticket( $post, 50 );
 
@@ -90,6 +87,7 @@ class Emails_Test extends Controller_Test_Case {
 	public function it_should_include_fees_in_order_completed() {
 		$this->freeze_time( Dates::immutable( '2025-02-20 10:00:00' ) );
 		$this->make_controller()->register();
+		$this->make_controller( Checkout_Fees::class )->register();
 		$post      = static::factory()->post->create( [ 'post_title' => 'Event post' ] );
 		$ticket_id = $this->create_tc_ticket( $post, 50 );
 
@@ -119,6 +117,7 @@ class Emails_Test extends Controller_Test_Case {
 	public function it_should_not_break_template_when_adding_multiple_fees_to_same_ticket() {
 		$this->freeze_time( Dates::immutable( '2025-02-20 10:00:00' ) );
 		$this->make_controller()->register();
+		$this->make_controller( Checkout_Fees::class )->register();
 		$post      = static::factory()->post->create( [ 'post_title' => 'Event post' ] );
 		$ticket_id = $this->create_tc_ticket( $post, 50 );
 
@@ -150,6 +149,7 @@ class Emails_Test extends Controller_Test_Case {
 	public function it_should_allow_multiple_fees_of_different_types_on_the_same_ticket() {
 		$this->freeze_time( Dates::immutable( '2025-02-20 10:00:00' ) );
 		$this->make_controller()->register();
+		$this->make_controller( Checkout_Fees::class )->register();
 		$post      = static::factory()->post->create( [ 'post_title' => 'Event post' ] );
 		$ticket_id = $this->create_tc_ticket( $post, 50 );
 
