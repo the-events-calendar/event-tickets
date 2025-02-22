@@ -12,6 +12,7 @@ namespace TEC\Tickets\Commerce;
 use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Gateways\Contracts\Gateway_Interface;
+use TEC\Tickets\Commerce\Status\Created;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Refunded;
 use TEC\Tickets\Commerce\Status\Reversed;
@@ -358,22 +359,39 @@ class Order extends Abstract_Order {
 	 * @since 5.1.9
 	 * @since 5.18.1 Wrap status update in a transaction to prevent race conditions.
 	 *
-	 * @param int    $order_id        Which order ID will be updated.
-	 * @param string $new_status_slug Which Order Status we are modifying to.
-	 * @param array  $extra_args      Extra repository arguments.
+	 * @param int                     $order_id        Which order ID will be updated.
+	 * @param string|Status_Interface $new_status      Which Order Status we are modifying to.
+	 * @param array                   $extra_args      Extra repository arguments.
 	 *
-	 * @return bool|\WP_Error
+	 * @return bool
 	 */
-	public function modify_status( $order_id, $new_status_slug, array $extra_args = [] ) {
-		$new_status = tribe( Status\Status_Handler::class )->get_by_slug( $new_status_slug );
+	public function modify_status( $order_id, $new_status, array $extra_args = [] ): bool {
+		if ( ! $new_status instanceof Status\Status_Interface ) {
+			$new_status = tribe( Status\Status_Handler::class )->get_by_slug( (string) $new_status );
+		}
 
-		if ( ! $new_status ) {
+		if ( ! $new_status instanceof Status\Status_Interface ) {
 			return false;
 		}
 
+		$required_previous_status = $new_status->required_previous_status();
+		if ( $required_previous_status ) {
+			$order = tec_tc_get_order( $order_id );
+			foreach ( $required_previous_status as $required_status ) {
+				// If the required status is present we skip that status.
+				if ( isset( $order->status_log[ $required_status->get_slug() ] ) ) {
+					continue;
+				}
+
+				// Recursively call the modify_status method to ensure all required statuses are met.
+				$this->modify_status( $order_id, $required_status, $extra_args );
+			}
+		}
+
+		// we specifically only lock the order transactions after the required statuses have been met.
 		DB::beginTransaction();
 
-		// During this operations - the order should be locked!
+		// During these operations - the order should be locked!
 		$locked = $this->lock_order( $order_id );
 
 		// If we were unable to lock the order, bail.
@@ -558,7 +576,7 @@ class Order extends Abstract_Order {
 
 		$hash              = $cart->get_cart_hash();
 		$existing_order_id = null;
-		
+
 		$order_args = [
 			'title'                => $this->generate_order_title( $original_cart_items, $hash ),
 			'total_value'          => $total->get_decimal(),
@@ -578,7 +596,7 @@ class Order extends Abstract_Order {
 		if ( $hash ) {
 			$existing_order_id = tec_tc_orders()->by_args(
 				[
-					'status' => tribe( Pending::class )->get_wp_slug(),
+					'status' => [ tribe( Pending::class )->get_wp_slug(), tribe( Created::class )->get_wp_slug() ],
 					'hash'   => $hash,
 				]
 			)->first_id();
@@ -691,6 +709,7 @@ class Order extends Abstract_Order {
 		$locked = $this->lock_order( $existing_order_id );
 
 		if ( ! $locked ) {
+			$this->unlock_order( $existing_order_id );
 			return false;
 		}
 
@@ -991,7 +1010,7 @@ class Order extends Abstract_Order {
 				'order'            => 'DESC',
 				'status'           => 'any',
 				'gateway_order_id' => $gateway_order_id,
-			] 
+			]
 		)->first();
 	}
 
@@ -1213,7 +1232,7 @@ class Order extends Abstract_Order {
 			'tec-tickets-commerce-stripe-webhooks'
 		);
 	}
-	
+
 	/**
 	 * Generate a hashed key for the order for public view.
 	 *
@@ -1228,7 +1247,7 @@ class Order extends Abstract_Order {
 		$time  = time();
 		$email = sanitize_email( $email );
 		$hash  = empty( $hash ) ? wp_generate_password() : $hash;
-		
+
 		return substr( md5( $hash . $email . $time ), 0, 12 );
 	}
 }

@@ -66,4 +66,13 @@ class Completed extends Status_Abstract {
 			tribe( Refunded::class ),
 		];
 	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function required_previous_status(): array {
+		return [
+			tribe( Pending::class ),
+		];
+	}
 }

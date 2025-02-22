@@ -280,19 +280,48 @@ class Cart {
 	}
 
 	/**
+	 * Determine if the cart has items.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the cart has items.
+	 */
+	public function has_items(): bool {
+		return $this->get_repository()->has_items();
+	}
+
+	/**
 	 * Clear the cart.
 	 *
 	 * @since 5.1.9
 	 *
 	 * @return bool
 	 */
-	public function clear_cart() {
+	public function clear_cart(): bool {
 		$this->set_cart_hash_cookie( null );
 		$this->get_repository()->clear();
 
 		unset( $_COOKIE[ static::get_cart_hash_cookie_name() ] );
 
 		return delete_transient( static::get_current_cart_transient() );
+	}
+
+	/**
+	 * Based on the current time when is the cart going to expire.
+	 *
+	 * @since TBD
+	 *
+	 * @return int
+	 */
+	public function get_cart_expiration(): int {
+		/**
+		 * Filters the life span of the Cart Cookie.
+		 *
+		 * @since 5.1.9
+		 *
+		 * @param int $expires The expiry time, as passed to setcookie().
+		 */
+		return (int) apply_filters( 'tec_tickets_commerce_cart_expiration', time() + ( 1 * HOUR_IN_SECONDS ) );
 	}
 
 	/**
@@ -309,14 +338,7 @@ class Cart {
 			return false;
 		}
 
-		/**
-		 * Filters the life span of the Cart Cookie.
-		 *
-		 * @since 5.1.9
-		 *
-		 * @param int $expires The expiry time, as passed to setcookie().
-		 */
-		$expire  = apply_filters( 'tec_tickets_commerce_cart_expiration', time() + 1 * HOUR_IN_SECONDS );
+		$expire = $this->get_cart_expiration();
 
 		// When null means we are deleting.
 		if ( null === $value ) {

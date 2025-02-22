@@ -85,8 +85,10 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @param array errors an array of arrays. Each base array is keyed with the error code and cotains a list of error
 	 *     messages.
 	 */
-	obj.handleErrorDisplay = ( errors ) => {
+	obj.handleErrorDisplay = ( errors, afterDisplay = () => {} ) => {
 		errors.map( e => obj.showNotice( {}, '', e[ 1 ] ) );
+
+		afterDisplay();
 	};
 
 	/**
@@ -240,16 +242,22 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @return {boolean}
 	 */
-	obj.handlePaymentError = ( data ) => {
+	obj.handlePaymentError = async ( data ) => {
 		$( obj.selectors.cardErrors ).val( data.error.message );
 		tribe.tickets.debug.log( 'stripe', 'handlePaymentError', data );
 
-		tribe.tickets.loader.hide( obj.checkoutContainer );
+		// If we have a payment intent, we need to update the order.
+		if ( data.error.payment_intent ) {
+			const response = await obj.handleUpdateOrder( data.error.payment_intent );
+		}
 
 		return obj.handleErrorDisplay(
 			[
 				[ data.error.code, data.error.message ]
-			]
+			],
+			() => {
+				tribe.tickets.loader.hide( obj.checkoutContainer );
+			}
 		);
 	};
 
@@ -268,7 +276,9 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		const response = await obj.handleUpdateOrder( data.paymentIntent );
 
 		// Redirect the user to the success page.
-		window.location.replace( response.redirect_url );
+		if  ( response.redirect_url ) {
+			window.location.replace( response.redirect_url );
+		}
 		return true;
 	};
 
@@ -285,7 +295,9 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		const response = await obj.handleUpdateOrder( data.paymentIntent );
 
 		// Redirect the user to the success page.
-		window.location.replace( response.redirect_url );
+		if  ( response.redirect_url ) {
+			window.location.replace(response.redirect_url);
+		}
 
 		return true;
 	};

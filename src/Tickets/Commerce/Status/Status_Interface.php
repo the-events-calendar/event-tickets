@@ -120,7 +120,16 @@ interface Status_Interface {
 	 *
 	 * @since 5.13.3
 	 *
-	 * @return array
+	 * @return array<Status_Abstract>
 	 */
 	public function can_be_updated_to(): array;
+
+	/**
+	 * An array of the statuses this status needs to be have-had before it can be updated to.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<Status_Abstract>
+	 */
+	public function required_previous_status(): array;
 }
