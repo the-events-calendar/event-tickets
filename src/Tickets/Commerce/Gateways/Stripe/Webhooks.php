@@ -290,6 +290,7 @@ class Webhooks extends Abstract_Webhooks {
 		 */
 		$max_attempts = (int) apply_filters( 'tec_tickets_commerce_gateway_stripe_webhook_valid_key_polling_attempts', 20 );
 		$valid_key    = $this->pool_to_get_valid_key( $max_attempts );
+		$updated      = false;
 
 		if ( false === $valid_key ) {
 			$status   = esc_html__( 'We have not received any Stripe events yet. Please wait a few seconds and refresh the page.', 'event-tickets' );
