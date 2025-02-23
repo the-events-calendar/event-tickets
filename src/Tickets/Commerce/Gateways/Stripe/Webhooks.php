@@ -75,7 +75,7 @@ class Webhooks extends Abstract_Webhooks {
 	 */
 	public const PENDING_WEBHOOKS_KEY = '_tec_tickets_commerce_stripe_webhook_pending';
 
-	/**
+	 /**
 	 * Nonce key for webhook on-demand set up.
 	 *
 	 * @since 5.11.0

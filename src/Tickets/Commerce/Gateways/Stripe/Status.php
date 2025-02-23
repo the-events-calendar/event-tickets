@@ -188,7 +188,9 @@ class Status {
 
 		$last_payment_error = $payment_intent['last_payment_error'] ?? null;
 
-		if ( ! $last_payment_error || empty( $last_payment_error['decline_code'] ) ) {
+		$has_valid_error = ! empty( $last_payment_error['decline_code'] ) || ! empty( $last_payment_error['type'] );
+
+		if ( ! $last_payment_error || ! $has_valid_error ) {
 			return tribe( Commerce_Status\Status_Handler::class )->get_by_slug( $statuses[ $stripe_status ] );
 		}
 

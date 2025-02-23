@@ -296,7 +296,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-stripe-failed-payment-intent-secret', $messages['failed-payment-intent-secret'], $order );
 		}
 
-		$status = tribe( Status::class )->convert_payment_intent_to_commerce_status( $payment_intent );
+ 		$status = tribe( Status::class )->convert_payment_intent_to_commerce_status( $payment_intent );
 
 		if ( ! $status ) {
 			return new WP_Error( 'tec-tc-gateway-stripe-invalid-payment-intent-status', $messages['invalid-payment-intent-status'], [ 'status' => $status ] );
