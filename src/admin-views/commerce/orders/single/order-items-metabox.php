@@ -75,6 +75,14 @@ use TEC\Tickets\Commerce\Order;
 					);
 				}
 			}
+
+			$this->template(
+				'order-items-coupons',
+				[
+					'coupons' => $order->coupons ?? [],
+					'order'   => $order,
+				]
+			);
 			?>
 		</tbody>
 		<tfoot>
