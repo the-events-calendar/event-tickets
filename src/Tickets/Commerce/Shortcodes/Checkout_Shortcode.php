@@ -130,5 +130,4 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		tribe_asset_enqueue_group( 'tribe-tickets-commerce-checkout' );
 		tribe_asset_enqueue( 'tribe-tickets-forms-style' );
 	}
-
 }

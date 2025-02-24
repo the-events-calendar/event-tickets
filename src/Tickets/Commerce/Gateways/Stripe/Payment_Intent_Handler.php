@@ -30,17 +30,19 @@ class Payment_Intent_Handler {
 	 *
 	 * @param mixed $_deprecated Deprecated.
 	 */
-	public function create_payment_intent_for_cart( $_deprecated = false ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
+	public function create_payment_intent_for_cart( $_deprecated = null ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
+		if ( null !== $_deprecated ) {
+			_deprecated_argument( __METHOD__, 'TBD', esc_html__( 'This method no longer uses the 1st param.', 'event-tickets' ) );
+		}
+
 		// Somehow we already have a payment intent.
 		if ( $this->get() ) {
 			return;
 		}
 
 		// Let us look into the cookie.
-		$existing_payment_intent_id = $this->get_payment_intent_cookie();
-		if ( $existing_payment_intent_id ) {
-			$payment_intent = Payment_Intent::get( $existing_payment_intent_id );
-		} else {
+		$payment_intent = $this->get_existing_if_valid();
+		if ( ! $payment_intent ) {
 			// If it all fails lets create a new one.
 			$payment_intent = Payment_Intent::create_from_cart( tribe( Cart::class ) );
 
@@ -50,6 +52,35 @@ class Payment_Intent_Handler {
 		}
 
 		$this->set( $payment_intent );
+	}
+
+	/**
+	 * Gets the existing Payment Intent if it is valid.
+	 *
+	 * @since TBD
+	 *
+	 * @return array|null
+	 */
+	protected function get_existing_if_valid(): ?array {
+		$existing_payment_intent_id = $this->get_payment_intent_cookie();
+		if ( ! $existing_payment_intent_id ) {
+			return null;
+		}
+
+		$payment_intent = Payment_Intent::get( $existing_payment_intent_id );
+		if ( is_wp_error( $payment_intent ) ) {
+			return null;
+		}
+
+		if ( ! $payment_intent ) {
+			return null;
+		}
+
+		if ( ! empty( $payment_intent['errors'] ) ) {
+			return null;
+		}
+
+		return $payment_intent;
 	}
 
 	/**

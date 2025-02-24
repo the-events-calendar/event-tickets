@@ -4,6 +4,8 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Notice_Handler;
+use TEC\Tickets\Commerce\Status\Completed;
+use TEC\Tickets\Commerce\Success;
 use Tribe\Tickets\Admin\Settings as Admin_Settings;
 use Tribe\Admin\Pages;
 use Tribe__Tickets__Main as Tickets_Plugin;
@@ -44,6 +46,8 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		add_action( 'admin_init', [ $this, 'setup_stripe_webhook_on_release' ] );
 		// Set up during plugin activation.
 		add_action( 'admin_init', [ $this, 'setup_stripe_webhook_on_activation' ] );
+
+		add_action( 'tec_tickets_commerce_checkout_parse_request', [ $this, 'handle_checkout_request' ] );
 
 		add_action( 'wp_ajax_tec_tickets_commerce_gateway_stripe_test_webhooks', [ $this, 'action_handle_testing_webhooks_field' ] );
 		add_action( 'wp_ajax_tec_tickets_commerce_gateway_stripe_verify_webhooks', [ $this, 'action_handle_verify_webhooks' ] );
@@ -327,6 +331,55 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 
 		tribe( Payment_Intent_Handler::class )->create_payment_intent_for_cart();
 	}
+
+	public function handle_checkout_request() {
+		$payment_intent_id            = tec_get_request_var( 'payment_intent' );
+		$payment_intent_client_secret = tec_get_request_var( 'payment_intent_client_secret' );
+
+		if ( ! $payment_intent_id || ! $payment_intent_client_secret ) {
+			return;
+		}
+
+		$existing_payment_intent = tribe( Payment_Intent_Handler::class )->get();
+
+		// Do we need to re-fecth the payment intent?
+		if ( $existing_payment_intent['id'] === $payment_intent_id || $existing_payment_intent['client_secret'] === $payment_intent_client_secret ) {
+			$payment_intent = $existing_payment_intent;
+		} else {
+			$payment_intent = Payment_Intent::get( $payment_intent_id );
+		}
+
+		// Invalid payment intent i guess?q]
+		if ( $payment_intent['client_secret'] !== $payment_intent_client_secret ) {
+			return;
+		}
+
+		$success_url = add_query_arg( [ 'tc-order-id' => $payment_intent['id'] ], tribe( Success::class )->get_url() );
+		$new_status  = tribe( Status::class )->convert_payment_intent_to_commerce_status( $payment_intent );
+
+		$order = tec_tc_orders()->by_args(
+			[
+				'status'           => 'any',
+				'gateway_order_id' => $payment_intent['id'],
+			]
+		)->first();
+
+		// We will attempt to update the order status to the one returned by Stripe.
+		$updated = tribe( Order::class )->modify_status(
+			$order->ID,
+			$new_status->get_slug(),
+			[
+				'gateway_payload'  => $payment_intent,
+				'gateway_order_id' => $payment_intent['id'],
+			]
+		);
+
+		if ( Completed::SLUG === $new_status->get_slug() ) {
+			wp_safe_redirect( $success_url );
+			exit;
+		}
+	}
+
 
 	/**
 	 * Intercept saving settings to check if any new payment methods would break Stripe payment intents.

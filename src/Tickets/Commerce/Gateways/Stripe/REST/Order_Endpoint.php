@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe\REST;
 
 use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
@@ -10,6 +11,7 @@ use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent_Handler;
 use TEC\Tickets\Commerce\Gateways\Stripe\Status;
 use TEC\Tickets\Commerce\Order;
 
+use TEC\Tickets\Commerce\Status\Action_Required;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Created;
 use TEC\Tickets\Commerce\Status\Pending;
@@ -203,6 +205,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$response['success']       = true;
 		$response['order_id']      = $order->ID;
 		$response['client_secret'] = $payment_intent['client_secret'];
+		$response['return_url'] = add_query_arg( [ Cart::$cookie_query_arg => tribe( Cart::class )->get_cart_hash() ], tribe( Checkout::class )->get_url() );
 
 		if ( $status->get_slug() === Pending::SLUG ) {
 			$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $payment_intent['id'] ], tribe( Success::class )->get_url() );
