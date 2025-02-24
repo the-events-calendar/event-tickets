@@ -90,17 +90,17 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 			&gt;
 		&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__message"&gt;
-		&lt;span&gt;
-			&lt;span class="tec-tickets-seating__message-text"&gt;
-				Seats reserved for 			&lt;/span&gt;
-			&lt;span class="tec-tickets-seating__message-time"&gt;
-				&lt;span class="tec-tickets-seating__time-minutes"&gt;
-					&lt;!-- This will be set by JS. --&gt;
-				&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
-					&lt;!-- This will be set by JS. --&gt;
+			&lt;span&gt;
+				&lt;span class="tec-tickets-seating__message-text"&gt;
+					Seats reserved for 				&lt;/span&gt;
+				&lt;span class="tec-tickets-seating__message-time"&gt;
+					&lt;span class="tec-tickets-seating__time-minutes"&gt;
+						&lt;!-- This will be set by JS. --&gt;
+					&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
+						&lt;!-- This will be set by JS. --&gt;
+					&lt;/span&gt;
 				&lt;/span&gt;
 			&lt;/span&gt;
-		&lt;/span&gt;
 		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 	&lt;/div&gt;
@@ -234,47 +234,47 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
                 class="tec-tickets-seating__message"
               >
                 
-		
+			
                 <span>
                   
-			
+				
                   <span
                     class="tec-tickets-seating__message-text"
                   >
                     
-				Seats reserved for 			
+					Seats reserved for 				
                   </span>
                   
-			
+				
                   <span
                     class="tec-tickets-seating__message-time"
                   >
                     
-				
+					
                     <span
                       class="tec-tickets-seating__time-minutes"
                     >
                       
-					
+						
                       <!-- This will be set by JS. -->
                       
-				
+					
                     </span>
                     :
                     <span
                       class="tec-tickets-seating__time-seconds"
                     >
                       
-					
+						
                       <!-- This will be set by JS. -->
                       
-				
+					
                     </span>
                     
-			
+				
                   </span>
                   
-		
+			
                 </span>
                 
 		
@@ -490,17 +490,17 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 			&gt;
 		&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__message"&gt;
-		&lt;span&gt;
-			&lt;span class="tec-tickets-seating__message-text"&gt;
-				Seats reserved for 			&lt;/span&gt;
-			&lt;span class="tec-tickets-seating__message-time"&gt;
-				&lt;span class="tec-tickets-seating__time-minutes"&gt;
-					&lt;!-- This will be set by JS. --&gt;
-				&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
-					&lt;!-- This will be set by JS. --&gt;
+			&lt;span&gt;
+				&lt;span class="tec-tickets-seating__message-text"&gt;
+					Seats reserved for 				&lt;/span&gt;
+				&lt;span class="tec-tickets-seating__message-time"&gt;
+					&lt;span class="tec-tickets-seating__time-minutes"&gt;
+						&lt;!-- This will be set by JS. --&gt;
+					&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
+						&lt;!-- This will be set by JS. --&gt;
+					&lt;/span&gt;
 				&lt;/span&gt;
 			&lt;/span&gt;
-		&lt;/span&gt;
 		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 	&lt;/div&gt;
@@ -634,47 +634,47 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
                 class="tec-tickets-seating__message"
               >
                 
-		
+			
                 <span>
                   
-			
+				
                   <span
                     class="tec-tickets-seating__message-text"
                   >
                     
-				Seats reserved for 			
+					Seats reserved for 				
                   </span>
                   
-			
+				
                   <span
                     class="tec-tickets-seating__message-time"
                   >
                     
-				
+					
                     <span
                       class="tec-tickets-seating__time-minutes"
                     >
                       
-					
+						
                       <!-- This will be set by JS. -->
                       
-				
+					
                     </span>
                     :
                     <span
                       class="tec-tickets-seating__time-seconds"
                     >
                       
-					
+						
                       <!-- This will be set by JS. -->
                       
-				
+					
                     </span>
                     
-			
+				
                   </span>
                   
-		
+			
                 </span>
                 
 		
@@ -938,17 +938,17 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 			&gt;
 		&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__message"&gt;
-		&lt;span&gt;
-			&lt;span class="tec-tickets-seating__message-text"&gt;
-				Seats reserved for 			&lt;/span&gt;
-			&lt;span class="tec-tickets-seating__message-time"&gt;
-				&lt;span class="tec-tickets-seating__time-minutes"&gt;
-					&lt;!-- This will be set by JS. --&gt;
-				&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
-					&lt;!-- This will be set by JS. --&gt;
+			&lt;span&gt;
+				&lt;span class="tec-tickets-seating__message-text"&gt;
+					Seats reserved for 				&lt;/span&gt;
+				&lt;span class="tec-tickets-seating__message-time"&gt;
+					&lt;span class="tec-tickets-seating__time-minutes"&gt;
+						&lt;!-- This will be set by JS. --&gt;
+					&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
+						&lt;!-- This will be set by JS. --&gt;
+					&lt;/span&gt;
 				&lt;/span&gt;
 			&lt;/span&gt;
-		&lt;/span&gt;
 		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 	&lt;/div&gt;
@@ -1082,47 +1082,47 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
                 class="tec-tickets-seating__message"
               >
                 
-		
+			
                 <span>
                   
-			
+				
                   <span
                     class="tec-tickets-seating__message-text"
                   >
                     
-				Seats reserved for 			
+					Seats reserved for 				
                   </span>
                   
-			
+				
                   <span
                     class="tec-tickets-seating__message-time"
                   >
                     
-				
+					
                     <span
                       class="tec-tickets-seating__time-minutes"
                     >
                       
-					
+						
                       <!-- This will be set by JS. -->
                       
-				
+					
                     </span>
                     :
                     <span
                       class="tec-tickets-seating__time-seconds"
                     >
                       
-					
+						
                       <!-- This will be set by JS. -->
                       
-				
+					
                     </span>
                     
-			
+				
                   </span>
                   
-		
+			
                 </span>
                 
 		
@@ -1433,17 +1433,17 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 			&gt;
 		&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__message"&gt;
-		&lt;span&gt;
-			&lt;span class="tec-tickets-seating__message-text"&gt;
-				Seats reserved for 			&lt;/span&gt;
-			&lt;span class="tec-tickets-seating__message-time"&gt;
-				&lt;span class="tec-tickets-seating__time-minutes"&gt;
-					&lt;!-- This will be set by JS. --&gt;
-				&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
-					&lt;!-- This will be set by JS. --&gt;
+			&lt;span&gt;
+				&lt;span class="tec-tickets-seating__message-text"&gt;
+					Seats reserved for 				&lt;/span&gt;
+				&lt;span class="tec-tickets-seating__message-time"&gt;
+					&lt;span class="tec-tickets-seating__time-minutes"&gt;
+						&lt;!-- This will be set by JS. --&gt;
+					&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
+						&lt;!-- This will be set by JS. --&gt;
+					&lt;/span&gt;
 				&lt;/span&gt;
 			&lt;/span&gt;
-		&lt;/span&gt;
 		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 	&lt;/div&gt;
@@ -1577,47 +1577,47 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
                 class="tec-tickets-seating__message"
               >
                 
-		
+			
                 <span>
                   
-			
+				
                   <span
                     class="tec-tickets-seating__message-text"
                   >
                     
-				Seats reserved for 			
+					Seats reserved for 				
                   </span>
                   
-			
+				
                   <span
                     class="tec-tickets-seating__message-time"
                   >
                     
-				
+					
                     <span
                       class="tec-tickets-seating__time-minutes"
                     >
                       
-					
+						
                       <!-- This will be set by JS. -->
                       
-				
+					
                     </span>
                     :
                     <span
                       class="tec-tickets-seating__time-seconds"
                     >
                       
-					
+						
                       <!-- This will be set by JS. -->
                       
-				
+					
                     </span>
                     
-			
+				
                   </span>
                   
-		
+			
                 </span>
                 
 		
@@ -1975,17 +1975,17 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 			&gt;
 		&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__message"&gt;
-		&lt;span&gt;
-			&lt;span class="tec-tickets-seating__message-text"&gt;
-				Seats reserved for 			&lt;/span&gt;
-			&lt;span class="tec-tickets-seating__message-time"&gt;
-				&lt;span class="tec-tickets-seating__time-minutes"&gt;
-					&lt;!-- This will be set by JS. --&gt;
-				&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
-					&lt;!-- This will be set by JS. --&gt;
+			&lt;span&gt;
+				&lt;span class="tec-tickets-seating__message-text"&gt;
+					Seats reserved for 				&lt;/span&gt;
+				&lt;span class="tec-tickets-seating__message-time"&gt;
+					&lt;span class="tec-tickets-seating__time-minutes"&gt;
+						&lt;!-- This will be set by JS. --&gt;
+					&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
+						&lt;!-- This will be set by JS. --&gt;
+					&lt;/span&gt;
 				&lt;/span&gt;
 			&lt;/span&gt;
-		&lt;/span&gt;
 		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 	&lt;/div&gt;
@@ -2119,47 +2119,47 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
                 class="tec-tickets-seating__message"
               >
                 
-		
+			
                 <span>
                   
-			
+				
                   <span
                     class="tec-tickets-seating__message-text"
                   >
                     
-				Seats reserved for 			
+					Seats reserved for 				
                   </span>
                   
-			
+				
                   <span
                     class="tec-tickets-seating__message-time"
                   >
                     
-				
+					
                     <span
                       class="tec-tickets-seating__time-minutes"
                     >
                       
-					
+						
                       <!-- This will be set by JS. -->
                       
-				
+					
                     </span>
                     :
                     <span
                       class="tec-tickets-seating__time-seconds"
                     >
                       
-					
+						
                       <!-- This will be set by JS. -->
                       
-				
+					
                     </span>
                     
-			
+				
                   </span>
                   
-		
+			
                 </span>
                 
 		
@@ -2564,17 +2564,17 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 			&gt;
 		&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__message"&gt;
-		&lt;span&gt;
-			&lt;span class="tec-tickets-seating__message-text"&gt;
-				Seats reserved for 			&lt;/span&gt;
-			&lt;span class="tec-tickets-seating__message-time"&gt;
-				&lt;span class="tec-tickets-seating__time-minutes"&gt;
-					&lt;!-- This will be set by JS. --&gt;
-				&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
-					&lt;!-- This will be set by JS. --&gt;
+			&lt;span&gt;
+				&lt;span class="tec-tickets-seating__message-text"&gt;
+					Seats reserved for 				&lt;/span&gt;
+				&lt;span class="tec-tickets-seating__message-time"&gt;
+					&lt;span class="tec-tickets-seating__time-minutes"&gt;
+						&lt;!-- This will be set by JS. --&gt;
+					&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
+						&lt;!-- This will be set by JS. --&gt;
+					&lt;/span&gt;
 				&lt;/span&gt;
 			&lt;/span&gt;
-		&lt;/span&gt;
 		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 	&lt;/div&gt;
@@ -2708,47 +2708,47 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
                 class="tec-tickets-seating__message"
               >
                 
-		
+			
                 <span>
                   
-			
+				
                   <span
                     class="tec-tickets-seating__message-text"
                   >
                     
-				Seats reserved for 			
+					Seats reserved for 				
                   </span>
                   
-			
+				
                   <span
                     class="tec-tickets-seating__message-time"
                   >
                     
-				
+					
                     <span
                       class="tec-tickets-seating__time-minutes"
                     >
                       
-					
+						
                       <!-- This will be set by JS. -->
                       
-				
+					
                     </span>
                     :
                     <span
                       class="tec-tickets-seating__time-seconds"
                     >
                       
-					
+						
                       <!-- This will be set by JS. -->
                       
-				
+					
                     </span>
                     
-			
+				
                   </span>
                   
-		
+			
                 </span>
                 
 		
@@ -3106,17 +3106,17 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 			&gt;
 		&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__message"&gt;
-		&lt;span&gt;
-			&lt;span class="tec-tickets-seating__message-text"&gt;
-				Seats reserved for 			&lt;/span&gt;
-			&lt;span class="tec-tickets-seating__message-time"&gt;
-				&lt;span class="tec-tickets-seating__time-minutes"&gt;
-					&lt;!-- This will be set by JS. --&gt;
-				&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
-					&lt;!-- This will be set by JS. --&gt;
+			&lt;span&gt;
+				&lt;span class="tec-tickets-seating__message-text"&gt;
+					Seats reserved for 				&lt;/span&gt;
+				&lt;span class="tec-tickets-seating__message-time"&gt;
+					&lt;span class="tec-tickets-seating__time-minutes"&gt;
+						&lt;!-- This will be set by JS. --&gt;
+					&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
+						&lt;!-- This will be set by JS. --&gt;
+					&lt;/span&gt;
 				&lt;/span&gt;
 			&lt;/span&gt;
-		&lt;/span&gt;
 		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 	&lt;/div&gt;
@@ -3250,47 +3250,47 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
                 class="tec-tickets-seating__message"
               >
                 
-		
+			
                 <span>
                   
-			
+				
                   <span
                     class="tec-tickets-seating__message-text"
                   >
                     
-				Seats reserved for 			
+					Seats reserved for 				
                   </span>
                   
-			
+				
                   <span
                     class="tec-tickets-seating__message-time"
                   >
                     
-				
+					
                     <span
                       class="tec-tickets-seating__time-minutes"
                     >
                       
-					
+						
                       <!-- This will be set by JS. -->
                       
-				
+					
                     </span>
                     :
                     <span
                       class="tec-tickets-seating__time-seconds"
                     >
                       
-					
+						
                       <!-- This will be set by JS. -->
                       
-				
+					
                     </span>
                     
-			
+				
                   </span>
                   
-		
+			
                 </span>
                 
 		
@@ -3601,17 +3601,17 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 			&gt;
 		&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__message"&gt;
-		&lt;span&gt;
-			&lt;span class="tec-tickets-seating__message-text"&gt;
-				Seats reserved for 			&lt;/span&gt;
-			&lt;span class="tec-tickets-seating__message-time"&gt;
-				&lt;span class="tec-tickets-seating__time-minutes"&gt;
-					&lt;!-- This will be set by JS. --&gt;
-				&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
-					&lt;!-- This will be set by JS. --&gt;
+			&lt;span&gt;
+				&lt;span class="tec-tickets-seating__message-text"&gt;
+					Seats reserved for 				&lt;/span&gt;
+				&lt;span class="tec-tickets-seating__message-time"&gt;
+					&lt;span class="tec-tickets-seating__time-minutes"&gt;
+						&lt;!-- This will be set by JS. --&gt;
+					&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
+						&lt;!-- This will be set by JS. --&gt;
+					&lt;/span&gt;
 				&lt;/span&gt;
 			&lt;/span&gt;
-		&lt;/span&gt;
 		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 	&lt;/div&gt;
@@ -3745,47 +3745,47 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
                 class="tec-tickets-seating__message"
               >
                 
-		
+			
                 <span>
                   
-			
+				
                   <span
                     class="tec-tickets-seating__message-text"
                   >
                     
-				Seats reserved for 			
+					Seats reserved for 				
                   </span>
                   
-			
+				
                   <span
                     class="tec-tickets-seating__message-time"
                   >
                     
-				
+					
                     <span
                       class="tec-tickets-seating__time-minutes"
                     >
                       
-					
+						
                       <!-- This will be set by JS. -->
                       
-				
+					
                     </span>
                     :
                     <span
                       class="tec-tickets-seating__time-seconds"
                     >
                       
-					
+						
                       <!-- This will be set by JS. -->
                       
-				
+					
                     </span>
                     
-			
+				
                   </span>
                   
-		
+			
                 </span>
                 
 		
@@ -4049,17 +4049,17 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 			&gt;
 		&lt;div class="dashicons dashicons-clock"&gt;&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__message"&gt;
-		&lt;span&gt;
-			&lt;span class="tec-tickets-seating__message-text"&gt;
-				Seats reserved for 			&lt;/span&gt;
-			&lt;span class="tec-tickets-seating__message-time"&gt;
-				&lt;span class="tec-tickets-seating__time-minutes"&gt;
-					&lt;!-- This will be set by JS. --&gt;
-				&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
-					&lt;!-- This will be set by JS. --&gt;
+			&lt;span&gt;
+				&lt;span class="tec-tickets-seating__message-text"&gt;
+					Seats reserved for 				&lt;/span&gt;
+				&lt;span class="tec-tickets-seating__message-time"&gt;
+					&lt;span class="tec-tickets-seating__time-minutes"&gt;
+						&lt;!-- This will be set by JS. --&gt;
+					&lt;/span&gt;:&lt;span class="tec-tickets-seating__time-seconds"&gt;
+						&lt;!-- This will be set by JS. --&gt;
+					&lt;/span&gt;
 				&lt;/span&gt;
 			&lt;/span&gt;
-		&lt;/span&gt;
 		&lt;/div&gt;
 		&lt;div class="tec-tickets-seating__dialog-append-target"&gt;&lt;/div&gt;
 	&lt;/div&gt;
@@ -4193,47 +4193,47 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
                 class="tec-tickets-seating__message"
               >
                 
-		
+			
                 <span>
                   
-			
+				
                   <span
                     class="tec-tickets-seating__message-text"
                   >
                     
-				Seats reserved for 			
+					Seats reserved for 				
                   </span>
                   
-			
+				
                   <span
                     class="tec-tickets-seating__message-time"
                   >
                     
-				
+					
                     <span
                       class="tec-tickets-seating__time-minutes"
                     >
                       
-					
+						
                       <!-- This will be set by JS. -->
                       
-				
+					
                     </span>
                     :
                     <span
                       class="tec-tickets-seating__time-seconds"
                     >
                       
-					
+						
                       <!-- This will be set by JS. -->
                       
-				
+					
                     </span>
                     
-			
+				
                   </span>
                   
-		
+			
                 </span>
                 
 		
