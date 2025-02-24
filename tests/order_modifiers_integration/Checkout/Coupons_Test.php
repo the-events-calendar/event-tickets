@@ -39,6 +39,8 @@ class Coupons_Test extends Controller_Test_Case {
 	 * @test
 	 */
 	public function it_should_not_store_objects() {
+		$this->make_controller()->register();
+
 		$post      = static::factory()->post->create();
 		$ticket_id = $this->create_tc_ticket( $post, 10 );
 		$coupon    = $this->create_coupon();
