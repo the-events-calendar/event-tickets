@@ -78,6 +78,7 @@
     "psr-4": {
       "TEC\\Tickets\\Flexible_Tickets\\Test\\": "tests/_support/Flexible_Tickets",
       "TEC\\Tickets\\Tests\\Unit\\Order_Modifiers\\": "tests/wpunit/TEC/Tickets/Order_Modifiers",
+      "TEC\\Tickets\\Tests\\Order_Modifiers_Integration\\": "tests/order_modifiers_integration",
       "Tribe\\Tests\\Modules\\Tickets\\": "tests/_support/Modules",
       "Tribe\\Tests\\Tickets\\": "tests/_support",
       "Tribe\\Tickets\\Events\\Views\\": "tests/views_integration/Tribe/Tickets/Events/Views"

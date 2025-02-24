@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\Cart;
 
 use InvalidArgumentException;
 use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
 use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
@@ -32,20 +33,6 @@ class Agnostic_Cart extends Abstract_Cart {
 	protected array $items = [];
 
 	/**
-	 * Whether the cart subtotal has been calculated.
-	 *
-	 * @var bool
-	 */
-	protected bool $subtotal_calculated = false;
-
-	/**
-	 * Whether the cart total has been calculated.
-	 *
-	 * @var bool
-	 */
-	protected bool $total_calculated = false;
-
-	/**
 	 * Gets the cart items from the cart.
 	 *
 	 * This method should include any persistence by the cart implementation.
@@ -63,12 +50,38 @@ class Agnostic_Cart extends Abstract_Cart {
 			return [];
 		}
 
+		$this->load_items_from_transient();
+
+		return $this->get_items_as_array();
+	}
+
+	/**
+	 * Loads the items from the transient.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function load_items_from_transient() {
 		$items = get_transient( $this->get_transient_key( $this->get_hash() ) );
 		if ( is_array( $items ) && ! empty( $items ) ) {
 			$this->set_items_from_array( $items );
 		}
 
-		return $this->get_items_as_array();
+		$this->reset_calculations();
+	}
+
+	/**
+	 * Sets the cart hash.
+	 *
+	 * @since 5.1.9
+	 * @since 5.2.0 Renamed to set_hash instead of set_id
+	 *
+	 * @param string $hash The hash to set.
+	 */
+	public function set_hash( $hash ) {
+		parent::set_hash( $hash );
+		$this->load_items_from_transient();
 	}
 
 	/**
@@ -107,16 +120,23 @@ class Agnostic_Cart extends Abstract_Cart {
 	 * by the cart implementation.
 	 *
 	 * @since TBD
+	 *
+	 * @return bool Whether the cart was saved.
 	 */
 	public function save() {
-		$cart_hash = tribe( Cart::class )->get_cart_hash( true );
+		$cart_hash = $this->get_hash();
 
-		if ( false === $cart_hash ) {
-			return false;
+		// If we don't have a cart hash, generate one.
+		if ( empty( $cart_hash ) ) {
+			// If we still don't have a cart hash, bail.
+			if ( false === $this->generate_and_set_cart_hash() ) {
+				return false;
+			}
+
+			$cart_hash = $this->get_hash();
 		}
 
-		$this->set_hash( $cart_hash );
-
+		// If we don't have any items, clear the cart and bail.
 		if ( ! $this->has_items() ) {
 			$this->clear();
 
@@ -130,6 +150,25 @@ class Agnostic_Cart extends Abstract_Cart {
 		);
 
 		tribe( Cart::class )->set_cart_hash_cookie( $cart_hash );
+
+		return true;
+	}
+
+	/**
+	 * Generates and sets the cart hash.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the cart hash was generated and set.
+	 */
+	protected function generate_and_set_cart_hash(): bool {
+		$cart_hash = tribe( Cart::class )->get_cart_hash( true );
+
+		if ( false === $cart_hash ) {
+			return false;
+		}
+
+		$this->set_hash( $cart_hash );
 
 		return true;
 	}
@@ -153,8 +192,8 @@ class Agnostic_Cart extends Abstract_Cart {
 
 		// Reset items and cart total.
 		$this->items         = [];
-		$this->cart_subtotal = null;
-		$this->cart_total    = null;
+		$this->cart_subtotal = new Precision_Value( 0 );
+		$this->cart_total    = new Precision_Value( 0 );
 		$this->reset_calculations();
 	}
 
@@ -439,105 +478,5 @@ class Agnostic_Cart extends Abstract_Cart {
 		$item['type']      = 'ticket';
 
 		return $item;
-	}
-
-	/**
-	 * Get the total value of the cart, including additional values such as fees or discounts.
-	 *
-	 * This method calculates the total by first computing the subtotal from all items in the cart,
-	 * and then applying any additional values (e.g., fees or discounts) provided via the
-	 * `tec_tickets_commerce_get_cart_additional_values` filter.
-	 *
-	 * @since 5.10.0
-	 * @since 5.18.0 Refactored logic, to include a new filter.
-	 *
-	 * @return float The total value of the cart, or null if there are no items.
-	 */
-	public function get_cart_total() {
-		// If the total has already been calculated, return it.
-		if ( $this->total_calculated ) {
-			return $this->cart_total;
-		}
-
-		$subtotal = $this->get_cart_subtotal();
-		if ( ! $subtotal ) {
-			return 0.0;
-		}
-
-		$items = $this->get_items_in_cart( true );
-
-		// Extract subtotals from the cart items.
-		$sub_totals = array_filter( wp_list_pluck( $items, 'sub_total' ) );
-
-		/**
-		 * Filters the additional values in the cart in order to add additional fees or discounts.
-		 *
-		 * Additional values must be instances of the `Value` class to ensure consistent behavior.
-		 *
-		 * @since 5.18.0
-		 *
-		 * @param Value[] $values     An array of `Value` instances representing additional fees or discounts.
-		 * @param array   $items      The items currently in the cart.
-		 * @param Value   $sub_totals The total of the subtotals from the items.
-		 */
-		$additional_values = apply_filters(
-			'tec_tickets_commerce_get_cart_additional_values',
-			[],
-			$items,
-			Value::create()->total( $sub_totals )
-		);
-
-		// Combine the subtotals and additional values.
-		$total_value = Value::create()->total( array_merge( $sub_totals, $additional_values ) );
-
-		// Set the total and mark it as calculated.
-		$this->cart_total       = $total_value->get_decimal();
-		$this->total_calculated = true;
-
-		return $this->cart_total;
-	}
-
-	/**
-	 * Get the subtotal of the cart items.
-	 *
-	 * The subtotal is the sum of all item subtotals without additional values like fees or discounts.
-	 *
-	 * @since 5.18.0 Refactored to avoid cumulative calculations.
-	 *
-	 * @return float The subtotal of the cart.
-	 */
-	public function get_cart_subtotal(): float {
-		// If the subtotal has already been calculated, return it.
-		if ( $this->subtotal_calculated ) {
-			return (float) $this->cart_subtotal;
-		}
-
-		// Set the subtotal to 0 before calculating it.
-		$this->cart_subtotal = 0.0;
-
-		// Calculate the total from the subtotals of each item.
-		$items = $this->get_items_in_cart( true );
-		foreach ( $items as $item ) {
-			$this->cart_subtotal += $item['sub_total']->get_decimal();
-		}
-
-		// Set the subtotal as calculated.
-		$this->subtotal_calculated = true;
-
-		return $this->cart_subtotal;
-	}
-
-	/**
-	 * Reset the cart calculations.
-	 *
-	 * After calling this method, calculations will be performed again.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	protected function reset_calculations() {
-		$this->subtotal_calculated = false;
-		$this->total_calculated    = false;
 	}
 }

@@ -17,15 +17,20 @@ use TEC\Tickets\Commerce\Order_Modifiers\API\Coupons;
 use TEC\Tickets\Commerce\Order_Modifiers\API\Fees;
 use TEC\Tickets\Commerce\Order_Modifiers\Admin\Editor;
 use TEC\Tickets\Commerce\Order_Modifiers\Admin\Order_Modifier_Fee_Metabox;
+use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Coupons as Coupons_Checkout;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Fees as Agnostic_Checkout_Fees;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal\Fees as Paypal_Checkout_Fees;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe\Fees as Stripe_Checkout_Fees;
+use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe\Coupons as Stripe_Checkout_Coupons;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Coupon_Table;
 use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Fee_Table;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Currency_Value;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
+use TEC\Tickets\Commerce\Utils\Currency;
 use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
@@ -47,17 +52,24 @@ final class Controller extends Controller_Contract {
 	 * @return void Filters and actions hooks added by the controller are be removed.
 	 */
 	public function unregister(): void {
+		$this->container->get( Tables::class )->unregister();
 		$this->container->get( Paypal_Checkout_Fees::class )->unregister();
 		$this->container->get( Stripe_Checkout_Fees::class )->unregister();
 		$this->container->get( Agnostic_Checkout_Fees::class )->unregister();
-		$this->container->get( Tables::class )->unregister();
 		$this->container->get( Editor::class )->unregister();
+		$this->container->get( Coupons_Checkout::class )->unregister();
+		$this->container->get( Stripe_Checkout_Coupons::class )->unregister();
+
+		// API classes.
 		$this->container->get( Coupons::class )->unregister();
+		$this->container->get( Fees::class )->unregister();
 
 		if ( is_admin() ) {
 			$this->container->get( Modifier_Admin_Handler::class )->unregister();
 			$this->container->get( Order_Modifier_Fee_Metabox::class )->unregister();
 		}
+
+		remove_action( 'init', [ $this, 'set_currency_defaults' ] );
 	}
 
 	/**
@@ -76,6 +88,11 @@ final class Controller extends Controller_Contract {
 		$this->container->register( Stripe_Checkout_Fees::class );
 		$this->container->register( Agnostic_Checkout_Fees::class );
 		$this->container->register( Editor::class );
+		$this->container->register( Coupons_Checkout::class );
+		$this->container->register( Stripe_Checkout_Coupons::class );
+
+		// API classes.
+		$this->container->register( Coupons::class );
 		$this->container->register( Fees::class );
 
 		if ( is_admin() ) {
@@ -86,11 +103,30 @@ final class Controller extends Controller_Contract {
 		$this->container->singleton( Fee::class );
 		$this->container->singleton( Fee_Table::class );
 		$this->container->singleton( Coupon_Table::class );
+		$this->container->singleton( Coupon::class );
 
 		$this->run_deprecated_coupon_filter();
 
-		$this->container->singleton( Coupon::class );
-		$this->container->register( Coupons::class );
+		add_action( 'init', [ $this, 'set_currency_defaults' ] );
+	}
+
+	/**
+	 * Set up currency default values in the value classes.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function set_currency_defaults() {
+		$currency_code = Currency::get_currency_code();
+		Currency_Value::set_defaults(
+			Currency::get_currency_symbol( $currency_code ),
+			Currency::get_currency_separator_thousands( $currency_code ),
+			Currency::get_currency_separator_decimal( $currency_code ),
+			Currency::get_currency_symbol_position( $currency_code )
+		);
+
+		Precision_Value::set_default_precision( (int) Currency::get_currency_precision( $currency_code ) );
 	}
 
 	/**

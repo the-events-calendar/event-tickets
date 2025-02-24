@@ -11,6 +11,8 @@ namespace TEC\Tickets\Commerce\Cart;
 
 use InvalidArgumentException;
 use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Legacy_Value_Factory as Factory;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
 use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Tickets__Tickets as Tickets;
@@ -34,9 +36,9 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @var ?float
+	 * @var Precision_Value
 	 */
-	protected ?float $cart_subtotal = null;
+	protected Precision_Value $cart_subtotal;
 
 	/**
 	 * Cart total.
@@ -45,16 +47,44 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * have been done.
 	 *
 	 * @since 5.10.0
-	 * @since TBD Marked the property as protected.
+	 * @since TBD Marked the property as protected, and changed to a Precision_Value.
 	 *
-	 * @var ?float
+	 * @var Precision_Value
 	 */
-	protected ?float $cart_total = null;
+	protected Precision_Value $cart_total;
 
 	/**
 	 * @var string The Cart hash for this cart.
 	 */
 	protected $cart_hash;
+
+	/**
+	 * Whether the cart subtotal has been calculated.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	protected bool $subtotal_calculated = false;
+
+	/**
+	 * Whether the cart total has been calculated.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	protected bool $total_calculated = false;
+
+	/**
+	 * Abstract_Cart constructor.
+	 *
+	 * @since TBD
+	 */
+	public function __construct() {
+		$this->cart_subtotal = new Precision_Value( 0.0 );
+		$this->cart_total    = new Precision_Value( 0.0 );
+	}
 
 	/**
 	 * Determines if this instance of the cart has a public page.
@@ -108,23 +138,28 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * Get the total value of the cart, including additional values such as fees or discounts.
 	 *
 	 * This method calculates the total by first computing the subtotal from all items in the cart,
-	 * and then applying any additional values (e.g., fees or discounts) provided via the `tec_tickets_commerce_get_cart_additional_values` filter.
+	 * and then applying any additional values (e.g., fees or discounts) provided via the
+	 * `tec_tickets_commerce_get_cart_additional_values` filter.
 	 *
-	 * @since 5.18.0 Refactored logic, to include a new filter.
 	 * @since 5.10.0
+	 * @since 5.18.0 Refactored logic, to include a new filter.
+	 * @since TBD Added internal caching for this method to prevent duplicate calculations.
 	 *
-	 * @return float The total value of the cart, or null if there are no items.
+	 * @return float The total value of the cart.
 	 */
-	public function get_cart_total() {
-		$subtotal = $this->get_cart_subtotal();
-		if ( ! $subtotal ) {
-			return 0.0;
+	public function get_cart_total(): float {
+		// If the total has already been calculated, return it.
+		if ( $this->total_calculated ) {
+			return $this->cart_total->get();
 		}
 
-		$items = $this->get_items_in_cart( true );
+		$subtotal = $this->get_cart_subtotal();
+		if ( $subtotal <= 0.0 ) {
+			$this->total_calculated = true;
+			return $this->cart_total->get();
+		}
 
-		// Extract subtotals from the cart items.
-		$sub_totals = array_filter( wp_list_pluck( $items, 'sub_total' ) );
+		$subtotal_value = Factory::to_legacy_value( $this->cart_subtotal );
 
 		/**
 		 * Filters the additional values in the cart in order to add additional fees or discounts.
@@ -133,23 +168,30 @@ abstract class Abstract_Cart implements Cart_Interface {
 		 *
 		 * @since 5.18.0
 		 *
-		 * @param Value[] $values     An array of `Value` instances representing additional fees or discounts.
-		 * @param array   $items      The items currently in the cart.
-		 * @param Value   $sub_totals The total of the subtotals from the items.
+		 * @param Value[] $values         An array of `Value` instances representing additional fees or discounts.
+		 * @param array   $items          The items currently in the cart.
+		 * @param Value   $subtotal_value The total of the subtotals from the items.
+		 *
+		 * @var Value[] $additional_values
 		 */
 		$additional_values = apply_filters(
 			'tec_tickets_commerce_get_cart_additional_values',
 			[],
-			$items,
-			Value::create()->total( $sub_totals )
+			$this->get_items_in_cart( true, 'all' ),
+			$subtotal_value
 		);
 
-		// Combine the subtotals and additional values.
-		$total_value = Value::create()->total( array_merge( $sub_totals, $additional_values ) );
+		// Convert all additional values to precision values.
+		$additional_values = array_map(
+			static fn( $value ) => Factory::to_precision_value( $value ),
+			$additional_values
+		);
 
-		$this->cart_total = $total_value->get_decimal();
+		// Set the total and mark it as calculated.
+		$this->cart_total       = Precision_Value::sum( $this->cart_subtotal, ...$additional_values );
+		$this->total_calculated = true;
 
-		return $total_value->get_decimal();
+		return $this->cart_total->get();
 	}
 
 	/**
@@ -158,26 +200,49 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * The subtotal is the sum of all item subtotals without additional values like fees or discounts.
 	 *
 	 * @since 5.18.0 Refactored to avoid cumulative calculations.
+	 * @since TBD Added internal caching for this method to prevent duplicate calculations.
 	 *
 	 * @return float The subtotal of the cart.
 	 */
 	public function get_cart_subtotal(): float {
-		// Reset cart_total to ensure it's not cumulative across calls.
-		$this->cart_total = 0.0;
-
-		$items = $this->get_items_in_cart( true );
-
-		// If no items in the cart, return null.
-		if ( empty( $items ) ) {
-			return 0.0;
+		// If the subtotal has already been calculated, return it.
+		if ( $this->subtotal_calculated ) {
+			return $this->cart_subtotal->get();
 		}
+
+		// Set up the array of subtotal objects.
+		$subtotals          = [];
+		$callable_subtotals = [];
 
 		// Calculate the total from the subtotals of each item.
-		foreach ( $items as $item ) {
-			$this->cart_total += $item['sub_total']->get_decimal();
+		$all_items = $this->get_items_in_cart( true, 'all' );
+
+		// Process any items that have the subtotal as a simple float.
+		$float_items = array_filter( $all_items, static fn( $item ) => is_float( $item['sub_total'] ) );
+		foreach ( $float_items as $item ) {
+			$subtotals[] = new Precision_Value( $item['sub_total'] );
 		}
 
-		return $this->cart_total;
+		// Process any items that have the subtotal as a Value object.
+		$value_items = array_filter( $all_items, static fn( $item ) => $item['sub_total'] instanceof Value );
+		foreach ( $value_items as $item ) {
+			$subtotals[] = Factory::to_precision_value( $item['sub_total'] );
+		}
+
+		// Now process any items that are callable.
+		$original_subtotal = Precision_Value::sum( ...$subtotals );
+		$callable_items    = array_filter( $all_items, static fn( $item ) => is_callable( $item['sub_total'] ) );
+		$callable_items    = $this->update_items_with_subtotal( $callable_items, $original_subtotal->get() );
+		foreach ( $callable_items as $item ) {
+			$callable_subtotals[] = Factory::to_precision_value( $item['sub_total'] );
+		}
+
+		$this->cart_subtotal = Precision_Value::sum( $original_subtotal, ...$callable_subtotals );
+
+		// Set the subtotal as calculated.
+		$this->subtotal_calculated = true;
+
+		return $this->cart_subtotal->get();
 	}
 
 	/**
@@ -197,7 +262,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 		 * @param string         $cart_hash Cart hash value.
 		 * @param Cart_Interface $cart      Which cart object we are using here.
 		 */
-		$this->cart_hash = apply_filters( 'tec_tickets_commerce_cart_set_hash', $hash, $this );
+		$this->cart_hash = (string) apply_filters( 'tec_tickets_commerce_cart_set_hash', $hash, $this );
 	}
 
 	/**
@@ -216,7 +281,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 		 * @param string         $cart_hash Cart hash value.
 		 * @param Cart_Interface $cart      Which cart object we are using here.
 		 */
-		return apply_filters( 'tec_tickets_commerce_cart_get_hash', $this->cart_hash, $this );
+		return (string) apply_filters( 'tec_tickets_commerce_cart_get_hash', $this->cart_hash, $this );
 	}
 
 	/**
@@ -347,5 +412,47 @@ abstract class Abstract_Cart implements Cart_Interface {
 		}
 
 		return (int) $this->get_items()[ $item_id ]['quantity'];
+	}
+
+	/**
+	 * Reset the cart calculations.
+	 *
+	 * After calling this method, calculations will be performed again.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function reset_calculations() {
+		$this->subtotal_calculated = false;
+		$this->total_calculated    = false;
+	}
+
+	/**
+	 * Update dynamic items using a subtotal value.
+	 *
+	 * This will convert any callable items to a Value object using the given
+	 * subtotal as input.
+	 *
+	 * @since TBD
+	 *
+	 * @param array  $items    The items to update.
+	 * @param ?float $subtotal The subtotal to use for the calculation. If null, the cart subtotal will be used.
+	 *
+	 * @return array The updated items.
+	 */
+	public function update_items_with_subtotal( array $items, ?float $subtotal = null ): array {
+		$subtotal ??= $this->get_cart_subtotal();
+		foreach ( $items as &$item ) {
+			if ( ! is_callable( $item['sub_total'] ) ) {
+				continue;
+			}
+
+			// Get the result and update the item with a value object.
+			$result            = $item['sub_total']( $subtotal );
+			$item['sub_total'] = Value::create( $result );
+		}
+
+		return $items;
 	}
 }

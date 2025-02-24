@@ -141,6 +141,19 @@ class Currency_Value extends Base_Value {
 	}
 
 	/**
+	 * Create a new instance of the class from a float.
+	 *
+	 * @since TBD
+	 *
+	 * @param float $value The value to store.
+	 *
+	 * @return Currency_Value The new instance.
+	 */
+	public static function create_from_float( float $value ): self {
+		return self::create( new Precision_Value( $value ) );
+	}
+
+	/**
 	 * Set the default values for the class.
 	 *
 	 * Use this to allow for setting default values for all instances of this class
