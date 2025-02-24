@@ -231,20 +231,6 @@ class Coupons extends Controller_Contract {
 	}
 
 	/**
-	 * Filter whether an item should be skipped in the checkout display.
-	 *
-	 * @since TBD
-	 *
-	 * @param bool  $should_skip Whether the item should be skipped or not.
-	 * @param array $item        The item to be checked.
-	 *
-	 * @return bool Whether the item should be skipped.
-	 */
-	public function should_skip_item( bool $should_skip, array $item ): bool {
-		return $should_skip || $this->is_coupon( $item );
-	}
-
-	/**
 	 * Filter the cart items when creating an order to ensure coupons are included.
 	 *
 	 * @since TBD
