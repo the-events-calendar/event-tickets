@@ -221,6 +221,10 @@ class Singular_Order_PageTest extends WPTestCase {
 		$singular_page->render_order_items( $order );
 		$html = ob_get_clean();
 
+		$html = str_replace( $this->tickets, '{{TICKET_ID}}', $html );
+		$html = str_replace( $order->ID, '{{ORDER_ID}}', $html );
+		$html = str_replace( $this->event_ids, '{{EVENT_ID}}', $html );
+
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
 }
