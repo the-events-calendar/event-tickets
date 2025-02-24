@@ -10,8 +10,6 @@
  * @var WP_Post $order   The current post object (with added properties).
  */
 
-use TEC\Tickets\Commerce\Admin\Singular_Order_Page;
-
 // If we don't have any coupons, we don't need to display anything; just add a comment to the HTML.
 if ( empty( $coupons ) ) {
 	printf(
