@@ -49,7 +49,7 @@ global.tec.tickets.seating = {
 						{
 							ticketId: 23,
 							name: 'Adult',
-							price: 50,
+							price: '$50',
 							description: 'Adult, General Admission',
 							dateInRange: true,
 							priceValue: 50,
@@ -57,7 +57,7 @@ global.tec.tickets.seating = {
 						{
 							ticketId: 89,
 							name: 'Child',
-							price: 30,
+							price: '$30',
 							description: 'Child, General Admission',
 							dateInRange: false,
 							priceValue: 30,
@@ -70,7 +70,7 @@ global.tec.tickets.seating = {
 						{
 							ticketId: 66,
 							name: 'VIP',
-							price: 100,
+							price: '$100',
 							description: 'Best seats',
 							dateInRange: true,
 							priceValue: 100,

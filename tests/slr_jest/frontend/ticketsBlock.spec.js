@@ -204,6 +204,7 @@ describe('Seat Selection Modal', () => {
 					seatLabel: 'A-1',
 					reservationId: 'uuid-reservation-0',
 					priceValue: 50,
+					price: '$50',
 				},
 			];
 
@@ -240,6 +241,7 @@ describe('Seat Selection Modal', () => {
 					seatLabel: 'A-1',
 					reservationId: 'uuid-reservation-0',
 					priceValue: 30,
+					price: '$30',
 				},
 				{
 					seatTypeId: 'uuid-seat-type-0',
@@ -248,6 +250,7 @@ describe('Seat Selection Modal', () => {
 					seatLabel: 'A-2',
 					reservationId: 'uuid-reservation-1',
 					priceValue: '20',
+					price: '$20',
 				},
 			];
 
@@ -289,6 +292,7 @@ describe('Seat Selection Modal', () => {
 					seatLabel: 'A-1',
 					reservationId: 'uuid-reservation-0',
 					priceValue: 50,
+					price: '$50',
 				},
 				{
 					seatTypeId: 'uuid-seat-type-0',
@@ -297,6 +301,7 @@ describe('Seat Selection Modal', () => {
 					seatLabel: 'A-2',
 					reservationId: 'uuid-reservation-1',
 					priceValue: 30,
+					price: '$30',
 				},
 				{
 					seatTypeId: 'uuid-seat-type-1',
@@ -305,6 +310,7 @@ describe('Seat Selection Modal', () => {
 					seatLabel: 'B-15',
 					reservationId: 'uuid-reservation-3',
 					priceValue: '100',
+					price: '$100',
 				},
 			];
 
@@ -353,6 +359,7 @@ describe('Seat Selection Modal', () => {
 					seatLabel: 'A-1',
 					reservationId: 'uuid-reservation-0',
 					priceValue: 50,
+					price: '$50',
 				},
 				{
 					seatTypeId: 'uuid-seat-type-0',
@@ -361,6 +368,7 @@ describe('Seat Selection Modal', () => {
 					seatLabel: 'A-2',
 					reservationId: 'uuid-reservation-1',
 					priceValue: 20,
+					price: '$20',
 				},
 				{
 					seatTypeId: 'uuid-seat-type-1',
@@ -369,6 +377,7 @@ describe('Seat Selection Modal', () => {
 					seatLabel: 'B-15',
 					reservationId: 'uuid-reservation-3',
 					priceValue: 30,
+					price: '$30',
 				},
 				{
 					seatTypeId: 'uuid-seat-type-2',
@@ -377,6 +386,7 @@ describe('Seat Selection Modal', () => {
 					seatLabel: 'C-23',
 					reservationId: 'uuid-reservation-4',
 					priceValue: 100,
+					price: '$100',
 				},
 			];
 
@@ -447,6 +457,7 @@ describe('Seat Selection Modal', () => {
 					seatLabel: 'A-1',
 					reservationId: 'uuid-reservation-0',
 					priceValue: 50,
+					price: '$50',
 				},
 				{
 					seatTypeId: 'uuid-seat-type-0',
@@ -455,6 +466,7 @@ describe('Seat Selection Modal', () => {
 					seatLabel: 'A-2',
 					reservationId: 'uuid-reservation-1',
 					priceValue: 50,
+					price: '$50',
 				},
 				{
 					seatTypeId: 'uuid-seat-type-1',
@@ -463,6 +475,7 @@ describe('Seat Selection Modal', () => {
 					seatLabel: 'B-15',
 					reservationId: 'uuid-reservation-3',
 					priceValue: 50,
+					price: '$50',
 				},
 				{
 					seatTypeId: 'uuid-seat-type-2',
@@ -471,6 +484,7 @@ describe('Seat Selection Modal', () => {
 					seatLabel: 'C-23',
 					reservationId: 'uuid-reservation-4',
 					priceValue: 50,
+					price: '$50',
 				},
 			];
 
@@ -486,6 +500,7 @@ describe('Seat Selection Modal', () => {
 					seatLabel: 'A-1',
 					reservationId: 'uuid-reservation-0',
 					priceValue: 10,
+					price: '$10',
 				},
 				{
 					seatTypeId: 'uuid-seat-type-1',
@@ -494,6 +509,7 @@ describe('Seat Selection Modal', () => {
 					seatLabel: 'B-15',
 					reservationId: 'uuid-reservation-3',
 					priceValue: '20',
+					price: '$20',
 				},
 				{
 					seatTypeId: 'uuid-seat-type-2',
@@ -502,6 +518,7 @@ describe('Seat Selection Modal', () => {
 					seatLabel: 'C-23',
 					reservationId: 'uuid-reservation-4',
 					priceValue: 11,
+					price: '$11',
 				},
 			];
 
@@ -552,6 +569,7 @@ describe('Seat Selection Modal', () => {
 					seatLabel: 'A-1',
 					reservationId: 'uuid-reservation-0',
 					priceValue: 5,
+					price: '$5',
 				},
 				{
 					seatTypeId: 'uuid-seat-type-1',
@@ -560,6 +578,7 @@ describe('Seat Selection Modal', () => {
 					seatLabel: 'B-15',
 					reservationId: 'uuid-reservation-3',
 					priceValue: '50',
+					price: '$50',
 				},
 			];
 
@@ -603,6 +622,7 @@ describe('Seat Selection Modal', () => {
 					seatLabel: 'B-15',
 					reservationId: 'uuid-reservation-3',
 					priceValue: 20,
+					price: '$20',
 				},
 			];
 
