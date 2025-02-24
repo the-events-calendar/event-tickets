@@ -14,6 +14,7 @@ use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon as Coupon_Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Value_Interface;
 use TEC\Tickets\Commerce\Traits\Type;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Template;
@@ -251,6 +252,27 @@ class Coupons extends Controller_Contract {
 		if ( empty( $coupons ) ) {
 			return $items;
 		}
+
+		// Ensure the coupons have floats instead of Value objects for the sub_total.
+		$coupons = array_map(
+			static function ( array $coupon ) {
+				if ( is_float( $coupon['sub_total'] ) ) {
+					return $coupon;
+				}
+
+				// Convert to a float in the ways we know how, falling back to just casting to float.
+				if ( $coupon['sub_total'] instanceof Value ) {
+					$coupon['sub_total'] = $coupon['sub_total']->get_float();
+				} elseif ( $coupon['sub_total'] instanceof Value_Interface ) {
+					$coupon['sub_total'] = (float) $coupon['sub_total']->get();
+				} else {
+					$coupon['sub_total'] = (float) $coupon['sub_total'];
+				}
+
+				return $coupon;
+			},
+			$coupons
+		);
 
 		return array_merge( $items, $coupons );
 	}
