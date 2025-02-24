@@ -12,7 +12,6 @@ global.wp = {
 	element: React,
 	api: {},
 	apiRequest: {},
-	editor: {},
 	components: {},
 	data: {},
 	blockEditor: {},
