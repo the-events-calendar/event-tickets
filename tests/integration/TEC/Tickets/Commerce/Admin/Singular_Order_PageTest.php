@@ -187,7 +187,7 @@ class Singular_Order_PageTest extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_render_coupons() {
-		// First, we should ensure that there is a comment about not having coupons.
+		// First, we should ensure that orders with no coupons have no mention of coupons.
 		$this->prepare_test_data();
 
 		/** @var Singular_Order_Page $singular_page */
@@ -198,10 +198,10 @@ class Singular_Order_PageTest extends WPTestCase {
 			$singular_page->render_order_items( $order );
 			$html = ob_get_clean();
 
-			// These orders don't have coupons, so we should see the message.
-			$this->assertTrue(
-				str_contains( $html, '<!-- No coupons found. -->' ),
-				'Orders without coupons should have an HTML comment that no coupons are found.'
+			// These orders don't have coupons, so they shouldn't mention them at all.
+			$this->assertFalse(
+				stripos( $html, 'coupon' ),
+				'Orders without coupons should have no mention of coupons in the HTML.'
 			);
 		}
 

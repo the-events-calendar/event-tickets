@@ -10,13 +10,8 @@
  * @var WP_Post $order   The current post object (with added properties).
  */
 
-// If we don't have any coupons, we don't need to display anything; just add a comment to the HTML.
+// If we don't have any coupons, we don't need to display anything.
 if ( empty( $coupons ) ) {
-	printf(
-		'<!-- %s -->',
-		esc_html__( 'No coupons found.', 'event-tickets' )
-	);
-
 	return;
 }
 
