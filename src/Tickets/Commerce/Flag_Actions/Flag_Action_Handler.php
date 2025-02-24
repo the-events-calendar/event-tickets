@@ -83,7 +83,6 @@ class Flag_Action_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 * Prepare the order for email.
 	 *
 	 * @since 5.18.0
-	 * @since TBD Added ticket fees to the order object.
 	 *
 	 * @param WP_Post $order The order to prepare.
 	 *
@@ -94,9 +93,7 @@ class Flag_Action_Handler extends \TEC\Common\Contracts\Service_Provider {
 			return $order;
 		}
 
-		$items        = $order->items;
-		$order->items = array_filter( $items, fn( $item ) => $this->is_ticket( $item ) );
-		$order->fees  = array_filter( $items, fn( $item ) => array_key_exists( 'type', $item ) && 'fee' === $item['type'] );
+		$order->items = array_filter( $order->items, fn ( $item ) => $this->is_ticket( $item ) );
 
 		return $order;
 	}
