@@ -15,14 +15,18 @@ use Closure;
 use Generator;
 use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent_Handler;
 use TEC\Tickets\Commerce\Status\Denied;
+use Tribe\Tests\Traits\With_Clock_Mock;
+use Tribe__Date_Utils as Dates;
 
 class Hooks_Test extends WPTestCase {
 	use Ticket_Maker;
 	use With_Uopz;
 	use Order_Maker;
 	use With_Uopz;
+	use With_Clock_Mock;
 
 	public function test_it_processes_async_stripe_webhooks() {
+		$this->freeze_time( Dates::immutable( '2024-06-13 17:25:00' ) );
 		$post = self::factory()->post->create(
 			[
 				'post_type' => 'page',
@@ -44,6 +48,7 @@ class Hooks_Test extends WPTestCase {
 		tribe( Webhooks::class )->add_pending_webhook( $order->ID, $wp_status_slug_from_slug( Completed::SLUG ), $wp_status_slug_from_slug( Created::SLUG ) );
 
 		$this->assertSame( $wp_status_slug_from_slug( Created::SLUG ), $order->post_status );
+		$this->freeze_time( Dates::immutable( '2024-06-13 17:51:00' ) );
 		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID, 0 );
 
 		$refreshed_order = tec_tc_get_order( $order->ID );
@@ -66,6 +71,7 @@ class Hooks_Test extends WPTestCase {
 	}
 
 	public function test_it_reschedules_async_stripe_webhooks_when_encounter_issues() {
+		$this->freeze_time( Dates::immutable( '2024-06-13 17:25:00' ) );
 		$post = self::factory()->post->create(
 			[
 				'post_type' => 'page',
@@ -80,6 +86,7 @@ class Hooks_Test extends WPTestCase {
 
 		$this->assertFalse( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-stripe-webhooks' ) );
 		tribe( Order::class )->set_on_checkout_screen_hold( $order->ID );
+		$this->freeze_time( Dates::immutable( '2024-06-13 17:51:00' ) );
 		$this->assertTrue( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-stripe-webhooks' ) );
 
 		$refreshed_order = tec_tc_get_order( $order->ID );
@@ -136,6 +143,7 @@ class Hooks_Test extends WPTestCase {
 	}
 
 	public function test_it_should_bail_async_stripe_webhooks_when_end_result_is_done_already() {
+		$this->freeze_time( Dates::immutable( '2024-06-13 17:25:00' ) );
 		$post = self::factory()->post->create(
 			[
 				'post_type' => 'page',
@@ -159,6 +167,7 @@ class Hooks_Test extends WPTestCase {
 		$refreshed_order = tec_tc_get_order( $order->ID );
 
 		$this->assertSame( $wp_status_slug_from_slug( Completed::SLUG ), $refreshed_order->post_status );
+		$this->freeze_time( Dates::immutable( '2024-06-13 17:51:00' ) );
 		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID, 0 );
 
 		$refreshed_order = tec_tc_get_order( $order->ID );
