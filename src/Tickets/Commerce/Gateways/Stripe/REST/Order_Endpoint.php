@@ -16,8 +16,6 @@ use TEC\Tickets\Commerce\Status\Created;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Success;
 
-use Tribe__Utils__Array as Arr;
-
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -159,20 +157,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-stripe-failed-creating-order', $messages['failed-creating-order'], $order );
 		}
 
-		tec_tc_orders()
-			->by_args(
-				[
-					'id' => $order->ID,
-				]
-			)
-			->set_args(
-				[
-					'gateway_payload'  => $payment_intent,
-					'gateway_order_id' => $payment_intent['id'],
-				]
-			)
-			->save();
-
 		$status = tribe( Status::class )->convert_to_commerce_status( $payment_intent['status'] );
 
 		// We will attempt to update the order status to the one returned by Stripe.
@@ -187,7 +171,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		if ( ! in_array( $status->get_slug(), [ Created::SLUG, Pending::SLUG ], true ) ) {
 			// When the payment fails we unlock the order.
-			tribe( Order::class )->unlock_order( $order->ID );
+			$orders->unlock_order( $order->ID );
 
 			return new WP_Error(
 				'tec-tc-gateway-stripe-failed-payment',
@@ -201,7 +185,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		// Ensure we unlock the order when the payment is successful.
-		tribe( Order::class )->unlock_order( $order->ID );
+		$orders->unlock_order( $order->ID );
 
 		// Respond with the client_secret for Stripe Usage.
 		$response['success']       = true;
@@ -311,7 +295,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-stripe-invalid-payment-intent-status', $messages['invalid-payment-intent-status'], [ 'status' => $status ] );
 		}
 
-		$updated = $orders->modify_status(
+		$orders->modify_status(
 			$order->ID,
 			$status->get_slug(),
 			[
