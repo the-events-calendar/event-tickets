@@ -157,6 +157,20 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-stripe-failed-creating-order', $messages['failed-creating-order'], $order );
 		}
 
+		tec_tc_orders()
+			->by_args(
+				[
+					'id' => $order->ID,
+				]
+			)
+			->set_args(
+				[
+					'gateway_payload'  => $payment_intent,
+					'gateway_order_id' => $payment_intent['id'],
+				]
+			)
+			->save();
+
 		$status = tribe( Status::class )->convert_to_commerce_status( $payment_intent['status'] );
 
 		if ( ! in_array( $status->get_slug(), [ Created::SLUG, Pending::SLUG ], true ) ) {

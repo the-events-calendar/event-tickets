@@ -55,7 +55,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 
 		add_action( 'wp_ajax_' . Webhooks::NONCE_KEY_SETUP, [ $this, 'action_handle_set_up_webhook' ] );
 
-		add_action( 'tec_tickets_commerce_async_webhook_process', [ $this, 'process_async_stripe_webhook' ], 10 );
+		add_action( 'tec_tickets_commerce_async_webhook_process', [ $this, 'process_async_stripe_webhook' ], 10, 2 );
 	}
 
 	/**
@@ -79,12 +79,14 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 * Process the async stripe webhook.
 	 *
 	 * @since 5.18.1
+	 * @since TBD Added the $try parameter.
 	 *
 	 * @param int $order_id The order ID.
+	 * @param int $try      The number of times this has been tried.
 	 *
 	 * @throws Exception If the action fails after too many retries.
 	 */
-	public function process_async_stripe_webhook( int $order_id ): void {
+	public function process_async_stripe_webhook( int $order_id, int $try = 0 ): void {
 		$order = tec_tc_get_order( $order_id );
 
 		if ( ! $order ) {
@@ -100,6 +102,23 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		}
 
 		$webhooks = tribe( Webhooks::class );
+
+		if ( time() < $order->on_checkout_hold ) {
+			if ( $try > $webhooks->get_max_number_of_retries() ) {
+				throw new Exception( __( 'Failed to process the webhook after too many tries.', 'event-tickets' ) );
+			}
+
+			as_schedule_single_action(
+				$order->on_checkout_hold + MINUTE_IN_SECONDS,
+				'tec_tickets_commerce_async_webhook_process',
+				[
+					'order_id' => $order_id,
+					'try'      => $try++,
+				],
+				'tec-tickets-commerce-stripe-webhooks'
+			);
+			return;
+		}
 
 		$pending_webhooks = $webhooks->get_pending_webhooks( $order->ID );
 

@@ -44,7 +44,7 @@ class Hooks_Test extends WPTestCase {
 		tribe( Webhooks::class )->add_pending_webhook( $order->ID, $wp_status_slug_from_slug( Completed::SLUG ), $wp_status_slug_from_slug( Created::SLUG ) );
 
 		$this->assertSame( $wp_status_slug_from_slug( Created::SLUG ), $order->post_status );
-		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID );
+		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID, 0 );
 
 		$refreshed_order = tec_tc_get_order( $order->ID );
 
@@ -56,7 +56,7 @@ class Hooks_Test extends WPTestCase {
 
 		tribe( Webhooks::class )->add_pending_webhook( $order->ID, $wp_status_slug_from_slug( Pending::SLUG ), $wp_status_slug_from_slug( Completed::SLUG ) );
 
-		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID );
+		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID, 1 );
 
 		$refreshed_order = tec_tc_get_order( $order->ID );
 
@@ -89,7 +89,7 @@ class Hooks_Test extends WPTestCase {
 		tribe( Webhooks::class )->add_pending_webhook( $order->ID, $wp_status_slug_from_slug( Completed::SLUG ), $wp_status_slug_from_slug( Pending::SLUG ) );
 
 		// Issue is encountered here - Different old status
-		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID );
+		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID, 0 );
 		$this->assertEmpty( tribe( Webhooks::class )->get_pending_webhooks( $order->ID ) );
 
 		$refreshed_order = tec_tc_get_order( $order->ID );
@@ -101,7 +101,7 @@ class Hooks_Test extends WPTestCase {
 		tribe( Webhooks::class )->add_pending_webhook( $order->ID, $wp_status_slug_from_slug( Completed::SLUG ), $wp_status_slug_from_slug( Pending::SLUG ) );
 
 		// Issue is encountered here - Order is locked.
-		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID );
+		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID, 0 );
 		$this->assertEmpty( tribe( Webhooks::class )->get_pending_webhooks( $order->ID ) );
 
 		$refreshed_order = tec_tc_get_order( $order->ID );
@@ -115,7 +115,7 @@ class Hooks_Test extends WPTestCase {
 		tribe( Webhooks::class )->add_pending_webhook( $order->ID, $wp_status_slug_from_slug( Completed::SLUG ), $wp_status_slug_from_slug( Pending::SLUG ) );
 
 		// Issue is encountered here - Modify status will fail.
-		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID );
+		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID, 0 );
 		$this->assertEmpty( tribe( Webhooks::class )->get_pending_webhooks( $order->ID ) );
 
 		$refreshed_order = tec_tc_get_order( $order->ID );
@@ -127,7 +127,7 @@ class Hooks_Test extends WPTestCase {
 		tribe( Webhooks::class )->add_pending_webhook( $order->ID, $wp_status_slug_from_slug( Completed::SLUG ), $wp_status_slug_from_slug( Created::SLUG ) );
 
 		// Issue is encountered here - Success
-		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID );
+		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID, 0 );
 
 		$refreshed_order = tec_tc_get_order( $order->ID );
 		$this->assertEmpty( tribe( Webhooks::class )->get_pending_webhooks( $order->ID ) );
@@ -159,7 +159,7 @@ class Hooks_Test extends WPTestCase {
 		$refreshed_order = tec_tc_get_order( $order->ID );
 
 		$this->assertSame( $wp_status_slug_from_slug( Completed::SLUG ), $refreshed_order->post_status );
-		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID );
+		do_action( 'tec_tickets_commerce_async_webhook_process', $order->ID, 0 );
 
 		$refreshed_order = tec_tc_get_order( $order->ID );
 
