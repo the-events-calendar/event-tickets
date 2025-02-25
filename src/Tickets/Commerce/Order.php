@@ -46,7 +46,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @var string
 	 */
-	protected const ON_CHECKOUT_SCREEN_HOLD_META = '_tec_tc_order_on_checkout_screen_hold_timeout';
+	public const ON_CHECKOUT_SCREEN_HOLD_META = '_tec_tc_order_on_checkout_screen_hold_timeout';
 
 	/**
 	 * Meta key for the checkout status of the order.
@@ -1294,7 +1294,27 @@ class Order extends Abstract_Order {
 	public function set_on_checkout_screen_hold( int $order_id ): bool {
 		$on_screen_hold = time() + $this->get_default_on_checkout_screen_hold_timeout();
 
-		return (bool) update_post_meta( $order_id, static::ON_CHECKOUT_SCREEN_HOLD_META, $on_screen_hold );
+		$updated = (bool) update_post_meta( $order_id, static::ON_CHECKOUT_SCREEN_HOLD_META, $on_screen_hold );
+
+		if ( ! $updated ) {
+			return false;
+		}
+
+		/**
+		 * Fires after an order's checkout is marked as completed.
+		 *
+		 * @since 5.18.1
+		 *
+		 * @param int $order_id The order ID.
+		 */
+		do_action( 'tec_tickets_commerce_order_on_checkout_screen_hold_set', $order_id, $on_screen_hold );
+
+		return (bool) as_schedule_single_action(
+			$on_screen_hold + MINUTE_IN_SECONDS, // We schedule the action to run after the timeout.
+			'tec_tickets_commerce_async_webhook_process',
+			[ 'order_id' => $order_id ],
+			'tec-tickets-commerce-stripe-webhooks'
+		);
 	}
 
 	/**

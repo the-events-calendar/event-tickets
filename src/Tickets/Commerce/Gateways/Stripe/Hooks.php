@@ -99,6 +99,10 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 			return;
 		}
 
+		if ( time() < $order->on_checkout_hold ) {
+			return;
+		}
+
 		$webhooks = tribe( Webhooks::class );
 
 		$pending_webhooks = $webhooks->get_pending_webhooks( $order->ID );
