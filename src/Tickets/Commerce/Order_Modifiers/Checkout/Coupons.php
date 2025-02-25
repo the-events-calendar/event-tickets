@@ -183,7 +183,9 @@ class Coupons extends Controller_Contract {
 		// Store the coupons in the properties after normalizing them.
 		$properties['coupons'] = array_map(
 			static function ( array $coupon ) {
-				$coupon['sub_total'] = Value::create( $coupon['sub_total'] );
+				if ( ! $coupon['sub_total'] instanceof Value ) {
+					$coupon['sub_total'] = Value::create( $coupon['sub_total'] );
+				}
 
 				return $coupon;
 			},
