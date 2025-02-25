@@ -28,6 +28,7 @@ class Order_Test extends WPTestCase {
 	use With_Clock_Mock;
 
 	protected static array $clean_callbacks = [];
+	protected static array $back_up = [];
 
 	public function test_it_does_not_create_multiple_orders_for_single_cart() {
 		$post = self::factory()->post->create(
@@ -454,9 +455,21 @@ class Order_Test extends WPTestCase {
 	}
 
 	/**
+	 * @before
+	 */
+	public function reset_wp_actions(): void {
+		global $wp_actions;
+
+		self::$back_up = $wp_actions;
+		$wp_actions = [];
+	}
+
+	/**
 	 * @after
 	 */
 	public function clear_commited_transactions() {
+		global $wp_actions;
+		$wp_actions = self::$back_up;
 		if ( empty( self::$clean_callbacks ) ) {
 			return;
 		}
