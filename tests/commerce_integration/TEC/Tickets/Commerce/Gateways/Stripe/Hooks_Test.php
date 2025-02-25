@@ -37,7 +37,7 @@ class Hooks_Test extends WPTestCase {
 
 		$this->assertFalse( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-stripe-webhooks' ) );
 
-		tribe( Order::class )->checkout_completed( $order->ID );
+		tribe( Order::class )->set_on_checkout_screen_hold( $order->ID );
 
 		$this->assertTrue( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-stripe-webhooks' ) );
 
@@ -79,7 +79,7 @@ class Hooks_Test extends WPTestCase {
 		$order = $this->create_order( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ], [ 'order_status' => Created::SLUG ] );
 
 		$this->assertFalse( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-stripe-webhooks' ) );
-		tribe( Order::class )->checkout_completed( $order->ID );
+		tribe( Order::class )->set_on_checkout_screen_hold( $order->ID );
 		$this->assertTrue( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-stripe-webhooks' ) );
 
 		$refreshed_order = tec_tc_get_order( $order->ID );
@@ -150,7 +150,7 @@ class Hooks_Test extends WPTestCase {
 
 		$this->assertFalse( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-stripe-webhooks' ) );
 
-		tribe( Order::class )->checkout_completed( $order->ID );
+		tribe( Order::class )->set_on_checkout_screen_hold( $order->ID );
 
 		$this->assertTrue( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-stripe-webhooks' ) );
 

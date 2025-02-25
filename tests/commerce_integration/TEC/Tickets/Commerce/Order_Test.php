@@ -16,11 +16,14 @@ use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Status\Action_Required;
+use Tribe\Tests\Traits\With_Clock_Mock;
+use Tribe__Date_Utils as Dates;
 
 class Order_Test extends WPTestCase {
 	use Ticket_Maker;
 	use With_Uopz;
 	use Order_Maker;
+	use With_Clock_Mock;
 
 	protected static array $clean_callbacks = [];
 
@@ -141,6 +144,28 @@ class Order_Test extends WPTestCase {
 		$this->assertTrue( tribe( Order::class )->checkout_completed( $order->ID ) );
 
 		$this->assertTrue( tribe( Order::class )->is_checkout_completed( $order->ID ) );
+	}
+
+	public function test_on_checkout_screen_hold_flag() {
+		$this->freeze_time( Dates::immutable( '2024-06-13 17:25:00' ) );
+		$post = self::factory()->post->create(
+			[
+				'post_type' => 'page',
+			]
+		);
+		$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
+		$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
+
+		$order = $this->create_order_from_cart( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ] );
+		tribe( Cart::class )->clear_cart();
+
+		$this->assertFalse( tribe( Order::class )->has_on_checkout_screen_hold( $order->ID ) );
+
+		tribe( Order::class )->set_on_checkout_screen_hold( $order->ID );
+		$this->assertTrue( tribe( Order::class )->has_on_checkout_screen_hold( $order->ID ) );
+
+		$this->freeze_time( Dates::immutable( '2024-06-13 17:31:00' ) );
+		$this->assertFalse( tribe( Order::class )->has_on_checkout_screen_hold( $order->ID ) );
 	}
 
 	public function test_orders_are_not_updated_while_locked() {
