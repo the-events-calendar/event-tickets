@@ -12,6 +12,8 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
 
+use WP_Post;
+
 /**
  * Class Fees
  *
@@ -48,6 +50,14 @@ class Fees extends Abstract_Fees {
 			30,
 			3
 		);
+
+		// Attach fees to the order object.
+		add_filter(
+			'tribe_post_type_tc_orders_properties',
+			[ $this, 'attach_fees_to_order_object' ],
+			10,
+			2
+		);
 	}
 
 	/**
@@ -68,5 +78,32 @@ class Fees extends Abstract_Fees {
 			[ $this, 'display_fee_section' ],
 			30
 		);
+
+		remove_filter(
+			'tribe_post_type_tc_orders_properties',
+			[ $this, 'attach_fees_to_order_object' ]
+		);
+	}
+
+	/**
+	 * Add fees to the order object properties.
+	 *
+	 * @since TBD
+	 *
+	 * @param array   $properties The properties of the order object.
+	 * @param WP_Post $order      The order object.
+	 *
+	 * @return array The updated properties of the order object.
+	 */
+	public function attach_fees_to_order_object( array $properties, WP_Post $order ): array {
+		// There shouldn't be an order with no items, but let's just be safe.
+		$items = $properties['items'] ?? [];
+		if ( empty( $items ) ) {
+			return $properties;
+		}
+
+		$properties['fees'] = $this->get_combined_fees_for_items( $items );
+
+		return $properties;
 	}
 }
