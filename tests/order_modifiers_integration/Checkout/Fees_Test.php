@@ -3,8 +3,10 @@
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
 
 use Generator;
+use PHPUnit\Framework\Assert;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
+use TEC\Tickets\Commerce\Admin\Singular_Order_Page;
 use TEC\Tickets\Commerce\Cart as Commerce_Cart;
 use TEC\Tickets\Commerce\Cart\Cart_Interface as Cart;
 use TEC\Tickets\Commerce\Order_Modifiers\API\Fees as ApiFees;
@@ -19,20 +21,23 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\With_No_Object_Storage;
+use Tribe\Tickets\Test\Traits\With_Test_Orders;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 
 class Fees_Test extends Controller_Test_Case {
-	use Ticket_Maker;
+
 	use Attendee_Maker;
-	use With_Tickets_Commerce;
-	use Reservations_Maker;
-	use SnapshotAssertions;
-	use Order_Maker;
 	use Fee_Creator;
-	use With_Uopz;
-	use With_No_Object_Storage;
+	use Order_Maker;
+	use Reservations_Maker;
 	use Series_Pass_Factory;
+	use SnapshotAssertions;
+	use Ticket_Maker;
+	use With_No_Object_Storage;
+	use With_Test_Orders;
+	use With_Tickets_Commerce;
+	use With_Uopz;
 
 	protected string $controller_class = Fees::class;
 
@@ -974,6 +979,40 @@ class Fees_Test extends Controller_Test_Case {
 
 		// Step 4: Assert that the total matches the expected total.
 		$this->assertEquals( $expected_total, $order->total_value->get_decimal() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_render_fees() {
+		// Reset the fees and subtotal.
+		$this->make_controller()->register();
+
+		// First, we should ensure that orders with no fees have no mention of fees.
+		$this->prepare_test_data();
+
+		/** @var Singular_Order_Page $singular_page */
+		$singular_page = tribe( Singular_Order_Page::class );
+
+		// Now, we should add a fee to the order and ensure it is displayed.
+		$post      = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post, 10 );
+		$fee       = $this->create_fee_for_ticket( $ticket_id );
+		$order     = $this->create_order( [ $ticket_id => 1 ] );
+
+		// We should have fees attached to the order.
+		Assert::assertNotEmpty( $order->fees );
+
+		ob_start();
+		$singular_page->render_order_items( $order );
+		$html = ob_get_clean();
+
+		$html = str_replace( $ticket_id, '{{TICKET_ID}}', $html );
+		$html = str_replace( $order->ID, '{{ORDER_ID}}', $html );
+		$html = str_replace( $post, '{{EVENT_ID}}', $html );
+		$html = str_replace( $fee, '{{FEE_ID}}', $html );
+
+		$this->assertMatchesHtmlSnapshot( $html );
 	}
 
 	/**
