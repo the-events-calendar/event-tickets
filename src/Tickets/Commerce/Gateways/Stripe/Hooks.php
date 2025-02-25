@@ -360,7 +360,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		}
 
 		// Invalid payment intent i guess?
-		if ( $payment_intent['client_secret'] !== $payment_intent_client_secret ) {
+		if ( empty( $payment_intent['client_secret'] ) || $payment_intent['client_secret'] !== $payment_intent_client_secret ) {
 			return;
 		}
 
