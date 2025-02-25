@@ -404,11 +404,11 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	public function modify_checkout_vars( $vars ) {
 		$payment_intent = tribe( Payment_Intent_Handler::class )->get();
 
-		$vars['billing_fields']['name']['value']             = Arr::get( $payment_intent, [ 'metadata', 'purchaser_name'], '' );
-		$vars['billing_fields']['email']['value']            = Arr::get( $payment_intent, [ 'metadata', 'purchaser_email'], '' );
+		$vars['billing_fields']['name']['value']             = Arr::get( $payment_intent, [ 'metadata', 'purchaser_name' ], '' );
+		$vars['billing_fields']['email']['value']            = Arr::get( $payment_intent, [ 'metadata', 'purchaser_email' ], '' );
 		$vars['billing_fields']['address']['value']['line1'] = Arr::get( $payment_intent, [ 'shipping', 'address', 'line1' ], '' );
 		$vars['billing_fields']['address']['value']['line2'] = Arr::get( $payment_intent, [ 'shipping', 'address', 'line2' ], '' );
-		$vars['billing_fields']['city']['value']             = Arr::get( $payment_intent, [ 'shipping', 'address', 'city'], '' );
+		$vars['billing_fields']['city']['value']             = Arr::get( $payment_intent, [ 'shipping', 'address', 'city' ], '' );
 		$vars['billing_fields']['state']['value']            = Arr::get( $payment_intent, [ 'shipping', 'address', 'state' ], '' );
 		$vars['billing_fields']['zip']['value']              = Arr::get( $payment_intent, [ 'shipping', 'address', 'postal_code' ], '' );
 		$vars['billing_fields']['country']['value']          = Arr::get( $payment_intent, [ 'shipping', 'address', 'country' ], '' );
@@ -435,7 +435,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 * @return bool
 	 */
 	public function modify_checkout_display_billing_info( bool $value ): bool {
-		$payment_methods = tribe( Merchant::class )->get_payment_method_types();
+		$payment_methods       = tribe( Merchant::class )->get_payment_method_types();
 		$count_payment_methods = count( $payment_methods );
 		if ( 1 < $count_payment_methods ) {
 			return true;
