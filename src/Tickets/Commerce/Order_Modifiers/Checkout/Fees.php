@@ -105,7 +105,7 @@ class Fees extends Abstract_Fees {
 
 		// We need to normalize the fees for the order object.
 		$properties['fees'] = array_map(
-			function ( $fee ) {
+			static function ( $fee ) {
 				$fee['sub_total'] = Legacy_Value_Factory::to_legacy_value( $fee['fee_amount'] );
 
 				return $fee;
