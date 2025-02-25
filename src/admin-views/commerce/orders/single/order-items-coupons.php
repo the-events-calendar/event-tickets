@@ -10,6 +10,8 @@
  * @var WP_Post $order   The current post object (with added properties).
  */
 
+declare( strict_types=1 );
+
 // If we don't have any coupons, we don't need to display anything.
 if ( empty( $coupons ) ) {
 	return;
@@ -24,7 +26,7 @@ if ( empty( $coupons ) ) {
 		<td><?php echo esc_html( $coupon['display_name'] ); ?></td>
 		<td><code><?php echo esc_html( $coupon['slug'] ); ?></code></td>
 		<td class="tec-tickets-commerce-single-order--items--table--row--info-column"></td>
-		<td style="padding-left:0;">
+		<td style="padding-left: 0;">
 			<div class="tec-tickets-commerce-price-container">
 				<ins>
 					<span class="tec-tickets-commerce-price">
@@ -33,5 +35,6 @@ if ( empty( $coupons ) ) {
 				</ins>
 			</div>
 		</td>
+		<td></td>
 	</tr>
 <?php endforeach; ?>
