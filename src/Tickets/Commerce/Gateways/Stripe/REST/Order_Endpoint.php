@@ -174,6 +174,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$status = tribe( Status::class )->convert_to_commerce_status( $payment_intent['status'] );
 
 		if ( ! in_array( $status->get_slug(), [ Created::SLUG, Pending::SLUG ], true ) ) {
+			$orders->unlock_order( $order->ID );
+
 			return new WP_Error(
 				'tec-tc-gateway-stripe-failed-payment',
 				$messages['failed-payment'],
