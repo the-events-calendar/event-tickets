@@ -197,6 +197,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			]
 		);
 
+		$orders->unlock_order( $order->ID );
+
 		// Respond with the client_secret for Stripe Usage.
 		$response['success']       = true;
 		$response['order_id']      = $order->ID;
