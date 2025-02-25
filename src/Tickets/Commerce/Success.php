@@ -123,7 +123,7 @@ class Success {
 		}
 
 
-		$order_id = tribe_get_request_var( Success::$order_id_query_arg );
+		$order_id = tribe_get_request_var( static::$order_id_query_arg );
 		$order    = tribe( Order::class )->get_from_gateway_order_id( $order_id );
 
 		tribe( Order::class )->remove_on_checkout_screen_hold( $order );
