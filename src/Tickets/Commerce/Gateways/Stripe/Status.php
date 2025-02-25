@@ -179,21 +179,16 @@ class Status {
 		if ( ! isset( $payment_intent['status'] ) ) {
 			return false;
 		}
-		$stripe_status = $payment_intent['status'];
-
-		if ( ! $this->is_valid_status( $stripe_status ) ) {
-			return false;
-		}
-		$statuses = $this->get_valid_statuses();
 
 		$last_payment_error = $payment_intent['last_payment_error'] ?? null;
+		$has_valid_error    = ! empty( $last_payment_error['decline_code'] ) || ! empty( $last_payment_error['type'] );
 
-		$has_valid_error = ! empty( $last_payment_error['decline_code'] ) || ! empty( $last_payment_error['type'] );
-
-		if ( ! $last_payment_error || ! $has_valid_error ) {
-			return tribe( Commerce_Status\Status_Handler::class )->get_by_slug( $statuses[ $stripe_status ] );
+		if ( $last_payment_error && $has_valid_error ) {
+			tribe( Commerce_Status\Denied::class );
 		}
 
-		return tribe( Commerce_Status\Denied::class );
+		$stripe_status = $payment_intent['status'];
+
+		return $this->convert_to_commerce_status( $stripe_status );
 	}
 }
