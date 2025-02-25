@@ -18,7 +18,7 @@ use TEC\Tickets\Commerce\Order;
 	<td><?php echo esc_html( $ticket->name ); ?></td>
 	<td class="tribe-desktop-only"><?php echo 'series_pass' === $ticket->type ? esc_html__( 'Series Pass', 'event-tickets' ) : esc_html__( 'Standard Ticket', 'event-tickets' ); ?></td>
 	<td class="tec-tickets-commerce-single-order--items--table--row--info-column"><?php /* @todo dpan: this is were Refunded would go */ ?></td>
-	<td style="padding-left:0;">
+	<td class="tec-tickets-commerce-single-order--items--table--row--price-column">
 		<?php
 		$current  = tribe( Order::class )->get_item_value( $item );
 		$original = tribe( Order::class )->get_item_value( $item, true );
