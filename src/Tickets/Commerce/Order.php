@@ -1301,13 +1301,45 @@ class Order extends Abstract_Order {
 		}
 
 		/**
-		 * Fires after an order's checkout is marked as completed.
+		 * Fires after an order is marked as on checkout screen hold.
 		 *
 		 * @since 5.18.1
 		 *
 		 * @param int $order_id The order ID.
 		 */
 		do_action( 'tec_tickets_commerce_order_on_checkout_screen_hold_set', $order_id, $on_screen_hold );
+
+		return (bool) as_schedule_single_action(
+			$on_screen_hold + MINUTE_IN_SECONDS, // We schedule the action to run after the timeout.
+			'tec_tickets_commerce_async_webhook_process',
+			[ 'order_id' => $order_id ],
+			'tec-tickets-commerce-stripe-webhooks'
+		);
+	}
+	/**
+	 * Delete an order on checkout screen hold.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id Which order we are setting.
+	 *
+	 * @return bool
+	 */
+	public function remove_on_checkout_screen_hold( int $order_id ): bool {
+		$updated = (bool) delete_post_meta( $order_id, static::ON_CHECKOUT_SCREEN_HOLD_META );
+
+		if ( ! $updated ) {
+			return false;
+		}
+
+		/**
+		 * Fires after an order has its checkout screen hold removed.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $order_id The order ID.
+		 */
+		do_action( 'tec_tickets_commerce_order_on_checkout_screen_hold_remove', $order_id );
 
 		return (bool) as_schedule_single_action(
 			$on_screen_hold + MINUTE_IN_SECONDS, // We schedule the action to run after the timeout.
