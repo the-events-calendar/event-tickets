@@ -10,6 +10,7 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Commerce\Order_Modifiers\Traits;
 
 use Exception;
+use TEC\Tickets\Commerce\Order_Modifiers\Factory;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Coupons as Coupons_Repository;
