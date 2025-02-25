@@ -55,7 +55,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 
 		add_action( 'wp_ajax_' . Webhooks::NONCE_KEY_SETUP, [ $this, 'action_handle_set_up_webhook' ] );
 
-		add_action( 'tec_tickets_commerce_async_webhook_process', [ $this, 'process_async_stripe_webhook' ], 10 );
+		add_action( 'tec_tickets_commerce_async_webhook_process', [ $this, 'process_async_stripe_webhook' ], 10, 2 );
 	}
 
 	/**
@@ -79,12 +79,14 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 * Process the async stripe webhook.
 	 *
 	 * @since 5.18.1
+	 * @since TBD Added the $retry parameter.
 	 *
 	 * @param int $order_id The order ID.
+	 * @param int $retry      The number of times this has been tried.
 	 *
 	 * @throws Exception If the action fails after too many retries.
 	 */
-	public function process_async_stripe_webhook( int $order_id ): void {
+	public function process_async_stripe_webhook( int $order_id, int $retry = 0 ): void {
 		$order = tec_tc_get_order( $order_id );
 
 		if ( ! $order ) {
@@ -99,11 +101,24 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 			return;
 		}
 
+		$webhooks = tribe( Webhooks::class );
+
 		if ( time() < $order->on_checkout_hold ) {
+			if ( $retry > $webhooks->get_max_number_of_retries() ) {
+				throw new Exception( __( 'Failed to process the webhook after too many tries.', 'event-tickets' ) );
+			}
+
+			as_schedule_single_action(
+				$order->on_checkout_hold + MINUTE_IN_SECONDS,
+				'tec_tickets_commerce_async_webhook_process',
+				[
+					'order_id' => $order_id,
+					'try'      => $retry++,
+				],
+				'tec-tickets-commerce-stripe-webhooks'
+			);
 			return;
 		}
-
-		$webhooks = tribe( Webhooks::class );
 
 		$pending_webhooks = $webhooks->get_pending_webhooks( $order->ID );
 
@@ -350,14 +365,14 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		$payment_intent_id            = tec_get_request_var( 'payment_intent' );
 		$payment_intent_client_secret = tec_get_request_var( 'payment_intent_client_secret' );
 
-		if ( ! $payment_intent_id || ! $payment_intent_client_secret ) {
+		if ( ! ( $payment_intent_id && $payment_intent_client_secret ) ) {
 			return;
 		}
 
 		$existing_payment_intent = tribe( Payment_Intent_Handler::class )->get();
 
 		// Do we need to re-fecth the payment intent?
-		if ( ! empty( $existing_payment_intent ) && ( $existing_payment_intent['id'] === $payment_intent_id || $existing_payment_intent['client_secret'] === $payment_intent_client_secret ) ) {
+		if ( ! empty( $existing_payment_intent['id'] ) && ! empty( $existing_payment_intent['client_secret'] ) && $existing_payment_intent['id'] === $payment_intent_id && $existing_payment_intent['client_secret'] === $payment_intent_client_secret ) {
 			$payment_intent = $existing_payment_intent;
 		} else {
 			$payment_intent = Payment_Intent::get( $payment_intent_id );
@@ -383,7 +398,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		)->first();
 
 		// We will attempt to update the order status to the one returned by Stripe.
-		$updated = tribe( Order::class )->modify_status(
+		tribe( Order::class )->modify_status(
 			$order->ID,
 			$new_status->get_slug(),
 			[
@@ -394,8 +409,8 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 
 		// If we get a success status, we redirect to the success page.
 		if ( Completed::SLUG === $new_status->get_slug() ) {
-			wp_safe_redirect( $success_url );
-			exit;
+			wp_safe_redirect( $success_url ); // phpcs:ignore WordPressVIPMinimum.Security.ExitAfterRedirect.NoExit, StellarWP.CodeAnalysis.RedirectAndDie.Error
+			tribe_exit();
 		}
 	}
 

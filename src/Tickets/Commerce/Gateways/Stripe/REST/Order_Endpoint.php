@@ -16,8 +16,6 @@ use TEC\Tickets\Commerce\Status\Created;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Success;
 
-use Tribe__Utils__Array as Arr;
-
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -175,19 +173,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		$status = tribe( Status::class )->convert_to_commerce_status( $payment_intent['status'] );
 
-		// We will attempt to update the order status to the one returned by Stripe.
-		$updated = $orders->modify_status(
-			$order->ID,
-			$status->get_slug(),
-			[
-				'gateway_payload'  => $payment_intent,
-				'gateway_order_id' => $payment_intent['id'],
-			]
-		);
-
 		if ( ! in_array( $status->get_slug(), [ Created::SLUG, Pending::SLUG ], true ) ) {
-			// When the payment fails we unlock the order.
-			tribe( Order::class )->unlock_order( $order->ID );
+			$orders->unlock_order( $order->ID );
 
 			return new WP_Error(
 				'tec-tc-gateway-stripe-failed-payment',
@@ -200,14 +187,23 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			);
 		}
 
-		// Ensure we unlock the order when the payment is successful.
-		tribe( Order::class )->unlock_order( $order->ID );
+		// We will attempt to update the order status to the one returned by Stripe.
+		$orders->modify_status(
+			$order->ID,
+			$status->get_slug(),
+			[
+				'gateway_payload'  => $payment_intent,
+				'gateway_order_id' => $payment_intent['id'],
+			]
+		);
+
+		$orders->unlock_order( $order->ID );
 
 		// Respond with the client_secret for Stripe Usage.
 		$response['success']       = true;
 		$response['order_id']      = $order->ID;
 		$response['client_secret'] = $payment_intent['client_secret'];
-		$response['return_url'] = add_query_arg( [ Cart::$cookie_query_arg => tribe( Cart::class )->get_cart_hash() ], tribe( Checkout::class )->get_url() );
+		$response['return_url']    = add_query_arg( [ Cart::$cookie_query_arg => tribe( Cart::class )->get_cart_hash() ], tribe( Checkout::class )->get_url() );
 
 		if ( $status->get_slug() === Pending::SLUG ) {
 			$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $payment_intent['id'] ], tribe( Success::class )->get_url() );
@@ -311,7 +307,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-stripe-invalid-payment-intent-status', $messages['invalid-payment-intent-status'], [ 'status' => $status ] );
 		}
 
-		$updated = $orders->modify_status(
+		$orders->modify_status(
 			$order->ID,
 			$status->get_slug(),
 			[

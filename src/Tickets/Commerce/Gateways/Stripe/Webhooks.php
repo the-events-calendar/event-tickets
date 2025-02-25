@@ -534,6 +534,26 @@ class Webhooks extends Abstract_Webhooks {
 	}
 
 	/**
+	 * Get the max number of retries for the webhooks.
+	 *
+	 * @since TBD
+	 *
+	 * @return int The number of retries.
+	 */
+	public function get_max_number_of_retries(): int {
+		/**
+		 * Filter the maximum number of attempts we will try to retry a webhook process.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $max_attempts How many attempts we will try to retry a webhook process. Defaults to 5.
+		 *
+		 * @return int
+		 */
+		return (int) apply_filters( 'tec_tickets_commerce_gateway_stripe_webhook_maximum_attempts', 5 );
+	}
+
+	/**
 	 * Includes a Copy button to the webhook UI.
 	 *
 	 * @since 5.3.0

@@ -160,11 +160,37 @@ class Payment_Intent_Handler {
 			$expire = 1;
 		}
 
-		$is_cookie_set = setcookie( $this->get_payment_intent_cookie_name(), $payment_intent_id ?? '', $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, is_ssl(), true ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.cookies_setcookie
+		/**
+		 * Filter the cookie options for the payment intent cookie.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $cookie_options The cookie options.
+		 *
+		 * @return array
+		 */
+		$cookie_options = (array) apply_filters(
+			'tec_tickets_commerce_stripe_payment_intent_cookie_options',
+			[
+				'expires'  => $expire,
+				'path'     => COOKIEPATH,
+				'domain'   => COOKIE_DOMAIN,
+				'secure'   => is_ssl(),
+				'httponly' => true,
+			]
+		);
+
+		$cookie_name = $this->get_payment_intent_cookie_name();
+
+		$is_cookie_set = setcookie( $cookie_name, $payment_intent_id ?? '', $cookie_options ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.cookies_setcookie
 
 		if ( $is_cookie_set ) {
 			// Overwrite local variable, so we can use it right away.
-			$_COOKIE[ $this->get_payment_intent_cookie_name() ] = $payment_intent_id; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
+			$_COOKIE[ $cookie_name ] = $payment_intent_id; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
+		}
+
+		if ( ! $payment_intent_id ) {
+			unset( $_COOKIE[ $cookie_name ] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
 		}
 
 		return $is_cookie_set;
