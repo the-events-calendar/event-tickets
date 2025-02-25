@@ -177,9 +177,18 @@ class Coupons extends Controller_Contract {
 		$coupons = array_filter( $items, fn( $item ) => $this->is_coupon( $item ) );
 		$items   = array_filter( $items, fn( $item ) => ! $this->is_coupon( $item ) );
 
-		// Store the items and coupons in the properties.
-		$properties['coupons'] = $coupons;
-		$properties['items']   = $items;
+		// Store the regular items without the coupons.
+		$properties['items'] = $items;
+
+		// Store the coupons in the properties after normalizing them.
+		$properties['coupons'] = array_map(
+			static function ( array $coupon ) {
+				$coupon['sub_total'] = Value::create( $coupon['sub_total'] );
+
+				return $coupon;
+			},
+			$coupons
+		);
 
 		return $properties;
 	}
