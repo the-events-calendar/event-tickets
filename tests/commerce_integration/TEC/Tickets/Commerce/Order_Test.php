@@ -16,6 +16,8 @@ use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Status\Action_Required;
+use TEC\Tickets\Commerce\Status\Created;
+use TEC\Tickets\Commerce\Status\Unsupported;
 use Tribe\Tests\Traits\With_Clock_Mock;
 use Tribe__Date_Utils as Dates;
 
@@ -177,12 +179,24 @@ class Order_Test extends WPTestCase {
 		$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
 		$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
 
+		$storage = [];
+		add_action( 'tec_tickets_commerce_order_status_transition', function ( $new, $old, $post ) use ( &$storage ) {
+			$storage[] = [ $new::SLUG, $old::SLUG, $post->ID ];
+		}, 10, 3 );
+
+		$this->assertEquals( 0, did_action( 'tec_tickets_commerce_order_status_transition' ) );
 		$order = $this->create_order_from_cart( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ] );
 		tribe( Cart::class )->clear_cart();
 
 		$this->assertFalse( tribe( Order::class )->is_order_locked( $order->ID ) );
 
 		$result = tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
+
+		$this->assertEquals( 3, did_action( 'tec_tickets_commerce_order_status_transition' ) );
+
+		$this->assertEquals( [ Created::SLUG, Unsupported::SLUG, $order->ID ], $storage['0'] );
+		$this->assertEquals( [ Pending::SLUG, Created::SLUG, $order->ID ], $storage['1'] );
+		$this->assertEquals( [ Completed::SLUG, Pending::SLUG, $order->ID ], $storage['2'] );
 
 		$this->assertTrue( $result );
 
