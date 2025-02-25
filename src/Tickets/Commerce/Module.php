@@ -5,6 +5,7 @@ namespace TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce;
 use Tribe__Utils__Array as Arr;
 use TEC\Tickets\Commerce\Communication\Email as Email_Communication;
+use TEC\Tickets\Commerce\Reports\Attendees as Attendees_Reports;
 
 /**
  * Class Tickets Provider class for Tickets Commerce
@@ -615,15 +616,18 @@ class Module extends \Tribe__Tickets__Tickets {
 
 		$ticket_post = get_post( $ticket_id );
 
-		if ( ! $ticket_post ) {
+		if ( ! $ticket_post instanceof \WP_Post ) {
 			return false;
 		}
 
 		$deleted = false;
 		// We are handling both Ticket and Attendee post type deletion using this same method.
-		if ( $ticket_post->post_type === Attendee::POSTTYPE ) {
+		if ( Attendee::POSTTYPE === $ticket_post->post_type
+			&& tribe( Attendees_Reports::class )->user_can_manage_attendees( 0, $event_id ) ) {
 			$deleted = tribe( Attendee::class )->delete( $ticket_id );
-		} else if ( $ticket_post->post_type === Ticket::POSTTYPE ) {
+		}
+		
+		if ( Ticket::POSTTYPE === $ticket_post->post_type ) {
 			$deleted = tribe( Ticket::class )->delete( $event_id, $ticket_id );
 		}
 
