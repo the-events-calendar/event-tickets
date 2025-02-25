@@ -59,9 +59,71 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 			'gateways'           => $gateways,
 			'gateways_active'    => $this->get_gateways_active(),
 			'gateways_connected' => $this->get_gateways_connected(),
+			'billing_fields'     => $this->get_billing_fields(),
+			'has_error'          => false,
+			'error'              => [
+				'title'   => null,
+				'message' => null,
+			],
 		];
 
 		$this->template_vars = $args;
+	}
+
+	/**
+	 * Gets a list of billing fields.
+	 *
+	 * @since TBD
+	 *
+	 * @return array|array[]
+	 */
+	public function get_billing_fields(): array {
+		$fields = [
+			'name' => [
+				'label' => __( 'Person purchasing tickets:', 'event-tickets' ),
+				'type'  => 'text',
+				'value' => '',
+			],
+			'email' => [
+				'label' => __( 'Email address', 'event-tickets' ),
+				'type'  => 'email',
+				'value' => '',
+			],
+			'address' => [
+				'type'  => 'text',
+				'value' => [
+					'line1' => '',
+					'line2' => '',
+				],
+			],
+			'city' => [
+				'label' => __( 'City', 'event-tickets' ),
+				'type'  => 'text',
+				'value' => '',
+			],
+			'state' => [
+				'label' => __( 'State', 'event-tickets' ),
+				'type'  => 'text',
+				'value' => '',
+			],
+			'zip' => [
+				'label' => __( 'Zip/Postal code', 'event-tickets' ),
+				'type'  => 'text',
+				'value' => '',
+			],
+			'country' => [
+				'label' => __( 'Country or region', 'event-tickets' ),
+				'type'  => 'select',
+				'value' => '',
+			],
+
+		];
+
+		if ( $this->should_display_billing_info() ) {
+			$fields['name']['label'] = __( 'Full name', 'event-tickets' );
+		}
+
+		return $fields;
 	}
 
 	/**

@@ -14,6 +14,7 @@ use Exception;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
+use Tribe__Utils__Array as Arr;
 
 /**
  * Class Hooks
@@ -71,6 +72,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		add_filter( 'tribe_settings_validate_field_value', [ $this, 'provide_defaults_for_hidden_fields'], 10, 3 );
 		add_filter( 'tec_tickets_commerce_admin_notices', [ $this, 'filter_admin_notices' ] );
 		add_filter( 'tec_tickets_commerce_success_page_should_display_billing_fields', [ $this, 'modify_checkout_display_billing_info' ] );
+		add_filter( 'tec_tickets_commerce_shortcode_checkout_page_template_vars', [ $this, 'modify_checkout_vars' ] );
 	}
 
 	/**
@@ -355,6 +357,10 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 			return;
 		}
 
+		// Overwrite the local payment intent, since we confirmed the one we received is the one in use.
+		// This will be relevant for the checkout page.
+		tribe( Payment_Intent_Handler::class )->set( $payment_intent );
+
 		$success_url = add_query_arg( [ 'tc-order-id' => $payment_intent['id'] ], tribe( Success::class )->get_url() );
 		$new_status  = tribe( Status::class )->convert_payment_intent_to_commerce_status( $payment_intent );
 
@@ -382,6 +388,48 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		}
 	}
 
+	/**
+	 * Modify the checkout variables to include errors and billing fields.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $vars The current template vars.
+	 *
+	 * @return array
+	 */
+	public function modify_checkout_vars( $vars ) {
+		$payment_intent = tribe( Payment_Intent_Handler::class )->get();
+
+		$vars['billing_fields']['name']['value']             = Arr::get( $payment_intent, [ 'metadata', 'purchaser_name'], '' );
+		$vars['billing_fields']['email']['value']            = Arr::get( $payment_intent, [ 'metadata', 'purchaser_email'], '' );
+		$vars['billing_fields']['address']['value']['line1'] = Arr::get( $payment_intent, [ 'shipping', 'address', 'line1' ], '' );
+		$vars['billing_fields']['address']['value']['line2'] = Arr::get( $payment_intent, [ 'shipping', 'address', 'line2' ], '' );
+		$vars['billing_fields']['city']['value']             = Arr::get( $payment_intent, [ 'shipping', 'address', 'city'], '' );
+		$vars['billing_fields']['state']['value']            = Arr::get( $payment_intent, [ 'shipping', 'address', 'state' ], '' );
+		$vars['billing_fields']['zip']['value']              = Arr::get( $payment_intent, [ 'shipping', 'address', 'postal_code' ], '' );
+		$vars['billing_fields']['country']['value']          = Arr::get( $payment_intent, [ 'shipping', 'address', 'country' ], '' );
+
+		$redirect_status = tec_get_request_var( 'redirect_status' );
+		if ( $redirect_status === 'failed' ) {
+			$vars['has_error'] = true;
+			$vars['error']     = [
+				'title'   => esc_html__( 'Payment Failed', 'event-tickets' ),
+				'message' => esc_html__( 'There was an issue processing your payment with your payment method. Please try again.', 'event-tickets' ),
+			];
+		}
+
+		return $vars;
+	}
+
+	/**
+	 * Modify the checkout whether to display billing fields.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $value The current value.
+	 *
+	 * @return bool
+	 */
 	public function modify_checkout_display_billing_info( bool $value ): bool {
 		$payment_methods = tribe( Merchant::class )->get_payment_method_types();
 		$count_payment_methods = count( $payment_methods );

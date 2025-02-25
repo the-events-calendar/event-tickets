@@ -93,7 +93,17 @@ class Payment_Intent_Handler {
 	 * @return void
 	 */
 	public function set( array $payment_intent ): void {
+		// Do some real basic validation.
+		if ( empty( $payment_intent['id'] ) ) {
+			return;
+		}
+
 		$this->payment_intent = $payment_intent;
+
+		// If the existing cookie is different, update it.
+		if ( $this->get_payment_intent_cookie() !== $payment_intent['id'] ) {
+			$this->store_payment_intent_cookie( $payment_intent['id'] );
+		}
 	}
 
 	/**
