@@ -13,51 +13,24 @@
  *
  * @version 5.3.0
  *
+ * @var Checkout_Shortcode $shortcode [Global] The checkout shortcode instance.
  * @var \Tribe__Template $this [Global] Template object.
  * @var array[] $items [Global] List of Items on the cart to be checked out.
  * @var bool $must_login Global] Whether login is required to buy tickets or not.
  */
 
-// Bail if the cart is empty.
-if ( empty( $items ) ) {
-	return;
-}
+use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
 
-// Bail if user needs to login, but is not logged in.
-if ( $must_login && ! is_user_logged_in() ) {
+if ( ! $shortcode->should_display_purchaser_info() ) {
 	return;
-}
-
-$info_title   = __( 'Purchaser info', 'event-tickets' );
-$show_address = false;
-foreach ( $gateways as $gateway ) {
-	// Check if Stripe is active and enabled.
-	if (
-		'stripe' === $gateway::get_key()
-		&& $gateway::is_enabled()
-		&& $gateway::is_active()
-	) {
-		$payment_methods = ( new TEC\Tickets\Commerce\Gateways\Stripe\Merchant() )->get_payment_method_types();
-		// If more than one payment method, or if only one but not a card, we need to show the address fields.
-		if (
-			1 < count( $payment_methods )
-			|| (
-				1 === count( $payment_methods )
-				&& 'card' !== $payment_methods[0]
-			)
-		) {
-			$info_title   = __( 'Billing info', 'event-tickets' );
-			$show_address = true;
-		}
-	}
 }
 
 ?>
 <div class="tribe-tickets__form tribe-tickets__commerce-checkout-purchaser-info-wrapper tribe-common-b2">
-	<h4 class="tribe-common-h5 tribe-tickets__commerce-checkout-purchaser-info-title"><?php echo esc_html( $info_title ); ?></h4>
-	<?php $this->template( 'checkout/purchaser-info/name', [ 'show_address' => $show_address ] ); ?>
+	<h4 class="tribe-common-h5 tribe-tickets__commerce-checkout-purchaser-info-title"><?php echo esc_html( $shortcode->get_purchaser_info_title() ); ?></h4>
+	<?php $this->template( 'checkout/purchaser-info/name', [ 'show_address' => $shortcode->should_display_billing_info() ] ); ?>
 	<?php $this->template( 'checkout/purchaser-info/email' ); ?>
-	<?php if ( $show_address ) : ?>
+	<?php if ( $shortcode->should_display_billing_info() ) : ?>
 		<?php $this->template( 'checkout/purchaser-info/address' ); ?>
 		<div class="tribe-tickets__commerce-checkout-address-wrapper">
 			<?php $this->template( 'checkout/purchaser-info/city' ); ?>

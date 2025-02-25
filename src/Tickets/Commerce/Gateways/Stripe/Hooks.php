@@ -70,6 +70,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		add_filter( 'tribe_settings_save_field_value', [ $this, 'validate_payment_methods' ], 10, 2 );
 		add_filter( 'tribe_settings_validate_field_value', [ $this, 'provide_defaults_for_hidden_fields'], 10, 3 );
 		add_filter( 'tec_tickets_commerce_admin_notices', [ $this, 'filter_admin_notices' ] );
+		add_filter( 'tec_tickets_commerce_success_page_should_display_billing_fields', [ $this, 'modify_checkout_display_billing_info' ] );
 	}
 
 	/**
@@ -343,7 +344,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		$existing_payment_intent = tribe( Payment_Intent_Handler::class )->get();
 
 		// Do we need to re-fecth the payment intent?
-		if ( $existing_payment_intent['id'] === $payment_intent_id || $existing_payment_intent['client_secret'] === $payment_intent_client_secret ) {
+		if ( ! empty( $existing_payment_intent ) && ( $existing_payment_intent['id'] === $payment_intent_id || $existing_payment_intent['client_secret'] === $payment_intent_client_secret ) ) {
 			$payment_intent = $existing_payment_intent;
 		} else {
 			$payment_intent = Payment_Intent::get( $payment_intent_id );
@@ -374,12 +375,26 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 			]
 		);
 
+		// If we get a success status, we redirect to the success page.
 		if ( Completed::SLUG === $new_status->get_slug() ) {
 			wp_safe_redirect( $success_url );
 			exit;
 		}
 	}
 
+	public function modify_checkout_display_billing_info( bool $value ): bool {
+		$payment_methods = tribe( Merchant::class )->get_payment_method_types();
+		$count_payment_methods = count( $payment_methods );
+		if ( 1 < $count_payment_methods ) {
+			return true;
+		}
+
+		if ( 1 === $count_payment_methods && 'card' !== $payment_methods[0] ) {
+			return true;
+		}
+
+		return $value;
+	}
 
 	/**
 	 * Intercept saving settings to check if any new payment methods would break Stripe payment intents.
