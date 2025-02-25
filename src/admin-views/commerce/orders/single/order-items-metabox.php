@@ -3,7 +3,7 @@
  * Single order - Items metabox.
  *
  * @since 5.13.3
- * @since TBD Added the coupons section.
+ * @since TBD Added the coupons and fees sections.
  *
  * @version TBD
  *
@@ -84,6 +84,14 @@ use TEC\Tickets\Commerce\Order;
 				[
 					'coupons' => $order->coupons ?? [],
 					'order'   => $order,
+				]
+			);
+
+			$this->template(
+				'order-items-fees',
+				[
+					'fees'  => $order->fees ?? [],
+					'order' => $order,
 				]
 			);
 			?>

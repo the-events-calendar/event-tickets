@@ -14,6 +14,7 @@ use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon as Coupon_Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon;
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Value_Interface;
 use TEC\Tickets\Commerce\Traits\Type;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Template;
@@ -176,9 +177,20 @@ class Coupons extends Controller_Contract {
 		$coupons = array_filter( $items, fn( $item ) => $this->is_coupon( $item ) );
 		$items   = array_filter( $items, fn( $item ) => ! $this->is_coupon( $item ) );
 
-		// Store the items and coupons in the properties.
-		$properties['coupons'] = $coupons;
-		$properties['items']   = $items;
+		// Store the regular items without the coupons.
+		$properties['items'] = $items;
+
+		// Store the coupons in the properties after normalizing them.
+		$properties['coupons'] = array_map(
+			static function ( array $coupon ) {
+				if ( ! $coupon['sub_total'] instanceof Value ) {
+					$coupon['sub_total'] = Value::create( $coupon['sub_total'] );
+				}
+
+				return $coupon;
+			},
+			$coupons
+		);
 
 		return $properties;
 	}
@@ -231,20 +243,6 @@ class Coupons extends Controller_Contract {
 	}
 
 	/**
-	 * Filter whether an item should be skipped in the checkout display.
-	 *
-	 * @since TBD
-	 *
-	 * @param bool  $should_skip Whether the item should be skipped or not.
-	 * @param array $item        The item to be checked.
-	 *
-	 * @return bool Whether the item should be skipped.
-	 */
-	public function should_skip_item( bool $should_skip, array $item ): bool {
-		return $should_skip || $this->is_coupon( $item );
-	}
-
-	/**
 	 * Filter the cart items when creating an order to ensure coupons are included.
 	 *
 	 * @since TBD
@@ -265,6 +263,27 @@ class Coupons extends Controller_Contract {
 		if ( empty( $coupons ) ) {
 			return $items;
 		}
+
+		// Ensure the coupons have floats instead of Value objects for the sub_total.
+		$coupons = array_map(
+			static function ( array $coupon ) {
+				if ( is_float( $coupon['sub_total'] ) ) {
+					return $coupon;
+				}
+
+				// Convert to a float in the ways we know how, falling back to just casting to float.
+				if ( $coupon['sub_total'] instanceof Value ) {
+					$coupon['sub_total'] = $coupon['sub_total']->get_float();
+				} elseif ( $coupon['sub_total'] instanceof Value_Interface ) {
+					$coupon['sub_total'] = (float) $coupon['sub_total']->get();
+				} else {
+					$coupon['sub_total'] = (float) $coupon['sub_total'];
+				}
+
+				return $coupon;
+			},
+			$coupons
+		);
 
 		return array_merge( $items, $coupons );
 	}
