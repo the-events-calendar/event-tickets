@@ -79,14 +79,14 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 * Process the async stripe webhook.
 	 *
 	 * @since 5.18.1
-	 * @since TBD Added the $try parameter.
+	 * @since TBD Added the $retry parameter.
 	 *
 	 * @param int $order_id The order ID.
-	 * @param int $try      The number of times this has been tried.
+	 * @param int $retry      The number of times this has been tried.
 	 *
 	 * @throws Exception If the action fails after too many retries.
 	 */
-	public function process_async_stripe_webhook( int $order_id, int $try = 0 ): void {
+	public function process_async_stripe_webhook( int $order_id, int $retry = 0 ): void {
 		$order = tec_tc_get_order( $order_id );
 
 		if ( ! $order ) {
@@ -104,7 +104,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		$webhooks = tribe( Webhooks::class );
 
 		if ( time() < $order->on_checkout_hold ) {
-			if ( $try > $webhooks->get_max_number_of_retries() ) {
+			if ( $retry > $webhooks->get_max_number_of_retries() ) {
 				throw new Exception( __( 'Failed to process the webhook after too many tries.', 'event-tickets' ) );
 			}
 
@@ -113,7 +113,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 				'tec_tickets_commerce_async_webhook_process',
 				[
 					'order_id' => $order_id,
-					'try'      => $try++,
+					'try'      => $retry++,
 				],
 				'tec-tickets-commerce-stripe-webhooks'
 			);
