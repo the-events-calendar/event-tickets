@@ -29,7 +29,15 @@ if ( ! $shortcode->should_display_purchaser_info() ) {
 ?>
 <div class="tribe-tickets__form tribe-tickets__commerce-checkout-purchaser-info-wrapper tribe-common-b2">
 	<h4 class="tribe-common-h5 tribe-tickets__commerce-checkout-purchaser-info-title"><?php echo esc_html( $shortcode->get_purchaser_info_title() ); ?></h4>
-	<?php $this->template( 'checkout/purchaser-info/name', [ 'show_address' => $shortcode->should_display_billing_info(), 'field' => $billing_fields['name'] ] ); ?>
+	<?php
+	$this->template(
+		'checkout/purchaser-info/name',
+		[
+			'show_address' => $shortcode->should_display_billing_info(),
+			'field'        => $billing_fields['name'],
+		]
+	);
+	?>
 	<?php $this->template( 'checkout/purchaser-info/email', [ 'field' => $billing_fields['email'] ] ); ?>
 	<?php if ( $shortcode->should_display_billing_info() ) : ?>
 		<?php $this->template( 'checkout/purchaser-info/address', [ 'field' => $billing_fields['address'] ] ); ?>
