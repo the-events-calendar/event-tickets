@@ -297,7 +297,7 @@ class Cart {
 	 *
 	 * @return bool
 	 */
-	public function clear_cart(): bool {
+	public function clear_cart() {
 		$this->set_cart_hash_cookie( null );
 		$this->get_repository()->clear();
 
