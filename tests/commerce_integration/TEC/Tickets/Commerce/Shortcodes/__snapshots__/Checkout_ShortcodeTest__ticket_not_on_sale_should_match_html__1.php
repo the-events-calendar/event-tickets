@@ -1,5 +1,5 @@
 <?php return '<div class="tribe-common event-tickets">
-	<section
+	<form
 		class="tribe-tickets__commerce-checkout"
 		 data-js="tec-tickets-commerce-notice" data-notice-default-title="Checkout Unavailable!" data-notice-default-content="Checkout is not available at this time because a payment method has not been set up for this event. Please notify the site administrator." 	>
 		<input type="hidden" id="tec-tc-checkout-nonce" name="tec-tc-checkout-nonce" value="jhd73jd873" /><input type="hidden" name="_wp_http_referer" value="" />		<header class="tribe-tickets__commerce-checkout-header">
@@ -109,7 +109,7 @@
 			autocomplete="off"
 			placeholder="First and last name"
 			 class="tribe-tickets__commerce-checkout-purchaser-info-form-field tribe-tickets__commerce-checkout-purchaser-info-form-field-name tribe-common-form-control-text__input tribe-tickets__form-field-input" 			required
-		/>
+					/>
 		<div class="tribe-common-b3 tribe-tickets__form-field-description tribe-common-a11y-hidden error">
 			Your first and last names are required		</div>
 	</div>
@@ -125,7 +125,7 @@
 			name="purchaser-email"
 			autocomplete="off"
 			 class="tribe-common-b2 tribe-tickets__commerce-checkout-purchaser-info-form-field tribe-tickets__commerce-checkout-purchaser-info-form-field-email tribe-common-form-control-text__input tribe-tickets__form-field-input" 			required
-		/>
+					/>
 		<div class="tribe-common-b3 tribe-tickets__form-field-description tribe-common-a11y-hidden error">
 			Your email address is required		</div>
 		<div class="tribe-common-b3 tribe-tickets__form-field-description">
@@ -141,6 +141,6 @@
 		Checkout is not available at this time because a payment method has not been set up. Please notify the site administrator.	</div>
 </div>
 </footer>
-			</section>
+			</form>
 </div>
 ';
