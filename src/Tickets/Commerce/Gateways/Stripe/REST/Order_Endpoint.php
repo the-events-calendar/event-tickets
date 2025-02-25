@@ -147,6 +147,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			);
 		}
 
+		// Flag the order as on checkout screen hold.
+		$orders->set_on_checkout_screen_hold( $order->ID );
+
 		$payment_intent = tribe( Payment_Intent_Handler::class )->update_payment_intent( $data, $order );
 
 		if ( is_wp_error( $payment_intent ) ) {
@@ -209,7 +212,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		if ( $status->get_slug() === Pending::SLUG ) {
 			$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $payment_intent['id'] ], tribe( Success::class )->get_url() );
-			$orders->checkout_completed( $order->ID );
 		}
 
 		return new WP_REST_Response( $response );
@@ -284,6 +286,11 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-stripe-order-not-found', $messages['order-not-found'], $order );
 		}
 
+		$orders = tribe( Order::class );
+
+		// Flag the order as on checkout screen hold.
+		$orders->set_on_checkout_screen_hold( $order->ID );
+
 		$client_secret  = $request->get_param( 'client_secret' );
 		$payment_intent = Payment_Intent::get( $gateway_order_id );
 
@@ -304,8 +311,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		if ( ! $status ) {
 			return new WP_Error( 'tec-tc-gateway-stripe-invalid-payment-intent-status', $messages['invalid-payment-intent-status'], [ 'status' => $status ] );
 		}
-
-		$orders = tribe( Order::class );
 
 		$updated = $orders->modify_status(
 			$order->ID,
@@ -338,8 +343,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		tribe( Cart::class )->clear_cart();
 
 		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $gateway_order_id ], tribe( Success::class )->get_url() );
-
-		$orders->checkout_completed( $order->ID );
 
 		return new WP_REST_Response( $response );
 	}

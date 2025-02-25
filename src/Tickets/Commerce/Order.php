@@ -40,6 +40,15 @@ class Order extends Abstract_Order {
 	const POSTTYPE = 'tec_tc_order';
 
 	/**
+	 * Meta key for the checkout holding status for a particular order and it's webhooks.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected const ON_CHECKOUT_SCREEN_HOLD_META = '_tec_tc_order_on_checkout_screen_hold_timeout';
+
+	/**
 	 * Meta key for the checkout status of the order.
 	 *
 	 * @since 5.18.1
@@ -1167,6 +1176,7 @@ class Order extends Abstract_Order {
 	 * Get whether the order has its checkout completed.
 	 *
 	 * @since 5.18.1
+	 * @deprecated TBD In favor of using checkout on_screen hold timeouts.
 	 *
 	 * @param int $order_id The order ID.
 	 *
@@ -1205,6 +1215,7 @@ class Order extends Abstract_Order {
 	 * Mark an order's checkout as completed.
 	 *
 	 * @since 5.18.1
+	 * @deprecated TBD In favor of using checkout on_screen hold timeouts.
 	 *
 	 * @param int $order_id The order ID.
 	 *
@@ -1231,6 +1242,59 @@ class Order extends Abstract_Order {
 			[ 'order_id' => $order_id ],
 			'tec-tickets-commerce-stripe-webhooks'
 		);
+	}
+
+	/**
+	 * Given an order ID, check if the order is on checkout screen hold.
+	 *
+	 * @param int $order_id Which order we are checking.
+	 *
+	 * @return bool
+	 */
+	public function has_on_checkout_screen_hold( int $order_id ): bool {
+		$on_screen_hold = (int) get_post_meta( $order_id, static::ON_CHECKOUT_SCREEN_HOLD_META, true );
+
+		/**
+		 * Filters whether the order is on checkout screen hold.
+		 * This is used to determine if the order is still on the checkout screen.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $is_on_screen_hold Whether the order is on the checkout screen hold.
+		 * @param int  $order_id         The order ID.
+		 */
+		return (bool) apply_filters( 'tec_tickets_commerce_order_has_on_checkout_screen_hold', $on_screen_hold > time(), $order_id );
+	}
+
+	/**
+	 * Get the default on checkout screen hold timeout.
+	 *
+	 * @since TBD
+	 *
+	 * @return int
+	 */
+	protected function get_default_on_checkout_screen_hold_timeout(): int {
+		/**
+		 * Filters the default on checkout screen hold timeout.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $timeout The default timeout.
+		 */
+		return apply_filters( 'tec_tickets_commerce_order_on_checkout_screen_hold_timeout', MINUTE_IN_SECONDS * 5 );
+	}
+
+	/**
+	 * Set an order on checkout screen hold.
+	 *
+	 * @param int $order_id Which order we are setting.
+	 *
+	 * @return bool
+	 */
+	public function set_on_checkout_screen_hold( int $order_id ): bool {
+		$on_screen_hold = time() + $this->get_default_on_checkout_screen_hold_timeout();
+
+		return (bool) update_post_meta( $order_id, static::ON_CHECKOUT_SCREEN_HOLD_META, $on_screen_hold );
 	}
 
 	/**
