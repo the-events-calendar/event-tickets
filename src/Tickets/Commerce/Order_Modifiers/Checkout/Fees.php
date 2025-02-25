@@ -12,6 +12,7 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
 
+use TEC\Tickets\Commerce\Order_Modifiers\Values\Legacy_Value_Factory;
 use WP_Post;
 
 /**
@@ -102,7 +103,15 @@ class Fees extends Abstract_Fees {
 			return $properties;
 		}
 
-		$properties['fees'] = $this->get_combined_fees_for_items( $items );
+		// We need to normalize the fees for the order object.
+		$properties['fees'] = array_map(
+			function ( $fee ) {
+				$fee['sub_total'] = Legacy_Value_Factory::to_legacy_value( $fee['fee_amount'] );
+
+				return $fee;
+			},
+			$this->get_combined_fees_for_items( $items )
+		);
 
 		return $properties;
 	}
