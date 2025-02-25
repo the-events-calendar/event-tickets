@@ -270,7 +270,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	}
 
 	/**
-	 * ŵhether the purchaser info should be included in the checkout page.
+	 * Whether the purchaser info should be included in the checkout page.
 	 *
 	 * @since TBD
 	 *
