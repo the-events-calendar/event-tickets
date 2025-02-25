@@ -48,7 +48,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		// Set up during plugin activation.
 		add_action( 'admin_init', [ $this, 'setup_stripe_webhook_on_activation' ] );
 
-		add_action( 'tec_tickets_commerce_checkout_parse_request', [ $this, 'handle_checkout_request' ] );
+		add_action( 'tec_tickets_commerce_checkout_page_parse_request', [ $this, 'handle_checkout_request' ] );
 
 		add_action( 'wp_ajax_tec_tickets_commerce_gateway_stripe_test_webhooks', [ $this, 'action_handle_testing_webhooks_field' ] );
 		add_action( 'wp_ajax_tec_tickets_commerce_gateway_stripe_verify_webhooks', [ $this, 'action_handle_verify_webhooks' ] );
@@ -339,6 +339,13 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		tribe( Payment_Intent_Handler::class )->create_payment_intent_for_cart();
 	}
 
+	/**
+	 * Handles the checkout request pieces related to Stripe Gateway.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
 	public function handle_checkout_request() {
 		$payment_intent_id            = tec_get_request_var( 'payment_intent' );
 		$payment_intent_client_secret = tec_get_request_var( 'payment_intent_client_secret' );

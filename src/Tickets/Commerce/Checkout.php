@@ -128,7 +128,7 @@ class Checkout {
 		 *
 		 * @since TBD
 		 */
-		do_action( 'tec_tickets_commerce_checkout_parse_request' );
+		do_action( 'tec_tickets_commerce_checkout_page_parse_request' );
 	}
 
 	/**

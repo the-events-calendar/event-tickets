@@ -127,6 +127,14 @@ class Success {
 		$order    = tribe( Order::class )->get_from_gateway_order_id( $order_id );
 
 		tribe( Order::class )->remove_on_checkout_screen_hold( $order );
+
+		/**
+		 * Allows for additional parsing of the request on the success page.
+		 * This is useful for handling additional data that may be passed in the request.
+		 *
+		 * @since TBD
+		 */
+		do_action( 'tec_tickets_commerce_success_page_parse_request' );
 	}
 
 	/**
