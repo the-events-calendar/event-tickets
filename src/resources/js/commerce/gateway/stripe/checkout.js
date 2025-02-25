@@ -49,7 +49,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		infoForm: '.tribe-tickets__commerce-checkout-purchaser-info-wrapper',
 		renderButton: '#tec-tc-gateway-stripe-render-payment',
 		submitButton: '#tec-tc-gateway-stripe-checkout-button',
-		hiddenElement: '.tribe-common-a11y-hidden'
+		hiddenElement: '.tribe-common-a11y-hidden',
+		form: '.tribe-tickets__commerce-checkout',
 	};
 
 	/**
@@ -564,7 +565,9 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		}
 	};
 
-	obj.renderPayment = () => {
+	obj.renderPayment = ( event ) => {
+		event.preventDefault();
+
 		const form = $( obj.selectors.infoForm );
 		const fields = form.find('input, select');
 		let valid = true;
@@ -711,7 +714,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @since 5.3.0
 	 */
 	obj.bindEvents = () => {
-		$( document ).on( 'click', obj.selectors.renderButton, obj.renderPayment );
+		$( document ).on( 'submit', obj.selectors.form, obj.renderPayment );
 		$( document ).on( 'click', obj.selectors.submitButton, obj.handlePayment );
 	};
 
