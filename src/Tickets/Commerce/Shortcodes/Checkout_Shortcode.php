@@ -14,7 +14,6 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Utils\Value;
 
 use TEC\Tickets\Commerce\Gateways\Manager;
-use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
 
 /**
  * Class for Shortcode Tribe_Tickets_Checkout.
@@ -79,12 +78,12 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	 */
 	public function get_billing_fields(): array {
 		$fields = [
-			'name' => [
+			'name'    => [
 				'label' => __( 'Person purchasing tickets:', 'event-tickets' ),
 				'type'  => 'text',
 				'value' => '',
 			],
-			'email' => [
+			'email'   => [
 				'label' => __( 'Email address', 'event-tickets' ),
 				'type'  => 'email',
 				'value' => '',
@@ -96,17 +95,17 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 					'line2' => '',
 				],
 			],
-			'city' => [
+			'city'    => [
 				'label' => __( 'City', 'event-tickets' ),
 				'type'  => 'text',
 				'value' => '',
 			],
-			'state' => [
+			'state'   => [
 				'label' => __( 'State', 'event-tickets' ),
 				'type'  => 'text',
 				'value' => '',
 			],
-			'zip' => [
+			'zip'     => [
 				'label' => __( 'Zip/Postal code', 'event-tickets' ),
 				'type'  => 'text',
 				'value' => '',
@@ -116,7 +115,6 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 				'type'  => 'select',
 				'value' => '',
 			],
-
 		];
 
 		if ( $this->should_display_billing_info() ) {
@@ -201,7 +199,16 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 			$title = __( 'Billing info', 'event-tickets' );
 		}
 
-		return (string) apply_filters( 'tec_tickets_commerce_success_page_get_purchaser_info_title', $title, $this);
+		/**
+		 * Filters the purchaser info title for the checkout page.
+		 * This title is used to describe the section where the purchaser info is displayed.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $title     The title of the purchaser info section.
+		 * @param static $shortcode The instance of the shortcode.
+		 */
+		return (string) apply_filters( 'tec_tickets_commerce_success_page_get_purchaser_info_title', $title, $this );
 	}
 
 
@@ -220,14 +227,14 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		 *
 		 * @since TBD
 		 *
-		 * @param bool   $value    Whether the purchaser info should be included in the checkout page.
-		 * @param static $instance The instance of the shortcode.
+		 * @param bool   $value     Whether the purchaser info should be included in the checkout page.
+		 * @param static $shortcode The instance of the shortcode.
 		 */
 		return apply_filters( 'tec_tickets_commerce_success_page_should_display_billing_fields', $value, $this );
 	}
 
 	/**
-	 * ŵhether the billing info should be included in the checkout page.
+	 * Whether the billing info should be included in the checkout page.
 	 *
 	 * @since TBD
 	 *
