@@ -474,7 +474,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 					: $amount;
 
 				/*
-				 * Because of how the items are grouped, we need to combine the fees differentlyl
+				 * Because of how the items are grouped, we need to combine the fees differently
 				 * based on whether they are flat or a percentage. Flat fees will be the same price
 				 * regardless of what item they are attached to. Percent fees will be calculated
 				 * based on the price of the item they are attached to. Therefore, we need to index
