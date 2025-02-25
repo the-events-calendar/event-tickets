@@ -363,7 +363,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 			$payment_intent = Payment_Intent::get( $payment_intent_id );
 		}
 
-		// Invalid payment intent i guess?q]
+		// Invalid payment intent, bail.
 		if ( $payment_intent['client_secret'] !== $payment_intent_client_secret ) {
 			return;
 		}
