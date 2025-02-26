@@ -504,24 +504,24 @@ class Modifier_Admin_Handler extends Controller_Contract {
 			wp_die( esc_html__( 'Nonce verification failed.', 'event-tickets' ) );
 		}
 
-		// Get the appropriate strategy for the selected modifier type.
-		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
+		try {
+			// Get the appropriate strategy for the selected modifier type.
+			$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
 
-		// Handle invalid modifier strategy.
-		if ( ! $modifier_strategy ) {
-			wp_die( esc_html__( 'Invalid modifier type.', 'event-tickets' ) );
+			// Perform the deletion logic.
+			$success = $modifier_strategy->delete_modifier( $modifier_id );
+
+			// Construct the redirect URL with a success or failure flag.
+			$redirect_url = remove_query_arg( [ 'action', 'modifier_id', '_wpnonce' ], wp_get_referer() );
+			$redirect_url = add_query_arg( 'deleted', $success ? 'success' : 'fail', $redirect_url );
+
+			// Redirect to the original page to avoid resubmitting the form upon refresh.
+			wp_safe_redirect( $redirect_url );
+			tribe_exit();
+		} catch ( Exception $e ) {
+			// Handle invalid modifier strategy.
+			tribe_exit( esc_html__( 'Invalid modifier type.', 'event-tickets' ) );
 		}
-
-		// Perform the deletion logic.
-		$deletion_success = $modifier_strategy->delete_modifier( $modifier_id );
-
-		// Construct the redirect URL with a success or failure flag.
-		$redirect_url = remove_query_arg( [ 'action', 'modifier_id', '_wpnonce' ], wp_get_referer() );
-		$redirect_url = add_query_arg( 'deleted', $deletion_success ? 'success' : 'fail', $redirect_url );
-
-		// Redirect to the original page to avoid resubmitting the form upon refresh.
-		wp_safe_redirect( $redirect_url );
-		tribe_exit();
 	}
 
 	/**
