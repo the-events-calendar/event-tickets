@@ -500,7 +500,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		}
 
 		// Verify nonce.
-		if ( ! wp_verify_nonce( $nonce, 'delete_modifier_' . $modifier_id ) ) {
+		if ( ! wp_verify_nonce( $nonce, "delete_modifier_{$modifier_id}" ) ) {
 			wp_die( esc_html__( 'Nonce verification failed.', 'event-tickets' ) );
 		}
 
