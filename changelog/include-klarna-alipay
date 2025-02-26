@@ -1,4 +1,0 @@
-Significance: minor
-Type: feat
-
-Properly support `return_url` on the checkout page, so that payments like Klarna, AliPay and a couple others properly handle failed orders.
