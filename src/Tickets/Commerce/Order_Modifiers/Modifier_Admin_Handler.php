@@ -9,14 +9,14 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers;
 
-use InvalidArgumentException;
 use Exception;
+use InvalidArgumentException;
+use TEC\Common\Asset;
+use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use Tribe__Tickets__Main as Tickets_Plugin;
-use TEC\Common\StellarWP\Assets\Assets;
-use TEC\Common\Asset;
 
 /**
  * Class Modifier_Settings.
