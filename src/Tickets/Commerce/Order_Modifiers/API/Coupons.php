@@ -256,7 +256,7 @@ class Coupons extends Base_API {
 				[
 					'success'     => true,
 					'discount'    => $discount->get(),
-					'label'       => esc_html( $coupon->display_name ),
+					'label'       => esc_html( $coupon->slug ),
 					'message'     => sprintf(
 						/* translators: %s: the coupon code */
 						esc_html__( 'Coupon "%s" applied successfully.', 'event-tickets' ),
