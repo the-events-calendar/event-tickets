@@ -445,7 +445,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 			return;
 		}
 
-		$this->render_success_message( __( 'Modifier saved successfully!', 'event-tickets' ) );
+		$this->render_success_message( $this->get_successful_save_message( $modifier_type ) );
 	}
 
 	/**
@@ -565,5 +565,37 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	 */
 	protected function get_modifier_type_from_request(): string {
 		return sanitize_key( tec_get_request_var( 'modifier', $this->get_default_type() ) );
+	}
+
+	/**
+	 * Get the successful save message for the modifier type.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $modifier_type The type of modifier that was saved.
+	 *
+	 * @return string The success message to display.
+	 */
+	protected function get_successful_save_message( string $modifier_type ): string {
+		switch ( $modifier_type ) {
+			case 'coupon':
+				return __( 'Coupon saved successfully!', 'event-tickets' );
+
+			case 'fee':
+				return __( 'Fee saved successfully!', 'event-tickets' );
+
+			default:
+				$message = __( 'Modifier saved successfully!', 'event-tickets' );
+
+				/**
+				 * Filters the successful save message for order modifiers.
+				 *
+				 * @since TBD
+				 *
+				 * @param string $message       The success message to display.
+				 * @param string $modifier_type The type of modifier that was saved.
+				 */
+				return (string) apply_filters( 'tec_tickets_commerce_order_modifiers_successful_save_message', $message, $modifier_type );
+		}
 	}
 }
