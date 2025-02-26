@@ -106,24 +106,24 @@ final class Deprecated_Autoloader {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $class The class to load.
+	 * @param string $class_name The class to load.
 	 *
 	 * @return void
 	 */
-	public function load( string $class ) {
+	public function load( string $class_name ) {
 		// Check if the class is in the class map, if not return.
-		if ( ! array_key_exists( $class, $this->class_map ) ) {
+		if ( ! array_key_exists( $class_name, $this->class_map ) ) {
 			return;
 		}
 
 		// Log a notice that the class is deprecated.
 		_deprecated_class(
-			esc_html( $class ),
+			esc_html( $class_name ),
 			'TBD',
-			esc_html( $this->class_map[ $class ] )
+			esc_html( $this->class_map[ $class_name ] )
 		);
 
 		// Alias the class to the new class.
-		class_alias( $this->class_map[ $class ], $class );
+		class_alias( $this->class_map[ $class_name ], $class_name );
 	}
 }
