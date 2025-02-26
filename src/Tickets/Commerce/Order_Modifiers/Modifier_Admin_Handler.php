@@ -394,8 +394,9 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		} catch ( InvalidArgumentException $exception ) {
 			$this->render_error_message(
 				sprintf(
-					/* translators: %s: error message */
-					__( 'Error saving modifier: %s', 'event-tickets' ),
+					/* translators: 1: the modifier name 2:error message */
+					__( 'Error saving %1$s: %2$s', 'event-tickets' ),
+					$modifier_strategy->get_modifier_display_name(),
 					$exception->getMessage()
 				)
 			);
