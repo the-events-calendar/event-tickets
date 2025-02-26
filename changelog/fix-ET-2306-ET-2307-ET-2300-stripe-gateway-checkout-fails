@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Prevent problems related to Stripe checkout experience causing users to duplicate charges.
