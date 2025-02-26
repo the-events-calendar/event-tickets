@@ -244,12 +244,12 @@ class Modifier_Admin_Handler extends Controller_Contract {
 			return;
 		}
 
-		if ( ! $is_edit ) {
+		// Render the appropriate view based on the context.
+		if ( $is_edit ) {
+			$this->render_edit_view( $manager, $context );
+		} else {
 			$this->render_table_view( $manager, $context );
-
-			return;
 		}
-		$this->render_edit_view( $manager, $context );
 	}
 
 	/**
