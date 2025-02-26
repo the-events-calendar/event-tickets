@@ -1,4 +1,0 @@
-Significance: minor
-Type: tweak
-
-Improve how we handle webhooks with Stripe to avoid Orders to be left behind in status due to order of operations on Checkout page.
