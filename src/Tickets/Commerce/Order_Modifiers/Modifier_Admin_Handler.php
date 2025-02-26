@@ -516,7 +516,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 			$redirect_url = add_query_arg( 'deleted', $success ? 'success' : 'fail', $redirect_url );
 
 			// Redirect to the original page to avoid resubmitting the form upon refresh.
-			wp_safe_redirect( $redirect_url ); // phpcs:ignore WordPressVIPMinimum.Security.ExitAfterRedirect
+			wp_safe_redirect( $redirect_url ); // phpcs:ignore WordPressVIPMinimum.Security.ExitAfterRedirect,StellarWP.CodeAnalysis.RedirectAndDie
 			tribe_exit();
 		} catch ( Exception $e ) {
 			// Handle invalid modifier strategy.
