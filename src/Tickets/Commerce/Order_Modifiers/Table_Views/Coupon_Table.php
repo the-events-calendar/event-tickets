@@ -241,7 +241,7 @@ class Coupon_Table extends Order_Modifier_Table {
 	 *
 	 * @return array An array of sortable columns.
 	 */
-	protected function get_sortable_columns() {
+	public function get_sortable_columns() {
 		return [
 			'display_name' => [ 'display_name', true ],
 			'slug'         => [ 'slug', false ],
