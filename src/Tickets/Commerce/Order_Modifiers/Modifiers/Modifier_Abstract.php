@@ -35,11 +35,11 @@ use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta as Me
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Meta_Keys;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Status;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Currency_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Float_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Percent_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Positive_Integer_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
+use TEC\Tickets\Commerce\Values\Currency_Value;
+use TEC\Tickets\Commerce\Values\Float_Value;
+use TEC\Tickets\Commerce\Values\Percent_Value;
+use TEC\Tickets\Commerce\Values\Positive_Integer_Value;
+use TEC\Tickets\Commerce\Values\Precision_Value;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Exceptions\Not_Found_Exception;
 

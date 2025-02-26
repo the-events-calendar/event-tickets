@@ -29,7 +29,7 @@
  * @return string
  */
 
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
+use TEC\Tickets\Commerce\Values\Precision_Value;
 
 $get_validation_error_attr = function ( string $field_label ): string {
 	// translators: %s is the field label.

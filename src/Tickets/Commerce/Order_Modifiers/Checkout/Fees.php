@@ -12,7 +12,7 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
 
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Legacy_Value_Factory;
+use TEC\Tickets\Commerce\Values\Legacy_Value_Factory;
 use WP_Post;
 
 /**
