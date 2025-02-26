@@ -20,7 +20,7 @@
  * phpcs:disable WordPress.WP.GlobalVariablesOverride
  */
 
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
+use TEC\Tickets\Commerce\Values\Precision_Value;
 
 if ( ! empty( $order_modifier_display_name ) ) {
 	$heading = __( 'Edit Coupon', 'event-tickets' );

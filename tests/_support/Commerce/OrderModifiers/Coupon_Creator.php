@@ -5,8 +5,8 @@ declare( strict_types=1 );
 namespace Tribe\Tickets\Test\Commerce\OrderModifiers;
 
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Float_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Percent_Value;
+use TEC\Tickets\Commerce\Values\Float_Value;
+use TEC\Tickets\Commerce\Values\Percent_Value;
 
 trait Coupon_Creator {
 

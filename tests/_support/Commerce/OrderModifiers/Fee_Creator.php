@@ -8,7 +8,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Meta;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Relationships as Relationships_Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta as Meta_Repository;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship as Relationship_Repository;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Float_Value;
+use TEC\Tickets\Commerce\Values\Float_Value;
 use TEC\Common\StellarWP\Models\Contracts\Model;
 
 trait Fee_Creator {

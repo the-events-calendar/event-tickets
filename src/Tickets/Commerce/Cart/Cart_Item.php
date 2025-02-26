@@ -11,8 +11,8 @@ namespace TEC\Tickets\Commerce\Cart;
 
 use ArrayAccess;
 use ReturnTypeWillChange;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Integer_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Value_Interface;
+use TEC\Tickets\Commerce\Values\Integer_Value;
+use TEC\Tickets\Commerce\Values\Value_Interface;
 use Tribe\Traits\Array_Access;
 
 /**

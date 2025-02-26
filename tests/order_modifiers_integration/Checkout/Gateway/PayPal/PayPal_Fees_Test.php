@@ -4,7 +4,7 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal;
 
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway as PayPalGateway;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Float_Value;
+use TEC\Tickets\Commerce\Values\Float_Value;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\OrderModifiers\Fee_Creator;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;

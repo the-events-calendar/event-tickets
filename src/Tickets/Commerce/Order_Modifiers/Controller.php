@@ -28,8 +28,8 @@ use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Coupon_Table;
 use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Fee_Table;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Currency_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
+use TEC\Tickets\Commerce\Values\Currency_Value;
+use TEC\Tickets\Commerce\Values\Precision_Value;
 use TEC\Tickets\Commerce\Utils\Currency;
 use Tribe__Tickets__Main as Tickets_Plugin;
 

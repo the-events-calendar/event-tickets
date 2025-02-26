@@ -6,8 +6,8 @@ namespace TEC\Tickets\Tests\Unit\Order_Modifiers\Values;
 
 use Codeception\TestCase\WPTestCase;
 use InvalidArgumentException;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Percent_Value as Percent;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value as PV;
+use TEC\Tickets\Commerce\Values\Percent_Value as Percent;
+use TEC\Tickets\Commerce\Values\Precision_Value as PV;
 
 class Percent_Value_Test extends WPTestCase {
 

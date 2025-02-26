@@ -11,7 +11,7 @@ namespace TEC\Tickets\Commerce\Cart;
 
 use InvalidArgumentException;
 use TEC\Tickets\Commerce\Cart;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
+use TEC\Tickets\Commerce\Values\Precision_Value;
 use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;

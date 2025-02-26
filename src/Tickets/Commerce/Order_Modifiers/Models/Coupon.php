@@ -9,8 +9,8 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Models;
 
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Percent_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
+use TEC\Tickets\Commerce\Values\Percent_Value;
+use TEC\Tickets\Commerce\Values\Precision_Value;
 
 /**
  * Class Coupon

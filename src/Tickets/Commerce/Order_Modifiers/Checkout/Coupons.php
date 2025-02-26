@@ -14,7 +14,7 @@ use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon as Coupon_Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Value_Interface;
+use TEC\Tickets\Commerce\Values\Value_Interface;
 use TEC\Tickets\Commerce\Traits\Type;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Template;
