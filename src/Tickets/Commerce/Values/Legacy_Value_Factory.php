@@ -5,7 +5,7 @@
  * @since 5.18.0
  */
 
-namespace TEC\Tickets\Commerce\Order_Modifiers\Values;
+namespace TEC\Tickets\Commerce\Values;
 
 use TEC\Tickets\Commerce\Utils\Value as LegacyValue;
 

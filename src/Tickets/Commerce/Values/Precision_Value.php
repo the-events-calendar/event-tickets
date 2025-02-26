@@ -7,10 +7,10 @@
 
 declare( strict_types=1 );
 
-namespace TEC\Tickets\Commerce\Order_Modifiers\Values;
+namespace TEC\Tickets\Commerce\Values;
 
 use InvalidArgumentException;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Positive_Integer_Value as Positive_Int;
+use TEC\Tickets\Commerce\Values\Positive_Integer_Value as Positive_Int;
 
 /**
  * Class Precision_Value.
