@@ -363,18 +363,9 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		// Get and sanitize request vars for modifier and modifier_id.
 		$modifier_type = $this->get_modifier_type_from_request();
 		$modifier_id   = absint( tec_get_request_var( 'modifier_id', '0' ) );
-		$is_edit       = tribe_is_truthy( tec_get_request_var( 'edit', '0' ) );
-
-		// Prepare the context for the page.
-		$context = [
-			'event_id'    => 0,
-			'modifier'    => $modifier_type,
-			'modifier_id' => $modifier_id,
-			'is_edit'     => $is_edit,
-		];
 
 		// Get the appropriate strategy for the selected modifier.
-		$modifier_strategy = tribe( Controller::class )->get_modifier( $context['modifier'] );
+		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
 
 		// Early bail if the strategy doesn't exist.
 		if ( ! $modifier_strategy ) {
@@ -383,7 +374,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		}
 
 		$raw_data                      = tribe_get_request_vars( true );
-		$raw_data['order_modifier_id'] = $context['modifier_id'];
+		$raw_data['order_modifier_id'] = $modifier_id;
 
 		try {
 			// Use the Modifier Manager to sanitize and save the data.
