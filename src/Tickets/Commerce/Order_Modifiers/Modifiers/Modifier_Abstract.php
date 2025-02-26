@@ -570,7 +570,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	public function delete_modifier( int $modifier_id ): bool {
 		// Check if the modifier exists before attempting to delete it.
 		try {
-			$modifier = $this->repository->find_by_id( $modifier_id );
+			$this->repository->find_by_id( $modifier_id );
 		} catch ( Exception $e ) {
 			// Return false if the modifier does not exist.
 			return false;

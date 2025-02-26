@@ -647,7 +647,7 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 		if ( $data['should_display_message'] ) {
 			$this->assertNotNull( $captured_success_message, 'Success message should be displayed.' );
 			$this->assertEquals(
-				__( 'Modifier saved successfully!', 'event-tickets' ),
+				$this->get_success_message( $data['get_data']['modifier'] ),
 				$captured_success_message,
 				'Success message does not match the expected value.'
 			);
@@ -656,14 +656,39 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 		}
 	}
 
+	protected function get_success_message( string $modifier_type ) {
+		switch ( $modifier_type ) {
+			case 'fee':
+				return 'Fee saved successfully!';
+			case 'coupon':
+				return 'Coupon saved successfully!';
+			default:
+				return 'Modifier saved successfully!';
+		}
+	}
+
 	public function handle_notices_data_provider(): Generator {
-		yield 'Valid notice display' => [
+		yield 'Valid notice display – Fee' => [
 			function () {
 				return [
 					'get_data'               => [
 						'updated'  => 1,
 						'edit'     => 1,
 						'modifier' => 'fee',
+						'page'     => 'tec-tickets-order-modifiers',
+					],
+					'should_display_message' => true,
+				];
+			},
+		];
+
+		yield 'Valid notice display – Coupon' => [
+			function () {
+				return [
+					'get_data'               => [
+						'updated'  => 1,
+						'edit'     => 1,
+						'modifier' => 'coupon',
 						'page'     => 'tec-tickets-order-modifiers',
 					],
 					'should_display_message' => true,
