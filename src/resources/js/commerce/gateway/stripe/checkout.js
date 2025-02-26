@@ -277,8 +277,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		const response = await obj.handleUpdateOrder( data.paymentIntent );
 
 		// Redirect the user to the success page.
-		if  ( response.redirect_url ) {
-			window.location.replace( response.redirect_url );
+		if  ( response.redirect_url && URL.canParse( response.redirect_url ) ) {
+			window.location = response.redirect_url;
 		}
 		return true;
 	};
@@ -296,8 +296,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		const response = await obj.handleUpdateOrder( data.paymentIntent );
 
 		// Redirect the user to the success page.
-		if  ( response.redirect_url ) {
-			window.location.replace( response.redirect_url );
+		if  ( response.redirect_url && URL.canParse( response.redirect_url ) ) {
+			window.location = response.redirect_url;
 		}
 
 		return true;
