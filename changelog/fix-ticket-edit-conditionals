@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Template conditional appearance, ensuring the SKU field appears when editting a Ticket created through WooCommerce. [ETP-996]
