@@ -224,7 +224,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	 */
 	public function render_tec_order_modifiers_page(): void {
 		// Get and sanitize request vars for modifier and modifier_id.
-		$modifier_type = sanitize_key( tec_get_request_var( 'modifier', $this->get_default_type() ) );
+		$modifier_type = $this->get_modifier_type_from_request();
 		$modifier_id   = absint( tec_get_request_var( 'modifier_id', '0' ) );
 		$is_edit       = tribe_is_truthy( tec_get_request_var( 'edit', '0' ) );
 
@@ -286,7 +286,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	 */
 	protected function get_modifier_data_by_id( int $modifier_id ): ?array {
 		// Get the modifier type from the request or use the default.
-		$modifier_type = tec_get_request_var( 'modifier', $this->get_default_type() );
+		$modifier_type = $this->get_modifier_type_from_request();
 
 		// Get the appropriate strategy for the selected modifier type.
 		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
@@ -361,7 +361,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		}
 
 		// Get and sanitize request vars for modifier and modifier_id.
-		$modifier_type = sanitize_key( tec_get_request_var( 'modifier', $this->get_default_type() ) );
+		$modifier_type = $this->get_modifier_type_from_request();
 		$modifier_id   = absint( tec_get_request_var( 'modifier_id', '0' ) );
 		$is_edit       = tribe_is_truthy( tec_get_request_var( 'edit', '0' ) );
 
@@ -434,8 +434,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 			return;
 		}
 
-		$modifier_type = sanitize_key( tec_get_request_var( 'modifier', $this->get_default_type() ) );
-
+		$modifier_type     = $this->get_modifier_type_from_request();
 		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
 
 		if ( ! $modifier_strategy ) {
@@ -497,7 +496,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		$action        = tec_get_request_var( 'action', '' );
 		$modifier_id   = absint( tec_get_request_var( 'modifier_id', '' ) );
 		$nonce         = tec_get_request_var( '_wpnonce', '' );
-		$modifier_type = sanitize_key( tec_get_request_var( 'modifier', '' ) );
+		$modifier_type = $this->get_modifier_type_from_request();
 
 		// Early bail if the action is not 'delete_modifier'.
 		if ( 'delete_modifier' !== $action ) {
