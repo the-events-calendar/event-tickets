@@ -11,7 +11,7 @@ use TEC\Tickets\Commerce\Cart as Commerce_Cart;
 use TEC\Tickets\Commerce\Cart\Cart_Interface as Cart;
 use TEC\Tickets\Commerce\Order_Modifiers\API\Fees as ApiFees;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal\Fees as PayPalFees;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Float_Value;
+use TEC\Tickets\Commerce\Values\Float_Value;
 use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use Tribe\Tests\Traits\With_Uopz;
