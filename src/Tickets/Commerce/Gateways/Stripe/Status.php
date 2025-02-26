@@ -27,6 +27,8 @@ class Status {
 	/**
 	 * Order Status in Stripe for when the payment intent is first created or when payment is denied.
 	 *
+	 * Deprecated in favor of REQUIRES_PAYMENT_METHOD.
+	 *
 	 * @since 5.3.0
 	 *
 	 * @var string
@@ -162,5 +164,31 @@ class Status {
 		$statuses = $this->get_valid_statuses();
 
 		return tribe( Commerce_Status\Status_Handler::class )->get_by_slug( $statuses[ $stripe_status ] );
+	}
+
+	/**
+	 * Converts a valid Stripe payment intent to a commerce status object.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $payment_intent A Stripe payment intent.
+	 *
+	 * @return false|Commerce_Status\Status_Interface|null
+	 */
+	public function convert_payment_intent_to_commerce_status( array $payment_intent ) {
+		if ( ! isset( $payment_intent['status'] ) ) {
+			return false;
+		}
+
+		$last_payment_error = $payment_intent['last_payment_error'] ?? null;
+		$has_valid_error    = ! empty( $last_payment_error['decline_code'] ) || ! empty( $last_payment_error['type'] );
+
+		if ( $last_payment_error && $has_valid_error ) {
+			tribe( Commerce_Status\Denied::class );
+		}
+
+		$stripe_status = $payment_intent['status'];
+
+		return $this->convert_to_commerce_status( $stripe_status );
 	}
 }

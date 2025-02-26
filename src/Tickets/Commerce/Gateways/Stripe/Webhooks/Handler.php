@@ -130,7 +130,7 @@ class Handler {
 	 * @return bool|WP_Error|null
 	 */
 	public static function update_order_status( \WP_Post $order, Commerce_Status\Status_Interface $status, array $metadata = [] ) {
-		if ( ! tribe( Order::class )->is_checkout_completed( $order->ID ) ) {
+		if ( tribe( Order::class )->has_on_checkout_screen_hold( $order->ID ) ) {
 
 			tribe( Webhooks::class )->add_pending_webhook( $order->ID, $status->get_wp_slug(), $order->post_status, $metadata );
 

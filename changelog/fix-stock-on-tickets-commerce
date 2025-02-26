@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Ensure refunds would put the stock back when handled by either Webhook or directly on checkout page

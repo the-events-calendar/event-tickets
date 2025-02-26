@@ -13,57 +13,14 @@ use TEC\Tickets\Commerce\Gateways\Stripe\REST\Webhook_Endpoint;
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
 class Payment_Intent_Handler {
-
 	/**
-	 * Base string to use when composing payment intent transient names.
+	 * Store the Payment Intent for the duration of the page load.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
-	 * @var string
+	 * @var array $payment_intent The Payment Intent.
 	 */
-	public $payment_intent_transient_prefix = 'paymentintent-';
-
-	/**
-	 * Transient name to store payment intents.
-	 *
-	 * @since 5.3.0
-	 *
-	 * @var string
-	 */
-	public $payment_intent_transient_name;
-
-	/**
-	 * Counter for how many times we've re-tried creating a PaymentIntent.
-	 *
-	 * @since 5.3.0
-	 *
-	 * @var int
-	 */
-	protected $payment_element_fallback_retries = 0;
-
-	/**
-	 * Max number of retries to create a PaymentIntent.
-	 *
-	 * @since 5.3.0
-	 *
-	 * @var int
-	 */
-	protected $payment_intent_max_retries = 2;
-
-	/**
-	 * Increment the retry counter if under max_retries.
-	 *
-	 * @return bool True if incremented, false if no more retries are allowed.
-	 */
-	public function count_retries() {
-		if ( $this->payment_intent_max_retries <= $this->payment_element_fallback_retries ) {
-			return false;
-		}
-
-		$this->payment_element_fallback_retries ++;
-
-		return true;
-	}
+	protected array $payment_intent = [];
 
 	/**
 	 * Calls the Stripe API and returns a new PaymentIntent object, used to authenticate
@@ -71,29 +28,172 @@ class Payment_Intent_Handler {
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param string $currency 3-letter ISO code for the desired currency. Not all currencies are supported.
-	 * @param int    $value    The payment value in the smallest currency unit (e.g: cents, if the purchase is in USD).
+	 * @param mixed $_deprecated Deprecated.
 	 */
-	public function create_payment_intent_for_cart( $retry = false ) {
-		$this->set_payment_intent_transient_name();
-		$payment_intent = Payment_Intent::create_from_cart( tribe( Cart::class ), $retry );
-
-		if ( ! isset( $payment_intent['id'] ) && ! empty( $payment_intent['errors'] ) ) {
-
-			if ( $this->count_retries() ) {
-				$this->delete_payment_intent_transient();
-
-				return $this->create_payment_intent_for_cart( true );
-			}
-
-			// We're over the max retries, display an error to the end user and move on.
-			$payment_intent['errors'][0] = [
-				'et_could_not_create_stripe_order',
-				__( 'There was an error enabling Stripe on your cart. More information is available in the Event Tickets settings dashboard. Please contact the site administrator for support.', 'event-tickets' ),
-			];
+	public function create_payment_intent_for_cart( $_deprecated = null ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
+		if ( null !== $_deprecated ) {
+			_deprecated_argument( __METHOD__, 'TBD', esc_html__( 'This method no longer uses the 1st param.', 'event-tickets' ) );
 		}
 
-		return $this->store_payment_intent( $payment_intent );
+		// Somehow we already have a payment intent.
+		if ( $this->get() ) {
+			return;
+		}
+
+		// Let us look into the cookie.
+		$payment_intent = $this->get_existing_if_valid();
+		if ( ! $payment_intent ) {
+			// If it all fails lets create a new one.
+			$payment_intent = Payment_Intent::create_from_cart( tribe( Cart::class ) );
+
+			if ( isset( $payment_intent['id'] ) && empty( $payment_intent['errors'] ) ) {
+				$this->store_payment_intent_cookie( $payment_intent['id'] );
+			}
+		}
+
+		$this->set( $payment_intent );
+	}
+
+	/**
+	 * Gets the existing Payment Intent if it is valid.
+	 *
+	 * @since TBD
+	 *
+	 * @return array|null
+	 */
+	protected function get_existing_if_valid(): ?array {
+		$existing_payment_intent_id = $this->get_payment_intent_cookie();
+		if ( ! $existing_payment_intent_id ) {
+			return null;
+		}
+
+		$payment_intent = Payment_Intent::get( $existing_payment_intent_id );
+		if ( is_wp_error( $payment_intent ) ) {
+			return null;
+		}
+
+		if ( ! $payment_intent ) {
+			return null;
+		}
+
+		if ( ! empty( $payment_intent['errors'] ) ) {
+			return null;
+		}
+
+		return $payment_intent;
+	}
+
+	/**
+	 * Store the Payment Intent for the duration of the page load.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $payment_intent The Payment Intent.
+	 *
+	 * @return void
+	 */
+	public function set( array $payment_intent ): void {
+		// Do some real basic validation.
+		if ( empty( $payment_intent['id'] ) ) {
+			return;
+		}
+
+		$this->payment_intent = $payment_intent;
+
+		// If the existing cookie is different, update it.
+		if ( $this->get_payment_intent_cookie() !== $payment_intent['id'] ) {
+			$this->store_payment_intent_cookie( $payment_intent['id'] );
+		}
+	}
+
+	/**
+	 * Gets the stored Payment Intent.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get(): array {
+		return $this->payment_intent;
+	}
+
+	/**
+	 * Where we store the payment intent ID in a cookie.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_payment_intent_cookie_name(): string {
+		return Gateway::get_provider_key() . '-payment-intent-' . tribe( Cart::class )->get_cart_hash();
+	}
+
+	/**
+	 * Retrieve the payment intent ID from a cookie.
+	 *
+	 * @since TBD
+	 *
+	 * @return ?string
+	 */
+	public function get_payment_intent_cookie(): ?string {
+		return ! empty( $_COOKIE[ $this->get_payment_intent_cookie_name() ] ) ? sanitize_key( $_COOKIE[ $this->get_payment_intent_cookie_name() ] ) : null; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
+	}
+
+	/**
+	 * Store the payment intent ID in a cookie.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $payment_intent_id The payment intent ID.
+	 *
+	 * @return bool
+	 */
+	public function store_payment_intent_cookie( $payment_intent_id ): bool {
+		if ( headers_sent() ) {
+			return false;
+		}
+
+		$expire = tribe( Cart::class )->get_cart_expiration();
+
+		// When null means we are deleting.
+		if ( null === $payment_intent_id ) {
+			$expire = 1;
+		}
+
+		/**
+		 * Filter the cookie options for the payment intent cookie.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $cookie_options The cookie options.
+		 *
+		 * @return array
+		 */
+		$cookie_options = (array) apply_filters(
+			'tec_tickets_commerce_stripe_payment_intent_cookie_options',
+			[
+				'expires'  => $expire,
+				'path'     => COOKIEPATH,
+				'domain'   => COOKIE_DOMAIN,
+				'secure'   => is_ssl(),
+				'httponly' => true,
+			]
+		);
+
+		$cookie_name = $this->get_payment_intent_cookie_name();
+
+		$is_cookie_set = setcookie( $cookie_name, $payment_intent_id ?? '', $cookie_options ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.cookies_setcookie
+
+		if ( $is_cookie_set ) {
+			// Overwrite local variable, so we can use it right away.
+			$_COOKIE[ $cookie_name ] = $payment_intent_id; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
+		}
+
+		if ( ! $payment_intent_id ) {
+			unset( $_COOKIE[ $cookie_name ] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
+		}
+
+		return $is_cookie_set;
 	}
 
 	/**
@@ -108,11 +208,16 @@ class Payment_Intent_Handler {
 	 * @return array|\WP_Error|null
 	 */
 	public function update_payment_intent( $data, \WP_Post $order ) {
-		$body              = [];
-		$payment_intent_id = $data['payment_intent']['id'];
+		$body = [];
+
+		// Attempt to avoid an extra request by using the existing payment intent.
+		$payment_intent = $this->get();
+
+		if ( empty( $payment_intent['id'] ) || empty( $data['payment_intent']['id'] ) || $data['payment_intent']['id'] !== $payment_intent['id'] ) {
+			$payment_intent = Payment_Intent::get( $data['payment_intent']['id'] );
+		}
 
 		$stripe_receipt_emails = tribe_get_option( Settings::$option_stripe_receipt_emails );
-		$payment_intent        = Payment_Intent::get( $payment_intent_id );
 		$body['metadata']      = $this->get_updated_metadata( $order, $payment_intent );
 
 		if ( $stripe_receipt_emails ) {
@@ -128,7 +233,7 @@ class Payment_Intent_Handler {
 			$body['description'] = $this->get_payment_intent_description( $order, $data, $body, $payment_intent );
 		}
 
-		return Payment_Intent::update( $payment_intent_id, $body );
+		return Payment_Intent::update( $payment_intent['id'], $body );
 	}
 
 	/**
@@ -139,7 +244,7 @@ class Payment_Intent_Handler {
 	 * @return array
 	 */
 	public function get_publishable_payment_intent_data() {
-		$pi = $this->get_payment_intent_transient();
+		$pi = $this->get();
 
 		if ( empty( $pi ) ) {
 			return [];
@@ -152,66 +257,7 @@ class Payment_Intent_Handler {
 		return [
 			'id'   => $pi['id'],
 			'key'  => $pi['client_secret'],
-			'name' => $this->get_payment_intent_transient_name(),
 		];
-	}
-
-	/**
-	 * Compose the transient name used for payment intent transients.
-	 *
-	 * @since 5.3.0
-	 */
-	public function set_payment_intent_transient_name() {
-		$this->payment_intent_transient_name = $this->payment_intent_transient_prefix . md5( tribe( Cart::class )->get_cart_hash() );
-	}
-
-	/**
-	 * Returns the transient name used for payment intent transients.
-	 *
-	 * @since 5.3.0
-	 *
-	 * @return string
-	 */
-	public function get_payment_intent_transient_name() {
-
-		if ( empty( $this->payment_intent_transient_name ) ) {
-			$this->set_payment_intent_transient_name();
-		}
-
-		return $this->payment_intent_transient_name;
-	}
-
-	/**
-	 * Retrieve a stored payment intent referring to the current cart.
-	 *
-	 * @since 5.3.0
-	 *
-	 * @return array|false
-	 */
-	public function get_payment_intent_transient() {
-		return get_transient( $this->get_payment_intent_transient_name() );
-	}
-
-	/**
-	 * Delete the payment intent transient.
-	 *
-	 * @since 5.3.0
-	 *
-	 * @return bool
-	 */
-	public function delete_payment_intent_transient() {
-		return delete_transient( $this->get_payment_intent_transient_name() );
-	}
-
-	/**
-	 * Store a payment intent array in a transient.
-	 *
-	 * @since 5.3.0
-	 *
-	 * @param array $payment_intent Payment intent data from Stripe.
-	 */
-	public function store_payment_intent( $payment_intent ) {
-		set_transient( $this->get_payment_intent_transient_name(), $payment_intent, 6 * HOUR_IN_SECONDS );
 	}
 
 	/**
@@ -309,4 +355,133 @@ class Payment_Intent_Handler {
 
 		return $payment_intent_description;
 	}
+
+	// phpcs:disable
+	/**************************************
+	 *
+	 * Deprecated methods and Properties
+	 *
+	 *************************************/
+
+	/**
+	 * Base string to use when composing payment intent transient names.
+	 *
+	 * @since 5.3.0
+	 * @deprecated TBD
+	 *
+	 * @var string
+	 */
+	public $payment_intent_transient_prefix = 'paymentintent-';
+
+	/**
+	 * Transient name to store payment intents.
+	 *
+	 * @since 5.3.0
+	 * @deprecated TBD
+	 *
+	 * @var string
+	 */
+	public $payment_intent_transient_name;
+
+	/**
+	 * Counter for how many times we've re-tried creating a PaymentIntent.
+	 *
+	 * @since 5.3.0
+	 * @deprecated TBD
+	 *
+	 * @var int
+	 */
+	protected $payment_element_fallback_retries = 0;
+
+	/**
+	 * Max number of retries to create a PaymentIntent.
+	 *
+	 * @since 5.3.0
+	 * @deprecated TBD
+	 *
+	 * @var int
+	 */
+	protected $payment_intent_max_retries = 2;
+
+	/**
+	 * Increment the retry counter if under max_retries.
+	 *
+	 * @deprecated TBD
+	 *
+	 * @return bool True if incremented, false if no more retries are allowed.
+	 */
+	public function count_retries() {
+		if ( $this->payment_intent_max_retries <= $this->payment_element_fallback_retries ) {
+			return false;
+		}
+
+		$this->payment_element_fallback_retries ++;
+
+		return true;
+	}
+
+	/**
+	 * Compose the transient name used for payment intent transients.
+	 *
+	 * @deprecated TBD
+	 *
+	 * @since 5.3.0
+	 */
+	public function set_payment_intent_transient_name() {
+		$this->payment_intent_transient_name = $this->payment_intent_transient_prefix . md5( tribe( Cart::class )->get_cart_hash() );
+	}
+
+	/**
+	 * Returns the transient name used for payment intent transients.
+	 *
+	 * @deprecated TBD
+	 * @since 5.3.0
+	 *
+	 * @return string
+	 */
+	public function get_payment_intent_transient_name() {
+
+		if ( empty( $this->payment_intent_transient_name ) ) {
+			$this->set_payment_intent_transient_name();
+		}
+
+		return $this->payment_intent_transient_name;
+	}
+
+	/**
+	 * Retrieve a stored payment intent referring to the current cart.
+	 *
+	 * @since 5.3.0
+	 * @deprecated TBD
+	 *
+	 * @return array|false
+	 */
+	public function get_payment_intent_transient() {
+		return get_transient( $this->get_payment_intent_transient_name() );
+	}
+
+	/**
+	 * Delete the payment intent transient.
+	 *
+	 * @since 5.3.0
+	 * @deprecated TBD
+	 *
+	 * @return bool
+	 */
+	public function delete_payment_intent_transient() {
+		return delete_transient( $this->get_payment_intent_transient_name() );
+	}
+
+	/**
+	 * Store a payment intent array in a transient.
+	 *
+	 * @since 5.3.0
+	 * @deprecated TBD
+	 *
+	 * @param array $payment_intent Payment intent data from Stripe.
+	 */
+	public function store_payment_intent( $payment_intent ) {
+		set_transient( $this->get_payment_intent_transient_name(), $payment_intent, 6 * HOUR_IN_SECONDS );
+	}
+	// phpcs:enable
 }

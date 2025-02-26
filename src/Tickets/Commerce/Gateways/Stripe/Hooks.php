@@ -4,6 +4,8 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Notice_Handler;
+use TEC\Tickets\Commerce\Status\Completed;
+use TEC\Tickets\Commerce\Success;
 use Tribe\Tickets\Admin\Settings as Admin_Settings;
 use Tribe\Admin\Pages;
 use Tribe__Tickets__Main as Tickets_Plugin;
@@ -12,6 +14,7 @@ use Exception;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
+use Tribe__Utils__Array as Arr;
 
 /**
  * Class Hooks
@@ -45,12 +48,14 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		// Set up during plugin activation.
 		add_action( 'admin_init', [ $this, 'setup_stripe_webhook_on_activation' ] );
 
+		add_action( 'tec_tickets_commerce_checkout_page_parse_request', [ $this, 'handle_checkout_request' ] );
+
 		add_action( 'wp_ajax_tec_tickets_commerce_gateway_stripe_test_webhooks', [ $this, 'action_handle_testing_webhooks_field' ] );
 		add_action( 'wp_ajax_tec_tickets_commerce_gateway_stripe_verify_webhooks', [ $this, 'action_handle_verify_webhooks' ] );
 
 		add_action( 'wp_ajax_' . Webhooks::NONCE_KEY_SETUP, [ $this, 'action_handle_set_up_webhook' ] );
 
-		add_action( 'tec_tickets_commerce_async_webhook_process', [ $this, 'process_async_stripe_webhook' ], 10 );
+		add_action( 'tec_tickets_commerce_async_webhook_process', [ $this, 'process_async_stripe_webhook' ], 10, 2 );
 	}
 
 	/**
@@ -66,18 +71,22 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		add_filter( 'tribe_settings_save_field_value', [ $this, 'validate_payment_methods' ], 10, 2 );
 		add_filter( 'tribe_settings_validate_field_value', [ $this, 'provide_defaults_for_hidden_fields'], 10, 3 );
 		add_filter( 'tec_tickets_commerce_admin_notices', [ $this, 'filter_admin_notices' ] );
+		add_filter( 'tec_tickets_commerce_success_page_should_display_billing_fields', [ $this, 'modify_checkout_display_billing_info' ] );
+		add_filter( 'tec_tickets_commerce_shortcode_checkout_page_template_vars', [ $this, 'modify_checkout_vars' ] );
 	}
 
 	/**
 	 * Process the async stripe webhook.
 	 *
 	 * @since 5.18.1
+	 * @since TBD Added the $retry parameter.
 	 *
 	 * @param int $order_id The order ID.
+	 * @param int $retry      The number of times this has been tried.
 	 *
 	 * @throws Exception If the action fails after too many retries.
 	 */
-	public function process_async_stripe_webhook( int $order_id ): void {
+	public function process_async_stripe_webhook( int $order_id, int $retry = 0 ): void {
 		$order = tec_tc_get_order( $order_id );
 
 		if ( ! $order ) {
@@ -93,6 +102,23 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		}
 
 		$webhooks = tribe( Webhooks::class );
+
+		if ( time() < $order->on_checkout_hold ) {
+			if ( $retry > $webhooks->get_max_number_of_retries() ) {
+				throw new Exception( __( 'Failed to process the webhook after too many tries.', 'event-tickets' ) );
+			}
+
+			as_schedule_single_action(
+				$order->on_checkout_hold + MINUTE_IN_SECONDS,
+				'tec_tickets_commerce_async_webhook_process',
+				[
+					'order_id' => $order_id,
+					'try'      => $retry++,
+				],
+				'tec-tickets-commerce-stripe-webhooks'
+			);
+			return;
+		}
 
 		$pending_webhooks = $webhooks->get_pending_webhooks( $order->ID );
 
@@ -326,6 +352,122 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		}
 
 		tribe( Payment_Intent_Handler::class )->create_payment_intent_for_cart();
+	}
+
+	/**
+	 * Handles the checkout request pieces related to Stripe Gateway.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function handle_checkout_request() {
+		$payment_intent_id            = tec_get_request_var( 'payment_intent' );
+		$payment_intent_client_secret = tec_get_request_var( 'payment_intent_client_secret' );
+
+		if ( ! ( $payment_intent_id && $payment_intent_client_secret ) ) {
+			return;
+		}
+
+		$existing_payment_intent = tribe( Payment_Intent_Handler::class )->get();
+
+		// Do we need to re-fecth the payment intent?
+		if ( ! empty( $existing_payment_intent['id'] ) && ! empty( $existing_payment_intent['client_secret'] ) && $existing_payment_intent['id'] === $payment_intent_id && $existing_payment_intent['client_secret'] === $payment_intent_client_secret ) {
+			$payment_intent = $existing_payment_intent;
+		} else {
+			$payment_intent = Payment_Intent::get( $payment_intent_id );
+		}
+
+		// Invalid payment intent, bail.
+		if ( empty( $payment_intent['client_secret'] ) || $payment_intent['client_secret'] !== $payment_intent_client_secret ) {
+			return;
+		}
+
+		// Overwrite the local payment intent, since we confirmed the one we received is the one in use.
+		// This will be relevant for the checkout page.
+		tribe( Payment_Intent_Handler::class )->set( $payment_intent );
+
+		$success_url = add_query_arg( [ 'tc-order-id' => $payment_intent['id'] ], tribe( Success::class )->get_url() );
+		$new_status  = tribe( Status::class )->convert_payment_intent_to_commerce_status( $payment_intent );
+
+		$order = tec_tc_orders()->by_args(
+			[
+				'status'           => 'any',
+				'gateway_order_id' => $payment_intent['id'],
+			]
+		)->first();
+
+		// We will attempt to update the order status to the one returned by Stripe.
+		tribe( Order::class )->modify_status(
+			$order->ID,
+			$new_status->get_slug(),
+			[
+				'gateway_payload'  => $payment_intent,
+				'gateway_order_id' => $payment_intent['id'],
+			]
+		);
+
+		// If we get a success status, we redirect to the success page.
+		if ( Completed::SLUG === $new_status->get_slug() ) {
+			wp_safe_redirect( $success_url ); // phpcs:ignore WordPressVIPMinimum.Security.ExitAfterRedirect.NoExit, StellarWP.CodeAnalysis.RedirectAndDie.Error
+			tribe_exit();
+		}
+	}
+
+	/**
+	 * Modify the checkout variables to include errors and billing fields.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $vars The current template vars.
+	 *
+	 * @return array
+	 */
+	public function modify_checkout_vars( $vars ) {
+		$payment_intent = tribe( Payment_Intent_Handler::class )->get();
+
+		$vars['billing_fields']['name']['value']             = Arr::get( $payment_intent, [ 'metadata', 'purchaser_name' ], '' );
+		$vars['billing_fields']['email']['value']            = Arr::get( $payment_intent, [ 'metadata', 'purchaser_email' ], '' );
+		$vars['billing_fields']['address']['value']['line1'] = Arr::get( $payment_intent, [ 'shipping', 'address', 'line1' ], '' );
+		$vars['billing_fields']['address']['value']['line2'] = Arr::get( $payment_intent, [ 'shipping', 'address', 'line2' ], '' );
+		$vars['billing_fields']['city']['value']             = Arr::get( $payment_intent, [ 'shipping', 'address', 'city' ], '' );
+		$vars['billing_fields']['state']['value']            = Arr::get( $payment_intent, [ 'shipping', 'address', 'state' ], '' );
+		$vars['billing_fields']['zip']['value']              = Arr::get( $payment_intent, [ 'shipping', 'address', 'postal_code' ], '' );
+		$vars['billing_fields']['country']['value']          = Arr::get( $payment_intent, [ 'shipping', 'address', 'country' ], '' );
+
+		$redirect_status = tec_get_request_var( 'redirect_status' );
+		if ( $redirect_status === 'failed' ) {
+			$vars['has_error'] = true;
+			$vars['error']     = [
+				'title'   => esc_html__( 'Payment Failed', 'event-tickets' ),
+				'message' => esc_html__( 'There was an issue processing your payment with your payment method. Please try again.', 'event-tickets' ),
+			];
+		}
+
+		return $vars;
+	}
+
+	/**
+	 * Modify the checkout whether to display billing fields.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $value The current value.
+	 *
+	 * @return bool
+	 */
+	public function modify_checkout_display_billing_info( bool $value ): bool {
+		$payment_methods       = tribe( Merchant::class )->get_payment_method_types();
+		$count_payment_methods = count( $payment_methods );
+		if ( 1 < $count_payment_methods ) {
+			return true;
+		}
+
+		if ( 1 === $count_payment_methods && 'card' !== $payment_methods[0] ) {
+			return true;
+		}
+
+		return $value;
 	}
 
 	/**

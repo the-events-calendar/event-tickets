@@ -290,6 +290,7 @@ class Webhooks extends Abstract_Webhooks {
 		 */
 		$max_attempts = (int) apply_filters( 'tec_tickets_commerce_gateway_stripe_webhook_valid_key_polling_attempts', 20 );
 		$valid_key    = $this->pool_to_get_valid_key( $max_attempts );
+		$updated      = false;
 
 		if ( false === $valid_key ) {
 			$status   = esc_html__( 'We have not received any Stripe events yet. Please wait a few seconds and refresh the page.', 'event-tickets' );
@@ -530,6 +531,26 @@ class Webhooks extends Abstract_Webhooks {
 
 		wp_send_json_success( [ 'is_valid_webhook' => false, 'updated' => false, 'status' => $status ] );
 		exit;
+	}
+
+	/**
+	 * Get the max number of retries for the webhooks.
+	 *
+	 * @since TBD
+	 *
+	 * @return int The number of retries.
+	 */
+	public function get_max_number_of_retries(): int {
+		/**
+		 * Filter the maximum number of attempts we will try to retry a webhook process.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $max_attempts How many attempts we will try to retry a webhook process. Defaults to 5.
+		 *
+		 * @return int
+		 */
+		return (int) apply_filters( 'tec_tickets_commerce_gateway_stripe_webhook_maximum_attempts', 5 );
 	}
 
 	/**
