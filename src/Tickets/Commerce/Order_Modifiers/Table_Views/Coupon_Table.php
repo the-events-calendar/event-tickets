@@ -265,12 +265,13 @@ class Coupon_Table extends Order_Modifier_Table {
 	public function render_table_explain_text(): string {
 		$learn_more_link = sprintf(
 			'<a href="%s">%s</a>',
-			'#', // @todo redscar - need to get the KB article link.
-			__( 'Learn More', 'event-tickets' )
+			esc_url( '#' ),
+			esc_html__( 'Learn More', 'event-tickets' )
 		);
 
 		return sprintf(
-			'Create a coupon for a discount to be applied at checkout. Coupons can only be used with Tickets Commerce transactions. %s',
+			/* translators: %s: Learn More link */
+			esc_html__( 'Create a coupon for a discount to be applied at checkout. Coupons can only be used with Tickets Commerce transactions. %s', 'event-tickets' ),
 			$learn_more_link
 		);
 	}
