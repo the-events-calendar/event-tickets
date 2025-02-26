@@ -1864,7 +1864,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	public function do_metabox_advanced_options( $post_id, $ticket_id ) {
 		$provider = __CLASS__;
 
-		echo '<div id="' . sanitize_html_class( $provider ) . '_advanced" class="tribe-dependent" data-depends="#' . sanitize_html_class( $provider ) . '_radio" data-condition-is-checked>';
+		echo '<div id="' . sanitize_html_class( $provider ) . '_advanced" class="tribe-dependent" data-depends="#tec_tickets_ticket_provider" data-condition="' . esc_attr( $provider ) . '">';
 
 		if ( ! tribe_is_frontend() ) {
 			$this->do_metabox_sku_options( $post_id, $ticket_id );
