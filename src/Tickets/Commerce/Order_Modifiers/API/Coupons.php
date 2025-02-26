@@ -12,6 +12,7 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\API;
 use Exception;
 use TEC\Common\Contracts\Container;
 use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Cart\Abstract_Cart;
 use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier;
@@ -231,8 +232,17 @@ class Coupons extends Base_API {
 			/** @var Cart $cart_page */
 			$cart_page = tribe( Cart::class );
 			$cart_page->set_cart_hash( $request->get_param( 'cart_hash' ) );
+
+			/** @var Abstract_Cart $cart */
 			$cart = $cart_page->get_repository();
 
+			// Remove any other coupons from the cart.
+			$other_coupons = $cart->get_items_in_cart( false, 'coupon' );
+			foreach ( $other_coupons as $id => $other_coupon ) {
+				$cart->remove_item( $id );
+			}
+
+			// Store the previous total for use with the coupon calculation.
 			$original_total = Currency_Value::create_from_float( $cart->get_cart_total() );
 
 			// Add the coupon to the cart.
