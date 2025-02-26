@@ -515,7 +515,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @since TBD Ensure that if we are querying for more than one ticket provider, the meta query relation is set to OR.
 	 * @since TBD Correct the docblock to reflect the method's behavior.
 	 *
-	 * @param  int $post
+	 * @param  int $post Which post we are getting the tickets from.
 	 * @return array
 	 */
 	public function get_tickets_ids( $post = null ) {
