@@ -2,7 +2,7 @@
 /**
  * Class that handles interfacing with TEC\Common\Notifications.
  *
- * @since   TBD
+ * @since 5.19.3
  *
  * @package TEC\Tickets\Notifications
  */
@@ -15,7 +15,7 @@ use TEC\Common\Integrations\Traits\Plugin_Integration;
 /**
  * Class Notifications
  *
- * @since   TBD
+ * @since 5.19.3
  * @package TEC\Tickets\Notifications
  */
 class Notifications extends Integration_Abstract {
@@ -24,7 +24,7 @@ class Notifications extends Integration_Abstract {
 	/**
 	 * The slug of this plugin calling the Notifications class.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @return string
 	 */
@@ -51,7 +51,7 @@ class Notifications extends Integration_Abstract {
 	/**
 	 * Adds the Tickets settings page to the list of allowed pages for Notifications.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @param array $allowed An array of pages where notifications will be displayed.
 	 *
@@ -65,7 +65,7 @@ class Notifications extends Integration_Abstract {
 	/**
 	 * Outputs the hook that renders the Notifications icon on all TEC admin pages.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 */
 	public function render_icon() {
 		// Don't double-dip on the action.
@@ -76,7 +76,7 @@ class Notifications extends Integration_Abstract {
 		/**
 		 * Fires to trigger the IAN icon on admin pages.
 		 *
-		 * @since TBD
+		 * @since 5.19.3
 		 */
 		do_action( 'tec_ian_icon', $this->get_slug() );
 	}

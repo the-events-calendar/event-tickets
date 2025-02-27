@@ -16,9 +16,9 @@
  * @since 4.12.3 Account for inactive ticket providers.
  * @since 5.0.3 Add filter to control the re-sending emails option on email alteration.
  * @since 5.9.1 Corrected template override filepath.
- * @since TBD Reverted template override filepath.
+ * @since 5.19.3 Reverted template override filepath.
  *
- * @version TBD
+ * @version 5.19.3
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
