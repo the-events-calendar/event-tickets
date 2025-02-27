@@ -3,7 +3,7 @@
 /**
  * Initialize Gutenberg Rest Compatibility layers for WP api and Tickets
  *
- * @todo  Remove this on class when we move into using our own API for RSVP
+ * @todo Remove this on class when we move into using our own API for RSVP
  *
  * @since 4.9
  */
@@ -31,10 +31,10 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 	 *
 	 * @since 4.9
 	 *
-	 * @param  int    $meta_id
-	 * @param  int    $object_id
-	 * @param  string $meta_key
-	 * @param  mixed  $capacity
+	 * @param int    $meta_id
+	 * @param int    $object_id
+	 * @param string $meta_key
+	 * @param mixed  $capacity
 	 *
 	 * @return null
 	 */

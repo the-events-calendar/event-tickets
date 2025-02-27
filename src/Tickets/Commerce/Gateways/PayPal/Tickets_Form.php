@@ -8,7 +8,7 @@ use TEC\Tickets\Commerce\Module;
 /**
  * Class Tickets_Form
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
@@ -31,7 +31,7 @@ class Tickets_Form {
 	 *
 	 * @since 4.7
 	 *
-	 * @param        $message
+	 * @param $message
 	 * @param string $type
 	 */
 	public function add_message( $message, $type = 'update' ) {
@@ -112,7 +112,7 @@ class Tickets_Form {
 	 *
 	 * @return void The method will echo in the context of a buffered output.
 	 *
-	 * @see   Tribe__Tickets__Tickets::front_end_tickets_form_in_content
+	 * @see Tribe__Tickets__Tickets::front_end_tickets_form_in_content
 	 */
 	public function render() {
 		if ( $this->has_rendered || ! tribe( Module::class )->is_active() ) {

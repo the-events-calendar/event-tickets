@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Email abstract class.
  *
- * @since   5.5.9
+ * @since 5.5.9
  *
  * @package TEC\Tickets\Emails
  */
@@ -20,7 +20,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Email_Abstract.
  *
- * @since   5.5.9
+ * @since 5.5.9
  *
  * @package TEC\Tickets\Emails
  */
@@ -356,7 +356,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get WordPress blog name.
 	 *
-	 * @todo  This doesnt belong on the abstracts, it's more like a template helper.
+	 * @todo This doesnt belong on the abstracts, it's more like a template helper.
 	 *
 	 * @since 5.5.9
 	 *

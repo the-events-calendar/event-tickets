@@ -26,7 +26,7 @@ if ( ! $rsvp->has_meta_enabled() ) {
  *
  * @since 5.0.0
  *
- * @see  Tribe__Template\do_entry_point()
+ * @see Tribe__Template\do_entry_point()
  * @link https://docs.theeventscalendar.com/reference/classes/tribe__template/do_entry_point/
  */
 $this->do_entry_point( 'rsvp_attendee_fields' );

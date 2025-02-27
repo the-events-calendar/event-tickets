@@ -2,7 +2,7 @@
 /**
  * Hydrates the template context of the ticket panel.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Admin\Panels_Data;
  */
@@ -16,7 +16,7 @@ use Tribe__Tickets__Tickets as Tickets;
 /**
  * Class Ticket_Panel_Data.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Admin\Panels_Data;
  */

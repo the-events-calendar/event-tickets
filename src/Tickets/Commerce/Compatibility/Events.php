@@ -2,7 +2,7 @@
 /**
  * Handles Tickets Commerce compatibility with The Events Calendar.
  *
- * @since   5.2.0
+ * @since 5.2.0
  *
  * @package TEC\Tickets\Commerce\Compatibility
  */
@@ -14,7 +14,7 @@ use TEC\Tickets\Commerce\Checkout;
 /**
  * Class Events.
  *
- * @since   5.2.0
+ * @since 5.2.0
  *
  * @package TEC\Tickets\Commerce\Compatibility
  */

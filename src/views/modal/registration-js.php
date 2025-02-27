@@ -5,12 +5,12 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/modal/registration-js.php
  *
- * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
+ * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   4.11.0
- * @since   4.11.3 Reformat a bit of the code around the button - no functional changes.
- * @since   4.11.3.1 Fix PHP errors when there are no tickets.
- * @since   5.0.3 Updated template link.
+ * @since 4.11.0
+ * @since 4.11.3 Reformat a bit of the code around the button - no functional changes.
+ * @since 4.11.3.1 Fix PHP errors when there are no tickets.
+ * @since 5.0.3 Updated template link.
  *
  * @version 5.0.3
  *

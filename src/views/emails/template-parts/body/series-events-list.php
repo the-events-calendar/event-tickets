@@ -7,11 +7,11 @@
  *
  * See more documentation about our views templating system.
  *
- * @link    https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
+ * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
  *
  * @version 5.8.4
  *
- * @since   5.8.4
+ * @since 5.8.4
  *
  * @var bool           $show_events_in_email Whether to show the events in the email or not.
  * @var string         $title                The upcoming Events list title.
@@ -22,7 +22,7 @@
  *                                           current available.
  * @var string         $series_link_text     The text for the series link.
  *
- * @see     tribe_get_event for the augmented WP_Post object returned in the `$events` array.
+ * @see tribe_get_event for the augmented WP_Post object returned in the `$events` array.
  */
 
 if ( ! $show_events_in_email ) {

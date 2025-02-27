@@ -2,7 +2,7 @@
 /**
  * Shortcode [tribe_tickets_checkout].
  *
- * @since   5.1.6
+ * @since 5.1.6
  * @package Tribe\Tickets\Shortcodes
  */
 
@@ -17,7 +17,7 @@ use Tribe__Tickets__Editor__Template;
 /**
  * Class for Shortcode Tribe_Tickets_Checkout.
  *
- * @since   5.1.6
+ * @since 5.1.6
  * @package Tribe\Tickets\Shortcodes
  */
 class Tribe_Tickets_Checkout extends Shortcode_Abstract {

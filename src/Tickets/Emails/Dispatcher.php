@@ -2,7 +2,7 @@
 /**
  * Email Dispatcher class.
  *
- * @since   5.6.0
+ * @since 5.6.0
  *
  * @package TEC\Tickets\Emails
  */
@@ -12,7 +12,7 @@ namespace TEC\Tickets\Emails;
 /**
  * Class Dispatcher.
  *
- * @since   5.6.0
+ * @since 5.6.0
  *
  * @package TEC\Tickets\Emails
  */

@@ -33,7 +33,7 @@ class Tribe__Tickets__REST__V1__Documentation__RSVP_Report_Definition_Provider
 		 *
 		 * @param array $documentation An associative PHP array in the format supported by Swagger.
 		 *
-		 * @link  http://swagger.io/
+		 * @link http://swagger.io/
 		 */
 		$documentation = apply_filters( 'tribe_tickets_rest_swagger_rsvp_report_documentation', $documentation );
 

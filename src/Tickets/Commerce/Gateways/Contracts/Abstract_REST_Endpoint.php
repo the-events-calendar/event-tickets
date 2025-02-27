@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce\Settings;
 /**
  * Abstract REST Endpoint Contract
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Contracts
  */
@@ -76,7 +76,7 @@ abstract class Abstract_REST_Endpoint implements REST_Endpoint_Interface, \Tribe
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @TODO  We need to make sure Swagger documentation is present.
+	 * @TODO We need to make sure Swagger documentation is present.
 	 *
 	 * @since 5.3.0 moved to Abstract_REST_Endpoint
 	 * @since 5.1.9

@@ -2,7 +2,7 @@
 /**
  * The Controller to set up the Uplink library.
  *
- * @since   5.16.0
+ * @since 5.16.0
  * @package TEC\Tickets\Libraries\Uplink
  */
 

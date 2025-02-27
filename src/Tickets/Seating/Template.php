@@ -2,7 +2,7 @@
 /**
  * Allow including of Event Tickets Wallet Plus Template.
  *
- * @since   1.0.0
+ * @since 1.0.0
  *
  * @pacakge TEC\Controller
  */
@@ -15,7 +15,7 @@ use Tribe__Tickets__Main as Tickets;
 /**
  * Class Template
  *
- * @since   1.0.0
+ * @since 1.0.0
  *
  * @package TEC\Tickets_Wallet_Plus
  */

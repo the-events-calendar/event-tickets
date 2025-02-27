@@ -2,7 +2,7 @@
 /**
  * Simulates a Series Post for the purpose of the email preview.
  *
- * @since   5.8.4
+ * @since 5.8.4
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Emails;
  */
@@ -15,7 +15,7 @@ use WP_Post;
 /**
  * Class Mock_Series_Post.
  *
- * @since   5.8.4
+ * @since 5.8.4
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Emails;
  */

@@ -86,8 +86,8 @@ class Tribe__Tickets__JSON_LD__Type extends Tribe__JSON_LD__Abstract {
 	/**
 	 * Fetches the JSON-LD data for this type of object
 	 *
-	 * @param  int|WP_Post|null $post The post/event
-	 * @param  array  $args
+	 * @param int|WP_Post|null $post The post/event
+	 * @param array  $args
 	 *
 	 * @return array
 	 */

@@ -2,7 +2,7 @@
 /**
  * Handles registering and setup for assets on Ticket Commerce.
  *
- * @since   5.1.6
+ * @since 5.1.6
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
@@ -16,7 +16,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\REST\Order_Endpoint;
 /**
  * Class Assets.
  *
- * @since   5.1.6
+ * @since 5.1.6
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */

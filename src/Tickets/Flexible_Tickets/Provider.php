@@ -6,7 +6,7 @@
  *
  * Setting `define( '', false )` in the site wp-config.php file will disable the feature.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Recurring_Tickets;
  */
@@ -20,7 +20,7 @@ use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
 /**
  * Class Provider.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */

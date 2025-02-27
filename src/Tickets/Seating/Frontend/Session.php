@@ -2,7 +2,7 @@
 /**
  * The Seating feature frontend session cookie.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Frontend;
  */
@@ -16,7 +16,7 @@ use TEC\Tickets\Seating\Tables\Sessions;
 /**
  * Class Session.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Frontend;
  */

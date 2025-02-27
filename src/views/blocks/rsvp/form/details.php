@@ -8,12 +8,12 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
+ * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   4.9
- * @since   4.11.5 Corrected the template override instructions in template comments.
- * @since   4.12.0 Add $post_id to filter for hiding opt-outs.
- * @since   5.0.3 Add vars to docblock and removed duplicative vars.
+ * @since 4.9
+ * @since 4.11.5 Corrected the template override instructions in template comments.
+ * @since 4.12.0 Add $post_id to filter for hiding opt-outs.
+ * @since 5.0.3 Add vars to docblock and removed duplicative vars.
  *
  * @version 5.0.3
  *

@@ -51,7 +51,7 @@ class Account_Webhook implements Webhook_Event_Interface {
 	}
 
 	/**
-	 * @todo  We need to figure out what happens when this is the case.
+	 * @todo We need to figure out what happens when this is the case.
 	 *
 	 * These will be directly sent to the Rest API.
 	 *

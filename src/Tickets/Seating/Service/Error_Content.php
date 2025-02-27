@@ -2,7 +2,7 @@
 /**
  * Handles the rendering of the service error content.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Service;
  */
@@ -14,7 +14,7 @@ use TEC\Tickets\Seating\Admin\Template;
 /**
  * Class Error_Content.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Service;
  */

@@ -126,7 +126,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__IPN implements Tribe__Tickets__
 		 * @since 4.7
 		 *
 		 * @param string                                            $config_status
-		 * @param    Tribe__Tickets__Commerce__PayPal__Handler__IPN $this
+		 * @param Tribe__Tickets__Commerce__PayPal__Handler__IPN $this
 		 */
 		$config_status = apply_filters( 'tribe_tickets_commerce_paypal_ipn_config_status', null, $this );
 

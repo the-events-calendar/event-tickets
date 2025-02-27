@@ -2,7 +2,7 @@
 /**
  * Class that handles interfacing with core Site Health.
  *
- * @since   5.6.0.1
+ * @since 5.6.0.1
  *
  * @package TEC\Tickets\Site_Health
  */
@@ -17,7 +17,7 @@ use TEC\Tickets\Site_Health\Subsections\Plugins\Plugin_Data_Subsection;
 /**
  * Class Site_Health
  *
- * @since   5.6.0.1
+ * @since 5.6.0.1
  * @package TEC\Tickets\Site_Health
  */
 class Info_Section extends Info_Section_Abstract {

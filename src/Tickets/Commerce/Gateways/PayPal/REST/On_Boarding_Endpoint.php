@@ -26,7 +26,7 @@ use WP_REST_Server;
 /**
  * Class On_Boarding_Endpoint
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal\REST
  */

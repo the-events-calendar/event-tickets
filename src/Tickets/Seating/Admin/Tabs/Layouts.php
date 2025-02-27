@@ -2,7 +2,7 @@
 /**
  * The tab used to display the current site Layouts.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller\Admin\Tabs;
  */
@@ -17,7 +17,7 @@ use TEC\Tickets\Seating\Service\Maps as Maps_Service;
 /**
  * Class Layouts.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller\Admin\Tabs;
  */

@@ -2,7 +2,7 @@
 /**
  * Service Provider for interfacing with tec-common Site Health.
  *
- * @since   5.6.0.1
+ * @since 5.6.0.1
  *
  * @package TEC\Tickets\Site_Health
  */
@@ -16,7 +16,7 @@ use TEC\Tickets\Site_Health\Subsections\Plugins\Plugin_Data_Subsection;
 /**
   * Class Provider
   *
-  * @since   5.6.0.1
+  * @since 5.6.0.1
 
   * @package TEC\Tickets\Site_Health
   */

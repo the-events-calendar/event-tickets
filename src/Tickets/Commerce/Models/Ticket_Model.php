@@ -2,9 +2,9 @@
 /**
  * Models an Tickets Commerce Ticket.
  *
- * @since    5.1.9
+ * @since 5.1.9
  *
- * @package  TEC\Tickets\Commerce\Models
+ * @package TEC\Tickets\Commerce\Models
  */
 
 namespace TEC\Tickets\Commerce\Models;
@@ -24,9 +24,9 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Attendee.
  *
- * @since    5.1.9
+ * @since 5.1.9
  *
- * @package  TEC\Tickets\Commerce\Models
+ * @package TEC\Tickets\Commerce\Models
  */
 class Ticket_Model extends Base {
 

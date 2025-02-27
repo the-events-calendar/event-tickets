@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal;
 /**
  * Service provider for the Tickets Commerce: PayPal Commerce gateway.
  *
- * @since   5.1.6
+ * @since 5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
 class Provider extends \TEC\Common\Contracts\Service_Provider {

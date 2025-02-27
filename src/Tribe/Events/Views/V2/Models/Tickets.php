@@ -3,7 +3,7 @@
  * The Tickets abstraction object, used to add tickets-related properties to the event object crated by the
  * `tribe_get_event` function.
  *
- * @since   4.10.9
+ * @since 4.10.9
  *
  * @package Tribe\Tickets\Events\Views\V2\Models
  */
@@ -15,7 +15,7 @@ use Tribe\Utils\Lazy_Events;
 /**
  * Class Tickets
  *
- * @since   4.10.9
+ * @since 4.10.9
  *
  * @package Tribe\Tickets\Events\Views\V2\Models
  */

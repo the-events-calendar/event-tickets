@@ -10,8 +10,8 @@
  *
  * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   4.9
- * @since   5.0.2 Fix template path in documentation block.
+ * @since 4.9
+ * @since 5.0.2 Fix template path in documentation block.
  * @version 5.0.2
  *
  */

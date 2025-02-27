@@ -172,7 +172,7 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 	/**
 	 * The total number of tickets sold and paid for, for this event.
 	 *
-	 * @since  4.6
+	 * @since 4.6
 	 *
 	 * @return int
 	 */
@@ -192,7 +192,7 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 	/**
 	 * The total number of tickets sold then cancelled, for this event.
 	 *
-	 * @since  4.10.5
+	 * @since 4.10.5
 	 *
 	 * @return int
 	 */

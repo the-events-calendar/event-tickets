@@ -11,7 +11,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Order
  *
- * @since   5.2.0
+ * @since 5.2.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Manual
  */

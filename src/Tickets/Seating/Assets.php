@@ -2,7 +2,7 @@
 /**
  * Handles the reegistration of assets common to all the Tickets Seating modules.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating;
  */
