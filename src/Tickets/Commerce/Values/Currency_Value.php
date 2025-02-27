@@ -96,20 +96,29 @@ class Currency_Value extends Base_Value {
 	 * @return string The value.
 	 */
 	public function get(): string {
+		// If the value is negative, we need to remove the negative sign before formatting.
+		if ( $this->value->get() < 0 ) {
+			$value  = $this->value->invert_sign();
+			$prefix = '- ';
+		} else {
+			$value  = $this->value;
+			$prefix = '';
+		}
+
 		$formatted = number_format(
-			$this->value->get(),
-			$this->value->get_precision(),
+			$value->get(),
+			$value->get_precision(),
 			$this->decimal_separator,
 			$this->thousands_separator
 		);
 
 		switch ( $this->currency_symbol_position ) {
 			case 'after':
-				return "{$formatted}{$this->currency_symbol}";
+				return "{$prefix}{$formatted}{$this->currency_symbol}";
 
 			case 'before':
 			default:
-				return "{$this->currency_symbol}{$formatted}";
+				return "{$prefix}{$this->currency_symbol}{$formatted}";
 		}
 	}
 
