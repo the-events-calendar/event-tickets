@@ -72,7 +72,7 @@ $applied_container_classes = [
 						<img
 							src="<?php echo esc_url( tribe_resource_url( 'images/icons/close.svg', false, null, Tribe__Main::instance() ) ); ?>"
 							alt="<?php esc_attr_e( 'Close icon', 'event-tickets' ); ?>"
-							title="<?php esc_attr_e( 'Remove ticket', 'event-tickets' ); ?>"
+							title="<?php esc_attr_e( 'Remove coupon', 'event-tickets' ); ?>"
 						>
 					</button>
 				</span>
