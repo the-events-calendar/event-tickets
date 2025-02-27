@@ -16,13 +16,19 @@ use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Status\Action_Required;
+use TEC\Tickets\Commerce\Status\Created;
+use TEC\Tickets\Commerce\Status\Unsupported;
+use Tribe\Tests\Traits\With_Clock_Mock;
+use Tribe__Date_Utils as Dates;
 
 class Order_Test extends WPTestCase {
 	use Ticket_Maker;
 	use With_Uopz;
 	use Order_Maker;
+	use With_Clock_Mock;
 
 	protected static array $clean_callbacks = [];
+	protected static array $back_up = [];
 
 	public function test_it_does_not_create_multiple_orders_for_single_cart() {
 		$post = self::factory()->post->create(
@@ -143,7 +149,8 @@ class Order_Test extends WPTestCase {
 		$this->assertTrue( tribe( Order::class )->is_checkout_completed( $order->ID ) );
 	}
 
-	public function test_orders_are_not_updated_while_locked() {
+	public function test_on_checkout_screen_hold_flag() {
+		$this->freeze_time( Dates::immutable( '2024-06-13 17:25:00' ) );
 		$post = self::factory()->post->create(
 			[
 				'post_type' => 'page',
@@ -155,9 +162,42 @@ class Order_Test extends WPTestCase {
 		$order = $this->create_order_from_cart( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ] );
 		tribe( Cart::class )->clear_cart();
 
+		$this->assertFalse( tribe( Order::class )->has_on_checkout_screen_hold( $order->ID ) );
+
+		tribe( Order::class )->set_on_checkout_screen_hold( $order->ID );
+		$this->assertTrue( tribe( Order::class )->has_on_checkout_screen_hold( $order->ID ) );
+
+		$this->freeze_time( Dates::immutable( '2024-06-13 17:31:00' ) );
+		$this->assertFalse( tribe( Order::class )->has_on_checkout_screen_hold( $order->ID ) );
+	}
+
+	public function test_orders_are_not_updated_while_locked() {
+		$post = self::factory()->post->create(
+			[
+				'post_type' => 'page',
+			]
+		);
+		$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
+		$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
+
+		$storage = [];
+		add_action( 'tec_tickets_commerce_order_status_transition', function ( $new, $old, $post ) use ( &$storage ) {
+			$storage[] = [ $new::SLUG, $old::SLUG, $post->ID ];
+		}, 10, 3 );
+
+		$this->assertEquals( 0, did_action( 'tec_tickets_commerce_order_status_transition' ) );
+		$order = $this->create_order_from_cart( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ] );
+		tribe( Cart::class )->clear_cart();
+
 		$this->assertFalse( tribe( Order::class )->is_order_locked( $order->ID ) );
 
 		$result = tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
+
+		$this->assertEquals( 3, did_action( 'tec_tickets_commerce_order_status_transition' ) );
+
+		$this->assertEquals( [ Created::SLUG, Unsupported::SLUG, $order->ID ], $storage['0'] );
+		$this->assertEquals( [ Pending::SLUG, Created::SLUG, $order->ID ], $storage['1'] );
+		$this->assertEquals( [ Completed::SLUG, Pending::SLUG, $order->ID ], $storage['2'] );
 
 		$this->assertTrue( $result );
 
@@ -415,9 +455,21 @@ class Order_Test extends WPTestCase {
 	}
 
 	/**
+	 * @before
+	 */
+	public function reset_wp_actions(): void {
+		global $wp_actions;
+
+		self::$back_up = $wp_actions;
+		$wp_actions = [];
+	}
+
+	/**
 	 * @after
 	 */
 	public function clear_commited_transactions() {
+		global $wp_actions;
+		$wp_actions = self::$back_up;
 		if ( empty( self::$clean_callbacks ) ) {
 			return;
 		}

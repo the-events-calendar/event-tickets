@@ -1,5 +1,13 @@
 # Changelog
 
+### [5.19.2] 2025-02-27
+
+* Feature - Properly support `return_url` on the checkout page, so that payments like Klarna, AliPay and a couple others properly handle failed orders.
+* Tweak - Improve how we handle webhooks with Stripe to avoid Orders to be left behind in status due to order of operations on Checkout page.
+* Fix - Ensure refunds would put the stock back when handled by either Webhook or directly on checkout page
+* Fix - Prevent problems related to Stripe checkout experience causing users to duplicate charges.
+* Fix - Template conditional appearance, ensuring the SKU field appears when editting a Ticket created through WooCommerce. [ETP-996]
+
 ### [5.19.1.2] 2025-02-20
 
 * Security - Hardened the API around ticket and attendee creation, editing, and deletion. Props to "the sneaky squirrel" for the report! [SVUL-14]

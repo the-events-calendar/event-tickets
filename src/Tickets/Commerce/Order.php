@@ -12,6 +12,7 @@ namespace TEC\Tickets\Commerce;
 use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Gateways\Contracts\Gateway_Interface;
+use TEC\Tickets\Commerce\Status\Created;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Refunded;
 use TEC\Tickets\Commerce\Status\Reversed;
@@ -37,6 +38,15 @@ class Order extends Abstract_Order {
 	 * @var string
 	 */
 	const POSTTYPE = 'tec_tc_order';
+
+	/**
+	 * Meta key for the checkout holding status for a particular order and it's webhooks.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const ON_CHECKOUT_SCREEN_HOLD_META = '_tec_tc_order_on_checkout_screen_hold_timeout';
 
 	/**
 	 * Meta key for the checkout status of the order.
@@ -358,22 +368,39 @@ class Order extends Abstract_Order {
 	 * @since 5.1.9
 	 * @since 5.18.1 Wrap status update in a transaction to prevent race conditions.
 	 *
-	 * @param int    $order_id        Which order ID will be updated.
-	 * @param string $new_status_slug Which Order Status we are modifying to.
-	 * @param array  $extra_args      Extra repository arguments.
+	 * @param int                     $order_id        Which order ID will be updated.
+	 * @param string|Status_Interface $new_status      Which Order Status we are modifying to.
+	 * @param array                   $extra_args      Extra repository arguments.
 	 *
-	 * @return bool|\WP_Error
+	 * @return bool
 	 */
-	public function modify_status( $order_id, $new_status_slug, array $extra_args = [] ) {
-		$new_status = tribe( Status\Status_Handler::class )->get_by_slug( $new_status_slug );
+	public function modify_status( $order_id, $new_status, array $extra_args = [] ): bool {
+		if ( ! $new_status instanceof Status\Status_Interface ) {
+			$new_status = tribe( Status\Status_Handler::class )->get_by_slug( (string) $new_status );
+		}
 
-		if ( ! $new_status ) {
+		if ( ! $new_status instanceof Status\Status_Interface ) {
 			return false;
 		}
 
+		$required_previous_status = $new_status->required_previous_status();
+		if ( $required_previous_status ) {
+			$order = tec_tc_get_order( $order_id );
+			foreach ( $required_previous_status as $required_status ) {
+				// If the required status is present we skip that status.
+				if ( isset( $order->status_log[ $required_status->get_slug() ] ) ) {
+					continue;
+				}
+
+				// Recursively call the modify_status method to ensure all required statuses are met.
+				$this->modify_status( $order_id, $required_status, $extra_args );
+			}
+		}
+
+		// we specifically only lock the order transactions after the required statuses have been met.
 		DB::beginTransaction();
 
-		// During this operations - the order should be locked!
+		// During these operations - the order should be locked!
 		$locked = $this->lock_order( $order_id );
 
 		// If we were unable to lock the order, bail.
@@ -558,7 +585,7 @@ class Order extends Abstract_Order {
 
 		$hash              = $cart->get_cart_hash();
 		$existing_order_id = null;
-		
+
 		$order_args = [
 			'title'                => $this->generate_order_title( $original_cart_items, $hash ),
 			'total_value'          => $total->get_decimal(),
@@ -578,7 +605,7 @@ class Order extends Abstract_Order {
 		if ( $hash ) {
 			$existing_order_id = tec_tc_orders()->by_args(
 				[
-					'status' => tribe( Pending::class )->get_wp_slug(),
+					'status' => [ tribe( Pending::class )->get_wp_slug(), tribe( Created::class )->get_wp_slug() ],
 					'hash'   => $hash,
 				]
 			)->first_id();
@@ -691,6 +718,7 @@ class Order extends Abstract_Order {
 		$locked = $this->lock_order( $existing_order_id );
 
 		if ( ! $locked ) {
+			$this->unlock_order( $existing_order_id );
 			return false;
 		}
 
@@ -991,7 +1019,7 @@ class Order extends Abstract_Order {
 				'order'            => 'DESC',
 				'status'           => 'any',
 				'gateway_order_id' => $gateway_order_id,
-			] 
+			]
 		)->first();
 	}
 
@@ -1148,6 +1176,7 @@ class Order extends Abstract_Order {
 	 * Get whether the order has its checkout completed.
 	 *
 	 * @since 5.18.1
+	 * @deprecated TBD In favor of using checkout on_screen hold timeouts.
 	 *
 	 * @param int $order_id The order ID.
 	 *
@@ -1186,6 +1215,7 @@ class Order extends Abstract_Order {
 	 * Mark an order's checkout as completed.
 	 *
 	 * @since 5.18.1
+	 * @deprecated TBD In favor of using checkout on_screen hold timeouts.
 	 *
 	 * @param int $order_id The order ID.
 	 *
@@ -1209,11 +1239,125 @@ class Order extends Abstract_Order {
 
 		return (bool) as_enqueue_async_action(
 			'tec_tickets_commerce_async_webhook_process',
-			[ 'order_id' => $order_id ],
+			[
+				'order_id' => $order_id,
+				'try'      => 0,
+			],
 			'tec-tickets-commerce-stripe-webhooks'
 		);
 	}
-	
+
+	/**
+	 * Given an order ID, check if the order is on checkout screen hold.
+	 *
+	 * @param int $order_id Which order we are checking.
+	 *
+	 * @return bool
+	 */
+	public function has_on_checkout_screen_hold( int $order_id ): bool {
+		$on_screen_hold = (int) get_post_meta( $order_id, static::ON_CHECKOUT_SCREEN_HOLD_META, true );
+
+		/**
+		 * Filters whether the order is on checkout screen hold.
+		 * This is used to determine if the order is still on the checkout screen.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $is_on_screen_hold Whether the order is on the checkout screen hold.
+		 * @param int  $order_id         The order ID.
+		 */
+		return (bool) apply_filters( 'tec_tickets_commerce_order_has_on_checkout_screen_hold', $on_screen_hold > time(), $order_id );
+	}
+
+	/**
+	 * Get the default on checkout screen hold timeout.
+	 *
+	 * @since TBD
+	 *
+	 * @return int
+	 */
+	protected function get_default_on_checkout_screen_hold_timeout(): int {
+		/**
+		 * Filters the default on checkout screen hold timeout.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $timeout The default timeout.
+		 */
+		return apply_filters( 'tec_tickets_commerce_order_on_checkout_screen_hold_timeout', MINUTE_IN_SECONDS * 5 );
+	}
+
+	/**
+	 * Set an order on checkout screen hold.
+	 *
+	 * @param int $order_id Which order we are setting.
+	 *
+	 * @return bool
+	 */
+	public function set_on_checkout_screen_hold( int $order_id ): bool {
+		$on_screen_hold = time() + $this->get_default_on_checkout_screen_hold_timeout();
+
+		$updated = (bool) update_post_meta( $order_id, static::ON_CHECKOUT_SCREEN_HOLD_META, $on_screen_hold );
+
+		if ( ! $updated ) {
+			return false;
+		}
+
+		/**
+		 * Fires after an order is marked as on checkout screen hold.
+		 *
+		 * @since 5.18.1
+		 *
+		 * @param int $order_id The order ID.
+		 */
+		do_action( 'tec_tickets_commerce_order_on_checkout_screen_hold_set', $order_id, $on_screen_hold );
+
+		return (bool) as_schedule_single_action(
+			$on_screen_hold + MINUTE_IN_SECONDS, // We schedule the action to run after the timeout.
+			'tec_tickets_commerce_async_webhook_process',
+			[
+				'order_id' => $order_id,
+				'try'      => 0,
+			],
+			'tec-tickets-commerce-stripe-webhooks'
+		);
+	}
+	/**
+	 * Delete an order on checkout screen hold.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id Which order we are setting.
+	 *
+	 * @return bool
+	 */
+	public function remove_on_checkout_screen_hold( int $order_id ): bool {
+		$updated = (bool) delete_post_meta( $order_id, static::ON_CHECKOUT_SCREEN_HOLD_META );
+
+		if ( ! $updated ) {
+			return false;
+		}
+
+		/**
+		 * Fires after an order has its checkout screen hold removed.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $order_id The order ID.
+		 */
+		do_action( 'tec_tickets_commerce_order_on_checkout_screen_hold_remove', $order_id );
+
+		return (bool) as_schedule_single_action(
+			time(),
+			'tec_tickets_commerce_async_webhook_process',
+			[
+				'order_id' => $order_id,
+				'try'      => 0,
+			],
+			'tec-tickets-commerce-stripe-webhooks'
+		);
+	}
+
 	/**
 	 * Generate a hashed key for the order for public view.
 	 *
@@ -1228,7 +1372,7 @@ class Order extends Abstract_Order {
 		$time  = time();
 		$email = sanitize_email( $email );
 		$hash  = empty( $hash ) ? wp_generate_password() : $hash;
-		
+
 		return substr( md5( $hash . $email . $time ), 0, 12 );
 	}
 }

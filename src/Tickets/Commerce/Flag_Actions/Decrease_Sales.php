@@ -57,7 +57,7 @@ class Decrease_Sales extends Flag_Action_Abstract {
 				continue;
 			}
 
-			$quantity = Arr::get( $item, 'quantity' );
+			$quantity = (int) Arr::get( $item, 'quantity', 1 );
 
 			if ( ! $quantity ) {
 				continue;
