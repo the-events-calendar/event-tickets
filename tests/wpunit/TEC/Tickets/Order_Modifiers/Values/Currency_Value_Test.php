@@ -39,4 +39,41 @@ class Currency_Value_Test extends WPTestCase {
 		$this->assertEquals( '$1,000.00', $currency_value->get() );
 		$this->assertEquals( '$1,000.00', (string) $currency_value );
 	}
+
+	/**
+	 * @test
+	 * @dataProvider format_values_data_provider
+	 */
+	public function it_should_properly_format_values( array $constructor_args, string $expected ) {
+		$currency_value = Currency_Value::create( ...$constructor_args );
+		$this->assertEquals( $expected, $currency_value->get() );
+		$this->assertEquals( $expected, (string) $currency_value );
+	}
+
+	public function format_values_data_provider() {
+		yield 'default values' => [
+			[ new Precision_Value( 100 ) ],
+			'$100.00',
+		];
+
+		yield 'custom values' => [
+			[ new Precision_Value( 100 ), '€', '.', ',', 'before' ],
+			'€100,00',
+		];
+
+		yield 'custom values with different thousands' => [
+			[ new Precision_Value( 1000 ), '€', '.', ',', 'after' ],
+			'1.000,00€',
+		];
+
+		yield 'negative value' => [
+			[ new Precision_Value( -100 ) ],
+			'- $100.00',
+		];
+
+		yield 'value with different precision' => [
+			[ new Precision_Value( 100, 0 ), '¢', null, null, 'after' ],
+			'100¢',
+		];
+	}
 }
