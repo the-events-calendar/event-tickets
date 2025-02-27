@@ -358,11 +358,6 @@ class Session {
 	 * @return array|null The reservations for the ticket and post.
 	 */
 	public function get_post_ticket_reservations( int $post_id = null, int $ticket_id = null ): ?array {
-		// Bail while in admin side always. There are no reservations in the admin.
-		if ( is_admin() ) {
-			return null;
-		}
-
 		if ( ! ( $ticket_id && $post_id && tec_tickets_seating_enabled( $post_id ) ) ) {
 			return null;
 		}
