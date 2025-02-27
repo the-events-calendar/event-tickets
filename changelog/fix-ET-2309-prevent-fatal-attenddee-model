@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Ensure the Attendee Model for Tickets Commerce doesn't throw fatal errors when Order ID is invalid.
