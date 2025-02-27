@@ -282,7 +282,7 @@ class Cart {
 	/**
 	 * Determine if the cart has items.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @return bool Whether the cart has items.
 	 */
@@ -309,7 +309,7 @@ class Cart {
 	/**
 	 * Based on the current time when is the cart going to expire.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @return int
 	 */
