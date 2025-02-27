@@ -437,8 +437,7 @@ class Order extends Abstract_Order {
 
 		// After modifying the status we add a meta to flag when it was modified.
 		if ( $updated ) {
-			$time = Dates::build_date_object()->format( Dates::DBDATETIMEFORMAT );
-			add_post_meta( $order_id, static::get_status_log_meta_key( $new_status ), $time );
+			add_post_meta( $order_id, static::get_status_log_meta_key( $new_status ), tec_get_current_milliseconds() );
 		}
 
 		return (bool) $updated;
