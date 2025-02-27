@@ -46,4 +46,23 @@ class Legacy_Value_Factory {
 	public static function to_precision_value( LegacyValue $value ): Precision_Value {
 		return new Precision_Value( $value->get_float(), $value->get_precision() );
 	}
+
+	/**
+	 * Convert a legacy value object to a Currency_Value object.
+	 *
+	 * @since TBD
+	 *
+	 * @param LegacyValue $value The value to convert.
+	 *
+	 * @return Currency_Value The new value object.
+	 */
+	public static function to_currency_value( LegacyValue $value ): Currency_Value {
+		return Currency_Value::create(
+			static::to_precision_value( $value ),
+			$value->get_currency_symbol(),
+			$value->get_currency_separator_thousands(),
+			$value->get_currency_separator_decimal(),
+			$value->get_currency_symbol_position()
+		);
+	}
 }
