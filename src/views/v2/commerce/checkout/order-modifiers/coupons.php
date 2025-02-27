@@ -66,7 +66,7 @@ $applied_container_classes = [
 			<li>
 				<span class="tec-tickets__commerce-checkout-cart-coupons__applied-text tribe-tickets__commerce-checkout-cart-footer-quantity-label">
 					<span class="tec-tickets__commerce-checkout-cart-coupons__applied-label">
-						<?php echo esc_html( $coupon['display_name'] ?? '' ); ?>
+						<?php echo esc_html( $coupon['slug'] ?? '' ); ?>
 					</span>
 					<button class="tec-tickets__commerce-checkout-cart-coupons__remove-button" type="button">
 						<img
