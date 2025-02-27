@@ -9,8 +9,6 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Commerce\Values;
 
-use InvalidArgumentException;
-
 /**
  * Class Currency_Value
  *
@@ -263,16 +261,4 @@ class Currency_Value extends Base_Value {
 			$this->currency_symbol_position
 		);
 	}
-
-	/**
-	 * Validate that the value is valid.
-	 *
-	 * @since 5.18.0
-	 *
-	 * @param mixed $value The value to validate.
-	 *
-	 * @return void
-	 * @throws InvalidArgumentException When the value is not valid.
-	 */
-	protected function validate( $value ): void {}
 }
