@@ -130,18 +130,30 @@ class Currency_Value extends Base_Value {
 	 * Create a new instance of the class.
 	 *
 	 * @since 5.18.0
+	 * @since TBD Added currency_symbol, thousands_separator, decimal_separator, and currency_symbol_position params.
 	 *
-	 * @param Precision_Value $value The value to store.
+	 * @param Precision_Value $value                    The value to store.
+	 * @param ?string         $currency_symbol          The currency symbol. Will use the default if not provided.
+	 * @param ?string         $thousands_separator      The thousands separator. Will use the default if not provided.
+	 * @param ?string         $decimal_separator        The decimal separator. Will use the default if not provided.
+	 * @param ?string         $currency_symbol_position The currency symbol position. Will use the default if
+	 *                                                  not provided.
 	 *
 	 * @return Currency_Value The new instance.
 	 */
-	public static function create( Precision_Value $value ): self {
+	public static function create(
+		Precision_Value $value,
+		?string $currency_symbol = null,
+		?string $thousands_separator = null,
+		?string $decimal_separator = null,
+		?string $currency_symbol_position = null
+	): self {
 		return new self(
 			$value,
-			self::$defaults['currency_symbol'],
-			self::$defaults['thousands_separator'],
-			self::$defaults['decimal_separator'],
-			self::$defaults['currency_symbol_position']
+			$currency_symbol ?? self::$defaults['currency_symbol'],
+			$thousands_separator ?? self::$defaults['thousands_separator'],
+			$decimal_separator ?? self::$defaults['decimal_separator'],
+			$currency_symbol_position ?? self::$defaults['currency_symbol_position']
 		);
 	}
 
