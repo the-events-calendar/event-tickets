@@ -235,7 +235,9 @@ class Order_Repository extends Tribe__Repository {
 			$payload = $postarr['meta_input']['gateway_payload'];
 			unset( $postarr['meta_input']['gateway_payload'] );
 
-			$status = tribe( Commerce\Status\Status_Handler::class )->get_by_wp_slug( $postarr['post_status'] );
+			$wp_status = $postarr['post_status'] ?? get_post_status( $post_id );
+
+			$status = tribe( Commerce\Status\Status_Handler::class )->get_by_wp_slug( $wp_status );
 
 			if ( $status ) {
 				add_post_meta( $post_id, Order::get_gateway_payload_meta_key( $status ), $payload );

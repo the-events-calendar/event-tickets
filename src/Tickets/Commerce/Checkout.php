@@ -121,6 +121,14 @@ class Checkout {
 		if ( $cookie_param ) {
 			tribe( Cart::class )->set_cart_hash_cookie( $cookie_param );
 		}
+
+		/**
+		 * Allows for additional parsing of the request on the checkout page.
+		 * This is useful for handling additional data that may be passed in the request.
+		 *
+		 * @since TBD
+		 */
+		do_action( 'tec_tickets_commerce_checkout_page_parse_request' );
 	}
 
 	/**

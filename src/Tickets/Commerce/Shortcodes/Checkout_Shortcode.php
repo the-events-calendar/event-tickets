@@ -11,14 +11,9 @@ namespace TEC\Tickets\Commerce\Shortcodes;
 use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
-use TEC\Tickets\Commerce\Order;
-use TEC\Tickets\Commerce\Status\Completed;
-use TEC\Tickets\Commerce\Status\Created;
 use TEC\Tickets\Commerce\Utils\Value;
-use Tribe__Tickets__Editor__Template;
 
 use TEC\Tickets\Commerce\Gateways\Manager;
-use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
 
 /**
  * Class for Shortcode Tribe_Tickets_Checkout.
@@ -63,9 +58,70 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 			'gateways'           => $gateways,
 			'gateways_active'    => $this->get_gateways_active(),
 			'gateways_connected' => $this->get_gateways_connected(),
+			'billing_fields'     => $this->get_billing_fields(),
+			'has_error'          => false,
+			'error'              => [
+				'title'   => null,
+				'message' => null,
+			],
 		];
 
 		$this->template_vars = $args;
+	}
+
+	/**
+	 * Gets a list of billing fields.
+	 *
+	 * @since TBD
+	 *
+	 * @return array|array[]
+	 */
+	public function get_billing_fields(): array {
+		$fields = [
+			'name'    => [
+				'label' => __( 'Person purchasing tickets:', 'event-tickets' ),
+				'type'  => 'text',
+				'value' => '',
+			],
+			'email'   => [
+				'label' => __( 'Email address', 'event-tickets' ),
+				'type'  => 'email',
+				'value' => '',
+			],
+			'address' => [
+				'type'  => 'text',
+				'value' => [
+					'line1' => '',
+					'line2' => '',
+				],
+			],
+			'city'    => [
+				'label' => __( 'City', 'event-tickets' ),
+				'type'  => 'text',
+				'value' => '',
+			],
+			'state'   => [
+				'label' => __( 'State', 'event-tickets' ),
+				'type'  => 'text',
+				'value' => '',
+			],
+			'zip'     => [
+				'label' => __( 'Zip/Postal code', 'event-tickets' ),
+				'type'  => 'text',
+				'value' => '',
+			],
+			'country' => [
+				'label' => __( 'Country or region', 'event-tickets' ),
+				'type'  => 'select',
+				'value' => '',
+			],
+		];
+
+		if ( $this->should_display_billing_info() ) {
+			$fields['name']['label'] = __( 'Full name', 'event-tickets' );
+		}
+
+		return $fields;
 	}
 
 	/**
@@ -131,4 +187,110 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		tribe_asset_enqueue( 'tribe-tickets-forms-style' );
 	}
 
+	/**
+	 * Gets the purchaser info title for the checkout page.
+	 *
+	 * @return string
+	 */
+	public function get_purchaser_info_title(): string {
+		$title = __( 'Purchaser info', 'event-tickets' );
+
+		if ( $this->should_display_billing_info() ) {
+			$title = __( 'Billing info', 'event-tickets' );
+		}
+
+		/**
+		 * Filters the purchaser info title for the checkout page.
+		 * This title is used to describe the section where the purchaser info is displayed.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $title     The title of the purchaser info section.
+		 * @param static $shortcode The instance of the shortcode.
+		 */
+		return (string) apply_filters( 'tec_tickets_commerce_success_page_get_purchaser_info_title', $title, $this );
+	}
+
+
+	/**
+	 * Filters whether the billing fields info should be included in the checkout page.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $value Whether the billing fields info should be included in the checkout page.
+	 *
+	 * @return bool
+	 */
+	protected function filter_display_billing_fields( bool $value ): bool {
+		/**
+		 * Filter whether the billing fields info should be included in the checkout page.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool   $value     Whether the purchaser info should be included in the checkout page.
+		 * @param static $shortcode The instance of the shortcode.
+		 */
+		return apply_filters( 'tec_tickets_commerce_success_page_should_display_billing_fields', $value, $this );
+	}
+
+	/**
+	 * Whether the billing info should be included in the checkout page.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function should_display_billing_info(): bool {
+		if ( ! $this->should_display_purchaser_info() ) {
+			return $this->filter_display_billing_fields( false );
+		}
+
+		return $this->filter_display_billing_fields( false );
+	}
+
+	/**
+	 * Filters the purchaser info should be included in the checkout page.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $value Whether the purchaser info should be included in the checkout page.
+	 *
+	 * @return bool
+	 */
+	protected function filter_should_display_purchaser_info( bool $value ): bool {
+		/**
+		 * Filter whether the purchaser info should be included in the checkout page.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool   $value    Whether the purchaser info should be included in the checkout page.
+		 * @param static $instance The instance of the shortcode.
+		 */
+		return apply_filters( 'tec_tickets_commerce_success_page_should_display_purchaser_info', $value, $this );
+	}
+
+	/**
+	 * Whether the purchaser info should be included in the checkout page.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function should_display_purchaser_info(): bool {
+		$template = $this->get_template();
+
+		$items = $template->get( 'items' );
+
+		// Bail if the cart is empty.
+		if ( empty( $items ) ) {
+			return $this->filter_should_display_purchaser_info( false );
+		}
+
+		$must_login = $template->get( 'must_login', false );
+		if ( $must_login && ! is_user_logged_in() ) {
+			return $this->filter_should_display_purchaser_info( false );
+		}
+
+		return $this->filter_should_display_purchaser_info( true );
+	}
 }

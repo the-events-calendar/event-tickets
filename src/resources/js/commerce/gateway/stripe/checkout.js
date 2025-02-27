@@ -49,7 +49,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		infoForm: '.tribe-tickets__commerce-checkout-purchaser-info-wrapper',
 		renderButton: '#tec-tc-gateway-stripe-render-payment',
 		submitButton: '#tec-tc-gateway-stripe-checkout-button',
-		hiddenElement: '.tribe-common-a11y-hidden'
+		hiddenElement: '.tribe-common-a11y-hidden',
+		form: '.tribe-tickets__commerce-checkout',
 	};
 
 	/**
@@ -85,8 +86,10 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @param array errors an array of arrays. Each base array is keyed with the error code and cotains a list of error
 	 *     messages.
 	 */
-	obj.handleErrorDisplay = ( errors ) => {
+	obj.handleErrorDisplay = ( errors, afterDisplay = () => {} ) => {
 		errors.map( e => obj.showNotice( {}, '', e[ 1 ] ) );
+
+		afterDisplay();
 	};
 
 	/**
@@ -240,16 +243,22 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @return {boolean}
 	 */
-	obj.handlePaymentError = ( data ) => {
+	obj.handlePaymentError = async ( data ) => {
 		$( obj.selectors.cardErrors ).val( data.error.message );
 		tribe.tickets.debug.log( 'stripe', 'handlePaymentError', data );
 
-		tribe.tickets.loader.hide( obj.checkoutContainer );
+		// If we have a payment intent, we need to update the order.
+		if ( data.error.payment_intent ) {
+			const response = await obj.handleUpdateOrder( data.error.payment_intent );
+		}
 
 		return obj.handleErrorDisplay(
 			[
 				[ data.error.code, data.error.message ]
-			]
+			],
+			() => {
+				tribe.tickets.loader.hide( obj.checkoutContainer );
+			}
 		);
 	};
 
@@ -268,7 +277,9 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		const response = await obj.handleUpdateOrder( data.paymentIntent );
 
 		// Redirect the user to the success page.
-		window.location.replace( response.redirect_url );
+		if  ( response.redirect_url && URL.canParse( response.redirect_url ) ) {
+			window.location = response.redirect_url;
+		}
 		return true;
 	};
 
@@ -285,7 +296,9 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		const response = await obj.handleUpdateOrder( data.paymentIntent );
 
 		// Redirect the user to the success page.
-		window.location.replace( response.redirect_url );
+		if  ( response.redirect_url && URL.canParse( response.redirect_url ) ) {
+			window.location = response.redirect_url;
+		}
 
 		return true;
 	};
@@ -332,7 +345,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 				elements: obj.stripeElements,
 				redirect: 'if_required',
 				confirmParams: {
-					return_url: order.redirect_url
+					return_url: order.return_url
 				}
 			} ).then( obj.handleConfirmPayment );
 		}
@@ -341,7 +354,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			elements: obj.stripeElements,
 			redirect: 'if_required',
 			confirmParams: {
-				return_url: order.redirect_url,
+				return_url: order.return_url,
 				shipping: {
 					name: obj.getPurchaserData().name,
 					phone: obj.getPurchaserData().phone,
@@ -552,7 +565,9 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		}
 	};
 
-	obj.renderPayment = () => {
+	obj.renderPayment = ( event ) => {
+		event.preventDefault();
+
 		const form = $( obj.selectors.infoForm );
 		const fields = form.find('input, select');
 		let valid = true;
@@ -699,7 +714,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @since 5.3.0
 	 */
 	obj.bindEvents = () => {
-		$( document ).on( 'click', obj.selectors.renderButton, obj.renderPayment );
+		$( document ).on( 'submit', obj.selectors.form, obj.renderPayment );
 		$( document ).on( 'click', obj.selectors.submitButton, obj.handlePayment );
 	};
 
