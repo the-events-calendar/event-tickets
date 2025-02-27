@@ -259,6 +259,19 @@ class Precision_Value extends Base_Value {
 	}
 
 	/**
+	 * Invert the sign of the value.
+	 *
+	 * Converts a negative value to a positive value, and vice versa.
+	 *
+	 * @since TBD
+	 *
+	 * @return Precision_Value The new value object.
+	 */
+	public function invert_sign(): Precision_Value {
+		return $this->multiply_by_integer( new Integer_Value( -1 ) );
+	}
+
+	/**
 	 * Get the value as a string.
 	 *
 	 * @since TBD
