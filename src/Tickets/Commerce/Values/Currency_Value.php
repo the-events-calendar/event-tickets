@@ -81,11 +81,11 @@ class Currency_Value extends Base_Value {
 		string $decimal_separator = '.',
 		string $currency_symbol_position = 'before'
 	) {
-		$this->value                    = $value;
 		$this->currency_symbol          = $currency_symbol;
 		$this->thousands_separator      = $thousands_separator;
 		$this->decimal_separator        = $decimal_separator;
 		$this->currency_symbol_position = $currency_symbol_position;
+		parent::__construct( $value );
 	}
 
 	/**
