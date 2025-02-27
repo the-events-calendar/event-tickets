@@ -1,6 +1,6 @@
 # Changelog
 
-### [5.19.2] 2025-02-26
+### [5.19.2] 2025-02-27
 
 * Feature - Properly support `return_url` on the checkout page, so that payments like Klarna, AliPay and a couple others properly handle failed orders.
 * Tweak - Improve how we handle webhooks with Stripe to avoid Orders to be left behind in status due to order of operations on Checkout page.
