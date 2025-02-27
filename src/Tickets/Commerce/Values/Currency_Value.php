@@ -31,6 +31,13 @@ class Currency_Value extends Base_Value {
 	protected $currency_symbol_position;
 
 	/**
+	 * The decimal separator.
+	 *
+	 * @var string
+	 */
+	protected $decimal_separator;
+
+	/**
 	 * The thousands separator.
 	 *
 	 * @var string
@@ -38,11 +45,11 @@ class Currency_Value extends Base_Value {
 	protected $thousands_separator;
 
 	/**
-	 * The decimal separator.
+	 * The value.
 	 *
-	 * @var string
+	 * @var Precision_Value
 	 */
-	protected $decimal_separator;
+	protected $value;
 
 	/**
 	 * Default values.
