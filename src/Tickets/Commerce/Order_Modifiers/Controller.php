@@ -82,6 +82,7 @@ final class Controller extends Controller_Contract {
 		$this->container->register( Agnostic_Checkout_Fees::class );
 		$this->container->register( Editor::class );
 		$this->container->register( Fees::class );
+		$this->container->register( Emails::class );
 
 		if ( is_admin() ) {
 			$this->container->register( Modifier_Admin_Handler::class );

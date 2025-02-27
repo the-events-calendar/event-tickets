@@ -66,6 +66,11 @@
 		padding: 18px 0 0 0 !important;
 	}
 
+	.tec-tickets__email-table-content-upcoming-event-card__virtual {
+		color: #141827;
+		font-size: 12px;
+	}
+
 	.tec-tickets__email-table-content-upcoming-event-card__link a {
 		color: #141827;
 		text-decoration: underline !important;
