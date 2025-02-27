@@ -622,11 +622,10 @@ class Module extends \Tribe__Tickets__Tickets {
 
 		$deleted = false;
 		// We are handling both Ticket and Attendee post type deletion using this same method.
-		if ( Attendee::POSTTYPE === $ticket_post->post_type
-			&& tribe( Attendees_Reports::class )->user_can_manage_attendees( 0, $event_id ) ) {
+		if ( Attendee::POSTTYPE === $ticket_post->post_type ) {
 			$deleted = tribe( Attendee::class )->delete( $ticket_id );
 		}
-		
+
 		if ( Ticket::POSTTYPE === $ticket_post->post_type ) {
 			$deleted = tribe( Ticket::class )->delete( $event_id, $ticket_id );
 		}
