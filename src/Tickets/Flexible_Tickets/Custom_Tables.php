@@ -4,7 +4,7 @@
  *
  * @since   5.8.0
  *
- * @package TEC\Tickets\Recurring_Tickets;
+ * @package TEC\Tickets\Flexible_Tickets;
  */
 
 namespace TEC\Tickets\Flexible_Tickets;
