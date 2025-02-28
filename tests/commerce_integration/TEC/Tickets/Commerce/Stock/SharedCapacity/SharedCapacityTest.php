@@ -92,7 +92,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( 50, tribe_get_event_capacity( $event_id ), 'Total Event capacity should be 50' );
 		$this->assertEquals( 50, $global_stock->get_stock_level(), 'Global stock should be 50' );
 
-		// Create an Order for 5 on each Ticket.
+		// Create an Order for 5 on each Ticket.2
 		$order = $this->create_order(
 			[
 				$ticket_a_id => 5,
@@ -101,6 +101,9 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		);
 
 		tribe_cache()->delete( 'tec_tickets_attendees_by_ticket_id' );
+
+		wp_cache_delete( $ticket_a_id, 'tec_tickets' );
+		wp_cache_delete( $ticket_b_id, 'tec_tickets' );
 
 		// Refresh the ticket objects.
 		$ticket_a = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
