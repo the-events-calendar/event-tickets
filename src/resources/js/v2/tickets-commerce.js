@@ -421,7 +421,7 @@ tribe.tickets.commerce = {};
 
 						// Hide the applied coupon section.
 						$( obj.selectors.couponAppliedSection ).addClass(
-							obj.selectors.hiddenElement.className()
+							obj.selectors.hiddenElement.className(),
 						);
 						obj.updateTotalPrice( response.cart_amount );
 					} else {
