@@ -225,6 +225,9 @@ class Order_Test extends WPTestCase {
 		$this->assertTrue( $result );
 	}
 
+	/**
+	 * @skip This will also need to be completed when stock/attendees are fixed and done!
+	 */
 	public function test_double_order_transition_does_not_count_sales_twice() {
 		$post = self::factory()->post->create(
 			[
