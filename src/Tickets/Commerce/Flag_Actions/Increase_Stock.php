@@ -62,6 +62,11 @@ class Increase_Stock extends Flag_Action_Abstract {
 				continue;
 			}
 
+
+			$global_stock = new \Tribe__Tickets__Global_Stock( $ticket->get_event_id() );
+
+			tribe( Ticket::class )->decrease_ticket_sales_by( $ticket->ID, $quantity, $ticket->global_stock_mode(), $global_stock );
+
 			update_post_meta( $ticket->ID, Ticket::$stock_meta_key, $ticket->stock() + $quantity );
 		}
 	}
