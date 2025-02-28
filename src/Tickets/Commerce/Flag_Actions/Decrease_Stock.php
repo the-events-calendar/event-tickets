@@ -111,14 +111,6 @@ class Decrease_Stock extends Flag_Action_Abstract {
 				continue;
 			}
 
-			// Is ticket shared capacity?
-			$global_stock_mode  = $ticket->global_stock_mode();
-			$is_shared_capacity = ! empty( $global_stock_mode ) && 'own' !== $global_stock_mode;
-
-			if ( $is_shared_capacity ) {
-				return;
-			}
-
 			update_post_meta( $ticket->ID, Ticket::$stock_meta_key, $ticket->stock() - $quantity );
 		}
 	}
