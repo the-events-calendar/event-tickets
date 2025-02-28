@@ -34,7 +34,6 @@ use WP_REST_Server as Server;
 class Coupons extends Base_API {
 
 	use CouponsTrait;
-	use Type;
 
 	/**
 	 * TThe modifier manager instance to handle relationship updates.
@@ -246,11 +245,7 @@ class Coupons extends Base_API {
 			$original_total = Currency_Value::create_from_float( $cart->get_cart_total() );
 
 			// Add the coupon to the cart.
-			$cart->upsert_item(
-				$this->get_unique_type_id( $coupon->id, 'coupon' ),
-				1,
-				[ 'type' => 'coupon' ]
-			);
+			$coupon->add_to_cart( $cart );
 			$cart->save();
 
 			$cart_total = Currency_Value::create_from_float( $cart->get_cart_total() );
@@ -312,10 +307,12 @@ class Coupons extends Base_API {
 			/** @var Cart $cart_page */
 			$cart_page = tribe( Cart::class );
 			$cart_page->set_cart_hash( $request->get_param( 'cart_hash' ) );
+
+			/** @var Abstract_Cart $cart */
 			$cart = $cart_page->get_repository();
 
 			// Remove the item from the cart.
-			$cart->remove_item( $this->get_unique_type_id( $coupon->id, 'coupon' ) );
+			$coupon->remove_from_cart( $cart );
 			$cart->save();
 
 			$cart_total = Currency_Value::create_from_float( $cart->get_cart_total() );
@@ -360,9 +357,6 @@ class Coupons extends Base_API {
 	 * @return array
 	 */
 	protected function prepare_coupon_for_response( Order_Modifier $coupon ) {
-		// @todo: better processing of the response.
-		$raw_amount = $coupon->raw_amount;
-
 		return [
 			'id'         => $coupon->id,
 			'slug'       => $coupon->slug,
