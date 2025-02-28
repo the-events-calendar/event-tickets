@@ -1254,7 +1254,12 @@ class Order extends Abstract_Order {
 	 * @return bool
 	 */
 	public function has_on_checkout_screen_hold( int $order_id ): bool {
-		$on_screen_hold = (int) get_post_meta( $order_id, static::ON_CHECKOUT_SCREEN_HOLD_META, true );
+		$on_screen_hold = get_post_meta( $order_id, static::ON_CHECKOUT_SCREEN_HOLD_META, true );
+
+		// This is here because we previously stored the timestamp instead of DB milliseconds.
+		if ( is_numeric( $on_screen_hold ) ) {
+			$on_screen_hold = 0;
+		}
 
 		/**
 		 * Filters whether the order is on checkout screen hold.
@@ -1265,7 +1270,7 @@ class Order extends Abstract_Order {
 		 * @param bool $is_on_screen_hold Whether the order is on the checkout screen hold.
 		 * @param int  $order_id         The order ID.
 		 */
-		return (bool) apply_filters( 'tec_tickets_commerce_order_has_on_checkout_screen_hold', $on_screen_hold > time(), $order_id );
+		return (bool) apply_filters( 'tec_tickets_commerce_order_has_on_checkout_screen_hold', $on_screen_hold > tec_get_current_milliseconds(), $order_id );
 	}
 
 	/**
@@ -1283,7 +1288,7 @@ class Order extends Abstract_Order {
 		 *
 		 * @param int $timeout The default timeout.
 		 */
-		return apply_filters( 'tec_tickets_commerce_order_on_checkout_screen_hold_timeout', MINUTE_IN_SECONDS * 5 );
+		return (int) apply_filters( 'tec_tickets_commerce_order_on_checkout_screen_hold_timeout', MINUTE_IN_SECONDS * 5 );
 	}
 
 	/**
@@ -1294,7 +1299,8 @@ class Order extends Abstract_Order {
 	 * @return bool
 	 */
 	public function set_on_checkout_screen_hold( int $order_id ): bool {
-		$on_screen_hold = time() + $this->get_default_on_checkout_screen_hold_timeout();
+		$seconds = $this->get_default_on_checkout_screen_hold_timeout();
+		$on_screen_hold = tec_get_current_milliseconds( new \DateInterval( "PT{$seconds}S" ) );
 
 		$updated = (bool) update_post_meta( $order_id, static::ON_CHECKOUT_SCREEN_HOLD_META, $on_screen_hold );
 
@@ -1312,7 +1318,7 @@ class Order extends Abstract_Order {
 		do_action( 'tec_tickets_commerce_order_on_checkout_screen_hold_set', $order_id, $on_screen_hold );
 
 		return (bool) as_schedule_single_action(
-			$on_screen_hold + MINUTE_IN_SECONDS, // We schedule the action to run after the timeout.
+			tec_from_milliseconds_to_timestamp( $on_screen_hold ) + MINUTE_IN_SECONDS, // We schedule the action to run after the timeout.
 			'tec_tickets_commerce_async_webhook_process',
 			[
 				'order_id' => $order_id,
