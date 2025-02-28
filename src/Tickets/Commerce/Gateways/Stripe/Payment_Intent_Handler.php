@@ -16,7 +16,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Store the Payment Intent for the duration of the page load.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @var array $payment_intent The Payment Intent.
 	 */
@@ -32,7 +32,7 @@ class Payment_Intent_Handler {
 	 */
 	public function create_payment_intent_for_cart( $_deprecated = null ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 		if ( null !== $_deprecated ) {
-			_deprecated_argument( __METHOD__, 'TBD', esc_html__( 'This method no longer uses the 1st param.', 'event-tickets' ) );
+			_deprecated_argument( __METHOD__, '5.19.3', esc_html__( 'This method no longer uses the 1st param.', 'event-tickets' ) );
 		}
 
 		// Somehow we already have a payment intent.
@@ -57,7 +57,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Gets the existing Payment Intent if it is valid.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @return array|null
 	 */
@@ -86,7 +86,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Store the Payment Intent for the duration of the page load.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @param array $payment_intent The Payment Intent.
 	 *
@@ -109,7 +109,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Gets the stored Payment Intent.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @return array
 	 */
@@ -120,7 +120,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Where we store the payment intent ID in a cookie.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @return string
 	 */
@@ -131,7 +131,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Retrieve the payment intent ID from a cookie.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @return ?string
 	 */
@@ -142,7 +142,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Store the payment intent ID in a cookie.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @param mixed $payment_intent_id The payment intent ID.
 	 *
@@ -163,7 +163,7 @@ class Payment_Intent_Handler {
 		/**
 		 * Filter the cookie options for the payment intent cookie.
 		 *
-		 * @since TBD
+		 * @since 5.19.3
 		 *
 		 * @param array $cookie_options The cookie options.
 		 *
@@ -367,7 +367,7 @@ class Payment_Intent_Handler {
 	 * Base string to use when composing payment intent transient names.
 	 *
 	 * @since 5.3.0
-	 * @deprecated TBD
+	 * @deprecated 5.19.3
 	 *
 	 * @var string
 	 */
@@ -377,7 +377,7 @@ class Payment_Intent_Handler {
 	 * Transient name to store payment intents.
 	 *
 	 * @since 5.3.0
-	 * @deprecated TBD
+	 * @deprecated 5.19.3
 	 *
 	 * @var string
 	 */
@@ -387,7 +387,7 @@ class Payment_Intent_Handler {
 	 * Counter for how many times we've re-tried creating a PaymentIntent.
 	 *
 	 * @since 5.3.0
-	 * @deprecated TBD
+	 * @deprecated 5.19.3
 	 *
 	 * @var int
 	 */
@@ -397,7 +397,7 @@ class Payment_Intent_Handler {
 	 * Max number of retries to create a PaymentIntent.
 	 *
 	 * @since 5.3.0
-	 * @deprecated TBD
+	 * @deprecated 5.19.3
 	 *
 	 * @var int
 	 */
@@ -406,7 +406,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Increment the retry counter if under max_retries.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 5.19.3
 	 *
 	 * @return bool True if incremented, false if no more retries are allowed.
 	 */
@@ -423,7 +423,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Compose the transient name used for payment intent transients.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 5.19.3
 	 *
 	 * @since 5.3.0
 	 */
@@ -434,7 +434,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Returns the transient name used for payment intent transients.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 5.19.3
 	 * @since 5.3.0
 	 *
 	 * @return string
@@ -452,7 +452,7 @@ class Payment_Intent_Handler {
 	 * Retrieve a stored payment intent referring to the current cart.
 	 *
 	 * @since 5.3.0
-	 * @deprecated TBD
+	 * @deprecated 5.19.3
 	 *
 	 * @return array|false
 	 */
@@ -464,7 +464,7 @@ class Payment_Intent_Handler {
 	 * Delete the payment intent transient.
 	 *
 	 * @since 5.3.0
-	 * @deprecated TBD
+	 * @deprecated 5.19.3
 	 *
 	 * @return bool
 	 */
@@ -476,7 +476,7 @@ class Payment_Intent_Handler {
 	 * Store a payment intent array in a transient.
 	 *
 	 * @since 5.3.0
-	 * @deprecated TBD
+	 * @deprecated 5.19.3
 	 *
 	 * @param array $payment_intent Payment intent data from Stripe.
 	 */

@@ -536,7 +536,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Get the max number of retries for the webhooks.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @return int The number of retries.
 	 */
@@ -544,7 +544,7 @@ class Webhooks extends Abstract_Webhooks {
 		/**
 		 * Filter the maximum number of attempts we will try to retry a webhook process.
 		 *
-		 * @since TBD
+		 * @since 5.19.3
 		 *
 		 * @param int $max_attempts How many attempts we will try to retry a webhook process. Defaults to 5.
 		 *

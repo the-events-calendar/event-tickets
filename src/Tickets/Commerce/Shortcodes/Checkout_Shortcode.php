@@ -72,7 +72,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	/**
 	 * Gets a list of billing fields.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @return array|array[]
 	 */
@@ -203,7 +203,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		 * Filters the purchaser info title for the checkout page.
 		 * This title is used to describe the section where the purchaser info is displayed.
 		 *
-		 * @since TBD
+		 * @since 5.19.3
 		 *
 		 * @param string $title     The title of the purchaser info section.
 		 * @param static $shortcode The instance of the shortcode.
@@ -215,7 +215,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	/**
 	 * Filters whether the billing fields info should be included in the checkout page.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @param bool $value Whether the billing fields info should be included in the checkout page.
 	 *
@@ -225,7 +225,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		/**
 		 * Filter whether the billing fields info should be included in the checkout page.
 		 *
-		 * @since TBD
+		 * @since 5.19.3
 		 *
 		 * @param bool   $value     Whether the purchaser info should be included in the checkout page.
 		 * @param static $shortcode The instance of the shortcode.
@@ -236,7 +236,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	/**
 	 * Whether the billing info should be included in the checkout page.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @return bool
 	 */
@@ -251,7 +251,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	/**
 	 * Filters the purchaser info should be included in the checkout page.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @param bool $value Whether the purchaser info should be included in the checkout page.
 	 *
@@ -261,7 +261,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		/**
 		 * Filter whether the purchaser info should be included in the checkout page.
 		 *
-		 * @since TBD
+		 * @since 5.19.3
 		 *
 		 * @param bool   $value    Whether the purchaser info should be included in the checkout page.
 		 * @param static $instance The instance of the shortcode.
@@ -272,7 +272,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	/**
 	 * Whether the purchaser info should be included in the checkout page.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @return bool
 	 */

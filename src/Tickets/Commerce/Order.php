@@ -42,7 +42,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Meta key for the checkout holding status for a particular order and it's webhooks.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @var string
 	 */
@@ -1176,7 +1176,7 @@ class Order extends Abstract_Order {
 	 * Get whether the order has its checkout completed.
 	 *
 	 * @since 5.18.1
-	 * @deprecated TBD In favor of using checkout on_screen hold timeouts.
+	 * @deprecated 5.19.3 In favor of using checkout on_screen hold timeouts.
 	 *
 	 * @param int $order_id The order ID.
 	 *
@@ -1215,7 +1215,7 @@ class Order extends Abstract_Order {
 	 * Mark an order's checkout as completed.
 	 *
 	 * @since 5.18.1
-	 * @deprecated TBD In favor of using checkout on_screen hold timeouts.
+	 * @deprecated 5.19.3 In favor of using checkout on_screen hold timeouts.
 	 *
 	 * @param int $order_id The order ID.
 	 *
@@ -1261,7 +1261,7 @@ class Order extends Abstract_Order {
 		 * Filters whether the order is on checkout screen hold.
 		 * This is used to determine if the order is still on the checkout screen.
 		 *
-		 * @since TBD
+		 * @since 5.19.3
 		 *
 		 * @param bool $is_on_screen_hold Whether the order is on the checkout screen hold.
 		 * @param int  $order_id         The order ID.
@@ -1272,7 +1272,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the default on checkout screen hold timeout.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @return int
 	 */
@@ -1280,7 +1280,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Filters the default on checkout screen hold timeout.
 		 *
-		 * @since TBD
+		 * @since 5.19.3
 		 *
 		 * @param int $timeout The default timeout.
 		 */
@@ -1325,7 +1325,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Delete an order on checkout screen hold.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @param int $order_id Which order we are setting.
 	 *
@@ -1341,7 +1341,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Fires after an order has its checkout screen hold removed.
 		 *
-		 * @since TBD
+		 * @since 5.19.3
 		 *
 		 * @param int $order_id The order ID.
 		 */
