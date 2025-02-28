@@ -11,6 +11,7 @@
  */
 
 use TEC\Tickets\Commerce\Utils\Value;
+use TEC\Tickets\Commerce\Values\Legacy_Value_Factory;
 
 // Filter coupon items. If we have any coupons, always use the first one. There *shouldn't* be more than one.
 $coupon_items = array_filter( $items, fn( $item ) => 'coupon' === ( $item['type'] ?? '' ) );
@@ -19,7 +20,7 @@ $coupon       = array_shift( $coupon_items ) ?? [];
 // Determine the discount to display.
 $discount = '';
 if ( isset( $coupon['sub_total'] ) && $coupon['sub_total'] instanceof Value ) {
-	$discount = $coupon['sub_total']->get_currency();
+	$discount = Legacy_Value_Factory::to_currency_value( $coupon['sub_total'] )->get();
 }
 
 // Set up classes for all of the elements.
@@ -72,7 +73,7 @@ $applied_container_classes = [
 						<img
 							src="<?php echo esc_url( tribe_resource_url( 'images/icons/close.svg', false, null, Tribe__Main::instance() ) ); ?>"
 							alt="<?php esc_attr_e( 'Close icon', 'event-tickets' ); ?>"
-							title="<?php esc_attr_e( 'Remove ticket', 'event-tickets' ); ?>"
+							title="<?php esc_attr_e( 'Remove coupon', 'event-tickets' ); ?>"
 						>
 					</button>
 				</span>
