@@ -12,9 +12,6 @@ node_modules
 # Vendor handling.
 /vendor
 
-# Allow certain vendor files.
-!vendor/phpqrcode
-
 # Some people makes...
 Makefile
 
