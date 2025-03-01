@@ -243,10 +243,10 @@ trait Attendee_Maker {
 		$faker = \Faker\Factory::create();
 
 		$result = [
-			'first_name' => Arr::get( $overrides, 'first_name', $faker->firstName ),
-			'last_name'  => Arr::get( $overrides, 'last_name', $faker->lastName ),
-			'full_name'  => Arr::get( $overrides, 'full_name', $faker->name ),
-			'email'      => Arr::get( $overrides, 'email', $faker->email ),
+			'first_name' => Arr::get( $overrides, 'first_name', $faker->firstName() ),
+			'last_name'  => Arr::get( $overrides, 'last_name', $faker->lastName() ),
+			'full_name'  => Arr::get( $overrides, 'full_name', $faker->name() ),
+			'email'      => Arr::get( $overrides, 'email', $faker->email() ),
 		];
 
 		$user = get_userdata( $user_id );
