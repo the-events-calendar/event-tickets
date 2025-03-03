@@ -11,9 +11,11 @@
  *
  * @todo FrontEnd needs to revisit all of these templates to make sure we're not missing anything
  *
- * @since   5.3.0
+ * @since 5.3.0
+ * @since 5.19.3 Added class `tribe-tickets__commerce-checkout-stripe__form` to the form.
  *
- * @version 5.3.0
+ * @version 5.19.3
+ *
  * @var bool $must_login      [Global] Whether login is required to buy tickets or not.
  * @var bool $payment_element [Global] Whether to load the Stripe Payment Element.
  */
@@ -23,7 +25,7 @@ if ( ! empty( $must_login ) ) {
 }
 ?>
 <div class="tribe-tickets__commerce-checkout-gateway tribe-tickets__commerce-checkout-stripe">
-	<form id="payment-form">
+	<form class="tribe-tickets__commerce-checkout-stripe__form" id="payment-form">
 
 		<?php $this->template( 'gateway/stripe/payment-element' ); ?>
 
