@@ -2,7 +2,7 @@
 /**
  * A pseudo-enum class to store the meta keys that relate Tickets to Posts.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Enums;
  */
@@ -12,7 +12,7 @@ namespace TEC\Tickets\Flexible_Tickets\Enums;
 /**
  * Class Ticket_To_Post_Relationship_Keys.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Enums;
  */

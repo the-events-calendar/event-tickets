@@ -2,7 +2,7 @@
 /**
  * Handles all of the post querying.
  *
- * @since   4.12.1
+ * @since 4.12.1
  *
  * @package Tribe\Tickets\Repositories
  */
@@ -20,7 +20,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Post_Repository.
  *
- * @since   4.12.1
+ * @since 4.12.1
  *
  * @package Tribe\Tickets\Repositories
  */

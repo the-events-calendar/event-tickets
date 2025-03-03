@@ -2,7 +2,7 @@
 /**
  * Provides common methods to interact with the oAuth token.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller\Service;
  */
@@ -17,7 +17,7 @@ use function TEC\Common\StellarWP\Uplink\get_resource;
 /**
  * Trait OAuth_Token.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller\Service;
  */

@@ -2,7 +2,7 @@
 /**
  * The controller that manages relationships between entities in the Seating context.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating;
  */
@@ -17,7 +17,7 @@ use WP_Post;
 /**
  * Class Delete_Operations.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating;
  */

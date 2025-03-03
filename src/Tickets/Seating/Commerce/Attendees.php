@@ -2,7 +2,7 @@
 /**
  * Provides methods to interact with Attndees' data.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Commerce;
  */
@@ -16,7 +16,7 @@ use Tribe__Cache_Listener as Triggers;
 /**
  * Class Attendees.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Commerce;
  */

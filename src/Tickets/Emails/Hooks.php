@@ -10,7 +10,7 @@
  * remove_action( 'some_action', [ tribe( TEC\Tickets\Emails\Hooks::class ), 'some_method' ] );
  * remove_action( 'some_action', [ tribe( 'tickets.emails.hooks' ), 'some_method' ] );
  *
- * @since   5.5.6
+ * @since 5.5.6
  *
  * @package TEC\Tickets\Emails
  */
@@ -25,7 +25,7 @@ use Tribe__Tickets__Tickets as Tickets_Module;
 /**
  * Class Hooks.
  *
- * @since   5.5.6
+ * @since 5.5.6
  *
  * @package TEC\Tickets\Emails
  */
@@ -221,7 +221,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Hooks to the legacy modules and hijacks the sending of RSVP emails from the old system to Tickets Emails.
 	 *
-	 * @see   Legacy_Hijack::send_rsvp_email
+	 * @see Legacy_Hijack::send_rsvp_email
 	 *
 	 * @since 5.6.0
 	 *
@@ -237,7 +237,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Hooks to the legacy modules and hijacks the sending of Tickets emails from the old system to Tickets Emails.
 	 *
-	 * @see   Legacy_Hijack::send_tickets_email_for_attendee
+	 * @see Legacy_Hijack::send_tickets_email_for_attendee
 	 *
 	 * @since 5.6.0
 	 *
@@ -257,7 +257,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Hooks to the legacy module of RSVP and hijacks the sending of RSVP email for non-attendance confirmation from the old system to Tickets Emails.
 	 *
-	 * @see   Legacy_Hijack::send_rsvp_non_attendance_confirmation
+	 * @see Legacy_Hijack::send_rsvp_non_attendance_confirmation
 	 *
 	 * @since 5.6.0
 	 *

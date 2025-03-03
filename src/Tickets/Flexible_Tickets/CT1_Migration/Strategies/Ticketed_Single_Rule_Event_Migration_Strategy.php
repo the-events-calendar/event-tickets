@@ -2,7 +2,7 @@
 /**
  * Handles the migration of Recurring Event with 1 recurrence rule and one or more non-RSVP tickets attached.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes\CT1_Migration\Strategies;
  */
@@ -16,7 +16,7 @@ use TEC\Events_Pro\Custom_Tables\V1\Migration\Strategy\Single_Rule_Event_Migrati
 /**
  * Class Ticketed_Single_Rule_Event_Migration_Strategy.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes\CT1_Migration\Strategies;
  */

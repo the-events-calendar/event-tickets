@@ -2,7 +2,7 @@
 /**
  * The service component used to exchange reservations infarmation with the service.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Service;
  */
@@ -16,7 +16,7 @@ use TEC\Tickets\Seating\Meta;
 /**
  * Class Reservations.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Service;
  */

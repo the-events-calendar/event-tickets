@@ -9,9 +9,9 @@
  *
  * @version 5.9.1
  *
- * @var  array  $orders              The orders for the current user.
- * @var  int    $post_id             The ID of the post the tickets are for.
- * @var  array  $titles              List of ticket type titles.
+ * @var array  $orders              The orders for the current user.
+ * @var int    $post_id             The ID of the post the tickets are for.
+ * @var array  $titles              List of ticket type titles.
  */
 
 ?>

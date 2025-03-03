@@ -413,8 +413,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Handler for the ticket column.
 	 *
-	 * @since  4.1
-	 * @since  4.12.1 Include the raw attendee Post ID in the ticket's ID.
+	 * @since 4.1
+	 * @since 4.12.1 Include the raw attendee Post ID in the ticket's ID.
 	 *
 	 * @param array $item Item whose ticket data should be output.
 	 *
@@ -1221,7 +1221,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Get the allowed search types and their descriptions.
 	 *
-	 * @see   \Tribe__Tickets__Attendee_Repository::__construct() List of valid ORM args.
+	 * @see \Tribe__Tickets__Attendee_Repository::__construct() List of valid ORM args.
 	 *
 	 * @since 4.10.8
 	 *

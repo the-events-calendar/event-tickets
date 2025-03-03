@@ -10,7 +10,7 @@ use TEC\Tickets\Commerce\Reports\Attendees as Attendees_Reports;
 /**
  * Class Tickets Provider class for Tickets Commerce
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce
  */
@@ -319,7 +319,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param      $post_id
+	 * @param $post_id
 	 * @param null $post_type
 	 *
 	 * @return array|mixed
@@ -539,7 +539,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Generate and store all the attendees information for a new order.
 	 *
-	 * @since      5.1.9
+	 * @since 5.1.9
 	 * @deprecated 5.2.0
 	 *
 	 * @param string $payment_status The tickets payment status, defaults to completed.

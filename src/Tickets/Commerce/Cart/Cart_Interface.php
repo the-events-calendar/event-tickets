@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Cart;
 /**
  * Interface Cart_Interface
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Cart
  */

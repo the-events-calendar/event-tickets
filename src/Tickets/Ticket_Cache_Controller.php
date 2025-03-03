@@ -2,7 +2,7 @@
 /**
  * Handles the caching of Ticket objects.
  *
- * @since   5.6.4
+ * @since 5.6.4
  *
  * @package TEC\Tickets;
  */
@@ -22,7 +22,7 @@ use WP_Post;
 /**
  * Class Ticket_Cache_Controller.
  *
- * @since   5.6.4
+ * @since 5.6.4
  *
  * @package TEC\Tickets;
  */

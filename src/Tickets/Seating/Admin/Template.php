@@ -2,7 +2,7 @@
 /**
  * A template class dedicated to the admin area.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller\Admin;
  */
@@ -14,7 +14,7 @@ use Tribe__Tickets__Main as Tickets;
 /**
  * Class Template.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller\Admin;
  */

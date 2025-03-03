@@ -10,7 +10,7 @@ use Tribe__Tickets__Main;
 /**
  * The Stripe specific settings.
  *
- * @since   5.3.0
+ * @since 5.3.0
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
 class Settings extends Abstract_Settings {

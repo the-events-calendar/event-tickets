@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 /**
  * Class Manual Gateway.
  *
- * @since   5.2.0
+ * @since 5.2.0
  * @package TEC\Tickets\Commerce\Gateways\Manual
  */
 class Gateway extends Abstract_Gateway {

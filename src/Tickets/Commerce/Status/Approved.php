@@ -8,7 +8,7 @@ namespace TEC\Tickets\Commerce\Status;
  * This is a payment that has begun, but is not complete.  An example of this is someone who has filled out the checkout
  * form and then gone to Gateway for payment.  We have the record of sale, but they haven't completed their payment yet.
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Status
  */

@@ -2,7 +2,7 @@
 /**
  * Provides the information required to register the Tickets block server-side.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Blocks\Tickets;
  */
@@ -22,7 +22,7 @@ use Tribe__Tickets__Tickets_View as Tickets_View;
 /**
  * Class Block.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Blocks\Tickets;
  */

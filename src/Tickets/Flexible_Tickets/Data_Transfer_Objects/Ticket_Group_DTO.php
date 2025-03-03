@@ -2,7 +2,7 @@
 /**
  * The data transfer object for the Ticket Group model.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Data_Transfer_Objects;
  */
@@ -15,7 +15,7 @@ use TEC\Tickets\Flexible_Tickets\Models\Ticket_Group;
 /**
  * Class Ticket_Group_DTO.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Data_Transfer_Objects;
  */

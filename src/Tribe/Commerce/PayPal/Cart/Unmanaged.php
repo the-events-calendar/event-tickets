@@ -168,7 +168,7 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	 *
 	 * @return string|bool The invoice number or `false` if not found.
 	 *
-	 * @see   Tribe__Tickets__Commerce__PayPal__Gateway::set_invoice_number()
+	 * @see Tribe__Tickets__Commerce__PayPal__Gateway::set_invoice_number()
 	 */
 	public function read_invoice_number() {
 		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */

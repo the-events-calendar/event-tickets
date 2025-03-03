@@ -11,7 +11,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Increase_Sales, normally triggered when refunding on orders get set to not-completed.
  *
- * @since   5.2.0
+ * @since 5.2.0
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */

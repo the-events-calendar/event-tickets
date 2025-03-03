@@ -7,7 +7,7 @@ use TEC\Tickets\phpqrcode\QRcode;
 /**
  * A Facade for the QR code generator.
  *
- * @since   5.6.7
+ * @since 5.6.7
  *
  * @package TEC\Tickets\QR
  */

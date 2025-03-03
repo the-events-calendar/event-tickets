@@ -547,7 +547,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		 * on a ticket-able post to another Ticket on another ticketable post 2. the term Event is used to refer to any
 		 * ticket-able post, not just Events.
 		 *
-		 * @since  5.8.3
+		 * @since 5.8.3
 		 *
 		 * @parram int[] $ticket_ids The set of Attendee IDs that will be moved.
 		 *
