@@ -85,6 +85,11 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 			return;
 		}
 
+		// If we don't have the raw amount set, nothing else to do.
+		if ( ! array_key_exists( 'raw_amount', $this->attributes ) ) {
+			return;
+		}
+
 		if ( $this->attributes['raw_amount'] instanceof Percent_Value ) {
 			return;
 		}
