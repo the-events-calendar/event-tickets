@@ -10,8 +10,9 @@
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since 5.3.0
+ * @since 5.19.3 Added a surrounding form to the purchaser info fields.
  *
- * @version 5.3.0
+ * @version 5.19.3
  *
  * @var Checkout_Shortcode $shortcode [Global] The checkout shortcode instance.
  * @var \Tribe__Template $this [Global] Template object.
@@ -29,7 +30,7 @@ if ( ! $shortcode->should_display_purchaser_info() ) {
 ?>
 <div class="tribe-tickets__form tribe-tickets__commerce-checkout-purchaser-info-wrapper tribe-common-b2">
 	<h4 class="tribe-common-h5 tribe-tickets__commerce-checkout-purchaser-info-title"><?php echo esc_html( $shortcode->get_purchaser_info_title() ); ?></h4>
-	<form class="tribe-tickets__commerce-checkout-stripe__form">
+	<form class="tribe-tickets__commerce-checkout-purchaser-info-wrapper__form">
 		<?php
 		$this->template(
 			'checkout/purchaser-info/name',

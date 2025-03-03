@@ -34,7 +34,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * Checkout Selectors.
 	 *
 	 * @since 5.3.0
-	 * @since 5.19.3 Changed form selector to target form surrounding stripe fields.
+	 * @since 5.19.3 Changed form selector to target form surrounding TicketsCommerce fields.
 	 *
 	 * @type {Object}
 	 */
@@ -51,7 +51,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		renderButton: '#tec-tc-gateway-stripe-render-payment',
 		submitButton: '#tec-tc-gateway-stripe-checkout-button',
 		hiddenElement: '.tribe-common-a11y-hidden',
-		form: '.tribe-tickets__commerce-checkout-stripe__form',
+		form: '.tribe-tickets__commerce-checkout-purchaser-info-wrapper__form',
 	};
 
 	/**
