@@ -23,7 +23,7 @@ if ( ! empty( $must_login ) ) {
 }
 ?>
 <div class="tribe-tickets__commerce-checkout-gateway tribe-tickets__commerce-checkout-stripe">
-	<form id="payment-form">
+	<form class="tribe-tickets__commerce-checkout-stripe__form" id="payment-form">
 
 		<?php $this->template( 'gateway/stripe/payment-element' ); ?>
 

@@ -34,7 +34,7 @@ $attributes = [
 
 ?>
 <div class="tribe-common event-tickets">
-	<form
+	<section
 		class="tribe-tickets__commerce-checkout"
 		<?php tribe_attributes( $attributes ); ?>
 	>
@@ -64,5 +64,5 @@ $attributes = [
 		<?php $this->template( 'checkout/gateways' ); ?>
 		<?php $this->template( 'checkout/footer' ); ?>
 		<?php $this->template( 'checkout/must-login' ); ?>
-	</form>
+	</section>
 </div>

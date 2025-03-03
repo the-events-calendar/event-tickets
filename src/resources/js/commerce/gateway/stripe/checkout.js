@@ -50,7 +50,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		renderButton: '#tec-tc-gateway-stripe-render-payment',
 		submitButton: '#tec-tc-gateway-stripe-checkout-button',
 		hiddenElement: '.tribe-common-a11y-hidden',
-		form: '.tribe-tickets__commerce-checkout',
+		form: '.tribe-tickets__commerce-checkout-stripe__form',
 	};
 
 	/**
