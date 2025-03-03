@@ -516,6 +516,9 @@ class Tribe__Tickets__Main {
 
 		// Admin provider.
 		tribe_register_provider( Admin_Provider::class );
+
+		// Set up IAN Client - In-App Notifications.
+		tribe_register_provider( TEC\Tickets\Notifications\Provider::class );
 	}
 
 	/**

@@ -15,6 +15,10 @@
  * @var int    $post_id   The ID of the post the tickets are for.
  */
 
+$purchaser_name  = $order && ! empty( $order['purchaser_name'] ) ? $order['purchaser_name'] : __( 'Unknown Name (invalid order)', 'event-tickets' );
+$purchaser_email = $order && ! empty( $order['purchaser_email'] ) ? $order['purchaser_email'] : __( 'Unknown Email (invalid order)', 'event-tickets' );
+$purchase_time   = $order && ! empty( $order['purchase_time'] ) ? $order['purchase_time'] : null;
+
  ?>
  <div class="user-details">
 	<?php
@@ -29,9 +33,9 @@
 				count( $attendees ),
 				'event-tickets'
 			),
-			esc_attr( $order['purchaser_name'] ),
-			'<a href="mailto:' . esc_url( $order['purchaser_email'] ) . '">' . esc_html( $order['purchaser_email'] ) . '</a>',
-			date_i18n( tribe_get_date_format( true ), strtotime( esc_attr( $order['purchase_time'] ) ) )
+			esc_attr( $purchaser_name ),
+			'<a href="mailto:' . esc_url( $purchaser_email ) . '">' . esc_html( $purchaser_email ) . '</a>',
+			$purchase_time ? date_i18n( tribe_get_date_format( true ), strtotime( esc_attr( $purchase_time ) ) ) : __( 'Unknown Time (invalid order)', 'event-tickets' )
 		);
 
 		/**

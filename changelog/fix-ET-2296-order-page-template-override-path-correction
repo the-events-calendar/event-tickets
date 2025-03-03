@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Corrected template override path for My Tickets page. [ET-2296]
