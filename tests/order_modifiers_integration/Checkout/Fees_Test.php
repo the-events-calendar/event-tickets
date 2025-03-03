@@ -1022,4 +1022,18 @@ class Fees_Test extends Controller_Test_Case {
 	public function reset_fees() {
 		$this->test_services->get( PayPalFees::class )->reset_fees_and_subtotal();
 	}
+
+	/**
+	 * @before
+	 */
+	public function replace_image_path() {
+		$this->set_fn_return(
+			'tribe_resource_url',
+			function ( $path ) {
+				$path = ltrim( $path, '/' );
+				return "https://example.com/{$path}";
+			},
+			true
+		);
+	}
 }
