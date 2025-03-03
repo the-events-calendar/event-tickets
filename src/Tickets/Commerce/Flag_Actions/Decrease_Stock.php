@@ -10,7 +10,9 @@ use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Traits\Is_Ticket;
+
 use Tribe__Utils__Array as Arr;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 
 /**
  * Class Decrease_Stock
@@ -111,7 +113,7 @@ class Decrease_Stock extends Flag_Action_Abstract {
 				continue;
 			}
 
-			$global_stock = new \Tribe__Tickets__Global_Stock( $ticket->get_event_id() );
+			$global_stock = new Global_Stock( $ticket->get_event_id() );
 
 			// Is ticket shared capacity?
 			$global_stock_mode  = $ticket->global_stock_mode();
