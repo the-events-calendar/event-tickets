@@ -11,8 +11,9 @@
  *
  * @since 5.1.9
  * @since 5.3.0 Added purchaser info templates.
+ * @since 5.19.3 Turned form element back to section.
  *
- * @version 5.3.0
+ * @version 5.19.3
  *
  * @var \Tribe__Template $this                  [Global] Template object.
  * @var Module           $provider              [Global] The tickets provider instance.

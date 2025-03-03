@@ -34,6 +34,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * Checkout Selectors.
 	 *
 	 * @since 5.3.0
+	 * @since 5.19.3 Changed form selector to target form surrounding stripe fields.
 	 *
 	 * @type {Object}
 	 */
