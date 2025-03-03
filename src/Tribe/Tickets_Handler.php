@@ -319,6 +319,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$meta_key = $this->key_start_date;
 		$tickets  = $this->get_tickets_ids( $post_id );
 
+
 		foreach ( $tickets as $ticket_id ) {
 			// Skip tickets with manual updates to that meta
 			if ( $this->has_manual_update( $ticket_id, $meta_key ) ) {
@@ -511,8 +512,10 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Gets the Tickets from a Post
 	 *
 	 * @since  4.6
+	 * @since TBD Ensure that if we are querying for more than one ticket provider, the meta query relation is set to OR.
+	 * @since TBD Correct the docblock to reflect the method's behavior.
 	 *
-	 * @param  int|WP_Post $post
+	 * @param  int $post Which post we are getting the tickets from.
 	 * @return array
 	 */
 	public function get_tickets_ids( $post = null ) {
@@ -536,6 +539,11 @@ class Tribe__Tickets__Tickets_Handler {
 
 			$args['post_type']  = array_merge( (array) $args['post_type'], (array) $module_args['post_type'] );
 			$args['meta_query'] = array_merge( (array) $args['meta_query'], (array) $module_args['meta_query'] );
+		}
+
+		// If we have more than one module (i.e. TC and RSVP), we need to set the relation to "OR" so we get tickets from all of them.
+		if ( count( $modules ) > 1 ) {
+			$args['meta_query']['relation'] = 'OR';
 		}
 
 		$query = new WP_Query( $args );
