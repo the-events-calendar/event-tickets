@@ -17,7 +17,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin.
 	 */
-	const VERSION = '5.19.2';
+	const VERSION = '5.19.3';
 
 	/**
 	 * Used to store the version history.
@@ -516,6 +516,9 @@ class Tribe__Tickets__Main {
 
 		// Admin provider.
 		tribe_register_provider( Admin_Provider::class );
+
+		// Set up IAN Client - In-App Notifications.
+		tribe_register_provider( TEC\Tickets\Notifications\Provider::class );
 	}
 
 	/**

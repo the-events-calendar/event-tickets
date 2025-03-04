@@ -79,7 +79,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 * Process the async stripe webhook.
 	 *
 	 * @since 5.18.1
-	 * @since TBD Added the $retry parameter.
+	 * @since 5.19.3 Added the $retry parameter.
 	 *
 	 * @param int $order_id The order ID.
 	 * @param int $retry      The number of times this has been tried.
@@ -357,7 +357,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Handles the checkout request pieces related to Stripe Gateway.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @return void
 	 */
@@ -417,7 +417,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Modify the checkout variables to include errors and billing fields.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @param array $vars The current template vars.
 	 *
@@ -450,7 +450,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Modify the checkout whether to display billing fields.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @param bool $value The current value.
 	 *

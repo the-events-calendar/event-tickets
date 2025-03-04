@@ -1,5 +1,15 @@
 # Changelog
 
+### [5.19.3] 2025-03-04
+
+* Feature - Add In-App Notifications for Event Tickets [ET-2294]
+* Tweak - Added actions: `tec_ian_icon`
+* Tweak - Changed views: `tickets/my-tickets/user-details`, `tickets/orders`
+* Fix - Replace form element wrapping the Checkout with section to avoid invalid HTML of form into form resulting to broken checkout with PayPal. [ET-2327]
+* Fix - Corrected template override path for My Tickets page. [ET-2296]
+* Fix - Ensure the Attendee Model for Tickets Commerce doesn't throw fatal errors when Order ID is invalid.
+* Language - 14 new strings added, 121 updated, 0 fuzzied, and 1 obsoleted.
+
 ### [5.19.2] 2025-02-27
 
 * Feature - Properly support `return_url` on the checkout page, so that payments like Klarna, AliPay and a couple others properly handle failed orders.
