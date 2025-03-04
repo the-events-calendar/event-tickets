@@ -273,13 +273,13 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 				'button_text'       => $name,
 				'button_attributes' => [
 					'data-attendee-id'    => (string) $item['attendee_id'],
-					'data-event-id'       => $item['event_id'],
-					'data-ticket-id'      => $item['product_id'],
-					'data-provider'       => $item['provider'],
-					'data-provider-slug'  => $item['provider_slug'],
-					'data-modal-title'    => $name,
-					'data-attendee-name'  => $name,
-					'data-attendee-email' => $email,
+					'data-event-id'       => (string) $item['event_id'],
+					'data-ticket-id'      => (string) $item['product_id'],
+					'data-provider'       => (string) $item['provider'],
+					'data-provider-slug'  => (string) $item['provider_slug'],
+					'data-modal-title'    => (string) $name,
+					'data-attendee-name'  => (string) $name,
+					'data-attendee-email' => (string) $email,
 				],
 				'button_classes'    => [
 					'button-link',
@@ -947,6 +947,15 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			return;
 		}
 
+		/** @var Tribe__Tickets__Attendees $attendees */
+		$attendees = tribe( 'tickets.attendees' );
+
+		$post = get_post( $this->get_post_id() );
+
+		if ( ! $attendees->user_can_manage_attendees( 0, $post->ID ?? '' ) ) {
+			return;
+		}
+
 		foreach ( $attendee_ids as $attendee ) {
 			list( $id, $addon ) = $this->attendee_reference( $attendee );
 
@@ -958,7 +967,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		}
 
 		// Redirect after deleting attendees back to attendee URL.
-		$post = get_post( $this->get_post_id() );
 		if ( ! isset( $post->ID ) ) {
 			return;
 		}
@@ -967,7 +975,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			return;
 		}
 
-		$redirect_url = tribe( 'tickets.attendees' )->get_report_link( $post );
+		$redirect_url = $attendees->get_report_link( $post );
 		wp_safe_redirect( $redirect_url );
 
 		exit;

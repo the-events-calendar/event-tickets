@@ -9,7 +9,6 @@ use TEC\Tickets\Commerce\Module;
  * @param boolean $display_sku
  */
 $display_sku = apply_filters( 'tribe_events_tickets_tpp_display_sku', true );
-$html_safe_provider_class = sanitize_html_class( Module::class );
 
 if ( ! $display_sku ) {
 	return;
@@ -17,9 +16,9 @@ if ( ! $display_sku ) {
 ?>
 
 <div
-	class="ticket_advanced_<?php echo $html_safe_provider_class; ?> input_block tribe-dependent"
-	data-depends="#provider_TEC_Tickets_Commerce_Module_radio"
-	data-condition-is-checked
+	class="ticket_advanced_<?php echo sanitize_html_class( Module::class ); ?> input_block tribe-dependent"
+	data-depends="#tec_tickets_ticket_provider"
+	data-condition="<?php echo esc_attr( Module::class ); ?>"
 >
 	<label for="ticket_tpp_sku" class="ticket_form_label ticket_form_left"><?php esc_html_e( 'SKU:', 'event-tickets' ); ?></label>
 	<input
