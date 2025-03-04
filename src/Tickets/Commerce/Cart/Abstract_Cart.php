@@ -154,12 +154,24 @@ abstract class Abstract_Cart implements Cart_Interface {
 		}
 
 		$subtotal = $this->get_cart_subtotal();
+
+		// If the subtotal is zero or less, return the subtotal without further calculations.
 		if ( $subtotal <= 0.0 ) {
 			$this->total_calculated = true;
 			return $this->cart_total->get();
 		}
 
-		$subtotal_value = Factory::to_legacy_value( $this->cart_subtotal );
+		$subtotal_value     = Factory::to_legacy_value( $this->cart_subtotal );
+		$callable_subtotals = [];
+
+		// Calculate the items that are dynamic. These items are not included in the subtotal calculation.
+		$callable_items = array_filter( $this->get_items_in_cart( true, 'all' ), static fn( $item ) => is_callable( $item['sub_total'] ) );
+		$callable_items = $this->update_items_with_subtotal( $callable_items, $subtotal );
+
+		// Get the subtotals for the callable items as Precision_Value objects.
+		foreach ( $callable_items as $item ) {
+			$callable_subtotals[] = Factory::to_precision_value( $item['sub_total'] );
+		}
 
 		/**
 		 * Filters the additional values in the cart in order to add additional fees or discounts.
@@ -188,7 +200,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 		);
 
 		// Set the total and mark it as calculated.
-		$this->cart_total       = Precision_Value::sum( $this->cart_subtotal, ...$additional_values );
+		$this->cart_total       = Precision_Value::sum( $this->cart_subtotal, ...$additional_values, ...$callable_subtotals );
 		$this->total_calculated = true;
 
 		return $this->cart_total->get();
@@ -210,9 +222,8 @@ abstract class Abstract_Cart implements Cart_Interface {
 			return $this->cart_subtotal->get();
 		}
 
-		// Set up the array of subtotal objects.
-		$subtotals          = [];
-		$callable_subtotals = [];
+		/** @var Precision_Value[] $subtotals The subtotal objects. */
+		$subtotals = [];
 
 		// Calculate the total from the subtotals of each item.
 		$all_items = $this->get_items_in_cart( true, 'all' );
@@ -229,15 +240,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 			$subtotals[] = Factory::to_precision_value( $item['sub_total'] );
 		}
 
-		// Now process any items that are callable.
-		$original_subtotal = Precision_Value::sum( ...$subtotals );
-		$callable_items    = array_filter( $all_items, static fn( $item ) => is_callable( $item['sub_total'] ) );
-		$callable_items    = $this->update_items_with_subtotal( $callable_items, $original_subtotal->get() );
-		foreach ( $callable_items as $item ) {
-			$callable_subtotals[] = Factory::to_precision_value( $item['sub_total'] );
-		}
-
-		$this->cart_subtotal = Precision_Value::sum( $original_subtotal, ...$callable_subtotals );
+		$this->cart_subtotal = Precision_Value::sum( ...$subtotals );
 
 		// Set the subtotal as calculated.
 		$this->subtotal_calculated = true;
