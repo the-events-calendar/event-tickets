@@ -40,6 +40,7 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
 use TEC\Tickets\Seating\Tables\Seat_Types;
 use TEC\Tickets\Seating\Tests\Integration\Truncates_Custom_Tables;
 use TEC\Common\StellarWP\Assets\Assets;
+use TEC\Tickets\Commerce\Reports\Attendance_Totals;
 
 class Controller_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -279,6 +280,14 @@ class Controller_Test extends Controller_Test_Case {
 		);
 
 		$this->assertMatchesHtmlSnapshot( $html );
+	}
+
+	/**
+	 * @before
+	 * @after
+	 */
+	public function before_and_after() {
+		$this->test_services->get( Attendance_Totals::class )->reset_counts();
 	}
 
 	/**

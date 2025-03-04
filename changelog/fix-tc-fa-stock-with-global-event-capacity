@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Ensure that Capacity and Stock handling now are handled in one single Action by Tickets Commerce and it respects Global Capacity.
