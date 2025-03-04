@@ -62,15 +62,23 @@ class Increase_Stock extends Flag_Action_Abstract {
 				continue;
 			}
 
+
+			$global_stock = new \Tribe__Tickets__Global_Stock( $ticket->get_event_id() );
+
 			// Is ticket shared capacity?
 			$global_stock_mode  = $ticket->global_stock_mode();
 			$is_shared_capacity = ! empty( $global_stock_mode ) && 'own' !== $global_stock_mode;
 
-			if ( $is_shared_capacity ) {
-				return;
+			tribe( Ticket::class )->decrease_ticket_sales_by( $ticket->ID, $quantity, $ticket->global_stock_mode(), $global_stock );
+
+			$stock = $ticket->stock();
+
+			// Global stock handling is done in the `decrease_ticket_sales_by` method.
+			if ( 'global' !== $global_stock_mode ) {
+				$stock += $quantity;
 			}
 
-			update_post_meta( $ticket->ID, Ticket::$stock_meta_key, $ticket->stock() + $quantity );
+			update_post_meta( $ticket->ID, Ticket::$stock_meta_key, $stock );
 		}
 	}
 }
