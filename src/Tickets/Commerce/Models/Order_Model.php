@@ -58,6 +58,11 @@ class Order_Model extends Base {
 			$events_in_order  = (array) Arr::get( $post_meta, [ Order::$events_in_order_meta_key ] );
 			$tickets_in_order = (array) Arr::get( $post_meta, [ Order::$tickets_in_order_meta_key ] );
 
+			$on_checkout_hold_timeout = (int) Arr::get( $post_meta, [ Order::ON_CHECKOUT_SCREEN_HOLD_META, 0 ], 0 );
+			if ( ! is_numeric( $on_checkout_hold_timeout ) ) {
+				$on_checkout_hold_timeout = 0;
+			}
+
 			$properties = [
 				'order_id'            => $post_id,
 				'provider'            => Module::class,
@@ -88,6 +93,7 @@ class Order_Model extends Base {
 				'events_in_order'     => $events_in_order,
 				'tickets_in_order'    => $tickets_in_order,
 				'flag_action_markers' => $flag_action_markers,
+				'on_checkout_hold'    => $on_checkout_hold_timeout,
 			];
 		} catch ( \Exception $e ) {
 			return [];

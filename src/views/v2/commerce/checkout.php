@@ -11,8 +11,9 @@
  *
  * @since 5.1.9
  * @since 5.3.0 Added purchaser info templates.
+ * @since 5.19.3 Turned form element back to section.
  *
- * @version 5.3.0
+ * @version 5.19.3
  *
  * @var \Tribe__Template $this                  [Global] Template object.
  * @var Module           $provider              [Global] The tickets provider instance.
@@ -22,6 +23,8 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  * @var array[]          $gateways              [Global] An array with the gateways.
  * @var int              $gateways_active       [Global] The number of active gateways.
+ * @var bool             $has_error             [Global] Whether there is an error or not.
+ * @var array            $error                 [Global] Title and Content of the error.
  */
 
 $attributes = [
@@ -49,10 +52,11 @@ $attributes = [
 					'notice_classes'  => [
 						'tribe-tickets__notice--error',
 						'tribe-tickets__commerce-checkout-notice',
+						$has_error ? 'tribe-tickets__commerce-checkout-notice--visible' : '',
 					],
 					'content_classes' => [ 'tribe-tickets__commerce-checkout-notice-content' ],
-					'title'           => __( 'Checkout Error!', 'event-tickets' ),
-					'content'         => __( 'Something went wrong!', 'event-tickets' ),
+					'title'           => $error['title'] ?? esc_html__( 'Checkout Error!', 'event-tickets' ),
+					'content'         => $error['content'] ?? esc_html__( 'Something went wrong!', 'event-tickets' ),
 				]
 		);
 		?>

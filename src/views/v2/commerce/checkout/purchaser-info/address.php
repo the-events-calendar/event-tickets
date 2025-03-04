@@ -41,6 +41,7 @@ $field_classes = [
 			placeholder="<?php esc_attr_e( 'Street address', 'event-tickets' ); ?>"
 			<?php tribe_classes( $field_classes ); ?>
 			required
+			<?php echo ! empty( $field['value']['line1'] ) ? 'value="' . esc_attr( $field['value']['line1'] ) . '"' : ''; ?>
 		/>
 		<div class="tribe-common-b3 tribe-tickets__form-field-description tribe-common-a11y-hidden error">
 			<?php esc_html_e( 'Your address is required', 'event-tickets' ); ?>
@@ -59,6 +60,7 @@ $field_classes = [
 			placeholder="<?php esc_attr_e( 'Apt., suite, unit number, etc (optional)', 'event-tickets' ); ?>"
 			autocomplete="off"
 			<?php tribe_classes( $field_classes ); ?>
+			<?php echo ! empty( $field['value']['line2'] ) ? 'value="' . esc_attr( $field['value']['line2'] ) . '"' : ''; ?>
 		/>
 		<div class="tribe-common-b3 tribe-tickets__form-field-description tribe-common-a11y-hidden error"></div>
 	</div>

@@ -100,6 +100,9 @@ abstract class Shortcode_Abstract extends Common_Shortcode_Abstract {
 	public function get_template_vars() {
 		$this->setup_template_vars();
 
+		// Ensure we include the shortcode instance in the template vars.
+		$this->template_vars['shortcode'] = $this;
+
 		return (array) $this->filter_template_vars( $this->template_vars );
 	}
 
@@ -147,5 +150,4 @@ abstract class Shortcode_Abstract extends Common_Shortcode_Abstract {
 		 */
 		return (array) apply_filters( "tec_tickets_commerce_success_shortcode_{$shortcode_id}_page_{$gateway}_template_vars", $template_vars, $this );
 	}
-
 }

@@ -232,4 +232,10 @@ abstract class Status_Abstract implements Status_Interface {
 	public function can_be_updated_to(): array {
 		return [];
 	}
+	/**
+	 * {@inheritdoc}
+	 */
+	public function required_previous_status(): array {
+		return [];
+	}
 }

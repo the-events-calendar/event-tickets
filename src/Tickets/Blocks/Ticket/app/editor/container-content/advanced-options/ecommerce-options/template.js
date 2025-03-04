@@ -20,7 +20,7 @@ import './style.pcss';
 const { EDD, WOO, PROVIDER_TYPES, TICKET_LABELS } = constants;
 const EDIT_TICKET = 'edit-ticket';
 const REPORT = 'report';
-const LINK_TYPES = [ EDIT_TICKET, REPORT ];
+const LINK_TYPES = [ EDIT_TICKET ];
 
 const EcommerceOptions = ( {
 	editTicketLink,

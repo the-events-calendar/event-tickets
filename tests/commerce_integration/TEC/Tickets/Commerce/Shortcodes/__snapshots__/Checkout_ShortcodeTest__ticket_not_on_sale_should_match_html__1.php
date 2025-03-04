@@ -98,7 +98,8 @@
 </div>
 				<div class="tribe-tickets__form tribe-tickets__commerce-checkout-purchaser-info-wrapper tribe-common-b2">
 	<h4 class="tribe-common-h5 tribe-tickets__commerce-checkout-purchaser-info-title">Purchaser info</h4>
-	<div class="tribe-tickets__commerce-checkout-purchaser-info-field tribe-tickets__form-field tribe-tickets__form-field--text">
+	<form class="tribe-tickets__commerce-checkout-purchaser-info-wrapper__form">
+		<div class="tribe-tickets__commerce-checkout-purchaser-info-field tribe-tickets__form-field tribe-tickets__form-field--text">
 	<label for="tec-tc-purchaser-name"  class="tribe-tickets__form-field-label tribe-tickets__commerce-checkout-purchaser-info-name-field-label" >
 		Person purchasing tickets:	</label>
 	<div class="tribe-tickets__form-field-input-wrapper">
@@ -109,12 +110,12 @@
 			autocomplete="off"
 			placeholder="First and last name"
 			 class="tribe-tickets__commerce-checkout-purchaser-info-form-field tribe-tickets__commerce-checkout-purchaser-info-form-field-name tribe-common-form-control-text__input tribe-tickets__form-field-input" 			required
-		/>
+					/>
 		<div class="tribe-common-b3 tribe-tickets__form-field-description tribe-common-a11y-hidden error">
 			Your first and last names are required		</div>
 	</div>
 </div>
-	<div class="tribe-tickets__commerce-checkout-purchaser-info-field tribe-tickets__form-field tribe-tickets__form-field--email">
+		<div class="tribe-tickets__commerce-checkout-purchaser-info-field tribe-tickets__form-field tribe-tickets__form-field--email">
 	<label for="tec-tc-purchaser-email"  class="tribe-tickets__form-field-label tribe-tickets__commerce-checkout-purchaser-info-email-field-label" >
 		Email address	</label>
 
@@ -125,14 +126,15 @@
 			name="purchaser-email"
 			autocomplete="off"
 			 class="tribe-common-b2 tribe-tickets__commerce-checkout-purchaser-info-form-field tribe-tickets__commerce-checkout-purchaser-info-form-field-email tribe-common-form-control-text__input tribe-tickets__form-field-input" 			required
-		/>
+					/>
 		<div class="tribe-common-b3 tribe-tickets__form-field-description tribe-common-a11y-hidden error">
 			Your email address is required		</div>
 		<div class="tribe-common-b3 tribe-tickets__form-field-description">
 			Your tickets will be sent to this email address		</div>
 	</div>
 </div>
-	</div>
+			</form>
+</div>
 				<footer class="tribe-tickets__commerce-checkout-footer">
 	<div id="tribe-tickets__commerce-checkout-footer-notice-error--no-gateway"  class="tribe-tickets__notice tribe-tickets__notice--error tribe-tickets__commerce-checkout-footer-notice-error--no-gateway" >
 			<h3 class="tribe-common-h7 tribe-tickets-notice__title">Checkout Unavailable!</h3>
