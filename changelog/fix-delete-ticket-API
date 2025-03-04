@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Restore Ticket's API capability checks to take place in controller and not in internal API [ET-2313]
