@@ -371,6 +371,7 @@ class Orders_Table extends WP_Posts_List_Table {
 					$dashicon = 'undo';
 					break;
 				case 'failed':
+				case 'denied':
 					$dashicon = 'no-alt';
 					break;
 				case 'pending':

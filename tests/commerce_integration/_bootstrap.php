@@ -1,6 +1,7 @@
 <?php
 
 use \TEC\Tickets\Commerce\Provider as Commerce_Provider;
+use Tribe\Tickets\Promoter\Triggers\Dispatcher;
 
 $tec_support = dirname( __DIR__, 3 ) . '/the-events-calendar/tests/_support';
 Codeception\Util\Autoload::addNamespace( 'Tribe\Events\Test', $tec_support );
@@ -23,3 +24,6 @@ global $wpdb;
 $wpdb->query( "ALTER TABLE $wpdb->posts AUTO_INCREMENT = 5096" );
 
 tec_tickets_tests_fake_transactions_enable();
+
+// Disconnect Promoter to avoid license-related notices.
+remove_action( 'tribe_tickets_promoter_trigger', [ tribe( Dispatcher::class ), 'trigger' ] );

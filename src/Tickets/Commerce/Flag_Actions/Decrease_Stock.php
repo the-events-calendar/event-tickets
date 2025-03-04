@@ -104,7 +104,7 @@ class Decrease_Stock extends Flag_Action_Abstract {
 				continue;
 			}
 
-			$quantity = Arr::get( $item, 'quantity', 1 );
+			$quantity = (int) Arr::get( $item, 'quantity', 1 );
 
 			// Skip generating for zero-ed items.
 			if ( 0 >= $quantity ) {

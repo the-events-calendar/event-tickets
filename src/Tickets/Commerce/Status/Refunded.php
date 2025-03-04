@@ -27,6 +27,8 @@ class Refunded extends Status_Abstract {
 		'warning',
 		'backfill_purchaser',
 		'count_refunded',
+		'increase_stock',
+		'archive_attendees',
 	];
 
 	/**
