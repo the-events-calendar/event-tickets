@@ -35,7 +35,7 @@ $purchase_time   = $order && ! empty( $order['purchase_time'] ) ? $order['purcha
 			),
 			esc_attr( $purchaser_name ),
 			'<a href="mailto:' . esc_url( $purchaser_email ) . '">' . esc_html( $purchaser_email ) . '</a>',
-			$purchase_time ? date_i18n( tribe_get_date_format( true ), strtotime( esc_attr( $purchase_time ) ) ) : __( 'Unknown Time (invalid order)', 'event-tickets' )
+			esc_html( $purchase_time ? date_i18n( tribe_get_date_format( true ), strtotime( $purchase_time ) ) : __( 'Unknown Time (invalid order)', 'event-tickets' ) )
 		);
 
 		/**
