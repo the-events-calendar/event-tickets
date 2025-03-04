@@ -14,6 +14,7 @@ use Tribe__Tickets_Plus__Commerce__WooCommerce__Main;
 use WP_Error;
 use WP_Post;
 use WP_User;
+use Tribe__Utils__Array as Arr;
 
 trait Attendee_Maker {
 
