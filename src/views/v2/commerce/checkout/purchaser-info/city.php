@@ -31,17 +31,18 @@ $field_classes = [
 ?>
 <div class="tribe-tickets__commerce-checkout-purchaser-info-field tribe-tickets__form-field tribe-tickets__form-field--city">
 	<label for="tec-tc-purchaser-city" <?php tribe_classes( $label_classes ); ?>>
-		<?php esc_html_e( 'City', 'event-tickets' ); ?>
+		<?php echo esc_html( $field['label'] ); ?>
 	</label>
 
 	<div class="tribe-tickets__form-field-input-wrapper">
 		<input
-			type="text"
+			type="<?php echo esc_attr( $field['type'] ); ?>"
 			id="tec-tc-purchaser-city"
 			name="purchaser-city"
 			autocomplete="off"
 			<?php tribe_classes( $field_classes ); ?>
 			required
+			<?php echo $field['value'] ? 'value="' . esc_attr( $field['value'] ) . '"' : ''; ?>
 		/>
 		<div class="tribe-common-b3 tribe-tickets__form-field-description tribe-common-a11y-hidden error">
 			<?php esc_html_e( 'Your city is required', 'event-tickets' ); ?>

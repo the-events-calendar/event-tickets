@@ -135,20 +135,17 @@ body.wp-admin.post-type-tec_tc_order {
 	display: inline-flex;
 	flex-flow: row nowrap;
 	justify-content: center;
-	line-height: 2.5em;
-	margin: calc(-1 * var(--tec-spacer-0)) 0;
+	line-height: 1em;
+	margin: 0;
 	max-width: 100%;
+	padding: var(--tec-spacer-1);
 	white-space: nowrap;
 
-	> span {
-		margin-right: var(--tec-spacer-3);
-		overflow: hidden;
-		text-overflow: ellipsis;
-
-		&:first-child {
-			margin-left: var(--tec-spacer-3);
-			margin-right: var(--tec-spacer-0);
-		}
+	.dashicons {
+		font-size: 16px;
+		height: 16px;
+		margin-right: var(--tec-spacer-0);
+		width: 16px;
 	}
 
 	&.status-pending {
@@ -161,7 +158,8 @@ body.wp-admin.post-type-tec_tc_order {
 		border-color: #00a32a;
 	}
 
-	&.status-denied {
+	&.status-denied,
+	&.status-failed {
 		border-color: #646970;
 	}
 

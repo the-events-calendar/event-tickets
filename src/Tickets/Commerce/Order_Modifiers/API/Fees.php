@@ -275,7 +275,7 @@ class Fees extends Base_API {
 		$fees_for_post_by_ticket = [];
 
 		foreach ( tribe_tickets()->where( 'event', $post_id )->get_ids( true ) as $ticket_id ) {
-			$fees_for_post_by_ticket[ $ticket_id ] = $this->get_selected_fees( $ticket_id );
+			$fees_for_post_by_ticket[ $ticket_id ] = $this->get_selected_fees( (int) $ticket_id );
 		}
 
 		return $fees_for_post_by_ticket;
