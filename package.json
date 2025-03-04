@@ -1,6 +1,6 @@
 {
   "name": "event-tickets",
-  "version": "5.19.2",
+  "version": "5.19.3",
   "repository": "git@github.com:the-events-calendar/event-tickets.git",
   "_zipname": "event-tickets",
   "_zipfoldername": "event-tickets",
@@ -10,7 +10,10 @@
   "_glotPressUrl": "https://translate.wordpress.org",
   "_glotPressSlug": "wp-plugins/event-tickets/stable",
   "_glotPressFileFormat": "%textdomain%-%wp_locale%.%format%",
-  "_glotPressFormats": ["po", "mo"],
+  "_glotPressFormats": [
+    "po",
+    "mo"
+  ],
   "_glotPressFilter": {
     "translation_sets": false,
     "minimum_percentage": 30,
@@ -79,7 +82,10 @@
     "glotpress": "gulp glotpress",
     "changelog": "./vendor/bin/changelogger add"
   },
-  "engines": { "node": "18.17.0", "npm": "9.6.7" },
+  "engines": {
+    "node": "18.17.0",
+    "npm": "9.6.7"
+  },
   "devDependencies": {
     "@playwright/test": "^1.44.0",
     "@redux-devtools/extension": "^3.3.0",

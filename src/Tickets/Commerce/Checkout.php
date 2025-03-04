@@ -126,7 +126,7 @@ class Checkout {
 		 * Allows for additional parsing of the request on the checkout page.
 		 * This is useful for handling additional data that may be passed in the request.
 		 *
-		 * @since TBD
+		 * @since 5.19.3
 		 */
 		do_action( 'tec_tickets_commerce_checkout_page_parse_request' );
 	}
