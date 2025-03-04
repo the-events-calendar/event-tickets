@@ -6,6 +6,7 @@ use Closure;
 use Generator;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Service\Service_Status;
 use TEC\Tickets\Seating\Tables\Layouts;
 use TEC\Tickets\Seating\Tables\Seat_Types;
@@ -147,6 +148,13 @@ class Editor_Test extends Controller_Test_Case {
 				$ticket_id_2 => 5,
 			]
 		);
+		
+		$order_attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		
+		// Mock the reservation ID to do proper stock calculation.
+		foreach ( $order_attendees as $key => $attendee ) {
+			update_post_meta( $attendee['ID'], Meta::META_KEY_RESERVATION_ID, 'test-reservation-id-' . $key );
+		}
 
 		$totals_1 = [
 			'stock'   => 40 - 3 - 5,
