@@ -5,7 +5,6 @@
 
 namespace TEC\Tickets\Seating\Orders;
 
-use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Reports\Report_Abstract;
 use TEC\Tickets\Commerce\Reports\Tabbed_View;
 use TEC\Tickets\Seating\Meta;
@@ -13,6 +12,7 @@ use TEC\Tickets\Seating\Service\Error_Content;
 use TEC\Tickets\Seating\Service\Service;
 use TEC\Tickets\Seating\Service\Service_Status;
 use Tribe__Main;
+use Tribe__Tickets__Tickets;
 use WP_Error;
 use WP_Post;
 use Tribe__Tickets__Main as Tickets_Main;
@@ -199,19 +199,15 @@ class Seats_Report extends Report_Abstract {
 		if ( ! $this->can_access_page( $post_id ) ) {
 			return $actions;
 		}
+		
+		$tickets = Tribe__Tickets__Tickets::get_ticket_counts( $post_id );
 
-		$commerce = tribe( Module::class );
-
-		if ( ! $commerce->post_has_tickets( $post ) ) {
+		if ( ! $tickets ) {
 			return $actions;
 		}
-
-		// Tickets Commerce requirement.
-		if ( ! function_exists( 'tec_tc_attendees' ) ) {
-			return $actions;
-		}
-
-		$has_attendees = tec_tc_attendees()->by( 'event_id', $post_id )->count();
+		
+		$provider      = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $post_id );
+		$has_attendees = $provider->get_attendees_count( $post_id );
 
 		if ( ! $has_attendees ) {
 			return $actions;
