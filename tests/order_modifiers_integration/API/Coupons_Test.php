@@ -92,7 +92,9 @@ class Coupons_Test extends Controller_Test_Case {
 			return $response;
 		}
 
-		$this->assertSame( 200, $response->get_status() );
+		$this->assertGreaterThanOrEqual( 200, $response->get_status(), 'A response code should be returned >= 200' );
+		$this->assertLessThan( 300, $response->get_status(), 'A response code should be returned < 300' );
+		$this->assertSame( 200, $response->get_status(), 'A successful response code shoudl be returned' );
 		$this->assertFalse( $response->is_error(), "Expected a successful response for path: {$path}" );
 		$this->assertNull( $response->as_error() );
 
