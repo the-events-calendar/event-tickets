@@ -217,4 +217,103 @@ class Coupons_Test extends Controller_Test_Case {
 			)
 		);
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_calculate_coupons_complex_math() {
+		$post = static::factory()->post->create(
+			[ 'post_title' => 'The Event' ],
+		);
+
+		// Create a bunch of tickets.
+		$ticket_id_1 = $this->create_tc_ticket( $post, 11.28 );
+		$ticket_id_2 = $this->create_tc_ticket( $post, 22.56 );
+		$ticket_id_3 = $this->create_tc_ticket( $post, 33.84 );
+		$ticket_id_4 = $this->create_tc_ticket( $post, 45.12 );
+		$ticket_id_5 = $this->create_tc_ticket( $post, 56.40 );
+
+		// Create a 17.3% off coupon.
+		$coupon_1 = $this->create_coupon(
+			[
+				'raw_amount' => 17.3,
+				'sub_type'   => 'percent',
+			]
+		);
+
+		// Create a $3.45 off coupon.
+		$coupon_2 = $this->create_coupon(
+			[
+				'raw_amount' => 3.45,
+				'sub_type'   => 'flat',
+			]
+		);
+
+		// Basic checks to ensure the coupon is calculating values correctly.
+		Assert::assertEquals( -1.95, $coupon_1->get_discount_amount( 11.28 ), '17.3% of 11.28 should be 1.95' );
+		Assert::assertEquals( -3.90, $coupon_1->get_discount_amount( 22.56 ), '17.3% of 22.56 should be 3.90' );
+		Assert::assertEquals( -5.85, $coupon_1->get_discount_amount( 33.84 ), '17.3% of 33.84 should be 5.85' );
+		Assert::assertEquals( -7.81, $coupon_1->get_discount_amount( 45.12 ), '17.3% of 45.12 should be 7.81' );
+		Assert::assertEquals( -9.76, $coupon_1->get_discount_amount( 56.40 ), '17.3% of 56.40 should be 9.76' );
+
+		// All of the coupons for the flat rate should be the same.
+		Assert::assertEquals( -3.45, $coupon_2->get_discount_amount( 11.28 ), '3.45 off 11.28 should be 3.45' );
+		Assert::assertEquals( -3.45, $coupon_2->get_discount_amount( 22.56 ), '3.45 off 22.56 should be 3.45' );
+		Assert::assertEquals( -3.45, $coupon_2->get_discount_amount( 33.84 ), '3.45 off 33.84 should be 3.45' );
+		Assert::assertEquals( -3.45, $coupon_2->get_discount_amount( 45.12 ), '3.45 off 45.12 should be 3.45' );
+		Assert::assertEquals( -3.45, $coupon_2->get_discount_amount( 56.40 ), '3.45 off 56.40 should be 3.45' );
+
+		// Register the controller.
+		$this->make_controller()->register();
+
+		// Get the cart and start adding tickets.
+		/** @var Commerce_Cart $cart */
+		$cart = tribe( Commerce_Cart::class );
+		$cart->add_ticket( $ticket_id_1, 2 );
+		$cart->add_ticket( $ticket_id_2, 3 );
+		$cart->add_ticket( $ticket_id_3, 4 );
+		$cart->add_ticket( $ticket_id_4, 5 );
+		$cart->add_ticket( $ticket_id_5, 6 );
+
+		// Grab the total and subtotal.
+		$cart_subtotal = $cart->get_cart_subtotal();
+		$cart_total    = $cart->get_cart_total();
+
+		// With only tickets in the cart and no coupons applied, the total and subtotal should be the same.
+		Assert::assertEquals( $cart_subtotal, $cart_total );
+
+		// Cart subtotal should be (11.28 * 2) + (22.56 * 3) + (33.84 * 4) + (45.12 * 5) + (56.40 * 6) = 22.56 + 67.68 + 135.36 + 225.60 + 338.40 = 789.60.
+		Assert::assertEquals( 789.60, $cart_subtotal );
+
+		$order1 = $this->create_order_from_cart( $cart );
+
+		// Validate that the order has the correct amounts.
+		Assert::assertCount( 5, $order1->items, 'Order should have 5 different tickets' );
+		Assert::assertObjectHasAttribute( 'coupons', $order1, 'Order object should have coupons property' );
+		Assert::assertCount( 0, $order1->coupons, 'Coupons should be empty when no coupons added' );
+		Assert::assertEquals( 789.60, $order1->subtotal->get_float() );
+		Assert::assertEquals( 789.60, $order1->total_value->get_float() );
+
+		// Let's add a coupon and create a new order.
+		$coupon_1->add_to_cart( $cart->get_repository() );
+
+		// Grab the total and subtotal.
+		$cart_subtotal = $cart->get_cart_subtotal();
+		$cart_total    = $cart->get_cart_total();
+
+		// Cart subtotal should be (11.28 * 2) + (22.56 * 3) + (33.84 * 4) + (45.12 * 5) + (56.40 * 6) = 22.56 + 67.68 + 135.36 + 225.60 + 338.40 = 789.60.
+		Assert::assertEquals( 789.60, $cart_subtotal );
+
+		// Cart total should be 789.60 - 17.3% = 789.60 - 136.60 = 653.00.
+		Assert::assertEquals( 653.00, $cart_total, 'Order should be discounted by 17.3% ($136.60)' );
+
+		$order2 = $this->create_order_from_cart( $cart );
+
+		// Validate that the order has the correct amounts.
+		Assert::assertCount( 5, $order2->items, 'Order should have 5 different tickets' );
+		Assert::assertObjectHasAttribute( 'coupons', $order2, 'Order object should have coupons property' );
+		Assert::assertCount( 1, $order2->coupons, 'Coupons should have 1 coupon' );
+		Assert::assertEquals( 789.60, $order2->subtotal->get_float() );
+		Assert::assertEquals( 653.00, $order2->total_value->get_float(), 'Order should be discounted by 17.3% ($136.00)' );
+	}
 }
