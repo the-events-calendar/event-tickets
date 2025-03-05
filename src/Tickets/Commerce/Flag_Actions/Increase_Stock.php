@@ -74,7 +74,7 @@ class Increase_Stock extends Flag_Action_Abstract {
 			$stock = $ticket->stock();
 
 			// Global stock handling is done in the `decrease_ticket_sales_by` method.
-			if ( 'global' !== $global_stock_mode ) {
+			if ( 'own' === $global_stock_mode ) {
 				$stock += $quantity;
 			}
 

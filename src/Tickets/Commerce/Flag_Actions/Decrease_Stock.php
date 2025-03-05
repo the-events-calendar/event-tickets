@@ -119,12 +119,14 @@ class Decrease_Stock extends Flag_Action_Abstract {
 			$global_stock_mode  = $ticket->global_stock_mode();
 			$is_shared_capacity = ! empty( $global_stock_mode ) && 'own' !== $global_stock_mode;
 
+			$test_stock = $ticket->stock();
+
 			tribe( Ticket::class )->increase_ticket_sales_by( $ticket->ID, $quantity, $is_shared_capacity, $global_stock );
 
 			$stock = $ticket->stock();
 
 			// Global stock is handled in the `increase_ticket_sales_by` method.
-			if ( 'global' !== $global_stock_mode ) {
+			if ( 'own' === $global_stock_mode ) {
 				$stock -= $quantity;
 			}
 
