@@ -12,10 +12,10 @@
 		<div class="tribe-tickets__rsvp-details-wrapper tribe-common-g-col">
 	<div class="tribe-tickets__rsvp-details">
 		<h3 class="tribe-tickets__rsvp-title tribe-common-h2 tribe-common-h4--min-medium">
-	Test RSVP ticket for 267</h3>
+	Test RSVP ticket for 13664</h3>
 
 		<div class="tribe-tickets__rsvp-description tribe-common-h6 tribe-common-h--alt tribe-common-b3--min-medium">
-	<p>Ticket RSVP ticket excerpt for 267</p>
+	<p>Ticket RSVP ticket excerpt for 13664</p>
 </div>
 
 		<div class="tribe-tickets__rsvp-attendance">
@@ -58,6 +58,7 @@
 
 </div>
 
+		
 	</div>
 
 	

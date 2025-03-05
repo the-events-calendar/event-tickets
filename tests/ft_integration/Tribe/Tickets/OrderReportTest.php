@@ -180,6 +180,23 @@ class OrderReportTest extends WPTestCase {
 				wp_update_post( [ 'ID' => $order_a->ID, 'menu_order' => 0 ] );
 				wp_update_post( [ 'ID' => $order_b->ID, 'menu_order' => 1 ] );
 
+				// Manually set the `post_date` of each order in sequence to ensure the order is consistent in the snapshot.
+				global $wpdb;
+				foreach (
+					[
+						$order_a->ID => '2022-01-01 00:00:00',
+						$order_b->ID => '2022-01-02 00:00:00',
+					] as $order_id => $post_date
+				) {
+					$wpdb->query(
+						$wpdb->prepare(
+							"UPDATE {$wpdb->posts} SET post_date = %s WHERE ID = %d",
+							$post_date,
+							$order_id
+						)
+					);
+				}
+
 				return [ $series_id, [ $series_id, $series_pass_id_a, $order_a->ID, $order_b->ID ] ];
 			}
 		];

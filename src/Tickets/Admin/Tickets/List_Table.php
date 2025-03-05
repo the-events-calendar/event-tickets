@@ -49,7 +49,7 @@ class List_Table extends WP_List_Table {
 	 *
 	 * @var string
 	 */
-	public static $default_status = 'active';
+	public static $default_status = 'all';
 
 	/**
 	 * Default Sort By.

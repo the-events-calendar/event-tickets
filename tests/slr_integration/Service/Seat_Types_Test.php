@@ -43,7 +43,7 @@ class Seat_Types_Test extends WPTestCase {
 	 * @after
 	 */
 	public function clean_up(): void {
-		Seat_Types_Table::truncate();
+		tribe( Seat_Types_Table::class )->empty_table();
 	}
 
 	public function test_update_from_service(): void {

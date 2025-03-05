@@ -155,7 +155,7 @@ class Seat_Types {
 		);
 
 		$updated = $updater->check_last_update( $force )
-							->update_from_service( fn() => Seat_Types_Table::truncate() )
+							->update_from_service( fn() => tribe( Seat_Types_Table::class )->empty_table() )
 							->store_fetched_data( [ $this, 'insert_rows_from_service' ] );
 
 		return $updated;

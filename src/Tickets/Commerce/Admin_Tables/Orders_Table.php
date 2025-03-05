@@ -965,7 +965,7 @@ class Orders_Table extends WP_Posts_List_Table {
 			data-freeform="1"
 			data-force-search="1"
 			data-searching-placeholder="<?php esc_attr_e( 'Searching...', 'event-tickets' ); ?>"
-			data-source="tec_tc_order_table_events"
+			data-source="tec_tickets_list_ticketables_ajax"
 			data-source-nonce="<?php echo esc_attr( wp_create_nonce( 'tribe_dropdown' ) ); ?>"
 			data-ajax-delay="400"
 			data-ajax-cache="1"
