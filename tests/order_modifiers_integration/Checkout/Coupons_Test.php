@@ -13,7 +13,6 @@ use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Coupons;
 use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
 use TEC\Tickets\Commerce\Traits\Type;
 use TEC\Tickets\Commerce\Utils\Value;
-use TEC\Tickets\Commerce\Values\Legacy_Value_Factory;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
@@ -23,6 +22,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\With_No_Object_Storage;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
+use Tribe\Tests\Tickets\Traits\Tribe_URL;
 
 class Coupons_Test extends Controller_Test_Case {
 
@@ -33,6 +33,7 @@ class Coupons_Test extends Controller_Test_Case {
 	use Series_Pass_Factory;
 	use SnapshotAssertions;
 	use Ticket_Maker;
+	use Tribe_URL;
 	use Type;
 	use With_No_Object_Storage;
 	use With_Tickets_Commerce;
