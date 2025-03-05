@@ -30,8 +30,13 @@ $apply_button_classes = [
 ];
 
 $input_container_classes = [
-	'tec-tickets__commerce-checkout-cart-coupons' => true,
-	'tribe-common-a11y-hidden'                    => ! empty( $coupon ),
+	'tec-tickets__commerce-checkout-cart-coupons',
+	'tribe-common-a11y-hidden',
+];
+
+$add_coupon_link_classes = [
+	'tec-tickets__commerce-checkout-cart-coupons__add-coupon-link' => true,
+	'tribe-common-a11y-hidden'                                     => ! empty( $coupon ),
 ];
 
 $applied_container_classes = [
@@ -41,6 +46,11 @@ $applied_container_classes = [
 
 ?>
 <div class="tec-tickets__commerce-checkout-coupons-wrapper tribe-tickets__form tribe-common-b2">
+	<p <?php tribe_classes( $add_coupon_link_classes ); ?>>
+		<button>
+			<?php esc_html_e( 'Add coupon code', 'event-tickets' ); ?>
+		</button>
+	</p>
 	<div <?php tribe_classes( $input_container_classes ); ?>>
 		<input
 			class="tec-tickets__commerce-checkout-cart-coupons__input"

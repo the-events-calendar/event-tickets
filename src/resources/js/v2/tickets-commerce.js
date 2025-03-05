@@ -55,6 +55,7 @@ tribe.tickets.commerce = {};
 		purchaserEmail: '.tribe-tickets__commerce-checkout-purchaser-info-form-field-email',
 
 		// Coupon related selectors.
+		couponAddLink: '.tec-tickets__commerce-checkout-cart-coupons__add-coupon-link',
 		couponAppliedDiscount: '.tec-tickets__commerce-checkout-cart-coupons__applied-discount',
 		couponAppliedLabel: '.tec-tickets__commerce-checkout-cart-coupons__applied-label',
 		couponAppliedSection: '.tec-tickets__commerce-checkout-cart-coupons__applied',
@@ -173,10 +174,9 @@ tribe.tickets.commerce = {};
 	obj.bindCheckoutEvents = function( $container ) {
 		$document.trigger( 'beforeSetup.tecTicketsCommerce', [ $container ] );
 
-		// Bind coupon apply event.
+		// Bind coupon events.
+		obj.bindAddCouponLink();
 		obj.bindCouponApply();
-
-		// Bind coupon remove event.
 		obj.bindCouponRemove();
 
 		// Bind container based events.
@@ -276,6 +276,14 @@ tribe.tickets.commerce = {};
 		).body.textContent;
 
 		$couponLabelElement.text( unescapedLabel );
+	};
+
+	obj.bindAddCouponLink = function() {
+		const hiddenName = obj.selectors.hiddenElement.className();
+		$document.on( 'click', `${ obj.selectors.couponAddLink } > button`, function() {
+			$( obj.selectors.couponAddLink ).addClass( hiddenName );
+			$( obj.selectors.couponInputContainer ).removeClass( hiddenName );
+		} );
 	};
 
 	obj.bindCouponApply = function() {
@@ -379,7 +387,6 @@ tribe.tickets.commerce = {};
 				return;
 			}
 
-			const $inputContainer = $( obj.selectors.couponInputContainer );
 			const couponValue = $( obj.selectors.couponInput ).val().trim();
 			const nonce = $( obj.selectors.nonce ).val();
 			const $errorMessage = $( obj.selectors.couponError );
@@ -416,7 +423,7 @@ tribe.tickets.commerce = {};
 				success( response ) {
 					if ( response.success ) {
 						// Show input and apply button again.
-						$inputContainer.removeClass( obj.selectors.hiddenElement.className() );
+						$( obj.selectors.couponAddLink ).removeClass( obj.selectors.hiddenElement.className() );
 						$( obj.selectors.couponInput ).val( '' );
 
 						// Hide the applied coupon section.
