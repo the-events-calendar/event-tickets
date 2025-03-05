@@ -32,6 +32,7 @@ if ( empty( $order ) ) {
 	$this->template( 'order/details/date' );
 	$this->template( 'order/details/email' );
 	$this->template( 'order/details/coupons' );
+	$this->template( 'order/details/fees' );
 	$this->template( 'order/details/total' );
 	$this->template( 'order/details/payment-method' );
 	?>
