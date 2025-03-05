@@ -17,9 +17,9 @@ use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Coupon_Table;
 use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Fee_Table;
 use TEC\Tickets\Commerce\Utils\Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Legacy_Value_Factory;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Percent_Value;
+use TEC\Tickets\Commerce\Values\Legacy_Value_Factory;
+use TEC\Tickets\Commerce\Values\Precision_Value;
+use TEC\Tickets\Commerce\Values\Percent_Value;
 
 /**
  * Context class that interacts with the strategy.

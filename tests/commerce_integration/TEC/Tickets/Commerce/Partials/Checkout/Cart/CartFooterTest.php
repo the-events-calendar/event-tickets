@@ -3,9 +3,12 @@
 namespace TEC\Tickets\Commerce\Partials\Checkout\Cart;
 
 use TEC\Tickets\Commerce\Utils\Value;
+use Tribe\Tests\Tickets\Traits\Tribe_URL;
 use Tribe\Tickets\Test\Testcases\TicketsCommerceSnapshotTestCase;
 
 class CartFooterTest extends TicketsCommerceSnapshotTestCase {
+
+	use Tribe_URL;
 
 	protected $partial_path = 'checkout/cart/footer';
 

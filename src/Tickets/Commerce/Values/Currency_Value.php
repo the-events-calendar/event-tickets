@@ -7,9 +7,7 @@
 
 declare( strict_types=1 );
 
-namespace TEC\Tickets\Commerce\Order_Modifiers\Values;
-
-use TEC\Tickets\Commerce\Order_Modifiers\Traits\Stringify;
+namespace TEC\Tickets\Commerce\Values;
 
 /**
  * Class Currency_Value
@@ -17,6 +15,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Traits\Stringify;
  * @since 5.18.0
  */
 class Currency_Value extends Base_Value {
+
 	/**
 	 * The currency symbol.
 	 *
@@ -32,6 +31,13 @@ class Currency_Value extends Base_Value {
 	protected $currency_symbol_position;
 
 	/**
+	 * The decimal separator.
+	 *
+	 * @var string
+	 */
+	protected $decimal_separator;
+
+	/**
 	 * The thousands separator.
 	 *
 	 * @var string
@@ -39,11 +45,11 @@ class Currency_Value extends Base_Value {
 	protected $thousands_separator;
 
 	/**
-	 * The decimal separator.
+	 * The value.
 	 *
-	 * @var string
+	 * @var Precision_Value
 	 */
-	protected $decimal_separator;
+	protected $value;
 
 	/**
 	 * Default values.
@@ -75,11 +81,11 @@ class Currency_Value extends Base_Value {
 		string $decimal_separator = '.',
 		string $currency_symbol_position = 'before'
 	) {
-		$this->value                    = $value;
 		$this->currency_symbol          = $currency_symbol;
 		$this->thousands_separator      = $thousands_separator;
 		$this->decimal_separator        = $decimal_separator;
 		$this->currency_symbol_position = $currency_symbol_position;
+		parent::__construct( $value );
 	}
 
 	/**
@@ -90,20 +96,29 @@ class Currency_Value extends Base_Value {
 	 * @return string The value.
 	 */
 	public function get(): string {
+		// If the value is negative, we need to remove the negative sign before formatting.
+		if ( $this->value->get() < 0 ) {
+			$value  = $this->value->invert_sign();
+			$prefix = '- ';
+		} else {
+			$value  = $this->value;
+			$prefix = '';
+		}
+
 		$formatted = number_format(
-			$this->value->get(),
-			$this->value->get_precision(),
+			$value->get(),
+			$value->get_precision(),
 			$this->decimal_separator,
 			$this->thousands_separator
 		);
 
 		switch ( $this->currency_symbol_position ) {
 			case 'after':
-				return "{$formatted}{$this->currency_symbol}";
+				return "{$prefix}{$formatted}{$this->currency_symbol}";
 
 			case 'before':
 			default:
-				return "{$this->currency_symbol}{$formatted}";
+				return "{$prefix}{$this->currency_symbol}{$formatted}";
 		}
 	}
 
@@ -124,19 +139,44 @@ class Currency_Value extends Base_Value {
 	 * Create a new instance of the class.
 	 *
 	 * @since 5.18.0
+	 * @since TBD Added currency_symbol, thousands_separator, decimal_separator, and currency_symbol_position params.
 	 *
-	 * @param Precision_Value $value The value to store.
+	 * @param Precision_Value $value                    The value to store.
+	 * @param ?string         $currency_symbol          The currency symbol. Will use the default if not provided.
+	 * @param ?string         $thousands_separator      The thousands separator. Will use the default if not provided.
+	 * @param ?string         $decimal_separator        The decimal separator. Will use the default if not provided.
+	 * @param ?string         $currency_symbol_position The currency symbol position. Will use the default if
+	 *                                                  not provided.
 	 *
 	 * @return Currency_Value The new instance.
 	 */
-	public static function create( Precision_Value $value ): self {
+	public static function create(
+		Precision_Value $value,
+		?string $currency_symbol = null,
+		?string $thousands_separator = null,
+		?string $decimal_separator = null,
+		?string $currency_symbol_position = null
+	): self {
 		return new self(
 			$value,
-			self::$defaults['currency_symbol'],
-			self::$defaults['thousands_separator'],
-			self::$defaults['decimal_separator'],
-			self::$defaults['currency_symbol_position']
+			$currency_symbol ?? self::$defaults['currency_symbol'],
+			$thousands_separator ?? self::$defaults['thousands_separator'],
+			$decimal_separator ?? self::$defaults['decimal_separator'],
+			$currency_symbol_position ?? self::$defaults['currency_symbol_position']
 		);
+	}
+
+	/**
+	 * Create a new instance of the class from a float.
+	 *
+	 * @since TBD
+	 *
+	 * @param float $value The value to store.
+	 *
+	 * @return Currency_Value The new instance.
+	 */
+	public static function create_from_float( float $value ): self {
+		return self::create( new Precision_Value( $value ) );
 	}
 
 	/**
@@ -249,16 +289,4 @@ class Currency_Value extends Base_Value {
 			$this->currency_symbol_position
 		);
 	}
-
-	/**
-	 * Validate that the value is valid.
-	 *
-	 * @since 5.18.0
-	 *
-	 * @param mixed $value The value to validate.
-	 *
-	 * @return void
-	 * @throws InvalidArgumentException When the value is not valid.
-	 */
-	protected function validate( $value ): void {}
 }

@@ -82,6 +82,10 @@ class Cart {
 	 * @return array The prepared data.
 	 */
 	public function handle_seat_selection( array $data ): array {
+		if ( ! array_key_exists( 'tickets', $data ) ) {
+			return $data;
+		}
+
 		foreach ( $data['tickets'] as $key => $ticket_data ) {
 			if ( ! isset( $ticket_data['seat_labels'] ) ) {
 				continue;

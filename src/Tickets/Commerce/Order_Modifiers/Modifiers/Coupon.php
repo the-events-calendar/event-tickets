@@ -7,13 +7,14 @@
  *
  * @since 5.18.0
  *
- * @package TEC\Tickets\Commerce\Order_Modifiers\Modifiers;
+ * @package TEC\Tickets\Commerce\Order_Modifiers\Modifiers
  */
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Modifiers;
 
 use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Coupon_Table;
+use TEC\Tickets\Commerce\Values\Precision_Value;
 use Tribe__Tickets__Admin__Views;
 
 /**
@@ -87,7 +88,6 @@ class Coupon extends Modifier_Abstract {
 			$modifier->id,
 			[
 				'meta_key'   => 'coupons_available',
-				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 				'meta_value' => tec_get_request_var( 'order_modifier_coupon_limit', '' ),
 			]
 		);
@@ -113,7 +113,6 @@ class Coupon extends Modifier_Abstract {
 			$modifier->id,
 			[
 				'meta_key'   => 'coupons_available',
-				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 				'meta_value' => tec_get_request_var( 'order_modifier_coupon_limit', '' ),
 			]
 		);
@@ -174,13 +173,15 @@ class Coupon extends Modifier_Abstract {
 	 */
 	public function map_context_to_template( array $context ): array {
 		$limit_value = $this->meta_repository->find_by_order_modifier_id_and_meta_key( $context['modifier_id'], 'coupons_available' )->meta_value ?? '';
+		$amount      = new Precision_Value( $context['raw_amount'] ?? 0 );
+
 		return [
-			'order_modifier_display_name'     => $context['display_name'] ?? '',
-			'order_modifier_slug'             => $context['slug'] ?? $this->generate_unique_slug(),
-			'order_modifier_sub_type'         => $context['sub_type'] ?? '',
-			'order_modifier_fee_amount_cents' => $this->convert_from_raw_amount( $context['raw_amount'] ?? 0 ),
-			'order_modifier_status'           => $context['status'] ?? '',
-			'order_modifier_coupon_limit'     => $limit_value ?? '',
+			'order_modifier_display_name' => $context['display_name'] ?? '',
+			'order_modifier_slug'         => $context['slug'] ?? $this->generate_unique_slug(),
+			'order_modifier_sub_type'     => $context['sub_type'] ?? '',
+			'order_modifier_amount'       => $amount,
+			'order_modifier_status'       => $context['status'] ?? '',
+			'order_modifier_coupon_limit' => $limit_value ?? '',
 		];
 	}
 
