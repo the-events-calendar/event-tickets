@@ -242,7 +242,7 @@ class Coupons extends Base_API {
 			}
 
 			// Store the previous total for use with the coupon calculation.
-			$original_total = Currency_Value::create_from_float( $cart->get_cart_total() );
+			$original_total = Currency_Value::create_from_float( $cart->get_cart_subtotal() );
 
 			// Add the coupon to the cart.
 			$coupon->add_to_cart( $cart );
