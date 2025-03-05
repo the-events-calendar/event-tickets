@@ -62,6 +62,7 @@ class Increase_Stock extends Flag_Action_Abstract {
 				continue;
 			}
 
+			$original_stock = $ticket->stock();
 
 			$global_stock = new \Tribe__Tickets__Global_Stock( $ticket->get_event_id() );
 
@@ -74,7 +75,7 @@ class Increase_Stock extends Flag_Action_Abstract {
 			$stock = $ticket->stock();
 
 			// Global stock handling is done in the `decrease_ticket_sales_by` method.
-			if ( 'own' === $global_stock_mode ) {
+			if ( $original_stock === $stock ) {
 				$stock += $quantity;
 			}
 

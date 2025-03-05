@@ -113,6 +113,7 @@ class Decrease_Stock extends Flag_Action_Abstract {
 				continue;
 			}
 
+			$original_stock = $ticket->stock();
 			$global_stock = new Global_Stock( $ticket->get_event_id() );
 
 			// Is ticket shared capacity?
@@ -124,7 +125,7 @@ class Decrease_Stock extends Flag_Action_Abstract {
 			$stock = $ticket->stock();
 
 			// Global stock is handled in the `increase_ticket_sales_by` method.
-			if ( 'own' === $global_stock_mode ) {
+			if ( $original_stock === $stock ) {
 				$stock -= $quantity;
 			}
 
