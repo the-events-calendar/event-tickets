@@ -9,6 +9,8 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Models;
 
+use TEC\Tickets\Commerce\Cart\Cart_Interface;
+use TEC\Tickets\Commerce\Traits\Type;
 use TEC\Tickets\Commerce\Values\Percent_Value;
 use TEC\Tickets\Commerce\Values\Precision_Value;
 
@@ -20,6 +22,8 @@ use TEC\Tickets\Commerce\Values\Precision_Value;
  * @property Percent_Value $raw_amount The raw amount.
  */
 class Coupon extends Order_Modifier {
+
+	use Type;
 
 	/**
 	 * The modifier type.
@@ -46,5 +50,34 @@ class Coupon extends Order_Modifier {
 		$discount   = $base_price->multiply( $this->attributes['raw_amount'] );
 
 		return -1 * $discount->get();
+	}
+
+	/**
+	 * Add the coupon to the cart.
+	 *
+	 * @since TBD
+	 *
+	 * @param Cart_Interface $cart     The cart repository.
+	 * @param int            $quantity The quantity.
+	 */
+	public function add_to_cart( Cart_Interface $cart, int $quantity = 1 ) {
+		$cart->upsert_item(
+			$this->get_unique_type_id( $this->id, 'coupon' ),
+			$quantity,
+			[ 'type' => 'coupon' ]
+		);
+	}
+
+	/**
+	 * Remove the coupon from the cart.
+	 *
+	 * @since TBD
+	 *
+	 * @param Cart_Interface $cart The cart repository.
+	 *
+	 * @return void
+	 */
+	public function remove_from_cart( Cart_Interface $cart ) {
+		$cart->remove_item( $this->get_unique_type_id( $this->id, 'coupon' ) );
 	}
 }

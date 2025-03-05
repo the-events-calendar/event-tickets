@@ -1,4 +1,5 @@
 <?php
+
 namespace Tribe\Tickets\Test\Commerce\TicketsCommerce;
 
 use TEC\Tickets\Commerce\Cart;
@@ -7,6 +8,7 @@ use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use Tribe\Tickets\Test\Commerce\Ticket_Maker as Ticket_Maker_Base;
+use Tribe__Repository__Usage_Error;
 use WP_Post;
 
 trait Order_Maker {
@@ -42,6 +44,24 @@ trait Order_Maker {
 			}
 		}
 
+		$order = $this->create_order_from_cart( $cart, $overrides );
+		$cart->clear_cart();
+
+		return $order;
+	}
+
+	/**
+	 * Create an order from a cart.
+	 *
+	 * Does NOT clear the cart afterwards.
+	 *
+	 * @param Cart  $cart      The cart to create the order from.
+	 * @param array $overrides An array of overrides for the purchaser.
+	 *
+	 * @return false|WP_Post The order post object or false if the order could not be created.
+	 * @throws Tribe__Repository__Usage_Error
+	 */
+	protected function create_order_from_cart( Cart $cart, array $overrides = [] ) {
 		$default_purchaser = [
 			'purchaser_user_id'    => 0,
 			'purchaser_full_name'  => 'Test Purchaser',
@@ -80,8 +100,6 @@ trait Order_Maker {
 		clean_post_cache( $order->ID );
 
 		remove_filter( 'tec_tickets_commerce_order_create_args', $feed_args_callback );
-
-		$cart->clear_cart();
 
 		return $order;
 	}

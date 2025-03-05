@@ -156,6 +156,11 @@ trait Coupons {
 		$available = $meta->find_by_order_modifier_id_and_meta_key( $coupon_id, 'coupons_available' );
 
 		// If we got null, the coupon is unlimited.
+		if ( null === $available ) {
+			return -1;
+		}
+
+		// If we got null, the coupon is unlimited.
 		if ( ! property_exists( $available, 'meta_value' ) || empty( $available->meta_value ) ) {
 			return -1;
 		}

@@ -71,6 +71,33 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	protected static string $order_modifier_type;
 
 	/**
+	 * Constructor.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array<string,mixed> $attributes Attributes.
+	 */
+	public function __construct( array $attributes = [] ) {
+		parent::__construct( $attributes );
+
+		// If we have a percent sub_type, we need to ensure the raw_amount is a Percent_Value.
+		if ( 'flat' === $this->sub_type ) {
+			return;
+		}
+
+		// If we don't have the raw amount set, nothing else to do.
+		if ( ! array_key_exists( 'raw_amount', $this->attributes ) ) {
+			return;
+		}
+
+		if ( $this->attributes['raw_amount'] instanceof Percent_Value ) {
+			return;
+		}
+
+		$this->setAttribute( 'raw_amount', new Percent_Value( $this->raw_amount ) );
+	}
+
+	/**
 	 * Finds a model by its ID.
 	 *
 	 * @since 5.18.0

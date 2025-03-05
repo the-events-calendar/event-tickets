@@ -17,6 +17,7 @@ use InvalidArgumentException;
  * @since 5.18.0
  */
 abstract class Base_Value implements Value_Interface {
+
 	/**
 	 * The value.
 	 *
@@ -59,5 +60,5 @@ abstract class Base_Value implements Value_Interface {
 	 * @return void
 	 * @throws InvalidArgumentException When the value is not valid.
 	 */
-	abstract protected function validate( $value ): void;
+	protected function validate( $value ): void {}
 }

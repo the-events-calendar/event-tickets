@@ -24,6 +24,7 @@ use Tribe\Tickets\Test\Traits\With_No_Object_Storage;
 use Tribe\Tickets\Test\Traits\With_Test_Orders;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Tickets\Traits\Tribe_URL;
 
 class Fees_Test extends Controller_Test_Case {
 
@@ -34,6 +35,7 @@ class Fees_Test extends Controller_Test_Case {
 	use Series_Pass_Factory;
 	use SnapshotAssertions;
 	use Ticket_Maker;
+	use Tribe_URL;
 	use With_No_Object_Storage;
 	use With_Test_Orders;
 	use With_Tickets_Commerce;

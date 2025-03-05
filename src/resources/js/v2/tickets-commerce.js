@@ -416,11 +416,13 @@ tribe.tickets.commerce = {};
 				success( response ) {
 					if ( response.success ) {
 						// Show input and apply button again.
-						$inputContainer.show();
+						$inputContainer.removeClass( obj.selectors.hiddenElement.className() );
 						$( obj.selectors.couponInput ).val( '' );
 
 						// Hide the applied coupon section.
-						$( obj.selectors.couponAppliedSection ).hide();
+						$( obj.selectors.couponAppliedSection ).addClass(
+							obj.selectors.hiddenElement.className(),
+						);
 						obj.updateTotalPrice( response.cart_amount );
 					} else {
 						$errorMessage
