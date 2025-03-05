@@ -117,7 +117,7 @@ class Coupons_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
-	public function it_should_calculate_fees_and_store_them_correctly_simple_math() {
+	public function it_should_calculate_coupons_simple_math() {
 		$post        = static::factory()->post->create( [ 'post_title' => 'The Coupon Event' ] );
 		$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
 		$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
