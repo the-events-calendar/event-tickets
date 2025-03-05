@@ -68,21 +68,7 @@ class Coupons_Test extends Controller_Test_Case {
 
 		yield 'apply coupon -> valid response' => [
 			function () use ( $coupon_15_percent ) {
-				// Create an event.
-				$event_id = self::factory()->post->create( [ 'post_title' => 'The Event' ] );
-
-				// Create a ticket.
-				$ticket = $this->create_tc_ticket( $event_id, 10 );
-
-				// Set up the cart with the ticket.
-				$commerce_cart = tribe( Cart::class );
-				$commerce_cart->set_cart_hash( 'fake-cart-hash' );
-
-				/** @var Abstract_Cart $cart */
-				$cart = $commerce_cart->get_repository();
-				$cart->upsert_item( $ticket, 1 );
-
-				$this->assertCount( 1, $cart->get_items_in_cart( false, 'all' ) );
+				$cart = $this->set_up_cart_with_ticket();
 				$this->assertCount( 0, $cart->get_items_in_cart( false, 'coupon' ) );
 
 				// Set up the fake payment intent update handler.
@@ -94,7 +80,7 @@ class Coupons_Test extends Controller_Test_Case {
 					'POST',
 					[
 						'coupon'            => $coupon_15_percent()->slug,
-						'cart_hash'         => 'fake-cart-hash',
+						'cart_hash'         => $cart->get_hash(),
 						'payment_intent_id' => 'fake-payment-intent-id',
 					],
 				];
@@ -205,5 +191,25 @@ class Coupons_Test extends Controller_Test_Case {
 		}
 
 		return rest_do_request( $request );
+	}
+
+	protected function set_up_cart_with_ticket() {
+		// Create an event.
+		$event_id = self::factory()->post->create( [ 'post_title' => 'The Event' ] );
+
+		// Create a ticket.
+		$ticket = $this->create_tc_ticket( $event_id, 10 );
+
+		// Set up the cart with the ticket.
+		$commerce_cart = tribe( Cart::class );
+		$commerce_cart->set_cart_hash( 'fake-cart-hash' );
+
+		/** @var Abstract_Cart $cart */
+		$cart = $commerce_cart->get_repository();
+		$cart->upsert_item( $ticket, 1 );
+
+		$this->assertCount( 1, $cart->get_items_in_cart( false, 'all' ) );
+
+		return $cart;
 	}
 }
