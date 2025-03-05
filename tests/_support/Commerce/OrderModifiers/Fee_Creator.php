@@ -8,13 +8,12 @@ use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Meta;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Relationships as Relationships_Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta as Meta_Repository;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship as Relationship_Repository;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Float_Value;
+use TEC\Tickets\Commerce\Values\Float_Value;
 use TEC\Common\StellarWP\Models\Contracts\Model;
-use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifier_Relationships as Relationships_Table;
-use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta as Meta_Table;
-use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifiers as Modifiers_Table;
 
 trait Fee_Creator {
+
+	use Custom_Tables;
 
 	protected static $fee_counter = 0;
 
@@ -28,20 +27,6 @@ trait Fee_Creator {
 	 */
 	public function reset_counter() {
 		self::$fee_counter = 0;
-	}
-
-	/**
-	 * Truncates the custom tables.
-	 *
-	 * This method truncates the custom tables used by the order modifiers.
-	 *
-	 * @before
-	 * @after
-	 */
-	public function truncate_custom_tables() {
-		$this->assertTrue( tribe( Relationships_Table::class )->truncate() );
-		$this->assertTrue( tribe( Meta_Table::class )->truncate() );
-		$this->assertTrue( tribe( Modifiers_Table::class )->truncate() );
 	}
 
 	/**
@@ -95,7 +80,7 @@ trait Fee_Creator {
 			$args['raw_amount'] = Float_Value::from_number( $args['raw_amount'] );
 		}
 
-		self::$fee_counter ++;
+		self::$fee_counter++;
 
 		$args = array_merge(
 			[
@@ -141,7 +126,7 @@ trait Fee_Creator {
 				[
 					'order_modifier_id' => $fee->id,
 					'meta_key'          => 'fee_applied_to',
-					'meta_value'        => $applied_to, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+					'meta_value'        => $applied_to,
 					'priority'          => 0,
 				]
 			)
@@ -180,5 +165,4 @@ trait Fee_Creator {
 		// Insert the relationship into the repository.
 		return tribe( Relationship_Repository::class )->insert( $relationship );
 	}
-
 }

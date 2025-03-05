@@ -155,7 +155,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 * @return int The total number of items.
 	 */
 	protected function setup_items( array $params, int $per_page ): int {
-		$this->items = $this->modifier->get_modifiers( $params );
+		$this->items = $this->get_items( $params );
 
 		// Get the total number of items.
 		if ( count( $this->items ) < $per_page && $this->current_page === 1 ) {
@@ -165,6 +165,19 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 		unset( $params['limit'], $params['page'] );
 
 		return count( $this->modifier->get_modifiers( $params ) );
+	}
+
+	/**
+	 * Get the modifier items.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $params The query parameters.
+	 *
+	 * @return array The items that were retrieved.
+	 */
+	protected function get_items( array $params ): array {
+		return $this->modifier->get_modifiers( $params );
 	}
 
 	/**

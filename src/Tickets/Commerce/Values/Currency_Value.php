@@ -7,9 +7,9 @@
 
 declare( strict_types=1 );
 
-namespace TEC\Tickets\Commerce\Order_Modifiers\Values;
+namespace TEC\Tickets\Commerce\Values;
 
-use TEC\Tickets\Commerce\Order_Modifiers\Traits\Stringify;
+use InvalidArgumentException;
 
 /**
  * Class Currency_Value
@@ -17,6 +17,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Traits\Stringify;
  * @since 5.18.0
  */
 class Currency_Value extends Base_Value {
+
 	/**
 	 * The currency symbol.
 	 *
@@ -137,6 +138,19 @@ class Currency_Value extends Base_Value {
 			self::$defaults['decimal_separator'],
 			self::$defaults['currency_symbol_position']
 		);
+	}
+
+	/**
+	 * Create a new instance of the class from a float.
+	 *
+	 * @since TBD
+	 *
+	 * @param float $value The value to store.
+	 *
+	 * @return Currency_Value The new instance.
+	 */
+	public static function create_from_float( float $value ): self {
+		return self::create( new Precision_Value( $value ) );
 	}
 
 	/**

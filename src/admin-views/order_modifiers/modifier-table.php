@@ -21,7 +21,7 @@ $form_classes = [
 
 ?>
 <div class="wrap">
-	<h1><?php echo esc_html__( 'Booking Fees', 'event-tickets' ); ?></h1>
+	<h1><?php echo esc_html__( 'Coupons &amp; Fees', 'event-tickets' ); ?></h1>
 	<form
 		id="event-tickets__order-modifiers-admin-form"
 		<?php tribe_classes( $form_classes ); ?>

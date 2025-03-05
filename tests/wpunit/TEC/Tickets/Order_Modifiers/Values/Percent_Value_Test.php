@@ -6,7 +6,8 @@ namespace TEC\Tickets\Tests\Unit\Order_Modifiers\Values;
 
 use Codeception\TestCase\WPTestCase;
 use InvalidArgumentException;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Percent_Value;
+use TEC\Tickets\Commerce\Values\Percent_Value as Percent;
+use TEC\Tickets\Commerce\Values\Precision_Value as PV;
 
 class Percent_Value_Test extends WPTestCase {
 
@@ -18,7 +19,7 @@ class Percent_Value_Test extends WPTestCase {
 		$this->expectException( InvalidArgumentException::class );
 		$this->expectExceptionMessage( $expected_message );
 
-		new Percent_Value( $raw_value );
+		new Percent( $raw_value );
 	}
 
 	/**
@@ -26,7 +27,7 @@ class Percent_Value_Test extends WPTestCase {
 	 * @dataProvider percent_data_provider
 	 */
 	public function it_should_get_percents_correctly( $raw_value, float $expected ) {
-		$value = new Percent_Value( $raw_value );
+		$value = new Percent( $raw_value );
 		$this->assertSame( $expected, $value->get_as_percent() );
 	}
 
@@ -35,8 +36,19 @@ class Percent_Value_Test extends WPTestCase {
 	 * @dataProvider decimal_data_provider
 	 */
 	public function it_should_get_decimals_correctly( $raw_value, float $expected ) {
-		$value = new Percent_Value( $raw_value );
+		$value = new Percent( $raw_value );
 		$this->assertSame( $expected, $value->get_as_decimal() );
+	}
+
+	/**
+	 * @test
+	 * @dataProvider multiplication_data_provider
+	 */
+	public function it_should_multiply_objects_correctly( $raw_value, PV $multiplier, $expected ) {
+		$value = new Percent( $raw_value );
+		$result = $multiplier->multiply( $value );
+
+		$this->assertSame( $expected, (string) $result );
 	}
 
 	// Data Providers
@@ -72,5 +84,25 @@ class Percent_Value_Test extends WPTestCase {
 		yield 'One hundred percent as decimal' => [ 100, 1.0 ];
 		yield 'Large percent as decimal' => [ 10000, 100.0 ];
 		yield 'Negative percent as decimal' => [ -50, -0.5 ];
+	}
+
+	public function multiplication_data_provider() {
+		$multiplier = new PV( 100 );
+
+		// Normal cases
+		yield '10 percent * 100' => [ 10, $multiplier, '10.00' ];
+		yield '5 percent * 100' => [ 5, $multiplier, '5.00' ];
+		yield 'Half percent * 100' => [ 0.5, $multiplier, '0.50' ];
+		yield 'Tiny percent * 100' => [ 0.05, $multiplier, '0.05' ];
+
+		// Edge cases
+		yield 'One hundred percent * 100' => [ 100, $multiplier, '100.00' ];
+		yield 'Large percent * 100' => [ 10000, $multiplier, '10000.00' ];
+		yield 'Negative percent * 100' => [ -50, $multiplier, '-50.00' ];
+
+		// Cases with a different multiplier.
+		yield '25 percent of 50' => [ 25, new PV( 50 ), '12.50' ];
+		yield '17 percent of 1000' => [ 17, new PV( 1000 ), '170.00' ];
+		yield '1.5 percent of 10' => [ 1.5, new PV( 10 ), '0.15' ];
 	}
 }
