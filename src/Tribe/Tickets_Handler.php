@@ -167,6 +167,16 @@ class Tribe__Tickets__Tickets_Handler {
 		remove_action( 'tec_tickets_commerce_increase_ticket_stock', [ $this, 'decrease_stock_of_shared_tickets' ] );
 	}
 
+	/**
+	 * Syncs stock decrease of shared tickets
+	 *
+	 * @since TBD
+	 *
+	 * @param Tribe__Tickets__Ticket_Object $ticket   The ticket post object.
+	 * @param int                           $quantity The quantity of tickets to decrease.
+	 *
+	 * @return void
+	 */
 	public function decrease_stock_of_shared_tickets( $ticket, int $quantity ): void {
 		if ( ! $quantity ) {
 			return;
@@ -190,7 +200,7 @@ class Tribe__Tickets__Tickets_Handler {
 			return;
 		}
 
-		$stock_diff  = absint( $quantity );
+		$stock_diff = absint( $quantity );
 
 		// Get all Tickets.
 		$other_tickets = $provider->get_tickets_ids( $parent_id );
