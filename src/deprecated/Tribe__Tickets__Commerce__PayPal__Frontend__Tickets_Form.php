@@ -1,9 +1,11 @@
 <?php
+_deprecated_file( __FILE__, 'TBD' );
 
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form
  *
  * @since 4.7
+ * @deprecated TBD
  */
 class Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form {
 
