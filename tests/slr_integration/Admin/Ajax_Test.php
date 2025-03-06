@@ -57,10 +57,10 @@ class Ajax_Test extends Controller_Test_Case {
 	 * @after
 	 */
 	public function truncate_tables(): void {
-		Maps::truncate();
-		Seat_Types_Table::truncate();
-		Layouts_Table::truncate();
-		Sessions::truncate();
+		tribe( Maps::class )->empty_table();
+		tribe( Seat_Types_Table::class )->empty_table();
+		tribe( Layouts_Table::class )->empty_table();
+		tribe( Sessions::class )->empty_table();
 	}
 
 	public function asset_data_provider() {
@@ -2613,10 +2613,10 @@ class Ajax_Test extends Controller_Test_Case {
 			)
 		);
 	}
-	
+
 	public function test_remove_event_layout_success() {
 		$this->make_controller()->register();
-		
+
 		Maps_Service::insert_rows_from_service(
 			[
 				[
@@ -2628,7 +2628,7 @@ class Ajax_Test extends Controller_Test_Case {
 			]
 		);
 		set_transient( Maps_Service::update_transient_name(), time() );
-		
+
 		Layouts::insert_rows_from_service(
 			[
 				[
@@ -2642,7 +2642,7 @@ class Ajax_Test extends Controller_Test_Case {
 			]
 		);
 		set_transient( Layouts::update_transient_name(), time() );
-		
+
 		Seat_Types_Table::insert_many(
 			[
 				[
@@ -2661,31 +2661,31 @@ class Ajax_Test extends Controller_Test_Case {
 				],
 			]
 		);
-		
+
 		set_transient( Seat_Types::update_transient_name(), time() );
 		$this->set_up_ajax_request_context();
 		$this->reset_wp_send_json_mocks();
-		
+
 		// Setup request body.
 		$this->set_oauth_token( 'auth-token' );
-		
+
 		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler   = tribe( 'tickets.handler' );
 		$capacity_meta_key = $tickets_handler->key_capacity;
-		
+
 		// Create event with associated layout and ticket and attendees.
 		$post_id = static::factory()->post->create();
-		
+
 		// Enable the global stock on the Event.
 		update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
-		
+
 		// set capacity as per layout 1.
 		update_post_meta( $post_id, $capacity_meta_key, 100 );
 		update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, 100 );
-		
+
 		update_post_meta( $post_id, Meta::META_KEY_ENABLED, true );
 		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-1' );
-		
+
 		$ticket_id_1 = $this->create_tc_ticket(
 			$post_id,
 			10,
@@ -2696,7 +2696,7 @@ class Ajax_Test extends Controller_Test_Case {
 				],
 			]
 		);
-		
+
 		$ticket_id_2 = $this->create_tc_ticket(
 			$post_id,
 			10,
@@ -2707,42 +2707,42 @@ class Ajax_Test extends Controller_Test_Case {
 				],
 			]
 		);
-		
+
 		update_post_meta( $ticket_id_1, Meta::META_KEY_ENABLED, true );
 		update_post_meta( $ticket_id_1, Meta::META_KEY_SEAT_TYPE, 'some-seat-type-1' );
 		update_post_meta( $ticket_id_1, Meta::META_KEY_LAYOUT_ID, 'some-layout-1' );
-		
-		
+
+
 		update_post_meta( $ticket_id_2, Meta::META_KEY_ENABLED, true );
 		update_post_meta( $ticket_id_2, Meta::META_KEY_SEAT_TYPE, 'some-seat-type-2' );
 		update_post_meta( $ticket_id_2, Meta::META_KEY_LAYOUT_ID, 'some-layout-1' );
-		
+
 		$ticket_1 = tribe( Module::class )->get_ticket( $post_id, $ticket_id_1 );
 		$ticket_2 = tribe( Module::class )->get_ticket( $post_id, $ticket_id_2 );
-		
+
 		$this->assertEquals( 70, $ticket_1->capacity() );
 		$this->assertEquals( 70, $ticket_1->stock() );
 		$this->assertEquals( 70, $ticket_1->available() );
 		$this->assertEquals( 70, $ticket_1->inventory() );
-		
+
 		$this->assertEquals( 30, $ticket_2->capacity() );
 		$this->assertEquals( 30, $ticket_2->stock() );
 		$this->assertEquals( 30, $ticket_2->available() );
 		$this->assertEquals( 30, $ticket_2->inventory() );
-		
+
 		$global_stock = new Global_Stock( $post_id );
-		
+
 		$this->assertTrue( $global_stock->is_enabled(), 'Global stock should be enabled.' );
 		$this->assertEquals( 100, tribe_get_event_capacity( $post_id ), 'Total Event capacity should be 100' );
 		$this->assertEquals( 100, $global_stock->get_stock_level(), 'Global stock should be 100' );
-		
+
 		$order = $this->create_order(
 			[
 				$ticket_id_1 => 5,
 				$ticket_id_2 => 5,
 			]
 		);
-		
+
 		// Total attendees by layout should be 10.
 		$this->assertEquals(
 			10,
@@ -2751,12 +2751,12 @@ class Ajax_Test extends Controller_Test_Case {
 				->where( 'meta_equals', Meta::META_KEY_LAYOUT_ID, 'some-layout-1' )
 				->count()
 		);
-		
+
 		$_REQUEST['postId'] = $post_id;
-		
+
 		$wp_send_json_success = $this->mock_wp_send_json_success();
 		do_action( 'wp_ajax_' . Ajax::ACTION_EVENT_LAYOUT_REMOVE );
-		
+
 		$success = $wp_send_json_success->was_called_times_with(
 			1,
 			[
@@ -2764,17 +2764,17 @@ class Ajax_Test extends Controller_Test_Case {
 				'updatedAttendees' => 10, // Number of Attendees updated.
 			]
 		);
-		
+
 		$this->assertTrue( $success );
-		
+
 		// Confirm no layout is set for the post.
 		$this->assertEquals( '', get_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, true ) );
 		$this->assertEquals( '', get_post_meta( $post_id, Meta::META_KEY_ENABLED, true ) );
-		
+
 		// Confirm the tickets have no layout set.
 		$this->assertEquals( '', get_post_meta( $ticket_id_1, Meta::META_KEY_LAYOUT_ID, true ) );
 		$this->assertEquals( '', get_post_meta( $ticket_id_2, Meta::META_KEY_LAYOUT_ID, true ) );
-	
+
 		// Total attendees should be 10.
 		$this->assertEquals(
 			10,
@@ -2782,7 +2782,7 @@ class Ajax_Test extends Controller_Test_Case {
 			->where( 'event', $post_id )
 			->count()
 		);
-		
+
 		// Total attendees by layout should be 0.
 		$this->assertEquals(
 			0,
@@ -2791,46 +2791,46 @@ class Ajax_Test extends Controller_Test_Case {
 			->where( 'meta_equals', Meta::META_KEY_LAYOUT_ID, 'some-layout-1' )
 			->count()
 		);
-		
+
 		// Refresh tickets.
 		$ticket_1 = tribe( Module::class )->get_ticket( $post_id, $ticket_id_1 );
 		$ticket_2 = tribe( Module::class )->get_ticket( $post_id, $ticket_id_2 );
-		
+
 		// Confirm the tickets have no layout set.
 		$this->assertEquals( 1, $ticket_1->capacity() );
 		$this->assertEquals( 1, $ticket_1->stock() );
 		$this->assertEquals( 1, $ticket_1->available() );
 		$this->assertEquals( 1, $ticket_1->inventory() );
-		
+
 		$this->assertEquals( 1, $ticket_2->capacity() );
 		$this->assertEquals( 1, $ticket_2->stock() );
 		$this->assertEquals( 1, $ticket_2->available() );
 		$this->assertEquals( 1, $ticket_2->inventory() );
-		
+
 		// Confirm the global stock is removed.
 		$this->assertFalse( $global_stock->is_enabled() );
 		$this->assertEquals( 0, $global_stock->get_stock_level() );
-		
+
 		// Check event capacity.
 		$this->assertEquals( 2, tribe_get_event_capacity( $post_id ) );
-		
+
 		$stock_data = \Tribe__Tickets__Tickets::get_ticket_counts( $post_id );
-		
+
 		$this->assertMatchesJsonSnapshot( wp_json_encode( $stock_data, JSON_SNAPSHOT_OPTIONS ) );
 	}
-	
+
 	public function test_remove_event_layout_fails() {
 		$this->make_controller()->register();
-		
+
 		$admin_id = $this->set_up_ajax_request_context();
 		$this->reset_wp_send_json_mocks();
-		
+
 		// Missing post ID.
 		unset( $_REQUEST['postId'] );
 		$wp_send_json_error = $this->mock_wp_send_json_error();
-		
+
 		do_action( 'wp_ajax_' . Ajax::ACTION_EVENT_LAYOUT_REMOVE );
-		
+
 		$this->assertTrue(
 			$wp_send_json_error->was_called_times_with(
 				1,
@@ -2841,14 +2841,14 @@ class Ajax_Test extends Controller_Test_Case {
 			)
 		);
 		$this->reset_wp_send_json_mocks();
-		
+
 		// User cannot edit post.
 		wp_set_current_user( self::factory()->user->create( [ 'role' => 'subscriber' ] ) );
 		$_REQUEST['postId'] = static::factory()->post->create();
 		$wp_send_json_error = $this->mock_wp_send_json_error();
-		
+
 		do_action( 'wp_ajax_' . Ajax::ACTION_EVENT_LAYOUT_REMOVE );
-		
+
 		$this->assertTrue(
 			$wp_send_json_error->was_called_times_with(
 				1,
@@ -2859,15 +2859,15 @@ class Ajax_Test extends Controller_Test_Case {
 			)
 		);
 		$this->reset_wp_send_json_mocks();
-		
+
 		wp_set_current_user( $admin_id );
-		
+
 		// No layout set for the post.
 		$_REQUEST['postId'] = static::factory()->post->create();
 		$wp_send_json_error = $this->mock_wp_send_json_error();
-		
+
 		do_action( 'wp_ajax_' . Ajax::ACTION_EVENT_LAYOUT_REMOVE );
-		
+
 		$this->assertTrue(
 			$wp_send_json_error->was_called_times_with(
 				1,
@@ -2877,7 +2877,7 @@ class Ajax_Test extends Controller_Test_Case {
 				403
 			)
 		);
-		
+
 		$this->reset_wp_send_json_mocks();
 	}
 }
