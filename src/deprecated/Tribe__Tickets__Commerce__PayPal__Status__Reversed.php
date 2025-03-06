@@ -1,5 +1,5 @@
 <?php
-_deprecated_file( __FILE__, 'TBD', 'Tribe__Tickets__Commerce__PayPal__Status__Reversed' );
+_deprecated_file( __FILE__, 'TBD' );
 
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Status__Reversed

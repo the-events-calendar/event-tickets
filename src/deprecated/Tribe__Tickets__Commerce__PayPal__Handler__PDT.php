@@ -1,5 +1,5 @@
 <?php
-_deprecated_file( __FILE__, 'TBD', 'Tribe__Tickets__Commerce__PayPal__Handler__PDT' );
+_deprecated_file( __FILE__, 'TBD' );
 
 /**
  * @deprecated TBD
