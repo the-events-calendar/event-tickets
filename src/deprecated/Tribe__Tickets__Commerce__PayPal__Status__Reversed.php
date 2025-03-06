@@ -1,13 +1,13 @@
 <?php
+_deprecated_file( __FILE__, 'TBD', 'Tribe__Tickets__Commerce__PayPal__Status__Reversed' );
 
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Status__Reversed
  *
  * @since 5.1.6
+ * @deprecated TBD
  *
  */
-
-
 class Tribe__Tickets__Commerce__PayPal__Status__Reversed extends Tribe__Tickets__Status__Abstract {
 
 	public $name          = 'Reversed';

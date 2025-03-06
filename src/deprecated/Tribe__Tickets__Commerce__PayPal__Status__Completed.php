@@ -1,10 +1,11 @@
 <?php
-
+_deprecated_file( __FILE__, 'TBD', 'Tribe__Tickets__Commerce__PayPal__Status__Completed' );
 
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Statuses__Complete
  *
  * @since 4.10
+ * @deprecated TBD
  *
  */
 class Tribe__Tickets__Commerce__PayPal__Status__Completed extends Tribe__Tickets__Status__Abstract {

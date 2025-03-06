@@ -1,9 +1,11 @@
 <?php
+_deprecated_file( __FILE__, 'TBD', 'Tribe__Tickets__Commerce__PayPal__Status__Refunded' );
 
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Status__Refunded
  *
  * @since 4.10
+ * @deprecated TBD
  *
  */
 
