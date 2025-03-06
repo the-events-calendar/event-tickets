@@ -7,6 +7,7 @@ _deprecated_file( __FILE__, 'TBD', 'Tribe__Tickets__Commerce__PayPal__Main' );
  * Logic for tribe commerce PayPal tickets
  *
  * @since 4.7
+ * @deprecated TBD
  */
 class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**

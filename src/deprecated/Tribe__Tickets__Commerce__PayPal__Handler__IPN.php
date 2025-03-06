@@ -1,5 +1,9 @@
 <?php
+_deprecated_file( __FILE__, 'TBD', 'Tribe__Tickets__Commerce__PayPal__Handler__IPN' );
 
+/**
+ * @deprecated TBD
+ */
 class Tribe__Tickets__Commerce__PayPal__Handler__IPN implements Tribe__Tickets__Commerce__PayPal__Handler__Interface {
 
 	/**

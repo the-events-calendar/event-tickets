@@ -9,8 +9,6 @@ use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker;
 use Tribe__Post_Transient as Post_Transient;
 use Tribe__Tickets__Commerce__PayPal__Gateway as Gateway;
-use Tribe__Tickets__Commerce__PayPal__Handler__PDT as PDT;
-use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Commerce__PayPal__Tickets_View as Tickets_View;
 use Tribe__Tickets__Data_API as Data_API;
