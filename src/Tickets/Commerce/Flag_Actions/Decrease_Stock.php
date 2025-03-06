@@ -13,6 +13,7 @@ use TEC\Tickets\Commerce\Traits\Is_Ticket;
 
 use Tribe__Utils__Array as Arr;
 use Tribe__Tickets__Global_Stock as Global_Stock;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
  * Class Decrease_Stock
@@ -128,6 +129,17 @@ class Decrease_Stock extends Flag_Action_Abstract {
 			if ( $original_stock === $stock ) {
 				$stock -= $quantity;
 			}
+
+			/**
+			 * Fires after the calculations of a ticket stock decrease are done but before are saved.
+			 *
+			 * @since TBD
+			 *
+			 * @param Ticket_Object $ticket          The ticket post object.
+			 * @param int           $stock           The new stock value.
+			 * @param int           $original_stock  The original stock value.
+			 */
+			do_action( 'tec_tickets_commerce_decrease_ticket_stock', $ticket, $stock, $original_stock );
 
 			update_post_meta( $ticket->ID, Ticket::$stock_meta_key, $stock );
 		}
