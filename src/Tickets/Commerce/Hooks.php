@@ -150,7 +150,7 @@ class Hooks extends Service_Provider {
 	 * Provides the results for the events dropdown in the Orders table.
 	 *
 	 * @since 5.13.0
-	 * @deprecated TBD
+	 * @deprecated 5.20.0
 	 *
 	 * @param array<string,mixed>  $results The results.
 	 * @param array<string,string> $search The search.
@@ -159,7 +159,7 @@ class Hooks extends Service_Provider {
 	 */
 	public function provide_events_results_to_ajax( $results, $search ) {
 		// phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped
-		_deprecated_function( __METHOD__, 'TBD', Tickets_Hooks::class . '::provide_events_results_to_ajax' );
+		_deprecated_function( __METHOD__, '5.20.0', Tickets_Hooks::class . '::provide_events_results_to_ajax' );
 		return tribe( Tickets_Hooks::class )->provide_events_results_to_ajax( $results, $search );
 	}
 
@@ -449,10 +449,10 @@ class Hooks extends Service_Provider {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @deprecated TBD
+	 * @deprecated 5.20.0
 	 */
 	public function load_commerce_module() {
-		_deprecated_function( __METHOD__, 'TBD' );
+		_deprecated_function( __METHOD__, '5.20.0' );
 	}
 
 	/**

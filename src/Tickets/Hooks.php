@@ -56,7 +56,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Provides the results for the events dropdown in the Orders table.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @param array<string,mixed>  $results The results.
 	 * @param array<string,string> $search The search.

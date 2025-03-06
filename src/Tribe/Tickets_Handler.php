@@ -170,7 +170,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Syncs stock decrease of shared tickets
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket   The ticket post object.
 	 * @param int                           $quantity The quantity of tickets to decrease.
@@ -746,7 +746,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 5.2.3
 	 *
-	 * @deprecated TBD
+	 * @deprecated 5.20.0
 	 *
 	 * @param $post_id  int                     Target post/Event ID.
 	 * @param $ticket   Tribe__Tickets__Tickets Ticket Object.

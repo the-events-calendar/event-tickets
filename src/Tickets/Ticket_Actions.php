@@ -2,7 +2,7 @@
 /**
  * The Ticket Actions controller.
  *
- * @since TBD
+ * @since 5.20.0
  * @package TEC\Tickets
  */
 
@@ -20,14 +20,14 @@ use TEC\Common\StellarWP\DB\DB;
 /**
  * Class Ticket_Actions.
  *
- * @since TBD
+ * @since 5.20.0
  * @package TEC\Tickets
  */
 class Ticket_Actions extends Controller_Contract {
 	/**
 	 * The action that will be fired when a ticket's start time is almost reached or reached or just reached briefly in the past.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @var string
 	 */
@@ -36,7 +36,7 @@ class Ticket_Actions extends Controller_Contract {
 	/**
 	 * The action that will be fired when a ticket's end time is almost reached or reached or just reached briefly in the past.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @var string
 	 */
@@ -45,7 +45,7 @@ class Ticket_Actions extends Controller_Contract {
 	/**
 	 * The action scheduler group for ticket actions.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @var string
 	 */
@@ -54,7 +54,7 @@ class Ticket_Actions extends Controller_Contract {
 	/**
 	 * The keys of interest for syncing ticket dates actions.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @var array
 	 */
@@ -63,7 +63,7 @@ class Ticket_Actions extends Controller_Contract {
 	/**
 	 * The RSVP IDs to sync.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @var array
 	 */
@@ -72,7 +72,7 @@ class Ticket_Actions extends Controller_Contract {
 	/**
 	 * The pre-update stock.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @var array
 	 */
@@ -100,7 +100,7 @@ class Ticket_Actions extends Controller_Contract {
 	/**
 	 * Registers the controller by subscribing to front-end hooks and binding implementations.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @return void
 	 */
@@ -117,7 +117,7 @@ class Ticket_Actions extends Controller_Contract {
 	/**
 	 * Un-registers the Controller by unsubscribing from WordPress hooks.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @return void
 	 */
@@ -134,7 +134,7 @@ class Ticket_Actions extends Controller_Contract {
 	/**
 	 * Fires the ticket end sales action.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 *
@@ -149,7 +149,7 @@ class Ticket_Actions extends Controller_Contract {
 	/**
 	 * Fires the ticket end sales action.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 *
@@ -163,7 +163,7 @@ class Ticket_Actions extends Controller_Contract {
 	/**
 	 * Syncs ticket dates actions.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @param int $ticket_id The ticket id.
 	 *
@@ -197,7 +197,7 @@ class Ticket_Actions extends Controller_Contract {
 		/**
 		 * Fires when the dates of a ticket are updated.
 		 *
-		 * @since TBD
+		 * @since 5.20.0
 		 *
 		 * @param int $ticket_id              The ticket ID.
 		 * @param int $ticket_start_timestamp The ticket start timestamp.
@@ -212,7 +212,7 @@ class Ticket_Actions extends Controller_Contract {
 	 *
 	 * The method will store for the request's lifecycle the stock value before the update.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @param int    $meta_id  The meta ID.
 	 * @param int    $ticket_id The ticket ID.
@@ -240,7 +240,7 @@ class Ticket_Actions extends Controller_Contract {
 	 *
 	 * If a change is found and the change is for a ticket, an event is fired.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @param int    $meta_id    The meta ID.
 	 * @param int    $ticket_id  The ticket ID.
@@ -276,7 +276,7 @@ class Ticket_Actions extends Controller_Contract {
 	 * Syncs the RSVP dates for all RSVPs that had an update to a related
 	 * meta during the request.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @return void
 	 */
@@ -284,7 +284,7 @@ class Ticket_Actions extends Controller_Contract {
 		/**
 		 * Filters the RSVP IDs to sync.
 		 *
-		 * @since TBD
+		 * @since 5.20.0
 		 *
 		 * @param array $rsvp_ids The RSVP IDs to sync.
 		 */
@@ -302,7 +302,7 @@ class Ticket_Actions extends Controller_Contract {
 	 *
 	 * If a change is found and the change is for a Ticket Object, the event is fired.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @param int  $ticket_id The ticket ID.
 	 * @param int  $new_stock The new stock value.
@@ -320,7 +320,7 @@ class Ticket_Actions extends Controller_Contract {
 			/**
 			 * Fires when the stock of a ticket is added.
 			 *
-			 * @since TBD
+			 * @since 5.20.0
 			 *
 			 * @param int $ticket_id The ticket id.
 			 * @param int $new_stock The new stock value that has just been set.
@@ -336,7 +336,7 @@ class Ticket_Actions extends Controller_Contract {
 		/**
 		 * Fires when the stock of a ticket changes.
 		 *
-		 * @since TBD
+		 * @since 5.20.0
 		 *
 		 * @param int $ticket_id The ticket id.
 		 * @param int $new_stock The new stock value.
@@ -348,7 +348,7 @@ class Ticket_Actions extends Controller_Contract {
 	/**
 	 * Fires the ticket date action.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @param int  $ticket_id The ticket ID.
 	 * @param bool $is_start  Whether the action is for the start or end date.
@@ -399,7 +399,7 @@ class Ticket_Actions extends Controller_Contract {
 			 * In your callbacks you should use the value of $its_happening to reliably determine if this event is going to be fired
 			 * again in the future or not. If $its_happening is false, the event will be fired again in the future otherwise it won't.
 			 *
-			 * @since TBD
+			 * @since 5.20.0
 			 *
 			 * @param int     $ticket_id     The ticket ID.
 			 * @param bool    $its_happening Whether the event is happening or not.
@@ -435,7 +435,7 @@ class Ticket_Actions extends Controller_Contract {
 	/**
 	 * Syncs the action scheduler date actions.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @param int $ticket_id         The ticket ID.
 	 * @param int $start_timestamp   The ticket start date.
@@ -467,7 +467,7 @@ class Ticket_Actions extends Controller_Contract {
 	/**
 	 * Schedules the ticket start action.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @param int $ticket_id       The ticket ID.
 	 * @param int $now             The current timestamp.
@@ -507,7 +507,7 @@ class Ticket_Actions extends Controller_Contract {
 	/**
 	 * Schedule the date end action.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @param int $ticket_id     The ticket ID.
 	 * @param int $now           The current timestamp.

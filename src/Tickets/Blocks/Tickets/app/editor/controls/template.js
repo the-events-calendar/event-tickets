@@ -48,7 +48,7 @@ RadioInput.propTypes = {
 /**
  * Get the block controls for the Tickets block.
  *
- * @since TBD
+ * @since 5.20.0
  *
  * @param {Object}   props                      The component properties.
  * @param {boolean}  props.disabled             Whether the controls should be disabled.
@@ -110,7 +110,7 @@ function getTicketsBlockControls({
 	/**
 	 * Filters the controls for the Tickets block.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @param {Array} controls The controls.
 	 */

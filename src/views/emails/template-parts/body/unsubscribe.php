@@ -9,9 +9,9 @@
  *
  * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
  *
- * @version TBD
+ * @version 5.20.0
  *
- * @since TBD
+ * @since 5.20.0
  *
  * @var Subscriber $subscriber The post object with properties.
  */

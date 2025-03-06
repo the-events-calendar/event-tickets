@@ -55,7 +55,7 @@ const TicketsContainer = ({
 	/**
 	 * Filters the components injected before the header of the Tickets block.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @return {Array} The injected components.
 	 */

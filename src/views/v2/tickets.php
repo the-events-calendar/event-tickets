@@ -10,9 +10,9 @@
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since   5.0.3
- * @since TBD Added waitlist entry point.
+ * @since 5.20.0 Added waitlist entry point.
  *
- * @version TBD
+ * @version 5.20.0
  *
  * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
  * @var Tribe__Tickets__Tickets            $provider                    [Global] The tickets provider class.

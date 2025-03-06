@@ -15,9 +15,9 @@
  *
  * @since 4.12.3
  * @since 5.7.0 Add list of attendees that confirmed RSVP.
- * @since TBD Added waitlist entry point.
+ * @since 5.20.0 Added waitlist entry point.
  *
- * @version TBD
+ * @version 5.20.0
  */
 
 ?>

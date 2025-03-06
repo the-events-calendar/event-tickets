@@ -1,0 +1,4 @@
+Significance: patch
+Type: tweak
+
+Added filters: `tec_tickets_rsvp_ids_to_sync`

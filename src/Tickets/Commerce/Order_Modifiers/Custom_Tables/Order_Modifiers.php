@@ -55,7 +55,7 @@ class Order_Modifiers extends Table {
 	/**
 	 * An array of all the columns in the table.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @var string[]
 	 */
