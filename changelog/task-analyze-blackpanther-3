@@ -1,0 +1,4 @@
+Significance: patch
+Type: tweak
+
+Changed views: `emails/confirmation`, `emails/spot-available`, `emails/template-parts/body/unsubscribe`, `tickets/my-tickets/user-details`, `v2/rsvp/content`, `v2/tickets`
