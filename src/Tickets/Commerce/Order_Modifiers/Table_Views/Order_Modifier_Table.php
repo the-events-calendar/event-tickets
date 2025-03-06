@@ -344,7 +344,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 
 		// Output the title and the "Add New" button.
 		printf(
-			'<h3>%s <a href="%s" class="page-title-action">%s</a></h3>',
+			'<h3 class="tec-tickets__modifier-page-title">%s <a href="%s" class="page-title-action">%s</a></h3>',
 			esc_html( $modifier ),
 			esc_url( $add_new_url ),
 			esc_html_x( 'Add New', 'Add New Order modifier link text', 'event-tickets' )
