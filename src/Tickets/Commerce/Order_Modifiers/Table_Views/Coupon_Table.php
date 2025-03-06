@@ -270,7 +270,8 @@ class Coupon_Table extends Order_Modifier_Table {
 		);
 
 		return sprintf(
-			'Create a coupon for a discount to be applied at checkout. Coupons can only be used with Tickets Commerce transactions. %s',
+			'<span class="tec-tickets__modifier-explain-text">%s %s</span>',
+			esc_html__( 'Create a coupon for a discount to be applied at checkout. Coupons can only be used with Tickets Commerce transactions.', 'event-tickets' ),
 			$learn_more_link
 		);
 	}

@@ -304,6 +304,9 @@ class Fee_Table extends Order_Modifier_Table {
 	 * @return string The explanation text with a clickable "Learn More" link.
 	 */
 	public function render_table_explain_text(): string {
-		return esc_html__( 'Fees will be applied to the cart at checkout. Fees can only be used with Tickets Commerce transactions.', 'event-tickets' );
+		return sprintf(
+			'<span class="tec-tickets__modifier-explain-text">%s</span>',
+			esc_html__( 'Fees will be applied to the cart at checkout. Fees can only be used with Tickets Commerce transactions.', 'event-tickets' )
+		);
 	}
 }
