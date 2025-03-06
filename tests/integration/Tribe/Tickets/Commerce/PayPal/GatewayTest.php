@@ -1,11 +1,7 @@
 <?php
 namespace Tribe\Tickets\Commerce\PayPal;
 
-use Prophecy\Argument;
 use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
-use Tribe__Tickets__Commerce__PayPal__Gateway as Gateway;
-use Tribe__Tickets__Commerce__PayPal__Handler__PDT as PDT;
-use Tribe__Tickets__Commerce__PayPal__Handler__IPN as IPN;
 use Tribe__Tickets__Tickets_View as Tickets_View;
 
 class GatewayTest extends \Codeception\TestCase\WPTestCase {

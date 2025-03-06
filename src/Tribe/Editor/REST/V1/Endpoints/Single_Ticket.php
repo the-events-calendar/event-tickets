@@ -104,11 +104,11 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 		if ( ! $post instanceof WP_Post ) {
 			return false;
 		}
-		
+
 		if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, $nonce_action ) ) {
 			return false;
 		}
-		
+
 		return current_user_can( 'edit_event_tickets' )
 				|| current_user_can( get_post_type_object( $post->post_type )->cap->edit_others_posts )
 				|| current_user_can( 'edit_post', $post->ID );
@@ -266,7 +266,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 			$body['price'] = '0';
 		}
 
-		$is_paypal_ticket = $provider instanceof Tribe__Tickets__Commerce__PayPal__Main || $provider instanceof \TEC\Tickets\Commerce\Module;
+		$is_paypal_ticket = $provider instanceof \TEC\Tickets\Commerce\Module;
 		$is_invalid_price = ! is_numeric( $body['price'] ) || (float) $body['price'] < 0;
 
 		if (

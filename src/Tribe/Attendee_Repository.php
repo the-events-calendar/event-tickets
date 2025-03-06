@@ -715,10 +715,6 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			// For RSVP tickets the order status is the going status
 			$statuses = [ 'yes', 'no' ];
 
-			if ( tribe( 'tickets.commerce.paypal' )->is_active() ) {
-				$statuses = array_merge( $statuses, $status_mgr->get_statuses_by_action( 'all', 'tpp' ) );
-			}
-
 			if (
 				class_exists( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' )
 				&& function_exists( 'wc_get_order_statuses' )

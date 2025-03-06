@@ -3185,8 +3185,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			/**
 			 * Not all classes have this static method.
-			 *
-			 * @see \Tribe__Tickets__Commerce__PayPal__Main::get_key() Does have this static method.
 			 */
 			if ( method_exists( $provider, 'get_key' ) ) {
 				$key = $provider::get_key( 'attendee_optout_key' );

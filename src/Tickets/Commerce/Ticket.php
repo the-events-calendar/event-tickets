@@ -454,20 +454,31 @@ class Ticket {
 		}
 
 		if ( $refresh || ! isset( $quantities[ Denied::SLUG ] ) ) {
-			$denied_orders = \Tribe__Tickets__Commerce__PayPal__Order::find_by(
+			$denied_orders = tec_tc_orders()->by_args(
 				[
-					'ticket_id'      => $ticket_id,
-					'post_status'    => Denied::SLUG,
-					'posts_per_page' => - 1,
-				],
-				[
-					'items',
+					'post_status' => Denied::SLUG,
+					'tickets'     => $ticket_id,
 				]
-			);
+			)->all();
 
 			$denied = 0;
 			foreach ( $denied_orders as $denied_order ) {
-				$denied += $denied_order->get_item_quantity( $ticket_id );
+				$ticket_quantities = array_map(
+					static function ( $item ) use ( $ticket_id ) {
+						if ( ! isset( $item['ticket_id'] ) ) {
+							return 0;
+						}
+
+						if ( (int) $item['ticket_id'] !== (int) $ticket_id ) {
+							return 0;
+						}
+
+						return (int) $item['quantity'];
+					},
+					$denied_order->items
+				);
+
+				$denied += array_sum( $ticket_quantities );
 			}
 
 			$quantities[ Denied::SLUG ] = max( 0, $denied );

@@ -7,7 +7,6 @@ namespace PHPSTORM_META {
 		'tickets.rsvp'                => \Tribe__Tickets__RSVP::class,
 		'tickets.commerce.cart'       => \Tribe__Tickets__Commerce__Cart::class,
 		'tickets.commerce.currency'   => \Tribe__Tickets__Commerce__Currency::class,
-		'tickets.commerce.paypal'     => \Tribe__Tickets__Commerce__PayPal__Main::class,
 		'tickets.redirections'        => \Tribe__Tickets__Redirections::class,
 		'tickets.theme-compatibility' => \Tribe__Tickets__Theme_Compatibility::class,
 		'tickets.main'                => \Tribe__Tickets__Main::class,
