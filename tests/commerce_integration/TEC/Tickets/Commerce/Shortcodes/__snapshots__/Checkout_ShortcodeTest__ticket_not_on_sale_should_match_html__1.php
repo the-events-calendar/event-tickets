@@ -78,44 +78,45 @@
 
 	
 <footer  class="tribe-tickets__commerce-checkout-cart-footer tribe-common-b1" >
-	<div class="tec-tickets__commerce-checkout-coupons-wrapper tribe-tickets__form tribe-common-b2">
-	<p  class="tec-tickets__commerce-checkout-cart-coupons__add-coupon-link" >
-		<button>
-			Add coupon code		</button>
-	</p>
-	<div  class="tec-tickets__commerce-checkout-cart-coupons tribe-common-a11y-hidden" >
+	<div class="tribe-common-b2 tribe-tickets__form tec-tickets-commerce-checkout-cart__coupons">
+	<button  class="tec-tickets-commerce-checkout-cart__coupons-add-link" >
+		Add coupon code	</button>
+	<div  class="tec-tickets-commerce-checkout-cart__coupons-input-container tribe-common-a11y-hidden" >
 		<input
-			class="tec-tickets__commerce-checkout-cart-coupons__input"
+			class="tec-tickets-commerce-checkout-cart__coupons-input-field"
 			type="text"
-			id="coupon_input"
+			id="tec-tickets-commerce-checkout-cart__coupon-input-field"
 			name="coupons"
-			aria-describedby="coupon_error"
+			aria-describedby="tec-tickets-commerce-checkout-cart__coupons-error-text"
 			aria-label="Enter coupon code"
 			placeholder="Enter coupon code"
 			value=""
 		/>
-		<button
-			id="coupon_apply"
-			 class="tec-tickets__commerce-checkout-cart-coupons__apply-button tribe-common-c-btn" 		>
+		<button  class="tribe-common-c-btn-border tec-tickets-commerce-checkout-cart__coupons-apply-button" >
 			Apply		</button>
 	</div>
-	<p id="coupon_error" class="tec-tickets__commerce-checkout-cart-coupons__error" style="display: none; color: red;" aria-live="polite" role="alert">
+	<p
+		id="tec-tickets-commerce-checkout-cart__coupons-error-text"
+		class="tec-tickets-commerce-checkout-cart__coupons-input-error tribe-common-a11y-hidden"
+		aria-live="polite"
+		role="alert"
+	>
 		Invalid coupon code	</p>
-	<div  class="tec-tickets__commerce-checkout-cart-coupons__applied tribe-common-a11y-hidden" >
+	<div  class="tec-tickets-commerce-checkout-cart__coupons-applied-container tribe-common-a11y-hidden" >
 		<ul>
 			<li>
-				<span class="tec-tickets__commerce-checkout-cart-coupons__applied-text tribe-tickets__commerce-checkout-cart-footer-quantity-label">
-					<span class="tec-tickets__commerce-checkout-cart-coupons__applied-label">
+				<span class="tribe-tickets__commerce-checkout-cart-footer-quantity-label tec-tickets-commerce-checkout-cart__coupons-applied-text">
+					<span class="tec-tickets-commerce-checkout-cart__coupons-applied-label">
 											</span>
-					<button class="tec-tickets__commerce-checkout-cart-coupons__remove-button" type="button">
+					<button class="tec-tickets-commerce-checkout-cart__coupons-remove-button" type="button">
 						<img
 							src="http://wordpress.test/wp-content/plugins/event-tickets/common/src/resources/images/icons/close.svg"
-							alt="Close icon"
+							alt="Icon to remove coupon"
 							title="Remove coupon"
 						>
 					</button>
 				</span>
-				<span class="tec-tickets__commerce-checkout-cart-coupons__applied-discount tribe-tickets__commerce-checkout-cart-footer-quantity-number">
+				<span class="tribe-tickets__commerce-checkout-cart-footer-quantity-number tec-tickets-commerce-checkout-cart__coupons-discount-amount">
 									</span>
 			</li>
 		</ul>
