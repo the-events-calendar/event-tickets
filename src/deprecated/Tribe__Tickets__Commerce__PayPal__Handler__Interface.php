@@ -1,4 +1,11 @@
 <?php
+_deprecated_file( __FILE__, 'TBD', 'Tribe__Tickets__Commerce__PayPal__Handler__Interface' );
+
+/**
+ * Interface Tribe__Tickets__Commerce__PayPal__Handler__Interface
+ *
+ * @deprecated TBD
+ */
 interface Tribe__Tickets__Commerce__PayPal__Handler__Interface {
 
 	/**

@@ -1,9 +1,11 @@
 <?php
+_deprecated_file( __FILE__, 'TBD', 'Tribe__Tickets__Commerce__PayPal__Handler__Invalid_PDT' );
 
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Handler__Invalid_PDT
  *
  * @since 4.7
+ * @deprecated TBD
  */
 class Tribe__Tickets__Commerce__PayPal__Handler__Invalid_PDT implements Tribe__Tickets__Commerce__PayPal__Handler__Interface {
 
