@@ -1,4 +1,0 @@
-Significance: patch
-Type: tweak
-
-Move method `provide_events_results_to_ajax` one level higher so that it loads regardless of Tickets Commerce. [ETP-976]

@@ -1,4 +1,0 @@
-Significance: patch
-Type: tweak
-
-Firing a hook `tec.tickets.seating.setUsingAssignedSeating` whenever the isUsingAssignedSeating property is set. [ETP-973]

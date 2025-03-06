@@ -1,4 +1,0 @@
-Significance: patch
-Type: tweak
-
-Introduced hooks that fire during RSVP creation/update/deletion while in the block editor.

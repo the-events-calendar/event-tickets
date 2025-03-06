@@ -1,4 +1,0 @@
-Significance: patch
-Type: tweak
-
-Added actions: `tec_tickets_commerce_decrease_ticket_stock`, `tec_tickets_commerce_increase_ticket_stock`, `tec_tickets_ticket_dates_updated`, `tec_tickets_ticket_stock_added`, `tec_tickets_ticket_stock_changed`, `tec_tickets_ticket_{$prefix}_date_trigger`, `tec_tickets_ticket_upserted`
