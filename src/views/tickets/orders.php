@@ -143,12 +143,6 @@ $is_event_page = is_singular( 'tribe_events' ) || is_singular( 'tribe_event_seri
 			<?php $template->template( 'tickets/orders-rsvp' ); ?>
 
 			<?php
-			if ( ! class_exists( 'Tribe__Tickets_Plus__Commerce__PayPal__Meta' ) && Tribe__Tickets__Commerce__PayPal__Main::class === $provider_class ) {
-				$template->template( 'tickets/orders-pp-tickets' );
-			}
-			?>
-
-			<?php
 			if ( ! class_exists( 'Tribe__Tickets_Plus__Meta' ) && \TEC\Tickets\Commerce\Module::class === $provider_class ) {
 				$template->template( 'tickets/orders-tc-tickets' );
 			}
