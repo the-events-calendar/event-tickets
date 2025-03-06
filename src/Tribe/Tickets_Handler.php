@@ -144,7 +144,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		// Stock actions.
 		add_action( 'event_tickets_attendee_ticket_deleted', [ $this, 'maybe_increase_global_stock_data' ], 10, 2 );
-		add_action( 'event_tickets_after_update_ticket', [ $this, 'trigger_shared_cap_sync' ], 30, 3 );
+		add_action( 'tec_tickets_commerce_increase_ticket_stock', [ $this, 'decrease_stock_of_shared_tickets' ], 10, 3 );
 	}
 
 	/**
@@ -164,6 +164,82 @@ class Tribe__Tickets__Tickets_Handler {
 
 		remove_filter( 'updated_postmeta', [ $this, 'update_meta_date' ], 15 );
 		remove_action( 'wp_insert_post', [ $this, 'update_start_date' ], 15 );
+		remove_action( 'tec_tickets_commerce_increase_ticket_stock', [ $this, 'decrease_stock_of_shared_tickets' ] );
+	}
+
+	/**
+	 * Syncs stock decrease of shared tickets
+	 *
+	 * @since 5.20.0
+	 *
+	 * @param Tribe__Tickets__Ticket_Object $ticket   The ticket post object.
+	 * @param int                           $quantity The quantity of tickets to decrease.
+	 *
+	 * @return void
+	 */
+	public function decrease_stock_of_shared_tickets( $ticket, int $quantity ): void {
+		if ( ! $quantity ) {
+			return;
+		}
+
+		if ( ! $this->has_shared_capacity( $ticket ) ) {
+			return;
+		}
+
+		$parent_id = $ticket->get_event_id();
+
+		if ( ! $parent_id ) {
+			// No event, no shared capacity...
+			return;
+		}
+
+		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $parent_id );
+
+		if ( ! $provider ) {
+			// If we don't have a provider, we can't update the shared stock.
+			return;
+		}
+
+		$stock_diff = absint( $quantity );
+
+		// Get all Tickets.
+		$other_tickets = $provider->get_tickets_ids( $parent_id );
+
+		foreach ( $other_tickets as $ticket_id ) {
+			if ( $ticket_id === $ticket->ID ) {
+				continue;
+			}
+
+			$other_ticket = Tribe__Tickets__Tickets::load_ticket_object( $ticket_id );
+
+			if ( ! $other_ticket instanceof Tribe__Tickets__Ticket_Object ) {
+				continue;
+			}
+
+			if ( ! $this->is_ticket_managing_stock( $other_ticket ) ) {
+				continue;
+			}
+
+			if ( ! $this->has_shared_capacity( $other_ticket ) ) {
+				continue;
+			}
+
+			$mode = get_post_meta( $ticket_id, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
+
+			$max_capacity = [ tribe_get_event_capacity( $parent_id ), $other_ticket->stock() + $stock_diff ];
+
+			if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode ) {
+				$max_capacity[] = $other_ticket->capacity();
+			}
+
+			$new_other_ticket_stock = min( $max_capacity );
+			update_post_meta( $other_ticket->ID, '_stock', $new_other_ticket_stock );
+
+			// Makes sure we mark it as in Stock for the status.
+			if ( 0 !== $new_other_ticket_stock ) {
+				update_post_meta( $other_ticket->ID, '_stock_status', 'instock' );
+			}
+		}
 	}
 
 	/**
@@ -670,6 +746,8 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 5.2.3
 	 *
+	 * @deprecated 5.20.0
+	 *
 	 * @param $post_id  int                     Target post/Event ID.
 	 * @param $ticket   Tribe__Tickets__Tickets Ticket Object.
 	 * @param $raw_data array                   Raw data from Ticket update.
@@ -677,19 +755,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return bool|WP_Error
 	 */
 	public function trigger_shared_cap_sync( $post_id, $ticket, $raw_data ) {
-		$ticket_capacity_data = Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', [] );
-		$ticket_capacity      = Tribe__Utils__Array::get( $ticket_capacity_data, 'event_capacity', false );
-		$capacity_mode        = Tribe__Utils__Array::get( $ticket_capacity_data, 'mode', false );
-
-		if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $capacity_mode ) {
-			return false;
-		}
-
-		if ( empty( $ticket_capacity_data ) || ! $ticket_capacity ) {
-			return new WP_Error( 'invalid_capacity', __( 'Invalid ticket capacity data.', 'event-tickets' ), $raw_data );
-		}
-
-		return $this->sync_shared_capacity( $post_id, $ticket_capacity );
+		return false;
 	}
 
 	/**
