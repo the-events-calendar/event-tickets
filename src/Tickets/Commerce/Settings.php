@@ -25,9 +25,6 @@ use WP_Admin_Bar;
 /**
  * The Tickets Commerce Global settings.
  *
- * This class will contain all of the settings handling and admin settings config implementation from
- * Tribe__Tickets__Commerce__PayPal__Main that is gateway-agnostic.
- *
  * @since   5.1.6
  * @package Tribe\Tickets\Commerce\Tickets_Commerce
  */

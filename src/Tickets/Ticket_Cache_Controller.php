@@ -130,19 +130,15 @@ class Ticket_Cache_Controller extends Controller {
 	 * Fetches the ticket IDs from a PayPal order.
 	 *
 	 * @since 5.6.4
+	 * @deprecated TBD
 	 *
 	 * @param int $order_id The ID of the PayPal order.
 	 *
 	 * @return array<int> The IDs of the tickets in the order.
 	 */
 	public function get_ticket_ids_from_paypal_order( int $order_id ): array {
-		$items = get_post_meta( $order_id, PayPal_Order::$meta_prefix . 'items', true );
-
-		if ( empty( $items ) || ! is_array( $items ) ) {
-			return [];
-		}
-
-		return array_column( $items, 'ticket_id' );
+		 _deprecated_function( __METHOD__, 'TBD' );
+		return [];
 	}
 
 	/**
@@ -165,12 +161,8 @@ class Ticket_Cache_Controller extends Controller {
 		$ticket_related_post_types = [
 			// A Commerce Attendee is created, updated or deleted.
 			Commerce_Attendee::POSTTYPE => Commerce_Attendee::$ticket_relation_meta_key,
-			// A PayPal attendee is created, updated or deleted.
-			PayPal::ATTENDEE_OBJECT     => PayPal::ATTENDEE_PRODUCT_KEY,
 			// An RSVP attendee is created, updated or deleted.
 			RSVP::ATTENDEE_OBJECT       => RSVP::ATTENDEE_PRODUCT_KEY,
-			// A PayPal order is created, updated or deleted.
-			PayPal::ORDER_OBJECT        => [ $this, 'get_ticket_ids_from_paypal_order' ],
 			// A Commerce Order is created, updated or deleted.
 			Commerce_Order::POSTTYPE    => Commerce_Order::$tickets_in_order_meta_key,
 		];
