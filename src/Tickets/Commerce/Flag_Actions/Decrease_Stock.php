@@ -135,11 +135,10 @@ class Decrease_Stock extends Flag_Action_Abstract {
 			 *
 			 * @since TBD
 			 *
-			 * @param Ticket_Object $ticket          The ticket post object.
-			 * @param int           $stock           The new stock value.
-			 * @param int           $original_stock  The original stock value.
+			 * @param Ticket_Object $ticket   The ticket post object.
+			 * @param int           $quantity The quantity to decrease.
 			 */
-			do_action( 'tec_tickets_commerce_decrease_ticket_stock', $ticket, $stock, $original_stock );
+			do_action( 'tec_tickets_commerce_decrease_ticket_stock', $ticket, $quantity );
 
 			update_post_meta( $ticket->ID, Ticket::$stock_meta_key, $stock );
 		}
