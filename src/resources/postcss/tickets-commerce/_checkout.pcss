@@ -163,7 +163,7 @@
 			.tec-tickets-price__regular-price {
 				color: var(--tec-color-text-secondary);
 				font-size: var(--tec-font-size-2);
-				font-weight: var(--tec-font-weight-normal);
+				font-weight: var(--tec-font-weight-regular);
 				text-decoration: line-through;
 			}
 
@@ -210,7 +210,7 @@
 	}
 
 	.tribe-tickets__commerce-checkout-cart-footer-order-modifier-fees,
-	.tec-tickets__commerce-checkout-cart-coupons {
+	.tec-tickets-commerce-checkout-cart__coupons-input-container {
 		text-align: right;
 	}
 
@@ -396,38 +396,48 @@
 		}
 	}
 
-	.tec-tickets__commerce-checkout-coupons-wrapper {
+	.tec-tickets-commerce-checkout-cart__coupons {
 		text-align: right;
 
-		.tec-tickets__commerce-checkout-cart-coupons__input {
+		.tec-tickets-commerce-checkout-cart__coupons-input-error {
+			color: red;
+		}
+
+		.tec-tickets-commerce-checkout-cart__coupons-add-link {
+			color: var(--tec-color-accent-primary);
+			font-size: var(--tec-font-size-2);
+			padding-bottom: var(--tec-spacer-1);
+		}
+
+		.tec-tickets-commerce-checkout-cart__coupons-input-field {
 			border: 1px solid var(--tec-color-border-default);
 			border-radius: var(--tec-border-radius-default);
 			padding: var(--tec-spacer-1) var(--tec-spacer-3);
 			width: auto;
 		}
 
-		.tec-tickets__commerce-checkout-cart-coupons__apply-button {
+		.tec-tickets-commerce-checkout-cart__coupons-apply-button {
 			border: 0;
 			border-radius: var(--tec-border-radius-default);
-			color: var(--tec-color-background);
-			padding: 6px var(--tec-spacer-2);
+			font-weight: var(--tec-font-weight-regular);
+			padding: 6px 0 6px var(--tec-spacer-2);
 			width: auto;
 
-			&:active,
 			&:focus,
 			&:hover {
-				padding: 6px var(--tec-spacer-2);
+				background-color: var(--tec-color-background);
+				color: var(--tec-color-button-primary);
 			}
 		}
 
-		.tec-tickets__commerce-checkout-cart-coupons__applied {
+		.tec-tickets-commerce-checkout-cart__coupons-applied-container {
 			font-size: var(--tec-font-size-3);
 
-			.tec-tickets__commerce-checkout-cart-coupons__applied-text {
+			.tec-tickets-commerce-checkout-cart__coupons-applied-text {
 				background-color: #eaecff;
-				border-radius: 6px;
+				border-radius: var(--tec-border-radius-default);
 				letter-spacing: 0.2px;
-				line-height: 26px;
+				line-height: var(--tec-line-height-3);
 				padding: var(--tec-spacer-1) var(--tec-spacer-2);
 			}
 
@@ -436,7 +446,7 @@
 			}
 		}
 
-		.tec-tickets__commerce-checkout-cart-coupons__remove-button {
+		.tec-tickets-commerce-checkout-cart__coupons-remove-button {
 			margin-left: var(--tec-spacer-2);
 
 			& img {
