@@ -480,7 +480,6 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.rsvp', new Tribe__Tickets__RSVP );
 		tribe_singleton( 'tickets.commerce.cart', 'Tribe__Tickets__Commerce__Cart' );
 		tribe_singleton( 'tickets.commerce.currency', 'Tribe__Tickets__Commerce__Currency', [ 'hook' ] );
-		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
 		tribe_singleton( 'tickets.redirections', 'Tribe__Tickets__Redirections' );
 
 		tribe_singleton( Tribe__Tickets__Theme_Compatibility::class, Tribe__Tickets__Theme_Compatibility::class );

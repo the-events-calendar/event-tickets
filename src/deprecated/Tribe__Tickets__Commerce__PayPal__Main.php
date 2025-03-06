@@ -1,4 +1,5 @@
 <?php
+_deprecated_file( __FILE__, 'TBD', 'Tribe__Tickets__Commerce__PayPal__Main' );
 
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Main
