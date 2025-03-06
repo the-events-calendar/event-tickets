@@ -144,8 +144,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		// Stock actions.
 		add_action( 'event_tickets_attendee_ticket_deleted', [ $this, 'maybe_increase_global_stock_data' ], 10, 2 );
-		add_action( 'tec_tickets_commerce_decrease_ticket_stock', [ $this, 'update_shared_ticket_stock' ], 10, 3 );
-		add_action( 'tec_tickets_commerce_increase_ticket_stock', [ $this, 'update_shared_ticket_stock' ], 10, 3 );
+		add_action( 'tec_tickets_commerce_increase_ticket_stock', [ $this, 'decrease_stock_of_shared_tickets' ], 10, 3 );
 	}
 
 	/**
@@ -165,12 +164,11 @@ class Tribe__Tickets__Tickets_Handler {
 
 		remove_filter( 'updated_postmeta', [ $this, 'update_meta_date' ], 15 );
 		remove_action( 'wp_insert_post', [ $this, 'update_start_date' ], 15 );
-		remove_action( 'tec_tickets_commerce_decrease_ticket_stock', [ $this, 'update_shared_ticket_stock' ] );
-		remove_action( 'tec_tickets_commerce_increase_ticket_stock', [ $this, 'update_shared_ticket_stock' ] );
+		remove_action( 'tec_tickets_commerce_increase_ticket_stock', [ $this, 'decrease_stock_of_shared_tickets' ] );
 	}
 
-	public function update_shared_ticket_stock( $ticket, int $new_stock, int $old_stock ): void {
-		if ( $new_stock === $old_stock ) {
+	public function decrease_stock_of_shared_tickets( $ticket, int $quantity ): void {
+		if ( ! $quantity ) {
 			return;
 		}
 
@@ -192,14 +190,7 @@ class Tribe__Tickets__Tickets_Handler {
 			return;
 		}
 
-		$stock_diff  = $new_stock - $old_stock;
-		$is_increase = $stock_diff > 0;
-
-		if ( ! $is_increase ) {
-			return;
-		}
-
-		$stock_diff  = absint( $stock_diff );
+		$stock_diff  = absint( $quantity );
 
 		// Get all Tickets.
 		$other_tickets = $provider->get_tickets_ids( $parent_id );
@@ -231,11 +222,11 @@ class Tribe__Tickets__Tickets_Handler {
 				$max_capacity[] = $other_ticket->capacity();
 			}
 
-			$new_stock = min( $max_capacity );
-			update_post_meta( $other_ticket->ID, '_stock', $new_stock );
+			$new_other_ticket_stock = min( $max_capacity );
+			update_post_meta( $other_ticket->ID, '_stock', $new_other_ticket_stock );
 
 			// Makes sure we mark it as in Stock for the status.
-			if ( 0 !== $new_stock ) {
+			if ( 0 !== $new_other_ticket_stock ) {
 				update_post_meta( $other_ticket->ID, '_stock_status', 'instock' );
 			}
 		}

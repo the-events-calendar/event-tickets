@@ -67,17 +67,14 @@ class Increase_Stock extends Flag_Action_Abstract {
 
 			$global_stock = new \Tribe__Tickets__Global_Stock( $ticket->get_event_id() );
 
-			// Is ticket shared capacity?
-			$global_stock_mode  = $ticket->global_stock_mode();
-			$is_shared_capacity = ! empty( $global_stock_mode ) && 'own' !== $global_stock_mode;
-
 			tribe( Ticket::class )->decrease_ticket_sales_by( $ticket->ID, $quantity, $ticket->global_stock_mode(), $global_stock );
 
 			$stock = $ticket->stock();
 
-			// Global stock handling is done in the `decrease_ticket_sales_by` method.
-			if ( $original_stock === $stock ) {
-				$stock += $quantity;
+			$stock_should_be = min( $original_stock + $quantity, $ticket->capacity() );
+
+			if ( $stock_should_be !== $stock ) {
+				$stock = $stock_should_be;
 			}
 
 			/**
@@ -85,11 +82,10 @@ class Increase_Stock extends Flag_Action_Abstract {
 			 *
 			 * @since TBD
 			 *
-			 * @param Ticket_Object $ticket          The ticket post object.
-			 * @param int           $stock           The new stock value.
-			 * @param int           $original_stock  The original stock value.
+			 * @param Ticket_Object $ticket   The ticket post object.
+			 * @param int           $quantity The quantity of tickets to increase.
 			 */
-			do_action( 'tec_tickets_commerce_increase_ticket_stock', $ticket, $stock, $original_stock );
+			do_action( 'tec_tickets_commerce_increase_ticket_stock', $ticket, $quantity );
 
 			update_post_meta( $ticket->ID, Ticket::$stock_meta_key, $stock );
 		}

@@ -124,10 +124,10 @@ class Decrease_Stock extends Flag_Action_Abstract {
 			tribe( Ticket::class )->increase_ticket_sales_by( $ticket->ID, $quantity, $is_shared_capacity, $global_stock );
 
 			$stock = $ticket->stock();
+			$stock_should_be = max( $original_stock - $quantity, 0 );
 
-			// Global stock is handled in the `increase_ticket_sales_by` method.
-			if ( $original_stock === $stock ) {
-				$stock -= $quantity;
+			if ( $stock_should_be !== $stock ) {
+				$stock = $stock_should_be;
 			}
 
 			/**
