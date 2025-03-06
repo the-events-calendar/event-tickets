@@ -97,16 +97,6 @@ class Tribe__Tickets__Privacy {
 			'callback'               => [ $this, 'rsvp_exporter' ],
 		];
 
-		$exporters[] = [
-			'exporter_friendly_name' => __( 'Event Tickets TribeCommerce Attendee', 'event-tickets' ),
-			'callback'               => [ $this, 'tpp_attendee_exporter' ],
-		];
-
-		$exporters[] = [
-			'exporter_friendly_name' => __( 'Event Tickets TribeCommerce Order', 'event-tickets' ),
-			'callback'               => [ $this, 'tpp_order_exporter' ],
-		];
-
 		return $exporters;
 	}
 
@@ -122,17 +112,7 @@ class Tribe__Tickets__Privacy {
 		$erasers[] = [
 			'eraser_friendly_name' => __( 'Event Tickets RSVP Attendee', 'event-tickets' ),
 			'callback'             => [ $this, 'rsvp_eraser' ],
-		];
-
-		$erasers[] = [
-			'eraser_friendly_name' => __( 'Event Tickets TribeCommerce Attendee', 'event-tickets' ),
-			'callback'             => [ $this, 'tpp_attendee_eraser' ],
-		];
-
-		$erasers[] = [
-			'eraser_friendly_name' => __( 'Event Tickets TribeCommerce Order', 'event-tickets' ),
-			'callback'             => [ $this, 'tpp_order_eraser' ],
-		];
+		]; // RSVP
 
 		return $erasers;
 	}
@@ -288,138 +268,47 @@ class Tribe__Tickets__Privacy {
 	/**
 	 * Eraser for Events Ticket Tribe Commerce Attendees
 	 *
+	 * @since 4.7.6
+	 * @deprecated TBD
+	 *
 	 * @param     $email_address
 	 * @param int $page
-	 * @since     4.7.6
 	 *
 	 * @return array
 	 */
 	public function tpp_attendee_eraser( $email_address, $page = 1 ) {
-		if ( empty( $email_address ) ) {
-			return [
-				'items_removed'  => false,
-				'items_retained' => false,
-				'messages'       => [],
-				'done'           => true,
-			];
-		}
-
-		$messages       = [];
-		$items_removed  = false;
-		$items_retained = false;
-
-		$number = 500; // Limit us to avoid timing out
-		$page   = (int) $page;
-
-		// Get the tribe commerce attendees/orders
-		$tpp_attendees = new WP_Query( [
-			'post_type'      => 'tribe_tpp_attendees',
-			'meta_key'       => '_tribe_tpp_email',
-			'meta_value'     => $email_address,
-			'page'           => $page,
-			'posts_per_page' => $number,
-			'orderby'        => 'ID',
-			'order'          => 'ASC',
-		] );
-
-		foreach ( $tpp_attendees->posts as $attendee ) {
-
-			$event_id = get_post_meta( $attendee->ID, Tribe__Tickets__RSVP::ATTENDEE_EVENT_KEY, true );
-			$deleted  = wp_delete_post( $attendee->ID );
-
-			if ( $deleted ) {
-				$items_removed = true;
-				if ( $event_id ) {
-					Tribe__Post_Transient::instance()->delete( $event_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
-				}
-			} else {
-				$items_retained = true;
-				$messages[]     = __( 'TribeCommerce attendee information was not removed. A database error may have occurred during deletion.', 'event-tickets' );
-			}
-		}
-
-		// Tell core if we have more elements to work on still
-		$done = count( $tpp_attendees->posts ) < $number;
-
 		return [
-			'items_removed'  => $items_removed,
-			'items_retained' => $items_retained,
-			'messages'       => $messages,
-			'done'           => $done,
+			'items_removed'  => false,
+			'items_retained' => false,
+			'messages'       => [],
+			'done'           => true,
 		];
 	}
 
 	/**
 	 * Eraser for Events Ticket Tribe Commerce Order
 	 *
+	 * @since 4.7.6
+	 * @deprecated TBD
+	 *
 	 * @param     $email_address
 	 * @param int $page
-	 * @since     4.7.6
 	 *
 	 * @return array
 	 */
 	public function tpp_order_eraser( $email_address, $page = 1 ) {
-		if ( empty( $email_address ) ) {
-			return [
-				'items_removed'  => false,
-				'items_retained' => false,
-				'messages'       => [],
-				'done'           => true,
-			];
-		}
-
-		$messages       = [];
-		$items_removed  = false;
-		$items_retained = false;
-
-		$number = 500; // Limit us to avoid timing out
-		$page   = (int) $page;
-
-		// Get the tribe commerce orders
-		$tpp_orders = new WP_Query( [
-			'post_type'      => 'tribe_tpp_orders',
-			'meta_key'       => '_tribe_paypal_payer_email',
-			'meta_value'     => $email_address,
-			'page'           => $page,
-			'posts_per_page' => $number,
-			'orderby'        => 'ID',
-			'order'          => 'ASC',
-		] );
-
-		foreach ( $tpp_orders->posts as $order ) {
-
-			// Get the order
-			$tpp_order = Tribe__Tickets__Commerce__PayPal__Order::from_order_id( $order->ID, true );
-			$event_id  = get_post_meta( $order->ID, '_tribe_paypal_post', true );
-
-			// Delete the order (with attendees, because the user who did the order inserted these values)
-			$deleted = $tpp_order->delete();
-
-			if ( $deleted ) {
-				$items_removed = true;
-				if ( $event_id ) {
-					// Delete the transient so the site admin see the list updated
-					Tribe__Post_Transient::instance()->delete( $event_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
-				}
-			} else {
-				$items_retained = true;
-				$messages[]     = __( 'TribeCommerce order information was not removed. A database error may have occurred during deletion.', 'event-tickets' );
-			}
-		}
-
-		// Tell core if we have more elements to work on still
-		$done = count( $tpp_orders->posts ) < $number;
-
 		return [
-			'items_removed'  => $items_removed,
-			'items_retained' => $items_retained,
-			'messages'       => $messages,
-			'done'           => $done,
+			'items_removed'  => false,
+			'items_retained' => false,
+			'messages'       => [],
+			'done'           => true,
 		];
 	}
 
 	/**
 	 * Exporter for Events Ticket Tribe Commerce Attendee
+	 *
+	 * @deprecated TBD
 	 *
 	 * @param     $email_address
 	 * @param int $page
@@ -428,82 +317,16 @@ class Tribe__Tickets__Privacy {
 	 * @return array
 	 */
 	public function tpp_attendee_exporter( $email_address, $page = 1 ) {
-		$number = 500; // Limit us to avoid timing out
-		$page   = (int) $page;
-
-		$export_items = [];
-
-		// Get the tribe commerce attendees/orders
-		$tpp_attendees = new WP_Query( [
-			'post_type'      => 'tribe_tpp_attendees',
-			'meta_key'       => '_tribe_tpp_email',
-			'meta_value'     => $email_address,
-			'page'           => $page,
-			'posts_per_page' => $number,
-			'orderby'        => 'ID',
-			'order'          => 'ASC',
-		] );
-
-		foreach ( $tpp_attendees->posts as $attendee ) {
-
-			$item_id = "tribe_tpp_attendees-{$attendee->ID}";
-
-			// Set our own group for Tribe Commerce attendees
-			$group_id = 'tpp-attendees';
-
-			// Set a label for the group
-			$group_label = __( 'Event Tickets TribeCommerce Attendee Data', 'event-tickets' );
-
-			$data = [];
-
-			$data[] = [
-				'name'  => __( 'Order Title', 'event-tickets' ),
-				'value' => get_the_title( $attendee->ID ),
-			];
-
-			$data[] = [
-				'name'  => __( 'Full Name', 'event-tickets' ),
-				'value' => get_post_meta( $attendee->ID, '_tribe_tpp_full_name', true ),
-			];
-
-			$data[] = [
-				'name'  => __( 'Email', 'event-tickets' ),
-				'value' => get_post_meta( $attendee->ID, '_tribe_tpp_email', true ),
-			];
-
-			$data[] = [
-				'name'  => __( 'Date', 'event-tickets' ),
-				'value' => $attendee->post_date,
-			];
-
-			/**
-			 * Allow filtering for the tribecommerce attendee data export.
-			 *
-			 * @since 4.7.6
-			 * @param array  $data      The data array to export
-			 * @param object $attendee  The attendee object
-			 */
-			$data = apply_filters( 'tribe_tickets_personal_data_export_tpp', $data, $attendee );
-
-			$export_items[] = [
-				'group_id'    => $group_id,
-				'group_label' => $group_label,
-				'item_id'     => $item_id,
-				'data'        => $data,
-			];
-		}
-
-		// Tell core if we have more comments to work on still
-		$done = count( $tpp_attendees->posts ) < $number;
-
 		return [
-			'data' => $export_items,
-			'done' => $done,
+			'data' => [],
+			'done' => 0,
 		];
 	}
 
 	/**
 	 * Exporter for Events Ticket Tribe Commerce Attendee
+	 *
+	 * @deprecated TBD
 	 *
 	 * @param     $email_address
 	 * @param int $page
@@ -512,89 +335,9 @@ class Tribe__Tickets__Privacy {
 	 * @return array
 	 */
 	public function tpp_order_exporter( $email_address, $page = 1 ) {
-		$number = 500; // Limit us to avoid timing out
-		$page   = (int) $page;
-
-		$export_items = [];
-
-		// Get the tribe commerce orders
-		$tpp_orders = new WP_Query( [
-			'post_type'      => 'tribe_tpp_orders',
-			'meta_key'       => '_tribe_paypal_payer_email',
-			'meta_value'     => $email_address,
-			'page'           => $page,
-			'posts_per_page' => $number,
-			'orderby'        => 'ID',
-			'order'          => 'ASC',
-		] );
-
-		foreach ( $tpp_orders->posts as $order ) {
-
-			$item_id = "order-{$order->ID}";
-
-			// Set our own group for Tribe Commerce orders
-			$group_id = 'tpp-orders';
-
-			// Set a label for the group
-			$group_label = __( 'Event Tickets TribeCommerce Order Data', 'event-tickets' );
-
-			$data = [];
-
-			$data[] = [
-				'name'  => __( 'Order Number', 'event-tickets' ),
-				'value' => $order->ID,
-			];
-
-			$data[] = [
-				'name'  => __( 'Order Total', 'event-tickets' ),
-				'value' => get_post_meta( $order->ID, '_tribe_paypal_mc_gross', true ),
-			];
-
-			$meta     = get_post_meta( $order->ID, '_paypal_hashed_meta', true );
-			$address  = isset( $meta['address_name'] ) ? $meta['address_name'] : '';
-			$address .= isset( $meta['address_street'] ) ? ', ' . $meta['address_street'] : '';
-			$address .= isset( $meta['address_city'] ) ? ', ' . $meta['address_city'] : '';
-			$address .= isset( $meta['address_zip'] ) ? ', ' . $meta['address_zip'] : '';
-			$address .= isset( $meta['address_country'] ) ? ', ' . $meta['address_country'] : '';
-
-			$data[] = [
-				'name'  => __( 'Billing Address', 'event-tickets' ),
-				'value' => $address,
-			];
-
-			$data[] = [
-				'name'  => __( 'Email', 'event-tickets' ),
-				'value' => get_post_meta( $order->ID, '_tribe_paypal_payer_email', true ),
-			];
-
-			$data[] = [
-				'name'  => __( 'Date', 'event-tickets' ),
-				'value' => get_post_meta( $order->ID, '_tribe_paypal_payment_date', true ),
-			];
-
-			/**
-			 * Allow filtering for the tribecommerce order data export.
-			 *
-			 * @since 4.7.6
-			 * @param array  $data   The data array to export
-			 * @param object $order  The order object
-			 */
-			$data = apply_filters( 'tribe_tickets_personal_data_export_tpp_order', $data, $order );
-
-			$export_items[] = [
-				'group_id'    => $group_id,
-				'group_label' => $group_label,
-				'item_id'     => $item_id,
-				'data'        => $data,
-			];
-		}
-
-		// Tell core if we have more orders to work on still
-		$done = count( $tpp_orders->posts ) < $number;
-
 		return [
-			'data' => $export_items,
-			'done' => $done,
+			'data' => [],
+			'done' => 0,
 		];
 	}
 

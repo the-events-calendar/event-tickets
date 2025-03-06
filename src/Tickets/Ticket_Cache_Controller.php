@@ -13,8 +13,6 @@ use TEC\Common\Contracts\Provider\Controller;
 use TEC\Tickets\Commerce\Attendee as Commerce_Attendee;
 use TEC\Tickets\Commerce\Order as Commerce_Order;
 use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
-use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
-use Tribe__Tickets__Commerce__PayPal__Order as PayPal_Order;
 use Tribe__Tickets__RSVP as RSVP;
 use Tribe__Tickets__Ticket_Object as Ticket;
 use WP_Post;
