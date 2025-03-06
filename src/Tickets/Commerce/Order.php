@@ -1318,7 +1318,7 @@ class Order extends Abstract_Order {
 			'tec_tickets_commerce_async_webhook_process',
 			[
 				'order_id' => $order_id,
-				'try' => 0
+				'try'      => 0,
 			],
 			'tec-tickets-commerce-stripe-webhooks'
 		);
@@ -1362,7 +1362,7 @@ class Order extends Abstract_Order {
 			'tec_tickets_commerce_async_webhook_process',
 			[
 				'order_id' => $order_id,
-				'try' => 0,
+				'try'      => 0,
 			],
 			'tec-tickets-commerce-stripe-webhooks'
 		);
