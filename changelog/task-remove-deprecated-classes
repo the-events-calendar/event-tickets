@@ -1,0 +1,4 @@
+Significance: major
+Type: tweak
+
+Removed the following classes that were previously deprecated: `Tribe__Events__Tickets__Attendees_Table`, `Tribe__Events__Tickets__Metabox`, `Tribe__Events__Tickets__Ticket_Object`, `Tribe__Events__Tickets__Tickets_Pro`, `Tribe__Tickets__Cache__Abstract_Cache`, `Tribe__Tickets__Cache__Central`, `Tribe__Tickets__Cache__Cache_Interface`, `Tribe__Tickets__Cache__Transient_Cache`, `Tribe__Tickets__Google_Event_Data`, `Tribe__Tickets__Integrations__Freemius`, `Tribe__Tickets__Integrations__Manager`, `TribeEventsTicketObject`, `TribeEventsTickets`, `TribeEventsTicketsAttendeesTable`, `TribeEventsTicketsMetabox`, `TribeEventsTicketsPro`
