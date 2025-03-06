@@ -32,7 +32,7 @@ class Block extends Abstract_Block {
 	/**
 	 * The slug of the editor script.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @var string
 	 */
@@ -41,7 +41,7 @@ class Block extends Abstract_Block {
 	/**
 	 * The slug of the editor style.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @var string
 	 */
@@ -50,7 +50,7 @@ class Block extends Abstract_Block {
 	/**
 	 * The slug of the frontend script.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @var string
 	 */
@@ -388,7 +388,7 @@ class Block extends Abstract_Block {
 	 * Registers the editor scripts.
 	 *
 	 * @since 5.8.0
-	 * @since TBD - Changed from WP methods to StellarWP/assets.
+	 * @since 5.20.0 - Changed from WP methods to StellarWP/assets.
 	 *
 	 * @return void
 	 */

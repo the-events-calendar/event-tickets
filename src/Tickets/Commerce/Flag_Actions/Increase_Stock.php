@@ -80,7 +80,7 @@ class Increase_Stock extends Flag_Action_Abstract {
 			/**
 			 * Fires after the calculations of a ticket stock increase are done but before are saved.
 			 *
-			 * @since TBD
+			 * @since 5.20.0
 			 *
 			 * @param Ticket_Object $ticket   The ticket post object.
 			 * @param int           $quantity The quantity of tickets to increase.

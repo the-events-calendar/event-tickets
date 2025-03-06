@@ -58,7 +58,7 @@ class Order_Modifiers_Meta extends Table {
 	/**
 	 * An array of all the columns in the table.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 *
 	 * @var string[]
 	 */

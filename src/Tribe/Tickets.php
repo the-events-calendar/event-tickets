@@ -4109,7 +4109,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Fires once a ticket's data has been saved.
 			 *
-			 * @since TBD
+			 * @since 5.20.0
 			 *
 			 * @param int    $ticket_id The ticket id that was just added.
 			 * @param int    $post_id   The ticket parent post ID.

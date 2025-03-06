@@ -10,9 +10,9 @@
  * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
  * If you are looking for Event related templates, see in The Events Calendar plugin.
  *
- * @version TBD
+ * @version 5.20.0
  *
- * @since TBD
+ * @since 5.20.0
  *
  * @var Template   $this               Current template object.
  * @var Subscribed $email              The email object.

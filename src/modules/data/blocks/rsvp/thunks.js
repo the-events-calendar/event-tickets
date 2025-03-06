@@ -90,7 +90,7 @@ const createOrUpdateRSVP = ( method ) => ( payload ) => ( dispatch ) => {
 	/**
 	 * Fires after an RSVP is created or updated.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 * @param {Object} payload The RSVP payload.
 	 * @param {boolean} isCreate Whether the RSVP was created or not.
 	 */
@@ -115,7 +115,7 @@ export const deleteRSVP = ( id ) => ( dispatch ) => {
 	/**
 	 * Fires after an RSVP is deleted.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 * @param {number} id The RSVP ID.
 	 */
 	doAction( 'tec.tickets.blocks.rsvp.deleted', id );

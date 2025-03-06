@@ -27,7 +27,7 @@ import './style.pcss';
 /**
  * Get the block controls for the RSVP block.
  *
- * @since TBD
+ * @since 5.20.0
  * @return {Array} The block controls.
  */
 function getRSVPBlockControls() {
@@ -36,7 +36,7 @@ function getRSVPBlockControls() {
 	/**
 	 * Filters the RSVP block controls.
 	 *
-	 * @since TBD
+	 * @since 5.20.0
 	 * @param {Array} controls The existing controls.
 	 */
 	return applyFilters( 'tec.tickets.blocks.RSVP.Controls', controls );
@@ -45,7 +45,7 @@ function getRSVPBlockControls() {
 /**
  * The RSVP block controls.
  *
- * @since TBD
+ * @since 5.20.0
  * @return {Node} The RSVP block controls.
  */
 const RSVPControls = () => {
@@ -119,7 +119,7 @@ const RSVP = ( {
 		/**
 		 * Filters the components injected before the header of the RSVP block.
 		 *
-		 * @since TBD
+		 * @since 5.20.0
 		 * @return {Array} The injected components.
 		 */
 		const injectedComponentsTicketsBeforeHeader = applyFilters(

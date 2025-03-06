@@ -23,7 +23,7 @@ const store = createReduxStore(storeName, {
 				/**
 				 * Fires every time the isUsingAssignedSeating state property is changed.
 				 *
-				 * @since TBD
+				 * @since 5.20.0
 				 *
 				 * @param {boolean} isUsingAssignedSeating Whether the event is using assigned seating
 				 */
