@@ -314,6 +314,7 @@ tribe.tickets.commerce = {};
 			const hiddenName = obj.selectors.hiddenElement.className();
 			const $inputContainer = $( obj.selectors.couponInputContainer );
 			const nonce = $( obj.selectors.nonce ).val();
+			const intentId = window.tecTicketsCommerceGatewayStripeCheckout.paymentIntentData.id || '';
 
 			// Hide the error message initially.
 			$errorMessage.addClass( hiddenName );
@@ -335,7 +336,7 @@ tribe.tickets.commerce = {};
 			const requestData = {
 				coupon: couponValue,
 				nonce: nonce,
-				payment_intent_id: window.tecTicketsCommerceGatewayStripeCheckout.paymentIntentData.id || '',
+				payment_intent_id: intentId,
 				purchaser_data: obj.getPurchaserData( $( obj.selectors.purchaserFormContainer ) ),
 				cart_hash: cartHash[ 1 ],
 			};
