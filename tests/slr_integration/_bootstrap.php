@@ -27,13 +27,13 @@ tribe_update_option( 'ticket-enabled-post-types', array_values( array_unique( $t
 tribe()->get( \TEC\Tickets\Seating\Service\Service::class );
 
 tribe()->get( Maps::class )->update();
-tribe()->get( Maps::class )->truncate();
+tribe()->get( Maps::class )->empty_table();
 tribe()->get( Layouts::class )->update();
-tribe()->get( Layouts::class )->truncate();
+tribe()->get( Layouts::class )->empty_table();
 tribe()->get( Seat_Types::class )->update();
-tribe()->get( Seat_Types::class )->truncate();
+tribe()->get( Seat_Types::class )->empty_table();
 tribe()->get( Sessions::class )->update();
-tribe()->get( Sessions::class )->truncate();
+tribe()->get( Sessions::class )->empty_table();
 
 define( 'JSON_SNAPSHOT_OPTIONS', JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
 
