@@ -938,7 +938,7 @@ class Hooks extends Service_Provider {
 
 
 	/**
-	 * Modify the cart contents for the Rest call around TTickets Commerce cart.
+	 * Modify the cart contents for the Rest call around Tickets Commerce cart.
 	 *
 	 * @since 5.2.0
 	 *
