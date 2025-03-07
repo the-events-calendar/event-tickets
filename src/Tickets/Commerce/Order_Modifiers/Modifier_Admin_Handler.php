@@ -16,6 +16,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
+use TEC\Tickets\Commerce\Utils\Currency;
 use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
@@ -145,6 +146,30 @@ class Modifier_Admin_Handler extends Controller_Contract {
 				function () {
 					return [
 						'modifier' => $this->get_modifier_type_from_request(),
+					];
+				}
+			)
+			->register();
+
+		Asset::add(
+			'tec-tickets-order-modifiers-amount-field-edit-js',
+			'admin/order-modifiers/amount-field.js',
+			Tickets_Plugin::VERSION,
+		)
+			->add_to_group_path( 'et-core' )
+			->set_condition( fn() => $this->is_on_page() )
+			->set_dependencies( 'jquery', 'tribe-validation' )
+			->enqueue_on( 'admin_enqueue_scripts' )
+			->add_to_group( 'tec-tickets-order-modifiers' )
+			->add_localize_script(
+				'etOrderModifiersAmountField',
+				function () {
+					$code = Currency::get_currency_code();
+					return [
+						'currencySymbol'   => Currency::get_currency_symbol( $code ),
+						'decimalSeparator' => Currency::get_currency_separator_decimal( $code ),
+						'placement'        => Currency::get_currency_symbol_position( $code ),
+						'precision'        => Currency::get_currency_precision( $code ),
 					];
 				}
 			)
