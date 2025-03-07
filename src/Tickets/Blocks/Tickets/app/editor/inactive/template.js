@@ -8,6 +8,7 @@ import React from 'react';
  * Wordpress dependencies
  */
 import { __, _x, sprintf } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -126,11 +127,24 @@ const Inactive = ({
 	postTypeLabel = 'post',
 	showWarning = false,
 }) => {
+	/**
+	 * Filters the components injected before the inactive header of the Tickets block.
+	 *
+	 * @since 5.20.0
+	 *
+	 * @return {Array} The injected components.
+	 */
+	const injectedComponentsTicketsBeforeHeader = applyFilters(
+		'tec.tickets.blocks.Tickets.ComponentsBeforeInactiveHeader',
+		[]
+	);
+
 	return (
 		<Card
 			className="tribe-editor__card-no-bottom-border"
 			header={TICKET_LABELS.ticket.plural}
 		>
+			{ injectedComponentsTicketsBeforeHeader }
 			<div className="tickets-description">
 				{getInactiveTicketsMessage({
 					Warning,

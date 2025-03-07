@@ -13,13 +13,18 @@ use WP_Post;
 use Generator;
 use Closure;
 use TEC\Tickets\Commerce\Status\Pending;
+use TEC\Tickets\Commerce\Status\Approved;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Status\Action_Required;
 use TEC\Tickets\Commerce\Status\Created;
+use TEC\Tickets\Commerce\Status\Refunded;
 use TEC\Tickets\Commerce\Status\Unsupported;
 use Tribe\Tests\Traits\With_Clock_Mock;
 use Tribe__Date_Utils as Dates;
+use Tribe__Tickets__Global_Stock as Global_Stock;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 
 class Order_Test extends WPTestCase {
 	use Ticket_Maker;
@@ -220,6 +225,9 @@ class Order_Test extends WPTestCase {
 		$this->assertTrue( $result );
 	}
 
+	/**
+	 * @skip This will also need to be completed when stock/attendees are fixed and done!
+	 */
 	public function test_double_order_transition_does_not_count_sales_twice() {
 		$post = self::factory()->post->create(
 			[
@@ -289,6 +297,309 @@ class Order_Test extends WPTestCase {
 		$this->assertSame( 4, $ticket_obj_2->qty_sold() );
 	}
 
+	public function test_order_status_transitions_and_stats() {
+		$post = self::factory()->post->create(
+			[
+				'post_type' => 'page',
+			]
+		);
+
+		// Enable the global stock on the Event.
+		update_post_meta( $post, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
+		// Set the Event global stock level to 50.
+		update_post_meta( $post, Global_Stock::GLOBAL_STOCK_LEVEL, 50 );
+
+		$ticket_a_id = $this->create_tc_ticket(
+			$post,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 30,
+				],
+			]
+		);
+		$ticket_b_id = $this->create_tc_ticket(
+			$post,
+			20,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::GLOBAL_STOCK_MODE,
+					'capacity' => 50,
+				],
+			]
+		);
+		$ticket_c_id = $this->create_tc_ticket(
+			$post,
+			30,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::OWN_STOCK_MODE,
+					'capacity' => 40,
+				],
+			]
+		);
+
+		// Get the ticket objects.
+		$ticket_a = tribe( Module::class )->get_ticket( $post, $ticket_a_id );
+		$ticket_b = tribe( Module::class )->get_ticket( $post, $ticket_b_id );
+		$ticket_c = tribe( Module::class )->get_ticket( $post, $ticket_c_id );
+
+		// Make sure both tickets are valid Ticket Object.
+		$this->assertInstanceOf( Ticket_Object::class, $ticket_a );
+		$this->assertInstanceOf( Ticket_Object::class, $ticket_b );
+		$this->assertInstanceOf( Ticket_Object::class, $ticket_c );
+
+		$this->assertEquals( 30, $ticket_a->capacity() );
+		$this->assertEquals( 30, $ticket_a->stock() );
+		$this->assertEquals( 30, $ticket_a->available() );
+		$this->assertEquals( 30, $ticket_a->inventory() );
+
+		$this->assertEquals( 50, $ticket_b->capacity() );
+		$this->assertEquals( 50, $ticket_b->stock() );
+		$this->assertEquals( 50, $ticket_b->available() );
+		$this->assertEquals( 50, $ticket_b->inventory() );
+
+		$this->assertEquals( 40, $ticket_c->capacity() );
+		$this->assertEquals( 40, $ticket_c->stock() );
+		$this->assertEquals( 40, $ticket_c->available() );
+		$this->assertEquals( 40, $ticket_c->inventory() );
+
+		$global_stock = new Global_Stock( $post );
+
+		$this->assertTrue( $global_stock->is_enabled(), 'Global stock should be enabled.' );
+		$this->assertEquals( 90, tribe_get_event_capacity( $post ), 'Total Event capacity should be 50' );
+		$this->assertEquals( 50, $global_stock->get_stock_level(), 'Global stock should be 50' );
+
+		// Create an Order for 5 on each Ticket.
+		$order_id = $this->create_order_from_cart(
+			[
+				$ticket_a_id => 5,
+				$ticket_b_id => 6,
+				$ticket_c_id => 7,
+			]
+		)->ID;
+
+		$attendee_by_ticket = function ( $ticket_id ) use ( $order_id ){
+			return tec_tc_attendees()->by_args(
+				[
+					'post_parent' => $order_id,
+					'ticket_id'   => $ticket_id,
+				]
+			)->get_ids();
+		};
+
+		$refreshed_order = tec_tc_get_order( $order_id );
+
+		$this->assertEquals( Created::SLUG, str_replace( 'tec-tc-', '', $refreshed_order->post_status ), 'Order should be in Created status' );
+
+		tribe_cache()->delete( 'tec_tickets_attendees_by_ticket_id' );
+
+		// Refresh the ticket objects.
+		$ticket_a = tribe( Module::class )->get_ticket( $post, $ticket_a_id );
+		$ticket_b = tribe( Module::class )->get_ticket( $post, $ticket_b_id );
+		$ticket_c = tribe( Module::class )->get_ticket( $post, $ticket_c_id );
+
+		$this->assertCount( 0, $attendee_by_ticket( $ticket_a_id ) );
+		$this->assertCount( 0, $attendee_by_ticket( $ticket_b_id ) );
+		$this->assertCount( 0, $attendee_by_ticket( $ticket_c_id ) );
+
+		$this->assertEquals( 30, $ticket_a->capacity() );
+		$this->assertEquals( 30, $ticket_a->stock() );
+		$this->assertEquals( 30, $ticket_a->available() );
+		$this->assertEquals( 30, $ticket_a->inventory() );
+
+		$this->assertEquals( 50, $ticket_b->capacity() );
+		$this->assertEquals( 50, $ticket_b->stock() );
+		$this->assertEquals( 50, $ticket_b->available() );
+		$this->assertEquals( 50, $ticket_b->inventory() );
+
+		$this->assertEquals( 40, $ticket_c->capacity() );
+		$this->assertEquals( 40, $ticket_c->stock() );
+		$this->assertEquals( 40, $ticket_c->available() );
+		$this->assertEquals( 40, $ticket_c->inventory() );
+
+		$this->assertEquals( 50, $global_stock->get_stock_level(), 'Global stock should be 50' );
+
+		$orders = tribe( Order::class );
+
+		// Transition to Pending.
+		$orders->modify_status( $order_id, Pending::SLUG );
+
+		$refreshed_order = tec_tc_get_order( $order_id );
+
+		$global_stock = new Global_Stock( $post );
+
+		$this->assertEquals( Pending::SLUG, str_replace( 'tec-tc-', '', $refreshed_order->post_status ) );
+
+		tribe_cache()->delete( 'tec_tickets_attendees_by_ticket_id' );
+
+		// Refresh the ticket objects.
+		$ticket_a = tribe( Module::class )->get_ticket( $post, $ticket_a_id );
+		$ticket_b = tribe( Module::class )->get_ticket( $post, $ticket_b_id );
+		$ticket_c = tribe( Module::class )->get_ticket( $post, $ticket_c_id );
+
+		$this->assertCount( 5, $attendee_by_ticket( $ticket_a_id ) );
+		$this->assertCount( 6, $attendee_by_ticket( $ticket_b_id ) );
+		$this->assertCount( 7, $attendee_by_ticket( $ticket_c_id ) );
+
+		$this->assertEquals( 30, $ticket_a->capacity() );
+		$this->assertEquals( 30 - 5, $ticket_a->stock() );
+		$this->assertEquals( 30 - 5, $ticket_a->available() );
+		$this->assertEquals( 30 - 5, $ticket_a->inventory() );
+
+		$this->assertEquals( 50, $ticket_b->capacity() );
+		$this->assertEquals( 50 - 11, $ticket_b->stock() );
+		$this->assertEquals( 50 - 11, $ticket_b->available() );
+		$this->assertEquals( 50 - 11, $ticket_b->inventory() );
+
+		$this->assertEquals( 40, $ticket_c->capacity() );
+		$this->assertEquals( 40 - 7, $ticket_c->stock() );
+		$this->assertEquals( 40 - 7, $ticket_c->available() );
+		$this->assertEquals( 40 - 7, $ticket_c->inventory() );
+
+		$this->assertEquals( 50 - 11, $global_stock->get_stock_level(), 'Global stock should be 50-11 = 39' );
+
+		// Transition to Approved.
+		$orders->modify_status( $order_id, Approved::SLUG );
+
+		$refreshed_order = tec_tc_get_order( $order_id );
+
+		$this->assertEquals( Approved::SLUG, str_replace( 'tec-tc-', '', $refreshed_order->post_status ) );
+
+		tribe_cache()->delete( 'tec_tickets_attendees_by_ticket_id' );
+
+		// Refresh the ticket objects.
+		$ticket_a = tribe( Module::class )->get_ticket( $post, $ticket_a_id );
+		$ticket_b = tribe( Module::class )->get_ticket( $post, $ticket_b_id );
+		$ticket_c = tribe( Module::class )->get_ticket( $post, $ticket_c_id );
+
+		$this->assertCount( 5, $attendee_by_ticket( $ticket_a_id ) );
+		$this->assertCount( 6, $attendee_by_ticket( $ticket_b_id ) );
+		$this->assertCount( 7, $attendee_by_ticket( $ticket_c_id ) );
+
+		$this->assertEquals( 30, $ticket_a->capacity() );
+		$this->assertEquals( 30 - 5, $ticket_a->stock() );
+		$this->assertEquals( 30 - 5, $ticket_a->available() );
+		$this->assertEquals( 30, $ticket_a->inventory() ); // Weird right ? But thats how are code expects it right now because of TEC\Tickets\Commerce\Attendee::decreases_inventory
+
+		$this->assertEquals( 50, $ticket_b->capacity() );
+		$this->assertEquals( 50 - 11, $ticket_b->stock() );
+		$this->assertEquals( 50 - 11, $ticket_b->available() );
+		$this->assertEquals( 50, $ticket_b->inventory() ); // Weird right ? But thats how are code expects it right now because of TEC\Tickets\Commerce\Attendee::decreases_inventory
+
+		$this->assertEquals( 40, $ticket_c->capacity() );
+		$this->assertEquals( 40 - 7, $ticket_c->stock() );
+		$this->assertEquals( 40 - 7, $ticket_c->available() );
+		$this->assertEquals( 40, $ticket_c->inventory() ); // Weird right ? But thats how are code expects it right now because of TEC\Tickets\Commerce\Attendee::decreases_inventory
+
+		$this->assertEquals( 50 - 11, $global_stock->get_stock_level(), 'Global stock should be 50-11 = 39' );
+
+		// Transition to Action Required.
+		$orders->modify_status( $order_id, Action_Required::SLUG );
+
+		$refreshed_order = tec_tc_get_order( $order_id );
+
+		$this->assertEquals( Action_Required::SLUG, str_replace( 'tec-tc-', '', $refreshed_order->post_status ) );
+
+		tribe_cache()->delete( 'tec_tickets_attendees_by_ticket_id' );
+
+		// Refresh the ticket objects.
+		$ticket_a = tribe( Module::class )->get_ticket( $post, $ticket_a_id );
+		$ticket_b = tribe( Module::class )->get_ticket( $post, $ticket_b_id );
+		$ticket_c = tribe( Module::class )->get_ticket( $post, $ticket_c_id );
+
+		$this->assertCount( 5, $attendee_by_ticket( $ticket_a_id ) );
+		$this->assertCount( 6, $attendee_by_ticket( $ticket_b_id ) );
+		$this->assertCount( 7, $attendee_by_ticket( $ticket_c_id ) );
+
+		$this->assertEquals( 30, $ticket_a->capacity() );
+		$this->assertEquals( 30 - 5, $ticket_a->stock() );
+		$this->assertEquals( 30 - 5, $ticket_a->available() );
+		$this->assertEquals( 30, $ticket_a->inventory() ); // Weird right ? But thats how are code expects it right now because of TEC\Tickets\Commerce\Attendee::decreases_inventory
+
+		$this->assertEquals( 50, $ticket_b->capacity() );
+		$this->assertEquals( 50 - 11, $ticket_b->stock() );
+		$this->assertEquals( 50 - 11, $ticket_b->available() );
+		$this->assertEquals( 50, $ticket_b->inventory() ); // Weird right ? But thats how are code expects it right now because of TEC\Tickets\Commerce\Attendee::decreases_inventory
+
+		$this->assertEquals( 40, $ticket_c->capacity() );
+		$this->assertEquals( 40 - 7, $ticket_c->stock() );
+		$this->assertEquals( 40 - 7, $ticket_c->available() );
+		$this->assertEquals( 40, $ticket_c->inventory() ); // Weird right ? But thats how are code expects it right now because of TEC\Tickets\Commerce\Attendee::decreases_inventory
+
+		$this->assertEquals( 50 - 11, $global_stock->get_stock_level(), 'Global stock should be 50-11 = 39' );
+
+		// Transition to Completed.
+		$orders->modify_status( $order_id, Completed::SLUG );
+
+		$refreshed_order = tec_tc_get_order( $order_id );
+
+		$this->assertEquals( Completed::SLUG, str_replace( 'tec-tc-', '', $refreshed_order->post_status ) );
+
+		tribe_cache()->delete( 'tec_tickets_attendees_by_ticket_id' );
+
+		// Refresh the ticket objects.
+		$ticket_a = tribe( Module::class )->get_ticket( $post, $ticket_a_id );
+		$ticket_b = tribe( Module::class )->get_ticket( $post, $ticket_b_id );
+		$ticket_c = tribe( Module::class )->get_ticket( $post, $ticket_c_id );
+
+		$this->assertCount( 5, $attendee_by_ticket( $ticket_a_id ) );
+		$this->assertCount( 6, $attendee_by_ticket( $ticket_b_id ) );
+		$this->assertCount( 7, $attendee_by_ticket( $ticket_c_id ) );
+
+		$this->assertEquals( 30, $ticket_a->capacity() );
+		$this->assertEquals( 30 - 5, $ticket_a->stock() );
+		$this->assertEquals( 30 - 5, $ticket_a->available() );
+		$this->assertEquals( 30 - 5, $ticket_a->inventory() );
+
+		$this->assertEquals( 50, $ticket_b->capacity() );
+		$this->assertEquals( 50 - 11, $ticket_b->stock() );
+		$this->assertEquals( 50 - 11, $ticket_b->available() );
+		$this->assertEquals( 50 - 11, $ticket_b->inventory() );
+
+		$this->assertEquals( 40, $ticket_c->capacity() );
+		$this->assertEquals( 40 - 7, $ticket_c->stock() );
+		$this->assertEquals( 40 - 7, $ticket_c->available() );
+		$this->assertEquals( 40 - 7, $ticket_c->inventory() );
+
+		$this->assertEquals( 50 - 11, $global_stock->get_stock_level(), 'Global stock should be 50-11 = 39' );
+
+		// Transition to Refunded.
+		$orders->modify_status( $order_id, Refunded::SLUG );
+
+		$refreshed_order = tec_tc_get_order( $order_id );
+
+		$this->assertEquals( Refunded::SLUG, str_replace( 'tec-tc-', '', $refreshed_order->post_status ) );
+
+		tribe_cache()->delete( 'tec_tickets_attendees_by_ticket_id' );
+
+		// Refresh the ticket objects.
+		$ticket_a = tribe( Module::class )->get_ticket( $post, $ticket_a_id );
+		$ticket_b = tribe( Module::class )->get_ticket( $post, $ticket_b_id );
+		$ticket_c = tribe( Module::class )->get_ticket( $post, $ticket_c_id );
+
+		$this->assertCount( 0, $attendee_by_ticket( $ticket_a_id ) );
+		$this->assertCount( 0, $attendee_by_ticket( $ticket_b_id ) );
+		$this->assertCount( 0, $attendee_by_ticket( $ticket_c_id ) );
+
+		$this->assertEquals( 30, $ticket_a->capacity() );
+		$this->assertEquals( 30, $ticket_a->stock() );
+		$this->assertEquals( 30, $ticket_a->available() );
+		$this->assertEquals( 30, $ticket_a->inventory() );
+
+		$this->assertEquals( 50, $ticket_b->capacity() );
+		$this->assertEquals( 50, $ticket_b->stock() );
+		$this->assertEquals( 50, $ticket_b->available() );
+		$this->assertEquals( 50, $ticket_b->inventory() );
+
+		$this->assertEquals( 40, $ticket_c->capacity() );
+		$this->assertEquals( 40, $ticket_c->stock() );
+		$this->assertEquals( 40, $ticket_c->available() );
+		$this->assertEquals( 40, $ticket_c->inventory() );
+
+		$this->assertEquals( 50, $global_stock->get_stock_level(), 'Global stock should be 50' );
+	}
 	public function modify_status_provider(): Generator {
 		yield 'already locked order' => [
 			function () {
