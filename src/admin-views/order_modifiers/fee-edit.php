@@ -112,10 +112,9 @@ $modifier_statuses = [
 						name="order_modifier_amount"
 						id="order_modifier_amount"
 						class="tribe-field tribe-validation-field tec_order_modifier_amount_field"
-						step="0.01"
+						step="0.1"
 						maxlength="9"
 						data-validation-required="true"
-						data-validation-is-greater-than="0"
 						data-validation-error="<?php echo esc_attr( $get_validation_error_attr( __( 'Amount', 'event-tickets' ) ) ); ?>"
 						value="<?php echo esc_attr( $order_modifier_amount ); ?>" />
 				</div>
