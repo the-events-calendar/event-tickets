@@ -5,6 +5,7 @@ import * as actions from './actions';
 import * as utils from '@moderntribe/tickets/data/utils';
 import { middlewares } from '@moderntribe/common/store';
 import { globals, time, moment as momentUtil } from '@moderntribe/common/utils';
+import { doAction } from '@wordpress/hooks';
 
 const { request: {
 	actions: wpRequestActions,
@@ -85,6 +86,15 @@ const createOrUpdateRSVP = ( method ) => ( payload ) => ( dispatch ) => {
 	};
 
 	dispatch( wpRequestActions.wpRequest( options ) );
+
+	/**
+	 * Fires after an RSVP is created or updated.
+	 *
+	 * @since 5.20.0
+	 * @param {Object} payload The RSVP payload.
+	 * @param {boolean} isCreate Whether the RSVP was created or not.
+	 */
+	doAction( 'tec.tickets.blocks.rsvp.createdOrUpdated', payload, method === METHODS.POST );
 };
 
 export const createRSVP = createOrUpdateRSVP( METHODS.POST );
@@ -101,6 +111,14 @@ export const deleteRSVP = ( id ) => ( dispatch ) => {
 	};
 
 	dispatch( wpRequestActions.wpRequest( options ) );
+
+	/**
+	 * Fires after an RSVP is deleted.
+	 *
+	 * @since 5.20.0
+	 * @param {number} id The RSVP ID.
+	 */
+	doAction( 'tec.tickets.blocks.rsvp.deleted', id );
 };
 
 export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {

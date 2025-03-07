@@ -9,7 +9,7 @@
 
 namespace TEC\Tickets\Seating\Tables;
 
-use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
+use TEC\Common\Integrations\Custom_Table_Abstract as Table;
 
 /**
  * Class Maps.
@@ -19,8 +19,6 @@ use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
  * @package TEC\Controller\Tables;
  */
 class Maps extends Table {
-	use Custom_Table_Query_Methods;
-
 	/**
 	 * The schema version.
 	 *
@@ -65,6 +63,22 @@ class Maps extends Table {
 	 * @var string
 	 */
 	protected static $uid_column = 'id';
+
+	/**
+	 * An array of all the columns in the table.
+	 *
+	 * @since 5.20.0
+	 *
+	 * @var string[]
+	 */
+	public static function get_columns(): array {
+		return [
+			'id',
+			'name',
+			'seats',
+			'screenshot_url',
+		];
+	}
 
 	/**
 	 * Returns the table creation SQL in the format supported

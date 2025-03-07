@@ -70,7 +70,7 @@ class Maps {
 		delete_transient( self::update_transient_name() );
 		wp_cache_delete( 'option_map_card_objects', 'tec-tickets-seating' );
 
-		$invalidated = Maps_Table::truncate() !== false;
+		$invalidated = tribe( Maps_Table::class )->empty_table() !== false;
 
 		/**
 		 * Fires after the caches and custom tables storing information about Maps have been

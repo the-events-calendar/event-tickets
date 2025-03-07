@@ -10,7 +10,7 @@
 namespace TEC\Tickets\Seating\Tables;
 
 use TEC\Common\StellarWP\DB\DB;
-use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
+use TEC\Common\Integrations\Custom_Table_Abstract as Table;
 
 /**
  * Class Seat_Types.
@@ -20,8 +20,6 @@ use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
  * @package TEC\Controller\Tables;
  */
 class Seat_Types extends Table {
-	use Custom_Table_Query_Methods;
-
 	/**
 	 * The schema version.
 	 *
@@ -66,6 +64,23 @@ class Seat_Types extends Table {
 	 * @var string
 	 */
 	protected static $uid_column = 'id';
+
+	/**
+	 * An array of all the columns in the table.
+	 *
+	 * @since 5.20.0
+	 *
+	 * @var string[]
+	 */
+	public static function get_columns(): array {
+		return [
+			'id',
+			'name',
+			'map',
+			'layout',
+			'seats',
+		];
+	}
 
 	/**
 	 * Returns the number of seats for a given seat type.

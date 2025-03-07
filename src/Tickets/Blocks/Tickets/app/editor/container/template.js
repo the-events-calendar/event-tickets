@@ -4,6 +4,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Wordpress dependencies
@@ -51,6 +52,18 @@ const TicketsContainer = ({
 		'tribe-editor__card-padding-bottom': hasATicketSelected,
 	});
 
+	/**
+	 * Filters the components injected before the header of the Tickets block.
+	 *
+	 * @since 5.20.0
+	 *
+	 * @return {Array} The injected components.
+	 */
+	const injectedComponentsTicketsBeforeHeader = applyFilters(
+		'tec.tickets.blocks.Tickets.ComponentsBeforeHeader',
+		[]
+	);
+
 	return (
 		<div className="tribe-editor__tickets__container">
 			<div className={innerBlocksClassName}>
@@ -58,6 +71,7 @@ const TicketsContainer = ({
 					className={cardClassName}
 					header={TICKET_LABELS.ticket.plural}
 				>
+					{ injectedComponentsTicketsBeforeHeader }
 					{canCreateTickets && (
 						<InnerBlocks allowedBlocks={['tribe/tickets-item']} />
 					)}

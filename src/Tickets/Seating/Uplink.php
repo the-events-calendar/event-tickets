@@ -165,10 +165,10 @@ class Uplink extends Controller_Contract {
 	 */
 	public function reset_data_on_new_connection() {
 		// Truncate tables.
-		tribe( Maps::class )->truncate();
-		tribe( Layouts::class )->truncate();
-		tribe( Seat_Types::class )->truncate();
-		tribe( Sessions::class )->truncate();
+		tribe( Maps::class )->empty_table();
+		tribe( Layouts::class )->empty_table();
+		tribe( Seat_Types::class )->empty_table();
+		tribe( Sessions::class )->empty_table();
 
 		// Clear cache.
 		tribe( Service\Maps::class )->invalidate_cache();

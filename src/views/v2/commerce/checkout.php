@@ -11,8 +11,9 @@
  *
  * @since 5.1.9
  * @since 5.3.0 Added purchaser info templates.
+ * @since 5.19.3 Turned form element back to section.
  *
- * @version 5.3.0
+ * @version 5.19.3
  *
  * @var \Tribe__Template $this                  [Global] Template object.
  * @var Module           $provider              [Global] The tickets provider instance.
@@ -34,7 +35,7 @@ $attributes = [
 
 ?>
 <div class="tribe-common event-tickets">
-	<form
+	<section
 		class="tribe-tickets__commerce-checkout"
 		<?php tribe_attributes( $attributes ); ?>
 	>
@@ -64,5 +65,5 @@ $attributes = [
 		<?php $this->template( 'checkout/gateways' ); ?>
 		<?php $this->template( 'checkout/footer' ); ?>
 		<?php $this->template( 'checkout/must-login' ); ?>
-	</form>
+	</section>
 </div>

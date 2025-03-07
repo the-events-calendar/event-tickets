@@ -30,6 +30,7 @@ use Tribe__Date_Utils;
 use WP_Query;
 use WP_Post;
 use WP_User_Query;
+use TEC\Tickets\Hooks as Tickets_Hooks;
 
 /**
  * Class Hooks.
@@ -64,8 +65,6 @@ class Hooks extends Service_Provider {
 
 		// Compatibility Hooks
 		add_action( 'init', [ $this, 'register_event_compatibility_hooks' ] );
-
-		add_action( 'tribe_common_loaded', [ $this, 'load_commerce_module' ] );
 
 		add_action( 'template_redirect', [ $this, 'do_cart_parse_request' ] );
 		add_action( 'template_redirect', [ $this, 'do_checkout_parse_request' ] );
@@ -141,7 +140,6 @@ class Hooks extends Service_Provider {
 		add_filter( 'tec_tickets_editor_configuration_localized_data', [ $this, 'filter_block_editor_localized_data' ] );
 		add_action( 'tribe_editor_config', [ $this, 'filter_tickets_editor_config' ] );
 		add_filter( 'wp_list_table_class_name', [ $this, 'filter_wp_list_table_class_name' ], 10, 2 );
-		add_filter( 'tribe_dropdown_tec_tc_order_table_events', [ $this, 'provide_events_results_to_ajax' ], 10, 2 );
 		add_filter( 'tribe_dropdown_tec_tc_order_table_customers', [ $this, 'provide_customers_results_to_ajax' ], 10, 2 );
 
 		add_filter( 'tec_tickets_all_tickets_table_provider_options', [ $this, 'filter_all_tickets_table_provider_options' ] );
@@ -152,6 +150,7 @@ class Hooks extends Service_Provider {
 	 * Provides the results for the events dropdown in the Orders table.
 	 *
 	 * @since 5.13.0
+	 * @deprecated 5.20.0
 	 *
 	 * @param array<string,mixed>  $results The results.
 	 * @param array<string,string> $search The search.
@@ -159,42 +158,9 @@ class Hooks extends Service_Provider {
 	 * @return array<string,mixed>
 	 */
 	public function provide_events_results_to_ajax( $results, $search ) {
-		if ( empty( $search['term'] ) ) {
-			return $results;
-		}
-
-		$term = $search['term'];
-
-		$args = [
-			'no_found_rows'          => true,
-			'update_post_meta_cache' => false,
-			'update_post_term_cache' => false,
-			'post_type'              => (array) tribe_get_option( 'ticket-enabled-post-types', [] ),
-			'post_status'            => 'any',
-			'posts_per_page'         => 10,
-			's'                      => $term,
-			// Default to show most recent first.
-			'orderby'                => 'ID',
-			'order'                  => 'DESC',
-		];
-
-		$query = new WP_Query( $args );
-
-		if ( empty( $query->posts ) ) {
-			return $results;
-		}
-
-		$results = array_map(
-			function ( WP_Post $result ) {
-				return [
-					'id'   => $result->ID,
-					'text' => get_the_title( $result->ID ),
-				];
-			},
-			$query->posts
-		);
-
-		return [ 'results' => $results ];
+		// phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped
+		_deprecated_function( __METHOD__, '5.20.0', Tickets_Hooks::class . '::provide_events_results_to_ajax' );
+		return tribe( Tickets_Hooks::class )->provide_events_results_to_ajax( $results, $search );
 	}
 
 	/**
@@ -482,9 +448,11 @@ class Hooks extends Service_Provider {
 	 * Initializes the Module Class.
 	 *
 	 * @since 5.1.9
+	 *
+	 * @deprecated 5.20.0
 	 */
 	public function load_commerce_module() {
-		$this->container->make( Module::class );
+		_deprecated_function( __METHOD__, '5.20.0' );
 	}
 
 	/**

@@ -14,6 +14,7 @@ use Tribe__Tickets_Plus__Commerce__WooCommerce__Main;
 use WP_Error;
 use WP_Post;
 use WP_User;
+use Tribe__Utils__Array as Arr;
 
 trait Attendee_Maker {
 
@@ -253,10 +254,10 @@ trait Attendee_Maker {
 		$faker = Factory::create();
 
 		$result = [
-			'first_name' => $overrides['first_name'] ?? $faker->firstName(),
-			'last_name'  => $overrides['last_name'] ?? $faker->lastName(),
-			'full_name'  => $overrides['full_name'] ?? $faker->name(),
-			'email'      => $overrides['email'] ?? $faker->email(),
+			'first_name' => Arr::get( $overrides, 'first_name', $faker->firstName() ),
+			'last_name'  => Arr::get( $overrides, 'last_name', $faker->lastName() ),
+			'full_name'  => Arr::get( $overrides, 'full_name', $faker->name() ),
+			'email'      => Arr::get( $overrides, 'email', $faker->email() ),
 		];
 
 		$user = get_userdata( $user_id );

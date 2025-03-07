@@ -16,6 +16,7 @@ import { InspectorControls } from '@wordpress/editor';
  */
 import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import './style.pcss';
+import { applyFilters } from '@wordpress/hooks';
 
 const RadioInput = ({ provider, onProviderChange, ...additionalProps }) => (
 	<div className="tribe-editor__tickets-control-container">
@@ -44,16 +45,32 @@ RadioInput.propTypes = {
 	onProviderChange: PropTypes.func,
 };
 
-const Controls = ({
+/**
+ * Get the block controls for the Tickets block.
+ *
+ * @since 5.20.0
+ *
+ * @param {Object}   props                      The component properties.
+ * @param {boolean}  props.disabled             Whether the controls should be disabled.
+ * @param {boolean}  props.hasMultipleProviders Whether there are multiple providers.
+ * @param {Node}     props.message              The message to display.
+ * @param {Function} props.onProviderChange     The function to call when the provider changes.
+ * @param {Array}    props.providers            The available providers.
+ * @param {string}   props.selectedProvider     The selected provider.
+ *
+ * @return {Array} The block controls.
+ */
+function getTicketsBlockControls({
 	disabled,
 	hasMultipleProviders,
 	message,
 	onProviderChange,
 	providers,
 	selectedProvider,
-}) =>
-	hasMultipleProviders && (
-		<InspectorControls key="inspector">
+}) {
+	const controls = [];
+	if (hasMultipleProviders) {
+		controls.push(
 			<PanelBody
 				// eslint-disable-next-line no-undef
 				title={sprintf(
@@ -87,8 +104,28 @@ const Controls = ({
 					</fieldset>
 				</PanelRow>
 			</PanelBody>
-		</InspectorControls>
-	);
+		);
+	}
+
+	/**
+	 * Filters the controls for the Tickets block.
+	 *
+	 * @since 5.20.0
+	 *
+	 * @param {Array} controls The controls.
+	 */
+	return applyFilters('tec.tickets.blocks.Tickets.Controls', controls);
+}
+
+const Controls = (props) => {
+	const controls = getTicketsBlockControls(props);
+
+	if (!controls.length) {
+		return null;
+	}
+
+	return <InspectorControls key="inspector">{controls}</InspectorControls>;
+};
 
 Controls.propTypes = {
 	disabled: PropTypes.bool,

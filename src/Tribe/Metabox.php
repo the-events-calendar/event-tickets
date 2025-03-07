@@ -502,6 +502,7 @@ class Tribe__Tickets__Metabox {
 				);
 			}
 			wp_send_json_error( $output );
+			return;
 		}
 
 		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
@@ -517,6 +518,7 @@ class Tribe__Tickets__Metabox {
 				);
 			}
 			wp_send_json_error( $output );
+			return;
 		}
 
 		if ( ! $this->has_permission( $post_id, $_POST, 'remove_ticket_nonce' ) ) {
@@ -530,6 +532,7 @@ class Tribe__Tickets__Metabox {
 				);
 			}
 			wp_send_json_error( $output );
+			return;
 		}
 
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
@@ -544,6 +547,7 @@ class Tribe__Tickets__Metabox {
 				);
 			}
 			wp_send_json_error( $output );
+			return;
 		}
 
 		// Pass the control to the child object
@@ -855,7 +859,7 @@ class Tribe__Tickets__Metabox {
 		if ( empty( $data['nonce'] ) || ! wp_verify_nonce( $data['nonce'], $nonce_action ) ) {
 			return false;
 		}
-		
+
 		return current_user_can( 'edit_event_tickets' )
 				|| current_user_can( get_post_type_object( $post->post_type )->cap->edit_others_posts )
 				|| current_user_can( 'edit_post', $post->ID );

@@ -113,7 +113,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 				'tec_tickets_commerce_async_webhook_process',
 				[
 					'order_id' => $order_id,
-					'try'      => $retry++,
+					'try'      => ++$retry,
 				],
 				'tec-tickets-commerce-stripe-webhooks'
 			);

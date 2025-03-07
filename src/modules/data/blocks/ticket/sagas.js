@@ -645,34 +645,36 @@ export function* createNewTicket( action ) {
 				select( selectors.getTicketTempSaleEndDateMoment, props ),
 			] );
 
+			const ticketDetails = {
+				title,
+				description,
+				price,
+				sku,
+				iac,
+				startDate,
+				startDateInput,
+				startDateMoment,
+				endDate,
+				endDateInput,
+				endDateMoment,
+				startTime,
+				endTime,
+				startTimeInput,
+				endTimeInput,
+				capacityType,
+				capacity,
+				salePriceChecked,
+				salePrice,
+				saleStartDate,
+				saleStartDateInput,
+				saleStartDateMoment,
+				saleEndDate,
+				saleEndDateInput,
+				saleEndDateMoment,
+			};
+
 			yield all( [
-				put( actions.setTicketDetails( clientId, {
-					title,
-					description,
-					price,
-					sku,
-					iac,
-					startDate,
-					startDateInput,
-					startDateMoment,
-					endDate,
-					endDateInput,
-					endDateMoment,
-					startTime,
-					endTime,
-					startTimeInput,
-					endTimeInput,
-					capacityType,
-					capacity,
-					salePriceChecked,
-					salePrice,
-					saleStartDate,
-					saleStartDateInput,
-					saleStartDateMoment,
-					saleEndDate,
-					saleEndDateInput,
-					saleEndDateMoment,
-				} ) ),
+				put( actions.setTicketDetails( clientId, ticketDetails ) ),
 				put( actions.setTempSalePriceChecked( clientId, salePriceChecked ) ),
 				put( actions.setTempSalePrice( clientId, salePrice ) ),
 				put( actions.setTicketId( clientId, ticket.id ) ),
@@ -689,9 +691,12 @@ export function* createNewTicket( action ) {
 			 * Fires after the ticket has been created.
 			 *
 			 * @since 5.16.0
+			 * @since 5.20.0 The `ticketId` and `ticketDetails` parameters were added.
 			 * @param {string} clientId The ticket's client ID.
+			 * @param {number} ticketId The ticket's ID.
+			 * @param {Object} ticketDetails The ticket details.
 			 */
-			doAction( 'tec.tickets.blocks.ticketCreated', clientId );
+			doAction( 'tec.tickets.blocks.ticketCreated', clientId, ticket.id, ticketDetails );
 
 			yield fork( saveTicketWithPostSave, clientId );
 		}
@@ -794,35 +799,37 @@ export function* updateTicket( action ) {
 				select( selectors.getTicketTempCapacity, props ),
 			] );
 
+			const ticketDetails = {
+				title,
+				description,
+				price,
+				on_sale,
+				sku,
+				iac,
+				startDate,
+				startDateInput,
+				startDateMoment,
+				endDate,
+				endDateInput,
+				endDateMoment,
+				startTime,
+				endTime,
+				startTimeInput,
+				endTimeInput,
+				capacityType,
+				capacity,
+				salePriceChecked,
+				salePrice,
+				saleStartDate,
+				saleStartDateInput,
+				saleStartDateMoment,
+				saleEndDate,
+				saleEndDateInput,
+				saleEndDateMoment,
+			};
+
 			yield all( [
-				put( actions.setTicketDetails( clientId, {
-					title,
-					description,
-					price,
-					on_sale,
-					sku,
-					iac,
-					startDate,
-					startDateInput,
-					startDateMoment,
-					endDate,
-					endDateInput,
-					endDateMoment,
-					startTime,
-					endTime,
-					startTimeInput,
-					endTimeInput,
-					capacityType,
-					capacity,
-					salePriceChecked,
-					salePrice,
-					saleStartDate,
-					saleStartDateInput,
-					saleStartDateMoment,
-					saleEndDate,
-					saleEndDateInput,
-					saleEndDateMoment,
-				} ) ),
+				put( actions.setTicketDetails( clientId, ticketDetails ) ),
 				put( actions.setTicketSold( clientId, capacity_details.sold ) ),
 				put( actions.setTicketAvailable( clientId, available ) ),
 				put( actions.setTicketHasChanges( clientId, false ) ),
@@ -840,9 +847,12 @@ export function* updateTicket( action ) {
 			 * Fires after the ticket has been updated.
 			 *
 			 * @since 5.16.0
+			 * @since 5.20.0 The `ticketId and `ticketDetails` parameters were added
 			 * @param {string} clientId The ticket's client ID.
+			 * @param {number} ticketId The ticket's ID.
+			 * @param {Object} ticketDetails The ticket details.
 			 */
-			doAction( 'tec.tickets.blocks.ticketUpdated', clientId );
+			doAction( 'tec.tickets.blocks.ticketUpdated', clientId, ticketId, ticketDetails );
 		}
 	} catch ( e ) {
 		console.error( e );
@@ -903,6 +913,15 @@ export function* deleteTicket( action ) {
 						body: body.join( '&' ),
 					},
 				} );
+
+				/**
+				 * Fires after the ticket has been deleted.
+				 *
+				 * @since 5.20.0
+				 * @param {string} clientId The ticket's client ID.
+				 * @param {number} ticketId The ticket's ID.
+				 */
+				doAction( 'tec.tickets.blocks.ticketDeleted', clientId, ticketId );
 			} catch ( e ) {
 				/**
 				 * @todo handle error on removal

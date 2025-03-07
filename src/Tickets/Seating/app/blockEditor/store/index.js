@@ -4,6 +4,7 @@ import { controls } from './controls';
 import { selectors } from './selectors';
 import { actions } from './actions';
 import { localizedData } from './localized-data';
+import { doAction } from '@wordpress/hooks';
 
 const storeName = 'tec-tickets-seating';
 
@@ -19,6 +20,15 @@ const store = createReduxStore(storeName, {
 	reducer(state = DEFAULT_STATE, action) {
 		switch (action.type) {
 			case 'SET_USING_ASSIGNED_SEATING':
+				/**
+				 * Fires every time the isUsingAssignedSeating state property is changed.
+				 *
+				 * @since 5.20.0
+				 *
+				 * @param {boolean} isUsingAssignedSeating Whether the event is using assigned seating
+				 */
+				doAction( 'tec.tickets.seating.setUsingAssignedSeating', action.isUsingAssignedSeating );
+
 				return {
 					...state,
 					isUsingAssignedSeating: action.isUsingAssignedSeating,
