@@ -99,9 +99,8 @@ $modifier_statuses = [
 						id="order_modifier_amount"
 						class="tribe-field tec_order_modifier_amount_field"
 						maxlength="9"
-						step="0.01"
+						step="0.1"
 						data-validation-required="true"
-						data-validation-is-greater-than="0"
 						data-validation-error="<?php esc_attr_e( 'Amount is required', 'event-tickets' ); ?>"
 						value="<?php echo esc_attr( $order_modifier_amount ); ?>" />
 				</div>
