@@ -21,7 +21,7 @@ git_clone_required_plugins(){
 	  	elif [[ -n "$(git ls-remote --heads ${plugin_repo_url} ${TRAVIS_BRANCH})" ]]; then
 			branch="${TRAVIS_BRANCH}";
 	  	else
-			branch="master";
+			branch="main";
 	  	fi;
 
 		echo "Cloning branch ${branch} for plugin ${plugin_slug}";
