@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.19.3
+Stable tag: 5.20.0
 Requires at least: 6.5
 Tested up to: 6.7.1
 Requires PHP: 7.4
@@ -198,6 +198,25 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.20.0] 2025-03-06 =
+
+* Feature - Adds Ticket actions for ticket goes on sale, ticket sale ended and ticket stock changed. [ETP-975]
+* Feature - Introduced Waitlist entry points in Ticket and RSVP templates. [ETP-944]
+* Tweak - Added actions: `tec_tickets_commerce_decrease_ticket_stock`, `tec_tickets_commerce_increase_ticket_stock`, `tec_tickets_ticket_dates_updated`, `tec_tickets_ticket_stock_added`, `tec_tickets_ticket_stock_changed`, `tec_tickets_ticket_{$prefix}_date_trigger`, `tec_tickets_ticket_upserted`
+* Tweak - Added filters: `tec_tickets_rsvp_ids_to_sync`
+* Tweak - Adding filters to Tickets and RSVP block for the ability to render components on top of those blocks. [ETP-954]
+* Tweak - Changed views: `emails/confirmation`, `emails/spot-available`, `emails/template-parts/body/unsubscribe`, `tickets/my-tickets/user-details`, `v2/rsvp/content`, `v2/tickets`
+* Tweak - Enrich ticket management JS hooks.
+* Tweak - Firing a hook `tec.tickets.seating.setUsingAssignedSeating` whenever the `isUsingAssignedSeating` property is set. [ETP-973]
+* Tweak - Init TicketsCommerce Module as soon as possible. [ETP-972]
+* Tweak - Introduced hooks that fire during RSVP creation/update/deletion while in the block editor.
+* Tweak - Introduce Waitlist email templates. [ETP-957]
+* Tweak - Moved abstract class for custom tables into TCMN.
+* Tweak - Move method `provide_events_results_to_ajax` one level higher so that it loads regardless of Tickets Commerce. [ETP-976]
+* Fix - Ensure that Capacity and Stock handling now are handled in one single Action by Tickets Commerce and it respects Global Capacity.
+* Fix - Restore Ticket's API capability checks to take place in controller and not in internal API. [ET-2313]
+* Language - 2 new strings added, 55 updated, 0 fuzzied, and 1 obsoleted.
 
 = [5.19.3] 2025-03-04 =
 

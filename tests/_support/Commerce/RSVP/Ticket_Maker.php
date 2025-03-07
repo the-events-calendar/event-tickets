@@ -3,6 +3,9 @@
 namespace Tribe\Tickets\Test\Commerce\RSVP;
 
 use Tribe__Utils__Array as Utils_Array;
+use Exception;
+use Tribe__Tickets__Tickets as Tickets;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 trait Ticket_Maker {
 
@@ -40,11 +43,11 @@ trait Ticket_Maker {
 
 		$merged_meta_input = array_merge(
 			[
-				'_tribe_rsvp_for_event'                          => $post_id,
 				tribe( 'tickets.handler' )->key_capacity         => $capacity,
 				'_manage_stock'                                  => 'yes',
 				'_ticket_start_date'                             => date( 'Y-m-d H:i:s', strtotime( '-1 day' ) ),
 				'_ticket_end_date'                               => date( 'Y-m-d H:i:s', strtotime( '+1 day' ) ),
+				'_tribe_rsvp_for_event'                          => $post_id,
 			],
 			$meta_input
 		);
@@ -81,6 +84,26 @@ trait Ticket_Maker {
 		$rsvp->clear_ticket_cache_for_post( $post_id );
 
 		return $ticket_id;
+	}
+
+	/**
+	 * Updates an existing RSVP ticket.
+	 *
+	 * @param int   $ticket_id The ID of the ticket to update.
+	 * @param array $overrides An array of values to override the default and random generation arguments.
+	 *
+	 * @return int The ticket post ID.
+	 * @throws Exception If the RSVP is not found.
+	 */
+	protected function update_rsvp_ticket( $ticket_id, array $overrides ) {
+		$ticket = Tickets::load_ticket_object( $ticket_id );
+		if ( ! $ticket instanceof Ticket_Object ) {
+			throw new Exception( 'RSVP not found!' );
+		}
+
+		$overrides = array_merge( $overrides, [ 'ID' => $ticket->ID ] );
+
+		return $this->create_rsvp_ticket( $ticket->get_event_id(), $overrides );
 	}
 
 	protected function create_many_rsvp_tickets( int $count, int $post_id, array $overrides = [] ) {
