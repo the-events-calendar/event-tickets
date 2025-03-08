@@ -19,6 +19,8 @@ namespace TEC\Tickets;
 
 use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\Payments_Tab;
+use WP_Query;
+use WP_Post;
 
 /**
  * Class Hooks.
@@ -52,6 +54,55 @@ class Hooks extends Service_Provider {
 	}
 
 	/**
+	 * Provides the results for the events dropdown in the Orders table.
+	 *
+	 * @since 5.20.0
+	 *
+	 * @param array<string,mixed>  $results The results.
+	 * @param array<string,string> $search The search.
+	 *
+	 * @return array<string,mixed>
+	 */
+	public function provide_events_results_to_ajax( $results, $search ) {
+		if ( empty( $search['term'] ) ) {
+			return $results;
+		}
+
+		$term = $search['term'];
+
+		$args = [
+			'no_found_rows'          => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+			'post_type'              => (array) tribe_get_option( 'ticket-enabled-post-types', [] ),
+			'post_status'            => 'any',
+			'posts_per_page'         => 10,
+			's'                      => $term,
+			// Default to show most recent first.
+			'orderby'                => 'ID',
+			'order'                  => 'DESC',
+		];
+
+		$query = new WP_Query( $args );
+
+		if ( empty( $query->posts ) ) {
+			return $results;
+		}
+
+		$results = array_map(
+			function ( WP_Post $result ) {
+				return [
+					'id'   => $result->ID,
+					'text' => get_the_title( $result->ID ),
+				];
+			},
+			$query->posts
+		);
+
+		return [ 'results' => $results ];
+	}
+
+	/**
 	 * Generate TicketsCommerce Pages.
 	 *
 	 * @since 5.2.1
@@ -67,5 +118,6 @@ class Hooks extends Service_Provider {
 	 */
 	protected function add_filters() {
 		add_filter( 'tec_tickets_settings_tabs_ids', [ tribe( Payments_Tab::class ), 'settings_add_tab_id' ] );
+		add_filter( 'tribe_dropdown_tec_tickets_list_ticketables_ajax', [ $this, 'provide_events_results_to_ajax' ], 10, 2 );
 	}
 }

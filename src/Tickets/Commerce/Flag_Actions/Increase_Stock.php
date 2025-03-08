@@ -7,6 +7,7 @@ use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Traits\Is_Ticket;
 use Tribe__Utils__Array as Arr;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
  * Class Increase_Stock, normally triggered when refunding on orders get set to not-completed.
@@ -62,21 +63,29 @@ class Increase_Stock extends Flag_Action_Abstract {
 				continue;
 			}
 
+			$original_stock = $ticket->stock();
 
 			$global_stock = new \Tribe__Tickets__Global_Stock( $ticket->get_event_id() );
-
-			// Is ticket shared capacity?
-			$global_stock_mode  = $ticket->global_stock_mode();
-			$is_shared_capacity = ! empty( $global_stock_mode ) && 'own' !== $global_stock_mode;
 
 			tribe( Ticket::class )->decrease_ticket_sales_by( $ticket->ID, $quantity, $ticket->global_stock_mode(), $global_stock );
 
 			$stock = $ticket->stock();
 
-			// Global stock handling is done in the `decrease_ticket_sales_by` method.
-			if ( 'global' !== $global_stock_mode ) {
-				$stock += $quantity;
+			$stock_should_be = min( $original_stock + $quantity, $ticket->capacity() );
+
+			if ( $stock_should_be !== $stock ) {
+				$stock = $stock_should_be;
 			}
+
+			/**
+			 * Fires after the calculations of a ticket stock increase are done but before are saved.
+			 *
+			 * @since 5.20.0
+			 *
+			 * @param Ticket_Object $ticket   The ticket post object.
+			 * @param int           $quantity The quantity of tickets to increase.
+			 */
+			do_action( 'tec_tickets_commerce_increase_ticket_stock', $ticket, $quantity );
 
 			update_post_meta( $ticket->ID, Ticket::$stock_meta_key, $stock );
 		}
