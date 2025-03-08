@@ -152,13 +152,21 @@ class Modifier_Admin_Handler extends Controller_Contract {
 			->register();
 
 		Asset::add(
+			'tec-tickets-imask',
+			'https://unpkg.com/imask@7.6.1/dist/imask.js',
+			''
+		)
+			->set_type( 'js' )
+			->register();
+
+		Asset::add(
 			'tec-tickets-order-modifiers-amount-field-edit-js',
 			'admin/order-modifiers/amount-field.js',
 			Tickets_Plugin::VERSION,
 		)
 			->add_to_group_path( 'et-core' )
 			->set_condition( fn() => $this->is_on_page() )
-			->set_dependencies( 'jquery', 'tribe-validation' )
+			->set_dependencies( 'jquery', 'tribe-validation', 'tec-tickets-imask' )
 			->enqueue_on( 'admin_enqueue_scripts' )
 			->add_to_group( 'tec-tickets-order-modifiers' )
 			->add_localize_script(
@@ -166,10 +174,11 @@ class Modifier_Admin_Handler extends Controller_Contract {
 				function () {
 					$code = Currency::get_currency_code();
 					return [
-						'currencySymbol'   => Currency::get_currency_symbol( $code ),
-						'decimalSeparator' => Currency::get_currency_separator_decimal( $code ),
-						'placement'        => Currency::get_currency_symbol_position( $code ),
-						'precision'        => Currency::get_currency_precision( $code ),
+						'currencySymbol'     => Currency::get_currency_symbol( $code ),
+						'decimalSeparator'   => Currency::get_currency_separator_decimal( $code ),
+						'thousandsSeparator' => Currency::get_currency_separator_thousands( $code ),
+						'placement'          => Currency::get_currency_symbol_position( $code ),
+						'precision'          => Currency::get_currency_precision( $code ),
 					];
 				}
 			)

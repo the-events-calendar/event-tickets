@@ -3,91 +3,91 @@
  *
  * Dependencies:
  * - jQuery
+ * - window.IMask
  * - window.tribe.validation
  * - window.etOrderModifiersAmountField
+ *
+ * @typedef {Object} etOrderModifiersAmountField The internationalization object.
+ * @type {string} currencySymbol     The currency symbol
+ * @type {string} decimalSeparator   The decimal separator character
+ * @type {string} thousandsSeparator The thousands separator character
+ * @type {string} placement          Can be "prefix" or "postfix"
+ * @type {number} precision          The number of decimal places to display
  */
 
-// Fallbacks for the global variables.
 window.etOrderModifiersAmountField = window.etOrderModifiersAmountField || {
 	currencySymbol: '$',
 	decimalSeparator: '.',
-	placement: 'before',
+	thousandsSeparator: ',',
+	placement: 'prefix',
 	precision: 2,
 };
 
+/**
+ * This script initializes the amount field for order modifiers.
+ *
+ * @since TBD
+ * @param {jQuery} $ jQuery
+ * @param {Object} validation The validation object
+ * @param {etOrderModifiersAmountField} i18n The internationalization object
+ */
 ( function( $, validation, i18n ) {
 	const $document = $( document );
+	let mask;
 
 	const selectors = {
 		amount: '#order_modifier_amount',
-		save: '#order_modifier_form_save',
 		type: '#order_modifier_sub_type',
 	};
 
-	const getType = () => {
-		const $typeSelect = $( selectors.type );
-		return $typeSelect.val();
-	};
+	const getType = () => $( selectors.type ).val();
 
-	const addAmountExtras = () => {
-		const $amount = $( selectors.amount );
-		let value = Number.parseFloat( $amount.val() || 0 ).toFixed( i18n.precision );
+	const setupMask = () => {
+		let pattern;
 
-		// If the decimal separator is not a period, replace it.
-		if ( '.' !== i18n.decimalSeparator ) {
-			value = value.replace( '.', i18n.decimalSeparator );
+		if ( 'percent' === getType() ) {
+			pattern = 'num %';
+		} else {
+			pattern = 'postfix' === i18n.placement
+				? `num ${ i18n.currencySymbol }`
+				: `${ i18n.currencySymbol } num`;
 		}
 
-		// Set the input type to text.
-		$amount.attr( 'type', 'text' );
-
-		// Set the value based on the type.
-		switch ( getType() ) {
-			case 'percent':
-				$( selectors.amount ).val( `${ value }%` );
-				break;
-
-			case 'flat':
-				if ( 'after' === i18n.placement ) {
-					$( selectors.amount ).val( `${ value }${ i18n.currencySymbol }` );
-				} else {
-					$( selectors.amount ).val( `${ i18n.currencySymbol }${ value }` );
-				}
-				break;
-
-			default:
-				break;
-		}
+		mask = window.IMask(
+			document.querySelector( selectors.amount ),
+			{
+				mask: pattern,
+				lazy: false,
+				blocks: {
+					num: {
+						mask: Number,
+						max: 999999999,
+						min: 0.01,
+						normalizeZeros: true,
+						padFractionalZeros: true,
+						radix: i18n.decimalSeparator,
+						scale: i18n.precision,
+						thousandsSeparator: i18n.thousandsSeparator,
+					},
+				},
+			},
+		);
 	};
 
-	const removeAmountExtras = () => {
-		const $amount = $( selectors.amount );
-		let value = $amount.val();
-
-		// Maybe replace the decimal separator.
-		if ( '.' !== i18n.decimalSeparator ) {
-			value = value.replace( i18n.decimalSeparator, '.' );
-		}
-
-		// Remove any other non-digit characters.
-		value = value.replace( /[^0-9.]/g, '' );
-
-		$amount.val( value );
-		$amount.attr( 'type', 'number' );
-	};
-
-	const updateAmountDisplay = () => {
-		removeAmountExtras();
-		addAmountExtras();
+	const updateMask = () => {
+		const value = mask.unmaskedValue;
+		mask.destroy();
+		setupMask();
+		mask.unmaskedValue = value;
 	};
 
 	const validateAmount = () => {
 		const $input = $( selectors.amount );
-		const value = $input.val();
-		const asFloat = parseFloat( value );
+		const asFloat = parseFloat( mask.unmaskedValue );
 
 		if ( ! isNaN( asFloat ) && asFloat > 0 ) {
 			$input.removeClass( validation.selectors.error.className() );
+			$input.val( asFloat );
 			return;
 		}
 
@@ -96,25 +96,9 @@ window.etOrderModifiersAmountField = window.etOrderModifiersAmountField || {
 		$input.trigger( 'displayErrors.tribe' );
 	};
 
-	const handleUnfocus = () => {
-		validateAmount();
-		addAmountExtras();
-	};
-
-	const prepareForValidation = () => {
-		removeAmountExtras();
-		validateAmount();
-	};
-
-	const bindEvents = () => {
-		$document.on( 'change', selectors.type, updateAmountDisplay );
-		$document.on( 'focusin', selectors.amount, removeAmountExtras );
-		$document.on( 'focusout', selectors.amount, handleUnfocus );
-		$document.on( 'validation.tribe', prepareForValidation );
-	};
-
 	$document.ready( () => {
-		bindEvents();
-		updateAmountDisplay();
+		setupMask( document.querySelector( selectors.amount ) );
+		$document.on( 'change', selectors.type, updateMask );
+		$document.on( 'validation.tribe', validateAmount );
 	} );
 }( jQuery, window.tribe.validation, window.etOrderModifiersAmountField || {} ) );
