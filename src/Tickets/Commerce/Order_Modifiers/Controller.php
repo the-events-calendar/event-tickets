@@ -119,11 +119,23 @@ final class Controller extends Controller_Contract {
 	 */
 	public function set_currency_defaults() {
 		$currency_code = Currency::get_currency_code();
+
+		switch ( Currency::get_currency_symbol_position( $currency_code ) ) {
+			case 'postfix':
+				$currency_symbol_position = 'after';
+				break;
+
+			case 'prefix':
+			default:
+				$currency_symbol_position = 'before';
+				break;
+		}
+
 		Currency_Value::set_defaults(
 			Currency::get_currency_symbol( $currency_code ),
 			Currency::get_currency_separator_thousands( $currency_code ),
 			Currency::get_currency_separator_decimal( $currency_code ),
-			Currency::get_currency_symbol_position( $currency_code )
+			$currency_symbol_position
 		);
 
 		Precision_Value::set_default_precision( (int) Currency::get_currency_precision( $currency_code ) );
