@@ -10,7 +10,6 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Commerce\Order_Modifiers\Traits;
 
 use TEC\Common\Asset;
-use TEC\Common\StellarWP\Assets\Asset as StellarAsset;
 use Tribe__Tickets__Main as Tickets;
 
 /**
@@ -36,15 +35,14 @@ trait Asset_Build {
 	 * @param string  $path    The asset path, relative to the build/OrderModifiers/ directory.
 	 * @param ?string $version (Optional) The asset version. Defaults to the plugin version.
 	 *
-	 * @return array|false|StellarAsset
+	 * @return Asset The asset instance.
 	 */
-	protected function add_asset( string $handle, string $path, ?string $version = null ) {
+	protected function add_asset( string $handle, string $path, ?string $version = null ): Asset {
 		return Asset::add(
 			$handle,
 			$path,
 			$version ?? Tickets::VERSION
-		)
-			->add_to_group( static::$asset_group )
-			->add_to_group_path( 'et-order-modifiers' );
+		)->add_to_group( static::$asset_group )
+		->add_to_group_path( 'et-order-modifiers' );
 	}
 }
