@@ -275,7 +275,7 @@ class Fee extends Modifier_Abstract {
 			'fee_applied_to'
 		)->meta_value ?? '';
 		$raw_amount = (float) ( $context['raw_amount'] ?? 0 );
-		$sub_type   = $context['sub_type'] ?? 'percent';
+		$sub_type   = $context['sub_type'] ?? '';
 
 		switch ( $sub_type ) {
 			case 'percent':
@@ -294,7 +294,7 @@ class Fee extends Modifier_Abstract {
 		return [
 			'order_modifier_display_name' => $context['display_name'] ?? '',
 			'order_modifier_slug'         => $context['slug'] ?? $this->generate_unique_slug(),
-			'order_modifier_sub_type'     => $context['sub_type'] ?? '',
+			'order_modifier_sub_type'     => $sub_type,
 			'order_modifier_amount'       => $amount,
 			'order_modifier_status'       => $context['status'] ?? '',
 			'order_modifier_fee_limit'    => $context['fee_limit'] ?? '',
