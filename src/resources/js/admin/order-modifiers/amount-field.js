@@ -42,42 +42,45 @@ window.etOrderModifiersAmountField = window.etOrderModifiersAmountField || {
 
 	const getType = () => $( selectors.type ).val();
 
-	const setupMask = () => {
-		let pattern;
-
+	const getMaskPattern = () => {
 		if ( 'percent' === getType() ) {
-			pattern = 'num %';
-		} else {
-			pattern = 'postfix' === i18n.placement
-				? `num ${ i18n.currencySymbol }`
-				: `${ i18n.currencySymbol } num`;
+			return 'num %';
 		}
 
-		mask = window.IMask(
-			document.querySelector( selectors.amount ),
-			{
-				mask: pattern,
-				lazy: false,
-				blocks: {
-					num: {
-						mask: Number,
-						max: 999999999,
-						min: 0.01,
-						normalizeZeros: true,
-						padFractionalZeros: true,
-						radix: i18n.decimalSeparator,
-						scale: i18n.precision,
-						thousandsSeparator: i18n.thousandsSeparator,
-					},
+		return 'postfix' === i18n.placement
+			? `num ${ i18n.currencySymbol }`
+			: `${ i18n.currencySymbol } num`;
+	};
+
+	const getMaskOptions = ( pattern ) => {
+		return {
+			mask: pattern,
+			lazy: false,
+			blocks: {
+				num: {
+					mask: Number,
+					max: 999999999,
+					min: 0,
+					normalizeZeros: true,
+					padFractionalZeros: true,
+					radix: i18n.decimalSeparator,
+					scale: i18n.precision,
+					thousandsSeparator: i18n.thousandsSeparator,
 				},
 			},
+		};
+	};
+
+	const setupMask = () => {
+		mask = window.IMask(
+			document.querySelector( selectors.amount ),
+			getMaskOptions( getMaskPattern() ),
 		);
 	};
 
 	const updateMask = () => {
 		const value = mask.unmaskedValue;
-		mask.destroy();
-		setupMask();
+		mask.updateOptions( { mask: getMaskPattern() } );
 		mask.unmaskedValue = value;
 	};
 
