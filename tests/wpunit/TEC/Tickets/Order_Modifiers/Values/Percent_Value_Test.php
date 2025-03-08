@@ -57,7 +57,7 @@ class Percent_Value_Test extends WPTestCase {
 		yield 'Non-numeric value' => [ 'foo', 'Value must be a number.' ];
 		yield 'NAN value' => [ NAN, 'NAN is by definition not a number.' ];
 		yield 'Infinity value' => [ INF, 'Infinity is too big for us to work with.' ];
-		yield 'Infinity value' => [ 0.0001, 'Percent value cannot be smaller than 0.0001 (0.01%).' ];
+		yield 'Too small percent' => [ 0.001, 'Percent value cannot be smaller than 0.0001 (0.01%).' ];
 	}
 
 	public function percent_data_provider() {
