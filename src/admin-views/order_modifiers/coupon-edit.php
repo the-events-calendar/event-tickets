@@ -11,7 +11,7 @@
  * @var string          $order_modifier_display_name The coupon name (display name).
  * @var string          $order_modifier_slug         The coupon code (slug).
  * @var string          $order_modifier_sub_type     The discount type (percentage/flat).
- * @var Precision_Value $order_modifier_amount       The amount.
+ * @var Value_Interface $order_modifier_amount       The amount.
  * @var string          $order_modifier_status       The status of the coupon (active, inactive, draft).
  * @var int             $order_modifier_coupon_limit The coupon limit.
  *
@@ -20,7 +20,7 @@
  * phpcs:disable WordPress.WP.GlobalVariablesOverride
  */
 
-use TEC\Tickets\Commerce\Values\Precision_Value;
+use TEC\Tickets\Commerce\Values\Value_Interface;
 
 if ( ! empty( $order_modifier_display_name ) ) {
 	$heading = __( 'Edit Coupon', 'event-tickets' );
@@ -99,7 +99,7 @@ $modifier_statuses = [
 						id="order_modifier_amount"
 						class="tribe-field tec_order_modifier_amount_field"
 						data-validation-error="<?php esc_attr_e( 'Amount is required', 'event-tickets' ); ?>"
-						value="<?php echo esc_attr( $order_modifier_amount ); ?>" />
+						value="<?php echo esc_attr( (string) $order_modifier_amount ); ?>" />
 				</div>
 
 				<div class="form-field form-required">
