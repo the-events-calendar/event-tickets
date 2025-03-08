@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\QR;
 
-use TEC\Tickets\phpqrcode\QRcode;
+use TEC\Common\phpqrcode\QRcode;
 
 /**
  * A Facade for the QR code generator.
@@ -19,7 +19,7 @@ class QR {
 	 *
 	 * @var int What type of error correction will be used on the QR code.
 	 */
-	protected $level = TEC_TICKETS_QR_ECLEVEL_L;
+	protected $level = TEC_COMMON_QR_ECLEVEL_L;
 
 	/**
 	 * The size of the QR code.
