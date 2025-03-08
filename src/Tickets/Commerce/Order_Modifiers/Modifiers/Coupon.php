@@ -181,7 +181,7 @@ class Coupon extends Modifier_Abstract {
 		$raw_amount  = (float) ( $context['raw_amount'] ?? 0 );
 		$sub_type    = $context['sub_type'] ?? 'percent';
 
-		switch ($sub_type) {
+		switch ( $sub_type ) {
 			case 'percent':
 				$amount = new Percent_Value( $raw_amount );
 				break;
