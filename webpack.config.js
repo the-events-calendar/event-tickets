@@ -266,6 +266,29 @@ const targets = [
 				'build/OrderModifiers/block-editor.css',
 		},
 	},
+	{
+		name: 'order-modifier-utils',
+		entry: './src/Tickets/Commerce/Order_Modifiers/app/utils/index.js',
+		outputScript: './build/OrderModifiers/utils.min.js',
+		outputStyle: `build/OrderModifiers/utils.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/order-modifier-utils.js': 'build/OrderModifiers/utils.js',
+			'src/resources/css/app/order-modifier-utils.css':
+				'build/OrderModifiers/utils.css',
+		},
+	},
+	{
+		name: 'order-modifier-edit-bundle',
+		entry: './src/Tickets/Commerce/Order_Modifiers/app/admin/modifierEdit/index.js',
+		outputScript: './build/OrderModifiers/admin/modifierEdit.min.js',
+		outputStyle: `build/OrderModifiers/admin/modifierEdit.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/order-modifier-edit-bundle.js':
+				'build/OrderModifiers/admin/modifierEdit.js',
+			'src/resources/css/app/order-modifier-edit-bundle.css':
+				'build/OrderModifiers/admin/modifierEdit.css',
+		},
+	},
 ];
 
 // A function cannot be spread directly, we need this temporary variable.
@@ -298,6 +321,7 @@ const config = merge(common, {
 			'@tec/tickets/seating/frontend/session':
 				'tec.tickets.seating.frontend.session',
 			'@tec/tickets/order-modifiers/rest': 'tec.tickets.orderModifiers.rest',
+			'@tec/tickets/order-modifiers/utils': 'tec.tickets.orderModifiers.utils',
 		},
 	],
 	// Configure multiple entry points.
