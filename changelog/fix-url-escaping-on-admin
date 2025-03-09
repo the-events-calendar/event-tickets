@@ -1,0 +1,4 @@
+Significance: patch
+Type: security
+
+Ensure proper URL encoding for Admin URLS
