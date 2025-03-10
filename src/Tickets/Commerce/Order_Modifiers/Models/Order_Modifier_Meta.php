@@ -39,8 +39,8 @@ class Order_Modifier_Meta extends Model implements ModelCrud, ModelFromQueryBuil
 		'id'                => 'int',
 		'order_modifier_id' => 'int',
 		'meta_key'          => 'string',
-		'meta_value'        => 'string',
-		'priority'          => 'int',
+		'meta_value'        => 'string|int',
+		'priority'          => [ 'int', 0 ],
 		'created_at'        => 'string',
 	];
 
