@@ -163,7 +163,7 @@ trait Coupons {
 		}
 
 		// If we got null, the coupon is unlimited.
-		if ( ! property_exists( $available, 'meta_value' ) || empty( $available->meta_value ) ) {
+		if ( empty( $available->meta_value ) ) {
 			return -1;
 		}
 
@@ -183,12 +183,9 @@ trait Coupons {
 		try {
 			$uses = $this->get_uses_meta( $coupon_id );
 
-			// Verify that the meta_value property exists.
-			if ( ! property_exists( $uses, 'meta_value' ) ) {
-				return 0;
-			}
-
-			return (int) $uses->meta_value;
+			return empty( $uses->meta_value )
+				? 0
+				: (int) $uses->meta_value;
 		} catch ( Exception $e ) {
 			return 0;
 		}
