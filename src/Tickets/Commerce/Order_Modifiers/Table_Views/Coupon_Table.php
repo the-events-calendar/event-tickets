@@ -12,10 +12,12 @@
  */
 namespace TEC\Tickets\Commerce\Order_Modifiers\Table_Views;
 
-use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship;
-use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta;
+use TEC\Tickets\Commerce\Order_Modifiers\Data_Transfer_Objects\Order_Modifier_DTO;
+use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon as Coupon_Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Coupons;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta;
 
 /**
  * Class for displaying Coupon data in the table.
@@ -91,7 +93,7 @@ class Coupon_Table extends Order_Modifier_Table {
 			[
 				'action'      => 'delete_modifier',
 				'modifier_id' => $item->id,
-				'_wpnonce'    => wp_create_nonce( 'delete_modifier_' . $item->id ),
+				'_wpnonce'    => wp_create_nonce( "delete_modifier_{$item->id}" ),
 				'modifier'    => $this->modifier->get_modifier_type(),
 			],
 			admin_url( 'admin.php' )
@@ -134,7 +136,12 @@ class Coupon_Table extends Order_Modifier_Table {
 	 * @return array The items that were retrieved.
 	 */
 	protected function get_items( array $params ): array {
-		return $this->modifier->get_modifiers( $params, false );
+		return array_map(
+			function ( $item ) {
+				return Order_Modifier_DTO::fromObject( $item )->toModel();
+			},
+			$this->modifier->get_modifiers( $params, false )
+		);
 	}
 
 	/**
