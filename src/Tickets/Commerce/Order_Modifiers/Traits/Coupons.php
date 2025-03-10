@@ -13,8 +13,9 @@ use Exception;
 use TEC\Tickets\Commerce\Order_Modifiers\Factory;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier;
+use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Meta;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Coupons as Coupons_Repository;
-use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta as Meta_Repository;
 
 /**
  * Trait Coupons
@@ -35,6 +36,7 @@ trait Coupons {
 	protected function is_coupon_slug_valid( string $slug ): bool {
 		try {
 			$repo = Factory::get_repository_for_type( 'coupon' );
+
 			return $this->is_coupon_valid( $repo->find_by_slug( $slug ) );
 		} catch ( Exception $e ) {
 			return false;
@@ -150,8 +152,8 @@ trait Coupons {
 	 * @return int The usage limit for the coupon. -1 indicates there is no limit.
 	 */
 	protected function get_coupon_usage_limit( int $coupon_id ): int {
-		/** @var Order_Modifiers_Meta $meta */
-		$meta = tribe( Order_Modifiers_Meta::class );
+		/** @var Meta_Repository $meta */
+		$meta = tribe( Meta_Repository::class );
 
 		$available = $meta->find_by_order_modifier_id_and_meta_key( $coupon_id, 'coupons_available' );
 
@@ -178,16 +180,38 @@ trait Coupons {
 	 * @return int The number of times the coupon has been used.
 	 */
 	protected function get_coupon_uses( int $coupon_id ): int {
-		/** @var Order_Modifiers_Meta $meta */
-		$meta = tribe( Order_Modifiers_Meta::class );
+		try {
+			$uses = $this->get_uses_meta( $coupon_id );
 
-		$uses = $meta->find_by_order_modifier_id_and_meta_key( $coupon_id, 'coupons_uses' );
+			// Verify that the meta_value property exists.
+			if ( ! property_exists( $uses, 'meta_value' ) ) {
+				return 0;
+			}
 
-		if ( null === $uses || ! property_exists( $uses, 'meta_value' ) ) {
+			return (int) $uses->meta_value;
+		} catch ( Exception $e ) {
 			return 0;
 		}
+	}
 
-		return (int) $uses->meta_value;
+	/**
+	 * Get the meta for a coupon's uses.
+	 *
+	 * @param int $coupon_id
+	 *
+	 * @return Order_Modifier_Meta The meta for the coupon's uses.
+	 * @throws Exception If no uses meta is found.
+	 */
+	protected function get_uses_meta( int $coupon_id ): Order_Modifier_Meta {
+		/** @var Meta_Repository $meta */
+		$meta = tribe( Meta_Repository::class );
+
+		$uses = $meta->find_by_order_modifier_id_and_meta_key( $coupon_id, 'coupons_uses' );
+		if ( ! $uses instanceof Order_Modifier_Meta ) {
+			throw new Exception( 'No uses meta found' );
+		}
+
+		return $uses;
 	}
 
 	/**
