@@ -233,4 +233,54 @@ trait Coupons {
 
 		return $this->get_coupon_uses( $coupon_id ) < $limit;
 	}
+
+	/**
+	 * Add a coupon use.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $coupon_id The coupon ID.
+	 * @param int $quantity  The number of uses to add.
+	 *
+	 * @return void
+	 */
+	protected function add_coupon_use( int $coupon_id, int $quantity = 1 ) {
+		try {
+			$existing_uses = $this->get_uses_meta( $coupon_id );
+		} catch ( Exception $e ) {
+			$existing_uses = new Order_Modifier_Meta(
+				[
+					'order_modifier_id' => $coupon_id,
+					'meta_key'          => 'coupons_uses',
+					'meta_value'        => 0,
+				]
+			);
+		}
+
+		$existing_uses->meta_value += $quantity;
+		$existing_uses->save();
+	}
+
+	/**
+	 * Remove a coupon use.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $coupon_id The coupon ID.
+	 * @param int $quantity  The number of uses to remove.
+	 *
+	 * @return void
+	 */
+	protected function remove_coupon_use( int $coupon_id, int $quantity = 1 ) {
+		try {
+			$existing_uses = $this->get_uses_meta( $coupon_id );
+
+			// Use max() to ensure we don't set the usage to a negative number.
+			$existing_uses->meta_value = max( $existing_uses->meta_value - $quantity, 0 );
+			$existing_uses->save();
+		} catch ( Exception $e ) {
+			// Do nothing.
+			return;
+		}
+	}
 }
