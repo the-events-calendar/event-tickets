@@ -18,6 +18,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 use Tribe__Tickets__Tickets_View as Tickets_View;
+use TEC\Common\Asset;
 
 /**
  * Class Block.
@@ -27,6 +28,34 @@ use Tribe__Tickets__Tickets_View as Tickets_View;
  * @package TEC\Tickets\Blocks\Tickets;
  */
 class Block extends Abstract_Block {
+
+	/**
+	 * The slug of the editor script.
+	 *
+	 * @since 5.20.0
+	 *
+	 * @var string
+	 */
+	public const EDITOR_SCRIPT_SLUG = 'tec-tickets-tickets-block-editor-script';
+
+	/**
+	 * The slug of the editor style.
+	 *
+	 * @since 5.20.0
+	 *
+	 * @var string
+	 */
+	public const EDITOR_STYLE_SLUG = 'tec-tickets-tickets-block-editor-style';
+
+	/**
+	 * The slug of the frontend script.
+	 *
+	 * @since 5.20.0
+	 *
+	 * @var string
+	 */
+	public const FRONTEND_SCRIPT_SLUG = 'tribe-tickets-block';
+
 	/**
 	 * Hooks the block on the required actions.
 	 *
@@ -80,7 +109,7 @@ class Block extends Abstract_Block {
 
 		tribe_asset(
 			$plugin,
-			'tribe-tickets-block',
+			self::FRONTEND_SCRIPT_SLUG,
 			$tickets_js,
 			[
 				'jquery',
@@ -359,27 +388,31 @@ class Block extends Abstract_Block {
 	 * Registers the editor scripts.
 	 *
 	 * @since 5.8.0
+	 * @since 5.20.0 - Changed from WP methods to StellarWP/assets.
 	 *
 	 * @return void
 	 */
 	public function register_editor_scripts() {
-		$plugin = Tickets_Main::instance();
-		$min    = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-
-		// Using WordPress functions to register since we just need to register them.
-		wp_register_script(
-			'tec-tickets-tickets-block-editor-script',
-			$plugin->plugin_url . "build/Tickets/Blocks/Tickets/editor{$min}.js",
-			[ 'tribe-common-gutenberg-vendor', 'tribe-tickets-gutenberg-vendor' ],
-			Tickets_Main::VERSION,
-			[ 'in_footer' => false ]
-		);
-
-		wp_register_style(
-			'tec-tickets-tickets-block-editor-style',
-			$plugin->plugin_url . "build/Tickets/Blocks/Tickets/editor{$min}.css",
-			[ 'tribe-tickets-gutenberg-main-styles' ],
+		Asset::add(
+			self::EDITOR_SCRIPT_SLUG,
+			'Tickets/editor.js',
 			Tickets_Main::VERSION
-		);
+		)
+			->add_to_group_path( 'et-tickets-blocks' )
+			->set_dependencies(
+				'tribe-tickets-gutenberg-vendor',
+				'tribe-common-gutenberg-vendor'
+			)
+			->in_header()
+			->register();
+
+		Asset::add(
+			self::EDITOR_STYLE_SLUG,
+			'Tickets/editor.css',
+			Tickets_Main::VERSION
+		)
+			->add_to_group_path( 'et-tickets-blocks' )
+			->set_dependencies( 'tribe-tickets-gutenberg-main-styles' )
+			->register();
 	}
 }

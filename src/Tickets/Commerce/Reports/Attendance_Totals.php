@@ -24,6 +24,17 @@ class Attendance_Totals extends \Tribe__Tickets__Abstract_Attendance_Totals {
 	protected $total_cancelled = 0;
 	protected $total_refunded = 0;
 
+	/**
+	 * Reset the counts to zero so that we can calculate for next event.
+	 *
+	 * @since 5.20.0
+	 */
+	public function reset_counts(): void {
+		$this->total_paid      = 0;
+		$this->total_pending   = 0;
+		$this->total_cancelled = 0;
+		$this->total_refunded  = 0;
+	}
 
 	/**
 	 * {@inheritDoc}
