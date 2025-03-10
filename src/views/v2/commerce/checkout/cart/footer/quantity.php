@@ -9,17 +9,27 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.1.9
+ * @since 5.1.9
+ * @since TBD Updated logic to only count ticket items for quantity.
  *
- * @version 5.1.9
+ * @version TBD
  *
- * @var \Tribe__Template $this                  [Global] Template object.
- * @var Module           $provider              [Global] The tickets provider instance.
- * @var string           $provider_id           [Global] The tickets provider class name.
- * @var array[]          $items                 [Global] List of Items on the cart to be checked out.
- * @var array[]          $gateways              [Global] An array with the gateways.
- * @var int              $gateways_active       [Global] The number of active gateways.
+ * @var Tribe__Template $this            [Global] Template object.
+ * @var Module          $provider        [Global] The tickets provider instance.
+ * @var string          $provider_id     [Global] The tickets provider class name.
+ * @var array[]         $items           [Global] List of Items on the cart to be checked out.
+ * @var array[]         $gateways        [Global] An array with the gateways.
+ * @var int             $gateways_active [Global] The number of active gateways.
  */
+
+use TEC\Tickets\Commerce\Module;
+
+$items = array_filter(
+	$items,
+	function ( $item ) {
+		return 'ticket' === ( $item['type'] ?? 'ticket' );
+	}
+);
 
 ?>
 <div class="tribe-tickets__commerce-checkout-cart-footer-quantity">
