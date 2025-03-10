@@ -195,7 +195,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 */
 	protected function column_default( $item, $column_name ) {
 		// Build the method name dynamically based on the column name.
-		$method = 'render_' . $column_name . '_column';
+		$method = "render_{$column_name}_column";
 
 		// If a specific method exists for the column, call it.
 		if ( method_exists( $this, $method ) && is_callable( [ $this, $method ] ) ) {
@@ -232,12 +232,13 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 * @return string Rendered HTML for actions.
 	 */
 	protected function render_actions( string $label, array $actions ): string {
-		$action_links = [];
-
 		// Loop through the actions and build both the label and action links.
-		foreach ( $actions as $action_label => $data ) {
-			$action_links[ $action_label ] = sprintf( '<a href="%s">%s</a>', esc_url( $data['url'] ), esc_html( $data['label'] ) );
-		}
+		$action_links = array_map(
+			function ( $data ) {
+				return sprintf( '<a href="%s">%s</a>', esc_url( $data['url'] ), esc_html( $data['label'] ) );
+			},
+			$actions
+		);
 
 		$url = isset( $actions['edit'] ) ? $actions['edit']['url'] : ( array_values( $actions )[0]['url'] ?? '#' );
 
