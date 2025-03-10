@@ -254,7 +254,7 @@ trait Coupons {
 			);
 		}
 
-		$existing_uses->meta_value += $quantity;
+		$existing_uses->meta_value = (int) $existing_uses->meta_value + $quantity;
 		$existing_uses->save();
 	}
 
@@ -273,7 +273,7 @@ trait Coupons {
 			$existing_uses = $this->get_uses_meta( $coupon_id );
 
 			// Use max() to ensure we don't set the usage to a negative number.
-			$existing_uses->meta_value = max( $existing_uses->meta_value - $quantity, 0 );
+			$existing_uses->meta_value = max( (int) $existing_uses->meta_value - $quantity, 0 );
 			$existing_uses->save();
 		} catch ( Exception $e ) {
 			// Do nothing.
