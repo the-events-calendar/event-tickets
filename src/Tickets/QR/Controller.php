@@ -168,7 +168,7 @@ class Controller extends Controller_Contract {
 	 * @since 5.6.7
 	 */
 	public function has_library_loaded(): bool {
-		return defined( 'TEC_COMMON_QR_CACHEABLE' );
+		return defined( 'TEC_QR_CACHEABLE' );
 	}
 
 	/**
