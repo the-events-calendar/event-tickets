@@ -2298,7 +2298,7 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next().value ).toEqual(
 				put( actions.setTicketTempStartDateInput(
 					action.payload.clientId,
-					action.payload.dayPickerInput.state.value,
+					action.payload.dayPickerInput,
 				) ),
 			);
 			expect( gen.next().value ).toEqual(
@@ -2323,7 +2323,7 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next().value ).toEqual(
 				put( actions.setTicketTempStartDateInput(
 					action.payload.clientId,
-					action.payload.dayPickerInput.state.value,
+					action.payload.dayPickerInput,
 				) ),
 			);
 			expect( gen.next().value ).toEqual(
@@ -2360,7 +2360,7 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next().value ).toEqual(
 				put( actions.setTicketTempEndDateInput(
 					action.payload.clientId,
-					action.payload.dayPickerInput.state.value,
+					action.payload.dayPickerInput,
 				) ),
 			);
 			expect( gen.next().value ).toEqual(
@@ -2385,7 +2385,7 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next().value ).toEqual(
 				put( actions.setTicketTempEndDateInput(
 					action.payload.clientId,
-					action.payload.dayPickerInput.state.value,
+					action.payload.dayPickerInput,
 				) ),
 			);
 			expect( gen.next().value ).toEqual(
