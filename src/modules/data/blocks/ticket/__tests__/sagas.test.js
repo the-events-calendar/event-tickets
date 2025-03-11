@@ -107,7 +107,10 @@ describe( 'Ticket Block sagas', () => {
 					types.HANDLE_TICKET_END_DATE,
 					types.HANDLE_TICKET_START_TIME,
 					types.HANDLE_TICKET_END_TIME,
+					types.HANDLE_TICKET_SALE_START_DATE,
+					types.HANDLE_TICKET_SALE_END_DATE,
 					MOVE_TICKET_SUCCESS,
+					types.UPDATE_UNEDITABLE_TICKETS,
 				], sagas.handler ),
 			);
 			expect( gen.next().value ).toEqual(
