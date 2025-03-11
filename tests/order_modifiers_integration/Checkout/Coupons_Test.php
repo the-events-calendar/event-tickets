@@ -10,6 +10,9 @@ use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Cart as Commerce_Cart;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Coupons;
+use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Meta;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta;
+use TEC\Tickets\Commerce\Order_Modifiers\Traits\Coupons as Coupon_Trait;
 use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
 use TEC\Tickets\Commerce\Traits\Type;
 use TEC\Tickets\Commerce\Utils\Value;
@@ -28,6 +31,7 @@ class Coupons_Test extends Controller_Test_Case {
 
 	use Attendee_Maker;
 	use Coupon_Creator;
+	use Coupon_Trait;
 	use Order_Maker;
 	use Reservations_Maker;
 	use Series_Pass_Factory;
@@ -315,5 +319,67 @@ class Coupons_Test extends Controller_Test_Case {
 		Assert::assertCount( 1, $order2->coupons, 'Coupons should have 1 coupon' );
 		Assert::assertEquals( 789.60, $order2->subtotal->get_float() );
 		Assert::assertEquals( 653.00, $order2->total_value->get_float(), 'Order should be discounted by 17.3% ($136.00)' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_update_coupon_usage() {
+		$post = static::factory()->post->create(
+			[ 'post_title' => 'The Event' ],
+		);
+
+		// Create a tickets.
+		$ticket_id = $this->create_tc_ticket( $post, 11.28 );
+
+		// Create a 17.3% off coupon.
+		$coupon = $this->create_coupon(
+			[
+				'raw_amount' => 17.3,
+				'sub_type'   => 'percent',
+			]
+		);
+
+		// Set the usage limit to 2.
+		$repo = tribe( Order_Modifiers_Meta::class );
+		$repo->upsert_meta(
+			new Order_Modifier_Meta(
+				[
+					'order_modifier_id' => $coupon->id,
+					'meta_key'          => 'coupons_available',
+					'meta_value'        => 2,
+				]
+			)
+		);
+
+		// Ensure the usage limit is set correctly.
+		Assert::assertEquals( 2, $this->get_coupon_usage_limit( $coupon->id ) );
+		Assert::assertEquals( 0, $this->get_coupon_uses( $coupon->id ) );
+
+		// Basic checks to ensure the coupon is calculating values correctly.
+		Assert::assertEquals( -1.95, $coupon->get_discount_amount( 11.28 ), '17.3% of 11.28 should be 1.95' );
+
+		// Register the controller.
+		$this->make_controller()->register();
+
+		// Get the cart and start adding tickets.
+		/** @var Commerce_Cart $cart */
+		$cart = tribe( Commerce_Cart::class );
+		$cart->add_ticket( $ticket_id, 2 );
+
+		// Grab the total and subtotal.
+		$cart_subtotal = $cart->get_cart_subtotal();
+		$cart_total    = $cart->get_cart_total();
+
+		// With only tickets in the cart and no coupons applied, the total and subtotal should be the same.
+		Assert::assertEquals( $cart_subtotal, $cart_total );
+
+		// Add the order to the cart, create an order, and ensure the coupon is used.
+		$coupon->add_to_cart( $cart->get_repository() );
+		$order = $this->create_order_from_cart( $cart );
+
+		// The limit should be the same, and the usage should have increased.
+		Assert::assertEquals( 2, $this->get_coupon_usage_limit( $coupon->id ) );
+		Assert::assertEquals( 1, $this->get_coupon_uses( $coupon->id ) );
 	}
 }
