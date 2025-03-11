@@ -54,14 +54,13 @@ abstract class Abstract_Coupon_Usage extends Flag_Action_Abstract {
 	 * @param WP_Post           $post       Order object as a WP_Post object.
 	 */
 	public function handle( Status_Interface $new_status, $old_status, WP_Post $post ) {
-		// If there aren't any coupons, bail.
+		// If there aren't any coupons, don't handle.
 		if ( empty( $post->coupons ) ) {
 			return;
 		}
 
-		// Handle the coupon usage updates.
 		foreach ( $post->coupons as $coupon ) {
-			$this->handle_coupon_usage( $coupon );
+			$this->handle_coupon_usage( $coupon, $post );
 		}
 	}
 
@@ -105,7 +104,8 @@ abstract class Abstract_Coupon_Usage extends Flag_Action_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $coupon Array of coupon data.
+	 * @param array   $coupon Array of coupon data.
+	 * @param WP_Post $order  Order object as a WP_Post object.
 	 */
-	abstract protected function handle_coupon_usage( $coupon );
+	abstract protected function handle_coupon_usage( array $coupon, $order );
 }
