@@ -327,7 +327,7 @@ describe( 'Ticket Block sagas', () => {
 			const tickets = [ 'tribe' ];
 			const gen = sagas.createMissingTicketBlocks( tickets );
 			expect( gen.next().value ).toEqual(
-				call( wpDispatch, 'core/editor' ),
+				call( wpDispatch, 'core/block-editor' ),
 			);
 			expect( gen.next( wpDispatchCoreEditor ).value ).toEqual(
 				call( wpSelect, 'core/block-editor' ),
