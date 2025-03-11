@@ -9,11 +9,14 @@ use PHPUnit\Framework\Assert;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Cart as Commerce_Cart;
+use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Coupons;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Meta;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Coupons as Coupon_Trait;
 use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
+use TEC\Tickets\Commerce\Status\Completed;
+use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Traits\Type;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
@@ -341,19 +344,20 @@ class Coupons_Test extends Controller_Test_Case {
 		);
 
 		// Set the usage limit to 2.
-		$repo = tribe( Order_Modifiers_Meta::class );
+		$limit = 5;
+		$repo  = tribe( Order_Modifiers_Meta::class );
 		$repo->upsert_meta(
 			new Order_Modifier_Meta(
 				[
 					'order_modifier_id' => $coupon->id,
 					'meta_key'          => 'coupons_available',
-					'meta_value'        => 2,
+					'meta_value'        => $limit,
 				]
 			)
 		);
 
 		// Ensure the usage limit is set correctly.
-		Assert::assertEquals( 2, $this->get_coupon_usage_limit( $coupon->id ) );
+		Assert::assertEquals( $limit, $this->get_coupon_usage_limit( $coupon->id ) );
 		Assert::assertEquals( 0, $this->get_coupon_uses( $coupon->id ) );
 
 		// Basic checks to ensure the coupon is calculating values correctly.
@@ -379,7 +383,17 @@ class Coupons_Test extends Controller_Test_Case {
 		$order = $this->create_order_from_cart( $cart );
 
 		// The limit should be the same, and the usage should have increased.
-		Assert::assertEquals( 2, $this->get_coupon_usage_limit( $coupon->id ) );
+		Assert::assertEquals( $limit, $this->get_coupon_usage_limit( $coupon->id ) );
 		Assert::assertEquals( 1, $this->get_coupon_uses( $coupon->id ) );
+
+		// Transition the order status back to pending and then to completed.
+		$orders = tribe( Order::class );
+		$orders->modify_status( $order->ID, Pending::SLUG );
+		$orders->modify_status( $order->ID, Completed::SLUG );
+		Assert::assertEquals(
+			1,
+			$this->get_coupon_uses( $coupon->id ),
+			'Order status should not affect coupon usage'
+		);
 	}
 }
