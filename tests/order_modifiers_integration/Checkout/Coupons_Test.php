@@ -4,7 +4,6 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Tests\Order_Modifiers_Integration\Checkout;
 
-
 use PHPUnit\Framework\Assert;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
@@ -15,8 +14,13 @@ use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Meta;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Coupons as Coupon_Trait;
 use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
+use TEC\Tickets\Commerce\Status\Action_Required;
+use TEC\Tickets\Commerce\Status\Approved;
 use TEC\Tickets\Commerce\Status\Completed;
+use TEC\Tickets\Commerce\Status\Created;
 use TEC\Tickets\Commerce\Status\Pending;
+use TEC\Tickets\Commerce\Status\Refunded;
+use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Traits\Type;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
@@ -177,7 +181,7 @@ class Coupons_Test extends Controller_Test_Case {
 		// Cart subtotal should be (10 * 2) + (20 * 3) + (30 * 4) + (40 * 5) + (50 * 6) = 20 + 60 + 120 + 200 + 300 = 700.
 		Assert::assertEquals( 700.0, $cart_subtotal );
 
-		$order1 = $this->create_order_from_cart( $cart );
+		$order1 = $this->create_order_from_cart();
 
 		// Validate that the order has the correct amounts.
 		Assert::assertCount( 5, $order1->items, 'Order should have 5 different tickets' );
@@ -199,7 +203,7 @@ class Coupons_Test extends Controller_Test_Case {
 		// Cart total should be 700 - 10% = 700 - 70 = 630.
 		Assert::assertEquals( 630.0, $cart_total );
 
-		$order2 = $this->create_order_from_cart( $cart );
+		$order2 = $this->create_order_from_cart();
 
 		// Validate that the order has the correct amounts.
 		Assert::assertCount( 5, $order2->items, 'Order should have 5 different tickets' );
@@ -292,7 +296,7 @@ class Coupons_Test extends Controller_Test_Case {
 		// Cart subtotal should be (11.28 * 2) + (22.56 * 3) + (33.84 * 4) + (45.12 * 5) + (56.40 * 6) = 22.56 + 67.68 + 135.36 + 225.60 + 338.40 = 789.60.
 		Assert::assertEquals( 789.60, $cart_subtotal );
 
-		$order1 = $this->create_order_from_cart( $cart );
+		$order1 = $this->create_order_from_cart();
 
 		// Validate that the order has the correct amounts.
 		Assert::assertCount( 5, $order1->items, 'Order should have 5 different tickets' );
@@ -314,7 +318,7 @@ class Coupons_Test extends Controller_Test_Case {
 		// Cart total should be 789.60 - 17.3% = 789.60 - 136.60 = 653.00.
 		Assert::assertEquals( 653.00, $cart_total, 'Order should be discounted by 17.3% ($136.60)' );
 
-		$order2 = $this->create_order_from_cart( $cart );
+		$order2 = $this->create_order_from_cart();
 
 		// Validate that the order has the correct amounts.
 		Assert::assertCount( 5, $order2->items, 'Order should have 5 different tickets' );
@@ -332,7 +336,7 @@ class Coupons_Test extends Controller_Test_Case {
 			[ 'post_title' => 'The Event' ],
 		);
 
-		// Create a tickets.
+		// Create a ticket.
 		$ticket_id = $this->create_tc_ticket( $post, 11.28 );
 
 		// Create a 17.3% off coupon.
@@ -380,7 +384,7 @@ class Coupons_Test extends Controller_Test_Case {
 
 		// Add the order to the cart, create an order, and ensure the coupon is used.
 		$coupon->add_to_cart( $cart->get_repository() );
-		$order = $this->create_order_from_cart( $cart );
+		$order = $this->create_order_from_cart();
 
 		// The limit should be the same, and the usage should have increased.
 		Assert::assertEquals( $limit, $this->get_coupon_usage_limit( $coupon->id ) );
@@ -395,5 +399,95 @@ class Coupons_Test extends Controller_Test_Case {
 			$this->get_coupon_uses( $coupon->id ),
 			'Order status should not affect coupon usage'
 		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_handle_status_transitions_without_duplicate_usages() {
+		$post = static::factory()->post->create(
+			[ 'post_title' => 'The Event' ],
+		);
+
+		// Create a ticket.
+		$ticket_id = $this->create_tc_ticket( $post, 11.28 );
+
+		// Create a 17.3% off coupon.
+		$coupon = $this->create_coupon(
+			[
+				'raw_amount' => 17.3,
+				'sub_type'   => 'percent',
+			]
+		);
+
+		// Set the usage limit to 2.
+		$limit = 5;
+		$repo  = tribe( Order_Modifiers_Meta::class );
+		$repo->upsert_meta(
+			new Order_Modifier_Meta(
+				[
+					'order_modifier_id' => $coupon->id,
+					'meta_key'          => 'coupons_available',
+					'meta_value'        => $limit,
+				]
+			)
+		);
+
+		// Ensure the usage limit is set correctly.
+		Assert::assertEquals( $limit, $this->get_coupon_usage_limit( $coupon->id ) );
+		Assert::assertEquals( 0, $this->get_coupon_uses( $coupon->id ) );
+
+		// Register the controller.
+		$this->make_controller()->register();
+
+		// Get the cart and add ticket and coupon.
+		/** @var Commerce_Cart $cart */
+		$cart = tribe( Commerce_Cart::class );
+		$cart->add_ticket( $ticket_id, 2 );
+		$coupon->add_to_cart( $cart->get_repository() );
+
+		$order = tec_tc_get_order( $this->create_order_without_transitions()->ID );
+		$orders = tribe( Order::class );
+		$status_handler = tribe( Status_Handler::class );
+
+		// Status should start as created.
+		Assert::assertEquals( Created::SLUG, $status_handler->get_by_wp_slug( $order->post_status )::SLUG );
+		Assert::assertEquals( $limit, $this->get_coupon_usage_limit( $coupon->id ) );
+		Assert::assertEquals( 0, $this->get_coupon_uses( $coupon->id ) );
+
+		// Transition the order status to pending. At this point, the coupon should be marked as used.
+		$orders->modify_status( $order->ID, Pending::SLUG );
+		$order = tec_tc_get_order( $order->ID );
+		Assert::assertEquals( Pending::SLUG, $status_handler->get_by_wp_slug( $order->post_status )::SLUG );
+		Assert::assertEquals( $limit, $this->get_coupon_usage_limit( $coupon->id ) );
+		Assert::assertEquals( 1, $this->get_coupon_uses( $coupon->id ) );
+
+		// Transition the order status to Approved. No change in the coupon usage.
+		$orders->modify_status( $order->ID, Approved::SLUG );
+		$order = tec_tc_get_order( $order->ID );
+		Assert::assertEquals( Approved::SLUG, $status_handler->get_by_wp_slug( $order->post_status )::SLUG );
+		Assert::assertEquals( $limit, $this->get_coupon_usage_limit( $coupon->id ) );
+		Assert::assertEquals( 1, $this->get_coupon_uses( $coupon->id ) );
+
+		// Transition to Action required. No change in the coupon usage.
+		$orders->modify_status( $order->ID, Action_Required::SLUG );
+		$order = tec_tc_get_order( $order->ID );
+		Assert::assertEquals( Action_Required::SLUG, $status_handler->get_by_wp_slug( $order->post_status )::SLUG );
+		Assert::assertEquals( $limit, $this->get_coupon_usage_limit( $coupon->id ) );
+		Assert::assertEquals( 1, $this->get_coupon_uses( $coupon->id ) );
+
+		// Transition to Completed. No change in the coupon usage.
+		$orders->modify_status( $order->ID, Completed::SLUG );
+		$order = tec_tc_get_order( $order->ID );
+		Assert::assertEquals( Completed::SLUG, $status_handler->get_by_wp_slug( $order->post_status )::SLUG );
+		Assert::assertEquals( $limit, $this->get_coupon_usage_limit( $coupon->id ) );
+		Assert::assertEquals( 1, $this->get_coupon_uses( $coupon->id ) );
+
+		// Transition to Refunded. Coupon usage should be decremented.
+		$orders->modify_status( $order->ID, Refunded::SLUG );
+		$order = tec_tc_get_order( $order->ID );
+		Assert::assertEquals( Refunded::SLUG, $status_handler->get_by_wp_slug( $order->post_status )::SLUG );
+		Assert::assertEquals( $limit, $this->get_coupon_usage_limit( $coupon->id ) );
+		Assert::assertEquals( 0, $this->get_coupon_uses( $coupon->id ) );
 	}
 }
