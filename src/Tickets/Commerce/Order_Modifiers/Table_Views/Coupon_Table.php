@@ -155,7 +155,7 @@ class Coupon_Table extends Order_Modifier_Table {
 	 *
 	 * @since 5.18.0
 	 *
-	 * @param object $item The order modifier item.
+	 * @param Coupon_Model $item The order modifier item.
 	 *
 	 * @return string The number of remaining coupons, or '-' if unlimited.
 	 */
@@ -178,7 +178,7 @@ class Coupon_Table extends Order_Modifier_Table {
 	 *
 	 * @since 5.18.0
 	 *
-	 * @param object $item The order modifier item.
+	 * @param Coupon_Model $item The order modifier item.
 	 *
 	 * @return string The number of used coupons, or '-' if unlimited.
 	 */

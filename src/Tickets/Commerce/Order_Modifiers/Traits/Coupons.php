@@ -194,7 +194,7 @@ trait Coupons {
 	/**
 	 * Get the meta for a coupon's uses.
 	 *
-	 * @param int $coupon_id
+	 * @param int $coupon_id The coupon ID.
 	 *
 	 * @return Order_Modifier_Meta The meta for the coupon's uses.
 	 * @throws Exception If no uses meta is found.

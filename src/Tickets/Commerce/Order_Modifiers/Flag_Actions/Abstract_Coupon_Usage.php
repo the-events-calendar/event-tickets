@@ -32,7 +32,7 @@ abstract class Abstract_Coupon_Usage extends Flag_Action_Abstract {
 	 * @var string[]
 	 */
 	protected $post_types = [
-		Order::POSTTYPE
+		Order::POSTTYPE,
 	];
 
 	/**
