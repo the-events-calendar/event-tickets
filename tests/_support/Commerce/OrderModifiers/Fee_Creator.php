@@ -3,6 +3,9 @@
 namespace Tribe\Tickets\Test\Commerce\OrderModifiers;
 
 use Exception;
+use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifier_Relationships as Relationships_Table;
+use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta as Meta_Table;
+use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifiers as Modifiers_Table;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Fee;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Meta;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Relationships as Relationships_Model;
