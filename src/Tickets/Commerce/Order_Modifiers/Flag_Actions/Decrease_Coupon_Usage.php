@@ -9,6 +9,7 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Flag_Actions;
 
+use TEC\Tickets\Commerce\Status\Status_Interface;
 use WP_Post;
 
 /**
@@ -30,6 +31,25 @@ class Decrease_Coupon_Usage extends Abstract_Coupon_Usage {
 	];
 
 	/**
+	 * Determines if a transition of status will trigger this flag action.
+	 *
+	 * @since TBD
+	 *
+	 * @param Status_Interface  $new_status New post status.
+	 * @param ?Status_Interface $old_status Old post status.
+	 * @param WP_Post           $post       Post object.
+	 *
+	 * @return bool
+	 */
+	public function should_trigger( Status_Interface $new_status, $old_status, $post ) {
+		if ( ! parent::should_trigger( $new_status, $old_status, $post ) ) {
+			return false;
+		}
+
+		return $this->has_usage_been_calculated( $post );
+	}
+
+	/**
 	 * Handles the usage of a coupon.
 	 *
 	 * @since TBD
@@ -39,5 +59,6 @@ class Decrease_Coupon_Usage extends Abstract_Coupon_Usage {
 	 */
 	protected function handle_coupon_usage( $coupon, $order ) {
 		$this->remove_coupon_use( $coupon['id'], $coupon['quantity'] );
+		$this->mark_usage_uncalculated( $order );
 	}
 }
