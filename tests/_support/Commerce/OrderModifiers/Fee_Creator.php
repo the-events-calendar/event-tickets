@@ -30,6 +30,20 @@ trait Fee_Creator {
 	}
 
 	/**
+	 * Truncates the custom tables.
+	 *
+	 * This method truncates the custom tables used by the order modifiers.
+	 *
+	 * @before
+	 * @after
+	 */
+	public function truncate_custom_tables() {
+		$this->assertTrue( false !== tribe( Relationships_Table::class )->empty_table() );
+		$this->assertTrue( false !== tribe( Meta_Table::class )->empty_table() );
+		$this->assertTrue( false !== tribe( Modifiers_Table::class )->empty_table() );
+	}
+
+	/**
 	 * Creates a fee for a ticket.
 	 *
 	 * This method creates a fee with the provided arguments and associates it with a ticket.

@@ -100,6 +100,9 @@ class Provider extends Service_Provider {
 		// Seating.
 		$this->container->register( Seating\Controller::class );
 
+		// Ticket Action hooks.
+		$this->container->register( Ticket_Actions::class );
+
 		$this->has_registered = true;
 
 		return true;
