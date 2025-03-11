@@ -25,6 +25,15 @@ abstract class Abstract_Coupon_Usage extends Flag_Action_Abstract {
 	use Coupons;
 
 	/**
+	 * Meta key for the calculated usage.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected string $meta_key = '_tec_tickets_coupon_usage_calculated';
+
+	/**
 	 * Which Post Types we check for this flag action.
 	 *
 	 * @since TBD
@@ -54,6 +63,41 @@ abstract class Abstract_Coupon_Usage extends Flag_Action_Abstract {
 		foreach ( $post->coupons as $coupon ) {
 			$this->handle_coupon_usage( $coupon );
 		}
+	}
+
+	/**
+	 * Determine if the usage has been calculated.
+	 *
+	 * @param WP_Post $post The order post object.
+	 *
+	 * @return bool True if the usage has been calculated, false otherwise.
+	 */
+	protected function has_usage_been_calculated( $post ): bool {
+		$usage = get_post_meta( $post->ID, $this->meta_key, true );
+
+		return ! empty( $usage );
+	}
+
+	/**
+	 * Marks the usage as calculated.
+	 *
+	 * @param WP_Post $order The order post object.
+	 *
+	 * @return void
+	 */
+	protected function mark_usage_calculated( $order ) {
+		update_post_meta( $order->ID, $this->meta_key, 'calculated' );
+	}
+
+	/**
+	 * Marks the usage as uncalculated.
+	 *
+	 * @param WP_Post $order The order post object.
+	 *
+	 * @return void
+	 */
+	protected function mark_usage_uncalculated( $order ) {
+		delete_post_meta( $order->ID, $this->meta_key );
 	}
 
 	/**
