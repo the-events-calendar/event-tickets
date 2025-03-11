@@ -13,6 +13,7 @@ use TEC\Tickets\Commerce\Traits\Is_Ticket;
 
 use Tribe__Utils__Array as Arr;
 use Tribe__Tickets__Global_Stock as Global_Stock;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
  * Class Decrease_Stock
@@ -113,6 +114,7 @@ class Decrease_Stock extends Flag_Action_Abstract {
 				continue;
 			}
 
+			$original_stock = $ticket->stock();
 			$global_stock = new Global_Stock( $ticket->get_event_id() );
 
 			// Is ticket shared capacity?
@@ -122,11 +124,21 @@ class Decrease_Stock extends Flag_Action_Abstract {
 			tribe( Ticket::class )->increase_ticket_sales_by( $ticket->ID, $quantity, $is_shared_capacity, $global_stock );
 
 			$stock = $ticket->stock();
+			$stock_should_be = max( $original_stock - $quantity, 0 );
 
-			// Global stock is handled in the `increase_ticket_sales_by` method.
-			if ( 'global' !== $global_stock_mode ) {
-				$stock -= $quantity;
+			if ( $stock_should_be !== $stock ) {
+				$stock = $stock_should_be;
 			}
+
+			/**
+			 * Fires after the calculations of a ticket stock decrease are done but before are saved.
+			 *
+			 * @since 5.20.0
+			 *
+			 * @param Ticket_Object $ticket   The ticket post object.
+			 * @param int           $quantity The quantity to decrease.
+			 */
+			do_action( 'tec_tickets_commerce_decrease_ticket_stock', $ticket, $quantity );
 
 			update_post_meta( $ticket->ID, Ticket::$stock_meta_key, $stock );
 		}

@@ -4106,6 +4106,18 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$version->update( $ticket->ID );
 
+			/**
+			 * Fires once a ticket's data has been saved.
+			 *
+			 * @since 5.20.0
+			 *
+			 * @param int    $ticket_id The ticket id that was just added.
+			 * @param int    $post_id   The ticket parent post ID.
+			 * @param array  $raw_data  The ticket data that was used to save.
+			 * @param string $class     The Commerce engine class name.
+			 */
+			do_action( 'tec_tickets_ticket_upserted', $ticket->ID, $post_id, $data, __CLASS__ );
+
 			$this->clear_ticket_cache_for_post( $post_id );
 
 			return $save_ticket;

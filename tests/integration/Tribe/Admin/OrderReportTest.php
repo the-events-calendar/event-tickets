@@ -252,6 +252,20 @@ class OrderReportTest extends WPTestCase {
 				$order_ids = wp_list_pluck( [ $order_a, $order_b, $order_c ], 'ID' );
 				$this->set_sequential_post_dates( ...$order_ids );
 
+				wp_update_post(
+					[
+						'ID'         => $ticket_id_a,
+						'menu_order' => 0,
+					]
+				);
+
+				wp_update_post(
+					[
+						'ID'         => $ticket_id_b,
+						'menu_order' => 1,
+					]
+				);
+
 				return [
 					$event_id,
 					[

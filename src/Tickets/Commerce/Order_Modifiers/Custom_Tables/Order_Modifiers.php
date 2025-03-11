@@ -7,6 +7,8 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables;
 
+use TEC\Common\Integrations\Custom_Table_Abstract as Table;
+
 /**
  * Class Orders_Modifiers.
  *
@@ -14,7 +16,7 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables;
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables;
  */
-class Order_Modifiers extends Abstract_Custom_Table {
+class Order_Modifiers extends Table {
 	/**
 	 * @since 5.18.0
 	 *
@@ -49,6 +51,28 @@ class Order_Modifiers extends Abstract_Custom_Table {
 	 * @var string The field that uniquely identifies a row in the table.
 	 */
 	protected static $uid_column = 'id';
+
+	/**
+	 * An array of all the columns in the table.
+	 *
+	 * @since 5.20.0
+	 *
+	 * @var string[]
+	 */
+	public static function get_columns(): array {
+		return [
+			'id',
+			'modifier_type',
+			'sub_type',
+			'raw_amount',
+			'display_name',
+			'status',
+			'created_at',
+			'start_time',
+			'end_time',
+			'updated_at',
+		];
+	}
 
 	/**
 	 * Returns the table creation SQL in the format supported
