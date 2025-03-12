@@ -165,7 +165,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 			Tickets_Plugin::VERSION,
 		)
 			->add_to_group_path( 'et-core' )
-			->set_condition( fn() => $this->is_on_page() )
+			->set_condition( fn() => $this->is_on_edit_page() )
 			->set_dependencies( 'jquery', 'tribe-validation', 'tec-tickets-imask' )
 			->enqueue_on( 'admin_enqueue_scripts' )
 			->add_to_group( 'tec-tickets-order-modifiers' )
@@ -197,6 +197,19 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		$admin_page  = $admin_pages->get_current_page();
 
 		return ! empty( $admin_page ) && static::$slug === $admin_page;
+	}
+
+	/**
+	 * Defines whether the current page is the Event Tickets Order Modifiers edit page.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool True if on the Order Modifiers edit page, false otherwise.
+	 */
+	protected function is_on_edit_page(): bool {
+		$is_edit = tribe_is_truthy( tec_get_request_var( 'edit', '0' ) );
+
+		return $is_edit && $this->is_on_page();
 	}
 
 	/**

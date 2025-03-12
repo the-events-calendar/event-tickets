@@ -13,6 +13,8 @@ namespace TEC\Tickets\Commerce\Order_Modifiers;
 use InvalidArgumentException;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Assets\Config;
+use TEC\Tickets\Commerce\Flag_Actions\Flag_Action_Handler;
+use TEC\Tickets\Commerce\Flag_Actions\Flag_Action_Interface;
 use TEC\Tickets\Commerce\Order_Modifiers\API\Coupons;
 use TEC\Tickets\Commerce\Order_Modifiers\API\Fees;
 use TEC\Tickets\Commerce\Order_Modifiers\Admin\Editor;
@@ -22,6 +24,8 @@ use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Fees as Agnostic_Checkout_Fees
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal\Fees as Paypal_Checkout_Fees;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe\Fees as Stripe_Checkout_Fees;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe\Coupons as Stripe_Checkout_Coupons;
+use TEC\Tickets\Commerce\Order_Modifiers\Flag_Actions\Decrease_Coupon_Usage;
+use TEC\Tickets\Commerce\Order_Modifiers\Flag_Actions\Increase_Coupon_Usage;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
@@ -41,6 +45,16 @@ use Tribe__Tickets__Main as Tickets_Plugin;
 final class Controller extends Controller_Contract {
 
 	use Valid_Types;
+
+	/**
+	 * The flag action classes.
+	 *
+	 * @var Flag_Action_Interface[]
+	 */
+	protected array $flag_action_classes = [
+		Decrease_Coupon_Usage::class,
+		Increase_Coupon_Usage::class,
+	];
 
 	/**
 	 * Un-registers the Controller by unsubscribing from WordPress hooks.
@@ -105,6 +119,7 @@ final class Controller extends Controller_Contract {
 		$this->container->singleton( Coupon_Table::class );
 		$this->container->singleton( Coupon::class );
 
+		$this->register_flag_actions();
 		$this->run_deprecated_coupon_filter();
 
 		add_action( 'init', [ $this, 'set_currency_defaults' ] );
@@ -139,6 +154,24 @@ final class Controller extends Controller_Contract {
 		);
 
 		Precision_Value::set_default_precision( (int) Currency::get_currency_precision( $currency_code ) );
+	}
+
+	/**
+	 * Register the flag actions.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function register_flag_actions() {
+		/** @var Flag_Action_Handler $handler */
+		$handler = $this->container->get( Flag_Action_Handler::class );
+
+		foreach ( $this->flag_action_classes as $class ) {
+			$instance = new $class();
+			$this->container->singleton( $class, $instance );
+			$handler->register_flag_action( $instance );
+		}
 	}
 
 	/**

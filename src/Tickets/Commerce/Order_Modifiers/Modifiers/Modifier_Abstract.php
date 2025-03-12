@@ -302,8 +302,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 
 			case 'flat':
 			default:
-				$precision_value  = new Precision_Value( $value );
-				$formatted_amount = ( Currency_Value::create( $precision_value ) )->get();
+				$formatted_amount = Currency_Value::create_from_float( $value )->get();
 				break;
 		}
 

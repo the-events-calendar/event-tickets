@@ -18,8 +18,6 @@ use TEC\Tickets\Commerce\Values\Precision_Value;
  * Class Coupon
  *
  * @since 5.18.0
- *
- * @property Percent_Value $raw_amount The raw amount.
  */
 class Coupon extends Order_Modifier {
 

@@ -44,7 +44,7 @@ trait Order_Maker {
 			}
 		}
 
-		$order = $this->create_order_from_cart( $cart, $overrides );
+		$order = $this->create_order_from_cart( $overrides );
 		$cart->clear_cart();
 
 		return $order;
@@ -55,37 +55,16 @@ trait Order_Maker {
 	 *
 	 * Does NOT clear the cart afterwards.
 	 *
-	 * @param Cart  $cart      The cart to create the order from.
 	 * @param array $overrides An array of overrides for the purchaser.
 	 *
 	 * @return false|WP_Post The order post object or false if the order could not be created.
-	 * @throws Tribe__Repository__Usage_Error
 	 */
-	protected function create_order_from_cart( Cart $cart, array $overrides = [] ) {
-		$default_purchaser = [
-			'purchaser_user_id'    => 0,
-			'purchaser_full_name'  => 'Test Purchaser',
-			'purchaser_first_name' => 'Test',
-			'purchaser_last_name'  => 'Purchaser',
-			'purchaser_email'      => 'test-' . uniqid() . '@test.com',
-		];
-
-		$gateway = $overrides['gateway'] ?? tribe( Gateway::class );
-
+	protected function create_order_from_cart( array $overrides = [] ) {
+		$order        = $this->create_order_without_transitions( $overrides );
 		$order_status = $overrides['order_status'] ?? Completed::SLUG;
-		$purchaser    = wp_parse_args( $overrides, $default_purchaser );
 
-		$feed_args_callback = function ( $args ) use ( $overrides ) {
-			$args['post_date']     = $overrides['post_date'] ?? '';
-			$args['post_date_gmt'] = $overrides['post_date_gmt'] ?? $args['post_date'];
-
-			return $args;
-		};
-
-		add_filter( 'tec_tickets_commerce_order_create_args', $feed_args_callback );
-
+		/** @var Order $orders */
 		$orders = tribe( Order::class );
-		$order  = $orders->create_from_cart( $gateway, $purchaser );
 
 		// If the order can't be transitioned to pending, return false.
 		if ( ! $orders->modify_status( $order->ID, Pending::SLUG ) ) {
@@ -98,6 +77,41 @@ trait Order_Maker {
 		}
 
 		clean_post_cache( $order->ID );
+
+		return $order;
+	}
+
+	/**
+	 * Create an order without transitioning it.
+	 *
+	 * @param array $overrides An array of overrides for the purchaser.
+	 *
+	 * @return WP_Post The order post object.
+	 */
+	protected function create_order_without_transitions( array $overrides = [] ) {
+		$default_purchaser = [
+			'purchaser_user_id'    => 0,
+			'purchaser_full_name'  => 'Test Purchaser',
+			'purchaser_first_name' => 'Test',
+			'purchaser_last_name'  => 'Purchaser',
+			'purchaser_email'      => 'test-' . uniqid() . '@test.com',
+		];
+
+		$gateway   = $overrides['gateway'] ?? tribe( Gateway::class );
+		$purchaser = wp_parse_args( $overrides, $default_purchaser );
+
+		$feed_args_callback = function ( $args ) use ( $overrides ) {
+			$args['post_date']     = $overrides['post_date'] ?? '';
+			$args['post_date_gmt'] = $overrides['post_date_gmt'] ?? $args['post_date'];
+
+			return $args;
+		};
+
+		add_filter( 'tec_tickets_commerce_order_create_args', $feed_args_callback );
+
+		/** @var Order $orders */
+		$orders = tribe( Order::class );
+		$order  = $orders->create_from_cart( $gateway, $purchaser );
 
 		remove_filter( 'tec_tickets_commerce_order_create_args', $feed_args_callback );
 
