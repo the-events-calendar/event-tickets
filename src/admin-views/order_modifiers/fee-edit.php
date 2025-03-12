@@ -6,15 +6,18 @@
  * The form includes fields for Fee name, code, discount type, amount, status, and Fee limit.
  * It also includes a nonce field for security.
  *
- * @since   5.18.0
+ * @since 5.18.0
+ * @since  TBD Updated the form to change how the raw amount field is handled.
  *
- * @var string          $order_modifier_display_name The Fee name (display name).
- * @var string          $order_modifier_slug         The Fee code (slug).
- * @var string          $order_modifier_sub_type     The discount type (percentage/flat).
- * @var Value_Interface $order_modifier_amount       The amount.
- * @var string          $order_modifier_status       The status of the Fee (active, inactive, draft).
- * @var int             $order_modifier_fee_limit    The Fee limit.
- * @var string          $order_modifier_apply_to     What the fee is applied to (All, Per, Organizer, Venue)
+ * @version TBD
+ *
+ * @var string                 $order_modifier_display_name The Fee name (display name).
+ * @var string                 $order_modifier_slug         The Fee code (slug).
+ * @var string                 $order_modifier_sub_type     The discount type (percentage/flat).
+ * @var Value_Interface|string $order_modifier_amount       The amount.
+ * @var string                 $order_modifier_status       The status of the Fee (active, inactive, draft).
+ * @var int                    $order_modifier_fee_limit    The Fee limit.
+ * @var string                 $order_modifier_apply_to     What the fee is applied to (All, Per, Organizer, Venue)
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers
  *
@@ -41,12 +44,6 @@ if ( ! empty( $order_modifier_display_name ) ) {
 } else {
 	$heading = __( 'New Fee', 'event-tickets' );
 }
-
-$modifier_statuses = [
-	'active'   => __( 'Active', 'event-tickets' ),
-	'inactive' => __( 'Inactive', 'event-tickets' ),
-	'draft'    => __( 'Draft', 'event-tickets' ),
-];
 
 ?>
 <div class="wrap">
@@ -116,25 +113,7 @@ $modifier_statuses = [
 						value="<?php echo esc_attr( (string) $order_modifier_amount ); ?>" />
 				</div>
 
-				<div class="form-field form-required">
-					<label for="order_modifier_status">
-						<?php esc_html_e( 'Status', 'event-tickets' ); ?>
-					</label>
-					<select
-						name="order_modifier_status"
-						id="order_modifier_status"
-						class="tribe-validation-field"
-						data-validation-required="true"
-						data-validation-error="<?php echo esc_attr( $get_validation_error_attr( __( 'Status', 'event-tickets' ) ) ); ?>">
-
-						<?php foreach ( $modifier_statuses as $status => $label ) : ?>
-							<option value="<?php echo esc_attr( $status ); ?>" <?php selected( $order_modifier_status ?? '', $status ); ?>>
-								<?php echo esc_html( $label ); ?>
-							</option>
-						<?php endforeach; ?>
-
-					</select>
-				</div>
+				<?php $this->template( 'order_modifiers/modifier-status-dropdown', [ 'order_modifier_status' => $order_modifier_status ] ); ?>
 
 				<div class="form-field form-required">
 					<label for="order_modifier_apply_to">
