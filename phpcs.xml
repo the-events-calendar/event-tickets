@@ -38,7 +38,6 @@
 	<!-- Setting or modifying variables in templates is different than modifying WP globals elsewhere -->
 	<rule ref="WordPress.WP.GlobalVariablesOverride">
 		<exclude-pattern>src/views/v2/commerce/checkout/cart/*</exclude-pattern>
-		<exclude-pattern>src/admin-views/order_modifiers/*</exclude-pattern>
 	</rule>
 
 	<!-- General exclusions -->
