@@ -209,7 +209,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	protected function is_on_edit_page(): bool {
 		$is_edit = tribe_is_truthy( tec_get_request_var( 'edit', '0' ) );
 
-		return $this->is_on_page() && $is_edit;
+		return $is_edit && $this->is_on_page();
 	}
 
 	/**
