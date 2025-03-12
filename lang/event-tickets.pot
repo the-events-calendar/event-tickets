@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.20.0\n"
+"Project-Id-Version: Event Tickets 5.20.1\n"
 "Report-Msgid-Bugs-To: https://evnt.is/191x\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-03-06T17:25:25+00:00\n"
+"POT-Creation-Date: 2025-03-12T18:13:07+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: event-tickets\n"
@@ -718,7 +718,7 @@ msgid "Seating Icon"
 msgstr ""
 
 #: src/admin-views/commerce/reports/seats-upsell.php:26
-#: src/Tickets/Seating/Admin.php:114
+#: src/Tickets/Seating/Admin.php:113
 #: src/Tickets/Seating/Health.php:280
 #: src/Tickets/Seating/Settings.php:71
 msgid "Seating"
@@ -9768,11 +9768,6 @@ msgstr ""
 msgid "The ticket with ID %s was checked in."
 msgstr ""
 
-#. Translators: %1$s and %2$s are opening/closing p tags, %3$s and %4$s are opening/closing a tags.
-#: src/Tickets/Seating/Admin.php:265
-msgid "%1$sTickets with assigned seating can only be created when selling with %3$sTickets Commerce%4$s. Support for WooCommerce sales will be included in a future release.%2$s"
-msgstr ""
-
 #: src/Tickets/Seating/Admin/Ajax.php:494
 #: src/Tickets/Seating/Admin/Ajax.php:563
 msgid "No map ID provided"
@@ -9943,34 +9938,34 @@ msgctxt "Error message for deleting a layout"
 msgid "Failed to delete the layout."
 msgstr ""
 
-#: src/Tickets/Seating/Frontend.php:286
+#: src/Tickets/Seating/Frontend.php:287
 msgctxt "Seat selection modal initial total string"
 msgid "0 Tickets"
 msgstr ""
 
-#: src/Tickets/Seating/Frontend.php:294
+#: src/Tickets/Seating/Frontend.php:295
 msgctxt "Find seats button text"
 msgid "Find Seats"
 msgstr ""
 
-#: src/Tickets/Seating/Frontend.php:439
+#: src/Tickets/Seating/Frontend.php:440
 msgctxt "Seat selection modal total string"
 msgid "1 Ticket"
 msgstr ""
 
-#: src/Tickets/Seating/Frontend.php:441
+#: src/Tickets/Seating/Frontend.php:442
 msgctxt "Seat selection modal total string"
 msgid "{count} Tickets"
 msgstr ""
 
 #: src/Tickets/Seating/Frontend/Timer.php:522
-#: src/Tickets/Seating/app/frontend/session/index.js:317
+#: src/Tickets/Seating/app/frontend/session/index.js:319
 msgctxt "Seat selection expired timer content"
 msgid "Your seat selections are no longer reserved, but tickets are still available."
 msgstr ""
 
 #: src/Tickets/Seating/Frontend/Timer.php:527
-#: src/Tickets/Seating/app/frontend/session/index.js:322
+#: src/Tickets/Seating/app/frontend/session/index.js:324
 msgctxt "Seat selection expired timer button label"
 msgid "Find Seats"
 msgstr ""
@@ -9998,7 +9993,7 @@ msgid "Sold Out"
 msgstr ""
 
 #: src/Tickets/Seating/Frontend/Timer.php:586
-#: src/Tickets/Seating/app/frontend/session/index.js:312
+#: src/Tickets/Seating/app/frontend/session/index.js:314
 msgctxt "Seat selection expired timer title"
 msgid "Time limit expired"
 msgstr ""
@@ -10179,13 +10174,13 @@ msgid "Seats for: %1$s [#%2$d]"
 msgstr ""
 
 #: src/Tickets/Seating/Orders/Seats_Report.php:80
-#: src/Tickets/Seating/Orders/Seats_Report.php:232
+#: src/Tickets/Seating/Orders/Seats_Report.php:228
 #: src/Tickets/Seating/Orders/Seats_Tab.php:51
 msgid "Seats"
 msgstr ""
 
 #. translators: %s: post type
-#: src/Tickets/Seating/Orders/Seats_Report.php:228
+#: src/Tickets/Seating/Orders/Seats_Report.php:224
 msgid "See seats purchased for this %s"
 msgstr ""
 
@@ -12819,7 +12814,7 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
-#: src/views/seating/seat-selection-timer.php:32
+#: src/views/seating/seat-selection-timer.php:31
 msgctxt "Seat selection timer text"
 msgid "Seats reserved for "
 msgstr ""

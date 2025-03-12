@@ -6,9 +6,9 @@
  * [your-theme]/tribe/tickets-seating/seat-selection-timer.php
  *
  * @since 5.16.0
- * @since TBD Updated the template wrapper.
+ * @since 5.20.1 Updated the template wrapper.
  *
- * @version TBD
+ * @version 5.20.1
  *
  * @var string $token        The token used to keep track of the seat selection timer.
  * @var string $redirect_url The URL to redirect the user to when the timer expires.

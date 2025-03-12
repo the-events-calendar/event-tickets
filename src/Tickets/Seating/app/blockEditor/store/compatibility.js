@@ -18,7 +18,7 @@ export function currentProviderSupportsSeating() {
 	/**
 	 * Filter the allowed ticket providers for seating.
 	 *
-	 * @since TBD
+	 * @since 5.20.1
 	 *
 	 * @param {string[]} allowedProviders The allowed ticket providers for seating.
 	 */
