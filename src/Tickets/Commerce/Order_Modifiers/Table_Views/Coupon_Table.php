@@ -67,56 +67,6 @@ class Coupon_Table extends Order_Modifier_Table {
 	}
 
 	/**
-	 * Renders the "display_name" column with "Edit" and "Delete" actions, including nonces for security.
-	 *
-	 * This method generates the display content for the "Name" column, including an "Edit" link
-	 * and the "Delete" link. The edit link directs the user to the admin page where
-	 * they can edit the specific modifier, passing the necessary parameters for the page,
-	 * modifier type, modifier ID, and a nonce for security.
-	 *
-	 * @since 5.18.0
-	 *
-	 * @param Coupon_Model $item The current item from the table, typically an Order_Modifier object.
-	 *
-	 * @return string The HTML output for the "display_name" column, including row actions.
-	 */
-	protected function render_display_name_column( Coupon_Model $item ) {
-		$edit_link = add_query_arg(
-			[
-				'page'        => $this->modifier->get_page_slug(),
-				'modifier'    => $this->modifier->get_modifier_type(),
-				'edit'        => 1,
-				'modifier_id' => $item->id,
-			],
-			admin_url( 'admin.php' )
-		);
-
-		// Replace with actual delete URL and include nonce.
-		$delete_link = add_query_arg(
-			[
-				'action'      => 'delete_modifier',
-				'modifier_id' => $item->id,
-				'_wpnonce'    => wp_create_nonce( "delete_modifier_{$item->id}" ),
-				'modifier'    => $this->modifier->get_modifier_type(),
-			],
-			admin_url( 'admin.php' )
-		);
-
-		$actions = [
-			'edit'   => [
-				'label' => __( 'Edit', 'event-tickets' ),
-				'url'   => $edit_link,
-			],
-			'delete' => [
-				'label' => __( 'Delete', 'event-tickets' ),
-				'url'   => $delete_link,
-			],
-		];
-
-		return $this->render_actions( $item->display_name, $actions );
-	}
-
-	/**
 	 * Render the "status" column.
 	 *
 	 * @since 5.18.0
