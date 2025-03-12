@@ -24,11 +24,19 @@
 
 use TEC\Tickets\Commerce\Module;
 
+// Ensure we are only counting ticket items in the quantity.
 $items = array_filter(
 	$items,
 	function ( $item ) {
 		return 'ticket' === ( $item['type'] ?? 'ticket' );
 	}
+);
+
+// Calculate the total quantity of ticket items, ensuring that we cast the quantity to an integer.
+$quantity = array_reduce(
+	$items,
+	static fn( $carry, $item ) => $carry + (int) ( $item['quantity'] ?? 0 ),
+	0
 );
 
 ?>
@@ -41,7 +49,7 @@ $items = array_filter(
 			'<span class="tribe-tickets__commerce-checkout-cart-footer-quantity-label">',
 			'</span>',
 			'<span class="tribe-tickets__commerce-checkout-cart-footer-quantity-number">',
-			array_sum( wp_list_pluck( $items, 'quantity' ) ),
+			abs( $quantity ),
 			'</span>'
 		)
 	);
