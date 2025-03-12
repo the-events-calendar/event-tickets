@@ -3,6 +3,7 @@
 namespace TEC\Tickets\QR;
 
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Common\QR\QR;
 
 /**
  * Class QR_Test.
