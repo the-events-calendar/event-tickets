@@ -199,6 +199,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.20.1] 2025-03-13 =
+
+* Security - Ensure proper URL encoding for Admin URLS
+* Language - 0 new strings added, 11 updated, 0 fuzzied, and 1 obsoleted.
+
 = [5.20.0] 2025-03-06 =
 
 * Feature - Adds Ticket actions for ticket goes on sale, ticket sale ended and ticket stock changed. [ETP-975]
