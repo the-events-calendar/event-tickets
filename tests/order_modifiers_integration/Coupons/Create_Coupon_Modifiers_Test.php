@@ -74,13 +74,8 @@ class Create_Coupon_Modifiers_Test extends Order_Modifiers_TestCase {
 			}
 		}
 
-		// Clear the request data to avoid conflicts with other tests.
-		unset( $_REQUEST['id'], $_REQUEST['edit'], $_POST['modifier_id'], $_POST['edit'] );
-
 		$modifier_admin_handler = tribe( Modifier_Admin_Handler::class );
-		$_REQUEST               = [
-			'modifier' => $this->modifier_type,
-		]; // phpcs:ignore WordPress.Security.NonceVerification
+		$_REQUEST['modifier']   = $this->modifier_type;
 
 		ob_start();
 		$this->get_table_class_instance()->prepare_items();
@@ -110,5 +105,18 @@ class Create_Coupon_Modifiers_Test extends Order_Modifiers_TestCase {
 
 	protected function get_table_class_instance(): Order_Modifier_Table {
 		return tribe( Coupon_Table::class );
+	}
+
+	/**
+	 * @before
+	 */
+	public function clean_request_data() {
+		unset(
+			$_POST['edit'],
+			$_POST['modifier_id'],
+			$_REQUEST['id'],
+			$_REQUEST['edit'],
+			$_REQUEST['modifier']
+		);
 	}
 }
