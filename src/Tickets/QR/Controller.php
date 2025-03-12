@@ -3,6 +3,7 @@
 namespace TEC\Tickets\QR;
 
 use \TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use Tribe__Main as Common;
 
 /**
  * Class Controller.
@@ -167,7 +168,7 @@ class Controller extends Controller_Contract {
 	 * @since 5.6.7
 	 */
 	public function has_library_loaded(): bool {
-		return defined( 'TEC_TICKETS_QR_CACHEABLE' );
+		return defined( 'TEC_QR_CACHEABLE' );
 	}
 
 	/**
@@ -180,7 +181,7 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		require_once tribe( 'tickets.main' )->plugin_path . 'vendor/phpqrcode/qrlib.php';
+		require_once Common::instance()->plugin_path . 'vendor/phpqrcode/qrlib.php';
 	}
 
 	/**
