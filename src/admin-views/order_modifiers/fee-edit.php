@@ -20,9 +20,9 @@
  * @var string                 $order_modifier_apply_to     What the fee is applied to (All, Per, Organizer, Venue)
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers
- *
- * phpcs:disable WordPress.WP.GlobalVariablesOverride
  */
+
+use TEC\Tickets\Commerce\Values\Value_Interface;
 
 /**
  * Util function to display the validation error according to the field name.
@@ -31,9 +31,6 @@
  *
  * @return string
  */
-
-use TEC\Tickets\Commerce\Values\Value_Interface;
-
 $get_validation_error_attr = function ( string $field_label ): string {
 	// translators: %s is the field label.
 	return sprintf( __( '%s is required', 'event-tickets' ), $field_label );
