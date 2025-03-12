@@ -41,6 +41,7 @@ use TEC\Tickets\Commerce\Values\Percent_Value;
 use TEC\Tickets\Commerce\Values\Positive_Integer_Value;
 use TEC\Tickets\Commerce\Values\Precision_Value;
 use TEC\Tickets\Commerce\Utils\Value;
+use TEC\Tickets\Commerce\Values\Value_Interface;
 use TEC\Tickets\Exceptions\Not_Found_Exception;
 
 /**
@@ -656,6 +657,29 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 
 			default:
 				throw new InvalidArgumentException( sprintf( 'Method %s does not exist.', esc_html( $method ) ) );
+		}
+	}
+
+	/**
+	 * Get the amount for the given subtype.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $sub_type   The subtype of the amount.
+	 * @param float  $raw_amount The raw amount.
+	 *
+	 * @return Value_Interface The amount value.
+	 */
+	protected function get_amount_for_subtype( string $sub_type, float $raw_amount ) {
+		switch ( $sub_type ) {
+			case 'percent':
+				return new Percent_Value( $raw_amount );
+
+			case 'flat':
+				return Currency_Value::create_from_float( $raw_amount );
+
+			default:
+				return new Precision_Value( $raw_amount );
 		}
 	}
 

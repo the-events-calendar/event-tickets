@@ -11,7 +11,6 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Models;
 
 use TEC\Tickets\Commerce\Cart\Cart_Interface;
 use TEC\Tickets\Commerce\Traits\Type;
-use TEC\Tickets\Commerce\Values\Percent_Value;
 use TEC\Tickets\Commerce\Values\Precision_Value;
 
 /**
