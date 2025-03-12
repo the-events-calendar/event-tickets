@@ -48,7 +48,6 @@ class Create_Coupon_Modifiers_Test extends Order_Modifiers_TestCase {
 				'order_modifier_sub_type'     => $i % 2 ? 'percent' : 'flat',
 				'order_modifier_slug'         => sprintf( 'test_coupon_%02d', $i ),
 				'order_modifier_display_name' => "Test Coupon Insert {$i}",
-
 			];
 
 			// Insert the modifier and store the ID.
@@ -77,9 +76,16 @@ class Create_Coupon_Modifiers_Test extends Order_Modifiers_TestCase {
 		$modifier_admin_handler = tribe( Modifier_Admin_Handler::class );
 		$_REQUEST['modifier']   = $this->modifier_type;
 
+		// Filter the per_page to 20.
+		$filter = static fn() => 20;
+		add_filter( 'coupon_per_page', $filter );
+
 		ob_start();
 		$this->get_table_class_instance()->prepare_items();
 		$modifier_admin_handler->render_tec_order_modifiers_page();
+
+		// Remove the filter
+		remove_filter( 'coupon_per_page', $filter );
 
 		$this->assertMatchesHtmlSnapshot( ob_get_clean() );
 	}
