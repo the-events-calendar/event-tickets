@@ -77,15 +77,11 @@ class Create_Coupon_Modifiers_Test extends Order_Modifiers_TestCase {
 		$_REQUEST['modifier']   = $this->modifier_type;
 
 		// Filter the per_page to 20.
-		$filter = static fn() => 20;
-		add_filter( 'coupon_per_page', $filter );
+		add_filter( 'coupon_per_page', static fn() => 20 );
 
 		ob_start();
 		$this->get_table_class_instance()->prepare_items();
 		$modifier_admin_handler->render_tec_order_modifiers_page();
-
-		// Remove the filter
-		remove_filter( 'coupon_per_page', $filter );
 
 		$this->assertMatchesHtmlSnapshot( ob_get_clean() );
 	}
