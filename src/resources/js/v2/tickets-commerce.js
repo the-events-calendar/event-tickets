@@ -365,7 +365,7 @@ tribe.tickets.commerce = {};
 					}
 				},
 				error( response ) {
-					const msg = response.responseJSON?.message || tecTicketsCommerce.i18n.couponApplyError;
+					const msg = response?.responseJSON?.message || tecTicketsCommerce.i18n.couponApplyError;
 					$errorMessage.text( msg ).removeClass( hiddenName );
 					$couponInput.addClass( obj.selectors.couponInputErrorClass );
 					$inputContainer.removeClass( hiddenName );
