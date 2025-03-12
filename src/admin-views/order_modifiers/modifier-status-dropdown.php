@@ -28,8 +28,8 @@ $modifier_statuses = [
 		<?php echo esc_html_x( 'Status', 'Modifier status dropdown label', 'event-tickets' ); ?>
 	</label>
 	<select name="order_modifier_status" id="order_modifier_status">
-		<?php foreach ( $modifier_statuses as $status => $label ) : ?>
-			<option value="<?php echo esc_attr( $status ); ?>" <?php selected( $order_modifier_status ?? '', $status ); ?>>
+		<?php foreach ( $modifier_statuses as $modifier_status => $label ) : ?>
+			<option value="<?php echo esc_attr( $modifier_status ); ?>" <?php selected( $order_modifier_status ?? '', $modifier_status ); ?>>
 				<?php echo esc_html( $label ); ?>
 			</option>
 		<?php endforeach; ?>
