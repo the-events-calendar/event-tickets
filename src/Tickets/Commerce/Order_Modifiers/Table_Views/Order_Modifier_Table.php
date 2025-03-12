@@ -164,7 +164,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 
 		unset( $params['limit'], $params['page'] );
 
-		return count( $this->modifier->get_modifiers( $params ) );
+		return count( $this->get_items( $params ) );
 	}
 
 	/**
