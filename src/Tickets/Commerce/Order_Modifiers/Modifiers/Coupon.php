@@ -14,10 +14,6 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Modifiers;
 
 use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Coupon_Table;
-use TEC\Tickets\Commerce\Values\Currency_Value;
-use TEC\Tickets\Commerce\Values\Percent_Value;
-use TEC\Tickets\Commerce\Values\Precision_Value;
-use TEC\Tickets\Commerce\Values\Value_Interface;
 use Tribe__Tickets__Admin__Views;
 
 /**
