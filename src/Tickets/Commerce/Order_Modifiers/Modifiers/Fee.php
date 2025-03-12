@@ -274,22 +274,11 @@ class Fee extends Modifier_Abstract {
 			$context['modifier_id'],
 			'fee_applied_to'
 		)->meta_value ?? '';
-		$raw_amount = (float) ( $context['raw_amount'] ?? 0 );
-		$sub_type   = $context['sub_type'] ?? '';
 
-		switch ( $sub_type ) {
-			case 'percent':
-				$amount = new Percent_Value( $raw_amount );
-				break;
-
-			case 'flat':
-				$amount = Currency_Value::create_from_float( $raw_amount );
-				break;
-
-			default:
-				$amount = new Precision_Value( $raw_amount );
-				break;
-		}
+		$sub_type = $context['sub_type'] ?? '';
+		$amount   = array_key_exists( 'raw_amount', $context )
+			? $this->get_amount_for_subtype( $sub_type, (float) $context['raw_amount'] )
+			: '';
 
 		return [
 			'order_modifier_display_name' => $context['display_name'] ?? '',
