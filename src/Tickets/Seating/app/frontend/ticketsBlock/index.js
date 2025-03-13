@@ -231,11 +231,11 @@ function updateTotals(parentElement) {
  */
 function addTicketToSelection(parentElement, props) {
 	parentElement = parentElement || document;
-	const priceValue = tickets?.[props.ticketId]?.priceValue || null;
-	const formattedPrice = tickets?.[props.ticketId]?.price || null;
-	const ticketName = tickets?.[props.ticketId].name || null;
+	const priceValue = tickets?.[props.ticketId]?.priceValue ?? null;
+	const formattedPrice = tickets?.[props.ticketId]?.price ?? null;
+	const ticketName = tickets?.[props.ticketId]?.name ?? null;
 
-	if (!(priceValue && ticketName)) {
+	if ( priceValue === null || ticketName === null ) {
 		return;
 	}
 
