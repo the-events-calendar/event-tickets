@@ -29,13 +29,13 @@ class QR_Test extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_not_create_instance_of_module_and_return_WP_Error(): void {
-		add_filter( 'tec_tickets_qr_code_can_use',  '__return_false' );
+		add_filter( 'tec_qr_code_can_use',  '__return_false' );
 
 		$qr_code = tribe( QR::class );
 		$this->assertNotInstanceOf( QR::class, $qr_code );
 		$this->assertInstanceOf( \WP_Error::class, $qr_code );
 
-		remove_filter( 'tec_tickets_qr_code_can_use',  '__return_false' );
+		remove_filter( 'tec_qr_code_can_use',  '__return_false' );
 	}
 
 	/**
