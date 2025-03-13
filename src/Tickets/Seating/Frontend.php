@@ -168,10 +168,10 @@ class Frontend extends Controller_Contract {
 		$prices = array_keys( $prices );
 
 		$inventory = $this->get_events_ticket_capacity_for_seating( $post_id );
-		
+
 		/** @var Tribe__Tickets__Commerce__Currency $currency */
 		$currency = tribe( 'tickets.commerce.currency' );
-		
+
 		$cost_range = count( $prices ) === 1 ? $currency->get_formatted_currency_with_symbol( $prices[0], $post_id, $provider, false ) :
 			$currency->get_formatted_currency_with_symbol( min( $prices ), $post_id, $provider, false )
 			. ' - '
@@ -275,7 +275,7 @@ class Frontend extends Controller_Contract {
 		/** @var \Tribe\Dialog\View $dialog_view */
 		$dialog_view = tribe( 'dialog.view' );
 		$provider    = Tickets::get_event_ticket_provider_object( $post_id );
-		
+
 		/** @var Tribe__Tickets__Commerce__Currency $currency */
 		$currency = tribe( 'tickets.commerce.currency' );
 		$content  = $this->template->template(
@@ -450,11 +450,11 @@ class Frontend extends Controller_Contract {
 			'ACTION_CLEAR_RESERVATIONS' => Ajax::ACTION_CLEAR_RESERVATIONS,
 			'sessionTimeout'            => tribe( Timer::class )->get_timeout( $post_id ),
 		];
-		
+
 		/**
 		 * Filters the data to be localized on the ticket block frontend.
 		 *
-		 * @since TBD
+		 * @since 5.20.1
 		 *
 		 * @param array<string,mixed> $data The data to be localized on the ticket block frontend.
 		 * @param int                 $post_id The post ID.
@@ -513,10 +513,10 @@ class Frontend extends Controller_Contract {
 
 			/** @var Tickets_Handler $tickets_handler */
 			$tickets_handler = tribe( 'tickets.handler' );
-			
+
 			/** @var Tribe__Tickets__Commerce__Currency $currency */
 			$currency = tribe( 'tickets.commerce.currency' );
-			
+
 			$seat_type_map[ $seat_type ]['tickets'][] = [
 				'ticketId'    => $ticket_id,
 				'name'        => $ticket->name,
