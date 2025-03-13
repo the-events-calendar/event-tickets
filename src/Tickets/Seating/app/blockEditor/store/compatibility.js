@@ -1,3 +1,4 @@
+import { applyFilters } from '@wordpress/hooks';
 import { getTicketProviderFromCommonStore } from './common-store-bridge';
 
 /**
@@ -14,5 +15,16 @@ import { getTicketProviderFromCommonStore } from './common-store-bridge';
 export function currentProviderSupportsSeating() {
 	const provider = getTicketProviderFromCommonStore();
 
-	return 'TEC\\Tickets\\Commerce\\Module' === provider;
+	/**
+	 * Filter the allowed ticket providers for seating.
+	 *
+	 * @since 5.20.1
+	 *
+	 * @param {string[]} allowedProviders The allowed ticket providers for seating.
+	 */
+	let allowedProviders = applyFilters( 'tec.tickets.seating.allowedProviders', [
+		'TEC\\Tickets\\Commerce\\Module',
+	] );
+
+	return allowedProviders.includes( provider );
 }

@@ -13,8 +13,7 @@ namespace TEC\Tickets\Seating;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\Asset;
-use TEC\Tickets\Commerce\Utils\Currency;
-use TEC\Tickets\Commerce\Utils\Value;
+use Tribe__Tickets__Commerce__Currency;
 use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Frontend\Timer;
@@ -170,12 +169,13 @@ class Frontend extends Controller_Contract {
 
 		$inventory = $this->get_events_ticket_capacity_for_seating( $post_id );
 
-		$cost_range = count( $prices ) === 1 ?
-			tribe_format_currency( $prices[0], $post_id ) :
-			tribe_format_currency( min( $prices ), $post_id )
-			. ' - '
-			. tribe_format_currency( max( $prices ), $post_id );
+		/** @var Tribe__Tickets__Commerce__Currency $currency */
+		$currency = tribe( 'tickets.commerce.currency' );
 
+		$cost_range = count( $prices ) === 1 ? $currency->get_formatted_currency_with_symbol( $prices[0], $post_id, $provider, false ) :
+			$currency->get_formatted_currency_with_symbol( min( $prices ), $post_id, $provider, false )
+			. ' - '
+			. $currency->get_formatted_currency_with_symbol( max( $prices ), $post_id, $provider, false );
 
 		$timeout = $this->container->get( Timer::class )->get_timeout( $post_id );
 
@@ -275,7 +275,8 @@ class Frontend extends Controller_Contract {
 		/** @var \Tribe\Dialog\View $dialog_view */
 		$dialog_view = tribe( 'dialog.view' );
 		$provider    = Tickets::get_event_ticket_provider_object( $post_id );
-		/** @var \Tribe__Tickets__Commerce__Currency $currency */
+
+		/** @var Tribe__Tickets__Commerce__Currency $currency */
 		$currency = tribe( 'tickets.commerce.currency' );
 		$content  = $this->template->template(
 			'iframe-view',
@@ -431,7 +432,7 @@ class Frontend extends Controller_Contract {
 	public function get_ticket_block_data( $post_id ): array {
 		$service_ok = $this->service->get_status()->is_ok();
 
-		return [
+		$data = [
 			'objectName'                => 'dialog_obj_' . self::MODAL_ID,
 			'modalId'                   => self::MODAL_ID,
 			'seatTypeMap'               => $service_ok ? $this->build_seat_type_map( $post_id ) : [],
@@ -449,6 +450,16 @@ class Frontend extends Controller_Contract {
 			'ACTION_CLEAR_RESERVATIONS' => Ajax::ACTION_CLEAR_RESERVATIONS,
 			'sessionTimeout'            => tribe( Timer::class )->get_timeout( $post_id ),
 		];
+
+		/**
+		 * Filters the data to be localized on the ticket block frontend.
+		 *
+		 * @since 5.20.1
+		 *
+		 * @param array<string,mixed> $data The data to be localized on the ticket block frontend.
+		 * @param int                 $post_id The post ID.
+		 */
+		return apply_filters( 'tec_tickets_seating_frontend_ticket_block_data', $data, $post_id );
 	}
 
 	/**
@@ -501,13 +512,15 @@ class Frontend extends Controller_Contract {
 			}
 
 			/** @var Tickets_Handler $tickets_handler */
-			$tickets_handler        = tribe( 'tickets.handler' );
-			$formatted_ticket_price = Value::create( $ticket->price )->get_currency();
+			$tickets_handler = tribe( 'tickets.handler' );
+
+			/** @var Tribe__Tickets__Commerce__Currency $currency */
+			$currency = tribe( 'tickets.commerce.currency' );
 
 			$seat_type_map[ $seat_type ]['tickets'][] = [
 				'ticketId'    => $ticket_id,
 				'name'        => $ticket->name,
-				'price'       => $formatted_ticket_price,
+				'price'       => $currency->get_formatted_currency_with_symbol( $ticket->price, $post_id, $provider, false ),
 				'priceValue'  => $ticket->price,
 				'description' => $ticket->description,
 				'dateInRange' => $ticket->date_in_range(),
