@@ -252,11 +252,13 @@ class Coupons extends Base_API {
 			$cart_total = Currency_Value::create_from_float( $cart->get_cart_total() );
 			$discount   = Currency_Value::create_from_float( $coupon->get_discount_amount( $original_total->get_raw_value()->get() ) );
 
-			// Update the payment intent with the new value
-			Payment_Intent::update(
-				$request->get_param( 'payment_intent_id' ),
-				[ 'amount' => $cart_total->get_raw_value()->get_as_integer() ]
-			);
+			// Update the payment intent with the new value.
+			if ( $this->is_using_stripe() ) {
+				$this->update_stripe_payment_intent(
+					$request->get_param( 'payment_intent_id' ),
+					$cart_total->get_raw_value()->get_as_integer()
+				);
+			}
 
 			return rest_ensure_response(
 				[
@@ -319,10 +321,12 @@ class Coupons extends Base_API {
 			$cart_total = Currency_Value::create_from_float( $cart->get_cart_total() );
 
 			// Update the payment intent with the new value.
-			Payment_Intent::update(
-				$request->get_param( 'payment_intent_id' ),
-				[ 'amount' => $cart_total->get_raw_value()->get_as_integer() ]
-			);
+			if ( $this->is_using_stripe() ) {
+				$this->update_stripe_payment_intent(
+					$request->get_param( 'payment_intent_id' ),
+					$cart_total->get_raw_value()->get_as_integer()
+				);
+			}
 
 			return rest_ensure_response(
 				[
