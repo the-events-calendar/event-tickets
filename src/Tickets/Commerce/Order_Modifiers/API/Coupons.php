@@ -449,10 +449,10 @@ class Coupons extends Base_API {
 				'required'    => true,
 			],
 			'payment_intent_id' => [
-				'description' => esc_html__( 'The payment intent to apply the coupon to.', 'event-tickets' ),
+				'description' => esc_html__( 'The Stripe payment intent to apply the coupon to.', 'event-tickets' ),
 				'type'        => 'string',
 				'format'      => 'text-field',
-				'required'    => true,
+				'required'    => $this->is_using_stripe(),
 			],
 			'purchaser_data'    => [
 				'description'       => esc_html__( 'The purchaser data.', 'event-tickets' ),
