@@ -556,29 +556,6 @@ class Coupons extends Base_API {
 	}
 
 	/**
-	 * Get the purchaser information.
-	 *
-	 * @since 5.18.0
-	 *
-	 * @param Request $request The request object.
-	 *
-	 * @return array
-	 */
-	protected function get_purchaser_information( Request $request ) {
-		$purchaser_data = $request->get_param( 'purchaser_data' );
-
-		[ $first_name, $last_name ] = explode( ' ', $purchaser_data['name'], 2 );
-
-		return [
-			'purchaser_user_id'    => 0,
-			'purchaser_full_name'  => $purchaser_data['name'],
-			'purchaser_first_name' => $first_name ?? $purchaser_data['name'],
-			'purchaser_last_name'  => $last_name ?? '',
-			'purchaser_email'      => sanitize_email( $purchaser_data['email'] ),
-		];
-	}
-
-	/**
 	 * Get the coupon slug from the request object and validate it.
 	 *
 	 * @since TBD
