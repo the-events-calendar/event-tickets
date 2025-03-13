@@ -128,6 +128,16 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			$unit['items'][] = $this->get_unit_data( $item, $order );
 		}
 
+		/**
+		 * Filters the unit data for the order before sending it to PayPal.
+		 *
+		 * @since TBD
+		 *
+		 * @param array   $unit  The structured data for the order.
+		 * @param WP_Post $order The current order object.
+		 */
+		$unit = (array) apply_filters( 'tec_tickets_commerce_paypal_order_unit', $unit, $order );
+
 		$paypal_order = tribe( Client::class )->create_order( $unit );
 
 		if ( empty( $paypal_order['id'] ) || empty( $paypal_order['create_time'] ) ) {
