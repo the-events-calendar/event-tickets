@@ -503,6 +503,14 @@ class Client {
 						'currency_code' => Arr::get( $unit, 'currency' ),
 					],
 				];
+
+				// If we have extra breakdown provided, merge into the item breakdown.
+				if ( array_key_exists( 'extra_breakdown', $unit ) ) {
+					$purchase_unit['amount']['breakdown'] = array_merge(
+						$purchase_unit['amount']['breakdown'],
+						$unit['extra_breakdown']
+					);
+				}
 			}
 
 			if ( ! empty( $unit['tax_id'] ) ) {
