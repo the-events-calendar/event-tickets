@@ -349,6 +349,21 @@ class Coupons extends Base_API {
 	}
 
 	/**
+	 * Update the Stripe payment intent.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id     The payment intent ID.
+	 * @param int    $amount The new amount as an integer. This should be in the smallest currency
+	 *                       unit (e.g. cents for USD: $1 = 100 cents).
+	 *
+	 * @return void
+	 */
+	protected function update_stripe_payment_intent( string $id, int $amount ) {
+		Payment_Intent::update( $id, [ 'amount' => $amount ] );
+	}
+
+	/**
 	 * Prepare a coupon for the response.
 	 *
 	 * @since 5.18.0
