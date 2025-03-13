@@ -2,9 +2,9 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.20.0
+Stable tag: 5.20.1
 Requires at least: 6.5
-Tested up to: 6.7.1
+Tested up to: 6.7.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -198,6 +198,14 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.20.1] 2025-03-13 =
+
+* Feature - Added Ticket editor support for creating seating ticket with WooCommerce. [SL-209]
+* Security - Ensure proper URL encoding for Admin URLS
+* Tweak - Added filters: `tec_tickets_seating_frontend_ticket_block_data`
+* Tweak - Changed views: `seating/seat-selection-timer`
+* Language - 0 new strings added, 11 updated, 0 fuzzied, and 1 obsoleted.
 
 = [5.20.0] 2025-03-06 =
 
