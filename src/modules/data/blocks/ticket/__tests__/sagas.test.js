@@ -68,6 +68,16 @@ jest.mock( '@wordpress/data', () => {
 					},
 				};
 			}
+			if ( key === 'core/editor' ) {
+				return  {
+					getCurrentPost: () => 10,
+					getEditedPostAttribute: ( attr ) => {
+						if ( attr === 'date' ) {
+							return '2018-11-09T19:48:42';
+						}
+					},
+				}
+			}
 			if ( key === 'core' ) {
 				return {
 					getPostType: () => ( {
