@@ -13,6 +13,8 @@ use Exception;
 use TEC\Common\Contracts\Container;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Cart\Abstract_Cart;
+use TEC\Tickets\Commerce\Gateways\Manager as Gateway_Manager;
+use TEC\Tickets\Commerce\Gateways\Stripe\Gateway as Stripe;
 use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier;
@@ -532,6 +534,24 @@ class Coupons extends Base_API {
 
 			default:
 				return [];
+		}
+	}
+
+	/**
+	 * Determine if the current gateway is Stripe.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the current gateway is Stripe.
+	 */
+	protected function is_using_stripe(): bool {
+		try {
+			/** @var Gateway_Manager $manager */
+			$manager = $this->container->get( Gateway_Manager::class );
+
+			return Stripe::get_key() === $manager->get_current_gateway();
+		} catch ( Exception $e ) {
+			return false;
 		}
 	}
 
