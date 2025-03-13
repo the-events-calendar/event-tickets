@@ -68,7 +68,7 @@ class Coupons extends Controller_Contract {
 	 * @return array
 	 */
 	public function add_coupon_unit_data_to_paypal( array $unit, WP_Post $order ) {
-		if ( empty ( $order->coupons ) ) {
+		if ( empty( $order->coupons ) ) {
 			return $unit;
 		}
 
