@@ -9,8 +9,6 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Modifiers;
 
-use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Fee;
-
 /**
  * Fee_Modifier_Manager class
  *
@@ -24,6 +22,6 @@ class Fee_Modifier_Manager extends Modifier_Manager {
 	 * @param Fee $fee The fee object.
 	 */
 	public function __construct( Fee $fee ) {
-		$this->strategy = $fee;
+		parent::__construct( $fee );
 	}
 }

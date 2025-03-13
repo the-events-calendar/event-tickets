@@ -27,7 +27,7 @@ trait Order_Modifiers {
 		// Set default data for the modifier.
 		$default_data = [
 			'order_modifier_id'           => 0,
-			'order_modifier_amount'       => '0',
+			'order_modifier_amount'       => 0.00,
 			'order_modifier_sub_type'     => 'flat',
 			'order_modifier_status'       => 'active',
 			'order_modifier_slug'         => 'test_modifier',
@@ -36,10 +36,6 @@ trait Order_Modifiers {
 
 		// Merge provided data with default data.
 		$modifier_data = array_merge( $default_data, $data );
-
-		if ( 'coupon' === $modifier_data['modifier'] ) {
-			$modifier_data['order_modifier_coupon_name'] = $modifier_data['order_modifier_display_name'];
-		}
 
 		// Get the modifier type (e.g., coupon, fee, etc.).
 		$modifier_type = sanitize_key( $modifier_data['modifier'] );

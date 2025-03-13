@@ -18,6 +18,7 @@ use TEC\Common\StellarWP\Models\Repositories\Contracts\Updatable;
 use TEC\Common\StellarWP\Models\Repositories\Repository;
 use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifiers_Meta as Table;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Meta;
+
 /**
  * Class Order_Modifiers_Meta.
  *
@@ -53,7 +54,6 @@ class Order_Modifiers_Meta extends Repository implements Insertable, Updatable, 
 			[
 				'order_modifier_id' => $model->order_modifier_id,
 				'meta_key'          => $model->meta_key,
-				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 				'meta_value'        => $model->meta_value,
 				'priority'          => $model->priority,
 				'created_at'        => current_time( 'mysql' ),

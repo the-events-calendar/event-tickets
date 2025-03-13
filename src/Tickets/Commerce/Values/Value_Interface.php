@@ -7,7 +7,7 @@
 
 declare( strict_types=1 );
 
-namespace TEC\Tickets\Commerce\Order_Modifiers\Values;
+namespace TEC\Tickets\Commerce\Values;
 
 /**
  * Interface Value_Interface

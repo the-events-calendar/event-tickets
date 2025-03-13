@@ -7,7 +7,7 @@
 
 declare( strict_types=1 );
 
-namespace TEC\Tickets\Commerce\Order_Modifiers\Values;
+namespace TEC\Tickets\Commerce\Values;
 
 use InvalidArgumentException;
 
@@ -17,6 +17,7 @@ use InvalidArgumentException;
  * @since 5.18.0
  */
 abstract class Base_Value implements Value_Interface {
+
 	/**
 	 * The value.
 	 *
@@ -30,6 +31,8 @@ abstract class Base_Value implements Value_Interface {
 	 * @since 5.18.0
 	 *
 	 * @param mixed $value The value to store.
+	 *
+	 * @throws InvalidArgumentException When the value is not valid. See the validate method.
 	 */
 	public function __construct( $value ) {
 		$this->validate( $value );
@@ -57,5 +60,5 @@ abstract class Base_Value implements Value_Interface {
 	 * @return void
 	 * @throws InvalidArgumentException When the value is not valid.
 	 */
-	abstract protected function validate( $value ): void;
+	protected function validate( $value ): void {}
 }

@@ -34,6 +34,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
+use TEC\Tickets\Deprecated_Autoloader;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
@@ -74,6 +76,9 @@ if ( tribe_is_not_min_php_version() ) {
 	}
 	return false;
 }
+
+// Register our deprecated autoloader.
+Deprecated_Autoloader::get_instance()->register();
 
 // Require the main plugin class.
 require_once EVENT_TICKETS_DIR . '/src/Tribe/Main.php';

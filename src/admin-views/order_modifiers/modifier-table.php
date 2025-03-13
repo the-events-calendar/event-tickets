@@ -7,11 +7,13 @@
  *
  * @since 5.18.0
  *
- * @var $this
- * @var $context array Context data passed to the template.
- * @var $order_modifier_table \TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Order_Modifier_Table The table instance for
- *      rendering.
+ * @var Modifier_Abstract    $this                 The modifier strategy instance.
+ * @var array                $context              Context data passed to the template.
+ * @var Order_Modifier_Table $order_modifier_table The table instance for rendering.
  */
+
+use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Abstract;
+use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Order_Modifier_Table;
 
 // Define form classes for the main form element.
 $form_classes = [
@@ -21,7 +23,7 @@ $form_classes = [
 
 ?>
 <div class="wrap">
-	<h1><?php echo esc_html__( 'Booking Fees', 'event-tickets' ); ?></h1>
+	<h1><?php echo esc_html__( 'Coupons &amp; Fees', 'event-tickets' ); ?></h1>
 	<form
 		id="event-tickets__order-modifiers-admin-form"
 		<?php tribe_classes( $form_classes ); ?>

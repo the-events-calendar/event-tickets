@@ -3,7 +3,7 @@
 namespace TEC\Tickets\Commerce\Order_Modifiers\Models;
 
 use stdClass;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Float_Value;
+use TEC\Tickets\Commerce\Values\Float_Value;
 use Tribe\Tickets\Test\Commerce\OrderModifiers\Fee_Creator;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use TEC\Tickets\Exceptions\Not_Found_Exception;
