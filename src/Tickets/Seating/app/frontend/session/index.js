@@ -419,6 +419,10 @@ async function getInterruptDialogElement() {
  * @return {void} The timer is interrupted.
  */
 async function interrupt() {
+	if ( ! isInterruptable() ) {
+		return true;
+	}
+
 	setIsInterruptable(true);
 
 	getTimerElements().forEach((timerElement) => {
