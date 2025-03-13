@@ -13,6 +13,7 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\Commerce\Traits\Type;
 use TEC\Tickets\Commerce\Values\Legacy_Value_Factory;
+use TEC\Tickets\Commerce\Values\Precision_Value;
 use WP_Post;
 
 /**
@@ -71,26 +72,31 @@ class Coupons extends Controller_Contract {
 			return $unit;
 		}
 
-		foreach ( $order->coupons as $coupon ) {
-			// Get SKU and value.
-			$sku   = $this->get_unique_type_id( $coupon['id'], 'coupon' );
-			$value = Legacy_Value_Factory::to_precision_value( $coupon['sub_total'] );
+		/*
+		 * PayPal doesn't support negative amount for items like Stripe. So, we need
+		 * to do the following to add a discount:
+		 *
+		 * 1. Get the coupon values and add them together.
+		 * 2. Convert the total to a positive number.
+		 * 3. Add the total to the extra_breakdown field.
+		 */
 
-			// Build item data array.
-			$unit['items'][] = [
-				'name'        => $coupon['slug'],
-				'quantity'    => $coupon['quantity'] ?? 1,
-				'unit_amount' => [
-					'value'         => (string) $value,
-					'currency_code' => $order->currency,
-				],
-				'item_total'  => [
-					'value'         => (string) $value,
-					'currency_code' => $order->currency,
-				],
-				'sku'         => $sku,
-			];
+		$values = [];
+		foreach ( $order->coupons as $coupon ) {
+			$values[] = Legacy_Value_Factory::to_precision_value( $coupon['sub_total'] );
 		}
+
+		$total = abs( Precision_Value::sum( ...$values )->get() );
+
+		// Set up the extra breakdown data.
+		if ( ! array_key_exists( 'extra_breakdown', $unit ) ) {
+			$unit['extra_breakdown'] = [];
+		}
+
+		$unit['extra_breakdown']['discount'] = [
+			'currency_code' => $order->currency,
+			'value'         => (string) $total,
+		];
 
 		return $unit;
 	}
