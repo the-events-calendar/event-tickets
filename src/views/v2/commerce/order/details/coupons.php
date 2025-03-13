@@ -26,7 +26,7 @@ if ( empty( $order->coupons ) ) {
 
 $discounts = array_map(
 	fn( Value $value ) => Legacy_Value_Factory::to_currency_value( $value ),
-	wp_list_pluck( $order->coupons, 'sub_total' )
+	wp_list_pluck( array_values( $order->coupons ), 'sub_total' )
 );
 
 $total_discount = Currency_Value::sum( ...$discounts );
