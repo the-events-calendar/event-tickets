@@ -12,6 +12,7 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\Commerce\Traits\Type;
+use TEC\Tickets\Commerce\Values\Legacy_Value_Factory;
 use WP_Post;
 
 /**
@@ -71,21 +72,20 @@ class Coupons extends Controller_Contract {
 		}
 
 		foreach ( $order->coupons as $coupon ) {
-			if ( is_int( $coupon['id'] ) ) {
-				$sku = $this->get_unique_type_id( $coupon['id'], 'coupon' );
-			} else {
-				$sku = $coupon['id'];
-			}
+			// Get SKU and value.
+			$sku   = $this->get_unique_type_id( $coupon['id'], 'coupon' );
+			$value = Legacy_Value_Factory::to_precision_value( $coupon['sub_total'] );
 
+			// Build item data array.
 			$unit['items'][] = [
 				'name'        => $coupon['slug'],
 				'quantity'    => $coupon['quantity'] ?? 1,
 				'unit_amount' => [
-					'value'         => $coupon['sub_total'],
+					'value'         => (string) $value,
 					'currency_code' => $order->currency,
 				],
 				'item_total'  => [
-					'value'         => $coupon['sub_total'],
+					'value'         => (string) $value,
 					'currency_code' => $order->currency,
 				],
 				'sku'         => $sku,
