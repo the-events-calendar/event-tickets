@@ -79,6 +79,7 @@ class Coupons extends Controller_Contract {
 		 * 1. Get the coupon values and add them together.
 		 * 2. Convert the total to a positive number.
 		 * 3. Add the total to the extra_breakdown field.
+		 * 4. Update the item total to reflect the total PRIOR to discount.
 		 */
 
 		$values = [];
@@ -97,6 +98,14 @@ class Coupons extends Controller_Contract {
 			'currency_code' => $order->currency,
 			'value'         => (string) $total,
 		];
+
+		// Update the item total to reflect the total PRIOR to discount.
+		$item_values = array_map(
+			static fn( $item ) => new Precision_Value( $item['sub_total'] ),
+			$order->items
+		);
+
+		$unit['item_value'] = (string) Precision_Value::sum( ...$item_values );
 
 		return $unit;
 	}
