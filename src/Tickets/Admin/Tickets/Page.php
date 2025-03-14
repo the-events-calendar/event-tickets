@@ -49,12 +49,29 @@ class Page extends Abstract_Admin_Page {
 	/**
 	 * Whether the page has a header.
 	 *
-	 * @since 6.4.1
+	 * @since TBD
 	 *
 	 * @var bool
 	 */
 	public static bool $has_header = false;
 
+	/**
+	 * Whether the page has a footer.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	public static bool $has_footer = false;
+
+	/**
+	 * Whether the page has a sidebar.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	public static bool $has_sidebar = false;
 
 	/**
 	 * The provider filter query key.
@@ -215,6 +232,45 @@ class Page extends Abstract_Admin_Page {
 		$admin_page  = $admin_pages->get_current_page();
 
 		return ! empty( $admin_page ) && static::$page_slug === $admin_page;
+	}
+
+	/**
+	 * Add the admin page wrapper classes.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $classes The classes to add to the admin page wrapper.
+	 *
+	 * @return string[]
+	 */
+	public static function add_admin_page_wrapper_classes( array $classes ): array {
+		if ( ! static::is_on_page() ) {
+			return $classes;
+		}
+
+		$classes[] = 'tec-admin-page--header';
+		$classes[] = 'tec-admin-page--simple';
+
+		return $classes;
+	}
+
+	/**
+	 * Add the admin page header classes.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $classes The classes to add to the admin page wrapper.
+	 *
+	 * @return string[]
+	 */
+	public static function add_admin_page_header_classes( array $classes ): array {
+		if ( ! static::is_on_page() ) {
+			return $classes;
+		}
+
+		$classes[] = 'tec-admin-page__header--simple';
+
+		return $classes;
 	}
 
 	/**

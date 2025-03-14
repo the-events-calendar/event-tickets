@@ -44,6 +44,8 @@ class Hooks extends Service_Provider {
 		add_action( 'admin_menu', tribe_callback( Page::class, 'admin_page' ), 15 );
 		add_action( 'current_screen', tribe_callback( Screen_Options::class, 'init' ) );
 		add_action( 'admin_menu', tribe_callback( Page::class, 'maybe_register_tabs' ), 20 );
+		add_action( 'tec_admin_page_wrapper_classes', tribe_callback( Page::class, 'add_admin_page_wrapper_classes' ) );
+		add_action( 'tec_admin_page_header_classes', tribe_callback( Page::class, 'add_admin_page_header_classes' ) );
 	}
 
 	/**
