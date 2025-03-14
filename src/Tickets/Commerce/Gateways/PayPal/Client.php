@@ -499,7 +499,7 @@ class Client {
 				$purchase_unit['items']               = $items;
 				$purchase_unit['amount']['breakdown'] = [
 					'item_total' => [
-						'value'         => Arr::get( $unit, 'value' ),
+						'value'         => $unit['item_value'] ?? $unit['value'],
 						'currency_code' => Arr::get( $unit, 'currency' ),
 					],
 				];
