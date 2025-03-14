@@ -362,7 +362,7 @@ class Page extends Abstract_Admin_Page {
 	 * @return void
 	 */
 	protected function render_ticket_table_tab(): void {
-		include dirname( __FILE__ ) . '/views/ticket-table.php';
+		include __DIR__ . '/views/ticket-table.php';
 	}
 
 	/**
@@ -423,7 +423,7 @@ class Page extends Abstract_Admin_Page {
 	 * @since TBD
 	 */
 	public function admin_page_sidebar_content(): void {
-		// No sidebar content for now
+		// No sidebar content for now.
 	}
 
 	/**
@@ -432,7 +432,7 @@ class Page extends Abstract_Admin_Page {
 	 * @since TBD
 	 */
 	public function admin_page_footer_content(): void {
-		// No footer content for now
+		// No footer content for now.
 	}
 
 	/**
