@@ -70,7 +70,13 @@ jest.mock( '@wordpress/data', () => {
 			}
 			if ( key === 'core/editor' ) {
 				return  {
-					getCurrentPost: () => 10,
+					getCurrentPost: () => {
+						return {
+							id: 10,
+							type: 'tec_tickets',
+						};
+					},
+					getCurrentPostId: () => 10,
 					getEditedPostAttribute: ( attr ) => {
 						if ( attr === 'date' ) {
 							return '2018-11-09T19:48:42';
@@ -363,7 +369,10 @@ describe( 'Ticket Block sagas', () => {
 							case 'provider':
 								return PROVIDER;
 							case 'tickets':
-								return [ 'tribe' ];
+								return JSON.stringify( [ {
+									id: 10,
+									type: 'tec_tickets'
+								} ] );
 							default:
 								return defaultValue;
 						}
@@ -373,7 +382,10 @@ describe( 'Ticket Block sagas', () => {
 
 			const gen = cloneableGenerator( sagas.setTicketsInitialState )( action );
 			expect( gen.next().value ).toEqual(
-				select( selectors.getTicketsIdsInBlocks ),
+				{
+					id: 10,
+					type: 'tec_tickets',
+				},
 			);
 
 			const clone1 = gen.clone();
