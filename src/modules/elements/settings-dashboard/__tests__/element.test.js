@@ -63,8 +63,10 @@ describe( 'Settings Dashboard Element', () => {
 
 	it( 'executes the close click handler', () => {
 		const onCloseClick = jest.fn();
-		const component = mount( <SettingsDashboard onCloseClick={ onCloseClick } /> );
-		component.find( 'button.tribe-editor__settings-dashboard__close-button' ).simulate( 'click' );
+		const component = renderer.create( <SettingsDashboard onCloseClick={ onCloseClick } /> );
+		const button = component.root.findByProps( { className : 'tribe-editor__settings-dashboard__close-button' } );
+
+		button.props.onClick();
 		expect( onCloseClick ).toHaveBeenCalled();
 		expect( onCloseClick ).toHaveBeenCalledTimes( 1 );
 	} );
