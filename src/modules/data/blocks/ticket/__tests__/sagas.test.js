@@ -389,8 +389,13 @@ describe( 'Ticket Block sagas', () => {
 			);
 
 			const clone1 = gen.clone();
+
+			expect( clone1.next().value ).toEqual(
+				select( selectors.getTicketsIdsInBlocks ),
+			);
+
 			expect( clone1.next( [] ).value ).toEqual(
-				call( sagas.createMissingTicketBlocks, [ 'tribe' ] ),
+				call( sagas.createMissingTicketBlocks, [ 10 ] ),
 			);
 			expect( clone1.next().value ).toEqual(
 				all( [
@@ -407,7 +412,16 @@ describe( 'Ticket Block sagas', () => {
 			expect( clone1.next().done ).toEqual( true );
 
 			const clone2 = gen.clone();
-			expect( clone2.next( [ 'tribe' ] ).value ).toEqual(
+
+			expect( clone2.next().value ).toEqual(
+				select( selectors.getTicketsIdsInBlocks ),
+			);
+
+			expect( clone2.next().value ).toEqual(
+				call( sagas.createMissingTicketBlocks, [ 10 ] ),
+			);
+
+			expect( clone2.next().value ).toEqual(
 				all( [
 					put( actions.setTicketsSharedCapacity( SHARED_CAPACITY ) ),
 					put( actions.setTicketsTempSharedCapacity( SHARED_CAPACITY ) ),
@@ -438,7 +452,10 @@ describe( 'Ticket Block sagas', () => {
 							case 'provider':
 								return PROVIDER;
 							case 'tickets':
-								return [ 'tribe' ];
+								return JSON.stringify( [ {
+									id: 10,
+									type: 'tec_tickets'
+								} ] );
 							default:
 								return defaultValue;
 						}
@@ -446,13 +463,22 @@ describe( 'Ticket Block sagas', () => {
 				},
 			};
 			const gen = cloneableGenerator( sagas.setTicketsInitialState )( action );
+
 			expect( gen.next().value ).toEqual(
-				select( selectors.getTicketsIdsInBlocks ),
+				{
+					id: 10,
+					type: 'tec_tickets'
+				},
 			);
 
 			const clone1 = gen.clone();
+
+			expect( clone1.next().value ).toEqual(
+				select( selectors.getTicketsIdsInBlocks ),
+			);
+
 			expect( clone1.next( [] ).value ).toEqual(
-				call( sagas.createMissingTicketBlocks, [ 'tribe' ] ),
+				call( sagas.createMissingTicketBlocks, [ 10 ] ),
 			);
 			expect( clone1.next().value ).toEqual(
 				select( selectors.getDefaultTicketProvider ),
@@ -463,9 +489,19 @@ describe( 'Ticket Block sagas', () => {
 			expect( clone1.next().done ).toEqual( true );
 
 			const clone2 = gen.clone();
-			expect( clone2.next( [ 'tribe' ] ).value ).toEqual(
+
+			expect( clone2.next().value ).toEqual(
+				select( selectors.getTicketsIdsInBlocks ),
+			);
+
+			expect( clone2.next().value ).toEqual(
+				call( sagas.createMissingTicketBlocks, [ 10 ] ),
+			);
+
+			expect( clone2.next().value ).toEqual(
 				select( selectors.getDefaultTicketProvider ),
 			);
+
 			expect( clone2.next( DEFAULT_PROVIDER ).value ).toEqual(
 				put( actions.setTicketsProvider( DEFAULT_PROVIDER ) ),
 			);
