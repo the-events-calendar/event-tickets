@@ -76,7 +76,13 @@ jest.mock( '@wordpress/data', () => {
 							type: 'tec_tickets',
 						};
 					},
+					getBlockCount: () => {},
+					getBlockIndex: () => 0,
+					getBlockRootClientId: () => 88,
+					getBlocks: () => {},
 					getCurrentPostId: () => 10,
+					getCurrentPostAttribute: () => {},
+					getCurrentPostType: () => 'tribe_events',
 					getEditedPostAttribute: ( attr ) => {
 						if ( attr === 'date' ) {
 							return '2018-11-09T19:48:42';
