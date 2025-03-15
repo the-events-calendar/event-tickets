@@ -499,10 +499,18 @@ class Client {
 				$purchase_unit['items']               = $items;
 				$purchase_unit['amount']['breakdown'] = [
 					'item_total' => [
-						'value'         => Arr::get( $unit, 'value' ),
+						'value'         => $unit['item_value'] ?? $unit['value'],
 						'currency_code' => Arr::get( $unit, 'currency' ),
 					],
 				];
+
+				// If we have extra breakdown provided, merge into the item breakdown.
+				if ( array_key_exists( 'extra_breakdown', $unit ) ) {
+					$purchase_unit['amount']['breakdown'] = array_merge(
+						$purchase_unit['amount']['breakdown'],
+						$unit['extra_breakdown']
+					);
+				}
 			}
 
 			if ( ! empty( $unit['tax_id'] ) ) {

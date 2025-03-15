@@ -13,6 +13,8 @@ use Exception;
 use TEC\Common\Contracts\Container;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Cart\Abstract_Cart;
+use TEC\Tickets\Commerce\Gateways\Manager as Gateway_Manager;
+use TEC\Tickets\Commerce\Gateways\Stripe\Gateway as Stripe;
 use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier;
@@ -250,11 +252,13 @@ class Coupons extends Base_API {
 			$cart_total = Currency_Value::create_from_float( $cart->get_cart_total() );
 			$discount   = Currency_Value::create_from_float( $coupon->get_discount_amount( $original_total->get_raw_value()->get() ) );
 
-			// Update the payment intent with the new value
-			Payment_Intent::update(
-				$request->get_param( 'payment_intent_id' ),
-				[ 'amount' => $cart_total->get_raw_value()->get_as_integer() ]
-			);
+			// Update the payment intent with the new value.
+			if ( $this->is_using_stripe() ) {
+				$this->update_stripe_payment_intent(
+					$request->get_param( 'payment_intent_id' ),
+					$cart_total->get_raw_value()->get_as_integer()
+				);
+			}
 
 			return rest_ensure_response(
 				[
@@ -317,10 +321,12 @@ class Coupons extends Base_API {
 			$cart_total = Currency_Value::create_from_float( $cart->get_cart_total() );
 
 			// Update the payment intent with the new value.
-			Payment_Intent::update(
-				$request->get_param( 'payment_intent_id' ),
-				[ 'amount' => $cart_total->get_raw_value()->get_as_integer() ]
-			);
+			if ( $this->is_using_stripe() ) {
+				$this->update_stripe_payment_intent(
+					$request->get_param( 'payment_intent_id' ),
+					$cart_total->get_raw_value()->get_as_integer()
+				);
+			}
 
 			return rest_ensure_response(
 				[
@@ -344,6 +350,21 @@ class Coupons extends Base_API {
 				)
 			);
 		}
+	}
+
+	/**
+	 * Update the Stripe payment intent.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id     The payment intent ID.
+	 * @param int    $amount The new amount as an integer. This should be in the smallest currency
+	 *                       unit (e.g. cents for USD: $1 = 100 cents).
+	 *
+	 * @return void
+	 */
+	protected function update_stripe_payment_intent( string $id, int $amount ) {
+		Payment_Intent::update( $id, [ 'amount' => $amount ] );
 	}
 
 	/**
@@ -447,10 +468,10 @@ class Coupons extends Base_API {
 				'required'    => true,
 			],
 			'payment_intent_id' => [
-				'description' => esc_html__( 'The payment intent to apply the coupon to.', 'event-tickets' ),
+				'description' => esc_html__( 'The Stripe payment intent to apply the coupon to.', 'event-tickets' ),
 				'type'        => 'string',
 				'format'      => 'text-field',
-				'required'    => true,
+				'required'    => $this->is_using_stripe(),
 			],
 			'purchaser_data'    => [
 				'description'       => esc_html__( 'The purchaser data.', 'event-tickets' ),
@@ -536,26 +557,21 @@ class Coupons extends Base_API {
 	}
 
 	/**
-	 * Get the purchaser information.
+	 * Determine if the current gateway is Stripe.
 	 *
-	 * @since 5.18.0
+	 * @since TBD
 	 *
-	 * @param Request $request The request object.
-	 *
-	 * @return array
+	 * @return bool Whether the current gateway is Stripe.
 	 */
-	protected function get_purchaser_information( Request $request ) {
-		$purchaser_data = $request->get_param( 'purchaser_data' );
+	protected function is_using_stripe(): bool {
+		try {
+			/** @var Gateway_Manager $manager */
+			$manager = $this->container->get( Gateway_Manager::class );
 
-		[ $first_name, $last_name ] = explode( ' ', $purchaser_data['name'], 2 );
-
-		return [
-			'purchaser_user_id'    => 0,
-			'purchaser_full_name'  => $purchaser_data['name'],
-			'purchaser_first_name' => $first_name ?? $purchaser_data['name'],
-			'purchaser_last_name'  => $last_name ?? '',
-			'purchaser_email'      => sanitize_email( $purchaser_data['email'] ),
-		];
+			return Stripe::get_key() === $manager->get_current_gateway();
+		} catch ( Exception $e ) {
+			return false;
+		}
 	}
 
 	/**
