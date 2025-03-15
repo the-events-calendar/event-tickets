@@ -87,7 +87,7 @@ class Coupons extends Controller_Contract {
 			$values[] = Legacy_Value_Factory::to_precision_value( $coupon['sub_total'] );
 		}
 
-		$total = abs( Precision_Value::sum( ...$values )->get() );
+		$total = Precision_Value::sum( ...$values )->invert_sign();
 
 		// Set up the extra breakdown data.
 		if ( ! array_key_exists( 'extra_breakdown', $unit ) ) {
