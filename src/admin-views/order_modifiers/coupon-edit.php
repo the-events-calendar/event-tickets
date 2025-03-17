@@ -29,7 +29,7 @@ if ( ! empty( $order_modifier_display_name ) ) {
 	$heading = __( 'New Coupon', 'event-tickets' );
 }
 
-$limit_error_text = __( 'If setting a limit for a Coupon, it must be a positive number. Use 0 or leave empty for no limit.', 'event-tickets' );
+$limit_error_text = __( 'Coupon Limit must be a positive number. Use 0 or leave empty for no limit.', 'event-tickets' );
 
 ?>
 <div class="wrap">
