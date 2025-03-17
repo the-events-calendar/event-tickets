@@ -37,6 +37,7 @@ window.etOrderModifiersAmountField = window.etOrderModifiersAmountField || {
 
 	const selectors = {
 		amount: '#order_modifier_amount',
+		form: '.tec-settings-order_modifier',
 		type: '#order_modifier_sub_type',
 	};
 
@@ -85,6 +86,7 @@ window.etOrderModifiersAmountField = window.etOrderModifiersAmountField || {
 	};
 
 	const validateAmount = () => {
+		const $form = $( selectors.form );
 		const $input = $( selectors.amount );
 		const asFloat = parseFloat( mask.unmaskedValue );
 
@@ -94,6 +96,10 @@ window.etOrderModifiersAmountField = window.etOrderModifiersAmountField || {
 			return;
 		}
 
+		// Remove the valid class so the validation library won't allow submit.
+		$form.removeClass( validation.selectors.valid.className() );
+
+		// Mark the input as invalid and display the error.
 		$input.addClass( validation.selectors.error.className() );
 		$input.one( 'focusin', validation.onChangeFieldRemoveError );
 		$input.trigger( 'displayErrors.tribe' );
