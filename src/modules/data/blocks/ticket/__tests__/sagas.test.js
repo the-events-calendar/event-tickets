@@ -1053,9 +1053,13 @@ describe( 'Ticket Block sagas', () => {
 			};
 
 			const gen = cloneableGenerator( sagas.fetchTicket )( action );
+
+			// Should set ticket as loading.
 			expect( gen.next().value ).toEqual(
 				put( actions.setTicketIsLoading( CLIENT_ID, true ) ),
 			);
+
+			// Should fetch ticket details from API.
 			expect( gen.next().value ).toEqual(
 				call( wpREST, {
 					path: `tickets/${ TICKET_ID }`,
@@ -1063,18 +1067,18 @@ describe( 'Ticket Block sagas', () => {
 				} ),
 			);
 
-			const clone1 = gen.clone();
-			const apiResponse1 = {
-				response: {
-					ok: false,
-				},
+			// Clone the generator to handle different response scenarios.
+			const failureClone = gen.clone();
+			const failureResponse = {
+				response: { ok: false },
 				data: {},
 			};
 
-			expect( clone1.next( apiResponse1 ).value ).toEqual(
-				put( actions.setTicketIsLoading( CLIENT_ID, false ) ),
+			// Simulate a failed response from the API.
+			expect( failureClone.next( failureResponse ).value ).toEqual(
+				put( actions.setTicketIsLoading( CLIENT_ID, false ) )
 			);
-			expect( clone1.next().done ).toEqual( true );
+			expect( failureClone.next().done ).toBe( true );
 
 			const clone2 = gen.clone();
 			const apiResponse2 = {
