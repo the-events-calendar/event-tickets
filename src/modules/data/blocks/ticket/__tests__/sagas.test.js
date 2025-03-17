@@ -1019,6 +1019,11 @@ describe( 'Ticket Block sagas', () => {
 			expect( clone1.next().value ).toEqual(
 				select( selectors.getTicketsTempSharedCapacity ),
 			);
+
+			expect( clone1.next().value ).toEqual(
+				select( selectors.showSalePrice, props ),
+			);
+
 			expect( clone1.next().done ).toEqual( true );
 
 			const clone2 = gen.clone();
@@ -1027,6 +1032,11 @@ describe( 'Ticket Block sagas', () => {
 			expect( clone2.next( independentCapacityType ).value ).toEqual(
 				select( selectors.getTicketTempCapacity, props ),
 			);
+
+			expect( clone2.next().value ).toEqual(
+				select( selectors.showSalePrice, props ),
+			);
+
 			expect( clone2.next().done ).toEqual( true );
 		} );
 	} );
