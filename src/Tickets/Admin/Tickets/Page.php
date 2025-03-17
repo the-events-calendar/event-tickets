@@ -445,44 +445,7 @@ class Page extends Abstract_Admin_Page {
 
 		$this->render_tabs();
 
-		$current_tab = $this->get_current_tab();
-
-		/**
-		 * Action that fires before rendering the tab content on the "All Tickets" page.
-		 *
-		 * @since TBD
-		 *
-		 * @param string $current_tab The current tab slug.
-		 * @param Page   $this        The current page instance.
-		 */
-		do_action( 'tec_tickets_admin_tickets_page_before_tab_content', $current_tab, $this );
-
-		switch ( $current_tab ) {
-			case 'ticket-table':
-				$this->render_ticket_table_tab_content();
-				break;
-			default:
-				/**
-				 * Action that fires when rendering a custom tab's content on the "All Tickets" page.
-				 *
-				 * @since TBD
-				 *
-				 * @param string $current_tab The current tab slug.
-				 * @param Page   $this        The current page instance.
-				 */
-				do_action( 'tec_tickets_admin_tickets_page_custom_tab_content', $current_tab, $this );
-				break;
-		}
-
-		/**
-		 * Action that fires after rendering the tab content on the "All Tickets" page.
-		 *
-		 * @since TBD
-		 *
-		 * @param string $current_tab The current tab slug.
-		 * @param Page   $this        The current page instance.
-		 */
-		do_action( 'tec_tickets_admin_tickets_page_after_tab_content', $current_tab, $this );
+		$this->render_tab_content();
 	}
 
 	/**
