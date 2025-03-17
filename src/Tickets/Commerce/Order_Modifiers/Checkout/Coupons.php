@@ -160,7 +160,7 @@ class Coupons extends Controller_Contract {
 	/**
 	 * Filter the properties of the order object to add coupons.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param array $properties The properties of the order object.
 	 *
@@ -198,7 +198,7 @@ class Coupons extends Controller_Contract {
 	/**
 	 * Add coupon item parameters to the cart item.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param ?array $full_item The full item parameters, or null.
 	 * @param array  $item      The cart item details.
@@ -245,7 +245,7 @@ class Coupons extends Controller_Contract {
 	/**
 	 * Filter the cart items when creating an order to ensure coupons are included.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param array $items    The items in the cart.
 	 * @param Value $subtotal The calculated subtotal of the cart items.

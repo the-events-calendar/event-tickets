@@ -5,9 +5,9 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/v2/commerce/order/details/coupons.php
  *
- * @since TBD
+ * @since 5.21.0
  *
- * @version TBD
+ * @version 5.21.0
  *
  * @var Tribe__Template $this  [Global] Template object.
  * @var WP_Post         $order [Global] The order object.

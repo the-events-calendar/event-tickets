@@ -2,7 +2,7 @@
 /**
  * Vendor Asset class.
  *
- * @since TBD
+ * @since 5.21.0
  */
 
 declare( strict_types=1 );
@@ -18,14 +18,14 @@ use TEC\Common\StellarWP\Assets\Asset;
  * it does not have a version or a minified version. It also does not do any local file
  * processing.
  *
- * @since TBD
+ * @since 5.21.0
  */
 class Vendor_Asset extends Asset {
 
 	/**
 	 * Whether or not to attempt to load an .asset.php file.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @var bool
 	 */
@@ -34,7 +34,7 @@ class Vendor_Asset extends Asset {
 	/**
 	 * Constructor.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param string $slug The asset slug.
 	 * @param string $url  The asset URL.
@@ -52,7 +52,7 @@ class Vendor_Asset extends Asset {
 	 *
 	 * Note: This does NOT make use of the `$use_min_if_available` parameter.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param bool $use_min_if_available [UNUSED] Whether to use the minified version of the asset if available.
 	 * @return string
@@ -66,7 +66,7 @@ class Vendor_Asset extends Asset {
 	 *
 	 * This always returns an empty string.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @return string
 	 */

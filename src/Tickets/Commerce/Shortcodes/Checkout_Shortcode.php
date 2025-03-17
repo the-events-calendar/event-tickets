@@ -36,7 +36,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	 * Method used to save the template vars for this instance of shortcode.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Updated the $items variable to retrieve all item types from the cart.
+	 * @since 5.21.0 Updated the $items variable to retrieve all item types from the cart.
 	 *
 	 * @return void
 	 */
@@ -55,7 +55,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 				/**
 				 * Filters whether the current item should be skipped in the checkout items.
 				 *
-				 * @since TBD
+				 * @since 5.21.0
 				 *
 				 * @param bool  $should_skip Whether the item should be skipped or not.
 				 * @param array $item        The item to be checked.

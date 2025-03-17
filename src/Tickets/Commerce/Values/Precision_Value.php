@@ -117,7 +117,7 @@ class Precision_Value extends Base_Value {
 	 * Note that this is the RAW integer value. For example, a value of 1.23 with a precision of 2
 	 * would return 123.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param ?int $precision The precision to use. Passing null will use the default precision.
 	 *
@@ -219,7 +219,7 @@ class Precision_Value extends Base_Value {
 	 * This will multiply the values together and return a new value object with the product.
 	 * The precision of the new value will be determined by the precision of THIS object.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param Precision_Value $value The value to multiply by.
 	 *
@@ -263,7 +263,7 @@ class Precision_Value extends Base_Value {
 	 *
 	 * Converts a negative value to a positive value, and vice versa.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @return Precision_Value The new value object.
 	 */
@@ -274,7 +274,7 @@ class Precision_Value extends Base_Value {
 	/**
 	 * Get the value as a string.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @return string The value as a string.
 	 */
@@ -288,7 +288,7 @@ class Precision_Value extends Base_Value {
 	 * Validate that the precision is valid.
 	 *
 	 * @since 5.18.0
-	 * @since TBD Made the method static.
+	 * @since 5.21.0 Made the method static.
 	 *
 	 * @throws InvalidArgumentException If the precision is greater than the max precision.
 	 */
@@ -315,7 +315,7 @@ class Precision_Value extends Base_Value {
 	/**
 	 * Set the default precision.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param int $precision The default precision.
 	 */

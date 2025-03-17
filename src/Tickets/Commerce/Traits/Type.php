@@ -2,7 +2,7 @@
 /**
  * Type trait.
  *
- * @since TBD
+ * @since 5.21.0
  */
 
 namespace TEC\Tickets\Commerce\Traits;
@@ -10,7 +10,7 @@ namespace TEC\Tickets\Commerce\Traits;
 /**
  * Trait Type
  *
- * @since TBD
+ * @since 5.21.0
  */
 trait Type {
 
@@ -23,7 +23,7 @@ trait Type {
 	 * "coupon". If the type key is not set, or if it is set to something other
 	 * than "coupon", this will return false.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param array $thing The thing to check.
 	 *
@@ -41,7 +41,7 @@ trait Type {
 	/**
 	 * Get a unique ID for an item using its ID and type.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param int|string $id   The ID of the item.
 	 * @param string     $type The type of the item.
@@ -55,7 +55,7 @@ trait Type {
 	/**
 	 * Get the type of an item from its unique ID.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param string $unique_id The unique ID of the item.
 	 *
@@ -69,7 +69,7 @@ trait Type {
 	/**
 	 * Get the ID of an item from its unique ID.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param string $unique_id The unique ID of the item.
 	 *

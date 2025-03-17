@@ -2,7 +2,7 @@
 /**
  * Cart trait.
  *
- * @since TBD
+ * @since 5.21.0
  */
 
 declare( strict_types=1 );
@@ -14,7 +14,7 @@ use TEC\Tickets\Commerce;
 /**
  * Trait Cart
  *
- * @since TBD
+ * @since 5.21.0
  */
 trait Cart {
 
@@ -36,7 +36,7 @@ trait Cart {
 	/**
 	 * Get the expiration time for the cart transient.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @return int The expiration time in seconds.
 	 */
@@ -44,7 +44,7 @@ trait Cart {
 		/**
 		 * Filters the expiration time for the cart transient.
 		 *
-		 * @since TBD
+		 * @since 5.21.0
 		 *
 		 * @param int $expire The expiration time in seconds. Should be relative time, not an absolute timestamp.
 		 */

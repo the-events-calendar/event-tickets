@@ -3,9 +3,9 @@
  * Single order - Items metabox.
  *
  * @since 5.13.3
- * @since TBD Added the coupons and fees sections.
+ * @since 5.21.0 Added the coupons and fees sections.
  *
- * @version TBD
+ * @version 5.21.0
  *
  * @var WP_Post             $order       The current post object.
  * @var Singular_Order_Page $single_page The orders table output.

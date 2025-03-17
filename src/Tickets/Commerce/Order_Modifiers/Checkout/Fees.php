@@ -89,7 +89,7 @@ class Fees extends Abstract_Fees {
 	/**
 	 * Add fees to the order object properties.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param array   $properties The properties of the order object.
 	 * @param WP_Post $order      The order object.

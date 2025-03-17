@@ -225,7 +225,7 @@ tribe.tickets.commerce = {};
 	/**
 	 * Updates the total price displayed on the page.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 * @param {string} newAmount The new total amount to display.
 	 */
 	obj.updateTotalPrice = function( newAmount ) {
@@ -243,7 +243,7 @@ tribe.tickets.commerce = {};
 	/**
 	 * Updates the coupon discount displayed on the page.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 * @param {string} discount The new discount to display.
 	 */
 	obj.updateCouponDiscount = function( discount ) {
@@ -262,7 +262,7 @@ tribe.tickets.commerce = {};
 	/**
 	 * Updates the coupon label displayed on the page.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 * @param {string} label The new label to display.
 	 */
 	obj.updateCouponLabel = function( label ) {
@@ -300,7 +300,7 @@ tribe.tickets.commerce = {};
 		/**
 		 * Function to apply the coupon and handle AJAX request.
 		 *
-		 * @since TBD
+		 * @since 5.21.0
 		 */
 		function applyCoupon() {
 			// Prevent multiple AJAX requests at once.
@@ -384,7 +384,7 @@ tribe.tickets.commerce = {};
 	/**
 	 * Bind the remove coupon button.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 */
 	obj.bindCouponRemove = function() {
 		$document.on( 'click', obj.selectors.couponRemoveButton, function() {

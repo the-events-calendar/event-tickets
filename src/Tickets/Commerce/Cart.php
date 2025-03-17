@@ -76,7 +76,7 @@ class Cart {
 	 * parent class is the cookie handling.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Updated to use Cart_Interface instead of Unmanaged_Cart.
+	 * @since 5.21.0 Updated to use Cart_Interface instead of Unmanaged_Cart.
 	 *
 	 * @return Cart_Interface
 	 */
@@ -87,7 +87,7 @@ class Cart {
 		 * Filters the cart repository, by default we use Unmanaged Cart.
 		 *
 		 * @since 5.1.9
-		 * @since TBD Updated to use Cart_Interface instead of Unmanaged_Cart.
+		 * @since 5.21.0 Updated to use Cart_Interface instead of Unmanaged_Cart.
 		 *
 		 * @param Cart_Interface $cart Instance of the cart repository managing the cart.
 		 */
@@ -310,21 +310,21 @@ class Cart {
 		 *
 		 * @depecated
 		 * @since 5.1.9
-		 * @since TBD Deprecated in favor of `tec_tickets_commerce_cart_cookie_expiration`.
+		 * @since 5.21.0 Deprecated in favor of `tec_tickets_commerce_cart_cookie_expiration`.
 		 *
 		 * @param int $expire The expiry time, as passed to setcookie().
 		 */
 		$expire = (int) apply_filters_deprecated(
 			'tec_tickets_commerce_cart_expiration',
 			[ time() + HOUR_IN_SECONDS ],
-			'TBD',
+			'5.21.0',
 			'tec_tickets_commerce_cart_cookie_expiration'
 		);
 
 		/**
 		 * Filters the life span of the Cart Cookie.
 		 *
-		 * @since TBD
+		 * @since 5.21.0
 		 *
 		 * @param int $expire The expiry time, as passed to setcookie().
 		 */
@@ -366,7 +366,7 @@ class Cart {
 	 * Get the tickets currently in the cart for a given provider.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Added the $type parameter.
+	 * @since 5.21.0 Added the $type parameter.
 	 *
 	 * @param bool   $full_item_params Determines all the item params, including event_id, sub_total, and obj.
 	 * @param string $type             The type of item to get from the cart. Default is 'ticket'. Use 'all' to get all items.
@@ -682,7 +682,7 @@ class Cart {
 	/**
 	 * Map the ticket data to a more usable format.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param array $ticket_data  Array of raw ticket data.
 	 * @param array $tickets_meta Array of ticket meta data.
@@ -749,7 +749,7 @@ class Cart {
 	 * @return string The transient name.
 	 */
 	public static function get_transient_name( $id ) {
-		_deprecated_function( __METHOD__, 'TBD', 'TEC\Tickets\Commerce\Traits\Cart::get_transient_key' );
+		_deprecated_function( __METHOD__, '5.21.0', 'TEC\Tickets\Commerce\Traits\Cart::get_transient_key' );
 		return Commerce::ABBR . '-cart-' . md5( $id ?? '' );
 	}
 }

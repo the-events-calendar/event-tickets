@@ -636,7 +636,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 *
 	 * This should be used for deprecated methods that are no longer in use.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param string $name      The method name.
 	 * @param array  $arguments The method arguments.
@@ -648,7 +648,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		$method = __CLASS__ . "::{$name}";
 		switch ( $name ) {
 			case 'convert_from_raw_amount':
-				_deprecated_function( esc_html( $method ), 'TBD', 'No replacement available.' );
+				_deprecated_function( esc_html( $method ), '5.21.0', 'No replacement available.' );
 
 				$amount       = ( $arguments[0] ?? 0 ) / 100;
 				$amount_value = Value::create( $amount );
@@ -663,7 +663,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	/**
 	 * Get the amount for the given subtype.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param string $sub_type   The subtype of the amount.
 	 * @param float  $raw_amount The raw amount.

@@ -32,7 +32,7 @@ class Coupon extends Order_Modifier {
 	/**
 	 * Get the discount amount.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param float $subtotal The price that should be used to calculate the discount.
 	 *
@@ -52,7 +52,7 @@ class Coupon extends Order_Modifier {
 	/**
 	 * Add the coupon to the cart.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param Cart_Interface $cart     The cart repository.
 	 * @param int            $quantity The quantity.
@@ -68,7 +68,7 @@ class Coupon extends Order_Modifier {
 	/**
 	 * Remove the coupon from the cart.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param Cart_Interface $cart The cart repository.
 	 *

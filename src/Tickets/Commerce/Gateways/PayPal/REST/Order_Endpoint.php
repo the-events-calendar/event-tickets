@@ -131,7 +131,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		/**
 		 * Filters the unit data for the order before sending it to PayPal.
 		 *
-		 * @since TBD
+		 * @since 5.21.0
 		 *
 		 * @param array   $unit  The structured data for the order.
 		 * @param WP_Post $order The current order object.

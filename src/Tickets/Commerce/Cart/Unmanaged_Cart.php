@@ -85,7 +85,7 @@ class Unmanaged_Cart extends Abstract_Cart {
 	/**
 	 * Clears the cart of its contents and persists its new state.
 	 *
-	 * @since TBD Added calculation caching reset.
+	 * @since 5.21.0 Added calculation caching reset.
 	 *
 	 * This method should include any persistence, request and redirection required
 	 * by the cart implementation.
@@ -164,7 +164,7 @@ class Unmanaged_Cart extends Abstract_Cart {
 	 * Adds a specified quantity of the item to the cart.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Added calculation caching reset.
+	 * @since 5.21.0 Added calculation caching reset.
 	 *
 	 * @param int|string $item_id    The item ID.
 	 * @param int        $quantity   The quantity to add.
@@ -198,7 +198,7 @@ class Unmanaged_Cart extends Abstract_Cart {
 	 * Removes an item from the cart.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Added calculation caching reset.
+	 * @since 5.21.0 Added calculation caching reset.
 	 *
 	 * @param int|string $item_id  The item ID.
 	 * @param null|int   $quantity The quantity to remove.
@@ -268,7 +268,7 @@ class Unmanaged_Cart extends Abstract_Cart {
 		 *
 		 * This allows for further processing of data within the $data array.
 		 *
-		 * @since TBD
+		 * @since 5.21.0
 		 *
 		 * @param Cart_Interface $cart The cart object.
 		 * @param array          $data The data to be processed by the cart.
@@ -288,7 +288,7 @@ class Unmanaged_Cart extends Abstract_Cart {
 	/**
 	 * Insert or update an item.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param string|int $item_id     The item ID.
 	 * @param int        $quantity    The quantity of the item. If the item exists, this quantity will override

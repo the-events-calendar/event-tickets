@@ -82,7 +82,7 @@ class Coupon_Table extends Order_Modifier_Table {
 	/**
 	 * Get the modifier items.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param array $params The query parameters.
 	 *

@@ -2,7 +2,7 @@
 /**
  * Decrease Coupon Usage flag action.
  *
- * @since TBD
+ * @since 5.21.0
  */
 
 declare( strict_types=1 );
@@ -15,14 +15,14 @@ use WP_Post;
 /**
  * Class Decrease_Coupon_Usage
  *
- * @since TBD
+ * @since 5.21.0
  */
 class Decrease_Coupon_Usage extends Abstract_Coupon_Usage {
 
 	/**
 	 * Which flags are associated and will trigger this action.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @var string[]
 	 */
@@ -33,7 +33,7 @@ class Decrease_Coupon_Usage extends Abstract_Coupon_Usage {
 	/**
 	 * Determines if a transition of status will trigger this flag action.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param Status_Interface  $new_status New post status.
 	 * @param ?Status_Interface $old_status Old post status.
@@ -52,7 +52,7 @@ class Decrease_Coupon_Usage extends Abstract_Coupon_Usage {
 	/**
 	 * Handles the usage of a coupon.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param array   $coupon Array of coupon data.
 	 * @param WP_Post $order  Order object as a WP_Post object.

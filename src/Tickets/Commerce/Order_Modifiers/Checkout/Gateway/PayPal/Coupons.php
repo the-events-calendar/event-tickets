@@ -4,7 +4,7 @@
  *
  * This class manages the addition and calculation of coupons within the PayPal gateway workflow.
  *
- * @since   TBD
+ * @since   5.21.0
  * @package TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal
  */
 
@@ -19,7 +19,7 @@ use WP_Post;
 /**
  * Class Coupons
  *
- * @since TBD
+ * @since 5.21.0
  */
 class Coupons extends Controller_Contract {
 
@@ -28,7 +28,7 @@ class Coupons extends Controller_Contract {
 	/**
 	 * Registers the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @return void
 	 */
@@ -46,7 +46,7 @@ class Coupons extends Controller_Contract {
 	 *
 	 * Bound implementations should not be removed in this method!
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @return void Filters and actions hooks added by the controller are be removed.
 	 */
@@ -60,7 +60,7 @@ class Coupons extends Controller_Contract {
 	/**
 	 * Adds coupon unit data to the PayPal order.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param array   $unit  The unit data to be passed to PayPal.
 	 * @param WP_Post $order The order object.

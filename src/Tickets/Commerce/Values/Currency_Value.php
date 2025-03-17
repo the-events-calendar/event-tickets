@@ -139,7 +139,7 @@ class Currency_Value extends Base_Value {
 	 * Create a new instance of the class.
 	 *
 	 * @since 5.18.0
-	 * @since TBD Added currency_symbol, thousands_separator, decimal_separator, and currency_symbol_position params.
+	 * @since 5.21.0 Added currency_symbol, thousands_separator, decimal_separator, and currency_symbol_position params.
 	 *
 	 * @param Precision_Value $value                    The value to store.
 	 * @param ?string         $currency_symbol          The currency symbol. Will use the default if not provided.
@@ -169,7 +169,7 @@ class Currency_Value extends Base_Value {
 	/**
 	 * Create a new instance of the class from a float.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param float $value The value to store.
 	 *
