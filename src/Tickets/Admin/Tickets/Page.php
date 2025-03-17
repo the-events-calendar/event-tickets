@@ -387,7 +387,7 @@ class Page extends Abstract_Admin_Page {
 		 *
 		 * @param Page $this The current page instance.
 		 */
-		do_action( 'tec_tickets_admin_before_register_tabs', $this );
+		do_action( 'tec_tickets_admin_tickets_page_before_register_tabs', $this );
 
 		$this->register_tab(
 			'ticket-table',
@@ -407,7 +407,7 @@ class Page extends Abstract_Admin_Page {
 		 *
 		 * @param Page $this The current page instance.
 		 */
-		do_action( 'tec_tickets_admin_after_register_tabs', $this );
+		do_action( 'tec_tickets_admin_tickets_page_after_register_tabs', $this );
 	}
 
 	/**
