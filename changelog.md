@@ -1,5 +1,10 @@
 # Changelog
 
+### [5.21.0] 2025-03-17
+
+* Feature - Add the ability to create Coupons that can be applied to Event Tickets. [ET-2189]
+* Language - 21 new strings added, 106 updated, 5 fuzzied, and 9 obsoleted.
+
 ### [5.20.1] 2025-03-13
 
 * Feature - Added Ticket editor support for creating seating ticket with WooCommerce. [SL-209]
