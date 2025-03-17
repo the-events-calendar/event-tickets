@@ -29,6 +29,8 @@ if ( ! empty( $order_modifier_display_name ) ) {
 	$heading = __( 'New Coupon', 'event-tickets' );
 }
 
+$limit_error_text = __( 'If setting a limit for a Coupon, it must be a positive number. Use 0 or leave empty for no limit.', 'event-tickets' );
+
 ?>
 <div class="wrap">
 	<h1><?php echo esc_html( $heading ); ?></h1>
@@ -109,6 +111,8 @@ if ( ! empty( $order_modifier_display_name ) ) {
 						id="order_modifier_coupon_limit"
 						maxlength="15"
 						class="tribe-field tec_order_modifier_amount_field"
+						data-validation-is-greater-or-equal-to="0"
+						data-validation-error="<?php echo esc_attr( $limit_error_text ); ?>"
 						value="<?php echo esc_attr( $order_modifier_coupon_limit ?? '' ); ?>" />
 					<p>
 						<?php esc_html_e( 'Leave field blank to allow for unlimited coupon redemption.', 'event-tickets' ); ?>
