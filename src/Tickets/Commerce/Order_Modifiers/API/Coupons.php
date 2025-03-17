@@ -10,21 +10,22 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Commerce\Order_Modifiers\API;
 
 use Exception;
-use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
+use TEC\Common\Contracts\Container;
+use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Cart\Abstract_Cart;
+use TEC\Tickets\Commerce\Gateways\Manager as Gateway_Manager;
+use TEC\Tickets\Commerce\Gateways\Stripe\Gateway as Stripe;
 use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
-use TEC\Tickets\Commerce\Order;
-use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier;
-use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon as Modifier;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon_Modifier_Manager as Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Coupons as Coupons_Repository;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Coupons as CouponsTrait;
+use TEC\Tickets\Commerce\Values\Currency_Value;
 use WP_Error;
 use WP_REST_Request as Request;
 use WP_REST_Response as Response;
 use WP_REST_Server as Server;
-use TEC\Common\Contracts\Container;
 
 /**
  * Class Coupons
@@ -43,13 +44,22 @@ class Coupons extends Base_API {
 	protected Manager $manager;
 
 	/**
+	 * The repository for interacting with the order modifiers table.
+	 *
+	 * @since 5.18.0
+	 *
+	 * @var Coupons_Repository
+	 */
+	protected Coupons_Repository $repo;
+
+	/**
 	 * Coupons constructor.
 	 *
 	 * @since 5.18.0
 	 *
-	 * @param Container          $container The DI container.
+	 * @param Container          $container  The DI container.
 	 * @param Coupons_Repository $repository The coupons repository.
-	 * @param Manager            $manager The manager for the order modifiers.
+	 * @param Manager            $manager    The manager for the order modifiers.
 	 */
 	public function __construct( Container $container, Coupons_Repository $repository, Manager $manager ) {
 		parent::__construct( $container );
@@ -90,7 +100,7 @@ class Coupons extends Base_API {
 			'/coupons/validate',
 			[
 				'methods'             => Server::CREATABLE,
-				'callback'            => [ $this, 'validate_coupon' ],
+				'callback'            => fn( Request $request ) => $this->validate_coupon( $request ),
 				'permission_callback' => '__return_true',
 				'args'                => $this->get_endpoint_args( 'validate' ),
 			]
@@ -214,46 +224,53 @@ class Coupons extends Base_API {
 		try {
 			// Get and validate the coupon slug.
 			$coupon_slug = $request->get_param( 'coupon' );
-			if ( ! $this->is_coupon_slug_valid( $coupon_slug ) ) {
-				throw new Exception( esc_html__( 'Invalid coupon.', 'event-tickets' ), 400 );
-			}
+			$this->validate_coupon_slug( $coupon_slug );
 
+			/** @var Coupon $coupon */
 			$coupon = $this->repo->find_by_slug( $coupon_slug );
 
-			// @todo: Use another method to get the Order class object.
-			$order_class = tribe( Order::class );
+			/** @var Cart $cart_page */
+			$cart_page = tribe( Cart::class );
+			$cart_page->set_cart_hash( $request->get_param( 'cart_hash' ) );
 
-			$purchaser_data    = $this->get_purchaser_information( $request );
-			$payment_intent_id = $request->get_param( 'payment_intent_id' );
+			/** @var Abstract_Cart $cart */
+			$cart = $cart_page->get_repository();
 
-			// @todo: paypal gateway also.
-			$order = $order_class->create_from_cart( tribe( Gateway::class ), $purchaser_data );
-			if ( empty( $order ) ) {
-				throw new Exception( esc_html__( 'Could not create order.', 'event-tickets' ), 500 );
+			// Remove any other coupons from the cart.
+			$other_coupons = $cart->get_items_in_cart( false, 'coupon' );
+			foreach ( $other_coupons as $id => $other_coupon ) {
+				$cart->remove_item( $id );
 			}
 
-			$original_order_value = $order->total_value->get_integer();
-			$new_order_value      = max( 0, $original_order_value - $coupon->raw_amount );
+			// Store the previous total for use with the coupon calculation.
+			$original_total = Currency_Value::create_from_float( $cart->get_cart_subtotal() );
 
-			// Update the payment intent with the new value
-			Payment_Intent::update(
-				$payment_intent_id,
-				[
-					'amount' => $new_order_value,
-				]
-			);
+			// Add the coupon to the cart.
+			$coupon->add_to_cart( $cart );
+			$cart->save();
 
-			$modifier = new Modifier();
+			$cart_total = Currency_Value::create_from_float( $cart->get_cart_total() );
+			$discount   = Currency_Value::create_from_float( $coupon->get_discount_amount( $original_total->get_raw_value()->get() ) );
+
+			// Update the payment intent with the new value.
+			if ( $this->is_using_stripe() ) {
+				$this->update_stripe_payment_intent(
+					$request->get_param( 'payment_intent_id' ),
+					$cart_total->get_raw_value()->get_as_integer()
+				);
+			}
 
 			return rest_ensure_response(
 				[
-					'discount' => Value::create( $modifier->convert_from_raw_amount( $coupon->raw_amount ) )->get_currency(),
-					'message'  => sprintf(
+					'success'     => true,
+					'discount'    => $discount->get(),
+					'label'       => esc_html( $coupon->slug ),
+					'message'     => sprintf(
 						/* translators: %s: the coupon code */
 						esc_html__( 'Coupon "%s" applied successfully.', 'event-tickets' ),
 						$coupon->slug
 					),
-					'amount'   => Value::create( $modifier->convert_from_raw_amount( $new_order_value ) )->get_currency(),
+					'cart_amount' => $cart_total->get(),
 				]
 			);
 		} catch ( Exception $e ) {
@@ -262,7 +279,8 @@ class Coupons extends Base_API {
 					'tickets_apply_coupon_error',
 					$e->getMessage(),
 					[
-						'status' => $e->getCode() ?: 500,
+						'status'  => $e->getCode() ?: 500,
+						'success' => false,
 					]
 				)
 			);
@@ -282,41 +300,43 @@ class Coupons extends Base_API {
 		try {
 			// Get and validate the coupon slug.
 			$coupon_slug = $request->get_param( 'coupon' );
-			if ( ! $this->is_coupon_slug_valid( $coupon_slug ) ) {
+			if ( ! $this->does_coupon_slug_exist( $coupon_slug ) ) {
 				throw new Exception( esc_html__( 'Invalid coupon.', 'event-tickets' ), 400 );
 			}
 
+			/** @var Coupon $coupon */
 			$coupon = $this->repo->find_by_slug( $coupon_slug );
 
-			// @todo: Use another method to get the Order class object.
-			$order_class = tribe( Order::class );
+			/** @var Cart $cart_page */
+			$cart_page = tribe( Cart::class );
+			$cart_page->set_cart_hash( $request->get_param( 'cart_hash' ) );
 
-			$purchaser_data    = $this->get_purchaser_information( $request );
-			$payment_intent_id = $request->get_param( 'payment_intent_id' );
+			/** @var Abstract_Cart $cart */
+			$cart = $cart_page->get_repository();
 
-			// @todo: paypal gateway also.
-			$order = $order_class->create_from_cart( tribe( Gateway::class ), $purchaser_data );
-			if ( empty( $order ) ) {
-				throw new Exception( esc_html__( 'Could not create order.', 'event-tickets' ), 500 );
+			// Remove the item from the cart.
+			$coupon->remove_from_cart( $cart );
+			$cart->save();
+
+			$cart_total = Currency_Value::create_from_float( $cart->get_cart_total() );
+
+			// Update the payment intent with the new value.
+			if ( $this->is_using_stripe() ) {
+				$this->update_stripe_payment_intent(
+					$request->get_param( 'payment_intent_id' ),
+					$cart_total->get_raw_value()->get_as_integer()
+				);
 			}
-
-			$original_order_value = $order->total_value->get_integer();
-
-			Payment_Intent::update(
-				$payment_intent_id,
-				[
-					'amount' => $original_order_value,
-				]
-			);
 
 			return rest_ensure_response(
 				[
-					'message' => sprintf(
-					/* translators: %s: the coupon code */
+					'success'     => true,
+					'message'     => sprintf(
+						/* translators: %s: the coupon code */
 						esc_html__( 'Coupon "%s" removed successfully.', 'event-tickets' ),
 						$coupon->slug
 					),
-					'amount'  => $order->total_value->get_currency(),
+					'cart_amount' => $cart_total->get(),
 				]
 			);
 		} catch ( Exception $e ) {
@@ -333,6 +353,21 @@ class Coupons extends Base_API {
 	}
 
 	/**
+	 * Update the Stripe payment intent.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id     The payment intent ID.
+	 * @param int    $amount The new amount as an integer. This should be in the smallest currency
+	 *                       unit (e.g. cents for USD: $1 = 100 cents).
+	 *
+	 * @return void
+	 */
+	protected function update_stripe_payment_intent( string $id, int $amount ) {
+		Payment_Intent::update( $id, [ 'amount' => $amount ] );
+	}
+
+	/**
 	 * Prepare a coupon for the response.
 	 *
 	 * @since 5.18.0
@@ -342,9 +377,6 @@ class Coupons extends Base_API {
 	 * @return array
 	 */
 	protected function prepare_coupon_for_response( Order_Modifier $coupon ) {
-		// @todo: better processing of the response.
-		$raw_amount = $coupon->raw_amount;
-
 		return [
 			'id'         => $coupon->id,
 			'slug'       => $coupon->slug,
@@ -429,28 +461,37 @@ class Coupons extends Base_API {
 		];
 
 		$common_args = [
-			'payment_intent_id' => [
-				'description' => esc_html__( 'The payment intent to apply the coupon to.', 'event-tickets' ),
+			'cart_hash'         => [
+				'description' => esc_html__( 'The cart hash.', 'event-tickets' ),
 				'type'        => 'string',
 				'format'      => 'text-field',
 				'required'    => true,
 			],
+			'payment_intent_id' => [
+				'description' => esc_html__( 'The Stripe payment intent to apply the coupon to.', 'event-tickets' ),
+				'type'        => 'string',
+				'format'      => 'text-field',
+				'required'    => $this->is_using_stripe(),
+			],
 			'purchaser_data'    => [
-				'description' => esc_html__( 'The purchaser data.', 'event-tickets' ),
-				'type'        => 'object',
-				'required'    => true,
-				'properties'  => [
+				'description'       => esc_html__( 'The purchaser data.', 'event-tickets' ),
+				'type'              => 'object',
+				'sanitize_callback' => function ( $raw_value ) {
+					return [
+						'name'  => sanitize_text_field( $raw_value['name'] ?? '' ),
+						'email' => sanitize_email( $raw_value['email'] ?? '' ),
+					];
+				},
+				'properties'        => [
 					'name'  => [
 						'description' => esc_html__( 'The purchaser name.', 'event-tickets' ),
 						'type'        => 'string',
 						'format'      => 'text-field',
-						'required'    => true,
 					],
 					'email' => [
 						'description' => esc_html__( 'The purchaser email.', 'event-tickets' ),
 						'type'        => 'string',
 						'format'      => 'email',
-						'required'    => true,
 					],
 				],
 			],
@@ -516,25 +557,35 @@ class Coupons extends Base_API {
 	}
 
 	/**
-	 * Get the purchaser information.
+	 * Determine if the current gateway is Stripe.
 	 *
-	 * @since 5.18.0
+	 * @since TBD
 	 *
-	 * @param Request $request The request object.
-	 *
-	 * @return array
+	 * @return bool Whether the current gateway is Stripe.
 	 */
-	protected function get_purchaser_information( Request $request ) {
-		$purchaser_data = $request->get_param( 'purchaser_data' );
+	protected function is_using_stripe(): bool {
+		try {
+			/** @var Gateway_Manager $manager */
+			$manager = $this->container->get( Gateway_Manager::class );
 
-		[ $first_name, $last_name ] = explode( ' ', $purchaser_data['name'], 2 );
+			return Stripe::get_key() === $manager->get_current_gateway();
+		} catch ( Exception $e ) {
+			return false;
+		}
+	}
 
-		return [
-			'purchaser_user_id'    => 0,
-			'purchaser_full_name'  => $purchaser_data['name'],
-			'purchaser_first_name' => $first_name ?? $purchaser_data['name'],
-			'purchaser_last_name'  => $last_name ?? '',
-			'purchaser_email'      => sanitize_email( $purchaser_data['email'] ),
-		];
+	/**
+	 * Get the coupon slug from the request object and validate it.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $coupon_slug The coupon slug.
+	 *
+	 * @throws Exception If the coupon slug is invalid.
+	 */
+	protected function validate_coupon_slug( string $coupon_slug ) {
+		if ( ! $this->is_coupon_slug_valid( $coupon_slug ) ) {
+			throw new Exception( esc_html__( 'Invalid coupon.', 'event-tickets' ), 400 );
+		}
 	}
 }

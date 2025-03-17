@@ -19,10 +19,10 @@ use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Fees as Fee_Repository;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Currency_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Integer_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Legacy_Value_Factory;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
+use TEC\Tickets\Commerce\Values\Currency_Value;
+use TEC\Tickets\Commerce\Values\Integer_Value;
+use TEC\Tickets\Commerce\Values\Legacy_Value_Factory;
+use TEC\Tickets\Commerce\Values\Precision_Value;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Template as Template;
 use Tribe__Tickets__Tickets as Tickets;
@@ -474,7 +474,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 					: $amount;
 
 				/*
-				 * Because of how the items are grouped, we need to combine the fees differentlyl
+				 * Because of how the items are grouped, we need to combine the fees differently
 				 * based on whether they are flat or a percentage. Flat fees will be the same price
 				 * regardless of what item they are attached to. Percent fees will be calculated
 				 * based on the price of the item they are attached to. Therefore, we need to index

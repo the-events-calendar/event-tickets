@@ -7,8 +7,8 @@ namespace TEC\Tickets\Tests\Unit\Order_Modifiers\Values;
 use Codeception\TestCase\WPTestCase;
 use InvalidArgumentException;
 use stdClass;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Integer_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value as PV;
+use TEC\Tickets\Commerce\Values\Integer_Value;
+use TEC\Tickets\Commerce\Values\Precision_Value as PV;
 
 class Precision_Value_Test extends WPTestCase {
 
@@ -89,6 +89,22 @@ class Precision_Value_Test extends WPTestCase {
 	public function multiplication_by_integer_with_objects( PV $value, int $multiplier, $expected_product ) {
 		$object = new Integer_Value( $multiplier );
 		$this->assertEquals( $expected_product, $value->multiply_by_integer( $object )->get() );
+	}
+
+	/**
+	 * @dataProvider multiplication_by_objects_data_provider
+	 * @test
+	 */
+	public function multiplication_by_objects_with_objects( PV $value, PV $multiplier, $expected_product ) {
+		$this->assertSame( $expected_product, (string) $value->multiply( $multiplier ) );
+	}
+
+	/**
+	 * @dataProvider raw_values_as_integers_provider
+	 * @test
+	 */
+	public function raw_values_as_integers( PV $value, int $expected, int $precision = 2 ) {
+		$this->assertSame( $expected, $value->get_as_integer( $precision ) );
 	}
 
 	public function get_data_provider() {
@@ -173,5 +189,25 @@ class Precision_Value_Test extends WPTestCase {
 		yield 'Multiplication by 10' => [ new PV( 1.23 ), 10, 12.30 ];
 		yield 'Multiplication by -10' => [ new PV( 1.23 ), -10, -12.30 ];
 		yield 'Multiplication by 3' => [ new PV( 1.23 ), 3, 3.69 ];
+	}
+
+	public function multiplication_by_objects_data_provider() {
+		// Test cases for multiplying a PV (present value) object by another PV object
+		yield 'Simple multiplication by 2' => [ new PV( 1.23 ), new PV( 2 ), '2.46' ];
+		yield 'Multiplication by 0' => [ new PV( 1.23 ), new PV( 0 ), '0.00' ];
+		yield 'Multiplication by 1' => [ new PV( 1.23 ), new PV( 1 ), '1.23' ];
+		yield 'Multiplication by -1' => [ new PV( 1.23 ), new PV( -1 ), '-1.23' ];
+		yield 'Multiplication by 10' => [ new PV( 1.23 ), new PV( 10 ), '12.30' ];
+		yield 'Multiplication by -10' => [ new PV( 1.23 ), new PV( -10 ), '-12.30' ];
+		yield 'Multiplication by 3' => [ new PV( 1.23 ), new PV( 3 ), '3.69' ];
+		yield 'Multiply 10 by 10 with the same precision' => [ new PV( 10, 2 ), new PV( 10, 2 ), '100.00' ];
+		yield 'Multiply 10 by 10 with different precision' => [ new PV( 10, 2 ), new PV( 10, 3 ), '100.00' ];
+	}
+
+	public function raw_values_as_integers_provider() {
+		yield 'Simple integer value' => [ new PV( 1234.56 ), 123456 ];
+		yield 'Integer value with 4 decimal places' => [ new PV( 1234.5678 ), 123457 ];
+		yield 'Integer value with 4 decimal places and 4 precision' => [ new PV( 1234.5678 ), 12345700, 4 ];
+		yield 'Small value' => [ new PV( 1.23 ), 123 ];
 	}
 }

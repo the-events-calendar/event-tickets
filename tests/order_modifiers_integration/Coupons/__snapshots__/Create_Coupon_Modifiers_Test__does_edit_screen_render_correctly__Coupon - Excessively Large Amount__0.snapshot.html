@@ -6,12 +6,12 @@
 
 				<input type="hidden" id="order_modifier_save_action" name="order_modifier_save_action" value="1234567890" /><input type="hidden" name="_wp_http_referer" value="" />
 				<div class="form-field form-required">
-					<label for="order_modifier_coupon_name">
+					<label for="order_modifier_display_name">
 						Coupon Name					</label>
 					<input
 						type="text"
-						name="order_modifier_coupon_name"
-						id="order_modifier_coupon_name"
+						name="order_modifier_display_name"
+						id="order_modifier_display_name"
 						maxlength="255"
 						data-validation-required="true"
 						data-validation-error="Fee Name is required"
@@ -31,7 +31,7 @@
 						data-validation-error="Coupon Code is required"
 						value="large_amount" />
 					<p>
-						A unique code has been created for this coupon. You can override this code by replacing it with your own unique code (ex. SUMMERSAVINGS24).					</p>
+						A unique code has been created for this coupon. You can override this code by replacing it with your own unique code (ex. SUMMERSAVINGS25).					</p>
 				</div>
 
 				<div class="form-field form-required">
@@ -48,27 +48,28 @@
 				<div class="form-field form-required">
 					<label for="order_modifier_amount">
 						Amount					</label>
-					<input type="number" name="order_modifier_amount" id="order_modifier_amount" class="tribe-field tec_order_modifier_amount_field"
-						maxlength="9"
-						step="0.01"
-						data-validation-required="true"
-						data-validation-is-greater-than="0"
+					<input
+						type="text"
+						name="order_modifier_amount"
+						id="order_modifier_amount"
+						class="tribe-field tec_order_modifier_amount_field"
 						data-validation-error="Amount is required"
-						value="1234567.90" />
+						value="$1,234,567.90" />
 				</div>
 
-				<div class="form-field form-required">
-					<label for="order_modifier_status">
-						Status					</label>
-					<select name="order_modifier_status" id="order_modifier_status">
-													<option value="active"  selected='selected'>
-								Active							</option>
-													<option value="inactive" >
-								Inactive							</option>
-													<option value="draft" >
-								Draft							</option>
-											</select>
-				</div>
+				
+<div class="form-field form-required">
+	<label for="order_modifier_status">
+		Status	</label>
+	<select name="order_modifier_status" id="order_modifier_status">
+					<option value="active"  selected='selected'>
+				Active			</option>
+					<option value="inactive" >
+				Inactive			</option>
+					<option value="draft" >
+				Draft			</option>
+			</select>
+</div>
 
 				<div class="form-field form-required">
 					<label for="order_modifier_coupon_limit">
@@ -79,6 +80,8 @@
 						id="order_modifier_coupon_limit"
 						maxlength="15"
 						class="tribe-field tec_order_modifier_amount_field"
+						data-validation-is-greater-or-equal-to="0"
+						data-validation-error="Coupon Limit must be a positive number. Use 0 or leave empty for no limit."
 						value="" />
 					<p>
 						Leave field blank to allow for unlimited coupon redemption.					</p>
