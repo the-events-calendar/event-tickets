@@ -1080,8 +1080,8 @@ describe( 'Ticket Block sagas', () => {
 			);
 			expect( failureClone.next().done ).toBe( true );
 
-			const clone2 = gen.clone();
-			const apiResponse2 = {
+			const successClone = gen.clone();
+			const apiResponse = {
 				response: {
 					ok: true,
 				},
@@ -1103,9 +1103,17 @@ describe( 'Ticket Block sagas', () => {
 					capacity_type: 'own',
 					capacity: 100,
 					supports_attendee_information: true,
+					sale_price_data: {
+						enabled: true,
+						sale_price: '10',
+						start_date: '2018-11-09 19:48:42',
+						end_date: '2018-11-10 19:48:42',
+					},
+					on_sale: true,
+					attendee_information_fields: null,
 				},
 			};
-			const startMoment2 = momentUtil.toMoment( apiResponse2.data.available_from );
+			const startMoment2 = momentUtil.toMoment( apiResponse.data.available_from );
 			const startDate2 = momentUtil.toDatabaseDate( startMoment2 );
 			const startDateInput2 = momentUtil.toDate( startMoment2 );
 			const startTime2 = momentUtil.toDatabaseTime( startMoment2 );
@@ -1116,71 +1124,107 @@ describe( 'Ticket Block sagas', () => {
 			const endTime2 = '';
 			const endTimeInput2 = '';
 
-			expect( clone2.next( apiResponse2 ).value ).toEqual(
-				call( momentUtil.toMoment, apiResponse2.data.available_from ),
+			expect( successClone.next( apiResponse ).value ).toEqual(
+				call( momentUtil.toMoment, apiResponse.data.available_from ),
 			);
-			expect( clone2.next( startMoment2 ).value ).toEqual(
+			expect( successClone.next( startMoment2 ).value ).toEqual(
 				call( momentUtil.toDatabaseDate, startMoment2 ),
 			);
-			expect( clone2.next( startDate2 ).value ).toEqual(
+			expect( successClone.next( startDate2 ).value ).toEqual(
 				call( momentUtil.toDate, startMoment2 ),
 			);
-			expect( clone2.next( startDateInput2 ).value ).toEqual(
+			expect( successClone.next( startDateInput2 ).value ).toEqual(
 				call( momentUtil.toDatabaseTime, startMoment2 ),
 			);
-			expect( clone2.next( startTime2 ).value ).toEqual(
+			expect( successClone.next( startTime2 ).value ).toEqual(
 				call( momentUtil.toTime, startMoment2 ),
 			);
-			expect( clone2.next( startTimeInput2 ).value ).toEqual(
+			expect( successClone.next( startTimeInput2 ).value ).toEqual(
 				call( momentUtil.toMoment, '' ),
 			);
 
-			const details2 = {
-				title: apiResponse2.data.title,
-				description: apiResponse2.data.description,
-				price: apiResponse2.data.cost_details.values[ 0 ],
-				sku: apiResponse2.data.sku,
-				iac: apiResponse2.data.iac,
+			const salePriceChecked = apiResponse.data.sale_price_data?.enabled || false;
+			const salePrice = apiResponse.data.sale_price_data?.sale_price || '';
+			const saleStartDateMoment = momentUtil.toMoment( apiResponse.data.sale_price_data?.start_date || '' );
+			const saleStartDate = momentUtil.toDatabaseDate( saleStartDateMoment );
+			const saleStartDateInput = momentUtil.toDate( saleStartDateMoment );
+
+			expect( successClone.next().value ).toEqual(
+				call( momentUtil.toMoment, apiResponse.data.sale_price_data.start_date )
+			);
+			expect( successClone.next( saleStartDateMoment ).value ).toEqual(
+				call( momentUtil.toDatabaseDate, saleStartDateMoment )
+			);
+
+			expect( successClone.next( saleStartDate ).value ).toEqual(
+				call( momentUtil.toDate, saleStartDateMoment )
+			);
+
+			const saleEndDateMoment = momentUtil.toMoment( apiResponse.data.sale_price_data?.end_date || '' );
+			const saleEndDate = momentUtil.toDatabaseDate( saleEndDateMoment );
+			const saleEndDateInput = momentUtil.toDate( saleEndDateMoment );
+
+			expect( successClone.next().value ).toEqual(
+				call( momentUtil.toMoment, apiResponse.data.sale_price_data.end_date )
+			);
+
+			expect( successClone.next( saleEndDateMoment ).value ).toEqual(
+				call( momentUtil.toDatabaseDate, saleEndDateMoment )
+			);
+
+			expect( successClone.next( saleEndDate ).value ).toEqual(
+				call( momentUtil.toDate, saleEndDateMoment )
+			);
+
+			const details = {
+				title: apiResponse.data.title,
+				description: apiResponse.data.description,
+				price: apiResponse.data.cost_details.values[ 0 ],
+				sku: apiResponse.data.sku,
+				iac: apiResponse.data.iac,
 				startDate: startDate2,
 				startDateInput: startDateInput2,
 				startDateMoment: startMoment2,
 				endDate: endDate2,
 				endDateInput: endDateInput2,
-				endDateMoment: endMoment2,
+				endDateMoment: undefined,
 				startTime: startTime2,
 				endTime: endTime2,
 				startTimeInput: startTimeInput2,
 				endTimeInput: endTimeInput2,
-				capacityType: apiResponse2.data.capacity_type,
-				capacity: apiResponse2.data.capacity,
+				capacityType: apiResponse.data.capacity_type,
+				capacity: apiResponse.data.capacity,
+				attendeeInfoFields: apiResponse.data.attendee_information_fields,
+				type: apiResponse.data.type,
+				on_sale: apiResponse.data.on_sale,
+				saleEndDate,
+				saleEndDateInput: undefined,
+				saleEndDateMoment,
+				salePrice,
+				salePriceChecked,
+				saleStartDate,
+				saleStartDateInput: undefined,
+				saleStartDateMoment,
 			};
 
-			expect( clone2.next( endMoment2 ).value ).toEqual(
+			expect( successClone.next().value ).toEqual(
 				all( [
-					put( actions.setTicketDetails( CLIENT_ID, details2 ) ),
-					put( actions.setTicketTempDetails( CLIENT_ID, details2 ) ),
-					put( actions.setTicketSold( CLIENT_ID, apiResponse2.data.totals.sold ) ),
-					put( actions.setTicketAvailable( CLIENT_ID, apiResponse2.data.totals.stock ) ),
-					put( actions.setTicketCurrencySymbol(
-						CLIENT_ID,
-						apiResponse2.data.cost_details.currency_symbol,
-					) ),
-					put( actions.setTicketCurrencyPosition(
-						CLIENT_ID,
-						apiResponse2.data.cost_details.currency_position,
-					) ),
-					put( actions.setTicketProvider( CLIENT_ID, apiResponse2.data.provider ) ),
-					put( actions.setTicketHasAttendeeInfoFields(
-						CLIENT_ID,
-						apiResponse2.data.supports_attendee_information,
-					) ),
+					put( actions.setTicketDetails( CLIENT_ID, details ) ),
+					put( actions.setTicketTempDetails( CLIENT_ID, details ) ),
+					put( actions.setTicketSold( CLIENT_ID, apiResponse.data.totals.sold ) ),
+					put( actions.setTicketAvailable( CLIENT_ID, apiResponse.data.totals.stock ) ),
+					put( actions.setTicketCurrencySymbol( CLIENT_ID, apiResponse.data.cost_details.currency_symbol ) ),
+					put( actions.setTicketCurrencyPosition( CLIENT_ID, apiResponse.data.cost_details.currency_position ) ),
+					put( actions.setTicketProvider( CLIENT_ID, apiResponse.data.provider ) ),
+					put( actions.setTicketHasAttendeeInfoFields( CLIENT_ID, apiResponse.data.supports_attendee_information ) ),
 					put( actions.setTicketHasBeenCreated( CLIENT_ID, true ) ),
-				] ),
+				] )
 			);
-			expect( clone2.next().value ).toEqual(
+
+			expect( successClone.next().value ).toEqual(
 				put( actions.setTicketIsLoading( CLIENT_ID, false ) ),
 			);
-			expect( clone2.next().done ).toEqual( true );
+			expect( successClone.next().done ).toEqual( true );
 
 			const clone3 = gen.clone();
 			const apiResponse3 = {
