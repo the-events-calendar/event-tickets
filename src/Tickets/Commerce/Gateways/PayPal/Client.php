@@ -494,6 +494,18 @@ class Client {
 				],
 			];
 
+			/*
+			 * Generate the amount breakdown using the items and any extra breakdown
+			 * values.
+			 *
+			 * @see https://developer.paypal.com/docs/api/payments/v2/#definition-amount_breakdown
+			 *
+			 * The "item_total" section of the breakdown should be passed as the "item_value" key,
+			 * and it will fall back to using the "value" key from the $unit array.
+			 *
+			 * If the "extra_breakdown" key is supplied, it will be merged into the breakdown array.
+			 * Use this to provide additional breakdown data, such as "discount", "tax_total", etc.
+			 */
 			$items = Arr::get( $unit, 'items' );
 			if ( ! empty( $items ) ) {
 				$purchase_unit['items']               = $items;
