@@ -79,17 +79,8 @@ class Coupon extends Modifier_Abstract {
 	 * @return Model The newly inserted modifier or an empty array if no changes were made.
 	 */
 	public function insert_modifier( array $data ): Model {
-		// Save the modifier.
 		$modifier = parent::insert_modifier( $data );
-
-		// Handle metadata (e.g., coupons_available).
-		$this->handle_meta_data(
-			$modifier->id,
-			[
-				'meta_key'   => 'coupons_available',
-				'meta_value' => tec_get_request_var( 'order_modifier_coupon_limit', '' ),
-			]
-		);
+		$this->set_usage_limit( $modifier->id, tec_get_request_var( 'order_modifier_coupon_limit', '' ) );
 
 		return $modifier;
 	}
@@ -104,17 +95,8 @@ class Coupon extends Modifier_Abstract {
 	 * @return Model The updated modifier or an empty array if no changes were made.
 	 */
 	public function update_modifier( array $data ): Model {
-		// Save the modifier.
 		$modifier = parent::update_modifier( $data );
-
-		// Handle metadata (e.g., coupons_available).
-		$this->handle_meta_data(
-			$modifier->id,
-			[
-				'meta_key'   => 'coupons_available',
-				'meta_value' => tec_get_request_var( 'order_modifier_coupon_limit', '' ),
-			]
-		);
+		$this->set_usage_limit( $modifier->id, tec_get_request_var( 'order_modifier_coupon_limit', '' ) );
 
 		return $modifier;
 	}
@@ -204,5 +186,30 @@ class Coupon extends Modifier_Abstract {
 	 * @return void
 	 */
 	public function handle_relationship_update( array $modifier_ids, array $new_post_ids ): void {
+	}
+
+	/**
+	 * Set the usage limit for a coupon.
+	 *
+	 * @since TBD
+	 *
+	 * @param int        $modifier_id The modifier ID.
+	 * @param string|int $limit       The limit to set. Pass an empty string or 0 for no limit.
+	 *
+	 * @return Model
+	 */
+	public function set_usage_limit( int $modifier_id, $limit ) {
+		// Allow passing zero to set an empty limit.
+		if ( 0 === (int) $limit ) {
+			$limit = '';
+		}
+
+		return $this->handle_meta_data(
+			$modifier_id,
+			[
+				'meta_key'   => 'coupons_available',
+				'meta_value' => $limit,
+			]
+		);
 	}
 }
