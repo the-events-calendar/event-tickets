@@ -128,8 +128,8 @@ class Fees extends Abstract_Fees {
 	 *
 	 * @since 5.18.0
 	 *
-	 * @param array   $metadata       The metadata array to add fees information to.
-	 * @param WP_Post $order          The order containing the fee items.
+	 * @param array   $metadata The metadata array to add fees information to.
+	 * @param WP_Post $order    The order containing the fee items.
 	 *
 	 * @return array Updated metadata including the fees as a string.
 	 */
