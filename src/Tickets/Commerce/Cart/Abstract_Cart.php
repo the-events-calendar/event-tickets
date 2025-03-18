@@ -199,8 +199,19 @@ abstract class Abstract_Cart implements Cart_Interface {
 			$additional_values
 		);
 
-		// Set the total and mark it as calculated.
-		$this->cart_total       = Precision_Value::sum( $this->cart_subtotal, ...$additional_values, ...$callable_subtotals );
+		// Calculate the new value from all of the subtotals.
+		$total = Precision_Value::sum(
+			$this->cart_subtotal,
+			...$additional_values,
+			...$callable_subtotals
+		);
+
+		// Only update the stored total if it's greater than zero.
+		$this->cart_total = $total->get() > 0.0
+			? $total
+			: new Precision_Value( 0.0 );
+
+		// Mark that the total has been calculated.
 		$this->total_calculated = true;
 
 		return $this->cart_total->get();

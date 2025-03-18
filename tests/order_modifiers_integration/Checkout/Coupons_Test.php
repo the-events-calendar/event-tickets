@@ -490,4 +490,41 @@ class Coupons_Test extends Controller_Test_Case {
 		Assert::assertEquals( $limit, $this->get_coupon_usage_limit( $coupon->id ) );
 		Assert::assertEquals( 0, $this->get_coupon_uses( $coupon->id ) );
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_allow_negative_orders() {
+		$this->make_controller()->register();
+		$post = static::factory()->post->create(
+			[ 'post_title' => 'The Event' ],
+		);
+
+		// Create a ticket.
+		$ticket_id = $this->create_tc_ticket( $post, 11.28 );
+
+		// Create a $12 off coupon.
+		$coupon = $this->create_coupon(
+			[
+				'raw_amount' => 12,
+				'sub_type'   => 'flat',
+			]
+		);
+
+		// Get the cart and add ticket and coupon.
+		/** @var Commerce_Cart $cart */
+		$cart = tribe( Commerce_Cart::class );
+		$cart->add_ticket( $ticket_id );
+		$coupon->add_to_cart( $cart->get_repository() );
+
+		// The cart shouldn't allow for negative values.
+		Assert::assertEquals( 0, $cart->get_cart_total() );
+
+		// Generate the order and ensure that it has been created correctly.
+		$order = $this->create_order_from_cart();
+
+		Assert::assertEquals( '0', $order->total, 'The order total should be zero' );
+		Assert::assertEquals( 11.28, $order->subtotal->get_float(), 'The order subtotal should be 11.28' );
+		Assert::assertEquals( 0, $order->total_value->get_float(), 'The order total value should be zero' );
+	}
 }
