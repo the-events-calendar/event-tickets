@@ -236,14 +236,14 @@ class Coupons extends Base_API {
 			/** @var Abstract_Cart $cart */
 			$cart = $cart_page->get_repository();
 
+			// Store the previous total for use with the coupon calculation.
+			$original_total = Currency_Value::create_from_float( $cart->get_cart_total() );
+
 			// Remove any other coupons from the cart.
 			$other_coupons = $cart->get_items_in_cart( false, 'coupon' );
 			foreach ( $other_coupons as $id => $other_coupon ) {
 				$cart->remove_item( $id );
 			}
-
-			// Store the previous total for use with the coupon calculation.
-			$original_total = Currency_Value::create_from_float( $cart->get_cart_subtotal() );
 
 			// Add the coupon to the cart.
 			$coupon->add_to_cart( $cart );
@@ -262,15 +262,16 @@ class Coupons extends Base_API {
 
 			return rest_ensure_response(
 				[
-					'success'     => true,
-					'discount'    => $discount->get(),
-					'label'       => esc_html( $coupon->slug ),
-					'message'     => sprintf(
+					'success'    => true,
+					'discount'   => $discount->get(),
+					'label'      => esc_html( $coupon->slug ),
+					'message'    => sprintf(
 						/* translators: %s: the coupon code */
 						esc_html__( 'Coupon "%s" applied successfully.', 'event-tickets' ),
 						$coupon->slug
 					),
-					'cart_amount' => $cart_total->get(),
+					'cartAmount' => $cart_total->get(),
+					'doReload'   => $this->should_trigger_reload( $original_total, $cart_total ),
 				]
 			);
 		} catch ( Exception $e ) {
@@ -314,6 +315,9 @@ class Coupons extends Base_API {
 			/** @var Abstract_Cart $cart */
 			$cart = $cart_page->get_repository();
 
+			// Store the previous total for use with the coupon calculation.
+			$original_total = Currency_Value::create_from_float( $cart->get_cart_total() );
+
 			// Remove the item from the cart.
 			$coupon->remove_from_cart( $cart );
 			$cart->save();
@@ -330,13 +334,14 @@ class Coupons extends Base_API {
 
 			return rest_ensure_response(
 				[
-					'success'     => true,
-					'message'     => sprintf(
+					'success'    => true,
+					'message'    => sprintf(
 						/* translators: %s: the coupon code */
 						esc_html__( 'Coupon "%s" removed successfully.', 'event-tickets' ),
 						$coupon->slug
 					),
-					'cart_amount' => $cart_total->get(),
+					'cartAmount' => $cart_total->get(),
+					'doReload'   => $this->should_trigger_reload( $original_total, $cart_total ),
 				]
 			);
 		} catch ( Exception $e ) {
@@ -587,5 +592,30 @@ class Coupons extends Base_API {
 		if ( ! $this->is_coupon_slug_valid( $coupon_slug ) ) {
 			throw new Exception( esc_html__( 'Invalid coupon.', 'event-tickets' ), 400 );
 		}
+	}
+
+	/**
+	 * Determine if the page needs a reload after the coupon is applied or removed.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param Currency_Value $old_total The old total.
+	 * @param Currency_Value $new_total The new total.
+	 *
+	 * @return bool
+	 */
+	protected function should_trigger_reload( Currency_Value $old_total, Currency_Value $new_total ): bool {
+		// If neither value is zero, we don't need a reload.
+		if ( $old_total->get_raw_value()->get() !== 0.0 && $new_total->get_raw_value()->get() !== 0.0 ) {
+			return false;
+		}
+
+		// If both values are zero, we don't need a reload.
+		if ( $old_total->get_raw_value()->get() === 0.0 && $new_total->get_raw_value()->get() === 0.0 ) {
+			return false;
+		}
+
+		// We got here because one is zero and the other isn't, so we need a reload.
+		return true;
 	}
 }

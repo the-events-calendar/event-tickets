@@ -286,6 +286,16 @@ tribe.tickets.commerce = {};
 		} );
 	};
 
+	/**
+	 * Get the Stripe Payment Intent ID if available.
+	 *
+	 * @since 5.21.0
+	 * @return {undefined|string} The Stripe Payment Intent ID if available.
+	 */
+	obj.getStripeIntentId = function() {
+		return window.tecTicketsCommerceGatewayStripeCheckout?.paymentIntentData?.id;
+	}
+
 	obj.bindCouponApply = function() {
 		let ajaxInProgress = false;
 
@@ -314,7 +324,7 @@ tribe.tickets.commerce = {};
 			const hiddenName = obj.selectors.hiddenElement.className();
 			const $inputContainer = $( obj.selectors.couponInputContainer );
 			const nonce = $( obj.selectors.nonce ).val();
-			const stripeIntentId = window.tecTicketsCommerceGatewayStripeCheckout?.paymentIntentData?.id;
+			const stripeIntentId = obj.getStripeIntentId();
 
 			// Hide the error message initially.
 			$errorMessage.addClass( hiddenName );
@@ -357,8 +367,13 @@ tribe.tickets.commerce = {};
 						// Display coupon value and discount.
 						obj.updateCouponDiscount( response.discount );
 						obj.updateCouponLabel( response.label );
-						obj.updateTotalPrice( response.cart_amount );
+						obj.updateTotalPrice( response.cartAmount );
 						$( obj.selectors.couponAppliedSection ).removeClass( hiddenName );
+
+						// Maybe reload the page if necessary.
+						if ( response.doReload ) {
+							window.location.reload();
+						}
 					} else {
 						$errorMessage
 							.text( response.message || tecTicketsCommerce.i18n.invalidCoupon )
@@ -399,6 +414,7 @@ tribe.tickets.commerce = {};
 			const $errorMessage = $( obj.selectors.couponError );
 			const hiddenName = obj.selectors.hiddenElement.className();
 			const nonce = $( obj.selectors.nonce ).val();
+			const paymentIntentId = obj.getStripeIntentId();
 
 			// Hide the error message initially.
 			$errorMessage.addClass( hiddenName );
@@ -419,9 +435,12 @@ tribe.tickets.commerce = {};
 			const requestData = {
 				nonce: nonce,
 				coupon: couponValue,
-				payment_intent_id: window.tecTicketsCommerceGatewayStripeCheckout.paymentIntentData.id,
 				cart_hash: cartHash[ 1 ],
 			};
+
+			if ( undefined !== paymentIntentId ) {
+				requestData.payment_intent_id = paymentIntentId;
+			}
 
 			// Perform the AJAX request to remove the coupon.
 			$.ajax( {
@@ -439,7 +458,12 @@ tribe.tickets.commerce = {};
 
 						// Hide the applied coupon section.
 						$( obj.selectors.couponAppliedSection ).addClass( hiddenName );
-						obj.updateTotalPrice( response.cart_amount );
+						obj.updateTotalPrice( response.cartAmount );
+
+						// Maybe reload the page if necessary.
+						if ( response.doReload ) {
+							window.location.reload();
+						}
 					} else {
 						$errorMessage
 							.text( response.message || tecTicketsCommerce.i18n.couponRemoveFail )
