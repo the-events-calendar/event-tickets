@@ -570,10 +570,7 @@ class Coupons extends Base_API {
 	 */
 	protected function is_using_stripe(): bool {
 		try {
-			/** @var Gateway_Manager $manager */
-			$manager = $this->container->get( Gateway_Manager::class );
-
-			return Stripe::get_key() === $manager->get_current_gateway();
+			return Stripe::should_show() && Stripe::is_active() && Stripe::is_enabled();
 		} catch ( Exception $e ) {
 			return false;
 		}
