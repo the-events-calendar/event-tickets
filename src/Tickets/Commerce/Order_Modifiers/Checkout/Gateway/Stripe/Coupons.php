@@ -14,6 +14,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon;
 use TEC\Tickets\Commerce\Utils\Value;
+use WP_Post;
 
 /**
  * Class Coupons
@@ -36,6 +37,13 @@ class Coupons extends Controller_Contract {
 			10,
 			2
 		);
+
+		add_filter(
+			'tec_tickets_commerce_stripe_update_payment_intent_metadata',
+			[ $this, 'add_meta_data_to_stripe' ],
+			10,
+			2
+		);
 	}
 
 	/**
@@ -51,6 +59,11 @@ class Coupons extends Controller_Contract {
 		remove_filter(
 			'tec_tickets_commerce_create_order_from_cart_items',
 			[ $this, 'append_coupons_to_cart' ]
+		);
+
+		remove_filter(
+			'tec_tickets_commerce_stripe_update_payment_intent_metadata',
+			[ $this, 'add_meta_data_to_stripe' ]
 		);
 	}
 
@@ -101,5 +114,46 @@ class Coupons extends Controller_Contract {
 		}
 
 		return $items;
+	}
+
+	/**
+	 * Add coupon metadata to the Stripe payment intent.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param array   $metadata The metadata to be passed to Stripe.
+	 * @param WP_Post $order    The order object.
+	 *
+	 * @return array The updated metadata.
+	 */
+	public function add_meta_data_to_stripe( array $metadata, WP_Post $order ) {
+		// Skip adding metadata if the order has no coupons.
+		if ( empty( $order->coupons ) ) {
+			return $metadata;
+		}
+
+		// Loop through the coupon items and format each one as "Coupon Slug (quantity): Subtotal".
+		$coupon_metadata = [];
+		foreach ( $order->coupons as $coupon ) {
+			// Skip the coupon if it lacks required data or has an invalid price.
+			if ( ! isset( $coupon['slug'], $coupon['sub_total'] ) ) {
+				continue;
+			}
+
+			/** @var Value $sub_total */
+			$sub_total = $coupon['sub_total'];
+
+			$coupon_metadata[] = sprintf(
+				'%s: %s',
+				$coupon['slug'],
+				$sub_total->get_decimal()
+			);
+		}
+
+		if ( ! empty( $coupon_metadata ) ) {
+			$metadata['coupons'] = implode( ', ', $coupon_metadata );
+		}
+
+		return $metadata;
 	}
 }
