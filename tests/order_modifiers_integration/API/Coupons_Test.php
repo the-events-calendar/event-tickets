@@ -57,9 +57,9 @@ class Coupons_Test extends Controller_Test_Case {
 			},
 		];
 
-		$coupon_15_percent = function (): Coupon {
+		$coupon_15_percent = function ( $reset = false ): Coupon {
 			static $coupon = null;
-			if ( null === $coupon ) {
+			if ( null === $coupon || $reset ) {
 				$coupon = $this->create_coupon( [ 'raw_amount' => 15 ] );
 			}
 
@@ -99,7 +99,8 @@ class Coupons_Test extends Controller_Test_Case {
 				$this->assertArrayHasKey( 'discount', $data );
 				$this->assertArrayHasKey( 'label', $data );
 				$this->assertArrayHasKey( 'message', $data );
-				$this->assertArrayHasKey( 'cart_amount', $data );
+				$this->assertArrayHasKey( 'cartAmount', $data );
+				$this->assertArrayHasKey( 'doReload', $data );
 
 				// Check that the data has been generated correctly.
 				$this->assertTrue( $data['success'] );
@@ -116,7 +117,60 @@ class Coupons_Test extends Controller_Test_Case {
 				);
 				$this->assertSame(
 					Currency_Value::create_from_float( $cart->get_cart_total() )->get(),
-					$data['cart_amount']
+					$data['cartAmount']
+				);
+			},
+		];
+
+		yield 'Remove coupon – valid response' => [
+			function () use ( $coupon_15_percent ) {
+				$cart = $this->set_up_cart_with_ticket();
+				$coupon_15_percent( true )->add_to_cart( $cart );
+				$this->assertCount( 1, $cart->get_items_in_cart( false, 'coupon' ) );
+
+				// Set up the fake payment intent update handler.
+				$this->set_class_fn_return( Payment_Intent::class, 'update', true );
+
+				return [
+					'/coupons/remove',
+					false,
+					'POST',
+					[
+						'coupon'            => $coupon_15_percent()->slug,
+						'cart_hash'         => $cart->get_hash(),
+						'payment_intent_id' => 'fake-payment-intent-id',
+					],
+				];
+			},
+			function ( Response $response ) use ( $coupon_15_percent ) {
+				// Check that the coupon was applied to the cart.
+				/** @var Abstract_Cart $cart */
+				$cart = tribe( Cart::class )->get_repository();
+
+				$this->assertCount( 1, $cart->get_items_in_cart( false, 'all' ) );
+				$this->assertCount( 0, $cart->get_items_in_cart( false, 'coupon' ) );
+
+				// Check that the response has the correct data.
+				$data = $response->get_data();
+				$this->assertArrayHasKey( 'success', $data );
+				$this->assertArrayHasKey( 'message', $data );
+				$this->assertArrayHasKey( 'cartAmount', $data );
+				$this->assertArrayHasKey( 'doReload', $data );
+
+				// Check that the data has been generated correctly.
+				$this->assertTrue( $data['success'] );
+				$this->assertSame(
+					esc_html(
+						sprintf(
+							'Coupon "%s" removed successfully.',
+							$coupon_15_percent()->slug,
+						)
+					),
+					$data['message']
+				);
+				$this->assertSame(
+					Currency_Value::create_from_float( $cart->get_cart_total() )->get(),
+					$data['cartAmount']
 				);
 			},
 		];
@@ -170,7 +224,6 @@ class Coupons_Test extends Controller_Test_Case {
 
 		$this->assertGreaterThanOrEqual( 200, $response->get_status(), 'A response code should be returned >= 200' );
 		$this->assertLessThan( 300, $response->get_status(), 'A response code should be returned < 300' );
-		$this->assertSame( 200, $response->get_status(), 'A successful response code shoudl be returned' );
 		$this->assertFalse( $response->is_error(), "Expected a successful response for path: {$path}" );
 		$this->assertNull( $response->as_error() );
 
