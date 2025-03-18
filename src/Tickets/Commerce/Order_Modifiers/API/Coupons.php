@@ -13,7 +13,6 @@ use Exception;
 use TEC\Common\Contracts\Container;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Cart\Abstract_Cart;
-use TEC\Tickets\Commerce\Gateways\Manager as Gateway_Manager;
 use TEC\Tickets\Commerce\Gateways\Stripe\Gateway as Stripe;
 use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon;
