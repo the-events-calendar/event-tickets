@@ -545,6 +545,7 @@ class Order extends Abstract_Order {
 
 					$ticket_value         = Value::create( $ticket->price );
 					$ticket_regular_value = Value::create( $ticket->regular_price );
+					$subtotal_value       = $item['sub_total'] ?? $ticket_value->sub_total( $item['quantity'] );
 
 					return [
 						'event_id'          => $item['event_id'] ?? tribe( Ticket::class )->get_related_event_id( $item['ticket_id'] ),
@@ -552,8 +553,8 @@ class Order extends Abstract_Order {
 						'price'             => $ticket_value->get_decimal(),
 						'quantity'          => $item['quantity'],
 						'regular_price'     => $ticket_regular_value->get_decimal(),
-						'regular_sub_total' => $item['regular_sub_total'] ?? $ticket_regular_value->sub_total( $item['quantity'] )->get_decimal(),
-						'sub_total'         => $item['sub_total'] ?? $ticket_value->sub_total( $item['quantity'] )->get_decimal(),
+						'regular_sub_total' => $ticket_regular_value->sub_total( $item['quantity'] )->get_decimal(),
+						'sub_total'         => $subtotal_value->get_decimal(),
 						'ticket_id'         => $item['ticket_id'],
 						'type'              => $item['type'] ?? 'ticket',
 					];
