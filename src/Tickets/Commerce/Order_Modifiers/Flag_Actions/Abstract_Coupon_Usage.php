@@ -2,7 +2,7 @@
 /**
  * Abstract Coupon Usage flag action.
  *
- * @since TBD
+ * @since 5.21.0
  */
 
 declare( strict_types=1 );
@@ -18,7 +18,7 @@ use WP_Post;
 /**
  * Class Abstract_Coupon_Usage
  *
- * @since TBD
+ * @since 5.21.0
  */
 abstract class Abstract_Coupon_Usage extends Flag_Action_Abstract {
 
@@ -27,7 +27,7 @@ abstract class Abstract_Coupon_Usage extends Flag_Action_Abstract {
 	/**
 	 * Meta key for the calculated usage.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @var string
 	 */
@@ -36,7 +36,7 @@ abstract class Abstract_Coupon_Usage extends Flag_Action_Abstract {
 	/**
 	 * Which Post Types we check for this flag action.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @var string[]
 	 */
@@ -47,7 +47,7 @@ abstract class Abstract_Coupon_Usage extends Flag_Action_Abstract {
 	/**
 	 * Handles the action flag execution.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param Status_Interface  $new_status New post status.
 	 * @param ?Status_Interface $old_status Old post status.
@@ -102,7 +102,7 @@ abstract class Abstract_Coupon_Usage extends Flag_Action_Abstract {
 	/**
 	 * Handles the usage of a coupon.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param array   $coupon Array of coupon data.
 	 * @param WP_Post $order  Order object as a WP_Post object.

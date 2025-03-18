@@ -202,7 +202,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	/**
 	 * Defines whether the current page is the Event Tickets Order Modifiers edit page.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @return bool True if on the Order Modifiers edit page, false otherwise.
 	 */
@@ -597,7 +597,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	/**
 	 * Get the modifier type from the request variables.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @return string The modifier type.
 	 */
@@ -608,7 +608,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	/**
 	 * Get the successful save message for the modifier type.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param string $modifier_type The type of modifier that was saved.
 	 *
@@ -628,7 +628,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 				/**
 				 * Filters the successful save message for order modifiers.
 				 *
-				 * @since TBD
+				 * @since 5.21.0
 				 *
 				 * @param string $message       The success message to display.
 				 * @param string $modifier_type The type of modifier that was saved.

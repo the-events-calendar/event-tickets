@@ -130,7 +130,7 @@ class Order_Modifier_Meta extends Model implements ModelCrud, ModelFromQueryBuil
 	 *
 	 * This adds the ability to have multiple types separated by a pipe character.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param string $key   Property name.
 	 * @param mixed  $value Property value.

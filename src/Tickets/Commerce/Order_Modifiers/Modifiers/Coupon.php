@@ -191,7 +191,7 @@ class Coupon extends Modifier_Abstract {
 	/**
 	 * Set the usage limit for a coupon.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param int        $modifier_id The modifier ID.
 	 * @param string|int $limit       The limit to set. Pass an empty string or 0 for no limit.

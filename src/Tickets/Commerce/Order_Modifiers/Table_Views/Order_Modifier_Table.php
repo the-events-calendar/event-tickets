@@ -170,7 +170,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	/**
 	 * Get the modifier items.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param array $params The query parameters.
 	 *

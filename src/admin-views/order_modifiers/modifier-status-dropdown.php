@@ -4,9 +4,9 @@
  *
  * This file is used to display a dropdown for the status of an order modifier.
  *
- * @since TBD
+ * @since 5.21.0
  *
- * @version TBD
+ * @version 5.21.0
  *
  * @var string $order_modifier_status The status of the order modifier (active, inactive, draft).
  *

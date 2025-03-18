@@ -355,7 +355,7 @@ class Coupons extends Base_API {
 	/**
 	 * Update the Stripe payment intent.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param string $id     The payment intent ID.
 	 * @param int    $amount The new amount as an integer. This should be in the smallest currency
@@ -559,7 +559,7 @@ class Coupons extends Base_API {
 	/**
 	 * Determine if the current gateway is Stripe.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @return bool Whether the current gateway is Stripe.
 	 */
@@ -577,7 +577,7 @@ class Coupons extends Base_API {
 	/**
 	 * Get the coupon slug from the request object and validate it.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param string $coupon_slug The coupon slug.
 	 *

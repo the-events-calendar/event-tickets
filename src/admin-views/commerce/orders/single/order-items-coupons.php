@@ -2,9 +2,9 @@
 /**
  * Single order - Coupons section.
  *
- * @since TBD
+ * @since 5.21.0
  *
- * @version TBD
+ * @version 5.21.0
  *
  * @var array   $coupons The coupons for the order.
  * @var WP_Post $order   The current post object (with added properties).

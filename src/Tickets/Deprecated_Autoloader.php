@@ -2,7 +2,7 @@
 /**
  * Autoloader for deprecated classes.
  *
- * @since TBD
+ * @since 5.21.0
  */
 
 declare( strict_types=1 );
@@ -22,7 +22,7 @@ use TEC\Tickets\Commerce\Values\Value_Interface;
 /**
  * Class Deprecated_Autoloader
  *
- * @since TBD
+ * @since 5.21.0
  */
 final class Deprecated_Autoloader {
 
@@ -32,7 +32,7 @@ final class Deprecated_Autoloader {
 	 * The key is the deprecated class name and the value is the new class name.
 	 * Note that the old class name should be fully qualified.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @var array<string, string>
 	 */
@@ -51,7 +51,7 @@ final class Deprecated_Autoloader {
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @var Deprecated_Autoloader
 	 */
@@ -60,7 +60,7 @@ final class Deprecated_Autoloader {
 	/**
 	 * Get the single instance of the class.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @return Deprecated_Autoloader
 	 */
@@ -75,14 +75,14 @@ final class Deprecated_Autoloader {
 	/**
 	 * Deprecated_Autoloader constructor.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 */
 	private function __construct() {}
 
 	/**
 	 * Register the autoloader.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @return void
 	 */
@@ -93,7 +93,7 @@ final class Deprecated_Autoloader {
 	/**
 	 * Unregister the autoloader.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @return void
 	 */
@@ -104,7 +104,7 @@ final class Deprecated_Autoloader {
 	/**
 	 * Load the deprecated class.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param string $class_name The class to load.
 	 *
@@ -119,7 +119,7 @@ final class Deprecated_Autoloader {
 		// Log a notice that the class is deprecated.
 		_deprecated_class(
 			esc_html( $class_name ),
-			'TBD',
+			'5.21.0',
 			esc_html( $this->class_map[ $class_name ] )
 		);
 

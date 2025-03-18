@@ -37,7 +37,7 @@ class Legacy_Value_Factory {
 	/**
 	 * Convert a legacy value object to a Precision_Value object.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param LegacyValue $value The value to convert.
 	 *
@@ -50,7 +50,7 @@ class Legacy_Value_Factory {
 	/**
 	 * Convert a legacy value object to a Currency_Value object.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param LegacyValue $value The value to convert.
 	 *

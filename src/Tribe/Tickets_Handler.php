@@ -1871,7 +1871,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * The most common use case is determining whether a ticket in the given quantity can
 	 * be added to the cart.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param int|string     $ticket_id     Ticket ID.
 	 * @param int            $quantity      The quantity requested.

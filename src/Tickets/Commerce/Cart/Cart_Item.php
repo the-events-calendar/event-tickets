@@ -2,7 +2,7 @@
 /**
  * Cart Item class.
  *
- * @since TBD
+ * @since 5.21.0
  */
 
 declare( strict_types=1 );
@@ -18,7 +18,7 @@ use Tribe\Traits\Array_Access;
 /**
  * Class Cart_Item
  *
- * @since TBD
+ * @since 5.21.0
  */
 class Cart_Item implements ArrayAccess {
 
@@ -27,7 +27,7 @@ class Cart_Item implements ArrayAccess {
 	/**
 	 * Cart_Item constructor.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param array $data The data to set.
 	 */
@@ -50,7 +50,7 @@ class Cart_Item implements ArrayAccess {
 	 * Get an offset.
 	 *
 	 * @link  http://php.net/manual/en/arrayaccess.offsetget.php
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param mixed $offset The offset to get.
 	 *
@@ -67,7 +67,7 @@ class Cart_Item implements ArrayAccess {
 	 * Set an offset.
 	 *
 	 * @link  http://php.net/manual/en/arrayaccess.offsetset.php
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param mixed $offset The offset to set.
 	 * @param mixed $value  The value to set.
@@ -89,7 +89,7 @@ class Cart_Item implements ArrayAccess {
 	/**
 	 * Add a quantity to the item.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param int $new_quantity The quantity to add.
 	 *
@@ -106,7 +106,7 @@ class Cart_Item implements ArrayAccess {
 	/**
 	 * Get the item data as an array.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @return array The item data.
 	 */

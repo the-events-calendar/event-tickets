@@ -26,7 +26,7 @@ window.etOrderModifiersAmountField = window.etOrderModifiersAmountField || {
 /**
  * This script initializes the amount field for order modifiers.
  *
- * @since TBD
+ * @since 5.21.0
  * @param {jQuery} $ jQuery
  * @param {Object} validation The validation object
  * @param {etOrderModifiersAmountField} i18n The internationalization object

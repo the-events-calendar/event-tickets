@@ -3,7 +3,7 @@
  * Logic for handling coupons during the checkout process.
  *
  * @since   5.18.0
- * @since   TBD Updated with actual coupon logic.
+ * @since   5.21.0 Updated with actual coupon logic.
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Checkout
  *

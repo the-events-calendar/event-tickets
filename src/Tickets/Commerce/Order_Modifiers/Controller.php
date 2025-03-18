@@ -131,7 +131,7 @@ final class Controller extends Controller_Contract {
 	/**
 	 * Set up currency default values in the value classes.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @return void
 	 */
@@ -162,7 +162,7 @@ final class Controller extends Controller_Contract {
 	/**
 	 * Register the flag actions.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @return void
 	 */
@@ -180,7 +180,7 @@ final class Controller extends Controller_Contract {
 	/**
 	 * Magic method to handle dynamic method calls.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param string $name      The method name.
 	 * @param array  $arguments The method arguments.
@@ -192,7 +192,7 @@ final class Controller extends Controller_Contract {
 		$method = __CLASS__ . "::{$name}";
 		switch ( $name ) {
 			case 'filter_out_coupons':
-				_deprecated_function( esc_html( $method ), 'TBD', 'No replacement available.' );
+				_deprecated_function( esc_html( $method ), '5.21.0', 'No replacement available.' );
 
 				return $arguments[0] ?? [];
 
@@ -204,7 +204,7 @@ final class Controller extends Controller_Contract {
 	/**
 	 * Run the deprecated coupon filter.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @return void
 	 */
@@ -215,14 +215,14 @@ final class Controller extends Controller_Contract {
 		 * This filter will be removed when the Coupon functionality is ready for production.
 		 *
 		 * @since      5.18.0
-		 * @deprecated TBD
+		 * @deprecated 5.21.0
 		 *
 		 * @param bool $enabled Whether the coupons are enabled.
 		 */
 		apply_filters_deprecated(
 			'tec_tickets_commerce_order_modifiers_coupons_enabled',
 			[ false ],
-			'TBD',
+			'5.21.0',
 			'',
 			__( 'The coupon functionality is now included for all sites.', 'event-tickets' )
 		);

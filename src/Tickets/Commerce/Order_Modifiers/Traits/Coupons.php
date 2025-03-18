@@ -27,7 +27,7 @@ trait Coupons {
 	/**
 	 * Determine if a coupon is valid, using the slug to look up the coupon.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param string $slug The coupon slug.
 	 *
@@ -46,7 +46,7 @@ trait Coupons {
 	/**
 	 * Determine if a coupon slug exists.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param string $slug The coupon slug.
 	 *
@@ -65,7 +65,7 @@ trait Coupons {
 	/**
 	 * Determine if a coupon is valid.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param Coupon|Order_Modifier $maybe_coupon The coupon to check.
 	 *
@@ -100,7 +100,7 @@ trait Coupons {
 	/**
 	 * Determine if a coupon is within its start and end date range.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param Coupon $coupon The coupon to check.
 	 *
@@ -128,7 +128,7 @@ trait Coupons {
 	/**
 	 * Determine if a modifier is a coupon.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param Order_Modifier $modifier The modifier to check.
 	 *
@@ -145,7 +145,7 @@ trait Coupons {
 	/**
 	 * Get the usage limit for a coupon.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param int $coupon_id The coupon ID.
 	 *
@@ -173,7 +173,7 @@ trait Coupons {
 	/**
 	 * Get the number of times a coupon has been used.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param int $coupon_id The coupon ID.
 	 *
@@ -214,7 +214,7 @@ trait Coupons {
 	/**
 	 * Determine if a coupon has uses remaining.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param int $coupon_id The coupon ID.
 	 *
@@ -234,7 +234,7 @@ trait Coupons {
 	/**
 	 * Add a coupon use.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param int $coupon_id The coupon ID.
 	 * @param int $quantity  The number of uses to add.
@@ -261,7 +261,7 @@ trait Coupons {
 	/**
 	 * Remove a coupon use.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param int $coupon_id The coupon ID.
 	 * @param int $quantity  The number of uses to remove.

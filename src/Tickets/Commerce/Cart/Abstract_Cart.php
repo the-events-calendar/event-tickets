@@ -34,7 +34,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 *
 	 * This should be the total of items in the cart without any additional calculations.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @var Precision_Value
 	 */
@@ -47,7 +47,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * have been done.
 	 *
 	 * @since 5.10.0
-	 * @since TBD Marked the property as protected, and changed to a Precision_Value.
+	 * @since 5.21.0 Marked the property as protected, and changed to a Precision_Value.
 	 *
 	 * @var Precision_Value
 	 */
@@ -61,7 +61,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	/**
 	 * Whether the cart subtotal has been calculated.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @var bool
 	 */
@@ -70,7 +70,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	/**
 	 * Whether the cart total has been calculated.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @var bool
 	 */
@@ -79,7 +79,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	/**
 	 * Abstract_Cart constructor.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 */
 	public function __construct() {
 		$this->cart_subtotal = new Precision_Value( 0.0 );
@@ -100,7 +100,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	/**
 	 * Gets the Cart mode based.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @return string
 	 */
@@ -112,7 +112,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * Get the tickets currently in the cart for a given provider.
 	 *
 	 * @since 5.10.0
-	 * @since TBD Added the $type parameter.
+	 * @since 5.21.0 Added the $type parameter.
 	 *
 	 * @param bool   $full_item_params Determines all the item params, including event_id, sub_total, and obj.
 	 * @param string $type             The type of item to get from the cart. Default is 'ticket'. Use 'all' to get all items.
@@ -143,7 +143,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 *
 	 * @since 5.10.0
 	 * @since 5.18.0 Refactored logic, to include a new filter.
-	 * @since TBD Added internal caching for this method to prevent duplicate calculations.
+	 * @since 5.21.0 Added internal caching for this method to prevent duplicate calculations.
 	 *
 	 * @return float The total value of the cart.
 	 */
@@ -212,7 +212,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * The subtotal is the sum of all item subtotals without additional values like fees or discounts.
 	 *
 	 * @since 5.18.0 Refactored to avoid cumulative calculations.
-	 * @since TBD Added internal caching for this method to prevent duplicate calculations.
+	 * @since 5.21.0 Added internal caching for this method to prevent duplicate calculations.
 	 *
 	 * @return float The subtotal of the cart.
 	 */
@@ -290,7 +290,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	/**
 	 * Add the full set of parameters to the items in the cart.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param array $items The items in the cart.
 	 *
@@ -326,7 +326,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * this method should return the data as is.
 	 *
 	 * @since 5.1.10
-	 * @since TBD Moved to the abstract class.
+	 * @since 5.21.0 Moved to the abstract class.
 	 *
 	 * @param array $data To be processed by the cart.
 	 *
@@ -336,7 +336,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 		/**
 		 * Filter the data before it is processed by the cart.
 		 *
-		 * @since TBD
+		 * @since 5.21.0
 		 *
 		 * @param array          $data The data to be processed by the cart.
 		 * @param Cart_Interface $this The cart object.
@@ -347,7 +347,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	/**
 	 * Get a non-public property.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param string $property The property to get.
 	 *
@@ -364,7 +364,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 						esc_html__( 'Accessing the %s property directly is deprecated.', 'event-tickets' ),
 						esc_html( $property )
 					),
-					'TBD'
+					'5.21.0'
 				);
 				return $this->cart_total;
 
@@ -376,7 +376,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	/**
 	 * Get items in the cart of a particular type.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param string $type The type of item to get from the cart. Use 'all' to get all items.
 	 *
@@ -401,7 +401,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	/**
 	 * Get the quantity of an item in the cart.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param int|string $item_id The item ID.
 	 *
@@ -422,7 +422,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 *
 	 * After calling this method, calculations will be performed again.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @return void
 	 */
@@ -437,7 +437,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * This will convert any callable items to a Value object using the given
 	 * subtotal as input.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param array  $items    The items to update.
 	 * @param ?float $subtotal The subtotal to use for the calculation. If null, the cart subtotal will be used.

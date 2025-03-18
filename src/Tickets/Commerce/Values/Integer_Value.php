@@ -35,7 +35,7 @@ class Integer_Value extends Base_Value {
 	/**
 	 * Add a value to the current value.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param int $value The value to add.
 	 *

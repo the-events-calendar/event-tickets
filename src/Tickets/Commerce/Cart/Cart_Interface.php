@@ -8,7 +8,7 @@ use InvalidArgumentException;
  * Interface Cart_Interface
  *
  * @since 5.1.9
- * @since TBD Updated the interface: remove add_item(), add upsert_item(), add get_item_quantity().
+ * @since 5.21.0 Updated the interface: remove add_item(), add upsert_item(), add get_item_quantity().
  *
  * @package TEC\Tickets\Commerce\Cart
  */
@@ -117,7 +117,7 @@ interface Cart_Interface {
 	 * Removes an item from the cart.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Removed the $quantity parameter.
+	 * @since 5.21.0 Removed the $quantity parameter.
 	 *
 	 * @param int|string $item_id The item ID.
 	 */
@@ -157,7 +157,7 @@ interface Cart_Interface {
 	 *
 	 * Use this method to add a new item, or to update the quantity and extra data of an existing item.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param string|int $item_id    The item ID.
 	 * @param int        $quantity   The quantity of the item. If the item exists, this quantity will override
@@ -171,7 +171,7 @@ interface Cart_Interface {
 	/**
 	 * Get the quantity of an item in the cart.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param int|string $item_id The item ID.
 	 *

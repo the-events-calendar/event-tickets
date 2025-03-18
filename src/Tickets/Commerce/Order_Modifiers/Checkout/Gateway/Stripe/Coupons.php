@@ -2,7 +2,7 @@
 /**
  * Stripe Coupons controller.
  *
- * @since TBD
+ * @since 5.21.0
  */
 
 declare( strict_types=1 );
@@ -18,14 +18,14 @@ use TEC\Tickets\Commerce\Utils\Value;
 /**
  * Class Coupons
  *
- * @since TBD
+ * @since 5.21.0
  */
 class Coupons extends Controller_Contract {
 
 	/**
 	 * Registers the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @return void
 	 */
@@ -43,7 +43,7 @@ class Coupons extends Controller_Contract {
 	 *
 	 * Bound implementations should not be removed in this method!
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @return void Filters and actions hooks added by the controller are be removed.
 	 */
@@ -57,7 +57,7 @@ class Coupons extends Controller_Contract {
 	/**
 	 * Appends coupons to the cart items when an order is made.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param array $items    The cart items.
 	 * @param Value $subtotal The subtotal value.
