@@ -294,7 +294,7 @@ tribe.tickets.commerce = {};
 	 */
 	obj.getStripeIntentId = function() {
 		return window.tecTicketsCommerceGatewayStripeCheckout?.paymentIntentData?.id;
-	}
+	};
 
 	obj.bindCouponApply = function() {
 		let ajaxInProgress = false;
