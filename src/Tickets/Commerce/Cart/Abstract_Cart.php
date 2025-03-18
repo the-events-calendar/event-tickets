@@ -209,6 +209,8 @@ abstract class Abstract_Cart implements Cart_Interface {
 		// Only update the stored total if it's greater than zero.
 		if ( $total->get() > 0.0 ) {
 			$this->cart_total = $total;
+		} else {
+			$this->cart_total = new Precision_Value( 0.0 );
 		}
 
 		// Mark that the total has been calculated.
