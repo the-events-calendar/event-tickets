@@ -299,7 +299,12 @@ class Order_Summary {
 	 * @return void
 	 */
 	protected function process_fee_item_data( string $status_slug, array $item ) {
+		$this->event_sales_by_status[ $status_slug ]['total_fees_amount'] += $item['sub_total'];
 
+		// Include the fee data in the total sales.
+		if ( Completed::SLUG === $status_slug ) {
+			$this->total_sales['amount'] += $item['sub_total'];
+		}
 	}
 
 	/**
