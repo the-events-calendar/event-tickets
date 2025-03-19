@@ -68,6 +68,13 @@ class Ticket extends PureComponent {
 			this.props
 		);
 
+		/**
+		 * Renders the default ticket form.
+		 *
+		 * @since TBD
+		 *
+		 * @return {JSX.Element}
+		 */
 		const defaultForm = () => {
 			return(
 				<Fragment>
@@ -106,6 +113,14 @@ class Ticket extends PureComponent {
 				</Fragment>
 			);
 		};
+
+		/**
+		 * Renders the default ticket form.
+		 *
+		 * @since TBD
+		 *
+		 * @return {JSX.Element} The default ticket form JSX element.
+		 */
 		const ticketForm = applyFilters(
 			'tec.tickets.blocks.Ticket.form',
 			defaultForm,
