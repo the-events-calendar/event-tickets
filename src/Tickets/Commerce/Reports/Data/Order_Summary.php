@@ -183,6 +183,27 @@ class Order_Summary {
 		}
 
 		$this->build_order_sales_data();
+		$this->format_prices();
+	}
+
+	/**
+	 * Format the prices for all of the data.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @return void
+	 */
+	protected function format_prices() {
+		// First, handle each status.
+		foreach ( $this->event_sales_by_status as &$data ) {
+			$data['total_sales_price'] = $this->format_price( $data['total_sales_amount'] );
+		}
+
+		// Handle the total ordered.
+		$this->total_ordered['price'] = $this->format_price( $this->total_ordered['amount'] );
+
+		// Handle the total sales.
+		$this->total_sales['price'] = $this->format_price( $this->total_sales['amount'] );
 	}
 
 	/**
@@ -255,18 +276,15 @@ class Order_Summary {
 
 		$this->event_sales_by_status[ $status_slug ]['qty_sold']           += $quantity;
 		$this->event_sales_by_status[ $status_slug ]['total_sales_amount'] += $sales_amount;
-		$this->event_sales_by_status[ $status_slug ]['total_sales_price']   = $this->format_price( $this->event_sales_by_status[ $status_slug ]['total_sales_amount'] );
 
 		// process the total ordered data.
 		$this->total_ordered['qty']    += $quantity;
 		$this->total_ordered['amount'] += $sales_amount;
-		$this->total_ordered['price']   = $this->format_price( $this->total_ordered['amount'] );
 
 		// Only completed orders should be counted in the total sales.
 		if ( Completed::SLUG === $status_slug ) {
 			$this->total_sales['qty']    += $quantity;
 			$this->total_sales['amount'] += $sales_amount;
-			$this->total_sales['price']   = $this->format_price( $this->total_sales['amount'] );
 		}
 	}
 
