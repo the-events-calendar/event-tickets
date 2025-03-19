@@ -211,7 +211,7 @@ class Coupons extends Controller_Contract {
 
 		// Set the new condition for enqueuing the asset.
 		$asset->set_condition(
-			function(): bool {
+			function (): bool {
 				// If it's not the checkout page, we don't need to enqueue the asset.
 				if ( ! tribe( Checkout::class )->is_current_page() ) {
 					return false;
@@ -227,7 +227,7 @@ class Coupons extends Controller_Contract {
 
 				// Define our own "is_active()" method to avoid calling should_show().
 				$is_active = Closure::bind(
-					function() {
+					function () {
 						return tribe( static::$merchant )->is_active();
 					},
 					$gateway,
