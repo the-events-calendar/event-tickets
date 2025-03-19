@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Reports;
 
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Reports\Data\Order_Summary;
 use TEC\Tickets\Event;
 use WP_Post;
 
@@ -363,7 +364,7 @@ class Orders extends Report_Abstract {
 		$post_type_object    = get_post_type_object( $post->post_type );
 		$post_singular_label = $post_type_object->labels->singular_name;
 
-		$order_summary = new Commerce\Reports\Data\Order_Summary( $post_id );
+		$order_summary = new Order_Summary( $post_id );
 
 		$this->template_vars = [
 			'orders_table'        => tribe( Commerce\Admin_Tables\Orders::class ),
