@@ -303,11 +303,14 @@ class Order_Summary {
 		}
 
 		$status = tribe( Status_Handler::class )->get_by_slug( $status_slug );
+
 		$this->event_sales_by_status[ $status_slug ] = [
-			'label'              => $status->get_name(),
-			'qty_sold'           => 0,
-			'total_sales_amount' => 0,
-			'total_sales_price'  => $this->format_price( 0 ),
+			'label'                  => $status->get_name(),
+			'qty_sold'               => 0,
+			'total_fees_amount'      => 0,
+			'total_discounts_amount' => 0,
+			'total_sales_amount'     => 0,
+			'total_sales_price'      => $this->format_price( 0 ),
 		];
 	}
 
