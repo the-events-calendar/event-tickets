@@ -35,14 +35,6 @@ class Fees extends Abstract_Fees {
 	 * @since 5.18.0
 	 */
 	public function do_register(): void {
-		// Hook for appending fees to the cart for PayPal processing.
-		add_filter(
-			'tec_tickets_commerce_create_order_from_cart_items',
-			[ $this, 'append_fees_to_cart' ],
-			10,
-			2
-		);
-
 		// Hook for adding fee unit data to PayPal order.
 		add_action(
 			'tec_tickets_commerce_paypal_order_get_unit_data_fee',
@@ -60,11 +52,6 @@ class Fees extends Abstract_Fees {
 	 * @return void
 	 */
 	public function unregister(): void {
-		remove_filter(
-			'tec_tickets_commerce_create_order_from_cart_items',
-			[ $this, 'append_fees_to_cart' ],
-		);
-
 		remove_action(
 			'tec_tickets_commerce_paypal_order_get_unit_data_fee',
 			[ $this, 'add_fee_unit_data_to_paypal' ],

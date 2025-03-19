@@ -39,14 +39,6 @@ class Fees extends Abstract_Fees {
 	 * @since 5.18.0
 	 */
 	public function do_register(): void {
-		// Hook for appending fees to the cart for Stripe processing.
-		add_filter(
-			'tec_tickets_commerce_create_order_from_cart_items',
-			[ $this, 'append_fees_to_cart' ],
-			10,
-			2
-		);
-
 		add_filter(
 			'tec_tickets_commerce_stripe_create_from_cart',
 			[ $this, 'append_fees_to_cart_stripe' ],
@@ -70,11 +62,6 @@ class Fees extends Abstract_Fees {
 	 * @return void
 	 */
 	public function unregister(): void {
-		remove_filter(
-			'tec_tickets_commerce_create_order_from_cart_items',
-			[ $this, 'append_fees_to_cart' ],
-		);
-
 		remove_filter(
 			'tec_tickets_commerce_stripe_create_from_cart',
 			[ $this, 'append_fees_to_cart_stripe' ]

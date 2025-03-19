@@ -25,8 +25,6 @@ use TEC\Tickets\Commerce\Traits\Type;
  */
 class Fees extends Abstract_Fees {
 
-	use Type;
-
 	/**
 	 * Registers the necessary hooks for adding and managing fees during the checkout process.
 	 *
@@ -58,6 +56,14 @@ class Fees extends Abstract_Fees {
 			'tribe_post_type_tc_orders_properties',
 			[ $this, 'attach_fees_to_order_object' ]
 		);
+
+		// Append fee data to the cart.
+		add_filter(
+			'tec_tickets_commerce_create_order_from_cart_items',
+			[ $this, 'append_fees_to_cart' ],
+			10,
+			2
+		);
 	}
 
 	/**
@@ -82,6 +88,11 @@ class Fees extends Abstract_Fees {
 		remove_filter(
 			'tribe_post_type_tc_orders_properties',
 			[ $this, 'attach_fees_to_order_object' ]
+		);
+
+		remove_filter(
+			'tec_tickets_commerce_create_order_from_cart_items',
+			[ $this, 'append_fees_to_cart' ],
 		);
 	}
 
