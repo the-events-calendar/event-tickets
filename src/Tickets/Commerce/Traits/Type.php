@@ -34,6 +34,17 @@ trait Type {
 	}
 
 	/**
+	 * Determine if a thing is a fee.
+	 *
+	 * @param array $thing The thing to check.
+	 *
+	 * @return bool Whether the thing is a fee.
+	 */
+	protected function is_fee( array $thing ) {
+		return $this->is_type( $thing, 'fee' );
+	}
+
+	/**
 	 * Determine if a thing is the given type.
 	 *
 	 * @since 5.21.0

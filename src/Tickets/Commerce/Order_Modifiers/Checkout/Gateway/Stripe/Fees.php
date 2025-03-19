@@ -12,6 +12,7 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe;
 
+use TEC\Tickets\Commerce\Traits\Type;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Abstract_Fees;
 use WP_Post;
@@ -26,6 +27,8 @@ use WP_Post;
  * @since 5.18.0
  */
 class Fees extends Abstract_Fees {
+
+	use Type;
 
 	/**
 	 * Registers the necessary hooks for adding and managing fees in Stripe checkout.
@@ -137,9 +140,7 @@ class Fees extends Abstract_Fees {
 		// Filter out the fee items from the order's items.
 		$fee_items = array_filter(
 			$order->items,
-			function ( $item ) {
-				return ! empty( $item['type'] ) && 'fee' === $item['type'];
-			}
+			fn( $item ) => $this->is_fee( $item )
 		);
 
 		// Sort the array alphabetically by display name.
