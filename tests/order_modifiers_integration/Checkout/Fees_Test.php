@@ -1012,12 +1012,6 @@ class Fees_Test extends Controller_Test_Case {
 	 * @test
 	 */
 	public function it_should_render_fees() {
-		// Reset the fees and subtotal.
-		$this->make_controller()->register();
-
-		// First, we should ensure that orders with no fees have no mention of fees.
-		$this->prepare_test_data();
-
 		/** @var Singular_Order_Page $singular_page */
 		$singular_page = tribe( Singular_Order_Page::class );
 
@@ -1025,7 +1019,14 @@ class Fees_Test extends Controller_Test_Case {
 		$post      = static::factory()->post->create();
 		$ticket_id = $this->create_tc_ticket( $post, 10 );
 		$fee       = $this->create_fee_for_ticket( $ticket_id );
-		$order     = $this->create_order( [ $ticket_id => 1 ] );
+		$this->add_fee_to_ticket( $fee, $ticket_id );
+
+		$this->make_controller()->register();
+
+		$order = $this->create_order( [ $ticket_id => 1 ] );
+
+		// Refresh the order.
+		$order = tec_tc_get_order( $order->ID );
 
 		// We should have fees attached to the order.
 		Assert::assertNotEmpty( $order->fees );
