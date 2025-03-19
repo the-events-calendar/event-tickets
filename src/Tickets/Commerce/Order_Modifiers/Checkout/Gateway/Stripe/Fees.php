@@ -124,13 +124,13 @@ class Fees extends Abstract_Fees {
 	 * @return array Updated metadata including the fees as a string.
 	 */
 	public function add_meta_data_to_stripe( array $metadata, WP_Post $order ) {
-		// Filter out the fee items from the order's items.
-		$fee_items = array_filter(
-			$order->items,
-			fn( $item ) => $this->is_fee( $item )
-		);
+		// Ensure the order has fees.
+		if ( empty( $order->fees ) ) {
+			return $metadata;
+		}
 
 		// Sort the array alphabetically by display name.
+		$fee_items = $order->fees;
 		usort(
 			$fee_items,
 			static function ( $a, $b ) {
