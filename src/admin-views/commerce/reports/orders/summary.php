@@ -143,7 +143,6 @@ $tickets_by_type = $order_summary->get_tickets_by_type();
 								?>
 							</div>
 						</div>
-
 						<div class="tec-tickets__admin-orders-report__sales-overview__list__item">
 							<div class="tec-tickets__admin-orders-report__sales-overview__list__item-label">
 								<div class="tec-tickets__admin-orders-report__sales-overview__total-label">
@@ -160,7 +159,6 @@ $tickets_by_type = $order_summary->get_tickets_by_type();
 								?>
 							</div>
 						</div>
-
 						<div class="tec-tickets__admin-orders-report__sales-overview__list__item">
 							<div class="tec-tickets__admin-orders-report__sales-overview__list__item-label">
 								<div class="tec-tickets__admin-orders-report__sales-overview__total-label">
