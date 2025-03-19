@@ -12,8 +12,6 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
 
-use TEC\Tickets\Commerce\Traits\Type;
-
 /**
  * Class Fees
  *
