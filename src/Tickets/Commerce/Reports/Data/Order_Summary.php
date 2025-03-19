@@ -88,6 +88,16 @@ class Order_Summary {
 	public function __construct( int $post_id ) {
 		$this->post_id = $post_id;
 		$this->init_vars();
+	}
+
+	/**
+	 * Initialize the data.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @return void
+	 */
+	public function init() {
 		$this->build_data();
 	}
 

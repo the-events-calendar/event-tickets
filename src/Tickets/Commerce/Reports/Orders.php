@@ -365,6 +365,7 @@ class Orders extends Report_Abstract {
 		$post_singular_label = $post_type_object->labels->singular_name;
 
 		$order_summary = new Order_Summary( $post_id );
+		$order_summary->init();
 
 		$this->template_vars = [
 			'orders_table'        => tribe( Commerce\Admin_Tables\Orders::class ),
