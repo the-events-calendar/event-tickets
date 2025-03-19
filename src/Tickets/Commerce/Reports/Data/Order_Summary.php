@@ -264,6 +264,8 @@ class Order_Summary {
 	/**
 	 * Process the fee item data.
 	 *
+	 * @since 5.21.0
+	 *
 	 * @param string $status_slug The status slug.
 	 * @param array  $item        The item.
 	 *
@@ -275,6 +277,8 @@ class Order_Summary {
 
 	/**
 	 * Process the coupon item data.
+	 *
+	 * @since 5.21.0
 	 *
 	 * @param string $status_slug The status slug.
 	 * @param array  $item        The item.
