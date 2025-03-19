@@ -81,6 +81,20 @@ class Order_Summary {
 	protected array $event_sales_data = [];
 
 	/**
+	 * @since 5.21.0
+	 *
+	 * @var Currency_Value[] The event completed fees.
+	 */
+	protected array $event_completed_fees = [];
+
+	/**
+	 * @since 5.21.0
+	 *
+	 * @var Currency_Value[] The event completed discounts.
+	 */
+	protected array $event_completed_discounts = [];
+
+	/**
 	 * Order_Summary constructor.
 	 *
 	 * @since 5.6.7
@@ -134,14 +148,23 @@ class Order_Summary {
 	 */
 	protected function init_vars(): void {
 		$this->total_sales   = [
-			'qty'    => 0,
-			'amount' => 0,
-			'price'  => $this->format_price( 0 ),
+			'qty'             => 0,
+			'amount'          => 0,
+			'price'           => $this->format_price( 0 ),
+			'total_fees'      => $this->format_price( 0 ),
+			'fees_qty'        => 0,
+			'total_discounts' => $this->format_price( 0 ),
+			'discounts_qty'   => 0,
 		];
+
 		$this->total_ordered = [
-			'qty'    => 0,
-			'amount' => 0,
-			'price'  => $this->format_price( 0 ),
+			'qty'             => 0,
+			'amount'          => 0,
+			'price'           => $this->format_price( 0 ),
+			'total_fees'      => $this->format_price( 0 ),
+			'fees_qty'        => 0,
+			'total_discounts' => $this->format_price( 0 ),
+			'discounts_qty'   => 0,
 		];
 	}
 
@@ -196,18 +219,30 @@ class Order_Summary {
 	 * @return void
 	 */
 	protected function format_prices() {
-		// First, handle each status.
+		$all_fees      = [];
+		$all_discounts = [];
+
+		// Handle the event sales by status.
 		foreach ( $this->event_sales_by_status as &$data ) {
+			// Add the fees and discounts to their respective arrays.
+			$all_fees      = array_merge( $all_fees, $data['total_fee_amounts'] );
+			$all_discounts = array_merge( $all_discounts, $data['total_discount_amounts'] );
+
+			// Update the different prices with the formatted values.
 			$data['total_sales_price']    = Currency_Value::create_from_float( $data['total_sales_amount'] )->get();
 			$data['total_fee_price']      = Currency_Value::sum( ...$data['total_fee_amounts'] )->get();
 			$data['total_discount_price'] = Currency_Value::sum( ...$data['total_discount_amounts'] )->get();
 		}
 
 		// Handle the total ordered.
-		$this->total_ordered['price'] = Currency_Value::create_from_float( $this->total_ordered['amount'] )->get();
+		$this->total_ordered['price']           = Currency_Value::create_from_float( $this->total_ordered['amount'] )->get();
+		$this->total_ordered['total_fees']      = Currency_Value::sum( ...$all_fees )->get();
+		$this->total_ordered['total_discounts'] = Currency_Value::sum( ...$all_discounts )->get();
 
 		// Handle the total sales.
-		$this->total_sales['price'] = Currency_Value::create_from_float( $this->total_sales['amount'] )->get();
+		$this->total_sales['price']           = Currency_Value::create_from_float( $this->total_sales['amount'] )->get();
+		$this->total_sales['total_fees']      = Currency_Value::sum( ...$this->event_completed_fees )->get();
+		$this->total_sales['total_discounts'] = Currency_Value::sum( ...$this->event_completed_discounts )->get();
 	}
 
 	/**
@@ -304,11 +339,18 @@ class Order_Summary {
 	 */
 	protected function process_fee_item_data( string $status_slug, array $item ) {
 		$amount = Legacy_Value_Factory::to_currency_value( $item['sub_total'] );
+
+		// Add the fee amount to the total fees for the status.
 		$this->event_sales_by_status[ $status_slug ]['total_fee_amounts'][] = $amount;
+
+		// Include the fee quantity in the total ordered.
+		$this->total_ordered['fees_qty'] += $item['quantity'];
 
 		// Include the fee data in the total sales.
 		if ( Completed::SLUG === $status_slug ) {
-			$this->total_sales['amount'] += $item['sub_total']->get_decimal();
+			$this->total_sales['amount']   += $item['sub_total']->get_decimal();
+			$this->total_sales['fees_qty'] += $item['quantity'];
+			$this->event_completed_fees[]   = $amount;
 		}
 	}
 
@@ -324,11 +366,18 @@ class Order_Summary {
 	 */
 	protected function process_coupon_item_data( string $status_slug, array $item ) {
 		$amount = Legacy_Value_Factory::to_currency_value( $item['sub_total'] );
+
+		// Add the discount amount to the total discounts for the status.
 		$this->event_sales_by_status[ $status_slug ]['total_discount_amounts'][] = $amount;
+
+		// Include the discount quantity in the total ordered.
+		$this->total_ordered['discounts_qty'] += $item['quantity'];
 
 		// Decrease total sales by the coupon amount. The sub_total is negative, so we can add it.
 		if ( Completed::SLUG === $status_slug ) {
-			$this->total_sales['amount'] += $item['sub_total']->get_decimal();
+			$this->total_sales['amount']        += $item['sub_total']->get_decimal();
+			$this->total_sales['discounts_qty'] += $item['quantity'];
+			$this->event_completed_discounts[]   = $amount;
 		}
 	}
 
