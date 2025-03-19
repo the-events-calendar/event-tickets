@@ -126,10 +126,35 @@ class Fees_Test extends Controller_Test_Case {
 		$this->assertEquals( 1, did_filter( 'tec_tickets_commerce_prepare_order_for_email_send_email_purchase_receipt' ) );
 		$this->assertNotNull( $email_purchase_listener_before );
 		$this->assertNotNull( $email_completed_listener_before );
-		$this->assertCount( 6, $refreshed_order->items );
-		$this->assertCount( 6, $email_completed_listener_before);
+		$this->assertCount( 3, $refreshed_order->items );
+		$this->assertCount( 3, $refreshed_order->fees );
+
+		// The items in the listeners shouldn't be fees.
+		$filter = fn( $item ) => 'fee' === $item['type'];
+		$this->assertCount(
+			0,
+			array_filter( $email_completed_listener_before, $filter ),
+			'Fees should not be included in the email items.'
+		);
+		$this->assertCount(
+			0,
+			array_filter( $email_completed_listener_after, $filter ),
+			'Fees should not be included in the email items.'
+		);
+		$this->assertCount(
+			0,
+			array_filter( $email_purchase_listener_before, $filter ),
+			'Fees should not be included in the email items.'
+		);
+		$this->assertCount(
+			0,
+			array_filter( $email_purchase_listener_after, $filter ),
+			'Fees should not be included in the email items.'
+		);
+
+		$this->assertCount( 3, $email_completed_listener_before);
 		$this->assertCount( 3, $email_completed_listener_after);
-		$this->assertCount( 6, $email_purchase_listener_before);
+		$this->assertCount( 3, $email_purchase_listener_before);
 		$this->assertCount( 3, $email_purchase_listener_after);
 	}
 
