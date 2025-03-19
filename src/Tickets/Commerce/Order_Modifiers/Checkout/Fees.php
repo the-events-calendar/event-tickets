@@ -13,8 +13,6 @@
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
 
 use TEC\Tickets\Commerce\Traits\Type;
-use TEC\Tickets\Commerce\Values\Legacy_Value_Factory;
-use WP_Post;
 
 /**
  * Class Fees
