@@ -253,7 +253,7 @@ class Coupons extends Base_API {
 			$discount   = Currency_Value::create_from_float( $coupon->get_discount_amount( $original_total->get_raw_value()->get() ) );
 
 			// Update the payment intent with the new value.
-			if ( $this->is_using_stripe() ) {
+			if ( $this->is_using_stripe() && $request->has_param( 'payment_intent_id' ) ) {
 				$this->update_stripe_payment_intent(
 					$request->get_param( 'payment_intent_id' ),
 					$cart_total->get_raw_value()->get_as_integer()
@@ -325,7 +325,7 @@ class Coupons extends Base_API {
 			$cart_total = Currency_Value::create_from_float( $cart->get_cart_total() );
 
 			// Update the payment intent with the new value.
-			if ( $this->is_using_stripe() ) {
+			if ( $this->is_using_stripe() && $request->has_param( 'payment_intent_id' ) ) {
 				$this->update_stripe_payment_intent(
 					$request->get_param( 'payment_intent_id' ),
 					$cart_total->get_raw_value()->get_as_integer()
@@ -476,7 +476,6 @@ class Coupons extends Base_API {
 				'description' => esc_html__( 'The Stripe payment intent to apply the coupon to.', 'event-tickets' ),
 				'type'        => 'string',
 				'format'      => 'text-field',
-				'required'    => $this->is_using_stripe(),
 			],
 			'purchaser_data'    => [
 				'description'       => esc_html__( 'The purchaser data.', 'event-tickets' ),
