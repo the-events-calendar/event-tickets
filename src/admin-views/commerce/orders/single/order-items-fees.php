@@ -12,6 +12,8 @@
 
 declare( strict_types=1 );
 
+use TEC\Tickets\Commerce\Values\Currency_Value;
+
 // If we don't have any fees, we don't need to display anything.
 if ( empty( $fees ) ) {
 	return;
@@ -30,7 +32,7 @@ if ( empty( $fees ) ) {
 			<div class="tec-tickets-commerce-price-container">
 				<ins>
 					<span class="tec-tickets-commerce-price">
-						<?php echo esc_html( $fee['sub_total']->get_currency() ); ?>
+						<?php echo esc_html( Currency_Value::create_from_float( $fee['sub_total'] )->get() ); ?>
 					</span>
 				</ins>
 			</div>

@@ -338,7 +338,7 @@ class Order_Summary {
 	 * @return void
 	 */
 	protected function process_fee_item_data( string $status_slug, array $item ) {
-		$amount = Legacy_Value_Factory::to_currency_value( $item['sub_total'] );
+		$amount = Currency_Value::create_from_float( $item['sub_total'] );
 
 		// Add the fee amount to the total fees for the status.
 		$this->event_sales_by_status[ $status_slug ]['total_fee_amounts'][] = $amount;
@@ -348,7 +348,7 @@ class Order_Summary {
 
 		// Include the fee data in the total sales.
 		if ( Completed::SLUG === $status_slug ) {
-			$this->total_sales['amount']   += $item['sub_total']->get_decimal();
+			$this->total_sales['amount']   += $item['sub_total'];
 			$this->total_sales['fees_qty'] += $item['quantity'];
 			$this->event_completed_fees[]   = $amount;
 		}

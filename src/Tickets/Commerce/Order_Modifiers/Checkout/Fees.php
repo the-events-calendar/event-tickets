@@ -12,6 +12,7 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
 
+use TEC\Tickets\Commerce\Traits\Type;
 use TEC\Tickets\Commerce\Values\Legacy_Value_Factory;
 use WP_Post;
 
@@ -25,6 +26,8 @@ use WP_Post;
  * @since 5.18.0
  */
 class Fees extends Abstract_Fees {
+
+	use Type;
 
 	/**
 	 * Registers the necessary hooks for adding and managing fees during the checkout process.
@@ -55,9 +58,7 @@ class Fees extends Abstract_Fees {
 		// Attach fees to the order object.
 		add_filter(
 			'tribe_post_type_tc_orders_properties',
-			[ $this, 'attach_fees_to_order_object' ],
-			10,
-			2
+			[ $this, 'attach_fees_to_order_object' ]
 		);
 	}
 
@@ -91,27 +92,24 @@ class Fees extends Abstract_Fees {
 	 *
 	 * @since 5.21.0
 	 *
-	 * @param array   $properties The properties of the order object.
-	 * @param WP_Post $order      The order object.
+	 * @param array $properties The properties of the order object.
 	 *
 	 * @return array The updated properties of the order object.
 	 */
-	public function attach_fees_to_order_object( array $properties, WP_Post $order ): array {
+	public function attach_fees_to_order_object( array $properties ): array {
 		// There shouldn't be an order with no items, but let's just be safe.
 		$items = $properties['items'] ?? [];
 		if ( empty( $items ) ) {
 			return $properties;
 		}
 
-		// We need to normalize the fees for the order object.
-		$properties['fees'] = array_map(
-			static function ( $fee ) {
-				$fee['sub_total'] = Legacy_Value_Factory::to_legacy_value( $fee['fee_amount'] );
+		// Separate fees from other items.
+		$fees     = array_filter( $items, fn( $item ) => $this->is_fee( $item ) );
+		$not_fees = array_filter( $items, fn( $item ) => ! $this->is_fee( $item ) );
 
-				return $fee;
-			},
-			$this->get_combined_fees_for_items( $items )
-		);
+		// Update the properties with the items and fees.
+		$properties['items'] = $not_fees;
+		$properties['fees']  = $fees;
 
 		return $properties;
 	}
