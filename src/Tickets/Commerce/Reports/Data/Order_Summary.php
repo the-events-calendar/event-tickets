@@ -206,13 +206,12 @@ class Order_Summary {
 		foreach ( $order->items as $item ) {
 			if ( $this->is_ticket( $item ) ) {
 				$this->process_ticket_item_data( $order->status_slug, $item );
-				continue;
 			}
+		}
 
-			// Fees have their own key in the $order object, but they are also items.
-			if ( $this->is_fee( $item ) ) {
-				$this->process_fee_item_data( $order->status_slug, $item );
-			}
+		// Handle fees.
+		foreach ( $order->fees as $fee ) {
+			$this->process_fee_item_data( $order->status_slug, $fee );
 		}
 
 		// Handle coupons.
