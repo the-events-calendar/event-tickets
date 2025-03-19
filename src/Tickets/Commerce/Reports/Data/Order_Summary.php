@@ -16,6 +16,7 @@ use TEC\Tickets\Commerce\Traits\Type;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets;
+use WP_Post;
 
 /**
  * Class Order_Summary.
@@ -188,9 +189,7 @@ class Order_Summary {
 		$orders = tec_tc_orders()->by_args( $args )->all();
 
 		foreach ( $orders as $order ) {
-			foreach ( $order->items as $item ) {
-				$this->process_order_sales_data( $order->status_slug, $item );
-			}
+			$this->process_order_sales_data( $order );
 		}
 	}
 
@@ -198,15 +197,41 @@ class Order_Summary {
 	 * Process the order sales data.
 	 *
 	 * @since 5.9.0
+	 * @since 5.21.0 Updated this method to handle an order directly, instead of individual items.
 	 *
-	 * @param string            $status_slug The status slug.
-	 * @param array<string,int> $item The ticket item data.
+	 * @param WP_Post $order The order object with extra properties.
 	 */
-	protected function process_order_sales_data( string $status_slug, $item ): void {
-		if ( ! $this->is_ticket( $item ) ) {
-			return;
+	protected function process_order_sales_data( WP_Post $order ): void {
+		// Handle items first.
+		foreach ( $order->items as $item ) {
+			if ( $this->is_ticket( $item ) ) {
+				$this->process_ticket_item_data( $order->status_slug, $item );
+				continue;
+			}
+
+			// Fees have their own key in the $order object, but they are also items.
+			if ( $this->is_fee( $item ) ) {
+				$this->process_fee_item_data( $order->status_slug, $item );
+			}
 		}
 
+		// Handle coupons.
+		foreach ( $order->coupons as $coupon ) {
+			$this->process_coupon_item_data( $order->status_slug, $coupon );
+		}
+	}
+
+	/**
+	 * Process the ticket item data.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param string $status_slug The status slug.
+	 * @param array  $item        The item. It should already be validated as a ticket.
+	 *
+	 * @return void
+	 */
+	protected function process_ticket_item_data( string $status_slug, array $item ) {
 		$ticket_id = $item['ticket_id'];
 		$tickets   = $this->get_tickets();
 
@@ -244,6 +269,30 @@ class Order_Summary {
 			$this->total_sales['amount'] += $sales_amount;
 			$this->total_sales['price']   = $this->format_price( $this->total_sales['amount'] );
 		}
+	}
+
+	/**
+	 * Process the fee item data.
+	 *
+	 * @param string $status_slug The status slug.
+	 * @param array  $item        The item.
+	 *
+	 * @return void
+	 */
+	protected function process_fee_item_data( string $status_slug, array $item ) {
+
+	}
+
+	/**
+	 * Process the coupon item data.
+	 *
+	 * @param string $status_slug The status slug.
+	 * @param array  $item        The item.
+	 *
+	 * @return void
+	 */
+	protected function process_coupon_item_data( string $status_slug, array $item ) {
+
 	}
 
 	/**
