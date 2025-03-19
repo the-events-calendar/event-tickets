@@ -239,17 +239,7 @@ class Order_Summary {
 			return;
 		}
 
-		if ( ! isset( $this->event_sales_by_status[ $status_slug ] ) ) {
-			$status = tribe( Status_Handler::class )->get_by_slug( $status_slug );
-
-			// This is the first time we've seen this status, so initialize it.
-			$this->event_sales_by_status[ $status_slug ] = [
-				'label'              => $status->get_name(),
-				'qty_sold'           => 0,
-				'total_sales_amount' => 0,
-				'total_sales_price'  => $this->format_price( 0 ),
-			];
-		}
+		$this->maybe_initialize_status( $status_slug );
 
 		$sales_amount = $item['sub_total'];
 		$quantity     = $item['quantity'];
@@ -293,6 +283,29 @@ class Order_Summary {
 	 */
 	protected function process_coupon_item_data( string $status_slug, array $item ) {
 
+	}
+
+	/**
+	 * Initialize the data for the status slug if we haven't already.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param string $status_slug The status slug.
+	 *
+	 * @return void
+	 */
+	protected function maybe_initialize_status( string $status_slug ) {
+		if ( isset( $this->event_sales_by_status[ $status_slug ] ) ) {
+			return;
+		}
+
+		$status = tribe( Status_Handler::class )->get_by_slug( $status_slug );
+		$this->event_sales_by_status[ $status_slug ] = [
+			'label'              => $status->get_name(),
+			'qty_sold'           => 0,
+			'total_sales_amount' => 0,
+			'total_sales_price'  => $this->format_price( 0 ),
+		];
 	}
 
 	/**
