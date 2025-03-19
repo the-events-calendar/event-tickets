@@ -14,6 +14,8 @@ use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Traits\Type;
 use TEC\Tickets\Commerce\Utils\Value;
+use TEC\Tickets\Commerce\Values\Currency_Value;
+use TEC\Tickets\Commerce\Values\Legacy_Value_Factory;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets;
 use WP_Post;
@@ -196,14 +198,16 @@ class Order_Summary {
 	protected function format_prices() {
 		// First, handle each status.
 		foreach ( $this->event_sales_by_status as &$data ) {
-			$data['total_sales_price'] = $this->format_price( $data['total_sales_amount'] );
+			$data['total_sales_price']    = Currency_Value::create_from_float( $data['total_sales_amount'] )->get();
+			$data['total_fee_price']      = Currency_Value::sum( ...$data['total_fee_amounts'] )->get();
+			$data['total_discount_price'] = Currency_Value::sum( ...$data['total_discount_amounts'] )->get();
 		}
 
 		// Handle the total ordered.
-		$this->total_ordered['price'] = $this->format_price( $this->total_ordered['amount'] );
+		$this->total_ordered['price'] = Currency_Value::create_from_float( $this->total_ordered['amount'] )->get();
 
 		// Handle the total sales.
-		$this->total_sales['price'] = $this->format_price( $this->total_sales['amount'] );
+		$this->total_sales['price'] = Currency_Value::create_from_float( $this->total_sales['amount'] )->get();
 	}
 
 	/**
@@ -299,11 +303,12 @@ class Order_Summary {
 	 * @return void
 	 */
 	protected function process_fee_item_data( string $status_slug, array $item ) {
-		$this->event_sales_by_status[ $status_slug ]['total_fees_amount'] += $item['sub_total'];
+		$amount = Legacy_Value_Factory::to_currency_value( $item['sub_total'] );
+		$this->event_sales_by_status[ $status_slug ]['total_fee_amounts'][] = $amount;
 
 		// Include the fee data in the total sales.
 		if ( Completed::SLUG === $status_slug ) {
-			$this->total_sales['amount'] += $item['sub_total'];
+			$this->total_sales['amount'] += $item['sub_total']->get_decimal();
 		}
 	}
 
@@ -318,11 +323,12 @@ class Order_Summary {
 	 * @return void
 	 */
 	protected function process_coupon_item_data( string $status_slug, array $item ) {
-		$this->event_sales_by_status[ $status_slug ]['total_discounts_amount'] += $item['sub_total'];
+		$amount = Legacy_Value_Factory::to_currency_value( $item['sub_total'] );
+		$this->event_sales_by_status[ $status_slug ]['total_discount_amounts'][] = $amount;
 
 		// Decrease total sales by the coupon amount. The sub_total is negative, so we can add it.
 		if ( Completed::SLUG === $status_slug ) {
-			$this->total_sales['amount'] += $item['sub_total'];
+			$this->total_sales['amount'] += $item['sub_total']->get_decimal();
 		}
 	}
 
@@ -345,8 +351,8 @@ class Order_Summary {
 		$this->event_sales_by_status[ $status_slug ] = [
 			'label'                  => $status->get_name(),
 			'qty_sold'               => 0,
-			'total_fees_amount'      => 0,
-			'total_discounts_amount' => 0,
+			'total_fee_amounts'      => [],
+			'total_discount_amounts' => [],
 			'total_sales_amount'     => 0,
 			'total_sales_price'      => $this->format_price( 0 ),
 		];
