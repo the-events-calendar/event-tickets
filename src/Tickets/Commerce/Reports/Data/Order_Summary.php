@@ -12,7 +12,7 @@ namespace TEC\Tickets\Commerce\Reports\Data;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Ticket;
-use TEC\Tickets\Commerce\Traits\Is_Ticket;
+use TEC\Tickets\Commerce\Traits\Type;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets;
@@ -26,7 +26,7 @@ use Tribe__Tickets__Tickets;
  */
 class Order_Summary {
 
-	use Is_Ticket;
+	use Type;
 
 	/**
 	 * @since 5.6.7
