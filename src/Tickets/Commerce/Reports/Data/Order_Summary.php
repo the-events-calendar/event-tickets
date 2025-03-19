@@ -318,7 +318,12 @@ class Order_Summary {
 	 * @return void
 	 */
 	protected function process_coupon_item_data( string $status_slug, array $item ) {
+		$this->event_sales_by_status[ $status_slug ]['total_discounts_amount'] += $item['sub_total'];
 
+		// Decrease total sales by the coupon amount. The sub_total is negative, so we can add it.
+		if ( Completed::SLUG === $status_slug ) {
+			$this->total_sales['amount'] += $item['sub_total'];
+		}
 	}
 
 	/**
