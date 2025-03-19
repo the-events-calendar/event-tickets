@@ -40,7 +40,7 @@ trait Type {
 	 *
 	 * @return bool Whether the thing is a fee.
 	 */
-	protected function is_fee( array $thing ) {
+	protected function is_fee( array $thing ): bool {
 		return $this->is_type( $thing, 'fee' );
 	}
 
