@@ -68,42 +68,55 @@ class Ticket extends PureComponent {
 			this.props
 		);
 
-		return showTicket ? (
-			<Fragment>
-				<article
-					className={classNames(
-						'tribe-editor__ticket',
-						{ 'tribe-editor__ticket--disabled': isDisabled },
-						{
-							'tribe-editor__ticket--selected':
+		const defaultForm = () => {
+			return(
+				<Fragment>
+					<article
+						className={classNames(
+							'tribe-editor__ticket',
+							{ 'tribe-editor__ticket--disabled': isDisabled },
+							{
+								'tribe-editor__ticket--selected':
 								filteredIsSelected,
-						},
-						{
-							'tribe-editor__ticket--has-tickets-plus':
+							},
+							{
+								'tribe-editor__ticket--has-tickets-plus':
 								hasTicketsPlus,
-						},
-						{
-							'tribe-editor__ticket--is-asc': applyFilters(
-								'tribe.editor.ticket.isAsc',
-								false,
-								clientId
-							),
-						}
-					)}
-				>
-					<TicketContainer
-						clientId={clientId}
-						isSelected={filteredIsSelected}
-					/>
-					<TicketDashboard
-						clientId={clientId}
-						isSelected={filteredIsSelected}
-					/>
-					{isLoading && <Spinner />}
-				</article>
-				{isModalShowing && <MoveModal />}
+							},
+							{
+								'tribe-editor__ticket--is-asc': applyFilters(
+									'tribe.editor.ticket.isAsc',
+									false,
+									clientId
+								),
+							}
+						)}
+					>
+						<TicketContainer
+							clientId={clientId}
+							isSelected={filteredIsSelected}
+						/>
+						<TicketDashboard
+							clientId={clientId}
+							isSelected={filteredIsSelected}
+						/>
+						{isLoading && <Spinner />}
+					</article>
+					{isModalShowing && <MoveModal />}
+				</Fragment>
+			);
+		};
+		const ticketForm = applyFilters(
+			'tec.tickets.blocks.Ticket.form',
+			defaultForm,
+			this.props
+		);
+
+		return showTicket ?
+			<Fragment>
+				{ticketForm}
 			</Fragment>
-		) : null;
+			: null;
 	}
 }
 
