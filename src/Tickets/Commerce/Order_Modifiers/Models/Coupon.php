@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Models;
 
 use TEC\Tickets\Commerce\Cart\Cart_Interface;
 use TEC\Tickets\Commerce\Traits\Type;
+use TEC\Tickets\Commerce\Values\Float_Value;
 use TEC\Tickets\Commerce\Values\Precision_Value;
 
 /**
@@ -40,13 +41,15 @@ class Coupon extends Order_Modifier {
 	 */
 	public function get_discount_amount( float $subtotal ): float {
 		if ( 'flat' === $this->sub_type ) {
-			return -1 * $this->raw_amount;
+			/** @var Float_Value $amount */
+			$amount = $this->attributes['raw_amount'];
+			return $amount->invert_sign()->get();
 		}
 
 		$base_price = new Precision_Value( $subtotal );
 		$discount   = $base_price->multiply( $this->attributes['raw_amount'] );
 
-		return -1 * $discount->get();
+		return $discount->invert_sign()->get();
 	}
 
 	/**
