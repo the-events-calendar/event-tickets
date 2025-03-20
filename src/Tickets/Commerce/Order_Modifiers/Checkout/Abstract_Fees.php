@@ -11,6 +11,7 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
 
+use BadMethodCallException;
 use TEC\Common\Contracts\Container;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\Commerce\Order_Modifiers\Controller;
@@ -80,29 +81,6 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 * @var Order_Modifier_Relationship
 	 */
 	protected Order_Modifier_Relationship $order_modifiers_relationship_repository;
-
-	/**
-	 * Subtotal value used in fee calculations.
-	 *
-	 * This represents the total amount used as a basis for calculating applicable fees.
-	 *
-	 * @since 5.18.0
-	 * @var null|Value
-	 */
-	protected ?Value $subtotal = null;
-
-	/**
-	 * Tracks whether the fees have already been appended to the cart.
-	 *
-	 * This static property ensures that the fees are only appended once during the
-	 * checkout process across multiple instances of the class. If set to `true`, the
-	 * method `append_fees_to_cart` will not add the fees again. The default is `false`,
-	 * indicating the fees have not yet been appended.
-	 *
-	 * @since 5.18.0
-	 * @var bool
-	 */
-	protected static bool $fees_appended = false;
 
 	/**
 	 * The order modifiers controller.
@@ -185,11 +163,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 		}
 
 		// Store the subtotal as a class property for later use, encapsulated as a Value object.
-		$this->subtotal = $subtotal;
 
-		if ( $this->subtotal->get_integer() <= 0 ) {
-			return $values;
-		}
 
 		// Fetch the combined fees for the items in the cart.
 		$combined_fees = $this->get_combined_fees_for_items( $items );
@@ -219,10 +193,6 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 * @param Template $template The template object for rendering.
 	 */
 	public function display_fee_section( WP_Post $post, array $items, Template $template ): void {
-		if ( ! $this->subtotal ) {
-			return;
-		}
-
 		// Process the fees for each item into a single array.
 		$combined_fees = $this->prepare_fees_for_frontend_display( $items );
 
@@ -392,8 +362,6 @@ abstract class Abstract_Fees extends Controller_Contract {
 			return $items;
 		}
 
-		$this->subtotal = $subtotal;
-
 		// Get all the combined fees for the items in the cart.
 		$raw_fees = $this->get_combined_fees_for_items( $items, true );
 
@@ -522,15 +490,28 @@ abstract class Abstract_Fees extends Controller_Contract {
 	}
 
 	/**
-	 * Resets the fees state and resets the subtotal to zero.
+	 * Triggered when invoking inaccessible methods in an object context.
 	 *
-	 * This method clears the flag indicating that fees have been appended
-	 * and resets the subtotal to its default value of zero.
+	 * @since 5.21.0
 	 *
-	 * @return void
+	 * @param string $name      The name of the method being called.
+	 * @param array  $arguments Arguments passed to the method.
+	 *
+	 * @return mixed
+	 * @throws BadMethodCallException When an invalid method is called.
 	 */
-	public function reset_fees_and_subtotal(): void {
-		self::$fees_appended = false;
-		$this->subtotal      = null;
+	public function __call( $name, $arguments ) {
+		switch ( $name ) {
+			case 'reset_fees_and_subtotal':
+				_deprecated_function(
+					esc_html( __CLASS__ . "::{$name}" ),
+					'5.21.0',
+					esc_html__( 'This method is no longer used.', 'event-tickets' )
+				);
+				return;
+
+			default:
+				throw new BadMethodCallException( esc_html( __CLASS__ . "::{$name}" ) );
+		}
 	}
 }

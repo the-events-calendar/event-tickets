@@ -1042,12 +1042,4 @@ class Fees_Test extends Controller_Test_Case {
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
-
-	/**
-	 * @before
-	 * @after
-	 */
-	public function reset_fees() {
-		$this->test_services->get( PayPalFees::class )->reset_fees_and_subtotal();
-	}
 }
