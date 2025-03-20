@@ -34,6 +34,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Coupon_Table;
 use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Fee_Table;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 use TEC\Tickets\Commerce\Values\Currency_Value;
+use TEC\Tickets\Commerce\Values\Percent_Value;
 use TEC\Tickets\Commerce\Values\Precision_Value;
 use TEC\Tickets\Commerce\Utils\Currency;
 use Tribe__Tickets__Main as Tickets_Plugin;
@@ -149,11 +150,19 @@ final class Controller extends Controller_Contract {
 				break;
 		}
 
+		$thousands_separator = Currency::get_currency_separator_thousands( $currency_code );
+		$decimal_separator   = Currency::get_currency_separator_decimal( $currency_code );
+
 		Currency_Value::set_defaults(
 			Currency::get_currency_symbol( $currency_code ),
-			Currency::get_currency_separator_thousands( $currency_code ),
-			Currency::get_currency_separator_decimal( $currency_code ),
+			$thousands_separator,
+			$decimal_separator,
 			$currency_symbol_position
+		);
+
+		Percent_Value::set_defaults(
+			$thousands_separator,
+			$decimal_separator
 		);
 
 		Precision_Value::set_default_precision( (int) Currency::get_currency_precision( $currency_code ) );
