@@ -405,9 +405,7 @@ abstract class Abstract_Fees extends Controller_Contract {
 		}
 
 		// Add the fee items to the other cart items.
-		$items = array_merge( $items, $fee_items );
-
-		return $items;
+		return array_merge( $items, $fee_items );
 	}
 
 	/**
