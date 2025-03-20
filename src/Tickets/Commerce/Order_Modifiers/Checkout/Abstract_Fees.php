@@ -147,23 +147,20 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 * Calculates the fees and modifies the total value in the checkout process.
 	 *
 	 * @since 5.18.0
+	 * @since 5.21.0 Removed the $subtotal parameter.
 	 *
-	 * @param array $values   The existing values being passed through the filter.
-	 * @param array $items    The items in the cart.
-	 * @param Value $subtotal The list of subtotals from the items.
+	 * @param array $values The existing values being passed through the filter.
+	 * @param array $items  The items in the cart.
 	 *
-	 * @return array The updated total values, including the fees.
+	 * @return Precision_Value[] The updated total values, including the fees.
 	 */
-	public function calculate_fees( array $values, array $items, Value $subtotal ): array {
+	public function calculate_fees( array $values, array $items ): array {
 		$cache_key = 'calculate_fees_' . md5( wp_json_encode( $items ) );
 		$cache     = tribe_cache();
 
 		if ( ! empty( $cache[ $cache_key ] ) && is_array( $cache[ $cache_key ] ) ) {
 			return $cache[ $cache_key ];
 		}
-
-		// Store the subtotal as a class property for later use, encapsulated as a Value object.
-
 
 		// Fetch the combined fees for the items in the cart.
 		$combined_fees = $this->get_combined_fees_for_items( $items );
@@ -173,10 +170,10 @@ abstract class Abstract_Fees extends Controller_Contract {
 		}
 
 		// Calculate the total fees based on each individual fee.
-		$sum_of_fees = $this->manager->calculate_total_fees( $combined_fees );
+		$fee_values = $this->manager->combine_total_fees( $combined_fees );
 
 		// Add the calculated fees to the total value.
-		$values[] = $sum_of_fees;
+		$values = array_merge( $values, $fee_values );
 
 		$cache[ $cache_key ] = $values;
 
@@ -345,13 +342,13 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 * Adds fees as separate items in the cart.
 	 *
 	 * @since 5.18.0
+	 * @sicne 5.21.0 Removed the $subtotal parameter.
 	 *
-	 * @param array $items    The current items in the cart.
-	 * @param Value $subtotal The calculated subtotal of the cart items.
+	 * @param array $items The current items in the cart.
 	 *
 	 * @return array Updated list of items with fees added.
 	 */
-	public function append_fees_to_cart( array $items, Value $subtotal ) {
+	public function append_fees_to_cart( array $items ) {
 		if ( empty( $items ) ) {
 			return $items;
 		}

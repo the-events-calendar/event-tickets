@@ -35,10 +35,10 @@ class Fees extends Abstract_Fees {
 	public function do_register(): void {
 		// Hook for calculating total values, setting subtotal, and modifying the total value.
 		add_filter(
-			'tec_tickets_commerce_get_cart_additional_values',
+			'tec_tickets_commerce_get_cart_additional_values_total',
 			[ $this, 'calculate_fees' ],
 			10,
-			3
+			2
 		);
 
 		// Hook for displaying fees in the checkout.
@@ -58,9 +58,7 @@ class Fees extends Abstract_Fees {
 		// Append fee data to the cart.
 		add_filter(
 			'tec_tickets_commerce_create_order_from_cart_items',
-			[ $this, 'append_fees_to_cart' ],
-			10,
-			2
+			[ $this, 'append_fees_to_cart' ]
 		);
 	}
 
@@ -73,7 +71,7 @@ class Fees extends Abstract_Fees {
 	 */
 	public function unregister(): void {
 		remove_filter(
-			'tec_tickets_commerce_get_cart_additional_values',
+			'tec_tickets_commerce_get_cart_additional_values_total',
 			[ $this, 'calculate_fees' ]
 		);
 
@@ -90,7 +88,7 @@ class Fees extends Abstract_Fees {
 
 		remove_filter(
 			'tec_tickets_commerce_create_order_from_cart_items',
-			[ $this, 'append_fees_to_cart' ],
+			[ $this, 'append_fees_to_cart' ]
 		);
 	}
 
