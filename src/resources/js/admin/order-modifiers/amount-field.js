@@ -11,6 +11,7 @@
  * @type {string} currencySymbol     The currency symbol
  * @type {string} decimalSeparator   The decimal separator character
  * @type {string} thousandsSeparator The thousands separator character
+ * @type {string} percentMax         The maximum value for a percentage
  * @type {string} placement          Can be "prefix" or "postfix"
  * @type {number} precision          The number of decimal places to display
  */
@@ -19,6 +20,7 @@ window.etOrderModifiersAmountField = window.etOrderModifiersAmountField || {
 	currencySymbol: '$',
 	decimalSeparator: '.',
 	thousandsSeparator: ',',
+	percentMax: 999999999,
 	placement: 'prefix',
 	precision: 2,
 };
@@ -90,7 +92,11 @@ window.etOrderModifiersAmountField = window.etOrderModifiersAmountField || {
 		const $input = $( selectors.amount );
 		const asFloat = parseFloat( mask.unmaskedValue );
 
-		if ( ! isNaN( asFloat ) && asFloat > 0 ) {
+		// Set up the conditions to check if the value is valid.
+		const isFloatValid = ! isNaN( asFloat ) && asFloat > 0;
+		const isPercentValid = 'percent' === getType() && asFloat <= parseFloat( i18n.percentMax );
+
+		if ( isFloatValid && isPercentValid ) {
 			$input.removeClass( validation.selectors.error.className() );
 			$input.val( asFloat );
 			return;

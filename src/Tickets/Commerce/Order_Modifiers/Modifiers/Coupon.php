@@ -12,8 +12,10 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Modifiers;
 
+use InvalidArgumentException;
 use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Coupon_Table;
+use TEC\Tickets\Commerce\Values\Float_Value;
 use Tribe__Tickets__Admin__Views;
 
 /**
@@ -211,5 +213,42 @@ class Coupon extends Modifier_Abstract {
 				'meta_value' => $limit,
 			]
 		);
+	}
+
+	/**
+	 * Maps and sanitizes raw form data into model-ready data.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param array $raw_data The raw form data, typically from $_POST.
+	 *
+	 * @return array The sanitized and mapped data for database insertion or updating.
+	 * @throws InvalidArgumentException If the percentage is greater than 100.
+	 */
+	public function map_form_data_to_model( array $raw_data ): array {
+		// If the subtype is a percentage, validate the amount is <= 100.
+		if ( 'percent' === $raw_data['order_modifier_sub_type'] ) {
+			$this->validate_percentage( (float) $raw_data['order_modifier_amount'] );
+		}
+
+		return parent::map_form_data_to_model( $raw_data );
+	}
+
+	/**
+	 * Validates that the percentage is less than or equal to 100.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param float $value The percentage value to validate.
+	 *
+	 * @return void
+	 * @throws InvalidArgumentException If the percentage is greater than 100.
+	 */
+	protected function validate_percentage( float $value ) {
+		if ( Float_Value::from_number( $value )->get() > 100 ) {
+			throw new InvalidArgumentException(
+				esc_html__( 'Percentage must be less than or equal to 100.', 'event-tickets' )
+			);
+		}
 	}
 }

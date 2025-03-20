@@ -173,10 +173,15 @@ class Modifier_Admin_Handler extends Controller_Contract {
 				'etOrderModifiersAmountField',
 				function () {
 					$code = Currency::get_currency_code();
+					$percent_max = 'coupon' === $this->get_modifier_type_from_request()
+						? 100
+						: 999999999;
+
 					return [
 						'currencySymbol'     => Currency::get_currency_symbol( $code ),
 						'decimalSeparator'   => Currency::get_currency_separator_decimal( $code ),
 						'thousandsSeparator' => Currency::get_currency_separator_thousands( $code ),
+						'percentMax'         => $percent_max,
 						'placement'          => Currency::get_currency_symbol_position( $code ),
 						'precision'          => Currency::get_currency_precision( $code ),
 					];
