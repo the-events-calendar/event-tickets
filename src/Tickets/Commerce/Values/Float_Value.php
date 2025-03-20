@@ -33,6 +33,17 @@ class Float_Value extends Base_Value {
 	}
 
 	/**
+	 * Invert the sign of the value.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @return Float_Value
+	 */
+	public function invert_sign(): Float_Value {
+		return new static( -1 * $this->value );
+	}
+
+	/**
 	 * Create a new instance from a numeric value.
 	 *
 	 * @param float|int|string $value The value to store. Can be a float, int, or numeric string.
