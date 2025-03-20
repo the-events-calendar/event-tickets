@@ -29,7 +29,12 @@ class Currency_Value_Test extends WPTestCase {
 		$this->assertEquals( '1.000,00¢', $currency_value->get() );
 		$this->assertEquals( '1.000,00¢', (string) $currency_value );
 
-		Currency_Value::set_defaults();
+		Currency_Value::set_defaults(
+			'$',
+			',',
+			'.',
+			'before'
+		);
 
 		$currency_value = Currency_Value::create( new Precision_Value( 100 ) );
 		$this->assertEquals( '$100.00', $currency_value->get() );

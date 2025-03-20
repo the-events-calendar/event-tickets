@@ -16,6 +16,8 @@ namespace TEC\Tickets\Commerce\Values;
  */
 class Currency_Value extends Base_Value {
 
+	use Digit_Separators;
+
 	/**
 	 * The currency symbol.
 	 *
@@ -31,20 +33,6 @@ class Currency_Value extends Base_Value {
 	protected $currency_symbol_position;
 
 	/**
-	 * The decimal separator.
-	 *
-	 * @var string
-	 */
-	protected $decimal_separator;
-
-	/**
-	 * The thousands separator.
-	 *
-	 * @var string
-	 */
-	protected $thousands_separator;
-
-	/**
 	 * The value.
 	 *
 	 * @var Precision_Value
@@ -58,8 +46,6 @@ class Currency_Value extends Base_Value {
 	 */
 	protected static array $defaults = [
 		'currency_symbol'          => '$',
-		'thousands_separator'      => ',',
-		'decimal_separator'        => '.',
 		'currency_symbol_position' => 'before',
 	];
 
@@ -105,12 +91,7 @@ class Currency_Value extends Base_Value {
 			$prefix = '';
 		}
 
-		$formatted = number_format(
-			$value->get(),
-			$value->get_precision(),
-			$this->decimal_separator,
-			$this->thousands_separator
-		);
+		$formatted = $this->get_formatted_number( $value->get(), $value->get_precision() );
 
 		switch ( $this->currency_symbol_position ) {
 			case 'after':
@@ -160,8 +141,8 @@ class Currency_Value extends Base_Value {
 		return new self(
 			$value,
 			$currency_symbol ?? self::$defaults['currency_symbol'],
-			$thousands_separator ?? self::$defaults['thousands_separator'],
-			$decimal_separator ?? self::$defaults['decimal_separator'],
+			$thousands_separator ?? self::$separator_defaults['thousands_separator'],
+			$decimal_separator ?? self::$separator_defaults['decimal_separator'],
 			$currency_symbol_position ?? self::$defaults['currency_symbol_position']
 		);
 	}
@@ -201,11 +182,11 @@ class Currency_Value extends Base_Value {
 		?string $currency_symbol_position = null
 	) {
 		self::$defaults = [
-			'currency_symbol'          => $currency_symbol ?? '$',
-			'thousands_separator'      => $thousands_separator ?? ',',
-			'decimal_separator'        => $decimal_separator ?? '.',
-			'currency_symbol_position' => $currency_symbol_position ?? 'before',
+			'currency_symbol'          => $currency_symbol ?? self::$defaults['currency_symbol'],
+			'currency_symbol_position' => $currency_symbol_position ?? self::$defaults['currency_symbol_position'],
 		];
+
+		self::set_separator_defaults( $decimal_separator, $thousands_separator );
 	}
 
 	/**

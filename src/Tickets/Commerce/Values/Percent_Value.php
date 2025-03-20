@@ -18,6 +18,8 @@ use InvalidArgumentException;
  */
 class Percent_Value extends Precision_Value {
 
+	use Digit_Separators;
+
 	/**
 	 * Minimum number a percentage can be.
 	 *
@@ -33,15 +35,24 @@ class Percent_Value extends Precision_Value {
 	 *
 	 * @since 5.18.0
 	 *
-	 * @param float|int|string $value The value to store. Can be a float, int, or numeric string. The
-	 *                                value will be divided by 100 to convert it to a percentage.
+	 * @param float|int|string $value               The value to store. Can be a float, int, or numeric string. The
+	 *                                              value will be divided by 100 to convert it to a percentage.
+	 * @param ?string          $thousands_separator The thousands separator.
+	 * @param ?string          $decimal_separator   The decimal separator.
 	 *
 	 * @throws InvalidArgumentException When the value is not numeric, or it is too small.
 	 */
-	public function __construct( $value ) {
+	public function __construct(
+		$value,
+		?string $thousands_separator = null,
+		?string $decimal_separator = null
+	) {
 		$value = Float_Value::from_number( $value )->get() / 100;
 		parent::__construct( $value, 4 );
 		$this->validate_minimum_value();
+
+		$this->thousands_separator = $thousands_separator ?? self::$separator_defaults['thousands_separator'];
+		$this->decimal_separator   = $decimal_separator ?? self::$separator_defaults['decimal_separator'];
 	}
 
 	/**
@@ -78,13 +89,11 @@ class Percent_Value extends Precision_Value {
 	 * @return string
 	 */
 	public function get_as_string(): string {
-		return sprintf( '%02.2F%%', $this->get_as_percent() );
+		return "{$this->get_formatted_number( $this->get_as_percent(), 2 )}%";
 	}
 
 	/**
 	 * The __toString method allows a class to decide how it will react when it is converted to a string.
-	 *
-	 * @todo: Allow for locale-specific formatting.
 	 *
 	 * @since 5.18.0
 	 *
@@ -107,5 +116,22 @@ class Percent_Value extends Precision_Value {
 				sprintf( 'Percent value cannot be smaller than %.4f (%.2f%%).', $this->min_threshold, $this->min_threshold * 100 )
 			);
 		}
+	}
+
+	/**
+	 * Set the default decimal and thousands separators.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param ?string $thousands_separator The thousands separator.
+	 * @param ?string $decimal_separator   The decimal separator.
+	 *
+	 * @return void
+	 */
+	public static function set_defaults(
+		?string $thousands_separator = null,
+		?string $decimal_separator = null
+	) {
+		self::set_separator_defaults( $decimal_separator, $thousands_separator );
 	}
 }
