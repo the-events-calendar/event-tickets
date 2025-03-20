@@ -5,6 +5,7 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Tests\Unit\Order_Modifiers\Values;
 
 use Codeception\TestCase\WPTestCase;
+use Generator;
 use InvalidArgumentException;
 use TEC\Tickets\Commerce\Values\Percent_Value as Percent;
 use TEC\Tickets\Commerce\Values\Precision_Value as PV;
@@ -45,25 +46,34 @@ class Percent_Value_Test extends WPTestCase {
 	 * @dataProvider multiplication_data_provider
 	 */
 	public function it_should_multiply_objects_correctly( $raw_value, PV $multiplier, $expected ) {
-		$value = new Percent( $raw_value );
+		$value  = new Percent( $raw_value );
 		$result = $multiplier->multiply( $value );
 
 		$this->assertSame( $expected, (string) $result );
 	}
 
+	/**
+	 * @test
+	 * @dataProvider format_data_provider
+	 */
+	public function it_should_format_values_correctly( $raw_value, $output ) {
+		$value = new Percent( $raw_value );
+		$this->assertSame( $output, (string) $value );
+	}
+
 	// Data Providers
 
-	public function invalid_data_provider() {
+	public function invalid_data_provider(): Generator {
 		yield 'Non-numeric value' => [ 'foo', 'Value must be a number.' ];
 		yield 'NAN value' => [ NAN, 'NAN is by definition not a number.' ];
 		yield 'Infinity value' => [ INF, 'Infinity is too big for us to work with.' ];
 		yield 'Too small percent' => [ 0.001, 'Percent value cannot be smaller than 0.0001 (0.01%).' ];
 	}
 
-	public function percent_data_provider() {
+	public function percent_data_provider(): Generator {
 		// Normal cases
-		yield '10 percent' => [ 10, (float) 10 ];
-		yield '5 percent' => [ 5, (float) 5 ];
+		yield '10 percent' => [ 10, 10.0 ];
+		yield '5 percent' => [ 5, 5.0 ];
 		yield 'Half percent' => [ 0.5, 0.5 ];
 		yield 'Tiny percent' => [ 0.05, 0.05 ];
 
@@ -104,5 +114,29 @@ class Percent_Value_Test extends WPTestCase {
 		yield '25 percent of 50' => [ 25, new PV( 50 ), '12.50' ];
 		yield '17 percent of 1000' => [ 17, new PV( 1000 ), '170.00' ];
 		yield '1.5 percent of 10' => [ 1.5, new PV( 10 ), '0.15' ];
+	}
+
+	public function format_data_provider(): Generator {
+		// First, we expect the normal behavior with defaults.
+		yield '10 percent' => [ 10, '10.00%' ];
+		yield '5 percent' => [ 5, '5.00%' ];
+		yield 'Half percent' => [ 0.5, '0.50%' ];
+		yield 'Tiny percent' => [ 0.05, '0.05%' ];
+		yield 'One thousand percent' => [ 1000, '1,000.00%' ];
+
+		Percent::set_defaults( '.', ',' );
+
+		yield '10 percent' => [ 10, '10,00%' ];
+		yield '5 percent' => [ 5, '5,00%' ];
+		yield 'Half percent' => [ 0.5, '0,50%' ];
+		yield 'Tiny percent' => [ 0.05, '0,05%' ];
+		yield 'One thousand percent' => [ 1000, '1.000,00%' ];
+	}
+
+	/**
+	 * @afterClass
+	 */
+	public static function restore_value_defaults() {
+		Percent::set_defaults( ',', '.' );
 	}
 }
