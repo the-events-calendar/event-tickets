@@ -63,7 +63,7 @@ trait Digit_Separators {
 	 *
 	 * @return void
 	 */
-	static function set_separator_defaults(
+	protected static function set_separator_defaults(
 		?string $decimal_separator = null,
 		?string $thousands_separator = null
 	) {
