@@ -8,14 +8,13 @@ use PHPUnit\Framework\Assert;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Cart as Commerce_Cart;
 use TEC\Tickets\Commerce\Gateways\Manager;
-use TEC\Tickets\Commerce\Gateways\PayPal\Client;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway as PayPalGateway;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal\Coupons;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\OrderModifiers\Coupon_Creator;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
-use WP_REST_Request as Request;
+use Tribe\Tickets\Test\Traits\PayPal_REST_Override;
 
 /**
  * Class Coupons_Test
@@ -27,6 +26,7 @@ class Coupons_Test extends Controller_Test_Case {
 	use Coupon_Creator;
 	use Ticket_Maker;
 	use With_Uopz;
+	use PayPal_REST_Override;
 
 	protected string $controller_class = Coupons::class;
 
@@ -128,42 +128,5 @@ class Coupons_Test extends Controller_Test_Case {
 		);
 
 		return [ $ticket_id, $coupon ];
-	}
-
-	protected function create_order_via_rest(): array {
-		$request = new Request( 'POST', '/tribe/tickets/v1/commerce/paypal/order' );
-		$request->set_header( 'Content-Type', 'application/json' );
-		$request->set_body(
-			json_encode(
-				[
-					'purchaser' => [
-						'name'  => 'John Doe',
-						'email' => 'johndoe@example.com',
-					],
-				]
-			)
-		);
-
-		// Set up a function to replace Client::post(), and to return the data passed to it.
-		$fake_id = 'PAY-1234567890';
-		$this->set_class_fn_return(
-			Client::class,
-			'post',
-			static function () use ( &$spy_data, $fake_id ) {
-				$spy_data = func_get_args();
-
-				return [
-					'id'          => $fake_id,
-					'create_time' => '2200-01-01T00:00:00Z',
-				];
-			},
-			true
-		);
-
-		$response = rest_do_request( $request );
-		Assert::assertEquals( 200, $response->get_status() );
-		Assert::assertEquals( $fake_id, $response->get_data()['id'] );
-
-		return $spy_data;
 	}
 }
