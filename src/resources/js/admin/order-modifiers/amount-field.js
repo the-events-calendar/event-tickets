@@ -87,6 +87,14 @@ window.etOrderModifiersAmountField = window.etOrderModifiersAmountField || {
 		mask.unmaskedValue = value;
 	};
 
+	const isPercentValid = () => {
+		if ( 'percent' !== getType() ) {
+			return true;
+		}
+
+		return parseFloat( mask.unmaskedValue ) <= parseFloat( i18n.percentMax );
+	};
+
 	const validateAmount = () => {
 		const $form = $( selectors.form );
 		const $input = $( selectors.amount );
@@ -94,9 +102,8 @@ window.etOrderModifiersAmountField = window.etOrderModifiersAmountField || {
 
 		// Set up the conditions to check if the value is valid.
 		const isFloatValid = ! isNaN( asFloat ) && asFloat > 0;
-		const isPercentValid = 'percent' === getType() && asFloat <= parseFloat( i18n.percentMax );
 
-		if ( isFloatValid && isPercentValid ) {
+		if ( isFloatValid && isPercentValid() ) {
 			$input.removeClass( validation.selectors.error.className() );
 			$input.val( asFloat );
 			return;
