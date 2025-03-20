@@ -109,7 +109,7 @@ class Coupons extends Controller_Contract {
 		// Include fees in the item total if present.
 		if ( ! empty( $order->fees ) ) {
 			$fee_values = array_map(
-				static fn( $fee ) => new Precision_Value( $fee['price'] ),
+				static fn( $fee ) => new Precision_Value( $fee['sub_total'] ),
 				$order->fees
 			);
 
