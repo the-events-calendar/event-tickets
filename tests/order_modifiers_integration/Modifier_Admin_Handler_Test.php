@@ -38,6 +38,7 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 	public function asset_data_provider() {
 		$assets = [
 			'tec-tickets-order-modifiers-table' => 'src/resources/js/admin/order-modifiers/table.js',
+			'tec-tickets-order-modifiers-amount-field-edit-js' => 'src/resources/js/admin/order-modifiers/amount-field.js',
 		];
 
 		foreach ( $assets as $slug => $path ) {
@@ -242,8 +243,8 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 				return [
 					'modifier_id'        => 99999,
 					'modifier_type'      => 'fee',
-					'expected_result'    => null, // No result expected.
-					'expected_exception' => Not_Found_Exception::class, // Exception expected.
+					'expected_result'    => null,
+					'expected_exception' => Not_Found_Exception::class,
 				];
 			},
 		];
@@ -262,8 +263,8 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 				return [
 					'modifier_id'        => $modifier->id,
 					'modifier_type'      => 'invalid-modifier',
-					'expected_result'    => null, // No result expected.
-					'expected_exception' => InvalidArgumentException::class, // Exception expected.
+					'expected_result'    => null,
+					'expected_exception' => InvalidArgumentException::class,
 				];
 			},
 		];
@@ -577,6 +578,7 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 				];
 			},
 		];
+
 		yield 'Missing display name' => [
 			function () {
 				return [
@@ -609,6 +611,25 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 					'nonce'          => 'valid_nonce',
 					'valid_nonce'    => true,
 					'expected_error' => 'The field "status" is required and cannot be empty.',
+				];
+			},
+		];
+
+		yield 'Invalid coupon percentage > 100' => [
+			function () {
+				return [
+					'post_data'      => [
+						'order_modifier_sub_type'     => 'percent',
+						'order_modifier_amount'       => '101',
+						'order_modifier_slug'         => 'test_slug_5',
+						'order_modifier_display_name' => 'Test 5 Coupon',
+						'order_modifier_status'       => 'active',
+						'order_modifier_form_save'    => true,
+						'modifier'                    => 'coupon',
+					],
+					'nonce'          => 'valid_nonce',
+					'valid_nonce'    => true,
+					'expected_error' => 'Percentage must be less than or equal to 100.',
 				];
 			},
 		];
