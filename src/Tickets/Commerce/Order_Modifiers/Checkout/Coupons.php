@@ -14,6 +14,7 @@ use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon as Coupon_Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon;
+use TEC\Tickets\Commerce\Values\Precision_Value;
 use TEC\Tickets\Commerce\Values\Value_Interface;
 use TEC\Tickets\Commerce\Traits\Type;
 use TEC\Tickets\Commerce\Utils\Value;
@@ -78,9 +79,7 @@ class Coupons extends Controller_Contract {
 
 		add_filter(
 			'tec_tickets_commerce_create_order_from_cart_items',
-			[ $this, 'create_order_from_cart_items' ],
-			10,
-			2
+			[ $this, 'create_order_from_cart_items' ]
 		);
 
 		// Add asset localization to ensure the script has the necessary data.
@@ -226,9 +225,7 @@ class Coupons extends Controller_Contract {
 				'type'         => 'coupon',
 				'coupon_id'    => $coupon->id,
 				'price'        => $coupon->raw_amount,
-				'sub_total'    => static function ( float $sub_total ) use ( $coupon ): float {
-					return $coupon->get_discount_amount( $sub_total );
-				},
+				'sub_total'    => static fn( float $sub_total ) => $coupon->get_discount_amount( $sub_total ),
 				'display_name' => $coupon->display_name,
 				'slug'         => $coupon->slug,
 				'quantity'     => 1,
@@ -247,22 +244,31 @@ class Coupons extends Controller_Contract {
 	 *
 	 * @since 5.21.0
 	 *
-	 * @param array $items    The items in the cart.
-	 * @param Value $subtotal The calculated subtotal of the cart items.
+	 * @param array $items The items in the cart.
 	 *
 	 * @return array Updated items.
 	 */
-	public function create_order_from_cart_items( array $items, Value $subtotal ): array {
+	public function create_order_from_cart_items( array $items ): array {
 		$cart_page = tribe( Cart::class );
 		$cart      = $cart_page->get_repository();
-		$coupons   = $cart->update_items_with_subtotal(
-			$cart->get_items_in_cart( true, 'coupon' ),
-			$subtotal->get_float()
-		);
 
+		// If we don't have any coupons, we have nothing to do.
+		$coupons = $cart->get_items_in_cart( true, 'coupon' );
 		if ( empty( $coupons ) ) {
 			return $items;
 		}
+
+		// Get the subtotals of the cart items as Precision_Value objects.
+		$subtotals = array_map(
+			static fn( $item ) => new Precision_Value( $item['sub_total'] ),
+			$items
+		);
+
+		// Update the coupon values with the correct subtotals.
+		$coupons = $cart->update_items_with_subtotal(
+			$cart->get_items_in_cart( true, 'coupon' ),
+			Precision_Value::sum( ...$subtotals )->get(),
+		);
 
 		// Ensure the coupons have floats instead of Value objects for the sub_total.
 		$coupons = array_map(
