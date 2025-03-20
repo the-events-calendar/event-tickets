@@ -95,7 +95,7 @@ $limit_error_text = __( 'Coupon Limit must be a positive number. Use 0 or leave 
 						name="order_modifier_amount"
 						id="order_modifier_amount"
 						class="tribe-field tec_order_modifier_amount_field"
-						data-validation-error="<?php esc_attr_e( 'Amount is required', 'event-tickets' ); ?>"
+						data-validation-error="<?php esc_attr_e( 'Amount is required. A Percentage amount cannot be more than 100%.', 'event-tickets' ); ?>"
 						value="<?php echo esc_attr( (string) $order_modifier_amount ); ?>" />
 				</div>
 
