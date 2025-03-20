@@ -15,9 +15,7 @@
 
 declare( strict_types=1 );
 
-use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Commerce\Values\Currency_Value;
-use TEC\Tickets\Commerce\Values\Legacy_Value_Factory;
 
 // If there are no fees, we don't need to display anything.
 if ( empty( $order->fees ) ) {
@@ -25,7 +23,7 @@ if ( empty( $order->fees ) ) {
 }
 
 $fees = array_map(
-	fn( Value $value ) => Legacy_Value_Factory::to_currency_value( $value ),
+	fn( float $value ) => Currency_Value::create_from_float( $value ),
 	wp_list_pluck( $order->fees, 'sub_total' )
 );
 

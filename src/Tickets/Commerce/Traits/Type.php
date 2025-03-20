@@ -30,12 +30,36 @@ trait Type {
 	 * @return bool Whether the thing is a coupon.
 	 */
 	protected function is_coupon( array $thing ): bool {
-		// Something without a type is not a coupon.
+		return $this->is_type( $thing, 'coupon' );
+	}
+
+	/**
+	 * Determine if a thing is a fee.
+	 *
+	 * @param array $thing The thing to check.
+	 *
+	 * @return bool Whether the thing is a fee.
+	 */
+	protected function is_fee( array $thing ): bool {
+		return $this->is_type( $thing, 'fee' );
+	}
+
+	/**
+	 * Determine if a thing is the given type.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param array  $thing The thing to check.
+	 * @param string $type The type to check for.
+	 *
+	 * @return bool
+	 */
+	protected function is_type( array $thing, string $type ): bool {
 		if ( ! array_key_exists( 'type', $thing ) ) {
 			return false;
 		}
 
-		return 'coupon' === $thing['type'];
+		return $type === $thing['type'];
 	}
 
 	/**

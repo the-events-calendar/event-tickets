@@ -2,33 +2,37 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal;
 
+use PHPUnit\Framework\Assert;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
+use TEC\Tickets\Commerce\Cart as Commerce_Cart;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway as PayPalGateway;
+use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Fees as BaseFees;
 use TEC\Tickets\Commerce\Values\Float_Value;
+use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\OrderModifiers\Fee_Creator;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe\Tickets\Test\Traits\PayPal_REST_Override;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
+use Tribe\Tickets\Test\Traits\With_No_Object_Storage;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use WP_Post;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
-use TEC\Tickets\Commerce\Cart as Commerce_Cart;
-use Tribe\Tickets\Test\Traits\With_No_Object_Storage;
-use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Fees as BaseFees;
-use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
-use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 
 class PayPal_Fees_Test extends Controller_Test_Case {
-	use Ticket_Maker;
+
 	use Attendee_Maker;
-	use With_Tickets_Commerce;
-	use Reservations_Maker;
-	use SnapshotAssertions;
-	use Order_Maker;
 	use Fee_Creator;
-	use With_No_Object_Storage;
+	use Order_Maker;
+	use PayPal_REST_Override;
+	use Reservations_Maker;
 	use Series_Pass_Factory;
+	use SnapshotAssertions;
+	use Ticket_Maker;
+	use With_No_Object_Storage;
+	use With_Tickets_Commerce;
 
 	protected string $controller_class = Fees::class;
 
@@ -69,70 +73,6 @@ class PayPal_Fees_Test extends Controller_Test_Case {
 		], $overrides );
 
 		$this->assert_no_object_stored( get_post_meta( $order->ID ) );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_not_include_fees_in_emails() {
-		$post = static::factory()->post->create();
-		$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
-		$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
-		$ticket_id_3 = $this->create_tc_ticket( $post, 30 );
-
-		$fee_for_all_1 = $this->create_fee_for_all( [ 'raw_amount' => 10, 'sub_type' => 'percent' ] );
-
-		$fee_per_ticket_1 = $this->create_fee_for_ticket( $ticket_id_1, [ 'raw_amount' => 2, 'sub_type' => 'percent' ] );
-		$this->add_fee_to_ticket( $fee_per_ticket_1, $ticket_id_3 );
-
-		$fee_per_ticket_2 = $this->create_fee_for_ticket( $ticket_id_2, [ 'raw_amount' => 2.5, 'sub_type' => 'flat' ] );
-		$this->add_fee_to_ticket( $fee_per_ticket_2, $ticket_id_3 );
-
-		$email_completed_listener_before = null;
-		$email_completed_listener_after  = null;
-		add_filter( 'tec_tickets_commerce_prepare_order_for_email_send_email_completed_order', function ( $order ) use ( &$email_completed_listener_before ) {
-			$email_completed_listener_before = $order->items;
-			return $order;
-		}, 5 );
-		add_filter( 'tec_tickets_commerce_prepare_order_for_email_send_email_completed_order', function ( $order ) use ( &$email_completed_listener_after ) {
-			$email_completed_listener_after = $order->items;
-			return $order;
-		}, 15 );
-
-		$email_purchase_listener_before = null;
-		$email_purchase_listener_after  = null;
-		add_filter( 'tec_tickets_commerce_prepare_order_for_email_send_email_purchase_receipt', function ( $order ) use ( &$email_purchase_listener_before ) {
-			$email_purchase_listener_before = $order->items;
-			return $order;
-		}, 5 );
-		add_filter( 'tec_tickets_commerce_prepare_order_for_email_send_email_purchase_receipt', function ( $order ) use ( &$email_purchase_listener_after ) {
-			$email_purchase_listener_after = $order->items;
-			return $order;
-		}, 15 );
-
-		$this->make_controller()->register();
-
-		$overrides['gateway'] = tribe( $this->gateway_class );
-
-		$order = $this->create_order( [
-			$ticket_id_1 => 2,
-			$ticket_id_2 => 3,
-			$ticket_id_3 => 4,
-		], $overrides );
-
-		$refreshed_order = tec_tc_get_order( $order->ID );
-
-		$this->assertTrue( tec_tickets_emails_is_enabled() );
-
-		$this->assertEquals( 1, did_filter( 'tec_tickets_commerce_prepare_order_for_email_send_email_completed_order' ) );
-		$this->assertEquals( 1, did_filter( 'tec_tickets_commerce_prepare_order_for_email_send_email_purchase_receipt' ) );
-		$this->assertNotNull( $email_purchase_listener_before );
-		$this->assertNotNull( $email_completed_listener_before );
-		$this->assertCount( 6, $refreshed_order->items );
-		$this->assertCount( 6, $email_completed_listener_before);
-		$this->assertCount( 3, $email_completed_listener_after);
-		$this->assertCount( 6, $email_purchase_listener_before);
-		$this->assertCount( 3, $email_purchase_listener_after);
 	}
 
 	/**
@@ -498,5 +438,47 @@ class PayPal_Fees_Test extends Controller_Test_Case {
 			'expected_total'    => Float_Value::from_number( 60 ),
 			'expected_subtotal' => Float_Value::from_number( 50 ),
 		];
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_include_fees_with_paypal_order_items() {
+		$this->make_controller()->register();
+		$post = static::factory()->post->create();
+
+		// Create a ticket and some fees.
+		$ticket_id      = $this->create_tc_ticket( $post, 10 );
+		$fee_for_all    = $this->create_fee_for_all( [ 'raw_amount' => 10, 'sub_type' => 'percent' ] );
+		$fee_per_ticket = $this->create_fee_for_ticket( $ticket_id, [ 'raw_amount' => 2, 'sub_type' => 'percent' ] );
+		$this->add_fee_to_ticket( $fee_per_ticket, $ticket_id );
+
+		// Set up the cart and add the ticket to it.
+		$cart = tribe( Commerce_Cart::class );
+		$cart->add_ticket( $ticket_id, 2 );
+
+		// Create the order using the REST API, because that's how it will work on a live site.
+		[ $path, $query_args, $args ] = $this->create_order_via_rest();
+
+		// Verify the data from the request.
+		Assert::assertEquals( '/v2/checkout/orders', $path );
+		Assert::assertEmpty( $query_args );
+		Assert::assertTrue( isset( $args['body']['purchase_units'][0] ) );
+
+		$purchase_unit = $args['body']['purchase_units'][0];
+		Assert::assertCount( 3, $purchase_unit['items'], 'There should be a ticket and 2 fees in the unit data' );
+
+		// Each item should have the same quantity.
+		foreach ( $purchase_unit['items'] as $item ) {
+			Assert::assertEquals( 2, $item['quantity'], 'The quantity should be 2' );
+		}
+
+		// Make sure we have the item breakdown.
+		Assert::assertArrayHasKey( 'breakdown', $purchase_unit['amount'], 'The amount should have a breakdown of items.' );
+		Assert::assertCount( 1, $purchase_unit['amount']['breakdown'], 'The amount should have a breakdown of items only.' );
+		Assert::assertArrayHasKey( 'item_total', $purchase_unit['amount']['breakdown'], 'The breakdown should have an item total' );
+
+		// The item total should be 10*2 + 10*2*.1 + 10*2*.02 = 20 + 2 + 0.4 = 22.40 (as a string).
+		Assert::assertSame( '22.40', $purchase_unit['amount']['breakdown']['item_total']['value'] );
 	}
 }

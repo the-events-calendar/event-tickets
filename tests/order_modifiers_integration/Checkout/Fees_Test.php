@@ -126,10 +126,35 @@ class Fees_Test extends Controller_Test_Case {
 		$this->assertEquals( 1, did_filter( 'tec_tickets_commerce_prepare_order_for_email_send_email_purchase_receipt' ) );
 		$this->assertNotNull( $email_purchase_listener_before );
 		$this->assertNotNull( $email_completed_listener_before );
-		$this->assertCount( 6, $refreshed_order->items );
-		$this->assertCount( 6, $email_completed_listener_before);
+		$this->assertCount( 3, $refreshed_order->items );
+		$this->assertCount( 3, $refreshed_order->fees );
+
+		// The items in the listeners shouldn't be fees.
+		$filter = fn( $item ) => 'fee' === $item['type'];
+		$this->assertCount(
+			0,
+			array_filter( $email_completed_listener_before, $filter ),
+			'Fees should not be included in the email items.'
+		);
+		$this->assertCount(
+			0,
+			array_filter( $email_completed_listener_after, $filter ),
+			'Fees should not be included in the email items.'
+		);
+		$this->assertCount(
+			0,
+			array_filter( $email_purchase_listener_before, $filter ),
+			'Fees should not be included in the email items.'
+		);
+		$this->assertCount(
+			0,
+			array_filter( $email_purchase_listener_after, $filter ),
+			'Fees should not be included in the email items.'
+		);
+
+		$this->assertCount( 3, $email_completed_listener_before);
 		$this->assertCount( 3, $email_completed_listener_after);
-		$this->assertCount( 6, $email_purchase_listener_before);
+		$this->assertCount( 3, $email_purchase_listener_before);
 		$this->assertCount( 3, $email_purchase_listener_after);
 	}
 
@@ -987,12 +1012,6 @@ class Fees_Test extends Controller_Test_Case {
 	 * @test
 	 */
 	public function it_should_render_fees() {
-		// Reset the fees and subtotal.
-		$this->make_controller()->register();
-
-		// First, we should ensure that orders with no fees have no mention of fees.
-		$this->prepare_test_data();
-
 		/** @var Singular_Order_Page $singular_page */
 		$singular_page = tribe( Singular_Order_Page::class );
 
@@ -1000,7 +1019,14 @@ class Fees_Test extends Controller_Test_Case {
 		$post      = static::factory()->post->create();
 		$ticket_id = $this->create_tc_ticket( $post, 10 );
 		$fee       = $this->create_fee_for_ticket( $ticket_id );
-		$order     = $this->create_order( [ $ticket_id => 1 ] );
+		$this->add_fee_to_ticket( $fee, $ticket_id );
+
+		$this->make_controller()->register();
+
+		$order = $this->create_order( [ $ticket_id => 1 ] );
+
+		// Refresh the order.
+		$order = tec_tc_get_order( $order->ID );
 
 		// We should have fees attached to the order.
 		Assert::assertNotEmpty( $order->fees );

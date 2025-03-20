@@ -19,6 +19,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Strategy_Interface;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Fees as Fee_Repository;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
+use TEC\Tickets\Commerce\Traits\Type;
 use TEC\Tickets\Commerce\Values\Currency_Value;
 use TEC\Tickets\Commerce\Values\Integer_Value;
 use TEC\Tickets\Commerce\Values\Legacy_Value_Factory;
@@ -37,6 +38,7 @@ use WP_Post;
  */
 abstract class Abstract_Fees extends Controller_Contract {
 
+	use Type;
 	use Valid_Types;
 
 	/**
@@ -380,11 +382,13 @@ abstract class Abstract_Fees extends Controller_Contract {
 	 * @return array Updated list of items with fees added.
 	 */
 	public function append_fees_to_cart( array $items, Value $subtotal ) {
-		if ( self::$fees_appended ) {
+		if ( empty( $items ) ) {
 			return $items;
 		}
 
-		if ( empty( $items ) ) {
+		// See if we already have fees in the cart.
+		$fee_items = array_filter( $items, fn( $item ) => $this->is_fee( $item ) );
+		if ( ! empty( $fee_items ) ) {
 			return $items;
 		}
 
@@ -434,8 +438,6 @@ abstract class Abstract_Fees extends Controller_Contract {
 
 		// Add the fee items to the other cart items.
 		$items = array_merge( $items, $fee_items );
-
-		self::$fees_appended = true;
 
 		return $items;
 	}

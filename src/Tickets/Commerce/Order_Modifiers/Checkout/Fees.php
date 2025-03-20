@@ -12,9 +12,6 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
 
-use TEC\Tickets\Commerce\Values\Legacy_Value_Factory;
-use WP_Post;
-
 /**
  * Class Fees
  *
@@ -55,7 +52,13 @@ class Fees extends Abstract_Fees {
 		// Attach fees to the order object.
 		add_filter(
 			'tribe_post_type_tc_orders_properties',
-			[ $this, 'attach_fees_to_order_object' ],
+			[ $this, 'attach_fees_to_order_object' ]
+		);
+
+		// Append fee data to the cart.
+		add_filter(
+			'tec_tickets_commerce_create_order_from_cart_items',
+			[ $this, 'append_fees_to_cart' ],
 			10,
 			2
 		);
@@ -84,6 +87,11 @@ class Fees extends Abstract_Fees {
 			'tribe_post_type_tc_orders_properties',
 			[ $this, 'attach_fees_to_order_object' ]
 		);
+
+		remove_filter(
+			'tec_tickets_commerce_create_order_from_cart_items',
+			[ $this, 'append_fees_to_cart' ],
+		);
 	}
 
 	/**
@@ -91,27 +99,24 @@ class Fees extends Abstract_Fees {
 	 *
 	 * @since 5.21.0
 	 *
-	 * @param array   $properties The properties of the order object.
-	 * @param WP_Post $order      The order object.
+	 * @param array $properties The properties of the order object.
 	 *
 	 * @return array The updated properties of the order object.
 	 */
-	public function attach_fees_to_order_object( array $properties, WP_Post $order ): array {
+	public function attach_fees_to_order_object( array $properties ): array {
 		// There shouldn't be an order with no items, but let's just be safe.
 		$items = $properties['items'] ?? [];
 		if ( empty( $items ) ) {
 			return $properties;
 		}
 
-		// We need to normalize the fees for the order object.
-		$properties['fees'] = array_map(
-			static function ( $fee ) {
-				$fee['sub_total'] = Legacy_Value_Factory::to_legacy_value( $fee['fee_amount'] );
+		// Separate fees from other items.
+		$fees     = array_filter( $items, fn( $item ) => $this->is_fee( $item ) );
+		$not_fees = array_filter( $items, fn( $item ) => ! $this->is_fee( $item ) );
 
-				return $fee;
-			},
-			$this->get_combined_fees_for_items( $items )
-		);
+		// Update the properties with the items and fees.
+		$properties['items'] = $not_fees;
+		$properties['fees']  = $fees;
 
 		return $properties;
 	}

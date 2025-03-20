@@ -36,7 +36,7 @@ class Coupons extends Controller_Contract {
 		add_filter(
 			'tec_tickets_commerce_paypal_order_unit',
 			[ $this, 'add_coupon_unit_data_to_paypal' ],
-			10,
+			20,
 			2
 		);
 	}
@@ -54,6 +54,7 @@ class Coupons extends Controller_Contract {
 		remove_filter(
 			'tec_tickets_commerce_paypal_order_unit',
 			[ $this, 'add_coupon_unit_data_to_paypal' ],
+			20
 		);
 	}
 
@@ -104,6 +105,16 @@ class Coupons extends Controller_Contract {
 			static fn( $item ) => new Precision_Value( $item['sub_total'] ),
 			$order->items
 		);
+
+		// Include fees in the item total if present.
+		if ( ! empty( $order->fees ) ) {
+			$fee_values = array_map(
+				static fn( $fee ) => new Precision_Value( $fee['sub_total'] ),
+				$order->fees
+			);
+
+			$item_values = array_merge( $item_values, $fee_values );
+		}
 
 		$unit['item_value'] = (string) Precision_Value::sum( ...$item_values );
 
