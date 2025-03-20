@@ -95,8 +95,6 @@ class Percent_Value extends Precision_Value {
 	/**
 	 * The __toString method allows a class to decide how it will react when it is converted to a string.
 	 *
-	 * @todo: Allow for locale-specific formatting.
-	 *
 	 * @since 5.18.0
 	 *
 	 * @return string The value as a string.
