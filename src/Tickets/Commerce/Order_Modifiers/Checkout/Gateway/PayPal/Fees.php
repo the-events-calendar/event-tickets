@@ -84,7 +84,7 @@ class Fees extends Abstract_Fees {
 	 *
 	 * @return array
 	 */
-	public function inclue_fees_with_items( array $unit, WP_Post $order, Order_Endpoint $endpoint) {
+	public function inclue_fees_with_items( array $unit, WP_Post $order, Order_Endpoint $endpoint ) {
 		if ( empty( $order->fees ) ) {
 			return $unit;
 		}
