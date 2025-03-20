@@ -59,7 +59,7 @@ class Coupons extends Controller_Contract {
 		add_action(
 			'tec_tickets_commerce_checkout_cart_before_footer_quantity',
 			[ $this, 'display_coupon_section' ],
-			20,
+			40,
 			3
 		);
 
