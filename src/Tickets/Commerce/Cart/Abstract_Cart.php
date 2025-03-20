@@ -153,19 +153,47 @@ abstract class Abstract_Cart implements Cart_Interface {
 			return $this->cart_total->get();
 		}
 
-		$subtotal = $this->get_cart_subtotal();
+		$subtotal = new Precision_Value( $this->get_cart_subtotal() );
+
+		/**
+		 * Filters the additional values in the cart in order to add additional fees or discounts.
+		 *
+		 * Additional values must be instances of the `Precision_Value` class to ensure consistent behavior.
+		 *
+		 * @since 5.21.0
+		 *
+		 * @param Precision_Value[] $values   An array of `Precision_Value` instances representing additional fees or discounts.
+		 * @param array             $items    The items currently in the cart.
+		 * @param Precision_Value   $subtotal The total of the subtotals from the items.
+		 *
+		 * @var Precision_Value[] $additional_values
+		 */
+		$additional_values = apply_filters(
+			'tec_tickets_commerce_get_cart_additional_values_total',
+			[],
+			$this->get_items_in_cart( true, 'all' ),
+			$subtotal
+		);
+
+		// Set up the new subtotal that includes the additional values.
+		$subtotal = Precision_Value::sum( $subtotal, ...$additional_values );
 
 		// If the subtotal is zero or less, return the subtotal without further calculations.
-		if ( $subtotal <= 0.0 ) {
+		if ( $subtotal->get() <= 0.0 ) {
 			$this->total_calculated = true;
 			return $this->cart_total->get();
 		}
 
 		$callable_subtotals = [];
 
+		// Get the items that have a dynamic subtotal.
+		$callable_items = array_filter(
+			$this->get_items_in_cart( true, 'all' ),
+			static fn( $item ) => is_callable( $item['sub_total'] )
+		);
+
 		// Calculate the items that are dynamic. These items are not included in the subtotal calculation.
-		$callable_items = array_filter( $this->get_items_in_cart( true, 'all' ), static fn( $item ) => is_callable( $item['sub_total'] ) );
-		$callable_items = $this->update_items_with_subtotal( $callable_items, $subtotal );
+		$callable_items = $this->update_items_with_subtotal( $callable_items, $subtotal->get() );
 
 		// Get the subtotals for the callable items as Precision_Value objects.
 		foreach ( $callable_items as $item ) {
@@ -174,7 +202,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 
 		// Calculate the new value from all of the subtotals.
 		$total = Precision_Value::sum(
-			$this->cart_subtotal,
+			$subtotal,
 			...$callable_subtotals
 		);
 
@@ -228,27 +256,21 @@ abstract class Abstract_Cart implements Cart_Interface {
 		/**
 		 * Filters the additional values in the cart in order to add additional fees or discounts.
 		 *
-		 * Additional values must be instances of the `Value` class to ensure consistent behavior.
+		 * Additional values must be instances of the `Precision_Value` class to ensure consistent behavior.
 		 *
-		 * @since 5.18.0
+		 * @since 5.21.0
 		 *
-		 * @param Value[] $values         An array of `Value` instances representing additional fees or discounts.
-		 * @param array   $items          The items currently in the cart.
-		 * @param Value   $subtotal_value The total of the subtotals from the items.
+		 * @param Precision_Value[] $values         An array of `Precision_Value` instances representing additional fees or discounts.
+		 * @param array             $items          The items currently in the cart.
+		 * @param Precision_Value   $subtotal_value The total of the subtotals from the items.
 		 *
-		 * @var Value[] $additional_values
+		 * @var Precision_Value[] $additional_values
 		 */
 		$additional_values = apply_filters(
-			'tec_tickets_commerce_get_cart_additional_values',
+			'tec_tickets_commerce_get_cart_additional_values_subtotal',
 			[],
 			$this->get_items_in_cart( true, 'all' ),
-			Factory::to_legacy_value( $subtotal )
-		);
-
-		// Convert all additional values to precision values.
-		$additional_values = array_map(
-			static fn( $value ) => Factory::to_precision_value( $value ),
-			$additional_values
+			$subtotal
 		);
 
 		$this->cart_subtotal = Precision_Value::sum( $subtotal, ...$additional_values );
