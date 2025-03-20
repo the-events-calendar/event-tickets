@@ -13,6 +13,7 @@
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal;
 
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Abstract_Fees;
+use TEC\Tickets\Commerce\Values\Precision_Value;
 use WP_Post;
 
 /**
@@ -76,13 +77,13 @@ class Fees extends Abstract_Fees {
 		return [
 			'name'        => $item['display_name'],
 			'unit_amount' => [
-				'value'         => (string) $item['price'],
+				'value'         => (string) ( new Precision_Value( $item['price'] ) ),
 				'currency_code' => $order->currency,
 			],
 			// Fees should be added as many times as the items.
 			'quantity'    => $item['quantity'] ?? 1,
 			'item_total'  => [
-				'value'         => (string) $item['sub_total'],
+				'value'         => (string) ( new Precision_Value( $item['sub_total'] ) ),
 				'currency_code' => $order->currency,
 			],
 			'sku'         => "fee-{$item['fee_id']}",
