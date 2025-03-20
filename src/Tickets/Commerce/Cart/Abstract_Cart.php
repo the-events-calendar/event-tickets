@@ -161,7 +161,6 @@ abstract class Abstract_Cart implements Cart_Interface {
 			return $this->cart_total->get();
 		}
 
-		$subtotal_value     = Factory::to_legacy_value( $this->cart_subtotal );
 		$callable_subtotals = [];
 
 		// Calculate the items that are dynamic. These items are not included in the subtotal calculation.
@@ -173,36 +172,9 @@ abstract class Abstract_Cart implements Cart_Interface {
 			$callable_subtotals[] = Factory::to_precision_value( $item['sub_total'] );
 		}
 
-		/**
-		 * Filters the additional values in the cart in order to add additional fees or discounts.
-		 *
-		 * Additional values must be instances of the `Value` class to ensure consistent behavior.
-		 *
-		 * @since 5.18.0
-		 *
-		 * @param Value[] $values         An array of `Value` instances representing additional fees or discounts.
-		 * @param array   $items          The items currently in the cart.
-		 * @param Value   $subtotal_value The total of the subtotals from the items.
-		 *
-		 * @var Value[] $additional_values
-		 */
-		$additional_values = apply_filters(
-			'tec_tickets_commerce_get_cart_additional_values',
-			[],
-			$this->get_items_in_cart( true, 'all' ),
-			$subtotal_value
-		);
-
-		// Convert all additional values to precision values.
-		$additional_values = array_map(
-			static fn( $value ) => Factory::to_precision_value( $value ),
-			$additional_values
-		);
-
 		// Calculate the new value from all of the subtotals.
 		$total = Precision_Value::sum(
 			$this->cart_subtotal,
-			...$additional_values,
 			...$callable_subtotals
 		);
 
@@ -251,7 +223,35 @@ abstract class Abstract_Cart implements Cart_Interface {
 			$subtotals[] = Factory::to_precision_value( $item['sub_total'] );
 		}
 
-		$this->cart_subtotal = Precision_Value::sum( ...$subtotals );
+		$subtotal = Precision_Value::sum( ...$subtotals );
+
+		/**
+		 * Filters the additional values in the cart in order to add additional fees or discounts.
+		 *
+		 * Additional values must be instances of the `Value` class to ensure consistent behavior.
+		 *
+		 * @since 5.18.0
+		 *
+		 * @param Value[] $values         An array of `Value` instances representing additional fees or discounts.
+		 * @param array   $items          The items currently in the cart.
+		 * @param Value   $subtotal_value The total of the subtotals from the items.
+		 *
+		 * @var Value[] $additional_values
+		 */
+		$additional_values = apply_filters(
+			'tec_tickets_commerce_get_cart_additional_values',
+			[],
+			$this->get_items_in_cart( true, 'all' ),
+			Factory::to_legacy_value( $subtotal )
+		);
+
+		// Convert all additional values to precision values.
+		$additional_values = array_map(
+			static fn( $value ) => Factory::to_precision_value( $value ),
+			$additional_values
+		);
+
+		$this->cart_subtotal = Precision_Value::sum( $subtotal, ...$additional_values );
 
 		// Set the subtotal as calculated.
 		$this->subtotal_calculated = true;
