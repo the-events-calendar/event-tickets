@@ -12,6 +12,7 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal;
 
+use TEC\Tickets\Commerce\Gateways\PayPal\REST\Order_Endpoint;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Abstract_Fees;
 use TEC\Tickets\Commerce\Values\Precision_Value;
 use WP_Post;
@@ -43,6 +44,14 @@ class Fees extends Abstract_Fees {
 			10,
 			2
 		);
+
+		// Trigger the fees to be added to the other items.
+		add_filter(
+			'tec_tickets_commerce_paypal_order_unit',
+			[ $this, 'inclue_fees_with_items' ],
+			10,
+			3
+		);
 	}
 
 	/**
@@ -57,6 +66,34 @@ class Fees extends Abstract_Fees {
 			'tec_tickets_commerce_paypal_order_get_unit_data_fee',
 			[ $this, 'add_fee_unit_data_to_paypal' ],
 		);
+
+		remove_filter(
+			'tec_tickets_commerce_paypal_order_unit',
+			[ $this, 'inclue_fees_with_items' ],
+		);
+	}
+
+	/**
+	 * Includes fees with the items in the PayPal order.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param array          $unit     The current unit data.
+	 * @param WP_Post        $order    The current order object.
+	 * @param Order_Endpoint $endpoint The order endpoint object.
+	 *
+	 * @return array
+	 */
+	public function inclue_fees_with_items( array $unit, WP_Post $order, Order_Endpoint $endpoint) {
+		if ( empty( $order->fees ) ) {
+			return $unit;
+		}
+
+		foreach ( $order->fees as $fee ) {
+			$unit['items'][] = $endpoint->get_unit_data( $fee, $order );
+		}
+
+		return $unit;
 	}
 
 	/**
