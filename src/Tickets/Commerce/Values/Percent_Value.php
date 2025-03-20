@@ -89,7 +89,7 @@ class Percent_Value extends Precision_Value {
 	 * @return string
 	 */
 	public function get_as_string(): string {
-		return sprintf( '%02.2F%%', $this->get_as_percent() );
+		return "{$this->get_formatted_number( $this->get_as_percent(), 2 )}%";
 	}
 
 	/**
