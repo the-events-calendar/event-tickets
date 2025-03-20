@@ -134,10 +134,11 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		 *
 		 * @since 5.21.0
 		 *
-		 * @param array   $unit  The structured data for the order.
-		 * @param WP_Post $order The current order object.
+		 * @param array          $unit     The structured data for the order.
+		 * @param WP_Post        $order    The current order object.
+		 * @param Order_Endpoint $endpoint The current instance of the Order_Endpoint class.
 		 */
-		$unit = (array) apply_filters( 'tec_tickets_commerce_paypal_order_unit', $unit, $order );
+		$unit = (array) apply_filters( 'tec_tickets_commerce_paypal_order_unit', $unit, $order, $this );
 
 		$paypal_order = tribe( Client::class )->create_order( $unit );
 
