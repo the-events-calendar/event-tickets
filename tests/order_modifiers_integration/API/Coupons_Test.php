@@ -108,7 +108,7 @@ class Coupons_Test extends Controller_Test_Case {
 
 				// Check that the data has been generated correctly.
 				Assert::assertTrue( $data['success'] );
-				Assert::assertSame( '- $1.50', $data['discount'] );
+				Assert::assertSame( '- &#x24;1.50', $data['discount'] );
 				Assert::assertSame( $coupon_15_percent()->slug, $data['label'] );
 				Assert::assertSame(
 					esc_html(
