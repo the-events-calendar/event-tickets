@@ -266,7 +266,7 @@ class Coupons extends Controller_Contract {
 
 		// Update the coupon values with the correct subtotals.
 		$coupons = $cart->update_items_with_subtotal(
-			$cart->get_items_in_cart( true, 'coupon' ),
+			$coupons,
 			Precision_Value::sum( ...$subtotals )->get(),
 		);
 

@@ -153,7 +153,8 @@ abstract class Abstract_Cart implements Cart_Interface {
 			return $this->cart_total->get();
 		}
 
-		$subtotal = new Precision_Value( $this->get_cart_subtotal() );
+		$subtotal  = new Precision_Value( $this->get_cart_subtotal() );
+		$all_items = $this->get_items_in_cart( true, 'all' );
 
 		/**
 		 * Filters the additional values in the cart in order to add additional fees or discounts.
@@ -171,7 +172,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 		$additional_values = apply_filters(
 			'tec_tickets_commerce_get_cart_additional_values_total',
 			[],
-			$this->get_items_in_cart( true, 'all' ),
+			$all_items,
 			$subtotal
 		);
 
@@ -188,7 +189,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 
 		// Get the items that have a dynamic subtotal.
 		$callable_items = array_filter(
-			$this->get_items_in_cart( true, 'all' ),
+			$all_items,
 			static fn( $item ) => is_callable( $item['sub_total'] )
 		);
 
@@ -269,7 +270,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 		$additional_values = apply_filters(
 			'tec_tickets_commerce_get_cart_additional_values_subtotal',
 			[],
-			$this->get_items_in_cart( true, 'all' ),
+			$all_items,
 			$subtotal
 		);
 
