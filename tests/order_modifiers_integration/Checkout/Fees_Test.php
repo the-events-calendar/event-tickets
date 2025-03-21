@@ -10,10 +10,10 @@ use TEC\Tickets\Commerce\Admin\Singular_Order_Page;
 use TEC\Tickets\Commerce\Cart as Commerce_Cart;
 use TEC\Tickets\Commerce\Cart\Cart_Interface as Cart;
 use TEC\Tickets\Commerce\Order_Modifiers\API\Fees as ApiFees;
-use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal\Fees as PayPalFees;
-use TEC\Tickets\Commerce\Values\Float_Value;
 use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
+use TEC\Tickets\Commerce\Values\Float_Value;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
+use Tribe\Tests\Tickets\Traits\Tribe_URL;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\OrderModifiers\Fee_Creator;
@@ -24,7 +24,6 @@ use Tribe\Tickets\Test\Traits\With_No_Object_Storage;
 use Tribe\Tickets\Test\Traits\With_Test_Orders;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
-use Tribe\Tests\Tickets\Traits\Tribe_URL;
 
 class Fees_Test extends Controller_Test_Case {
 
@@ -708,9 +707,9 @@ class Fees_Test extends Controller_Test_Case {
 	/**
 	 * Data provider for testing order totals with various inputs.
 	 *
-	 * @return \Generator
+	 * @return Generator
 	 */
-	public function cart_totals_data_provider(): \Generator {
+	public function cart_totals_data_provider(): Generator {
 		yield 'Ticket $10, Fee $5, Application All' => [
 			'ticket_price'      => Float_Value::from_number( 10 ),
 			'fee_raw_amount'    => Float_Value::from_number( 5 ),
