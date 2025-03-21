@@ -62,7 +62,7 @@ class Coupon extends Order_Modifier {
 	 */
 	public function add_to_cart( Cart_Interface $cart, int $quantity = 1 ) {
 		$cart->upsert_item(
-			$this->get_unique_type_id( $this->id, 'coupon' ),
+			$this->get_type_id(),
 			$quantity,
 			[ 'type' => 'coupon' ]
 		);
@@ -78,6 +78,17 @@ class Coupon extends Order_Modifier {
 	 * @return void
 	 */
 	public function remove_from_cart( Cart_Interface $cart ) {
-		$cart->remove_item( $this->get_unique_type_id( $this->id, 'coupon' ) );
+		$cart->remove_item( $this->get_type_id() );
+	}
+
+	/**
+	 * Get the unique type ID for the coupon.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @return string The unique type ID.
+	 */
+	public function get_type_id(): string {
+		return $this->get_unique_type_id( $this->id, 'coupon' );
 	}
 }
