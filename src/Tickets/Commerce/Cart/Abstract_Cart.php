@@ -156,15 +156,20 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * @return array<string, mixed> List of items.
 	 */
 	public function get_items_in_cart( $full_item_params = false, string $type = 'ticket' ): array {
-		$items = $this->filter_items_by_type( $type );
+		// Get all of the items.
+		$items = $this->get_items();
+
+		// If we want the full params, add them.
+		if ( $full_item_params ) {
+			$items = $this->add_full_item_params( $items );
+		}
+
+		// Filter the items by type.
+		$items = $this->filter_items_by_type( $type, $items );
 
 		// When Items is empty in any capacity return an empty array.
 		if ( empty( $items ) ) {
 			return [];
-		}
-
-		if ( $full_item_params ) {
-			$items = $this->add_full_item_params( $items );
 		}
 
 		return array_filter( $items );
