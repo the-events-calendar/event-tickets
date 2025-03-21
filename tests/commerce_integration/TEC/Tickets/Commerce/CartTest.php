@@ -6,7 +6,6 @@ use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Cart\Agnostic_Cart;
 use TEC\Tickets\Commerce\Cart\Cart_Interface;
-use TEC\Tickets\Commerce\Cart\Unmanaged_Cart;
 use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
