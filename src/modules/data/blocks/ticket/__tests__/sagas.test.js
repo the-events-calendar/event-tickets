@@ -8,6 +8,7 @@ import { cloneableGenerator } from 'redux-saga/utils';
  * WordPress dependencies
  */
 import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
+import { applyFilters, doAction } from '@wordpress/hooks';
 
 /**
  * Internal Dependencies
@@ -40,6 +41,14 @@ import {
 	hasPostTypeChannel,
 	createDates,
 } from '@moderntribe/tickets/data/shared/sagas';
+
+jest.mock( '@moderntribe/common/utils/moment', () => ( {
+	toMoment: ( date ) => date,
+	toDatabaseDate: ( date ) => date,
+	toDate: ( date ) => date,
+	toDatabaseTime: ( date ) => date,
+	toTime: ( date ) => date,
+} ) );
 
 const {
 	INDEPENDENT,
@@ -1054,127 +1063,151 @@ describe( 'Ticket Block sagas', () => {
 
 			const gen = cloneableGenerator( sagas.fetchTicket )( action );
 
-			// Should set ticket as loading.
 			expect( gen.next().value ).toEqual(
-				put( actions.setTicketIsLoading( CLIENT_ID, true ) ),
+				put( actions.setTicketIsLoading( CLIENT_ID, true ) )
 			);
 
-			// Should fetch ticket details from API.
 			expect( gen.next().value ).toEqual(
 				call( wpREST, {
 					path: `tickets/${ TICKET_ID }`,
 					namespace: 'tribe/tickets/v1',
-				} ),
+				} )
 			);
 
-			// Clone the generator to handle different response scenarios.
-			const failureClone = gen.clone();
-			const failureResponse = {
-				response: { ok: false },
-				data: {},
-			};
-
-			// Simulate a failed response from the API.
-			expect( failureClone.next( failureResponse ).value ).toEqual(
-				put( actions.setTicketIsLoading( CLIENT_ID, false ) )
-			);
-			expect( failureClone.next().done ).toBe( true );
-
-			const successClone = gen.clone();
 			const apiResponse = {
 				response: {
 					ok: true,
+					status: 200,
 				},
 				data: {
-					cost_details: {
-						values: [ 20 ],
-					},
-					totals: {
-						sold: 10,
-						stock: 45,
-					},
-					available_from: '2018-11-09 19:48:42',
-					available_until: '',
-					provider: 'woo',
+					provider: 'provider',
 					title: 'title',
 					description: 'description',
-					sku: '12345678',
+					status: 'draft',
+					cost_details: {
+						values: [ 10 ],
+						currency_symbol: 'R',
+						currency_position: 'suffix',
+					},
+					sku: '',
 					iac: 'none',
-					capacity_type: 'own',
-					capacity: 100,
+					available_from: '2018-11-09 19:48:42',
+					available_until: '2018-11-12 19:48:42',
+					capacity_type: 'unlimited',
+					capacity: 0,
 					supports_attendee_information: true,
+					totals: {
+						sold: 0,
+						stock: 0,
+					},
+					type: 'default',
+					on_sale: true,
 					sale_price_data: {
 						enabled: true,
-						sale_price: '10',
+						sale_price: '15',
 						start_date: '2018-11-09 19:48:42',
-						end_date: '2018-11-10 19:48:42',
+						end_date: '2018-11-12 19:48:42',
 					},
-					on_sale: true,
 					attendee_information_fields: null,
 				},
 			};
-			const startMoment2 = momentUtil.toMoment( apiResponse.data.available_from );
-			const startDate2 = momentUtil.toDatabaseDate( startMoment2 );
-			const startDateInput2 = momentUtil.toDate( startMoment2 );
-			const startTime2 = momentUtil.toDatabaseTime( startMoment2 );
-			const startTimeInput2 = momentUtil.toTime( startMoment2 );
-			const endMoment2 = momentUtil.toMoment( '' );
-			const endDate2 = '';
-			const endDateInput2 = '';
-			const endTime2 = '';
-			const endTimeInput2 = '';
 
-			expect( successClone.next( apiResponse ).value ).toEqual(
-				call( momentUtil.toMoment, apiResponse.data.available_from ),
-			);
-			expect( successClone.next( startMoment2 ).value ).toEqual(
-				call( momentUtil.toDatabaseDate, startMoment2 ),
-			);
-			expect( successClone.next( startDate2 ).value ).toEqual(
-				call( momentUtil.toDate, startMoment2 ),
-			);
-			expect( successClone.next( startDateInput2 ).value ).toEqual(
-				call( momentUtil.toDatabaseTime, startMoment2 ),
-			);
-			expect( successClone.next( startTime2 ).value ).toEqual(
-				call( momentUtil.toTime, startMoment2 ),
-			);
-			expect( successClone.next( startTimeInput2 ).value ).toEqual(
-				call( momentUtil.toMoment, '' ),
+			// First convert the dates
+			expect( gen.next( apiResponse ).value ).toEqual(
+				call( momentUtil.toMoment, apiResponse.data.available_from )
 			);
 
-			const salePriceChecked = apiResponse.data.sale_price_data?.enabled || false;
-			const salePrice = apiResponse.data.sale_price_data?.sale_price || '';
-			const saleStartDateMoment = momentUtil.toMoment( apiResponse.data.sale_price_data?.start_date || '' );
-			const saleStartDate = momentUtil.toDatabaseDate( saleStartDateMoment );
-			const saleStartDateInput = momentUtil.toDate( saleStartDateMoment );
+			const startMoment = momentUtil.toMoment( apiResponse.data.available_from );
 
-			expect( successClone.next().value ).toEqual(
+			expect( gen.next( startMoment ).value ).toEqual(
+				call( momentUtil.toDatabaseDate, startMoment )
+			);
+
+			const startDate = momentUtil.toDatabaseDate( startMoment );
+
+			expect( gen.next( startDate ).value ).toEqual(
+				call( momentUtil.toDate, startMoment )
+			);
+
+			const startDateInput = momentUtil.toDate( startMoment );
+
+			expect( gen.next( startDateInput ).value ).toEqual(
+				call( momentUtil.toDatabaseTime, startMoment )
+			);
+
+			const startTime = momentUtil.toDatabaseTime( startMoment );
+
+			expect( gen.next( startTime ).value ).toEqual(
+				call( momentUtil.toTime, startMoment )
+			);
+
+			const startTimeInput = momentUtil.toTime( startMoment );
+
+			expect( gen.next( startTimeInput ).value ).toEqual(
+				call( momentUtil.toMoment, apiResponse.data.available_until )
+			);
+
+			const endMoment = momentUtil.toMoment( apiResponse.data.available_until );
+
+			expect( gen.next( endMoment ).value ).toEqual(
+				call( momentUtil.toDatabaseDate, endMoment )
+			);
+
+			const endDate = momentUtil.toDatabaseDate( endMoment );
+
+			expect( gen.next( endDate ).value ).toEqual(
+				call( momentUtil.toDate, endMoment )
+			);
+
+			const endDateInput = momentUtil.toDate( endMoment );
+
+			expect( gen.next( endDateInput ).value ).toEqual(
+				call( momentUtil.toDatabaseTime, endMoment )
+			);
+
+			const endTime = momentUtil.toDatabaseTime( endMoment );
+
+			expect( gen.next( endTime ).value ).toEqual(
+				call( momentUtil.toTime, endMoment )
+			);
+
+			const endTimeInput = momentUtil.toTime( endMoment );
+
+			expect( gen.next( endTimeInput ).value ).toEqual(
 				call( momentUtil.toMoment, apiResponse.data.sale_price_data.start_date )
 			);
-			expect( successClone.next( saleStartDateMoment ).value ).toEqual(
+
+			const saleStartDateMoment = momentUtil.toMoment( apiResponse.data.sale_price_data.start_date );
+
+			expect( gen.next( saleStartDateMoment ).value ).toEqual(
 				call( momentUtil.toDatabaseDate, saleStartDateMoment )
 			);
 
-			expect( successClone.next( saleStartDate ).value ).toEqual(
+			const saleStartDate = momentUtil.toDatabaseDate( saleStartDateMoment );
+
+			expect( gen.next( saleStartDate ).value ).toEqual(
 				call( momentUtil.toDate, saleStartDateMoment )
 			);
 
-			const saleEndDateMoment = momentUtil.toMoment( apiResponse.data.sale_price_data?.end_date || '' );
-			const saleEndDate = momentUtil.toDatabaseDate( saleEndDateMoment );
-			const saleEndDateInput = momentUtil.toDate( saleEndDateMoment );
+			const saleStartDateInput = momentUtil.toDate( saleStartDateMoment );
 
-			expect( successClone.next().value ).toEqual(
+			expect( gen.next( saleStartDateInput ).value ).toEqual(
 				call( momentUtil.toMoment, apiResponse.data.sale_price_data.end_date )
 			);
 
-			expect( successClone.next( saleEndDateMoment ).value ).toEqual(
+			const saleEndDateMoment = momentUtil.toMoment( apiResponse.data.sale_price_data.end_date );
+
+			expect( gen.next( saleEndDateMoment ).value ).toEqual(
 				call( momentUtil.toDatabaseDate, saleEndDateMoment )
 			);
 
-			expect( successClone.next( saleEndDate ).value ).toEqual(
+			const saleEndDate = momentUtil.toDatabaseDate( saleEndDateMoment );
+
+			expect( gen.next( saleEndDate ).value ).toEqual(
 				call( momentUtil.toDate, saleEndDateMoment )
 			);
+
+			const saleEndDateInput = momentUtil.toDate( saleEndDateMoment );
 
 			const details = {
 				title: apiResponse.data.title,
@@ -1182,32 +1215,32 @@ describe( 'Ticket Block sagas', () => {
 				price: apiResponse.data.cost_details.values[ 0 ],
 				sku: apiResponse.data.sku,
 				iac: apiResponse.data.iac,
-				startDate: startDate2,
-				startDateInput: startDateInput2,
-				startDateMoment: startMoment2,
-				endDate: endDate2,
-				endDateInput: endDateInput2,
-				endDateMoment: undefined,
-				startTime: startTime2,
-				endTime: endTime2,
-				startTimeInput: startTimeInput2,
-				endTimeInput: endTimeInput2,
+				startDate,
+				startDateInput,
+				startDateMoment: startMoment,
+				endDate,
+				endDateInput,
+				endDateMoment: endMoment,
+				startTime,
+				endTime,
+				startTimeInput,
+				endTimeInput,
 				capacityType: apiResponse.data.capacity_type,
 				capacity: apiResponse.data.capacity,
 				attendeeInfoFields: apiResponse.data.attendee_information_fields,
 				type: apiResponse.data.type,
 				on_sale: apiResponse.data.on_sale,
-				saleEndDate,
-				saleEndDateInput: undefined,
-				saleEndDateMoment,
-				salePrice,
-				salePriceChecked,
+				salePriceChecked: apiResponse.data.sale_price_data.enabled,
+				salePrice: apiResponse.data.sale_price_data.sale_price,
 				saleStartDate,
-				saleStartDateInput: undefined,
+				saleStartDateInput,
 				saleStartDateMoment,
+				saleEndDate,
+				saleEndDateInput,
+				saleEndDateMoment,
 			};
 
-			expect( successClone.next().value ).toEqual(
+			expect( gen.next( saleEndDateInput ).value ).toEqual(
 				all( [
 					put( actions.setTicketDetails( CLIENT_ID, details ) ),
 					put( actions.setTicketTempDetails( CLIENT_ID, details ) ),
@@ -1221,128 +1254,15 @@ describe( 'Ticket Block sagas', () => {
 				] )
 			);
 
-			expect( successClone.next().value ).toEqual(
-				put( actions.setTicketIsLoading( CLIENT_ID, false ) ),
-			);
-			expect( successClone.next().done ).toEqual( true );
-
-			const clone3 = gen.clone();
-			const apiResponse3 = {
-				response: {
-					ok: true,
-				},
-				data: {
-					cost_details: {
-						values: [ 20 ],
-					},
-					totals: {
-						sold: 10,
-						stock: 45,
-					},
-					available_from: '2018-11-09 19:48:42',
-					available_until: '2018-11-12 19:48:42',
-					provider: 'woo',
-					title: 'title',
-					description: 'description',
-					sku: '12345678',
-					iac: 'none',
-					capacity_type: 'own',
-					capacity: 100,
-					supports_attendee_information: true,
-				},
-			};
-
-			const startMoment3 = momentUtil.toMoment( apiResponse3.data.available_from );
-			const startDate3 = momentUtil.toDatabaseDate( startMoment3 );
-			const startDateInput3 = momentUtil.toDate( startMoment3 );
-			const startTime3 = momentUtil.toDatabaseTime( startMoment3 );
-			const startTimeInput3 = momentUtil.toTime( startMoment3 );
-			const endMoment3 = momentUtil.toMoment( apiResponse3.data.available_until );
-			const endDate3 = momentUtil.toDatabaseDate( endMoment3 );
-			const endDateInput3 = momentUtil.toDate( endMoment3 );
-			const endTime3 = momentUtil.toDatabaseTime( endMoment3 );
-			const endTimeInput3 = momentUtil.toTime( endMoment3 );
-
-			expect( clone3.next( apiResponse3 ).value ).toEqual(
-				call( momentUtil.toMoment, apiResponse3.data.available_from ),
-			);
-			expect( clone3.next( startMoment3 ).value ).toEqual(
-				call( momentUtil.toDatabaseDate, startMoment3 ),
-			);
-			expect( clone3.next( startDate3 ).value ).toEqual(
-				call( momentUtil.toDate, startMoment3 ),
-			);
-			expect( clone3.next( startDateInput3 ).value ).toEqual(
-				call( momentUtil.toDatabaseTime, startMoment3 ),
-			);
-			expect( clone3.next( startTime3 ).value ).toEqual(
-				call( momentUtil.toTime, startMoment3 ),
-			);
-			expect( clone3.next( startTimeInput3 ).value ).toEqual(
-				call( momentUtil.toMoment, '' ),
-			);
-			expect( clone3.next( endMoment2 ).value ).toEqual(
-				call( momentUtil.toMoment, apiResponse3.data.available_until ),
-			);
-			expect( clone3.next( endMoment3 ).value ).toEqual(
-				call( momentUtil.toDatabaseDate, endMoment3 ),
-			);
-			expect( clone3.next( endDate3 ).value ).toEqual(
-				call( momentUtil.toDate, endMoment3 ),
-			);
-			expect( clone3.next( endDateInput3 ).value ).toEqual(
-				call( momentUtil.toDatabaseTime, endMoment3 ),
-			);
-			expect( clone3.next( startTime3 ).value ).toEqual(
-				call( momentUtil.toTime, endMoment3 ),
+			expect( gen.next().value ).toEqual(
+				doAction( 'tec.tickets.blocks.fetchTicket', CLIENT_ID, apiResponse.data, details )
 			);
 
-			const details3 = {
-				title: apiResponse3.data.title,
-				description: apiResponse3.data.description,
-				price: apiResponse3.data.cost_details.values[ 0 ],
-				sku: apiResponse3.data.sku,
-				iac: apiResponse3.data.iac,
-				startDate: startDate3,
-				startDateInput: startDateInput3,
-				startDateMoment: startMoment3,
-				endDate: endDate3,
-				endDateInput: endDateInput3,
-				endDateMoment: endMoment3,
-				startTime: startTime3,
-				endTime: endTime3,
-				startTimeInput: startTimeInput3,
-				endTimeInput: endTimeInput3,
-				capacityType: apiResponse3.data.capacity_type,
-				capacity: apiResponse3.data.capacity,
-			};
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketIsLoading( CLIENT_ID, false ) )
+			);
 
-			expect( clone3.next( startTimeInput3 ).value ).toEqual(
-				all( [
-					put( actions.setTicketDetails( CLIENT_ID, details3 ) ),
-					put( actions.setTicketTempDetails( CLIENT_ID, details3 ) ),
-					put( actions.setTicketSold( CLIENT_ID, apiResponse3.data.totals.sold ) ),
-					put( actions.setTicketAvailable( CLIENT_ID, apiResponse3.data.totals.stock ) ),
-					put( actions.setTicketCurrencySymbol(
-						CLIENT_ID,
-						apiResponse3.data.cost_details.currency_symbol,
-					) ),
-					put( actions.setTicketCurrencyPosition(
-						CLIENT_ID,
-						apiResponse3.data.cost_details.currency_position,
-					) ),
-					put( actions.setTicketProvider( CLIENT_ID, apiResponse3.data.provider ) ),
-					put( actions.setTicketHasAttendeeInfoFields(
-						CLIENT_ID,
-						apiResponse3.data.supports_attendee_information,
-					) ),
-					put( actions.setTicketHasBeenCreated( CLIENT_ID, true ) ),
-				] ),
-			);
-			expect( clone3.next().value ).toEqual(
-				put( actions.setTicketIsLoading( CLIENT_ID, false ) ),
-			);
-			expect( clone3.next().done ).toEqual( true );
+			expect( gen.next().done ).toEqual( true );
 		} );
 
 		it( 'should not fetch ticket if new ticket', () => {
