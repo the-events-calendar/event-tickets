@@ -59,6 +59,24 @@ abstract class Abstract_Cart implements Cart_Interface {
 	protected $cart_hash;
 
 	/**
+	 * Array of items with full parameters available.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @var array
+	 */
+	protected array $full_param_items = [];
+
+	/**
+	 * Whether the items in the cart have full parameters.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @var bool
+	 */
+	protected bool $items_have_full_params = false;
+
+	/**
 	 * Whether the cart subtotal has been calculated.
 	 *
 	 * @since 5.21.0
@@ -331,7 +349,11 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * @return array The items in the cart with the full set of parameters.
 	 */
 	protected function add_full_item_params( array $items ): array {
-		return array_map(
+		if ( $this->items_have_full_params ) {
+			return $this->full_param_items;
+		}
+
+		$this->full_param_items = array_map(
 			static function ( $item ) {
 				// Try to get the ticket object, and if it's not valid, remove it from the cart.
 				$item['obj'] = Tickets::load_ticket_object( $item['ticket_id'] );
@@ -350,6 +372,10 @@ abstract class Abstract_Cart implements Cart_Interface {
 			},
 			$items
 		);
+
+		$this->items_have_full_params = true;
+
+		return $this->full_param_items;
 	}
 
 	/**
@@ -466,8 +492,9 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * @return void
 	 */
 	protected function reset_calculations() {
-		$this->subtotal_calculated = false;
-		$this->total_calculated    = false;
+		$this->items_have_full_params = false;
+		$this->subtotal_calculated    = false;
+		$this->total_calculated       = false;
 	}
 
 	/**

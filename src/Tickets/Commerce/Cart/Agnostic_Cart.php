@@ -425,7 +425,11 @@ class Agnostic_Cart extends Abstract_Cart {
 	 * @return array The items in the cart with the full set of parameters.
 	 */
 	protected function add_full_item_params( array $items ): array {
-		return array_map(
+		if ( $this->items_have_full_params ) {
+			return $this->full_param_items;
+		}
+
+		$this->full_param_items = array_map(
 			function ( $item ) {
 				$type = $item['type'] ?? 'ticket';
 				switch ( $type ) {
@@ -452,6 +456,10 @@ class Agnostic_Cart extends Abstract_Cart {
 			},
 			$items
 		);
+
+		$this->items_have_full_params = true;
+
+		return $this->full_param_items;
 	}
 
 	/**
