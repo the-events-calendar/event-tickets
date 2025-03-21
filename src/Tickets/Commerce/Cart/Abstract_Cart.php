@@ -120,7 +120,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * @return array<string, mixed> List of items.
 	 */
 	public function get_items_in_cart( $full_item_params = false, string $type = 'ticket' ): array {
-		$items = $this->get_items_by_type( $type );
+		$items = $this->filter_items_by_type( $type );
 
 		// When Items is empty in any capacity return an empty array.
 		if ( empty( $items ) ) {
@@ -412,24 +412,29 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 *
 	 * @since 5.21.0
 	 *
-	 * @param string $type The type of item to get from the cart. Use 'all' to get all items.
+	 * @param string $type  The type of item to get from the item array. Use 'all' to get all items.
+	 * @param ?array $items The items to filter. If omitted, items will be retrieved from the cart.
 	 *
-	 * @return array The items in the cart.
+	 * @return array The filtered items.
 	 */
-	protected function get_items_by_type( string $type ): array {
-		$items = $this->get_items();
-
-		// Filter the items if we have something other than 'all' as the type.
-		if ( 'all' !== $type ) {
-			$items = array_filter(
-				$items,
-				static function ( $item ) use ( $type ) {
-					return $type === ( $item['type'] ?? 'ticket' );
-				}
-			);
+	protected function filter_items_by_type( string $type, ?array $items = null ): array {
+		// Get the items from the cart if they aren't provided.
+		if ( null === $items ) {
+			$items = $this->get_items();
 		}
 
-		return $items;
+		// If the type is 'all', then no filtering is needed.
+		if ( 'all' === $type ) {
+			return $items;
+		}
+
+		// Filter the items if we have something other than 'all' as the type.
+		return array_filter(
+			$items,
+			static function ( $item ) use ( $type ) {
+				return $type === ( $item['type'] ?? 'ticket' );
+			}
+		);
 	}
 
 	/**
