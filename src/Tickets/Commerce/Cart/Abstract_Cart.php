@@ -54,6 +54,15 @@ abstract class Abstract_Cart implements Cart_Interface {
 	protected Precision_Value $cart_total;
 
 	/**
+	 * Array of items that have had calculations performed on them.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @var array
+	 */
+	protected array $calculated_items = [];
+
+	/**
 	 * @var string The Cart hash for this cart.
 	 */
 	protected $cart_hash;
@@ -66,6 +75,15 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * @var array
 	 */
 	protected array $full_param_items = [];
+
+	/**
+	 * Whether the items in the cart have been calculated.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @var bool
+	 */
+	protected bool $items_calculated = false;
 
 	/**
 	 * Whether the items in the cart have full parameters.
@@ -153,6 +171,30 @@ abstract class Abstract_Cart implements Cart_Interface {
 	}
 
 	/**
+	 * Get an array of items that have had their calculations performed.
+	 *
+	 * In the `get_cart_subtotal()` and `get_cart_total()` methods, we have filters that allow
+	 * adding additional values to the cart. They also process any cart items that are dynamic,
+	 * meaning their actual value is dependent upon the other cart items.
+	 *
+	 * This method ensures that the items have had these calculations performed and returns
+	 * the items in a state that matches what will be used to create an order.
+	 *
+	 * @param string $type The type of item to get from the cart. Use 'all' for all items.
+	 *
+	 * @return array A
+	 */
+	public function get_calculated_items( string $type ): array {
+		// If the totals haven't been calculated, calculate them by triggering a cart total calculation.
+		if ( ! $this->items_calculated ) {
+			$this->get_cart_total();
+		}
+
+		// Filter the items before returning them.
+		return $this->filter_items_by_type( $type, $this->calculated_items );
+	}
+
+	/**
 	 * Get the total value of the cart, including additional values such as fees or discounts.
 	 *
 	 * This method calculates the total by first computing the subtotal from all items in the cart,
@@ -173,6 +215,9 @@ abstract class Abstract_Cart implements Cart_Interface {
 
 		$subtotal  = new Precision_Value( $this->get_cart_subtotal() );
 		$all_items = $this->get_items_in_cart( true, 'all' );
+
+		// Store the items as order-ready.
+		$this->calculated_items = $all_items;
 
 		/**
 		 * Filters the additional values in the cart in order to add additional fees or discounts.
@@ -215,8 +260,9 @@ abstract class Abstract_Cart implements Cart_Interface {
 		$callable_items = $this->update_items_with_subtotal( $callable_items, $subtotal->get() );
 
 		// Get the subtotals for the callable items as Precision_Value objects.
-		foreach ( $callable_items as $item ) {
-			$callable_subtotals[] = Factory::to_precision_value( $item['sub_total'] );
+		foreach ( $callable_items as $id => $item ) {
+			$this->calculated_items[ $id ] = $item;
+			$callable_subtotals[]          = Factory::to_precision_value( $item['sub_total'] );
 		}
 
 		// Calculate the new value from all of the subtotals.
@@ -230,7 +276,8 @@ abstract class Abstract_Cart implements Cart_Interface {
 			? $total
 			: new Precision_Value( 0.0 );
 
-		// Mark that the total has been calculated.
+		// Mark that the items and total have been calculated.
+		$this->items_calculated = true;
 		$this->total_calculated = true;
 
 		return $this->cart_total->get();
@@ -426,6 +473,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 					),
 					'5.21.0'
 				);
+
 				return $this->cart_total;
 
 			default:
@@ -492,6 +540,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * @return void
 	 */
 	protected function reset_calculations() {
+		$this->items_calculated       = false;
 		$this->items_have_full_params = false;
 		$this->subtotal_calculated    = false;
 		$this->total_calculated       = false;
