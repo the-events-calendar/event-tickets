@@ -39,13 +39,6 @@ class PayPal_Fees_Test extends Controller_Test_Case {
 	protected string $gateway_class = PayPalGateway::class;
 
 	/**
-	 * @after
-	 */
-	public function breakdown() {
-		$this->test_services->get( $this->controller_class )->reset_fees_and_subtotal();
-	}
-
-	/**
 	 * @test
 	 */
 	public function it_should_not_store_objects() {

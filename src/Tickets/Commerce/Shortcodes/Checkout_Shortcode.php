@@ -44,7 +44,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		$cart          = tribe( Cart::class );
 		$cart_subtotal = Value::create( $cart->get_cart_subtotal() ?? 0 );
 		$cart_total    = Value::create( $cart->get_cart_total() ?? 0 );
-		$items         = $cart->get_repository()->update_items_with_subtotal( $cart->get_items_in_cart( true, 'all' ) );
+		$items         = $cart->get_repository()->get_calculated_items( 'all' );
 		$sections      = array_unique( array_filter( wp_list_pluck( $items, 'event_id' ) ) );
 		$gateways      = tribe( Manager::class )->get_gateways();
 

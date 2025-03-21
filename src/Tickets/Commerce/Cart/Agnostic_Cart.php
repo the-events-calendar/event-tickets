@@ -80,6 +80,11 @@ class Agnostic_Cart extends Abstract_Cart {
 	 * @param string $hash The hash to set.
 	 */
 	public function set_hash( $hash ) {
+		// If the cart hash matches what we already have, don't set it again.
+		if ( $this->get_hash() === $hash ) {
+			return;
+		}
+
 		parent::set_hash( $hash );
 		$this->load_items_from_transient();
 	}
@@ -425,7 +430,11 @@ class Agnostic_Cart extends Abstract_Cart {
 	 * @return array The items in the cart with the full set of parameters.
 	 */
 	protected function add_full_item_params( array $items ): array {
-		return array_map(
+		if ( $this->items_have_full_params ) {
+			return $this->full_param_items;
+		}
+
+		$this->full_param_items = array_map(
 			function ( $item ) {
 				$type = $item['type'] ?? 'ticket';
 				switch ( $type ) {
@@ -452,6 +461,10 @@ class Agnostic_Cart extends Abstract_Cart {
 			},
 			$items
 		);
+
+		$this->items_have_full_params = true;
+
+		return $this->full_param_items;
 	}
 
 	/**

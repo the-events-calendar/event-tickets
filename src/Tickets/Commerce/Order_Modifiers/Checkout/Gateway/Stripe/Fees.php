@@ -87,9 +87,6 @@ class Fees extends Abstract_Fees {
 	 * @return Value Updated value including fees, or the original value if no fees exist.
 	 */
 	public function append_fees_to_cart_stripe( Value $value, array $items ): Value {
-		// Set the class-level subtotal to the current cart value.
-		$this->subtotal = $value;
-
 		// If no items exist in the cart, return the original value.
 		if ( empty( $items ) ) {
 			return $value;

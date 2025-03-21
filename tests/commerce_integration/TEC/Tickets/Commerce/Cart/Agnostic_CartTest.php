@@ -174,6 +174,48 @@ class Agnostic_CartTest extends WPTestCase {
 		$this->assertEquals( 1, $cart->get_item_quantity( 1 ) );
 	}
 
+	/**
+	 * @test
+	 */
+	public function it_should_filter_by_item_type() {
+		$cart = new Agnostic_Cart();
+
+		// Add different item types
+		$cart->upsert_item( 1, 1 );
+		$cart->upsert_item( 2, 1, [ 'type' => 'non-ticket' ] );
+		$cart->upsert_item( 3, 2, [ 'type' => 'ticket' ] );
+
+		$this->assertEquals( 3, $cart->has_items(), 'Adding items to the cart should increase the item count.' );
+		$this->assertEquals( 2, count( $cart->get_items_in_cart() ), 'It should get ticket items by default' );
+		$this->assertEquals( 1, count( $cart->get_items_in_cart( false, 'non-ticket' ) ), 'It should get items by type' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_calculate_full_params_once() {
+		$cart = new class() extends Agnostic_Cart {
+			protected $called_count = 0;
+			protected function add_ticket_params( $item ) {
+				$this->called_count++;
+				return $item;
+			}
+
+			public function get_called_count(): int {
+				return $this->called_count;
+			}
+		};
+
+		$cart->upsert_item( 1, 1 );
+		$this->assertEquals( 0, $cart->get_called_count(), 'Full item params should not be called after item is added' );
+
+		$cart->get_items_in_cart( true );
+		$this->assertEquals( 1, $cart->get_called_count(), 'Full item params should be called once' );
+
+		$cart->get_items_in_cart( true );
+		$this->assertEquals( 1, $cart->get_called_count(), 'Full item params should not be called again' );
+	}
+
 	public function items_data_provider() {
 		/*
 		 * Format for these tests is:

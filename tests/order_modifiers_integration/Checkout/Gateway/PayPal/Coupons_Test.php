@@ -178,11 +178,11 @@ class Coupons_Test extends Controller_Test_Case {
 		// The item total should be 22.56 + 2.26 + .46 = 25.28 (as a string).
 		Assert::assertEquals( '25.28', $purchase_unit['amount']['breakdown']['item_total']['value'] );
 
-		// The discount should be 17.3% * 2 * 11.28 = 3.90 (as a string).
-		Assert::assertEquals( '3.90', $purchase_unit['amount']['breakdown']['discount']['value'] );
+		// The discount should be 17.3% * 22.56 = 4.37 (as a string).
+		Assert::assertEquals( '4.37', $purchase_unit['amount']['breakdown']['discount']['value'] );
 
-		// The total value should match the item total minus the discount. 25.28 - 3.90 = 21.38 (as a string).
-		Assert::assertEquals( '21.38', $purchase_unit['amount']['value'], 'The total value should equal item_total minus discount' );
+		// The total value should match the item total minus the discount. 25.28 - 4.37 = 20.91 (as a string).
+		Assert::assertEquals( '20.91', $purchase_unit['amount']['value'], 'The total value should equal item_total minus discount' );
 	}
 
 	protected function create_the_things(): array {

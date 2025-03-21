@@ -37,13 +37,6 @@ class Coupons extends Controller_Contract {
 	 */
 	protected function do_register(): void {
 		add_filter(
-			'tec_tickets_commerce_create_order_from_cart_items',
-			[ $this, 'append_coupons_to_cart' ],
-			10,
-			2
-		);
-
-		add_filter(
 			'tec_tickets_commerce_stripe_update_payment_intent_metadata',
 			[ $this, 'add_meta_data_to_stripe' ],
 			10,
@@ -68,11 +61,6 @@ class Coupons extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_filter(
-			'tec_tickets_commerce_create_order_from_cart_items',
-			[ $this, 'append_coupons_to_cart' ]
-		);
-
-		remove_filter(
 			'tec_tickets_commerce_stripe_update_payment_intent_metadata',
 			[ $this, 'add_meta_data_to_stripe' ]
 		);
@@ -82,55 +70,6 @@ class Coupons extends Controller_Contract {
 			[ $this, 'adjust_stripe_asset_enqueue_condition' ],
 			1
 		);
-	}
-
-	/**
-	 * Appends coupons to the cart items when an order is made.
-	 *
-	 * @since 5.21.0
-	 *
-	 * @param array $items    The cart items.
-	 * @param Value $subtotal The subtotal value.
-	 *
-	 * @return array The cart items with the coupons appended.
-	 */
-	public function append_coupons_to_cart( array $items, Value $subtotal ): array {
-		// If we have no items, we have nothing to do.
-		if ( empty( $items ) ) {
-			return $items;
-		}
-
-		/** @var Cart $cart_page */
-		$cart_page = tribe( Cart::class );
-		$coupons   = $cart_page->get_items_in_cart( false, 'coupon' );
-
-		// If we have no coupons, we have nothing to do.
-		if ( empty( $coupons ) ) {
-			return $items;
-		}
-
-		foreach ( $coupons as $id => $coupon_data ) {
-			try {
-				/** @var Coupon $coupon */
-				$coupon = Coupon::find( (int) $coupon_data['coupon_id'] );
-			} catch ( Exception $e ) {
-				continue;
-			}
-
-			$items[ $id ] = [
-				'id'           => $id,
-				'type'         => 'coupon',
-				'coupon_id'    => $coupon->id,
-				'price'        => $coupon->raw_amount,
-				'sub_total'    => $coupon->get_discount_amount( $subtotal->get_float() ),
-				'display_name' => $coupon->display_name,
-				'quantity'     => 1,
-				'event_id'     => 0,
-				'ticket_id'    => 0,
-			];
-		}
-
-		return $items;
 	}
 
 	/**

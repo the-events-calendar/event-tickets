@@ -54,9 +54,45 @@ abstract class Abstract_Cart implements Cart_Interface {
 	protected Precision_Value $cart_total;
 
 	/**
+	 * Array of items that have had calculations performed on them.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @var array
+	 */
+	protected array $calculated_items = [];
+
+	/**
 	 * @var string The Cart hash for this cart.
 	 */
 	protected $cart_hash;
+
+	/**
+	 * Array of items with full parameters available.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @var array
+	 */
+	protected array $full_param_items = [];
+
+	/**
+	 * Whether the items in the cart have been calculated.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @var bool
+	 */
+	protected bool $items_calculated = false;
+
+	/**
+	 * Whether the items in the cart have full parameters.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @var bool
+	 */
+	protected bool $items_have_full_params = false;
 
 	/**
 	 * Whether the cart subtotal has been calculated.
@@ -120,18 +156,47 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * @return array<string, mixed> List of items.
 	 */
 	public function get_items_in_cart( $full_item_params = false, string $type = 'ticket' ): array {
-		$items = $this->get_items_by_type( $type );
+		// Get all of the items.
+		$items = $this->get_items();
+
+		// If we want the full params, add them.
+		if ( $full_item_params ) {
+			$items = $this->add_full_item_params( $items );
+		}
+
+		// Filter the items by type.
+		$items = $this->filter_items_by_type( $type, $items );
 
 		// When Items is empty in any capacity return an empty array.
 		if ( empty( $items ) ) {
 			return [];
 		}
 
-		if ( $full_item_params ) {
-			$items = $this->add_full_item_params( $items );
+		return array_filter( $items );
+	}
+
+	/**
+	 * Get an array of items that have had their calculations performed.
+	 *
+	 * In the `get_cart_subtotal()` and `get_cart_total()` methods, we have filters that allow
+	 * adding additional values to the cart. They also process any cart items that are dynamic,
+	 * meaning their actual value is dependent upon the other cart items.
+	 *
+	 * This method ensures that the items have had these calculations performed and returns
+	 * the items in a state that matches what will be used to create an order.
+	 *
+	 * @param string $type The type of item to get from the cart. Use 'all' for all items.
+	 *
+	 * @return array A
+	 */
+	public function get_calculated_items( string $type ): array {
+		// If the totals haven't been calculated, calculate them by triggering a cart total calculation.
+		if ( ! $this->items_calculated ) {
+			$this->get_cart_total();
 		}
 
-		return array_filter( $items );
+		// Filter the items before returning them.
+		return $this->filter_items_by_type( $type, $this->calculated_items );
 	}
 
 	/**
@@ -153,56 +218,61 @@ abstract class Abstract_Cart implements Cart_Interface {
 			return $this->cart_total->get();
 		}
 
-		$subtotal = $this->get_cart_subtotal();
+		$subtotal  = new Precision_Value( $this->get_cart_subtotal() );
+		$all_items = $this->get_items_in_cart( true, 'all' );
 
-		// If the subtotal is zero or less, return the subtotal without further calculations.
-		if ( $subtotal <= 0.0 ) {
-			$this->total_calculated = true;
-			return $this->cart_total->get();
-		}
-
-		$subtotal_value     = Factory::to_legacy_value( $this->cart_subtotal );
-		$callable_subtotals = [];
-
-		// Calculate the items that are dynamic. These items are not included in the subtotal calculation.
-		$callable_items = array_filter( $this->get_items_in_cart( true, 'all' ), static fn( $item ) => is_callable( $item['sub_total'] ) );
-		$callable_items = $this->update_items_with_subtotal( $callable_items, $subtotal );
-
-		// Get the subtotals for the callable items as Precision_Value objects.
-		foreach ( $callable_items as $item ) {
-			$callable_subtotals[] = Factory::to_precision_value( $item['sub_total'] );
-		}
+		// Store the items as order-ready.
+		$this->calculated_items = $all_items;
 
 		/**
 		 * Filters the additional values in the cart in order to add additional fees or discounts.
 		 *
-		 * Additional values must be instances of the `Value` class to ensure consistent behavior.
+		 * Additional values must be instances of the `Precision_Value` class to ensure consistent behavior.
 		 *
-		 * @since 5.18.0
+		 * @since 5.21.0
 		 *
-		 * @param Value[] $values         An array of `Value` instances representing additional fees or discounts.
-		 * @param array   $items          The items currently in the cart.
-		 * @param Value   $subtotal_value The total of the subtotals from the items.
+		 * @param Precision_Value[] $values   An array of `Precision_Value` instances representing additional fees or discounts.
+		 * @param array             $items    The items currently in the cart.
+		 * @param Precision_Value   $subtotal The total of the subtotals from the items.
 		 *
-		 * @var Value[] $additional_values
+		 * @var Precision_Value[] $additional_values
 		 */
 		$additional_values = apply_filters(
-			'tec_tickets_commerce_get_cart_additional_values',
+			'tec_tickets_commerce_get_cart_additional_values_total',
 			[],
-			$this->get_items_in_cart( true, 'all' ),
-			$subtotal_value
+			$all_items,
+			$subtotal
 		);
 
-		// Convert all additional values to precision values.
-		$additional_values = array_map(
-			static fn( $value ) => Factory::to_precision_value( $value ),
-			$additional_values
+		// Set up the new subtotal that includes the additional values.
+		$subtotal = Precision_Value::sum( $subtotal, ...$additional_values );
+
+		// If the subtotal is zero or less, return the subtotal without further calculations.
+		if ( $subtotal->get() <= 0.0 ) {
+			$this->total_calculated = true;
+			return $this->cart_total->get();
+		}
+
+		$callable_subtotals = [];
+
+		// Get the items that have a dynamic subtotal.
+		$callable_items = array_filter(
+			$all_items,
+			static fn( $item ) => is_callable( $item['sub_total'] )
 		);
+
+		// Calculate the items that are dynamic. These items are not included in the subtotal calculation.
+		$callable_items = $this->update_items_with_subtotal( $callable_items, $subtotal->get() );
+
+		// Get the subtotals for the callable items as Precision_Value objects.
+		foreach ( $callable_items as $id => $item ) {
+			$this->calculated_items[ $id ] = $item;
+			$callable_subtotals[]          = Factory::to_precision_value( $item['sub_total'] );
+		}
 
 		// Calculate the new value from all of the subtotals.
 		$total = Precision_Value::sum(
-			$this->cart_subtotal,
-			...$additional_values,
+			$subtotal,
 			...$callable_subtotals
 		);
 
@@ -211,7 +281,8 @@ abstract class Abstract_Cart implements Cart_Interface {
 			? $total
 			: new Precision_Value( 0.0 );
 
-		// Mark that the total has been calculated.
+		// Mark that the items and total have been calculated.
+		$this->items_calculated = true;
 		$this->total_calculated = true;
 
 		return $this->cart_total->get();
@@ -251,7 +322,29 @@ abstract class Abstract_Cart implements Cart_Interface {
 			$subtotals[] = Factory::to_precision_value( $item['sub_total'] );
 		}
 
-		$this->cart_subtotal = Precision_Value::sum( ...$subtotals );
+		$subtotal = Precision_Value::sum( ...$subtotals );
+
+		/**
+		 * Filters the additional values in the cart in order to add additional fees or discounts.
+		 *
+		 * Additional values must be instances of the `Precision_Value` class to ensure consistent behavior.
+		 *
+		 * @since 5.21.0
+		 *
+		 * @param Precision_Value[] $values         An array of `Precision_Value` instances representing additional fees or discounts.
+		 * @param array             $items          The items currently in the cart.
+		 * @param Precision_Value   $subtotal_value The total of the subtotals from the items.
+		 *
+		 * @var Precision_Value[] $additional_values
+		 */
+		$additional_values = apply_filters(
+			'tec_tickets_commerce_get_cart_additional_values_subtotal',
+			[],
+			$all_items,
+			$subtotal
+		);
+
+		$this->cart_subtotal = Precision_Value::sum( $subtotal, ...$additional_values );
 
 		// Set the subtotal as calculated.
 		$this->subtotal_calculated = true;
@@ -308,7 +401,11 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * @return array The items in the cart with the full set of parameters.
 	 */
 	protected function add_full_item_params( array $items ): array {
-		return array_map(
+		if ( $this->items_have_full_params ) {
+			return $this->full_param_items;
+		}
+
+		$this->full_param_items = array_map(
 			static function ( $item ) {
 				// Try to get the ticket object, and if it's not valid, remove it from the cart.
 				$item['obj'] = Tickets::load_ticket_object( $item['ticket_id'] );
@@ -327,6 +424,10 @@ abstract class Abstract_Cart implements Cart_Interface {
 			},
 			$items
 		);
+
+		$this->items_have_full_params = true;
+
+		return $this->full_param_items;
 	}
 
 	/**
@@ -377,6 +478,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 					),
 					'5.21.0'
 				);
+
 				return $this->cart_total;
 
 			default:
@@ -389,24 +491,29 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 *
 	 * @since 5.21.0
 	 *
-	 * @param string $type The type of item to get from the cart. Use 'all' to get all items.
+	 * @param string $type  The type of item to get from the item array. Use 'all' to get all items.
+	 * @param ?array $items The items to filter. If omitted, items will be retrieved from the cart.
 	 *
-	 * @return array The items in the cart.
+	 * @return array The filtered items.
 	 */
-	protected function get_items_by_type( string $type ): array {
-		$items = $this->get_items();
-
-		// Filter the items if we have something other than 'all' as the type.
-		if ( 'all' !== $type ) {
-			$items = array_filter(
-				$items,
-				static function ( $item ) use ( $type ) {
-					return $type === ( $item['type'] ?? 'ticket' );
-				}
-			);
+	protected function filter_items_by_type( string $type, ?array $items = null ): array {
+		// Get the items from the cart if they aren't provided.
+		if ( null === $items ) {
+			$items = $this->get_items();
 		}
 
-		return $items;
+		// If the type is 'all', then no filtering is needed.
+		if ( 'all' === $type ) {
+			return $items;
+		}
+
+		// Filter the items if we have something other than 'all' as the type.
+		return array_filter(
+			$items,
+			static function ( $item ) use ( $type ) {
+				return $type === ( $item['type'] ?? 'ticket' );
+			}
+		);
 	}
 
 	/**
@@ -438,8 +545,10 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * @return void
 	 */
 	protected function reset_calculations() {
-		$this->subtotal_calculated = false;
-		$this->total_calculated    = false;
+		$this->items_calculated       = false;
+		$this->items_have_full_params = false;
+		$this->subtotal_calculated    = false;
+		$this->total_calculated       = false;
 	}
 
 	/**

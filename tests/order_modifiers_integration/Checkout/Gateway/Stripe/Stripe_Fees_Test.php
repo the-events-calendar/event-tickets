@@ -366,13 +366,6 @@ class Stripe_Fees_Test extends Controller_Test_Case {
 	}
 
 	/**
-	 * @after
-	 */
-	public function breakdown() {
-		$this->make_controller()->reset_fees_and_subtotal();
-	}
-
-	/**
 	 * @test
 	 * @dataProvider order_totals_data_provider
 	 * Ensures the order totals are calculated correctly for tickets and fees using the Stripe gateway.

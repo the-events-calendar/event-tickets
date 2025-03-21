@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Models;
 
 use TEC\Tickets\Commerce\Cart\Cart_Interface;
 use TEC\Tickets\Commerce\Traits\Type;
+use TEC\Tickets\Commerce\Values\Float_Value;
 use TEC\Tickets\Commerce\Values\Precision_Value;
 
 /**
@@ -40,13 +41,15 @@ class Coupon extends Order_Modifier {
 	 */
 	public function get_discount_amount( float $subtotal ): float {
 		if ( 'flat' === $this->sub_type ) {
-			return -1 * $this->raw_amount;
+			/** @var Float_Value $amount */
+			$amount = $this->attributes['raw_amount'];
+			return $amount->invert_sign()->get();
 		}
 
 		$base_price = new Precision_Value( $subtotal );
 		$discount   = $base_price->multiply( $this->attributes['raw_amount'] );
 
-		return -1 * $discount->get();
+		return $discount->invert_sign()->get();
 	}
 
 	/**
@@ -59,7 +62,7 @@ class Coupon extends Order_Modifier {
 	 */
 	public function add_to_cart( Cart_Interface $cart, int $quantity = 1 ) {
 		$cart->upsert_item(
-			$this->get_unique_type_id( $this->id, 'coupon' ),
+			$this->get_type_id(),
 			$quantity,
 			[ 'type' => 'coupon' ]
 		);
@@ -75,6 +78,17 @@ class Coupon extends Order_Modifier {
 	 * @return void
 	 */
 	public function remove_from_cart( Cart_Interface $cart ) {
-		$cart->remove_item( $this->get_unique_type_id( $this->id, 'coupon' ) );
+		$cart->remove_item( $this->get_type_id() );
+	}
+
+	/**
+	 * Get the unique type ID for the coupon.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @return string The unique type ID.
+	 */
+	public function get_type_id(): string {
+		return $this->get_unique_type_id( $this->id, 'coupon' );
 	}
 }
