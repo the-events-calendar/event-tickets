@@ -80,6 +80,11 @@ class Agnostic_Cart extends Abstract_Cart {
 	 * @param string $hash The hash to set.
 	 */
 	public function set_hash( $hash ) {
+		// If the cart hash matches what we already have, don't set it again.
+		if ( $this->get_hash() === $hash ) {
+			return;
+		}
+
 		parent::set_hash( $hash );
 		$this->load_items_from_transient();
 	}
