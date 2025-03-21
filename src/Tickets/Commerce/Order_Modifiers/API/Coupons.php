@@ -21,6 +21,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon_Modifier_Manager as Ma
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Coupons as Coupons_Repository;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Coupons as CouponsTrait;
 use TEC\Tickets\Commerce\Values\Currency_Value;
+use TEC\Tickets\Commerce\Values\Legacy_Value_Factory;
 use TEC\Tickets\Commerce\Values\Precision_Value;
 use WP_Error;
 use WP_REST_Request as Request;
@@ -238,7 +239,6 @@ class Coupons extends Base_API {
 
 			// Store the previous total for use with the coupon calculation.
 			$original_total = Currency_Value::create_from_float( $cart->get_cart_total() );
-			$original_subtotal = new Precision_Value( $cart->get_cart_subtotal() );
 
 			// Remove any other coupons from the cart.
 			$other_coupons = $cart->get_items_in_cart( false, 'coupon' );
@@ -250,8 +250,9 @@ class Coupons extends Base_API {
 			$coupon->add_to_cart( $cart );
 			$cart->save();
 
-			$cart_total = Currency_Value::create_from_float( $cart->get_cart_total() );
-			$discount   = Currency_Value::create_from_float( $coupon->get_discount_amount( $original_subtotal->get() ) );
+			$calculated_coupon = $cart->get_calculated_items( 'coupon' )[ $coupon->get_type_id() ];
+			$cart_total        = Currency_Value::create_from_float( $cart->get_cart_total() );
+			$discount          = Legacy_Value_Factory::to_currency_value( $calculated_coupon['sub_total'] );
 
 			// Update the payment intent with the new value.
 			if ( $this->is_using_stripe() && $request->has_param( 'payment_intent_id' ) ) {
