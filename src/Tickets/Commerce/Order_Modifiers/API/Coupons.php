@@ -22,7 +22,6 @@ use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Coupons as Coupons_Reposit
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Coupons as CouponsTrait;
 use TEC\Tickets\Commerce\Values\Currency_Value;
 use TEC\Tickets\Commerce\Values\Legacy_Value_Factory;
-use TEC\Tickets\Commerce\Values\Precision_Value;
 use WP_Error;
 use WP_REST_Request as Request;
 use WP_REST_Response as Response;

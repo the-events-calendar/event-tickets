@@ -10,13 +10,11 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe;
 
 use Closure;
-use Exception;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
-use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Assets;
 use WP_Post;
