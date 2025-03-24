@@ -247,12 +247,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 		// Set up the new subtotal that includes the additional values.
 		$subtotal = Precision_Value::sum( $subtotal, ...$additional_values );
 
-		// If the subtotal is zero or less, return the subtotal without further calculations.
-		if ( $subtotal->get() <= 0.0 ) {
-			$this->total_calculated = true;
-			return $this->cart_total->get();
-		}
-
+		// Get the subtotals for the dynamic items.
 		$callable_subtotals = $this->calculate_dynamic_items( $all_items, $subtotal );
 
 		// Calculate the new value from all of the subtotals.
