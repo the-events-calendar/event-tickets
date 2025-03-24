@@ -226,16 +226,21 @@ class Precision_Value extends Base_Value {
 	 * @return static The new value object.
 	 */
 	public function multiply( Precision_Value $value ): Precision_Value {
+		// Get the common precision level.
 		$common_precision  = max( $this->get_precision(), $value->get_precision() );
-		$precision_product = $this->get_precision() * $value->get_precision();
 
+		// Convert both numbers to the common precision level.
 		$current_value = $this->convert_to_precision( $common_precision );
 		$value         = $value->convert_to_precision( $common_precision );
 
+		// The calculation precision level will be the common precision times 2.
+		$calculation_precision = $common_precision * 2;
+
+		// Multiply the values together.
 		$new_value = $current_value->value * $value->value;
 
 		return new static(
-			(float) ( $new_value / ( 10 ** $precision_product ) ),
+			(float) ( $new_value / ( 10 ** $calculation_precision ) ),
 			$this->get_precision()
 		);
 	}

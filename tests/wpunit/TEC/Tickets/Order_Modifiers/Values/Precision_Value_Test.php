@@ -202,6 +202,7 @@ class Precision_Value_Test extends WPTestCase {
 		yield 'Multiplication by 3' => [ new PV( 1.23 ), new PV( 3 ), '3.69' ];
 		yield 'Multiply 10 by 10 with the same precision' => [ new PV( 10, 2 ), new PV( 10, 2 ), '100.00' ];
 		yield 'Multiply 10 by 10 with different precision' => [ new PV( 10, 2 ), new PV( 10, 3 ), '100.00' ];
+		yield 'Multiply 25 by 0.5 with different precision' => [ new PV( 25, 1 ), new PV( 0.5, 4 ), '12.5' ];
 	}
 
 	public function raw_values_as_integers_provider() {

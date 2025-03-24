@@ -114,6 +114,10 @@ class Percent_Value_Test extends WPTestCase {
 		yield '25 percent of 50' => [ 25, new PV( 50 ), '12.50' ];
 		yield '17 percent of 1000' => [ 17, new PV( 1000 ), '170.00' ];
 		yield '1.5 percent of 10' => [ 1.5, new PV( 10 ), '0.15' ];
+
+		// Cases with a different precision.
+		yield '25 percent of 50 with 1 precision' => [ 25, new PV( 50, 1 ), '12.5' ];
+		yield '17 percent of 1000 with 1 precision' => [ 17, new PV( 1000, 1 ), '170.0' ];
 	}
 
 	public function format_data_provider(): Generator {

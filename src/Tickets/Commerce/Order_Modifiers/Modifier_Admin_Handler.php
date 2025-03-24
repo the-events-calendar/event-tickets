@@ -172,7 +172,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 			->add_localize_script(
 				'etOrderModifiersAmountField',
 				function () {
-					$code = Currency::get_currency_code();
+					$code        = Currency::get_currency_code();
 					$percent_max = 'coupon' === $this->get_modifier_type_from_request()
 						? 100
 						: 999999999;
