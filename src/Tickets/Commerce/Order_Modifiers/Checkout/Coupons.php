@@ -253,22 +253,10 @@ class Coupons extends Controller_Contract {
 		$cart      = $cart_page->get_repository();
 
 		// If we don't have any coupons, we have nothing to do.
-		$coupons = $cart->get_items_in_cart( true, 'coupon' );
+		$coupons = $cart->get_calculated_items( 'coupon' );
 		if ( empty( $coupons ) ) {
 			return $items;
 		}
-
-		// Get the subtotals of the cart items as Precision_Value objects.
-		$subtotals = array_map(
-			static fn( $item ) => new Precision_Value( $item['sub_total'] ),
-			$items
-		);
-
-		// Update the coupon values with the correct subtotals.
-		$coupons = $cart->update_items_with_subtotal(
-			$coupons,
-			Precision_Value::sum( ...$subtotals )->get(),
-		);
 
 		// Ensure the coupons have floats instead of Value objects for the sub_total.
 		$coupons = array_map(

@@ -549,7 +549,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 *
 	 * @return array The updated items.
 	 */
-	public function update_items_with_subtotal( array $items, ?float $subtotal = null ): array {
+	protected function update_items_with_subtotal( array $items, ?float $subtotal = null ): array {
 		$subtotal ??= $this->get_cart_subtotal();
 		foreach ( $items as &$item ) {
 			if ( ! is_callable( $item['sub_total'] ) ) {
