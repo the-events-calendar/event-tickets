@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-03-17T21:50:51+00:00\n"
+"POT-Creation-Date: 2025-03-24T20:54:51+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: event-tickets\n"
@@ -601,12 +601,12 @@ msgid "Payment"
 msgstr ""
 
 #: src/admin-views/commerce/orders/single/order-items-coupons.php:22
-#: src/Tickets/Commerce/Order_Modifiers/Modifiers/Coupon.php:69
+#: src/Tickets/Commerce/Order_Modifiers/Modifiers/Coupon.php:71
 #: src/Tickets/Commerce/Order_Modifiers/Traits/Valid_Types.php:97
 msgid "Coupons"
 msgstr ""
 
-#: src/admin-views/commerce/orders/single/order-items-fees.php:22
+#: src/admin-views/commerce/orders/single/order-items-fees.php:24
 #: src/Tickets/Commerce/Order_Modifiers/Modifiers/Fee.php:69
 #: src/Tickets/Commerce/Order_Modifiers/Traits/Valid_Types.php:102
 msgid "Fees"
@@ -678,7 +678,7 @@ msgid "Refund"
 msgstr ""
 
 #: src/admin-views/commerce/reports/attendees.php:27
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:558
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:562
 #: src/Tribe/Attendees.php:1204
 #: src/Tribe/Attendees_Table.php:745
 msgid "Export"
@@ -687,7 +687,7 @@ msgstr ""
 #: src/admin-views/commerce/reports/attendees.php:52
 #: src/admin-views/commerce/reports/orders.php:36
 #: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:84
-#: src/Tickets/Commerce/Order.php:286
+#: src/Tickets/Commerce/Order.php:287
 #: src/Tribe/Commerce/PayPal/Orders/Report.php:326
 msgid "Search Orders"
 msgstr ""
@@ -712,11 +712,19 @@ msgstr ""
 msgid "Sales Totals"
 msgstr ""
 
-#: src/admin-views/commerce/reports/orders/summary.php:116
+#: src/admin-views/commerce/reports/orders/summary.php:117
 msgid "Total Tickets Ordered"
 msgstr ""
 
-#: src/admin-views/commerce/reports/orders/summary.php:122
+#: src/admin-views/commerce/reports/orders/summary.php:133
+msgid "Total Fees Collected"
+msgstr ""
+
+#: src/admin-views/commerce/reports/orders/summary.php:149
+msgid "Total Discounts"
+msgstr ""
+
+#: src/admin-views/commerce/reports/orders/summary.php:165
 msgid "Total Ticket Sales"
 msgstr ""
 
@@ -748,7 +756,7 @@ msgid "Seats Assignment"
 msgstr ""
 
 #: src/admin-views/editor/button-view-orders.php:45
-#: src/Tickets/Commerce/Order.php:285
+#: src/Tickets/Commerce/Order.php:286
 msgid "View Orders"
 msgstr ""
 
@@ -1307,7 +1315,7 @@ msgid "Amount"
 msgstr ""
 
 #: src/admin-views/order_modifiers/coupon-edit.php:98
-msgid "Amount is required"
+msgid "Amount is required. A Percentage amount cannot be more than 100%."
 msgstr ""
 
 #: src/admin-views/order_modifiers/coupon-edit.php:106
@@ -1397,7 +1405,7 @@ msgid "Status"
 msgstr ""
 
 #: src/admin-views/order_modifiers/modifier-table.php:26
-#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:258
+#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:263
 msgid "Coupons &amp; Fees"
 msgstr ""
 
@@ -2639,9 +2647,9 @@ msgstr ""
 
 #: src/Tickets/Admin/Tickets/List_Table.php:549
 #: src/Tickets/Commerce/Admin/Orders_Page.php:108
-#: src/Tickets/Commerce/Order.php:253
-#: src/Tickets/Commerce/Order.php:278
-#: src/Tickets/Commerce/Reports/Orders.php:235
+#: src/Tickets/Commerce/Order.php:254
+#: src/Tickets/Commerce/Order.php:279
+#: src/Tickets/Commerce/Reports/Orders.php:238
 #: src/Tickets/Commerce/Reports/Orders_Tab.php:33
 #: src/Tribe/Commerce/PayPal/Main.php:500
 #: src/Tickets/Blocks/Tickets/app/editor/action-buttons/orders/template.js:25
@@ -2748,7 +2756,7 @@ msgstr ""
 #: src/Tickets/Commerce/Admin/Notices.php:93
 #: src/Tickets/Commerce/Admin/Notices.php:140
 #: src/Tickets/Commerce/Admin/Notices.php:195
-#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Coupon_Table.php:189
+#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Coupon_Table.php:187
 msgid "Learn More"
 msgstr ""
 
@@ -2942,7 +2950,7 @@ msgstr ""
 #: src/Tickets/Commerce/Admin_Tables/Orders.php:115
 #: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:162
 #: src/Tickets/Commerce/Gateways/Stripe/Payment_Intent_Handler.php:336
-#: src/Tickets/Commerce/Order.php:279
+#: src/Tickets/Commerce/Order.php:280
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:98
 msgid "Order"
 msgstr ""
@@ -2967,39 +2975,39 @@ msgstr ""
 msgid "No matching orders found."
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:355
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:359
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:177
 msgid "%1$s"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:459
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:463
 msgid "Search by Purchaser Name"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:460
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:464
 msgid "Search by Purchaser Email"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:461
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:465
 msgid "Search by Gateway"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:462
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:466
 #: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:689
 msgid "Search by Gateway ID"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:463
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:467
 #: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:690
 msgid "Search by Order ID"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:550
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:554
 #: src/Tribe/Attendees_Table.php:744
 msgid "Print"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:648
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:652
 msgid "orders"
 msgstr ""
 
@@ -3079,7 +3087,7 @@ msgid "Email not available"
 msgstr ""
 
 #. translators: %s: property name
-#: src/Tickets/Commerce/Cart/Abstract_Cart.php:364
+#: src/Tickets/Commerce/Cart/Abstract_Cart.php:456
 msgid "Accessing the %s property directly is deprecated."
 msgstr ""
 
@@ -7249,46 +7257,46 @@ msgstr ""
 msgid "Unexpected response from PayPal when on boarding"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:480
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:518
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:482
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:520
 msgid "Order ID in PayPal"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:493
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:495
 msgid "Payer ID token from PayPal"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:531
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:533
 #: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:368
 msgid "To which status the failing should change this order to"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:544
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:546
 #: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:381
 msgid "Why this particular order has failed."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:585
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:587
 msgid "Creating new PayPal order failed. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:586
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:588
 msgid "Your PayPal order was cancelled."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:587
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:589
 msgid "Provided Order id is not valid."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:588
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:590
 msgid "There was a problem while processing your payment, please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:589
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:591
 msgid "Your payment was declined."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:590
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:592
 msgid "There was a problem with the Order status change, please try again."
 msgstr ""
 
@@ -7813,177 +7821,177 @@ msgstr ""
 msgid "(deleted)"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:280
 #: src/Tickets/Commerce/Order.php:281
+#: src/Tickets/Commerce/Order.php:282
 msgid "Add New Order"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:282
+#: src/Tickets/Commerce/Order.php:283
 msgid "Edit Order"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:283
+#: src/Tickets/Commerce/Order.php:284
 msgid "New Order"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:284
+#: src/Tickets/Commerce/Order.php:285
 #: src/Tickets/Emails/JSON_LD/Order_Schema.php:77
 msgid "View Order"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:287
+#: src/Tickets/Commerce/Order.php:288
 msgid "No orders found."
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:288
+#: src/Tickets/Commerce/Order.php:289
 msgid "No orders found in Trash."
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:289
+#: src/Tickets/Commerce/Order.php:290
 msgid "All Orders"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:290
+#: src/Tickets/Commerce/Order.php:291
 msgid "Order Archives"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:291
+#: src/Tickets/Commerce/Order.php:292
 msgid "Order Attributes"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:292
+#: src/Tickets/Commerce/Order.php:293
 msgid "Insert into order"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:293
+#: src/Tickets/Commerce/Order.php:294
 msgid "Uploaded to this order"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:294
+#: src/Tickets/Commerce/Order.php:295
 msgid "Filter orders list"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:295
+#: src/Tickets/Commerce/Order.php:296
 msgid "Filter by date"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:296
+#: src/Tickets/Commerce/Order.php:297
 msgid "Orders list navigation"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:297
+#: src/Tickets/Commerce/Order.php:298
 msgid "Orders list"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:298
+#: src/Tickets/Commerce/Order.php:299
 msgid "Order published."
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:299
+#: src/Tickets/Commerce/Order.php:300
 msgid "Order published privately."
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:300
+#: src/Tickets/Commerce/Order.php:301
 msgid "Order reverted to draft."
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:301
+#: src/Tickets/Commerce/Order.php:302
 msgid "Order trashed."
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:302
+#: src/Tickets/Commerce/Order.php:303
 msgid "Order scheduled."
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:303
+#: src/Tickets/Commerce/Order.php:304
 msgid "Order updated."
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:304
+#: src/Tickets/Commerce/Order.php:305
 msgctxt "navigation link block title"
 msgid "Order Link"
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:305
+#: src/Tickets/Commerce/Order.php:306
 msgctxt "navigation link block description"
 msgid "A link to an order."
 msgstr ""
 
 #. translators: %s: the coupon code
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:270
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:271
 msgid "Coupon \"%s\" applied successfully."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:304
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:588
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:306
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:590
 msgid "Invalid coupon."
 msgstr ""
 
 #. translators: %s: the coupon code
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:336
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:341
 msgid "Coupon \"%s\" removed successfully."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:406
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:412
 msgid "The coupon ID."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:411
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:456
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:511
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:417
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:462
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:516
 msgid "The coupon slug."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:415
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:421
 msgid "The coupon name."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:419
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:534
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:425
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:539
 msgid "The coupon sub type."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:423
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:529
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:429
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:534
 msgid "The coupon amount."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:427
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:523
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:433
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:528
 msgid "The coupon status."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:431
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:541
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:437
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:546
 msgid "The coupon start time."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:436
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:547
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:442
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:552
 msgid "The coupon end time."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:465
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:471
 msgid "The cart hash."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:471
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:477
 msgid "The Stripe payment intent to apply the coupon to."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:477
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:482
 msgid "The purchaser data."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:487
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:492
 msgid "The purchaser name."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:492
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:497
 msgid "The purchaser email."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:517
+#: src/Tickets/Commerce/Order_Modifiers/API/Coupons.php:522
 msgid "The coupon display name."
 msgstr ""
 
@@ -7995,36 +8003,44 @@ msgstr ""
 msgid "The selected fees for the ticket."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Checkout/Coupons.php:136
+#: src/Tickets/Commerce/Order_Modifiers/Checkout/Abstract_Fees.php:504
+msgid "This method is no longer used."
+msgstr ""
+
+#: src/Tickets/Commerce/Order_Modifiers/Checkout/Coupons.php:134
 msgid "Unable to determine the coupon to remove."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Checkout/Coupons.php:137
+#: src/Tickets/Commerce/Order_Modifiers/Checkout/Coupons.php:135
 msgid "There was an error applying the coupon. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Checkout/Coupons.php:138
+#: src/Tickets/Commerce/Order_Modifiers/Checkout/Coupons.php:136
 msgid "Coupon code cannot be empty."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Checkout/Coupons.php:139
+#: src/Tickets/Commerce/Order_Modifiers/Checkout/Coupons.php:137
 msgid "There was an error removing the coupon. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Checkout/Coupons.php:140
+#: src/Tickets/Commerce/Order_Modifiers/Checkout/Coupons.php:138
 msgid "Failed to remove the coupon. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Checkout/Coupons.php:141
+#: src/Tickets/Commerce/Order_Modifiers/Checkout/Coupons.php:139
 msgid "Invalid coupon code."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Controller.php:227
+#: src/Tickets/Commerce/Order_Modifiers/Controller.php:224
 msgid "The coupon functionality is now included for all sites."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Modifiers/Coupon.php:58
+#: src/Tickets/Commerce/Order_Modifiers/Modifiers/Coupon.php:60
 msgid "Coupon"
+msgstr ""
+
+#: src/Tickets/Commerce/Order_Modifiers/Modifiers/Coupon.php:250
+msgid "Percentage must be less than or equal to 100."
 msgstr ""
 
 #: src/Tickets/Commerce/Order_Modifiers/Modifiers/Fee.php:58
@@ -8065,41 +8081,41 @@ msgstr ""
 msgid "Meta key is required to insert or update meta data."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:317
-#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:419
+#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:322
+#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:424
 msgid "Invalid modifier."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:377
+#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:382
 msgid "Invalid Modifier ID provided."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:389
+#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:394
 msgid "Error retrieving modifier data."
 msgstr ""
 
 #. translators: 1: the modifier name 2:error message
-#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:436
+#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:441
 msgid "Error saving %1$s: %2$s"
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:551
+#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:556
 msgid "Nonce verification failed."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:570
+#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:575
 msgid "Invalid modifier type."
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:620
+#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:625
 msgid "Coupon saved successfully!"
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:623
+#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:628
 msgid "Fee saved successfully!"
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:626
+#: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:631
 msgid "Modifier saved successfully!"
 msgstr ""
 
@@ -8111,7 +8127,7 @@ msgstr ""
 msgid "Used"
 msgstr ""
 
-#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Coupon_Table.php:194
+#: src/Tickets/Commerce/Order_Modifiers/Table_Views/Coupon_Table.php:192
 msgid "Create a coupon for a discount to be applied at checkout. Coupons can only be used with Tickets Commerce transactions."
 msgstr ""
 
@@ -8276,7 +8292,7 @@ msgctxt "attendee export"
 msgid "Purchaser Email Address"
 msgstr ""
 
-#: src/Tickets/Commerce/Reports/Data/Order_Summary.php:148
+#: src/Tickets/Commerce/Reports/Data/Order_Summary.php:184
 #: src/Tribe/Tickets_Handler.php:121
 #: src/views/blocks/tickets/extra-available-unlimited.php:19
 #: src/views/v2/tickets/item/extra/available/unlimited.php:56
@@ -8290,32 +8306,32 @@ msgid "Unlimited"
 msgstr ""
 
 #. Translators: %1$s: the post/event title, %2$d: the post/event ID.
-#: src/Tickets/Commerce/Reports/Orders.php:56
+#: src/Tickets/Commerce/Reports/Orders.php:59
 #: src/Tickets/Commerce/Reports/Tabbed_View.php:199
 #: src/Tribe/Commerce/Orders_Tabbed_View.php:142
 msgctxt "orders report screen heading"
 msgid "Orders for: %1$s [#%2$d]"
 msgstr ""
 
-#: src/Tickets/Commerce/Reports/Orders.php:116
+#: src/Tickets/Commerce/Reports/Orders.php:119
 #: src/Tribe/Commerce/PayPal/Main.php:1790
 msgid "Sales report"
 msgstr ""
 
-#: src/Tickets/Commerce/Reports/Orders.php:157
+#: src/Tickets/Commerce/Reports/Orders.php:160
 #: src/Tribe/Commerce/PayPal/Main.php:1816
 msgid "Report"
 msgstr ""
 
-#: src/Tickets/Commerce/Reports/Orders.php:233
+#: src/Tickets/Commerce/Reports/Orders.php:236
 msgid "See Tickets Commerce purchases for this %s"
 msgstr ""
 
-#: src/Tickets/Commerce/Reports/Orders.php:267
+#: src/Tickets/Commerce/Reports/Orders.php:270
 msgid "Tickets Commerce Orders"
 msgstr ""
 
-#: src/Tickets/Commerce/Reports/Orders.php:331
+#: src/Tickets/Commerce/Reports/Orders.php:334
 msgctxt "Browser title"
 msgid "%s - Tickets Commerce Orders"
 msgstr ""
@@ -13318,7 +13334,7 @@ msgstr ""
 msgid "Email:"
 msgstr ""
 
-#: src/views/v2/commerce/order/details/fees.php:37
+#: src/views/v2/commerce/order/details/fees.php:35
 msgid "Fees:"
 msgstr ""
 
