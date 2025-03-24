@@ -1,4 +1,0 @@
-Significance: patch
-Type: fix
-
-Fix the input field for Fees (and Coupons) when the type is Percent and the thousands/decimal separators are set to "." and ","
