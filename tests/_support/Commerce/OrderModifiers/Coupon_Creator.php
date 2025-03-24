@@ -20,7 +20,7 @@ trait Coupon_Creator {
 	/**
 	 * Create a coupon.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param array $args The coupon arguments.
 	 *
@@ -51,7 +51,7 @@ trait Coupon_Creator {
 	/**
 	 * Create multiple coupons.
 	 *
-	 * @since TBD
+	 * @since 5.21.0
 	 *
 	 * @param int   $how_many The number of coupons to create.
 	 * @param array $args     The coupon arguments.
