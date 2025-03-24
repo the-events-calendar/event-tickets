@@ -253,29 +253,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 			return $this->cart_total->get();
 		}
 
-		$callable_subtotals = [];
-
-		// Get the items that have a dynamic subtotal.
-		$callable_items = array_filter(
-			$all_items,
-			static fn( $item ) => is_callable( $item['sub_total'] )
-		);
-
-		// Calculate the items that are dynamic. These items are not included in the subtotal calculation.
-		$callable_items = $this->update_items_with_subtotal( $callable_items, $subtotal->get() );
-
-		/*
-		 * With each item, we need to see if it is a positive value or a negative value.
-		 * If it is a positive, we can just add it and move on. But if it is negative, then
-		 * we need to ensure that it does not take the cart value less than zero.
-		 *
-		 * If the item would take the cart value below zero, calculate the amount that
-		 * would take it exactly to zero, and set that as the item's value.
-		 */
-		foreach ( $callable_items as $id => $item ) {
-			$this->calculated_items[ $id ] = $item;
-			$callable_subtotals[]          = Factory::to_precision_value( $item['sub_total'] );
-		}
+		$callable_subtotals = $this->calculate_dynamic_items( $all_items, $subtotal );
 
 		// Calculate the new value from all of the subtotals.
 		$total = Precision_Value::sum(
@@ -584,5 +562,18 @@ abstract class Abstract_Cart implements Cart_Interface {
 		}
 
 		return $items;
+	}
+
+	/**
+	 * Handle the calculation of dynamic items.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param array           $items    Array of items to calculate.
+	 * @param Precision_Value $subtotal The subtotal to use for the calculation.
+	 *
+	 * @return Precision_Value[] The calculated subtotals as Precision_Value objects.
+	 */
+	protected function calculate_dynamic_items( array $items, Precision_Value $subtotal ): array {
 	}
 }
