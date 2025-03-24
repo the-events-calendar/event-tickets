@@ -575,5 +575,76 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * @return Precision_Value[] The calculated subtotals as Precision_Value objects.
 	 */
 	protected function calculate_dynamic_items( array $items, Precision_Value $subtotal ): array {
+		// Get the items that have a dynamic subtotal.
+		$callable_items = array_filter(
+			$items,
+			static fn( $item ) => is_callable( $item['sub_total'] )
+		);
+
+		// If we don't have any callable items, just return the subtotal.
+		if ( empty( $callable_items ) ) {
+			return [];
+		}
+
+		// Calculate the items that are dynamic. These items are not included in the subtotal calculation.
+		$callable_items = $this->update_items_with_subtotal( $callable_items, $subtotal->get() );
+
+		// Separate the dynamic items into items that raise the cart prices and items that lower the price.
+		$positive_items = array_filter(
+			$callable_items,
+			static fn( $item ) => $item['sub_total']->get_decimal() >= 0.0
+		);
+
+		// The positive items can be added to the cart total without any further calculations.
+		$subtotals = [];
+		foreach ( $positive_items as $id => $item ) {
+			$subtotals[]                   = Factory::to_precision_value( $item['sub_total'] );
+			$this->calculated_items[ $id ] = $item;
+		}
+
+		$negative_items = array_filter(
+			$callable_items,
+			static fn( $item ) => $item['sub_total']->get_decimal() < 0.0
+		);
+
+		// If we don't have any negative items, just return the positive subtotals.
+		if ( empty ( $negative_items ) ) {
+			return $subtotals;
+		}
+
+		$running_total = Precision_Value::sum( $subtotal, ...$subtotals );
+		foreach ( $negative_items as $id => $item ) {
+			$item_subtotal = Factory::to_precision_value( $item['sub_total'] );
+
+			// If the new total with the item is still zero or more, add the item and move on.
+			$with_item = $running_total->add( $item_subtotal );
+			if ( $with_item->get() >= 0.0 ) {
+				$running_total                 = $with_item;
+				$this->calculated_items[ $id ] = $item;
+				$subtotals[]                   = $item_subtotal;
+				continue;
+			}
+
+			/*
+			 * The total with the last item is negative. We need to take this value,
+			 * and add it to the item's subtotal to get the exact amount that would
+			 * take the cart total to zero.
+			 *
+			 * e.g $5 + (-$6) = -$1. We need to add the -$1 to the discount of $6 to get $5.
+			 *
+			 * The item subtotal is already negative, and the $with_item is also negative,
+			 * so we need to invert the sign of one of them before adding them together.
+			 */
+			$difference = $item_subtotal->add( $with_item->invert_sign() );
+
+			// Update the item with the new sub_total.
+			$item['sub_total'] = Factory::to_legacy_value( $difference );
+
+			// Store the item in the calculated items, add the $difference value to the subtotals.
+			$this->calculated_items[ $id ] = $item;
+			$subtotals[]                   = $difference;
+		}
+
+		return $subtotals;
 	}
 }
