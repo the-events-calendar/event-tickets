@@ -137,19 +137,7 @@ final class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function set_currency_defaults() {
-		$currency_code = Currency::get_currency_code();
-
-		switch ( Currency::get_currency_symbol_position( $currency_code ) ) {
-			case 'postfix':
-				$currency_symbol_position = 'after';
-				break;
-
-			case 'prefix':
-			default:
-				$currency_symbol_position = 'before';
-				break;
-		}
-
+		$currency_code       = Currency::get_currency_code();
 		$thousands_separator = Currency::get_currency_separator_thousands( $currency_code );
 		$decimal_separator   = Currency::get_currency_separator_decimal( $currency_code );
 
@@ -157,7 +145,7 @@ final class Controller extends Controller_Contract {
 			Currency::get_currency_symbol( $currency_code ),
 			$thousands_separator,
 			$decimal_separator,
-			$currency_symbol_position
+			Currency::get_currency_symbol_position( $currency_code )
 		);
 
 		Percent_Value::set_defaults(

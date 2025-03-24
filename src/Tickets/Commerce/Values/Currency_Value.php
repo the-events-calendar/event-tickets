@@ -70,7 +70,7 @@ class Currency_Value extends Base_Value {
 		$this->currency_symbol          = $currency_symbol;
 		$this->thousands_separator      = $thousands_separator;
 		$this->decimal_separator        = $decimal_separator;
-		$this->currency_symbol_position = $currency_symbol_position;
+		$this->currency_symbol_position = self::map_position( $currency_symbol_position );
 		parent::__construct( $value );
 	}
 
@@ -181,9 +181,10 @@ class Currency_Value extends Base_Value {
 		?string $decimal_separator = null,
 		?string $currency_symbol_position = null
 	) {
+		$position       = self::map_position( $currency_symbol_position ?? self::$defaults['currency_symbol_position'] );
 		self::$defaults = [
 			'currency_symbol'          => $currency_symbol ?? self::$defaults['currency_symbol'],
-			'currency_symbol_position' => $currency_symbol_position ?? self::$defaults['currency_symbol_position'],
+			'currency_symbol_position' => $position,
 		];
 
 		self::set_separator_defaults( $decimal_separator, $thousands_separator );
@@ -269,5 +270,29 @@ class Currency_Value extends Base_Value {
 			$this->decimal_separator,
 			$this->currency_symbol_position
 		);
+	}
+
+	/**
+	 * Map a position to a valid value.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param string $position The position to map.
+	 *
+	 * @return string The mapped position, either 'before' or 'after'.
+	 */
+	protected static function map_position( string $position ): string {
+		switch ( $position ) {
+			case 'before':
+			case 'after':
+				return $position;
+
+			case 'postfix':
+				return 'after';
+
+			case 'prefix':
+			default:
+				return 'before';
+		}
 	}
 }
