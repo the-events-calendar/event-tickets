@@ -527,4 +527,53 @@ class Coupons_Test extends Controller_Test_Case {
 		Assert::assertEquals( 11.28, $order->subtotal->get_float(), 'The order subtotal should be 11.28' );
 		Assert::assertEquals( 0, $order->total_value->get_float(), 'The order total value should be zero' );
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_change_coupon_value_to_match_maximum_discount() {
+		$this->make_controller()->register();
+		$post = static::factory()->post->create(
+			[ 'post_title' => 'The Event' ],
+		);
+
+		// Create a ticket.
+		$ticket_id = $this->create_tc_ticket( $post, 11.28 );
+
+		// Create a $12 off coupon.
+		$coupon = $this->create_coupon(
+			[
+				'raw_amount' => 12,
+				'sub_type'   => 'flat',
+			]
+		);
+
+		// Get the cart and add ticket and coupon.
+		/** @var Commerce_Cart $cart */
+		$cart = tribe( Commerce_Cart::class );
+		$cart->add_ticket( $ticket_id );
+		$coupon->add_to_cart( $cart->get_repository() );
+
+		// The cart shouldn't allow for negative values.
+		Assert::assertEquals( 0, $cart->get_cart_total() );
+
+		// Get the calculated items from the cart.
+		$items = $cart->get_repository()->get_calculated_items( 'all' );
+		Assert::assertEquals( 2, count( $items ), 'There should be a ticket and a coupon in the cart' );
+
+		// The coupon should have a value of 11.28.
+		$cart_coupon = $cart->get_repository()->get_calculated_items( 'coupon' )[ $coupon->get_type_id() ];
+		Assert::assertEquals( -11.28, $cart_coupon['sub_total']->get_float(), 'The coupon sub_total should be the maximum discount' );
+		Assert::assertEquals( -11.28, $cart_coupon['price'], 'The coupon price should be the maximum discount' );
+
+		// Generate the order and ensure that it has been created correctly.
+		$order = $this->create_order_from_cart();
+		Assert::assertEquals( '0', $order->total, 'The order total should be zero' );
+		Assert::assertEquals( 0, $order->total_value->get_float(), 'The order total value should be zero' );
+		Assert::assertEquals( 11.28, $order->subtotal->get_float(), 'The order subtotal should be 11.28' );
+		Assert::assertNotEmpty( $order->coupons, 'The order should have coupons' );
+		Assert::assertArrayHasKey( $coupon->get_type_id(), $order->coupons, 'The order should have the specific coupon' );
+		Assert::assertEquals( -11.28, $order->coupons[ $coupon->get_type_id() ]['price'], 'The order coupon price should be the maximum discount' );
+		Assert::assertEquals( -11.28, $order->coupons[ $coupon->get_type_id() ]['sub_total']->get_float(), 'The order coupon sub_total should be the maximum discount' );
+	}
 }
