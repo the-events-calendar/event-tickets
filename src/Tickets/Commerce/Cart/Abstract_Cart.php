@@ -264,7 +264,14 @@ abstract class Abstract_Cart implements Cart_Interface {
 		// Calculate the items that are dynamic. These items are not included in the subtotal calculation.
 		$callable_items = $this->update_items_with_subtotal( $callable_items, $subtotal->get() );
 
-		// Get the subtotals for the callable items as Precision_Value objects.
+		/*
+		 * With each item, we need to see if it is a positive value or a negative value.
+		 * If it is a positive, we can just add it and move on. But if it is negative, then
+		 * we need to ensure that it does not take the cart value less than zero.
+		 *
+		 * If the item would take the cart value below zero, calculate the amount that
+		 * would take it exactly to zero, and set that as the item's value.
+		 */
 		foreach ( $callable_items as $id => $item ) {
 			$this->calculated_items[ $id ] = $item;
 			$callable_subtotals[]          = Factory::to_precision_value( $item['sub_total'] );
