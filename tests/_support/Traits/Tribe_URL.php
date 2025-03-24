@@ -9,7 +9,7 @@ use Tribe\Tests\Traits\With_Uopz;
 /**
  * Trait Tribe_URL
  *
- * @since TBD
+ * @since 5.21.0
  */
 trait Tribe_URL {
 

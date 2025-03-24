@@ -20,7 +20,7 @@ use Tribe\Tickets\Test\Traits\PayPal_REST_Override;
 /**
  * Class Coupons_Test
  *
- * @since TBD
+ * @since 5.21.0
  */
 class Coupons_Test extends Controller_Test_Case {
 
