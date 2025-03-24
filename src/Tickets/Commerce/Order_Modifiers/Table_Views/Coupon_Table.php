@@ -166,8 +166,6 @@ class Coupon_Table extends Order_Modifier_Table {
 			'display_name' => [ 'display_name', true ],
 			'slug'         => [ 'slug', false ],
 			'raw_amount'   => [ 'raw_amount', false ],
-			'used'         => [ 'used', false ],
-			'remaining'    => [ 'remaining', false ],
 			'status'       => [ 'status', false ],
 		];
 	}
