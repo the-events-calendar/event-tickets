@@ -639,6 +639,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 
 			// Update the item with the new sub_total.
 			$item['sub_total'] = Factory::to_legacy_value( $difference );
+			$item['price']     = $difference->get();
 
 			// Store the item in the calculated items, add the $difference value to the subtotals.
 			$this->calculated_items[ $id ] = $item;
