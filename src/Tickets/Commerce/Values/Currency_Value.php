@@ -181,7 +181,7 @@ class Currency_Value extends Base_Value {
 		?string $decimal_separator = null,
 		?string $currency_symbol_position = null
 	) {
-		$position = self::map_position( $currency_symbol_position ?? self::$defaults['currency_symbol_position'] );
+		$position       = self::map_position( $currency_symbol_position ?? self::$defaults['currency_symbol_position'] );
 		self::$defaults = [
 			'currency_symbol'          => $currency_symbol ?? self::$defaults['currency_symbol'],
 			'currency_symbol_position' => $position,
