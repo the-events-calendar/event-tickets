@@ -608,7 +608,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 		);
 
 		// If we don't have any negative items, just return the positive subtotals.
-		if ( empty ( $negative_items ) ) {
+		if ( empty( $negative_items ) ) {
 			return $subtotals;
 		}
 
