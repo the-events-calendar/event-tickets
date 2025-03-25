@@ -201,7 +201,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.21.0] 2025-03-25 =
 
-* Feature - Add the ability to create Coupons that can be applied to Event Tickets. [ET-2189]
+* Feature - Add the ability to create Coupons that can be applied to ticket checkouts sold through TicketsCommerce. [ET-2189]
 * Fix - Fix the input field for Fees (and Coupons) when the type is Percent and the thousands/decimal separators are set to "." and ","
 * Language - 6 new strings added, 95 updated, 0 fuzzied, and 1 obsoleted.
 * Language - 21 new strings added, 106 updated, 5 fuzzied, and 9 obsoleted.
