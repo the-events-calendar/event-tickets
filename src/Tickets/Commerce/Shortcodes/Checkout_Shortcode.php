@@ -33,16 +33,36 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	public static $shortcode_id = 'checkout';
 
 	/**
-	 * {@inheritDoc}
+	 * Method used to save the template vars for this instance of shortcode.
+	 *
+	 * @since 5.1.9
+	 * @since 5.21.0 Updated the $items variable to retrieve all item types from the cart.
+	 *
+	 * @return void
 	 */
 	public function setup_template_vars() {
 		$cart          = tribe( Cart::class );
-		$items         = $cart->get_items_in_cart( true );
 		$cart_subtotal = Value::create( $cart->get_cart_subtotal() ?? 0 );
 		$cart_total    = Value::create( $cart->get_cart_total() ?? 0 );
+		$items         = $cart->get_repository()->get_calculated_items( 'all' );
 		$sections      = array_unique( array_filter( wp_list_pluck( $items, 'event_id' ) ) );
+		$gateways      = tribe( Manager::class )->get_gateways();
 
-		$gateways = tribe( Manager::class )->get_gateways();
+		// Pass each item through a filter to determine if it should be skipped.
+		$items = array_filter(
+			$items,
+			function ( $item ) {
+				/**
+				 * Filters whether the current item should be skipped in the checkout items.
+				 *
+				 * @since 5.21.0
+				 *
+				 * @param bool  $should_skip Whether the item should be skipped or not.
+				 * @param array $item        The item to be checked.
+				 */
+				return ! (bool) apply_filters( 'tec_tickets_checkout_should_skip_item', false, $item );
+			}
+		);
 
 		$args = [
 			'provider_id'        => Module::class,

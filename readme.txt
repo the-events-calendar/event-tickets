@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.20.1
+Stable tag: 5.21.0
 Requires at least: 6.5
 Tested up to: 6.7.2
 Requires PHP: 7.4
@@ -198,6 +198,15 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.21.0] 2025-03-25 =
+
+* Feature - Add the ability to create Coupons that can be applied to ticket checkouts sold through TicketsCommerce. [ET-2189]
+* Tweak - Added filters: `tec_tickets_commerce_cart_cookie_expiration`, `tec_tickets_commerce_cart_repo_prepare_data`, `tec_tickets_commerce_cart_add_full_item_params`, `tec_tickets_commerce_paypal_order_unit`, `tec_tickets_commerce_order_modifiers_successful_save_message`, `tec_tickets_checkout_should_skip_item`, `tec_tickets_commerce_cart_transient_expiration`
+* Tweak - Removed filters: `tec_tickets_commerce_cart_expiration`, `tec_tickets_commerce_order_modifiers_coupons_enabled`
+* Tweak - Added actions: `tec_tickets_commerce_cart_process`
+* Fix - Fix the input field for Fees (and Coupons) when the type is Percent and the thousands/decimal separators are set to "." and ","
+* Language - 21 new strings added, 106 updated, 5 fuzzied, and 9 obsoleted.
 
 = [5.20.1] 2025-03-13 =
 
