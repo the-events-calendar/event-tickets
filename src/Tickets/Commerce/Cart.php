@@ -4,6 +4,7 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce;
+use TEC\Tickets\Commerce\Cart\Agnostic_Cart;
 use TEC\Tickets\Commerce\Cart\Cart_Interface;
 use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
 use Tribe__Tickets__Tickets as Tickets;
@@ -77,11 +78,12 @@ class Cart {
 	 *
 	 * @since 5.1.9
 	 * @since 5.21.0 Updated to use Cart_Interface instead of Unmanaged_Cart.
+	 * @since 5.21.1 Used Agnostic_Cart instead of Cart_Interface until we can fix ETP.
 	 *
-	 * @return Cart_Interface
+	 * @return Agnostic_Cart
 	 */
 	public function get_repository() {
-		$default_cart = tribe( Cart_Interface::class );
+		$default_cart = tribe( Agnostic_Cart::class );
 
 		/**
 		 * Filters the cart repository, by default we use Unmanaged Cart.
