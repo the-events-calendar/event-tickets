@@ -614,7 +614,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @return bool Whether AR assets should be registered.
 	 */
-	public function filter_should_register_ar_assets( $should_register ) {
+	public function filter_should_register_ar_assets( bool $should_register ): bool {
 		// If other providers already registered the assets, we don't need to do it.
 		if ( $should_register ) {
 			return $should_register;
