@@ -13,6 +13,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Seating\Meta;
@@ -104,6 +105,7 @@ class Controller extends Controller_Contract {
 		add_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ], 10, 4 );
 		add_action( 'before_delete_post', [ $this, 'restock_ticket_on_attendee_deletion' ], 10, 2 );
 		add_action( 'wp_trash_post', [ $this, 'restock_ticket_on_attendee_trash' ] );
+		add_filter( 'tec_tickets_plus_seating_is_checkout_page', [ $this, 'filter_is_checkout_page' ] );
 	}
 
 	/**
@@ -124,6 +126,7 @@ class Controller extends Controller_Contract {
 		remove_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ], 10 );
 		remove_action( 'before_delete_post', [ $this, 'restock_ticket_on_attendee_deletion' ] );
 		remove_action( 'wp_trash_post', [ $this, 'restock_ticket_on_attendee_trash' ] );
+		remove_filter( 'tec_tickets_plus_seating_is_checkout_page', [ $this, 'filter_is_checkout_page' ] );
 	}
 
 	/**
@@ -579,5 +582,23 @@ class Controller extends Controller_Contract {
 		$this->update_seated_ticket_stock( $ticket_id, $seat_type, 1 );
 
 		add_filter( 'update_post_metadata', [ $this, 'handle_ticket_meta_update' ], 10, 4 );
+	}
+	
+	/**
+	 * Filters whether the current page is the Tickets Commerce checkout page.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $is_checkout_page Whether the current page is the Tickets Commerce checkout page.
+	 *
+	 * @return bool Whether the current page is the Tickets Commerce checkout page.
+	 */
+	public function filter_is_checkout_page( bool $is_checkout_page ): bool {
+		// If already on checkout page, then no need to determine.
+		if ( $is_checkout_page ) {
+			return $is_checkout_page;
+		}
+		
+		return tribe( Checkout::class )->is_current_page();
 	}
 }
