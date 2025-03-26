@@ -17,6 +17,7 @@ use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Seating\Meta;
+use TEC\Tickets\Seating\Orders\Cart as Seating_Cart;
 use TEC\Tickets\Seating\Service\Service;
 use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
 use Tribe__Cache_Listener as Cache_Listener;
@@ -28,7 +29,7 @@ use WP_Post;
 /**
  * Class Controller.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Commerce;
  */
@@ -106,6 +107,7 @@ class Controller extends Controller_Contract {
 		add_action( 'before_delete_post', [ $this, 'restock_ticket_on_attendee_deletion' ], 10, 2 );
 		add_action( 'wp_trash_post', [ $this, 'restock_ticket_on_attendee_trash' ] );
 		add_filter( 'tec_tickets_plus_seating_is_checkout_page', [ $this, 'filter_is_checkout_page' ] );
+		add_filter( 'tec_tickets_plus_seating_register_ar_assets', [ $this, 'filter_should_register_ar_assets' ] );
 	}
 
 	/**
@@ -127,6 +129,7 @@ class Controller extends Controller_Contract {
 		remove_action( 'before_delete_post', [ $this, 'restock_ticket_on_attendee_deletion' ] );
 		remove_action( 'wp_trash_post', [ $this, 'restock_ticket_on_attendee_trash' ] );
 		remove_filter( 'tec_tickets_plus_seating_is_checkout_page', [ $this, 'filter_is_checkout_page' ] );
+		remove_filter( 'tec_tickets_plus_seating_register_ar_assets', [ $this, 'filter_should_register_ar_assets' ] );
 	}
 
 	/**
@@ -600,5 +603,23 @@ class Controller extends Controller_Contract {
 		}
 		
 		return tribe( Checkout::class )->is_current_page();
+	}
+	
+	/**
+	 * Filters whether AR assets should be registered.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $should_register Whether AR assets should be registered.
+	 *
+	 * @return bool Whether AR assets should be registered.
+	 */
+	public function filter_should_register_ar_assets( $should_register ) {
+		// If other providers already registered the assets, we don't need to do it.
+		if ( $should_register ) {
+			return $should_register;
+		}
+		
+		return tribe( Seating_Cart::class )->cart_has_seating_tickets();
 	}
 }
