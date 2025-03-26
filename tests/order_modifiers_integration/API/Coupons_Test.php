@@ -287,6 +287,10 @@ class Coupons_Test extends Controller_Test_Case {
 
 		/** @var Abstract_Cart $cart */
 		$cart = $commerce_cart->get_repository();
+
+		// Ensure we have the same cart object by checking the hash.
+		Assert::assertSame( 'fake-cart-hash', $cart->get_hash() );
+
 		$cart->upsert_item( $ticket, 1 );
 
 		Assert::assertCount( 1, $cart->get_items_in_cart( false, 'all' ) );
