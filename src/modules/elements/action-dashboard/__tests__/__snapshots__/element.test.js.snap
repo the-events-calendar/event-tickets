@@ -1,5 +1,22 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Action Dashboard Element executes the confirm handler 1`] = `
+<section
+  className="tribe-editor__action-dashboard"
+>
+  <div
+    className="tribe-editor__action-dashboard__group-right"
+  >
+    <button
+      className="tribe-editor__button tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm tribe-common-c-btn"
+      onClick={[Function]}
+      onMouseDown={[MockFunction]}
+      type="button"
+    />
+  </div>
+</section>
+`;
+
 exports[`Action Dashboard Element renders action dashboard 1`] = `
 <section
   className="tribe-editor__action-dashboard"
