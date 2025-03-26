@@ -1,4 +1,0 @@
-Significance: patch
-Type: fix
-
-Add TicketsCommerce support for ETP seating assets conditionals to avoid dependency. [ET-2336]
