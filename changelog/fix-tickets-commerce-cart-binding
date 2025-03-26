@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Fix an error when using ETP and ET with Woo as commerce provider instead of TicketsCommerce. [ET-2336]
