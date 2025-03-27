@@ -156,7 +156,7 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 
 		// On page.
 		$this->set_fn_return( 'get_current_screen',  ( object ) [
-			'id' => Page::$slug,
+			'id' => Page::$page_slug,
 		] );
 		$this->assertTrue( $this->page->is_on_page(), 'Should return true when on page.' );
 	}
@@ -164,12 +164,12 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 	// test
 	public function test_get_url() {
 		$this->assertEquals(
-			'http://wordpress.test/wp-admin/admin.php?page=' . Page::$slug,
+			'http://wordpress.test/wp-admin/admin.php?page=' . Page::$page_slug,
 			$this->page->get_url(),
 			'Should return regular URL when no arguments are passed.'
 		);
 		$this->assertEquals(
-			'http://wordpress.test/wp-admin/admin.php?page=' . Page::$slug . '&s=some-value&var=some-other-page',
+			'http://wordpress.test/wp-admin/admin.php?page=' . Page::$page_slug . '&s=some-value&var=some-other-page',
 			$this->page->get_url( [
 				's'    => 'some-value',
 				'var'  => 'some-other-page',
@@ -179,7 +179,7 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	// test
-	public function test_render_tec_tickets_admin_tickets_page() {
+	public function test_render() {
 		$this->prepare_test_data();
 
 		// Delete event to test orphaned ticket scenario.
@@ -192,7 +192,7 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 			'invert' => false,
 		] );
 		ob_start();
-		$this->page->render_tec_tickets_admin_tickets_page();
+		$this->page->admin_page_main_content();
 		$actual = ob_get_clean();
 		preg_match( '/name=\"_wpnonce\" value=\"([^\"]+)\"/', $actual, $matches );
 		if ( count( $matches ) > 1 ) {
@@ -210,7 +210,7 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 	// test
 	public function test_render_tec_tickets_no_tickets_page() {
 		ob_start();
-		$this->page->render_tec_tickets_admin_tickets_page();
+		$this->page->admin_page_main_content();
 		$actual = ob_get_clean();
 		$this->assertMatchesHtmlSnapshot( $actual );
 	}
