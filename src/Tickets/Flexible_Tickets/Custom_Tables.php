@@ -103,9 +103,15 @@ class Custom_Tables extends Controller {
 			[
 				Ticket_Groups::table_name(),
 				Posts_And_Ticket_Groups::table_name()
-			] as $table
+			] as $table_name
 		) {
-			$truncated += DB::query( "TRUNCATE TABLE $table" );
+			// Check if the table exists before attempting to truncate it.
+			$table_exists = DB::query( "SHOW TABLES LIKE '$table_name'" );
+			if ( ! $table_exists ) {
+				continue;
+			}
+
+			$truncated += DB::query( "TRUNCATE TABLE $table_name" );
 		}
 		DB::query( 'SET FOREIGN_KEY_CHECKS = 1' );
 

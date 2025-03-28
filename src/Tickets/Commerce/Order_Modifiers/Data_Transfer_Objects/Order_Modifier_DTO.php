@@ -15,10 +15,10 @@ use TEC\Common\StellarWP\Models\DataTransferObject;
 use TEC\Tickets\Commerce\Order_Modifiers\Factory;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Float_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Percent_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Positive_Integer_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Value_Interface;
+use TEC\Tickets\Commerce\Values\Float_Value;
+use TEC\Tickets\Commerce\Values\Percent_Value;
+use TEC\Tickets\Commerce\Values\Positive_Integer_Value;
+use TEC\Tickets\Commerce\Values\Value_Interface;
 
 /**
  * Class Order_Modifier_DTO.
