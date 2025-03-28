@@ -9,22 +9,23 @@
 
 namespace TEC\Tickets\Blocks;
 
+use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Common\StellarWP\Assets\Config;
+use TEC\Tickets\Blocks\Ticket\Block as Ticket_Item_Block;
+use TEC\Tickets\Blocks\Tickets\Block as Tickets_Block;
 use Tribe\Tickets\Editor\Warnings;
 use Tribe__Tickets__Admin__Views as Admin_Views;
 use Tribe__Tickets__Attendees_Table as Attendees_Table;
 use Tribe__Tickets__Editor__Assets as Assets;
 use Tribe__Tickets__Editor__Blocks__Attendees as Attendees_Block;
 use Tribe__Tickets__Editor__Blocks__Rsvp as RSVP_Block;
-use TEC\Tickets\Blocks\Tickets\Block as Tickets_Block;
-use TEC\Tickets\Blocks\Ticket\Block as Ticket_Item_Block;
 use Tribe__Tickets__Editor__Configuration as Configuration;
 use Tribe__Tickets__Editor__Meta as Meta;
 use Tribe__Tickets__Editor__REST__Compatibility as REST_Compatibility;
 use Tribe__Tickets__Editor__Template as Template;
 use Tribe__Tickets__Editor__Template__Overwrite as Template_Overwrite;
-use Tribe__Tickets__Ticket_Object as Ticket_Object;
-use TEC\Common\StellarWP\Assets\Config;
 use Tribe__Tickets__Main as Tickets_Plugin;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
  * Class Controller.
@@ -33,7 +34,21 @@ use Tribe__Tickets__Main as Tickets_Plugin;
  *
  * @package TEC\Tickets\Blocks;
  */
-class Controller extends \TEC\Common\Contracts\Provider\Controller {
+class Controller extends Controller_Contract {
+
+	/**
+	 * Whether the controller is active or not.
+	 *
+	 * Controllers will be active by default, if that is not the case, the controller should override this method.
+	 *
+	 * @since 5.0.17
+	 *
+	 * @return bool Whether the controller is active or not.
+	 */
+	public function is_active(): bool {
+		return ! tec_using_classy_editor();
+	}
+
 	/**
 	 * Binds and sets up implementations.
 	 *
