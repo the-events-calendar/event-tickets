@@ -27,6 +27,19 @@ final class Editor extends Controller_Contract {
 	use Asset_Build;
 
 	/**
+	 * Whether the controller is active or not.
+	 *
+	 * Controllers will be active by default, if that is not the case, the controller should override this method.
+	 *
+	 * @since 5.0.17
+	 *
+	 * @return bool Whether the controller is active or not.
+	 */
+	public function is_active(): bool {
+		return ! tec_using_classy_editor();
+	}
+
+	/**
 	 * Registers the filters and actions hooks added by the controller.
 	 *
 	 * @since 5.18.0
