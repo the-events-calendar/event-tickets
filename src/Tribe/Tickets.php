@@ -1,6 +1,8 @@
 <?php
 
+use TEC\Events\Classy\Back_Compatible_Editor;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
+use Tribe__Editor as Editor;
 use Tribe__Utils__Array as Arr;
 
 if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
@@ -3629,7 +3631,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return false;
 			}
 
-			/** @var Tribe__Editor $editor */
+			/** @var Editor|Back_Compatible_Editor $editor */
 			$editor = tribe( 'editor' );
 
 			// Blocks and ticket templates merged - bail if we should be seeing blocks.
