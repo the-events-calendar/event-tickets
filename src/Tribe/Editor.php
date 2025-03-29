@@ -1,5 +1,8 @@
 <?php
 
+use TEC\Events\Classy\Back_Compatible_Editor;
+use Tribe__Editor as Editor;
+
 /**
  * Class Tribe__Tickets__Editor
  *
@@ -288,7 +291,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 * @return bool
 	 */
 	public function flush_blocks() {
-		/** @var Tribe__Editor $editor */
+		/** @var Editor|Back_Compatible_Editor $editor */
 		$editor = tribe( 'editor' );
 
 		// Bail because we dont have access to any of the classes we need for Blocks Editor.

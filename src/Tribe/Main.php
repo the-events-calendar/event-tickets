@@ -411,7 +411,7 @@ class Tribe__Tickets__Main {
 		// Start Up Common.
 		Tribe__Main::instance();
 
-		add_action( 'tribe_common_loaded', [ $this, 'bootstrap' ], 0 );
+		add_action( 'tribe_common_loaded', [ $this, 'bootstrap' ], 1 );
 
 		// Admin home.
 		tribe_register_provider( Tribe\Tickets\Admin\Home\Service_Provider::class );
