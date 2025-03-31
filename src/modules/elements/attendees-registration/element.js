@@ -86,7 +86,7 @@ class AttendeesRegistration extends PureComponent {
 				/>
 				{ fieldInfo && (
 					<div className="tribe-editor__attendee-registration__field-info">
-					{ fieldInfo }
+						{ fieldInfo }
 					</div>
 				) }
 				{ showHelperText && (
