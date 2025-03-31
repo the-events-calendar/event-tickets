@@ -3,20 +3,38 @@
 namespace TEC\Tickets\Blocks;
 
 use TEC\Common\Tests\Provider\Controller_Test_Case;
-use Tribe\Tests\Traits\With_Uopz;
+use TEC\Events\Classy\Back_Compatible_Editor;
 
 class ControllerTest extends Controller_Test_Case {
-
-	use With_Uopz;
 
 	protected string $controller_class = Controller::class;
 
 	/**
 	 * @test
 	 */
-	public function it_should_not_register_with_classy_active() {
-		$this->set_fn_return( 'tec_using_classy_editor', true );
+	public function it_should_not_register_blocks_with_classy_active() {
+		add_filter( 'tec_using_classy_editor', '__return_true' );
+
+		$editor = $this->test_services->make( 'editor' );
+		$this->assertInstanceOf( Back_Compatible_Editor::class, $editor );
+		$this->assertFalse( $editor->should_load_blocks() );
+
 		$this->make_controller()->register();
-		$this->assertFalse( $this->controller_class::is_registered(), 'Controller should not be registered with Classy active' );
+
+		$should_not_register = [
+			'assets',
+			'block.tickets',
+			'blocks.rsvp',
+			'blocks.tickets-item',
+			'block.attendees',
+		];
+
+		foreach ( $should_not_register as $service ) {
+			$service_string = "tickets.editor.{$service}";
+			$this->assertFalse(
+				$this->test_services->has( $service_string ),
+				"Service {$service_string} should not be registered with Classy active."
+			);
+		}
 	}
 }
