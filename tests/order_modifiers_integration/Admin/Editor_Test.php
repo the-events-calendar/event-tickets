@@ -171,7 +171,7 @@ class Editor_Test extends Controller_Test_Case {
 	 * @dataProvider asset_data_provider
 	 */
 	public function it_should_locate_assets_where_expected( $slug, $path ) {
-		$this->set_fn_return( 'tec_using_classy_editor', false );
+		add_filter( 'tec_using_classy_editor', '__return_false' );
 		$this->make_controller()->register();
 
 		$this->assertTrue( Assets::init()->exists( $slug ), 'Asset should be registered with Stellar Assets' );
@@ -266,7 +266,7 @@ class Editor_Test extends Controller_Test_Case {
 	 * @test
 	 */
 	public function it_should_not_register_with_classy_editor() {
-		$this->set_fn_return( 'tec_using_classy_editor', true );
+		add_filter( 'tec_using_classy_editor', '__return_true' );
 		$this->make_controller()->register();
 		$this->assertFalse( $this->controller_class::is_registered(), 'Controller should not be registered with Classy active' );
 	}
