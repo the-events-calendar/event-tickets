@@ -48,7 +48,7 @@ $ticket_type = $ticket_type ?? 'default';
 	 * @param int Post ID
 	 * @param int Ticket ID
 	 */
-	do_action( 'tribe_events_tickets_pre_edit', $post_id, $ticket_id );
+	do_action( 'tribe_events_tickets_pre_edit', $post_id, $ticket_id, $ticket_type );
 	?>
 
 	<div id="ticket_form" class="ticket_form tribe_sectionheader tribe-validation">
