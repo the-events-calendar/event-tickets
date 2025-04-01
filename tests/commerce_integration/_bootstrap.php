@@ -1,6 +1,7 @@
 <?php
 
-use \TEC\Tickets\Commerce\Provider as Commerce_Provider;
+use TEC\Events\Classy\Controller as Classy_Controller;
+use TEC\Tickets\Commerce\Provider as Commerce_Provider;
 use Tribe\Tickets\Promoter\Triggers\Dispatcher;
 
 $tec_support = dirname( __DIR__, 3 ) . '/the-events-calendar/tests/_support';
@@ -9,7 +10,10 @@ Codeception\Util\Autoload::addNamespace( 'Tribe\Events\Test', $tec_support );
 // Let's make sure Commerce is enabled.
 putenv( 'TEC_TICKETS_COMMERCE=1' );
 putenv( 'TEC_DISABLE_LOGGING=1' );
-tribe_register_provider( Commerce_Provider::class );
+
+/** @var Tribe__Container $container */
+$container = tribe();
+$container->register( Commerce_Provider::class );
 
 // Let's make sure to set rewrite rules.
 global $wp_rewrite;
@@ -27,3 +31,8 @@ tec_tickets_tests_fake_transactions_enable();
 
 // Disconnect Promoter to avoid license-related notices.
 remove_action( 'tribe_tickets_promoter_trigger', [ tribe( Dispatcher::class ), 'trigger' ] );
+
+// Ensure Classy is disabled for these tests.
+//if ( $container->has( Classy_Controller::class ) ) {
+//	unset( $container[ Classy_Controller::class ] );
+//}
