@@ -24,9 +24,14 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 *
 	 * @since 4.9
 	 *
-	 * @return bool
+	 * @return void
 	 */
 	public function hook() {
+		// Don't hook when the classy editor is active.
+		if ( tec_using_classy_editor() ) {
+			return;
+		}
+
 		// Add Rest API support
 		add_filter( 'tribe_tickets_register_ticket_post_type_args', array( $this, 'add_rest_support' ) );
 
