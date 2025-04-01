@@ -61,15 +61,11 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 *
 	 * @since 4.9
 	 *
-	 *
-	 * @param array $template Array of all the templates used by default
-	 * @param string $post_type The current post type
-	 *
-	 * @return array
+	 * @return void
 	 */
 	public function add_tickets_block_in_editor() {
 		// Post types where the block shouldn't be displayed by default
-		if ( ! class_exists( 'Tribe__Events__Main' ) ) {
+		if ( ! class_exists( Tribe__Events__Main::class ) ) {
 			return;
 		}
 
