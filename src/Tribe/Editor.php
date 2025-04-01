@@ -1,6 +1,6 @@
 <?php
 
-use TEC\Events\Classy\Back_Compatible_Editor;
+use TEC\Events\Classy\Back_Compatibility\Editor as Back_Compatible_Editor;
 use Tribe__Editor as Editor;
 
 /**
