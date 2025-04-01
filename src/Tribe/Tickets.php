@@ -1,6 +1,6 @@
 <?php
 
-use TEC\Events\Classy\Back_Compatible_Editor;
+use TEC\Events\Classy\Back_Compat\Editor as Back_Compatible_Editor;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use Tribe__Editor as Editor;
 use Tribe__Utils__Array as Arr;

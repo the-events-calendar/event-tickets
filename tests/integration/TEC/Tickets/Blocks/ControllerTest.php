@@ -3,7 +3,7 @@
 namespace TEC\Tickets\Blocks;
 
 use TEC\Common\Tests\Provider\Controller_Test_Case;
-use TEC\Events\Classy\Back_Compatible_Editor;
+use TEC\Events\Classy\Back_Compat\Editor;
 
 class ControllerTest extends Controller_Test_Case {
 
@@ -16,7 +16,7 @@ class ControllerTest extends Controller_Test_Case {
 		add_filter( 'tec_using_classy_editor', '__return_true' );
 
 		$editor = $this->test_services->make( 'editor' );
-		$this->assertInstanceOf( Back_Compatible_Editor::class, $editor );
+		$this->assertInstanceOf( Editor::class, $editor );
 		$this->assertFalse( $editor->should_load_blocks() );
 
 		$this->make_controller()->register();

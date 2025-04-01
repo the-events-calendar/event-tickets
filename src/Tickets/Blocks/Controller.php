@@ -11,7 +11,7 @@ namespace TEC\Tickets\Blocks;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Assets\Config;
-use TEC\Events\Classy\Back_Compatible_Editor;
+use TEC\Events\Classy\Back_Compat\Editor as Back_Compatible_Editor;
 use TEC\Tickets\Blocks\Ticket\Block as Ticket_Item_Block;
 use TEC\Tickets\Blocks\Tickets\Block as Tickets_Block;
 use Tribe\Tickets\Editor\Warnings;
