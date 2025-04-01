@@ -49,6 +49,7 @@ class AttendeesRegistration extends PureComponent {
 			onClose,
 			onIframeLoad,
 			showHelperText,
+			fieldInfo,
 			...restProps
 		} = this.props;
 
@@ -83,6 +84,11 @@ class AttendeesRegistration extends PureComponent {
 					onClose={ onClose }
 					{ ...restProps }
 				/>
+				{ fieldInfo && (
+					<div className="tribe-editor__attendee-registration__field-info">
+						{ fieldInfo }
+					</div>
+				) }
 				{ showHelperText && (
 					<span className="tribe-editor__attendee-registration__helper-text">
 						{ helperText }

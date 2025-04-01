@@ -30,6 +30,7 @@ const AttendeesRegistration = ( {
 	onClick = noop,
 	onClose = noop,
 	onIframeLoad = noop,
+	fieldInfo
 } ) => {
 	const linkText = hasAttendeeInfoFields ? linkTextEdit : linkTextAdd;
 
@@ -56,6 +57,7 @@ const AttendeesRegistration = ( {
 			showHelperText={ ! isCreated }
 			// @todo: @paulmskim shouldCloseOnClickOutside is a fix until we can figure out modal closing issue in WP 5.5.
 			shouldCloseOnClickOutside={ false }
+			fieldInfo = { fieldInfo }
 		/>
 	);
 };
