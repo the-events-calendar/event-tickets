@@ -9,6 +9,7 @@ use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Traits\CapacityMatrix;
 use Tribe__Tickets__Data_API as Data_API;
 use Tribe__Tickets__Editor__Template as Template;
+use wpdb;
 
 class TicketsBlock_TestCase extends WPTestCase {
 	use With_Uopz;
@@ -53,7 +54,11 @@ class TicketsBlock_TestCase extends WPTestCase {
 			add_filter( 'tribe_tickets_rsvp_new_views_is_enabled', '__return_false' );
 		}
 
-		/** @var \wpdb $wpdb */
+		// Mark the Classy editor as disabled.
+
+		add_filter( 'tec_events_classy_editor_enabled', '__return_false' );
+
+		/** @var wpdb $wpdb */
 		global $wpdb;
 
 		// Set high initial post ID to prevent collisions with acceptable tolerances assertions.
@@ -64,7 +69,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 	 * {@inheritdoc}
 	 */
 	public function tearDown() {
-		/** @var \wpdb $wpdb */
+		/** @var wpdb $wpdb */
 		global $wpdb;
 
 		// Delete high initial post ID.
