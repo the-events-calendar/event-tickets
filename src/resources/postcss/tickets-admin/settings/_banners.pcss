@@ -2,6 +2,7 @@
  * Event Tickets Admin Settings - Banners
  *
  * @since 5.1.10
+ * @since TBD Adjusted Admin styles.
  */
 
 .tec-tickets__admin-banner {
@@ -126,5 +127,14 @@ a.tec-tickets__admin-tc-banner-link {
 	&:hover {
 		color: var(--tec-color-accent-primary-hover);
 		text-decoration: none;
+	}
+}
+@media (--viewport-xsmall) {
+	.tickets_page_tec-tickets-settings #tec-tickets-settings-form {
+		.tec-settings-form__header-block--horizontal {
+			&.tec-tickets__admin-banner {
+				margin-top: calc(var(--tec-spacer-7) * -1);
+			}
+		}
 	}
 }
