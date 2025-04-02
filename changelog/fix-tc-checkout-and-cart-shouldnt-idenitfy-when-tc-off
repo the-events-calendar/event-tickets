@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Ensures when TicketsCommerce is disabled, we dont identify pages as Checkout or Cart page for TicketsCommerce. [ETP-1004]
