@@ -13,7 +13,7 @@
 /**
  * Filters the list of post types to ignore when determining which post types should support tickets.
  *
- * @since TBD
+ * @since 5.1.6
  *
  * @param string[] $post_types_to_ignore Array of post type names that should not support tickets.
  */
@@ -47,9 +47,9 @@ foreach ( $all_post_type_objects as $post_type => $post_type_object ) {
 /**
  * Filters the list of post types that can have tickets.
  *
- * @since TBD
+ * @since 5.1.6
  *
- * @param array<string, string> $all_post_types Associative array of post types, with post type names as 
+ * @param array<string, string> $all_post_types Associative array of post types, with post type names as
  *                                             keys and singular display names as values.
  */
 $all_post_types = apply_filters( 'tribe_tickets_settings_post_types', $all_post_types );
@@ -61,10 +61,10 @@ $options = get_option( Tribe__Main::OPTIONNAME, [] );
  *
  * This controls options for requiring users to log in before they can RSVP or purchase tickets.
  *
- * @since TBD
+ * @since 5.1.6
  *
- * @param array<string, string> $ticket_systems Associative array of ticket systems, with system 
- *                                             identifiers as keys (like 'event-tickets_rsvp') and 
+ * @param array<string, string> $ticket_systems Associative array of ticket systems, with system
+ *                                             identifiers as keys (like 'event-tickets_rsvp') and
  *                                             translated labels as values.
  */
 $ticket_addons = apply_filters(
@@ -328,7 +328,7 @@ $tickets_fields = array_merge(
  *
  * A field definition is one suitable to be consumed by the `Tribe__Settings_Tab` class.
  *
- * @since TBD
+ * @since 5.1.6
  *
  * @see Tribe__Settings_Tab
  * @see Tribe__Field
