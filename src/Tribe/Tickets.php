@@ -1138,11 +1138,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Mark an attendee as not checked in
 		 *
 		 * @abstract
+		 * @since TBD - Add optional $app parameter to allow for bulk checkin process.
 		 *
-		 * @param int $attendee_id
+		 * @param int  $attendee_id
+		 * @param bool $app True if from bulk checkin process.
+		 *
 		 * @return mixed
 		 */
-		public function uncheckin( $attendee_id ) {
+		public function uncheckin( $attendee_id, $app = false ) {
 			$context_id = tribe_get_request_var( 'event_ID', null );
 
 			/**
