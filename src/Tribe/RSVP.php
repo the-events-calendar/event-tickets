@@ -2349,14 +2349,17 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Marks an attendee as not checked in for an event
 	 *
-	 * @param int $attendee_id The attendee ID.
+	 * @since TBD - Add optional $app parameter to allow for bulk checkin process.
+	 *
+	 * @param int  $attendee_id The attendee ID.
+	 * @param bool $app         True if from bulk checkin process.
 	 *
 	 * @return bool
 	 */
-	public function uncheckin( $attendee_id ) {
+	public function uncheckin( $attendee_id, $app = false ) {
 		$event_id = get_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, true );
 
-		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $event_id ) ) {
+		if ( ! $app && ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $event_id ) ) {
 			return false;
 		}
 
