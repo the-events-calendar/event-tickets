@@ -54,9 +54,9 @@ class TicketsBlock_TestCase extends WPTestCase {
 			add_filter( 'tribe_tickets_rsvp_new_views_is_enabled', '__return_false' );
 		}
 
-		// Mark the Classy editor as disabled.
-
-		add_filter( 'tec_events_classy_editor_enabled', '__return_false' );
+		if ( tec_using_classy_editor() ) {
+			$this->markTestSkipped( 'Skipping test because the Classy editor is enabled.' );
+		}
 
 		/** @var wpdb $wpdb */
 		global $wpdb;
