@@ -8,14 +8,15 @@
 
 namespace TEC\Tickets;
 
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Common\lucatume\DI52\Container;
-use Tribe__Tickets__Tickets as Tickets;
-use Tribe__Tickets__Ticket_Object as Ticket_Object;
-use TEC\Tickets\Commerce\Ticket;
-use WP_Post;
 use Exception;
+use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Common\lucatume\DI52\Container;
+use TEC\Tickets\Commerce\Ticket;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use Tribe__Tickets__Tickets as Tickets;
+use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
+use WP_Post;
 
 /**
  * Class Ticket_Actions.
@@ -86,7 +87,7 @@ class Ticket_Actions extends Controller_Contract {
 	public function __construct( Container $container ) {
 		parent::__construct( $container );
 
-		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		/** @var Tickets_Handler $tickets_handler */
 		$tickets_handler = tribe( 'tickets.handler' );
 
 		self::$keys_of_interest = [
