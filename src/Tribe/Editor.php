@@ -2,6 +2,7 @@
 
 use TEC\Events\Classy\Back_Compatibility\Editor as Back_Compatible_Editor;
 use Tribe__Editor as Editor;
+use Tribe__Events__Main as TEC;
 
 /**
  * Class Tribe__Tickets__Editor
@@ -65,14 +66,14 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 */
 	public function add_tickets_block_in_editor() {
 		// Post types where the block shouldn't be displayed by default
-		if ( ! class_exists( Tribe__Events__Main::class ) ) {
+		if ( ! class_exists( TEC::class ) ) {
 			return;
 		}
 
 		foreach ( $this->get_enabled_post_types() as $post_type ) {
 			$post_type_object = get_post_type_object( $post_type );
 
-			if ( ! $post_type_object || $post_type !== Tribe__Events__Main::POSTTYPE ) {
+			if ( ! $post_type_object || $post_type !== TEC::POSTTYPE ) {
 				continue;
 			}
 
