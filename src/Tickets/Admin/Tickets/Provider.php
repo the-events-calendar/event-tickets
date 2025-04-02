@@ -43,6 +43,7 @@ class Provider extends Service_Provider {
 		$this->container->singleton( Hooks::class, $hooks );
 		$this->container->singleton( List_Table::class, List_Table::class );
 		$this->container->singleton( Screen_Options::class, Screen_Options::class );
+		$this->container->singleton( Page::class, Page::class );
 	}
 
 	/**
