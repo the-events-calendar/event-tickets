@@ -175,14 +175,14 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 			$store = compact( 'ticket_id', 'new_stock' );
 		}, 10, 2 );
 
-		[ $post_id, $ticket_id, $updater ] = $fixture();
+		[ , $ticket_id, $updater ] = $fixture();
 
 		$this->assertEquals( 1, did_action( 'tec_tickets_ticket_dates_updated' ) );
 		$this->assertEquals( 0, did_action( 'tec_tickets_ticket_stock_changed' ) );
 		$this->assertEquals( 1, did_action( 'tec_tickets_ticket_stock_added' ) );
 
 		$this->assertEquals( $store['ticket_id'], $ticket_id );
-		$this->assertEquals( $store['new_stock'], 5 );
+		$this->assertEquals( 5, $store['new_stock'] );
 		$this->assertTrue( ! isset( $store['old_stock'] ) );
 
 		$this->assertCount(
@@ -211,8 +211,8 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		$this->assertEquals( 1, did_action( 'tec_tickets_ticket_stock_added' ) );
 
 		$this->assertEquals( $store['ticket_id'], $ticket_id );
-		$this->assertEquals( $store['new_stock'], 6 );
-		$this->assertEquals( $store['old_stock'], 5 );
+		$this->assertEquals( 6, $store['new_stock'] );
+		$this->assertEquals( 5, $store['old_stock'] );
 
 		$this->assertCount(
 			0,
@@ -243,8 +243,8 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		$this->assertEquals( 1, did_action( 'tec_tickets_ticket_stock_added' ) );
 
 		$this->assertEquals( $store['ticket_id'], $ticket_id );
-		$this->assertEquals( $store['new_stock'], 5 );
-		$this->assertEquals( $store['old_stock'], 6 );
+		$this->assertEquals( 5, $store['new_stock'] );
+		$this->assertEquals( 6, $store['old_stock'] );
 
 		$this->assertCount(
 			0,
@@ -271,7 +271,7 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 
 		$this->make_controller()->register();
 
-		[ $post_id, $ticket_id, $updater ] = $fixture();
+		[ $post_id, $ticket_id, ] = $fixture();
 
 		$listeners = [
 			'ticket_id' => null,
@@ -414,7 +414,7 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 				$this->assertEquals( $counter, did_action( 'tec_tickets_ticket_dates_updated' ) );
 				$this->assertEquals( 0, did_action( 'tec_tickets_ticket_stock_changed' ) );
 				$this->assertEquals( $counter, did_action( 'tec_tickets_ticket_stock_added' ) );
-				$this->assertEquals( $store['new_stock'], 5 );
+				$this->assertEquals( 5, $store['new_stock'] );
 				$this->assertTrue( ! isset( $store['old_stock'] ) );
 			}
 		}
