@@ -23,8 +23,6 @@ class ControllerTest extends Controller_Test_Case {
 
 		$should_not_register = [
 			'assets',
-			'block.tickets',
-			'blocks.rsvp',
 			'blocks.tickets-item',
 			'block.attendees',
 		];
