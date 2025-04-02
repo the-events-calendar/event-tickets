@@ -73,6 +73,7 @@ class Controller extends Controller_Contract {
 
 		// This should be registered regardless, but will only have load() called when using blocks.
 		$this->container->singleton( 'tickets.editor.blocks.rsvp', RSVP_Block::class );
+		$this->container->singleton( 'tickets.editor.blocks.tickets', Tickets_Block::class );
 
 		// Only register for blocks if we are using them.
 		if ( ! $editor->should_load_blocks() ) {
@@ -96,22 +97,17 @@ class Controller extends Controller_Contract {
 		Config::add_group_path( 'et-tickets-blocks', Tickets_Plugin::instance()->plugin_path . 'build/', 'Tickets/Blocks/' );
 
 		$this->container->singleton( 'tickets.editor.assets', Assets::class, [ 'register' ] );
-		$this->container->singleton( 'tickets.editor.blocks.tickets', Tickets_Block::class, [ 'load' ] );
 		$this->container->singleton( 'tickets.editor.blocks.tickets-item', Ticket_Item_Block::class, [ 'load' ] );
 		$this->container->singleton( 'tickets.editor.blocks.attendees', Attendees_Block::class, [ 'load' ] );
 
 		$this->hook();
-
-		// The Tickets Block editor will handle AJAX requests, register now if we're in an AJAX context.
-		if ( wp_doing_ajax() ) {
-			tribe( 'tickets.editor.blocks.tickets' )->hook();
-		}
 
 		// Initialize the correct Singleton.
 		tribe( 'tickets.editor.assets' );
 		tribe( 'tickets.editor.configuration' );
 		tribe( 'tickets.editor.template.overwrite' )->hook();
 		tribe( 'tickets.editor.blocks.rsvp' )->load();
+		tribe( 'tickets.editor.blocks.tickets' )->load();
 	}
 
 	/**
