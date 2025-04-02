@@ -10,6 +10,13 @@
  * @since   4.7
  */
 
+/**
+ * Filters the list of post types to ignore when determining which post types should support tickets.
+ *
+ * @since TBD
+ *
+ * @param string[] $post_types_to_ignore Array of post type names that should not support tickets.
+ */
 $post_types_to_ignore = apply_filters(
 	'tribe_tickets_settings_post_type_ignore_list',
 	[
@@ -37,15 +44,28 @@ foreach ( $all_post_type_objects as $post_type => $post_type_object ) {
 	$all_post_types[ $post_type ] = $post_type_object->labels->singular_name;
 }
 
+/**
+ * Filters the list of post types that can have tickets.
+ *
+ * @since TBD
+ *
+ * @param array<string, string> $all_post_types Associative array of post types, with post type names as 
+ *                                             keys and singular display names as values.
+ */
 $all_post_types = apply_filters( 'tribe_tickets_settings_post_types', $all_post_types );
 
 $options = get_option( Tribe__Main::OPTIONNAME, [] );
 
 /**
- * List of ticketing solutions that support login requirements (ie, disabling or
- * enabling the ticket form according to whether a user is logged in or not).
+ * Filters the list of ticketing solutions that support login requirements.
  *
- * @param array $ticket_systems List of ticket systems.
+ * This controls options for requiring users to log in before they can RSVP or purchase tickets.
+ *
+ * @since TBD
+ *
+ * @param array<string, string> $ticket_systems Associative array of ticket systems, with system 
+ *                                             identifiers as keys (like 'event-tickets_rsvp') and 
+ *                                             translated labels as values.
  */
 $ticket_addons = apply_filters(
 	'tribe_tickets_settings_systems_supporting_login_requirements',
@@ -274,11 +294,24 @@ if ( tec_tribe_commerce_is_available() ) {
 }
 
 /**
- * Allows for the specific filtering of the commerce fields.
+ * Filters the commerce fields to add or modify settings for payment gateways.
  *
  * @since 5.1.6
  *
- * @param array $commerce_fields Which fields are already present from legacy.
+ * @param array<string, array{
+ *     type: string,
+ *     label?: string,
+ *     tooltip?: string,
+ *     default?: mixed,
+ *     validation_type?: string,
+ *     options?: array<string, string>,
+ *     can_be_empty?: bool,
+ *     html?: string,
+ *     parent_option?: string|bool,
+ *     fieldset_attributes?: array<string, mixed>,
+ *     size?: string,
+ *     class?: string|array<string>
+ * }> $commerce_fields Array of field definitions for commerce/payment settings.
  */
 $commerce_fields = (array) apply_filters( 'tec_tickets_commerce_settings', $commerce_fields );
 
@@ -291,14 +324,29 @@ $tickets_fields = array_merge(
 );
 
 /**
- * Filters the fields to be registered in the Settings > General tab.
+ * Filters the fields to be registered in the Settings > Tickets tab.
  *
  * A field definition is one suitable to be consumed by the `Tribe__Settings_Tab` class.
+ *
+ * @since TBD
  *
  * @see Tribe__Settings_Tab
  * @see Tribe__Field
  *
- * @param array $tickets_fields An associative array of fields definitions to register.
+ * @param array<string, array{
+ *     type: string,
+ *     label?: string,
+ *     tooltip?: string,
+ *     default?: mixed,
+ *     validation_type?: string,
+ *     options?: array<string, string>,
+ *     can_be_empty?: bool,
+ *     html?: string,
+ *     parent_option?: string|bool,
+ *     fieldset_attributes?: array<string, mixed>,
+ *     size?: string,
+ *     class?: string|array<string>
+ * }> $tickets_fields An associative array of field definitions to register.
  */
 $tickets_fields = apply_filters( 'tribe_tickets_settings_tab_fields', $tickets_fields );
 
