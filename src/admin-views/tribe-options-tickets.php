@@ -56,55 +56,42 @@ $ticket_addons = apply_filters( 'tribe_tickets_settings_systems_supporting_login
 ]
 );
 
-// Create the tickets header section
-$tickets_header = new Div( new Element_Classes( [ 'tec-settings-form__header-block' ] ) );
-$tickets_header->add_child(
-	new Heading(
-		sprintf( _x( '%s Settings', 'tickets fields settings title', 'event-tickets' ), tribe_get_ticket_label_singular( 'tickets_fields_settings_title' ) ),
-		3,
-		new Element_Classes( 'tec-settings-form__section-header' )
-	)
-);
-
-// Create post types ticket settings section
-$post_types_section = tribe( 'settings' )->wrap_section_content(
-	'ticket-enabled-post-types-section',
-	[
-		'ticket-enabled-post-types' => [
-			'type'            => 'checkbox_list',
-			'label'           => esc_html(
-				sprintf(
-					// Translators: %s: dynamic "tickets" text.
-					_x(
-						'Post types that can have %s',
-						'tickets fields settings enabled post types',
-						'event-tickets'
-					),
-					tribe_get_ticket_label_plural_lowercase( 'tickets_fields_settings_enabled_post_types' )
-				)
-			),
-			// only set the default to tribe_events if the ticket-enabled-post-types index has never been saved
-			'default'         => array_key_exists( 'ticket-enabled-post-types', $options ) ? false : 'tribe_events',
-			'options'         => $all_post_types,
-			'can_be_empty'    => true,
-			'validation_type' => 'options_multi',
-		],
-		'event_tickets_uninstall'   => [
-			'type'            => 'checkbox_bool',
-			'label'           => esc_html__( 'Remove all Event Tickets data upon uninstall?', 'event-tickets' ),
-			'tooltip'         => esc_html__( 'If checked, all Event Tickets data will be removed from the database when the plugin is uninstalled.', 'event-tickets' ),
-			'default'         => false,
-			'validation_type' => 'boolean',
-			'parent_option'   => false,
-		],
-	]
-);
-
 $tickets_fields = [
-	'tickets-title' => $tickets_header,
+	// Ticket Settings Header
+	'tickets-title' => [
+		'type' => 'html',
+		'html' => '<h3 id="tec-tickets-settings-tickets" class="tec-settings-form__section-header">' . 
+			sprintf( _x( '%s Settings', 'tickets fields settings title', 'event-tickets' ), tribe_get_ticket_label_singular( 'tickets_fields_settings_title' ) ) . '</h3>',
+	],
+	// Post types that can have tickets
+	'ticket-enabled-post-types' => [
+		'type'            => 'checkbox_list',
+		'label'           => esc_html(
+			sprintf(
+				// Translators: %s: dynamic "tickets" text.
+				_x(
+					'Post types that can have %s',
+					'tickets fields settings enabled post types',
+					'event-tickets'
+				),
+				tribe_get_ticket_label_plural_lowercase( 'tickets_fields_settings_enabled_post_types' )
+			)
+		),
+		// only set the default to tribe_events if the ticket-enabled-post-types index has never been saved
+		'default'         => array_key_exists( 'ticket-enabled-post-types', $options ) ? false : 'tribe_events',
+		'options'         => $all_post_types,
+		'can_be_empty'    => true,
+		'validation_type' => 'options_multi',
+	],
+	'event_tickets_uninstall'   => [
+		'type'            => 'checkbox_bool',
+		'label'           => esc_html__( 'Remove all Event Tickets data upon uninstall?', 'event-tickets' ),
+		'tooltip'         => esc_html__( 'If checked, all Event Tickets data will be removed from the database when the plugin is uninstalled.', 'event-tickets' ),
+		'default'         => false,
+		'validation_type' => 'boolean',
+		'parent_option'   => false,
+	],
 ];
-
-$tickets_fields = array_merge($tickets_fields, $post_types_section);
 
 $tec_fields  = [];
 $misc_fields = [];
@@ -121,127 +108,101 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 		'tribe_events_single_event_before_the_content' => __( 'Above the event description', 'event-tickets' ),
 	];
 
-	// Create TEC integration header
-	$tec_header = new Div( new Element_Classes( [ 'tec-settings-form__header-block' ] ) );
-	$tec_header->add_child(
-		new Heading(
-			__( 'The Events Calendar Integration', 'event-tickets' ),
-			3,
-			new Element_Classes( 'tec-settings-form__section-header' )
-		)
-	);
-
-	// Create TEC integration section without including the header in the wrapped content
-	$tec_fields_section = tribe( 'settings' )->wrap_section_content(
-		'tec-integration-section',
-		[
-			'ticket-rsvp-form-location' => [
-				'type'            => 'dropdown',
-				'label'           => esc_html( sprintf( _x( 'Location of %s form', 'form location setting', 'event-tickets' ), tribe_get_rsvp_label_singular( 'form_location_setting' ) ) ),
-				'tooltip'         => esc_html__( 'This setting only impacts events made with the classic editor.', 'event-tickets' ),
-				'options'         => $ticket_form_location_options,
-				'validation_type' => 'options',
-				'parent_option'   => Tribe__Events__Main::OPTIONNAME,
-				'default'         => reset( $ticket_form_location_options ),
-			],
-			'ticket-commerce-form-location' => [
-				'type'            => 'dropdown',
-				'label'           => esc_html( sprintf( _x( 'Location of %s form', 'form location setting', 'event-tickets' ), tribe_get_ticket_label_plural( 'form_location_setting' ) ) ),
-				'tooltip'         => esc_html__( 'This setting only impacts events made with the classic editor.', 'event-tickets' ),
-				'options'         => $ticket_form_location_options,
-				'validation_type' => 'options',
-				'parent_option'   => Tribe__Events__Main::OPTIONNAME,
-				'default'         => reset( $ticket_form_location_options ),
-			],
-			'ticket-display-tickets-left-threshold' => [
-				'type'            => 'text',
-				'label'           => esc_html( sprintf( _x( 'Display # %s left threshold', 'tickets remaining threshold label', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'remaining_threshold_setting_label' ) ) ),
-				'tooltip'         => esc_html( sprintf( _x( 'If this number is less than the number of %1$s left for sale on your event, this will prevent the "# of %1$s left" text from showing on your website. You can leave this blank if you would like to always show the text.', 'tickets remaining threshold tooltip', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'remaining_threshold_setting_tooltip' ) ) ),
-				'validation_type' => 'int',
-				'size'            => 'small',
-				'can_be_empty'    => true,
-				'parent_option'   => Tribe__Events__Main::OPTIONNAME,
-			],
-		]
-	);
-
-	$tec_fields = [
-		'tec-header' => $tec_header,
+	// TEC Integration header
+	$tec_fields['tec-header'] = [
+		'type' => 'html',
+		'html' => '<h3 id="tec-tickets-settings-tec-integration" class="tec-settings-form__section-header">' . 
+			esc_html__( 'The Events Calendar Integration', 'event-tickets' ) . '</h3>',
 	];
-	$tec_fields = array_merge($tec_fields, $tec_fields_section);
+
+	// TEC integration fields
+	$tec_fields['ticket-rsvp-form-location'] = [
+		'type'            => 'dropdown',
+		'label'           => esc_html( sprintf( _x( 'Location of %s form', 'form location setting', 'event-tickets' ), tribe_get_rsvp_label_singular( 'form_location_setting' ) ) ),
+		'tooltip'         => esc_html__( 'This setting only impacts events made with the classic editor.', 'event-tickets' ),
+		'options'         => $ticket_form_location_options,
+		'validation_type' => 'options',
+		'parent_option'   => Tribe__Events__Main::OPTIONNAME,
+		'default'         => reset( $ticket_form_location_options ),
+	];
+	
+	$tec_fields['ticket-commerce-form-location'] = [
+		'type'            => 'dropdown',
+		'label'           => esc_html( sprintf( _x( 'Location of %s form', 'form location setting', 'event-tickets' ), tribe_get_ticket_label_plural( 'form_location_setting' ) ) ),
+		'tooltip'         => esc_html__( 'This setting only impacts events made with the classic editor.', 'event-tickets' ),
+		'options'         => $ticket_form_location_options,
+		'validation_type' => 'options',
+		'parent_option'   => Tribe__Events__Main::OPTIONNAME,
+		'default'         => reset( $ticket_form_location_options ),
+	];
+	
+	$tec_fields['ticket-display-tickets-left-threshold'] = [
+		'type'            => 'text',
+		'label'           => esc_html( sprintf( _x( 'Display # %s left threshold', 'tickets remaining threshold label', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'remaining_threshold_setting_label' ) ) ),
+		'tooltip'         => esc_html( sprintf( _x( 'If this number is less than the number of %1$s left for sale on your event, this will prevent the "# of %1$s left" text from showing on your website. You can leave this blank if you would like to always show the text.', 'tickets remaining threshold tooltip', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'remaining_threshold_setting_tooltip' ) ) ),
+		'validation_type' => 'int',
+		'size'            => 'small',
+		'can_be_empty'    => true,
+		'parent_option'   => Tribe__Events__Main::OPTIONNAME,
+	];
 } else {
 	$sample_date = strtotime( 'January 15 ' . date( 'Y' ) );
 
-	// Create miscellaneous header
-	$misc_header = new Div( new Element_Classes( [ 'tec-settings-form__header-block' ] ) );
-	$misc_header->add_child(
-		new Heading(
-			__( 'Miscellaneous Settings', 'event-tickets' ),
-			3,
-			new Element_Classes( 'tec-settings-form__section-header' )
-		)
-	);
-
-	// Create miscellaneous section without including the header in the wrapped content
-	$misc_fields_content = tribe( 'settings' )->wrap_section_content(
-		'misc-section',
-		[
-			'debugEvents' => [
-				'type'            => 'checkbox_bool',
-				'label'           => esc_html__( 'Debug mode', 'event-tickets' ),
-				'tooltip'         => sprintf(
-					// Translators: %s Debug bar plugin link.
-					esc_html__(
-						'Enable this option to log debug information. By default this will log to your server PHP error log. If you\'d like to see the log messages in your browser, then we recommend that you install the %s and look for the "Tribe" tab in the debug output.',
-						'event-tickets'
-					),
-					'<a href="https://wordpress.org/extend/plugins/debug-bar/" target="_blank">' . esc_html__( 'Debug Bar Plugin', 'event-tickets' ) . '</a>'
-				),
-				'default'         => false,
-				'validation_type' => 'boolean',
-			],
-			'datepickerFormat' => [
-				'type'            => 'dropdown',
-				'label'           => esc_html__( 'Compact Date Format', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'Select the date format used for elements with minimal space, such as in datepickers.', 'event-tickets' ),
-				'default'         => 1,
-				'options'         => [
-					'0'  => date( 'Y-m-d', $sample_date ),
-					'1'  => date( 'n/j/Y', $sample_date ),
-					'2'  => date( 'm/d/Y', $sample_date ),
-					'3'  => date( 'j/n/Y', $sample_date ),
-					'4'  => date( 'd/m/Y', $sample_date ),
-					'5'  => date( 'n-j-Y', $sample_date ),
-					'6'  => date( 'm-d-Y', $sample_date ),
-					'7'  => date( 'j-n-Y', $sample_date ),
-					'8'  => date( 'd-m-Y', $sample_date ),
-					'9'  => date( 'Y.m.d', $sample_date ),
-					'10' => date( 'm.d.Y', $sample_date ),
-					'11' => date( 'd.m.Y', $sample_date ),
-				],
-				'validation_type' => 'options',
-			],
-		]
-	);
-
-	$misc_fields = [
-		'misc-header' => $misc_header,
+	// Miscellaneous header
+	$misc_fields['misc-header'] = [
+		'type' => 'html',
+		'html' => '<h3 id="tec-tickets-settings-misc" class="tec-settings-form__section-header">' . 
+			esc_html__( 'Miscellaneous Settings', 'event-tickets' ) . '</h3>',
 	];
-	$misc_fields = array_merge($misc_fields, $misc_fields_content);
+
+	// Miscellaneous fields
+	$misc_fields['debugEvents'] = [
+		'type'            => 'checkbox_bool',
+		'label'           => esc_html__( 'Debug mode', 'event-tickets' ),
+		'tooltip'         => sprintf(
+			// Translators: %s Debug bar plugin link.
+			esc_html__(
+				'Enable this option to log debug information. By default this will log to your server PHP error log. If you\'d like to see the log messages in your browser, then we recommend that you install the %s and look for the "Tribe" tab in the debug output.',
+				'event-tickets'
+			),
+			'<a href="https://wordpress.org/extend/plugins/debug-bar/" target="_blank">' . esc_html__( 'Debug Bar Plugin', 'event-tickets' ) . '</a>'
+		),
+		'default'         => false,
+		'validation_type' => 'boolean',
+	];
+	
+	$misc_fields['datepickerFormat'] = [
+		'type'            => 'dropdown',
+		'label'           => esc_html__( 'Compact Date Format', 'event-tickets' ),
+		'tooltip'         => esc_html__( 'Select the date format used for elements with minimal space, such as in datepickers.', 'event-tickets' ),
+		'default'         => 1,
+		'options'         => [
+			'0'  => date( 'Y-m-d', $sample_date ),
+			'1'  => date( 'n/j/Y', $sample_date ),
+			'2'  => date( 'm/d/Y', $sample_date ),
+			'3'  => date( 'j/n/Y', $sample_date ),
+			'4'  => date( 'd/m/Y', $sample_date ),
+			'5'  => date( 'n-j-Y', $sample_date ),
+			'6'  => date( 'm-d-Y', $sample_date ),
+			'7'  => date( 'j-n-Y', $sample_date ),
+			'8'  => date( 'd-m-Y', $sample_date ),
+			'9'  => date( 'Y.m.d', $sample_date ),
+			'10' => date( 'm.d.Y', $sample_date ),
+			'11' => date( 'd.m.Y', $sample_date ),
+		],
+		'validation_type' => 'options',
+	];
 }
 
-// Create authentication requirements header
-$auth_header = new Div( new Element_Classes( [ 'tec-settings-form__header-block' ] ) );
-$auth_header->add_child(
-	new Heading(
-		__( 'Login Requirements', 'event-tickets' ),
-		3,
-		new Element_Classes( 'tec-settings-form__section-header' )
-	)
-);
-
-// Create auth paragraph as HTML field instead of using entities
-$auth_description = [
+// Authentication requirements fields
+$auth_fields = [
+	// Authentication Requirements header
+	'auth-header' => [
+		'type' => 'html',
+		'html' => '<h3 id="tec-tickets-settings-authentication" class="tec-settings-form__section-header">' . 
+			esc_html__( 'Login Requirements', 'event-tickets' ) . '</h3>',
+	],
+	// Authentication Requirements description
 	'auth-description' => [
 		'type' => 'html',
 		'html' => '<div class="tec-settings-form__description"><p>' . 
@@ -257,28 +218,14 @@ $auth_description = [
 			) . 
 		'</p></div>',
 	],
+	// Authentication Requirements field
+	'ticket-authentication-requirements' => [
+		'type'            => 'checkbox_list',
+		'options'         => $ticket_addons,
+		'validation_type' => 'options_multi',
+		'can_be_empty'    => true,
+	],
 ];
-
-// Create authentication requirements section without including the header in the wrapped content
-$auth_fields_section = tribe( 'settings' )->wrap_section_content(
-	'auth-requirements-section',
-	array_merge(
-		$auth_description,
-		[
-			'ticket-authentication-requirements' => [
-				'type'            => 'checkbox_list',
-				'options'         => $ticket_addons,
-				'validation_type' => 'options_multi',
-				'can_be_empty'    => true,
-			],
-		]
-	)
-);
-
-$authentication_fields_section = [
-	'auth-header' => $auth_header,
-];
-$authentication_fields_section = array_merge($authentication_fields_section, $auth_fields_section);
 
 $commerce_fields = [];
 
@@ -301,7 +248,7 @@ $commerce_fields = (array) apply_filters( 'tec_tickets_commerce_settings', $comm
 $tickets_fields = array_merge(
 	$tickets_fields,
 	$tec_fields,
-	$authentication_fields_section,
+	$auth_fields,
 	$commerce_fields,
 	$misc_fields
 );
