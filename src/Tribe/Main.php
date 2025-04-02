@@ -411,6 +411,14 @@ class Tribe__Tickets__Main {
 		// Start Up Common.
 		Tribe__Main::instance();
 
+		/*
+		 * This is the main hook that will bootstrap the plugin.
+		 *
+		 * We use priority 1 to ensure that this runs before any other plugin that might be using common,
+		 * but *after* TEC has loaded. We load after TEC due to the Classy editor loading things that
+		 * this plugin depends on, and we want to ensure that we use the correct conditions to
+		 * load our dependencies.
+		 */
 		add_action( 'tribe_common_loaded', [ $this, 'bootstrap' ], 1 );
 
 		// Admin home.
