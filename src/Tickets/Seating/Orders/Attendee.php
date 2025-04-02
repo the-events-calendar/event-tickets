@@ -9,7 +9,6 @@
 
 namespace TEC\Tickets\Seating\Orders;
 
-use TEC\Tickets\Commerce\Module;
 use Tribe__Main as Common;
 use Tribe__Tickets__Attendee_Repository as Attendee_Repository;
 use Tribe__Utils__Array as Arr;
@@ -20,6 +19,7 @@ use TEC\Tickets\Seating\Meta;
 use WP_Query;
 use WP_Post;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use Tribe__Tickets__RSVP as RSVP_Provider;
 
 /**
  * Class Attendee
@@ -69,11 +69,11 @@ class Attendee {
 			return $value;
 		}
 
-		if ( ! isset( $item['ID'] ) ) {
+		if ( ! isset( $item['attendee_id'] ) ) {
 			return '-';
 		}
 
-		$seat_label = get_post_meta( $item['ID'], Meta::META_KEY_ATTENDEE_SEAT_LABEL, true );
+		$seat_label = get_post_meta( $item['attendee_id'], Meta::META_KEY_ATTENDEE_SEAT_LABEL, true );
 
 		if ( ! empty( $seat_label ) ) {
 			return $seat_label;
@@ -302,11 +302,11 @@ class Attendee {
 	public function format_many( array $attendees ): array {
 		$unknown_attendee_name = __( 'Unknown', 'event-tickets' );
 
-		// Filter out attendees that are not from the Commerce module.
+		// Filter out attendees that are from the RSVP provider.
 		$attendees = array_filter(
 			$attendees,
 			static function ( array $attendee ): bool {
-				return Module::class === $attendee['provider'];
+				return RSVP_Provider::class !== $attendee['provider'];
 			}
 		);
 

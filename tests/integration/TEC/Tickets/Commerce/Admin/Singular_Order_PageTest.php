@@ -2,19 +2,23 @@
 
 namespace TEC\Tickets\Commerce\Admin;
 
+use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Order;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
-use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Denied;
+use TEC\Tickets\Commerce\Traits\Type;
 use Tribe\Tests\Traits\With_Uopz;
+use Tribe\Tickets\Test\Commerce\OrderModifiers\Coupon_Creator;
 use Tribe\Tickets\Test\Traits\With_Test_Orders;
 use WP_Screen;
+use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 
-class Singular_Order_PageTest extends \Codeception\TestCase\WPTestCase {
+class Singular_Order_PageTest extends WPTestCase {
 
+	use Coupon_Creator;
 	use SnapshotAssertions;
-	use With_Uopz;
+	use Type;
 	use With_Test_Orders;
+	use With_Uopz;
 
 	/**
 	 * Created orders.
@@ -177,5 +181,50 @@ class Singular_Order_PageTest extends \Codeception\TestCase\WPTestCase {
 
 			$this->assertEquals( tribe( Denied::class )->get_wp_slug(), get_post_status( $order->ID ) );
 		}
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_render_coupons() {
+		// First, we should ensure that orders with no coupons have no mention of coupons.
+		$this->prepare_test_data();
+
+		/** @var Singular_Order_Page $singular_page */
+		$singular_page = tribe( Singular_Order_Page::class );
+
+		foreach ( $this->orders as $order ) {
+			ob_start();
+			$singular_page->render_order_items( $order );
+			$html = ob_get_clean();
+
+			// These orders don't have coupons, so they shouldn't mention them at all.
+			$this->assertFalse(
+				stripos( $html, 'coupon' ),
+				'Orders without coupons should have no mention of coupons in the HTML.'
+			);
+		}
+
+		// Now, we should add a coupon to the order and ensure it is displayed.
+		$coupon = $this->create_coupon();
+		$order  = $this->create_order(
+			[
+				$this->tickets[0] => 1,
+				$coupon->id       => [
+					'id'     => $this->get_unique_type_id( $coupon->id, 'coupon' ),
+					'extras' => [ 'type' => 'coupon' ],
+				],
+			]
+		);
+
+		ob_start();
+		$singular_page->render_order_items( $order );
+		$html = ob_get_clean();
+
+		$html = str_replace( $this->tickets, '{{TICKET_ID}}', $html );
+		$html = str_replace( $order->ID, '{{ORDER_ID}}', $html );
+		$html = str_replace( $this->event_ids, '{{EVENT_ID}}', $html );
+
+		$this->assertMatchesHtmlSnapshot( $html );
 	}
 }

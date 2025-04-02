@@ -1,5 +1,7 @@
 <?php
 
+use Tribe__Tickets__REST__V1__Messages as Messages;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -107,8 +109,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function __construct() {
 		$this->add_hooks();
-
-		$this->path = trailingslashit( dirname( dirname( dirname( __FILE__ ) ) ) );
+		$this->path = trailingslashit( dirname( __DIR__, 2 ) );
 	}
 
 	/**
@@ -395,6 +396,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$meta_key = $this->key_start_date;
 		$tickets  = $this->get_tickets_ids( $post_id );
 
+
 		foreach ( $tickets as $ticket_id ) {
 			// Skip tickets with manual updates to that meta
 			if ( $this->has_manual_update( $ticket_id, $meta_key ) ) {
@@ -587,8 +589,10 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Gets the Tickets from a Post
 	 *
 	 * @since  4.6
+	 * @since TBD Ensure that if we are querying for more than one ticket provider, the meta query relation is set to OR.
+	 * @since TBD Correct the docblock to reflect the method's behavior.
 	 *
-	 * @param  int|WP_Post $post
+	 * @param  int $post Which post we are getting the tickets from.
 	 * @return array
 	 */
 	public function get_tickets_ids( $post = null ) {
@@ -612,6 +616,11 @@ class Tribe__Tickets__Tickets_Handler {
 
 			$args['post_type']  = array_merge( (array) $args['post_type'], (array) $module_args['post_type'] );
 			$args['meta_query'] = array_merge( (array) $args['meta_query'], (array) $module_args['meta_query'] );
+		}
+
+		// If we have more than one module (i.e. TC and RSVP), we need to set the relation to "OR" so we get tickets from all of them.
+		if ( count( $modules ) > 1 ) {
+			$args['meta_query']['relation'] = 'OR';
 		}
 
 		$query = new WP_Query( $args );
@@ -1165,7 +1174,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$post_id = Tribe__Main::post_id_helper( $post );
 		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
 
-		/** @var Tribe__Tickets__Ticket_Object $ticket */
+		/** @var Ticket_Object $ticket */
 		foreach ( $tickets as $index => $ticket ) {
 			// Eliminate tickets by stock mode
 			if ( ! is_null( $stock_mode ) && $ticket->global_stock_mode() !== $stock_mode ) {
@@ -1226,7 +1235,7 @@ class Tribe__Tickets__Tickets_Handler {
 			return $total;
 		}
 
-		/** @var Tribe__Tickets__Ticket_Object $ticket */
+		/** @var Ticket_Object $ticket */
 		foreach ( $tickets as $ticket ) {
 			// Skip shared cap Tickets as it's added when we fetch the total
 			if (
@@ -1364,7 +1373,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * If a ticket's actual ticket stock available is Unlimited, this will return the maximum allowed to be purchased
 	 * in a single action (i.e. always zero or greater).
 	 *
-	 * @see    \Tribe__Tickets__Ticket_Object::available() The actual ticket stock available, allowing -1 for Unlimited.
+	 * @see    Ticket_Object::available() The actual ticket stock available, allowing -1 for Unlimited.
 	 *
 	 * @since  4.8.1
 	 * @since  4.11.5 Return a zero or positive integer and add a maximum able to be purchased in a single action,
@@ -1398,7 +1407,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		$ticket = $provider->get_ticket( $event, $ticket_id );
 
-		if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
+		if ( ! $ticket instanceof Ticket_Object ) {
 			return 0;
 		}
 
@@ -1422,10 +1431,10 @@ class Tribe__Tickets__Tickets_Handler {
 		 *
 		 * @since 4.8.1
 		 *
-		 * @param int                           $available_at_a_time Max purchase quantity, as restricted by Max At A Time.
-		 * @param Tribe__Tickets__Ticket_Object $ticket              Ticket object.
-		 * @param WP_Post                       $event               Event post.
-		 * @param int                           $ticket_id           Raw ticket ID.
+		 * @param int           $available_at_a_time Max purchase quantity, as restricted by Max At A Time.
+		 * @param Ticket_Object $ticket              Ticket object.
+		 * @param WP_Post       $event               Event post.
+		 * @param int           $ticket_id           Raw ticket ID.
 		 */
 		$available_at_a_time = apply_filters( 'tribe_tickets_get_ticket_max_purchase', $available_at_a_time, $ticket, $event, $ticket_id );
 
@@ -1449,11 +1458,11 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.11.5
 	 *
-	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket object.
+	 * @param Ticket_Object $ticket Ticket object.
 	 *
 	 * @return int
 	 */
-	private function get_max_qty_limit_per_transaction( Tribe__Tickets__Ticket_Object $ticket ) {
+	private function get_max_qty_limit_per_transaction( Ticket_Object $ticket ) {
 		$default_max = 100;
 
 		/**
@@ -1464,9 +1473,9 @@ class Tribe__Tickets__Tickets_Handler {
 		 *
 		 * @since 4.11.5
 		 *
-		 * @param int                           $default_max Maximum quantity allowed at one time (only applicable if
+		 * @param int           $default_max                 Maximum quantity allowed at one time (only applicable if
 		 *                                                   the ticket stock available is greater).
-		 * @param Tribe__Tickets__Ticket_Object $ticket      Ticket object.
+		 * @param Ticket_Object $ticket                      Ticket object.
 		 *
 		 * @return int
 		 */
@@ -1864,6 +1873,49 @@ class Tribe__Tickets__Tickets_Handler {
 		$global_stock->set_stock_level( $prev_stock + 1 );
 	}
 
+	/**
+	 * Determine whether a given ticket has the given capacity.
+	 *
+	 * The most common use case is determining whether a ticket in the given quantity can
+	 * be added to the cart.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param int|string     $ticket_id     Ticket ID.
+	 * @param int            $quantity      The quantity requested.
+	 * @param ?Ticket_Object $ticket_object Ticket object.
+	 *
+	 * @return true|WP_Error True if the ticket has the given capacity, or a `WP_Error` if not.
+	 */
+	public function ticket_has_capacity( $ticket_id, int $quantity = 1, ?Ticket_Object $ticket_object = null ) {
+		$max             = $this->get_ticket_max_purchase( $ticket_id );
+		$ticket_object ??= Tribe__Tickets__Tickets::load_ticket_object( $ticket_id );
+
+		if ( ( -1 !== $max && $max < $quantity ) || ! $ticket_object->date_in_range() ) {
+			/** @var Messages $messages */
+			$messages = tribe( 'tickets.rest-v1.messages' );
+
+			$error_code = 'ticket-capacity-not-available';
+
+			return new WP_Error(
+				$error_code,
+				sprintf(
+					$messages->get_message( $error_code ),
+					$ticket_object->name
+				),
+				[
+					'ticket'        => [
+						'ticket_id' => $ticket_id,
+						'quantity'  => $quantity,
+					],
+					'max_available' => $max,
+				]
+			);
+		}
+
+		return true;
+	}
+
 	/************************
 	 *                      *
 	 *  Deprecated Methods  *
@@ -1935,11 +1987,11 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Render the ticket row into the ticket table
 	 *
-	 * @deprecated 4.6.2
-	 *
 	 * @since 4.6
 	 *
-	 * @param Tribe__Tickets__Ticket_Object $ticket
+	 * @deprecated 4.6.2
+	 *
+	 * @param Ticket_Object $ticket
 	 */
 	public function render_ticket_row( $ticket ) {
 		_deprecated_function( __METHOD__, '4.6.2', "tribe( 'tickets.admin.views' )->template( array( 'editor', 'ticket-row' ) )" );
