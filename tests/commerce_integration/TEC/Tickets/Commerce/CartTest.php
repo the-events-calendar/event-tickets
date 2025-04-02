@@ -7,12 +7,14 @@ use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Cart\Agnostic_Cart;
 use TEC\Tickets\Commerce\Cart\Cart_Interface;
 use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
+use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
 class CartTest extends WPTestCase {
 
 	use Cart_Trait;
 	use Ticket_Maker;
+	use With_Uopz;
 
 	private static $cart_hash;
 
@@ -122,6 +124,12 @@ class CartTest extends WPTestCase {
 
 		// Redirect request
 		$_REQUEST[ Cart::$url_query_arg ] = Cart::REDIRECT_MODE;
+
+		$this->set_fn_return( 'tec_tickets_commerce_is_enabled', false );
+
+		$this->assertFalse( $cart->is_current_page(), $assertion_msg );
+
+		$this->set_fn_return( 'tec_tickets_commerce_is_enabled', true );
 
 		$assertion_msg = 'When called with Cart::$url_query_arg, Cart->is_current_page() should return true.';
 		$this->assertTrue( $cart->is_current_page(), $assertion_msg );
