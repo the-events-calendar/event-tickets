@@ -143,7 +143,14 @@ class ItemTest extends V2TestCase {
 			]
 		);
 
-		$html = str_replace( [ $args['post_id'], $args['ticket']->ID ], [ '{{POST_ID}}', '{{TICKET_ID}}'], $html );
+		/*
+		 * Replace the post ID and ticket ID with placeholders to avoid snapshot mismatch.
+		 *
+		 * This is done sequentially to ensure that the ticket ID is replaced first,
+		 * and the post ID does not affect the ticket ID replacement.
+		 */
+		$html = str_replace( $args['ticket']->ID, '{{TICKET_ID}}', $html );
+		$html = str_replace( $args['post_id'], '{{POST_ID}}', $html );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
@@ -198,7 +205,14 @@ class ItemTest extends V2TestCase {
 			]
 		);
 
-		$html = str_replace( [ $args['post_id'], $args['ticket']->ID ], [ '{{POST_ID}}', '{{TICKET_ID}}'], $html );
+		/*
+		 * Replace the post ID and ticket ID with placeholders to avoid snapshot mismatch.
+		 *
+		 * This is done sequentially to ensure that the ticket ID is replaced first,
+		 * and the post ID does not affect the ticket ID replacement.
+		 */
+		$html = str_replace( $args['ticket']->ID, '{{TICKET_ID}}', $html );
+		$html = str_replace( $args['post_id'], '{{POST_ID}}', $html );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
