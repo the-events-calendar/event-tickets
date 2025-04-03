@@ -1,4 +1,4 @@
 Significance: patch
 Type: fix
 
-Ensures when TicketsCommerce is disabled, we dont identify pages as Checkout or Cart page for TicketsCommerce. [ET-2349]
+Ensures when TicketsCommerce is disabled, we don't identify pages as Checkout or Cart page for TicketsCommerce. [ET-2349]
