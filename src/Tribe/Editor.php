@@ -33,8 +33,8 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 		add_action( 'tribe_events_tickets_capacity', tribe_callback( 'tickets.admin.views', 'template', 'editor/total-capacity' ) );
 		add_action( 'tribe_events_tickets_ticket_table_add_header_column', tribe_callback( 'tickets.admin.views', 'template', 'editor/column-head-price' ) );
 		add_action( 'tribe_events_tickets_ticket_table_add_tbody_column', [ $this, 'add_column_content_price' ], 10, 2 );
-		add_action( "tec_tickets_editor_list_table_title_icon_rsvp", tribe_callback( 'tickets.admin.views', 'template', 'editor/icons/rsvp' ) );
-		add_action( "tec_tickets_editor_list_table_title_icon_default", tribe_callback( 'tickets.admin.views', 'template', 'editor/icons/ticket' ) );
+		add_action( 'tec_tickets_editor_list_table_title_icon_rsvp', tribe_callback( 'tickets.admin.views', 'template', 'editor/icons/rsvp' ) );
+		add_action( 'tec_tickets_editor_list_table_title_icon_default', tribe_callback( 'tickets.admin.views', 'template', 'editor/icons/ticket' ) );
 
 		// Don't hook when the Classy editor is active.
 		if ( tec_using_classy_editor() ) {
