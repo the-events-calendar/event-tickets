@@ -19,6 +19,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Admin__Notices as Notices;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Attendees as Attendees;
+use WP_Hook;
 
 class BaseTest extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -67,6 +68,10 @@ class BaseTest extends Controller_Test_Case {
 	 * @test
 	 */
 	public function should_not_replace_tickets_block_on_post(): void {
+		if ( tec_using_classy_editor() ) {
+			$this->markTestSkipped( 'Skipping test because the Classy editor is enabled.' );
+		}
+
 		$post_id  = static::factory()->post->create( [
 			'post_type' => 'page',
 		] );
@@ -96,6 +101,10 @@ class BaseTest extends Controller_Test_Case {
 	 * @test
 	 */
 	public function should_not_replace_tickets_block_on_series(): void {
+		if ( tec_using_classy_editor() ) {
+			$this->markTestSkipped( 'Skipping test because the Classy editor is enabled.' );
+		}
+
 		$series = static::factory()->post->create( [
 			'post_type' => Series_Post_Type::POSTTYPE,
 		] );
@@ -125,6 +134,10 @@ class BaseTest extends Controller_Test_Case {
 	 * @test
 	 */
 	public function should_not_replace_tickets_block_on_events_not_in_series(): void {
+		if ( tec_using_classy_editor() ) {
+			$this->markTestSkipped( 'Skipping test because the Classy editor is enabled.' );
+		}
+
 		$event    = tribe_events()->set_args( [
 			'title'      => 'Event',
 			'status'     => 'publish',
@@ -157,6 +170,10 @@ class BaseTest extends Controller_Test_Case {
 	 * @test
 	 */
 	public function should_replace_tickets_block_on_events_in_series(): void {
+		if ( tec_using_classy_editor() ) {
+			$this->markTestSkipped( 'Skipping test because the Classy editor is enabled.' );
+		}
+
 		$series = static::factory()->post->create( [
 			'post_type'  => Series_Post_Type::POSTTYPE,
 			'post_title' => 'Test Series block',
@@ -378,31 +395,37 @@ class BaseTest extends Controller_Test_Case {
 
 		$notices     = Notices::instance();
 		$notice_slug = 'tribe_notice_classic_editor_ecp_recurring_tickets-' . $event_id;
+
 		// Simulate a request to edit the event.
 		$_GET['post'] = $event_id;
+
 		// Remove other hooked functions to avoid side effects.
-		$GLOBALS['wp_filter']['admin_init'] = new \WP_Hook();
+		$GLOBALS['wp_filter']['admin_init'] = new WP_Hook();
+
 		// Hook the admin notices.
 		tribe( 'tickets.admin.notices' )->hook();
+
 		// Finally dispatch the `admin_init` action.
 		do_action( 'admin_init' );
 
 		$notice = $notices->get( $notice_slug );
 
-		if ( $expect_notice_when_unregistered ) {
-			$this->assertNotNull( $notice );
+		if ( $expect_notice_when_unregistered && ! tec_using_classy_editor() ) {
+			$this->assertNotNull( $notice, 'Notice should be present when unregistered.' );
 		} else {
-			$this->assertNull( $notice );
+			$this->assertNull( $notice, 'Notice should not be present when registered.' );
 		}
 
 		// Build and register the controller.
-		$controller = $this->make_controller()->register();
+		$this->make_controller()->register();
 
 		// Simulate a request to edit the event.
 		$_GET['post'] = $event_id;
+
 		// Remove the previous notice.
 		$notice = $notices->remove( $notice_slug );
 		$this->assertNull( $notices->get( $notice_slug ) );
+
 		// Dispatch the `admin_init` action again.
 		do_action( 'admin_init' );
 
@@ -453,7 +476,7 @@ class BaseTest extends Controller_Test_Case {
 		$post_id = $fixture();
 
 		// Build and register the controller.
-		$controller = $this->make_controller()->register();
+		$this->make_controller()->register();
 
 		// Run the test again.
 		ob_start();
