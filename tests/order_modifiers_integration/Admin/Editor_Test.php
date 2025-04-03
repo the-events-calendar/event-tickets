@@ -264,8 +264,12 @@ class Editor_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
-	public function it_should_not_register_with_classy_editor() {
+	public function it_should_register_inverse_to_classy() {
 		$this->make_controller()->register();
-		$this->assertFalse( $this->controller_class::is_registered(), 'Controller should not be registered with Classy active' );
+		$this->assertEquals(
+			! tec_using_classy_editor(),
+			$this->controller_class::is_registered(),
+			'Controller should not be registered with Classy active'
+		);
 	}
 }
