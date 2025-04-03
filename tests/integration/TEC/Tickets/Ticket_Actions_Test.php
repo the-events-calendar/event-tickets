@@ -460,13 +460,23 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		$this->assertLessThan( 5, $end_process_actions_time - $start_process_actions_time );
 	}
 
+	protected function check_we_are_clearing_up( string $when ) {
+		$this->assertCount( 0, $this->query_action_scheduler_actions_count(), "We should clean up start hook {$when}" );
+		$this->assertCount( 0, $this->query_action_scheduler_actions_count( null, false ), "We should clean up end hook {$when}" );
+	}
+
 	/**
-	 * @before
 	 * @after
 	 */
-	public function check_we_are_clearing_up() {
-		$this->assertCount( 0, $this->query_action_scheduler_actions_count() );
-		$this->assertCount( 0, $this->query_action_scheduler_actions_count( null, false ) );
+	public function clean_up_after() {
+		$this->check_we_are_clearing_up( 'after' );
+	}
+
+	/**
+	 * @before
+	 */
+	public function clean_up_before() {
+		$this->check_we_are_clearing_up( 'before' );
 	}
 
 	protected function query_action_scheduler_actions_count( ?array $args = null, bool $start = true, $limit = 100, $offset = 0 ): array {
