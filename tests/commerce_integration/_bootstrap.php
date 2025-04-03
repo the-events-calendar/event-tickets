@@ -10,10 +10,7 @@ Codeception\Util\Autoload::addNamespace( 'Tribe\Events\Test', $tec_support );
 // Let's make sure Commerce is enabled.
 putenv( 'TEC_TICKETS_COMMERCE=1' );
 putenv( 'TEC_DISABLE_LOGGING=1' );
-
-/** @var Tribe__Container $container */
-$container = tribe();
-$container->register( Commerce_Provider::class );
+tribe_register_provider( Commerce_Provider::class );
 
 // Let's make sure to set rewrite rules.
 global $wp_rewrite;
@@ -33,6 +30,4 @@ tec_tickets_tests_fake_transactions_enable();
 remove_action( 'tribe_tickets_promoter_trigger', [ tribe( Dispatcher::class ), 'trigger' ] );
 
 // Ensure Classy is disabled for these tests.
-//if ( $container->has( Classy_Controller::class ) ) {
-//	unset( $container[ Classy_Controller::class ] );
-//}
+tec_tickets_tests_disable_and_unregister_classy_editor();
