@@ -100,7 +100,7 @@ class Telemetry {
 
 		$opt_in_status['ticket-telemetry-optin-heading'] =  [
 			'type' => 'html',
-			'html' => '<h3 id="event-tickets-telemetry-settings">' . __( 'Telemetry', 'event-tickets' ) . '</h3>',
+			'html' => '<h3 id="event-tickets-telemetry-settings" class="tec-settings-form__section-header">' . __( 'Telemetry', 'event-tickets' ) . '</h3>',
 		];
 
 		$opt_in_status['opt-in-status'] = [

@@ -5,7 +5,7 @@
     },
     "ticket-telemetry-optin-heading": {
         "type": "html",
-        "html": "<h3 id=\"event-tickets-telemetry-settings\">Telemetry</h3>"
+        "html": "<h3 id=\"event-tickets-telemetry-settings\" class=\"tec-settings-form__section-header\">Telemetry</h3>"
     },
     "opt-in-status": {
         "type": "checkbox_bool",
