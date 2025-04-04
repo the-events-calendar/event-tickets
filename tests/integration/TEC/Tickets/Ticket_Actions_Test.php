@@ -476,6 +476,9 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 	 */
 	public function clean_up_before() {
 		$this->check_we_are_clearing_up( 'before' );
+		if ( $this->is_risky() ) {
+			$this->markAsRisky();
+		}
 	}
 
 	protected function query_action_scheduler_actions_count( ?array $args = null, bool $start = true, $limit = 100 ): int {
@@ -516,6 +519,10 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		}
 
 		return as_get_scheduled_actions( $params, OBJECT );
+	}
+
+	protected function is_risky(): bool {
+		return self::$before_test_counts['start'] > 0 || self::$before_test_counts['end'] > 0;
 	}
 
 	/**
