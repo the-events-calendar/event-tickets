@@ -21,9 +21,9 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	/**
 	 * Tribe__Tickets__Editor__Meta constructor.
 	 *
-	 * since 5.8.0
+	 * @since 5.8.0
 	 *
-	 * @param Tribe__Tickets__Admin__Views $admin_views A reference to the Admin Views class.
+	 * @param Admin_Views $admin_views A reference to the Admin Views class.
 	 */
 	public function __construct( Admin_Views $admin_views ) {
 		$this->admin_views = $admin_views;
