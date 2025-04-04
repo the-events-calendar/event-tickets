@@ -56,6 +56,7 @@ class Controller extends Controller_Contract {
 		$this->container->singleton( 'tickets.editor.rest.compatibility', REST_Compatibility::class, [ 'hook' ] );
 		$this->container->singleton( 'tickets.editor.attendees_table', Attendees_Table::class );
 
+		$this->hook();
 		$this->register_for_blocks();
 
 		// Handle general non-block-specific instances.
@@ -100,9 +101,10 @@ class Controller extends Controller_Contract {
 		$this->container->singleton( 'tickets.editor.blocks.tickets-item', Ticket_Item_Block::class, [ 'load' ] );
 		$this->container->singleton( 'tickets.editor.blocks.attendees', Attendees_Block::class, [ 'load' ] );
 
-		$this->hook();
+		$this->hook_blocks();
 
-		// Initialize the correct Singleton.
+		// Initialize the correct Singletons.
+		tribe( 'tickets.editor.rest.compatibility' );
 		tribe( 'tickets.editor.assets' );
 		tribe( 'tickets.editor.configuration' );
 		tribe( 'tickets.editor.template.overwrite' )->hook();
@@ -147,13 +149,24 @@ class Controller extends Controller_Contract {
 		// Setup the Meta registration.
 		add_action( 'init', tribe_callback( 'tickets.editor.meta', 'register' ), 15 );
 		add_filter( 'register_meta_args', tribe_callback( 'tickets.editor.meta', 'register_meta_args' ), 10, 4 );
-		add_action( 'tribe_plugins_loaded', [ $this, 'register_blocks' ], 300 );
 
 		// Handle REST specific meta filtering.
 		add_filter( 'rest_dispatch_request', tribe_callback( 'tickets.editor.meta', 'filter_rest_dispatch_request' ), 10, 3 );
 
-		// Setup the Rest compatibility layer for WP.
-		tribe( 'tickets.editor.rest.compatibility' );
+		// Handle the editor template.
+		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle_buttons' ] );
+		add_action( 'tec_tickets_list_row_edit', [ $this, 'render_ticket_edit_controls' ], 10, 2 );
+	}
+
+	/**
+	 * Add hooks related to blocks.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function hook_blocks() {
+		add_action( 'tribe_plugins_loaded', [ $this, 'register_blocks' ], 300 );
 
 		global $wp_version;
 		if ( version_compare( $wp_version, '5.8', '<' ) ) {
@@ -163,9 +176,6 @@ class Controller extends Controller_Contract {
 			// WP version is 5.8 or above.
 			add_action( 'block_categories_all', tribe_callback( 'tickets.editor', 'block_categories' ) );
 		}
-
-		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle_buttons' ] );
-		add_action( 'tec_tickets_list_row_edit', [ $this, 'render_ticket_edit_controls' ], 10, 2 );
 	}
 
 	/**
