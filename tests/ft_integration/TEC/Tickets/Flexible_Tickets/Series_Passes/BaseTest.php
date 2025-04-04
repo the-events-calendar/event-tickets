@@ -375,6 +375,9 @@ class BaseTest extends Controller_Test_Case {
 	 * @dataProvider recurring_events_and_tickets_admin_notices_provider
 	 */
 	public function should_control_the_notice_about_recurring_events_and_tickets_correctly( Closure $fixture ): void {
+		// Ensure should_load_blocks() resolves to true.
+		add_filter( 'tribe_editor_should_load_blocks', '__return_true', 1000 );
+
 		[ $event_id, $ticket_id, $expect_notice_when_unregistered ] = array_replace( [ null, null, null ], $fixture() );
 
 		$notices     = Notices::instance();
