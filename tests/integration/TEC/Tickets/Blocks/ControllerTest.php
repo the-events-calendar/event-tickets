@@ -13,7 +13,9 @@ class ControllerTest extends Controller_Test_Case {
 	 * @test
 	 */
 	public function it_should_not_register_blocks_with_classy_active() {
-		add_filter( 'tec_using_classy_editor', '__return_true' );
+		if ( ! tec_using_classy_editor() ) {
+			$this->markTestSkipped( 'Classy editor is not active.' );
+		}
 
 		$editor = $this->test_services->make( 'editor' );
 		$this->assertInstanceOf( Editor::class, $editor );
@@ -32,6 +34,52 @@ class ControllerTest extends Controller_Test_Case {
 			$this->assertFalse(
 				$this->test_services->has( $service_string ),
 				"Service {$service_string} should not be registered with Classy active."
+			);
+		}
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_register_blocks_without_classy_active() {
+		if ( tec_using_classy_editor() ) {
+			$this->markTestSkipped( 'Classy editor is active.' );
+		}
+
+		$should_register = [
+			'compatibility.tickets',
+			'assets',
+			'blocks.tickets-item',
+			'block.attendees',
+		];
+
+		foreach ( $should_register as $service ) {
+			$service_string = "tickets.editor.{$service}";
+			$this->assertTrue(
+				$this->test_services->has( $service_string ),
+				"Service {$service_string} should be registered without Classy active."
+			);
+		}
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_register_items_regardless_of_editor() {
+		$should_register = [
+			'tickets.editor.warnings',
+			'tickets.editor.template.overwrite',
+			'tickets.editor.template',
+			'tickets.editor.configuration',
+			'tickets.editor.meta',
+			'tickets.editor.rest.compatibility',
+			'tickets.editor.attendees_table',
+		];
+
+		foreach ( $should_register as $service ) {
+			$this->assertTrue(
+				$this->test_services->has( $service ),
+				"Service {$service} should be registered."
 			);
 		}
 	}
