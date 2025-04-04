@@ -2289,6 +2289,7 @@ class AttendeesTest extends Controller_Test_Case {
 		// Simulate the request to access the Event Attendees page.
 		$_GET['event_id'] = $single_event;
 		$_GET['post_type'] = get_post_type( $single_event );
+		tribe_cache()->reset();
 		$attendee_table = new Tribe__Tickets__Attendees_Table();
 		$attendee_table->prepare_items();
 		$attendee_item = $attendee_table->items[0];
