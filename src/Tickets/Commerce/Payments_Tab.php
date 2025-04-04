@@ -15,7 +15,8 @@ use Tribe__Tickets__Main;
 /**
  * Class Payments_Tab
  *
- * @since   5.2.0
+ * @since TBD Added horizontal layout blocks for improved visual organization.
+ * @since 5.2.0
  *
  * @package TEC\Tickets\Commerce
  */
@@ -110,7 +111,58 @@ class Payments_Tab extends Service_Provider {
 
 		$tab_settings = apply_filters( 'tec_tickets_commerce_payments_tab_settings', $tab_settings );
 
-		new \Tribe__Settings_Tab( static::$slug, esc_html__( 'Payments', 'event-tickets' ), $tab_settings );
+		$payments_tab = new \Tribe__Settings_Tab( static::$slug, esc_html__( 'Payments', 'event-tickets' ), $tab_settings );
+
+		// Add gateway child tabs
+		$this->add_gateway_tabs( $payments_tab );
+
+		return $payments_tab;
+	}
+
+	/**
+	 * Add gateway tabs as children of the main Payments tab.
+	 *
+	 * @since TBD
+	 *
+	 * @param \Tribe__Settings_Tab $parent_tab The parent Payments tab.
+	 */
+	protected function add_gateway_tabs( $parent_tab ) {
+		// Add main Tickets Commerce tab first
+		$tc_tab_settings = [
+			'priority'  => 5, // Lower priority to show first
+			'fields'    => $this->get_tickets_commerce_section_fields(),
+			'show_save' => true,
+		];
+
+		$tc_tab = new \Tribe__Settings_Tab(
+			'tickets-commerce',
+			esc_html__( 'Tickets Commerce', 'event-tickets' ),
+			$tc_tab_settings
+		);
+
+		$parent_tab->add_child( $tc_tab );
+
+		// Then add gateway tabs
+		$gateways = tribe( Manager::class )->get_gateways();
+		$gateways = array_filter( $gateways, static function ( $gateway ) {
+			return $gateway::should_show();
+		} );
+
+		foreach ( $gateways as $gateway_key => $gateway ) {
+			$tab_settings = [
+				'priority'  => 10,
+				'fields'    => $this->get_gateway_section_fields( $gateway ),
+				'show_save' => true,
+			];
+
+			$gateway_tab = new \Tribe__Settings_Tab(
+				'payment-' . $gateway_key,
+				$gateway::get_label(),
+				$tab_settings
+			);
+
+			$parent_tab->add_child( $gateway_tab );
+		}
 	}
 
 	/**
@@ -205,6 +257,7 @@ class Payments_Tab extends Service_Provider {
 		$gateways = array_filter( $gateways, static function ( $gateway ) {
 			return $gateway::should_show();
 		} );
+        
 
 		foreach ( $gateways as $gateway_key => $gateway ) {
 			$sections[] = [
@@ -287,6 +340,7 @@ class Payments_Tab extends Service_Provider {
 	/**
 	 * Gets the fields for the Tickets Commerce top level fields.
 	 *
+	 * @since TBD Added horizontal layout blocks for improved visual organization.
 	 * @since 5.3.0
 	 *
 	 * @return array[]
@@ -341,6 +395,7 @@ class Payments_Tab extends Service_Provider {
 	/**
 	 * Get selected section top level menu.
 	 *
+	 * @since TBD Added horizontal layout blocks for improved visual organization.
 	 * @since 5.3.0
 	 *
 	 * @param Gateway $section_gateway Gateway class.
@@ -399,29 +454,25 @@ class Payments_Tab extends Service_Provider {
 	 * @return array[]
 	 */
 	public function get_fields(): array {
-		$section_gateway = $this->get_section_gateway();
-
 		$fields = [
 			'tribe-form-content-start' => [
 				'type' => 'html',
-				'html' => '<div class="tribe-settings-form-wrap">',
+				'html' => '<div class="tribe-settings-form-wrap tec-tickets__admin-settings-wrapper">',
 			],
 		];
 
-		if ( empty( $section_gateway ) ) {
-			$fields = array_merge( $fields, $this->get_tickets_commerce_section_fields() );
-		} else {
-			$fields = array_merge( $fields, $this->get_gateway_section_fields( $section_gateway ) );
-		}
+		// Add main Tickets Commerce fields
+		$fields = array_merge( $fields, $this->get_tickets_commerce_section_fields() );
 
 		/**
 		 * Hook to modify the top level settings for Tickets Commerce.
 		 *
+		 * @since TBD Added support for gateway child tabs.
 		 * @since 5.2.0
 		 *
 		 * @param array[] $top_level_settings Top level settings.
 		 */
-		return apply_filters( 'tec_tickets_commerce_settings_top_level', array_merge( $this->get_section_menu(), $fields ) );
+		return apply_filters( 'tec_tickets_commerce_settings_top_level', $fields );
 	}
 
 	/**
