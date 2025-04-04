@@ -1,5 +1,8 @@
 <?php
 
+use TEC\Events\Classy\Back_Compatibility\Editor as Back_Compatible_Editor;
+use Tribe__Editor as Editor;
+
 /**
  * Initialize template overwrite for tickets block
  *
@@ -99,14 +102,14 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 			return ! has_blocks( $post_id );
 		}
 
-		if ( $is_event && $this->has_early_access_to_blocks() ) {
+		if ( $this->has_early_access_to_blocks() ) {
 			return false;
 		}
 
-		/** @var Tribe__Editor $editor */
+		/** @var Editor|Back_Compatible_Editor $editor */
 		$editor = tribe( 'editor' );
 
-		return $editor->is_classic_editor();
+		return $editor->should_load_blocks();
 	}
 
 	/**

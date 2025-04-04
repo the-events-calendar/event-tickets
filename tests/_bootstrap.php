@@ -2,8 +2,10 @@
 /**
  * @file Global bootstrap for all codeception tests
  */
+
 use Codeception\Util\Autoload;
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Events\Classy\Controller as Classy;
 use TEC\Tickets\Commerce\Order;
 
 Autoload::addNamespace( 'Tribe__Events__WP_UnitTestCase', __DIR__ . '/_support' );
@@ -57,4 +59,28 @@ function tec_tickets_tests_fake_transactions_disable() {
 	uopz_unset_return( DB::class, 'beginTransaction' );
 	uopz_unset_return( DB::class, 'rollback' );
 	uopz_unset_return( DB::class, 'commit' );
+}
+
+function tec_tickets_tests_disable_and_unregister_classy_editor() {
+	/** @var Tribe__Container $container */
+	$container = tribe();
+
+	// If Classy isn't registered, or the container doesn't have Classy, we don't need to do anything.
+	if ( ! $container->getVar( Classy::class . '_registered' ) || ! $container->has( Classy::class ) ) {
+		return;
+	}
+
+	$classy = $container->get( Classy::class );
+
+	// Unregister Classy.
+	$classy->unregister();
+
+	// Unset the _registered var in the container.
+	unset( $container[ Classy::class . '_registered' ] );
+
+	// Set the classy filter to false.
+	add_filter( 'tec_using_classy_editor', [ Classy::class, 'return_false' ], 100 );
+
+	// Register the old editor.
+	$container->register( Tribe__Editor__Provider::class );
 }

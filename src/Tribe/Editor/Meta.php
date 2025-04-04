@@ -19,6 +19,17 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	private Admin_Views $admin_views;
 
 	/**
+	 * Tribe__Tickets__Editor__Meta constructor.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param Admin_Views $admin_views A reference to the Admin Views class.
+	 */
+	public function __construct( Admin_Views $admin_views ) {
+		$this->admin_views = $admin_views;
+	}
+
+	/**
 	 * Register the required Meta fields for good Gutenberg saving.
 	 *
 	 * @since 4.9
@@ -153,17 +164,6 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 			'_tribe_ticket_has_attendee_info_fields',
 			$this->boolean_or_null()
 		);
-	}
-
-	/**
-	 * Tribe__Tickets__Editor__Meta constructor.
-	 *
-	 * since 5.8.0
-	 *
-	 * @param Tribe__Tickets__Admin__Views $admin_views A reference to the Admin Views class.
-	 */
-	public function __construct(Admin_Views $admin_views){
-		$this->admin_views = $admin_views;
 	}
 
 	/**

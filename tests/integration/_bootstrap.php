@@ -22,3 +22,4 @@ if ( ! tec_tickets_commerce_is_enabled() ) {
 tribe( Commerce_Module::class );
 
 tec_tickets_tests_fake_transactions_enable();
+tec_tickets_tests_disable_and_unregister_classy_editor();

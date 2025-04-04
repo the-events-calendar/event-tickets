@@ -77,3 +77,4 @@ global $wp_filter;
 $wp_filter['tribe_log'] = new WP_Hook();
 
 tec_tickets_tests_fake_transactions_enable();
+tec_tickets_tests_disable_and_unregister_classy_editor();
