@@ -46,11 +46,16 @@ class ControllerTest extends Controller_Test_Case {
 			$this->markTestSkipped( 'Classy editor is active.' );
 		}
 
+		// Something else might have filtered blocks to off; ensure they are on.
+		add_filter( 'tribe_editor_should_load_blocks', '__return_true', 1000 );
+
+		$this->make_controller()->register();
+
 		$should_register = [
 			'compatibility.tickets',
 			'assets',
 			'blocks.tickets-item',
-			'block.attendees',
+			'blocks.attendees',
 		];
 
 		foreach ( $should_register as $service ) {
