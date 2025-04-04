@@ -61,10 +61,11 @@ class Connector {
 	 * @param int|string $ticket_id The ticket ID.
 	 * @param int|string $event_id The Event ID.
 	 * @param string     $security_code The security code.
+	 * @param int     $attendee_id The attendee ID>
 	 *
 	 * @return string
 	 */
-	public function get_checkin_url( $ticket_id, $event_id, string $security_code ): string {
+	public function get_checkin_url( $ticket_id, $event_id, string $security_code, int $attendee_id ): string {
 		$base_url = home_url( '/' );
 
 		/**
@@ -129,7 +130,7 @@ class Connector {
 			return null;
 		}
 
-		$link   = $this->get_checkin_url( $ticket['qr_ticket_id'], $ticket['event_id'], $ticket['security_code'] );
+		$link   = $this->get_checkin_url( $ticket['qr_ticket_id'], $ticket['event_id'], $ticket['security_code'], $ticket['attendee_id'] );
 		$upload = $this->get_image_for_link( $link );
 
 		if ( ! $upload ) {
