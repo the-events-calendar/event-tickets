@@ -41,9 +41,9 @@ $admin_views = tribe( 'tickets.admin.views' );
 			 */
 			do_action( 'tribe_events_tickets_new_ticket_buttons', $post_id, $tickets );
 
-            if ( empty( $tickets ) ) {
-                $admin_views->template( [ 'editor', 'panel', 'settings-button' ], [ 'post_id' => $post_id, 'tickets' => $tickets ] );
-            }
+			if ( empty( $tickets ) ) {
+				$admin_views->template( [ 'editor', 'panel', 'settings-button' ], [ 'post_id' => $post_id, 'tickets' => $tickets ] );
+			}
 			?>
 		</div>
 
@@ -184,10 +184,10 @@ $admin_views = tribe( 'tickets.admin.views' );
 			<?php endif; ?>
 
 			<?php
-            if ( ! empty( $tickets ) ) {
-                $admin_views->template( [ 'editor', 'panel', 'settings-button' ], [ 'post_id' => $post_id, 'tickets' => $tickets ] );
-            }
-            ?>
+			if ( ! empty( $tickets ) ) {
+				$admin_views->template( [ 'editor', 'panel', 'settings-button' ], [ 'post_id' => $post_id, 'tickets' => $tickets ] );
+			}
+			?>
 		</div>
 	</div>
 	<?php
