@@ -2291,13 +2291,16 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * It is hacky, but we'll aim to resolve this issue when we end-of-life our legacy ticket plugins
 	 * OR write around it in a future major release
 	 *
-	 * @param int  $attendee_id The Attendee ID.
-	 * @param bool|null $qr          True if from QR checkin process.
-	 * @param int|null  $event_id    The ID of the ticket-able post the Attendee is being checked into.
+	 * @since - Add the optional `$details` parameter to be able to set the checkin time and device_id.
+	 *
+	 * @param int                 $attendee_id The Attendee ID.
+	 * @param bool|null           $qr          True if from QR checkin process.
+	 * @param int|null            $event_id    The ID of the ticket-able post the Attendee is being checked into.
+	 * @param array<string|mixed> $details     Check-out details including timestamp and device_id information.
 	 *
 	 * @return bool
 	 */
-	public function checkin( $attendee_id, $qr = null, $event_id = null ) {
+	public function checkin( $attendee_id, $qr = null, $event_id = null, $details = [] ) {
 		$qr = (bool) $qr;
 
 		if ( $qr ) {
@@ -2317,9 +2320,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		$checkin_details = [
-			'date'   => current_time( 'mysql' ),
+			'date'      => $details['timestamp'] ?: current_time( 'mysql' ),
 			'source' => ! empty( $qr ) ? 'app' : 'site',
 			'author' => get_current_user_id(),
+			'device_id' => $details['device_id'] ?? null,
 		];
 
 		/**
