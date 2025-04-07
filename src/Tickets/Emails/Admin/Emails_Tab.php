@@ -145,7 +145,7 @@ class Emails_Tab {
 	 * Gets the top level settings for Tickets Commerce.
 	 *
 	 * @since 5.5.6
-	 * @since    TBD Updated class names to follow new settings.
+	 * @since TBD Updated class names to follow new settings.
 	 *
 	 * @return array[]
 	 */
