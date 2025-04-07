@@ -126,7 +126,7 @@ class Completed_Order extends Email_Abstract {
 		return [
 			[
 				'type' => 'html',
-				'html' => '<div class="tribe-settings-form-wrap">',
+				'html' => '<div class="tribe-settings-form-wrap tec-settings-form__header-block--horizontal">',
 			],
 			[
 				'type' => 'html',

@@ -139,7 +139,7 @@ class RSVP extends Email_Abstract {
 		$settings = [
 			[
 				'type' => 'html',
-				'html' => '<div class="tribe-settings-form-wrap">',
+				'html' => '<div class="tribe-settings-form-wrap tec-settings-form__header-block--horizontal">',
 			],
 			[
 				'type' => 'html',
