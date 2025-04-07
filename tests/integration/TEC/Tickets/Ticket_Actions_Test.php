@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets;
 
+use ActionScheduler;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use Tribe\Tests\Traits\With_Clock_Mock;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Maker;
@@ -22,6 +23,11 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 	protected $controller_class = Ticket_Actions::class;
 
 	protected static $back_up_actions = [];
+
+	protected static array $before_test_counts = [
+		'start' => 0,
+		'end'   => 0,
+	];
 
 	/**
 	 * @before
@@ -175,29 +181,24 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 			$store = compact( 'ticket_id', 'new_stock' );
 		}, 10, 2 );
 
-		[ $post_id, $ticket_id, $updater ] = $fixture();
+		[ , $ticket_id, $updater ] = $fixture();
 
 		$this->assertEquals( 1, did_action( 'tec_tickets_ticket_dates_updated' ) );
 		$this->assertEquals( 0, did_action( 'tec_tickets_ticket_stock_changed' ) );
 		$this->assertEquals( 1, did_action( 'tec_tickets_ticket_stock_added' ) );
 
 		$this->assertEquals( $store['ticket_id'], $ticket_id );
-		$this->assertEquals( $store['new_stock'], 5 );
+		$this->assertEquals( 5, $store['new_stock'] );
 		$this->assertTrue( ! isset( $store['old_stock'] ) );
 
-		$this->assertCount(
+		$this->assertEquals(
 			1,
-			$this->query_action_scheduler_actions_count(
-				[ $ticket_id ]
-			)
+			$this->query_action_scheduler_actions_count( [ $ticket_id ] )
 		);
 
-		$this->assertCount(
+		$this->assertEquals(
 			1,
-			$this->query_action_scheduler_actions_count(
-				[ $ticket_id ],
-				false
-			)
+			$this->query_action_scheduler_actions_count( [ $ticket_id ], false )
 		);
 
 		$this->assertEquals( 0, did_action( $this->controller_class::TICKET_START_SALES_HOOK ) );
@@ -211,22 +212,17 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		$this->assertEquals( 1, did_action( 'tec_tickets_ticket_stock_added' ) );
 
 		$this->assertEquals( $store['ticket_id'], $ticket_id );
-		$this->assertEquals( $store['new_stock'], 6 );
-		$this->assertEquals( $store['old_stock'], 5 );
+		$this->assertEquals( 6, $store['new_stock'] );
+		$this->assertEquals( 5, $store['old_stock'] );
 
-		$this->assertCount(
+		$this->assertEquals(
 			0,
-			$this->query_action_scheduler_actions_count(
-				[ $ticket_id ]
-			)
+			$this->query_action_scheduler_actions_count( [ $ticket_id ] )
 		);
 
-		$this->assertCount(
+		$this->assertEquals(
 			0,
-			$this->query_action_scheduler_actions_count(
-				[ $ticket_id ],
-				false
-			)
+			$this->query_action_scheduler_actions_count( [ $ticket_id ], false )
 		);
 
 		$this->assertEquals( 0, did_action( $this->controller_class::TICKET_START_SALES_HOOK ) );
@@ -243,22 +239,17 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		$this->assertEquals( 1, did_action( 'tec_tickets_ticket_stock_added' ) );
 
 		$this->assertEquals( $store['ticket_id'], $ticket_id );
-		$this->assertEquals( $store['new_stock'], 5 );
-		$this->assertEquals( $store['old_stock'], 6 );
+		$this->assertEquals( 5, $store['new_stock'] );
+		$this->assertEquals( 6, $store['old_stock'] );
 
-		$this->assertCount(
+		$this->assertEquals(
 			0,
-			$this->query_action_scheduler_actions_count(
-				[ $ticket_id ]
-			)
+			$this->query_action_scheduler_actions_count( [ $ticket_id ] )
 		);
 
-		$this->assertCount(
+		$this->assertEquals(
 			1,
-			$this->query_action_scheduler_actions_count(
-				[ $ticket_id ],
-				false
-			)
+			$this->query_action_scheduler_actions_count( [ $ticket_id ], false )
 		);
 	}
 
@@ -271,7 +262,7 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 
 		$this->make_controller()->register();
 
-		[ $post_id, $ticket_id, $updater ] = $fixture();
+		[ $post_id, $ticket_id, ] = $fixture();
 
 		$listeners = [
 			'ticket_id' => null,
@@ -289,7 +280,7 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 
 		$this->assertEquals( 0, did_action( 'tec_tickets_ticket_start_date_trigger' ) );
 
-		$start_actions = $this->query_action_scheduler_actions_count( [ $ticket_id ] );
+		$start_actions = $this->query_action_scheduler_actions( [ $ticket_id ] );
 
 		$this->assertCount( 1, $start_actions );
 
@@ -311,7 +302,7 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		$this->assertEquals( strtotime( '2050-01-01 08:00:00' ), $listeners['timestamp'] );
 		$this->assertEquals( $post_id, $listeners['event']->ID );
 
-		$start_actions = $this->query_action_scheduler_actions_count( [ $ticket_id ] );
+		$start_actions = $this->query_action_scheduler_actions( [ $ticket_id ] );
 
 		$this->assertCount( 1, $start_actions );
 
@@ -333,7 +324,7 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		$this->assertEquals( strtotime( '2050-01-01 08:00:00' ), $listeners['timestamp'] );
 		$this->assertEquals( $post_id, $listeners['event']->ID );
 
-		$start_actions = $this->query_action_scheduler_actions_count( [ $ticket_id ] );
+		$start_actions = $this->query_action_scheduler_actions( [ $ticket_id ] );
 
 		$this->assertCount( 1, $start_actions );
 
@@ -355,7 +346,7 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		$this->assertEquals( strtotime( '2050-01-01 08:00:00' ), $listeners['timestamp'] );
 		$this->assertEquals( $post_id, $listeners['event']->ID );
 
-		$start_actions = $this->query_action_scheduler_actions_count( [ $ticket_id ] );
+		$start_actions = $this->query_action_scheduler_actions( [ $ticket_id ] );
 
 		$this->assertCount( 1, $start_actions );
 
@@ -377,7 +368,7 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		$this->assertEquals( strtotime( '2050-01-01 08:00:00' ), $listeners['timestamp'] );
 		$this->assertEquals( $post_id, $listeners['event']->ID );
 
-		$start_actions = $this->query_action_scheduler_actions_count( [ $ticket_id ] );
+		$start_actions = $this->query_action_scheduler_actions( [ $ticket_id ] );
 
 		$this->assertCount( 0, $start_actions );
 	}
@@ -414,7 +405,7 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 				$this->assertEquals( $counter, did_action( 'tec_tickets_ticket_dates_updated' ) );
 				$this->assertEquals( 0, did_action( 'tec_tickets_ticket_stock_changed' ) );
 				$this->assertEquals( $counter, did_action( 'tec_tickets_ticket_stock_added' ) );
-				$this->assertEquals( $store['new_stock'], 5 );
+				$this->assertEquals( 5, $store['new_stock'] );
 				$this->assertTrue( ! isset( $store['old_stock'] ) );
 			}
 		}
@@ -422,8 +413,8 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		$this->assertEquals( $posts * $tickets_per_post, $counter );
 
 		// 500 tickets all of them in the future means 1000 actions.
-		$start_actions = $this->query_action_scheduler_actions_count( null, true, ( $posts * $tickets_per_post ) );
-		$end_actions   = $this->query_action_scheduler_actions_count( null, false, ( $posts * $tickets_per_post ) );
+		$start_actions = $this->query_action_scheduler_actions( null, true, ( $posts * $tickets_per_post ) );
+		$end_actions   = $this->query_action_scheduler_actions( null, false, ( $posts * $tickets_per_post ) );
 
 		$this->assertCount( ( $posts * $tickets_per_post ), $start_actions );
 		$this->assertCount( ( $posts * $tickets_per_post ), $end_actions );
@@ -460,16 +451,37 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		$this->assertLessThan( 5, $end_process_actions_time - $start_process_actions_time );
 	}
 
-	/**
-	 * @before
-	 * @after
-	 */
-	public function check_we_are_clearing_up() {
-		$this->assertCount( 0, $this->query_action_scheduler_actions_count() );
-		$this->assertCount( 0, $this->query_action_scheduler_actions_count( null, false ) );
+	protected function check_we_are_clearing_up( string $when ) {
+		$this->assertEquals(
+			self::$before_test_counts['start'],
+			$this->query_action_scheduler_actions_count(),
+			"We should clean up start hook {$when}"
+		);
+		$this->assertEquals(
+			self::$before_test_counts['end'],
+			$this->query_action_scheduler_actions_count( null, false ),
+			"We should clean up end hook {$when}"
+		);
 	}
 
-	protected function query_action_scheduler_actions_count( ?array $args = null, bool $start = true, $limit = 100, $offset = 0 ): array {
+	/**
+	 * @ after
+	 */
+	public function clean_up_after() {
+		$this->check_we_are_clearing_up( 'after' );
+	}
+
+	/**
+	 * @ before
+	 */
+	public function clean_up_before() {
+		$this->check_we_are_clearing_up( 'before' );
+		if ( $this->is_risky() ) {
+			$this->markAsRisky();
+		}
+	}
+
+	protected function query_action_scheduler_actions_count( ?array $args = null, bool $start = true, $limit = 100 ): int {
 		$hook = $start ? $this->controller_class::TICKET_START_SALES_HOOK : $this->controller_class::TICKET_END_SALES_HOOK;
 
 		$params = [
@@ -479,7 +491,27 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 			'order'    => 'ASC',
 			'group'    => $this->controller_class::AS_TICKET_ACTIONS_GROUP,
 			'per_page' => $limit,
-			'offset'   => $offset,
+		];
+
+		if ( is_array( $args ) ) {
+			$params['args'] = $args;
+		}
+
+		$store = ActionScheduler::store();
+
+		return (int) $store->query_actions( $params, 'count' );
+	}
+
+	protected function query_action_scheduler_actions( ?array $args = null, bool $start = true, int $limit = 100 ) {
+		$hook = $start ? $this->controller_class::TICKET_START_SALES_HOOK : $this->controller_class::TICKET_END_SALES_HOOK;
+
+		$params = [
+			'hook'     => $hook,
+			'status'   => ActionScheduler_Store::STATUS_PENDING,
+			'orderby'  => 'date',
+			'order'    => 'ASC',
+			'group'    => $this->controller_class::AS_TICKET_ACTIONS_GROUP,
+			'per_page' => $limit,
 		];
 
 		if ( is_array( $args ) ) {
@@ -487,5 +519,37 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		}
 
 		return as_get_scheduled_actions( $params, OBJECT );
+	}
+
+	protected function is_risky(): bool {
+		return self::$before_test_counts['start'] > 0 || self::$before_test_counts['end'] > 0;
+	}
+
+	/**
+	 * @beforeClass
+	 */
+	public static function check_before() {
+		$params = [
+			'hook'     => Ticket_Actions::TICKET_START_SALES_HOOK,
+			'status'   => ActionScheduler_Store::STATUS_PENDING,
+			'orderby'  => 'date',
+			'order'    => 'ASC',
+			'group'    => Ticket_Actions::AS_TICKET_ACTIONS_GROUP,
+			'per_page' => 100,
+			'offset'   => 0,
+		];
+
+		$store = ActionScheduler::store();
+
+		$start = (int) $store->query_actions( $params, 'count' );
+
+		$params['hook'] = Ticket_Actions::TICKET_END_SALES_HOOK;
+
+		$end = (int) $store->query_actions( $params, 'count' );
+
+		self::$before_test_counts = [
+			'start' => $start,
+			'end'   => $end,
+		];
 	}
 }

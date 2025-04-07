@@ -1,5 +1,9 @@
 <?php
 
+use TEC\Events\Classy\Back_Compatibility\Editor as Back_Compatible_Editor;
+use Tribe__Editor as Editor;
+use Tribe__Events__Main as TEC;
+
 /**
  * Class Tribe__Tickets__Editor
  *
@@ -21,31 +25,36 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 *
 	 * @since 4.9
 	 *
-	 * @return bool
+	 * @return void
 	 */
 	public function hook() {
-		// Add Rest API support
-		add_filter( 'tribe_tickets_register_ticket_post_type_args', array( $this, 'add_rest_support' ) );
-
-		// Update Post content to use correct child blocks for tickets
-		add_filter( 'tribe_blocks_editor_update_classic_content', array( $this, 'update_tickets_block_with_childs' ), 10, 3 );
-
-		// Add RSVP and tickets blocks
-		add_action( 'admin_init', array( $this, 'add_tickets_block_in_editor' ) );
-
-		add_filter( 'tribe_events_editor_default_classic_template', array( $this, 'filter_default_template_classic_blocks' ), 15 );
-
 		add_action( 'tribe_events_tickets_post_capacity', tribe_callback( 'tickets.admin.views', 'template', 'editor/button-view-orders' ) );
-		add_action( 'tribe_events_tickets_metabox_edit_main', array( $this, 'filter_get_price_fields' ), 10, 2 );
+		add_action( 'tribe_events_tickets_metabox_edit_main', [ $this, 'filter_get_price_fields' ], 10, 2 );
 		add_action( 'tribe_events_tickets_capacity', tribe_callback( 'tickets.admin.views', 'template', 'editor/total-capacity' ) );
 		add_action( 'tribe_events_tickets_ticket_table_add_header_column', tribe_callback( 'tickets.admin.views', 'template', 'editor/column-head-price' ) );
-		add_action( 'tribe_events_tickets_ticket_table_add_tbody_column', array( $this, 'add_column_content_price' ), 10, 2 );
-		add_action( "tec_tickets_editor_list_table_title_icon_rsvp", tribe_callback( 'tickets.admin.views', 'template', 'editor/icons/rsvp' ) );
-		add_action( "tec_tickets_editor_list_table_title_icon_default", tribe_callback( 'tickets.admin.views', 'template', 'editor/icons/ticket' ) );
+		add_action( 'tribe_events_tickets_ticket_table_add_tbody_column', [ $this, 'add_column_content_price' ], 10, 2 );
+		add_action( 'tec_tickets_editor_list_table_title_icon_rsvp', tribe_callback( 'tickets.admin.views', 'template', 'editor/icons/rsvp' ) );
+		add_action( 'tec_tickets_editor_list_table_title_icon_default', tribe_callback( 'tickets.admin.views', 'template', 'editor/icons/ticket' ) );
+
+		// Don't hook when the Classy editor is active.
+		if ( tec_using_classy_editor() ) {
+			return;
+		}
+
+		// Add Rest API support
+		add_filter( 'tribe_tickets_register_ticket_post_type_args', [ $this, 'add_rest_support' ] );
+
+		// Update Post content to use correct child blocks for tickets
+		add_filter( 'tribe_blocks_editor_update_classic_content', [ $this, 'update_tickets_block_with_childs' ], 10, 3 );
+
+		// Add RSVP and tickets blocks
+		add_action( 'admin_init', [ $this, 'add_tickets_block_in_editor' ] );
+
+		add_filter( 'tribe_events_editor_default_classic_template', [ $this, 'filter_default_template_classic_blocks' ], 15 );
 
 		// Maybe add flag from classic editor
-		add_action( 'load-post.php', array( $this, 'flush_blocks' ), 0 );
-		add_action( 'tribe_tickets_update_blocks_from_classic_editor', array( $this, 'update_blocks' ) );
+		add_action( 'load-post.php', [ $this, 'flush_blocks' ], 0 );
+		add_action( 'tribe_tickets_update_blocks_from_classic_editor', [ $this, 'update_blocks' ] );
 	}
 
 	/**
@@ -53,31 +62,27 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 *
 	 * @since 4.9
 	 *
-	 *
-	 * @param array $template Array of all the templates used by default
-	 * @param string $post_type The current post type
-	 *
-	 * @return array
+	 * @return void
 	 */
 	public function add_tickets_block_in_editor() {
 		// Post types where the block shouldn't be displayed by default
-		if ( ! class_exists( 'Tribe__Events__Main' ) ) {
+		if ( ! class_exists( TEC::class ) ) {
 			return;
 		}
 
 		foreach ( $this->get_enabled_post_types() as $post_type ) {
 			$post_type_object = get_post_type_object( $post_type );
 
-			if ( ! $post_type_object || $post_type !== Tribe__Events__Main::POSTTYPE ) {
+			if ( ! $post_type_object || $post_type !== TEC::POSTTYPE ) {
 				continue;
 			}
 
 			$template = isset( $post_type_object->template )
 				? (array) $post_type_object->template
-				: array();
+				: [];
 
-			$template[] = array( 'tribe/tickets' );
-			$template[] = array( 'tribe/rsvp' );
+			$template[] = [ 'tribe/tickets' ];
+			$template[] = [ 'tribe/rsvp' ];
 
 			$post_type_object->template = $template;
 		}
@@ -92,10 +97,10 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 *
 	 * @return array
 	 */
-	public function filter_default_template_classic_blocks( $template = array() ) {
-		$template[] = array( 'tribe/tickets' );
-		$template[] = array( 'tribe/rsvp' );
-		$template[] = array( 'tribe/attendees' );
+	public function filter_default_template_classic_blocks( $template = [] ) {
+		$template[] = [ 'tribe/tickets' ];
+		$template[] = [ 'tribe/rsvp' ];
+		$template[] = [ 'tribe/attendees' ];
 		return $template;
 	}
 
@@ -204,7 +209,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 * @return array
 	 */
 	public function get_enabled_post_types() {
-		return (array) tribe_get_option( 'ticket-enabled-post-types', array() );
+		return (array) tribe_get_option( 'ticket-enabled-post-types', [] );
 	}
 
 	/**
@@ -223,13 +228,13 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 
 		return array_merge(
 			$categories,
-			array(
-				array(
+			[
+				[
 					'slug'  => 'tribe-tickets',
 					'title' => __( 'Tickets Blocks', 'event-tickets' ),
 					'icon'  => 'tec-tickets',
-				),
-			)
+				],
+			]
 		);
 	}
 
@@ -288,7 +293,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 * @return bool
 	 */
 	public function flush_blocks() {
-		/** @var Tribe__Editor $editor */
+		/** @var Editor|Back_Compatible_Editor $editor */
 		$editor = tribe( 'editor' );
 
 		// Bail because we dont have access to any of the classes we need for Blocks Editor.
@@ -370,11 +375,13 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 		$editor_utils->remove_inner_blocks( $post_id, $block_name, "<!-- $block_name  /-->" );
 
 		$content      = get_post_field( 'post_content', $post_id );
-		$post_content = $this->update_tickets_block_with_childs( $content, $post, array() );
+		$post_content = $this->update_tickets_block_with_childs( $content, $post, [] );
 
-		return wp_update_post( array(
-			'ID'           => $post->ID,
-			'post_content' => $post_content,
-		) );
+		return wp_update_post(
+			[
+				'ID'           => $post->ID,
+				'post_content' => $post_content,
+			]
+		);
 	}
 }

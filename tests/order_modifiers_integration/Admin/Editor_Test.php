@@ -173,11 +173,15 @@ class Editor_Test extends Controller_Test_Case {
 	public function it_should_locate_assets_where_expected( $slug, $path ) {
 		$this->make_controller()->register();
 
-		$this->assertTrue( Assets::init()->exists( $slug ) );
+		$this->assertTrue( Assets::init()->exists( $slug ), 'Asset should be registered with Stellar Assets' );
 
 		// We use false, because in CI mode the assets are not build so min aren't available. Its enough to check that the non-min is as expected.
 		$asset_url = Assets::init()->get( $slug )->get_url( false );
-		$this->assertEquals( plugins_url( $path, EVENT_TICKETS_MAIN_PLUGIN_FILE ), $asset_url );
+		$this->assertEquals(
+			plugins_url( $path, EVENT_TICKETS_MAIN_PLUGIN_FILE ),
+			$asset_url,
+			'Asset URL should be as expected'
+		);
 	}
 
 	public function asset_data_provider() {
@@ -255,5 +259,17 @@ class Editor_Test extends Controller_Test_Case {
 		);
 
 		$this->assertEquals( $fixture(), $should_enqueue_assets() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_register_inverse_to_classy() {
+		$this->make_controller()->register();
+		$this->assertEquals(
+			! tec_using_classy_editor(),
+			$this->controller_class::is_registered(),
+			'Controller should not be registered with Classy active'
+		);
 	}
 }

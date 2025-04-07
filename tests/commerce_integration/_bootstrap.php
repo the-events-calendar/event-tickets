@@ -1,6 +1,7 @@
 <?php
 
-use \TEC\Tickets\Commerce\Provider as Commerce_Provider;
+use TEC\Events\Classy\Controller as Classy_Controller;
+use TEC\Tickets\Commerce\Provider as Commerce_Provider;
 use Tribe\Tickets\Promoter\Triggers\Dispatcher;
 
 $tec_support = dirname( __DIR__, 3 ) . '/the-events-calendar/tests/_support';
@@ -27,3 +28,6 @@ tec_tickets_tests_fake_transactions_enable();
 
 // Disconnect Promoter to avoid license-related notices.
 remove_action( 'tribe_tickets_promoter_trigger', [ tribe( Dispatcher::class ), 'trigger' ] );
+
+// Ensure Classy is disabled for these tests.
+tec_tickets_tests_disable_and_unregister_classy_editor();

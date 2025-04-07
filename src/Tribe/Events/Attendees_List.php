@@ -6,6 +6,8 @@
 
 namespace Tribe\Tickets\Events;
 
+use TEC\Events\Classy\Back_Compatibility\Editor as Back_Compatible_Editor;
+use Tribe__Editor as Editor;
 use Tribe__Tickets__Main;
 use WP_Post;
 
@@ -150,7 +152,7 @@ class Attendees_List {
 			return null;
 		}
 
-		/** @var \Tribe__Editor $editor */
+		/** @var Editor|Back_Compatible_Editor $editor */
 		$editor = tribe( 'editor' );
 
 		if ( ! $editor->is_events_using_blocks() ) {

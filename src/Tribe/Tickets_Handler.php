@@ -1,5 +1,7 @@
 <?php
 
+use TEC\Events\Classy\Back_Compatibility\Editor as Back_Compatible_Editor;
+use Tribe__Editor as Editor;
 use Tribe__Tickets__REST__V1__Messages as Messages;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Utils__Array as Arr;
@@ -1639,8 +1641,8 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		// We reversed this logic on the back end
-		if ( class_exists( 'Tribe__Tickets_Plus__Attendees_List' ) ) {
-			/** @var \Tribe__Editor $editor */
+		if ( class_exists( Tribe__Tickets_Plus__Attendees_List::class ) ) {
+			/** @var Editor|Back_Compatible_Editor $editor */
 			$editor = tribe( 'editor' );
 
 			// Only update this meta if not using blocks.

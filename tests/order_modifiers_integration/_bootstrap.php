@@ -60,3 +60,4 @@ DB::query( DB::prepare( "ALTER TABLE %i AUTO_INCREMENT = 9687", DB::prefix( 'tec
 
 // Disconnect Promoter to avoid license-related notices.
 remove_action( 'tribe_tickets_promoter_trigger', [ tribe( Dispatcher::class ), 'trigger' ] );
+tec_tickets_tests_disable_and_unregister_classy_editor();

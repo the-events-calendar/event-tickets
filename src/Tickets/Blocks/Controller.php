@@ -9,22 +9,26 @@
 
 namespace TEC\Tickets\Blocks;
 
+use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Common\StellarWP\Assets\Config;
+use TEC\Events\Classy\Back_Compatibility\Editor as Back_Compatible_Editor;
+use TEC\Tickets\Blocks\Ticket\Block as Ticket_Item_Block;
+use TEC\Tickets\Blocks\Tickets\Block as Tickets_Block;
 use Tribe\Tickets\Editor\Warnings;
+use Tribe__Editor as Editor;
 use Tribe__Tickets__Admin__Views as Admin_Views;
 use Tribe__Tickets__Attendees_Table as Attendees_Table;
 use Tribe__Tickets__Editor__Assets as Assets;
 use Tribe__Tickets__Editor__Blocks__Attendees as Attendees_Block;
 use Tribe__Tickets__Editor__Blocks__Rsvp as RSVP_Block;
-use TEC\Tickets\Blocks\Tickets\Block as Tickets_Block;
-use TEC\Tickets\Blocks\Ticket\Block as Ticket_Item_Block;
+use Tribe__Tickets__Editor__Compatibility__Tickets as Editor_Compatibility;
 use Tribe__Tickets__Editor__Configuration as Configuration;
 use Tribe__Tickets__Editor__Meta as Meta;
 use Tribe__Tickets__Editor__REST__Compatibility as REST_Compatibility;
 use Tribe__Tickets__Editor__Template as Template;
 use Tribe__Tickets__Editor__Template__Overwrite as Template_Overwrite;
-use Tribe__Tickets__Ticket_Object as Ticket_Object;
-use TEC\Common\StellarWP\Assets\Config;
 use Tribe__Tickets__Main as Tickets_Plugin;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
  * Class Controller.
@@ -33,34 +37,27 @@ use Tribe__Tickets__Main as Tickets_Plugin;
  *
  * @package TEC\Tickets\Blocks;
  */
-class Controller extends \TEC\Common\Contracts\Provider\Controller {
+class Controller extends Controller_Contract {
+
 	/**
 	 * Binds and sets up implementations.
 	 *
 	 * @since 4.9
 	 */
 	public function do_register(): void {
-		// Add group path for tickets blocks.
-		Config::add_group_path( 'et-tickets-blocks', Tickets_Plugin::instance()->plugin_path . 'build/', 'Tickets/Blocks/' );
-
 		// The general warnings class.
 		$this->container->singleton( 'tickets.editor.warnings', Warnings::class, [ 'hook' ] );
 
 		// Register these all the time - as we now use them in most of the templates, blocks or otherwise.
 		$this->container->singleton( 'tickets.editor.template.overwrite', Template_Overwrite::class );
 		$this->container->singleton( 'tickets.editor.template', Template::class );
-		$this->container->singleton( 'tickets.editor.blocks.tickets', Tickets_Block::class, [ 'load' ] );
-		$this->container->singleton( 'tickets.editor.blocks.rsvp', RSVP_Block::class, [ 'load' ] );
-		$this->container->singleton( 'tickets.editor.blocks.tickets-item', Ticket_Item_Block::class, [ 'load' ] );
-		$this->container->singleton( 'tickets.editor.blocks.attendees', Attendees_Block::class, [ 'load' ] );
 		$this->container->singleton( 'tickets.editor.configuration', Configuration::class, [ 'hook' ] );
+		$this->container->singleton( 'tickets.editor.meta', Meta::class );
+		$this->container->singleton( 'tickets.editor.rest.compatibility', REST_Compatibility::class, [ 'hook' ] );
+		$this->container->singleton( 'tickets.editor.attendees_table', Attendees_Table::class );
 
+		$this->hook();
 		$this->register_for_blocks();
-
-		if ( wp_doing_ajax() ) {
-			// The Tickets Block editor will handle AJAX requests, register now if we're in an AJAX context.
-			tribe( 'tickets.editor.blocks.tickets' )->hook();
-		}
 
 		// Handle general non-block-specific instances.
 		tribe( 'tickets.editor.warnings' );
@@ -72,38 +69,47 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 * @since 5.0.4
 	 */
 	public function register_for_blocks() {
-		/** @var \Tribe__Editor $editor */
+		/** @var Editor|Back_Compatible_Editor $editor */
 		$editor = tribe( 'editor' );
 
-		$this->container->singleton(
-			'tickets.editor.compatibility.tickets',
-			'Tribe__Tickets__Editor__Compatibility__Tickets',
-			[ 'hook' ]
-		);
-
-		$this->container->singleton( 'tickets.editor.assets', Assets::class, [ 'register' ] );
-		$this->container->singleton( 'tickets.editor.meta', Meta::class );
-		$this->container->singleton( 'tickets.editor.rest.compatibility', REST_Compatibility::class, [ 'hook' ] );
-		$this->container->singleton( 'tickets.editor.attendees_table', Attendees_Table::class );
-
-		$this->hook();
-
-		/**
-		 * Lets load all compatibility related methods
-		 *
-		 * @todo remove once RSVP and tickets blocks are completed
-		 */
-		$this->load_compatibility_tickets();
+		// This should be registered regardless, but will only have load() called when using blocks.
+		$this->container->singleton( 'tickets.editor.blocks.rsvp', RSVP_Block::class );
+		$this->container->singleton( 'tickets.editor.blocks.tickets', Tickets_Block::class );
 
 		// Only register for blocks if we are using them.
 		if ( ! $editor->should_load_blocks() ) {
 			return;
 		}
 
-		// Initialize the correct Singleton.
+		$this->container->singleton(
+			'tickets.editor.compatibility.tickets',
+			Editor_Compatibility::class,
+			[ 'hook' ]
+		);
+
+		/**
+		 * Lets load all compatibility related methods
+		 *
+		 * @todo remove once RSVP and tickets blocks are completed
+		 */
+		tribe( 'tickets.editor.compatibility.tickets' );
+
+		// Add group path for tickets blocks.
+		Config::add_group_path( 'et-tickets-blocks', Tickets_Plugin::instance()->plugin_path . 'build/', 'Tickets/Blocks/' );
+
+		$this->container->singleton( 'tickets.editor.assets', Assets::class, [ 'register' ] );
+		$this->container->singleton( 'tickets.editor.blocks.tickets-item', Ticket_Item_Block::class, [ 'load' ] );
+		$this->container->singleton( 'tickets.editor.blocks.attendees', Attendees_Block::class, [ 'load' ] );
+
+		$this->hook_blocks();
+
+		// Initialize the correct Singletons.
+		tribe( 'tickets.editor.rest.compatibility' );
 		tribe( 'tickets.editor.assets' );
 		tribe( 'tickets.editor.configuration' );
 		tribe( 'tickets.editor.template.overwrite' )->hook();
+		tribe( 'tickets.editor.blocks.rsvp' )->load();
+		tribe( 'tickets.editor.blocks.tickets' )->load();
 	}
 
 	/**
@@ -113,15 +119,14 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 * @since 5.8.4 Correctly get post type when creating a new post or page.
 	 */
 	public function register_blocks() {
+		// In admin context, do not register the blocks if the post type is not ticketable.
 		if ( is_admin() ) {
-			// In admin context, do not register the blocks if the post type is not ticketable.
 			$post_id           = tribe_get_request_var( 'post' );
 			$post_type_default = 'post';
 
 			$post_type = $post_id ? get_post_type( $post_id ) : tribe_get_request_var( 'post_type', $post_type_default );
 
 			if ( ! in_array( $post_type, (array) tribe_get_option( 'ticket-enabled-post-types', [] ), true ) ) {
-				// Exit if the post type is not ticketable.
 				return;
 			}
 		}
@@ -144,13 +149,24 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		// Setup the Meta registration.
 		add_action( 'init', tribe_callback( 'tickets.editor.meta', 'register' ), 15 );
 		add_filter( 'register_meta_args', tribe_callback( 'tickets.editor.meta', 'register_meta_args' ), 10, 4 );
-		add_action( 'tribe_plugins_loaded', [ $this, 'register_blocks' ], 300 );
 
 		// Handle REST specific meta filtering.
 		add_filter( 'rest_dispatch_request', tribe_callback( 'tickets.editor.meta', 'filter_rest_dispatch_request' ), 10, 3 );
 
-		// Setup the Rest compatibility layer for WP.
-		tribe( 'tickets.editor.rest.compatibility' );
+		// Handle the editor template.
+		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle_buttons' ] );
+		add_action( 'tec_tickets_list_row_edit', [ $this, 'render_ticket_edit_controls' ], 10, 2 );
+	}
+
+	/**
+	 * Add hooks related to blocks.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function hook_blocks() {
+		add_action( 'tribe_plugins_loaded', [ $this, 'register_blocks' ], 300 );
 
 		global $wp_version;
 		if ( version_compare( $wp_version, '5.8', '<' ) ) {
@@ -160,9 +176,6 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 			// WP version is 5.8 or above.
 			add_action( 'block_categories_all', tribe_callback( 'tickets.editor', 'block_categories' ) );
 		}
-
-		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle_buttons' ] );
-		add_action( 'tec_tickets_list_row_edit', [ $this, 'render_ticket_edit_controls' ], 10, 2 );
 	}
 
 	/**
@@ -197,19 +210,6 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		if ( ! empty( $enabled['rsvp'] ) ) {
 			tribe( Meta::class )->render_rsvp_form_toggle( $post_id );
 		}
-	}
-
-	/**
-	 * Initializes the correct classes for when Tickets is active.
-	 *
-	 * @since 4.9
-	 *
-	 * @return bool
-	 */
-	private function load_compatibility_tickets() {
-		tribe( 'tickets.editor.compatibility.tickets' );
-
-		return true;
 	}
 
 	/**
