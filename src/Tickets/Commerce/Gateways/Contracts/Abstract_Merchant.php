@@ -102,7 +102,7 @@ abstract class Abstract_Merchant implements Merchant_Interface {
 
 		return (string) tribe( Tickets_Settings::class )->get_url(
 			[
-				'tab'            => Payments_Tab::$slug,
+				'tab'            => Gateway::get_key(),
 				$current_section => Gateway::get_key(),
 				'tc-action'      => $this->get_disconnect_action(),
 				'tc-nonce'       => wp_create_nonce( $this->get_disconnect_action() ),
