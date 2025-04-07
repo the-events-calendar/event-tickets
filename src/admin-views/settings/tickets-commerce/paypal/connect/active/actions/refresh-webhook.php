@@ -31,7 +31,7 @@ if ( empty( $is_merchant_connected ) || ! $debug ) {
 $url = tribe( Settings::class )->get_url(
 	[
 		tribe( Payments_Tab::class )::$key_current_section_get_var => $gateway_key,
-		'tc-action'                                                => 'paypal-refresh-webhook',
+		'tc-action' => 'paypal-refresh-webhook',
 	]
 );
 ?>

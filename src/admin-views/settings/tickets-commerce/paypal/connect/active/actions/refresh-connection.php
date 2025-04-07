@@ -29,7 +29,7 @@ if ( empty( $is_merchant_connected ) ) {
 $resync_connection_url = tribe( Settings::class )->get_url(
 	[
 		tribe( Payments_Tab::class )::$key_current_section_get_var => $gateway_key,
-		'tc-action'                                                => 'paypal-resync-connection',
+		'tc-action' => 'paypal-resync-connection',
 	]
 );
 ?>

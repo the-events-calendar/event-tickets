@@ -106,7 +106,7 @@ class Payments_Tab extends Service_Provider {
 			return;
 		}
 
-		// Create the main parent tab first
+		// Create the main parent tab first.
 		$tab_settings = [
 			'priority'  => 25,
 			'fields'    => $this->get_fields(),
@@ -132,12 +132,15 @@ class Payments_Tab extends Service_Provider {
 
 		// Get and register gateway tabs.
 		$gateways = tribe( Manager::class )->get_gateways();
-		$gateways = array_filter( $gateways, static function ( $gateway ) {
-			return $gateway::should_show();
-		} );
+		$gateways = array_filter(
+			$gateways,
+			static function ( $gateway ) {
+				return $gateway::should_show();
+			}
+		);
 
 		foreach ( $gateways as $gateway_key => $gateway ) {
-			$gateway_tab = new \Tribe__Settings_Tab(
+			$gateway_tab = new Tribe__Settings_Tab(
 				$gateway_key,
 				$gateway::get_label(),
 				$tab_settings
