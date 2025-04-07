@@ -78,7 +78,7 @@ class Checkout {
 	 * Determines if the current page is the Checkout page.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Ensure it method returns false if tickets commerce is disabled.
+	 * @since 5.21.1 Ensure it method returns false if tickets commerce is disabled.
 	 *
 	 * @return bool
 	 */
