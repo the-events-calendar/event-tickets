@@ -154,16 +154,17 @@ class Emails_Tab {
 			return $this->get_email_settings();
 		}
 
-		$fields = [];
-		$fields['tribe-form-content-start'] = [
+		$fields                                = [];
+		$fields['tribe-form-content-start']    = [
 			'type' => 'html',
-			'html' => '<div class="tribe-settings-form-wrap">',
+			'html' => '<div class="tribe-settings-form-wrap tec-settings-form__header-block--horizontal">',
 		];
 		$fields['tribe-tickets-emails-header'] = [
 			'type' => 'html',
 			'html' => '<h2 class="tec-tickets__admin-settings-tab-heading">' . esc_html__( 'Tickets Emails', 'event-tickets' ) . '</h2>',
 		];
-		$kb_link_html = sprintf( '<a href="%s" target="_blank" rel="nofollow">%s</a>',
+		$kb_link_html                          = sprintf(
+			'<a href="%s" target="_blank" rel="nofollow">%s</a>',
 			'https://evnt.is/event-tickets-emails',
 			esc_html__( 'Knowledgebase', 'event-tickets' )
 		);
@@ -233,22 +234,27 @@ class Emails_Tab {
 		$back_link = [
 			[
 				'type' => 'html',
-				'html' => $this->get_template()->template( 'back-link',
+				'html' => $this->get_template()->template(
+					'back-link',
 					[
 						'text' => __( 'Back to Email Settings', 'event-tickets' ),
 						'url'  => $this->get_url(),
 					],
-					false ),
-			]
+					false 
+				),
+			],
 		];
 
 		if ( ! $email ) {
-			return array_merge( $back_link, [
+			return array_merge(
+				$back_link,
 				[
-					'type' => 'html',
-					'html' => '<p>' . esc_html__( 'Invalid email id selected.', 'event-tickets' ) . '</p>',
-				]
-			] );
+					[
+						'type' => 'html',
+						'html' => '<p>' . esc_html__( 'Invalid email id selected.', 'event-tickets' ) . '</p>',
+					],
+				] 
+			);
 		}
 
 		$hidden_fields = [
@@ -259,8 +265,8 @@ class Emails_Tab {
 					esc_attr( static::$key_current_section ),
 					esc_attr( static::$key_current_section ),
 					esc_attr( $email_id )
-				)
-			]
+				),
+			],
 		];
 
 		$settings = $email->get_settings();
@@ -306,8 +312,11 @@ class Emails_Tab {
 			return $url;
 		}
 
-		return add_query_arg( [
-			'section'            => $email_id,
-		], $url );
+		return add_query_arg(
+			[
+				'section' => $email_id,
+			],
+			$url 
+		);
 	}
 }
