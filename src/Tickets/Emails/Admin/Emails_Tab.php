@@ -145,6 +145,7 @@ class Emails_Tab {
 	 * Gets the top level settings for Tickets Commerce.
 	 *
 	 * @since 5.5.6
+	 * @since    TBD Updated class names to follow new settings.
 	 *
 	 * @return array[]
 	 */
@@ -161,7 +162,7 @@ class Emails_Tab {
 		];
 		$fields['tribe-tickets-emails-header'] = [
 			'type' => 'html',
-			'html' => '<h2 class="tec-tickets__admin-settings-tab-heading">' . esc_html__( 'Tickets Emails', 'event-tickets' ) . '</h2>',
+			'html' => '<h2 class="tec-settings-form__section-header">' . esc_html__( 'Tickets Emails', 'event-tickets' ) . '</h2>',
 		];
 		$kb_link_html                          = sprintf(
 			'<a href="%s" target="_blank" rel="nofollow">%s</a>',
@@ -240,7 +241,7 @@ class Emails_Tab {
 						'text' => __( 'Back to Email Settings', 'event-tickets' ),
 						'url'  => $this->get_url(),
 					],
-					false 
+					false
 				),
 			],
 		];
@@ -253,7 +254,7 @@ class Emails_Tab {
 						'type' => 'html',
 						'html' => '<p>' . esc_html__( 'Invalid email id selected.', 'event-tickets' ) . '</p>',
 					],
-				] 
+				]
 			);
 		}
 
@@ -316,7 +317,7 @@ class Emails_Tab {
 			[
 				'section' => $email_id,
 			],
-			$url 
+			$url
 		);
 	}
 }
