@@ -143,7 +143,7 @@ class Controller extends Controller_Contract {
 		// If we're still here, redirect to the Guided Setup page.
 		$setup_url = add_query_arg(
 			[
-				'page'      => Landing_Page::$slug,
+				'page' => Landing_Page::$slug,
 			],
 			admin_url( 'edit.php' )
 		);

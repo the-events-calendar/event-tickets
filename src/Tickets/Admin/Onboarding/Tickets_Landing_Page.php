@@ -9,7 +9,7 @@
 
 namespace TEC\Tickets\Admin\Onboarding;
 
-use TEC\Common\StellarWP\Installer\Installer; // todo: remove if we aren't doing installs
+use TEC\Common\StellarWP\Installer\Installer; // todo: remove if we aren't doing installs.
 use TEC\Common\Admin\Abstract_Admin_Page;
 use TEC\Common\Admin\Traits\Is_Tickets_Page;
 use TEC\Common\Lists\Currency;
@@ -234,10 +234,10 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		$settings_url   = '';
 		$data           = tribe( Data::class );
 		$completed_tabs = array_flip( (array) $data->get_wizard_setting( 'completed_tabs', [] ) );
-		$tec_installed   = Installer::get()->is_installed( 'the-events-calendar' );
-		$tec_activated   = Installer::get()->is_active( 'the-events-calendar' );
-		$etp_installed   = Installer::get()->is_installed( 'event-tickets-plus' );
-		$etp_activated   = Installer::get()->is_active( 'event-tickets-plus' );
+		$tec_installed  = Installer::get()->is_installed( 'the-events-calendar' );
+		$tec_activated  = Installer::get()->is_active( 'the-events-calendar' );
+		$etp_installed  = Installer::get()->is_installed( 'event-tickets-plus' );
+		$etp_activated  = Installer::get()->is_active( 'event-tickets-plus' );
 		?>
 			<div class="tec-admin-page__content-section tec-tickets-admin-page__content-section">
 				<h2 class="tec-admin-page__content-header"><?php esc_html_e( 'Tickets setup', 'event-tickets' ); ?></h2>
@@ -463,16 +463,16 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		$data         = tribe( Data::class );
 		$initial_data = [
 			/* Wizard History */
-			'begun'                   => (bool) $data->get_wizard_setting( 'begun', false ),
-			'currentTab'              => absint( $data->get_wizard_setting( 'current_tab', 0 ) ),
-			'finished'                => (bool) $data->get_wizard_setting( 'finished', false ),
-			'completedTabs'           => (array) $data->get_wizard_setting( 'completed_tabs', [] ),
-			'skippedTabs'             => (array) $data->get_wizard_setting( 'skipped_tabs', [] ),
+			'begun'         => (bool) $data->get_wizard_setting( 'begun', false ),
+			'currentTab'    => absint( $data->get_wizard_setting( 'current_tab', 0 ) ),
+			'finished'      => (bool) $data->get_wizard_setting( 'finished', false ),
+			'completedTabs' => (array) $data->get_wizard_setting( 'completed_tabs', [] ),
+			'skippedTabs'   => (array) $data->get_wizard_setting( 'skipped_tabs', [] ),
 			/* nonces */
-			'action_nonce'            => wp_create_nonce( API::NONCE_ACTION ),
-			'_wpnonce'                => wp_create_nonce( 'wp_rest' ),
+			'action_nonce'  => wp_create_nonce( API::NONCE_ACTION ),
+			'_wpnonce'      => wp_create_nonce( 'wp_rest' ),
 			/* Data */
-			'currencies'              => tribe( Currency::class )->get_currency_list(),
+			'currencies'    => tribe( Currency::class )->get_currency_list(),
 		];
 
 

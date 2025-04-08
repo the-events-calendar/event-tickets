@@ -7,7 +7,6 @@
 
 namespace TEC\Tickets\Admin\Onboarding;
 
-use Tribe\Events\Views\V2\Manager as Views_Manager;
 use TEC\Common\Admin\Onboarding\Abstract_Data;
 /**
  * Class Data
