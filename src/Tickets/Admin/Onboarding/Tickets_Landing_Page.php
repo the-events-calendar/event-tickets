@@ -9,7 +9,6 @@
 
 namespace TEC\Tickets\Admin\Onboarding;
 
-use TEC\Tickets\Telemetry\Telemetry;
 use TEC\Common\StellarWP\Installer\Installer; // todo: remove if we aren't doing installs
 use TEC\Common\Admin\Abstract_Admin_Page;
 use TEC\Common\Admin\Traits\Is_Tickets_Page;
@@ -34,7 +33,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 *
 	 * @var string
 	 */
-	const DISMISS_ONBOARDING_PAGE_ACTION = 'tec_tickets_dismiss_onboarding_page';
+	const DISMISS_PAGE_ACTION = 'tec_tickets_dismiss_onboarding_page';
 
 	/**
 	 * The option to dismiss the onboarding page.
@@ -43,7 +42,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 *
 	 * @var string
 	 */
-	const DISMISS_ONBOARDING_OPTION = 'tec_tickets_onboarding_page_dismissed';
+	const DISMISS_PAGE_OPTION = 'tec_tickets_onboarding_page_dismissed';
 
 	/**
 	 * The option to mark the guided setup as visited.
@@ -136,7 +135,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 * @return bool
 	 */
 	public static function is_dismissed(): bool {
-		return (bool) tribe_get_option( self::DISMISS_ONBOARDING_OPTION, false );
+		return (bool) tribe_get_option( self::DISMISS_PAGE_OPTION, false );
 	}
 
 	/**
@@ -180,7 +179,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 
 		$action_url = add_query_arg(
 			// We do not need a nonce. This page can be seen only by admins. see `required_capability` method.
-			[ 'action' => self::DISMISS_ONBOARDING_PAGE_ACTION ],
+			[ 'action' => self::DISMISS_PAGE_ACTION ],
 			admin_url( '/admin-post.php' )
 		);
 		?>
@@ -200,7 +199,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			return;
 		}
 
-		tribe_update_option( self::DISMISS_ONBOARDING_OPTION, true );
+		tribe_update_option( self::DISMISS_PAGE_OPTION, true );
 
 		wp_safe_redirect( admin_url( $this->get_parent_page_slug() ) );
 		exit;
