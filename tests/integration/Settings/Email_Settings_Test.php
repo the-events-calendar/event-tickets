@@ -83,6 +83,26 @@ class Email_Settings_Test extends WPTestCase {
 	}
 
 	/**
+	 * Clean dynamic content from HTML to avoid false mismatches in snapshot tests.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $content The content to clean.
+	 *
+	 * @return string The cleaned content.
+	 */
+	protected function clean_dynamic_content( string $content ): string {
+		// Replace plugin path in common resources
+		$content = preg_replace(
+			'#plugins/[^/]+/common/src/resources#',
+			'plugins/*placeholder*/common/src/resources',
+			$content
+		);
+
+		return $content;
+	}
+
+	/**
 	 * @test
 	 * @dataProvider provide_attendee_registration_tab_tests
 	 */
@@ -109,6 +129,9 @@ class Email_Settings_Test extends WPTestCase {
 		ob_start();
 		$tab->do_content();
 		$content = ob_get_clean();
+
+		// Clean dynamic content
+		$content = $this->clean_dynamic_content( $content );
 
 		// Assert the snapshot
 		$this->assertMatchesHtmlSnapshot( $content );
