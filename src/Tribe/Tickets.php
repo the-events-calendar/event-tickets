@@ -1145,12 +1145,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @abstract
 		 * @since TBD - Add optional $app parameter to allow for bulk checkin process when using RSVP.
 		 *
-		 * @param int  $attendee_id
+		 * @param int  $attendee_id The ID of the attendee that's being checkedin.
 		 * @param bool $app True if from bulk checkin process.
 		 *
 		 * @return mixed
 		 */
-		public function uncheckin( $attendee_id, $app = false ) {
+		public function uncheckin( $attendee_id, $app = false ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
 			$context_id = tribe_get_request_var( 'event_ID', null );
 
 			/**
