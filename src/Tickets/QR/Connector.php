@@ -129,7 +129,7 @@ class Connector {
 			return null;
 		}
 
-		$link   = $this->get_checkin_url( $ticket['qr_ticket_id'], $ticket['event_id'], $ticket['security_code'] );
+		$link   = $this->get_checkin_url( $ticket['qr_ticket_id'], $ticket['event_id'], $ticket['security_code'], $ticket['attendee_id'] );
 		$upload = $this->get_image_for_link( $link );
 
 		if ( ! $upload ) {
