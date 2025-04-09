@@ -61,11 +61,10 @@ class Connector {
 	 * @param int|string $ticket_id The ticket ID.
 	 * @param int|string $event_id The Event ID.
 	 * @param string     $security_code The security code.
-	 * @param int     $attendee_id The attendee ID>
 	 *
 	 * @return string
 	 */
-	public function get_checkin_url( $ticket_id, $event_id, string $security_code, int $attendee_id ): string {
+	public function get_checkin_url( $ticket_id, $event_id, string $security_code ): string {
 		$base_url = home_url( '/' );
 
 		/**
