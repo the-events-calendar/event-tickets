@@ -2355,7 +2355,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @since TBD - Add optional $app parameter to allow for bulk checkin process.
 	 *
-	 * @param int  $attendee_id The attendee ID.
+	 * @param int  $attendee_id The ID of the attendee that's being uncheckedin.
 	 * @param bool $app         True if from bulk checkin process.
 	 *
 	 * @return bool
