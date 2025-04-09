@@ -87,6 +87,16 @@ class Payments_Tab extends Service_Provider {
 	 */
 	protected $template;
 
+	/**
+	 * Stores the instance of the settings tab.
+	 *
+	 * @since TBD
+	 *
+	 * @var Tribe__Settings_Tab
+	 */
+	protected $settings_tab;
+
+
 
 	/**
 	 * @inheritdoc
@@ -123,12 +133,12 @@ class Payments_Tab extends Service_Provider {
 		);
 
 		// Create the main Tickets Commerce child tab.
-		$tc_tab = new Tribe__Settings_Tab(
+		$this->settings_tab = new Tribe__Settings_Tab(
 			'tickets-commerce',
 			esc_html__( 'Tickets Commerce', 'event-tickets' ),
 			$tab_settings
 		);
-		$parent_tab->add_child( $tc_tab );
+		$parent_tab->add_child( $this->settings_tab );
 
 		// Get and register gateway tabs.
 		$gateways = tribe( Manager::class )->get_gateways();
@@ -147,6 +157,17 @@ class Payments_Tab extends Service_Provider {
 			);
 			$parent_tab->add_child( $gateway_tab );
 		}
+	}
+
+	/**
+	 * Gets the settings tab.
+	 *
+	 * @since TBD
+	 *
+	 * @return Tribe__Settings_Tab
+	 */
+	public function get_settings_tab() {
+		return $this->settings_tab;
 	}
 
 	/**
