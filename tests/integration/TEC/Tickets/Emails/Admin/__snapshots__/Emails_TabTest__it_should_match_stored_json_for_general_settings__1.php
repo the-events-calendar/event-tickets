@@ -1,11 +1,11 @@
 <?php return '{
     "tribe-form-content-start": {
         "type": "html",
-        "html": "<div class=\\"tribe-settings-form-wrap\\">"
+        "html": "<div class=\\"tribe-settings-form-wrap tec-settings-form__header-block--horizontal\\">"
     },
     "tribe-tickets-emails-header": {
         "type": "html",
-        "html": "<h2 class=\\"tec-tickets__admin-settings-tab-heading\\">Tickets Emails<\\/h2>"
+        "html": "<h2 class=\\"tec-settings-form__section-header\\">Tickets Emails<\\/h2>"
     },
     "tribe-tickets-emails-description": {
         "type": "html",
