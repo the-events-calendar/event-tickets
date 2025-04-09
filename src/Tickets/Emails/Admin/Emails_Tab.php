@@ -53,6 +53,15 @@ class Emails_Tab {
 	public static $key_current_section = 'tec_tickets_emails_current_section';
 
 	/**
+	 * Stores the instance of the settings tab.
+	 *
+	 * @since TBD
+	 *
+	 * @var Tribe__Settings_Tab
+	 */
+	protected $settings_tab;
+
+	/**
 	 * Create the Tickets Commerce Emails Settings Tab.
 	 *
 	 * @since  5.5.6
@@ -75,7 +84,20 @@ class Emails_Tab {
 
 		$tab_settings = apply_filters( 'tec_tickets_commerce_emails_tab_settings', $tab_settings );
 
-		return new Tribe__Settings_Tab( static::$slug, esc_html__( 'Emails', 'event-tickets' ), $tab_settings );
+		$this->settings_tab = new Tribe__Settings_Tab( static::$slug, esc_html__( 'Emails', 'event-tickets' ), $tab_settings );
+
+		return $this->settings_tab;
+	}
+
+	/**
+	 * Gets the settings tab.
+	 *
+	 * @since TBD
+	 *
+	 * @return Tribe__Settings_Tab
+	 */
+	public function get_settings_tab() {
+		return $this->settings_tab;
 	}
 
 	/**
