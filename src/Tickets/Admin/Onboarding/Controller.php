@@ -145,7 +145,7 @@ class Controller extends Controller_Contract {
 			[
 				'page' => Landing_Page::$slug,
 			],
-			admin_url( 'edit.php' )
+			admin_url( 'admin.php' )
 		);
 
 		// phpcs:ignore WordPressVIPMinimum.Security.ExitAfterRedirect.NoExit, StellarWP.CodeAnalysis.RedirectAndDie.Error
