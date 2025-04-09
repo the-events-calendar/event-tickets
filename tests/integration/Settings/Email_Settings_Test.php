@@ -63,7 +63,6 @@ class Email_Settings_Test extends WPTestCase {
 		yield 'main emails tab' => [
 			'emails',
 			[],
-			'main_content',
 		];
 
 		// Modal enabled
@@ -72,7 +71,6 @@ class Email_Settings_Test extends WPTestCase {
 			[
 				'tec-tickets-emails-sender-name' => 'Fred',
 			],
-			'modal_enabled_content',
 		];
 
 		// Modal disabled
@@ -81,7 +79,6 @@ class Email_Settings_Test extends WPTestCase {
 			[
 				'tec-tickets-emails-sender-name' => false,
 			],
-			'modal_disabled_content',
 		];
 	}
 
@@ -89,7 +86,7 @@ class Email_Settings_Test extends WPTestCase {
 	 * @test
 	 * @dataProvider provide_attendee_registration_tab_tests
 	 */
-	public function should_match_attendee_registration_tab_snapshots( string $tab, array $options, string $content_var ): void {
+	public function should_match_attendee_registration_tab_snapshots( string $tab, array $options ): void {
 		// Set up WordPress admin environment
 		$this->set_fn_return( 'is_admin', true );
 		$this->set_fn_return( 'current_user_can', true );
@@ -101,8 +98,8 @@ class Email_Settings_Test extends WPTestCase {
 		}
 
 		// Set the current tab
-		$_GET['tab']               = $tab;
-		$emails_tab = tribe( Emails_Tab::class );
+		$_GET['tab'] = $tab;
+		$emails_tab  = tribe( Emails_Tab::class );
 		$emails_tab->register_tab( 'tec-tickets-settings' );
 
 		// Get the settings instance and get the fields
