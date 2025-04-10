@@ -8,16 +8,16 @@ use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway as Gateway;
 use TEC\Tickets\Settings as Tickets_Commerce_Settings;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
-use \TEC\Common\Contracts\Service_Provider;
+use TEC\Common\Contracts\Service_Provider;
 use Tribe__Settings_Tab;
-use \Tribe__Template;
+use Tribe__Template;
 use Tribe__Tickets__Main;
 
 /**
  * Class Payments_Tab
  *
- * @since TBD Added horizontal layout blocks for improved visual organization.
  * @since 5.2.0
+ * @since TBD Added horizontal layout blocks for improved visual organization.
  *
  * @package TEC\Tickets\Commerce
  */
