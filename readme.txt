@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.21.0
+Stable tag: 5.21.1
 Requires at least: 6.5
 Tested up to: 6.7.2
 Requires PHP: 7.4
@@ -198,6 +198,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.21.1] 2025-04-07 =
+
+* Fix - Ensures when TicketsCommerce is disabled, we don't identify pages as Checkout or Cart page for TicketsCommerce. [ET-2349]
+* Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted.
 
 = [5.21.0] 2025-03-25 =
 

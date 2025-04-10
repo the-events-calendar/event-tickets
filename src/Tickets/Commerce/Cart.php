@@ -133,10 +133,15 @@ class Cart {
 	 * If the current page is the cart page or not.
 	 *
 	 * @since 5.1.9
+	 * @since 5.21.1 Ensure it method returns false if tickets commerce is disabled.
 	 *
 	 * @return bool
 	 */
 	public function is_current_page() {
+		if ( ! tec_tickets_commerce_is_enabled() ) {
+			return false;
+		}
+
 		$cart_mode = tribe_get_request_var( static::$url_query_arg, false );
 
 		if ( ! $this->is_available_mode( $cart_mode ) ) {
