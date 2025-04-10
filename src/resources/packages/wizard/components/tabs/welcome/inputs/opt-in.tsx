@@ -22,7 +22,7 @@ const OptInCheckbox = ({ initialOptin, onChange }) => {
 			/>
 			<div className="tec-tickets-onboarding__checkbox-description">
 				<label htmlFor="tec-tickets-onboarding__optin-checkbox-input">
-				{__("Yes, I’d like to share basic information and have access to the TEC chatbot.", "event-tickets")}
+				{__("Yes, I’d like to share basic information about my usage for future improvements.", "event-tickets")}
 				</label>
 				<div
 					id="tec-tickets-onboarding__checkbox-description"
