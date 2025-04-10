@@ -68,7 +68,7 @@ const NextButton = ({ disabled, moveToNextTab, tabSettings }) => {
 
 			if (result.success) {
 				// Mark the step as completed on the landing page.
-				const stepIndicators = Array.from(document.getElementsByClassName(`event-tickets-onboarding-step-${tabSettings.currentTab}`));
+				const stepIndicators = Array.from(document.getElementsByClassName(`tec-tickets-onboarding-step-${tabSettings.currentTab}`));
 
 				stepIndicators.map((stepIndicator: Element) => {
 					stepIndicator.classList.add('tec-admin-page__onboarding-step--completed');
@@ -107,7 +107,7 @@ const NextButton = ({ disabled, moveToNextTab, tabSettings }) => {
 				variant="primary"
 				disabled={disabled || isSaving}
 				onClick={() => setClicked(true)}
-				className="event-tickets-onboarding__button event-tickets-onboarding__button--next"
+				className="tec-tickets-onboarding__button tec-tickets-onboarding__button--next"
 			>
 				{isSaving && __('Saving...', 'event-tickets')}{isSaving && <Spinner />}
 				{!isSaving && __('Continue', 'event-tickets')}

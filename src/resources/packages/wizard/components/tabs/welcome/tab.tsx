@@ -26,21 +26,21 @@ const WelcomeContent = ({moveToNextTab, skipToNextTab}) => {
 
 	return (
 		<>
-			<div className="event-tickets-onboarding__tab-hero">
-				<img src={Illustration} className="event-tickets-onboarding__welcome-header" alt="Welcome" role="presentation" />
+			<div className="tec-tickets-onboarding__tab-hero">
+				<img src={Illustration} className="tec-tickets-onboarding__welcome-header" alt="Welcome" role="presentation" />
 			</div>
-			<div className="event-tickets-onboarding__tab-header">
-				<h1 className="event-tickets-onboarding__tab-heading">{__("Welcome to Event Tickets", "event-tickets")}</h1>
-				<p className="event-tickets-onboarding__tab-subheader">{__("Congratulations on installing the best ticketing solution for WordPress. Let’s tailor your experience to your needs.", "event-tickets")}</p>
+			<div className="tec-tickets-onboarding__tab-header">
+				<h1 className="tec-tickets-onboarding__tab-heading">{__("Welcome to Event Tickets", "event-tickets")}</h1>
+				<p className="tec-tickets-onboarding__tab-subheader">{__("Congratulations on installing the best ticketing solution for WordPress. Let’s tailor your experience to your needs.", "event-tickets")}</p>
 			</div>
-			<div className="event-tickets-onboarding__tab-content">
+			<div className="tec-tickets-onboarding__tab-content">
 				<SetupButton
 					tabSettings={tabSettings}
 					moveToNextTab={moveToNextTab}
 				/>
 				<ExitButton />
 			</div>
-			<div className="event-tickets-onboarding__tab-footer">
+			<div className="tec-tickets-onboarding__tab-footer">
 				{!originalValue && <OptInCheckbox initialOptin={optin} onChange={setOptinValue} />}
 			</div>
 		</>

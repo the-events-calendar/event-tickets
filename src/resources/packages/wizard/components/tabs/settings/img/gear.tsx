@@ -2,7 +2,7 @@ import React from "react";
 
 const GearIcon = () => {
 	return (
-		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 31 30" className="event-tickets-onboarding__content-header-icon" role="presentation">
+		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 31 30" className="tec-tickets-onboarding__content-header-icon" role="presentation">
 			<g stroke="#C3C4C7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" clipPath="url(#a)">
 				<path d="M15.5 18.75a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5Z" />
 				<path

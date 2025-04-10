@@ -39,9 +39,9 @@ const OnboardingModal = ({ bootData }) => {
         <>
             {isOpen && (
                 <Modal
-                    overlayClassName="event-tickets-onboarding__modal-overlay"
-                    className="event-tickets-onboarding__modal"
-                    contentLabel="ET Onboarding Wizard"
+                    overlayClassName="tec-tickets-onboarding__modal-overlay"
+                    className="tec-tickets-onboarding__modal"
+                    contentLabel="Tickets Onboarding Wizard"
                     isDismissible={false}
                     isFullScreen={true}
                     initialTabName="intro"
@@ -60,7 +60,7 @@ const OnboardingModal = ({ bootData }) => {
 let isModalRendered = false;
 
 domReady(() => {
-    const trigger = document.getElementById("event-tickets-onboarding-wizard");
+    const trigger = document.getElementById("tec-tickets-onboarding-wizard");
 
     if (!trigger || isModalRendered) {
         return;

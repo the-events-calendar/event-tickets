@@ -109,7 +109,7 @@ const SettingsContent = ({moveToNextTab, skipToNextTab}) => {
 		const isVisited = visitedFields.includes(inputId);
 		const isValid = !isVisited || !!timeZone;
 		const fieldEle = document.getElementById(inputId);
-		const parentEle = fieldEle?.closest('.event-tickets-onboarding__form-field');
+		const parentEle = fieldEle?.closest('.tec-tickets-onboarding__form-field');
 
 		if ( isVisited ) {
 			toggleClasses(timeZone, fieldEle, parentEle, isValid);
@@ -134,17 +134,17 @@ const SettingsContent = ({moveToNextTab, skipToNextTab}) => {
 	return (
 		<>
 			<GearIcon />
-			<div className="event-tickets-onboarding__tab-header">
-				<h1 className="event-tickets-onboarding__tab-heading">{__('Event Settings', 'event-tickets')}</h1>
-				<p className="event-tickets-onboarding__tab-subheader">{__('Let\'s get your events with the correct basic settings.', 'event-tickets')}</p>
+			<div className="tec-tickets-onboarding__tab-header">
+				<h1 className="tec-tickets-onboarding__tab-heading">{__('Event Settings', 'event-tickets')}</h1>
+				<p className="tec-tickets-onboarding__tab-subheader">{__('Let\'s get your events with the correct basic settings.', 'event-tickets')}</p>
 			</div>
-			<div className="event-tickets-onboarding__tab-content">
-				<div className="event-tickets-onboarding__form-wrapper">
+			<div className="tec-tickets-onboarding__tab-content">
+				<div className="tec-tickets-onboarding__form-wrapper">
 					<BaseControl
 						__nextHasNoMarginBottom
 						id="currency-code"
 						label={__('Currency symbol', 'event-tickets')}
-						className="event-tickets-onboarding__form-field"
+						className="tec-tickets-onboarding__form-field"
 					>
 						<select
 							onChange={(e) => setCurrency(e.target.value)}
@@ -154,15 +154,15 @@ const SettingsContent = ({moveToNextTab, skipToNextTab}) => {
 								<option key={key} value={key}>{data['symbol']} ({data['name']})</option>
 							))}
 						</select>
-						<span className="event-tickets-onboarding__required-label">{__('Currency symbol is required.', 'event-tickets')}</span>
-						<span className="event-tickets-onboarding__invalid-label">{__('Currency symbol is invalid.', 'event-tickets')}</span>
+						<span className="tec-tickets-onboarding__required-label">{__('Currency symbol is required.', 'event-tickets')}</span>
+						<span className="tec-tickets-onboarding__invalid-label">{__('Currency symbol is invalid.', 'event-tickets')}</span>
 					</BaseControl>
 
 					<BaseControl
 						__nextHasNoMarginBottom
 						id="time-zone"
 						label={__('Time zone', 'event-tickets')}
-						className="event-tickets-onboarding__form-field"
+						className="tec-tickets-onboarding__form-field"
 					>
 						<select
 							id="time-zone"
@@ -179,16 +179,16 @@ const SettingsContent = ({moveToNextTab, skipToNextTab}) => {
 								</optgroup>
 							))}
 						</select>
-						<span id="time-zone-description" className="event-tickets-onboarding__field-description">{timeZoneMessage}</span>
-						<span className="event-tickets-onboarding__required-label">{__('A non-UTC time zone is required.', 'event-tickets')}</span>
-						<span className="event-tickets-onboarding__invalid-label">{__('Time zone is invalid.', 'event-tickets')}</span>
+						<span id="time-zone-description" className="tec-tickets-onboarding__field-description">{timeZoneMessage}</span>
+						<span className="tec-tickets-onboarding__required-label">{__('A non-UTC time zone is required.', 'event-tickets')}</span>
+						<span className="tec-tickets-onboarding__invalid-label">{__('Time zone is invalid.', 'event-tickets')}</span>
 					</BaseControl>
 
 					<BaseControl
 						__nextHasNoMarginBottom
 						id="date-format"
 						label={__('Date format', 'event-tickets')}
-						className="event-tickets-onboarding__form-field"
+						className="tec-tickets-onboarding__form-field"
 					>
 						<select
 							id="date-format"
@@ -199,15 +199,15 @@ const SettingsContent = ({moveToNextTab, skipToNextTab}) => {
 								<option key={value} value={value}>{label}</option>
 							))}
 						</select>
-						<span className="event-tickets-onboarding__required-label">{__('Date format is required.', 'event-tickets')}</span>
-						<span className="event-tickets-onboarding__invalid-label">{__('Date format is invalid.', 'event-tickets')}</span>
+						<span className="tec-tickets-onboarding__required-label">{__('Date format is required.', 'event-tickets')}</span>
+						<span className="tec-tickets-onboarding__invalid-label">{__('Date format is invalid.', 'event-tickets')}</span>
 					</BaseControl>
 
 					<BaseControl
 						__nextHasNoMarginBottom
 						id="week-starts"
 						label={__('Your week starts on', 'event-tickets')}
-						className="event-tickets-onboarding__form-field"
+						className="tec-tickets-onboarding__form-field"
 					>
 						<select
 							id="week-starts"
@@ -218,8 +218,8 @@ const SettingsContent = ({moveToNextTab, skipToNextTab}) => {
 								<option key={value} value={value}>{label}</option>
 							))}
 						</select>
-						<span className="event-tickets-onboarding__required-label">{__('Currency symbol is required.', 'event-tickets')}</span>
-						<span className="event-tickets-onboarding__invalid-label">{__('Currency symbol is invalid.', 'event-tickets')}</span>
+						<span className="tec-tickets-onboarding__required-label">{__('Currency symbol is required.', 'event-tickets')}</span>
+						<span className="tec-tickets-onboarding__invalid-label">{__('Currency symbol is invalid.', 'event-tickets')}</span>
 					</BaseControl>
 
 				</div>

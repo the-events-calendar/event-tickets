@@ -9,7 +9,7 @@
 
 namespace TEC\Tickets\Admin\Onboarding;
 
-use TEC\Common\StellarWP\Installer\Installer; // todo: remove if we aren't doing installs.
+use TEC\Common\StellarWP\Installer\Installer;
 use TEC\Common\Admin\Abstract_Admin_Page;
 use TEC\Common\Admin\Traits\Is_Tickets_Page;
 use TEC\Common\Lists\Currency;
@@ -236,8 +236,6 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		$completed_tabs = array_flip( (array) $data->get_wizard_setting( 'completed_tabs', [] ) );
 		$tec_installed  = Installer::get()->is_installed( 'the-events-calendar' );
 		$tec_activated  = Installer::get()->is_active( 'the-events-calendar' );
-		$etp_installed  = Installer::get()->is_installed( 'event-tickets-plus' );
-		$etp_activated  = Installer::get()->is_active( 'event-tickets-plus' );
 		?>
 			<div class="tec-admin-page__content-section tec-tickets-admin-page__content-section">
 				<h2 class="tec-admin-page__content-header"><?php esc_html_e( 'Tickets setup', 'event-tickets' ); ?></h2>
@@ -248,15 +246,15 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 						tribe_classes(
 							[
 								'step-list__item' => true,
-								'tec-tickets-onboarding-step-2' => true,
-								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[2] ) || ! empty( tribe_get_option( 'defaultCurrencyCode' ) ),
+								'tec-tickets-onboarding-step-1' => true,
+								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[1] ) || ! empty( tribe_get_option( 'defaultCurrencyCode' ) ),
 							]
 						);
 						?>
 					>
 						<div class="step-list__item-left">
 							<span class="step-list__item-icon" role="presentation"></span>
-							<?php esc_html_e( 'Currency', 'event-tickets' ); ?>
+							<?php esc_html_e( 'Location & Currency', 'event-tickets' ); ?>
 						</div>
 						<div class="step-list__item-right">
 							<a href="<?php echo esc_url( admin_url( "{$settings_url}&tab=display-currency-tab" ) ); ?>" class="tec-admin-page__link">
@@ -265,7 +263,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 						</div>
 					</li>
 					<li
-						id="tec-tickets-onboarding-wizard-date-item"
+						id="tec-tickets-onboarding-wizard-email-item"
 						<?php
 						tribe_classes(
 							[
@@ -278,11 +276,99 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 					>
 						<div class="step-list__item-left">
 							<span class="step-list__item-icon" role="presentation"></span>
-							<?php esc_html_e( 'Date format', 'event-tickets' ); ?>
+							<?php esc_html_e( 'Email communication setup', 'event-tickets' ); ?>
 						</div>
 						<div class="step-list__item-right">
 							<a href="<?php echo esc_url( admin_url( "{$settings_url}&tab=display-date-time-tab" ) ); ?>" class="tec-admin-page__link">
-								<?php esc_html_e( 'Edit date format', 'event-tickets' ); ?>
+								<?php esc_html_e( 'Edit email settings', 'event-tickets' ); ?>
+							</a>
+						</div>
+					</li>
+					<li
+						id="tec-tickets-onboarding-wizard-stripe-item"
+						<?php
+						tribe_classes(
+							[
+								'step-list__item' => true,
+								'tec-tickets-onboarding-step-3' => true,
+								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[3] ) || ! empty( tribe_get_option( 'dateWithYearFormat' ) ),
+							]
+						);
+						?>
+					>
+						<div class="step-list__item-left">
+							<span class="step-list__item-icon" role="presentation"></span>
+							<?php esc_html_e( 'Stripe initialization', 'event-tickets' ); ?>
+						</div>
+						<div class="step-list__item-right">
+							<a href="<?php echo esc_url( admin_url( "{$settings_url}&tab=display-date-time-tab" ) ); ?>" class="tec-admin-page__link">
+								<?php esc_html_e( 'Edit Stripe settings', 'event-tickets' ); ?>
+							</a>
+						</div>
+					</li>
+					<li
+						id="tec-tickets-onboarding-wizard-square-item"
+						<?php
+						tribe_classes(
+							[
+								'step-list__item' => true,
+								'tec-tickets-onboarding-step-4' => true,
+								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[4] ) || ! empty( tribe_get_option( 'dateWithYearFormat' ) ),
+							]
+						);
+						?>
+					>
+						<div class="step-list__item-left">
+							<span class="step-list__item-icon" role="presentation"></span>
+							<?php esc_html_e( 'Square initialization', 'event-tickets' ); ?>
+						</div>
+						<div class="step-list__item-right">
+							<a href="<?php echo esc_url( admin_url( "{$settings_url}&tab=display-date-time-tab" ) ); ?>" class="tec-admin-page__link">
+								<?php esc_html_e( 'Edit Square settings', 'event-tickets' ); ?>
+							</a>
+						</div>
+					</li>
+					<li
+						id="tec-tickets-onboarding-wizard-square-onboarding-item"
+						<?php
+						tribe_classes(
+							[
+								'step-list__item' => true,
+								'tec-tickets-onboarding-step-5' => true,
+								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[5] ) || ! empty( tribe_get_option( 'dateWithYearFormat' ) ),
+							]
+						);
+						?>
+					>
+						<div class="step-list__item-left">
+							<span class="step-list__item-icon" role="presentation"></span>
+							<?php esc_html_e( 'Complete Square configuration', 'event-tickets' ); ?>
+						</div>
+						<div class="step-list__item-right">
+							<a href="<?php echo esc_url( admin_url( "{$settings_url}&tab=display-date-time-tab" ) ); ?>" class="tec-admin-page__link">
+								<?php esc_html_e( 'Go to onboarding', 'event-tickets' ); ?>
+							</a>
+						</div>
+					</li>
+					<li
+						id="tec-tickets-onboarding-wizard-login-item"
+						<?php
+						tribe_classes(
+							[
+								'step-list__item' => true,
+								'tec-tickets-onboarding-step-2' => true,
+								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[2] ) || ! empty( tribe_get_option( 'dateWithYearFormat' ) ),
+							]
+						);
+						?>
+					>
+						<div class="step-list__item-left">
+							<span class="step-list__item-icon" role="presentation"></span>
+							<?php esc_html_e( 'Ticket purchasing login pre-requisites', 'event-tickets' ); ?>
+						</div>
+						<div class="step-list__item-right">
+							<a href="<?php echo esc_url( admin_url( "{$settings_url}&tab=display-date-time-tab" ) ); ?>" class="tec-admin-page__link">
+								<?php esc_html_e( 'Edit ticket settings', 'event-tickets' ); ?>
 							</a>
 						</div>
 					</li>
@@ -312,55 +398,16 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 								<?php esc_html_e( 'Install The Events Calendar', 'event-tickets' ); ?>
 							</div>
 							<?php if ( ! $tec_installed || ! $tec_activated ) : ?>
-							<div class="step-list__item-right">
-								<?php
-								Installer::get()->render_plugin_button(
-									'event-tickets',
-									$tec_installed ? 'activate' : 'install',
-									$tec_installed ? __( 'Activate The Events Calendar', 'event-tickets' ) : __( 'Install The Events Calendar', 'event-tickets' ),
-									admin_url( 'edit.php?post_type=tribe_events&page=first-time-setup' )
-								);
-								?>
-							</div>
-							<?php endif; ?>
-						</li>
-					</ul>
-				</div>
-				<div id="tec-tickets-onboarding-wizard-tickets-plus">
-					<h2 class="tec-admin-page__content-header">
-						<?php esc_html_e( 'Event Tickets Plus', 'event-tickets' ); ?>
-					</h2>
-					<h3 class="tec-admin-page__content-subheader">
-						<?php esc_html_e( 'Do you need more features for your tickets?', 'event-tickets' ); ?>
-					</h3>
-					<ul class="tec-admin-page__content-step-list">
-						<li
-							id="tec-tickets-onboarding-wizard-tickets-item"
-							<?php
-							tribe_classes(
-								[
-									'step-list__item' => true,
-									'tec-tickets-onboarding-step-5' => true,
-									'tec-admin-page__onboarding-step--completed' => ( isset( $completed_tabs[5] ) || ( $etp_installed && $etp_activated ) ),
-								]
-							);
-							?>
-						>
-							<div class="step-list__item-left">
-								<span class="step-list__item-icon" role="presentation"></span>
-								<?php esc_html_e( 'Install Event Tickets Plus', 'event-tickets' ); ?>
-							</div>
-							<?php if ( ! $etp_installed || ! $etp_activated ) : ?>
-							<div class="step-list__item-right">
-								<?php
-								Installer::get()->render_plugin_button(
-									'event-tickets',
-									$etp_installed ? 'activate' : 'install',
-									$etp_installed ? __( 'Activate Event Tickets Plus', 'event-tickets' ) : __( 'Install Event Tickets Plus', 'event-tickets' ),
-									admin_url( 'edit.php?post_type=tribe_events&page=first-time-setup' )
-								);
-								?>
-							</div>
+								<div class="step-list__item-right">
+									<?php
+									Installer::get()->render_plugin_button(
+										'the-events-calendar',
+										$tec_installed ? 'activate' : 'install',
+										$tec_installed ? __( 'Activate The Events Calendar', 'event-tickets' ) : __( 'Install The Events Calendar', 'event-tickets' ),
+										admin_url( 'edit.php?post_type=tribe_events&page=first-time-setup' )
+									);
+									?>
+								</div>
 							<?php endif; ?>
 						</li>
 					</ul>
@@ -486,7 +533,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		 *
 		 * @return array
 		 */
-		return (array) apply_filters( 'tribe_events_onboarding_wizard_initial_data', $initial_data, $this );
+		return (array) apply_filters( 'tribe_tickets_onboarding_wizard_initial_data', $initial_data, $this );
 	}
 
 	/**

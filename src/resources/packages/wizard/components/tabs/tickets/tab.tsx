@@ -9,8 +9,8 @@ import SkipButton from '../../buttons/skip';
 import TicketsIcon from './img/tickets';
 
 const TicketsContent = ({moveToNextTab, skipToNextTab}) => {
-	const eventTicketsInstalled = useSelect(select => select(SETTINGS_STORE_KEY).getSetting("event-tickets-installed") || false, []);
-	const eventTicketsActive = useSelect(select => select(SETTINGS_STORE_KEY).getSetting("event-tickets-active") || false, []);
+	const eventTicketsInstalled = useSelect(select => select(SETTINGS_STORE_KEY).getSetting("tec-tickets-installed") || false, []);
+	const eventTicketsActive = useSelect(select => select(SETTINGS_STORE_KEY).getSetting("tec-tickets-active") || false, []);
 	const [ticketValue, setTicketValue] = useState(true); // Default to install/activate.
 
 	// Create tabSettings object to pass to NextButton.
@@ -24,31 +24,31 @@ const TicketsContent = ({moveToNextTab, skipToNextTab}) => {
 	return (
 		<>
 			<TicketsIcon />
-			<div className="event-tickets-onboarding__tab-header">
-				<h1 className="event-tickets-onboarding__tab-heading">{__("Event Tickets", "event-tickets")}</h1>
-				<p className="event-tickets-onboarding__tab-subheader">{__("Will you be selling tickets or providing attendees the ability to RSVP to your events?", "event-tickets")}</p>
+			<div className="tec-tickets-onboarding__tab-header">
+				<h1 className="tec-tickets-onboarding__tab-heading">{__("Event Tickets", "event-tickets")}</h1>
+				<p className="tec-tickets-onboarding__tab-subheader">{__("Will you be selling tickets or providing attendees the ability to RSVP to your events?", "event-tickets")}</p>
 			</div>
-			<div className="event-tickets-onboarding__tab-content">
+			<div className="tec-tickets-onboarding__tab-content">
 				{!eventTicketsActive &&(
 					<div
 						alignment="top"
 						justify="center"
 						spacing={0}
-						className="event-tickets-onboarding__checkbox event-tickets-onboarding__checkbox--tickets"
+						className="tec-tickets-onboarding__checkbox tec-tickets-onboarding__checkbox--tickets"
 					>
 						<CheckboxControl
 							__nextHasNoMarginBottom
-							aria-describedby="event-tickets-onboarding__checkbox-description"
+							aria-describedby="tec-tickets-onboarding__checkbox-description"
 							checked={ticketValue}
 							onChange={setTicketValue}
-							id="event-tickets-onboarding__tickets-checkbox-input"
+							id="tec-tickets-onboarding__tickets-checkbox-input"
 						/>
-						<div className="event-tickets-onboarding__checkbox-description">
-							<label htmlFor="event-tickets-onboarding__tickets-checkbox-input">
+						<div className="tec-tickets-onboarding__checkbox-description">
+							<label htmlFor="tec-tickets-onboarding__tickets-checkbox-input">
 								{message}
 							</label>
 							<div
-								id="event-tickets-onboarding__checkbox-description"
+								id="tec-tickets-onboarding__checkbox-description"
 							>
 							</div>
 						</div>

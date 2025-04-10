@@ -26,15 +26,15 @@ const Tab: FunctionComponent<TabProps> = ({
 	const handleClick = () => handleChange(index);
 
 	const tabClasses = useMemo(() => {
-	return [
-		"event-tickets-onboarding__tab",
-		`event-tickets-onboarding__tab--${id}`,
-		disabled && "event-tickets-onboarding__tab--disabled",
-		isActive && "event-tickets-onboarding__tab--active",
-		completed && "event-tickets-onboarding__tab--completed",
-	]
+		return [
+			"tec-tickets-onboarding__tab",
+			`tec-tickets-onboarding__tab--${id}`,
+			disabled && "tec-tickets-onboarding__tab--disabled",
+			isActive && "tec-tickets-onboarding__tab--active",
+			completed && "tec-tickets-onboarding__tab--completed",
+		]
 		.filter(Boolean)
-		.join(" ");
+		.join(' ');
 	}, [disabled, isActive, completed]);
 
 	return (
@@ -42,7 +42,7 @@ const Tab: FunctionComponent<TabProps> = ({
 			<button
 				aria-controls={panelId}
 				aria-selected={isActive}
-				className="event-tickets-onboarding__tab-button"
+				className="tec-tickets-onboarding__tab-button"
 				disabled={disabled}
 				id={id}
 				onClick={handleClick}
@@ -50,7 +50,7 @@ const Tab: FunctionComponent<TabProps> = ({
 				role="tab"
 				tabIndex={isActive ? 0 : -1}
 			>
-				<span className="event-tickets-onboarding__tab-title">{title}</span>
+				<span className="tec-tickets-onboarding__tab-title">{title}</span>
 			</button>
 		</li>
 	);

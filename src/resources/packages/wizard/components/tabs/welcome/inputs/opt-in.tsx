@@ -12,20 +12,20 @@ const OptInCheckbox = ({ initialOptin, onChange }) => {
 	};
 
 	return (
-		<div className="event-tickets-onboarding__checkbox event-tickets-onboarding__checkbox--optin">
+		<div className="tec-tickets-onboarding__checkbox tec-tickets-onboarding__checkbox--optin">
 			<CheckboxControl
 				__nextHasNoMarginBottom
-				aria-describedby="event-tickets-onboarding__checkbox-description"
+				aria-describedby="tec-tickets-onboarding__checkbox-description"
 				checked={isChecked}
 				onChange={handleChange}
-				id="event-tickets-onboarding__optin-checkbox-input"
+				id="tec-tickets-onboarding__optin-checkbox-input"
 			/>
-			<div className="event-tickets-onboarding__checkbox-description">
-				<label htmlFor="event-tickets-onboarding__optin-checkbox-input">
+			<div className="tec-tickets-onboarding__checkbox-description">
+				<label htmlFor="tec-tickets-onboarding__optin-checkbox-input">
 				{__("Yes, I’d like to share basic information and have access to the TEC chatbot.", "event-tickets")}
 				</label>
 				<div
-					id="event-tickets-onboarding__checkbox-description"
+					id="tec-tickets-onboarding__checkbox-description"
 				>
 				<a href="https://evnt.is/1bcl" target="_blank">{__("What permissions are being granted?", "event-tickets")}</a>
 				</div>

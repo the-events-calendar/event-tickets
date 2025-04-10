@@ -7,11 +7,8 @@ import EtIcon from "./img/et";
 import MemoizedTabPanel from "./tabs/tabpanel";
 import Tab from "./tabs/tab";
 import WelcomeContent from "./tabs/welcome/tab";
-import DisplayContent from "./tabs/display/tab";
 import SettingsContent from "./tabs/settings/tab";
-import VenueContent from "./tabs/venue/tab";
 import TicketsContent from "./tabs/tickets/tab";
-import OrganizerContent from "./tabs/organizer/tab";
 
 const OnboardingTabs = () => {
 	type TabConfig = {
@@ -23,10 +20,7 @@ const OnboardingTabs = () => {
 
 	const tabConfig = [
 		{ id: "welcome", title: __("Welcome", "event-tickets"), content: WelcomeContent, ref: useRef(null) },
-		{ id: "display", title: __("Display", "event-tickets"), content: DisplayContent, ref: useRef(null) },
 		{ id: "settings", title: __("Settings", "event-tickets"), content: SettingsContent, ref: useRef(null) },
-		{ id: "organizer", title: __("Organizer", "event-tickets"), content: OrganizerContent, ref: useRef(null) },
-		{ id: "venue", title: __("Venue", "event-tickets"), content: VenueContent, ref: useRef(null) },
 		{ id: "tickets", title: __("Tickets", "event-tickets"), content: TicketsContent, ref: useRef(null) }
 	];
 
@@ -127,12 +121,12 @@ const OnboardingTabs = () => {
 	};
 
 	return (
-		<section className={`event-tickets-onboarding__tabs event-tickets-onboarding__tab-${tabsState[activeTab].id}`}>
-			<div className="event-tickets-onboarding__tabs-header">
+		<section className={`tec-tickets-onboarding__tabs tec-tickets-onboarding__tab-${tabsState[activeTab].id}`}>
+			<div className="tec-tickets-onboarding__tabs-header">
 				<EtIcon />
 				<ul
 					role="tablist"
-					className="event-tickets-onboarding__tabs-list"
+					className="tec-tickets-onboarding__tabs-list"
 					aria-label="Onboarding Tabs"
 					onKeyDown={handleKeyPress}
 				>

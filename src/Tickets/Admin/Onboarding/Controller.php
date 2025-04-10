@@ -13,7 +13,7 @@ use TEC\Tickets\Admin\Onboarding\Steps\Optin;
 use TEC\Tickets\Admin\Onboarding\Steps\Settings;
 use TEC\Tickets\Admin\Onboarding\Data;
 use TEC\Tickets\Admin\Onboarding\Tickets_Landing_Page as Landing_Page;
-use TEC\Common\StellarWP\Assets\Config;
+use TEC\Common\StellarWP\Assets\Config as Asset_Config;
 
 /**
  * Class Controller
@@ -29,7 +29,7 @@ class Controller extends Controller_Contract {
 	 * @since TBD
 	 */
 	public function do_register(): void {
-		Config::add_group_path( 'tec-tickets-onboarding', tribe( 'tickets.main' )->plugin_path . 'build/', 'wizard' );
+		Asset_Config::add_group_path( 'tec-tickets-onboarding', tribe( 'tickets.main' )->plugin_path . 'build/', 'wizard' );
 		$this->add_filters();
 		$this->add_actions();
 
@@ -118,26 +118,30 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function redirect_tec_pages_to_guided_setup(): void {
+		$force = apply_filters( 'tec_tickets_onboarding_force_redirect_to_guided_setup', false );
 		// Do not redirect if they are already on the Guided Setup page.
 		$page = tec_get_request_var( 'page' );
 		if ( Landing_Page::$slug === $page ) {
 			return;
 		}
 
-		// Do not redirect if they have been to the Guided Setup page already.
-		if ( (bool) tribe_get_option( Landing_Page::VISITED_GUIDED_SETUP_OPTION, false ) ) {
-			return;
-		}
+		if ( ! $force ) {
 
-		// Do not redirect if they dismissed the Guided Setup page.
-		if ( Landing_Page::is_dismissed() ) {
-			return;
-		}
+			// Do not redirect if they have been to the Guided Setup page already.
+			if ( (bool) tribe_get_option( Landing_Page::VISITED_GUIDED_SETUP_OPTION, false ) ) {
+				return;
+			}
 
-		// Do not redirect if they have older versions and are probably already set up.
-		$versions = (array) tribe_get_option( 'previous_event_tickets_versions', [] );
-		if ( count( $versions ) > 1 ) {
-			return;
+			// Do not redirect if they dismissed the Guided Setup page.
+			if ( Landing_Page::is_dismissed() ) {
+				return;
+			}
+
+			// Do not redirect if they have older versions and are probably already set up.
+			$versions = (array) tribe_get_option( 'previous_event_tickets_versions', [] );
+			if ( count( $versions ) > 1 ) {
+				return;
+			}
 		}
 
 		// If we're still here, redirect to the Guided Setup page.
