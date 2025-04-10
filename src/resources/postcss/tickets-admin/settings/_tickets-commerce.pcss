@@ -38,7 +38,6 @@
 	display: flex;
 	flex-direction: row;
 	justify-content: space-around;
-	margin-bottom: var(--tec-spacer-3);
 	padding: 45px 32px 20px 32px;
 
 	@media (--viewport-medium) {
@@ -46,6 +45,10 @@
 		background-position: center right;
 		background-repeat: no-repeat;
 		background-size: 420px 100%;
+	}
+
+	@media (--viewport-large) {
+		margin: 0 var(--tec-spacer-11) var(--tec-spacer-3) 0;
 	}
 }
 
