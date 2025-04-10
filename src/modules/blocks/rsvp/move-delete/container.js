@@ -16,10 +16,10 @@ import {
 	actions,
 	selectors,
 	thunks,
-} from '@moderntribe/tickets/data/blocks/rsvp';
+} from '../../../data/blocks/rsvp';
 import {
 	showModal,
-} from '@moderntribe/tickets/data/shared/move/actions';
+} from '../../../data/shared/move/actions';
 
 const mapStateToProps = ( state ) => ( {
 	created: selectors.getRSVPCreated( state ),

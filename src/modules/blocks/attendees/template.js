@@ -19,7 +19,7 @@ import { InspectorControls } from '@wordpress/editor';
 /**
  * Internal dependencies
  */
-import { AttendeesGravatar } from '@moderntribe/tickets/icons';
+import { AttendeesGravatar } from '../../icons';
 import './style.pcss';
 
 /**

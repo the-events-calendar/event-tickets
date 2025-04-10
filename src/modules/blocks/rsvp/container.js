@@ -18,13 +18,13 @@ import {
 	actions,
 	selectors,
 	thunks,
-} from '@moderntribe/tickets/data/blocks/rsvp';
+} from '../../data/blocks/rsvp';
 import {
 	isModalShowing,
 	getModalTicketId,
-} from '@moderntribe/tickets/data/shared/move/selectors';
+} from '../../data/shared/move/selectors';
 import { withStore } from '@moderntribe/common/hoc';
-import withSaveData from '@moderntribe/tickets/blocks/hoc/with-save-data';
+import withSaveData from '../hoc/with-save-data';
 import { moment as momentUtil, time } from '@moderntribe/common/utils';
 import { hasRecurrenceRules, noRsvpsOnRecurring } from '@moderntribe/common/utils/recurrence';
 

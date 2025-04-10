@@ -8,9 +8,9 @@ import { compose } from 'redux';
  * Internal dependencies
  */
 import { withStore } from '@moderntribe/common/hoc';
-import withSaveData from '@moderntribe/tickets/blocks/hoc/with-save-data';
-import * as actions from '@moderntribe/tickets/data/blocks/attendees/actions';
-import * as selectors from '@moderntribe/tickets/data/blocks/attendees/selectors';
+import withSaveData from '../hoc/with-save-data';
+import * as actions from '../../data/blocks/attendees/actions';
+import * as selectors from '../../data/blocks/attendees/selectors';
 import Attendees from './template';
 
 /**

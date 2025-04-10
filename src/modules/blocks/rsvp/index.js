@@ -11,13 +11,13 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { RSVP as RSVPIcon } from '@moderntribe/tickets/icons';
+import { RSVP as RSVPIcon } from '../../icons';
 import RSVP from './container';
 import {
 	KEY_TICKET_GOING_COUNT,
 	KEY_TICKET_NOT_GOING_COUNT,
 	KEY_TICKET_HEADER,
-} from '@moderntribe/tickets/data/utils';
+} from '../../data/utils';
 
 /**
  * Module Code

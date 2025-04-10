@@ -12,7 +12,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import Attendees from './container';
-import { Attendees as AttendeesIcon } from '@moderntribe/tickets/icons';
+import { Attendees as AttendeesIcon } from '../../icons';
 
 /**
  * Module Code

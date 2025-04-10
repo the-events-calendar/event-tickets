@@ -13,7 +13,7 @@ import { select, dispatch as wpDispatch } from '@wordpress/data';
  * Internal dependencies
  */
 import RSVPActionDashboard from './template';
-import { actions, selectors, thunks } from '@moderntribe/tickets/data/blocks/rsvp';
+import { actions, selectors, thunks } from '../../../data/blocks/rsvp';
 import { withStore } from '@moderntribe/common/hoc';
 import { hasRecurrenceRules, noTicketsOnRecurring } from '@moderntribe/common/utils/recurrence';
 

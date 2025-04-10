@@ -8,7 +8,7 @@ import { compose } from 'redux';
  * Internal dependencies
  */
 import RSVPSettingsDashboard from './template';
-import { actions, selectors } from '@moderntribe/tickets/data/blocks/rsvp';
+import { actions, selectors } from '../../../data/blocks/rsvp';
 import { withStore } from '@moderntribe/common/hoc';
 
 const mapStateToProps = ( state ) => ( {

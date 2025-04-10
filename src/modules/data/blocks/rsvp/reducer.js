@@ -8,7 +8,7 @@ import tempDetails from './reducers/temp-details';
 import headerImage, {
 	DEFAULT_STATE as HEADER_IMAGE_DEFAULT_STATE,
 } from './reducers/header-image';
-import { types } from '@moderntribe/tickets/data/blocks/rsvp';
+import { types } from './index';
 
 export const DEFAULT_STATE = {
 	id: 0,

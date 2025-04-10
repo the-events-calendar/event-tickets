@@ -12,7 +12,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { Card, SplitContainer } from '@moderntribe/tickets/elements';
+import { Card, SplitContainer } from '../../../elements';
 
 const RSVPInactiveBlock = ( { created, setAddEditOpen } ) => {
 	const title = created
