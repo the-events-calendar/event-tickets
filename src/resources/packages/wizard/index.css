@@ -350,9 +350,15 @@
 
 /* TabPanel Hero - only used on Welcome tab */
 .tec-tickets-onboarding__tab-hero {
-	margin: 0 auto var(--tec-spacer-8);
+	margin: 0 auto var(--tec-spacer-1);
 	max-width: 100%;
 	width: fit-content;
+}
+
+@media (min-width: 500px) {
+	.tec-tickets-onboarding__tab-hero {
+		margin: 0 auto var(--tec-spacer-8);
+	}
 }
 
 /* TabPanel Header section */
@@ -390,7 +396,7 @@
 .tec-tickets-onboarding__tab-content {
 	display: grid;
 	font-size: var(--tec-font-size-2);
-	gap: var(--tec-spacer-5);
+	gap: var(--tec-spacer-3);
 	margin: 0 auto;
 	max-width: min(100%, 100vw);
 	min-width: var(--tec-spacer-content-min-width);
@@ -416,6 +422,7 @@
 @media (min-width: 500px) {
 	.tec-tickets-onboarding__tab-content {
 		max-width: min(100%, 100vw);
+		gap: var(--tec-spacer-5);
 	}
 }
 
@@ -663,7 +670,7 @@
 
 .tec-tickets-onboarding__tab-footer {
 	font-size: var(--tec-font-size-2);
-	margin-top: var(--tec-spacer-8);
+	margin-top: var(--tec-spacer-13);
 }
 
 @media (min-width: 500px) {

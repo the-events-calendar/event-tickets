@@ -4,7 +4,7 @@ import { useSelect, useDispatch } from "@wordpress/data";
 import SetupButton from '../../buttons/setup';
 import ExitButton from '../../buttons/exit';
 import OptInCheckbox from './inputs/opt-in';
-import Illustration from './img/wizard-welcome-img.svg';
+import Illustration from './img/wizard-welcome-img.png';
 import { SETTINGS_STORE_KEY } from "../../../data";
 
 const WelcomeContent = ({moveToNextTab, skipToNextTab}) => {
