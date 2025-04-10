@@ -42,6 +42,15 @@ class Settings {
 	public static $troubleshooting_page_id = 'tec-tickets-troubleshooting';
 
 	/**
+	 * Stores the instance of the settings tab.
+	 *
+	 * @since TBD
+	 *
+	 * @var Tribe__Settings_Tab
+	 */
+	protected $settings_tab;
+
+	/**
 	 * Settings tabs.
 	 */
 	public $tabs = [];
@@ -291,7 +300,19 @@ class Settings {
 
 		$settings = $this->get_settings_array();
 
-		$this->tabs['event-tickets'] = new Tribe__Settings_Tab( 'event-tickets', esc_html__( 'General', 'event-tickets' ), $settings );
+		$this->settings_tab          = new Tribe__Settings_Tab( 'event-tickets', esc_html__( 'General', 'event-tickets' ), $settings );
+		$this->tabs['event-tickets'] = $this->settings_tab;
+	}
+
+	/**
+	 * Gets the settings tab.
+	 *
+	 * @since TBD
+	 *
+	 * @return Tribe__Settings_Tab
+	 */
+	public function get_settings_tab() {
+		return $this->settings_tab;
 	}
 
 	/**
