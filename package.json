@@ -62,7 +62,6 @@
     ]
   },
   "scripts": {
-    "jest": "TZ=UTC gulp jest",
     "changelog": "./vendor/bin/changelogger add"
   },
   "engines": {
