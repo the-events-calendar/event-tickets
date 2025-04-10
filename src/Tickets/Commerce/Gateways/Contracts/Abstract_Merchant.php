@@ -94,6 +94,7 @@ abstract class Abstract_Merchant implements Merchant_Interface {
 	 * Returns the URL to disconnect the merchant.
 	 *
 	 * @since 5.11.0.5
+	 * @since TBD Removed `tab` in favor of $current_section.
 	 *
 	 * @return string
 	 */
