@@ -8,14 +8,16 @@ use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway as Gateway;
 use TEC\Tickets\Settings as Tickets_Commerce_Settings;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
-use \TEC\Common\Contracts\Service_Provider;
-use \Tribe__Template;
+use TEC\Common\Contracts\Service_Provider;
+use Tribe__Settings_Tab;
+use Tribe__Template;
 use Tribe__Tickets__Main;
 
 /**
  * Class Payments_Tab
  *
- * @since   5.2.0
+ * @since 5.2.0
+ * @since TBD Added horizontal layout blocks for improved visual organization.
  *
  * @package TEC\Tickets\Commerce
  */
@@ -61,10 +63,11 @@ class Payments_Tab extends Service_Provider {
 	 * Key to use in GET variable for currently selected section.
 	 *
 	 * @since 5.3.0
+	 * @since TBD updated to new tab system.
 	 *
 	 * @var string
 	 */
-	public static $key_current_section_get_var = 'tc-section';
+	public static $key_current_section_get_var = 'tab';
 
 	/**
 	 * Key to use for section menu.
@@ -84,6 +87,16 @@ class Payments_Tab extends Service_Provider {
 	 */
 	protected $template;
 
+	/**
+	 * Stores the instance of the settings tab.
+	 *
+	 * @since TBD
+	 *
+	 * @var Tribe__Settings_Tab
+	 */
+	protected $settings_tab;
+
+
 
 	/**
 	 * @inheritdoc
@@ -96,12 +109,14 @@ class Payments_Tab extends Service_Provider {
 	 * Create the Tickets Commerce Payments Settings Tab.
 	 *
 	 * @since 5.2.0
+	 * @since TBD Updated to use new child tabs.
 	 */
 	public function register_tab( $admin_page ) {
 		if ( ! empty( $admin_page ) && Plugin_Settings::$settings_page_id !== $admin_page ) {
 			return;
 		}
 
+		// Create the main parent tab first.
 		$tab_settings = [
 			'priority'  => 25,
 			'fields'    => $this->get_fields(),
@@ -110,7 +125,49 @@ class Payments_Tab extends Service_Provider {
 
 		$tab_settings = apply_filters( 'tec_tickets_commerce_payments_tab_settings', $tab_settings );
 
-		new \Tribe__Settings_Tab( static::$slug, esc_html__( 'Payments', 'event-tickets' ), $tab_settings );
+		// Create the parent "Payments" tab.
+		$parent_tab = new Tribe__Settings_Tab(
+			static::$slug,
+			esc_html__( 'Payments', 'event-tickets' ),
+			$tab_settings
+		);
+
+		// Create the main Tickets Commerce child tab.
+		$this->settings_tab = new Tribe__Settings_Tab(
+			'tickets-commerce',
+			esc_html__( 'Tickets Commerce', 'event-tickets' ),
+			$tab_settings
+		);
+		$parent_tab->add_child( $this->settings_tab );
+
+		// Get and register gateway tabs.
+		$gateways = tribe( Manager::class )->get_gateways();
+		$gateways = array_filter(
+			$gateways,
+			static function ( $gateway ) {
+				return $gateway::should_show();
+			}
+		);
+
+		foreach ( $gateways as $gateway_key => $gateway ) {
+			$gateway_tab = new Tribe__Settings_Tab(
+				$gateway_key,
+				$gateway::get_label(),
+				$tab_settings
+			);
+			$parent_tab->add_child( $gateway_tab );
+		}
+	}
+
+	/**
+	 * Gets the settings tab.
+	 *
+	 * @since TBD
+	 *
+	 * @return Tribe__Settings_Tab
+	 */
+	public function get_settings_tab() {
+		return $this->settings_tab;
 	}
 
 	/**
@@ -167,62 +224,26 @@ class Payments_Tab extends Service_Provider {
 	 * Returns the settings item for the section menu at the top of the Payments settings tab.
 	 *
 	 * @since  5.3.0
+	 * @deprecated TBD No longer used as we've moved to WordPress-style parent-child tabs
 	 *
 	 * @return array[]
 	 */
 	public function get_section_menu(): array {
-		$template_vars = [
-			'sections'         => $this->get_sections(),
-			'selected_section' => tribe_get_request_var( static::$key_current_section_get_var, '' ),
-		];
-
-		return [
-			static::$key_section_menu => [
-				'type' => 'html',
-				'html' => $this->get_template()->template( 'section/menu', $template_vars, false ),
-			],
-		];
+		_deprecated_function( __METHOD__, 'TBD', 'The section menu has been replaced with WordPress-style parent-child tabs' );
+		return [];
 	}
 
 	/**
 	 * Gets an array of all the sections, based on the active Gateways.
 	 *
 	 * @since 5.3.0
+	 * @deprecated TBD No longer used as we've moved to WordPress-style parent-child tabs
 	 *
 	 * @return array[]
 	 */
 	public function get_sections(): array {
-		$sections = [
-			[
-				'slug'    => '',
-				'classes' => [],
-				'url'     => $this->get_url(),
-				'text'    => __( 'Tickets Commerce', 'event-tickets' ),
-			],
-		];
-
-		$gateways = tribe( Manager::class )->get_gateways();
-		$gateways = array_filter( $gateways, static function ( $gateway ) {
-			return $gateway::should_show();
-		} );
-
-		foreach ( $gateways as $gateway_key => $gateway ) {
-			$sections[] = [
-				'classes' => [],
-				'slug'    => $gateway_key,
-				'url'     => $gateway::get_settings_url(),
-				'text'    => $gateway::get_label(),
-			];
-		}
-
-		/**
-		 * Filters the sections available on the Payment Tab.
-		 *
-		 * @since 5.3.0
-		 *
-		 * @param array[] $sections Current sections.
-		 */
-		return (array) apply_filters( 'tec_tickets_commerce_payments_tab_sections', $sections );
+		_deprecated_function( __METHOD__, 'TBD', 'The section navigation has been replaced with WordPress-style parent-child tabs' );
+		return [];
 	}
 
 	/**
@@ -395,6 +416,7 @@ class Payments_Tab extends Service_Provider {
 	 * Gets the top level settings for Tickets Commerce.
 	 *
 	 * @since 5.3.0
+	 * @since TBD Updated classes to display section as a horizontal block.
 	 *
 	 * @return array[]
 	 */
@@ -404,7 +426,7 @@ class Payments_Tab extends Service_Provider {
 		$fields = [
 			'tribe-form-content-start' => [
 				'type' => 'html',
-				'html' => '<div class="tribe-settings-form-wrap">',
+				'html' => '<div class="tribe-settings-form-wrap tec-settings-form__header-block tec-settings-form__header-block--horizontal">',
 			],
 		];
 
@@ -421,7 +443,7 @@ class Payments_Tab extends Service_Provider {
 		 *
 		 * @param array[] $top_level_settings Top level settings.
 		 */
-		return apply_filters( 'tec_tickets_commerce_settings_top_level', array_merge( $this->get_section_menu(), $fields ) );
+		return apply_filters( 'tec_tickets_commerce_settings_top_level', $fields );
 	}
 
 	/**
