@@ -109,6 +109,7 @@ class Ticket extends Email_Abstract implements Purchase_Confirmation_Email_Inter
 	 * Get email settings fields.
 	 *
 	 * @since 5.5.10
+	 * @since TBD Added new classes for settings.
 	 *
 	 * @return array
 	 */

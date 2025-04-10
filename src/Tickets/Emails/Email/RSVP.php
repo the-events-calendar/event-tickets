@@ -121,6 +121,7 @@ class RSVP extends Email_Abstract {
 	 * Get email settings fields.
 	 *
 	 * @since 5.5.10
+	 * @since TBD Added new classes for settings.
 	 *
 	 * @return array
 	 */

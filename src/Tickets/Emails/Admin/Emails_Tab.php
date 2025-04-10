@@ -66,6 +66,7 @@ class Emails_Tab {
 	 *
 	 * @since  5.5.6
 	 * @since  5.8.4 Return the registered tab.
+	 * @since TBD Set the return to `$this->settings_tab`.
 	 *
 	 * @param string $admin_page Page ID of current admin page.
 	 *
@@ -247,6 +248,7 @@ class Emails_Tab {
 	 * Get email settings.
 	 *
 	 * @since 5.5.9
+	 * @since TBD Added new classes for settings.
 	 *
 	 * @return array Settings array
 	 */
