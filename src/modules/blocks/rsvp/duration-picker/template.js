@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 /**
  * Internal dependencies
  */
-import { DateTimeRangePicker } from '@moderntribe/tickets/elements';
+import { DateTimeRangePicker } from '../../../elements';
 import './style.pcss';
 
 const RSVPDurationPicker = ( props ) => (

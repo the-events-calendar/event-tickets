@@ -17,11 +17,11 @@ import { applyFilters } from '@wordpress/hooks';
  * Internal dependencies
  */
 import RSVPContainer from './container/container';
-import RSVPActionDashboard from '@moderntribe/tickets/blocks/rsvp/action-dashboard/container';
-import RSVPSettingsDashboard from '@moderntribe/tickets/blocks/rsvp/settings-dashboard/container';
+import RSVPActionDashboard from './action-dashboard/container';
+import RSVPSettingsDashboard from './settings-dashboard/container';
 import RSVPInactiveBlock from './inactive-block/container';
-import MoveModal from '@moderntribe/tickets/elements/move-modal';
-import { Card } from '@moderntribe/tickets/elements';
+import MoveModal from '../../elements/move-modal';
+import { Card } from '../../elements';
 import './style.pcss';
 
 /**

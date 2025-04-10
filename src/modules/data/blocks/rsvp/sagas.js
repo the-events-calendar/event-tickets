@@ -16,14 +16,14 @@ import { updateRSVP } from './thunks';
 import {
 	DEFAULT_STATE as RSVP_HEADER_IMAGE_DEFAULT_STATE,
 } from './reducers/header-image';
-import * as ticketActions from '@moderntribe/tickets/data/blocks/ticket/actions';
+import * as ticketActions from '../ticket/actions';
 import {
 	DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE,
-} from '@moderntribe/tickets/data/blocks/ticket/reducers/header-image';
-import * as utils from '@moderntribe/tickets/data/utils';
-import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
-import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
-import { isTribeEventPostType, createWPEditorSavingChannel, createDates } from '@moderntribe/tickets/data/shared/sagas';
+} from '../ticket/reducers/header-image';
+import * as utils from '../../utils';
+import { MOVE_TICKET_SUCCESS } from '../../shared/move/types';
+import * as moveSelectors from '../../shared/move/selectors';
+import { isTribeEventPostType, createWPEditorSavingChannel, createDates } from '../../shared/sagas';
 
 import {
 	api,

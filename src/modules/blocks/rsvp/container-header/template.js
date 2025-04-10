@@ -12,12 +12,12 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import RSVPCounters from '@moderntribe/tickets/blocks/rsvp/counters/container';
-import { NumericLabel, SplitContainer } from '@moderntribe/tickets/elements';
+import RSVPCounters from '../counters/container';
+import { NumericLabel, SplitContainer } from '../../../elements';
 import {
 	SettingsActionButton,
 	AttendeesActionButton,
-} from '@moderntribe/tickets/blocks/rsvp/action-buttons';
+} from '../action-buttons';
 
 import './style.pcss';
 

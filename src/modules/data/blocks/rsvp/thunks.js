@@ -2,7 +2,7 @@
  * Internal dependencies
  */
 import * as actions from './actions';
-import * as utils from '@moderntribe/tickets/data/utils';
+import * as utils from '../../utils';
 import { middlewares } from '@moderntribe/common/store';
 import { globals, time, moment as momentUtil } from '@moderntribe/common/utils';
 import { doAction } from '@wordpress/hooks';

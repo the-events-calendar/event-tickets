@@ -8,7 +8,7 @@ import { compose } from 'redux';
  * Internal dependencies
  */
 import RSVPContainerContent from './template';
-import { selectors } from '@moderntribe/tickets/data/blocks/rsvp';
+import { selectors } from '../../../data/blocks/rsvp';
 import { plugins } from '@moderntribe/common/data';
 import { withStore } from '@moderntribe/common/hoc';
 

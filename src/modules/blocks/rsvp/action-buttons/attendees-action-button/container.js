@@ -13,7 +13,7 @@ import { select } from '@wordpress/data';
  * Internal dependencies
  */
 import AttendeesActionButton from './template';
-import { selectors } from '@moderntribe/tickets/data/blocks/rsvp';
+import { selectors } from '../../../../data/blocks/rsvp';
 import { withStore } from '@moderntribe/common/hoc';
 import { globals } from '@moderntribe/common/utils';
 

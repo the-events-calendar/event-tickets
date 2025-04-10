@@ -16,8 +16,8 @@ const { InnerBlocks } = wp.blockEditor;
  */
 import Availability from '../availability/container';
 import Inactive from '../inactive/container';
-import { Card } from '@moderntribe/tickets/elements';
-import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { Card } from '../../../../../../modules/elements';
+import { TICKET_LABELS } from '../../../../../../modules/data/blocks/ticket/constants';
 import './style.pcss';
 import Uneditable from '../uneditable/container';
 

@@ -2,7 +2,7 @@
  * Internal dependencies
  */
 import { DEFAULT_STATE } from './details';
-import { types } from '@moderntribe/tickets/data/blocks/rsvp';
+import { types } from '../index';
 
 export default ( state = DEFAULT_STATE, action ) => {
 	switch ( action.type ) {
