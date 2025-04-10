@@ -44,7 +44,6 @@ class Email_Settings_Test extends WPTestCase {
 		if ( ! isset( $this->original_options[ $key ] ) ) {
 			$this->original_options[ $key ] = tribe_get_option( $key );
 		}
-		codecept_debug( 'Setting ' . $key . ' to ' . $value );
 		tribe_update_option( $key, $value );
 	}
 
