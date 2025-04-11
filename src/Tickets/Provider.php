@@ -58,6 +58,9 @@ class Provider extends Service_Provider {
 		$this->container->singleton( static::class, $this );
 		$this->container->singleton( 'tickets.provider', $this );
 
+		// Set up the installer.
+		$this->container->register( Installer\Provider::class );
+
 		// Loads the QR code controller.
 		$this->container->register( QR\Controller::class );
 

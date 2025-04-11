@@ -14,6 +14,7 @@ use TEC\Tickets\Admin\Onboarding\Steps\Settings;
 use TEC\Tickets\Admin\Onboarding\Data;
 use TEC\Tickets\Admin\Onboarding\Tickets_Landing_Page as Landing_Page;
 use TEC\Common\StellarWP\Assets\Config as Asset_Config;
+use TEC\Tickets\Admin\Onboarding\Template;
 
 /**
  * Class Controller
@@ -33,6 +34,7 @@ class Controller extends Controller_Contract {
 		$this->add_filters();
 		$this->add_actions();
 
+		$this->container->singleton( 'tec.tickets.onboarding_template', Template::class );
 		$this->container->singleton( Landing_Page::class );
 		$this->container->singleton( Data::class );
 		$this->container->singleton( API::class );
@@ -118,15 +120,24 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function redirect_tec_pages_to_guided_setup(): void {
+		/**
+		 * Allows bypassing the checks for if we don't need to/have already visited the Guided Setup page.
+		 * Use with caution for now as this function does not check if we are on a Tickets admin page - so it will redirect *every* admin page
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $force Whether to force the redirect to the Guided Setup page.
+		 *
+		 * @return bool
+		 */
 		$force = apply_filters( 'tec_tickets_onboarding_force_redirect_to_guided_setup', false );
+
 		// Do not redirect if they are already on the Guided Setup page.
-		$page = tec_get_request_var( 'page' );
-		if ( Landing_Page::$slug === $page ) {
+		if ( Landing_Page::is_on_page() ) {
 			return;
 		}
 
 		if ( ! $force ) {
-
 			// Do not redirect if they have been to the Guided Setup page already.
 			if ( (bool) tribe_get_option( Landing_Page::VISITED_GUIDED_SETUP_OPTION, false ) ) {
 				return;

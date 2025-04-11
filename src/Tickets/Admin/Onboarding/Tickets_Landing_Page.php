@@ -15,6 +15,7 @@ use TEC\Common\Admin\Traits\Is_Tickets_Page;
 use TEC\Common\Lists\Currency;
 use TEC\Tickets\Admin\Onboarding\API;
 use TEC\Common\Asset;
+use TEC\Tickets\Admin\Onboarding\Template;
 
 /**
  * Class Landing_Page
@@ -117,6 +118,15 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	public int $menu_position = 1;
 
 	/**
+	 * The template instance.
+	 *
+	 * @since TBD
+	 *
+	 * @var Template
+	 */
+	protected Template $template;
+
+	/**
 	 * Get the admin page title.
 	 *
 	 * @since TBD
@@ -125,17 +135,6 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 */
 	public function get_the_page_title(): string {
 		return esc_html__( 'TEC Tickets Setup Guide', 'event-tickets' );
-	}
-
-	/**
-	 * Has the page been dismissed?
-	 *
-	 * @since TBD
-	 *
-	 * @return bool
-	 */
-	public static function is_dismissed(): bool {
-		return (bool) tribe_get_option( self::DISMISS_PAGE_OPTION, false );
 	}
 
 	/**
@@ -213,6 +212,10 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 * @return void
 	 */
 	public function admin_page_main_content(): void {
+		$installer = Installer::get();
+
+		$this->template = tribe( 'tec.tickets.onboarding_template' );
+
 		$this->admin_content_checklist_section();
 
 		$this->admin_content_resources_section();
@@ -231,189 +234,84 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 * @return void
 	 */
 	public function admin_content_checklist_section(): void {
-		$settings_url   = '';
 		$data           = tribe( Data::class );
 		$completed_tabs = array_flip( (array) $data->get_wizard_setting( 'completed_tabs', [] ) );
-		$tec_installed  = Installer::get()->is_installed( 'the-events-calendar' );
-		$tec_activated  = Installer::get()->is_active( 'the-events-calendar' );
+
+		$this->template->template(
+			'checklist-section',
+			[
+				'data'           => $data,
+				'installer'      => Installer::get(),
+				'list_items'     => $this->get_list_items( $completed_tabs ),
+			]
+		);
 		?>
-			<div class="tec-admin-page__content-section tec-tickets-admin-page__content-section">
-				<h2 class="tec-admin-page__content-header"><?php esc_html_e( 'Tickets setup', 'event-tickets' ); ?></h2>
-				<ul class="tec-admin-page__content-step-list">
-					<li
-						id="tec-tickets-onboarding-wizard-currency-item"
-						<?php
-						tribe_classes(
-							[
-								'step-list__item' => true,
-								'tec-tickets-onboarding-step-1' => true,
-								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[1] ) || ! empty( tribe_get_option( 'defaultCurrencyCode' ) ),
-							]
-						);
-						?>
-					>
-						<div class="step-list__item-left">
-							<span class="step-list__item-icon" role="presentation"></span>
-							<?php esc_html_e( 'Location & Currency', 'event-tickets' ); ?>
-						</div>
-						<div class="step-list__item-right">
-							<a href="<?php echo esc_url( admin_url( "{$settings_url}&tab=display-currency-tab" ) ); ?>" class="tec-admin-page__link">
-								<?php esc_html_e( 'Edit currency', 'event-tickets' ); ?>
-							</a>
-						</div>
-					</li>
-					<li
-						id="tec-tickets-onboarding-wizard-email-item"
-						<?php
-						tribe_classes(
-							[
-								'step-list__item' => true,
-								'tec-tickets-onboarding-step-2' => true,
-								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[2] ) || ! empty( tribe_get_option( 'dateWithYearFormat' ) ),
-							]
-						);
-						?>
-					>
-						<div class="step-list__item-left">
-							<span class="step-list__item-icon" role="presentation"></span>
-							<?php esc_html_e( 'Email communication setup', 'event-tickets' ); ?>
-						</div>
-						<div class="step-list__item-right">
-							<a href="<?php echo esc_url( admin_url( "{$settings_url}&tab=display-date-time-tab" ) ); ?>" class="tec-admin-page__link">
-								<?php esc_html_e( 'Edit email settings', 'event-tickets' ); ?>
-							</a>
-						</div>
-					</li>
-					<li
-						id="tec-tickets-onboarding-wizard-stripe-item"
-						<?php
-						tribe_classes(
-							[
-								'step-list__item' => true,
-								'tec-tickets-onboarding-step-3' => true,
-								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[3] ) || ! empty( tribe_get_option( 'dateWithYearFormat' ) ),
-							]
-						);
-						?>
-					>
-						<div class="step-list__item-left">
-							<span class="step-list__item-icon" role="presentation"></span>
-							<?php esc_html_e( 'Stripe initialization', 'event-tickets' ); ?>
-						</div>
-						<div class="step-list__item-right">
-							<a href="<?php echo esc_url( admin_url( "{$settings_url}&tab=display-date-time-tab" ) ); ?>" class="tec-admin-page__link">
-								<?php esc_html_e( 'Edit Stripe settings', 'event-tickets' ); ?>
-							</a>
-						</div>
-					</li>
-					<li
-						id="tec-tickets-onboarding-wizard-square-item"
-						<?php
-						tribe_classes(
-							[
-								'step-list__item' => true,
-								'tec-tickets-onboarding-step-4' => true,
-								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[4] ) || ! empty( tribe_get_option( 'dateWithYearFormat' ) ),
-							]
-						);
-						?>
-					>
-						<div class="step-list__item-left">
-							<span class="step-list__item-icon" role="presentation"></span>
-							<?php esc_html_e( 'Square initialization', 'event-tickets' ); ?>
-						</div>
-						<div class="step-list__item-right">
-							<a href="<?php echo esc_url( admin_url( "{$settings_url}&tab=display-date-time-tab" ) ); ?>" class="tec-admin-page__link">
-								<?php esc_html_e( 'Edit Square settings', 'event-tickets' ); ?>
-							</a>
-						</div>
-					</li>
-					<li
-						id="tec-tickets-onboarding-wizard-square-onboarding-item"
-						<?php
-						tribe_classes(
-							[
-								'step-list__item' => true,
-								'tec-tickets-onboarding-step-5' => true,
-								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[5] ) || ! empty( tribe_get_option( 'dateWithYearFormat' ) ),
-							]
-						);
-						?>
-					>
-						<div class="step-list__item-left">
-							<span class="step-list__item-icon" role="presentation"></span>
-							<?php esc_html_e( 'Complete Square configuration', 'event-tickets' ); ?>
-						</div>
-						<div class="step-list__item-right">
-							<a href="<?php echo esc_url( admin_url( "{$settings_url}&tab=display-date-time-tab" ) ); ?>" class="tec-admin-page__link">
-								<?php esc_html_e( 'Go to onboarding', 'event-tickets' ); ?>
-							</a>
-						</div>
-					</li>
-					<li
-						id="tec-tickets-onboarding-wizard-login-item"
-						<?php
-						tribe_classes(
-							[
-								'step-list__item' => true,
-								'tec-tickets-onboarding-step-2' => true,
-								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[2] ) || ! empty( tribe_get_option( 'dateWithYearFormat' ) ),
-							]
-						);
-						?>
-					>
-						<div class="step-list__item-left">
-							<span class="step-list__item-icon" role="presentation"></span>
-							<?php esc_html_e( 'Ticket purchasing login pre-requisites', 'event-tickets' ); ?>
-						</div>
-						<div class="step-list__item-right">
-							<a href="<?php echo esc_url( admin_url( "{$settings_url}&tab=display-date-time-tab" ) ); ?>" class="tec-admin-page__link">
-								<?php esc_html_e( 'Edit ticket settings', 'event-tickets' ); ?>
-							</a>
-						</div>
-					</li>
-				</ul>
-				<div id="tec-tickets-onboarding-wizard-calendar">
-					<h2 class="tec-admin-page__content-header">
-						<?php esc_html_e( 'The Events Calendar', 'event-tickets' ); ?>
-					</h2>
-					<h3 class="tec-admin-page__content-subheader">
-						<?php esc_html_e( 'Do you need events for your tickets?', 'event-tickets' ); ?>
-					</h3>
-					<ul class="tec-admin-page__content-step-list">
-						<li
-							id="tec-tickets-onboarding-wizard-tickets-item"
-							<?php
-							tribe_classes(
-								[
-									'step-list__item' => true,
-									'tec-tickets-onboarding-step-5' => true,
-									'tec-admin-page__onboarding-step--completed' => ( isset( $completed_tabs[5] ) || ( $tec_installed && $tec_activated ) ),
-								]
-							);
-							?>
-						>
-							<div class="step-list__item-left">
-								<span class="step-list__item-icon" role="presentation"></span>
-								<?php esc_html_e( 'Install The Events Calendar', 'event-tickets' ); ?>
-							</div>
-							<?php if ( ! $tec_installed || ! $tec_activated ) : ?>
-								<div class="step-list__item-right">
-									<?php
-									Installer::get()->render_plugin_button(
-										'the-events-calendar',
-										$tec_installed ? 'activate' : 'install',
-										$tec_installed ? __( 'Activate The Events Calendar', 'event-tickets' ) : __( 'Install The Events Calendar', 'event-tickets' ),
-										admin_url( 'edit.php?post_type=tribe_events&page=first-time-setup' )
-									);
-									?>
-								</div>
-							<?php endif; ?>
-						</li>
-					</ul>
-				</div>
-			</div>
+
 		<?php
+	}
+
+	/**
+	 * Get the list items for the checklist section.
+	 *
+	 * @since TBD
+	 *
+	 * @return array The list items.
+	 */
+	public function get_list_items( array $completed_tabs ): array {
+		$settings_url   = '';
+
+		return [
+			[
+				'id' => 'tec-tickets-onboarding-wizard-currency-item',
+				'classes' => [
+					'tec-tickets-onboarding-step-1',
+					'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[1] ) || ! empty( tribe_get_option( 'defaultCurrencyCode' ) ),
+				],
+				'title' => __( 'Location & Currency', 'event-tickets' ),
+				'link' => admin_url( "{$settings_url}&tab=display-currency-tab" ),
+				'link_text' => __( 'Edit currency', 'event-tickets' ),
+			],
+			[
+				'id' => 'tec-tickets-onboarding-wizard-email-item',
+				'classes' => [
+					'tec-tickets-onboarding-step-2',
+					'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[2] ) || ! empty( tribe_get_option( 'defaultCurrencyCode' ) ),
+				],
+				'title' => __( 'Email communication setup', 'event-tickets' ),
+				'link' => admin_url( "{$settings_url}&tab=display-currency-tab" ),
+				'link_text' => __( 'Edit email settings', 'event-tickets' ),
+			],
+			[
+				'id' => 'tec-tickets-onboarding-wizard-stripe-item',
+				'classes' => [
+					'tec-tickets-onboarding-step-3',
+					'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[3] ) || ! empty( tribe_get_option( 'defaultCurrencyCode' ) ),
+				],
+				'title' => __( 'Stripe payment setup', 'event-tickets' ),
+				'link' => admin_url( "{$settings_url}&tab=display-currency-tab" ),
+				'link_text' => __( 'Edit Stripe settings', 'event-tickets' ),
+			],
+			[
+				'id' => 'tec-tickets-onboarding-wizard-square-item',
+				'classes' => [
+					'tec-tickets-onboarding-step-3',
+					'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[3] ) || ! empty( tribe_get_option( 'defaultCurrencyCode' ) ),
+				],
+				'title' => __( 'Square for in-person and online payments', 'event-tickets' ),
+				'link' => admin_url( "{$settings_url}&tab=display-currency-tab" ),
+				'link_text' => __( 'Edit Square settings', 'event-tickets' ),
+			],
+			[
+				'id' => 'tec-tickets-onboarding-wizard-login-item',
+				'classes' => [
+					'tec-tickets-onboarding-step-4',
+					'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[4] ) || ! empty( tribe_get_option( 'dateWithYearFormat' ) ),
+				],
+				'title' => __( 'Login requirement for purchasing tickets', 'event-tickets' ),
+				'link' => admin_url( "{$settings_url}&tab=display-currency-tab" ),
+				'link_text' => __( 'Edit', 'event-tickets' ),
+			]
+		];
 	}
 
 	/**
