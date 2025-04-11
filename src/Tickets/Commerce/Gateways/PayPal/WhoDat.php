@@ -21,7 +21,7 @@ class WhoDat extends Abstract_WhoDat {
 	 *
 	 * @var string
 	 */
-	public $api_endpoint = 'paypal';
+	protected string $api_endpoint = 'paypal';
 
 	/**
 	 * Fetch the signup link from PayPal.
