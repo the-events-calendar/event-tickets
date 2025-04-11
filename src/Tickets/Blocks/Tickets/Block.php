@@ -107,7 +107,7 @@ class Block extends Abstract_Block {
 		$tickets_js = tribe_tickets_new_views_is_enabled() ? 'v2/tickets-block.js' : 'tickets-block.js';
 		$plugin     = Tickets_Main::instance();
 
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			self::FRONTEND_SCRIPT_SLUG,
 			$tickets_js,

@@ -29,7 +29,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 	 */
 	public function register() {
 		$plugin = \Tribe__Tickets__Main::instance();
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tribe-tickets-admin-commerce-paypal-commerce-partner-js',
 			$this->get_partner_js_url(),
@@ -74,7 +74,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 		/**
 		 * This file is intentionally enqueued on every page of the administration.
 		 */
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tec-tickets-commerce-gateway-paypal-global-admin-styles',
 			'tickets-commerce/gateway/paypal/admin-global.css',
@@ -83,7 +83,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 			[]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tec-tickets-commerce-gateway-paypal-checkout',
 			'commerce/gateway/paypal/checkout.js',
@@ -120,7 +120,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 			]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tec-tickets-commerce-gateway-paypal-signup',
 			'commerce/gateway/paypal/signup.js',
@@ -146,7 +146,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 		);
 
 		// Tickets Commerce PayPal main frontend styles.
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tribe-tickets-commerce-paypal-style',
 			'tickets-commerce/gateway/paypal.css',
