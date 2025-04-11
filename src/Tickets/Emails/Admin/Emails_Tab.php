@@ -219,7 +219,16 @@ class Emails_Tab {
 		 *
 		 * @param array[] $fields Top level settings.
 		 */
-		return apply_filters( 'tec_tickets_emails_settings_fields', $fields );
+		// Apply the filter **before** adding the closing div.
+		$fields = apply_filters( 'tec_tickets_emails_settings_fields', $fields );
+
+		// Close wrapper div — make sure it's **always last**.
+		$fields['tribe-form-content-end'] = [
+			'type' => 'html',
+			'html' => '</div>',
+		];
+
+		return $fields;
 	}
 
 	/**
