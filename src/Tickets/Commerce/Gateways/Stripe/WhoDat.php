@@ -22,7 +22,7 @@ class WhoDat extends Abstract_WhoDat {
 	 *
 	 * @var string
 	 */
-	public $api_endpoint = 'stripe';
+	protected string $api_endpoint = 'stripe';
 
 	/**
 	 * Creates a new account link for the client and redirects the user to setup the account details.
