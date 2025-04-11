@@ -17,7 +17,7 @@ import {
 	ClockInactive,
 	TicketActive,
 	TicketInactive,
-} from '../icons';
+} from '../../../../../../modules/icons';
 
 const ClockIcon = ( { isDisabled } ) => (
 	isDisabled ? <ClockInactive /> : <ClockActive />
