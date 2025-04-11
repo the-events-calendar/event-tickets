@@ -408,7 +408,7 @@ class Block extends Abstract_Block {
 
 		Asset::add(
 			self::EDITOR_STYLE_SLUG,
-			'Tickets/editor.css',
+			'Tickets/style-editor.css',
 			Tickets_Main::VERSION
 		)
 			->add_to_group_path( 'et-tickets-blocks' )

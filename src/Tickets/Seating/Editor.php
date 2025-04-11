@@ -237,7 +237,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 
 		Asset::add(
 			'tec-tickets-seating-block-editor-style',
-			'blockEditor.css',
+			'style-blockEditor.css',
 			Tickets::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )

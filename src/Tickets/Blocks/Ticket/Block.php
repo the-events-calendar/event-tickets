@@ -92,14 +92,14 @@ class Block extends Abstract_Block {
 		// Using WordPress functions to register since we just need to register them.
 		wp_register_script(
 			'tec-tickets-ticket-item-block-editor-script',
-			$plugin->plugin_url . "build/Tickets/Blocks/Ticket/editor.js",
+			$plugin->plugin_url . "build/tickets/Blocks/Ticket/editor.js",
 			[ 'tribe-common-gutenberg-vendor', 'tribe-tickets-gutenberg-vendor', 'tec-common-php-date-formatter' ],
 			Tickets_Main::VERSION
 		);
 
 		wp_register_style(
 			'tec-tickets-ticket-item-block-editor-style',
-			$plugin->plugin_url . "build/Tickets/Blocks/Ticket/editor{$min}.css",
+			$plugin->plugin_url . "build/tickets/Blocks/Ticket/editor.css",
 			[ 'tribe-tickets-gutenberg-main-styles' ],
 			Tickets_Main::VERSION
 		);

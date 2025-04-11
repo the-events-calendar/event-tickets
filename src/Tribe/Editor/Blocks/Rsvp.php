@@ -227,9 +227,12 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 		tec_asset(
 			$plugin,
 			'tribe-tickets-gutenberg-block-rsvp-style',
-			'app/rsvp/frontend.css',
+			'rsvp/frontend.css',
 			[],
-			null
+			null,
+			[
+				'group_path' => get_class( $plugin ) . '-packages',
+			]
 		);
 
 		tec_asset(
@@ -309,13 +312,16 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 			null
 		);
 
-		tec_asset(
-			$plugin,
-			'tribe-tickets-rsvp-style-override',
-			Tribe__Templates::locate_stylesheet( 'tribe-events/tickets/rsvp.css' ),
-			[],
-			null
-		);
+		$stylesheet = Tribe__Templates::locate_stylesheet( 'tribe-events/tickets/rsvp.css' );
+		if ( $stylesheet ) {
+			tec_asset(
+				$plugin,
+				'tribe-tickets-rsvp-style-override',
+				$stylesheet,
+				[],
+				null
+			);
+		}
 	}
 
 	/**

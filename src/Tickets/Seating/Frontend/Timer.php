@@ -218,7 +218,7 @@ class Timer extends Controller_Contract {
 
 		Asset::add(
 			'tec-tickets-seating-session-style',
-			'frontend/session.css',
+			'frontend/style-session.css',
 			ET::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
