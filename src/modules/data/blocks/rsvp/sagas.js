@@ -16,14 +16,14 @@ import { updateRSVP } from './thunks';
 import {
 	DEFAULT_STATE as RSVP_HEADER_IMAGE_DEFAULT_STATE,
 } from './reducers/header-image';
-import * as ticketActions from '@moderntribe/tickets/data/blocks/ticket/actions';
+import * as ticketActions from '../ticket/actions';
 import {
 	DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE,
-} from '@moderntribe/tickets/data/blocks/ticket/reducers/header-image';
-import * as utils from '@moderntribe/tickets/data/utils';
-import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
-import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
-import { isTribeEventPostType, createWPEditorSavingChannel, createDates } from '@moderntribe/tickets/data/shared/sagas';
+} from '../ticket/reducers/header-image';
+import * as utils from '../../utils';
+import { MOVE_TICKET_SUCCESS } from '../../shared/move/types';
+import * as moveSelectors from '../../shared/move/selectors';
+import { isTribeEventPostType, createWPEditorSavingChannel, createDates } from '../../shared/sagas';
 
 import {
 	api,
@@ -156,7 +156,7 @@ export function* initializeRSVP() {
 	try {
 		if ( yield call( isTribeEventPostType ) ) {
 			// NOTE: This requires TEC to be installed, if not installed, do not set an end date
-			const eventStart = yield select( window.tribe.events.data.blocks.datetime.selectors.getStart ); // RSVP window should end when event starts... ideally
+			const eventStart = yield select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart ); // RSVP window should end when event starts... ideally
 			const {
 				moment: endMoment,
 				date: endDate,
@@ -213,7 +213,7 @@ export function* syncRSVPSaleEndWithEventStart( prevStartDate ) {
 		const isSyncedToEventStart = yield call( [ tempEndMoment, 'isSame' ], prevEventStartMoment, 'minute' );
 
 		if ( isNotManuallyEdited && isSyncedToEventStart ) {
-			const eventStart = yield select( window.tribe.events.data.blocks.datetime.selectors.getStart );
+			const eventStart = yield select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart );
 			const {
 				moment: endDateMoment,
 				date: endDate,
@@ -311,13 +311,13 @@ export function* handleEventStartDateChanges() {
 		// Proceed after creating dummy RSVP or after fetching
 		yield take( [ types.INITIALIZE_RSVP, types.SET_RSVP_DETAILS ] );
 		const isEvent = yield call( isTribeEventPostType );
-		if ( isEvent && window.tribe.events ) {
-			const { SET_START_DATE_TIME, SET_START_TIME } = window.tribe.events.data.blocks.datetime.types;
+		if ( isEvent && window.tec.events ) {
+			const { SET_START_DATE_TIME, SET_START_TIME } = window.tec.events.app.main.data.blocks.datetime.types;
 
 			let syncTask;
 			while ( true ) {
 				// Cache current event start date for comparison
-				const eventStart = yield select( window.tribe.events.data.blocks.datetime.selectors.getStart );
+				const eventStart = yield select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart );
 
 				// Wait til use changes date or time on TEC datetime block
 				yield take( [ SET_START_DATE_TIME, SET_START_TIME ] );

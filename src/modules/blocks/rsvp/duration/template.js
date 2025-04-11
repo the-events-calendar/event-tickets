@@ -12,8 +12,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import RSVPDurationLabel from '@moderntribe/tickets/blocks/rsvp/duration-label/container';
-import RSVPDurationPicker from '@moderntribe/tickets/blocks/rsvp/duration-picker/container';
+import RSVPDurationLabel from '../duration-label/container';
+import RSVPDurationPicker from '../duration-picker/container';
 import './style.pcss';
 
 const RSVPDuration = ( { hasDurationError } ) => (

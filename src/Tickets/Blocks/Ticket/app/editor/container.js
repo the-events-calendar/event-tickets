@@ -10,12 +10,12 @@ import { compose } from 'redux';
 import Template from './template';
 import { plugins } from '@moderntribe/common/data';
 import { withStore } from '@moderntribe/common/hoc';
-import withSaveData from '@moderntribe/tickets/blocks/hoc/with-save-data';
-import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
+import withSaveData from '../../../../../modules/blocks/hoc/with-save-data';
+import { actions, selectors } from '../../../../../modules/data/blocks/ticket';
 import {
 	isModalShowing,
 	getModalTicketId,
-} from '@moderntribe/tickets/data/shared/move/selectors';
+} from '../../../../../modules/data/shared/move/selectors';
 
 const getShowTicket = ( state, ownProps ) => (
 	selectors.getTicketsIsSelected( state ) ||

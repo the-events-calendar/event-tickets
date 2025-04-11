@@ -12,7 +12,7 @@ import { withStore } from '@moderntribe/common/hoc';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { select } from '@wordpress/data';
-import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { TICKET_LABELS } from '../../../../../../modules/data/blocks/ticket/constants';
 
 const getCurrentPostStatus = () => {
 	const { status = 'auto-draft' } = select('core/editor').getCurrentPost();

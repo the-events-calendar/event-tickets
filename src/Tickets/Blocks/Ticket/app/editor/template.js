@@ -16,7 +16,7 @@ import { Spinner } from '@wordpress/components';
 import './style.pcss';
 import TicketContainer from './container/container';
 import TicketDashboard from './dashboard/container';
-import MoveModal from '@moderntribe/tickets/elements/move-modal';
+import MoveModal from '../../../../../modules/elements/move-modal/container';
 import { applyFilters } from '@wordpress/hooks';
 
 class Ticket extends PureComponent {

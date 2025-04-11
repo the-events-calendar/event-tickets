@@ -22,23 +22,23 @@ import * as selectors from './selectors';
 import { DEFAULT_STATE } from './reducer';
 import { DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE } from './reducers/header-image';
 import { DEFAULT_STATE as TICKET_DEFAULT_STATE } from './reducers/tickets/ticket';
-import * as rsvpActions from '@moderntribe/tickets/data/blocks/rsvp/actions';
+import * as rsvpActions from '../../blocks/rsvp/actions';
 import {
 	DEFAULT_STATE as RSVP_HEADER_IMAGE_DEFAULT_STATE,
-} from '@moderntribe/tickets/data/blocks/rsvp/reducers/header-image';
-import * as utils from '@moderntribe/tickets/data/utils';
+} from '../rsvp/reducers/header-image';
+import * as utils from '../../utils';
 import { api, globals, moment as momentUtil, time as timeUtil } from '@moderntribe/common/utils';
 import { plugins } from '@moderntribe/common/data';
-import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
-import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
+import { MOVE_TICKET_SUCCESS } from '../../shared/move/types';
+import * as moveSelectors from '../../shared/move/selectors';
 import {
 	createDates,
 	createWPEditorNotSavingChannel,
 	createWPEditorSavingChannel,
 	hasPostTypeChannel,
 	isTribeEventPostType,
-} from '@moderntribe/tickets/data/shared/sagas';
-import { isTicketEditableFromPost } from '@moderntribe/tickets/data/blocks/ticket/utils';
+} from '../../shared/sagas';
+import { isTicketEditableFromPost } from './utils';
 
 const {
 	UNLIMITED,
@@ -263,12 +263,12 @@ export function* setTicketInitialState( action ) {
 	const isEvent = yield call( isTribeEventPostType );
 
 	// Only run this on events post type.
-	if ( isEvent && window.tribe.events ) {
+	if ( isEvent && window.tec.events ) {
 		// This try-catch may be redundant given the above if statement.
 		try {
 			// NOTE: This requires TEC to be installed, if not installed, do not set an end date
 			// Ticket purchase window should end when event starts
-			const eventStart = yield select( tribe.events.data.blocks.datetime.selectors.getStart );
+			const eventStart = yield select( tec.events.app.main.data.blocks.datetime.selectors.getStart );
 			const endMoment = yield call( momentUtil.toMoment, eventStart );
 			const endDate = yield call( momentUtil.toDatabaseDate, endMoment );
 			const endDateInput = yield datePickerFormat
@@ -1278,9 +1278,9 @@ export function* syncTicketSaleEndWithEventStart( prevStartDate, clientId ) {
 
 		// This if statement may be redundant given the try-catch statement above.
 		// Only run this on events post type.
-		if ( isEvent && window.tribe.events && isNotManuallyEdited && isSyncedToEventStart ) {
+		if ( isEvent && window.tec.events && isNotManuallyEdited && isSyncedToEventStart ) {
 			const eventStart = yield select(
-				window.tribe.events.data.blocks.datetime.selectors.getStart,
+				window.tec.events.app.main.data.blocks.datetime.selectors.getStart,
 			);
 			const {
 				moment: endDateMoment,
@@ -1332,17 +1332,17 @@ export function* handleEventStartDateChanges() {
 		yield call( [ postTypeChannel, 'close' ] );
 
 		const isEvent = yield call( isTribeEventPostType );
-		if ( isEvent && window.tribe.events ) {
+		if ( isEvent && window.tec.events ) {
 			const {
 				SET_START_DATE_TIME,
 				SET_START_TIME,
-			} = window.tribe.events.data.blocks.datetime.types;
+			} = window.tec.events.app.main.data.blocks.datetime.types;
 
 			let syncTask;
 			while ( true ) {
 				// Cache current event start date for comparison
 				const eventStart = yield select(
-					window.tribe.events.data.blocks.datetime.selectors.getStart,
+					window.tec.events.app.main.data.blocks.datetime.selectors.getStart,
 				);
 
 				// Wait til use changes date or time on TEC datetime block

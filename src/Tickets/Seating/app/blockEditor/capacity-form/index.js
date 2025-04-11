@@ -12,7 +12,7 @@ import {
 import { META_KEY_ENABLED, META_KEY_LAYOUT_ID } from '../constants';
 import EventLayoutSelect from './event-layout-select';
 import ServiceError from './service-error';
-import { getLocalizedString } from '@tec/tickets/seating/utils';
+import { getLocalizedString } from '../../utils';
 import SeriesNotice from "./series-notice";
 
 const getString = (key) => getLocalizedString(key, 'capacity-form');

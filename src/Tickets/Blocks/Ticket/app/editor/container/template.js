@@ -8,16 +8,16 @@ import classNames from 'classnames';
 /**
  * Internal dependencies
  */
-import { ContainerPanel } from '@moderntribe/tickets/elements';
+import { ContainerPanel } from '../../../../../../modules/elements';
 import TicketContainerHeader from '../container-header/template';
 import TicketContainerContent from '../container-content/container';
-import { LAYOUT } from '@moderntribe/tickets/elements/container-panel';
+import { LAYOUT } from '../../../../../../modules/elements/container-panel';
 import {
 	ClockActive,
 	ClockInactive,
 	TicketActive,
 	TicketInactive,
-} from '@moderntribe/tickets/icons';
+} from '../../../../../../modules/icons';
 
 const ClockIcon = ( { isDisabled } ) => (
 	isDisabled ? <ClockInactive /> : <ClockActive />

@@ -4,7 +4,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import AutosizeInput from 'react-input-autosize'; // eslint-disable-line import/no-unresolved
+import { reactInputAutosize as AutosizeInput } from '@moderntribe/common/modules';
 
 /**
  * WordPress dependencies
@@ -19,7 +19,7 @@ import { InspectorControls } from '@wordpress/editor';
 /**
  * Internal dependencies
  */
-import { AttendeesGravatar } from '@moderntribe/tickets/icons';
+import { AttendeesGravatar } from '../../icons';
 import './style.pcss';
 
 /**

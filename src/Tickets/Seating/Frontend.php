@@ -341,7 +341,7 @@ class Frontend extends Controller_Contract {
 		// Register the front-end CSS.
 		Asset::add(
 			'tec-tickets-seating-frontend-style',
-			'frontend/ticketsBlock.css',
+			'frontend/style-ticketsBlock.css',
 			ET::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )

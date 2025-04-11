@@ -4,7 +4,7 @@
  * update, update the Series data.
  */
 
-import { updateUneditableTickets } from '@moderntribe/tickets/data/blocks/ticket/actions';
+import { updateUneditableTickets } from '../../../../../modules/data/blocks/ticket/actions';
 import { store } from '@moderntribe/common/store';
 import { onMetaBoxesUpdateCompleted } from '../metaboxes';
 import { addAction } from '@wordpress/hooks';
@@ -14,7 +14,7 @@ import {
 	hasSelectedSeries,
 	getSeriesPostIdFromSelection,
 } from '../../series-relationship';
-import { UNLIMITED } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { UNLIMITED } from '../../../../../modules/data/blocks/ticket/constants';
 import { sprintf } from '@wordpress/i18n';
 
 const ftStore = wp.data.select('tec-tickets/flexible-tickets');

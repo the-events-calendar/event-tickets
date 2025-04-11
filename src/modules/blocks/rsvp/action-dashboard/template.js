@@ -12,8 +12,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import MoveDelete from '@moderntribe/tickets/blocks/rsvp/move-delete/container';
-import { ActionDashboard } from '@moderntribe/tickets/elements';
+import MoveDelete from '../move-delete/container';
+import { ActionDashboard } from '../../../elements';
 import './style.pcss';
 
 const confirmLabel = ( created ) => (

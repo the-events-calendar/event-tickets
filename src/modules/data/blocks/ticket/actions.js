@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import { types } from '@moderntribe/tickets/data/blocks/ticket';
+import { types } from './index';
 
 //
 // ─── TICKETS ACTIONS ────────────────────────────────────────────────────────────

@@ -9,7 +9,7 @@ import { compose } from 'redux';
  */
 import SettingsActionButton from './template';
 
-import { actions } from '@moderntribe/tickets/data/blocks/ticket';
+import { actions } from '../../../../../../../modules/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
 
 const mapDispatchToProps = ( dispatch ) => ( {

@@ -2,7 +2,7 @@ import './style.pcss';
 import {
 	getIframeElement,
 	initServiceIframe,
-} from '@tec/tickets/seating/service/iframe';
+} from '../../service/iframe';
 import {
 	INBOUND_APP_READY_FOR_DATA,
 	INBOUND_SEATS_SELECTED,
@@ -12,15 +12,15 @@ import {
 	registerAction,
 	sendPostMessage,
 	getToken,
-} from '@tec/tickets/seating/service/api';
+} from '../../service/api';
 import { TicketRow } from './ticket-row';
 import { localizedData } from './localized-data';
-import { formatWithCurrency } from '@tec/tickets/seating/currency';
+import { formatWithCurrency } from '../../currency';
 import { getCheckoutHandlerForProvider } from './checkout-handlers';
 import {
 	start as startTimer,
 	reset as resetTimer,
-} from '@tec/tickets/seating/frontend/session';
+} from '../../frontend/session';
 import './filters';
 
 const {

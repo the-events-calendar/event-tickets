@@ -544,7 +544,7 @@ class Controller extends Controller_Contract {
 
 		Asset::add(
 			'tec-tickets-seating-admin-seats-report-style',
-			'admin/seatsReport.css',
+			'admin/style-seatsReport.css',
 			Tickets_Main::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )

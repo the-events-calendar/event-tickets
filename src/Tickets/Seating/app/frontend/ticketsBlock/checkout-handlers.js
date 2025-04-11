@@ -1,5 +1,5 @@
 import { applyFilters } from '@wordpress/hooks';
-import { setIsInterruptable } from '@tec/tickets/seating/frontend/session';
+import { setIsInterruptable } from '../../frontend/session';
 
 /**
  * Checks out a ticket using the Tickets Commerce module.

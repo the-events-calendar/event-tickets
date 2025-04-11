@@ -5,7 +5,7 @@ import {
 	ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES,
 	ajaxNonce,
 	ajaxUrl,
-} from '@tec/tickets/seating/ajax';
+} from '../ajax';
 
 /**
  * @typedef {Object} UpdatedSeatType

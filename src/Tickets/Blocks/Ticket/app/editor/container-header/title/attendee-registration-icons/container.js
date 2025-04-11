@@ -10,7 +10,7 @@ import { __ } from '@wordpress/i18n';
  */
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
-import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
+import { selectors } from '../../../../../../../../modules/data/blocks/ticket';
 import {
 	globals,
 	moment as momentUtil,

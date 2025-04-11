@@ -1,4 +1,4 @@
-import { createHtmlComponentFromTemplateString } from '@tec/tickets/seating/utils';
+import { createHtmlComponentFromTemplateString } from '../../utils';
 
 /**
  * @typedef {Object} TicketRowProps

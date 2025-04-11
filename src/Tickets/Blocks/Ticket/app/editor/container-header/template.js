@@ -11,7 +11,7 @@ import TicketContainerHeaderTitle from './title/container';
 import TicketContainerHeaderDescription from './description/container';
 import TicketContainerHeaderPrice from './price/container';
 import TicketContainerHeaderQuantity from './quantity/container';
-import { SALE_PRICE_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { SALE_PRICE_LABELS } from '../../../../../../modules/data/blocks/ticket/constants';
 import './style.pcss';
 import {applyFilters} from "@wordpress/hooks";
 

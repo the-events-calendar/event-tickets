@@ -13,7 +13,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { LabelWithTooltip } from '@moderntribe/tickets/elements';
+import { LabelWithTooltip } from '../../../elements';
 import './style.pcss';
 
 const tooltipLabel = (

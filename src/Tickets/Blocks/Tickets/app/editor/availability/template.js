@@ -13,8 +13,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { IconWithTooltip, NumericLabel } from '@moderntribe/tickets/elements';
-import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { IconWithTooltip, NumericLabel } from '../../../../../../modules/elements';
+import { TICKET_LABELS } from '../../../../../../modules/data/blocks/ticket/constants';
 import './style.pcss';
 
 /**
@@ -58,7 +58,7 @@ const Availability = ( { available, total } ) => {
 				'tribe-editor__tickets__availability-label--total',
 			) }
 			count={ total }
-			singular={ '%d ' + __( 'total capacity', 'event-tickets' ) } 
+			singular={ '%d ' + __( 'total capacity', 'event-tickets' ) }
 			plural={ '%d ' + __( 'total capacity', 'event-tickets' ) }
 		/>
 	);

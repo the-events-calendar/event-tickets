@@ -14,7 +14,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { LabeledItem, Link } from '@moderntribe/common/elements';
-import { constants } from '@moderntribe/tickets/data/blocks/ticket';
+import { constants } from '../../../../../../../../modules/data/blocks/ticket';
 import './style.pcss';
 
 const { EDD, WOO, PROVIDER_TYPES, TICKET_LABELS } = constants;

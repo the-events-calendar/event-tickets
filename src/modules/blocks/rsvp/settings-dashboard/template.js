@@ -14,9 +14,9 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import RSVPHeaderImage from '@moderntribe/tickets/blocks/rsvp/header-image/container';
-import { SettingsDashboard } from '@moderntribe/tickets/elements';
-import { Settings as SettingsIcon } from '@moderntribe/tickets/icons';
+import RSVPHeaderImage from '../header-image/container';
+import { SettingsDashboard } from '../../../elements';
+import { Settings as SettingsIcon } from '../../../icons';
 import './style.pcss';
 
 const RSVPSettingsDashboard = ( { isSettingsLoading, onCloseClick } ) => (

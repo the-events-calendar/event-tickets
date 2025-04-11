@@ -2,8 +2,8 @@ import './style.pcss';
 import {
 	initServiceIframe,
 	getIframeElement,
-} from '@tec/tickets/seating/service/iframe';
-import { onReady } from '@tec/tickets/seating/utils';
+} from '../../service/iframe';
+import { onReady } from '../../utils';
 import {
 	INBOUND_APP_READY_FOR_DATA,
 	OUTBOUND_SEAT_TYPE_TICKETS,
@@ -15,14 +15,14 @@ import {
 	removeAction,
 	registerAction,
 	sendPostMessage,
-} from '@tec/tickets/seating/service/api';
+} from '../../service/api';
 import {
 	ajaxUrl,
 	ajaxNonce,
 	ACTION_FETCH_ATTENDEES,
 	ACTION_RESERVATION_CREATED,
 	ACTION_RESERVATION_UPDATED,
-} from '@tec/tickets/seating/ajax';
+} from '../../ajax';
 import { localizedData } from './localized-data';
 import { handleReservationsDeleted } from '../action-handlers';
 
