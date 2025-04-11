@@ -53,15 +53,6 @@ const customEntryPoints = compileCustomEntryPoints({
    * The main function of this configuration schema is to ensure they are placed correctly.
    */
   '/src/styles': createTECLegacyBlocksFrontendPostCss('tec.tickets'),
-
-  /**
-   * This deals with packages written following modern module-based approaches.
-   * These packages are usually not Blocks and require `@wordpress/scripts` to be explicitly
-   * instructed about them to compile correctly.
-   * To avoid having to list each package, here the configuration schema is used to recursively
-   * pick them up and namespace them.
-   */
-  '/src/resources/packages': createTECPackage('tec.tickets'),
 }, defaultConfig);
 
 /**
@@ -76,11 +67,6 @@ const customEntryPoints = compileCustomEntryPoints({
  * `@wordpress/scripts` so here we explicitly point out the root index.
  */
 customEntryPoints['app/main'] = exposeEntry('tec.tickets.app.main', __dirname + '/src/modules/index.js');
-
-/**
- * Same as above, widgets are built like legacy blocks and are not following the `block.json` convention.
- */
-customEntryPoints['app/widgets'] = exposeEntry('tec.tickets.app.widgets', __dirname + '/src/modules/widgets/index.js');
 
 /**
  * Prepends a loader for SVG files that will be applied after the default one. Loaders are applied

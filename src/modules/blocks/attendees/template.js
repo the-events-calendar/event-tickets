@@ -4,7 +4,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import AutosizeInput from '@moderntribe/common';
+import { reactInputAutosize as AutosizeInput } from '@moderntribe/common/modules';
 
 /**
  * WordPress dependencies
