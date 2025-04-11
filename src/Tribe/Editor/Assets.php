@@ -14,13 +14,13 @@ class Tribe__Tickets__Editor__Assets {
 		$plugin = Tribe__Tickets__Main::instance();
 
 		// A minimal set of Babel transpilers for commonly used JavaScript features.
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tec-tickets-vendor-babel',
 			'app/vendor-babel.js'
 		);
 
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tribe-tickets-gutenberg-vendor',
 			'app/vendor.js',
@@ -45,7 +45,7 @@ class Tribe__Tickets__Editor__Assets {
 			]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tribe-tickets-gutenberg-main',
 			'app/main.js',
@@ -62,7 +62,7 @@ class Tribe__Tickets__Editor__Assets {
 			]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tribe-tickets-gutenberg-main-styles',
 			'app/main.css',
@@ -76,7 +76,7 @@ class Tribe__Tickets__Editor__Assets {
 			]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tec-tickets-blocks-category-icon-styles',
 			'tickets-admin-blocks.css',

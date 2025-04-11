@@ -42,7 +42,7 @@ class Tribe__Tickets__Editor__Blocks__Attendees
 	public function assets() {
 		$gutenberg = Tribe__Tickets__Main::instance();
 
-		tribe_asset(
+		tec_asset(
 			$gutenberg,
 			'tribe-tickets-gutenberg-block-attendees-style',
 			'app/attendees/frontend.css',
