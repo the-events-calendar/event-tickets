@@ -99,6 +99,7 @@ class RSVP_Not_Going extends Email_Abstract {
 	 * Get email settings fields.
 	 *
 	 * @since 5.5.10
+	 * @since TBD Added new classes for settings.
 	 *
 	 * @return array
 	 */
@@ -117,7 +118,7 @@ class RSVP_Not_Going extends Email_Abstract {
 		$settings = [
 			[
 				'type' => 'html',
-				'html' => '<div class="tribe-settings-form-wrap">',
+				'html' => '<div class="tribe-settings-form-wrap tec-settings-form__header-block--horizontal">',
 			],
 			[
 				'type' => 'html',
@@ -129,10 +130,10 @@ class RSVP_Not_Going extends Email_Abstract {
 			],
 			$this->get_option_key( 'enabled' )     => [
 				'type'            => 'toggle',
-				'label'           => sprintf( 
+				'label'           => sprintf(
 					// Translators: %s - Title of email.
 					esc_html__( 'Enable %s', 'event-tickets' ),
-					$this->get_title() 
+					$this->get_title()
 				),
 				'default'         => true,
 				'validation_type' => 'boolean',

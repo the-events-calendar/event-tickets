@@ -53,10 +53,20 @@ class Emails_Tab {
 	public static $key_current_section = 'tec_tickets_emails_current_section';
 
 	/**
+	 * Stores the instance of the settings tab.
+	 *
+	 * @since TBD
+	 *
+	 * @var Tribe__Settings_Tab
+	 */
+	protected $settings_tab;
+
+	/**
 	 * Create the Tickets Commerce Emails Settings Tab.
 	 *
 	 * @since  5.5.6
 	 * @since  5.8.4 Return the registered tab.
+	 * @since TBD Set the return to `$this->settings_tab`.
 	 *
 	 * @param string $admin_page Page ID of current admin page.
 	 *
@@ -75,7 +85,20 @@ class Emails_Tab {
 
 		$tab_settings = apply_filters( 'tec_tickets_commerce_emails_tab_settings', $tab_settings );
 
-		return new Tribe__Settings_Tab( static::$slug, esc_html__( 'Emails', 'event-tickets' ), $tab_settings );
+		$this->settings_tab = new Tribe__Settings_Tab( static::$slug, esc_html__( 'Emails', 'event-tickets' ), $tab_settings );
+
+		return $this->settings_tab;
+	}
+
+	/**
+	 * Gets the settings tab.
+	 *
+	 * @since TBD
+	 *
+	 * @return Tribe__Settings_Tab
+	 */
+	public function get_settings_tab() {
+		return $this->settings_tab;
 	}
 
 	/**
@@ -145,6 +168,7 @@ class Emails_Tab {
 	 * Gets the top level settings for Tickets Commerce.
 	 *
 	 * @since 5.5.6
+	 * @since TBD Updated class names to follow new settings.
 	 *
 	 * @return array[]
 	 */
@@ -154,16 +178,17 @@ class Emails_Tab {
 			return $this->get_email_settings();
 		}
 
-		$fields = [];
-		$fields['tribe-form-content-start'] = [
+		$fields                                = [];
+		$fields['tribe-form-content-start']    = [
 			'type' => 'html',
-			'html' => '<div class="tribe-settings-form-wrap">',
+			'html' => '<div class="tribe-settings-form-wrap tec-settings-form__header-block--horizontal">',
 		];
 		$fields['tribe-tickets-emails-header'] = [
 			'type' => 'html',
-			'html' => '<h2 class="tec-tickets__admin-settings-tab-heading">' . esc_html__( 'Tickets Emails', 'event-tickets' ) . '</h2>',
+			'html' => '<h2 class="tec-settings-form__section-header">' . esc_html__( 'Tickets Emails', 'event-tickets' ) . '</h2>',
 		];
-		$kb_link_html = sprintf( '<a href="%s" target="_blank" rel="nofollow">%s</a>',
+		$kb_link_html                          = sprintf(
+			'<a href="%s" target="_blank" rel="nofollow">%s</a>',
 			'https://evnt.is/event-tickets-emails',
 			esc_html__( 'Knowledgebase', 'event-tickets' )
 		);
@@ -194,7 +219,16 @@ class Emails_Tab {
 		 *
 		 * @param array[] $fields Top level settings.
 		 */
-		return apply_filters( 'tec_tickets_emails_settings_fields', $fields );
+		// Apply the filter **before** adding the closing div.
+		$fields = apply_filters( 'tec_tickets_emails_settings_fields', $fields );
+
+		// Close wrapper div — make sure it's **always last**.
+		$fields['tribe-form-content-end'] = [
+			'type' => 'html',
+			'html' => '</div>',
+		];
+
+		return $fields;
 	}
 
 	/**
@@ -223,6 +257,7 @@ class Emails_Tab {
 	 * Get email settings.
 	 *
 	 * @since 5.5.9
+	 * @since TBD Added new classes for settings.
 	 *
 	 * @return array Settings array
 	 */
@@ -233,22 +268,27 @@ class Emails_Tab {
 		$back_link = [
 			[
 				'type' => 'html',
-				'html' => $this->get_template()->template( 'back-link',
+				'html' => $this->get_template()->template(
+					'back-link',
 					[
 						'text' => __( 'Back to Email Settings', 'event-tickets' ),
 						'url'  => $this->get_url(),
 					],
-					false ),
-			]
+					false
+				),
+			],
 		];
 
 		if ( ! $email ) {
-			return array_merge( $back_link, [
+			return array_merge(
+				$back_link,
 				[
-					'type' => 'html',
-					'html' => '<p>' . esc_html__( 'Invalid email id selected.', 'event-tickets' ) . '</p>',
+					[
+						'type' => 'html',
+						'html' => '<p>' . esc_html__( 'Invalid email id selected.', 'event-tickets' ) . '</p>',
+					],
 				]
-			] );
+			);
 		}
 
 		$hidden_fields = [
@@ -259,8 +299,8 @@ class Emails_Tab {
 					esc_attr( static::$key_current_section ),
 					esc_attr( static::$key_current_section ),
 					esc_attr( $email_id )
-				)
-			]
+				),
+			],
 		];
 
 		$settings = $email->get_settings();
@@ -306,8 +346,11 @@ class Emails_Tab {
 			return $url;
 		}
 
-		return add_query_arg( [
-			'section'            => $email_id,
-		], $url );
+		return add_query_arg(
+			[
+				'section' => $email_id,
+			],
+			$url
+		);
 	}
 }

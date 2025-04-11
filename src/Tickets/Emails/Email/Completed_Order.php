@@ -108,6 +108,7 @@ class Completed_Order extends Email_Abstract {
 	 * Get email settings.
 	 *
 	 * @since 5.5.10
+	 * @since TBD Added new classes for settings.
 	 *
 	 * @return array
 	 */
@@ -126,7 +127,7 @@ class Completed_Order extends Email_Abstract {
 		return [
 			[
 				'type' => 'html',
-				'html' => '<div class="tribe-settings-form-wrap">',
+				'html' => '<div class="tribe-settings-form-wrap tec-settings-form__header-block--horizontal">',
 			],
 			[
 				'type' => 'html',
