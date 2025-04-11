@@ -1,4 +1,4 @@
-import { notifyUserOfError } from '@tec/tickets/seating/service/notices';
+import { notifyUserOfError } from './notices';
 import { establishReadiness } from './api';
 
 const { _x } = wp.i18n;

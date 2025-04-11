@@ -14,7 +14,7 @@ import { applyFilters } from '@wordpress/hooks';
  */
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
-import withSaveData from '../../../../../../modules/blocks/hoc/with-save-data';
+import withSaveData from '../../../../../modules/blocks/hoc/with-save-data';
 import { actions, selectors } from '../../../../../modules/data/blocks/ticket';
 import {
 	hasRecurrenceRules,

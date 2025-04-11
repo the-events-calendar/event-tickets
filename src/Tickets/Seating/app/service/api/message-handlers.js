@@ -1,4 +1,4 @@
-import { ajaxUrl, ajaxNonce } from '@tec/tickets/seating/ajax';
+import { ajaxUrl, ajaxNonce } from '../../ajax';
 import { layoutsHomeUrl, mapsHomeUrl } from './localized-data';
 
 /**

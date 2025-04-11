@@ -1,7 +1,7 @@
 import {
 	nonce,
 	baseUrl
-} from '@tec/tickets/order-modifiers/rest';
+} from '../../rest';
 
 /**
  * Fetches fees from the API.
