@@ -107,5 +107,9 @@
                 "link"
             ]
         }
+    },
+    "tribe-form-content-end": {
+        "type": "html",
+        "html": "<\\/div>"
     }
 }';
