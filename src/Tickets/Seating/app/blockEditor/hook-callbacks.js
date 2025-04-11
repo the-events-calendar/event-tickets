@@ -1,3 +1,4 @@
+import React from 'react';
 import { storeName } from './store';
 import { select, dispatch } from '@wordpress/data';
 import SeatType from './header/seat-type';
