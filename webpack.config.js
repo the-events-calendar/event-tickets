@@ -68,6 +68,26 @@ const customEntryPoints = compileCustomEntryPoints({
  */
 customEntryPoints['app/main'] = exposeEntry('tec.tickets.app.main', __dirname + '/src/modules/index.js');
 
+customEntryPoints['Tickets/Blocks/Tickets/editor'] = exposeEntry('tec.tickets.blocks.tickets.editor', __dirname + '/src/Tickets/Blocks/Tickets/app/editor/index.js');
+customEntryPoints['Tickets/Blocks/Ticket/editor'] = exposeEntry('tec.tickets.blocks.ticket.editor', __dirname + '/src/Tickets/Blocks/Ticket/app/editor/index.js');
+customEntryPoints['FlexibleTickets/block-editor'] = exposeEntry('tec.tickets.flexibleTickets.blockEditor', __dirname + '/src/Tickets/Flexible_Tickets/app/block-editor/index.js');
+customEntryPoints['FlexibleTickets/classic-editor'] = exposeEntry('tec.tickets.flexibleTickets.classicEditor', __dirname + '/src/Tickets/Flexible_Tickets/app/classic-editor/index.js');
+customEntryPoints['Seating/utils'] = exposeEntry('tec.tickets.seating.utils', __dirname + '/src/Tickets/Seating/app/utils/index.js');
+customEntryPoints['Seating/ajax'] = exposeEntry('tec.tickets.seating.ajax', __dirname + '/src/Tickets/Seating/app/ajax/index.js');
+customEntryPoints['Seating/currency'] = exposeEntry('tec.tickets.seating.currency', __dirname + '/src/Tickets/Seating/app/currency/index.js');
+customEntryPoints['Seating/service'] = exposeEntry('tec.tickets.seating.service', __dirname + '/src/Tickets/Seating/app/service/index.js');
+customEntryPoints['Seating/admin/maps'] = exposeEntry('tec.tickets.seating.admin.maps', __dirname + '/src/Tickets/Seating/app/admin/maps/index.js');
+customEntryPoints['Seating/admin/layouts'] = exposeEntry('tec.tickets.seating.admin.layouts', __dirname + '/src/Tickets/Seating/app/admin/layouts/index.js');
+customEntryPoints['Seating/admin/mapEdit'] = exposeEntry('tec.tickets.seating.admin.mapEdit', __dirname + '/src/Tickets/Seating/app/admin/mapEdit/index.js');
+customEntryPoints['Seating/admin/layoutEdit'] = exposeEntry('tec.tickets.seating.admin.layoutEdit', __dirname + '/src/Tickets/Seating/app/admin/layoutEdit/index.js');
+customEntryPoints['Seating/admin/seatsReport'] = exposeEntry('tec.tickets.seating.admin.seatsReport', __dirname + '/src/Tickets/Seating/app/admin/seatsReport/index.js');
+customEntryPoints['Seating/blockEditor'] = exposeEntry('tec.tickets.seating.blockEditor', __dirname + '/src/Tickets/Seating/app/blockEditor/index.js');
+customEntryPoints['Seating/frontend/ticketsBlock'] = exposeEntry('tec.tickets.seating.frontend.ticketsBlock', __dirname + '/src/Tickets/Seating/app/frontend/ticketsBlock/index.js');
+customEntryPoints['Seating/frontend/session'] = exposeEntry('tec.tickets.seating.frontend.session', __dirname + '/src/Tickets/Seating/app/frontend/session/index.js');
+customEntryPoints['OrderModifiers/rest'] = exposeEntry('tec.tickets.orderModifiers.rest', __dirname + '/src/Tickets/Commerce/Order_Modifiers/app/rest/index.js');
+customEntryPoints['OrderModifiers/blockEditor'] = exposeEntry('tec.tickets.orderModifiers.blockEditor', __dirname + '/src/Tickets/Commerce/Order_Modifiers/app/blockEditor/index.js');
+
+
 /**
  * Prepends a loader for SVG files that will be applied after the default one. Loaders are applied
  * in a LIFO queue in WebPack.
