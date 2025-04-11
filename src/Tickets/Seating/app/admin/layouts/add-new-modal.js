@@ -1,5 +1,5 @@
-import {ACTION_ADD_NEW_LAYOUT, ajaxNonce, ajaxUrl} from '@tec/tickets/seating/ajax';
-import {onReady, getLocalizedString, redirectTo} from '@tec/tickets/seating/utils';
+import {ACTION_ADD_NEW_LAYOUT, ajaxNonce, ajaxUrl} from '../../ajax';
+import {onReady, getLocalizedString, redirectTo} from '../../utils';
 import { localizedData } from './localized-data';
 
 /**

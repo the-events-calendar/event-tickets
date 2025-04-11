@@ -3,7 +3,7 @@ import './style.pcss';
 import { doAction, applyFilters } from '@wordpress/hooks';
 import { InterruptDialogComponent } from './interrupt-dialog-component';
 import { _x } from '@wordpress/i18n';
-import { onReady } from '@tec/tickets/seating/utils';
+import { onReady } from '../../utils';
 
 const {
 	ajaxUrl,

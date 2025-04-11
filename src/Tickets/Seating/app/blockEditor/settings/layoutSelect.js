@@ -4,7 +4,7 @@ import {
 	ACTION_EVENT_LAYOUT_UPDATED,
 	ajaxNonce,
 	ajaxUrl
-} from '@tec/tickets/seating/ajax';
+} from '../../ajax';
 import {Modal, Dashicon, CheckboxControl, Button, Spinner} from '@wordpress/components';
 import {useSelect} from '@wordpress/data';
 import {__} from '@wordpress/i18n';

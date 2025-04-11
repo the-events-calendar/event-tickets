@@ -1,7 +1,7 @@
 import { LabeledItem, Select } from '@moderntribe/common/elements';
 import PropTypes from 'prop-types';
 import { Fragment } from 'react';
-import { getLink, getLocalizedString } from '@tec/tickets/seating/utils';
+import { getLink, getLocalizedString } from '../../utils';
 
 const getString = (key) => getLocalizedString(key, 'capacity-form');
 const loadingSeatTypes = getString('seat-types-loading-msg');

@@ -2,7 +2,7 @@ import {
 	ajaxUrl,
 	ajaxNonce,
 	ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID,
-} from '@tec/tickets/seating/ajax';
+} from '../../ajax';
 
 /**
  * @typedef {Object} SeatTypeData

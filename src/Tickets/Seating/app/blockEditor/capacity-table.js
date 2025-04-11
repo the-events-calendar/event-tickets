@@ -1,6 +1,6 @@
 import { select } from '@wordpress/data';
 import { storeName } from './store';
-import { getLocalizedString } from '@tec/tickets/seating/utils';
+import { getLocalizedString } from '../utils';
 
 /**
  * Filters the mapped props for the Capacity Table component.

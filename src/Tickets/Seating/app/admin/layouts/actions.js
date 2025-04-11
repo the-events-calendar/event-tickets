@@ -1,5 +1,5 @@
-import { ajaxUrl, ajaxNonce, ACTION_DUPLICATE_LAYOUT } from '@tec/tickets/seating/ajax';
-import { onReady, getLocalizedString, redirectTo } from '@tec/tickets/seating/utils';
+import { ajaxUrl, ajaxNonce, ACTION_DUPLICATE_LAYOUT } from '../../ajax';
+import { onReady, getLocalizedString, redirectTo } from '../../utils';
 
 
 /**
