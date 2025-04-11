@@ -45,8 +45,6 @@ $title  = $tec_installed ?
 						$this->template( 'checklist-section/tec-install/install-button' );
 					} elseif ( ! $tec_activated ) {
 						$this->template( 'checklist-section/tec-install/activate-button' );
-					} else {
-						echo 'fail';
 					}
 				?>
 			</div>
