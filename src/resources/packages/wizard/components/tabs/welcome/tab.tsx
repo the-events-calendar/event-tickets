@@ -31,7 +31,7 @@ const WelcomeContent = ({moveToNextTab, skipToNextTab}) => {
 			</div>
 			<div className="tec-tickets-onboarding__tab-header">
 				<h1 className="tec-tickets-onboarding__tab-heading">{__("Welcome to Event Tickets", "event-tickets")}</h1>
-				<p className="tec-tickets-onboarding__tab-subheader">{__("Congratulations on installing the best ticketing solution for WordPress. Let’s tailor your experience to your needs.", "event-tickets")}</p>
+				<p className="tec-tickets-onboarding__tab-subheader">{__("Congratulations on installing the top ticket management solution for WordPress - now let’s make it yours.", "event-tickets")}</p>
 			</div>
 			<div className="tec-tickets-onboarding__tab-content">
 				<SetupButton

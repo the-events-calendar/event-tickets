@@ -1,7 +1,13 @@
-import React from "react";
+import React from 'react';
 
 const EtIcon = (props) => (
-	<svg xmlns="http://www.w3.org/2000/svg" width={53} height={40} {...props}>
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width={53}
+		height={40}
+		className="tec-tickets-onboarding__header-icon"
+		{...props}
+	>
 		<g fill="none" fillRule="evenodd">
 			<path
 				fill="#3D54FF"
@@ -23,7 +29,7 @@ const EtIcon = (props) => (
 			/>
 			<path
 				fill="#FFF"
-				d="M38.529 29.645a2 2 0 1 0 2.942 2.71 2 2 0 0 0-2.942-2.71M32.529 24.645a2 2 0 1 0 2.941 2.71 2 2 0 0 0-2.941-2.71M27.529 19.645a2 2 0 1 0 2.944 2.71 2 2 0 0 0-2.944-2.71"
+				d="M38.529 29.645a2 2 0 1 0 2.942 2.71 2 2 0 0 0-2.942-2.71m-6-5a2 2 0 1 0 2.941 2.71 2 2 0 0 0-2.941-2.71m-5-5a2 2 0 1 0 2.944 2.71 2 2 0 0 0-2.944-2.71"
 			/>
 		</g>
 	</svg>

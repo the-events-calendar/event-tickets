@@ -60,7 +60,7 @@ const SetupButton = ({ tabSettings, moveToNextTab }) => {
 			disabled={false}
 			className="tec-tickets-onboarding__button tec-tickets-onboarding__button--setup"
 		>
-			{__("Set up my calendar", "event-tickets")}
+			{__("Set up your tickets", "event-tickets")}
 		</Button>
 	);
 };
