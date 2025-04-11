@@ -11,8 +11,6 @@ use TEC\Common\Admin\Onboarding\Abstract_Data;
 /**
  * Class Data
  *
- * @todo Move as muc as possible of this to common.
- *
  * @since TBD
  * @package TEC\Tickets\Admin\Onboarding
  */
