@@ -240,9 +240,9 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		$this->template->template(
 			'checklist-section',
 			[
-				'data'           => $data,
-				'installer'      => Installer::get(),
-				'list_items'     => $this->get_list_items( $completed_tabs ),
+				'data'       => $data,
+				'installer'  => Installer::get(),
+				'list_items' => $this->get_list_items( $completed_tabs ),
 			]
 		);
 		?>
@@ -255,60 +255,62 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 *
 	 * @since TBD
 	 *
+	 * @param array $completed_tabs The completed tabs.
+	 *
 	 * @return array The list items.
 	 */
 	public function get_list_items( array $completed_tabs ): array {
-		$settings_url   = '';
+		$settings_url = '';
 
 		return [
 			[
-				'id' => 'tec-tickets-onboarding-wizard-currency-item',
-				'classes' => [
+				'id'        => 'tec-tickets-onboarding-wizard-currency-item',
+				'classes'   => [
 					'tec-tickets-onboarding-step-1',
 					'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[1] ) || ! empty( tribe_get_option( 'defaultCurrencyCode' ) ),
 				],
-				'title' => __( 'Location & Currency', 'event-tickets' ),
-				'link' => admin_url( "{$settings_url}&tab=display-currency-tab" ),
+				'title'     => __( 'Location & Currency', 'event-tickets' ),
+				'link'      => admin_url( "{$settings_url}&tab=display-currency-tab" ),
 				'link_text' => __( 'Edit currency', 'event-tickets' ),
 			],
 			[
-				'id' => 'tec-tickets-onboarding-wizard-email-item',
-				'classes' => [
+				'id'        => 'tec-tickets-onboarding-wizard-email-item',
+				'classes'   => [
 					'tec-tickets-onboarding-step-2',
 					'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[2] ) || ! empty( tribe_get_option( 'defaultCurrencyCode' ) ),
 				],
-				'title' => __( 'Email communication setup', 'event-tickets' ),
-				'link' => admin_url( "{$settings_url}&tab=display-currency-tab" ),
+				'title'     => __( 'Email communication setup', 'event-tickets' ),
+				'link'      => admin_url( "{$settings_url}&tab=display-currency-tab" ),
 				'link_text' => __( 'Edit email settings', 'event-tickets' ),
 			],
 			[
-				'id' => 'tec-tickets-onboarding-wizard-stripe-item',
-				'classes' => [
+				'id'        => 'tec-tickets-onboarding-wizard-stripe-item',
+				'classes'   => [
 					'tec-tickets-onboarding-step-3',
 					'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[3] ) || ! empty( tribe_get_option( 'defaultCurrencyCode' ) ),
 				],
-				'title' => __( 'Stripe payment setup', 'event-tickets' ),
-				'link' => admin_url( "{$settings_url}&tab=display-currency-tab" ),
+				'title'     => __( 'Stripe payment setup', 'event-tickets' ),
+				'link'      => admin_url( "{$settings_url}&tab=display-currency-tab" ),
 				'link_text' => __( 'Edit Stripe settings', 'event-tickets' ),
 			],
 			[
-				'id' => 'tec-tickets-onboarding-wizard-square-item',
-				'classes' => [
+				'id'       => 'tec-tickets-onboarding-wizard-square-item',
+				'classes'  => [
 					'tec-tickets-onboarding-step-3',
 					'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[3] ) || ! empty( tribe_get_option( 'defaultCurrencyCode' ) ),
 				],
-				'title' => __( 'Square for in-person and online payments', 'event-tickets' ),
-				'link' => admin_url( "{$settings_url}&tab=display-currency-tab" ),
+				'title'     => __( 'Square for in-person and online payments', 'event-tickets' ),
+				'link'      => admin_url( "{$settings_url}&tab=display-currency-tab" ),
 				'link_text' => __( 'Edit Square settings', 'event-tickets' ),
 			],
 			[
-				'id' => 'tec-tickets-onboarding-wizard-login-item',
-				'classes' => [
+				'id'       => 'tec-tickets-onboarding-wizard-login-item',
+				'classes'  => [
 					'tec-tickets-onboarding-step-4',
 					'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[4] ) || ! empty( tribe_get_option( 'dateWithYearFormat' ) ),
 				],
-				'title' => __( 'Login requirement for purchasing tickets', 'event-tickets' ),
-				'link' => admin_url( "{$settings_url}&tab=display-currency-tab" ),
+				'title'     => __( 'Login requirement for purchasing tickets', 'event-tickets' ),
+				'link'      => admin_url( "{$settings_url}&tab=display-currency-tab" ),
 				'link_text' => __( 'Edit', 'event-tickets' ),
 			]
 		];

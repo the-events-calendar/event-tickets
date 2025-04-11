@@ -61,6 +61,7 @@ class Controller extends Controller_Contract {
 		// Add the step handlers.
 		add_filter( 'tec_tickets_onboarding_wizard_handle', [ Optin::class, 'handle' ], 10, 2 );
 		add_filter( 'tec_tickets_onboarding_wizard_handle', [ Settings::class, 'handle' ], 11, 2 );
+		add_filter( 'tec_telemetry_is_tec_admin_page', [ $this, 'hide_telemetry_on_onboarding_page' ] );
 	}
 
 	/**
@@ -206,5 +207,18 @@ class Controller extends Controller_Contract {
 	 */
 	public function register_rest_endpoints(): void {
 		$this->container->make( API::class )->register();
+	}
+
+	/**
+	 * Hide telemetry on the onboarding page.
+	 *
+	 * @since TBD
+	 */
+	public function hide_telemetry_on_onboarding_page(): bool {
+		if ( Landing_Page::is_on_page() ) {
+			return false;
+		}
+
+		return true;
 	}
 }
