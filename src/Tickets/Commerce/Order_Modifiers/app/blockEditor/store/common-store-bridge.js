@@ -1,10 +1,10 @@
 import {
 	setTicketHasChanges,
-} from '@moderntribe/tickets/data/blocks/ticket/actions';
+} from '../../../../../../modules/data/blocks/ticket/actions';
 import {
 	getTicketId,
 	getTicketsProvider,
-} from '@moderntribe/tickets/data/blocks/ticket/selectors';
+} from '../../../../../../modules/data/blocks/ticket/selectors';
 
 /**
  * Dispatches an action to the common store.

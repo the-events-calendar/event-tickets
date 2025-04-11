@@ -13,7 +13,7 @@ const { InnerBlocks, useBlockProps } = wp.blockEditor;
 /**
  * Internal dependencies
  */
-import { Tickets as TicketsIcon } from '@moderntribe/tickets/icons';
+import { Tickets as TicketsIcon } from '../../../../../modules/icons';
 import Ticket from './container';
 
 const block = {

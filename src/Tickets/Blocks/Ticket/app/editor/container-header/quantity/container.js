@@ -9,7 +9,7 @@ import { compose } from 'redux';
  */
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
-import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
+import { selectors } from '../../../../../../../modules/data/blocks/ticket';
 
 const getSharedSold = ( state, isShared ) => (
 	isShared ? selectors.getSharedTicketsSold( state ) : 0

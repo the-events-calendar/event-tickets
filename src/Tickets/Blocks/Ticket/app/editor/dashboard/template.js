@@ -12,8 +12,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { ActionDashboard } from '@moderntribe/tickets/elements';
-import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { ActionDashboard } from '../../../../../../modules/elements';
+import { TICKET_LABELS } from '../../../../../../modules/data/blocks/ticket/constants';
 import MoveDelete from './move-delete/container';
 import './style.pcss';
 

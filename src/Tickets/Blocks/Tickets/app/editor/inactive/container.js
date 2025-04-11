@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
+import { selectors } from '../../../../../../modules/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
 import { applyFilters } from '@wordpress/hooks';
 import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';

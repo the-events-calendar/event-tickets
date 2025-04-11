@@ -1,4 +1,4 @@
-import { ECP as PlusIcon } from '@moderntribe/tickets/icons';
+import { ECP as PlusIcon } from '../../../../../modules/icons';
 import { _x } from '@wordpress/i18n';
 const Upsell = () => {
 	const anchorStyle = {

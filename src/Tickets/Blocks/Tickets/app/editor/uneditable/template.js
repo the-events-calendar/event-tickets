@@ -1,4 +1,4 @@
-import { Card } from '@moderntribe/tickets/elements';
+import { Card } from '../../../../../../modules/elements';
 import React from 'react';
 import TicketContainerHeaderTitle from '../../../../Ticket/app/editor/container-header/title/template';
 import TicketContainerHeaderDescription from '../../../../Ticket/app/editor/container-header/description/template';

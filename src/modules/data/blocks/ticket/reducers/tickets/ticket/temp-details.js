@@ -6,8 +6,8 @@ import moment from 'moment';
 /**
  * Internal dependencies
  */
-import * as constants from '@moderntribe/tickets/data/blocks/ticket/constants';
-import * as types from '@moderntribe/tickets/data/blocks/ticket/types';
+import * as constants from '../../../constants';
+import * as types from '../../../types';
 import { globals, moment as momentUtil } from '@moderntribe/common/utils';
 
 const datePickerFormat = globals.tecDateSettings().datepickerFormat;

@@ -12,7 +12,7 @@ import { __, sprintf } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { IconWithTooltip } from '@moderntribe/tickets/elements';
+import { IconWithTooltip } from '../../../../../../../modules/elements';
 import QuantityBar from './quantity-bar/element';
 import './style.pcss';
 

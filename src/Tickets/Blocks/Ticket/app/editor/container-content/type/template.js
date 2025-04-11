@@ -13,11 +13,11 @@ import { _x } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { ECP as ECPIcon } from '@moderntribe/tickets/icons';
+import { ECP as ECPIcon } from '../../../../../../../modules/icons';
 import './styles.pcss';
-import { LabelWithTooltip } from '@moderntribe/tickets/elements';
+import { LabelWithTooltip } from '../../../../../../../modules/elements';
 import { Dashicon } from '@wordpress/components';
-import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { TICKET_LABELS } from '../../../../../../../modules/data/blocks/ticket/constants';
 
 const Type = ({ typeName, typeDescription, upsellMessage, typeIcon }) => {
 	// This is sanitized in the PHP section, furthermore this description will not go to the backend.

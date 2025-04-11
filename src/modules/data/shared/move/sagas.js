@@ -15,8 +15,8 @@ import { select as wpSelect } from '@wordpress/data';
  */
 import * as types from './types';
 import { globals } from '@moderntribe/common/utils';
-import * as selectors from '@moderntribe/tickets/data/shared/move/selectors';
-import * as actions from '@moderntribe/tickets/data/shared/move/actions';
+import * as selectors from './selectors';
+import * as actions from './actions';
 
 export function createBody( params ) {
 	return Object.entries( params )

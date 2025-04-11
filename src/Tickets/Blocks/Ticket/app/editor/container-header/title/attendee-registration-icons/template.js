@@ -11,8 +11,8 @@ import { __, sprintf } from '@wordpress/i18n';
 import {
 	ARF as ARFIcon,
 	SaleWindow as SaleWindowIcon,
-} from '@moderntribe/tickets/icons';
-import { IconWithTooltip } from '@moderntribe/tickets/elements';
+} from '../../../../../../../../modules/icons';
+import { IconWithTooltip } from '../../../../../../../../modules/elements';
 import './style.pcss';
 
 const AttendeeRegistrationIcons = ( {

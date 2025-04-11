@@ -22,23 +22,23 @@ import * as selectors from './selectors';
 import { DEFAULT_STATE } from './reducer';
 import { DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE } from './reducers/header-image';
 import { DEFAULT_STATE as TICKET_DEFAULT_STATE } from './reducers/tickets/ticket';
-import * as rsvpActions from '@moderntribe/tickets/data/blocks/rsvp/actions';
+import * as rsvpActions from '../../blocks/rsvp/actions';
 import {
 	DEFAULT_STATE as RSVP_HEADER_IMAGE_DEFAULT_STATE,
-} from '@moderntribe/tickets/data/blocks/rsvp/reducers/header-image';
-import * as utils from '@moderntribe/tickets/data/utils';
+} from '../rsvp/reducers/header-image';
+import * as utils from '../../utils';
 import { api, globals, moment as momentUtil, time as timeUtil } from '@moderntribe/common/utils';
 import { plugins } from '@moderntribe/common/data';
-import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
-import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
+import { MOVE_TICKET_SUCCESS } from '../../shared/move/types';
+import * as moveSelectors from '../../shared/move/selectors';
 import {
 	createDates,
 	createWPEditorNotSavingChannel,
 	createWPEditorSavingChannel,
 	hasPostTypeChannel,
 	isTribeEventPostType,
-} from '@moderntribe/tickets/data/shared/sagas';
-import { isTicketEditableFromPost } from '@moderntribe/tickets/data/blocks/ticket/utils';
+} from '../../shared/sagas';
+import { isTicketEditableFromPost } from './utils';
 
 const {
 	UNLIMITED,

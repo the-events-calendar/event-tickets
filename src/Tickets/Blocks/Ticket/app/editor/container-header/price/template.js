@@ -13,7 +13,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { PREFIX, SUFFIX, PRICE_POSITIONS } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { PREFIX, SUFFIX, PRICE_POSITIONS } from '../../../../../../../modules/data/blocks/ticket/constants';
 import './style.pcss';
 
 const TicketContainerHeaderPriceLabel = ( {
