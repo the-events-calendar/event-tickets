@@ -15,7 +15,7 @@ import {
 	constants,
 	actions,
 	selectors,
-} from '@moderntribe/tickets/data/blocks/ticket';
+} from '../../../../../../../modules/data/blocks/ticket';
 
 const {
 	UNLIMITED,

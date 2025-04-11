@@ -8,9 +8,9 @@ import { compose } from 'redux';
  * Internal dependencies
  */
 import { withStore } from '@moderntribe/common/hoc';
-import * as selectors from '@moderntribe/tickets/data/shared/move/selectors';
-import { INITIALIZE_MODAL, SUBMIT_MODAL } from '@moderntribe/tickets/data/shared/move/types';
-import { hideModal, setModalData } from '@moderntribe/tickets/data/shared/move/actions';
+import * as selectors from '../../data/shared/move/selectors';
+import { INITIALIZE_MODAL, SUBMIT_MODAL } from '../../data/shared/move/types';
+import { hideModal, setModalData } from '../../data/shared/move/actions';
 import Template from './template';
 
 const mapStateToProps = ( state ) => ( {

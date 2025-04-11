@@ -3,7 +3,7 @@
  */
 import classNames from "classnames";
 import { Checkbox, CheckboxInput, } from "@moderntribe/common/elements";
-import { LabelWithTooltip } from '@moderntribe/tickets/elements';
+import { LabelWithTooltip } from '../../../../../../modules/elements';
 import { Dashicon } from "@wordpress/components";
 
 /**

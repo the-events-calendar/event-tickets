@@ -4,7 +4,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import AutosizeInput from 'react-input-autosize'; // eslint-disable-line import/no-unresolved
+import AutosizeInput from '@moderntribe/common';
 
 /**
  * WordPress dependencies

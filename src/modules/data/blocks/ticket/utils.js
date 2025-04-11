@@ -10,7 +10,7 @@ const { settings, priceSettings, tickets: ticketsConfig } = globals;
 import {
 	getDefaultTicketProvider,
 	getTicketProviders,
-} from '@moderntribe/tickets/data/blocks/ticket/selectors';
+} from './selectors';
 import { applyFilters } from '@wordpress/hooks';
 
 /**

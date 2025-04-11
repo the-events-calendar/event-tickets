@@ -16,11 +16,10 @@ import uniqid from 'uniqid';
 /**
  * Internal dependencies
  */
-import { PREFIX, SUFFIX, SALE_PRICE_LABELS, WOO_CLASS } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { PREFIX, SUFFIX, SALE_PRICE_LABELS, WOO_CLASS } from '../../../../../../../modules/data/blocks/ticket/constants';
 import { Checkbox, DayPickerInput, LabeledItem } from '@moderntribe/common/elements';
-import { getTicketsProvider } from '@moderntribe/tickets/data/blocks/ticket/selectors';
+import { getTicketsProvider } from '../../../../../../../modules/data/blocks/ticket/selectors';
 import './style.pcss';
-import {DateTimeRangePicker} from "@moderntribe/tickets/elements";
 
 /**
  * Get the ticket provider from the common store.

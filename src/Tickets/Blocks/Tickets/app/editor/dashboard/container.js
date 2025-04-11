@@ -8,7 +8,7 @@ import { compose } from 'redux';
  * Internal dependencies
  */
 import TicketsDashboard from './template';
-import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
+import { selectors } from '../../../../../../modules/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
 
 const mapStateToProps = ( state ) => ( {

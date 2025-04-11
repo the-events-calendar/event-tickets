@@ -13,7 +13,7 @@ import { renderToString } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { Notice } from '@moderntribe/tickets/elements';
+import { Notice } from '../../../../../../modules/elements';
 
 const SeriesPassNotice = ({ seriesPassLink, seriesName }) => {
 	return (

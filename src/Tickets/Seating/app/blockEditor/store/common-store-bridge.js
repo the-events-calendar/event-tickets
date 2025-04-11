@@ -6,13 +6,13 @@ import {
 	setTicketsTempSharedCapacity,
 	setTicketTempCapacity,
 	setTicketTempCapacityType,
-} from '@moderntribe/tickets/data/blocks/ticket/actions';
+} from '../../../../../modules/data/blocks/ticket/actions';
 import {
 	getTicketId,
 	getTicketsSharedCapacityInt,
 	getTicketsProvider,
-} from '@moderntribe/tickets/data/blocks/ticket/selectors';
-import { CAPPED } from '@moderntribe/tickets/data/blocks/ticket/constants';
+} from '../../../../../modules/data/blocks/ticket/selectors';
+import { CAPPED } from '../../../../../modules/data/blocks/ticket/constants';
 
 /**
  * Dispatches an action to the common store.

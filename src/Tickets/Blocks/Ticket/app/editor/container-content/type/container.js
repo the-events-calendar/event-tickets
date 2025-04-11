@@ -14,11 +14,11 @@ import { _x, sprintf } from '@wordpress/i18n';
  */
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
-import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
+import { selectors } from '../../../../../../../modules/data/blocks/ticket';
 import { plugins } from '@moderntribe/common/data';
 import { applyFilters } from '@wordpress/hooks';
-import { Ticket as TicketIcon } from '@moderntribe/tickets/icons';
-import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { Ticket as TicketIcon } from '../../../../../../../modules/icons';
+import { TICKET_LABELS } from '../../../../../../../modules/data/blocks/ticket/constants';
 
 const mapStateToProps = (state, ownProps) => {
 	const postTypeLabel = selectors

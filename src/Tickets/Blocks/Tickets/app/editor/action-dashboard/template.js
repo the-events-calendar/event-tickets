@@ -19,8 +19,8 @@ import {
 	OrdersActionButton,
 } from '../action-buttons';
 import NotSupportedMessage from '../not-supported-message/container';
-import { ActionDashboard } from '@moderntribe/tickets/elements';
-import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { ActionDashboard } from '../../../../../../modules/elements';
+import { TICKET_LABELS } from '../../../../../../modules/data/blocks/ticket/constants';
 import './style.pcss';
 import { applyFilters } from '@wordpress/hooks';
 

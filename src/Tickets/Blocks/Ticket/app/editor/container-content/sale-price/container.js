@@ -10,7 +10,7 @@ import { isString } from 'lodash';
  */
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
-import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
+import { selectors, actions } from '../../../../../../../modules/data/blocks/ticket';
 import { globals, moment as momentUtil } from "@moderntribe/common/utils";
 
 /**

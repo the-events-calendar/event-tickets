@@ -8,7 +8,7 @@ import { compose } from 'redux';
  * Internal dependencies
  */
 import Template from './template';
-import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
+import { selectors, actions } from '../../../../../../../modules/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
 import {
 	globals,

@@ -16,9 +16,9 @@ import { Dashicon } from '@wordpress/components';
 /**
  * Internal dependencies
  */
-import { constants, options } from '@moderntribe/tickets/data/blocks/ticket';
+import { constants, options } from '../../../../../../../modules/data/blocks/ticket';
 import { LabeledItem, NumberInput, Select } from '@moderntribe/common/elements';
-import { LabelWithTooltip } from '@moderntribe/tickets/elements';
+import { LabelWithTooltip } from '../../../../../../../modules/elements';
 import { ReactSelectOption } from '@moderntribe/common/data/plugins/proptypes';
 import './style.pcss';
 import {applyFilters} from '@wordpress/hooks';

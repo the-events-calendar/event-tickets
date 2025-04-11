@@ -14,7 +14,7 @@ import { applyFilters } from '@wordpress/hooks';
  */
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
-import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
+import { selectors } from '../../../../../../modules/data/blocks/ticket';
 
 const getHasOverlay = (state, ownProps) =>
 	selectors.getTicketsIsSettingsOpen(state) ||

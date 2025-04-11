@@ -14,7 +14,7 @@ import { Dashicon } from '@wordpress/components';
 /**
  * Internal dependencies
  */
-import { DateTimeRangePicker, LabelWithTooltip } from '@moderntribe/tickets/elements';
+import { DateTimeRangePicker, LabelWithTooltip } from '../../../../../../../modules/elements';
 import './style.pcss';
 
 const TicketDuration = ( {

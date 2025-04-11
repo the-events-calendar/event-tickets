@@ -15,11 +15,11 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { Button } from '@moderntribe/common/elements';
-import { Card } from '@moderntribe/tickets/elements';
+import { Card } from '../index';
 import {
 	Close as CloseIcon,
 	Settings as SettingsIcon,
-} from '@moderntribe/tickets/icons';
+} from '../../icons';
 import './style.pcss';
 
 const SettingsDashboard = ( {

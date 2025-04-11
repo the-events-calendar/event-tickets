@@ -14,7 +14,7 @@ import { applyFilters } from '@wordpress/hooks';
 /**
  * Internal dependencies
  */
-import { SettingsDashboard } from '@moderntribe/tickets/elements';
+import { SettingsDashboard } from '../../../../../../modules/elements';
 import CapacityTable from '../capacity-table/container';
 import HeaderImage from '../header-image/container';
 import './style.pcss';

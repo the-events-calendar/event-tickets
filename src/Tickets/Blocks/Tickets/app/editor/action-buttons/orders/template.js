@@ -12,8 +12,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { ActionButton } from '@moderntribe/tickets/elements';
-import { Orders } from '@moderntribe/tickets/icons';
+import { ActionButton } from '../../../../../../../modules/elements';
+import { Orders } from '../../../../../../../modules/icons';
 
 const OrdersActionButton = ( { href } ) => ( href ? (
 	<ActionButton

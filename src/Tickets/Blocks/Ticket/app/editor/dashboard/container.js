@@ -14,7 +14,7 @@ import { applyFilters } from '@wordpress/hooks';
  * Internal dependencies
  */
 import Template from './template';
-import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
+import { actions, selectors } from '../../../../../../modules/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
 
 /**

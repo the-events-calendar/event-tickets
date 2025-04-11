@@ -14,7 +14,7 @@ import { InspectorControls } from '@wordpress/editor';
 /**
  * Internal dependencies
  */
-import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { TICKET_LABELS } from '../../../../../../modules/data/blocks/ticket/constants';
 import './style.pcss';
 import { applyFilters } from '@wordpress/hooks';
 

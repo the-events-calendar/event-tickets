@@ -9,12 +9,12 @@ import { compose } from 'redux';
  */
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
-import withSaveData from '@moderntribe/tickets/blocks/hoc/with-save-data';
+import withSaveData from '../../../../../../modules/blocks/hoc/with-save-data';
 import {
 	selectors,
 	actions,
 	constants,
-} from '@moderntribe/tickets/data/blocks/ticket';
+} from '../../../../../../modules/data/blocks/ticket';
 import { applyFilters } from '@wordpress/hooks';
 import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
 import { __ } from '@wordpress/i18n';
