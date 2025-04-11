@@ -82,8 +82,8 @@ customEntryPoints['Seating/admin/mapEdit'] = exposeEntry('tec.tickets.seating.ad
 customEntryPoints['Seating/admin/layoutEdit'] = exposeEntry('tec.tickets.seating.admin.layoutEdit', __dirname + '/src/Tickets/Seating/app/admin/layoutEdit/index.js');
 customEntryPoints['Seating/admin/seatsReport'] = exposeEntry('tec.tickets.seating.admin.seatsReport', __dirname + '/src/Tickets/Seating/app/admin/seatsReport/index.js');
 customEntryPoints['Seating/blockEditor'] = exposeEntry('tec.tickets.seating.blockEditor', __dirname + '/src/Tickets/Seating/app/blockEditor/index.js');
-customEntryPoints['Seating/frontend/ticketsBlock'] = exposeEntry('tec.tickets.seating.frontend.ticketsBlock', __dirname + '/src/Tickets/Seating/app/frontend/ticketsBlock/index.js');
 customEntryPoints['Seating/frontend/session'] = exposeEntry('tec.tickets.seating.frontend.session', __dirname + '/src/Tickets/Seating/app/frontend/session/index.js');
+customEntryPoints['Seating/frontend/ticketsBlock'] = exposeEntry('tec.tickets.seating.frontend.ticketsBlock', __dirname + '/src/Tickets/Seating/app/frontend/ticketsBlock/index.js');
 customEntryPoints['OrderModifiers/rest'] = exposeEntry('tec.tickets.orderModifiers.rest', __dirname + '/src/Tickets/Commerce/Order_Modifiers/app/rest/index.js');
 customEntryPoints['OrderModifiers/blockEditor'] = exposeEntry('tec.tickets.orderModifiers.blockEditor', __dirname + '/src/Tickets/Commerce/Order_Modifiers/app/blockEditor/index.js');
 
