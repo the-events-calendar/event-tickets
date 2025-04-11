@@ -63,6 +63,7 @@
   },
   "scripts": {
     "analyze": "webpack-bundle-analyzer -m static stats.json",
+    "before-zip": "bash bin/action-before-zip.sh",
     "bootstrap": "./scripts/linkDependencies",
     "build:webpack": "export NODE_OPTIONS=--openssl-legacy-provider && cross-env NODE_ENV=production webpack -p",
     "build:webpack:inspect": "export NODE_OPTIONS=--openssl-legacy-provider && cross-env NODE_ENV=production node --inspect node_modules/webpack/bin/webpack.js -p",

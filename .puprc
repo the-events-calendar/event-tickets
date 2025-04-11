@@ -3,13 +3,15 @@
 		"cd common && composer -- pup build",
 		"composer install --no-dev",
 		"npm ci --no-audit --no-fund",
-		"npm run build"
+		"npm run build",
+		"npm run before-zip"
 	],
 	"build_dev": [
 		"cd common && composer -- pup build",
 		"composer install",
 		"npm ci --no-audit --no-fund",
-		"npm run build"
+		"npm run build",
+		"npm run before-zip"
 	],
 	"workflows": {
 		"tec-zip": [
@@ -25,8 +27,8 @@
 	"checks": {
 		"tbd": {
 			"dirs": [
-				 "src", 
-				 "common/src" 
+				 "src",
+				 "common/src"
 			]
 		},
 		"version-conflict": {
@@ -48,7 +50,7 @@
 	],
 	"paths": {
 		"changelog": "readme.txt",
-		"css": [ 
+		"css": [
 			"src/resources/postcss",
 			"common/src/resources/postcss"
 		],
@@ -80,9 +82,9 @@
 				"regex": "(Stable tag: )(.+)"
 			}
 		],
-		"views": [ 
+		"views": [
 			"src/views",
-			"common/src/views" 
+			"common/src/views"
 		]
 	},
 	"zip_name": "event-tickets"
