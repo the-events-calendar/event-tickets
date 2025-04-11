@@ -5,7 +5,7 @@ import {
 	ACTION_REMOVE_EVENT_LAYOUT,
 	ajaxNonce,
 	ajaxUrl
-} from '@tec/tickets/seating/ajax';
+} from '../../ajax';
 import { globals } from '@moderntribe/common/utils';
 
 /**

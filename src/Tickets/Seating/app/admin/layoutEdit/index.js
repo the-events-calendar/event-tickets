@@ -3,8 +3,8 @@ import {
 	getIframeElement,
 	initServiceIframe,
 	handleResize
-} from '@tec/tickets/seating/service/iframe';
-import { onReady, redirectTo } from '@tec/tickets/seating/utils';
+} from '../../service/iframe';
+import { onReady, redirectTo } from '../../utils';
 import {
 	getAssociatedEventsUrl,
 	registerAction,
@@ -14,7 +14,7 @@ import {
 	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
 	GO_TO_ASSOCIATED_EVENTS,
 	INBOUND_SET_ELEMENT_HEIGHT,
-} from '@tec/tickets/seating/service/api';
+} from '../../service/api';
 import {
 	handleReservationsDeleted,
 	handleReservationsUpdatedFollowingSeatTypes,

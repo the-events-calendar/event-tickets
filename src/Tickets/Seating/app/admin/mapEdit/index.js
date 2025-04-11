@@ -1,14 +1,14 @@
 import './style.pcss';
-import { onReady } from '@tec/tickets/seating/utils';
+import { onReady } from '../../utils';
 import {
 	initServiceIframe,
 	getIframeElement,
 	handleResize,
-} from '@tec/tickets/seating/service/iframe';
+} from '../../service/iframe';
 import {
 	registerAction,
 	INBOUND_SET_ELEMENT_HEIGHT,
-} from '@tec/tickets/seating/service/api';
+} from '../../service/api';
 
 /**
  * Initializes iframe and the communication with the service.

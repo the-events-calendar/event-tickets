@@ -1,5 +1,5 @@
-import { ajaxUrl, ajaxNonce } from '@tec/tickets/seating/ajax';
-import { onReady, getLocalizedString } from '@tec/tickets/seating/utils';
+import { ajaxUrl, ajaxNonce } from '../../ajax';
+import { onReady, getLocalizedString } from '../../utils';
 
 /**
  * Get localized string for the given key.

@@ -1,5 +1,5 @@
 const { _x } = wp.i18n;
-import { getLocalizedString } from '@tec/tickets/seating/utils';
+import { getLocalizedString } from '../utils';
 
 export const BAD_SERVICE_RESPONSE = 'BAD_SERVICE_RESPONSE';
 export const MISSING_REQUEST_PARAMETERS = 'MISSING_REQUEST_PARAMETERS';
