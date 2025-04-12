@@ -37,7 +37,7 @@ class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 
 	public function asset_data_provider() {
 		$assets = [
-			'tec-tickets-order-modifiers-table' => 'src/resources/js/admin/order-modifiers/table.js',
+			'tec-tickets-order-modifiers-table' => 'build/js/admin/order-modifiers/table.js',
 		];
 
 		foreach ( $assets as $slug => $path ) {
