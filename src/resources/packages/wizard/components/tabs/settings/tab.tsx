@@ -6,7 +6,7 @@ import { useSelect, useDispatch } from "@wordpress/data";
 import { SETTINGS_STORE_KEY } from "../../../data";
 import NextButton from '../../buttons/next';
 import SkipButton from '../../buttons/skip';
-import GearIcon from './img/gear';
+import TicketIcon from './img/ticket';
 
 const dateFormatOptions = [
 	{ label: _x('October 29, 2024', 'example date in "F j, Y" format', 'event-tickets'), value: 'F j, Y' },
@@ -133,10 +133,10 @@ const SettingsContent = ({moveToNextTab, skipToNextTab}) => {
 
 	return (
 		<>
-			<GearIcon />
+			<TicketIcon />
 			<div className="tec-tickets-onboarding__tab-header">
-				<h1 className="tec-tickets-onboarding__tab-heading">{__('Event Settings', 'event-tickets')}</h1>
-				<p className="tec-tickets-onboarding__tab-subheader">{__('Let\'s get your events with the correct basic settings.', 'event-tickets')}</p>
+				<h1 className="tec-tickets-onboarding__tab-heading">{__('Selling Tickets', 'event-tickets')}</h1>
+				<p className="tec-tickets-onboarding__tab-subheader">{__('Nail down the basics of your ticket setup.', 'event-tickets')}</p>
 			</div>
 			<div className="tec-tickets-onboarding__tab-content">
 				<div className="tec-tickets-onboarding__form-wrapper">

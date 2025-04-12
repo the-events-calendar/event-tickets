@@ -8,7 +8,7 @@ import MemoizedTabPanel from "./tabs/tabpanel";
 import Tab from "./tabs/tab";
 import WelcomeContent from "./tabs/welcome/tab";
 import SettingsContent from "./tabs/settings/tab";
-import TicketsContent from "./tabs/tickets/tab";
+import CommunicationContent from "./tabs/communication/tab";
 
 const OnboardingTabs = () => {
 	type TabConfig = {
@@ -20,8 +20,8 @@ const OnboardingTabs = () => {
 
 	const tabConfig = [
 		{ id: "welcome", title: __("Welcome", "event-tickets"), content: WelcomeContent, ref: useRef(null) },
-		{ id: "settings", title: __("Settings", "event-tickets"), content: SettingsContent, ref: useRef(null) },
-		{ id: "tickets", title: __("Tickets", "event-tickets"), content: TicketsContent, ref: useRef(null) }
+		{ id: "settings", title: __("Selling Tickets", "event-tickets"), content: SettingsContent, ref: useRef(null) },
+		{ id: "communication", title: __("Communication", "event-tickets"), content: CommunicationContent, ref: useRef(null) }
 	];
 
 	const { closeModal } = useDispatch(MODAL_STORE_KEY);

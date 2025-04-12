@@ -1,7 +1,7 @@
 /* -----------------------------------------------------------------------------------------------------
  * Custom Properties: some are new, some are from the TEC common styles, reproduced here for the admin.
  * ----------------------------------------------------------------------------------------------------- */
-:root {
+ :root {
 	/* -----------------------------------------------------------------------------
 	 * Colors
 	 * ----------------------------------------------------------------------------- */
@@ -156,9 +156,9 @@
 
 /* Tab Container Header Brand Icon */
 .tec-tickets-onboarding__header-icon {
-	height: var(--tec-spacer-7);
+	height: var(--tec-spacer-8);
 	margin: 0 auto;
-	width: var(--tec-spacer-7);
+	width: var(--tec-spacer-8);
 }
 
 @media (min-width: 1024px) {

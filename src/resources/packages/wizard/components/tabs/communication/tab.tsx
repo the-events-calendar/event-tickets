@@ -13,8 +13,8 @@ const TicketsContent = ({moveToNextTab, skipToNextTab}) => {
 	const eventTicketsActive = useSelect(select => select(SETTINGS_STORE_KEY).getSetting("tec-tickets-active") || false, []);
 	const [ticketValue, setTicketValue] = useState(true); // Default to install/activate.
 
-	// Create tabSettings object to pass to NextButton.
-	const tabSettings = {
+	// Create tabCommunication object to pass to NextButton.
+	const tabCommunication = {
 		eventTickets: ticketValue,
 		currentTab: 5, // Include the current tab index.
 	}
@@ -54,7 +54,7 @@ const TicketsContent = ({moveToNextTab, skipToNextTab}) => {
 						</div>
 					</div>
 				)}
-				<NextButton tabSettings={tabSettings} moveToNextTab={moveToNextTab} disabled={false}/>
+				<NextButton tabCommunication={tabCommunication} moveToNextTab={moveToNextTab} disabled={false}/>
 				<SkipButton skipToNextTab={skipToNextTab} currentTab={5} />
 			</div>
 		</>
