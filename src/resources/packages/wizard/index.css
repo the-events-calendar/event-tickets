@@ -190,7 +190,7 @@
 .tec-tickets-onboarding__tabs-list {
 	border-radius: var(--tec-admin-border-radius-1);
 	display: grid;
-	grid-template-columns: repeat(5, 1fr);
+	grid-template-columns: repeat(4, 1fr);
 	justify-content: center;
 	list-style: none;
 	margin: 0 auto;
@@ -313,7 +313,6 @@
 	line-height: var(--tec-admin-line-height-0);
 	padding: 0;
 	text-align: center;
-	vertical-align: middle;
 	width: 18px;
 }
 

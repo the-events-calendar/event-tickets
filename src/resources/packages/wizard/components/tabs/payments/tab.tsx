@@ -8,13 +8,13 @@ import NextButton from '../../buttons/next';
 import SkipButton from '../../buttons/skip';
 import TicketsIcon from './img/tickets';
 
-const CommunicationContent = ({moveToNextTab, skipToNextTab}) => {
+const PaymentsContent = ({moveToNextTab, skipToNextTab}) => {
 	const eventTicketsInstalled = useSelect(select => select(SETTINGS_STORE_KEY).getSetting("tec-tickets-installed") || false, []);
 	const eventTicketsActive = useSelect(select => select(SETTINGS_STORE_KEY).getSetting("tec-tickets-active") || false, []);
 	const [ticketValue, setTicketValue] = useState(true); // Default to install/activate.
 
-	// Create tabCommunication object to pass to NextButton.
-	const tabCommunication = {
+	// Create tabPayments object to pass to NextButton.
+	const tabPayments = {
 		eventTickets: ticketValue,
 		currentTab: 5, // Include the current tab index.
 	}
@@ -25,8 +25,8 @@ const CommunicationContent = ({moveToNextTab, skipToNextTab}) => {
 		<>
 			<TicketsIcon />
 			<div className="tec-tickets-onboarding__tab-header">
-				<h1 className="tec-tickets-onboarding__tab-heading">{__("Event Tickets", "event-tickets")}</h1>
-				<p className="tec-tickets-onboarding__tab-subheader">{__("Will you be selling tickets or providing attendees the ability to RSVP to your events?", "event-tickets")}</p>
+				<h1 className="tec-tickets-onboarding__tab-heading">{__("Sell your tickets online", "event-tickets")}</h1>
+				<p className="tec-tickets-onboarding__tab-subheader">{__("Easily accept payments with your trusted gateway", "event-tickets")}</p>
 			</div>
 			<div className="tec-tickets-onboarding__tab-content">
 				{!eventTicketsActive &&(
@@ -54,11 +54,11 @@ const CommunicationContent = ({moveToNextTab, skipToNextTab}) => {
 						</div>
 					</div>
 				)}
-				<NextButton tabCommunication={tabCommunication} moveToNextTab={moveToNextTab} disabled={false}/>
+				<NextButton tabPayments={tabPayments} moveToNextTab={moveToNextTab} disabled={false}/>
 				<SkipButton skipToNextTab={skipToNextTab} currentTab={5} />
 			</div>
 		</>
 	);
 };
 
-export default CommunicationContent;
+export default PaymentsContent;
