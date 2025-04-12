@@ -157,7 +157,6 @@ class Controller extends Controller_Contract {
 		try {
 			// Use WhoDat to get the connection URL
 			$connect_url = $this->container->make( WhoDat::class )->connect_account();
-			$t=1;
 
 			if ( empty( $connect_url ) ) {
 				wp_send_json_error( [ 'message' => __( 'Failed to generate connection URL.', 'event-tickets' ) ] );

@@ -3,12 +3,13 @@
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_WhoDat;
+use TEC\Tickets\Commerce\Gateways\Square\REST\On_Boarding_Endpoint;
 use Tribe__Utils__Array as Arr;
 
 /**
  * Class WhoDat. Handles connection to Square when the platform keys are needed.
  *
- * @since   5.3.0
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -17,11 +18,20 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * The API Path.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @var string
 	 */
-	 protected string $api_endpoint = 'square';
+	protected string $api_endpoint = 'square';
+
+	/**
+	 * The nonce action for the state.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected string $state_nonce_action = 'tec-tc-square-connect';
 
 	/**
 	 * Get the API URL for making requests.
@@ -130,15 +140,27 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * Creates a new account link for the client and redirects the user to setup the account details.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @return string
 	 */
 	public function connect_account() {
+		$merchant = tribe( Merchant::class );
+
+		// Generate and store the code challenge using the Merchant class
+		$code_challenge = $merchant->generate_code_challenge();
+		$user_id = get_current_user_id();
+
+		wp_set_current_user( 0 );
+		$nonce = wp_create_nonce( $this->state_nonce_action );
+		wp_set_current_user( $user_id );
+
 		$query_args = [
-			'mode'           => 'sandbox',
-			'code_challenge' => urlencode( tribe( Gateway::class )->generate_unique_tracking_id() ),
-			'redirect_uri'   => $this->get_return_url(),
+			'mode'                  => tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live',
+			'code_challenge'        => $code_challenge,
+			'code_challenge_method' => 'S256',
+			'url'                   => tribe( On_Boarding_Endpoint::class )->get_return_url(),
+			'state'                 => $nonce,
 		];
 
 		$connection_response = $this->get( 'oauth/authorize', $query_args );
@@ -146,10 +168,14 @@ class WhoDat extends Abstract_WhoDat {
 		return $connection_response['auth_url'];
 	}
 
+	public function get_state_nonce_action(): string {
+		return $this->state_nonce_action;
+	}
+
 	/**
 	 * Get the return URL for OAuth redirects.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @return string
 	 */
@@ -160,7 +186,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * De-authorize the current seller account in Square oAuth.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @return string
 	 */
@@ -178,17 +204,31 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * Register a newly connected Square account to the website.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @param array $account_data array of data returned from Square after a successful connection.
 	 *
 	 * @return array|null
 	 */
 	public function onboard_account( $account_data ) {
+		$merchant = tribe( Merchant::class );
+
+		// Get the stored code verifier for PKCE
+		$code_verifier = $merchant->get_code_verifier();
+
+		if ( empty( $code_verifier ) ) {
+			$this->log_error( 'OAuth Error', 'Missing code_verifier during token exchange', '' );
+			return null;
+		}
+
 		$query_args = [
-			'grant_type' => 'authorization_code',
-			'code'       => $account_data['code'],
+			'grant_type'    => 'authorization_code',
+			'code'          => $account_data['code'],
+			'code_verifier' => $code_verifier,
 		];
+
+		// Delete the code verifier as it's no longer needed
+		$merchant->delete_code_verifier();
 
 		return $this->get( 'authorize/redirect', $query_args );
 	}
@@ -196,7 +236,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * Requests WhoDat to refresh the oAuth tokens.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @return string
 	 */
@@ -214,7 +254,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * Get the token status from Square.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @return array|null
 	 */
@@ -231,7 +271,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * Get merchant information from Square.
 	 *
-	 * @since 5.3.0
+	* @since TBD
 	 *
 	 * @param string $merchant_id The merchant ID.
 	 *

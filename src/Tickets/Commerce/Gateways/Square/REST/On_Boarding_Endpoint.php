@@ -66,10 +66,18 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since TBD
 	 *
+	 * @param WP_REST_Request $request The request object.
+	 *
 	 * @return bool Whether the current user can access the endpoint or not.
 	 */
-	public function has_permission() {
-		return current_user_can( 'manage_options' );
+	public function has_permission( WP_REST_Request $request ) {
+		$state = $request->get_param( 'state' );
+
+		if ( empty( $state ) ) {
+			return false;
+		}
+
+		return wp_verify_nonce( $state, tribe( WhoDat::class )->get_state_nonce_action() );
 	}
 
 	/**
@@ -101,14 +109,14 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 						},
 					],
 					'state'            => [
-						'required'          => false,
+						'required'          => true,
 						'type'              => 'string',
 						'validate_callback' => static function ( $value ) {
-							if ( ! is_string( $value ) ) {
+							if ( empty( $state ) ) {
 								return false;
 							}
 
-							return true;
+							return wp_verify_nonce( $state, tribe( WhoDat::class )->get_state_nonce_action() );
 						},
 					],
 					'error'            => [
@@ -149,6 +157,8 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	 */
 	public function handle_request( WP_REST_Request $request ) {
 		$params = $request->get_params();
+
+		return rest_ensure_response( $params );
 
 		// If there's an error in the request, bail out.
 		if ( ! empty( $params['error'] ) ) {

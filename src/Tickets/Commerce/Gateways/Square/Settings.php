@@ -81,7 +81,7 @@ class Settings {
 			$template_vars = array_merge( $template_vars, $connected_vars );
 		}
 
-		return $admin_views->template( 'settings/tickets-commerce/gateway/square/' . $signup_template, $template_vars, false );
+		return $admin_views->template( 'settings/tickets-commerce/square/' . $signup_template, $template_vars, false );
 	}
 
 	/**

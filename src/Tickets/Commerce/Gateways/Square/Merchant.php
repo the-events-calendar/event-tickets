@@ -50,6 +50,15 @@ class Merchant extends Abstract_Merchant {
 	public static $merchant_default_currency_option_key = 'tickets-commerce-merchant-currency';
 
 	/**
+	 * Option key to save the PKCE code verifier for OAuth authentication.
+	 *
+	 * @since 5.3.0
+	 *
+	 * @var string
+	 */
+	public static $code_verifier_option_key = 'tickets-commerce-square-code-verifier';
+
+	/**
 	 * Determines if Merchant is active. For Square this is the same as being connected.
 	 *
 	 * @since 5.3.0
@@ -347,6 +356,67 @@ class Merchant extends Abstract_Merchant {
 	 */
 	public function get_merchant_currency() {
 		return get_option( static::$merchant_default_currency_option_key, 'USD' );
+	}
+
+	/**
+	 * Generates and stores a PKCE code verifier for OAuth authentication.
+	 *
+	 * @since 5.3.0
+	 *
+	 * @return string The generated code verifier
+	 */
+	public function generate_code_verifier() {
+		// Generate a code_verifier (random string between 43-128 chars)
+		$code_verifier = bin2hex( random_bytes( 43 ) );
+
+		// Store the code verifier as an option with a 2-hour expiration
+		set_transient( static::$code_verifier_option_key, $code_verifier, HOUR_IN_SECONDS * 2 );
+
+		return $code_verifier;
+	}
+
+	/**
+	 * Creates a PKCE code challenge from the stored code verifier.
+	 *
+	 * @since 5.3.0
+	 *
+	 * @return string The code challenge for OAuth authentication
+	 */
+	public function generate_code_challenge() {
+		$code_verifier = $this->get_code_verifier();
+
+		if ( empty( $code_verifier ) ) {
+			$code_verifier = $this->generate_code_verifier();
+		}
+
+		// Create code_challenge using SHA256 hash of the code_verifier (PKCE)
+		$code_challenge = rtrim( strtr( base64_encode( hash( 'sha256', $code_verifier, true ) ), '+/', '-_' ), '=' );
+
+		return $code_challenge;
+	}
+
+	/**
+	 * Gets the stored PKCE code verifier.
+	 *
+	 * @since 5.3.0
+	 *
+	 * @return string The stored code verifier or empty string if not found
+	 */
+	public function get_code_verifier() {
+		$code_verifier = get_transient( static::$code_verifier_option_key );
+
+		return $code_verifier ?: '';
+	}
+
+	/**
+	 * Deletes the stored PKCE code verifier.
+	 *
+	 * @since 5.3.0
+	 *
+	 * @return bool True if successful, false otherwise
+	 */
+	public function delete_code_verifier() {
+		return delete_transient( static::$code_verifier_option_key );
 	}
 
 	/**
