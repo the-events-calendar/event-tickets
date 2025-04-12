@@ -72,7 +72,7 @@ class Tribe__Tickets__Editor__Assets {
 		tec_asset(
 			$plugin,
 			'tribe-tickets-gutenberg-secondary-styles',
-			'app/style-main.css',
+			'app/main.css',
 			[],
 			null,
 			[
@@ -94,7 +94,7 @@ class Tribe__Tickets__Editor__Assets {
 		tec_asset(
 			$plugin,
 			'tribe-tickets-gutenberg-main-styles',
-			'app/main.css',
+			'app/style-main.css',
 			[ 'tribe-common-full-style', 'tribe-tickets-gutenberg-vendor-styles' ],
 			'enqueue_block_editor_assets',
 			[

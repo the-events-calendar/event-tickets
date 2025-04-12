@@ -440,9 +440,6 @@ class Tribe__Tickets__Main {
 	 * @since TBD Added Tyson group paths.
 	 */
 	public function bootstrap() {
-		// Add the group path for the ET core assets.
-		Assets_Config::add_group_path( 'et-core', $this->plugin_path, 'src/resources/', true );
-
 		/*
 		* Register the `/build` directory assets as a different group to ensure back-compatibility.
 		* This needs to happen early in the plugin bootstrap routine.

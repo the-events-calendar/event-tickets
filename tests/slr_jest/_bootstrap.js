@@ -24,7 +24,8 @@ global.tec.tickets.seating = {
 		ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID:
 			'tec_tickets_seating_get_seat_types_by_layout_id',
 	},
-	utils: {
+	utils: {},
+	utilsData: {
 		localizedStrings: {
 			layouts: {
 				'add-failed': 'Failed to add the layout.',

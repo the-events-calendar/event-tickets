@@ -135,7 +135,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 			'admin/order-modifiers/table.js',
 			Tickets_Plugin::VERSION
 		)
-			->add_to_group_path( 'et-core' )
+			->add_to_group_path( Tickets_Plugin::class )
 			->set_condition( fn() => $this->is_on_page() )
 			->set_dependencies( 'jquery', 'wp-util' )
 			->enqueue_on( 'admin_enqueue_scripts' )

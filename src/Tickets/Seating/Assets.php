@@ -131,7 +131,7 @@ class Assets extends Controller_Contract {
 			ET::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->add_localize_script( 'tec.tickets.seating.utils', [ $this, 'get_utils_data' ] )
+			->add_localize_script( 'tec.tickets.seating.utilsData', [ $this, 'get_utils_data' ] )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
 	}
