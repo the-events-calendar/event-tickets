@@ -102,7 +102,11 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 
 		if ( is_wp_error( $request ) ) {
 			$this->log_error( 'WhoDat request error:', $request->get_error_message(), $url );
+			return null;
+		}
 
+		$status_code = wp_remote_retrieve_response_code( $request );
+		if ( 200 !== $status_code ) {
 			return null;
 		}
 
@@ -129,7 +133,7 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 			$type,
 			$message
 		);
-		tribe( 'logger' )->log_error( $log, 'whodat-connection' );
+		do_action( 'tribe_log', 'error', 'whodat-connection', [$log ] );
 	}
 
 }

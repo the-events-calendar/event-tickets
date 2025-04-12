@@ -19,7 +19,7 @@ use Tribe__Utils__Array as Arr;
  */
 class Gateway extends Abstract_Gateway {
 	use Paid_Gateway;
-	
+
 	/**
 	 * @inheritDoc
 	 */

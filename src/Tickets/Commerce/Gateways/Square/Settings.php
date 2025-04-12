@@ -70,7 +70,7 @@ class Settings {
 		];
 
 		// Only add these if we're connected.
-		if ( $is_connected ) {
+		if ( $is_connected && false === true ) {
 			$connected_vars = [
 				'merchant_name'    => $merchant->get_merchant_name(),
 				'merchant_email'   => $merchant->get_merchant_email(),

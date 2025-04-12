@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Traits\Paid_Gateway;
 use TEC\Tickets\Commerce\Payments_Tab;
 use TEC\Tickets\Commerce\Settings as TC_Settings;
 use TEC\Tickets\Commerce\Utils\Currency;
-use \Tribe__Tickets__Main;
+use Tribe__Tickets__Main;
 use Tribe__Utils__Array as Arr;
 
 /**

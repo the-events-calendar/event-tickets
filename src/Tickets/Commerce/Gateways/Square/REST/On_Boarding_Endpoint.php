@@ -6,11 +6,14 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Square\Gateway;
 use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 use TEC\Tickets\Commerce\Gateways\Square\WhoDat;
+use TEC\Tickets\Settings as Tickets_Commerce_Settings;
 use TEC\Tickets\Commerce\Payments_Tab;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
+
+use Tribe__Date_Utils as Dates;
 
 /**
  * Class On_Boarding_Endpoint
@@ -112,14 +115,25 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 						'required'          => true,
 						'type'              => 'string',
 						'validate_callback' => static function ( $value ) {
-							if ( empty( $state ) ) {
+							if ( empty( $value ) ) {
 								return false;
 							}
 
-							return wp_verify_nonce( $state, tribe( WhoDat::class )->get_state_nonce_action() );
+							return wp_verify_nonce( $value, tribe( WhoDat::class )->get_state_nonce_action() );
 						},
 					],
-					'error'            => [
+					'token_type'            => [
+						'required'          => false,
+						'type'              => 'string',
+						'validate_callback' => static function ( $value ) {
+							if ( ! is_string( $value ) ) {
+								return false;
+							}
+
+							return $value === 'bearer';
+						},
+					],
+					'access_token' => [
 						'required'          => false,
 						'type'              => 'string',
 						'validate_callback' => static function ( $value ) {
@@ -130,7 +144,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 							return true;
 						},
 					],
-					'error_description' => [
+					'access_token' => [
 						'required'          => false,
 						'type'              => 'string',
 						'validate_callback' => static function ( $value ) {
@@ -139,6 +153,20 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 							}
 
 							return true;
+						},
+					],
+					'expires_at' => [
+						'required'          => false,
+						'type'              => 'string',
+						'validate_callback' => static function ( $value ) {
+							if ( ! is_string( $value ) ) {
+								return false;
+							}
+
+							$date = Dates::build_date_object( $value );
+							$now = Dates::build_date_object( 'now' );
+
+							return $date > $now;
 						},
 					],
 				],
@@ -157,8 +185,6 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	 */
 	public function handle_request( WP_REST_Request $request ) {
 		$params = $request->get_params();
-
-		return rest_ensure_response( $params );
 
 		// If there's an error in the request, bail out.
 		if ( ! empty( $params['error'] ) ) {
@@ -186,7 +212,11 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		// If the response doesn't have the code and state, bail out.
-		if ( empty( $params['code'] ) || empty( $params['state'] ) ) {
+		if (
+			empty( $params['merchant_id'] )
+			|| empty( $params['access_token'] )
+			|| empty( $params['refresh_token'] )
+		) {
 			$url = add_query_arg(
 				[
 					'tc-status' => 'tc-square-token-error',
@@ -199,30 +229,9 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 			exit;
 		}
 
-		// Get the signup response data from WhoDat.
-		$signup_data = [
-			'code'  => $params['code'],
-			'state' => $params['state'],
-		];
-
-		// Request the tokens from Square via WhoDat.
-		$response = tribe( WhoDat::class )->onboard_account( $signup_data );
-
-		if ( empty( $response ) || isset( $response['error'] ) ) {
-			$url = add_query_arg(
-				[
-					'tc-status' => 'tc-square-token-error',
-					'tc-section' => Gateway::get_key(),
-				],
-				tribe( Payments_Tab::class )->get_url()
-			);
-
-			wp_safe_redirect( $url );
-			exit;
-		}
-
-		// Save the account data.
-		$saved = tribe( Merchant::class )->save_signup_data( $response );
+		//here
+		// Save the account data from the OAuth response
+		$saved = tribe( Merchant::class )->save_signup_data( $params );
 
 		if ( ! $saved ) {
 			$url = add_query_arg(
@@ -236,6 +245,27 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 			wp_safe_redirect( $url );
 			exit;
 		}
+
+		// Fetch additional merchant details from Square API
+		$merchant = tribe( Merchant::class );
+		$merchant_data = $merchant->fetch_merchant_data( true );
+
+		// Log the retrieval attempt
+		if ( $merchant_data ) {
+			do_action( 'tribe_log', 'info', 'Square Merchant Data Retrieved', [
+				'source' => 'tickets-commerce',
+				'merchant_id' => $params['merchant_id'],
+			] );
+		} else {
+			do_action( 'tribe_log', 'warning', 'Failed to retrieve Square Merchant Data during onboarding', [
+				'source' => 'tickets-commerce',
+				'merchant_id' => $params['merchant_id'],
+			] );
+		}
+
+		// Enable the gateway.
+		tribe_update_option( Tickets_Commerce_Settings::$tickets_commerce_enabled, true );
+		tribe_update_option( Gateway::get_enabled_option_key(), true );
 
 		// Redirect to the settings page.
 		$url = add_query_arg(

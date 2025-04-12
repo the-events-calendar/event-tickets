@@ -12,42 +12,52 @@
  * @var string                                        $settings_url      [Global] The URL to the settings page.
  * @var string                                        $disconnect_nonce  [Global] The nonce for disconnecting.
  * @var bool                                          $is_connected      [Global] Whether Square is connected.
- * @var string                                        $merchant_name     [Global] The merchant name.
- * @var string                                        $merchant_email    [Global] The merchant email.
- * @var string                                        $merchant_id       [Global] The merchant ID.
- * @var string                                        $merchant_currency [Global] The merchant currency.
  */
 
 if ( ! $is_connected ) {
 	return;
 }
 
+// Fetch fresh merchant data to ensure we have the latest information
+$merchant_data = $merchant->fetch_merchant_data();
+
+// Get merchant details - preferring data from the API if available
+$merchant_name = $merchant->get_merchant_name();
+$merchant_email = $merchant->get_merchant_email();
+$merchant_currency = $merchant->get_merchant_currency();
+
 $test_mode = TEC\Tickets\Commerce\Gateways\Square\Gateway::is_test_mode();
 ?>
 
-<div class="tec-tickets__admin-settings-tickets-commerce-gateway tec-tickets__admin-settings-tickets-commerce-gateway--connected">
+<div class="tec-tickets__admin-settings-tickets-commerce-gateway tec-tickets__admin-settings-tickets-commerce-gateway--connected" role="region" aria-labelledby="tec-tickets-commerce-square-settings-heading">
+	<h3 id="tec-tickets-commerce-square-settings-heading" class="screen-reader-text"><?php esc_html_e( 'Square Connection Status', 'event-tickets' ); ?></h3>
+
 	<div id="tec-tickets__admin-settings-tickets-commerce-gateway-connect" class="tec-tickets__admin-settings-tickets-commerce-gateway-connect">
-		<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected">
+		<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected" aria-labelledby="tec-tickets-commerce-square-connection-details">
+			<h4 id="tec-tickets-commerce-square-connection-details" class="screen-reader-text"><?php esc_html_e( 'Connection Details', 'event-tickets' ); ?></h4>
+
 			<!-- Connection Info -->
 			<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-row">
-				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-label">
+				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-label" id="square-connected-to-label">
 					<?php esc_html_e( 'Connected to:', 'event-tickets' ); ?>
 				</span>
-				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-value">
-					<?php echo esc_html( $merchant_name ); ?>
-					<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-subtext">
+				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-value" aria-labelledby="square-connected-to-label">
+					<?php echo esc_html( $merchant_name ?: __( 'Square Account', 'event-tickets' ) ); ?>
+					<?php if ( ! empty( $merchant_email ) ) : ?>
+					<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-subtext" aria-label="<?php esc_attr_e( 'Account email', 'event-tickets' ); ?>">
 						<?php echo esc_html( $merchant_email ); ?>
 					</span>
+					<?php endif; ?>
 				</span>
 			</div>
 
 			<!-- Square Status -->
 			<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-row">
-				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-label">
+				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-label" id="square-status-label">
 					<?php esc_html_e( 'Status:', 'event-tickets' ); ?>
 				</span>
-				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-value">
-					<span class="dashicons dashicons-yes"></span>
+				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-value" aria-labelledby="square-status-label">
+					<span class="dashicons dashicons-yes" aria-hidden="true"></span>
 					<?php esc_html_e( 'Connected', 'event-tickets' ); ?>
 					<?php if ( $test_mode ) : ?>
 						<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-subtext">
@@ -59,41 +69,43 @@ $test_mode = TEC\Tickets\Commerce\Gateways\Square\Gateway::is_test_mode();
 
 			<!-- Currency Info -->
 			<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-row">
-				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-label">
+				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-label" id="square-currency-label">
 					<?php esc_html_e( 'Currency:', 'event-tickets' ); ?>
 				</span>
-				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-value">
+				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-value" aria-labelledby="square-currency-label">
 					<?php echo esc_html( $merchant_currency ); ?>
 				</span>
 			</div>
 
+			<?php if ( isset( $merchant_data['merchant']['country'] ) ) : ?>
+			<!-- Country Info -->
+			<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-row">
+				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-label" id="square-country-label">
+					<?php esc_html_e( 'Country:', 'event-tickets' ); ?>
+				</span>
+				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-value" aria-labelledby="square-country-label">
+					<?php echo esc_html( $merchant_data['merchant']['country'] ); ?>
+				</span>
+			</div>
+			<?php endif; ?>
+
 			<!-- Disconnect Button -->
 			<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-row">
-				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-label"></span>
+				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-label" aria-hidden="true"></span>
 				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-value">
 					<a
 						href="#"
 						class="tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-square-button"
 						id="tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-square"
 						data-nonce="<?php echo esc_attr( $disconnect_nonce ); ?>"
+						aria-label="<?php esc_attr_e( 'Disconnect from Square payment gateway', 'event-tickets' ); ?>"
 					>
 						<?php esc_html_e( 'Disconnect from Square', 'event-tickets' ); ?>
 					</a>
 				</span>
 			</div>
 
-			<!-- Help Links -->
-			<div class="tec-tickets__admin-settings-tickets-commerce-gateway-help-links">
-				<a href="https://evnt.is/1axt" target="_blank" rel="noopener noreferrer">
-					<?php esc_html_e( 'Learn more about Square', 'event-tickets' ); ?>
-				</a>
-				<a href="https://evnt.is/1axu" target="_blank" rel="noopener noreferrer">
-					<?php esc_html_e( 'Square requirements', 'event-tickets' ); ?>
-				</a>
-				<a href="https://evnt.is/1axv" target="_blank" rel="noopener noreferrer">
-					<?php esc_html_e( 'About online payments', 'event-tickets' ); ?>
-				</a>
-			</div>
+			<?php $this->template( 'settings/tickets-commerce/square/connect/help-links' ); ?>
 		</div>
 	</div>
 

@@ -40,7 +40,7 @@ $connect_url = '#';
 				<div class="tec-tickets__admin-settings-tickets-commerce-gateway-signup-links">
 					<a
 						href="<?php echo esc_url( $connect_url ); ?>"
-						class="tec-tickets__admin-settings-tickets-commerce-gateway-connect-button tec-tickets__admin-settings-tickets-commerce-gateway-connect-square-button"
+						class="tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link tec-tickets__admin-settings-tickets-commerce-gateway-connect-square-button"
 						id="tec-tickets__admin-settings-tickets-commerce-gateway-connect-square"
 					>
 						<?php esc_html_e( 'Connect with Square', 'event-tickets' ); ?>
@@ -52,17 +52,7 @@ $connect_url = '#';
 				</div>
 			<?php endif; ?>
 
-			<div class="tec-tickets__admin-settings-tickets-commerce-gateway-help-links">
-				<a href="https://evnt.is/1axt" target="_blank" rel="noopener noreferrer">
-					<?php esc_html_e( 'Learn more about Square', 'event-tickets' ); ?>
-				</a>
-				<a href="https://evnt.is/1axu" target="_blank" rel="noopener noreferrer">
-					<?php esc_html_e( 'Square requirements', 'event-tickets' ); ?>
-				</a>
-				<a href="https://evnt.is/1axv" target="_blank" rel="noopener noreferrer">
-					<?php esc_html_e( 'About online payments', 'event-tickets' ); ?>
-				</a>
-			</div>
+			<?php $this->template( 'settings/tickets-commerce/square/connect/help-links' ); ?>
 		</div>
 	</div>
 
