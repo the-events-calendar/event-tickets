@@ -1,8 +1,12 @@
 <?php
-
+/**
+ * Main file controlling Square integration.
+ *
+ * @since TBD
+ */
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
-use \TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 
 /**
  * Class Controller
