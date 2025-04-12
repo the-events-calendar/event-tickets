@@ -6,7 +6,7 @@
  * @return {string} The link URL, or an empty string if it does not exist.
  */
 export function getLink(link) {
-	return window?.tec?.tickets?.seating?.utils?.links?.[link] || '';
+	return window?.tec?.tickets?.seating?.utilsData?.links?.[link] || '';
 }
 
 /**
@@ -20,10 +20,10 @@ export function getLink(link) {
 export function getLocalizedString(slug, group) {
 	if (group) {
 		return (
-			window?.tec?.tickets?.seating?.utils?.localizedStrings?.[group]?.[slug] || ''
+			window?.tec?.tickets?.seating?.utilsData?.localizedStrings?.[group]?.[slug] || ''
 		);
 	}
-	return window?.tec?.tickets?.seating?.utils?.localizedStrings?.[slug] || '';
+	return window?.tec?.tickets?.seating?.utilsData?.localizedStrings?.[slug] || '';
 }
 
 /**

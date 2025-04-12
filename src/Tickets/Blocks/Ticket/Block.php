@@ -99,14 +99,14 @@ class Block extends Abstract_Block {
 
 		wp_register_style(
 			'tec-tickets-ticket-item-block-secondary-editor-style',
-			$plugin->plugin_url . 'build/tickets/Blocks/Ticket/style-editor.css',
+			$plugin->plugin_url . 'build/tickets/Blocks/Ticket/editor.css',
 			[ 'tribe-tickets-gutenberg-main-styles' ],
 			Tickets_Main::VERSION
 		);
 
 		wp_register_style(
 			'tec-tickets-ticket-item-block-editor-style',
-			$plugin->plugin_url . 'build/tickets/Blocks/Ticket/editor.css',
+			$plugin->plugin_url . 'build/tickets/Blocks/Ticket/style-editor.css',
 			[ 'tec-tickets-ticket-item-block-secondary-editor-style' ],
 			Tickets_Main::VERSION
 		);
