@@ -735,6 +735,7 @@ async function waitForModalElement() {
 		const check = () => {
 			if (window[objectName]) {
 				resolve(window[objectName]);
+				return;
 			}
 			setTimeout(check, 50);
 		};

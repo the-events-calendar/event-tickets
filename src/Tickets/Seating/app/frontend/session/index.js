@@ -400,7 +400,7 @@ async function getInterruptDialogElement() {
 	}
 
 	// @see tec-a11y-dialog.js in Common.
-	return new A11yDialog({
+	return new window.tec.common.tecA11yDialog({
 		trigger: '.tec-tickets-seating__timer',
 		appendTarget,
 		wrapperClasses: 'tribe-dialog',
