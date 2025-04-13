@@ -290,37 +290,3 @@ export {
 	registerAction,
 	removeAction,
 };
-
-window.tec = window.tec || {};
-window.tec.tickets.seating = window.tec.tickets.seating || {};
-window.tec.tickets.seating.service = window.tec.tickets.seating.service || {};
-window.tec.tickets.seating.service.api = {
-	...(window.tec.tickets.seating.service.api || {}),
-	INBOUND_APP_READY,
-	INBOUND_APP_READY_FOR_DATA,
-	INBOUND_SEATS_SELECTED,
-	INBOUND_SET_ELEMENT_HEIGHT,
-	OUTBOUND_EVENT_ATTENDEES,
-	OUTBOUND_HOST_READY,
-	OUTBOUND_REMOVE_RESERVATIONS,
-	OUTBOUND_SEAT_TYPE_TICKETS,
-	OUTBOUND_ATTENDEE_UPDATE,
-	RESERVATIONS_DELETED,
-	RESERVATIONS_UPDATED,
-	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
-	SEAT_TYPES_UPDATED,
-	SEAT_TYPE_DELETED,
-	GO_TO_ASSOCIATED_EVENTS,
-	RESERVATION_UPDATED,
-	RESERVATION_CREATED,
-	establishReadiness,
-	getHandlerForAction,
-	getHandlerQueue,
-	getRegisteredActions,
-	getToken,
-	registerAction,
-	removeAction,
-	sendPostMessage,
-	startListeningForServiceMessages,
-	getAssociatedEventsUrl,
-};

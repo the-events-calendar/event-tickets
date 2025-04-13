@@ -85,13 +85,3 @@ export function handleResize(data, dom) {
 	const iframe = getIframeElement(dom);
 	iframe.style.height = data.height + 'px';
 }
-
-window.tec = window.tec || {};
-window.tec.tickets.seating = window.tec.tickets.seating || {};
-window.tec.tickets.seating.service = window.tec.tickets.seating.service || {};
-window.tec.tickets.seating.service.iframe = {
-	...(window.tec.tickets.seating.service.iframe || {}),
-	getIframeElement,
-	initServiceIframe,
-	handleResize,
-};

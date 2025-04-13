@@ -735,6 +735,7 @@ async function waitForModalElement() {
 		const check = () => {
 			if (window[objectName]) {
 				resolve(window[objectName]);
+				return;
 			}
 			setTimeout(check, 50);
 		};
@@ -752,11 +753,3 @@ waitForModalElement().then((modalElement) => {
 	});
 });
 
-window.tec = window.tec || {};
-window.tec.tickets = window.tec.tickets || {};
-window.tec.tickets.seating = window.tec.tickets.seating || {};
-window.tec.tickets.seating.frontend = window.tec.tickets.seating.frontend || {};
-window.tec.tickets.seating.frontend.ticketsBlock = {
-	...(window.tec.tickets.seating.frontend.ticketsBlock || {}),
-	cancelReservations,
-};

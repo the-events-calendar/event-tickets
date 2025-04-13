@@ -27,4 +27,4 @@
  * @type {TicketBlockExternals}
  */
 export const localizedData =
-	window?.tec?.tickets?.seating?.frontend?.ticketsBlock;
+	window?.tec?.tickets?.seating?.frontend?.ticketsBlockData;

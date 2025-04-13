@@ -63,19 +63,3 @@ const errorCodeToMessageMap = {
 export function getErrorMessage(errorCode) {
 	return errorCodeToMessageMap[errorCode] || unknownError;
 }
-
-window.tec = window.tec || {};
-window.tec.tickets.seating = window.tec.tickets.seating || {};
-window.tec.tickets.seating.service = window.tec.tickets.seating.service || {};
-window.tec.tickets.seating.service.errors = {
-	...(window.tec.tickets.seating.service.errors || {}),
-	BAD_SERVICE_RESPONSE,
-	MISSING_REQUEST_PARAMETERS,
-	MISSING_EPHEMERAL_TOKEN,
-	INVALID_SITE_PARAMETER,
-	INVALID_EXPIRE_TIME_PARAMETER,
-	SITE_NOT_FOUND,
-	EPHEMERAL_TOKEN_STORE_ERROR,
-	SITE_NOT_AUTHORIZED,
-	getErrorMessage,
-};

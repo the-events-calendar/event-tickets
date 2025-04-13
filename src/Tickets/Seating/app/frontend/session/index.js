@@ -400,7 +400,7 @@ async function getInterruptDialogElement() {
 	}
 
 	// @see tec-a11y-dialog.js in Common.
-	return new A11yDialog({
+	return new window.tec.common.tecA11yDialog({
 		trigger: '.tec-tickets-seating__timer',
 		appendTarget,
 		wrapperClasses: 'tribe-dialog',
@@ -418,7 +418,7 @@ async function getInterruptDialogElement() {
  *
  * @return {void} The timer is interrupted.
  */
-async function interrupt() {
+export async function interrupt() {
 	if ( ! isInterruptable() ) {
 		return true;
 	}
@@ -917,16 +917,3 @@ export function getResumeTimeoutId() {
 // On DOM ready check if any timer needs to be synced.
 onReady(() => syncOnLoad());
 onReady(() => watchCheckoutControls());
-
-window.tec = window.tec || {};
-window.tec.tickets = window.tec.tickets || {};
-window.tec.tickets.seating = window.tec.tickets.seating || {};
-window.tec.tickets.seating.frontend = window.tec.tickets.seating.frontend || {};
-window.tec.tickets.seating.frontend.session = {
-	...(window.tec.tickets.seating.frontend.session || {}),
-	start,
-	reset,
-	syncOnLoad,
-	interrupt,
-	setIsInterruptable,
-};

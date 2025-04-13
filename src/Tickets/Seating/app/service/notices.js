@@ -102,12 +102,3 @@ export function notifyUserOfWarning(message) {
 	setNoticeMessage(notice, message);
 	showNotice(notice);
 }
-
-window.tec = window.tec || {};
-window.tec.tickets.seating = window.tec.tickets.seating || {};
-window.tec.tickets.seating.service = window.tec.tickets.seating.service || {};
-window.tec.tickets.seating.service.notices = {
-	...(window.tec.tickets.seating.service.notices || {}),
-	notifyUserOfWarning,
-	notifyUserOfError,
-};
