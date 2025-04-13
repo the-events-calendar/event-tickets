@@ -426,13 +426,8 @@
 }
 
 @media (min-width: 1024px) {
-	#settingsPanel .tec-tickets-onboarding__tab-content,
-	#organizerPanel .tec-tickets-onboarding__tab-content, {
-		max-width: 330px;
-	}
-
-	#ticketsPanel .tec-tickets-onboarding__tab-content {
-		max-width: 440px;
+	#settingsPanel .tec-tickets-onboarding__tab-content {
+		max-width: 363px;
 	}
 
 	#venuePanel .tec-tickets-onboarding__tab-content {
@@ -573,29 +568,32 @@
 	width: 0;
 }
 
-.tec-tickets-onboarding__checkbox-label {
+.tec-tickets-onboarding__checkbox {
 	align-items: center;
-	background: #fff;
-	border: 1.128px solid var(--tec-wp-core-grey-50);
-	border-radius: var(--tec-admin-border-radius-0);
-	box-sizing: border-box;
+	display: flex;
+	gap: var(--tec-spacer-0);
+}
+
+.tec-tickets-onboarding__checkbox-label,
+.tec-tickets-onboarding__radio-label {
 	cursor: pointer;
+}
+
+.tec-tickets-onboarding__payment-title {
+	font-size: var(--tec-font-size-3);
+	margin-bottom: var(--tec-spacer-0);
+}
+
+.tec-tickets-onboarding__radio-group {
 	display: flex;
 	flex-direction: column;
 	gap: var(--tec-spacer-2);
-	height: 116px;
-	padding: var(--tec-spacer-2) var(--tec-spacer-4);
-	text-align: center;
-	width: 128px;
 }
 
-.tec-tickets-onboarding__checkbox-label--checked {
-	border: 2px solid var(--tec-wp-core-blue-50);
-	padding: calc(var(--tec-spacer-2) - 1px) calc(var(--tec-spacer-4) - 1px);
-}
-
-#tec-tickets-onboarding__checkbox-label-all {
-	justify-content: center;
+.tec-tickets-onboarding__radio-help {
+	color: var(--tec-wp-core-grey-50);
+	font-size: var(--tec-font-size-1);
+	margin-left: var(--tec-spacer-0);
 }
 
 .tec-tickets-onboarding__checkbox--optin,
@@ -640,6 +638,7 @@
 	min-width: var(--tec-spacer-content-min-width);
 	padding: var(--tec-spacer-5) var(--tec-spacer-7) var(--tec-spacer-7);
 	text-align: left;
+	width: 100%;
 	max-width: 100%;
 }
 
@@ -707,6 +706,27 @@
 	padding: var(--tec-spacer-2) var(--tec-spacer-3);
 	text-transform: none;
 	width: 100%;
+}
+
+.tec-tickets-onboarding__modal .tec-tickets-onboarding__tabs .tec-tickets-onboarding__tab-content .tec-tickets-onboarding__form-wrapper input[type=checkbox] {
+	height: var(--tec-spacer-4);
+	width: var(--tec-spacer-4);
+}
+
+.tec-tickets-onboarding__modal .tec-tickets-onboarding__tabs .tec-tickets-onboarding__tab-content .tec-tickets-onboarding__form-wrapper input[type=radio] {
+	height: var(--tec-spacer-4);
+	margin-right: var(--tec-spacer-2);
+	width: var(--tec-spacer-4)
+}
+
+.tec-tickets-onboarding__modal .tec-tickets-onboarding__tabs .tec-tickets-onboarding__tab-content .tec-tickets-onboarding__form-wrapper input[type=radio]:checked::before {
+	height: .625rem;
+	margin: var(--tec-spacer-0);
+	width: .625rem;
+}
+
+.tec-tickets-onboarding__modal .tec-tickets-onboarding__tabs .tec-tickets-onboarding__tab-content .tec-tickets-onboarding__form-wrapper svg.components-checkbox-control__checked {
+	left: .625rem;
 }
 
 .tec-tickets-onboarding__form-wrapper .components-checkbox-control__input[type=checkbox]:checked,
