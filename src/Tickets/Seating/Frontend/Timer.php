@@ -210,7 +210,7 @@ class Timer extends Controller_Contract {
 				'wp-i18n',
 				'tec-tickets-seating-utils'
 			)
-			->add_localize_script( 'tec.tickets.seating.frontend.session', fn() => $this->get_localized_data() )
+			->add_localize_script( 'tec.tickets.seating.frontend.sessionData', fn() => $this->get_localized_data() )
 			->enqueue_on( 'tec_tickets_seating_seat_selection_timer' )
 			->add_to_group( 'tec-tickets-seating-frontend' )
 			->add_to_group( 'tec-tickets-seating' )

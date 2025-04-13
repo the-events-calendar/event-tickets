@@ -535,7 +535,7 @@ class Controller extends Controller_Contract {
 			->add_dependency( 'tec-tickets-seating-service-bundle' )
 			->enqueue_on( Seats_Report::$asset_action )
 			->add_localize_script(
-				'tec.tickets.seating.admin.seatsReport',
+				'tec.tickets.seating.admin.seatsReportData',
 				fn() => $this->get_localized_data( get_the_ID() )
 			)
 			->add_to_group( 'tec-tickets-seating-admin' )
