@@ -10,13 +10,3 @@ export {
 	nonce,
 	baseUrl,
 };
-
-// Add our data to the global `tec` object.
-window.tec = window.tec || {};
-window.tec.tickets = window.tec.tickets || {};
-window.tec.tickets.orderModifiers = window.tec.tickets.orderModifiers || {};
-window.tec.tickets.orderModifiers.rest = {
-	...( window.tec.tickets.orderModifiers.rest || {} ),
-	nonce,
-	baseUrl,
-};

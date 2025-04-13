@@ -7,7 +7,7 @@
  *
  * @type   {Object}
  */
-tribe.tickets.commerce.gateway.stripe = tribe.tickets.commerce.gateway.stripe || {};
+window.tribe.tickets.commerce.gateway.stripe = window?.tribe?.tickets?.commerce?.gateway?.stripe || {};
 
 /**
  * This script Object for public usage of the methods.
@@ -730,4 +730,4 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	};
 
 	$( obj.ready );
-} )( jQuery, tribe.tickets.commerce.gateway.stripe, Stripe, tribe.ky );
+} )( jQuery, window.tribe.tickets.commerce.gateway.stripe, Stripe, tribe.ky );
