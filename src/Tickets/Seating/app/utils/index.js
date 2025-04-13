@@ -104,15 +104,3 @@ export function redirectTo(url, newTab = false) {
 		window.location.href = url;
 	}
 }
-
-window.tec = window.tec || {};
-window.tec.tickets.seating = window.tec.tickets.seating || {};
-window.tec.tickets.seating.utils = {
-	...(window.tec.tickets.seating.utils || {}),
-	getLink,
-	getLocalizedString,
-	createHtmlComponentFromTemplateString,
-	createHtmlComponentFromTemplateElement,
-	onReady,
-	redirectTo,
-};

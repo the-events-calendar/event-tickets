@@ -4,7 +4,7 @@ const {
 	thousandSeparator,
 	position,
 	symbol,
-} = window.tec.tickets.seating.currency;
+} = window.tec.tickets.seating.currencyData;
 
 /**
  * Formats a value to a currency string not including the currency symbol.
@@ -66,11 +66,3 @@ export function formatWithCurrency(value) {
 		? `${symbol}${valueString}`
 		: `${valueString}${symbol}`;
 }
-
-window.tec = window.tec || {};
-window.tec.tickets.seating = window.tec.tickets.seating || {};
-window.tec.tickets.seating.currency = {
-	...(window.tec.tickets.seating.currency || {}),
-	formatValue,
-	formatWithCurrency
-};

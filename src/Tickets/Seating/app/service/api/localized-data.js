@@ -10,7 +10,7 @@
 /**
  * @type {Externals}
  */
-const localizedData = window.tec.tickets.seating.service;
+const localizedData = window.tec.tickets.seating.serviceData;
 
 export const baseUrl = localizedData.baseUrl.replace(/\/$/, '');
 export const mapsHomeUrl = localizedData.mapsHomeUrl.replace(/\/$/, '');
