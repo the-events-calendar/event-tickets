@@ -5,7 +5,8 @@ import fs from 'fs';
 global.tec = global.tec || {};
 global.tec.tickets = global.tec.tickets || {};
 global.tec.tickets.seating = {
-	service: {
+	service: {},
+	serviceData: {
 		baseUrl: 'https://wordpress.test',
 		mapsHomeUrl:
 			'https://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&tab=layouts',
@@ -14,7 +15,8 @@ global.tec.tickets.seating = {
 		associatedEventsUrl:
 			'https://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating-events',
 	},
-	ajax: {
+	ajax: {},
+	ajaxData: {
 		ajaxUrl: 'https://wordpress.test/wp-admin/admin-ajax.php',
 		ajaxNonce: '1234567890',
 		ACTION_FETCH_ATTENDEES: 'tec_tickets_seating_fetch_attendees',
@@ -41,7 +43,8 @@ global.tec.tickets.seating = {
 		},
 	},
 	frontend: {
-		ticketsBlock: {
+		ticketsBlock: {},
+		ticketsBlockData: {
 			objectName: 'tribe-tickets-seating-modal',
 			seatTypeMap: [
 				{
@@ -95,7 +98,8 @@ global.tec.tickets.seating = {
 				'tec_tickets_seating_reservation_updated',
 			sessionTimeout: 893,
 		},
-		session: {
+		session: {},
+		sessionData: {
 			ajaxUrl: 'https://wordpress.test/wp-admin/admin-ajax.php',
 			ajaxNonce: '1234567890',
 			checkoutGraceTime: 60,
@@ -108,7 +112,8 @@ global.tec.tickets.seating = {
 				'tec_tickets_seating_timer_pause_to_checkout',
 		},
 	},
-	currency: {
+	currency: {},
+	currencyData: {
 		decimalSeparator: '.',
 		decimalNumbers: 2,
 		thousandSeparator: ',',
@@ -116,7 +121,8 @@ global.tec.tickets.seating = {
 		symbol: '$',
 	},
 	admin: {
-		seatsReport: {
+		seatsReport: {},
+		seatsReportData: {
 			postId: 17,
 			seatTypeMap: [
 				{
