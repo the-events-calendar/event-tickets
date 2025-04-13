@@ -36,6 +36,7 @@ tribe.tickets.commerce.square = {};
 	const selectors = {
 		connectButton: '#tec-tickets__admin-settings-tickets-commerce-gateway-connect-square',
 		disconnectButton: '#tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-square',
+		reconnectButton: '#tec-tickets__admin-settings-tickets-commerce-gateway-reconnect-square',
 	};
 
 	/**
@@ -84,6 +85,59 @@ tribe.tickets.commerce.square = {};
 			alert( tribe.tickets.commerce.square.i18n.connectError );
 			button.classList.remove( 'loading' );
 			button.innerText = tribe.tickets.commerce.square.i18n.connect;
+		});
+	};
+
+	/**
+	 * Handle reconnect button click.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Event} event The click event.
+	 * @return {void}
+	 */
+	const handleReconnectClick = ( event ) => {
+		event.preventDefault();
+
+		const button = event.currentTarget;
+
+		// Show loading state
+		button.classList.add( 'loading' );
+		button.innerText = tribe.tickets.commerce.square.i18n.connecting;
+
+		// Get required scopes if available
+		const requiredScopes = button.dataset.requiredScopes || '';
+
+		// Make AJAX request
+		fetch( ajaxurl, {
+			method: 'POST',
+			credentials: 'same-origin',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: new URLSearchParams({
+				action: 'tec_tickets_commerce_square_connect',
+				_wpnonce: tribe.tickets.commerce.square.i18n.connectNonce,
+				scopes: requiredScopes,
+			}),
+		})
+		.then( response => response.json() )
+		.then( response => {
+			if ( response.success && response.data.url ) {
+				// Redirect to the Square authorization page
+				window.location.href = response.data.url;
+			} else {
+				// Show error message
+				alert( tribe.tickets.commerce.square.i18n.connectError );
+				button.classList.remove( 'loading' );
+				button.innerText = tribe.tickets.commerce.square.i18n.reconnect;
+			}
+		})
+		.catch( () => {
+			// Show error message
+			alert( tribe.tickets.commerce.square.i18n.connectError );
+			button.classList.remove( 'loading' );
+			button.innerText = tribe.tickets.commerce.square.i18n.reconnect;
 		});
 	};
 
@@ -154,6 +208,11 @@ tribe.tickets.commerce.square = {};
 		const disconnectButton = document.querySelector( selectors.disconnectButton );
 		if ( disconnectButton ) {
 			disconnectButton.addEventListener( 'click', handleDisconnectClick );
+		}
+
+		const reconnectButton = document.querySelector( selectors.reconnectButton );
+		if ( reconnectButton ) {
+			reconnectButton.addEventListener( 'click', handleReconnectClick );
 		}
 	};
 

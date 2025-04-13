@@ -90,7 +90,6 @@ class WhoDat extends Abstract_WhoDat {
 
 		$default_arguments = [
 			'body'      => [],
-			'sslverify' => false,
 		];
 
 		foreach ( $default_arguments as $key => $default_argument ) {
@@ -198,39 +197,7 @@ class WhoDat extends Abstract_WhoDat {
 			'return_url'  => esc_url( $this->get_return_url() ),
 		];
 
-		return $this->get( 'token/revoke', $query_args );
-	}
-
-	/**
-	 * Register a newly connected Square account to the website.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $account_data array of data returned from Square after a successful connection.
-	 *
-	 * @return array|null
-	 */
-	public function onboard_account( $account_data ) {
-		$merchant = tribe( Merchant::class );
-
-		// Get the stored code verifier for PKCE
-		$code_verifier = $merchant->get_code_verifier();
-
-		if ( empty( $code_verifier ) ) {
-			$this->log_error( 'OAuth Error', 'Missing code_verifier during token exchange', '' );
-			return null;
-		}
-
-		$query_args = [
-			'grant_type'    => 'authorization_code',
-			'code'          => $account_data['code'],
-			'code_verifier' => $code_verifier,
-		];
-
-		// Delete the code verifier as it's no longer needed
-		$merchant->delete_code_verifier();
-
-		return $this->get( 'authorize/redirect', $query_args );
+		return $this->get( 'oauth/token/revoke', $query_args );
 	}
 
 	/**
@@ -248,7 +215,7 @@ class WhoDat extends Abstract_WhoDat {
 			'refresh_token' => $refresh_token,
 		];
 
-		return $this->get( 'token/refresh', $query_args );
+		return $this->get( 'oauth/token/refresh', $query_args );
 	}
 
 	/**
@@ -259,13 +226,14 @@ class WhoDat extends Abstract_WhoDat {
 	 * @return array|null
 	 */
 	public function get_token_status() {
-		$merchant_id = tribe( Merchant::class )->get_merchant_id();
+		$merchant = tribe( Merchant::class );
 
 		$query_args = [
-			'merchant_id' => $merchant_id,
+			'access_token' => $merchant->get_access_token(),
+			'mode' => $merchant->get_mode(),
 		];
 
-		return $this->get( 'token/status', $query_args );
+		return $this->get( 'oauth/token/status', $query_args );
 	}
 
 	/**
@@ -283,5 +251,133 @@ class WhoDat extends Abstract_WhoDat {
 		];
 
 		return $this->get( 'merchants/' . $merchant_id, $query_args );
+	}
+
+	/**
+	 * Get required OAuth scopes for the Square integration.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $include_descriptions Whether to include detailed descriptions for each scope.
+	 *
+	 * @return array|null Array of required scopes or null if the request fails.
+	 */
+	public function get_required_scopes( $include_descriptions = false ) {
+		$query_args = [
+			'include_descriptions' => (bool) $include_descriptions,
+		];
+
+		$response = $this->get( 'oauth/scopes', $query_args );
+
+		if ( empty( $response ) || ! isset( $response['scopes'] ) ) {
+			do_action( 'tribe_log', 'error', 'Failed to retrieve Square OAuth scopes', [
+				'source' => 'tickets-commerce',
+				'response' => $response,
+			] );
+			return null;
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Verify if the currently connected merchant has all required scopes.
+	 *
+	 * @since TBD
+	 *
+	 * @return array {
+	 *     Array containing verification results
+	 *
+	 *     @type bool   $has_all_scopes    Whether the merchant has all required scopes.
+	 *     @type array  $missing_scopes    Array of missing scope IDs, if any.
+	 *     @type string $reconnect_url     URL to reconnect with the correct scopes, if needed.
+	 * }
+	 */
+	public function verify_merchant_scopes() {
+		// Get required scopes
+		$required_scopes_data = $this->get_required_scopes();
+
+		if ( null === $required_scopes_data ) {
+			return [
+				'has_all_scopes' => false,
+				'missing_scopes' => [],
+				'reconnect_url' => '',
+				'error' => 'Failed to retrieve required scopes',
+			];
+		}
+
+		$required_scopes = isset( $required_scopes_data['scopes'] )
+			? $required_scopes_data['scopes']
+			: [];
+
+		// Get token status which includes the scopes
+		$token_status = $this->get_token_status();
+
+		if ( empty( $token_status ) || isset( $token_status['error'] ) ) {
+			return [
+				'has_all_scopes' => false,
+				'missing_scopes' => $required_scopes,
+				'reconnect_url' => $this->get_reconnect_url( $required_scopes ),
+				'error' => 'Could not verify current token status',
+			];
+		}
+
+		// Extract current scopes
+		$current_scopes = isset( $token_status['scopes'] )
+			? $token_status['scopes']
+			: [];
+
+		// Find missing scopes
+		$missing_scopes = array_diff( $required_scopes, $current_scopes );
+
+		$result = [
+			'has_all_scopes' => empty( $missing_scopes ),
+			'missing_scopes' => $missing_scopes,
+		];
+
+		// If scopes are missing, provide a reconnect URL
+		if ( ! empty( $missing_scopes ) ) {
+			$result['reconnect_url'] = $this->get_reconnect_url( $required_scopes );
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Get a URL to reconnect with specific scopes.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $scopes Array of required scope IDs.
+	 *
+	 * @return string Reconnect URL.
+	 */
+	protected function get_reconnect_url( array $scopes = [] ) {
+		$merchant = tribe( Merchant::class );
+
+		// Generate and store the code challenge using the Merchant class
+		$code_challenge = $merchant->generate_code_challenge();
+		$user_id = get_current_user_id();
+
+		wp_set_current_user( 0 );
+		$nonce = wp_create_nonce( $this->state_nonce_action );
+		wp_set_current_user( $user_id );
+
+		$query_args = [
+			'mode'                  => tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live',
+			'code_challenge'        => $code_challenge,
+			'code_challenge_method' => 'S256',
+			'url'                   => tribe( On_Boarding_Endpoint::class )->get_return_url(),
+			'state'                 => $nonce,
+		];
+
+		// Add scopes if provided
+		if ( ! empty( $scopes ) ) {
+			$query_args['scopes'] = implode( ',', $scopes );
+		}
+
+		$connection_response = $this->get( 'oauth/authorize', $query_args );
+
+		return isset( $connection_response['auth_url'] ) ? $connection_response['auth_url'] : '';
 	}
 }
