@@ -6,7 +6,7 @@
  *
  * @type   {Object}
  */
-tribe.tickets.commerce.gateway.paypal = tribe.tickets.commerce.gateway.paypal || {};
+window.tribe.tickets.commerce.gateway.paypal = window.tribe.tickets.commerce.gateway.paypal || {};
 
 /**
  * This script Object for public usage of the methods.
@@ -15,7 +15,7 @@ tribe.tickets.commerce.gateway.paypal = tribe.tickets.commerce.gateway.paypal ||
  *
  * @type   {Object}
  */
-tribe.tickets.commerce.gateway.paypal.checkout = {};
+window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 
 /**
  * Initializes in a Strict env the code that manages the checkout for PayPal.
@@ -953,4 +953,4 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 
 	$( obj.ready );
 
-} )( jQuery, tribe.tickets.commerce.gateway.paypal );
+} )( jQuery, window.tribe.tickets.commerce.gateway.paypal );

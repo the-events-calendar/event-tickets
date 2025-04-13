@@ -4,7 +4,7 @@
  * @since 5.0.3
  * @type   {Object}
  */
-tribe.tickets = tribe.tickets || {};
+window.tribe.tickets = window.tribe.tickets || {};
 
 /**
  * Configures ET Loader Object in the Global Tribe variable
@@ -63,4 +63,4 @@ tribe.tickets.loader = {};
 			$loader.addClass( obj.selectors.hiddenElement.className() );
 		}
 	};
-} )( jQuery, tribe.tickets.loader );
+} )( jQuery, window.tribe.tickets.loader );
