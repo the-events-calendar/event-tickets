@@ -17,7 +17,7 @@ use Tribe__Tickets__Main as ET;
  *
  * @package TEC\Tickets\Admin\Onboarding
  */
-class Template extends Tribe__Template  {
+class Template extends Tribe__Template {
 	/**
 	 * Template constructor.
 	 *

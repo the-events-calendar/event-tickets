@@ -12,7 +12,7 @@ use TEC\Common\StellarWP\Installer\Installer;
 
 $tec_installed = Installer::get()->is_installed( 'the-events-calendar' );
 $tec_activated = Installer::get()->is_active( 'the-events-calendar' );
-$step_title         = $tec_installed ?
+$step_title    = $tec_installed ?
 	_x( 'Activate The Events Calendar', 'Activate label for the installer button.', 'event-tickets' )
 	: _x( 'Install The Events Calendar', 'Install label for the installer button.', 'event-tickets' );
 ?>
