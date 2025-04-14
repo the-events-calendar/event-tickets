@@ -39,3 +39,4 @@ addListener( Events::SUITE_AFTER, function () use ( $mu_plugin_path ) {
 	}
 } );
 
+// Remove the onboarding page after the suite is done.

@@ -71,6 +71,8 @@ class Controller extends Controller_Contract {
 		// Add the step handlers.
 		add_filter( 'tec_tickets_onboarding_wizard_handle', [ Optin::class, 'handle' ], 10, 2 );
 		add_filter( 'tec_tickets_onboarding_wizard_handle', [ Settings::class, 'handle' ], 11, 2 );
+
+		add_filter( 'tec_country_list', [ $this, 'add_country_list_modifiers' ] );
 	}
 
 	/**
@@ -207,5 +209,36 @@ class Controller extends Controller_Contract {
 	 */
 	public function register_rest_endpoints(): void {
 		$this->container->make( API::class )->register();
+	}
+
+	/**
+	 * Add modifiers to the country list for payment gateways.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $country_list The list of countries grouped by continent.
+	 *
+	 * @return array The modified country list.
+	 */
+	public function add_country_list_modifiers( $country_list ) {
+		$stripe_modifiers = new Stripe_Modifiers();
+		$square_modifiers = new Square_Modifiers();
+
+		// Loop through each continent
+		foreach ( $country_list as $continent => $countries ) {
+			// Loop through each country in the continent
+			foreach ( $countries as $country_code => $country_data ) {
+				// If this country exists in stripe modifiers, add the stripe flag
+				if ( isset( $stripe_modifiers->get_supported_countries()[ $country_code ] ) ) {
+					$country_list[ $continent ][ $country_code ]['stripe'] = true;
+				}
+
+				if ( isset( $square_modifiers->get_supported_countries()[ $country_code ] ) ) {
+					$country_list[ $continent ][ $country_code ]['square'] = true;
+				}
+			}
+		}
+
+		return $country_list;
 	}
 }
