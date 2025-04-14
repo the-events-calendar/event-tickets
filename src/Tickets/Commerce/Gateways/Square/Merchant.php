@@ -613,4 +613,65 @@ class Merchant extends Abstract_Merchant {
 	public function get_client_secret(): string {
 		return $this->get_access_token();
 	}
+
+	/**
+	 * Get the client ID for the Square SDK.
+	 *
+	 * @since 5.3.0
+	 *
+	 * @return string
+	 */
+	public function get_client_id() {
+		$client_id = tribe_get_option( Settings::$option_client_id );
+
+		if ( empty( $client_id ) && tribe( Gateway::class )->is_test_mode() ) {
+			$client_id = tribe_get_option( Settings::$option_sandbox_client_id );
+		}
+
+		return $client_id;
+	}
+
+	/**
+	 * Get the location ID for the Square merchant.
+	 *
+	 * @since 5.3.0
+	 *
+	 * @return string
+	 */
+	public function get_location_id() {
+		$location_id = tribe_get_option( Settings::$option_location_id );
+
+		if ( empty( $location_id ) && tribe( Gateway::class )->is_test_mode() ) {
+			$location_id = tribe_get_option( Settings::$option_sandbox_location_id );
+		}
+
+		return $location_id;
+	}
+
+	/**
+	 * Gets all available locations from the merchant's Square account.
+	 *
+	 * @since 5.3.0
+	 *
+	 * @return array|WP_Error Array of locations or WP_Error on failure.
+	 */
+	public function get_locations() {
+		if ( ! $this->is_active() ) {
+			return new \WP_Error( 'square-inactive', __( 'Square is not connected.', 'event-tickets' ) );
+		}
+
+		try {
+			$url = 'locations';
+			$args = [];
+			$response = tribe( Requests::class )->get( $url, [], $args );
+
+			if ( empty( $response['locations'] ) || ! is_array( $response['locations'] ) ) {
+				return [];
+			}
+
+			return $response['locations'];
+		} catch ( \Exception $e ) {
+			return new \WP_Error( 'square-locations-failed', $e->getMessage() );
+		}
+	}
 }

@@ -17,6 +17,51 @@ use Tribe__Utils__Array as Arr;
 class Settings {
 
 	/**
+	 * Client ID option key.
+	 *
+	 * @since 5.3.0
+	 *
+	 * @var string
+	 */
+	public static $option_client_id = 'tickets-commerce-square-client-id';
+
+	/**
+	 * Sandbox Client ID option key.
+	 *
+	 * @since 5.3.0
+	 *
+	 * @var string
+	 */
+	public static $option_sandbox_client_id = 'tickets-commerce-square-sandbox-client-id';
+
+	/**
+	 * Location ID option key.
+	 *
+	 * @since 5.3.0
+	 *
+	 * @var string
+	 */
+	public static $option_location_id = 'tickets-commerce-square-location-id';
+
+	/**
+	 * Sandbox Location ID option key.
+	 *
+	 * @since 5.3.0
+	 *
+	 * @var string
+	 */
+	public static $option_sandbox_location_id = 'tickets-commerce-square-sandbox-location-id';
+
+	/**
+	 * Test mode option key.
+	 *
+	 * @since 5.3.0
+	 *
+	 * @var string
+	 */
+	public static $option_test_mode = 'tickets-commerce-square-test-mode';
+
+	/**
 	 * Get all the settings for the Square gateway.
 	 *
 	 * @since TBD
@@ -72,9 +117,9 @@ class Settings {
 		// Only add these if we're connected.
 		if ( $is_connected && false === true ) {
 			$connected_vars = [
-				'merchant_name'    => $merchant->get_merchant_name(),
-				'merchant_email'   => $merchant->get_merchant_email(),
-				'merchant_id'      => $merchant->get_merchant_id(),
+				'merchant_name'     => $merchant->get_merchant_name(),
+				'merchant_email'    => $merchant->get_merchant_email(),
+				'merchant_id'       => $merchant->get_merchant_id(),
 				'merchant_currency' => $merchant->get_merchant_currency(),
 			];
 

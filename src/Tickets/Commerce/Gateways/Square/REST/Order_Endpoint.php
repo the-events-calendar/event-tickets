@@ -1,0 +1,436 @@
+<?php
+
+namespace TEC\Tickets\Commerce\Gateways\Square\REST;
+
+use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Checkout;
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
+use TEC\Tickets\Commerce\Gateways\Square\Gateway;
+use TEC\Tickets\Commerce\Gateways\Square\Payment;
+use TEC\Tickets\Commerce\Gateways\Square\Payment_Handler;
+use TEC\Tickets\Commerce\Gateways\Square\Status;
+use TEC\Tickets\Commerce\Order;
+
+use TEC\Tickets\Commerce\Status\Completed;
+use TEC\Tickets\Commerce\Status\Created;
+use TEC\Tickets\Commerce\Status\Pending;
+use TEC\Tickets\Commerce\Success;
+
+use WP_Error;
+use WP_REST_Request;
+use WP_REST_Response;
+use WP_REST_Server;
+use WP_Post;
+
+/**
+ * Class Order Endpoint.
+ *
+ * @since   TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square\REST
+ */
+class Order_Endpoint extends Abstract_REST_Endpoint {
+
+	/**
+	 * The REST API endpoint path.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected $path = '/commerce/square/order';
+
+	/**
+	 * Register the actual endpoint on WP Rest API.
+	 *
+	 * @since TBD
+	 */
+	public function register() {
+		$namespace     = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
+		$documentation = tribe( 'tickets.rest-v1.endpoints.documentation' );
+
+		register_rest_route(
+			$namespace,
+			$this->get_endpoint_path(),
+			[
+				'methods'             => WP_REST_Server::CREATABLE,
+				'args'                => $this->create_order_args(),
+				'callback'            => [ $this, 'handle_create_order' ],
+				'permission_callback' => '__return_true',
+			]
+		);
+
+		register_rest_route(
+			$namespace,
+			$this->get_endpoint_path() . '/(?P<order_id>[0-9a-zA-Z_-]+)',
+			[
+				'methods'             => WP_REST_Server::CREATABLE,
+				'args'                => $this->update_order_args(),
+				'callback'            => [ $this, 'handle_update_order' ],
+				'permission_callback' => '__return_true',
+			]
+		);
+
+		register_rest_route(
+			$namespace,
+			$this->get_endpoint_path() . '/(?P<order_id>[0-9a-zA-Z_-]+)',
+			[
+				'methods'             => WP_REST_Server::DELETABLE,
+				'args'                => $this->fail_order_args(),
+				'callback'            => [ $this, 'handle_fail_order' ],
+				'permission_callback' => '__return_true',
+			]
+		);
+
+		$documentation->register_documentation_provider( $this->get_endpoint_path(), $this );
+	}
+
+	/**
+	 * Arguments used for the endpoint.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function create_order_args() {
+		return [];
+	}
+
+	/**
+	 * Handles the request that creates an order with Tickets Commerce and the Square gateway.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 *
+	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
+	 */
+	public function handle_create_order( WP_REST_Request $request ) {
+		$response = [
+			'success' => false,
+		];
+
+		$orders    = tribe( Order::class );
+		$messages  = $this->get_error_messages();
+		$data      = $request->get_json_params();
+		$purchaser = $orders->get_purchaser_data( $data );
+
+		if ( is_wp_error( $purchaser ) ) {
+			return $purchaser;
+		}
+
+		if ( ! tribe( Cart::class )->has_items() ) {
+			return new WP_Error(
+				'tec-tc-empty-cart',
+				$messages['empty-cart'],
+				[
+					'purchaser' => $purchaser,
+					'data'      => $data,
+				]
+			);
+		}
+
+		// For Square, we create a placeholder payment that will be updated later with the actual payment details
+		$payment = tribe( Payment_Handler::class )->create_payment_for_cart( $data['payment_source_id'], tribe( Cart::class ) );
+
+		if ( is_wp_error( $payment ) || empty( $payment ) ) {
+			return new WP_Error( 'tec-tc-gateway-square-failed-creating-payment', $messages['failed-creating-payment'] );
+		}
+
+		// If an order was created for this hash, we will attempt to update it, otherwise create a new one.
+		$order = $orders->create_from_cart( tribe( Gateway::class ), $purchaser );
+		if ( ! $order instanceof WP_Post ) {
+			return new WP_Error(
+				'tec-tc-gateway-square-order-creation-failed',
+				$messages['failed-order-creation'],
+				[
+					'cart_items' => tribe( Cart::class )->get_items_in_cart(),
+					'order'      => $order,
+					'purchaser'  => $purchaser,
+				]
+			);
+		}
+
+		// Flag the order as on checkout screen hold.
+		$orders->set_on_checkout_screen_hold( $order->ID );
+
+		if ( empty( $payment['id'] ) || empty( $payment['created_at'] ) ) {
+			return new WP_Error( 'tec-tc-gateway-square-failed-creating-order', $messages['failed-creating-order'], $order );
+		}
+
+		tec_tc_orders()
+			->by_args(
+				[
+					'id' => $order->ID,
+				]
+			)
+			->set_args(
+				[
+					'gateway_payload'  => $payment,
+					'gateway_order_id' => $payment['id'],
+				]
+			)
+			->save();
+
+		// Set order to Created status
+		$orders->modify_status(
+			$order->ID,
+			Created::SLUG,
+			[
+				'gateway_payload'  => $payment,
+				'gateway_order_id' => $payment['id'],
+			]
+		);
+
+		$orders->unlock_order( $order->ID );
+
+		// Respond with the order data for Square usage
+		$response['success']       = true;
+		$response['order_id']      = $order->ID;
+		$response['payment_id']    = $payment['id'];
+		$response['return_url']    = add_query_arg( [ Cart::$cookie_query_arg => tribe( Cart::class )->get_cart_hash() ], tribe( Checkout::class )->get_url() );
+
+		return new WP_REST_Response( $response );
+	}
+
+	/**
+	 * Arguments used for the updating order endpoint.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function update_order_args() {
+		return [
+			'order_id'   => [
+				'description'       => __( 'Order ID in Square', 'event-tickets' ),
+				'required'          => true,
+				'type'              => 'string',
+				'validate_callback' => static function ( $value ) {
+					if ( ! is_string( $value ) ) {
+						return new WP_Error( 'rest_invalid_param', 'The Order ID argument must be a string.', [ 'status' => 400 ] );
+					}
+
+					return $value;
+				},
+				'sanitize_callback' => [ $this, 'sanitize_callback' ],
+			],
+			'payment_id' => [
+				'description'       => __( 'Payment ID from Square', 'event-tickets' ),
+				'required'          => true,
+				'type'              => 'string',
+				'validate_callback' => static function ( $value ) {
+					if ( ! is_string( $value ) ) {
+						return new WP_Error( 'rest_invalid_param', 'The Payment ID argument must be a string.', [ 'status' => 400 ] );
+					}
+
+					return $value;
+				},
+				'sanitize_callback' => [ $this, 'sanitize_callback' ],
+			],
+		];
+	}
+
+	/**
+	 * Handles the request that updates an order with Tickets Commerce and the Square gateway.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 *
+	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
+	 */
+	public function handle_update_order( WP_REST_Request $request ) {
+		$response = [
+			'success' => false,
+		];
+
+		$messages       = $this->get_error_messages();
+		$gateway_order_id = $request->get_param( 'order_id' );
+
+		$order = tec_tc_orders()->by_args(
+			[
+				'status'           => [
+					tribe( Created::class )->get_wp_slug(),
+					tribe( Pending::class )->get_wp_slug(),
+				], // Potentially change this to method that fetch all non-final statuses.
+				'gateway_order_id' => $gateway_order_id,
+			]
+		)->first();
+
+		if ( is_wp_error( $order ) || empty( $order ) ) {
+			return new WP_Error( 'tec-tc-gateway-square-order-not-found', $messages['order-not-found'], $order );
+		}
+
+		$orders = tribe( Order::class );
+
+		// Flag the order as on checkout screen hold.
+		$orders->set_on_checkout_screen_hold( $order->ID );
+
+		$payment_id = $request->get_param( 'payment_id' );
+		$payment = Payment::get( $payment_id );
+
+		if ( is_wp_error( $payment ) ) {
+			return new WP_Error( 'tec-tc-gateway-square-failed-getting-payment', $messages['failed-getting-payment'], $order );
+		}
+
+		if ( empty( $payment['id'] ) || $payment['id'] !== $payment_id ) {
+			return new WP_Error( 'tec-tc-gateway-square-failed-payment-id', $messages['failed-getting-payment'], $order );
+		}
+
+		// Update order with payment information
+		$orders->modify_status(
+			$order->ID,
+			Completed::SLUG,
+			[
+				'gateway_payload'  => $payment,
+				'gateway_order_id' => $payment['id'],
+			]
+		);
+
+		// When we have success we clear the cart.
+		tribe( Cart::class )->clear_cart();
+
+		// Respond with the necessary data
+		$response['success']          = true;
+		$response['status']           = Completed::SLUG;
+		$response['order_id']         = $order->ID;
+		$response['gateway_order_id'] = $payment_id;
+		$response['redirect_url']     = add_query_arg( [ 'tc-order-id' => $payment_id ], tribe( Success::class )->get_url() );
+
+		return new WP_REST_Response( $response );
+	}
+
+	/**
+	 * Arguments used for the fail order endpoint.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function fail_order_args() {
+		return [
+			'order_id'      => [
+				'description'       => __( 'Order ID in Square', 'event-tickets' ),
+				'required'          => true,
+				'type'              => 'string',
+				'validate_callback' => static function ( $value ) {
+					if ( ! is_string( $value ) ) {
+						return new WP_Error( 'rest_invalid_param', 'The order ID argument must be a string.', [ 'status' => 400 ] );
+					}
+
+					return $value;
+				},
+				'sanitize_callback' => [ $this, 'sanitize_callback' ],
+			],
+			'failed_status' => [
+				'description'       => __( 'To which status the failing should change this order to', 'event-tickets' ),
+				'required'          => false,
+				'type'              => 'string',
+				'validate_callback' => static function ( $value ) {
+					if ( ! is_string( $value ) ) {
+						return new WP_Error( 'rest_invalid_param', 'The failed status argument must be a string.', [ 'status' => 400 ] );
+					}
+
+					return $value;
+				},
+				'sanitize_callback' => [ $this, 'sanitize_callback' ],
+			],
+			'failed_reason' => [
+				'description'       => __( 'Why this particular order has failed.', 'event-tickets' ),
+				'required'          => false,
+				'type'              => 'string',
+				'validate_callback' => static function ( $value ) {
+					if ( ! is_string( $value ) ) {
+						return new WP_Error( 'rest_invalid_param', 'The failed reason argument must be a string.', [ 'status' => 400 ] );
+					}
+
+					return $value;
+				},
+				'sanitize_callback' => [ $this, 'sanitize_callback' ],
+			],
+		];
+	}
+
+	/**
+	 * Handles the request that fails an order with Tickets Commerce and the Square gateway.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 *
+	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
+	 */
+	public function handle_fail_order( WP_REST_Request $request ) {
+		$response = [
+			'success' => false,
+		];
+
+		$messages = $this->get_error_messages();
+		$order_id = $request->get_param( 'order_id' );
+		$failed_status = $request->get_param( 'failed_status' );
+		$failed_reason = $request->get_param( 'failed_reason' );
+
+		$order = tec_tc_orders()->by_args(
+			[
+				'status'           => [
+					tribe( Created::class )->get_wp_slug(),
+					tribe( Pending::class )->get_wp_slug(),
+				],
+				'gateway_order_id' => $order_id,
+			]
+		)->first();
+
+		if ( is_wp_error( $order ) || empty( $order ) ) {
+			return new WP_Error( 'tec-tc-gateway-square-order-not-found', $messages['order-not-found'], $order );
+		}
+
+		$orders = tribe( Order::class );
+
+		// Mark the order as failed
+		$orders->modify_status(
+			$order->ID,
+			$failed_status ?: 'failed',
+			[
+				'gateway_payload'  => [
+					'failed_reason' => $failed_reason,
+				],
+				'gateway_order_id' => $order_id,
+			]
+		);
+
+		$response['success'] = true;
+		$response['status'] = $failed_status ?: 'failed';
+		$response['message'] = $failed_reason ?: $messages['failed-payment'];
+
+		return new WP_REST_Response( $response );
+	}
+
+	/**
+	 * Returns an array of error messages that are used by the API responses.
+	 *
+	 * @since TBD
+	 *
+	 * @return array $messages Array of error messages.
+	 */
+	public function get_error_messages() {
+		$messages = [
+			'failed-order-creation'      => __( 'Creating new order failed, please refresh your checkout page.', 'event-tickets' ),
+			'failed-creating-payment'    => __( 'Creating new Square payment failed. Please try again.', 'event-tickets' ),
+			'failed-creating-order'      => __( 'Creating new Square order failed. Please try again.', 'event-tickets' ),
+			'order-not-found'            => __( 'Order not found, please restart your checkout process.', 'event-tickets' ),
+			'failed-getting-payment'     => __( 'Your payment is invalid. Please try again.', 'event-tickets' ),
+			'failed-payment'             => __( 'Your payment method has failed. Please try again.', 'event-tickets' ),
+			'invalid-payment-status'     => __( 'Your payment status was not recognized. Please try again.', 'event-tickets' ),
+			'empty-cart'                 => __( 'Cannot generate an order for an empty cart, please select new items to checkout.', 'event-tickets' ),
+		];
+		/**
+		 * Filter the error messages for Square checkout.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $messages Array of error messages.
+		 */
+		return apply_filters( 'tec_tickets_commerce_square_order_endpoint_error_messages', $messages );
+	}
+}

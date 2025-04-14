@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Tickets\Commerce\Gateways\Square\REST\On_Boarding_Endpoint;
+use TEC\Tickets\Commerce\Gateways\Square\REST\Order_Endpoint;
 use TEC\Common\Contracts\Service_Provider;
 
 /**
@@ -20,6 +21,7 @@ class REST extends Service_Provider {
 	 */
 	public function register_endpoints() {
 		$this->container->make( On_Boarding_Endpoint::class )->register();
+		$this->container->make( Order_Endpoint::class )->register();
 	}
 
 	/**
@@ -29,5 +31,6 @@ class REST extends Service_Provider {
 	 */
 	public function register() {
 		$this->container->singleton( On_Boarding_Endpoint::class );
+		$this->container->singleton( Order_Endpoint::class );
 	}
 }

@@ -57,6 +57,24 @@ class Gateway extends Abstract_Gateway {
 	const VERSION = '1.0.0';
 
 	/**
+	 * Application ID for live mode.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const APPLICATION_ID_LIVE = '';
+
+	/**
+	 * Application ID for sandbox mode.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const APPLICATION_ID_SANDBOX = '';
+
+	/**
 	 * @inheritDoc
 	 */
 	public static function get_label() {
@@ -189,6 +207,71 @@ class Gateway extends Abstract_Gateway {
 			'<p><strong>%1$s</strong></p><p>%2$s</p>',
 			$notice_header,
 			$notice_text
+		);
+	}
+
+	/**
+	 * Get the Square.js URL based on test mode.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The Square.js URL.
+	 */
+	public function get_square_js_url() {
+		$is_test_mode = $this->is_test_mode();
+		$square_js_url = $is_test_mode
+			? 'https://sandbox.web.squarecdn.com/v1/square.js'
+			: 'https://web.squarecdn.com/v1/square.js';
+
+		/**
+		 * Filters the Square.js URL.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $square_js_url The Square.js URL.
+		 * @param bool   $is_test_mode  Whether test mode is active.
+		 */
+		return apply_filters( 'tec_tickets_commerce_gateway_square_js_url', $square_js_url, $is_test_mode );
+	}
+
+	/**
+	 * Get the Application ID for Square, with support for constant override and mode awareness.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The Square Application ID.
+	 */
+	public function get_application_id() {
+		$mode = $this->is_test_mode() ? 'SANDBOX' : 'LIVE';
+		$constant_name = 'TEC_TICKETS_COMMERCE_SQUARE_APPLICATION_ID_' . $mode;
+
+		// Check if external constant is defined
+		if ( defined( $constant_name ) ) {
+			return constant( $constant_name );
+		}
+
+		// Generic fallback external constant
+		if ( defined( 'TEC_TICKETS_COMMERCE_SQUARE_APPLICATION_ID' ) ) {
+			return constant( 'TEC_TICKETS_COMMERCE_SQUARE_APPLICATION_ID' );
+		}
+
+		// Get from class constants based on mode
+		$application_id = $this->is_test_mode()
+			? static::APPLICATION_ID_SANDBOX
+			: static::APPLICATION_ID_LIVE;
+
+		/**
+		 * Filter the Square Application ID.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $application_id The Application ID.
+		 * @param string $mode           The current mode ('SANDBOX' or 'LIVE').
+		 */
+		return apply_filters(
+			'tec_tickets_commerce_square_application_id',
+			$application_id,
+			$mode
 		);
 	}
 }
