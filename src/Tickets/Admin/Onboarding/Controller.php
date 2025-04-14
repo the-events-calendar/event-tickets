@@ -30,6 +30,7 @@ class Controller extends Controller_Contract {
 	 */
 	public function do_register(): void {
 		Asset_Config::add_group_path( 'tec-tickets-onboarding', tribe( 'tickets.main' )->plugin_path . 'build/', 'wizard' );
+
 		$this->add_filters();
 		$this->add_actions();
 
@@ -38,6 +39,17 @@ class Controller extends Controller_Contract {
 		$this->container->singleton( API::class );
 
 		$this->container->make( API::class )->set_data( $this->container->make( Data::class ) );
+	}
+
+	/**
+	 * Whether the controller is active.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_active(): bool {
+		return apply_filters( 'tec_tickets_onboarding_is_active', true );
 	}
 
 	/**
