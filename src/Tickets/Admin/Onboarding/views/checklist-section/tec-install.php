@@ -6,7 +6,6 @@
  *
  * @var \Tribe\Tickets\Admin\Onboarding\Template  $this      The template instance.
  * @var \Tribe\Tickets\Admin\Onboarding\Installer $installer The installer instance.
- *
  */
 
 use TEC\Common\StellarWP\Installer\Installer;
