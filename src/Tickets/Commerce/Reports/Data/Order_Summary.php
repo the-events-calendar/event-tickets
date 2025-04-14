@@ -12,10 +12,13 @@ namespace TEC\Tickets\Commerce\Reports\Data;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Ticket;
-use TEC\Tickets\Commerce\Traits\Is_Ticket;
+use TEC\Tickets\Commerce\Traits\Type;
 use TEC\Tickets\Commerce\Utils\Value;
+use TEC\Tickets\Commerce\Values\Currency_Value;
+use TEC\Tickets\Commerce\Values\Legacy_Value_Factory;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets;
+use WP_Post;
 
 /**
  * Class Order_Summary.
@@ -26,7 +29,7 @@ use Tribe__Tickets__Tickets;
  */
 class Order_Summary {
 
-	use Is_Ticket;
+	use Type;
 
 	/**
 	 * @since 5.6.7
@@ -78,6 +81,20 @@ class Order_Summary {
 	protected array $event_sales_data = [];
 
 	/**
+	 * @since 5.21.0
+	 *
+	 * @var Currency_Value[] The event completed fees.
+	 */
+	protected array $event_completed_fees = [];
+
+	/**
+	 * @since 5.21.0
+	 *
+	 * @var Currency_Value[] The event completed discounts.
+	 */
+	protected array $event_completed_discounts = [];
+
+	/**
 	 * Order_Summary constructor.
 	 *
 	 * @since 5.6.7
@@ -87,6 +104,16 @@ class Order_Summary {
 	public function __construct( int $post_id ) {
 		$this->post_id = $post_id;
 		$this->init_vars();
+	}
+
+	/**
+	 * Initialize the data.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @return void
+	 */
+	public function init() {
 		$this->build_data();
 	}
 
@@ -121,14 +148,23 @@ class Order_Summary {
 	 */
 	protected function init_vars(): void {
 		$this->total_sales   = [
-			'qty'    => 0,
-			'amount' => 0,
-			'price'  => $this->format_price( 0 ),
+			'qty'             => 0,
+			'amount'          => 0,
+			'price'           => $this->format_price( 0 ),
+			'total_fees'      => $this->format_price( 0 ),
+			'fees_qty'        => 0,
+			'total_discounts' => $this->format_price( 0 ),
+			'discounts_qty'   => 0,
 		];
+
 		$this->total_ordered = [
-			'qty'    => 0,
-			'amount' => 0,
-			'price'  => $this->format_price( 0 ),
+			'qty'             => 0,
+			'amount'          => 0,
+			'price'           => $this->format_price( 0 ),
+			'total_fees'      => $this->format_price( 0 ),
+			'fees_qty'        => 0,
+			'total_discounts' => $this->format_price( 0 ),
+			'discounts_qty'   => 0,
 		];
 	}
 
@@ -172,6 +208,41 @@ class Order_Summary {
 		}
 
 		$this->build_order_sales_data();
+		$this->format_prices();
+	}
+
+	/**
+	 * Format the prices for all of the data.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @return void
+	 */
+	protected function format_prices() {
+		$all_fees      = [];
+		$all_discounts = [];
+
+		// Handle the event sales by status.
+		foreach ( $this->event_sales_by_status as &$data ) {
+			// Add the fees and discounts to their respective arrays.
+			$all_fees      = array_merge( $all_fees, $data['total_fee_amounts'] );
+			$all_discounts = array_merge( $all_discounts, $data['total_discount_amounts'] );
+
+			// Update the different prices with the formatted values.
+			$data['total_sales_price']    = Currency_Value::create_from_float( $data['total_sales_amount'] )->get();
+			$data['total_fee_price']      = Currency_Value::sum( ...$data['total_fee_amounts'] )->get();
+			$data['total_discount_price'] = Currency_Value::sum( ...$data['total_discount_amounts'] )->get();
+		}
+
+		// Handle the total ordered.
+		$this->total_ordered['price']           = Currency_Value::create_from_float( $this->total_ordered['amount'] )->get();
+		$this->total_ordered['total_fees']      = Currency_Value::sum( ...$all_fees )->get();
+		$this->total_ordered['total_discounts'] = Currency_Value::sum( ...$all_discounts )->get();
+
+		// Handle the total sales.
+		$this->total_sales['price']           = Currency_Value::create_from_float( $this->total_sales['amount'] )->get();
+		$this->total_sales['total_fees']      = Currency_Value::sum( ...$this->event_completed_fees )->get();
+		$this->total_sales['total_discounts'] = Currency_Value::sum( ...$this->event_completed_discounts )->get();
 	}
 
 	/**
@@ -188,9 +259,7 @@ class Order_Summary {
 		$orders = tec_tc_orders()->by_args( $args )->all();
 
 		foreach ( $orders as $order ) {
-			foreach ( $order->items as $item ) {
-				$this->process_order_sales_data( $order->status_slug, $item );
-			}
+			$this->process_order_sales_data( $order );
 		}
 	}
 
@@ -198,15 +267,40 @@ class Order_Summary {
 	 * Process the order sales data.
 	 *
 	 * @since 5.9.0
+	 * @since 5.21.0 Updated this method to handle an order directly, instead of individual items.
 	 *
-	 * @param string            $status_slug The status slug.
-	 * @param array<string,int> $item The ticket item data.
+	 * @param WP_Post $order The order object with extra properties.
 	 */
-	protected function process_order_sales_data( string $status_slug, $item ): void {
-		if ( ! $this->is_ticket( $item ) ) {
-			return;
+	protected function process_order_sales_data( WP_Post $order ): void {
+		// Handle items first.
+		foreach ( $order->items as $item ) {
+			if ( $this->is_ticket( $item ) ) {
+				$this->process_ticket_item_data( $order->status_slug, $item );
+			}
 		}
 
+		// Handle fees.
+		foreach ( $order->fees as $fee ) {
+			$this->process_fee_item_data( $order->status_slug, $fee );
+		}
+
+		// Handle coupons.
+		foreach ( $order->coupons as $coupon ) {
+			$this->process_coupon_item_data( $order->status_slug, $coupon );
+		}
+	}
+
+	/**
+	 * Process the ticket item data.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param string $status_slug The status slug.
+	 * @param array  $item        The item. It should already be validated as a ticket.
+	 *
+	 * @return void
+	 */
+	protected function process_ticket_item_data( string $status_slug, array $item ) {
 		$ticket_id = $item['ticket_id'];
 		$tickets   = $this->get_tickets();
 
@@ -214,36 +308,103 @@ class Order_Summary {
 			return;
 		}
 
-		if ( ! isset( $this->event_sales_by_status[ $status_slug ] ) ) {
-			$status = tribe( Status_Handler::class )->get_by_slug( $status_slug );
-
-			// This is the first time we've seen this status, so initialize it.
-			$this->event_sales_by_status[ $status_slug ] = [
-				'label'              => $status->get_name(),
-				'qty_sold'           => 0,
-				'total_sales_amount' => 0,
-				'total_sales_price'  => $this->format_price( 0 ),
-			];
-		}
+		$this->maybe_initialize_status( $status_slug );
 
 		$sales_amount = $item['sub_total'];
 		$quantity     = $item['quantity'];
 
 		$this->event_sales_by_status[ $status_slug ]['qty_sold']           += $quantity;
 		$this->event_sales_by_status[ $status_slug ]['total_sales_amount'] += $sales_amount;
-		$this->event_sales_by_status[ $status_slug ]['total_sales_price']   = $this->format_price( $this->event_sales_by_status[ $status_slug ]['total_sales_amount'] );
 
 		// process the total ordered data.
 		$this->total_ordered['qty']    += $quantity;
 		$this->total_ordered['amount'] += $sales_amount;
-		$this->total_ordered['price']   = $this->format_price( $this->total_ordered['amount'] );
 
 		// Only completed orders should be counted in the total sales.
 		if ( Completed::SLUG === $status_slug ) {
 			$this->total_sales['qty']    += $quantity;
 			$this->total_sales['amount'] += $sales_amount;
-			$this->total_sales['price']   = $this->format_price( $this->total_sales['amount'] );
 		}
+	}
+
+	/**
+	 * Process the fee item data.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param string $status_slug The status slug.
+	 * @param array  $item        The item.
+	 *
+	 * @return void
+	 */
+	protected function process_fee_item_data( string $status_slug, array $item ) {
+		$amount = Currency_Value::create_from_float( $item['sub_total'] );
+
+		// Add the fee amount to the total fees for the status.
+		$this->event_sales_by_status[ $status_slug ]['total_fee_amounts'][] = $amount;
+
+		// Include the fee quantity in the total ordered.
+		$this->total_ordered['fees_qty'] += $item['quantity'];
+
+		// Include the fee data in the total sales.
+		if ( Completed::SLUG === $status_slug ) {
+			$this->total_sales['amount']   += $item['sub_total'];
+			$this->total_sales['fees_qty'] += $item['quantity'];
+			$this->event_completed_fees[]   = $amount;
+		}
+	}
+
+	/**
+	 * Process the coupon item data.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param string $status_slug The status slug.
+	 * @param array  $item        The item.
+	 *
+	 * @return void
+	 */
+	protected function process_coupon_item_data( string $status_slug, array $item ) {
+		$amount = Legacy_Value_Factory::to_currency_value( $item['sub_total'] );
+
+		// Add the discount amount to the total discounts for the status.
+		$this->event_sales_by_status[ $status_slug ]['total_discount_amounts'][] = $amount;
+
+		// Include the discount quantity in the total ordered.
+		$this->total_ordered['discounts_qty'] += $item['quantity'];
+
+		// Decrease total sales by the coupon amount. The sub_total is negative, so we can add it.
+		if ( Completed::SLUG === $status_slug ) {
+			$this->total_sales['amount']        += $item['sub_total']->get_decimal();
+			$this->total_sales['discounts_qty'] += $item['quantity'];
+			$this->event_completed_discounts[]   = $amount;
+		}
+	}
+
+	/**
+	 * Initialize the data for the status slug if we haven't already.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param string $status_slug The status slug.
+	 *
+	 * @return void
+	 */
+	protected function maybe_initialize_status( string $status_slug ) {
+		if ( isset( $this->event_sales_by_status[ $status_slug ] ) ) {
+			return;
+		}
+
+		$status = tribe( Status_Handler::class )->get_by_slug( $status_slug );
+
+		$this->event_sales_by_status[ $status_slug ] = [
+			'label'                  => $status->get_name(),
+			'qty_sold'               => 0,
+			'total_fee_amounts'      => [],
+			'total_discount_amounts' => [],
+			'total_sales_amount'     => 0,
+			'total_sales_price'      => $this->format_price( 0 ),
+		];
 	}
 
 	/**

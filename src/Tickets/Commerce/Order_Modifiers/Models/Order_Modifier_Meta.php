@@ -39,8 +39,8 @@ class Order_Modifier_Meta extends Model implements ModelCrud, ModelFromQueryBuil
 		'id'                => 'int',
 		'order_modifier_id' => 'int',
 		'meta_key'          => 'string',
-		'meta_value'        => 'string',
-		'priority'          => 'int',
+		'meta_value'        => 'string|int',
+		'priority'          => [ 'int', 0 ],
 		'created_at'        => 'string',
 	];
 
@@ -123,5 +123,71 @@ class Order_Modifier_Meta extends Model implements ModelCrud, ModelFromQueryBuil
 	 */
 	public static function fromQueryBuilderObject( $object ): self {
 		return Order_Modifier_Meta_DTO::fromObject( $object )->toModel();
+	}
+
+	/**
+	 * Validates an attribute to a PHP type.
+	 *
+	 * This adds the ability to have multiple types separated by a pipe character.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param string $key   Property name.
+	 * @param mixed  $value Property value.
+	 *
+	 * @return bool
+	 */
+	public function isPropertyTypeValid( string $key, $value ): bool {
+		$type = $this->getPropertyType( $key );
+
+		if ( ! str_contains( $type, '|' ) ) {
+			return parent::isPropertyTypeValid( $key, $value );
+		}
+
+		// With multiple types, check each one until we get a valid match, otherwise return false.
+		$types = array_map(
+			static fn( $item ) => trim( $item ),
+			explode( '|', $type )
+		);
+
+		foreach ( $types as $type ) {
+			switch ( $type ) {
+				case 'int':
+					$valid = is_int( $value );
+					break;
+
+				case 'string':
+					$valid = is_string( $value );
+					break;
+
+				case 'bool':
+					$valid = is_bool( $value );
+					break;
+
+				case 'array':
+					$valid = is_array( $value );
+					break;
+
+				case 'float':
+					$valid = is_float( $value );
+					break;
+
+				case 'number':
+					$valid = is_int( $value ) || is_float( $value );
+					break;
+
+				default:
+					$valid = $value instanceof $type;
+					break;
+			}
+
+			// We've found a valid type, so we can return true.
+			if ( $valid ) {
+				return true;
+			}
+		}
+
+		// If we've reached this point, we haven't found a valid type, so return false.
+		return false;
 	}
 }

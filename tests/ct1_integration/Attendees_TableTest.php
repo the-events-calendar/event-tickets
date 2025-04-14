@@ -62,7 +62,7 @@ class Attendees_TableTest extends WPTestCase {
 	public function create_order_for_ticket( $ticket_id, $quantity = 5 ) {
 		// create order.
 		$cart = new Cart();
-		$cart->get_repository()->add_item( $ticket_id, $quantity );
+		$cart->get_repository()->upsert_item( $ticket_id, $quantity );
 
 		$purchaser = [
 			'purchaser_user_id'    => 0,

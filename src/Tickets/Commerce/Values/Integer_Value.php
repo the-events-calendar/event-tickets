@@ -7,7 +7,7 @@
 
 declare( strict_types=1 );
 
-namespace TEC\Tickets\Commerce\Order_Modifiers\Values;
+namespace TEC\Tickets\Commerce\Values;
 
 use InvalidArgumentException;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Validate_Numeric;
@@ -30,6 +30,19 @@ class Integer_Value extends Base_Value {
 	 */
 	public function get(): int {
 		return $this->value;
+	}
+
+	/**
+	 * Add a value to the current value.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param int $value The value to add.
+	 *
+	 * @return static A new instance with the added value.
+	 */
+	public function add( int $value ): Integer_Value {
+		return 0 === $value ? $this : new static( $this->get() + $value );
 	}
 
 	/**

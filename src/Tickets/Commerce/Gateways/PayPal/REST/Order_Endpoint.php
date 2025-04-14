@@ -13,6 +13,7 @@ use TEC\Tickets\Commerce\Status\Denied;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Success;
+use TEC\Tickets\Commerce\Values\Legacy_Value_Factory;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Utils__Array as Arr;
 
@@ -117,7 +118,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		$unit = [
 			'reference_id' => $order->ID,
-			'value'        => (string) $order->total_value->get_decimal(),
+			'value'        => (string) Legacy_Value_Factory::to_precision_value( $order->total_value ),
 			'currency'     => $order->currency,
 			'first_name'   => $order->purchaser['first_name'],
 			'last_name'    => $order->purchaser['last_name'],
@@ -127,6 +128,17 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		foreach ( $order->items as $item ) {
 			$unit['items'][] = $this->get_unit_data( $item, $order );
 		}
+
+		/**
+		 * Filters the unit data for the order before sending it to PayPal.
+		 *
+		 * @since 5.21.0
+		 *
+		 * @param array          $unit     The structured data for the order.
+		 * @param WP_Post        $order    The current order object.
+		 * @param Order_Endpoint $endpoint The current instance of the Order_Endpoint class.
+		 */
+		$unit = (array) apply_filters( 'tec_tickets_commerce_paypal_order_unit', $unit, $order, $this );
 
 		$paypal_order = tribe( Client::class )->create_order( $unit );
 
