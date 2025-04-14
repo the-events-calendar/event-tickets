@@ -12,34 +12,22 @@ import { ContainerPanel } from '../../../../../../modules/elements';
 import TicketContainerHeader from '../container-header/template';
 import TicketContainerContent from '../container-content/container';
 import { LAYOUT } from '../../../../../../modules/elements/container-panel';
-import {
-	ClockActive,
-	ClockInactive,
-	TicketActive,
-	TicketInactive,
-} from '../../../../../../modules/icons';
+import { ClockActive, ClockInactive, TicketActive, TicketInactive } from '../../../../../../modules/icons';
 
-const ClockIcon = ( { isDisabled } ) => (
-	isDisabled ? <ClockInactive /> : <ClockActive />
-);
+const ClockIcon = ( { isDisabled } ) => ( isDisabled ? <ClockInactive /> : <ClockActive /> );
 
 ClockIcon.propTypes = {
 	isDisabled: PropTypes.bool.isRequired,
 };
 
-const TicketIcon = ( { isDisabled } ) => (
-	isDisabled ? <TicketInactive /> : <TicketActive />
-);
+const TicketIcon = ( { isDisabled } ) => ( isDisabled ? <TicketInactive /> : <TicketActive /> );
 
 TicketIcon.propTypes = {
 	isDisabled: PropTypes.bool.isRequired,
 };
 
-const TicketContainerIcon = ( { isDisabled, isFuture, isPast } ) => (
-	isFuture || isPast
-		? <ClockIcon isDisabled={ isDisabled } />
-		: <TicketIcon isDisabled={ isDisabled } />
-);
+const TicketContainerIcon = ( { isDisabled, isFuture, isPast } ) =>
+	isFuture || isPast ? <ClockIcon isDisabled={ isDisabled } /> : <TicketIcon isDisabled={ isDisabled } />;
 
 TicketContainerIcon.propTypes = {
 	isDisabled: PropTypes.bool.isRequired,
@@ -49,19 +37,10 @@ TicketContainerIcon.propTypes = {
 
 const TicketContainer = ( { clientId, isDisabled, isFuture, isPast, isSelected, isOnSale } ) => (
 	<ContainerPanel
-		className={ classNames(
-			'tribe-editor__ticket__container',
-			{ 'tribe-editor__ticket-on-sale': isOnSale },
-		) }
+		className={ classNames( 'tribe-editor__ticket__container', { 'tribe-editor__ticket-on-sale': isOnSale } ) }
 		layout={ LAYOUT.ticket }
-		icon={
-			<TicketContainerIcon
-				isDisabled={ isDisabled }
-				isFuture={ isFuture }
-				isPast={ isPast }
-			/>
-		}
-		header={ <TicketContainerHeader clientId={ clientId } isSelected={ isSelected } isOnSale={ isOnSale }/> }
+		icon={ <TicketContainerIcon isDisabled={ isDisabled } isFuture={ isFuture } isPast={ isPast } /> }
+		header={ <TicketContainerHeader clientId={ clientId } isSelected={ isSelected } isOnSale={ isOnSale } /> }
 		content={ <TicketContainerContent clientId={ clientId } /> }
 	/>
 );

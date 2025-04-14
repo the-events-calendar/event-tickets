@@ -14,15 +14,8 @@ import { select } from '@wordpress/data';
  * Internal dependencies
  */
 import RSVP from './template';
-import {
-	actions,
-	selectors,
-	thunks,
-} from '../../data/blocks/rsvp';
-import {
-	isModalShowing,
-	getModalTicketId,
-} from '../../data/shared/move/selectors';
+import { actions, selectors, thunks } from '../../data/blocks/rsvp';
+import { isModalShowing, getModalTicketId } from '../../data/shared/move/selectors';
 import { withStore } from '@moderntribe/common/hoc';
 import withSaveData from '../hoc/with-save-data';
 import { moment as momentUtil, time } from '@moderntribe/common/utils';
@@ -40,11 +33,11 @@ const getIsInactive = ( state ) => {
 
 	const startMoment = momentUtil.setTimeInSeconds(
 		startDateMoment.clone(),
-		time.toSeconds( startTime, time.TIME_FORMAT_HH_MM ),
+		time.toSeconds( startTime, time.TIME_FORMAT_HH_MM )
 	);
 	const endMoment = momentUtil.setTimeInSeconds(
 		endDateMoment.clone(),
-		time.toSeconds( endTime, time.TIME_FORMAT_HH_MM ),
+		time.toSeconds( endTime, time.TIME_FORMAT_HH_MM )
 	);
 	const currentMoment = moment();
 
@@ -62,9 +55,7 @@ const setInitialState = ( dispatch, ownProps ) => () => {
 		dispatch( actions.setRSVPGoingCount( parseInt( attributes.goingCount, 10 ) ) );
 	}
 	if ( attributes.notGoingCount ) {
-		dispatch( actions.setRSVPNotGoingCount(
-			parseInt( attributes.notGoingCount, 10 ),
-		) );
+		dispatch( actions.setRSVPNotGoingCount( parseInt( attributes.notGoingCount, 10 ) ) );
 	}
 };
 
@@ -91,8 +82,4 @@ const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 	setAddEditClosed: () => dispatch( actions.setRSVPIsAddEditOpen( false ) ),
 } );
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps, mapDispatchToProps ),
-	withSaveData(),
-)( RSVP );
+export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps ), withSaveData() )( RSVP );

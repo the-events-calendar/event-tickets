@@ -12,10 +12,7 @@ import { initStore } from '../data';
 import rsvp from './rsvp';
 import attendees from './attendees';
 
-let blocks = [
-	rsvp,
-	attendees,
-];
+let blocks = [ rsvp, attendees ];
 
 /**
  * Allows filtering the list of blocks registered by Event Tickets.

@@ -18,8 +18,4 @@ const mapStateToProps = ( state, ownProps ) => ( {
 	isOnSale: selectors.getTicketOnSale( state, ownProps ),
 } );
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps ),
-)( Template );
-
+export default compose( withStore(), connect( mapStateToProps ) )( Template );

@@ -14,6 +14,7 @@
  * @type {string} percentMax         The maximum value for a percentage
  * @type {string} placement          Can be "prefix" or "postfix"
  * @type {number} precision          The number of decimal places to display
+ * @property
  */
 
 window.etOrderModifiersAmountField = window.etOrderModifiersAmountField || {
@@ -29,11 +30,11 @@ window.etOrderModifiersAmountField = window.etOrderModifiersAmountField || {
  * This script initializes the amount field for order modifiers.
  *
  * @since 5.21.0
- * @param {jQuery} $ jQuery
- * @param {Object} validation The validation object
- * @param {etOrderModifiersAmountField} i18n The internationalization object
+ * @param {jQuery}                      $          jQuery
+ * @param {Object}                      validation The validation object
+ * @param {etOrderModifiersAmountField} i18n       The internationalization object
  */
-( function( $, validation, i18n ) {
+( function ( $, validation, i18n ) {
 	const $document = $( document );
 	let mask;
 
@@ -50,9 +51,7 @@ window.etOrderModifiersAmountField = window.etOrderModifiersAmountField || {
 			return 'num %';
 		}
 
-		return 'postfix' === i18n.placement
-			? `num ${ i18n.currencySymbol }`
-			: `${ i18n.currencySymbol } num`;
+		return 'postfix' === i18n.placement ? `num ${ i18n.currencySymbol }` : `${ i18n.currencySymbol } num`;
 	};
 
 	const getMaskOptions = ( pattern ) => {
@@ -75,10 +74,7 @@ window.etOrderModifiersAmountField = window.etOrderModifiersAmountField || {
 	};
 
 	const setupMask = () => {
-		mask = window.IMask(
-			document.querySelector( selectors.amount ),
-			getMaskOptions( getMaskPattern() ),
-		);
+		mask = window.IMask( document.querySelector( selectors.amount ), getMaskOptions( getMaskPattern() ) );
 	};
 
 	const updateMask = () => {
@@ -123,4 +119,4 @@ window.etOrderModifiersAmountField = window.etOrderModifiersAmountField || {
 		$document.on( 'change', selectors.type, updateMask );
 		$document.on( 'validation.tribe', validateAmount );
 	} );
-}( jQuery, window.tribe.validation, window.etOrderModifiersAmountField || {} ) );
+} )( jQuery, window.tribe.validation, window.etOrderModifiersAmountField || {} );

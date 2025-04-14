@@ -1,54 +1,47 @@
 /**
  * External dependencies.
  */
-import classNames from "classnames";
-import { Checkbox, CheckboxInput, } from "@moderntribe/common/elements";
+import classNames from 'classnames';
+import { Checkbox, CheckboxInput } from '@moderntribe/common/elements';
 import { LabelWithTooltip } from '../../../../../../modules/elements';
-import { Dashicon } from "@wordpress/components";
+import { Dashicon } from '@wordpress/components';
 
 /**
  * Internal dependencies.
  */
-import { getFeeLabel } from "./map-fee-object";
+import { getFeeLabel } from './map-fee-object';
 
 /**
  * Get the name attribute for the checkbox.
  *
  * @param {string} clientId
- * @param {Fee} fee
- * @returns {`tec-ticket-fee-${string}-${string}`}
+ * @param {Fee}    fee
+ * @return {`tec-ticket-fee-${string}-${string}`}
  */
 const getCheckboxName = ( clientId, fee ) => {
 	return `tec-ticket-fee-${ fee.id }-${ clientId }`;
 };
 
-
 /**
  * Get the container classes for the checkbox.
  *
- * @returns {[string]}
+ * @return {[string]}
  */
 const getContainerClasses = () => {
 	return [ 'tribe-editor__ticket__fee-checkbox' ];
-}
+};
 
 /**
  * CheckboxFee component.
  *
- * @param {string} clientId The client ID of the ticket.
- * @param {Fee} fee The fee object to map.
- * @param {boolean} isChecked Whether the fee is checked.
- * @param {boolean} isDisabled Whether the fee is disabled.
- * @param {function} onChange The change handler for the fee.
+ * @param {string}   clientId   The client ID of the ticket.
+ * @param {Fee}      fee        The fee object to map.
+ * @param {boolean}  isChecked  Whether the fee is checked.
+ * @param {boolean}  isDisabled Whether the fee is disabled.
+ * @param {Function} onChange   The change handler for the fee.
  * @return {JSX.Element|null} The checkbox item, or null if the fee is not active.
  */
-const CheckboxFee = ( {
-	clientId,
-	fee,
-	isChecked,
-	isDisabled,
-	onChange,
-} ) => {
+const CheckboxFee = ( { clientId, fee, isChecked, isDisabled, onChange } ) => {
 	// We shouldn't have these here, but just in case skip anything not active.
 	if ( fee.status !== 'active' ) {
 		return null;
@@ -68,11 +61,7 @@ const CheckboxFee = ( {
 				value={ fee.id }
 				key={ fee.id }
 			/>
-			<LabelWithTooltip
-				forId={ name }
-				isLabel={ true }
-				label={ getFeeLabel( fee ) }
-			/>
+			<LabelWithTooltip forId={ name } isLabel={ true } label={ getFeeLabel( fee ) } />
 		</div>
 	);
 };
@@ -80,26 +69,18 @@ const CheckboxFee = ( {
 /**
  * CheckboxFeeWithTooltip component.
  *
- * @param {string} clientId
- * @param {Fee} fee
- * @param {boolean} isChecked
- * @param {boolean} isDisabled
- * @param {function} onChange
- * @param {string} tooltipText
- * @param {string} tooltipPosition
- * @returns {JSX.Element}
+ * @param {string}   clientId
+ * @param {Fee}      fee
+ * @param {boolean}  isChecked
+ * @param {boolean}  isDisabled
+ * @param {Function} onChange
+ * @param {string}   tooltipText
+ * @param {string}   tooltipPosition
+ * @return {JSX.Element}
  */
-const CheckboxFeeWithTooltip = ( {
-	clientId,
-	fee,
-	isChecked,
-	isDisabled,
-	onChange,
-	tooltipText,
-} ) => {
+const CheckboxFeeWithTooltip = ( { clientId, fee, isChecked, isDisabled, onChange, tooltipText } ) => {
 	if ( undefined === typeof onChange ) {
-		onChange = () => {
-		};
+		onChange = () => {};
 	}
 
 	const name = getCheckboxName( clientId, fee );
@@ -120,18 +101,12 @@ const CheckboxFeeWithTooltip = ( {
 				isLabel={ true }
 				label={ getFeeLabel( fee ) }
 				tooltipText={ tooltipText }
-				tooltipLabel={ tooltipText &&
-					<Dashicon
-						className="tribe-editor__ticket__tooltip-label"
-						icon="info-outline"
-					/>
+				tooltipLabel={
+					tooltipText && <Dashicon className="tribe-editor__ticket__tooltip-label" icon="info-outline" />
 				}
 			/>
 		</div>
 	);
-}
-
-export {
-	CheckboxFee,
-	CheckboxFeeWithTooltip,
 };
+
+export { CheckboxFee, CheckboxFeeWithTooltip };

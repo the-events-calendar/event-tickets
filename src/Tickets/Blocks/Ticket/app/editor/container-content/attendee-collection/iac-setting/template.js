@@ -22,10 +22,12 @@ class IACSetting extends PureComponent {
 		isDisabled: PropTypes.bool,
 		onChange: PropTypes.func.isRequired,
 		iac: PropTypes.string,
-		iacOptions: PropTypes.arrayOf( PropTypes.shape( {
-			label: PropTypes.string,
-			value: PropTypes.string,
-		} ) ),
+		iacOptions: PropTypes.arrayOf(
+			PropTypes.shape( {
+				label: PropTypes.string,
+				value: PropTypes.string,
+			} )
+		),
 	};
 
 	constructor( props ) {
@@ -52,11 +54,13 @@ class IACSetting extends PureComponent {
 						)
 					}
 				</div>
-				<div className={ classNames(
-					'tribe-editor__ticket__iac-setting',
-					'tribe-editor__ticket__content-row',
-					'tribe-editor__ticket__content-row--iac-setting',
-				) }>
+				<div
+					className={ classNames(
+						'tribe-editor__ticket__iac-setting',
+						'tribe-editor__ticket__content-row',
+						'tribe-editor__ticket__content-row--iac-setting'
+					) }
+				>
 					<RadioControl
 						className="tribe-editor__ticket__iac-setting-input"
 						id={ this.id }

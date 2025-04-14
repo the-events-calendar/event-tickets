@@ -13,23 +13,15 @@ import * as types from './types';
 import * as actions from './actions';
 import * as selectors from './selectors';
 import { updateRSVP } from './thunks';
-import {
-	DEFAULT_STATE as RSVP_HEADER_IMAGE_DEFAULT_STATE,
-} from './reducers/header-image';
+import { DEFAULT_STATE as RSVP_HEADER_IMAGE_DEFAULT_STATE } from './reducers/header-image';
 import * as ticketActions from '../ticket/actions';
-import {
-	DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE,
-} from '../ticket/reducers/header-image';
+import { DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE } from '../ticket/reducers/header-image';
 import * as utils from '../../utils';
 import { MOVE_TICKET_SUCCESS } from '../../shared/move/types';
 import * as moveSelectors from '../../shared/move/selectors';
 import { isTribeEventPostType, createWPEditorSavingChannel, createDates } from '../../shared/sagas';
 
-import {
-	api,
-	moment as momentUtil,
-	time as timeUtil,
-} from '@moderntribe/common/utils';
+import { api, moment as momentUtil, time as timeUtil } from '@moderntribe/common/utils';
 
 //
 // ─── RSVP DETAILS ───────────────────────────────────────────────────────────────
@@ -39,7 +31,7 @@ import {
  * Set details for current RSVP
  *
  * @export
- * @yields
+ * @yield
  * @param {Object} action redux action
  */
 export function* setRSVPDetails( action ) {
@@ -81,7 +73,7 @@ export function* setRSVPDetails( action ) {
  * Set details for current temp RSVP
  *
  * @export
- * @yields
+ * @yield
  * @param {Object} action redux action
  */
 export function* setRSVPTempDetails( action ) {
@@ -128,7 +120,7 @@ export function* setRSVPTempDetails( action ) {
  *
  * @borrows TEC - Optional functionality requires TEC to be enabled and post type to be event
  * @export
- * @yields
+ * @yield
  */
 export function* initializeRSVP() {
 	const publishDate = yield call( [ wpSelect( 'core/editor' ), 'getEditedPostAttribute' ], 'date' );
@@ -192,7 +184,7 @@ export function* initializeRSVP() {
  * @borrows TEC - Functionality requires TEC to be enabled
  * @param {string} prevStartDate Previous start date before latest set date time changes
  * @export
- * @yields
+ * @yield
  */
 export function* syncRSVPSaleEndWithEventStart( prevStartDate ) {
 	try {
@@ -257,7 +249,7 @@ export function* syncRSVPSaleEndWithEventStart( prevStartDate ) {
  * Avoids the user having to open up the RSVP block, and then click update again there, when changing the event start date.
  *
  * @export
- * @yields
+ * @yield
  */
 export function* saveRSVPWithPostSave() {
 	let saveChannel;
@@ -304,7 +296,7 @@ export function* saveRSVPWithPostSave() {
  *
  * @borrows TEC - Functionality requires TEC to be enabled and post type to be event
  * @export
- * @yields
+ * @yield
  */
 export function* handleEventStartDateChanges() {
 	try {
@@ -351,7 +343,11 @@ export function* handleRSVPDurationError() {
 		const endTime = yield select( selectors.getRSVPTempEndTime );
 		const startTimeSeconds = yield call( timeUtil.toSeconds, startTime, timeUtil.TIME_FORMAT_HH_MM_SS );
 		const endTimeSeconds = yield call( timeUtil.toSeconds, endTime, timeUtil.TIME_FORMAT_HH_MM_SS );
-		const startDateTimeMoment = yield call( momentUtil.setTimeInSeconds, startDateMoment.clone(), startTimeSeconds );
+		const startDateTimeMoment = yield call(
+			momentUtil.setTimeInSeconds,
+			startDateMoment.clone(),
+			startTimeSeconds
+		);
 		const endDateTimeMoment = yield call( momentUtil.setTimeInSeconds, endDateMoment.clone(), endTimeSeconds );
 		const durationHasError = yield call( [ startDateTimeMoment, 'isSameOrAfter' ], endDateTimeMoment );
 
@@ -409,7 +405,7 @@ export function* handleRSVPEndTimeInput( action ) {
  * Handles proper RSVP deletion and RSVP block removal upon moving RSVP
  *
  * @export
- * @yields
+ * @yield
  */
 export function* handleRSVPMove() {
 	const rsvpId = yield select( selectors.getRSVPId );
@@ -626,7 +622,7 @@ export function* handler( action ) {
  * Temporary bandaid until datepickers allow blank state
  *
  * @export
- * @yields
+ * @yield
  */
 export function* setNonEventPostTypeEndDate() {
 	yield take( [ types.INITIALIZE_RSVP ] );
@@ -656,19 +652,22 @@ export function* setNonEventPostTypeEndDate() {
 //
 
 export default function* watchers() {
-	yield takeEvery( [
-		types.SET_RSVP_DETAILS,
-		types.SET_RSVP_TEMP_DETAILS,
-		types.INITIALIZE_RSVP,
-		types.HANDLE_RSVP_START_DATE,
-		types.HANDLE_RSVP_END_DATE,
-		types.HANDLE_RSVP_START_TIME,
-		types.HANDLE_RSVP_END_TIME,
-		types.FETCH_RSVP_HEADER_IMAGE,
-		types.UPDATE_RSVP_HEADER_IMAGE,
-		types.DELETE_RSVP_HEADER_IMAGE,
-		MOVE_TICKET_SUCCESS,
-	], handler );
+	yield takeEvery(
+		[
+			types.SET_RSVP_DETAILS,
+			types.SET_RSVP_TEMP_DETAILS,
+			types.INITIALIZE_RSVP,
+			types.HANDLE_RSVP_START_DATE,
+			types.HANDLE_RSVP_END_DATE,
+			types.HANDLE_RSVP_START_TIME,
+			types.HANDLE_RSVP_END_TIME,
+			types.FETCH_RSVP_HEADER_IMAGE,
+			types.UPDATE_RSVP_HEADER_IMAGE,
+			types.DELETE_RSVP_HEADER_IMAGE,
+			MOVE_TICKET_SUCCESS,
+		],
+		handler
+	);
 
 	yield fork( handleEventStartDateChanges );
 	yield fork( setNonEventPostTypeEndDate );

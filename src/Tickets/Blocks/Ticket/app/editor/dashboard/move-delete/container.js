@@ -11,9 +11,7 @@ import Template from './template';
 
 import { withStore } from '@moderntribe/common/hoc';
 import { actions, selectors } from '../../../../../../../modules/data/blocks/ticket';
-import {
-	showModal,
-} from '../../../../../../../modules/data/shared/move/actions';
+import { showModal } from '../../../../../../../modules/data/shared/move/actions';
 
 const mapStateToProps = ( state, ownProps ) => ( {
 	isDisabled: selectors.isTicketDisabled( state, ownProps ),
@@ -35,7 +33,4 @@ const mergeProps = ( stateProps, dispatchProps, ownProps ) => ( {
 	moveTicket: () => dispatchProps.moveTicket( stateProps.ticketId ),
 } );
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps, mapDispatchToProps, mergeProps ),
-)( Template );
+export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps, mergeProps ) )( Template );

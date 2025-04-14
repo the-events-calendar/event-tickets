@@ -28,7 +28,4 @@ const mapStateToProps = ( state ) => {
 	};
 };
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps ),
-)( AttendeesActionButton );
+export default compose( withStore(), connect( mapStateToProps ) )( AttendeesActionButton );

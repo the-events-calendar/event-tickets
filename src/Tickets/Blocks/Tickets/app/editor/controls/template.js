@@ -18,30 +18,27 @@ import { TICKET_LABELS } from '../../../../../../modules/data/blocks/ticket/cons
 import './style.pcss';
 import { applyFilters } from '@wordpress/hooks';
 
-const RadioInput = ({ provider, onProviderChange, ...additionalProps }) => (
+const RadioInput = ( { provider, onProviderChange, ...additionalProps } ) => (
 	<div className="tribe-editor__tickets-control-container">
 		<input
 			className="tribe-editor__tickets-control__input tribe-editor__tickets-control__input--radio"
 			type="radio"
-			id={provider.class}
-			name={provider.class}
-			onChange={onProviderChange}
-			{...additionalProps}
+			id={ provider.class }
+			name={ provider.class }
+			onChange={ onProviderChange }
+			{ ...additionalProps }
 		/>
-		<label
-			className="tribe-editor__tickets-control__label"
-			htmlFor={provider.class}
-		>
-			{provider.name}
+		<label className="tribe-editor__tickets-control__label" htmlFor={ provider.class }>
+			{ provider.name }
 		</label>
 	</div>
 );
 
 RadioInput.propTypes = {
-	provider: PropTypes.shape({
+	provider: PropTypes.shape( {
 		name: PropTypes.string,
 		class: PropTypes.string,
-	}),
+	} ),
 	onProviderChange: PropTypes.func,
 };
 
@@ -60,24 +57,24 @@ RadioInput.propTypes = {
  *
  * @return {Array} The block controls.
  */
-function getTicketsBlockControls({
+function getTicketsBlockControls( {
 	disabled,
 	hasMultipleProviders,
 	message,
 	onProviderChange,
 	providers,
 	selectedProvider,
-}) {
+} ) {
 	const controls = [];
-	if (hasMultipleProviders) {
+	if ( hasMultipleProviders ) {
 		controls.push(
 			<PanelBody
 				// eslint-disable-next-line no-undef
-				title={sprintf(
+				title={ sprintf(
 					/* Translators: %s - Ticket plural label. */
-					__('%s Settings', 'event-tickets'),
+					__( '%s Settings', 'event-tickets' ),
 					TICKET_LABELS.ticket.plural
-				)}
+				) }
 			>
 				<PanelRow>
 					<fieldset className="tribe-editor__tickets-controls-provider">
@@ -86,21 +83,21 @@ function getTicketsBlockControls({
 								// eslint-disable-next-line no-undef
 								sprintf(
 									/* Translators: %s - Ticket plural label. */
-									__('Sell %s using', 'event-tickets'),
+									__( 'Sell %s using', 'event-tickets' ),
 									TICKET_LABELS.ticket.pluralLowercase
 								)
 							}
 						</legend>
-						{message}
-						{providers.map((provider, key) => (
+						{ message }
+						{ providers.map( ( provider, key ) => (
 							<RadioInput
-								key={`provider-option-${key + 1}`}
-								provider={provider}
-								onProviderChange={onProviderChange}
-								checked={selectedProvider === provider.class}
-								disabled={disabled}
+								key={ `provider-option-${ key + 1 }` }
+								provider={ provider }
+								onProviderChange={ onProviderChange }
+								checked={ selectedProvider === provider.class }
+								disabled={ disabled }
 							/>
-						))}
+						) ) }
 					</fieldset>
 				</PanelRow>
 			</PanelBody>
@@ -114,17 +111,17 @@ function getTicketsBlockControls({
 	 *
 	 * @param {Array} controls The controls.
 	 */
-	return applyFilters('tec.tickets.blocks.Tickets.Controls', controls);
+	return applyFilters( 'tec.tickets.blocks.Tickets.Controls', controls );
 }
 
-const Controls = (props) => {
-	const controls = getTicketsBlockControls(props);
+const Controls = ( props ) => {
+	const controls = getTicketsBlockControls( props );
 
-	if (!controls.length) {
+	if ( ! controls.length ) {
 		return null;
 	}
 
-	return <InspectorControls key="inspector">{controls}</InspectorControls>;
+	return <InspectorControls key="inspector">{ controls }</InspectorControls>;
 };
 
 Controls.propTypes = {
@@ -132,9 +129,7 @@ Controls.propTypes = {
 	hasMultipleProviders: PropTypes.bool,
 	message: PropTypes.node,
 	onProviderChange: PropTypes.func,
-	providers: PropTypes.arrayOf(
-		PropTypes.shape({ name: PropTypes.string, class: PropTypes.string })
-	),
+	providers: PropTypes.arrayOf( PropTypes.shape( { name: PropTypes.string, class: PropTypes.string } ) ),
 	selectedProvider: PropTypes.string,
 };
 

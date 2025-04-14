@@ -15,13 +15,13 @@ import { renderToString } from '@wordpress/element';
  */
 import { Notice } from '../../../../../../modules/elements';
 
-const SeriesPassNotice = ({ seriesPassLink, seriesName }) => {
+const SeriesPassNotice = ( { seriesPassLink, seriesName } ) => {
 	return (
 		<div>
 			<Notice
 				description={
 					<div
-						dangerouslySetInnerHTML={{
+						dangerouslySetInnerHTML={ {
 							__html: sprintf(
 								_x(
 									'Create and manage Series Passes from the %s Series admin.',
@@ -32,15 +32,15 @@ const SeriesPassNotice = ({ seriesPassLink, seriesName }) => {
 								renderToString(
 									<a
 										className="helper-link"
-										href={seriesPassLink}
+										href={ seriesPassLink }
 										target="_blank"
 										rel="noopener noreferrer"
 									>
-										{seriesName}
+										{ seriesName }
 									</a>
 								)
 							),
-						}}
+						} }
 					></div>
 				}
 			/>

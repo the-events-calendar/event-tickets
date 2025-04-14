@@ -16,8 +16,4 @@ const mapDispatchToProps = ( dispatch ) => ( {
 	onClick: () => dispatch( actions.openSettings() ),
 } );
 
-export default compose(
-	withStore(),
-	connect( null, mapDispatchToProps ),
-)( SettingsActionButton );
-
+export default compose( withStore(), connect( null, mapDispatchToProps ) )( SettingsActionButton );

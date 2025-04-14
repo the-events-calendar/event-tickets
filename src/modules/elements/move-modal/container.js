@@ -34,8 +34,4 @@ const mapDispatchToProps = ( dispatch ) => ( {
 	onSubmit: () => dispatch( { type: SUBMIT_MODAL } ),
 } );
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps, mapDispatchToProps ),
-)( Template );
-
+export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps ) )( Template );

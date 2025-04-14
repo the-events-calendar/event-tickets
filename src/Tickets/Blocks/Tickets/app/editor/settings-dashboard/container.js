@@ -21,8 +21,4 @@ const mapDispatchToProps = ( dispatch ) => ( {
 	onCloseClick: () => dispatch( actions.closeSettings() ),
 } );
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps, mapDispatchToProps ),
-)( TicketsSettingsDashboard );
-
+export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps ) )( TicketsSettingsDashboard );

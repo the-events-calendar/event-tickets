@@ -15,7 +15,4 @@ const mapStateToProps = ( state ) => ( {
 	hasDurationError: selectors.getRSVPHasDurationError( state ),
 } );
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps ),
-)( RSVPDuration );
+export default compose( withStore(), connect( mapStateToProps ) )( RSVPDuration );

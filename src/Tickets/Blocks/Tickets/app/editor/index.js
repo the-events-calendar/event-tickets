@@ -48,11 +48,11 @@ const block = {
 		},
 	},
 
-	edit(editProps) {
+	edit( editProps ) {
 		const blockProps = useBlockProps();
 		return (
-			<div {...blockProps}>
-				<Tickets {...editProps} />
+			<div { ...blockProps }>
+				<Tickets { ...editProps } />
 			</div>
 		);
 	},
@@ -60,11 +60,11 @@ const block = {
 		const blockProps = useBlockProps.save();
 
 		return (
-			<div {...blockProps}>
+			<div { ...blockProps }>
 				<InnerBlocks.Content />
 			</div>
 		);
 	},
 };
 
-registerBlockType(`tribe/tickets`, block);
+registerBlockType( `tribe/tickets`, block );

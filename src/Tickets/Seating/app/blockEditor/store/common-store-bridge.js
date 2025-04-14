@@ -21,8 +21,8 @@ import { CAPPED } from '../../../../../modules/data/blocks/ticket/constants';
  *
  * @param {Object} action The action to dispatch.
  */
-function dispatchToCommonStore(action) {
-	window.__tribe_common_store__.dispatch(action);
+function dispatchToCommonStore( action ) {
+	window.__tribe_common_store__.dispatch( action );
 }
 
 /**
@@ -35,8 +35,8 @@ function dispatchToCommonStore(action) {
  *
  * @return {*} The result of the common store selector.
  */
-function selectFromCommonStore(selector, ...args) {
-	return selector(window.__tribe_common_store__.getState(), ...args);
+function selectFromCommonStore( selector, ...args ) {
+	return selector( window.__tribe_common_store__.getState(), ...args );
 }
 
 /**
@@ -47,10 +47,10 @@ function selectFromCommonStore(selector, ...args) {
  * @param {string} clientId The client ID of Ticket block to set the capacity for.
  * @param {number} capacity The capacity to set.
  */
-export function setTicketsSharedCapacityInCommonStore(clientId, capacity) {
-	dispatchToCommonStore(setTicketsSharedCapacity(capacity));
-	dispatchToCommonStore(setTicketsTempSharedCapacity(capacity));
-	setTicketHasChangesInCommonStore(clientId);
+export function setTicketsSharedCapacityInCommonStore( clientId, capacity ) {
+	dispatchToCommonStore( setTicketsSharedCapacity( capacity ) );
+	dispatchToCommonStore( setTicketsTempSharedCapacity( capacity ) );
+	setTicketHasChangesInCommonStore( clientId );
 }
 
 /**
@@ -61,12 +61,12 @@ export function setTicketsSharedCapacityInCommonStore(clientId, capacity) {
  * @param {string} clientId The client ID of the current ticket block.
  * @param {number} capacity The capacity to set.
  */
-export function setCappedTicketCapacityInCommonStore(clientId, capacity) {
-	dispatchToCommonStore(setTicketCapacity(clientId, capacity));
-	dispatchToCommonStore(setTicketTempCapacity(clientId, capacity));
-	dispatchToCommonStore(setTicketCapacityType(clientId, CAPPED));
-	dispatchToCommonStore(setTicketTempCapacityType(clientId, CAPPED));
-	setTicketHasChangesInCommonStore(clientId);
+export function setCappedTicketCapacityInCommonStore( clientId, capacity ) {
+	dispatchToCommonStore( setTicketCapacity( clientId, capacity ) );
+	dispatchToCommonStore( setTicketTempCapacity( clientId, capacity ) );
+	dispatchToCommonStore( setTicketCapacityType( clientId, CAPPED ) );
+	dispatchToCommonStore( setTicketTempCapacityType( clientId, CAPPED ) );
+	setTicketHasChangesInCommonStore( clientId );
 }
 
 /**
@@ -76,8 +76,8 @@ export function setCappedTicketCapacityInCommonStore(clientId, capacity) {
  *
  * @param {string} clientId The client ID of the Ticket block to update.
  */
-export function setTicketHasChangesInCommonStore(clientId) {
-	dispatchToCommonStore(setTicketHasChanges(clientId, true));
+export function setTicketHasChangesInCommonStore( clientId ) {
+	dispatchToCommonStore( setTicketHasChanges( clientId, true ) );
 }
 
 /**
@@ -89,8 +89,8 @@ export function setTicketHasChangesInCommonStore(clientId) {
  *
  * @return {string} The ticket ID.
  */
-export function getTicketIdFromCommonStore(clientId) {
-	return selectFromCommonStore(getTicketId, { clientId });
+export function getTicketIdFromCommonStore( clientId ) {
+	return selectFromCommonStore( getTicketId, { clientId } );
 }
 
 /**
@@ -102,7 +102,7 @@ export function getTicketIdFromCommonStore(clientId) {
  * @return {number} The current integer value of the shared capacity.
  */
 export function getTicketsSharedCapacityFromCommonStore() {
-	return selectFromCommonStore(getTicketsSharedCapacityInt);
+	return selectFromCommonStore( getTicketsSharedCapacityInt );
 }
 
 /**
@@ -115,8 +115,8 @@ export function getTicketsSharedCapacityFromCommonStore() {
  */
 export function getTicketProviderFromCommonStore() {
 	try {
-		return selectFromCommonStore(getTicketsProvider);
-	} catch (e) {
+		return selectFromCommonStore( getTicketsProvider );
+	} catch ( e ) {
 		return '';
 	}
 }

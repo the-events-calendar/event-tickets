@@ -30,7 +30,4 @@ const mapDispatchToProps = ( dispatch ) => ( {
 	onRemove: () => dispatch( actions.deleteTicketsHeaderImage() ),
 } );
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps, mapDispatchToProps ),
-)( Template );
+export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps ) )( Template );

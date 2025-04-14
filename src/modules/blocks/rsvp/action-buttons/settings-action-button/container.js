@@ -19,7 +19,4 @@ const mapDispatchToProps = ( dispatch ) => ( {
 	onClick: () => dispatch( actions.setRSVPSettingsOpen( true ) ),
 } );
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps, mapDispatchToProps ),
-)( SettingsActionButton );
+export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps ) )( SettingsActionButton );

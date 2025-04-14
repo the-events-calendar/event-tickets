@@ -6,7 +6,10 @@ const SeriesNotice = () => {
 	return (
 		<Fragment>
 			<Notice
-				description={ __( 'Assigned seating is not yet supported for events that are in series.', 'event-tickets' ) }
+				description={ __(
+					'Assigned seating is not yet supported for events that are in series.',
+					'event-tickets'
+				) }
 			/>
 		</Fragment>
 	);

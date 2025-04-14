@@ -15,16 +15,12 @@ import { __ } from '@wordpress/i18n';
 import { ActionButton } from '../../../../../../../modules/elements';
 import { Orders } from '../../../../../../../modules/icons';
 
-const OrdersActionButton = ( { href } ) => ( href ? (
-	<ActionButton
-		asLink={ true }
-		href={ href }
-		icon={ <Orders /> }
-		target="_blank"
-	>
-		{ __( 'Orders', 'event-tickets' ) }
-	</ActionButton>
-) : null );
+const OrdersActionButton = ( { href } ) =>
+	href ? (
+		<ActionButton asLink={ true } href={ href } icon={ <Orders /> } target="_blank">
+			{ __( 'Orders', 'event-tickets' ) }
+		</ActionButton>
+	) : null;
 
 OrdersActionButton.propTypes = {
 	href: PropTypes.string.isRequired,

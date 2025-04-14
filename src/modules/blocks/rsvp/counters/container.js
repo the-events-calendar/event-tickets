@@ -17,7 +17,4 @@ const mapStateToProps = ( state ) => ( {
 	showNotGoing: selectors.getRSVPNotGoingResponses( state ),
 } );
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps ),
-)( RSVPCounters );
+export default compose( withStore(), connect( mapStateToProps ) )( RSVPCounters );

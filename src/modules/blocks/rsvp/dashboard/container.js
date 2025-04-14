@@ -15,7 +15,4 @@ const mapStateToProps = ( state ) => ( {
 	isSettingsOpen: selectors.getRSVPSettingsOpen( state ),
 } );
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps ),
-)( RSVPDashboard );
+export default compose( withStore(), connect( mapStateToProps ) )( RSVPDashboard );

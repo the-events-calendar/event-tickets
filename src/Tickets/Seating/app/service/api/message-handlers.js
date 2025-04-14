@@ -10,8 +10,8 @@ import { layoutsHomeUrl, mapsHomeUrl } from './localized-data';
  *
  * @return {void}
  */
-export function defaultMessageHandler(event) {
-	console.debug('Message received from service', event);
+export function defaultMessageHandler( event ) {
+	console.debug( 'Message received from service', event );
 }
 
 /**
@@ -22,15 +22,12 @@ export function defaultMessageHandler(event) {
  * @return {Promise<boolean>} A promise that will resolve to `true` if the request was successful, `false` otherwise.
  */
 export async function invalidateMapsLayoutsCache() {
-	const url = new URL(ajaxUrl);
-	url.searchParams.set('_ajax_nonce', ajaxNonce);
-	url.searchParams.set(
-		'action',
-		'tec_tickets_seating_service_invalidate_maps_layouts_cache'
-	);
-	const response = await fetch(url.toString(), { method: 'POST' });
+	const url = new URL( ajaxUrl );
+	url.searchParams.set( '_ajax_nonce', ajaxNonce );
+	url.searchParams.set( 'action', 'tec_tickets_seating_service_invalidate_maps_layouts_cache' );
+	const response = await fetch( url.toString(), { method: 'POST' } );
 
-	if (response.status !== 200) {
+	if ( response.status !== 200 ) {
 		console.error(
 			'Invalidation of maps and layouts cache failed, clean the transients manually to fetch up-to-date maps and layouts from the service.'
 		);
@@ -48,15 +45,12 @@ export async function invalidateMapsLayoutsCache() {
  * @return {Promise<boolean>} A promise that will resolve to `true` if the request was successful, `false` otherwise.
  */
 export async function invalidateLayoutsCache() {
-	const url = new URL(ajaxUrl);
-	url.searchParams.set('_ajax_nonce', ajaxNonce);
-	url.searchParams.set(
-		'action',
-		'tec_tickets_seating_service_invalidate_layouts_cache'
-	);
-	const response = await fetch(url.toString(), { method: 'POST' });
+	const url = new URL( ajaxUrl );
+	url.searchParams.set( '_ajax_nonce', ajaxNonce );
+	url.searchParams.set( 'action', 'tec_tickets_seating_service_invalidate_layouts_cache' );
+	const response = await fetch( url.toString(), { method: 'POST' } );
 
-	if (response.status !== 200) {
+	if ( response.status !== 200 ) {
 		console.error(
 			'Invalidation of layouts cache failed, clean the transients manually to fetch up-to-date layouts from the service.'
 		);
@@ -107,8 +101,8 @@ export function onSeatTypeCreatedUpdated() {
  * @return {void}
  */
 export function onGoToMapsHome() {
-	if (!mapsHomeUrl) {
-		console.error('Maps home url not found');
+	if ( ! mapsHomeUrl ) {
+		console.error( 'Maps home url not found' );
 		return;
 	}
 
@@ -123,8 +117,8 @@ export function onGoToMapsHome() {
  * @return {void}
  */
 export function onGoToLayoutsHome() {
-	if (!layoutsHomeUrl) {
-		console.error('Layouts home url not found');
+	if ( ! layoutsHomeUrl ) {
+		console.error( 'Layouts home url not found' );
 		return;
 	}
 

@@ -61,7 +61,4 @@ const mapStateToProps = ( state, ownProps ) => {
 	};
 };
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps ),
-)( EcommerceOptions );
+export default compose( withStore(), connect( mapStateToProps ) )( EcommerceOptions );
