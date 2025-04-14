@@ -2,9 +2,15 @@ import React from "react";
 import { CheckboxControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
-const ViewCheckbox = ({ isChecked, onChange, setPaymentOption }) => {
-	const viewLabel = __( 'Accept payments online (Powered by Stripe)', 'event-tickets' );
+interface ViewCheckboxProps {
+	isChecked: boolean;
+	onChange: (checked: boolean) => void;
+	setPaymentOption: (value: string) => void;
+	label: string;
+	help?: string;
+}
 
+const ViewCheckbox = ({ isChecked, onChange, setPaymentOption, label, help }: ViewCheckboxProps) => {
 	const handleChange = (checked) => {
 		onChange(checked);
 		setPaymentOption(checked ? 'stripe' : '');
@@ -29,7 +35,12 @@ const ViewCheckbox = ({ isChecked, onChange, setPaymentOption }) => {
 					htmlFor={`tec-tickets-onboarding__checkbox-input`}
 					className={isChecked ? "tec-tickets-onboarding__checkbox-label tec-tickets-onboarding__checkbox-label--checked" : "tec-tickets-onboarding__checkbox-label"}
 				>
-					{viewLabel}
+					{__(label, 'event-tickets')}
+					{help && (
+						<span className="tec-tickets-onboarding__checkbox-help">
+							({__(help, 'event-tickets')})
+						</span>
+					)}
 				</label>
 			</div>
 		</div>

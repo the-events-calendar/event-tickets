@@ -212,8 +212,10 @@ const SettingsContent = ({ moveToNextTab, skipToNextTab }) => {
 						) : (
 							<ViewCheckbox
 								isChecked={paymentOption === 'stripe'}
-								onChange={setPaymentOption}
+								onChange={(checked) => setPaymentOption(checked ? 'stripe' : '')}
 								setPaymentOption={setPaymentOption}
+								label="Accept payments online"
+								help="Powered by Stripe"
 							/>
 						)}
 					</BaseControl>

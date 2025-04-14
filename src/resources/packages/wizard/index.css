@@ -590,7 +590,8 @@
 	gap: var(--tec-spacer-2);
 }
 
-.tec-tickets-onboarding__radio-help {
+.tec-tickets-onboarding__radio-help,
+.tec-tickets-onboarding__checkbox-help {
 	color: var(--tec-wp-core-grey-50);
 	font-size: var(--tec-font-size-1);
 	margin-left: var(--tec-spacer-0);
