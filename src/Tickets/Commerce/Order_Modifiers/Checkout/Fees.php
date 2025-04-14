@@ -35,10 +35,10 @@ class Fees extends Abstract_Fees {
 	public function do_register(): void {
 		// Hook for calculating total values, setting subtotal, and modifying the total value.
 		add_filter(
-			'tec_tickets_commerce_get_cart_additional_values',
+			'tec_tickets_commerce_get_cart_additional_values_total',
 			[ $this, 'calculate_fees' ],
 			10,
-			3
+			2
 		);
 
 		// Hook for displaying fees in the checkout.
@@ -47,6 +47,18 @@ class Fees extends Abstract_Fees {
 			[ $this, 'display_fee_section' ],
 			30,
 			3
+		);
+
+		// Attach fees to the order object.
+		add_filter(
+			'tribe_post_type_tc_orders_properties',
+			[ $this, 'attach_fees_to_order_object' ]
+		);
+
+		// Append fee data to the cart.
+		add_filter(
+			'tec_tickets_commerce_create_order_from_cart_items',
+			[ $this, 'append_fees_to_cart' ]
 		);
 	}
 
@@ -59,7 +71,7 @@ class Fees extends Abstract_Fees {
 	 */
 	public function unregister(): void {
 		remove_filter(
-			'tec_tickets_commerce_get_cart_additional_values',
+			'tec_tickets_commerce_get_cart_additional_values_total',
 			[ $this, 'calculate_fees' ]
 		);
 
@@ -68,5 +80,42 @@ class Fees extends Abstract_Fees {
 			[ $this, 'display_fee_section' ],
 			30
 		);
+
+		remove_filter(
+			'tribe_post_type_tc_orders_properties',
+			[ $this, 'attach_fees_to_order_object' ]
+		);
+
+		remove_filter(
+			'tec_tickets_commerce_create_order_from_cart_items',
+			[ $this, 'append_fees_to_cart' ]
+		);
+	}
+
+	/**
+	 * Add fees to the order object properties.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param array $properties The properties of the order object.
+	 *
+	 * @return array The updated properties of the order object.
+	 */
+	public function attach_fees_to_order_object( array $properties ): array {
+		// There shouldn't be an order with no items, but let's just be safe.
+		$items = $properties['items'] ?? [];
+		if ( empty( $items ) ) {
+			return $properties;
+		}
+
+		// Separate fees from other items.
+		$fees     = array_filter( $items, fn( $item ) => $this->is_fee( $item ) );
+		$not_fees = array_filter( $items, fn( $item ) => ! $this->is_fee( $item ) );
+
+		// Update the properties with the items and fees.
+		$properties['items'] = $not_fees;
+		$properties['fees']  = $fees;
+
+		return $properties;
 	}
 }

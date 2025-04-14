@@ -35,14 +35,14 @@ trait With_Test_Orders {
 	 *
 	 * @return array
 	 */
-	protected function prepare_test_data( $with_wp_users = false ) {
+	protected function prepare_test_data() {
 		if ( ! empty( $this->orders ) ) {
 			return [ $this->orders, $this->tickets, $this->event_ids ];
 		}
 
 		$this->event_ids  = $this->create_test_events();
 		$this->tickets    = $this->create_test_tickets( $this->event_ids );
-		$this->orders     = $this->create_test_orders( $this->tickets, 2 , $with_wp_users );
+		$this->orders     = $this->create_test_orders( $this->tickets );
 
 		return [ $this->orders, $this->tickets, $this->event_ids ];
 	}

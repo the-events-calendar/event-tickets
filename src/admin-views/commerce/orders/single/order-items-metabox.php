@@ -3,15 +3,18 @@
  * Single order - Items metabox.
  *
  * @since 5.13.3
+ * @since 5.21.0 Added the coupons and fees sections.
  *
- * @version 5.13.3
+ * @version 5.21.0
  *
- * @var WP_Post                                         $order             The current post object.
- * @var \TEC\Tickets\Commerce\Admin\Singular_Order_Page $single_page       The orders table output.
+ * @var WP_Post             $order       The current post object.
+ * @var Singular_Order_Page $single_page The orders table output.
  */
 
+use TEC\Tickets\Commerce\Admin\Singular_Order_Page;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
+
 ?>
 <div class="tec-tickets-commerce-single-order--items">
 	<table class="tec-tickets-commerce-single-order--items--table widefat fixed">
@@ -75,6 +78,22 @@ use TEC\Tickets\Commerce\Order;
 					);
 				}
 			}
+
+			$this->template(
+				'order-items-coupons',
+				[
+					'coupons' => $order->coupons ?? [],
+					'order'   => $order,
+				]
+			);
+
+			$this->template(
+				'order-items-fees',
+				[
+					'fees'  => $order->fees ?? [],
+					'order' => $order,
+				]
+			);
 			?>
 		</tbody>
 		<tfoot>

@@ -78,11 +78,15 @@ class Checkout {
 	 * Determines if the current page is the Checkout page.
 	 *
 	 * @since 5.1.9
-	 *
+	 * @since 5.21.1 Ensure it method returns false if tickets commerce is disabled.
 	 *
 	 * @return bool
 	 */
 	public function is_current_page() {
+		if ( ! tec_tickets_commerce_is_enabled() ) {
+			return false;
+		}
+
 		if ( is_admin() ) {
 			return false;
 		}

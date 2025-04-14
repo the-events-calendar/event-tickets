@@ -1,6 +1,7 @@
 import { addFilter, addAction } from '@wordpress/hooks';
 import CapacityForm from './capacity-form';
 import { storeName } from './store';
+import { currentProviderSupportsSeating } from './store/compatibility';
 import { select } from '@wordpress/data';
 import Seats from './dashboard-actions/seats';
 import { filterCapacityTableMappedProps } from './capacity-table';
@@ -34,7 +35,8 @@ function filterRenderCapacityForm(renderDefaultForm, { clientId, ticketProvider 
 		return renderDefaultForm;
 	}
 
-	if ( ticketProvider !== "TEC\\Tickets\\Commerce\\Module" && ticketProvider !== 'tc' ) {
+	// When the provider does not support seating, we render the default form.
+	if ( ! currentProviderSupportsSeating() ) {
 		return renderDefaultForm;
 	}
 

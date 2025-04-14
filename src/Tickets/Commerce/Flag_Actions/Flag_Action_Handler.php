@@ -72,28 +72,6 @@ class Flag_Action_Handler extends \TEC\Common\Contracts\Service_Provider {
 		}
 
 		$this->container->singleton( static::class, $this );
-
-		add_filter( 'tec_tickets_commerce_prepare_order_for_email_send_email_completed_order', [ $this, 'prepare_order_for_email' ] );
-		add_filter( 'tec_tickets_commerce_prepare_order_for_email_send_email_purchase_receipt', [ $this, 'prepare_order_for_email' ] );
-	}
-
-	/**
-	 * Prepare the order for email.
-	 *
-	 * @since 5.18.0
-	 *
-	 * @param WP_Post $order The order to prepare.
-	 *
-	 * @return WP_Post
-	 */
-	public function prepare_order_for_email( WP_Post $order ) {
-		if ( empty( $order->items ) || ! is_array( $order->items ) ) {
-			return $order;
-		}
-
-		$order->items = array_filter( $order->items, fn ( $item ) => $this->is_ticket( $item ) );
-
-		return $order;
 	}
 
 	/**

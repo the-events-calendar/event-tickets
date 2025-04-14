@@ -7,7 +7,7 @@
 
 declare( strict_types=1 );
 
-namespace TEC\Tickets\Commerce\Order_Modifiers\Values;
+namespace TEC\Tickets\Commerce\Values;
 
 use InvalidArgumentException;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Validate_Numeric;
@@ -30,6 +30,17 @@ class Float_Value extends Base_Value {
 	 */
 	public function get(): float {
 		return $this->value;
+	}
+
+	/**
+	 * Invert the sign of the value.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @return Float_Value
+	 */
+	public function invert_sign(): Float_Value {
+		return new static( -1 * $this->value );
 	}
 
 	/**

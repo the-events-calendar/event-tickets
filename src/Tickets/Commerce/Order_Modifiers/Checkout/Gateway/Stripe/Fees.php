@@ -12,6 +12,7 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe;
 
+use TEC\Tickets\Commerce\Traits\Type;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Abstract_Fees;
 use WP_Post;
@@ -27,6 +28,8 @@ use WP_Post;
  */
 class Fees extends Abstract_Fees {
 
+	use Type;
+
 	/**
 	 * Registers the necessary hooks for adding and managing fees in Stripe checkout.
 	 *
@@ -36,14 +39,6 @@ class Fees extends Abstract_Fees {
 	 * @since 5.18.0
 	 */
 	public function do_register(): void {
-		// Hook for appending fees to the cart for Stripe processing.
-		add_filter(
-			'tec_tickets_commerce_create_order_from_cart_items',
-			[ $this, 'append_fees_to_cart' ],
-			10,
-			2
-		);
-
 		add_filter(
 			'tec_tickets_commerce_stripe_create_from_cart',
 			[ $this, 'append_fees_to_cart_stripe' ],
@@ -67,11 +62,6 @@ class Fees extends Abstract_Fees {
 	 * @return void
 	 */
 	public function unregister(): void {
-		remove_filter(
-			'tec_tickets_commerce_create_order_from_cart_items',
-			[ $this, 'append_fees_to_cart' ],
-		);
-
 		remove_filter(
 			'tec_tickets_commerce_stripe_create_from_cart',
 			[ $this, 'append_fees_to_cart_stripe' ]
@@ -97,9 +87,6 @@ class Fees extends Abstract_Fees {
 	 * @return Value Updated value including fees, or the original value if no fees exist.
 	 */
 	public function append_fees_to_cart_stripe( Value $value, array $items ): Value {
-		// Set the class-level subtotal to the current cart value.
-		$this->subtotal = $value;
-
 		// If no items exist in the cart, return the original value.
 		if ( empty( $items ) ) {
 			return $value;
@@ -128,21 +115,19 @@ class Fees extends Abstract_Fees {
 	 *
 	 * @since 5.18.0
 	 *
-	 * @param array   $metadata       The metadata array to add fees information to.
-	 * @param WP_Post $order          The order containing the fee items.
+	 * @param array   $metadata The metadata array to add fees information to.
+	 * @param WP_Post $order    The order containing the fee items.
 	 *
 	 * @return array Updated metadata including the fees as a string.
 	 */
 	public function add_meta_data_to_stripe( array $metadata, WP_Post $order ) {
-		// Filter out the fee items from the order's items.
-		$fee_items = array_filter(
-			$order->items,
-			function ( $item ) {
-				return ! empty( $item['type'] ) && 'fee' === $item['type'];
-			}
-		);
+		// Ensure the order has fees.
+		if ( empty( $order->fees ) ) {
+			return $metadata;
+		}
 
 		// Sort the array alphabetically by display name.
+		$fee_items = $order->fees;
 		usort(
 			$fee_items,
 			static function ( $a, $b ) {

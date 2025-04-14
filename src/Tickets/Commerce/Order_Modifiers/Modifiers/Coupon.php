@@ -7,13 +7,15 @@
  *
  * @since 5.18.0
  *
- * @package TEC\Tickets\Commerce\Order_Modifiers\Modifiers;
+ * @package TEC\Tickets\Commerce\Order_Modifiers\Modifiers
  */
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Modifiers;
 
+use InvalidArgumentException;
 use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Coupon_Table;
+use TEC\Tickets\Commerce\Values\Float_Value;
 use Tribe__Tickets__Admin__Views;
 
 /**
@@ -79,18 +81,8 @@ class Coupon extends Modifier_Abstract {
 	 * @return Model The newly inserted modifier or an empty array if no changes were made.
 	 */
 	public function insert_modifier( array $data ): Model {
-		// Save the modifier.
 		$modifier = parent::insert_modifier( $data );
-
-		// Handle metadata (e.g., coupons_available).
-		$this->handle_meta_data(
-			$modifier->id,
-			[
-				'meta_key'   => 'coupons_available',
-				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
-				'meta_value' => tec_get_request_var( 'order_modifier_coupon_limit', '' ),
-			]
-		);
+		$this->set_usage_limit( $modifier->id, tec_get_request_var( 'order_modifier_coupon_limit', '' ) );
 
 		return $modifier;
 	}
@@ -105,18 +97,8 @@ class Coupon extends Modifier_Abstract {
 	 * @return Model The updated modifier or an empty array if no changes were made.
 	 */
 	public function update_modifier( array $data ): Model {
-		// Save the modifier.
 		$modifier = parent::update_modifier( $data );
-
-		// Handle metadata (e.g., coupons_available).
-		$this->handle_meta_data(
-			$modifier->id,
-			[
-				'meta_key'   => 'coupons_available',
-				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
-				'meta_value' => tec_get_request_var( 'order_modifier_coupon_limit', '' ),
-			]
-		);
+		$this->set_usage_limit( $modifier->id, tec_get_request_var( 'order_modifier_coupon_limit', '' ) );
 
 		return $modifier;
 	}
@@ -173,14 +155,23 @@ class Coupon extends Modifier_Abstract {
 	 * @return array The context data ready for rendering the form.
 	 */
 	public function map_context_to_template( array $context ): array {
-		$limit_value = $this->meta_repository->find_by_order_modifier_id_and_meta_key( $context['modifier_id'], 'coupons_available' )->meta_value ?? '';
+		$limit_value = $this->meta_repository->find_by_order_modifier_id_and_meta_key(
+			$context['modifier_id'],
+			'coupons_available'
+		)->meta_value ?? '';
+
+		$sub_type = $context['sub_type'] ?? '';
+		$amount   = array_key_exists( 'raw_amount', $context )
+			? $this->get_amount_for_subtype( $sub_type, (float) $context['raw_amount'] )
+			: '';
+
 		return [
-			'order_modifier_display_name'     => $context['display_name'] ?? '',
-			'order_modifier_slug'             => $context['slug'] ?? $this->generate_unique_slug(),
-			'order_modifier_sub_type'         => $context['sub_type'] ?? '',
-			'order_modifier_fee_amount_cents' => $this->convert_from_raw_amount( $context['raw_amount'] ?? 0 ),
-			'order_modifier_status'           => $context['status'] ?? '',
-			'order_modifier_coupon_limit'     => $limit_value ?? '',
+			'order_modifier_display_name' => $context['display_name'] ?? '',
+			'order_modifier_slug'         => $context['slug'] ?? $this->generate_unique_slug(),
+			'order_modifier_sub_type'     => $sub_type,
+			'order_modifier_amount'       => $amount,
+			'order_modifier_status'       => $context['status'] ?? '',
+			'order_modifier_coupon_limit' => $limit_value ?? '',
 		];
 	}
 
@@ -197,5 +188,67 @@ class Coupon extends Modifier_Abstract {
 	 * @return void
 	 */
 	public function handle_relationship_update( array $modifier_ids, array $new_post_ids ): void {
+	}
+
+	/**
+	 * Set the usage limit for a coupon.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param int        $modifier_id The modifier ID.
+	 * @param string|int $limit       The limit to set. Pass an empty string or 0 for no limit.
+	 *
+	 * @return Model
+	 */
+	public function set_usage_limit( int $modifier_id, $limit ) {
+		// Allow passing zero to set an empty limit.
+		if ( 0 === (int) $limit ) {
+			$limit = '';
+		}
+
+		return $this->handle_meta_data(
+			$modifier_id,
+			[
+				'meta_key'   => 'coupons_available',
+				'meta_value' => $limit,
+			]
+		);
+	}
+
+	/**
+	 * Maps and sanitizes raw form data into model-ready data.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param array $raw_data The raw form data, typically from $_POST.
+	 *
+	 * @return array The sanitized and mapped data for database insertion or updating.
+	 * @throws InvalidArgumentException If the percentage is greater than 100.
+	 */
+	public function map_form_data_to_model( array $raw_data ): array {
+		// If the subtype is a percentage, validate the amount is <= 100.
+		if ( 'percent' === $raw_data['order_modifier_sub_type'] ) {
+			$this->validate_percentage( (float) $raw_data['order_modifier_amount'] );
+		}
+
+		return parent::map_form_data_to_model( $raw_data );
+	}
+
+	/**
+	 * Validates that the percentage is less than or equal to 100.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param float $value The percentage value to validate.
+	 *
+	 * @return void
+	 * @throws InvalidArgumentException If the percentage is greater than 100.
+	 */
+	protected function validate_percentage( float $value ) {
+		if ( Float_Value::from_number( $value )->get() > 100 ) {
+			throw new InvalidArgumentException(
+				esc_html__( 'Percentage must be less than or equal to 100.', 'event-tickets' )
+			);
+		}
 	}
 }

@@ -2,37 +2,43 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout;
 
+use Generator;
+use PHPUnit\Framework\Assert;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Float_Value;
+use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
+use TEC\Tickets\Commerce\Admin\Singular_Order_Page;
+use TEC\Tickets\Commerce\Cart as Commerce_Cart;
+use TEC\Tickets\Commerce\Cart\Cart_Interface as Cart;
+use TEC\Tickets\Commerce\Order_Modifiers\API\Fees as ApiFees;
+use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
+use TEC\Tickets\Commerce\Values\Float_Value;
+use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
+use Tribe\Tests\Tickets\Traits\Tribe_URL;
+use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\OrderModifiers\Fee_Creator;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
+use Tribe\Tickets\Test\Traits\With_No_Object_Storage;
+use Tribe\Tickets\Test\Traits\With_Test_Orders;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
-use TEC\Tickets\Commerce\Cart\Unmanaged_Cart as Cart;
-use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
-use Tribe\Tests\Traits\With_Uopz;
-use TEC\Tickets\Commerce\Cart as Commerce_Cart;
-use Generator;
-use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal\Fees as PayPalFees;
-use TEC\Tickets\Commerce\Order_Modifiers\API\Fees as ApiFees;
-use Tribe\Tickets\Test\Traits\With_No_Object_Storage;
-use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
-use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 
 class Fees_Test extends Controller_Test_Case {
-	use Ticket_Maker;
+
 	use Attendee_Maker;
-	use With_Tickets_Commerce;
-	use Reservations_Maker;
-	use SnapshotAssertions;
-	use Order_Maker;
 	use Fee_Creator;
-	use With_Uopz;
-	use With_No_Object_Storage;
+	use Order_Maker;
+	use Reservations_Maker;
 	use Series_Pass_Factory;
+	use SnapshotAssertions;
+	use Ticket_Maker;
+	use Tribe_URL;
+	use With_No_Object_Storage;
+	use With_Test_Orders;
+	use With_Tickets_Commerce;
+	use With_Uopz;
 
 	protected string $controller_class = Fees::class;
 
@@ -119,10 +125,35 @@ class Fees_Test extends Controller_Test_Case {
 		$this->assertEquals( 1, did_filter( 'tec_tickets_commerce_prepare_order_for_email_send_email_purchase_receipt' ) );
 		$this->assertNotNull( $email_purchase_listener_before );
 		$this->assertNotNull( $email_completed_listener_before );
-		$this->assertCount( 6, $refreshed_order->items );
-		$this->assertCount( 6, $email_completed_listener_before);
+		$this->assertCount( 3, $refreshed_order->items );
+		$this->assertCount( 3, $refreshed_order->fees );
+
+		// The items in the listeners shouldn't be fees.
+		$filter = fn( $item ) => 'fee' === $item['type'];
+		$this->assertCount(
+			0,
+			array_filter( $email_completed_listener_before, $filter ),
+			'Fees should not be included in the email items.'
+		);
+		$this->assertCount(
+			0,
+			array_filter( $email_completed_listener_after, $filter ),
+			'Fees should not be included in the email items.'
+		);
+		$this->assertCount(
+			0,
+			array_filter( $email_purchase_listener_before, $filter ),
+			'Fees should not be included in the email items.'
+		);
+		$this->assertCount(
+			0,
+			array_filter( $email_purchase_listener_after, $filter ),
+			'Fees should not be included in the email items.'
+		);
+
+		$this->assertCount( 3, $email_completed_listener_before);
 		$this->assertCount( 3, $email_completed_listener_after);
-		$this->assertCount( 6, $email_purchase_listener_before);
+		$this->assertCount( 3, $email_purchase_listener_before);
 		$this->assertCount( 3, $email_purchase_listener_after);
 	}
 
@@ -157,7 +188,7 @@ class Fees_Test extends Controller_Test_Case {
 
 		$this->make_controller()->register();
 		$cart = tribe( Cart::class );
-		$cart->add_item( $ticket, $quantity );
+		$cart->upsert_item( $ticket, $quantity );
 
 		// Assert the total value matches the expected total.
 		$this->assertEquals(
@@ -655,20 +686,30 @@ class Fees_Test extends Controller_Test_Case {
 
 		$this->make_controller()->register();
 		$cart = tribe( Cart::class );
-		$cart->add_item( $ticket, $quantity );
+		$cart->upsert_item( $ticket, $quantity );
 
 		$this->assertEquals( $quantity * $expected_total->get(), $cart->get_cart_total() );
 		$this->set_fn_return( 'wp_create_nonce', '1029384756' );
 		// Assert the total value matches the expected total.
-		$this->assertMatchesHtmlSnapshot( preg_replace( '#<link rel=(.*)/>#', '', str_replace( [ $event_id, $ticket ], [ '{POST_ID}', '{TICKET_ID}' ], tribe( Checkout_Shortcode::class )->get_html() ) ) );
+		$this->assertMatchesHtmlSnapshot(
+			preg_replace(
+				'#<link rel=(.*)/>#',
+				'',
+				str_replace(
+					[ $event_id, $ticket ],
+					[ '{POST_ID}', '{TICKET_ID}' ],
+					tribe( Checkout_Shortcode::class )->get_html()
+				)
+			)
+		);
 	}
 
 	/**
 	 * Data provider for testing order totals with various inputs.
 	 *
-	 * @return \Generator
+	 * @return Generator
 	 */
-	public function cart_totals_data_provider(): \Generator {
+	public function cart_totals_data_provider(): Generator {
 		yield 'Ticket $10, Fee $5, Application All' => [
 			'ticket_price'      => Float_Value::from_number( 10 ),
 			'fee_raw_amount'    => Float_Value::from_number( 5 ),
@@ -967,10 +1008,37 @@ class Fees_Test extends Controller_Test_Case {
 	}
 
 	/**
-	 * @before
-	 * @after
+	 * @test
 	 */
-	public function reset_fees() {
-		$this->test_services->get( PayPalFees::class )->reset_fees_and_subtotal();
+	public function it_should_render_fees() {
+		/** @var Singular_Order_Page $singular_page */
+		$singular_page = tribe( Singular_Order_Page::class );
+
+		// Now, we should add a fee to the order and ensure it is displayed.
+		$post      = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post, 10 );
+		$fee       = $this->create_fee_for_ticket( $ticket_id );
+		$this->add_fee_to_ticket( $fee, $ticket_id );
+
+		$this->make_controller()->register();
+
+		$order = $this->create_order( [ $ticket_id => 1 ] );
+
+		// Refresh the order.
+		$order = tec_tc_get_order( $order->ID );
+
+		// We should have fees attached to the order.
+		Assert::assertNotEmpty( $order->fees );
+
+		ob_start();
+		$singular_page->render_order_items( $order );
+		$html = ob_get_clean();
+
+		$html = str_replace( $ticket_id, '{{TICKET_ID}}', $html );
+		$html = str_replace( $order->ID, '{{ORDER_ID}}', $html );
+		$html = str_replace( $post, '{{EVENT_ID}}', $html );
+		$html = str_replace( $fee, '{{FEE_ID}}', $html );
+
+		$this->assertMatchesHtmlSnapshot( $html );
 	}
 }

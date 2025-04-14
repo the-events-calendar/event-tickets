@@ -17,9 +17,9 @@ use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Coupon_Table;
 use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Fee_Table;
 use TEC\Tickets\Commerce\Utils\Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Legacy_Value_Factory;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Percent_Value;
+use TEC\Tickets\Commerce\Values\Legacy_Value_Factory;
+use TEC\Tickets\Commerce\Values\Precision_Value;
+use TEC\Tickets\Commerce\Values\Percent_Value;
 
 /**
  * Context class that interacts with the strategy.
@@ -166,14 +166,25 @@ class Modifier_Manager {
 	 * @return Value The total amount after fees are applied.
 	 */
 	public function calculate_total_fees( array $items ): Value {
-		$total_fees = new Precision_Value( 0.0 );
+		return Legacy_Value_Factory::to_legacy_value(
+			( new Precision_Value( 0.0 ) )->sum( ...$this->combine_total_fees( $items ) )
+		);
+	}
 
-		$all_fees = [];
-		foreach ( $items as $item ) {
-			$all_fees[] = $item['fee_amount'];
-		}
-
-		return Legacy_Value_Factory::to_legacy_value( $total_fees->sum( ...$all_fees ) );
+	/**
+	 * Get the combined fees for an array of items.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param array $items The items in the cart.
+	 *
+	 * @return Precision_Value[] The combined fees for the items.
+	 */
+	public function combine_total_fees( array $items ): array {
+		return array_map(
+			static fn( $item ) => $item['fee_amount'],
+			$items
+		);
 	}
 
 	/**
