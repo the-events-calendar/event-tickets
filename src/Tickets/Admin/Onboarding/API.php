@@ -44,7 +44,7 @@ class API extends Abstract_API {
 	 *
 	 * @var  string
 	 */
-	protected const ROOT_NAMESPACE = 'tec/events/onboarding';
+	protected const ROOT_NAMESPACE = 'tec/tickets/onboarding';
 
 	/**
 	 * Register the endpoint.
