@@ -62,6 +62,11 @@
     ]
   },
   "scripts": {
+    "lint:js": "wp-scripts lint-js src/",
+    "lint:css": "wp-scripts lint-style",
+    "lint": "npm run lint:js && npm run lint:css",
+    "format:css": "wp-scripts lint-style --fix",
+    "format:js": "wp-scripts lint-js src/ --fix",
     "build": "wp-scripts build",
     "start": "wp-scripts start",
     "changelog": "./vendor/bin/changelogger add"
@@ -90,6 +95,7 @@
     "postcss-nested": "^7.0.2",
     "postcss-preset-env": "^10.1.5",
     "redux-mock-store": "^1.5.3",
+    "stylelint-order": "^6.0.4",
     "webpack-cli": "^6.0.1",
     "webpack-merge": "^4.1.4"
   },
