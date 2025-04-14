@@ -50,28 +50,36 @@ class Order_Test extends WPTestCase {
 		$hash = $cart->get_cart_hash( true );
 		$this->assertSame( 'abcdefghijklmnop', $hash );
 
-		// Careful!!! Each next order includes previous order's items as well since we are not clearing the cart in between!!
-		$order_1 = $this->create_order_from_cart( [ $ticket_id_1 => 1 ] );
-		$this->assertSame( 'abcdefghijklmnop', $cart->get_cart_hash() );
-		$order_2 = $this->create_order_from_cart( [ $ticket_id_2 => 1 ] );
-		$this->assertSame( 'abcdefghijklmnop', $cart->get_cart_hash() );
-		$order_3 = $this->create_order_from_cart( [ $ticket_id_1 => 2, $ticket_id_2 => 2 ] );
+		// Each next order includes previous order's items as well since we are not clearing the cart in between.
+		$order_1 = $this->create_order_from_cart_items( [ $ticket_id_1 => 1 ] );
 		$this->assertSame( 'abcdefghijklmnop', $cart->get_cart_hash() );
 
+		$order_2 = $this->create_order_from_cart_items( [ $ticket_id_2 => 1 ] );
+		$this->assertSame( 'abcdefghijklmnop', $cart->get_cart_hash() );
+
+		// This will update the quantity of both tickets in the cart.
+		$order_3 = $this->create_order_from_cart_items( [ $ticket_id_1 => 2, $ticket_id_2 => 2 ] );
+		$this->assertSame( 'abcdefghijklmnop', $cart->get_cart_hash() );
+
+		// All of the orders should be an instance of the WP_Post class.
 		$this->assertInstanceof( WP_Post::class, $order_1 );
 		$this->assertInstanceof( WP_Post::class, $order_2 );
 		$this->assertInstanceof( WP_Post::class, $order_3 );
 
-		// They should be the same order!
+		// They should be the same order.
 		$this->assertEquals( $order_1->ID, $order_2->ID );
 		$this->assertEquals( $order_1->ID, $order_3->ID );
 
-		// They should not have the same totals!
+		// The first order has 1 ticket of ID 1, which costs 10.
 		$this->assertSame( 10.0, $order_1->total_value->get_decimal() );
-		$this->assertSame( 30.0, $order_2->total_value->get_decimal() );
-		$this->assertSame( 90.0, $order_3->total_value->get_decimal() );
 
-		$times =0;
+		// The second order has 1 ticket of ID 2, which costs 20, plus the original ticket of ID 1.
+		$this->assertSame( 30.0, $order_2->total_value->get_decimal() );
+
+		// The third order has 2 tickets of ID 1, which costs 20, and 2 tickets of ID 2, which costs 40.
+		$this->assertSame( 60.0, $order_3->total_value->get_decimal() );
+
+		$times = 0;
 		$this->set_fn_return( 'wp_generate_password', function () use ( &$times ) {
 			$times++;
 			return 'abcdefghijklmnop-' . $times;
@@ -79,15 +87,15 @@ class Order_Test extends WPTestCase {
 
 		$cart->clear_cart();
 		$cart->get_cart_hash( true );
-		$order_4 = $this->create_order_from_cart( [ $ticket_id_1 => 1 ] );
+		$order_4 = $this->create_order_from_cart_items( [ $ticket_id_1 => 1 ] );
 		$this->assertSame( 'abcdefghijklmnop-1', $cart->get_cart_hash() );
 		$cart->clear_cart();
 		$cart->get_cart_hash( true );
-		$order_5 = $this->create_order_from_cart( [ $ticket_id_2 => 1 ] );
+		$order_5 = $this->create_order_from_cart_items( [ $ticket_id_2 => 1 ] );
 		$this->assertSame( 'abcdefghijklmnop-2', $cart->get_cart_hash() );
 		$cart->clear_cart();
 		$cart->get_cart_hash( true );
-		$order_6 = $this->create_order_from_cart( [ $ticket_id_1 => 2, $ticket_id_2 => 2 ] );
+		$order_6 = $this->create_order_from_cart_items( [ $ticket_id_1 => 2, $ticket_id_2 => 2 ] );
 		$this->assertSame( 'abcdefghijklmnop-3', $cart->get_cart_hash() );
 		$cart->clear_cart();
 
@@ -144,7 +152,7 @@ class Order_Test extends WPTestCase {
 		$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
 		$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
 
-		$order = $this->create_order_from_cart( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ] );
+		$order = $this->create_order_from_cart_items( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ] );
 		tribe( Cart::class )->clear_cart();
 
 		$this->assertFalse( tribe( Order::class )->is_checkout_completed( $order->ID ) );
@@ -164,7 +172,7 @@ class Order_Test extends WPTestCase {
 		$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
 		$ticket_id_2 = $this->create_tc_ticket( $post, 20 );
 
-		$order = $this->create_order_from_cart( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ] );
+		$order = $this->create_order_from_cart_items( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ] );
 		tribe( Cart::class )->clear_cart();
 
 		$this->assertFalse( tribe( Order::class )->has_on_checkout_screen_hold( $order->ID ) );
@@ -191,7 +199,7 @@ class Order_Test extends WPTestCase {
 		}, 10, 3 );
 
 		$this->assertEquals( 0, did_action( 'tec_tickets_commerce_order_status_transition' ) );
-		$order = $this->create_order_from_cart( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ] );
+		$order = $this->create_order_from_cart_items( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ] );
 		tribe( Cart::class )->clear_cart();
 
 		$this->assertFalse( tribe( Order::class )->is_order_locked( $order->ID ) );
@@ -372,7 +380,7 @@ class Order_Test extends WPTestCase {
 		$this->assertEquals( 50, $global_stock->get_stock_level(), 'Global stock should be 50' );
 
 		// Create an Order for 5 on each Ticket.
-		$order_id = $this->create_order_from_cart(
+		$order_id = $this->create_order_from_cart_items(
 			[
 				$ticket_a_id => 5,
 				$ticket_b_id => 6,
@@ -731,9 +739,9 @@ class Order_Test extends WPTestCase {
 		$this->assertSame( $expected, $result );
 	}
 
-	protected function create_order_from_cart( array $items, array $overrides = [] ) {
+	protected function create_order_from_cart_items( array $items, array $overrides = [] ) {
 		foreach ( $items as $id => $quantity ) {
-			tribe( Cart::class )->get_repository()->add_item( $id, $quantity );
+			tribe( Cart::class )->get_repository()->upsert_item( $id, $quantity );
 		}
 
 		$default_purchaser = [

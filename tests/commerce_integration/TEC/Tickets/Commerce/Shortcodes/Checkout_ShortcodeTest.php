@@ -5,6 +5,8 @@ namespace TEC\Tickets\Commerce\Shortcodes;
 use Codeception\TestCase\WPTestCase;
 use Spatie\Snapshots\MatchesSnapshots;
 use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Cart\Agnostic_Cart;
+use TEC\Tickets\Commerce\Cart\Cart_Interface;
 use TEC\Tickets\Commerce\Cart\Unmanaged_Cart;
 use TEC\Tickets\Commerce\Gateways\Manual\Gateway;
 use TEC\Tickets\Commerce\Module;
@@ -65,7 +67,7 @@ class Checkout_ShortcodeTest extends WPTestCase {
 		$this->set_fn_return( 'wp_create_nonce', 'jhd73jd873' );
 
 		tribe_singleton( Cart::class, new Cart() );
-		tribe_singleton( Unmanaged_Cart::class, new Unmanaged_Cart() );
+		tribe_singleton( Cart_Interface::class, Agnostic_Cart::class );
 		tribe_update_option( 'tickets-commerce-currency-code', 'USD' );
 		tribe_update_option( 'tickets-commerce-currency-decimal-separator', '.' );
 		tribe_update_option( 'tickets-commerce-currency-thousands-separator', ',' );

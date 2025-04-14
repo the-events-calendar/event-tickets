@@ -19,6 +19,7 @@ use TEC\Tickets\Commerce\Status\Reversed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Date_Utils as Dates;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use WP_Post;
 
 /**
@@ -525,32 +526,45 @@ class Order extends Abstract_Order {
 	public function create_from_cart( Gateway_Interface $gateway, $purchaser = null ) {
 		$cart = tribe( Cart::class );
 
-		$items = $cart->get_items_in_cart();
+		// Prepare the items for the order.
 		$items = array_filter(
 			array_map(
 				static function ( $item ) {
-					/** @var Value $ticket_value */
-					$ticket_value         = tribe( Ticket::class )->get_price_value( $item['ticket_id'] );
-					$ticket_regular_value = tribe( Ticket::class )->get_price_value( $item['ticket_id'], true );
+					/** @var Ticket_Object $ticket */
+					$ticket = $item['obj'] ?? tribe( Ticket::class )->get_ticket( $item['ticket_id'] );
 
-					if ( null === $ticket_value ) {
+					// Ensure we have a valid ticket object to work with.
+					if ( null === $ticket ) {
 						return null;
 					}
 
-					$item['price']     = $ticket_value->get_decimal();
-					$item['sub_total'] = $ticket_value->sub_total( $item['quantity'] )->get_decimal();
-					$item['event_id']  = tribe( Ticket::class )->get_related_event_id( $item['ticket_id'] );
+					// Ensure we have the properties we need on the ticket object.
+					if ( ! isset( $ticket->price, $ticket->regular_price ) ) {
+						return null;
+					}
 
-					$item['regular_price']     = $ticket_regular_value->get_decimal();
-					$item['regular_sub_total'] = $ticket_regular_value->sub_total( $item['quantity'] )->get_decimal();
+					$ticket_value         = Value::create( $ticket->price );
+					$ticket_regular_value = Value::create( $ticket->regular_price );
+					$subtotal_value       = $item['sub_total'] ?? $ticket_value->sub_total( $item['quantity'] );
 
-					return $item;
+					return [
+						'event_id'          => $item['event_id'] ?? tribe( Ticket::class )->get_related_event_id( $item['ticket_id'] ),
+						'extra'             => $item['extra'] ?? [],
+						'price'             => $ticket_value->get_decimal(),
+						'quantity'          => $item['quantity'],
+						'regular_price'     => $ticket_regular_value->get_decimal(),
+						'regular_sub_total' => $ticket_regular_value->sub_total( $item['quantity'] )->get_decimal(),
+						'sub_total'         => $subtotal_value->get_decimal(),
+						'ticket_id'         => $item['ticket_id'],
+						'type'              => $item['type'] ?? 'ticket',
+					];
 				},
-				$items
+				$cart->get_items_in_cart( true )
 			)
 		);
 
-		$subtotal = $this->get_value_total( $items );
+		// Get the subtotal calculation from the cart.
+		$cart_subtotal = Value::create( $cart->get_cart_subtotal() );
 
 		$original_cart_items = $items;
 
@@ -576,20 +590,41 @@ class Order extends Abstract_Order {
 		$items = apply_filters(
 			'tec_tickets_commerce_create_order_from_cart_items',
 			$items,
-			$subtotal,
+			$cart_subtotal,
 			$gateway,
 			$purchaser
 		);
 
-		$total = $this->get_value_total( array_filter( $items ) );
+		// Get the total calculation from the cart.
+		$cart_total = Value::create( $cart->get_cart_total() );
+
+		/**
+		 * Filter the cart total before creating an order.
+		 *
+		 * @since 5.21.0
+		 *
+		 * @param Value             $cart_total    The cart total.
+		 * @param array             $items         The items in the cart.
+		 * @param Value             $cart_subtotal The calculated subtotal of the cart items.
+		 * @param Gateway_Interface $gateway       The payment gateway used for the order.
+		 * @param ?array            $purchaser     Purchaser details.
+		 */
+		$cart_total = apply_filters(
+			'tec_tickets_commerce_create_order_from_cart_total',
+			$cart_total,
+			$items,
+			$cart_subtotal,
+			$gateway,
+			$purchaser
+		);
 
 		$hash              = $cart->get_cart_hash();
 		$existing_order_id = null;
 
 		$order_args = [
 			'title'                => $this->generate_order_title( $original_cart_items, $hash ),
-			'total_value'          => $total->get_decimal(),
-			'subtotal'             => $subtotal->get_decimal(),
+			'total_value'          => $cart_total->get_decimal(),
+			'subtotal'             => $cart_subtotal->get_decimal(),
 			'items'                => $items,
 			'gateway'              => $gateway::get_key(),
 			'hash'                 => $hash,
