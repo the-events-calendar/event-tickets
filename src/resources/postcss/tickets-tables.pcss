@@ -51,12 +51,14 @@
 
 	tbody tr:only-child,
 	tr.Tribe__Tickets__RSVP {
+
 		.tribe-tickets__tickets-editor-ticket-name-sortable {
 			display: none;
 		}
 	}
 
 	td.column-primary {
+
 		.tribe-handle {
 			color: #ccc;
 			cursor: move;
@@ -68,7 +70,9 @@
 	}
 
 	.ui-sortable {
+
 		td.column-primary {
+
 			.tribe-handle {
 				display: block;
 			}
@@ -96,7 +100,7 @@
 		font-size: var(--tec-font-size-1);
 		line-height: var(--tec-spacer-4);
 
-		&:before {
+		&::before {
 			color: #ccc;
 			font-size: var(--tec-spacer-3);
 			height: var(--tec-spacer-3);
@@ -109,7 +113,7 @@
 	.tribe-tickets__tickets-editor-ticket-available-dates-icon-expired {
 		font-style: italic;
 
-		&:before {
+		&::before {
 			color: var(--tec-color-icon-error);
 		}
 	}
@@ -127,7 +131,7 @@
 			line-height: 16px;
 			width: 16px;
 
-			&:before {
+			&::before {
 				font-size: 16px;
 			}
 		}
@@ -173,27 +177,29 @@
 		.ticket_duplicate_text {
 			font-size: 0;
 
-			&:before {
-				content: '\f464';
-				font-family: 'dashicons', sans-serif;
+			&::before {
+				content: "\f464";
+				font-family: dashicons, sans-serif;
 				font-size: 20px;
 				vertical-align: top;
 			}
 		}
 
 		.ticket_delete_text {
-			&:before {
-				content: '\f182';
+
+			&::before {
+				content: "\f182";
 			}
 		}
 
 		.ticket_duplicate_text {
-			&:before {
+
+			&::before {
 				background-color: #ccc;
-				content: '';
+				content: "";
 				display: inline-block;
 				height: 22px;
-				mask-image: url("../icons/ticket-copy.svg");
+				mask-image: url(../icons/ticket-copy.svg);
 				mask-position: center;
 				mask-repeat: no-repeat;
 				width: 20px;
@@ -207,7 +213,8 @@
 	}
 
 	.ticket_duplicate:hover {
-		.ticket_duplicate_text:before {
+
+		.ticket_duplicate_text::before {
 			background-color: #727272;
 		}
 	}
@@ -218,6 +225,7 @@
 
 	/* Expanded capacity table */
 	#tribe_panel_settings & {
+
 		tbody tr {
 			box-shadow: none;
 
@@ -225,13 +233,13 @@
 				border-bottom: 1px solid var(--tec-color-border-default);
 				display: block;
 
-				&:before,
-				&:after {
-					content: '';
+				&::before,
+				&::after {
+					content: "";
 					display: table;
 				}
 
-				&:after {
+				&::after {
 					clear: both;
 				}
 
@@ -241,6 +249,7 @@
 				}
 
 				&.tribe-tickets-editor-table-row-capacity-independent {
+
 					td:first-child {
 						display: none;
 					}
@@ -278,6 +287,7 @@
 	}
 
 	@media screen and (max-width: 782px) {
+
 		.tribe-mobile-hidden {
 			display: none;
 		}
@@ -303,8 +313,9 @@
 		}
 
 		&.tribe-tickets-editor-capacity-table {
+
 			td:first-child,
-			td[colspan='2'] {
+			td[colspan="2"] {
 				width: 100%;
 			}
 		}

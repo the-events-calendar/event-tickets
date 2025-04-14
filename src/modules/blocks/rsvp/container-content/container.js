@@ -17,7 +17,4 @@ const mapStateToProps = ( state ) => ( {
 	isAddEditOpen: selectors.getRSVPIsAddEditOpen( state ),
 } );
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps ),
-)( RSVPContainerContent );
+export default compose( withStore(), connect( mapStateToProps ) )( RSVPContainerContent );

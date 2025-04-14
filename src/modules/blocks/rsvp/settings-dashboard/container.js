@@ -19,7 +19,4 @@ const mapDispatchToProps = ( dispatch ) => ( {
 	onCloseClick: () => dispatch( actions.setRSVPSettingsOpen( false ) ),
 } );
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps, mapDispatchToProps ),
-)( RSVPSettingsDashboard );
+export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps ) )( RSVPSettingsDashboard );

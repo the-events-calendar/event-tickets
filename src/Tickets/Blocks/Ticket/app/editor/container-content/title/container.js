@@ -15,7 +15,7 @@ import { selectors, actions } from '../../../../../../../modules/data/blocks/tic
  * Decodes HTML entities in a given input string and returns the decoded text.
  *
  * @param {string} title - The input string containing HTML entities to be decoded.
- * @returns {string} The decoded text without HTML entities.
+ * @return {string} The decoded text without HTML entities.
  */
 export function htmlEntityDecode( title ) {
 	const doc = new DOMParser().parseFromString( title, 'text/html' );
@@ -35,10 +35,4 @@ const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 	},
 } );
 
-export default compose(
-	withStore(),
-	connect(
-		mapStateToProps,
-		mapDispatchToProps,
-	),
-)( Template );
+export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps ) )( Template );

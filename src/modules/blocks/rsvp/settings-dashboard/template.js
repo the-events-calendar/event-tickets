@@ -21,25 +21,24 @@ import './style.pcss';
 
 const RSVPSettingsDashboard = ( { isSettingsLoading, onCloseClick } ) => (
 	<SettingsDashboard
-		className={ classNames(
-			'tribe-editor__rsvp__settings-dashboard',
-			{ 'tribe-editor__rsvp__settings-dashboard--loading': isSettingsLoading },
-		) }
+		className={ classNames( 'tribe-editor__rsvp__settings-dashboard', {
+			'tribe-editor__rsvp__settings-dashboard--loading': isSettingsLoading,
+		} ) }
 		closeButtonDisabled={ isSettingsLoading }
-		content={ (
+		content={
 			<Fragment>
 				<RSVPHeaderImage />
 				{ isSettingsLoading && <Spinner /> }
 			</Fragment>
-		) }
-		headerLeft={ (
+		}
+		headerLeft={
 			<Fragment>
 				<SettingsIcon />
 				<span className="tribe-editor__settings-dashboard__header-left-text">
 					{ __( 'RSVP Settings', 'event-tickets' ) }
 				</span>
 			</Fragment>
-		) }
+		}
 		onCloseClick={ onCloseClick }
 	/>
 );

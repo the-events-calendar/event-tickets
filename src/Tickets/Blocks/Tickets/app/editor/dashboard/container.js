@@ -16,7 +16,4 @@ const mapStateToProps = ( state ) => ( {
 	hideDashboard: selectors.hasATicketSelected( state ),
 } );
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps ),
-)( TicketsDashboard );
+export default compose( withStore(), connect( mapStateToProps ) )( TicketsDashboard );

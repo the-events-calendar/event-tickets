@@ -9,8 +9,7 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_RSVP_TEMP_TITLE:
 			return {
 				...state,
-				title: action.
-					payload.title,
+				title: action.payload.title,
 			};
 		case types.SET_RSVP_TEMP_DESCRIPTION:
 			return {

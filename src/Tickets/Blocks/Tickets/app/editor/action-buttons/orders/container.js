@@ -25,14 +25,8 @@ const mapStateToProps = ( state ) => {
 	const page = constants.TICKET_ORDERS_PAGE_SLUG[ provider ];
 
 	return {
-		href: page
-			? `${ adminURL }edit.php?post_type=${ postType }&page=${ page }&event_id=${ postId }`
-			: '',
+		href: page ? `${ adminURL }edit.php?post_type=${ postType }&page=${ page }&event_id=${ postId }` : '',
 	};
 };
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps ),
-)( AttendeesActionButton );
-
+export default compose( withStore(), connect( mapStateToProps ) )( AttendeesActionButton );

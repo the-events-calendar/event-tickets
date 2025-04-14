@@ -1,5 +1,5 @@
-import {ACTION_ADD_NEW_LAYOUT, ajaxNonce, ajaxUrl} from '../../ajax';
-import {onReady, getLocalizedString, redirectTo} from '../../utils';
+import { ACTION_ADD_NEW_LAYOUT, ajaxNonce, ajaxUrl } from '../../ajax';
+import { onReady, getLocalizedString, redirectTo } from '../../utils';
 import { localizedData } from './localized-data';
 
 /**
@@ -13,19 +13,19 @@ export const { addLayoutModal } = localizedData;
  * @return {Promise<Element>} A promise that resolves to the modal element.
  */
 export async function waitForModalElement() {
-	return new Promise((resolve) => {
+	return new Promise( ( resolve ) => {
 		let timeoutId;
 		const check = () => {
-			if ( window[addLayoutModal] ) {
-				clearTimeout(timeoutId);
-				resolve( window[addLayoutModal] );
+			if ( window[ addLayoutModal ] ) {
+				clearTimeout( timeoutId );
+				resolve( window[ addLayoutModal ] );
 				return;
 			}
-			timeoutId = setTimeout(check, 50);
+			timeoutId = setTimeout( check, 50 );
 		};
 
 		check();
-	});
+	} );
 }
 
 /**
@@ -57,7 +57,7 @@ export function modalActionListener() {
  */
 export async function addNewLayout( event ) {
 	const mapSelect = document.getElementById( 'tec-tickets-seating__select-map' );
-	const mapId = mapSelect.selectedOptions[0].value;
+	const mapId = mapSelect.selectedOptions[ 0 ].value;
 	const wrapper = document.querySelector( '.tec-tickets-seating__new-layout-wrapper' );
 
 	if ( ! mapId ) {
@@ -67,11 +67,11 @@ export async function addNewLayout( event ) {
 	event.target.disabled = true;
 	wrapper.style.opacity = 0.5;
 
-	const result = await addLayoutByMapId(mapId);
+	const result = await addLayoutByMapId( mapId );
 
 	if ( result ) {
 		closeModal();
-		redirectTo(result.data);
+		redirectTo( result.data );
 	} else {
 		alert( getLocalizedString( 'add-failed', 'layouts' ) );
 		wrapper.style.opacity = 1;
@@ -89,11 +89,11 @@ export async function addNewLayout( event ) {
  * @return {Promise<boolean|object>} A promise that resolves to data object if the layout was added successfully, false otherwise.
  */
 export async function addLayoutByMapId( mapId ) {
-	const url = new URL(ajaxUrl);
-	url.searchParams.set('_ajax_nonce', ajaxNonce);
-	url.searchParams.set('mapId', mapId);
-	url.searchParams.set('action', ACTION_ADD_NEW_LAYOUT);
-	const response = await fetch(url.toString(), { method: 'POST' });
+	const url = new URL( ajaxUrl );
+	url.searchParams.set( '_ajax_nonce', ajaxNonce );
+	url.searchParams.set( 'mapId', mapId );
+	url.searchParams.set( 'action', ACTION_ADD_NEW_LAYOUT );
+	const response = await fetch( url.toString(), { method: 'POST' } );
 
 	if ( response.status === 200 ) {
 		return await response.json();
@@ -111,14 +111,14 @@ export async function addLayoutByMapId( mapId ) {
  *
  * @return {void} Handles the map select updates.
  */
-export function handleSelectUpdates(event) {
-	const selectedOption = event.target.options[event.target.selectedIndex];
+export function handleSelectUpdates( event ) {
+	const selectedOption = event.target.options[ event.target.selectedIndex ];
 
 	const img = document.getElementById( 'tec-tickets-seating__new-layout-map-preview-img' );
-	img.src = selectedOption.getAttribute('data-screenshot-url');;
+	img.src = selectedOption.getAttribute( 'data-screenshot-url' );
 
 	const seatsCountElement = document.querySelector( '.tec-tickets-seating__new-layout-map-seats-count' );
-	seatsCountElement.innerHTML = selectedOption.getAttribute('data-seats-count');
+	seatsCountElement.innerHTML = selectedOption.getAttribute( 'data-seats-count' );
 
 	const mapNameElement = document.querySelector( '.tec-tickets-seating__new-layout-map-name' );
 	mapNameElement.innerHTML = selectedOption.innerHTML;
@@ -132,9 +132,9 @@ export function handleSelectUpdates(event) {
  * @return {void} The modal is closed.
  */
 export function closeModal() {
-	const modal = window?.[addLayoutModal];
+	const modal = window?.[ addLayoutModal ];
 
-	if (!modal) {
+	if ( ! modal ) {
 		return;
 	}
 
@@ -151,11 +151,11 @@ export function closeModal() {
 export async function init() {
 	const modalElement = await waitForModalElement();
 
-	modalElement.on('show', () => {
+	modalElement.on( 'show', () => {
 		modalActionListener();
-	});
+	} );
 }
 
 onReady( async () => {
 	await init();
-});
+} );

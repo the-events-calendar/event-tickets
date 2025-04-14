@@ -5,8 +5,8 @@
  *
  * @return {string} The link URL, or an empty string if it does not exist.
  */
-export function getLink(link) {
-	return window?.tec?.tickets?.seating?.utilsData?.links?.[link] || '';
+export function getLink( link ) {
+	return window?.tec?.tickets?.seating?.utilsData?.links?.[ link ] || '';
 }
 
 /**
@@ -17,13 +17,11 @@ export function getLink(link) {
  *
  * @return {string} The localized string, or an empty string if it does not exist.
  */
-export function getLocalizedString(slug, group) {
-	if (group) {
-		return (
-			window?.tec?.tickets?.seating?.utilsData?.localizedStrings?.[group]?.[slug] || ''
-		);
+export function getLocalizedString( slug, group ) {
+	if ( group ) {
+		return window?.tec?.tickets?.seating?.utilsData?.localizedStrings?.[ group ]?.[ slug ] || '';
 	}
-	return window?.tec?.tickets?.seating?.utilsData?.localizedStrings?.[slug] || '';
+	return window?.tec?.tickets?.seating?.utilsData?.localizedStrings?.[ slug ] || '';
 }
 
 /**
@@ -39,13 +37,13 @@ export function getLocalizedString(slug, group) {
  *
  * @return {HTMLElement} The HTML Element.
  */
-export function createHtmlComponentFromTemplateString(htmlTemplate, props) {
-	const html = htmlTemplate.replace(/{(\w*)}/g, function (match, key) {
-		return props?.[key] || '';
-	});
-	const template = document.createElement('template');
+export function createHtmlComponentFromTemplateString( htmlTemplate, props ) {
+	const html = htmlTemplate.replace( /{(\w*)}/g, function ( match, key ) {
+		return props?.[ key ] || '';
+	} );
+	const template = document.createElement( 'template' );
 	template.innerHTML = html.trim();
-	return template.content.children[0];
+	return template.content.children[ 0 ];
 }
 
 /**
@@ -60,14 +58,14 @@ export function createHtmlComponentFromTemplateString(htmlTemplate, props) {
  * @param {Object} props      The props to replace in the template.
  * @return {HTMLElement|null} The HTML Element, or `null` if the template is not found.
  */
-export function createHtmlComponentFromTemplateElement(templateId, props) {
-	const template = document.getElementById(templateId);
+export function createHtmlComponentFromTemplateElement( templateId, props ) {
+	const template = document.getElementById( templateId );
 
-	if (!template) {
+	if ( ! template ) {
 		return null;
 	}
 
-	return createHtmlComponentFromTemplateString(template.innerHTML, props);
+	return createHtmlComponentFromTemplateString( template.innerHTML, props );
 }
 
 /**
@@ -75,15 +73,15 @@ export function createHtmlComponentFromTemplateElement(templateId, props) {
  *
  * @since 5.16.0
  *
- * @param {function} domReadyCallback The callback to call when the DOM is ready.
+ * @param {Function} domReadyCallback The callback to call when the DOM is ready.
  *
  * @return {void}
  */
-export const onReady = (domReadyCallback) => {
-	if (document.readyState !== 'loading') {
+export const onReady = ( domReadyCallback ) => {
+	if ( document.readyState !== 'loading' ) {
 		domReadyCallback();
 	} else {
-		document.addEventListener('DOMContentLoaded', domReadyCallback);
+		document.addEventListener( 'DOMContentLoaded', domReadyCallback );
 	}
 };
 
@@ -92,13 +90,13 @@ export const onReady = (domReadyCallback) => {
  *
  * @since 5.16.0
  *
- * @param {string} url The URL to relocate to.
+ * @param {string}  url            The URL to relocate to.
  * @param {boolean} [newTab=false] Whether to open the URL in a new tab.
  *
  * @return {void}
  */
-export function redirectTo(url, newTab = false) {
-	if (newTab) {
+export function redirectTo( url, newTab = false ) {
+	if ( newTab ) {
 		window.open( url, '_blank', 'noopener,noreferrer' );
 	} else {
 		window.location.href = url;

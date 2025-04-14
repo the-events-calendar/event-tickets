@@ -40,4 +40,3 @@ export default function modal( state = DEFAULT_STATE, action ) {
 			return state;
 	}
 }
-

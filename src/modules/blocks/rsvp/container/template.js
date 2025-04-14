@@ -16,10 +16,9 @@ import './style.pcss';
 
 const RSVPContainer = ( { isDisabled, isSelected, clientId } ) => (
 	<ContainerPanel
-		className={ classNames(
-			'tribe-editor__rsvp-container',
-			{ 'tribe-editor__rsvp-container--disabled': isDisabled },
-		) }
+		className={ classNames( 'tribe-editor__rsvp-container', {
+			'tribe-editor__rsvp-container--disabled': isDisabled,
+		} ) }
 		layout={ LAYOUT.rsvp }
 		header={ <RSVPContainerHeader isSelected={ isSelected } /> }
 		content={ <RSVPContainerContent clientId={ clientId } /> }

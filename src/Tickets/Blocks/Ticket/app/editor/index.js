@@ -30,22 +30,22 @@ const block = {
 		},
 	},
 
-	edit(editProps) {
+	edit( editProps ) {
 		const blockProps = useBlockProps();
 		return (
-			<div {...blockProps}>
-				<Ticket {...editProps} />
+			<div { ...blockProps }>
+				<Ticket { ...editProps } />
 			</div>
 		);
 	},
 	save() {
 		const blockProps = useBlockProps.save();
 		return (
-			<div {...blockProps}>
+			<div { ...blockProps }>
 				<InnerBlocks.Content />
 			</div>
 		);
 	},
 };
 
-registerBlockType(`tribe/tickets-item`, block);
+registerBlockType( `tribe/tickets-item`, block );

@@ -36,22 +36,22 @@ import {
  * @return {Promise<SeatTypesUpdateResponseData|false>} A promise that will resolve to the seat types update response
  *                                                      data or `false` on failure.
  */
-export async function handleSeatTypesUpdated(data) {
+export async function handleSeatTypesUpdated( data ) {
 	const updatedSeatTypes = data?.seatTypes || [];
 
-	if (!(Array.isArray(updatedSeatTypes) && updatedSeatTypes.length > 0)) {
+	if ( ! ( Array.isArray( updatedSeatTypes ) && updatedSeatTypes.length > 0 ) ) {
 		return false;
 	}
 
-	const url = new URL(ajaxUrl);
-	url.searchParams.set('_ajax_nonce', ajaxNonce);
-	url.searchParams.set('action', ACTION_SEAT_TYPES_UPDATED);
-	const response = await fetch(url.toString(), {
+	const url = new URL( ajaxUrl );
+	url.searchParams.set( '_ajax_nonce', ajaxNonce );
+	url.searchParams.set( 'action', ACTION_SEAT_TYPES_UPDATED );
+	const response = await fetch( url.toString(), {
 		method: 'POST',
-		body: JSON.stringify(updatedSeatTypes),
-	});
+		body: JSON.stringify( updatedSeatTypes ),
+	} );
 
-	if (!response.ok) {
+	if ( ! response.ok ) {
 		return false;
 	}
 
@@ -81,21 +81,21 @@ export async function handleSeatTypesUpdated(data) {
  *
  * @return {Promise<boolean>} A promise that will resolve to `true` if the seat type deletion handling was successful.
  */
-export async function handleSeatTypeDeleted(data) {
-	if (!data?.deletedId) {
+export async function handleSeatTypeDeleted( data ) {
+	if ( ! data?.deletedId ) {
 		return false;
 	}
 
-	const url = new URL(ajaxUrl);
-	url.searchParams.set('_ajax_nonce', ajaxNonce);
-	url.searchParams.set('action', ACTION_SEAT_TYPE_DELETED);
+	const url = new URL( ajaxUrl );
+	url.searchParams.set( '_ajax_nonce', ajaxNonce );
+	url.searchParams.set( 'action', ACTION_SEAT_TYPE_DELETED );
 
-	const response = await fetch(url.toString(), {
+	const response = await fetch( url.toString(), {
 		method: 'POST',
-		body: JSON.stringify(data),
-	});
+		body: JSON.stringify( data ),
+	} );
 
-	if (!response.ok) {
+	if ( ! response.ok ) {
 		return false;
 	}
 
@@ -119,22 +119,22 @@ export async function handleSeatTypeDeleted(data) {
  * @return {Promise<boolean|number>} A promise that will resolve to the number of
  *                                   reservations that were deleted or `false` on failure.
  */
-export async function handleReservationsDeleted(data) {
+export async function handleReservationsDeleted( data ) {
 	const ids = data?.ids || [];
 
-	if (!(Array.isArray(ids) && ids.length > 0)) {
+	if ( ! ( Array.isArray( ids ) && ids.length > 0 ) ) {
 		return 0;
 	}
 
-	const url = new URL(ajaxUrl);
-	url.searchParams.set('_ajax_nonce', ajaxNonce);
-	url.searchParams.set('action', ACTION_DELETE_RESERVATIONS);
-	const response = await fetch(url.toString(), {
+	const url = new URL( ajaxUrl );
+	url.searchParams.set( '_ajax_nonce', ajaxNonce );
+	url.searchParams.set( 'action', ACTION_DELETE_RESERVATIONS );
+	const response = await fetch( url.toString(), {
 		method: 'POST',
-		body: JSON.stringify(ids),
-	});
+		body: JSON.stringify( ids ),
+	} );
 
-	if (!response.ok) {
+	if ( ! response.ok ) {
 		return false;
 	}
 
@@ -161,22 +161,22 @@ export async function handleReservationsDeleted(data) {
  * @return {Promise<ReservationsUpdateResponseData|false>} A promise that will resolve to the reservations update
  *                                                         response data or `false` on failure.
  */
-export async function handleReservationsUpdatedFollowingSeatTypes(data) {
+export async function handleReservationsUpdatedFollowingSeatTypes( data ) {
 	const updated = data?.updated || {};
 
-	if (!updated || Object.keys(updated).length === 0) {
+	if ( ! updated || Object.keys( updated ).length === 0 ) {
 		return 0;
 	}
 
-	const url = new URL(ajaxUrl);
-	url.searchParams.set('_ajax_nonce', ajaxNonce);
-	url.searchParams.set('action', ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES);
-	const response = await fetch(url.toString(), {
+	const url = new URL( ajaxUrl );
+	url.searchParams.set( '_ajax_nonce', ajaxNonce );
+	url.searchParams.set( 'action', ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES );
+	const response = await fetch( url.toString(), {
 		method: 'POST',
-		body: JSON.stringify(updated),
-	});
+		body: JSON.stringify( updated ),
+	} );
 
-	if (!response.ok) {
+	if ( ! response.ok ) {
 		return false;
 	}
 

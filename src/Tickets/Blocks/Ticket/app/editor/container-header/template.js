@@ -13,13 +13,9 @@ import TicketContainerHeaderPrice from './price/container';
 import TicketContainerHeaderQuantity from './quantity/container';
 import { SALE_PRICE_LABELS } from '../../../../../../modules/data/blocks/ticket/constants';
 import './style.pcss';
-import {applyFilters} from "@wordpress/hooks";
+import { applyFilters } from '@wordpress/hooks';
 
-const TicketContainerHeader = ( {
-	clientId,
-	isSelected,
-	isOnSale,
-} ) => {
+const TicketContainerHeader = ( { clientId, isSelected, isOnSale } ) => {
 	if ( isSelected ) {
 		return null;
 	}
@@ -41,7 +37,7 @@ const TicketContainerHeader = ( {
 	let detailsItems = [
 		<OnSaleLabel isOnSale={ isOnSale } />,
 		<TicketContainerHeaderTitle clientId={ clientId } isSelected={ isSelected } />,
-		<TicketContainerHeaderDescription clientId={ clientId } isSelected={ isSelected } />
+		<TicketContainerHeaderDescription clientId={ clientId } isSelected={ isSelected } />,
 	];
 
 	/**
@@ -52,18 +48,14 @@ const TicketContainerHeader = ( {
 	 * @param {Array}  items    The header details of the ticket.
 	 * @param {string} clientId The client ID of the ticket block.
 	 */
-	detailsItems = applyFilters(
-		'tec.tickets.blocks.Ticket.header.detailItems',
-		detailsItems,
-		clientId
-	);
+	detailsItems = applyFilters( 'tec.tickets.blocks.Ticket.header.detailItems', detailsItems, clientId );
 
 	return (
 		<Fragment>
 			<div className="tribe-editor__ticket__container-header-details">
-				{detailsItems.map((item, index) => (
-					<Fragment key={index}>{item}</Fragment>
-				))}
+				{ detailsItems.map( ( item, index ) => (
+					<Fragment key={ index }>{ item }</Fragment>
+				) ) }
 			</div>
 			<TicketContainerHeaderPrice clientId={ clientId } isSelected={ isSelected } />
 			<TicketContainerHeaderQuantity clientId={ clientId } isSelected={ isSelected } />

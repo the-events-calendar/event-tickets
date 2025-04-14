@@ -6,7 +6,7 @@
  * @return {Element|null} The notice element, or null if it does not exist.j
  */
 function getNoticeElement() {
-	return document.getElementById('tec-tickets-seating-notice');
+	return document.getElementById( 'tec-tickets-seating-notice' );
 }
 
 /**
@@ -16,8 +16,8 @@ function getNoticeElement() {
  *
  * @param {Element|null} notice The notice element to hide.
  */
-function hideNotice(notice) {
-	if (!notice) {
+function hideNotice( notice ) {
+	if ( ! notice ) {
 		return;
 	}
 	notice.style.display = 'none';
@@ -31,8 +31,8 @@ function hideNotice(notice) {
  *
  * @param {Element|null} notice The notice element to show.
  */
-function showNotice(notice) {
-	if (!notice) {
+function showNotice( notice ) {
+	if ( ! notice ) {
 		return;
 	}
 	notice.style.display = 'block';
@@ -47,15 +47,15 @@ function showNotice(notice) {
  * @param {Element|null} notice    The notice element to manipulate.
  * @param {string}       className The class to set; all other classes will be removed.
  */
-function setNoticeClass(notice, className) {
-	if (!notice) {
+function setNoticeClass( notice, className ) {
+	if ( ! notice ) {
 		return;
 	}
 	const classes = notice.classList;
-	classes.remove('notice-success');
-	classes.remove('notice-warning');
-	classes.remove('notice-error');
-	classes.add(className);
+	classes.remove( 'notice-success' );
+	classes.remove( 'notice-warning' );
+	classes.remove( 'notice-error' );
+	classes.add( className );
 }
 
 /**
@@ -66,8 +66,8 @@ function setNoticeClass(notice, className) {
  * @param {Element|null} notice  The notice element to manipulate.
  * @param {string}       message The message to display.
  */
-function setNoticeMessage(notice, message) {
-	if (!notice) {
+function setNoticeMessage( notice, message ) {
+	if ( ! notice ) {
 		return;
 	}
 	notice.innerHTML = '<p>' + message + '</p>';
@@ -80,12 +80,12 @@ function setNoticeMessage(notice, message) {
  *
  * @param {string} message The message to display.
  */
-export function notifyUserOfError(message) {
+export function notifyUserOfError( message ) {
 	const notice = getNoticeElement();
-	hideNotice(notice);
-	setNoticeClass(notice, 'notice-error');
-	setNoticeMessage(notice, message);
-	showNotice(notice);
+	hideNotice( notice );
+	setNoticeClass( notice, 'notice-error' );
+	setNoticeMessage( notice, message );
+	showNotice( notice );
 }
 
 /**
@@ -95,10 +95,10 @@ export function notifyUserOfError(message) {
  *
  * @param {string} message The message to display.
  */
-export function notifyUserOfWarning(message) {
+export function notifyUserOfWarning( message ) {
 	const notice = getNoticeElement();
-	hideNotice(notice);
-	setNoticeClass(notice, 'notice-warning');
-	setNoticeMessage(notice, message);
-	showNotice(notice);
+	hideNotice( notice );
+	setNoticeClass( notice, 'notice-warning' );
+	setNoticeMessage( notice, message );
+	showNotice( notice );
 }

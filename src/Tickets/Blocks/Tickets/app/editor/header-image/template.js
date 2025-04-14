@@ -16,14 +16,9 @@ import { ImageUpload } from '@moderntribe/common/elements';
 import { TICKET_LABELS } from '../../../../../../modules/data/blocks/ticket/constants';
 import './style.pcss';
 
-const HeaderImage = ( {
-	image,
-	isSettingsLoading,
-	onRemove,
-	onSelect,
-} ) => {
+const HeaderImage = ( { image, isSettingsLoading, onRemove, onSelect } ) => {
 	const description =
-		!image?.src &&
+		! image?.src &&
 		// eslint-disable-next-line no-undef
 		sprintf(
 			/* Translators: %s - Ticket plural label. */
@@ -39,7 +34,7 @@ const HeaderImage = ( {
 		// eslint-disable-next-line no-undef
 		title: sprintf(
 			/* Translators: %s - Ticket singular label. */
-			__('%s Header Image', 'event-tickets'),
+			__( '%s Header Image', 'event-tickets' ),
 			TICKET_LABELS.ticket.singular
 		),
 		description,

@@ -20,33 +20,25 @@ import { applyFilters } from '@wordpress/hooks';
 import { Ticket as TicketIcon } from '../../../../../../../modules/icons';
 import { TICKET_LABELS } from '../../../../../../../modules/data/blocks/ticket/constants';
 
-const mapStateToProps = (state, ownProps) => {
-	const postTypeLabel = selectors
-		.getCurrentPostTypeLabel('singular_name')
-		.toLowerCase();
-	const ticketDetails = selectors.getTicketDetails(state, ownProps);
+const mapStateToProps = ( state, ownProps ) => {
+	const postTypeLabel = selectors.getCurrentPostTypeLabel( 'singular_name' ).toLowerCase();
+	const ticketDetails = selectors.getTicketDetails( state, ownProps );
 	const typeName = sprintf(
 		/* Translators: %s - the singular label for a ticket. */
-		_x('Standard %s', 'Default ticket type label.', 'event-tickets'),
+		_x( 'Standard %s', 'Default ticket type label.', 'event-tickets' ),
 		TICKET_LABELS.ticket.singular
 	);
 	const typeDescription = sprintf(
 		// translators: %s is the post type name in human readable form.
-		_x(
-			'A standard ticket is specific to this %s.',
-			'Default ticket type description.',
-			'event-tickets'
-		),
+		_x( 'A standard ticket is specific to this %s.', 'Default ticket type description.', 'event-tickets' ),
 		postTypeLabel
 	);
-	const hasEventsPro = plugins.selectors.hasPlugin(state)(
-		plugins.constants.EVENTS_PRO_PLUGIN
-	);
+	const hasEventsPro = plugins.selectors.hasPlugin( state )( plugins.constants.EVENTS_PRO_PLUGIN );
 	const currentPostIsEvent = selectors.currentPostIsEvent();
 
 	// Show an ECP related upsell message if on an Event and the user doesn't have ECP activated.
 	const upsellMessage =
-		!hasEventsPro && currentPostIsEvent
+		! hasEventsPro && currentPostIsEvent
 			? sprintf(
 					/* Translators: %s - the singular label for a ticket. */
 					_x(
@@ -76,17 +68,13 @@ const mapStateToProps = (state, ownProps) => {
 	 * @type {Object} context.ownProps The properties passed to the component.
 	 * @type {Object} context.ticketDetails The ticket details.
 	 */
-	mappedProps = applyFilters(
-		'tec.tickets.blocks.Tickets.Type.mappedProps',
-		mappedProps,
-		{
-			state,
-			ownProps,
-			ticketDetails,
-		}
-	);
+	mappedProps = applyFilters( 'tec.tickets.blocks.Tickets.Type.mappedProps', mappedProps, {
+		state,
+		ownProps,
+		ticketDetails,
+	} );
 
 	return mappedProps;
 };
 
-export default compose(withStore(), connect(mapStateToProps))(Template);
+export default compose( withStore(), connect( mapStateToProps ) )( Template );

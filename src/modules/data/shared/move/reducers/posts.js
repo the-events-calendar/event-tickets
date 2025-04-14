@@ -30,4 +30,3 @@ export default function posts( state = DEFAULT_STATE, action ) {
 			return state;
 	}
 }
-

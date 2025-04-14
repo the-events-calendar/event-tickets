@@ -8,10 +8,7 @@ import { __, sprintf } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import {
-	ARF as ARFIcon,
-	SaleWindow as SaleWindowIcon,
-} from '../../../../../../../../modules/icons';
+import { ARF as ARFIcon, SaleWindow as SaleWindowIcon } from '../../../../../../../../modules/icons';
 import { IconWithTooltip } from '../../../../../../../../modules/elements';
 import './style.pcss';
 
@@ -31,17 +28,13 @@ const AttendeeRegistrationIcons = ( {
 
 	return (
 		<div className="tribe-editor__title__attendee-registration-icons">
-			{
-				hasAttendeeInfoFields
-					? (
-						<IconWithTooltip
-							propertyName={ __( 'Attendee registration', 'event-tickets' ) }
-							description={ attendeeInfoFieldsLabel }
-							icon={ <ARFIcon /> }
-						/>
-					)
-					: null
-			}
+			{ hasAttendeeInfoFields ? (
+				<IconWithTooltip
+					propertyName={ __( 'Attendee registration', 'event-tickets' ) }
+					description={ attendeeInfoFieldsLabel }
+					icon={ <ARFIcon /> }
+				/>
+			) : null }
 
 			<IconWithTooltip
 				propertyName={ saleWindowLabel }
@@ -55,18 +48,12 @@ const AttendeeRegistrationIcons = ( {
 AttendeeRegistrationIcons.propTypes = {
 	attendeeInfoFieldsLabel: PropTypes.string,
 	clientId: PropTypes.string,
-	fromDate: PropTypes.oneOfType([
-		PropTypes.instanceOf(Date),
-		PropTypes.string
-	]).isRequired,
+	fromDate: PropTypes.oneOfType( [ PropTypes.instanceOf( Date ), PropTypes.string ] ).isRequired,
 	hasAttendeeInfoFields: PropTypes.bool,
 	isBlockSelected: PropTypes.bool,
 	isSelected: PropTypes.bool,
 	saleWindowLabel: PropTypes.string,
-	toDate: PropTypes.oneOfType([
-		PropTypes.instanceOf(Date),
-		PropTypes.string
-	]).isRequired,
+	toDate: PropTypes.oneOfType( [ PropTypes.instanceOf( Date ), PropTypes.string ] ).isRequired,
 };
 
 export default AttendeeRegistrationIcons;

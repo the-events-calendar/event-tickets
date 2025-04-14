@@ -20,10 +20,7 @@ import { Attendees as AttendeesIcon } from '../../icons';
 export default {
 	id: 'attendees',
 	title: __( 'Attendee List', 'event-tickets' ),
-	description: __(
-		'Show the gravatars of people coming to this event.',
-		'event-tickets',
-	),
+	description: __( 'Show the gravatars of people coming to this event.', 'event-tickets' ),
 	icon: <AttendeesIcon />,
 	category: 'tribe-tickets',
 	keywords: [ 'event', 'events-gutenberg', 'tribe' ],
@@ -36,7 +33,7 @@ export default {
 	attributes: {
 		title: {
 			type: 'html',
-			default: __( 'Who\'s Attending?', 'event-tickets' ),
+			default: __( "Who's Attending?", 'event-tickets' ),
 		},
 		displayTitle: {
 			type: 'boolean',

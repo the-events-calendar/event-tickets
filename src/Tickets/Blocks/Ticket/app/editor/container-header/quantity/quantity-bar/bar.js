@@ -8,17 +8,9 @@ import classNames from 'classnames';
 /**
  * Internal dependencies
  */
-import {
-	number,
-	TribePropTypes,
-} from '@moderntribe/common/utils';
+import { number, TribePropTypes } from '@moderntribe/common/utils';
 
-const Bar = ( {
-	children,
-	className = null,
-	value = 0,
-	total = 0
-} ) => {
+const Bar = ( { children, className = null, value = 0, total = 0 } ) => {
 	if ( value === 0 || total === 0 ) {
 		return null;
 	}
@@ -31,20 +23,14 @@ const Bar = ( {
 	}
 
 	// Prevent numbers above 100 and below 0
-	const limitedValuePercentage = Math.max(
-		0,
-		Math.min( 100, valuePercentage ),
-	);
+	const limitedValuePercentage = Math.max( 0, Math.min( 100, valuePercentage ) );
 
 	const style = {
 		width: `${ limitedValuePercentage.toFixed( 2 ) }%`,
 	};
 
 	return (
-		<span
-			className={ classNames( 'tribe-editor__quantity-bar__bar', className ) }
-			style={ style }
-		>
+		<span className={ classNames( 'tribe-editor__quantity-bar__bar', className ) } style={ style }>
 			{ children }
 		</span>
 	);

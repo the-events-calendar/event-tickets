@@ -30,4 +30,3 @@ export default function postTypes( state = DEFAULT_STATE, action ) {
 			return state;
 	}
 }
-

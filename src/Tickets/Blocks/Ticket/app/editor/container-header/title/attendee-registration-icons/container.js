@@ -11,10 +11,7 @@ import { __ } from '@wordpress/i18n';
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
 import { selectors } from '../../../../../../../../modules/data/blocks/ticket';
-import {
-	globals,
-	moment as momentUtil,
-} from '@moderntribe/common/utils';
+import { globals, moment as momentUtil } from '@moderntribe/common/utils';
 
 const { select } = wp.data;
 
@@ -22,7 +19,7 @@ const { select } = wp.data;
  * Given a Sale status that is present on the map return a translated label.
  *
  * @param { string } saleStatus The sale status
- * @returns { string } The translated sale window label
+ * @return { string } The translated sale window label
  */
 const getSaleWindowLabel = ( saleStatus ) => {
 	if ( ! saleStatus ) {
@@ -41,9 +38,9 @@ const getSaleWindowLabel = ( saleStatus ) => {
  * Determine the sale status of the ticket.
  *
  * @since 5.6.7
- * @param { Object } state The redux state
+ * @param { Object } state    The redux state
  * @param { Object } ownProps The ownProps of the component
- * @returns { string } Sale status slug.
+ * @return { string } Sale status slug.
  */
 const getSalesStatus = ( state, ownProps ) => {
 	switch ( true ) {
@@ -61,7 +58,7 @@ const getSalesStatus = ( state, ownProps ) => {
  * Given an array of attendee info fields returs a label for the tooltip
  *
  * @param { Array } attendeeInfoFields The attendee info fields array
- * @returns { string } Returns the first 4 attendee fields joined by comma
+ * @return { string } Returns the first 4 attendee fields joined by comma
  */
 const getAttendeeInfoFieldsLabel = ( attendeeInfoFields ) => {
 	if ( ! Array.isArray( attendeeInfoFields ) ) {
@@ -104,7 +101,4 @@ const mapStateToProps = ( state, ownProps ) => {
 	};
 };
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps ),
-)( Template );
+export default compose( withStore(), connect( mapStateToProps ) )( Template );

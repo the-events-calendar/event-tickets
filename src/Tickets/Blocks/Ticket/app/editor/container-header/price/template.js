@@ -29,18 +29,15 @@ const TicketContainerHeaderPriceLabel = ( {
 	salePrice,
 	onSale,
 } ) => {
-	const getAvailableLabel = () => (
-		isUnlimited
-			? __( 'unlimited', 'event-tickets' )
-			: (
-				<>
-					<span className="tribe-editor__ticket__container-header-label__available">
-						{ available }
-					</span>
-					{ __( 'available', 'event-tickets' ) }
-				</>
-			)
-	);
+	const getAvailableLabel = () =>
+		isUnlimited ? (
+			__( 'unlimited', 'event-tickets' )
+		) : (
+			<>
+				<span className="tribe-editor__ticket__container-header-label__available">{ available }</span>
+				{ __( 'available', 'event-tickets' ) }
+			</>
+		);
 
 	const numericFormatProps = {
 		...( currencyPosition === PREFIX && { prefix: currencySymbol } ),
@@ -55,7 +52,9 @@ const TicketContainerHeaderPriceLabel = ( {
 	/**
 	 * The price class to be used.
 	 */
-	const priceClass = hasValidSalePrice ? 'tribe-editor__ticket__container-header-price__price--on-sale' : 'tribe-editor__ticket__container-header-price__price';
+	const priceClass = hasValidSalePrice
+		? 'tribe-editor__ticket__container-header-price__price--on-sale'
+		: 'tribe-editor__ticket__container-header-price__price';
 
 	return (
 		<Fragment>
@@ -83,9 +82,7 @@ const TicketContainerHeaderPriceLabel = ( {
 					value={ salePrice }
 				/>
 			) }
-			<div className="tribe-editor__ticket__container-header-label">
-				{ getAvailableLabel() }
-			</div>
+			<div className="tribe-editor__ticket__container-header-label">{ getAvailableLabel() }</div>
 		</Fragment>
 	);
 };

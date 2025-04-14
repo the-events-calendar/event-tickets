@@ -33,10 +33,6 @@ const mapDispatchToProps = ( dispatch ) => ( {
 
 	onSelect: ( image ) => dispatch( actions.updateRSVPHeaderImage( image ) ),
 	onRemove: () => dispatch( actions.deleteRSVPHeaderImage() ),
-
 } );
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps, mapDispatchToProps ),
-)( RSVPHeaderImage );
+export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps ) )( RSVPHeaderImage );

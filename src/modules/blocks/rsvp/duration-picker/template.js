@@ -11,10 +11,7 @@ import { DateTimeRangePicker } from '../../../elements';
 import './style.pcss';
 
 const RSVPDurationPicker = ( props ) => (
-	<DateTimeRangePicker
-		className="tribe-editor__rsvp-duration__duration-picker"
-		{ ...props }
-	/>
+	<DateTimeRangePicker className="tribe-editor__rsvp-duration__duration-picker" { ...props } />
 );
 
 RSVPDurationPicker.propTypes = {

@@ -20,7 +20,7 @@ import { createHtmlComponentFromTemplateString } from '../../utils';
  *
  * @return {HTMLElement} The HTML element for the Ticket Row component.
  */
-export function TicketRow(props) {
+export function TicketRow( props ) {
 	return createHtmlComponentFromTemplateString(
 		`<div class="tec-tickets-seating__ticket-row"
 			data-seat-type-id="{seatTypeId}"

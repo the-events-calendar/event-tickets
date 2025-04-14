@@ -17,7 +17,4 @@ const mapStateToProps = ( state, ownProps ) => ( {
 	hasBeenCreated: selectors.getTicketHasBeenCreated( state, ownProps ),
 } );
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps ),
-)( Template );
+export default compose( withStore(), connect( mapStateToProps ) )( Template );

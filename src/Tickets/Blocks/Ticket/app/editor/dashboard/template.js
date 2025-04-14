@@ -17,18 +17,18 @@ import { TICKET_LABELS } from '../../../../../../modules/data/blocks/ticket/cons
 import MoveDelete from './move-delete/container';
 import './style.pcss';
 
-const confirmLabel = (hasBeenCreated) => {
+const confirmLabel = ( hasBeenCreated ) => {
 	return hasBeenCreated
 		? // eslint-disable-next-line no-undef
 		  sprintf(
 				/* Translators: %s - the singular label for a ticket. */
-				__('Update %s', 'event-tickets'),
+				__( 'Update %s', 'event-tickets' ),
 				TICKET_LABELS.ticket.singular
 		  )
 		: // eslint-disable-next-line no-undef
 		  sprintf(
 				/* Translators: %s - the singular label for a ticket. */
-				__('Create %s', 'event-tickets'),
+				__( 'Create %s', 'event-tickets' ),
 				TICKET_LABELS.ticket.singular
 		  );
 };
@@ -44,9 +44,7 @@ const TicketDashboard = ( {
 	onConfirmClick,
 } ) => (
 	<Fragment>
-		{ hasBeenCreated && (
-			<MoveDelete clientId={ clientId } />
-		) }
+		{ hasBeenCreated && <MoveDelete clientId={ clientId } /> }
 		<ActionDashboard
 			className="tribe-editor__ticket__dashboard tribe-common"
 			cancelLabel={ cancelLabel }
@@ -57,7 +55,6 @@ const TicketDashboard = ( {
 			onConfirmClick={ onConfirmClick }
 		/>
 	</Fragment>
-
 );
 
 TicketDashboard.propTypes = {

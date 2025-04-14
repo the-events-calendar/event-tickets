@@ -23,7 +23,4 @@ const mapDispatchToProps = ( dispatch ) => ( {
 	setAddEditOpen: () => dispatch( actions.setRSVPIsAddEditOpen( true ) ),
 } );
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps, mapDispatchToProps ),
-)( RSVPContainerHeader );
+export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps ) )( RSVPContainerHeader );
