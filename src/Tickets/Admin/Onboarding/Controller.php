@@ -34,7 +34,7 @@ class Controller extends Controller_Contract {
 		$this->add_filters();
 		$this->add_actions();
 
-		$this->container->singleton( 'tec.tickets.onboarding_template', Template::class );
+		$this->container->singleton( Template::class, Template::class );
 		$this->container->singleton( Landing_Page::class );
 		$this->container->singleton( Data::class );
 		$this->container->singleton( API::class );

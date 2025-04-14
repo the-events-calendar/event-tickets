@@ -214,7 +214,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	public function admin_page_main_content(): void {
 		$installer = Installer::get();
 
-		$this->template = tribe( 'tec.tickets.onboarding_template' );
+		$this->template = tribe( Template::class );
 
 		$this->admin_content_checklist_section();
 
@@ -294,8 +294,8 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 				'link_text' => __( 'Edit Stripe settings', 'event-tickets' ),
 			],
 			[
-				'id'       => 'tec-tickets-onboarding-wizard-square-item',
-				'classes'  => [
+				'id'        => 'tec-tickets-onboarding-wizard-square-item',
+				'classes'   => [
 					'tec-tickets-onboarding-step-3',
 					'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[3] ) || ! empty( tribe_get_option( 'defaultCurrencyCode' ) ),
 				],
@@ -304,15 +304,15 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 				'link_text' => __( 'Edit Square settings', 'event-tickets' ),
 			],
 			[
-				'id'       => 'tec-tickets-onboarding-wizard-login-item',
-				'classes'  => [
+				'id'        => 'tec-tickets-onboarding-wizard-login-item',
+				'classes'   => [
 					'tec-tickets-onboarding-step-4',
 					'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[4] ) || ! empty( tribe_get_option( 'dateWithYearFormat' ) ),
 				],
 				'title'     => __( 'Login requirement for purchasing tickets', 'event-tickets' ),
 				'link'      => admin_url( "{$settings_url}&tab=display-currency-tab" ),
 				'link_text' => __( 'Edit', 'event-tickets' ),
-			]
+			],
 		];
 	}
 

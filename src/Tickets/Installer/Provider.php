@@ -1,6 +1,10 @@
 <?php
 /**
  * The Events Calendar Installer Service Provider
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Installer
  */
 
 namespace TEC\Tickets\Installer;
@@ -8,7 +12,13 @@ namespace TEC\Tickets\Installer;
 use TEC\Common\StellarWP\Installer\Installer;
 use TEC\Common\Contracts\Service_Provider;
 
-
+/**
+ * The Events Calendar Installer Service Provider
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Installer
+ */
 class Provider extends Service_Provider {
 
 

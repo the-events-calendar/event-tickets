@@ -15,9 +15,6 @@
  */
 
 $classes = array_merge( $classes, [ 'step-list__item' ] );
-if ( $id === 'tec-tickets-onboarding-wizard-events-item' ) {
-	$foo = 'bar';
-}
 ?>
 <li
 	id="<?php echo esc_attr( $id ); ?>"
