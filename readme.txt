@@ -199,6 +199,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.21.1] 2025-04-07 =
+
+* Fix - Ensures when TicketsCommerce is disabled, we don't identify pages as Checkout or Cart page for TicketsCommerce. [ET-2349]
+* Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted.
+
 = [5.21.0] 2025-03-25 =
 
 * Feature - Add the ability to create Coupons that can be applied to ticket checkouts sold through TicketsCommerce. [ET-2189]
