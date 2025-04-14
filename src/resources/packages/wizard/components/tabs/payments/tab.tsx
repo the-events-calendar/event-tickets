@@ -8,13 +8,22 @@ import NextButton from '../../buttons/next';
 import SkipButton from '../../buttons/skip';
 import TicketsIcon from './img/tickets';
 
+<<<<<<<< HEAD:src/resources/packages/wizard/components/tabs/payments/tab.tsx
 const PaymentsContent = ({moveToNextTab, skipToNextTab}) => {
+========
+const CommunicationContent = ({moveToNextTab, skipToNextTab}) => {
+>>>>>>>> debe62927f59ae2eec01d4b0551fe78888b10604:src/resources/packages/wizard/components/tabs/communication/tab.tsx
 	const eventTicketsInstalled = useSelect(select => select(SETTINGS_STORE_KEY).getSetting("tec-tickets-installed") || false, []);
 	const eventTicketsActive = useSelect(select => select(SETTINGS_STORE_KEY).getSetting("tec-tickets-active") || false, []);
 	const [ticketValue, setTicketValue] = useState(true); // Default to install/activate.
 
+<<<<<<<< HEAD:src/resources/packages/wizard/components/tabs/payments/tab.tsx
 	// Create tabPayments object to pass to NextButton.
 	const tabPayments = {
+========
+	// Create tabCommunication object to pass to NextButton.
+	const tabCommunication = {
+>>>>>>>> debe62927f59ae2eec01d4b0551fe78888b10604:src/resources/packages/wizard/components/tabs/communication/tab.tsx
 		eventTickets: ticketValue,
 		currentTab: 5, // Include the current tab index.
 	}
@@ -54,11 +63,19 @@ const PaymentsContent = ({moveToNextTab, skipToNextTab}) => {
 						</div>
 					</div>
 				)}
+<<<<<<<< HEAD:src/resources/packages/wizard/components/tabs/payments/tab.tsx
 				<NextButton tabPayments={tabPayments} moveToNextTab={moveToNextTab} disabled={false}/>
+========
+				<NextButton tabCommunication={tabCommunication} moveToNextTab={moveToNextTab} disabled={false}/>
+>>>>>>>> debe62927f59ae2eec01d4b0551fe78888b10604:src/resources/packages/wizard/components/tabs/communication/tab.tsx
 				<SkipButton skipToNextTab={skipToNextTab} currentTab={5} />
 			</div>
 		</>
 	);
 };
 
+<<<<<<<< HEAD:src/resources/packages/wizard/components/tabs/payments/tab.tsx
 export default PaymentsContent;
+========
+export default CommunicationContent;
+>>>>>>>> debe62927f59ae2eec01d4b0551fe78888b10604:src/resources/packages/wizard/components/tabs/communication/tab.tsx
