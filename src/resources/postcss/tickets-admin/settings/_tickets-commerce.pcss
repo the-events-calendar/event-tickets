@@ -173,7 +173,6 @@
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-connected-row {
-	display: flex;
 	font-size: 13px;
 	font-weight: normal;
 	margin: 20px 0;
@@ -207,7 +206,7 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 	font-size: 16px;
 	font-weight: 600;
 	line-height: 18px;
-	margin-top: 25px;
+	margin-top: 10px;
 	min-width: 340px;
 	padding: 15px 0;
 	text-align: center;
@@ -609,19 +608,44 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 	display: block;
 }
 
+.tec-tickets__admin-settings-tickets-commerce-gateway-connected-warning-message,
+.tec-tickets__admin-settings-tickets-commerce-gateway-connected-message {
+	display: flex;
+	align-items: center;
+	margin-bottom: 15px;
+	padding: 10px 12px;
+}
+
 .tec-tickets__admin-settings-tickets-commerce-gateway-connected-warning-message {
 	background-color: #fff8e5;
 	border-left: 4px solid #ffb900;
-	padding: 10px 12px;
-	margin-bottom: 15px;
-	display: flex;
-	align-items: center;
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-connected-warning-message .dashicons-warning {
 	color: var(--tec-color-icon-error);
 	font-size: 20px;
 	margin-right: 10px;
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateway-connected-notice-message {
+	background-color: #e5f5fa;
+	border-left: 4px solid #00a0d2;
+	display: flex;
+	align-items: center;
+	margin-bottom: 15px;
+	padding: 10px 12px;
+	font-size: 13px;
+
+	.dashicons-info-outline {
+		color: #00a0d2;
+		font-size: 20px;
+		margin-right: 10px;
+	}
+
+	a {
+		font-weight: bold;
+	}
+
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-reconnect-square-button {
@@ -648,4 +672,22 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 	&:active {
 		background-color: var(--tec-color-button-primary-active);
 	}
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateway-sandbox-notice {
+	display: flex;
+	align-items: center;
+	font-size: 13px;
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateway-sandbox-notice a {
+	color: #00a0d2;
+	text-decoration: underline;
+	font-weight: 500;
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateway-sandbox-notice a:hover,
+.tec-tickets__admin-settings-tickets-commerce-gateway-sandbox-notice a:focus {
+	color: #007cba;
+	text-decoration: none;
 }

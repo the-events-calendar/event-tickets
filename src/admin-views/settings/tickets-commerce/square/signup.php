@@ -38,6 +38,7 @@ $connect_url = '#';
 
 			<?php if ( $is_ssl ) : ?>
 				<div class="tec-tickets__admin-settings-tickets-commerce-gateway-signup-links">
+					<?php $this->template( 'settings/tickets-commerce/square/connect/sandbox-notice' ); ?>
 					<a
 						href="<?php echo esc_url( $connect_url ); ?>"
 						class="tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link tec-tickets__admin-settings-tickets-commerce-gateway-connect-square-button"

@@ -93,42 +93,19 @@ $test_mode = TEC\Tickets\Commerce\Gateways\Square\Gateway::is_test_mode();
 			</div>
 			<?php endif; ?>
 
-			<?php if ( $has_missing_scopes && ! empty( $scope_verification['missing_scopes'] ) ) : ?>
-			<!-- Scope Warning and Reconnect -->
-			<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-row tec-tickets__admin-settings-tickets-commerce-gateway-connected-warning">
-				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-label" aria-hidden="true"></span>
-				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-value">
-					<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-warning-message" id="square-scope-warning-message">
-						<span class="dashicons dashicons-warning" aria-hidden="true"></span>
-						<?php esc_html_e( 'Your Square connection is missing required permissions. This may cause payment processing issues. Please reconnect your account to update permissions.', 'event-tickets' ); ?>
-					</div>
-					<a
-						href="#"
-						class="tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link tec-tickets__admin-settings-tickets-commerce-gateway-reconnect-square-button"
-						id="tec-tickets__admin-settings-tickets-commerce-gateway-reconnect-square"
-						aria-describedby="square-scope-warning-message"
-						data-required-scopes="<?php echo esc_attr( implode( ',', $scope_verification['missing_scopes'] ) ); ?>"
-					>
-						<?php esc_html_e( 'Reconnect Account', 'event-tickets' ); ?>
-					</a>
-				</span>
-			</div>
-			<?php endif; ?>
+			<?php $this->template( 'settings/tickets-commerce/square/connect/missing-scopes' ); ?>
 
 			<!-- Disconnect Button -->
 			<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-row">
-				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-label" aria-hidden="true"></span>
-				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-value">
-					<a
-						href="#"
-						class="tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-square-button"
-						id="tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-square"
-						data-nonce="<?php echo esc_attr( $disconnect_nonce ); ?>"
-						aria-label="<?php esc_attr_e( 'Disconnect from Square payment gateway', 'event-tickets' ); ?>"
-					>
-						<?php esc_html_e( 'Disconnect from Square', 'event-tickets' ); ?>
-					</a>
-				</span>
+				<a
+					href="#"
+					class="tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-square-button"
+					id="tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-square"
+					data-nonce="<?php echo esc_attr( $disconnect_nonce ); ?>"
+					aria-label="<?php esc_attr_e( 'Disconnect from Square payment gateway', 'event-tickets' ); ?>"
+				>
+					<?php esc_html_e( 'Disconnect from Square', 'event-tickets' ); ?>
+				</a>
 			</div>
 
 			<?php $this->template( 'settings/tickets-commerce/square/connect/help-links' ); ?>
