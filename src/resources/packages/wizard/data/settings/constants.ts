@@ -1,2 +1,2 @@
 export const SETTINGS_STORE_KEY = 'data/TTOWSettingsStore';
-export const API_ENDPOINT = '/tec/events/onboarding/wizard';
+export const API_ENDPOINT = '/tec/tickets/onboarding/wizard';
