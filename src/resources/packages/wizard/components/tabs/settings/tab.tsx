@@ -44,7 +44,7 @@ const SettingsContent = ({ moveToNextTab, skipToNextTab }) => {
 		currency: currencyCode,
 		country: selectedCountry,
 		paymentOption,
-		currentTab: 2, // Include the current tab index.
+		currentTab: 1,
 	};
 
 	useEffect(() => {

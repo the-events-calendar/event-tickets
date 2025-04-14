@@ -370,12 +370,6 @@
 	text-align: center;
 }
 
-@media (min-width: 500px) {
-	.tec-tickets-onboarding__tab-header {
-		padding-bottom: var(--tec-spacer-3);
-	}
-}
-
 .tec-tickets-onboarding__tab-header * {
 	text-align: center;
 }
@@ -389,6 +383,7 @@
 .tec-tickets-onboarding__tab-subheader {
 	font-size: var(--tec-font-size-2);
 	margin: auto auto;
+	max-width: 438px;
 }
 
 /* TabPanel Content section */
@@ -418,33 +413,27 @@
 	margin: 0 auto;
 }
 
+.tec-tickets-onboarding__button.is-primary {
+	margin-top: var(--tec-spacer-4);
+}
+
 @media (min-width: 500px) {
 	.tec-tickets-onboarding__tab-content {
 		max-width: min(100%, 100vw);
-		gap: var(--tec-spacer-5);
+		gap: var(--tec-spacer-2);
 	}
 }
 
 @media (min-width: 1024px) {
-	#settingsPanel .tec-tickets-onboarding__tab-content {
+	.tec-tickets-onboarding__tab-content {
 		max-width: 363px;
-	}
-
-	#venuePanel .tec-tickets-onboarding__tab-content {
-		max-width: 590px;
 	}
 }
 
 .tec-tickets-onboarding__content-header-icon {
-	height: 36px;
+	height: 30px;
 	margin: 0 auto var(--tec-spacer-1);
-}
-
-.tec-tickets-onboarding__content-header-icon--brand {
-	display: block;
-	height: 38px;
-	margin: 0 auto var(--tec-spacer-1);
-	width: 46px;
+	width: 30px;
 }
 
 .tec-tickets-onboarding__content-checkbox-grid {

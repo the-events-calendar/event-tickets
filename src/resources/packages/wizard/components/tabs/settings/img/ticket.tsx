@@ -8,8 +8,7 @@ const TicketIcon = () => {
 			viewBox="0 0 31 30"
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
-			className="tec-tickets-onboarding__content-header-icon tec-tickets-onboarding__content-header-icon--brand"
-			alt="Event Tickets Logo"
+			className="tec-tickets-onboarding__content-header-icon"
 		>
 			<path
 				fill-rule="evenodd"

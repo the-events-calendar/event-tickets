@@ -8,7 +8,7 @@ const TicketsIcon = () => {
 			viewBox="0 0 31 30"
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
-			className="tec-tickets-onboarding__content-header-icon tec-tickets-onboarding__content-header-icon--brand"
+			className="tec-tickets-onboarding__content-header-icon"
 			alt="Event Tickets Logo"
 		>
 			<path
