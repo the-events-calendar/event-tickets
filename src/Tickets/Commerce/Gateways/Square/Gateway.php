@@ -217,7 +217,7 @@ class Gateway extends Abstract_Gateway {
 	 *
 	 * @return string The Square.js URL.
 	 */
-	public function get_square_js_url() {
+	public function get_square_js_url(): string {
 		$is_test_mode  = $this->is_test_mode();
 		$square_js_url = $is_test_mode
 			? 'https://sandbox.web.squarecdn.com/v1/square.js'
@@ -242,15 +242,15 @@ class Gateway extends Abstract_Gateway {
 	 * @return string The Square Application ID.
 	 */
 	public function get_application_id() {
-		$mode = $this->is_test_mode() ? 'SANDBOX' : 'LIVE';
+		$mode          = $this->is_test_mode() ? 'SANDBOX' : 'LIVE';
 		$constant_name = 'TEC_TICKETS_COMMERCE_SQUARE_APPLICATION_ID_' . $mode;
 
-		// Check if external constant is defined
+		// Check if external constant is defined.
 		if ( defined( $constant_name ) ) {
 			return constant( $constant_name );
 		}
 
-		// Generic fallback external constant
+		// Generic fallback external constant.
 		if ( defined( 'TEC_TICKETS_COMMERCE_SQUARE_APPLICATION_ID' ) ) {
 			return constant( 'TEC_TICKETS_COMMERCE_SQUARE_APPLICATION_ID' );
 		}

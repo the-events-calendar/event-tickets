@@ -8,7 +8,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Merchant
  *
- * @since   5.3.0
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -16,7 +16,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Stores the nonce action for disconnecting Square.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @var string
 	 */
@@ -25,7 +25,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Option key to save the information regarding merchant status.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @var string
 	 */
@@ -34,7 +34,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Option key to save the information regarding merchant authorization.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @var string
 	 */
@@ -43,7 +43,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Option key to save the information regarding merchant default currency.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @var string
 	 */
@@ -52,7 +52,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Option key to save the PKCE code verifier for OAuth authentication.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @var string
 	 */
@@ -61,7 +61,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Determines if Merchant is active. For Square this is the same as being connected.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @param bool $recheck Whether to force a recheck of the connection.
 	 *
@@ -74,7 +74,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Determines if the Merchant is connected.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @param bool $recheck Whether to force a recheck of the connection.
 	 *
@@ -104,7 +104,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Returns the options key for the account in the merchant mode.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @return string
 	 */
@@ -617,7 +617,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Get the client ID for the Square SDK.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @return string
 	 */
@@ -634,7 +634,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Get the location ID for the Square merchant.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @return string
 	 */
@@ -651,7 +651,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Gets all available locations from the merchant's Square account.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @return array|WP_Error Array of locations or WP_Error on failure.
 	 */
@@ -661,8 +661,8 @@ class Merchant extends Abstract_Merchant {
 		}
 
 		try {
-			$url = 'locations';
-			$args = [];
+			$url      = 'locations';
+			$args     = [];
 			$response = tribe( Requests::class )->get( $url, [], $args );
 
 			if ( empty( $response['locations'] ) || ! is_array( $response['locations'] ) ) {

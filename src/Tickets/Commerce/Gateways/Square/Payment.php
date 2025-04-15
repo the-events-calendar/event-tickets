@@ -1,11 +1,17 @@
 <?php
+/**
+ * Square Payment Processing Class
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square
+ */
 
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use RuntimeException;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Order;
-use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Commerce\Utils\Value;
 
 /**
@@ -31,8 +37,9 @@ class Payment {
 	 *
 	 * @since TBD
 	 *
-	 * @param Value $value The value object to create a payment for.
-	 * @param bool  $retry Whether this is a retry attempt.
+	 * @param string  $source_id The source ID.
+	 * @param Value   $value     The value object to create a payment for.
+	 * @param boolean $retry     Whether this is a retry attempt.
 	 *
 	 * @return array|\WP_Error The payment data or WP_Error on failure.
 	 */
