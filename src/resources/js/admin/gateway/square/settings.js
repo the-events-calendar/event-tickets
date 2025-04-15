@@ -79,6 +79,7 @@ tribe.tickets.commerce.square = {};
 		return {
 			connect: container.dataset.connect || strings.connect,
 			connecting: container.dataset.connecting || strings.connecting,
+			disconnecting: container.dataset.disconnecting || strings.disconnecting,
 			reconnect: container.dataset.reconnect || strings.reconnect,
 			connectError: container.dataset.connectError || strings.connectError,
 			disconnectConfirm: container.dataset.disconnectConfirm || strings.disconnectConfirm,

@@ -38,6 +38,7 @@ $test_mode = TEC\Tickets\Commerce\Gateways\Square\Gateway::is_test_mode();
     id="tec-tickets__admin-settings-tickets-commerce-gateway-square-container"
     data-connect="<?php echo esc_attr__( 'Connect with Square', 'event-tickets' ); ?>"
     data-connecting="<?php echo esc_attr__( 'Connecting...', 'event-tickets' ); ?>"
+    data-disconnecting="<?php echo esc_attr__( 'Disconnecting...', 'event-tickets' ); ?>"
     data-reconnect="<?php echo esc_attr__( 'Reconnect Account', 'event-tickets' ); ?>"
     data-connect-error="<?php echo esc_attr__( 'There was an error connecting to Square. Please try again.', 'event-tickets' ); ?>"
     data-disconnect-confirm="<?php echo esc_attr__( 'Are you sure you want to disconnect from Square?', 'event-tickets' ); ?>"
