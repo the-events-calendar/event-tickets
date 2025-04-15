@@ -13,6 +13,8 @@
  * @var bool                                          $is_merchant_active [Global] Whether the merchant is active or not.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 ?>
 <div class="tec-tickets__admin-settings-tickets-commerce-gateway-help-link">
 	<?php $this->template( 'components/icons/lightbulb' ); ?>

@@ -8,6 +8,8 @@
  * @since   5.3.0 Using generic CSS classes for gateway instead of PayPal.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 ?>
 <div class="tec-tickets__admin-settings-tickets-commerce-gateway-modal-content tec-tickets__admin-modal tribe-common-b2">
 
@@ -57,4 +59,4 @@
 	</div>
 
 </div>
-
+<?php

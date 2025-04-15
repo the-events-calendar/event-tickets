@@ -14,6 +14,8 @@
  * @var bool                                          $is_merchant_connected [Global] Whether the merchant is connected or not.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 if ( ! empty( $is_merchant_connected ) ) {
 	return;
 }
@@ -28,3 +30,4 @@ if ( ! empty( $is_merchant_connected ) ) {
 		class="tec-tickets__admin-settings-tickets-commerce-gateway-help-link-url"
 	><?php esc_html_e( 'Learn more about configuring PayPal payments', 'event-tickets' ); ?></a>
 </div>
+<?php

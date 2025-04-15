@@ -15,12 +15,12 @@
  * @var bool                                          $is_merchant_connected [Global] Whether the merchant is connected or not.
  */
 
+defined( 'ABSPATH' ) || exit;
 if ( empty( $is_merchant_connected ) ) {
 	return;
 }
 
 ?>
-
 <div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected">
 
 	<?php $this->template( 'settings/tickets-commerce/paypal/connect/active/paypal-status' ); ?>
@@ -34,3 +34,4 @@ if ( empty( $is_merchant_connected ) ) {
 	<?php $this->template( 'settings/tickets-commerce/paypal/connect/help-links' ); ?>
 
 </div>
+<?php
