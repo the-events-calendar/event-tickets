@@ -1,13 +1,21 @@
 <?php
+/**
+ * Payment Handler for the Square gateway.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square
+ */
 
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Tickets\Commerce\Cart;
+use WP_Post;
 
 /**
  * Class Payment Handler
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -199,17 +207,14 @@ class Payment_Handler {
 	 *
 	 * @since TBD
 	 *
-	 * @param array    $data  The frontend data.
-	 * @param \WP_Post $order The order post object.
+	 * @param array   $data  The frontend data.
+	 * @param WP_Post $order The order post object.
 	 *
-	 * @return array|\WP_Error The payment data or error.
+	 * @return array|null The payment data or error.
 	 */
-	public function update_payment( $data, \WP_Post $order ) {
+	public function update_payment( array $data, WP_Post $order ): ?array {
 		if ( empty( $data['payment_source_id'] ) ) {
-			return new \WP_Error(
-				'tec-tc-gateway-square-empty-payment-id',
-				__( 'Payment ID cannot be empty.', 'event-tickets' )
-			);
+			return null;
 		}
 
 		$payment_id = $data['payment_source_id'];
@@ -220,10 +225,7 @@ class Payment_Handler {
 		}
 
 		if ( ! $payment ) {
-			return new \WP_Error(
-				'tec-tc-gateway-square-payment-not-found',
-				__( 'Payment not found.', 'event-tickets' )
-			);
+			return null;
 		}
 
 		// Update the payment with order metadata.
@@ -248,7 +250,7 @@ class Payment_Handler {
 	 *
 	 * @return array
 	 */
-	public function get_publishable_payment_data() {
+	public function get_publishable_payment_data(): array {
 		$merchant = tribe( Merchant::class );
 
 		if ( ! $merchant->is_active() ) {
@@ -267,7 +269,7 @@ class Payment_Handler {
 		 *
 		 * @param array $data The payment data.
 		 */
-		return apply_filters( 'tec_tickets_commerce_square_publishable_payment_data', $data );
+		return (array) apply_filters( 'tec_tickets_commerce_square_publishable_payment_data', $data );
 	}
 
 	/**
@@ -275,13 +277,13 @@ class Payment_Handler {
 	 *
 	 * @since TBD
 	 *
-	 * @param \WP_Post $order    The order post object.
-	 * @param array    $payment  The payment data.
+	 * @param WP_Post $order    The order post object.
+	 * @param array   $payment  The payment data.
 	 *
 	 * @return array
 	 */
-	protected function get_updated_metadata( \WP_Post $order, array $payment ) {
-		$metadata = isset( $payment['metadata'] ) ? $payment['metadata'] : [];
+	protected function get_updated_metadata( WP_Post $order, array $payment ): array {
+		$metadata = $payment['metadata'] ?? [];
 
 		$order_data = [
 			'order_id'       => $order->ID,
@@ -291,14 +293,14 @@ class Payment_Handler {
 			'customer_name'  => get_post_meta( $order->ID, '_tec_tc_purchaser_full_name', true ),
 		];
 
-		// Don't add duplicate data
+		// Don't add duplicate data.
 		foreach ( $order_data as $key => $value ) {
 			if ( isset( $metadata[ $key ] ) && $metadata[ $key ] === $value ) {
 				unset( $order_data[ $key ] );
 			}
 		}
 
-		// If no changes, return empty array
+		// If no changes, return empty array.
 		if ( empty( $order_data ) ) {
 			return [];
 		}

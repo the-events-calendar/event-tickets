@@ -10,13 +10,15 @@
  * @var array                                         $scope_verification [Global] The scope verification results.
  * @var bool                                          $has_missing_scopes [Global] Whether there are missing scopes.
  */
-// Verify merchant has all required scopes for Square integration
+
+defined( 'ABSPATH' ) || exit;
+// Verify merchant has all required scopes for Square integration.
 $scope_verification = tribe( \TEC\Tickets\Commerce\Gateways\Square\WhoDat::class )->verify_merchant_scopes();
 $has_missing_scopes = ! empty( $scope_verification['missing_scopes'] );
 
 $test_mode = TEC\Tickets\Commerce\Gateways\Square\Gateway::is_test_mode();
 
-// Only show this if there are missing scopes
+// Only show this if there are missing scopes.
 if ( ! $has_missing_scopes || empty( $scope_verification['missing_scopes'] ) ) {
 	return;
 }
@@ -37,3 +39,4 @@ if ( ! $has_missing_scopes || empty( $scope_verification['missing_scopes'] ) ) {
 		<?php esc_html_e( 'Reconnect Account', 'event-tickets' ); ?>
 	</a>
 </div>
+<?php

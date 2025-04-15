@@ -3,9 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Tickets\Commerce\Payments_Tab;
-use TEC\Tickets\Commerce\Settings as TC_Settings;
-use TEC\Tickets\Commerce\Utils\Currency;
-use Tribe__Utils__Array as Arr;
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Settings;
 
 /**
  * Square Commerce Settings.
@@ -14,52 +12,52 @@ use Tribe__Utils__Array as Arr;
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
-class Settings {
+class Settings extends Abstract_Settings {
 
 	/**
 	 * Client ID option key.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public static $option_client_id = 'tickets-commerce-square-client-id';
+	public static string $option_client_id = 'tickets-commerce-square-client-id';
 
 	/**
 	 * Sandbox Client ID option key.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public static $option_sandbox_client_id = 'tickets-commerce-square-sandbox-client-id';
+	public static string $option_sandbox_client_id = 'tickets-commerce-square-sandbox-client-id';
 
 	/**
 	 * Location ID option key.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public static $option_location_id = 'tickets-commerce-square-location-id';
+	public static string $option_location_id = 'tickets-commerce-square-location-id';
 
 	/**
 	 * Sandbox Location ID option key.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public static $option_sandbox_location_id = 'tickets-commerce-square-sandbox-location-id';
+	public static string $option_sandbox_location_id = 'tickets-commerce-square-sandbox-location-id';
 
 	/**
 	 * Test mode option key.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public static $option_test_mode = 'tickets-commerce-square-test-mode';
+	public static string $option_test_mode = 'tickets-commerce-square-test-mode';
 
 	/**
 	 * Get all the settings for the Square gateway.
@@ -68,23 +66,21 @@ class Settings {
 	 *
 	 * @return array The gateway settings.
 	 */
-	public function get_settings() {
-		$settings_array = [
+	public function get_settings(): array {
+		return [
 			'square-connection-start' => [
-				'type'            => 'html',
-				'html'            => '<div class="tec-tickets__admin-settings-toggle-large">',
+				'type' => 'html',
+				'html' => '<div class="tec-tickets__admin-settings-toggle-large">',
 			],
-			'square-signup' => [
-				'type'            => 'html',
-				'html'            => $this->get_connection_settings_html(),
+			'square-signup'           => [
+				'type' => 'html',
+				'html' => $this->get_connection_settings_html(),
 			],
-			'square-connection-end' => [
-				'type'            => 'html',
-				'html'            => '</div>',
+			'square-connection-end'   => [
+				'type' => 'html',
+				'html' => '</div>',
 			],
 		];
-
-		return $settings_array;
 	}
 
 	/**
@@ -92,12 +88,12 @@ class Settings {
 	 *
 	 * @since TBD
 	 *
-	 * @return false|string
+	 * @return string
 	 */
-	public function get_connection_settings_html() {
-		$merchant      = tribe( Merchant::class );
-		$is_connected  = $merchant->is_connected();
-		$signup_template  = 'signup';
+	public function get_connection_settings_html(): string {
+		$merchant        = tribe( Merchant::class );
+		$is_connected    = $merchant->is_connected();
+		$signup_template = 'signup';
 
 		if ( $is_connected ) {
 			$signup_template = 'connected';
@@ -136,7 +132,7 @@ class Settings {
 	 *
 	 * @return string
 	 */
-	public function get_section_name() {
+	public function get_section_name(): string {
 		return 'square-payments';
 	}
 
@@ -145,12 +141,12 @@ class Settings {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $container_classes
-	 * @param string $section
+	 * @param array  $container_classes Container classes.
+	 * @param string $section           Section name.
 	 *
 	 * @return array
 	 */
-	public function filter_settings_container_classes( $container_classes, $section ) {
+	public function filter_settings_container_classes( array $container_classes, string $section ): array {
 		if ( $this->get_section_name() === $section ) {
 			$container_classes = array_merge(
 				$container_classes,

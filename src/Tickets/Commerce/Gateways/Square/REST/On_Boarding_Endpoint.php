@@ -16,9 +16,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 use TEC\Tickets\Commerce\Gateways\Square\WhoDat;
 use TEC\Tickets\Settings as Tickets_Commerce_Settings;
 use TEC\Tickets\Commerce\Payments_Tab;
-use WP_Error;
 use WP_REST_Request;
-use WP_REST_Response;
 use WP_REST_Server;
 
 use Tribe__Date_Utils as Dates;
@@ -39,7 +37,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @var string
 	 */
-	protected $namespace = 'tribe/tickets/v1';
+	protected string $namespace = 'tribe/tickets/v1';
 
 	/**
 	 * The REST endpoint path for this endpoint.
@@ -48,7 +46,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @var string
 	 */
-	protected $path = '/commerce/square/on-boarding';
+	protected string $path = '/commerce/square/on-boarding';
 
 	/**
 	 * Get the namespace for this endpoint.
@@ -57,7 +55,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @return string
 	 */
-	public function get_namespace() {
+	public function get_namespace(): string {
 		return $this->namespace;
 	}
 
@@ -68,7 +66,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @return string
 	 */
-	public function get_path() {
+	public function get_path(): string {
 		return $this->path;
 	}
 
@@ -96,7 +94,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since TBD
 	 */
-	public function register() {
+	public function register(): void {
 		$namespace = $this->get_namespace();
 		$path      = $this->get_path();
 
@@ -172,7 +170,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 							}
 
 							$date = Dates::build_date_object( $value );
-							$now = Dates::build_date_object( 'now' );
+							$now  = Dates::build_date_object( 'now' );
 
 							return $date > $now;
 						},
@@ -189,7 +187,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
-	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
+	 * @return void Request is handled via redirect.
 	 */
 	public function handle_request( WP_REST_Request $request ) {
 		$params = $request->get_params();
@@ -225,7 +223,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 			);
 
 			wp_safe_redirect( $url );
-			exit;
+			tribe_exit();
 		}
 
 		// If the response doesn't have the code and state, bail out.
@@ -254,7 +252,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 			);
 
 			wp_safe_redirect( $url );
-			exit;
+			tribe_exit();
 		}
 
 		// Save the account data from the OAuth response.
@@ -266,26 +264,26 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 				'error',
 				'Square token save error',
 				[
-					'source' => 'tickets-commerce-square',
-					'message' => 'Failed to save Square merchant credentials',
+					'source'      => 'tickets-commerce-square',
+					'message'     => 'Failed to save Square merchant credentials',
 					'merchant_id' => $params['merchant_id'] ?? 'unknown',
 				]
 			);
 
 			$url = add_query_arg(
 				[
-					'tc-status' => 'tc-square-token-error',
+					'tc-status'  => 'tc-square-token-error',
 					'tc-section' => Gateway::get_key(),
 				],
 				tribe( Payments_Tab::class )->get_url()
 			);
 
 			wp_safe_redirect( $url );
-			exit;
+			tribe_exit();
 		}
 
 		// Fetch additional merchant details from Square API.
-		$merchant = tribe( Merchant::class );
+		$merchant      = tribe( Merchant::class );
 		$merchant_data = $merchant->fetch_merchant_data( true );
 
 		// Log the retrieval attempt.
@@ -324,7 +322,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 		);
 
 		wp_safe_redirect( $url );
-		exit;
+		tribe_exit();
 	}
 
 	/**
@@ -332,26 +330,34 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since TBD
 	 *
+	 * @param string|null $hash The hash to append to the URL.
+	 *
 	 * @return string
 	 */
-	public function get_return_url( $hash = null ) {
+	public function get_return_url( $hash = null ): string {
 		return rest_url( $this->get_namespace() . $this->get_path() );
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Returns an array in the format used by Swagger 2.0.
+	 *
+	 * @since TBD
+	 *
+	 * @link http://swagger.io/
+	 *
+	 * @return array An array description of a Swagger supported component.
 	 */
-	public function get_documentation() {
+	public function get_documentation(): array {
 		return [
 			'get' => [
-				'summary'    => __( 'Handle Square OAuth callback', 'event-tickets' ),
-				'description' => __( 'Handle redirect from Square after OAuth authorization', 'event-tickets' ),
-				'responses'  => [
+				'summary'     => esc_html__( 'Handle Square OAuth callback', 'event-tickets' ),
+				'description' => esc_html__( 'Handle redirect from Square after OAuth authorization', 'event-tickets' ),
+				'responses'   => [
 					'200' => [
-						'description' => __( 'Processes the OAuth callback and redirects appropriately', 'event-tickets' ),
+						'description' => esc_html__( 'Processes the OAuth callback and redirects appropriately', 'event-tickets' ),
 					],
 					'400' => [
-						'description' => __( 'Error handling the OAuth callback', 'event-tickets' ),
+						'description' => esc_html__( 'Error handling the OAuth callback', 'event-tickets' ),
 					],
 				],
 			],

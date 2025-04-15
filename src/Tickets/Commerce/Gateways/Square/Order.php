@@ -27,7 +27,7 @@ class Order extends Abstract_Order {
 	 * @return Commerce_Order
 	 */
 	public function create_order( Commerce_Order $order ) {
-		// Implement Square order creation.
+		// Implement Square order creation
 		return $order;
 	}
 
