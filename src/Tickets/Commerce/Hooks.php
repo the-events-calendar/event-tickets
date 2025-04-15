@@ -17,18 +17,18 @@
 
 namespace TEC\Tickets\Commerce;
 
-use \TEC\Common\Contracts\Service_Provider;
+use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce as Base_Commerce;
 use TEC\Tickets\Commerce\Admin\Orders_Page;
 use TEC\Tickets\Commerce\Admin_Tables\Orders_Table;
 use TEC\Tickets\Commerce\Reports\Orders;
 use TEC\Tickets\Commerce\Status\Completed;
-use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Status\Status_Handler;
-use WP_Admin_Bar;
+use TEC\Tickets\Commerce\Status\Status_Interface;
 use Tribe__Date_Utils;
-use WP_Query;
+use WP_Admin_Bar;
 use WP_Post;
+use WP_Query;
 use WP_User_Query;
 use TEC\Tickets\Hooks as Tickets_Hooks;
 
@@ -922,7 +922,7 @@ class Hooks extends Service_Provider {
 	 * @return array
 	 */
 	public function filter_tickets_in_cart( $tickets, $provider ) {
-		if ( \TEC\Tickets\Commerce::PROVIDER !== $provider ) {
+		if ( Base_Commerce::PROVIDER !== $provider ) {
 			return $tickets;
 		}
 
@@ -938,7 +938,7 @@ class Hooks extends Service_Provider {
 
 
 	/**
-	 * Modify the cart contents for the Rest call around TTickets Commerce cart.
+	 * Modify the cart contents for the Rest call around Tickets Commerce cart.
 	 *
 	 * @since 5.2.0
 	 *
@@ -967,7 +967,7 @@ class Hooks extends Service_Provider {
 				'post_id'   => $data['event_id'],
 				'optout'    => $data['extra']['optout'],
 				'iac'       => $data['extra']['iac'],
-				'provider'  => \TEC\Tickets\Commerce::PROVIDER,
+				'provider'  => Base_Commerce::PROVIDER,
 			];
 		}
 
