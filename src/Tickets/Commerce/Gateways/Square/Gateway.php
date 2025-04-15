@@ -218,7 +218,7 @@ class Gateway extends Abstract_Gateway {
 	 * @return string The Square.js URL.
 	 */
 	public function get_square_js_url() {
-		$is_test_mode = $this->is_test_mode();
+		$is_test_mode  = $this->is_test_mode();
 		$square_js_url = $is_test_mode
 			? 'https://sandbox.web.squarecdn.com/v1/square.js'
 			: 'https://web.squarecdn.com/v1/square.js';

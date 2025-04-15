@@ -38,7 +38,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 			[ 'jquery', 'wp-i18n' ],
 			'admin_enqueue_scripts',
 			[
-				'conditionals' => [ $this, 'is_square_section' ]
+				'conditionals' => [ $this, 'is_square_section' ],
 			]
 		);
 
@@ -114,7 +114,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 			],
 			'admin_enqueue_scripts',
 			[
-				'conditionals' => [ $this, 'is_square_section' ]
+				'conditionals' => [ $this, 'is_square_section' ],
 			]
 		);
 
@@ -126,7 +126,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 			[],
 			'admin_enqueue_scripts',
 			[
-				'conditionals' => [ $this, 'is_square_section' ]
+				'conditionals' => [ $this, 'is_square_section' ],
 			]
 		);
 	}
@@ -139,7 +139,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 	 * @return array
 	 */
 	public function get_square_checkout_data() {
-		$card_style_options =[
+		$card_style_options = [
 			'style' => [
 				'input' => [
 					'color'           => '#23282d',
@@ -177,7 +177,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 	 *
 	 * @return bool
 	 */
-	public function is_square_section() : bool {
+	public function is_square_section(): bool {
 		return Gateway::get_key() === tribe_get_request_var( Payments_Tab::$key_current_section_get_var );
 	}
 
@@ -188,7 +188,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 	 *
 	 * @return bool If the `Square` assets should be enqueued or not.
 	 */
-	public function should_enqueue_assets() {
+	public function should_enqueue_assets(): bool {
 		return tribe( Checkout::class )->is_current_page() && tribe( Gateway::class )->is_enabled() && tribe( Gateway::class )->is_active();
 	}
 }
