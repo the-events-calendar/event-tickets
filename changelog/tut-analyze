@@ -1,0 +1,4 @@
+Significance: patch
+Type: tweak
+
+Removed filters: `tec_tickets_qr_code_can_use`
