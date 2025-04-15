@@ -255,7 +255,7 @@ class Gateway extends Abstract_Gateway {
 			return constant( 'TEC_TICKETS_COMMERCE_SQUARE_APPLICATION_ID' );
 		}
 
-		// Get from class constants based on mode
+		// Get from class constants based on mode.
 		$application_id = $this->is_test_mode()
 			? static::APPLICATION_ID_SANDBOX
 			: static::APPLICATION_ID_LIVE;

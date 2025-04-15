@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce\Order as Commerce_Order;
 /**
  * Class Order
  *
- * @since   5.3.0
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -16,7 +16,7 @@ class Order {
 	/**
 	 * Create a Square order from a Commerce order.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @param Commerce_Order $order The order object.
 	 *

@@ -43,7 +43,7 @@ class Payment {
 	 *
 	 * @return array|\WP_Error The payment data or WP_Error on failure.
 	 */
-	public static function create( $source_id, Value $value, $retry = false ) {
+	public static function create( $source_id, Value $value, $retry = false ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$merchant = tribe( Merchant::class );
 
 		if ( ! $merchant->is_active() ) {
@@ -54,8 +54,8 @@ class Payment {
 		}
 
 		$query_args = [];
-		$body = [
-			'amount_money' => [
+		$body       = [
+			'amount_money'    => [
 				'amount'   => (int) $value->get_integer(),
 				'currency' => $value->get_currency_code(),
 			],
@@ -67,7 +67,7 @@ class Payment {
 		];
 
 		$args = [
-			'body' => $body,
+			'body'    => $body,
 			'headers' => [
 				'Content-Type' => 'application/json',
 			],
@@ -84,6 +84,8 @@ class Payment {
 	 * @param string $source_id The source ID.
 	 * @param Cart   $cart      The cart object.
 	 * @param bool   $retry     Whether this is a retry attempt.
+	 *
+	 * @throws RuntimeException If the value object is not returned from the filter.
 	 *
 	 * @return array|\WP_Error The payment data or WP_Error on failure.
 	 */
@@ -142,7 +144,9 @@ class Payment {
 		}
 
 		$query_args = [];
-		$body = [];
+		$body       = [];
+
+		// Prepare the request arguments.
 		$args = [
 			'body' => $body,
 		];
@@ -169,7 +173,9 @@ class Payment {
 		}
 
 		$query_args = [];
-		$body = $data;
+		$body       = $data;
+
+		// Prepare the request arguments.
 		$args = [
 			'body' => $body,
 		];
@@ -195,9 +201,11 @@ class Payment {
 		}
 
 		$query_args = [];
-		$body = [
+		$body       = [
 			'idempotency_key' => uniqid( 'tec-square-cancel-', true ),
 		];
+
+		// Prepare the request arguments.
 		$args = [
 			'body' => $body,
 		];

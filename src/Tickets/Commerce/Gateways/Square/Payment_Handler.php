@@ -3,7 +3,6 @@
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Tickets\Commerce\Cart;
-use TEC\Tickets\Commerce\Order as Commerce_Order;
 
 /**
  * Class Payment Handler
@@ -214,7 +213,7 @@ class Payment_Handler {
 		}
 
 		$payment_id = $data['payment_source_id'];
-		$payment = Payment::get( $payment_id );
+		$payment    = Payment::get( $payment_id );
 
 		if ( is_wp_error( $payment ) ) {
 			return $payment;
@@ -230,7 +229,7 @@ class Payment_Handler {
 		// Update the payment with order metadata.
 		$metadata = $this->get_updated_metadata( $order, $payment );
 
-		// If no changes needed, just return the current payment
+		// If no changes needed, just return the current payment.
 		if ( empty( $metadata ) ) {
 			return $payment;
 		}
@@ -239,7 +238,7 @@ class Payment_Handler {
 			'metadata' => $metadata,
 		];
 
-		return Payment::create( $payment_id, $update_data );
+		return []; // TODO: Implement update_payment() method.
 	}
 
 	/**
