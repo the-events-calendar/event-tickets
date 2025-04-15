@@ -119,20 +119,25 @@ const SettingsContent = ({ moveToNextTab, skipToNextTab }) => {
 							onChange={(e) => setCountry(e.target.value)}
 							defaultValue={selectedCountry}
 						>
-							{Object.entries(countries)
-								.flatMap(([continent, countries]) =>
-									Object.entries(countries).map(([code, name]) => ({
-										code,
-										name,
-										continent
-									}))
+							{Object.entries(countries).map(
+								([key, continents]) => (
+									<optgroup
+										key={key}
+										className="continent"
+										label={key}
+									>
+										{Object.entries(
+											continents as {
+												[code: string]: string;
+											}
+										).map(([code, countryName]) => (
+											<option key={code} value={code}>
+												{countryName}
+											</option>
+										))}
+									</optgroup>
 								)
-								.sort((a, b) => a.name.localeCompare(b.name))
-								.map(({ code, name }) => (
-									<option key={code} value={code}>
-										{name}
-									</option>
-								))}
+							)}
 						</select>
 						<span className="tec-tickets-onboarding__required-label">
 							{__('Country is required.', 'event-tickets')}

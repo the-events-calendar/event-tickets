@@ -524,6 +524,8 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			'countries'     => tribe( Country::class )->get_country_name_list(),
 		];
 
+		error_log( print_r( $initial_data, true ) );
+
 
 		/**
 		 * Filter the initial data.
