@@ -89,7 +89,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Adds the ET pages to the list for the QR code notice.
 	 *
-	 * @since TBD
+	 * @since 5.22.0
 	 *
 	 * @param array $valid_pages An array of pages where notice will be displayed.
 	 *
@@ -113,7 +113,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Adds the post types to the list for the QR code notice.
 	 *
-	 * @since TBD
+	 * @since 5.22.0
 	 *
 	 * @param array $valid_post_types An array of post types to display the notice.
 	 *
