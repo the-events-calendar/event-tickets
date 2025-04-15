@@ -521,7 +521,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			'_wpnonce'      => wp_create_nonce( 'wp_rest' ),
 			/* Data */
 			'currencies'    => tribe( Currency::class )->get_currency_list(),
-			'countries'     => tribe( Country::class )->get_country_list(),
+			'countries'     => tribe( Country::class )->get_country_name_list(),
 		];
 
 

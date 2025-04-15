@@ -226,13 +226,14 @@ class Controller extends Controller_Contract {
 
 		// Loop through each continent
 		foreach ( $country_list as $continent => $countries ) {
-			// Loop through each country in the continent
+			// Loop through each country in the continent.
 			foreach ( $countries as $country_code => $country_data ) {
 				// If this country exists in stripe modifiers, add the stripe flag
 				if ( isset( $stripe_modifiers->get_supported_countries()[ $country_code ] ) ) {
 					$country_list[ $continent ][ $country_code ]['stripe'] = true;
 				}
 
+				// If this country exists in square modifiers, add the square flag.
 				if ( isset( $square_modifiers->get_supported_countries()[ $country_code ] ) ) {
 					$country_list[ $continent ][ $country_code ]['square'] = true;
 				}
