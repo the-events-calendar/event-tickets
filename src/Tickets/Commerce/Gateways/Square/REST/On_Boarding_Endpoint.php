@@ -251,11 +251,16 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 		$saved = tribe( Merchant::class )->save_signup_data( $params );
 
 		if ( ! $saved ) {
-			do_action( 'tribe_log', 'error', 'Square token save error', [
-				'source' => 'tickets-commerce-square',
-				'message' => 'Failed to save Square merchant credentials',
-				'merchant_id' => $params['merchant_id'] ?? 'unknown',
-			] );
+			do_action(
+				'tribe_log',
+				'error',
+				'Square token save error',
+				[
+					'source'      => 'tickets-commerce-square',
+					'message'     => 'Failed to save Square merchant credentials',
+					'merchant_id' => $params['merchant_id'] ?? 'unknown',
+				]
+			);
 
 			$url = add_query_arg(
 				[
@@ -280,7 +285,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 				'info',
 				'Square Merchant Data Retrieved',
 				[
-					'source' => 'tickets-commerce',
+					'source'      => 'tickets-commerce',
 					'merchant_id' => $params['merchant_id'],
 				]
 			);
@@ -290,7 +295,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 				'warning',
 				'Failed to retrieve Square Merchant Data during onboarding',
 				[
-					'source' => 'tickets-commerce',
+					'source'      => 'tickets-commerce',
 					'merchant_id' => $params['merchant_id'],
 				]
 			);

@@ -34,8 +34,8 @@ $error_messages = $signup->get_errors_from_on_boarded_data();
 
 		<?php if ( is_array( $error_messages ) ) : ?>
 			<ul>
-				<?php foreach ( $error_messages as $error ) : ?>
-					<li><span class="dashicons dashicons-warning" style="color: red;"></span> <?php echo esc_html( $error ); ?></li>
+				<?php foreach ( $error_messages as $error_message ) : ?>
+					<li><span class="dashicons dashicons-warning" style="color: red;"></span> <?php echo esc_html( $error_message ); ?></li>
 				<?php endforeach; ?>
 			</ul>
 		<?php endif; ?>

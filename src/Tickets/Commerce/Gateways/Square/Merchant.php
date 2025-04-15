@@ -3,7 +3,6 @@
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
-use WP_Error;
 use Exception;
 
 /**

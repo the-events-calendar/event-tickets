@@ -290,7 +290,7 @@ class WhoDat extends Abstract_WhoDat {
 				'error',
 				'Failed to retrieve Square OAuth scopes',
 				[
-					'source' => 'tickets-commerce',
+					'source'   => 'tickets-commerce',
 					'response' => $response,
 				]
 			);
