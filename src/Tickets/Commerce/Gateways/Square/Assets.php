@@ -123,15 +123,9 @@ class Assets extends Controller_Contract {
 			->set_condition( [ $this, 'is_square_section' ] )
 			->set_action( 'admin_enqueue_scripts' )
 			->add_localize_script(
-				'tec.tickets.commerce.square.i18n',
+				'tec.tickets.commerce.square.localized',
 				[
-					'connect'           => __( 'Connect with Square', 'event-tickets' ),
-					'connecting'        => __( 'Connecting...', 'event-tickets' ),
-					'reconnect'         => __( 'Reconnect Account', 'event-tickets' ),
-					'connectError'      => __( 'There was an error connecting to Square. Please try again.', 'event-tickets' ),
-					'disconnectConfirm' => __( 'Are you sure you want to disconnect from Square?', 'event-tickets' ),
-					'disconnectError'   => __( 'There was an error disconnecting from Square. Please try again.', 'event-tickets' ),
-					'connectNonce'      => wp_create_nonce( 'square-connect' ),
+					'connectNonce' => wp_create_nonce( 'square-connect' ),
 				]
 			)
 			->register();

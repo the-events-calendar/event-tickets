@@ -187,11 +187,16 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 		// If there's an error in the request, bail out.
 		if ( ! empty( $params['error'] ) ) {
 			// Log the error.
-			do_action( 'tribe_log', 'error', 'Square signup error', [
-				'source' => 'tickets-commerce-square',
-				'error' => $params['error'],
-				'description' => $params['error_description'] ?? 'No description provided',
-			] );
+			do_action(
+				'tribe_log',
+				'error',
+				'Square signup error',
+				[
+					'source'      => 'tickets-commerce-square',
+					'error'       => $params['error'],
+					'description' => $params['error_description'] ?? 'No description provided',
+				]
+			);
 
 			$error_status = 'tc-square-signup-error';
 
@@ -219,11 +224,16 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 			|| empty( $params['access_token'] )
 			|| empty( $params['refresh_token'] )
 		) {
-			do_action( 'tribe_log', 'error', 'Square token error', [
-				'source' => 'tickets-commerce-square',
-				'message' => 'Missing required OAuth parameters',
-				'params_received' => array_keys( $params ),
-			] );
+			do_action(
+				'tribe_log',
+				'error',
+				'Square token error',
+				[
+					'source'          => 'tickets-commerce-square',
+					'message'         => 'Missing required OAuth parameters',
+					'params_received' => array_keys( $params ),
+				]
+			);
 
 			$url = add_query_arg(
 				[
