@@ -4,16 +4,17 @@
  * @since TBD
  */
 
-window.tribe = window.tribe || {};
-tribe.tickets = tribe.tickets || {};
-tribe.tickets.commerce = tribe.tickets.commerce || {};
+window.tec = window.tec || {};
+window.tec.tickets = window.tec.tickets || {};
+window.tec.tickets.commerce = window.tec.tickets.commerce || {};
+window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 
 /**
  * Tickets Commerce Square Webhooks object.
  *
  * @since TBD
  */
-tribe.tickets.commerce.square.webhooks = {};
+window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square.webhooks || {};
 
 /**
  * Initializes Tickets Commerce Square Webhooks.
@@ -138,4 +139,4 @@ tribe.tickets.commerce.square.webhooks = {};
 	// When the DOM is ready, initialize
 	$( init );
 
-} )( jQuery, document, tribe.tickets.commerce.square.webhooks );
+} )( jQuery, document, window.tec.tickets.commerce.square.webhooks );

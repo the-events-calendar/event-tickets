@@ -11,6 +11,7 @@
  * @var TEC\Tickets\Commerce\Gateways\Square\Merchant $merchant        [Global] The Signup class.
  */
 
+defined( 'ABSPATH' ) || exit;
 ?>
 <div class="tec-tickets__admin-settings-tickets-commerce-gateway-help-link">
 	<?php $this->template( 'components/icons/lightbulb' ); ?>
@@ -22,3 +23,4 @@
 		class="tec-tickets__admin-settings-tickets-commerce-gateway-help-link-url"
 	><?php esc_html_e( 'Learn more about configuring Square payments', 'event-tickets' ); ?></a>
 </div>
+<?php

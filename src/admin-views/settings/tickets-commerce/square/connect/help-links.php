@@ -2,7 +2,7 @@
 /**
  * The Template for displaying the Tickets Commerce Square help links.
  *
- * @since   TBD
+ * @since TBD
  *
  * @version TBD
  *
@@ -11,6 +11,7 @@
  * @var TEC\Tickets\Commerce\Gateways\Square\Merchant $merchant        [Global] The Signup class.
  */
 
+defined( 'ABSPATH' ) || exit;
 ?>
 
 <div class="tec-tickets__admin-settings-tickets-commerce-gateway-help-links">
@@ -20,3 +21,4 @@
 	<?php $this->template( 'settings/tickets-commerce/square/connect/help-links/troubleshooting' ); ?>
 
 </div>
+<?php

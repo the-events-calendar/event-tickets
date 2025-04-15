@@ -4,16 +4,16 @@
  * @since TBD
  */
 
-window.tribe = window.tribe || {};
-tribe.tickets = tribe.tickets || {};
-tribe.tickets.commerce = tribe.tickets.commerce || {};
+window.tec = window.tec || {};
+window.tec.tickets = window.tec.tickets || {};
+window.tec.tickets.commerce = window.tec.tickets.commerce || {};
 
 /**
  * Tickets Commerce Square integration object.
  *
  * @since TBD
  */
-tribe.tickets.commerce.square = {};
+window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 
 /**
  * Initializes Tickets Commerce Square integration.
@@ -114,7 +114,7 @@ tribe.tickets.commerce.square = {};
 			},
 			body: new URLSearchParams({
 				action: 'tec_tickets_commerce_square_connect',
-				_wpnonce: strings.connectNonce,
+				_wpnonce: obj.localized.connectNonce,
 			}),
 		})
 		.then( response => response.json() )
@@ -345,4 +345,4 @@ tribe.tickets.commerce.square = {};
 		document.addEventListener( 'DOMContentLoaded', init );
 	}
 
-} )( document, tribe.tickets.commerce.square );
+} )( document, window.tec.tickets.commerce.square );

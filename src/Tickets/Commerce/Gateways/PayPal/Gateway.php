@@ -23,17 +23,17 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * @inheritDoc
 	 */
-	protected static $key = 'paypal';
+	protected static string $key = 'paypal';
 
 	/**
 	 * @inheritDoc
 	 */
-	protected static $settings = Settings::class;
+	protected static string $settings = Settings::class;
 
 	/**
 	 * @inheritDoc
 	 */
-	protected static $merchant = Merchant::class;
+	protected static string $merchant = Merchant::class;
 
 	/**
 	 * @inheritDoc
@@ -43,7 +43,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * @inheritDoc
 	 */
-	protected static $supported_currencies = [
+	protected static array $supported_currencies = [
 		'AUD', 'BRL', 'CAD', 'CNY', 'CZK', 'DKK', 'EUR', 'HKD', 'HUF',
 		'ILS', 'JPY', 'MYR', 'MXN', 'TWD', 'NZD', 'NOK', 'PHP', 'PLN',
 		'GBP', 'RUB', 'SGD', 'SEK', 'CHF', 'THB', 'USD',

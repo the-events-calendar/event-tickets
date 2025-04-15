@@ -11,18 +11,20 @@
  * @var TEC\Tickets\Commerce\Gateways\Square\Gateway  $gateway           [Global] The gateway class.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 // Get the status from the URL.
-$status = tribe_get_request_var( 'tc-status', '' );
+$tc_status = tribe_get_request_var( 'tc-status', '' );
 
 // Bail if no status.
-if ( empty( $status ) ) {
+if ( empty( $tc_status ) ) {
 	return;
 }
 
 $error_class = 'error';
 $error_message = '';
 
-switch ( $status ) {
+switch ( $tc_status ) {
 	case 'tc-square-signup-error':
 		$error_message = __( 'There was an error connecting to Square. Please try again.', 'event-tickets' );
 		break;

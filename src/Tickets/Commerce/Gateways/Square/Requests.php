@@ -1,11 +1,18 @@
 <?php
+/**
+ * Square Requests.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square;
+ */
 
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Requests;
 
 /**
- * Stripe Requests.
+ * Square Requests.
  *
  * @since TBD
  *
@@ -20,7 +27,7 @@ class Requests extends Abstract_Requests {
 	 *
 	 * @var string
 	 */
-	public static $merchant = Merchant::class;
+	public static string $merchant = Merchant::class;
 
 	/**
 	 * The Gateway class reference to use.
@@ -29,7 +36,7 @@ class Requests extends Abstract_Requests {
 	 *
 	 * @var string
 	 */
-	public static $gateway = Gateway::class;
+	public static string $gateway = Gateway::class;
 
 	/**
 	 * The Square API base URLs.
@@ -38,13 +45,20 @@ class Requests extends Abstract_Requests {
 	 *
 	 * @var array
 	 */
-	private static $api_base_urls = [
-		'live' => 'https://connect.squareup.com/v2',
+	private const API_BASE_URLS = [
+		'live'    => 'https://connect.squareup.com/v2',
 		'sandbox' => 'https://connect.squareupsandbox.com/v2',
 	];
 
 	/**
-	 * @inheritDoc
+	 * Get REST API endpoint URL for requests.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $endpoint   The endpoint path.
+	 * @param array  $query_args Query args appended to the URL.
+	 *
+	 * @return string The API URL.
 	 */
 	public static function get_api_url( $endpoint, array $query_args = [] ) {
 		$base_url = static::get_environment_url();
@@ -62,9 +76,8 @@ class Requests extends Abstract_Requests {
 	 */
 	public static function get_environment_url() {
 		$merchant = tribe( static::$merchant );
-		$mode = $merchant->get_mode();
+		$mode     = $merchant->get_mode();
 
-		return static::$api_base_urls[ $mode ] ?? static::$api_base_urls['sandbox'];
+		return static::API_BASE_URLS[ $mode ] ?? static::API_BASE_URLS['sandbox'];
 	}
-
 }

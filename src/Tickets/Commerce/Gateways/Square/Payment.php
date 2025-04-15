@@ -5,8 +5,8 @@ namespace TEC\Tickets\Commerce\Gateways\Square;
 use RuntimeException;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Order;
-use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Commerce\Utils\Value;
+use WP_Error;
 
 /**
  * Square payment processing class.
@@ -24,31 +24,29 @@ class Payment {
 	 *
 	 * @var string
 	 */
-	public static $tc_metadata_identifier = 'tec_tc_square_payment';
+	public static string $tc_metadata_identifier = 'tec_tc_square_payment';
 
 	/**
 	 * Create a payment from the provided Value object.
 	 *
 	 * @since TBD
 	 *
-	 * @param Value $value The value object to create a payment for.
-	 * @param bool  $retry Whether this is a retry attempt.
+	 * @param string $source_id The source ID.
+	 * @param Value  $value     The value object to create a payment for.
 	 *
-	 * @return array|\WP_Error The payment data or WP_Error on failure.
+	 * @return ?array| The payment data.
 	 */
-	public static function create( $source_id, Value $value, $retry = false ) {
+	public static function create( string $source_id, Value $value ): ?array {
 		$merchant = tribe( Merchant::class );
 
 		if ( ! $merchant->is_active() ) {
-			return new \WP_Error(
-				'tec-tc-gateway-square-inactive',
-				__( 'Square gateway is not active.', 'event-tickets' )
-			);
+			return null;
 		}
 
 		$query_args = [];
+
 		$body = [
-			'amount_money' => [
+			'amount_money'    => [
 				'amount'   => (int) $value->get_integer(),
 				'currency' => $value->get_currency_code(),
 			],
@@ -60,7 +58,7 @@ class Payment {
 		];
 
 		$args = [
-			'body' => $body,
+			'body'    => $body,
 			'headers' => [
 				'Content-Type' => 'application/json',
 			],
@@ -78,7 +76,8 @@ class Payment {
 	 * @param Cart   $cart      The cart object.
 	 * @param bool   $retry     Whether this is a retry attempt.
 	 *
-	 * @return array|\WP_Error The payment data or WP_Error on failure.
+	 * @return array|WP_Error The payment data or WP_Error on failure.
+	 * @throws RuntimeException If the value object is not returned from the filter.
 	 */
 	public static function create_from_cart( string $source_id, Cart $cart, $retry = false ) {
 		$items = tribe( Order::class )->prepare_cart_items_for_order( $cart );
@@ -124,19 +123,16 @@ class Payment {
 	 *
 	 * @param string $payment_id The payment ID.
 	 *
-	 * @return array|\WP_Error The payment data or WP_Error on failure.
+	 * @return ?array The payment data.
 	 */
-	public static function get( $payment_id ) {
-		if ( empty( $payment_id ) ) {
-			return new \WP_Error(
-				'tec-tc-gateway-square-empty-payment-id',
-				__( 'Payment ID cannot be empty.', 'event-tickets' )
-			);
+	public static function get( string $payment_id ): ?array {
+		if ( ! $payment_id ) {
+			return null;
 		}
 
 		$query_args = [];
-		$body = [];
-		$args = [
+		$body       = [];
+		$args       = [
 			'body' => $body,
 		];
 
@@ -151,19 +147,16 @@ class Payment {
 	 * @param string $payment_id The payment ID.
 	 * @param array  $data       The payment data to update.
 	 *
-	 * @return array|\WP_Error The updated payment data or WP_Error on failure.
+	 * @return ?array The updated payment data.
 	 */
-	public static function update( $payment_id, $data ) {
-		if ( empty( $payment_id ) ) {
-			return new \WP_Error(
-				'tec-tc-gateway-square-empty-payment-id',
-				__( 'Payment ID cannot be empty.', 'event-tickets' )
-			);
+	public static function update( string $payment_id, array $data ): ?array {
+		if ( ! $payment_id ) {
+			return null;
 		}
 
 		$query_args = [];
-		$body = $data;
-		$args = [
+		$body       = $data;
+		$args       = [
 			'body' => $body,
 		];
 
@@ -177,21 +170,18 @@ class Payment {
 	 *
 	 * @param string $payment_id The payment ID.
 	 *
-	 * @return array|\WP_Error The cancelled payment data or WP_Error on failure.
+	 * @return ?array The cancelled payment data.
 	 */
-	public static function cancel( $payment_id ) {
-		if ( empty( $payment_id ) ) {
-			return new \WP_Error(
-				'tec-tc-gateway-square-empty-payment-id',
-				__( 'Payment ID cannot be empty.', 'event-tickets' )
-			);
+	public static function cancel( string $payment_id ): ?array {
+		if ( ! $payment_id ) {
+			return null;
 		}
 
 		$query_args = [];
-		$body = [
+		$body       = [
 			'idempotency_key' => uniqid( 'tec-square-cancel-', true ),
 		];
-		$args = [
+		$args       = [
 			'body' => $body,
 		];
 
@@ -207,7 +197,7 @@ class Payment {
 	 *
 	 * @return string The formatted error message.
 	 */
-	public static function compile_errors( $errors ) {
+	public static function compile_errors( array $errors ): string {
 		if ( empty( $errors ) ) {
 			return '';
 		}

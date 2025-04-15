@@ -8,7 +8,6 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Square\Gateway;
 use TEC\Tickets\Commerce\Gateways\Square\Payment;
 use TEC\Tickets\Commerce\Gateways\Square\Payment_Handler;
-use TEC\Tickets\Commerce\Gateways\Square\Status;
 use TEC\Tickets\Commerce\Order;
 
 use TEC\Tickets\Commerce\Status\Completed;
@@ -38,14 +37,14 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @var string
 	 */
-	protected $path = '/commerce/square/order';
+	protected string $path = '/commerce/square/order';
 
 	/**
 	 * Register the actual endpoint on WP Rest API.
 	 *
 	 * @since TBD
 	 */
-	public function register() {
+	public function register(): void {
 		$namespace     = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
 		$documentation = tribe( 'tickets.rest-v1.endpoints.documentation' );
 
@@ -92,7 +91,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @return array
 	 */
-	public function create_order_args() {
+	public function create_order_args(): array {
 		return [];
 	}
 
@@ -172,7 +171,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			)
 			->save();
 
-		// Set order to Created status
+		// Set order to Created status.
 		$orders->modify_status(
 			$order->ID,
 			Created::SLUG,
@@ -184,11 +183,11 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		$orders->unlock_order( $order->ID );
 
-		// Respond with the order data for Square usage
-		$response['success']       = true;
-		$response['order_id']      = $order->ID;
-		$response['payment_id']    = $payment['id'];
-		$response['return_url']    = add_query_arg( [ Cart::$cookie_query_arg => tribe( Cart::class )->get_cart_hash() ], tribe( Checkout::class )->get_url() );
+		// Respond with the order data for Square usage.
+		$response['success']    = true;
+		$response['order_id']   = $order->ID;
+		$response['payment_id'] = $payment['id'];
+		$response['return_url'] = add_query_arg( [ Cart::$cookie_query_arg => tribe( Cart::class )->get_cart_hash() ], tribe( Checkout::class )->get_url() );
 
 		return new WP_REST_Response( $response );
 	}
@@ -200,7 +199,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @return array
 	 */
-	public function update_order_args() {
+	public function update_order_args(): array {
 		return [
 			'order_id'   => [
 				'description'       => __( 'Order ID in Square', 'event-tickets' ),
@@ -245,7 +244,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'success' => false,
 		];
 
-		$messages       = $this->get_error_messages();
+		$messages         = $this->get_error_messages();
 		$gateway_order_id = $request->get_param( 'order_id' );
 
 		$order = tec_tc_orders()->by_args(
@@ -268,7 +267,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$orders->set_on_checkout_screen_hold( $order->ID );
 
 		$payment_id = $request->get_param( 'payment_id' );
-		$payment = Payment::get( $payment_id );
+		$payment    = Payment::get( $payment_id );
 
 		if ( is_wp_error( $payment ) ) {
 			return new WP_Error( 'tec-tc-gateway-square-failed-getting-payment', $messages['failed-getting-payment'], $order );
@@ -278,7 +277,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-square-failed-payment-id', $messages['failed-getting-payment'], $order );
 		}
 
-		// Update order with payment information
+		// Update order with payment information.
 		$orders->modify_status(
 			$order->ID,
 			Completed::SLUG,
@@ -291,7 +290,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		// When we have success we clear the cart.
 		tribe( Cart::class )->clear_cart();
 
-		// Respond with the necessary data
+		// Respond with the necessary data.
 		$response['success']          = true;
 		$response['status']           = Completed::SLUG;
 		$response['order_id']         = $order->ID;
@@ -308,7 +307,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @return array
 	 */
-	public function fail_order_args() {
+	public function fail_order_args(): array {
 		return [
 			'order_id'      => [
 				'description'       => __( 'Order ID in Square', 'event-tickets' ),
@@ -366,8 +365,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'success' => false,
 		];
 
-		$messages = $this->get_error_messages();
-		$order_id = $request->get_param( 'order_id' );
+		$messages      = $this->get_error_messages();
+		$order_id      = $request->get_param( 'order_id' );
 		$failed_status = $request->get_param( 'failed_status' );
 		$failed_reason = $request->get_param( 'failed_reason' );
 
@@ -387,7 +386,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		$orders = tribe( Order::class );
 
-		// Mark the order as failed
+		// Mark the order as failed.
 		$orders->modify_status(
 			$order->ID,
 			$failed_status ?: 'failed',
@@ -400,7 +399,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		);
 
 		$response['success'] = true;
-		$response['status'] = $failed_status ?: 'failed';
+		$response['status']  = $failed_status ?: 'failed';
 		$response['message'] = $failed_reason ?: $messages['failed-payment'];
 
 		return new WP_REST_Response( $response );
@@ -413,16 +412,16 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @return array $messages Array of error messages.
 	 */
-	public function get_error_messages() {
+	public function get_error_messages(): array {
 		$messages = [
-			'failed-order-creation'      => __( 'Creating new order failed, please refresh your checkout page.', 'event-tickets' ),
-			'failed-creating-payment'    => __( 'Creating new Square payment failed. Please try again.', 'event-tickets' ),
-			'failed-creating-order'      => __( 'Creating new Square order failed. Please try again.', 'event-tickets' ),
-			'order-not-found'            => __( 'Order not found, please restart your checkout process.', 'event-tickets' ),
-			'failed-getting-payment'     => __( 'Your payment is invalid. Please try again.', 'event-tickets' ),
-			'failed-payment'             => __( 'Your payment method has failed. Please try again.', 'event-tickets' ),
-			'invalid-payment-status'     => __( 'Your payment status was not recognized. Please try again.', 'event-tickets' ),
-			'empty-cart'                 => __( 'Cannot generate an order for an empty cart, please select new items to checkout.', 'event-tickets' ),
+			'failed-order-creation'   => esc_html__( 'Creating new order failed, please refresh your checkout page.', 'event-tickets' ),
+			'failed-creating-payment' => esc_html__( 'Creating new Square payment failed. Please try again.', 'event-tickets' ),
+			'failed-creating-order'   => esc_html__( 'Creating new Square order failed. Please try again.', 'event-tickets' ),
+			'order-not-found'         => esc_html__( 'Order not found, please restart your checkout process.', 'event-tickets' ),
+			'failed-getting-payment'  => esc_html__( 'Your payment is invalid. Please try again.', 'event-tickets' ),
+			'failed-payment'          => esc_html__( 'Your payment method has failed. Please try again.', 'event-tickets' ),
+			'invalid-payment-status'  => esc_html__( 'Your payment status was not recognized. Please try again.', 'event-tickets' ),
+			'empty-cart'              => esc_html__( 'Cannot generate an order for an empty cart, please select new items to checkout.', 'event-tickets' ),
 		];
 		/**
 		 * Filter the error messages for Square checkout.
@@ -431,6 +430,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		 *
 		 * @param array $messages Array of error messages.
 		 */
-		return apply_filters( 'tec_tickets_commerce_square_order_endpoint_error_messages', $messages );
+		return (array) apply_filters( 'tec_tickets_commerce_square_order_endpoint_error_messages', $messages );
 	}
 }

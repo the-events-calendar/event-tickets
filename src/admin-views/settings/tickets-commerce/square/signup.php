@@ -14,6 +14,8 @@
  * @var bool                                          $is_connected      [Global] Whether Square is connected.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 if ( $is_connected ) {
 	return;
 }
@@ -24,7 +26,7 @@ $this->template( 'settings/tickets-commerce/square/connect/error-notices' );
 // Determine if the site is using SSL.
 $is_ssl = is_ssl();
 
-// We'll use JavaScript to handle the redirect instead of getting the URL here
+// We'll use JavaScript to handle the redirect instead of getting the URL here.
 $connect_url = '#';
 ?>
 
@@ -43,12 +45,10 @@ $connect_url = '#';
 		<h2 class="tec-tickets__admin-settings-tickets-commerce-gateway-title">
 			<?php esc_html_e( 'Accept online payments with Square!', 'event-tickets' ); ?>
 		</h2>
-
 		<div class="tec-tickets__admin-settings-tickets-commerce-gateway-description">
 			<p class="tec-tickets__admin-settings-tickets-commerce-gateway-description-text">
 				<?php echo wp_kses( __( 'Start selling tickets to your events today with Square integration for Tickets Commerce. Enable credit card payments, Apple Pay, Google Pay, and more.<br>', 'event-tickets' ), [ 'br' => [] ] ); ?>
 			</p>
-
 			<?php if ( $is_ssl ) : ?>
 				<div class="tec-tickets__admin-settings-tickets-commerce-gateway-signup-links">
 					<?php $this->template( 'settings/tickets-commerce/square/connect/sandbox-notice' ); ?>
@@ -65,11 +65,9 @@ $connect_url = '#';
 					<?php echo wp_kses( __( '<strong>SSL Certificate Required</strong> - to connect Square and use credit card payments, you need to have an SSL certificate, and your site needs to be using HTTPS.', 'event-tickets' ), [ 'strong' => [] ] ); ?>
 				</div>
 			<?php endif; ?>
-
 			<?php $this->template( 'settings/tickets-commerce/square/connect/help-links' ); ?>
 		</div>
 	</div>
-
 	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-logo">
 		<img
 			src="<?php echo esc_url( $gateway->get_logo_url() ); ?>"
@@ -79,3 +77,4 @@ $connect_url = '#';
 		/>
 	</div>
 </div>
+<?php

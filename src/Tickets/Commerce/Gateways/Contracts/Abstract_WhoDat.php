@@ -1,5 +1,13 @@
 <?php
+/**
+ * WhoDat Connection Contract.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Contracts
+ */
 
+// phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
 use Tribe__Utils__Array as Arr;
@@ -19,16 +27,16 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 	 *
 	 * @var string
 	 */
-	protected string $api_endpoint;
+	protected const API_ENDPOINT = '';
 
 	/**
-	 * Public WhoDat URL, used to authenticate accounts with gateway payment providers
+	 * WhoDat URL, used to authenticate accounts with gateway payment providers
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	protected string $api_base_url = 'https://whodat.theeventscalendar.com/commerce/v1';
+	protected const API_BASE_URL = 'https://whodat.theeventscalendar.com/commerce/v1';
 
 	/**
 	 * Returns the gateway-specific endpoint to use
@@ -38,7 +46,7 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 	 * @return string
 	 */
 	protected function get_gateway_endpoint() {
-		return $this->api_endpoint;
+		return static::API_ENDPOINT;
 	}
 
 	/**
@@ -54,7 +62,7 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 			return TEC_TC_WHODAT_DEV_URL;
 		}
 
-		return $this->api_base_url;
+		return static::API_BASE_URL;
 	}
 
 	/**
@@ -98,24 +106,24 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 			$request_arguments[ $key ] = array_merge( $default_argument, Arr::get( $request_arguments, $key, [] ) );
 		}
 		$request_arguments = array_filter( $request_arguments );
-		$request           = wp_remote_post( $url, $request_arguments );
+		$response          = wp_remote_post( $url, $request_arguments );
 
-		if ( is_wp_error( $request ) ) {
-			$this->log_error( 'WhoDat request error:', $request->get_error_message(), $url );
+		if ( is_wp_error( $response ) ) {
+			$this->log_error( 'WhoDat request error:', $response->get_error_message(), $url );
 			return null;
 		}
 
-		$status_code = wp_remote_retrieve_response_code( $request );
+		$status_code = wp_remote_retrieve_response_code( $response );
 		if ( 200 !== $status_code ) {
 			return null;
 		}
 
-		$body = wp_remote_retrieve_body( $request );
+		$body = wp_remote_retrieve_body( $response );
 		$body = json_decode( $body, true );
 
 		if ( ! is_array( $body ) ) {
 			$this->log_error( 'WhoDat unexpected response:', $body, $url );
-			$this->log_error( 'Response:', print_r( $request, true ), '--->' );
+			$this->log_error( 'Response:', print_r( $response, true ), '--->' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
 			return null;
 		}
@@ -133,7 +141,6 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 			$type,
 			$message
 		);
-		do_action( 'tribe_log', 'error', 'whodat-connection', [$log ] );
+		do_action( 'tribe_log', 'error', __CLASS__, [ $log ] );
 	}
-
 }
