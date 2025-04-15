@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Tickets\Commerce\Payments_Tab;
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Settings;
 
 /**
  * Square Commerce Settings.
@@ -11,7 +12,7 @@ use TEC\Tickets\Commerce\Payments_Tab;
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
-class Settings {
+class Settings extends Abstract_Settings {
 
 	/**
 	 * Client ID option key.
