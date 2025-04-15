@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Square On-Boarding Endpoint
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square\REST
+ */
+
 namespace TEC\Tickets\Commerce\Gateways\Square\REST;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
@@ -16,7 +24,7 @@ use WP_REST_Server;
 use Tribe__Date_Utils as Dates;
 
 /**
- * Class On_Boarding_Endpoint
+ * Class On_Boarding_Endpoint.
  *
  * @since TBD
  *
@@ -189,15 +197,20 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 		// If there's an error in the request, bail out.
 		if ( ! empty( $params['error'] ) ) {
 			// Log the error.
-			do_action( 'tribe_log', 'error', 'Square signup error', [
-				'source' => 'tickets-commerce-square',
-				'error' => $params['error'],
-				'description' => $params['error_description'] ?? 'No description provided',
-			] );
+			do_action(
+				'tribe_log',
+				'error',
+				'Square signup error',
+				[
+					'source'      => 'tickets-commerce-square',
+					'error'       => $params['error'],
+					'description' => $params['error_description'] ?? 'No description provided',
+				]
+			);
 
 			$error_status = 'tc-square-signup-error';
 
-			// Handle specific error cases
+			// Handle specific error cases.
 			if ( 'user_denied' === $params['error'] ) {
 				$error_status = 'tc-square-user-denied';
 			}
@@ -205,7 +218,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 			// Redirect back to the settings page with an error.
 			$url = add_query_arg(
 				[
-					'tc-status' => $error_status,
+					'tc-status'  => $error_status,
 					'tc-section' => Gateway::get_key(),
 				],
 				tribe( Payments_Tab::class )->get_url()
@@ -221,15 +234,20 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 			|| empty( $params['access_token'] )
 			|| empty( $params['refresh_token'] )
 		) {
-			do_action( 'tribe_log', 'error', 'Square token error', [
-				'source' => 'tickets-commerce-square',
-				'message' => 'Missing required OAuth parameters',
-				'params_received' => array_keys( $params ),
-			] );
+			do_action(
+				'tribe_log',
+				'error',
+				'Square token error',
+				[
+					'source'          => 'tickets-commerce-square',
+					'message'         => 'Missing required OAuth parameters',
+					'params_received' => array_keys( $params ),
+				]
+			);
 
 			$url = add_query_arg(
 				[
-					'tc-status' => 'tc-square-token-error',
+					'tc-status'  => 'tc-square-token-error',
 					'tc-section' => Gateway::get_key(),
 				],
 				tribe( Payments_Tab::class )->get_url()
@@ -239,16 +257,20 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 			exit;
 		}
 
-		//here
-		// Save the account data from the OAuth response
+		// Save the account data from the OAuth response.
 		$saved = tribe( Merchant::class )->save_signup_data( $params );
 
 		if ( ! $saved ) {
-			do_action( 'tribe_log', 'error', 'Square token save error', [
-				'source' => 'tickets-commerce-square',
-				'message' => 'Failed to save Square merchant credentials',
-				'merchant_id' => $params['merchant_id'] ?? 'unknown',
-			] );
+			do_action(
+				'tribe_log',
+				'error',
+				'Square token save error',
+				[
+					'source' => 'tickets-commerce-square',
+					'message' => 'Failed to save Square merchant credentials',
+					'merchant_id' => $params['merchant_id'] ?? 'unknown',
+				]
+			);
 
 			$url = add_query_arg(
 				[
@@ -262,21 +284,31 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 			exit;
 		}
 
-		// Fetch additional merchant details from Square API
+		// Fetch additional merchant details from Square API.
 		$merchant = tribe( Merchant::class );
 		$merchant_data = $merchant->fetch_merchant_data( true );
 
-		// Log the retrieval attempt
+		// Log the retrieval attempt.
 		if ( $merchant_data ) {
-			do_action( 'tribe_log', 'info', 'Square Merchant Data Retrieved', [
-				'source' => 'tickets-commerce',
-				'merchant_id' => $params['merchant_id'],
-			] );
+			do_action(
+				'tribe_log',
+				'info',
+				'Square Merchant Data Retrieved',
+				[
+					'source'      => 'tickets-commerce',
+					'merchant_id' => $params['merchant_id'],
+				]
+			);
 		} else {
-			do_action( 'tribe_log', 'warning', 'Failed to retrieve Square Merchant Data during onboarding', [
-				'source' => 'tickets-commerce',
-				'merchant_id' => $params['merchant_id'],
-			] );
+			do_action(
+				'tribe_log',
+				'warning',
+				'Failed to retrieve Square Merchant Data during onboarding',
+				[
+					'source'      => 'tickets-commerce',
+					'merchant_id' => $params['merchant_id'],
+				]
+			);
 		}
 
 		// Enable the gateway.
