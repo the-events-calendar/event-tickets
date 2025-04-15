@@ -1,35 +1,20 @@
 /* global tribe, jQuery, tecTicketsCommerceGatewaySquareCheckout */
-
-/**
- * Path to this script in the global tribe Object.
- *
- * @since 5.3.0
- *
- * @type   {Object}
- */
-tribe.tickets.commerce.gateway.square = tribe.tickets.commerce.gateway.square || {};
+window.tec = window.tec || {};
+window.tec.tickets = window.tec.tickets || {};
+window.tec.tickets.commerce = window.tec.tickets.commerce || {};
+window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 
 /**
  * This script Object for public usage of the methods.
  *
- * @since 5.3.0
+ * @since TBD
  *
  * @type   {Object}
  */
-tribe.tickets.commerce.gateway.square.checkout = {};
+window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square.checkout || {};
 
 ( ( $, obj, ky ) => {
 	'use strict';
-
-	/**
-	 * Pull the variables from the PHP backend.
-	 *
-	 * @since 5.3.0
-	 *
-	 * @type {Object}
-	 */
-	obj.checkout = tecTicketsCommerceGatewaySquareCheckout;
-
 	/**
 	 * Checkout Selectors.
 	 *
@@ -102,7 +87,7 @@ tribe.tickets.commerce.gateway.square.checkout = {};
 	obj.getRequestArgs = ( data, headers ) => {
 		if ( 'undefined' === typeof headers ) {
 			headers = {
-				'X-WP-Nonce': obj.checkout.nonce
+				'X-WP-Nonce': obj.data.nonce
 			};
 		}
 
@@ -223,7 +208,7 @@ tribe.tickets.commerce.gateway.square.checkout = {};
 
 		try {
 			// First create an order via the REST API
-			const orderResponse = await ky.post( obj.checkout.orderEndpoint, obj.getRequestArgs( formData ) ).json();
+			const orderResponse = await ky.post( obj.data.orderEndpoint, obj.getRequestArgs( formData ) ).json();
 
 			if ( ! orderResponse.success ) {
 				throw new Error( 'Failed to create order.', { cause: orderResponse } );
@@ -235,7 +220,7 @@ tribe.tickets.commerce.gateway.square.checkout = {};
 
 			// Now update the order with the payment details
 			const updateResponse = await ky.post(
-				`${obj.checkout.orderEndpoint}/${orderId}`,
+				`${obj.data.orderEndpoint}/${orderId}`,
 				obj.getRequestArgs({
 					order_id: orderId,
 					payment_id: paymentId
@@ -269,10 +254,10 @@ tribe.tickets.commerce.gateway.square.checkout = {};
 			}
 
 			// Initialize Square.js
-			const payments = window.Square.payments(obj.checkout.applicationId, obj.checkout.locationId);
+			const payments = window.Square.payments(obj.data.applicationId, obj.checkout.locationId);
 
 			// Create a card payment element
-			obj.card = await payments.card(obj.checkout.squareCardOptions);
+			obj.card = await payments.card(obj.data.squareCardOptions);
 
 			// Mount the card element to the DOM
 			await obj.card.attach(obj.selectors.cardElement);
@@ -354,4 +339,4 @@ tribe.tickets.commerce.gateway.square.checkout = {};
 	// When the document is ready, initialize the checkout.
 	$( obj.ready );
 
-} )( jQuery, tribe.tickets.commerce.gateway.square.checkout, tribe.ky );
+} )( jQuery, window.tec.tickets.commerce.square.checkout, tribe.ky );

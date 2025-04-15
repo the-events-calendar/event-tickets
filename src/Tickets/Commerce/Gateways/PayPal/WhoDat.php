@@ -1,5 +1,13 @@
 <?php
+/**
+ * WhoDat Connection for PayPal.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\PayPal
+ */
 
+// phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_WhoDat;
@@ -8,7 +16,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\REST\On_Boarding_Endpoint;
 /**
  * Class Connect_Client
  *
- * @since   5.1.6
+ * @since 5.1.6
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
@@ -17,11 +25,11 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * The API Path.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @var string
 	 */
-	protected string $api_endpoint = 'paypal';
+	protected const API_ENDPOINT = 'paypal';
 
 	/**
 	 * Fetch the signup link from PayPal.

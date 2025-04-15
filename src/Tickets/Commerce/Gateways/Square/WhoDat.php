@@ -1,5 +1,13 @@
 <?php
+/**
+ * WhoDat Connection for Square.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square
+ */
 
+// phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_WhoDat;
@@ -22,7 +30,7 @@ class WhoDat extends Abstract_WhoDat {
 	 *
 	 * @var string
 	 */
-	protected string $api_endpoint = 'square';
+	protected const API_ENDPOINT = 'square';
 
 	/**
 	 * The nonce action for the state.
@@ -31,36 +39,36 @@ class WhoDat extends Abstract_WhoDat {
 	 *
 	 * @var string
 	 */
-	protected string $state_nonce_action = 'tec-tc-square-connect';
+	protected const STATE_NONCE_ACTION = 'tec-tc-square-connect';
 
 	/**
 	 * Get the API URL for making requests.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @param string $endpoint   The endpoint to connect to.
 	 * @param array  $query_args The query arguments.
 	 *
 	 * @return string
 	 */
-	public function get_api_url( $endpoint, array $query_args = [] ) {
+	public function get_api_url( $endpoint, array $query_args = [] ): string {
 		return add_query_arg( $query_args, "{$this->get_api_base_url()}/{$this->get_gateway_endpoint()}/{$endpoint}" );
 	}
 
 	/**
 	 * Make a GET request to the WhoDat API.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @param string $endpoint   The endpoint to connect to.
 	 * @param array  $query_args The query arguments.
 	 *
 	 * @return array|null
 	 */
-	public function get( $endpoint, array $query_args ) {
+	public function get( $endpoint, array $query_args ): ?array {
 		$url = $this->get_api_url( $endpoint, $query_args );
 
-		$request = wp_remote_get( $url );
+		$request = wp_remote_get( $url ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_remote_get_wp_remote_get
 
 		if ( is_wp_error( $request ) ) {
 			$this->log_error( 'WhoDat request error:', $request->get_error_message(), $url );
@@ -77,7 +85,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * Make a POST request to the WhoDat API.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @param string $endpoint          The endpoint to connect to.
 	 * @param array  $query_args        The query arguments.
@@ -85,11 +93,11 @@ class WhoDat extends Abstract_WhoDat {
 	 *
 	 * @return array|null
 	 */
-	public function post( $endpoint, array $query_args = [], array $request_arguments = [] ) {
+	public function post( $endpoint, array $query_args = [], array $request_arguments = [] ): ?array {
 		$url = $this->get_api_url( $endpoint, $query_args );
 
 		$default_arguments = [
-			'body'      => [],
+			'body' => [],
 		];
 
 		foreach ( $default_arguments as $key => $default_argument ) {
@@ -109,7 +117,7 @@ class WhoDat extends Abstract_WhoDat {
 
 		if ( ! is_array( $body ) ) {
 			$this->log_error( 'WhoDat unexpected response:', $body, $url );
-			$this->log_error( 'Response:', print_r( $request, true ), '--->' );
+			$this->log_error( 'Response:', print_r( $request, true ), '--->' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
 			return null;
 		}
@@ -120,13 +128,13 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * Log an error message for debugging purposes.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @param string $type    The type of error.
 	 * @param string $message The error message.
 	 * @param string $url     The URL that was being requested.
 	 */
-	public function log_error( $type, $message, $url ) {
+	public function log_error( $type, $message, $url ): void {
 		$log = sprintf(
 			'[%s] %s %s',
 			$url,
@@ -143,15 +151,15 @@ class WhoDat extends Abstract_WhoDat {
 	 *
 	 * @return string
 	 */
-	public function connect_account() {
+	public function connect_account(): string {
 		$merchant = tribe( Merchant::class );
 
-		// Generate and store the code challenge using the Merchant class
+		// Generate and store the code challenge using the Merchant class.
 		$code_challenge = $merchant->generate_code_challenge();
-		$user_id = get_current_user_id();
+		$user_id        = get_current_user_id();
 
 		wp_set_current_user( 0 );
-		$nonce = wp_create_nonce( $this->state_nonce_action );
+		$nonce = wp_create_nonce( $this->get_state_nonce_action() );
 		wp_set_current_user( $user_id );
 
 		$query_args = [
@@ -167,8 +175,15 @@ class WhoDat extends Abstract_WhoDat {
 		return $connection_response['auth_url'];
 	}
 
+	/**
+	 * Get the state nonce action.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
 	public function get_state_nonce_action(): string {
-		return $this->state_nonce_action;
+		return self::STATE_NONCE_ACTION;
 	}
 
 	/**
@@ -178,7 +193,7 @@ class WhoDat extends Abstract_WhoDat {
 	 *
 	 * @return string
 	 */
-	public function get_return_url() {
+	public function get_return_url(): string {
 		return rest_url( 'tribe/tickets/v1/commerce/square/on-boarding' );
 	}
 
@@ -187,9 +202,9 @@ class WhoDat extends Abstract_WhoDat {
 	 *
 	 * @since TBD
 	 *
-	 * @return string
+	 * @return ?array
 	 */
-	public function disconnect_account() {
+	public function disconnect_account(): ?array {
 		$account_id = tribe( Merchant::class )->get_account_id();
 
 		$query_args = [
@@ -205,9 +220,9 @@ class WhoDat extends Abstract_WhoDat {
 	 *
 	 * @since TBD
 	 *
-	 * @return string
+	 * @return ?array
 	 */
-	public function refresh_token() {
+	public function refresh_token(): ?array {
 		$refresh_token = tribe( Merchant::class )->get_refresh_token();
 
 		$query_args = [
@@ -225,12 +240,12 @@ class WhoDat extends Abstract_WhoDat {
 	 *
 	 * @return array|null
 	 */
-	public function get_token_status() {
+	public function get_token_status(): ?array {
 		$merchant = tribe( Merchant::class );
 
 		$query_args = [
 			'access_token' => $merchant->get_access_token(),
-			'mode' => $merchant->get_mode(),
+			'mode'         => $merchant->get_mode(),
 		];
 
 		return $this->get( 'oauth/token/status', $query_args );
@@ -239,13 +254,13 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * Get merchant information from Square.
 	 *
-	* @since TBD
+	 * @since TBD
 	 *
 	 * @param string $merchant_id The merchant ID.
 	 *
 	 * @return array|null
 	 */
-	public function get_merchant( $merchant_id ) {
+	public function get_merchant( string $merchant_id ): ?array {
 		$query_args = [
 			'merchant_id' => $merchant_id,
 		];
@@ -262,7 +277,7 @@ class WhoDat extends Abstract_WhoDat {
 	 *
 	 * @return array|null Array of required scopes or null if the request fails.
 	 */
-	public function get_required_scopes( $include_descriptions = false ) {
+	public function get_required_scopes( bool $include_descriptions = false ): ?array {
 		$query_args = [
 			'include_descriptions' => (bool) $include_descriptions,
 		];
@@ -270,10 +285,16 @@ class WhoDat extends Abstract_WhoDat {
 		$response = $this->get( 'oauth/scopes', $query_args );
 
 		if ( empty( $response ) || ! isset( $response['scopes'] ) ) {
-			do_action( 'tribe_log', 'error', 'Failed to retrieve Square OAuth scopes', [
-				'source' => 'tickets-commerce',
-				'response' => $response,
-			] );
+			do_action(
+				'tribe_log',
+				'error',
+				'Failed to retrieve Square OAuth scopes',
+				[
+					'source' => 'tickets-commerce',
+					'response' => $response,
+				]
+			);
+
 			return null;
 		}
 
@@ -293,41 +314,33 @@ class WhoDat extends Abstract_WhoDat {
 	 *     @type string $reconnect_url     URL to reconnect with the correct scopes, if needed.
 	 * }
 	 */
-	public function verify_merchant_scopes() {
-		// Get required scopes
+	public function verify_merchant_scopes(): array {
 		$required_scopes_data = $this->get_required_scopes();
 
 		if ( null === $required_scopes_data ) {
 			return [
 				'has_all_scopes' => false,
 				'missing_scopes' => [],
-				'reconnect_url' => '',
-				'error' => 'Failed to retrieve required scopes',
+				'reconnect_url'  => '',
+				'error'          => 'Failed to retrieve required scopes',
 			];
 		}
 
-		$required_scopes = isset( $required_scopes_data['scopes'] )
-			? $required_scopes_data['scopes']
-			: [];
+		$required_scopes = $required_scopes_data['scopes'] ?? [];
 
-		// Get token status which includes the scopes
 		$token_status = $this->get_token_status();
 
 		if ( empty( $token_status ) || isset( $token_status['error'] ) ) {
 			return [
 				'has_all_scopes' => false,
 				'missing_scopes' => $required_scopes,
-				'reconnect_url' => $this->get_reconnect_url( $required_scopes ),
-				'error' => 'Could not verify current token status',
+				'reconnect_url'  => $this->get_reconnect_url( $required_scopes ),
+				'error'          => 'Could not verify current token status',
 			];
 		}
 
-		// Extract current scopes
-		$current_scopes = isset( $token_status['scopes'] )
-			? $token_status['scopes']
-			: [];
+		$current_scopes = $token_status['scopes'] ?? [];
 
-		// Find missing scopes
 		$missing_scopes = array_diff( $required_scopes, $current_scopes );
 
 		$result = [
@@ -335,7 +348,7 @@ class WhoDat extends Abstract_WhoDat {
 			'missing_scopes' => $missing_scopes,
 		];
 
-		// If scopes are missing, provide a reconnect URL
+		// If scopes are missing, provide a reconnect URL.
 		if ( ! empty( $missing_scopes ) ) {
 			$result['reconnect_url'] = $this->get_reconnect_url( $required_scopes );
 		}
@@ -352,15 +365,14 @@ class WhoDat extends Abstract_WhoDat {
 	 *
 	 * @return string Reconnect URL.
 	 */
-	protected function get_reconnect_url( array $scopes = [] ) {
+	protected function get_reconnect_url( array $scopes = [] ): string {
 		$merchant = tribe( Merchant::class );
 
-		// Generate and store the code challenge using the Merchant class
 		$code_challenge = $merchant->generate_code_challenge();
-		$user_id = get_current_user_id();
+		$user_id        = get_current_user_id();
 
 		wp_set_current_user( 0 );
-		$nonce = wp_create_nonce( $this->state_nonce_action );
+		$nonce = wp_create_nonce( $this->get_state_nonce_action() );
 		wp_set_current_user( $user_id );
 
 		$query_args = [
@@ -371,13 +383,12 @@ class WhoDat extends Abstract_WhoDat {
 			'state'                 => $nonce,
 		];
 
-		// Add scopes if provided
 		if ( ! empty( $scopes ) ) {
 			$query_args['scopes'] = implode( ',', $scopes );
 		}
 
 		$connection_response = $this->get( 'oauth/authorize', $query_args );
 
-		return isset( $connection_response['auth_url'] ) ? $connection_response['auth_url'] : '';
+		return $connection_response['auth_url'] ?? '';
 	}
 }

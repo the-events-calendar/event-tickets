@@ -4,16 +4,16 @@
  * @since TBD
  */
 
-window.tribe = window.tribe || {};
-tribe.tickets = tribe.tickets || {};
-tribe.tickets.commerce = tribe.tickets.commerce || {};
+window.tec = window.tec || {};
+window.tec.tickets = window.tec.tickets || {};
+window.tec.tickets.commerce = window.tec.tickets.commerce || {};
 
 /**
  * Tickets Commerce Square integration object.
  *
  * @since TBD
  */
-tribe.tickets.commerce.square = {};
+window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 
 /**
  * Initializes Tickets Commerce Square integration.
@@ -25,8 +25,6 @@ tribe.tickets.commerce.square = {};
  */
 ( ( document, obj ) => {
 	'use strict';
-
-	tribe.tickets.commerce.square.i18n = window.tribe_tickets_commerce_square_strings;
 
 	/**
 	 * Selectors used for configuration and setup.
@@ -54,7 +52,9 @@ tribe.tickets.commerce.square = {};
 
 		// Show loading state
 		button.classList.add( 'loading' );
-		button.innerText = tribe.tickets.commerce.square.i18n.connecting;
+		button.innerText = obj.i18n.connecting;
+
+		console.log( 'handling connect click' );
 
 		// Make AJAX request
 		fetch( ajaxurl, {
@@ -65,7 +65,7 @@ tribe.tickets.commerce.square = {};
 			},
 			body: new URLSearchParams({
 				action: 'tec_tickets_commerce_square_connect',
-				_wpnonce: tribe.tickets.commerce.square.i18n.connectNonce,
+				_wpnonce: obj.i18n.connectNonce,
 			}),
 		})
 		.then( response => response.json() )
@@ -75,16 +75,16 @@ tribe.tickets.commerce.square = {};
 				window.location.href = response.data.url;
 			} else {
 				// Show error message
-				alert( tribe.tickets.commerce.square.i18n.connectError );
+				alert( obj.i18n.connectError );
 				button.classList.remove( 'loading' );
-				button.innerText = tribe.tickets.commerce.square.i18n.connect;
+				button.innerText = obj.i18n.connect;
 			}
 		})
 		.catch( () => {
 			// Show error message
-			alert( tribe.tickets.commerce.square.i18n.connectError );
+			alert( obj.i18n.connectError );
 			button.classList.remove( 'loading' );
-			button.innerText = tribe.tickets.commerce.square.i18n.connect;
+			button.innerText = obj.i18n.connect;
 		});
 	};
 
@@ -103,7 +103,7 @@ tribe.tickets.commerce.square = {};
 
 		// Show loading state
 		button.classList.add( 'loading' );
-		button.innerText = tribe.tickets.commerce.square.i18n.connecting;
+		button.innerText = obj.i18n.connecting;
 
 		// Get required scopes if available
 		const requiredScopes = button.dataset.requiredScopes || '';
@@ -117,7 +117,7 @@ tribe.tickets.commerce.square = {};
 			},
 			body: new URLSearchParams({
 				action: 'tec_tickets_commerce_square_connect',
-				_wpnonce: tribe.tickets.commerce.square.i18n.connectNonce,
+				_wpnonce: obj.i18n.connectNonce,
 				scopes: requiredScopes,
 			}),
 		})
@@ -128,16 +128,16 @@ tribe.tickets.commerce.square = {};
 				window.location.href = response.data.url;
 			} else {
 				// Show error message
-				alert( tribe.tickets.commerce.square.i18n.connectError );
+				alert( obj.i18n.connectError );
 				button.classList.remove( 'loading' );
-				button.innerText = tribe.tickets.commerce.square.i18n.reconnect;
+				button.innerText = obj.i18n.reconnect;
 			}
 		})
 		.catch( () => {
 			// Show error message
-			alert( tribe.tickets.commerce.square.i18n.connectError );
+			alert( obj.i18n.connectError );
 			button.classList.remove( 'loading' );
-			button.innerText = tribe.tickets.commerce.square.i18n.reconnect;
+			button.innerText = obj.i18n.reconnect;
 		});
 	};
 
@@ -153,7 +153,7 @@ tribe.tickets.commerce.square = {};
 		event.preventDefault();
 
 		// Confirm disconnection
-		if ( ! confirm( tribe.tickets.commerce.square.i18n.disconnectConfirm ) ) {
+		if ( ! confirm( obj.i18n.disconnectConfirm ) ) {
 			return;
 		}
 
@@ -181,13 +181,13 @@ tribe.tickets.commerce.square = {};
 				window.location.reload();
 			} else {
 				// Show error message
-				alert( tribe.tickets.commerce.square.i18n.disconnectError );
+				alert( obj.i18n.disconnectError );
 				button.classList.remove( 'loading' );
 			}
 		})
 		.catch( () => {
 			// Show error message
-			alert( tribe.tickets.commerce.square.i18n.disconnectError );
+			alert( obj.i18n.disconnectError );
 			button.classList.remove( 'loading' );
 		});
 	};
@@ -224,9 +224,11 @@ tribe.tickets.commerce.square = {};
 	 * @return {void}
 	 */
 	const init = () => {
+		console.log( 'initializing' );
 		bindEvents();
 	};
 
+	console.log( 'document.readyState', document.readyState );
 	// When the DOM is ready, initialize
 	if ( 'loading' !== document.readyState ) {
 		init();
@@ -234,4 +236,4 @@ tribe.tickets.commerce.square = {};
 		document.addEventListener( 'DOMContentLoaded', init );
 	}
 
-} )( document, tribe.tickets.commerce.square );
+} )( document, window.tec.tickets.commerce.square );
