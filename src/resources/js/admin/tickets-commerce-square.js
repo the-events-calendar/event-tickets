@@ -54,8 +54,6 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 		button.classList.add( 'loading' );
 		button.innerText = obj.i18n.connecting;
 
-		console.log( 'handling connect click' );
-
 		// Make AJAX request
 		fetch( ajaxurl, {
 			method: 'POST',
@@ -224,11 +222,9 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 	 * @return {void}
 	 */
 	const init = () => {
-		console.log( 'initializing' );
 		bindEvents();
 	};
 
-	console.log( 'document.readyState', document.readyState );
 	// When the DOM is ready, initialize
 	if ( 'loading' !== document.readyState ) {
 		init();
