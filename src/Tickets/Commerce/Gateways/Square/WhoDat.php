@@ -30,7 +30,7 @@ class WhoDat extends Abstract_WhoDat {
 	 *
 	 * @var string
 	 */
-	protected const API_ENDPOINT = 'square';
+	protected const API_ENDPOINT = 'commerce/v1/square';
 
 	/**
 	 * The nonce action for the state.
