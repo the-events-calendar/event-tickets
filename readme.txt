@@ -204,6 +204,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Feature - Move QR-Related code from ET to Common [TEC-5426]
 * Feature - Move QR code library to Common [TEC-5403]
 * Tweak - Removed filters: `tec_tickets_qr_code_can_use`
+* Language - 0 new strings added, 5 updated, 0 fuzzied, and 4 obsoleted.
 
 = [5.21.1] 2025-04-07 =
 
