@@ -9,6 +9,13 @@
 
 namespace TEC\Tickets\Admin\Onboarding;
 
+/**
+ * Modifiers for the Square payment gateway.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Admin\Onboarding
+ */
 class Square_Modifiers {
 
 	/**
@@ -32,6 +39,4 @@ class Square_Modifiers {
 
 		return apply_filters( 'tec_tickets_square_supported_countries', $countries );
 	}
-
-
 }
