@@ -199,6 +199,12 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.22.0] 2025-04-15 =
+
+* Feature - Move QR-Related code from ET to Common [TEC-5426]
+* Feature - Move QR code library to Common [TEC-5403]
+* Tweak - Removed filters: `tec_tickets_qr_code_can_use`
+
 = [5.21.1] 2025-04-07 =
 
 * Fix - Ensures when TicketsCommerce is disabled, we don't identify pages as Checkout or Cart page for TicketsCommerce. [ET-2349]
