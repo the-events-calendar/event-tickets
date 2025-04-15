@@ -3,6 +3,10 @@ namespace Tribe\Tickets\Admin;
 
 use Tribe\Admin\Troubleshooting as Troubleshooting;
 use Tribe__Settings_Tab;
+use Tribe__Template;
+use TEC\Common\Configuration\Configuration;
+use TEC\Tickets\Admin\Help_Hub\ET_Hub_Resource_Data;
+use TEC\Common\Admin\Help_Hub\Hub;
 
 /**
  * Manages the admin settings UI in relation to ticket configuration.
@@ -31,6 +35,15 @@ class Settings {
 	 * @var string
 	 */
 	public static $help_page_id = 'tec-tickets-help';
+
+	/**
+	 * The Help Hub page slug.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static string $help_hub_slug = 'tec-tickets-help-hub';
 
 	/**
 	 * Event Tickets Help page slug.
@@ -229,17 +242,22 @@ class Settings {
 			]
 		);
 
+		// Instantiate necessary dependencies for the Help Hub.
+		$template      = tribe( Tribe__Template::class );
+		$config        = tribe( Configuration::class );
+		$resource_data = tribe( ET_Hub_Resource_Data::class );
+
+		// Instantiate the Hub instance with all dependencies.
+		$hub_instance = new Hub( $resource_data, $config, $template );
+
 		$admin_pages->register_page(
 			[
 				'id'       => static::$help_page_id,
 				'parent'   => static::$parent_slug,
 				'title'    => esc_html__( 'Help', 'event-tickets' ),
-				'path'     => static::$help_page_id,
+				'path'     => self::$help_hub_slug,
 				'position' => 3,
-				'callback' => [
-					tribe( 'settings.manager' ),
-					'do_help_tab',
-				],
+				'callback' => [ $hub_instance, 'render' ],
 			]
 		);
 
@@ -439,5 +457,19 @@ class Settings {
 		}
 
 		return $form_options;
+	}
+
+	/**
+	 * Adds the help hub page ID to the list of help pages.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $pages The list of help page IDs.
+	 *
+	 * @return array The modified list of help page IDs.
+	 */
+	public function add_help_hub_page( array $pages ): array {
+		$pages[] = 'tickets_page_' . self::$help_hub_slug;
+		return $pages;
 	}
 }
