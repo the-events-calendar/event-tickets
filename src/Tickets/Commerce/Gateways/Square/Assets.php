@@ -111,12 +111,15 @@ class Assets extends Controller_Contract {
 	 */
 	public function do_register(): void {
 		Asset::add(
-			'tec-tickets-commerce-square',
-			'admin/tickets-commerce-square.js',
+			'tec-tickets-commerce-gateway-square-admin-settings',
+			'admin/gateway/square/settings.js',
 			Tickets_Plugin::VERSION
 		)
 			->add_to_group_path( 'et-core' )
-			->set_dependencies( 'jquery' )
+			->set_dependencies(
+				'jquery',
+				'wp-i18n',
+			)
 			->set_condition( [ $this, 'is_square_section' ] )
 			->set_action( 'admin_enqueue_scripts' )
 			->add_localize_script(
@@ -247,6 +250,45 @@ class Assets extends Controller_Contract {
 		] as $asset ) {
 			$stellar_assets->remove( $asset );
 		}
+	}
+
+	/**
+	 * Get the Square checkout data for localization.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_square_checkout_data() {
+		$card_style_options =[
+			'style' => [
+				'input' => [
+					'color'           => '#23282d',
+					'backgroundColor' => '#ffffff',
+					'fontSize'        => '14px',
+				],
+			],
+		];
+
+		$data = [
+			'nonce'             => wp_create_nonce( 'wp_rest' ),
+			'orderEndpoint'     => tribe( Order_Endpoint::class )->get_route_url(),
+			'applicationId'     => tribe( Gateway::class )->get_application_id(),
+			'locationId'        => tribe( Merchant::class )->get_location_id(),
+			'paymentData'       => tribe( Payment_Handler::class )->get_publishable_payment_data(),
+			'squareCardOptions' => $card_style_options,
+		];
+
+		/**
+		 * Filters the Square checkout data for localization.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $data The data to be localized.
+		 *
+		 * @return array
+		 */
+		return apply_filters( 'tec_tickets_commerce_square_checkout_localized_data', $data );
 	}
 
 	/**

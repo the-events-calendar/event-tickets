@@ -26,6 +26,24 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 ( ( document, obj ) => {
 	'use strict';
 
+	const { __ } = wp.i18n;
+
+	/**
+	 * Default strings used in the module.
+	 *
+	 * @since TBD
+	 */
+	const strings = {
+		connect: __( 'Connect with Square', 'event-tickets' ),
+		connecting: __( 'Connecting...', 'event-tickets' ),
+		reconnect: __( 'Reconnect Account', 'event-tickets' ),
+		connectError: __( 'There was an error connecting to Square. Please try again.', 'event-tickets' ),
+		disconnectConfirm: __( 'Are you sure you want to disconnect from Square?', 'event-tickets' ),
+		disconnectError: __( 'There was an error disconnecting from Square. Please try again.', 'event-tickets' ),
+		disconnecting: __( 'Disconnecting...', 'event-tickets' ),
+		disconnect: __( 'Disconnect from Square', 'event-tickets' ),
+	};
+
 	/**
 	 * Selectors used for configuration and setup.
 	 *
@@ -35,6 +53,38 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 		connectButton: '#tec-tickets__admin-settings-tickets-commerce-gateway-connect-square',
 		disconnectButton: '#tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-square',
 		reconnectButton: '#tec-tickets__admin-settings-tickets-commerce-gateway-reconnect-square',
+		container: '#tec-tickets__admin-settings-tickets-commerce-gateway-square-container',
+		disconnectDialog: '#tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-square-dialog',
+		disconnectCancel: '.tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-cancel',
+		disconnectConfirm: '.tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-confirm',
+	};
+
+	/**
+	 * Get strings from data attributes on the container.
+	 *
+	 * @since TBD
+	 *
+	 * @return {Object} The strings data object.
+	 */
+	const getStrings = () => {
+		const container = document.querySelector(selectors.container);
+
+		if (!container) {
+			return {
+				...strings,
+				connectNonce: '',
+			};
+		}
+
+		return {
+			connect: container.dataset.connect || strings.connect,
+			connecting: container.dataset.connecting || strings.connecting,
+			reconnect: container.dataset.reconnect || strings.reconnect,
+			connectError: container.dataset.connectError || strings.connectError,
+			disconnectConfirm: container.dataset.disconnectConfirm || strings.disconnectConfirm,
+			disconnectError: container.dataset.disconnectError || strings.disconnectError,
+			connectNonce: container.dataset.connectNonce || '',
+		};
 	};
 
 	/**
@@ -49,10 +99,11 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 		event.preventDefault();
 
 		const button = event.currentTarget;
+		const strings = getStrings();
 
 		// Show loading state
 		button.classList.add( 'loading' );
-		button.innerText = obj.i18n.connecting;
+		button.innerText = strings.connecting;
 
 		// Make AJAX request
 		fetch( ajaxurl, {
@@ -63,7 +114,7 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 			},
 			body: new URLSearchParams({
 				action: 'tec_tickets_commerce_square_connect',
-				_wpnonce: obj.i18n.connectNonce,
+				_wpnonce: obj.localized.connectNonce,
 			}),
 		})
 		.then( response => response.json() )
@@ -73,16 +124,16 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 				window.location.href = response.data.url;
 			} else {
 				// Show error message
-				alert( obj.i18n.connectError );
+				alert( strings.connectError );
 				button.classList.remove( 'loading' );
-				button.innerText = obj.i18n.connect;
+				button.innerText = strings.connect;
 			}
 		})
 		.catch( () => {
 			// Show error message
-			alert( obj.i18n.connectError );
+			alert( strings.connectError );
 			button.classList.remove( 'loading' );
-			button.innerText = obj.i18n.connect;
+			button.innerText = strings.connect;
 		});
 	};
 
@@ -98,10 +149,11 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 		event.preventDefault();
 
 		const button = event.currentTarget;
+		const strings = getStrings();
 
 		// Show loading state
 		button.classList.add( 'loading' );
-		button.innerText = obj.i18n.connecting;
+		button.innerText = strings.connecting;
 
 		// Get required scopes if available
 		const requiredScopes = button.dataset.requiredScopes || '';
@@ -115,7 +167,7 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 			},
 			body: new URLSearchParams({
 				action: 'tec_tickets_commerce_square_connect',
-				_wpnonce: obj.i18n.connectNonce,
+				_wpnonce: strings.connectNonce,
 				scopes: requiredScopes,
 			}),
 		})
@@ -126,16 +178,16 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 				window.location.href = response.data.url;
 			} else {
 				// Show error message
-				alert( obj.i18n.connectError );
+				alert( strings.connectError );
 				button.classList.remove( 'loading' );
-				button.innerText = obj.i18n.reconnect;
+				button.innerText = strings.reconnect;
 			}
 		})
 		.catch( () => {
 			// Show error message
-			alert( obj.i18n.connectError );
+			alert( strings.connectError );
 			button.classList.remove( 'loading' );
-			button.innerText = obj.i18n.reconnect;
+			button.innerText = strings.reconnect;
 		});
 	};
 
@@ -150,15 +202,34 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 	const handleDisconnectClick = ( event ) => {
 		event.preventDefault();
 
-		// Confirm disconnection
-		if ( ! confirm( obj.i18n.disconnectConfirm ) ) {
-			return;
+		// Show the custom dialog
+		const dialog = document.querySelector( selectors.disconnectDialog );
+		if ( dialog ) {
+			dialog.style.display = 'flex';
+		}
+	};
+
+	/**
+	 * Process the disconnect request
+	 *
+	 * @since TBD
+	 *
+	 * @return {void}
+	 */
+	const processDisconnect = () => {
+		const strings = getStrings();
+		const disconnectButton = document.querySelector( selectors.disconnectButton );
+		const dialog = document.querySelector( selectors.disconnectDialog );
+
+		// Hide the dialog
+		if ( dialog ) {
+			dialog.style.display = 'none';
 		}
 
-		const button = event.currentTarget;
-
 		// Show loading state
-		button.classList.add( 'loading' );
+		disconnectButton.classList.add( 'loading' );
+		disconnectButton.innerText = strings.disconnecting;
+		disconnectButton.disabled = true;
 
 		// Make AJAX request
 		fetch( ajaxurl, {
@@ -169,7 +240,7 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 			},
 			body: new URLSearchParams({
 				action: 'tec_tickets_commerce_square_disconnect',
-				_wpnonce: button.dataset.nonce,
+				_wpnonce: disconnectButton.dataset.nonce,
 			}),
 		})
 		.then( response => response.json() )
@@ -179,15 +250,36 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 				window.location.reload();
 			} else {
 				// Show error message
-				alert( obj.i18n.disconnectError );
-				button.classList.remove( 'loading' );
+				alert( strings.disconnectError );
+				disconnectButton.classList.remove( 'loading' );
+				disconnectButton.innerText = strings.disconnect;
+				disconnectButton.disabled = false;
 			}
 		})
 		.catch( () => {
 			// Show error message
-			alert( obj.i18n.disconnectError );
-			button.classList.remove( 'loading' );
+			alert( strings.disconnectError );
+			disconnectButton.classList.remove( 'loading' );
+			disconnectButton.innerText = strings.disconnect;
+			disconnectButton.disabled = false;
 		});
+	};
+
+	/**
+	 * Cancel disconnect request
+	 *
+	 * @since TBD
+	 *
+	 * @param {Event} event The click event
+	 * @return {void}
+	 */
+	const cancelDisconnect = ( event ) => {
+		event.preventDefault();
+
+		const dialog = document.querySelector( selectors.disconnectDialog );
+		if ( dialog ) {
+			dialog.style.display = 'none';
+		}
 	};
 
 	/**
@@ -211,6 +303,27 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 		const reconnectButton = document.querySelector( selectors.reconnectButton );
 		if ( reconnectButton ) {
 			reconnectButton.addEventListener( 'click', handleReconnectClick );
+		}
+
+		// Dialog buttons
+		const cancelButton = document.querySelector( selectors.disconnectCancel );
+		if ( cancelButton ) {
+			cancelButton.addEventListener( 'click', cancelDisconnect );
+		}
+
+		const confirmButton = document.querySelector( selectors.disconnectConfirm );
+		if ( confirmButton ) {
+			confirmButton.addEventListener( 'click', processDisconnect );
+		}
+
+		// Close dialog when clicking outside of it
+		const dialog = document.querySelector( selectors.disconnectDialog );
+		if ( dialog ) {
+			dialog.addEventListener( 'click', ( event ) => {
+				if ( event.target === dialog ) {
+					cancelDisconnect( event );
+				}
+			} );
 		}
 	};
 

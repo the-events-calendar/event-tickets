@@ -1,18 +1,49 @@
+/**
+ * Tickets Commerce Square Webhooks JavaScript.
+ *
+ * @since TBD
+ */
+
 window.tec = window.tec || {};
 window.tec.tickets = window.tec.tickets || {};
 window.tec.tickets.commerce = window.tec.tickets.commerce || {};
 window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
+
+/**
+ * Tickets Commerce Square Webhooks object.
+ *
+ * @since TBD
+ */
 window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square.webhooks || {};
 
-(function(webhooks) {
+/**
+ * Initializes Tickets Commerce Square Webhooks.
+ *
+ * @since TBD
+ *
+ * @param {Document} document The document object.
+ * @return {void}
+ */
+( ( $, document, obj ) => {
+	'use strict';
+
+	const { __ } = wp.i18n;
+
+	/**
+	 * Default strings used in the module.
+	 *
+	 * @since TBD
+	 */
+	const strings = {
+		copied: __( 'Copied!', 'event-tickets' ),
+	};
+
 	/**
 	 * Selectors used for configuration and setup.
 	 *
-	 * @since 5.3.0
-	 *
-	 * @type  {Object}
+	 * @since TBD
 	 */
-	webhooks.selectors = {
+	const selectors = {
 		container: '.tec-tickets-commerce-square-webhooks-container',
 		copyButton: '.tec-tickets-commerce-square-copy-button',
 		testWebhookButton: '.tec-tickets-commerce-square-test-webhook-button',
@@ -24,15 +55,33 @@ window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square
 	};
 
 	/**
-	 * Handles the initialization of the scripts.
+	 * Toggle the visibility of fields based on test mode.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @return {void}
 	 */
-	webhooks.init = function() {
-		// Initialize the copy buttons
-		$( webhooks.selectors.copyButton ).each( function() {
+	const toggleTestMode = () => {
+		const isTestMode = $( selectors.testModeCheckbox ).is( ':checked' );
+
+		if ( isTestMode ) {
+			$( selectors.liveFields ).closest( '.tribe-field' ).hide();
+			$( selectors.sandboxFields ).closest( '.tribe-field' ).show();
+		} else {
+			$( selectors.liveFields ).closest( '.tribe-field' ).show();
+			$( selectors.sandboxFields ).closest( '.tribe-field' ).hide();
+		}
+	};
+
+	/**
+	 * Initialize copy buttons functionality.
+	 *
+	 * @since TBD
+	 *
+	 * @return {void}
+	 */
+	const initCopyButtons = () => {
+		$( selectors.copyButton ).each( function() {
 			const $button = $( this );
 			const targetId = $button.data( 'clipboard-target' );
 
@@ -48,7 +97,7 @@ window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square
 				const originalText = $this.text();
 
 				// Change the text to indicate success
-				$this.text( 'Copied!' );
+				$this.text( strings.copied );
 
 				// Change it back after 2 seconds
 				setTimeout( function() {
@@ -56,33 +105,38 @@ window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square
 				}, 2000 );
 			} );
 		} );
-
-		// Initialize the test webhook button
-		$( webhooks.selectors.testWebhookButton ).on( 'click', webhooks.testWebhook );
-
-		// Initialize the test mode toggle
-		$( webhooks.selectors.testModeCheckbox ).on( 'change', webhooks.toggleTestMode );
-		// Trigger once on load to set initial state
-		webhooks.toggleTestMode();
 	};
 
 	/**
-	 * Toggle the visibility of fields based on test mode.
+	 * Bind events for Webhooks.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @return {void}
 	 */
-	webhooks.toggleTestMode = function() {
-		const isTestMode = $( webhooks.selectors.testModeCheckbox ).is( ':checked' );
+	const bindEvents = () => {
+		// Initialize the test webhook button
+		$( selectors.testWebhookButton ).on( 'click', obj.testWebhook );
 
-		if ( isTestMode ) {
-			$( webhooks.selectors.liveFields ).closest( '.tribe-field' ).hide();
-			$( webhooks.selectors.sandboxFields ).closest( '.tribe-field' ).show();
-		} else {
-			$( webhooks.selectors.liveFields ).closest( '.tribe-field' ).show();
-			$( webhooks.selectors.sandboxFields ).closest( '.tribe-field' ).hide();
-		}
+		// Initialize the test mode toggle
+		$( selectors.testModeCheckbox ).on( 'change', toggleTestMode );
 	};
 
-}(window.tec.tickets.commerce.square.webhooks));
+	/**
+	 * Initialize Webhooks.
+	 *
+	 * @since TBD
+	 *
+	 * @return {void}
+	 */
+	const init = () => {
+		initCopyButtons();
+		bindEvents();
+		// Trigger once on load to set initial state
+		toggleTestMode();
+	};
+
+	// When the DOM is ready, initialize
+	$( init );
+
+} )( jQuery, document, window.tec.tickets.commerce.square.webhooks );

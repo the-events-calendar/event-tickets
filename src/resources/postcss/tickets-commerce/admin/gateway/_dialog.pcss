@@ -1,0 +1,86 @@
+/**
+ * Event Tickets Commerce Admin Gateway Dialogs
+ *
+ * @since TBD
+ */
+
+.tec-tickets__admin-settings-tickets-commerce-gateway-dialog {
+	background-color: rgba(0, 0, 0, 0.5);
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 100000;
+	align-items: center;
+	justify-content: center;
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateway-dialog-content {
+	background-color: #fff;
+	border-radius: 4px;
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+	padding: 30px;
+	max-width: 500px;
+	width: 100%;
+	position: relative;
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateway-dialog-content h3 {
+	margin-top: 0;
+	font-size: 20px;
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateway-dialog-buttons {
+	margin-top: 20px;
+	text-align: right;
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateway-dialog-buttons .button {
+	margin-left: 10px;
+}
+
+/* WP doesn't have a standard danger button, so we create our own */
+.tec-tickets__admin-settings-tickets-commerce-gateway-dialog-buttons .button.button-danger {
+	background: #d63638;
+	border-color: #d63638;
+	color: #fff;
+
+	&:hover, &:focus {
+		background: #b32d2e;
+		border-color: #b32d2e;
+		color: #fff;
+	}
+
+	&:active {
+		background: #8c2626;
+		border-color: #8c2626;
+	}
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-square-button.loading {
+	position: relative;
+	pointer-events: none;
+	opacity: 0.8;
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-square-button.loading::after {
+	content: "";
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	top: 50%;
+	margin-top: -8px;
+	margin-left: 8px;
+	border-radius: 50%;
+	border: 2px solid rgba(0, 0, 0, 0.3);
+	border-top-color: #d63638;
+	animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
