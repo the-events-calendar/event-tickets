@@ -18,6 +18,9 @@ if ( $is_connected ) {
 	return;
 }
 
+// Include the error notices template.
+$this->template( 'settings/tickets-commerce/square/connect/error-notices' );
+
 // Determine if the site is using SSL.
 $is_ssl = is_ssl();
 
@@ -25,7 +28,17 @@ $is_ssl = is_ssl();
 $connect_url = '#';
 ?>
 
-<div class="tec-tickets__admin-settings-tickets-commerce-gateway">
+<div
+	class="tec-tickets__admin-settings-tickets-commerce-gateway"
+    id="tec-tickets__admin-settings-tickets-commerce-gateway-square-container"
+    data-connect="<?php echo esc_attr__( 'Connect with Square', 'event-tickets' ); ?>"
+    data-connecting="<?php echo esc_attr__( 'Connecting...', 'event-tickets' ); ?>"
+    data-reconnect="<?php echo esc_attr__( 'Reconnect Account', 'event-tickets' ); ?>"
+    data-connect-error="<?php echo esc_attr__( 'There was an error connecting to Square. Please try again.', 'event-tickets' ); ?>"
+    data-disconnect-confirm="<?php echo esc_attr__( 'Are you sure you want to disconnect from Square?', 'event-tickets' ); ?>"
+    data-disconnect-error="<?php echo esc_attr__( 'There was an error disconnecting from Square. Please try again.', 'event-tickets' ); ?>"
+    data-connect-nonce="<?php echo esc_attr( wp_create_nonce( 'square-connect' ) ); ?>"
+>
 	<div id="tec-tickets__admin-settings-tickets-commerce-gateway-connect" class="tec-tickets__admin-settings-tickets-commerce-gateway-connect">
 		<h2 class="tec-tickets__admin-settings-tickets-commerce-gateway-title">
 			<?php esc_html_e( 'Accept online payments with Square!', 'event-tickets' ); ?>

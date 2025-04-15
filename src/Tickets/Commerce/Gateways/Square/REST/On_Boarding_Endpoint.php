@@ -189,19 +189,23 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 		// If there's an error in the request, bail out.
 		if ( ! empty( $params['error'] ) ) {
 			// Log the error.
-			tribe( 'logger' )->log_error(
-				sprintf(
-					'Square signup error: %s - %s',
-					$params['error'],
-					$params['error_description'] ?? 'No description provided'
-				),
-				'tickets-commerce-square'
-			);
+			do_action( 'tribe_log', 'error', 'Square signup error', [
+				'source' => 'tickets-commerce-square',
+				'error' => $params['error'],
+				'description' => $params['error_description'] ?? 'No description provided',
+			] );
+
+			$error_status = 'tc-square-signup-error';
+
+			// Handle specific error cases
+			if ( 'user_denied' === $params['error'] ) {
+				$error_status = 'tc-square-user-denied';
+			}
 
 			// Redirect back to the settings page with an error.
 			$url = add_query_arg(
 				[
-					'tc-status' => 'tc-square-signup-error',
+					'tc-status' => $error_status,
 					'tc-section' => Gateway::get_key(),
 				],
 				tribe( Payments_Tab::class )->get_url()
@@ -217,6 +221,12 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 			|| empty( $params['access_token'] )
 			|| empty( $params['refresh_token'] )
 		) {
+			do_action( 'tribe_log', 'error', 'Square token error', [
+				'source' => 'tickets-commerce-square',
+				'message' => 'Missing required OAuth parameters',
+				'params_received' => array_keys( $params ),
+			] );
+
 			$url = add_query_arg(
 				[
 					'tc-status' => 'tc-square-token-error',
@@ -234,6 +244,12 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 		$saved = tribe( Merchant::class )->save_signup_data( $params );
 
 		if ( ! $saved ) {
+			do_action( 'tribe_log', 'error', 'Square token save error', [
+				'source' => 'tickets-commerce-square',
+				'message' => 'Failed to save Square merchant credentials',
+				'merchant_id' => $params['merchant_id'] ?? 'unknown',
+			] );
+
 			$url = add_query_arg(
 				[
 					'tc-status' => 'tc-square-token-error',
