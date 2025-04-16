@@ -622,10 +622,10 @@ class Merchant extends Abstract_Merchant {
 	 * @return string
 	 */
 	public function get_client_id(): string {
-		$client_id = tribe_get_option( Settings::$option_client_id );
+		$client_id = tribe_get_option( Settings::OPTION_CLIENT_ID );
 
 		if ( empty( $client_id ) && tribe( Gateway::class )->is_test_mode() ) {
-			$client_id = tribe_get_option( Settings::$option_sandbox_client_id );
+			$client_id = tribe_get_option( Settings::OPTION_SANDBOX_CLIENT_ID );
 		}
 
 		return $client_id;

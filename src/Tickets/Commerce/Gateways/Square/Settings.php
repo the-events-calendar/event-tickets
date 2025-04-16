@@ -22,7 +22,7 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @var string
 	 */
-	public static string $option_client_id = 'tickets-commerce-square-client-id';
+	const OPTION_CLIENT_ID = 'tickets-commerce-square-client-id';
 
 	/**
 	 * Sandbox Client ID option key.
@@ -31,7 +31,7 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @var string
 	 */
-	public static string $option_sandbox_client_id = 'tickets-commerce-square-sandbox-client-id';
+	const OPTION_SANDBOX_CLIENT_ID = 'tickets-commerce-square-sandbox-client-id';
 
 	/**
 	 * Location ID option key.
@@ -40,7 +40,7 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @var string
 	 */
-	public static string $option_location_id = 'tickets-commerce-square-location-id';
+	const OPTION_LOCATION_ID = 'tickets-commerce-square-location-id';
 
 	/**
 	 * Sandbox Location ID option key.
@@ -49,7 +49,7 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @var string
 	 */
-	public static string $option_sandbox_location_id = 'tickets-commerce-square-sandbox-location-id';
+	const OPTION_SANDBOX_LOCATION_ID = 'tickets-commerce-square-sandbox-location-id';
 
 	/**
 	 * Get all the settings for the Square gateway.
@@ -99,7 +99,7 @@ class Settings extends Abstract_Settings {
 
 		// If in sandbox mode, only show the sandbox location settings.
 		if ( $is_sandbox_mode ) {
-			$connected_settings[ static::$option_sandbox_location_id ] = [
+			$connected_settings[ static::OPTION_SANDBOX_LOCATION_ID ] = [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Square Test Location', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'Select the Square test location to process test payments through.', 'event-tickets' ),
@@ -109,7 +109,7 @@ class Settings extends Abstract_Settings {
 			];
 		} else {
 			// In live mode, only show the live location settings.
-			$connected_settings[ static::$option_location_id ] = [
+			$connected_settings[ static::OPTION_LOCATION_ID ] = [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Square Location', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'Select the Square location to process payments through.', 'event-tickets' ),
