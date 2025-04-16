@@ -161,6 +161,33 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	};
 
 	/**
+	 * Get the verification details for the card.
+	 *
+	 * @since TBD
+	 *
+	 * @return {Object} The verification details.
+	 */
+	obj.getVerificationDetails = () => {
+		return {
+			intent: 'CHARGE',
+			currencyCode: obj.data.currencyCode,
+			// billingContract: {
+			// 	givenName: null,
+			// 	familyName: null,
+			// 	email: null,
+			// 	phone: null,
+			// 	countryCode: null,
+			// 	addressLines: null,
+			// 	state: null,
+			// 	city: null,
+			// 	postalCode: null,
+			// },
+			customerInitiated: true,
+			sellerKeyedIn: false,
+		};
+	};
+
+	/**
 	 * Create a payment and handle the response.
 	 *
 	 * @since 5.3.0
@@ -170,7 +197,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	obj.createPayment = async ( formData ) => {
 		try {
 			// Create a payment request with the payment data from the form
-			const response = await obj.card.tokenize();
+			const response = await obj.card.tokenize( obj.getVerificationDetails() );
 			if ( response.status === 'OK' ) {
 				// Send the payment token to your server for processing
 				await obj.processPayment( response.token );
@@ -214,24 +241,9 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 				throw new Error( 'Failed to create order.', { cause: orderResponse } );
 			}
 
-			// Store these for the next step
-			const orderId = orderResponse.order_id;
-			const paymentId = orderResponse.payment_id;
-
-			// Now update the order with the payment details
-			const updateResponse = await ky.post(
-				`${obj.data.orderEndpoint}/${orderId}`,
-				obj.getRequestArgs({
-					order_id: orderId,
-					payment_id: paymentId
-				})
-			).json();
-
-			if ( updateResponse.success ) {
+			if ( orderResponse.redirect_url ) {
 				// If successful, redirect to the success page
-				window.location.href = updateResponse.redirect_url;
-			} else {
-				throw new Error( 'Payment failed to process.', { cause: updateResponse } );
+				window.location.href = orderResponse.redirect_url;
 			}
 		} catch ( e ) {
 			obj.onPaymentError({ message: e.message || 'An error occurred while processing the payment.' });

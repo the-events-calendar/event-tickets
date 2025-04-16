@@ -63,20 +63,21 @@
 	position: relative;
 	pointer-events: none;
 	opacity: 0.8;
-}
 
-.tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-square-button.loading::after {
-	content: "";
-	position: absolute;
-	width: 16px;
-	height: 16px;
-	top: 50%;
-	margin-top: -8px;
-	margin-left: 8px;
-	border-radius: 50%;
-	border: 2px solid rgba(0, 0, 0, 0.3);
-	border-top-color: #d63638;
-	animation: spin 1s linear infinite;
+	&::after {
+		content: "";
+		position: absolute;
+		width: 16px;
+		height: 16px;
+		top: 50%;
+		right: -30px;
+		margin-top: -11px;
+		margin-left: 8px;
+		border-radius: 50%;
+		border: 2px solid rgba(0, 0, 0, 0.3);
+		border-top-color: #d63638;
+		animation: spin 1s linear infinite;
+	}
 }
 
 @keyframes spin {

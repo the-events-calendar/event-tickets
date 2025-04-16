@@ -157,28 +157,7 @@ class Assets extends Controller_Contract {
 			->set_action( 'tec-tickets-commerce-checkout-shortcode-assets' )
 			->set_as_module()
 			->add_to_group( 'tec-tickets-commerce-gateway-square' )
-			->add_localize_script(
-				'tec.tickets.commerce.square.checkout.data',
-				fn() => (array) apply_filters(
-					'tec_tickets_commerce_square_checkout_localized_data',
-					[
-						'nonce'             => wp_create_nonce( 'wp_rest' ),
-						'orderEndpoint'     => $this->order_endpoint->get_route_url(),
-						'applicationId'     => $this->gateway->get_application_id(),
-						'locationId'        => $this->merchant->get_location_id(),
-						'paymentData'       => $this->payment_handler->get_publishable_payment_data(),
-						'squareCardOptions' => [
-							'style' => [
-								'input' => [
-									'color'           => '#23282d',
-									'backgroundColor' => '#fff',
-									'fontSize'        => '14px',
-								],
-							],
-						],
-					]
-				)
-			)
+			->add_localize_script( 'tec.tickets.commerce.square.checkout.data', [ $this, 'get_square_checkout_data' ] )
 			->register();
 
 		// Tickets Commerce Square main frontend styles.
@@ -214,8 +193,8 @@ class Assets extends Controller_Contract {
 
 		// Administration styles for Square gateway.
 		Asset::add(
-			'tec-tickets-commerce-gateway-square-admin-webhooks-styles',
-			'tickets-commerce/admin/gateway/square/webhooks.css',
+			'tec-tickets-commerce-admin-styles',
+			'tickets-admin.css',
 			Tickets_Plugin::VERSION
 		)
 			->add_to_group_path( 'et-core' )
@@ -266,6 +245,7 @@ class Assets extends Controller_Contract {
 
 		$data = [
 			'nonce'             => wp_create_nonce( 'wp_rest' ),
+			'currencyCode'      => tribe( Merchant::class )->get_merchant_currency(),
 			'orderEndpoint'     => tribe( Order_Endpoint::class )->get_route_url(),
 			'applicationId'     => tribe( Gateway::class )->get_application_id(),
 			'locationId'        => tribe( Merchant::class )->get_location_id(),

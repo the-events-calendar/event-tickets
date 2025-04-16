@@ -68,7 +68,6 @@ class Payment {
 
 		$args = [
 			'body'    => $body,
-			'body'    => $body,
 			'headers' => [
 				'Content-Type' => 'application/json',
 			],
