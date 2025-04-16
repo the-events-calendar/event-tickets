@@ -1,14 +1,13 @@
 module.exports = {
   presets: [
     [
-      '@babel/preset-env',
+      '@wordpress/babel-preset-default/',
       {
         targets: {
           node: 'current',
         },
       },
     ],
-    '@babel/preset-react',
   ],
   // This is needed to transform ES modules
   env: {
