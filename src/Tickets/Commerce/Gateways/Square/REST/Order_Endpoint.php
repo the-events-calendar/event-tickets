@@ -3,14 +3,11 @@
 namespace TEC\Tickets\Commerce\Gateways\Square\REST;
 
 use TEC\Tickets\Commerce\Cart;
-use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Square\Gateway;
-use TEC\Tickets\Commerce\Gateways\Square\Payment;
 use TEC\Tickets\Commerce\Gateways\Square\Payment_Handler;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Gateways\Square\Status;
-use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Created;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Success;
