@@ -146,6 +146,8 @@ class Settings extends Abstract_Settings {
 						'</div>',
 				],
 			];
+
+			// Merge the sandbox notice with the connected settings.
 			$connected_settings = array_merge( $sandbox_notice, $connected_settings );
 		}
 
@@ -172,7 +174,7 @@ class Settings extends Abstract_Settings {
 	protected function get_location_options( bool $sandbox = false ): array {
 		$merchant = tribe( Merchant::class );
 
-		// Store the original mode
+		// Store the original mode.
 		$original_mode = $merchant->get_mode();
 
 		// Set the merchant mode based on whether we're getting sandbox locations.
@@ -201,7 +203,7 @@ class Settings extends Abstract_Settings {
 						$name .= ' (' . $location['type'] . ')';
 					}
 
-					// Add location status if not active
+					// Add location status if not active.
 					if ( ! empty( $location['status'] ) && 'ACTIVE' !== $location['status'] ) {
 						$name .= ' - ' . $location['status'];
 					}
