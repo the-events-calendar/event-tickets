@@ -9,7 +9,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Gateway;
 use TEC\Tickets\Commerce\Gateways\Square\Payment;
 use TEC\Tickets\Commerce\Gateways\Square\Payment_Handler;
 use TEC\Tickets\Commerce\Order;
-
+use TEC\Tickets\Commerce\Gateways\Square\Status;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Created;
 use TEC\Tickets\Commerce\Status\Pending;
@@ -55,17 +55,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'methods'             => WP_REST_Server::CREATABLE,
 				'args'                => $this->create_order_args(),
 				'callback'            => [ $this, 'handle_create_order' ],
-				'permission_callback' => '__return_true',
-			]
-		);
-
-		register_rest_route(
-			$namespace,
-			$this->get_endpoint_path() . '/(?P<order_id>[0-9a-zA-Z_-]+)',
-			[
-				'methods'             => WP_REST_Server::CREATABLE,
-				'args'                => $this->update_order_args(),
-				'callback'            => [ $this, 'handle_update_order' ],
 				'permission_callback' => '__return_true',
 			]
 		);
@@ -129,13 +118,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			);
 		}
 
-		// For Square, we create a placeholder payment that will be updated later with the actual payment details
-		$payment = tribe( Payment_Handler::class )->create_payment_for_cart( $data['payment_source_id'], tribe( Cart::class ) );
-
-		if ( is_wp_error( $payment ) || empty( $payment ) ) {
-			return new WP_Error( 'tec-tc-gateway-square-failed-creating-payment', $messages['failed-creating-payment'] );
-		}
-
 		// If an order was created for this hash, we will attempt to update it, otherwise create a new one.
 		$order = $orders->create_from_cart( tribe( Gateway::class ), $purchaser );
 		if ( ! $order instanceof WP_Post ) {
@@ -148,6 +130,13 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 					'purchaser'  => $purchaser,
 				]
 			);
+		}
+
+		// For Square, we create a placeholder payment that will be updated later with the actual payment details.
+		$payment = tribe( Payment_Handler::class )->create_payment_for_cart( $data['payment_source_id'], tribe( Cart::class ), $order );
+
+		if ( is_wp_error( $payment ) || empty( $payment ) ) {
+			return new WP_Error( 'tec-tc-gateway-square-failed-creating-payment', $messages['failed-creating-payment'] );
 		}
 
 		// Flag the order as on checkout screen hold.
@@ -174,7 +163,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		// Set order to Created status.
 		$orders->modify_status(
 			$order->ID,
-			Created::SLUG,
+			tribe( Status::class )->convert_to_commerce_status( $payment['status'] )->get_slug(),
 			[
 				'gateway_payload'  => $payment,
 				'gateway_order_id' => $payment['id'],
@@ -187,115 +176,10 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$response['success']    = true;
 		$response['order_id']   = $order->ID;
 		$response['payment_id'] = $payment['id'];
-		$response['return_url'] = add_query_arg( [ Cart::$cookie_query_arg => tribe( Cart::class )->get_cart_hash() ], tribe( Checkout::class )->get_url() );
-
-		return new WP_REST_Response( $response );
-	}
-
-	/**
-	 * Arguments used for the updating order endpoint.
-	 *
-	 * @since TBD
-	 *
-	 * @return array
-	 */
-	public function update_order_args(): array {
-		return [
-			'order_id'   => [
-				'description'       => __( 'Order ID in Square', 'event-tickets' ),
-				'required'          => true,
-				'type'              => 'string',
-				'validate_callback' => static function ( $value ) {
-					if ( ! is_string( $value ) ) {
-						return new WP_Error( 'rest_invalid_param', 'The Order ID argument must be a string.', [ 'status' => 400 ] );
-					}
-
-					return $value;
-				},
-				'sanitize_callback' => [ $this, 'sanitize_callback' ],
-			],
-			'payment_id' => [
-				'description'       => __( 'Payment ID from Square', 'event-tickets' ),
-				'required'          => true,
-				'type'              => 'string',
-				'validate_callback' => static function ( $value ) {
-					if ( ! is_string( $value ) ) {
-						return new WP_Error( 'rest_invalid_param', 'The Payment ID argument must be a string.', [ 'status' => 400 ] );
-					}
-
-					return $value;
-				},
-				'sanitize_callback' => [ $this, 'sanitize_callback' ],
-			],
-		];
-	}
-
-	/**
-	 * Handles the request that updates an order with Tickets Commerce and the Square gateway.
-	 *
-	 * @since TBD
-	 *
-	 * @param WP_REST_Request $request The request object.
-	 *
-	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
-	 */
-	public function handle_update_order( WP_REST_Request $request ) {
-		$response = [
-			'success' => false,
-		];
-
-		$messages         = $this->get_error_messages();
-		$gateway_order_id = $request->get_param( 'order_id' );
-
-		$order = tec_tc_orders()->by_args(
-			[
-				'status'           => [
-					tribe( Created::class )->get_wp_slug(),
-					tribe( Pending::class )->get_wp_slug(),
-				], // Potentially change this to method that fetch all non-final statuses.
-				'gateway_order_id' => $gateway_order_id,
-			]
-		)->first();
-
-		if ( is_wp_error( $order ) || empty( $order ) ) {
-			return new WP_Error( 'tec-tc-gateway-square-order-not-found', $messages['order-not-found'], $order );
-		}
-
-		$orders = tribe( Order::class );
-
-		// Flag the order as on checkout screen hold.
-		$orders->set_on_checkout_screen_hold( $order->ID );
-
-		$payment_id = $request->get_param( 'payment_id' );
-		$payment    = Payment::get( $payment_id );
-
-		if ( is_wp_error( $payment ) ) {
-			return new WP_Error( 'tec-tc-gateway-square-failed-getting-payment', $messages['failed-getting-payment'], $order );
-		}
-
-		if ( empty( $payment['id'] ) || $payment['id'] !== $payment_id ) {
-			return new WP_Error( 'tec-tc-gateway-square-failed-payment-id', $messages['failed-getting-payment'], $order );
-		}
-
-		// Update order with payment information.
-		$orders->modify_status(
-			$order->ID,
-			Completed::SLUG,
-			[
-				'gateway_payload'  => $payment,
-				'gateway_order_id' => $payment['id'],
-			]
-		);
 
 		// When we have success we clear the cart.
 		tribe( Cart::class )->clear_cart();
-
-		// Respond with the necessary data.
-		$response['success']          = true;
-		$response['status']           = Completed::SLUG;
-		$response['order_id']         = $order->ID;
-		$response['gateway_order_id'] = $payment_id;
-		$response['redirect_url']     = add_query_arg( [ 'tc-order-id' => $payment_id ], tribe( Success::class )->get_url() );
+		$response['redirect_url']     = add_query_arg( [ 'tc-order-id' => $payment['id'] ], tribe( Success::class )->get_url() );
 
 		return new WP_REST_Response( $response );
 	}

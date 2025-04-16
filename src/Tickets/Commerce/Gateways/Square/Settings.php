@@ -97,7 +97,7 @@ class Settings extends Abstract_Settings {
 			],
 		];
 
-		// If in sandbox mode, only show the sandbox location settings
+		// If in sandbox mode, only show the sandbox location settings.
 		if ( $is_sandbox_mode ) {
 			$connected_settings[ static::$option_sandbox_location_id ] = [
 				'type'            => 'dropdown',
@@ -108,7 +108,7 @@ class Settings extends Abstract_Settings {
 				'can_be_empty'    => false,
 			];
 		} else {
-			// In live mode, only show the live location settings
+			// In live mode, only show the live location settings.
 			$connected_settings[ static::$option_location_id ] = [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Square Location', 'event-tickets' ),
@@ -119,7 +119,7 @@ class Settings extends Abstract_Settings {
 			];
 		}
 
-		// Add a notice about sandbox mode if active
+		// Add a notice about sandbox mode if active.
 		if ( $is_sandbox_mode ) {
 			$sandbox_notice = [
 				'square-sandbox-notice' => [
@@ -175,7 +175,7 @@ class Settings extends Abstract_Settings {
 		// Store the original mode
 		$original_mode = $merchant->get_mode();
 
-		// Set the merchant mode based on whether we're getting sandbox locations
+		// Set the merchant mode based on whether we're getting sandbox locations.
 		if ( $sandbox ) {
 			$merchant->set_mode( 'sandbox' );
 		} else {
@@ -185,7 +185,7 @@ class Settings extends Abstract_Settings {
 		$options = [];
 
 		try {
-			// Only try to fetch locations if the merchant is connected in the current mode
+			// Only try to fetch locations if the merchant is connected in the current mode.
 			if ( $merchant->is_connected() ) {
 				$locations = $merchant->get_locations();
 
@@ -196,7 +196,7 @@ class Settings extends Abstract_Settings {
 
 					$name = $location['name'];
 
-					// Add the location type as additional information
+					// Add the location type as additional information.
 					if ( ! empty( $location['type'] ) ) {
 						$name .= ' (' . $location['type'] . ')';
 					}
@@ -210,7 +210,7 @@ class Settings extends Abstract_Settings {
 				}
 			}
 		} catch ( \Exception $e ) {
-			// If there's an error, add a placeholder option that explains the error
+			// If there's an error, add a placeholder option that explains the error.
 			$options[''] = sprintf(
 				/* translators: %s: error message */
 				__( 'Error loading locations: %s', 'event-tickets' ),
@@ -218,10 +218,10 @@ class Settings extends Abstract_Settings {
 			);
 		}
 
-		// Restore the original mode
+		// Restore the original mode.
 		$merchant->set_mode( $original_mode );
 
-		// If there are no locations available, add a placeholder
+		// If there are no locations available, add a placeholder.
 		if ( empty( $options ) ) {
 			if ( $sandbox ) {
 				$options[''] = __( 'No test locations available. Connect your sandbox account.', 'event-tickets' );

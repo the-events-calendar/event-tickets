@@ -14,7 +14,7 @@ use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Utils\Value;
 use WP_Error;
-
+use WP_Post;
 /**
  * Square payment processing class.
  *
@@ -38,15 +38,13 @@ class Payment {
 	 *
 	 * @since TBD
 	 *
-	 * @param string  $source_id The source ID.
-	 * @param Value   $value     The value object to create a payment for.
-	 * @param boolean $retry     Whether this is a retry attempt.
-	 * @param string $source_id The source ID.
-	 * @param Value  $value     The value object to create a payment for.
+	 * @param string   $source_id The source ID.
+	 * @param Value    $value     The value object to create a payment for.
+	 * @param ?WP_Post $order     The order post object.
 	 *
 	 * @return ?array| The payment data.
 	 */
-	public static function create( string $source_id, Value $value ): ?array { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+	public static function create( string $source_id, Value $value, ?WP_Post $order = null ): ?array { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$merchant = tribe( Merchant::class );
 
 		if ( ! $merchant->is_active() ) {
@@ -61,10 +59,15 @@ class Payment {
 			],
 			'idempotency_key' => uniqid( 'tec-square-', true ),
 			'source_id'       => $source_id,
+			'location_id'     => $merchant->get_location_id(),
 			'metadata'        => [
 				static::$tc_metadata_identifier => true,
 			],
 		];
+
+		if ( $order instanceof WP_Post ) {
+			$body['reference_id'] = $order->ID;
+		}
 
 		$args = [
 			'body'    => $body,
@@ -89,7 +92,7 @@ class Payment {
 	 *
 	 * @throws RuntimeException If the value object is not returned from the filter.
 	 */
-	public static function create_from_cart( string $source_id, Cart $cart, $retry = false ) {
+	public static function create_from_cart( string $source_id, Cart $cart, ?WP_Post $order = null ) {
 		$items = tribe( Order::class )->prepare_cart_items_for_order( $cart );
 		if ( empty( $items ) ) {
 			return [];
@@ -105,8 +108,9 @@ class Payment {
 		 * @param Value  $value     The total value of the cart.
 		 * @param array  $items     The items in the cart.
 		 * @param string $source_id The source ID.
+		 * @param ?WP_Post $order     The order post object.
 		 */
-		$value = apply_filters( 'tec_tickets_commerce_square_create_from_cart', $value, $items, $source_id );
+		$value = apply_filters( 'tec_tickets_commerce_square_create_from_cart', $value, $items, $source_id, $order );
 
 		if ( ! $value instanceof Value && is_numeric( $value ) ) {
 			$value = Value::create( $value );
@@ -117,7 +121,7 @@ class Payment {
 			throw new RuntimeException( esc_html__( 'Value object not returned from filter', 'event-tickets' ) );
 		}
 
-		$payment = static::create( $source_id, $value, $retry );
+		$payment = static::create( $source_id, $value, $order );
 
 		if ( is_wp_error( $payment ) ) {
 			return $payment;
@@ -193,13 +197,11 @@ class Payment {
 
 		$query_args = [];
 		$body       = [
-		$body       = [
 			'idempotency_key' => uniqid( 'tec-square-cancel-', true ),
 		];
 
 		// Prepare the request arguments.
 		$args = [
-		$args       = [
 			'body' => $body,
 		];
 

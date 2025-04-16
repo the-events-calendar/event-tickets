@@ -167,21 +167,27 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	 *
 	 * @return {Object} The verification details.
 	 */
-	obj.getVerificationDetails = () => {
+	obj.getVerificationDetails = ( formData ) => {
+		// Split the purchaser name into given name and family name at the first space
+		const fullName = formData['purchaser-name'] || '';
+		const spaceIndex = fullName.indexOf(' ');
+		const givenName = spaceIndex > 0 ? fullName.substring(0, spaceIndex) : fullName;
+		const familyName = spaceIndex > 0 ? fullName.substring(spaceIndex + 1) : '';
+
 		return {
 			intent: 'CHARGE',
 			currencyCode: obj.data.currencyCode,
-			// billingContract: {
-			// 	givenName: null,
-			// 	familyName: null,
-			// 	email: null,
-			// 	phone: null,
-			// 	countryCode: null,
-			// 	addressLines: null,
-			// 	state: null,
-			// 	city: null,
-			// 	postalCode: null,
-			// },
+			billingContact: {
+				givenName: givenName,
+				familyName: familyName,
+				email: formData['purchaser-email'],
+				phone: formData['purchaser-phone'] || null,
+				countryCode: formData['purchaser-country'] || null,
+				addressLines: formData['purchaser-address'] || null,
+				state: formData['purchaser-state'] || null,
+				city: formData['purchaser-city'] || null,
+				postalCode: formData['purchaser-postal-code'] || null,
+			},
 			customerInitiated: true,
 			sellerKeyedIn: false,
 		};
@@ -190,14 +196,12 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Create a payment and handle the response.
 	 *
-	 * @since 5.3.0
-	 *
-	 * @param {Object} formData The form data from the payment form.
+	 * @since TBD
 	 */
-	obj.createPayment = async ( formData ) => {
+	obj.createPayment = async () => {
 		try {
 			// Create a payment request with the payment data from the form
-			const response = await obj.card.tokenize( obj.getVerificationDetails() );
+			const response = await obj.card.tokenize();
 			if ( response.status === 'OK' ) {
 				// Send the payment token to your server for processing
 				await obj.processPayment( response.token );
@@ -218,7 +222,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Process the payment with our backend.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @param {string} sourceId The source ID from Square.
 	 */
