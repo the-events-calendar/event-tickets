@@ -187,6 +187,10 @@ class Ticket extends Email_Abstract implements Purchase_Confirmation_Email_Inter
 					],
 				],
 			],
+			[
+				'type' => 'html',
+				'html' => '</div>',
+			],
 		];
 	}
 

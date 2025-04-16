@@ -227,6 +227,10 @@ class RSVP extends Email_Abstract {
 				],
 				'class'               => 'tribe-dependent',
 			],
+			[
+				'type' => 'html',
+				'html' => '</div>',
+			],
 		];
 
 		return array_merge( $settings, $add_settings );

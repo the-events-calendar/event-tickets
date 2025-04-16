@@ -175,6 +175,10 @@ class Purchase_Receipt extends Email_Abstract {
 					],
 				],
 			],
+			[
+				'type' => 'html',
+				'html' => '</div>',
+			],
 		];
 	}
 
