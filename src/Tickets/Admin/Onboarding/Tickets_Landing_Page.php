@@ -13,6 +13,7 @@ use TEC\Common\StellarWP\Installer\Installer;
 use TEC\Common\Admin\Abstract_Admin_Page;
 use TEC\Common\Admin\Traits\Is_Tickets_Page;
 use TEC\Common\Lists\Currency;
+use TEC\Common\Lists\Country;
 use TEC\Tickets\Admin\Onboarding\API;
 use TEC\Common\Asset;
 
@@ -520,6 +521,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			'_wpnonce'      => wp_create_nonce( 'wp_rest' ),
 			/* Data */
 			'currencies'    => tribe( Currency::class )->get_currency_list(),
+			'countries'     => tribe( Country::class )->get_country_list(),
 		];
 
 
