@@ -39,4 +39,3 @@ if ( ! $has_missing_scopes || empty( $scope_verification['missing_scopes'] ) ) {
 		<?php esc_html_e( 'Reconnect Account', 'event-tickets' ); ?>
 	</a>
 </div>
-<?php

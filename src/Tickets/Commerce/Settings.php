@@ -181,6 +181,27 @@ class Settings {
 	}
 
 	/**
+	 * Gets the URL to the Tickets Commerce settings page.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $args Optional. Additional arguments to add to the URL. Default empty array.
+	 *
+	 * @return string The URL to the Tickets Commerce settings page.
+	 */
+	public function get_url( array $args = [] ) {
+		$defaults = [
+			'page' => 'tec-tickets-settings',
+			'tab'  => 'payments',
+		];
+
+		// Allow the link to be "changed" on the fly.
+		$args = wp_parse_args( $args, $defaults );
+
+		return tribe( Plugin_Settings::class )->get_url( $args );
+	}
+
+	/**
 	 * Determine whether Tickets Commerce is in test mode.
 	 *
 	 * @since 5.3.0    moved to Settings class

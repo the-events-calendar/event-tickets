@@ -39,4 +39,3 @@ if ( ! $test_mode ) {
 	?>
 	</span>
 </div>
-<?php

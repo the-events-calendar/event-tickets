@@ -257,16 +257,14 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	 * @since 5.3.0
 	 */
 	obj.initializeSquare = async () => {
-		console.log( 'initializeSquare' );
-
 		try {
-			if (!window.Square) {
-				console.error('Square SDK not loaded');
+			if ( ! window.Square ) {
+				console.error( 'Square SDK not loaded' );
 				return;
 			}
 
 			// Initialize Square.js
-			const payments = window.Square.payments(obj.data.applicationId, obj.checkout.locationId);
+			const payments = window.Square.payments(obj.data.applicationId, obj.data.locationId);
 
 			// Create a card payment element
 			obj.card = await payments.card(obj.data.squareCardOptions);

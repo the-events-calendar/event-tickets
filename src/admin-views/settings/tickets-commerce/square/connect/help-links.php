@@ -21,4 +21,3 @@ defined( 'ABSPATH' ) || exit;
 	<?php $this->template( 'settings/tickets-commerce/square/connect/help-links/troubleshooting' ); ?>
 
 </div>
-<?php

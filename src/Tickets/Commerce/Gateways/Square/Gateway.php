@@ -334,4 +334,30 @@ class Gateway extends Abstract_Gateway {
 			$mode
 		);
 	}
+
+	/**
+	 * Determines if test mode is enabled.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public static function is_test_mode(): bool {
+		return tec_tickets_commerce_is_sandbox_mode();
+	}
+
+	/**
+	 * Get the location ID to use for transactions based on the current mode.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The location ID or empty string if not set.
+	 */
+	public function get_location_id(): string {
+		if ( static::is_test_mode() ) {
+			return (string) tribe_get_option( Settings::$option_sandbox_location_id, '' );
+		}
+
+		return (string) tribe_get_option( Settings::$option_location_id, '' );
+	}
 }

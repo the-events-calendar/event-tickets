@@ -640,13 +640,7 @@ class Merchant extends Abstract_Merchant {
 	 * @return string
 	 */
 	public function get_location_id(): string {
-		$location_id = tribe_get_option( Settings::$option_location_id );
-
-		if ( empty( $location_id ) && tribe( Gateway::class )->is_test_mode() ) {
-			$location_id = tribe_get_option( Settings::$option_sandbox_location_id );
-		}
-
-		return $location_id;
+		return tribe( Gateway::class )->get_location_id();
 	}
 
 	/**
