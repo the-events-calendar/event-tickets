@@ -2320,7 +2320,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		$checkin_details = [
-			'date'      => ! empty( $details['timestamp'] ) ?: current_time( 'mysql' ),
+			'date'      => (string) ! empty( $details['timestamp'] ) ? $details['timestamp'] : current_time( 'mysql' ),
 			'source'    => ! empty( $qr ) ? 'app' : 'site',
 			'author'    => get_current_user_id(),
 			'device_id' => $details['device_id'] ?? null,
