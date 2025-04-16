@@ -3,12 +3,12 @@
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
-use Tribe__Utils__Array as Arr;
+use Exception;
 
 /**
  * Class Merchant
  *
- * @since   5.3.0
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -16,7 +16,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Stores the nonce action for disconnecting Square.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @var string
 	 */
@@ -25,62 +25,62 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Option key to save the information regarding merchant status.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public static $merchant_unauthorized_option_key = 'tickets-commerce-merchant-unauthorized';
+	public static string $merchant_unauthorized_option_key = 'tickets-commerce-merchant-unauthorized';
 
 	/**
 	 * Option key to save the information regarding merchant authorization.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public static $merchant_deauthorized_option_key = 'tickets-commerce-merchant-deauthorized';
+	public static string $merchant_deauthorized_option_key = 'tickets-commerce-merchant-deauthorized';
 
 	/**
 	 * Option key to save the information regarding merchant default currency.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public static $merchant_default_currency_option_key = 'tickets-commerce-merchant-currency';
+	public static string $merchant_default_currency_option_key = 'tickets-commerce-merchant-currency';
 
 	/**
 	 * Option key to save the PKCE code verifier for OAuth authentication.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public static $code_verifier_option_key = 'tickets-commerce-square-code-verifier';
+	public static string $code_verifier_option_key = 'tickets-commerce-square-code-verifier';
 
 	/**
 	 * Determines if Merchant is active. For Square this is the same as being connected.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @param bool $recheck Whether to force a recheck of the connection.
 	 *
 	 * @return bool
 	 */
-	public function is_active( $recheck = false ) {
+	public function is_active( $recheck = false ): bool {
 		return $this->is_connected( $recheck );
 	}
 
 	/**
 	 * Determines if the Merchant is connected.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @param bool $recheck Whether to force a recheck of the connection.
 	 *
 	 * @return bool
 	 */
-	public function is_connected( $recheck = false ) {
+	public function is_connected( $recheck = false ): bool {
 		$client_data = $this->to_array();
 
 		if (
@@ -104,11 +104,11 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Returns the options key for the account in the merchant mode.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @return string
 	 */
-	public function get_account_key() {
+	public function get_account_key(): string {
 		$gateway_key = Gateway::get_key();
 
 		return "tec_tickets_commerce_{$gateway_key}_account";
@@ -123,7 +123,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return string
 	 */
-	public function get_signup_data_key() {
+	public function get_signup_data_key(): string {
 		$gateway_key = Gateway::get_key();
 		$mode        = $this->get_mode();
 
@@ -137,7 +137,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return string
 	 */
-	public function get_access_token() {
+	public function get_access_token(): string {
 		$data = get_option( $this->get_signup_data_key() );
 
 		if ( empty( $data['access_token'] ) ) {
@@ -154,7 +154,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return string
 	 */
-	public function get_refresh_token() {
+	public function get_refresh_token(): string {
 		$data = get_option( $this->get_signup_data_key() );
 
 		if ( empty( $data['refresh_token'] ) ) {
@@ -171,7 +171,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return string
 	 */
-	public function get_merchant_id() {
+	public function get_merchant_id(): string {
 		$data = get_option( $this->get_signup_data_key() );
 
 		if ( empty( $data['merchant_id'] ) ) {
@@ -188,7 +188,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return string
 	 */
-	public function get_account_id() {
+	public function get_account_id(): string {
 		return $this->get_merchant_id();
 	}
 
@@ -199,7 +199,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return array
 	 */
-	public function to_array() {
+	public function to_array(): array {
 		return [
 			'client_id'     => $this->get_merchant_id(),
 			'access_token'  => $this->get_access_token(),
@@ -212,11 +212,11 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $signup_data
+	 * @param array $signup_data The signup data to save.
 	 *
 	 * @return bool
 	 */
-	public function save_signup_data( array $signup_data ) {
+	public function save_signup_data( array $signup_data ): bool {
 		unset( $signup_data['state'] );
 
 		return update_option( $this->get_signup_data_key(), $signup_data );
@@ -231,7 +231,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return array
 	 */
-	public function check_account_status( $client_data = [] ) {
+	public function check_account_status( array $client_data = [] ): array {
 		if ( empty( $client_data ) ) {
 			$client_data = $this->to_array();
 		}
@@ -270,8 +270,8 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return bool
 	 */
-	public function delete_signup_data() {
-		// Also delete any stored merchant data
+	public function delete_signup_data(): bool {
+		// Also delete any stored merchant data.
 		$this->delete_merchant_data();
 
 		return delete_option( $this->get_signup_data_key() );
@@ -284,10 +284,8 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return bool
 	 */
-	public function is_merchant_unauthorized() {
-		$unauthorized = get_option( static::$merchant_unauthorized_option_key );
-
-		return ! empty( $unauthorized );
+	public function is_merchant_unauthorized(): bool {
+		return ! empty( get_option( static::$merchant_unauthorized_option_key ) );
 	}
 
 	/**
@@ -299,7 +297,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return bool
 	 */
-	public function set_merchant_unauthorized( $validation_key ) {
+	public function set_merchant_unauthorized( string $validation_key ): bool {
 		return update_option( static::$merchant_unauthorized_option_key, sanitize_key( $validation_key ) );
 	}
 
@@ -310,7 +308,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return bool
 	 */
-	public function unset_merchant_unauthorized() {
+	public function unset_merchant_unauthorized(): bool {
 		return delete_option( static::$merchant_unauthorized_option_key );
 	}
 
@@ -321,10 +319,8 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return bool
 	 */
-	public function is_merchant_deauthorized() {
-		$deauthorized = get_option( static::$merchant_deauthorized_option_key );
-
-		return ! empty( $deauthorized );
+	public function is_merchant_deauthorized(): bool {
+		return ! empty( get_option( static::$merchant_deauthorized_option_key ) );
 	}
 
 	/**
@@ -336,7 +332,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return bool
 	 */
-	public function set_merchant_deauthorized( $validation_key ) {
+	public function set_merchant_deauthorized( string $validation_key ): bool {
 		return update_option( static::$merchant_deauthorized_option_key, sanitize_key( $validation_key ) );
 	}
 
@@ -347,7 +343,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return bool
 	 */
-	public function unset_merchant_deauthorized() {
+	public function unset_merchant_deauthorized(): bool {
 		return delete_option( static::$merchant_deauthorized_option_key );
 	}
 
@@ -358,7 +354,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return string
 	 */
-	public function get_merchant_currency() {
+	public function get_merchant_currency(): string {
 		return get_option( static::$merchant_default_currency_option_key, 'USD' );
 	}
 
@@ -369,11 +365,11 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return string The generated code verifier
 	 */
-	public function generate_code_verifier() {
-		// Generate a code_verifier (random string between 43-128 chars)
+	public function generate_code_verifier(): string {
+		// Generate a code_verifier (random string between 43-128 chars).
 		$code_verifier = bin2hex( random_bytes( 43 ) );
 
-		// Store the code verifier as an option with a 2-hour expiration
+		// Store the code verifier as an option with a 2-hour expiration.
 		set_transient( static::$code_verifier_option_key, $code_verifier, HOUR_IN_SECONDS * 2 );
 
 		return $code_verifier;
@@ -386,7 +382,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return string The code challenge for OAuth authentication
 	 */
-	public function generate_code_challenge() {
+	public function generate_code_challenge(): string {
 		$code_verifier = $this->get_code_verifier();
 
 		if ( empty( $code_verifier ) ) {
@@ -406,10 +402,10 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return string The stored code verifier or empty string if not found
 	 */
-	public function get_code_verifier() {
+	public function get_code_verifier(): string {
 		$code_verifier = get_transient( static::$code_verifier_option_key );
 
-		return $code_verifier ?: '';
+		return false !== $code_verifier ? $code_verifier : '';
 	}
 
 	/**
@@ -419,7 +415,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return bool True if successful, false otherwise
 	 */
-	public function delete_code_verifier() {
+	public function delete_code_verifier(): bool {
 		return delete_transient( static::$code_verifier_option_key );
 	}
 
@@ -432,13 +428,13 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return bool
 	 */
-	public function update( $data ) {
+	public function update( array $data ): bool {
 		if ( empty( $data ) ) {
 			return false;
 		}
 
 		$current_data = get_option( $this->get_signup_data_key(), [] );
-		$merged_data = array_merge( $current_data, $data );
+		$merged_data  = array_merge( $current_data, $data );
 
 		return update_option( $this->get_signup_data_key(), $merged_data );
 	}
@@ -450,10 +446,10 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @param bool $force_refresh Whether to force a refresh of the data from the API.
 	 *
-	 * @return array|false The merchant data or false on failure.
+	 * @return array The merchant data.
 	 */
-	public function fetch_merchant_data( $force_refresh = false ) {
-		// Look for cached data first if we're not forcing a refresh
+	public function fetch_merchant_data( bool $force_refresh = false ): array {
+		// Look for cached data first if we're not forcing a refresh.
 		if ( ! $force_refresh ) {
 			$stored_data = get_option( $this->get_merchant_data_option_key() );
 			if ( ! empty( $stored_data ) ) {
@@ -461,39 +457,44 @@ class Merchant extends Abstract_Merchant {
 			}
 		}
 
-		// If not connected, bail
+		// If not connected, bail.
 		if ( ! $this->is_connected() ) {
-			return false;
+			return [];
 		}
 
 		$merchant_id = $this->get_merchant_id();
 
-		// If we don't have a merchant ID, bail
+		// If we don't have a merchant ID, bail.
 		if ( empty( $merchant_id ) ) {
-			return false;
+			return [];
 		}
 
-		// Make request using the Requests class
+		// Make request using the Requests class.
 		$response = tribe( Requests::class )->get( "merchants/{$merchant_id}" );
 
-		// Handle error responses
+		// Handle error responses.
 		if ( is_wp_error( $response ) || isset( $response['errors'] ) ) {
 			$error_message = is_wp_error( $response )
 				? $response->get_error_message()
 				: ( ! empty( $response['errors'][0]['detail'] ) ? $response['errors'][0]['detail'] : 'Unknown error' );
 
-			do_action( 'tribe_log', 'error', 'Square API Error', [
-				'message' => $error_message,
-				'source' => 'tickets-commerce',
-			] );
+			do_action(
+				'tribe_log',
+				'error',
+				'Square API Error',
+				[
+					'message' => $error_message,
+					'source'  => 'tickets-commerce',
+				]
+			);
 
-			return false;
+			return [];
 		}
 
-		// Store the merchant data in a permanent option
+		// Store the merchant data in a permanent option.
 		update_option( $this->get_merchant_data_option_key(), $response );
 
-		// Update some merchant fields in our local data if available
+		// Update some merchant fields in our local data if available.
 		if ( isset( $response['merchant'] ) ) {
 			$merchant = $response['merchant'];
 
@@ -509,7 +510,7 @@ class Merchant extends Abstract_Merchant {
 
 			if ( isset( $merchant['currency'] ) ) {
 				$update_data['merchant_currency'] = $merchant['currency'];
-				// Also update the option
+				// Also update the option.
 				update_option( static::$merchant_default_currency_option_key, $merchant['currency'] );
 			}
 
@@ -532,9 +533,9 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return string
 	 */
-	private function get_merchant_data_option_key() {
+	private function get_merchant_data_option_key(): string {
 		$gateway_key = Gateway::get_key();
-		$mode = $this->get_mode();
+		$mode        = $this->get_mode();
 		$merchant_id = $this->get_merchant_id();
 
 		return "tec_tickets_commerce_{$gateway_key}_merchant_data_{$mode}_{$merchant_id}";
@@ -549,14 +550,14 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return string
 	 */
-	public function get_merchant_name( $force_refresh = false ) {
+	public function get_merchant_name( bool $force_refresh = false ): string {
 		$data = get_option( $this->get_signup_data_key() );
 
 		if ( ! empty( $data['merchant_name'] ) ) {
 			return $data['merchant_name'];
 		}
 
-		// Try to fetch from API if we don't have it stored
+		// Try to fetch from API if we don't have it stored.
 		$merchant_data = $this->fetch_merchant_data( $force_refresh );
 
 		if ( ! empty( $merchant_data['merchant']['business_name'] ) ) {
@@ -575,14 +576,14 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return string
 	 */
-	public function get_merchant_email( $force_refresh = false ) {
+	public function get_merchant_email( bool $force_refresh = false ): string {
 		$data = get_option( $this->get_signup_data_key() );
 
 		if ( ! empty( $data['merchant_email'] ) ) {
 			return $data['merchant_email'];
 		}
 
-		// Try to fetch from API if we don't have it stored
+		// Try to fetch from API if we don't have it stored.
 		$merchant_data = $this->fetch_merchant_data( $force_refresh );
 
 		if ( ! empty( $merchant_data['merchant']['email_address'] ) ) {
@@ -599,7 +600,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return bool True if deleted, false otherwise.
 	 */
-	public function delete_merchant_data() {
+	public function delete_merchant_data(): bool {
 		return delete_option( $this->get_merchant_data_option_key() );
 	}
 
@@ -612,5 +613,57 @@ class Merchant extends Abstract_Merchant {
 	 */
 	public function get_client_secret(): string {
 		return $this->get_access_token();
+	}
+
+	/**
+	 * Get the client ID for the Square SDK.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_client_id(): string {
+		$client_id = tribe_get_option( Settings::$option_client_id );
+
+		if ( empty( $client_id ) && tribe( Gateway::class )->is_test_mode() ) {
+			$client_id = tribe_get_option( Settings::$option_sandbox_client_id );
+		}
+
+		return $client_id;
+	}
+
+	/**
+	 * Get the location ID for the Square merchant.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_location_id(): string {
+		return tribe( Gateway::class )->get_location_id();
+	}
+
+	/**
+	 * Gets all available locations from the merchant's Square account.
+	 *
+	 * @since TBD
+	 *
+	 * @return array Array of locations.
+	 * @throws Exception On failure.
+	 */
+	public function get_locations(): array {
+		if ( ! $this->is_active() ) {
+			throw new Exception( __( 'Square is not connected.', 'event-tickets' ) );
+		}
+
+		$url      = 'locations';
+		$args     = [];
+		$response = tribe( Requests::class )->get( $url, [], $args );
+
+		if ( empty( $response['locations'] ) || ! is_array( $response['locations'] ) ) {
+			return [];
+		}
+
+		return $response['locations'];
 	}
 }

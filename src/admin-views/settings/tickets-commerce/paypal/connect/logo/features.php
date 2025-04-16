@@ -13,6 +13,7 @@
  * @var bool                                          $is_merchant_active [Global] Whether the merchant is active or not.
  */
 
+defined( 'ABSPATH' ) || exit;
 ?>
 <ul>
 	<li>
@@ -28,3 +29,4 @@
 		<?php esc_html_e( 'Supports 3D Secure payments', 'event-tickets' ); ?>
 	</li>
 </ul>
+<?php
