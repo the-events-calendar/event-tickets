@@ -40,7 +40,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @return string
 	 */
-	public function get_gateway_dashboard_url_by_order( WP_Post $order ) : ?string {
+	public function get_gateway_dashboard_url_by_order( WP_Post $order ): ?string {
 		$merchant = tribe( Merchant::class );
 
 		if ( ! $merchant->is_active() ) {
@@ -72,7 +72,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @return ?string
 	 */
-	public function get_square_order_id( WP_Post $order ) : ?string {
+	public function get_square_order_id( WP_Post $order ): ?string {
 		if ( ! $order instanceof WP_Post ) {
 			return null;
 		}
