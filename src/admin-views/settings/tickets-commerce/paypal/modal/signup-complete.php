@@ -7,6 +7,8 @@
  * @since   5.2.1
  */
 
+defined( 'ABSPATH' ) || exit;
+
 $request_vars = tribe_get_request_vars();
 
 // Bail if we're not in the correct context, when PayPal was connected.

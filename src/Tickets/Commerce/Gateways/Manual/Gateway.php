@@ -16,7 +16,7 @@ class Gateway extends Abstract_Gateway {
 	 *
 	 * @since 5.2.0
 	 */
-	protected static $key = 'manual';
+	protected static string $key = 'manual';
 
 	/**
 	 * @inheritDoc

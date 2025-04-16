@@ -91,11 +91,11 @@ class Checkout {
 			return false;
 		}
 
-		$current_page = get_queried_object_id();
+		$current_page    = get_queried_object_id();
 		$is_current_page = $this->get_page_id() === $current_page;
 
 		/**
-		 * @todo determine hte usage of tribe_ticket_redirect_to
+		 * @todo determine the usage of tribe_ticket_redirect_to
 		 * 		$redirect = tribe_get_request_var( 'tribe_tickets_redirect_to', null );
 		 */
 
