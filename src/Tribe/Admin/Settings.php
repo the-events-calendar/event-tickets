@@ -481,7 +481,7 @@ class Settings {
 	 *
 	 * @return string
 	 */
-	public function get_settings_page_id(){
+	public function get_settings_page_id() {
 		return self::$settings_page_id;
 	}
 }

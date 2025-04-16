@@ -45,7 +45,7 @@ $hero_section->set_header_image(
 		)
 	)
 );
-$hero_section->set_title( new Heading( __( 'Finding and extending your tickets', 'tribe-common' ), 2, new Classes( 'tec-settings-form__sidebar-header' ) ) );
+$hero_section->set_title( new Heading( __( 'Finding and extending your tickets', 'event-tickets' ), 2, new Classes( 'tec-settings-form__sidebar-header' ) ) );
 
 $hero_section->add_section(
 	( new Settings_Section() )
