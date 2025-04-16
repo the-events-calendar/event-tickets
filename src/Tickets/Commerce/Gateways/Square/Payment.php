@@ -44,7 +44,7 @@ class Payment {
 	 *
 	 * @return ?array| The payment data.
 	 */
-	public static function create( string $source_id, Value $value, ?WP_Post $order = null ): ?array { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+	public static function create( string $source_id, Value $value, ?WP_Post $order = null ): ?array {
 		$merchant = tribe( Merchant::class );
 
 		if ( ! $merchant->is_active() ) {
@@ -84,9 +84,9 @@ class Payment {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $source_id The source ID.
-	 * @param Cart   $cart      The cart object.
-	 * @param bool   $retry     Whether this is a retry attempt.
+	 * @param string   $source_id The source ID.
+	 * @param Cart     $cart      The cart object.
+	 * @param ?WP_Post $order     The order post object.
 	 *
 	 * @return array|WP_Error The payment data or WP_Error on failure.
 	 *
@@ -105,9 +105,9 @@ class Payment {
 		 *
 		 * @since TBD
 		 *
-		 * @param Value  $value     The total value of the cart.
-		 * @param array  $items     The items in the cart.
-		 * @param string $source_id The source ID.
+		 * @param Value    $value     The total value of the cart.
+		 * @param array    $items     The items in the cart.
+		 * @param string   $source_id The source ID.
 		 * @param ?WP_Post $order     The order post object.
 		 */
 		$value = apply_filters( 'tec_tickets_commerce_square_create_from_cart', $value, $items, $source_id, $order );
