@@ -41,15 +41,13 @@ class Glance_Items {
 	 * @return array $items The maybe modified array of items to be displayed.
 	 */
 	public function custom_glance_items_attendees( $items = [] ): array {
-		$items = is_array( $items ) ? $items : [];
-		
 		$total = get_transient( static::$attendee_count_key );
 
 		if ( false === $total ) {
 			if ( ! wp_next_scheduled( 'tec_tickets_update_glance_item_attendee_counts' ) ) {
 				wp_schedule_single_event( time(), 'tec_tickets_update_glance_item_attendee_counts' );
 			}
-			return $items;
+			return (array) $items;
 		}
 
 		// Translators: %s Is the number of attendees.
