@@ -8,10 +8,14 @@
 namespace TEC\Tickets\Emails\Email;
 
 use TEC\Tickets\Emails\Dispatcher;
-use TEC\Tickets\Emails\Email_Template;
 use TEC\Tickets\Emails\Admin\Preview_Data;
 use TEC\Tickets\Emails\Email_Abstract;
 use TEC\Tickets\Emails\JSON_LD\Order_Schema;
+use TEC\Common\Admin\Entities\Div;
+use TEC\Common\Admin\Entities\Field_Wrapper;
+use TEC\Common\Admin\Entities\Heading;
+use Tribe\Utils\Element_Classes as Classes;
+use Tribe__Field;
 
 /**
  * Class Purchase_Receipt
@@ -114,17 +118,29 @@ class Purchase_Receipt extends Email_Abstract {
 		);
 
 		return [
+			'tec-settings-email-template-header'          => ( new Div( new Classes( [ 'tec-settings-form__header-block' ] ) ) )->add_children(
+				[
+					new Heading(
+						esc_html__( 'Purchase Receipt Email Settings', 'event-tickets' ),
+						2,
+						new Classes( [ 'tec-settings-form__section-header' ] )
+					),
+					( new Field_Wrapper(
+						new Tribe__Field(
+							'tecTicketsEmailTemplateExplanation',
+							[
+								'type' => 'html',
+								'html' => '<p class="tec-settings-form__section-description">'
+								          . $email_description
+								          . '</p>',
+							]
+						)
+					) ),
+				]
+			),
 			[
 				'type' => 'html',
-				'html' => '<div class="tribe-settings-form-wrap tec-settings-form__header-block--horizontal">',
-			],
-			[
-				'type' => 'html',
-				'html' => '<h2>' . esc_html__( 'Purchase Receipt Email Settings', 'event-tickets' ) . '</h2>',
-			],
-			[
-				'type' => 'html',
-				'html' => '<p>' . $email_description . '</p>',
+				'html' => '<div>',
 			],
 			$this->get_option_key( 'enabled' ) => [
 				'type'                => 'toggle',

@@ -13,6 +13,11 @@ use TEC\Tickets\Emails\Email_Template;
 use TEC\Tickets\Emails\Email_Abstract;
 use TEC\Tickets\Emails\Admin\Preview_Data;
 use TEC\Tickets\Emails\JSON_LD\Reservation_Schema;
+use TEC\Common\Admin\Entities\Div;
+use TEC\Common\Admin\Entities\Field_Wrapper;
+use TEC\Common\Admin\Entities\Heading;
+use Tribe\Utils\Element_Classes as Classes;
+use Tribe__Field;
 
 /**
  * Class Ticket
@@ -126,29 +131,41 @@ class Ticket extends Email_Abstract implements Purchase_Confirmation_Email_Inter
 		);
 
 		return [
+			'tec-settings-email-template-header'          => ( new Div( new Classes( [ 'tec-settings-form__header-block' ] ) ) )->add_children(
+				[
+					new Heading(
+						esc_html__( 'Ticket Email Settings', 'event-tickets' ),
+						2,
+						new Classes( [ 'tec-settings-form__section-header' ] )
+					),
+					( new Field_Wrapper(
+						new Tribe__Field(
+							'tecTicketsEmailTemplateExplanation',
+							[
+								'type' => 'html',
+								'html' => '<p class="tec-settings-form__section-description">'
+											. $email_description
+											. '</p>',
+							]
+						)
+					) ),
+				]
+			),
 			[
 				'type' => 'html',
-				'html' => '<div class="tribe-settings-form-wrap tec-settings-form__header-block--horizontal">',
+				'html' => '<div>',
 			],
-			[
-				'type' => 'html',
-				'html' => '<h2>' . esc_html__( 'Ticket Email Settings', 'event-tickets' ) . '</h2>',
-			],
-			[
-				'type' => 'html',
-				'html' => '<p>' . $email_description . '</p>',
-			],
-			$this->get_option_key( 'enabled' ) => [
-				'type'                => 'toggle',
-				'label'               => sprintf(
-					// Translators: %s - Title of email.
+			$this->get_option_key( 'enabled' )            => [
+				'type'            => 'toggle',
+				'label'           => sprintf(
+				// Translators: %s - Title of email.
 					esc_html__( 'Enable %s', 'event-tickets' ),
 					$this->get_title()
 				),
-				'default'             => true,
-				'validation_type'     => 'boolean',
+				'default'         => true,
+				'validation_type' => 'boolean',
 			],
-			$this->get_option_key( 'subject' ) => [
+			$this->get_option_key( 'subject' )            => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Subject', 'event-tickets' ),
 				'default'             => $this->get_default_subject(),
@@ -156,7 +173,7 @@ class Ticket extends Email_Abstract implements Purchase_Confirmation_Email_Inter
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
 			],
-			$this->get_option_key( 'heading' ) => [
+			$this->get_option_key( 'heading' )            => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Heading', 'event-tickets' ),
 				'default'             => $this->get_default_heading(),
@@ -165,12 +182,12 @@ class Ticket extends Email_Abstract implements Purchase_Confirmation_Email_Inter
 				'validation_callback' => 'is_string',
 			],
 			$this->get_option_key( 'additional-content' ) => [
-				'type'                => 'wysiwyg',
-				'label'               => esc_html__( 'Additional content', 'event-tickets' ),
-				'default'             => '',
-				'size'                => 'large',
-				'tooltip'             => esc_html__( 'Additional content will be displayed below the tickets in your email.', 'event-tickets' ),
-				'validation_type'     => 'html',
+				'type'            => 'wysiwyg',
+				'label'           => esc_html__( 'Additional content', 'event-tickets' ),
+				'default'         => '',
+				'size'            => 'large',
+				'tooltip'         => esc_html__( 'Additional content will be displayed below the tickets in your email.', 'event-tickets' ),
+				'validation_type' => 'html',
 				'settings'        => [
 					'media_buttons' => false,
 					'quicktags'     => false,
