@@ -84,6 +84,7 @@ class Provider extends Service_Provider {
 		$this->container->singleton( Compatibility\Events::class );
 
 		// Load any external SPs we might need.
+		$this->container->register( Gateways\Square\Controller::class );
 		$this->container->register( Gateways\Stripe\Provider::class );
 		$this->container->register( Gateways\PayPal\Provider::class );
 		$this->container->register( Gateways\Manual\Provider::class );

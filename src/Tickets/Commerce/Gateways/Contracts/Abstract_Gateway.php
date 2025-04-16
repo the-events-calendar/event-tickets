@@ -127,7 +127,6 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 		if ( ! static::should_show() ) {
 			return false;
 		}
-
 		return tribe( static::$merchant )->is_active();
 	}
 

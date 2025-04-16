@@ -12,35 +12,43 @@ use Tribe__Utils__Array as Arr;
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
 abstract class Abstract_WhoDat implements WhoDat_Interface {
+	/**
+	 * The API endpoint.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected string $api_endpoint;
 
 	/**
 	 * Public WhoDat URL, used to authenticate accounts with gateway payment providers
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @var string
 	 */
-	private $api_base_url = 'https://whodat.theeventscalendar.com/commerce/v1';
+	protected string $api_base_url = 'https://whodat.theeventscalendar.com/commerce/v1';
 
 	/**
 	 * Returns the gateway-specific endpoint to use
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @return string
 	 */
-	private function get_gateway_endpoint() {
+	protected function get_gateway_endpoint() {
 		return $this->api_endpoint;
 	}
 
 	/**
 	 * Returns the WhoDat URL to use.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @return string
 	 */
-	private function get_api_base_url() {
+	protected function get_api_base_url() {
 
 		if ( defined( 'TEC_TC_WHODAT_DEV_URL' ) && TEC_TC_WHODAT_DEV_URL ) {
 			return TEC_TC_WHODAT_DEV_URL;
@@ -94,7 +102,11 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 
 		if ( is_wp_error( $request ) ) {
 			$this->log_error( 'WhoDat request error:', $request->get_error_message(), $url );
+			return null;
+		}
 
+		$status_code = wp_remote_retrieve_response_code( $request );
+		if ( 200 !== $status_code ) {
 			return null;
 		}
 
@@ -121,7 +133,7 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 			$type,
 			$message
 		);
-		tribe( 'logger' )->log_error( $log, 'whodat-connection' );
+		do_action( 'tribe_log', 'error', 'whodat-connection', [$log ] );
 	}
 
 }
