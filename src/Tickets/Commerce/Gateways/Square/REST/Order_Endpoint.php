@@ -176,7 +176,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		// When we have success we clear the cart.
 		tribe( Cart::class )->clear_cart();
-		$response['redirect_url']     = add_query_arg( [ 'tc-order-id' => $payment['id'] ], tribe( Success::class )->get_url() );
+		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $payment['id'] ], tribe( Success::class )->get_url() );
 
 		return new WP_REST_Response( $response );
 	}
