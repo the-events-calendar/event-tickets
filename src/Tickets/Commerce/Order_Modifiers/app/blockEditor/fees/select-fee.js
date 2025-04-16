@@ -13,8 +13,8 @@ import { mapFeeToOption } from './map-fee-object';
 
 /**
  *
- * @param {Fee[]} feesAvailable
- * @param {function} onChange
+ * @param {Fee[]}    feesAvailable
+ * @param {Function} onChange
  */
 const SelectFee = ( { feesAvailable, onConfirm, onCancel } ) => {
 	// Set up options for the select control.
@@ -22,7 +22,7 @@ const SelectFee = ( { feesAvailable, onConfirm, onCancel } ) => {
 		{
 			label: __( 'Select a fee', 'event-tickets' ),
 			value: '',
-		}
+		},
 	];
 
 	feesAvailable.forEach( ( fee ) => {
@@ -37,23 +37,19 @@ const SelectFee = ( { feesAvailable, onConfirm, onCancel } ) => {
 	const onSelectionChange = ( value ) => {
 		setSelectedFee( value );
 		setAddButtonDisabled( value === '' );
-	}
+	};
 
 	return (
 		<div className="tec-events-block-editor__fee-select-container">
 			<SelectControl
-				className={ classNames(
-					'tec-events-block-editor__fee-select',
-				) }
+				className={ classNames( 'tec-events-block-editor__fee-select' ) }
 				hideLabelFromVision
 				options={ options }
 				onChange={ onSelectionChange }
 				value={ selectedFee }
 			/>
 			<Button
-				className={ classNames(
-					'tec-events-block-editor__fee-select__add-fee'
-				) }
+				className={ classNames( 'tec-events-block-editor__fee-select__add-fee' ) }
 				disabled={ addButtonDisabled }
 				variant="secondary"
 				label={ _x(
@@ -66,9 +62,7 @@ const SelectFee = ( { feesAvailable, onConfirm, onCancel } ) => {
 				{ __( 'Add fee', 'event-tickets' ) }
 			</Button>
 			<Button
-				className={ classNames(
-					'tec-events-block-editor__fee-select__cancel'
-				) }
+				className={ classNames( 'tec-events-block-editor__fee-select__cancel' ) }
 				variant="tertiary"
 				label={ _x(
 					'Cancel adding fee to the ticket',
@@ -80,7 +74,7 @@ const SelectFee = ( { feesAvailable, onConfirm, onCancel } ) => {
 				{ __( 'Cancel', 'event-tickets' ) }
 			</Button>
 		</div>
-	)
+	);
 };
 
 export default SelectFee;

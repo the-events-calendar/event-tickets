@@ -1,413 +1,159 @@
-/**
- * External dependencies
- */
-const { resolve } = require('path');
-const { reduce, zipObject } = require('lodash');
-const merge = require('webpack-merge');
-const common = require('@the-events-calendar/product-taskmaster/webpack/common/webpack.config');
-const {
-	getDirectoryNames,
-	getDirectories,
-} = require('@the-events-calendar/product-taskmaster/webpack/utils/directories');
-const {
-	getJSFileNames,
-	getJSFiles,
-} = require('@the-events-calendar/product-taskmaster/webpack/utils/files');
-
-// Do we need to expose this as a variable?
-const PLUGIN_SCOPE = 'tickets';
-
-//
-// ────────────────────────────────────────────────────────────────────────────────────── I ──────────
-//   :::::: G E N E R A T E   E V E N T S   P L U G I N : :  :   :    :     :        :          :
-// ──────────────────────────────────────────────────────────────────────────────────────────────
-//
+const {dirname, basename, extname} = require('path');
+const {readdirSync, statSync, existsSync} = require('fs');
 
 /**
- * By default, the optimization would break all modules from the `node_modules` directory
- * in a `src/resources/js/app/vendor.js` file. That file would include React and block-editor
- * dependencies that are not always required on the frontend. This modification of the default
- * optimization will create two files: one (`src/resources/js/app/vendor-babel.js`) that contains
- * only the Babel transpilers and one (`src/resources/js/app/vendor.js`) that contains all the
- * other dependencies. The second file (`src/resources/js/app/vendor.js`) MUST require the first
- * (`src/resources/js/app/vendor-babel.js`) file as a dependency.
+ * The default configuration coming from the @wordpress/scripts package.
+ * Customized following the "Advanced Usage" section of the documentation:
+ * See: https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/#advanced-usage
  */
-common.optimization.splitChunks.cacheGroups['vendor-babel-runtime'] = {
-	name: 'vendor-babel',
-	chunks: 'all',
-	test: /[\\/]node_modules[\\/]@babel[\\/]/,
-	priority: 20,
+const defaultConfig = require('@wordpress/scripts/config/webpack.config');
+
+const {
+  createTECLegacyJs,
+  createTECPostCss,
+  createTECLegacyBlocksFrontendPostCss,
+  createTECPackage,
+  compileCustomEntryPoints,
+  exposeEntry,
+  doNotPrefixSVGIdsClasses,
+  WindowAssignPropertiesPlugin,
+} = require('@stellarwp/tyson');
+
+/**
+ * Compile a list of entry points to be compiled to the format used by WebPack to define multiple entry points.
+ * This is akin to the compilation system used for multi-page applications.
+ * See: https://webpack.js.org/concepts/entry-points/#multi-page-application
+ */
+const customEntryPoints = compileCustomEntryPoints({
+  /**
+   * All existing Javascript files will be compiled to ES6, most will not be changed at all,
+   * minified and cleaned up.
+   * This is mostly a pass-thru with the additional benefit that the compiled packages will be
+   * exposed on the `window.tec.tickets` object.
+   * E.g. the `src/resources/js/admin-ignored-events.js` file will be compiled to
+   * `/build/js/admin-ignored-events.js` and exposed on `window.tec.tickets.adminIgnoredEvents`.
+   */
+  '/src/resources/js': createTECLegacyJs('tec.tickets'),
+
+  /**
+   * Compile, recursively, the PostCSS file using PostCSS nesting rules.
+   * By default, the `@wordpress/scripts` configuration would compile files using the CSS
+   * nesting syntax (https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_nesting) where
+   * the `&` symbol indicates the parent element.
+   * The PostCSS syntax followed in TEC files will instead use the `&` symbol to mean "this element".
+   * Handling this correctly requires adding a PostCSS processor specific to the PostCSS files that
+   * will handle the nesting correctly.
+   * Note the plugin will need to specify the following development dependencies: postcss-nested, postcss-preset-env,
+   * postcss-mixins, postcss-import, postcss-custom-media.
+   */
+  '/src/resources/postcss': createTECPostCss('tec.tickets'),
+
+  /**
+   * This deals with existing Blocks frontend styles being compiled separately.
+   * The main function of this configuration schema is to ensure they are placed correctly.
+   */
+  '/src/styles': createTECLegacyBlocksFrontendPostCss('tec.tickets'),
+
+  /**
+   * This deals with packages written following modern module-based approaches.
+   * These packages are usually not Blocks and require `@wordpress/scripts` to be explicitly
+   * instructed about them to compile correctly.
+   * To avoid having to list each package, here the configuration schema is used to recursively
+   * pick them up and namespace them.
+   */
+  '/src/resources/packages': createTECPackage('tec.tickets'),
+}, defaultConfig);
+
+/**
+ * Following are static entry points, to be included in the build non-recursively.
+ * These are built following a modern module approach where the root `index.js` file
+ * will include the whole module.
+ */
+
+/**
+ * Blocks from `/src/modules/index.js` are built to `/build/app/main.js`.
+ * The existing Block Editor code does not follow the `block.json` based convention expected by
+ * `@wordpress/scripts` so here we explicitly point out the root index.
+ */
+customEntryPoints['app/main'] = exposeEntry('tec.tickets.app.main', __dirname + '/src/modules/index.js');
+
+customEntryPoints['tickets/Blocks/Tickets/editor'] = exposeEntry('tec.tickets.blocks.tickets.editor', __dirname + '/src/Tickets/Blocks/Tickets/app/editor/index.js');
+customEntryPoints['tickets/Blocks/Ticket/editor'] = exposeEntry('tec.tickets.blocks.ticket.editor', __dirname + '/src/Tickets/Blocks/Ticket/app/editor/index.js');
+customEntryPoints['FlexibleTickets/block-editor'] = exposeEntry('tec.tickets.flexibleTickets.blockEditor', __dirname + '/src/Tickets/Flexible_Tickets/app/block-editor/index.js');
+customEntryPoints['FlexibleTickets/classic-editor'] = exposeEntry('tec.tickets.flexibleTickets.classicEditor', __dirname + '/src/Tickets/Flexible_Tickets/app/classic-editor/index.js');
+customEntryPoints['Seating/utils'] = exposeEntry('tec.tickets.seating.utils', __dirname + '/src/Tickets/Seating/app/utils/index.js');
+customEntryPoints['Seating/ajax'] = exposeEntry('tec.tickets.seating.ajax', __dirname + '/src/Tickets/Seating/app/ajax/index.js');
+customEntryPoints['Seating/currency'] = exposeEntry('tec.tickets.seating.currency', __dirname + '/src/Tickets/Seating/app/currency/index.js');
+customEntryPoints['Seating/service'] = exposeEntry('tec.tickets.seating.service', __dirname + '/src/Tickets/Seating/app/service/index.js');
+customEntryPoints['Seating/admin/maps'] = exposeEntry('tec.tickets.seating.admin.maps', __dirname + '/src/Tickets/Seating/app/admin/maps/index.js');
+customEntryPoints['Seating/admin/layouts'] = exposeEntry('tec.tickets.seating.admin.layouts', __dirname + '/src/Tickets/Seating/app/admin/layouts/index.js');
+customEntryPoints['Seating/admin/mapEdit'] = exposeEntry('tec.tickets.seating.admin.mapEdit', __dirname + '/src/Tickets/Seating/app/admin/mapEdit/index.js');
+customEntryPoints['Seating/admin/layoutEdit'] = exposeEntry('tec.tickets.seating.admin.layoutEdit', __dirname + '/src/Tickets/Seating/app/admin/layoutEdit/index.js');
+customEntryPoints['Seating/admin/seatsReport'] = exposeEntry('tec.tickets.seating.admin.seatsReport', __dirname + '/src/Tickets/Seating/app/admin/seatsReport/index.js');
+customEntryPoints['Seating/blockEditor'] = exposeEntry('tec.tickets.seating.blockEditor', __dirname + '/src/Tickets/Seating/app/blockEditor/index.js');
+customEntryPoints['Seating/frontend/session'] = exposeEntry('tec.tickets.seating.frontend.session', __dirname + '/src/Tickets/Seating/app/frontend/session/index.js');
+customEntryPoints['Seating/frontend/ticketsBlock'] = exposeEntry('tec.tickets.seating.frontend.ticketsBlock', __dirname + '/src/Tickets/Seating/app/frontend/ticketsBlock/index.js');
+customEntryPoints['OrderModifiers/rest'] = exposeEntry('tec.tickets.orderModifiers.rest', __dirname + '/src/Tickets/Commerce/Order_Modifiers/app/rest/index.js');
+customEntryPoints['OrderModifiers/blockEditor'] = exposeEntry('tec.tickets.orderModifiers.blockEditor', __dirname + '/src/Tickets/Commerce/Order_Modifiers/app/blockEditor/index.js');
+
+/**
+ * Prepends a loader for SVG files that will be applied after the default one. Loaders are applied
+ * in a LIFO queue in WebPack.
+ * By default, `@wordpress/scripts` uses `@svgr/webpack` to handle SVG files and, together with it,
+ * the default SVGO (package `svgo/svgo-loader`) configuration that includes the `prefixIds` plugin.
+ * To avoid `id` and `class` attribute conflicts, the `prefixIds` plugin would prefix all `id` and
+ * `class` attributes in SVG tags with a generated prefix. This would break TEC classes (already
+ * namespaced) so here we prepend a rule to handle SVG files in the `src/modules` directory by
+ * disabling the `prefixIds` plugin.
+ */
+doNotPrefixSVGIdsClasses(defaultConfig);
+
+/**
+ * Finally the customizations are merged with the default WebPack configuration.
+ */
+module.exports = {
+  ...defaultConfig,
+  ...{
+    entry: (buildType) => {
+      const defaultEntryPoints = defaultConfig.entry(buildType);
+      return {
+        ...defaultEntryPoints, ...customEntryPoints,
+      };
+    },
+    optimization: {
+      ...defaultConfig.optimization,
+      ...{
+				moduleIds: 'hashed',
+        splitChunks: {
+          ...defaultConfig.optimization.splitChunks,
+					minSize: 50,
+					cacheGroups: {
+						...defaultConfig.optimization.splitChunks.cacheGroups,
+						vendor: {
+							test: /[\\/]node_modules[\\/]/,
+							name: 'vendor',
+							chunks: 'all',
+							priority: 10,
+						},
+						'vendor-babel-runtime': {
+							test: /[\\/]node_modules[\\/]@babel[\\/]/,
+							name: 'vendor-babel',
+							chunks: 'all',
+							priority: 20,
+						},
+					},
+        },
+      },
+    },
+    output: {
+      ...defaultConfig.output,
+      ...{
+        enabledLibraryTypes: ['window'],
+      },
+    },
+    plugins: [
+      ...defaultConfig.plugins,
+      new WindowAssignPropertiesPlugin(),
+    ],
+  },
 };
-common.optimization.splitChunks.cacheGroups.vendor.priority = 10;
-
-const isProduction = process.env.NODE_ENV === 'production';
-const postfix = isProduction ? 'min.css' : 'css';
-
-// The targets we would like to compile.
-// The `moveFromTo` property is used to move the files in place after the build completed using the
-// `MoveTargetsInPlace` plugin; see below.
-const targets = [
-	{
-		name: 'main',
-		entry: './src/modules/index.js',
-		outputScript: './src/resources/js/app/main.min.js',
-		outputStyle: `src/resources/css/app/[name].${postfix}`,
-	},
-	{
-		name: 'tickets-editor',
-		entry: './src/Tickets/Blocks/Tickets/app/editor/index.js',
-		outputScript: './build/Tickets/Blocks/Tickets/editor.min.js',
-		outputStyle: `build/Tickets/Blocks/Tickets/editor.${postfix}`,
-		moveFromTo: {
-			'src/resources/js/app/tickets-editor.js':
-				'build/Tickets/Blocks/Tickets/editor.js',
-			'src/resources/css/app/tickets-editor.css':
-				'build/Tickets/Blocks/Tickets/editor.css',
-		},
-	},
-	{
-		name: 'ticket-editor',
-		entry: './src/Tickets/Blocks/Ticket/app/editor/index.js',
-		outputScript: './build/Tickets/Blocks/Ticket/editor.min.js',
-		outputStyle: `build/Tickets/Blocks/Ticket/editor.${postfix}`,
-		moveFromTo: {
-			'src/resources/js/app/ticket-editor.js':
-				'build/Tickets/Blocks/Ticket/editor.js',
-			'src/resources/css/app/ticket-editor.css':
-				'build/Tickets/Blocks/Ticket/editor.css',
-		},
-	},
-	{
-		name: 'flexible-tickets-block-editor',
-		entry: './src/Tickets/Flexible_Tickets/app/block-editor/index.js',
-		outputScript: './build/FlexibleTickets/block-editor.min.js',
-		outputStyle: `build/FlexibleTickets/block-editor.${postfix}`,
-		moveFromTo: {
-			'src/resources/js/app/flexible-tickets-block-editor.js':
-				'build/FlexibleTickets/block-editor.js',
-			'src/resources/css/app/flexible-tickets-block-editor.css':
-				'build/FlexibleTickets/block-editor.css',
-		},
-	},
-	{
-		name: 'flexible-tickets-classic-editor',
-		entry: './src/Tickets/Flexible_Tickets/app/classic-editor/index.js',
-		outputScript: './build/FlexibleTickets/classic-editor.min.js',
-		outputStyle: `build/FlexibleTickets/classic-editor.${postfix}`,
-		moveFromTo: {
-			'src/resources/js/app/flexible-tickets-classic-editor.js':
-				'build/FlexibleTickets/classic-editor.js',
-			'src/resources/css/app/flexible-tickets-classic-editor.css':
-				'build/FlexibleTickets/classic-editor.css',
-		},
-	},
-	{
-		name: 'seating-utils',
-		entry: './src/Tickets/Seating/app/utils/index.js',
-		outputScript: './build/Seating/utils.min.js',
-		outputStyle: `build/Seating/utils.${postfix}`,
-		moveFromTo: {
-			'src/resources/js/app/seating-utils.js': 'build/Seating/utils.js',
-			'src`/resources/css/app/seating-utils.css`':
-				'build/Seating/utils.css',
-		},
-	},
-	{
-		name: 'seating-ajax',
-		entry: './src/Tickets/Seating/app/ajax/index.js',
-		outputScript: './build/Seating/ajax.min.js',
-		outputStyle: `build/Seating/ajax.${postfix}`,
-		moveFromTo: {
-			'src/resources/js/app/seating-ajax.js': 'build/Seating/ajax.js',
-			'src/resources/css/app/seating-ajax.css': 'build/Seating/ajax.css',
-		},
-	},
-	{
-		name: 'seating-currency',
-		entry: './src/Tickets/Seating/app/currency/index.js',
-		outputScript: './build/Seating/currency.min.js',
-		outputStyle: `build/Seating/currency.${postfix}`,
-		moveFromTo: {
-			'src/resources/js/app/seating-currency.js':
-				'build/Seating/currency.js',
-			'src/resources/css/app/seating-currency.css':
-				'build/Seating/currency.css',
-		},
-	},
-	{
-		name: 'seating-service-bundle',
-		entry: './src/Tickets/Seating/app/service/index.js',
-		outputScript: './build/Seating/service.min.js',
-		outputStyle: `build/Seating/service.${postfix}`,
-		moveFromTo: {
-			'src/resources/js/app/seating-service-bundle.js':
-				'build/Seating/service.js',
-			'src/resources/css/app/seating-service-bundle.css':
-				'build/Seating/service.css',
-		},
-	},
-	{
-		name: 'seating-maps-bundle',
-		entry: './src/Tickets/Seating/app/admin/maps/index.js',
-		outputScript: './build/Seating/admin/maps.min.js',
-		outputStyle: `build/Seating/admin/maps.${postfix}`,
-		moveFromTo: {
-			'src/resources/js/app/seating-maps-bundle.js':
-				'build/Seating/admin/maps.js',
-			'src/resources/css/app/seating-maps-bundle.css':
-				'build/Seating/admin/maps.css',
-		},
-	},
-	{
-		name: 'seating-layouts-bundle',
-		entry: './src/Tickets/Seating/app/admin/layouts/index.js',
-		outputScript: './build/Seating/admin/layouts.min.js',
-		outputStyle: `build/Seating/admin/layouts.${postfix}`,
-		moveFromTo: {
-			'src/resources/js/app/seating-layouts-bundle.js':
-				'build/Seating/admin/layouts.js',
-			'src/resources/css/app/seating-layouts-bundle.css':
-				'build/Seating/admin/layouts.css',
-		},
-	},
-	{
-		name: 'seating-map-edit-bundle',
-		entry: './src/Tickets/Seating/app/admin/mapEdit/index.js',
-		outputScript: './build/Seating/admin/mapEdit.min.js',
-		outputStyle: `build/Seating/admin/mapEdit.${postfix}`,
-		moveFromTo: {
-			'src/resources/js/app/seating-map-edit-bundle.js':
-				'build/Seating/admin/mapEdit.js',
-			'src/resources/css/app/seating-map-edit-bundle.css':
-				'build/Seating/admin/mapEdit.css',
-		},
-	},
-	{
-		name: 'seating-layout-edit-bundle',
-		entry: './src/Tickets/Seating/app/admin/layoutEdit/index.js',
-		outputScript: './build/Seating/admin/layoutEdit.min.js',
-		outputStyle: `build/Seating/admin/layoutEdit.${postfix}`,
-		moveFromTo: {
-			'src/resources/js/app/seating-layout-edit-bundle.js':
-				'build/Seating/admin/layoutEdit.js',
-			'src/resources/css/app/seating-layout-edit-bundle.css':
-				'build/Seating/admin/layoutEdit.css',
-		},
-	},
-	{
-		name: 'seating-seats-report-bundle',
-		entry: './src/Tickets/Seating/app/admin/seatsReport/index.js',
-		outputScript: './build/Seating/admin/seatsReport.min.js',
-		outputStyle: `build/Seating/admin/seatsReport.${postfix}`,
-		moveFromTo: {
-			'src/resources/js/app/seating-seats-report-bundle.js':
-				'build/Seating/admin/seatsReport.js',
-			'src/resources/css/app/seating-seats-report-bundle.css':
-				'build/Seating/admin/seatsReport.css',
-		},
-	},
-	{
-		name: 'seating-block-editor-bundle',
-		entry: './src/Tickets/Seating/app/blockEditor/index.js',
-		outputScript: './build/Seating/block-editor.min.js',
-		outputStyle: `build/Seating/blockEditor.${postfix}`,
-		moveFromTo: {
-			'src/resources/js/app/seating-block-editor-bundle.js':
-				'build/Seating/blockEditor.js',
-			'src/resources/css/app/seating-block-editor-bundle.css':
-				'build/Seating/blockEditor.css',
-		},
-	},
-	{
-		name: 'seating-frontend-ticketsBlock-bundle',
-		entry: './src/Tickets/Seating/app/frontend/ticketsBlock/index.js',
-		outputScript: './build/Seating/frontend/ticketsBlock.min.js',
-		outputStyle: `build/Seating/frontend/ticketsBlock.${postfix}`,
-		moveFromTo: {
-			'src/resources/js/app/seating-frontend-ticketsBlock-bundle.js':
-				'build/Seating/frontend/ticketsBlock.js',
-			'src/resources/css/app/seating-frontend-ticketsBlock-bundle.css':
-				'build/Seating/frontend/ticketsBlock.css',
-		},
-	},
-	{
-		name: 'seating-frontend-session-bundle',
-		entry: './src/Tickets/Seating/app/frontend/session/index.js',
-		outputScript: './build/Seating/frontend/session.min.js',
-		outputStyle: `build/Seating/frontend/session.${postfix}`,
-		moveFromTo: {
-			'src/resources/js/app/seating-frontend-session-bundle.js':
-				'build/Seating/frontend/session.js',
-			'src/resources/css/app/seating-frontend-session-bundle.css':
-				'build/Seating/frontend/session.css',
-		},
-	},
-	{
-		name: 'order-modifiers-rest',
-		entry: './src/Tickets/Commerce/Order_Modifiers/app/rest/index.js',
-		outputScript: './build/OrderModifiers/rest.min.js',
-		outputStyle: `build/OrderModifiers/rest.${postfix}`,
-		moveFromTo: {
-			'src/resources/js/app/order-modifiers-rest.js':
-				'build/OrderModifiers/rest.js',
-			'src/resources/css/app/order-modifiers-rest.css':
-				'build/OrderModifiers/rest.css',
-		},
-	},
-	{
-		name: 'order-modifiers-block-editor-bundle',
-		entry: './src/Tickets/Commerce/Order_Modifiers/app/blockEditor/index.js',
-		outputScript: './build/OrderModifiers/block-editor.min.js',
-		outputStyle: `build/OrderModifiers/block-editor.${postfix}`,
-		moveFromTo: {
-			'src/resources/js/app/order-modifiers-block-editor-bundle.js':
-				'build/OrderModifiers/block-editor.js',
-			'src/resources/css/app/order-modifiers-block-editor-bundle.css':
-				'build/OrderModifiers/block-editor.css',
-		},
-	},
-];
-
-// A function cannot be spread directly, we need this temporary variable.
-const targetEntries = reduce(
-	targets,
-	(carry, target) => ({
-		...carry,
-		[target.name]: resolve(__dirname, target.entry),
-	}),
-	{}
-);
-
-const config = merge(common, {
-	// Add externals missing from products-taskmaster.
-	externals: [
-		{
-			'@wordpress/core-data': 'wp.coreData',
-			'@tec/tickets/seating/service/iframe':
-				'tec.tickets.seating.service.iframe',
-			'@tec/tickets/seating/service/errors':
-				'tec.tickets.seating.service.errors',
-			'@tec/tickets/seating/service/notices':
-				'tec.tickets.seating.service.notices',
-			'@tec/tickets/seating/service': 'tec.tickets.seating.service',
-			'@tec/tickets/seating/service/api':
-				'tec.tickets.seating.service.api',
-			'@tec/tickets/seating/utils': 'tec.tickets.seating.utils',
-			'@tec/tickets/seating/ajax': 'tec.tickets.seating.ajax',
-			'@tec/tickets/seating/currency': 'tec.tickets.seating.currency',
-			'@tec/tickets/seating/frontend/session':
-				'tec.tickets.seating.frontend.session',
-			'@tec/tickets/order-modifiers/rest': 'tec.tickets.orderModifiers.rest',
-		},
-	],
-	// Configure multiple entry points.
-	entry: targetEntries,
-});
-
-// WebPack 4 does support multiple entry and output points, but the plugins used by the build do not.
-// For this reason we're setting the output target to a string template.
-// The files will be moved to the correct location after the build completed, by the `MoveTargetsInPlace` plugin.
-// See below.
-config.output = {
-	path: __dirname,
-	filename: './src/resources/js/app/[name].min.js',
-};
-
-// Define, build and add to the stack of plugins a plugin that will move the files in place after they are built.
-const fs = require('node:fs');
-const normalize = require('path').normalize;
-
-class MoveTargetsInPlace {
-	constructor(moveTargets) {
-		// Add, to each move target, the minified version of the file.
-		Object.keys(moveTargets).forEach((file) => {
-			const minFile = file.replace(/\.(js|css)/g, '.min.$1');
-			moveTargets[minFile] = moveTargets[file].replace(
-				/\.(js|css)/i,
-				'.min.$1'
-			);
-		});
-		this.moveTargetsObject = moveTargets;
-		this.sourceFiles = Object.keys(moveTargets).map((file) =>
-			normalize(file)
-		);
-		this.moveFile = this.moveFile.bind(this);
-	}
-
-	moveFile(file) {
-		const normalizedFile = normalize(file);
-
-		if (this.sourceFiles.indexOf(normalizedFile) === -1) {
-			return;
-		}
-
-		const destination = this.moveTargetsObject[normalizedFile];
-		console.log(`Moving ${normalizedFile} to ${destination}...`);
-
-		// Recursively create the directory for the target.
-		fs.mkdirSync(destination.replace(/\/[^/]+$/, ''), { recursive: true });
-
-		// Move the target.
-		fs.renameSync(normalizedFile, destination);
-	}
-
-	apply(compiler) {
-		// compiler.hooks.done.tap ( 'MoveTargetsIntoPlace', this.moveTargets );
-		compiler.hooks.assetEmitted.tap('MoveTargetsIntoPlace', this.moveFile);
-	}
-}
-
-const moveTargets = targets.reduce((carry, target) => {
-	return {
-		...carry,
-		...target.moveFromTo,
-	};
-}, {});
-config.plugins.push(new MoveTargetsInPlace(moveTargets));
-
-// If COMPILE_SOURCE_MAPS env var is set, then set devtool=eval-source-map
-if (process.env.COMPILE_SOURCE_MAPS) {
-	config.devtool = 'eval-source-map';
-}
-
-//
-// ──────────────────────────────────────────────────────────────────────────────────────────── II ──────────
-//   :::::: G E N E R A T E   S T Y L E S   F R O M   V I E W S : :  :   :    :     :        :          :
-// ──────────────────────────────────────────────────────────────────────────────────────────────────────
-//
-
-const stylePath = resolve(__dirname, './src/styles');
-const styleDirectories = getDirectories(stylePath);
-const styleDirectoryNames = getDirectoryNames(stylePath);
-const styleEntries = zipObject(styleDirectoryNames, styleDirectories);
-
-const removeExtension = (str) => str.slice(0, str.lastIndexOf('.'));
-
-const entries = reduce(
-	styleEntries,
-	(result, dirPath, dirName) => {
-		const jsFiles = getJSFiles(dirPath);
-		const jsFileNames = getJSFileNames(dirPath);
-		const entryNames = jsFileNames.map(
-			(filename) => `${dirName}/${removeExtension(filename)}`
-		);
-		return {
-			...result,
-			...zipObject(entryNames, jsFiles),
-		};
-	},
-	{}
-);
-
-const styleConfig = merge(common, {
-	entry: entries,
-	output: {
-		path: __dirname,
-	},
-});
-
-//
-// ─── EXPORT CONFIGS ─────────────────────────────────────────────────────────────
-//
-
-module.exports = [config, styleConfig];

@@ -7,8 +7,8 @@ import PropTypes from 'prop-types';
 /**
  * Internal dependencies
  */
-import RSVPActionDashboard from '@moderntribe/tickets/blocks/rsvp/action-dashboard/container';
-import RSVPSettingsDashboard from '@moderntribe/tickets/blocks/rsvp/settings-dashboard/container';
+import RSVPActionDashboard from '../action-dashboard/container';
+import RSVPSettingsDashboard from '../settings-dashboard/container';
 
 const RSVPDashboard = ( { isSelected, isSettingsOpen } ) => {
 	if ( ! isSelected ) {
