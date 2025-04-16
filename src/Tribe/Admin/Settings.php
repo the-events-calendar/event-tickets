@@ -286,6 +286,18 @@ class Settings {
 	}
 
 	/**
+	 * Register the default settings tab sidebar.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function register_default_sidebar() {
+		$sidebar = include_once tribe( 'tickets.main' )->plugin_path . 'src/admin-views/settings/sidebars/default-sidebar.php';
+		Tribe__Settings_Tab::set_default_sidebar( $sidebar );
+	}
+
+	/**
 	 * Loads the ticket settings from an admin-view file and returns them as an array.
 	 *
 	 * @since 4.10.9 Use customizable ticket name functions.
@@ -460,5 +472,16 @@ class Settings {
 		}
 
 		return $form_options;
+	}
+
+	/**
+	 * Get the settings page ID.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_settings_page_id(){
+		return self::$settings_page_id;
 	}
 }
