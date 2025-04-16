@@ -125,6 +125,11 @@ class Payments_Tab extends Service_Provider {
 
 		$tab_settings = apply_filters( 'tec_tickets_commerce_payments_tab_settings', $tab_settings );
 
+		$tab_settings['fields']['tribe-form-content-end'] = [
+			'type' => 'html',
+			'html' => '</div>',
+		];
+
 		// Create the parent "Payments" tab.
 		$parent_tab = new Tribe__Settings_Tab(
 			static::$slug,
@@ -443,7 +448,9 @@ class Payments_Tab extends Service_Provider {
 		 *
 		 * @param array[] $top_level_settings Top level settings.
 		 */
-		return apply_filters( 'tec_tickets_commerce_settings_top_level', $fields );
+		$fields = apply_filters( 'tec_tickets_commerce_settings_top_level', $fields );
+
+		return $fields;
 	}
 
 	/**
