@@ -51,6 +51,34 @@ class Requests extends Abstract_Requests {
 	];
 
 	/**
+	 * Get a response from the Square API with caching.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $endpoint          The endpoint path.
+	 * @param array  $query_args        Query args appended to the URL.
+	 * @param array  $request_arguments Request arguments.
+	 * @param bool   $raw               Whether to return the raw response.
+	 *
+	 * @return array|null
+	 */
+	public static function get_with_cache( $endpoint, array $query_args = [], array $request_arguments = [], $raw = false ): ?array {
+		$cache_key = md5( wp_json_encode( [ $endpoint, $query_args, $request_arguments, $raw ] ) );
+		$cache     = tribe_cache();
+
+		$cached_response = $cache->get_transient( $cache_key );
+		if ( false !== $cached_response ) {
+			return $cached_response;
+		}
+
+		$response = self::get( $endpoint, $query_args, $request_arguments, $raw );
+
+		$cache->set_transient( $cache_key, $response, MINUTE_IN_SECONDS * 10 );
+
+		return $response;
+	}
+
+	/**
 	 * Get REST API endpoint URL for requests.
 	 *
 	 * @since TBD

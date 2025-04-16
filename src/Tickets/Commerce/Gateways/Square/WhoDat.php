@@ -66,6 +66,14 @@ class WhoDat extends Abstract_WhoDat {
 	 * @return array|null
 	 */
 	public function get( $endpoint, array $query_args ): ?array {
+		$cache           = tribe_cache();
+		$cache_key       = md5( wp_json_encode( [ $endpoint, $query_args ] ) );
+		$cached_response = $cache->get_transient( $cache_key );
+
+		if ( false !== $cached_response ) {
+			return $cached_response;
+		}
+
 		$url = $this->get_api_url( $endpoint, $query_args );
 
 		$request = wp_remote_get( $url ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_remote_get_wp_remote_get
@@ -78,6 +86,8 @@ class WhoDat extends Abstract_WhoDat {
 
 		$body = wp_remote_retrieve_body( $request );
 		$body = json_decode( $body, true );
+
+		$cache->set_transient( $cache_key, $body, HOUR_IN_SECONDS );
 
 		return $body;
 	}
@@ -171,6 +181,20 @@ class WhoDat extends Abstract_WhoDat {
 		];
 
 		$connection_response = $this->get( 'oauth/authorize', $query_args );
+
+		if ( empty( $connection_response['auth_url'] ) ) {
+			do_action(
+				'tribe_log',
+				'error',
+				'Failed to retrieve Square OAuth authorize URL',
+				[
+					'source'   => 'tickets-commerce',
+					'response' => $connection_response,
+				]
+			);
+
+			return '';
+		}
 
 		return $connection_response['auth_url'];
 	}

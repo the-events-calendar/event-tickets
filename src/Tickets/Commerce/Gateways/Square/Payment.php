@@ -76,7 +76,7 @@ class Payment {
 			],
 		];
 
-		return tribe( Requests::class )->post( 'payments', $query_args, $args );
+		return Requests::post( 'payments', $query_args, $args );
 	}
 
 	/**
@@ -152,7 +152,7 @@ class Payment {
 			'body' => $body,
 		];
 
-		return tribe( Requests::class )->get( "payments/{$payment_id}", $query_args, $args );
+		return Requests::get_with_cache( "payments/{$payment_id}", $query_args, $args );
 	}
 
 	/**
@@ -178,7 +178,7 @@ class Payment {
 			'body' => $body,
 		];
 
-		return tribe( Requests::class )->put( "payments/{$payment_id}", $query_args, $args );
+		return Requests::put( "payments/{$payment_id}", $query_args, $args );
 	}
 
 	/**
@@ -205,7 +205,7 @@ class Payment {
 			'body' => $body,
 		];
 
-		return tribe( Requests::class )->post( "payments/{$payment_id}/cancel", $query_args, $args );
+		return Requests::po st( "payments/{$payment_id}/cancel", $query_args, $args );
 	}
 
 	/**

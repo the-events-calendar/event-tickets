@@ -469,8 +469,7 @@ class Merchant extends Abstract_Merchant {
 			return [];
 		}
 
-		// Make request using the Requests class.
-		$response = tribe( Requests::class )->get( "merchants/{$merchant_id}" );
+		$response = Requests::get_with_cache( "merchants/{$merchant_id}" );
 
 		// Handle error responses.
 		if ( is_wp_error( $response ) || isset( $response['errors'] ) ) {
@@ -658,7 +657,7 @@ class Merchant extends Abstract_Merchant {
 
 		$url      = 'locations';
 		$args     = [];
-		$response = tribe( Requests::class )->get( $url, [], $args );
+		$response = Requests::get_with_cache( $url, [], $args );
 
 		if ( empty( $response['locations'] ) || ! is_array( $response['locations'] ) ) {
 			return [];
