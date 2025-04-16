@@ -1110,7 +1110,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function save_checkin_details( $attendee_id, $qr, $details = [] ) {
 			$checkin_details = [
-				'date'      => $details['timestamp'] ?: current_time( 'mysql' ),
+				'date'      => ! empty( $details['timestamp'] ) ?: current_time( 'mysql' ),
 				'source'    => ! empty( $qr ) ? 'app' : 'site',
 				'author'    => get_current_user_id(),
 				'device_id' => $details['device_id'] ?? null,
