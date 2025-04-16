@@ -232,7 +232,7 @@ class Assets extends Controller_Contract {
 	 *
 	 * @return array
 	 */
-	public function get_square_checkout_data() {
+	public function get_square_checkout_data(): array {
 		$card_style_options = [
 			'style' => [
 				'input' => [
@@ -245,11 +245,11 @@ class Assets extends Controller_Contract {
 
 		$data = [
 			'nonce'             => wp_create_nonce( 'wp_rest' ),
-			'currencyCode'      => tribe( Merchant::class )->get_merchant_currency(),
-			'orderEndpoint'     => tribe( Order_Endpoint::class )->get_route_url(),
-			'applicationId'     => tribe( Gateway::class )->get_application_id(),
-			'locationId'        => tribe( Merchant::class )->get_location_id(),
-			'paymentData'       => tribe( Payment_Handler::class )->get_publishable_payment_data(),
+			'currencyCode'      => $this->merchant->get_merchant_currency(),
+			'orderEndpoint'     => $this->order_endpoint->get_route_url(),
+			'applicationId'     => $this->gateway->get_application_id(),
+			'locationId'        => $this->merchant->get_location_id(),
+			'paymentData'       => $this->payment_handler->get_publishable_payment_data(),
 			'squareCardOptions' => $card_style_options,
 		];
 
@@ -262,7 +262,7 @@ class Assets extends Controller_Contract {
 		 *
 		 * @return array
 		 */
-		return apply_filters( 'tec_tickets_commerce_square_checkout_localized_data', $data );
+		return (array) apply_filters( 'tec_tickets_commerce_square_checkout_localized_data', $data );
 	}
 
 	/**
