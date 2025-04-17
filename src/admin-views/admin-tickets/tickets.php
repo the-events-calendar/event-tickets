@@ -18,9 +18,6 @@ if ( ! $tickets_exist ) {
 
 $tickets_table->prepare_items();
 ?>
-<h1>
-	<?php esc_html_e( 'All Tickets', 'event-tickets' ); ?>
-</h1>
 <form id="tec-tickets-admin-tickets-form" method="get">
 	<input type="hidden" name="page" value="<?php echo esc_attr( $page_slug ); ?>" />
 	<?php $tickets_table->display(); ?>

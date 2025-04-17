@@ -863,7 +863,11 @@ export const currentPostIsEvent = () => {
 };
 
 export const getNumericPrice = ( price, decimalPoint, decimalPlaces, thousandSep ) => {
-	// Remove thousand separators.
+	if ( typeof price !== 'string' ) {
+		price = String( price );
+	}
+	
+	// Remove thousand separator.
 	let newValue = price.replace( new RegExp( '\\' + thousandSep, 'g' ), '' );
 
 	// Replace decimal separator with period.
