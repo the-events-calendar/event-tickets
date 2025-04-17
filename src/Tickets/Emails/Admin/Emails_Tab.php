@@ -183,7 +183,7 @@ class Emails_Tab {
 			return $this->get_email_settings();
 		}
 
-		$kb_link_html                          = sprintf(
+		$kb_link_html = sprintf(
 			'<a href="%s" target="_blank" rel="nofollow">%s</a>',
 			'https://evnt.is/event-tickets-emails',
 			esc_html__( 'Knowledgebase', 'event-tickets' )
@@ -192,7 +192,10 @@ class Emails_Tab {
 		if ( tribe_installed_before( Tribe__Tickets__Main::class, '5.6.0' ) ) {
 			$description_text = sprintf(
 			// Translators: %s Link to knowledgebase article.
-				esc_html__( 'Customize your customer communications when tickets are purchased, RSVPs are submitted, and for Tickets Commerce order notifications. Enabling Tickets Emails will overwrite any manual customization that has been done to our previous email templates. Learn more about Event Tickets and Tickets Commerce communications in our %s.', 'event-tickets' ),
+				esc_html__(
+					'Customize your customer communications when tickets are purchased, RSVPs are submitted, and for Tickets Commerce order notifications. Enabling Tickets Emails will overwrite any manual customization that has been done to our previous email templates. Learn more about Event Tickets and Tickets Commerce communications in our %s.',
+					'event-tickets'
+				),
 				$kb_link_html
 			);
 		} else {
@@ -203,31 +206,30 @@ class Emails_Tab {
 			);
 		}
 
-
-		$fields['tec-settings-email-template-header'] =  ( new Div( new Classes( [ 'tec-settings-form__header-block' ] ) ) )->add_children(
-				[
-					new Heading(
-						esc_html__( 'Tickets Emails', 'event-tickets' ) ,
-						2,
-						new Classes( [ 'tec-settings-form__section-header' ] )
-					),
-					( new Field_Wrapper(
-						new Tribe__Field(
-							'tecTicketsEmailTemplateExplanation',
-							[
-								'type' => 'html',
-								'html' => '<p class="tec-settings-form__section-description">'
-								          . $description_text
-								          . '</p>',
-							]
-						)
-					) ),
-				]
-			);
-		$fields['tec-settings-email-template-opening-div'] =	[
-				'type' => 'html',
-				'html' => '<div>',
-			];
+		$fields['tec-settings-email-template-header']      = ( new Div( new Classes( [ 'tec-settings-form__header-block' ] ) ) )->add_children(
+			[
+				new Heading(
+					esc_html__( 'Tickets Emails', 'event-tickets' ),
+					2,
+					new Classes( [ 'tec-settings-form__section-header' ] )
+				),
+				( new Field_Wrapper(
+					new Tribe__Field(
+						'tecTicketsEmailTemplateExplanation',
+						[
+							'type' => 'html',
+							'html' => '<p class="tec-settings-form__section-description">'
+										. $description_text
+										. '</p>',
+						]
+					)
+				) ),
+			]
+		);
+		$fields['tec-settings-email-template-opening-div'] = [
+			'type' => 'html',
+			'html' => '<div>',
+		];
 
 		/**
 		 * Hook to modify the settings fields for Tickets Emails.

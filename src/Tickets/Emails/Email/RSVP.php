@@ -156,8 +156,8 @@ class RSVP extends Email_Abstract {
 							[
 								'type' => 'html',
 								'html' => '<p class="tec-settings-form__section-description">'
-								          . $email_description
-								          . '</p>',
+											. $email_description
+											. '</p>',
 							]
 						)
 					) ),
