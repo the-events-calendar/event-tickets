@@ -222,7 +222,9 @@ class Tribe__Tickets__Assets {
 					[
 						'name' => 'HeaderImageData',
 						'data' => fn() => [
+							// Translators: %s is the ticket label singular.
 							'title'  => esc_html( sprintf( __( '%s header image', 'event-tickets' ), tribe_get_ticket_label_singular( 'header_image_title' ) ) ),
+							// Translators: %s is the ticket label singular lowercase.
 							'button' => esc_html( sprintf( __( 'Set as %s header', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'header_button' ) ) ),
 						],
 					],
@@ -384,8 +386,16 @@ class Tribe__Tickets__Assets {
 				'localize' => [
 					[
 						'name' => 'Attendees',
-						'data' => static function () {
-							$config_data = [
+						/**
+						 * Allow filtering the configuration data for the Attendee objects on Attendees report page.
+						 *
+						 * @since 5.2.0
+						 *
+						 * @param array $config_data List of configuration data to be localized.
+						 */
+						'data' => static fn () => (array) apply_filters(
+							'tribe_tickets_attendees_report_js_config',
+							[
 								'nonce'                 => wp_create_nonce( 'email-attendee-list' ),
 								'required'              => esc_html__( 'You need to select a user or type a valid email address', 'event-tickets' ),
 								'sending'               => esc_html__( 'Sending...', 'event-tickets' ),
@@ -393,24 +403,17 @@ class Tribe__Tickets__Assets {
 								'checkin_nonce'         => wp_create_nonce( 'checkin' ),
 								'uncheckin_nonce'       => wp_create_nonce( 'uncheckin' ),
 								'cannot_move'           => esc_html__( 'You must first select one or more tickets before you can move them!', 'event-tickets' ),
-								'move_url'              => add_query_arg( [
-									'dialog'    => \Tribe__Tickets__Main::instance()->move_tickets()->dialog_name(),
-									'check'     => wp_create_nonce( 'move_tickets' ),
-									'TB_iframe' => 'true',
-								] ),
 								'confirmation_singular' => esc_html__( 'Please confirm that you would like to delete this attendee.', 'event-tickets' ),
 								'confirmation_plural'   => esc_html__( 'Please confirm that you would like to delete these attendees.', 'event-tickets' ),
-							];
-
-							/**
-							 * Allow filtering the configuration data for the Attendee objects on Attendees report page.
-							 *
-							 * @since 5.2.0
-							 *
-							 * @param array $config_data List of configuration data to be localized.
-							 */
-							return apply_filters( 'tribe_tickets_attendees_report_js_config', $config_data );
-						},
+								'move_url'              => add_query_arg(
+									[
+										'dialog'    => \Tribe__Tickets__Main::instance()->move_tickets()->dialog_name(),
+										'check'     => wp_create_nonce( 'move_tickets' ),
+										'TB_iframe' => 'true',
+									]
+								),
+							]
+						),
 					],
 				],
 				'groups'   => [
