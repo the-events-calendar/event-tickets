@@ -14,3 +14,15 @@ import sagas from './sagas';
 export default reducer;
 
 export { constants, options, utils, types, actions, selectors, sagas };
+
+window.tribe = window.tribe || {};
+window.tribe.tickets = window.tribe.tickets || {};
+window.tribe.tickets.data = window.tribe.tickets.data || {};
+window.tribe.tickets.data.blocks = window.tribe.tickets.data.blocks || {};
+window.tribe.tickets.data.blocks = {
+	...window.tribe.tickets.data.blocks,
+	...{
+		actions,
+		selectors,
+	},
+};
