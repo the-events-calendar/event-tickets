@@ -95,7 +95,7 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	protected function register_assets(): void {
-		tribe_asset(
+		tec_asset(
 			\Tribe__Tickets__Main::instance(),
 			'tec-tickets-qr-connector',
 			'qr-connector.js',

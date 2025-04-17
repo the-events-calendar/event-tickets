@@ -35,7 +35,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 		/** @var Tribe__Tickets__Main $tickets_main */
 		$plugin = tribe( 'tickets.main' );
 
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			static::$group_key . '-modal-scripts',
 			'admin/tickets-attendees.js',

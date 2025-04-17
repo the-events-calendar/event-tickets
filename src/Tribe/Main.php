@@ -7,7 +7,7 @@ use Tribe\Tickets\Admin\Provider as Admin_Provider;
 use Tribe\Tickets\Events\Service_Provider as Events_Service_Provider;
 use Tribe\Tickets\Promoter\Service_Provider as Promoter_Service_Provider;
 use Tribe\Tickets\Admin\Settings;
-use TEC\Common\StellarWP\Assets\Config;
+use TEC\Common\StellarWP\Assets\Config as Assets_Config;
 
 /**
  * Class Tribe__Tickets__Main.
@@ -437,10 +437,32 @@ class Tribe__Tickets__Main {
 	 * Load Text Domain on tribe_common_loaded as it requires common
 	 *
 	 * @since 4.10
+	 * @since TBD Added Tyson group paths.
 	 */
 	public function bootstrap() {
-		// Add the group path for the ET core assets.
-		Config::add_group_path( 'et-core', $this->plugin_path, 'src/resources/', true );
+		/*
+		* Register the `/build` directory assets as a different group to ensure back-compatibility.
+		* This needs to happen early in the plugin bootstrap routine.
+		*/
+		Assets_Config::add_group_path(
+			self::class,
+			$this->plugin_path,
+			'build/',
+			true
+		);
+
+		/*
+		* Register the `/build` directory as root for packages.
+		* The difference from the group registration above is that packages are not expected to use prefix directories
+		* like `/js` or `/css`.
+		*/
+		Assets_Config::add_group_path(
+			self::class . '-packages',
+			$this->plugin_path,
+			'build/',
+			false
+		);
+
 		$this->hooks();
 
 		$this->register_active_plugin();
@@ -958,7 +980,7 @@ class Tribe__Tickets__Main {
 				'welcome_page_template' => $this->plugin_path . 'src/admin-views/admin-welcome-message.php',
 			] );
 
-			tribe_asset(
+			tec_asset(
 				$this,
 				'tribe-tickets-welcome-message',
 				'admin/welcome-message.js',

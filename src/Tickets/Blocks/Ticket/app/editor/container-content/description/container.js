@@ -9,7 +9,7 @@ import { compose } from 'redux';
  */
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
-import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
+import { selectors, actions } from '../../../../../../../modules/data/blocks/ticket';
 
 const mapStateToProps = ( state, ownProps ) => ( {
 	isDisabled: selectors.isTicketDisabled( state, ownProps ),
@@ -24,10 +24,4 @@ const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 	},
 } );
 
-export default compose(
-	withStore(),
-	connect(
-		mapStateToProps,
-		mapDispatchToProps,
-	),
-)( Template );
+export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps ) )( Template );

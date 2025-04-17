@@ -5,7 +5,7 @@
  */
 
 /* global wp */
-( function( $, tableSettings ) {
+( function ( $, tableSettings ) {
 	$( document ).on( 'click', '.row-actions .delete a', ( e ) => {
 		let message;
 		switch ( tableSettings.modifier ) {
