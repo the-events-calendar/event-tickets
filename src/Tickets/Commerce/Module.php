@@ -18,7 +18,7 @@ class Module extends \Tribe__Tickets__Tickets {
 
 	public function __construct() {
 		// This needs to happen before parent construct.
-		$this->plugin_name = 'Tickets Commerce'; // Intentioanlly not translated.
+		$this->plugin_name = 'Tickets Commerce'; // Intentionally not translated.
 
 		parent::__construct();
 
