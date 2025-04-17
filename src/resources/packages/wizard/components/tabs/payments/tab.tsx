@@ -12,7 +12,7 @@ const PaymentsContent = ({ moveToNextTab, skipToNextTab }) => {
 	// Create tabPayments object to pass to NextButton.
 	const tabPayments = {
 		eventTickets: true,
-		currentTab: 3,
+		currentTab: 2,
 	};
 
 	return (

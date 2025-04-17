@@ -49,7 +49,7 @@ const CommunicationContent = ({ moveToNextTab, skipToNextTab }) => {
 	const tabCommunication = {
 		email,
 		senderName,
-		currentTab: 2,
+		currentTab: 3,
 	};
 
 	// Compute whether the "Continue" button should be enabled

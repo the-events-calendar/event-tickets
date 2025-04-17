@@ -1,4 +1,4 @@
-import React, { FunctionComponent, LegacyRef, useMemo } from "react";
+import React, { FunctionComponent, Ref, useMemo } from "react";
 
 interface TabProps {
 	tab: {
@@ -7,7 +7,7 @@ interface TabProps {
 		disabled: boolean;
 		completed: boolean;
 		panelId: string;
-		ref: LegacyRef<HTMLButtonElement>;
+		ref: Ref<HTMLButtonElement>;
 	};
 	activeTab: number;
 	index: number;

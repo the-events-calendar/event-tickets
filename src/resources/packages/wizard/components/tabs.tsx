@@ -23,8 +23,8 @@ const OnboardingTabs = () => {
 	const tabConfig = [
 		{ id: "welcome", title: __("Welcome", "event-tickets"), content: WelcomeContent, ref: useRef(null) },
 		{ id: "settings", title: __("Selling Tickets", "event-tickets"), content: SettingsContent, ref: useRef(null) },
-		{ id: "communication", title: __("Communication", "event-tickets"), content: CommunicationContent, ref: useRef(null) },
 		{ id: "payments", title: __("Payments", "event-tickets"), content: PaymentsContent, ref: useRef(null) },
+		{ id: "communication", title: __("Communication", "event-tickets"), content: CommunicationContent, ref: useRef(null) },
 		{ id: "events", title: __("Events", "event-tickets"), content: EventsContent, ref: useRef(null) }
 	];
 
