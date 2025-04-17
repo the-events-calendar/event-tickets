@@ -1,9 +1,7 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
-import { useSelect } from '@wordpress/data';
-import { useState, useEffect } from '@wordpress/element';
+import { useState } from '@wordpress/element';
 import { BaseControl, Notice } from '@wordpress/components';
-import { SETTINGS_STORE_KEY } from '../../../data';
 import NextButton from '../../buttons/next';
 import SkipButton from '../../buttons/skip';
 import EmailIcon from './img/email';
@@ -57,7 +55,7 @@ const CommunicationContent = ({ moveToNextTab, skipToNextTab }) => {
 
 	// Get validation messages
 	const getValidationMessages = () => {
-		const messages = [];
+		const messages: string[] = [];
 
 		if (hasInteracted.email && !email) {
 			messages.push(__('Email is required.', 'event-tickets'));

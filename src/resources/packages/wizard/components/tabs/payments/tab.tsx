@@ -6,7 +6,7 @@ import { useState, useEffect } from '@wordpress/element';
 import { SETTINGS_STORE_KEY } from '../../../data';
 import NextButton from '../../buttons/next';
 import SkipButton from '../../buttons/skip';
-import TicketsIcon from './img/tickets';
+import CartIcon from './img/cart';
 
 const PaymentsContent = ({ moveToNextTab, skipToNextTab }) => {
 	// Create tabPayments object to pass to NextButton.
@@ -17,7 +17,7 @@ const PaymentsContent = ({ moveToNextTab, skipToNextTab }) => {
 
 	return (
 		<>
-			<TicketsIcon />
+			<CartIcon />
 			<div className="tec-tickets-onboarding__tab-header">
 				<h1 className="tec-tickets-onboarding__tab-heading">
 					{__('Sell your tickets online', 'event-tickets')}
