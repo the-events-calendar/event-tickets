@@ -15,6 +15,11 @@ use Tribe\Tickets\Admin\Settings as Plugin_Settings;
 use Tribe__Settings_Tab;
 use Tribe__Template;
 use Tribe__Tickets__Main;
+use TEC\Common\Admin\Entities\Div;
+use TEC\Common\Admin\Entities\Field_Wrapper;
+use TEC\Common\Admin\Entities\Heading;
+use Tribe\Utils\Element_Classes as Classes;
+use Tribe__Field;
 
 /**
  * Class Emails_Tab
@@ -178,15 +183,6 @@ class Emails_Tab {
 			return $this->get_email_settings();
 		}
 
-		$fields                                = [];
-		$fields['tribe-form-content-start']    = [
-			'type' => 'html',
-			'html' => '<div class="tribe-settings-form-wrap tec-settings-form__header-block--horizontal">',
-		];
-		$fields['tribe-tickets-emails-header'] = [
-			'type' => 'html',
-			'html' => '<h2 class="tec-settings-form__section-header">' . esc_html__( 'Tickets Emails', 'event-tickets' ) . '</h2>',
-		];
 		$kb_link_html                          = sprintf(
 			'<a href="%s" target="_blank" rel="nofollow">%s</a>',
 			'https://evnt.is/event-tickets-emails',
@@ -195,22 +191,43 @@ class Emails_Tab {
 
 		if ( tribe_installed_before( Tribe__Tickets__Main::class, '5.6.0' ) ) {
 			$description_text = sprintf(
-				// Translators: %s Link to knowledgebase article.
+			// Translators: %s Link to knowledgebase article.
 				esc_html__( 'Customize your customer communications when tickets are purchased, RSVPs are submitted, and for Tickets Commerce order notifications. Enabling Tickets Emails will overwrite any manual customization that has been done to our previous email templates. Learn more about Event Tickets and Tickets Commerce communications in our %s.', 'event-tickets' ),
 				$kb_link_html
 			);
 		} else {
 			$description_text = sprintf(
-				// Translators: %s Link to knowledgebase article.
+			// Translators: %s Link to knowledgebase article.
 				esc_html__( 'Customize your customer communications when tickets are purchased, RSVPs are submitted, and for Tickets Commerce order notifications. Learn more about Event Tickets and Tickets Commerce communications in our %s.', 'event-tickets' ),
 				$kb_link_html
 			);
 		}
 
-		$fields['tribe-tickets-emails-description'] = [
-			'type' => 'html',
-			'html' => sprintf( '<p>%s</p>', $description_text ),
-		];
+
+		$fields['tec-settings-email-template-header'] =  ( new Div( new Classes( [ 'tec-settings-form__header-block' ] ) ) )->add_children(
+				[
+					new Heading(
+						esc_html__( 'Tickets Emails', 'event-tickets' ) ,
+						2,
+						new Classes( [ 'tec-settings-form__section-header' ] )
+					),
+					( new Field_Wrapper(
+						new Tribe__Field(
+							'tecTicketsEmailTemplateExplanation',
+							[
+								'type' => 'html',
+								'html' => '<p class="tec-settings-form__section-description">'
+								          . $description_text
+								          . '</p>',
+							]
+						)
+					) ),
+				]
+			);
+		$fields['tec-settings-email-template-opening-div'] =	[
+				'type' => 'html',
+				'html' => '<div>',
+			];
 
 		/**
 		 * Hook to modify the settings fields for Tickets Emails.
