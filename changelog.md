@@ -1204,7 +1204,7 @@
 * Tweak - Improved on meta data handling of for Blocks editor.
 * Tweak - Deprecate Select2 3.5.4 in favor of SelectWoo
 * Tweak - Consolidate duplicate code for getting tickets for each Ticket Provider. [ETP-235]
-* Tweak - Modify new views implementation for The Event Calendar, in order to include the "Sold Out" message as we had in the previous version. [ET-764]
+* Tweak - Modify new views implementation for The Events Calendar, in order to include the "Sold Out" message as we had in the previous version. [ET-764]
 * Tweak - Attendee REST endpoint now returns 401 (Unauthorized) if Event Tickets Plus is not loaded. [ETP-297]
 * Tweak - Implement price suffix for the tickets block when a price suffix is provided by a Commerce provider. [ET-620]
 * Tweak - When using Event Tickets Plus, the checkbox "Hide my attendee data from public view" will no longer show up when purchasing a ticket if an "Attendees List" is not being displayed in the event. [ETP-624]
