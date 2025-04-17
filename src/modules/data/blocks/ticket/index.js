@@ -25,4 +25,4 @@ window.tribe.tickets.data.blocks = {
 		actions,
 		selectors,
 	},
-}
+};
