@@ -61,9 +61,7 @@ const customEntryPoints = compileCustomEntryPoints({
    * To avoid having to list each package, here the configuration schema is used to recursively
    * pick them up and namespace them.
    */
-  '/src/resources/packages': createTECPackage('tec.tickets', {
-    exclude: ['wizard'] // Exclude the wizard package from automatic compilation.
-  }),
+  '/src/resources/packages': createTECPackage('tec.tickets'),
 }, defaultConfig);
 
 /**
@@ -98,14 +96,19 @@ customEntryPoints['Seating/frontend/ticketsBlock'] = exposeEntry('tec.tickets.se
 customEntryPoints['OrderModifiers/rest'] = exposeEntry('tec.tickets.orderModifiers.rest', __dirname + '/src/Tickets/Commerce/Order_Modifiers/app/rest/index.js');
 customEntryPoints['OrderModifiers/blockEditor'] = exposeEntry('tec.tickets.orderModifiers.blockEditor', __dirname + '/src/Tickets/Commerce/Order_Modifiers/app/blockEditor/index.js');
 
-// Add specific wizard entry point with custom configuration and different output path
-customEntryPoints['wizard/index'] = {
+// Remove wizard package from Tyson compilation
+Object.keys(customEntryPoints).forEach(key => {
+  if (key.includes('wizard')) {
+    delete customEntryPoints[key];
+  }
+});
+// Add wizard package manually
+customEntryPoints['wizard/wizard'] = {
   import: __dirname + '/src/resources/packages/wizard/index.tsx',
   library: {
     name: ['tec', 'tickets', 'wizard'],
     type: 'window',
-  },
-  filename: 'wizard/index.js',
+  }
 };
 
 /**

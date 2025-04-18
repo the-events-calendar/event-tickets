@@ -29,7 +29,7 @@ class Controller extends Controller_Contract {
 	 * @since TBD
 	 */
 	public function do_register(): void {
-		Asset_Config::add_group_path( 'tec-tickets-onboarding', tribe( 'tickets.main' )->plugin_path, 'build' );
+		Asset_Config::add_group_path( 'tec-tickets-onboarding', tribe( 'tickets.main' )->plugin_path . 'build/', 'wizard' );
 
 		$this->add_filters();
 		$this->add_actions();
