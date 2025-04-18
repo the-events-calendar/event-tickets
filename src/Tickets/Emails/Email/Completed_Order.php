@@ -194,6 +194,10 @@ class Completed_Order extends Email_Abstract {
 					],
 				],
 			],
+			[
+				'type' => 'html',
+				'html' => '</div>',
+			],
 		];
 	}
 

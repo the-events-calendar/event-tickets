@@ -60,6 +60,10 @@
             ]
         }
     },
+    "4": {
+        "type": "html",
+        "html": "<\\/div>"
+    },
     "tec-tickets-emails-ticket-add-event-links": {
         "type": "checkbox_bool",
         "label": "Calendar links",
@@ -74,7 +78,7 @@
         "default": true,
         "validation_type": "boolean"
     },
-    "4": {
+    "5": {
         "type": "html",
         "html": "<input type=\\"hidden\\" name=\\"tec_tickets_emails_current_section\\" id=\\"tec_tickets_emails_current_section\\" value=\\"tec_tickets_emails_ticket\\" \\/>"
     }
