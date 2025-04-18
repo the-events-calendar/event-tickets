@@ -15,16 +15,19 @@ const SettingsContent = ({ moveToNextTab, skipToNextTab }) => {
 		select(SETTINGS_STORE_KEY).getVisitedFields()
 	);
 	const setVisitedField = useDispatch(SETTINGS_STORE_KEY).setVisitedField;
+	const updateSettings = useDispatch(SETTINGS_STORE_KEY).updateSettings;
 	const {
 		currency,
 		country,
 		currencies,
 		countries,
+		paymentOption: storedPaymentOption,
 	}: {
 		currency: string;
 		country: string;
 		currencies: Record<string, { symbol: string; name: string }>;
 		countries: Record<string, { label: string; value: string }>;
+		paymentOption: string;
 	} = useSelect((select) => {
 		const store = select(SETTINGS_STORE_KEY);
 		return {
@@ -32,12 +35,18 @@ const SettingsContent = ({ moveToNextTab, skipToNextTab }) => {
 			country: store.getSetting('country'),
 			currencies: store.getSetting('currencies'),
 			countries: store.getSetting('countries'),
+			paymentOption: store.getSetting('paymentOption'),
 		};
 	}, []);
 	const [currencyCode, setCurrency] = useState(currency || 'USD');
 	const [selectedCountry, setCountry] = useState(country || 'US');
-	const [paymentOption, setPaymentOption] = useState('');
+	const [paymentOption, setPaymentOption] = useState(storedPaymentOption || '');
 	const [canContinue, setCanContinue] = useState(false);
+
+	// Update settings store when payment option changes
+	useEffect(() => {
+		updateSettings({ paymentOption });
+	}, [paymentOption, updateSettings]);
 
 	// Create tabSettings object to pass to NextButton.
 	const tabSettings = {
