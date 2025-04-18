@@ -239,8 +239,6 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		$installer->register_plugin( 'the-events-calendar', 'The Events Calendar' );
 		$tec_installed = $installer->is_installed( 'the-events-calendar' );
 		$tec_activated = $installer->is_active( 'the-events-calendar' );
-		var_dump( $tec_installed );
-		var_dump( $tec_activated );
 		?>
 			<div class="tec-admin-page__content-section tec-tickets-admin-page__content-section">
 				<h2 class="tec-admin-page__content-header"><?php esc_html_e( 'Tickets setup', 'event-tickets' ); ?></h2>
