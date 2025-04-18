@@ -182,7 +182,7 @@ const CommunicationContent = ({ moveToNextTab, skipToNextTab }) => {
 					moveToNextTab={moveToNextTab}
 					disabled={!canContinue}
 				/>
-				<SkipButton skipToNextTab={skipToNextTab} currentTab={5} />
+				<SkipButton skipToNextTab={skipToNextTab} currentTab={3} />
 			</div>
 		</>
 	);

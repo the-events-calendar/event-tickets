@@ -121,8 +121,10 @@ const PaymentsContent = ({ moveToNextTab, skipToNextTab }) => {
 				{['stripe', 'square'].includes(paymentOption) ? (
 					renderPaymentGateway()
 				) : (
-					<div className="tec-tickets-onboarding__payment-option">
-						{__('Selected payment option:', 'event-tickets')} {paymentOption || __('None', 'event-tickets')}
+					<div className="tec-tickets-onboarding__form-wrapper">
+						<div className="tec-tickets-onboarding__payment-option">
+							{__('You have not selected a payment option yet.', 'event-tickets')}
+						</div>
 					</div>
 				)}
 				<NextButton
@@ -130,7 +132,7 @@ const PaymentsContent = ({ moveToNextTab, skipToNextTab }) => {
 					moveToNextTab={moveToNextTab}
 					disabled={['stripe', 'square'].includes(paymentOption) && !isConnected}
 				/>
-				<SkipButton skipToNextTab={skipToNextTab} currentTab={5} />
+				<SkipButton skipToNextTab={skipToNextTab} currentTab={2} />
 			</div>
 		</>
 	);

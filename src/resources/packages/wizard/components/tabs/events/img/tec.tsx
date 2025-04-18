@@ -7,7 +7,7 @@ const TicketsIcon = () => {
 			width={55}
 			height={55}
 			fill="none"
-			className="tec-tickets-onboarding__content-header-icon"
+			className="tec-tickets-onboarding__content-tec-icon"
 		>
 			<path
 				fill="#fff"
