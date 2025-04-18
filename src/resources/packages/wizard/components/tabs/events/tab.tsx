@@ -7,17 +7,19 @@ import { SETTINGS_STORE_KEY } from '../../../data';
 import NextButton from '../../buttons/next';
 import SkipButton from '../../buttons/skip';
 import TECIcon from './img/tec';
+import SuccessContent from './success';
 
 const EventsContent = ( { moveToNextTab, skipToNextTab } ) => {
 	const eventsCalendarInstalled = useSelect(
-		( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'tec-events-installed' ) || false,
+		( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'events-calendar-installed' ) || false,
 		[]
 	);
 	const eventsCalendarActive = useSelect(
-		( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'tec-events-active' ) || false,
+		( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'events-calendar-active' ) || false,
 		[]
 	);
 	const [ eventsValue, setEventsValue ] = useState( true ); // Default to install/activate.
+	const [ showSuccess, setShowSuccess ] = useState( eventsCalendarActive );
 
 	// Create tabSettings object to pass to NextButton.
 	const tabSettings = {
@@ -28,6 +30,20 @@ const EventsContent = ( { moveToNextTab, skipToNextTab } ) => {
 	const message = ! eventsCalendarInstalled
 		? __( 'Yes, install The Events Calendar for free on my website.', 'event-tickets' )
 		: __( 'Activate the The Events Calendar Plugin for me.', 'event-tickets' );
+
+	const handleNextClick = async () => {
+		if ( eventsValue ) {
+			// TODO: Here we should handle the installation/activation
+			// After successful installation/activation:
+			setShowSuccess( true );
+		} else {
+			moveToNextTab( tabSettings );
+		}
+	};
+
+	if ( showSuccess ) {
+		return <SuccessContent />;
+	}
 
 	return (
 		<>
@@ -44,23 +60,25 @@ const EventsContent = ( { moveToNextTab, skipToNextTab } ) => {
 				</p>
 			</div>
 			<div className="tec-tickets-onboarding__tab-content">
-				{ ! eventsCalendarActive && (
-					<div className="tec-tickets-onboarding__checkbox tec-tickets-onboarding__checkbox--events">
-						<CheckboxControl
-							__nextHasNoMarginBottom
-							aria-describedby="tec-tickets-onboarding__checkbox-description"
-							checked={ eventsValue }
-							onChange={ setEventsValue }
-							id="tec-tickets-onboarding__events-checkbox-input"
-						/>
-						<div className="tec-tickets-onboarding__checkbox-description">
-							<label htmlFor="tec-tickets-onboarding__events-checkbox-input">{ message }</label>
-							<div id="tec-tickets-onboarding__checkbox-description"></div>
+				<div className="tec-tickets-onboarding__form-wrapper">
+					{ ! eventsCalendarActive && (
+						<div className="tec-tickets-onboarding__checkbox tec-tickets-onboarding__checkbox--events">
+							<CheckboxControl
+								__nextHasNoMarginBottom
+								aria-describedby="tec-tickets-onboarding__checkbox-description"
+								checked={ eventsValue }
+								onChange={ setEventsValue }
+								id="tec-tickets-onboarding__events-checkbox-input"
+							/>
+							<div className="tec-tickets-onboarding__checkbox-description">
+								<label htmlFor="tec-tickets-onboarding__events-checkbox-input">{ message }</label>
+								<div id="tec-tickets-onboarding__checkbox-description"></div>
+							</div>
 						</div>
-					</div>
-				) }
-				<NextButton tabSettings={ tabSettings } moveToNextTab={ moveToNextTab } disabled={ false } />
-				<SkipButton skipToNextTab={ skipToNextTab } currentTab={ 4 } />
+					) }
+					<NextButton tabSettings={ tabSettings } moveToNextTab={ handleNextClick } disabled={ false } />
+					<SkipButton skipToNextTab={ skipToNextTab } currentTab={ 4 } />
+				</div>
 			</div>
 		</>
 	);

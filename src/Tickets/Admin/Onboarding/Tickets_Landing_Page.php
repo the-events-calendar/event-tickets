@@ -235,8 +235,12 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		$settings_url   = '';
 		$data           = tribe( Data::class );
 		$completed_tabs = array_flip( (array) $data->get_wizard_setting( 'completed_tabs', [] ) );
-		$tec_installed  = Installer::get()->is_installed( 'the-events-calendar' );
-		$tec_activated  = Installer::get()->is_active( 'the-events-calendar' );
+		$installer      = Installer::get();
+		$installer->register_plugin( 'the-events-calendar', 'The Events Calendar' );
+		$tec_installed = $installer->is_installed( 'the-events-calendar' );
+		$tec_activated = $installer->is_active( 'the-events-calendar' );
+		var_dump( $tec_installed );
+		var_dump( $tec_activated );
 		?>
 			<div class="tec-admin-page__content-section tec-tickets-admin-page__content-section">
 				<h2 class="tec-admin-page__content-header"><?php esc_html_e( 'Tickets setup', 'event-tickets' ); ?></h2>
@@ -511,17 +515,20 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		$data         = tribe( Data::class );
 		$initial_data = [
 			/* Wizard History */
-			'begun'         => (bool) $data->get_wizard_setting( 'begun', false ),
-			'currentTab'    => absint( $data->get_wizard_setting( 'current_tab', 0 ) ),
-			'finished'      => (bool) $data->get_wizard_setting( 'finished', false ),
-			'completedTabs' => (array) $data->get_wizard_setting( 'completed_tabs', [] ),
-			'skippedTabs'   => (array) $data->get_wizard_setting( 'skipped_tabs', [] ),
+			'begun'                     => (bool) $data->get_wizard_setting( 'begun', false ),
+			'currentTab'                => absint( $data->get_wizard_setting( 'current_tab', 0 ) ),
+			'finished'                  => (bool) $data->get_wizard_setting( 'finished', false ),
+			'completedTabs'             => (array) $data->get_wizard_setting( 'completed_tabs', [] ),
+			'skippedTabs'               => (array) $data->get_wizard_setting( 'skipped_tabs', [] ),
 			/* nonces */
-			'action_nonce'  => wp_create_nonce( API::NONCE_ACTION ),
-			'_wpnonce'      => wp_create_nonce( 'wp_rest' ),
+			'action_nonce'              => wp_create_nonce( API::NONCE_ACTION ),
+			'_wpnonce'                  => wp_create_nonce( 'wp_rest' ),
 			/* Data */
-			'currencies'    => tribe( Currency::class )->get_currency_list(),
-			'countries'     => tribe( Country::class )->get_country_list(),
+			'currencies'                => tribe( Currency::class )->get_currency_list(),
+			'countries'                 => tribe( Country::class )->get_country_list(),
+			/* TEC install step */
+			'events-calendar-installed' => Installer::get()->is_installed( 'the-events-calendar' ),
+			'events-calendar-active'    => Installer::get()->is_active( 'the-events-calendar' ),
 		];
 
 

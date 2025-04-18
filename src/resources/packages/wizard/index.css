@@ -646,6 +646,21 @@
 	}
 }
 
+.tec-tickets-onboarding__form-wrapper.events-success {
+	align-items: center;
+	gap: 0;
+	padding: var(--tec-spacer-5) var(--tec-spacer-7);
+}
+
+.tec-tickets-onboarding__form-wrapper.events-success button.is-primary {
+	margin-top: var(--tec-spacer-0);
+}
+
+.tec-tickets-onboarding__success-heading {
+	font-size: var(--tec-font-size-3);
+	font-weight: var(--tec-font-weight-bold);
+}
+
 .tec-tickets-onboarding__form-field-trigger {
 	line-height: var(--tec-line-height-2);
 	max-height: var(--tec-spacer-4);
