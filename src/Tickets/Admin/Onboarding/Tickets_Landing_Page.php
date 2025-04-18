@@ -235,8 +235,10 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		$settings_url   = '';
 		$data           = tribe( Data::class );
 		$completed_tabs = array_flip( (array) $data->get_wizard_setting( 'completed_tabs', [] ) );
-		$tec_installed  = Installer::get()->is_installed( 'the-events-calendar' );
-		$tec_activated  = Installer::get()->is_active( 'the-events-calendar' );
+		$installer      = Installer::get();
+		$installer->register_plugin( 'the-events-calendar', 'The Events Calendar' );
+		$tec_installed = $installer->is_installed( 'the-events-calendar' );
+		$tec_activated = $installer->is_active( 'the-events-calendar' );
 		?>
 			<div class="tec-admin-page__content-section tec-tickets-admin-page__content-section">
 				<h2 class="tec-admin-page__content-header"><?php esc_html_e( 'Tickets setup', 'event-tickets' ); ?></h2>
@@ -511,17 +513,20 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		$data         = tribe( Data::class );
 		$initial_data = [
 			/* Wizard History */
-			'begun'         => (bool) $data->get_wizard_setting( 'begun', false ),
-			'currentTab'    => absint( $data->get_wizard_setting( 'current_tab', 0 ) ),
-			'finished'      => (bool) $data->get_wizard_setting( 'finished', false ),
-			'completedTabs' => (array) $data->get_wizard_setting( 'completed_tabs', [] ),
-			'skippedTabs'   => (array) $data->get_wizard_setting( 'skipped_tabs', [] ),
+			'begun'                     => (bool) $data->get_wizard_setting( 'begun', false ),
+			'currentTab'                => absint( $data->get_wizard_setting( 'current_tab', 0 ) ),
+			'finished'                  => (bool) $data->get_wizard_setting( 'finished', false ),
+			'completedTabs'             => (array) $data->get_wizard_setting( 'completed_tabs', [] ),
+			'skippedTabs'               => (array) $data->get_wizard_setting( 'skipped_tabs', [] ),
 			/* nonces */
-			'action_nonce'  => wp_create_nonce( API::NONCE_ACTION ),
-			'_wpnonce'      => wp_create_nonce( 'wp_rest' ),
+			'action_nonce'              => wp_create_nonce( API::NONCE_ACTION ),
+			'_wpnonce'                  => wp_create_nonce( 'wp_rest' ),
 			/* Data */
-			'currencies'    => tribe( Currency::class )->get_currency_list(),
-			'countries'     => tribe( Country::class )->get_country_list(),
+			'currencies'                => tribe( Currency::class )->get_currency_list(),
+			'countries'                 => tribe( Country::class )->get_country_list(),
+			/* TEC install step */
+			'events-calendar-installed' => Installer::get()->is_installed( 'the-events-calendar' ),
+			'events-calendar-active'    => Installer::get()->is_active( 'the-events-calendar' ),
 		];
 
 
@@ -559,7 +564,17 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 * @return void
 	 */
 	public function tec_onboarding_wizard_target(): void {
-		$force        = apply_filters( 'tec_tickets_onboarding_wizard_force', false );
+		/**
+		 * Allow users to force-ignore the checks and display the wizard.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $force Whether to force the wizard to display.
+		 *
+		 * @return bool
+		 */
+		$force = apply_filters( 'tec_tickets_onboarding_wizard_force', false );
+
 		$tec_versions = (array) tribe_get_option( 'previous_etp_versions', [] );
 		// If there is more than one previous version, don't show the wizard.
 		if ( ! $force && count( $tec_versions ) > 1 ) {
@@ -591,7 +606,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	public function register_assets(): void {
 		Asset::add(
 			'tec-tickets-onboarding-wizard-script',
-			'index.js'
+			'wizard.js'
 		)
 			->add_to_group_path( 'tec-tickets-onboarding' )
 			->add_to_group( 'tec-tickets-onboarding' )
@@ -603,7 +618,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 
 		Asset::add(
 			'tec-tickets-onboarding-wizard-style',
-			'index.css'
+			'wizard.css'
 		)
 			->add_to_group_path( 'tec-tickets-onboarding' )
 			->add_to_group( 'tec-tickets-onboarding' )
