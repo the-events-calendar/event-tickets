@@ -29,7 +29,7 @@ class Controller extends Controller_Contract {
 	 * @since TBD
 	 */
 	public function do_register(): void {
-		Asset_Config::add_group_path( 'tec-tickets-onboarding', tribe( 'tickets.main' )->plugin_path . 'build/', 'wizard' );
+		Asset_Config::add_group_path( 'tec-tickets-onboarding', tribe( 'tickets.main' )->plugin_path, 'build' );
 
 		$this->add_filters();
 		$this->add_actions();
@@ -130,12 +130,23 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function redirect_tec_pages_to_guided_setup(): void {
-		$force = apply_filters( 'tec_tickets_onboarding_force_redirect_to_guided_setup', false );
-		// Do not redirect if they are already on the Guided Setup page.
+		// Do not redirect if they are already on the Guided Setup page. Also prevents an infinite loop if $force is true.
 		$page = tec_get_request_var( 'page' );
 		if ( Landing_Page::$slug === $page ) {
 			return;
 		}
+
+		/**
+		 * Allow users to force-ignore the checks and redirect to the Guided Setup page.
+		 * Note this will potentially redirect ALL admin requests - so use sparingly!
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $force Whether to force the redirect to the Guided Setup page.
+		 *
+		 * @return bool
+		 */
+		$force = apply_filters( 'tec_tickets_onboarding_force_redirect_to_guided_setup', false );
 
 		if ( ! $force ) {
 

@@ -564,7 +564,17 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 * @return void
 	 */
 	public function tec_onboarding_wizard_target(): void {
-		$force        = apply_filters( 'tec_tickets_onboarding_wizard_force', false );
+		/**
+		 * Allow users to force-ignore the checks and display the wizard.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $force Whether to force the wizard to display.
+		 *
+		 * @return bool
+		 */
+		$force = apply_filters( 'tec_tickets_onboarding_wizard_force', false );
+
 		$tec_versions = (array) tribe_get_option( 'previous_etp_versions', [] );
 		// If there is more than one previous version, don't show the wizard.
 		if ( ! $force && count( $tec_versions ) > 1 ) {
@@ -596,7 +606,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	public function register_assets(): void {
 		Asset::add(
 			'tec-tickets-onboarding-wizard-script',
-			'index.js'
+			'wizard.js'
 		)
 			->add_to_group_path( 'tec-tickets-onboarding' )
 			->add_to_group( 'tec-tickets-onboarding' )
@@ -608,7 +618,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 
 		Asset::add(
 			'tec-tickets-onboarding-wizard-style',
-			'index.css'
+			'wizard.css'
 		)
 			->add_to_group_path( 'tec-tickets-onboarding' )
 			->add_to_group( 'tec-tickets-onboarding' )
