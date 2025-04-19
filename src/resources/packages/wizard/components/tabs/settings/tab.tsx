@@ -78,7 +78,6 @@ const SettingsContent = ({ moveToNextTab, skipToNextTab }) => {
 
 	// Compute whether the "Continue" button should be enabled
 	useEffect(() => {
-		// Since most of these are selects, we just ensure there is a value.
 		const fieldsToCheck = {
 			currencyCode: currencyCode,
 			country: selectedCountry,
@@ -96,7 +95,8 @@ const SettingsContent = ({ moveToNextTab, skipToNextTab }) => {
 		return fields.some((field) => visitedFields.includes(field)) || values;
 	};
 
-	const isUSD = selectedCountry === 'US';
+	// TODO: Remove this once we are ready to enable Square.
+	const supportsSquare = false;
 
 	return (
 		<>
@@ -182,7 +182,7 @@ const SettingsContent = ({ moveToNextTab, skipToNextTab }) => {
 						__nextHasNoMarginBottom
 						id="payment-options"
 						label={
-							isUSD ? (
+							supportsSquare ? (
 								<>
 									<div className="tec-tickets-onboarding__payment-title">
 										{__('Ticket payments', 'event-tickets')}
@@ -200,7 +200,7 @@ const SettingsContent = ({ moveToNextTab, skipToNextTab }) => {
 						help={__('Free tickets and RSVP options are always available.', 'event-tickets')}
 						className="tec-tickets-onboarding__form-field"
 					>
-						{isUSD ? (
+						{supportsSquare ? (
 							<ViewRadio
 								selectedValue={paymentOption}
 								onChange={setPaymentOption}
