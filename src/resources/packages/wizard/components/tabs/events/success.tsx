@@ -4,8 +4,20 @@ import { Button } from '@wordpress/components';
 import SuccessIcon from './img/success';
 import FinishButton from '../../buttons/finish';
 import TECIcon from './img/tec';
+import { useSelect } from '@wordpress/data';
+import { SETTINGS_STORE_KEY } from '../../../data/settings/constants';
 
-const SuccessContent = () => {
+interface SuccessContentProps {
+	onlyActivated?: boolean;
+	alreadyActivated?: boolean;
+}
+
+const SuccessContent = ( { onlyActivated = false, alreadyActivated = false }: SuccessContentProps ) => {
+	const tecWizardCompleted = useSelect(
+		( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'tec-wizard-completed' ) || false,
+		[]
+	);
+
 	return (
 		<>
 			<TECIcon />
@@ -23,14 +35,24 @@ const SuccessContent = () => {
 						{ __( 'Congratulations!', 'event-tickets' ) }
 					</div>
 					<p className="tec-tickets-onboarding__success-message">
-						{ __( 'The Events Calendar is now installed.', 'event-tickets' ) }
+						{ alreadyActivated
+							? __( 'The Events Calendar was already installed and activated.', 'event-tickets' )
+							: onlyActivated
+							? __( 'The Events Calendar is now activated.', 'event-tickets' )
+							: __( 'The Events Calendar is now installed and activated.', 'event-tickets' ) }
 					</p>
 					<Button
 						variant="primary"
 						className="tec-tickets-onboarding__button tec-tickets-onboarding__button--next"
-						href="/wp-admin/edit.php?post_type=tribe_events&page=first-time-setup"
+						href={
+							tecWizardCompleted
+								? '/wp-admin/edit.php?post_type=tribe_events&page=tec-events-settings'
+								: '/wp-admin/edit.php?post_type=tribe_events&page=first-time-setup'
+						}
 					>
-						{ __( 'Continue to The Events Calendar Setup', 'event-tickets' ) }
+						{ tecWizardCompleted
+							? __( 'Go to The Events Calendar Settings', 'event-tickets' )
+							: __( 'Continue to The Events Calendar Setup', 'event-tickets' ) }
 					</Button>
 					<FinishButton />
 				</div>

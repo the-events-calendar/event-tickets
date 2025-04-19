@@ -16,6 +16,7 @@ use TEC\Common\Lists\Currency;
 use TEC\Common\Lists\Country;
 use TEC\Tickets\Admin\Onboarding\API;
 use TEC\Common\Asset;
+use TEC\Events\Admin\Onboarding\Data as TEC_Data;
 
 /**
  * Class Landing_Page
@@ -503,6 +504,35 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	}
 
 	/**
+	 * Check if the TEC wizard is completed.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	protected function is_tec_wizard_completed(): bool {
+		if ( ! has_action( 'tribe_common_loaded', 'Tribe__Events__Main' ) ) {
+			return false;
+		}
+
+		$settings = tribe( TEC_Data::class )->get_wizard_settings();
+
+		if ( isset( $settings['finished'] ) && $settings['finished'] ) {
+			return true;
+		}
+
+		if ( tribe_get_option( 'tec_events_onboarding_page_dismissed' ) ) {
+			return true;
+		}
+
+		if ( tribe_get_option( 'tec_onboarding_wizard_visited_guided_setup' ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Get the initial data for the wizard.
 	 *
 	 * @since TBD
@@ -527,6 +557,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			/* TEC install step */
 			'events-calendar-installed' => Installer::get()->is_installed( 'the-events-calendar' ),
 			'events-calendar-active'    => Installer::get()->is_active( 'the-events-calendar' ),
+			'tec-wizard-completed'      => $this->is_tec_wizard_completed(),
 		];
 
 
