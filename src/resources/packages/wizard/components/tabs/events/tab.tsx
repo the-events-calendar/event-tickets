@@ -18,8 +18,12 @@ const EventsContent = ( { moveToNextTab, skipToNextTab } ) => {
 		( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'events-calendar-active' ) || false,
 		[]
 	);
-	const [ eventsValue, setEventsValue ] = useState( true ); // Default to install/activate.
-	const [ showSuccess, setShowSuccess ] = useState( eventsCalendarActive );
+
+	if ( eventsCalendarActive ) {
+		return <SuccessContent alreadyActivated={ eventsCalendarActive } />;
+	}
+
+	const [ eventsValue, setEventsValue ] = useState( true );
 
 	// Create tabSettings object to pass to NextButton.
 	const tabSettings = {
@@ -29,21 +33,17 @@ const EventsContent = ( { moveToNextTab, skipToNextTab } ) => {
 
 	const message = ! eventsCalendarInstalled
 		? __( 'Yes, install The Events Calendar for free on my website.', 'event-tickets' )
-		: __( 'Activate the The Events Calendar Plugin for me.', 'event-tickets' );
+		: __( 'Yes, activate The Events Calendar plugin for me.', 'event-tickets' );
 
 	const handleNextClick = async () => {
 		if ( eventsValue ) {
 			// TODO: Here we should handle the installation/activation
 			// After successful installation/activation:
-			setShowSuccess( true );
+			return <SuccessContent onlyActivated={ eventsCalendarInstalled } />;
 		} else {
 			moveToNextTab( tabSettings );
 		}
 	};
-
-	if ( showSuccess ) {
-		return <SuccessContent />;
-	}
 
 	return (
 		<>

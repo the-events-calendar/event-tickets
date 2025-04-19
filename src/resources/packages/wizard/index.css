@@ -1,7 +1,7 @@
 /* -----------------------------------------------------------------------------------------------------
  * Custom Properties: some are new, some are from the TEC common styles, reproduced here for the admin.
  * ----------------------------------------------------------------------------------------------------- */
- :root {
+:root {
 	/* -----------------------------------------------------------------------------
 	 * Colors
 	 * ----------------------------------------------------------------------------- */
@@ -313,7 +313,7 @@
 .tec-tickets-onboarding__tab--completed .tec-tickets-onboarding__tab-title:before {
 	background-color: var(--tec-wp-core-grey-50);
 	color: var(--tec-wp-core-grey-0);
-	content: '✓';
+	content: "✓";
 }
 
 .tec-tickets-onboarding__tab--active .tec-tickets-onboarding__tab-title:before {
@@ -661,6 +661,14 @@
 	font-weight: var(--tec-font-weight-bold);
 }
 
+.tec-tickets-onboarding__success-message {
+	text-align: center;
+}
+
+.tec-tickets-onboarding__success-finish {
+	margin-top: var(--tec-spacer-2);
+}
+
 .tec-tickets-onboarding__form-field-trigger {
 	line-height: var(--tec-line-height-2);
 	max-height: var(--tec-spacer-4);
@@ -725,22 +733,22 @@
 }
 
 .tec-tickets-onboarding__modal .tec-tickets-onboarding__tabs .tec-tickets-onboarding__tab-content .tec-tickets-onboarding__form-wrapper input[type=radio]:checked::before {
-	height: .625rem;
+	height: 0.625rem;
 	margin: var(--tec-spacer-0);
-	width: .625rem;
+	width: 0.625rem;
 }
 
 .tec-tickets-onboarding__modal .tec-tickets-onboarding__tabs .tec-tickets-onboarding__tab-content .tec-tickets-onboarding__form-wrapper svg.components-checkbox-control__checked {
-	left: .625rem;
+	left: 0.625rem;
 }
 
-.tec-tickets-onboarding__form-wrapper .components-checkbox-control__input[type=checkbox]:checked,
-.tec-tickets-onboarding__form-wrapper .components-checkbox-control__input[type=checkbox]:indeterminate {
+.tec-tickets-onboarding__form-wrapper .components-checkbox-control__input[type="checkbox"]:checked,
+.tec-tickets-onboarding__form-wrapper .components-checkbox-control__input[type="checkbox"]:indeterminate {
 	background: var(--tec-wp-core-blue-50);
 	border-color: var(--tec-wp-core-blue-50);
 }
 
-.tec-tickets-onboarding__form-wrapper .components-checkbox-control__input[type=checkbox]:focus {
+.tec-tickets-onboarding__form-wrapper .components-checkbox-control__input[type="checkbox"]:focus {
 	box-shadow: 0 0 0 var(--wp-admin-border-width-focus) #fff, 0 0 0 calc(var(--wp-admin-border-width-focus) * 2) var(--tec-wp-core-blue-50);
 }
 
@@ -833,8 +841,8 @@
 .tec-tickets-onboarding__connection-error {
 	align-items: center;
 	display: flex;
-  justify-content: center;
-  margin-bottom: var(--tec-spacer-3);
+	justify-content: center;
+	margin-bottom: var(--tec-spacer-3);
 }
 
 .tec-tickets-onboarding__connection-status--connected svg,
