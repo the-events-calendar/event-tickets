@@ -11,6 +11,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\Admin\Onboarding\API;
 use TEC\Tickets\Admin\Onboarding\Steps\Optin;
 use TEC\Tickets\Admin\Onboarding\Steps\Settings;
+use TEC\Tickets\Admin\Onboarding\Steps\Events;
 use TEC\Tickets\Admin\Onboarding\Data;
 use TEC\Tickets\Admin\Onboarding\Tickets_Landing_Page as Landing_Page;
 use TEC\Common\StellarWP\Assets\Config as Asset_Config;
@@ -71,6 +72,7 @@ class Controller extends Controller_Contract {
 		// Add the step handlers.
 		add_filter( 'tec_tickets_onboarding_wizard_handle', [ Optin::class, 'handle' ], 10, 2 );
 		add_filter( 'tec_tickets_onboarding_wizard_handle', [ Settings::class, 'handle' ], 11, 2 );
+		add_filter( 'tec_tickets_onboarding_wizard_handle', [ Events::class, 'handle' ], 12, 2 );
 	}
 
 	/**

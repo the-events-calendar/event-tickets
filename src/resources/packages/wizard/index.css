@@ -646,6 +646,11 @@
 	}
 }
 
+.tec-tickets-onboarding__form-wrapper.events-install {
+	background: transparent;
+	padding: 0;
+}
+
 .tec-tickets-onboarding__form-wrapper.events-success {
 	align-items: center;
 	gap: 0;
