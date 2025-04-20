@@ -13,6 +13,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square\REST;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Square\Gateway;
 use TEC\Tickets\Commerce\Gateways\Square\Merchant;
+use TEC\Tickets\Commerce\Gateways\Square\Webhooks;
 use TEC\Tickets\Commerce\Gateways\Square\WhoDat;
 use TEC\Tickets\Settings as Tickets_Commerce_Settings;
 use TEC\Tickets\Commerce\Payments_Tab;
@@ -309,6 +310,9 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 			);
 		}
 
+		// Register webhooks for this merchant
+		$this->register_webhooks();
+
 		// Enable the gateway.
 		tribe_update_option( Tickets_Commerce_Settings::$tickets_commerce_enabled, true );
 		tribe_update_option( Gateway::get_enabled_option_key(), true );
@@ -323,6 +327,42 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 
 		wp_safe_redirect( $url );
 		tribe_exit();
+	}
+
+	/**
+	 * Register webhooks for the newly connected merchant.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function register_webhooks() {
+		// Get the webhooks controller
+		$webhooks = tribe( Webhooks::class );
+
+		// Register the webhook
+		$webhook_data = $webhooks->register_webhook();
+
+		if ( $webhook_data ) {
+			do_action(
+				'tribe_log',
+				'info',
+				'Square webhook registered successfully',
+				[
+					'source'      => 'tickets-commerce-square',
+					'webhook_id'  => $webhook_data['id'] ?? '',
+				]
+			);
+		} else {
+			do_action(
+				'tribe_log',
+				'error',
+				'Failed to register Square webhook during onboarding',
+				[
+					'source' => 'tickets-commerce-square',
+				]
+			);
+		}
 	}
 
 	/**

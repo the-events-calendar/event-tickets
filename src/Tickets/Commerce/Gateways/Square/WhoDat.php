@@ -391,4 +391,91 @@ class WhoDat extends Abstract_WhoDat {
 
 		return $connection_response['auth_url'] ?? '';
 	}
+
+	/**
+	 * Register a webhook subscription for the merchant.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $notification_url The URL to send webhook notifications to.
+	 * @param array  $event_types      The event types to subscribe to.
+	 *
+	 * @return array|null
+	 */
+	public function register_webhook( string $notification_url, array $event_types = [] ): ?array {
+		$merchant = tribe( Merchant::class );
+
+		$query_args = [
+			'access_token' => $merchant->get_access_token(),
+			'mode'         => $merchant->get_mode(),
+		];
+
+		$body = [
+			'notification_url' => $notification_url,
+			'api_version'      => '2023-12-13', // Use the current Square API version
+		];
+
+		// Add event types if provided
+		if ( ! empty( $event_types ) ) {
+			$body['event_types'] = $event_types;
+		}
+
+		$request_arguments = [
+			'body' => wp_json_encode( $body ),
+			'headers' => [
+				'Content-Type' => 'application/json',
+			],
+		];
+
+		return $this->post( 'webhooks/subscriptions', $query_args, $request_arguments );
+	}
+
+	/**
+	 * Get all webhook subscriptions for the merchant.
+	 *
+	 * @since TBD
+	 *
+	 * @return array|null
+	 */
+	public function get_webhooks(): ?array {
+		$merchant = tribe( Merchant::class );
+
+		$query_args = [
+			'access_token' => $merchant->get_access_token(),
+			'mode'         => $merchant->get_mode(),
+		];
+
+		return $this->get( 'webhooks/subscriptions', $query_args );
+	}
+
+	/**
+	 * Delete a webhook subscription.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $subscription_id The ID of the webhook subscription to delete.
+	 *
+	 * @return array|null
+	 */
+	public function delete_webhook( string $subscription_id ): ?array {
+		$merchant = tribe( Merchant::class );
+
+		$query_args = [
+			'access_token' => $merchant->get_access_token(),
+			'mode'         => $merchant->get_mode(),
+		];
+
+		$body = [
+			'subscription_id' => $subscription_id,
+		];
+
+		$request_arguments = [
+			'body' => wp_json_encode( $body ),
+			'headers' => [
+				'Content-Type' => 'application/json',
+			],
+		];
+
+		return $this->post( 'webhooks/subscriptions/delete', $query_args, $request_arguments );
+	}
 }
