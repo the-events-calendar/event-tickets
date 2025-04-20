@@ -66,6 +66,9 @@ class Webhooks extends Controller_Contract {
 		// Add cron event for webhook health check
 		add_action( 'init', [ $this, 'register_cron_events' ] );
 		add_action( 'tec_tickets_commerce_square_check_webhooks', [ $this, 'check_webhook_health' ] );
+
+		// Add AJAX handler for webhook registration
+		add_action( 'wp_ajax_tec_tickets_commerce_square_register_webhook', [ $this, 'ajax_register_webhook' ] );
 	}
 
 	/**
@@ -235,5 +238,46 @@ class Webhooks extends Controller_Contract {
 		$computed_signature = hash_hmac( 'sha256', $body, $stored_signature );
 
 		return hash_equals( $signature, $computed_signature );
+	}
+
+	/**
+	 * AJAX handler for webhook registration.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function ajax_register_webhook() {
+		// Verify nonce
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'square-webhook-register' ) ) {
+			wp_send_json_error( [
+				'message' => __( 'Security check failed. Please refresh the page and try again.', 'event-tickets' ),
+			] );
+		}
+
+		// Check user capabilities
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [
+				'message' => __( 'You do not have permission to perform this action.', 'event-tickets' ),
+			] );
+		}
+
+		// Unregister existing webhook if any
+		$this->unregister_webhook();
+
+		// Register new webhook
+		$response = $this->register_webhook();
+
+		if ( empty( $response ) || isset( $response['error'] ) ) {
+			wp_send_json_error( [
+				'message' => __( 'Failed to register webhook with Square. Please check your connection settings and try again.', 'event-tickets' ),
+				'response' => $response,
+			] );
+		}
+
+		wp_send_json_success( [
+			'message' => __( 'Webhook successfully registered with Square.', 'event-tickets' ),
+			'webhook_id' => tribe_get_option( self::$option_webhook_id ),
+		] );
 	}
 }

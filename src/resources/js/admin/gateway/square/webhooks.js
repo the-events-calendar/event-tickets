@@ -36,6 +36,8 @@ window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square
 	 */
 	const strings = {
 		copied: __( 'Copied!', 'event-tickets' ),
+		errorRegisteringWebhook: __( 'Failed to register webhook. Please try again.', 'event-tickets' ),
+		errorGeneric: __( 'An error occurred. Please try again.', 'event-tickets' ),
 	};
 
 	/**
@@ -47,8 +49,9 @@ window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square
 		container: '.tec-tickets-commerce-square-webhooks-container',
 		copyButton: '.tec-tickets-commerce-square-copy-button',
 		testWebhookButton: '.tec-tickets-commerce-square-test-webhook-button',
+		registerWebhookButton: '#tec-tickets__admin-settings-square-webhook-register',
 		statusMessage: '.tec-tickets-commerce-square-webhook-status',
-		spinner: '.tec-tickets-commerce-square-webhook-spinner',
+		spinner: '.tec-tickets__admin-settings-square-webhook-spinner',
 		testModeCheckbox: '#square-test-mode',
 		liveFields: '.square-live-field',
 		sandboxFields: '.square-sandbox-field',
@@ -100,10 +103,54 @@ window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square
 				$this.text( strings.copied );
 
 				// Change it back after 2 seconds
-				setTimeout( function() {
+				setTimeout( () => {
 					$this.text( originalText );
 				}, 2000 );
 			} );
+		} );
+	};
+
+	/**
+	 * Handle webhook registration functionality.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Event} event The click event.
+	 * @return {void}
+	 */
+	obj.registerWebhook = ( event ) => {
+		event.preventDefault();
+
+		const $registerButton = $( event.currentTarget );
+		const $spinner = $registerButton.siblings( '.spinner' );
+		const { nonce } = $registerButton.data();
+
+		$registerButton.prop( 'disabled', true );
+		$spinner.addClass( 'is-active' );
+
+		$.ajax( {
+			url: ajaxurl,
+			type: 'POST',
+			data: {
+				action: 'tec_tickets_commerce_square_register_webhook',
+				nonce,
+			},
+			success: ( response ) => {
+				if ( response.success ) {
+					// Reload the page to refresh the status
+					location.reload();
+				} else {
+					const message = response.data?.message || strings.errorRegisteringWebhook;
+					alert( message );
+					$registerButton.prop( 'disabled', false );
+					$spinner.removeClass( 'is-active' );
+				}
+			},
+			error: () => {
+				alert( strings.errorGeneric );
+				$registerButton.prop( 'disabled', false );
+				$spinner.removeClass( 'is-active' );
+			},
 		} );
 	};
 
@@ -120,6 +167,9 @@ window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square
 
 		// Initialize the test mode toggle
 		$( selectors.testModeCheckbox ).on( 'change', toggleTestMode );
+
+		// Initialize the webhook registration button
+		$( selectors.registerWebhookButton ).on( 'click', obj.registerWebhook );
 	};
 
 	/**
