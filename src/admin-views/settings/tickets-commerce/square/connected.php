@@ -82,6 +82,7 @@ $test_mode = TEC\Tickets\Commerce\Gateways\Square\Gateway::is_test_mode();
 					<?php endif; ?>
 				</span>
 			</div>
+			<?php $this->template( 'settings/tickets-commerce/square/connect/webhook-status' ); ?>
 			<!-- Currency Info -->
 			<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-row">
 				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-label" id="square-currency-label">
