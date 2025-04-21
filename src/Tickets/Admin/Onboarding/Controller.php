@@ -11,6 +11,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\Admin\Onboarding\API;
 use TEC\Tickets\Admin\Onboarding\Steps\Optin;
 use TEC\Tickets\Admin\Onboarding\Steps\Settings;
+use TEC\Tickets\Admin\Onboarding\Steps\Communication;
 use TEC\Tickets\Admin\Onboarding\Steps\Events;
 use TEC\Tickets\Admin\Onboarding\Data;
 use TEC\Tickets\Admin\Onboarding\Tickets_Landing_Page as Landing_Page;
@@ -41,9 +42,10 @@ class Controller extends Controller_Contract {
 		Asset_Config::add_group_path( 'tec-tickets-onboarding', tribe( 'tickets.main' )->plugin_path . 'build/', 'wizard' );
 
 		$this->steps = [
-			'optin'    => new Optin(),
-			'settings' => new Settings(),
-			'events'   => new Events(),
+			'optin'         => new Optin(),
+			'settings'      => new Settings(),
+			'communication' => new Communication(),
+			'events'        => new Events(),
 		];
 
 		$this->add_filters();
@@ -86,7 +88,8 @@ class Controller extends Controller_Contract {
 		// Add the step handlers.
 		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['optin'], 'handle' ], 10, 2 );
 		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['settings'], 'handle' ], 11, 2 );
-		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['events'], 'handle' ], 12, 2 );
+		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['communication'], 'handle' ], 12, 2 );
+		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['events'], 'handle' ], 13, 2 );
 	}
 
 	/**
@@ -112,7 +115,8 @@ class Controller extends Controller_Contract {
 		// Remove the step handlers.
 		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['optin'], 'handle' ], 10 );
 		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['settings'], 'handle' ], 11 );
-		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['events'], 'handle' ], 12 );
+		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['communication'], 'handle' ], 12 );
+		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['events'], 'handle' ], 13 );
 	}
 
 	/**
