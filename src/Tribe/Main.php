@@ -235,13 +235,16 @@ class Tribe__Tickets__Main {
 		// Will be used to set up Stripe webhook on admin_init.
 		set_transient( 'tec_tickets_commerce_setup_stripe_webhook', true );
 
-		// Set a transient we can use when deciding whether or not to show update/welcome splash pages
+		// Set a transient we can use when deciding whether or not to show update/welcome splash pages.
 		if ( is_network_admin() ) {
 			// Never redirect on network admin.
 			return;
 		}
 
-		if ( isset( $_POST['checked'] ) && count( $_POST['checked'] ) > 1 ) {
+		// Get the checked plugins from the request. If there are more than one, we're doing a bulk activation.
+		$checked = tec_get_request_var( 'checked', [] );
+
+		if (  count( $checked ) > 1 ) {
 			// If multiple plugins are being activated, set the wizard redirect transient, this should only trigger redirection on a ET admin page visit.
 			set_transient( Landing_Page::BULK_ACTIVATION_REDIRECT_OPTION, 1, 30 );
 		} else {
