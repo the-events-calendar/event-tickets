@@ -233,7 +233,7 @@ class Settings {
 				'position' => 2,
 				'callback' => [
 					tribe( 'settings' ),
-					'generatePage',
+					'generate_page',
 				],
 			]
 		);
@@ -361,7 +361,7 @@ class Settings {
 				'capability' => $admin_pages->get_capability( 'manage_network_options' ),
 				'callback'   => [
 					$settings,
-					'generatePage',
+					'generate_page',
 				],
 			]
 		);

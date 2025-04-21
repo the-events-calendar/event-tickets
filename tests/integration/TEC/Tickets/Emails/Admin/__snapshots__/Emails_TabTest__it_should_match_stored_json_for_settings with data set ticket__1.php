@@ -3,17 +3,10 @@
         "type": "html",
         "html": "<div class=\\"tec-tickets__admin-settings-back-link-wrapper tec-settings-form__header-block--horizontal\\">\\n\\t<a class=\\"tec-tickets__admin-settings-back-link\\" href=\\"http:\\/\\/wordpress.test\\/wp-admin\\/admin.php?page=tec-tickets-settings&amp;tab=emails\\" role=\\"link\\">\\n\\t\\t&larr; Back to Email Settings\\t<\\/a>\\n<\\/div>\\n"
     },
+    "tec-settings-email-template-header": {},
     "1": {
         "type": "html",
-        "html": "<div class=\\"tribe-settings-form-wrap tec-settings-form__header-block--horizontal\\">"
-    },
-    "2": {
-        "type": "html",
-        "html": "<h2>Ticket Email Settings<\\/h2>"
-    },
-    "3": {
-        "type": "html",
-        "html": "<p>Ticket purchasers will receive an email including their ticket and additional info upon completion of purchase. Customize the content of this specific email using the tools below. You can also use email placeholders and customize email templates. <a href=\\"https:\\/\\/evnt.is\\/event-tickets-emails\\" target=\\"_blank\\" rel=\\"noopener noreferrer\\">Learn more<\\/a>.<\\/p>"
+        "html": "<div>"
     },
     "tec-tickets-emails-ticket-enabled": {
         "type": "toggle",
@@ -60,6 +53,10 @@
             ]
         }
     },
+    "2": {
+        "type": "html",
+        "html": "<\\/div>"
+    },
     "tec-tickets-emails-ticket-add-event-links": {
         "type": "checkbox_bool",
         "label": "Calendar links",
@@ -74,7 +71,7 @@
         "default": true,
         "validation_type": "boolean"
     },
-    "4": {
+    "3": {
         "type": "html",
         "html": "<input type=\\"hidden\\" name=\\"tec_tickets_emails_current_section\\" id=\\"tec_tickets_emails_current_section\\" value=\\"tec_tickets_emails_ticket\\" \\/>"
     }

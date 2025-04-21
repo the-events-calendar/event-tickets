@@ -1,15 +1,8 @@
 <?php return '{
-    "tribe-form-content-start": {
+    "tec-settings-email-template-header": {},
+    "tec-settings-email-template-opening-div": {
         "type": "html",
-        "html": "<div class=\\"tribe-settings-form-wrap tec-settings-form__header-block--horizontal\\">"
-    },
-    "tribe-tickets-emails-header": {
-        "type": "html",
-        "html": "<h2 class=\\"tec-settings-form__section-header\\">Tickets Emails<\\/h2>"
-    },
-    "tribe-tickets-emails-description": {
-        "type": "html",
-        "html": "<p>Customize your customer communications when tickets are purchased, RSVPs are submitted, and for Tickets Commerce order notifications. Learn more about Event Tickets and Tickets Commerce communications in our <a href=\\"https:\\/\\/evnt.is\\/event-tickets-emails\\" target=\\"_blank\\" rel=\\"nofollow\\">Knowledgebase<\\/a>.<\\/p>"
+        "html": "<div>"
     },
     "0": {
         "type": "html",

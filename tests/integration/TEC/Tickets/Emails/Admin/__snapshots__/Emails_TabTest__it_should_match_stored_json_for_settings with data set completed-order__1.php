@@ -70,6 +70,10 @@
     },
     "4": {
         "type": "html",
+        "html": "<\\/div>"
+    },
+    "5": {
+        "type": "html",
         "html": "<input type=\\"hidden\\" name=\\"tec_tickets_emails_current_section\\" id=\\"tec_tickets_emails_current_section\\" value=\\"tec_tickets_emails_completed_order\\" \\/>"
     }
 }';
