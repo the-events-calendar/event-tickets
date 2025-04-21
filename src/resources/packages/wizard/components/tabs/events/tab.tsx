@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { __ } from '@wordpress/i18n';
 import { useSelect } from '@wordpress/data';
 import { CheckboxControl } from '@wordpress/components';
@@ -21,6 +21,12 @@ const EventsContent = ( { moveToNextTab, skipToNextTab } ) => {
 	const [showSuccess, setShowSuccess] = useState(false);
 	const [eventsValue, setEventsValue] = useState(true);
 
+	useEffect(() => {
+		if (eventsCalendarActive) {
+			setShowSuccess(true);
+		}
+	}, [eventsCalendarActive]);
+
 	const handleSuccess = () => {
 		setShowSuccess(true);
 	};
@@ -36,7 +42,10 @@ const EventsContent = ( { moveToNextTab, skipToNextTab } ) => {
 		: __( 'Yes, activate The Events Calendar plugin for me.', 'event-tickets' );
 
 	if (showSuccess) {
-		return <SuccessContent onlyActivated={eventsCalendarActive} />;
+		return <SuccessContent
+			onlyActivated={eventsCalendarInstalled && !eventsCalendarActive}
+			alreadyActivated={eventsCalendarActive}
+		/>;
 	}
 
 	return (
