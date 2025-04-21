@@ -244,7 +244,7 @@ class Tribe__Tickets__Main {
 		// Get the checked plugins from the request. If there are more than one, we're doing a bulk activation.
 		$checked = tec_get_request_var( 'checked', [] );
 
-		if (  count( $checked ) > 1 ) {
+		if ( count( $checked ) > 1 ) {
 			// If multiple plugins are being activated, set the wizard redirect transient, this should only trigger redirection on a ET admin page visit.
 			set_transient( Landing_Page::BULK_ACTIVATION_REDIRECT_OPTION, 1, 30 );
 		} else {
