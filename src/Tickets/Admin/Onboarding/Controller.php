@@ -85,6 +85,8 @@ class Controller extends Controller_Contract {
 		add_action( 'admin_post_' . Landing_Page::DISMISS_PAGE_ACTION, [ $this, 'handle_onboarding_page_dismiss' ] );
 		add_action( 'admin_notices', [ $this, 'remove_all_admin_notices_in_onboarding_page' ], -1 * PHP_INT_MAX );
 		add_action( 'tec_admin_headers_about_to_be_sent', [ $this, 'redirect_tec_pages_to_guided_setup' ] );
+		// Remove older deprecated actions
+		//remove_action( 'admin_init', [ 'Tribe__Admin__Activation_Page', 'maybe_redirect' ], 10 );
 	}
 
 	/**
@@ -149,6 +151,45 @@ class Controller extends Controller_Contract {
 		$force = apply_filters( 'tec_tickets_onboarding_force_redirect_to_guided_setup', false );
 
 		if ( ! $force ) {
+			// For single plugin activation, check the activation redirect transient
+			$activation_redirect = get_transient( Landing_Page::ACTIVATION_REDIRECT_OPTION );
+
+			// For bulk activation, only redirect if they're on an ET admin page and have the wizard redirect transient
+			$wizard_redirect = get_transient( Landing_Page::BULK_ACTIVATION_REDIRECT_OPTION );
+
+			// If neither transient is set, don't redirect
+			if ( ! $activation_redirect && ! $wizard_redirect ) {
+				return;
+			}
+
+			// If it's a bulk activation (wizard redirect), only proceed if we're on an ET admin page
+			if ( ! $activation_redirect && $wizard_redirect ) {
+				$requested_page = tec_get_request_var( 'page', '' );
+				$post_type = tec_get_request_var( 'post_type', '' );
+				$current_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+
+				// Check if we're on any ET admin page
+				$is_et_page = false;
+
+				// Check main tec-tickets pages
+				if (
+					! empty( $requested_page )
+					&& (
+						strpos( $requested_page, 'tec-tickets' ) === 0
+						|| null !== $current_screen && strpos( $current_screen->base, 'tec-tickets' ) === 0
+						|| $requested_page === 'tickets-setup'
+					)
+				) {
+					$is_et_page = true;
+				} else if ( $post_type === 'ticket-meta-fieldset' ) {
+					// Check if we're on the ticket fieldsets page
+					$is_et_page = true;
+				}
+
+				if ( ! $is_et_page ) {
+					return;
+				}
+			}
 
 			// Do not redirect if they have been to the Guided Setup page already.
 			if ( (bool) tribe_get_option( Landing_Page::VISITED_GUIDED_SETUP_OPTION, false ) ) {
@@ -174,6 +215,10 @@ class Controller extends Controller_Contract {
 			],
 			admin_url( 'admin.php' )
 		);
+
+		// If we are about to redirect, delete our redirect transients - we don't need them any more.
+		delete_transient( Landing_Page::ACTIVATION_REDIRECT_OPTION );
+		delete_transient( Landing_Page::BULK_ACTIVATION_REDIRECT_OPTION );
 
 		// phpcs:ignore WordPressVIPMinimum.Security.ExitAfterRedirect.NoExit, StellarWP.CodeAnalysis.RedirectAndDie.Error
 		wp_safe_redirect( $setup_url );
