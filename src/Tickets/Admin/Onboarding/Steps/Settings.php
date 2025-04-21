@@ -1,6 +1,6 @@
 <?php
 /**
- * Settings step for the onboarding wizard.
+ * Handles the settings step of the onboarding wizard.
  *
  * @since TBD
  *
@@ -12,17 +12,28 @@ namespace TEC\Tickets\Admin\Onboarding\Steps;
 use TEC\Common\Admin\Onboarding\Steps\Abstract_Step;
 use WP_REST_Response;
 use WP_REST_Request;
+use TEC\Tickets\Settings as Tickets_Commerce_Settings;
+use TEC\Tickets\Commerce\Utils\Currency;
+
 /**
- * Settings step for the onboarding wizard.
+ * Class Settings
  *
  * @since TBD
  *
  * @package TEC\Tickets\Admin\Onboarding\Steps
  */
 class Settings extends Abstract_Step {
+	/**
+	 * The tab number for this step.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	public const TAB_NUMBER = 1;
 
 	/**
-	 * Process the step.
+	 * Process the settings data.
 	 *
 	 * @since TBD
 	 *
@@ -31,7 +42,17 @@ class Settings extends Abstract_Step {
 	 *
 	 * @return WP_REST_Response
 	 */
-	public static function process( $response, $request ): WP_REST_Response {
-		return new WP_REST_Response( [ 'success' => true ] );
+	public function process( $response, $request ): WP_REST_Response {
+		$settings = $request->get_json_params();
+
+		if ( empty( $settings['currentTab'] ) ) {
+			return $this->add_fail_message( $response, __( 'No settings provided.', 'event-tickets' ) );
+		}
+
+		tribe_update_option( Tickets_Commerce_Settings::$tickets_commerce_enabled, (bool) $settings['paymentOption'] );
+
+		tribe_update_option( Currency::$currency_code_option, $settings['currency'] );
+
+		return $this->add_message( $response, __( 'Successfully saved settings.', 'event-tickets' ) );
 	}
 }
