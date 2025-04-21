@@ -23,6 +23,14 @@ use TEC\Common\StellarWP\Assets\Config as Asset_Config;
  * @package TEC\Tickets\Admin\Onboarding
  */
 class Controller extends Controller_Contract {
+	/**
+	 * The step instances.
+	 *
+	 * @since TBD
+	 *
+	 * @var array
+	 */
+	protected $steps = [];
 
 	/**
 	 * Register the provider.
@@ -31,6 +39,12 @@ class Controller extends Controller_Contract {
 	 */
 	public function do_register(): void {
 		Asset_Config::add_group_path( 'tec-tickets-onboarding', tribe( 'tickets.main' )->plugin_path . 'build/', 'wizard' );
+
+		$this->steps = [
+			'optin'    => new Optin(),
+			'settings' => new Settings(),
+			'events'   => new Events(),
+		];
 
 		$this->add_filters();
 		$this->add_actions();
@@ -70,9 +84,9 @@ class Controller extends Controller_Contract {
 	 */
 	public function add_filters(): void {
 		// Add the step handlers.
-		add_filter( 'tec_tickets_onboarding_wizard_handle', [ Optin::class, 'handle' ], 10, 2 );
-		add_filter( 'tec_tickets_onboarding_wizard_handle', [ Settings::class, 'handle' ], 11, 2 );
-		add_filter( 'tec_tickets_onboarding_wizard_handle', [ Events::class, 'handle' ], 12, 2 );
+		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['optin'], 'handle' ], 10, 2 );
+		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['settings'], 'handle' ], 11, 2 );
+		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['events'], 'handle' ], 12, 2 );
 	}
 
 	/**
@@ -96,8 +110,9 @@ class Controller extends Controller_Contract {
 	 */
 	public function remove_filters(): void {
 		// Remove the step handlers.
-		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ Optin::class, 'handle' ], 10 );
-		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ Settings::class, 'handle' ], 11 );
+		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['optin'], 'handle' ], 10 );
+		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['settings'], 'handle' ], 11 );
+		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['events'], 'handle' ], 12 );
 	}
 
 	/**
