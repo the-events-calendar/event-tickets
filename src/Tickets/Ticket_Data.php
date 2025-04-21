@@ -27,15 +27,16 @@ class Ticket_Data {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $post_id The post ID.
+	 * @param int   $post_id               The post ID.
+	 * @param array $excluded_ticket_types The ticket types to exclude.
 	 *
 	 * @return Generator<Ticket_Object> The ticket.
 	 */
-	public function get_posts_tickets( int $post_id ): Generator {
+	public function get_posts_tickets( int $post_id, array $excluded_ticket_types = [ 'rsvp', 'edd', Series_Passes::TICKET_TYPE ] ): Generator {
 		$ticket_types = array_values(
 			array_filter(
 				tribe_tickets()->ticket_types(),
-				static fn( $key ) => ! in_array( $key, [ 'rsvp', 'edd', Series_Passes::TICKET_TYPE ], true ),
+				static fn( $key ) => ! in_array( $key, $excluded_ticket_types, true ),
 				ARRAY_FILTER_USE_KEY
 			)
 		);
@@ -96,11 +97,12 @@ class Ticket_Data {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $post_id The post ID.
+	 * @param int   $post_id               The post ID.
+	 * @param array $excluded_ticket_types The ticket types to exclude.
 	 *
 	 * @return array The ticket data.
 	 */
-	public function get_posts_tickets_data( int $post_id ): array {
+	public function get_posts_tickets_data( int $post_id, array $excluded_ticket_types = [ 'rsvp', 'edd', Series_Passes::TICKET_TYPE ] ): array {
 		$ticket_count                   = 0;
 		$availability                   = [];
 		$tickets_on_sale                = [];
@@ -108,7 +110,7 @@ class Ticket_Data {
 		$tickets_have_ended_sales       = [];
 		$tickets_about_to_go_to_sale    = [];
 
-		foreach ( $this->get_posts_tickets( $post_id ) as $ticket ) {
+		foreach ( $this->get_posts_tickets( $post_id, $excluded_ticket_types ) as $ticket ) {
 			++$ticket_count;
 
 			$this->count_ticket_stats( $ticket, $availability, $tickets_on_sale, $tickets_have_not_started_sales, $tickets_have_ended_sales, $tickets_about_to_go_to_sale );

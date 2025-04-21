@@ -13,12 +13,12 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use WP_Query;
 use TEC\Common\Contracts\Container;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
-use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
 use TEC\Tickets\Commerce\Gateways\Square\Requests;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
 use TEC\Common\StellarWP\DB\DB;
 use ActionScheduler_Store;
+use TEC\Tickets\Ticket_Data;
 
 /**
  * Class Tickets_Sync
@@ -83,16 +83,27 @@ class Tickets_Sync extends Controller_Contract {
 	private Remote_Objects $remote_objects;
 
 	/**
+	 * The ticket data instance.
+	 *
+	 * @since TBD
+	 *
+	 * @var Ticket_Data
+	 */
+	private Ticket_Data $ticket_data;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since TBD
 	 *
 	 * @param Container      $container      The container instance.
 	 * @param Remote_Objects $remote_objects The remote objects instance.
+	 * @param Ticket_Data    $ticket_data    The ticket data instance.
 	 */
-	public function __construct( Container $container, Remote_Objects $remote_objects ) {
+	public function __construct( Container $container, Remote_Objects $remote_objects, Ticket_Data $ticket_data ) {
 		parent::__construct( $container );
 		$this->remote_objects = $remote_objects;
+		$this->ticket_data    = $ticket_data;
 	}
 
 	/**
@@ -107,6 +118,9 @@ class Tickets_Sync extends Controller_Contract {
 		add_action( self::SYNC_ACTION, [ $this, 'sync_tickets' ] );
 		add_action( self::SYNC_TICKET_ABLE_POST_TYPE_TICKETS_ACTION, [ $this, 'sync_ticket_able_post_type_tickets' ] );
 		add_action( self::SYNC_TICKET_ABLE_POST_TYPE_TICKETS_CLEANUP_ACTION, [ $this, 'cleanup_ticket_able_post_type_tickets' ] );
+		add_action( 'tec_tickets_ticket_upserted', [ $this, 'schedule_ticket_sync' ], 10, 2 );
+		add_action( 'tec_tickets_ticket_start_date_trigger', [ $this, 'schedule_ticket_sync_on_date_trigger' ], 10, 4 );
+		add_action( 'tec_tickets_ticket_end_date_trigger', [ $this, 'schedule_ticket_sync_on_date_trigger' ], 10, 4 );
 	}
 
 	/**
@@ -116,7 +130,16 @@ class Tickets_Sync extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	public function unregister(): void {}
+	public function unregister(): void {
+		remove_action( 'init', [ $this, 'schedule_tickets_sync' ] );
+		remove_action( self::SYNC_ACTION, [ $this, 'sync_tickets' ] );
+		remove_action( self::SYNC_TICKET_ABLE_POST_TYPE_TICKETS_ACTION, [ $this, 'sync_ticket_able_post_type_tickets' ] );
+		remove_action( self::SYNC_TICKET_ABLE_POST_TYPE_TICKETS_CLEANUP_ACTION, [ $this, 'cleanup_ticket_able_post_type_tickets' ] );
+	}
+
+	public function schedule_ticket_sync( int $ticket_id, int $parent_id ): void {}
+
+	public function schedule_ticket_sync_on_date_trigger( int $ticket_id, bool $its_happening, int $timestamp, WP_Post $parent ): void {}
 
 	/**
 	 * Schedule the tickets sync.
@@ -130,11 +153,7 @@ class Tickets_Sync extends Controller_Contract {
 			return;
 		}
 
-		if ( get_option( self::SYNC_ACTION_COMPLETED_OPTION, false ) ) {
-			return;
-		}
-
-		if ( count( $this->get_as_actions_with_status( self::SYNC_TICKET_ABLE_POST_TYPE_TICKETS_ACTION ) ) ) {
+		if ( $this->sync_is_completed() || $this->sync_is_in_progress() ) {
 			return;
 		}
 
@@ -149,7 +168,7 @@ class Tickets_Sync extends Controller_Contract {
 	 * @return void
 	 */
 	public function sync_tickets(): void {
-		if ( get_option( self::SYNC_ACTION_COMPLETED_OPTION, false ) ) {
+		if ( $this->sync_is_completed() ) {
 			return;
 		}
 
@@ -171,7 +190,7 @@ class Tickets_Sync extends Controller_Contract {
 	 * @return void
 	 */
 	public function sync_ticket_able_post_type_tickets( string $ticket_able_post_type ): void {
-		if ( get_option( self::SYNC_ACTION_COMPLETED_OPTION, false ) ) {
+		if ( $this->sync_is_completed() ) {
 			return;
 		}
 
@@ -212,47 +231,46 @@ class Tickets_Sync extends Controller_Contract {
 		// Reschedule myself to continue in 2 minutes.
 		as_schedule_single_action( time() + MINUTE_IN_SECONDS * 2, self::SYNC_TICKET_ABLE_POST_TYPE_TICKETS_ACTION, [ $ticket_able_post_type ], self::SYNC_ACTION_GROUP );
 
-		$post_ids     = $query->posts;
-		$ticket_types = array_values(
-			array_filter(
-				tribe_tickets()->ticket_types(),
-				// we are NOT syncing RSVPs at all. We are syncing series passes but we handle them in a different way.
-				static fn( $key ) => ! in_array( $key, [ 'rsvp', Series_Passes::TICKET_TYPE ], true ),
-				ARRAY_FILTER_USE_KEY
-			)
-		);
+		$post_ids = $query->posts;
 
 		$batch = [];
 
 		foreach ( $post_ids as $post_id ) {
-			foreach (
-				tribe_tickets()
-					->where( 'event', $post_id )
-					->where( 'post_type', $ticket_types )
-					->get_ids( true ) as $ticket_id
+			$tickets_stats = $this->ticket_data->get_posts_tickets_data( $post_id, [ 'rsvp', Series_Passes::TICKET_TYPE ] );
+
+			if (
+				empty( $tickets_stats['tickets_on_sale'] ) &&
+				empty( $tickets_stats['tickets_about_to_go_to_sale'] ) &&
+				empty( $tickets_stats['tickets_have_ended_sales'] )
 			) {
-
-				if ( ! $ticket_id ) {
-					continue;
-				}
-
-				$ticket = Tickets::load_ticket_object( $ticket_id );
-
-				if ( ! $ticket instanceof Ticket_Object ) {
-					continue;
-				}
-
-				if ( $ticket->get_event_id() !== $post_id ) {
-					// This is a series ticket which is coming from the series!
-					continue;
-				}
-
-				if ( ! isset( $batch[ $post_id ] ) ) {
-					$batch[ $post_id ] = [];
-				}
-
-				$batch[ $post_id ][] = $ticket;
+				update_post_meta( $post_id, Item::SQUARE_SYNCED_META, time() );
+				continue;
 			}
+
+			$ticket_ids = array_unique(
+				array_merge(
+					$tickets_stats['tickets_on_sale'],
+					$tickets_stats['tickets_about_to_go_to_sale'],
+					$tickets_stats['tickets_have_ended_sales']
+				)
+			);
+
+			$batch[ $post_id ] = array_filter(
+				array_map(
+					static fn ( $ticket_id ) => Tickets::load_ticket_object( $ticket_id ),
+					$ticket_ids
+				)
+			);
+
+			if ( empty( $batch[ $post_id ] ) ) {
+				update_post_meta( $post_id, Item::SQUARE_SYNCED_META, time() );
+			}
+		}
+
+		$batch = array_filter( $batch );
+
+		if ( empty( $batch ) ) {
+			return;
 		}
 
 		$square_batches = $this->remote_objects->transform_batch( $batch );
@@ -322,7 +340,7 @@ class Tickets_Sync extends Controller_Contract {
 	 * @return void
 	 */
 	public function cleanup_ticket_able_post_type_tickets(): void {
-		if ( count( $this->get_as_actions_with_status( self::SYNC_TICKET_ABLE_POST_TYPE_TICKETS_ACTION ) ) ) {
+		if ( $this->sync_is_in_progress() ) {
 			return;
 		}
 
@@ -335,6 +353,8 @@ class Tickets_Sync extends Controller_Contract {
 
 		$rows = (int) DB::query( $query );
 
+		wp_cache_flush_group( 'post_meta' );
+
 		if ( ! $rows ) {
 			update_option( self::SYNC_ACTION_COMPLETED_OPTION, true );
 			return;
@@ -345,6 +365,7 @@ class Tickets_Sync extends Controller_Contract {
 
 	protected function get_as_actions_with_status( string $hook, array $status = [], ?array $args = null ): array {
 		if ( ! $status ) {
+			// Cant be set as default arguments since ActionScheduler_Store class is not available during parsing this.
 			$status = [ ActionScheduler_Store::STATUS_PENDING, ActionScheduler_Store::STATUS_RUNNING ];
 		}
 
@@ -391,5 +412,13 @@ class Tickets_Sync extends Controller_Contract {
 		foreach ( $object['item_data']['variations'] as $variation ) {
 			$this->fire_sync_object_hooks( $variation );
 		}
+	}
+
+	protected function sync_is_in_progress(): bool {
+		return count( $this->get_as_actions_with_status( self::SYNC_TICKET_ABLE_POST_TYPE_TICKETS_ACTION ) ) > 0;
+	}
+
+	protected function sync_is_completed(): bool {
+		return (bool) get_option( self::SYNC_ACTION_COMPLETED_OPTION, false );
 	}
 }
