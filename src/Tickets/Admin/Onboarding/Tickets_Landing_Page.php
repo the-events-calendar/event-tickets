@@ -554,6 +554,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			/* Data */
 			'currencies'                => tribe( Currency::class )->get_currency_list(),
 			'countries'                 => tribe( Country::class )->get_country_list(),
+			'optin'                     => tribe_get_option( 'opt-in-status', false ),
 			/* TEC install step */
 			'events-calendar-installed' => Installer::get()->is_installed( 'the-events-calendar' ),
 			'events-calendar-active'    => Installer::get()->is_active( 'the-events-calendar' ),
