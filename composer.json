@@ -71,16 +71,16 @@
     "changelogger": {
       "changelog": "changelog.md",
       "types": {
-        "version" : "Version",
-        "feat" : "Feature",
-        "tweak" : "Tweak",
-        "fix" : "Fix",
-        "performance" : "Performance",
-        "security" : "Security",
-        "accessibility" : "Accessibility",
-        "compatibility" : "Compatibility",
-        "deprecated" : "Deprecated",
-        "language" : "Language"
+        "version": "Version",
+        "feat": "Feature",
+        "fix": "Fix",
+        "tweak": "Tweak",
+        "performance": "Performance",
+        "security": "Security",
+        "accessibility": "Accessibility",
+        "compatibility": "Compatibility",
+        "deprecated": "Deprecated",
+        "language": "Language"
       },
       "formatter": {
         "filename": "bin/class-tec-changelog-formatter.php"
