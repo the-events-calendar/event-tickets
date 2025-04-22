@@ -25,3 +25,9 @@ modules:
         dbHost: %WP_DB_HOST%
         dbUser: %WP_DB_USER%
         dbPassword: %WP_DB_PASSWORD%
+        plugins:
+          - the-events-calendar/the-events-calendar.php
+          - event-tickets/event-tickets.php
+        activatePlugins:
+          - the-events-calendar/the-events-calendar.php
+          - event-tickets/event-tickets.php
