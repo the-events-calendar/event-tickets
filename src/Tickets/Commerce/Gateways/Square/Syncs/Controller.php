@@ -16,6 +16,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Settings;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
 use Tribe__Tickets__Tickets as Tickets;
 use TEC\Tickets\Ticket_Data;
+use Exception;
 
 /**
  * Class Controller
@@ -118,6 +119,7 @@ class Controller extends Controller_Contract {
 		$this->container->register( Inventory_Sync::class );
 		$this->container->register( Listeners::class );
 		add_action( 'init', [ $this, 'schedule_batch_sync' ] );
+		add_action( 'tribe_log', [ $this, 'mark_action_failed' ], 100, 3 );
 	}
 
 	/**
@@ -132,6 +134,7 @@ class Controller extends Controller_Contract {
 		$this->container->get( Inventory_Sync::class )->unregister();
 		$this->container->get( Listeners::class )->unregister();
 		remove_action( 'init', [ $this, 'schedule_batch_sync' ] );
+		remove_action( 'tribe_log', [ $this, 'mark_action_failed' ], 100 );
 	}
 
 	/**
@@ -162,6 +165,31 @@ class Controller extends Controller_Contract {
 	 */
 	public static function is_sync_completed(): bool {
 		return (bool) tribe_get_option( self::OPTION_SYNC_ACTION_COMPLETED, false );
+	}
+
+	/**
+	 * Mark the action as failed.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 * @throws Exception If an action scheduler actions fails.
+	 */
+	public function mark_action_failed( string $level, string $message = '', array $data = [] ): void {
+		if ( 'error' !== $level ) {
+			return;
+		}
+
+		if ( ! did_action( 'action_scheduler_before_process_queue' ) ) {
+			return;
+		}
+
+		if ( ! empty( $data ) ) {
+			$message .= ' with error data: ' . wp_json_encode( $data, JSON_PRETTY_PRINT );
+		}
+
+		// We mark action with errors as failed.
+		throw new Exception( $message );
 	}
 
 	/**

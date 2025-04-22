@@ -93,9 +93,10 @@ class Remote_Objects {
 
 		$cache = tribe_cache();
 
-		$cache_key = 'square_sync_synced_objects';
+		$cache_key = 'square_sync_discarded_objects';
 
-		$data = [];
+		$transformed = [];
+		$discarded   = [];
 
 		foreach ( $batch as $post_id =>$tickets ) {
 			foreach ( $tickets as $ticket ) {
@@ -103,11 +104,11 @@ class Remote_Objects {
 					try {
 						$change = new Inventory_Change( 'ADJUSTMENT', new Ticket_Item( $ticket ), [ 'location_id' => $location_id ] );
 					} catch ( NoChangeNeededException $e ) {
-						if ( ! isset( $data[ $post_id ] ) ) {
-							$data[ $post_id ] = [];
+						if ( ! isset( $discarded[ $post_id ] ) ) {
+							$discarded[ $post_id ] = [];
 						}
 
-						$data[ $post_id ][] = $ticket;
+						$discarded[ $post_id ][] = $ticket;
 						continue;
 					}
 
@@ -116,7 +117,7 @@ class Remote_Objects {
 			}
 		}
 
-		$cache[ $cache_key ] = $data;
+		$cache[ $cache_key ] = $discarded;
 
 		return $transformed;
 	}

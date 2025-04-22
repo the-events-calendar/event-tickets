@@ -73,7 +73,7 @@ class Inventory_Sync extends Controller_Contract {
 	 */
 	public function do_register(): void {
 		add_action( self::HOOK_SYNC_ACTION, [ $this, 'sync_post_type' ] );
-		add_action( self::HOOK_SYNC_EVENT_ACTION, [ $this, 'sync_event' ] );
+		add_action( self::HOOK_SYNC_EVENT_ACTION, [ $this, 'sync_event' ], 10, 3 );
 	}
 
 	/**
@@ -216,7 +216,7 @@ class Inventory_Sync extends Controller_Contract {
 
 		$square_batches = $this->remote_objects->transform_inventory_batch( $batch );
 
-		$rejected_objects = tribe_cache()['square_sync_synced_objects'] ?? [];
+		$rejected_objects = tribe_cache()['square_sync_discarded_objects'] ?? [];
 
 		foreach( $rejected_objects as $post_id => $tickets ) {
 			if ( count( $tickets ) === count( $batch[ $post_id ] ) ) {

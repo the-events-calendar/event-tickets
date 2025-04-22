@@ -226,6 +226,17 @@ class Items_Sync extends Controller_Contract {
 
 		$this->process_batch( [ $event_id => $tickets ] );
 
+		/**
+		 * Sync the events inventory.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $event_id  The event ID.
+		 * @param bool $execute  Whether to execute the sync.
+		 * @param array $tickets The tickets.
+		 */
+		do_action( Inventory_Sync::HOOK_SYNC_EVENT_ACTION, $event_id, true, $tickets );
+
 		return $tickets;
 	}
 

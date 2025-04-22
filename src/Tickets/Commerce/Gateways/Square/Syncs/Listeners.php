@@ -60,6 +60,10 @@ class Listeners extends Controller_Contract {
 	 * @return void
 	 */
 	public function schedule_ticket_sync( int $ticket_id, int $parent_id ): void {
+		if ( as_has_scheduled_action( Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $parent_id ], Sync_Controller::AS_SYNC_ACTION_GROUP ) ) {
+			return;
+		}
+
 		as_schedule_single_action( time() + MINUTE_IN_SECONDS / 3, Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $parent_id ], Sync_Controller::AS_SYNC_ACTION_GROUP );
 	}
 
@@ -75,6 +79,10 @@ class Listeners extends Controller_Contract {
 	 * @return void
 	 */
 	public function schedule_ticket_sync_on_date_start( int $ticket_id, bool $its_happening, int $timestamp, WP_Post $parent ): void {
+		if ( as_has_scheduled_action( Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $parent->ID ], Sync_Controller::AS_SYNC_ACTION_GROUP ) ) {
+			return;
+		}
+
 		$should_sync = $its_happening || time() >= $timestamp - Ticket_Data::get_ticket_about_to_go_to_sale_seconds( $ticket_id );
 
 		if ( ! $should_sync ) {
@@ -96,9 +104,12 @@ class Listeners extends Controller_Contract {
 	 * @return void
 	 */
 	public function schedule_ticket_sync_on_date_end( int $ticket_id, bool $its_happening, int $timestamp, WP_Post $parent ): void {
+		if ( as_has_scheduled_action( Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $parent->ID ], Sync_Controller::AS_SYNC_ACTION_GROUP ) ) {
+			return;
+		}
+
 		if ( ! $its_happening ) {
 			// Remove the synced tickets going out of sale at the very last moment.
-			as_unschedule_action( Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $parent->ID ], Sync_Controller::AS_SYNC_ACTION_GROUP );
 			return;
 		}
 
