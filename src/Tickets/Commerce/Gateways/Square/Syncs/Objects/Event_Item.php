@@ -1,12 +1,47 @@
 <?php
+/**
+ * Event Item object for Square synchronization.
+ *
+ * This class represents an Event as an Item in Square's catalog. It handles
+ * the mapping between a WordPress Event post and its representation in Square.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects
+ */
 
 namespace TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects;
 
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use WP_Post;
+
+/**
+ * Class Event_Item
+ *
+ * Handles the representation of a WordPress Event as a Square catalog item.
+ * Events in Square contain tickets as variations.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects
+ */
 class Event_Item extends Item {
+	/**
+	 * The type of Square catalog item this class represents.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	protected const ITEM_TYPE = 'ITEM';
 
+	/**
+	 * The data structure for the Square catalog item.
+	 *
+	 * @since TBD
+	 *
+	 * @var array
+	 */
 	protected array $data = [
 		'event_id'                 => null,
 		'type'                     => self::ITEM_TYPE,
@@ -30,8 +65,23 @@ class Event_Item extends Item {
 		],
 	];
 
+	/**
+	 * The WordPress event post.
+	 *
+	 * @since TBD
+	 *
+	 * @var WP_Post|null
+	 */
 	protected ?WP_Post $event = null;
 
+	/**
+	 * Constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $post_id The event post ID.
+	 * @param array $tickets The tickets associated with this event.
+	 */
 	public function __construct( int $post_id, array $tickets = [] ) {
 		$this->data['event_id'] = $post_id;
 		$this->event            = get_post( $post_id );
@@ -39,10 +89,24 @@ class Event_Item extends Item {
 		$this->register_hooks();
 	}
 
+	/**
+	 * Get the WordPress ID of the event.
+	 *
+	 * @since TBD
+	 *
+	 * @return int The event post ID.
+	 */
 	public function get_wp_id(): int {
 		return $this->data['event_id'];
 	}
 
+	/**
+	 * Set the object values for synchronization with Square.
+	 *
+	 * @since TBD
+	 *
+	 * @return array The data array prepared for Square synchronization.
+	 */
 	protected function set_object_values(): array {
 		$this->set( 'is_deleted', null === $this->event || $this->event->post_status === 'trash' );
 		$this->set_item_data( 'name', $this->event->post_title ? $this->event->post_title : __( 'Untitled Event', 'event-tickets' ) );
@@ -64,6 +128,15 @@ class Event_Item extends Item {
 		return $data;
 	}
 
+	/**
+	 * Set the tickets as variations of this event item.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $tickets An array of Ticket_Object instances to set as variations.
+	 *
+	 * @return void
+	 */
 	public function set_tickets( array $tickets ): void {
 		$this->data['item_data']['variations'] = array_map(
 			static fn( Ticket_Object $ticket ) => new Ticket_Item( $ticket ),

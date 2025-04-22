@@ -1,17 +1,53 @@
 <?php
+/**
+ * Inventory Change object for Square synchronization.
+ *
+ * This class represents an inventory change operation to be sent to Square.
+ * It handles different types of inventory changes like physical counts and adjustments.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects
+ */
 
 namespace TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects;
 
 use InvalidArgumentException;
 use JsonSerializable;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Remote_Objects;
+
+/**
+ * Class Inventory_Change
+ *
+ * Represents an inventory change operation for Square's API.
+ * Handles the formatting and validation of inventory adjustments, physical counts,
+ * and transfers according to Square's API requirements.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects
+ */
 class Inventory_Change implements JsonSerializable {
+	/**
+	 * Valid types of inventory changes for Square.
+	 *
+	 * @since TBD
+	 *
+	 * @var array
+	 */
 	protected const VALID_TYPES = [
 		'PHYSICAL_COUNT' => 1,
 		'ADJUSTMENT'     => 1,
 		'TRANSFER'       => 1,
 	];
 
+	/**
+	 * Valid inventory states for Square.
+	 *
+	 * @since TBD
+	 *
+	 * @var array
+	 */
 	protected const VALID_STATES = [
 		'CUSTOM'               => 1,
 		'IN_STOCK'             => 1,
@@ -26,10 +62,35 @@ class Inventory_Change implements JsonSerializable {
 		'UNLINKED_RETURN'      => 1,
 	];
 
+	/**
+	 * The data structure for the inventory change.
+	 *
+	 * @since TBD
+	 *
+	 * @var array
+	 */
 	protected array $data = [];
 
+	/**
+	 * The ticket item associated with this inventory change.
+	 *
+	 * @since TBD
+	 *
+	 * @var Ticket_Item
+	 */
 	protected Ticket_Item $ticket_item;
 
+	/**
+	 * Constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param string      $type        The type of inventory change.
+	 * @param Ticket_Item $ticket_item The ticket item to change inventory for.
+	 * @param array       $data        Additional data for the inventory change.
+	 *
+	 * @throws InvalidArgumentException If the type is invalid.
+	 */
 	public function __construct( string $type, Ticket_Item $ticket_item, array $data ) {
 		if ( ! isset( self::VALID_TYPES[ strtoupper( $type ) ] ) ) {
 			throw new InvalidArgumentException( 'Invalid type' );
@@ -56,6 +117,16 @@ class Inventory_Change implements JsonSerializable {
 		}
 	}
 
+	/**
+	 * Process inventory changes from Square.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $state    The inventory state reported by Square.
+	 * @param string $quantity The quantity reported by Square.
+	 *
+	 * @return void
+	 */
 	public function process_inventory_changed( string $state, string $quantity ): void {
 		$ticket = $this->ticket_item->get_ticket();
 
@@ -87,6 +158,17 @@ class Inventory_Change implements JsonSerializable {
 		}
 	}
 
+	/**
+	 * Set the data for an adjustment type inventory change.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $data Additional data for the adjustment.
+	 *
+	 * @return void
+	 * @throws NoChangeNeededException If no change is needed.
+	 * @throws InvalidArgumentException If the data is invalid.
+	 */
 	public function set_adjustment_data( array $data = [] ): void {
 		$cache     = tribe_cache();
 		$cache_key = 'square_sync_object_state_' . $this->ticket_item->get_id() . '_' . $data['location_id'];
@@ -108,7 +190,7 @@ class Inventory_Change implements JsonSerializable {
 			throw new NoChangeNeededException( 'Ticket ' . $this->ticket_item->get_id() . ' is already at the desired stock level in Square.' );
 		}
 
-		$default_to_state = $quantity - $previous_quantity > 0 ? 'IN_STOCK' : 'SOLD_ONLINE';
+		$default_to_state = $quantity - $previous_quantity > 0 ? 'IN_STOCK' : 'SOLD';
 
 		if ( ! $quantity ) {
 			throw new InvalidArgumentException( 'Quantity is required for an adjustment. We need to specify the amount of tickets that where adjusted!' );
@@ -135,10 +217,24 @@ class Inventory_Change implements JsonSerializable {
 		);
 	}
 
+	/**
+	 * Set the data for a physical count type inventory change.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
 	public function set_physical_count_data(): void {
 		$this->data['physical_count']['quantity'] = (string) $this->ticket_item->get_ticket()->available();
 	}
 
+	/**
+	 * Serialize the object to JSON.
+	 *
+	 * @since TBD
+	 *
+	 * @return array The data array for JSON serialization.
+	 */
 	public function jsonSerialize(): array {
 		return $this->data;
 	}

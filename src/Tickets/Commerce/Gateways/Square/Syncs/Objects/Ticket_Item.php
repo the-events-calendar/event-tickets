@@ -1,12 +1,46 @@
 <?php
+/**
+ * Ticket Item object for Square synchronization.
+ *
+ * This class represents a Ticket as an Item Variation in Square's catalog. It handles
+ * the mapping between a WordPress Ticket and its representation in Square.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects
+ */
 
 namespace TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects;
 
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
+/**
+ * Class Ticket_Item
+ *
+ * Handles the representation of a WordPress Ticket as a Square catalog item variation.
+ * Tickets in Square are represented as variations of an Event item.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects
+ */
 class Ticket_Item extends Item {
+	/**
+	 * The type of Square catalog item this class represents.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	public const ITEM_TYPE = 'ITEM_VARIATION';
 
+	/**
+	 * The data structure for the Square catalog item variation.
+	 *
+	 * @since TBD
+	 *
+	 * @var array
+	 */
 	protected array $data = [
 		'type'                     => self::ITEM_TYPE,
 		'id'                       => null,
@@ -37,21 +71,56 @@ class Ticket_Item extends Item {
 		],
 	];
 
+	/**
+	 * The WordPress ticket object.
+	 *
+	 * @since TBD
+	 *
+	 * @var Ticket_Object
+	 */
 	protected Ticket_Object $ticket;
 
+	/**
+	 * Constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param Ticket_Object $ticket The ticket object to represent in Square.
+	 */
 	public function __construct( Ticket_Object $ticket ) {
 		$this->ticket     = $ticket;
 		$this->register_hooks();
 	}
 
+	/**
+	 * Get the WordPress ID of the ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @return int The ticket post ID.
+	 */
 	public function get_wp_id(): int {
 		return $this->ticket->ID;
 	}
 
+	/**
+	 * Get the ticket object.
+	 *
+	 * @since TBD
+	 *
+	 * @return Ticket_Object The ticket object.
+	 */
 	public function get_ticket(): Ticket_Object {
 		return $this->ticket;
 	}
 
+	/**
+	 * Set the object values for synchronization with Square.
+	 *
+	 * @since TBD
+	 *
+	 * @return array The data array prepared for Square synchronization.
+	 */
 	protected function set_object_values(): array {
 		$this->set( 'is_deleted', ! $this->ticket->get_event() || $this->ticket->get_event()->post_status === 'trash' );
 		$this->set_item_data( 'name', $this->ticket->name ? $this->ticket->name : __( 'Untitled Ticket', 'event-tickets' ) );
