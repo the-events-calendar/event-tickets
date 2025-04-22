@@ -148,8 +148,8 @@ abstract class Item implements JsonSerializable {
 			$this->data['version'] = $version;
 		}
 		$this->data['present_at_location_ids'] = [ tribe( Merchant::class )->get_location_id() ];
-		$data = $this->set_object_values();
-		return $data;
+
+		return $this->set_object_values();
 	}
 
 	/**

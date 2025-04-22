@@ -119,7 +119,7 @@ class Inventory_Sync extends Controller_Contract {
 			'tribe-has-tickets' => true,
 			'post_status'       => 'publish',
 			'fields'            => 'ids',
-			'meta_query'        => [
+			'meta_query'        => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				[
 					'key'     => Item::SQUARE_SYNCED_META,
 					'compare' => 'EXISTS',
@@ -182,9 +182,9 @@ class Inventory_Sync extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int  $event_id The event ID.
-	 * @param bool $execute  Whether to execute the sync.
-	 * @param array $tickets The tickets.
+	 * @param int   $event_id The event ID.
+	 * @param bool  $execute  Whether to execute the sync.
+	 * @param array $tickets  The tickets.
 	 *
 	 * @return array The tickets.
 	 */
@@ -218,11 +218,11 @@ class Inventory_Sync extends Controller_Contract {
 
 		$rejected_objects = tribe_cache()['square_sync_discarded_objects'] ?? [];
 
-		foreach( $rejected_objects as $post_id => $tickets ) {
+		foreach ( $rejected_objects as $post_id => $tickets ) {
 			if ( count( $tickets ) === count( $batch[ $post_id ] ) ) {
 				$this->clean_up_synced_meta( $post_id );
 			}
-			foreach( $tickets as $ticket ) {
+			foreach ( $tickets as $ticket ) {
 				$this->clean_up_synced_meta( $ticket->ID );
 			}
 		}
@@ -260,9 +260,9 @@ class Inventory_Sync extends Controller_Contract {
 			do_action( 'tec_tickets_commerce_square_sync_inventory_changed', $count['state'], $count['quantity'], $count );
 		}
 
-		foreach( $batch as $post_id => $tickets ) {
+		foreach ( $batch as $post_id => $tickets ) {
 			$this->clean_up_synced_meta( $post_id );
-			foreach( $tickets as $ticket ) {
+			foreach ( $tickets as $ticket ) {
 				$this->clean_up_synced_meta( $ticket->ID );
 			}
 		}

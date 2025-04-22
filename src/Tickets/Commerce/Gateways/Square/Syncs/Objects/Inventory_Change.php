@@ -107,7 +107,7 @@ class Inventory_Change implements JsonSerializable {
 		$this->data[ strtolower( $type ) ] = [
 			'catalog_object_id' => $this->ticket_item->get_id(),
 			'location_id'       => $data['location_id'],
-			'occurred_at'       => date( Remote_Objects::SQUARE_DATE_TIME_FORMAT, $data['occurred_at'] ?? time() ),
+			'occurred_at'       => gmdate( Remote_Objects::SQUARE_DATE_TIME_FORMAT, $data['occurred_at'] ?? time() ),
 		];
 
 		$method = 'set_' . strtolower( $type ) . '_data';
@@ -173,7 +173,7 @@ class Inventory_Change implements JsonSerializable {
 		$cache     = tribe_cache();
 		$cache_key = 'square_sync_object_state_' . $this->ticket_item->get_id() . '_' . $data['location_id'];
 
-		$cached_state     = $cache[ $cache_key ];
+		$cached_state = $cache[ $cache_key ];
 
 		$previous_quantity = (int) ( $cached_state['quantity'] ?? 0 );
 

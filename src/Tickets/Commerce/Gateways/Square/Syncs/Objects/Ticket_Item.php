@@ -34,6 +34,8 @@ class Ticket_Item extends Item {
 	 */
 	public const ITEM_TYPE = 'ITEM_VARIATION';
 
+	// phpcs:disable Squiz.PHP.CommentedOutCode.Found
+
 	/**
 	 * The data structure for the Square catalog item variation.
 	 *
@@ -71,6 +73,8 @@ class Ticket_Item extends Item {
 		],
 	];
 
+	// phpcs:enable Squiz.PHP.CommentedOutCode.Found
+
 	/**
 	 * The WordPress ticket object.
 	 *
@@ -88,7 +92,7 @@ class Ticket_Item extends Item {
 	 * @param Ticket_Object $ticket The ticket object to represent in Square.
 	 */
 	public function __construct( Ticket_Object $ticket ) {
-		$this->ticket     = $ticket;
+		$this->ticket = $ticket;
 		$this->register_hooks();
 	}
 
@@ -126,7 +130,11 @@ class Ticket_Item extends Item {
 		$this->set_item_data( 'name', $this->ticket->name ? $this->ticket->name : __( 'Untitled Ticket', 'event-tickets' ) );
 		$this->set_item_data( 'sku', $this->ticket->sku );
 		$this->set_item_data( 'sellable', time() + 30 < $this->ticket->end_date() );
-		$this->set_item_data( 'price_money', [ 'amount' => $this->ticket->price * 100, 'currency' => 'USD' ] );
+		$this->set_item_data( 'price_money', [
+			'amount'   => $this->ticket->price * 100,
+			'currency' => 'USD',
+		] );
+
 		return $this->data;
 	}
 }

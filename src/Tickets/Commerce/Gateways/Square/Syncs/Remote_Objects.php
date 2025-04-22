@@ -98,7 +98,7 @@ class Remote_Objects {
 		$transformed = [];
 		$discarded   = [];
 
-		foreach ( $batch as $post_id =>$tickets ) {
+		foreach ( $batch as $post_id => $tickets ) {
 			foreach ( $tickets as $ticket ) {
 				foreach ( $location_ids as $location_id ) {
 					try {
@@ -139,7 +139,7 @@ class Remote_Objects {
 
 		foreach ( $batch as $tickets ) {
 			foreach ( $tickets as $ticket ) {
-				$ticket_item = new Ticket_Item( $ticket );
+				$ticket_item                  = new Ticket_Item( $ticket );
 				$data['catalog_object_ids'][] = $ticket_item->get_id();
 			}
 		}
@@ -168,7 +168,7 @@ class Remote_Objects {
 		$cache = tribe_cache();
 
 		foreach ( $response['counts'] as $count ) {
-			$cache_key = 'square_sync_object_state_' . $count['catalog_object_id'] . '_' . $count['location_id'];
+			$cache_key           = 'square_sync_object_state_' . $count['catalog_object_id'] . '_' . $count['location_id'];
 			$cache[ $cache_key ] = [
 				'quantity' => $count['quantity'],
 				'state'    => $count['state'],

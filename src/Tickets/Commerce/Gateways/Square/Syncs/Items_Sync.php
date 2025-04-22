@@ -152,7 +152,7 @@ class Items_Sync extends Controller_Contract {
 			'tribe-has-tickets' => true,
 			'post_status'       => 'publish',
 			'fields'            => 'ids',
-			'meta_query'        => [
+			'meta_query'        => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				[
 					'key'     => Item::SQUARE_SYNCED_META,
 					'compare' => 'NOT EXISTS',
@@ -212,8 +212,8 @@ class Items_Sync extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $event_id The event ID.
-	 * @param bool $execute Whether to execute the sync.
+	 * @param int   $event_id The event ID.
+	 * @param bool  $execute  Whether to execute the sync.
 	 *
 	 * @return array The tickets.
 	 */
@@ -299,7 +299,15 @@ class Items_Sync extends Controller_Contract {
 		}
 
 		if ( empty( $response['objects'] ) ) {
-			do_action( 'tribe_log', 'error', 'Square Sync', [ 'idempotency_key' => $idempotency_key, 'response' => $response ] );
+			do_action(
+				'tribe_log',
+				'error',
+				'Square Sync',
+				[
+					'idempotency_key' => $idempotency_key,
+					'response'        => $response,
+				]
+			);
 			return;
 		}
 
@@ -313,31 +321,34 @@ class Items_Sync extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $object The object.
+	 * @param array $square_object The object.
 	 *
 	 * @return void
 	 */
-	protected function fire_sync_object_hooks( array $object ): void {
+	protected function fire_sync_object_hooks( array $square_object ): void {
 		/**
 		 * Fires when a object is received from Square.
 		 *
+		 * @since TBD
+		 *
+		 * @param array $square_object The sync object.
 		 */
-		do_action( 'tec_tickets_commerce_square_sync_object_' . $object['id'], $object );
+		do_action( 'tec_tickets_commerce_square_sync_object_' . $square_object['id'], $square_object );
 
 		/**
 		 * Fires when a object is received from Square.
 		 *
 		 * @since TBD
 		 *
-		 * @param array $object The sync object.
+		 * @param array $square_object The sync object.
 		 */
-		do_action( 'tec_tickets_commerce_square_sync_object', $object );
+		do_action( 'tec_tickets_commerce_square_sync_object', $square_object );
 
-		if ( empty( $object['item_data']['variations'] ) || ! is_array( $object['item_data']['variations'] ) ) {
+		if ( empty( $square_object['item_data']['variations'] ) || ! is_array( $square_object['item_data']['variations'] ) ) {
 			return;
 		}
 
-		foreach ( $object['item_data']['variations'] as $variation ) {
+		foreach ( $square_object['item_data']['variations'] as $variation ) {
 			$this->fire_sync_object_hooks( $variation );
 		}
 	}

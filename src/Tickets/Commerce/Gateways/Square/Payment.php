@@ -217,7 +217,7 @@ class Payment {
 			'body' => $body,
 		];
 
-		return Requests::po st( "payments/{$payment_id}/cancel", $query_args, $args );
+		return Requests::post( "payments/{$payment_id}/cancel", $query_args, $args );
 	}
 
 	/**

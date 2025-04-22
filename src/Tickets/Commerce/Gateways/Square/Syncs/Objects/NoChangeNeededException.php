@@ -11,7 +11,10 @@
  */
 
 namespace TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects;
+
 use Exception;
+
+// phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 
 /**
  * Class NoChangeNeededException
@@ -24,5 +27,5 @@ use Exception;
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects
  */
 class NoChangeNeededException extends Exception {
-	// Empty
+	// Empty.
 }

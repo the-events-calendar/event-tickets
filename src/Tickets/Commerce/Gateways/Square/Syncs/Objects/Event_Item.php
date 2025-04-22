@@ -35,6 +35,8 @@ class Event_Item extends Item {
 	 */
 	protected const ITEM_TYPE = 'ITEM';
 
+	// phpcs:disable Squiz.PHP.CommentedOutCode.Found
+
 	/**
 	 * The data structure for the Square catalog item.
 	 *
@@ -64,6 +66,8 @@ class Event_Item extends Item {
 			// 'image_ids'            => [],
 		],
 	];
+
+	// phpcs:enable Squiz.PHP.CommentedOutCode.Found
 
 	/**
 	 * The WordPress event post.

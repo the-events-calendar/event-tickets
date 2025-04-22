@@ -72,14 +72,15 @@ class Listeners extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $ticket_id The ticket ID.
-	 * @param bool $its_happening Whether the ticket is about to go to sale or is already on sale.
-	 * @param int $timestamp The timestamp.
+	 * @param int     $ticket_id     The ticket ID.
+	 * @param bool    $its_happening Whether the ticket is about to go to sale or is already on sale.
+	 * @param int     $timestamp     The timestamp.
+	 * @param WP_Post $post_parent   The parent post.
 	 *
 	 * @return void
 	 */
-	public function schedule_ticket_sync_on_date_start( int $ticket_id, bool $its_happening, int $timestamp, WP_Post $parent ): void {
-		if ( as_has_scheduled_action( Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $parent->ID ], Sync_Controller::AS_SYNC_ACTION_GROUP ) ) {
+	public function schedule_ticket_sync_on_date_start( int $ticket_id, bool $its_happening, int $timestamp, WP_Post $post_parent ): void {
+		if ( as_has_scheduled_action( Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $post_parent->ID ], Sync_Controller::AS_SYNC_ACTION_GROUP ) ) {
 			return;
 		}
 
@@ -89,7 +90,7 @@ class Listeners extends Controller_Contract {
 			return;
 		}
 
-		as_schedule_single_action( time(), Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $parent->ID ], Sync_Controller::AS_SYNC_ACTION_GROUP );
+		as_schedule_single_action( time(), Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $post_parent->ID ], Sync_Controller::AS_SYNC_ACTION_GROUP );
 	}
 
 	/**
@@ -97,14 +98,15 @@ class Listeners extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $ticket_id The ticket ID.
-	 * @param bool $its_happening Whether the ticket is about to go to sale or is already on sale.
-	 * @param int $timestamp The timestamp.
+	 * @param int     $ticket_id     The ticket ID.
+	 * @param bool    $its_happening Whether the ticket is about to go to sale or is already on sale.
+	 * @param int     $timestamp     The timestamp.
+	 * @param WP_Post $post_parent   The parent post.
 	 *
 	 * @return void
 	 */
-	public function schedule_ticket_sync_on_date_end( int $ticket_id, bool $its_happening, int $timestamp, WP_Post $parent ): void {
-		if ( as_has_scheduled_action( Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $parent->ID ], Sync_Controller::AS_SYNC_ACTION_GROUP ) ) {
+	public function schedule_ticket_sync_on_date_end( int $ticket_id, bool $its_happening, int $timestamp, WP_Post $post_parent ): void {
+		if ( as_has_scheduled_action( Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $post_parent->ID ], Sync_Controller::AS_SYNC_ACTION_GROUP ) ) {
 			return;
 		}
 
@@ -113,6 +115,6 @@ class Listeners extends Controller_Contract {
 			return;
 		}
 
-		as_schedule_single_action( time(), Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $parent->ID ], Sync_Controller::AS_SYNC_ACTION_GROUP );
+		as_schedule_single_action( time(), Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $post_parent->ID ], Sync_Controller::AS_SYNC_ACTION_GROUP );
 	}
 }
