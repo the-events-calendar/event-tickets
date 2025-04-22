@@ -212,8 +212,8 @@ class Items_Sync extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int   $event_id The event ID.
-	 * @param bool  $execute  Whether to execute the sync.
+	 * @param int  $event_id The event ID.
+	 * @param bool $execute  Whether to execute the sync.
 	 *
 	 * @return array The tickets.
 	 */

@@ -174,7 +174,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @param string $level   The level of the log.
 	 * @param string $message The message of the log.
-	 * @param array $data     The data of the log.
+	 * @param array  $data    The data of the log.
 	 *
 	 * @return void
 	 * @throws Exception If an action scheduler actions fails.

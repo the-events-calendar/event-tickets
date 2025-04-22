@@ -52,7 +52,7 @@ class Ticket_Item extends Item {
 		// 'absent_at_location_ids'   => [],
 		'item_variation_data'      => [
 			// 'item_id'                   => '',
-			'name'                      => '', // max 255
+			'name'                      => '', // max 255 chars.
 			'sku'                       => '',
 			'pricing_type'              => 'FIXED_PRICING',
 			'price_money'               => [
@@ -64,11 +64,6 @@ class Ticket_Item extends Item {
 			'inventory_alert_threshold' => 5,
 			'stockable'                 => true,
 			'sellable'                  => true,
-			// 'stockable_conversion'      => [
-			// 	'stockable_item_variation_id' => null,
-			// 	'stockable_quantity'          => 1,
-			// 	'nonstockable_quantity'       => 1,
-			// ],
 			// 'image_ids'                 => [],
 		],
 	];
@@ -130,10 +125,13 @@ class Ticket_Item extends Item {
 		$this->set_item_data( 'name', $this->ticket->name ? $this->ticket->name : __( 'Untitled Ticket', 'event-tickets' ) );
 		$this->set_item_data( 'sku', $this->ticket->sku );
 		$this->set_item_data( 'sellable', time() + 30 < $this->ticket->end_date() );
-		$this->set_item_data( 'price_money', [
-			'amount'   => $this->ticket->price * 100,
-			'currency' => 'USD',
-		] );
+		$this->set_item_data(
+			'price_money',
+			[
+				'amount'   => $this->ticket->price * 100,
+				'currency' => 'USD',
+			]
+		);
 
 		return $this->data;
 	}

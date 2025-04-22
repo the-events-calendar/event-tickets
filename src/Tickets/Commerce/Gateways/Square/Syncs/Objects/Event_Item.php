@@ -35,7 +35,7 @@ class Event_Item extends Item {
 	 */
 	protected const ITEM_TYPE = 'ITEM';
 
-	// phpcs:disable Squiz.PHP.CommentedOutCode.Found
+	// phpcs:disable Squiz.PHP.CommentedOutCode.Found, Squiz.Commenting.InlineComment.InvalidEndChar
 
 	/**
 	 * The data structure for the Square catalog item.
@@ -67,7 +67,7 @@ class Event_Item extends Item {
 		],
 	];
 
-	// phpcs:enable Squiz.PHP.CommentedOutCode.Found
+	// phpcs:enable Squiz.PHP.CommentedOutCode.Found, Squiz.Commenting.InlineComment.InvalidEndChar
 
 	/**
 	 * The WordPress event post.
