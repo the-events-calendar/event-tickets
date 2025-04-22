@@ -11,6 +11,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\Admin\Onboarding\API;
 use TEC\Tickets\Admin\Onboarding\Steps\Optin;
 use TEC\Tickets\Admin\Onboarding\Steps\Settings;
+use TEC\Tickets\Admin\Onboarding\Steps\Payments;
 use TEC\Tickets\Admin\Onboarding\Steps\Communication;
 use TEC\Tickets\Admin\Onboarding\Steps\Events;
 use TEC\Tickets\Admin\Onboarding\Data;
@@ -44,6 +45,7 @@ class Controller extends Controller_Contract {
 		$this->steps = [
 			'optin'         => new Optin(),
 			'settings'      => new Settings(),
+			'payments'      => new Payments(),
 			'communication' => new Communication(),
 			'events'        => new Events(),
 		];
@@ -88,8 +90,9 @@ class Controller extends Controller_Contract {
 		// Add the step handlers.
 		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['optin'], 'handle' ], 10, 2 );
 		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['settings'], 'handle' ], 11, 2 );
-		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['communication'], 'handle' ], 12, 2 );
-		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['events'], 'handle' ], 13, 2 );
+		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['payments'], 'handle' ], 12, 2 );
+		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['communication'], 'handle' ], 13, 2 );
+		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['events'], 'handle' ], 14, 2 );
 	}
 
 	/**
@@ -115,8 +118,9 @@ class Controller extends Controller_Contract {
 		// Remove the step handlers.
 		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['optin'], 'handle' ], 10 );
 		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['settings'], 'handle' ], 11 );
-		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['communication'], 'handle' ], 12 );
-		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['events'], 'handle' ], 13 );
+		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['payments'], 'handle' ], 12 );
+		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['communication'], 'handle' ], 13 );
+		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['events'], 'handle' ], 14 );
 	}
 
 	/**
