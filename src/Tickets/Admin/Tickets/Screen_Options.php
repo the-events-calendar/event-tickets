@@ -59,12 +59,6 @@ class Screen_Options {
 			return $show;
 		}
 		
-		$tab = tec_get_request_var( 'tab' );
-		
-		if ( 'ticket-table' !== $tab ) {
-			return false;
-		}
-
 		/**
 		 * Filter the screen options show screen.
 		 *
