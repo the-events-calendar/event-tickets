@@ -12,7 +12,7 @@ namespace TEC\Tickets\Admin\Onboarding\Steps;
 use TEC\Common\Admin\Onboarding\Steps\Abstract_Step;
 use WP_REST_Response;
 use TEC\Common\StellarWP\Installer\Handler\Plugin;
-
+use TEC\Tickets\Admin\Onboarding\API;
 /**
  * Class Events
  *
@@ -41,6 +41,10 @@ class Events extends Abstract_Step {
 	 * @return WP_REST_Response
 	 */
 	public function process( $response, $request ): WP_REST_Response {
+		$params = $request->get_params();
+
+		$updated = tribe( API::class )->update_wizard_settings( $params );
+
 		return $this->install_events_calendar_plugin( $response, $request );
 	}
 

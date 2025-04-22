@@ -1,6 +1,6 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
-import { useSelect } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { Button } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 import { SETTINGS_STORE_KEY } from '../../../data';
@@ -20,16 +20,26 @@ const PaymentsContent = ({ moveToNextTab, skipToNextTab }) => {
 	const getSettings = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getSettings );
 	const wpNonce = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getSetting( '_wpnonce' ), [] );
 	const actionNonce = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'action_nonce' ), [] );
+	const updateSettings = useDispatch( SETTINGS_STORE_KEY ).updateSettings;
 
-	// Create tabSettings object to pass to NextButton
+	// Check for existing Stripe connection on mount
+	useEffect(() => {
+		const settings = getSettings();
+		if (settings.stripeConnected) {
+			setConnectionStatus('connected');
+		}
+	}, []);
+
 	const tabSettings = {
-		eventTickets: true,
 		currentTab: 2,
 		action_nonce: actionNonce,
+		gateway: paymentOption,
 	};
 
 	const handleConnect = async (gateway: string) => {
 		setConnectionStatus('connecting');
+
+		updateSettings( tabSettings );
 
 		apiFetch.use( apiFetch.createNonceMiddleware( wpNonce ) );
 

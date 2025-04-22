@@ -14,6 +14,7 @@ use WP_REST_Response;
 use WP_REST_Request;
 use TEC\Tickets\Settings as Tickets_Commerce_Settings;
 use TEC\Tickets\Commerce\Utils\Currency;
+use TEC\Tickets\Admin\Onboarding\API;
 
 /**
  * Class Settings
@@ -53,6 +54,9 @@ class Settings extends Abstract_Step {
 
 		tribe_update_option( Currency::$currency_code_option, $settings['currency'] );
 
-		return $this->add_message( $response, __( 'Successfully saved settings.', 'event-tickets' ) );
+		// Update the option.
+		$updated = tribe( API::class )->update_wizard_settings( $settings );
+
+		return $this->add_message( $response, $updated ? __( 'Successfully saved settings.', 'event-tickets' ) : __( 'Failed to save settings.', 'event-tickets' ) );
 	}
 }

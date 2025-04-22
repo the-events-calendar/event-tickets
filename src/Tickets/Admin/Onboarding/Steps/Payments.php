@@ -12,7 +12,7 @@ namespace TEC\Tickets\Admin\Onboarding\Steps;
 use TEC\Common\Admin\Onboarding\Steps\Abstract_Step;
 use WP_REST_Response;
 use TEC\Tickets\Commerce\Gateways\Stripe\Signup;
-
+use TEC\Tickets\Admin\Onboarding\API;
 /**
  * Class Payments
  *
@@ -60,7 +60,10 @@ class Payments extends Abstract_Step {
 	 * @return WP_REST_Response
 	 */
 	public function process( $response, $request ): WP_REST_Response {
-		if ( 'connect' === $request->get_param( 'action' ) ) {
+		$params  = $request->get_params();
+		$updated = tribe( API::class )->update_wizard_settings( $params );
+
+		if ( 'connect' === $params['action'] ) {
 			return $this->handle_payment_gateway_connection( $response, $request );
 		}
 

@@ -13,7 +13,7 @@ use TEC\Common\Admin\Onboarding\Steps\Abstract_Step;
 use WP_REST_Response;
 use WP_REST_Request;
 use TEC\Tickets\Emails\Admin\Settings;
-
+use TEC\Tickets\Admin\Onboarding\API;
 /**
  * Class Communication
  *
@@ -52,6 +52,8 @@ class Communication extends Abstract_Step {
 
 		tribe_update_option( Settings::$option_sender_name, $settings['senderName'] );
 
-		return $this->add_message( $response, __( 'Successfully saved communication settings.', 'event-tickets' ) );
+		$updated = tribe( API::class )->update_wizard_settings( $settings );
+
+		return $this->add_message( $response, $updated ? __( 'Successfully saved communication settings.', 'event-tickets' ) : __( 'Failed to save communication settings.', 'event-tickets' ) );
 	}
 }

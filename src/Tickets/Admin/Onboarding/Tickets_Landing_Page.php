@@ -17,6 +17,7 @@ use TEC\Common\Lists\Country;
 use TEC\Tickets\Admin\Onboarding\API;
 use TEC\Common\Asset;
 use TEC\Events\Admin\Onboarding\Data as TEC_Data;
+use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
 
 /**
  * Class Landing_Page
@@ -548,6 +549,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			'finished'                  => (bool) $data->get_wizard_setting( 'finished', false ),
 			'completedTabs'             => (array) $data->get_wizard_setting( 'completed_tabs', [] ),
 			'skippedTabs'               => (array) $data->get_wizard_setting( 'skipped_tabs', [] ),
+			'paymentOption'             => $data->get_wizard_setting( 'payment_option', '' ),
 			/* nonces */
 			'action_nonce'              => wp_create_nonce( API::NONCE_ACTION ),
 			'_wpnonce'                  => wp_create_nonce( 'wp_rest' ),
@@ -555,6 +557,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			'currencies'                => tribe( Currency::class )->get_currency_list(),
 			'countries'                 => tribe( Country::class )->get_country_list(),
 			'optin'                     => tribe_get_option( 'opt-in-status', false ),
+			'stripeConnected'           => tribe( Merchant::class )->is_connected( true ),
 			/* TEC install step */
 			'events-calendar-installed' => Installer::get()->is_installed( 'the-events-calendar' ),
 			'events-calendar-active'    => Installer::get()->is_active( 'the-events-calendar' ),
