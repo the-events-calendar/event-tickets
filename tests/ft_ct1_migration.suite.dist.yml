@@ -27,7 +27,9 @@ modules:
         dbPassword: %WP_DB_PASSWORD%
         plugins:
           - the-events-calendar/the-events-calendar.php
+          - events-pro/events-calendar-pro.php
           - event-tickets/event-tickets.php
         activatePlugins:
           - the-events-calendar/the-events-calendar.php
+          - events-pro/events-calendar-pro.php
           - event-tickets/event-tickets.php
