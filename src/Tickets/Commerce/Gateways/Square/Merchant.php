@@ -643,19 +643,6 @@ class Merchant extends Abstract_Merchant {
 	}
 
 	/**
-	 * Get the location ID for POS transactions.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $event_id The event ID.
-	 *
-	 * @return string
-	 */
-	public function get_pos_location_id( int $event_id = 0 ): string {
-		return tribe( Gateway::class )->get_pos_location_id( $event_id );
-	}
-
-	/**
 	 * Gets all available locations from the merchant's Square account.
 	 *
 	 * @since TBD

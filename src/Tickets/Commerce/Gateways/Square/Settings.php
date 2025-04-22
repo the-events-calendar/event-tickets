@@ -52,24 +52,6 @@ class Settings extends Abstract_Settings {
 	const OPTION_SANDBOX_LOCATION_ID = 'tickets-commerce-square-sandbox-location-id';
 
 	/**
-	 * POS Location ID option key.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	const OPTION_POS_LOCATION_ID = 'tickets-commerce-square-pos-location-id';
-
-	/**
-	 * Sandbox POS Location ID option key.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	const OPTION_SANDBOX_POS_LOCATION_ID = 'tickets-commerce-square-sandbox-pos-location-id';
-
-	/**
 	 * Inventory sync option key.
 	 *
 	 * @since TBD
@@ -136,7 +118,7 @@ class Settings extends Abstract_Settings {
 			$connected_settings[ static::OPTION_SANDBOX_LOCATION_ID ] = [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Square Test Web Location', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'Select the Square test location to process test payments that happen online through your website..', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'Select the Square test location to process test payments.', 'event-tickets' ),
 				'validation_type' => 'options',
 				'options'         => $this->get_location_options( true ),
 				'can_be_empty'    => false,
@@ -146,28 +128,7 @@ class Settings extends Abstract_Settings {
 			$connected_settings[ static::OPTION_LOCATION_ID ] = [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Square Web Location', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'Select the Square location to process payments that happen online through your website.', 'event-tickets' ),
-				'validation_type' => 'options',
-				'options'         => $this->get_location_options( false ),
-				'can_be_empty'    => false,
-			];
-		}
-
-		if ( $is_sandbox_mode ) {
-			$connected_settings[ static::OPTION_SANDBOX_POS_LOCATION_ID ] = [
-				'type'            => 'dropdown',
-				'label'           => esc_html__( 'Square Test POS Location', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'Select the Square test location to process test payments that happen in person at your business. For Events created through The Events Calendar, we create a new location for each Venue. In every other case you can control this in the Event\'s settings.', 'event-tickets' ),
-				'validation_type' => 'options',
-				'options'         => $this->get_location_options( true ),
-				'can_be_empty'    => false,
-			];
-		} else {
-			// In live mode, only show the live location settings.
-			$connected_settings[ static::OPTION_POS_LOCATION_ID ] = [
-				'type'            => 'dropdown',
-				'label'           => esc_html__( 'Square POS Location', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'Select the Square location to process payments that happen in person at your business. For Events created through The Events Calendar, we create a new location for each Venue. In every other case you can control this in the Event\'s settings.', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'Select the Square location to process payments.', 'event-tickets' ),
 				'validation_type' => 'options',
 				'options'         => $this->get_location_options( false ),
 				'can_be_empty'    => false,
