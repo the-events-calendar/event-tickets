@@ -13,6 +13,9 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\Contracts\Container;
 use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 use TEC\Tickets\Commerce\Gateways\Square\Settings;
+use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
+use Tribe__Tickets__Tickets as Tickets;
+use TEC\Tickets\Ticket_Data;
 
 /**
  * Class Controller
@@ -181,5 +184,52 @@ class Controller extends Controller_Contract {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Get the sync-able tickets of an event.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id The event ID.
+	 *
+	 * @return array The syncable tickets.
+	 */
+	public static function get_sync_able_tickets_of_event( int $event_id ): array {
+		$cache_key = 'tec_tickets_commerce_square_sync_able_tickets_' . $event_id;
+		$cache     = tribe_cache();
+
+		if ( ! empty( $cache[ $cache_key ] ) && is_array( $cache[ $cache_key ] ) ) {
+			return $cache[ $cache_key ];
+		}
+
+		$tickets_stats = tribe( Ticket_Data::class )->get_posts_tickets_data( $event_id, [ 'rsvp', Series_Passes::TICKET_TYPE ] );
+
+		if (
+			empty( $tickets_stats['tickets_on_sale'] ) &&
+			empty( $tickets_stats['tickets_about_to_go_to_sale'] ) &&
+			empty( $tickets_stats['tickets_have_ended_sales'] )
+		) {
+			return [];
+		}
+
+		$ticket_ids = array_unique(
+			array_merge(
+				$tickets_stats['tickets_on_sale'],
+				$tickets_stats['tickets_about_to_go_to_sale'],
+				$tickets_stats['tickets_have_ended_sales']
+			)
+		);
+
+		$tickets = array_filter(
+			array_map(
+				static fn ( $ticket_id ) => Tickets::load_ticket_object( $ticket_id ),
+				$ticket_ids
+			)
+		);
+
+		$cache[ $cache_key ] = $tickets;
+
+		return $tickets;
 	}
 }

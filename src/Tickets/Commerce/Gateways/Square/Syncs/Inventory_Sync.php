@@ -12,11 +12,8 @@ namespace TEC\Tickets\Commerce\Gateways\Square\Syncs;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use WP_Query;
 use TEC\Common\Contracts\Container;
-use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
-use Tribe__Tickets__Tickets as Tickets;
 use TEC\Tickets\Commerce\Gateways\Square\Requests;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
-use TEC\Tickets\Ticket_Data;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
 
 /**
@@ -55,27 +52,16 @@ class Inventory_Sync extends Controller_Contract {
 	private Remote_Objects $remote_objects;
 
 	/**
-	 * The ticket data instance.
-	 *
-	 * @since TBD
-	 *
-	 * @var Ticket_Data
-	 */
-	private Ticket_Data $ticket_data;
-
-	/**
 	 * Constructor.
 	 *
 	 * @since TBD
 	 *
 	 * @param Container      $container      The container instance.
 	 * @param Remote_Objects $remote_objects The remote objects instance.
-	 * @param Ticket_Data    $ticket_data    The ticket data instance.
 	 */
-	public function __construct( Container $container, Remote_Objects $remote_objects, Ticket_Data $ticket_data ) {
+	public function __construct( Container $container, Remote_Objects $remote_objects ) {
 		parent::__construct( $container );
 		$this->remote_objects = $remote_objects;
-		$this->ticket_data    = $ticket_data;
 	}
 
 	/**
@@ -87,6 +73,7 @@ class Inventory_Sync extends Controller_Contract {
 	 */
 	public function do_register(): void {
 		add_action( self::HOOK_SYNC_ACTION, [ $this, 'sync_post_type' ] );
+		add_action( self::HOOK_SYNC_EVENT_ACTION, [ $this, 'sync_event' ] );
 	}
 
 	/**
@@ -98,6 +85,7 @@ class Inventory_Sync extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_action( self::HOOK_SYNC_ACTION, [ $this, 'sync_post_type' ] );
+		remove_action( self::HOOK_SYNC_EVENT_ACTION, [ $this, 'sync_event' ] );
 	}
 
 	/**
@@ -196,34 +184,14 @@ class Inventory_Sync extends Controller_Contract {
 	 *
 	 * @param int  $event_id The event ID.
 	 * @param bool $execute  Whether to execute the sync.
+	 * @param array $tickets The tickets.
 	 *
 	 * @return array The tickets.
 	 */
-	public function sync_event( int $event_id, bool $execute = true ): array {
-		$tickets_stats = $this->ticket_data->get_posts_tickets_data( $event_id, [ 'rsvp', Series_Passes::TICKET_TYPE ] );
-
-		if (
-			empty( $tickets_stats['tickets_on_sale'] ) &&
-			empty( $tickets_stats['tickets_about_to_go_to_sale'] ) &&
-			empty( $tickets_stats['tickets_have_ended_sales'] )
-		) {
-			return [];
+	public function sync_event( int $event_id, bool $execute = true, array $tickets = [] ): array {
+		if ( empty( $tickets ) ) {
+			$tickets = Sync_Controller::get_sync_able_tickets_of_event( $event_id );
 		}
-
-		$ticket_ids = array_unique(
-			array_merge(
-				$tickets_stats['tickets_on_sale'],
-				$tickets_stats['tickets_about_to_go_to_sale'],
-				$tickets_stats['tickets_have_ended_sales']
-			)
-		);
-
-		$tickets = array_filter(
-			array_map(
-				static fn ( $ticket_id ) => Tickets::load_ticket_object( $ticket_id ),
-				$ticket_ids
-			)
-		);
 
 		if ( ! $execute ) {
 			return $tickets;
@@ -234,6 +202,15 @@ class Inventory_Sync extends Controller_Contract {
 		return $tickets;
 	}
 
+	/**
+	 * Process the batch.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $batch The batch.
+	 *
+	 * @return void
+	 */
 	protected function process_batch( array $batch ): void {
 		$this->remote_objects->cache_remote_object_state( $batch );
 
