@@ -13,6 +13,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\Contracts\Container;
 use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 use TEC\Tickets\Commerce\Gateways\Square\Settings;
+
 /**
  * Class Controller
  *
@@ -21,6 +22,42 @@ use TEC\Tickets\Commerce\Gateways\Square\Settings;
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs
  */
 class Controller extends Controller_Contract {
+	/**
+	 * The group that the sync action belongs to.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const AS_SYNC_ACTION_GROUP = 'tec_tickets_commerce_square_syncs';
+
+	/**
+	 * The option that marks the sync action as completed.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const OPTION_SYNC_ACTION_COMPLETED = 'tickets_commerce_square_sync_action_completed';
+
+	/**
+	 * The option that marks the sync action as in progress.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const OPTION_SYNC_ACTIONS_IN_PROGRESS = 'tickets_commerce_square_sync_ptypes_in_progress_%s';
+
+	/**
+	 * The option that marks the sync action as completed.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const OPTION_SYNC_ACTIONS_COMPLETED = 'tickets_commerce_square_sync_ptypes_completed_%s';
+
 	/**
 	 * The merchant.
 	 *
@@ -74,7 +111,10 @@ class Controller extends Controller_Contract {
 	 */
 	public function do_register(): void {
 		$this->container->singleton( Remote_Objects::class );
-		$this->container->register( Tickets_Sync::class );
+		$this->container->register( Items_Sync::class );
+		$this->container->register( Inventory_Sync::class );
+		$this->container->register( Listeners::class );
+		add_action( 'init', [ $this, 'schedule_batch_sync' ] );
 	}
 
 	/**
@@ -85,6 +125,61 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
-		$this->container->get( Tickets_Sync::class )->unregister();
+		$this->container->get( Items_Sync::class )->unregister();
+		$this->container->get( Inventory_Sync::class )->unregister();
+		$this->container->get( Listeners::class )->unregister();
+		remove_action( 'init', [ $this, 'schedule_batch_sync' ] );
+	}
+
+	/**
+	 * Schedule the batch sync.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function schedule_batch_sync(): void {
+		if ( as_has_scheduled_action( Items_Sync::HOOK_SYNC_ACTION, [], self::AS_SYNC_ACTION_GROUP ) ) {
+			return;
+		}
+
+		if ( self::is_sync_completed() || self::is_sync_in_progress() ) {
+			return;
+		}
+
+		as_schedule_single_action( time(), Items_Sync::HOOK_SYNC_ACTION, [], self::AS_SYNC_ACTION_GROUP );
+	}
+
+	/**
+	 * Whether the sync is completed.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public static function is_sync_completed(): bool {
+		return (bool) tribe_get_option( self::OPTION_SYNC_ACTION_COMPLETED, false );
+	}
+
+	/**
+	 * Whether the sync is in progress.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public static function is_sync_in_progress(): bool {
+		$ticket_able_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+		foreach ( $ticket_able_post_types as $ticket_able_post_type ) {
+			if ( tribe_get_option( sprintf( self::OPTION_SYNC_ACTIONS_IN_PROGRESS, $ticket_able_post_type ), false ) ) {
+				return true;
+			}
+		}
+
+		if ( tribe_get_option( sprintf( self::OPTION_SYNC_ACTIONS_IN_PROGRESS, 'default' ), false ) ) {
+			return true;
+		}
+
+		return false;
 	}
 }
