@@ -19,6 +19,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
 use TEC\Common\StellarWP\DB\DB;
 use ActionScheduler_Store;
 use TEC\Tickets\Ticket_Data;
+use WP_Post;
 
 /**
  * Class Tickets_Sync
@@ -47,6 +48,24 @@ class Tickets_Sync extends Controller_Contract {
 	protected const SYNC_ACTION = 'tec_tickets_commerce_square_sync_tickets';
 
 	/**
+	 * The action that syncs an individual event and its tickets with Square.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected const SYNC_EVENT_ACTION = 'tec_tickets_commerce_square_sync_event';
+
+	/**
+	 * The action that syncs the inventory of a ticket-able post type with Square.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected const SYNC_INVENTORY_ACTION = 'tec_tickets_commerce_square_sync_inventory';
+
+	/**
 	 * The option that marks the sync action as completed.
 	 *
 	 * @since TBD
@@ -63,15 +82,6 @@ class Tickets_Sync extends Controller_Contract {
 	 * @var string
 	 */
 	protected const SYNC_TICKET_ABLE_POST_TYPE_TICKETS_ACTION = 'tec_tickets_commerce_square_sync_ticket_able_post_type_tickets';
-
-	/**
-	 * The action that cleans up the tickets of a ticket-able post type with Square.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	protected const SYNC_TICKET_ABLE_POST_TYPE_TICKETS_CLEANUP_ACTION = 'tec_tickets_commerce_square_sync_ticket_able_post_type_tickets_cleanup';
 
 	/**
 	 * The remote objects instance.
@@ -117,10 +127,11 @@ class Tickets_Sync extends Controller_Contract {
 		add_action( 'init', [ $this, 'schedule_tickets_sync' ] );
 		add_action( self::SYNC_ACTION, [ $this, 'sync_tickets' ] );
 		add_action( self::SYNC_TICKET_ABLE_POST_TYPE_TICKETS_ACTION, [ $this, 'sync_ticket_able_post_type_tickets' ] );
-		add_action( self::SYNC_TICKET_ABLE_POST_TYPE_TICKETS_CLEANUP_ACTION, [ $this, 'cleanup_ticket_able_post_type_tickets' ] );
+		add_action( self::SYNC_EVENT_ACTION, [ $this, 'sync_event' ] );
+		add_action( self::SYNC_INVENTORY_ACTION, [ $this, 'sync_inventory' ] );
 		add_action( 'tec_tickets_ticket_upserted', [ $this, 'schedule_ticket_sync' ], 10, 2 );
-		add_action( 'tec_tickets_ticket_start_date_trigger', [ $this, 'schedule_ticket_sync_on_date_trigger' ], 10, 4 );
-		add_action( 'tec_tickets_ticket_end_date_trigger', [ $this, 'schedule_ticket_sync_on_date_trigger' ], 10, 4 );
+		add_action( 'tec_tickets_ticket_start_date_trigger', [ $this, 'schedule_ticket_sync_on_date_start' ], 10, 4 );
+		add_action( 'tec_tickets_ticket_end_date_trigger', [ $this, 'schedule_ticket_sync_on_date_end' ], 10, 4 );
 	}
 
 	/**
@@ -134,12 +145,68 @@ class Tickets_Sync extends Controller_Contract {
 		remove_action( 'init', [ $this, 'schedule_tickets_sync' ] );
 		remove_action( self::SYNC_ACTION, [ $this, 'sync_tickets' ] );
 		remove_action( self::SYNC_TICKET_ABLE_POST_TYPE_TICKETS_ACTION, [ $this, 'sync_ticket_able_post_type_tickets' ] );
-		remove_action( self::SYNC_TICKET_ABLE_POST_TYPE_TICKETS_CLEANUP_ACTION, [ $this, 'cleanup_ticket_able_post_type_tickets' ] );
+		remove_action( self::SYNC_EVENT_ACTION, [ $this, 'sync_event' ] );
+		remove_action( self::SYNC_INVENTORY_ACTION, [ $this, 'sync_inventory' ] );
+		remove_action( 'tec_tickets_ticket_upserted', [ $this, 'schedule_ticket_sync' ] );
+		remove_action( 'tec_tickets_ticket_start_date_trigger', [ $this, 'schedule_ticket_sync_on_date_start' ] );
+		remove_action( 'tec_tickets_ticket_end_date_trigger', [ $this, 'schedule_ticket_sync_on_date_end' ] );
 	}
 
-	public function schedule_ticket_sync( int $ticket_id, int $parent_id ): void {}
+	/**
+	 * Schedule the ticket sync.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket ID.
+	 * @param int $parent_id The parent ID.
+	 *
+	 * @return void
+	 */
+	public function schedule_ticket_sync( int $ticket_id, int $parent_id ): void {
+		as_schedule_single_action( time() + MINUTE_IN_SECONDS / 3, self::SYNC_EVENT_ACTION, [ $parent_id ], self::SYNC_ACTION_GROUP );
+	}
 
-	public function schedule_ticket_sync_on_date_trigger( int $ticket_id, bool $its_happening, int $timestamp, WP_Post $parent ): void {}
+	/**
+	 * Schedule the ticket sync on date start.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket ID.
+	 * @param bool $its_happening Whether the ticket is about to go to sale or is already on sale.
+	 * @param int $timestamp The timestamp.
+	 *
+	 * @return void
+	 */
+	public function schedule_ticket_sync_on_date_start( int $ticket_id, bool $its_happening, int $timestamp, WP_Post $parent ): void {
+		$should_sync = $its_happening || time() >= $timestamp - Ticket_Data::get_ticket_about_to_go_to_sale_seconds( $ticket_id );
+
+		if ( ! $should_sync ) {
+			return;
+		}
+
+		as_schedule_single_action( time(), self::SYNC_EVENT_ACTION, [ $parent->ID ], self::SYNC_ACTION_GROUP );
+	}
+
+	/**
+	 * Schedule the ticket sync on date end.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket ID.
+	 * @param bool $its_happening Whether the ticket is about to go to sale or is already on sale.
+	 * @param int $timestamp The timestamp.
+	 *
+	 * @return void
+	 */
+	public function schedule_ticket_sync_on_date_end( int $ticket_id, bool $its_happening, int $timestamp, WP_Post $parent ): void {
+		if ( ! $its_happening ) {
+			// Remove the synced tickets going out of sale at the very last moment.
+			as_unschedule_action( self::SYNC_EVENT_ACTION, [ $parent->ID ], self::SYNC_ACTION_GROUP );
+			return;
+		}
+
+		as_schedule_single_action( time(), self::SYNC_EVENT_ACTION, [ $parent->ID ], self::SYNC_ACTION_GROUP );
+	}
 
 	/**
 	 * Schedule the tickets sync.
@@ -180,6 +247,79 @@ class Tickets_Sync extends Controller_Contract {
 		}
 	}
 
+	public function sync_inventory( string $ticket_able_post_type ): void {
+		if ( $this->sync_is_completed() ) {
+			return;
+		}
+
+		$args = [
+			/**
+			 * Filters the number of "events" aka ticket-able post types to sync with Square per batch.
+			 *
+			 * Each "event" is created as an Event Item in Square. Each ticket the event is created with is created as a Variation within the Event Item.
+			 *
+			 * We can send up to 1000 items per batch to Square. We can't send less than 1 as well -_- !
+			 *
+			 * @since TBD
+			 *
+			 * @param int $posts_per_page The number of posts to sync.
+			 */
+			'posts_per_page'    => min( 1000, max( 1, (int) apply_filters( 'tec_tickets_commerce_square_sync_ticket_able_post_type_inventory_posts_per_page', 100 ) ) ),
+			'post_type'         => $ticket_able_post_type,
+			'tribe-has-tickets' => true,
+			'post_status'       => 'publish',
+			'fields'            => 'ids',
+			'meta_query'        => [
+				[
+					'key'     => Item::SQUARE_SYNCED_META,
+					'compare' => 'EXISTS',
+				],
+			],
+		];
+
+		$query = new WP_Query(
+			/**
+			 * Filters the query arguments for the ticket-able post type tickets sync.
+			 *
+			 * @since TBD
+			 *
+			 * @param array $args The query arguments.
+			 */
+			(array) apply_filters( 'tec_tickets_commerce_square_sync_ticket_able_post_type_tickets_query_args', $args )
+		);
+
+		if ( ! $query->have_posts() ) {
+			// We need to mark the process as completed somehow here...
+			return;
+		}
+
+		// Reschedules itself to continue in 2 minutes.
+		as_schedule_single_action( time() + MINUTE_IN_SECONDS * 2, self::SYNC_INVENTORY_ACTION, [ $ticket_able_post_type ], self::SYNC_ACTION_GROUP );
+
+		$post_ids = $query->posts;
+
+		$batch = [];
+
+		foreach ( $post_ids as $post_id ) {
+			$tickets = $this->sync_events_inventory( $post_id, false );
+
+			if ( ! $tickets ) {
+				continue;
+			}
+
+			$batch[ $post_id ] = $tickets;
+		}
+
+		$batch = array_filter( $batch );
+
+		if ( empty( $batch ) ) {
+			return;
+		}
+
+		$this->process_inventory_batch( $batch );
+	}
+
+
 	/**
 	 * Sync the tickets for a ticket type.
 	 *
@@ -219,16 +359,24 @@ class Tickets_Sync extends Controller_Contract {
 			],
 		];
 
-		$query = new WP_Query( $args );
+		$query = new WP_Query(
+			/**
+			 * Filters the query arguments for the ticket-able post type tickets sync.
+			 *
+			 * @since TBD
+			 *
+			 * @param array $args The query arguments.
+			 */
+			(array) apply_filters( 'tec_tickets_commerce_square_sync_ticket_able_post_type_tickets_query_args', $args )
+		);
 
 		if ( ! $query->have_posts() ) {
-			// Post type is synced! No more syncing needed. DB clean up scheduling takes place next.
-			as_unschedule_action( self::SYNC_TICKET_ABLE_POST_TYPE_TICKETS_CLEANUP_ACTION, [], self::SYNC_ACTION_GROUP );
-			as_schedule_single_action( time(), self::SYNC_TICKET_ABLE_POST_TYPE_TICKETS_CLEANUP_ACTION, [], self::SYNC_ACTION_GROUP );
+			// Post type is synced! Now on to sync the inventory.
+			as_schedule_single_action( time(), self::SYNC_INVENTORY_ACTION, [ $ticket_able_post_type ], self::SYNC_ACTION_GROUP );
 			return;
 		}
 
-		// Reschedule myself to continue in 2 minutes.
+		// Reschedules itself to continue in 2 minutes.
 		as_schedule_single_action( time() + MINUTE_IN_SECONDS * 2, self::SYNC_TICKET_ABLE_POST_TYPE_TICKETS_ACTION, [ $ticket_able_post_type ], self::SYNC_ACTION_GROUP );
 
 		$post_ids = $query->posts;
@@ -236,35 +384,14 @@ class Tickets_Sync extends Controller_Contract {
 		$batch = [];
 
 		foreach ( $post_ids as $post_id ) {
-			$tickets_stats = $this->ticket_data->get_posts_tickets_data( $post_id, [ 'rsvp', Series_Passes::TICKET_TYPE ] );
+			$tickets = $this->sync_event( $post_id, false );
 
-			if (
-				empty( $tickets_stats['tickets_on_sale'] ) &&
-				empty( $tickets_stats['tickets_about_to_go_to_sale'] ) &&
-				empty( $tickets_stats['tickets_have_ended_sales'] )
-			) {
+			if ( ! $tickets ) {
 				update_post_meta( $post_id, Item::SQUARE_SYNCED_META, time() );
 				continue;
 			}
 
-			$ticket_ids = array_unique(
-				array_merge(
-					$tickets_stats['tickets_on_sale'],
-					$tickets_stats['tickets_about_to_go_to_sale'],
-					$tickets_stats['tickets_have_ended_sales']
-				)
-			);
-
-			$batch[ $post_id ] = array_filter(
-				array_map(
-					static fn ( $ticket_id ) => Tickets::load_ticket_object( $ticket_id ),
-					$ticket_ids
-				)
-			);
-
-			if ( empty( $batch[ $post_id ] ) ) {
-				update_post_meta( $post_id, Item::SQUARE_SYNCED_META, time() );
-			}
+			$batch[ $post_id ] = $tickets;
 		}
 
 		$batch = array_filter( $batch );
@@ -273,6 +400,139 @@ class Tickets_Sync extends Controller_Contract {
 			return;
 		}
 
+		$this->process_batch( $batch );
+	}
+
+	/**
+	 * Sync the event.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id The event ID.
+	 * @param bool $execute Whether to execute the sync.
+	 *
+	 * @return array The tickets.
+	 */
+	public function sync_event( int $event_id, bool $execute = true ): array {
+		$tickets_stats = $this->ticket_data->get_posts_tickets_data( $event_id, [ 'rsvp', Series_Passes::TICKET_TYPE ] );
+
+		if (
+			empty( $tickets_stats['tickets_on_sale'] ) &&
+			empty( $tickets_stats['tickets_about_to_go_to_sale'] ) &&
+			empty( $tickets_stats['tickets_have_ended_sales'] )
+		) {
+			return [];
+		}
+
+		$ticket_ids = array_unique(
+			array_merge(
+				$tickets_stats['tickets_on_sale'],
+				$tickets_stats['tickets_about_to_go_to_sale'],
+				$tickets_stats['tickets_have_ended_sales']
+			)
+		);
+
+		$tickets = array_filter(
+			array_map(
+				static fn ( $ticket_id ) => Tickets::load_ticket_object( $ticket_id ),
+				$ticket_ids
+			)
+		);
+
+		if ( ! $execute ) {
+			return $tickets;
+		}
+
+		$this->process_batch( [ $event_id => $tickets ] );
+
+		return $tickets;
+	}
+
+	public function sync_events_inventory( int $event_id, bool $execute = true ): array {
+		$tickets_stats = $this->ticket_data->get_posts_tickets_data( $event_id, [ 'rsvp', Series_Passes::TICKET_TYPE ] );
+
+		if (
+			empty( $tickets_stats['tickets_on_sale'] ) &&
+			empty( $tickets_stats['tickets_about_to_go_to_sale'] ) &&
+			empty( $tickets_stats['tickets_have_ended_sales'] )
+		) {
+			return [];
+		}
+
+		$ticket_ids = array_unique(
+			array_merge(
+				$tickets_stats['tickets_on_sale'],
+				$tickets_stats['tickets_about_to_go_to_sale'],
+				$tickets_stats['tickets_have_ended_sales']
+			)
+		);
+
+		$tickets = array_filter(
+			array_map(
+				static fn ( $ticket_id ) => Tickets::load_ticket_object( $ticket_id ),
+				$ticket_ids
+			)
+		);
+
+		if ( ! $execute ) {
+			return $tickets;
+		}
+
+		$this->process_inventory_batch( [ $event_id => $tickets ] );
+
+		return $tickets;
+	}
+
+	protected function process_inventory_batch( array $batch ): void {
+		$square_batches = $this->remote_objects->transform_inventory_batch( $batch );
+
+		$args = [
+			'body'    => [
+				'idempotency_key' => uniqid( 'tec-square-', true ),
+				'changes'         => $square_batches,
+			],
+			'headers' => [
+				'Content-Type' => 'application/json',
+			],
+		];
+
+		$response = Requests::post(
+			'inventory/changes/batch-create',
+			[],
+			$args
+		);
+
+		if ( ! empty( $response['errors'] ) ) {
+			do_action( 'tribe_log', 'error', 'Square Inventory Sync', $response['errors'] );
+		}
+
+		if ( empty( $response['counts'] ) ) {
+			return;
+		}
+
+		foreach ( $response['counts'] as $count ) {
+			do_action( 'tec_tickets_commerce_square_sync_inventory_changed_' . $count['catalog_object_id'], $count );
+			do_action( 'tec_tickets_commerce_square_sync_inventory_changed', $count );
+		}
+
+		foreach( $batch as $post_id => $tickets ) {
+			$this->clean_up_synced_meta( $post_id );
+			foreach( $tickets as $ticket ) {
+				$this->clean_up_synced_meta( $ticket->ID );
+			}
+		}
+	}
+
+	protected function clean_up_synced_meta( int $object_id ): void {
+		$square_synced = get_post_meta( $object_id, Item::SQUARE_SYNCED_META, true );
+
+		$square_synced = $square_synced && $square_synced > time() - DAY_IN_SECONDS ? $square_synced : time();
+
+		delete_post_meta( $object_id, Item::SQUARE_SYNCED_META );
+		add_post_meta( $object_id, Item::SQUARE_SYNC_HISTORY_META, $square_synced );
+	}
+
+	protected function process_batch( array $batch ): void {
 		$square_batches = $this->remote_objects->transform_batch( $batch );
 
 		$args = [
@@ -330,37 +590,6 @@ class Tickets_Sync extends Controller_Contract {
 		foreach ( $response['objects'] as $object ) {
 			$this->fire_sync_object_hooks( $object );
 		}
-	}
-
-	/**
-	 * Cleanup the tickets of a ticket-able post type with Square.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function cleanup_ticket_able_post_type_tickets(): void {
-		if ( $this->sync_is_in_progress() ) {
-			return;
-		}
-
-		$query = DB::prepare(
-			"UPDATE %i SET meta_key=%s WHERE meta_key=%s ORDER BY meta_id DESC LIMIT 500",
-			DB::prefix( 'postmeta' ),
-			Item::SQUARE_SYNC_HISTORY_META,
-			Item::SQUARE_SYNCED_META,
-		);
-
-		$rows = (int) DB::query( $query );
-
-		wp_cache_flush_group( 'post_meta' );
-
-		if ( ! $rows ) {
-			update_option( self::SYNC_ACTION_COMPLETED_OPTION, true );
-			return;
-		}
-
-		as_schedule_single_action( time() + ( MINUTE_IN_SECONDS / 6 ), self::SYNC_TICKET_ABLE_POST_TYPE_TICKETS_CLEANUP_ACTION, [], self::SYNC_ACTION_GROUP );
 	}
 
 	protected function get_as_actions_with_status( string $hook, array $status = [], ?array $args = null ): array {

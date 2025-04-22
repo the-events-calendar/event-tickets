@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 class Ticket_Item extends Item {
-	protected const ITEM_TYPE = 'ITEM_VARIATION';
+	public const ITEM_TYPE = 'ITEM_VARIATION';
 
 	protected array $data = [
 		'type'                     => self::ITEM_TYPE,
@@ -39,7 +39,6 @@ class Ticket_Item extends Item {
 
 	protected Ticket_Object $ticket;
 
-
 	public function __construct( Ticket_Object $ticket ) {
 		$this->ticket     = $ticket;
 		$this->register_hooks();
@@ -49,10 +48,15 @@ class Ticket_Item extends Item {
 		return $this->ticket->ID;
 	}
 
+	public function get_ticket(): Ticket_Object {
+		return $this->ticket;
+	}
+
 	protected function set_object_values(): array {
 		$this->set( 'is_deleted', ! $this->ticket->get_event() || $this->ticket->get_event()->post_status === 'trash' );
 		$this->set_item_data( 'name', $this->ticket->name ? $this->ticket->name : __( 'Untitled Ticket', 'event-tickets' ) );
 		$this->set_item_data( 'sku', $this->ticket->sku );
+		$this->set_item_data( 'sellable', time() + 30 < $this->ticket->end_date() );
 		$this->set_item_data( 'price_money', [ 'amount' => $this->ticket->price * 100, 'currency' => 'USD' ] );
 		return $this->data;
 	}
