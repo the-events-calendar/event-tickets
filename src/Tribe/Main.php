@@ -8,7 +8,7 @@ use Tribe\Tickets\Events\Service_Provider as Events_Service_Provider;
 use Tribe\Tickets\Promoter\Service_Provider as Promoter_Service_Provider;
 use Tribe\Tickets\Admin\Settings;
 use TEC\Common\StellarWP\Assets\Config as Assets_Config;
-use TEC\Tickets\Admin\Onboarding\Landing_Page;
+use TEC\Tickets\Admin\Onboarding\Tickets_Landing_Page;
 
 /**
  * Class Tribe__Tickets__Main.
@@ -246,10 +246,10 @@ class Tribe__Tickets__Main {
 
 		if ( count( $checked ) > 1 ) {
 			// If multiple plugins are being activated, set the wizard redirect transient, this should only trigger redirection on a ET admin page visit.
-			set_transient( Landing_Page::BULK_ACTIVATION_REDIRECT_OPTION, 1, 30 );
+			set_transient( Tickets_Landing_Page::BULK_ACTIVATION_REDIRECT_OPTION, 1, 30 );
 		} else {
 			// If a single plugin is being activated, set the activation redirect transient for immediate redirection.
-			set_transient( Landing_Page::ACTIVATION_REDIRECT_OPTION, 1, 30 );
+			set_transient( Tickets_Landing_Page::ACTIVATION_REDIRECT_OPTION, 1, 30 );
 		}
 	}
 
