@@ -1,4 +1,11 @@
 <?php
+/**
+ * Remote objects.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square\Syncs
+ */
 
 namespace TEC\Tickets\Commerce\Gateways\Square\Syncs;
 
@@ -9,10 +16,32 @@ use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 use TEC\Tickets\Commerce\Gateways\Square\Requests;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\NoChangeNeededException;
 
+/**
+ * Remote objects.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square\Syncs
+ */
 class Remote_Objects {
-
+	/**
+	 * The Square date time format.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	public const SQUARE_DATE_TIME_FORMAT = 'Y-m-d\TH:i:s.v\Z';
 
+	/**
+	 * Transform the batch.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $batch The batch.
+	 *
+	 * @return array The transformed batch.
+	 */
 	public function transform( array $batch ): array {
 		$transformed = [];
 
@@ -23,6 +52,15 @@ class Remote_Objects {
 		return $transformed;
 	}
 
+	/**
+	 * Transform the batch.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $batch The batch.
+	 *
+	 * @return array The transformed batch.
+	 */
 	public function transform_batch( array $batch ): array {
 		$transformed = $this->transform( $batch );
 
@@ -37,9 +75,16 @@ class Remote_Objects {
 		return $batches;
 	}
 
+	/**
+	 * Transform the inventory batch.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $batch The batch.
+	 *
+	 * @return array The transformed batch.
+	 */
 	public function transform_inventory_batch( array $batch ): array {
-		$transformed = [];
-
 		$location_ids = $this->get_location_ids();
 
 		if ( empty( $location_ids ) ) {
@@ -76,12 +121,19 @@ class Remote_Objects {
 		return $transformed;
 	}
 
+	/**
+	 * Cache the remote object state.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $batch The batch.
+	 *
+	 * @return void
+	 */
 	public function cache_remote_object_state( array $batch ): void {
 		$data = [
 			'location_ids'       => $this->get_location_ids(),
 			'catalog_object_ids' => [],
-			// 1 second ago.
-			// 'updated_after'      => date( self::SQUARE_DATE_TIME_FORMAT, time() - 1 ),
 		];
 
 		foreach ( $batch as $tickets ) {
@@ -123,13 +175,19 @@ class Remote_Objects {
 		}
 	}
 
+	/**
+	 * Get the location IDs.
+	 *
+	 * @since TBD
+	 *
+	 * @return array The location IDs.
+	 */
 	protected function get_location_ids(): array {
 		$merchant = tribe( Merchant::class );
 
 		return array_filter(
 			[
 				$merchant->get_location_id(),
-				// $merchant->get_pos_location_id( $event_id ),
 			]
 		);
 	}
