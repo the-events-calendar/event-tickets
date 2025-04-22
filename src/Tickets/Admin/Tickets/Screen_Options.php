@@ -58,6 +58,12 @@ class Screen_Options {
 		if ( empty( $screen ) || Page::$hook_suffix !== $screen->id ) {
 			return $show;
 		}
+		
+		$tab = tec_get_request_var( 'tab' );
+		
+		if ( 'ticket-table' !== $tab ) {
+			return false;
+		}
 
 		/**
 		 * Filter the screen options show screen.
