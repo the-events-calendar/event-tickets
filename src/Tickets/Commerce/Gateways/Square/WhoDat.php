@@ -70,7 +70,7 @@ class WhoDat extends Abstract_WhoDat {
 		$cache_key       = md5( wp_json_encode( [ $endpoint, $query_args ] ) );
 		$cached_response = $cache->get_transient( $cache_key );
 
-		if ( false !== $cached_response ) {
+		if ( is_array( $cached_response ) ) {
 			return $cached_response;
 		}
 
@@ -85,7 +85,7 @@ class WhoDat extends Abstract_WhoDat {
 		}
 
 		$body = wp_remote_retrieve_body( $request );
-		$body = json_decode( $body, true );
+		$body = (array) json_decode( $body, true );
 
 		$cache->set_transient( $cache_key, $body, HOUR_IN_SECONDS );
 

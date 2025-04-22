@@ -69,6 +69,18 @@ class Payment {
 			$body['reference_id'] = $order->ID;
 		}
 
+		/**
+		 * Filters the payment body.
+		 *
+		 * @since TBD
+		 *
+		 * @param array    $body The payment body.
+		 * @param string   $source_id The source ID.
+		 * @param Value    $value The value object.
+		 * @param ?WP_Post $order The order post object.
+		 */
+		$body = apply_filters( 'tec_tickets_commerce_square_payment_body', $body, $source_id, $value, $order );
+
 		$args = [
 			'body'    => $body,
 			'headers' => [

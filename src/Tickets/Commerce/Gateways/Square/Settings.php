@@ -52,6 +52,33 @@ class Settings extends Abstract_Settings {
 	const OPTION_SANDBOX_LOCATION_ID = 'tickets-commerce-square-sandbox-location-id';
 
 	/**
+	 * POS Location ID option key.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const OPTION_POS_LOCATION_ID = 'tickets-commerce-square-pos-location-id';
+
+	/**
+	 * Sandbox POS Location ID option key.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const OPTION_SANDBOX_POS_LOCATION_ID = 'tickets-commerce-square-sandbox-pos-location-id';
+
+	/**
+	 * Inventory sync option key.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const OPTION_INVENTORY_SYNC = 'tickets-commerce-square-inventory-sync';
+
+	/**
 	 * Get all the settings for the Square gateway.
 	 *
 	 * @since TBD
@@ -95,14 +122,21 @@ class Settings extends Abstract_Settings {
 				'type' => 'html',
 				'html' => '<h3>' . esc_html__( 'Square Settings', 'event-tickets' ) . '</h3>',
 			],
+			static::OPTION_INVENTORY_SYNC => [
+				'type'            => 'checkbox_bool',
+				'label'           => esc_html__( 'Enable Inventory Sync', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'If this option is selected, your Posts with Tickets on sale will be kept in sync with your Square inventory.', 'event-tickets' ),
+				'default'         => false,
+				'validation_type' => 'boolean',
+			],
 		];
 
 		// If in sandbox mode, only show the sandbox location settings.
 		if ( $is_sandbox_mode ) {
 			$connected_settings[ static::OPTION_SANDBOX_LOCATION_ID ] = [
 				'type'            => 'dropdown',
-				'label'           => esc_html__( 'Square Test Location', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'Select the Square test location to process test payments through.', 'event-tickets' ),
+				'label'           => esc_html__( 'Square Test Web Location', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'Select the Square test location to process test payments that happen online through your website..', 'event-tickets' ),
 				'validation_type' => 'options',
 				'options'         => $this->get_location_options( true ),
 				'can_be_empty'    => false,
@@ -111,8 +145,29 @@ class Settings extends Abstract_Settings {
 			// In live mode, only show the live location settings.
 			$connected_settings[ static::OPTION_LOCATION_ID ] = [
 				'type'            => 'dropdown',
-				'label'           => esc_html__( 'Square Location', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'Select the Square location to process payments through.', 'event-tickets' ),
+				'label'           => esc_html__( 'Square Web Location', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'Select the Square location to process payments that happen online through your website.', 'event-tickets' ),
+				'validation_type' => 'options',
+				'options'         => $this->get_location_options( false ),
+				'can_be_empty'    => false,
+			];
+		}
+
+		if ( $is_sandbox_mode ) {
+			$connected_settings[ static::OPTION_SANDBOX_POS_LOCATION_ID ] = [
+				'type'            => 'dropdown',
+				'label'           => esc_html__( 'Square Test POS Location', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'Select the Square test location to process test payments that happen in person at your business. For Events created through The Events Calendar, we create a new location for each Venue. In every other case you can control this in the Event\'s settings.', 'event-tickets' ),
+				'validation_type' => 'options',
+				'options'         => $this->get_location_options( true ),
+				'can_be_empty'    => false,
+			];
+		} else {
+			// In live mode, only show the live location settings.
+			$connected_settings[ static::OPTION_POS_LOCATION_ID ] = [
+				'type'            => 'dropdown',
+				'label'           => esc_html__( 'Square POS Location', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'Select the Square location to process payments that happen in person at your business. For Events created through The Events Calendar, we create a new location for each Venue. In every other case you can control this in the Event\'s settings.', 'event-tickets' ),
 				'validation_type' => 'options',
 				'options'         => $this->get_location_options( false ),
 				'can_be_empty'    => false,
@@ -160,6 +215,17 @@ class Settings extends Abstract_Settings {
 		 * @param bool  $is_connected Whether or not gateway is connected.
 		 */
 		return apply_filters( 'tec_tickets_commerce_square_settings', array_merge( $main_settings, $connected_settings ), $is_connected );
+	}
+
+	/**
+	 * Check if inventory sync is enabled.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether inventory sync is enabled.
+	 */
+	public function is_inventory_sync_enabled(): bool {
+		return tribe_is_truthy( tribe_get_option( static::OPTION_INVENTORY_SYNC ) );
 	}
 
 	/**

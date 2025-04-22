@@ -12,7 +12,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square\Syncs;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\Contracts\Container;
 use TEC\Tickets\Commerce\Gateways\Square\Merchant;
-
+use TEC\Tickets\Commerce\Gateways\Square\Settings;
 /**
  * Class Controller
  *
@@ -31,16 +31,27 @@ class Controller extends Controller_Contract {
 	private Merchant $merchant;
 
 	/**
+	 * The settings.
+	 *
+	 * @since TBD
+	 *
+	 * @var Settings
+	 */
+	private Settings $settings;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since TBD
 	 *
 	 * @param Container $container The container.
 	 * @param Merchant  $merchant  The merchant.
+	 * @param Settings  $settings  The settings.
 	 */
-	public function __construct( Container $container, Merchant $merchant ) {
+	public function __construct( Container $container, Merchant $merchant, Settings $settings ) {
 		parent::__construct( $container );
 		$this->merchant = $merchant;
+		$this->settings = $settings;
 	}
 
 	/**
@@ -51,7 +62,7 @@ class Controller extends Controller_Contract {
 	 * @return bool
 	 */
 	public function is_active(): bool {
-		return $this->merchant->is_connected();
+		return $this->merchant->is_connected() && $this->settings->is_inventory_sync_enabled();
 	}
 
 	/**
@@ -62,6 +73,7 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function do_register(): void {
+		$this->container->singleton( Remote_Objects::class );
 		$this->container->register( Tickets_Sync::class );
 	}
 

@@ -360,4 +360,27 @@ class Gateway extends Abstract_Gateway {
 
 		return (string) tribe_get_option( Settings::OPTION_LOCATION_ID, '' );
 	}
+
+	/**
+	 * Get the location ID for POS transactions.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id The event ID.
+	 *
+	 * @return string The location ID or empty string if not set.
+	 */
+	public function get_pos_location_id( int $event_id = 0 ): string {
+		$pos_location_id = (string) tribe_get_option( static::is_test_mode() ? Settings::OPTION_SANDBOX_POS_LOCATION_ID : Settings::OPTION_POS_LOCATION_ID, '' );
+
+		/**
+		 * Filters the POS location ID.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $pos_location_id The POS location ID.
+		 * @param int    $event_id        The event ID.
+		 */
+		return (string) apply_filters( 'tec_tickets_commerce_square_pos_location_id', $pos_location_id, $event_id );
+	}
 }
