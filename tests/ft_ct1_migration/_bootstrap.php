@@ -80,30 +80,28 @@ $clean_after_test = static function () {
 };
 addListener( Codeception\Events::TEST_AFTER, $clean_after_test );
 
-// Set environment variables early
-putenv( 'TEC_CUSTOM_TABLES_V1_DISABLED=0' );
-$_ENV['TEC_CUSTOM_TABLES_V1_DISABLED'] = 0;
-
 // Move the CT1 setup to plugins_loaded action
 addListener( Codeception\Events::SUITE_BEFORE, static function () {
-	add_action('plugins_loaded', static function() {
-		add_filter( 'tec_events_custom_tables_v1_enabled', '__return_true' );
-		tribe()->register( TEC\Events\Custom_Tables\V1\Provider::class );
-		tribe()->register( TEC\Events_Pro\Custom_Tables\V1\Provider::class );
-		tribe()->register( TEC\Events_Pro\Custom_Tables\V1\Models\Provider::class );
+	putenv( 'TEC_CUSTOM_TABLES_V1_DISABLED=0' );
+	$_ENV['TEC_CUSTOM_TABLES_V1_DISABLED'] = 0;
 
-		delete_transient( 'tec_custom_tables_v1_initialized' );
-		wp_cache_delete( 'tec_custom_tables_v1_initialized' );
 
-		// Run the activation routines
-		TEC_Activation::init();
-		Activation::init();
-		do_action( 'tec_events_custom_tables_v1_load_action_scheduler' );
+	add_filter( 'tec_events_custom_tables_v1_enabled', '__return_true' );
+	tribe()->register( TEC\Events\Custom_Tables\V1\Provider::class );
+	tribe()->register( TEC\Events_Pro\Custom_Tables\V1\Provider::class );
+	tribe()->register( TEC\Events_Pro\Custom_Tables\V1\Models\Provider::class );
 
-		global $wpdb;
-		// Increase the posts table auto increment value
-		if ( $wpdb->query( "ALTER TABLE $wpdb->posts AUTO_INCREMENT = 12389" ) === false ) {
-			throw new RuntimeException( 'Failed to set the posts table auto increment value.' );
-		}
-	}, 20); // Run after TEC and ET are loaded
+	delete_transient( 'tec_custom_tables_v1_initialized' );
+	wp_cache_delete( 'tec_custom_tables_v1_initialized' );
+
+	// Run the activation routines to ensure the tables will be set up independently of the previous state.
+	TEC_Activation::init();
+	Activation::init();
+	do_action( 'tec_events_custom_tables_v1_load_action_scheduler' );
+
+	global $wpdb;
+	// Increase the posts table auto increment value to avoid conflicts with the test data.
+	if ( $wpdb->query( "ALTER TABLE $wpdb->posts AUTO_INCREMENT = 12389" ) === false ) {
+		throw new RuntimeException( 'Failed to set the posts table auto increment value.' );
+	}
 });
