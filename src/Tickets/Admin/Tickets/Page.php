@@ -307,7 +307,7 @@ class Page extends Abstract_Admin_Page {
 	 * @since TBD
 	 */
 	public function get_the_page_title(): string {
-		return __( 'All Tickets', 'event-tickets' );
+		return '';
 	}
 
 	/**
