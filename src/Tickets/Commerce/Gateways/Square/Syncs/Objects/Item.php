@@ -3,7 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects;
 
 use JsonSerializable;
-
+use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 abstract class Item implements JsonSerializable {
 	protected array $data = [];
 
@@ -44,6 +44,11 @@ abstract class Item implements JsonSerializable {
 
 	public function to_array(): array {
 		$this->get_id();
+		$version = (int) get_post_meta( $this->get_wp_id(), self::SQUARE_VERSION_META, true );
+		if ( $version ) {
+			$this->data['version'] = $version;
+		}
+		$this->data['present_at_location_ids'] = [ tribe( Merchant::class )->get_location_id() ];
 		$data = $this->set_object_values();
 		return $data;
 	}
@@ -68,11 +73,13 @@ abstract class Item implements JsonSerializable {
 		if ( ! has_action( 'tec_tickets_commerce_square_sync_ticket_id_mapping_' . $this->get_id(), [ $this, 'on_ticket_id_mapping' ] ) ) {
 			add_action( 'tec_tickets_commerce_square_sync_ticket_id_mapping_' . $this->get_id(), [ $this, 'on_ticket_id_mapping' ] );
 		}
+
+		if ( ! has_action( 'tec_tickets_commerce_square_sync_object_' . $this->get_id(), [ $this, 'on_sync_object' ] ) ) {
+			add_action( 'tec_tickets_commerce_square_sync_object_' . $this->get_id(), [ $this, 'on_sync_object' ] );
+		}
 	}
 
 	public function on_ticket_id_mapping( string $square_object_id ): void {
-		update_post_meta( $this->get_wp_id(), self::SQUARE_SYNCED_META, time() );
-
 		if ( ! has_action( 'tec_tickets_commerce_square_sync_object_' . $square_object_id, [ $this, 'on_sync_object' ] ) ) {
 			add_action( 'tec_tickets_commerce_square_sync_object_' . $square_object_id, [ $this, 'on_sync_object' ] );
 		}
@@ -87,6 +94,8 @@ abstract class Item implements JsonSerializable {
 	}
 
 	public function on_sync_object( array $square_object ): void {
+		update_post_meta( $this->get_wp_id(), self::SQUARE_SYNCED_META, time() );
+
 		if ( isset( $square_object['version'] ) ) {
 			update_post_meta( $this->get_wp_id(), self::SQUARE_VERSION_META, $square_object['version'] );
 		}

@@ -16,8 +16,6 @@ use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
 use Tribe__Tickets__Tickets as Tickets;
 use TEC\Tickets\Commerce\Gateways\Square\Requests;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
-use TEC\Common\StellarWP\DB\DB;
-use ActionScheduler_Store;
 use TEC\Tickets\Ticket_Data;
 use WP_Post;
 
@@ -66,15 +64,6 @@ class Tickets_Sync extends Controller_Contract {
 	protected const SYNC_INVENTORY_ACTION = 'tec_tickets_commerce_square_sync_inventory';
 
 	/**
-	 * The option that marks the sync action as completed.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	protected const SYNC_ACTION_COMPLETED_OPTION = 'tec_tickets_commerce_square_sync_action_completed';
-
-	/**
 	 * The action that syncs the tickets of a ticket-able post type with Square.
 	 *
 	 * @since TBD
@@ -82,6 +71,19 @@ class Tickets_Sync extends Controller_Contract {
 	 * @var string
 	 */
 	protected const SYNC_TICKET_ABLE_POST_TYPE_TICKETS_ACTION = 'tec_tickets_commerce_square_sync_ticket_able_post_type_tickets';
+
+	/**
+	 * The option that marks the sync action as completed.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected const SYNC_ACTION_COMPLETED_OPTION = 'tickets_commerce_square_sync_action_completed';
+
+	protected const SYNC_ACTIONS_IN_PROGRESS_OPTION = 'tickets_commerce_square_sync_ptypes_in_progress_%s';
+
+	protected const SYNC_ACTIONS_COMPLETED_OPTION = 'tickets_commerce_square_sync_ptypes_completed_%s';
 
 	/**
 	 * The remote objects instance.
@@ -241,6 +243,8 @@ class Tickets_Sync extends Controller_Contract {
 
 		$ticket_able_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
 
+		tribe_update_option( sprintf( self::SYNC_ACTIONS_IN_PROGRESS_OPTION, 'default' ), time() );
+
 		foreach ( $ticket_able_post_types as $ticket_able_post_type ) {
 			as_unschedule_action( self::SYNC_TICKET_ABLE_POST_TYPE_TICKETS_ACTION, [ $ticket_able_post_type ], self::SYNC_ACTION_GROUP );
 			as_schedule_single_action( time(), self::SYNC_TICKET_ABLE_POST_TYPE_TICKETS_ACTION, [ $ticket_able_post_type ], self::SYNC_ACTION_GROUP );
@@ -289,8 +293,16 @@ class Tickets_Sync extends Controller_Contract {
 		);
 
 		if ( ! $query->have_posts() ) {
-			// We need to mark the process as completed somehow here...
-			return;
+			tribe_update_option( sprintf( self::SYNC_ACTIONS_COMPLETED_OPTION, $ticket_able_post_type ), time() );
+			tribe_remove_option( sprintf( self::SYNC_ACTIONS_IN_PROGRESS_OPTION, $ticket_able_post_type ) );
+
+			if ( $this->sync_is_in_progress() ) {
+				// Another post type is still syncing.
+				return;
+			}
+
+			// All post types are synced!
+			$this->fire_sync_completed_hook();
 		}
 
 		// Reschedules itself to continue in 2 minutes.
@@ -371,10 +383,13 @@ class Tickets_Sync extends Controller_Contract {
 		);
 
 		if ( ! $query->have_posts() ) {
+			tribe_remove_option( sprintf( self::SYNC_ACTIONS_COMPLETED_OPTION, 'default' ) );
 			// Post type is synced! Now on to sync the inventory.
 			as_schedule_single_action( time(), self::SYNC_INVENTORY_ACTION, [ $ticket_able_post_type ], self::SYNC_ACTION_GROUP );
 			return;
 		}
+
+		tribe_update_option( sprintf( self::SYNC_ACTIONS_IN_PROGRESS_OPTION, $ticket_able_post_type ), time() );
 
 		// Reschedules itself to continue in 2 minutes.
 		as_schedule_single_action( time() + MINUTE_IN_SECONDS * 2, self::SYNC_TICKET_ABLE_POST_TYPE_TICKETS_ACTION, [ $ticket_able_post_type ], self::SYNC_ACTION_GROUP );
@@ -484,7 +499,24 @@ class Tickets_Sync extends Controller_Contract {
 	}
 
 	protected function process_inventory_batch( array $batch ): void {
+		$this->remote_objects->cache_remote_object_state( $batch );
+
 		$square_batches = $this->remote_objects->transform_inventory_batch( $batch );
+
+		$rejected_objects = tribe_cache()['square_sync_synced_objects'] ?? [];
+
+		foreach( $rejected_objects as $post_id => $tickets ) {
+			if ( count( $tickets ) === count( $batch[ $post_id ] ) ) {
+				$this->clean_up_synced_meta( $post_id );
+			}
+			foreach( $tickets as $ticket ) {
+				$this->clean_up_synced_meta( $ticket->ID );
+			}
+		}
+
+		if ( empty( $square_batches ) ) {
+			return;
+		}
 
 		$args = [
 			'body'    => [
@@ -511,8 +543,8 @@ class Tickets_Sync extends Controller_Contract {
 		}
 
 		foreach ( $response['counts'] as $count ) {
-			do_action( 'tec_tickets_commerce_square_sync_inventory_changed_' . $count['catalog_object_id'], $count );
-			do_action( 'tec_tickets_commerce_square_sync_inventory_changed', $count );
+			do_action( 'tec_tickets_commerce_square_sync_inventory_changed_' . $count['catalog_object_id'], $count['state'], $count['quantity'] );
+			do_action( 'tec_tickets_commerce_square_sync_inventory_changed', $count['state'], $count['quantity'], $count );
 		}
 
 		foreach( $batch as $post_id => $tickets ) {
@@ -535,9 +567,11 @@ class Tickets_Sync extends Controller_Contract {
 	protected function process_batch( array $batch ): void {
 		$square_batches = $this->remote_objects->transform_batch( $batch );
 
+		$idempotency_key = uniqid( 'tec-square-', true );
+
 		$args = [
 			'body'    => [
-				'idempotency_key' => uniqid( 'tec-square-', true ),
+				'idempotency_key' => $idempotency_key,
 				'batches'         => $square_batches,
 			],
 			'headers' => [
@@ -551,68 +585,42 @@ class Tickets_Sync extends Controller_Contract {
 			$args
 		);
 
-		if ( empty( $response['id_mappings']) ) {
-			do_action( 'tribe_log', 'error', 'Square Sync', empty( $response['errors'] ) ? 'No ID mappings returned from Square' : $response['errors'] );
+		if ( ! empty( $response['errors'] ) ) {
+			do_action( 'tribe_log', 'error', 'Square Sync', (array) $response['errors'] );
 			return;
 		}
 
-		if ( ! empty( $response['errors'] ) ) {
-			do_action( 'tribe_log', 'error', 'Square Sync', $response['errors'] );
-		}
+		if ( ! empty( $response['id_mappings'] ) ) {
+			foreach ( $response['id_mappings'] as $id_mapping ) {
+				/**
+				 * Fires when a ticket ID mapping is received from Square.
+				 *
+				 * @since TBD
+				 *
+				 * @param string $object_id The object ID.
+				 * @param array  $id_mapping The ID mapping.
+				 */
+				do_action( 'tec_tickets_commerce_square_sync_ticket_id_mapping_' . $id_mapping['client_object_id'], $id_mapping['object_id'], $id_mapping );
 
-		$id_mappings = $response['id_mappings'];
-
-		foreach ( $id_mappings as $id_mapping ) {
-			/**
-			 * Fires when a ticket ID mapping is received from Square.
-			 *
-			 * @since TBD
-			 *
-			 * @param string $object_id The object ID.
-			 * @param array  $id_mapping The ID mapping.
-			 */
-			do_action( 'tec_tickets_commerce_square_sync_ticket_id_mapping_' . $id_mapping['client_object_id'], $id_mapping['object_id'], $id_mapping );
-
-			/**
-			 * Fires when a ticket ID mapping is received from Square.
-			 *
-			 * @since TBD
-			 *
-			 * @param array $id_mapping The ID mapping.
-			 */
-			do_action( 'tec_tickets_commerce_square_sync_ticket_id_mapping', $id_mapping );
+				/**
+				 * Fires when a ticket ID mapping is received from Square.
+				 *
+				 * @since TBD
+				 *
+				 * @param array $id_mapping The ID mapping.
+				 */
+				do_action( 'tec_tickets_commerce_square_sync_ticket_id_mapping', $id_mapping );
+			}
 		}
 
 		if ( empty( $response['objects'] ) ) {
+			do_action( 'tribe_log', 'error', 'Square Sync', [ 'idempotency_key' => $idempotency_key, 'response' => $response ] );
 			return;
 		}
 
 		foreach ( $response['objects'] as $object ) {
 			$this->fire_sync_object_hooks( $object );
 		}
-	}
-
-	protected function get_as_actions_with_status( string $hook, array $status = [], ?array $args = null ): array {
-		if ( ! $status ) {
-			// Cant be set as default arguments since ActionScheduler_Store class is not available during parsing this.
-			$status = [ ActionScheduler_Store::STATUS_PENDING, ActionScheduler_Store::STATUS_RUNNING ];
-		}
-
-		$params = [
-			'hook'     => $hook,
-			'status'   => $status,
-			'orderby'  => 'date',
-			'order'    => 'ASC',
-			'group'    => self::SYNC_ACTION_GROUP,
-			'per_page' => 100,
-			'offset'   => 0,
-		];
-
-		if ( is_array( $args ) ) {
-			$params['args'] = $args;
-		}
-
-		return as_get_scheduled_actions( $params, OBJECT );
 	}
 
 	protected function fire_sync_object_hooks( array $object ): void {
@@ -644,10 +652,39 @@ class Tickets_Sync extends Controller_Contract {
 	}
 
 	protected function sync_is_in_progress(): bool {
-		return count( $this->get_as_actions_with_status( self::SYNC_TICKET_ABLE_POST_TYPE_TICKETS_ACTION ) ) > 0;
+		$ticket_able_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+		foreach ( $ticket_able_post_types as $ticket_able_post_type ) {
+			if ( tribe_get_option( sprintf( self::SYNC_ACTIONS_IN_PROGRESS_OPTION, $ticket_able_post_type ), false ) ) {
+				return true;
+			}
+		}
+
+		if ( tribe_get_option( sprintf( self::SYNC_ACTIONS_IN_PROGRESS_OPTION, 'default' ), false ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	protected function fire_sync_completed_hook(): void {
+		$ticket_able_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+
+		foreach ( $ticket_able_post_types as $ticket_able_post_type ) {
+			tribe_remove_option( sprintf( self::SYNC_ACTIONS_IN_PROGRESS_OPTION, $ticket_able_post_type ) );
+			tribe_remove_option( sprintf( self::SYNC_ACTIONS_COMPLETED_OPTION, $ticket_able_post_type ) );
+		}
+
+		tribe_update_option( self::SYNC_ACTION_COMPLETED_OPTION, time() );
+
+		/**
+		 * Fires when the sync is completed.
+		 *
+		 * @since TBD
+		 */
+		do_action( 'tec_tickets_commerce_square_sync_completed' );
 	}
 
 	protected function sync_is_completed(): bool {
-		return (bool) get_option( self::SYNC_ACTION_COMPLETED_OPTION, false );
+		return (bool) tribe_get_option( self::SYNC_ACTION_COMPLETED_OPTION, false );
 	}
 }

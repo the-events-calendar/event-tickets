@@ -108,4 +108,10 @@ class Requests extends Abstract_Requests {
 
 		return static::API_BASE_URLS[ $mode ] ?? static::API_BASE_URLS['sandbox'];
 	}
+
+	public static function get_headers(): array {
+		return [
+			'Square-Version' => '2025-04-16',
+		];
+	}
 }

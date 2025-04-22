@@ -12,6 +12,9 @@ use Tribe__Utils__Array as Arr;
  * @package TEC\Tickets\Commerce\Gateways\Contracts
  */
 abstract class Abstract_Requests implements Requests_Interface {
+	public static function get_headers(): array {
+		return [];
+	}
 
 	/**
 	 * @inheritDoc
@@ -53,9 +56,9 @@ abstract class Abstract_Requests implements Requests_Interface {
 			: add_query_arg( $query_args, $url );
 
 		$default_arguments = [
-			'headers' => [
+			'headers' => array_merge( [
 				'Authorization' => 'Bearer ' . tribe( static::$merchant )->get_client_secret(),
-			],
+			], static::get_headers() ),
 		];
 
 		// By default, it's important that we have a body set for any method that is not the GET method.

@@ -11,8 +11,8 @@ class Ticket_Item extends Item {
 		'type'                     => self::ITEM_TYPE,
 		'id'                       => null,
 		'is_deleted'               => false,
-		// 'present_at_all_locations' => true,
-		// 'present_at_location_ids'  => [],
+		'present_at_all_locations' => false,
+		'present_at_location_ids'  => [],
 		// 'absent_at_location_ids'   => [],
 		'item_variation_data'      => [
 			// 'item_id'                   => '',
