@@ -8,6 +8,7 @@ use Tribe\Tickets\Events\Service_Provider as Events_Service_Provider;
 use Tribe\Tickets\Promoter\Service_Provider as Promoter_Service_Provider;
 use Tribe\Tickets\Admin\Settings;
 use TEC\Common\StellarWP\Assets\Config as Assets_Config;
+use TEC\Tickets\Admin\Onboarding\Tickets_Landing_Page;
 
 /**
  * Class Tribe__Tickets__Main.
@@ -123,6 +124,8 @@ class Tribe__Tickets__Main {
 	protected $move_ticket_types;
 
 	/**
+	 * @deprecated TBD
+	 *
 	 * @var Tribe__Admin__Activation_Page
 	 */
 	protected $activation_page;
@@ -220,11 +223,6 @@ class Tribe__Tickets__Main {
 	 * Fires when the plugin is activated.
 	 */
 	public function on_activation() {
-		// Set a transient we can use when deciding whether or not to show update/welcome splash pages
-		if ( ! is_network_admin() && ! isset( $_GET['activate-multi'] ) ) {
-			set_transient( '_tribe_tickets_activation_redirect', 1, 30 );
-		}
-
 		// Set plugin activation time for all installs.
 		if ( is_admin() ) {
 			// Avoid a race condition and fatal by waiting until Common is loaded before we try to run this.
@@ -234,8 +232,25 @@ class Tribe__Tickets__Main {
 			);
 		}
 
-		// Will be used to set up Stripe webwook on admin_init.
+		// Will be used to set up Stripe webhook on admin_init.
 		set_transient( 'tec_tickets_commerce_setup_stripe_webhook', true );
+
+		// Set a transient we can use when deciding whether or not to show update/welcome splash pages.
+		if ( is_network_admin() ) {
+			// Never redirect on network admin.
+			return;
+		}
+
+		// Get the checked plugins from the request. If there are more than one, we're doing a bulk activation.
+		$checked = tec_get_request_var( 'checked', [] );
+
+		if ( count( $checked ) > 1 ) {
+			// If multiple plugins are being activated, set the wizard redirect transient, this should only trigger redirection on a ET admin page visit.
+			set_transient( Tickets_Landing_Page::BULK_ACTIVATION_REDIRECT_OPTION, 1, 30 );
+		} else {
+			// If a single plugin is being activated, set the activation redirect transient for immediate redirection.
+			set_transient( Tickets_Landing_Page::ACTIVATION_REDIRECT_OPTION, 1, 30 );
+		}
 	}
 
 	/**
@@ -471,7 +486,6 @@ class Tribe__Tickets__Main {
 		$this->user_event_confirmation_list_shortcode();
 		$this->move_tickets();
 		$this->move_ticket_types();
-		$this->activation_page();
 
 		Tribe__Tickets__JSON_LD__Order::hook();
 		Tribe__Tickets__JSON_LD__Type::hook();
@@ -964,9 +978,13 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
+	 * @deprecated TBD
+	 *
 	 * @return Tribe__Admin__Activation_Page
 	 */
 	public function activation_page() {
+		_deprecated_function( __METHOD__, 'TBD', 'Now handled by TEC\Tickets\Admin\Onboarding\Controller' );
+
 		if ( empty( $this->activation_page ) ) {
 			$this->activation_page = new Tribe__Admin__Activation_Page( [
 				'slug'                  => 'event-tickets',
