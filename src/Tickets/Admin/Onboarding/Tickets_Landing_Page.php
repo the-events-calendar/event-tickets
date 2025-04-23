@@ -619,26 +619,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 * @return void
 	 */
 	public function tec_onboarding_wizard_target(): void {
-		/**
-		 * Allow users to force-ignore the checks and display the wizard.
-		 *
-		 * @since TBD
-		 *
-		 * @param bool $force Whether to force the wizard to display.
-		 *
-		 * @return bool
-		 */
-		$force = apply_filters( 'tec_tickets_onboarding_wizard_force_display', false );
-
-		$et_versions = (array) tribe_get_option( 'previous_etp_versions', [] );
-		// If there is more than one previous version, don't show the wizard.
-		if ( ! $force && count( $et_versions ) > 1 ) {
-			return;
-		}
-
-		$data = tribe( Data::class );
-		// Don't display if we've finished the wizard.
-		if ( ! $force && $data->get_wizard_setting( 'finished', false ) ) {
+		if ( ! $this->should_show_wizard() ) {
 			return;
 		}
 		?>
@@ -651,6 +632,43 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		<?php
 	}
 
+	/**
+	 * Check if the wizard should be displayed.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	protected function should_show_wizard(): bool {
+		/**
+		 * Allow users to force-ignore the checks and display the wizard.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $force Whether to force the wizard to display.
+		 *
+		 * @return bool
+		 */
+		$force = apply_filters( 'tec_tickets_onboarding_wizard_force_display', false );
+
+		if ( $force ) {
+			return true;
+		}
+
+		$et_versions = (array) tribe_get_option( 'previous_etp_versions', [] );
+		// If there is more than one previous version, don't show the wizard.
+		if ( count( $et_versions ) > 1 ) {
+			return false;
+		}
+
+		$data = tribe( Data::class );
+		// Don't display if we've finished the wizard.
+		if ( $data->get_wizard_setting( 'finished', false ) ) {
+			return false;
+		}
+
+		return true;
+	}
 	/**
 	 * Register the assets for the landing page.
 	 *
