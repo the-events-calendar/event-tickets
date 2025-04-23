@@ -129,13 +129,11 @@ const SettingsContent = ({ moveToNextTab, skipToNextTab }) => {
 							defaultValue={selectedCountry}
 						>
 							{Object.entries(countries)
-								.flatMap(([continent, countries]) =>
-									Object.entries(countries).map(([code, name]) => ({
-										code,
-										name,
-										continent
-									}))
-								)
+								.map(([code, country]) => ({
+									code,
+									name: country.name,
+									continent: country.group
+								}))
 								.sort((a, b) => a.name.localeCompare(b.name))
 								.map(({ code, name }) => (
 									<option key={code} value={code}>

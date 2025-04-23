@@ -575,7 +575,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			'_wpnonce'                  => wp_create_nonce( 'wp_rest' ),
 			/* Data */
 			'currencies'                => tribe( Currency::class )->get_currency_list(),
-			'countries'                 => tribe( Country::class )->get_country_list(),
+			'countries'                 => tribe( Country::class )->get_gateway_countries(),
 			'optin'                     => tribe_get_option( 'opt-in-status', false ),
 			'stripeConnected'           => tribe( Merchant::class )->is_connected( true ),
 			/* TEC install step */
