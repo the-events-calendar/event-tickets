@@ -55,6 +55,24 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	const VISITED_GUIDED_SETUP_OPTION = 'tec_tickets_onboarding_wizard_visited_guided_setup';
 
 	/**
+	 * The option to redirect to the guided setup after bulk activation.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const BULK_ACTIVATION_REDIRECT_OPTION = '_tec_tickets_wizard_redirect';
+
+	/**
+	 * The option to redirect to the guided setup after single activation.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const ACTIVATION_REDIRECT_OPTION = '_tec_tickets_activation_redirect';
+
+	/**
 	 * The slug for the admin menu.
 	 *
 	 * @since TBD
@@ -222,6 +240,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 
 		// Stop redirecting if the user has visited the Guided Setup page.
 		tribe_update_option( self::VISITED_GUIDED_SETUP_OPTION, true );
+		delete_transient( '_tribe_tickets_activation_redirect' );
 	}
 
 	/**
