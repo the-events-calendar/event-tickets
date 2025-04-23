@@ -161,6 +161,21 @@ jobs:
         run: composer -- pup i18n
 
       # ------------------------------------------------------------------------------
+      # Check `@release-engineer` tasks
+      # ------------------------------------------------------------------------------
+      - name: Check `@release-engineer` tasks
+        if: ${{ env.PRODUCTION_ZIP == 'true' }}
+        run: |
+          OUTPUT=$(find ./src/ -type f -exec grep -l "@release-engineer" {} \;)
+          if [ -n "$OUTPUT" ]; then
+            echo "Found @release-engineer tasks:"
+            echo "$OUTPUT"
+            exit 1
+          else
+            echo "No @release-engineer tasks found."
+          fi
+
+      # ------------------------------------------------------------------------------
       # Run Pup Package - creates the zip file for new OR production builds
       # ------------------------------------------------------------------------------
       - name: pup package
