@@ -13,6 +13,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects;
 
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use Tribe__Tickets__Commerce__Currency as Currency;
 
 /**
  * Class Ticket_Item
@@ -49,9 +50,7 @@ class Ticket_Item extends Item {
 		'is_deleted'               => false,
 		'present_at_all_locations' => false,
 		'present_at_location_ids'  => [],
-		// 'absent_at_location_ids'   => [],
 		'item_variation_data'      => [
-			// 'item_id'                   => '',
 			'name'                      => '', // max 255 chars.
 			'sku'                       => '',
 			'pricing_type'              => 'FIXED_PRICING',
@@ -129,7 +128,7 @@ class Ticket_Item extends Item {
 			'price_money',
 			[
 				'amount'   => $this->ticket->price * 100,
-				'currency' => 'USD',
+				'currency' => Currency::get_provider_currency_code( $this->ticket->provider_class, $this->ticket->ID ),
 			]
 		);
 
