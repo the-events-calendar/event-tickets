@@ -16,7 +16,7 @@ use TEC\Common\Lists\Currency;
 use TEC\Common\Lists\Country;
 use TEC\Tickets\Admin\Onboarding\API;
 use TEC\Common\Asset;
-use TEC\Events\Admin\Onboarding\Data as TEC_Data;
+use TEC\Tickets\Admin\Onboarding\Data;
 use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
 
 /**
@@ -135,7 +135,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 *
 	 * @var int
 	 */
-	public int $menu_position = 1;
+	public int $menu_position = 100;
 
 	/**
 	 * Get the admin page title.
@@ -242,7 +242,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 
 		// Stop redirecting if the user has visited the Guided Setup page.
 		tribe_update_option( self::VISITED_GUIDED_SETUP_OPTION, true );
-		delete_transient( '_tribe_tickets_activation_redirect' );
+		delete_transient( self::ACTIVATION_REDIRECT_OPTION );
 	}
 
 	/**
@@ -531,21 +531,23 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 * @return bool
 	 */
 	protected function is_tec_wizard_completed(): bool {
-		if ( ! has_action( 'tribe_common_loaded', 'Tribe__Events__Main' ) ) {
+		if ( ! did_action( 'tribe_common_loaded' ) ) {
 			return false;
 		}
 
-		$settings = tribe( TEC_Data::class )->get_wizard_settings();
+		$settings = tribe( Data::class )->get_wizard_settings();
 
-		if ( isset( $settings['finished'] ) && $settings['finished'] ) {
+		$finished  = $settings['finished'] ?? false;
+
+		if ( $finished ) {
 			return true;
 		}
 
-		if ( tribe_get_option( 'tec_events_onboarding_page_dismissed' ) ) {
+		if ( tribe_get_option( self::DISMISS_PAGE_OPTION ) ) {
 			return true;
 		}
 
-		if ( tribe_get_option( 'tec_onboarding_wizard_visited_guided_setup' ) ) {
+		if ( tribe_get_option( self::VISITED_GUIDED_SETUP_OPTION ) ) {
 			return true;
 		}
 
@@ -629,9 +631,9 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		 */
 		$force = apply_filters( 'tec_tickets_onboarding_wizard_force', false );
 
-		$tec_versions = (array) tribe_get_option( 'previous_etp_versions', [] );
+		$et_versions = (array) tribe_get_option( 'previous_etp_versions', [] );
 		// If there is more than one previous version, don't show the wizard.
-		if ( ! $force && count( $tec_versions ) > 1 ) {
+		if ( ! $force && count( $et_versions ) > 1 ) {
 			return;
 		}
 
