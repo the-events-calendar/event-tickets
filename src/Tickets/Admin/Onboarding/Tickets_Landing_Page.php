@@ -536,7 +536,6 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		}
 
 		$settings = tribe( Data::class )->get_wizard_settings();
-
 		$finished  = $settings['finished'] ?? false;
 
 		if ( $finished ) {
