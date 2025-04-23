@@ -628,7 +628,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		 *
 		 * @return bool
 		 */
-		$force = apply_filters( 'tec_tickets_onboarding_wizard_force', false );
+		$force = apply_filters( 'tec_tickets_onboarding_wizard_force_display', false );
 
 		$et_versions = (array) tribe_get_option( 'previous_etp_versions', [] );
 		// If there is more than one previous version, don't show the wizard.

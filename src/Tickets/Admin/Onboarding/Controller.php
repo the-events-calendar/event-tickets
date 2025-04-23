@@ -68,6 +68,13 @@ class Controller extends Controller_Contract {
 	 * @return bool
 	 */
 	public function is_active(): bool {
+		/**
+		 * Filters whether the onboarding controller is active.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $is_active Whether the controller is active.
+		 */
 		return apply_filters( 'tec_tickets_onboarding_is_active', true );
 	}
 
@@ -161,8 +168,19 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		// Check if we should force redirect.
-		if ( apply_filters( 'tec_tickets_onboarding_force_redirect_to_guided_setup', false ) ) {
+
+		/**
+		 * Allow users to force-ignore the checks and redirect to the Guided Setup page.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $force_redirect Whether to force the redirect to the Guided Setup page.
+		 *
+		 * @return bool
+		 */
+		$force_redirect = apply_filters( 'tec_tickets_onboarding_force_redirect_to_guided_setup', false );
+
+		if ( $force_redirect ) {
 			$this->do_redirect();
 			return;
 		}
