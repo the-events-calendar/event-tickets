@@ -39,36 +39,27 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 	protected const API_BASE_URL = 'https://whodat.theeventscalendar.com/commerce/v1';
 
 	/**
-	 * Returns the gateway-specific endpoint to use
-	 *
-	 * @since TBD
-	 *
-	 * @return string
+	 * @inheritDoc
 	 */
-	protected function get_gateway_endpoint() {
+	public function get_gateway_endpoint(): string {
 		return static::API_ENDPOINT;
-	}
-
-	/**
-	 * Returns the WhoDat URL to use.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	protected function get_api_base_url() {
-
-		if ( defined( 'TEC_TC_WHODAT_DEV_URL' ) && TEC_TC_WHODAT_DEV_URL ) {
-			return trim( TEC_TC_WHODAT_DEV_URL, '/' );
-		}
-
-		return trim( static::API_BASE_URL, '/' );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public function get_api_url( $endpoint, array $query_args = [] ) {
+	public function get_api_base_url(): string {
+		if ( defined( 'TEC_TC_WHODAT_DEV_URL' ) && TEC_TC_WHODAT_DEV_URL ) {
+			return untrailingslashit( TEC_TC_WHODAT_DEV_URL );
+		}
+
+		return untrailingslashit( static::API_BASE_URL );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function get_api_url( $endpoint, array $query_args = [] ): string {
 		return add_query_arg( $query_args, "{$this->get_api_base_url()}/{$this->get_gateway_endpoint()}/{$endpoint}" );
 	}
 

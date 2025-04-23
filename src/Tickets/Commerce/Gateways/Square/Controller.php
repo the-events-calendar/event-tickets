@@ -30,7 +30,6 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function do_register(): void {
-		// Register singletons
 		$this->container->singleton( Gateway::class );
 		$this->container->singleton( Merchant::class );
 		$this->container->singleton( WhoDat::class );
@@ -40,7 +39,6 @@ class Controller extends Controller_Contract {
 		$this->container->singleton( Order_Endpoint::class );
 		$this->container->singleton( REST\Webhook_Endpoint::class );
 
-		// Initialize service providers
 		$this->container->register( REST::class );
 		$this->container->register( Assets::class );
 		$this->container->register( Ajax::class );

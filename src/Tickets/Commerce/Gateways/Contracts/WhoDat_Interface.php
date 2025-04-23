@@ -10,6 +10,36 @@ namespace TEC\Tickets\Commerce\Gateways\Contracts;
  * @package TEC\Tickets\Commerce\Gateways\Contracts
  */
 interface WhoDat_Interface {
+	/**
+	 * Returns the WhoDat URL to use.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_api_base_url(): string;
+
+	/**
+	 * Returns the gateway-specific endpoint to use.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_gateway_endpoint(): string;
+
+	/**
+	 * Get REST API endpoint URL for requests.
+	 *
+	 * @since 5.3.0 moved to Abstract_WhoDat.
+	 * @since 5.1.9
+	 *
+	 * @param string $endpoint   The endpoint path.
+	 * @param array  $query_args Query args appended to the URL.
+	 *
+	 * @return string The API URL.
+	 */
+	public function get_api_url( $endpoint, array $query_args = [] ): string;
 
 	/**
 	 * Send a GET request to WhoDat.
@@ -23,19 +53,6 @@ interface WhoDat_Interface {
 	 * @return mixed|null
 	 */
 	public function get( $endpoint, array $query_args );
-
-	/**
-	 * Get REST API endpoint URL for requests.
-	 *
-	 * @since 5.3.0 moved to Abstract_WhoDat.
-	 * @since 5.1.9
-	 *
-	 * @param string $endpoint   The endpoint path.
-	 * @param array  $query_args Query args appended to the URL.
-	 *
-	 * @return string The API URL.
-	 */
-	public function get_api_url( $endpoint, array $query_args = [] );
 
 	/**
 	 * Log WhoDat errors.

@@ -42,66 +42,6 @@ class WhoDat extends Abstract_WhoDat {
 	protected const STATE_NONCE_ACTION = 'tec-tc-square-connect';
 
 	/**
-	 * Get the API URL for making requests.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $endpoint   The endpoint to connect to.
-	 * @param array  $query_args The query arguments.
-	 *
-	 * @return string
-	 */
-	public function get_api_url( $endpoint, array $query_args = [] ): string {
-		return add_query_arg( $query_args, "{$this->get_api_base_url()}/{$this->get_gateway_endpoint()}/{$endpoint}" );
-	}
-
-	/**
-	 * Make a GET request to the WhoDat API.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $endpoint   The endpoint to connect to.
-	 * @param array  $query_args The query arguments.
-	 *
-	 * @return array|null
-	 */
-	public function get( $endpoint, array $query_args ): ?array {
-		$url = $this->get_api_url( $endpoint, $query_args );
-
-		$request = wp_remote_get( $url ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_remote_get_wp_remote_get
-
-		if ( is_wp_error( $request ) ) {
-			$this->log_error( 'WhoDat request error:', $request->get_error_message(), $url );
-
-			return null;
-		}
-
-		$body = wp_remote_retrieve_body( $request );
-		$body = json_decode( $body, true );
-
-		return $body;
-	}
-
-	/**
-	 * Log an error message for debugging purposes.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $type    The type of error.
-	 * @param string $message The error message.
-	 * @param string $url     The URL that was being requested.
-	 */
-	public function log_error( $type, $message, $url ): void {
-		$log = sprintf(
-			'[%s] %s %s',
-			$url,
-			$type,
-			$message
-		);
-		tribe( 'logger' )->log_error( $log, 'whodat-connection' );
-	}
-
-	/**
 	 * Creates a new account link for the client and redirects the user to setup the account details.
 	 *
 	 * @since TBD
