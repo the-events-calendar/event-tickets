@@ -59,10 +59,10 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 	protected function get_api_base_url() {
 
 		if ( defined( 'TEC_TC_WHODAT_DEV_URL' ) && TEC_TC_WHODAT_DEV_URL ) {
-			return TEC_TC_WHODAT_DEV_URL;
+			return trim( TEC_TC_WHODAT_DEV_URL, '/' );
 		}
 
-		return static::API_BASE_URL;
+		return trim( static::API_BASE_URL, '/' );
 	}
 
 	/**
@@ -99,12 +99,27 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 		$url = $this->get_api_url( $endpoint, $query_args );
 
 		$default_arguments = [
-			'body' => [],
+			'body'    => [],
+			'headers' => [],
 		];
 
 		foreach ( $default_arguments as $key => $default_argument ) {
 			$request_arguments[ $key ] = array_merge( $default_argument, Arr::get( $request_arguments, $key, [] ) );
 		}
+
+		// Check if headers indicate JSON content type
+		$is_json = false;
+		if ( isset( $request_arguments['headers']['Content-Type'] ) && false !== strpos( $request_arguments['headers']['Content-Type'], 'application/json' ) ) {
+			$is_json = true;
+		} elseif ( isset( $request_arguments['headers']['content-type'] ) && false !== strpos( $request_arguments['headers']['content-type'], 'application/json' ) ) {
+			$is_json = true;
+		}
+
+		// If JSON content type, convert body to JSON
+		if ( $is_json && ! empty( $request_arguments['body'] ) && is_array( $request_arguments['body'] ) ) {
+			$request_arguments['body'] = wp_json_encode( $request_arguments['body'] );
+		}
+
 		$request_arguments = array_filter( $request_arguments );
 		$response          = wp_remote_post( $url, $request_arguments );
 

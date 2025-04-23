@@ -67,3 +67,6 @@ $webhook_nonce = wp_create_nonce( 'square-webhook-register' );
 		<span class="spinner tec-tickets__admin-settings-square-webhook-spinner"></span>
 	</span>
 </div>
+
+<!-- Hidden element to store the webhook nonce for use in admin notices -->
+<div class="tec-tickets__admin-settings-square-webhook-nonce" data-nonce="<?php echo esc_attr( $webhook_nonce ); ?>" style="display: none;"></div>
