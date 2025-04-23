@@ -168,7 +168,6 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-
 		/**
 		 * Allow users to force-ignore the checks and redirect to the Guided Setup page.
 		 *
