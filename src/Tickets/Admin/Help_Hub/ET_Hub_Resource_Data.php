@@ -13,6 +13,7 @@
 namespace TEC\Tickets\Admin\Help_Hub;
 
 use TEC\Common\Admin\Help_Hub\Resource_Data\Help_Hub_Data_Interface;
+use TEC\Common\Admin\Help_Hub\Section_Builder;
 use TEC\Common\Telemetry\Telemetry;
 use Tribe__Main;
 use Tribe__PUE__Checker;
@@ -23,7 +24,7 @@ use Tribe__PUE__Checker;
  * Implements the Help_Hub_Data_Interface, offering resources specific
  * to The Events Calendar, including FAQs, common issues, and customization guides.
  *
- * @since TBD
+ * @since   TBD
  * @package TEC\Events\Admin\Help_Hub
  */
 class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
@@ -77,7 +78,35 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 */
 	public function add_hooks(): void {
 		add_filter( 'tec_help_hub_body_classes', [ $this, 'add_admin_body_classes' ] );
+        add_filter( 'tec_help_hub_resources_description' , [ $this, 'add_resources_description' ] );
+        add_filter( 'tec_help_hub_support_title' , [ $this, 'add_support_description' ] );
 	}
+
+    /**
+     * Add resources description
+     *
+     * @since TBD
+     *
+     * @param string $description The default resources description.
+     *
+     * @return string The modified resources description.
+     */
+    public function add_resources_description( $description ){
+        return _x('Help on setting up, customizing, and troubleshooting your tickets.', 'Help Hub resources description', 'event-tickets');
+    }
+
+    /**
+     * Add support description
+     *
+     * @since TBD
+     *
+     * @param string $title The default support title.
+     *
+     * @return string The modified support title.
+     */
+    public function add_support_description( $title ){
+        return _x('Help on setting up, customizing, and troubleshooting your tickets.', 'Help Hub resources description', 'event-tickets');
+    }
 
 	/**
 	 * Adds custom body classes for the Help Hub page.
@@ -105,96 +134,107 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 * @return array The filtered resource sections array.
 	 */
 	public function create_resource_sections(): array {
-		// Initial data structure for resource sections.
-		return [
-			'getting_started' => [
-				[
-					'icon'  => $this->get_icon_url( 'tec_icon' ),
-					'title' => _x( 'The Events Calendar', 'The Events Calendar title', 'event-tickets' ),
-					'link'  => 'https://evnt.is/1ap9',
-				],
-				[
-					'icon'  => $this->get_icon_url( 'ea_icon' ),
-					'title' => _x( 'Event Aggregator', 'Event Aggregator title', 'event-tickets' ),
-					'link'  => 'https://evnt.is/1apc',
-				],
-				[
-					'icon'  => $this->get_icon_url( 'fbar_icon' ),
-					'title' => _x( 'Filter Bar', 'Filter Bar title', 'event-tickets' ),
-					'link'  => 'https://evnt.is/1apd',
-				],
-			],
-			'customizations'  => [
-				[
-					'title' => _x( 'Getting started with customization', 'Customization article', 'event-tickets' ),
-					'link'  => 'https://evnt.is/1apf',
-					'icon'  => $this->get_icon_url( 'article_icon' ),
-				],
-				[
-					'title' => _x( 'Highlighting events', 'Highlighting events article', 'event-tickets' ),
-					'link'  => 'https://evnt.is/1apg',
-					'icon'  => $this->get_icon_url( 'article_icon' ),
-				],
-				[
-					'title' => _x( 'Customizing template files', 'Customizing templates article', 'event-tickets' ),
-					'link'  => 'https://evnt.is/1aph',
-					'icon'  => $this->get_icon_url( 'article_icon' ),
-				],
-				[
-					'title' => _x( 'Customizing CSS', 'Customizing CSS article', 'event-tickets' ),
-					'link'  => 'https://evnt.is/1api',
-					'icon'  => $this->get_icon_url( 'article_icon' ),
-				],
-			],
-			'common_issues'   => [
-				[
-					'title' => _x( 'Known issues', 'Known issues article', 'event-tickets' ),
-					'link'  => 'https://evnt.is/1apj',
-					'icon'  => $this->get_icon_url( 'article_icon' ),
-				],
-				[
-					'title' => _x( 'Release notes', 'Release notes article', 'event-tickets' ),
-					'link'  => 'https://evnt.is/1apk',
-					'icon'  => $this->get_icon_url( 'article_icon' ),
-				],
-				[
-					'title' => _x( 'Integrations', 'Integrations article', 'event-tickets' ),
-					'link'  => 'https://evnt.is/1apl',
-					'icon'  => $this->get_icon_url( 'article_icon' ),
-				],
-				[
-					'title' => _x( 'Shortcodes', 'Shortcodes article', 'event-tickets' ),
-					'link'  => 'https://evnt.is/1apm',
-					'icon'  => $this->get_icon_url( 'article_icon' ),
-				],
-			],
-			'faqs'            => [
-				[
-					'question'  => _x( 'Can I have more than one calendar?', 'FAQ more than one calendar question', 'event-tickets' ),
-					'answer'    => _x( 'No, but you can use event categories or tags to display certain events.', 'FAQ more than one calendar answer', 'event-tickets' ),
-					'link_text' => _x( 'Learn More', 'Link to more than one calendar article', 'event-tickets' ),
-					'link_url'  => 'https://evnt.is/1arh',
-				],
-				[
-					'question'  => _x( 'What do I get with Events Calendar Pro?', 'FAQ what is in Calendar Pro question', 'event-tickets' ),
-					'answer'    => _x( 'Events Calendar Pro enhances The Events Calendar with additional views, powerful shortcodes, and a host of premium features.', 'FAQ what is in Calendar Pro answer', 'event-tickets' ),
-					'link_text' => _x( 'Learn More', 'Link to what is in Calendar Pro article', 'event-tickets' ),
-					'link_url'  => 'https://evnt.is/1arj',
-				],
-				[
-					'question'  => _x( 'How do I sell event tickets?', 'FAQ how to sell event tickets question', 'event-tickets' ),
-					'answer'    => _x( 'Get started with tickets and RSVPs using our free Event Tickets plugin.', 'FAQ how to sell event tickets answer', 'event-tickets' ),
-					'link_text' => _x( 'Learn More', 'Link to what is in Event Tickets article', 'event-tickets' ),
-					'link_url'  => 'https://evnt.is/1ark',
-				],
-				[
-					'question'  => _x( 'Where can I find a list of available shortcodes?', 'FAQ where are the shortcodes question', 'event-tickets' ),
-					'answer'    => _x( 'Our plugins offer a variety of shortcodes, allowing you to easily embed the calendar, display an event countdown clock, show attendee details, and much more.', 'FAQ where are the shortcodes answer', 'event-tickets' ),
-					'link_text' => _x( 'Learn More', 'Link to the shortcodes article', 'event-tickets' ),
-					'link_url'  => 'https://evnt.is/1arl',
-				],
-			],
-		];
+		/** @var Section_Builder $builder */
+		$builder = tribe( Section_Builder::class );
+
+		// Build getting started section.
+		$builder::make(
+			_x( 'Getting started guides', 'Section title', 'event-tickets' ),
+			'getting_started_guides'
+		)
+			->set_description( _x( 'Learn how to get started and configure the plugin for your WordPress site.', 'Section description', 'event-tickets' ) )
+			->add_link(
+				_x( 'Getting Started with Event Tickets', 'Getting started article', 'event-tickets' ),
+				'https://evnt.is/1ap9',
+				$this->get_icon_url( 'tec_icon' )
+			)
+			->build();
+
+		// Build tickets and RSVPs section.
+		$builder::make(
+			_x( 'Tickets & RSVPs', 'Section title', 'event-tickets' ),
+			'tickets_rsvps'
+		)
+			->set_description( _x( 'Now that you\'re set up, you\'re ready to create your first ticket or RSVP for an event!', 'Section description', 'event-tickets' ) )
+			->add_link(
+				_x( 'Using RSVPs', 'RSVPs article', 'event-tickets' ),
+				'https://evnt.is/1apf',
+				$this->get_icon_url( 'article_icon' )
+			)
+			->add_link(
+				_x( 'Setting Up E-Commerce for Selling Tickets', 'E-Commerce article', 'event-tickets' ),
+				'https://evnt.is/1apg',
+				$this->get_icon_url( 'article_icon' )
+			)
+			->add_link(
+				_x( 'Creating Tickets', 'Creating tickets article', 'event-tickets' ),
+				'https://evnt.is/1aph',
+				$this->get_icon_url( 'article_icon' )
+			)
+			->add_link(
+				_x( 'Moving Tickets', 'Moving tickets article', 'event-tickets' ),
+				'https://evnt.is/1api',
+				$this->get_icon_url( 'article_icon' )
+			)
+			->build();
+
+		// Build attendee management section.
+		$builder::make(
+			_x( 'Attendee Management', 'Section title', 'event-tickets' ),
+			'attendee_management'
+		)
+			->set_description(
+				_x( 'Collect key details during registration, publicly display attendees, and generate reports.', 'Section description', 'event-tickets' )
+			)
+			->add_link(
+				_x( 'Attendee Registration Settings', 'Registration settings article', 'event-tickets' ),
+				'https://evnt.is/1apj',
+				$this->get_icon_url( 'article_icon' )
+			)
+			->add_link(
+				_x( 'Enabling Attendee Information for Tickets', 'Attendee information article', 'event-tickets' ),
+				'https://evnt.is/1apk',
+				$this->get_icon_url( 'article_icon' )
+			)
+			->add_link(
+				_x( 'Managing Orders and Attendees', 'Managing orders article', 'event-tickets' ),
+				'https://evnt.is/1apl',
+				$this->get_icon_url( 'article_icon' )
+			)
+			->add_link(
+				_x( 'Refunding and Canceling Ticket Orders', 'Refunding tickets article', 'event-tickets' ),
+				'https://evnt.is/1apm',
+				$this->get_icon_url( 'article_icon' )
+			)
+			->build();
+
+		// Build ticket emails section.
+		$builder::make(
+			_x( 'Ticket Emails', 'Section title', 'event-tickets' ),
+			'ticket_emails'
+		)
+			->set_description(
+				_x( 'Learn all about how to customize the ticket email without any coding knowledge.', 'Section description', 'event-tickets' )
+			)
+			->add_link(
+				_x( 'Create Custom Email Marketing', 'Email marketing article', 'event-tickets' ),
+				'https://evnt.is/1apn',
+				$this->get_icon_url( 'article_icon' )
+			)
+			->add_link(
+				_x( 'All About Event Ticket Emails', 'Ticket emails article', 'event-tickets' ),
+				'https://evnt.is/1apo',
+				$this->get_icon_url( 'article_icon' )
+			)
+			->add_link(
+				_x( 'Customizing the Ticket Email', 'Email customization article', 'event-tickets' ),
+				'https://evnt.is/1app',
+				$this->get_icon_url( 'article_icon' )
+			)
+			->build();
+
+		// Get all built sections.
+		return $builder::get_all_sections();
 	}
 
 	/**
