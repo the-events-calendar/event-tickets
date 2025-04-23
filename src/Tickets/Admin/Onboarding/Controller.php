@@ -156,91 +156,80 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function redirect_tec_pages_to_guided_setup(): void {
-		// Do not redirect if they are already on the Guided Setup page. Also prevents an infinite loop if $force is true.
+		// Early bail if already on guided setup page.
 		if ( Landing_Page::$slug === tec_get_request_var( 'page' ) ) {
 			return;
 		}
 
-		/**
-		 * Allow users to force-ignore the checks and redirect to the Guided Setup page.
-		 * Note this will potentially redirect ALL admin requests - so use sparingly!
-		 *
-		 * @since TBD
-		 *
-		 * @param bool $force Whether to force the redirect to the Guided Setup page.
-		 *
-		 * @return bool
-		 */
-		$force = apply_filters( 'tec_tickets_onboarding_force_redirect_to_guided_setup', false );
-
-		if ( ! $force ) {
-			// For single plugin activation, check the activation redirect transient.
-			$activation_redirect = get_transient( Landing_Page::ACTIVATION_REDIRECT_OPTION );
-
-			// For bulk activation, only redirect if they're on an ET admin page and have the wizard redirect transient.
-			$wizard_redirect = get_transient( Landing_Page::BULK_ACTIVATION_REDIRECT_OPTION );
-
-			// If neither transient is set, don't redirect.
-			if ( ! $activation_redirect && ! $wizard_redirect ) {
-				return;
-			}
-
-			// If it's a bulk activation (wizard redirect), only proceed if we're on an ET admin page.
-			if ( ! $activation_redirect && $wizard_redirect ) {
-				$requested_page = tec_get_request_var( 'page', '' );
-				$post_type      = tec_get_request_var( 'post_type', '' );
-				$current_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
-
-				// Check if we're on any ET admin page.
-				$is_et_page = false;
-
-				// Check main tec-tickets pages.
-				if (
-					(
-						! empty( $requested_page )
-						&& (
-							strpos( $requested_page, 'tec-tickets' ) === 0
-							|| $requested_page === 'tickets-setup'
-						)
-					)
-					|| (
-						null !== $current_screen
-						&& strpos( $current_screen->base, 'tec-tickets' ) === 0
-					)
-				) {
-					$is_et_page = true;
-				} elseif ( $post_type === 'ticket-meta-fieldset' ) {
-					// Check if we're on the ticket fieldsets page.
-					$is_et_page = true;
-				}
-
-				if ( ! $is_et_page ) {
-					return;
-				}
-			}
-
-			// Do not redirect if they have been to the Guided Setup page already.
-			if ( (bool) tribe_get_option( Landing_Page::VISITED_GUIDED_SETUP_OPTION, false ) ) {
-				return;
-			}
-
-			// Do not redirect if they dismissed the Guided Setup page.
-			if ( Landing_Page::is_dismissed() ) {
-				return;
-			}
-
-			// Do not redirect if they have older versions and are probably already set up.
-			$versions = (array) tribe_get_option( 'previous_event_tickets_versions', [] );
-			if ( count( $versions ) > 1 ) {
-				return;
-			}
+		// Check if we should force redirect
+		if ( apply_filters( 'tec_tickets_onboarding_force_redirect_to_guided_setup', false ) ) {
+			$this->do_redirect();
+			return;
 		}
 
-		// If we're still here, redirect to the Guided Setup page.
+		// Check transients first
+		$activation_redirect = get_transient( Landing_Page::ACTIVATION_REDIRECT_OPTION );
+		$wizard_redirect = get_transient( Landing_Page::BULK_ACTIVATION_REDIRECT_OPTION );
+
+		if ( ! $activation_redirect && ! $wizard_redirect ) {
+			return;
+		}
+
+		// Early bail checks for existing setup
+		if (
+			(bool) tribe_get_option( Landing_Page::VISITED_GUIDED_SETUP_OPTION, false )
+			|| Landing_Page::is_dismissed()
+			|| count( (array) tribe_get_option( 'previous_event_tickets_versions', [] ) ) > 1
+		) {
+			return;
+		}
+
+		// For wizard redirect, verify we're on an ET admin page
+		if ( ! $activation_redirect && $wizard_redirect && ! $this->is_et_admin_page() ) {
+			return;
+		}
+
+		$this->do_redirect();
+	}
+
+	/**
+	 * Check if current page is an ET admin page
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	private function is_et_admin_page(): bool {
+		$requested_page = tec_get_request_var( 'page', '' );
+		$post_type = tec_get_request_var( 'post_type', '' );
+		$current_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+
+		// Check main tec-tickets pages
+		if ( ! empty( $requested_page )
+			&& ( strpos( $requested_page, 'tec-tickets' ) === 0 || $requested_page === 'tickets-setup' )
+		) {
+			return true;
+		}
+
+		// Check screen base
+		if ( null !== $current_screen && strpos( $current_screen->base, 'tec-tickets' ) === 0 ) {
+			return true;
+		}
+
+		// Check ticket fieldsets page
+		return $post_type === 'ticket-meta-fieldset';
+	}
+
+	/**
+	 * Handle the actual redirect
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	private function do_redirect(): void {
 		$setup_url = add_query_arg(
-			[
-				'page' => Landing_Page::$slug,
-			],
+			[ 'page' => Landing_Page::$slug ],
 			admin_url( 'admin.php' )
 		);
 
