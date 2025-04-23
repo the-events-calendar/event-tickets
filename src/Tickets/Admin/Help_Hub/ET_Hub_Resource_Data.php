@@ -13,7 +13,7 @@
 namespace TEC\Tickets\Admin\Help_Hub;
 
 use TEC\Common\Admin\Help_Hub\Resource_Data\Help_Hub_Data_Interface;
-use TEC\Common\Admin\Help_Hub\Section_Builder;
+use TEC\Common\Admin\Help_Hub\Section_Builder\Link_Section_Builder;
 use TEC\Common\Telemetry\Telemetry;
 use Tribe__Main;
 use Tribe__PUE__Checker;
@@ -78,35 +78,35 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 */
 	public function add_hooks(): void {
 		add_filter( 'tec_help_hub_body_classes', [ $this, 'add_admin_body_classes' ] );
-        add_filter( 'tec_help_hub_resources_description' , [ $this, 'add_resources_description' ] );
-        add_filter( 'tec_help_hub_support_title' , [ $this, 'add_support_description' ] );
+		add_filter( 'tec_help_hub_resources_description', [ $this, 'add_resources_description' ] );
+		add_filter( 'tec_help_hub_support_title', [ $this, 'add_support_description' ] );
 	}
 
-    /**
-     * Add resources description
-     *
-     * @since TBD
-     *
-     * @param string $description The default resources description.
-     *
-     * @return string The modified resources description.
-     */
-    public function add_resources_description( $description ){
-        return _x('Help on setting up, customizing, and troubleshooting your tickets.', 'Help Hub resources description', 'event-tickets');
-    }
+	/**
+	 * Add resources description
+	 *
+	 * @since TBD
+	 *
+	 * @param string $description The default resources description.
+	 *
+	 * @return string The modified resources description.
+	 */
+	public function add_resources_description( $description ) {
+		return _x( 'Help on setting up, customizing, and troubleshooting your tickets.', 'Help Hub resources description', 'event-tickets' );
+	}
 
-    /**
-     * Add support description
-     *
-     * @since TBD
-     *
-     * @param string $title The default support title.
-     *
-     * @return string The modified support title.
-     */
-    public function add_support_description( $title ){
-        return _x('Help on setting up, customizing, and troubleshooting your tickets.', 'Help Hub resources description', 'event-tickets');
-    }
+	/**
+	 * Add support description
+	 *
+	 * @since TBD
+	 *
+	 * @param string $title The default support title.
+	 *
+	 * @return string The modified support title.
+	 */
+	public function add_support_description( $title ) {
+		return _x( 'Help on setting up, customizing, and troubleshooting your tickets.', 'Help Hub resources description', 'event-tickets' );
+	}
 
 	/**
 	 * Adds custom body classes for the Help Hub page.
@@ -134,10 +134,25 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 * @return array The filtered resource sections array.
 	 */
 	public function create_resource_sections(): array {
-		/** @var Section_Builder $builder */
-		$builder = tribe( Section_Builder::class );
+		/** @var Link_Section_Builder $builder */
+		$builder = tribe( Link_Section_Builder::class );
 
-		// Build getting started section.
+		$this->add_getting_started_section( $builder );
+		$this->add_tickets_rsvps_section( $builder );
+		$this->add_attendee_management_section( $builder );
+		$this->add_ticket_emails_section( $builder );
+
+		return $builder::get_all_sections();
+	}
+
+	/**
+	 * Adds the "Getting Started" section.
+	 *
+	 * @since TBD
+	 *
+	 * @param Link_Section_Builder $builder The section builder instance.
+	 */
+	private function add_getting_started_section( Link_Section_Builder $builder ): void {
 		$builder::make(
 			_x( 'Getting started guides', 'Section title', 'event-tickets' ),
 			'getting_started_guides'
@@ -145,12 +160,20 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 			->set_description( _x( 'Learn how to get started and configure the plugin for your WordPress site.', 'Section description', 'event-tickets' ) )
 			->add_link(
 				_x( 'Getting Started with Event Tickets', 'Getting started article', 'event-tickets' ),
-				'https://evnt.is/1ap9',
+				'https://evnt.is/1aot',
 				$this->get_icon_url( 'tec_icon' )
 			)
 			->build();
+	}
 
-		// Build tickets and RSVPs section.
+	/**
+	 * Adds the "Tickets & RSVPs" section.
+	 *
+	 * @since TBD
+	 *
+	 * @param Link_Section_Builder $builder The section builder instance.
+	 */
+	private function add_tickets_rsvps_section( Link_Section_Builder $builder ): void {
 		$builder::make(
 			_x( 'Tickets & RSVPs', 'Section title', 'event-tickets' ),
 			'tickets_rsvps'
@@ -158,27 +181,35 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 			->set_description( _x( 'Now that you\'re set up, you\'re ready to create your first ticket or RSVP for an event!', 'Section description', 'event-tickets' ) )
 			->add_link(
 				_x( 'Using RSVPs', 'RSVPs article', 'event-tickets' ),
-				'https://evnt.is/1apf',
+				'https://evnt.is/1aox',
 				$this->get_icon_url( 'article_icon' )
 			)
 			->add_link(
 				_x( 'Setting Up E-Commerce for Selling Tickets', 'E-Commerce article', 'event-tickets' ),
-				'https://evnt.is/1apg',
+				'https://evnt.is/1ap0',
 				$this->get_icon_url( 'article_icon' )
 			)
 			->add_link(
 				_x( 'Creating Tickets', 'Creating tickets article', 'event-tickets' ),
-				'https://evnt.is/1aph',
+				'https://evnt.is/1ap2',
 				$this->get_icon_url( 'article_icon' )
 			)
 			->add_link(
 				_x( 'Moving Tickets', 'Moving tickets article', 'event-tickets' ),
-				'https://evnt.is/1api',
+				'https://evnt.is/ap10',
 				$this->get_icon_url( 'article_icon' )
 			)
 			->build();
+	}
 
-		// Build attendee management section.
+	/**
+	 * Adds the "Attendee Management" section.
+	 *
+	 * @since TBD
+	 *
+	 * @param Link_Section_Builder $builder The section builder instance.
+	 */
+	private function add_attendee_management_section( Link_Section_Builder $builder ): void {
 		$builder::make(
 			_x( 'Attendee Management', 'Section title', 'event-tickets' ),
 			'attendee_management'
@@ -188,27 +219,35 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 			)
 			->add_link(
 				_x( 'Attendee Registration Settings', 'Registration settings article', 'event-tickets' ),
-				'https://evnt.is/1apj',
+				'https://evnt.is/1ap11',
 				$this->get_icon_url( 'article_icon' )
 			)
 			->add_link(
 				_x( 'Enabling Attendee Information for Tickets', 'Attendee information article', 'event-tickets' ),
-				'https://evnt.is/1apk',
+				'https://evnt.is/1ap12',
 				$this->get_icon_url( 'article_icon' )
 			)
 			->add_link(
 				_x( 'Managing Orders and Attendees', 'Managing orders article', 'event-tickets' ),
-				'https://evnt.is/1apl',
+				'https://evnt.is/1aoy',
 				$this->get_icon_url( 'article_icon' )
 			)
 			->add_link(
 				_x( 'Refunding and Canceling Ticket Orders', 'Refunding tickets article', 'event-tickets' ),
-				'https://evnt.is/1apm',
+				'https://evnt.is/1ars',
 				$this->get_icon_url( 'article_icon' )
 			)
 			->build();
+	}
 
-		// Build ticket emails section.
+	/**
+	 * Adds the "Ticket Emails" section.
+	 *
+	 * @since TBD
+	 *
+	 * @param Link_Section_Builder $builder The section builder instance.
+	 */
+	private function add_ticket_emails_section( Link_Section_Builder $builder ): void {
 		$builder::make(
 			_x( 'Ticket Emails', 'Section title', 'event-tickets' ),
 			'ticket_emails'
@@ -218,23 +257,20 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 			)
 			->add_link(
 				_x( 'Create Custom Email Marketing', 'Email marketing article', 'event-tickets' ),
-				'https://evnt.is/1apn',
+				'https://evnt.is/1ap13',
 				$this->get_icon_url( 'article_icon' )
 			)
 			->add_link(
 				_x( 'All About Event Ticket Emails', 'Ticket emails article', 'event-tickets' ),
-				'https://evnt.is/1apo',
+				'https://evnt.is/1ap14',
 				$this->get_icon_url( 'article_icon' )
 			)
 			->add_link(
 				_x( 'Customizing the Ticket Email', 'Email customization article', 'event-tickets' ),
-				'https://evnt.is/1app',
+				'https://evnt.is/1ap15',
 				$this->get_icon_url( 'article_icon' )
 			)
 			->build();
-
-		// Get all built sections.
-		return $builder::get_all_sections();
 	}
 
 	/**
