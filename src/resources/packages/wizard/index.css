@@ -184,7 +184,7 @@
 .tec-tickets-onboarding__tabs-list {
 	border-radius: var(--tec-admin-border-radius-1);
 	display: grid;
-	grid-template-columns: repeat(4, 1fr);
+	grid-template-columns: repeat(3, 1fr);
 	justify-content: center;
 	list-style: none;
 	margin: 0 auto;
@@ -219,7 +219,7 @@
 
 @media (max-width: 1024px) {
 	.tec-tickets-onboarding__tabs-list {
-		grid-template-columns: repeat(7, var(--tec-spacer-tap-min-size));
+		grid-template-columns: repeat(5, var(--tec-spacer-tap-min-size));
 		max-width: calc(100vw - 64px);
 	}
 
@@ -424,9 +424,14 @@
 	}
 }
 
+#settingsPanel .tec-tickets-onboarding__form-wrapper,
 #paymentsPanel .tec-tickets-onboarding__form-wrapper {
 	padding: var(--tec-spacer-3) var(--tec-spacer-4);
 	text-align: center;
+}
+
+#settingsPanel .tec-tickets-onboarding__form-field label {
+	text-align: left;
 }
 
 .tec-tickets-onboarding__content-header-icon {
@@ -630,20 +635,6 @@
 	text-align: left;
 	width: 100%;
 	max-width: 100%;
-}
-
-@media (min-width: 1024px) {
-	#venuePanel .tec-tickets-onboarding__form-wrapper {
-		column-gap: var(--tec-spacer-4);
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		row-gap: var(--tec-spacer-2);
-	}
-
-	#venuePanel .tec-tickets-onboarding__form-wrapper .components-base-control:first-child,
-	#venuePanel .tec-tickets-onboarding__form-wrapper .components-base-control:nth-child(2) {
-		grid-column: span 2;
-	}
 }
 
 .tec-tickets-onboarding__form-wrapper.events-install {

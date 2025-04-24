@@ -8,7 +8,7 @@ import OptInCheckbox from './inputs/opt-in';
 import Illustration from './img/wizard-welcome-img.png';
 import { SETTINGS_STORE_KEY } from '../../../data';
 
-const WelcomeContent = ( { moveToNextTab, skipToNextTab } ) => {
+const WelcomeContent = ( { moveToNextTab } ) => {
 	const optin = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'optin' ) || false, [] );
 	const country = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'country' ) || 'US', [] );
 	const countries = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'countries' ) || {}, [] );

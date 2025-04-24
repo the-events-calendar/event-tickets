@@ -7,7 +7,7 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { SETTINGS_STORE_KEY } from '../../data';
 import { API_ENDPOINT } from '../../data/settings/constants';
 
-const SetupButton = ({ disabled, moveToNextTab, tabSettings }) => {
+const SetupButton = ({ moveToNextTab, tabSettings }) => {
 	const completeTab = useDispatch(SETTINGS_STORE_KEY).completeTab;
 	const actionNonce = useSelect((select) => select(SETTINGS_STORE_KEY).getSetting('action_nonce'), []);
 	const wpNonce = useSelect((select) => select(SETTINGS_STORE_KEY).getSetting('_wpnonce'), []);
@@ -85,7 +85,6 @@ const SetupButton = ({ disabled, moveToNextTab, tabSettings }) => {
 		<>
 			<Button
 				variant="primary"
-				disabled={disabled || isSaving}
 				onClick={() => setClicked(true)}
 				className="tec-tickets-onboarding__button tec-tickets-onboarding__button--setup"
 			>
