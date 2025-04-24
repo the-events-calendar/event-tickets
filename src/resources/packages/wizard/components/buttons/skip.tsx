@@ -14,7 +14,6 @@ const SkipButton = ({skipToNextTab, currentTab}) => {
 	const getSettings = useSelect(select => select(SETTINGS_STORE_KEY).getSettings);
 	const getCompletedTabs = useSelect(select => select(SETTINGS_STORE_KEY).getCompletedTabs);
 	const getSkippedTabs = useSelect(select => select(SETTINGS_STORE_KEY).getSkippedTabs);
-	const getVisitedFields = useSelect(SETTINGS_STORE_KEY).getVisitedFields;
 
 	const [isClicked, setClicked] = useState(false);
 
@@ -35,7 +34,6 @@ const SkipButton = ({skipToNextTab, currentTab}) => {
 					...settings, // Add settings data
 					completedTabs: getCompletedTabs(), // Include completedTabs
 					skippedTabs: getSkippedTabs(),     // Include skippedTabs
-					visitedFields: getVisitedFields(), // Include visitedFields
 				},
 				path: API_ENDPOINT,
 			});

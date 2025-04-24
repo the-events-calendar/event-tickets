@@ -31,7 +31,6 @@ const EventsContent = ( { moveToNextTab, skipToNextTab } ) => {
 		setShowSuccess(true);
 	};
 
-	// Create tabSettings object to pass to NextButton.
 	const tabSettings = {
 		eventsCalendar: eventsValue,
 		currentTab: 4,

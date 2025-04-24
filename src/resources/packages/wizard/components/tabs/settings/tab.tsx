@@ -11,89 +11,45 @@ import ViewCheckbox from './inputs/view-checkbox';
 import ViewRadio from './inputs/view-radio';
 
 const SettingsContent = ({ moveToNextTab, skipToNextTab }) => {
-	const visitedFields = useSelect((select) =>
-		select(SETTINGS_STORE_KEY).getVisitedFields()
-	);
-	const setVisitedField = useDispatch(SETTINGS_STORE_KEY).setVisitedField;
 	const updateSettings = useDispatch(SETTINGS_STORE_KEY).updateSettings;
 	const {
 		currency,
-		country,
 		currencies,
-		countries,
 		paymentOption: storedPaymentOption,
 	}: {
 		currency: string;
-		country: string;
 		currencies: Record<string, { symbol: string; name: string }>;
-		countries: Record<string, { label: string; value: string }>;
 		paymentOption: string;
 	} = useSelect((select) => {
 		const store = select(SETTINGS_STORE_KEY);
 		return {
 			currency: store.getSetting('currency'),
-			country: store.getSetting('country'),
 			currencies: store.getSetting('currencies'),
-			countries: store.getSetting('countries'),
 			paymentOption: store.getSetting('paymentOption'),
 		};
 	}, []);
 	const [currencyCode, setCurrency] = useState(currency || 'USD');
-	const [selectedCountry, setCountry] = useState(country || 'US');
 	const [paymentOption, setPaymentOption] = useState(storedPaymentOption || '');
 	const [canContinue, setCanContinue] = useState(false);
 
-	// Update settings store when payment option changes
 	useEffect(() => {
 		updateSettings({ paymentOption });
 	}, [paymentOption, updateSettings]);
 
-	// Create tabSettings object to pass to NextButton.
 	const tabSettings = {
 		currency: currencyCode,
-		country: selectedCountry,
 		paymentOption,
 		currentTab: 1,
 	};
-
-	useEffect(() => {
-		// Define the event listener function.
-		const handleChange = (event) => {
-			setVisitedField(event.target.id);
-		};
-
-		const fields = document
-			.getElementById('settingsPanel')
-			?.querySelectorAll('input, select, textarea');
-		fields?.forEach((field) => {
-			field.addEventListener('change', handleChange);
-		});
-
-		return () => {
-			fields?.forEach((field) => {
-				field.removeEventListener('change', handleChange);
-			});
-		};
-	}, []);
 
 	// Compute whether the "Continue" button should be enabled
 	useEffect(() => {
 		const fieldsToCheck = {
 			currencyCode: currencyCode,
-			country: selectedCountry,
-			'visit-at-least-one': hasVisitedHere(),
 		};
 
 		setCanContinue(Object.values(fieldsToCheck).every((field) => !!field));
-	}, [currencyCode, selectedCountry, visitedFields, paymentOption]);
-
-	const hasVisitedHere = () => {
-		const values = [
-			!!currencyCode && !!selectedCountry,
-		];
-		const fields = ['currencyCode', 'country'];
-		return fields.some((field) => visitedFields.includes(field)) || values;
-	};
+	}, [currencyCode, paymentOption]);
 
 	// TODO: Remove this once we are ready to enable Square.
 	const supportsSquare = false;
@@ -114,41 +70,6 @@ const SettingsContent = ({ moveToNextTab, skipToNextTab }) => {
 			</div>
 			<div className="tec-tickets-onboarding__tab-content">
 				<div className="tec-tickets-onboarding__form-wrapper">
-					<BaseControl
-						__nextHasNoMarginBottom
-						id="country"
-						label={__(
-							'Where in the world will you host your events?',
-							'event-tickets'
-						)}
-						className="tec-tickets-onboarding__form-field"
-					>
-						<select
-							id="country"
-							onChange={(e) => setCountry(e.target.value)}
-							defaultValue={selectedCountry}
-						>
-							{Object.entries(countries)
-								.map(([code, country]) => ({
-									code,
-									name: country.name,
-									continent: country.group
-								}))
-								.sort((a, b) => a.name.localeCompare(b.name))
-								.map(({ code, name }) => (
-									<option key={code} value={code}>
-										{name}
-									</option>
-								))}
-						</select>
-						<span className="tec-tickets-onboarding__required-label">
-							{__('Country is required.', 'event-tickets')}
-						</span>
-						<span className="tec-tickets-onboarding__invalid-label">
-							{__('Country is invalid.', 'event-tickets')}
-						</span>
-					</BaseControl>
-
 					<BaseControl
 						__nextHasNoMarginBottom
 						id="currency-code"
