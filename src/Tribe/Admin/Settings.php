@@ -458,18 +458,4 @@ class Settings {
 
 		return $form_options;
 	}
-
-	/**
-	 * Adds the help hub page ID to the list of help pages.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $pages The list of help page IDs.
-	 *
-	 * @return array The modified list of help page IDs.
-	 */
-	public function add_help_hub_page( array $pages ): array {
-		$pages[] = 'tickets_page_' . self::$help_hub_slug;
-		return $pages;
-	}
 }
