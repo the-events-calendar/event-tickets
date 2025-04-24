@@ -36,7 +36,7 @@ const NextButton = ( { disabled, moveToNextTab, tabSettings, onSuccess } ) => {
 			// Set the saving state.
 			setSaving( true );
 
-			if ( tabSettings.currentTab === 4 ) {
+			if ( tabSettings.currentTab === 3 ) {
 				// If we're on the last tab, we need to set the finished state to true.
 				tabSettings.finished = true;
 			}
@@ -77,14 +77,14 @@ const NextButton = ( { disabled, moveToNextTab, tabSettings, onSuccess } ) => {
 				setSaving( false );
 
 				// Move to the next tab.
-				if ( tabSettings.currentTab === 4 ) {
+				if ( tabSettings.currentTab === 3 ) {
 					setTimeout( () => {
 						onSuccess();
 					}, 1000 );
 				} else {
 					moveToNextTab();
 				}
-			} else if ( tabSettings.currentTab === 4 ) {
+			} else if ( tabSettings.currentTab === 3 ) {
 				// If we're on the last tab and the install fails, reset the saving state and close the modal.
 				setSaving( false );
 				setTimeout( () => {

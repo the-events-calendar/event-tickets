@@ -182,7 +182,7 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab } ) => {
 					</Button>
 				) }
 				{ connectionStatus !== 'connected' && (
-					<SkipButton skipToNextTab={ skipToNextTab } currentTab={ 2 } />
+					<SkipButton skipToNextTab={ skipToNextTab } currentTab={1} />
 				) }
 			</div>
 		</>

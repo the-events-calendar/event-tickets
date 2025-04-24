@@ -47,7 +47,7 @@ const CommunicationContent = ({ moveToNextTab, skipToNextTab }) => {
 	const tabCommunication = {
 		email,
 		senderName,
-		currentTab: 3,
+		currentTab: 2,
 	};
 
 	// Compute whether the "Continue" button should be enabled
@@ -182,7 +182,7 @@ const CommunicationContent = ({ moveToNextTab, skipToNextTab }) => {
 					moveToNextTab={moveToNextTab}
 					disabled={!canContinue}
 				/>
-				<SkipButton skipToNextTab={skipToNextTab} currentTab={3} />
+				<SkipButton skipToNextTab={skipToNextTab} currentTab={2} />
 			</div>
 		</>
 	);

@@ -33,7 +33,7 @@ const EventsContent = ( { moveToNextTab, skipToNextTab } ) => {
 
 	const tabSettings = {
 		eventsCalendar: eventsValue,
-		currentTab: 4,
+		currentTab: 3,
 	};
 
 	const message = !eventsCalendarInstalled
@@ -84,7 +84,7 @@ const EventsContent = ( { moveToNextTab, skipToNextTab } ) => {
 						disabled={false}
 						onSuccess={handleSuccess}
 					/>
-					<SkipButton skipToNextTab={skipToNextTab} currentTab={4} />
+					<SkipButton skipToNextTab={skipToNextTab} currentTab={3} />
 				</div>
 			</div>
 		</>
