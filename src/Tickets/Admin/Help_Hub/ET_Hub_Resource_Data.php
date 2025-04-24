@@ -110,7 +110,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	public function add_hooks(): void {
 		add_filter( 'tec_help_hub_body_classes', [ $this, 'add_admin_body_classes' ] );
 		add_filter( 'tec_help_hub_resources_description', [ $this, 'add_resources_description' ] );
-		add_filter( 'tec_help_hub_support_title', [ $this, 'add_support_description' ] );
+		add_filter( 'tec_help_hub_support_description', [ $this, 'add_support_description' ] );
 		add_filter( 'tec_help_hub_header_logo_src', [ $this, 'add_header_logo_src' ] );
 		add_filter( 'tec_help_hub_header_logo_alt', [ $this, 'add_header_logo_alt' ] );
 		add_filter( 'tec_help_hub_pages', [ $this, 'add_help_hub_pages' ] );
@@ -134,11 +134,11 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $title The default support title.
+	 * @param string $description The default support description.
 	 *
-	 * @return string The modified support title.
+	 * @return string The modified support description.
 	 */
-	public function add_support_description( $title ) {
+	public function add_support_description( $description ) {
 		return _x( 'Help on setting up, customizing, and troubleshooting your tickets.', 'Help Hub resources description', 'event-tickets' );
 	}
 
