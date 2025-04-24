@@ -75,7 +75,7 @@ class Tec_Event_Details_Provider extends Controller_Contract {
 			'event_location_time_zone' => $timezone,
 			'event_location_name'      => '',
 			'event_location_types'     => [ 'IN_PERSON' ], // Virtual event support is added by ECP integration.
-			'all_day_event'
+			'all_day_event'            => tribe_event_is_all_day( $event->ID ),
 		];
 
 		if ( tribe_has_venue( $event->ID ) ) {
