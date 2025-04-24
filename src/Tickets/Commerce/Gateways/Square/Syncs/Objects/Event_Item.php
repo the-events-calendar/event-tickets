@@ -51,7 +51,6 @@ class Event_Item extends Item {
 		'is_deleted'               => false,
 		'present_at_all_locations' => false,
 		'present_at_location_ids'  => [],
-		// 'absent_at_location_ids'   => [],
 		'item_data'                => [
 			'name'                 => '', // max 512 characters
 			// 'abbreviation'         => '', // max 24 chars only first 5 are visible in POS.
