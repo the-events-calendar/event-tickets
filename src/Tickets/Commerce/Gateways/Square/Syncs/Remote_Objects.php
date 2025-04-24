@@ -10,11 +10,14 @@
 namespace TEC\Tickets\Commerce\Gateways\Square\Syncs;
 
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Event_Item;
+use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Inventory_Change;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Ticket_Item;
 use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 use TEC\Tickets\Commerce\Gateways\Square\Requests;
+use TEC\Tickets\Ticket_Data;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\NoChangeNeededException;
+use InvalidArgumentException;
 
 /**
  * Remote objects.
@@ -120,6 +123,60 @@ class Remote_Objects {
 		$cache[ $cache_key ] = $discarded;
 
 		return $transformed;
+	}
+
+	/**
+	 * Delete the remote object.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $object_id        The object ID.
+	 * @param string $remote_object_id The remote object ID.
+	 *
+	 * @return void
+	 * @throws InvalidArgumentException If no event ID or remote object ID is provided.
+	 */
+	public function delete( int $object_id = 0, string $remote_object_id = '' ): void {
+		if ( ! $object_id && ! $remote_object_id ) {
+			throw new InvalidArgumentException( 'Either event ID or remote object ID must be provided' );
+		}
+
+		if ( $object_id ) {
+			$remote_object_id = $this->delete_remote_object_data( $object_id );
+		}
+
+		$response = Requests::delete( sprintf( 'catalog/object/%s', $remote_object_id ) );
+
+		if ( ! empty( $response['errors'] ) ) {
+			do_action( 'tribe_log', 'error', 'Square Delete event', $response['errors'] );
+		}
+	}
+
+	/**
+	 * Delete the remote object data.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $object_id The object ID.
+	 *
+	 * @return string The remote object ID.
+	 */
+	public function delete_remote_object_data( int $object_id ): string {
+		// Careful! We store it in local var and then we delete it!
+		$remote_object_id = Item::get_remote_object_id( $object_id );
+		Item::delete( $object_id );
+
+		$is_event = in_array( get_post_type( $object_id ), (array) tribe_get_option( 'ticket-enabled-post-types', [] ), true );
+
+		if ( ! $is_event ) {
+			return $remote_object_id;
+		}
+
+		foreach ( tribe( Ticket_Data::class )->get_posts_tickets( $object_id, [] ) as $ticket ) {
+			Item::delete( $ticket->ID );
+		}
+
+		return $remote_object_id;
 	}
 
 	/**

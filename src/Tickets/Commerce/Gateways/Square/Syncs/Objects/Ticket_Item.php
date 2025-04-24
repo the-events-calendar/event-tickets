@@ -35,8 +35,6 @@ class Ticket_Item extends Item {
 	 */
 	public const ITEM_TYPE = 'ITEM_VARIATION';
 
-	// phpcs:disable Squiz.PHP.CommentedOutCode.Found
-
 	/**
 	 * The data structure for the Square catalog item variation.
 	 *
@@ -63,11 +61,9 @@ class Ticket_Item extends Item {
 			'inventory_alert_threshold' => 5,
 			'stockable'                 => true,
 			'sellable'                  => true,
-			// 'image_ids'                 => [],
+			'image_ids'                 => [],
 		],
 	];
-
-	// phpcs:enable Squiz.PHP.CommentedOutCode.Found
 
 	/**
 	 * The WordPress ticket object.

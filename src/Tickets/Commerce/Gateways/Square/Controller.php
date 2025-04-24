@@ -34,10 +34,15 @@ class Controller extends Controller_Contract {
 		$this->container->singleton( Settings::class );
 		$this->container->singleton( On_Boarding_Endpoint::class );
 		$this->container->singleton( Order_Endpoint::class );
-		$this->container->register( REST::class );
-		$this->container->register( Assets::class );
-		$this->container->register( Ajax::class );
 		$this->container->register( Hooks::class );
+		$this->container->register( Assets::class );
+
+		if ( ! $this->container->get( Gateway::class )->is_enabled() ) {
+			return;
+		}
+
+		$this->container->register( REST::class );
+		$this->container->register( Ajax::class );
 		$this->container->register( Syncs_Controller::class );
 	}
 
@@ -49,10 +54,15 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
-		$this->container->get( REST::class )->unregister();
 		$this->container->get( Assets::class )->unregister();
-		$this->container->get( Ajax::class )->unregister();
 		$this->container->get( Hooks::class )->unregister();
+
+		if ( ! $this->container->get( Gateway::class )->is_enabled() ) {
+			return;
+		}
+
+		$this->container->get( REST::class )->unregister();
+		$this->container->get( Ajax::class )->unregister();
 		$this->container->get( Syncs_Controller::class )->unregister();
 	}
 }

@@ -111,7 +111,7 @@ abstract class Item implements JsonSerializable {
 			return $this->data['id'];
 		}
 
-		$square_id = get_post_meta( $this->get_wp_id(), self::SQUARE_ID_META, true );
+		$square_id = self::get_remote_object_id( $this->get_wp_id() );
 
 		if ( $square_id ) {
 			$this->data['id'] = $square_id;
@@ -121,6 +121,35 @@ abstract class Item implements JsonSerializable {
 		$this->data['id'] = '#' . str_replace( [ 'https://', 'http://' ], '', home_url() ) . '-' . $this->get_wp_id();
 
 		return $this->data['id'];
+	}
+
+	/**
+	 * Get the remote object ID for a given WordPress ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $id The WordPress ID.
+	 *
+	 * @return string The remote object ID.
+	 */
+	public static function get_remote_object_id( int $id ): string {
+		return (string) get_post_meta( $id, self::SQUARE_ID_META, true );
+	}
+
+	/**
+	 * Delete the remote data for a post.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $id The ID.
+	 *
+	 * @return void
+	 */
+	public static function delete( int $id ): void {
+		delete_post_meta( $id, self::SQUARE_ID_META );
+		delete_post_meta( $id, self::SQUARE_SYNCED_META );
+		delete_post_meta( $id, self::SQUARE_VERSION_META );
+		delete_post_meta( $id, self::SQUARE_SYNC_HISTORY_META );
 	}
 
 	/**

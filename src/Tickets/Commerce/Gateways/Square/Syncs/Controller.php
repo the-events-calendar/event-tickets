@@ -115,9 +115,12 @@ class Controller extends Controller_Contract {
 	 */
 	public function do_register(): void {
 		$this->container->singleton( Remote_Objects::class );
+
 		$this->container->register( Items_Sync::class );
 		$this->container->register( Inventory_Sync::class );
 		$this->container->register( Listeners::class );
+
+		// $this->container->register_on_action( 'tec_events_fully_loaded', Tec_Event_Details_Provider::class );
 		add_action( 'init', [ $this, 'schedule_batch_sync' ] );
 		add_action( 'tribe_log', [ $this, 'mark_action_failed' ], 100, 3 );
 	}
@@ -133,6 +136,11 @@ class Controller extends Controller_Contract {
 		$this->container->get( Items_Sync::class )->unregister();
 		$this->container->get( Inventory_Sync::class )->unregister();
 		$this->container->get( Listeners::class )->unregister();
+
+		if ( $this->container->isBound( Tec_Event_Details_Provider::class ) ) {
+			$this->container->get( Tec_Event_Details_Provider::class )->unregister();
+		}
+
 		remove_action( 'init', [ $this, 'schedule_batch_sync' ] );
 		remove_action( 'tribe_log', [ $this, 'mark_action_failed' ], 100 );
 	}
@@ -145,7 +153,7 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function schedule_batch_sync(): void {
-		if ( as_has_scheduled_action( Items_Sync::HOOK_SYNC_ACTION, [], self::AS_SYNC_ACTION_GROUP ) ) {
+		if ( as_has_scheduled_action( Items_Sync::HOOK_INIT_SYNC_ACTION, [], self::AS_SYNC_ACTION_GROUP ) ) {
 			return;
 		}
 
@@ -153,7 +161,7 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		as_schedule_single_action( time(), Items_Sync::HOOK_SYNC_ACTION, [], self::AS_SYNC_ACTION_GROUP );
+		as_schedule_single_action( time(), Items_Sync::HOOK_INIT_SYNC_ACTION, [], self::AS_SYNC_ACTION_GROUP );
 	}
 
 	/**

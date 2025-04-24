@@ -162,6 +162,7 @@ class Inventory_Sync extends Controller_Contract {
 			$tickets = $this->sync_event( $post_id, false );
 
 			if ( ! $tickets ) {
+				$this->clean_up_synced_meta( $post_id );
 				continue;
 			}
 
@@ -261,9 +262,9 @@ class Inventory_Sync extends Controller_Contract {
 		}
 
 		foreach ( $batch as $post_id => $tickets ) {
-			$this->clean_up_synced_meta( $post_id );
+			$this->clean_up_synced_meta( $post_id, true );
 			foreach ( $tickets as $ticket ) {
-				$this->clean_up_synced_meta( $ticket->ID );
+				$this->clean_up_synced_meta( $ticket->ID, true );
 			}
 		}
 	}
@@ -277,12 +278,16 @@ class Inventory_Sync extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	protected function clean_up_synced_meta( int $object_id ): void {
+	protected function clean_up_synced_meta( int $object_id, bool $force_add_history = false ): void {
 		$square_synced = get_post_meta( $object_id, Item::SQUARE_SYNCED_META, true );
+		delete_post_meta( $object_id, Item::SQUARE_SYNCED_META );
+
+		if ( ! $force_add_history && ! $square_synced ) {
+			return;
+		}
 
 		$square_synced = $square_synced && $square_synced > time() - DAY_IN_SECONDS ? $square_synced : time();
 
-		delete_post_meta( $object_id, Item::SQUARE_SYNCED_META );
 		add_post_meta( $object_id, Item::SQUARE_SYNC_HISTORY_META, $square_synced );
 	}
 

@@ -61,7 +61,6 @@ class Event_Item extends Item {
 			'product_type'         => 'EVENT',
 			'skip_modifier_screen' => true,
 			// 'categories'           => [],
-			// 'description_html'     => '', // max 65535 characters
 			// 'image_ids'            => [],
 		],
 	];
@@ -113,6 +112,7 @@ class Event_Item extends Item {
 	protected function set_object_values(): array {
 		$this->set( 'is_deleted', null === $this->event || $this->event->post_status === 'trash' );
 		$this->set_item_data( 'name', $this->event->post_title ? $this->event->post_title : __( 'Untitled Event', 'event-tickets' ) );
+		$this->set_description();
 
 		/**
 		 * Filters the event item data before it is sent to Square.
@@ -145,5 +145,79 @@ class Event_Item extends Item {
 			static fn( Ticket_Object $ticket ) => new Ticket_Item( $ticket ),
 			$tickets
 		);
+	}
+
+	/**
+	 * Set the description for the event item.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function set_description(): void {
+		// We are doing what core does in wp_trim_excerpt() - but we target the content instead of the excerpt.
+		$text = get_the_content( '', false, $this->event );
+		$text = strip_shortcodes( $text );
+		$text = excerpt_remove_blocks( $text );
+		$text = excerpt_remove_footnotes( $text );
+
+		/*
+		 * Temporarily unhook wp_filter_content_tags() since any tags
+		 * within the excerpt are stripped out. Modifying the tags here
+		 * is wasteful and can lead to bugs in the image counting logic.
+		 */
+		$filter_image_removed = remove_filter( 'the_content', 'wp_filter_content_tags', 12 );
+
+		/*
+		 * Temporarily unhook do_blocks() since excerpt_remove_blocks( $text )
+		 * handles block rendering needed for excerpt.
+		 */
+		$filter_block_removed = remove_filter( 'the_content', 'do_blocks', 9 );
+
+		/** This filter is documented in wp-includes/post-template.php */
+		$text = apply_filters( 'the_content', $text );
+		$text = str_replace( ']]>', ']]&gt;', $text );
+
+		// Restore the original filter if removed.
+		if ( $filter_block_removed ) {
+			add_filter( 'the_content', 'do_blocks', 9 );
+		}
+
+		/*
+		 * Only restore the filter callback if it was removed above. The logic
+		 * to unhook and restore only applies on the default priority of 10,
+		 * which is generally used for the filter callback in WordPress core.
+		 */
+		if ( $filter_image_removed ) {
+			add_filter( 'the_content', 'wp_filter_content_tags', 12 );
+		}
+
+		$text = trim( $text );
+
+		if ( strlen( $text ) <= 65535 ) {
+			// We are good to go - no need to trim anything.
+			$this->set_item_data( 'description_html', $text ? wpautop( $text ) : get_the_excerpt( $this->event ) );
+			return;
+		}
+
+		/**
+		 * If bigger than the limit of 65535, we need to trim it smartly with WP's `wp_trim_words()` function.
+		 *
+		 * Average number of letters per word we assume is 6.
+		 * For further safety we will use 65635 * 0.8 as the limit.
+		 *
+		 * So maximum allowed words become => 65535 * 0.8 / 6 = 8736 words.
+		 *
+		 * Lets make it a round number and use 8700.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $max_words The maximum number of words allowed in the description.
+		 */
+		$max_words = (int) apply_filters( 'tec_tickets_commerce_square_event_item_description_max_words', 8700 );
+
+		$text = wp_trim_words( $text, $max_words, ' [&hellip;]' );
+
+		$this->set_item_data( 'description_html', wpautop( $text ) );
 	}
 }

@@ -31,7 +31,7 @@ class Items_Sync extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	public const HOOK_INIT_SYNC_ACTION = 'tec_tickets_commerce_square_sync_tickets';
+	public const HOOK_INIT_SYNC_ACTION = 'tec_tickets_commerce_square_sync';
 
 	/**
 	 * The action that syncs an individual event and its tickets with Square.
@@ -41,6 +41,15 @@ class Items_Sync extends Controller_Contract {
 	 * @var string
 	 */
 	public const HOOK_SYNC_EVENT_ACTION = 'tec_tickets_commerce_square_sync_event';
+
+	/**
+	 * The action that syncs the deletion of an event or ticket with Square.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const HOOK_SYNC_DELETE_EVENT_ACTION = 'tec_tickets_commerce_square_sync_delete_event';
 
 	/**
 	 * The action that syncs the tickets of a ticket-able post type with Square.
@@ -84,6 +93,7 @@ class Items_Sync extends Controller_Contract {
 		add_action( self::HOOK_INIT_SYNC_ACTION, [ $this, 'schedule_sync_for_each_post_type' ] );
 		add_action( self::HOOK_SYNC_ACTION, [ $this, 'sync_post_type' ] );
 		add_action( self::HOOK_SYNC_EVENT_ACTION, [ $this, 'sync_event' ] );
+		add_action( self::HOOK_SYNC_DELETE_EVENT_ACTION, [ $this, 'sync_delete_event' ], 10, 2 );
 	}
 
 	/**
@@ -97,6 +107,21 @@ class Items_Sync extends Controller_Contract {
 		remove_action( self::HOOK_INIT_SYNC_ACTION, [ $this, 'schedule_sync_for_each_post_type' ] );
 		remove_action( self::HOOK_SYNC_ACTION, [ $this, 'sync_post_type' ] );
 		remove_action( self::HOOK_SYNC_EVENT_ACTION, [ $this, 'sync_event' ] );
+		remove_action( self::HOOK_SYNC_DELETE_EVENT_ACTION, [ $this, 'sync_delete_event' ] );
+	}
+
+	/**
+	 * Sync the deletion of an event or ticket with Square.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $object_id        The object ID.
+	 * @param string $remote_object_id The remote object ID.
+	 *
+	 * @return void
+	 */
+	public function sync_delete_event( int $object_id = 0, string $remote_object_id = '' ): void {
+		$this->remote_objects->delete( $object_id, $remote_object_id );
 	}
 
 	/**
@@ -191,7 +216,7 @@ class Items_Sync extends Controller_Contract {
 			$tickets = $this->sync_event( $post_id, false );
 
 			if ( ! $tickets ) {
-				update_post_meta( $post_id, Item::SQUARE_SYNCED_META, time() );
+				update_post_meta( $post_id, Item::SQUARE_SYNCED_META, false );
 				continue;
 			}
 
@@ -222,6 +247,11 @@ class Items_Sync extends Controller_Contract {
 
 		if ( ! $execute ) {
 			return $tickets;
+		}
+
+		if ( empty( $tickets ) ) {
+			$this->remote_objects->delete( $event_id );
+			return [];
 		}
 
 		$this->process_batch( [ $event_id => $tickets ] );
