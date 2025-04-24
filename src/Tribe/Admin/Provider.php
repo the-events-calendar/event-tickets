@@ -28,6 +28,5 @@ class Provider extends \TEC\Common\Contracts\Service_Provider {
 		add_filter( 'tec_admin_pages_with_tabs', tribe_callback( Settings::class, 'add_to_pages_with_tabs' ), 20, 1 );
 		add_filter( 'tec_admin_footer_text', tribe_callback( Settings::class, 'admin_footer_text_settings' ) );
 		add_filter( 'tribe-events-save-network-options', tribe_callback( Settings::class, 'maybe_hijack_save_network_settings' ), 10, 2 );
-		add_filter( 'tec_help_hub_pages', tribe_callback( Settings::class, 'add_help_hub_page' ) );
 	}
 }
