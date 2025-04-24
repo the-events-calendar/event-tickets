@@ -50,7 +50,7 @@ foreach ( $all_post_type_objects as $post_type => $post_type_object ) {
  * @since 5.1.6
  *
  * @param array<string, string> $all_post_types Associative array of post types, with post type names as
- *                                             keys and singular display names as values.
+ *                                              keys and singular display names as values.
  */
 $all_post_types = apply_filters( 'tribe_tickets_settings_post_types', $all_post_types );
 
@@ -64,8 +64,8 @@ $options = get_option( Tribe__Main::OPTIONNAME, [] );
  * @since 5.1.6
  *
  * @param array<string, string> $ticket_systems Associative array of ticket systems, with system
- *                                             identifiers as keys (like 'event-tickets_rsvp') and
- *                                             translated labels as values.
+ *                                              identifiers as keys (like 'event-tickets_rsvp') and
+ *                                              translated labels as values.
  */
 $ticket_addons = apply_filters(
 	'tribe_tickets_settings_systems_supporting_login_requirements',
@@ -83,19 +83,33 @@ $ticket_addons = apply_filters(
 	]
 );
 
-$tickets_fields = [
-	// Ticket Settings Header.
-	'tickets-title'             => [
+$info_box       = [
+	'tec-settings-general-title' => [
 		'type' => 'html',
-		'html' => '<h3 id="tec-tickets-settings-tickets" class="tec-settings-form__section-header">' .
-			sprintf(
-			// Translators: %s: singular ticket label.
-				_x( '%s Settings', 'tickets fields settings title', 'event-tickets' ),
-				tribe_get_ticket_label_singular( 'tickets_fields_settings_title' )
-			) . '</h3>',
+		'html' => '<div class="tec-settings-form__header-block tec-settings-form__header-block--horizontal">'
+					. '<h3 id="tec-settings-addons-title" class="tec-settings-form__section-header">'
+					. _x( 'General', 'Integrations section header', 'event-tickets' )
+					. '</h3>'
+					. '</div>',
+	],
+];
+$tickets_fields = [
+	'tec-settings-general-ticket-fields-div-start' => [
+		'type' => 'html',
+		'html' => '<div class="tec-settings-form__content-section">',
+	],
+	// Ticket Settings Header.
+	'tickets-title'                                => [
+		'type' => 'html',
+		'html' => '<h3 id="tec-tickets-settings-tickets" class="tec-settings-form__section-header tec-settings-form__section-header--sub">' .
+					sprintf(
+					// Translators: %s: singular ticket label.
+						_x( '%s Settings', 'tickets fields settings title', 'event-tickets' ),
+						tribe_get_ticket_label_singular( 'tickets_fields_settings_title' )
+					) . '</h3>',
 	],
 	// Post types that can have tickets.
-	'ticket-enabled-post-types' => [
+	'ticket-enabled-post-types'                    => [
 		'type'            => 'checkbox_list',
 		'label'           => esc_html(
 			sprintf(
@@ -114,13 +128,17 @@ $tickets_fields = [
 		'can_be_empty'    => true,
 		'validation_type' => 'options_multi',
 	],
-	'event_tickets_uninstall'   => [
+	'event_tickets_uninstall'                      => [
 		'type'            => 'checkbox_bool',
 		'label'           => esc_html__( 'Remove all Event Tickets data upon uninstall?', 'event-tickets' ),
 		'tooltip'         => esc_html__( 'If checked, all Event Tickets data will be removed from the database when the plugin is uninstalled.', 'event-tickets' ),
 		'default'         => false,
 		'validation_type' => 'boolean',
 		'parent_option'   => false,
+	],
+	'tec-settings-general-ticket-fields-div-end'   => [
+		'type' => 'html',
+		'html' => '</div">',
 	],
 ];
 
@@ -139,11 +157,16 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 		'tribe_events_single_event_before_the_content' => __( 'Above the event description', 'event-tickets' ),
 	];
 
+	$tec_fields['tec-settings-general-tec-fields-div-start'] = [
+		'type' => 'html',
+		'html' => '<div class="tec-settings-form__content-section">',
+	];
+
 	// TEC Integration header.
 	$tec_fields['tec-header'] = [
 		'type' => 'html',
-		'html' => '<h3 id="tec-tickets-settings-tec-integration" class="tec-settings-form__section-header">' .
-			esc_html__( 'The Events Calendar Integration', 'event-tickets' ) . '</h3>',
+		'html' => '<h3 id="tec-tickets-settings-tec-integration" class="tec-settings-form__section-header tec-settings-form__section-header--sub">' .
+					esc_html__( 'The Events Calendar Integration', 'event-tickets' ) . '</h3>',
 	];
 
 	// TEC integration fields.
@@ -200,14 +223,24 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 		'can_be_empty'    => true,
 		'parent_option'   => Tribe__Events__Main::OPTIONNAME,
 	];
+
+	$tec_fields['tec-settings-general-tec-fields-div-end'] = [
+		'type' => 'html',
+		'html' => '</div>',
+	];
 } else {
 	$sample_date = strtotime( 'January 15 ' . gmdate( 'Y' ) );
+
+	$misc_fields['tec-settings-general-misc-fields-div-start'] = [
+		'type' => 'html',
+		'html' => '<div class="tec-settings-form__content-section">',
+	];
 
 	// Miscellaneous header.
 	$misc_fields['misc-header'] = [
 		'type' => 'html',
-		'html' => '<h3 id="tec-tickets-settings-misc" class="tec-settings-form__section-header">' .
-			esc_html__( 'Miscellaneous Settings', 'event-tickets' ) . '</h3>',
+		'html' => '<h3 id="tec-tickets-settings-misc" class="tec-settings-form__section-header tec-settings-form__section-header--sub">' .
+					esc_html__( 'Miscellaneous Settings', 'event-tickets' ) . '</h3>',
 	];
 
 	// Miscellaneous fields.
@@ -247,40 +280,53 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 		],
 		'validation_type' => 'options',
 	];
+
+	$misc_fields['tec-settings-general-misc-fields-div-end'] = [
+		'type' => 'html',
+		'html' => '</div>',
+	];
 }
 
 // Authentication requirements fields.
 $auth_fields = [
-	// Authentication Requirements header.
-	'auth-header'                        => [
+	'tec-settings-general-auth-fields-div-start' => [
 		'type' => 'html',
-		'html' => '<h3 id="tec-tickets-settings-authentication" class="tec-settings-form__section-header">' .
-			esc_html__( 'Login Requirements', 'event-tickets' ) . '</h3>',
+		'html' => '<div class="tec-settings-form__content-section">',
+	],
+	// Authentication Requirements header.
+	'auth-header'                                => [
+		'type' => 'html',
+		'html' => '<h3 id="tec-tickets-settings-authentication" class="tec-settings-form__section-header tec-settings-form__section-header--sub">' .
+					esc_html__( 'Login Requirements', 'event-tickets' ) . '</h3>',
 	],
 	// Authentication Requirements description.
-	'auth-description'                   => [
+	'auth-description'                           => [
 		'type' => 'html',
 		'html' => '<div class="tec-settings-form__description"><p>' .
-			sprintf(
-			// Translators: %1$s: singular RSVP label, %2$s: plural tickets label in lowercase, %3$s: opening link tag to WP general settings, %4$s: closing link tag.
-				_x(
-					'You can require that users log into your site before they are able to %1$s (or buy %2$s). Please review your WordPress Membership option (via the %3$sGeneral Settings admin screen%4$s) before adjusting this setting.',
-					'ticket authentication requirements',
-					'event-tickets'
-				),
-				tribe_get_rsvp_label_singular( 'authentication_requirements_advice' ),
-				tribe_get_ticket_label_plural_lowercase( 'authentication_requirements_advice' ),
-				'<a href="' . esc_url( get_admin_url( null, 'options-general.php' ) ) . '" target="_blank">',
-				'</a>'
-			) .
-			'</p></div>',
+					sprintf(
+					// Translators: %1$s: singular RSVP label, %2$s: plural tickets label in lowercase, %3$s: opening link tag to WP general settings, %4$s: closing link tag.
+						_x(
+							'You can require that users log into your site before they are able to %1$s (or buy %2$s). Please review your WordPress Membership option (via the %3$sGeneral Settings admin screen%4$s) before adjusting this setting.',
+							'ticket authentication requirements',
+							'event-tickets'
+						),
+						tribe_get_rsvp_label_singular( 'authentication_requirements_advice' ),
+						tribe_get_ticket_label_plural_lowercase( 'authentication_requirements_advice' ),
+						'<a href="' . esc_url( get_admin_url( null, 'options-general.php' ) ) . '" target="_blank">',
+						'</a>'
+					) .
+					'</p></div>',
 	],
 	// Authentication Requirements field.
-	'ticket-authentication-requirements' => [
+	'ticket-authentication-requirements'         => [
 		'type'            => 'checkbox_list',
 		'options'         => $ticket_addons,
 		'validation_type' => 'options_multi',
 		'can_be_empty'    => true,
+	],
+	'tec-settings-general-auth-fields-div-end'   => [
+		'type' => 'html',
+		'html' => '</div>',
 	],
 ];
 
@@ -316,11 +362,12 @@ if ( tec_tribe_commerce_is_available() ) {
 $commerce_fields = (array) apply_filters( 'tec_tickets_commerce_settings', $commerce_fields );
 
 $tickets_fields = array_merge(
+	$info_box,
 	$tickets_fields,
 	$tec_fields,
 	$auth_fields,
 	$commerce_fields,
-	$misc_fields
+	$misc_fields,
 );
 
 /**
@@ -330,8 +377,8 @@ $tickets_fields = array_merge(
  *
  * @since 5.1.6
  *
- * @see Tribe__Settings_Tab
- * @see Tribe__Field
+ * @see   Tribe__Settings_Tab
+ * @see   Tribe__Field
  *
  * @param array<string, array{
  *     type: string,
