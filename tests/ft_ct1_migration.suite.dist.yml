@@ -3,8 +3,8 @@ bootstrap: _bootstrap.php
 modules:
     enabled:
         - \Helper\Ft_ct1_migration
-        - WPLoader
         - WPDb
+        - WPLoader
     config:
       WPDb:
         dsn: 'mysql:host=%WP_DB_HOST%;dbname=%WP_DB_NAME%'
