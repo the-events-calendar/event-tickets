@@ -686,7 +686,7 @@ class Tribe__Tickets__Main {
 
 		add_filter( 'tribe_post_types', [ $this, 'inject_post_types' ] );
 
-		// Setup Help Tab texting
+		// Setup Help Tab texting.
 		add_action( 'tribe_help_pre_get_sections', [ $this, 'add_help_section_support_content' ] );
 		add_action( 'tribe_help_pre_get_sections', [ $this, 'add_help_section_featured_content' ] );
 		add_action( 'tribe_help_pre_get_sections', [ $this, 'add_help_section_extra_content' ] );
