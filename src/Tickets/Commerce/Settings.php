@@ -266,9 +266,13 @@ class Settings {
 		$current_user = get_user_by( 'id', get_current_user_id() );
 
 		$settings = [
+			'tickets-commerce-settings-general-group-start'     => [
+				'type' => 'html',
+				'html' => '<div class="tec-settings-form__content-section">',
+			],
 			'tickets-commerce-settings-general-heading'     => [
 				'type' => 'html',
-				'html' => '<h3>' . __( 'General', 'event-tickets' ) . '</h3>',
+				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'General', 'event-tickets' ) . '</h3>',
 			],
 			static::$option_sandbox                         => [
 				'type'            => 'toggle',
@@ -307,9 +311,17 @@ class Settings {
 				],
 				'tooltip_first'   => true,
 			],
+			'tickets-commerce-settings-general-group-end'     => [
+				'type' => 'html',
+				'html' => '</div>',
+			],
+			'tickets-commerce-settings-currency-group-start'     => [
+				'type' => 'html',
+				'html' => '<div class="tec-settings-form__content-section">',
+			],
 			'tickets-commerce-settings-currency-heading'    => [
 				'type' => 'html',
-				'html' => '<h3>' . __( 'Currency', 'event-tickets' ) . '</h3>',
+				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'Currency', 'event-tickets' ) . '</h3>',
 			],
 			static::$option_currency_code                   => [
 				'type'            => 'dropdown',
@@ -355,9 +367,17 @@ class Settings {
 					'postfix' => esc_html__( 'After', 'event-tickets' ),
 				],
 			],
+			'tickets-commerce-settings-currency-group-end'     => [
+				'type' => 'html',
+				'html' => '</div>',
+			],
+			'tickets-commerce-settings-page-config-group-start'     => [
+				'type' => 'html',
+				'html' => '<div class="tec-settings-form__content-section">',
+			],
 			'tickets-commerce-settings-page-heading'        => [
 				'type' => 'html',
-				'html' => '<h3>' . __( 'Pages Configuration', 'event-tickets' ) . '</h3>',
+				'html' => '<h3  class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'Pages Configuration', 'event-tickets' ) . '</h3>',
 			],
 			static::$option_checkout_page                   => [
 				'type'            => 'dropdown',
@@ -389,13 +409,21 @@ class Settings {
 				'options'         => $pages,
 				'required'        => true,
 			],
+			'tickets-commerce-settings-page-config-group-end'     => [
+				'type' => 'html',
+				'html' => '</div>',
+			],
 		];
 
-		if ( ! tec_tickets_emails_is_enabled() ) {
+		if (  !tec_tickets_emails_is_enabled() ) {
 			$email_settings = [
+				'tickets-commerce-settings-email-group-start'     => [
+					'type' => 'html',
+					'html' => '<div class="tec-settings-form__content-section">',
+				],
 				'tickets-commerce-email-settings-heading' => [
 					'type' => 'html',
-					'html' => '<h3>' . __( 'Emails', 'event-tickets' ) . '</h3>',
+					'html' => '<h3  class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'Emails', 'event-tickets' ) . '</h3>',
 				],
 				static::$option_confirmation_email_sender_email => [
 					'type'            => 'email',
@@ -447,6 +475,10 @@ class Settings {
 					),
 					'validation_callback' => 'is_string',
 					'validation_type'     => 'textarea',
+				],
+				'tickets-commerce-settings-email-group-end'     => [
+					'type' => 'html',
+					'html' => '</div>',
 				],
 			];
 

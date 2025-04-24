@@ -125,11 +125,6 @@ class Payments_Tab extends Service_Provider {
 
 		$tab_settings = apply_filters( 'tec_tickets_commerce_payments_tab_settings', $tab_settings );
 
-		$tab_settings['fields']['tribe-form-content-end'] = [
-			'type' => 'html',
-			'html' => '</div>',
-		];
-
 		// Create the parent "Payments" tab.
 		$parent_tab = new Tribe__Settings_Tab(
 			static::$slug,
@@ -334,11 +329,20 @@ class Payments_Tab extends Service_Provider {
 
 		$is_tickets_commerce_enabled = tec_tickets_commerce_is_enabled();
 
-		$fields['tickets-header-wrapper-start'] = [
-			'type' => 'html',
-			'html' => '<div class="tec-settings-form__header-block tec-settings-form__header-block--horizontal">',
-		];
-		$fields['tickets-commerce-header']      = [
+		$fields['tec-settings-payment-header-start'] = [
+				'type' => 'html',
+				'html' => '<div class="tec-settings-form__header-block tec-settings-form__header-block--horizontal">'
+				          . '<h3 id="tec-settings-addons-title" class="tec-settings-form__section-header">'
+				          . _x( 'Tickets Commerce', 'Tickets Commerce settings header', 'event-tickets' )
+				          . '</h3>'
+				          . '<p class="tec-settings-form__section-description">'
+				          . $plus_message
+				          . '</p>',
+			];
+
+
+
+		$fields['tec-settings-payment-enable']      = [
 			'type' => 'html',
 			'html' => '<label class="tec-tickets__admin-settings-toggle-large">
 								<input
@@ -354,15 +358,11 @@ class Payments_Tab extends Service_Provider {
 
 		];
 
-		$fields['tickets-commerce-description'] = [
-			'type' => 'html',
-			'html' => '<p>' . $plus_message . '</p>',
-		];
-
-		$fields['tickets-header-wrapper-end'] = [
+		$fields['tec-settings-payment-header-end'] = [
 			'type' => 'html',
 			'html' => '</div>',
 		];
+
 
 		$fields[ Tickets_Commerce_Settings::$tickets_commerce_enabled ] = [
 			'type'            => 'hidden',
@@ -410,11 +410,13 @@ class Payments_Tab extends Service_Provider {
 		 */
 		$fields['tickets-commerce-header'] = [
 			'type' => 'html',
-			'html' => '<label class="tec-tickets__admin-settings-toggle-large">
+			'html' => '<fieldset>
+							<label class="tec-tickets__admin-settings-toggle-large">
 								<input ' . implode( ' ', $attributes ) . ' />
 								<span class="tec-tickets__admin-settings-toggle-large-switch"></span>
 								<span class="tec-tickets__admin-settings-toggle-large-label">' . $enable_label . '</span>
-							</label>',
+							</label>
+						</fieldset>',
 
 		];
 
@@ -444,17 +446,10 @@ class Payments_Tab extends Service_Provider {
 	public function get_fields(): array {
 		$section_gateway = $this->get_section_gateway();
 
-		$fields = [
-			'tribe-form-content-start' => [
-				'type' => 'html',
-				'html' => '<div class="tribe-settings-form-wrap tec-settings-form__element--full-width">',
-			],
-		];
-
 		if ( empty( $section_gateway ) ) {
-			$fields = array_merge( $fields, $this->get_tickets_commerce_section_fields() );
+			$fields =  $this->get_tickets_commerce_section_fields();
 		} else {
-			$fields = array_merge( $fields, $this->get_gateway_section_fields( $section_gateway ) );
+			$fields =  $this->get_gateway_section_fields( $section_gateway );
 		}
 
 		/**
