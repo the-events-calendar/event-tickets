@@ -33,7 +33,7 @@ class Webhook_Notice {
 	 * @since TBD
 	 */
 	public function register() {
-		// First check the webhook status if needed
+		// First check the webhook status if needed.
 		$this->maybe_check_webhook_status();
 
 		tribe_notice(
@@ -54,45 +54,50 @@ class Webhook_Notice {
 	 * @since TBD
 	 */
 	protected function maybe_check_webhook_status() {
-		// If Square gateway is not enabled, don't perform check
+		// If Square gateway is not enabled, don't perform check.
 		if ( ! tribe( Gateway::class )->is_enabled() ) {
 			return;
 		}
 
-		// Get the last check time
-		$status = tribe_get_option( Webhooks::$option_webhook_last_check, [] );
+		// Get the last check time.
+		$status       = tribe_get_option( Webhooks::$option_webhook_last_check, [] );
 		$last_checked = isset( $status['last_checked'] ) ? (int) $status['last_checked'] : 0;
 
-		// Check if we need to run a check (not checked in the last 12 hours)
+		// Check if we need to run a check (not checked in the last 12 hours).
 		if ( time() - $last_checked > 12 * HOUR_IN_SECONDS ) {
-			// Run the webhook health check
+			// Run the webhook health check.
 			tribe( Webhooks::class )->check_webhook_health();
 
-			// Also check the webhook configuration
+			// Also check the webhook configuration.
 			tribe( Webhooks::class )->check_webhook_configuration();
 		}
 	}
 
 	/**
-	 * Determines if the webhook notice should be displayed
+	 * Determines if the webhook notice should be displayed.
 	 *
 	 * @since TBD
 	 *
 	 * @return bool
 	 */
 	public function should_display_notice() {
-		// If Square gateway is not enabled, don't show the notice
+		// If Square gateway is not enabled, don't show the notice.
 		if ( ! tribe( Gateway::class )->is_enabled() ) {
 			return false;
 		}
 
-		// Get the webhook health status
+		// If Square gateway is not enabled, don't show the notice.
+		if ( ! tribe( Gateway::class )->is_active() ) {
+			return false;
+		}
+
+		// Get the webhook health status.
 		$status = tribe_get_option( Webhooks::$option_webhook_last_check, [] );
 
-		// Get the webhook configuration status
+		// Get the webhook configuration status.
 		$config = tribe_get_option( Webhooks::$option_webhook_configuration, [] );
 
-		// If there's no status or webhooks are healthy and configuration is current, don't show notice
+		// If there's no status or webhooks are healthy and configuration is current, don't show notice.
 		if (
 			empty( $status ) ||
 			(
@@ -103,12 +108,12 @@ class Webhook_Notice {
 			return false;
 		}
 
-		// Only show on admin pages
+		// Only show on admin pages.
 		if ( ! is_admin() ) {
 			return false;
 		}
 
-		// Don't show on tickets admin pages where we already have inline notices
+		// Don't show on tickets admin pages where we already have inline notices.
 		$screen = get_current_screen();
 		if ( $screen && $this->is_tickets_admin_page( $screen->id ) ) {
 			return false;
@@ -118,7 +123,7 @@ class Webhook_Notice {
 	}
 
 	/**
-	 * Render the webhook notice
+	 * Render the webhook notice.
 	 *
 	 * @since TBD
 	 *
@@ -127,47 +132,53 @@ class Webhook_Notice {
 	public function render_notice() {
 		$health_status = tribe_get_option( Webhooks::$option_webhook_last_check, [] );
 		$config_status = tribe_get_option( Webhooks::$option_webhook_configuration, [] );
-		$webhook_id = tribe_get_option( Webhooks::$option_webhook_id );
+		$webhook_id    = tribe_get_option( Webhooks::$option_webhook_id );
 
 		$issues = [];
 
-		// Check if webhook is missing
+		// Check if webhook is missing.
 		if ( empty( $webhook_id ) ) {
 			$issues[] = esc_html__( 'Webhook not registered', 'event-tickets' );
+		} else {
+			// All other checks are only relevant if the webhook is registered.
+			// Check health status.
+			if ( ! empty( $health_status ) && isset( $health_status['is_healthy'] ) && ! $health_status['is_healthy'] ) {
+				$issues[] = esc_html__( 'Webhook not functioning', 'event-tickets' );
+			}
+
+			// Check configuration status.
+			if ( ! empty( $config_status ) ) {
+				// API version issues.
+				if ( isset( $config_status['version_mismatch'] ) && $config_status['version_mismatch'] ) {
+					$issues[] = esc_html__( 'API version mismatch', 'event-tickets' );
+				}
+
+				// Event type issues.
+				if ( isset( $config_status['event_types_check'] ) && isset( $config_status['event_types_check']['is_current'] ) && ! $config_status['event_types_check']['is_current'] ) {
+					$issues[] = esc_html__( 'Event types configuration outdated', 'event-tickets' );
+				}
+
+				// Missing events.
+				if ( ! empty( $config_status['missing_events'] ) ) {
+					$issues[] = esc_html__( 'Missing webhook events', 'event-tickets' );
+				}
+			}
 		}
 
-		// Check health status
-		if ( ! empty( $health_status ) && isset( $health_status['is_healthy'] ) && ! $health_status['is_healthy'] ) {
-			$issues[] = esc_html__( 'Webhook not functioning', 'event-tickets' );
-		}
-
-		// Check configuration status
-		if ( ! empty( $config_status ) ) {
-			// API version issues
-			if ( isset( $config_status['version_mismatch'] ) && $config_status['version_mismatch'] ) {
-				$issues[] = esc_html__( 'API version mismatch', 'event-tickets' );
-			}
-
-			// Event type issues
-			if ( isset( $config_status['event_types_check'] ) && isset( $config_status['event_types_check']['is_current'] ) && ! $config_status['event_types_check']['is_current'] ) {
-				$issues[] = esc_html__( 'Event types configuration outdated', 'event-tickets' );
-			}
-
-			// Missing events
-			if ( ! empty( $config_status['missing_events'] ) ) {
-				$issues[] = esc_html__( 'Missing webhook events', 'event-tickets' );
-			}
+		// If there are no issues, don't show the notice.
+		if ( empty( $issues ) ) {
+			return '';
 		}
 
 		$issues_text = implode( ', ', $issues );
 
-		// Create a URL to the ticket settings page
+		// Create a URL to the ticket settings page.
 		$settings_url = admin_url( 'admin.php?page=tec-tickets-settings&tab=payments&section=square' );
 
-		// Create the webhook nonce
+		// Create the webhook nonce.
 		$webhook_nonce = wp_create_nonce( 'square-webhook-register' );
 
-		$message = sprintf(
+		return sprintf(
 			'<p><strong>%1$s</strong></p><p>%2$s</p><p><a href="%3$s" class="button button-primary" data-nonce="%5$s">%4$s</a></p><div class="tec-tickets__admin-settings-square-webhook-nonce" data-nonce="%5$s" style="display: none;"></div>',
 			esc_html__( 'Square Webhook Issue', 'event-tickets' ),
 			sprintf(
@@ -179,8 +190,6 @@ class Webhook_Notice {
 			esc_html__( 'Fix Webhook Configuration', 'event-tickets' ),
 			esc_attr( $webhook_nonce )
 		);
-
-		return $message;
 	}
 
 	/**
