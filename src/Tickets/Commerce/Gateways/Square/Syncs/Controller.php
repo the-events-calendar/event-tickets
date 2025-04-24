@@ -120,7 +120,8 @@ class Controller extends Controller_Contract {
 		$this->container->register( Inventory_Sync::class );
 		$this->container->register( Listeners::class );
 
-		// $this->container->register_on_action( 'tec_events_fully_loaded', Tec_Event_Details_Provider::class );
+		$this->container->register_on_action( 'tec_events_fully_loaded', Tec_Event_Details_Provider::class );
+
 		add_action( 'init', [ $this, 'schedule_batch_sync' ] );
 		add_action( 'tribe_log', [ $this, 'mark_action_failed' ], 100, 3 );
 	}
