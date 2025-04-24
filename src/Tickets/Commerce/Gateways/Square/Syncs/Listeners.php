@@ -34,6 +34,7 @@ class Listeners extends Controller_Contract {
 	 * @return void
 	 */
 	public function do_register(): void {
+		add_action( 'save_post', [ $this, 'schedule_sync_on_save' ], 10, 2 );
 		add_action( 'tec_tickets_ticket_upserted', [ $this, 'schedule_sync' ], 10, 2 );
 		add_action( 'tec_tickets_ticket_start_date_trigger', [ $this, 'schedule_sync_on_date_start' ], 10, 4 );
 		add_action( 'tec_tickets_ticket_end_date_trigger', [ $this, 'schedule_sync_on_date_end' ], 10, 4 );
@@ -49,11 +50,30 @@ class Listeners extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
+		remove_action( 'save_post', [ $this, 'schedule_sync_on_save' ] );
 		remove_action( 'tec_tickets_ticket_upserted', [ $this, 'schedule_sync' ] );
 		remove_action( 'tec_tickets_ticket_start_date_trigger', [ $this, 'schedule_sync_on_date_start' ] );
 		remove_action( 'tec_tickets_ticket_end_date_trigger', [ $this, 'schedule_sync_on_date_end' ] );
 		remove_action( 'wp_trash_post', [ $this, 'schedule_sync_on_delete' ] );
 		remove_action( 'before_delete_post', [ $this, 'schedule_sync_on_delete' ] );
+	}
+
+	/**
+	 * Schedule the sync on save.
+	 *
+	 * @since TBD
+	 *
+	 * @param int     $post_id The post ID.
+	 * @param WP_Post $post    The post object.
+	 *
+	 * @return void
+	 */
+	public function schedule_sync_on_save( int $post_id, WP_Post $post ): void {
+		if ( ! in_array( $post->post_type, (array) tribe_get_option( 'ticket-enabled-post-types', [] ), true ) ) {
+			return;
+		}
+
+		$this->schedule_sync( $post_id, $post_id );
 	}
 
 	/**
