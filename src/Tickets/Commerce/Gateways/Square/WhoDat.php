@@ -12,7 +12,6 @@ namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_WhoDat;
 use TEC\Tickets\Commerce\Gateways\Square\REST\On_Boarding_Endpoint;
-use Tribe__Utils__Array as Arr;
 
 /**
  * Class WhoDat. Handles connection to Square when the platform keys are needed.
@@ -313,13 +312,13 @@ class WhoDat extends Abstract_WhoDat {
 			'api_version'      => $api_version,
 		];
 
-		// Add event types if provided
+		// Add event types if provided.
 		if ( ! empty( $event_types ) ) {
 			$body['event_types'] = $event_types;
 		}
 
 		$request_arguments = [
-			'body' => $body,
+			'body'    => $body,
 			'headers' => [
 				'Content-Type' => 'application/json',
 			],
@@ -368,7 +367,7 @@ class WhoDat extends Abstract_WhoDat {
 		];
 
 		$request_arguments = [
-			'body' => $body,
+			'body'    => $body,
 			'headers' => [
 				'Content-Type' => 'application/json',
 			],
@@ -383,9 +382,9 @@ class WhoDat extends Abstract_WhoDat {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $webhook_id   The ID of the webhook to check.
-	 * @param array  $event_types  The expected event types.
-	 * @param string $api_version  The expected API version, defaults to '2023-12-13'.
+	 * @param string      $webhook_id   The ID of the webhook to check.
+	 * @param array       $event_types  The expected event types.
+	 * @param string|null $api_version  The expected API version, if null will use the latest available.
 	 *
 	 * @return array {
 	 *     Array containing verification results
@@ -397,8 +396,8 @@ class WhoDat extends Abstract_WhoDat {
 	 *     @type array  $webhook_data       The full webhook data retrieved.
 	 * }
 	 */
-	public function check_webhook_configuration( string $webhook_id, array $event_types, string $api_version = '2023-12-13' ): array {
-		// Default result structure
+	public function check_webhook_configuration( string $webhook_id, array $event_types, ?string $api_version = null ): array {
+		// Default result structure.
 		$result = [
 			'is_current'       => false,
 			'missing_events'   => [],
@@ -407,7 +406,13 @@ class WhoDat extends Abstract_WhoDat {
 			'webhook_data'     => null,
 		];
 
-		// Get all webhooks
+		// If no API version is provided, fetch the latest one.
+		if ( null === $api_version ) {
+			$event_types_data = $this->get_available_event_types();
+			$api_version = $event_types_data['api_version'] ?? '2025-04-16';
+		}
+
+		// Get all webhooks.
 		$webhooks = $this->get_webhooks();
 
 		if ( empty( $webhooks ) || empty( $webhooks['subscriptions'] ) ) {
@@ -416,7 +421,7 @@ class WhoDat extends Abstract_WhoDat {
 
 		$target_webhook = null;
 
-		// Find our specific webhook
+		// Find our specific webhook.
 		foreach ( $webhooks['subscriptions'] as $subscription ) {
 			if ( isset( $subscription['id'] ) && $subscription['id'] === $webhook_id ) {
 				$target_webhook = $subscription;
@@ -424,30 +429,30 @@ class WhoDat extends Abstract_WhoDat {
 			}
 		}
 
-		// If webhook not found
+		// If webhook not found.
 		if ( empty( $target_webhook ) ) {
 			return $result;
 		}
 
-		// Store the webhook data for reference
+		// Store the webhook data for reference.
 		$result['webhook_data'] = $target_webhook;
 
-		// Check API version
-		$current_version = $target_webhook['api_version'] ?? '';
+		// Check API version.
+		$current_version           = $target_webhook['api_version'] ?? '';
 		$result['current_version'] = $current_version;
 
 		if ( $current_version !== $api_version ) {
 			$result['version_mismatch'] = true;
 		}
 
-		// Check event types
+		// Check event types.
 		$current_events = $target_webhook['event_types'] ?? [];
 
-		// Check for missing events
-		$missing_events = array_diff( $event_types, $current_events );
+		// Check for missing events.
+		$missing_events           = array_diff( $event_types, $current_events );
 		$result['missing_events'] = $missing_events;
 
-		// Webhook is current if API version matches and no missing events
+		// Webhook is current if API version matches and no missing events.
 		$result['is_current'] = ! $result['version_mismatch'] && empty( $missing_events );
 
 		return $result;
@@ -484,7 +489,7 @@ class WhoDat extends Abstract_WhoDat {
 			return null;
 		}
 
-		// Ensure the response has a standardized format with both event types and API version
+		// Ensure the response has a standardized format with both event types and API version.
 		return [
 			'event_types' => $response['event_types'] ?? [],
 			'api_version' => $response['api_version'] ?? '',

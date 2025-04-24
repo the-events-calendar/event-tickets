@@ -33,9 +33,6 @@ class Webhook_Notice {
 	 * @since TBD
 	 */
 	public function register() {
-		// First check the webhook status if needed.
-		$this->maybe_check_webhook_status();
-
 		tribe_notice(
 			$this->notice_slug,
 			[ $this, 'render_notice' ],
@@ -49,31 +46,6 @@ class Webhook_Notice {
 	}
 
 	/**
-	 * Maybe check webhook status if we haven't checked recently.
-	 *
-	 * @since TBD
-	 */
-	protected function maybe_check_webhook_status() {
-		// If Square gateway is not enabled, don't perform check.
-		if ( ! tribe( Gateway::class )->is_enabled() ) {
-			return;
-		}
-
-		// Get the last check time.
-		$status       = tribe_get_option( Webhooks::$option_webhook_last_check, [] );
-		$last_checked = isset( $status['last_checked'] ) ? (int) $status['last_checked'] : 0;
-
-		// Check if we need to run a check (not checked in the last 12 hours).
-		if ( time() - $last_checked > 12 * HOUR_IN_SECONDS ) {
-			// Run the webhook health check.
-			tribe( Webhooks::class )->check_webhook_health();
-
-			// Also check the webhook configuration.
-			tribe( Webhooks::class )->check_webhook_configuration();
-		}
-	}
-
-	/**
 	 * Determines if the webhook notice should be displayed.
 	 *
 	 * @since TBD
@@ -81,6 +53,11 @@ class Webhook_Notice {
 	 * @return bool
 	 */
 	public function should_display_notice() {
+		// Only show on admin pages.
+		if ( ! is_admin() ) {
+			return false;
+		}
+
 		// If Square gateway is not enabled, don't show the notice.
 		if ( ! tribe( Gateway::class )->is_enabled() ) {
 			return false;
@@ -91,31 +68,13 @@ class Webhook_Notice {
 			return false;
 		}
 
-		// Get the webhook health status.
-		$status = tribe_get_option( Webhooks::$option_webhook_last_check, [] );
-
-		// Get the webhook configuration status.
-		$config = tribe_get_option( Webhooks::$option_webhook_configuration, [] );
-
-		// If there's no status or webhooks are healthy and configuration is current, don't show notice.
-		if (
-			empty( $status ) ||
-			(
-				( isset( $status['is_healthy'] ) && $status['is_healthy'] ) &&
-				( isset( $config['is_current'] ) && $config['is_current'] )
-			)
-		) {
-			return false;
-		}
-
-		// Only show on admin pages.
-		if ( ! is_admin() ) {
-			return false;
-		}
-
 		// Don't show on tickets admin pages where we already have inline notices.
 		$screen = get_current_screen();
 		if ( $screen && $this->is_tickets_admin_page( $screen->id ) ) {
+			return false;
+		}
+
+		if ( ! tribe( Webhooks::class )->is_webhook_healthy() ) {
 			return false;
 		}
 
@@ -130,9 +89,8 @@ class Webhook_Notice {
 	 * @return string
 	 */
 	public function render_notice() {
-		$health_status = tribe_get_option( Webhooks::$option_webhook_last_check, [] );
-		$config_status = tribe_get_option( Webhooks::$option_webhook_configuration, [] );
-		$webhook_id    = tribe_get_option( Webhooks::$option_webhook_id );
+		$webhook_id = tribe( Webhooks::class )->get_webhook_id();
+		$webhooks   = tribe( Webhooks::class );
 
 		$issues = [];
 
@@ -141,27 +99,14 @@ class Webhook_Notice {
 			$issues[] = esc_html__( 'Webhook not registered', 'event-tickets' );
 		} else {
 			// All other checks are only relevant if the webhook is registered.
-			// Check health status.
-			if ( ! empty( $health_status ) && isset( $health_status['is_healthy'] ) && ! $health_status['is_healthy'] ) {
-				$issues[] = esc_html__( 'Webhook not functioning', 'event-tickets' );
+			// API version issues.
+			if ( ! $webhooks->is_api_version_current() ) {
+				$issues[] = esc_html__( 'API version mismatch', 'event-tickets' );
 			}
 
-			// Check configuration status.
-			if ( ! empty( $config_status ) ) {
-				// API version issues.
-				if ( isset( $config_status['version_mismatch'] ) && $config_status['version_mismatch'] ) {
-					$issues[] = esc_html__( 'API version mismatch', 'event-tickets' );
-				}
-
-				// Event type issues.
-				if ( isset( $config_status['event_types_check'] ) && isset( $config_status['event_types_check']['is_current'] ) && ! $config_status['event_types_check']['is_current'] ) {
-					$issues[] = esc_html__( 'Event types configuration outdated', 'event-tickets' );
-				}
-
-				// Missing events.
-				if ( ! empty( $config_status['missing_events'] ) ) {
-					$issues[] = esc_html__( 'Missing webhook events', 'event-tickets' );
-				}
+			// Event type issues.
+			if ( ! $webhooks->is_event_types_current() ) {
+				$issues[] = esc_html__( 'Event types configuration outdated', 'event-tickets' );
 			}
 		}
 
