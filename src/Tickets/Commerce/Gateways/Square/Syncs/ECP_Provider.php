@@ -10,7 +10,6 @@
 namespace TEC\Tickets\Commerce\Gateways\Square\Syncs;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use Tribe\Events\Virtual\Models\Event as Virtual_Event;
 use WP_Post;
 
 /**
@@ -43,9 +42,19 @@ class ECP_Provider extends Controller_Contract {
 		remove_filter( 'tec_tickets_commerce_square_event_data', [ $this, 'filter_event_item_data' ], 10 );
 	}
 
+	/**
+	 * Filters the event item data.
+	 *
+	 * @since TBD
+	 *
+	 * @param array   $data  The event data.
+	 * @param WP_Post $event The event post object.
+	 *
+	 * @return array The filtered event data.
+	 */
 	public function filter_event_item_data( array $data, WP_Post $event ): array {
 		$tribe_event = tribe_get_event( $event->ID );
-		if ( ! $tribe_event->virtual ) {
+		if ( ! ( $tribe_event->virtual ?? false ) ) {
 			return $data;
 		}
 
