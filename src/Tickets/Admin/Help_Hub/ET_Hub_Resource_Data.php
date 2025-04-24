@@ -17,42 +17,72 @@ use TEC\Common\Admin\Help_Hub\Section_Builder\Link_Section_Builder;
 use TEC\Common\Telemetry\Telemetry;
 use Tribe__Main;
 use Tribe__PUE__Checker;
+use Tribe__Tickets__Main;
 
 /**
- * Class TEC_Hub_Resource_Data
+ * Class ET_Hub_Resource_Data
  *
- * Implements the Help_Hub_Data_Interface, offering resources specific
- * to The Events Calendar, including FAQs, common issues, and customization guides.
+ * Handles the Help Hub resource data and page registration for Event Tickets.
  *
- * @since   TBD
- * @package TEC\Events\Admin\Help_Hub
+ * @since TBD
  */
 class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
+	/**
+	 * The ID of the help hub page.
+	 *
+	 * @since TBD
+	 * @var string
+	 */
+	const HELP_HUB_PAGE_ID = 'tickets_page_tec-tickets-help-hub';
 
 	/**
 	 * Holds the URLs for the necessary icons.
 	 *
 	 * @since TBD
-	 * @var array
+	 * @var array<string,string>
 	 */
 	protected array $icons = [];
 
 	/**
 	 * The body class array that styles the admin page.
 	 *
-	 * @var array
+	 * @since TBD
+	 * @var array<string>
 	 */
 	protected array $admin_page_body_classes = [ 'tribe_events_page_tec-events-settings' ];
 
 	/**
+	 * Whether the class has been initialized.
+	 *
+	 * @since TBD
+	 * @var bool
+	 */
+	protected bool $initialized = false;
+
+	/**
 	 * Constructor.
 	 *
-	 * Initializes the icons array with URLs.
+	 * Sets up the initialization hooks.
 	 *
 	 * @since TBD
 	 */
 	public function __construct() {
-		$origin ??= Tribe__Main::instance();
+		add_action( 'load-' . self::HELP_HUB_PAGE_ID, [ $this, 'initialize' ] );
+	}
+
+	/**
+	 * Initializes the Help Hub Resource Data.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function initialize(): void {
+		if ( $this->initialized ) {
+			return;
+		}
+
+		$origin = Tribe__Main::instance();
 
 		$this->icons = [
 			'tec_icon'     => tribe_resource_url( 'images/logo/event-tickets.svg', false, null, $origin ),
@@ -64,6 +94,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 		];
 
 		$this->add_hooks();
+		$this->initialized = true;
 	}
 
 	/**
@@ -80,6 +111,9 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 		add_filter( 'tec_help_hub_body_classes', [ $this, 'add_admin_body_classes' ] );
 		add_filter( 'tec_help_hub_resources_description', [ $this, 'add_resources_description' ] );
 		add_filter( 'tec_help_hub_support_title', [ $this, 'add_support_description' ] );
+		add_filter( 'tec_help_hub_header_logo_src', [ $this, 'add_header_logo_src' ] );
+		add_filter( 'tec_help_hub_header_logo_alt', [ $this, 'add_header_logo_alt' ] );
+		add_filter( 'tec_help_hub_pages', [ $this, 'add_help_hub_pages' ] );
 	}
 
 	/**
@@ -302,5 +336,47 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 			'has_valid_license' => $has_valid_license,
 			'is_opted_in'       => $is_opted_in,
 		];
+	}
+
+	/**
+	 * Filters the logo source URL for the Help Hub header.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $src The default logo source URL.
+	 *
+	 * @return string The filtered logo source URL.
+	 */
+	public function add_header_logo_src( $src ) {
+		$origin = Tribe__Tickets__Main::instance();
+
+		return tribe_resource_url( 'images/tec-tickets-logo.svg', false, null, $origin );
+	}
+
+	/**
+	 * Filters the logo alt text for the Help Hub header.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $alt The default logo alt text.
+	 *
+	 * @return string The filtered logo alt text.
+	 */
+	public function add_header_logo_alt( $alt ) {
+		return __( 'Event Tickets logo', 'event-tickets' );
+	}
+
+	/**
+	 * Adds the help hub page ID to the list of help pages.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $help_pages The current array of help pages.
+	 *
+	 * @return array Modified array of help pages.
+	 */
+	public function add_help_hub_pages( $help_pages ) {
+		$help_pages[] = self::HELP_HUB_PAGE_ID;
+		return $help_pages;
 	}
 }
