@@ -24,8 +24,8 @@ if ( ! $is_connected ) {
 $merchant_data = $merchant->fetch_merchant_data();
 
 // Get merchant details - preferring data from the API if available.
-$merchant_name = $merchant->get_merchant_name();
-$merchant_email = $merchant->get_merchant_email();
+$merchant_name     = $merchant->get_merchant_name();
+$merchant_email    = $merchant->get_merchant_email();
 $merchant_currency = $merchant->get_merchant_currency();
 
 // Verify merchant has all required scopes for Square integration.
@@ -82,6 +82,7 @@ $test_mode = TEC\Tickets\Commerce\Gateways\Square\Gateway::is_test_mode();
 					<?php endif; ?>
 				</span>
 			</div>
+			<?php $this->template( 'settings/tickets-commerce/square/connect/webhook-status' ); ?>
 			<!-- Currency Info -->
 			<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-row">
 				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-label" id="square-currency-label">

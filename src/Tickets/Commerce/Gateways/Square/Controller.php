@@ -11,6 +11,8 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\Commerce\Gateways\Square\REST\On_Boarding_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Square\REST\Order_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Syncs_Controller;
+use TEC\Tickets\Commerce\Gateways\Square\Webhooks;
+
 /**
  * Class Controller
  *
@@ -34,15 +36,19 @@ class Controller extends Controller_Contract {
 		$this->container->singleton( Settings::class );
 		$this->container->singleton( On_Boarding_Endpoint::class );
 		$this->container->singleton( Order_Endpoint::class );
-		$this->container->register( Hooks::class );
-		$this->container->register( Assets::class );
+		$this->container->singleton( REST\Webhook_Endpoint::class );
+
 		$this->container->register( REST::class );
+		$this->container->register( Assets::class );
+		$this->container->register( Ajax::class );
+		$this->container->register( Hooks::class );
+		$this->container->register( Notices\Controller::class );
+		$this->container->register( Webhooks::class );
 
 		if ( ! $this->container->get( Gateway::class )->is_enabled() ) {
 			return;
 		}
 
-		$this->container->register( Ajax::class );
 		$this->container->register( Syncs_Controller::class );
 	}
 
@@ -54,15 +60,17 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
-		$this->container->get( Assets::class )->unregister();
-		$this->container->get( Hooks::class )->unregister();
 		$this->container->get( REST::class )->unregister();
+		$this->container->get( Assets::class )->unregister();
+		$this->container->get( Ajax::class )->unregister();
+		$this->container->get( Hooks::class )->unregister();
+		$this->container->get( Notices\Controller::class )->unregister();
+		$this->container->get( Webhooks::class )->unregister();
 
 		if ( ! $this->container->get( Gateway::class )->is_enabled() ) {
 			return;
 		}
 
-		$this->container->get( Ajax::class )->unregister();
 		$this->container->get( Syncs_Controller::class )->unregister();
 	}
 }
