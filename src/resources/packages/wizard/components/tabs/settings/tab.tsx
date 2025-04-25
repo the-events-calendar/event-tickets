@@ -78,6 +78,8 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab } ) => {
 			path: API_ENDPOINT,
 		} );
 
+		updateSettings(tabSettings);
+
 		if ( result.signup_url ) {
 			window.location.href = result.signup_url;
 		} else {
@@ -139,7 +141,7 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab } ) => {
 			<div className="tec-tickets-onboarding__tab-content">
 				<div className="tec-tickets-onboarding__form-wrapper">
 					{ paymentOption === 'stripe' && renderStripeGateway() }
-					{ connectionStatus !== 'connected' && (
+					{ (!paymentOption || (paymentOption === 'stripe' && connectionStatus !== 'connected')) && (
 						<BaseControl
 							__nextHasNoMarginBottom
 							id="currency-code"
