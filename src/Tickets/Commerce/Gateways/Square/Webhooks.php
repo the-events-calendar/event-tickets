@@ -12,8 +12,8 @@ namespace TEC\Tickets\Commerce\Gateways\Square;
 use TEC\Tickets\Commerce\Gateways\Square\WhoDat;
 use WP_Error;
 use TEC\Tickets\Commerce\Gateways\Square\Notices\Webhook_Notice;
-
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+
 /**
  * Class Webhooks
  *
