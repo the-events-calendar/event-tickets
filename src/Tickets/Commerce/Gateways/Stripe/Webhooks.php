@@ -592,7 +592,7 @@ class Webhooks extends Abstract_Webhooks {
 		return [
 			'tickets-commerce-gateway-settings-group-start-webhook'       => [
 				'type' => 'html',
-				'html' => '<div class="tec-settings-form__element--full-width">',
+				'html' => '<div class="tec-settings-form__content-section">',
 			],
 			'tickets-commerce-gateway-settings-group-header-webhook'      => [
 				'type' => 'html',
@@ -606,7 +606,7 @@ class Webhooks extends Abstract_Webhooks {
 				'type'       => 'text',
 				'label'      => esc_html__( 'Webhooks URL', 'event-tickets' ),
 				'tooltip'    => '',
-				'size'       => 'large',
+				'size'       => 'medium',
 				'default'    => tribe( Webhook_Endpoint::class )->get_route_url(),
 				'attributes' => [
 					'readonly' => 'readonly',
@@ -617,7 +617,7 @@ class Webhooks extends Abstract_Webhooks {
 				'type'                => 'text',
 				'label'               => esc_html__( 'Signing Secret', 'event-tickets' ),
 				'tooltip'             => $signing_key_tooltip,
-				'size'                => 'large',
+				'size'                => 'medium',
 				'default'             => '',
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'textarea',
