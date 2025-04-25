@@ -297,9 +297,9 @@ tribe.tickets.commerce = {};
 	};
 
 	obj.disableInterruption = () => {
-		const disable = window.tec.tickets?.seating?.frontend?.session?.setIsInterruptable;
-		if ( 'function' === typeof disable ) {
-			disable( true );
+		const setInterruptable = window.tec.tickets?.seating?.frontend?.session?.setIsInterruptable;
+		if ( 'function' === typeof setInterruptable ) {
+			setInterruptable( false );
 		}
 	};
 
