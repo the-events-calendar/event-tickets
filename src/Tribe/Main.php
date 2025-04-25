@@ -991,7 +991,7 @@ class Tribe__Tickets__Main {
 				'admin_page'            => 'tickets_page_tec-tickets-settings',
 				'admin_url'             => tribe( Settings::class )->get_url(),
 				'version'               => self::VERSION,
-				'activation_transient'  => '_tribe_tickets_activation_redirect',
+				'activation_transient'  => Tickets_Landing_Page::ACTIVATION_REDIRECT_OPTION,
 				'plugin_path'           => $this->plugin_dir . 'event-tickets.php',
 				'version_history_slug'  => $this->version_history_slug,
 				'welcome_page_title'    => esc_html__( 'Welcome to Event Tickets!', 'event-tickets' ),

@@ -16,6 +16,8 @@ use TEC\Common\Lists\Currency;
 use TEC\Common\Lists\Country;
 use TEC\Tickets\Admin\Onboarding\API;
 use TEC\Common\Asset;
+use TEC\Tickets\Admin\Onboarding\Data;
+use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
 
 /**
  * Class Landing_Page
@@ -133,7 +135,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 *
 	 * @var int
 	 */
-	public int $menu_position = 1;
+	public int $menu_position = 100;
 
 	/**
 	 * Get the admin page title.
@@ -240,7 +242,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 
 		// Stop redirecting if the user has visited the Guided Setup page.
 		tribe_update_option( self::VISITED_GUIDED_SETUP_OPTION, true );
-		delete_transient( '_tribe_tickets_activation_redirect' );
+		delete_transient( self::ACTIVATION_REDIRECT_OPTION );
 	}
 
 	/**
@@ -522,6 +524,36 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	}
 
 	/**
+	 * Check if the TEC wizard is completed.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	protected function is_tec_wizard_completed(): bool {
+		if ( ! did_action( 'tribe_common_loaded' ) ) {
+			return false;
+		}
+
+		$settings = tribe( Data::class )->get_wizard_settings();
+		$finished  = $settings['finished'] ?? false;
+
+		if ( $finished ) {
+			return true;
+		}
+
+		if ( tribe_get_option( self::DISMISS_PAGE_OPTION ) ) {
+			return true;
+		}
+
+		if ( tribe_get_option( self::VISITED_GUIDED_SETUP_OPTION ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Get the initial data for the wizard.
 	 *
 	 * @since TBD
@@ -537,15 +569,19 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			'finished'                  => (bool) $data->get_wizard_setting( 'finished', false ),
 			'completedTabs'             => (array) $data->get_wizard_setting( 'completed_tabs', [] ),
 			'skippedTabs'               => (array) $data->get_wizard_setting( 'skipped_tabs', [] ),
+			'paymentOption'             => $data->get_wizard_setting( 'payment_option', '' ),
 			/* nonces */
 			'action_nonce'              => wp_create_nonce( API::NONCE_ACTION ),
 			'_wpnonce'                  => wp_create_nonce( 'wp_rest' ),
 			/* Data */
 			'currencies'                => tribe( Currency::class )->get_currency_list(),
-			'countries'                 => tribe( Country::class )->get_country_list(),
+			'countries'                 => tribe( Country::class )->get_gateway_countries(),
+			'optin'                     => tribe_get_option( 'opt-in-status', false ),
+			'stripeConnected'           => tribe( Merchant::class )->is_connected( true ),
 			/* TEC install step */
 			'events-calendar-installed' => Installer::get()->is_installed( 'the-events-calendar' ),
 			'events-calendar-active'    => Installer::get()->is_active( 'the-events-calendar' ),
+			'tec-wizard-completed'      => $this->is_tec_wizard_completed(),
 		];
 
 
@@ -583,26 +619,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 * @return void
 	 */
 	public function tec_onboarding_wizard_target(): void {
-		/**
-		 * Allow users to force-ignore the checks and display the wizard.
-		 *
-		 * @since TBD
-		 *
-		 * @param bool $force Whether to force the wizard to display.
-		 *
-		 * @return bool
-		 */
-		$force = apply_filters( 'tec_tickets_onboarding_wizard_force', false );
-
-		$tec_versions = (array) tribe_get_option( 'previous_etp_versions', [] );
-		// If there is more than one previous version, don't show the wizard.
-		if ( ! $force && count( $tec_versions ) > 1 ) {
-			return;
-		}
-
-		$data = tribe( Data::class );
-		// Don't display if we've finished the wizard.
-		if ( ! $force && $data->get_wizard_setting( 'finished', false ) ) {
+		if ( ! $this->should_show_wizard() ) {
 			return;
 		}
 		?>
@@ -615,6 +632,43 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		<?php
 	}
 
+	/**
+	 * Check if the wizard should be displayed.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	protected function should_show_wizard(): bool {
+		/**
+		 * Allow users to force-ignore the checks and display the wizard.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $force Whether to force the wizard to display.
+		 *
+		 * @return bool
+		 */
+		$force = apply_filters( 'tec_tickets_onboarding_wizard_force_display', false );
+
+		if ( $force ) {
+			return true;
+		}
+
+		$et_versions = (array) tribe_get_option( 'previous_etp_versions', [] );
+		// If there is more than one previous version, don't show the wizard.
+		if ( count( $et_versions ) > 1 ) {
+			return false;
+		}
+
+		$data = tribe( Data::class );
+		// Don't display if we've finished the wizard.
+		if ( $data->get_wizard_setting( 'finished', false ) ) {
+			return false;
+		}
+
+		return true;
+	}
 	/**
 	 * Register the assets for the landing page.
 	 *

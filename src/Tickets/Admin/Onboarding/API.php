@@ -152,11 +152,33 @@ class API extends Abstract_API {
 	 * @return WP_REST_Response The response.
 	 */
 	protected function set_tab_records( $request ): WP_REST_Response {
-		$params   = $request->get_params();
+		$params  = $request->get_params();
+		$updated = $this->update_wizard_settings( $params );
+
+		return new WP_REST_Response(
+			[
+				'success' => true,
+				'message' => $updated ? [ __( 'Onboarding wizard step completed successfully.', 'event-tickets' ) ] : [ __( 'Failed to update wizard settings.', 'event-tickets' ) ],
+			],
+			200
+		);
+	}
+
+	/**
+	 * Update the wizard settings option.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $params The request parameters.
+	 *
+	 * @return bool True if the settings were updated, false otherwise.
+	 */
+	public function update_wizard_settings( $params ): bool {
 		$begun    = $params['begun'] ?? false;
 		$finished = $params['finished'] ?? false;
 		$skipped  = $params['skippedTabs'] ?? [];
 		$complete = $params['completedTabs'] ?? [];
+		$gateway  = $params['paymentOption'] ?? '';
 
 		// Remove any elements in $completed from $skipped.
 		$skipped = array_values( array_diff( $skipped, $complete ) );
@@ -176,6 +198,7 @@ class API extends Abstract_API {
 		$settings['current_tab']    = $params['currentTab'] ?? 0;
 		$settings['completed_tabs'] = $this->normalize_tabs( $complete );
 		$settings['skipped_tabs']   = $this->normalize_tabs( $skipped );
+		$settings['payment_option'] = $gateway;
 
 		// Stuff we don't want/need to store in the settings.
 		unset(
@@ -189,17 +212,8 @@ class API extends Abstract_API {
 		// Add a snapshot of the data from the last request.
 		$settings['last_send'] = $params;
 
-		// Update the option.
-		$updated = tribe( Data::class )->update_wizard_settings( $settings );
-
-		// We want to record the issue but we *don't* want to send back a failure since this part is not required for the user.
-		return new WP_REST_Response(
-			[
-				'success' => true,
-				'message' => $updated ? [ __( 'Onboarding wizard step completed successfully.', 'event-tickets' ) ] : [ __( 'Failed to update wizard settings.', 'event-tickets' ) ],
-			],
-			200
-		);
+		// Update the option and return true if successful.
+		return tribe( Data::class )->update_wizard_settings( $settings );
 	}
 
 	/**

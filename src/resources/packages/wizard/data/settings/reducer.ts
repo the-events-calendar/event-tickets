@@ -9,7 +9,6 @@ const {
 	SAVE_SETTINGS_REQUEST,
 	SAVE_SETTINGS_SUCCESS,
 	UPDATE,
-	SET_VISITED_FIELDS,
 	SKIP_TAB,
 	COMPLETE_TAB,
 } = TYPES;
@@ -23,16 +22,14 @@ interface State {
 	settings: { [key: string]: any };// This should be an object, not an array
 	isSaving: boolean;
 	error: any;
-	visitedFields: [];
-	completedTabs: [];
-	skippedTabs: [];
+	completedTabs: number[];
+	skippedTabs: number[];
 }
 
 const initialState = {
 	settings: {},
 	isSaving: false,
 	error: null,
-	visitedFields: [],
 	completedTabs: [],
 	skippedTabs: [],
 };
@@ -52,13 +49,12 @@ const reducer = (
 			if (state.settings && Object.keys(state.settings).length > 0) {
 				return state; // Prevent overwriting if already initialized
 			}
-			const { completedTabs = [], skippedTabs = [], visitedFields = [], ...otherSettings } = settings || {};
+			const { completedTabs = [], skippedTabs = [], ...otherSettings } = settings || {};
 			return {
 				...state,
 				settings: otherSettings, // Populate settings without completedTabs and skippedTabs
 				completedTabs,          // Hydrate completedTabs into its separate property
 				skippedTabs,            // Hydrate skippedTabs into its separate property
-				visitedFields,          // Hydrate visitedFields into its separate property
 			};
 
 		case CREATE:
@@ -100,12 +96,6 @@ const reducer = (
 			return {
 				...state,
 				isSaving: payload || false,
-			};
-
-		case SET_VISITED_FIELDS:
-			return {
-				...state,
-				visitedFields: Array.from(new Set([...state.visitedFields || [], payload])),
 			};
 
 		case COMPLETE_TAB:

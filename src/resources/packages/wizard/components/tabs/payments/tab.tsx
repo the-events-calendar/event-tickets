@@ -1,9 +1,11 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
-import { useSelect } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { Button } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 import { SETTINGS_STORE_KEY } from '../../../data';
+import { API_ENDPOINT } from '../../../data/settings/constants';
+import apiFetch from '@wordpress/api-fetch';
 import NextButton from '../../buttons/next';
 import SkipButton from '../../buttons/skip';
 import CartIcon from './img/cart';
@@ -15,25 +17,47 @@ import ErrorIcon from './img/error';
 const PaymentsContent = ({ moveToNextTab, skipToNextTab }) => {
 	const paymentOption = useSelect((select) => select(SETTINGS_STORE_KEY).getSetting('paymentOption'), []);
 	const [connectionStatus, setConnectionStatus] = useState('disconnected');
+	const getSettings = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getSettings );
+	const wpNonce = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getSetting( '_wpnonce' ), [] );
+	const actionNonce = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'action_nonce' ), [] );
+	const updateSettings = useDispatch( SETTINGS_STORE_KEY ).updateSettings;
 
-	// Create tabSettings object to pass to NextButton
+	// Check for existing Stripe connection on mount
+	useEffect(() => {
+		const settings = getSettings();
+		if (settings.stripeConnected) {
+			setConnectionStatus('connected');
+		}
+	}, []);
+
 	const tabSettings = {
-		eventTickets: true,
 		currentTab: 2,
+		action_nonce: actionNonce,
+		gateway: paymentOption,
 	};
 
-	const handleConnect = (gateway: string) => {
+	const handleConnect = async (gateway: string) => {
 		setConnectionStatus('connecting');
 
-		// TODO: Add connection logic here for the gateways
-		// Test code to simulate connection states
-		setTimeout(() => {
-			if (gateway === 'stripe') {
-				setConnectionStatus('connected');
-			} else {
-				setConnectionStatus('failed');
-			}
-		}, 1000);
+		updateSettings( tabSettings );
+
+		apiFetch.use( apiFetch.createNonceMiddleware( wpNonce ) );
+
+		const result = await apiFetch( {
+			method: 'POST',
+			data: {
+				...getSettings(),
+				gateway: gateway,
+				action: 'connect',
+			},
+			path: API_ENDPOINT,
+		} );
+
+		if (result.signup_url) {
+			window.location.href = result.signup_url;
+		} else {
+			setConnectionStatus('failed');
+		}
 	};
 
 	const isConnected = connectionStatus === 'connected';

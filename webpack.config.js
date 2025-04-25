@@ -53,17 +53,6 @@ const customEntryPoints = compileCustomEntryPoints({
    * The main function of this configuration schema is to ensure they are placed correctly.
    */
   '/src/styles': createTECLegacyBlocksFrontendPostCss('tec.tickets'),
-
-  /**
-   * This deals with packages written following modern module-based approaches.
-   * These packages are usually not Blocks and require `@wordpress/scripts` to be explicitly
-   * instructed about them to compile correctly.
-   * To avoid having to list each package, here the configuration schema is used to recursively
-   * pick them up and namespace them.
-   */
-  '/src/resources/packages': createTECPackage('tec.tickets', {
-    exclude: ['wizard'] // Exclude the wizard package from automatic compilation.
-  }),
 }, defaultConfig);
 
 /**
@@ -97,16 +86,8 @@ customEntryPoints['Seating/frontend/session'] = exposeEntry('tec.tickets.seating
 customEntryPoints['Seating/frontend/ticketsBlock'] = exposeEntry('tec.tickets.seating.frontend.ticketsBlock', __dirname + '/src/Tickets/Seating/app/frontend/ticketsBlock/index.js');
 customEntryPoints['OrderModifiers/rest'] = exposeEntry('tec.tickets.orderModifiers.rest', __dirname + '/src/Tickets/Commerce/Order_Modifiers/app/rest/index.js');
 customEntryPoints['OrderModifiers/blockEditor'] = exposeEntry('tec.tickets.orderModifiers.blockEditor', __dirname + '/src/Tickets/Commerce/Order_Modifiers/app/blockEditor/index.js');
+customEntryPoints['wizard/wizard'] = exposeEntry('tec.tickets.wizard', __dirname + '/src/resources/packages/wizard/index.tsx');
 
-// Add specific wizard entry point with custom configuration and different output path
-customEntryPoints['wizard/index'] = {
-  import: __dirname + '/src/resources/packages/wizard/index.tsx',
-  library: {
-    name: ['tec', 'tickets', 'wizard'],
-    type: 'window',
-  },
-  filename: 'wizard/index.js',
-};
 
 /**
  * Prepends a loader for SVG files that will be applied after the default one. Loaders are applied

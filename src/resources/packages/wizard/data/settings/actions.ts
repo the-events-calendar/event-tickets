@@ -1,22 +1,18 @@
-
 /* Dispatch actions for the reducers to handle */
-import TYPES from "./action-types";
 import { API_ENDPOINT } from "./constants";
 import { apiFetch } from '@wordpress/data';
 
-
-const {
-	CREATE,
-	INITIALIZE,
-	IS_SAVING,
-	SAVE_SETTINGS_ERROR,
-	SAVE_SETTINGS_REQUEST,
-	SAVE_SETTINGS_SUCCESS,
-	UPDATE,
-	SET_VISITED_FIELDS,
-	SKIP_TAB,
-	COMPLETE_TAB,
-} = TYPES;
+export const TYPES = {
+	CREATE: 'CREATE',
+	INITIALIZE: 'INITIALIZE',
+	IS_SAVING: 'IS_SAVING',
+	SAVE_SETTINGS_ERROR: 'SAVE_SETTINGS_ERROR',
+	SAVE_SETTINGS_REQUEST: 'SAVE_SETTINGS_REQUEST',
+	SAVE_SETTINGS_SUCCESS: 'SAVE_SETTINGS_SUCCESS',
+	UPDATE: 'UPDATE',
+	SKIP_TAB: 'SKIP_TAB',
+	COMPLETE_TAB: 'COMPLETE_TAB',
+} as const;
 
 interface Settings {
 	[key: string]: any;
@@ -36,49 +32,42 @@ interface Action {
 
 export function initializeSettings(settings) {
 	return {
-		type: INITIALIZE,
+		type: TYPES.INITIALIZE,
 		settings
 	};
 }
 
 export function createSetting(setting) {
 	return {
-		type: CREATE,
+		type: TYPES.CREATE,
 		setting
 	};
 }
 
 export const updateSettings = settings => {
     return{
-      type: UPDATE,
+      type: TYPES.UPDATE,
       settings,
     };
 };
 
 export const setSaving = (isSaving) => {
 	return {
-		type: IS_SAVING,
+		type: TYPES.IS_SAVING,
 		isSaving
 	};
 };
 
-export const setVisitedField = (visitedFieldId) => {
-	return {
-		type: SET_VISITED_FIELDS,
-		payload: visitedFieldId
-	};
-}
-
 export const skipTab = (tabId) => {
 	return {
-		type: SKIP_TAB,
+		type: TYPES.SKIP_TAB,
 		payload: tabId
 	};
 }
 
 export const completeTab = (tabId) => {
 	return {
-		type: COMPLETE_TAB,
+		type: TYPES.COMPLETE_TAB,
 		payload: tabId
 	};
 }

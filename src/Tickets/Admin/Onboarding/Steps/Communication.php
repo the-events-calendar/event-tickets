@@ -1,6 +1,6 @@
 <?php
 /**
- * Handles the settings step of the onboarding wizard.
+ * Handles the communication step of the onboarding wizard.
  *
  * @since TBD
  *
@@ -12,18 +12,16 @@ namespace TEC\Tickets\Admin\Onboarding\Steps;
 use TEC\Common\Admin\Onboarding\Steps\Abstract_Step;
 use WP_REST_Response;
 use WP_REST_Request;
-use TEC\Tickets\Settings as Tickets_Commerce_Settings;
-use TEC\Tickets\Commerce\Utils\Currency;
+use TEC\Tickets\Emails\Admin\Settings;
 use TEC\Tickets\Admin\Onboarding\API;
-
 /**
- * Class Settings
+ * Class Communication
  *
  * @since TBD
  *
  * @package TEC\Tickets\Admin\Onboarding\Steps
  */
-class Settings extends Abstract_Step {
+class Communication extends Abstract_Step {
 	/**
 	 * The tab number for this step.
 	 *
@@ -31,10 +29,10 @@ class Settings extends Abstract_Step {
 	 *
 	 * @var int
 	 */
-	public const TAB_NUMBER = 1;
+	public const TAB_NUMBER = 3;
 
 	/**
-	 * Process the settings data.
+	 * Process the communication data.
 	 *
 	 * @since TBD
 	 *
@@ -47,16 +45,15 @@ class Settings extends Abstract_Step {
 		$settings = $request->get_json_params();
 
 		if ( empty( $settings['currentTab'] ) ) {
-			return $this->add_fail_message( $response, __( 'No settings provided.', 'event-tickets' ) );
+			return $this->add_fail_message( $response, __( 'No communication settings provided.', 'event-tickets' ) );
 		}
 
-		tribe_update_option( Tickets_Commerce_Settings::$tickets_commerce_enabled, (bool) $settings['paymentOption'] );
+		tribe_update_option( Settings::$option_sender_email, $settings['email'] );
 
-		tribe_update_option( Currency::$currency_code_option, $settings['currency'] );
+		tribe_update_option( Settings::$option_sender_name, $settings['senderName'] );
 
-		// Update the option.
 		$updated = tribe( API::class )->update_wizard_settings( $settings );
 
-		return $this->add_message( $response, $updated ? __( 'Successfully saved settings.', 'event-tickets' ) : __( 'Failed to save settings.', 'event-tickets' ) );
+		return $this->add_message( $response, $updated ? __( 'Successfully saved communication settings.', 'event-tickets' ) : __( 'Failed to save communication settings.', 'event-tickets' ) );
 	}
 }
