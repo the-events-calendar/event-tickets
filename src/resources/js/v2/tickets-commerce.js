@@ -296,6 +296,13 @@ tribe.tickets.commerce = {};
 		return window.tecTicketsCommerceGatewayStripeCheckout?.paymentIntentData?.id;
 	};
 
+	obj.disableInterruption = () => {
+		const disable = window.tec.tickets?.seating?.frontend?.session?.setIsInterruptable;
+		if ( 'function' === typeof disable ) {
+			disable( true );
+		}
+	};
+
 	obj.bindCouponApply = function() {
 		let ajaxInProgress = false;
 
@@ -372,6 +379,7 @@ tribe.tickets.commerce = {};
 
 						// Maybe reload the page if necessary.
 						if ( response.doReload ) {
+							obj.disableInterruption();
 							window.location.reload();
 						}
 					} else {
@@ -462,6 +470,7 @@ tribe.tickets.commerce = {};
 
 						// Maybe reload the page if necessary.
 						if ( response.doReload ) {
+							obj.disableInterruption();
 							window.location.reload();
 						}
 					} else {
