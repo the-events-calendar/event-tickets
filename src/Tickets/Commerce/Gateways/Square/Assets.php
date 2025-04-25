@@ -186,6 +186,8 @@ class Assets extends Controller_Contract {
 				'tribe-clipboard',
 				'tribe-common',
 				'tec-ky',
+				'wp-i18n',
+				'jquery'
 			)
 			->set_action( 'admin_enqueue_scripts' )
 			->set_condition( [ $this, 'is_square_section' ] )

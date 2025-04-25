@@ -12,7 +12,6 @@ namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_WhoDat;
 use TEC\Tickets\Commerce\Gateways\Square\REST\On_Boarding_Endpoint;
-use Tribe__Utils__Array as Arr;
 
 /**
  * Class WhoDat. Handles connection to Square when the platform keys are needed.
@@ -40,109 +39,6 @@ class WhoDat extends Abstract_WhoDat {
 	 * @var string
 	 */
 	protected const STATE_NONCE_ACTION = 'tec-tc-square-connect';
-
-	/**
-	 * Get the API URL for making requests.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $endpoint   The endpoint to connect to.
-	 * @param array  $query_args The query arguments.
-	 *
-	 * @return string
-	 */
-	public function get_api_url( $endpoint, array $query_args = [] ): string {
-		return add_query_arg( $query_args, "{$this->get_api_base_url()}/{$this->get_gateway_endpoint()}/{$endpoint}" );
-	}
-
-	/**
-	 * Make a GET request to the WhoDat API.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $endpoint   The endpoint to connect to.
-	 * @param array  $query_args The query arguments.
-	 *
-	 * @return array|null
-	 */
-	public function get( $endpoint, array $query_args ): ?array {
-		$url = $this->get_api_url( $endpoint, $query_args );
-
-		$request = wp_remote_get( $url ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_remote_get_wp_remote_get
-
-		if ( is_wp_error( $request ) ) {
-			$this->log_error( 'WhoDat request error:', $request->get_error_message(), $url );
-
-			return null;
-		}
-
-		$body = wp_remote_retrieve_body( $request );
-		$body = json_decode( $body, true );
-
-		return $body;
-	}
-
-	/**
-	 * Make a POST request to the WhoDat API.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $endpoint          The endpoint to connect to.
-	 * @param array  $query_args        The query arguments.
-	 * @param array  $request_arguments The request arguments.
-	 *
-	 * @return array|null
-	 */
-	public function post( $endpoint, array $query_args = [], array $request_arguments = [] ): ?array {
-		$url = $this->get_api_url( $endpoint, $query_args );
-
-		$default_arguments = [
-			'body' => [],
-		];
-
-		foreach ( $default_arguments as $key => $default_argument ) {
-			$request_arguments[ $key ] = array_merge( $default_argument, Arr::get( $request_arguments, $key, [] ) );
-		}
-		$request_arguments = array_filter( $request_arguments );
-		$request           = wp_remote_post( $url, $request_arguments );
-
-		if ( is_wp_error( $request ) ) {
-			$this->log_error( 'WhoDat request error:', $request->get_error_message(), $url );
-
-			return null;
-		}
-
-		$body = wp_remote_retrieve_body( $request );
-		$body = json_decode( $body, true );
-
-		if ( ! is_array( $body ) ) {
-			$this->log_error( 'WhoDat unexpected response:', $body, $url );
-			$this->log_error( 'Response:', print_r( $request, true ), '--->' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
-
-			return null;
-		}
-
-		return $body;
-	}
-
-	/**
-	 * Log an error message for debugging purposes.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $type    The type of error.
-	 * @param string $message The error message.
-	 * @param string $url     The URL that was being requested.
-	 */
-	public function log_error( $type, $message, $url ): void {
-		$log = sprintf(
-			'[%s] %s %s',
-			$url,
-			$type,
-			$message
-		);
-		tribe( 'logger' )->log_error( $log, 'whodat-connection' );
-	}
 
 	/**
 	 * Creates a new account link for the client and redirects the user to setup the account details.
@@ -390,5 +286,213 @@ class WhoDat extends Abstract_WhoDat {
 		$connection_response = $this->get( 'oauth/authorize', $query_args );
 
 		return $connection_response['auth_url'] ?? '';
+	}
+
+	/**
+	 * Register a webhook subscription for the merchant.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $notification_url The URL to send webhook notifications to.
+	 * @param array  $event_types      The event types to subscribe to.
+	 * @param string $api_version      The API version to use, defaults to '2023-12-13'.
+	 *
+	 * @return array|null
+	 */
+	public function register_webhook( string $notification_url, array $event_types = [], string $api_version = '2023-12-13' ): ?array {
+		$merchant = tribe( Merchant::class );
+
+		$query_args = [
+			'access_token' => $merchant->get_access_token(),
+			'mode'         => $merchant->get_mode(),
+		];
+
+		$body = [
+			'notification_url' => $notification_url,
+			'api_version'      => $api_version,
+		];
+
+		// Add event types if provided.
+		if ( ! empty( $event_types ) ) {
+			$body['event_types'] = $event_types;
+		}
+
+		$request_arguments = [
+			'body'    => $body,
+			'headers' => [
+				'Content-Type' => 'application/json',
+			],
+		];
+
+		return $this->post( 'webhooks/subscriptions', $query_args, $request_arguments );
+	}
+
+	/**
+	 * Get all webhook subscriptions for the merchant.
+	 *
+	 * @since TBD
+	 *
+	 * @return array|null
+	 */
+	public function get_webhooks(): ?array {
+		$merchant = tribe( Merchant::class );
+
+		$query_args = [
+			'access_token' => $merchant->get_access_token(),
+			'mode'         => $merchant->get_mode(),
+		];
+
+		return $this->get( 'webhooks/subscriptions', $query_args );
+	}
+
+	/**
+	 * Delete a webhook subscription.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $subscription_id The ID of the webhook subscription to delete.
+	 *
+	 * @return array|null
+	 */
+	public function delete_webhook( string $subscription_id ): ?array {
+		$merchant = tribe( Merchant::class );
+
+		$query_args = [
+			'access_token' => $merchant->get_access_token(),
+			'mode'         => $merchant->get_mode(),
+		];
+
+		$body = [
+			'subscription_id' => $subscription_id,
+		];
+
+		$request_arguments = [
+			'body'    => $body,
+			'headers' => [
+				'Content-Type' => 'application/json',
+			],
+		];
+
+		return $this->post( 'webhooks/subscriptions/delete', $query_args, $request_arguments );
+	}
+
+	/**
+	 * Check if the existing webhook configuration matches the current requirements.
+	 * Compares event types and API version to determine if the webhook needs updating.
+	 *
+	 * @since TBD
+	 *
+	 * @param string      $webhook_id   The ID of the webhook to check.
+	 * @param array       $event_types  The expected event types.
+	 * @param string|null $api_version  The expected API version, if null will use the latest available.
+	 *
+	 * @return array {
+	 *     Array containing verification results
+	 *
+	 *     @type bool   $is_current         Whether the webhook is up to date.
+	 *     @type array  $missing_events     Array of missing event types, if any.
+	 *     @type bool   $version_mismatch   Whether the API version is different.
+	 *     @type string $current_version    The current API version of the webhook.
+	 *     @type array  $webhook_data       The full webhook data retrieved.
+	 * }
+	 */
+	public function check_webhook_configuration( string $webhook_id, array $event_types, ?string $api_version = null ): array {
+		// Default result structure.
+		$result = [
+			'is_current'       => false,
+			'missing_events'   => [],
+			'version_mismatch' => false,
+			'current_version'  => '',
+			'webhook_data'     => null,
+		];
+
+		// If no API version is provided, fetch the latest one.
+		if ( null === $api_version ) {
+			$event_types_data = $this->get_available_event_types();
+			$api_version      = $event_types_data['api_version'] ?? '2025-04-16';
+		}
+
+		// Get all webhooks.
+		$webhooks = $this->get_webhooks();
+
+		if ( empty( $webhooks ) || empty( $webhooks['subscriptions'] ) ) {
+			return $result;
+		}
+
+		$target_webhook = null;
+
+		// Find our specific webhook.
+		foreach ( $webhooks['subscriptions'] as $subscription ) {
+			if ( isset( $subscription['id'] ) && $subscription['id'] === $webhook_id ) {
+				$target_webhook = $subscription;
+				break;
+			}
+		}
+
+		// If webhook not found.
+		if ( empty( $target_webhook ) ) {
+			return $result;
+		}
+
+		// Store the webhook data for reference.
+		$result['webhook_data'] = $target_webhook;
+
+		// Check API version.
+		$current_version           = $target_webhook['api_version'] ?? '';
+		$result['current_version'] = $current_version;
+
+		if ( $current_version !== $api_version ) {
+			$result['version_mismatch'] = true;
+		}
+
+		// Check event types.
+		$current_events = $target_webhook['event_types'] ?? [];
+
+		// Check for missing events.
+		$missing_events           = array_diff( $event_types, $current_events );
+		$result['missing_events'] = $missing_events;
+
+		// Webhook is current if API version matches and no missing events.
+		$result['is_current'] = ! $result['version_mismatch'] && empty( $missing_events );
+
+		return $result;
+	}
+
+	/**
+	 * Get available webhook event types from the API.
+	 *
+	 * @since TBD
+	 *
+	 * @return array|null Array containing available event types and API version or null if the request fails.
+	 */
+	public function get_available_event_types(): ?array {
+		$merchant = tribe( Merchant::class );
+
+		$query_args = [
+			'access_token' => $merchant->get_access_token(),
+			'mode'         => $merchant->get_mode(),
+		];
+
+		$response = $this->get( 'webhooks/event-types', $query_args );
+
+		if ( empty( $response ) || isset( $response['error'] ) ) {
+			do_action(
+				'tribe_log',
+				'error',
+				'Failed to retrieve Square webhook event types',
+				[
+					'source'   => 'tickets-commerce-square',
+					'response' => $response ?? 'Empty response',
+				]
+			);
+
+			return null;
+		}
+
+		// Ensure the response has a standardized format with both event types and API version.
+		return [
+			'event_types' => $response['event_types'] ?? [],
+			'api_version' => $response['api_version'] ?? '',
+		];
 	}
 }

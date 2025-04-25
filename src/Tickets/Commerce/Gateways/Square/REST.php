@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Tickets\Commerce\Gateways\Square\REST\On_Boarding_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Square\REST\Order_Endpoint;
+use TEC\Tickets\Commerce\Gateways\Square\REST\Webhook_Endpoint;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\Contracts\Container;
 
@@ -41,6 +42,15 @@ class REST extends Controller_Contract {
 	protected Order_Endpoint $order_endpoint;
 
 	/**
+	 * The webhook endpoint.
+	 *
+	 * @since TBD
+	 *
+	 * @var Webhook_Endpoint
+	 */
+	protected Webhook_Endpoint $webhook_endpoint;
+
+	/**
 	 * REST constructor.
 	 *
 	 * @since TBD
@@ -48,12 +58,19 @@ class REST extends Controller_Contract {
 	 * @param Container            $container The container instance.
 	 * @param On_Boarding_Endpoint $on_boarding_endpoint The on boarding endpoint instance.
 	 * @param Order_Endpoint       $order_endpoint The order endpoint instance.
+	 * @param Webhook_Endpoint     $webhook_endpoint The webhook endpoint instance.
 	 */
-	public function __construct( Container $container, On_Boarding_Endpoint $on_boarding_endpoint, Order_Endpoint $order_endpoint ) {
+	public function __construct(
+		Container $container,
+		On_Boarding_Endpoint $on_boarding_endpoint,
+		Order_Endpoint $order_endpoint,
+		Webhook_Endpoint $webhook_endpoint
+	) {
 		parent::__construct( $container );
 
 		$this->on_boarding_endpoint = $on_boarding_endpoint;
 		$this->order_endpoint       = $order_endpoint;
+		$this->webhook_endpoint     = $webhook_endpoint;
 	}
 
 	/**
@@ -84,5 +101,6 @@ class REST extends Controller_Contract {
 	public function register_endpoints() {
 		$this->on_boarding_endpoint->register();
 		$this->order_endpoint->register();
+		$this->webhook_endpoint->register();
 	}
 }
