@@ -39,7 +39,5 @@ class Controller extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	public function unregister(): void {
-
-	}
+	public function unregister(): void {}
 }
