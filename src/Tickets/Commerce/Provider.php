@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce;
 use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\Cart\Agnostic_Cart;
 use TEC\Tickets\Commerce\Cart\Cart_Interface;
+use TEC\Tickets\Commerce\RSVP\Controller as RSVP_Controller;
 use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
@@ -96,6 +97,9 @@ class Provider extends Service_Provider {
 
 		// Register Order modifiers main controller.
 		$this->container->register( Order_Modifiers\Controller::class );
+
+		// RSVP controller.
+		$this->container->register( RSVP_Controller::class );
 
 		$this->container->register_on_action(
 			'tec_events_pro_custom_tables_v1_fully_activated',
