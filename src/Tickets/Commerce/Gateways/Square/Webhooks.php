@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Tickets\Commerce\Gateways\Square\WhoDat;
 use WP_Error;
+use TEC\Tickets\Commerce\Gateways\Square\Notices\Webhook_Notice;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 /**
@@ -57,6 +58,8 @@ class Webhooks extends Controller_Contract {
 	public function do_register(): void {
 		// Add AJAX handler for webhook registration.
 		add_action( 'wp_ajax_tec_tickets_commerce_square_register_webhook', [ $this, 'ajax_register_webhook' ] );
+
+		tribe( Webhook_Notice::class );
 	}
 
 	/**

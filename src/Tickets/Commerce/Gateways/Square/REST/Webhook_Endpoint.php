@@ -137,32 +137,6 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * @return WP_REST_Response|WP_Error Response or error.
 	 */
 	public function handle_webhook( WP_REST_Request $request ) {
-		// Get raw body for signature verification.
-		$body = WP_REST_Server::get_raw_data();
-
-		// Get the Square-Signature header.
-		$signature = $request->get_header( 'Square-Signature' );
-
-		// Verify the signature.
-		$webhooks = tribe( Webhooks::class );
-		if ( ! $webhooks->verify_signature( $signature, $body ) ) {
-			do_action(
-				'tribe_log',
-				'error',
-				'Invalid Square webhook signature',
-				[
-					'source'    => 'tickets-commerce-square',
-					'signature' => $signature,
-				]
-			);
-
-			return new WP_Error(
-				'invalid_signature',
-				__( 'Invalid webhook signature', 'event-tickets' ),
-				[ 'status' => 401 ]
-			);
-		}
-
 		// Get the event data.
 		$event_data = $request->get_json_params();
 

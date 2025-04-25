@@ -63,13 +63,13 @@ class Webhook_Notice {
 	 *
 	 * @since TBD
 	 */
-	public function register() {
+	public function register(): void {
 		tribe_notice(
 			self::SLUG,
 			[ $this, 'render_notice' ],
 			[
 				'type'     => 'error',
-				'dismiss'  => true,
+				'dismiss'  => false,
 				'priority' => 10,
 			],
 			[ $this, 'should_display_notice' ]

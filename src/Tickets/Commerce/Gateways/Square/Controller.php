@@ -41,8 +41,8 @@ class Controller extends Controller_Contract {
 		$this->container->register( Assets::class );
 		$this->container->register( Ajax::class );
 		$this->container->register( Hooks::class );
-		$this->container->register( Webhooks::class );
 		$this->container->register( Notices\Controller::class );
+		$this->container->register( Webhooks::class );
 	}
 
 	/**
