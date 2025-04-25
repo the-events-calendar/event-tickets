@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Square Webhook Endpoint
  *
@@ -112,13 +111,13 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * @return WP_REST_Response|WP_Error Response or error.
 	 */
 	public function handle_webhook( WP_REST_Request $request ) {
-		// Get raw body for signature verification
-		$body = file_get_contents( 'php://input' );
+		// Get raw body for signature verification.
+		$body = file_get_contents( 'php://input' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file,WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsRemoteFile,WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsRemoteFile_get_contents_file_get_contents
 
-		// Get the Square-Signature header
+		// Get the Square-Signature header.
 		$signature = $request->get_header( 'Square-Signature' );
 
-		// Verify the signature
+		// Verify the signature.
 		$webhooks = tribe( Webhooks::class );
 		if ( ! $webhooks->verify_signature( $signature, $body ) ) {
 			do_action(
@@ -138,7 +137,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			);
 		}
 
-		// Get the event data
+		// Get the event data.
 		$event_data = $request->get_json_params();
 
 		if ( empty( $event_data ) || empty( $event_data['type'] ) ) {
@@ -159,22 +158,22 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			);
 		}
 
-		// Log the webhook event
+		// Log the webhook event.
 		do_action(
 			'tribe_log',
 			'info',
 			'Received Square webhook',
 			[
-				'source'    => 'tickets-commerce-square',
+				'source'     => 'tickets-commerce-square',
 				'event_type' => $event_data['type'],
-				'data'      => $event_data,
+				'data'       => $event_data,
 			]
 		);
 
-		// Process the webhook based on event type
+		// Process the webhook based on event type.
 		$this->process_webhook_event( $event_data );
 
-		// Return a successful response
+		// Return a successful response.
 		return new WP_REST_Response(
 			[
 				'success' => true,
@@ -206,7 +205,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 				break;
 
 			default:
-				// Log unsupported event type
+				// Log unsupported event type.
 				do_action(
 					'tribe_log',
 					'warning',
@@ -245,12 +244,12 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		$payment_id = $payment_data['id'];
-		$status = $payment_data['status'] ?? '';
+		$status     = $payment_data['status'] ?? '';
 
-		// Get the order controller
+		// Get the order controller.
 		$order_controller = tribe( Order::class );
 
-		// Find the order associated with this payment
+		// Find the order associated with this payment.
 		$order = $order_controller->get_order_by_payment_id( $payment_id );
 
 		if ( empty( $order ) ) {
@@ -266,7 +265,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return;
 		}
 
-		// Update the order status based on payment status
+		// Update the order status based on payment status.
 		switch ( $status ) {
 			case 'COMPLETED':
 				$order_controller->mark_as_completed( $order );
@@ -281,7 +280,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 				break;
 
 			default:
-				// No status change for other payment statuses
+				// No status change for other payment statuses.
 				break;
 		}
 	}
@@ -301,18 +300,18 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		$payment_id = $refund_data['payment_id'];
-		$refund_id = $refund_data['id'] ?? '';
-		$status = $refund_data['status'] ?? '';
+		$refund_id  = $refund_data['id'] ?? '';
+		$status     = $refund_data['status'] ?? '';
 
-		// Skip if refund is not completed
+		// Skip if refund is not completed.
 		if ( 'COMPLETED' !== $status ) {
 			return;
 		}
 
-		// Get the order controller
+		// Get the order controller.
 		$order_controller = tribe( Order::class );
 
-		// Find the order associated with this payment
+		// Find the order associated with this payment.
 		$order = $order_controller->get_order_by_payment_id( $payment_id );
 
 		if ( empty( $order ) ) {
@@ -329,7 +328,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return;
 		}
 
-		// Mark the order as refunded
+		// Mark the order as refunded.
 		$order_controller->mark_as_refunded( $order );
 	}
 

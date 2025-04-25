@@ -8,10 +8,8 @@
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Tickets\Commerce\Gateways\Square\Notices\Webhook_Notice;
 use TEC\Tickets\Commerce\Gateways\Square\REST\On_Boarding_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Square\REST\Order_Endpoint;
-use TEC\Tickets\Commerce\Gateways\Square\REST\Webhook_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Square\Webhooks;
 
 /**

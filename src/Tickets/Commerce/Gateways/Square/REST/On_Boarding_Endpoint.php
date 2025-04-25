@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Square On-Boarding Endpoint
  *
@@ -107,7 +106,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 				'callback'            => [ $this, 'handle_request' ],
 				'permission_callback' => [ $this, 'has_permission' ],
 				'args'                => [
-					'code'             => [
+					'code'         => [
 						'required'          => false,
 						'type'              => 'string',
 						'validate_callback' => static function ( $value ) {
@@ -118,7 +117,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 							return true;
 						},
 					],
-					'state'            => [
+					'state'        => [
 						'required'          => true,
 						'type'              => 'string',
 						'validate_callback' => static function ( $value ) {
@@ -129,7 +128,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 							return wp_verify_nonce( $value, tribe( WhoDat::class )->get_state_nonce_action() );
 						},
 					],
-					'token_type'            => [
+					'token_type'   => [
 						'required'          => false,
 						'type'              => 'string',
 						'validate_callback' => static function ( $value ) {
@@ -151,18 +150,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 							return true;
 						},
 					],
-					'access_token' => [
-						'required'          => false,
-						'type'              => 'string',
-						'validate_callback' => static function ( $value ) {
-							if ( ! is_string( $value ) ) {
-								return false;
-							}
-
-							return true;
-						},
-					],
-					'expires_at' => [
+					'expires_at'   => [
 						'required'          => false,
 						'type'              => 'string',
 						'validate_callback' => static function ( $value ) {
@@ -310,7 +298,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 			);
 		}
 
-		// Register webhooks for this merchant
+		// Register webhooks for this merchant.
 		$this->register_webhooks();
 
 		// Enable the gateway.
@@ -337,10 +325,10 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	 * @return void
 	 */
 	protected function register_webhooks() {
-		// Get the webhooks controller
+		// Get the webhooks controller.
 		$webhooks = tribe( Webhooks::class );
 
-		// Register the webhook
+		// Register the webhook.
 		$webhook_data = $webhooks->register_webhook();
 
 		if ( $webhook_data ) {
@@ -349,8 +337,8 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 				'info',
 				'Square webhook registered successfully',
 				[
-					'source'      => 'tickets-commerce-square',
-					'webhook_id'  => $webhook_data['id'] ?? '',
+					'source'     => 'tickets-commerce-square',
+					'webhook_id' => $webhook_data['id'] ?? '',
 				]
 			);
 		} else {

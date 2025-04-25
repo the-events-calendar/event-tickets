@@ -24,8 +24,8 @@ if ( ! $is_connected ) {
 $merchant_data = $merchant->fetch_merchant_data();
 
 // Get merchant details - preferring data from the API if available.
-$merchant_name = $merchant->get_merchant_name();
-$merchant_email = $merchant->get_merchant_email();
+$merchant_name     = $merchant->get_merchant_name();
+$merchant_email    = $merchant->get_merchant_email();
 $merchant_currency = $merchant->get_merchant_currency();
 
 // Verify merchant has all required scopes for Square integration.

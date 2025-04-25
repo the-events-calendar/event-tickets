@@ -451,7 +451,7 @@ class Webhooks extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	public function ajax_register_webhook() {
+	public function ajax_register_webhook(): void {
 		// Verify nonce.
 		if ( ! wp_verify_nonce( tec_get_request_var( 'nonce' ), 'square-webhook-register' ) ) {
 			wp_send_json_error(
@@ -479,7 +479,7 @@ class Webhooks extends Controller_Contract {
 		$response = $this->register_webhook();
 
 		if ( is_wp_error( $response ) ) {
-			return wp_send_json_error( $response );
+			wp_send_json_error( $response );
 		}
 
 		if (

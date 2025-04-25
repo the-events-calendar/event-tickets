@@ -409,7 +409,7 @@ class WhoDat extends Abstract_WhoDat {
 		// If no API version is provided, fetch the latest one.
 		if ( null === $api_version ) {
 			$event_types_data = $this->get_available_event_types();
-			$api_version = $event_types_data['api_version'] ?? '2025-04-16';
+			$api_version      = $event_types_data['api_version'] ?? '2025-04-16';
 		}
 
 		// Get all webhooks.

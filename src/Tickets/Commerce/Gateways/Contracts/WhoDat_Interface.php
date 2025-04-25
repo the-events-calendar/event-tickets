@@ -1,4 +1,11 @@
 <?php
+/**
+ * WhoDat Interface.
+ *
+ * @since   5.3.0
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Contracts
+ */
 
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
@@ -9,6 +16,7 @@ namespace TEC\Tickets\Commerce\Gateways\Contracts;
  *
  * @package TEC\Tickets\Commerce\Gateways\Contracts
  */
+// phpcs:ignore SlevomatCodingStandard.Classes.InterfaceName.InterfaceNameMustBeCapitalized, StellarWP.Classes.ValidClassName.NotSnakeCase
 interface WhoDat_Interface {
 	/**
 	 * Returns the WhoDat URL to use.
@@ -47,8 +55,8 @@ interface WhoDat_Interface {
 	 * @since 5.3.0 moved to Abstract_WhoDat.
 	 * @since 5.1.9
 	 *
-	 * @param string $endpoint
-	 * @param array  $query_args
+	 * @param string $endpoint   The endpoint path.
+	 * @param array  $query_args Query args appended to the URL.
 	 *
 	 * @return mixed|null
 	 */
@@ -60,9 +68,9 @@ interface WhoDat_Interface {
 	 * @since 5.3.0    moved to Abstract_WhoDat and made public.
 	 * @since 5.1.9
 	 *
-	 * @param string $type
-	 * @param string $message
-	 * @param string $url
+	 * @param string $type     The error type.
+	 * @param string $message  The error message.
+	 * @param string $url      The URL of the request.
 	 */
 	public function log_error( $type, $message, $url );
 
@@ -72,9 +80,9 @@ interface WhoDat_Interface {
 	 * @since 5.3.0    moved to Abstract_WhoDat.
 	 * @since 5.1.9
 	 *
-	 * @param string $endpoint
-	 * @param array  $query_args
-	 * @param array  $request_arguments
+	 * @param string $endpoint           The endpoint path.
+	 * @param array  $query_args         Query args appended to the URL.
+	 * @param array  $request_arguments The request arguments.
 	 *
 	 * @return array|null
 	 */

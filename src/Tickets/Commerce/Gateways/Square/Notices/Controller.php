@@ -28,10 +28,10 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function do_register(): void {
-		// Register all notice classes as singletons
+		// Register all notice classes as singletons.
 		$this->container->singleton( Webhook_Notice::class );
 
-		// Register the notice instances
+		// Register the notice instances.
 		$this->container->get( Webhook_Notice::class )->register();
 	}
 
