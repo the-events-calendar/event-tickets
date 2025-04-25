@@ -184,7 +184,12 @@ class Settings extends Abstract_Settings {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Get the list of settings for the gateway.
+	 *
+	 * @since 5.3.0
+	 * @since TBD Added new div.
+	 *
+	 * @return array The list of settings for the gateway.
 	 */
 	public function get_settings() {
 		$currency_code = Currency::get_currency_code();
@@ -216,7 +221,11 @@ class Settings extends Abstract_Settings {
 			esc_html__( 'You are using the free Stripe payment gateway integration. This includes an additional 2%% fee for processing ticket sales. This fee is removed if you have an active subscription to Event Tickets Plus. %1$s.', 'event-tickets' ),
 			$plus_link_faq
 		);
-		$main_settings  = [
+		$main_settings = [
+			'tickets-commerce-stripe-commerce-wrapper-start' => [
+				'type' => 'html',
+				'html' => '<div class="tec-settings-form__element--full-width">',
+			],
 			'tickets-commerce-stripe-commerce-description' => [
 				'type' => 'html',
 				'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-description">' . $stripe_message . '</div>',
@@ -225,6 +234,10 @@ class Settings extends Abstract_Settings {
 				'type'            => 'wrapped_html',
 				'html'            => $this->get_connection_settings_html(),
 				'validation_type' => 'html',
+			],
+			'tickets-commerce-stripe-commerce-wrapper-end' => [
+				'type' => 'html',
+				'html' => '</div>',
 			],
 		];
 

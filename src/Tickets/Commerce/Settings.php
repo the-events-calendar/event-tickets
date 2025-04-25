@@ -548,13 +548,19 @@ class Settings {
 	 * Handle setting up dependencies for all of the fields.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Return early if Tickets_Settings::$tickets_commerce_enabled is enabled.
 	 *
 	 * @param array[] $settings Which settings we are applying conditionals to.
 	 *
 	 * @return array[]
 	 */
 	public function apply_commerce_enabled_conditional( $settings ) {
-		$validate_if         = new Tribe__Field_Conditional( Tickets_Settings::$tickets_commerce_enabled, 'tribe_is_truthy' );
+		$validate_if = new Tribe__Field_Conditional( Tickets_Settings::$tickets_commerce_enabled, 'tribe_is_truthy' );
+
+		if ( ! tribe_is_truthy( Tickets_Settings::$tickets_commerce_enabled ) ) {
+			return $settings;
+		}
+
 		$fieldset_attributes = [
 			'data-depends'              => '#' . Tickets_Settings::$tickets_commerce_enabled . '-input',
 			'data-condition-is-checked' => '',

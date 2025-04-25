@@ -376,6 +376,7 @@ class Payments_Tab extends Service_Provider {
 	 * Get selected section top level menu.
 	 *
 	 * @since 5.3.0
+	 * @since TBD Wrapped elements in new HTML.
 	 *
 	 * @param Gateway $section_gateway Gateway class.
 	 *
@@ -392,39 +393,44 @@ class Payments_Tab extends Service_Provider {
 			$section_gateway::get_label()
 		);
 
-		$attributes = tribe_get_attributes( [
-			'type'     => 'checkbox',
-			'name'     => $option_key,
-			'id'       => 'tickets-commerce-enable-input',
-			'class'    => 'tec-tickets__admin-settings-toggle-large-checkbox tribe-dependency tribe-dependency-verified',
-			'disabled' => ! $section_gateway::is_connected(),
-			'checked'  => $section_gateway::is_enabled(),
-		] );
+		$attributes = tribe_get_attributes(
+			[
+				'type'     => 'checkbox',
+				'name'     => $option_key,
+				'id'       => 'tickets-commerce-enable-input',
+				'class'    => 'tec-tickets__admin-settings-toggle-large-checkbox tribe-dependency tribe-dependency-verified',
+				'disabled' => ! $section_gateway::is_connected(),
+				'checked'  => $section_gateway::is_enabled(),
+			]
+		);
 
-		$fields['tickets-header-wrapper-start'] = [
+		$fields['tec-settings-payment-header-start'] = [
 			'type' => 'html',
-			'html' => '<div class="tec-settings-form__header-block tec-settings-form__header-block--horizontal">',
+			'html' => '<div class="tec-settings-form__header-block tec-settings-form__header-block--horizontal">'
+						. '<h3 id="tec-settings-addons-title" class="tec-settings-form__section-header">'
+						. $section_gateway::get_label()
+						. '</h3>',
 		];
+
 		/**
 		 * @todo this needs to move into a template
 		 */
 		$fields['tickets-commerce-header'] = [
 			'type' => 'html',
-			'html' => '<fieldset>
+			'html' => '
 							<label class="tec-tickets__admin-settings-toggle-large">
 								<input ' . implode( ' ', $attributes ) . ' />
 								<span class="tec-tickets__admin-settings-toggle-large-switch"></span>
 								<span class="tec-tickets__admin-settings-toggle-large-label">' . $enable_label . '</span>
 							</label>
-						</fieldset>',
+						',
 
 		];
 
-		$fields['tickets-header-wrapper-end'] = [
+		$fields['tec-settings-payment-header-end'] = [
 			'type' => 'html',
 			'html' => '</div>',
 		];
-
 
 		$fields[ $option_key ] = [
 			'type'            => 'hidden',
