@@ -46,6 +46,13 @@ class Settings {
 	public static string $help_hub_slug = 'tec-tickets-help-hub';
 
 	/**
+	 * The Original Help page slug.
+	 *
+	 * @var string
+	 */
+	public static string $old_help_slug = 'tec-tickets-help';
+
+	/**
 	 * Event Tickets Help page slug.
 	 *
 	 * @since 5.6.3
@@ -242,6 +249,9 @@ class Settings {
 			]
 		);
 
+		// Redirects users from the outdated Help page to the new Help Hub page if accessed.
+		$this->redirect_to_help_hub();
+
 		// Instantiate necessary dependencies for the Help Hub.
 		$template      = tribe( Tribe__Template::class );
 		$config        = tribe( Configuration::class );
@@ -262,6 +272,36 @@ class Settings {
 		);
 
 		$this->maybe_add_troubleshooting();
+	}
+
+	/**
+	 * Redirects users from an outdated help page to the updated Help Hub page in the WordPress admin.
+	 *
+	 * Checks the `page` query parameters, and if they match the old help page slug.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function redirect_to_help_hub(): void {
+		$page = tribe_get_request_var( 'page' );
+
+		// Exit if the request is not for the old help page.
+		if ( self::$old_help_slug !== $page ) {
+			return;
+		}
+
+		// Build the new URL for redirection.
+		$new_url = add_query_arg(
+			[
+				'page' => self::$help_hub_slug,
+			],
+			admin_url( 'admin.php' )
+		);
+
+		//phpcs:ignore WordPressVIPMinimum.Security.ExitAfterRedirect.NoExit
+		wp_safe_redirect( $new_url );
+		tribe_exit();
 	}
 
 	/**
