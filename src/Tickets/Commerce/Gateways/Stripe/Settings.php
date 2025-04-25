@@ -256,15 +256,15 @@ class Settings extends Abstract_Settings {
 		}
 
 		$connected_settings = [
-			'tickets-commerce-stripe-settings-heading'               => [
+			'tickets-commerce-stripe-general-section-start' => [
 				'type' => 'html',
-				'html' => '<h3 class="tribe-dependent -input">' . __( 'Stripe Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
+				'html' => '<div class="tec-settings-form__content-section">',
 			],
 			'tickets-commerce-gateway-settings-group-header-general' => [
 				'type' => 'html',
-				'html' => '<h4 class="tec-tickets__admin-settings-tickets-commerce-gateway-group-header">' . __( 'General', 'event-tickets' ) . '</h4><div class="clear"></div>',
+				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'General', 'event-tickets' ) . '</h3><div class="clear"></div>',
 			],
-			static::$option_statement_descriptor                     => [
+			static::$option_statement_descriptor           => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Statement Descriptor', 'event-tickets' ),
 				'tooltip'             => esc_html__( 'This is the text that appears on the ticket purchaser bank statements. If left blank, the descriptor set in Stripe will be used.', 'event-tickets' ),
@@ -274,23 +274,26 @@ class Settings extends Abstract_Settings {
 				'validation_type'     => 'textarea',
 				'placeholder'         => ! empty( $this->connection_status['statement_descriptor'] ) ? esc_textarea( $this->connection_status['statement_descriptor'] ) : '',
 			],
-			static::$option_stripe_receipt_emails                    => [
+			static::$option_stripe_receipt_emails          => [
 				'type'            => 'checkbox_bool',
 				'label'           => esc_html__( 'Enable Stripe Receipt Emails', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'If this option is selected, ticket buyers will get Stripe receipts, as well as Event Tickets confirmation emails.', 'event-tickets' ),
 				'default'         => false,
 				'validation_type' => 'boolean',
 			],
-			'tickets-commerce-stripe-checkout-settings-heading'      => [
+			'tickets-commerce-stripe-general-section-end'  => [
 				'type' => 'html',
-				'html' => '<h3 class="tribe-dependent -input">' . __( 'Checkout Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
+				'html' => '</div>',
 			],
-
+			'tickets-commerce-stripe-checkout-section-start' => [
+				'type' => 'html',
+				'html' => '<div class="tec-settings-form__content-section">',
+			],
 			'tickets-commerce-gateway-settings-group-header-checkout' => [
 				'type' => 'html',
-				'html' => '<h4 class="tec-tickets__admin-settings-tickets-commerce-gateway-group-header">' . __( 'Checkout', 'event-tickets' ) . '</h4><div class="clear"></div>',
+				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'Checkout', 'event-tickets' ) . '</h3><div class="clear"></div>',
 			],
-			static::$option_checkout_element                          => [
+			static::$option_checkout_element               => [
 				'type'            => 'radio',
 				'label'           => esc_html__( 'Checkout Type', 'event-tickets' ),
 				'tooltip'         => $checkout_type_tooltip,
@@ -301,7 +304,7 @@ class Settings extends Abstract_Settings {
 					self::PAYMENT_ELEMENT_SLUG => esc_html__( 'Accept credit card payments and additional payment methods configured in Stripe.', 'event-tickets' ),
 				],
 			],
-			static::$option_checkout_element_card_fields              => [
+			static::$option_checkout_element_card_fields   => [
 				'type'                => 'radio',
 				'label'               => esc_html__( 'Credit Card field format', 'event-tickets' ),
 				'default'             => self::COMPACT_CARD_ELEMENT_SLUG,
@@ -326,7 +329,7 @@ class Settings extends Abstract_Settings {
 					),
 				],
 			],
-			static::$option_checkout_element_payment_methods          => [
+			static::$option_checkout_element_payment_methods => [
 				'type'                => 'checkbox_list',
 				'label'               => esc_html__( 'Payment methods accepted', 'event-tickets' ),
 				'tooltip'             => $payment_methods_tooltip,
@@ -339,6 +342,10 @@ class Settings extends Abstract_Settings {
 				'class'               => 'tribe-dependent',
 				'validation_type'     => 'options_multi',
 				'options'             => $this->get_payment_methods_available_by_currency(),
+			],
+			'tickets-commerce-stripe-checkout-section-end' => [
+				'type' => 'html',
+				'html' => '</div>',
 			],
 		];
 
