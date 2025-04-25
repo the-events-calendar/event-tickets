@@ -278,6 +278,11 @@ tribe.tickets.commerce = {};
 		$couponLabelElement.text( unescapedLabel );
 	};
 
+	/**
+	 * Binds the `Add Coupon` link to its respective event handler.
+	 *
+	 * @since 5.21.0
+	 */
 	obj.bindAddCouponLink = function() {
 		const hiddenName = obj.selectors.hiddenElement.className();
 		$document.on( 'click', obj.selectors.couponAddLink, function() {
@@ -313,6 +318,11 @@ tribe.tickets.commerce = {};
 		}
 	};
 
+	/**
+	 * Binds the coupon "Apply" button to its respective event handler.
+	 *
+	 * @since 5.21.0
+	 */
 	obj.bindCouponApply = function() {
 		let ajaxInProgress = false;
 
