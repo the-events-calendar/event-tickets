@@ -144,13 +144,14 @@ class Inventory_Sync extends Controller_Contract {
 			tribe_update_option( sprintf( Sync_Controller::OPTION_SYNC_ACTIONS_COMPLETED, $ticket_able_post_type ), time() );
 			tribe_remove_option( sprintf( Sync_Controller::OPTION_SYNC_ACTIONS_IN_PROGRESS, $ticket_able_post_type ) );
 
-			if ( Sync_Controller::is_sync_in_progress() ) {
+			if ( Sync_Controller::is_sync_in_progress( false ) ) {
 				// Another post type is still syncing.
 				return;
 			}
 
 			// All post types are synced!
 			$this->fire_sync_completed_hook();
+			return;
 		}
 
 		// Reschedules itself to continue in 2 minutes.

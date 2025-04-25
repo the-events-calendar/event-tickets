@@ -103,7 +103,7 @@ class Controller extends Controller_Contract {
 	 * @return bool
 	 */
 	public function is_active(): bool {
-		return $this->merchant->is_connected() && $this->settings->is_inventory_sync_enabled();
+		return $this->merchant->is_connected();
 	}
 
 	/**
@@ -117,8 +117,13 @@ class Controller extends Controller_Contract {
 		$this->container->singleton( Remote_Objects::class );
 
 		$this->container->register( Items_Sync::class );
-		$this->container->register( Inventory_Sync::class );
 		$this->container->register( Listeners::class );
+
+		if ( ! $this->settings->is_inventory_sync_enabled() ) {
+			return;
+		}
+
+		$this->container->register( Inventory_Sync::class );
 
 		$this->container->register_on_action( 'tec_events_fully_loaded', Tec_Event_Details_Provider::class );
 
@@ -135,8 +140,13 @@ class Controller extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		$this->container->get( Items_Sync::class )->unregister();
-		$this->container->get( Inventory_Sync::class )->unregister();
 		$this->container->get( Listeners::class )->unregister();
+
+		if ( ! $this->settings->is_inventory_sync_enabled() ) {
+			return;
+		}
+
+		$this->container->get( Inventory_Sync::class )->unregister();
 
 		if ( $this->container->isBound( Tec_Event_Details_Provider::class ) ) {
 			$this->container->get( Tec_Event_Details_Provider::class )->unregister();
@@ -254,9 +264,11 @@ class Controller extends Controller_Contract {
 		$ticket_able_to_sync = [];
 
 		foreach ( $ticket_able_post_types as $ticket_able_post_type ) {
-			if ( ! tribe_get_option( sprintf( self::OPTION_SYNC_ACTIONS_COMPLETED, $ticket_able_post_type ), false ) ) {
-				$ticket_able_to_sync[] = $ticket_able_post_type;
+			if ( tribe_get_option( sprintf( self::OPTION_SYNC_ACTIONS_COMPLETED, $ticket_able_post_type ), false ) ) {
+				continue;
 			}
+
+			$ticket_able_to_sync[] = $ticket_able_post_type;
 		}
 
 		return $ticket_able_to_sync;
@@ -288,10 +300,6 @@ class Controller extends Controller_Contract {
 			}
 		}
 
-		if ( tribe_get_option( sprintf( self::OPTION_SYNC_ACTIONS_IN_PROGRESS, 'default' ), false ) ) {
-			return true;
-		}
-
 		return false;
 	}
 
@@ -302,7 +310,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	public static function reset_sync_status( string $post_type = '' ): void {
+	public static function reset_sync_status( array $new_options = [], string $post_type = '' ): void {
 		/**
 		 * Fires before the sync status is reset.
 		 *
@@ -310,9 +318,9 @@ class Controller extends Controller_Contract {
 		 *
 		 * @param string $post_type The post type.
 		 */
-		do_action( 'tec_tickets_commerce_square_sync_pre_reset_status', $post_type );
+		do_action( Listeners::HOOK_SYNC_RESET_SYNCED_POST_TYPE, $post_type );
 
-		$settings = Settings_Manager::get_options();
+		$settings = $new_options;
 
 		$progress_option  = sprintf( self::OPTION_SYNC_ACTIONS_IN_PROGRESS, $post_type );
 		$completed_option = sprintf( self::OPTION_SYNC_ACTIONS_COMPLETED, $post_type );
@@ -330,15 +338,21 @@ class Controller extends Controller_Contract {
 			unset( $settings[ self::OPTION_SYNC_LATEST_TIMESTAMP ] );
 		}
 
-		Settings_Manager::set_options( $settings );
+		add_action( 'tec_shutdown', function () use ( $settings, $post_type ) {
+			$listeners = tribe( Listeners::class );
 
-		/**
-		 * Fires when the sync status is reset.
-		 *
-		 * @since TBD
-		 *
-		 * @param string $post_type The post type.
-		 */
-		do_action( 'tec_tickets_commerce_square_sync_post_reset_status', $post_type );
+			$listeners->remove_tec_settings_listener();
+			Settings_Manager::set_options( $settings );
+			$listeners->add_tec_settings_listener();
+
+			/**
+			 * Fires when the sync status is reset.
+			 *
+			 * @since TBD
+			 *
+			 * @param string $post_type The post type.
+			 */
+			do_action( 'tec_tickets_commerce_square_sync_post_reset_status', $post_type );
+		} );
 	}
 }

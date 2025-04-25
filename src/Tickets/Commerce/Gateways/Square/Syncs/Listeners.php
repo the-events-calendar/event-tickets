@@ -12,6 +12,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square\Syncs;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
 use TEC\Tickets\Commerce\Gateways\Square\Settings;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Common\Contracts\Container;
 use TEC\Tickets\Commerce\Ticket as Ticket_Data;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
@@ -34,7 +35,29 @@ class Listeners extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	protected const HOOK_SYNC_RESET_SYNCED_POST_TYPE = 'tec_tickets_commerce_square_sync_reset_post_type_data';
+	public const HOOK_SYNC_RESET_SYNCED_POST_TYPE = 'tec_tickets_commerce_square_sync_pre_reset_status';
+
+	/**
+	 * The settings.
+	 *
+	 * @since TBD
+	 *
+	 * @var Settings
+	 */
+	private Settings $settings;
+
+	/**
+	 * Constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param Container $container The container.
+	 * @param Settings $settings The settings.
+	 */
+	public function __construct( Container $container, Settings $settings ) {
+		parent::__construct( $container );
+		$this->settings = $settings;
+	}
 
 	/**
 	 * Register the controller.
@@ -44,15 +67,19 @@ class Listeners extends Controller_Contract {
 	 * @return void
 	 */
 	public function do_register(): void {
+		add_action( self::HOOK_SYNC_RESET_SYNCED_POST_TYPE, [ $this, 'reset_post_type_data' ] );
+		$this->add_tec_settings_listener();
+
+		if ( ! $this->settings->is_inventory_sync_enabled() ) {
+			return;
+		}
+
 		add_action( 'save_post', [ $this, 'schedule_sync_on_save' ], 10, 2 );
 		add_action( 'tec_tickets_ticket_upserted', [ $this, 'schedule_sync' ], 10, 2 );
 		add_action( 'tec_tickets_ticket_start_date_trigger', [ $this, 'schedule_sync_on_date_start' ], 10, 4 );
 		add_action( 'tec_tickets_ticket_end_date_trigger', [ $this, 'schedule_sync_on_date_end' ], 10, 4 );
 		add_action( 'wp_trash_post', [ $this, 'schedule_sync_on_delete' ] );
 		add_action( 'before_delete_post', [ $this, 'schedule_sync_on_delete' ] );
-		add_action( 'tec_common_settings_manager_pre_set_options', [ $this, 'reset_sync_status' ], 10, 2 );
-		add_action( 'tec_tickets_commerce_square_sync_pre_reset_status', [ $this, 'reset_post_type_data' ] );
-		add_action( self::HOOK_SYNC_RESET_SYNCED_POST_TYPE, [ $this, 'reset_post_type_data' ] );
 	}
 
 	/**
@@ -63,15 +90,41 @@ class Listeners extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
+		remove_action( self::HOOK_SYNC_RESET_SYNCED_POST_TYPE, [ $this, 'reset_post_type_data' ] );
+		$this->remove_tec_settings_listener();
+
+		if ( ! $this->settings->is_inventory_sync_enabled() ) {
+			return;
+		}
+
 		remove_action( 'save_post', [ $this, 'schedule_sync_on_save' ] );
 		remove_action( 'tec_tickets_ticket_upserted', [ $this, 'schedule_sync' ] );
 		remove_action( 'tec_tickets_ticket_start_date_trigger', [ $this, 'schedule_sync_on_date_start' ] );
 		remove_action( 'tec_tickets_ticket_end_date_trigger', [ $this, 'schedule_sync_on_date_end' ] );
 		remove_action( 'wp_trash_post', [ $this, 'schedule_sync_on_delete' ] );
 		remove_action( 'before_delete_post', [ $this, 'schedule_sync_on_delete' ] );
+	}
+
+	/**
+	 * Add the settings listener.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function add_tec_settings_listener(): void {
+		add_action( 'tec_common_settings_manager_pre_set_options', [ $this, 'reset_sync_status' ], 10, 2 );
+	}
+
+	/**
+	 * Remove the settings listener.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function remove_tec_settings_listener(): void {
 		remove_action( 'tec_common_settings_manager_pre_set_options', [ $this, 'reset_sync_status' ] );
-		remove_action( 'tec_tickets_commerce_square_sync_pre_reset_status', [ $this, 'reset_post_type_data' ] );
-		remove_action( self::HOOK_SYNC_RESET_SYNCED_POST_TYPE, [ $this, 'reset_post_type_data' ] );
 	}
 
 	/**
@@ -85,11 +138,13 @@ class Listeners extends Controller_Contract {
 	 * @return void
 	 */
 	public function reset_sync_status( array $new_options, array $old_options ): void {
+		$this->remove_tec_settings_listener();
 		$sync_still_enabled = tribe_is_truthy( $new_options[ Settings::OPTION_INVENTORY_SYNC ] );
 
 		if ( ! $sync_still_enabled ) {
 			// We do a global reset then!
-			Sync_Controller::reset_sync_status();
+			Sync_Controller::reset_sync_status( $new_options );
+			$this->add_tec_settings_listener();
 			return;
 		}
 
@@ -103,12 +158,23 @@ class Listeners extends Controller_Contract {
 		$removed_post_types = array_diff( $old_ticket_enabled_post_types, $new_ticket_enabled_post_types );
 
 		foreach ( $removed_post_types as $post_type ) {
-			Sync_Controller::reset_sync_status( $post_type );
+			Sync_Controller::reset_sync_status( $new_options, $post_type );
 		}
+
+		$this->add_tec_settings_listener();
 	}
 
+	/**
+	 * Reset the post type data.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $post_type The post type.
+	 *
+	 * @return void
+	 */
 	public function reset_post_type_data( string $post_type = '' ): void {
-		$post_types = [ $post_type ];
+		$post_types = array_filter( [ $post_type ] );
 		if ( empty( $post_types ) ) {
 			$post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
 		}
