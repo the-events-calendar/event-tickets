@@ -296,6 +296,16 @@ tribe.tickets.commerce = {};
 		return window.tecTicketsCommerceGatewayStripeCheckout?.paymentIntentData?.id;
 	};
 
+	/**
+	 * Disables interruption functionality for the seating timer.
+	 *
+	 * This ensures that the seating timer is NOT reset and the cart is NOT cleared.
+	 * This is intended to be used when a coupon application or removal triggers
+	 * the page to be reloaded. Under normal circumstances, the timer would be reset
+	 * and the cart contents emptied when the page is reloaded.
+	 *
+	 * @since TBD
+	 */
 	obj.disableInterruption = () => {
 		const setInterruptable = window.tec.tickets?.seating?.frontend?.session?.setIsInterruptable;
 		if ( 'function' === typeof setInterruptable ) {
