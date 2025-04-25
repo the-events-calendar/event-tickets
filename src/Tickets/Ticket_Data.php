@@ -59,6 +59,19 @@ class Ticket_Data {
 	}
 
 	/**
+	 * Load the ticket object.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket post ID.
+	 *
+	 * @return Ticket_Object|null The ticket object.
+	 */
+	protected function load_ticket_object( int $ticket_id ): ?Ticket_Object {
+		return Tickets::load_ticket_object( $ticket_id );
+	}
+
+	/**
 	 * Get the tickets for a post.
 	 *
 	 * @since TBD
@@ -81,12 +94,12 @@ class Ticket_Data {
 				continue;
 			}
 
-			$ticket = Tickets::load_ticket_object( $ticket_id );
+			$ticket = $this->load_ticket_object( $ticket_id );
 
 			if ( ! $ticket instanceof Ticket_Object ) {
 				continue;
 			}
-
+			add_filter( 'tribe_tickets_post_types')
 			if ( $ticket->get_event_id() !== $post_id ) {
 				// This is a series ticket which is coming from the series!
 				continue;
@@ -112,7 +125,7 @@ class Ticket_Data {
 			return null;
 		}
 
-		$rsvp = Tickets::load_ticket_object( $rsvp->ID );
+		$rsvp = $this->load_ticket_object( $rsvp->ID );
 
 		if ( ! $rsvp instanceof Ticket_Object ) {
 			return null;

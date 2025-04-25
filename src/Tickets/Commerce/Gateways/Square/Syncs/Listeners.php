@@ -12,7 +12,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square\Syncs;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
 use TEC\Tickets\Commerce\Gateways\Square\Settings;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Tickets\Ticket_Data;
+use TEC\Tickets\Commerce\Ticket as Ticket_Data;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use WP_Post;
@@ -50,7 +50,7 @@ class Listeners extends Controller_Contract {
 		add_action( 'tec_tickets_ticket_end_date_trigger', [ $this, 'schedule_sync_on_date_end' ], 10, 4 );
 		add_action( 'wp_trash_post', [ $this, 'schedule_sync_on_delete' ] );
 		add_action( 'before_delete_post', [ $this, 'schedule_sync_on_delete' ] );
-		add_action( 'tec_common_settings_manager_post_set_options', [ $this, 'reset_sync_status' ], 10, 2 );
+		add_action( 'tec_common_settings_manager_pre_set_options', [ $this, 'reset_sync_status' ], 10, 2 );
 		add_action( 'tec_tickets_commerce_square_sync_pre_reset_status', [ $this, 'reset_post_type_data' ] );
 		add_action( self::HOOK_SYNC_RESET_SYNCED_POST_TYPE, [ $this, 'reset_post_type_data' ] );
 	}
@@ -69,11 +69,21 @@ class Listeners extends Controller_Contract {
 		remove_action( 'tec_tickets_ticket_end_date_trigger', [ $this, 'schedule_sync_on_date_end' ] );
 		remove_action( 'wp_trash_post', [ $this, 'schedule_sync_on_delete' ] );
 		remove_action( 'before_delete_post', [ $this, 'schedule_sync_on_delete' ] );
-		remove_action( 'tec_common_settings_manager_post_set_options', [ $this, 'reset_sync_status' ] );
+		remove_action( 'tec_common_settings_manager_pre_set_options', [ $this, 'reset_sync_status' ] );
 		remove_action( 'tec_tickets_commerce_square_sync_pre_reset_status', [ $this, 'reset_post_type_data' ] );
 		remove_action( self::HOOK_SYNC_RESET_SYNCED_POST_TYPE, [ $this, 'reset_post_type_data' ] );
 	}
 
+	/**
+	 * Reset the sync status.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $new_options The new options.
+	 * @param array $old_options The old options.
+	 *
+	 * @return void
+	 */
 	public function reset_sync_status( array $new_options, array $old_options ): void {
 		$sync_still_enabled = tribe_is_truthy( $new_options[ Settings::OPTION_INVENTORY_SYNC ] );
 
@@ -149,7 +159,7 @@ class Listeners extends Controller_Contract {
 
 		foreach ( $results->posts as $post_id ) {
 			// Remove the event from Square.
-			$this->schedule_sync_on_delete( $post_id );
+			$this->schedule_deletion( $post_id );
 		}
 	}
 

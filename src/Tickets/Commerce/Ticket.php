@@ -1317,4 +1317,17 @@ class Ticket extends Ticket_Data {
 	protected function get_ticket_types(): array {
 		return [ self::POSTTYPE ];
 	}
+
+	/**
+	 * Load the ticket object.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket post ID.
+	 *
+	 * @return Ticket_Object|null The ticket object.
+	 */
+	protected function load_ticket_object( int $ticket_id ): ?Ticket_Object {
+		return tribe( Module::class )->get_ticket( 0, $ticket_id );
+	}
 }
