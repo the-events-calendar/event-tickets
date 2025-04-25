@@ -99,7 +99,7 @@ class Ticket_Data {
 			if ( ! $ticket instanceof Ticket_Object ) {
 				continue;
 			}
-			add_filter( 'tribe_tickets_post_types')
+
 			if ( $ticket->get_event_id() !== $post_id ) {
 				// This is a series ticket which is coming from the series!
 				continue;
