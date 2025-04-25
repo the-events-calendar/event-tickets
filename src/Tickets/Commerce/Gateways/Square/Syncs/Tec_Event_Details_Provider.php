@@ -29,8 +29,7 @@ class Tec_Event_Details_Provider extends Controller_Contract {
 	 * @return void
 	 */
 	public function do_register(): void {
-		// There is missing docs about event data in Square API reference.
-		// add_filter( 'tec_tickets_commerce_square_event_item_data', [ $this, 'filter_event_item_data' ], 10, 2 );
+		add_filter( 'tec_tickets_commerce_square_event_item_data', [ $this, 'filter_event_item_data' ], 10, 2 );
 
 		$this->container->register_on_action( 'tec_events_pro_fully_loaded', ECP_Provider::class );
 	}
@@ -82,6 +81,7 @@ class Tec_Event_Details_Provider extends Controller_Contract {
 			$event_data['event_location_name'] = tribe_get_venue( $event->ID );
 
 			if ( tribe_address_exists( $event->ID ) ) {
+				// @todo the docs about this are missing in Square API reference as a result its incomplete.
 				$event_data['address_id'] = tribe_get_venue_id( $event->ID );
 			}
 		}

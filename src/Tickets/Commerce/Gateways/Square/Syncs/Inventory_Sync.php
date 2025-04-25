@@ -274,7 +274,8 @@ class Inventory_Sync extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $object_id The object ID.
+	 * @param int  $object_id The object ID.
+	 * @param bool $force_add_history Whether to force add the history.
 	 *
 	 * @return void
 	 */

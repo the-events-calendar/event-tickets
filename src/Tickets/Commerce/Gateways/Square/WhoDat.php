@@ -87,7 +87,7 @@ class WhoDat extends Abstract_WhoDat {
 		$body = wp_remote_retrieve_body( $request );
 		$body = (array) json_decode( $body, true );
 
-		$cache->set_transient( $cache_key, $body, HOUR_IN_SECONDS );
+		$cache->set_transient( $cache_key, $body, 10 * MINUTE_IN_SECONDS );
 
 		return $body;
 	}
