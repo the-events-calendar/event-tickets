@@ -17,6 +17,7 @@ use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
 use Tribe__Tickets__Tickets as Tickets;
 use TEC\Tickets\Ticket_Data;
 use Exception;
+use Tribe__Settings_Manager as Settings_Manager;
 
 /**
  * Class Controller
@@ -36,15 +37,6 @@ class Controller extends Controller_Contract {
 	public const AS_SYNC_ACTION_GROUP = 'tec_tickets_commerce_square_syncs';
 
 	/**
-	 * The option that marks the sync action as completed.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const OPTION_SYNC_ACTION_COMPLETED = 'tickets_commerce_square_sync_action_completed';
-
-	/**
 	 * The option that marks the sync action as in progress.
 	 *
 	 * @since TBD
@@ -61,6 +53,15 @@ class Controller extends Controller_Contract {
 	 * @var string
 	 */
 	public const OPTION_SYNC_ACTIONS_COMPLETED = 'tickets_commerce_square_sync_ptypes_completed_%s';
+
+	/**
+	 * The option that marks the sync action as completed.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const OPTION_SYNC_LATEST_TIMESTAMP = 'tickets_commerce_square_sync_latest_timestamp';
 
 	/**
 	 * The merchant.
@@ -166,17 +167,6 @@ class Controller extends Controller_Contract {
 	}
 
 	/**
-	 * Whether the sync is completed.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool
-	 */
-	public static function is_sync_completed(): bool {
-		return (bool) tribe_get_option( self::OPTION_SYNC_ACTION_COMPLETED, false );
-	}
-
-	/**
 	 * Mark the action as failed.
 	 *
 	 * @since TBD
@@ -203,28 +193,6 @@ class Controller extends Controller_Contract {
 
 		// We mark action with errors as failed.
 		throw new Exception( $message );
-	}
-
-	/**
-	 * Whether the sync is in progress.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool
-	 */
-	public static function is_sync_in_progress(): bool {
-		$ticket_able_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
-		foreach ( $ticket_able_post_types as $ticket_able_post_type ) {
-			if ( tribe_get_option( sprintf( self::OPTION_SYNC_ACTIONS_IN_PROGRESS, $ticket_able_post_type ), false ) ) {
-				return true;
-			}
-		}
-
-		if ( tribe_get_option( sprintf( self::OPTION_SYNC_ACTIONS_IN_PROGRESS, 'default' ), false ) ) {
-			return true;
-		}
-
-		return false;
 	}
 
 	/**
@@ -272,5 +240,106 @@ class Controller extends Controller_Contract {
 		$cache[ $cache_key ] = $tickets;
 
 		return $tickets;
+	}
+
+	/**
+	 * Get the ticket-able post types to sync.
+	 *
+	 * @since TBD
+	 *
+	 * @return array The ticket-able post types to sync.
+	 */
+	public static function ticket_able_post_types_to_sync(): array {
+		$ticket_able_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+
+		$ticket_able_to_sync = [];
+
+		foreach ( $ticket_able_post_types as $ticket_able_post_type ) {
+			if ( ! tribe_get_option( sprintf( self::OPTION_SYNC_ACTIONS_COMPLETED, $ticket_able_post_type ), false ) ) {
+				$ticket_able_to_sync[] = $ticket_able_post_type;
+			}
+		}
+
+		return $ticket_able_to_sync;
+	}
+
+	/**
+	 * Whether the sync is completed.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public static function is_sync_completed(): bool {
+		return empty( self::ticket_able_post_types_to_sync() );
+	}
+
+	/**
+	 * Whether the sync is in progress.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public static function is_sync_in_progress(): bool {
+		$ticket_able_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+		foreach ( $ticket_able_post_types as $ticket_able_post_type ) {
+			if ( tribe_get_option( sprintf( self::OPTION_SYNC_ACTIONS_IN_PROGRESS, $ticket_able_post_type ), false ) ) {
+				return true;
+			}
+		}
+
+		if ( tribe_get_option( sprintf( self::OPTION_SYNC_ACTIONS_IN_PROGRESS, 'default' ), false ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Reset the sync status.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public static function reset_sync_status( string $post_type = '' ): void {
+		/**
+		 * Fires before the sync status is reset.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $post_type The post type.
+		 */
+		do_action( 'tec_tickets_commerce_square_sync_pre_reset_status', $post_type );
+
+		$settings = Settings_Manager::get_options();
+
+		$progress_option  = sprintf( self::OPTION_SYNC_ACTIONS_IN_PROGRESS, $post_type );
+		$completed_option = sprintf( self::OPTION_SYNC_ACTIONS_COMPLETED, $post_type );
+
+		foreach ( array_keys( $settings ) as $key ) {
+			if ( ! str_starts_with( $key, $progress_option ) && ! str_starts_with( $key, $completed_option ) ) {
+				continue;
+			}
+
+			unset( $settings[ $key ] );
+		}
+
+		if ( ! $post_type ) {
+			// This is a global reset, so we need to unset the latest timestamp option.
+			unset( $settings[ self::OPTION_SYNC_LATEST_TIMESTAMP ] );
+		}
+
+		Settings_Manager::set_options( $settings );
+
+		/**
+		 * Fires when the sync status is reset.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $post_type The post type.
+		 */
+		do_action( 'tec_tickets_commerce_square_sync_post_reset_status', $post_type );
 	}
 }

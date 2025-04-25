@@ -10,12 +10,14 @@
 namespace TEC\Tickets\Commerce\Gateways\Square\Syncs;
 
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
+use TEC\Tickets\Commerce\Gateways\Square\Settings;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\Ticket_Data;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use WP_Post;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
+use WP_Query;
 
 /**
  * Class Listeners
@@ -25,6 +27,14 @@ use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs
  */
 class Listeners extends Controller_Contract {
+	/**
+	 * The hook to delete synced post types.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected const HOOK_SYNC_RESET_SYNCED_POST_TYPE = 'tec_tickets_commerce_square_sync_reset_post_type_data';
 
 	/**
 	 * Register the controller.
@@ -40,6 +50,9 @@ class Listeners extends Controller_Contract {
 		add_action( 'tec_tickets_ticket_end_date_trigger', [ $this, 'schedule_sync_on_date_end' ], 10, 4 );
 		add_action( 'wp_trash_post', [ $this, 'schedule_sync_on_delete' ] );
 		add_action( 'before_delete_post', [ $this, 'schedule_sync_on_delete' ] );
+		add_action( 'tec_common_settings_manager_post_set_options', [ $this, 'reset_sync_status' ], 10, 2 );
+		add_action( 'tec_tickets_commerce_square_sync_pre_reset_status', [ $this, 'reset_post_type_data' ] );
+		add_action( self::HOOK_SYNC_RESET_SYNCED_POST_TYPE, [ $this, 'reset_post_type_data' ] );
 	}
 
 	/**
@@ -56,6 +69,88 @@ class Listeners extends Controller_Contract {
 		remove_action( 'tec_tickets_ticket_end_date_trigger', [ $this, 'schedule_sync_on_date_end' ] );
 		remove_action( 'wp_trash_post', [ $this, 'schedule_sync_on_delete' ] );
 		remove_action( 'before_delete_post', [ $this, 'schedule_sync_on_delete' ] );
+		remove_action( 'tec_common_settings_manager_post_set_options', [ $this, 'reset_sync_status' ] );
+		remove_action( 'tec_tickets_commerce_square_sync_pre_reset_status', [ $this, 'reset_post_type_data' ] );
+		remove_action( self::HOOK_SYNC_RESET_SYNCED_POST_TYPE, [ $this, 'reset_post_type_data' ] );
+	}
+
+	public function reset_sync_status( array $new_options, array $old_options ): void {
+		$sync_still_enabled = tribe_is_truthy( $new_options[ Settings::OPTION_INVENTORY_SYNC ] );
+
+		if ( ! $sync_still_enabled ) {
+			// We do a global reset then!
+			Sync_Controller::reset_sync_status();
+			return;
+		}
+
+		$old_ticket_enabled_post_types = (array) ( $old_options['ticket-enabled-post-types'] ?? [] );
+		$new_ticket_enabled_post_types = (array) ( $new_options['ticket-enabled-post-types'] ?? [] );
+
+		if ( $old_ticket_enabled_post_types === $new_ticket_enabled_post_types ) {
+			return;
+		}
+
+		$removed_post_types = array_diff( $old_ticket_enabled_post_types, $new_ticket_enabled_post_types );
+
+		foreach ( $removed_post_types as $post_type ) {
+			Sync_Controller::reset_sync_status( $post_type );
+		}
+	}
+
+	public function reset_post_type_data( string $post_type = '' ): void {
+		$post_types = [ $post_type ];
+		if ( empty( $post_types ) ) {
+			$post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+		}
+
+		if ( empty( $post_types ) ) {
+			return;
+		}
+
+		/**
+		 * Filter the number of events to delete at once.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $number The number of events to delete at once.
+		 */
+		$schedule_events_to_delete_at_once = max( 1, (int) apply_filters( 'tec_tickets_commerce_square_sync_reset_post_type_data_schedule_events_to_delete_at_once', 1000 ) );
+
+		$args = [
+			'no_found_rows'          => true,
+			'update_post_term_cache' => false,
+			'post_type'              => $post_types,
+			'posts_per_page'         => $schedule_events_to_delete_at_once, // Most servers will be able to handle 1000 ids at a time and at the same time it will cover most cases all in one go.
+			'post_status'            => 'publish',
+			'fields'                 => 'ids',
+			'meta_query'             => [
+				[
+					'key'     => Item::SQUARE_ID_META,
+					'compare' => 'EXISTS',
+				],
+			],
+		];
+
+		$results = new WP_Query( $args );
+
+		if ( empty( $results->posts ) ) {
+			// The action will stop repeating itself here. When no more results are found.
+			return;
+		}
+
+		/**
+		 * We don't do found_rows so we cant now if there are more posts to delete or not.
+		 *
+		 * We let the next action decide that instead. Having the found_rows property results in slower queries.
+		 *
+		 * We want to give some time for the deletions to occur before this runs. So that the query above retrieves diff results because of the deleted meta_keys Item::SQUARE_ID_META.
+		 */
+		as_schedule_single_action( time() + ( 15 * MINUTE_IN_SECONDS ), self::HOOK_SYNC_RESET_SYNCED_POST_TYPE, [ $post_type ], Sync_Controller::AS_SYNC_ACTION_GROUP );
+
+		foreach ( $results->posts as $post_id ) {
+			// Remove the event from Square.
+			$this->schedule_sync_on_delete( $post_id );
+		}
 	}
 
 	/**

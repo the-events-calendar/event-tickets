@@ -172,12 +172,14 @@ class Items_Sync extends Controller_Contract {
 			 *
 			 * @param int $posts_per_page The number of posts to sync.
 			 */
-			'posts_per_page'    => min( 1000, max( 1, (int) apply_filters( 'tec_tickets_commerce_square_sync_post_type_posts_per_page', 100 ) ) ),
-			'post_type'         => $ticket_able_post_type,
-			'tribe-has-tickets' => true,
-			'post_status'       => 'publish',
-			'fields'            => 'ids',
-			'meta_query'        => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+			'posts_per_page'         => min( 1000, max( 1, (int) apply_filters( 'tec_tickets_commerce_square_sync_post_type_posts_per_page', 100 ) ) ),
+			'no_found_rows'          => true,
+			'update_post_term_cache' => false,
+			'post_type'              => $ticket_able_post_type,
+			'tribe-has-tickets'      => true,
+			'post_status'            => 'publish',
+			'fields'                 => 'ids',
+			'meta_query'             => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				[
 					'key'     => Item::SQUARE_SYNCED_META,
 					'compare' => 'NOT EXISTS',
@@ -197,7 +199,7 @@ class Items_Sync extends Controller_Contract {
 		);
 
 		if ( ! $query->have_posts() ) {
-			tribe_remove_option( sprintf( Sync_Controller::OPTION_SYNC_ACTIONS_COMPLETED, 'default' ) );
+			tribe_remove_option( sprintf( Sync_Controller::OPTION_SYNC_ACTIONS_IN_PROGRESS, 'default' ) );
 			// Post type is synced! Now on to sync the inventory.
 			as_schedule_single_action( time(), Inventory_Sync::HOOK_SYNC_ACTION, [ $ticket_able_post_type ], Sync_Controller::AS_SYNC_ACTION_GROUP );
 			return;
