@@ -136,7 +136,10 @@ class Items_Sync extends Controller_Contract {
 			return;
 		}
 
-		$ticket_able_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+		$ticket_able_post_types = Sync_Controller::ticket_able_post_types_to_sync();
+		if ( empty( $ticket_able_post_types ) ) {
+			return;
+		}
 
 		tribe_update_option( sprintf( Sync_Controller::OPTION_SYNC_ACTIONS_IN_PROGRESS, 'default' ), time() );
 

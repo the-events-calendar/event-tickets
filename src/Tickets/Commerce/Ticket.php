@@ -12,15 +12,17 @@ use Tribe__Tickets__Global_Stock as Event_Stock;
 use Tribe__Utils__Array as Arr;
 use Tribe__Date_Utils as Date_Utils;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use TEC\Tickets\Ticket_Data;
 
 /**
  * Class Ticket.
  *
- * @since   5.1.9
+ * @since 5.1.9
+ * @since TBD extend Ticket_Data
  *
  * @package TEC\Tickets\Commerce
  */
-class Ticket {
+class Ticket extends Ticket_Data {
 	use Is_Ticket;
 
 	/**
@@ -1303,5 +1305,16 @@ class Ticket {
 			'start_date' => get_post_meta( $ticket_id, static::$sale_price_start_date_key, true ),
 			'end_date'   => get_post_meta( $ticket_id, static::$sale_price_end_date_key, true ),
 		];
+	}
+
+	/**
+	 * Get the ticket types.
+	 *
+	 * @since TBD
+	 *
+	 * @return array The ticket types.
+	 */
+	protected function get_ticket_types(): array {
+		return [ self::POSTTYPE ];
 	}
 }

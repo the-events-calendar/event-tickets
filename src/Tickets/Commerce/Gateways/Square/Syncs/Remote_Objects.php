@@ -15,7 +15,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Inventory_Change;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Ticket_Item;
 use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 use TEC\Tickets\Commerce\Gateways\Square\Requests;
-use TEC\Tickets\Ticket_Data;
+use TEC\Tickets\Commerce\Ticket as Ticket_Data;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\NoChangeNeededException;
 use InvalidArgumentException;
 
@@ -166,13 +166,13 @@ class Remote_Objects {
 		$remote_object_id = Item::get_remote_object_id( $object_id );
 		Item::delete( $object_id );
 
-		$is_event = in_array( get_post_type( $object_id ), (array) tribe_get_option( 'ticket-enabled-post-types', [] ), true );
+		$is_ticket = in_array( get_post_type( $object_id ), tribe_tickets()->ticket_types(), true );
 
-		if ( ! $is_event ) {
+		if ( $is_ticket ) {
 			return $remote_object_id;
 		}
 
-		foreach ( tribe( Ticket_Data::class )->get_posts_tickets( $object_id, [] ) as $ticket ) {
+		foreach ( tribe( Ticket_Data::class )->get_posts_tickets( $object_id ) as $ticket ) {
 			Item::delete( $ticket->ID );
 		}
 

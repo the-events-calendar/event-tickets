@@ -13,9 +13,8 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\Contracts\Container;
 use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 use TEC\Tickets\Commerce\Gateways\Square\Settings;
-use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
 use Tribe__Tickets__Tickets as Tickets;
-use TEC\Tickets\Ticket_Data;
+use TEC\Tickets\Commerce\Ticket as Ticket_Data;
 use Exception;
 use Tribe__Settings_Manager as Settings_Manager;
 
@@ -212,7 +211,7 @@ class Controller extends Controller_Contract {
 			return $cache[ $cache_key ];
 		}
 
-		$tickets_stats = tribe( Ticket_Data::class )->get_posts_tickets_data( $event_id, [ 'rsvp', Series_Passes::TICKET_TYPE ] );
+		$tickets_stats = tribe( Ticket_Data::class )->get_posts_tickets_data( $event_id );
 
 		if (
 			empty( $tickets_stats['tickets_on_sale'] ) &&

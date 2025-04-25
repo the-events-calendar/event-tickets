@@ -21,6 +21,42 @@ use Generator;
  * @package TEC\Tickets
  */
 class Ticket_Data {
+	/**
+	 * The excluded ticket types.
+	 *
+	 * @since TBD
+	 *
+	 * @var array
+	 */
+	protected array $excluded_ticket_types = [ 'rsvp', 'edd', Series_Passes::TICKET_TYPE ];
+
+	/**
+	 * Set the excluded ticket types.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $excluded_ticket_types The excluded ticket types.
+	 */
+	public function set_excluded_ticket_types( array $excluded_ticket_types ): void {
+		$this->excluded_ticket_types = $excluded_ticket_types;
+	}
+
+	/**
+	 * Get the ticket types.
+	 *
+	 * @since TBD
+	 *
+	 * @return array The ticket types.
+	 */
+	protected function get_ticket_types(): array {
+		return array_values(
+			array_filter(
+				tribe_tickets()->ticket_types(),
+				static fn( $key ) => ! in_array( $key, $this->excluded_ticket_types, true ),
+				ARRAY_FILTER_USE_KEY
+			)
+		);
+	}
 
 	/**
 	 * Get the tickets for a post.
@@ -28,18 +64,11 @@ class Ticket_Data {
 	 * @since TBD
 	 *
 	 * @param int   $post_id               The post ID.
-	 * @param array $excluded_ticket_types The ticket types to exclude.
 	 *
 	 * @return Generator<Ticket_Object> The ticket.
 	 */
-	public function get_posts_tickets( int $post_id, array $excluded_ticket_types = [ 'rsvp', 'edd', Series_Passes::TICKET_TYPE ] ): Generator {
-		$ticket_types = array_values(
-			array_filter(
-				tribe_tickets()->ticket_types(),
-				static fn( $key ) => ! in_array( $key, $excluded_ticket_types, true ),
-				ARRAY_FILTER_USE_KEY
-			)
-		);
+	public function get_posts_tickets( int $post_id ): Generator {
+		$ticket_types = $this->get_ticket_types();
 
 		foreach (
 			tribe_tickets()
@@ -97,12 +126,11 @@ class Ticket_Data {
 	 *
 	 * @since TBD
 	 *
-	 * @param int   $post_id               The post ID.
-	 * @param array $excluded_ticket_types The ticket types to exclude.
+	 * @param int $post_id The post ID.
 	 *
 	 * @return array The ticket data.
 	 */
-	public function get_posts_tickets_data( int $post_id, array $excluded_ticket_types = [ 'rsvp', 'edd', Series_Passes::TICKET_TYPE ] ): array {
+	public function get_posts_tickets_data( int $post_id ): array {
 		$ticket_count                   = 0;
 		$availability                   = [];
 		$tickets_on_sale                = [];
@@ -110,7 +138,7 @@ class Ticket_Data {
 		$tickets_have_ended_sales       = [];
 		$tickets_about_to_go_to_sale    = [];
 
-		foreach ( $this->get_posts_tickets( $post_id, $excluded_ticket_types ) as $ticket ) {
+		foreach ( $this->get_posts_tickets( $post_id ) as $ticket ) {
 			++$ticket_count;
 
 			$this->count_ticket_stats( $ticket, $availability, $tickets_on_sale, $tickets_have_not_started_sales, $tickets_have_ended_sales, $tickets_about_to_go_to_sale );
