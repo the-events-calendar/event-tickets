@@ -35,8 +35,16 @@ class Event_Item extends Item {
 	 */
 	protected const ITEM_TYPE = 'ITEM';
 
-	// phpcs:disable Squiz.PHP.CommentedOutCode.Found, Squiz.Commenting.InlineComment.InvalidEndChar
+	/**
+	 * The meta key for the latest object snapshot.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected const SQUARE_LATEST_OBJECT_SNAPSHOT = '_tec_tickets_commerce_square_latest_object_snapshot';
 
+	// phpcs:disable Squiz.PHP.CommentedOutCode.Found, Squiz.Commenting.InlineComment.InvalidEndChar
 	/**
 	 * The data structure for the Square catalog item.
 	 *
@@ -219,5 +227,51 @@ class Event_Item extends Item {
 		$text = wp_trim_words( $text, $max_words, ' [&hellip;]' );
 
 		$this->set_item_data( 'description_html', wpautop( $text ) );
+	}
+
+	/**
+	 * Handle object sync from Square.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $square_object The Square object data.
+	 *
+	 * @return void
+	 */
+	public function on_sync_object( array $square_object ): void {
+		parent::on_sync_object( $square_object );
+
+		update_post_meta( $this->get_wp_id(), self::SQUARE_LATEST_OBJECT_SNAPSHOT, md5( wp_json_encode( $this ) ) );
+	}
+
+	/**
+	 * Delete the remote data for a post.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $id The ID.
+	 *
+	 * @return void
+	 */
+	public static function delete( int $id ): void {
+		parent::delete( $id );
+		delete_post_meta( $id, self::SQUARE_LATEST_OBJECT_SNAPSHOT );
+	}
+
+	/**
+	 * Whether the object needs to be synced.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the object needs to be synced.
+	 */
+	public function needs_sync(): bool {
+		$latest_snapshot = get_post_meta( $this->get_wp_id(), self::SQUARE_LATEST_OBJECT_SNAPSHOT, true );
+
+		if ( ! $latest_snapshot ) {
+			return true;
+		}
+
+		return $latest_snapshot !== md5( wp_json_encode( $this ) );
 	}
 }

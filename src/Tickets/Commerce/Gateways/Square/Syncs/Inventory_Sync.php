@@ -220,7 +220,7 @@ class Inventory_Sync extends Controller_Contract {
 
 		$square_batches = $this->remote_objects->transform_inventory_batch( $batch );
 
-		$rejected_objects = tribe_cache()['square_sync_discarded_objects'] ?? [];
+		$rejected_objects = tribe_cache()['square_inventory_sync_discarded_objects'] ?? [];
 
 		foreach ( $rejected_objects as $post_id => $tickets ) {
 			if ( count( $tickets ) === count( $batch[ $post_id ] ) ) {
@@ -291,6 +291,11 @@ class Inventory_Sync extends Controller_Contract {
 		}
 
 		$square_synced = $square_synced && $square_synced > time() - DAY_IN_SECONDS ? $square_synced : time();
+
+		$history = get_post_meta( $object_id, Item::SQUARE_SYNC_HISTORY_META );
+		if ( is_array( $history ) && count( $history ) > 9 ) {
+			$history = array_slice( $history, -9 );
+		}
 
 		add_post_meta( $object_id, Item::SQUARE_SYNC_HISTORY_META, $square_synced );
 	}

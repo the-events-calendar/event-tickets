@@ -69,11 +69,24 @@ class Remote_Objects {
 
 		$batches = [];
 
-		foreach ( $transformed as $batch ) {
+		$cache = tribe_cache();
+
+		$cache_key = 'square_items_sync_discarded_objects';
+
+		$discarded = [];
+
+		foreach ( $transformed as $event_item ) {
+			if ( ! $event_item->needs_sync() ) {
+				$discarded[] = $event_item->get_wp_id();
+				continue;
+			}
+
 			$batches[] = [
-				'objects' => [ $batch ],
+				'objects' => [ $event_item ],
 			];
 		}
+
+		$cache[ $cache_key ] = $discarded;
 
 		return $batches;
 	}
@@ -96,7 +109,7 @@ class Remote_Objects {
 
 		$cache = tribe_cache();
 
-		$cache_key = 'square_sync_discarded_objects';
+		$cache_key = 'square_inventory_sync_discarded_objects';
 
 		$transformed = [];
 		$discarded   = [];

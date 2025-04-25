@@ -255,6 +255,12 @@ class Items_Sync extends Controller_Contract {
 		}
 
 		$this->process_batch( $batch );
+
+		$discarded_objects = tribe_cache()['square_items_sync_discarded_objects'] ?? [];
+
+		foreach ( $discarded_objects as $post_id ) {
+			update_post_meta( $post_id, Item::SQUARE_SYNCED_META, false );
+		}
 	}
 
 	/**
@@ -306,6 +312,10 @@ class Items_Sync extends Controller_Contract {
 	 */
 	protected function process_batch( array $batch ): void {
 		$square_batches = $this->remote_objects->transform_batch( $batch );
+
+		if ( empty( $square_batches ) ) {
+			return;
+		}
 
 		$idempotency_key = uniqid( 'tec-square-', true );
 
