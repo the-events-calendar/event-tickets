@@ -75,9 +75,35 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
-	 * @return bool Always returns true as we validate using the webhook signature.
+	 * @return bool|WP_Error Always returns true as we validate using the webhook signature.
 	 */
 	public function has_permission( WP_REST_Request $request ) {
+		// Get raw body for signature verification.
+		$body = WP_REST_Server::get_raw_data();
+
+		// Get the Square-Signature header.
+		$signature = $request->get_header( 'Square-Signature' );
+
+		// Verify the signature.
+		$webhooks = tribe( Webhooks::class );
+		if ( ! $webhooks->verify_signature( $signature, $body ) ) {
+			do_action(
+				'tribe_log',
+				'error',
+				'Invalid Square webhook signature',
+				[
+					'source'    => 'tickets-commerce-square',
+					'signature' => $signature,
+				]
+			);
+
+			return new WP_Error(
+				'invalid_signature',
+				__( 'Invalid webhook signature', 'event-tickets' ),
+				[ 'status' => 401 ]
+			);
+		}
+
 		return true;
 	}
 
@@ -112,7 +138,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 */
 	public function handle_webhook( WP_REST_Request $request ) {
 		// Get raw body for signature verification.
-		$body = file_get_contents( 'php://input' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file,WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsRemoteFile,WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsRemoteFile_get_contents_file_get_contents
+		$body = WP_REST_Server::get_raw_data();
 
 		// Get the Square-Signature header.
 		$signature = $request->get_header( 'Square-Signature' );

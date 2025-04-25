@@ -57,6 +57,7 @@ class Controller extends Controller_Contract {
 		$this->container->get( Assets::class )->unregister();
 		$this->container->get( Ajax::class )->unregister();
 		$this->container->get( Hooks::class )->unregister();
+		$this->container->get( Webhooks::class )->unregister();
 		$this->container->get( Notices\Controller::class )->unregister();
 	}
 }

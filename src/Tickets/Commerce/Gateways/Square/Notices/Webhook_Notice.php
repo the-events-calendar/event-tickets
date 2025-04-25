@@ -19,13 +19,44 @@ use TEC\Tickets\Commerce\Gateways\Square\Webhooks;
  */
 class Webhook_Notice {
 	/**
-	 * Notice slug
+	 * Notice slug.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	protected $notice_slug = 'tec-tickets-commerce-square-webhook-notice';
+	public const SLUG = 'tec-tickets-commerce-square-webhook-notice';
+
+	/**
+	 * Webhooks instance.
+	 *
+	 * @since TBD
+	 *
+	 * @var Webhooks
+	 */
+	protected $webhooks;
+
+	/**
+	 * Gateway instance.
+	 *
+	 * @since TBD
+	 *
+	 * @var Gateway
+	 */
+	protected $gateway;
+
+	/**
+	 * Constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param Webhooks $webhooks Webhooks instance.
+	 * @param Gateway  $gateway  Gateway instance.
+	 */
+	public function __construct( Webhooks $webhooks, Gateway $gateway ) {
+		$this->webhooks = $webhooks;
+		$this->gateway  = $gateway;
+	}
 
 	/**
 	 * Setup hooks for the service provider.
@@ -34,7 +65,7 @@ class Webhook_Notice {
 	 */
 	public function register() {
 		tribe_notice(
-			$this->notice_slug,
+			self::SLUG,
 			[ $this, 'render_notice' ],
 			[
 				'type'     => 'error',
@@ -59,12 +90,12 @@ class Webhook_Notice {
 		}
 
 		// If Square gateway is not enabled, don't show the notice.
-		if ( ! tribe( Gateway::class )->is_enabled() ) {
+		if ( ! $this->gateway->is_enabled() ) {
 			return false;
 		}
 
 		// If Square gateway is not enabled, don't show the notice.
-		if ( ! tribe( Gateway::class )->is_active() ) {
+		if ( ! $this->gateway->is_active() ) {
 			return false;
 		}
 
@@ -74,7 +105,7 @@ class Webhook_Notice {
 			return false;
 		}
 
-		if ( ! tribe( Webhooks::class )->is_webhook_healthy() ) {
+		if ( ! $this->webhooks->is_webhook_healthy() ) {
 			return false;
 		}
 
@@ -89,8 +120,7 @@ class Webhook_Notice {
 	 * @return string
 	 */
 	public function render_notice() {
-		$webhook_id = tribe( Webhooks::class )->get_webhook_id();
-		$webhooks   = tribe( Webhooks::class );
+		$webhook_id = $this->webhooks->get_webhook_id();
 
 		$issues = [];
 
@@ -100,12 +130,12 @@ class Webhook_Notice {
 		} else {
 			// All other checks are only relevant if the webhook is registered.
 			// API version issues.
-			if ( ! $webhooks->is_api_version_current() ) {
+			if ( ! $this->webhooks->is_api_version_current() ) {
 				$issues[] = esc_html__( 'API version mismatch', 'event-tickets' );
 			}
 
 			// Event type issues.
-			if ( ! $webhooks->is_event_types_current() ) {
+			if ( ! $this->webhooks->is_event_types_current() ) {
 				$issues[] = esc_html__( 'Event types configuration outdated', 'event-tickets' );
 			}
 		}

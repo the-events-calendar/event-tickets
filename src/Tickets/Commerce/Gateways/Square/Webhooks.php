@@ -29,7 +29,7 @@ class Webhooks extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	public static $option_webhook = 'tickets-commerce-square-webhook';
+	public const OPTION_WEBHOOK = 'tickets-commerce-square-webhook';
 
 	/**
 	 * Option key for storing webhook IDs.
@@ -38,7 +38,7 @@ class Webhooks extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	public static $option_webhook_id = 'tickets-commerce-square-webhook-id';
+	public const OPTION_WEBHOOK_ID = 'tickets-commerce-square-webhook-id';
 
 	/**
 	 * Option key for storing available event types.
@@ -47,7 +47,7 @@ class Webhooks extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	public static $option_available_event_types = 'tickets-commerce-square-webhook-event-types';
+	public const OPTION_AVAILABLE_EVENT_TYPES = 'tickets-commerce-square-webhook-event-types';
 
 	/**
 	 * Register the service provider.
@@ -77,7 +77,7 @@ class Webhooks extends Controller_Contract {
 	 * @return string The webhook endpoint URL.
 	 */
 	public function get_webhook_endpoint_url() {
-		$endpoint_url = rest_url( 'tribe/tickets/v1/commerce/square/webhooks' );
+		$endpoint_url = $this->container->get( REST\Webhook_Endpoint::class )->get_endpoint_url();
 
 		// Allow overriding via constant for local development.
 		if ( defined( 'TEC_TICKETS_COMMERCE_SQUARE_WEBHOOK_DOMAIN' ) ) {
@@ -115,7 +115,7 @@ class Webhooks extends Controller_Contract {
 		$whodat       = tribe( WhoDat::class );
 
 		// First check if we have any existing webhooks.
-		$existing_webhook_id = tribe_get_option( self::$option_webhook_id );
+		$existing_webhook_id = tribe_get_option( self::OPTION_WEBHOOK_ID );
 
 		// If we have a stored webhook ID, try to delete it first.
 		if ( ! empty( $existing_webhook_id ) ) {
@@ -192,8 +192,8 @@ class Webhooks extends Controller_Contract {
 
 		// Store the webhook ID and signature.
 		if ( ! empty( $subscription['id'] ) ) {
-			tribe_update_option( self::$option_webhook, $subscription );
-			tribe_update_option( self::$option_webhook_id, $subscription['id'] );
+			tribe_update_option( self::OPTION_WEBHOOK, $subscription );
+			tribe_update_option( self::OPTION_WEBHOOK_ID, $subscription['id'] );
 		}
 
 		return $response;
@@ -218,7 +218,7 @@ class Webhooks extends Controller_Contract {
 	 * }
 	 */
 	public function get_webhook(): ?array {
-		$webhook = tribe_get_option( self::$option_webhook );
+		$webhook = tribe_get_option( self::OPTION_WEBHOOK );
 
 		if ( empty( $webhook ) || ! is_array( $webhook ) ) {
 			return null;
@@ -235,7 +235,7 @@ class Webhooks extends Controller_Contract {
 	 * @return string|null The webhook ID or null if not set.
 	 */
 	public function get_webhook_id(): ?string {
-		$webhook_id = tribe_get_option( self::$option_webhook_id );
+		$webhook_id = tribe_get_option( self::OPTION_WEBHOOK_ID );
 
 		if ( empty( $webhook_id ) ) {
 			return null;
@@ -260,8 +260,8 @@ class Webhooks extends Controller_Contract {
 		$url2 = preg_replace( '#^https?://#', '', $url2 );
 
 		// Remove trailing slashes.
-		$url1 = rtrim( $url1, '/' );
-		$url2 = rtrim( $url2, '/' );
+		$url1 = untrailingslashit( $url1 );
+		$url2 = untrailingslashit( $url2 );
 
 		return $url1 == $url2;
 	}
@@ -274,7 +274,7 @@ class Webhooks extends Controller_Contract {
 	 * @return bool Success or failure.
 	 */
 	public function unregister_webhook() {
-		$webhook_id = tribe_get_option( self::$option_webhook_id );
+		$webhook_id = tribe_get_option( self::OPTION_WEBHOOK_ID );
 
 		if ( empty( $webhook_id ) ) {
 			return false;
@@ -284,8 +284,8 @@ class Webhooks extends Controller_Contract {
 		$response = $whodat->delete_webhook( $webhook_id );
 
 		// Clean up stored webhook data.
-		tribe_remove_option( self::$option_webhook_id );
-		tribe_remove_option( self::$option_webhook );
+		tribe_remove_option( self::OPTION_WEBHOOK_ID );
+		tribe_remove_option( self::OPTION_WEBHOOK );
 
 		return empty( $response['error'] );
 	}
@@ -307,7 +307,7 @@ class Webhooks extends Controller_Contract {
 	public function get_available_event_types( bool $force_refresh = false ): array {
 		// Try to get from cache first unless forcing refresh.
 		if ( ! $force_refresh ) {
-			$cached_data = tribe_get_option( self::$option_available_event_types );
+			$cached_data = tribe_get_option( self::OPTION_AVAILABLE_EVENT_TYPES );
 			if ( ! empty( $cached_data ) && isset( $cached_data['last_updated'] ) && $cached_data['last_updated'] > ( time() - DAY_IN_SECONDS ) ) {
 				return [
 					'types'       => $cached_data['types'] ?? [],
@@ -332,7 +332,7 @@ class Webhooks extends Controller_Contract {
 
 			// Cache the result with a timestamp.
 			tribe_update_option(
-				self::$option_available_event_types,
+				self::OPTION_AVAILABLE_EVENT_TYPES,
 				[
 					'types'        => $result['types'],
 					'api_version'  => $result['api_version'],
@@ -497,7 +497,7 @@ class Webhooks extends Controller_Contract {
 		wp_send_json_success(
 			[
 				'message'    => __( 'Webhook successfully registered with Square.', 'event-tickets' ),
-				'webhook_id' => tribe_get_option( self::$option_webhook_id ),
+				'webhook_id' => tribe_get_option( self::OPTION_WEBHOOK_ID ),
 			]
 		);
 	}
