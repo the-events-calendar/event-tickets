@@ -592,15 +592,15 @@ class Webhooks extends Abstract_Webhooks {
 		return [
 			'tickets-commerce-gateway-settings-group-start-webhook'       => [
 				'type' => 'html',
-				'html' => '<div class="tribe-settings-form-wrap">',
+				'html' => '<div class="tec-settings-form__element--full-width">',
 			],
 			'tickets-commerce-gateway-settings-group-header-webhook'      => [
 				'type' => 'html',
-				'html' => '<h4 class="tec-tickets__admin-settings-tickets-commerce-gateway-group-header">' . esc_html__( 'Webhooks', 'event-tickets' ) . '</h4><div class="clear"></div>',
+				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . esc_html__( 'Webhooks', 'event-tickets' ) . '</h3>',
 			],
 			'tickets-commerce-gateway-settings-group-description-webhook' => [
 				'type' => 'html',
-				'html' => $this->get_description_webhook_html(),
+				'html' =>  $this->get_description_webhook_html(),
 			],
 			static::$option_webhooks_value       => [
 				'type'       => 'text',
@@ -630,7 +630,7 @@ class Webhooks extends Abstract_Webhooks {
 			],
 			'tickets-commerce-gateway-settings-group-end-webhook' => [
 				'type' => 'html',
-				'html' => '<div class="clear"></div></div>',
+				'html' => '</div>',
 			],
 		];
 	}
