@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.21.1
+Stable tag: 5.22.0
 Requires at least: 6.5
 Tested up to: 6.7.2
 Requires PHP: 7.4
@@ -198,6 +198,13 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.22.0] 2025-04-15 =
+
+* Feature - Move QR-Related code from ET to Common [TEC-5426]
+* Feature - Move QR code library to Common [TEC-5403]
+* Tweak - Removed filters: `tec_tickets_qr_code_can_use`
+* Language - 0 new strings added, 5 updated, 0 fuzzied, and 4 obsoleted.
 
 = [5.21.1] 2025-04-07 =
 
