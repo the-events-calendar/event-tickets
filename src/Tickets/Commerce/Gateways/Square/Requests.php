@@ -99,7 +99,7 @@ class Requests extends Abstract_Requests {
 	 * Process Request responses to catch any error code and transform in a WP_Error.
 	 * Returns the request array if no errors are found. Or a WP_Error object.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @param array|\WP_Error $response Array of server data.
 	 *
