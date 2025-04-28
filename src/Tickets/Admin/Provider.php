@@ -37,6 +37,9 @@ class Provider extends \TEC\Common\Contracts\Service_Provider {
 		// Register the All Tickets provider.
 		$this->container->register( Tickets\Provider::class );
 
+		// Register the Onboarding wizard controller.
+		$this->container->register( Onboarding\Controller::class );
+
 		// Register singleton classes.
 		$this->container->singleton( Plugin_Action_Links::class );
 		$this->container->singleton( Glance_Items::class );

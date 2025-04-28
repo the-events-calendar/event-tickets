@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 /**
  * Internal dependencies
  */
-import { Bulb as BulbIcon } from '@moderntribe/tickets/icons';
+import { Bulb as BulbIcon } from '../../icons';
 import './style.pcss';
 
 const Notice = ( { description } ) => {

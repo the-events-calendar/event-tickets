@@ -1,5 +1,5 @@
 import defaultState from './default-state';
-import { getTicketIdFromCommonStore } from "./common-store-bridge";
+import { getTicketIdFromCommonStore } from './common-store-bridge';
 
 export const reducer = ( state = defaultState, action ) => {
 	const clientId = action?.clientId;
@@ -12,7 +12,7 @@ export const reducer = ( state = defaultState, action ) => {
 				...state,
 				feesAvailable: action.feesAvailable,
 				feesAutomatic: action.feesAutomatic,
-			}
+			};
 
 		case 'SET_AUTOMATIC_FEES':
 			return {
@@ -27,7 +27,7 @@ export const reducer = ( state = defaultState, action ) => {
 			};
 
 		case 'ADD_FEE_TO_TICKET':
-			ticketPostId = getTicketIdFromCommonStore( clientId )
+			ticketPostId = getTicketIdFromCommonStore( clientId );
 			ticketFees = state.selectedFeesByClientId[ clientId ] || [];
 			ticketFees.push( action.feeId );
 
@@ -44,7 +44,7 @@ export const reducer = ( state = defaultState, action ) => {
 			};
 
 		case 'REMOVE_FEE_FROM_TICKET':
-			ticketPostId = getTicketIdFromCommonStore( clientId )
+			ticketPostId = getTicketIdFromCommonStore( clientId );
 			ticketFees = state.selectedFeesByClientId[ clientId ] || [];
 
 			const index = ticketFees.indexOf( action.feeId );
@@ -120,9 +120,7 @@ export const reducer = ( state = defaultState, action ) => {
 
 		case 'ADD_DISPLAYED_FEE':
 			const displayedFees = state.displayedFeesByClientId[ clientId ] || [];
-			const availableFeeIndex = state.feesAvailable.findIndex(
-				( fee ) => fee.id === action.feeId
-			);
+			const availableFeeIndex = state.feesAvailable.findIndex( ( fee ) => fee.id === action.feeId );
 
 			if ( availableFeeIndex === -1 ) {
 				console.log( 'Fee not found in available fees.' );
