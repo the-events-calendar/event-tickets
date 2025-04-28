@@ -2,7 +2,7 @@
 
 ### [5.21.1.1] 2025-04-28
 
-* Security - Added more safety checks to telemetry opt-ins/opt-outs. [TBD]
+* Security - Added more safety checks to telemetry opt-ins/opt-outs. [TECENG-49]
 * Language - 0 new strings added, 9 updated, 0 fuzzied, and 0 obsoleted.
 
 ### [5.21.1] 2025-04-07
