@@ -52,7 +52,7 @@ class Ticket_Data {
 		return array_values(
 			array_filter(
 				tribe_tickets()->ticket_types(),
-				static fn( $key ) => ! in_array( $key, $this->excluded_ticket_types, true ),
+				fn( $key ) => ! in_array( $key, $this->excluded_ticket_types, true ),
 				ARRAY_FILTER_USE_KEY
 			)
 		);
