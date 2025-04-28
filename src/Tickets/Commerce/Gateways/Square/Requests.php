@@ -10,7 +10,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Requests;
-
+use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\SquareRateLimitedException;
 /**
  * Square Requests.
  *
@@ -67,7 +67,7 @@ class Requests extends Abstract_Requests {
 		$cache     = tribe_cache();
 
 		$cached_response = $cache->get_transient( $cache_key );
-		if ( false !== $cached_response ) {
+		if ( is_array( $cached_response ) ) {
 			return $cached_response;
 		}
 
@@ -93,6 +93,27 @@ class Requests extends Abstract_Requests {
 		$endpoint = ltrim( $endpoint, '/' );
 
 		return add_query_arg( $query_args, "{$base_url}/{$endpoint}" );
+	}
+
+	/**
+	 * Process Request responses to catch any error code and transform in a WP_Error.
+	 * Returns the request array if no errors are found. Or a WP_Error object.
+	 *
+	 * @since 5.3.0
+	 *
+	 * @param array|\WP_Error $response Array of server data.
+	 *
+	 * @return array|\WP_Error
+	 * @throws SquareRateLimitedException If the response code is 429.
+	 */
+	public static function process_response( $response ) {
+		$response_code = wp_remote_retrieve_response_code( $response );
+
+		if ( 429 === $response_code ) {
+			throw new SquareRateLimitedException();
+		}
+
+		return parent::process_response( $response );
 	}
 
 	/**

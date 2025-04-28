@@ -11,7 +11,6 @@ namespace TEC\Tickets\Commerce\Gateways\Square\Syncs;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use WP_Query;
-use TEC\Common\Contracts\Container;
 use TEC\Tickets\Commerce\Gateways\Square\Requests;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
@@ -24,16 +23,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Settings;
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs
  */
-class Items_Sync extends Controller_Contract {
-	/**
-	 * The action that syncs tickets with Square.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const HOOK_INIT_SYNC_ACTION = 'tec_tickets_commerce_square_sync';
-
+class Items_Sync {
 	/**
 	 * The action that syncs an individual event and its tickets with Square.
 	 *
@@ -62,6 +52,15 @@ class Items_Sync extends Controller_Contract {
 	public const HOOK_SYNC_ACTION = 'tec_tickets_commerce_square_sync_post_type';
 
 	/**
+	 * The regulator instance.
+	 *
+	 * @since TBD
+	 *
+	 * @var Regulator
+	 */
+	private Regulator $regulator;
+
+	/**
 	 * The remote objects instance.
 	 *
 	 * @since TBD
@@ -71,65 +70,16 @@ class Items_Sync extends Controller_Contract {
 	private Remote_Objects $remote_objects;
 
 	/**
-	 * The settings.
-	 *
-	 * @since TBD
-	 *
-	 * @var Settings
-	 */
-	private Settings $settings;
-
-	/**
 	 * Constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param Container      $container      The container instance.
+	 * @param Regulator      $regulator      The regulator instance.
 	 * @param Remote_Objects $remote_objects The remote objects instance.
-	 * @param Settings       $settings       The settings instance.
 	 */
-	public function __construct( Container $container, Remote_Objects $remote_objects, Settings $settings ) {
-		parent::__construct( $container );
+	public function __construct( Regulator $regulator, Remote_Objects $remote_objects ) {
+		$this->regulator      = $regulator;
 		$this->remote_objects = $remote_objects;
-		$this->settings       = $settings;
-	}
-
-	/**
-	 * Register the controller.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function do_register(): void {
-		add_action( self::HOOK_SYNC_DELETE_EVENT_ACTION, [ $this, 'sync_delete_event' ], 10, 2 );
-
-		if ( ! $this->settings->is_inventory_sync_enabled() ) {
-			return;
-		}
-
-		add_action( self::HOOK_INIT_SYNC_ACTION, [ $this, 'schedule_sync_for_each_post_type' ] );
-		add_action( self::HOOK_SYNC_ACTION, [ $this, 'sync_post_type' ] );
-		add_action( self::HOOK_SYNC_EVENT_ACTION, [ $this, 'sync_event' ] );
-	}
-
-	/**
-	 * Unregister the controller.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function unregister(): void {
-		remove_action( self::HOOK_SYNC_DELETE_EVENT_ACTION, [ $this, 'sync_delete_event' ] );
-
-		if ( ! $this->settings->is_inventory_sync_enabled() ) {
-			return;
-		}
-
-		remove_action( self::HOOK_INIT_SYNC_ACTION, [ $this, 'schedule_sync_for_each_post_type' ] );
-		remove_action( self::HOOK_SYNC_ACTION, [ $this, 'sync_post_type' ] );
-		remove_action( self::HOOK_SYNC_EVENT_ACTION, [ $this, 'sync_event' ] );
 	}
 
 	/**
@@ -144,30 +94,6 @@ class Items_Sync extends Controller_Contract {
 	 */
 	public function sync_delete_event( int $object_id = 0, string $remote_object_id = '' ): void {
 		$this->remote_objects->delete( $object_id, $remote_object_id );
-	}
-
-	/**
-	 * Sync the tickets.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function schedule_sync_for_each_post_type(): void {
-		if ( Sync_Controller::is_sync_completed() ) {
-			return;
-		}
-
-		$ticket_able_post_types = Sync_Controller::ticket_able_post_types_to_sync();
-		if ( empty( $ticket_able_post_types ) ) {
-			return;
-		}
-
-		foreach ( $ticket_able_post_types as $ticket_able_post_type ) {
-			tribe_update_option( sprintf( Sync_Controller::OPTION_SYNC_ACTIONS_IN_PROGRESS, $ticket_able_post_type ), time() );
-			as_unschedule_action( self::HOOK_SYNC_ACTION, [ $ticket_able_post_type ], Sync_Controller::AS_SYNC_ACTION_GROUP );
-			as_schedule_single_action( time(), self::HOOK_SYNC_ACTION, [ $ticket_able_post_type ], Sync_Controller::AS_SYNC_ACTION_GROUP );
-		}
 	}
 
 	/**
@@ -224,14 +150,14 @@ class Items_Sync extends Controller_Contract {
 
 		if ( ! $query->have_posts() ) {
 			// Post type is synced! Now on to sync the inventory.
-			as_schedule_single_action( time(), Inventory_Sync::HOOK_SYNC_ACTION, [ $ticket_able_post_type ], Sync_Controller::AS_SYNC_ACTION_GROUP );
+			$this->regulator->schedule( Inventory_Sync::HOOK_SYNC_ACTION, [ $ticket_able_post_type ] );
 			return;
 		}
 
 		tribe_update_option( sprintf( Sync_Controller::OPTION_SYNC_ACTIONS_IN_PROGRESS, $ticket_able_post_type ), time() );
 
 		// Reschedules itself to continue in 2 minutes.
-		as_schedule_single_action( time() + MINUTE_IN_SECONDS * 2, self::HOOK_SYNC_ACTION, [ $ticket_able_post_type ], Sync_Controller::AS_SYNC_ACTION_GROUP );
+		$this->regulator->schedule( self::HOOK_SYNC_ACTION, [ $ticket_able_post_type ], MINUTE_IN_SECONDS * 2 );
 
 		$post_ids = $query->posts;
 

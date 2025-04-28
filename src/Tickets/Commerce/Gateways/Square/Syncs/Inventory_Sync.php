@@ -9,9 +9,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Square\Syncs;
 
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use WP_Query;
-use TEC\Common\Contracts\Container;
 use TEC\Tickets\Commerce\Gateways\Square\Requests;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
@@ -23,7 +21,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs
  */
-class Inventory_Sync extends Controller_Contract {
+class Inventory_Sync {
 	/**
 	 * The action that syncs the inventory of a ticket-able post type with Square.
 	 *
@@ -52,40 +50,25 @@ class Inventory_Sync extends Controller_Contract {
 	private Remote_Objects $remote_objects;
 
 	/**
+	 * The regulator instance.
+	 *
+	 * @since TBD
+	 *
+	 * @var Regulator
+	 */
+	private Regulator $regulator;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param Container      $container      The container instance.
+	 * @param Regulator      $regulator      The regulator instance.
 	 * @param Remote_Objects $remote_objects The remote objects instance.
 	 */
-	public function __construct( Container $container, Remote_Objects $remote_objects ) {
-		parent::__construct( $container );
+	public function __construct( Regulator $regulator, Remote_Objects $remote_objects ) {
+		$this->regulator      = $regulator;
 		$this->remote_objects = $remote_objects;
-	}
-
-	/**
-	 * Register the controller.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function do_register(): void {
-		add_action( self::HOOK_SYNC_ACTION, [ $this, 'sync_post_type' ] );
-		add_action( self::HOOK_SYNC_EVENT_ACTION, [ $this, 'sync_event' ], 10, 3 );
-	}
-
-	/**
-	 * Unregister the controller.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function unregister(): void {
-		remove_action( self::HOOK_SYNC_ACTION, [ $this, 'sync_post_type' ] );
-		remove_action( self::HOOK_SYNC_EVENT_ACTION, [ $this, 'sync_event' ] );
 	}
 
 	/**
@@ -155,7 +138,7 @@ class Inventory_Sync extends Controller_Contract {
 		}
 
 		// Reschedules itself to continue in 2 minutes.
-		as_schedule_single_action( time() + MINUTE_IN_SECONDS * 2, self::HOOK_SYNC_ACTION, [ $ticket_able_post_type ], Sync_Controller::AS_SYNC_ACTION_GROUP );
+		$this->regulator->schedule( self::HOOK_SYNC_ACTION, [ $ticket_able_post_type ], 2 * MINUTE_IN_SECONDS );
 
 		$post_ids = $query->posts;
 

@@ -47,16 +47,27 @@ class Listeners extends Controller_Contract {
 	private Settings $settings;
 
 	/**
+	 * The regulator.
+	 *
+	 * @since TBD
+	 *
+	 * @var Regulator
+	 */
+	private Regulator $regulator;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since TBD
 	 *
 	 * @param Container $container The container.
-	 * @param Settings $settings The settings.
+	 * @param Settings  $settings The settings.
+	 * @param Regulator $regulator The regulator.
 	 */
-	public function __construct( Container $container, Settings $settings ) {
+	public function __construct( Container $container, Settings $settings, Regulator $regulator ) {
 		parent::__construct( $container );
-		$this->settings = $settings;
+		$this->settings  = $settings;
+		$this->regulator = $regulator;
 	}
 
 	/**
@@ -67,7 +78,6 @@ class Listeners extends Controller_Contract {
 	 * @return void
 	 */
 	public function do_register(): void {
-		add_action( self::HOOK_SYNC_RESET_SYNCED_POST_TYPE, [ $this, 'reset_post_type_data' ] );
 		$this->add_tec_settings_listener();
 
 		if ( ! $this->settings->is_inventory_sync_enabled() ) {
@@ -90,7 +100,6 @@ class Listeners extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
-		remove_action( self::HOOK_SYNC_RESET_SYNCED_POST_TYPE, [ $this, 'reset_post_type_data' ] );
 		$this->remove_tec_settings_listener();
 
 		if ( ! $this->settings->is_inventory_sync_enabled() ) {
@@ -221,7 +230,7 @@ class Listeners extends Controller_Contract {
 		 *
 		 * We want to give some time for the deletions to occur before this runs. So that the query above retrieves diff results because of the deleted meta_keys Item::SQUARE_ID_META.
 		 */
-		as_schedule_single_action( time() + ( 15 * MINUTE_IN_SECONDS ), self::HOOK_SYNC_RESET_SYNCED_POST_TYPE, [ $post_type ], Sync_Controller::AS_SYNC_ACTION_GROUP );
+		$this->regulator->schedule( self::HOOK_SYNC_RESET_SYNCED_POST_TYPE, [ $post_type ], 15 * MINUTE_IN_SECONDS );
 
 		foreach ( $results->posts as $post_id ) {
 			// Remove the event from Square.
@@ -327,15 +336,11 @@ class Listeners extends Controller_Contract {
 	 * @return void
 	 */
 	public function schedule_sync( int $ticket_id, int $parent_id ): void {
-		if ( as_has_scheduled_action( Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $parent_id ], Sync_Controller::AS_SYNC_ACTION_GROUP ) ) {
-			return;
-		}
-
 		if ( ! $this->is_object_syncable( $ticket_id ) ) {
 			return;
 		}
 
-		as_schedule_single_action( time() + MINUTE_IN_SECONDS / 3, Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $parent_id ], Sync_Controller::AS_SYNC_ACTION_GROUP );
+		$this->regulator->schedule( Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $parent_id ], MINUTE_IN_SECONDS / 3 );
 	}
 
 	/**
@@ -351,10 +356,6 @@ class Listeners extends Controller_Contract {
 	 * @return void
 	 */
 	public function schedule_sync_on_date_start( int $ticket_id, bool $its_happening, int $timestamp, WP_Post $post_parent ): void {
-		if ( as_has_scheduled_action( Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $post_parent->ID ], Sync_Controller::AS_SYNC_ACTION_GROUP ) ) {
-			return;
-		}
-
 		if ( ! $this->is_object_syncable( $ticket_id ) ) {
 			return;
 		}
@@ -365,7 +366,7 @@ class Listeners extends Controller_Contract {
 			return;
 		}
 
-		as_schedule_single_action( time(), Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $post_parent->ID ], Sync_Controller::AS_SYNC_ACTION_GROUP );
+		$this->regulator->schedule( Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $post_parent->ID ], MINUTE_IN_SECONDS / 3 );
 	}
 
 	/**
@@ -381,10 +382,6 @@ class Listeners extends Controller_Contract {
 	 * @return void
 	 */
 	public function schedule_sync_on_date_end( int $ticket_id, bool $its_happening, int $timestamp, WP_Post $post_parent ): void {
-		if ( as_has_scheduled_action( Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $post_parent->ID ], Sync_Controller::AS_SYNC_ACTION_GROUP ) ) {
-			return;
-		}
-
 		if ( ! $this->is_object_syncable( $ticket_id ) ) {
 			return;
 		}
@@ -394,7 +391,7 @@ class Listeners extends Controller_Contract {
 			return;
 		}
 
-		as_schedule_single_action( time(), Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $post_parent->ID ], Sync_Controller::AS_SYNC_ACTION_GROUP );
+		$this->regulator->schedule( Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $post_parent->ID ], MINUTE_IN_SECONDS / 3 );
 	}
 
 	/**
@@ -415,11 +412,7 @@ class Listeners extends Controller_Contract {
 			as_unschedule_action( Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $post_id ], Sync_Controller::AS_SYNC_ACTION_GROUP );
 		}
 
-		if ( as_has_scheduled_action( Items_Sync::HOOK_SYNC_DELETE_EVENT_ACTION, [ 0, $remote_object_id ], Sync_Controller::AS_SYNC_ACTION_GROUP ) ) {
-			return;
-		}
-
-		as_schedule_single_action( time() + MINUTE_IN_SECONDS / 3, Items_Sync::HOOK_SYNC_DELETE_EVENT_ACTION, [ 0, $remote_object_id ], Sync_Controller::AS_SYNC_ACTION_GROUP );
+		$this->regulator->schedule( Items_Sync::HOOK_SYNC_DELETE_EVENT_ACTION, [ 0, $remote_object_id ], MINUTE_IN_SECONDS / 3 );
 	}
 
 	/**

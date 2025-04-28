@@ -115,15 +115,15 @@ class Controller extends Controller_Contract {
 	 */
 	public function do_register(): void {
 		$this->container->singleton( Remote_Objects::class );
+		$this->container->singleton( Items_Sync::class );
+		$this->container->singleton( Inventory_Sync::class );
 
-		$this->container->register( Items_Sync::class );
+		$this->container->register( Regulator::class );
 		$this->container->register( Listeners::class );
 
 		if ( ! $this->settings->is_inventory_sync_enabled() ) {
 			return;
 		}
-
-		$this->container->register( Inventory_Sync::class );
 
 		$this->container->register_on_action( 'tec_events_fully_loaded', Tec_Event_Details_Provider::class );
 
@@ -139,14 +139,12 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
-		$this->container->get( Items_Sync::class )->unregister();
+		$this->container->get( Regulator::class )->unregister();
 		$this->container->get( Listeners::class )->unregister();
 
 		if ( ! $this->settings->is_inventory_sync_enabled() ) {
 			return;
 		}
-
-		$this->container->get( Inventory_Sync::class )->unregister();
 
 		if ( $this->container->isBound( Tec_Event_Details_Provider::class ) ) {
 			$this->container->get( Tec_Event_Details_Provider::class )->unregister();
@@ -164,7 +162,7 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function schedule_batch_sync(): void {
-		if ( as_has_scheduled_action( Items_Sync::HOOK_INIT_SYNC_ACTION, [], self::AS_SYNC_ACTION_GROUP ) ) {
+		if ( as_has_scheduled_action( Regulator::HOOK_INIT_SYNC_ACTION, [], self::AS_SYNC_ACTION_GROUP ) ) {
 			return;
 		}
 
@@ -172,7 +170,7 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		as_schedule_single_action( time(), Items_Sync::HOOK_INIT_SYNC_ACTION, [], self::AS_SYNC_ACTION_GROUP );
+		as_schedule_single_action( time(), Regulator::HOOK_INIT_SYNC_ACTION, [], self::AS_SYNC_ACTION_GROUP );
 	}
 
 	/**
