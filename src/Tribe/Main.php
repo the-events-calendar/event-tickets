@@ -449,7 +449,6 @@ class Tribe__Tickets__Main {
 		$this->user_event_confirmation_list_shortcode();
 		$this->move_tickets();
 		$this->move_ticket_types();
-		$this->activation_page();
 
 		Tribe__Tickets__JSON_LD__Order::hook();
 		Tribe__Tickets__JSON_LD__Type::hook();
@@ -459,8 +458,17 @@ class Tribe__Tickets__Main {
 
 		/**
 		 * Fires once Event Tickets has completed basic setup.
+		 *
+		 * @deprecated TBD Use `tec_tickets_fully_loaded` instead.
 		 */
-		do_action( 'tribe_tickets_plugin_loaded' );
+		do_action_deprecated( 'tribe_tickets_plugin_loaded', [], 'TBD', 'Use `tec_tickets_fully_loaded` instead.' );
+
+		/**
+		 * Fires when Event Tickets is fully loaded.
+		 *
+		 * @since TBD
+		 */
+		do_action( 'tec_tickets_fully_loaded' );
 	}
 
 	/**
@@ -678,12 +686,12 @@ class Tribe__Tickets__Main {
 
 		add_filter( 'tribe_post_types', [ $this, 'inject_post_types' ] );
 
-		// Setup Help Tab texting
+		// Setup Help Tab texting.
 		add_action( 'tribe_help_pre_get_sections', [ $this, 'add_help_section_support_content' ] );
 		add_action( 'tribe_help_pre_get_sections', [ $this, 'add_help_section_featured_content' ] );
 		add_action( 'tribe_help_pre_get_sections', [ $this, 'add_help_section_extra_content' ] );
 		add_filter( 'tribe_support_registered_template_systems', [ $this, 'add_template_updates_check' ] );
-		add_action( 'tribe_tickets_plugin_loaded', [ 'Tribe__Support', 'getInstance' ] );
+		add_action( 'tec_tickets_fully_loaded', [ 'Tribe__Support', 'getInstance' ] );
 
 		// Setup Front End Display
 		add_action( 'tribe_events_inside_cost', 'tribe_tickets_buy_button', 10, 0 );
@@ -850,6 +858,7 @@ class Tribe__Tickets__Main {
 		Tribe__Credits::init();
 		$this->maybe_set_et_version();
 		$this->maybe_set_options_for_old_installs();
+		$this->activation_page();
 	}
 
 	/**

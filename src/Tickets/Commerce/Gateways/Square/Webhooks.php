@@ -80,7 +80,7 @@ class Webhooks extends Controller_Contract {
 	 * @return string The webhook endpoint URL.
 	 */
 	public function get_webhook_endpoint_url() {
-		$endpoint_url = $this->container->get( REST\Webhook_Endpoint::class )->get_endpoint_url();
+		$endpoint_url = $this->container->get( REST\Webhook_Endpoint::class )->get_route_url();
 
 		// Allow overriding via constant for local development.
 		if ( defined( 'TEC_TICKETS_COMMERCE_SQUARE_WEBHOOK_DOMAIN' ) ) {
