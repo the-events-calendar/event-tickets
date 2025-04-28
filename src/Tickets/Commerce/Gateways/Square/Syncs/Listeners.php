@@ -208,7 +208,7 @@ class Listeners extends Controller_Contract {
 			'posts_per_page'         => $schedule_events_to_delete_at_once, // Most servers will be able to handle 1000 ids at a time and at the same time it will cover most cases all in one go.
 			'post_status'            => 'publish',
 			'fields'                 => 'ids',
-			'meta_query'             => [
+			'meta_query'             => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				[
 					'key'     => Item::SQUARE_ID_META,
 					'compare' => 'EXISTS',

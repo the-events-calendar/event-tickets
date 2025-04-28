@@ -9,12 +9,10 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Square\Syncs;
 
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use WP_Query;
 use TEC\Tickets\Commerce\Gateways\Square\Requests;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
-use TEC\Tickets\Commerce\Gateways\Square\Settings;
 
 /**
  * Class Tickets_Sync

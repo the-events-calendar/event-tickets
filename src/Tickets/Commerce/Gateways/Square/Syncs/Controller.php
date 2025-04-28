@@ -306,6 +306,9 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
+	 * @param array  $new_options The new options.
+	 * @param string $post_type   The post type.
+	 *
 	 * @return void
 	 */
 	public static function reset_sync_status( array $new_options = [], string $post_type = '' ): void {
@@ -336,21 +339,24 @@ class Controller extends Controller_Contract {
 			unset( $settings[ self::OPTION_SYNC_LATEST_TIMESTAMP ] );
 		}
 
-		add_action( 'tec_shutdown', function () use ( $settings, $post_type ) {
-			$listeners = tribe( Listeners::class );
+		add_action(
+			'tec_shutdown',
+			function () use ( $settings, $post_type ) {
+				$listeners = tribe( Listeners::class );
 
-			$listeners->remove_tec_settings_listener();
-			Settings_Manager::set_options( $settings );
-			$listeners->add_tec_settings_listener();
+				$listeners->remove_tec_settings_listener();
+				Settings_Manager::set_options( $settings );
+				$listeners->add_tec_settings_listener();
 
-			/**
-			 * Fires when the sync status is reset.
-			 *
-			 * @since TBD
-			 *
-			 * @param string $post_type The post type.
-			 */
-			do_action( 'tec_tickets_commerce_square_sync_post_reset_status', $post_type );
-		} );
+				/**
+				 * Fires when the sync status is reset.
+				 *
+				 * @since TBD
+				 *
+				 * @param string $post_type The post type.
+				 */
+				do_action( 'tec_tickets_commerce_square_sync_post_reset_status', $post_type );
+			}
+		);
 	}
 }
