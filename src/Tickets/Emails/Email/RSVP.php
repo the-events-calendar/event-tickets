@@ -13,6 +13,11 @@ use TEC\Tickets\Emails\Dispatcher;
 use TEC\Tickets\Emails\Email_Template;
 use TEC\Tickets\Emails\Email_Abstract;
 use TEC\Tickets\Emails\JSON_LD\Reservation_Schema;
+use TEC\Common\Admin\Entities\Div;
+use TEC\Common\Admin\Entities\Field_Wrapper;
+use TEC\Common\Admin\Entities\Heading;
+use Tribe\Utils\Element_Classes as Classes;
+use Tribe__Field;
 
 /**
  * Class RSVP
@@ -121,6 +126,7 @@ class RSVP extends Email_Abstract {
 	 * Get email settings fields.
 	 *
 	 * @since 5.5.10
+	 * @since TBD Added new classes for settings.
 	 *
 	 * @return array
 	 */
@@ -131,48 +137,60 @@ class RSVP extends Email_Abstract {
 		);
 
 		$email_description = sprintf(
-			// Translators: %1$s: RSVP Emails knowledgebase article link.
+		// Translators: %1$s: RSVP Emails knowledgebase article link.
 			esc_html_x( 'Registrants will receive an email including their RSVP info upon registration. Customize the content of this specific email using the tools below. You can also use email placeholders and customize email templates. %1$s.', 'about RSVP email', 'event-tickets' ),
 			$kb_link
 		);
 
 		$settings = [
+			'tec-settings-email-template-header'        => ( new Div( new Classes( [ 'tec-settings-form__header-block' ] ) ) )->add_children(
+				[
+					new Heading(
+						esc_html__( 'RSVP Email Settings', 'event-tickets' ),
+						2,
+						new Classes( [ 'tec-settings-form__section-header' ] )
+					),
+					( new Field_Wrapper(
+						new Tribe__Field(
+							'tecTicketsEmailTemplateExplanation',
+							[
+								'type' => 'html',
+								'html' => '<p class="tec-settings-form__section-description">'
+											. $email_description
+											. '</p>',
+							]
+						)
+					) ),
+				]
+			),
 			[
 				'type' => 'html',
-				'html' => '<div class="tribe-settings-form-wrap">',
+				'html' => '<div>',
 			],
-			[
-				'type' => 'html',
-				'html' => '<h2>' . esc_html__( 'RSVP Email Settings', 'event-tickets' ) . '</h2>',
-			],
-			[
-				'type' => 'html',
-				'html' => '<p>' . $email_description . '</p>',
-			],
-			$this->get_option_key( 'enabled' ) => [
-				'type'                => 'toggle',
-				'label'               => sprintf(
-					// Translators: %s - Title of email.
+			$this->get_option_key( 'enabled' )          => [
+				'type'            => 'toggle',
+				'label'           => sprintf(
+				// Translators: %s - Title of email.
 					esc_html__( 'Enable %s', 'event-tickets' ),
 					$this->get_title()
 				),
-				'default'             => true,
-				'validation_type'     => 'boolean',
+				'default'         => true,
+				'validation_type' => 'boolean',
 			],
 			$this->get_option_key( 'use-ticket-email' ) => [
-				'type'                => 'toggle',
-				'label'               => esc_html__( 'Use Ticket Email', 'event-tickets' ),
-				'tooltip'             => esc_html__( 'Use the ticket email settings and template.', 'event-tickets' ),
-				'default'             => true,
-				'validation_type'     => 'boolean',
-				'attributes'          => [
+				'type'            => 'toggle',
+				'label'           => esc_html__( 'Use Ticket Email', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'Use the ticket email settings and template.', 'event-tickets' ),
+				'default'         => true,
+				'validation_type' => 'boolean',
+				'attributes'      => [
 					'id' => $this->get_option_key( 'use-ticket-email' ),
 				],
 			],
 		];
 
 		$add_settings = [
-			$this->get_option_key( 'subject' ) => [
+			$this->get_option_key( 'subject' )            => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Subject', 'event-tickets' ),
 				'default'             => $this->get_default_subject(),
@@ -185,7 +203,7 @@ class RSVP extends Email_Abstract {
 				],
 				'class'               => 'tribe-dependent',
 			],
-			$this->get_option_key( 'heading' ) => [
+			$this->get_option_key( 'heading' )            => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Heading', 'event-tickets' ),
 				'default'             => $this->get_default_heading(),
@@ -205,7 +223,7 @@ class RSVP extends Email_Abstract {
 				'size'                => 'large',
 				'tooltip'             => esc_html__( 'Additional content will be displayed below the RSVP information in your email.', 'event-tickets' ),
 				'validation_type'     => 'html',
-				'settings'        => [
+				'settings'            => [
 					'media_buttons' => false,
 					'quicktags'     => false,
 					'editor_height' => 200,
@@ -225,6 +243,10 @@ class RSVP extends Email_Abstract {
 					'data-condition-is-not-checked' => true,
 				],
 				'class'               => 'tribe-dependent',
+			],
+			[
+				'type' => 'html',
+				'html' => '</div>',
 			],
 		];
 

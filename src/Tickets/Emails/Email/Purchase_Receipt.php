@@ -8,10 +8,14 @@
 namespace TEC\Tickets\Emails\Email;
 
 use TEC\Tickets\Emails\Dispatcher;
-use TEC\Tickets\Emails\Email_Template;
 use TEC\Tickets\Emails\Admin\Preview_Data;
 use TEC\Tickets\Emails\Email_Abstract;
 use TEC\Tickets\Emails\JSON_LD\Order_Schema;
+use TEC\Common\Admin\Entities\Div;
+use TEC\Common\Admin\Entities\Field_Wrapper;
+use TEC\Common\Admin\Entities\Heading;
+use Tribe\Utils\Element_Classes as Classes;
+use Tribe__Field;
 
 /**
  * Class Purchase_Receipt
@@ -97,6 +101,7 @@ class Purchase_Receipt extends Email_Abstract {
 	 * Get email settings.
 	 *
 	 * @since 5.5.10
+	 * @since TBD Added new classes for settings.
 	 *
 	 * @return array
 	 */
@@ -113,29 +118,41 @@ class Purchase_Receipt extends Email_Abstract {
 		);
 
 		return [
+			'tec-settings-email-template-header'          => ( new Div( new Classes( [ 'tec-settings-form__header-block' ] ) ) )->add_children(
+				[
+					new Heading(
+						esc_html__( 'Purchase Receipt Email Settings', 'event-tickets' ),
+						2,
+						new Classes( [ 'tec-settings-form__section-header' ] )
+					),
+					( new Field_Wrapper(
+						new Tribe__Field(
+							'tecTicketsEmailTemplateExplanation',
+							[
+								'type' => 'html',
+								'html' => '<p class="tec-settings-form__section-description">'
+											. $email_description
+											. '</p>',
+							]
+						)
+					) ),
+				]
+			),
 			[
 				'type' => 'html',
-				'html' => '<div class="tribe-settings-form-wrap">',
+				'html' => '<div>',
 			],
-			[
-				'type' => 'html',
-				'html' => '<h2>' . esc_html__( 'Purchase Receipt Email Settings', 'event-tickets' ) . '</h2>',
-			],
-			[
-				'type' => 'html',
-				'html' => '<p>' . $email_description . '</p>',
-			],
-			$this->get_option_key( 'enabled' ) => [
-				'type'                => 'toggle',
-				'label'               => sprintf(
-					// Translators: %s - Title of email.
+			$this->get_option_key( 'enabled' )            => [
+				'type'            => 'toggle',
+				'label'           => sprintf(
+				// Translators: %s - Title of email.
 					esc_html__( 'Enable %s', 'event-tickets' ),
 					$this->get_title()
 				),
-				'default'             => true,
-				'validation_type'     => 'boolean',
+				'default'         => true,
+				'validation_type' => 'boolean',
 			],
-			$this->get_option_key( 'subject' ) => [
+			$this->get_option_key( 'subject' )            => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Subject', 'event-tickets' ),
 				'default'             => $this->get_default_subject(),
@@ -143,7 +160,7 @@ class Purchase_Receipt extends Email_Abstract {
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
 			],
-			$this->get_option_key( 'heading' ) => [
+			$this->get_option_key( 'heading' )            => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Heading', 'event-tickets' ),
 				'default'             => $this->get_default_heading(),
@@ -152,12 +169,12 @@ class Purchase_Receipt extends Email_Abstract {
 				'validation_callback' => 'is_string',
 			],
 			$this->get_option_key( 'additional-content' ) => [
-				'type'                => 'wysiwyg',
-				'label'               => esc_html__( 'Additional content', 'event-tickets' ),
-				'default'             => '',
-				'tooltip'             => esc_html__( 'Additional content will be displayed below the purchase receipt details in the email.', 'event-tickets' ),
-				'size'                => 'large',
-				'validation_type'     => 'html',
+				'type'            => 'wysiwyg',
+				'label'           => esc_html__( 'Additional content', 'event-tickets' ),
+				'default'         => '',
+				'tooltip'         => esc_html__( 'Additional content will be displayed below the purchase receipt details in the email.', 'event-tickets' ),
+				'size'            => 'large',
+				'validation_type' => 'html',
 				'settings'        => [
 					'media_buttons' => false,
 					'quicktags'     => false,
@@ -173,6 +190,10 @@ class Purchase_Receipt extends Email_Abstract {
 						'link',
 					],
 				],
+			],
+			[
+				'type' => 'html',
+				'html' => '</div>',
 			],
 		];
 	}
