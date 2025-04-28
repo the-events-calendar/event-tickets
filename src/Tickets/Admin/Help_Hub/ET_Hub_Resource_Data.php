@@ -85,7 +85,8 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 		$origin = Tribe__Main::instance();
 
 		$this->icons = [
-			'tec_icon'     => tribe_resource_url( 'images/logo/event-tickets.svg', false, null, $origin ),
+			'tec_icon'     => tribe_resource_url( 'images/logo/the-events-calendar.svg', false, null, $origin ),
+			'et_icon'      => tribe_resource_url( 'images/logo/event-tickets.svg', false, null, $origin ),
 			'ea_icon'      => tribe_resource_url( 'images/logo/event-aggregator.svg', false, null, $origin ),
 			'fbar_icon'    => tribe_resource_url( 'images/logo/filterbar.svg', false, null, $origin ),
 			'article_icon' => tribe_resource_url( 'images/icons/file-text1.svg', false, null, $origin ),
@@ -208,7 +209,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 			->add_link(
 				_x( 'Getting Started with Event Tickets', 'Getting started article', 'event-tickets' ),
 				'https://evnt.is/1aot',
-				$this->get_icon_url( 'tec_icon' )
+				$this->get_icon_url( 'et_icon' )
 			)
 			->build();
 	}
