@@ -76,7 +76,7 @@ class Ticket_Data {
 	 *
 	 * @since TBD
 	 *
-	 * @param int   $post_id               The post ID.
+	 * @param int $post_id The post ID.
 	 *
 	 * @return Generator<Ticket_Object> The ticket.
 	 */
