@@ -143,29 +143,36 @@ class RSVP extends Email_Abstract {
 		);
 
 		$settings = [
-			'tec-settings-email-template-header'        => ( new Div( new Classes( [ 'tec-settings-form__header-block' ] ) ) )->add_children(
-				[
-					new Heading(
-						esc_html__( 'RSVP Email Settings', 'event-tickets' ),
-						2,
-						new Classes( [ 'tec-settings-form__section-header' ] )
-					),
-					( new Field_Wrapper(
-						new Tribe__Field(
-							'tecTicketsEmailTemplateExplanation',
-							[
-								'type' => 'html',
-								'html' => '<p class="tec-settings-form__section-description">'
-											. $email_description
-											. '</p>',
-							]
-						)
-					) ),
-				]
-			),
+
+			'tec-settings-email-template-wrapper_start'   => [
+				'type' => 'html',
+				'html' => '<div class="tec-settings-form__header-block--horizontal">',
+			],
+			'tec-settings-email-template-header'          => [
+				'type' => 'html',
+				'html' => '<h3>' . esc_html__( 'RSVP Email Settings', 'event-tickets' ) . '</h3>',
+			],
+			'info-box-description'                        => [
+				'type' => 'html',
+				'html' => '<p class="tec-settings-form__section-description">'
+				          . $email_description
+				          . '</p>',
+			],
 			[
 				'type' => 'html',
-				'html' => '<div>',
+				'html' => '</div>',
+			],
+			'tec-settings-email-template-settings-wrapper-start' => [
+				'type' => 'html',
+				'html' => '<div class="tec-settings-form__content-section">',
+			],
+			'tec-settings-email-template-settings'        => [
+				'type' => 'html',
+				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . esc_html__( 'Settings', 'event-tickets' ) . '</h3>',
+			],
+			'tec-settings-email-template-settings-wrapper-end' => [
+				'type' => 'html',
+				'html' => '</div>',
 			],
 			$this->get_option_key( 'enabled' )          => [
 				'type'            => 'toggle',
@@ -243,10 +250,6 @@ class RSVP extends Email_Abstract {
 					'data-condition-is-not-checked' => true,
 				],
 				'class'               => 'tribe-dependent',
-			],
-			[
-				'type' => 'html',
-				'html' => '</div>',
 			],
 		];
 
