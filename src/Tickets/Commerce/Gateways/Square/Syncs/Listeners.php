@@ -257,6 +257,10 @@ class Listeners extends Controller_Contract {
 			return;
 		}
 
+		if ( empty( Sync_Controller::get_sync_able_tickets_of_event( $post_id ) ) ) {
+			return;
+		}
+
 		$this->schedule_sync( $post_id, $post_id );
 	}
 
