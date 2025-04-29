@@ -106,10 +106,10 @@ class Regulator extends Controller_Contract {
 	 * @param Inventory_Sync $inventory_sync The inventory sync.
 	 * @param Items_Sync     $items_sync The items sync.
 	 */
-	public function __construct( Container $container ) {
+	public function __construct( Container $container, Inventory_Sync $inventory_sync, Items_Sync $items_sync ) {
 		parent::__construct( $container );
-		// $this->inventory_sync = $inventory_sync;
-		// $this->items_sync     = $items_sync;
+		$this->inventory_sync = $inventory_sync;
+		$this->items_sync     = $items_sync;
 	}
 
 	/**
