@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.21.1
+Stable tag: 5.21.1.1
 Requires at least: 6.5
 Tested up to: 6.7.2
 Requires PHP: 7.4
@@ -198,6 +198,12 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.21.1.1] 2025-04-28 =
+
+* Version - Event Tickets 5.21.1.1 is only compatible with The Events Calendar 6.11.2.1 or higher.
+* Security - Added more safety checks to telemetry opt-ins/opt-outs. [TCMN-186]
+* Language - 0 new strings added, 9 updated, 0 fuzzied, and 0 obsoleted.
 
 = [5.21.1] 2025-04-07 =
 
