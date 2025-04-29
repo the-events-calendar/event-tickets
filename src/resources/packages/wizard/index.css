@@ -820,19 +820,6 @@
 	display: none;
 }
 
-.tec-tickets-dismiss-onboarding-screen {
-	bottom: 2em;
-	display: none;
-	position: absolute;
-	right: 10em;
-}
-
-@media (min-width: 782px) {
-	.tec-tickets-dismiss-onboarding-screen {
-		display: inline-block;
-	}
-}
-
 .tec-tickets-onboarding__connection-status--connected,
 .tec-tickets-onboarding__connection-error {
 	align-items: center;
