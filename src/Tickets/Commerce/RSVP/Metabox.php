@@ -59,8 +59,9 @@ class Metabox {
 		return $admin_views->template(
 			[ 'editor', 'rsvp', 'metabox' ],
 			[
-				'post' => $post,
-				'post_id' => $post_id,
+				'admin_views' => $admin_views,
+				'post'        => $post,
+				'post_id'     => $post_id,
 			]
 		);
 	}
