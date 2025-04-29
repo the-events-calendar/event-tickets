@@ -10,11 +10,8 @@
 namespace TEC\Tickets\Commerce\RSVP;
 
 use TEC\Tickets\Admin\Panel_Data;
-use TEC\Tickets\Admin\Panels_Data\Ticket_Panel_Data;
 use TEC\Tickets\Event;
 use Tribe__Tickets__Main;
-use Tribe__Tickets__Tickets;
-use Tribe__Date_Utils;
 use WP_Post;
 
 /**

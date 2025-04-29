@@ -16,13 +16,16 @@
 	I am RSVP
 
 	<?php
-	$admin_views->template( [ 'components', 'switch-field' ], [
-		'id'      => 'tec_tickets_rsvp_enable',
-		'name'    => 'tec_tickets_rsvp_enable',
-		'label'   => 'Enable RSVP ',
-		'tooltip' => 'Allow users to register as attendees for this event',
-		'value'   => '',
-	] );
+	$admin_views->template(
+		[ 'components', 'switch-field' ],
+		[
+			'id'      => 'tec_tickets_rsvp_enable',
+			'name'    => 'tec_tickets_rsvp_enable',
+			'label'   => 'Enable RSVP ',
+			'tooltip' => 'Allow users to register as attendees for this event',
+			'value'   => '',
+		]
+	);
 	?>
 
 	<?php $admin_views->template( [ 'editor', 'rsvp', 'panel', 'rsvp' ], get_defined_vars() ); ?>

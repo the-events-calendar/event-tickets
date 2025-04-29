@@ -38,17 +38,19 @@
 		</legend>
 		<div class="tribe-field-wrap">
 			<?php
-			$this->template( 'components/switch', [
-				'id'            => $id,
-				'label'         => $label,
-				'classes_wrap'  => [ 'tec-tickets-settings-switch-control' ],
-				'classes_input' => [ 'tec-tickets-settings-switch__input' ],
-				'classes_label' => [ 'tec-tickets-settings-switch__label' ],
-				'name'          => $name,
-				'value'         => 1,
-				'checked'       => $value,
-				'attrs'         => [],
-			] );
+			$this->template( 'components/switch',
+				[
+					'id'            => $id,
+					'label'         => $label,
+					'classes_wrap'  => [ 'tec-tickets-settings-switch-control' ],
+					'classes_input' => [ 'tec-tickets-settings-switch__input' ],
+					'classes_label' => [ 'tec-tickets-settings-switch__label' ],
+					'name'          => $name,
+					'value'         => 1,
+					'checked'       => $value,
+					'attrs'         => [],
+				]
+			);
 			?>
 		</div>
 	</span>
