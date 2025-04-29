@@ -167,11 +167,12 @@ class Regulator extends Controller_Contract {
 	 * @param string $hook The hook.
 	 * @param array  $args The arguments.
 	 * @param int    $minimum_delay The minimum delay.
+	 * @param bool   $unique Whether the action should be unique.
 	 *
 	 * @return void
 	 */
-	public function schedule( string $hook, array $args, int $minimum_delay = 0 ): void {
-		if ( as_has_scheduled_action( $hook, $args, Sync_Controller::AS_SYNC_ACTION_GROUP ) ) {
+	public function schedule( string $hook, array $args, int $minimum_delay = 0, bool $unique = true ): void {
+		if ( $unique && as_has_scheduled_action( $hook, $args, Sync_Controller::AS_SYNC_ACTION_GROUP ) ) {
 			return;
 		}
 
@@ -219,8 +220,7 @@ class Regulator extends Controller_Contract {
 			tribe( Listeners::class )->reset_post_type_data( $post_type );
 			$this->fire_square_request_completed();
 		} catch ( SquareRateLimitedException $e ) {
-			$this->schedule( Listeners::HOOK_SYNC_RESET_SYNCED_POST_TYPE, [ $post_type ], 15 * MINUTE_IN_SECONDS );
-			return;
+			$this->schedule( Listeners::HOOK_SYNC_RESET_SYNCED_POST_TYPE, [ $post_type ], 15 * MINUTE_IN_SECONDS, false );
 		}
 	}
 
@@ -239,7 +239,7 @@ class Regulator extends Controller_Contract {
 			$this->items_sync->sync_delete_event( $object_id, $remote_object_id );
 			$this->fire_square_request_completed();
 		} catch ( SquareRateLimitedException $e ) {
-			$this->schedule( Items_Sync::HOOK_SYNC_DELETE_EVENT_ACTION, [ $object_id, $remote_object_id ], MINUTE_IN_SECONDS / 3 );
+			$this->schedule( Items_Sync::HOOK_SYNC_DELETE_EVENT_ACTION, [ $object_id, $remote_object_id ], MINUTE_IN_SECONDS / 3, false );
 		}
 	}
 
@@ -257,7 +257,7 @@ class Regulator extends Controller_Contract {
 			$this->items_sync->sync_post_type( $post_type );
 			$this->fire_square_request_completed();
 		} catch ( SquareRateLimitedException $e ) {
-			$this->schedule( Items_Sync::HOOK_SYNC_ACTION, [ $post_type ], MINUTE_IN_SECONDS );
+			$this->schedule( Items_Sync::HOOK_SYNC_ACTION, [ $post_type ], MINUTE_IN_SECONDS / 6, false );
 		}
 	}
 
@@ -276,7 +276,7 @@ class Regulator extends Controller_Contract {
 			$this->items_sync->sync_event( $event_id, $execute );
 			$this->fire_square_request_completed();
 		} catch ( SquareRateLimitedException $e ) {
-			$this->schedule( Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $event_id, $execute ], MINUTE_IN_SECONDS / 3 );
+			$this->schedule( Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $event_id, $execute ], MINUTE_IN_SECONDS / 3, false );
 		}
 	}
 
@@ -294,7 +294,7 @@ class Regulator extends Controller_Contract {
 			$this->inventory_sync->sync_post_type( $post_type );
 			$this->fire_square_request_completed();
 		} catch ( SquareRateLimitedException $e ) {
-			$this->schedule( Inventory_Sync::HOOK_SYNC_ACTION, [ $post_type ], MINUTE_IN_SECONDS );
+			$this->schedule( Inventory_Sync::HOOK_SYNC_ACTION, [ $post_type ], MINUTE_IN_SECONDS / 6, false );
 		}
 	}
 
@@ -314,7 +314,7 @@ class Regulator extends Controller_Contract {
 			$this->inventory_sync->sync_event( $event_id, $execute, $tickets );
 			$this->fire_square_request_completed();
 		} catch ( SquareRateLimitedException $e ) {
-			$this->schedule( Inventory_Sync::HOOK_SYNC_EVENT_ACTION, [ $event_id, $execute, $tickets ], MINUTE_IN_SECONDS / 3 );
+			$this->schedule( Inventory_Sync::HOOK_SYNC_EVENT_ACTION, [ $event_id, $execute, $tickets ], MINUTE_IN_SECONDS / 3, false );
 		}
 	}
 

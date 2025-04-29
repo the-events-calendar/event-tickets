@@ -158,6 +158,11 @@ class Remote_Objects {
 			$remote_object_id = $this->delete_remote_object_data( $object_id );
 		}
 
+		if ( ! $remote_object_id ) {
+			// Was not synced yet.
+			return;
+		}
+
 		$response = Requests::delete( sprintf( 'catalog/object/%s', $remote_object_id ) );
 
 		if ( ! empty( $response['errors'] ) ) {

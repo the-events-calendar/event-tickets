@@ -127,7 +127,7 @@ class Inventory_Sync {
 		}
 
 		// Reschedules itself to continue in 2 minutes.
-		tribe( Regulator::class )->schedule( self::HOOK_SYNC_ACTION, [ $ticket_able_post_type ], 2 * MINUTE_IN_SECONDS );
+		tribe( Regulator::class )->schedule( self::HOOK_SYNC_ACTION, [ $ticket_able_post_type ], 2 * MINUTE_IN_SECONDS, false );
 
 		$post_ids = $query->posts;
 

@@ -146,7 +146,7 @@ class Items_Sync {
 		tribe_update_option( sprintf( Sync_Controller::OPTION_SYNC_ACTIONS_IN_PROGRESS, $ticket_able_post_type ), time() );
 
 		// Reschedules itself to continue in 2 minutes.
-		$regulator->schedule( self::HOOK_SYNC_ACTION, [ $ticket_able_post_type ], MINUTE_IN_SECONDS * 2 );
+		$regulator->schedule( self::HOOK_SYNC_ACTION, [ $ticket_able_post_type ], MINUTE_IN_SECONDS * 2, false );
 
 		$post_ids = $query->posts;
 

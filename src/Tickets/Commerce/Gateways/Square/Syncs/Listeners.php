@@ -249,6 +249,10 @@ class Listeners extends Controller_Contract {
 	 * @return void
 	 */
 	public function schedule_sync_on_save( int $post_id, WP_Post $post ): void {
+		if ( wp_is_post_revision( $post_id ) || wp_is_post_autosave( $post_id ) ) {
+			return;
+		}
+
 		if ( ! in_array( $post->post_type, (array) tribe_get_option( 'ticket-enabled-post-types', [] ), true ) ) {
 			return;
 		}
@@ -287,7 +291,7 @@ class Listeners extends Controller_Contract {
 			return;
 		}
 
-		if ( ! $this->is_object_syncable( $post_id ) ) {
+		if ( ! $this->is_object_syncable( $post_id, true ) ) {
 			return;
 		}
 
@@ -420,11 +424,23 @@ class Listeners extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $post_id The post ID.
+	 * @param int  $post_id            The post ID.
+	 * @param bool $requires_remote_id Whether the object requires a remote ID.
 	 *
 	 * @return bool
 	 */
-	protected function is_object_syncable( int $post_id ): bool {
-		return (bool) Item::get_remote_object_id( $post_id );
+	protected function is_object_syncable( int $post_id, bool $requires_remote_id = false ): bool {
+		$has_remote_object_id = (bool) Item::get_remote_object_id( $post_id );
+
+		if ( $has_remote_object_id ) {
+			return true;
+		}
+
+		if ( $requires_remote_id ) {
+			return false;
+		}
+
+		// If the initial sync is completed we need to sync this object anew.
+		return Sync_Controller::is_sync_completed();
 	}
 }

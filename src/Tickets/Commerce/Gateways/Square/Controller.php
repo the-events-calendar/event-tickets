@@ -45,10 +45,6 @@ class Controller extends Controller_Contract {
 		$this->container->register( Notices\Controller::class );
 		$this->container->register( Webhooks::class );
 
-		if ( ! $this->container->get( Gateway::class )->is_enabled() ) {
-			return;
-		}
-
 		$this->container->register( Syncs_Controller::class );
 	}
 
@@ -66,10 +62,6 @@ class Controller extends Controller_Contract {
 		$this->container->get( Hooks::class )->unregister();
 		$this->container->get( Notices\Controller::class )->unregister();
 		$this->container->get( Webhooks::class )->unregister();
-
-		if ( ! $this->container->get( Gateway::class )->is_enabled() ) {
-			return;
-		}
 
 		$this->container->get( Syncs_Controller::class )->unregister();
 	}

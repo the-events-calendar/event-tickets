@@ -109,7 +109,18 @@ class Requests extends Abstract_Requests {
 	public static function process_response( $response ) {
 		$response_code = wp_remote_retrieve_response_code( $response );
 
-		if ( 429 === $response_code ) {
+		/**
+		 * Filter the chance of triggering a rate limit exception.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $chance The chance of triggering a rate limit exception.
+		 */
+		$chance_of_triggering_rate_limit_exception = min( 100, max( 0, (int) apply_filters( 'tec_tickets_commerce_square_requests_chance_of_triggering_rate_limit_exception', 0 ) ) );
+
+		$should_trigger = $chance_of_triggering_rate_limit_exception > wp_rand( 0, 99 );
+
+		if ( $should_trigger || 429 === $response_code ) {
 			throw new SquareRateLimitedException();
 		}
 
