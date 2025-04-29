@@ -62,6 +62,15 @@ class Regulator extends Controller_Contract {
 	];
 
 	/**
+	 * The rate limited data.
+	 *
+	 * @since TBD
+	 *
+	 * @var array
+	 */
+	protected ?array $rate_limited_data = null;
+
+	/**
 	 * The random delays.
 	 *
 	 * @since TBD
@@ -89,15 +98,6 @@ class Regulator extends Controller_Contract {
 	private Items_Sync $items_sync;
 
 	/**
-	 * The listeners.
-	 *
-	 * @since TBD
-	 *
-	 * @var Listeners
-	 */
-	private Listeners $listeners;
-
-	/**
 	 * Constructor.
 	 *
 	 * @since TBD
@@ -105,13 +105,11 @@ class Regulator extends Controller_Contract {
 	 * @param Container      $container The container.
 	 * @param Inventory_Sync $inventory_sync The inventory sync.
 	 * @param Items_Sync     $items_sync The items sync.
-	 * @param Listeners      $listeners The listeners.
 	 */
-	public function __construct( Container $container, Inventory_Sync $inventory_sync, Items_Sync $items_sync, Listeners $listeners ) {
+	public function __construct( Container $container ) {
 		parent::__construct( $container );
-		$this->inventory_sync = $inventory_sync;
-		$this->items_sync     = $items_sync;
-		$this->listeners      = $listeners;
+		// $this->inventory_sync = $inventory_sync;
+		// $this->items_sync     = $items_sync;
 	}
 
 	/**
@@ -218,7 +216,7 @@ class Regulator extends Controller_Contract {
 	 */
 	public function listeners_reset_post_type_data( string $post_type = '' ): void {
 		try {
-			$this->listeners->reset_post_type_data( $post_type );
+			tribe( Listeners::class )->reset_post_type_data( $post_type );
 			$this->fire_square_request_completed();
 		} catch ( SquareRateLimitedException $e ) {
 			$this->schedule( Listeners::HOOK_SYNC_RESET_SYNCED_POST_TYPE, [ $post_type ], 15 * MINUTE_IN_SECONDS );
@@ -346,14 +344,14 @@ class Regulator extends Controller_Contract {
 	 * @return int
 	 */
 	protected function get_rate_limited_minimum_delay( int $minimum_delay ): int {
-		$rate_limited_data = (array) tribe_get_option( 'square_rate_limited', [] );
-		if ( empty( $rate_limited_data ) ) {
+		$this->set_rate_limited_data();
+		if ( ! $this->rate_limited_data ) {
 			return $minimum_delay;
 		}
 
-		if ( count( $rate_limited_data ) > 1 ) {
-			$size = count( $rate_limited_data );
-			return ( $rate_limited_data[ $size - 1 ] - $rate_limited_data[ $size - 2 ] ) + $minimum_delay;
+		if ( count( $this->rate_limited_data ) > 1 ) {
+			$size = count( $this->rate_limited_data );
+			return ( $this->rate_limited_data[ $size - 1 ] - $this->rate_limited_data[ $size - 2 ] ) + $minimum_delay;
 		}
 
 		return ( MINUTE_IN_SECONDS / 2 ) + $minimum_delay;
@@ -369,6 +367,11 @@ class Regulator extends Controller_Contract {
 	 * @return int
 	 */
 	protected function get_random_delay( int $minimum_delay ): int {
+		$this->set_rate_limited_data();
+		if ( ! $this->rate_limited_data ) {
+			return $minimum_delay;
+		}
+
 		$desired_offset = 10;
 		foreach ( self::RANDOM_DELAY_RANGES as $offset => $delay ) {
 			if ( $minimum_delay >= $delay[0] ) {
@@ -388,5 +391,20 @@ class Regulator extends Controller_Contract {
 		self::$random_delays[] = $delay;
 
 		return $delay;
+	}
+
+	/**
+	 * Sets the rate limited data.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function set_rate_limited_data(): void {
+		if ( null !== $this->rate_limited_data ) {
+			return;
+		}
+
+		$this->rate_limited_data = (array) tribe_get_option( 'square_rate_limited', [] );
 	}
 }

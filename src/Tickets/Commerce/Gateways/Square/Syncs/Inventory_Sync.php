@@ -50,24 +50,13 @@ class Inventory_Sync {
 	private Remote_Objects $remote_objects;
 
 	/**
-	 * The regulator instance.
-	 *
-	 * @since TBD
-	 *
-	 * @var Regulator
-	 */
-	private Regulator $regulator;
-
-	/**
 	 * Constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param Regulator      $regulator      The regulator instance.
 	 * @param Remote_Objects $remote_objects The remote objects instance.
 	 */
-	public function __construct( Regulator $regulator, Remote_Objects $remote_objects ) {
-		$this->regulator      = $regulator;
+	public function __construct( Remote_Objects $remote_objects ) {
 		$this->remote_objects = $remote_objects;
 	}
 
@@ -138,7 +127,7 @@ class Inventory_Sync {
 		}
 
 		// Reschedules itself to continue in 2 minutes.
-		$this->regulator->schedule( self::HOOK_SYNC_ACTION, [ $ticket_able_post_type ], 2 * MINUTE_IN_SECONDS );
+		tribe( Regulator::class )->schedule( self::HOOK_SYNC_ACTION, [ $ticket_able_post_type ], 2 * MINUTE_IN_SECONDS );
 
 		$post_ids = $query->posts;
 

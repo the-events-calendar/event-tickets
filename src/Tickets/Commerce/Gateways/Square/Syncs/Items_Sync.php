@@ -50,15 +50,6 @@ class Items_Sync {
 	public const HOOK_SYNC_ACTION = 'tec_tickets_commerce_square_sync_post_type';
 
 	/**
-	 * The regulator instance.
-	 *
-	 * @since TBD
-	 *
-	 * @var Regulator
-	 */
-	private Regulator $regulator;
-
-	/**
 	 * The remote objects instance.
 	 *
 	 * @since TBD
@@ -72,11 +63,9 @@ class Items_Sync {
 	 *
 	 * @since TBD
 	 *
-	 * @param Regulator      $regulator      The regulator instance.
 	 * @param Remote_Objects $remote_objects The remote objects instance.
 	 */
-	public function __construct( Regulator $regulator, Remote_Objects $remote_objects ) {
-		$this->regulator      = $regulator;
+	public function __construct( Remote_Objects $remote_objects ) {
 		$this->remote_objects = $remote_objects;
 	}
 
@@ -146,16 +135,18 @@ class Items_Sync {
 			(array) apply_filters( 'tec_tickets_commerce_square_sync_post_type_query_args', $args )
 		);
 
+		$regulator = tribe( Regulator::class );
+
 		if ( ! $query->have_posts() ) {
 			// Post type is synced! Now on to sync the inventory.
-			$this->regulator->schedule( Inventory_Sync::HOOK_SYNC_ACTION, [ $ticket_able_post_type ] );
+			$regulator->schedule( Inventory_Sync::HOOK_SYNC_ACTION, [ $ticket_able_post_type ] );
 			return;
 		}
 
 		tribe_update_option( sprintf( Sync_Controller::OPTION_SYNC_ACTIONS_IN_PROGRESS, $ticket_able_post_type ), time() );
 
 		// Reschedules itself to continue in 2 minutes.
-		$this->regulator->schedule( self::HOOK_SYNC_ACTION, [ $ticket_able_post_type ], MINUTE_IN_SECONDS * 2 );
+		$regulator->schedule( self::HOOK_SYNC_ACTION, [ $ticket_able_post_type ], MINUTE_IN_SECONDS * 2 );
 
 		$post_ids = $query->posts;
 
