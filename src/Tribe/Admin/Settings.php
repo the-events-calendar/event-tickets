@@ -49,6 +49,8 @@ class Settings {
 	 * The Original Help page slug.
 	 *
 	 * @since TBD
+	 * 
+	 * @since TBD
 	 *
 	 * @var string
 	 */
