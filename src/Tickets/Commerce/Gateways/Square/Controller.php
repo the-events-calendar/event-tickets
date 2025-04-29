@@ -10,6 +10,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\Commerce\Gateways\Square\REST\On_Boarding_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Square\REST\Order_Endpoint;
+use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Syncs_Controller;
 use TEC\Tickets\Commerce\Gateways\Square\Webhooks;
 
 /**
@@ -43,6 +44,8 @@ class Controller extends Controller_Contract {
 		$this->container->register( Hooks::class );
 		$this->container->register( Notices\Controller::class );
 		$this->container->register( Webhooks::class );
+
+		$this->container->register( Syncs_Controller::class );
 	}
 
 	/**
@@ -57,7 +60,9 @@ class Controller extends Controller_Contract {
 		$this->container->get( Assets::class )->unregister();
 		$this->container->get( Ajax::class )->unregister();
 		$this->container->get( Hooks::class )->unregister();
-		$this->container->get( Webhooks::class )->unregister();
 		$this->container->get( Notices\Controller::class )->unregister();
+		$this->container->get( Webhooks::class )->unregister();
+
+		$this->container->get( Syncs_Controller::class )->unregister();
 	}
 }

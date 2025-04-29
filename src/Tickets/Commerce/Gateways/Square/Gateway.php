@@ -355,9 +355,9 @@ class Gateway extends Abstract_Gateway {
 	 */
 	public function get_location_id(): string {
 		if ( static::is_test_mode() ) {
-			return (string) tribe_get_option( Settings::$option_sandbox_location_id, '' );
+			return (string) tribe_get_option( Settings::OPTION_SANDBOX_LOCATION_ID, '' );
 		}
 
-		return (string) tribe_get_option( Settings::$option_location_id, '' );
+		return (string) tribe_get_option( Settings::OPTION_LOCATION_ID, '' );
 	}
 }

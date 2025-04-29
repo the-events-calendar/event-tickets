@@ -69,6 +69,18 @@ class Payment {
 			$body['reference_id'] = $order->ID;
 		}
 
+		/**
+		 * Filters the payment body.
+		 *
+		 * @since TBD
+		 *
+		 * @param array    $body The payment body.
+		 * @param string   $source_id The source ID.
+		 * @param Value    $value The value object.
+		 * @param ?WP_Post $order The order post object.
+		 */
+		$body = apply_filters( 'tec_tickets_commerce_square_payment_body', $body, $source_id, $value, $order );
+
 		$args = [
 			'body'    => $body,
 			'headers' => [
@@ -76,7 +88,7 @@ class Payment {
 			],
 		];
 
-		return tribe( Requests::class )->post( 'payments', $query_args, $args );
+		return Requests::post( 'payments', $query_args, $args );
 	}
 
 	/**
@@ -152,7 +164,7 @@ class Payment {
 			'body' => $body,
 		];
 
-		return tribe( Requests::class )->get( "payments/{$payment_id}", $query_args, $args );
+		return Requests::get_with_cache( "payments/{$payment_id}", $query_args, $args );
 	}
 
 	/**
@@ -178,7 +190,7 @@ class Payment {
 			'body' => $body,
 		];
 
-		return tribe( Requests::class )->put( "payments/{$payment_id}", $query_args, $args );
+		return Requests::put( "payments/{$payment_id}", $query_args, $args );
 	}
 
 	/**
@@ -205,7 +217,7 @@ class Payment {
 			'body' => $body,
 		];
 
-		return tribe( Requests::class )->post( "payments/{$payment_id}/cancel", $query_args, $args );
+		return Requests::post( "payments/{$payment_id}/cancel", $query_args, $args );
 	}
 
 	/**

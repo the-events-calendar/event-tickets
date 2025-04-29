@@ -10,7 +10,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Requests;
-
+use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\SquareRateLimitedException;
 /**
  * Square Requests.
  *
@@ -51,6 +51,34 @@ class Requests extends Abstract_Requests {
 	];
 
 	/**
+	 * Get a response from the Square API with caching.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $endpoint          The endpoint path.
+	 * @param array  $query_args        Query args appended to the URL.
+	 * @param array  $request_arguments Request arguments.
+	 * @param bool   $raw               Whether to return the raw response.
+	 *
+	 * @return array|null
+	 */
+	public static function get_with_cache( $endpoint, array $query_args = [], array $request_arguments = [], $raw = false ): ?array {
+		$cache_key = md5( wp_json_encode( [ $endpoint, $query_args, $request_arguments, $raw ] ) );
+		$cache     = tribe_cache();
+
+		$cached_response = $cache->get_transient( $cache_key );
+		if ( is_array( $cached_response ) ) {
+			return $cached_response;
+		}
+
+		$response = self::get( $endpoint, $query_args, $request_arguments, $raw );
+
+		$cache->set_transient( $cache_key, $response, MINUTE_IN_SECONDS * 10 );
+
+		return $response;
+	}
+
+	/**
 	 * Get REST API endpoint URL for requests.
 	 *
 	 * @since TBD
@@ -68,6 +96,38 @@ class Requests extends Abstract_Requests {
 	}
 
 	/**
+	 * Process Request responses to catch any error code and transform in a WP_Error.
+	 * Returns the request array if no errors are found. Or a WP_Error object.
+	 *
+	 * @since TBD
+	 *
+	 * @param array|\WP_Error $response Array of server data.
+	 *
+	 * @return array|\WP_Error
+	 * @throws SquareRateLimitedException If the response code is 429.
+	 */
+	public static function process_response( $response ) {
+		$response_code = wp_remote_retrieve_response_code( $response );
+
+		/**
+		 * Filter the chance of triggering a rate limit exception.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $chance The chance of triggering a rate limit exception.
+		 */
+		$chance_of_triggering_rate_limit_exception = min( 100, max( 0, (int) apply_filters( 'tec_tickets_commerce_square_requests_chance_of_triggering_rate_limit_exception', 0 ) ) );
+
+		$should_trigger = $chance_of_triggering_rate_limit_exception > wp_rand( 0, 99 );
+
+		if ( $should_trigger || 429 === $response_code ) {
+			throw new SquareRateLimitedException();
+		}
+
+		return parent::process_response( $response );
+	}
+
+	/**
 	 * Get environment base URL based on current mode.
 	 *
 	 * @since TBD
@@ -79,5 +139,18 @@ class Requests extends Abstract_Requests {
 		$mode     = $merchant->get_mode();
 
 		return static::API_BASE_URLS[ $mode ] ?? static::API_BASE_URLS['sandbox'];
+	}
+
+	/**
+	 * Get the headers.
+	 *
+	 * @since TBD
+	 *
+	 * @return array The headers.
+	 */
+	public static function get_headers(): array {
+		return [
+			'Square-Version' => '2025-04-16',
+		];
 	}
 }

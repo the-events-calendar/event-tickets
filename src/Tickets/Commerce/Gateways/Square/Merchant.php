@@ -469,8 +469,7 @@ class Merchant extends Abstract_Merchant {
 			return [];
 		}
 
-		// Make request using the Requests class.
-		$response = tribe( Requests::class )->get( "merchants/{$merchant_id}" );
+		$response = Requests::get_with_cache( "merchants/{$merchant_id}" );
 
 		// Handle error responses.
 		if ( is_wp_error( $response ) || isset( $response['errors'] ) ) {
@@ -623,10 +622,10 @@ class Merchant extends Abstract_Merchant {
 	 * @return string
 	 */
 	public function get_client_id(): string {
-		$client_id = tribe_get_option( Settings::$option_client_id );
+		$client_id = tribe_get_option( Settings::OPTION_CLIENT_ID );
 
 		if ( empty( $client_id ) && tribe( Gateway::class )->is_test_mode() ) {
-			$client_id = tribe_get_option( Settings::$option_sandbox_client_id );
+			$client_id = tribe_get_option( Settings::OPTION_SANDBOX_CLIENT_ID );
 		}
 
 		return $client_id;
@@ -658,7 +657,7 @@ class Merchant extends Abstract_Merchant {
 
 		$url      = 'locations';
 		$args     = [];
-		$response = tribe( Requests::class )->get( $url, [], $args );
+		$response = Requests::get_with_cache( $url, [], $args );
 
 		if ( empty( $response['locations'] ) || ! is_array( $response['locations'] ) ) {
 			return [];

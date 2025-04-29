@@ -68,6 +68,20 @@ class WhoDat extends Abstract_WhoDat {
 
 		$connection_response = $this->get( 'oauth/authorize', $query_args );
 
+		if ( empty( $connection_response['auth_url'] ) ) {
+			do_action(
+				'tribe_log',
+				'error',
+				'Failed to retrieve Square OAuth authorize URL',
+				[
+					'source'   => 'tickets-commerce',
+					'response' => $connection_response,
+				]
+			);
+
+			return '';
+		}
+
 		return $connection_response['auth_url'];
 	}
 
