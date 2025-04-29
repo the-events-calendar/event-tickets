@@ -9,6 +9,7 @@ use TEC\Tickets\Commerce\Settings as TC_Settings;
 use TEC\Tickets\Commerce\Utils\Currency;
 use Tribe__Tickets__Main as Tickets;
 use Tribe__Template as Template;
+use Tribe\Events\Views\V2\Assets;
 
 /**
  * Square Gateway
@@ -161,7 +162,7 @@ class Gateway extends Abstract_Gateway {
 	 * @return string
 	 */
 	public function get_logo_url(): string {
-		return esc_url( Tickets::instance()->plugin_url . 'src/resources/images/admin/square-logo.png' );
+		return esc_url( Tickets::instance()->plugin_url . 'src/resources/images/admin/square.png' );
 	}
 
 	/**

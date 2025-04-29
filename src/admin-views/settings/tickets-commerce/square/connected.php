@@ -36,7 +36,7 @@ $test_mode = TEC\Tickets\Commerce\Gateways\Square\Gateway::is_test_mode();
 ?>
 
 <div
-	class="tec-tickets__admin-settings-tickets-commerce-gateway tec-tickets__admin-settings-tickets-commerce-gateway--connected"
+	class="tec-tickets__admin-settings-tickets-commerce-gateway tec-tickets__admin-settings-tickets-commerce-gateway--connected tec-settings-form__element--full-width"
 	id="tec-tickets__admin-settings-tickets-commerce-gateway-square-container"
 	data-connect="<?php echo esc_attr__( 'Connect with Square', 'event-tickets' ); ?>"
 	data-connecting="<?php echo esc_attr__( 'Connecting...', 'event-tickets' ); ?>"
@@ -139,8 +139,14 @@ $test_mode = TEC\Tickets\Commerce\Gateways\Square\Gateway::is_test_mode();
 		<img
 			src="<?php echo esc_url( $gateway->get_logo_url() ); ?>"
 			alt="<?php esc_attr_e( 'Square logo', 'event-tickets' ); ?>"
-			class="tec-tickets__admin-settings-tickets-commerce-gateway-logo-square"
+			class="tec-tickets__admin-settings-tickets-commerce-gateway-logo-image"
 			style="max-width: 300px;"
 		/>
+		<ul>
+			<li><?php esc_html_e( 'Credit cards, digital wallets, and contactless payments', 'event-tickets' ); ?></li>
+			<li><?php esc_html_e( 'Quick, secure checkout experience', 'event-tickets' ); ?></li>
+			<li><?php esc_html_e( 'Accept payments from around the world', 'event-tickets' ); ?></li>
+			<li><?php esc_html_e( 'Seamless integration with Square POS', 'event-tickets' ); ?></li>
+		</ul>
 	</div>
 </div>

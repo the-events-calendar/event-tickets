@@ -76,6 +76,12 @@ $connect_url = '#';
 			class="tec-tickets__admin-settings-tickets-commerce-gateway-logo-square"
 			style="max-width: 300px;"
 		/>
+		<ul>
+			<li><?php esc_html_e( 'Credit cards, digital wallets, and contactless payments', 'event-tickets' ); ?></li>
+			<li><?php esc_html_e( 'Quick, secure checkout experience', 'event-tickets' ); ?></li>
+			<li><?php esc_html_e( 'Accept payments from around the world', 'event-tickets' ); ?></li>
+			<li><?php esc_html_e( 'Seamless integration with Square POS', 'event-tickets' ); ?></li>
+		</ul>
 	</div>
 </div>
 <?php

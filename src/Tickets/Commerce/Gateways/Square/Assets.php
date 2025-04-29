@@ -203,6 +203,8 @@ class Assets extends Controller_Contract {
 			->set_action( 'admin_enqueue_scripts' )
 			->set_condition( [ $this, 'is_square_section' ] )
 			->register();
+
+		$this->register_admin_assets();
 	}
 
 	/**
@@ -287,5 +289,106 @@ class Assets extends Controller_Contract {
 	 */
 	public function should_enqueue_assets(): bool {
 		return $this->checkout->is_current_page() && $this->gateway->is_enabled() && $this->gateway->is_active();
+	}
+
+	/**
+	 * Register admin assets.
+	 *
+	 * @since TBD
+	 */
+	private function register_admin_assets(): void {
+		$plugin = Tickets_Plugin::instance();
+		$admin_page = tribe_get_request_var('page');
+
+		// Only load on the tickets settings page with Square tab
+		if (
+			'tec-tickets-settings' !== $admin_page
+			|| 'square' !== tribe_get_request_var('tab')
+		) {
+			return;
+		}
+
+		// Register Square settings CSS
+		tribe_asset(
+			$plugin,
+			'tec-tickets-commerce-square-settings-styles',
+			'tickets-commerce-square.css',
+			[],
+			'admin_enqueue_scripts',
+			[
+				'priority' => 10,
+			]
+		);
+
+		// Add inline JavaScript instead of external file
+		add_action('admin_footer', function() {
+			?>
+<script>
+/**
+ * Tickets Commerce Square Settings UI Enhancements
+ *
+ * @since TBD
+ */
+( function( $, window, document ) {
+    'use strict';
+
+    /**
+     * Object to handle Square settings UI enhancements.
+     */
+    var SquareSettings = {
+        /**
+         * Setup the Square settings UI enhancements.
+         */
+        init: function() {
+            this.enhanceLayout();
+            this.setupDialogs();
+        },
+
+        /**
+         * Enhance the layout of the Square settings page to match Stripe's UI.
+         */
+        enhanceLayout: function() {
+
+            // Make sure the container uses flexbox layout
+            $('.tec-tickets__admin-settings-tickets-commerce-gateway').css({
+                'display': 'flex',
+                'flex-wrap': 'wrap'
+            });
+
+            // Style the webhooks status section
+            $('.tec-tickets__admin-settings-square-webhook-status').find('.dashicons-yes').addClass('tec-tickets__admin-settings-tickets-commerce-gateway-capability--yes');
+        },
+
+        /**
+         * Setup the disconnect dialog functionality
+         */
+        setupDialogs: function() {
+            var $dialog = $('#tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-square-dialog');
+
+            // Button to open dialog
+            $('#tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-square').on('click', function(e) {
+                e.preventDefault();
+                $dialog.css('display', 'flex');
+            });
+
+            // Buttons to close dialog
+            $('.tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-cancel').on('click', function() {
+                $dialog.hide();
+            });
+        },
+    };
+
+    // Initialize when document is ready
+    $(document).ready(function() {
+        // Only run on the Square settings page
+        if ($('#tec-tickets__admin-settings-tickets-commerce-gateway-square-container').length) {
+            SquareSettings.init();
+        }
+    });
+
+})( jQuery, window, document );
+</script>
+			<?php
+		});
 	}
 }
