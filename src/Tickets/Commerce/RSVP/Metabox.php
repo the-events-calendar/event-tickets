@@ -1,4 +1,11 @@
 <?php
+/**
+ * Handles RSVP metabox functionality in Tickets Commerce.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\RSVP
+ */
 
 namespace TEC\Tickets\Commerce\RSVP;
 
@@ -10,8 +17,22 @@ use Tribe__Tickets__Tickets;
 use Tribe__Date_Utils;
 use WP_Post;
 
+/**
+ * Class Metabox.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\RSVP
+ */
 class Metabox {
 
+	/**
+	 * Configures the RSVP metabox for the given post type.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|null $post_type The post type to configure the metabox for.
+	 */
 	public function configure( $post_type = null ) {
 		if ( ! in_array( $post_type, Tribe__Tickets__Main::instance()->post_types() ) ) {
 			return;

@@ -1,15 +1,22 @@
 <?php
+/**
+ * Handles registering and setup for RSVP in Tickets Commerce.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\RSVP
+ */
 
 namespace TEC\Tickets\Commerce\RSVP;
 
-use \TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 
 /**
  * Class Controller.
  *
  * @since   TBD
  *
- * @package TEC\Tickets\QR
+ * @package TEC\Tickets\Commerce\RSVP
  */
 class Controller extends Controller_Contract {
 	/**
@@ -32,8 +39,6 @@ class Controller extends Controller_Contract {
 	 * @uses  Notices::register_admin_notices()
 	 */
 	public function do_register(): void {
-		//$this->container->singleton( Settings::class );
-
 		$this->add_actions();
 	}
 
@@ -64,8 +69,14 @@ class Controller extends Controller_Contract {
 
 	}
 
+	/**
+	 * Configures the RSVP metabox for the given post type.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|null $post_type The post type to configure the metabox for.
+	 */
 	public function configure( $post_type = null ) {
 		$this->container->make( Metabox::class )->configure( $post_type );
 	}
-
 }
