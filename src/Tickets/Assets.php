@@ -39,9 +39,11 @@ class Assets extends Service_Provider {
 			[
 				'localize' => [
 					'name' => 'tecTicketsSettings',
-					'data' => [
-						'debug' => defined( 'WP_DEBUG' ) && WP_DEBUG
-					],
+					'data' => static function() {
+						return [
+							'debug' => defined( 'WP_DEBUG' ) && WP_DEBUG
+						];
+					},
 				],
 			]
 		);

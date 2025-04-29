@@ -130,12 +130,14 @@ class Tribe__Tickets__Assets {
 						'tribe-tickets-rsvp',
 						'tribe-tickets-registration-page',
 					],
-					'localize' => [
-						[
+					'localize' => static function() {
+						return [
+							[
 							'name' => 'TribeCurrency',
-							'data' => [ 'Tribe__Tickets__Tickets', 'get_asset_localize_data_for_currencies' ],
-						],
-					],
+								'data' => [ 'Tribe__Tickets__Tickets', 'get_asset_localize_data_for_currencies' ],
+							],
+						];
+					},
 				]
 			);
 

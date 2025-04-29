@@ -40,12 +40,13 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 				'localize' => [
 					[
 						'name' => 'tribeTicketsCommercePayPaCommerce',
-						'data' => [
-							'translations' => [
-								'confirmPaypalAccountDisconnection' => esc_html__( 'Disconnect PayPal Account', 'event-tickets' ),
-								'disconnectPayPalAccount'           => esc_html__( 'Are you sure you want to disconnect your PayPal account?', 'event-tickets' ),
-								'connectSuccessTitle'               => esc_html__( 'You’re connected to PayPal! Here’s what’s next...', 'event-tickets' ),
-								'pciWarning'                        => sprintf(
+						'data' => static function() {
+							return [
+								'translations'              => [
+									'confirmPaypalAccountDisconnection' => esc_html__( 'Disconnect PayPal Account', 'event-tickets' ),
+									'disconnectPayPalAccount'          => esc_html__( 'Are you sure you want to disconnect your PayPal account?', 'event-tickets' ),
+								'connectSuccessTitle'       => esc_html__( 'You’re connected to PayPal! Here’s what’s next...', 'event-tickets' ),
+								'pciWarning'                => sprintf(
 									__(
 										'PayPal allows you to accept credit or debit cards directly on your website. Because of
 										this, your site needs to maintain <a href="%1$s" target="_blank">PCI-DDS compliance</a>.
@@ -55,20 +56,21 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 									// @todo Replace this URL.
 									'https://www.theeventscalendar.com/documentation/resources/pci-compliance/'
 								),
-								'pciComplianceInstructions'         => [
+								'pciComplianceInstructions' => [
 									esc_html__( 'Using a trusted, secure hosting provider – preferably one which claims and actively promotes PCI compliance.', 'event-tickets' ),
 									esc_html__( 'Maintain security best practices when setting passwords and limit access to your server.', 'event-tickets' ),
 									esc_html__( 'Implement an SSL certificate to keep your payments secure.', 'event-tickets' ),
 									esc_html__( 'Keep plugins up to date to ensure latest security fixes are present.', 'event-tickets' ),
 								],
-								'liveWarning'                       => tec_tickets_commerce_is_sandbox_mode()
+								'liveWarning'               => tec_tickets_commerce_is_sandbox_mode()
 									? esc_html__( 'You have connected your account for test mode. You will need to connect again once you are in live mode.', 'event-tickets' )
 									: '',
-							],
-						],
+								],
+							];
+						},
 					],
 				],
-			]
+			],
 		);
 
 		/**
@@ -108,10 +110,10 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 							'orderEndpoint' => tribe( Order_Endpoint::class )->get_route_url(),
 							'advancedPayments' => [
 								'fieldPlaceholders' => [
-									'cvv' => esc_html__( 'E.g.: 123', 'event-tickets' ),
+									'cvv'            => esc_html__( 'E.g.: 123', 'event-tickets' ),
 									'expirationDate' => esc_html__( 'E.g.: 03/26', 'event-tickets' ),
-									'number' => esc_html__( 'E.g.: 4111 1111 1111 1111', 'event-tickets' ),
-									'zipCode' => esc_html__( 'E.g.: 01020', 'event-tickets' ),
+									'number'         => esc_html__( 'E.g.: 4111 1111 1111 1111', 'event-tickets' ),
+									'zipCode'        => esc_html__( 'E.g.: 01020', 'event-tickets' ),
 								]
 							],
 						];
