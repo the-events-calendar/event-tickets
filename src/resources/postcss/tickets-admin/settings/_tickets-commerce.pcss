@@ -426,35 +426,34 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 
 .tec-tickets__admin-settings-featured {
 	background-color: var(--tec-color-background);
-	border: solid 1px var(--tec-color-border-default);
-	border-radius: 8px;
-	margin: var(--tec-spacer-7);
-	padding: var(--tec-spacer-8);
+	border-bottom: solid 1px var(--tec-color-border-default);
+	padding: calc(var(--tec-spacer-8) - var(--tec-spacer-6)) var(--tec-spacer-8) var(--tec-spacer-8);
+
+	.tec-tickets__admin-settings-featured-title {
+		background-color: transparent;
+		font-size: var(--tec-font-size-5);
+		font-weight: 700;
+		margin-bottom: var(--tec-spacer-2);
+		padding: var(--tec-spacer-1) 0;
+	}
+
+	.tec-tickets__admin-settings-featured-description {
+		margin-bottom: var(--tec-spacer-4);
+		max-width: 720px;
+	}
+
+	.tec-tickets__admin-settings-featured-link {
+		align-items: center;
+		color: var(--tec-color-text-primary);
+		display: flex;
+	}
+
+	.tec-tickets__admin-settings-featured-link-url {
+		color: var(--tec-color-accent-primary);
+		padding: 0 var(--tec-spacer-1);
+	}
 }
 
-.tec-tickets__admin-settings-featured-title {
-	background-color: transparent;
-	font-size: var(--tec-font-size-5);
-	font-weight: 700;
-	margin-bottom: var(--tec-spacer-2);
-	padding: var(--tec-spacer-1) 0;
-}
-
-.tec-tickets__admin-settings-featured-description {
-	margin-bottom: var(--tec-spacer-4);
-	max-width: 720px;
-}
-
-.tec-tickets__admin-settings-featured-link {
-	align-items: center;
-	color: var(--tec-color-text-primary);
-	display: flex;
-}
-
-.tec-tickets__admin-settings-featured-link-url {
-	color: var(--tec-color-accent-primary);
-	padding: 0 var(--tec-spacer-1);
-}
 
 .tec-tickets__admin-settings-tickets-commerce-gateways-item {
 	margin-bottom: var(--tec-spacer-7);
