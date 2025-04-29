@@ -43,7 +43,6 @@ class Provider extends Service_Provider {
 	 */
 	public function register() {
 		if ( $this->has_registered ) {
-
 			return false;
 		}
 

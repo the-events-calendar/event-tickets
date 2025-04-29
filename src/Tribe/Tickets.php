@@ -1245,7 +1245,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$this->parent_url  = $this->parentUrl  = trailingslashit( plugins_url( '', $this->parent_path ) );
 
 			// Register all Tribe__Tickets__Tickets api consumers
-			self::$active_modules[ $this->class_name ] = $this->plugin_name;
+			add_action( 'init', function() {
+				self::$active_modules[ $this->class_name ] = $this->plugin_name;
+			} );
 
 			add_action( 'wp', [ $this, 'hook' ] );
 

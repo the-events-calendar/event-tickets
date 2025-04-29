@@ -124,7 +124,10 @@ final class Controller extends Controller_Contract {
 		$this->container->singleton( Coupon::class );
 
 		$this->register_flag_actions();
-		$this->run_deprecated_coupon_filter();
+
+		add_action( 'init', function() {
+			$this->run_deprecated_coupon_filter();
+		} );
 
 		add_action( 'init', [ $this, 'set_currency_defaults' ] );
 	}
