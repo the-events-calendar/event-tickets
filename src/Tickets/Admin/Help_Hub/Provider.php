@@ -14,7 +14,7 @@ use TEC\Common\Contracts\Service_Provider;
 /**
  * Class Provider
  *
- * @since
+ * @since TBD
  *
  * @package TEC\Tickets\Admin\Notice\Help_Hub
  */
