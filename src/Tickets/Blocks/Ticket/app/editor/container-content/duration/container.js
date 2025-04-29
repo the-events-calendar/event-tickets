@@ -8,12 +8,9 @@ import { compose } from 'redux';
  * Internal dependencies
  */
 import Template from './template';
-import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
+import { selectors, actions } from '../../../../../../../modules/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
-import {
-	globals,
-	moment as momentUtil,
-} from '@moderntribe/common/utils';
+import { globals, moment as momentUtil } from '@moderntribe/common/utils';
 
 const onFromDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
 	dispatch( actions.handleTicketStartDate( ownProps.clientId, date, dayPickerInput ) );
@@ -113,11 +110,4 @@ const mergeProps = ( stateProps, dispatchProps, ownProps ) => {
 	};
 };
 
-export default compose(
-	withStore(),
-	connect(
-		mapStateToProps,
-		mapDispatchToProps,
-		mergeProps,
-	),
-)( Template );
+export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps, mergeProps ) )( Template );

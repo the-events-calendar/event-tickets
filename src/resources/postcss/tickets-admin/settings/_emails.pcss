@@ -11,7 +11,7 @@
 .tec-tickets__admin-settings-emails-description {
 	color: #8e8e8e;
 	font-size: 13px;
-	font-weight: normal;
+	font-weight: 400;
 	margin-bottom: 35px;
 	max-width: 84%;
 }
@@ -54,7 +54,7 @@
 		height: 25px;
 		width: 25px;
 
-		&:before {
+		&::before {
 			font-size: 25px;
 			font-weight: var(--tec-font-weight-regular);
 		}
@@ -129,6 +129,7 @@
 .tribe-common {
 
 	body.tickets_page_tec-tickets-settings & {
+
 		div.tribe-dialog {
 			z-index: 99999; /* Fix for the WP admin bar. */
 		}
@@ -175,7 +176,10 @@
 	}
 }
 
-.tickets_page_tec-tickets-settings #tec-settings-form.tec-settings-form__emails-tab--active > .tec-settings-form__footer,
-.tickets_page_tec-tickets-settings .tec-settings-form.tec-settings-form__emails-tab--active > .tec-settings-form__footer {
-	justify-content: flex-start;
+.tec-settings-form__emails-tab--active,
+.tec-settings-form__wallet-tab--active {
+
+	.tec-settings-form__footer {
+		display: inline-block;
+	}
 }
