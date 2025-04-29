@@ -6,7 +6,7 @@
  * the Help_Hub_Data_Interface and provides Event Tickets specific
  * resources, FAQs, and settings for the Help Hub functionality.
  *
- * @since   TBD
+ * @since TBD
  * @package TEC\Events\Admin\Help_Hub
  */
 
@@ -127,7 +127,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 *
 	 * @return string The modified resources description.
 	 */
-	public function add_resources_description( $description ) {
+	public function add_resources_description( $description ): string {
 		return _x( 'Help on setting up, customizing, and troubleshooting your tickets.', 'Help Hub resources description', 'event-tickets' );
 	}
 
@@ -140,7 +140,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 *
 	 * @return string The modified support description.
 	 */
-	public function add_support_description( $description ) {
+	public function add_support_description( $description ): string {
 		return _x( 'Help on setting up, customizing, and troubleshooting your tickets.', 'Help Hub support description', 'event-tickets' );
 	}
 	/**
@@ -152,7 +152,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 *
 	 * @return string The modified support description.
 	 */
-	public function add_support_title( $title ) {
+	public function add_support_title( $title ): string {
 		return _x( 'Event Tickets (TEC) Support Hub', 'Help Hub support title', 'event-tickets' );
 	}
 
@@ -164,9 +164,9 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $classes The current array of body classes.
+	 * @param array<string> $classes The current array of body classes.
 	 *
-	 * @return array Modified array of body classes.
+	 * @return array<string> Modified array of body classes.
 	 */
 	public function add_admin_body_classes( array $classes ): array {
 		return array_merge( $classes, $this->admin_page_body_classes );
@@ -179,7 +179,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @return array The filtered resource sections array.
+	 * @return array<string, mixed> The filtered resource sections array.
 	 */
 	public function create_resource_sections(): array {
 		/** @var Link_Section_Builder $builder */
@@ -376,7 +376,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 *
 	 * @return string The filtered logo alt text.
 	 */
-	public function add_header_logo_alt( $alt ) {
+	public function add_header_logo_alt( $alt ): string {
 		return __( 'Event Tickets logo', 'event-tickets' );
 	}
 
@@ -385,11 +385,11 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $help_pages The current array of help pages.
+	 * @param array<string> $help_pages The current array of help pages.
 	 *
-	 * @return array Modified array of help pages.
+	 * @return array<string> Modified array of help pages.
 	 */
-	public function add_help_hub_pages( $help_pages ) {
+	public function add_help_hub_pages( $help_pages ): array {
 		$help_pages[] = self::HELP_HUB_PAGE_ID;
 		return $help_pages;
 	}

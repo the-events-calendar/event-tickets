@@ -48,6 +48,8 @@ class Settings {
 	/**
 	 * The Original Help page slug.
 	 *
+	 * @since TBD
+	 *
 	 * @var string
 	 */
 	public static string $old_help_slug = 'tec-tickets-help';

@@ -2,7 +2,7 @@
 /**
  * Service Provider for interfacing with TEC\Tickets\Admin\Notice\Help_Hub.
  *
- * @since
+ * @since TBD
  *
  * @package TEC\Tickets\Admin\Notice\Help_Hub
  */
@@ -23,7 +23,7 @@ class Provider extends Service_Provider {
 	/**
 	 * Register implementations.
 	 *
-	 * @since
+	 * @since TBD
 	 */
 	public function register() {
 		$this->container->singleton( self::class, $this );

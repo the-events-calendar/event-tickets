@@ -1,0 +1,291 @@
+<div class="tribe_settings wrap tec-events-admin-settings">
+	<div class="tribe-notice-wrap">
+	<div class="wp-header-end"></div>
+</div>
+<div class="tec-settings-header-wrap">
+<h1>
+	<img
+		class="tribe-events-admin-title__logo"
+		src="https://example.com/"
+		alt="The Events Calendar logo"
+		role="presentation"
+		id="tec-settings-logo"
+	/>
+	Help
+</h1>
+</div>
+<dialog id="tec-settings-nav-modal" class="tec-settings-form__modal" aria-labelledby="tec-settings-nav-modal-title" aria-modal="true" role="dialog">
+	<div class="tec-modal__content">
+		<div class="tec-modal__header">
+			<h2 id="tec-settings-nav-modal-title" class="screen-reader-text">Settings Navigation</h2>
+			<button id="tec-settings-nav-modal-close" class="tec-modal__control tec-modal__control--close" data-modal-close aria-label="Close settings navigation">
+				<span class="screen-reader-text">Close</span>
+			</button>
+		</div>
+		<nav class="tec-settings__nav-wrapper" aria-label="Main Help Hub Navigation">
+	<ul class="tec-nav" role="tablist">
+					<li
+				data-tab-target="tec-help-tab"
+				class="tec-nav__tab tec-nav__tab--active"
+				role="tab"
+				id="tab-main-tec-help-tab"
+				aria-controls="tec-help-tab"
+			>
+				<a class="tec-nav__link">Support Hub</a>
+			</li>
+					<li
+				data-tab-target="tec-resources-tab"
+				class="tec-nav__tab "
+				role="tab"
+				id="tab-main-tec-resources-tab"
+				aria-controls="tec-resources-tab"
+			>
+				<a class="tec-nav__link">Resources</a>
+			</li>
+			</ul>
+</nav>
+	</div>
+</dialog>
+<div class="tec-nav__modal-controls">
+	<button
+		id="tec-settings-nav-modal-open"
+		class="tec-modal__control tec-modal__control--open"
+		aria-controls="tec-settings-nav-modal"
+		aria-expanded="false"
+		aria-label="Open settings navigation"
+	>
+		<span>Support Hub</span>
+		<img
+			class="tec-modal__control-icon"
+			src="https://example.com/"
+			alt="Open settings navigation"
+		>
+	</button>
+</div>
+<nav class="tec-settings__nav-wrapper" aria-label="Main Help Hub Navigation">
+	<ul class="tec-nav" role="tablist">
+					<li
+				data-tab-target="tec-help-tab"
+				class="tec-nav__tab tec-nav__tab--active"
+				role="tab"
+				id="tab-main-tec-help-tab"
+				aria-controls="tec-help-tab"
+			>
+				<a class="tec-nav__link">Support Hub</a>
+			</li>
+					<li
+				data-tab-target="tec-resources-tab"
+				class="tec-nav__tab "
+				role="tab"
+				id="tab-main-tec-resources-tab"
+				aria-controls="tec-resources-tab"
+			>
+				<a class="tec-nav__link">Resources</a>
+			</li>
+			</ul>
+</nav>
+<div id="tec-help-hub-tab-containers" class="tec-tab-parent-container">
+			<div
+			id="tec-help-tab"
+			class="tec-tab-container hidden"
+			role="tabpanel"
+			aria-labelledby="tab-tec-help-tab"
+			data-link-title="Support Hub"
+		>
+				<div class="tribe-settings-form form">
+		<div class="tec-settings-form">
+			<div class="tec-settings-form__header-block tec-settings-form__header-block--horizontal">
+				<h2 class="tec-settings-form__section-header">
+					TEC Support Hub				</h2>
+				<p class="tec-settings-form__section-description">
+					Help on setting up, customizing, and troubleshooting your calendar.				</p>
+			</div>
+			<div class="tec-settings-form__content-section">
+				<div>
+					<div class="tec-settings__support-hub-iframe-container">
+	<!-- Loading spinner displayed while iframe content is loading -->
+	<div id="tec-settings__support-hub-iframe-loader" class="loader">
+		<div class="spinner-container">
+			<div class="spinner is-active"></div> <!-- WordPress spinner class -->
+		</div>
+	</div>
+
+	<!-- Embed the iframe with the dynamically generated URL -->
+	<iframe src="http://wordpress.test/wp-admin/edit.php?post_type=tribe_events&#038;page=tec-events-help-hub&#038;embedded_content=true" frameborder="0" tabindex="-1" id="tec-settings__support-hub-iframe" class="hidden"></iframe>
+</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<div class="tec-settings-form__sidebar tec-help-resources__sidebar">
+	<div class="tec-settings-form__sidebar-section">
+		<div class="tec-settings__sidebar-icon-wrap">
+			<div>
+				<img class="tec-settings-infobox-logo"
+					src=""
+					alt="Support chat logo"
+				>
+			</div>
+			<div class="tec-settings__sidebar-icon-wrap-content">
+				<h2>
+					Get priority live support				</h2>
+				<p>
+					You can get live support from The Events Calendar team if you have an active license for one of our products.				</p>
+				<p>
+					<a href="https://theeventscalendar.com/knowledgebase/priority-support-through-the-tec-support-hub" target="_blank" rel="noopener noreferrer">
+						Learn how to get live support					</a>
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+		</div>
+			<div
+			id="tec-resources-tab"
+			class="tec-tab-container hidden"
+			role="tabpanel"
+			aria-labelledby="tab-tec-resources-tab"
+			data-link-title="Resources"
+		>
+			<div class="tribe-settings-form form">
+	<div class="tec-settings-form">
+		<div class="tec-settings-form__header-block tec-settings-form__header-block--horizontal">
+	<h2 class="tec-settings-form__section-header">
+		Resources	</h2>
+	<p class="tec-settings-form__section-description">
+		Help on setting up, customizing, and troubleshooting your calendar. See our <a href="https://evnt.is/1bbw" rel="noopener noreferrer" target="_blank">Knowledgebase</a> for in-depth content.	</p>
+	<div class='notice notice-info is-dismissible inline' data-stellarwp-tec_common-notice-id='tec-common-help-chatbot-notice'><p>To find the answer to all your questions use the <a data-tab-target="tec-help-tab" href="#">TEC Chatbot</a></p></div></div>
+
+<div class="tec-settings-form__content-section">
+	<div class="tec-settings-form__header-block">
+		<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">
+			Getting started guides		</h3>
+					<p class="tec-settings-form__section-description">
+				Learn how to get started and configure the plugin for your WordPress site.			</p>
+			</div>
+	<ul class="tec-help-list__list-expanded">
+					<li>
+						<a href="https://evnt.is/1aot" rel="noopener" target="_blank">
+				Getting Started with Event Tickets			</a>
+		</li>
+	</ul>
+</div>
+
+<div class="tec-settings-form__content-section">
+	<div class="tec-settings-form__header-block">
+		<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">
+			Tickets &amp; RSVPs		</h3>
+					<p class="tec-settings-form__section-description">
+				Now that you're set up, you're ready to create your first ticket or RSVP for an event!			</p>
+			</div>
+	<ul class="tec-help-list__list-expanded">
+					<li>
+						<a href="https://evnt.is/1aox" rel="noopener" target="_blank">
+				Using RSVPs			</a>
+		</li>
+					<li>
+						<a href="https://evnt.is/1ap0" rel="noopener" target="_blank">
+				Setting Up E-Commerce for Selling Tickets			</a>
+		</li>
+					<li>
+						<a href="https://evnt.is/1ap2" rel="noopener" target="_blank">
+				Creating Tickets			</a>
+		</li>
+					<li>
+						<a href="https://evnt.is/ap10" rel="noopener" target="_blank">
+				Moving Tickets			</a>
+		</li>
+	</ul>
+</div>
+
+<div class="tec-settings-form__content-section">
+	<div class="tec-settings-form__header-block">
+		<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">
+			Attendee Management		</h3>
+					<p class="tec-settings-form__section-description">
+				Collect key details during registration, publicly display attendees, and generate reports.			</p>
+			</div>
+	<ul class="tec-help-list__list-expanded">
+					<li>
+						<a href="https://evnt.is/1ap11" rel="noopener" target="_blank">
+				Attendee Registration Settings			</a>
+		</li>
+					<li>
+						<a href="https://evnt.is/1ap12" rel="noopener" target="_blank">
+				Enabling Attendee Information for Tickets			</a>
+		</li>
+					<li>
+						<a href="https://evnt.is/1aoy" rel="noopener" target="_blank">
+				Managing Orders and Attendees			</a>
+		</li>
+					<li>
+						<a href="https://evnt.is/1ars" rel="noopener" target="_blank">
+				Refunding and Canceling Ticket Orders			</a>
+		</li>
+	</ul>
+</div>
+
+<div class="tec-settings-form__content-section">
+	<div class="tec-settings-form__header-block">
+		<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">
+			Ticket Emails		</h3>
+					<p class="tec-settings-form__section-description">
+				Learn all about how to customize the ticket email without any coding knowledge.			</p>
+			</div>
+	<ul class="tec-help-list__list-expanded">
+					<li>
+						<a href="https://evnt.is/1ap13" rel="noopener" target="_blank">
+				Create Custom Email Marketing			</a>
+		</li>
+					<li>
+						<a href="https://evnt.is/1ap14" rel="noopener" target="_blank">
+				All About Event Ticket Emails			</a>
+		</li>
+					<li>
+						<a href="https://evnt.is/1ap15" rel="noopener" target="_blank">
+				Customizing the Ticket Email			</a>
+		</li>
+	</ul>
+</div>
+<div class="tec-settings-infobox">
+	<img class="tec-settings-infobox-logo" src="" alt="AI Chatbot logo">
+	<h3 class="tec-settings-infobox-title">
+		Our AI Chatbot is here to help you	</h3>
+	<p>
+		You have questions? The TEC Chatbot has the answers.	</p>
+	<p>
+		<a data-tab-target="tec-help-tab" href="javascript:void(0)">
+			Talk to TEC Chatbot		</a>
+	</p>
+</div>
+	</div>
+</div>
+
+<div class="tec-settings-form__sidebar tec-help-resources__sidebar">
+	<div class="tec-settings-form__sidebar-section">
+		<div class="tec-settings__sidebar-icon-wrap">
+			<div>
+				<img class="tec-settings-infobox-logo"
+					src=""
+					alt="AI Chatbot logo"
+				>
+			</div>
+			<div class="tec-settings__sidebar-icon-wrap-content">
+					<h2>
+						Our AI Chatbot is here to help you					</h2>
+					<p>
+						You have questions? The TEC Chatbot has the answers.					</p>
+					<p>
+						<a data-tab-target="tec-help-tab" href="javascript:void(0);">
+							Talk to TEC Chatbot						</a>
+					</p>
+
+			</div>
+		</div>
+	</div>
+
+	</div>
+		</div>
+	</div>
+</div>
+
