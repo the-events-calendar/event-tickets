@@ -14,7 +14,7 @@ use Tribe__Template;
 use Tribe__Tickets__Main;
 
 /**
- * Class ¢
+ * Class Payments_Tab
  *
  * @since 5.2.0
  * @since TBD Added horizontal layout blocks for improved visual organization.
