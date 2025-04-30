@@ -131,8 +131,8 @@ class RSVP_Not_Going extends Email_Abstract {
 			'info-box-description'                        => [
 				'type' => 'html',
 				'html' => '<p class="tec-settings-form__section-description">'
-				          . $email_description
-				          . '</p><br/>',
+						. $email_description
+						. '</p><br/>',
 			],
 
 			[

@@ -278,9 +278,9 @@ class Settings {
 			[
 				'type' => 'html',
 				'html' => '<fieldset><p>' . esc_html__(
-						'Add a logo and customize link colors and footer information to personalize your communications.  If you\'d like more granular control over email styling, you can override the email templates in your theme.  Learn More',
-						'event-tickets'
-					) . '</p></fieldset>',
+					'Add a logo and customize link colors and footer information to personalize your communications.  If you\'d like more granular control over email styling, you can override the email templates in your theme.  Learn More',
+					'event-tickets'
+				) . '</p></fieldset>',
 			],
 			static::$option_header_image_url               => [
 				'type'                => 'image',
