@@ -236,7 +236,6 @@ class Tribe__Tickets__Main {
 			'tribe_common_loaded',
 			[ $this, 'set_activation_time' ]
 		);
-		error_log( current_action() );
 
 		$this->redirect_to_wizard_on_activation();
 	}
@@ -249,7 +248,6 @@ class Tribe__Tickets__Main {
 
 		// Get the checked plugins from the request. If there are more than one, we're doing a bulk activation.
 		$checked = $_POST['checked'] ?? [];
-		error_log( print_r( $checked, true ) );
 
 		if ( count( $checked ) > 1 ) {
 			// If multiple plugins are being activated, set the wizard redirect transient, this should only trigger redirection on a ET admin page visit.
