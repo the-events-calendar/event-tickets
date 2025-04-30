@@ -222,7 +222,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 
 		tribe_update_option( self::DISMISS_PAGE_OPTION, true );
 
-		wp_safe_redirect( admin_url( $this->get_parent_page_slug() ) );
+		wp_safe_redirect( add_query_arg( array( 'page' => $this->get_parent_page_slug() ), admin_url( 'admin.php' ) ) );
 		exit;
 	}
 
