@@ -206,7 +206,7 @@ class Emails_Tab {
 			);
 		}
 
-		$fields['tec-settings-email-template-header']      = ( new Div( new Classes( [ 'tec-settings-form__header-block tec-settings-form__header-block--horizontal' ] ) ) )->add_children(
+		$fields['tec-settings-email-template-header'] = ( new Div( new Classes( [ 'tec-settings-form__header-block tec-settings-form__header-block--horizontal' ] ) ) )->add_children(
 			[
 				new Heading(
 					esc_html__( 'Tickets Emails', 'event-tickets' ),

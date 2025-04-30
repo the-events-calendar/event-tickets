@@ -125,13 +125,13 @@ class Purchase_Receipt extends Email_Abstract {
 			],
 			'tec-settings-email-template-header'          => [
 				'type' => 'html',
-				'html' => '<h3>' .esc_html_x( 'Purchase Receipt Email Settings', 'Email Title', 'event-tickets-plus' ) . '</h3>',
+				'html' => '<h3>' . esc_html_x( 'Purchase Receipt Email Settings', 'Email Title', 'event-tickets' ) . '</h3>',
 			],
 			'info-box-description'                        => [
 				'type' => 'html',
 				'html' => '<p class="tec-settings-form__section-description">'
-				          . $email_description
-				          . '</p><br/>',
+							. $email_description
+							. '</p><br/>',
 			],
 			[
 				'type' => 'html',
