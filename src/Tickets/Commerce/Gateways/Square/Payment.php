@@ -10,7 +10,6 @@
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use RuntimeException;
-use TEC\Tickets\Commerce\Order as Commerce_Order;
 use TEC\Tickets\Commerce\Utils\Value;
 use WP_Post;
 

@@ -6,7 +6,6 @@ use WP_Post;
 use TEC\Tickets\Commerce\Abstract_Order;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Remote_Objects;
 use RuntimeException;
-use TEC\Tickets\Commerce\Order as Commerce_Order;
 use Tribe__Tickets__Main as ET;
 
 /**
@@ -154,9 +153,12 @@ class Order extends Abstract_Order {
 		update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order', wp_json_encode( $response['order'] ) );
 		update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_payload', wp_json_encode( $square_order ) );
 
-		// Schedule a pull of the order from Square. Making this more reliable than listening to the webhook.
-		// @todo dimi: This needs to be in sync with webhook handling. Ill get into that soon.
-		// as_schedule_single_event( time() + 20 * MINUTE_IN_SECONDS, 'tec_tickets_commerce_square_order_sync', [ $order->ID ] );
+		/**
+		 * Schedule a pull of the order from Square. Making this more reliable than listening to the webhook.
+		 *
+		 * @todo dimi: This needs to be in sync with webhook handling. Ill get into that soon.
+		 * as_schedule_single_event( time() + 20 * MINUTE_IN_SECONDS, 'tec_tickets_commerce_square_order_sync', [ $order->ID ] );
+		 */
 
 		return $response['order']['id'];
 	}

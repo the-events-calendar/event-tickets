@@ -291,7 +291,7 @@ class Remote_Objects {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $item     The item.
+	 * @param array   $item  The item.
 	 * @param WP_Post $order The order post object.
 	 *
 	 * @return array The line item.
@@ -349,7 +349,7 @@ class Remote_Objects {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $item The item.
+	 * @param array   $item  The item.
 	 * @param WP_Post $order The order post object.
 	 *
 	 * @return array The discount.
@@ -393,7 +393,7 @@ class Remote_Objects {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $item The item.
+	 * @param array   $item  The item.
 	 * @param WP_Post $order The order post object.
 	 *
 	 * @return array The service charge.

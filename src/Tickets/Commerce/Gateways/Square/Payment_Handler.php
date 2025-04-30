@@ -34,8 +34,8 @@ class Payment_Handler {
 	 *
 	 * @since TBD
 	 *
-	 * @param string   $source_id The source ID.
-	 * @param WP_Post  $order     The order post object.
+	 * @param string  $source_id The source ID.
+	 * @param WP_Post $order     The order post object.
 	 *
 	 * @return array
 	 */
