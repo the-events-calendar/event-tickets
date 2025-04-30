@@ -249,8 +249,10 @@ class Payments_Tab extends Service_Provider {
 	 * @return string
 	 */
 	public function get_url( array $args = [] ): string {
-		// Force the payment tab.
-		$args['tab'] = static::$slug;
+		if ( ! isset( $args['tab'] ) ) {
+			// Force the payment tab.
+			$args['tab'] = static::$slug;
+		}
 
 		// Use the settings page get_url to build the URL.
 		return tribe( Plugin_Settings::class )->get_url( $args );
