@@ -1,4 +1,4 @@
-import { localizedData } from "./localized-data";
+import { localizedData } from './localized-data';
 
 export default {
 	...localizedData,

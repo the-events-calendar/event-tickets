@@ -229,7 +229,7 @@ class Editor extends Controller {
 		$build_url = $plugin->plugin_url . 'build';
 
 		if ( $should_load_blocks && $use_block_editor_for_post ) {
-			tribe_asset(
+			tec_asset(
 				tribe( 'tickets.main' ),
 				'tec-tickets-flexible-tickets-block-editor-js',
 				$build_url . '/FlexibleTickets/block-editor.js',
@@ -250,7 +250,7 @@ class Editor extends Controller {
 			return;
 		}
 
-		tribe_asset(
+		tec_asset(
 			tribe( 'tickets.main' ),
 			'tec-tickets-flexible-tickets-event-classic-editor-js',
 			$build_url . '/FlexibleTickets/classic-editor.js',
