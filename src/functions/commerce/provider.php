@@ -2,18 +2,18 @@
 
 use TEC\Tickets\Settings;
 
-/**
- * Checks whether out new Tickets system should load.
- *
- * In order the function will check the `TEC_TICKETS_COMMERCE` constant,
- * the `TEC_TICKETS_COMMERCE` environment variable and, finally, the `Manager::$option_enabled` option.
- *
- * @since 5.1.6
- * @since TBD - Tickets commerce is always enabled now.
- *
- * @return bool Whether Tickets Commerce is enabled or not.
- */
 if ( ! function_exists( 'tec_tickets_commerce_is_enabled' ) ) {
+	/**
+	 * Checks whether out new Tickets system should load.
+	 *
+	 * In order the function will check the `TEC_TICKETS_COMMERCE` constant,
+	 * the `TEC_TICKETS_COMMERCE` environment variable and, finally, the `Manager::$option_enabled` option.
+	 *
+	 * @since 5.1.6
+	 * @since TBD - Tickets commerce is always enabled now.
+	 *
+	 * @return bool Whether Tickets Commerce is enabled or not.
+	 */
 	function tec_tickets_commerce_is_enabled() {
 		return true;
 	}
@@ -126,5 +126,4 @@ function tec_tribe_commerce_has_active_tickets() {
 	 * @param boolean $available should be available or not.
 	 */
 	return apply_filters( 'tec_tribe_commerce_has_active_tickets', $has_active_tickets );
-
 }
