@@ -193,16 +193,20 @@ class Controller extends Controller_Contract {
 		}
 
 		// Early bail checks for existing setup.
-		if (
-			(bool) tribe_get_option( Landing_Page::VISITED_GUIDED_SETUP_OPTION, false )
-			|| Landing_Page::is_dismissed()
-			|| count( (array) tribe_get_option( 'previous_event_tickets_versions', [] ) ) > 1
-		) {
+		if ( (bool) tribe_get_option( Landing_Page::VISITED_GUIDED_SETUP_OPTION, false ) ) {
+			return;
+		}
+
+		if ( Landing_Page::is_dismissed() ) {
+			return;
+		}
+
+		if ( count( (array) tribe_get_option( 'previous_event_tickets_versions', [] ) ) > 1 ) {
 			return;
 		}
 
 		// For wizard redirect, verify we're on an ET admin page.
-		if ( ! $activation_redirect && $wizard_redirect && ! $this->is_et_admin_page() ) {
+		if ( ! $activation_redirect && ! $this->is_et_admin_page() ) {
 			return;
 		}
 

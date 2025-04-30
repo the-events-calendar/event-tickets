@@ -236,11 +236,9 @@ class Tribe__Tickets__Main {
 			'tribe_common_loaded',
 			[ $this, 'set_activation_time' ]
 		);
+		error_log( current_action() );
 
-		add_action(
-			'tribe_common_loaded',
-			[ $this, 'redirect_to_wizard_on_activation' ]
-		);
+		$this->redirect_to_wizard_on_activation();
 	}
 
 	public function redirect_to_wizard_on_activation() {
@@ -250,14 +248,15 @@ class Tribe__Tickets__Main {
 		}
 
 		// Get the checked plugins from the request. If there are more than one, we're doing a bulk activation.
-		$checked = tec_get_request_var( 'checked', [] );
+		$checked = $_POST['checked'] ?? [];
+		error_log( print_r( $checked, true ) );
 
 		if ( count( $checked ) > 1 ) {
 			// If multiple plugins are being activated, set the wizard redirect transient, this should only trigger redirection on a ET admin page visit.
-			set_transient( Tickets_Landing_Page::BULK_ACTIVATION_REDIRECT_OPTION, 1, 30 );
+			set_transient( '_tec_tickets_wizard_redirect', 1, 30 );
 		} else {
 			// If a single plugin is being activated, set the activation redirect transient for immediate redirection.
-			set_transient( Tickets_Landing_Page::ACTIVATION_REDIRECT_OPTION, 1, 30 );
+			set_transient( '_tec_tickets_activation_redirect', 1, 30 );
 		}
 	}
 	/**
