@@ -63,7 +63,7 @@ class Tribe__Tickets__Main {
 	 *
 	 * @var string
 	 */
-	protected $min_tec_version = '6.8.0-dev';
+	protected $min_tec_version = '6.11.2.1-dev';
 
 	/**
 	 * Name of the provider.
@@ -223,19 +223,27 @@ class Tribe__Tickets__Main {
 	 * Fires when the plugin is activated.
 	 */
 	public function on_activation() {
-		// Set plugin activation time for all installs.
-		if ( is_admin() ) {
-			// Avoid a race condition and fatal by waiting until Common is loaded before we try to run this.
-			add_action(
-				'tribe_common_loaded',
-				[ $this, 'set_activation_time' ]
-			);
-		}
-
 		// Will be used to set up Stripe webhook on admin_init.
 		set_transient( 'tec_tickets_commerce_setup_stripe_webhook', true );
 
-		// Set a transient we can use when deciding whether or not to show update/welcome splash pages.
+		// Set plugin activation time for all installs.
+		if ( ! is_admin() ) {
+			return;
+		}
+
+		// Avoid a race condition and fatal by waiting until Common is loaded before we try to run this.
+		add_action(
+			'tribe_common_loaded',
+			[ $this, 'set_activation_time' ]
+		);
+
+		add_action(
+			'tribe_common_loaded',
+			[ $this, 'redirect_to_wizard_on_activation' ]
+		);
+	}
+
+	public function redirect_to_wizard_on_activation() {
 		if ( is_network_admin() ) {
 			// Never redirect on network admin.
 			return;
@@ -252,7 +260,6 @@ class Tribe__Tickets__Main {
 			set_transient( Tickets_Landing_Page::ACTIVATION_REDIRECT_OPTION, 1, 30 );
 		}
 	}
-
 	/**
 	 * Set the plugin activation time.
 	 * Activated on plugin activation, runs on tribe_common_loaded.
@@ -762,8 +769,8 @@ class Tribe__Tickets__Main {
 		 * @see \Tribe__Tickets__Assets::add_data_strings()
 		 */
 
-		add_action( 'tribe_plugins_loaded', tribe_callback( 'tickets.assets', 'enqueue_scripts' ) );
-		add_action( 'tribe_plugins_loaded', tribe_callback( 'tickets.assets', 'admin_enqueue_scripts' ) );
+		add_action( 'init', tribe_callback( 'tickets.assets', 'enqueue_scripts' ) );
+		add_action( 'init', tribe_callback( 'tickets.assets', 'admin_enqueue_scripts' ) );
 		add_action( 'admin_enqueue_scripts', tribe_callback( 'tickets.assets', 'enqueue_editor_scripts' ) );
 		add_filter( 'tribe_asset_data_add_object_tribe_l10n_datatables', tribe_callback( 'tickets.assets', 'add_data_strings' ) );
 
