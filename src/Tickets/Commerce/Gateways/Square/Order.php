@@ -84,15 +84,13 @@ class Order extends Abstract_Order {
 				'created_source' => home_url(),
 				'et_version'     => ET::VERSION,
 			],
-			$order,
-			$source_id
+			$order
 		);
 
 		$square_order = apply_filters(
 			'tec_tickets_commerce_square_order_payload',
 			$this->add_items_to_square_payload( $square_order, $order ),
-			$order,
-			$source_id
+			$order
 		);
 
 		$square_order_id = $this->get_square_order_id( $order->ID );
@@ -119,9 +117,8 @@ class Order extends Abstract_Order {
 		 *
 		 * @param array $square_order The Square order.
 		 * @param int   $order_id     The order ID.
-		 * @param string $source_id   The source ID.
 		 */
-		do_action( 'tec_tickets_commerce_square_order_before_upsert', $square_order, $order->ID, $source_id );
+		do_action( 'tec_tickets_commerce_square_order_before_upsert', $square_order, $order->ID );
 
 		$response = Requests::request(
 			$square_order_id ? 'PUT' : 'POST',
@@ -144,9 +141,8 @@ class Order extends Abstract_Order {
 		 * @param array  $response     The Square order.
 		 * @param int    $order_id     The order ID.
 		 * @param array  $square_order The Square order.
-		 * @param string $source_id    The source ID.
 		 */
-		do_action( 'tec_tickets_commerce_square_order_after_upsert', $response['order'], $order->ID, $square_order, $source_id );
+		do_action( 'tec_tickets_commerce_square_order_after_upsert', $response['order'], $order->ID, $square_order );
 
 		update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_id', $response['order']['id'] );
 		update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_version', $response['order']['version'] );
