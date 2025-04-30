@@ -7,6 +7,7 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Square\Gateway;
 use TEC\Tickets\Commerce\Gateways\Square\Payment_Handler;
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Gateways\Square\Order as Square_Order;
 use TEC\Tickets\Commerce\Gateways\Square\Status;
 use TEC\Tickets\Commerce\Status\Created;
 use TEC\Tickets\Commerce\Status\Pending;
@@ -17,6 +18,7 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
 use WP_Post;
+use RuntimeException;
 
 /**
  * Class Order Endpoint.
@@ -129,8 +131,14 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			);
 		}
 
+		try {
+			tribe( Square_Order::class )->upsert_from_order( $order );
+		} catch ( RuntimeException $e ) {
+			return new WP_Error( 'tec-tc-gateway-square-failed-creating-order', $messages['failed-creating-square-order'], $order );
+		}
+
 		// For Square, we create a placeholder payment that will be updated later with the actual payment details.
-		$payment = tribe( Payment_Handler::class )->create_payment_for_cart( $data['payment_source_id'], tribe( Cart::class ), $order );
+		$payment = tribe( Payment_Handler::class )->create_payment_for_order( $data['payment_source_id'], $order );
 
 		if ( is_wp_error( $payment ) || empty( $payment ) ) {
 			return new WP_Error( 'tec-tc-gateway-square-failed-creating-payment', $messages['failed-creating-payment'] );
@@ -151,8 +159,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			)
 			->set_args(
 				[
-					'gateway_payload'  => $payment,
-					'gateway_order_id' => $payment['id'],
+					'gateway_payload' => $payment,
 				]
 			)
 			->save();
@@ -162,8 +169,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			$order->ID,
 			tribe( Status::class )->convert_to_commerce_status( $payment['status'] )->get_slug(),
 			[
-				'gateway_payload'  => $payment,
-				'gateway_order_id' => $payment['id'],
+				'gateway_payload' => $payment,
 			]
 		);
 

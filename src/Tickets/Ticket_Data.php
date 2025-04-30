@@ -67,7 +67,7 @@ class Ticket_Data {
 	 *
 	 * @return Ticket_Object|null The ticket object.
 	 */
-	protected function load_ticket_object( int $ticket_id ): ?Ticket_Object {
+	public function load_ticket_object( int $ticket_id ): ?Ticket_Object {
 		return Tickets::load_ticket_object( $ticket_id );
 	}
 

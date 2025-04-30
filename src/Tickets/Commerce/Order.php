@@ -1430,4 +1430,30 @@ class Order extends Abstract_Order {
 
 		return substr( md5( $hash . $email . $time ), 0, 12 );
 	}
+
+	/**
+	 * Get the order items.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $order The order post object.
+	 *
+	 * @return array The order items.
+	 */
+	public function get_order_items( WP_Post $order ): array {
+		return array_filter( array_merge( $order->items ?? [], $order->discounts ?? [], $order->service_charges ?? [] ) );
+	}
+
+	/**
+	 * Get the order total value.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $order The order post object.
+	 *
+	 * @return Value The order total value.
+	 */
+	public function get_orders_total_value( WP_Post $order ): Value {
+		return $this->get_value_total( $this->get_order_items( $order ) );
+	}
 }
