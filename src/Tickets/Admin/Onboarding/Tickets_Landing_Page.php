@@ -204,7 +204,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			admin_url( '/admin-post.php' )
 		);
 		?>
-		<a class="tec-dismiss-onboarding-screen" href="<?php echo esc_url( $action_url ); ?>"><?php esc_html_e( 'Dismiss this screen', 'event-tickets' ); ?></a>
+		<a class="tec-dismiss-admin-page" href="<?php echo esc_url( $action_url ); ?>"><?php esc_html_e( 'Dismiss this screen', 'event-tickets' ); ?></a>
 		<?php
 	}
 

@@ -206,7 +206,7 @@ class Controller extends Controller_Contract {
 		}
 
 		// For wizard redirect, verify we're on an ET admin page.
-		if ( ! $activation_redirect && ! $this->is_et_admin_page() ) {
+		if ( $wizard_redirect && ! $this->is_et_admin_page() ) {
 			return;
 		}
 
