@@ -3,10 +3,33 @@
         "type": "html",
         "html": "<div class=\\"tec-tickets__admin-settings-back-link-wrapper tec-settings-form__header-block--horizontal\\">\\n\\t<a class=\\"tec-tickets__admin-settings-back-link\\" href=\\"http:\\/\\/wordpress.test\\/wp-admin\\/admin.php?page=tec-tickets-settings&amp;tab=emails\\" role=\\"link\\">\\n\\t\\t&larr; Back to Email Settings\\t<\\/a>\\n<\\/div>\\n"
     },
-    "tec-settings-email-template-header": {},
+    "tec-settings-email-template-wrapper_start": {
+        "type": "html",
+        "html": "<div class=\\"tec-settings-form__header-block--horizontal\\">"
+    },
+    "tec-settings-email-template-header": {
+        "type": "html",
+        "html": "<h3>Purchase Receipt Email Settings<\\/h3>"
+    },
+    "info-box-description": {
+        "type": "html",
+        "html": "<p class=\\"tec-settings-form__section-description\\">The ticket purchaser will receive an email about the purchase that was completed. Customize the content of this specific email using the tools below. You can also use email placeholders and customize email templates. <a href=\\"https:\\/\\/evnt.is\\/event-tickets-emails\\" target=\\"_blank\\" rel=\\"noopener noreferrer\\">Learn more<\\/a>.<\\/p><br\\/>"
+    },
     "1": {
         "type": "html",
-        "html": "<div>"
+        "html": "<\\/div>"
+    },
+    "tec-settings-email-template-settings-wrapper-start": {
+        "type": "html",
+        "html": "<div class=\\"tec-settings-form__content-section\\">"
+    },
+    "tec-settings-email-template-settings": {
+        "type": "html",
+        "html": "<h3 class=\\"tec-settings-form__section-header tec-settings-form__section-header--sub\\">Settings<\\/h3>"
+    },
+    "tec-settings-email-template-settings-wrapper-end": {
+        "type": "html",
+        "html": "<\\/div>"
     },
     "tec-tickets-emails-purchase-receipt-enabled": {
         "type": "toggle",
@@ -54,10 +77,6 @@
         }
     },
     "2": {
-        "type": "html",
-        "html": "<\\/div>"
-    },
-    "3": {
         "type": "html",
         "html": "<input type=\\"hidden\\" name=\\"tec_tickets_emails_current_section\\" id=\\"tec_tickets_emails_current_section\\" value=\\"tec_tickets_emails_purchase_receipt\\" \\/>"
     }
