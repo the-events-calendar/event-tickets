@@ -266,22 +266,22 @@ class Settings {
 		$current_user = get_user_by( 'id', get_current_user_id() );
 
 		$settings = [
-			'tickets-commerce-settings-general-group-start'     => [
+			'tickets-commerce-settings-general-group-start' => [
 				'type' => 'html',
 				'html' => '<div class="tec-settings-form__content-section">',
 			],
-			'tickets-commerce-settings-general-heading'     => [
+			'tickets-commerce-settings-general-heading'    => [
 				'type' => 'html',
 				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'General', 'event-tickets' ) . '</h3>',
 			],
-			static::$option_sandbox                         => [
+			static::$option_sandbox                       => [
 				'type'            => 'toggle',
 				'label'           => esc_html__( 'Enable Test Mode', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'Enables Test mode for testing payments. Any payments made will be done on "sandbox" accounts.', 'event-tickets' ),
 				'default'         => false,
 				'validation_type' => 'boolean',
 			],
-			static::$option_stock_handling                  => [
+			static::$option_stock_handling               => [
 				'type'            => 'radio',
 				'label'           => esc_html__( 'Stock Handling', 'event-tickets' ),
 				'tooltip'         => esc_html(
@@ -315,15 +315,15 @@ class Settings {
 				'type' => 'html',
 				'html' => '</div>',
 			],
-			'tickets-commerce-settings-currency-group-start'     => [
+			'tickets-commerce-settings-currency-group-start' => [
 				'type' => 'html',
 				'html' => '<div class="tec-settings-form__content-section">',
 			],
-			'tickets-commerce-settings-currency-heading'    => [
+			'tickets-commerce-settings-currency-heading'     => [
 				'type' => 'html',
 				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'Currency', 'event-tickets' ) . '</h3>',
 			],
-			static::$option_currency_code                   => [
+			static::$option_currency_code                    => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Currency Code', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'The currency that will be used for Tickets Commerce transactions.', 'event-tickets' ),
@@ -356,7 +356,7 @@ class Settings {
 				'validation_type' => 'int',
 			],
 
-			static::$option_currency_position               => [
+			static::$option_currency_position          => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Currency Position', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'The position of the currency symbol as it relates to the ticket values.', 'event-tickets' ),
@@ -371,7 +371,7 @@ class Settings {
 				'type' => 'html',
 				'html' => '</div>',
 			],
-			'tickets-commerce-settings-page-config-group-start'     => [
+			'tickets-commerce-settings-page-config-group-start'  => [
 				'type' => 'html',
 				'html' => '<div class="tec-settings-form__content-section">',
 			],

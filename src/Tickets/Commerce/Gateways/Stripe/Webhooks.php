@@ -600,7 +600,7 @@ class Webhooks extends Abstract_Webhooks {
 			],
 			'tickets-commerce-gateway-settings-group-description-webhook' => [
 				'type' => 'html',
-				'html' =>  $this->get_description_webhook_html(),
+				'html' => $this->get_description_webhook_html(),
 			],
 			static::$option_webhooks_value       => [
 				'type'       => 'text',
