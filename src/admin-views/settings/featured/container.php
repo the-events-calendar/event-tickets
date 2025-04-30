@@ -12,12 +12,18 @@
  * @var array           $content_context  Context for template used for content.
  * @var string[]        $classes          Array of classes.
  * @var array           $links            Array of arrays for links.
+ * @var string[]        $container_classes Array of classes for the container.
  */
+
+$container_classes = [
+	'tec-settings-form__element--full-width' => true,
+	...$container_classes
+];
 
 $classes[] = 'tec-tickets__admin-settings-featured';
 
 ?>
-<div class="tec-settings-form__element--full-width">
+<div <?php tribe_classes( $container_classes ); ?>>
 	<div <?php tribe_classes( $classes ); ?> >
 		<?php $this->template( 'title' ); ?>
 		<?php $this->template( 'description' ); ?>

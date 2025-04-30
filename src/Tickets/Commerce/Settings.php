@@ -491,14 +491,14 @@ class Settings {
 				'type' => 'html',
 				'html' => tribe( Featured_Settings::class )->get_html(
 					[
-						'title'            => __( 'Payment Gateways', 'event-tickets' ),
-						'description'      => __(
+						'title'             => __( 'Payment Gateways', 'event-tickets' ),
+						'description'       => __(
 							'Set up a payment gateway to get started with Tickets Commerce. Enable multiple ' .
 							'gateways for providing users additional options for users when purchasing tickets.',
 							'event-tickets'
 						),
-						'content_template' => $this->get_featured_gateways_html(),
-						'links'            => [
+						'content_template'  => $this->get_featured_gateways_html(),
+						'links'             => [
 							[
 								'slug'     => 'help-1',
 								'priority' => 10,
@@ -508,7 +508,8 @@ class Settings {
 								'classes'  => [],
 							],
 						],
-						'classes'          => [],
+						'classes'           => [],
+						'container_classes' => [ 'tec-settings-form__element--with-border-bottom' ],
 					]
 				),
 			],

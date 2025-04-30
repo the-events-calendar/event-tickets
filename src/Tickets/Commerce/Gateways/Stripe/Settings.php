@@ -221,14 +221,22 @@ class Settings extends Abstract_Settings {
 			esc_html__( 'You are using the free Stripe payment gateway integration. This includes an additional 2%% fee for processing ticket sales. This fee is removed if you have an active subscription to Event Tickets Plus. %1$s.', 'event-tickets' ),
 			$plus_link_faq
 		);
+
+		$container_classes = [
+			'tec-settings-form__element--full-width' => true,
+			'tec-settings-form__element--no-row-gap' => ! tribe( Gateway::class )->is_active(),
+			'tec-settings-form__element--no-spacing' => tribe( Gateway::class )->is_active(),
+		];
+
 		$main_settings = [
-			'tickets-commerce-stripe-commerce-wrapper-start' => [
-				'type' => 'html',
-				'html' => '<div class="tec-settings-form__element--full-width">',
-			],
+
 			'tickets-commerce-stripe-commerce-description' => [
 				'type' => 'html',
-				'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-description">' . $stripe_message . '</div>',
+				'html' => '<div class="tec-settings-form__element--full-width tec-settings-form__element--with-border-bottom"><div class="tec-tickets__admin-settings-tickets-commerce-description">' . $stripe_message . '</div></div>',
+			],
+			'tickets-commerce-stripe-commerce-wrapper-start' => [
+				'type' => 'html',
+				'html' => '<div ' . tec_get_classes_attr( $container_classes ) . '>',
 			],
 			'tickets-commerce-stripe-commerce-configure'   => [
 				'type'            => 'wrapped_html',
@@ -262,7 +270,7 @@ class Settings extends Abstract_Settings {
 			],
 			'tickets-commerce-gateway-settings-group-header-general' => [
 				'type' => 'html',
-				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'General', 'event-tickets' ) . '</h3><div class="clear"></div>',
+				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'General', 'event-tickets' ) . '</h3>',
 			],
 			static::$option_statement_descriptor           => [
 				'type'                => 'text',
@@ -291,7 +299,7 @@ class Settings extends Abstract_Settings {
 			],
 			'tickets-commerce-gateway-settings-group-header-checkout' => [
 				'type' => 'html',
-				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'Checkout', 'event-tickets' ) . '</h3><div class="clear"></div>',
+				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'Checkout', 'event-tickets' ) . '</h3>',
 			],
 			static::$option_checkout_element               => [
 				'type'            => 'radio',
