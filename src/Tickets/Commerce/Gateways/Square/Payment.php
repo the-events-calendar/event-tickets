@@ -10,11 +10,10 @@
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use RuntimeException;
-use TEC\Tickets\Commerce\Cart;
-use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Order as Commerce_Order;
 use TEC\Tickets\Commerce\Utils\Value;
-use WP_Error;
 use WP_Post;
+
 /**
  * Square payment processing class.
  *
@@ -38,13 +37,13 @@ class Payment {
 	 *
 	 * @since TBD
 	 *
-	 * @param string   $source_id The source ID.
-	 * @param Value    $value     The value object to create a payment for.
-	 * @param ?WP_Post $order     The order post object.
+	 * @param string  $source_id The source ID.
+	 * @param Value   $value     The value object to create a payment for.
+	 * @param WP_Post $order     The order post object.
 	 *
 	 * @return ?array| The payment data.
 	 */
-	public static function create( string $source_id, Value $value, ?WP_Post $order = null ): ?array {
+	public static function create( string $source_id, Value $value, WP_Post $order ): ?array {
 		$merchant = tribe( Merchant::class );
 
 		if ( ! $merchant->is_active() ) {
@@ -60,26 +59,24 @@ class Payment {
 			'idempotency_key' => uniqid( 'tec-square-', true ),
 			'source_id'       => $source_id,
 			'location_id'     => $merchant->get_location_id(),
+			'order_id'        => tribe( Order::class )->get_square_order_id( $order->ID ),
+			'reference_id'    => (string) $order->ID,
 			'metadata'        => [
 				static::$tc_metadata_identifier => true,
 			],
 		];
-
-		if ( $order instanceof WP_Post ) {
-			$body['reference_id'] = $order->ID;
-		}
 
 		/**
 		 * Filters the payment body.
 		 *
 		 * @since TBD
 		 *
-		 * @param array    $body The payment body.
-		 * @param string   $source_id The source ID.
-		 * @param Value    $value The value object.
-		 * @param ?WP_Post $order The order post object.
+		 * @param array   $body The payment body.
+		 * @param Value   $value The value object.
+		 * @param WP_Post $order The order post object.
+		 * @param string  $source_id The source ID.
 		 */
-		$body = apply_filters( 'tec_tickets_commerce_square_payment_body', $body, $source_id, $value, $order );
+		$body = apply_filters( 'tec_tickets_commerce_square_payment_body', $body, $value, $order, $source_id );
 
 		$args = [
 			'body'    => $body,
@@ -92,37 +89,30 @@ class Payment {
 	}
 
 	/**
-	 * Creates a payment from cart.
+	 * Creates a payment from order.
 	 *
 	 * @since TBD
 	 *
-	 * @param string   $source_id The source ID.
-	 * @param Cart     $cart      The cart object.
-	 * @param ?WP_Post $order     The order post object.
+	 * @param string  $source_id The source ID.
+	 * @param WP_Post $order     The order post object.
 	 *
-	 * @return array|WP_Error The payment data or WP_Error on failure.
+	 * @return array The payment data.
 	 *
 	 * @throws RuntimeException If the value object is not returned from the filter.
 	 */
-	public static function create_from_cart( string $source_id, Cart $cart, ?WP_Post $order = null ) {
-		$items = tribe( Order::class )->prepare_cart_items_for_order( $cart );
-		if ( empty( $items ) ) {
-			return [];
-		}
-
-		$value = tribe( Order::class )->get_value_total( array_filter( $items ) );
+	public static function create_from_order( string $source_id, WP_Post $order ): array {
+		$value = Value::create( $order->total );
 
 		/**
 		 * Filters the value and items before creating a Square payment.
 		 *
 		 * @since TBD
 		 *
-		 * @param Value    $value     The total value of the cart.
-		 * @param array    $items     The items in the cart.
-		 * @param string   $source_id The source ID.
-		 * @param ?WP_Post $order     The order post object.
+		 * @param Value   $value     The total value of the cart.
+		 * @param WP_Post $order     The order post object.
+		 * @param string  $source_id The source ID.
 		 */
-		$value = apply_filters( 'tec_tickets_commerce_square_create_from_cart', $value, $items, $source_id, $order );
+		$value = apply_filters( 'tec_tickets_commerce_square_create_from_order', $value, $order, $source_id );
 
 		if ( ! $value instanceof Value && is_numeric( $value ) ) {
 			$value = Value::create( $value );
@@ -135,11 +125,7 @@ class Payment {
 
 		$payment = static::create( $source_id, $value, $order );
 
-		if ( is_wp_error( $payment ) ) {
-			return $payment;
-		}
-
-		return $payment['payment'];
+		return $payment['payment'] ?? [];
 	}
 
 	/**

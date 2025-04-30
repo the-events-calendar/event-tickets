@@ -13,11 +13,15 @@ use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Event_Item;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Inventory_Change;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Ticket_Item;
+use TEC\Tickets\Commerce\Gateways\Square\Order as Square_Order;
 use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 use TEC\Tickets\Commerce\Gateways\Square\Requests;
 use TEC\Tickets\Commerce\Ticket as Ticket_Data;
+use TEC\Tickets\Commerce\Order as Commerce_Order;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\NoChangeNeededException;
 use InvalidArgumentException;
+use TEC\Tickets\Commerce\Utils\Value;
+use WP_Post;
 
 /**
  * Remote objects.
@@ -35,6 +39,37 @@ class Remote_Objects {
 	 * @var string
 	 */
 	public const SQUARE_DATE_TIME_FORMAT = 'Y-m-d\TH:i:s.v\Z';
+
+	/**
+	 * The order.
+	 *
+	 * @since TBD
+	 *
+	 * @var Square_Order
+	 */
+	private Square_Order $square_order;
+
+	/**
+	 * The ticket data.
+	 *
+	 * @since TBD
+	 *
+	 * @var Ticket_Data
+	 */
+	private Ticket_Data $ticket_data;
+
+	/**
+	 * Constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param Square_Order $square_order The order.
+	 * @param Ticket_Data  $ticket_data  The ticket data.
+	 */
+	public function __construct( Square_Order $square_order, Ticket_Data $ticket_data ) {
+		$this->square_order = $square_order;
+		$this->ticket_data  = $ticket_data;
+	}
 
 	/**
 	 * Transform the batch.
@@ -190,7 +225,7 @@ class Remote_Objects {
 			return $remote_object_id;
 		}
 
-		foreach ( tribe( Ticket_Data::class )->get_posts_tickets( $object_id ) as $ticket ) {
+		foreach ( $this->ticket_data->get_posts_tickets( $object_id ) as $ticket ) {
 			Item::delete( $ticket->ID );
 		}
 
@@ -249,6 +284,257 @@ class Remote_Objects {
 				'state'    => $count['state'],
 			];
 		}
+	}
+
+	/**
+	 * Get the line item.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $item     The item.
+	 * @param WP_Post $order The order post object.
+	 *
+	 * @return array The line item.
+	 */
+	public function get_line_item( array $item, WP_Post $order ): array {
+		$ticket_id = $item['ticket_id'] ?? false;
+
+		if ( ! $ticket_id ) {
+			return [];
+		}
+
+		$ticket = $this->square_order->get_cached_remote_data( $order->ID, $ticket_id );
+
+		unset(
+			$ticket['variation_total_price_money'],
+			$ticket['gross_sales_money'],
+			$ticket['total_tax_money'],
+			$ticket['total_discount_money'],
+			$ticket['total_money'],
+			$ticket['total_service_charge_money'],
+		);
+
+		$ticket_object = $this->ticket_data->load_ticket_object( $ticket_id );
+
+		if ( ! $ticket_object ) {
+			// We can't do anything for a ticket we can't load anymore. Probably it was deleted...
+			return $ticket;
+		}
+
+		$remote_object_id = Item::get_remote_object_id( $ticket_id );
+
+		$updates = [
+			'name'             => $ticket_object->get_event()->post_title,
+			'quantity'         => (string) ( $item['quantity'] ?? 1 ),
+			'variation_name'   => $ticket_object->name,
+			'item_type'        => $remote_object_id ? 'ITEM' : 'CUSTOM_AMOUNT',
+			'metadata'         => [
+				'local_id' => (string) $ticket_id,
+			],
+			'base_price_money' => [
+				'amount'   => absint( 100 * $item['price'] ),
+				'currency' => $order->currency,
+			],
+		];
+
+		if ( $remote_object_id ) {
+			$updates['catalog_object_id'] = $remote_object_id;
+		}
+
+		return array_merge( $ticket, $updates );
+	}
+
+	/**
+	 * Get the discount.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $item The item.
+	 * @param WP_Post $order The order post object.
+	 *
+	 * @return array The discount.
+	 */
+	public function get_discount( array $item, WP_Post $order ): array {
+		$id = $item['id'] ?? false;
+
+		if ( ! $id ) {
+			return [];
+		}
+
+		$discount = $this->square_order->get_cached_remote_data( $order->ID, $id, 'discounts' );
+
+		// Remove possible READ-ONLY properties.
+		unset(
+			$discount['reward_ids'],
+			$discount['pricing_rule_id'],
+		);
+
+		if ( $item['sub_total'] instanceof Value ) {
+			$item['sub_total'] = $item['sub_total']->get_float();
+		}
+
+		$updates = [
+			'name'         => $item['display_name'],
+			'type'         => 'FIXED_AMOUNT',
+			'amount_money' => [
+				'amount'   => absint( 100 * $item['sub_total'] ),
+				'currency' => $order->currency,
+			],
+			'metadata'     => [
+				'local_id' => (string) $id,
+			],
+		];
+
+		return array_merge( $discount, $updates );
+	}
+
+	/**
+	 * Get the service charge.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $item The item.
+	 * @param WP_Post $order The order post object.
+	 *
+	 * @return array The service charge.
+	 */
+	public function get_service_charge( array $item, WP_Post $order ): array {
+		$id = $item['id'] ?? false;
+
+		if ( ! $id ) {
+			return [];
+		}
+
+		$charge = $this->square_order->get_cached_remote_data( $order->ID, $id, 'service_charges' );
+
+		// Remove possible READ-ONLY properties.
+		unset(
+			$charge['applied_money'],
+			$charge['total_money'],
+			$charge['total_tax_money'],
+			$charge['type'],
+		);
+
+		if ( $item['sub_total'] instanceof Value ) {
+			$item['sub_total'] = $item['sub_total']->get_float();
+		}
+
+		$updates = [
+			'name'              => $item['display_name'],
+			'calculation_phase' => 'SUBTOTAL_PHASE',
+			'amount_money'      => [
+				'amount'   => absint( 100 * $item['sub_total'] ),
+				'currency' => $order->currency,
+			],
+			'metadata'          => [
+				'local_id' => (string) $id,
+			],
+		];
+
+		return array_merge( $charge, $updates );
+	}
+
+	/**
+	 * Get the customer ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id The order ID.
+	 *
+	 * @return string The customer ID.
+	 */
+	public function get_customer_id( int $order_id ): string {
+		$cache = tribe_cache();
+
+		$cache_key = 'tec_tickets_commerce_square_customer_id_' . $order_id;
+
+		if ( ! empty( $cache[ $cache_key ] ) && is_string( $cache[ $cache_key ] ) ) {
+			return $cache[ $cache_key ];
+		}
+
+		if ( is_user_logged_in() ) {
+			$customer_id = (string) get_user_meta( get_current_user_id(), '_tec_tickets_commerce_gateways_square_customer_id', true );
+
+			if ( $customer_id ) {
+				$cache[ $cache_key ] = $customer_id;
+				update_post_meta( $order_id, '_tec_tickets_commerce_gateways_square_customer_id', $customer_id );
+
+				return $customer_id;
+			}
+		}
+
+		$customer_id = (string) get_post_meta( $order_id, '_tec_tickets_commerce_gateways_square_customer_id', true );
+
+		if ( $customer_id ) {
+			$cache[ $cache_key ] = $customer_id;
+
+			return $customer_id;
+		}
+
+		$email = (string) get_post_meta( $order_id, Commerce_Order::$purchaser_email_meta_key, true );
+
+		if ( ! ( $email && is_email( $email ) ) ) {
+			// We can'd do a lot without a mail!
+			return '';
+		}
+
+		// Search for a customer first.
+		$results = Requests::post(
+			'customers/search',
+			[],
+			[
+				'body' => [
+					'limit' => 1,
+					'query' => [
+						'filter' => [
+							'email_address' => [ 'exact' => $email ],
+						],
+					],
+				],
+			]
+		);
+
+		if ( ! empty( $results['customers'][0]['id'] ) ) {
+			$customer_id         = $results['customers'][0]['id'];
+			$cache[ $cache_key ] = $customer_id;
+
+			update_post_meta( $order_id, '_tec_tickets_commerce_gateways_square_customer_id', $customer_id );
+
+			if ( is_user_logged_in() ) {
+				update_user_meta( get_current_user_id(), '_tec_tickets_commerce_gateways_square_customer_id', $customer_id );
+			}
+
+			return $customer_id;
+		}
+
+		// Search failed, now create the customer.
+		$response = Requests::post(
+			'customers',
+			[],
+			[
+				'body' => [
+					'idempotency_key' => 'creating_customer_for_order_' . $order_id,
+					'email_address'   => $email,
+					'given_name'      => get_post_meta( $order_id, Commerce_Order::$purchaser_first_name_meta_key, true ),
+					'family_name'     => get_post_meta( $order_id, Commerce_Order::$purchaser_last_name_meta_key, true ),
+				],
+			]
+		);
+
+		if ( empty( $response['customer']['id'] ) ) {
+			return '';
+		}
+
+		$customer_id         = $response['customer']['id'];
+		$cache[ $cache_key ] = $customer_id;
+
+		update_post_meta( $order_id, '_tec_tickets_commerce_gateways_square_customer_id', $customer_id );
+
+		if ( is_user_logged_in() ) {
+			update_user_meta( get_current_user_id(), '_tec_tickets_commerce_gateways_square_customer_id', $customer_id );
+		}
+
+		return $customer_id;
 	}
 
 	/**

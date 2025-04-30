@@ -34,11 +34,12 @@ class Payment_Handler {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $source_id The source ID.
+	 * @param string   $source_id The source ID.
+	 * @param WP_Post  $order     The order post object.
 	 *
 	 * @return array
 	 */
-	public function create_payment_for_cart( string $source_id ): array {
+	public function create_payment_for_order( string $source_id, WP_Post $order ): array {
 		// Somehow we already have a payment.
 		if ( $this->get() ) {
 			return $this->get();
@@ -48,7 +49,7 @@ class Payment_Handler {
 		$payment = $this->get_existing_if_valid();
 		if ( ! $payment ) {
 			// If it all fails lets create a new one.
-			$payment = Payment::create_from_cart( $source_id, tribe( Cart::class ) );
+			$payment = Payment::create_from_order( $source_id, $order );
 
 			if ( isset( $payment['id'] ) && empty( $payment['errors'] ) ) {
 				$this->store_payment_cookie( $payment['id'] );
