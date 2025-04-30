@@ -25,8 +25,6 @@ class Event_Repository_Commerce_Test extends \Codeception\TestCase\WPTestCase {
 
 		$this->factory()->event = new Event();
 
-		// Ensure the Tickets Commerce module is active.
-		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
 		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
 			$modules[ Module::class ] = tribe( Module::class )->plugin_name;
 

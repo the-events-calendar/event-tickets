@@ -13,11 +13,6 @@ abstract class V2CommerceTestCase extends V2TestCase {
 	public function setUp() {
 		// before
 		parent::setUp();
-
-		if ( ! defined( 'TEC_TICKETS_COMMERCE' ) ) {
-			define( 'TEC_TICKETS_COMMERCE', true );
-		}
-
 	}
 
 	/**

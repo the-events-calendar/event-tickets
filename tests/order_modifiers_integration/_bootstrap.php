@@ -17,7 +17,6 @@ Codeception\Util\Autoload::addNamespace( 'Tribe\Events\Test', $tec_support );
 Codeception\Util\Autoload::addNamespace( 'TEC\Event_Automator\Tests\Traits', $ea_support );
 Codeception\Util\Autoload::addNamespace( 'Tribe\Events_Pro\Tests', $ecp_support );
 
-putenv( 'TEC_TICKETS_COMMERCE=1' );
 putenv( 'TEC_DISABLE_LOGGING=1' );
 putenv( 'TEC_CUSTOM_TABLES_V1_DISABLED=0' );
 
