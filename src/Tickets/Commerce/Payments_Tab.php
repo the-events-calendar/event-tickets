@@ -396,8 +396,8 @@ class Payments_Tab extends Service_Provider {
 		$fields = [];
 
 		// Show the switch to enable/disable gateway at the top.
-		$option_key   = $section_gateway::get_enabled_option_key();
-		$enable_label = esc_html__( 'Enable payment gateway', 'event-tickets' );
+		$option_key        = $section_gateway::get_enabled_option_key();
+		$enable_label      = esc_html__( 'Enable payment gateway', 'event-tickets' );
 		$enable_label_a11y = sprintf(
 		// Translators: %s: Name of payment gateway.
 			esc_html__( 'Enable %s as a payment gateway', 'event-tickets' ),
