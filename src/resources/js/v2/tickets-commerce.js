@@ -276,16 +276,12 @@ tribe.tickets.commerce = {};
 		$couponLabelElement.text( unescapedLabel );
 	};
 
-<<<<<<< HEAD
 	/**
 	 * Binds the `Add Coupon` link to its respective event handler.
 	 *
 	 * @since 5.21.0
 	 */
 	obj.bindAddCouponLink = function() {
-=======
-	obj.bindAddCouponLink = function () {
->>>>>>> c041e50eace5042dfe255b6f5a26928c7d461297
 		const hiddenName = obj.selectors.hiddenElement.className();
 		$document.on( 'click', obj.selectors.couponAddLink, function () {
 			$( obj.selectors.couponAddLink ).addClass( hiddenName );
@@ -303,7 +299,6 @@ tribe.tickets.commerce = {};
 		return window.tecTicketsCommerceGatewayStripeCheckout?.paymentIntentData?.id;
 	};
 
-<<<<<<< HEAD
 	/**
 	 * Disables interruption functionality for the seating timer.
 	 *
@@ -327,9 +322,6 @@ tribe.tickets.commerce = {};
 	 * @since 5.21.0
 	 */
 	obj.bindCouponApply = function() {
-=======
-	obj.bindCouponApply = function () {
->>>>>>> c041e50eace5042dfe255b6f5a26928c7d461297
 		let ajaxInProgress = false;
 
 		$document.on( 'click', obj.selectors.couponApplyButton, applyCoupon );

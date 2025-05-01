@@ -432,24 +432,12 @@ export function* fetchTicket( action ) {
 			let endTime = yield call( momentUtil.toDatabaseTime, endMoment );
 			let endTimeInput = yield call( momentUtil.toTime, endMoment );
 
-<<<<<<< HEAD
 			if ( ! available_until ) {
 				endMoment = yield call( momentUtil.toMoment, '' );
 				endDate = '';
 				endDateInput = '';
 				endTime = '';
 				endTimeInput = '';
-=======
-			if ( available_until ) {
-				// eslint-disable-line camelcase
-				endMoment = yield call( momentUtil.toMoment, available_until );
-				endDate = yield call( momentUtil.toDatabaseDate, endMoment );
-				endDateInput = yield datePickerFormat
-					? call( momentUtil.toDate, endMoment, datePickerFormat )
-					: call( momentUtil.toDate, endMoment );
-				endTime = yield call( momentUtil.toDatabaseTime, endMoment );
-				endTimeInput = yield call( momentUtil.toTime, endMoment );
->>>>>>> c041e50eace5042dfe255b6f5a26928c7d461297
 			}
 
 			const salePriceChecked = sale_price_data?.enabled || false;
