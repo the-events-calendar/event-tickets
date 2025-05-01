@@ -56,25 +56,21 @@ $test_mode = TEC\Tickets\Commerce\Gateways\Square\Gateway::is_test_mode();
 			<!-- Connection Info -->
 			<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-row">
 				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-label" id="square-connected-to-label">
-					<?php esc_html_e( 'Connected to:', 'event-tickets' ); ?>
+					<?php esc_html_e( 'Connection:', 'event-tickets' ); ?>
 				</span>
 				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-value" aria-labelledby="square-connected-to-label">
-					<?php echo esc_html( $merchant_name ?: __( 'Square Account', 'event-tickets' ) ); ?>
-					<?php if ( ! empty( $merchant_email ) ) : ?>
-					<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-subtext" aria-label="<?php esc_attr_e( 'Account email', 'event-tickets' ); ?>">
-						<?php echo esc_html( $merchant_email ); ?>
-					</span>
-					<?php endif; ?>
+					<span class="dashicons dashicons-yes" aria-hidden="true"></span>
+					<?php esc_html_e( 'Connected', 'event-tickets' ); ?>
+					<?php $this->template( 'settings/tickets-commerce/square/connect/disconnect' ); ?>
 				</span>
 			</div>
 			<!-- Square Status -->
 			<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-row">
 				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-label" id="square-status-label">
-					<?php esc_html_e( 'Status:', 'event-tickets' ); ?>
+					<?php esc_html_e( 'Account:', 'event-tickets' ); ?>
 				</span>
 				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-value" aria-labelledby="square-status-label">
-					<span class="dashicons dashicons-yes" aria-hidden="true"></span>
-					<?php esc_html_e( 'Connected', 'event-tickets' ); ?>
+					<?php echo esc_html( $merchant_name ?: __( 'Square Account', 'event-tickets' ) ); ?>
 					<?php if ( $test_mode ) : ?>
 						<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-subtext">
 							<?php esc_html_e( '(Test Mode)', 'event-tickets' ); ?>
@@ -104,34 +100,7 @@ $test_mode = TEC\Tickets\Commerce\Gateways\Square\Gateway::is_test_mode();
 			</div>
 			<?php endif; ?>
 			<?php $this->template( 'settings/tickets-commerce/square/connect/missing-scopes' ); ?>
-			<!-- Disconnect Button -->
-			<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-row">
-				<button
-					type="button"
-					class="tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-square-button button button-link-delete"
-					id="tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-square"
-					data-nonce="<?php echo esc_attr( $disconnect_nonce ); ?>"
-					aria-label="<?php esc_attr_e( 'Disconnect from Square payment gateway', 'event-tickets' ); ?>"
-				>
-					<?php esc_html_e( 'Disconnect from Square', 'event-tickets' ); ?>
-				</button>
-			</div>
 
-			<!-- Disconnect Confirmation Dialog -->
-			<div id="tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-square-dialog" class="tec-tickets__admin-settings-tickets-commerce-gateway-dialog" style="display: none;">
-				<div class="tec-tickets__admin-settings-tickets-commerce-gateway-dialog-content">
-					<h3><?php esc_html_e( 'Disconnect Square', 'event-tickets' ); ?></h3>
-					<p><?php esc_html_e( 'Are you sure you want to disconnect from Square? This will disable payment processing for all tickets.', 'event-tickets' ); ?></p>
-					<div class="tec-tickets__admin-settings-tickets-commerce-gateway-dialog-buttons">
-						<button type="button" class="button button-secondary tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-cancel">
-							<?php esc_html_e( 'Cancel', 'event-tickets' ); ?>
-						</button>
-						<button type="button" class="button button-primary button-danger tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-confirm">
-							<?php esc_html_e( 'Disconnect', 'event-tickets' ); ?>
-						</button>
-					</div>
-				</div>
-			</div>
 			<?php $this->template( 'settings/tickets-commerce/square/connect/help-links' ); ?>
 		</div>
 	</div>
