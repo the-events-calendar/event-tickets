@@ -7,7 +7,6 @@ $tec_support = dirname( __DIR__, 3 ) . '/the-events-calendar/tests/_support';
 Codeception\Util\Autoload::addNamespace( 'Tribe\Events\Test', $tec_support );
 
 putenv( 'TEC_DISABLE_LOGGING=1' );
-tribe_register_provider( Commerce_Provider::class );
 
 // Let's make sure to set rewrite rules.
 global $wp_rewrite;

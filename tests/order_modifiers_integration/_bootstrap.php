@@ -40,8 +40,6 @@ DB::query( DB::prepare( "DROP TABLE IF EXISTS %i", DB::prefix( 'tec_order_modifi
 DB::query( DB::prepare( "DROP TABLE IF EXISTS %i", DB::prefix( 'tec_order_modifiers_meta' ) ) );
 DB::query( DB::prepare( "DROP TABLE IF EXISTS %i", DB::prefix( 'tec_order_modifier_relationships' ) ) );
 
-tribe_register_provider( Commerce_Provider::class );
-
 // Ensure `post` is a ticketable post type.
 $ticketable   = tribe_get_option( 'ticket-enabled-post-types', [] );
 $ticketable[] = 'post';
