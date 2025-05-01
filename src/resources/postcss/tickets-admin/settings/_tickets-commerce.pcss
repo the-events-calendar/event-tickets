@@ -152,7 +152,7 @@
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-logo-image {
 	height: auto;
-	margin-bottom: 32px;
+	margin-bottom: var(--tec-spacer-7);
 	max-width: 232px;
 	width: 100%;
 }
@@ -176,18 +176,24 @@
 	margin: 20px 0;
 	text-align: left;
 
+	&:first-of-type {
+		margin-top: 0;
+	}
+
 	span {
 		display: inline-block;
 		margin-right: 5px;
 	}
 }
 
-.tec-tickets__admin-settings-tickets-commerce-gateway-connected-col1 {
+.tec-tickets__admin-settings-tickets-commerce-gateway-connected-col1,
+.tec-tickets__admin-settings-tickets-commerce-gateway-connected-label {
 	flex-basis: 20%;
 	min-width: 125px;
 }
 
-.tec-tickets__admin-settings-tickets-commerce-gateway-connected-col2 {
+.tec-tickets__admin-settings-tickets-commerce-gateway-connected-col2,
+.tec-tickets__admin-settings-tickets-commerce-gateway-connected-value {
 	flex-basis: 80%;
 }
 
