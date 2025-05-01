@@ -115,7 +115,7 @@ class Assets extends Controller_Contract {
 			'admin/gateway/square/settings.js',
 			Tickets_Plugin::VERSION
 		)
-			->add_to_group_path( 'et-core' )
+			->add_to_group_path( Tickets_Plugin::class )
 			->set_dependencies(
 				'jquery',
 				'wp-i18n',
@@ -152,7 +152,6 @@ class Assets extends Controller_Contract {
 				'tribe-tickets-commerce-notice-js',
 				'tribe-tickets-commerce-base-gateway-checkout-toggler'
 			)
-			->add_to_group_path( 'et-core' )
 			->set_condition( [ $this, 'should_enqueue_assets' ] )
 			->set_action( 'tec-tickets-commerce-checkout-shortcode-assets' )
 			->set_as_module()
@@ -166,7 +165,7 @@ class Assets extends Controller_Contract {
 			'tickets-commerce/gateway/square.css',
 			Tickets_Plugin::VERSION
 		)
-			->add_to_group_path( 'et-core' )
+			->add_to_group_path( Tickets_Plugin::class )
 			->set_dependencies(
 				'tribe-common-skeleton-style',
 				'tribe-common-full-style',
@@ -181,7 +180,7 @@ class Assets extends Controller_Contract {
 			'admin/gateway/square/webhooks.js',
 			Tickets_Plugin::VERSION
 		)
-			->add_to_group_path( 'et-core' )
+			->add_to_group_path( Tickets_Plugin::class )
 			->set_dependencies(
 				'tribe-clipboard',
 				'tribe-common',
@@ -199,7 +198,7 @@ class Assets extends Controller_Contract {
 			'tickets-admin.css',
 			Tickets_Plugin::VERSION
 		)
-			->add_to_group_path( 'et-core' )
+			->add_to_group_path( Tickets_Plugin::class )
 			->set_action( 'admin_enqueue_scripts' )
 			->set_condition( [ $this, 'is_square_section' ] )
 			->register();
