@@ -47,9 +47,6 @@ class Hooks extends Service_Provider {
 	 * @since 5.1.6
 	 */
 	protected function add_actions() {
-		add_action( 'tribe_settings_do_tabs', [ tribe( Payments_Tab::class ), 'register_tab' ], 15 );
-		add_action( 'tribe_settings_after_save_' . Payments_Tab::$slug, [ $this, 'generate_payments_pages' ] );
-
 		$this->container->register( Ticket_Cache_Controller::class );
 	}
 
@@ -117,7 +114,6 @@ class Hooks extends Service_Provider {
 	 * @since 5.1.6
 	 */
 	protected function add_filters() {
-		add_filter( 'tec_tickets_settings_tabs_ids', [ tribe( Payments_Tab::class ), 'settings_add_tab_id' ] );
 		add_filter( 'tribe_dropdown_tec_tickets_list_ticketables_ajax', [ $this, 'provide_events_results_to_ajax' ], 10, 2 );
 	}
 }
