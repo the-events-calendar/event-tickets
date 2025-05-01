@@ -1,11 +1,19 @@
 # Changelog
 
+<<<<<<< HEAD
 ### [5.22.0] 2025-04-15
 
 * Feature - Move QR-Related code from ET to Common [TEC-5426]
 * Feature - Move QR code library to Common [TEC-5403]
 * Tweak - Removed filters: `tec_tickets_qr_code_can_use`
 * Language - 0 new strings added, 5 updated, 0 fuzzied, and 4 obsoleted.
+=======
+### [5.21.1.1] 2025-04-28
+
+* Version - Event Tickets 5.21.1.1 is only compatible with The Events Calendar 6.11.2.1 or higher.
+* Security - Added more safety checks to telemetry opt-ins/opt-outs. [TCMN-186]
+* Language - 0 new strings added, 9 updated, 0 fuzzied, and 0 obsoleted.
+>>>>>>> e514b420f4337271ddd5a9d605520f506d6e1b89
 
 ### [5.21.1] 2025-04-07
 
