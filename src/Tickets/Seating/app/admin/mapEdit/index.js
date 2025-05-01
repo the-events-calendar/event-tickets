@@ -1,14 +1,7 @@
 import './style.pcss';
-import { onReady } from '@tec/tickets/seating/utils';
-import {
-	initServiceIframe,
-	getIframeElement,
-	handleResize,
-} from '@tec/tickets/seating/service/iframe';
-import {
-	registerAction,
-	INBOUND_SET_ELEMENT_HEIGHT,
-} from '@tec/tickets/seating/service/api';
+import { onReady } from '../../utils';
+import { initServiceIframe, getIframeElement, handleResize } from '../../service/iframe';
+import { registerAction, INBOUND_SET_ELEMENT_HEIGHT } from '../../service/api';
 
 /**
  * Initializes iframe and the communication with the service.
@@ -19,14 +12,13 @@ import {
  *
  * @return {Promise<void>} A promise that resolves when the iframe is initialized.
  */
-export async function init(dom) {
+export async function init( dom ) {
 	dom = dom || document;
 
-	registerAction(INBOUND_SET_ELEMENT_HEIGHT, (data) => handleResize( data, dom ) );
+	registerAction( INBOUND_SET_ELEMENT_HEIGHT, ( data ) => handleResize( data, dom ) );
 
-	await initServiceIframe(getIframeElement(dom));
+	await initServiceIframe( getIframeElement( dom ) );
 }
-onReady(() => {
-	init(document);
-});
-
+onReady( () => {
+	init( document );
+} );

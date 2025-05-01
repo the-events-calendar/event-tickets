@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /**
  * Event Tickets Admin Stylesheet
  *
@@ -9,18 +10,23 @@
 @import "tickets-commerce/admin/_all.pcss";
 
 @import 'tickets-common.pcss';
+=======
+@import "tickets-common.pcss";
+>>>>>>> c041e50eace5042dfe255b6f5a26928c7d461297
 
 .tribe-tickets-column-attendees-link {
 	display: inline-block;
 }
 
 #ticket_form {
-	input[type=radio] {
+
+	input[type="radio"] {
 		margin-right: 5px;
 	}
 }
 
 .ticket_list {
+
 	h4 {
 		border-bottom: 1px solid #e5e5e5;
 		padding-bottom: 6px;
@@ -28,12 +34,13 @@
 
 		a {
 			font-size: 11px;
-			font-weight: normal;
+			font-weight: 400;
 			text-transform: none;
 		}
 	}
 
 	tr {
+
 		&:hover td div.ticket_controls {
 			visibility: visible;
 		}
@@ -50,7 +57,7 @@
 }
 
 .ticket_name p:first-child {
-	font-weight: bold;
+	font-weight: 700;
 }
 
 #tribe_ticket_header_preview img {
@@ -82,11 +89,11 @@
 }
 
 .tribe-strong-label {
-	font-weight: bold;
+	font-weight: 700;
 }
 
 /* Specific goal of this rule is to prevent the number input busting the ticket form layout under Twenty Fifteen */
-.tribe-theme-twentyfifteen .tribe-events-tickets input[type='number'] {
+.tribe-theme-twentyfifteen .tribe-events-tickets input[type="number"] {
 	padding: 0.375em;
 	width: 100%;
 }
@@ -108,6 +115,7 @@
 	}
 
 	&:hover {
+
 		.tooltip {
 			display: block;
 		}
@@ -126,6 +134,7 @@
 }
 
 .screen_reader_text {
+
 	@mixin screen-reader-text;
 }
 
@@ -168,30 +177,31 @@
 	}
 
 	.ticket_form_left {
-		font-weight: bold;
+		font-weight: 700;
 	}
 
 	label {
-		font-weight: normal;
+		font-weight: 400;
 	}
 
-	input[type='text'],
-	input[type='email'],
-	input[type='url'],
-	input[type='password'],
-	input[type='search'],
-	input[type='number'],
-	input[type='tel'],
-	input[type='range'],
-	input[type='date'],
-	input[type='month'],
-	input[type='week'],
-	input[type='time'],
-	input[type='datetime'],
-	input[type='datetime-local'],
-	input[type='color'],
+	input[type="text"],
+	input[type="email"],
+	input[type="url"],
+	input[type="password"],
+	input[type="search"],
+	input[type="number"],
+	input[type="tel"],
+	input[type="range"],
+	input[type="date"],
+	input[type="month"],
+	input[type="week"],
+	input[type="time"],
+	input[type="datetime"],
+	input[type="datetime-local"],
+	input[type="color"],
 	textarea,
 	label {
+
 		&.ticket_form_right {
 			display: block;
 		}
@@ -216,7 +226,7 @@
 	width: 100%;
 	will-change: transform;
 
-	&[aria-hidden='true'] {
+	&[aria-hidden="true"] {
 		opacity: 0;
 		position: absolute;
 		visibility: hidden;
@@ -244,6 +254,7 @@
 	}
 
 	&.panel_settings {
+
 		h4 {
 			margin: 0;
 		}
@@ -308,8 +319,8 @@
 
 .tribe-button-icon {
 
-	&:before {
-		font-family: 'dashicons', sans-serif;
+	&::before {
+		font-family: dashicons, sans-serif;
 		font-size: 1.25em;
 		left: -0.25em;
 		position: relative;
@@ -320,16 +331,16 @@
 		display: none;
 	}
 
-	&.tribe-button-icon-plus:before {
-		content: '\f132';
+	&.tribe-button-icon-plus::before {
+		content: "\f132";
 	}
 
-	&.tribe-button-icon-edit:before {
-		content: '\f464';
+	&.tribe-button-icon-edit::before {
+		content: "\f464";
 	}
 
-	&.tribe-button-icon-settings:before {
-		content: '\f111';
+	&.tribe-button-icon-settings::before {
+		content: "\f111";
 		top: -2px;
 	}
 }
@@ -346,7 +357,7 @@
 
 #tribe_tickets_image_preview_filename {
 	display: none;
-	font-weight: bold;
+	font-weight: 700;
 
 	&.-active {
 		display: inline;
@@ -376,6 +387,7 @@
 	}
 
 	#settings_form_toggle {
+
 		/* If the intro contains the Settings button, then move it to the end of the flex row. */
 		margin-left: auto;
 	}
@@ -396,6 +408,7 @@
 }
 
 .tribe_ticket_list_table {
+
 	.table-header .ticket_name {
 		align-items: center;
 		display: flex;
@@ -444,9 +457,9 @@
 		display: flex;
 		justify-content: flex-start;
 
-		a:not(:first-of-type):before {
+		a:not(:first-of-type)::before {
 			color: #2c3338;
-			content: '|';
+			content: "|";
 			margin-left: 2px;
 			margin-right: 2px;
 			text-decoration: none;
@@ -495,6 +508,7 @@
 	}
 
 	.ticket_field {
+
 		&.hasDatepicker {
 			border-radius: 3px;
 			font-size: 13px;
@@ -576,6 +590,7 @@
 }
 
 #tribe_ticket_provider_wrapper {
+
 	@mixin screen-reader-text;
 }
 
@@ -586,8 +601,8 @@ h4.ticket_form_title {
 }
 
 /* Ensure radios and checkboxes have some space to the right of them when inside a label */
-#ticket_form input[type=radio],
-#ticket_form input[type=checkbox] {
+#ticket_form input[type="radio"],
+#ticket_form input[type="checkbox"] {
 	margin-right: 0.4em;
 }
 
@@ -599,7 +614,9 @@ p.description {
 }
 
 #ticket_form .ticket_advanced.history {
+
 	.toggle-history {
+
 		span:nth-child(2) {
 			display: none;
 		}
@@ -610,6 +627,7 @@ p.description {
 	}
 
 	&._show {
+
 		span:first-child {
 			display: none;
 		}
@@ -636,6 +654,7 @@ p.description {
 }
 
 #ticket_bottom_right {
+
 	@media (max-width: 782px) {
 		margin-top: 1em;
 	}
@@ -646,6 +665,7 @@ p.description {
 }
 
 #ticket_form .tooltip_container {
+
 	@mixin tribe-ticket-tooltip;
 
 	display: inline;
@@ -703,6 +723,7 @@ p.description {
 	padding: 10px;
 
 	&.info {
+
 		.dashicons {
 			color: #2a709d;
 			margin-right: var(--tec-spacer-0);
@@ -768,16 +789,16 @@ p.description {
 	}
 
 	.tec-tickets__series_attached_ticket-type__icon--rsvp {
-		background-image: url('../icons/ticket-rsvp-icon.svg');
+		background-image: url(../icons/ticket-rsvp-icon.svg);
 		margin-top: 5px;
 	}
 
 	.tec-tickets__series_attached_ticket-type__icon--ticket {
-		background-image: url('../icons/ticket-default-icon.svg');
+		background-image: url(../icons/ticket-default-icon.svg);
 	}
 
 	.tec-tickets__series_attached_ticket-type__icon--series-pass {
-		background-image: url('../icons/ticket-series-pass-icon.svg');
+		background-image: url(../icons/ticket-series-pass-icon.svg);
 	}
 
 	.tickets__series_attached_ticket-type__title {
@@ -802,6 +823,7 @@ p.description {
 }
 
 .tickets_page_tec-tickets-settings {
+
 	.tribe_settings.wrap .tec-settings-header-wrap {
 		align-items: center;
 		display: flex;
@@ -822,6 +844,7 @@ p.description {
 	}
 
 	.ticket_sale_price {
+
 		div.ticket_sale_price-field {
 			margin-top: 10px;
 
@@ -869,6 +892,7 @@ p.description {
 }
 
 .tec-tickets-price {
+
 	ins {
 		text-decoration: none;
 	}

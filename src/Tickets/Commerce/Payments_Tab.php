@@ -96,13 +96,22 @@ class Payments_Tab extends Service_Provider {
 	 */
 	protected $settings_tab;
 
-
-
 	/**
 	 * @inheritdoc
 	 */
 	public function register() {
 		$this->container->singleton( static::class, $this );
+		$tab_slug = self::$slug;
+
+		add_action( 'tribe_settings_form_class', [ $this, 'include_form_class' ], 15, 3 );
+		add_action( 'tribe_settings_do_tabs', [ $this, 'register_tab' ], 15 );
+		add_action( "tribe_settings_after_save_{$tab_slug}", [ $this, 'generate_payments_pages' ] );
+		add_filter( 'tec_tickets_settings_tabs_ids', [ $this, 'settings_add_tab_id' ] );
+
+		// Load the tab and save actions if Tickets Commerce is enabled.
+		if ( ! tec_tickets_commerce_is_enabled() ) {
+			return;
+		}
 	}
 
 	/**
@@ -110,6 +119,8 @@ class Payments_Tab extends Service_Provider {
 	 *
 	 * @since 5.2.0
 	 * @since TBD Updated to use new child tabs.
+	 *
+	 * @param string $admin_page The admin page to register the tab on.
 	 */
 	public function register_tab( $admin_page ) {
 		if ( ! empty( $admin_page ) && Plugin_Settings::$settings_page_id !== $admin_page ) {
@@ -124,11 +135,6 @@ class Payments_Tab extends Service_Provider {
 		];
 
 		$tab_settings = apply_filters( 'tec_tickets_commerce_payments_tab_settings', $tab_settings );
-
-		$tab_settings['fields']['tribe-form-content-end'] = [
-			'type' => 'html',
-			'html' => '</div>',
-		];
 
 		// Create the parent "Payments" tab.
 		$parent_tab = new Tribe__Settings_Tab(
@@ -162,6 +168,31 @@ class Payments_Tab extends Service_Provider {
 			);
 			$parent_tab->add_child( $gateway_tab );
 		}
+	}
+
+	/**
+	 * Include the form class for the Payments tab.
+	 *
+	 * @since TBD
+	 *
+	 * @param array               $form_classes The form classes.
+	 * @param string              $admin_page   The admin page.
+	 * @param Tribe__Settings_Tab $tab_object   The tab object.
+	 *
+	 * @return array
+	 */
+	public function include_form_class( $form_classes, $admin_page, $tab_object ) {
+		if ( $tab_object->id !== static::$slug && $tab_object->get_parent_id() !== static::$slug ) {
+			return $form_classes;
+		}
+
+		if ( tec_tickets_commerce_is_enabled() ) {
+			return $form_classes;
+		}
+
+		$form_classes[] = 'tec-settings-form--no-gap';
+
+		return $form_classes;
 	}
 
 	/**
@@ -218,37 +249,13 @@ class Payments_Tab extends Service_Provider {
 	 * @return string
 	 */
 	public function get_url( array $args = [] ): string {
-		// Force the payment tab.
-		$args['tab'] = static::$slug;
+		if ( ! isset( $args['tab'] ) ) {
+			// Force the payment tab.
+			$args['tab'] = static::$slug;
+		}
 
 		// Use the settings page get_url to build the URL.
 		return tribe( Plugin_Settings::class )->get_url( $args );
-	}
-
-	/**
-	 * Returns the settings item for the section menu at the top of the Payments settings tab.
-	 *
-	 * @since  5.3.0
-	 * @deprecated TBD No longer used as we've moved to WordPress-style parent-child tabs
-	 *
-	 * @return array[]
-	 */
-	public function get_section_menu(): array {
-		_deprecated_function( __METHOD__, 'TBD', 'The section menu has been replaced with WordPress-style parent-child tabs' );
-		return [];
-	}
-
-	/**
-	 * Gets an array of all the sections, based on the active Gateways.
-	 *
-	 * @since 5.3.0
-	 * @deprecated TBD No longer used as we've moved to WordPress-style parent-child tabs
-	 *
-	 * @return array[]
-	 */
-	public function get_sections(): array {
-		_deprecated_function( __METHOD__, 'TBD', 'The section navigation has been replaced with WordPress-style parent-child tabs' );
-		return [];
 	}
 
 	/**
@@ -334,11 +341,18 @@ class Payments_Tab extends Service_Provider {
 
 		$is_tickets_commerce_enabled = tec_tickets_commerce_is_enabled();
 
-		$fields['tickets-header-wrapper-start'] = [
+		$fields['tec-settings-payment-header-start'] = [
 			'type' => 'html',
-			'html' => '<div class="tec-settings-form__header-block tec-settings-form__header-block--horizontal">',
+			'html' => '<div class="tec-settings-form__header-block tec-settings-form__header-block--horizontal">'
+						. '<h3 id="tec-settings-addons-title" class="tec-settings-form__section-header">'
+						. _x( 'Tickets Commerce', 'Tickets Commerce settings header', 'event-tickets' )
+						. '</h3>'
+						. '<p class="tec-settings-form__section-description">'
+						. $plus_message
+						. '</p>',
 		];
-		$fields['tickets-commerce-header']      = [
+
+		$fields['tec-settings-payment-enable'] = [
 			'type' => 'html',
 			'html' => '<label class="tec-tickets__admin-settings-toggle-large">
 								<input
@@ -354,15 +368,11 @@ class Payments_Tab extends Service_Provider {
 
 		];
 
-		$fields['tickets-commerce-description'] = [
-			'type' => 'html',
-			'html' => '<p>' . $plus_message . '</p>',
-		];
-
-		$fields['tickets-header-wrapper-end'] = [
+		$fields['tec-settings-payment-header-end'] = [
 			'type' => 'html',
 			'html' => '</div>',
 		];
+
 
 		$fields[ Tickets_Commerce_Settings::$tickets_commerce_enabled ] = [
 			'type'            => 'hidden',
@@ -376,6 +386,7 @@ class Payments_Tab extends Service_Provider {
 	 * Get selected section top level menu.
 	 *
 	 * @since 5.3.0
+	 * @since TBD Wrapped elements in new HTML.
 	 *
 	 * @param Gateway $section_gateway Gateway class.
 	 *
@@ -385,44 +396,46 @@ class Payments_Tab extends Service_Provider {
 		$fields = [];
 
 		// Show the switch to enable/disable gateway at the top.
-		$option_key   = $section_gateway::get_enabled_option_key();
-		$enable_label = sprintf(
+		$option_key        = $section_gateway::get_enabled_option_key();
+		$enable_label      = esc_html__( 'Enable payment gateway', 'event-tickets' );
+		$enable_label_a11y = sprintf(
 		// Translators: %s: Name of payment gateway.
-			esc_html__( 'Enable %s', 'event-tickets' ),
+			esc_html__( 'Enable %s as a payment gateway', 'event-tickets' ),
 			$section_gateway::get_label()
 		);
 
-		$attributes = tribe_get_attributes( [
-			'type'     => 'checkbox',
-			'name'     => $option_key,
-			'id'       => 'tickets-commerce-enable-input',
-			'class'    => 'tec-tickets__admin-settings-toggle-large-checkbox tribe-dependency tribe-dependency-verified',
-			'disabled' => ! $section_gateway::is_connected(),
-			'checked'  => $section_gateway::is_enabled(),
-		] );
+		$attributes = tribe_get_attributes(
+			[
+				'type'     => 'checkbox',
+				'name'     => $option_key,
+				'id'       => 'tickets-commerce-enable-input-' . $section_gateway::get_key(),
+				'class'    => 'tec-tickets__admin-settings-toggle-large-checkbox tribe-dependency tribe-dependency-verified',
+				'disabled' => ! $section_gateway::is_connected(),
+				'checked'  => $section_gateway::is_enabled(),
+			]
+		);
 
-		$fields['tickets-header-wrapper-start'] = [
+		$fields['tec-settings-payment-header-start'] = [
 			'type' => 'html',
 			'html' => '<div class="tec-settings-form__header-block tec-settings-form__header-block--horizontal">',
 		];
+
 		/**
 		 * @todo this needs to move into a template
 		 */
 		$fields['tickets-commerce-header'] = [
 			'type' => 'html',
-			'html' => '<label class="tec-tickets__admin-settings-toggle-large">
-								<input ' . implode( ' ', $attributes ) . ' />
-								<span class="tec-tickets__admin-settings-toggle-large-switch"></span>
-								<span class="tec-tickets__admin-settings-toggle-large-label">' . $enable_label . '</span>
-							</label>',
-
+			'html' => '<label class="tec-tickets__admin-settings-toggle-large" aria-label="' . $enable_label_a11y . '" for="tickets-commerce-enable-input-' . $section_gateway::get_key() . '">
+							<input ' . implode( ' ', $attributes ) . ' />
+							<span class="tec-tickets__admin-settings-toggle-large-switch"></span>
+							<span class="tec-tickets__admin-settings-toggle-large-label">' . $enable_label . '</span>
+						</label>',
 		];
 
-		$fields['tickets-header-wrapper-end'] = [
+		$fields['tec-settings-payment-header-end'] = [
 			'type' => 'html',
 			'html' => '</div>',
 		];
-
 
 		$fields[ $option_key ] = [
 			'type'            => 'hidden',
@@ -444,17 +457,10 @@ class Payments_Tab extends Service_Provider {
 	public function get_fields(): array {
 		$section_gateway = $this->get_section_gateway();
 
-		$fields = [
-			'tribe-form-content-start' => [
-				'type' => 'html',
-				'html' => '<div class="tribe-settings-form-wrap tec-settings-form__element--full-width">',
-			],
-		];
-
 		if ( empty( $section_gateway ) ) {
-			$fields = array_merge( $fields, $this->get_tickets_commerce_section_fields() );
+			$fields = $this->get_tickets_commerce_section_fields();
 		} else {
-			$fields = array_merge( $fields, $this->get_gateway_section_fields( $section_gateway ) );
+			$fields = $this->get_gateway_section_fields( $section_gateway );
 		}
 
 		/**
@@ -559,7 +565,7 @@ class Payments_Tab extends Service_Provider {
 
 		if ( ! current_user_can( 'edit_pages' ) ) {
 			return false;
-		};
+		}
 
 		$page_data = [
 			'post_status'    => 'publish',
@@ -599,4 +605,36 @@ class Payments_Tab extends Service_Provider {
 
 		return (bool) $query->post_count;
 	}
+
+	/*********************
+	 * Deprecated methods
+	 *********************/
+
+	// @codeCoverageIgnoreStart
+	/**
+	 * Returns the settings item for the section menu at the top of the Payments settings tab.
+	 *
+	 * @since 5.3.0
+	 * @deprecated TBD No longer used as we've moved to WordPress-style parent-child tabs
+	 *
+	 * @return array[]
+	 */
+	public function get_section_menu(): array {
+		_deprecated_function( __METHOD__, 'TBD', 'The section menu has been replaced with WordPress-style parent-child tabs' );
+		return [];
+	}
+
+	/**
+	 * Gets an array of all the sections, based on the active Gateways.
+	 *
+	 * @since 5.3.0
+	 * @deprecated TBD No longer used as we've moved to WordPress-style parent-child tabs
+	 *
+	 * @return array[]
+	 */
+	public function get_sections(): array {
+		_deprecated_function( __METHOD__, 'TBD', 'The section navigation has been replaced with WordPress-style parent-child tabs' );
+		return [];
+	}
+	// @codeCoverageIgnoreEnd
 }
