@@ -339,8 +339,10 @@ class Page extends Abstract_Admin_Page {
 	 * Get the menu position.
 	 *
 	 * @since TBD
+	 *
+	 * @return float The menu position.
 	 */
-	public function get_position(): ?int {
+	public function get_position(): float {
 		return 1.2;
 	}
 
