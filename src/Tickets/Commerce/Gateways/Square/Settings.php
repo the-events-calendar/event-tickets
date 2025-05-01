@@ -68,10 +68,18 @@ class Settings extends Abstract_Settings {
 	 * @return array The gateway settings.
 	 */
 	public function get_settings(): array {
+		$is_connected = tribe( Merchant::class )->is_connected();
+
+		$container_class = [
+			'tec-settings-form__element--full-width',
+			'tec-settings-form__element--no-spacing' => $is_connected,
+			'tec-settings-form__element--no-row-gap' => ! $is_connected,
+		];
+
 		$main_settings = [
 			'square-connection-start' => [
 				'type' => 'html',
-				'html' => '<div class="tec-tickets__admin-settings-toggle-large">',
+				'html' => '<div ' . tec_get_classes_attr( $container_class ) . '>',
 			],
 			'square-signup'           => [
 				'type' => 'html',
@@ -100,9 +108,13 @@ class Settings extends Abstract_Settings {
 		$is_sandbox_mode = tec_tickets_commerce_is_sandbox_mode();
 
 		$connected_settings = [
-			'square-settings-title' => [
+			'square-general-section-start' => [
 				'type' => 'html',
-				'html' => '<h3>' . esc_html__( 'Square Settings', 'event-tickets' ) . '</h3>',
+				'html' => '<div class="tec-settings-form__content-section">',
+			],
+			'tickets-commerce-gateway-settings-group-header-general' => [
+				'type' => 'html',
+				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'General', 'event-tickets' ) . '</h3>',
 			],
 			static::OPTION_INVENTORY_SYNC => [
 				'type'            => 'checkbox_bool',
@@ -135,12 +147,17 @@ class Settings extends Abstract_Settings {
 			];
 		}
 
+		$connected_settings['square-general-section-end'] = [
+			'type' => 'html',
+			'html' => '</div>',
+		];
+
 		// Add a notice about sandbox mode if active.
 		if ( $is_sandbox_mode ) {
 			$sandbox_notice = [
 				'square-sandbox-notice' => [
 					'type' => 'html',
-					'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-notice-message" id="square-sandbox-notice-message">' .
+					'html' => '<div class="tec-settings-form__element--full-width tec-settings-form__element--no-spacing tec-settings-form__element--with-border-bottom"><div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-notice-message" id="square-sandbox-notice-message">' .
 						'<span class="dashicons dashicons-info-outline" aria-hidden="true"></span>' .
 						'<span>' .
 						wp_kses(
@@ -159,7 +176,7 @@ class Settings extends Abstract_Settings {
 							]
 						) .
 						'</span>' .
-						'</div>',
+						'</div></div>',
 				],
 			];
 

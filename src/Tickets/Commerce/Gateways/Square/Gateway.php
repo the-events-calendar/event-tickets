@@ -161,7 +161,7 @@ class Gateway extends Abstract_Gateway {
 	 * @return string
 	 */
 	public function get_logo_url(): string {
-		return esc_url( Tickets::instance()->plugin_url . 'src/resources/images/admin/square-logo.png' );
+		return esc_url( Tickets::instance()->plugin_url . 'src/resources/images/admin/square.png' );
 	}
 
 	/**
