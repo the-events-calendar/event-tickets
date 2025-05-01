@@ -221,7 +221,7 @@ class Assets extends Controller_Contract {
 			'tec-tickets-commerce-gateway-square-checkout',
 			'tec-tickets-commerce-square-style',
 			'tec-tickets-commerce-gateway-square-admin-webhooks',
-			'tec-tickets-commerce-gateway-square-admin-webhooks-styles',
+			'tec-tickets-commerce-admin-styles',
 		] as $asset ) {
 			$stellar_assets->remove( $asset );
 		}
