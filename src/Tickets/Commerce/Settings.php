@@ -436,7 +436,7 @@ class Settings {
 			],
 		];
 
-		if (  !tec_tickets_emails_is_enabled() ) {
+		if ( ! tec_tickets_emails_is_enabled() ) {
 			$email_settings = [
 				'tickets-commerce-settings-email-group-start'     => [
 					'type' => 'html',
