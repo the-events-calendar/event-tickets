@@ -116,7 +116,7 @@ class Settings extends Abstract_Settings {
 				'type' => 'html',
 				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'General', 'event-tickets' ) . '</h3>',
 			],
-			static::OPTION_INVENTORY_SYNC => [
+			static::OPTION_INVENTORY_SYNC  => [
 				'type'            => 'checkbox_bool',
 				'label'           => esc_html__( 'Enable Inventory Sync', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'If this option is selected, your Posts with Tickets on sale will be kept in sync with your Square inventory.', 'event-tickets' ),
