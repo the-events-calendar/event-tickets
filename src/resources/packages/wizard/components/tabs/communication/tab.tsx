@@ -101,6 +101,10 @@ const CommunicationContent = ({ moveToNextTab, skipToNextTab }) => {
 						__nextHasNoMarginBottom
 						id="sender-email"
 						label={__(
+							'Email Address',
+							'event-tickets'
+						)}
+						help={__(
 							'When your customers receive an email about a purchase what address should it be from?',
 							'event-tickets'
 						)}
@@ -133,7 +137,11 @@ const CommunicationContent = ({ moveToNextTab, skipToNextTab }) => {
 						__nextHasNoMarginBottom
 						id="sender-name"
 						label={__(
-							'Who should we say the email is from (sender name)?',
+							'Sender Name',
+							'event-tickets'
+						)}
+						help={__(
+							'Who should we say the email is from?',
 							'event-tickets'
 						)}
 						className="tec-tickets-onboarding__form-field"
