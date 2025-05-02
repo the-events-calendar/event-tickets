@@ -487,7 +487,7 @@ class WhoDat extends Abstract_WhoDat {
 			'mode'         => $merchant->get_mode(),
 		];
 
-		$response = $this->get( 'webhooks/event-types', $query_args );
+		$response = $this->get_with_cache( 'webhooks/event-types', $query_args );
 
 		if ( empty( $response ) || isset( $response['error'] ) ) {
 			do_action(

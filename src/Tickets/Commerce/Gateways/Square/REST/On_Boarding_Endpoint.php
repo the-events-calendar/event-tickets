@@ -331,7 +331,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 		// Register the webhook.
 		$webhook_data = $webhooks->register_webhook();
 
-		if ( $webhook_data ) {
+		if ( is_wp_error( $webhook_data ) || ! empty( $webhook_data['id'] ) ) {
 			do_action(
 				'tribe_log',
 				'info',
@@ -348,6 +348,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 				'Failed to register Square webhook during onboarding',
 				[
 					'source' => 'tickets-commerce-square',
+					'error'  => $webhook_data,
 				]
 			);
 		}

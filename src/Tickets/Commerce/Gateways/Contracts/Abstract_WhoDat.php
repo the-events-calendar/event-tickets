@@ -82,6 +82,35 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 		return $body;
 	}
 
+	/**
+	 * Get a response from the WhoDat API with caching.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $endpoint          The endpoint path.
+	 * @param array  $query_args        Query args appended to the URL.
+	 * @param int    $expiration        Cache expiration in seconds.
+	 *
+	 * @return array|null The response array or null on failure.
+	 */
+	public function get_with_cache( string $endpoint, array $query_args = [], int $expiration = 10 * MINUTE_IN_SECONDS ): ?array {
+		$cache_key = md5( wp_json_encode( [ $endpoint, $query_args ] ) );
+		$cache     = tribe_cache();
+
+		$cached_response = $cache->get_transient( $cache_key );
+		if ( is_array( $cached_response ) ) {
+			return $cached_response;
+		}
+
+		$response = $this->get( $endpoint, $query_args );
+
+		if ( ! empty( $response ) ) {
+			$cache->set_transient( $cache_key, $response, $expiration );
+		}
+
+		return $response;
+	}
+
 	// phpcs:ignore Squiz.Commenting.FunctionComment.MissingParamTag
 	/**
 	 * @inheritDoc

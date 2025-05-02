@@ -101,7 +101,7 @@ class Webhook_Notice {
 
 		// Don't show on tickets admin pages where we already have inline notices.
 		$screen = get_current_screen();
-		if ( $screen && $this->is_tickets_admin_page( $screen->id ) ) {
+		if ( $screen && ! $this->is_tickets_admin_page( $screen->id ) ) {
 			return false;
 		}
 
@@ -178,12 +178,9 @@ class Webhook_Notice {
 	 */
 	protected function is_tickets_admin_page( $screen_id ) {
 		$valid_screens = [
-			'tribe_events_page_tec-tickets-settings',
-			'tribe_events_page_tec-tickets-commerce-orders',
-			'tribe_events_page_tickets-commerce-orders',
-			'events_page_tec-tickets-settings',
-			'events_page_tec-tickets-commerce-orders',
-			'events_page_tickets-commerce-orders',
+			'tickets_page_tec-tickets-settings',
+			'tickets_page_tec-tickets-commerce-orders',
+			'tickets_page_tickets-commerce-orders',
 		];
 
 		return in_array( $screen_id, $valid_screens, true );
