@@ -113,9 +113,9 @@ class Telemetry {
 					'Description of opt-in setting.',
 					'event-tickets'
 				),
-				'<br/><a href="' . Common_Telemetry::get_permissions_url() . '">', // URL is escaped in method.
-				'<br/><a href="' . Common_Telemetry::get_terms_url() . '">',     // URL is escaped in method.
-				'<br/><a href="' . Common_Telemetry::get_privacy_url() . '">',   // URL is escaped in method.
+				'<br/><a href="' . Common_Telemetry::get_permissions_url() . '" rel="noopener noreferrer" target="_blank">', // URL is escaped in method.
+				'<br/><a href="' . Common_Telemetry::get_terms_url() . '" rel="noopener noreferrer" target="_blank">',     // URL is escaped in method.
+				'<br/><a href="' . Common_Telemetry::get_privacy_url() . '" rel="noopener noreferrer" target="_blank">',   // URL is escaped in method.
 				'</a>'
 			),
 			'default'         => false,
