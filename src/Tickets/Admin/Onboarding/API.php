@@ -74,7 +74,7 @@ class API extends Abstract_API {
 	}
 
 	/**
-	 * Check the nonce.
+	 * Check the action nonce.
 	 *
 	 * @since TBD
 	 *
