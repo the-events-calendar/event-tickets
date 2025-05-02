@@ -364,4 +364,195 @@ class Settings extends Abstract_Settings {
 
 		return $container_classes;
 	}
+
+	/**
+	 * Wrapper for tribe_get_option that allows for environmental options.
+	 *
+	 * Consider WHAT should be environmental and WHAT should not before using any of those methods.
+	 *
+	 * For example, an order's data should NOT be environmental, as it's specific to a single order that it happened in a specific environment.
+	 * BUT an event's or a ticket's data should be environmental since those can be used BOTH in sandbox and live environments.
+	 * A customer's data should be environmental, since the same customer instance can buy in both environments!
+	 *
+	 * @since TBD
+	 *
+	 * @param string $option     The option name.
+	 * @param array  $args       Additional arguments.
+	 * @param bool   $by_default The default value if the option is not set.
+	 *
+	 * @return mixed The environmental option value.
+	 */
+	public static function get_environmental_option( string $option, array $args = [], bool $by_default = false ) {
+		return tribe_get_option( self::get_environmental_key( $option, $args ), $by_default );
+	}
+
+	/**
+	 * Wrapper for tribe_update_option that allows for environmental options.
+	 *
+	 * Consider WHAT should be environmental and WHAT should not before using any of those methods.
+	 *
+	 * For example, an order's data should NOT be environmental, as it's specific to a single order that it happened in a specific environment.
+	 * BUT an event's or a ticket's data should be environmental since those can be used BOTH in sandbox and live environments.
+	 * A customer's data should be environmental, since the same customer instance can buy in both environments!
+	 *
+	 * @since TBD
+	 *
+	 * @param string $option The option name.
+	 * @param mixed  $value  The value to set.
+	 * @param array  $args   Additional arguments.
+	 *
+	 * @return bool Whether the option was updated.
+	 */
+	public static function set_environmental_option( string $option, $value, array $args = [] ): bool {
+		return tribe_update_option( self::get_environmental_key( $option, $args ), $value );
+	}
+
+	/**
+	 * Wrapper for tribe_remove_option that allows for environmental options.
+	 *
+	 * Consider WHAT should be environmental and WHAT should not before using any of those methods.
+	 *
+	 * For example, an order's data should NOT be environmental, as it's specific to a single order that it happened in a specific environment.
+	 * BUT an event's or a ticket's data should be environmental since those can be used BOTH in sandbox and live environments.
+	 * A customer's data should be environmental, since the same customer instance can buy in both environments!
+	 *
+	 * @since TBD
+	 *
+	 * @param string $option The option name.
+	 * @param array  $args   Additional arguments.
+	 *
+	 * @return bool Whether the option was deleted.
+	 */
+	public static function delete_environmental_option( string $option, array $args = [] ): bool {
+		return tribe_remove_option( self::get_environmental_key( $option, $args ) );
+	}
+
+	/**
+	 * Wrapper for get_metadata that allows for environmental meta.
+	 *
+	 * Consider WHAT should be environmental and WHAT should not before using any of those methods.
+	 *
+	 * For example, an order's data should NOT be environmental, as it's specific to a single order that it happened in a specific environment.
+	 * BUT an event's or a ticket's data should be environmental since those can be used BOTH in sandbox and live environments.
+	 * A customer's data should be environmental, since the same customer instance can buy in both environments!
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $id       The ID of the object.
+	 * @param string $meta_key The meta key.
+	 * @param array  $args     Additional arguments.
+	 * @param string $type     The type of object.
+	 * @param bool   $single   Whether to return a single value.
+	 *
+	 * @return mixed The environmental meta value.
+	 */
+	public static function get_environmental_meta( int $id, string $meta_key, array $args = [], string $type = 'post', bool $single = true ) {
+		return get_metadata( $type, $id, self::get_environmental_key( $meta_key, $args ), $single );
+	}
+
+	/**
+	 * Wrapper for add_metadata that allows for environmental meta.
+	 *
+	 * Consider WHAT should be environmental and WHAT should not before using any of those methods.
+	 *
+	 * For example, an order's data should NOT be environmental, as it's specific to a single order that it happened in a specific environment.
+	 * BUT an event's or a ticket's data should be environmental since those can be used BOTH in sandbox and live environments.
+	 * A customer's data should be environmental, since the same customer instance can buy in both environments!
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $id         The ID of the object.
+	 * @param string $meta_key   The meta key.
+	 * @param mixed  $value      The value to add.
+	 * @param array  $args       Additional arguments.
+	 * @param string $type       The type of object.
+	 *
+	 * @return bool Whether the meta was added.
+	 */
+	public static function add_environmental_meta( int $id, string $meta_key, $value, array $args = [], string $type = 'post' ): bool {
+		// Make sure meta is added to the post, not a revision.
+		$the_post = 'post' === $type ? wp_is_post_revision( $id ) : false;
+		if ( $the_post ) {
+			$id = $the_post;
+		}
+
+		return add_metadata( $type, $id, self::get_environmental_key( $meta_key, $args ), $value );
+	}
+
+	/**
+	 * Wrapper for update_metadata that allows for environmental meta.
+	 *
+	 * Consider WHAT should be environmental and WHAT should not before using any of those methods.
+	 *
+	 * For example, an order's data should NOT be environmental, as it's specific to a single order that it happened in a specific environment.
+	 * BUT an event's or a ticket's data should be environmental since those can be used BOTH in sandbox and live environments.
+	 * A customer's data should be environmental, since the same customer instance can buy in both environments!
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $id         The ID of the object.
+	 * @param string $meta_key   The meta key.
+	 * @param mixed  $value      The value to update.
+	 * @param array  $args       Additional arguments.
+	 * @param string $type       The type of object.
+	 *
+	 * @return bool Whether the meta was updated.
+	 */
+	public static function set_environmental_meta( int $id, string $meta_key, $value, array $args = [], string $type = 'post' ): bool {
+		$the_post = 'post' === $type ? wp_is_post_revision( $id ) : false;
+		if ( $the_post ) {
+			$id = $the_post;
+		}
+
+		return (bool) update_metadata( $type, $id, self::get_environmental_key( $meta_key, $args ), $value );
+	}
+
+	/**
+	 * Wrapper for delete_metadata that allows for environmental meta.
+	 *
+	 * Consider WHAT should be environmental and WHAT should not before using any of those methods.
+	 *
+	 * For example, an order's data should NOT be environmental, as it's specific to a single order that it happened in a specific environment.
+	 * BUT an event's or a ticket's data should be environmental since those can be used BOTH in sandbox and live environments.
+	 * A customer's data should be environmental, since the same customer instance can buy in both environments!
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $id         The ID of the object.
+	 * @param string $meta_key   The meta key.
+	 * @param array  $args       Additional arguments.
+	 * @param string $type       The type of object.
+	 * @param mixed  $meta_value The value to delete.
+	 *
+	 * @return bool Whether the meta was deleted.
+	 */
+	public static function delete_environmental_meta( int $id, string $meta_key, array $args = [], string $type = 'post', $meta_value = '' ): bool {
+		$the_post = 'post' === $type ? wp_is_post_revision( $id ) : false;
+		if ( $the_post ) {
+			$id = $the_post;
+		}
+
+		return delete_metadata( $type, $id, self::get_environmental_key( $meta_key, $args ), $meta_value );
+	}
+
+	/**
+	 * Get the environmental key.
+	 *
+	 * Consider WHAT should be environmental and WHAT should not before using any of those methods.
+	 *
+	 * For example, an order's data should NOT be environmental, as it's specific to a single order that it happened in a specific environment.
+	 * BUT an event's or a ticket's data should be environmental since those can be used BOTH in sandbox and live environments.
+	 * A customer's data should be environmental, since the same customer instance can buy in both environments!
+	 *
+	 * @since TBD
+	 *
+	 * @param string $option The option name.
+	 * @param array  $args   Additional arguments.
+	 *
+	 * @return string The environmental key.
+	 */
+	public static function get_environmental_key( string $option, array $args = [] ): string {
+		$mode = tribe( Merchant::class )->is_test_mode() ? 'sandbox' : 'live';
+		return sprintf( $option, $mode, ...$args );
+	}
 }

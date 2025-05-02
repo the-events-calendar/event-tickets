@@ -13,6 +13,7 @@ use WP_Query;
 use TEC\Tickets\Commerce\Gateways\Square\Requests;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
+use TEC\Tickets\Commerce\Gateways\Square\Settings;
 
 /**
  * Class Tickets_Sync
@@ -143,7 +144,7 @@ class Items_Sync {
 			return;
 		}
 
-		tribe_update_option( sprintf( Sync_Controller::OPTION_SYNC_ACTIONS_IN_PROGRESS, $ticket_able_post_type ), time() );
+		Settings::set_environmental_option( Sync_Controller::OPTION_SYNC_ACTIONS_IN_PROGRESS, time(), [ $ticket_able_post_type ] );
 
 		// Reschedules itself to continue in 2 minutes.
 		$regulator->schedule( self::HOOK_SYNC_ACTION, [ $ticket_able_post_type ], MINUTE_IN_SECONDS * 2, false );
@@ -156,7 +157,7 @@ class Items_Sync {
 			$tickets = $this->sync_event( $post_id, false );
 
 			if ( ! $tickets ) {
-				update_post_meta( $post_id, Item::SQUARE_SYNCED_META, false );
+				Settings::set_environmental_meta( $post_id, Item::SQUARE_SYNCED_META, false );
 				continue;
 			}
 
@@ -174,7 +175,7 @@ class Items_Sync {
 		$discarded_objects = tribe_cache()['square_items_sync_discarded_objects'] ?? [];
 
 		foreach ( $discarded_objects as $post_id ) {
-			update_post_meta( $post_id, Item::SQUARE_SYNCED_META, false );
+			Settings::set_environmental_meta( $post_id, Item::SQUARE_SYNCED_META, false );
 		}
 	}
 

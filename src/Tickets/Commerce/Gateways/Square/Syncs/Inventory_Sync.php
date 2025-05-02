@@ -13,7 +13,7 @@ use WP_Query;
 use TEC\Tickets\Commerce\Gateways\Square\Requests;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
-
+use TEC\Tickets\Commerce\Gateways\Square\Settings;
 /**
  * Class Tickets_Sync
  *
@@ -113,8 +113,8 @@ class Inventory_Sync {
 		);
 
 		if ( ! $query->have_posts() ) {
-			tribe_update_option( sprintf( Sync_Controller::OPTION_SYNC_ACTIONS_COMPLETED, $ticket_able_post_type ), time() );
-			tribe_remove_option( sprintf( Sync_Controller::OPTION_SYNC_ACTIONS_IN_PROGRESS, $ticket_able_post_type ) );
+			Settings::set_environmental_option( Sync_Controller::OPTION_SYNC_ACTIONS_COMPLETED, time(), [ $ticket_able_post_type ] );
+			Settings::delete_environmental_option( Sync_Controller::OPTION_SYNC_ACTIONS_IN_PROGRESS, [ $ticket_able_post_type ] );
 
 			if ( Sync_Controller::is_sync_in_progress( false ) ) {
 				// Another post type is still syncing.
@@ -255,8 +255,8 @@ class Inventory_Sync {
 	 * @return void
 	 */
 	protected function clean_up_synced_meta( int $object_id, bool $force_add_history = false ): void {
-		$square_synced = get_post_meta( $object_id, Item::SQUARE_SYNCED_META, true );
-		delete_post_meta( $object_id, Item::SQUARE_SYNCED_META );
+		$square_synced = Settings::get_environmental_meta( $object_id, Item::SQUARE_SYNCED_META );
+		Settings::delete_environmental_meta( $object_id, Item::SQUARE_SYNCED_META );
 
 		if ( ! $force_add_history && ! $square_synced ) {
 			return;
@@ -264,12 +264,12 @@ class Inventory_Sync {
 
 		$square_synced = $square_synced && $square_synced > time() - DAY_IN_SECONDS ? $square_synced : time();
 
-		$history = get_post_meta( $object_id, Item::SQUARE_SYNC_HISTORY_META );
+		$history = Settings::get_environmental_meta( $object_id, Item::SQUARE_SYNC_HISTORY_META, [], 'post', false );
 		if ( is_array( $history ) && count( $history ) > 9 ) {
 			$history = array_slice( $history, -9 );
 		}
 
-		add_post_meta( $object_id, Item::SQUARE_SYNC_HISTORY_META, $square_synced );
+		Settings::add_environmental_meta( $object_id, Item::SQUARE_SYNC_HISTORY_META, $square_synced );
 	}
 
 	/**
@@ -283,7 +283,7 @@ class Inventory_Sync {
 		$ticket_able_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
 
 		foreach ( $ticket_able_post_types as $ticket_able_post_type ) {
-			tribe_remove_option( sprintf( Sync_Controller::OPTION_SYNC_ACTIONS_IN_PROGRESS, $ticket_able_post_type ) );
+			Settings::delete_environmental_option( Sync_Controller::OPTION_SYNC_ACTIONS_IN_PROGRESS, [ $ticket_able_post_type ] );
 		}
 
 		/**

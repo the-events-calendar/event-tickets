@@ -14,7 +14,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects;
 
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use WP_Post;
-
+use TEC\Tickets\Commerce\Gateways\Square\Settings;
 /**
  * Class Event_Item
  *
@@ -42,7 +42,7 @@ class Event_Item extends Item {
 	 *
 	 * @var string
 	 */
-	protected const SQUARE_LATEST_OBJECT_SNAPSHOT = '_tec_tickets_commerce_square_latest_object_snapshot';
+	protected const SQUARE_LATEST_OBJECT_SNAPSHOT = '_tec_tickets_commerce_square_latest_object_snapshot_%s';
 
 	// phpcs:disable Squiz.PHP.CommentedOutCode.Found, Squiz.Commenting.InlineComment.InvalidEndChar
 	/**
@@ -241,7 +241,7 @@ class Event_Item extends Item {
 	public function on_sync_object( array $square_object ): void {
 		parent::on_sync_object( $square_object );
 
-		update_post_meta( $this->get_wp_id(), self::SQUARE_LATEST_OBJECT_SNAPSHOT, md5( wp_json_encode( $this ) ) );
+		Settings::set_environmental_meta( $this->get_wp_id(), self::SQUARE_LATEST_OBJECT_SNAPSHOT, md5( wp_json_encode( $this ) ) );
 	}
 
 	/**
@@ -255,7 +255,7 @@ class Event_Item extends Item {
 	 */
 	public static function delete( int $id ): void {
 		parent::delete( $id );
-		delete_post_meta( $id, self::SQUARE_LATEST_OBJECT_SNAPSHOT );
+		Settings::delete_environmental_meta( $id, self::SQUARE_LATEST_OBJECT_SNAPSHOT );
 	}
 
 	/**
@@ -266,7 +266,7 @@ class Event_Item extends Item {
 	 * @return bool Whether the object needs to be synced.
 	 */
 	public function needs_sync(): bool {
-		$latest_snapshot = get_post_meta( $this->get_wp_id(), self::SQUARE_LATEST_OBJECT_SNAPSHOT, true );
+		$latest_snapshot = Settings::get_environmental_meta( $this->get_wp_id(), self::SQUARE_LATEST_OBJECT_SNAPSHOT );
 
 		if ( ! $latest_snapshot ) {
 			return true;

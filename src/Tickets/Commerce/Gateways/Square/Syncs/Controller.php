@@ -42,7 +42,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	public const OPTION_SYNC_ACTIONS_IN_PROGRESS = 'tickets_commerce_square_sync_ptypes_in_progress_%s';
+	public const OPTION_SYNC_ACTIONS_IN_PROGRESS = 'tickets_commerce_square_sync_ptypes_in_progress_%s_%s';
 
 	/**
 	 * The option that marks the sync action as completed.
@@ -51,7 +51,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	public const OPTION_SYNC_ACTIONS_COMPLETED = 'tickets_commerce_square_sync_ptypes_completed_%s';
+	public const OPTION_SYNC_ACTIONS_COMPLETED = 'tickets_commerce_square_sync_ptypes_completed_%s_%s';
 
 	/**
 	 * The option that marks the sync action as completed.
@@ -60,7 +60,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	public const OPTION_SYNC_LATEST_TIMESTAMP = 'tickets_commerce_square_sync_latest_timestamp';
+	public const OPTION_SYNC_LATEST_TIMESTAMP = 'tickets_commerce_square_sync_latest_timestamp_%s';
 
 	/**
 	 * The merchant.
@@ -262,7 +262,7 @@ class Controller extends Controller_Contract {
 		$ticket_able_to_sync = [];
 
 		foreach ( $ticket_able_post_types as $ticket_able_post_type ) {
-			if ( tribe_get_option( sprintf( self::OPTION_SYNC_ACTIONS_COMPLETED, $ticket_able_post_type ), false ) ) {
+			if ( Settings::get_environmental_option( self::OPTION_SYNC_ACTIONS_COMPLETED, [ $ticket_able_post_type ] ) ) {
 				continue;
 			}
 
@@ -293,7 +293,7 @@ class Controller extends Controller_Contract {
 	public static function is_sync_in_progress(): bool {
 		$ticket_able_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
 		foreach ( $ticket_able_post_types as $ticket_able_post_type ) {
-			if ( tribe_get_option( sprintf( self::OPTION_SYNC_ACTIONS_IN_PROGRESS, $ticket_able_post_type ), false ) ) {
+			if ( Settings::get_environmental_option( self::OPTION_SYNC_ACTIONS_IN_PROGRESS, [ $ticket_able_post_type ] ) ) {
 				return true;
 			}
 		}
@@ -323,8 +323,8 @@ class Controller extends Controller_Contract {
 
 		$settings = $new_options;
 
-		$progress_option  = sprintf( self::OPTION_SYNC_ACTIONS_IN_PROGRESS, $post_type );
-		$completed_option = sprintf( self::OPTION_SYNC_ACTIONS_COMPLETED, $post_type );
+		$progress_option  = Settings::get_environmental_key( self::OPTION_SYNC_ACTIONS_IN_PROGRESS, [ $post_type ] );
+		$completed_option = Settings::get_environmental_key( self::OPTION_SYNC_ACTIONS_COMPLETED, [ $post_type ] );
 
 		foreach ( array_keys( $settings ) as $key ) {
 			if ( ! str_starts_with( $key, $progress_option ) && ! str_starts_with( $key, $completed_option ) ) {
@@ -336,7 +336,7 @@ class Controller extends Controller_Contract {
 
 		if ( ! $post_type ) {
 			// This is a global reset, so we need to unset the latest timestamp option.
-			unset( $settings[ self::OPTION_SYNC_LATEST_TIMESTAMP ] );
+			unset( $settings[ Settings::get_environmental_key( self::OPTION_SYNC_LATEST_TIMESTAMP ) ] );
 		}
 
 		add_action(
