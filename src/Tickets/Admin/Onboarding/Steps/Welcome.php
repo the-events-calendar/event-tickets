@@ -1,6 +1,6 @@
 <?php
 /**
- * Optin step for the onboarding wizard.
+ * Welcome step for the onboarding wizard.
  *
  * @since TBD
  *
@@ -11,17 +11,18 @@ namespace TEC\Tickets\Admin\Onboarding\Steps;
 
 use TEC\Common\Admin\Onboarding\Steps\Abstract_Step;
 use TEC\Common\Telemetry\Telemetry as Common_Telemetry;
+use TEC\Tickets\Settings;
 use WP_REST_Response;
 use WP_REST_Request;
 
 /**
- * Optin step for the onboarding wizard.
+ * Welcome step for the onboarding wizard.
  *
  * @since TBD
  *
  * @package TEC\Tickets\Admin\Onboarding\Steps
  */
-class Optin extends Abstract_Step {
+class Welcome extends Abstract_Step {
 	/**
 	 * The tab number for this step.
 	 *
@@ -32,7 +33,7 @@ class Optin extends Abstract_Step {
 	public const TAB_NUMBER = 0;
 
 	/**
-	 * Process the optin data.
+	 * Process the welcome step data.
 	 *
 	 * @since TBD
 	 *
@@ -51,6 +52,9 @@ class Optin extends Abstract_Step {
 
 		// Save the option.
 		$option = tribe_update_option( 'opt-in-status', $optin );
+
+		// Enable Tickets Commerce.
+		$commerce_optin = tribe_update_option( Settings::$tickets_commerce_enabled, $optin );
 
 		if ( ! $option ) {
 			return $this->add_fail_message( $response, __( 'Failed to save opt-in status.', 'event-tickets' ) );

@@ -321,7 +321,7 @@ class Settings {
 			],
 			'tickets-commerce-settings-currency-heading'     => [
 				'type' => 'html',
-				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'Currency', 'event-tickets' ) . '</h3>',
+				'html' => '<h3 id="tickets-commerce-settings-currency" class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'Currency', 'event-tickets' ) . '</h3>',
 			],
 			static::$option_currency_code                    => [
 				'type'            => 'dropdown',
@@ -509,7 +509,7 @@ class Settings {
 							],
 						],
 						'classes'           => [],
-						'container_classes' => [ 'tec-settings-form__element--with-border-bottom' ],
+						'container_classes' => [ 'tec-settings-form__content-section' ],
 					]
 				),
 			],
