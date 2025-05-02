@@ -3,15 +3,22 @@
         "type": "checkbox",
         "label": "Require Login"
     },
+    "ticket-telemetry-optin-heading-div-start": {
+        "type": "html",
+        "html": "<div class=\"tec-settings-form__content-section\">"
+    },
     "ticket-telemetry-optin-heading": {
         "type": "html",
-        "html": "<h3 id=\"event-tickets-telemetry-settings\" class=\"tec-settings-form__section-header\">Telemetry</h3>"
+        "html": "<h3 id=\"event-tickets-telemetry-settings\" class=\"tec-settings-form__section-header tec-settings-form__section-header--sub\">Data sharing consent</h3>"
     },
     "opt-in-status": {
         "type": "checkbox_bool",
-        "label": "Opt in to Telemetry",
-        "tooltip": "Enable this option to share usage data with Event Tickets and StellarWP. <a href=\" https://evnt.is/1bcl \">What permissions are being granted?</a> <a href=\" https://evnt.is/1bcm \">Read our Terms of Service</a> <a href=\" https://evnt.is/1bcn \">Read our Privacy Policy</a>",
+        "tooltip": "Enable this option to share usage data with Event Tickets and StellarWP.\n\t\t\tThis activates access to TEC AI chatbot and in-app priority support for premium users.\n\t\t\t<br/><a href=\"https://evnt.is/1bcl\">What permissions are being granted?</a>\n\t\t\t<br/><a href=\"https://evnt.is/1bcm\">Read our terms of service</a>.\n\t\t\t<br/><a href=\"https://evnt.is/1bcn\">Read our privacy policy</a>.",
         "default": false,
         "validation_type": "boolean"
+    },
+    "ticket-telemetry-optin-heading-div-end": {
+        "type": "html",
+        "html": "</div>"
     }
 }
