@@ -52,7 +52,8 @@ class Settings extends Abstract_Step {
 
 		tribe_update_option( Tickets_Commerce_Settings::$tickets_commerce_enabled, (bool) $settings['paymentOption'] );
 
-		tribe_update_option( Currency::$currency_code_option, $settings['currency'] );
+		$currency = $settings['currency'] ?? Currency::DEFAULT_CURRENCY;
+		tribe_update_option( Currency::$currency_code_option, $currency );
 
 		// Update the option.
 		$updated = tribe( API::class )->update_wizard_settings( $settings );
