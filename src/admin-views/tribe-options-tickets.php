@@ -302,7 +302,7 @@ $auth_fields = [
 	// Authentication Requirements description.
 	'auth-description'                           => [
 		'type' => 'html',
-		'html' => '<div class="tec-settings-form__description"><p>' .
+		'html' => '<fieldset><div class="tec-settings-form__description"><p>' .
 					sprintf(
 					// Translators: %1$s: singular RSVP label, %2$s: plural tickets label in lowercase, %3$s: opening link tag to WP general settings, %4$s: closing link tag.
 						_x(
@@ -315,7 +315,7 @@ $auth_fields = [
 						'<a href="' . esc_url( get_admin_url( null, 'options-general.php' ) ) . '" target="_blank">',
 						'</a>'
 					) .
-					'</p></div>',
+					'</p></div></fieldset>',
 	],
 	// Authentication Requirements field.
 	'ticket-authentication-requirements'         => [
