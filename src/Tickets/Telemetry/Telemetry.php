@@ -89,14 +89,7 @@ class Telemetry {
 	 */
 	public function filter_tribe_tickets_settings_tab_fields(  $fields ): array {
 		$status = Config::get_container()->get( Status::class );
-		$opted  = $status->get();
 
-		switch ( $opted ) {
-			case $status::STATUS_ACTIVE:
-				$label = esc_html_x( 'Opt out of Telemetry', 'Settings label for opting out of Telemetry.', 'the-events-calendar' );
-			default:
-				$label = esc_html_x( 'Opt in to Telemetry', 'the-events-calendar' );
-		}
 		$opt_in_status['ticket-telemetry-optin-heading-div-start'] = [
 			'type' => 'html',
 			'html' => '<div class="tec-settings-form__content-section">',

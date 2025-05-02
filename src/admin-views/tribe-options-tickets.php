@@ -377,8 +377,8 @@ $tickets_fields = array_merge(
  *
  * @since 5.1.6
  *
- * @see   Tribe__Settings_Tab
- * @see   Tribe__Field
+ * @see Tribe__Settings_Tab
+ * @see Tribe__Field
  *
  * @param array<string, array{
  *     type: string,
