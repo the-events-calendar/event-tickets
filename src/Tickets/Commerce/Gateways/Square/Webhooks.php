@@ -107,99 +107,38 @@ class Webhooks extends Controller_Contract {
 	}
 
 	/**
-	 * Register a webhook with Square.
+	 * Register a webhook endpoint with WhoDat.
 	 *
 	 * @since TBD
 	 *
-	 * @return array|WP_Error The webhook data or WP_Error on failure.
+	 * @return true|WP_Error The webhook data or WP_Error on failure.
 	 */
-	public function register_webhook() {
+	public function register_webhook_endpoint() {
 		$endpoint_url = $this->get_webhook_endpoint_url();
-		$whodat       = tribe( WhoDat::class );
-
-		// First check if we have any existing webhooks.
-		$existing_webhook_id = tribe_get_option( self::OPTION_WEBHOOK_ID );
-
-		// If we have a stored webhook ID, try to delete it first.
-		if ( ! empty( $existing_webhook_id ) ) {
-			$this->unregister_webhook();
-		}
-
-		// Even if we don't have a stored ID, check for any webhooks with our endpoint URL.
-		$webhooks = $whodat->get_webhooks();
-
-		if ( ! empty( $webhooks['subscriptions'] ) ) {
-			foreach ( $webhooks['subscriptions'] as $subscription ) {
-				if ( ! isset( $subscription['notification_url'] ) ) {
-					continue;
-				}
-
-				if ( ! $this->urls_match( $subscription['notification_url'], $endpoint_url ) ) {
-					continue;
-				}
-
-				// Delete this webhook as it matches our URL.
-				$delete_response = $whodat->delete_webhook( $subscription['id'] );
-
-				do_action(
-					'tribe_log',
-					'info',
-					'Deleted existing Square webhook with matching URL',
-					[
-						'source'     => 'tickets-commerce-square',
-						'webhook_id' => $subscription['id'],
-						'url'        => $subscription['notification_url'],
-					]
-				);
-			}
-		}
+		$merchant_id  = tribe( Merchant::class )->get_merchant_id();
 
 		// Now register the new webhook with the appropriate event types and API version.
-		$response = $whodat->register_webhook( $endpoint_url );
+		$response = tribe( WhoDat::class )->register_webhook_endpoint( $endpoint_url, $merchant_id );
 
-		if (
-			empty( $response )
-			|| isset( $response['errors'] )
-			|| empty( $response['subscription'] )
-		) {
-			// Check if we hit the webhook subscription limit.
-			$has_limit_error = isset( $response['errors'] ) && array_reduce(
-				$response['errors'],
-				fn( $carry, $error ) => $carry || ( isset( $error['detail'] ) && 'Limit reached for subscription' === $error['detail'] ),
-				false
-			);
+		if ( is_wp_error( $response ) ) {
+			return $response;
+		}
 
-			if ( $has_limit_error ) {
-				return new WP_Error(
-					'tec-tickets-commerce-square-webhook-limit',
-					__( 'Unable to register webhook - subscription limit reached. Please remove unused webhooks from your Square account.', 'event-tickets' )
-				);
-			}
-
-			do_action(
-				'tribe_log',
-				'error',
-				'Failed to register Square webhook',
-				[
-					'source'   => 'tickets-commerce-square',
-					'response' => $response ?? 'Empty response',
-				]
-			);
-			return new WP_Error(
-				'tec-tickets-commerce-square-webhook-registration-failed',
-				__( 'Failed to register Square webhook. Please check your Square account for more information.', 'event-tickets' )
-			);
+		if ( empty( $response['subscription'] ) ) {
+			return new WP_Error( 'tec_tickets_commerce_square_webhook_registration_failed', __( 'Failed to register webhook endpoint for Square. Please check your connection settings and try again.', 'event-tickets' ) );
 		}
 
 		$subscription = $response['subscription'];
 
 		// Store the webhook ID and signature.
-		if ( ! empty( $subscription['id'] ) ) {
-			tribe_update_option( self::OPTION_WEBHOOK, $subscription );
-			tribe_update_option( self::OPTION_WEBHOOK_ID, $subscription['id'] );
+		if ( empty( $subscription['id'] ) ) {
+			return new WP_Error( 'tec_tickets_commerce_square_webhook_registration_failed', __( 'Failed to register webhook endpoint for Square. Please check your connection settings and try again.', 'event-tickets' ) );
 		}
 
-		return $response;
+		tribe_update_option( self::OPTION_WEBHOOK, $subscription );
+		tribe_update_option( self::OPTION_WEBHOOK_ID, $subscription['id'] );
+
+		return true;
 	}
 
 	/**
@@ -267,30 +206,6 @@ class Webhooks extends Controller_Contract {
 		$url2 = untrailingslashit( $url2 );
 
 		return $url1 == $url2;
-	}
-
-	/**
-	 * Remove a webhook from Square.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool Success or failure.
-	 */
-	public function unregister_webhook() {
-		$webhook_id = tribe_get_option( self::OPTION_WEBHOOK_ID );
-
-		if ( empty( $webhook_id ) ) {
-			return false;
-		}
-
-		$whodat   = tribe( WhoDat::class );
-		$response = $whodat->delete_webhook( $webhook_id );
-
-		// Clean up stored webhook data.
-		tribe_remove_option( self::OPTION_WEBHOOK_ID );
-		tribe_remove_option( self::OPTION_WEBHOOK );
-
-		return empty( $response['error'] );
 	}
 
 	/**
@@ -475,11 +390,8 @@ class Webhooks extends Controller_Contract {
 			);
 		}
 
-		// Unregister existing webhook if any.
-		$this->unregister_webhook();
-
 		// Register new webhook.
-		$response = $this->register_webhook();
+		$response = $this->register_webhook_endpoint();
 
 		if ( is_wp_error( $response ) ) {
 			wp_send_json_error( $response );
@@ -491,7 +403,7 @@ class Webhooks extends Controller_Contract {
 		) {
 			wp_send_json_error(
 				[
-					'message'  => __( 'Failed to register webhook with Square. Please check your connection settings and try again.', 'event-tickets' ),
+					'message'  => __( 'Failed to register webhook endpoint for Square. Please check your connection settings and try again.', 'event-tickets' ),
 					'response' => $response,
 				]
 			);
@@ -499,8 +411,7 @@ class Webhooks extends Controller_Contract {
 
 		wp_send_json_success(
 			[
-				'message'    => __( 'Webhook successfully registered with Square.', 'event-tickets' ),
-				'webhook_id' => tribe_get_option( self::OPTION_WEBHOOK_ID ),
+				'message' => __( 'Webhook endpoint successfully registered with Square.', 'event-tickets' ),
 			]
 		);
 	}
@@ -516,14 +427,6 @@ class Webhooks extends Controller_Contract {
 		$webhook = $this->get_webhook();
 
 		if ( empty( $webhook ) || ! isset( $webhook['id'] ) ) {
-			return false;
-		}
-
-		if ( ! $this->is_api_version_current() ) {
-			return false;
-		}
-
-		if ( ! $this->is_event_types_current() ) {
 			return false;
 		}
 
