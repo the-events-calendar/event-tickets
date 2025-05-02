@@ -14,6 +14,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects;
 
 use JsonSerializable;
 use TEC\Tickets\Commerce\Gateways\Square\Merchant;
+use TEC\Tickets\Commerce\Gateways\Square\Settings;
 
 /**
  * Abstract Class Item
@@ -42,7 +43,7 @@ abstract class Item implements JsonSerializable {
 	 *
 	 * @var string
 	 */
-	public const SQUARE_ID_META = '_tec_tickets_commerce_square_object_id';
+	public const SQUARE_ID_META = '_tec_tickets_commerce_square_object_id_%s';
 
 	/**
 	 * Meta key for storing the Square object version.
@@ -51,7 +52,7 @@ abstract class Item implements JsonSerializable {
 	 *
 	 * @var string
 	 */
-	public const SQUARE_VERSION_META = '_tec_tickets_commerce_square_version';
+	public const SQUARE_VERSION_META = '_tec_tickets_commerce_square_version_%s';
 
 	/**
 	 * Meta key for storing the last sync timestamp.
@@ -60,7 +61,7 @@ abstract class Item implements JsonSerializable {
 	 *
 	 * @var string
 	 */
-	public const SQUARE_SYNCED_META = '_tec_tickets_commerce_square_synced';
+	public const SQUARE_SYNCED_META = '_tec_tickets_commerce_square_synced_%s';
 
 	/**
 	 * Meta key for storing the sync history.
@@ -69,7 +70,7 @@ abstract class Item implements JsonSerializable {
 	 *
 	 * @var string
 	 */
-	public const SQUARE_SYNC_HISTORY_META = '_tec_tickets_commerce_square_sync_history';
+	public const SQUARE_SYNC_HISTORY_META = '_tec_tickets_commerce_square_sync_history_%s';
 
 	/**
 	 * The type of Square catalog item this class represents.
@@ -133,7 +134,7 @@ abstract class Item implements JsonSerializable {
 	 * @return string The remote object ID.
 	 */
 	public static function get_remote_object_id( int $id ): string {
-		return (string) get_post_meta( $id, self::SQUARE_ID_META, true );
+		return (string) Settings::get_environmental_meta( $id, self::SQUARE_ID_META );
 	}
 
 	/**
@@ -146,10 +147,10 @@ abstract class Item implements JsonSerializable {
 	 * @return void
 	 */
 	public static function delete( int $id ): void {
-		delete_post_meta( $id, self::SQUARE_ID_META );
-		delete_post_meta( $id, self::SQUARE_SYNCED_META );
-		delete_post_meta( $id, self::SQUARE_VERSION_META );
-		delete_post_meta( $id, self::SQUARE_SYNC_HISTORY_META );
+		Settings::delete_environmental_meta( $id, self::SQUARE_ID_META );
+		Settings::delete_environmental_meta( $id, self::SQUARE_SYNCED_META );
+		Settings::delete_environmental_meta( $id, self::SQUARE_VERSION_META );
+		Settings::delete_environmental_meta( $id, self::SQUARE_SYNC_HISTORY_META );
 	}
 
 	/**
@@ -172,7 +173,7 @@ abstract class Item implements JsonSerializable {
 	 */
 	public function to_array(): array {
 		$this->get_id();
-		$version = (int) get_post_meta( $this->get_wp_id(), self::SQUARE_VERSION_META, true );
+		$version = (int) Settings::get_environmental_meta( $this->get_wp_id(), self::SQUARE_VERSION_META );
 		if ( $version ) {
 			$this->data['version'] = $version;
 		}
@@ -272,7 +273,7 @@ abstract class Item implements JsonSerializable {
 
 		$this->data['id'] = $square_object_id;
 
-		update_post_meta( $this->get_wp_id(), self::SQUARE_ID_META, $square_object_id );
+		Settings::set_environmental_meta( $this->get_wp_id(), self::SQUARE_ID_META, $square_object_id );
 	}
 
 	/**
@@ -285,10 +286,10 @@ abstract class Item implements JsonSerializable {
 	 * @return void
 	 */
 	public function on_sync_object( array $square_object ): void {
-		update_post_meta( $this->get_wp_id(), self::SQUARE_SYNCED_META, time() );
+		Settings::set_environmental_meta( $this->get_wp_id(), self::SQUARE_SYNCED_META, time() );
 
 		if ( isset( $square_object['version'] ) ) {
-			update_post_meta( $this->get_wp_id(), self::SQUARE_VERSION_META, $square_object['version'] );
+			Settings::set_environmental_meta( $this->get_wp_id(), self::SQUARE_VERSION_META, $square_object['version'] );
 		}
 
 		/**
