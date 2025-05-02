@@ -226,7 +226,7 @@ class Items_Sync {
 	 *
 	 * @return void
 	 */
-	protected function process_batch( array $batch ): void {
+	public function process_batch( array $batch ): void {
 		$square_batches = $this->remote_objects->transform_batch( $batch );
 
 		if ( empty( $square_batches ) ) {

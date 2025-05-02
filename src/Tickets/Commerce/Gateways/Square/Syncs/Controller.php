@@ -125,6 +125,7 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
+		$this->container->register( Integrity_Controller::class );
 		$this->container->register_on_action( 'tec_events_fully_loaded', Tec_Event_Details_Provider::class );
 
 		add_action( 'init', [ $this, 'schedule_batch_sync' ] );
@@ -145,6 +146,8 @@ class Controller extends Controller_Contract {
 		if ( ! $this->settings->is_inventory_sync_enabled() ) {
 			return;
 		}
+
+		$this->container->get( Integrity_Controller::class )->unregister();
 
 		if ( $this->container->isBound( Tec_Event_Details_Provider::class ) ) {
 			$this->container->get( Tec_Event_Details_Provider::class )->unregister();
