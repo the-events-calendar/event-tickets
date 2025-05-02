@@ -12,8 +12,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { ActionButton } from '@moderntribe/tickets/elements';
-import { Settings } from '@moderntribe/tickets/icons';
+import { ActionButton } from '../../../../../../../modules/elements';
+import { Settings } from '../../../../../../../modules/icons';
 
 const SettingsActionButton = ( { onClick } ) => (
 	<ActionButton icon={ <Settings /> } onClick={ onClick }>

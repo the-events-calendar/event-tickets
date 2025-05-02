@@ -29,24 +29,18 @@ class RSVPAdvancedOptions extends PureComponent {
 		this.accordionId = uniqid();
 	}
 
-	getContent = () => (
-		<Fragment>
-		</Fragment>
-	);
+	getContent = () => <Fragment></Fragment>;
 
 	getHeader = () => (
 		<Fragment>
-			<Dashicon
-				className="tribe-editor__rsvp__advanced-options-header-icon"
-				icon="arrow-down"
-			/>
+			<Dashicon className="tribe-editor__rsvp__advanced-options-header-icon" icon="arrow-down" />
 			<span className="tribe-editor__rsvp__advanced-options-header-text">
 				{ __( 'Advanced Options', 'event-tickets' ) }
 			</span>
 		</Fragment>
 	);
 
-	getRows = () => ( [
+	getRows = () => [
 		{
 			accordionId: this.accordionId,
 			content: this.getContent(),
@@ -55,15 +49,10 @@ class RSVPAdvancedOptions extends PureComponent {
 			headerAttrs: { disabled: this.props.isDisabled },
 			headerClassName: 'tribe-editor__rsvp__advanced-options-header',
 		},
-	] );
+	];
 
 	render() {
-		return (
-			<Accordion
-				className="tribe-editor__rsvp__advanced-options"
-				rows={ this.getRows() }
-			/>
-		);
+		return <Accordion className="tribe-editor__rsvp__advanced-options" rows={ this.getRows() } />;
 	}
 }
 

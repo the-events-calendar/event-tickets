@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
  */
 import './style.pcss';
 
-const CapacityRow = ({label = '', items = '', right = ''}) => (
+const CapacityRow = ( { label = '', items = '', right = '' } ) => (
 	<div className="tribe-editor__tickets__capacity-row">
 		<span className="tribe-editor__tickets__capacity-row-left">
 			{ label && <span className="tribe-editor__tickets__capacity-row-label">{ label }</span> }
