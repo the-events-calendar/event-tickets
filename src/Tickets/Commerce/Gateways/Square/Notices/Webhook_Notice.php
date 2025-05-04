@@ -105,7 +105,11 @@ class Webhook_Notice {
 			return false;
 		}
 
-		if ( ! $this->webhooks->is_webhook_healthy() ) {
+		if ( $this->webhooks->is_webhook_expired() ) {
+			return true;
+		}
+
+		if ( $this->webhooks->is_webhook_healthy() ) {
 			return false;
 		}
 
@@ -127,17 +131,10 @@ class Webhook_Notice {
 		// Check if webhook is missing.
 		if ( empty( $webhook_id ) ) {
 			$issues[] = esc_html__( 'Webhook not registered', 'event-tickets' );
+		} else if ( $this->webhooks->is_webhook_expired() ) {
+			$issues[] = esc_html__( 'Webhook expired', 'event-tickets' );
 		} else {
-			// All other checks are only relevant if the webhook is registered.
-			// API version issues.
-			if ( ! $this->webhooks->is_api_version_current() ) {
-				$issues[] = esc_html__( 'API version mismatch', 'event-tickets' );
-			}
-
-			// Event type issues.
-			if ( ! $this->webhooks->is_event_types_current() ) {
-				$issues[] = esc_html__( 'Event types configuration outdated', 'event-tickets' );
-			}
+			$issues[] = esc_html__( 'Bad webhook configuration', 'event-tickets' );
 		}
 
 		// If there are no issues, don't show the notice.

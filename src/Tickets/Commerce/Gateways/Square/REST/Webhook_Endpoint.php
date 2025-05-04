@@ -78,22 +78,20 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * @return bool|WP_Error Always returns true as we validate using the webhook signature.
 	 */
 	public function has_permission( WP_REST_Request $request ) {
-		// Get raw body for signature verification.
-		$body = WP_REST_Server::get_raw_data();
 
-		// Get the Square-Signature header.
-		$signature = $request->get_header( 'Square-Signature' );
+		// Get the webhook secret key from the URL.
+		$secret_key = $request->get_param( Webhooks::PARAM_WEBHOOK_KEY );
 
-		// Verify the signature.
-		$webhooks = tribe( Webhooks::class );
-		if ( ! $webhooks->verify_signature( $signature, $body ) ) {
+
+
+		if ( ! tribe( Webhooks::class )->verify_signature( $secret_key ) ) {
 			do_action(
 				'tribe_log',
 				'error',
-				'Invalid Square webhook signature',
+				'Invalid Secret Key',
 				[
 					'source'    => 'tickets-commerce-square',
-					'signature' => $signature,
+					'signature' => $secret_key,
 				]
 			);
 
@@ -194,6 +192,11 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		$event_type = $event_data['type'] ?? '';
 
 		switch ( $event_type ) {
+			case 'order.created':
+			case 'order.updated':
+				$this->process_order_event( $event_data );
+				break;
+
 			case 'payment.created':
 			case 'payment.updated':
 				$this->process_payment_event( $event_data );
@@ -350,6 +353,15 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 					'application/json',
 				],
 				'parameters'  => [
+					[
+						'name'        => Webhooks::PARAM_WEBHOOK_KEY,
+						'in'          => 'query',
+						'description' => esc_html__( 'The webhook secret key', 'event-tickets' ),
+						'required'    => true,
+						'schema'      => [
+							'type' => 'string',
+						],
+					],
 					[
 						'name'        => 'body',
 						'in'          => 'body',

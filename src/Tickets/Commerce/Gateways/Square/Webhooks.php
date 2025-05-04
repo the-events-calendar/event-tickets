@@ -13,7 +13,7 @@ use TEC\Tickets\Commerce\Gateways\Square\WhoDat;
 use WP_Error;
 use TEC\Tickets\Commerce\Gateways\Square\Notices\Webhook_Notice;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-
+use Tribe__Date_Utils as Dates;
 /**
  * Class Webhooks
  *
@@ -22,6 +22,23 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
 class Webhooks extends Controller_Contract {
+	/**
+	 * Option key for storing webhook secret key.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const OPTION_WEBHOOK_SECRET = 'tec-tickets-commerce-square-webhook-secret';
+
+	/**
+	 * Parameter key for storing webhook secret key on the URL.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const PARAM_WEBHOOK_KEY = 'tec-tc-key';
 
 	/**
 	 * Option key for storing webhook data received from the API.
@@ -40,15 +57,6 @@ class Webhooks extends Controller_Contract {
 	 * @var string
 	 */
 	public const OPTION_WEBHOOK_ID = 'tickets-commerce-square-webhook-id';
-
-	/**
-	 * Option key for storing available event types.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const OPTION_AVAILABLE_EVENT_TYPES = 'tickets-commerce-square-webhook-event-types';
 
 	/**
 	 * Register the service provider.
@@ -73,13 +81,35 @@ class Webhooks extends Controller_Contract {
 	}
 
 	/**
+	 * Get the webhook secret.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $hash Whether to hash the secret key.
+	 *
+	 * @return string The webhook secret.
+	 */
+	public function get_webhook_secret( bool $hash = true ): string {
+		$webhook_secret = get_option( self::OPTION_WEBHOOK_SECRET );
+
+		if ( empty( $webhook_secret ) ) {
+			$webhook_secret = wp_generate_password( 64, true, true );
+
+			// We specifically save the raw secret key, not the hashed version, so that if the salt changes the webhooks fail.
+			update_option( self::OPTION_WEBHOOK_SECRET, $webhook_secret );
+		}
+
+		return $hash ? wp_hash_password( $webhook_secret ) : $webhook_secret;
+	}
+
+	/**
 	 * Get the webhook endpoint URL, with optional filtering.
 	 *
 	 * @since TBD
 	 *
 	 * @return string The webhook endpoint URL.
 	 */
-	public function get_webhook_endpoint_url() {
+	public function get_webhook_endpoint_url(): string {
 		$endpoint_url = $this->container->get( REST\Webhook_Endpoint::class )->get_route_url();
 
 		// Allow overriding via constant for local development.
@@ -89,6 +119,9 @@ class Webhooks extends Controller_Contract {
 			// Replace the home URL with the domain route.
 			$endpoint_url = str_replace( home_url(), $domain_route, $endpoint_url );
 		}
+
+		// Add the webhook secret key to the URL.
+		$endpoint_url = add_query_arg( self::PARAM_WEBHOOK_KEY, $this->get_webhook_secret( true ), $endpoint_url );
 
 		/**
 		 * Filters the Square webhook endpoint URL.
@@ -101,7 +134,7 @@ class Webhooks extends Controller_Contract {
 		 *
 		 * @param string $endpoint_url The webhook endpoint URL.
 		 */
-		$endpoint_url = apply_filters( 'tec_tickets_commerce_square_webhook_endpoint_url', $endpoint_url );
+		$endpoint_url = (string) apply_filters( 'tec_tickets_commerce_square_webhook_endpoint_url', $endpoint_url );
 
 		return $endpoint_url;
 	}
@@ -111,7 +144,7 @@ class Webhooks extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @return true|WP_Error The webhook data or WP_Error on failure.
+	 * @return array<string,mixed>|WP_Error The webhook data or WP_Error on failure.
 	 */
 	public function register_webhook_endpoint() {
 		$endpoint_url = $this->get_webhook_endpoint_url();
@@ -135,10 +168,12 @@ class Webhooks extends Controller_Contract {
 			return new WP_Error( 'tec_tickets_commerce_square_webhook_registration_failed', __( 'Failed to register webhook endpoint for Square. Please check your connection settings and try again.', 'event-tickets' ) );
 		}
 
+		$subscription['fetched_at'] = Dates::build_date_object()->format( Dates::DBDATETIMEFORMAT );
+
 		tribe_update_option( self::OPTION_WEBHOOK, $subscription );
 		tribe_update_option( self::OPTION_WEBHOOK_ID, $subscription['id'] );
 
-		return true;
+		return $subscription;
 	}
 
 	/**
@@ -157,6 +192,8 @@ class Webhooks extends Controller_Contract {
 	 *     @type string       $signature_key    The key used to verify webhook signatures.
 	 *     @type string       $created_at       The timestamp when the subscription was created.
 	 *     @type string       $updated_at       The timestamp when the subscription was last updated.
+	 *     @type string       $expires_at       The timestamp when the subscription will expire.
+	 *     @type string       $fetched_at       The timestamp when the subscription was last fetched.
 	 * }
 	 */
 	public function get_webhook(): ?array {
@@ -187,79 +224,26 @@ class Webhooks extends Controller_Contract {
 	}
 
 	/**
-	 * Compare two URLs to see if they match, ignoring protocol and trailing slashes.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $url1 The first URL to compare.
-	 * @param string $url2 The second URL to compare.
-	 *
-	 * @return bool Whether the URLs match.
-	 */
-	protected function urls_match( $url1, $url2 ) {
-		// Remove protocol.
-		$url1 = preg_replace( '#^https?://#', '', $url1 );
-		$url2 = preg_replace( '#^https?://#', '', $url2 );
-
-		// Remove trailing slashes.
-		$url1 = untrailingslashit( $url1 );
-		$url2 = untrailingslashit( $url2 );
-
-		return $url1 == $url2;
-	}
-
-	/**
 	 * Get the latest available event types from the API or cache.
 	 *
 	 * @since TBD
 	 *
 	 * @param bool $force_refresh Whether to force a refresh from the API.
 	 *
-	 * @return array {
-	 *     Array containing available event types data
-	 *
-	 *     @type array  $types         Array of available event types.
-	 *     @type string $api_version   The API version returned by the endpoint.
-	 * }
+	 * @return array<string> Array of available event types.
 	 */
 	public function get_available_event_types( bool $force_refresh = false ): array {
-		// Try to get from cache first unless forcing refresh.
-		if ( ! $force_refresh ) {
-			$cached_data = tribe_get_option( self::OPTION_AVAILABLE_EVENT_TYPES );
-			if ( ! empty( $cached_data ) && isset( $cached_data['last_updated'] ) && $cached_data['last_updated'] > ( time() - DAY_IN_SECONDS ) ) {
-				return [
-					'types'       => $cached_data['types'] ?? [],
-					'api_version' => $cached_data['api_version'] ?? '',
-				];
-			}
+		if ( $force_refresh ) {
+			$this->register_webhook_endpoint();
 		}
 
-		// Fetch from API.
-		$whodat   = tribe( WhoDat::class );
-		$response = $whodat->get_available_event_types();
+		$webhook = $this->get_webhook();
 
-		$result = [
-			'types'       => [],
-			'api_version' => '',
-		];
-
-		if ( ! empty( $response ) ) {
-			// The WhoDat class returns 'event_types' key for the array of event types.
-			$result['types']       = $response['event_types'] ?? [];
-			$result['api_version'] = $response['api_version'] ?? '';
-
-			// Cache the result with a timestamp.
-			tribe_update_option(
-				self::OPTION_AVAILABLE_EVENT_TYPES,
-				[
-					'types'        => $result['types'],
-					'api_version'  => $result['api_version'],
-					'last_updated' => time(),
-				]
-			);
+		if ( empty( $webhook ) || ! isset( $webhook['event_types'] ) ) {
+			return [];
 		}
 
-		return $result;
+		return $webhook['event_types'];
 	}
 
 	/**
@@ -268,69 +252,17 @@ class Webhooks extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @return string The API version to use.
+	 * @param bool $force_refresh Whether to force a refresh from the API.
+	 * @return string|null The API version to use or null if not set.
 	 */
-	public function get_api_version(): string {
-		$available_data = $this->get_available_event_types();
-		$api_version    = $available_data['api_version'] ?? '2025-04-16';
+	public function get_api_version( bool $force_refresh = false ): ?string {
+		if ( $force_refresh ) {
+			$this->register_webhook_endpoint();
+		}
 
-		/**
-		 * Filters the Square webhook API version.
-		 *
-		 * @since TBD
-		 *
-		 * @param string $api_version The API version to use for webhooks.
-		 */
-		return apply_filters( 'tec_tickets_commerce_square_webhook_api_version', $api_version );
-	}
-
-	/**
-	 * Check if the current event types match the available payment-related events from the API.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool Whether the current event types match the available ones.
-	 */
-	public function is_event_types_current(): bool {
 		$webhook = $this->get_webhook();
 
-		if ( empty( $webhook ) || ! isset( $webhook['event_types'] ) ) {
-			return false;
-		}
-
-		// Get event types directly from WhoDat API.
-		$api_event_types = tribe( WhoDat::class )->get_available_event_types();
-
-		if ( empty( $api_event_types ) || ! isset( $api_event_types['event_types'] ) ) {
-			return false;
-		}
-
-		$payment_related_events = array_intersect( $webhook['event_types'], $api_event_types['event_types'] );
-
-		return ! empty( $payment_related_events );
-	}
-
-	/**
-	 * Check if the current API version matches the recommended version.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool Whether the current API version is up to date.
-	 */
-	public function is_api_version_current(): bool {
-		$webhook = $this->get_webhook();
-
-		if ( empty( $webhook ) || ! isset( $webhook['api_version'] ) ) {
-			return false;
-		}
-
-		$api_event_types = tribe( WhoDat::class )->get_available_event_types();
-
-		if ( empty( $api_event_types['api_version'] ) ) {
-			return false;
-		}
-
-		return $webhook['api_version'] === $api_event_types['api_version'];
+		return $webhook['api_version'] ?? null;
 	}
 
 	/**
@@ -343,23 +275,17 @@ class Webhooks extends Controller_Contract {
 	 *
 	 * @return bool Whether the signature is valid.
 	 */
-	public function verify_signature( $signature, $body ) {
+	public function verify_signature( $received_secret_key ) {
 		$webhook = $this->get_webhook();
 
 		if ( empty( $webhook ) || ! isset( $webhook['signature_key'] ) ) {
 			return false;
 		}
 
-		$stored_signature = $webhook['signature_key'];
+		$unhashed_key = $this->get_webhook_secret( false );
 
-		if ( empty( $stored_signature ) || empty( $signature ) ) {
-			return false;
-		}
-
-		// Compute HMAC with SHA-256.
-		$computed_signature = hash_hmac( 'sha256', $body, $stored_signature );
-
-		return hash_equals( $signature, $computed_signature );
+		// Both keys need to be the same.
+		return wp_check_password( $unhashed_key, $received_secret_key );
 	}
 
 	/**
@@ -431,5 +357,36 @@ class Webhooks extends Controller_Contract {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Check if the webhook is expired.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the webhook is expired.
+	 */
+	public function is_webhook_expired(): bool {
+		$webhook = $this->get_webhook();
+
+		if ( empty( $webhook ) || ! isset( $webhook['id'] ) ) {
+			return false;
+		}
+
+		$expires_at = $webhook['expires_at'] ?? null;
+
+		// If the webhook has never been fetched, it is expired.
+		if ( empty( $expires_at ) ) {
+			return true;
+		}
+
+		$expires_at_date = Dates::build_date_object( $expires_at );
+		$now = Dates::build_date_object();
+
+		if ( $expires_at_date->getTimestamp() < $now->getTimestamp() ) {
+			return true;
+		}
+
+		return false;
 	}
 }

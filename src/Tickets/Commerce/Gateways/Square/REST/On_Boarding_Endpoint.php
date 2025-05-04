@@ -325,11 +325,8 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	 * @return void
 	 */
 	protected function register_webhooks() {
-		// Get the webhooks controller.
-		$webhooks = tribe( Webhooks::class );
-
 		// Register the webhook.
-		$webhook_data = $webhooks->register_webhook();
+		$webhook_data = tribe( Webhooks::class )->register_webhook_endpoint();
 
 		if ( is_wp_error( $webhook_data ) || ! empty( $webhook_data['id'] ) ) {
 			do_action(
