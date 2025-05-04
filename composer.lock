@@ -1808,16 +1808,16 @@
         },
         {
             "name": "lucatume/wp-browser",
-            "version": "3.6.5",
+            "version": "3.7.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lucatume/wp-browser.git",
-                "reference": "d4a2067dd6dad99e7e278373fbb2a34809937d58"
+                "reference": "4f4e266bea123abd6a9517fb239ee4ec7735b2c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lucatume/wp-browser/zipball/d4a2067dd6dad99e7e278373fbb2a34809937d58",
-                "reference": "d4a2067dd6dad99e7e278373fbb2a34809937d58",
+                "url": "https://api.github.com/repos/lucatume/wp-browser/zipball/4f4e266bea123abd6a9517fb239ee4ec7735b2c7",
+                "reference": "4f4e266bea123abd6a9517fb239ee4ec7735b2c7",
                 "shasum": ""
             },
             "require": {
@@ -1893,7 +1893,7 @@
             ],
             "support": {
                 "issues": "https://github.com/lucatume/wp-browser/issues",
-                "source": "https://github.com/lucatume/wp-browser/tree/3.6.5"
+                "source": "https://github.com/lucatume/wp-browser/tree/3.7.12"
             },
             "funding": [
                 {
@@ -1901,7 +1901,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-06-26T07:02:06+00:00"
+            "time": "2025-02-22T12:33:32+00:00"
         },
         {
             "name": "lucatume/wp-snaphot-assertions",
