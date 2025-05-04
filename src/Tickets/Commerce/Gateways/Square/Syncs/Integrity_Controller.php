@@ -417,8 +417,8 @@ class Integrity_Controller extends Controller_Contract {
 
 		// Keep the first 1000 items.
 		$first_thousand = array_slice( $to_be_checked, 0, 1000 );
-		$remaining = array_slice( $to_be_checked, 1000 );
-		$to_be_checked = $first_thousand;
+		$remaining      = array_slice( $to_be_checked, 1000 );
+		$to_be_checked  = $first_thousand;
 
 		$payload = [
 			'object_ids'              => array_keys( $to_be_checked ),
@@ -493,7 +493,7 @@ class Integrity_Controller extends Controller_Contract {
 			Settings::set_environmental_meta( $to_be_checked[ $object['id'] ]->wp_object_id, Item::SQUARE_VERSION_META, $object['version'] );
 
 			$is_remote_up_to_date_with_latest_snapshot = $to_be_checked[ $object['id'] ]->square_object_hash === md5( wp_json_encode( $wp_controlled_fields ) );
-			$is_local_up_to_date_with_remote = $is_ticket || ! $item_object->needs_sync();
+			$is_local_up_to_date_with_remote           = $is_ticket || ! $item_object->needs_sync();
 
 			if ( ! ( $is_remote_up_to_date_with_latest_snapshot && $is_local_up_to_date_with_remote ) ) {
 				// As to allow it to be synced again.
