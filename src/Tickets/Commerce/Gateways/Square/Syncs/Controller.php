@@ -193,7 +193,7 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		if ( ! did_action( 'action_scheduler_before_process_queue' ) ) {
+		if ( ! did_action( 'action_scheduler_begin_execute' ) ) {
 			return;
 		}
 
@@ -222,7 +222,9 @@ class Controller extends Controller_Contract {
 			return $cache[ $cache_key ];
 		}
 
-		$tickets_stats = tribe( Ticket_Data::class )->get_posts_tickets_data( $event_id );
+		$ticket_data = tribe( Ticket_Data::class );
+
+		$tickets_stats = $ticket_data->get_posts_tickets_data( $event_id );
 
 		if (
 			empty( $tickets_stats['tickets_on_sale'] ) &&
@@ -242,7 +244,7 @@ class Controller extends Controller_Contract {
 
 		$tickets = array_filter(
 			array_map(
-				static fn ( $ticket_id ) => Tickets::load_ticket_object( $ticket_id ),
+				static fn ( $ticket_id ) => $ticket_data->load_ticket_object( $ticket_id ),
 				$ticket_ids
 			)
 		);

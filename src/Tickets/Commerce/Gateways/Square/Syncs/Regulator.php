@@ -132,6 +132,7 @@ class Regulator extends Controller_Contract {
 		add_action( Integrity_Controller::HOOK_DATA_INTEGRITY_DELETE_ITEMS, [ $this, 'integrity_delete_items' ] );
 		add_action( Integrity_Controller::HOOK_DATA_INTEGRITY_CHECK_ITEMS, [ $this, 'integrity_check_items' ] );
 		add_action( Integrity_Controller::HOOK_DATA_INTEGRITY_SYNC_ITEMS, [ $this, 'integrity_sync_items' ] );
+		add_action( Integrity_Controller::HOOK_DATA_INTEGRITY_SYNC_INVENTORY, [ $this, 'integrity_sync_inventory' ] );
 		add_action( 'tec_tickets_commerce_square_sync_request_completed', [ $this, 'reset_rate_limited_storage' ] );
 	}
 
@@ -154,6 +155,7 @@ class Regulator extends Controller_Contract {
 		remove_action( Integrity_Controller::HOOK_DATA_INTEGRITY_DELETE_ITEMS, [ $this, 'integrity_delete_items' ] );
 		remove_action( Integrity_Controller::HOOK_DATA_INTEGRITY_CHECK_ITEMS, [ $this, 'integrity_check_items' ] );
 		remove_action( Integrity_Controller::HOOK_DATA_INTEGRITY_SYNC_ITEMS, [ $this, 'integrity_sync_items' ] );
+		remove_action( Integrity_Controller::HOOK_DATA_INTEGRITY_SYNC_INVENTORY, [ $this, 'integrity_sync_inventory' ] );
 		remove_action( 'tec_tickets_commerce_square_sync_request_completed', [ $this, 'reset_rate_limited_storage' ] );
 	}
 
@@ -278,6 +280,23 @@ class Regulator extends Controller_Contract {
 			$this->schedule( Integrity_Controller::HOOK_DATA_INTEGRITY_SYNC_ITEMS, [], 2 * MINUTE_IN_SECONDS, false );
 		}
 	}
+
+	/**
+	 * Syncs the inventory.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function integrity_sync_inventory(): void {
+		try {
+			tribe( Integrity_Controller::class )->sync_inventory();
+			$this->fire_square_request_completed();
+		} catch ( SquareRateLimitedException $e ) {
+			$this->schedule( Integrity_Controller::HOOK_DATA_INTEGRITY_SYNC_INVENTORY, [], 2 * MINUTE_IN_SECONDS, false );
+		}
+	}
+
 	/**
 	 * Resets the post type data.
 	 *

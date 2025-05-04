@@ -119,7 +119,7 @@ class Items_Sync {
 			'fields'                 => 'ids',
 			'meta_query'             => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				[
-					'key'     => Item::SQUARE_SYNCED_META,
+					'key'     => Settings::get_environmental_key( Item::SQUARE_SYNCED_META ),
 					'compare' => 'NOT EXISTS',
 				],
 			],

@@ -14,6 +14,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Requests;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
 use TEC\Tickets\Commerce\Gateways\Square\Settings;
+
 /**
  * Class Tickets_Sync
  *
@@ -95,7 +96,7 @@ class Inventory_Sync {
 			'fields'                 => 'ids',
 			'meta_query'             => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				[
-					'key'     => Item::SQUARE_SYNCED_META,
+					'key'     => Settings::get_environmental_key( Item::SQUARE_SYNCED_META ),
 					'compare' => 'EXISTS',
 				],
 			],
@@ -187,7 +188,7 @@ class Inventory_Sync {
 	 *
 	 * @return void
 	 */
-	protected function process_batch( array $batch ): void {
+	public function process_batch( array $batch ): void {
 		$this->remote_objects->cache_remote_object_state( $batch );
 
 		$square_batches = $this->remote_objects->transform_inventory_batch( $batch );

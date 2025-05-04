@@ -183,6 +183,23 @@ abstract class Item implements JsonSerializable {
 	}
 
 	/**
+	 * Get the WordPress controlled fields for a given Square object.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $square_object The Square object.
+	 *
+	 * @return array The WordPress controlled fields.
+	 */
+	public function get_wp_controlled_fields( array $square_object ): array {
+		unset( $square_object['version'] );
+		$myself = $this->to_array();
+		$myself['present_at_location_ids'] = [ tribe( Merchant::class )->get_location_id() ];
+		$square_object[ strtolower( static::ITEM_TYPE ) . '_data' ] = array_intersect_key( $square_object[ strtolower( static::ITEM_TYPE ) . '_data' ], $myself[ strtolower( static::ITEM_TYPE ) . '_data' ] );
+		return array_intersect_key( $square_object, $myself );
+	}
+
+	/**
 	 * Set a value in the data array.
 	 *
 	 * @since TBD
@@ -299,8 +316,9 @@ abstract class Item implements JsonSerializable {
 		 *
 		 * @param int   $wp_id The WordPress ID of the object.
 		 * @param array $square_object The sync object.
+		 * @param Item  $item The item object.
 		 */
-		do_action( 'tec_tickets_commerce_square_object_synced_' . $this->get_id(), $this->get_wp_id(), $square_object );
+		do_action( 'tec_tickets_commerce_square_object_synced_' . $this->get_id(), $this->get_wp_id(), $square_object, $this );
 
 		/**
 		 * Fires when a object is synced from Square.
@@ -310,7 +328,8 @@ abstract class Item implements JsonSerializable {
 		 * @param string $object_id The Square's object ID.
 		 * @param int    $wp_id The WordPress ID of the object.
 		 * @param array  $square_object The sync object.
+		 * @param Item   $item The item object.
 		 */
-		do_action( 'tec_tickets_commerce_square_object_synced', $this->get_id(), $this->get_wp_id(), $square_object );
+		do_action( 'tec_tickets_commerce_square_object_synced', $this->get_id(), $this->get_wp_id(), $square_object, $this );
 	}
 }

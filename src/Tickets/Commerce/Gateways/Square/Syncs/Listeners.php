@@ -210,7 +210,7 @@ class Listeners extends Controller_Contract {
 			'fields'                 => 'ids',
 			'meta_query'             => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				[
-					'key'     => Item::SQUARE_ID_META,
+					'key'     => Settings::get_environmental_key( Item::SQUARE_ID_META ),
 					'compare' => 'EXISTS',
 				],
 			],

@@ -173,7 +173,7 @@ class Inventory_Change implements JsonSerializable {
 		$cache     = tribe_cache();
 		$cache_key = 'square_sync_object_state_' . $this->ticket_item->get_id() . '_' . $data['location_id'];
 
-		$cached_state = $cache[ $cache_key ];
+		$cached_state = $cache->get( $cache_key );
 
 		$previous_quantity = (int) ( $cached_state['quantity'] ?? 0 );
 

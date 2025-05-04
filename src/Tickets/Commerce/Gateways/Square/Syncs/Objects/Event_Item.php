@@ -15,6 +15,8 @@ namespace TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use WP_Post;
 use TEC\Tickets\Commerce\Gateways\Square\Settings;
+use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
+
 /**
  * Class Event_Item
  *
@@ -42,7 +44,7 @@ class Event_Item extends Item {
 	 *
 	 * @var string
 	 */
-	protected const SQUARE_LATEST_OBJECT_SNAPSHOT = '_tec_tickets_commerce_square_latest_object_snapshot_%s';
+	public const SQUARE_LATEST_OBJECT_SNAPSHOT = '_tec_tickets_commerce_square_latest_object_snapshot_%s';
 
 	// phpcs:disable Squiz.PHP.CommentedOutCode.Found, Squiz.Commenting.InlineComment.InvalidEndChar
 	/**
@@ -95,6 +97,11 @@ class Event_Item extends Item {
 	public function __construct( int $post_id, array $tickets = [] ) {
 		$this->data['event_id'] = $post_id;
 		$this->event            = get_post( $post_id );
+
+		if ( empty( $tickets ) ) {
+			$tickets = Sync_Controller::get_sync_able_tickets_of_event( $post_id );
+		}
+
 		$this->set_tickets( $tickets );
 		$this->register_hooks();
 	}
@@ -273,5 +280,22 @@ class Event_Item extends Item {
 		}
 
 		return $latest_snapshot !== md5( wp_json_encode( $this ) );
+	}
+
+	/**
+	 * Get the WordPress controlled fields for a given Square object.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $square_object The Square object.
+	 *
+	 * @return array The WordPress controlled fields.
+	 */
+	public function get_wp_controlled_fields( array $square_object ): array {
+		$object = parent::get_wp_controlled_fields( $square_object );
+		// Remote ticket data.
+		unset( $object['item_data']['variations'] );
+
+		return $object;
 	}
 }
