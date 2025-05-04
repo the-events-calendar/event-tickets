@@ -194,8 +194,14 @@ abstract class Item implements JsonSerializable {
 	public function get_wp_controlled_fields( array $square_object ): array {
 		unset( $square_object['version'] );
 		$myself = $this->to_array();
+
 		$myself['present_at_location_ids'] = [ tribe( Merchant::class )->get_location_id() ];
-		$square_object[ strtolower( static::ITEM_TYPE ) . '_data' ] = array_intersect_key( $square_object[ strtolower( static::ITEM_TYPE ) . '_data' ], $myself[ strtolower( static::ITEM_TYPE ) . '_data' ] );
+
+		$square_object[ strtolower( static::ITEM_TYPE ) . '_data' ] = array_intersect_key(
+			$square_object[ strtolower( static::ITEM_TYPE ) . '_data' ],
+			$myself[ strtolower( static::ITEM_TYPE ) . '_data' ]
+		);
+
 		return array_intersect_key( $square_object, $myself );
 	}
 

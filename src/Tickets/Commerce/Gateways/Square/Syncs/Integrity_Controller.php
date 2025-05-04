@@ -169,10 +169,11 @@ class Integrity_Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param Container $container Container.
-	 * @param Regulator $regulator Regulator.
-	 * @param Items_Sync $items_sync Items sync.
+	 * @param Container      $container      Container.
+	 * @param Regulator      $regulator      Regulator.
+	 * @param Items_Sync     $items_sync     Items sync.
 	 * @param Inventory_Sync $inventory_sync Inventory sync.
+	 * @param Ticket_Data    $ticket_data    Ticket data.
 	 */
 	public function __construct( Container $container, Regulator $regulator, Items_Sync $items_sync, Inventory_Sync $inventory_sync, Ticket_Data $ticket_data ) {
 		parent::__construct( $container );
@@ -295,8 +296,9 @@ class Integrity_Controller extends Controller_Contract {
 			}
 
 			if ( isset( $to_be_checked[ $item->square_object_id ] ) ) {
-				$previous_item = $to_be_checked[ $item->square_object_id ];
+				$previous_item     = $to_be_checked[ $item->square_object_id ];
 				$to_local_delete[] = $previous_item->last_checked > $item->last_checked ? $item : $previous_item;
+
 				$to_be_checked[ $item->square_object_id ] = $previous_item->last_checked > $item->last_checked ? $previous_item : $item;
 				continue;
 			}
@@ -354,7 +356,7 @@ class Integrity_Controller extends Controller_Contract {
 
 		$deleted = [];
 
-		foreach ( Integrity_Table::fetch_all( 100, OBJECT, "WHERE id IN (" . implode( ',', $ids ) . ")" ) as $item ) {
+		foreach ( Integrity_Table::fetch_all( 100, OBJECT, 'WHERE id IN (' . implode( ',', $ids ) . ')' ) as $item ) {
 			$deleted[ $item->square_object_id ] = $item->id;
 
 			if ( count( $deleted ) > 999 ) {
@@ -566,7 +568,7 @@ class Integrity_Controller extends Controller_Contract {
 		$skipped_tickets = [];
 		$batch           = [];
 
-		foreach ( Integrity_Table::fetch_all( 100, OBJECT, "WHERE id IN (" . implode( ',', $ids ) . ")" ) as $item ) {
+		foreach ( Integrity_Table::fetch_all( 100, OBJECT, 'WHERE id IN (' . implode( ',', $ids ) . ')' ) as $item ) {
 			$is_ticket = in_array( get_post_type( $item->wp_object_id ), tribe_tickets()->ticket_types(), true );
 
 			if ( $is_ticket ) {
@@ -644,7 +646,7 @@ class Integrity_Controller extends Controller_Contract {
 		$objects_to_sync = [];
 		$batch           = [];
 
-		foreach ( Integrity_Table::fetch_all( 100, OBJECT, "WHERE id IN (" . implode( ',', $ids ) . ")" ) as $item ) {
+		foreach ( Integrity_Table::fetch_all( 100, OBJECT, 'WHERE id IN (' . implode( ',', $ids ) . ')' ) as $item ) {
 			$ticket_object = $this->ticket_data->load_ticket_object( $item->wp_object_id );
 			if ( ! $ticket_object ) {
 				continue;

@@ -124,7 +124,9 @@ class Integrity_Table extends Table {
 	 *                              the `dbDelta` function.
 	 */
 	protected function after_update( array $results ) {
-		return $this->check_and_add_index( $results, 'square_object_id', 'square_object_id' );
-		return $this->check_and_add_index( $results, 'wp_object_id', 'wp_object_id' );
+		$this->check_and_add_index( $results, 'square_object_id', 'square_object_id' );
+		$this->check_and_add_index( $results, 'wp_object_id', 'wp_object_id' );
+
+		return $results;
 	}
 }
