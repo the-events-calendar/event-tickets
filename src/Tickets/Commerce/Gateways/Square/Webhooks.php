@@ -360,11 +360,7 @@ class Webhooks extends Controller_Contract {
 		$expires_at_date = Dates::build_date_object( $expires_at );
 		$now = Dates::build_date_object();
 
-		if ( $expires_at_date->getTimestamp() < $now->getTimestamp() ) {
-			return true;
-		}
-
-		return false;
+		return $expires_at_date->getTimestamp() < $now->getTimestamp();
 	}
 	/**
 	 * Check if the webhook should be refreshed, defaults to once every hour.
