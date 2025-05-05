@@ -104,9 +104,7 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 
 		$response = $this->get( $endpoint, $query_args );
 
-		if ( ! empty( $response ) ) {
-			$cache->set_transient( $cache_key, $response, $expiration );
-		}
+		$cache->set_transient( $cache_key, $response, $expiration );
 
 		return $response;
 	}
