@@ -87,6 +87,7 @@ final class Controller extends Controller_Contract {
 		}
 
 		remove_action( 'init', [ $this, 'set_currency_defaults' ] );
+        remove_filter( 'tec_tickets_commerce_order_modifiers_coupons_enabled', [ $this, 'run_deprecated_coupon_filter' ] );
 	}
 
 	/**
