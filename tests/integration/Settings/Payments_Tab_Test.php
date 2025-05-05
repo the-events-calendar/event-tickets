@@ -135,6 +135,13 @@ class Payments_Tab_Test extends WPTestCase {
 		$tab->do_content();
 		$content = ob_get_clean();
 
+		// Normalize version numbers in the content
+		$content = preg_replace(
+			'/version=\d+\.\d+\.\d+/',
+			'version={version}',
+			$content
+		);
+
 		// Assert the snapshot
 		$this->assertMatchesHtmlSnapshot( $content );
 	}
