@@ -334,4 +334,23 @@ class Order extends Abstract_Order {
 
 		return array_merge( $square_order, $line_items );
 	}
+
+	/**
+	 * Get the order by Square order ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param string       $square_order_id The Square order ID.
+	 * @param string|array $status          The status of the order.
+	 *
+	 * @return WP_Post|null
+	 */
+	public function get_by_square_order_id( string $square_order_id, $status = 'any' ): ?WP_Post {
+		return tec_tc_orders()->by_args(
+			[
+				'status'           => $status,
+				'gateway_order_id' => $square_order_id,
+			]
+		)->first();
+	}
 }
