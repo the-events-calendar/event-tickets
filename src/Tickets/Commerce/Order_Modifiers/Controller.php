@@ -87,6 +87,7 @@ final class Controller extends Controller_Contract {
 		}
 
 		remove_action( 'init', [ $this, 'set_currency_defaults' ] );
+		remove_action( 'init', [ $this, 'run_deprecated_coupon_filter' ] );
 	}
 
 	/**
