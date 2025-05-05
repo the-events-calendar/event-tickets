@@ -12,8 +12,9 @@ namespace TEC\Tickets\Admin\Onboarding\Steps;
 use TEC\Common\Admin\Onboarding\Steps\Abstract_Step;
 use WP_REST_Response;
 use WP_REST_Request;
-use TEC\Tickets\Settings as Tickets_Commerce_Settings;
+use TEC\Tickets\Settings as Tickets_Settings;
 use TEC\Tickets\Commerce\Utils\Currency;
+use TEC\Tickets\Commerce\Settings as Tickets_Commerce_Settings;
 use TEC\Tickets\Admin\Onboarding\API;
 
 /**
@@ -50,9 +51,10 @@ class Settings extends Abstract_Step {
 			return $this->add_fail_message( $response, __( 'No settings provided.', 'event-tickets' ) );
 		}
 
-		tribe_update_option( Tickets_Commerce_Settings::$tickets_commerce_enabled, (bool) $settings['paymentOption'] );
+		tribe_update_option( Tickets_Settings::$tickets_commerce_enabled, (bool) $settings['paymentOption'] );
 
-		tribe_update_option( Currency::$currency_code_option, $settings['currency'] );
+		$currency = $settings['currency'] ?? tribe_get_option( Tickets_Commerce_Settings::$option_currency_code, 'USD' );
+		tribe_update_option( Currency::$currency_code_option, $currency );
 
 		// Update the option.
 		$updated = tribe( API::class )->update_wizard_settings( $settings );

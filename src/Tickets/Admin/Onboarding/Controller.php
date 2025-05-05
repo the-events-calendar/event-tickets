@@ -9,7 +9,7 @@ namespace TEC\Tickets\Admin\Onboarding;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\Admin\Onboarding\API;
-use TEC\Tickets\Admin\Onboarding\Steps\Optin;
+use TEC\Tickets\Admin\Onboarding\Steps\Welcome;
 use TEC\Tickets\Admin\Onboarding\Steps\Settings;
 use TEC\Tickets\Admin\Onboarding\Steps\Payments;
 use TEC\Tickets\Admin\Onboarding\Steps\Communication;
@@ -43,7 +43,7 @@ class Controller extends Controller_Contract {
 		Asset_Config::add_group_path( 'tec-tickets-onboarding', tribe( 'tickets.main' )->plugin_path . 'build/', 'wizard' );
 
 		$this->steps = [
-			'optin'         => new Optin(),
+			'welcome'       => new Welcome(),
 			'settings'      => new Settings(),
 			'payments'      => new Payments(),
 			'communication' => new Communication(),
@@ -95,7 +95,7 @@ class Controller extends Controller_Contract {
 	 */
 	public function add_filters(): void {
 		// Add the step handlers.
-		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['optin'], 'handle' ], 10, 2 );
+		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['welcome'], 'handle' ], 10, 2 );
 		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['settings'], 'handle' ], 11, 2 );
 		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['payments'], 'handle' ], 12, 2 );
 		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['communication'], 'handle' ], 13, 2 );
@@ -123,7 +123,7 @@ class Controller extends Controller_Contract {
 	 */
 	public function remove_filters(): void {
 		// Remove the step handlers.
-		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['optin'], 'handle' ], 10 );
+		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['welcome'], 'handle' ], 10 );
 		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['settings'], 'handle' ], 11 );
 		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['payments'], 'handle' ], 12 );
 		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['communication'], 'handle' ], 13 );
@@ -193,16 +193,20 @@ class Controller extends Controller_Contract {
 		}
 
 		// Early bail checks for existing setup.
-		if (
-			(bool) tribe_get_option( Landing_Page::VISITED_GUIDED_SETUP_OPTION, false )
-			|| Landing_Page::is_dismissed()
-			|| count( (array) tribe_get_option( 'previous_event_tickets_versions', [] ) ) > 1
-		) {
+		if ( (bool) tribe_get_option( Landing_Page::VISITED_GUIDED_SETUP_OPTION, false ) ) {
+			return;
+		}
+
+		if ( Landing_Page::is_dismissed() ) {
+			return;
+		}
+
+		if ( count( (array) tribe_get_option( 'previous_event_tickets_versions', [] ) ) > 1 ) {
 			return;
 		}
 
 		// For wizard redirect, verify we're on an ET admin page.
-		if ( ! $activation_redirect && $wizard_redirect && ! $this->is_et_admin_page() ) {
+		if ( $wizard_redirect && ! $this->is_et_admin_page() ) {
 			return;
 		}
 
