@@ -3,6 +3,26 @@
  *
  * @since 5.14.0
  */
+.tec-admin-page--simple {
+	.tec-admin-page__header {
+		position: inherit;
+	}
+	
+	.tec-admin-page__content {
+		margin: 0;
+	}
+
+	.tec-tickets__admin-tickets {
+		margin: 0;
+	}
+
+	.nav-tab-wrapper {
+		a:first-child {
+			margin-left: 0;
+		}
+	}
+}
+
 .tickets_page_tec-tickets-admin-tickets {
 	th,
 	td {
@@ -33,10 +53,7 @@
 		.column-sales,
 		.column-end,
 		.column-start {
-			text-align: center;
 			white-space: nowrap;
-			width: 1%;
-
 			@media (max-width: 782px) {
 				text-align: left;
 				width: auto;
@@ -46,7 +63,6 @@
 		.column-id {
 			text-align: left;
 			white-space: nowrap;
-			width: 1%;
 
 			@media (max-width: 782px) {
 				width: auto;

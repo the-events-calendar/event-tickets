@@ -250,6 +250,13 @@ class Page extends Abstract_Admin_Page {
 
 		$classes[] = 'tec-admin-page--header';
 		$classes[] = 'tec-admin-page--simple';
+		
+		// remove 'tec-admin-page' from the classes array.
+		$flipped_classes = array_flip( $classes );
+		
+		if ( isset( $flipped_classes['tec-admin-page'] ) ) {
+			unset( $classes[ $flipped_classes['tec-admin-page'] ] );
+		}
 
 		return $classes;
 	}
@@ -332,8 +339,10 @@ class Page extends Abstract_Admin_Page {
 	 * Get the menu position.
 	 *
 	 * @since TBD
+	 *
+	 * @return float The menu position.
 	 */
-	public function get_position(): ?int {
+	public function get_position(): float {
 		return 1.2;
 	}
 
