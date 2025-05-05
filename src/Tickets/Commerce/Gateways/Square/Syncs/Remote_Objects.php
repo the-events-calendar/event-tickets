@@ -561,7 +561,7 @@ class Remote_Objects {
 		update_post_meta( $order_id, '_tec_tickets_commerce_gateways_square_customer_id', $customer_id );
 
 		if ( is_user_logged_in() ) {
-			update_user_meta( get_current_user_id(), '_tec_tickets_commerce_gateways_square_customer_id', $customer_id );
+			Commerce_Meta::set( get_current_user_id(), '_tec_tickets_commerce_gateways_square_customer_id_%s', $customer_id, [], 'user' );
 		}
 
 		return $customer_id;

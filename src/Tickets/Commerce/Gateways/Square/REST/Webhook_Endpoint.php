@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Square\REST;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
+use TEC\Tickets\Commerce\Gateways\Square\Gateway;
 use TEC\Tickets\Commerce\Gateways\Square\Webhooks;
 use TEC\Tickets\Commerce\Gateways\Square\Order;
 use TEC\Tickets\Commerce\Gateways\Square\Status;
@@ -17,9 +18,14 @@ use WP_REST_Request;
 use WP_REST_Server;
 use WP_REST_Response;
 use WP_Error;
-
+use WP_User_Query;
+use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
+use TEC\Tickets\Commerce\Settings as Commerce_Settings;
+use TEC\Tickets\Commerce\Meta as Commerce_Meta;
 use TEC\Tickets\Commerce\Order as Commerce_Order;
 use TEC\Tickets\Commerce\Status\Refunded;
+use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
  * Class Webhook_Endpoint.
@@ -202,19 +208,46 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	protected function process_webhook_event( array $event_data ) {
 		$event_type = $event_data['type'] ?? '';
 
+		if ( ! in_array( $event_type, Events::get_webhook_event_types(), true ) ) {
+			do_action(
+				'tribe_log',
+				'warning',
+				'Unsupported Square webhook event type',
+				[
+					'source'     => 'tickets-commerce-square',
+					'event_type' => $event_type,
+					'data'       => $event_data,
+				]
+			);
+			return;
+		}
+
+		$event_mode = $event_data['env'] ?? 'sandbox';
+		$callback   = fn() => 'sandbox' === $event_mode;
+
+		add_filter( 'tec_tickets_commerce_is_sandbox_mode', $callback );
+
 		switch ( $event_type ) {
-			case 'order.created':
-			case 'order.updated':
+			case Events::WEBHOOK_EVENT_ORDER_CREATED:
+			case Events::WEBHOOK_EVENT_ORDER_UPDATED:
 				$this->process_order_event( $event_data );
 				break;
 
-			case 'payment.created':
-			case 'payment.updated':
+			case Events::WEBHOOK_EVENT_PAYMENT_CREATED:
+			case Events::WEBHOOK_EVENT_PAYMENT_UPDATED:
 				$this->process_payment_event( $event_data );
 				break;
 
-			case 'refund.created':
-			case 'refund.updated':
+			case Events::WEBHOOK_EVENT_CUSTOMER_DELETED:
+				$this->process_customer_delete_event( $event_data );
+				break;
+
+			case Events::WEBHOOK_EVENT_INVENTORY_COUNT_UPDATED:
+				$this->process_ticket_inventory_updated_event( $event_data );
+				break;
+
+			case Events::WEBHOOK_EVENT_REFUND_CREATED:
+			case Events::WEBHOOK_EVENT_REFUND_UPDATED:
 				$this->process_refund_event( $event_data );
 				break;
 
@@ -227,9 +260,9 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 					[
 						'source'     => 'tickets-commerce-square',
 						'event_type' => $event_type,
+						'data'       => $event_data,
 					]
 				);
-				break;
 		}
 
 		/**
@@ -241,6 +274,8 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		 * @param string $event_type The event type.
 		 */
 		do_action( 'tec_tickets_commerce_square_webhook_event', $event_data, $event_type );
+
+		remove_filter( 'tec_tickets_commerce_is_sandbox_mode', $callback );
 	}
 
 	/**
@@ -402,6 +437,99 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		}
 		// Update the order status.
 		tribe( Commerce_Order::class )->modify_status( $order, Refunded::SLUG, [ 'gateway_payload' => $event_data ] );
+	}
+
+	/**
+	 * Delete the customer ID from the user meta.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $event_data The webhook event data.
+	 */
+	protected function process_customer_delete_event( array $event_data ): void {
+		$customer_id = $event_data['data']['id'] ?? '';
+
+		if ( ! $customer_id ) {
+			return;
+		}
+
+		$user_query = new WP_User_Query(
+			[
+				'meta_key'   => Commerce_Settings::get_key( '_tec_tickets_commerce_gateways_square_customer_id_%s' ),
+				'meta_value' => $customer_id, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+				'fields'     => 'ID',
+			]
+		);
+
+		if ( empty( $user_query->get_results() ) ) {
+			return;
+		}
+
+		foreach ( $user_query->get_results() as $user_id ) {
+			Commerce_Meta::delete( $user_id, '_tec_tickets_commerce_gateways_square_customer_id_%s', [], 'user' );
+		}
+	}
+
+	/**
+	 * Process a ticket inventory updated event.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $event_data The webhook event data.
+	 */
+	protected function process_ticket_inventory_updated_event( array $event_data ): void {
+		$inventory_data = $event_data['data']['object']['inventory_counts'] ?? [];
+
+		if ( ! $inventory_data || ! is_array( $inventory_data ) ) {
+			return;
+		}
+
+		foreach ( $inventory_data as $inventory_item ) {
+			$location_id = $inventory_item['location_id'] ?? '';
+
+			if ( ! $location_id || $location_id !== tribe( Gateway::class )->get_location_id() ) {
+				// This is about a location that wp has nothing to do with, so we skip.
+				continue;
+			}
+
+			if ( 'ITEM_VARIATION' !== $inventory_item['catalog_object_type'] ) {
+				// This is not about a ticket, so we skip.
+				continue;
+			}
+
+			$object_id = $inventory_item['catalog_object_id'] ?? false;
+
+			if ( ! $object_id ) {
+				continue;
+			}
+
+			$ticket_id = Commerce_Meta::get_object_id( Item::SQUARE_ID_META, $object_id );
+
+			if ( ! $ticket_id ) {
+				continue;
+			}
+
+			$ticket = tribe( Commerce_Ticket::class )->load_ticket_object( $ticket_id );
+
+			if ( ! $ticket instanceof Ticket_Object ) {
+				continue;
+			}
+
+			$available = $ticket->available();
+
+			if ( -1 === $available ) {
+				continue;
+			}
+
+			$quantity = (int) ( $inventory_item['quantity'] ?? 0 );
+			$state    = $inventory_item['state'] ?? false;
+
+			if ( $quantity === $available ) {
+				continue;
+			}
+
+			// @todo dimi: Process the inventory change.
+		}
 	}
 
 	/**

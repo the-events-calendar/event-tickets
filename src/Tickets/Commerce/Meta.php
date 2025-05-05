@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce\Settings as Commerce_Settings;
+use WP_Query;
 
 /**
  * Meta class for the Tickets Commerce.
@@ -125,5 +126,36 @@ class Meta {
 		}
 
 		return delete_metadata( $type, $id, Commerce_Settings::get_environmental_key( $meta_key, $args ), $meta_value );
+	}
+
+	/**
+	 * Get the object ID for a given meta key and value.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $meta_key   The meta key.
+	 * @param mixed  $meta_value The meta value.
+	 *
+	 * @return int The object ID.
+	 */
+	public static function get_object_id( string $meta_key, $meta_value ): int {
+		$args = [
+			'post_type'              => 'any',
+			'post_status'            => 'any',
+			'no_found_rows'          => true,
+			'update_post_term_cache' => false,
+			'posts_per_page'         => 1,
+			'meta_key'               => $meta_key,
+			'meta_value'             => $meta_value, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+			'fields'                 => 'ids',
+		];
+
+		$results = new WP_Query( $args );
+
+		if ( empty( $results->posts ) ) {
+			return 0;
+		}
+
+		return (int) $results->posts[0];
 	}
 }
