@@ -155,6 +155,7 @@ const PaymentsContent = ({ moveToNextTab, skipToNextTab }) => {
 					tabSettings={tabSettings}
 					moveToNextTab={moveToNextTab}
 					disabled={['stripe', 'square'].includes(paymentOption) && !isConnected}
+					onSuccess={() => {}}
 				/>
 				<SkipButton skipToNextTab={skipToNextTab} currentTab={2} />
 			</div>
