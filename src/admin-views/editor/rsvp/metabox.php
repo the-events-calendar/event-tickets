@@ -13,8 +13,6 @@
 
 <div id="tec_tickets_rsvp_metabox" class="eventtable" aria-live="polite">
 	<?php wp_nonce_field( 'tec-tickets-rsvp-meta-box', 'tec-tickets-rsvp-post-settings' ); ?>
-	I am RSVP
-
 	<?php
 	$admin_views->template(
 		[ 'components', 'switch-field' ],
