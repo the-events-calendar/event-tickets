@@ -388,10 +388,6 @@ class Webhooks extends Controller_Contract {
 
 		$one_hour_ago = $now->modify( '-1 hour' );
 
-		if ( $fetched_at_date->getTimestamp() < $one_hour_ago->getTimestamp() ) {
-			return true;
-		}
-
-		return false;
+		return $fetched_at_date->getTimestamp() < $one_hour_ago->getTimestamp();
 	}
 }
