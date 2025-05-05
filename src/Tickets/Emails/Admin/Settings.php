@@ -180,7 +180,7 @@ class Settings {
 			],
 			[
 				'type' => 'html',
-				'html' => '<fieldset><p>' . esc_html__( 'If fields are empty, sender information will be from the site owner set in WordPress general settings.', 'event-tickets' ) . '</p></fieldset>',
+				'html' => '<p class="tec-settings-form__description-text">' . esc_html__( 'If fields are empty, sender information will be from the site owner set in WordPress general settings.', 'event-tickets' ) . '</p>',
 			],
 			static::$option_sender_name  => [
 				'type'                => 'text',
@@ -277,10 +277,10 @@ class Settings {
 			],
 			[
 				'type' => 'html',
-				'html' => '<fieldset><p>' . esc_html__(
+				'html' => '<p class="tec-settings-form__description-text">' . esc_html__(
 					'Add a logo and customize link colors and footer information to personalize your communications.  If you\'d like more granular control over email styling, you can override the email templates in your theme.  Learn More',
 					'event-tickets'
-				) . '</p></fieldset>',
+				) . '</p>',
 			],
 			static::$option_header_image_url               => [
 				'type'                => 'image',

@@ -22,7 +22,7 @@
     },
     "5": {
         "type": "html",
-        "html": "<fieldset><p>If fields are empty, sender information will be from the site owner set in WordPress general settings.<\\/p><\\/fieldset>"
+        "html": "<p class=\\"tec-settings-form__description-text\\">If fields are empty, sender information will be from the site owner set in WordPress general settings.<\\/p>"
     },
     "tec-tickets-emails-sender-name": {
         "type": "text",
@@ -58,7 +58,7 @@
     },
     "8": {
         "type": "html",
-        "html": "<fieldset><p>Add a logo and customize link colors and footer information to personalize your communications.  If you&#039;d like more granular control over email styling, you can override the email templates in your theme.  Learn More<\\/p><\\/fieldset>"
+        "html": "<p class=\\"tec-settings-form__description-text\\">Add a logo and customize link colors and footer information to personalize your communications.  If you&#039;d like more granular control over email styling, you can override the email templates in your theme.  Learn More<\\/p>"
     },
     "tec-tickets-emails-header-image-url": {
         "type": "image",
