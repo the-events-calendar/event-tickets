@@ -8,12 +8,9 @@ import { compose } from 'redux';
  * Internal dependencies
  */
 import DateTimeRangePicker from './template';
-import { actions, selectors } from '@moderntribe/tickets/data/blocks/rsvp';
+import { actions, selectors } from '../../../data/blocks/rsvp';
 import { withStore } from '@moderntribe/common/hoc';
-import {
-	globals,
-	moment as momentUtil,
-} from '@moderntribe/common/utils';
+import { globals, moment as momentUtil } from '@moderntribe/common/utils';
 
 const onFromDateChange = ( dispatch ) => ( date, modifiers, dayPickerInput ) => {
 	const payload = {
@@ -23,9 +20,7 @@ const onFromDateChange = ( dispatch ) => ( date, modifiers, dayPickerInput ) => 
 	dispatch( actions.handleRSVPStartDate( payload ) );
 };
 
-const onFromTimePickerChange = ( dispatch ) => ( e ) => (
-	dispatch( actions.setRSVPTempStartTimeInput( e.target.value ) )
-);
+const onFromTimePickerChange = ( dispatch ) => ( e ) => dispatch( actions.setRSVPTempStartTimeInput( e.target.value ) );
 
 const onFromTimePickerClick = ( dispatch ) => ( value, onClose ) => {
 	dispatch( actions.handleRSVPStartTime( value ) );
@@ -40,9 +35,7 @@ const onToDateChange = ( dispatch ) => ( date, modifiers, dayPickerInput ) => {
 	dispatch( actions.handleRSVPEndDate( payload ) );
 };
 
-const onToTimePickerChange = ( dispatch ) => ( e ) => (
-	dispatch( actions.setRSVPTempEndTimeInput( e.target.value ) )
-);
+const onToTimePickerChange = ( dispatch ) => ( e ) => dispatch( actions.setRSVPTempEndTimeInput( e.target.value ) );
 
 const onToTimePickerClick = ( dispatch ) => ( value, onClose ) => {
 	dispatch( actions.handleRSVPEndTime( value ) );
@@ -73,8 +66,7 @@ const mapStateToProps = ( state ) => {
 	const datePickerFormat = globals.tecDateSettings().datepickerFormat
 		? momentUtil.toFormat( globals.tecDateSettings().datepickerFormat )
 		: 'LL';
-	const isDisabled = selectors.getRSVPIsLoading( state ) ||
-		selectors.getRSVPSettingsOpen( state );
+	const isDisabled = selectors.getRSVPIsLoading( state ) || selectors.getRSVPSettingsOpen( state );
 
 	const startDateMoment = selectors.getRSVPTempStartDateMoment( state );
 	const endDateMoment = selectors.getRSVPTempEndDateMoment( state );
@@ -123,5 +115,5 @@ const mergeProps = ( stateProps, dispatchProps, ownProps ) => {
 
 export default compose(
 	withStore(),
-	connect( mapStateToProps, mapDispatchToProps, mergeProps ),
+	connect( mapStateToProps, mapDispatchToProps, mergeProps )
 )( DateTimeRangePicker );

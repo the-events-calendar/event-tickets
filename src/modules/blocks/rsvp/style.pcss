@@ -1,9 +1,9 @@
 .tribe-editor__rsvp-container {
-	background-color: #ffffff;
+	background-color: #fff;
 }
 
 .tribe-editor__rsvp {
-	font-family: 'Helvetica Neue', Helvetica, -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
+	font-family: "Helvetica Neue", Helvetica, -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
 	position: relative;
 
 	&--selected.tribe-editor__rsvp--add-edit-open {
@@ -13,9 +13,9 @@
 }
 
 .tribe-editor__inactive-block__icon {
+	align-items: center;
 	display: flex;
 	flex-direction: column;
-	align-items: center;
 
 	& > svg {
 		flex: none;
@@ -23,24 +23,24 @@
 }
 
 .tribe-editor__rsvp__inactive-block-icon-label {
-	color: #AEB4BB;
+	color: #aeb4bb;
 	flex: none;
-	font-weight: bold;
 	font-size: 16px;
-	line-height: 19px;
+	font-weight: 700;
 	letter-spacing: 0.05px;
+	line-height: 19px;
 }
 
 .components-spinner {
 
 	.tribe-editor__rsvp & {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
 		float: none;
+		left: 50%;
 		margin: 0;
 		opacity: 0.8;
+		position: absolute;
+		top: 50%;
+		transform: translate(-50%, -50%);
 	}
 }
 
@@ -65,7 +65,7 @@
 		flex: none;
 		justify-content: center;
 		padding: var(--tec-spacer-6);
-		width: calc(var(--tec-grid-width-1-of-8)*5);
+		width: calc(var(--tec-grid-width-1-of-8) *5);
 	}
 
 	.tribe-editor__rsvp-details {
@@ -83,8 +83,8 @@
 		border-left: 1px dashed var(--tec-color-border-secondary);
 		display: flex;
 		flex: none;
-		padding: 0 var(--tec-spacer-5) 0 var(--tec-spacer-4);
 		justify-content: center;
+		padding: 0 var(--tec-spacer-5) 0 var(--tec-spacer-4);
 		text-align: center;
 
 		@media screen and (min-width: 1024px) {
@@ -94,8 +94,8 @@
 
 	.tribe-editor__rsvp-actions {
 		border-top: 0;
-		margin-top: 0;
 		height: 100%;
+		margin-top: 0;
 		padding: 0;
 		width: 100%;
 

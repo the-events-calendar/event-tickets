@@ -182,9 +182,9 @@ class Editor_Test extends Controller_Test_Case {
 
 	public function asset_data_provider() {
 		$assets = [
-			'tec-tickets-order-modifiers-block-editor'      => 'build/OrderModifiers/block-editor.js',
+			'tec-tickets-order-modifiers-block-editor'      => 'build/OrderModifiers/blockEditor.js',
 			'tec-tickets-order-modifiers-rest-localization' => 'build/OrderModifiers/rest.js',
-			'tec-tickets-order-modifiers-block-editor-css'  => 'build/OrderModifiers/block-editor.css',
+			'tec-tickets-order-modifiers-block-editor-css'  => 'build/OrderModifiers/style-blockEditor.css',
 		];
 
 		foreach ( $assets as $slug => $path ) {

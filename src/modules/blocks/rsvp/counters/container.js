@@ -8,7 +8,7 @@ import { compose } from 'redux';
  * Internal dependencies
  */
 import RSVPCounters from './template';
-import { selectors } from '@moderntribe/tickets/data/blocks/rsvp';
+import { selectors } from '../../../data/blocks/rsvp';
 import { withStore } from '@moderntribe/common/hoc';
 
 const mapStateToProps = ( state ) => ( {
@@ -17,7 +17,4 @@ const mapStateToProps = ( state ) => ( {
 	showNotGoing: selectors.getRSVPNotGoingResponses( state ),
 } );
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps ),
-)( RSVPCounters );
+export default compose( withStore(), connect( mapStateToProps ) )( RSVPCounters );
