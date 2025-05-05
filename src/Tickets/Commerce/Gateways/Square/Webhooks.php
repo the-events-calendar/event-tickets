@@ -389,4 +389,36 @@ class Webhooks extends Controller_Contract {
 
 		return false;
 	}
+	/**
+	 * Check if the webhook should be refreshed, defaults to once every hour.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the webhook should be refreshed.
+	 */
+	public function should_refresh_webhook(): bool {
+		$webhook = $this->get_webhook();
+
+		if ( empty( $webhook ) || ! isset( $webhook['id'] ) ) {
+			return false;
+		}
+
+		$fetched_at = $webhook['fetched_at'] ?? null;
+
+		// If the webhook has never been fetched, it is expired.
+		if ( empty( $fetched_at ) ) {
+			return true;
+		}
+
+		$fetched_at_date = Dates::build_date_object( $fetched_at );
+		$now = Dates::build_date_object();
+
+		$one_hour_ago = $now->modify( '-1 hour' );
+
+		if ( $fetched_at_date->getTimestamp() < $one_hour_ago->getTimestamp() ) {
+			return true;
+		}
+
+		return false;
+	}
 }

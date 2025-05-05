@@ -68,7 +68,7 @@ $webhook_nonce = wp_create_nonce( 'square-webhook-register' );
 		<?php esc_html_e( 'Last Connection:', 'event-tickets' ); ?>
 	</span>
 	<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-value" aria-labelledby="last-connection-label">
-		<abbr datetime="<?php echo esc_attr( $fetched_date->format( 'Y-m-d H:i:s' ) ); ?>">
+		<abbr title="<?php echo esc_attr( $fetched_date->format( Dates::DBDATETIMEFORMAT ) ); ?>">
 			<?php echo esc_html( human_time_diff( $fetched_date->getTimestamp(), time() ) ); ?>
 		</abbr>
 	</span>
