@@ -18,32 +18,29 @@ tribe.tickets.utils = {};
  * Initializes in a Strict env the code that manages the plugin "utils".
  *
  * @since 5.0.3
- * @param  {Object} $   jQuery
- * @param  {Object} obj tribe.tickets.utils
+ * @param {Object} $   jQuery
+ * @param {Object} obj tribe.tickets.utils
  * @return {void}
  */
-( function( $, obj ) {
+( function ( $, obj ) {
 	const $document = $( document );
 
 	/**
 	 * Disable/Enable element.
 	 *
 	 * @since 5.0.3
-	 * @param {Object} $element jQuery object that we want to disable/enable.
+	 * @param {Object}  $element   jQuery object that we want to disable/enable.
 	 * @param {boolean} isDisabled True if we want to disable the element.
 	 * @return {void}
 	 */
-	obj.disable = function( $element, isDisabled ) {
+	obj.disable = function ( $element, isDisabled ) {
 		if ( isDisabled ) {
-			$element.prop( 'disabled', true )
-				.attr( {
-					disabled: 'true',
-					'aria-disabled': 'true',
-				} );
+			$element.prop( 'disabled', true ).attr( {
+				disabled: 'true',
+				'aria-disabled': 'true',
+			} );
 		} else {
-			$element.prop( 'disabled', false )
-				.removeProp( 'disabled' )
-				.removeAttr( 'disabled aria-disabled' );
+			$element.prop( 'disabled', false ).removeProp( 'disabled' ).removeAttr( 'disabled aria-disabled' );
 		}
 	};
 
@@ -51,9 +48,9 @@ tribe.tickets.utils = {};
 	 * Get the REST endpoint
 	 *
 	 * @since 5.0.3
-	 * @returns {string} REST endpoint URL.
+	 * @return {string} REST endpoint URL.
 	 */
-	obj.getRestEndpoint = function() {
+	obj.getRestEndpoint = function () {
 		return TribeCartEndpoint.url;
 	};
 
@@ -62,9 +59,9 @@ tribe.tickets.utils = {};
 	 *
 	 * @since 5.0.3
 	 * @param {string} provider The provider.
-	 * @returns {Object} The appropriate currency format.
+	 * @return {Object} The appropriate currency format.
 	 */
-	obj.getCurrencyFormatting = function( provider ) {
+	obj.getCurrencyFormatting = function ( provider ) {
 		const currency = JSON.parse( TribeCurrency.formatting );
 
 		return currency[ provider ];
@@ -76,18 +73,15 @@ tribe.tickets.utils = {};
 	 *
 	 * @since 5.0.3
 	 * @param {number} passedNumber The number to clean.
-	 * @param {string} provider The provider.
-	 * @returns {string} The cleaned number.
+	 * @param {string} provider     The provider.
+	 * @return {string} The cleaned number.
 	 */
-	obj.cleanNumber = function( passedNumber, provider ) {
+	obj.cleanNumber = function ( passedNumber, provider ) {
 		let number = passedNumber;
 		const format = obj.getCurrencyFormatting( provider );
 
 		// If there are no number of decimals and no thousands separator we can return the number.
-		if (
-			0 === parseInt( format.number_of_decimals ) &&
-			'' === format.thousands_sep
-		) {
+		if ( 0 === parseInt( format.number_of_decimals ) && '' === format.thousands_sep ) {
 			return number;
 		}
 
@@ -119,11 +113,11 @@ tribe.tickets.utils = {};
 	 * Based off coding from https://stackoverflow.com/a/2901136.
 	 *
 	 * @since 5.0.3
-	 * @param {number} number The number to format.
+	 * @param {number} number   The number to format.
 	 * @param {string} provider The provider.
-	 * @returns {string} The formatted number.
+	 * @return {string} The formatted number.
 	 */
-	obj.numberFormat = function( number, provider ) {
+	obj.numberFormat = function ( number, provider ) {
 		const format = obj.getCurrencyFormatting( provider );
 
 		if ( ! format ) {
@@ -135,10 +129,10 @@ tribe.tickets.utils = {};
 		const thousandsSep = format.thousands_sep;
 		const n = ! isFinite( +number ) ? 0 : +number;
 		const prec = ! isFinite( +decimals ) ? 0 : Math.abs( decimals );
-		const sep = ( 'undefined' === typeof thousandsSep ) ? ',' : thousandsSep;
-		const dec = ( 'undefined' === typeof decPoint ) ? '.' : decPoint;
+		const sep = 'undefined' === typeof thousandsSep ? ',' : thousandsSep;
+		const dec = 'undefined' === typeof decPoint ? '.' : decPoint;
 
-		const toFixedFix = function( num, precision ) {
+		const toFixedFix = function ( num, precision ) {
 			// Fix for IE parseFloat(0.55).toFixed(0) = 0;
 			const k = Math.pow( 10, precision );
 
@@ -164,9 +158,9 @@ tribe.tickets.utils = {};
 	 *
 	 * @since 5.0.3
 	 * @param {number} postId The post id.
-	 * @returns {jQuery} The jQuery object of the form.
+	 * @return {jQuery} The jQuery object of the form.
 	 */
-	obj.getTicketsFormFromPostId = function( postId ) {
+	obj.getTicketsFormFromPostId = function ( postId ) {
 		return $document.find( tribe.tickets.block.selectors.form + '[data-post-id="' + postId + '"]' );
 	};
 
@@ -175,9 +169,9 @@ tribe.tickets.utils = {};
 	 *
 	 * @since 5.0.3
 	 * @param {number} postId The post id.
-	 * @returns {boolean|string} The provider, or false if it's not found.
+	 * @return {boolean|string} The provider, or false if it's not found.
 	 */
-	obj.getTicketsProviderFromPostId = function( postId ) {
+	obj.getTicketsProviderFromPostId = function ( postId ) {
 		return obj.getTicketsFormFromPostId( postId ).data( 'provider' ) || false;
 	};
 
@@ -186,9 +180,9 @@ tribe.tickets.utils = {};
 	 *
 	 * @since 5.0.3
 	 * @param {number} postId The post id.
-	 * @returns {boolean|string} The provider ID, or false if it's not found.
+	 * @return {boolean|string} The provider ID, or false if it's not found.
 	 */
-	obj.getTicketsProviderIdFromPostId = function( postId ) {
+	obj.getTicketsProviderIdFromPostId = function ( postId ) {
 		return obj.getTicketsFormFromPostId( postId ).data( 'provider-id' ) || false;
 	};
 
@@ -198,7 +192,7 @@ tribe.tickets.utils = {};
 	 * @since 5.0.3
 	 * @return {boolean|number} postId The post id.
 	 */
-	obj.getTicketsPostId = function() {
+	obj.getTicketsPostId = function () {
 		const $ticketsBlock = $( tribe.tickets.block.selectors.form )[ 0 ];
 
 		// Return the post id for the first ticket block.
@@ -210,33 +204,29 @@ tribe.tickets.utils = {};
 	 *
 	 * @since 5.2.1
 	 * @param {jQuery} $ticketItem The ticket item
-	 * @param {Object} provider The provider
+	 * @param {Object} provider    The provider
 	 * @return {number} The ticket price.
 	 */
-	obj.getPrice = function( $ticketItem, provider ) {
+	obj.getPrice = function ( $ticketItem, provider ) {
 		if ( ! $ticketItem ) {
 			return 0;
 		}
 		const realPrice = $ticketItem.data( 'ticket-price' );
-		const formattedPrice = $ticketItem
-			.find( '.tribe-tickets__tickets-sale-price .tribe-amount' )
-			.text();
-		const priceString = isNaN( realPrice )
-			? obj.cleanNumber( formattedPrice, provider )
-			: realPrice;
+		const formattedPrice = $ticketItem.find( '.tribe-tickets__tickets-sale-price .tribe-amount' ).text();
+		const priceString = isNaN( realPrice ) ? obj.cleanNumber( formattedPrice, provider ) : realPrice;
 
 		return parseFloat( priceString );
 	};
 
 	/**
 	 *
-	 * @param targetQty {integer}
-	 * @param targetAvailable {integer}
-	 * @param maxAvailable {integer}
-	 * @param addedToCart {integer}
-	 * @returns {number} The shared cap
+	 * @param  targetQty       {integer}
+	 * @param  targetAvailable {integer}
+	 * @param  maxAvailable    {integer}
+	 * @param  addedToCart     {integer}
+	 * @return {number} The shared cap
 	 */
-	obj.calculateSharedCap = function( targetQty, targetAvailable, maxAvailable, addedToCart ) {
+	obj.calculateSharedCap = function ( targetQty, targetAvailable, maxAvailable, addedToCart ) {
 		const maxLimit = maxAvailable - addedToCart;
 
 		// If target qty is smaller than both max available and target ticket capacity then it's valid.

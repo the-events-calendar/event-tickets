@@ -16,8 +16,27 @@ use TEC\Tickets\Commerce\Reports\Attendees as Attendees_Reports;
  */
 class Module extends \Tribe__Tickets__Tickets {
 
+	/**
+	 * Constructor.
+	 *
+	 * @since 5.1.9
+	 * @since TBD Moved to do_init() to avoid issues with translations.
+	 */
 	public function __construct() {
-		// This needs to happen before parent construct.
+		if ( did_action( 'init' ) ) {
+			$this->do_init();
+		} else {
+			add_action( 'init', [ $this, 'do_init' ] );
+		}
+	}
+
+	/**
+	 * Initialize the module.
+	 *
+	 * @since TBD
+	 */
+	public function do_init() {
+		// This needs to happen before parent construct. But after the 'init' hook.
 		$this->plugin_name = __( 'Tickets Commerce', 'event-tickets' );
 
 		parent::__construct();

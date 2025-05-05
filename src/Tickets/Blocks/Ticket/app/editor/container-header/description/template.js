@@ -21,23 +21,18 @@ const TicketContainerHeaderDescription = ( {
 	onTempDescriptionChange,
 	tempDescription,
 	description,
-} ) => (
-	isSelected
-		? (
-			<TextareaAutosize
-				className="tribe-editor__ticket__container-header-description-input"
-				value={ tempDescription }
-				placeholder={ __( 'Description', 'event-tickets' ) }
-				onChange={ onTempDescriptionChange }
-				disabled={ isDisabled }
-			/>
-		)
-		: (
-			<span className="tribe-editor__ticket__container-header-description">
-				{ description }
-			</span>
-		)
-);
+} ) =>
+	isSelected ? (
+		<TextareaAutosize
+			className="tribe-editor__ticket__container-header-description-input"
+			value={ tempDescription }
+			placeholder={ __( 'Description', 'event-tickets' ) }
+			onChange={ onTempDescriptionChange }
+			disabled={ isDisabled }
+		/>
+	) : (
+		<span className="tribe-editor__ticket__container-header-description">{ description }</span>
+	);
 
 TicketContainerHeaderDescription.propTypes = {
 	isDisabled: PropTypes.bool,
