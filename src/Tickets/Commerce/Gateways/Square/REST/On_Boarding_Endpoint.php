@@ -328,17 +328,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 		// Register the webhook.
 		$webhook_data = tribe( Webhooks::class )->register_webhook_endpoint();
 
-		if ( is_wp_error( $webhook_data ) || ! empty( $webhook_data['id'] ) ) {
-			do_action(
-				'tribe_log',
-				'info',
-				'Square webhook registered successfully',
-				[
-					'source'     => 'tickets-commerce-square',
-					'webhook_id' => $webhook_data['id'] ?? '',
-				]
-			);
-		} else {
+		if ( is_wp_error( $webhook_data ) || empty( $webhook_data['id'] ) ) {
 			do_action(
 				'tribe_log',
 				'error',
@@ -348,7 +338,18 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 					'error'  => $webhook_data,
 				]
 			);
+			return;
 		}
+
+		do_action(
+			'tribe_log',
+			'info',
+			'Square webhook registered successfully',
+			[
+				'source'     => 'tickets-commerce-square',
+				'webhook_id' => $webhook_data['id'] ?? '',
+			]
+		);
 	}
 
 	/**
