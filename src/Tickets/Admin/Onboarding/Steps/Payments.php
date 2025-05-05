@@ -62,8 +62,9 @@ class Payments extends Abstract_Step {
 	public function process( $response, $request ): WP_REST_Response {
 		$params  = $request->get_params();
 		$updated = tribe( API::class )->update_wizard_settings( $params );
+		$action  = $params['action'] ?? '';
 
-		if ( 'connect' === $params['action'] ) {
+		if ( 'connect' === $action ) {
 			return $this->handle_payment_gateway_connection( $response, $request );
 		}
 
