@@ -224,29 +224,6 @@ class Webhooks extends Controller_Contract {
 	}
 
 	/**
-	 * Get the latest available event types from the API or cache.
-	 *
-	 * @since TBD
-	 *
-	 * @param bool $force_refresh Whether to force a refresh from the API.
-	 *
-	 * @return array<string> Array of available event types.
-	 */
-	public function get_available_event_types( bool $force_refresh = false ): array {
-		if ( $force_refresh ) {
-			$this->register_webhook_endpoint();
-		}
-
-		$webhook = $this->get_webhook();
-
-		if ( empty( $webhook ) || ! isset( $webhook['event_types'] ) ) {
-			return [];
-		}
-
-		return $webhook['event_types'];
-	}
-
-	/**
 	 * Gets the API version to use for webhooks.
 	 * Prioritizes the version from the available types endpoint, falling back to the class property.
 	 *

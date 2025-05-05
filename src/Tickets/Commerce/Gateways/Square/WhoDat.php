@@ -320,42 +320,4 @@ class WhoDat extends Abstract_WhoDat {
 
 		return $connection_response['auth_url'] ?? '';
 	}
-
-	/**
-	 * Get available webhook event types from the API.
-	 *
-	 * @since TBD
-	 *
-	 * @return array|null Array containing available event types and API version or null if the request fails.
-	 */
-	public function get_available_event_types(): ?array {
-		$merchant = tribe( Merchant::class );
-
-		$query_args = [
-			'access_token' => $merchant->get_access_token(),
-			'mode'         => $merchant->get_mode(),
-		];
-
-		$response = $this->get_with_cache( 'webhooks/event-types', $query_args );
-
-		if ( empty( $response ) || isset( $response['error'] ) ) {
-			do_action(
-				'tribe_log',
-				'error',
-				'Failed to retrieve Square webhook event types',
-				[
-					'source'   => 'tickets-commerce-square',
-					'response' => $response ?? 'Empty response',
-				]
-			);
-
-			return null;
-		}
-
-		// Ensure the response has a standardized format with both event types and API version.
-		return [
-			'event_types' => $response['event_types'] ?? [],
-			'api_version' => $response['api_version'] ?? '',
-		];
-	}
 }
