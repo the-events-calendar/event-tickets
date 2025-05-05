@@ -106,7 +106,7 @@ class Telemetry {
 			// Translators: 1: opening anchor tag, 2: opening anchor tag, 3: opening anchor tag, 4: closing anchor tag.
 				_x(
 					'Enable this option to share usage data with Event Tickets and StellarWP.
-			This activates access to TEC AI chatbot and in-app priority support for premium users.
+			This also activates access to TEC AI chatbot and in-app priority support for premium users.
 			%1$sWhat permissions are being granted?%4$s
 			%2$sRead our terms of service%4$s.
 			%3$sRead our privacy policy%4$s.',
