@@ -62,7 +62,7 @@ $webhook_nonce = wp_create_nonce( 'square-webhook-register' );
 		<?php endif; ?>
 	</span>
 </div>
-<?php if ( $is_healthy && $webhook['fetched_at'] ) : ?>
+<?php if ( $is_healthy && ! empty( $webhook['fetched_at'] ) ) : ?>
 <div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-row">
 	<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-label" id="last-connection-label">
 		<?php esc_html_e( 'Last Connection:', 'event-tickets' ); ?>
