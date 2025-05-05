@@ -57,20 +57,6 @@
         "type": "html",
         "html": "<\\/div>"
     },
-    "tec-tickets-emails-ticket-add-event-links": {
-        "type": "checkbox_bool",
-        "label": "Calendar links",
-        "tooltip": "Include iCal and Google event links in this email.",
-        "default": true,
-        "validation_type": "boolean"
-    },
-    "tec-tickets-emails-ticket-add-event-ics": {
-        "type": "checkbox_bool",
-        "label": "Calendar invites",
-        "tooltip": "Attach calendar invites (.ics) to the ticket email.",
-        "default": true,
-        "validation_type": "boolean"
-    },
     "3": {
         "type": "html",
         "html": "<input type=\\"hidden\\" name=\\"tec_tickets_emails_current_section\\" id=\\"tec_tickets_emails_current_section\\" value=\\"tec_tickets_emails_ticket\\" \\/>"
