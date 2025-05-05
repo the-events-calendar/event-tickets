@@ -16,9 +16,9 @@ use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Ticket_Item;
 use TEC\Tickets\Commerce\Gateways\Square\Order as Square_Order;
 use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 use TEC\Tickets\Commerce\Gateways\Square\Requests;
-use TEC\Tickets\Commerce\Gateways\Square\Settings;
 use TEC\Tickets\Commerce\Ticket as Ticket_Data;
 use TEC\Tickets\Commerce\Order as Commerce_Order;
+use TEC\Tickets\Commerce\Meta as Commerce_Meta;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\NoChangeNeededException;
 use InvalidArgumentException;
 use TEC\Tickets\Commerce\Utils\Value;
@@ -483,7 +483,7 @@ class Remote_Objects {
 		}
 
 		if ( is_user_logged_in() ) {
-			$customer_id = (string) Settings::get_environmental_meta( get_current_user_id(), '_tec_tickets_commerce_gateways_square_customer_id_%s', [], 'user' );
+			$customer_id = (string) Commerce_Meta::get( get_current_user_id(), '_tec_tickets_commerce_gateways_square_customer_id_%s', [], 'user' );
 
 			if ( $customer_id ) {
 				$cache[ $cache_key ] = $customer_id;
@@ -531,7 +531,7 @@ class Remote_Objects {
 			update_post_meta( $order_id, '_tec_tickets_commerce_gateways_square_customer_id', $customer_id );
 
 			if ( is_user_logged_in() ) {
-				Settings::set_environmental_meta( get_current_user_id(), '_tec_tickets_commerce_gateways_square_customer_id_%s', $customer_id, [], 'user' );
+				Commerce_Meta::set( get_current_user_id(), '_tec_tickets_commerce_gateways_square_customer_id_%s', $customer_id, [], 'user' );
 			}
 
 			return $customer_id;

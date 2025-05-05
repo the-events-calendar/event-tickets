@@ -14,8 +14,8 @@ namespace TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects;
 
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use WP_Post;
-use TEC\Tickets\Commerce\Gateways\Square\Settings;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
+use TEC\Tickets\Commerce\Meta as Commerce_Meta;
 
 /**
  * Class Event_Item
@@ -248,7 +248,7 @@ class Event_Item extends Item {
 	public function on_sync_object( array $square_object ): void {
 		parent::on_sync_object( $square_object );
 
-		Settings::set_environmental_meta( $this->get_wp_id(), self::SQUARE_LATEST_OBJECT_SNAPSHOT, md5( wp_json_encode( $this ) ) );
+		Commerce_Meta::set( $this->get_wp_id(), self::SQUARE_LATEST_OBJECT_SNAPSHOT, md5( wp_json_encode( $this ) ) );
 	}
 
 	/**
@@ -262,7 +262,7 @@ class Event_Item extends Item {
 	 */
 	public static function delete( int $id ): void {
 		parent::delete( $id );
-		Settings::delete_environmental_meta( $id, self::SQUARE_LATEST_OBJECT_SNAPSHOT );
+		Commerce_Meta::delete( $id, self::SQUARE_LATEST_OBJECT_SNAPSHOT );
 	}
 
 	/**
@@ -273,7 +273,7 @@ class Event_Item extends Item {
 	 * @return bool Whether the object needs to be synced.
 	 */
 	public function needs_sync(): bool {
-		$latest_snapshot = Settings::get_environmental_meta( $this->get_wp_id(), self::SQUARE_LATEST_OBJECT_SNAPSHOT );
+		$latest_snapshot = Commerce_Meta::get( $this->get_wp_id(), self::SQUARE_LATEST_OBJECT_SNAPSHOT );
 
 		if ( ! $latest_snapshot ) {
 			return true;

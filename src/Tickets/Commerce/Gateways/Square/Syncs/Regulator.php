@@ -13,7 +13,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\SquareRateLimitedExceptio
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\Contracts\Container;
-use TEC\Tickets\Commerce\Gateways\Square\Settings;
+use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 
 /**
  * Regulator for Square syncs.
@@ -212,7 +212,7 @@ class Regulator extends Controller_Contract {
 		}
 
 		foreach ( $ticket_able_post_types as $ticket_able_post_type ) {
-			Settings::set_environmental_option( Sync_Controller::OPTION_SYNC_ACTIONS_IN_PROGRESS, time(), [ $ticket_able_post_type ] );
+			Commerce_Settings::set( Sync_Controller::OPTION_SYNC_ACTIONS_IN_PROGRESS, time(), [ $ticket_able_post_type ] );
 			$this->schedule( Items_Sync::HOOK_SYNC_ACTION, [ $ticket_able_post_type ] );
 		}
 	}

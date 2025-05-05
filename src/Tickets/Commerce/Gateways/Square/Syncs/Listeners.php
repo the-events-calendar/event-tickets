@@ -19,6 +19,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use WP_Post;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
 use WP_Query;
+use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 
 /**
  * Class Listeners
@@ -210,7 +211,7 @@ class Listeners extends Controller_Contract {
 			'fields'                 => 'ids',
 			'meta_query'             => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				[
-					'key'     => Settings::get_environmental_key( Item::SQUARE_ID_META ),
+					'key'     => Commerce_Settings::get_key( Item::SQUARE_ID_META ),
 					'compare' => 'EXISTS',
 				],
 			],

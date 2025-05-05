@@ -16,11 +16,13 @@ use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Event_Item;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Inventory_Change;
-use TEC\Tickets\Commerce\Gateways\Square\Settings;
 use TEC\Tickets\Commerce\Gateways\Square\Requests;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Ticket_Item;
 use TEC\Tickets\Commerce\Ticket as Ticket_Data;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\NoChangeNeededException;
+use TEC\Tickets\Commerce\Settings as Commerce_Settings;
+use TEC\Tickets\Commerce\Meta as Commerce_Meta;
+
 /**
  * Integrity_Controller class.
  *
@@ -314,7 +316,7 @@ class Integrity_Controller extends Controller_Contract {
 		unset( $to_local_delete );
 
 		if ( ! empty( $to_be_deleted ) ) {
-			Settings::set_environmental_option( self::OPTION_INTEGRITY_CHECK_DELETED_ITEMS, $to_be_deleted );
+			Commerce_Settings::set( self::OPTION_INTEGRITY_CHECK_DELETED_ITEMS, $to_be_deleted );
 			$this->regulator->schedule( self::HOOK_DATA_INTEGRITY_DELETE_ITEMS, [], HOUR_IN_SECONDS );
 		}
 
@@ -325,7 +327,7 @@ class Integrity_Controller extends Controller_Contract {
 		}
 
 		if ( 1000 < count( $to_be_checked ) ) {
-			Settings::set_environmental_option( self::OPTION_INTEGRITY_CHECK_ITEMS, $to_be_checked );
+			Commerce_Settings::set( self::OPTION_INTEGRITY_CHECK_ITEMS, $to_be_checked );
 			$this->regulator->schedule( self::HOOK_DATA_INTEGRITY_CHECK_ITEMS, [] );
 			return;
 		}
@@ -342,7 +344,7 @@ class Integrity_Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function delete_items(): void {
-		$ids = Settings::get_environmental_option( self::OPTION_INTEGRITY_CHECK_DELETED_ITEMS );
+		$ids = Commerce_Settings::get( self::OPTION_INTEGRITY_CHECK_DELETED_ITEMS );
 
 		if ( empty( $ids ) || ! is_array( $ids ) ) {
 			return;
@@ -389,11 +391,11 @@ class Integrity_Controller extends Controller_Contract {
 		$diff = array_diff( $ids, array_values( $deleted ) );
 
 		if ( empty( $diff ) ) {
-			Settings::delete_environmental_option( self::OPTION_INTEGRITY_CHECK_DELETED_ITEMS );
+			Commerce_Settings::delete( self::OPTION_INTEGRITY_CHECK_DELETED_ITEMS );
 			return;
 		}
 
-		Settings::set_environmental_option( self::OPTION_INTEGRITY_CHECK_DELETED_ITEMS, $diff );
+		Commerce_Settings::set( self::OPTION_INTEGRITY_CHECK_DELETED_ITEMS, $diff );
 		$this->regulator->schedule( self::HOOK_DATA_INTEGRITY_DELETE_ITEMS, [], 5 * MINUTE_IN_SECONDS );
 	}
 
@@ -408,7 +410,7 @@ class Integrity_Controller extends Controller_Contract {
 	 */
 	public function check_items( array $to_be_checked = [] ): void {
 		if ( empty( $to_be_checked ) ) {
-			$to_be_checked = Settings::get_environmental_option( self::OPTION_INTEGRITY_CHECK_ITEMS );
+			$to_be_checked = Commerce_Settings::get( self::OPTION_INTEGRITY_CHECK_ITEMS );
 		}
 
 		if ( empty( $to_be_checked ) ) {
@@ -442,7 +444,7 @@ class Integrity_Controller extends Controller_Contract {
 			return;
 		}
 
-		Settings::delete_environmental_option( self::OPTION_INTEGRITY_CHECK_ITEMS );
+		Commerce_Settings::delete( self::OPTION_INTEGRITY_CHECK_ITEMS );
 
 		if ( empty( $response['objects'] ) ) {
 			// Weird.... Lets throw error.
@@ -490,14 +492,14 @@ class Integrity_Controller extends Controller_Contract {
 			$wp_controlled_fields = $item_object->get_wp_controlled_fields( $object );
 
 			// We always update the object's version so that we can modify it.
-			Settings::set_environmental_meta( $to_be_checked[ $object['id'] ]->wp_object_id, Item::SQUARE_VERSION_META, $object['version'] );
+			Commerce_Meta::set( $to_be_checked[ $object['id'] ]->wp_object_id, Item::SQUARE_VERSION_META, $object['version'] );
 
 			$is_remote_up_to_date_with_latest_snapshot = $to_be_checked[ $object['id'] ]->square_object_hash === md5( wp_json_encode( $wp_controlled_fields ) );
 			$is_local_up_to_date_with_remote           = $is_ticket || ! $item_object->needs_sync();
 
 			if ( ! ( $is_remote_up_to_date_with_latest_snapshot && $is_local_up_to_date_with_remote ) ) {
 				// As to allow it to be synced again.
-				Settings::delete_environmental_meta( $to_be_checked[ $object['id'] ]->wp_object_id, Event_Item::SQUARE_LATEST_OBJECT_SNAPSHOT );
+				Commerce_Meta::delete( $to_be_checked[ $object['id'] ]->wp_object_id, Event_Item::SQUARE_LATEST_OBJECT_SNAPSHOT );
 
 				$actually_in_need_of_sync[] = $to_be_checked[ $object['id'] ]->id;
 			}
@@ -520,7 +522,7 @@ class Integrity_Controller extends Controller_Contract {
 		}
 
 		if ( ! empty( $remaining ) ) {
-			Settings::set_environmental_option( self::OPTION_INTEGRITY_CHECK_ITEMS, $remaining );
+			Commerce_Settings::set( self::OPTION_INTEGRITY_CHECK_ITEMS, $remaining );
 			$this->regulator->schedule( self::HOOK_DATA_INTEGRITY_CHECK_ITEMS, [], MINUTE_IN_SECONDS / 2 );
 		}
 
@@ -530,8 +532,8 @@ class Integrity_Controller extends Controller_Contract {
 		}
 
 		if ( ! empty( $items_availability_out_of_sync ) ) {
-			$previous = (array) Settings::get_environmental_option( self::OPTION_INTEGRITY_SYNC_INVENTORY );
-			Settings::set_environmental_option( self::OPTION_INTEGRITY_SYNC_INVENTORY, array_merge( $previous, $items_availability_out_of_sync ) );
+			$previous = (array) Commerce_Settings::get( self::OPTION_INTEGRITY_SYNC_INVENTORY );
+			Commerce_Settings::set( self::OPTION_INTEGRITY_SYNC_INVENTORY, array_merge( $previous, $items_availability_out_of_sync ) );
 			$this->regulator->schedule( self::HOOK_DATA_INTEGRITY_SYNC_INVENTORY, [], MINUTE_IN_SECONDS / 6 );
 		}
 
@@ -539,8 +541,8 @@ class Integrity_Controller extends Controller_Contract {
 			return;
 		}
 
-		$previous = (array) Settings::get_environmental_option( self::OPTION_INTEGRITY_SYNC_ITEMS );
-		Settings::set_environmental_option( self::OPTION_INTEGRITY_SYNC_ITEMS, array_merge( $previous, $actually_in_need_of_sync ) );
+		$previous = (array) Commerce_Settings::get( self::OPTION_INTEGRITY_SYNC_ITEMS );
+		Commerce_Settings::set( self::OPTION_INTEGRITY_SYNC_ITEMS, array_merge( $previous, $actually_in_need_of_sync ) );
 	}
 
 	/**
@@ -551,7 +553,7 @@ class Integrity_Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function sync_items(): void {
-		$ids = Settings::get_environmental_option( self::OPTION_INTEGRITY_SYNC_ITEMS );
+		$ids = Commerce_Settings::get( self::OPTION_INTEGRITY_SYNC_ITEMS );
 
 		if ( empty( $ids ) || ! is_array( $ids ) ) {
 			return;
@@ -560,7 +562,7 @@ class Integrity_Controller extends Controller_Contract {
 		$ids = array_filter( array_map( 'intval', $ids ) );
 
 		if ( empty( $ids ) ) {
-			Settings::delete_environmental_option( self::OPTION_INTEGRITY_SYNC_ITEMS );
+			Commerce_Settings::delete( self::OPTION_INTEGRITY_SYNC_ITEMS );
 			return;
 		}
 
@@ -604,7 +606,7 @@ class Integrity_Controller extends Controller_Contract {
 		}
 
 		if ( empty( $batch ) ) {
-			Settings::delete_environmental_option( self::OPTION_INTEGRITY_SYNC_ITEMS );
+			Commerce_Settings::delete( self::OPTION_INTEGRITY_SYNC_ITEMS );
 			return;
 		}
 
@@ -614,11 +616,11 @@ class Integrity_Controller extends Controller_Contract {
 		$remaining = array_diff( $ids, $objects_to_sync, $skipped_tickets );
 
 		if ( empty( $remaining ) ) {
-			Settings::delete_environmental_option( self::OPTION_INTEGRITY_SYNC_ITEMS );
+			Commerce_Settings::delete( self::OPTION_INTEGRITY_SYNC_ITEMS );
 			return;
 		}
 
-		Settings::set_environmental_option( self::OPTION_INTEGRITY_SYNC_ITEMS, $remaining );
+		Commerce_Settings::set( self::OPTION_INTEGRITY_SYNC_ITEMS, $remaining );
 		$this->regulator->schedule( self::HOOK_DATA_INTEGRITY_SYNC_ITEMS, [], MINUTE_IN_SECONDS / 6 );
 	}
 
@@ -630,7 +632,7 @@ class Integrity_Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function sync_inventory(): void {
-		$ids = Settings::get_environmental_option( self::OPTION_INTEGRITY_SYNC_INVENTORY );
+		$ids = Commerce_Settings::get( self::OPTION_INTEGRITY_SYNC_INVENTORY );
 
 		if ( empty( $ids ) || ! is_array( $ids ) ) {
 			return;
@@ -639,7 +641,7 @@ class Integrity_Controller extends Controller_Contract {
 		$ids = array_filter( array_map( 'intval', $ids ) );
 
 		if ( empty( $ids ) ) {
-			Settings::delete_environmental_option( self::OPTION_INTEGRITY_SYNC_INVENTORY );
+			Commerce_Settings::delete( self::OPTION_INTEGRITY_SYNC_INVENTORY );
 			return;
 		}
 
@@ -679,7 +681,7 @@ class Integrity_Controller extends Controller_Contract {
 		}
 
 		if ( empty( $batch ) ) {
-			Settings::delete_environmental_option( self::OPTION_INTEGRITY_SYNC_INVENTORY );
+			Commerce_Settings::delete( self::OPTION_INTEGRITY_SYNC_INVENTORY );
 			return;
 		}
 
@@ -688,11 +690,11 @@ class Integrity_Controller extends Controller_Contract {
 		$remaining = array_diff( $ids, $objects_to_sync );
 
 		if ( empty( $remaining ) ) {
-			Settings::delete_environmental_option( self::OPTION_INTEGRITY_SYNC_INVENTORY );
+			Commerce_Settings::delete( self::OPTION_INTEGRITY_SYNC_INVENTORY );
 			return;
 		}
 
-		Settings::set_environmental_option( self::OPTION_INTEGRITY_SYNC_INVENTORY, $remaining );
+		Commerce_Settings::set( self::OPTION_INTEGRITY_SYNC_INVENTORY, $remaining );
 		$this->regulator->schedule( self::HOOK_DATA_INTEGRITY_SYNC_INVENTORY, [], MINUTE_IN_SECONDS / 6 );
 	}
 }

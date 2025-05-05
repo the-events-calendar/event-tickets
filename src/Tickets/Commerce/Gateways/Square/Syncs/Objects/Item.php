@@ -14,7 +14,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects;
 
 use JsonSerializable;
 use TEC\Tickets\Commerce\Gateways\Square\Merchant;
-use TEC\Tickets\Commerce\Gateways\Square\Settings;
+use TEC\Tickets\Commerce\Meta as Commerce_Meta;
 
 /**
  * Abstract Class Item
@@ -134,7 +134,7 @@ abstract class Item implements JsonSerializable {
 	 * @return string The remote object ID.
 	 */
 	public static function get_remote_object_id( int $id ): string {
-		return (string) Settings::get_environmental_meta( $id, self::SQUARE_ID_META );
+		return (string) Commerce_Meta::get( $id, self::SQUARE_ID_META );
 	}
 
 	/**
@@ -147,10 +147,10 @@ abstract class Item implements JsonSerializable {
 	 * @return void
 	 */
 	public static function delete( int $id ): void {
-		Settings::delete_environmental_meta( $id, self::SQUARE_ID_META );
-		Settings::delete_environmental_meta( $id, self::SQUARE_SYNCED_META );
-		Settings::delete_environmental_meta( $id, self::SQUARE_VERSION_META );
-		Settings::delete_environmental_meta( $id, self::SQUARE_SYNC_HISTORY_META );
+		Commerce_Meta::delete( $id, self::SQUARE_ID_META );
+		Commerce_Meta::delete( $id, self::SQUARE_SYNCED_META );
+		Commerce_Meta::delete( $id, self::SQUARE_VERSION_META );
+		Commerce_Meta::delete( $id, self::SQUARE_SYNC_HISTORY_META );
 	}
 
 	/**
@@ -173,7 +173,7 @@ abstract class Item implements JsonSerializable {
 	 */
 	public function to_array(): array {
 		$this->get_id();
-		$version = (int) Settings::get_environmental_meta( $this->get_wp_id(), self::SQUARE_VERSION_META );
+		$version = (int) Commerce_Meta::get( $this->get_wp_id(), self::SQUARE_VERSION_META );
 		if ( $version ) {
 			$this->data['version'] = $version;
 		}
@@ -296,7 +296,7 @@ abstract class Item implements JsonSerializable {
 
 		$this->data['id'] = $square_object_id;
 
-		Settings::set_environmental_meta( $this->get_wp_id(), self::SQUARE_ID_META, $square_object_id );
+		Commerce_Meta::set( $this->get_wp_id(), self::SQUARE_ID_META, $square_object_id );
 	}
 
 	/**
@@ -309,10 +309,10 @@ abstract class Item implements JsonSerializable {
 	 * @return void
 	 */
 	public function on_sync_object( array $square_object ): void {
-		Settings::set_environmental_meta( $this->get_wp_id(), self::SQUARE_SYNCED_META, time() );
+		Commerce_Meta::set( $this->get_wp_id(), self::SQUARE_SYNCED_META, time() );
 
 		if ( isset( $square_object['version'] ) ) {
-			Settings::set_environmental_meta( $this->get_wp_id(), self::SQUARE_VERSION_META, $square_object['version'] );
+			Commerce_Meta::set( $this->get_wp_id(), self::SQUARE_VERSION_META, $square_object['version'] );
 		}
 
 		/**

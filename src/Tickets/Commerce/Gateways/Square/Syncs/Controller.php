@@ -13,7 +13,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\Contracts\Container;
 use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 use TEC\Tickets\Commerce\Gateways\Square\Settings;
-use Tribe__Tickets__Tickets as Tickets;
+use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 use TEC\Tickets\Commerce\Ticket as Ticket_Data;
 use Exception;
 use Tribe__Settings_Manager as Settings_Manager;
@@ -267,7 +267,7 @@ class Controller extends Controller_Contract {
 		$ticket_able_to_sync = [];
 
 		foreach ( $ticket_able_post_types as $ticket_able_post_type ) {
-			if ( Settings::get_environmental_option( self::OPTION_SYNC_ACTIONS_COMPLETED, [ $ticket_able_post_type ] ) ) {
+			if ( Commerce_Settings::get( self::OPTION_SYNC_ACTIONS_COMPLETED, [ $ticket_able_post_type ] ) ) {
 				continue;
 			}
 
@@ -298,7 +298,7 @@ class Controller extends Controller_Contract {
 	public static function is_sync_in_progress(): bool {
 		$ticket_able_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
 		foreach ( $ticket_able_post_types as $ticket_able_post_type ) {
-			if ( Settings::get_environmental_option( self::OPTION_SYNC_ACTIONS_IN_PROGRESS, [ $ticket_able_post_type ] ) ) {
+			if ( Commerce_Settings::get( self::OPTION_SYNC_ACTIONS_IN_PROGRESS, [ $ticket_able_post_type ] ) ) {
 				return true;
 			}
 		}
@@ -328,8 +328,8 @@ class Controller extends Controller_Contract {
 
 		$settings = $new_options;
 
-		$progress_option  = Settings::get_environmental_key( self::OPTION_SYNC_ACTIONS_IN_PROGRESS, [ $post_type ] );
-		$completed_option = Settings::get_environmental_key( self::OPTION_SYNC_ACTIONS_COMPLETED, [ $post_type ] );
+		$progress_option  = Commerce_Settings::get_key( self::OPTION_SYNC_ACTIONS_IN_PROGRESS, [ $post_type ] );
+		$completed_option = Commerce_Settings::get_key( self::OPTION_SYNC_ACTIONS_COMPLETED, [ $post_type ] );
 
 		foreach ( array_keys( $settings ) as $key ) {
 			if ( ! str_starts_with( $key, $progress_option ) && ! str_starts_with( $key, $completed_option ) ) {
@@ -341,7 +341,7 @@ class Controller extends Controller_Contract {
 
 		if ( ! $post_type ) {
 			// This is a global reset, so we need to unset the latest timestamp option.
-			unset( $settings[ Settings::get_environmental_key( self::OPTION_SYNC_LATEST_TIMESTAMP ) ] );
+			unset( $settings[ Commerce_Settings::get_key( self::OPTION_SYNC_LATEST_TIMESTAMP ) ] );
 		}
 
 		add_action(
