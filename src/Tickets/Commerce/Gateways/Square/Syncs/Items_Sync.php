@@ -13,6 +13,8 @@ use WP_Query;
 use TEC\Tickets\Commerce\Gateways\Square\Requests;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
+use TEC\Tickets\Commerce\Settings as Commerce_Settings;
+use TEC\Tickets\Commerce\Meta as Commerce_Meta;
 
 /**
  * Class Tickets_Sync
@@ -118,7 +120,7 @@ class Items_Sync {
 			'fields'                 => 'ids',
 			'meta_query'             => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				[
-					'key'     => Item::SQUARE_SYNCED_META,
+					'key'     => Commerce_Settings::get_key( Item::SQUARE_SYNCED_META ),
 					'compare' => 'NOT EXISTS',
 				],
 			],
@@ -143,7 +145,7 @@ class Items_Sync {
 			return;
 		}
 
-		tribe_update_option( sprintf( Sync_Controller::OPTION_SYNC_ACTIONS_IN_PROGRESS, $ticket_able_post_type ), time() );
+		Commerce_Settings::set( Sync_Controller::OPTION_SYNC_ACTIONS_IN_PROGRESS, time(), [ $ticket_able_post_type ] );
 
 		// Reschedules itself to continue in 2 minutes.
 		$regulator->schedule( self::HOOK_SYNC_ACTION, [ $ticket_able_post_type ], MINUTE_IN_SECONDS * 2, false );
@@ -156,7 +158,7 @@ class Items_Sync {
 			$tickets = $this->sync_event( $post_id, false );
 
 			if ( ! $tickets ) {
-				update_post_meta( $post_id, Item::SQUARE_SYNCED_META, false );
+				Commerce_Meta::set( $post_id, Item::SQUARE_SYNCED_META, false );
 				continue;
 			}
 
@@ -174,7 +176,7 @@ class Items_Sync {
 		$discarded_objects = tribe_cache()['square_items_sync_discarded_objects'] ?? [];
 
 		foreach ( $discarded_objects as $post_id ) {
-			update_post_meta( $post_id, Item::SQUARE_SYNCED_META, false );
+			Commerce_Meta::set( $post_id, Item::SQUARE_SYNCED_META, false );
 		}
 	}
 
@@ -225,7 +227,7 @@ class Items_Sync {
 	 *
 	 * @return void
 	 */
-	protected function process_batch( array $batch ): void {
+	public function process_batch( array $batch ): void {
 		$square_batches = $this->remote_objects->transform_batch( $batch );
 
 		if ( empty( $square_batches ) ) {

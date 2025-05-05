@@ -13,6 +13,8 @@ use WP_Query;
 use TEC\Tickets\Commerce\Gateways\Square\Requests;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
+use TEC\Tickets\Commerce\Settings as Commerce_Settings;
+use TEC\Tickets\Commerce\Meta as Commerce_Meta;
 
 /**
  * Class Tickets_Sync
@@ -95,7 +97,7 @@ class Inventory_Sync {
 			'fields'                 => 'ids',
 			'meta_query'             => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				[
-					'key'     => Item::SQUARE_SYNCED_META,
+					'key'     => Commerce_Settings::get_key( Item::SQUARE_SYNCED_META ),
 					'compare' => 'EXISTS',
 				],
 			],
@@ -113,8 +115,8 @@ class Inventory_Sync {
 		);
 
 		if ( ! $query->have_posts() ) {
-			tribe_update_option( sprintf( Sync_Controller::OPTION_SYNC_ACTIONS_COMPLETED, $ticket_able_post_type ), time() );
-			tribe_remove_option( sprintf( Sync_Controller::OPTION_SYNC_ACTIONS_IN_PROGRESS, $ticket_able_post_type ) );
+			Commerce_Settings::set( Sync_Controller::OPTION_SYNC_ACTIONS_COMPLETED, time(), [ $ticket_able_post_type ] );
+			Commerce_Settings::delete( Sync_Controller::OPTION_SYNC_ACTIONS_IN_PROGRESS, [ $ticket_able_post_type ] );
 
 			if ( Sync_Controller::is_sync_in_progress( false ) ) {
 				// Another post type is still syncing.
@@ -187,7 +189,7 @@ class Inventory_Sync {
 	 *
 	 * @return void
 	 */
-	protected function process_batch( array $batch ): void {
+	public function process_batch( array $batch ): void {
 		$this->remote_objects->cache_remote_object_state( $batch );
 
 		$square_batches = $this->remote_objects->transform_inventory_batch( $batch );
@@ -255,8 +257,8 @@ class Inventory_Sync {
 	 * @return void
 	 */
 	protected function clean_up_synced_meta( int $object_id, bool $force_add_history = false ): void {
-		$square_synced = get_post_meta( $object_id, Item::SQUARE_SYNCED_META, true );
-		delete_post_meta( $object_id, Item::SQUARE_SYNCED_META );
+		$square_synced = Commerce_Meta::get( $object_id, Item::SQUARE_SYNCED_META );
+		Commerce_Meta::delete( $object_id, Item::SQUARE_SYNCED_META );
 
 		if ( ! $force_add_history && ! $square_synced ) {
 			return;
@@ -264,12 +266,12 @@ class Inventory_Sync {
 
 		$square_synced = $square_synced && $square_synced > time() - DAY_IN_SECONDS ? $square_synced : time();
 
-		$history = get_post_meta( $object_id, Item::SQUARE_SYNC_HISTORY_META );
+		$history = Commerce_Meta::get( $object_id, Item::SQUARE_SYNC_HISTORY_META, [], 'post', false );
 		if ( is_array( $history ) && count( $history ) > 9 ) {
 			$history = array_slice( $history, -9 );
 		}
 
-		add_post_meta( $object_id, Item::SQUARE_SYNC_HISTORY_META, $square_synced );
+		Commerce_Meta::add( $object_id, Item::SQUARE_SYNC_HISTORY_META, $square_synced );
 	}
 
 	/**
@@ -283,7 +285,7 @@ class Inventory_Sync {
 		$ticket_able_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
 
 		foreach ( $ticket_able_post_types as $ticket_able_post_type ) {
-			tribe_remove_option( sprintf( Sync_Controller::OPTION_SYNC_ACTIONS_IN_PROGRESS, $ticket_able_post_type ) );
+			Commerce_Settings::delete( Sync_Controller::OPTION_SYNC_ACTIONS_IN_PROGRESS, [ $ticket_able_post_type ] );
 		}
 
 		/**

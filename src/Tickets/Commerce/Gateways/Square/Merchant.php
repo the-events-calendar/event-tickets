@@ -615,6 +615,17 @@ class Merchant extends Abstract_Merchant {
 	}
 
 	/**
+	 * Get the test mode status.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_test_mode(): bool {
+		return tribe( Gateway::class )->is_test_mode();
+	}
+
+	/**
 	 * Get the client ID for the Square SDK.
 	 *
 	 * @since TBD

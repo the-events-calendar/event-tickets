@@ -19,6 +19,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use WP_Post;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
 use WP_Query;
+use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 
 /**
  * Class Listeners
@@ -148,7 +149,7 @@ class Listeners extends Controller_Contract {
 	 */
 	public function reset_sync_status( array $new_options, array $old_options ): void {
 		$this->remove_tec_settings_listener();
-		$sync_still_enabled = tribe_is_truthy( $new_options[ Settings::OPTION_INVENTORY_SYNC ] );
+		$sync_still_enabled = tribe_is_truthy( $new_options[ Settings::OPTION_INVENTORY_SYNC ] ?? false );
 
 		if ( ! $sync_still_enabled ) {
 			// We do a global reset then!
@@ -210,7 +211,7 @@ class Listeners extends Controller_Contract {
 			'fields'                 => 'ids',
 			'meta_query'             => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				[
-					'key'     => Item::SQUARE_ID_META,
+					'key'     => Commerce_Settings::get_key( Item::SQUARE_ID_META ),
 					'compare' => 'EXISTS',
 				],
 			],
@@ -390,7 +391,7 @@ class Listeners extends Controller_Contract {
 	 * @return void
 	 */
 	public function schedule_sync_on_date_end( int $ticket_id, bool $its_happening, int $timestamp, WP_Post $post_parent ): void {
-		if ( ! $this->is_object_syncable( $ticket_id ) ) {
+		if ( ! $this->is_object_syncable( $ticket_id, true ) ) {
 			return;
 		}
 

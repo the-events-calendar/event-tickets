@@ -132,7 +132,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		try {
-			tribe( Square_Order::class )->upsert_from_order( $order );
+			$square_order_id = tribe( Square_Order::class )->upsert_from_order( $order );
 		} catch ( RuntimeException $e ) {
 			return new WP_Error( 'tec-tc-gateway-square-failed-creating-order', $messages['failed-creating-square-order'], $order );
 		}
@@ -159,7 +159,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			)
 			->set_args(
 				[
-					'gateway_payload' => $payment,
+					'gateway_payload'  => $payment,
+					'gateway_order_id' => $square_order_id,
 				]
 			)
 			->save();
@@ -169,7 +170,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			$order->ID,
 			tribe( Status::class )->convert_to_commerce_status( $payment['status'] )->get_slug(),
 			[
-				'gateway_payload' => $payment,
+				'gateway_payload'  => $payment,
+				'gateway_order_id' => $square_order_id,
 			]
 		);
 
