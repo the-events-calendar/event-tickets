@@ -18,6 +18,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 use TEC\Tickets\Commerce\Gateways\Square\Requests;
 use TEC\Tickets\Commerce\Ticket as Ticket_Data;
 use TEC\Tickets\Commerce\Order as Commerce_Order;
+use TEC\Tickets\Commerce\Meta as Commerce_Meta;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\NoChangeNeededException;
 use InvalidArgumentException;
 use TEC\Tickets\Commerce\Utils\Value;
@@ -239,19 +240,44 @@ class Remote_Objects {
 	 *
 	 * @param array $batch The batch.
 	 *
-	 * @return void
+	 * @return string The location ID.
 	 */
-	public function cache_remote_object_state( array $batch ): void {
+	public function cache_remote_object_state( array $batch ): string {
+		$cache = tribe_cache();
+
+		$location_ids = $this->get_location_ids();
+
+		$location_id = $location_ids[0] ?? false;
+
+		if ( ! $location_id ) {
+			return '';
+		}
+
 		$data = [
-			'location_ids'       => $this->get_location_ids(),
+			'location_ids'       => $location_ids,
 			'catalog_object_ids' => [],
 		];
 
+		$cache_template_key = 'square_sync_object_state_%s_%s';
+
 		foreach ( $batch as $tickets ) {
 			foreach ( $tickets as $ticket ) {
-				$ticket_item                  = new Ticket_Item( $ticket );
-				$data['catalog_object_ids'][] = $ticket_item->get_id();
+				$ticket_item       = new Ticket_Item( $ticket );
+				$catalog_object_id = $ticket_item->get_id();
+
+				$cache_key = sprintf( $cache_template_key, $catalog_object_id, $location_id );
+
+				if ( ! empty( $cache->get( $cache_key ) ) && is_array( $cache->get( $cache_key ) ) ) {
+					continue;
+				}
+
+				$data['catalog_object_ids'][] = $catalog_object_id;
 			}
+		}
+
+		if ( empty( $data['catalog_object_ids'] ) ) {
+			// Everything is cached already.
+			return $location_id;
 		}
 
 		$args = [
@@ -272,18 +298,22 @@ class Remote_Objects {
 		}
 
 		if ( empty( $response['counts'] ) ) {
-			return;
+			return $location_id;
 		}
-
-		$cache = tribe_cache();
 
 		foreach ( $response['counts'] as $count ) {
-			$cache_key           = 'square_sync_object_state_' . $count['catalog_object_id'] . '_' . $count['location_id'];
-			$cache[ $cache_key ] = [
-				'quantity' => $count['quantity'],
-				'state'    => $count['state'],
-			];
+			$cache_key = sprintf( $cache_template_key, $count['catalog_object_id'], $count['location_id'] );
+			$cache->set(
+				$cache_key,
+				[
+					'quantity' => $count['quantity'],
+					'state'    => $count['state'],
+				],
+				MINUTE_IN_SECONDS * 2
+			);
 		}
+
+		return $location_id;
 	}
 
 	/**
@@ -453,7 +483,7 @@ class Remote_Objects {
 		}
 
 		if ( is_user_logged_in() ) {
-			$customer_id = (string) get_user_meta( get_current_user_id(), '_tec_tickets_commerce_gateways_square_customer_id', true );
+			$customer_id = (string) Commerce_Meta::get( get_current_user_id(), '_tec_tickets_commerce_gateways_square_customer_id_%s', [], 'user' );
 
 			if ( $customer_id ) {
 				$cache[ $cache_key ] = $customer_id;
@@ -501,7 +531,7 @@ class Remote_Objects {
 			update_post_meta( $order_id, '_tec_tickets_commerce_gateways_square_customer_id', $customer_id );
 
 			if ( is_user_logged_in() ) {
-				update_user_meta( get_current_user_id(), '_tec_tickets_commerce_gateways_square_customer_id', $customer_id );
+				Commerce_Meta::set( get_current_user_id(), '_tec_tickets_commerce_gateways_square_customer_id_%s', $customer_id, [], 'user' );
 			}
 
 			return $customer_id;

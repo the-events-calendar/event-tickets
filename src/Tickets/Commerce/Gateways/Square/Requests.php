@@ -66,13 +66,14 @@ class Requests extends Abstract_Requests {
 		$cache_key = md5( wp_json_encode( [ $endpoint, $query_args, $request_arguments, $raw ] ) );
 		$cache     = tribe_cache();
 
-		$cached_response = $cache->get_transient( $cache_key );
+		$cached_response = $cache[ $cache_key ] ?? $cache->get_transient( $cache_key );
 		if ( is_array( $cached_response ) ) {
 			return $cached_response;
 		}
 
 		$response = self::get( $endpoint, $query_args, $request_arguments, $raw );
 
+		$cache[ $cache_key ] = $response;
 		$cache->set_transient( $cache_key, $response, MINUTE_IN_SECONDS * 10 );
 
 		return $response;

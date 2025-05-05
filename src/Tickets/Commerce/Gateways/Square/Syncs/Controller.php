@@ -13,7 +13,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\Contracts\Container;
 use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 use TEC\Tickets\Commerce\Gateways\Square\Settings;
-use Tribe__Tickets__Tickets as Tickets;
+use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 use TEC\Tickets\Commerce\Ticket as Ticket_Data;
 use Exception;
 use Tribe__Settings_Manager as Settings_Manager;
@@ -42,7 +42,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	public const OPTION_SYNC_ACTIONS_IN_PROGRESS = 'tickets_commerce_square_sync_ptypes_in_progress_%s';
+	public const OPTION_SYNC_ACTIONS_IN_PROGRESS = 'tickets_commerce_square_sync_ptypes_in_progress_%s_%s';
 
 	/**
 	 * The option that marks the sync action as completed.
@@ -51,7 +51,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	public const OPTION_SYNC_ACTIONS_COMPLETED = 'tickets_commerce_square_sync_ptypes_completed_%s';
+	public const OPTION_SYNC_ACTIONS_COMPLETED = 'tickets_commerce_square_sync_ptypes_completed_%s_%s';
 
 	/**
 	 * The option that marks the sync action as completed.
@@ -60,7 +60,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	public const OPTION_SYNC_LATEST_TIMESTAMP = 'tickets_commerce_square_sync_latest_timestamp';
+	public const OPTION_SYNC_LATEST_TIMESTAMP = 'tickets_commerce_square_sync_latest_timestamp_%s';
 
 	/**
 	 * The merchant.
@@ -125,6 +125,7 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
+		$this->container->register( Integrity_Controller::class );
 		$this->container->register_on_action( 'tec_events_fully_loaded', Tec_Event_Details_Provider::class );
 
 		add_action( 'init', [ $this, 'schedule_batch_sync' ] );
@@ -145,6 +146,8 @@ class Controller extends Controller_Contract {
 		if ( ! $this->settings->is_inventory_sync_enabled() ) {
 			return;
 		}
+
+		$this->container->get( Integrity_Controller::class )->unregister();
 
 		if ( $this->container->isBound( Tec_Event_Details_Provider::class ) ) {
 			$this->container->get( Tec_Event_Details_Provider::class )->unregister();
@@ -190,7 +193,7 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		if ( ! did_action( 'action_scheduler_before_process_queue' ) ) {
+		if ( ! did_action( 'action_scheduler_begin_execute' ) ) {
 			return;
 		}
 
@@ -219,7 +222,9 @@ class Controller extends Controller_Contract {
 			return $cache[ $cache_key ];
 		}
 
-		$tickets_stats = tribe( Ticket_Data::class )->get_posts_tickets_data( $event_id );
+		$ticket_data = tribe( Ticket_Data::class );
+
+		$tickets_stats = $ticket_data->get_posts_tickets_data( $event_id );
 
 		if (
 			empty( $tickets_stats['tickets_on_sale'] ) &&
@@ -239,7 +244,7 @@ class Controller extends Controller_Contract {
 
 		$tickets = array_filter(
 			array_map(
-				static fn ( $ticket_id ) => Tickets::load_ticket_object( $ticket_id ),
+				static fn ( $ticket_id ) => $ticket_data->load_ticket_object( $ticket_id ),
 				$ticket_ids
 			)
 		);
@@ -262,7 +267,7 @@ class Controller extends Controller_Contract {
 		$ticket_able_to_sync = [];
 
 		foreach ( $ticket_able_post_types as $ticket_able_post_type ) {
-			if ( tribe_get_option( sprintf( self::OPTION_SYNC_ACTIONS_COMPLETED, $ticket_able_post_type ), false ) ) {
+			if ( Commerce_Settings::get( self::OPTION_SYNC_ACTIONS_COMPLETED, [ $ticket_able_post_type ] ) ) {
 				continue;
 			}
 
@@ -293,7 +298,7 @@ class Controller extends Controller_Contract {
 	public static function is_sync_in_progress(): bool {
 		$ticket_able_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
 		foreach ( $ticket_able_post_types as $ticket_able_post_type ) {
-			if ( tribe_get_option( sprintf( self::OPTION_SYNC_ACTIONS_IN_PROGRESS, $ticket_able_post_type ), false ) ) {
+			if ( Commerce_Settings::get( self::OPTION_SYNC_ACTIONS_IN_PROGRESS, [ $ticket_able_post_type ] ) ) {
 				return true;
 			}
 		}
@@ -323,8 +328,8 @@ class Controller extends Controller_Contract {
 
 		$settings = $new_options;
 
-		$progress_option  = sprintf( self::OPTION_SYNC_ACTIONS_IN_PROGRESS, $post_type );
-		$completed_option = sprintf( self::OPTION_SYNC_ACTIONS_COMPLETED, $post_type );
+		$progress_option  = Commerce_Settings::get_key( self::OPTION_SYNC_ACTIONS_IN_PROGRESS, [ $post_type ] );
+		$completed_option = Commerce_Settings::get_key( self::OPTION_SYNC_ACTIONS_COMPLETED, [ $post_type ] );
 
 		foreach ( array_keys( $settings ) as $key ) {
 			if ( ! str_starts_with( $key, $progress_option ) && ! str_starts_with( $key, $completed_option ) ) {
@@ -336,7 +341,7 @@ class Controller extends Controller_Contract {
 
 		if ( ! $post_type ) {
 			// This is a global reset, so we need to unset the latest timestamp option.
-			unset( $settings[ self::OPTION_SYNC_LATEST_TIMESTAMP ] );
+			unset( $settings[ Commerce_Settings::get_key( self::OPTION_SYNC_LATEST_TIMESTAMP ) ] );
 		}
 
 		add_action(
