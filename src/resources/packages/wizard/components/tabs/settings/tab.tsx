@@ -169,7 +169,7 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab } ) => {
 						moveToNextTab={ moveToNextTab }
 						tabSettings={ tabSettings }
 						disabled={ false }
-						onSuccess={ () => {} }
+						onSuccess={() => {}}
 					/>
 				) : (
 					<Button

@@ -61,20 +61,17 @@ class Events extends Abstract_Step {
 	public function install_events_calendar_plugin( $response, $request ): WP_REST_Response {
 		$params = $request->get_params();
 
-		if ( ! isset( $params['events-calendar-installed'] ) || ! isset( $params['events-calendar-active'] ) ) {
-			return $this->add_message( $response, __( 'Events Calendar install not requested.', 'event-tickets' ) );
-		}
-
-		$installed = $params['events-calendar-installed'];
-		$activated = $params['events-calendar-active'];
-
-		require_once ABSPATH . '/wp-admin/includes/plugin.php';
-		require_once ABSPATH . '/wp-admin/includes/file.php';
+		$installed = $params['events-calendar-installed'] ?? false;
+		$activated = $params['events-calendar-active'] ?? false;
 
 		// Check if the plugin is already installed and active.
 		if ( $installed && $activated ) {
 			return $this->add_message( $response, __( 'The Events Calendar plugin already installed and activated.', 'event-tickets' ) );
 		}
+
+		require_once ABSPATH . '/wp-admin/includes/plugin.php';
+		require_once ABSPATH . '/wp-admin/includes/file.php';
+
 
 		$plugin = new Plugin( 'The Events Calendar', 'the-events-calendar' );
 
