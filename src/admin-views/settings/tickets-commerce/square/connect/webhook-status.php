@@ -44,13 +44,13 @@ $webhook_nonce = wp_create_nonce( 'square-webhook-register' );
 				<?php esc_html_e( 'Not Functioning', 'event-tickets' ); ?>
 			<?php endif; ?>
 		</span>
-		<?php if ( ! $is_healthy && ! $is_expired ) : ?>
+		<?php if ( ! $is_healthy || $is_expired ) : ?>
 			<button
 				type="button"
 				class="button button-secondary tec-tickets__admin-settings-square-webhook-register-button"
 				id="tec-tickets__admin-settings-square-webhook-register"
 				data-nonce="<?php echo esc_attr( $webhook_nonce ); ?>"
-				<?php if ( $is_healthy ) : ?>
+				<?php if ( $is_healthy || $is_expired ) : ?>
 				aria-label="<?php esc_attr_e( 'Reregister Square webhooks', 'event-tickets' ); ?>"
 				<?php else : ?>
 				aria-label="<?php esc_attr_e( 'Register Square webhooks', 'event-tickets' ); ?>"
