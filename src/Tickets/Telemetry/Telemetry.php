@@ -188,13 +188,42 @@ class Telemetry {
 			return;
 		}
 
+		if ( ! static::is_et_admin_page() ) {
+			return;
+		}
+
+		$show = Common_Telemetry::calculate_modal_status();
+
+		if ( ! $show ) {
+			return;
+		}
+
+		// 'event-tickets'
+		$telemetry_slug = substr( basename( EVENT_TICKETS_MAIN_PLUGIN_FILE ), 0, -4 );
+
+		/**
+		 * Fires to trigger the modal content on admin pages.
+		 *
+		 * @since 5.6.0.1
+		 */
+		do_action( 'tec_telemetry_modal', $telemetry_slug );
+	}
+
+	/**
+	 * Determines if the current page is an ET admin page.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the current page is an ET admin page.
+	 */
+	public static function is_et_admin_page(): bool {
 		$current_screen = get_current_screen();
 		$admin_helpers = Tribe__Admin__Helpers::instance();
 		$admin_pages   = tribe( 'admin.pages' );
 		$admin_page    = $admin_pages->get_current_page();
 
 		if ( ! $admin_helpers->is_screen() ) {
-			return;
+			return false;
 		}
 
 		if (
@@ -225,21 +254,7 @@ class Telemetry {
 			return false;
 		}
 
-		$show = Common_Telemetry::calculate_modal_status();
-
-		if ( ! $show ) {
-			return;
-		}
-
-		// 'event-tickets'
-		$telemetry_slug = substr( basename( EVENT_TICKETS_MAIN_PLUGIN_FILE ), 0, -4 );
-
-		/**
-		 * Fires to trigger the modal content on admin pages.
-		 *
-		 * @since 5.6.0.1
-		 */
-		do_action( 'tec_telemetry_modal', $telemetry_slug );
+		return (bool) apply_filters( 'tec_telemetry_is_et_admin_page', true );
 	}
 
 	/**
