@@ -40,7 +40,7 @@ class Meta {
 	 * @return mixed The environmental meta value.
 	 */
 	public static function get( int $id, string $meta_key, array $args = [], string $type = 'post', bool $single = true ) {
-		return get_metadata( $type, $id, Commerce_Settings::get_environmental_key( $meta_key, $args ), $single );
+		return get_metadata( $type, $id, Commerce_Settings::get_key( $meta_key, $args ), $single );
 	}
 
 	/**
@@ -69,7 +69,7 @@ class Meta {
 			$id = $the_post;
 		}
 
-		return add_metadata( $type, $id, Commerce_Settings::get_environmental_key( $meta_key, $args ), $value );
+		return add_metadata( $type, $id, Commerce_Settings::get_key( $meta_key, $args ), $value );
 	}
 
 	/**
@@ -97,7 +97,7 @@ class Meta {
 			$id = $the_post;
 		}
 
-		return (bool) update_metadata( $type, $id, Commerce_Settings::get_environmental_key( $meta_key, $args ), $value );
+		return (bool) update_metadata( $type, $id, Commerce_Settings::get_key( $meta_key, $args ), $value );
 	}
 
 	/**
@@ -125,7 +125,7 @@ class Meta {
 			$id = $the_post;
 		}
 
-		return delete_metadata( $type, $id, Commerce_Settings::get_environmental_key( $meta_key, $args ), $meta_value );
+		return delete_metadata( $type, $id, Commerce_Settings::get_key( $meta_key, $args ), $meta_value );
 	}
 
 	/**
