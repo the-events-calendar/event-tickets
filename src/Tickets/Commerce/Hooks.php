@@ -523,14 +523,16 @@ class Hooks extends Service_Provider {
 			return;
 		}
 
-		$tab     = tribe_get_request_var( 'tab' );
-		$gateway = tribe( Manager::class )->get_gateway_by_key( $tab );
+		$tab         = tribe_get_request_var( 'tab' );
+		$gateway_key = Payments_Tab::TAB_ID;
 
-		if ( empty( $gateway ) ) {
-			return;
+		$gateway = tribe( Manager::class )->get_gateway_by_key( $tab );
+		// Lookup our Gateway, if we have one overwrite our $gateway_key.
+		if ( $gateway ) {
+			$gateway_key = $gateway::get_key();
 		}
 
-		if ( $gateway::get_key() !== $tab ) {
+		if ( $gateway_key !== $tab ) {
 			return;
 		}
 
