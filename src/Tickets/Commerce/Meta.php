@@ -139,6 +139,7 @@ class Meta {
 	 * @return int The object ID.
 	 */
 	public static function get_object_id( string $meta_key, $meta_value ): int {
+		$meta_key  = Commerce_Settings::get_key( $meta_key );
 		$cache     = tribe_cache();
 		$cache_key = 'tec_tickets_commerce_meta_get_object_id_' . md5( $meta_key . '_' . wp_json_encode( $meta_value ) );
 		$object_id = $cache[ $cache_key ] ?? false;
@@ -148,13 +149,17 @@ class Meta {
 		}
 
 		$args = [
-			'post_type'              => 'any',
+			'post_type'              => array_merge( (array) tribe_get_option( 'ticket-enabled-post-types', [] ), tribe_tickets()->ticket_types() ),
 			'post_status'            => 'any',
 			'no_found_rows'          => true,
 			'update_post_term_cache' => false,
 			'posts_per_page'         => 1,
-			'meta_key'               => $meta_key,
-			'meta_value'             => $meta_value, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+			'meta_query'             => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+				[
+					'key'   => $meta_key,
+					'value' => $meta_value,
+				],
+			],
 			'fields'                 => 'ids',
 		];
 
