@@ -20,14 +20,18 @@ class Events {
 	/**
 	 * Square Webhook Event Types
 	 *
+	 * Not used currently.
+	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	const WEBHOOK_EVENT_PAYMENT_UPDATED = 'payment.updated';
+	const PAYMENT_UPDATED = 'payment.updated';
 
 	/**
 	 * Square Webhook Event Types
+	 *
+	 * Not used currently.
 	 *
 	 * @since TBD
 	 *
@@ -42,7 +46,7 @@ class Events {
 	 *
 	 * @var string
 	 */
-	const WEBHOOK_EVENT_REFUND_CREATED = 'refund.created';
+	const REFUND_CREATED = 'refund.created';
 
 	/**
 	 * Square Webhook Event Types
@@ -51,7 +55,7 @@ class Events {
 	 *
 	 * @var string
 	 */
-	const WEBHOOK_EVENT_REFUND_UPDATED = 'refund.updated';
+	const REFUND_UPDATED = 'refund.updated';
 
 	/**
 	 * Square Webhook Event Types
@@ -60,7 +64,7 @@ class Events {
 	 *
 	 * @var string
 	 */
-	const WEBHOOK_EVENT_ORDER_CREATED = 'order.created';
+	const ORDER_CREATED = 'order.created';
 
 	/**
 	 * Square Webhook Event Types
@@ -69,7 +73,7 @@ class Events {
 	 *
 	 * @var string
 	 */
-	const WEBHOOK_EVENT_ORDER_UPDATED = 'order.updated';
+	const ORDER_UPDATED = 'order.updated';
 
 	/**
 	 * Square Webhook Event Types
@@ -78,7 +82,7 @@ class Events {
 	 *
 	 * @var string
 	 */
-	const WEBHOOK_EVENT_CUSTOMER_DELETED = 'customer.deleted';
+	const CUSTOMER_DELETED = 'customer.deleted';
 
 	/**
 	 * Square Webhook Event Types
@@ -87,7 +91,7 @@ class Events {
 	 *
 	 * @var string
 	 */
-	const WEBHOOK_EVENT_INVENTORY_COUNT_UPDATED = 'inventory.count.updated';
+	const INVENTORY_COUNT_UPDATED = 'inventory.count.updated';
 
 	/**
 	 * Square Webhook Event Types
@@ -96,7 +100,7 @@ class Events {
 	 *
 	 * @var string
 	 */
-	const WEBHOOK_EVENT_TERMINAL_CHECKOUT_CREATED = 'terminal.checkout.created';
+	const TERMINAL_CHECKOUT_CREATED = 'terminal.checkout.created';
 
 	/**
 	 * Square Webhook Event Types
@@ -105,7 +109,7 @@ class Events {
 	 *
 	 * @var string
 	 */
-	const WEBHOOK_EVENT_TERMINAL_CHECKOUT_UPDATED = 'terminal.checkout.updated';
+	const TERMINAL_CHECKOUT_UPDATED = 'terminal.checkout.updated';
 
 	/**
 	 * Square Webhook Event Types
@@ -114,7 +118,7 @@ class Events {
 	 *
 	 * @var string
 	 */
-	const WEBHOOK_EVENT_TERMINAL_REFUND_CREATED = 'terminal.refund.created';
+	const TERMINAL_REFUND_CREATED = 'terminal.refund.created';
 
 	/**
 	 * Square Webhook Event Types
@@ -123,7 +127,7 @@ class Events {
 	 *
 	 * @var string
 	 */
-	const WEBHOOK_EVENT_TERMINAL_REFUND_UPDATED = 'terminal.refund.updated';
+	const TERMINAL_REFUND_UPDATED = 'terminal.refund.updated';
 
 	/**
 	 * Square Webhook Event Types
@@ -132,7 +136,7 @@ class Events {
 	 *
 	 * @var string
 	 */
-	const WEBHOOK_EVENT_TERMINAL_ACTION_CREATED = 'terminal.action.created';
+	const TERMINAL_ACTION_CREATED = 'terminal.action.created';
 
 	/**
 	 * Square Webhook Event Types
@@ -141,7 +145,7 @@ class Events {
 	 *
 	 * @var string
 	 */
-	const WEBHOOK_EVENT_TERMINAL_ACTION_UPDATED = 'terminal.action.updated';
+	const TERMINAL_ACTION_UPDATED = 'terminal.action.updated';
 
 	/**
 	 * Webhook event types supported.
@@ -150,21 +154,19 @@ class Events {
 	 *
 	 * @var string[]
 	 */
-	protected const WEBHOOK_EVENT_TYPES = [
-		self::WEBHOOK_EVENT_PAYMENT_UPDATED,
-		self::WEBHOOK_EVENT_PAYMENT_CREATED,
-		self::WEBHOOK_EVENT_REFUND_CREATED,
-		self::WEBHOOK_EVENT_REFUND_UPDATED,
-		self::WEBHOOK_EVENT_ORDER_CREATED,
-		self::WEBHOOK_EVENT_ORDER_UPDATED,
-		self::WEBHOOK_EVENT_CUSTOMER_DELETED,
-		self::WEBHOOK_EVENT_INVENTORY_COUNT_UPDATED,
-		self::WEBHOOK_EVENT_TERMINAL_CHECKOUT_CREATED,
-		self::WEBHOOK_EVENT_TERMINAL_CHECKOUT_UPDATED,
-		self::WEBHOOK_EVENT_TERMINAL_REFUND_CREATED,
-		self::WEBHOOK_EVENT_TERMINAL_REFUND_UPDATED,
-		self::WEBHOOK_EVENT_TERMINAL_ACTION_CREATED,
-		self::WEBHOOK_EVENT_TERMINAL_ACTION_UPDATED,
+	protected const TYPES = [
+		self::REFUND_CREATED,
+		self::REFUND_UPDATED,
+		self::ORDER_CREATED,
+		self::ORDER_UPDATED,
+		self::CUSTOMER_DELETED,
+		self::INVENTORY_COUNT_UPDATED,
+		self::TERMINAL_CHECKOUT_CREATED,
+		self::TERMINAL_CHECKOUT_UPDATED,
+		self::TERMINAL_REFUND_CREATED,
+		self::TERMINAL_REFUND_UPDATED,
+		self::TERMINAL_ACTION_CREATED,
+		self::TERMINAL_ACTION_UPDATED,
 	];
 
 	/**
@@ -174,7 +176,7 @@ class Events {
 	 *
 	 * @return string[] The webhook event types.
 	 */
-	public static function get_webhook_event_types(): array {
+	public static function get_types(): array {
 		/**
 		 * Filters the webhook event types supported by the Square gateway.
 		 *
@@ -182,6 +184,6 @@ class Events {
 		 *
 		 * @param string[] $event_types The webhook event types.
 		 */
-		return (array) apply_filters( 'tec_tickets_commerce_square_webhook_event_types', self::WEBHOOK_EVENT_TYPES );
+		return (array) apply_filters( 'tec_tickets_commerce_square_webhook_event_types', self::TYPES );
 	}
 }

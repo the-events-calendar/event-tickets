@@ -57,6 +57,26 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	protected string $path = '/commerce/square/webhooks';
 
 	/**
+	 * The location ID.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private string $location_id;
+
+	/**
+	 * Constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param Gateway $gateway The gateway instance.
+	 */
+	public function __construct( Gateway $gateway ) {
+		$this->location_id = $gateway->get_location_id();
+	}
+
+	/**
 	 * Get the namespace for this endpoint.
 	 *
 	 * @since TBD
@@ -210,7 +230,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	protected function process_webhook_event( array $event_data ) {
 		$event_type = $event_data['type'] ?? '';
 
-		if ( ! in_array( $event_type, Events::get_webhook_event_types(), true ) ) {
+		if ( ! in_array( $event_type, Events::get_types(), true ) ) {
 			do_action(
 				'tribe_log',
 				'warning',
@@ -225,31 +245,28 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		$event_mode = $event_data['env'] ?? 'sandbox';
-		$callback   = fn() => 'sandbox' === $event_mode;
+		$is_sandbox = 'sandbox' === $event_mode;
 
-		add_filter( 'tec_tickets_commerce_is_sandbox_mode', $callback );
+		if ( $is_sandbox !== tec_tickets_commerce_is_sandbox_mode() ) {
+			return;
+		}
 
 		switch ( $event_type ) {
-			case Events::WEBHOOK_EVENT_ORDER_CREATED:
-			case Events::WEBHOOK_EVENT_ORDER_UPDATED:
+			case Events::ORDER_CREATED:
+			case Events::ORDER_UPDATED:
 				$this->process_order_event( $event_data );
 				break;
 
-			case Events::WEBHOOK_EVENT_PAYMENT_CREATED:
-			case Events::WEBHOOK_EVENT_PAYMENT_UPDATED:
-				$this->process_payment_event( $event_data );
-				break;
-
-			case Events::WEBHOOK_EVENT_CUSTOMER_DELETED:
+			case Events::CUSTOMER_DELETED:
 				$this->process_customer_delete_event( $event_data );
 				break;
 
-			case Events::WEBHOOK_EVENT_INVENTORY_COUNT_UPDATED:
+			case Events::INVENTORY_COUNT_UPDATED:
 				$this->process_ticket_inventory_updated_event( $event_data );
 				break;
 
-			case Events::WEBHOOK_EVENT_REFUND_CREATED:
-			case Events::WEBHOOK_EVENT_REFUND_UPDATED:
+			case Events::REFUND_CREATED:
+			case Events::REFUND_UPDATED:
 				$this->process_refund_event( $event_data );
 				break;
 
@@ -276,8 +293,6 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		 * @param string $event_type The event type.
 		 */
 		do_action( 'tec_tickets_commerce_square_webhook_event', $event_data, $event_type );
-
-		remove_filter( 'tec_tickets_commerce_is_sandbox_mode', $callback );
 	}
 
 	/**
@@ -288,14 +303,30 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * @param array $event_data The webhook event data.
 	 */
 	protected function process_order_event( array $event_data ) {
-		$order_data = $event_data['data']['object']['order'] ?? [];
+		$type = $event_data['data']['type'] ?? null;
 
-		if ( empty( $order_data ) || empty( $order_data['id'] ) ) {
+		if ( ! $type ) {
 			return;
 		}
 
-		$order_id = $order_data['id'];
-		$status   = $order_data['status'] ?? '';
+		$order_data = $event_data['data']['object'][ $type ] ?? null;
+
+		if ( ! is_array( $order_data ) ) {
+			return;
+		}
+
+		$order_id    = $order_data['order_id'] ?? false;
+		$location_id = $order_data['location_id'] ?? false;
+		$status      = $order_data['state'] ?? false;
+
+		if ( ! ( $order_id && $location_id && $status ) ) {
+			return;
+		}
+
+		if ( $location_id !== $this->location_id ) {
+			// This is about a location that wp has nothing to do with, so we skip.
+			return;
+		}
 
 		// Get the order controller.
 		$square_order_controller = tribe( Order::class );
@@ -303,7 +334,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		// Find the order associated with this payment.
 		$order = $square_order_controller->get_by_square_order_id( $order_id );
 
-		if ( empty( $order ) ) {
+		if ( empty( $order ) && 'order_updated' === $type ) {
 			do_action(
 				'tribe_log',
 				'warning',
@@ -317,81 +348,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return;
 		}
 
-		$status_obj = tribe( Status::class )->convert_to_commerce_status( $status );
-
-		if ( ! $status_obj ) {
-			do_action(
-				'tribe_log',
-				'warning',
-				'Square order webhook - no matching status found',
-				[
-					'source'     => 'tickets-commerce-square',
-					'order_id'   => $order_id,
-					'event_data' => $event_data,
-				]
-			);
-			return;
-		}
-
-		// Update the order status.
-		tribe( Commerce_Order::class )->modify_status( $order, $status_obj->get_slug(), [ 'gateway_payload' => $event_data ] );
-	}
-
-	/**
-	 * Process a payment event.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $event_data The webhook event data.
-	 */
-	protected function process_payment_event( array $event_data ) {
-		$payment_data = $event_data['data']['object']['payment'] ?? [];
-
-		if ( empty( $payment_data ) || empty( $payment_data['id'] ) ) {
-			return;
-		}
-
-		$order_id = $payment_data['id'];
-		$status   = $payment_data['status'] ?? '';
-
-		// Get the order controller.
-		$square_order_controller = tribe( Order::class );
-
-		// Find the order associated with this payment.
-		$order = $square_order_controller->get_by_square_order_id( $order_id );
-
-		if ( empty( $order ) ) {
-			do_action(
-				'tribe_log',
-				'warning',
-				'Square payment webhook - no matching order found',
-				[
-					'source'     => 'tickets-commerce-square',
-					'order_id'   => $order_id,
-					'event_data' => $event_data,
-				]
-			);
-			return;
-		}
-
-		$status_obj = tribe( Status::class )->convert_to_commerce_status( $status );
-
-		if ( ! $status_obj ) {
-			do_action(
-				'tribe_log',
-				'warning',
-				'Square order webhook - no matching status found',
-				[
-					'source'     => 'tickets-commerce-square',
-					'order_id'   => $order_id,
-					'event_data' => $event_data,
-				]
-			);
-			return;
-		}
-
-		// Update the order status.
-		tribe( Commerce_Order::class )->modify_status( $order, $status_obj->get_slug(), [ 'gateway_payload' => $event_data ] );
+		$square_order_controller->upsert_local_from_square_order( $order_id, $event_data );
 	}
 
 	/**
@@ -489,7 +446,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		foreach ( $inventory_data as $inventory_item ) {
 			$location_id = $inventory_item['location_id'] ?? '';
 
-			if ( ! $location_id || $location_id !== tribe( Gateway::class )->get_location_id() ) {
+			if ( ! $location_id || $this->location_id ) {
 				// This is about a location that wp has nothing to do with, so we skip.
 				continue;
 			}
