@@ -15,6 +15,9 @@ class Provider extends Service_Provider {
 	/**
 	 * Binds and sets up implementations.
 	 *
+	 * Note: plugins need to be registered *early* and *before* they can be installed or activated by StellarWP\Installer.
+	 * If they are not registered early enough, the installer ajax hooks *will not work*.
+	 *
 	 * @since 6.0.9
 	 */
 	public function register() {
