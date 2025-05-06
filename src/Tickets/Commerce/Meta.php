@@ -139,6 +139,14 @@ class Meta {
 	 * @return int The object ID.
 	 */
 	public static function get_object_id( string $meta_key, $meta_value ): int {
+		$cache     = tribe_cache();
+		$cache_key = 'tec_tickets_commerce_meta_get_object_id_' . md5( $meta_key . '_' . wp_json_encode( $meta_value ) );
+		$object_id = $cache[ $cache_key ] ?? false;
+
+		if ( is_int( $object_id ) && $object_id >= 0 ) {
+			return $object_id;
+		}
+
 		$args = [
 			'post_type'              => 'any',
 			'post_status'            => 'any',
@@ -153,9 +161,12 @@ class Meta {
 		$results = new WP_Query( $args );
 
 		if ( empty( $results->posts ) ) {
-			return 0;
+			$cache[ $cache_key ] = 0;
+			return $cache[ $cache_key ];
 		}
 
-		return (int) $results->posts[0];
+		$cache[ $cache_key ] = (int) $results->posts[0];
+
+		return $cache[ $cache_key ];
 	}
 }
