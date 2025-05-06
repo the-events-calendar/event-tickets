@@ -686,6 +686,12 @@
 	}
 }
 
+@media(max-height: 900px) {
+	.tec-tickets-onboarding__tab-footer {
+		margin-top: 0;
+	}
+}
+
 .tec-tickets-onboarding__tab-footer--boxed {
 	align-items: flex-start;
 	align-self: stretch;
