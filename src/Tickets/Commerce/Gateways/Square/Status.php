@@ -33,6 +33,8 @@ class Status {
 			case 'COMPLETED':
 				return tribe( Completed::class );
 			case 'PENDING':
+			case 'OPEN':
+			case 'DRAFT':
 				return tribe( Pending::class );
 			case 'FAILED':
 			case 'CANCELED':

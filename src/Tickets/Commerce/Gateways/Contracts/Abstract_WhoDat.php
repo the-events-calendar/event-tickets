@@ -97,13 +97,14 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 		$cache_key = md5( wp_json_encode( [ $endpoint, $query_args ] ) );
 		$cache     = tribe_cache();
 
-		$cached_response = $cache->get_transient( $cache_key );
+		$cached_response = $cache[ $cache_key ] ?? $cache->get_transient( $cache_key );
 		if ( is_array( $cached_response ) ) {
 			return $cached_response;
 		}
 
 		$response = $this->get( $endpoint, $query_args );
 
+		$cache[ $cache_key ] = $response;
 		$cache->set_transient( $cache_key, $response, $expiration );
 
 		return $response;

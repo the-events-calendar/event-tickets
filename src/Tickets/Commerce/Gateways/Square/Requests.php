@@ -51,6 +51,17 @@ class Requests extends Abstract_Requests {
 	];
 
 	/**
+	 * Get the merchant ID.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The merchant ID.
+	 */
+	public static function get_merchant_id(): string {
+		return tribe( static::$merchant )->get_merchant_id();
+	}
+
+	/**
 	 * Get a response from the Square API with caching.
 	 *
 	 * @since TBD
@@ -62,9 +73,10 @@ class Requests extends Abstract_Requests {
 	 *
 	 * @return array|null
 	 */
-	public static function get_with_cache( $endpoint, array $query_args = [], array $request_arguments = [], $raw = false, array $cache_params = [] ): ?array {
-		$cache_key = md5( wp_json_encode( [ $endpoint, $query_args, $request_arguments, $raw, ...array_values( $cache_params ) ] ) );
-		$cache     = tribe_cache();
+	public static function get_with_cache( $endpoint, array $query_args = [], array $request_arguments = [], $raw = false ): ?array {
+		$merchant_id = self::get_merchant_id();
+		$cache_key   = md5( wp_json_encode( [ $merchant_id, $endpoint, $query_args, $request_arguments, $raw ] ) );
+		$cache       = tribe_cache();
 
 		$cached_response = $cache[ $cache_key ] ?? $cache->get_transient( $cache_key );
 		if ( is_array( $cached_response ) ) {

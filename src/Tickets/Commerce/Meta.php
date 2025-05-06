@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce\Settings as Commerce_Settings;
+use WP_Query;
 
 /**
  * Meta class for the Tickets Commerce.
@@ -39,7 +40,7 @@ class Meta {
 	 * @return mixed The environmental meta value.
 	 */
 	public static function get( int $id, string $meta_key, array $args = [], string $type = 'post', bool $single = true ) {
-		return get_metadata( $type, $id, Commerce_Settings::get_environmental_key( $meta_key, $args ), $single );
+		return get_metadata( $type, $id, Commerce_Settings::get_key( $meta_key, $args ), $single );
 	}
 
 	/**
@@ -68,7 +69,7 @@ class Meta {
 			$id = $the_post;
 		}
 
-		return add_metadata( $type, $id, Commerce_Settings::get_environmental_key( $meta_key, $args ), $value );
+		return add_metadata( $type, $id, Commerce_Settings::get_key( $meta_key, $args ), $value );
 	}
 
 	/**
@@ -96,7 +97,7 @@ class Meta {
 			$id = $the_post;
 		}
 
-		return (bool) update_metadata( $type, $id, Commerce_Settings::get_environmental_key( $meta_key, $args ), $value );
+		return (bool) update_metadata( $type, $id, Commerce_Settings::get_key( $meta_key, $args ), $value );
 	}
 
 	/**
@@ -124,6 +125,48 @@ class Meta {
 			$id = $the_post;
 		}
 
-		return delete_metadata( $type, $id, Commerce_Settings::get_environmental_key( $meta_key, $args ), $meta_value );
+		return delete_metadata( $type, $id, Commerce_Settings::get_key( $meta_key, $args ), $meta_value );
+	}
+
+	/**
+	 * Get the object ID for a given meta key and value.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $meta_key   The meta key.
+	 * @param mixed  $meta_value The meta value.
+	 *
+	 * @return int The object ID.
+	 */
+	public static function get_object_id( string $meta_key, $meta_value ): int {
+		$cache     = tribe_cache();
+		$cache_key = 'tec_tickets_commerce_meta_get_object_id_' . md5( $meta_key . '_' . wp_json_encode( $meta_value ) );
+		$object_id = $cache[ $cache_key ] ?? false;
+
+		if ( is_int( $object_id ) && $object_id >= 0 ) {
+			return $object_id;
+		}
+
+		$args = [
+			'post_type'              => 'any',
+			'post_status'            => 'any',
+			'no_found_rows'          => true,
+			'update_post_term_cache' => false,
+			'posts_per_page'         => 1,
+			'meta_key'               => $meta_key,
+			'meta_value'             => $meta_value, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+			'fields'                 => 'ids',
+		];
+
+		$results = new WP_Query( $args );
+
+		if ( empty( $results->posts ) ) {
+			$cache[ $cache_key ] = 0;
+			return $cache[ $cache_key ];
+		}
+
+		$cache[ $cache_key ] = (int) $results->posts[0];
+
+		return $cache[ $cache_key ];
 	}
 }

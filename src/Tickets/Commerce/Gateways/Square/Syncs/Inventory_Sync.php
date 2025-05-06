@@ -15,6 +15,9 @@ use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
 use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 use TEC\Tickets\Commerce\Meta as Commerce_Meta;
+use TEC\Tickets\Commerce\Ticket as Tickets_Data;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\NotSyncableItemException;
 
 /**
  * Class Tickets_Sync
@@ -41,6 +44,15 @@ class Inventory_Sync {
 	 * @var string
 	 */
 	public const HOOK_SYNC_EVENT_ACTION = 'tec_tickets_commerce_square_sync_events_inventory';
+
+	/**
+	 * The action that syncs an individual ticket's inventory with Square.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const HOOK_CHECK_TICKET_INVENTORY_SYNC = 'tec_tickets_commerce_square_check_ticket_inventory';
 
 	/**
 	 * The remote objects instance.
@@ -178,6 +190,36 @@ class Inventory_Sync {
 		$this->process_batch( [ $event_id => $tickets ] );
 
 		return $tickets;
+	}
+
+	/**
+	 * Syncs the inventory of a ticket with Square.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $ticket_id       The ticket ID.
+	 * @param int    $square_quantity The quantity of tickets.
+	 * @param string $square_state    The state of the inventory.
+	 *
+	 * @return void
+	 */
+	public function sync_ticket( int $ticket_id, int $square_quantity, string $square_state ): void {
+		$ticket = tribe( Tickets_Data::class )->load_ticket_object( $ticket_id );
+
+		if ( ! $ticket instanceof Ticket_Object ) {
+			return;
+		}
+
+		try {
+			if ( Sync_Controller::is_ticket_in_sync_with_square_data( $ticket, $square_quantity, $square_state ) ) {
+				return;
+			}
+
+			$this->sync_event( $ticket->get_event_id() );
+		} catch ( NotSyncableItemException $e ) {
+			// If the ticket is not syncable, we don't need to sync it.
+			return;
+		}
 	}
 
 	/**

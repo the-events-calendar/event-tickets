@@ -15,6 +15,8 @@ namespace TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects;
 use InvalidArgumentException;
 use JsonSerializable;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Remote_Objects;
+use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
  * Class Inventory_Change
@@ -130,32 +132,20 @@ class Inventory_Change implements JsonSerializable {
 	public function process_inventory_changed( string $state, string $quantity ): void {
 		$ticket = $this->ticket_item->get_ticket();
 
-		$count = $ticket->available();
-
-		if ( $count === -1 ) {
-			if ( $state !== 'IN_STOCK' ) {
-				do_action( 'tribe_log', 'error', 'Square Inventory Sync - Ticket ' . $this->ticket_item->get_id() . ' has unlimited stock but Square says it is not in stock.' );
-			}
+		if ( ! $ticket instanceof Ticket_Object ) {
 			return;
 		}
 
-		if ( $count > 0 ) {
-			if ( $state !== 'IN_STOCK' ) {
-				do_action( 'tribe_log', 'error', 'Square Inventory Sync - Ticket ' . $this->ticket_item->get_id() . ' has ' . $count . ' in stock but Square says it is not in stock.' );
+		try {
+			if ( Sync_Controller::is_ticket_in_sync_with_square_data( $ticket, $quantity, $state ) ) {
+				return;
 			}
-
-			if ( $quantity !== (string) $count ) {
-				do_action( 'tribe_log', 'error', 'Square Inventory Sync - Ticket ' . $this->ticket_item->get_id() . ' has ' . $count . ' in stock but Square says it is ' . $quantity . '.' );
-			}
-
+		} catch ( NotSyncableItemException $e ) {
+			do_action( 'tribe_log', 'error', 'Square Inventory Sync - Ticket ' . $this->ticket_item->get_id() . ' is not syncable.' );
 			return;
 		}
 
-		if ( $count === 0 ) {
-			if ( $state !== 'SOLD' ) {
-				do_action( 'tribe_log', 'error', 'Square Inventory Sync - Ticket ' . $this->ticket_item->get_id() . ' has no stock but Square says it is not sold.' );
-			}
-		}
+		do_action( 'tribe_log', 'error', 'Square Inventory Sync - Ticket ' . $this->ticket_item->get_id() . ' is out of sync.' );
 	}
 
 	/**
@@ -176,25 +166,32 @@ class Inventory_Change implements JsonSerializable {
 		$cached_state = $cache->get( $cache_key );
 
 		$previous_quantity = (int) ( $cached_state['quantity'] ?? 0 );
+		$previous_state    = $cached_state['state'] ?? 'IN_STOCK';
+
+		$ticket = $this->ticket_item->get_ticket();
+
+		if ( ! $ticket instanceof Ticket_Object ) {
+			// translators: %s is the ticket ID.
+			throw new NoChangeNeededException( sprintf( __( 'Ticket %s is not a valid ticket object.', 'event-tickets' ), $this->ticket_item->get_id() ) );
+		}
+
+		try {
+			if ( Sync_Controller::is_ticket_in_sync_with_square_data( $ticket, $previous_quantity, $previous_state ) ) {
+				// translators: %s is the ticket ID.
+				throw new NoChangeNeededException( sprintf( __( 'Ticket %s is already in sync with Square.', 'event-tickets' ), $this->ticket_item->get_id() ) );
+			}
+		} catch ( NotSyncableItemException $e ) {
+			// translators: %s is the ticket ID.
+			throw new NoChangeNeededException( sprintf( __( 'Ticket %s is not sync-able.', 'event-tickets' ), $this->ticket_item->get_id() ) );
+		}
 
 		$quantity = $this->ticket_item->get_ticket()->available();
 
-		if ( $quantity === -1 ) {
-			if ( $previous_quantity > 900000000 ) {
-				throw new NoChangeNeededException( 'Ticket ' . $this->ticket_item->get_id() . ' has unlimited stock and Square stock is still enough.' );
-			}
-			$quantity = 1000000000;
-		}
-
-		if ( $quantity === $previous_quantity ) {
-			throw new NoChangeNeededException( 'Ticket ' . $this->ticket_item->get_id() . ' is already at the desired stock level in Square.' );
+		if ( ! $quantity && 0 !== $quantity ) {
+			throw new InvalidArgumentException( 'Quantity is required for an adjustment. We need to specify the amount of tickets that where adjusted!' );
 		}
 
 		$default_to_state = $quantity - $previous_quantity > 0 ? 'IN_STOCK' : 'SOLD';
-
-		if ( ! $quantity ) {
-			throw new InvalidArgumentException( 'Quantity is required for an adjustment. We need to specify the amount of tickets that where adjusted!' );
-		}
 
 		$to_state   = $data['to_state'] ?? $default_to_state;
 		$from_state = $data['from_state'] ?? ( 'IN_STOCK' === $to_state ? 'NONE' : 'IN_STOCK' );

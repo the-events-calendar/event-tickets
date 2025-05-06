@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Square\REST;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
+use TEC\Tickets\Commerce\Gateways\Square\Gateway;
 use TEC\Tickets\Commerce\Gateways\Square\Webhooks;
 use TEC\Tickets\Commerce\Gateways\Square\Order;
 use TEC\Tickets\Commerce\Gateways\Square\Status;
@@ -17,9 +18,16 @@ use WP_REST_Request;
 use WP_REST_Server;
 use WP_REST_Response;
 use WP_Error;
-
+use WP_User_Query;
+use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
+use TEC\Tickets\Commerce\Settings as Commerce_Settings;
+use TEC\Tickets\Commerce\Meta as Commerce_Meta;
 use TEC\Tickets\Commerce\Order as Commerce_Order;
 use TEC\Tickets\Commerce\Status\Refunded;
+use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
+use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\NotSyncableItemException;
 
 /**
  * Class Webhook_Endpoint.
@@ -47,6 +55,26 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * @var string
 	 */
 	protected string $path = '/commerce/square/webhooks';
+
+	/**
+	 * The location ID.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private string $location_id;
+
+	/**
+	 * Constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param Gateway $gateway The gateway instance.
+	 */
+	public function __construct( Gateway $gateway ) {
+		$this->location_id = $gateway->get_location_id();
+	}
 
 	/**
 	 * Get the namespace for this endpoint.
@@ -202,19 +230,43 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	protected function process_webhook_event( array $event_data ) {
 		$event_type = $event_data['type'] ?? '';
 
+		if ( ! in_array( $event_type, Events::get_types(), true ) ) {
+			do_action(
+				'tribe_log',
+				'warning',
+				'Unsupported Square webhook event type',
+				[
+					'source'     => 'tickets-commerce-square',
+					'event_type' => $event_type,
+					'data'       => $event_data,
+				]
+			);
+			return;
+		}
+
+		$event_mode = $event_data['env'] ?? 'sandbox';
+		$is_sandbox = 'sandbox' === $event_mode;
+
+		if ( $is_sandbox !== tec_tickets_commerce_is_sandbox_mode() ) {
+			return;
+		}
+
 		switch ( $event_type ) {
-			case 'order.created':
-			case 'order.updated':
+			case Events::ORDER_CREATED:
+			case Events::ORDER_UPDATED:
 				$this->process_order_event( $event_data );
 				break;
 
-			case 'payment.created':
-			case 'payment.updated':
-				$this->process_payment_event( $event_data );
+			case Events::CUSTOMER_DELETED:
+				$this->process_customer_delete_event( $event_data );
 				break;
 
-			case 'refund.created':
-			case 'refund.updated':
+			case Events::INVENTORY_COUNT_UPDATED:
+				$this->process_ticket_inventory_updated_event( $event_data );
+				break;
+
+			case Events::REFUND_CREATED:
+			case Events::REFUND_UPDATED:
 				$this->process_refund_event( $event_data );
 				break;
 
@@ -227,9 +279,9 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 					[
 						'source'     => 'tickets-commerce-square',
 						'event_type' => $event_type,
+						'data'       => $event_data,
 					]
 				);
-				break;
 		}
 
 		/**
@@ -251,14 +303,30 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * @param array $event_data The webhook event data.
 	 */
 	protected function process_order_event( array $event_data ) {
-		$order_data = $event_data['data']['object']['order'] ?? [];
+		$type = $event_data['data']['type'] ?? null;
 
-		if ( empty( $order_data ) || empty( $order_data['id'] ) ) {
+		if ( ! $type ) {
 			return;
 		}
 
-		$order_id = $order_data['id'];
-		$status   = $order_data['status'] ?? '';
+		$order_data = $event_data['data']['object'][ $type ] ?? null;
+
+		if ( ! is_array( $order_data ) ) {
+			return;
+		}
+
+		$order_id    = $order_data['order_id'] ?? false;
+		$location_id = $order_data['location_id'] ?? false;
+		$status      = $order_data['state'] ?? false;
+
+		if ( ! ( $order_id && $location_id && $status ) ) {
+			return;
+		}
+
+		if ( $location_id !== $this->location_id ) {
+			// This is about a location that wp has nothing to do with, so we skip.
+			return;
+		}
 
 		// Get the order controller.
 		$square_order_controller = tribe( Order::class );
@@ -266,7 +334,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		// Find the order associated with this payment.
 		$order = $square_order_controller->get_by_square_order_id( $order_id );
 
-		if ( empty( $order ) ) {
+		if ( empty( $order ) && 'order_updated' === $type ) {
 			do_action(
 				'tribe_log',
 				'warning',
@@ -280,81 +348,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return;
 		}
 
-		$status_obj = tribe( Status::class )->convert_to_commerce_status( $status );
-
-		if ( ! $status_obj ) {
-			do_action(
-				'tribe_log',
-				'warning',
-				'Square order webhook - no matching status found',
-				[
-					'source'     => 'tickets-commerce-square',
-					'order_id'   => $order_id,
-					'event_data' => $event_data,
-				]
-			);
-			return;
-		}
-
-		// Update the order status.
-		tribe( Commerce_Order::class )->modify_status( $order, $status_obj->get_slug(), [ 'gateway_payload' => $event_data ] );
-	}
-
-	/**
-	 * Process a payment event.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $event_data The webhook event data.
-	 */
-	protected function process_payment_event( array $event_data ) {
-		$payment_data = $event_data['data']['object']['payment'] ?? [];
-
-		if ( empty( $payment_data ) || empty( $payment_data['id'] ) ) {
-			return;
-		}
-
-		$order_id = $payment_data['id'];
-		$status   = $payment_data['status'] ?? '';
-
-		// Get the order controller.
-		$square_order_controller = tribe( Order::class );
-
-		// Find the order associated with this payment.
-		$order = $square_order_controller->get_by_square_order_id( $order_id );
-
-		if ( empty( $order ) ) {
-			do_action(
-				'tribe_log',
-				'warning',
-				'Square payment webhook - no matching order found',
-				[
-					'source'     => 'tickets-commerce-square',
-					'order_id'   => $order_id,
-					'event_data' => $event_data,
-				]
-			);
-			return;
-		}
-
-		$status_obj = tribe( Status::class )->convert_to_commerce_status( $status );
-
-		if ( ! $status_obj ) {
-			do_action(
-				'tribe_log',
-				'warning',
-				'Square order webhook - no matching status found',
-				[
-					'source'     => 'tickets-commerce-square',
-					'order_id'   => $order_id,
-					'event_data' => $event_data,
-				]
-			);
-			return;
-		}
-
-		// Update the order status.
-		tribe( Commerce_Order::class )->modify_status( $order, $status_obj->get_slug(), [ 'gateway_payload' => $event_data ] );
+		$square_order_controller->upsert_local_from_square_order( $order_id, $event_data );
 	}
 
 	/**
@@ -402,6 +396,123 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		}
 		// Update the order status.
 		tribe( Commerce_Order::class )->modify_status( $order, Refunded::SLUG, [ 'gateway_payload' => $event_data ] );
+	}
+
+	/**
+	 * Delete the customer ID from the user meta.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $event_data The webhook event data.
+	 */
+	protected function process_customer_delete_event( array $event_data ): void {
+		$customer_id = $event_data['data']['id'] ?? '';
+
+		if ( ! $customer_id ) {
+			return;
+		}
+
+		$user_query = new WP_User_Query(
+			[
+				'meta_key'   => Commerce_Settings::get_key( '_tec_tickets_commerce_gateways_square_customer_id_%s' ),
+				'meta_value' => $customer_id, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+				'fields'     => 'ID',
+			]
+		);
+
+		if ( empty( $user_query->get_results() ) ) {
+			return;
+		}
+
+		foreach ( $user_query->get_results() as $user_id ) {
+			Commerce_Meta::delete( $user_id, '_tec_tickets_commerce_gateways_square_customer_id_%s', [], 'user' );
+		}
+	}
+
+	/**
+	 * Process a ticket inventory updated event.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $event_data The webhook event data.
+	 */
+	protected function process_ticket_inventory_updated_event( array $event_data ): void {
+		$inventory_data = $event_data['data']['object']['inventory_counts'] ?? [];
+
+		if ( ! $inventory_data || ! is_array( $inventory_data ) ) {
+			return;
+		}
+
+		foreach ( $inventory_data as $inventory_item ) {
+			$location_id = $inventory_item['location_id'] ?? '';
+
+			if ( ! $location_id || $this->location_id ) {
+				// This is about a location that wp has nothing to do with, so we skip.
+				continue;
+			}
+
+			if ( 'ITEM_VARIATION' !== $inventory_item['catalog_object_type'] ) {
+				// This is not about a ticket, so we skip.
+				continue;
+			}
+
+			$object_id = $inventory_item['catalog_object_id'] ?? false;
+
+			if ( ! $object_id ) {
+				continue;
+			}
+
+			$ticket_id = Commerce_Meta::get_object_id( Item::SQUARE_ID_META, $object_id );
+
+			if ( ! $ticket_id ) {
+				continue;
+			}
+
+			$ticket = tribe( Commerce_Ticket::class )->load_ticket_object( $ticket_id );
+
+			if ( ! $ticket instanceof Ticket_Object ) {
+				continue;
+			}
+
+			$quantity = (int) ( $inventory_item['quantity'] ?? 0 );
+			$state    = $inventory_item['state'] ?? '';
+
+			try {
+				if ( Sync_Controller::is_ticket_in_sync_with_square_data( $ticket, $quantity, $state ) ) {
+					continue;
+				}
+
+				/**
+				 * We are out of sync!
+				 *
+				 * The rules of syncing is that single source of truth is the WP site, NOT Square.
+				 *
+				 * The quantity of tickets is expected to change ONLY via the WP site.
+				 *
+				 * Either by direct edit on the ticket object or by creating an order including the ticket.
+				 *
+				 * Orders can be created by Square integration.
+				 *
+				 * Having that in mind, we will simply schedule a background check in a few minutes to see if the quantity
+				 * came back into sync. If not, we will update Square with the correct quantity we have locally.
+				 */
+
+				/**
+				 * Fire an action so we can schedule a background check in a few minutes to see if the quantity
+				 * came back into sync.
+				 *
+				 * @since TBD
+				 *
+				 * @param int    $ticket_id The ticket ID.
+				 * @param int    $quantity  The quantity of tickets.
+				 * @param string $state     The state of the inventory.
+				 */
+				do_action( 'tec_tickets_commerce_square_ticket_out_of_sync', $ticket_id, $quantity, $state );
+			} catch ( NotSyncableItemException $e ) {
+				// If the ticket is not syncable, we don't need to sync it.
+				continue;
+			}
+		}
 	}
 
 	/**
