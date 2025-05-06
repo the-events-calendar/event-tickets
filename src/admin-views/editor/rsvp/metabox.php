@@ -3,6 +3,7 @@
  * @var Tribe__Tickets__Admin__Views $admin_views
  * @var WP_Post                      $post
  * @var int                          $post_id
+ * @var int                          $rsvp_id
  */
 
 ?>

@@ -22,7 +22,6 @@
 		class="ticket_field ticket_form_right"
 		size='25'
 		value="<?php echo esc_attr( $rsvp_limit ); ?>"
-		data-validation-is-required
 		data-validation-error="<?php echo esc_attr( $rsvp_required_type_error_message ); ?>"
 	/>
 	<p class="description ticket_form_right">
