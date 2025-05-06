@@ -257,7 +257,6 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		$data           = tribe( Data::class );
 		$completed_tabs = array_flip( (array) $data->get_wizard_setting( 'completed_tabs', [] ) );
 		$installer      = Installer::get();
-		$installer->register_plugin( 'the-events-calendar', 'The Events Calendar' );
 		$tec_installed = $installer->is_installed( 'the-events-calendar' );
 		$tec_activated = $installer->is_active( 'the-events-calendar' );
 		?>
@@ -419,7 +418,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 						>
 							<div class="step-list__item-left">
 								<span class="step-list__item-icon" role="presentation"></span>
-								<?php esc_html_e( 'Install The Events Calendar', 'event-tickets' ); ?>
+								<?php esc_html_e( 'The Events Calendar', 'event-tickets' ); ?>
 							</div>
 							<?php if ( ! $tec_installed || ! $tec_activated ) : ?>
 								<div class="step-list__item-right">
@@ -427,8 +426,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 									Installer::get()->render_plugin_button(
 										'the-events-calendar',
 										$tec_installed ? 'activate' : 'install',
-										$tec_installed ? __( 'Activate The Events Calendar', 'event-tickets' ) : __( 'Install The Events Calendar', 'event-tickets' ),
-										admin_url( 'edit.php?post_type=tribe_events&page=first-time-setup' )
+										$tec_installed ? __( 'Activate The Events Calendar', 'event-tickets' ) : __( 'Install The Events Calendar', 'event-tickets' )
 									);
 									?>
 								</div>
