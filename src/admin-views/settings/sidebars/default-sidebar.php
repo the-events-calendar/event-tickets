@@ -34,32 +34,32 @@ $external_attributes = new Attributes(
 $sidebar      = new Settings_Sidebar();
 $hero_section = new Settings_Sidebar_Section();
 
-// Set Hero Image.
-$hero_section->set_header_image(
-	new Image(
-		tribe_resource_url(
-			'images/settings_illustration.jpg',
-			false,
-			null,
-			Tribe__Tickets__Main::instance()
-		),
-		new Attributes(
-			[
-				'alt'  => '',
-				'role' => 'presentation',
-			]
+// Set Hero Image and Title.
+$hero_section
+	->set_header_image(
+		new Image(
+			tribe_resource_url(
+				'images/settings_illustration.jpg',
+				false,
+				null,
+				Tribe__Tickets__Main::instance()
+			),
+			new Attributes(
+				[
+					'alt'  => '',
+					'role' => 'presentation',
+				]
+			)
 		)
 	)
-);
-
-// Set Sidebar Title.
-$hero_section->set_title(
-	new Heading(
-		__( 'Supercharging your tickets', 'event-tickets' ),
-		2,
-		new Classes( 'tec-settings-form__sidebar-header' )
-	)
-);
+	->set_title(
+		new Heading(
+			__( 'Supercharging your tickets', 'event-tickets' ),
+			2,
+			new Classes( 'tec-settings-form__sidebar-header' ),
+			new Attributes( [ 'id' => 'tec-settings-sidebar-title' ] )
+		)
+	);
 
 // Build Beginner Resources List.
 $beginner_list = new Unordered_List(
@@ -124,7 +124,7 @@ $hero_section->add_section(
 			// Thank you paragraph.
 			( new Paragraph() )->add_child(
 				new Plain_Text(
-					__( 'Thank you for using Event Tickets! We recommend looking through the settings below so that you can fine tune your specific ticketing needs. Here are some resources that can help.', 'event-tickets' )
+					__( 'Thank you for using Event Tickets! We recommend looking through the settings below so that you can fine-tune your specific ticketing needs. Here are some resources that can help.', 'event-tickets' )
 				)
 			),
 			// Empty paragraph to add vertical space.
