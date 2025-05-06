@@ -314,7 +314,7 @@ STR;
 	 * Get the gateway label for the order.
 	 *
 	 * @since 5.13.3
-	 * @since TBD
+	 * @since TBD Added the created by.
 	 *
 	 * @param WP_Post|int $order The order post object or ID.
 	 *
@@ -329,7 +329,7 @@ STR;
 
 		$gateway = tribe( Manager::class )->get_gateway_by_key( $order->gateway );
 
-		$created_by = trim( (string) get_post_meta( $order->ID, Order::META_ORDER_CREATED_BY, true ) );
+		$created_by = Order::get_created_by( $order->ID );
 		$created_by = $created_by ? '<br/>' . esc_html__( 'Created by', 'event-tickets' ) . ' ' . $created_by : '';
 
 		if ( $gateway instanceof Free_Gateway ) {

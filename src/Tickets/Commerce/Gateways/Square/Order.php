@@ -28,6 +28,14 @@ use stdClass;
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
 class Order extends Abstract_Order {
+	/**
+	 * The hook to pull the order.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const HOOK_PULL_ORDER_ACTION = 'tec_tickets_commerce_square_order_pull_order';
 
 	/**
 	 * The merchant object.
@@ -182,12 +190,7 @@ class Order extends Abstract_Order {
 		update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order', wp_json_encode( $response['order'] ) );
 		update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_payload', wp_json_encode( $square_order ) );
 
-		/**
-		 * Schedule a pull of the order from Square. Making this more reliable than listening to the webhook.
-		 *
-		 * @todo dimi: This needs to be in sync with webhook handling. Ill get into that soon.
-		 * as_schedule_single_event( time() + 20 * MINUTE_IN_SECONDS, 'tec_tickets_commerce_square_order_sync', [ $order->ID ] );
-		 */
+		tribe( Syncs\Regulator::class )->schedule( self::HOOK_PULL_ORDER_ACTION, [ $response['order']['id'] ], 2 * MINUTE_IN_SECONDS );
 
 		return $response['order']['id'];
 	}
@@ -270,7 +273,7 @@ class Order extends Abstract_Order {
 			update_post_meta( $order->ID, Commerce_Order::META_ORDER_TOTAL_AMOUNT_UNACCOUNTED, $missed_money );
 			update_post_meta( $order->ID, Commerce_Order::META_ORDER_TOTAL_TAX, ( new Precision_Value( $net_amounts['tax_money']['amount'] / 100 ) )->get() );
 			update_post_meta( $order->ID, Commerce_Order::META_ORDER_TOTAL_TIP, ( new Precision_Value( $net_amounts['tip_money']['amount'] / 100 ) )->get() );
-			update_post_meta( $order->ID, Commerce_Order::META_ORDER_CREATED_BY, 'Square POS' );
+			update_post_meta( $order->ID, Commerce_Order::META_ORDER_CREATED_BY, 'square-pos' );
 
 			update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_id', $square_order_id );
 			update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_version', $square_order['version'] ?? 1 );

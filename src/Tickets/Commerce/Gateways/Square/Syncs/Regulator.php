@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square\Syncs;
 
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\SquareRateLimitedException;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
+use TEC\Tickets\Commerce\Gateways\Square\Order;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\Contracts\Container;
 use TEC\Tickets\Commerce\Settings as Commerce_Settings;
@@ -135,6 +136,7 @@ class Regulator extends Controller_Contract {
 		add_action( Integrity_Controller::HOOK_DATA_INTEGRITY_SYNC_ITEMS, [ $this, 'integrity_sync_items' ] );
 		add_action( Integrity_Controller::HOOK_DATA_INTEGRITY_SYNC_INVENTORY, [ $this, 'integrity_sync_inventory' ] );
 		add_action( 'tec_tickets_commerce_square_sync_request_completed', [ $this, 'reset_rate_limited_storage' ] );
+		add_action( Order::HOOK_PULL_ORDER_ACTION, [ $this, 'pull_order' ] );
 	}
 
 	/**
@@ -159,6 +161,7 @@ class Regulator extends Controller_Contract {
 		remove_action( Integrity_Controller::HOOK_DATA_INTEGRITY_SYNC_ITEMS, [ $this, 'integrity_sync_items' ] );
 		remove_action( Integrity_Controller::HOOK_DATA_INTEGRITY_SYNC_INVENTORY, [ $this, 'integrity_sync_inventory' ] );
 		remove_action( 'tec_tickets_commerce_square_sync_request_completed', [ $this, 'reset_rate_limited_storage' ] );
+		remove_action( Order::HOOK_PULL_ORDER_ACTION, [ $this, 'pull_order' ] );
 	}
 
 	/**
@@ -219,6 +222,23 @@ class Regulator extends Controller_Contract {
 		}
 	}
 
+	/**
+	 * Pulls the order.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $square_order_id The Square order ID.
+	 *
+	 * @return void
+	 */
+	public function pull_order( string $square_order_id ): void {
+		try {
+			tribe( Order::class )->upsert_local_from_square_order( $square_order_id );
+			$this->fire_square_request_completed();
+		} catch ( SquareRateLimitedException $e ) {
+			$this->schedule( Order::HOOK_PULL_ORDER_ACTION, [ $square_order_id ], HOUR_IN_SECONDS / 2, false );
+		}
+	}
 	/**
 	 * Checks the data integrity.
 	 *
