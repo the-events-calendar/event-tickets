@@ -668,7 +668,7 @@ class Merchant extends Abstract_Merchant {
 
 		$url      = 'locations';
 		$args     = [];
-		$response = Requests::get_with_cache( $url, [], $args, false, [ 'merchant_id' => $this->get_merchant_id() ] );
+		$response = Requests::get_with_cache( $url, [], $args );
 
 		if ( empty( $response['locations'] ) || ! is_array( $response['locations'] ) ) {
 			return [];
