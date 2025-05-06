@@ -19,7 +19,7 @@ namespace TEC\Tickets\Commerce;
 
 use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\Gateways\Manager;
-use Tribe\Tickets\Admin\Settings as ticket_settings;
+use Tribe\Tickets\Admin\Settings as Ticket_Settings;
 use TEC\Tickets\Commerce as Base_Commerce;
 use TEC\Tickets\Commerce\Admin\Orders_Page;
 use TEC\Tickets\Commerce\Admin_Tables\Orders_Table;
@@ -519,7 +519,7 @@ class Hooks extends Service_Provider {
 	 */
 	public function maybe_trigger_process_action() {
 		$page = tribe_get_request_var( 'page' );
-		if ( ticket_settings::$settings_page_id !== $page ) {
+		if ( Ticket_Settings::$settings_page_id !== $page ) {
 			return;
 		}
 
