@@ -653,11 +653,14 @@
 }
 
 .tec-tickets-onboarding__success-heading {
-	font-size: var(--tec-font-size-3);
+	font-size: var(--tec-font-size-5);
 	font-weight: var(--tec-font-weight-bold);
+	margin-bottom: var(--tec-spacer-1);
 }
 
 .tec-tickets-onboarding__success-message {
+	font-size: var(--tec-font-size-3);
+	margin-top: 0;
 	text-align: center;
 }
 
