@@ -62,8 +62,8 @@ class Requests extends Abstract_Requests {
 	 *
 	 * @return array|null
 	 */
-	public static function get_with_cache( $endpoint, array $query_args = [], array $request_arguments = [], $raw = false ): ?array {
-		$cache_key = md5( wp_json_encode( [ $endpoint, $query_args, $request_arguments, $raw ] ) );
+	public static function get_with_cache( $endpoint, array $query_args = [], array $request_arguments = [], $raw = false, array $cache_params = [] ): ?array {
+		$cache_key = md5( wp_json_encode( [ $endpoint, $query_args, $request_arguments, $raw, ...array_values( $cache_params ) ] ) );
 		$cache     = tribe_cache();
 
 		$cached_response = $cache[ $cache_key ] ?? $cache->get_transient( $cache_key );
