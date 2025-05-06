@@ -127,6 +127,7 @@ class Regulator extends Controller_Contract {
 		add_action( Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $this, 'items_sync_event' ] );
 		add_action( Inventory_Sync::HOOK_SYNC_ACTION, [ $this, 'inventory_sync_post_type' ] );
 		add_action( Inventory_Sync::HOOK_SYNC_EVENT_ACTION, [ $this, 'inventory_sync_event' ] );
+		add_action( Inventory_Sync::HOOK_CHECK_TICKET_INVENTORY_SYNC, [ $this, 'inventory_sync_ticket' ], 10, 3 );
 		add_action( Listeners::HOOK_SYNC_RESET_SYNCED_POST_TYPE, [ $this, 'listeners_reset_post_type_data' ] );
 		add_action( Integrity_Controller::HOOK_CHECK_DATA_INTEGRITY, [ $this, 'check_data_integrity' ] );
 		add_action( Integrity_Controller::HOOK_DATA_INTEGRITY_DELETE_ITEMS, [ $this, 'integrity_delete_items' ] );
@@ -145,11 +146,12 @@ class Regulator extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_action( self::HOOK_INIT_SYNC_ACTION, [ $this, 'schedule_sync_for_each_post_type' ] );
-		remove_action( Items_Sync::HOOK_SYNC_DELETE_EVENT_ACTION, [ $this, 'items_sync_delete_event' ], 10, 2 );
+		remove_action( Items_Sync::HOOK_SYNC_DELETE_EVENT_ACTION, [ $this, 'items_sync_delete_event' ] );
 		remove_action( Items_Sync::HOOK_SYNC_ACTION, [ $this, 'items_sync_post_type' ] );
 		remove_action( Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $this, 'items_sync_event' ] );
 		remove_action( Inventory_Sync::HOOK_SYNC_ACTION, [ $this, 'inventory_sync_post_type' ] );
 		remove_action( Inventory_Sync::HOOK_SYNC_EVENT_ACTION, [ $this, 'inventory_sync_event' ] );
+		remove_action( Inventory_Sync::HOOK_CHECK_TICKET_INVENTORY_SYNC, [ $this, 'inventory_sync_ticket' ] );
 		remove_action( Listeners::HOOK_SYNC_RESET_SYNCED_POST_TYPE, [ $this, 'listeners_reset_post_type_data' ] );
 		remove_action( Integrity_Controller::HOOK_CHECK_DATA_INTEGRITY, [ $this, 'check_data_integrity' ] );
 		remove_action( Integrity_Controller::HOOK_DATA_INTEGRITY_DELETE_ITEMS, [ $this, 'integrity_delete_items' ] );
@@ -406,6 +408,26 @@ class Regulator extends Controller_Contract {
 			$this->fire_square_request_completed();
 		} catch ( SquareRateLimitedException $e ) {
 			$this->schedule( Inventory_Sync::HOOK_SYNC_EVENT_ACTION, [ $event_id, $execute, $tickets ], MINUTE_IN_SECONDS / 3, false );
+		}
+	}
+
+	/**
+	 * Syncs the ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $ticket_id The ticket ID.
+	 * @param int    $quantity  The quantity of tickets.
+	 * @param string $state     The state of the inventory.
+	 *
+	 * @return void
+	 */
+	public function inventory_sync_ticket( int $ticket_id, int $quantity, string $state ): void {
+		try {
+			$this->inventory_sync->sync_ticket( $ticket_id, $quantity, $state );
+			$this->fire_square_request_completed();
+		} catch ( SquareRateLimitedException $e ) {
+			$this->schedule( Inventory_Sync::HOOK_CHECK_TICKET_INVENTORY_SYNC, [ $ticket_id, $quantity, $state ], 2 * MINUTE_IN_SECONDS, false );
 		}
 	}
 

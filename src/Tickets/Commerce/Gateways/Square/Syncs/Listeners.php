@@ -91,6 +91,7 @@ class Listeners extends Controller_Contract {
 		add_action( 'tec_tickets_ticket_end_date_trigger', [ $this, 'schedule_sync_on_date_end' ], 10, 4 );
 		add_action( 'wp_trash_post', [ $this, 'schedule_sync_on_delete' ] );
 		add_action( 'before_delete_post', [ $this, 'schedule_sync_on_delete' ] );
+		add_action( 'tec_tickets_commerce_square_ticket_out_of_sync', [ $this, 'schedule_ticket_sync_on_out_of_sync' ], 10, 3 );
 	}
 
 	/**
@@ -113,6 +114,7 @@ class Listeners extends Controller_Contract {
 		remove_action( 'tec_tickets_ticket_end_date_trigger', [ $this, 'schedule_sync_on_date_end' ] );
 		remove_action( 'wp_trash_post', [ $this, 'schedule_sync_on_delete' ] );
 		remove_action( 'before_delete_post', [ $this, 'schedule_sync_on_delete' ] );
+		remove_action( 'tec_tickets_commerce_square_ticket_out_of_sync', [ $this, 'schedule_ticket_sync_on_out_of_sync' ] );
 	}
 
 	/**
@@ -332,6 +334,21 @@ class Listeners extends Controller_Contract {
 
 		// This is the last sync-able ticket for this event, we need to schedule deletion for the parent event instead.
 		$this->schedule_deletion( $parent_id );
+	}
+
+	/**
+	 * Schedule the ticket sync on out of sync.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $ticket_id The ticket ID.
+	 * @param int    $quantity  The quantity of tickets.
+	 * @param string $state     The state of the inventory.
+	 *
+	 * @return void
+	 */
+	public function schedule_ticket_sync_on_out_of_sync( int $ticket_id, int $quantity, string $state ): void {
+		$this->regulator->schedule( Inventory_Sync::HOOK_CHECK_TICKET_INVENTORY_SYNC, [ $ticket_id, $quantity, $state ], 2 * MINUTE_IN_SECONDS );
 	}
 
 	/**

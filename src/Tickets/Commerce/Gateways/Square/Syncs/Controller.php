@@ -17,6 +17,9 @@ use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 use TEC\Tickets\Commerce\Ticket as Ticket_Data;
 use Exception;
 use Tribe__Settings_Manager as Settings_Manager;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
+use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\NotSyncableItemException;
 
 /**
  * Class Controller
@@ -363,5 +366,40 @@ class Controller extends Controller_Contract {
 				do_action( 'tec_tickets_commerce_square_sync_post_reset_status', $post_type );
 			}
 		);
+	}
+
+	/**
+	 * Whether the ticket is in sync with the square data.
+	 *
+	 * @since TBD
+	 *
+	 * @param Ticket_Object $ticket The ticket object.
+	 * @param int           $square_quantity The square quantity.
+	 * @param string        $square_state    The square state.
+	 *
+	 * @return bool Whether the ticket is in sync with the square data.
+	 *
+	 * @throws NotSyncableItemException If the ticket is not syncable.
+	 */
+	public static function is_ticket_in_sync_with_square_data( Ticket_Object $ticket, int $square_quantity, string $square_state ): bool {
+		if ( ! Item::get_remote_object_id( $ticket->ID ) ) {
+			throw new NotSyncableItemException( __( 'Ticket is not sync-able.', 'event-tickets' ) );
+		}
+
+		$local_quantity = $ticket->available();
+
+		if ( -1 === $local_quantity && $square_quantity > 900000000 && 'IN_STOCK' === $square_state ) {
+			return false;
+		}
+
+		if ( $square_quantity === $local_quantity && $square_quantity > 0 && 'IN_STOCK' === $square_state ) {
+			return false;
+		}
+
+		if ( $square_quantity === $local_quantity && $square_quantity === 0 && 'SOLD' === $square_state ) {
+			return false;
+		}
+
+		return true;
 	}
 }

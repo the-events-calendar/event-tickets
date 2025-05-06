@@ -26,6 +26,8 @@ use TEC\Tickets\Commerce\Order as Commerce_Order;
 use TEC\Tickets\Commerce\Status\Refunded;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
+use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\NotSyncableItemException;
 
 /**
  * Class Webhook_Endpoint.
@@ -515,20 +517,44 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 				continue;
 			}
 
-			$available = $ticket->available();
-
-			if ( -1 === $available ) {
-				continue;
-			}
-
 			$quantity = (int) ( $inventory_item['quantity'] ?? 0 );
-			$state    = $inventory_item['state'] ?? false;
+			$state    = $inventory_item['state'] ?? '';
 
-			if ( $quantity === $available ) {
+			try {
+				if ( Sync_Controller::is_ticket_in_sync_with_square_data( $ticket, $quantity, $state ) ) {
+					continue;
+				}
+
+				/**
+				 * We are out of sync!
+				 *
+				 * The rules of syncing is that single source of truth is the WP site, NOT Square.
+				 *
+				 * The quantity of tickets is expected to change ONLY via the WP site.
+				 *
+				 * Either by direct edit on the ticket object or by creating an order including the ticket.
+				 *
+				 * Orders can be created by Square integration.
+				 *
+				 * Having that in mind, we will simply schedule a background check in a few minutes to see if the quantity
+				 * came back into sync. If not, we will update Square with the correct quantity we have locally.
+				 */
+
+				/**
+				 * Fire an action so we can schedule a background check in a few minutes to see if the quantity
+				 * came back into sync.
+				 *
+				 * @since TBD
+				 *
+				 * @param int    $ticket_id The ticket ID.
+				 * @param int    $quantity  The quantity of tickets.
+				 * @param string $state     The state of the inventory.
+				 */
+				do_action( 'tec_tickets_commerce_square_ticket_out_of_sync', $ticket_id, $quantity, $state );
+			} catch ( NotSyncableItemException $e ) {
+				// If the ticket is not syncable, we don't need to sync it.
 				continue;
 			}
-
-			// @todo dimi: Process the inventory change.
 		}
 	}
 
