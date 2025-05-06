@@ -18,6 +18,8 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Common\Contracts\Service_Provider;
+use TEC\Tickets\Commerce\Gateways\Manager;
+use Tribe\Tickets\Admin\Settings as ticket_settings;
 use TEC\Tickets\Commerce as Base_Commerce;
 use TEC\Tickets\Commerce\Admin\Orders_Page;
 use TEC\Tickets\Commerce\Admin_Tables\Orders_Table;
@@ -513,15 +515,18 @@ class Hooks extends Service_Provider {
 	 * Depending on which page, tab and if an action is present we trigger the processing.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Switched the tab to check the provider instead of `payment`.
 	 */
 	public function maybe_trigger_process_action() {
 		$page = tribe_get_request_var( 'page' );
-		if ( \Tribe\Tickets\Admin\Settings::$settings_page_id !== $page ) {
+		if ( ticket_settings::$settings_page_id !== $page ) {
 			return;
 		}
 
-		$tab = tribe_get_request_var( 'tab' );
-		if ( 'payments' !== $tab ) {
+		$tab     = tribe_get_request_var( 'tab' );
+		$gateway = tribe( Manager::class )->get_gateway_by_key( $tab );
+
+		if ( $gateway::get_key() !== $tab ) {
 			return;
 		}
 

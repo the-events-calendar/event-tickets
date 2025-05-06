@@ -33,6 +33,15 @@ class Payments_Tab extends Service_Provider {
 	public static $slug = 'payments';
 
 	/**
+	 * Tab ID for the Tickets Commerce settings.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const TAB_ID = 'tickets-commerce';
+
+	/**
 	 * Meta key for page creation flag.
 	 *
 	 * @since 5.2.1
@@ -98,14 +107,16 @@ class Payments_Tab extends Service_Provider {
 
 	/**
 	 * @inheritdoc
+	 *
+	 * @since TBD switched to using $tab_id const.
 	 */
 	public function register() {
 		$this->container->singleton( static::class, $this );
-		$tab_slug = self::$slug;
+		$tab_id = self::TAB_ID;
 
 		add_action( 'tribe_settings_form_class', [ $this, 'include_form_class' ], 15, 3 );
 		add_action( 'tribe_settings_do_tabs', [ $this, 'register_tab' ], 15 );
-		add_action( "tribe_settings_after_save_{$tab_slug}", [ $this, 'generate_payments_pages' ] );
+		add_action( "tribe_settings_after_save_{$tab_id}", [ $this, 'maybe_generate_pages' ] );
 		add_filter( 'tec_tickets_settings_tabs_ids', [ $this, 'settings_add_tab_id' ] );
 
 		// Load the tab and save actions if Tickets Commerce is enabled.
@@ -145,7 +156,7 @@ class Payments_Tab extends Service_Provider {
 
 		// Create the main Tickets Commerce child tab.
 		$this->settings_tab = new Tribe__Settings_Tab(
-			'tickets-commerce',
+			self::TAB_ID,
 			esc_html__( 'Tickets Commerce', 'event-tickets' ),
 			$tab_settings
 		);
