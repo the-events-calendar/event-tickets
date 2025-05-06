@@ -395,7 +395,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return;
 		}
 		// Update the order status.
-		tribe( Commerce_Order::class )->modify_status( $order, Refunded::SLUG, [ 'gateway_payload' => $event_data ] );
+		tribe( Commerce_Order::class )->modify_status( $order->ID, Refunded::SLUG, [ 'gateway_payload' => $event_data ] );
 	}
 
 	/**
@@ -446,7 +446,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		foreach ( $inventory_data as $inventory_item ) {
 			$location_id = $inventory_item['location_id'] ?? '';
 
-			if ( ! $location_id || $this->location_id ) {
+			if ( ! $location_id || $location_id !== $this->location_id ) {
 				// This is about a location that wp has nothing to do with, so we skip.
 				continue;
 			}

@@ -534,7 +534,6 @@ class Integrity_Controller extends Controller_Contract {
 		if ( ! empty( $items_availability_out_of_sync ) ) {
 			$previous = (array) Commerce_Settings::get( self::OPTION_INTEGRITY_SYNC_INVENTORY );
 			Commerce_Settings::set( self::OPTION_INTEGRITY_SYNC_INVENTORY, array_merge( $previous, $items_availability_out_of_sync ) );
-			$this->regulator->schedule( self::HOOK_DATA_INTEGRITY_SYNC_INVENTORY, [], MINUTE_IN_SECONDS / 6 );
 		}
 
 		if ( empty( $actually_in_need_of_sync ) ) {

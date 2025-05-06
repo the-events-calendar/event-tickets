@@ -92,6 +92,7 @@ class Listeners extends Controller_Contract {
 		add_action( 'wp_trash_post', [ $this, 'schedule_sync_on_delete' ] );
 		add_action( 'before_delete_post', [ $this, 'schedule_sync_on_delete' ] );
 		add_action( 'tec_tickets_commerce_square_ticket_out_of_sync', [ $this, 'schedule_ticket_sync_on_out_of_sync' ], 10, 3 );
+		add_action( 'tec_tickets_ticket_stock_changed', [ $this, 'schedule_ticket_sync_on_stock_changed' ], );
 	}
 
 	/**
@@ -115,6 +116,7 @@ class Listeners extends Controller_Contract {
 		remove_action( 'wp_trash_post', [ $this, 'schedule_sync_on_delete' ] );
 		remove_action( 'before_delete_post', [ $this, 'schedule_sync_on_delete' ] );
 		remove_action( 'tec_tickets_commerce_square_ticket_out_of_sync', [ $this, 'schedule_ticket_sync_on_out_of_sync' ] );
+		remove_action( 'tec_tickets_ticket_stock_changed', [ $this, 'schedule_ticket_sync_on_stock_changed' ] );
 	}
 
 	/**
@@ -352,21 +354,41 @@ class Listeners extends Controller_Contract {
 	}
 
 	/**
-	 * Schedule the ticket sync.
+	 * Schedule the ticket sync on stock changed.
 	 *
 	 * @since TBD
 	 *
 	 * @param int $ticket_id The ticket ID.
-	 * @param int $parent_id The parent ID.
 	 *
 	 * @return void
 	 */
-	public function schedule_sync( int $ticket_id, int $parent_id ): void {
+	public function schedule_ticket_sync_on_stock_changed( int $ticket_id ): void {
+		$ticket = tribe( Ticket_Data::class )->load_ticket_object( $ticket_id );
+
+		if ( ! $ticket instanceof Ticket_Object ) {
+			return;
+		}
+
+		$this->schedule_sync( $ticket->ID, $ticket->get_event_id(), MINUTE_IN_SECONDS / 12 );
+	}
+
+	/**
+	 * Schedule the ticket sync.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id     The ticket ID.
+	 * @param int $parent_id     The parent ID.
+	 * @param int $minimum_delay The minimum delay in seconds.
+	 *
+	 * @return void
+	 */
+	public function schedule_sync( int $ticket_id, int $parent_id, int $minimum_delay = 20 ): void {
 		if ( ! $this->is_object_syncable( $ticket_id ) ) {
 			return;
 		}
 
-		$this->regulator->schedule( Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $parent_id ], MINUTE_IN_SECONDS / 3 );
+		$this->regulator->schedule( Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $parent_id ], $minimum_delay );
 	}
 
 	/**

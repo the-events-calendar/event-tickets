@@ -141,11 +141,11 @@ class Inventory_Change implements JsonSerializable {
 				return;
 			}
 		} catch ( NotSyncableItemException $e ) {
-			do_action( 'tribe_log', 'error', 'Square Inventory Sync - Ticket ' . $this->ticket_item->get_id() . ' is not syncable.' );
+			do_action( 'tribe_log', 'warning', 'Square Inventory Sync - Ticket ' . $this->ticket_item->get_id() . ' is not syncable.' );
 			return;
 		}
 
-		do_action( 'tribe_log', 'error', 'Square Inventory Sync - Ticket ' . $this->ticket_item->get_id() . ' is out of sync.' );
+		do_action( 'tribe_log', 'warning', 'Square Inventory Sync - Ticket ' . $this->ticket_item->get_id() . ' is out of sync.' );
 	}
 
 	/**

@@ -270,6 +270,7 @@ class Order extends Abstract_Order {
 			update_post_meta( $order->ID, Commerce_Order::META_ORDER_TOTAL_AMOUNT_UNACCOUNTED, $missed_money );
 			update_post_meta( $order->ID, Commerce_Order::META_ORDER_TOTAL_TAX, ( new Precision_Value( $net_amounts['tax_money']['amount'] / 100 ) )->get() );
 			update_post_meta( $order->ID, Commerce_Order::META_ORDER_TOTAL_TIP, ( new Precision_Value( $net_amounts['tip_money']['amount'] / 100 ) )->get() );
+			update_post_meta( $order->ID, Commerce_Order::META_ORDER_CREATED_BY, 'Square POS' );
 
 			update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_id', $square_order_id );
 			update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_version', $square_order['version'] ?? 1 );
@@ -316,7 +317,7 @@ class Order extends Abstract_Order {
 			return $order;
 		}
 
-		$this->commerce_order->modify_status( $order, $status_obj->get_slug(), $event_data ? [ 'gateway_payload' => $event_data ] : [] );
+		$this->commerce_order->modify_status( $order->ID, $status_obj->get_slug(), $event_data ? [ 'gateway_payload' => $event_data ] : [] );
 
 		return $order;
 	}
@@ -557,6 +558,11 @@ class Order extends Abstract_Order {
 				'sub_total'         => ( new Precision_Value( $ticket['variation_total_price_money']['amount'] / 100 ) )->get(),
 				'type'              => 'ticket',
 			];
+		}
+
+		if ( ! $items ) {
+			// If no ticket was found, we bail.
+			return [];
 		}
 
 		if ( $missed_money > 0 ) {
