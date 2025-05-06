@@ -130,6 +130,7 @@ class Ticket {
 	 * @var string
 	 */
 	public static $status_count_meta_key_prefix = '_tec_tc_ticket_status_count';
+
 	/**
 	 * The meta key that holds the ticket type.
 	 *
@@ -138,6 +139,15 @@ class Ticket {
 	 * @var string
 	 */
 	public static $type_meta_key = '_type';
+
+	/**
+	 * The clumn key that holds the ticket type.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $type_column_key = 'pinged';
 
 	/**
 	 * Stores the instance of the template engine that we will use for rendering the elements.
@@ -544,17 +554,18 @@ class Ticket {
 			$save_type = 'create';
 
 			/* Create main product post */
-			$args = array(
-				'post_status'  => 'publish',
-				'post_type'    => static::POSTTYPE,
-				'post_author'  => get_current_user_id(),
-				'post_excerpt' => $ticket->description,
-				'post_title'   => $ticket->name,
-				'menu_order'   => tribe_get_request_var( 'menu_order', - 1 ),
-				'meta_input' => [
+			$args = [
+				'post_status'          => 'publish',
+				'post_type'            => static::POSTTYPE,
+				'post_author'          => get_current_user_id(),
+				'post_excerpt'         => $ticket->description,
+				'post_title'           => $ticket->name,
+				$this->type_column_key => $raw_data['ticket_type'] ?? 'default',
+				'menu_order'           => tribe_get_request_var( 'menu_order', - 1 ),
+				'meta_input'           => [
 					'_type' => $raw_data['ticket_type'] ?? 'default',
 				]
-			);
+			];
 
 			$ticket->ID = wp_insert_post( $args );
 
@@ -562,15 +573,16 @@ class Ticket {
 			add_post_meta( $ticket->ID, static::$event_relation_meta_key, $post_id );
 
 		} else {
-			$args = array(
-				'ID'           => $ticket->ID,
-				'post_excerpt' => $ticket->description,
-				'post_title'   => $ticket->name,
-				'menu_order'   => $ticket->menu_order,
-				'meta_input' => [
+			$args = [
+				'ID'                   => $ticket->ID,
+				'post_excerpt'         => $ticket->description,
+				'post_title'           => $ticket->name,
+				'menu_order'           => $ticket->menu_order,
+				$this->type_column_key => $raw_data['ticket_type'] ?? 'default',
+				'meta_input'           => [
 					'_type' => $raw_data['ticket_type'] ?? 'default',
 				]
-			);
+			];
 
 			$ticket->ID = wp_update_post( $args );
 		}

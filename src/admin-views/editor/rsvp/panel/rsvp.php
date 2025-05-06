@@ -143,14 +143,14 @@ $ticket_type = $ticket_type ?? 'default';
 				/>
 				<input
 					type="button"
-					id="rsvp_form_save"
+					id="tc_ticket_form_save"
 					class="button-primary tribe-validation-submit"
 					name="ticket_form_save"
 					value="<?php esc_attr_e( 'Save', 'event-tickets' ); ?>"
 				/>
 				<input
 					type="button"
-					id="ticket_form_cancel"
+					id="tc_ticket_form_cancel"
 					class="button-secondary"
 					name="ticket_form_cancel"
 					value="<?php esc_attr_e( 'Cancel', 'event-tickets' ); ?>"
