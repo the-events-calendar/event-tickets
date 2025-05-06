@@ -182,6 +182,15 @@ class Order extends Abstract_Order {
 	public const META_ORDER_TOTAL_TIP = '_tec_tc_order_total_tip';
 
 	/**
+	 * Which meta holds the order created by.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const META_ORDER_CREATED_BY = '_tec_tc_order_created_by';
+
+	/**
 	 * Which meta holds the cart items used to setup this order.
 	 *
 	 * @since 5.1.9
@@ -1482,5 +1491,40 @@ class Order extends Abstract_Order {
 	 */
 	public function get_orders_total_value( WP_Post $order ): Value {
 		return $this->get_value_total( $this->get_order_items( $order ) );
+	}
+
+	/**
+	 * Get the order created by.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id The order ID.
+	 *
+	 * @return string The order created by.
+	 */
+	public static function get_created_by( int $order_id ): string {
+		$created_by = trim( (string) get_post_meta( $order_id, self::META_ORDER_CREATED_BY, true ) );
+
+		if ( empty( $created_by ) ) {
+			return '';
+		}
+
+		switch ( $created_by ) {
+			case 'square-pos':
+				$translated = esc_html__( 'Square POS', 'event-tickets' );
+				break;
+			default:
+				$translated = $created_by;
+				break;
+		}
+
+		/**
+		 * Filters the order created by.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $created_by The order created by.
+		 */
+		return apply_filters( 'tec_tickets_commerce_order_created_by', $translated, $order_id );
 	}
 }

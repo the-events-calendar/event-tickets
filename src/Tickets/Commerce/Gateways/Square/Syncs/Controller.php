@@ -389,17 +389,13 @@ class Controller extends Controller_Contract {
 		$local_quantity = $ticket->available();
 
 		if ( -1 === $local_quantity && $square_quantity > 900000000 && 'IN_STOCK' === $square_state ) {
-			return false;
-		}
-
-		if ( $square_quantity === $local_quantity && $square_quantity > 0 && 'IN_STOCK' === $square_state ) {
-			return false;
+			return true;
 		}
 
 		if ( $square_quantity === $local_quantity && $square_quantity === 0 && 'SOLD' === $square_state ) {
-			return false;
+			return true;
 		}
 
-		return true;
+		return $square_quantity === $local_quantity && 'IN_STOCK' === $square_state;
 	}
 }

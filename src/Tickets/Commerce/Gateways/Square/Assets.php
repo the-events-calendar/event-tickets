@@ -141,6 +141,7 @@ class Assets extends Controller_Contract {
 			'commerce/gateway/square/checkout.js',
 			Tickets_Plugin::VERSION
 		)
+			->add_to_group_path( Tickets_Plugin::class )
 			->set_dependencies(
 				'jquery',
 				'tribe-common',
