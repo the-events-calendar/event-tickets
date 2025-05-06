@@ -526,6 +526,10 @@ class Hooks extends Service_Provider {
 		$tab     = tribe_get_request_var( 'tab' );
 		$gateway = tribe( Manager::class )->get_gateway_by_key( $tab );
 
+		if ( empty( $gateway ) ) {
+			return;
+		}
+
 		if ( $gateway::get_key() !== $tab ) {
 			return;
 		}
