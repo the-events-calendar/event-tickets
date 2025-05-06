@@ -155,6 +155,33 @@ class Order extends Abstract_Order {
 	public static $total_value_meta_key = '_tec_tc_order_total_value';
 
 	/**
+	 * Which meta holds the amount unaccounted for in the order.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const META_ORDER_TOTAL_AMOUNT_UNACCOUNTED = '_tec_tc_order_total_amount_unaccounted';
+
+	/**
+	 * Which meta holds the total tax amount in the order.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const META_ORDER_TOTAL_TAX = '_tec_tc_order_total_tax';
+
+	/**
+	 * Which meta holds the total tip amount in the order.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const META_ORDER_TOTAL_TIP = '_tec_tc_order_total_tip';
+
+	/**
 	 * Which meta holds the cart items used to setup this order.
 	 *
 	 * @since 5.1.9
