@@ -125,7 +125,7 @@ class Ajax extends Controller_Contract {
 
 		try {
 			// Disconnect from Square via WhoDat API.
-			$response = $this->who_dat->disconnect_account();
+			$this->who_dat->disconnect_account();
 
 			// Delete local merchant data.
 			$this->merchant->delete_signup_data();

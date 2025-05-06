@@ -66,7 +66,7 @@ class WhoDat extends Abstract_WhoDat {
 			'state'                 => $nonce,
 		];
 
-		$connection_response = $this->get( 'oauth/authorize', $query_args );
+		$connection_response = $this->get_with_cache( 'oauth/authorize', $query_args );
 
 		if ( empty( $connection_response['auth_url'] ) ) {
 			do_action(
@@ -158,7 +158,7 @@ class WhoDat extends Abstract_WhoDat {
 			'mode'         => $merchant->get_mode(),
 		];
 
-		return $this->get( 'oauth/token/status', $query_args );
+		return $this->get_with_cache( 'oauth/token/status', $query_args );
 	}
 
 	/**
@@ -175,7 +175,7 @@ class WhoDat extends Abstract_WhoDat {
 			'merchant_id' => $merchant_id,
 		];
 
-		return $this->get( 'merchants/' . $merchant_id, $query_args );
+		return $this->get_with_cache( 'merchants/' . $merchant_id, $query_args );
 	}
 
 	/**
@@ -211,7 +211,7 @@ class WhoDat extends Abstract_WhoDat {
 			'include_descriptions' => (bool) $include_descriptions,
 		];
 
-		$response = $this->get( 'oauth/scopes', $query_args );
+		$response = $this->get_with_cache( 'oauth/scopes', $query_args );
 
 		if ( empty( $response ) || ! isset( $response['scopes'] ) ) {
 			do_action(
@@ -316,7 +316,7 @@ class WhoDat extends Abstract_WhoDat {
 			$query_args['scopes'] = implode( ',', $scopes );
 		}
 
-		$connection_response = $this->get( 'oauth/authorize', $query_args );
+		$connection_response = $this->get_with_cache( 'oauth/authorize', $query_args );
 
 		return $connection_response['auth_url'] ?? '';
 	}
