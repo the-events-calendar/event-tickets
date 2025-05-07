@@ -352,7 +352,7 @@ class Remote_Objects {
 		}
 
 		$remote_object_id = Item::get_remote_object_id( $ticket_id );
-		$event_id = $ticket_object->get_event()->ID;
+		$event_id         = $ticket_object->get_event()->ID;
 
 		$updates = [
 			'uid'              => "e-{$event_id}-t-{$ticket_id}",
