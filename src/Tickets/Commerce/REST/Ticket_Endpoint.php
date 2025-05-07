@@ -55,9 +55,16 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 			$namespace,
 			$this->get_endpoint_path(),
 			[
-				'methods'             => WP_REST_Server::CREATABLE,
-				'callback'            => [ $this, 'handle_create_ticket' ],
-				'permission_callback' => '__return_true',
+				[
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => [ $this, 'handle_create_ticket' ],
+					'permission_callback' => '__return_true',
+				],
+				[
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => [ $this, 'handle_create_ticket' ],
+					'permission_callback' => '__return_true',
+				]
 			]
 		);
 

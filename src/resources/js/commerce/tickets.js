@@ -28,7 +28,7 @@ tribe.tickets.commerce.tickets = {};
 	 *
 	 * @type {Object}
 	 */
-	obj.checkout = tecTicketsCommerceGatewayStripeCheckout;
+	obj.tickets = tecTicketsCommerceTickets;
 
 	/**
 	 * Checkout Selectors.
@@ -55,6 +55,9 @@ tribe.tickets.commerce.tickets = {};
 		event.preventDefault();
 
 		//@todo get ticket details and show error messages if missing
+
+		console.log('button clicked');
+		console.log(obj.tickets);
 
 		obj.submitButton( false );
 
