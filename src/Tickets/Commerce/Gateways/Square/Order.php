@@ -109,7 +109,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @param WP_Post $order The order object.
 	 *
-	 * @return WP_Post
+	 * @return string The Square order ID.
 	 *
 	 * @throws RuntimeException If the order fails to be created or updated.
 	 */
@@ -166,13 +166,12 @@ class Order extends Abstract_Order {
 
 		$square_order_id = null;
 
-		// If the order has a gateway payload, we need to update the order.
-		if ( ! empty( $order->gateway_payload ) ) {
+		if ( $order->gateway_order_id ?? false ) {
 			$square_order_id = $order->gateway_order_id;
 		}
 
 		if ( $square_order_id && ! $this->needs_update( $square_order, $order->ID ) ) {
-			return $order->gateway_order_id;
+			return $square_order_id;
 		}
 
 		if ( $square_order_id ) {
@@ -219,8 +218,6 @@ class Order extends Abstract_Order {
 		if ( ! $order_updated || ! isset( $order_updated[ $order->ID ] ) || ! $order_updated[ $order->ID ] ) {
 			throw new RuntimeException( 'Failed to update the order with the new Square order ID.' );
 		}
-
-		$square_order_id = $response['order']['id'];
 
 		/**
 		 * Fires after the Square order is upserted.
@@ -428,9 +425,9 @@ class Order extends Abstract_Order {
 			return '';
 		}
 
-		$order_id = $order->gateway_order_id;
+		$order_id = $order->gateway_order_id ?? false;
 
-		if ( empty( $order_id ) ) {
+		if ( ! $order_id ) {
 			return '';
 		}
 
