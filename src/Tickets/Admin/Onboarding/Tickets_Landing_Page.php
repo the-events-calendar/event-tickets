@@ -198,15 +198,6 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		?>
 			<h1 class="tec-admin__header-title"><?php esc_html_e( 'Event Tickets', 'event-tickets' ); ?></h1>
 		<?php
-
-		$action_url = add_query_arg(
-			// We do not need a nonce. This page can be seen only by admins. see `required_capability` method.
-			[ 'action' => self::DISMISS_PAGE_ACTION ],
-			admin_url( '/admin-post.php' )
-		);
-		?>
-		<a class="tec-dismiss-admin-page" href="<?php echo esc_url( $action_url ); ?>"><?php esc_html_e( 'Dismiss this screen', 'event-tickets' ); ?></a>
-		<?php
 	}
 
 	/**
@@ -263,6 +254,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 */
 	public function admin_content_checklist_section(): void {
 		$settings_url   = 'admin.php?page=tec-tickets-settings';
+		$action_url     = add_query_arg( [ 'action' => self::DISMISS_PAGE_ACTION ], admin_url( '/admin-post.php' ) );
 		$data           = tribe( Data::class );
 		$completed_tabs = array_flip( (array) $data->get_wizard_setting( 'completed_tabs', [] ) );
 		$installer      = Installer::get();
@@ -270,7 +262,11 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		$tec_activated  = $installer->is_active( 'the-events-calendar' );
 		?>
 			<div class="tec-admin-page__content-section tec-tickets-admin-page__content-section">
-				<h2 class="tec-admin-page__content-header"><?php esc_html_e( 'First-time setup', 'event-tickets' ); ?></h2>
+				<div class="tec-tickets-admin-page__content-section-header">
+					<h2 class="tec-admin-page__content-header"><?php esc_html_e( 'First-time setup', 'event-tickets' ); ?></h2>
+					<a class="tec-dismiss-admin-page" href="<?php echo esc_url( $action_url ); ?>"><?php esc_html_e( 'Dismiss this screen', 'event-tickets' ); ?></a>
+				</div>
+				<div class="tec-tickets-admin-page__content-section-subheader">3/4 steps completed</div>
 				<ul class="tec-admin-page__content-step-list">
 					<li
 						id="tec-tickets-onboarding-wizard-currency-item"
@@ -365,7 +361,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 						<?php esc_html_e( 'The Events Calendar', 'event-tickets' ); ?>
 					</h2>
 					<h3 class="tec-admin-page__content-subheader">
-						<?php esc_html_e( 'Do you need events for your tickets?', 'event-tickets' ); ?>
+						<?php esc_html_e( 'Full control over your event management needs', 'event-tickets' ); ?>
 					</h3>
 					<ul class="tec-admin-page__content-step-list">
 						<li
@@ -382,7 +378,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 						>
 							<div class="step-list__item-left">
 								<span class="step-list__item-icon" role="presentation"></span>
-								<?php esc_html_e( 'The Events Calendar', 'event-tickets' ); ?>
+								<?php echo $tec_installed ? esc_html__( 'Activate The Events Calendar', 'event-tickets' ) : esc_html__( 'Install The Events Calendar', 'event-tickets' ); ?>
 							</div>
 							<?php if ( ! $tec_installed || ! $tec_activated ) : ?>
 								<div class="step-list__item-right">
@@ -390,7 +386,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 									Installer::get()->render_plugin_button(
 										'the-events-calendar',
 										$tec_installed ? 'activate' : 'install',
-										$tec_installed ? __( 'Activate The Events Calendar', 'event-tickets' ) : __( 'Install The Events Calendar', 'event-tickets' )
+										$tec_installed ? esc_html__( 'Activate', 'event-tickets' ) : esc_html__( 'Install', 'event-tickets' )
 									);
 									?>
 								</div>
@@ -454,24 +450,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 * @return void
 	 */
 	public function admin_page_sidebar_content(): void {
-		?>
-			<section class="tec-admin-page__sidebar-section has-icon">
-				<span class="tec-admin-page__icon tec-admin-page__sidebar-icon tec-admin-page__icon--stars" role="presentation"></span>
-				<div>
-					<h3 class="tec-admin-page__sidebar-header"><?php esc_html_e( 'Our AI Chatbot is here to help you', 'event-tickets' ); ?></h3>
-					<p><?php esc_html_e( 'You have questions? The TEC Chatbot has the answers.', 'event-tickets' ); ?></p>
-					<p><a href="<?php echo esc_url( admin_url( 'admin.php?page=tec-tickets-help' ) ); ?>" class="tec-admin-page__link"><?php esc_html_e( 'Talk to TEC Chatbot', 'event-tickets' ); ?></a></p>
-				</div>
-			</section>
-			<section class="tec-admin-page__sidebar-section has-icon">
-				<span class="tec-admin-page__icon tec-admin-page__sidebar-icon tec-admin-page__icon--chat" role="presentation"></span>
-				<div>
-					<h2 class="tec-admin-page__sidebar-header"><?php esc_html_e( 'Get priority live support', 'event-tickets' ); ?></h2>
-					<p><?php esc_html_e( 'You can get live support from The Events Calendar team if you have an active license for one of our products.', 'event-tickets' ); ?></p>
-					<p><span class="tec-admin-page__link--external"><a href="https://theeventscalendar.com/knowledgebase/priority-support-through-the-tec-support-hub" target="_blank" rel="nofollow noopener" class="tec-admin-page__link"><?php esc_html_e( 'Learn how to get an active license', 'event-tickets' ); ?></a></span></p>
-				</div>
-			</section>
-		<?php
+	  // no op.
 	}
 
 	/**
