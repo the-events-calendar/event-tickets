@@ -16,6 +16,7 @@ use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 use TEC\Tickets\Commerce\Meta as Commerce_Meta;
 use TEC\Tickets\Commerce\Ticket as Ticket_Data;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use Tribe__Repository;
 use WP_User_Query;
 use WP_User;
 use stdClass;
@@ -77,6 +78,28 @@ class Order extends Abstract_Order {
 		$this->merchant       = $merchant;
 		$this->commerce_order = $commerce_order;
 		$this->settings       = $settings;
+	}
+
+	/**
+	 * Filter the schema for the repository.
+	 *
+	 * @since TBD
+	 *
+	 * @param array             $schema     The schema.
+	 * @param Tribe__Repository $repository The repository.
+	 *
+	 * @return array
+	 */
+	public function filter_schema( array $schema = [], ?Tribe__Repository $repository = null ) {
+		$schema['square_payment_id'] = function( $payment_ids ) use ( $repository ) {
+			$this->filter_by_payment_id( $payment_ids, $repository );
+		};
+
+		$schema['square_payment_id_not'] = function( $payment_ids ) use ( $repository ) {
+			$this->filter_by_payment_id_not( $payment_ids, $repository );
+		};
+
+		return $schema;
 	}
 
 	/**
@@ -713,19 +736,99 @@ class Order extends Abstract_Order {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $square_order_id The Square order ID.
-	 * @param string $payment_id The payment ID.
+	 * @param WP_Post $order      The order object.
+	 * @param string  $payment_id The payment ID.
 	 *
 	 * @return bool|int
 	 */
-	public function add_payment_id( string $square_order_id, string $payment_id ) {
-		$order = tribe( Commerce_Order::class )->get_from_gateway_order_id( $square_order_id );
+	public function add_payment_id( WP_Post $order, string $payment_id ) {
+		$added = Commerce_Meta::add( $order->ID, Payment::KEY_ORDER_PAYMENT_ID, $payment_id, [], 'post', false );
 
-		if ( ! $order ) {
+		if ( ! $added ) {
 			return false;
 		}
 
-		return Commerce_Meta::add( $order->ID, 'payment_id', $payment_id );
+		Commerce_Meta::set( $order->ID, Payment::KEY_ORDER_PAYMENT_ID_TIME, tec_get_current_milliseconds(), [ $payment_id ], 'post', false );
+
+		return $added;
+	}
+
+	/**
+	 * Get the payment IDs.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $order The order object.
+	 *
+	 * @return string|null
+	 */
+	public function get_payment_ids( WP_Post $order ): ?string {
+		return Commerce_Meta::get( $order->ID, Payment::KEY_ORDER_PAYMENT_ID, [], 'post', false, false );
+	}
+
+	/**
+	 * Get the order by payment ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $payment_id The payment ID.
+	 *
+	 * @return WP_Post|null
+	 */
+	public function get_by_payment_id( string $payment_id ): ?WP_Post {
+		return tec_tc_orders()->by( 'square_payment_id', $payment_id )->first();
+	}
+
+	/**
+	 * Filters order by payment ID.
+	 *
+	 * @since
+	 *
+	 * @param string|string[]   $payment_ids Which payment IDs we are filtering by.
+	 * @param Tribe__Repository $repository  The repository.
+	 *
+	 * @return null
+	 */
+	public function filter_by_payment_id( $payment_ids = null, ?Tribe__Repository $repository = null ) {
+		if ( empty( $payment_ids ) ) {
+			return null;
+		}
+
+		$payment_ids = array_filter( (array) $payment_ids );
+
+		if ( empty( $payment_ids ) ) {
+			return null;
+		}
+
+		$repository->by( 'meta_in', Payment::KEY_ORDER_PAYMENT_ID, $payment_ids );
+
+		return null;
+	}
+
+	/**
+	 * Filters order by payment ID not.
+	 *
+	 * @since
+	 *
+	 * @param string|string[]   $payment_ids Which payment IDs we are filtering by.
+	 * @param Tribe__Repository $repository  The repository.
+	 *
+	 * @return null
+	 */
+	public function filter_by_payment_id_not( $payment_ids = null, ?Tribe__Repository $repository = null ) {
+		if ( empty( $payment_ids ) ) {
+			return null;
+		}
+
+		$payment_ids = array_filter( (array) $payment_ids );
+
+		if ( empty( $payment_ids ) ) {
+			return null;
+		}
+
+		$repository->by( 'meta_not_in', Payment::KEY_ORDER_PAYMENT_ID, $payment_ids );
+
+		return null;
 	}
 
 	/**

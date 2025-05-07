@@ -23,6 +23,28 @@ use WP_Post;
 class Payment {
 
 	/**
+	 * The key used to identify the Square payment ID.
+	 *
+	 * Need to be passed by a sprintf, with mode being the first variable.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const KEY_ORDER_PAYMENT_ID = '_tec_tc_order_gateway:square_payment_id';
+
+	/**
+	 * The key used to identify the time of the Square payment ID
+	 *
+	 * Need to be passed by a sprintf, with mode being the first variable and the payment ID being the second variable.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const KEY_ORDER_PAYMENT_ID_TIME = '_tec_tc_order_gateway:square_payment_id_time:%s';
+
+	/**
 	 * The key used to identify Square payments created in Tickets Commerce.
 	 *
 	 * @since TBD

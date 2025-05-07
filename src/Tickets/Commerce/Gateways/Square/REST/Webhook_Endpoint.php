@@ -13,7 +13,6 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Square\Gateway;
 use TEC\Tickets\Commerce\Gateways\Square\Webhooks;
 use TEC\Tickets\Commerce\Gateways\Square\Order;
-use TEC\Tickets\Commerce\Gateways\Square\Status;
 use WP_REST_Request;
 use WP_REST_Server;
 use WP_REST_Response;
@@ -365,20 +364,21 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return;
 		}
 
-		$order_id  = $refund_data['order_id'];
-		$refund_id = $refund_data['id'] ?? '';
-		$status    = $refund_data['status'] ?? '';
+		$payment_id = $refund_data['payment_id'] ?? '';
+		$order_id   = $refund_data['order_id'];
+		$refund_id  = $refund_data['id'] ?? '';
+		$status     = $refund_data['status'] ?? '';
+
+		if ( empty( $payment_id ) ) {
+			return;
+		}
 
 		// Skip if refund is not completed.
 		if ( 'COMPLETED' !== $status ) {
 			return;
 		}
 
-		// Get the order controller.
-		$order_controller = tribe( Order::class );
-
-		// Find the order associated with this payment.
-		$order = tribe( Commerce_Order::class )->get_from_gateway_order_id( $order_id );
+		$order = tribe( Commerce_Order::class )->get_by_payment_id( $payment_id );
 
 		if ( empty( $order ) ) {
 			do_action(
@@ -388,12 +388,14 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 				[
 					'source'     => 'tickets-commerce-square',
 					'order_id'   => $order_id,
+					'payment_id' => $payment_id,
 					'refund_id'  => $refund_id,
 					'event_data' => $event_data,
 				]
 			);
 			return;
 		}
+
 		// Update the order status.
 		tribe( Commerce_Order::class )->modify_status( $order->ID, Refunded::SLUG, [ 'gateway_payload' => $event_data ] );
 	}

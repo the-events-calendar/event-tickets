@@ -147,6 +147,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-square-failed-creating-payment', $messages['failed-creating-payment'] );
 		}
 
+		tribe( Square_Order::class )->add_payment_id( $order, $payment['id'] );
+
 		// Flag the order as on checkout screen hold.
 		$orders->set_on_checkout_screen_hold( $order->ID );
 
