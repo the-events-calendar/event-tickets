@@ -378,7 +378,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return;
 		}
 
-		$order = tribe( Commerce_Order::class )->get_by_payment_id( $payment_id );
+		$order = tribe( Order::class )->get_by_payment_id( $payment_id );
 
 		if ( empty( $order ) ) {
 			do_action(
@@ -394,6 +394,28 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 				]
 			);
 			return;
+		}
+
+		if ( ! $order->original_gateway_order_id ?? 0 ) {
+			/**
+			 * Store the original and the after the refund gateway order id.
+			 *
+			 * The gateway_order_id should point to the refunded one which is the order's latest state.
+			 */
+			tec_tc_orders()
+				->by_args(
+					[
+						'id'     => $order->ID,
+						'status' => [ 'any' ],
+					]
+				)
+				->set_args(
+					[
+						'gateway_order_id'          => $order_id,
+						'original_gateway_order_id' => $order->gateway_order_id,
+					]
+				)
+				->save();
 		}
 
 		// Update the order status.

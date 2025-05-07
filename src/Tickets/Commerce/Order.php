@@ -97,6 +97,15 @@ class Order extends Abstract_Order {
 	public static $gateway_order_id_meta_key = '_tec_tc_order_gateway_order_id';
 
 	/**
+	 * Which meta holds the original gateway order id.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const ORIGINAL_GATEWAY_ORDER_ID_META_KEY = '_tec_tc_order_original_gateway_order_id';
+
+	/**
 	 * Normally when dealing with the gateways we have a payload from the original creation of the Order on their side
 	 * of the API, we should store that whole Payload with this meta key so that this data can be used in the future.
 	 *
@@ -669,7 +678,6 @@ class Order extends Abstract_Order {
 			'purchaser_first_name' => $purchaser['purchaser_first_name'],
 			'purchaser_last_name'  => $purchaser['purchaser_last_name'],
 			'purchaser_email'      => $purchaser['purchaser_email'],
-			'gateway_order_id'     => $this->generate_order_key( $hash ?? '', $purchaser['purchaser_email'] ),
 		];
 
 		if ( $hash ) {

@@ -84,6 +84,7 @@ class Order_Repository extends Tribe__Repository {
 
 		$this->add_simple_meta_schema_entry( 'gateway', Order::$gateway_meta_key, 'meta_equals' );
 		$this->add_simple_meta_schema_entry( 'gateway_order_id', Order::$gateway_order_id_meta_key, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'original_gateway_order_id', Order::ORIGINAL_GATEWAY_ORDER_ID_META_KEY, 'meta_equals' );
 		$this->add_simple_meta_schema_entry( 'currency', Order::$currency_meta_key, 'meta_equals' );
 		$this->add_simple_meta_schema_entry( 'purchaser_user_id', Order::$purchaser_user_id_meta_key, 'meta_equals' );
 		$this->add_simple_meta_schema_entry( 'purchaser_full_name', Order::$purchaser_full_name_meta_key, 'meta_equals' );

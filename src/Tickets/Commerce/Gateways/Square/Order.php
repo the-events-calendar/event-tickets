@@ -769,11 +769,17 @@ class Order extends Abstract_Order {
 	 * @since TBD
 	 *
 	 * @param string $payment_id The payment ID.
+	 * @param array  $status     The status of the order.
 	 *
 	 * @return WP_Post|null
 	 */
-	public function get_by_payment_id( string $payment_id ): ?WP_Post {
-		return tec_tc_orders()->by( 'square_payment_id', $payment_id )->first();
+	public function get_by_payment_id( string $payment_id, array $status = [ 'any' ] ): ?WP_Post {
+		return tec_tc_orders()->by_args(
+			[
+				'square_payment_id' => $payment_id,
+				'status'            => $status,
+			]
+		)->first();
 	}
 
 	/**
