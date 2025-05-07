@@ -626,7 +626,7 @@ describe( 'RSVP block sagas', () => {
 				put( actions.setRSVPTempStartDate( '' ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( actions.setRSVPTempStartDateInput( action.payload.dayPickerInput.state.value ) ),
+				put( actions.setRSVPTempStartDateInput( action.payload.dayPickerInput ) ),
 			);
 			expect( gen.next().value ).toEqual(
 				put( actions.setRSVPTempStartDateMoment( undefined ) ),
@@ -648,7 +648,7 @@ describe( 'RSVP block sagas', () => {
 				put( actions.setRSVPTempStartDate( action.payload.date ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( actions.setRSVPTempStartDateInput( action.payload.dayPickerInput.state.value ) ),
+				put( actions.setRSVPTempStartDateInput( action.payload.dayPickerInput ) ),
 			);
 			expect( gen.next().value ).toEqual(
 				put( actions.setRSVPTempStartDateMoment( action.payload.date ) ),
@@ -774,7 +774,7 @@ describe( 'RSVP block sagas', () => {
 				put( actions.setRSVPTempEndDate( '' ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( actions.setRSVPTempEndDateInput( action.payload.dayPickerInput.state.value ) ),
+				put( actions.setRSVPTempEndDateInput( action.payload.dayPickerInput ) ),
 			);
 			expect( gen.next().value ).toEqual(
 				put( actions.setRSVPTempEndDateMoment( undefined ) ),
@@ -796,7 +796,7 @@ describe( 'RSVP block sagas', () => {
 				put( actions.setRSVPTempEndDate( action.payload.date ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( actions.setRSVPTempEndDateInput( action.payload.dayPickerInput.state.value ) ),
+				put( actions.setRSVPTempEndDateInput( action.payload.dayPickerInput ) ),
 			);
 			expect( gen.next().value ).toEqual(
 				put( actions.setRSVPTempEndDateMoment( action.payload.date ) ),

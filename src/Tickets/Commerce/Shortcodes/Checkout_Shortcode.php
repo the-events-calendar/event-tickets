@@ -33,16 +33,36 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	public static $shortcode_id = 'checkout';
 
 	/**
-	 * {@inheritDoc}
+	 * Method used to save the template vars for this instance of shortcode.
+	 *
+	 * @since 5.1.9
+	 * @since 5.21.0 Updated the $items variable to retrieve all item types from the cart.
+	 *
+	 * @return void
 	 */
 	public function setup_template_vars() {
 		$cart          = tribe( Cart::class );
-		$items         = $cart->get_items_in_cart( true );
 		$cart_subtotal = Value::create( $cart->get_cart_subtotal() ?? 0 );
 		$cart_total    = Value::create( $cart->get_cart_total() ?? 0 );
+		$items         = $cart->get_repository()->get_calculated_items( 'all' );
 		$sections      = array_unique( array_filter( wp_list_pluck( $items, 'event_id' ) ) );
+		$gateways      = tribe( Manager::class )->get_gateways();
 
-		$gateways = tribe( Manager::class )->get_gateways();
+		// Pass each item through a filter to determine if it should be skipped.
+		$items = array_filter(
+			$items,
+			function ( $item ) {
+				/**
+				 * Filters whether the current item should be skipped in the checkout items.
+				 *
+				 * @since 5.21.0
+				 *
+				 * @param bool  $should_skip Whether the item should be skipped or not.
+				 * @param array $item        The item to be checked.
+				 */
+				return ! (bool) apply_filters( 'tec_tickets_checkout_should_skip_item', false, $item );
+			}
+		);
 
 		$args = [
 			'provider_id'        => Module::class,
@@ -72,7 +92,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	/**
 	 * Gets a list of billing fields.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @return array|array[]
 	 */
@@ -203,7 +223,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		 * Filters the purchaser info title for the checkout page.
 		 * This title is used to describe the section where the purchaser info is displayed.
 		 *
-		 * @since TBD
+		 * @since 5.19.3
 		 *
 		 * @param string $title     The title of the purchaser info section.
 		 * @param static $shortcode The instance of the shortcode.
@@ -215,7 +235,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	/**
 	 * Filters whether the billing fields info should be included in the checkout page.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @param bool $value Whether the billing fields info should be included in the checkout page.
 	 *
@@ -225,7 +245,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		/**
 		 * Filter whether the billing fields info should be included in the checkout page.
 		 *
-		 * @since TBD
+		 * @since 5.19.3
 		 *
 		 * @param bool   $value     Whether the purchaser info should be included in the checkout page.
 		 * @param static $shortcode The instance of the shortcode.
@@ -236,7 +256,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	/**
 	 * Whether the billing info should be included in the checkout page.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @return bool
 	 */
@@ -251,7 +271,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	/**
 	 * Filters the purchaser info should be included in the checkout page.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @param bool $value Whether the purchaser info should be included in the checkout page.
 	 *
@@ -261,7 +281,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		/**
 		 * Filter whether the purchaser info should be included in the checkout page.
 		 *
-		 * @since TBD
+		 * @since 5.19.3
 		 *
 		 * @param bool   $value    Whether the purchaser info should be included in the checkout page.
 		 * @param static $instance The instance of the shortcode.
@@ -272,7 +292,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	/**
 	 * Whether the purchaser info should be included in the checkout page.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @return bool
 	 */

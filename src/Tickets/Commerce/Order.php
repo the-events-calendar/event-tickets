@@ -19,6 +19,7 @@ use TEC\Tickets\Commerce\Status\Reversed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Date_Utils as Dates;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use WP_Post;
 
 /**
@@ -42,7 +43,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Meta key for the checkout holding status for a particular order and it's webhooks.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @var string
 	 */
@@ -152,6 +153,42 @@ class Order extends Abstract_Order {
 	 * @var string
 	 */
 	public static $total_value_meta_key = '_tec_tc_order_total_value';
+
+	/**
+	 * Which meta holds the amount unaccounted for in the order.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const META_ORDER_TOTAL_AMOUNT_UNACCOUNTED = '_tec_tc_order_total_amount_unaccounted';
+
+	/**
+	 * Which meta holds the total tax amount in the order.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const META_ORDER_TOTAL_TAX = '_tec_tc_order_total_tax';
+
+	/**
+	 * Which meta holds the total tip amount in the order.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const META_ORDER_TOTAL_TIP = '_tec_tc_order_total_tip';
+
+	/**
+	 * Which meta holds the order created by.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const META_ORDER_CREATED_BY = '_tec_tc_order_created_by';
 
 	/**
 	 * Which meta holds the cart items used to setup this order.
@@ -524,32 +561,45 @@ class Order extends Abstract_Order {
 	public function create_from_cart( Gateway_Interface $gateway, $purchaser = null ) {
 		$cart = tribe( Cart::class );
 
-		$items = $cart->get_items_in_cart();
+		// Prepare the items for the order.
 		$items = array_filter(
 			array_map(
 				static function ( $item ) {
-					/** @var Value $ticket_value */
-					$ticket_value         = tribe( Ticket::class )->get_price_value( $item['ticket_id'] );
-					$ticket_regular_value = tribe( Ticket::class )->get_price_value( $item['ticket_id'], true );
+					/** @var Ticket_Object $ticket */
+					$ticket = $item['obj'] ?? tribe( Ticket::class )->get_ticket( $item['ticket_id'] );
 
-					if ( null === $ticket_value ) {
+					// Ensure we have a valid ticket object to work with.
+					if ( null === $ticket ) {
 						return null;
 					}
 
-					$item['price']     = $ticket_value->get_decimal();
-					$item['sub_total'] = $ticket_value->sub_total( $item['quantity'] )->get_decimal();
-					$item['event_id']  = tribe( Ticket::class )->get_related_event_id( $item['ticket_id'] );
+					// Ensure we have the properties we need on the ticket object.
+					if ( ! isset( $ticket->price, $ticket->regular_price ) ) {
+						return null;
+					}
 
-					$item['regular_price']     = $ticket_regular_value->get_decimal();
-					$item['regular_sub_total'] = $ticket_regular_value->sub_total( $item['quantity'] )->get_decimal();
+					$ticket_value         = Value::create( $ticket->price );
+					$ticket_regular_value = Value::create( $ticket->regular_price );
+					$subtotal_value       = $item['sub_total'] ?? $ticket_value->sub_total( $item['quantity'] );
 
-					return $item;
+					return [
+						'event_id'          => $item['event_id'] ?? tribe( Ticket::class )->get_related_event_id( $item['ticket_id'] ),
+						'extra'             => $item['extra'] ?? [],
+						'price'             => $ticket_value->get_decimal(),
+						'quantity'          => $item['quantity'],
+						'regular_price'     => $ticket_regular_value->get_decimal(),
+						'regular_sub_total' => $ticket_regular_value->sub_total( $item['quantity'] )->get_decimal(),
+						'sub_total'         => $subtotal_value->get_decimal(),
+						'ticket_id'         => $item['ticket_id'],
+						'type'              => $item['type'] ?? 'ticket',
+					];
 				},
-				$items
+				$cart->get_items_in_cart( true )
 			)
 		);
 
-		$subtotal = $this->get_value_total( $items );
+		// Get the subtotal calculation from the cart.
+		$cart_subtotal = Value::create( $cart->get_cart_subtotal() );
 
 		$original_cart_items = $items;
 
@@ -575,20 +625,41 @@ class Order extends Abstract_Order {
 		$items = apply_filters(
 			'tec_tickets_commerce_create_order_from_cart_items',
 			$items,
-			$subtotal,
+			$cart_subtotal,
 			$gateway,
 			$purchaser
 		);
 
-		$total = $this->get_value_total( array_filter( $items ) );
+		// Get the total calculation from the cart.
+		$cart_total = Value::create( $cart->get_cart_total() );
+
+		/**
+		 * Filter the cart total before creating an order.
+		 *
+		 * @since 5.21.0
+		 *
+		 * @param Value             $cart_total    The cart total.
+		 * @param array             $items         The items in the cart.
+		 * @param Value             $cart_subtotal The calculated subtotal of the cart items.
+		 * @param Gateway_Interface $gateway       The payment gateway used for the order.
+		 * @param ?array            $purchaser     Purchaser details.
+		 */
+		$cart_total = apply_filters(
+			'tec_tickets_commerce_create_order_from_cart_total',
+			$cart_total,
+			$items,
+			$cart_subtotal,
+			$gateway,
+			$purchaser
+		);
 
 		$hash              = $cart->get_cart_hash();
 		$existing_order_id = null;
 
 		$order_args = [
 			'title'                => $this->generate_order_title( $original_cart_items, $hash ),
-			'total_value'          => $total->get_decimal(),
-			'subtotal'             => $subtotal->get_decimal(),
+			'total_value'          => $cart_total->get_decimal(),
+			'subtotal'             => $cart_subtotal->get_decimal(),
 			'items'                => $items,
 			'gateway'              => $gateway::get_key(),
 			'hash'                 => $hash,
@@ -1175,7 +1246,7 @@ class Order extends Abstract_Order {
 	 * Get whether the order has its checkout completed.
 	 *
 	 * @since 5.18.1
-	 * @deprecated TBD In favor of using checkout on_screen hold timeouts.
+	 * @deprecated 5.19.3 In favor of using checkout on_screen hold timeouts.
 	 *
 	 * @param int $order_id The order ID.
 	 *
@@ -1214,7 +1285,7 @@ class Order extends Abstract_Order {
 	 * Mark an order's checkout as completed.
 	 *
 	 * @since 5.18.1
-	 * @deprecated TBD In favor of using checkout on_screen hold timeouts.
+	 * @deprecated 5.19.3 In favor of using checkout on_screen hold timeouts.
 	 *
 	 * @param int $order_id The order ID.
 	 *
@@ -1235,6 +1306,8 @@ class Order extends Abstract_Order {
 		 * @param int $order_id The order ID.
 		 */
 		do_action( 'tec_tickets_commerce_order_checkout_completed', $order_id );
+
+		as_unschedule_action( 'tec_tickets_commerce_async_webhook_process', [ 'order_id' => $order_id ], 'tec-tickets-commerce-stripe-webhooks' );
 
 		return (bool) as_enqueue_async_action(
 			'tec_tickets_commerce_async_webhook_process',
@@ -1265,7 +1338,7 @@ class Order extends Abstract_Order {
 		 * Filters whether the order is on checkout screen hold.
 		 * This is used to determine if the order is still on the checkout screen.
 		 *
-		 * @since TBD
+		 * @since 5.19.3
 		 *
 		 * @param bool $is_on_screen_hold Whether the order is on the checkout screen hold.
 		 * @param int  $order_id         The order ID.
@@ -1276,7 +1349,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the default on checkout screen hold timeout.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @return int
 	 */
@@ -1284,7 +1357,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Filters the default on checkout screen hold timeout.
 		 *
-		 * @since TBD
+		 * @since 5.19.3
 		 *
 		 * @param int $timeout The default timeout.
 		 */
@@ -1317,6 +1390,15 @@ class Order extends Abstract_Order {
 		 */
 		do_action( 'tec_tickets_commerce_order_on_checkout_screen_hold_set', $order_id, $on_screen_hold );
 
+		as_unschedule_action(
+			'tec_tickets_commerce_async_webhook_process',
+			[
+				'order_id' => $order_id,
+				'try'      => 0,
+			],
+			'tec-tickets-commerce-stripe-webhooks'
+		);
+
 		return (bool) as_schedule_single_action(
 			tec_from_milliseconds_to_timestamp( $on_screen_hold ) + MINUTE_IN_SECONDS, // We schedule the action to run after the timeout.
 			'tec_tickets_commerce_async_webhook_process',
@@ -1330,7 +1412,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Delete an order on checkout screen hold.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @param int $order_id Which order we are setting.
 	 *
@@ -1346,11 +1428,20 @@ class Order extends Abstract_Order {
 		/**
 		 * Fires after an order has its checkout screen hold removed.
 		 *
-		 * @since TBD
+		 * @since 5.19.3
 		 *
 		 * @param int $order_id The order ID.
 		 */
 		do_action( 'tec_tickets_commerce_order_on_checkout_screen_hold_remove', $order_id );
+
+		as_unschedule_action(
+			'tec_tickets_commerce_async_webhook_process',
+			[
+				'order_id' => $order_id,
+				'try'      => 0,
+			],
+			'tec-tickets-commerce-stripe-webhooks'
+		);
 
 		return (bool) as_schedule_single_action(
 			time(),
@@ -1379,5 +1470,66 @@ class Order extends Abstract_Order {
 		$hash  = empty( $hash ) ? wp_generate_password() : $hash;
 
 		return substr( md5( $hash . $email . $time ), 0, 12 );
+	}
+
+	/**
+	 * Get the order items.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $order The order post object.
+	 *
+	 * @return array The order items.
+	 */
+	public function get_order_items( WP_Post $order ): array {
+		return array_filter( array_merge( $order->items ?? [], $order->discounts ?? [], $order->service_charges ?? [] ) );
+	}
+
+	/**
+	 * Get the order total value.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $order The order post object.
+	 *
+	 * @return Value The order total value.
+	 */
+	public function get_orders_total_value( WP_Post $order ): Value {
+		return $this->get_value_total( $this->get_order_items( $order ) );
+	}
+
+	/**
+	 * Get the order created by.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id The order ID.
+	 *
+	 * @return string The order created by.
+	 */
+	public static function get_created_by( int $order_id ): string {
+		$created_by = trim( (string) get_post_meta( $order_id, self::META_ORDER_CREATED_BY, true ) );
+
+		if ( empty( $created_by ) ) {
+			return '';
+		}
+
+		switch ( $created_by ) {
+			case 'square-pos':
+				$translated = esc_html__( 'Square POS', 'event-tickets' );
+				break;
+			default:
+				$translated = $created_by;
+				break;
+		}
+
+		/**
+		 * Filters the order created by.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $created_by The order created by.
+		 */
+		return apply_filters( 'tec_tickets_commerce_order_created_by', $translated, $order_id );
 	}
 }

@@ -438,9 +438,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				&& is_null( $this->event_timezone )
 			) {
 				try {
-					$this->event_timezone = new DateTimeZone( Tribe__Events__Timezones::get_event_timezone_string( $this->get_event_id() ) );
+					$timezone_string = Tribe__Events__Timezones::get_event_timezone_string( $this->get_event_id() );
+
+					$this->event_timezone = new DateTimeZone( $timezone_string );
 				} catch ( Exception $exception ) {
-					$this->event_timezone = null;
+					$this->event_timezone = 'UTC+0' === $timezone_string ? new DateTimeZone( 'UTC' ) : null;
 				}
 			}
 

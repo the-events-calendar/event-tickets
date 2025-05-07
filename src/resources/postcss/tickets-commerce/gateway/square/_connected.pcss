@@ -1,0 +1,92 @@
+/**
+ * Event Tickets - Square Gateway Connected UI Styles
+ *
+ * @since TBD
+ */
+
+.tec-tickets__admin-settings-tickets-commerce-gateway--connected {
+	/* General connected container styles */
+	.tec-tickets__admin-settings-tickets-commerce-gateway-connected {
+		background-color: #fff;
+		border: 1px solid #dcdcde;
+		border-radius: 4px;
+		padding: 20px;
+		margin-bottom: 20px;
+	}
+
+	/* Row styling for two-column layout */
+	.tec-tickets__admin-settings-tickets-commerce-gateway-connected-row {
+		display: grid;
+		grid-template-columns: 120px 1fr;
+		gap: 15px;
+		align-items: baseline;
+		margin-bottom: 15px;
+		padding-bottom: 15px;
+		border-bottom: 1px solid #f0f0f1;
+
+		&:last-child {
+			border-bottom: none;
+			margin-bottom: 0;
+			padding-bottom: 0;
+		}
+
+		/* Style for the disconnect button row */
+		&:has(.tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-square-button) {
+			grid-template-columns: 1fr;
+			text-align: right;
+		}
+	}
+
+	/* Label styling */
+	.tec-tickets__admin-settings-tickets-commerce-gateway-connected-label {
+		color: #646970;
+		font-weight: 600;
+		font-size: 14px;
+	}
+
+	/* Value styling */
+	.tec-tickets__admin-settings-tickets-commerce-gateway-connected-value {
+		color: #1d2327;
+		font-size: 14px;
+
+		/* Status indicator */
+		.dashicons-yes {
+			color: #00a32a;
+			margin-right: 5px;
+			vertical-align: text-bottom;
+		}
+
+		/* Sub-text styling */
+		.tec-tickets__admin-settings-tickets-commerce-gateway-connected-subtext {
+			display: block;
+			color: #646970;
+			font-size: 12px;
+			margin-top: 3px;
+		}
+	}
+
+	/* Disconnect button styling */
+	.tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-square-button {
+		color: #d63638;
+		margin-top: 10px;
+
+		&:hover {
+			color: #d63638;
+			text-decoration: underline;
+		}
+	}
+
+	/* Responsive adjustments */
+	@media screen and (max-width: 782px) {
+		.tec-tickets__admin-settings-tickets-commerce-gateway-connected-row {
+			grid-template-columns: 1fr;
+			gap: 5px;
+		}
+	}
+}
+
+/* Error notice styling */
+.tec-tickets__admin-settings-tickets-commerce-gateway-connection-error {
+	border-left-color: #d63638;
+	margin: 10px 0 20px;
+}

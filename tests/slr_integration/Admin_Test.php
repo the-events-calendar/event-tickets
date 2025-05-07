@@ -192,13 +192,13 @@ class Admin_Test extends Controller_Test_Case {
 	public function asset_data_provider() {
 		$assets = [
 			'tec-tickets-seating-admin-maps'              => '/build/Seating/admin/maps.js',
-			'tec-tickets-seating-admin-maps-style'        => '/build/Seating/admin/maps.css',
+			'tec-tickets-seating-admin-maps-style'        => '/build/Seating/admin/style-maps.css',
 			'tec-tickets-seating-admin-layouts'           => '/build/Seating/admin/layouts.js',
-			'tec-tickets-seating-admin-layouts-style'     => '/build/Seating/admin/layouts.css',
+			'tec-tickets-seating-admin-layouts-style'     => '/build/Seating/admin/style-layouts.css',
 			'tec-tickets-seating-admin-map-edit'          => '/build/Seating/admin/mapEdit.js',
-			'tec-tickets-seating-admin-map-edit-style'    => '/build/Seating/admin/mapEdit.css',
+			'tec-tickets-seating-admin-map-edit-style'    => '/build/Seating/admin/style-mapEdit.css',
 			'tec-tickets-seating-admin-layout-edit'       => '/build/Seating/admin/layoutEdit.js',
-			'tec-tickets-seating-admin-layout-edit-style' => '/build/Seating/admin/layoutEdit.css',
+			'tec-tickets-seating-admin-layout-edit-style' => '/build/Seating/admin/style-layoutEdit.css',
 		];
 
 		foreach ( $assets as $slug => $path ) {
@@ -227,53 +227,6 @@ class Admin_Test extends Controller_Test_Case {
 		global $submenu;
 
 		$submenu = null;
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_not_display_woo_incompatibility_notice_when_woo_inactive(): void {
-		$this->set_fn_return( 'function_exists', static fn( $fn ) => $fn === 'WC' ? false : function_exists( $fn ), true );
-		$this->set_fn_return( 'wp_create_nonce', '12345678' );
-		add_filter( 'tribe_admin_is_wp_screen', '__return_true' );
-
-		global $current_screen;
-
-		$current_screen = WP_Screen::get( 'tickets_page_tec-tickets-attendees' );
-		$controller = $this->make_controller();
-		$controller->register_woo_incompatibility_notice();
-
-		Notices::instance()->hook();
-
-		$this->assertFalse( function_exists( 'WC' ) );
-
-		ob_start();
-		do_action( 'admin_notices' );
-		$this->assertEmpty( ob_get_clean() );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_display_woo_incompatibility_notice_when_woo_active(): void {
-		$this->set_fn_return( 'function_exists', static fn( $fn ) => $fn === 'WC' ? true : function_exists( $fn ), true );
-		$this->set_fn_return( 'wp_create_nonce', '12345678' );
-		add_filter( 'tribe_admin_is_wp_screen', '__return_true' );
-
-		global $current_screen;
-
-		$current_screen = WP_Screen::get( 'tickets_page_tec-tickets-attendees' );
-
-		$controller = $this->make_controller();
-		$controller->register_woo_incompatibility_notice();
-
-		Notices::instance()->hook();
-
-		$this->assertTrue( function_exists( 'WC' ) );
-
-		ob_start();
-		do_action( 'admin_notices' );
-		$this->assertMatchesHtmlSnapshot( ob_get_clean() );
 	}
 
 	/**

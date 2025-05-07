@@ -2,9 +2,13 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.19.2
+<<<<<<< HEAD
+Stable tag: 5.24.0
+=======
+Stable tag: 5.23.0
+>>>>>>> c041e50eace5042dfe255b6f5a26928c7d461297
 Requires at least: 6.5
-Tested up to: 6.7.1
+Tested up to: 6.7.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -198,6 +202,72 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+<<<<<<< HEAD
+= [5.22.0] 2025-04-15 =
+
+* Feature - Move QR-Related code from ET to Common [TEC-5426]
+* Feature - Move QR code library to Common [TEC-5403]
+* Tweak - Removed filters: `tec_tickets_qr_code_can_use`
+* Language - 0 new strings added, 5 updated, 0 fuzzied, and 4 obsoleted.
+=======
+= [5.21.1.1] 2025-04-28 =
+
+* Version - Event Tickets 5.21.1.1 is only compatible with The Events Calendar 6.11.2.1 or higher.
+* Security - Added more safety checks to telemetry opt-ins/opt-outs. [TCMN-186]
+* Language - 0 new strings added, 9 updated, 0 fuzzied, and 0 obsoleted.
+>>>>>>> e514b420f4337271ddd5a9d605520f506d6e1b89
+
+= [5.21.1] 2025-04-07 =
+
+* Fix - Ensures when TicketsCommerce is disabled, we don't identify pages as Checkout or Cart page for TicketsCommerce. [ET-2349]
+* Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted.
+
+= [5.21.0] 2025-03-25 =
+
+* Feature - Add the ability to create Coupons that can be applied to ticket checkouts sold through TicketsCommerce. [ET-2189]
+* Tweak - Added filters: `tec_tickets_commerce_cart_cookie_expiration`, `tec_tickets_commerce_cart_repo_prepare_data`, `tec_tickets_commerce_cart_add_full_item_params`, `tec_tickets_commerce_paypal_order_unit`, `tec_tickets_commerce_order_modifiers_successful_save_message`, `tec_tickets_checkout_should_skip_item`, `tec_tickets_commerce_cart_transient_expiration`
+* Tweak - Removed filters: `tec_tickets_commerce_cart_expiration`, `tec_tickets_commerce_order_modifiers_coupons_enabled`
+* Tweak - Added actions: `tec_tickets_commerce_cart_process`
+* Fix - Fix the input field for Fees (and Coupons) when the type is Percent and the thousands/decimal separators are set to "." and ","
+* Language - 21 new strings added, 106 updated, 5 fuzzied, and 9 obsoleted.
+
+= [5.20.1] 2025-03-13 =
+
+* Feature - Added Ticket editor support for creating seating ticket with WooCommerce. [SL-209]
+* Security - Ensure proper URL encoding for Admin URLS
+* Tweak - Added filters: `tec_tickets_seating_frontend_ticket_block_data`
+* Tweak - Changed views: `seating/seat-selection-timer`
+* Language - 0 new strings added, 11 updated, 0 fuzzied, and 1 obsoleted.
+
+= [5.20.0] 2025-03-06 =
+
+* Feature - Adds Ticket actions for ticket goes on sale, ticket sale ended and ticket stock changed. [ETP-975]
+* Feature - Introduced Waitlist entry points in Ticket and RSVP templates. [ETP-944]
+* Tweak - Added actions: `tec_tickets_commerce_decrease_ticket_stock`, `tec_tickets_commerce_increase_ticket_stock`, `tec_tickets_ticket_dates_updated`, `tec_tickets_ticket_stock_added`, `tec_tickets_ticket_stock_changed`, `tec_tickets_ticket_{$prefix}_date_trigger`, `tec_tickets_ticket_upserted`
+* Tweak - Added filters: `tec_tickets_rsvp_ids_to_sync`
+* Tweak - Adding filters to Tickets and RSVP block for the ability to render components on top of those blocks. [ETP-954]
+* Tweak - Changed views: `emails/confirmation`, `emails/spot-available`, `emails/template-parts/body/unsubscribe`, `tickets/my-tickets/user-details`, `v2/rsvp/content`, `v2/tickets`
+* Tweak - Enrich ticket management JS hooks.
+* Tweak - Firing a hook `tec.tickets.seating.setUsingAssignedSeating` whenever the `isUsingAssignedSeating` property is set. [ETP-973]
+* Tweak - Init TicketsCommerce Module as soon as possible. [ETP-972]
+* Tweak - Introduced hooks that fire during RSVP creation/update/deletion while in the block editor.
+* Tweak - Introduce Waitlist email templates. [ETP-957]
+* Tweak - Moved abstract class for custom tables into TCMN.
+* Tweak - Move method `provide_events_results_to_ajax` one level higher so that it loads regardless of Tickets Commerce. [ETP-976]
+* Fix - Ensure that Capacity and Stock handling now are handled in one single Action by Tickets Commerce and it respects Global Capacity.
+* Fix - Restore Ticket's API capability checks to take place in controller and not in internal API. [ET-2313]
+* Language - 2 new strings added, 55 updated, 0 fuzzied, and 1 obsoleted.
+
+= [5.19.3] 2025-03-04 =
+
+* Feature - Add In-App Notifications for Event Tickets [ET-2294]
+* Tweak - Added actions: `tec_ian_icon`
+* Tweak - Changed views: `tickets/my-tickets/user-details`, `tickets/orders`
+* Fix - Replace form element wrapping the Checkout with section to avoid invalid HTML of form into form resulting to broken checkout with PayPal. [ET-2327]
+* Fix - Corrected template override path for My Tickets page. [ET-2296]
+* Fix - Ensure the Attendee Model for Tickets Commerce doesn't throw fatal errors when Order ID is invalid.
+* Language - 14 new strings added, 121 updated, 0 fuzzied, and 1 obsoleted.
 
 = [5.19.2] 2025-02-27 =
 

@@ -5,6 +5,7 @@
  */
 
 body.wp-admin.post-type-tec_tc_order {
+
 	.tec-tickets-commerce-single-order--items button,
 	.tec-tickets-commerce-single-order--items a {
 		display: none;
@@ -23,12 +24,14 @@ body.wp-admin.post-type-tec_tc_order {
 	}
 
 	@media screen and (--viewport-wpadmin) {
+
 		.tribe-mobile-hidden {
 			display: inline-block;
 		}
 	}
 
 	@media screen and (max-width: 1100px) {
+
 		.tribe-desktop-only {
 			display: none;
 		}
@@ -50,6 +53,7 @@ body.wp-admin.post-type-tec_tc_order {
 	}
 
 	#tribe-tickets-order-details {
+
 		.postbox-header {
 			display: none;
 		}
@@ -65,6 +69,7 @@ body.wp-admin.post-type-tec_tc_order {
 	}
 
 	#tribe-tickets-order-items {
+
 		.inside {
 			margin-top: 0;
 			padding: 0;
@@ -90,7 +95,8 @@ body.wp-admin.post-type-tec_tc_order {
 		width: 1.62rem;
 
 		.tribe-tickets-commerce-order-extend-indicator {
-			&:before {
+
+			&::before {
 				color: #3c434a;
 				content: "\f347";
 				display: inline-block;
@@ -110,6 +116,7 @@ body.wp-admin.post-type-tec_tc_order {
 }
 
 .tec-tickets-commerce-single-order {
+
 	&--details {
 		display: flex;
 		flex-flow: row wrap;
@@ -173,6 +180,7 @@ body.wp-admin.post-type-tec_tc_order {
 			border-right: none !important;
 
 			tfoot {
+
 				td {
 					font-size: var(--tec-font-size-3);
 					line-height: var(--tec-line-height-3);
@@ -185,6 +193,7 @@ body.wp-admin.post-type-tec_tc_order {
 			}
 
 			&--row {
+
 				&--gray-bg {
 					background: #f6f7f7;
 				}
@@ -195,6 +204,10 @@ body.wp-admin.post-type-tec_tc_order {
 					font-size: var(--tec-font-size-2);
 					line-height: var(--tec-line-height-2);
 					padding: var(--tec-spacer-5);
+				}
+
+				td&--price-column {
+					padding-left: 0;
 				}
 
 				&--info-column {
@@ -226,7 +239,7 @@ body.wp-admin.post-type-tec_tc_order {
 						border-bottom: none;
 					}
 
-					.tribe-tickets-commerce-order-extend-indicator:before {
+					.tribe-tickets-commerce-order-extend-indicator::before {
 						transform: rotate(180deg);
 					}
 				}

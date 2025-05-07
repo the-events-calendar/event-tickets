@@ -18,7 +18,7 @@ class Module extends \Tribe__Tickets__Tickets {
 
 	public function __construct() {
 		// This needs to happen before parent construct.
-		$this->plugin_name = __( 'Tickets Commerce', 'event-tickets' );
+		$this->plugin_name = 'Tickets Commerce'; // Intentionally not translated.
 
 		parent::__construct();
 
@@ -222,6 +222,20 @@ class Module extends \Tribe__Tickets__Tickets {
 	 */
 	public static function get_instance() {
 		return tribe( static::class );
+	}
+
+	/**
+	 * Hooks the module, happens on the `wp` hook.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function hook() {
+		parent::hook();
+
+		// Overwrite with the translated name.
+		$this->plugin_name = __( 'Tickets Commerce', 'event-tickets' );
 	}
 
 	/**
@@ -622,11 +636,10 @@ class Module extends \Tribe__Tickets__Tickets {
 
 		$deleted = false;
 		// We are handling both Ticket and Attendee post type deletion using this same method.
-		if ( Attendee::POSTTYPE === $ticket_post->post_type
-			&& tribe( Attendees_Reports::class )->user_can_manage_attendees( 0, $event_id ) ) {
+		if ( Attendee::POSTTYPE === $ticket_post->post_type ) {
 			$deleted = tribe( Attendee::class )->delete( $ticket_id );
 		}
-		
+
 		if ( Ticket::POSTTYPE === $ticket_post->post_type ) {
 			$deleted = tribe( Ticket::class )->delete( $event_id, $ticket_id );
 		}

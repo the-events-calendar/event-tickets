@@ -1,0 +1,238 @@
+<?php
+/**
+ * Square Payment Processing Class
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square
+ */
+
+namespace TEC\Tickets\Commerce\Gateways\Square;
+
+use RuntimeException;
+use TEC\Tickets\Commerce\Utils\Value;
+use WP_Post;
+
+/**
+ * Square payment processing class.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square
+ */
+class Payment {
+
+	/**
+	 * The key used to identify Square payments created in Tickets Commerce.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static string $tc_metadata_identifier = 'tec_tc_square_payment';
+
+	/**
+	 * Create a payment from the provided Value object.
+	 *
+	 * @since TBD
+	 *
+	 * @param string  $source_id The source ID.
+	 * @param Value   $value     The value object to create a payment for.
+	 * @param WP_Post $order     The order post object.
+	 *
+	 * @return ?array| The payment data.
+	 */
+	public static function create( string $source_id, Value $value, WP_Post $order ): ?array {
+		$merchant = tribe( Merchant::class );
+
+		if ( ! $merchant->is_active() ) {
+			return null;
+		}
+
+		$query_args = [];
+		$body       = [
+			'amount_money'    => [
+				'amount'   => (int) $value->get_integer(),
+				'currency' => $value->get_currency_code(),
+			],
+			'idempotency_key' => uniqid( 'tec-square-', true ),
+			'source_id'       => $source_id,
+			'location_id'     => $merchant->get_location_id(),
+			'order_id'        => tribe( Order::class )->get_square_order_id( $order->ID ),
+			'reference_id'    => (string) $order->ID,
+			'metadata'        => [
+				static::$tc_metadata_identifier => true,
+			],
+		];
+
+		/**
+		 * Filters the payment body.
+		 *
+		 * @since TBD
+		 *
+		 * @param array   $body The payment body.
+		 * @param Value   $value The value object.
+		 * @param WP_Post $order The order post object.
+		 * @param string  $source_id The source ID.
+		 */
+		$body = apply_filters( 'tec_tickets_commerce_square_payment_body', $body, $value, $order, $source_id );
+
+		$args = [
+			'body'    => $body,
+			'headers' => [
+				'Content-Type' => 'application/json',
+			],
+		];
+
+		return Requests::post( 'payments', $query_args, $args );
+	}
+
+	/**
+	 * Creates a payment from order.
+	 *
+	 * @since TBD
+	 *
+	 * @param string  $source_id The source ID.
+	 * @param WP_Post $order     The order post object.
+	 *
+	 * @return array The payment data.
+	 *
+	 * @throws RuntimeException If the value object is not returned from the filter.
+	 */
+	public static function create_from_order( string $source_id, WP_Post $order ): array {
+		$value = Value::create( $order->total );
+
+		/**
+		 * Filters the value and items before creating a Square payment.
+		 *
+		 * @since TBD
+		 *
+		 * @param Value   $value     The total value of the cart.
+		 * @param WP_Post $order     The order post object.
+		 * @param string  $source_id The source ID.
+		 */
+		$value = apply_filters( 'tec_tickets_commerce_square_create_from_order', $value, $order, $source_id );
+
+		if ( ! $value instanceof Value && is_numeric( $value ) ) {
+			$value = Value::create( $value );
+		}
+
+		// Ensure we have a Value object returned from the filters.
+		if ( ! $value instanceof Value ) {
+			throw new RuntimeException( esc_html__( 'Value object not returned from filter', 'event-tickets' ) );
+		}
+
+		$payment = static::create( $source_id, $value, $order );
+
+		return $payment['payment'] ?? [];
+	}
+
+	/**
+	 * Get a payment by ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $payment_id The payment ID.
+	 *
+	 * @return ?array The payment data.
+	 */
+	public static function get( string $payment_id ): ?array {
+		if ( ! $payment_id ) {
+			return null;
+		}
+
+		$query_args = [];
+		$body       = [];
+
+		// Prepare the request arguments.
+		$args = [
+			'body' => $body,
+		];
+
+		return Requests::get_with_cache( "payments/{$payment_id}", $query_args, $args );
+	}
+
+	/**
+	 * Update a payment.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $payment_id The payment ID.
+	 * @param array  $data       The payment data to update.
+	 *
+	 * @return ?array The updated payment data.
+	 */
+	public static function update( string $payment_id, array $data ): ?array {
+		if ( ! $payment_id ) {
+			return null;
+		}
+
+		$query_args = [];
+		$body       = $data;
+
+		// Prepare the request arguments.
+		$args = [
+			'body' => $body,
+		];
+
+		return Requests::put( "payments/{$payment_id}", $query_args, $args );
+	}
+
+	/**
+	 * Cancel a payment.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $payment_id The payment ID.
+	 *
+	 * @return ?array The cancelled payment data.
+	 */
+	public static function cancel( string $payment_id ): ?array {
+		if ( ! $payment_id ) {
+			return null;
+		}
+
+		$query_args = [];
+		$body       = [
+			'idempotency_key' => uniqid( 'tec-square-cancel-', true ),
+		];
+
+		// Prepare the request arguments.
+		$args = [
+			'body' => $body,
+		];
+
+		return Requests::post( "payments/{$payment_id}/cancel", $query_args, $args );
+	}
+
+	/**
+	 * Format error message for display.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $errors The errors array from Square API.
+	 *
+	 * @return string The formatted error message.
+	 */
+	public static function compile_errors( array $errors ): string {
+		if ( empty( $errors ) ) {
+			return '';
+		}
+
+		$error_message = '';
+
+		if ( isset( $errors['errors'] ) && is_array( $errors['errors'] ) ) {
+			foreach ( $errors['errors'] as $error ) {
+				if ( ! empty( $error['detail'] ) ) {
+					$error_message .= '<p>' . esc_html( $error['detail'] ) . '</p>';
+				} elseif ( ! empty( $error['message'] ) ) {
+					$error_message .= '<p>' . esc_html( $error['message'] ) . '</p>';
+				}
+			}
+		} elseif ( is_string( $errors ) ) {
+			$error_message = '<p>' . esc_html( $errors ) . '</p>';
+		}
+
+		return $error_message;
+	}
+}

@@ -27,7 +27,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 *
 	 * @since 5.3.0
 	 */
-	protected static $key;
+	protected static string $key;
 
 	/**
 	 * The Gateway settings class
@@ -36,7 +36,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 *
 	 * @var string
 	 */
-	protected static $settings;
+	protected static string $settings;
 
 	/**
 	 * The Gateway merchant class
@@ -45,7 +45,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 *
 	 * @var string
 	 */
-	protected static $merchant;
+	protected static string $merchant;
 
 	/**
 	 * Supported currencies.
@@ -54,7 +54,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 *
 	 * @var string[]
 	 */
-	protected static $supported_currencies = [];
+	protected static array $supported_currencies = [];
 
 	/**
 	 * The option name prefix that configured whether a gateway is enabled.
@@ -64,7 +64,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 *
 	 * @var string
 	 */
-	public static $option_enabled_prefix = '_tickets_commerce_gateway_enabled_';
+	public static string $option_enabled_prefix = '_tickets_commerce_gateway_enabled_';
 
 	/**
 	 * Default name for the checkout template.
@@ -73,7 +73,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 *
 	 * @var string
 	 */
-	public static $checkout_container_template_name = 'container';
+	public static string $checkout_container_template_name = 'container';
 
 	/**
 	 * Class used to manage the Orders for this Gateway
@@ -127,7 +127,6 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 		if ( ! static::should_show() ) {
 			return false;
 		}
-
 		return tribe( static::$merchant )->is_active();
 	}
 

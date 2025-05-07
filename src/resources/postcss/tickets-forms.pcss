@@ -4,6 +4,7 @@
  * @since 5.0.0
  */
 .event-tickets .tribe-tickets__form {
+
 	.tribe-tickets__form-field {
 		display: block;
 		padding-bottom: var(--tec-spacer-2);
@@ -12,9 +13,9 @@
 
 	.tribe-tickets__form-field--required {
 
-		header:first-child:after,
-		label:first-child:after {
-			content: '';
+		header:first-child::after,
+		label:first-child::after {
+			content: "";
 		}
 	}
 
@@ -53,9 +54,11 @@
 	}
 
 	@media (--viewport-medium) {
+
 		.tribe-tickets__form-field-input-text,
 		.tribe-tickets__form-field-input-select {
-			label:not([for*='text-area']) {
+
+			label:not([for*="text-area"]) {
 				align-self: center;
 			}
 		}
@@ -95,21 +98,21 @@
 		margin-left: 0;
 	}
 
-	input[type='text'],
-	input[type='email'],
-	input[type='url'],
-	input[type='password'],
-	input[type='search'],
-	input[type='number'],
-	input[type='tel'],
-	input[type='range'],
-	input[type='date'],
-	input[type='month'],
-	input[type='week'],
-	input[type='time'],
-	input[type='datetime'],
-	input[type='datetime-local'],
-	input[type='color'],
+	input[type="text"],
+	input[type="email"],
+	input[type="url"],
+	input[type="password"],
+	input[type="search"],
+	input[type="number"],
+	input[type="tel"],
+	input[type="range"],
+	input[type="date"],
+	input[type="month"],
+	input[type="week"],
+	input[type="time"],
+	input[type="datetime"],
+	input[type="datetime-local"],
+	input[type="color"],
 	select,
 	textarea {
 		border: 1px solid var(--tec-color-border-default);
@@ -121,30 +124,35 @@
 			box-shadow: none;
 		}
 
+		&.tec-tickets-commerce-checkout-cart__coupons-input-field {
+			width: auto;
+		}
+
 		@media (--viewport-medium) {
 			max-width: 600px;
 		}
 	}
 
-	input[type='text'],
-	input[type='email'],
-	input[type='url'],
-	input[type='password'],
-	input[type='search'],
-	input[type='number'],
-	input[type='tel'],
-	input[type='range'],
-	input[type='date'],
-	input[type='month'],
-	input[type='week'],
-	input[type='time'],
-	input[type='datetime'],
-	input[type='datetime-local'],
-	input[type='color'],
-	input[type='checkbox'],
-	input[type='radio'],
+	input[type="text"],
+	input[type="email"],
+	input[type="url"],
+	input[type="password"],
+	input[type="search"],
+	input[type="number"],
+	input[type="tel"],
+	input[type="range"],
+	input[type="date"],
+	input[type="month"],
+	input[type="week"],
+	input[type="time"],
+	input[type="datetime"],
+	input[type="datetime-local"],
+	input[type="color"],
+	input[type="checkbox"],
+	input[type="radio"],
 	select,
 	textarea {
+
 		&:invalid {
 			box-shadow: none;
 		}
@@ -171,7 +179,7 @@
 	select {
 		appearance: none;
 		background-color: var(--tec-color-background);
-		background-image: url('../images/select.png');
+		background-image: url(../images/select.png);
 		background-position: right center;
 		background-repeat: no-repeat;
 		background-size: 33px 33px;
@@ -186,6 +194,7 @@
 
 	/* Field-type specific */
 	.tribe-common-form-control-checkbox-radio-group {
+
 		> * {
 			margin-bottom: var(--tec-spacer-0);
 		}
@@ -204,6 +213,7 @@
 
 	/* Date of birth field */
 	.tribe-tickets__form-field--birth {
+
 		select {
 			display: inline-block;
 			margin: 0 0 var(--tec-spacer-1) 0;

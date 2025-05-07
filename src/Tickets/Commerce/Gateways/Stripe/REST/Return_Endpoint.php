@@ -30,7 +30,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @var string
 	 */
-	protected $path = '/commerce/stripe/return';
+	protected string $path = '/commerce/stripe/return';
 
 	/**
 	 * Register the actual endpoint on WP Rest API.
@@ -155,6 +155,12 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 
 		if ( ! empty( $webhook['id'] ) ) {
 			tribe( Webhooks::class )->add_webhook( $webhook );
+		}
+
+		// Check for unfinished onboarding wizard.
+		$wizard_data = get_option( 'tec_tickets_onboarding_wizard_data', [] );
+		if ( ! empty( $wizard_data ) && ( ! isset( $wizard_data['finished'] ) || ! $wizard_data['finished'] ) ) {
+			$url = admin_url( 'admin.php?page=tickets-setup' );
 		}
 
 		wp_safe_redirect( $url );

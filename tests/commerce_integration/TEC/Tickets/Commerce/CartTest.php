@@ -2,12 +2,19 @@
 
 namespace TEC\Tickets\Commerce;
 
+use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce;
-use TEC\Tickets\Commerce\Cart\Unmanaged_Cart;
+use TEC\Tickets\Commerce\Cart\Agnostic_Cart;
+use TEC\Tickets\Commerce\Cart\Cart_Interface;
+use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
+use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
-class CartTest extends \Codeception\TestCase\WPTestCase {
+class CartTest extends WPTestCase {
+
+	use Cart_Trait;
 	use Ticket_Maker;
+	use With_Uopz;
 
 	private static $cart_hash;
 
@@ -15,8 +22,8 @@ class CartTest extends \Codeception\TestCase\WPTestCase {
 		$cart       = new Cart();
 		$repository = $cart->get_repository();
 
-		$assertion_msg = 'Cart->get_repository() should return an instance of Unmanaged_Cart';
-		$this->assertTrue( is_a( $repository, 'TEC\Tickets\Commerce\Cart\Unmanaged_Cart' ), $assertion_msg );
+		$assertion_msg = 'Cart->get_repository() should return an instance of Cart_Interface';
+		$this->assertTrue( is_a( $repository, Cart_Interface::class ), $assertion_msg );
 	}
 
 	public function test_does_not_process_empty_cart() {
@@ -83,7 +90,7 @@ class CartTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertNull( $cart_hash, $assertion_msg );
 
 		// Make sure there is a transient set before generating a new hash.
-		set_transient( Cart::get_transient_name( static::$cart_hash ), [ 'items' ] );
+		set_transient( $this->get_transient_key( static::$cart_hash ), [ 'items' ] );
 
 		$cart_hash = $cart->get_cart_hash( true );
 
@@ -102,7 +109,7 @@ class CartTest extends \Codeception\TestCase\WPTestCase {
 	public function test_cart_transient_name_format_is_valid() {
 		$id             = '10';
 		$hash           = md5( $id );
-		$transient_name = Cart::get_transient_name( $id );
+		$transient_name = $this->get_transient_key( $id );
 
 		$assertion_msg = 'Invoice transient names should be in the format Commerce::ABBR-cart-ID_HASH.';
 		$this->assertEquals( Commerce::ABBR . '-cart-' . $hash, $transient_name, $assertion_msg );
@@ -117,6 +124,12 @@ class CartTest extends \Codeception\TestCase\WPTestCase {
 
 		// Redirect request
 		$_REQUEST[ Cart::$url_query_arg ] = Cart::REDIRECT_MODE;
+
+		$this->set_fn_return( 'tec_tickets_commerce_is_enabled', false );
+
+		$this->assertFalse( $cart->is_current_page(), $assertion_msg );
+
+		$this->set_fn_return( 'tec_tickets_commerce_is_enabled', true );
 
 		$assertion_msg = 'When called with Cart::$url_query_arg, Cart->is_current_page() should return true.';
 		$this->assertTrue( $cart->is_current_page(), $assertion_msg );
@@ -156,7 +169,7 @@ class CartTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_a = $this->create_tc_ticket( $post_id, 10.10 );
 		$ticket_b = $this->create_tc_ticket( $post_id, 20.30 );
 
-		tribe_singleton( Unmanaged_Cart::class, new Unmanaged_Cart() );
+		tribe_singleton( Cart_Interface::class, Agnostic_Cart::class );
 		$cart = tribe( Cart::class );
 
 		$cart->add_ticket( $ticket_a, 3 );

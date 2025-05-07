@@ -9,7 +9,6 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce\Admin\Featured_Settings;
-use TEC\Tickets\Commerce\Gateways\Abstract_Gateway;
 use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
@@ -17,7 +16,7 @@ use TEC\Tickets\Commerce\Traits\Has_Mode;
 use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Settings as Tickets_Settings;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
-use \Tribe__Template;
+use Tribe__Template;
 use Tribe__Field_Conditional;
 use Tribe__Tickets__Main;
 use WP_Admin_Bar;
@@ -181,15 +180,37 @@ class Settings {
 	}
 
 	/**
+	 * Gets the URL to the Tickets Commerce settings page.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $args Optional. Additional arguments to add to the URL. Default empty array.
+	 *
+	 * @return string The URL to the Tickets Commerce settings page.
+	 */
+	public function get_url( array $args = [] ) {
+		$defaults = [
+			'page' => 'tec-tickets-settings',
+			'tab'  => 'payments',
+		];
+
+		// Allow the link to be "changed" on the fly.
+		$args = wp_parse_args( $args, $defaults );
+
+		return tribe( Plugin_Settings::class )->get_url( $args );
+	}
+
+	/**
 	 * Determine whether Tickets Commerce is in test mode.
 	 *
 	 * @since 5.3.0    moved to Settings class
 	 * @since 5.1.6
+	 * @since TBD Use tec_tickets_commerce_is_sandbox_mode() instead.
 	 *
 	 * @return bool Whether Tickets Commerce is in test mode.
 	 */
 	public static function is_test_mode() {
-		return tribe_is_truthy( tribe_get_option( static::$option_sandbox ) );
+		return tec_tickets_commerce_is_sandbox_mode();
 	}
 
 	/**
@@ -266,18 +287,22 @@ class Settings {
 		$current_user = get_user_by( 'id', get_current_user_id() );
 
 		$settings = [
-			'tickets-commerce-settings-general-heading'     => [
+			'tickets-commerce-settings-general-group-start' => [
 				'type' => 'html',
-				'html' => '<h3>' . __( 'General', 'event-tickets' ) . '</h3>',
+				'html' => '<div class="tec-settings-form__content-section">',
 			],
-			static::$option_sandbox                         => [
+			'tickets-commerce-settings-general-heading'    => [
+				'type' => 'html',
+				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'General', 'event-tickets' ) . '</h3>',
+			],
+			static::$option_sandbox                       => [
 				'type'            => 'toggle',
 				'label'           => esc_html__( 'Enable Test Mode', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'Enables Test mode for testing payments. Any payments made will be done on "sandbox" accounts.', 'event-tickets' ),
 				'default'         => false,
 				'validation_type' => 'boolean',
 			],
-			static::$option_stock_handling                  => [
+			static::$option_stock_handling               => [
 				'type'            => 'radio',
 				'label'           => esc_html__( 'Stock Handling', 'event-tickets' ),
 				'tooltip'         => esc_html(
@@ -307,11 +332,19 @@ class Settings {
 				],
 				'tooltip_first'   => true,
 			],
-			'tickets-commerce-settings-currency-heading'    => [
+			'tickets-commerce-settings-general-group-end'     => [
 				'type' => 'html',
-				'html' => '<h3>' . __( 'Currency', 'event-tickets' ) . '</h3>',
+				'html' => '</div>',
 			],
-			static::$option_currency_code                   => [
+			'tickets-commerce-settings-currency-group-start' => [
+				'type' => 'html',
+				'html' => '<div class="tec-settings-form__content-section">',
+			],
+			'tickets-commerce-settings-currency-heading'     => [
+				'type' => 'html',
+				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'Currency', 'event-tickets' ) . '</h3>',
+			],
+			static::$option_currency_code                    => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Currency Code', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'The currency that will be used for Tickets Commerce transactions.', 'event-tickets' ),
@@ -344,7 +377,7 @@ class Settings {
 				'validation_type' => 'int',
 			],
 
-			static::$option_currency_position               => [
+			static::$option_currency_position          => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Currency Position', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'The position of the currency symbol as it relates to the ticket values.', 'event-tickets' ),
@@ -355,9 +388,17 @@ class Settings {
 					'postfix' => esc_html__( 'After', 'event-tickets' ),
 				],
 			],
+			'tickets-commerce-settings-currency-group-end'     => [
+				'type' => 'html',
+				'html' => '</div>',
+			],
+			'tickets-commerce-settings-page-config-group-start'  => [
+				'type' => 'html',
+				'html' => '<div class="tec-settings-form__content-section">',
+			],
 			'tickets-commerce-settings-page-heading'        => [
 				'type' => 'html',
-				'html' => '<h3>' . __( 'Pages Configuration', 'event-tickets' ) . '</h3>',
+				'html' => '<h3  class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'Pages Configuration', 'event-tickets' ) . '</h3>',
 			],
 			static::$option_checkout_page                   => [
 				'type'            => 'dropdown',
@@ -389,13 +430,21 @@ class Settings {
 				'options'         => $pages,
 				'required'        => true,
 			],
+			'tickets-commerce-settings-page-config-group-end'     => [
+				'type' => 'html',
+				'html' => '</div>',
+			],
 		];
 
 		if ( ! tec_tickets_emails_is_enabled() ) {
 			$email_settings = [
+				'tickets-commerce-settings-email-group-start'     => [
+					'type' => 'html',
+					'html' => '<div class="tec-settings-form__content-section">',
+				],
 				'tickets-commerce-email-settings-heading' => [
 					'type' => 'html',
-					'html' => '<h3>' . __( 'Emails', 'event-tickets' ) . '</h3>',
+					'html' => '<h3  class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'Emails', 'event-tickets' ) . '</h3>',
 				],
 				static::$option_confirmation_email_sender_email => [
 					'type'            => 'email',
@@ -448,6 +497,10 @@ class Settings {
 					'validation_callback' => 'is_string',
 					'validation_type'     => 'textarea',
 				],
+				'tickets-commerce-settings-email-group-end'     => [
+					'type' => 'html',
+					'html' => '</div>',
+				],
 			];
 
 			$settings = array_merge( $settings, $email_settings );
@@ -459,14 +512,14 @@ class Settings {
 				'type' => 'html',
 				'html' => tribe( Featured_Settings::class )->get_html(
 					[
-						'title'            => __( 'Payment Gateways', 'event-tickets' ),
-						'description'      => __(
+						'title'             => __( 'Payment Gateways', 'event-tickets' ),
+						'description'       => __(
 							'Set up a payment gateway to get started with Tickets Commerce. Enable multiple ' .
 							'gateways for providing users additional options for users when purchasing tickets.',
 							'event-tickets'
 						),
-						'content_template' => $this->get_featured_gateways_html(),
-						'links'            => [
+						'content_template'  => $this->get_featured_gateways_html(),
+						'links'             => [
 							[
 								'slug'     => 'help-1',
 								'priority' => 10,
@@ -476,7 +529,8 @@ class Settings {
 								'classes'  => [],
 							],
 						],
-						'classes'          => [],
+						'classes'           => [],
+						'container_classes' => [ 'tec-settings-form__element--with-border-bottom' ],
 					]
 				),
 			],
@@ -516,13 +570,19 @@ class Settings {
 	 * Handle setting up dependencies for all of the fields.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Return early if Tickets_Settings::$tickets_commerce_enabled is enabled.
 	 *
 	 * @param array[] $settings Which settings we are applying conditionals to.
 	 *
 	 * @return array[]
 	 */
 	public function apply_commerce_enabled_conditional( $settings ) {
-		$validate_if         = new Tribe__Field_Conditional( Tickets_Settings::$tickets_commerce_enabled, 'tribe_is_truthy' );
+		$validate_if = new Tribe__Field_Conditional( Tickets_Settings::$tickets_commerce_enabled, 'tribe_is_truthy' );
+
+		if ( ! tribe_is_truthy( Tickets_Settings::$tickets_commerce_enabled ) ) {
+			return $settings;
+		}
+
 		$fieldset_attributes = [
 			'data-depends'              => '#' . Tickets_Settings::$tickets_commerce_enabled . '-input',
 			'data-condition-is-checked' => '',
@@ -626,5 +686,133 @@ class Settings {
 		 * @param bool $is_free_ticket_allowed Whether free tickets are allowed in Tickets Commerce.
 		 */
 		return apply_filters( 'tec_tickets_commerce_is_free_ticket_allowed', true );
+	}
+
+	/**
+	 * Wrapper for get_option that allows for environmental options.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $option     The option name.
+	 * @param array  $args       Additional arguments.
+	 * @param bool   $by_default The default value if the option is not set.
+	 *
+	 * @return mixed The environmental option value.
+	 */
+	public static function get_option( string $option, array $args = [], bool $by_default = false ) {
+		return get_option( self::get_key( $option, $args ), $by_default );
+	}
+
+	/**
+	 * Wrapper for update_option that allows for environmental options.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $option   The option name.
+	 * @param mixed  $value    The value to set.
+	 * @param array  $args     Additional arguments.
+	 * @param bool   $autoload Whether to autoload the option.
+	 *
+	 * @return bool Whether the option was updated.
+	 */
+	public static function update_option( string $option, $value, array $args = [], bool $autoload = true ): bool {
+		return update_option( self::get_key( $option, $args ), $value, $autoload );
+	}
+
+	/**
+	 * Wrapper for delete_option that allows for environmental options.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $option The option name.
+	 * @param array  $args   Additional arguments.
+	 *
+	 * @return bool Whether the option was deleted.
+	 */
+	public static function delete_option( string $option, array $args = [] ): bool {
+		return delete_option( self::get_key( $option, $args ) );
+	}
+
+	/**
+	 * Wrapper for tribe_get_option that allows for environmental options.
+	 *
+	 * Consider WHAT should be environmental and WHAT should not before using any of those methods.
+	 *
+	 * For example, an order's data should NOT be environmental, as it's specific to a single order that it happened in a specific environment.
+	 * BUT an event's or a ticket's data should be environmental since those can be used BOTH in sandbox and live environments.
+	 * A customer's data should be environmental, since the same customer instance can buy in both environments!
+	 *
+	 * @since TBD
+	 *
+	 * @param string $option     The option name.
+	 * @param array  $args       Additional arguments.
+	 * @param bool   $by_default The default value if the option is not set.
+	 *
+	 * @return mixed The environmental option value.
+	 */
+	public static function get( string $option, array $args = [], bool $by_default = false ) {
+		return tribe_get_option( self::get_key( $option, $args ), $by_default );
+	}
+
+	/**
+	 * Wrapper for tribe_update_option that allows for environmental options.
+	 *
+	 * Consider WHAT should be environmental and WHAT should not before using any of those methods.
+	 *
+	 * For example, an order's data should NOT be environmental, as it's specific to a single order that it happened in a specific environment.
+	 * BUT an event's or a ticket's data should be environmental since those can be used BOTH in sandbox and live environments.
+	 * A customer's data should be environmental, since the same customer instance can buy in both environments!
+	 *
+	 * @since TBD
+	 *
+	 * @param string $option The option name.
+	 * @param mixed  $value  The value to set.
+	 * @param array  $args   Additional arguments.
+	 *
+	 * @return bool Whether the option was updated.
+	 */
+	public static function set( string $option, $value, array $args = [] ): bool {
+		return tribe_update_option( self::get_key( $option, $args ), $value );
+	}
+
+	/**
+	 * Wrapper for tribe_remove_option that allows for environmental options.
+	 *
+	 * Consider WHAT should be environmental and WHAT should not before using any of those methods.
+	 *
+	 * For example, an order's data should NOT be environmental, as it's specific to a single order that it happened in a specific environment.
+	 * BUT an event's or a ticket's data should be environmental since those can be used BOTH in sandbox and live environments.
+	 * A customer's data should be environmental, since the same customer instance can buy in both environments!
+	 *
+	 * @since TBD
+	 *
+	 * @param string $option The option name.
+	 * @param array  $args   Additional arguments.
+	 *
+	 * @return bool Whether the option was deleted.
+	 */
+	public static function delete( string $option, array $args = [] ): bool {
+		return tribe_remove_option( self::get_key( $option, $args ) );
+	}
+
+	/**
+	 * Get the environmental key.
+	 *
+	 * Consider WHAT should be environmental and WHAT should not before using any of those methods.
+	 *
+	 * For example, an order's data should NOT be environmental, as it's specific to a single order that it happened in a specific environment.
+	 * BUT an event's or a ticket's data should be environmental since those can be used BOTH in sandbox and live environments.
+	 * A customer's data should be environmental, since the same customer instance can buy in both environments!
+	 *
+	 * @since TBD
+	 *
+	 * @param string $option The option name.
+	 * @param array  $args   Additional arguments.
+	 *
+	 * @return string The environmental key.
+	 */
+	public static function get_key( string $option, array $args = [] ): string {
+		$mode = self::is_test_mode() ? 'sandbox' : 'live';
+		return sprintf( $option, $mode, ...$args );
 	}
 }

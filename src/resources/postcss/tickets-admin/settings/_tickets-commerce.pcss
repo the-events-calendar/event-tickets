@@ -25,32 +25,29 @@
 
 .tec-tickets__admin-settings-tickets-commerce-description {
 	font-size: 13px;
-	font-weight: normal;
-	margin-bottom: 35px;
-	max-width: 84%;
+	font-weight: 400;
+	width: 100%;
+	padding: 0 var(--tec-spacer-7);
+	box-sizing: border-box;
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway {
 	background: #fff;
-	border: 1px solid #ccc;
-	border-radius: 4px;
+	border-bottom: 1px solid #ccc;
 	box-sizing: border-box;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-around;
-	margin-bottom: var(--tec-spacer-3);
-	padding: 45px 32px 20px 32px;
+	padding: 0;
 
-	@media (--viewport-medium) {
-		background-image: url("../images/background-gateway-connect.png");
-		background-position: center right;
-		background-repeat: no-repeat;
-		background-size: 420px 100%;
+	@media (--viewport-large) {
+		margin: 0;
 	}
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-title {
 	font-size: 20px;
+	margin-top: 0;
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-description {
@@ -97,6 +94,7 @@
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-merchant-country-container {
+
 	@media (--viewport-medium) {
 
 		.tribe-dropdown .select2-selection--single {
@@ -125,10 +123,10 @@
 	margin-bottom: 16px;
 }
 
-.tec-tickets__admin-settings-tickets-commerce-gateway-logo ul li:before {
+.tec-tickets__admin-settings-tickets-commerce-gateway-logo ul li::before {
 	background-color: #405bfb;
 	border-radius: 100%;
-	content: '';
+	content: "";
 	display: inline-block;
 	height: 7px;
 	margin-right: 7px;
@@ -140,10 +138,12 @@
 	flex-basis: 290px;
 	font-size: 13px;
 	font-style: italic;
-	font-weight: normal;
+	font-weight: 400;
 	letter-spacing: 0.02em;
 	line-height: 16px;
-	margin-bottom: var(--tec-spacer-4);
+	padding: var(--tec-spacer-7);
+	border-left: 1px solid var(--tec-admin-core-grey-10);
+	background-color: #f9f7f4;
 
 	@media (--viewport-medium) {
 		display: flex;
@@ -152,7 +152,7 @@
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-logo-image {
 	height: auto;
-	margin-bottom: 32px;
+	margin-bottom: var(--tec-spacer-7);
 	max-width: 232px;
 	width: 100%;
 }
@@ -161,9 +161,7 @@
 	display: flex;
 	flex: 1;
 
-	@media (--viewport-medium) {
-		padding-right: 74px;
-	}
+	padding: var(--tec-spacer-7);
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-connect-text--connected {
@@ -173,19 +171,42 @@
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-connected-row {
-	display: flex;
 	font-size: 13px;
-	font-weight: normal;
-	margin: 20px 0;
+	font-weight: 400;
+	margin-bottom: 10px;
 	text-align: left;
+	line-height: 30px;
+
+	&:first-of-type {
+		margin-top: 0;
+	}
+
+	.dashicons {
+		vertical-align: middle;
+	}
+
+	.dashicons-yes {
+		color: var(--tec-success-border-color);
+	}
+
+	button.button {
+		margin-left: 10px;
+	}
+
+	span {
+		display: inline-block;
+		margin-right: 5px;
+	}
 }
 
-.tec-tickets__admin-settings-tickets-commerce-gateway-connected-col1 {
+.tec-tickets__admin-settings-tickets-commerce-gateway-connected-col1,
+.tec-tickets__admin-settings-tickets-commerce-gateway-connected-label {
 	flex-basis: 20%;
 	min-width: 125px;
 }
 
-.tec-tickets__admin-settings-tickets-commerce-gateway-connected-col2 {
+.tec-tickets__admin-settings-tickets-commerce-gateway-connected-col2,
+.tec-tickets__admin-settings-tickets-commerce-gateway-connected-value {
 	flex-basis: 80%;
 }
 
@@ -202,7 +223,7 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 	font-size: 16px;
 	font-weight: 600;
 	line-height: 18px;
-	margin-top: 25px;
+	margin-top: 10px;
 	min-width: 340px;
 	padding: 15px 0;
 	text-align: center;
@@ -243,7 +264,7 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-currency {
 	color: var(--tec-color-text-primary);
-	font-weight: bold;
+	font-weight: 700;
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-currency-message {
@@ -270,19 +291,23 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-connected-webhook {
+
 	&:not(last-of-type) {
 		margin-bottom: 8px;
 	}
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-connected-webhook--active {
+
 	.tec-tickets__admin-settings-tickets-commerce-paypal-connected-webhook-error,
 	.tec-tickets__admin-settings-tickets-commerce-gateway-connected-webhook-error {
+
 		@mixin hidden;
 	}
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-connected-webhook:not(.tec-tickets__admin-settings-tickets-commerce-gateway-connected-webhook--active) {
+
 	.tec-tickets__admin-settings-tickets-commerce-paypal-connected-webhook-name,
 	.tec-tickets__admin-settings-tickets-commerce-gateway-connected-webhook-name {
 		color: var(--tec-color-text-primary-light);
@@ -300,6 +325,7 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-connected-resync-button {
+
 	@mixin button-solid;
 
 	background-color: var(--tec-color-button-primary);
@@ -335,7 +361,9 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 
 .tribe-common,
 .event-tickets {
+
 	&.tribe-modal__wrapper--gateway-connected {
+
 		.tribe-tickets__notice {
 			display: block;
 		}
@@ -362,6 +390,7 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 	}
 
 	body.events-cal & {
+
 		div.tribe-dialog {
 			z-index: 99999;
 		}
@@ -403,7 +432,7 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 
 .tec-tickets__admin-settings-tickets-commerce-section-menu-link--active {
 	border-bottom-width: var(--tec-spacer-0);
-	font-weight: bold;
+	font-weight: 700;
 }
 
 .tec-tickets__admin-settings-tickets-commerce-section-menu-link--active,
@@ -414,35 +443,34 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 
 .tec-tickets__admin-settings-featured {
 	background-color: var(--tec-color-background);
-	border: solid 1px var(--tec-color-border-default);
-	border-radius: 8px;
-	margin-bottom: var(--tec-spacer-7);
-	padding: var(--tec-spacer-8);
+	padding: 0 var(--tec-spacer-7);
+	font-size: var(--tec-font-size-2);
+
+	.tec-tickets__admin-settings-featured-title {
+		background-color: transparent;
+		font-size: var(--tec-font-size-5);
+		font-weight: 700;
+		margin-bottom: var(--tec-spacer-2);
+		padding: 0 0 var(--tec-spacer-1) 0;
+	}
+
+	.tec-tickets__admin-settings-featured-description {
+		margin-bottom: var(--tec-spacer-4);
+		max-width: 720px;
+	}
+
+	.tec-tickets__admin-settings-featured-link {
+		align-items: center;
+		color: var(--tec-color-text-primary);
+		display: flex;
+	}
+
+	.tec-tickets__admin-settings-featured-link-url {
+		color: var(--tec-color-accent-primary);
+		padding: 0 var(--tec-spacer-1);
+	}
 }
 
-.tec-tickets__admin-settings-featured-title {
-	background-color: transparent;
-	font-size: var(--tec-font-size-5);
-	font-weight: bold;
-	margin-bottom: var(--tec-spacer-2);
-	padding: var(--tec-spacer-1) 0;
-}
-
-.tec-tickets__admin-settings-featured-description {
-	margin-bottom: var(--tec-spacer-4);
-	max-width: 720px;
-}
-
-.tec-tickets__admin-settings-featured-link {
-	align-items: center;
-	color: var(--tec-color-text-primary);
-	display: flex;
-}
-
-.tec-tickets__admin-settings-featured-link-url {
-	color: var(--tec-color-accent-primary);
-	padding: 0 var(--tec-spacer-1);
-}
 
 .tec-tickets__admin-settings-tickets-commerce-gateways-item {
 	margin-bottom: var(--tec-spacer-7);
@@ -473,7 +501,6 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateways-item-brand-subtitle {
-	font-size: 13px;
 	font-style: italic;
 }
 
@@ -598,4 +625,91 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 .tec-tickets__admin-after-pay-promo-link {
 	display: inline-block;
 	margin-right: 12px;
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateway-connected-warning .tec-tickets__admin-settings-tickets-commerce-gateway-connected-value {
+	display: block;
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateway-connected-warning-message,
+.tec-tickets__admin-settings-tickets-commerce-gateway-connected-message {
+	display: flex;
+	align-items: center;
+	margin-bottom: 15px;
+	padding: 10px 12px;
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateway-connected-warning-message {
+	background-color: #fff8e5;
+	border-left: 4px solid #ffb900;
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateway-connected-warning-message .dashicons-warning {
+	color: var(--tec-color-icon-error);
+	font-size: 20px;
+	margin-right: 10px;
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateway-connected-notice-message {
+	background-color: #e5f5fa;
+	border-left: 4px solid #00a0d2;
+	display: flex;
+	align-items: center;
+	padding: 10px 12px;
+	font-size: 13px;
+
+	.dashicons-info-outline {
+		color: #00a0d2;
+		font-size: 20px;
+		margin-right: 10px;
+	}
+
+	a {
+		font-weight: bold;
+	}
+
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateway-reconnect-square-button {
+	background: #405bfb;
+	border-radius: 4px;
+	color: #fff;
+	display: inline-block;
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 18px;
+	padding: 15px 20px;
+	text-align: center;
+	text-decoration: none;
+	margin-bottom: 10px;
+
+	&:hover,
+	&:active,
+	&:visited,
+	&:focus {
+		background-color: var(--tec-color-button-primary-hover);
+		color: #fff;
+	}
+
+	&:active {
+		background-color: var(--tec-color-button-primary-active);
+	}
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateway-sandbox-notice {
+	display: flex;
+	align-items: center;
+	font-size: 13px;
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateway-sandbox-notice a {
+	color: #00a0d2;
+	text-decoration: underline;
+	font-weight: 500;
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateway-sandbox-notice a:hover,
+.tec-tickets__admin-settings-tickets-commerce-gateway-sandbox-notice a:focus {
+	color: #007cba;
+	text-decoration: none;
 }

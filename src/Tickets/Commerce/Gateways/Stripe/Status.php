@@ -169,7 +169,7 @@ class Status {
 	/**
 	 * Converts a valid Stripe payment intent to a commerce status object.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @param array $payment_intent A Stripe payment intent.
 	 *

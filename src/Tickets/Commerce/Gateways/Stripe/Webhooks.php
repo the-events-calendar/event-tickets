@@ -536,7 +536,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Get the max number of retries for the webhooks.
 	 *
-	 * @since TBD
+	 * @since 5.19.3
 	 *
 	 * @return int The number of retries.
 	 */
@@ -544,7 +544,7 @@ class Webhooks extends Abstract_Webhooks {
 		/**
 		 * Filter the maximum number of attempts we will try to retry a webhook process.
 		 *
-		 * @since TBD
+		 * @since 5.19.3
 		 *
 		 * @param int $max_attempts How many attempts we will try to retry a webhook process. Defaults to 5.
 		 *
@@ -592,11 +592,11 @@ class Webhooks extends Abstract_Webhooks {
 		return [
 			'tickets-commerce-gateway-settings-group-start-webhook'       => [
 				'type' => 'html',
-				'html' => '<div class="tribe-settings-form-wrap">',
+				'html' => '<div class="tec-settings-form__content-section">',
 			],
 			'tickets-commerce-gateway-settings-group-header-webhook'      => [
 				'type' => 'html',
-				'html' => '<h4 class="tec-tickets__admin-settings-tickets-commerce-gateway-group-header">' . esc_html__( 'Webhooks', 'event-tickets' ) . '</h4><div class="clear"></div>',
+				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . esc_html__( 'Webhooks', 'event-tickets' ) . '</h3>',
 			],
 			'tickets-commerce-gateway-settings-group-description-webhook' => [
 				'type' => 'html',
@@ -606,7 +606,7 @@ class Webhooks extends Abstract_Webhooks {
 				'type'       => 'text',
 				'label'      => esc_html__( 'Webhooks URL', 'event-tickets' ),
 				'tooltip'    => '',
-				'size'       => 'large',
+				'size'       => 'medium',
 				'default'    => tribe( Webhook_Endpoint::class )->get_route_url(),
 				'attributes' => [
 					'readonly' => 'readonly',
@@ -617,7 +617,7 @@ class Webhooks extends Abstract_Webhooks {
 				'type'                => 'text',
 				'label'               => esc_html__( 'Signing Secret', 'event-tickets' ),
 				'tooltip'             => $signing_key_tooltip,
-				'size'                => 'large',
+				'size'                => 'medium',
 				'default'             => '',
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'textarea',
@@ -630,7 +630,7 @@ class Webhooks extends Abstract_Webhooks {
 			],
 			'tickets-commerce-gateway-settings-group-end-webhook' => [
 				'type' => 'html',
-				'html' => '<div class="clear"></div></div>',
+				'html' => '</div>',
 			],
 		];
 	}

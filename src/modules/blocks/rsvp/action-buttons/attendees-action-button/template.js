@@ -12,8 +12,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { ActionButton } from '@moderntribe/tickets/elements';
-import { Attendees } from '@moderntribe/tickets/icons';
+import { ActionButton } from '../../../../elements';
+import { Attendees } from '../../../../icons';
 
 const AttendeesActionButton = ( { href, isDisabled } ) => (
 	<ActionButton

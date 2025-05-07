@@ -15,11 +15,7 @@ import { __ } from '@wordpress/i18n';
 import { Counter } from '@moderntribe/common/elements';
 import './style.pcss';
 
-const RSVPCounters = ( {
-	goingCount,
-	notGoingCount,
-	showNotGoing,
-} ) => (
+const RSVPCounters = ( { goingCount, notGoingCount, showNotGoing } ) => (
 	<div className="tribe-editor__rsvp-container-header__counters">
 		<Counter
 			className="tribe-editor__rsvp-container-header__going-counter"

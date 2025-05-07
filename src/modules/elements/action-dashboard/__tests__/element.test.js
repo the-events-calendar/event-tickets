@@ -54,8 +54,9 @@ describe( 'Action Dashboard Element', () => {
 
 	it( 'executes the cancel handler', () => {
 		const onClick = jest.fn();
-		const component = mount( <ActionDashboard onCancelClick={ onClick } /> );
-		component.find( 'button.tribe-editor__action-dashboard__cancel-button' ).simulate( 'click' );
+		const component = renderer.create( <ActionDashboard onCancelClick={ onClick } /> );
+		const button = component.root.findByProps( { className: 'tribe-editor__action-dashboard__cancel-button' } );
+		button.props.onClick();
 		expect( onClick ).toHaveBeenCalled();
 		expect( onClick ).toHaveBeenCalledTimes( 1 );
 	} );
@@ -68,9 +69,12 @@ describe( 'Action Dashboard Element', () => {
 
 	it( 'executes the confirm handler', () => {
 		const onClick = jest.fn();
-		const component = mount( <ActionDashboard onConfirmClick={ onClick } /> );
-		/* eslint-disable-next-line max-len */
-		component.find( 'button.tribe-editor__action-dashboard__confirm-button' ).simulate( 'mouseDown' );
+		const component = renderer.create( <ActionDashboard onConfirmClick={ onClick } showCancel={ false } /> );
+		expect( component.toJSON() ).toMatchSnapshot();
+		
+		const button = component.root.findByType( 'button' );
+
+		button.props.onMouseDown();
 		expect( onClick ).toHaveBeenCalled();
 		expect( onClick ).toHaveBeenCalledTimes( 1 );
 	} );

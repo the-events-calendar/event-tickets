@@ -12,9 +12,6 @@ node_modules
 # Vendor handling.
 /vendor
 
-# Allow certain vendor files.
-!vendor/phpqrcode
-
 # Some people makes...
 Makefile
 
@@ -46,6 +43,8 @@ compiler.jar
 
 # Local packaging files
 .pup-*
+pup.phar
+.pup-zip
 
 # add this yourself to add githoooks - see .huskyrc.sample
 .huskyrc

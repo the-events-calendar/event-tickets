@@ -7,7 +7,8 @@ use Tribe\Tickets\Admin\Provider as Admin_Provider;
 use Tribe\Tickets\Events\Service_Provider as Events_Service_Provider;
 use Tribe\Tickets\Promoter\Service_Provider as Promoter_Service_Provider;
 use Tribe\Tickets\Admin\Settings;
-use TEC\Common\StellarWP\Assets\Config;
+use TEC\Common\StellarWP\Assets\Config as Assets_Config;
+use TEC\Tickets\Admin\Onboarding\Tickets_Landing_Page;
 
 /**
  * Class Tribe__Tickets__Main.
@@ -17,7 +18,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin.
 	 */
-	const VERSION = '5.19.2';
+	const VERSION = '5.24.0';
 
 	/**
 	 * Used to store the version history.
@@ -62,7 +63,7 @@ class Tribe__Tickets__Main {
 	 *
 	 * @var string
 	 */
-	protected $min_tec_version = '6.8.0-dev';
+	protected $min_tec_version = '6.11.2.1-dev';
 
 	/**
 	 * Name of the provider.
@@ -123,6 +124,8 @@ class Tribe__Tickets__Main {
 	protected $move_ticket_types;
 
 	/**
+	 * @deprecated TBD
+	 *
 	 * @var Tribe__Admin__Activation_Page
 	 */
 	protected $activation_page;
@@ -220,24 +223,40 @@ class Tribe__Tickets__Main {
 	 * Fires when the plugin is activated.
 	 */
 	public function on_activation() {
-		// Set a transient we can use when deciding whether or not to show update/welcome splash pages
-		if ( ! is_network_admin() && ! isset( $_GET['activate-multi'] ) ) {
-			set_transient( '_tribe_tickets_activation_redirect', 1, 30 );
-		}
+		// Will be used to set up Stripe webhook on admin_init.
+		set_transient( 'tec_tickets_commerce_setup_stripe_webhook', true );
 
 		// Set plugin activation time for all installs.
-		if ( is_admin() ) {
-			// Avoid a race condition and fatal by waiting until Common is loaded before we try to run this.
-			add_action(
-				'tribe_common_loaded',
-				[ $this, 'set_activation_time' ]
-			);
+		if ( ! is_admin() ) {
+			return;
 		}
 
-		// Will be used to set up Stripe webwook on admin_init.
-		set_transient( 'tec_tickets_commerce_setup_stripe_webhook', true );
+		// Avoid a race condition and fatal by waiting until Common is loaded before we try to run this.
+		add_action(
+			'tribe_common_loaded',
+			[ $this, 'set_activation_time' ]
+		);
+
+		$this->redirect_to_wizard_on_activation();
 	}
 
+	public function redirect_to_wizard_on_activation() {
+		if ( is_network_admin() ) {
+			// Never redirect on network admin.
+			return;
+		}
+
+		// Get the checked plugins from the request. If there are more than one, we're doing a bulk activation.
+		$checked = $_POST['checked'] ?? [];
+
+		if ( count( $checked ) > 1 ) {
+			// If multiple plugins are being activated, set the wizard redirect transient, this should only trigger redirection on a ET admin page visit.
+			set_transient( '_tec_tickets_wizard_redirect', 1, 30 );
+		} else {
+			// If a single plugin is being activated, set the activation redirect transient for immediate redirection.
+			set_transient( '_tec_tickets_activation_redirect', 1, 30 );
+		}
+	}
 	/**
 	 * Set the plugin activation time.
 	 * Activated on plugin activation, runs on tribe_common_loaded.
@@ -437,10 +456,32 @@ class Tribe__Tickets__Main {
 	 * Load Text Domain on tribe_common_loaded as it requires common
 	 *
 	 * @since 4.10
+	 * @since TBD Added Tyson group paths.
 	 */
 	public function bootstrap() {
-		// Add the group path for the ET core assets.
-		Config::add_group_path( 'et-core', $this->plugin_path, 'src/resources/', true );
+		/*
+		* Register the `/build` directory assets as a different group to ensure back-compatibility.
+		* This needs to happen early in the plugin bootstrap routine.
+		*/
+		Assets_Config::add_group_path(
+			self::class,
+			$this->plugin_path,
+			'build/',
+			true
+		);
+
+		/*
+		* Register the `/build` directory as root for packages.
+		* The difference from the group registration above is that packages are not expected to use prefix directories
+		* like `/js` or `/css`.
+		*/
+		Assets_Config::add_group_path(
+			self::class . '-packages',
+			$this->plugin_path,
+			'build/',
+			false
+		);
+
 		$this->hooks();
 
 		$this->register_active_plugin();
@@ -449,7 +490,6 @@ class Tribe__Tickets__Main {
 		$this->user_event_confirmation_list_shortcode();
 		$this->move_tickets();
 		$this->move_ticket_types();
-		$this->activation_page();
 
 		Tribe__Tickets__JSON_LD__Order::hook();
 		Tribe__Tickets__JSON_LD__Type::hook();
@@ -459,8 +499,17 @@ class Tribe__Tickets__Main {
 
 		/**
 		 * Fires once Event Tickets has completed basic setup.
+		 *
+		 * @deprecated TBD Use `tec_tickets_fully_loaded` instead.
 		 */
-		do_action( 'tribe_tickets_plugin_loaded' );
+		do_action_deprecated( 'tribe_tickets_plugin_loaded', [], 'TBD', 'Use `tec_tickets_fully_loaded` instead.' );
+
+		/**
+		 * Fires when Event Tickets is fully loaded.
+		 *
+		 * @since TBD
+		 */
+		do_action( 'tec_tickets_fully_loaded' );
 	}
 
 	/**
@@ -516,6 +565,9 @@ class Tribe__Tickets__Main {
 
 		// Admin provider.
 		tribe_register_provider( Admin_Provider::class );
+
+		// Set up IAN Client - In-App Notifications.
+		tribe_register_provider( TEC\Tickets\Notifications\Provider::class );
 	}
 
 	/**
@@ -675,12 +727,12 @@ class Tribe__Tickets__Main {
 
 		add_filter( 'tribe_post_types', [ $this, 'inject_post_types' ] );
 
-		// Setup Help Tab texting
+		// Setup Help Tab texting.
 		add_action( 'tribe_help_pre_get_sections', [ $this, 'add_help_section_support_content' ] );
 		add_action( 'tribe_help_pre_get_sections', [ $this, 'add_help_section_featured_content' ] );
 		add_action( 'tribe_help_pre_get_sections', [ $this, 'add_help_section_extra_content' ] );
 		add_filter( 'tribe_support_registered_template_systems', [ $this, 'add_template_updates_check' ] );
-		add_action( 'tribe_tickets_plugin_loaded', [ 'Tribe__Support', 'getInstance' ] );
+		add_action( 'tec_tickets_fully_loaded', [ 'Tribe__Support', 'getInstance' ] );
 
 		// Setup Front End Display
 		add_action( 'tribe_events_inside_cost', 'tribe_tickets_buy_button', 10, 0 );
@@ -723,8 +775,8 @@ class Tribe__Tickets__Main {
 		 * @see \Tribe__Tickets__Assets::add_data_strings()
 		 */
 
-		add_action( 'tribe_plugins_loaded', tribe_callback( 'tickets.assets', 'enqueue_scripts' ) );
-		add_action( 'tribe_plugins_loaded', tribe_callback( 'tickets.assets', 'admin_enqueue_scripts' ) );
+		add_action( 'init', tribe_callback( 'tickets.assets', 'enqueue_scripts' ) );
+		add_action( 'init', tribe_callback( 'tickets.assets', 'admin_enqueue_scripts' ) );
 		add_action( 'admin_enqueue_scripts', tribe_callback( 'tickets.assets', 'enqueue_editor_scripts' ) );
 		add_filter( 'tribe_asset_data_add_object_tribe_l10n_datatables', tribe_callback( 'tickets.assets', 'add_data_strings' ) );
 
@@ -847,6 +899,7 @@ class Tribe__Tickets__Main {
 		Tribe__Credits::init();
 		$this->maybe_set_et_version();
 		$this->maybe_set_options_for_old_installs();
+		$this->activation_page();
 	}
 
 	/**
@@ -939,23 +992,27 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
+	 * @deprecated TBD
+	 *
 	 * @return Tribe__Admin__Activation_Page
 	 */
 	public function activation_page() {
+		_deprecated_function( __METHOD__, 'TBD', 'Now handled by TEC\Tickets\Admin\Onboarding\Controller' );
+
 		if ( empty( $this->activation_page ) ) {
 			$this->activation_page = new Tribe__Admin__Activation_Page( [
 				'slug'                  => 'event-tickets',
 				'admin_page'            => 'tickets_page_tec-tickets-settings',
 				'admin_url'             => tribe( Settings::class )->get_url(),
 				'version'               => self::VERSION,
-				'activation_transient'  => '_tribe_tickets_activation_redirect',
+				'activation_transient'  => Tickets_Landing_Page::ACTIVATION_REDIRECT_OPTION,
 				'plugin_path'           => $this->plugin_dir . 'event-tickets.php',
 				'version_history_slug'  => $this->version_history_slug,
 				'welcome_page_title'    => esc_html__( 'Welcome to Event Tickets!', 'event-tickets' ),
 				'welcome_page_template' => $this->plugin_path . 'src/admin-views/admin-welcome-message.php',
 			] );
 
-			tribe_asset(
+			tec_asset(
 				$this,
 				'tribe-tickets-welcome-message',
 				'admin/welcome-message.js',

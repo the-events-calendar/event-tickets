@@ -5,7 +5,8 @@ import fs from 'fs';
 global.tec = global.tec || {};
 global.tec.tickets = global.tec.tickets || {};
 global.tec.tickets.seating = {
-	service: {
+	service: {},
+	serviceData: {
 		baseUrl: 'https://wordpress.test',
 		mapsHomeUrl:
 			'https://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&tab=layouts',
@@ -14,7 +15,8 @@ global.tec.tickets.seating = {
 		associatedEventsUrl:
 			'https://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating-events',
 	},
-	ajax: {
+	ajax: {},
+	ajaxData: {
 		ajaxUrl: 'https://wordpress.test/wp-admin/admin-ajax.php',
 		ajaxNonce: '1234567890',
 		ACTION_FETCH_ATTENDEES: 'tec_tickets_seating_fetch_attendees',
@@ -24,7 +26,8 @@ global.tec.tickets.seating = {
 		ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID:
 			'tec_tickets_seating_get_seat_types_by_layout_id',
 	},
-	utils: {
+	utils: {},
+	utilsData: {
 		localizedStrings: {
 			layouts: {
 				'add-failed': 'Failed to add the layout.',
@@ -40,7 +43,8 @@ global.tec.tickets.seating = {
 		},
 	},
 	frontend: {
-		ticketsBlock: {
+		ticketsBlock: {},
+		ticketsBlockData: {
 			objectName: 'tribe-tickets-seating-modal',
 			seatTypeMap: [
 				{
@@ -49,16 +53,18 @@ global.tec.tickets.seating = {
 						{
 							ticketId: 23,
 							name: 'Adult',
-							price: 50,
+							price: '$50',
 							description: 'Adult, General Admission',
 							dateInRange: true,
+							priceValue: 50,
 						},
 						{
 							ticketId: 89,
 							name: 'Child',
-							price: 30,
+							price: '$30',
 							description: 'Child, General Admission',
 							dateInRange: false,
+							priceValue: 30,
 						},
 					],
 				},
@@ -68,9 +74,10 @@ global.tec.tickets.seating = {
 						{
 							ticketId: 66,
 							name: 'VIP',
-							price: 100,
+							price: '$100',
 							description: 'Best seats',
 							dateInRange: true,
+							priceValue: 100,
 						},
 					],
 				},
@@ -91,7 +98,8 @@ global.tec.tickets.seating = {
 				'tec_tickets_seating_reservation_updated',
 			sessionTimeout: 893,
 		},
-		session: {
+		session: {},
+		sessionData: {
 			ajaxUrl: 'https://wordpress.test/wp-admin/admin-ajax.php',
 			ajaxNonce: '1234567890',
 			checkoutGraceTime: 60,
@@ -104,7 +112,8 @@ global.tec.tickets.seating = {
 				'tec_tickets_seating_timer_pause_to_checkout',
 		},
 	},
-	currency: {
+	currency: {},
+	currencyData: {
 		decimalSeparator: '.',
 		decimalNumbers: 2,
 		thousandSeparator: ',',
@@ -112,7 +121,8 @@ global.tec.tickets.seating = {
 		symbol: '$',
 	},
 	admin: {
-		seatsReport: {
+		seatsReport: {},
+		seatsReportData: {
 			postId: 17,
 			seatTypeMap: [
 				{
@@ -123,12 +133,14 @@ global.tec.tickets.seating = {
 							name: 'Adult',
 							price: 50,
 							description: 'Adult, General Admission',
+							priceValue: 50,
 						},
 						{
 							ticketId: 89,
 							name: 'Child',
 							price: 30,
 							description: 'Child, General Admission',
+							priceValue: 30,
 						},
 					],
 				},
@@ -140,6 +152,7 @@ global.tec.tickets.seating = {
 							name: 'VIP',
 							price: 100,
 							description: 'Best seats',
+							priceValue: 100,
 						},
 					],
 				},
