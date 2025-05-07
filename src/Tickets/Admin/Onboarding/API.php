@@ -188,7 +188,7 @@ class API extends Abstract_API {
 			$complete = array_merge( $complete, [ 0 ] );
 		}
 
-		// Add current tab to completed if it's not in skipped
+		// Add current tab to completed if it's not in skipped.
 		if ( ! in_array( $current, $skipped, true ) ) {
 			$complete = array_merge( $complete, [ $current ] );
 		}

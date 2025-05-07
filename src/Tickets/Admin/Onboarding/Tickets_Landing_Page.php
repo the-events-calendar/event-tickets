@@ -270,7 +270,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		$tec_activated  = $installer->is_active( 'the-events-calendar' );
 		?>
 			<div class="tec-admin-page__content-section tec-tickets-admin-page__content-section">
-				<h2 class="tec-admin-page__content-header"><?php esc_html_e( 'Tickets setup', 'event-tickets' ); ?></h2>
+				<h2 class="tec-admin-page__content-header"><?php esc_html_e( 'First-time setup', 'event-tickets' ); ?></h2>
 				<ul class="tec-admin-page__content-step-list">
 					<li
 						id="tec-tickets-onboarding-wizard-currency-item"
@@ -289,7 +289,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 							<?php esc_html_e( 'Currency', 'event-tickets' ); ?>
 						</div>
 						<div class="step-list__item-right">
-							<a href="<?php echo esc_url( admin_url( "{$settings_url}&tab=payments" ) ); ?>" class="tec-admin-page__link">
+							<a href="<?php echo esc_url( admin_url( "{$settings_url}&tab=payments#tribe-field-tickets-commerce-currency-code" ) ); ?>" class="tec-admin-page__link">
 								<?php esc_html_e( 'Edit currency', 'event-tickets' ); ?>
 							</a>
 						</div>
@@ -311,7 +311,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 							<?php esc_html_e( 'Email communication setup', 'event-tickets' ); ?>
 						</div>
 						<div class="step-list__item-right">
-							<a href="<?php echo esc_url( admin_url( "{$settings_url}&tab=emails" ) ); ?>" class="tec-admin-page__link">
+							<a href="<?php echo esc_url( admin_url( "{$settings_url}&tab=emails#tribe-field-tec-tickets-emails-sender-name" ) ); ?>" class="tec-admin-page__link">
 								<?php esc_html_e( 'Edit email settings', 'event-tickets' ); ?>
 							</a>
 						</div>
@@ -333,7 +333,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 							<?php esc_html_e( 'Stripe for online payments', 'event-tickets' ); ?>
 						</div>
 						<div class="step-list__item-right">
-							<a href="<?php echo esc_url( admin_url( "{$settings_url}&tc-section=stripe&tab=payments" ) ); ?>" class="tec-admin-page__link">
+							<a href="<?php echo esc_url( admin_url( "{$settings_url}&tc-section=stripe&tab=stripe" ) ); ?>" class="tec-admin-page__link">
 								<?php esc_html_e( 'Edit Stripe settings', 'event-tickets' ); ?>
 							</a>
 						</div>
@@ -354,7 +354,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 							<?php esc_html_e( 'Login requirement for purchasing tickets', 'event-tickets' ); ?>
 						</div>
 						<div class="step-list__item-right">
-							<a href="<?php echo esc_url( admin_url( $settings_url ) ); ?>" class="tec-admin-page__link">
+							<a href="<?php echo esc_url( admin_url( "{$settings_url}#tec-tickets-settings-authentication" ) ); ?>" class="tec-admin-page__link">
 								<?php esc_html_e( 'Edit', 'event-tickets' ); ?>
 							</a>
 						</div>
