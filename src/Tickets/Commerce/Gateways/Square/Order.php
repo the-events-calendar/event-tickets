@@ -129,16 +129,27 @@ class Order extends Abstract_Order {
 			$order
 		);
 
-		$square_order = apply_filters(
-			'tec_tickets_commerce_square_order_payload',
-			$this->add_items_to_square_payload( $square_order, $order ),
-			$order
-		);
+		$square_order = $this->add_items_to_square_payload( $square_order, $order );
 
-		$square_order_id = $this->get_square_order_id( $order->ID );
+		/**
+		 * Filters the Square order payload.
+		 *
+		 * @since TBD
+		 *
+		 * @param array   $payload The payload for the Square order.
+		 * @param WP_Post $order   The order object.
+		 */
+		$square_order = apply_filters( 'tec_tickets_commerce_square_order_payload', $square_order, $order );
+
+		$square_order_id = null;
+
+		// If the order has a gateway payload, we need to update the order.
+		if ( ! empty( $order->gateway_payload ) ) {
+			$square_order_id = $order->gateway_order_id;
+		}
 
 		if ( $square_order_id && ! $this->needs_update( $square_order, $order->ID ) ) {
-			return $square_order_id;
+			return $order->gateway_order_id;
 		}
 
 		if ( $square_order_id ) {
@@ -147,7 +158,7 @@ class Order extends Abstract_Order {
 		}
 
 		$body = [
-			'idempotency_key' => uniqid( 'tec-square-cancel-', true ),
+			'idempotency_key' => uniqid( $square_order_id ? 'tec-square-update-' : 'tec-square-create-', true ),
 			'order'           => $square_order,
 		];
 
@@ -174,6 +185,16 @@ class Order extends Abstract_Order {
 			throw new RuntimeException( 'Failed to create or update Square order.' );
 		}
 
+		// Update the order with the new Square order ID.
+		tec_tc_orders()->by( 'id', $order->ID )->set_args(
+			[
+				'gateway_order_id' => $response['order']['id'],
+				'gateway_payload'  => $square_order,
+			]
+		)->save();
+
+		$square_order_id = $response['order']['id'];
+
 		/**
 		 * Fires after the Square order is upserted.
 		 *
@@ -185,7 +206,6 @@ class Order extends Abstract_Order {
 		 */
 		do_action( 'tec_tickets_commerce_square_order_after_upsert', $response['order'], $order->ID, $square_order );
 
-		update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_id', $response['order']['id'] );
 		update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_version', $response['order']['version'] );
 		update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order', wp_json_encode( $response['order'] ) );
 		update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_payload', wp_json_encode( $square_order ) );
@@ -275,7 +295,6 @@ class Order extends Abstract_Order {
 			update_post_meta( $order->ID, Commerce_Order::META_ORDER_TOTAL_TIP, ( new Precision_Value( $net_amounts['tip_money']['amount'] / 100 ) )->get() );
 			update_post_meta( $order->ID, Commerce_Order::META_ORDER_CREATED_BY, 'square-pos' );
 
-			update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_id', $square_order_id );
 			update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_version', $square_order['version'] ?? 1 );
 			update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order', wp_json_encode( $square_order ) );
 			update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_payload', wp_json_encode( $square_order ) );
@@ -380,7 +399,7 @@ class Order extends Abstract_Order {
 			return '';
 		}
 
-		$order_id = $this->get_square_order_id( $order->ID );
+		$order_id = $order->gateway_order_id;
 
 		if ( empty( $order_id ) ) {
 			return '';
@@ -389,30 +408,6 @@ class Order extends Abstract_Order {
 		$is_test_mode = tribe( Gateway::class )->is_test_mode();
 
 		return sprintf( 'https://app.squareup%s.com/dashboard/orders/overview/%s', $is_test_mode ? 'sandbox' : '', $order_id );
-	}
-
-	/**
-	 * Get the Square order ID from the order.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $order_id The order ID.
-	 *
-	 * @return string
-	 */
-	public function get_square_order_id( int $order_id ): string {
-		/**
-		 * Filters the Square order ID.
-		 *
-		 * @since TBD
-		 *
-		 * @param string $square_order_id The Square order ID.
-		 */
-		return (string) apply_filters(
-			'tec_tickets_commerce_square_order_id',
-			(string) get_post_meta( $order_id, '_tec_tickets_commerce_gateways_square_order_id', true ),
-			$order_id
-		);
 	}
 
 	/**

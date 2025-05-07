@@ -352,11 +352,11 @@ class Remote_Objects {
 		}
 
 		$remote_object_id = Item::get_remote_object_id( $ticket_id );
+		$event_id = $ticket_object->get_event()->ID;
 
 		$updates = [
-			'name'             => $ticket_object->get_event()->post_title,
+			'uid'              => "e-{$event_id}-t-{$ticket_id}",
 			'quantity'         => (string) ( $item['quantity'] ?? 1 ),
-			'variation_name'   => $ticket_object->name,
 			'item_type'        => $remote_object_id ? 'ITEM' : 'CUSTOM_AMOUNT',
 			'metadata'         => [
 				'local_id' => (string) $ticket_id,
@@ -368,6 +368,8 @@ class Remote_Objects {
 		];
 
 		if ( $remote_object_id ) {
+			$updates['name']              = $ticket_object->get_event()->post_title;
+			$updates['variation_name']    = $ticket_object->name;
 			$updates['catalog_object_id'] = $remote_object_id;
 		}
 

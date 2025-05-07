@@ -58,7 +58,7 @@ class Payment {
 			'idempotency_key' => uniqid( 'tec-square-', true ),
 			'source_id'       => $source_id,
 			'location_id'     => $merchant->get_location_id(),
-			'order_id'        => tribe( Order::class )->get_square_order_id( $order->ID ),
+			'order_id'        => $order->gateway_order_id,
 			'reference_id'    => (string) $order->ID,
 			'metadata'        => [
 				static::$tc_metadata_identifier => true,
