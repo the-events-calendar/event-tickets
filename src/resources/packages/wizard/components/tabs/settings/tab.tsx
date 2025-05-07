@@ -17,6 +17,7 @@ import apiFetch from '@wordpress/api-fetch';
 const SettingsContent = ( { moveToNextTab, skipToNextTab } ) => {
 	const [ connectionStatus, setConnectionStatus ] = useState( 'disconnected' );
 	const getSettings = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getSettings );
+	const countryCurrency = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getCountryCurrency() );
 	const updateSettings = useDispatch( SETTINGS_STORE_KEY ).updateSettings;
 	const {
 		currency,
@@ -34,8 +35,9 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab } ) => {
 			paymentOption: store.getSetting( 'paymentOption' ),
 		};
 	}, [] );
+
 	const wpNonce = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getSetting( '_wpnonce' ), [] );
-	const [ currencyCode, setCurrency ] = useState( currency || 'USD' );
+	const [ currencyCode, setCurrency ] = useState( currency || countryCurrency );
 	const [ paymentOption, setPaymentOption ] = useState(storedPaymentOption || '');
 
 	useEffect(() => {
@@ -47,6 +49,10 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab } ) => {
 	useEffect(() => {
 		updateSettings({ paymentOption });
 	}, [paymentOption, updateSettings]);
+
+	useEffect(() => {
+		setCurrency(currency || countryCurrency || 'USD');
+	}, [currency, countryCurrency]);
 
 	useEffect( () => {
 		const settings = getSettings();
@@ -129,6 +135,7 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab } ) => {
 		);
 	};
 
+
 	return (
 		<>
 			<TicketIcon />
@@ -148,7 +155,7 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab } ) => {
 							label={ __( 'Currency', 'event-tickets' ) }
 							className="tec-tickets-onboarding__form-field"
 						>
-							<select onChange={ ( e ) => setCurrency( e.target.value ) } defaultValue={ currencyCode }>
+							<select onChange={ ( e ) => setCurrency( e.target.value ) } value={ currencyCode }>
 								{ Object.entries( currencies ).map( ( [ key, data ] ) => (
 									<option key={ key } value={ data[ 'code' ] }>
 										{ data[ 'name' ] } ({ data[ 'code' ] })
