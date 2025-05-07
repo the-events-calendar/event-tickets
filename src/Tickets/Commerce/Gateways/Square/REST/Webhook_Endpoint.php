@@ -332,7 +332,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		$square_order_controller = tribe( Order::class );
 
 		// Find the order associated with this payment.
-		$order = $square_order_controller->get_by_square_order_id( $order_id );
+		$order = tribe( Commerce_Order::class )->get_from_gateway_order_id( $order_id );
 
 		if ( empty( $order ) && 'order_updated' === $type ) {
 			do_action(
@@ -378,7 +378,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		$order_controller = tribe( Order::class );
 
 		// Find the order associated with this payment.
-		$order = $order_controller->get_by_square_order_id( $order_id );
+		$order = tribe( Commerce_Order::class )->get_from_gateway_order_id( $order_id );
 
 		if ( empty( $order ) ) {
 			do_action(

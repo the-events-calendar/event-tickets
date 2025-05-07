@@ -112,6 +112,8 @@ class Success {
 	 * @since 5.1.9
 	 */
 	public function parse_request() {
+		$i=1;
+
 		if ( ! $this->is_current_page() ) {
 			return;
 		}

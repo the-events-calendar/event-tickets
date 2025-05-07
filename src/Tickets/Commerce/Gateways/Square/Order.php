@@ -186,12 +186,16 @@ class Order extends Abstract_Order {
 		}
 
 		// Update the order with the new Square order ID.
-		tec_tc_orders()->by( 'id', $order->ID )->set_args(
+		$order_updated = tec_tc_orders()->by( 'id', $order->ID )->set_args(
 			[
 				'gateway_order_id' => $response['order']['id'],
 				'gateway_payload'  => $square_order,
 			]
 		)->save();
+
+		if ( ! $order_updated || ! isset( $order_updated[ $order->ID ] ) || ! $order_updated[ $order->ID ] ) {
+			throw new RuntimeException( 'Failed to update the order with the new Square order ID.' );
+		}
 
 		$square_order_id = $response['order']['id'];
 
@@ -206,6 +210,7 @@ class Order extends Abstract_Order {
 		 */
 		do_action( 'tec_tickets_commerce_square_order_after_upsert', $response['order'], $order->ID, $square_order );
 
+		// @todo @dimi We need to look if we need these, we store this information elsewhere.
 		update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_version', $response['order']['version'] );
 		update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order', wp_json_encode( $response['order'] ) );
 		update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_payload', wp_json_encode( $square_order ) );
@@ -240,7 +245,7 @@ class Order extends Abstract_Order {
 			$is_update = $order instanceof WP_Post;
 		}
 
-		$order     = $order instanceof WP_Post ? $order : $this->get_by_square_order_id( $square_order_id );
+		$order     = $order instanceof WP_Post ? $order : tribe( Commerce_Order::class )->get_from_gateway_order_id( $square_order_id );
 		$is_update = $order instanceof WP_Post;
 
 		if ( ! $is_update && ! $this->settings->is_inventory_sync_enabled() ) {
@@ -295,6 +300,7 @@ class Order extends Abstract_Order {
 			update_post_meta( $order->ID, Commerce_Order::META_ORDER_TOTAL_TIP, ( new Precision_Value( $net_amounts['tip_money']['amount'] / 100 ) )->get() );
 			update_post_meta( $order->ID, Commerce_Order::META_ORDER_CREATED_BY, 'square-pos' );
 
+			// @todo @dimi We need to look if we need these, we store this information elsewhere.
 			update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_version', $square_order['version'] ?? 1 );
 			update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order', wp_json_encode( $square_order ) );
 			update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_payload', wp_json_encode( $square_order ) );
@@ -670,25 +676,6 @@ class Order extends Abstract_Order {
 	}
 
 	/**
-	 * Get the order by Square order ID.
-	 *
-	 * @since TBD
-	 *
-	 * @param string       $square_order_id The Square order ID.
-	 * @param string|array $status          The status of the order.
-	 *
-	 * @return WP_Post|null
-	 */
-	public function get_by_square_order_id( string $square_order_id, $status = 'any' ): ?WP_Post {
-		return tec_tc_orders()->by_args(
-			[
-				'status'           => $status,
-				'gateway_order_id' => $square_order_id,
-			]
-		)->first();
-	}
-
-	/**
 	 * Get the Square order.
 	 *
 	 * @since TBD
@@ -719,6 +706,26 @@ class Order extends Abstract_Order {
 		$cache[ $cache_key ] = $square_order;
 
 		return $square_order;
+	}
+
+	/**
+	 * Add a payment to the order.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $square_order_id The Square order ID.
+	 * @param string $payment_id The payment ID.
+	 *
+	 * @return bool|int
+	 */
+	public function add_payment_id( string $square_order_id, string $payment_id ) {
+		$order = tribe( Commerce_Order::class )->get_from_gateway_order_id( $square_order_id );
+
+		if ( ! $order ) {
+			return false;
+		}
+
+		return Commerce_Meta::add( $order->ID, 'payment_id', $payment_id );
 	}
 
 	/**

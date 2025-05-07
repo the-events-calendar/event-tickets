@@ -60,9 +60,9 @@ class Meta {
 	 * @param array  $args       Additional arguments.
 	 * @param string $type       The type of object.
 	 *
-	 * @return bool Whether the meta was added.
+	 * @return bool|int Whether the meta was added.
 	 */
-	public static function add( int $id, string $meta_key, $value, array $args = [], string $type = 'post' ): bool {
+	public static function add( int $id, string $meta_key, $value, array $args = [], string $type = 'post' ) {
 		// Make sure meta is added to the post, not a revision.
 		$the_post = 'post' === $type ? wp_is_post_revision( $id ) : false;
 		if ( $the_post ) {
@@ -89,15 +89,15 @@ class Meta {
 	 * @param array  $args       Additional arguments.
 	 * @param string $type       The type of object.
 	 *
-	 * @return bool Whether the meta was updated.
+	 * @return bool|int Whether the meta was updated.
 	 */
-	public static function set( int $id, string $meta_key, $value, array $args = [], string $type = 'post' ): bool {
+	public static function set( int $id, string $meta_key, $value, array $args = [], string $type = 'post' ) {
 		$the_post = 'post' === $type ? wp_is_post_revision( $id ) : false;
 		if ( $the_post ) {
 			$id = $the_post;
 		}
 
-		return (bool) update_metadata( $type, $id, Commerce_Settings::get_key( $meta_key, $args ), $value );
+		return update_metadata( $type, $id, Commerce_Settings::get_key( $meta_key, $args ), $value );
 	}
 
 	/**
