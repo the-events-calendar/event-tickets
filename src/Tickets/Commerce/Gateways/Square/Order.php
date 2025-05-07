@@ -91,11 +91,11 @@ class Order extends Abstract_Order {
 	 * @return array
 	 */
 	public function filter_schema( array $schema = [], ?Tribe__Repository $repository = null ) {
-		$schema['square_payment_id'] = function( $payment_ids ) use ( $repository ) {
+		$schema['square_payment_id'] = function ( $payment_ids ) use ( $repository ) {
 			$this->filter_by_payment_id( $payment_ids, $repository );
 		};
 
-		$schema['square_payment_id_not'] = function( $payment_ids ) use ( $repository ) {
+		$schema['square_payment_id_not'] = function ( $payment_ids ) use ( $repository ) {
 			$this->filter_by_payment_id_not( $payment_ids, $repository );
 		};
 
