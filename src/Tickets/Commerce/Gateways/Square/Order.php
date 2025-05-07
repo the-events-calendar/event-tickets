@@ -175,7 +175,7 @@ class Order extends Abstract_Order {
 		}
 
 		if ( $square_order_id ) {
-			$order_version           = (int) get_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_version', true );
+			$order_version           = (int) ( $order->gateway_order_version ?? 0 );
 			$square_order['version'] = $order_version ? $order_version : 1;
 		}
 
@@ -210,8 +210,11 @@ class Order extends Abstract_Order {
 		// Update the order with the new Square order ID.
 		$order_updated = tec_tc_orders()->by( 'id', $order->ID )->set_args(
 			[
-				'gateway_order_id' => $response['order']['id'],
-				'gateway_payload'  => $square_order,
+				'gateway_order_id'      => $response['order']['id'],
+				'gateway_customer_id'   => $customer_id,
+				'gateway_order_version' => $response['order']['version'],
+				'latest_payload_sent'   => md5( wp_json_encode( $square_order ) ),
+				'gateway_order_object'  => wp_json_encode( $response['order'] ),
 			]
 		)->save();
 
@@ -229,11 +232,6 @@ class Order extends Abstract_Order {
 		 * @param array  $square_order The Square order.
 		 */
 		do_action( 'tec_tickets_commerce_square_order_after_upsert', $response['order'], $order->ID, $square_order );
-
-		// @todo @dimi We need to look if we need these, we store this information elsewhere.
-		update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_version', $response['order']['version'] );
-		update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order', wp_json_encode( $response['order'] ) );
-		update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_payload', wp_json_encode( $square_order ) );
 
 		tribe( Syncs\Regulator::class )->schedule( self::HOOK_PULL_ORDER_ACTION, [ $response['order']['id'] ], 2 * MINUTE_IN_SECONDS );
 
@@ -298,19 +296,21 @@ class Order extends Abstract_Order {
 			$purchaser = $this->get_square_orders_customer( $square_order_id );
 
 			$order_args = [
-				'total_value'          => $total_value->get(),
-				'subtotal'             => $subtotal_value->get(),
-				'currency'             => $net_amounts['total_money']['currency'],
-				'hash'                 => $hash,
-				'items'                => $items,
-				'gateway'              => Gateway::get_key(),
-				'title'                => $this->commerce_order->generate_order_title( $items, $hash ),
-				'purchaser_user_id'    => $purchaser->ID ?? 0,
-				'purchaser_full_name'  => $purchaser->display_name ?? '',
-				'purchaser_first_name' => $purchaser->first_name ?? '',
-				'purchaser_last_name'  => $purchaser->last_name ?? '',
-				'purchaser_email'      => $purchaser->user_email ?? '',
-				'gateway_order_id'     => $square_order_id,
+				'total_value'           => $total_value->get(),
+				'subtotal'              => $subtotal_value->get(),
+				'currency'              => $net_amounts['total_money']['currency'],
+				'hash'                  => $hash,
+				'items'                 => $items,
+				'gateway'               => Gateway::get_key(),
+				'title'                 => $this->commerce_order->generate_order_title( $items, $hash ),
+				'purchaser_user_id'     => $purchaser->ID ?? 0,
+				'purchaser_full_name'   => $purchaser->display_name ?? '',
+				'purchaser_first_name'  => $purchaser->first_name ?? '',
+				'purchaser_last_name'   => $purchaser->last_name ?? '',
+				'purchaser_email'       => $purchaser->user_email ?? '',
+				'gateway_order_id'      => $square_order_id,
+				'gateway_order_version' => $square_order['version'] ?? 1,
+				'gateway_order_object'  => wp_json_encode( $square_order ),
 			];
 
 			$order = $this->commerce_order->create( tribe( Gateway::class ), $order_args );
@@ -319,11 +319,6 @@ class Order extends Abstract_Order {
 			update_post_meta( $order->ID, Commerce_Order::META_ORDER_TOTAL_TAX, ( new Precision_Value( $net_amounts['tax_money']['amount'] / 100 ) )->get() );
 			update_post_meta( $order->ID, Commerce_Order::META_ORDER_TOTAL_TIP, ( new Precision_Value( $net_amounts['tip_money']['amount'] / 100 ) )->get() );
 			update_post_meta( $order->ID, Commerce_Order::META_ORDER_CREATED_BY, 'square-pos' );
-
-			// @todo @dimi We need to look if we need these, we store this information elsewhere.
-			update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_version', $square_order['version'] ?? 1 );
-			update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order', wp_json_encode( $square_order ) );
-			update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_payload', wp_json_encode( $square_order ) );
 		}
 
 		if ( ! $order instanceof WP_Post ) {
@@ -387,7 +382,13 @@ class Order extends Abstract_Order {
 		$cached_data = $cache[ $cache_key ] ?? false;
 
 		if ( ! is_array( $cached_data ) ) {
-			$cached_data = json_decode( get_post_meta( $order_id, '_tec_tickets_commerce_gateways_square_order', true ), true );
+			$order = tec_tc_get_order( $order_id );
+
+			if ( ! $order instanceof WP_Post ) {
+				return [];
+			}
+
+			$cached_data = $order->gateway_order_object ?? [];
 
 			$cache[ $cache_key ] = $cached_data;
 		}
@@ -456,7 +457,7 @@ class Order extends Abstract_Order {
 		 */
 		return apply_filters(
 			'tec_tickets_commerce_square_order_needs_update',
-			md5( wp_json_encode( $square_order ) ) !== md5( get_post_meta( $order_id, '_tec_tickets_commerce_gateways_square_order_payload', true ) ),
+			md5( wp_json_encode( $square_order ) ) !== Commerce_Meta::get( $order_id, Commerce_Order::LATEST_PAYLOAD_SENT_TO_GATEWAY_META_KEY, [], 'post', true, false ),
 			$square_order,
 			$order_id
 		);

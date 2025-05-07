@@ -97,6 +97,15 @@ class Order extends Abstract_Order {
 	public static $gateway_order_id_meta_key = '_tec_tc_order_gateway_order_id';
 
 	/**
+	 * Which meta holds the gateway order object.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const GATEWAY_ORDER_OBJECT_META_KEY = '_tec_tc_order_gateway_order_object';
+
+	/**
 	 * Which meta holds the original gateway order id.
 	 *
 	 * @since TBD
@@ -104,6 +113,33 @@ class Order extends Abstract_Order {
 	 * @var string
 	 */
 	public const ORIGINAL_GATEWAY_ORDER_ID_META_KEY = '_tec_tc_order_original_gateway_order_id';
+
+	/**
+	 * Which meta holds the gateway customer id.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const GATEWAY_CUSTOMER_ID_META_KEY = '_tec_tc_order_gateway_customer_id';
+
+	/**
+	 * Which meta holds the latest payload sent to the gateway.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const LATEST_PAYLOAD_SENT_TO_GATEWAY_META_KEY = '_tec_tc_order_latest_payload_sent_to_gateway';
+
+	/**
+	 * Which meta holds the gateway order version.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const GATEWAY_ORDER_VERSION_META_KEY = '_tec_tc_order_gateway_order_version';
 
 	/**
 	 * Normally when dealing with the gateways we have a payload from the original creation of the Order on their side

@@ -64,6 +64,10 @@ class Order_Model extends Base {
 			}
 
 			$original_gateway_order_id = Arr::get( $post_meta, [ Order::ORIGINAL_GATEWAY_ORDER_ID_META_KEY, 0 ] );
+			$gateway_order_object      = Arr::get( $post_meta, [ Order::GATEWAY_ORDER_OBJECT_META_KEY, '' ] );
+			$latest_payload_sent       = Arr::get( $post_meta, [ Order::LATEST_PAYLOAD_SENT_TO_GATEWAY_META_KEY, 0 ] );
+			$gateway_customer_id       = Arr::get( $post_meta, [ Order::GATEWAY_CUSTOMER_ID_META_KEY, 0 ] );
+			$gateway_order_version     = Arr::get( $post_meta, [ Order::GATEWAY_ORDER_VERSION_META_KEY, 0 ] );
 
 			$properties = [
 				'order_id'                  => $post_id,
@@ -77,6 +81,10 @@ class Order_Model extends Base {
 				'gateway_order_id'          => $gateway_order_id,
 				'original_gateway_order_id' => $original_gateway_order_id,
 				'gateway_payload'           => $gateway_payload,
+				'gateway_order_object'      => $gateway_order_object ? json_decode( $gateway_order_object, true ) : [],
+				'gateway_order_version'     => $gateway_order_version,
+				'gateway_customer_id'       => $gateway_customer_id,
+				'latest_payload_sent'       => $latest_payload_sent,
 				'total_value'               => Commerce\Utils\Value::create( $total_value ),
 				'subtotal'                  => Commerce\Utils\Value::create( $subtotal ),
 				'total'                     => $total_value,
