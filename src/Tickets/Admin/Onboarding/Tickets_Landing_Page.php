@@ -356,6 +356,33 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 						</div>
 					</li>
 				</ul>
+				<div class="tec-tickets-admin-page__content-section-videos">
+					<h2 class="tec-admin-page__content-header">
+						<?php esc_html_e( 'Create your first ticket', 'event-tickets' ); ?>
+					</h2>
+					<ul class="tec-admin-page__content-step-list">
+						<li class="step-list__item">
+							<div class="step-list__item-left">
+								<?php esc_html_e( 'Learn how to create a ticket', 'event-tickets' ); ?>
+							</div>
+							<div class="step-list__item-right">
+								<a href="#" class="tec-admin-page__link">
+									<?php esc_html_e( 'Watch Video', 'event-tickets' ); ?>
+								</a>
+							</div>
+						</li>
+						<li class="step-list__item">
+							<div class="step-list__item-left">
+								<?php esc_html_e( 'Learn how to optimize your workflow with ticket presets', 'event-tickets' ); ?>
+							</div>
+							<div class="step-list__item-right">
+								<a href="#" class="tec-admin-page__link">
+									<?php esc_html_e( 'Watch Video', 'event-tickets' ); ?>
+								</a>
+							</div>
+						</li>
+					</ul>
+				</div>
 				<div id="tec-tickets-onboarding-wizard-calendar">
 					<h2 class="tec-admin-page__content-header">
 						<?php esc_html_e( 'The Events Calendar', 'event-tickets' ); ?>
@@ -450,7 +477,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 * @return void
 	 */
 	public function admin_page_sidebar_content(): void {
-	  // no op.
+		// no op.
 	}
 
 	/**
