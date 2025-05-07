@@ -448,7 +448,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	public function admin_content_resources_section(): void {
 		$chatbot_link   = admin_url( 'admin.php?page=tec-tickets-help' );
 		$guide_link     = 'https://theeventscalendar.com/knowledgebase/guide/event-tickets/';
-		$customize_link = 'https://theeventscalendar.com/knowledgebase/guide/customization/';
+		$customize_link = 'https://theeventscalendar.com/knowledgebase/ticket-rsvp-template-files/';
 		?>
 		<div class="tec-admin-page__content-section">
 			<h2 class="tec-admin-page__content-header">
