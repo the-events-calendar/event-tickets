@@ -354,9 +354,8 @@ class Remote_Objects {
 		$remote_object_id = Item::get_remote_object_id( $ticket_id );
 
 		$updates = [
-			'name'             => $ticket_object->get_event()->post_title,
+			'note'             => $ticket_object->get_event()->post_title . ' - ' . $ticket_object->name,
 			'quantity'         => (string) ( $item['quantity'] ?? 1 ),
-			'variation_name'   => $ticket_object->name,
 			'item_type'        => $remote_object_id ? 'ITEM' : 'CUSTOM_AMOUNT',
 			'metadata'         => [
 				'local_id' => (string) $ticket_id,
@@ -369,6 +368,9 @@ class Remote_Objects {
 
 		if ( $remote_object_id ) {
 			$updates['catalog_object_id'] = $remote_object_id;
+			$updates['name']              = $ticket_object->get_event()->post_title;
+			$updates['variation_name']    = $ticket_object->name;
+			unset( $updates['note'] );
 		}
 
 		return array_merge( $ticket, $updates );
@@ -487,13 +489,13 @@ class Remote_Objects {
 
 			if ( $customer_id ) {
 				$cache[ $cache_key ] = $customer_id;
-				update_post_meta( $order_id, '_tec_tickets_commerce_gateways_square_customer_id', $customer_id );
+				Commerce_Meta::set( $order_id, Commerce_Order::GATEWAY_CUSTOMER_ID_META_KEY, $customer_id, [], 'post', false );
 
 				return $customer_id;
 			}
 		}
 
-		$customer_id = (string) get_post_meta( $order_id, '_tec_tickets_commerce_gateways_square_customer_id', true );
+		$customer_id = (string) Commerce_Meta::get( $order_id, Commerce_Order::GATEWAY_CUSTOMER_ID_META_KEY, [], 'post', true, false );
 
 		if ( $customer_id ) {
 			$cache[ $cache_key ] = $customer_id;
@@ -528,7 +530,7 @@ class Remote_Objects {
 			$customer_id         = $results['customers'][0]['id'];
 			$cache[ $cache_key ] = $customer_id;
 
-			update_post_meta( $order_id, '_tec_tickets_commerce_gateways_square_customer_id', $customer_id );
+			Commerce_Meta::set( $order_id, Commerce_Order::GATEWAY_CUSTOMER_ID_META_KEY, $customer_id, [], 'post', false );
 
 			if ( is_user_logged_in() ) {
 				Commerce_Meta::set( get_current_user_id(), '_tec_tickets_commerce_gateways_square_customer_id_%s', $customer_id, [], 'user' );
@@ -558,7 +560,7 @@ class Remote_Objects {
 		$customer_id         = $response['customer']['id'];
 		$cache[ $cache_key ] = $customer_id;
 
-		update_post_meta( $order_id, '_tec_tickets_commerce_gateways_square_customer_id', $customer_id );
+		Commerce_Meta::set( $order_id, Commerce_Order::GATEWAY_CUSTOMER_ID_META_KEY, $customer_id, [], 'post', false );
 
 		if ( is_user_logged_in() ) {
 			Commerce_Meta::set( get_current_user_id(), '_tec_tickets_commerce_gateways_square_customer_id_%s', $customer_id, [], 'user' );

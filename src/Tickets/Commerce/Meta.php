@@ -31,16 +31,19 @@ class Meta {
 	 *
 	 * @since TBD
 	 *
-	 * @param int    $id       The ID of the object.
-	 * @param string $meta_key The meta key.
-	 * @param array  $args     Additional arguments.
-	 * @param string $type     The type of object.
-	 * @param bool   $single   Whether to return a single value.
+	 * @param int    $id              The ID of the object.
+	 * @param string $meta_key        The meta key.
+	 * @param array  $args            Additional arguments.
+	 * @param string $type            The type of object.
+	 * @param bool   $single          Whether to return a single value.
+	 * @param bool   $use_environment Whether to use the environment.
 	 *
 	 * @return mixed The environmental meta value.
 	 */
-	public static function get( int $id, string $meta_key, array $args = [], string $type = 'post', bool $single = true ) {
-		return get_metadata( $type, $id, Commerce_Settings::get_key( $meta_key, $args ), $single );
+	public static function get( int $id, string $meta_key, array $args = [], string $type = 'post', bool $single = true, bool $use_environment = true ) {
+		$meta_key = $use_environment ? Commerce_Settings::get_key( $meta_key, $args ) : sprintf( $meta_key, ...$args );
+
+		return get_metadata( $type, $id, $meta_key, $single );
 	}
 
 	/**
@@ -54,22 +57,25 @@ class Meta {
 	 *
 	 * @since TBD
 	 *
-	 * @param int    $id         The ID of the object.
-	 * @param string $meta_key   The meta key.
-	 * @param mixed  $value      The value to add.
-	 * @param array  $args       Additional arguments.
-	 * @param string $type       The type of object.
+	 * @param int    $id              The ID of the object.
+	 * @param string $meta_key        The meta key.
+	 * @param mixed  $value           The value to add.
+	 * @param array  $args            Additional arguments.
+	 * @param string $type            The type of object.
+	 * @param bool   $use_environment Whether to use the environment.
 	 *
-	 * @return bool Whether the meta was added.
+	 * @return bool|int Whether the meta was added.
 	 */
-	public static function add( int $id, string $meta_key, $value, array $args = [], string $type = 'post' ): bool {
+	public static function add( int $id, string $meta_key, $value, array $args = [], string $type = 'post', bool $use_environment = true ) {
 		// Make sure meta is added to the post, not a revision.
 		$the_post = 'post' === $type ? wp_is_post_revision( $id ) : false;
 		if ( $the_post ) {
 			$id = $the_post;
 		}
 
-		return add_metadata( $type, $id, Commerce_Settings::get_key( $meta_key, $args ), $value );
+		$meta_key = $use_environment ? Commerce_Settings::get_key( $meta_key, $args ) : sprintf( $meta_key, ...$args );
+
+		return add_metadata( $type, $id, $meta_key, $value );
 	}
 
 	/**
@@ -83,21 +89,24 @@ class Meta {
 	 *
 	 * @since TBD
 	 *
-	 * @param int    $id         The ID of the object.
-	 * @param string $meta_key   The meta key.
-	 * @param mixed  $value      The value to update.
-	 * @param array  $args       Additional arguments.
-	 * @param string $type       The type of object.
+	 * @param int    $id              The ID of the object.
+	 * @param string $meta_key        The meta key.
+	 * @param mixed  $value           The value to update.
+	 * @param array  $args            Additional arguments.
+	 * @param string $type            The type of object.
+	 * @param bool   $use_environment Whether to use the environment.
 	 *
-	 * @return bool Whether the meta was updated.
+	 * @return bool|int Whether the meta was updated.
 	 */
-	public static function set( int $id, string $meta_key, $value, array $args = [], string $type = 'post' ): bool {
+	public static function set( int $id, string $meta_key, $value, array $args = [], string $type = 'post', bool $use_environment = true ) {
 		$the_post = 'post' === $type ? wp_is_post_revision( $id ) : false;
 		if ( $the_post ) {
 			$id = $the_post;
 		}
 
-		return (bool) update_metadata( $type, $id, Commerce_Settings::get_key( $meta_key, $args ), $value );
+		$meta_key = $use_environment ? Commerce_Settings::get_key( $meta_key, $args ) : sprintf( $meta_key, ...$args );
+
+		return update_metadata( $type, $id, $meta_key, $value );
 	}
 
 	/**
@@ -111,21 +120,24 @@ class Meta {
 	 *
 	 * @since TBD
 	 *
-	 * @param int    $id         The ID of the object.
-	 * @param string $meta_key   The meta key.
-	 * @param array  $args       Additional arguments.
-	 * @param string $type       The type of object.
-	 * @param mixed  $meta_value The value to delete.
+	 * @param int    $id              The ID of the object.
+	 * @param string $meta_key        The meta key.
+	 * @param array  $args            Additional arguments.
+	 * @param string $type            The type of object.
+	 * @param mixed  $meta_value      The value to delete.
+	 * @param bool   $use_environment Whether to use the environment.
 	 *
 	 * @return bool Whether the meta was deleted.
 	 */
-	public static function delete( int $id, string $meta_key, array $args = [], string $type = 'post', $meta_value = '' ): bool {
+	public static function delete( int $id, string $meta_key, array $args = [], string $type = 'post', $meta_value = '', bool $use_environment = true ): bool {
 		$the_post = 'post' === $type ? wp_is_post_revision( $id ) : false;
 		if ( $the_post ) {
 			$id = $the_post;
 		}
 
-		return delete_metadata( $type, $id, Commerce_Settings::get_key( $meta_key, $args ), $meta_value );
+		$meta_key = $use_environment ? Commerce_Settings::get_key( $meta_key, $args ) : sprintf( $meta_key, ...$args );
+
+		return delete_metadata( $type, $id, $meta_key, $meta_value );
 	}
 
 	/**

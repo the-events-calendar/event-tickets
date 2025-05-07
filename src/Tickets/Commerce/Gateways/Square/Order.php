@@ -16,6 +16,7 @@ use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 use TEC\Tickets\Commerce\Meta as Commerce_Meta;
 use TEC\Tickets\Commerce\Ticket as Ticket_Data;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use Tribe__Repository;
 use WP_User_Query;
 use WP_User;
 use stdClass;
@@ -80,13 +81,35 @@ class Order extends Abstract_Order {
 	}
 
 	/**
+	 * Filter the schema for the repository.
+	 *
+	 * @since TBD
+	 *
+	 * @param array             $schema     The schema.
+	 * @param Tribe__Repository $repository The repository.
+	 *
+	 * @return array
+	 */
+	public function filter_schema( array $schema = [], ?Tribe__Repository $repository = null ) {
+		$schema['square_payment_id'] = function ( $payment_ids ) use ( $repository ) {
+			$this->filter_by_payment_id( $payment_ids, $repository );
+		};
+
+		$schema['square_payment_id_not'] = function ( $payment_ids ) use ( $repository ) {
+			$this->filter_by_payment_id_not( $payment_ids, $repository );
+		};
+
+		return $schema;
+	}
+
+	/**
 	 * Create a Square order from a Commerce order.
 	 *
 	 * @since TBD
 	 *
 	 * @param WP_Post $order The order object.
 	 *
-	 * @return WP_Post
+	 * @return string The Square order ID.
 	 *
 	 * @throws RuntimeException If the order fails to be created or updated.
 	 */
@@ -129,25 +152,35 @@ class Order extends Abstract_Order {
 			$order
 		);
 
-		$square_order = apply_filters(
-			'tec_tickets_commerce_square_order_payload',
-			$this->add_items_to_square_payload( $square_order, $order ),
-			$order
-		);
+		$square_order = $this->add_items_to_square_payload( $square_order, $order );
 
-		$square_order_id = $this->get_square_order_id( $order->ID );
+		/**
+		 * Filters the Square order payload.
+		 *
+		 * @since TBD
+		 *
+		 * @param array   $payload The payload for the Square order.
+		 * @param WP_Post $order   The order object.
+		 */
+		$square_order = apply_filters( 'tec_tickets_commerce_square_order_payload', $square_order, $order );
+
+		$square_order_id = null;
+
+		if ( $order->gateway_order_id ?? false ) {
+			$square_order_id = $order->gateway_order_id;
+		}
 
 		if ( $square_order_id && ! $this->needs_update( $square_order, $order->ID ) ) {
 			return $square_order_id;
 		}
 
 		if ( $square_order_id ) {
-			$order_version           = (int) get_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_version', true );
+			$order_version           = (int) ( $order->gateway_order_version ?? 0 );
 			$square_order['version'] = $order_version ? $order_version : 1;
 		}
 
 		$body = [
-			'idempotency_key' => uniqid( 'tec-square-cancel-', true ),
+			'idempotency_key' => uniqid( $square_order_id ? 'tec-square-update-' : 'tec-square-create-', true ),
 			'order'           => $square_order,
 		];
 
@@ -174,6 +207,21 @@ class Order extends Abstract_Order {
 			throw new RuntimeException( 'Failed to create or update Square order.' );
 		}
 
+		// Update the order with the new Square order ID.
+		$order_updated = tec_tc_orders()->by( 'id', $order->ID )->set_args(
+			[
+				'gateway_order_id'      => $response['order']['id'],
+				'gateway_customer_id'   => $customer_id,
+				'gateway_order_version' => $response['order']['version'],
+				'latest_payload_sent'   => md5( wp_json_encode( $square_order ) ),
+				'gateway_order_object'  => wp_json_encode( $response['order'] ),
+			]
+		)->save();
+
+		if ( ! $order_updated || ! isset( $order_updated[ $order->ID ] ) || ! $order_updated[ $order->ID ] ) {
+			throw new RuntimeException( 'Failed to update the order with the new Square order ID.' );
+		}
+
 		/**
 		 * Fires after the Square order is upserted.
 		 *
@@ -184,11 +232,6 @@ class Order extends Abstract_Order {
 		 * @param array  $square_order The Square order.
 		 */
 		do_action( 'tec_tickets_commerce_square_order_after_upsert', $response['order'], $order->ID, $square_order );
-
-		update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_id', $response['order']['id'] );
-		update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_version', $response['order']['version'] );
-		update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order', wp_json_encode( $response['order'] ) );
-		update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_payload', wp_json_encode( $square_order ) );
 
 		tribe( Syncs\Regulator::class )->schedule( self::HOOK_PULL_ORDER_ACTION, [ $response['order']['id'] ], 2 * MINUTE_IN_SECONDS );
 
@@ -220,7 +263,7 @@ class Order extends Abstract_Order {
 			$is_update = $order instanceof WP_Post;
 		}
 
-		$order     = $order instanceof WP_Post ? $order : $this->get_by_square_order_id( $square_order_id );
+		$order     = $order instanceof WP_Post ? $order : tribe( Commerce_Order::class )->get_from_gateway_order_id( $square_order_id );
 		$is_update = $order instanceof WP_Post;
 
 		if ( ! $is_update && ! $this->settings->is_inventory_sync_enabled() ) {
@@ -253,19 +296,21 @@ class Order extends Abstract_Order {
 			$purchaser = $this->get_square_orders_customer( $square_order_id );
 
 			$order_args = [
-				'total_value'          => $total_value->get(),
-				'subtotal'             => $subtotal_value->get(),
-				'currency'             => $net_amounts['total_money']['currency'],
-				'hash'                 => $hash,
-				'items'                => $items,
-				'gateway'              => Gateway::get_key(),
-				'title'                => $this->commerce_order->generate_order_title( $items, $hash ),
-				'purchaser_user_id'    => $purchaser->ID ?? 0,
-				'purchaser_full_name'  => $purchaser->display_name ?? '',
-				'purchaser_first_name' => $purchaser->first_name ?? '',
-				'purchaser_last_name'  => $purchaser->last_name ?? '',
-				'purchaser_email'      => $purchaser->user_email ?? '',
-				'gateway_order_id'     => $square_order_id,
+				'total_value'           => $total_value->get(),
+				'subtotal'              => $subtotal_value->get(),
+				'currency'              => $net_amounts['total_money']['currency'],
+				'hash'                  => $hash,
+				'items'                 => $items,
+				'gateway'               => Gateway::get_key(),
+				'title'                 => $this->commerce_order->generate_order_title( $items, $hash ),
+				'purchaser_user_id'     => $purchaser->ID ?? 0,
+				'purchaser_full_name'   => $purchaser->display_name ?? '',
+				'purchaser_first_name'  => $purchaser->first_name ?? '',
+				'purchaser_last_name'   => $purchaser->last_name ?? '',
+				'purchaser_email'       => $purchaser->user_email ?? '',
+				'gateway_order_id'      => $square_order_id,
+				'gateway_order_version' => $square_order['version'] ?? 1,
+				'gateway_order_object'  => wp_json_encode( $square_order ),
 			];
 
 			$order = $this->commerce_order->create( tribe( Gateway::class ), $order_args );
@@ -274,11 +319,6 @@ class Order extends Abstract_Order {
 			update_post_meta( $order->ID, Commerce_Order::META_ORDER_TOTAL_TAX, ( new Precision_Value( $net_amounts['tax_money']['amount'] / 100 ) )->get() );
 			update_post_meta( $order->ID, Commerce_Order::META_ORDER_TOTAL_TIP, ( new Precision_Value( $net_amounts['tip_money']['amount'] / 100 ) )->get() );
 			update_post_meta( $order->ID, Commerce_Order::META_ORDER_CREATED_BY, 'square-pos' );
-
-			update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_id', $square_order_id );
-			update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_version', $square_order['version'] ?? 1 );
-			update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order', wp_json_encode( $square_order ) );
-			update_post_meta( $order->ID, '_tec_tickets_commerce_gateways_square_order_payload', wp_json_encode( $square_order ) );
 		}
 
 		if ( ! $order instanceof WP_Post ) {
@@ -342,7 +382,13 @@ class Order extends Abstract_Order {
 		$cached_data = $cache[ $cache_key ] ?? false;
 
 		if ( ! is_array( $cached_data ) ) {
-			$cached_data = json_decode( get_post_meta( $order_id, '_tec_tickets_commerce_gateways_square_order', true ), true );
+			$order = tec_tc_get_order( $order_id );
+
+			if ( ! $order instanceof WP_Post ) {
+				return [];
+			}
+
+			$cached_data = $order->gateway_order_object ?? [];
 
 			$cache[ $cache_key ] = $cached_data;
 		}
@@ -380,39 +426,15 @@ class Order extends Abstract_Order {
 			return '';
 		}
 
-		$order_id = $this->get_square_order_id( $order->ID );
+		$order_id = $order->gateway_order_id ?? false;
 
-		if ( empty( $order_id ) ) {
+		if ( ! $order_id ) {
 			return '';
 		}
 
 		$is_test_mode = tribe( Gateway::class )->is_test_mode();
 
 		return sprintf( 'https://app.squareup%s.com/dashboard/orders/overview/%s', $is_test_mode ? 'sandbox' : '', $order_id );
-	}
-
-	/**
-	 * Get the Square order ID from the order.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $order_id The order ID.
-	 *
-	 * @return string
-	 */
-	public function get_square_order_id( int $order_id ): string {
-		/**
-		 * Filters the Square order ID.
-		 *
-		 * @since TBD
-		 *
-		 * @param string $square_order_id The Square order ID.
-		 */
-		return (string) apply_filters(
-			'tec_tickets_commerce_square_order_id',
-			(string) get_post_meta( $order_id, '_tec_tickets_commerce_gateways_square_order_id', true ),
-			$order_id
-		);
 	}
 
 	/**
@@ -435,7 +457,7 @@ class Order extends Abstract_Order {
 		 */
 		return apply_filters(
 			'tec_tickets_commerce_square_order_needs_update',
-			md5( wp_json_encode( $square_order ) ) !== md5( get_post_meta( $order_id, '_tec_tickets_commerce_gateways_square_order_payload', true ) ),
+			md5( wp_json_encode( $square_order ) ) !== Commerce_Meta::get( $order_id, Commerce_Order::LATEST_PAYLOAD_SENT_TO_GATEWAY_META_KEY, [], 'post', true, false ),
 			$square_order,
 			$order_id
 		);
@@ -675,25 +697,6 @@ class Order extends Abstract_Order {
 	}
 
 	/**
-	 * Get the order by Square order ID.
-	 *
-	 * @since TBD
-	 *
-	 * @param string       $square_order_id The Square order ID.
-	 * @param string|array $status          The status of the order.
-	 *
-	 * @return WP_Post|null
-	 */
-	public function get_by_square_order_id( string $square_order_id, $status = 'any' ): ?WP_Post {
-		return tec_tc_orders()->by_args(
-			[
-				'status'           => $status,
-				'gateway_order_id' => $square_order_id,
-			]
-		)->first();
-	}
-
-	/**
 	 * Get the Square order.
 	 *
 	 * @since TBD
@@ -724,6 +727,112 @@ class Order extends Abstract_Order {
 		$cache[ $cache_key ] = $square_order;
 
 		return $square_order;
+	}
+
+	/**
+	 * Add a payment to the order.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $order      The order object.
+	 * @param string  $payment_id The payment ID.
+	 *
+	 * @return bool|int
+	 */
+	public function add_payment_id( WP_Post $order, string $payment_id ) {
+		$added = Commerce_Meta::add( $order->ID, Payment::KEY_ORDER_PAYMENT_ID, $payment_id, [], 'post', false );
+
+		if ( ! $added ) {
+			return false;
+		}
+
+		Commerce_Meta::set( $order->ID, Payment::KEY_ORDER_PAYMENT_ID_TIME, tec_get_current_milliseconds(), [ $payment_id ], 'post', false );
+
+		return $added;
+	}
+
+	/**
+	 * Get the payment IDs.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $order The order object.
+	 *
+	 * @return string|null
+	 */
+	public function get_payment_ids( WP_Post $order ): ?string {
+		return Commerce_Meta::get( $order->ID, Payment::KEY_ORDER_PAYMENT_ID, [], 'post', false, false );
+	}
+
+	/**
+	 * Get the order by payment ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $payment_id The payment ID.
+	 * @param array  $status     The status of the order.
+	 *
+	 * @return WP_Post|null
+	 */
+	public function get_by_payment_id( string $payment_id, array $status = [ 'any' ] ): ?WP_Post {
+		return tec_tc_orders()->by_args(
+			[
+				'square_payment_id' => $payment_id,
+				'status'            => $status,
+			]
+		)->first();
+	}
+
+	/**
+	 * Filters order by payment ID.
+	 *
+	 * @since
+	 *
+	 * @param string|string[]   $payment_ids Which payment IDs we are filtering by.
+	 * @param Tribe__Repository $repository  The repository.
+	 *
+	 * @return null
+	 */
+	public function filter_by_payment_id( $payment_ids = null, ?Tribe__Repository $repository = null ) {
+		if ( empty( $payment_ids ) ) {
+			return null;
+		}
+
+		$payment_ids = array_filter( (array) $payment_ids );
+
+		if ( empty( $payment_ids ) ) {
+			return null;
+		}
+
+		$repository->by( 'meta_in', Payment::KEY_ORDER_PAYMENT_ID, $payment_ids );
+
+		return null;
+	}
+
+	/**
+	 * Filters order by payment ID not.
+	 *
+	 * @since
+	 *
+	 * @param string|string[]   $payment_ids Which payment IDs we are filtering by.
+	 * @param Tribe__Repository $repository  The repository.
+	 *
+	 * @return null
+	 */
+	public function filter_by_payment_id_not( $payment_ids = null, ?Tribe__Repository $repository = null ) {
+		if ( empty( $payment_ids ) ) {
+			return null;
+		}
+
+		$payment_ids = array_filter( (array) $payment_ids );
+
+		if ( empty( $payment_ids ) ) {
+			return null;
+		}
+
+		$repository->by( 'meta_not_in', Payment::KEY_ORDER_PAYMENT_ID, $payment_ids );
+
+		return null;
 	}
 
 	/**

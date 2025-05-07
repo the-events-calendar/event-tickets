@@ -377,13 +377,18 @@ class Listeners extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $ticket_id     The ticket ID.
-	 * @param int $parent_id     The parent ID.
-	 * @param int $minimum_delay The minimum delay in seconds.
+	 * @param int  $ticket_id     The ticket ID.
+	 * @param ?int $parent_id     The parent ID. Null when the event has been deleted...
+	 * @param int  $minimum_delay The minimum delay in seconds.
 	 *
 	 * @return void
 	 */
-	public function schedule_sync( int $ticket_id, int $parent_id, int $minimum_delay = 20 ): void {
+	public function schedule_sync( int $ticket_id, ?int $parent_id = null, int $minimum_delay = 20 ): void {
+		if ( ! $parent_id ) {
+			// Don't sync the ticket if the event has been deleted...
+			return;
+		}
+
 		if ( ! $this->is_object_syncable( $ticket_id ) ) {
 			return;
 		}

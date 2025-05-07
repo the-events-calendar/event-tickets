@@ -177,10 +177,20 @@ class Attendee {
 	 * @return int The attendee ID.
 	 */
 	public function handle_attendee_delete( int $attendee_id, Reservations $reservations ): int {
-		$event_id       = get_post_meta( $attendee_id, Commerce_Attendee::$event_relation_meta_key, true );
+		$event_id = get_post_meta( $attendee_id, Commerce_Attendee::$event_relation_meta_key, true );
+		if ( ! $event_id ) {
+			return $attendee_id;
+		}
+
+		$event = get_post( $event_id );
+		if ( ! $event instanceof WP_Post ) {
+			// The event has been deleted, so we don't need to cancel the reservation.
+			return $attendee_id;
+		}
+
 		$reservation_id = get_post_meta( $attendee_id, Meta::META_KEY_RESERVATION_ID, true );
 
-		if ( ! $event_id || ! $reservation_id ) {
+		if ( ! $reservation_id ) {
 			return $attendee_id;
 		}
 

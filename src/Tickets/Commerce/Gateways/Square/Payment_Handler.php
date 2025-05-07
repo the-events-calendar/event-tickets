@@ -10,6 +10,8 @@
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Order;
+
 use WP_Post;
 
 /**
@@ -290,8 +292,8 @@ class Payment_Handler {
 			'order_id'       => $order->ID,
 			'site_url'       => home_url(),
 			'site_name'      => get_bloginfo( 'name' ),
-			'customer_email' => get_post_meta( $order->ID, '_tec_tc_purchaser_email', true ),
-			'customer_name'  => get_post_meta( $order->ID, '_tec_tc_purchaser_full_name', true ),
+			'customer_email' => get_post_meta( $order->ID, Order::$purchaser_email_meta_key, true ),
+			'customer_name'  => get_post_meta( $order->ID, Order::$purchaser_full_name_meta_key, true ),
 		];
 
 		// Don't add duplicate data.

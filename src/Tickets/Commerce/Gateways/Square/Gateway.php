@@ -88,7 +88,7 @@ class Gateway extends Abstract_Gateway {
 	 *
 	 * @var string
 	 */
-	const APPLICATION_ID_LIVE = '';
+	const APPLICATION_ID_LIVE = 'sq0idp-8PoFNX4o9XOz9vMYOrZ6vA';
 
 	/**
 	 * Application ID for sandbox mode.
@@ -97,7 +97,7 @@ class Gateway extends Abstract_Gateway {
 	 *
 	 * @var string
 	 */
-	const APPLICATION_ID_SANDBOX = '';
+	const APPLICATION_ID_SANDBOX = 'sandbox-sq0idb-JdEESM9hrZMuw36CFhL0mQ';
 
 	/**
 	 * Get the label for the Square Gateway.
