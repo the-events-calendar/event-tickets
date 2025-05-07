@@ -130,7 +130,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @var string
 	 */
-	public const LATEST_PAYLOAD_SENT_TO_GATEWAY_META_KEY = '_tec_tc_order_latest_payload_sent_to_gateway';
+	public const LATEST_PAYLOAD_HASH_SENT_TO_GATEWAY_META_KEY = '_tec_tc_order_latest_payload_hash_sent_to_gateway';
 
 	/**
 	 * Which meta holds the gateway order version.
