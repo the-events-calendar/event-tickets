@@ -9,13 +9,14 @@
 
 namespace TEC\Tickets\Admin\Onboarding;
 
+use Tribe__Main;
 use TEC\Common\StellarWP\Installer\Installer;
 use TEC\Common\Admin\Abstract_Admin_Page;
 use TEC\Common\Admin\Traits\Is_Tickets_Page;
 use TEC\Common\Lists\Currency;
 use TEC\Common\Lists\Country;
-use TEC\Tickets\Admin\Onboarding\API;
 use TEC\Common\Asset;
+use TEC\Tickets\Admin\Onboarding\API;
 use TEC\Tickets\Admin\Onboarding\Data;
 use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
 
@@ -126,7 +127,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 *
 	 * @var bool
 	 */
-	public static bool $has_logo = false;
+	public static bool $has_logo = true;
 
 	/**
 	 * The position of the submenu in the menu.
@@ -224,6 +225,14 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 
 		wp_safe_redirect( add_query_arg( array( 'page' => $this->get_parent_page_slug() ), admin_url( 'admin.php' ) ) );
 		exit;
+	}
+
+	public function logo_source( $source ): string {
+		if ( ! $this->is_on_page() ) {
+			return $source;
+		}
+
+		return tribe_resource_url( 'images/logo/the-events-calendar.svg', false, null, Tribe__Main::instance() );
 	}
 
 	/**
