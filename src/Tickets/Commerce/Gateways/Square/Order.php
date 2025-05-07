@@ -210,11 +210,11 @@ class Order extends Abstract_Order {
 		// Update the order with the new Square order ID.
 		$order_updated = tec_tc_orders()->by( 'id', $order->ID )->set_args(
 			[
-				'gateway_order_id'      => $response['order']['id'],
-				'gateway_customer_id'   => $customer_id,
-				'gateway_order_version' => $response['order']['version'],
-				'latest_payload_sent'   => md5( wp_json_encode( $square_order ) ),
-				'gateway_order_object'  => wp_json_encode( $response['order'] ),
+				'gateway_order_id'         => $response['order']['id'],
+				'gateway_customer_id'      => $customer_id,
+				'gateway_order_version'    => $response['order']['version'],
+				'latest_payload_hash_sent' => md5( wp_json_encode( $square_order ) ),
+				'gateway_order_object'     => wp_json_encode( $response['order'] ),
 			]
 		)->save();
 
@@ -457,7 +457,7 @@ class Order extends Abstract_Order {
 		 */
 		return apply_filters(
 			'tec_tickets_commerce_square_order_needs_update',
-			md5( wp_json_encode( $square_order ) ) !== Commerce_Meta::get( $order_id, Commerce_Order::LATEST_PAYLOAD_SENT_TO_GATEWAY_META_KEY, [], 'post', true, false ),
+			md5( wp_json_encode( $square_order ) ) !== Commerce_Meta::get( $order_id, Commerce_Order::LATEST_PAYLOAD_HASH_SENT_TO_GATEWAY_META_KEY, [], 'post', true, false ),
 			$square_order,
 			$order_id
 		);

@@ -96,6 +96,8 @@ class Events {
 	/**
 	 * Square Webhook Event Types
 	 *
+	 * Not used currently.
+	 *
 	 * @since TBD
 	 *
 	 * @var string
@@ -104,6 +106,8 @@ class Events {
 
 	/**
 	 * Square Webhook Event Types
+	 *
+	 * Not used currently.
 	 *
 	 * @since TBD
 	 *
@@ -114,6 +118,8 @@ class Events {
 	/**
 	 * Square Webhook Event Types
 	 *
+	 * Not used currently.
+	 *
 	 * @since TBD
 	 *
 	 * @var string
@@ -122,6 +128,8 @@ class Events {
 
 	/**
 	 * Square Webhook Event Types
+	 *
+	 * Not used currently.
 	 *
 	 * @since TBD
 	 *
@@ -132,6 +140,8 @@ class Events {
 	/**
 	 * Square Webhook Event Types
 	 *
+	 * Not used currently.
+	 *
 	 * @since TBD
 	 *
 	 * @var string
@@ -140,6 +150,8 @@ class Events {
 
 	/**
 	 * Square Webhook Event Types
+	 *
+	 * Not used currently.
 	 *
 	 * @since TBD
 	 *
@@ -161,12 +173,6 @@ class Events {
 		self::ORDER_UPDATED,
 		self::CUSTOMER_DELETED,
 		self::INVENTORY_COUNT_UPDATED,
-		self::TERMINAL_CHECKOUT_CREATED,
-		self::TERMINAL_CHECKOUT_UPDATED,
-		self::TERMINAL_REFUND_CREATED,
-		self::TERMINAL_REFUND_UPDATED,
-		self::TERMINAL_ACTION_CREATED,
-		self::TERMINAL_ACTION_UPDATED,
 	];
 
 	/**
