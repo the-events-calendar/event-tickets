@@ -420,8 +420,16 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 
 .tec-tickets__admin-settings-featured {
 	background-color: var(--tec-color-background);
-	padding: 0 var(--tec-spacer-7);
+	padding: var(--tec-spacer-3);
 	font-size: var(--tec-font-size-2);
+
+	@media (--viewport-xsmall) {
+		padding: 0 var(--tec-spacer-7) 0 0;
+	}
+
+	@media (--viewport-xlarge) {
+		padding: 0 var(--tec-spacer-7);
+	}
 
 	.tec-tickets__admin-settings-featured-title {
 		background-color: transparent;
