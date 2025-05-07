@@ -31,9 +31,9 @@ const SuccessContent = ( { onlyActivated = false, alreadyActivated = false }: Su
 					<div className="tec-tickets-onboarding__success-icon">
 						<SuccessIcon />
 					</div>
-					<div className="tec-tickets-onboarding__success-heading">
+					<h3 className="tec-tickets-onboarding__success-heading">
 						{ __( 'Congratulations!', 'event-tickets' ) }
-					</div>
+					</h3>
 					<p className="tec-tickets-onboarding__success-message">
 						{ alreadyActivated
 							? __( 'The Events Calendar was already installed and activated.', 'event-tickets' )
