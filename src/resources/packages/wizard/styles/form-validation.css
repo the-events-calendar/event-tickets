@@ -1,0 +1,53 @@
+/* -----------------------------------------------------------------------------
+ * Required Fields
+ * ----------------------------------------------------------------------------- */
+
+ .tec-tickets-onboarding__form-field label:has( + input:required ):after {
+	color: var(--tec-color-wp-error);
+	content: ' *';
+ }
+
+
+ * Form Validation
+/* -----------------------------------------------------------------------------
+ * Form Validation
+ * ----------------------------------------------------------------------------- */
+
+.tec-tickets-onboarding__form-field.invalid input,
+.tec-tickets-onboarding__form-field.invalid select,
+.tec-tickets-onboarding__form-field.invalid textarea {
+	border: 1px solid var(--tec-color-wp-error) !important;
+	color: var(--tec-color-wp-error);
+	font-weight: var(--tec-font-weight-bold);
+}
+
+.tec-tickets-onboarding__form-field.invalid input:focus,
+.tec-tickets-onboarding__form-field.invalid select:focus,
+.tec-tickets-onboarding__form-field.invalid textarea:focus {
+	border-color: var(--tec-color-wp-error);
+	box-shadow: 0 0 0 0.5px var(--tec-color-wp-error);
+	outline: 1px solid var(--tec-color-wp-error);
+}
+
+.tec-tickets-onboarding__required-label,
+.tec-tickets-onboarding__invalid-label {
+	color: var(--tec-color-wp-error);
+	display: none;
+	font-size: var(--tec-font-size-1);
+	font-weight: var(--tec-font-weight-regular);
+	margin-top: var(--tec-spacer-1);
+}
+
+.tec-tickets-onboarding__form-field.empty .tec-tickets-onboarding__required-label,
+.tec-tickets-onboarding__form-field.invalid .tec-tickets-onboarding__invalid-label {
+	display: block;
+}
+
+.tec-tickets-onboarding__form-field.empty .tec-tickets-onboarding__invalid-label {
+	display: none;
+}
+
+.tec-tickets-onboarding__form-field.empty .tec-tickets-onboarding__field-description,
+.tec-tickets-onboarding__form-field.invalid .tec-tickets-onboarding__field-description {
+	display: none;
+}

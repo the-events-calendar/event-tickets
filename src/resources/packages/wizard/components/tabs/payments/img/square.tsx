@@ -5,8 +5,9 @@ const SquareLogo = (props) => (
     xmlns="http://www.w3.org/2000/svg"
     width={131}
     height={40}
-    fill="none"
-    {...props}
+		fill="none"
+		role="presentation"
+		{...props}
   >
     <g clipPath="url(#a)">
       <path

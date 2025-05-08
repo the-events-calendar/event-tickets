@@ -42,9 +42,9 @@ const ExitButton = () => {
 
 	return(
 		<Button
-			variant="tertiary"
+			variant="link"
 			onClick={() => setClicked(true)}
-			className="tec-tickets-onboarding__button tec-tickets-onboarding__button--exit"
+			className="tec-tickets-onboarding__button tec-tickets-onboarding__button--skip tec-tickets-onboarding__button--exit"
 		>
 			{__('Skip guided setup', 'event-tickets')}
 		</Button>
