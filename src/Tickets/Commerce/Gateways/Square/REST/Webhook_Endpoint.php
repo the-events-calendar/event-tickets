@@ -118,7 +118,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		$whodat_hash = $request->get_header( 'X-WhoDat-Hash' );
 		$payload     = $request->get_body();
 
-		if ( ! $webhook->verify_signature( $secret_key ) || ! $webhook->verify_whodat_signature( $payload, $whodat_hash ) ) {
+		if ( ! ( $webhook->verify_signature( $secret_key ) && $webhook->verify_whodat_signature( $payload, $whodat_hash ) ) ) {
 			do_action(
 				'tribe_log',
 				'error',

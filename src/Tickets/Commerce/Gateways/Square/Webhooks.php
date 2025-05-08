@@ -278,8 +278,8 @@ class Webhooks extends Controller_Contract {
 			return false;
 		}
 
-        // Convert the payload to UTF-8.
-        $payload = mb_convert_encoding( $payload, 'UTF-8' );
+		// Convert the payload to UTF-8.
+		$payload = mb_convert_encoding( $payload, 'UTF-8' );
 
 		return md5( hash_hmac( 'sha256', "{$notification_url}.{$payload}", $signature ) ) === $received_hash;
 	}

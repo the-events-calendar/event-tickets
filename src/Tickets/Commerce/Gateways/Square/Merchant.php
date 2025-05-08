@@ -191,11 +191,7 @@ class Merchant extends Abstract_Merchant {
 	public function get_whodat_signature(): ?string {
 		$data = get_option( $this->get_signup_data_key() );
 
-		if ( empty( $data['whodat_signature'] ) ) {
-			return null;
-		}
-
-		return $data['whodat_signature'];
+		return $data['whodat_signature'] ?? null;
 	}
 
 	/**
