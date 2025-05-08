@@ -2,7 +2,7 @@
  * Required Fields
  * ----------------------------------------------------------------------------- */
 
- .tec-tickets-onboarding__form-field label:has( + input:required ):after {
+ .tec-tickets-onboarding__form-field label:has( + :is(input, select, textarea):required ):after {
 	color: var(--tec-color-wp-error);
 	content: ' *';
  }
