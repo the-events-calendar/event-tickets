@@ -243,8 +243,7 @@ class Webhooks extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $signature The signature from the request header.
-	 * @param string $body      The raw request body.
+	 * @param string $received_secret_key The secret key from the request.
 	 *
 	 * @return bool Whether the signature is valid.
 	 */
@@ -259,6 +258,31 @@ class Webhooks extends Controller_Contract {
 
 		// Both keys need to be the same.
 		return wp_check_password( $unhashed_key, $received_secret_key );
+	}
+
+	/**
+	 * Verify whodat signature.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $payload       The payload from the request.
+	 * @param string $received_hash The hash from the request.
+	 * @param string $secret_key    The secret key from the request.
+	 *
+	 * @return bool Whether the signature is valid.
+	 */
+	public function verify_whodat_signature( string $payload, string $received_hash, string $secret_key ) {
+		$signature        = tribe( Merchant::class )->get_whodat_signature();
+		$notification_url = add_query_arg( self::PARAM_WEBHOOK_KEY, $secret_key, untrailingslashit( $this->get_webhook_endpoint_url() ) );
+
+		if ( ! ( $signature && $notification_url && $payload ) ) {
+			return false;
+		}
+
+		// Convert the payload to UTF-8.
+		$payload = function_exists( 'mb_convert_encoding' ) ? mb_convert_encoding( $payload, 'UTF-8' ) : $payload;
+
+		return md5( "{$notification_url}.{$payload}.{$signature}" ) === $received_hash;
 	}
 
 	/**
