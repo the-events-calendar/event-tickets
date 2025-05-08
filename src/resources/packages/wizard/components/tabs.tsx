@@ -23,7 +23,6 @@ const OnboardingTabs = () => {
 	const tabConfig = [
 		{ id: "welcome", title: __("Welcome", "event-tickets"), content: WelcomeContent, ref: useRef(null) },
 		{ id: "settings", title: __("Selling Tickets", "event-tickets"), content: SettingsContent, ref: useRef(null) },
-
 		{ id: "communication", title: __("Communication", "event-tickets"), content: CommunicationContent, ref: useRef(null) },
 		{ id: "events", title: __("Events", "event-tickets"), content: EventsContent, ref: useRef(null) }
 	];
@@ -32,6 +31,7 @@ const OnboardingTabs = () => {
 	const lastActiveTab = useSelect((select) => select(SETTINGS_STORE_KEY).getSetting("currentTab")) || 0;
 	const skippedTabs = useSelect((select) => select(SETTINGS_STORE_KEY).getSkippedTabs()) || [];
 	const completedTabs = useSelect((select) => select(SETTINGS_STORE_KEY).getCompletedTabs()) || [];
+	const completeTab = useDispatch(SETTINGS_STORE_KEY).completeTab;
 
 	const [tabsState, setTabsState] = useState(() =>
 		tabConfig.map((tab, index) => ({
@@ -81,6 +81,7 @@ const OnboardingTabs = () => {
 	const moveToNextTab = () => {
 		if (activeTab < tabsState.length - 1) {
 			updateTabState(activeTab, { completed: true });
+			completeTab(activeTab);
 			updateTabState(activeTab + 1, { disabled: false });
 			setActiveTab(prevActiveTab => {
 				const newTab = prevActiveTab + 1;

@@ -17,7 +17,7 @@ const NextButton = ( { disabled, moveToNextTab, tabSettings, onSuccess } ) => {
 	const getSettings = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getSettings );
 	const getCompletedTabs = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getCompletedTabs );
 	const getSkippedTabs = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getSkippedTabs );
-	const isLastTab = tabSettings.currentTab === 4;
+	const isLastTab = tabSettings.currentTab === 3;
 
 	const [ isSaving, setSaving ] = useState( false );
 	const [ isClicked, setClicked ] = useState( false );

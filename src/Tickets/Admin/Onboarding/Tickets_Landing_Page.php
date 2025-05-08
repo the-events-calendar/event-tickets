@@ -196,7 +196,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 
 		tribe_update_option( self::DISMISS_PAGE_OPTION, true );
 
-		wp_safe_redirect( add_query_arg( array( 'page' => $this->get_parent_page_slug() ), admin_url( 'admin.php' ) ) );
+		wp_safe_redirect( add_query_arg( [ 'page' => $this->get_parent_page_slug() ], admin_url( 'admin.php' ) ) );
 		exit;
 	}
 
@@ -213,7 +213,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		}
 
 		$settings = tribe( Data::class )->get_wizard_settings();
-		$finished  = $settings['finished'] ?? false;
+		$finished = $settings['finished'] ?? false;
 
 		if ( $finished ) {
 			return true;
@@ -332,27 +332,27 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		$data         = tribe( Data::class );
 		$initial_data = [
 			/* Wizard History */
-			'begun'                     => (bool) $data->get_wizard_setting( 'begun', false ),
-			'currentTab'                => absint( $data->get_wizard_setting( 'current_tab', 0 ) ),
-			'finished'                  => (bool) $data->get_wizard_setting( 'finished', false ),
-			'completedTabs'             => (array) $data->get_wizard_setting( 'completed_tabs', [] ),
-			'skippedTabs'               => (array) $data->get_wizard_setting( 'skipped_tabs', [] ),
-			'paymentOption'             => $data->get_wizard_setting( 'payment_option', '' ),
+			'begun'                => (bool) $data->get_wizard_setting( 'begun', false ),
+			'currentTab'           => absint( $data->get_wizard_setting( 'current_tab', 0 ) ),
+			'finished'             => (bool) $data->get_wizard_setting( 'finished', false ),
+			'completedTabs'        => (array) $data->get_wizard_setting( 'completed_tabs', [] ),
+			'skippedTabs'          => (array) $data->get_wizard_setting( 'skipped_tabs', [] ),
+			'paymentOption'        => $data->get_wizard_setting( 'payment_option', '' ),
 			/* nonces */
-			'action_nonce'              => wp_create_nonce( API::NONCE_ACTION ),
-			'_wpnonce'                  => wp_create_nonce( 'wp_rest' ),
+			'action_nonce'         => wp_create_nonce( API::NONCE_ACTION ),
+			'_wpnonce'             => wp_create_nonce( 'wp_rest' ),
 			/* Data */
-			'currencies'                => tribe( Currency::class )->get_currency_list(),
-			'countries'                 => tribe( Country::class )->get_gateway_countries(),
-			'optin'                     => tribe_get_option( 'opt-in-status', false ),
-			'stripeConnected'           => tribe( Merchant::class )->is_connected( true ),
+			'currencies'           => tribe( Currency::class )->get_currency_list(),
+			'countries'            => tribe( Country::class )->get_gateway_countries(),
+			'optin'                => tribe_get_option( 'opt-in-status', false ),
+			'stripeConnected'      => tribe( Merchant::class )->is_connected( true ),
 			/* TEC install step */
-			'events-calendar-installed' => Installer::get()->is_installed( 'the-events-calendar' ),
-			'events-calendar-active'    => Installer::get()->is_active( 'the-events-calendar' ),
-			'tec-wizard-completed'      => $this->is_tec_wizard_completed(),
+			'tecInstalled'         => Installer::get()->is_installed( 'the-events-calendar' ),
+			'tecActive'            => Installer::get()->is_active( 'the-events-calendar' ),
+			'tec-wizard-completed' => $this->is_tec_wizard_completed(),
 			/* User info - for Communication Step */
-			'user_email'                => wp_get_current_user()->user_email,
-			'user_name'                 => wp_get_current_user()->display_name,
+			'userEmail'            => wp_get_current_user()->user_email,
+			'userName'             => wp_get_current_user()->display_name,
 		];
 
 
@@ -467,7 +467,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 							[
 								'step-list__item' => true,
 								'tec-tickets-onboarding-step-1' => true,
-								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[1] ) || ! empty( tribe_get_option( 'defaultCurrencyCode' ) ),
+								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[1] ),
 							]
 						);
 						?>

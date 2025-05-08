@@ -10,11 +10,11 @@ import SuccessContent from './success';
 
 const EventsContent = ( { moveToNextTab, skipToNextTab } ) => {
 	const eventsCalendarInstalled = useSelect(
-		( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'events-calendar-installed' ) || false,
+		( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'tecInstalled' ) || false,
 		[]
 	);
 	const eventsCalendarActive = useSelect(
-		( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'events-calendar-active' ) || false,
+		( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'tecActive' ) || false,
 		[]
 	);
 
@@ -33,7 +33,7 @@ const EventsContent = ( { moveToNextTab, skipToNextTab } ) => {
 
 	const tabSettings = {
 		eventsCalendar: eventsValue,
-		currentTab: 4,
+		currentTab: 3,
 	};
 
 	const message = !eventsCalendarInstalled
@@ -84,7 +84,7 @@ const EventsContent = ( { moveToNextTab, skipToNextTab } ) => {
 						disabled={false}
 						onSuccess={handleSuccess}
 					/>
-					<SkipButton skipToNextTab={skipToNextTab} currentTab={4} buttonText={__("Skip and finish setup", "event-tickets")} />
+					<SkipButton skipToNextTab={skipToNextTab} currentTab={3} buttonText={__("Skip and finish setup", "event-tickets")} />
 				</div>
 			</div>
 		</>

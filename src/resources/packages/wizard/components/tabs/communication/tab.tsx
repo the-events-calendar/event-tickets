@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
-import { useSelect } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { BaseControl, Notice } from '@wordpress/components';
 import { SETTINGS_STORE_KEY } from "../../../data";
 import NextButton from '../../buttons/next';
@@ -10,22 +10,28 @@ import EmailIcon from './img/email';
 import { getSetting } from '../../../data/settings/selectors';
 
 const CommunicationContent = ({ moveToNextTab, skipToNextTab }) => {
-	const userEmail = useSelect(
-		( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'user_email' ) || '',
+	const userEmailFromStore = useSelect(
+		( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'userEmail' ) || '',
 		[]
 	);
-	const [email, setEmail] = useState(userEmail || '');
-	const userName = useSelect(
-		( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'user_name' ) || '',
+	const [userEmail, setUserEmail] = useState(userEmailFromStore || '');
+	const userNameFromStore = useSelect(
+		( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'userName' ) || '',
 		[]
 	);
-	const [senderName, setSenderName] = useState(userName || '');
+	const [userName, setUserName] = useState(userNameFromStore || '');
 	const [isEmailValid, setIsEmailValid] = useState(true);
 	const [isNameValid, setIsNameValid] = useState(true);
 	const [hasInteracted, setHasInteracted] = useState({
 		email: false,
 		name: false,
 	});
+
+	const updateSettings = useDispatch(SETTINGS_STORE_KEY).updateSettings;
+
+	useEffect(() => {
+		updateSettings({ userEmail, userName });
+	}, [userEmail, userName, updateSettings]);
 
 	// Email validation function
 	const validateEmail = (email) => {
@@ -41,44 +47,52 @@ const CommunicationContent = ({ moveToNextTab, skipToNextTab }) => {
 	// Handle email change
 	const handleEmailChange = (e) => {
 		const value = e.target.value;
-		setEmail(value);
-		setHasInteracted((prev) => ({ ...prev, email: true }));
-		setIsEmailValid(validateEmail(value));
+		setUserEmail(value);
 	};
 
 	// Handle name change
 	const handleNameChange = (e) => {
 		const value = e.target.value;
-		setSenderName(value);
+		setUserName(value);
+	};
+
+	// Handle email blur
+	const handleEmailBlur = () => {
+		setHasInteracted((prev) => ({ ...prev, email: true }));
+		setIsEmailValid(validateEmail(userEmail));
+	};
+
+	// Handle name blur
+	const handleNameBlur = () => {
 		setHasInteracted((prev) => ({ ...prev, name: true }));
-		setIsNameValid(validateName(value));
+		setIsNameValid(validateName(userName));
 	};
 
 	// Create tabCommunication object to pass to NextButton.
 	const tabCommunication = {
-		email,
-		senderName,
+		userEmail,
+		userName,
 		currentTab: 2,
 	};
 
 	// Compute whether the "Continue" button should be enabled
-	const canContinue = isEmailValid && isNameValid && email && senderName;
+	const canContinue = isEmailValid && isNameValid && userEmail && userName;
 
 	// Get validation messages
 	const getValidationMessages = () => {
 		const messages: string[] = [];
 
-		if (hasInteracted.email && !email) {
+		if (hasInteracted.email && !userEmail) {
 			messages.push(__('Email is required.', 'event-tickets'));
-		} else if (hasInteracted.email && email && !isEmailValid) {
+		} else if (hasInteracted.email && userEmail && !isEmailValid) {
 			messages.push(
 				__('Please enter a valid email address.', 'event-tickets')
 			);
 		}
 
-		if (hasInteracted.name && !senderName) {
+		if (hasInteracted.name && !userName) {
 			messages.push(__('Sender name is required.', 'event-tickets'));
-		} else if (hasInteracted.name && senderName && !isNameValid) {
+		} else if (hasInteracted.name && userName && !isNameValid) {
 			messages.push(
 				__(
 					'Please enter a valid name (at least 2 characters).',
@@ -124,23 +138,21 @@ const CommunicationContent = ({ moveToNextTab, skipToNextTab }) => {
 						<input
 							type="email"
 							id="sender-email"
-							value={email}
+							value={userEmail}
 							onChange={handleEmailChange}
+							onBlur={handleEmailBlur}
 							placeholder={__('Email', 'event-tickets')}
-							className="tec-tickets-onboarding__input"
+							className={`tec-tickets-onboarding__input${hasInteracted.email && (!userEmail || !isEmailValid) ? ' tec-tickets-onboarding__input--invalid' : ''}`}
 							required={true}
 						/>
-						{hasInteracted.email && !email && (
-							<span className="tec-tickets-onboarding__required-label">
+						{hasInteracted.email && !userEmail && (
+							<span className="tec-tickets-onboarding__invalid-label" style={{display: 'block' }}>
 								{__('Email is required.', 'event-tickets')}
 							</span>
 						)}
-						{hasInteracted.email && email && !isEmailValid && (
-							<span className="tec-tickets-onboarding__invalid-label">
-								{__(
-									'Please enter a valid email address.',
-									'event-tickets'
-								)}
+						{hasInteracted.email && userEmail && !isEmailValid && (
+							<span className="tec-tickets-onboarding__invalid-label" style={{display: 'block' }}>
+								{__('Please enter a valid email address.', 'event-tickets')}
 							</span>
 						)}
 					</BaseControl>
@@ -161,43 +173,25 @@ const CommunicationContent = ({ moveToNextTab, skipToNextTab }) => {
 						<input
 							type="text"
 							id="sender-name"
-							value={senderName}
+							value={userName}
 							onChange={handleNameChange}
+							onBlur={handleNameBlur}
 							placeholder={__('Name', 'event-tickets')}
-							className="tec-tickets-onboarding__input"
+							className={`tec-tickets-onboarding__input${hasInteracted.name && (!userName || !isNameValid) ? ' tec-tickets-onboarding__input--invalid' : ''}`}
 							required={true}
 						/>
-						{hasInteracted.name && !senderName && (
-							<span className="tec-tickets-onboarding__required-label">
-								{__(
-									'Sender name is required.',
-									'event-tickets'
-								)}
+						{hasInteracted.name && !userName && (
+							<span className="tec-tickets-onboarding__invalid-label" style={{display: 'block' }}>
+								{__('Sender name is required.', 'event-tickets')}
 							</span>
 						)}
-						{hasInteracted.name && senderName && !isNameValid && (
-							<span className="tec-tickets-onboarding__invalid-label">
-								{__(
-									'Please enter a valid name (at least 2 characters).',
-									'event-tickets'
-								)}
+						{hasInteracted.name && userName && !isNameValid && (
+							<span className="tec-tickets-onboarding__invalid-label" style={{display: 'block' }}>
+								{__('Please enter a valid name (at least 2 characters).', 'event-tickets')}
 							</span>
 						)}
 					</BaseControl>
 				</div>
-				{validationMessages.length > 0 && (
-					<Notice
-						status="warning"
-						isDismissible={false}
-						className="tec-tickets-onboarding__validation-notice"
-					>
-						<ul>
-							{validationMessages.map((message, index) => (
-								<li key={index}>{message}</li>
-							))}
-						</ul>
-					</Notice>
-				)}
 				<NextButton
 					tabSettings={tabCommunication}
 					moveToNextTab={moveToNextTab}
