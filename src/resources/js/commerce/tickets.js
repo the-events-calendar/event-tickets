@@ -45,6 +45,48 @@ tribe.tickets.commerce.tickets = {};
 	};
 
 	/**
+	 * Check and return embed URL from tec_event_pro_calendar_embed_data if available.
+	 *
+	 * @since TBD
+	 *
+	 * @param string embedUrl The default embed URL.
+	 *
+	 * @return string The updated embed URL if available, otherwise the passed default URL.
+	 */
+	obj.getUpdatedTicketUrl = function( ticketsURL ) {
+		if (
+			typeof obj.tickets !== 'undefined' &&
+			obj.tickets.ticketEndpoint
+		) {
+			ticketsURL = obj.tickets.ticketEndpoint;
+		}
+		return ticketsURL;
+	}
+
+	/**
+	 * Build the embed URL using default or filtered query arguments.
+	 *
+	 * @since TBD
+	 *
+	 * @param object params The query parameters to be added to the URL.
+	 *
+	 * @return string|Error The complete URL with query arguments, or an error if the URL is empty.
+	 */
+	obj.buildTicketsUrl = function( params ) {
+		let ticketsURL = '';
+		ticketsURL = getUpdatedEmbedUrl( ticketsURL );
+
+		if ( !ticketsURL ) {
+			throw new Error( _x( 'Tickets Endpoint URL is not available.', 'Tickets REST Endpoint message when url for REST endpoint is not available.', 'event-tickets' ) );
+		}
+
+		const url = new URL( ticketsURL );
+		url.search = new URLSearchParams( params ).toString();
+
+		return url.toString();
+	}
+
+	/**
 	 * Starts the process to submit a ticket for saving.
 	 *
 	 * @since TBD
@@ -54,10 +96,18 @@ tribe.tickets.commerce.tickets = {};
 	obj.handleSave = async ( event ) => {
 		event.preventDefault();
 
-		//@todo get ticket details and show error messages if missing
+		//@todo show error messages if missing required fields
 
 		console.log('button clicked');
 		console.log(obj.tickets);
+
+		// Get all form input values
+		const formValues = obj.getFormInputValues();
+		const ticketUrl = obj.getUpdatedTicketUrl( [] );
+
+		// Log the form values (for debugging)
+		console.log('Form values:', formValues);
+		console.log('ticketUrl:', ticketUrl);
 
 		obj.submitButton( false );
 
@@ -75,6 +125,59 @@ tribe.tickets.commerce.tickets = {};
 	 */
 	obj.submitButton = ( enable ) => {
 		$( obj.selectors.submitButton ).prop( 'disabled', ! enable );
+	};
+
+	/**
+	 * Gets all input values from the ticket form.
+	 *
+	 * @since TBD
+	 *
+	 * @return {Object} An object containing all input values from the form.
+	 */
+	obj.getFormInputValues = () => {
+		const $form = $( obj.selectors.ticketForm );
+		const values = {};
+
+		// Get all inputs, selects, and textareas
+		const $inputs = $form.find('input, select, textarea');
+
+		$inputs.each(function() {
+			const $input = $(this);
+			const name = $input.attr('name');
+
+			// Skip if no name attribute
+			if (!name) {
+				return;
+			}
+
+			// Handle different input types
+			if ($input.is(':checkbox')) {
+				if ($input.is(':checked')) {
+					// For checkboxes with the same name (groups), store as array
+					if (name.endsWith('[]') || $form.find('input[name="' + name + '"]').length > 1) {
+						if (!values[name]) {
+							values[name] = [];
+						}
+						values[name].push($input.val());
+					} else {
+						values[name] = $input.val();
+					}
+				} else if (!values[name] && !name.endsWith('[]')) {
+					// Set unchecked checkboxes to empty or false if not part of a group
+					values[name] = '';
+				}
+			} else if ($input.is(':radio')) {
+				if ($input.is(':checked')) {
+					values[name] = $input.val();
+				}
+			} else if ($input.is('select[multiple]')) {
+				values[name] = $input.val() || [];
+			} else {
+				values[name] = $input.val();
+			}
+		});
+
+		return values;
 	};
 
 	/**

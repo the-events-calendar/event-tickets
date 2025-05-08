@@ -19,8 +19,7 @@
 		type='text'
 		id='rsvp_limit'
 		name='rsvp_limit'
-		class="ticket_field ticket_form_right"
-		size='25'
+		class="ticket_field ticket_form_right"\
 		value="<?php echo esc_attr( $rsvp_limit ); ?>"
 		data-validation-error="<?php echo esc_attr( $rsvp_required_type_error_message ); ?>"
 	/>

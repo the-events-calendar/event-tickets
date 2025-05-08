@@ -33,7 +33,7 @@
  * @var Tribe__Tickets__Admin__Views       $this                             The admin views instance.
  */
 
-$ticket_type = $ticket_type ?? 'default';
+$ticket_type = $ticket_type ?? 'rsvp';
 ?>
 
 <div id="tec_event_tickets_rsvp_panel" class="tribe-dependent panel_edit tribe-validation" aria-hidden="true"
@@ -79,7 +79,7 @@ $ticket_type = $ticket_type ?? 'default';
 					type='hidden'
 					id='ticket_type'
 					name='ticket_type'
-					value="<?php /*echo esc_attr( $ticket_type ?? 'rsvp' ); */ ?>"
+					value="<?php echo esc_attr( $ticket_type ); ?>"
 				/>
 
 				<?php $this->template( 'editor/panel/fields/limit', get_defined_vars() ); ?>
@@ -145,14 +145,14 @@ $ticket_type = $ticket_type ?? 'default';
 					type="button"
 					id="tc_ticket_form_save"
 					class="button-primary tribe-validation-submit"
-					name="ticket_form_save"
+					name="tc_ticket_form_save"
 					value="<?php esc_attr_e( 'Save', 'event-tickets' ); ?>"
 				/>
 				<input
 					type="button"
 					id="tc_ticket_form_cancel"
 					class="button-secondary"
-					name="ticket_form_cancel"
+					name="tc_ticket_form_cancel"
 					value="<?php esc_attr_e( 'Cancel', 'event-tickets' ); ?>"
 				/>
 

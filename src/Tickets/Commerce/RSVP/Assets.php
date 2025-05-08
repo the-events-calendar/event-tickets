@@ -44,7 +44,7 @@ class Assets extends Service_Provider {
 					'name' => 'tecTicketsCommerceTickets',
 					'data' => static function () {
 						return [
-							'orderEndpoint' => tribe( Ticket_Endpoint::class )->get_route_url(),
+							'ticketEndpoint' => tribe( Ticket_Endpoint::class )->get_route_url(),
 							'nonce'         => wp_create_nonce( 'wp_rest' ),
 						];
 					}
