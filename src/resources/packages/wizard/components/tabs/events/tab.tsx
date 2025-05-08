@@ -84,7 +84,7 @@ const EventsContent = ( { moveToNextTab, skipToNextTab } ) => {
 						disabled={false}
 						onSuccess={handleSuccess}
 					/>
-					<SkipButton skipToNextTab={skipToNextTab} currentTab={4} />
+					<SkipButton skipToNextTab={skipToNextTab} currentTab={4} buttonText={__("Skip and finish setup", "event-tickets")} />
 				</div>
 			</div>
 		</>
