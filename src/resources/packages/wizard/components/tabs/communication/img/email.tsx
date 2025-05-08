@@ -8,6 +8,7 @@ const EmailIcon = () => {
 			height={30}
 			fill="none"
 			className="tec-tickets-onboarding__content-header-icon"
+			role="presentation"
 		>
 			<path
 				fill="#C3C4C7"

@@ -1,14 +1,25 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
+import { useSelect } from '@wordpress/data';
 import { BaseControl, Notice } from '@wordpress/components';
+import { SETTINGS_STORE_KEY } from "../../../data";
 import NextButton from '../../buttons/next';
 import SkipButton from '../../buttons/skip';
 import EmailIcon from './img/email';
+import { getSetting } from '../../../data/settings/selectors';
 
 const CommunicationContent = ({ moveToNextTab, skipToNextTab }) => {
-	const [email, setEmail] = useState('');
-	const [senderName, setSenderName] = useState('');
+	const userEmail = useSelect(
+		( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'user_email' ) || '',
+		[]
+	);
+	const [email, setEmail] = useState(userEmail || '');
+	const userName = useSelect(
+		( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'user_name' ) || '',
+		[]
+	);
+	const [senderName, setSenderName] = useState(userName || '');
 	const [isEmailValid, setIsEmailValid] = useState(true);
 	const [isNameValid, setIsNameValid] = useState(true);
 	const [hasInteracted, setHasInteracted] = useState({
@@ -117,6 +128,7 @@ const CommunicationContent = ({ moveToNextTab, skipToNextTab }) => {
 							onChange={handleEmailChange}
 							placeholder={__('Email', 'event-tickets')}
 							className="tec-tickets-onboarding__input"
+							required={true}
 						/>
 						{hasInteracted.email && !email && (
 							<span className="tec-tickets-onboarding__required-label">
@@ -153,6 +165,7 @@ const CommunicationContent = ({ moveToNextTab, skipToNextTab }) => {
 							onChange={handleNameChange}
 							placeholder={__('Name', 'event-tickets')}
 							className="tec-tickets-onboarding__input"
+							required={true}
 						/>
 						{hasInteracted.name && !senderName && (
 							<span className="tec-tickets-onboarding__required-label">

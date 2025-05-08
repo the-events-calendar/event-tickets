@@ -1,13 +1,14 @@
 import React from 'react';
 
-const TicketsIcon = () => {
+const TECInstallIcon = () => {
 	return (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			width={55}
 			height={55}
 			fill="none"
-			className="tec-tickets-onboarding__content-tec-icon"
+			className="tec-tickets-onboarding__content-install-icon"
+			role="presentation"
 		>
 			<path
 				fill="#fff"
@@ -35,4 +36,4 @@ const TicketsIcon = () => {
 	);
 };
 
-export default TicketsIcon;
+export default TECInstallIcon;

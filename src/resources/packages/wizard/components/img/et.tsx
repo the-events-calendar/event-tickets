@@ -6,6 +6,7 @@ const EtIcon = (props) => (
 		width={39}
 		height={39}
 		className="tec-tickets-onboarding__header-icon"
+		role="presentation"
 		{...props}
 	>
 		<path

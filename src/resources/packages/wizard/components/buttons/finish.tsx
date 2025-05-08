@@ -42,9 +42,9 @@ const FinishButton = () => {
 
 	return (
 		<Button
-			variant="tertiary"
+			variant="link"
 			onClick={ () => setClicked( true ) }
-			className="tec-tickets-onboarding__success-finish"
+			className="tec-tickets-onboarding__button tec-tickets-onboarding__button--skip tec-tickets-onboarding__success-finish"
 		>
 			{ __( 'Finish the Event Tickets Setup', 'event-tickets' ) }
 		</Button>
