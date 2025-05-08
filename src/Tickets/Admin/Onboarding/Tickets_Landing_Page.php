@@ -139,14 +139,36 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	public int $menu_position = 100;
 
 	/**
-	 * Get the admin page title.
+	 * Register the assets for the landing page.
 	 *
 	 * @since TBD
 	 *
-	 * @return string The page title.
+	 * @return void
 	 */
-	public function get_the_page_title(): string {
-		return esc_html__( 'TEC Tickets Setup Guide', 'event-tickets' );
+	public function register_assets(): void {
+		Asset::add(
+			'tec-tickets-onboarding-wizard-script',
+			'wizard.js'
+		)
+			->add_to_group_path( 'tec-tickets-onboarding' )
+			->add_to_group( 'tec-tickets-onboarding' )
+			->enqueue_on( 'admin_enqueue_scripts' )
+			->set_condition( [ __CLASS__, 'is_on_page' ] )
+			->use_asset_file( true )
+			->in_footer()
+			->register();
+
+		Asset::add(
+			'tec-tickets-onboarding-wizard-style',
+			'wizard.css'
+		)
+			->add_to_group_path( 'tec-tickets-onboarding' )
+			->add_to_group( 'tec-tickets-onboarding' )
+			->enqueue_on( 'admin_enqueue_scripts' )
+			->set_condition( [ __CLASS__, 'is_on_page' ] )
+			->use_asset_file( false )
+			->set_dependencies( 'wp-components', 'tec-variables-full', 'tribe-common-admin' )
+			->register();
 	}
 
 	/**
@@ -158,46 +180,6 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 */
 	public static function is_dismissed(): bool {
 		return (bool) tribe_get_option( self::DISMISS_PAGE_OPTION, false );
-	}
-
-	/**
-	 * Get the admin menu title.
-	 *
-	 * @since TBD
-	 *
-	 * @return string The menu title.
-	 */
-	public function get_the_menu_title(): string {
-		return esc_html__( 'Setup Guide', 'event-tickets' );
-	}
-
-	/**
-	 * Add some wrapper classes to the admin page.
-	 *
-	 * @since TBD
-	 *
-	 * @return array The class(es) array.
-	 */
-	public function content_wrapper_classes(): array {
-		$classes   = parent::content_classes();
-		$classes[] = 'tec-tickets-admin__content';
-		$classes[] = 'tec-tickets__landing-page-content';
-
-		return $classes;
-	}
-
-	/**
-	 * Render the admin page title.
-	 * In the header.
-	 *
-	 * @since TBD
-	 *
-	 * @return void Renders the admin page title.
-	 */
-	public function admin_page_title(): void {
-		?>
-			<h1 class="tec-admin__header-title"><?php esc_html_e( 'Event Tickets', 'event-tickets' ); ?></h1>
-		<?php
 	}
 
 	/**
@@ -218,12 +200,222 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		exit;
 	}
 
+	/**
+	 * Check if the TEC wizard is completed.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	protected function is_tec_wizard_completed(): bool {
+		if ( ! did_action( 'tribe_common_loaded' ) ) {
+			return false;
+		}
+
+		$settings = tribe( Data::class )->get_wizard_settings();
+		$finished  = $settings['finished'] ?? false;
+
+		if ( $finished ) {
+			return true;
+		}
+
+		if ( tribe_get_option( self::DISMISS_PAGE_OPTION ) ) {
+			return true;
+		}
+
+		if ( tribe_get_option( self::VISITED_GUIDED_SETUP_OPTION ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check if the wizard should be displayed.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	protected function should_show_wizard(): bool {
+		/**
+		 * Allow users to force-ignore the checks and display the wizard.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $force Whether to force the wizard to display.
+		 *
+		 * @return bool
+		 */
+		$force = apply_filters( 'tec_tickets_onboarding_wizard_force_display', false );
+
+		if ( $force ) {
+			return true;
+		}
+
+		$et_versions = (array) tribe_get_option( 'previous_etp_versions', [] );
+		// If there is more than one previous version, don't show the wizard.
+		if ( count( $et_versions ) > 1 ) {
+			return false;
+		}
+
+		$data = tribe( Data::class );
+		// Don't display if we've finished the wizard.
+		if ( $data->get_wizard_setting( 'finished', false ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Get the admin page title.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The page title.
+	 */
+	public function get_the_page_title(): string {
+		return esc_html__( 'TEC Tickets Setup Guide', 'event-tickets' );
+	}
+
+	/**
+	 * Get the admin menu title.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The menu title.
+	 */
+	public function get_the_menu_title(): string {
+		return esc_html__( 'Setup Guide', 'event-tickets' );
+	}
+
+	/**
+	 * Render the admin page title.
+	 * In the header.
+	 *
+	 * @since TBD
+	 *
+	 * @return void Renders the admin page title.
+	 */
+	public function admin_page_title(): void {
+		?>
+			<h1 class="tec-admin__header-title"><?php esc_html_e( 'Event Tickets', 'event-tickets' ); ?></h1>
+		<?php
+	}
+
+	/**
+	 * Get the logo source.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $source The source.
+	 *
+	 * @return string The logo source.
+	 */
 	public function logo_source( $source ): string {
 		if ( ! $this->is_on_page() ) {
 			return $source;
 		}
 
 		return tribe_resource_url( 'images/logo/the-events-calendar.svg', false, null, Tribe__Main::instance() );
+	}
+
+	/**
+	 * Get the initial data for the wizard.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, mixed> The initial data.
+	 */
+	public function get_initial_data(): array {
+		$data         = tribe( Data::class );
+		$initial_data = [
+			/* Wizard History */
+			'begun'                     => (bool) $data->get_wizard_setting( 'begun', false ),
+			'currentTab'                => absint( $data->get_wizard_setting( 'current_tab', 0 ) ),
+			'finished'                  => (bool) $data->get_wizard_setting( 'finished', false ),
+			'completedTabs'             => (array) $data->get_wizard_setting( 'completed_tabs', [] ),
+			'skippedTabs'               => (array) $data->get_wizard_setting( 'skipped_tabs', [] ),
+			'paymentOption'             => $data->get_wizard_setting( 'payment_option', '' ),
+			/* nonces */
+			'action_nonce'              => wp_create_nonce( API::NONCE_ACTION ),
+			'_wpnonce'                  => wp_create_nonce( 'wp_rest' ),
+			/* Data */
+			'currencies'                => tribe( Currency::class )->get_currency_list(),
+			'countries'                 => tribe( Country::class )->get_gateway_countries(),
+			'optin'                     => tribe_get_option( 'opt-in-status', false ),
+			'stripeConnected'           => tribe( Merchant::class )->is_connected( true ),
+			/* TEC install step */
+			'events-calendar-installed' => Installer::get()->is_installed( 'the-events-calendar' ),
+			'events-calendar-active'    => Installer::get()->is_active( 'the-events-calendar' ),
+			'tec-wizard-completed'      => $this->is_tec_wizard_completed(),
+			/* User info - for Communication Step */
+			'user_email'                => wp_get_current_user()->user_email,
+			'user_name'                 => wp_get_current_user()->display_name,
+		];
+
+
+		/**
+		 * Filter the initial data.
+		 *
+		 * @since TBD
+		 *
+		 * @param array      $initial_data The initial data.
+		 * @param Controller $controller   The controller object.
+		 *
+		 * @return array
+		 */
+		return (array) apply_filters( 'tribe_tickets_onboarding_wizard_initial_data', $initial_data, $this );
+	}
+
+	/**
+	 * Render the onboarding wizard trigger.
+	 * To show a button, use code similar to below.
+	 *
+	 * $button = get_submit_button(
+	 *     esc_html__( 'Open Install Wizard (current)', 'event-tickets' ),
+	 *     'secondary tec-tickets-onboarding-wizard',
+	 *     'open',
+	 *     true,
+	 *     [
+	 *         'id'                     => 'tec-tickets-onboarding-wizard',
+	 *         'data-container-element' => ,
+	 *         'data-wizard-boot-data'  => wp_json_encode( $this->get_initial_data() ),
+	 *     ]
+	 * );
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function tec_onboarding_wizard_target(): void {
+		if ( ! $this->should_show_wizard() ) {
+			return;
+		}
+		?>
+		<span
+			id="tec-tickets-onboarding-wizard"
+			data-container-element="tec-tickets-onboarding-wizard-target"
+			data-wizard-boot-data="<?php echo esc_attr( wp_json_encode( $this->get_initial_data() ) ); ?>"
+		></span>
+		<div class="wrap" id="tec-tickets-onboarding-wizard-target"></div>
+		<?php
+	}
+
+	/**
+	 * Add some wrapper classes to the admin page.
+	 *
+	 * @since TBD
+	 *
+	 * @return array The class(es) array.
+	 */
+	public function content_wrapper_classes(): array {
+		$classes   = parent::content_classes();
+		$classes[] = 'tec-tickets-admin__content';
+		$classes[] = 'tec-tickets__landing-page-content';
+
+		return $classes;
 	}
 
 	/**
@@ -525,184 +717,5 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 */
 	public function admin_page_footer_content(): void {
 		// no op.
-	}
-
-	/**
-	 * Check if the TEC wizard is completed.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool
-	 */
-	protected function is_tec_wizard_completed(): bool {
-		if ( ! did_action( 'tribe_common_loaded' ) ) {
-			return false;
-		}
-
-		$settings = tribe( Data::class )->get_wizard_settings();
-		$finished  = $settings['finished'] ?? false;
-
-		if ( $finished ) {
-			return true;
-		}
-
-		if ( tribe_get_option( self::DISMISS_PAGE_OPTION ) ) {
-			return true;
-		}
-
-		if ( tribe_get_option( self::VISITED_GUIDED_SETUP_OPTION ) ) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * Get the initial data for the wizard.
-	 *
-	 * @since TBD
-	 *
-	 * @return array<string, mixed> The initial data.
-	 */
-	public function get_initial_data(): array {
-		$data         = tribe( Data::class );
-		$initial_data = [
-			/* Wizard History */
-			'begun'                     => (bool) $data->get_wizard_setting( 'begun', false ),
-			'currentTab'                => absint( $data->get_wizard_setting( 'current_tab', 0 ) ),
-			'finished'                  => (bool) $data->get_wizard_setting( 'finished', false ),
-			'completedTabs'             => (array) $data->get_wizard_setting( 'completed_tabs', [] ),
-			'skippedTabs'               => (array) $data->get_wizard_setting( 'skipped_tabs', [] ),
-			'paymentOption'             => $data->get_wizard_setting( 'payment_option', '' ),
-			/* nonces */
-			'action_nonce'              => wp_create_nonce( API::NONCE_ACTION ),
-			'_wpnonce'                  => wp_create_nonce( 'wp_rest' ),
-			/* Data */
-			'currencies'                => tribe( Currency::class )->get_currency_list(),
-			'countries'                 => tribe( Country::class )->get_gateway_countries(),
-			'optin'                     => tribe_get_option( 'opt-in-status', false ),
-			'stripeConnected'           => tribe( Merchant::class )->is_connected( true ),
-			/* TEC install step */
-			'events-calendar-installed' => Installer::get()->is_installed( 'the-events-calendar' ),
-			'events-calendar-active'    => Installer::get()->is_active( 'the-events-calendar' ),
-			'tec-wizard-completed'      => $this->is_tec_wizard_completed(),
-		];
-
-
-		/**
-		 * Filter the initial data.
-		 *
-		 * @since TBD
-		 *
-		 * @param array      $initial_data The initial data.
-		 * @param Controller $controller   The controller object.
-		 *
-		 * @return array
-		 */
-		return (array) apply_filters( 'tribe_tickets_onboarding_wizard_initial_data', $initial_data, $this );
-	}
-
-	/**
-	 * Render the onboarding wizard trigger.
-	 * To show a button, use code similar to below.
-	 *
-	 * $button = get_submit_button(
-	 *     esc_html__( 'Open Install Wizard (current)', 'event-tickets' ),
-	 *     'secondary tec-tickets-onboarding-wizard',
-	 *     'open',
-	 *     true,
-	 *     [
-	 *         'id'                     => 'tec-tickets-onboarding-wizard',
-	 *         'data-container-element' => ,
-	 *         'data-wizard-boot-data'  => wp_json_encode( $this->get_initial_data() ),
-	 *     ]
-	 * );
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function tec_onboarding_wizard_target(): void {
-		if ( ! $this->should_show_wizard() ) {
-			return;
-		}
-		?>
-		<span
-			id="tec-tickets-onboarding-wizard"
-			data-container-element="tec-tickets-onboarding-wizard-target"
-			data-wizard-boot-data="<?php echo esc_attr( wp_json_encode( $this->get_initial_data() ) ); ?>"
-		></span>
-		<div class="wrap" id="tec-tickets-onboarding-wizard-target"></div>
-		<?php
-	}
-
-	/**
-	 * Check if the wizard should be displayed.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool
-	 */
-	protected function should_show_wizard(): bool {
-		/**
-		 * Allow users to force-ignore the checks and display the wizard.
-		 *
-		 * @since TBD
-		 *
-		 * @param bool $force Whether to force the wizard to display.
-		 *
-		 * @return bool
-		 */
-		$force = apply_filters( 'tec_tickets_onboarding_wizard_force_display', false );
-
-		if ( $force ) {
-			return true;
-		}
-
-		$et_versions = (array) tribe_get_option( 'previous_etp_versions', [] );
-		// If there is more than one previous version, don't show the wizard.
-		if ( count( $et_versions ) > 1 ) {
-			return false;
-		}
-
-		$data = tribe( Data::class );
-		// Don't display if we've finished the wizard.
-		if ( $data->get_wizard_setting( 'finished', false ) ) {
-			return false;
-		}
-
-		return true;
-	}
-	/**
-	 * Register the assets for the landing page.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function register_assets(): void {
-		Asset::add(
-			'tec-tickets-onboarding-wizard-script',
-			'wizard.js'
-		)
-			->add_to_group_path( 'tec-tickets-onboarding' )
-			->add_to_group( 'tec-tickets-onboarding' )
-			->enqueue_on( 'admin_enqueue_scripts' )
-			->set_condition( [ __CLASS__, 'is_on_page' ] )
-			->use_asset_file( true )
-			->in_footer()
-			->register();
-
-		Asset::add(
-			'tec-tickets-onboarding-wizard-style',
-			'wizard.css'
-		)
-			->add_to_group_path( 'tec-tickets-onboarding' )
-			->add_to_group( 'tec-tickets-onboarding' )
-			->enqueue_on( 'admin_enqueue_scripts' )
-			->set_condition( [ __CLASS__, 'is_on_page' ] )
-			->use_asset_file( false )
-			->set_dependencies( 'wp-components', 'tec-variables-full', 'tribe-common-admin' )
-			->register();
 	}
 }
