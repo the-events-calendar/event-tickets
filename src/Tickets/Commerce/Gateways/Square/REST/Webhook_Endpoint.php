@@ -115,17 +115,19 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		$secret_key = $request->get_param( Webhooks::PARAM_WEBHOOK_KEY );
 
 		// Get the whodat signature from the request header.
-		$whodat_signature = $request->get_header( 'X-WhoDat-Signature' );
+		$whodat_hash = $request->get_header( 'X-WhoDat-Hash' );
+		$payload     = $request->get_body();
 
-		if ( ! $webhook->verify_signature( $secret_key ) || ! $webhook->verify_whodat_signature( $whodat_signature ) ) {
+		if ( ! $webhook->verify_signature( $secret_key ) || ! $webhook->verify_whodat_signature( $payload, $whodat_hash ) ) {
 			do_action(
 				'tribe_log',
 				'error',
-				'Invalid Secret Key or Whodat Signature',
+				'Invalid Secret Key or Whodat Hash',
 				[
-					'source'           => 'tickets-commerce-square',
-					'secret_key'       => $secret_key,
-					'whodat_signature' => $whodat_signature,
+					'source'      => 'tickets-commerce-square',
+					'secret_key'  => $secret_key,
+					'whodat_hash' => $whodat_hash,
+					'payload'     => $payload,
 				]
 			);
 

@@ -243,8 +243,7 @@ class Webhooks extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $signature The signature from the request header.
-	 * @param string $body      The raw request body.
+	 * @param string $received_secret_key The secret key from the request.
 	 *
 	 * @return bool Whether the signature is valid.
 	 */
@@ -266,19 +265,23 @@ class Webhooks extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $signature The signature from the request header.
-	 * @param string $body      The raw request body.
+	 * @param string $payload       The payload from the request.
+	 * @param string $received_hash The hash from the request.
 	 *
 	 * @return bool Whether the signature is valid.
 	 */
-	public function verify_whodat_signature( $received_secret_key ) {
-		$signature = tribe( Merchant::class )->get_whodat_signature();
+	public function verify_whodat_signature( string $payload, string $received_hash ) {
+		$signature        = tribe( Merchant::class )->get_whodat_signature();
+		$notification_url = $this->get_webhook_endpoint_url();
 
-		if ( empty( $signature ) ) {
+		if ( empty( $signature ) || empty( $notification_url ) || empty( $payload ) ) {
 			return false;
 		}
 
-		return $signature === $received_secret_key;
+        // Convert the payload to UTF-8.
+        $payload = mb_convert_encoding( $payload, 'UTF-8' );
+
+		return md5( hash_hmac( 'sha256', "{$notification_url}.{$payload}", $signature ) ) === $received_hash;
 	}
 
 	/**
