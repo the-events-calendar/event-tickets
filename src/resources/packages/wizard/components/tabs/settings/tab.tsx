@@ -161,7 +161,11 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab } ) => {
 							label={ __( 'Currency', 'event-tickets' ) }
 							className="tec-tickets-onboarding__form-field"
 						>
-							<select onChange={ ( e ) => setCurrency( e.target.value ) } value={ currencyCode }>
+							<select
+								onChange={ ( e ) => setCurrency( e.target.value ) }
+								value={ currencyCode }
+								required
+							>
 								{ Object.entries( currencies ).map( ( [ key, data ] ) => (
 									<option key={ key } value={ data[ 'code' ] }>
 										{ data[ 'name' ] } ({ data[ 'code' ] })

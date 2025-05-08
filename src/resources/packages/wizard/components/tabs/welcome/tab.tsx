@@ -26,6 +26,8 @@ const WelcomeContent = ( { moveToNextTab } ) => {
 		const currentCountry = selectedCountry || country;
 		const hasStripe = countries[currentCountry]?.has_stripe || false;
 
+		// Update settings store to carry available payment options forward.
+		// @TODO: Add Square when it's ready.
 		updateSettings( {
 			country: currentCountry,
 			paymentOption: hasStripe ? 'stripe' : ''
@@ -73,6 +75,7 @@ const WelcomeContent = ( { moveToNextTab } ) => {
 							id="country"
 							onChange={ ( e ) => setCountry( e.target.value ) }
 							defaultValue={ selectedCountry }
+							required
 						>
 							{ Object.entries( countries )
 								.map( ( [ code, country ] ) => ( {
