@@ -1,31 +1,42 @@
 <?php
 /**
- * Square Webhook Notices
+ * Square Notices Controller
  *
  * @since TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Notices
  */
 
-namespace TEC\Tickets\Commerce\Gateways\Square\Notices;
+namespace TEC\Tickets\Commerce\Gateways\Square;
 
-use TEC\Tickets\Commerce\Gateways\Square\Gateway;
-use TEC\Tickets\Commerce\Gateways\Square\Webhooks;
+use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Common\Contracts\Container;
 
 /**
- * Square Webhook Notice Class
+ * Class Controller
  *
  * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square\Notices
  */
-class Webhook_Notice {
+class Notices_Controller extends Controller_Contract {
 	/**
-	 * Notice slug.
+	 * Webhook notice slug.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public const SLUG = 'tec-tickets-commerce-square-webhook-notice';
+	public const WEBHOOK_NOTICE_SLUG = 'tec-tickets-commerce-square-webhook-notice';
+
+	/**
+	 * Not ready to sell notice slug.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const NOT_READY_TO_SELL_NOTICE_SLUG = 'tec-tickets-commerce-square-not-ready-to-sell-notice';
 
 	/**
 	 * Webhooks instance.
@@ -34,7 +45,7 @@ class Webhook_Notice {
 	 *
 	 * @var Webhooks
 	 */
-	protected $webhooks;
+	private Webhooks $webhooks;
 
 	/**
 	 * Gateway instance.
@@ -43,38 +54,73 @@ class Webhook_Notice {
 	 *
 	 * @var Gateway
 	 */
-	protected $gateway;
+	private Gateway $gateway;
+
+	/**
+	 * Merchant instance.
+	 *
+	 * @since TBD
+	 *
+	 * @var Merchant
+	 */
+	private Merchant $merchant;
 
 	/**
 	 * Constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param Webhooks $webhooks Webhooks instance.
-	 * @param Gateway  $gateway  Gateway instance.
+	 * @param Container $container Container instance.
+	 * @param Webhooks  $webhooks  Webhooks instance.
+	 * @param Gateway   $gateway   Gateway instance.
+	 * @param Merchant  $merchant  Merchant instance.
 	 */
-	public function __construct( Webhooks $webhooks, Gateway $gateway ) {
+	public function __construct( Container $container, Webhooks $webhooks, Gateway $gateway, Merchant $merchant ) {
+		parent::__construct( $container );
 		$this->webhooks = $webhooks;
 		$this->gateway  = $gateway;
+		$this->merchant = $merchant;
 	}
 
 	/**
-	 * Setup hooks for the service provider.
+	 * Register the notice providers.
 	 *
 	 * @since TBD
+	 *
+	 * @return void
 	 */
-	public function register(): void {
+	public function do_register(): void {
 		tribe_notice(
-			self::SLUG,
-			[ $this, 'render_notice' ],
+			self::WEBHOOK_NOTICE_SLUG,
+			[ $this, 'render_webhook_notice' ],
 			[
 				'type'     => 'error',
 				'dismiss'  => false,
 				'priority' => 10,
 			],
-			[ $this, 'should_display_notice' ]
+			[ $this, 'should_display_webhook_notice' ]
+		);
+
+		tribe_notice(
+			self::NOT_READY_TO_SELL_NOTICE_SLUG,
+			[ $this, 'render_not_ready_to_sell_notice' ],
+			[
+				'type'     => 'error',
+				'dismiss'  => false,
+				'priority' => 10,
+			],
+			[ $this, 'should_display_not_ready_to_sell_notice' ]
 		);
 	}
+
+	/**
+	 * Unregisters the notice providers.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function unregister(): void {}
 
 	/**
 	 * Determines if the webhook notice should be displayed.
@@ -83,7 +129,7 @@ class Webhook_Notice {
 	 *
 	 * @return bool
 	 */
-	public function should_display_notice() {
+	public function should_display_webhook_notice() {
 		// Only show on admin pages.
 		if ( ! is_admin() ) {
 			return false;
@@ -109,11 +155,30 @@ class Webhook_Notice {
 			return true;
 		}
 
-		if ( $this->webhooks->is_webhook_healthy() ) {
+		return ! $this->webhooks->is_webhook_healthy();
+	}
+
+	/**
+	 * Determines if the not ready to sell notice should be displayed.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function should_display_not_ready_to_sell_notice() {
+		if ( ! is_admin() ) {
 			return false;
 		}
 
-		return true;
+		if ( ! $this->gateway->is_enabled() ) {
+			return false;
+		}
+
+		if ( ! $this->gateway->is_active() ) {
+			return false;
+		}
+
+		return ! $this->merchant->is_ready_to_sell();
 	}
 
 	/**
@@ -123,7 +188,7 @@ class Webhook_Notice {
 	 *
 	 * @return string
 	 */
-	public function render_notice() {
+	public function render_webhook_notice() {
 		$webhook_id = $this->webhooks->get_webhook_id();
 
 		$issues = [];
@@ -131,7 +196,7 @@ class Webhook_Notice {
 		// Check if webhook is missing.
 		if ( empty( $webhook_id ) ) {
 			$issues[] = esc_html__( 'Webhook not registered', 'event-tickets' );
-		} else if ( $this->webhooks->is_webhook_expired() ) {
+		} elseif ( $this->webhooks->is_webhook_expired() ) {
 			$issues[] = esc_html__( 'Webhook expired', 'event-tickets' );
 		} else {
 			$issues[] = esc_html__( 'Bad webhook configuration', 'event-tickets' );
@@ -161,6 +226,23 @@ class Webhook_Notice {
 			esc_url( $settings_url ),
 			esc_html__( 'Fix Webhook Configuration', 'event-tickets' ),
 			esc_attr( $webhook_nonce )
+		);
+	}
+
+	/**
+	 * Render the webhook notice.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function render_not_ready_to_sell_notice() {
+		return sprintf(
+			'<p><strong>%1$s</strong></p><p>%2$s</p><p><a href="%3$s" class="button button-primary">%4$s</a></p>',
+			esc_html__( 'Square Location not configured', 'event-tickets' ),
+			esc_html__( 'The Square payment gateway is not ready to sell until you configure a Business Location. .', 'event-tickets' ),
+			esc_url( admin_url( 'admin.php?page=tec-tickets-settings&tab=square' ) ),
+			esc_html__( 'Configure Business Location', 'event-tickets' )
 		);
 	}
 

@@ -205,7 +205,7 @@ class Order extends Abstract_Order {
 
 		if ( empty( $response['order']['id'] ) ) {
 			do_action( 'tribe_log', 'error', 'Square order upsert failed', [ $response['errors'] ?? $response, $square_order, $square_order_id ] );
-			throw new RuntimeException( __( 'Failed to create or update Square order.', 'event-tickets' ), 'tec-tc-gateway-square-failed-creating-order' );
+			throw new RuntimeException( __( 'Failed to create or update Square order.', 'event-tickets' ), 1 );
 		}
 
 		$args = [
@@ -223,7 +223,7 @@ class Order extends Abstract_Order {
 
 		if ( ! $order_updated || ! isset( $order_updated[ $order->ID ] ) || ! $order_updated[ $order->ID ] ) {
 			do_action( 'tribe_log', 'error', 'Order update failed', [ $args, $order ] );
-			throw new RuntimeException( __( 'Failed to update the order with the new Square order ID.', 'event-tickets' ), 'tec-tc-gateway-square-failed-updating-order' );
+			throw new RuntimeException( __( 'Failed to update the order with the new Square order ID.', 'event-tickets' ), 2 );
 		}
 
 		/**

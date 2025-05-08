@@ -209,7 +209,7 @@ class WhoDat extends Abstract_WhoDat {
 				]
 			);
 
-			throw new RuntimeException( $response['errors'] ?? __( 'Failed to register Square webhook', 'event-tickets' ), 'tec_tickets_commerce_square_webhook_registration_failed' );
+			throw new RuntimeException( $response['errors'] ?? __( 'Failed to register Square webhook', 'event-tickets' ), 3 );
 		}
 
 		return $response['subscription'];
