@@ -109,20 +109,23 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * @return bool|WP_Error Always returns true as we validate using the webhook signature.
 	 */
 	public function has_permission( WP_REST_Request $request ) {
+		$webhook = tribe( Webhooks::class );
 
 		// Get the webhook secret key from the URL.
 		$secret_key = $request->get_param( Webhooks::PARAM_WEBHOOK_KEY );
 
+		// Get the whodat signature from the request header.
+		$whodat_signature = $request->get_header( 'X-WhoDat-Signature' );
 
-
-		if ( ! tribe( Webhooks::class )->verify_signature( $secret_key ) ) {
+		if ( ! $webhook->verify_signature( $secret_key ) || ! $webhook->verify_whodat_signature( $whodat_signature ) ) {
 			do_action(
 				'tribe_log',
 				'error',
-				'Invalid Secret Key',
+				'Invalid Secret Key or Whodat Signature',
 				[
-					'source'    => 'tickets-commerce-square',
-					'signature' => $secret_key,
+					'source'           => 'tickets-commerce-square',
+					'secret_key'       => $secret_key,
+					'whodat_signature' => $whodat_signature,
 				]
 			);
 

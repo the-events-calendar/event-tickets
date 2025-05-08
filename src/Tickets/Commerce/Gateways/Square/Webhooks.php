@@ -262,6 +262,26 @@ class Webhooks extends Controller_Contract {
 	}
 
 	/**
+	 * Verify whodat signature.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $signature The signature from the request header.
+	 * @param string $body      The raw request body.
+	 *
+	 * @return bool Whether the signature is valid.
+	 */
+	public function verify_whodat_signature( $received_secret_key ) {
+		$signature = tribe( Merchant::class )->get_whodat_signature();
+
+		if ( empty( $signature ) ) {
+			return false;
+		}
+
+		return $signature === $received_secret_key;
+	}
+
+	/**
 	 * AJAX handler for webhook registration.
 	 *
 	 * @since TBD

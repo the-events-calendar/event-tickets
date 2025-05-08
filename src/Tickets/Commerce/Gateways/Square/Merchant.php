@@ -182,6 +182,23 @@ class Merchant extends Abstract_Merchant {
 	}
 
 	/**
+	 * Returns the Whodat signature stored for server-side transactions.
+	 *
+	 * @since TBD
+	 *
+	 * @return ?string
+	 */
+	public function get_whodat_signature(): ?string {
+		$data = get_option( $this->get_signup_data_key() );
+
+		if ( empty( $data['whodat_signature'] ) ) {
+			return null;
+		}
+
+		return $data['whodat_signature'];
+	}
+
+	/**
 	 * Get the account ID (same as merchant ID for Square).
 	 *
 	 * @since TBD
