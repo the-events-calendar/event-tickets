@@ -267,21 +267,22 @@ class Webhooks extends Controller_Contract {
 	 *
 	 * @param string $payload       The payload from the request.
 	 * @param string $received_hash The hash from the request.
+	 * @param string $secret_key    The secret key from the request.
 	 *
 	 * @return bool Whether the signature is valid.
 	 */
-	public function verify_whodat_signature( string $payload, string $received_hash ) {
+	public function verify_whodat_signature( string $payload, string $received_hash, string $secret_key ) {
 		$signature        = tribe( Merchant::class )->get_whodat_signature();
-		$notification_url = $this->get_webhook_endpoint_url();
+		$notification_url = add_query_arg( self::PARAM_WEBHOOK_KEY, $secret_key, untrailingslashit( $this->get_webhook_endpoint_url() ) );
 
-		if ( empty( $signature ) || empty( $notification_url ) || empty( $payload ) ) {
+		if ( ! ( $signature && $notification_url && $payload ) ) {
 			return false;
 		}
 
 		// Convert the payload to UTF-8.
-		$payload = mb_convert_encoding( $payload, 'UTF-8' );
+		$payload = function_exists( 'mb_convert_encoding' ) ? mb_convert_encoding( $payload, 'UTF-8' ) : $payload;
 
-		return md5( hash_hmac( 'sha256', "{$notification_url}.{$payload}", $signature ) ) === $received_hash;
+		return md5( "{$notification_url}.{$payload}.{$signature}" ) === $received_hash;
 	}
 
 	/**
