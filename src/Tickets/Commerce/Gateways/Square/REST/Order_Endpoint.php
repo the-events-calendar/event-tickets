@@ -134,7 +134,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		try {
 			$square_order_id = tribe( Square_Order::class )->upsert_square_from_local_order( $order );
 		} catch ( RuntimeException $e ) {
-			return new WP_Error( $e->getCode(), $messages['failed-creating-order'], $order );
+			return new WP_Error( 'tec-tc-gateway-square-failed-creating-order', $messages['failed-creating-order'], $order );
 		}
 
 		// Get the order object from the database, since the order object might have been updated by the Square_Order::upsert_square_from_local_order method.

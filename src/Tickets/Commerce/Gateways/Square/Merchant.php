@@ -689,4 +689,15 @@ class Merchant extends Abstract_Merchant {
 
 		return $response['locations'];
 	}
+
+	/**
+	 * Whether the merchant is ready to sell.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_ready_to_sell(): bool {
+		return (bool) $this->get_location_id();
+	}
 }

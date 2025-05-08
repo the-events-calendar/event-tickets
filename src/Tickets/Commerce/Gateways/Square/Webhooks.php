@@ -11,7 +11,6 @@ namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Tickets\Commerce\Gateways\Square\WhoDat;
 use WP_Error;
-use TEC\Tickets\Commerce\Gateways\Square\Notices\Webhook_Notice;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use Tribe__Date_Utils as Dates;
 use RuntimeException;
@@ -68,8 +67,6 @@ class Webhooks extends Controller_Contract {
 	public function do_register(): void {
 		// Add AJAX handler for webhook registration.
 		add_action( 'wp_ajax_tec_tickets_commerce_square_register_webhook', [ $this, 'ajax_register_webhook' ] );
-
-		tribe( Webhook_Notice::class );
 	}
 
 	/**
@@ -156,7 +153,7 @@ class Webhooks extends Controller_Contract {
 			// Now register the new webhook with the appropriate event types and API version.
 			$subscription = tribe( WhoDat::class )->register_webhook_endpoint( $endpoint_url, $merchant_id )['subscription'] ?? null;
 		} catch ( RuntimeException $e ) {
-			return new WP_Error( $e->getCode(), $e->getMessage() );
+			return new WP_Error( 'tec_tickets_commerce_square_webhook_registration_failed', $e->getMessage() );
 		}
 
 		// Store the webhook ID and signature.
