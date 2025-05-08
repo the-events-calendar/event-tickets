@@ -452,13 +452,19 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		$installer      = Installer::get();
 		$tec_installed  = $installer->is_installed( 'the-events-calendar' );
 		$tec_activated  = $installer->is_active( 'the-events-calendar' );
+		$count_complete = 0;
+		foreach ( [ 0, 1, 2 ] as $step ) {
+			if ( in_array( $step, $completed_tabs, true ) ) {
+				++$count_complete;
+			}
+		}
 		?>
 			<section class="tec-admin-page__content-section tec-tickets-admin-page__content-section">
 				<div class="tec-tickets-admin-page__content-section-header">
 					<h2 class="tec-admin-page__content-header"><?php esc_html_e( 'First-time setup', 'event-tickets' ); ?></h2>
 					<a class="tec-dismiss-admin-page" href="<?php echo esc_url( $action_url ); ?>"><?php esc_html_e( 'Dismiss this screen', 'event-tickets' ); ?></a>
 				</div>
-				<div class="tec-tickets-admin-page__content-section-subheader">3/4 steps completed</div>
+				<div class="tec-tickets-admin-page__content-section-subheader"><?php echo esc_html( $count_complete ) . '/3 ' . esc_html__( 'steps completed', 'event-tickets' ); ?></div>
 				<ul class="tec-admin-page__content-step-list">
 					<li
 						id="tec-tickets-onboarding-wizard-currency-item"
@@ -467,7 +473,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 							[
 								'step-list__item' => true,
 								'tec-tickets-onboarding-step-1' => true,
-								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[1] ),
+								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[0] ),
 							]
 						);
 						?>
@@ -511,7 +517,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 							[
 								'step-list__item' => true,
 								'tec-tickets-onboarding-step-3' => true,
-								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[3] ),
+								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[1] ),
 							]
 						);
 						?>
