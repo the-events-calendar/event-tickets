@@ -8,6 +8,7 @@ const TicketsIcon = () => {
 			height={32}
 			fill="none"
 			className="tec-tickets-onboarding__content-header-icon"
+			role="presentation"
 		>
 			<path
 				stroke="#C3C4C7"

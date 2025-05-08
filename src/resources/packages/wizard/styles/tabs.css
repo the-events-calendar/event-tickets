@@ -1,0 +1,298 @@
+/* -----------------------------------------------------------------------------
+ * Tab Container
+ * ----------------------------------------------------------------------------- */
+
+.tec-tickets-onboarding__tabs {
+	display: grid;
+	grid-template-columns: auto;
+	grid-template-rows: none;
+	justify-content: center;
+	row-gap: var(--tec-spacer-5);
+}
+
+.tec-tickets-onboarding__tabs.tec-tickets-onboarding__tab-welcome {
+	gap: var(--tec-spacer-8);
+}
+
+@media (min-width: 1024px) {
+	.tec-tickets-onboarding__tabs {
+		column-gap: 100px;
+		row-gap: calc(20vh - 100px);
+		grid-template-columns: none;
+		grid-template-rows: 84px auto;
+	}
+
+	.tec-tickets-onboarding__tabs.tec-tickets-onboarding__tab-welcome {
+		gap: var(--tec-spacer-9);
+	}
+}
+
+/* -----------------------------------------------------------------------------
+ * Tab Container Header
+ * ----------------------------------------------------------------------------- */
+.tec-tickets-onboarding__tabs-header {
+	align-items: center;
+	display: flex;
+	flex-flow: column nowrap;
+	gap: var(--tec-spacer-5);
+	justify-content: space-between;
+	margin: 0 auto;
+	min-width: var(--tec-spacer-onboarding-content-min-width);
+	padding-bottom: 0;
+	padding-top: 0;
+}
+
+@media (min-width: 1024px) {
+	.tec-tickets-onboarding__tabs-header {
+		padding-bottom: var(--tec-spacer-3);
+	}
+}
+
+/* -----------------------------------------------------------------------------
+ * Tab Container Header Brand Icon
+ * ----------------------------------------------------------------------------- */
+.tec-tickets-onboarding__header-icon {
+	height: var(--tec-spacer-8);
+	margin: 0 auto;
+	width: var(--tec-spacer-8);
+}
+
+@media (min-width: 1024px) {
+	.tec-tickets-onboarding__header-icon {
+		margin: 0 auto var(--tec-spacer-5);
+	}
+}
+
+@media (min-width: 1024px) {
+	.tec-tickets-onboarding__tabs-header {
+		flex-flow: row nowrap;
+	}
+
+	.tec-tickets-onboarding__header-icon {
+		left: var(--tec-spacer-3);
+		margin: 0;
+		position: absolute;
+		top: var(--tes-spacer-7);
+	}
+}
+
+/* -----------------------------------------------------------------------------
+ * TabList & Tabs
+ * ----------------------------------------------------------------------------- */
+.tec-tickets-onboarding__tabs-list {
+	border-radius: var(--tec-admin-border-radius-1);
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	justify-content: center;
+	list-style: none;
+	margin: 0 auto;
+	max-width: 800px;
+	min-width: var(--tec-spacer-onboarding-content-min-width);
+	width: 100%;
+}
+
+.tec-tickets-onboarding__tab-welcome .tec-tickets-onboarding__tabs-list {
+	display: none;
+}
+
+.tec-tickets-onboarding__tab {
+	align-items: center;
+	border: 1px solid var(--tec-wp-core-grey-50);
+	border-collapse: collapse;
+	border-left-width: 0;
+	color: transparent;
+	counter-increment: tab;
+	display: flex;
+	flex-grow: 0;
+	font-size: 1px;
+	gap: var(--tec-spacer-2);
+	height: auto;
+	justify-content: center;
+	letter-spacing: -1px;
+	margin: 0;
+	padding: 0;
+	position: relative;
+	white-space: nowrap;
+}
+
+@media (max-width: 1024px) {
+	.tec-tickets-onboarding__tabs-list {
+		grid-template-columns: repeat(5, var(--tec-spacer-tap-min-size));
+		max-width: calc(100vw - 64px);
+	}
+
+	li.tec-tickets-onboarding__tab.tec-tickets-onboarding__tab--active {
+		grid-column: span 3;
+	}
+}
+
+.tec-tickets-onboarding__tab.tec-tickets-onboarding__tab--welcome {
+	display: none;
+}
+
+.tec-tickets-onboarding__tab:nth-child(2) {
+	border-bottom-left-radius: var(--tec-admin-border-radius-1);
+	border-left-width: 1px;
+	border-top-left-radius: var(--tec-admin-border-radius-1);
+}
+
+.tec-tickets-onboarding__tab:last-child {
+	border-bottom-right-radius: var(--tec-admin-border-radius-1);
+	border-top-right-radius: var(--tec-admin-border-radius-1);
+}
+
+@media (min-width: 1024px) {
+	.tec-tickets-onboarding__tab {
+		color: var(--tec-wp-core-grey-50);
+		font-size: var(--tec-font-size-2);
+		letter-spacing: normal;
+	}
+}
+
+.tec-tickets-onboarding__tab--active {
+	background-color: var(--tec-wp-core-blue-50);
+	border-left-color: var(--tec-wp-core-blue-50);
+	color: #fff;
+	font-size: var(--tec-font-size-2);
+	letter-spacing: normal;
+}
+
+.tec-tickets-onboarding__tab--active:hover {
+	color: #fff;
+}
+
+.tec-tickets-onboarding__tab-button {
+	align-items: center;
+	background: none;
+	border: none;
+	color: inherit;
+	cursor: pointer;
+	display: flex;
+	flex-flow: row;
+	font-size: 0;
+	justify-content: center;
+	letter-spacing: normal;
+	padding: var(--tec-spacer-1) var(--tec-spacer-5);
+	width: 100%;
+	z-index: 1;
+}
+
+.tec-tickets-onboarding__tab--active .tec-tickets-onboarding__tab-button {
+	font-size: var(--tec-font-size-2);
+}
+
+@media (min-width: 1024px) {
+	.tec-tickets-onboarding__tab-button {
+		font-size: var(--tec-font-size-2);
+	}
+}
+
+.tec-tickets-onboarding__tab--disabled,
+.tec-tickets-onboarding__tab--disabled .tec-tickets-onboarding__tab-button {
+	color: var(--tec-wp-core-grey-50);
+	cursor: not-allowed;
+}
+
+.tec-tickets-onboarding__tab-title:before {
+	border: 1px solid var(--tec-wp-core-grey-50);
+	border-radius: var(--tec-admin-border-radius-round);
+	box-sizing: border-box;
+	color: var(--tec-wp-core-grey-50);
+	content: counter(tab);
+	display: inline-block;
+	font-size: var(--tec-font-size-1);
+	height: 18px;
+	line-height: var(--tec-admin-line-height-0);
+	padding: 0;
+	text-align: center;
+	width: 18px;
+}
+
+.tec-tickets-onboarding__tab--completed .tec-tickets-onboarding__tab-title:before {
+	background-color: var(--tec-wp-core-grey-50);
+	color: var(--tec-wp-core-grey-0);
+	content: "✓";
+}
+
+.tec-tickets-onboarding__tab--active .tec-tickets-onboarding__tab-title:before {
+	background-color: #fff;
+	border: 1px solid #fff;
+	color: var(--tec-wp-core-blue-50);
+	margin-right: var(--tec-spacer-2);
+}
+
+@media (min-width: 1024px) {
+	.tec-tickets-onboarding__tab-title:before {
+		margin-right: var(--tec-spacer-2);
+	}
+}
+
+.tec-tickets-onboarding__tabpanel {
+	display: flex;
+	flex-flow: column nowrap;
+	margin: 0 auto;
+	min-width: var(--tec-spacer-onboarding-content-min-width);
+	width: min(100%, 100vw, 635px);
+}
+
+.tec-tickets-onboarding__tabpanel[aria-hidden="true"] {
+	display: none;
+}
+
+/* TabPanel Hero - only used on Welcome tab */
+.tec-tickets-onboarding__tab-hero {
+	margin: 0 auto var(--tec-spacer-1);
+	max-width: 100%;
+	width: fit-content;
+}
+
+@media (min-width: 500px) {
+	.tec-tickets-onboarding__tab-hero {
+		margin: 0 auto var(--tec-spacer-8);
+	}
+}
+
+/* -----------------------------------------------------------------------------
+ * TabPanel Header section
+ * ----------------------------------------------------------------------------- */
+.tec-tickets-onboarding__tab-header {
+	align-items: center;
+	display: flex;
+	flex-flow: column nowrap;
+	padding-bottom: var(--tec-spacer-5);
+	row-gap: var(--tec-spacer-1);
+	text-align: center;
+}
+
+.tec-tickets-onboarding__tab-header * {
+	text-align: center;
+}
+
+.tec-tickets-onboarding__tab-heading {
+	font-size: var(--tec-font-size-8);
+	line-height: normal;
+	margin: 0 auto;
+}
+
+.tec-tickets-onboarding__tab-subheader {
+	font-size: var(--tec-font-size-2);
+	margin: auto auto;
+	max-width: 438px;
+}
+
+.tec-tickets-onboarding__tab-footer {
+	font-size: var(--tec-font-size-2);
+	margin-top: var(--tec-spacer-13);
+}
+
+@media (min-width: 500px) {
+	.tec-tickets-onboarding__tab-footer {
+		margin-top: var(--tec-spacer-11);
+	}
+}
+
+@media(max-height: 900px) {
+	.tec-tickets-onboarding__tab-footer {
+		margin-top: 0;
+	}
+}

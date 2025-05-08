@@ -198,15 +198,6 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		?>
 			<h1 class="tec-admin__header-title"><?php esc_html_e( 'Event Tickets', 'event-tickets' ); ?></h1>
 		<?php
-
-		$action_url = add_query_arg(
-			// We do not need a nonce. This page can be seen only by admins. see `required_capability` method.
-			[ 'action' => self::DISMISS_PAGE_ACTION ],
-			admin_url( '/admin-post.php' )
-		);
-		?>
-		<a class="tec-dismiss-admin-page" href="<?php echo esc_url( $action_url ); ?>"><?php esc_html_e( 'Dismiss this screen', 'event-tickets' ); ?></a>
-		<?php
 	}
 
 	/**
@@ -268,9 +259,15 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		$installer      = Installer::get();
 		$tec_installed = $installer->is_installed( 'the-events-calendar' );
 		$tec_activated = $installer->is_active( 'the-events-calendar' );
+		$action_url    = add_query_arg(
+			// We do not need a nonce. This page can be seen only by admins. see `required_capability` method.
+			[ 'action' => self::DISMISS_PAGE_ACTION ],
+			admin_url( '/admin-post.php' )
+		);
 		?>
-			<div class="tec-admin-page__content-section tec-tickets-admin-page__content-section">
+			<section class="tec-admin-page__content-section tec-tickets-admin-page__content-section">
 				<h2 class="tec-admin-page__content-header"><?php esc_html_e( 'Tickets setup', 'event-tickets' ); ?></h2>
+				<a class="tec-dismiss-admin-page" href="<?php echo esc_url( $action_url ); ?>"><?php esc_html_e( 'Dismiss this screen', 'event-tickets' ); ?></a>
 				<ul class="tec-admin-page__content-step-list">
 					<li
 						id="tec-tickets-onboarding-wizard-currency-item"
@@ -443,7 +440,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 						</li>
 					</ul>
 				</div>
-			</div>
+			</section>
 		<?php
 	}
 
@@ -705,7 +702,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			->enqueue_on( 'admin_enqueue_scripts' )
 			->set_condition( [ __CLASS__, 'is_on_page' ] )
 			->use_asset_file( false )
-			->set_dependencies( 'wp-components', 'tribe-common-admin' )
+			->set_dependencies( 'wp-components', 'tec-variables-full', 'tribe-common-admin' )
 			->register();
 	}
 }

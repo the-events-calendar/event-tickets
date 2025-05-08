@@ -117,6 +117,7 @@ const CommunicationContent = ({ moveToNextTab, skipToNextTab }) => {
 							onChange={handleEmailChange}
 							placeholder={__('Email', 'event-tickets')}
 							className="tec-tickets-onboarding__input"
+							required={true}
 						/>
 						{hasInteracted.email && !email && (
 							<span className="tec-tickets-onboarding__required-label">
@@ -153,6 +154,7 @@ const CommunicationContent = ({ moveToNextTab, skipToNextTab }) => {
 							onChange={handleNameChange}
 							placeholder={__('Name', 'event-tickets')}
 							className="tec-tickets-onboarding__input"
+							required={true}
 						/>
 						{hasInteracted.name && !senderName && (
 							<span className="tec-tickets-onboarding__required-label">

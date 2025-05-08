@@ -62,7 +62,7 @@ const SkipButton = ({skipToNextTab, currentTab}) => {
 
 	return (
 		<Button
-			variant="tertiary"
+			variant="link"
 			onClick={() => setClicked(true)}
 			className="tec-tickets-onboarding__button tec-tickets-onboarding__button--skip"
 		>

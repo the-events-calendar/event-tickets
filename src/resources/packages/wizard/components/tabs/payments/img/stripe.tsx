@@ -6,6 +6,7 @@ const StripeLogo = () => (
     width={81}
     height={40}
     fill="none"
+    role="presentation"
   >
     <g clipPath="url(#a)">
       <g fill="#6772E5" clipPath="url(#b)">
