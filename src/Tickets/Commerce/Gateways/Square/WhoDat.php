@@ -12,7 +12,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_WhoDat;
 use TEC\Tickets\Commerce\Gateways\Square\REST\On_Boarding_Endpoint;
-
+use RuntimeException;
 /**
  * Class WhoDat. Handles connection to Square when the platform keys are needed.
  *
@@ -187,6 +187,8 @@ class WhoDat extends Abstract_WhoDat {
 	 * @param string $merchant_id  The merchant ID.
 	 *
 	 * @return ?array The webhook data or null if the request fails.
+	 *
+	 * @throws RuntimeException If the webhook registration fails.
 	 */
 	public function register_webhook_endpoint( string $endpoint_url, string $merchant_id ): ?array {
 		$query_args = [
@@ -194,7 +196,23 @@ class WhoDat extends Abstract_WhoDat {
 			'merchant_id' => $merchant_id,
 		];
 
-		return $this->post( 'webhooks/register', $query_args );
+		$response = $this->post( 'webhooks/register', $query_args );
+
+		if ( empty( $response['subscription'] ) ) {
+			do_action(
+				'tribe_log',
+				'error',
+				'Failed to register Square webhook',
+				[
+					'source' => 'tickets-commerce',
+					'error'  => $response,
+				]
+			);
+
+			throw new RuntimeException( $response['errors'] ?? __( 'Failed to register Square webhook', 'event-tickets' ), 'tec_tickets_commerce_square_webhook_registration_failed' );
+		}
+
+		return $response['subscription'];
 	}
 
 	/**
