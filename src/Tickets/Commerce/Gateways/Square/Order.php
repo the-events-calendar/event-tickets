@@ -204,22 +204,26 @@ class Order extends Abstract_Order {
 		);
 
 		if ( empty( $response['order']['id'] ) ) {
-			throw new RuntimeException( 'Failed to create or update Square order.' );
+			do_action( 'tribe_log', 'error', 'Square order upsert failed', [ $response['errors'] ?? $response, $square_order, $square_order_id ] );
+			throw new RuntimeException( __( 'Failed to create or update Square order.', 'event-tickets' ), 'tec-tc-gateway-square-failed-creating-order' );
 		}
+
+		$args = [
+			'gateway_order_id'         => $response['order']['id'],
+			'gateway_customer_id'      => $customer_id,
+			'gateway_order_version'    => $response['order']['version'],
+			'latest_payload_hash_sent' => md5( wp_json_encode( $square_order ) ),
+			'gateway_order_object'     => wp_json_encode( $response['order'] ),
+		];
 
 		// Update the order with the new Square order ID.
 		$order_updated = tec_tc_orders()->by( 'id', $order->ID )->set_args(
-			[
-				'gateway_order_id'         => $response['order']['id'],
-				'gateway_customer_id'      => $customer_id,
-				'gateway_order_version'    => $response['order']['version'],
-				'latest_payload_hash_sent' => md5( wp_json_encode( $square_order ) ),
-				'gateway_order_object'     => wp_json_encode( $response['order'] ),
-			]
+			$args
 		)->save();
 
 		if ( ! $order_updated || ! isset( $order_updated[ $order->ID ] ) || ! $order_updated[ $order->ID ] ) {
-			throw new RuntimeException( 'Failed to update the order with the new Square order ID.' );
+			do_action( 'tribe_log', 'error', 'Order update failed', [ $args, $order ] );
+			throw new RuntimeException( __( 'Failed to update the order with the new Square order ID.', 'event-tickets' ), 'tec-tc-gateway-square-failed-updating-order' );
 		}
 
 		/**

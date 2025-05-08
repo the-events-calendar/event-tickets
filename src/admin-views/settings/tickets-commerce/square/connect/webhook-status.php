@@ -20,7 +20,7 @@ $webhook_id    = $webhooks->get_webhook_id();
 $webhook       = $webhooks->get_webhook();
 $is_healthy    = $webhooks->is_webhook_healthy();
 $is_expired    = $webhooks->is_webhook_expired();
-$fetched_date  = Dates::build_date_object( $webhook['fetched_at'] );
+$fetched_date  = ! empty( $webhook['fetched_at'] ) ? Dates::build_date_object( $webhook['fetched_at'] ) : null;
 $webhook_nonce = wp_create_nonce( 'square-webhook-register' );
 ?>
 <!-- Webhook Status -->
@@ -62,7 +62,7 @@ $webhook_nonce = wp_create_nonce( 'square-webhook-register' );
 		<?php endif; ?>
 	</span>
 </div>
-<?php if ( $is_healthy && ! empty( $webhook['fetched_at'] ) ) : ?>
+<?php if ( $is_healthy && $fetched_date ) : ?>
 <div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-row">
 	<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-label" id="last-connection-label">
 		<?php esc_html_e( 'Last Connection:', 'event-tickets' ); ?>

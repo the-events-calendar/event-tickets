@@ -57,15 +57,6 @@ class Controller extends Controller_Contract {
 	public const OPTION_SYNC_ACTIONS_COMPLETED = 'tickets_commerce_square_sync_ptypes_completed_%s_%s';
 
 	/**
-	 * The option that marks the sync action as completed.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const OPTION_SYNC_LATEST_TIMESTAMP = 'tickets_commerce_square_sync_latest_timestamp_%s';
-
-	/**
 	 * The merchant.
 	 *
 	 * @since TBD
@@ -334,23 +325,30 @@ class Controller extends Controller_Contract {
 		$progress_option  = Commerce_Settings::get_key( self::OPTION_SYNC_ACTIONS_IN_PROGRESS, [ $post_type ] );
 		$completed_option = Commerce_Settings::get_key( self::OPTION_SYNC_ACTIONS_COMPLETED, [ $post_type ] );
 
+		$keys_to_remove = [];
+
 		foreach ( array_keys( $settings ) as $key ) {
 			if ( ! str_starts_with( $key, $progress_option ) && ! str_starts_with( $key, $completed_option ) ) {
 				continue;
 			}
 
-			unset( $settings[ $key ] );
+			$keys_to_remove[ $key ] = true;
 		}
 
-		if ( ! $post_type ) {
-			// This is a global reset, so we need to unset the latest timestamp option.
-			unset( $settings[ Commerce_Settings::get_key( self::OPTION_SYNC_LATEST_TIMESTAMP ) ] );
+		if ( ! $keys_to_remove ) {
+			return;
 		}
 
 		add_action(
 			'tec_shutdown',
-			function () use ( $settings, $post_type ) {
+			function () use ( $keys_to_remove, $post_type ) {
 				$listeners = tribe( Listeners::class );
+
+				/**
+				 * We make sure we only remove the keys that we should remove and leave any other changes that took place between
+				 * self::reset_sync_status and this callback unaffected.
+				 */
+				$settings = array_diff_key( Settings_Manager::get_options(), $keys_to_remove );
 
 				$listeners->remove_tec_settings_listener();
 				Settings_Manager::set_options( $settings );

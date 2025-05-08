@@ -181,6 +181,8 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	public function handle_request( WP_REST_Request $request ) {
 		$params = $request->get_params();
 
+		$square_tab_url = tribe( Payments_Tab::class )->get_url( [ 'tab' => Gateway::get_key() ] );
+
 		// If there's an error in the request, bail out.
 		if ( ! empty( $params['error'] ) ) {
 			// Log the error.
@@ -205,10 +207,9 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 			// Redirect back to the settings page with an error.
 			$url = add_query_arg(
 				[
-					'tc-status'  => $error_status,
-					'tc-section' => Gateway::get_key(),
+					'tc-status' => $error_status,
 				],
-				tribe( Payments_Tab::class )->get_url()
+				$square_tab_url
 			);
 
 			wp_safe_redirect( $url );
@@ -234,10 +235,9 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 
 			$url = add_query_arg(
 				[
-					'tc-status'  => 'tc-square-token-error',
-					'tc-section' => Gateway::get_key(),
+					'tc-status' => 'tc-square-token-error',
 				],
-				tribe( Payments_Tab::class )->get_url()
+				$square_tab_url
 			);
 
 			wp_safe_redirect( $url );
@@ -261,10 +261,9 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 
 			$url = add_query_arg(
 				[
-					'tc-status'  => 'tc-square-token-error',
-					'tc-section' => Gateway::get_key(),
+					'tc-status' => 'tc-square-token-error',
 				],
-				tribe( Payments_Tab::class )->get_url()
+				$square_tab_url
 			);
 
 			wp_safe_redirect( $url );
@@ -305,15 +304,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 		tribe_update_option( Tickets_Commerce_Settings::$tickets_commerce_enabled, true );
 		tribe_update_option( Gateway::get_enabled_option_key(), true );
 
-		// Redirect to the settings page.
-		$url = add_query_arg(
-			[
-				'tc-section' => Gateway::get_key(),
-			],
-			tribe( Payments_Tab::class )->get_url()
-		);
-
-		wp_safe_redirect( $url );
+		wp_safe_redirect( $square_tab_url );
 		tribe_exit();
 	}
 

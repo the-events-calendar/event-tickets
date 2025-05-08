@@ -145,7 +145,7 @@ class Webhook_Notice {
 		$issues_text = implode( ', ', $issues );
 
 		// Create a URL to the ticket settings page.
-		$settings_url = admin_url( 'admin.php?page=tec-tickets-settings&tab=payments&section=square' );
+		$settings_url = admin_url( 'admin.php?page=tec-tickets-settings&tab=square' );
 
 		// Create the webhook nonce.
 		$webhook_nonce = wp_create_nonce( 'square-webhook-register' );

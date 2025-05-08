@@ -14,6 +14,8 @@ use WP_Error;
 use TEC\Tickets\Commerce\Gateways\Square\Notices\Webhook_Notice;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use Tribe__Date_Utils as Dates;
+use RuntimeException;
+
 /**
  * Class Webhooks
  *
@@ -150,18 +152,12 @@ class Webhooks extends Controller_Contract {
 		$endpoint_url = $this->get_webhook_endpoint_url();
 		$merchant_id  = tribe( Merchant::class )->get_merchant_id();
 
-		// Now register the new webhook with the appropriate event types and API version.
-		$response = tribe( WhoDat::class )->register_webhook_endpoint( $endpoint_url, $merchant_id );
-
-		if ( is_wp_error( $response ) ) {
-			return $response;
+		try {
+			// Now register the new webhook with the appropriate event types and API version.
+			$subscription = tribe( WhoDat::class )->register_webhook_endpoint( $endpoint_url, $merchant_id )['subscription'] ?? null;
+		} catch ( RuntimeException $e ) {
+			return new WP_Error( $e->getCode(), $e->getMessage() );
 		}
-
-		if ( empty( $response['subscription'] ) ) {
-			return new WP_Error( 'tec_tickets_commerce_square_webhook_registration_failed', __( 'Failed to register webhook endpoint for Square. Please check your connection settings and try again.', 'event-tickets' ) );
-		}
-
-		$subscription = $response['subscription'];
 
 		// Store the webhook ID and signature.
 		if ( empty( $subscription['id'] ) ) {
@@ -302,7 +298,7 @@ class Webhooks extends Controller_Contract {
 
 		if (
 			empty( $response ) ||
-			isset( $response['error'] )
+			isset( $response['errors'] )
 		) {
 			wp_send_json_error(
 				[

@@ -20,6 +20,7 @@ use WP_Post;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
 use WP_Query;
 use TEC\Tickets\Commerce\Settings as Commerce_Settings;
+use Tribe__Settings_Manager as Settings_Manager;
 
 /**
  * Class Listeners
@@ -92,7 +93,8 @@ class Listeners extends Controller_Contract {
 		add_action( 'wp_trash_post', [ $this, 'schedule_sync_on_delete' ] );
 		add_action( 'before_delete_post', [ $this, 'schedule_sync_on_delete' ] );
 		add_action( 'tec_tickets_commerce_square_ticket_out_of_sync', [ $this, 'schedule_ticket_sync_on_out_of_sync' ], 10, 3 );
-		add_action( 'tec_tickets_ticket_stock_changed', [ $this, 'schedule_ticket_sync_on_stock_changed' ], );
+		add_action( 'tec_tickets_ticket_stock_changed', [ $this, 'schedule_ticket_sync_on_stock_changed' ] );
+		add_action( 'tec_tickets_commerce_square_merchant_disconnected', [ $this, 'unsync' ] );
 	}
 
 	/**
@@ -117,6 +119,7 @@ class Listeners extends Controller_Contract {
 		remove_action( 'before_delete_post', [ $this, 'schedule_sync_on_delete' ] );
 		remove_action( 'tec_tickets_commerce_square_ticket_out_of_sync', [ $this, 'schedule_ticket_sync_on_out_of_sync' ] );
 		remove_action( 'tec_tickets_ticket_stock_changed', [ $this, 'schedule_ticket_sync_on_stock_changed' ] );
+		remove_action( 'tec_tickets_commerce_square_merchant_disconnected', [ $this, 'unsync' ] );
 	}
 
 	/**
@@ -139,6 +142,21 @@ class Listeners extends Controller_Contract {
 	 */
 	public function remove_tec_settings_listener(): void {
 		remove_action( 'tec_common_settings_manager_pre_set_options', [ $this, 'reset_sync_status' ] );
+	}
+
+	/**
+	 * Remove local sync data.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function unsync(): void {
+		$this->remove_tec_settings_listener();
+
+		Sync_Controller::reset_sync_status( Settings_Manager::get_options() );
+
+		$this->add_tec_settings_listener();
 	}
 
 	/**
@@ -198,6 +216,22 @@ class Listeners extends Controller_Contract {
 		}
 
 		/**
+		 * Whether to delete all events at once.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool   $all_at_once Whether to delete all events at once.
+		 * @param array  $post_types  The post types.
+		 * @param string $post_type   The post type.
+		 */
+		$all_at_once = apply_filters(
+			'tec_tickets_commerce_square_sync_reset_post_type_data_all_at_once',
+			did_action( 'tec_tickets_commerce_square_merchant_disconnected' ) || doing_action( 'tec_tickets_commerce_square_merchant_disconnected' ),
+			$post_types,
+			$post_type
+		);
+
+		/**
 		 * Filter the number of events to delete at once.
 		 *
 		 * @since TBD
@@ -205,6 +239,17 @@ class Listeners extends Controller_Contract {
 		 * @param int $number The number of events to delete at once.
 		 */
 		$schedule_events_to_delete_at_once = max( 1, (int) apply_filters( 'tec_tickets_commerce_square_sync_reset_post_type_data_schedule_events_to_delete_at_once', 1000 ) );
+
+		if ( $all_at_once ) {
+			/**
+			 * Filter the number of events to delete at once but when all at once is requested.
+			 *
+			 * @since TBD
+			 *
+			 * @param int $number The number of events to delete at once.
+			 */
+			$schedule_events_to_delete_at_once = apply_filters( 'tec_tickets_commerce_square_sync_reset_post_type_data_schedule_events_to_delete_at_once_all_at_once', -1 );
+		}
 
 		$args = [
 			'no_found_rows'          => true,
@@ -228,18 +273,20 @@ class Listeners extends Controller_Contract {
 			return;
 		}
 
-		/**
-		 * We don't do found_rows so we cant now if there are more posts to delete or not.
-		 *
-		 * We let the next action decide that instead. Having the found_rows property results in slower queries.
-		 *
-		 * We want to give some time for the deletions to occur before this runs. So that the query above retrieves diff results because of the deleted meta_keys Item::SQUARE_ID_META.
-		 */
-		$this->regulator->schedule( self::HOOK_SYNC_RESET_SYNCED_POST_TYPE, [ $post_type ], 15 * MINUTE_IN_SECONDS );
+		if ( ! $all_at_once ) {
+			/**
+			 * We don't do found_rows so we cant now if there are more posts to delete or not.
+			 *
+			 * We let the next action decide that instead. Having the found_rows property results in slower queries.
+			 *
+			 * We want to give some time for the deletions to occur before this runs. So that the query above retrieves diff results because of the deleted meta_keys Item::SQUARE_ID_META.
+			 */
+			$this->regulator->schedule( self::HOOK_SYNC_RESET_SYNCED_POST_TYPE, [ $post_type ], 15 * MINUTE_IN_SECONDS );
+		}
 
 		foreach ( $results->posts as $post_id ) {
 			// Remove the event from Square.
-			$this->schedule_deletion( $post_id );
+			$this->schedule_deletion( $post_id, $all_at_once );
 		}
 	}
 
@@ -452,13 +499,25 @@ class Listeners extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $post_id The post ID.
+	 * @param int  $post_id         The post ID.
+	 * @param bool $only_local_data Whether to only remove local data.
 	 *
 	 * @return void
 	 */
-	protected function schedule_deletion( int $post_id ): void {
+	protected function schedule_deletion( int $post_id, bool $only_local_data = false ): void {
 		$remote_objects   = tribe( Remote_Objects::class );
 		$remote_object_id = $remote_objects->delete_remote_object_data( $post_id );
+
+		if ( $only_local_data ) {
+			/**
+			 * Variable `$only_local_data` being true, by default, happens only when the merchant
+			 * is being disconnected.
+			 *
+			 * So there is no point in scheduling a deletion at a later time, since,
+			 * we won't be authorized to delete the objects from Square by then.
+			 */
+			return;
+		}
 
 		if ( as_has_scheduled_action( Items_Sync::HOOK_SYNC_EVENT_ACTION, [ $post_id ], Sync_Controller::AS_SYNC_ACTION_GROUP ) ) {
 			// Unschedule any possible scheduled syncs.

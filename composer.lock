@@ -4519,12 +4519,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/coding-standards.git",
-                "reference": "fa3c0b7387072d8fde885e386986e66ee2869f4b"
+                "reference": "86ebe9d4eb92e502d0cbd73e436a9e63e2c12e95"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/coding-standards/zipball/fa3c0b7387072d8fde885e386986e66ee2869f4b",
-                "reference": "fa3c0b7387072d8fde885e386986e66ee2869f4b",
+                "url": "https://api.github.com/repos/stellarwp/coding-standards/zipball/86ebe9d4eb92e502d0cbd73e436a9e63e2c12e95",
+                "reference": "86ebe9d4eb92e502d0cbd73e436a9e63e2c12e95",
                 "shasum": ""
             },
             "require": {
@@ -4555,6 +4555,10 @@
                 {
                     "name": "Matthew Batchelder",
                     "email": "borkweb@gmail.com"
+                },
+                {
+                    "name": "Gustavo Bordoni",
+                    "email": "bordoni.dev@gmail.com"
                 }
             ],
             "description": "Code sniffing rules for StellarWP",
@@ -4564,9 +4568,9 @@
                 "wordpress"
             ],
             "support": {
-                "source": "https://github.com/stellarwp/coding-standards/tree/main"
+                "source": "https://github.com/stellarwp/coding-standards/tree/2.1.0"
             },
-            "time": "2024-02-04T03:55:54+00:00"
+            "time": "2025-04-25T12:31:32+00:00"
         },
         {
             "name": "symfony/browser-kit",
