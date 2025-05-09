@@ -23,26 +23,8 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @since TBD Moved to do_init() to avoid issues with translations.
 	 */
 	public function __construct() {
-<<<<<<< HEAD
 		// This needs to happen before parent construct.
 		$this->plugin_name = 'Tickets Commerce'; // Intentionally not translated.
-=======
-		if ( did_action( 'init' ) ) {
-			$this->do_init();
-		} else {
-			add_action( 'init', [ $this, 'do_init' ] );
-		}
-	}
-
-	/**
-	 * Initialize the module.
-	 *
-	 * @since TBD
-	 */
-	public function do_init() {
-		// This needs to happen before parent construct. But after the 'init' hook.
-		$this->plugin_name = __( 'Tickets Commerce', 'event-tickets' );
->>>>>>> 26569a1afea4393ff5831e823a3eedb9a5e8f3ec
 
 		parent::__construct();
 
