@@ -179,12 +179,18 @@ class API extends Abstract_API {
 		$skipped  = $params['skippedTabs'] ?? [];
 		$complete = $params['completedTabs'] ?? [];
 		$gateway  = $params['paymentOption'] ?? '';
+		$current  = $params['currentTab'] ?? 0;
 
 		// Remove any elements in $completed from $skipped.
 		$skipped = array_values( array_diff( $skipped, $complete ) );
 
 		if ( $begun ) {
-			$complete = array_push( $complete, 0 );
+			$complete = array_merge( $complete, [ 0 ] );
+		}
+
+		// Add current tab to completed if it's not in skipped.
+		if ( ! in_array( $current, $skipped, true ) ) {
+			$complete = array_merge( $complete, [ $current ] );
 		}
 
 		if ( $finished ) {
@@ -195,7 +201,7 @@ class API extends Abstract_API {
 		$settings                   = tribe( Data::class )->get_wizard_settings();
 		$settings['begun']          = $begun;
 		$settings['finished']       = $finished;
-		$settings['current_tab']    = $params['currentTab'] ?? 0;
+		$settings['current_tab']    = $current;
 		$settings['completed_tabs'] = $this->normalize_tabs( $complete );
 		$settings['skipped_tabs']   = $this->normalize_tabs( $skipped );
 		$settings['payment_option'] = $gateway;

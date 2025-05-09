@@ -51,3 +51,7 @@
 .tec-tickets-onboarding__form-field.invalid .tec-tickets-onboarding__field-description {
 	display: none;
 }
+
+input.tec-tickets-onboarding__input--invalid {
+	border-color: var(--tec-color-wp-error);
+}
