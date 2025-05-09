@@ -10,20 +10,12 @@
 	row-gap: var(--tec-spacer-5);
 }
 
-.tec-tickets-onboarding__tabs.tec-tickets-onboarding__tab-welcome {
-	gap: var(--tec-spacer-8);
-}
-
 @media (min-width: 1024px) {
 	.tec-tickets-onboarding__tabs {
 		column-gap: 100px;
 		row-gap: calc(20vh - 100px);
 		grid-template-columns: none;
 		grid-template-rows: 84px auto;
-	}
-
-	.tec-tickets-onboarding__tabs.tec-tickets-onboarding__tab-welcome {
-		gap: var(--tec-spacer-9);
 	}
 }
 
@@ -91,10 +83,6 @@
 	width: 100%;
 }
 
-.tec-tickets-onboarding__tab-welcome .tec-tickets-onboarding__tabs-list {
-	display: none;
-}
-
 .tec-tickets-onboarding__tab {
 	align-items: center;
 	border: 1px solid var(--tec-wp-core-grey-50);
@@ -124,10 +112,6 @@
 	li.tec-tickets-onboarding__tab.tec-tickets-onboarding__tab--active {
 		grid-column: span 3;
 	}
-}
-
-.tec-tickets-onboarding__tab.tec-tickets-onboarding__tab--welcome {
-	display: none;
 }
 
 .tec-tickets-onboarding__tab:nth-child(2) {
@@ -239,19 +223,6 @@
 	display: none;
 }
 
-/* TabPanel Hero - only used on Welcome tab */
-.tec-tickets-onboarding__tab-hero {
-	margin: 0 auto var(--tec-spacer-1);
-	max-width: 100%;
-	width: fit-content;
-}
-
-@media (min-width: 500px) {
-	.tec-tickets-onboarding__tab-hero {
-		margin: 0 auto var(--tec-spacer-8);
-	}
-}
-
 /* -----------------------------------------------------------------------------
  * TabPanel Header section
  * ----------------------------------------------------------------------------- */
@@ -295,4 +266,58 @@
 	.tec-tickets-onboarding__tab-footer {
 		margin-top: 0;
 	}
+}
+
+/* -----------------------------------------------------------------------------
+ * Overrides for Welcome Tab
+ * ----------------------------------------------------------------------------- */
+
+/* Hide the tab button for the Welcome tab */
+.tec-tickets-onboarding__tab.tec-tickets-onboarding__tab--welcome {
+	display: none;
+}
+
+/* Set the gap for the Welcome tab */
+.tec-tickets-onboarding__tabs.tec-tickets-onboarding__tab-welcome {
+	gap: var(--tec-spacer-8);
+
+	@media (min-width: 1024px) {
+		gap: var(--tec-spacer-9);
+	}
+
+	@media (max-height:900px) {
+		row-gap: 0;
+	}
+}
+
+/* Hide the tab list in the Welcome tab */
+.tec-tickets-onboarding__tab-welcome .tec-tickets-onboarding__tabs-list {
+	display: none;
+}
+
+/* TabPanel Hero - only used on Welcome tab */
+.tec-tickets-onboarding__tab-hero {
+	margin: 0 auto var(--tec-spacer-1);
+	max-width: 100%;
+	width: fit-content;
+}
+
+@media (min-width: 500px) {
+	.tec-tickets-onboarding__tab-hero {
+		margin: 0 auto var(--tec-spacer-8);
+	}
+}
+
+/* Remove the bottom margin on the hero when the height is too short */
+@media (max-height:900px) {
+    .tec-tickets-onboarding__tab-hero {
+       margin-bottom: 0;
+  }
+}
+
+/* Bring the footer up when the height is too short */
+@media(max-height:900px) {
+  .tec-tickets-onboarding__tab-footer {
+    margin-top:0
+  }
 }

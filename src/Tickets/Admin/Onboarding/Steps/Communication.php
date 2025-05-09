@@ -29,7 +29,7 @@ class Communication extends Abstract_Step {
 	 *
 	 * @var int
 	 */
-	public const TAB_NUMBER = 3;
+	public const TAB_NUMBER = 2;
 
 	/**
 	 * Process the communication data.
@@ -48,15 +48,10 @@ class Communication extends Abstract_Step {
 			return $this->add_fail_message( $response, __( 'No communication settings provided.', 'event-tickets' ) );
 		}
 
-		if ( $settings['currentTab'] !== self::TAB_NUMBER ) {
-			// Not our tab, no-op.
-			return $response;
-		}
-
-		$email = $settings['email'] ?? '';
+		$email = $settings['userEmail'] ?? '';
 		tribe_update_option( Settings::$option_sender_email, $email );
 
-		$sender_name = $settings['senderName'] ?? '';
+		$sender_name = $settings['userName'] ?? '';
 		tribe_update_option( Settings::$option_sender_name, $sender_name );
 
 		$updated = tribe( API::class )->update_wizard_settings( $settings );

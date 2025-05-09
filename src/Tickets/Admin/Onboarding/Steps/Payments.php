@@ -12,6 +12,7 @@ namespace TEC\Tickets\Admin\Onboarding\Steps;
 use TEC\Common\Admin\Onboarding\Steps\Abstract_Step;
 use WP_REST_Response;
 use TEC\Tickets\Commerce\Gateways\Stripe\Signup;
+use TEC\Tickets\Commerce\Payments_Tab;
 use TEC\Tickets\Admin\Onboarding\API;
 /**
  * Class Payments
@@ -28,7 +29,7 @@ class Payments extends Abstract_Step {
 	 *
 	 * @var int
 	 */
-	public const TAB_NUMBER = 2;
+	public const TAB_NUMBER = 1;
 
 	/**
 	 * Passes the request and data to the handler.
@@ -68,6 +69,13 @@ class Payments extends Abstract_Step {
 			return $this->handle_payment_gateway_connection( $response, $request );
 		}
 
+		if ( isset( $params['stripeConnected'] ) && $params['stripeConnected'] ) {
+			$success = tribe( Payments_Tab::class )->maybe_auto_generate_checkout_page();
+			$success = tribe( Payments_Tab::class )->maybe_auto_generate_order_success_page() || $success;
+
+			return $this->add_message( $response, __( 'Stripe checkout and order pages created.', 'event-tickets' ) );
+		}
+
 		return $this->add_message( $response, __( 'Payment gateway connection not requested.', 'event-tickets' ) );
 	}
 
@@ -83,6 +91,7 @@ class Payments extends Abstract_Step {
 	 */
 	public function handle_payment_gateway_connection( $response, $request ): WP_REST_Response {
 		$params = $request->get_params();
+		$success = false;
 
 		if ( ! isset( $params['gateway'] ) ) {
 			return $this->add_message( $response, __( 'Payment gateway connection not requested.', 'event-tickets' ) );
