@@ -141,7 +141,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 
 			tribe( Merchant::class )->delete_signup_data();
 			wp_redirect( $disconnect_url );
-			exit();
+			tribe_exit();
 		}
 
 		tribe( Merchant::class )->unset_merchant_unauthorized();
@@ -164,7 +164,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		wp_safe_redirect( $url );
-		exit();
+		tribe_exit();
 	}
 
 	/**
@@ -185,7 +185,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 		);
 
 		wp_safe_redirect( $url );
-		exit();
+		tribe_exit();
 	}
 
 	/**
@@ -220,6 +220,6 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 		$url = tribe( Plugin_Settings::class )->get_url( $url_args );
 
 		wp_safe_redirect( $url );
-		exit();
+		tribe_exit();
 	}
 }
