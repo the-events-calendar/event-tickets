@@ -1,8 +1,8 @@
-<div class="tribe-settings-form-wrap tec-settings-form__element--full-width"><div class="tec-settings-form__header-block tec-settings-form__header-block--horizontal"><label class="tec-tickets__admin-settings-toggle-large">
-								<input type="checkbox" name="_tickets_commerce_gateway_enabled_stripe" id="tickets-commerce-enable-input" class="tec-tickets__admin-settings-toggle-large-checkbox tribe-dependency tribe-dependency-verified" disabled />
-								<span class="tec-tickets__admin-settings-toggle-large-switch"></span>
-								<span class="tec-tickets__admin-settings-toggle-large-label">Enable Stripe</span>
-							</label></div><div class="tec-tickets__admin-settings-tickets-commerce-description">You are using the free Stripe payment gateway integration. This includes an additional 2% fee for processing ticket sales. This fee is removed if you have an active subscription to Event Tickets Plus. <a href="https://evnt.is/1b3u" target="_blank" rel="noopener noreferrer">Learn more</a>.</div><fieldset id="tribe-field-tickets-commerce-stripe-commerce-configure" class="tribe-field tribe-field-wrapped_html"><div class="tribe-field-wrap">
+<div class="tec-settings-form__header-block tec-settings-form__header-block--horizontal"><label class="tec-tickets__admin-settings-toggle-large" aria-label="Enable Stripe as a payment gateway" for="tickets-commerce-enable-input-stripe">
+							<input type="checkbox" name="_tickets_commerce_gateway_enabled_stripe" id="tickets-commerce-enable-input-stripe" class="tec-tickets__admin-settings-toggle-large-checkbox tribe-dependency tribe-dependency-verified" disabled />
+							<span class="tec-tickets__admin-settings-toggle-large-switch"></span>
+							<span class="tec-tickets__admin-settings-toggle-large-label">Enable payment gateway</span>
+						</label></div><div class="tec-settings-form__element--full-width tec-settings-form__content-section"><div class="tec-tickets__admin-settings-tickets-commerce-description">You are using the free Stripe payment gateway integration. This includes an additional 2% fee for processing ticket sales. This fee is removed if you have an active subscription to Event Tickets Plus. <a href="https://evnt.is/1b3u" target="_blank" rel="noopener noreferrer">Learn more</a>.</div></div><div class="tec-settings-form__element--full-width tec-settings-form__element--no-row-gap"><fieldset id="tribe-field-tickets-commerce-stripe-commerce-configure" class="tribe-field tribe-field-wrapped_html"><div class="tribe-field-wrap">
 <div class="tec-tickets__admin-settings-tickets-commerce-gateway">
 	<div id="tec-tickets__admin-settings-tickets-commerce-gateway-connect" class="tec-tickets__admin-settings-tickets-commerce-gateway-connect">
 
@@ -17,7 +17,7 @@
 	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-signup-links">
 		<div class="tec-tickets__admin-settings-tickets-commerce-gateway-signup-settings">
 	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connect-button">
-		<a data-gateway-onboard-complete="tecTicketsCommerceGatewayStripeSignupCallback" href="https://whodat.theeventscalendar.com/commerce/v1/stripe/connect?token=https://wordpress.test/index.php?rest_route=/tribe/tickets/v1/commerce/stripe/return&#038;return_url=https://whodat.theeventscalendar.com/commerce/v1/stripe/connected&#038;version=5.21.1&#038;mode=live&#038;" data-gateway-button="true" id="connect_to_stripe" class="tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link">
+		<a data-gateway-onboard-complete="tecTicketsCommerceGatewayStripeSignupCallback" href="https://whodat.theeventscalendar.com/commerce/v1/stripe/connect?token=https://wordpress.test/index.php?rest_route=/tribe/tickets/v1/commerce/stripe/return&#038;return_url=https://whodat.theeventscalendar.com/commerce/v1/stripe/connected&#038;version={version}&#038;mode=live&#038;" data-gateway-button="true" id="connect_to_stripe" class="tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link">
 			Get Connected with <i>Stripe</i>		</a>
 	</div>
 </div>

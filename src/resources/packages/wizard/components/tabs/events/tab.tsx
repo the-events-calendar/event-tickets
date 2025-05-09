@@ -5,7 +5,7 @@ import { CheckboxControl } from '@wordpress/components';
 import { SETTINGS_STORE_KEY } from '../../../data';
 import NextButton from '../../buttons/next';
 import SkipButton from '../../buttons/skip';
-import TECIcon from './img/tec';
+import TECInstallIcon from './img/tec';
 import SuccessContent from './success';
 
 const EventsContent = ( { moveToNextTab, skipToNextTab } ) => {
@@ -33,7 +33,7 @@ const EventsContent = ( { moveToNextTab, skipToNextTab } ) => {
 
 	const tabSettings = {
 		eventsCalendar: eventsValue,
-		currentTab: 3,
+		currentTab: 4,
 	};
 
 	const message = !eventsCalendarInstalled
@@ -49,7 +49,7 @@ const EventsContent = ( { moveToNextTab, skipToNextTab } ) => {
 
 	return (
 		<>
-			<TECIcon />
+			<TECInstallIcon />
 			<div className="tec-tickets-onboarding__tab-header">
 				<h1 className="tec-tickets-onboarding__tab-heading">
 					{ __( 'The Events Calendar', 'event-tickets' ) }
@@ -81,10 +81,10 @@ const EventsContent = ( { moveToNextTab, skipToNextTab } ) => {
 					<NextButton
 						tabSettings={tabSettings}
 						moveToNextTab={moveToNextTab}
-						disabled={false}
+						disabled={!eventsValue}
 						onSuccess={handleSuccess}
 					/>
-					<SkipButton skipToNextTab={skipToNextTab} currentTab={3} />
+					<SkipButton skipToNextTab={skipToNextTab} currentTab={4} buttonText={__("Skip and finish setup", "event-tickets")} />
 				</div>
 			</div>
 		</>

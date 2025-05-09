@@ -1,14 +1,25 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
+import { useSelect } from '@wordpress/data';
 import { BaseControl, Notice } from '@wordpress/components';
+import { SETTINGS_STORE_KEY } from "../../../data";
 import NextButton from '../../buttons/next';
 import SkipButton from '../../buttons/skip';
 import EmailIcon from './img/email';
+import { getSetting } from '../../../data/settings/selectors';
 
 const CommunicationContent = ({ moveToNextTab, skipToNextTab }) => {
-	const [email, setEmail] = useState('');
-	const [senderName, setSenderName] = useState('');
+	const userEmail = useSelect(
+		( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'user_email' ) || '',
+		[]
+	);
+	const [email, setEmail] = useState(userEmail || '');
+	const userName = useSelect(
+		( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'user_name' ) || '',
+		[]
+	);
+	const [senderName, setSenderName] = useState(userName || '');
 	const [isEmailValid, setIsEmailValid] = useState(true);
 	const [isNameValid, setIsNameValid] = useState(true);
 	const [hasInteracted, setHasInteracted] = useState({
@@ -101,6 +112,10 @@ const CommunicationContent = ({ moveToNextTab, skipToNextTab }) => {
 						__nextHasNoMarginBottom
 						id="sender-email"
 						label={__(
+							'Email Address',
+							'event-tickets'
+						)}
+						help={__(
 							'When your customers receive an email about a purchase what address should it be from?',
 							'event-tickets'
 						)}
@@ -113,6 +128,7 @@ const CommunicationContent = ({ moveToNextTab, skipToNextTab }) => {
 							onChange={handleEmailChange}
 							placeholder={__('Email', 'event-tickets')}
 							className="tec-tickets-onboarding__input"
+							required={true}
 						/>
 						{hasInteracted.email && !email && (
 							<span className="tec-tickets-onboarding__required-label">
@@ -133,7 +149,11 @@ const CommunicationContent = ({ moveToNextTab, skipToNextTab }) => {
 						__nextHasNoMarginBottom
 						id="sender-name"
 						label={__(
-							'Who should we say the email is from (sender name)?',
+							'Sender Name',
+							'event-tickets'
+						)}
+						help={__(
+							'Who should we say the email is from?',
 							'event-tickets'
 						)}
 						className="tec-tickets-onboarding__form-field"
@@ -145,6 +165,7 @@ const CommunicationContent = ({ moveToNextTab, skipToNextTab }) => {
 							onChange={handleNameChange}
 							placeholder={__('Name', 'event-tickets')}
 							className="tec-tickets-onboarding__input"
+							required={true}
 						/>
 						{hasInteracted.name && !senderName && (
 							<span className="tec-tickets-onboarding__required-label">
@@ -181,6 +202,7 @@ const CommunicationContent = ({ moveToNextTab, skipToNextTab }) => {
 					tabSettings={tabCommunication}
 					moveToNextTab={moveToNextTab}
 					disabled={!canContinue}
+					onSuccess={() => {}}
 				/>
 				<SkipButton skipToNextTab={skipToNextTab} currentTab={2} />
 			</div>

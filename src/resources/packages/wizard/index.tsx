@@ -39,8 +39,8 @@ const OnboardingModal = ({ bootData }) => {
         <>
             {isOpen && (
                 <Modal
-                    overlayClassName="tec-tickets-onboarding__modal-overlay"
-                    className="tec-tickets-onboarding__modal"
+                    overlayClassName="tec-onboarding__modal-overlay"
+                    className="tec-onboarding__modal"
                     contentLabel="Tickets Onboarding Wizard"
                     isDismissible={false}
                     isFullScreen={true}

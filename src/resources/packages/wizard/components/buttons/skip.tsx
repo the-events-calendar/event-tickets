@@ -7,7 +7,7 @@ import { useEffect, useState } from '@wordpress/element';
 import { MODAL_STORE_KEY, SETTINGS_STORE_KEY } from "../../data";
 import { API_ENDPOINT } from "../../data/settings/constants";
 
-const SkipButton = ({skipToNextTab, currentTab}) => {
+const SkipButton = ({skipToNextTab, currentTab, buttonText = __("Skip step", "event-tickets")}) => {
 	const skipTab = useDispatch(SETTINGS_STORE_KEY).skipTab;
 	const closeModal = useDispatch(MODAL_STORE_KEY).closeModal;
 
@@ -62,11 +62,11 @@ const SkipButton = ({skipToNextTab, currentTab}) => {
 
 	return (
 		<Button
-			variant="tertiary"
+			variant="link"
 			onClick={() => setClicked(true)}
 			className="tec-tickets-onboarding__button tec-tickets-onboarding__button--skip"
 		>
-			{__( "Skip step", "event-tickets" )}
+			{buttonText}
 		</Button>
 	);
 };

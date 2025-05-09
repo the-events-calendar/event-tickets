@@ -9,7 +9,7 @@ namespace TEC\Tickets\Admin\Onboarding;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\Admin\Onboarding\API;
-use TEC\Tickets\Admin\Onboarding\Steps\Optin;
+use TEC\Tickets\Admin\Onboarding\Steps\Welcome;
 use TEC\Tickets\Admin\Onboarding\Steps\Settings;
 use TEC\Tickets\Admin\Onboarding\Steps\Payments;
 use TEC\Tickets\Admin\Onboarding\Steps\Communication;
@@ -43,7 +43,7 @@ class Controller extends Controller_Contract {
 		Asset_Config::add_group_path( 'tec-tickets-onboarding', tribe( 'tickets.main' )->plugin_path . 'build/', 'wizard' );
 
 		$this->steps = [
-			'optin'         => new Optin(),
+			'welcome'       => new Welcome(),
 			'settings'      => new Settings(),
 			'payments'      => new Payments(),
 			'communication' => new Communication(),
@@ -95,11 +95,13 @@ class Controller extends Controller_Contract {
 	 */
 	public function add_filters(): void {
 		// Add the step handlers.
-		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['optin'], 'handle' ], 10, 2 );
+		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['welcome'], 'handle' ], 10, 2 );
 		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['settings'], 'handle' ], 11, 2 );
 		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['payments'], 'handle' ], 12, 2 );
 		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['communication'], 'handle' ], 13, 2 );
 		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['events'], 'handle' ], 14, 2 );
+		add_filter( 'tec_telemetry_is_et_admin_page', [ $this, 'hide_telemetry_on_onboarding_page' ], 10, 1 );
+		add_filter( 'tec_settings_page_logo_source', [ $this->container->make( Landing_Page::class ), 'logo_source' ] );
 	}
 
 	/**
@@ -123,11 +125,13 @@ class Controller extends Controller_Contract {
 	 */
 	public function remove_filters(): void {
 		// Remove the step handlers.
-		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['optin'], 'handle' ], 10 );
+		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['welcome'], 'handle' ], 10 );
 		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['settings'], 'handle' ], 11 );
 		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['payments'], 'handle' ], 12 );
 		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['communication'], 'handle' ], 13 );
 		remove_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['events'], 'handle' ], 14 );
+		remove_filter( 'tec_telemetry_is_et_admin_page', [ $this, 'hide_telemetry_on_onboarding_page' ], 10 );
+		remove_filter( 'tec_settings_page_logo_source', [ $this->container->make( Landing_Page::class ), 'logo_source' ] );
 	}
 
 	/**
@@ -301,5 +305,22 @@ class Controller extends Controller_Contract {
 	 */
 	public function register_rest_endpoints(): void {
 		$this->container->make( API::class )->register();
+	}
+
+	/**
+	 * Hide telemetry on the onboarding page by returning false when the page is detected.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $is_et_admin_page Whether the current page is an ET admin page.
+	 *
+	 * @return bool
+	 */
+	public function hide_telemetry_on_onboarding_page( $is_et_admin_page ): bool {
+		if ( Landing_Page::is_on_page() ) {
+			return false;
+		}
+
+		return $is_et_admin_page;
 	}
 }

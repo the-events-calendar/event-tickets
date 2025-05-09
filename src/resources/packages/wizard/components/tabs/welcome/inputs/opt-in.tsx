@@ -15,7 +15,7 @@ const OptInCheckbox = ({ initialOptin, onChange }) => {
 		<div className="tec-tickets-onboarding__checkbox tec-tickets-onboarding__checkbox--optin">
 			<CheckboxControl
 				__nextHasNoMarginBottom
-				aria-describedby="tec-tickets-onboarding__checkbox-description"
+				aria-describedby="tec-tickets-onboarding__checkbox-permissions"
 				checked={isChecked}
 				onChange={handleChange}
 				id="tec-tickets-onboarding__optin-checkbox-input"
@@ -25,7 +25,7 @@ const OptInCheckbox = ({ initialOptin, onChange }) => {
 				{__("Yes, I’d like to share basic information about my usage for future improvements.", "event-tickets")}
 				</label>
 				<div
-					id="tec-tickets-onboarding__checkbox-description"
+					id="tec-tickets-onboarding__checkbox-permissions"
 				>
 				<a href="https://evnt.is/1bcl" target="_blank">{__("What permissions are being granted?", "event-tickets")}</a>
 				</div>

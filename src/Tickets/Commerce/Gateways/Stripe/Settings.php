@@ -232,7 +232,7 @@ class Settings extends Abstract_Settings {
 
 			'tickets-commerce-stripe-commerce-description' => [
 				'type' => 'html',
-				'html' => '<div class="tec-settings-form__element--full-width tec-settings-form__element--with-border-bottom"><div class="tec-tickets__admin-settings-tickets-commerce-description">' . $stripe_message . '</div></div>',
+				'html' => '<div class="tec-settings-form__element--full-width tec-settings-form__content-section"><div class="tec-tickets__admin-settings-tickets-commerce-description">' . $stripe_message . '</div></div>',
 			],
 			'tickets-commerce-stripe-commerce-wrapper-start' => [
 				'type' => 'html',

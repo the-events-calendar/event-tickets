@@ -17,6 +17,7 @@ const NextButton = ( { disabled, moveToNextTab, tabSettings, onSuccess } ) => {
 	const getSettings = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getSettings );
 	const getCompletedTabs = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getCompletedTabs );
 	const getSkippedTabs = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getSkippedTabs );
+	const isLastTab = tabSettings.currentTab === 4;
 
 	const [ isSaving, setSaving ] = useState( false );
 	const [ isClicked, setClicked ] = useState( false );
@@ -36,7 +37,7 @@ const NextButton = ( { disabled, moveToNextTab, tabSettings, onSuccess } ) => {
 			// Set the saving state.
 			setSaving( true );
 
-			if ( tabSettings.currentTab === 3 ) {
+			if ( isLastTab ) {
 				// If we're on the last tab, we need to set the finished state to true.
 				tabSettings.finished = true;
 			}
@@ -77,14 +78,14 @@ const NextButton = ( { disabled, moveToNextTab, tabSettings, onSuccess } ) => {
 				setSaving( false );
 
 				// Move to the next tab.
-				if ( tabSettings.currentTab === 3 ) {
+				if ( isLastTab ) {
 					setTimeout( () => {
 						onSuccess();
 					}, 1000 );
 				} else {
 					moveToNextTab();
 				}
-			} else if ( tabSettings.currentTab === 3 ) {
+			} else if ( isLastTab ) {
 				// If we're on the last tab and the install fails, reset the saving state and close the modal.
 				setSaving( false );
 				setTimeout( () => {

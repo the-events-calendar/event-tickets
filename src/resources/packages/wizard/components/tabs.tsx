@@ -23,7 +23,6 @@ const OnboardingTabs = () => {
 	const tabConfig = [
 		{ id: "welcome", title: __("Welcome", "event-tickets"), content: WelcomeContent, ref: useRef(null) },
 		{ id: "settings", title: __("Selling Tickets", "event-tickets"), content: SettingsContent, ref: useRef(null) },
-		// { id: "payments", title: __("Payments", "event-tickets"), content: PaymentsContent, ref: useRef(null) },
 		{ id: "communication", title: __("Communication", "event-tickets"), content: CommunicationContent, ref: useRef(null) },
 		{ id: "events", title: __("Events", "event-tickets"), content: EventsContent, ref: useRef(null) }
 	];
@@ -34,7 +33,7 @@ const OnboardingTabs = () => {
 	const completedTabs = useSelect((select) => select(SETTINGS_STORE_KEY).getCompletedTabs()) || [];
 
 	const [tabsState, setTabsState] = useState(() =>
-		tabConfig.map((tab: TabConfig, index) => ({
+		tabConfig.map((tab, index) => ({
 			...tab,
 			disabled: index > lastActiveTab, // Disable all tabs except the last active one (default to 0)
 		}))
