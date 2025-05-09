@@ -29,7 +29,7 @@ class Communication extends Abstract_Step {
 	 *
 	 * @var int
 	 */
-	public const TAB_NUMBER = 3;
+	public const TAB_NUMBER = 2;
 
 	/**
 	 * Process the communication data.
