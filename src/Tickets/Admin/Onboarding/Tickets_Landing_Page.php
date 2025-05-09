@@ -16,6 +16,7 @@ use TEC\Common\Admin\Traits\Is_Tickets_Page;
 use TEC\Common\Lists\Currency;
 use TEC\Common\Lists\Country;
 use TEC\Common\Asset;
+use Tribe__Tickets__Main;
 use TEC\Tickets\Admin\Onboarding\API;
 use TEC\Tickets\Admin\Onboarding\Data;
 use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
@@ -163,6 +164,18 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			'wizard.css'
 		)
 			->add_to_group_path( 'tec-tickets-onboarding' )
+			->add_to_group( 'tec-tickets-onboarding' )
+			->enqueue_on( 'admin_enqueue_scripts' )
+			->set_condition( [ __CLASS__, 'is_on_page' ] )
+			->use_asset_file( false )
+			->set_dependencies( 'wp-components', 'tec-variables-full', 'tribe-common-admin' )
+			->register();
+
+		Asset::add(
+			'tec-tickets-onboarding-style',
+			'tickets-admin-onboarding.css'
+		)
+			->add_to_group_path( Tribe__Tickets__Main::class )
 			->add_to_group( 'tec-tickets-onboarding' )
 			->enqueue_on( 'admin_enqueue_scripts' )
 			->set_condition( [ __CLASS__, 'is_on_page' ] )
