@@ -2,11 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-<<<<<<< HEAD
 Stable tag: 5.24.0
-=======
-Stable tag: 5.23.0
->>>>>>> c041e50eace5042dfe255b6f5a26928c7d461297
 Requires at least: 6.5
 Tested up to: 6.7.2
 Requires PHP: 7.4
@@ -203,20 +199,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-<<<<<<< HEAD
-= [5.22.0] 2025-04-15 =
-
-* Feature - Move QR-Related code from ET to Common [TEC-5426]
-* Feature - Move QR code library to Common [TEC-5403]
-* Tweak - Removed filters: `tec_tickets_qr_code_can_use`
-* Language - 0 new strings added, 5 updated, 0 fuzzied, and 4 obsoleted.
-=======
 = [5.21.1.1] 2025-04-28 =
 
 * Version - Event Tickets 5.21.1.1 is only compatible with The Events Calendar 6.11.2.1 or higher.
 * Security - Added more safety checks to telemetry opt-ins/opt-outs. [TCMN-186]
 * Language - 0 new strings added, 9 updated, 0 fuzzied, and 0 obsoleted.
->>>>>>> e514b420f4337271ddd5a9d605520f506d6e1b89
 
 = [5.21.1] 2025-04-07 =
 
