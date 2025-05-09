@@ -48,11 +48,6 @@ class Communication extends Abstract_Step {
 			return $this->add_fail_message( $response, __( 'No communication settings provided.', 'event-tickets' ) );
 		}
 
-		if ( $settings['currentTab'] !== self::TAB_NUMBER ) {
-			// Not our tab, no-op.
-			return $response;
-		}
-
 		$email = $settings['userEmail'] ?? '';
 		tribe_update_option( Settings::$option_sender_email, $email );
 

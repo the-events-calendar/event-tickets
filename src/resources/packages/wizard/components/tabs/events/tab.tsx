@@ -33,7 +33,7 @@ const EventsContent = ( { moveToNextTab, skipToNextTab } ) => {
 
 	const tabSettings = {
 		eventsCalendar: eventsValue,
-		currentTab: 3,
+		currentTab: 4,
 	};
 
 	const message = !eventsCalendarInstalled
