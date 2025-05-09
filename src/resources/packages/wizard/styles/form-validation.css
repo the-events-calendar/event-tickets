@@ -32,10 +32,10 @@
 .tec-tickets-onboarding__required-label,
 .tec-tickets-onboarding__invalid-label {
 	color: var(--tec-color-wp-error);
+	display: none;
 	font-size: var(--tec-font-size-1);
 	font-weight: var(--tec-font-weight-regular);
 	margin-top: var(--tec-spacer-1);
-	display: none;
 }
 
 .tec-tickets-onboarding__form-field.empty .tec-tickets-onboarding__required-label,
