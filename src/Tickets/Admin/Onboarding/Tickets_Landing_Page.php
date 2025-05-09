@@ -231,6 +231,17 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	}
 
 	/**
+	 * Force the wizard to display.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	protected function force_wizard_display(): bool {
+		return apply_filters( 'tec_tickets_onboarding_wizard_force_display', false );
+	}
+
+	/**
 	 * Check if the wizard should be displayed.
 	 *
 	 * @since TBD
@@ -247,7 +258,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		 *
 		 * @return bool
 		 */
-		$force = apply_filters( 'tec_tickets_onboarding_wizard_force_display', false );
+		$force = $this->force_wizard_display();
 
 		if ( $force ) {
 			return true;
@@ -334,7 +345,8 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			/* Wizard History */
 			'begun'                     => (bool) $data->get_wizard_setting( 'begun', false ),
 			'currentTab'                => absint( $data->get_wizard_setting( 'current_tab', 0 ) ),
-			'finished'                  => (bool) $data->get_wizard_setting( 'finished', false ),
+			'finished'                   => (bool) $data->get_wizard_setting( 'finished', false ),
+			'forceDisplay'              => $this->force_wizard_display(),
 			'completedTabs'             => (array) $data->get_wizard_setting( 'completed_tabs', [] ),
 			'skippedTabs'               => (array) $data->get_wizard_setting( 'skipped_tabs', [] ),
 			'paymentOption'             => $data->get_wizard_setting( 'payment_option', '' ),
