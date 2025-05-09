@@ -186,11 +186,11 @@ class WhoDat extends Abstract_WhoDat {
 	 * @param string $endpoint_url The webhook endpoint URL.
 	 * @param string $merchant_id  The merchant ID.
 	 *
-	 * @return ?array The webhook data or null if the request fails.
+	 * @return array The webhook data or null if the request fails.
 	 *
 	 * @throws RuntimeException If the webhook registration fails.
 	 */
-	public function register_webhook_endpoint( string $endpoint_url, string $merchant_id ): ?array {
+	public function register_webhook_endpoint( string $endpoint_url, string $merchant_id ): array {
 		$query_args = [
 			'url'         => $endpoint_url,
 			'merchant_id' => $merchant_id,
@@ -209,7 +209,7 @@ class WhoDat extends Abstract_WhoDat {
 				]
 			);
 
-			throw new RuntimeException( $response['errors'] ?? __( 'Failed to register Square webhook', 'event-tickets' ), 3 );
+			throw new RuntimeException( __( 'Failed to register Square webhook', 'event-tickets' ), 3 );
 		}
 
 		return $response['subscription'];

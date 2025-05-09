@@ -151,7 +151,7 @@ class Webhooks extends Controller_Contract {
 
 		try {
 			// Now register the new webhook with the appropriate event types and API version.
-			$subscription = tribe( WhoDat::class )->register_webhook_endpoint( $endpoint_url, $merchant_id )['subscription'] ?? null;
+			$subscription = tribe( WhoDat::class )->register_webhook_endpoint( $endpoint_url, $merchant_id );
 		} catch ( RuntimeException $e ) {
 			return new WP_Error( 'tec_tickets_commerce_square_webhook_registration_failed', $e->getMessage() );
 		}
