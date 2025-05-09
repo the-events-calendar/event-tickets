@@ -24,7 +24,7 @@ const SkipButton = ({skipToNextTab, currentTab, buttonText = __("Skip step", "ev
 
 			const settings = getSettings();
 
-			if ( currentTab === 5) {
+			if ( currentTab === 3) {
 				settings.finished = true;
 			}
 
@@ -39,7 +39,7 @@ const SkipButton = ({skipToNextTab, currentTab, buttonText = __("Skip step", "ev
 			});
 
 			if (result.success) {
-				if ( currentTab < 5) {
+				if ( currentTab < 3) {
 					skipToNextTab();
 				} else {
 					setTimeout(() => {

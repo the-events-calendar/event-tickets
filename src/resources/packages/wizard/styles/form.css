@@ -52,7 +52,6 @@
 	flex-direction: column;
 	gap: var(--tec-spacer-2);
 	margin: 0 auto;
-	min-width: var(--tec-spacer-onboarding-content-min-width);
 	padding: var(--tec-spacer-5) var(--tec-spacer-7) var(--tec-spacer-7);
 	text-align: left;
 	width: 100%;

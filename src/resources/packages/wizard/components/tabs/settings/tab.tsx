@@ -47,6 +47,12 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab } ) => {
 	}, [storedPaymentOption]);
 
 	useEffect(() => {
+		if (!paymentOption) {
+			setPaymentOption('stripe');
+		}
+	}, [paymentOption]);
+
+	useEffect(() => {
 		updateSettings({ paymentOption });
 	}, [paymentOption, updateSettings]);
 

@@ -53,10 +53,10 @@ class Communication extends Abstract_Step {
 			return $response;
 		}
 
-		$email = $settings['email'] ?? '';
+		$email = $settings['userEmail'] ?? '';
 		tribe_update_option( Settings::$option_sender_email, $email );
 
-		$sender_name = $settings['senderName'] ?? '';
+		$sender_name = $settings['userName'] ?? '';
 		tribe_update_option( Settings::$option_sender_name, $sender_name );
 
 		$updated = tribe( API::class )->update_wizard_settings( $settings );

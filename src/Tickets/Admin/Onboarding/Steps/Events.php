@@ -61,8 +61,8 @@ class Events extends Abstract_Step {
 	public function install_events_calendar_plugin( $response, $request ): WP_REST_Response {
 		$params = $request->get_params();
 
-		$installed = $params['events-calendar-installed'] ?? false;
-		$activated = $params['events-calendar-active'] ?? false;
+		$installed = $params['tecInstalled'] ?? false;
+		$activated = $params['tecActive'] ?? false;
 
 		// Check if the plugin is already installed and active.
 		if ( $installed && $activated ) {

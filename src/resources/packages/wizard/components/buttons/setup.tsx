@@ -90,7 +90,7 @@ const SetupButton = ({ moveToNextTab, tabSettings }) => {
 			>
 				{isSaving && __('Setting up...', 'event-tickets')}
 				{isSaving && <Spinner />}
-				{!isSaving && __('Set up payments', 'event-tickets')}
+				{!isSaving && __('Setup your tickets', 'event-tickets')}
 			</Button>
 		</>
 	);

@@ -1,10 +1,11 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
+import { useSelect, useDispatch } from '@wordpress/data';
+import { useEffect, useState } from '@wordpress/element';
 import SuccessIcon from './img/success';
 import FinishButton from '../../buttons/finish';
 import TECInstallIcon from './img/tec';
-import { useSelect } from '@wordpress/data';
 import { SETTINGS_STORE_KEY } from '../../../data/settings/constants';
 
 interface SuccessContentProps {
@@ -17,6 +18,21 @@ const SuccessContent = ( { onlyActivated = false, alreadyActivated = false }: Su
 		( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'tec-wizard-completed' ) || false,
 		[]
 	);
+	const completeTab = useDispatch( SETTINGS_STORE_KEY ).completeTab;
+	const updateSettings = useDispatch( SETTINGS_STORE_KEY ).updateSettings;
+	const [isClicked, setClicked] = useState(false);
+
+	useEffect(() => {
+		if (isClicked) {
+			// Mark the last tab as completed
+			completeTab(3);
+			// Update settings to mark wizard as finished
+			updateSettings({
+				finished: true,
+				begun: true
+			});
+		}
+	}, [isClicked]);
 
 	return (
 		<>
@@ -44,6 +60,7 @@ const SuccessContent = ( { onlyActivated = false, alreadyActivated = false }: Su
 					variant="primary"
 					className="tec-tickets-onboarding__button tec-tickets-onboarding__button--next"
 					href={`/wp-admin/edit.php?post_type=tribe_events&page=${tecWizardCompleted ? 'tec-events-settings' : 'first-time-setup'}`}
+					onClick={() => setClicked(true)}
 				>
 					{ tecWizardCompleted
 						? __( 'Go to The Events Calendar Settings', 'event-tickets' )
