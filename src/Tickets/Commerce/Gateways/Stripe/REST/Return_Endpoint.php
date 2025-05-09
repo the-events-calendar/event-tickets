@@ -147,9 +147,9 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 		tribe( Merchant::class )->unset_merchant_unauthorized();
 		$url = tribe( Plugin_Settings::class )->get_url(
 			[
-				'tab'        => Payments_Tab::$slug,
-				'tc-section' => Gateway::get_key(),
-				'tc-status'  => 'stripe-signup-complete',
+				'tab'       => Gateway::get_key(),
+				'page'      => Plugin_Settings::$settings_page_id,
+				'tc-status' => 'stripe-signup-complete',
 			]
 		);
 
@@ -175,11 +175,13 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	 * @param object $payload data returned from WhoDat.
 	 */
 	public function handle_connection_error( $payload ) {
-		$url = tribe( Plugin_Settings::class )->get_url( [
-			'tab'             => Payments_Tab::$slug,
-			'tc-section'      => Gateway::get_key(),
-			'tc-stripe-error' => $payload->{'tc-stripe-error'},
-		] );
+		$url = tribe( Plugin_Settings::class )->get_url(
+			[
+				'tab'             => Gateway::get_key(),
+				'page'            => Plugin_Settings::$settings_page_id,
+				'tc-stripe-error' => $payload->{'tc-stripe-error'},
+			]
+		);
 
 		wp_safe_redirect( $url );
 		exit();
@@ -200,8 +202,8 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 		Gateway::disable();
 
 		$query_args = [
-			'tab'                 => Payments_Tab::$slug,
-			'tc-section'          => Gateway::get_key(),
+			'tab'                 => Gateway::get_key(),
+			'page'                => Plugin_Settings::$settings_page_id,
 			'stripe_disconnected' => 1,
 		];
 
