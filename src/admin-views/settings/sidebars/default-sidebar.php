@@ -97,9 +97,6 @@ $advanced_list = new Unordered_List(
 $advanced_list->add_children(
 	[
 		( new List_Item( null, null ) )->add_child(
-			new Link( 'https://evnt.is/1ao-', __( 'Switching from Tribe Commerce to WooCommerce', 'event-tickets' ), null, $external_attributes )
-		),
-		( new List_Item( null, null ) )->add_child(
 			new Link( 'https://evnt.is/1ap0', __( 'Setting Up E-Commerce Plugins for Selling Tickets', 'event-tickets' ), null, $external_attributes )
 		),
 		( new List_Item( null, null ) )->add_child(
