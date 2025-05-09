@@ -25,15 +25,16 @@ const OnboardingModal = ({ bootData }) => {
 
     // Select state
     const finished = useSelect((select) => select(SETTINGS_STORE_KEY).getSetting("finished"));
+    const forceDisplay = useSelect((select) => select(SETTINGS_STORE_KEY).getSetting("forceDisplay"));
     const begun = useSelect((select) => select(SETTINGS_STORE_KEY).getSetting("begun"));
     const isOpen = useSelect((select) => select(MODAL_STORE_KEY).getIsOpen());
 
     // Open modal conditionally after initialization. Prevents a second render.
     useEffect(() => {
-        if (isInitialized && !finished) {
+        if (isInitialized && (!finished || forceDisplay)) {
             openModal();
         }
-    }, [begun, finished, isInitialized]);
+    }, [begun, finished, forceDisplay, isInitialized]);
 
     return (
         <>
@@ -62,7 +63,13 @@ let isModalRendered = false;
 domReady(() => {
     const trigger = document.getElementById("tec-tickets-onboarding-wizard");
 
-    if (!trigger || isModalRendered) {
+    if (!trigger) {
+        console.warn("Trigger element missing.");
+        return;
+    }
+
+    if (isModalRendered) {
+        console.warn("Modal already rendered.");
         return;
     }
 
