@@ -46,8 +46,6 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab, addTab, updateTab, reo
 
 	const paymentsTabExists = Array.isArray(existingTabs) && existingTabs.some(tab => tab && tab.id === 'payments');
 
-	console.log( 'countryCode', countryCode );
-
 	const {
 		currency,
 		currencies,
@@ -74,13 +72,8 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab, addTab, updateTab, reo
 		};
 	}, [] );
 
-	console.log( 'countries', countries );
-	console.log( 'currencies', currencies );
-
 	// Check if the selected country has only one payment gateway option
 	const singleGateway = countryCode ? checkCountrySingleGateway(countryCode, countries) : null;
-
-	console.log('Single gateway detected:', singleGateway);
 
 	// Initialize currency based on country if possible
 	const initialCurrency = currency ||
