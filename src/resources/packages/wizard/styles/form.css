@@ -64,12 +64,6 @@
 	padding: 0;
 }
 
-#settingsPanel .tec-tickets-onboarding__form-wrapper,
-#paymentsPanel .tec-tickets-onboarding__form-wrapper {
-	padding: var(--tec-spacer-3) var(--tec-spacer-4);
-	text-align: center;
-}
-
 .tec-tickets-onboarding__form-wrapper.events-install {
 	background: transparent;
 	padding: 0;
@@ -102,6 +96,64 @@
 }
 
 /* Stupidly specific or important to override component styles */
+.tec-tickets-onboarding__payment-options > .components-base-control__field > .components-base-control__label {
+	font-size: var(--tec-font-size-3);
+	font-style: normal;
+	font-weight: var(--tec-font-weight-regular);
+	letter-spacing: -0.28px;
+	line-height: var(--tec-line-height-2);
+	text-transform: none;
+	margin-bottom: 0;
+	margin-top: var(--tec-spacer-3);
+}
+
+.tec-tickets-onboarding__payment-option {
+	cursor:pointer;
+    pointer-events: auto;
+	margin-bottom: var(--tec-spacer-3);
+
+	&.disabled {
+		cursor: not-allowed;
+		pointer-events: none;
+		opacity: 0.7;
+
+		input {
+			cursor: not-allowed;
+			background-color: var(--tec-scales-grey-200);
+		}
+	}
+
+	.tec-tickets-onboarding__payment-option-content {
+		margin-left: var(--tec-spacer-2);
+	}
+}
+
+.tec-tickets-onboarding__payment-option-provider {
+	font-size: var(--tec-font-size-1);
+	color: var(--tec-wp-core-grey-50);
+	margin-left: var(--tec-spacer-1);
+}
+
+.components-radio-control__option .components-radio-control__input[type="radio"] {
+	height: 24px;
+	width: 24px;
+	min-height: 24px;
+	min-width: 24px;
+}
+
+.tec-tickets-onboarding__gateway-logo {
+	text-align: center;
+}
+
+.tec-tickets-onboarding__subtitle {
+	margin-top: 0;
+}
+
+.tec-tickets-onboarding__free-options-note {
+	font-size: var(--tec-font-size-1);
+	color: var(--tec-wp-core-grey-50);
+}
+
 .tec-tickets-onboarding__form-wrapper label {
 	font-size: var(--tec-font-size-2);
 	font-style: normal;
@@ -123,38 +175,6 @@
 	width: 100%;
 }
 
-.tec-tickets-onboarding__form-wrapper input[type=checkbox] {
-	height: var(--tec-spacer-4);
-	width: var(--tec-spacer-4);
-}
-
-.tec-tickets-onboarding__form-wrapper input[type=radio] {
-	height: var(--tec-spacer-4);
-	margin-right: var(--tec-spacer-2);
-	width: var(--tec-spacer-4)
-}
-
-.tec-tickets-onboarding__form-wrapper input[type=radio]:checked::before {
-	height: 0.625rem;
-	margin: var(--tec-spacer-0);
-	width: 0.625rem;
-}
-
-.tec-tickets-onboarding__form-wrapper svg.components-checkbox-control__checked {
-	left: 0.625rem;
-}
-
-.tec-tickets-onboarding__form-wrapper .components-checkbox-control__input[type="checkbox"]:checked,
-.tec-tickets-onboarding__form-wrapper .components-checkbox-control__input[type="checkbox"]:indeterminate {
-	background: var(--tec-wp-core-blue-50);
-	border-color: var(--tec-wp-core-blue-50);
-}
-
-.tec-tickets-onboarding__form-wrapper .components-checkbox-control__input[type="checkbox"]:focus {
-	box-shadow: 0 0 0 var(--wp-admin-border-width-focus) #fff, 0 0 0 calc(var(--wp-admin-border-width-focus) * 2) var(--tec-wp-core-blue-50);
-}
-
-
 .tec-onboarding__modal .components-select-control__input:focus ~ .components-input-control__backdrop {
 	border-color: var(--tec-wp-core-blue-50) !important;
 	box-shadow: 0 0 0 0.5px var(--tec-wp-core-blue-50) !important;
@@ -175,4 +195,16 @@
 .tec-tickets-onboarding__connection-status--connected svg,
 .tec-tickets-onboarding__connection-error svg {
 	margin-right: var(--tec-spacer-0);
+}
+
+.tec-tickets-onboarding__warning-notice {
+	background-color: #fcf9e8;
+	border-left: 4px solid #f0b849;
+	margin: 10px 0;
+	padding: 10px 12px;
+}
+
+.tec-tickets-onboarding__warning-notice p {
+	margin: 0;
+	color: #72777c;
 }
