@@ -74,7 +74,7 @@ tribe.tickets.commerce.tickets = {};
 	 */
 	obj.buildTicketsUrl = function( params ) {
 		let ticketsURL = '';
-		ticketsURL = getUpdatedEmbedUrl( ticketsURL );
+		ticketsURL = obj.getUpdatedTicketUrl( ticketsURL );
 
 		if ( !ticketsURL ) {
 			throw new Error( _x( 'Tickets Endpoint URL is not available.', 'Tickets REST Endpoint message when url for REST endpoint is not available.', 'event-tickets' ) );
@@ -84,6 +84,25 @@ tribe.tickets.commerce.tickets = {};
 		url.search = new URLSearchParams( params ).toString();
 
 		return url.toString();
+	}
+
+	/**
+	 * Check and return REST nonce from tecTicketsCommerceTickets if available.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The embed nonce.
+	 */
+	obj.getEmbedNonce = function() {
+		let RESTNonce = '';
+
+		if (
+			typeof tecTicketsCommerceTickets !== 'undefined' &&
+			tecTicketsCommerceTickets.nonce
+		) {
+			RESTNonce = tecTicketsCommerceTickets.nonce;
+		}
+		return RESTNonce;
 	}
 
 	/**
@@ -103,15 +122,43 @@ tribe.tickets.commerce.tickets = {};
 
 		// Get all form input values
 		const formValues = obj.getFormInputValues();
+		const nonce = { '_wpnonce' : obj.getEmbedNonce() };
 		const ticketUrl = obj.getUpdatedTicketUrl( [] );
 
 		// Log the form values (for debugging)
-		console.log('Form values:', formValues);
+		console.log('Form values:', { ...formValues, ...nonce });
+		console.log('nonce:', nonce);
 		console.log('ticketUrl:', ticketUrl);
 
 		obj.submitButton( false );
 
 		//@todo submit details to rest endpoint and handle success and error
+
+		const body = {
+			'_wpnonce': nonce,
+			formValues
+		};
+
+		fetch(
+				obj.buildTicketsUrl( { ...formValues, ...nonce } ),
+			{
+				method: 'POST',
+				headers: {
+					//'X-WP-Nonce': $container.find( tribe.tickets.commerce.selectors.nonce ).val(),
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify( body ),
+			}
+		)
+			.then( response => response.json() )
+			.then( data => {
+				if ( data.success ) {
+					//return obj.handleApproveSuccess( data, actions, $container );
+				} else {
+					//return obj.handleApproveFail( data, actions, $container );
+				}
+			} )
+			.catch( obj.handleApproveError );
 
 		obj.submitButton( true );
 	};
