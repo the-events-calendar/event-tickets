@@ -35,7 +35,7 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 	 *
 	 * @var string
 	 */
-	protected const API_BASE_URL = 'https://whodat.theeventscalendar.com/commerce/v1';
+	protected const API_BASE_URL = 'https://whodat.theeventscalendar.com/';
 
 	/**
 	 * @inheritDoc

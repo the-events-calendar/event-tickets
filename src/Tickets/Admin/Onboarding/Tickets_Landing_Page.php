@@ -356,7 +356,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		$data         = tribe( Data::class );
 		$initial_data = [
 			/* Wizard History */
-      'forceDisplay'         => $this->force_wizard_display(),
+			'forceDisplay'         => $this->force_wizard_display(),
 			'begun'                => (bool) $data->get_wizard_setting( 'begun', false ),
 			'currentTab'           => absint( $data->get_wizard_setting( 'current_tab', 0 ) ),
 			'finished'             => (bool) $data->get_wizard_setting( 'finished', false ),
