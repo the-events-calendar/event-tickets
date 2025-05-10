@@ -149,6 +149,20 @@
 	margin-top: 0;
 }
 
+.tec-tickets-onboarding__tab-actions {
+	display: flex;
+	flex-direction: column;
+	gap: var(--tec-spacer-2);
+	align-items: center;
+	margin-top: var(--tec-spacer-4);
+	text-align: center;
+}
+
+/* Style for when we have both the connection button and skip button */
+.tec-tickets-onboarding__tab-actions .tec-tickets-onboarding__skip-button {
+	margin-top: var(--tec-spacer-1);
+}
+
 .tec-tickets-onboarding__free-options-note {
 	font-size: var(--tec-font-size-1);
 	color: var(--tec-wp-core-grey-50);

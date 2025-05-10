@@ -9,6 +9,7 @@ import { SETTINGS_STORE_KEY } from '../../../data';
 import { API_ENDPOINT } from '../../../data/settings/constants';
 import NextButton from '../../buttons/next';
 import SkipButton from '../../buttons/skip';
+import GatewayConnectionButton from '../../buttons/gateway-connection';
 import TicketIcon from './img/ticket';
 import StripeLogo from '../payments/img/stripe';
 import SquareLogo from '../payments/img/square';
@@ -438,43 +439,6 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab, addTab, updateTab, reo
 					<p className="tec-tickets-onboarding__gateway-description">
 						{content.description}
 					</p>
-
-					{connectionStatus === 'connected' ? (
-						<div className="tec-tickets-onboarding__connection-status tec-tickets-onboarding__connection-status--connected">
-							<CheckIcon /> {__('Connected', 'event-tickets')}
-						</div>
-					) : connectionStatus === 'failed' ? (
-						<>
-							<div className="tec-tickets-onboarding__connection-error">
-								<ErrorIcon />
-								<span className="tec-tickets-onboarding__error-text">
-									{__('Connection failed. ', 'event-tickets')}
-									<a href="/wp-admin/admin.php?page=tec-tickets-help" className="tec-tickets-onboarding__support-link">
-										{__('Contact Support ↗', 'event-tickets')}
-									</a>
-								</span>
-							</div>
-							<Button
-								isPrimary
-								className="tec-tickets-onboarding__try-again"
-								onClick={() => handleConnect(singleGateway)}
-							>
-								{__('Try again', 'event-tickets')}
-							</Button>
-						</>
-					) : (
-						<Button
-							isPrimary
-							className="tec-tickets-onboarding__connect-gateway tec-tickets-onboarding__next-button"
-							onClick={() => handleConnect(singleGateway)}
-							disabled={connectionStatus === 'connecting'}
-						>
-							{connectionStatus === 'connecting'
-								? __('Connecting...', 'event-tickets')
-								: content.connectText
-							}
-						</Button>
-					)}
 				</div>
 			</div>
 		);
@@ -556,20 +520,37 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab, addTab, updateTab, reo
 					}
 				</div>
 
-				{/* Only show next button if there's no single gateway or connection is already established */}
-				{(!hasCountryWithSingleGateway || (hasCountryWithSingleGateway && connectionStatus === 'connected')) && (
-					<NextButton
-						moveToNextTab={handleNextTab}
-						tabSettings={tabSettings}
-						disabled={!paymentOption}
-						onSuccess={() => {}}
-					/>
-				)}
+				{/* Display buttons based on context */}
+				<div className="tec-tickets-onboarding__tab-actions">
+					{/* Show the appropriate navigation button based on context */}
+					{!hasCountryWithSingleGateway ? (
+						/* Standard next button when there's no single gateway */
+						<NextButton
+							moveToNextTab={handleNextTab}
+							tabSettings={tabSettings}
+							disabled={!paymentOption}
+							onSuccess={() => {}}
+						/>
+					) : (
+						/* Connection options for single gateway */
+						<>
+							{singleGateway && (
+								<GatewayConnectionButton
+									connectionStatus={connectionStatus}
+									gatewayType={singleGateway}
+									connectText={countries[countryCode] && singleGateway ?
+										__(`Connect to ${singleGateway.charAt(0).toUpperCase() + singleGateway.slice(1)}`, 'event-tickets') :
+										__('Connect', 'event-tickets')}
+									onConnect={() => handleConnect(singleGateway)}
+									onContinue={handleNextTab}
+								/>
+							)}
 
-				{/* Only show skip button if not in single gateway mode or if connection has failed */}
-				{(hasCountryWithSingleGateway && connectionStatus === 'failed') && (
+						</>
+					)}
+					{/* Should always show skip button */}
 					<SkipButton skipToNextTab={skipToNextTab} currentTab={1} />
-				)}
+				</div>
 			</div>
 		</>
 	);
