@@ -305,23 +305,6 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	}
 
 	/**
-	 * Get the logo source.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $source The source.
-	 *
-	 * @return string The logo source.
-	 */
-	public function logo_source( $source ): string {
-		if ( ! $this->is_on_page() ) {
-			return $source;
-		}
-
-		return tribe_resource_url( 'images/logo/the-events-calendar.svg', false, null, Tribe__Main::instance() );
-	}
-
-	/**
 	 * Get the initial data for the wizard.
 	 *
 	 * @since TBD
@@ -459,12 +442,12 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			}
 		}
 		?>
-			<section class="tec-admin-page__content-section tec-tickets-admin-page__content-section">
-				<div class="tec-tickets-admin-page__content-section-header">
+			<section class="tec-admin-page__content-section">
+				<div class="tec-admin-page__content-section-header">
 					<h2 class="tec-admin-page__content-header"><?php esc_html_e( 'First-time setup', 'event-tickets' ); ?></h2>
 					<a class="tec-dismiss-admin-page" href="<?php echo esc_url( $action_url ); ?>"><?php esc_html_e( 'Dismiss this screen', 'event-tickets' ); ?></a>
 				</div>
-				<div class="tec-tickets-admin-page__content-section-subheader"><?php echo esc_html( $count_complete ) . '/3 ' . esc_html__( 'steps completed', 'event-tickets' ); ?></div>
+				<div class="tec-admin-page__content-section-subheader"><?php echo esc_html( $count_complete ) . '/3 ' . esc_html__( 'steps completed', 'event-tickets' ); ?></div>
 				<ul class="tec-admin-page__content-step-list">
 					<li
 						id="tec-tickets-onboarding-wizard-currency-item"
@@ -533,7 +516,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 						</div>
 					</li>
 				</ul>
-				<div class="tec-tickets-admin-page__content-section-videos">
+				<div class="tec-admin-page__content-section-mid">
 					<h2 class="tec-admin-page__content-header">
 						<?php esc_html_e( 'Create your first ticket', 'event-tickets' ); ?>
 					</h2>

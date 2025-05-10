@@ -101,7 +101,6 @@ class Controller extends Controller_Contract {
 		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['communication'], 'handle' ], 13, 2 );
 		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['events'], 'handle' ], 14, 2 );
 		add_filter( 'tec_telemetry_is_et_admin_page', [ $this, 'hide_telemetry_on_onboarding_page' ], 10, 1 );
-		add_filter( 'tec_settings_page_logo_source', [ $this->container->make( Landing_Page::class ), 'logo_source' ] );
 	}
 
 	/**
