@@ -480,7 +480,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 						tec_classes(
 							[
 								'step-list__item' => true,
-								'tec-tickets-onboarding-step-1' => true,
+								'tec-tickets-onboarding-step-0' => true,
 								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[0] ),
 							]
 						);
@@ -524,7 +524,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 						tec_classes(
 							[
 								'step-list__item' => true,
-								'tec-tickets-onboarding-step-3' => true,
+								'tec-tickets-onboarding-step-1' => true,
 								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[1] ),
 							]
 						);
