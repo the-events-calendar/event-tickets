@@ -31,7 +31,7 @@ const PaymentsContent = ({ moveToNextTab, skipToNextTab }) => {
 	}, []);
 
 	const tabSettings = {
-		currentTab: 2,
+		currentTab: 1,
 		action_nonce: actionNonce,
 		gateway: paymentOption,
 	};

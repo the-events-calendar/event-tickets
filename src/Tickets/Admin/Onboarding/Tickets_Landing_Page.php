@@ -16,6 +16,7 @@ use TEC\Common\Admin\Traits\Is_Tickets_Page;
 use TEC\Common\Lists\Currency;
 use TEC\Common\Lists\Country;
 use TEC\Common\Asset;
+use Tribe__Tickets__Main;
 use TEC\Tickets\Admin\Onboarding\API;
 use TEC\Tickets\Admin\Onboarding\Data;
 use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
@@ -169,6 +170,18 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			->use_asset_file( false )
 			->set_dependencies( 'wp-components', 'tec-variables-full', 'tribe-common-admin' )
 			->register();
+
+		Asset::add(
+			'tec-tickets-onboarding-style',
+			'tickets-admin-onboarding.css'
+		)
+			->add_to_group_path( Tribe__Tickets__Main::class )
+			->add_to_group( 'tec-tickets-onboarding' )
+			->enqueue_on( 'admin_enqueue_scripts' )
+			->set_condition( [ __CLASS__, 'is_on_page' ] )
+			->use_asset_file( false )
+			->set_dependencies( 'wp-components', 'tec-variables-full', 'tribe-common-admin' )
+			->register();
 	}
 
 	/**
@@ -231,6 +244,17 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	}
 
 	/**
+	 * Force the wizard to display.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	protected function force_wizard_display(): bool {
+		return apply_filters( 'tec_tickets_onboarding_wizard_force_display', false );
+	}
+
+	/**
 	 * Check if the wizard should be displayed.
 	 *
 	 * @since TBD
@@ -247,7 +271,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		 *
 		 * @return bool
 		 */
-		$force = apply_filters( 'tec_tickets_onboarding_wizard_force_display', false );
+		$force = $this->force_wizard_display();
 
 		if ( $force ) {
 			return true;
@@ -315,6 +339,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		$data         = tribe( Data::class );
 		$initial_data = [
 			/* Wizard History */
+      'forceDisplay'         => $this->force_wizard_display(),
 			'begun'                => (bool) $data->get_wizard_setting( 'begun', false ),
 			'currentTab'           => absint( $data->get_wizard_setting( 'current_tab', 0 ) ),
 			'finished'             => (bool) $data->get_wizard_setting( 'finished', false ),

@@ -28,7 +28,7 @@ class Events extends Abstract_Step {
 	 *
 	 * @var int
 	 */
-	public const TAB_NUMBER = 4;
+	public const TAB_NUMBER = 3;
 
 	/**
 	 * Process the events data.

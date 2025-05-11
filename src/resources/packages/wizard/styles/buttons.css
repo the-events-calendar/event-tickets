@@ -13,8 +13,6 @@
 }
 
 .tec-tickets-onboarding__button.is-primary {
-	background: none;
-	background-color: var(--tec-wp-core-blue-50);
 	margin-top: var(--tec-spacer-4);
 }
 

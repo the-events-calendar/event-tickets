@@ -29,7 +29,7 @@ class Communication extends Abstract_Step {
 	 *
 	 * @var int
 	 */
-	public const TAB_NUMBER = 3;
+	public const TAB_NUMBER = 2;
 
 	/**
 	 * Process the communication data.
@@ -46,11 +46,6 @@ class Communication extends Abstract_Step {
 
 		if ( empty( $settings['currentTab'] ) ) {
 			return $this->add_fail_message( $response, __( 'No communication settings provided.', 'event-tickets' ) );
-		}
-
-		if ( $settings['currentTab'] !== self::TAB_NUMBER ) {
-			// Not our tab, no-op.
-			return $response;
 		}
 
 		$email = $settings['userEmail'] ?? '';
