@@ -197,8 +197,10 @@ class API extends Abstract_API {
 			$begun = true;
 		}
 
-		// Set up our data for a single save.
-		$settings                   = tribe( Data::class )->get_wizard_settings();
+		// Get existing settings first.
+		$settings = tribe( Data::class )->get_wizard_settings();
+
+		// Update wizard-specific settings.
 		$settings['begun']          = $begun;
 		$settings['finished']       = $finished;
 		$settings['current_tab']    = $current;
@@ -215,8 +217,8 @@ class API extends Abstract_API {
 			$params['_wpnonce']
 		);
 
-		// Add a snapshot of the data from the last request.
-		$settings['last_send'] = $params;
+		// Merge the new params with existing last_send data instead of overwriting.
+		$settings['last_send'] = array_merge( $settings['last_send'] ?? [], $params );
 
 		// Update the option and return true if successful.
 		return tribe( Data::class )->update_wizard_settings( $settings );
