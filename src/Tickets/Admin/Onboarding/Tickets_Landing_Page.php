@@ -324,7 +324,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 */
 	public function admin_page_title(): void {
 		?>
-			<h1 class="tec-admin__header-title"><?php esc_html_e( 'Event Tickets', 'event-tickets' ); ?></h1>
+			<h1 class="tec-admin-page__header-title"><?php esc_html_e( 'Event Tickets', 'event-tickets' ); ?></h1>
 		<?php
 	}
 
