@@ -19,7 +19,8 @@ use TEC\Common\Asset;
 use Tribe__Tickets__Main;
 use TEC\Tickets\Admin\Onboarding\API;
 use TEC\Tickets\Admin\Onboarding\Data;
-use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
+use TEC\Tickets\Commerce\Gateways\Stripe\Merchant as Stripe_Merchant;
+use TEC\Tickets\Commerce\Gateways\Square\Merchant as Square_Merchant;
 
 /**
  * Class Landing_Page
@@ -356,7 +357,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		$data         = tribe( Data::class );
 		$initial_data = [
 			/* Wizard History */
-      'forceDisplay'         => $this->force_wizard_display(),
+			'forceDisplay'         => $this->force_wizard_display(),
 			'begun'                => (bool) $data->get_wizard_setting( 'begun', false ),
 			'currentTab'           => absint( $data->get_wizard_setting( 'current_tab', 0 ) ),
 			'finished'             => (bool) $data->get_wizard_setting( 'finished', false ),
@@ -370,7 +371,8 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			'currencies'           => tribe( Currency::class )->get_currency_list(),
 			'countries'            => tribe( Country::class )->get_gateway_countries(),
 			'optin'                => tribe_get_option( 'opt-in-status', false ),
-			'stripeConnected'      => tribe( Merchant::class )->is_connected( true ),
+			'stripeConnected'      => tribe( Stripe_Merchant::class )->is_connected( true ),
+			'squareConnected'      => tribe( Square_Merchant::class )->is_connected( true ),
 			/* TEC install step */
 			'tecInstalled'         => Installer::get()->is_installed( 'the-events-calendar' ),
 			'tecActive'            => Installer::get()->is_active( 'the-events-calendar' ),

@@ -20,7 +20,7 @@ class WhoDat extends Abstract_WhoDat {
 	 *
 	 * @var string
 	 */
-	protected const API_ENDPOINT = 'stripe';
+	protected const API_ENDPOINT = 'commerce/v1/stripe';
 
 	/**
 	 * Creates a new account link for the client and redirects the user to setup the account details.

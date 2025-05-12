@@ -29,7 +29,7 @@ class WhoDat extends Abstract_WhoDat {
 	 *
 	 * @var string
 	 */
-	protected const API_ENDPOINT = 'paypal';
+	protected const API_ENDPOINT = 'commerce/v1/paypal';
 
 	/**
 	 * Fetch the signup link from PayPal.

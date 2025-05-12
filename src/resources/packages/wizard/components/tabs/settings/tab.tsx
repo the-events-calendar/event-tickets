@@ -3,69 +3,212 @@ import { BaseControl } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 import { __, _x } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
+import { Button } from '@wordpress/components';
+import apiFetch from '@wordpress/api-fetch';
 import { SETTINGS_STORE_KEY } from '../../../data';
 import { API_ENDPOINT } from '../../../data/settings/constants';
 import NextButton from '../../buttons/next';
 import SkipButton from '../../buttons/skip';
+import GatewayConnectionButton from '../../buttons/gateway-connection';
 import TicketIcon from './img/ticket';
 import StripeLogo from '../payments/img/stripe';
+import SquareLogo from '../payments/img/square';
+import PayPalLogo from '../payments/img/paypal';
 import CheckIcon from '../payments/img/check';
 import ErrorIcon from '../payments/img/error';
-import { Button } from '@wordpress/components';
-import apiFetch from '@wordpress/api-fetch';
+import SingleGatewayContent from './single-gateway-content';
+import PaymentRadioOptions from './payment-radio-options';
+import CurrencySelector from './currency-selector';
+import PaymentSelector from './payment-selector';
+import {
+	getCountriesByCurrency,
+	checkCountrySingleGateway,
+	determineGatewayAvailability,
+	handleCurrencyChange,
+	handleConnect,
+	handleNextTab,
+} from './handlers';
 
-const SettingsContent = ( { moveToNextTab, skipToNextTab } ) => {
+const SettingsContent = ( { moveToNextTab, skipToNextTab, addTab, updateTab, reorderTabs } ) => {
 	const [ connectionStatus, setConnectionStatus ] = useState( 'disconnected' );
 	const getSettings = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getSettings );
 	const countryCurrency = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getCountryCurrency() );
+	const countryCode = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'country' ) );
+	const wpNonce = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getSetting( '_wpnonce' ), [] );
+	const actionNonce = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'action_nonce' ), [] );
 	const updateSettings = useDispatch( SETTINGS_STORE_KEY ).updateSettings;
+
+	// Get existing tabs to check if payments tab already exists
+	const existingTabs = useSelect((select) => {
+		const store = select(SETTINGS_STORE_KEY);
+		return store.getVisibleTabs ? store.getVisibleTabs() : [];
+	}, []);
+
+	const paymentsTabExists = Array.isArray(existingTabs) && existingTabs.some(tab => tab && tab.id === 'payments');
+
 	const {
 		currency,
 		currencies,
+		countries,
 		paymentOption: storedPaymentOption,
 	}: {
 		currency: string;
-		currencies: Record< string, { symbol: string; name: string } >;
+		currencies: Record<string, { symbol: string; name: string; code: string }>;
+		countries: Record<string, {
+			currency: string;
+			has_paypal?: boolean;
+			has_square?: boolean;
+			has_stripe?: boolean;
+			name?: string;
+		}>;
 		paymentOption: string;
 	} = useSelect( ( select ) => {
 		const store = select( SETTINGS_STORE_KEY );
 		return {
 			currency: store.getSetting( 'currency' ),
 			currencies: store.getSetting( 'currencies' ),
+			countries: store.getSetting( 'countries' ),
 			paymentOption: store.getSetting( 'paymentOption' ),
 		};
 	}, [] );
 
-	const wpNonce = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getSetting( '_wpnonce' ), [] );
-	const [ currencyCode, setCurrency ] = useState( currency || countryCurrency );
-	const [ paymentOption, setPaymentOption ] = useState(storedPaymentOption || '');
+	// Check if the selected country has only one payment gateway option
+	const singleGateway = countryCode ? checkCountrySingleGateway(countryCode, countries) : null;
+
+	// Initialize currency based on country if possible
+	const initialCurrency = currency ||
+		(countryCode && countries[countryCode]?.currency) ||
+		countryCurrency ||
+		'USD';
+
+	const initialGateways = determineGatewayAvailability(initialCurrency, countries);
+
+	// Set initial payment option based on country compatibility
+	const initialPaymentOption = storedPaymentOption ||
+		singleGateway ||
+		(initialGateways.stripe ? 'stripe' : (initialGateways.square ? 'square' : 'paypal'));
+
+	const [ currencyCode, setCurrency ] = useState(initialCurrency);
+	const [ paymentOption, setPaymentOption ] = useState(initialPaymentOption);
+
+	// Payment gateway availability based on selected currency
+	const [ paymentGateways, setPaymentGateways ] = useState(initialGateways);
+
+	// Track if we've already added the payments tab
+	const [ paymentsTabAdded, setPaymentsTabAdded ] = useState(false);
+
+	// Determine if we should skip the payments tab completely
+	const [ skipPaymentsTab, setSkipPaymentsTab ] = useState(!!singleGateway);
+
+	const handlePaymentOptionChanged = ( selected ) => {
+		setPaymentOption(selected);
+		updateSettings({ paymentOption: selected });
+	};
 
 	useEffect(() => {
-		if (storedPaymentOption !== undefined) {
-			setPaymentOption(storedPaymentOption);
+		// Update UI state when country changes
+		if (countryCode) {
+			const gateway = checkCountrySingleGateway(countryCode, countries);
+			setSkipPaymentsTab(!!gateway);
+
+			// If there's only one gateway for this country, set it
+			if (gateway) {
+				handlePaymentOptionChanged(gateway);
+			}
+
+			// Set currency for this country if available
+			if (countries[countryCode]?.currency) {
+				setCurrency(countries[countryCode].currency);
+			}
 		}
-	}, [storedPaymentOption]);
+	}, [countryCode, countries]);
 
 	useEffect(() => {
 		if (!paymentOption) {
-			setPaymentOption('stripe');
+			const gatewayPriority = ['stripe', 'square', 'paypal'];
+			const firstAvailableGateway = gatewayPriority.find(gateway => paymentGateways[gateway]);
+			if (firstAvailableGateway) {
+				handlePaymentOptionChanged(firstAvailableGateway);
+			}
 		}
-	}, [paymentOption]);
+	}, [paymentOption, paymentGateways]);
 
 	useEffect(() => {
 		updateSettings({ paymentOption });
 	}, [paymentOption, updateSettings]);
 
-	useEffect(() => {
-		setCurrency(currency || countryCurrency || 'USD');
-	}, [currency, countryCurrency]);
+	// Wrapper for handleCurrencyChange
+	const onCurrencyChange = (e) => {
+		handleCurrencyChange({
+			e,
+			setCurrency,
+			setPaymentGateways,
+			paymentOption,
+			setPaymentOption: handlePaymentOptionChanged,
+			countries,
+		});
+	};
 
-	useEffect( () => {
+	// Wrapper for handleConnect
+	const onConnect = async (gateway: string) => {
+		await handleConnect({
+			gateway,
+			currencyCode,
+			actionNonce,
+			wpNonce,
+			getSettings,
+			updateSettings,
+			setConnectionStatus,
+			apiEndpoint: API_ENDPOINT,
+		});
+	};
+
+	// Wrapper for handleNextTab
+	const onNextTab = () => {
+		handleNextTab({
+			currencyCode,
+			updateSettings,
+			skipPaymentsTab,
+			moveToNextTab,
+			paymentOption,
+			paymentsTabExists,
+			paymentsTabAdded,
+			setPaymentsTabAdded,
+			addTab,
+			reorderTabs,
+			skipToNextTab,
+		});
+	};
+
+	// Check for connection on first load
+	useEffect(() => {
 		const settings = getSettings();
-		if ( settings.stripeConnected ) {
-			setConnectionStatus( 'connected' );
+
+		// If connected via Stripe
+		if (settings.stripeConnected) {
+			setConnectionStatus('connected');
 		}
-	}, [] );
+
+		// If connected via Square
+		if (settings.squareConnected) {
+			setConnectionStatus('connected');
+		}
+
+		// If we were in the process of connecting and we're back (likely completed)
+		if (settings.connecting && singleGateway) {
+			setConnectionStatus('connected');
+
+			// Reset the connecting flag
+			updateSettings({ connecting: false });
+
+			// Wait a moment to show the connected state before moving on
+			const timer = setTimeout(() => {
+				moveToNextTab();
+			}, 1500);
+
+			return () => clearTimeout(timer);
+		}
+	}, []);
 
 	const tabSettings = {
 		currency: currencyCode,
@@ -73,74 +216,8 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab } ) => {
 		currentTab: 1,
 	};
 
-	const handleConnect = async ( gateway: string ) => {
-		setConnectionStatus( 'connecting' );
-
-		updateSettings( tabSettings );
-
-		apiFetch.use( apiFetch.createNonceMiddleware( wpNonce ) );
-
-		const result = await apiFetch( {
-			method: 'POST',
-			data: {
-				...getSettings(),
-				gateway: gateway,
-				action: 'connect',
-			},
-			path: API_ENDPOINT,
-		} );
-
-		updateSettings(tabSettings);
-
-		if ( result.signup_url ) {
-			window.location.href = result.signup_url;
-		} else {
-			setConnectionStatus( 'failed' );
-		}
-	};
-
-	const renderStripeGateway = () => {
-		return (
-			<div className="tec-tickets-onboarding__payment-gateway">
-				<div className="tec-tickets-onboarding__gateway-logo">
-					<StripeLogo />
-				</div>
-				<p className="tec-tickets-onboarding__gateway-description">
-					{ __( 'Enable credit card payments, Afterpay, Klarna and more on your website.', 'event-tickets' ) }
-				</p>
-				{ connectionStatus === 'connected' ? (
-					<div className="tec-tickets-onboarding__connection-status tec-tickets-onboarding__connection-status--connected">
-						<CheckIcon /> { __( 'Connected', 'event-tickets' ) }
-					</div>
-				) : connectionStatus === 'failed' ? (
-					<>
-						<div className="tec-tickets-onboarding__connection-error">
-							<ErrorIcon />
-							<span className="tec-tickets-onboarding__error-text">
-								{ __( 'Connection failed. ', 'event-tickets' ) }
-								<a
-									href="/wp-admin/admin.php?page=tec-tickets-help"
-									className="tec-tickets-onboarding__support-link"
-								>
-									{ __( 'Contact Support ↗', 'event-tickets' ) }
-								</a>
-							</span>
-						</div>
-						<Button
-							isPrimary
-							className="tec-tickets-onboarding__try-again"
-							onClick={ () => handleConnect( paymentOption ) }
-						>
-							{ __( 'Try again', 'event-tickets' ) }
-						</Button>
-					</>
-				) : (
-					''
-				) }
-			</div>
-		);
-	};
-
+	// Check if we have country with only one gateway to handle display logic
+	const hasCountryWithSingleGateway = !!singleGateway;
 
 	return (
 		<>
@@ -153,56 +230,60 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab } ) => {
 			</div>
 			<div className="tec-tickets-onboarding__tab-content">
 				<div className="tec-tickets-onboarding__form-wrapper">
-					{ paymentOption === 'stripe' && renderStripeGateway() }
-					{ (!paymentOption || (paymentOption === 'stripe' && connectionStatus !== 'connected')) && (
-						<BaseControl
-							__nextHasNoMarginBottom
-							id="currency-code"
-							label={ __( 'Currency', 'event-tickets' ) }
-							className="tec-tickets-onboarding__form-field"
-						>
-							<select
-								onChange={ ( e ) => setCurrency( e.target.value ) }
-								value={ currencyCode }
-								required
-							>
-								{ Object.entries( currencies ).map( ( [ key, data ] ) => (
-									<option key={ key } value={ data[ 'code' ] }>
-										{ data[ 'name' ] } ({ data[ 'code' ] })
-									</option>
-								) ) }
-							</select>
-							<span className="tec-tickets-onboarding__required-label">
-								{ __( 'Currency is required.', 'event-tickets' ) }
-							</span>
-							<span className="tec-tickets-onboarding__invalid-label">
-								{ __( 'Currency is invalid.', 'event-tickets' ) }
-							</span>
-						</BaseControl>
-					) }
-				</div>
-				{ !paymentOption || connectionStatus === 'connected' ? (
-					<NextButton
-						moveToNextTab={ moveToNextTab }
-						tabSettings={ tabSettings }
-						disabled={ false }
-						onSuccess={() => {}}
+					{hasCountryWithSingleGateway && (
+						<SingleGatewayContent
+							singleGateway={singleGateway}
+							connectionStatus={connectionStatus}
+						/>
+					)}
+
+					<CurrencySelector
+						currencies={currencies}
+						currencyCode={currencyCode}
+						onCurrencyChange={onCurrencyChange}
+						hasCountryWithSingleGateway={hasCountryWithSingleGateway}
 					/>
-				) : (
-					<Button
-						isPrimary
-						className="tec-tickets-onboarding__button"
-						onClick={ () => handleConnect( paymentOption ) }
-						disabled={ connectionStatus === 'connecting' }
-					>
-						{ connectionStatus === 'connecting'
-							? __( 'Connecting...', 'event-tickets' )
-							: __( 'Connect to Stripe', 'event-tickets' ) }
-					</Button>
-				) }
-				{ connectionStatus !== 'connected' && (
-					<SkipButton skipToNextTab={ skipToNextTab } currentTab={1} />
-				) }
+
+					{ ! hasCountryWithSingleGateway && (
+						<PaymentSelector
+							paymentGateways={paymentGateways}
+							paymentOption={paymentOption}
+							onPaymentOptionChange={handlePaymentOptionChanged}
+						/>
+					)}
+				</div>
+
+				{/* Display buttons based on context */}
+				<div className="tec-tickets-onboarding__tab-actions">
+					{/* Show the appropriate navigation button based on context */}
+					{!hasCountryWithSingleGateway ? (
+						/* Standard next button when there's no single gateway */
+						<NextButton
+							moveToNextTab={onNextTab}
+							tabSettings={tabSettings}
+							disabled={!paymentOption}
+							onSuccess={() => {}}
+						/>
+					) : (
+						/* Connection options for single gateway */
+						<>
+							{singleGateway && (
+								<GatewayConnectionButton
+									connectionStatus={connectionStatus}
+									gatewayType={singleGateway}
+									connectText={countries[countryCode] && singleGateway ?
+										__(`Connect to ${singleGateway.charAt(0).toUpperCase() + singleGateway.slice(1)}`, 'event-tickets') :
+										__('Connect', 'event-tickets')}
+									onConnect={() => onConnect(singleGateway)}
+									onContinue={onNextTab}
+								/>
+							)}
+
+						</>
+					)}
+					{/* Should always show skip button */}
+					<SkipButton skipToNextTab={skipToNextTab} currentTab={1} />
+				</div>
 			</div>
 		</>
 	);

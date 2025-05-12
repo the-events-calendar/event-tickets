@@ -16,15 +16,47 @@ const OnboardingTabs = () => {
 	type TabConfig = {
 		id: string;
 		title: string;
-		content: React.ComponentType;
-		ref: React.RefObject<HTMLDivElement>;
+		content: React.ComponentType<any>;
+		ref: React.RefObject<HTMLDivElement | null>;
+		priority?: number;
+		isVisible?: boolean | (() => boolean);
+		dependencies?: string[];
 	};
 
-	const tabConfig = [
-		{ id: "welcome", title: __("Welcome", "event-tickets"), content: WelcomeContent, ref: useRef(null) },
-		{ id: "settings", title: __("Selling Tickets", "event-tickets"), content: SettingsContent, ref: useRef(null) },
-		{ id: "communication", title: __("Communication", "event-tickets"), content: CommunicationContent, ref: useRef(null) },
-		{ id: "events", title: __("Events", "event-tickets"), content: EventsContent, ref: useRef(null) }
+	// Initial tab configuration
+	const initialTabConfig: TabConfig[] = [
+		{
+			id: "welcome",
+			title: __("Welcome", "event-tickets"),
+			content: WelcomeContent,
+			ref: useRef<HTMLDivElement>(null),
+			priority: 10,
+			isVisible: true,
+		},
+		{
+			id: "settings",
+			title: __("Selling Tickets", "event-tickets"),
+			content: SettingsContent,
+			ref: useRef<HTMLDivElement>(null),
+			priority: 20,
+			isVisible: true,
+		},
+		{
+			id: "communication",
+			title: __("Communication", "event-tickets"),
+			content: CommunicationContent,
+			ref: useRef<HTMLDivElement>(null),
+			priority: 30,
+			isVisible: true,
+		},
+		{
+			id: "events",
+			title: __("Events", "event-tickets"),
+			content: EventsContent,
+			ref: useRef<HTMLDivElement>(null),
+			priority: 40,
+			isVisible: true,
+		}
 	];
 
 	const { closeModal } = useDispatch(MODAL_STORE_KEY);
@@ -33,15 +65,60 @@ const OnboardingTabs = () => {
 	const completedTabs = useSelect((select) => select(SETTINGS_STORE_KEY).getCompletedTabs()) || [];
 	const completeTab = useDispatch(SETTINGS_STORE_KEY).completeTab;
 
+	// Dynamic tab configuration state
+	const [tabsConfig, setTabsConfig] = useState<TabConfig[]>(initialTabConfig);
+
+	// Get visible tabs sorted by priority
+	const getVisibleTabsSorted = () => {
+		return tabsConfig
+			.filter(tab => {
+				if (typeof tab.isVisible === 'function') {
+					return tab.isVisible();
+				}
+				return tab.isVisible !== false;
+			})
+			.sort((a, b) => (a.priority || 0) - (b.priority || 0));
+	};
+
+	// Map visible tabs to state
 	const [tabsState, setTabsState] = useState(() =>
-		tabConfig.map((tab, index) => ({
+		getVisibleTabsSorted().map((tab, index) => ({
 			...tab,
-			disabled: index > lastActiveTab, // Disable all tabs except the last active one (default to 0)
+			disabled: index > lastActiveTab,
 		}))
 	);
 
 	// Set the current active tab
 	const [activeTab, setActiveTab] = useState(0);
+
+	// Function to add a new tab
+	const addTab = (newTab: TabConfig) => {
+		setTabsConfig(prev => [...prev, newTab]);
+	};
+
+	// Function to update a tab's configuration
+	const updateTab = (id: string, updates: Partial<TabConfig>) => {
+		setTabsConfig(prev =>
+			prev.map(tab => tab.id === id ? { ...tab, ...updates } : tab)
+		);
+	};
+
+	// Function to reorder tabs based on updated priorities
+	const reorderTabs = () => {
+		setTabsConfig(prev => [...prev].sort((a, b) => (a.priority || 0) - (b.priority || 0)));
+	};
+
+	// Update tabs state when tabsConfig changes
+	useEffect(() => {
+		const visibleTabs = getVisibleTabsSorted();
+
+		setTabsState(
+			visibleTabs.map((tab, index) => ({
+				...tab,
+				disabled: index > lastActiveTab,
+			}))
+		);
+	}, [tabsConfig, lastActiveTab]);
 
 	const updateTabState = (index, changes) => {
 		setTabsState((prevState) =>
@@ -56,9 +133,9 @@ const OnboardingTabs = () => {
 	};
 
 	const moveToTab = (index) => {
-		if (index > 0 && index < tabsState.length) {
-			const isCompleted = completedTabs.includes(index); // Check if tab is in completedTabs
-			const isSkipped = skippedTabs.includes(index);     // Check if tab is in skippedTabs
+		if (index >= 0 && index < tabsState.length) {
+			const isCompleted = completedTabs.includes(index);
+			const isSkipped = skippedTabs.includes(index);
 
 			updatePreviousTabStates(index, {
 				completed: isCompleted,
@@ -74,7 +151,7 @@ const OnboardingTabs = () => {
 	// If we are on the welcome tab, and we have a last active tab, move directly to that tab.
 	useEffect(() => {
 		if (lastActiveTab > 0) {
-			moveToTab(lastActiveTab); // Move to the correct tab after initialization
+			moveToTab(lastActiveTab);
 		}
 	}, [lastActiveTab]);
 
@@ -85,7 +162,9 @@ const OnboardingTabs = () => {
 			updateTabState(activeTab + 1, { disabled: false });
 			setActiveTab(prevActiveTab => {
 				const newTab = prevActiveTab + 1;
-				tabsState[newTab].ref.current.focus();  // Set focus here
+				if (tabsState[newTab].ref.current) {
+					tabsState[newTab].ref.current.focus();
+				}
 				return newTab;
 			});
 		} else {
@@ -98,7 +177,9 @@ const OnboardingTabs = () => {
 			updateTabState(activeTab + 1, { disabled: false });
 			setActiveTab(prevActiveTab => {
 				const newTab = prevActiveTab + 1;
-				tabsState[newTab].ref.current.focus();  // Set focus here
+				if (tabsState[newTab].ref.current) {
+					tabsState[newTab].ref.current.focus();
+				}
 				return newTab;
 			});
 		} else {
@@ -121,19 +202,27 @@ const OnboardingTabs = () => {
 		const newIndex = activeTab + direction;
 		if (newIndex >= 0 && newIndex < tabsState.length && !tabsState[newIndex].disabled) {
 			setActiveTab(newIndex);
-			tabsState[newIndex].ref.current.focus();
+			if (tabsState[newIndex].ref.current) {
+				tabsState[newIndex].ref.current.focus();
+			}
 		}
 	};
 
+	// Get the current tab based on the active index
+	const currentTab = tabsState[activeTab] || tabsState[0];
+
 	return (
-		<section className={`tec-tickets-onboarding__tabs tec-tickets-onboarding__tab-${tabsState[activeTab].id}`}>
+		<section className={`tec-tickets-onboarding__tabs tec-tickets-onboarding__tab-${currentTab.id}`}>
 			<div className="tec-tickets-onboarding__tabs-header">
 				<EtIcon />
 				<ul
 					role="tablist"
 					className="tec-tickets-onboarding__tabs-list"
-					aria-label="Onboarding Tabs"
+					aria-label={__("Onboarding Tabs", "event-tickets")}
 					onKeyDown={handleKeyPress}
+					style={{
+						gridTemplateColumns: `repeat(${tabsState.length - 1}, 1fr)`
+					}}
 				>
 					{tabsState.map((tab, index) => (
 						<Tab
@@ -146,17 +235,26 @@ const OnboardingTabs = () => {
 					))}
 				</ul>
 			</div>
-			{tabsState.map((tab, index) => (
-				<MemoizedTabPanel
-					key={tab.id}
-					tabIndex={index}
-					id={`${tab.id}Panel`}
-					tabId={tab.id}
-					activeTab={activeTab}
-				>
-					<tab.content moveToNextTab={moveToNextTab} skipToNextTab={skipToNextTab}  />
-				</MemoizedTabPanel>
-			))}
+			{tabsState.map((tab, index) => {
+				const TabContent = tab.content;
+				return (
+					<MemoizedTabPanel
+						key={tab.id}
+						tabIndex={index}
+						id={`${tab.id}Panel`}
+						tabId={tab.id}
+						activeTab={activeTab}
+					>
+						<TabContent
+							moveToNextTab={moveToNextTab}
+							skipToNextTab={skipToNextTab}
+							addTab={addTab}
+							updateTab={updateTab}
+							reorderTabs={reorderTabs}
+						/>
+					</MemoizedTabPanel>
+				);
+			})}
 		</section>
 	);
 };
