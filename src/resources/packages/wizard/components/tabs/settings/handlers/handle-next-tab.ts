@@ -51,9 +51,6 @@ const handleNextTab = ({
 	// Save currency setting
 	updateSettings({
 		currency: currencyCode,
-		// Mark payment option as connected to prevent the payments tab from being disabled
-		stripeConnected: paymentOption === 'stripe' ? true : undefined,
-		squareConnected: paymentOption === 'square' ? true : undefined,
 	});
 
 	// If we should skip the payments tab or no payment gateway is selected
