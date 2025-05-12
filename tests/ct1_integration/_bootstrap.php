@@ -17,7 +17,6 @@ $ecp_dir = dirname( __DIR__, 3 ) . '/events-pro';
 Autoload::addNamespace( 'Tribe\Events_Pro\Tests', $ecp_dir . '/tests/_support' );
 
 // Let's  make sure Views v2 are activated if not.
-putenv( 'TEC_TICKETS_COMMERCE=1' );
 putenv( 'TEC_CUSTOM_TABLES_V1_DISABLED=0' );
 $_ENV['TEC_CUSTOM_TABLES_V1_DISABLED'] = 0;
 add_filter( 'tec_events_custom_tables_v1_enabled', '__return_true' );
@@ -36,8 +35,6 @@ $logger = tribe( Logger::class );
 $logger->setHandlers( [] );
 // Disable the Promoter trigger to avoid Promoter-related errors.
 remove_action( 'tribe_tickets_promoter_trigger', [ tribe( Dispatcher::class ), 'trigger' ] );
-// Ensure Ticket Commerce is enabled.
-add_filter( 'tec_tickets_commerce_is_enabled', '__return_true', 100 );
 tribe()->register( Commerce_Provider::class );
 tribe( Commerce_Module::class );
 

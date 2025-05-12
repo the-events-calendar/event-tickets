@@ -365,17 +365,15 @@ class Payments_Tab extends Service_Provider {
 
 		$fields['tec-settings-payment-enable'] = [
 			'type' => 'html',
-			'html' => '<label class="tec-tickets__admin-settings-toggle-large">
-								<input
-									type="checkbox"
-									name="' . Tickets_Commerce_Settings::$tickets_commerce_enabled . '"
-									' . checked( $is_tickets_commerce_enabled, true, false ) . '
-									id="tickets-commerce-enable-input"
-									class="tec-tickets__admin-settings-toggle-large-checkbox tribe-dependency tribe-dependency-verified">
-									<span class="tec-tickets__admin-settings-toggle-large-switch"></span>
-									<span class="tec-tickets__admin-settings-toggle-large-label">' . esc_html__( 'Enable Tickets Commerce', 'event-tickets' ) . '</span>
-							</label>
-						',
+			'html' => '<div>
+							<input
+								type="hidden"
+								name="' . Tickets_Commerce_Settings::$tickets_commerce_enabled . '"
+								' . checked( $is_tickets_commerce_enabled, true, false ) . '
+								id="tickets-commerce-enable-input"
+								class="tribe-dependency tribe-dependency-verified">
+						</div>
+						<h2 class="tec-tickets__admin-settings-tab-heading">' . esc_html__( 'Tickets Commerce', 'event-tickets' ) . '</h2>',
 
 		];
 

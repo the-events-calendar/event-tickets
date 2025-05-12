@@ -19,8 +19,6 @@ class Assets_Test extends Controller_Test_Case {
 	 * @before
 	 */
 	public function ensure_tickets_commerce_active(): void {
-		// Ensure the Tickets Commerce module is active.
-		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
 		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
 			$modules[ Module::class ] = tribe( Module::class )->plugin_name;
 

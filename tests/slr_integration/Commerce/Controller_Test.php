@@ -43,8 +43,6 @@ class Controller_Test extends Controller_Test_Case {
 	 * @before
 	 */
 	public function ensure_tickets_commerce_active(): void {
-		// Ensure the Tickets Commerce module is active.
-		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
 		add_filter(
 			'tribe_tickets_get_modules',
 			function ( $modules ) {
@@ -478,10 +476,10 @@ class Controller_Test extends Controller_Test_Case {
 	public function test_stock_count_for_multiple_same_seated_types() {
 		$controller = $this->make_controller();
 		$controller->register();
-		
+
 		$admin = $this->factory->user->create( [ 'role' => 'administrator' ] );
 		wp_set_current_user( $admin );
-		
+
 		$event_id = tribe_events()->set_args(
 			[
 				'title'      => 'Test Event',

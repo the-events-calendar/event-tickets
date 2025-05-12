@@ -17,7 +17,6 @@ Codeception\Util\Autoload::addNamespace( 'Tribe\Events\Test', $tec_support );
 Codeception\Util\Autoload::addNamespace( 'TEC\Event_Automator\Tests\Traits', $ea_support );
 Codeception\Util\Autoload::addNamespace( 'Tribe\Events_Pro\Tests', $ecp_support );
 
-putenv( 'TEC_TICKETS_COMMERCE=1' );
 putenv( 'TEC_DISABLE_LOGGING=1' );
 putenv( 'TEC_CUSTOM_TABLES_V1_DISABLED=0' );
 
@@ -40,8 +39,6 @@ $custom_tables->register_tables();
 DB::query( DB::prepare( "DROP TABLE IF EXISTS %i", DB::prefix( 'tec_order_modifiers' ) ) );
 DB::query( DB::prepare( "DROP TABLE IF EXISTS %i", DB::prefix( 'tec_order_modifiers_meta' ) ) );
 DB::query( DB::prepare( "DROP TABLE IF EXISTS %i", DB::prefix( 'tec_order_modifier_relationships' ) ) );
-
-tribe_register_provider( Commerce_Provider::class );
 
 // Ensure `post` is a ticketable post type.
 $ticketable   = tribe_get_option( 'ticket-enabled-post-types', [] );

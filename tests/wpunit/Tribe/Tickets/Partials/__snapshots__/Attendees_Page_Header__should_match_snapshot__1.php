@@ -60,6 +60,31 @@
 		<div class="tec-tickets__admin-attendees-attendance-type">
 	<div class="tec-tickets__admin-attendees-attendance-type-heading">
 		<div class="tec-tickets__admin-attendees-attendance-type-heading-label">
+			Tickets		</div>
+		<div class="tec-tickets__admin-attendees-attendance-type-heading-border"></div>
+		<div class="tec-tickets__admin-attendees-attendance-type-heading-total">
+			<span class="tec-tickets__admin-attendees-attendance-type-heading-total-label">
+				Total			</span>
+			<span class="tec-tickets__admin-attendees-attendance-type-heading-total-amount">
+				0			</span>
+		</div>
+	</div>
+	<div class="tec-tickets__admin-attendees-attendance-type-complete">
+		<div class="tec-tickets__admin-attendees-attendance-type-complete-label">
+			Complete:		</div>
+		<div class="tec-tickets__admin-attendees-attendance-type-complete-amount">
+			0		</div>
+	</div>
+	<div class="tec-tickets__admin-attendees-attendance-type-cancelled">
+		<div class="tec-tickets__admin-attendees-attendance-type-cancelled-label">
+			Cancelled:		</div>
+		<div class="tec-tickets__admin-attendees-attendance-type-cancelled-amount">
+			0		</div>
+	</div>
+</div>
+<div class="tec-tickets__admin-attendees-attendance-type">
+	<div class="tec-tickets__admin-attendees-attendance-type-heading">
+		<div class="tec-tickets__admin-attendees-attendance-type-heading-label">
 			RSVPs		</div>
 		<div class="tec-tickets__admin-attendees-attendance-type-heading-border"></div>
 		<div class="tec-tickets__admin-attendees-attendance-type-heading-total">
