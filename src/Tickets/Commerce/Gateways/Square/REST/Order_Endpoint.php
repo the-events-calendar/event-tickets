@@ -141,7 +141,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$order = tribe( Order::class )->get_from_gateway_order_id( $square_order_id );
 
 		// For Square, we create a placeholder payment that will be updated later with the actual payment details.
-		$payment = tribe( Payment_Handler::class )->create_payment_for_order( $data['payment_source_id'], $order );
+		$payment = tribe( Payment_Handler::class )->create_payment_for_order( $data['payment_source_id'], $order, $square_order_id );
 
 		if ( is_wp_error( $payment ) || empty( $payment ) ) {
 			return new WP_Error( 'tec-tc-gateway-square-failed-creating-payment', $messages['failed-creating-payment'] );
