@@ -58,23 +58,17 @@ class Payment {
 	 *
 	 * @since TBD
 	 *
-	 * @param string  $source_id The source ID.
-	 * @param Value   $value     The value object to create a payment for.
-	 * @param WP_Post $order     The order post object.
+	 * @param string  $source_id       The source ID.
+	 * @param Value   $value           The value object to create a payment for.
+	 * @param WP_Post $order           The order post object.
+	 * @param string  $square_order_id The Square order ID.
 	 *
 	 * @return ?array| The payment data.
 	 */
-	public static function create( string $source_id, Value $value, WP_Post $order ): ?array {
+	public static function create( string $source_id, Value $value, WP_Post $order, string $square_order_id = '' ): ?array {
 		$merchant = tribe( Merchant::class );
 
 		if ( ! $merchant->is_active() ) {
-			return null;
-		}
-
-		// Refresh the order object to ensure we have the latest data.
-		$order = tec_tc_get_order( $order->ID );
-
-		if ( ! $order ) {
 			return null;
 		}
 
@@ -87,7 +81,7 @@ class Payment {
 			'idempotency_key' => uniqid( 'tec-square-', true ),
 			'source_id'       => $source_id,
 			'location_id'     => $merchant->get_location_id(),
-			'order_id'        => $order->gateway_order_id,
+			'order_id'        => $square_order_id,
 			'reference_id'    => (string) $order->ID,
 			'metadata'        => [
 				static::$tc_metadata_identifier => true,
@@ -121,14 +115,15 @@ class Payment {
 	 *
 	 * @since TBD
 	 *
-	 * @param string  $source_id The source ID.
-	 * @param WP_Post $order     The order post object.
+	 * @param string  $source_id       The source ID.
+	 * @param WP_Post $order           The order post object.
+	 * @param string  $square_order_id The Square order ID.
 	 *
 	 * @return array The payment data.
 	 *
 	 * @throws RuntimeException If the value object is not returned from the filter.
 	 */
-	public static function create_from_order( string $source_id, WP_Post $order ): array {
+	public static function create_from_order( string $source_id, WP_Post $order, string $square_order_id = '' ): array {
 		$value = Value::create( $order->total );
 
 		/**
@@ -151,7 +146,7 @@ class Payment {
 			throw new RuntimeException( esc_html__( 'Value object not returned from filter', 'event-tickets' ) );
 		}
 
-		$payment = static::create( $source_id, $value, $order );
+		$payment = static::create( $source_id, $value, $order, $square_order_id );
 
 		return $payment['payment'] ?? [];
 	}
