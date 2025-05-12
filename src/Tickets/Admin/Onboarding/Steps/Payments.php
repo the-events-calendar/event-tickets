@@ -147,7 +147,6 @@ class Payments extends Abstract_Step {
 	 * @return WP_REST_Response
 	 */
 	private function handle_square_connection( $response, $params ): WP_REST_Response {
-
 		// Use the existing Square signup URL generation.
 		$signup_url = tribe( WhoDat::class )->connect_account();
 
@@ -171,7 +170,6 @@ class Payments extends Abstract_Step {
 	 * @return WP_REST_Response
 	 */
 	private function handle_paypal_connection( $response, $params ): WP_REST_Response {
-
 		// Use the existing PayPal signup URL generation.
 		$signup_url = tribe( PayPalSignup::class )->generate_url( $params['country'], true );
 
