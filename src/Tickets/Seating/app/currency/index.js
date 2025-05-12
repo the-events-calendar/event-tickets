@@ -1,10 +1,5 @@
-const {
-	decimalSeparator,
-	decimalNumbers,
-	thousandSeparator,
-	position,
-	symbol,
-} = window.tec.tickets.seating.currency;
+const { decimalSeparator, decimalNumbers, thousandSeparator, position, symbol } =
+	window.tec.tickets.seating.currencyData;
 
 /**
  * Formats a value to a currency string not including the currency symbol.
@@ -15,23 +10,22 @@ const {
  *
  * @return {string} The formatted value, without the currency symbol.
  */
-export function formatValue(value) {
-	const [units, decimals] = value.toString().split('.');
+export function formatValue( value ) {
+	const [ units, decimals ] = value.toString().split( '.' );
 	const formattedDecimals = decimals
 		? '.' +
-		  Number('.' + decimals)
-				.toPrecision(decimalNumbers)
+		  Number( '.' + decimals )
+				.toPrecision( decimalNumbers )
 				.toString()
-				.slice(2)
+				.slice( 2 )
 		: '';
 	return (
 		units
 			.toString()
 			// Replace the '.' with the decimal separator.
-			.replace(/\./g, decimalSeparator)
+			.replace( /\./g, decimalSeparator )
 			// Add the thousand separator.
-			.replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator) +
-		formattedDecimals
+			.replace( /\B(?=(\d{3})+(?!\d))/g, thousandSeparator ) + formattedDecimals
 	);
 }
 
@@ -44,33 +38,22 @@ export function formatValue(value) {
  *
  * @return {string} The formatted value including the currency symbol.
  */
-export function formatWithCurrency(value) {
-	const [units, decimals] = value.toString().split('.');
+export function formatWithCurrency( value ) {
+	const [ units, decimals ] = value.toString().split( '.' );
 	const formattedDecimals = decimals
 		? '.' +
-		  Number('.' + decimals)
-				.toPrecision(decimalNumbers)
+		  Number( '.' + decimals )
+				.toPrecision( decimalNumbers )
 				.toString()
-				.slice(2)
+				.slice( 2 )
 		: '';
 	const valueString =
 		units
 			.toString()
 			// Replace the '.' with the decimal separator.
-			.replace(/\./g, decimalSeparator)
+			.replace( /\./g, decimalSeparator )
 			// Add the thousand separator.
-			.replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator) +
-		formattedDecimals;
+			.replace( /\B(?=(\d{3})+(?!\d))/g, thousandSeparator ) + formattedDecimals;
 
-	return position === 'prefix'
-		? `${symbol}${valueString}`
-		: `${valueString}${symbol}`;
+	return position === 'prefix' ? `${ symbol }${ valueString }` : `${ valueString }${ symbol }`;
 }
-
-window.tec = window.tec || {};
-window.tec.tickets.seating = window.tec.tickets.seating || {};
-window.tec.tickets.seating.currency = {
-	...(window.tec.tickets.seating.currency || {}),
-	formatValue,
-	formatWithCurrency
-};

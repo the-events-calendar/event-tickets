@@ -12,10 +12,7 @@ import { some } from 'lodash';
  * Internal dependencies
  */
 import { editor } from '@moderntribe/common/data';
-import {
-	globals,
-	moment as momentUtil,
-} from '@moderntribe/common/utils';
+import { globals, moment as momentUtil } from '@moderntribe/common/utils';
 
 /*
  * Determines if current post is a tribe event
@@ -31,20 +28,18 @@ export function* isTribeEventPostType() {
  * Creates event channel subscribing to WP editor state when post type is loaded.
  * Used as post type is not available upon load in some cases, so some false negatives
  *
- * @returns {Function} Channel
+ * @return {Function} Channel
  */
 export function hasPostTypeChannel() {
-	return eventChannel( emit => {
+	return eventChannel( ( emit ) => {
 		const wpEditor = wpSelect( 'core/editor' );
 
-		const predicates = [
-			() => !! wpEditor.getEditedPostAttribute( 'type' ),
-		];
+		const predicates = [ () => !! wpEditor.getEditedPostAttribute( 'type' ) ];
 
 		// Returns unsubscribe function
 		return subscribe( () => {
 			// Only emit when truthy
-			if ( some( predicates, fn => fn() ) ) {
+			if ( some( predicates, ( fn ) => fn() ) ) {
 				emit( true ); // Emitted value is insignificant here, but cannot be left undefined
 			}
 		} );
@@ -54,20 +49,18 @@ export function hasPostTypeChannel() {
 /**
  * Creates event channel subscribing to WP editor state when saving post
  *
- * @returns {Function} Channel
+ * @return {Function} Channel
  */
 export function createWPEditorSavingChannel() {
 	return eventChannel( ( emit ) => {
 		const wpEditor = wpSelect( 'core/editor' );
 
-		const predicates = [
-			() => wpEditor.isSavingPost() && ! wpEditor.isAutosavingPost(),
-		];
+		const predicates = [ () => wpEditor.isSavingPost() && ! wpEditor.isAutosavingPost() ];
 
 		// Returns unsubscribe function
 		return subscribe( () => {
 			// Only emit when truthy
-			if ( some( predicates, fn => fn() ) ) {
+			if ( some( predicates, ( fn ) => fn() ) ) {
 				emit( true ); // Emitted value is insignificant here, but cannot be left undefined
 			}
 		} );
@@ -77,20 +70,18 @@ export function createWPEditorSavingChannel() {
 /**
  * Creates event channel subscribing to WP editor state when not saving post
  *
- * @returns {Function} Channel
+ * @return {Function} Channel
  */
 export function createWPEditorNotSavingChannel() {
 	return eventChannel( ( emit ) => {
 		const wpEditor = wpSelect( 'core/editor' );
 
-		const predicates = [
-			() => ! ( wpEditor.isSavingPost() && ! wpEditor.isAutosavingPost() ),
-		];
+		const predicates = [ () => ! ( wpEditor.isSavingPost() && ! wpEditor.isAutosavingPost() ) ];
 
 		// Returns unsubscribe function
 		return subscribe( () => {
 			// Only emit when truthy
-			if ( some( predicates, fn => fn() ) ) {
+			if ( some( predicates, ( fn ) => fn() ) ) {
 				emit( true ); // Emitted value is insignificant here, but cannot be left undefined
 			}
 		} );
@@ -101,9 +92,9 @@ export function createWPEditorNotSavingChannel() {
  * Create date objects used throughout sagas
  *
  * @export
- * @yields
+ * @yield
  * @param {string} date datetime string
- * @returns {Object} Object of dates/moments
+ * @return {Object} Object of dates/moments
  */
 export function* createDates( date ) {
 	const { datepickerFormat } = yield call( [ globals, 'tecDateSettings' ] );

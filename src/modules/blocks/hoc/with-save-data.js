@@ -9,13 +9,7 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-	noop,
-	isEmpty,
-	isArray,
-	isObject,
-	keys,
-} from 'lodash';
+import { noop, isEmpty, isArray, isObject, keys } from 'lodash';
 import isShallowEqual from '@wordpress/is-shallow-equal';
 
 const blockRegister = {};
@@ -29,10 +23,11 @@ const blockRegister = {};
  * component to extract the keys of those to do the comparision.
  *
  * @param {Object} selectedAttributes Set of attributes to only update fallback to this.props.attributes
- * @returns {Function} Return a new HOC
+ * @return {Function} Return a new HOC
  */
-export default ( selectedAttributes = null ) => ( WrappedComponent ) => {
-	class WithSaveData extends Component {
+export default ( selectedAttributes = null ) =>
+	( WrappedComponent ) => {
+		class WithSaveData extends Component {
 			static defaultProps = {
 				attributes: {},
 				setInitialState: noop,
@@ -152,9 +147,11 @@ export default ( selectedAttributes = null ) => ( WrappedComponent ) => {
 			render() {
 				return <WrappedComponent { ...this.props } />;
 			}
-	}
+		}
 
-	WithSaveData.displayName = `WithSaveData( ${ WrappedComponent.displayName || WrappedComponent.name || 'Component ' }`; // eslint-disable-line max-len
+		WithSaveData.displayName = `WithSaveData( ${
+			WrappedComponent.displayName || WrappedComponent.name || 'Component '
+		}`; // eslint-disable-line max-len
 
-	return WithSaveData;
-};
+		return WithSaveData;
+	};

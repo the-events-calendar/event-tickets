@@ -15,6 +15,8 @@
  * @var bool                                          $is_merchant_connected [Global] Whether the merchant is connected or not.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Events;
 
@@ -55,3 +57,4 @@ if ( ! empty( $webhook_data['event_types'] ) ) {
 		<?php endforeach; ?>
 	</div>
 </div>
+<?php

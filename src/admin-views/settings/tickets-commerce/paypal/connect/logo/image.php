@@ -14,12 +14,13 @@
  * @var bool                                          $is_merchant_active [Global] Whether the merchant is active or not.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 $image_src = tribe_resource_url( 'images/admin/paypal-logo.png', false, null, Tribe__Tickets__Main::instance() );
-
 ?>
-
 <img
 	src="<?php echo esc_url( $image_src ); ?>"
 	alt="<?php esc_attr_e( 'PayPal Logo Image', 'event-tickets' ); ?>"
 	class="tec-tickets__admin-settings-tickets-commerce-gateway-logo-image"
 >
+<?php

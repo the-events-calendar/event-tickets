@@ -15,14 +15,14 @@
 	<h3 class="tribe-common-h2 tribe-tickets__commerce-checkout-header-title">
 	Purchase Tickets</h3>
 	<div class="tribe-common-b2 tribe-tickets__commerce-checkout-header-links">
-	
+
 <a
 	class="tribe-common-anchor-alt tribe-tickets__commerce-checkout-header-link-back-to-event"
 	href="http://wordpress.test/page-with-tickets"
 >back to event</a>
 </div>
 </header>
-					
+
 <div class="tribe-tickets__commerce-checkout-cart">
 
 	<header class="tribe-tickets__commerce-checkout-cart-header">
@@ -71,7 +71,7 @@
 </div>
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-price">
-	
+
 <span class="tec-tickets-price amount">
 	<ins>
 	<span class="tec-tickets-price__sale-price amount">
@@ -96,7 +96,7 @@
 </article>
 </div>
 
-	
+
 <footer  class="tribe-tickets__commerce-checkout-cart-footer tribe-common-b1" >
 	<div class="tribe-common-b2 tribe-tickets__form tec-tickets-commerce-checkout-cart__coupons">
 	<button  class="tec-tickets-commerce-checkout-cart__coupons-add-link" >
@@ -156,7 +156,7 @@
 </div>
 		<div id="tribe-tickets__commerce-checkout-footer-notice-error--no-gateway"  class="tribe-tickets__notice tribe-tickets__notice--error tribe-tickets__commerce-checkout-notice" >
 			<h3 class="tribe-common-h7 tribe-tickets-notice__title">Checkout Error!</h3>
-	
+
 	<div  class="tribe-common-b2 tribe-tickets-notice__content tribe-tickets__commerce-checkout-notice-content" >
 		Something went wrong!	</div>
 </div>
@@ -202,7 +202,7 @@
 				<footer class="tribe-tickets__commerce-checkout-footer">
 	<div id="tribe-tickets__commerce-checkout-footer-notice-error--no-gateway"  class="tribe-tickets__notice tribe-tickets__notice--error tribe-tickets__commerce-checkout-footer-notice-error--no-gateway" >
 			<h3 class="tribe-common-h7 tribe-tickets-notice__title">Checkout Unavailable!</h3>
-	
+
 	<div  class="tribe-common-b2 tribe-tickets-notice__content tribe-tickets__commerce-checkout-notice-content" >
 		Checkout is not available at this time because a payment method has not been set up. Please notify the site administrator.	</div>
 </div>

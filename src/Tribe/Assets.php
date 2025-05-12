@@ -27,7 +27,7 @@ class Tribe__Tickets__Assets {
 		// Check wether we use v1 or v2. We need to update this when we deprecate tickets v1.
 		$tickets_stylesheet = tribe_tickets_new_views_is_enabled() ? 'tickets.css' : 'tickets-v1.css';
 
-		tribe_assets(
+		tec_assets(
 			$tickets_main,
 			[
 				[ 'event-tickets-tickets-css', $tickets_stylesheet, $tickets_deps ],
@@ -41,7 +41,7 @@ class Tribe__Tickets__Assets {
 			]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tribe-tickets-forms-style',
 			'tickets-forms.css',
@@ -59,7 +59,7 @@ class Tribe__Tickets__Assets {
 		);
 
 		// Tickets loader library JS.
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tribe-tickets-loader',
 			'v2/tickets-loader.js',
@@ -79,7 +79,7 @@ class Tribe__Tickets__Assets {
 		);
 
 		// @todo: Remove this once we solve the common breakpoints vs container based.
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tribe-common-responsive',
 			'common-responsive.css',
@@ -97,7 +97,7 @@ class Tribe__Tickets__Assets {
 			]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tribe-tickets-orders-style',
 			'my-tickets.css',
@@ -115,7 +115,7 @@ class Tribe__Tickets__Assets {
 
 		if ( tribe_tickets_new_views_is_enabled() ) {
 			// Tribe tickets utils.
-			tribe_asset(
+			tec_asset(
 				$tickets_main,
 				'tribe-tickets-utils',
 				'v2/tickets-utils.js',
@@ -140,7 +140,7 @@ class Tribe__Tickets__Assets {
 			);
 
 			// Tribe tickets page.
-			tribe_asset(
+			tec_asset(
 				$tickets_main,
 				'tribe-tickets-page',
 				'v2/tickets-page.js',
@@ -159,7 +159,7 @@ class Tribe__Tickets__Assets {
 		} else {
 
 			// Tickets registration page scripts.
-			tribe_asset(
+			tec_asset(
 				$tickets_main,
 				'tribe-tickets-registration-page-scripts',
 				'tickets-registration-page.js',
@@ -177,7 +177,7 @@ class Tribe__Tickets__Assets {
 			);
 
 			// Tickets registration page styles.
-			tribe_asset(
+			tec_asset(
 				$tickets_main,
 				'tribe-tickets-registration-page-styles',
 				'tickets-registration-page.css',
@@ -202,21 +202,6 @@ class Tribe__Tickets__Assets {
 	public function admin_enqueue_scripts() {
 		/** @var Tribe__Tickets__Main $tickets_main */
 		$tickets_main = tribe( 'tickets.main' );
-
-		// Set up some data for our localize scripts.
-		$upload_header_data = [
-			'title'  => esc_html( sprintf( __( '%s header image', 'event-tickets' ), tribe_get_ticket_label_singular( 'header_image_title' ) ) ),
-			'button' => esc_html( sprintf( __( 'Set as %s header', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'header_button' ) ) ),
-		];
-
-		$nonces = [
-			'add_ticket_nonce'       => wp_create_nonce( 'add_ticket_nonce' ),
-			'edit_ticket_nonce'      => wp_create_nonce( 'edit_ticket_nonce' ),
-			'remove_ticket_nonce'    => wp_create_nonce( 'remove_ticket_nonce' ),
-			'duplicate_ticket_nonce' => wp_create_nonce( 'duplicate_ticket_nonce' ),
-			'ajaxurl'                => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
-		];
-
 		$ticket_js_deps = [ 'jquery-ui-datepicker', 'tribe-bumpdown', 'tribe-attrchange', 'underscore', 'tribe-validation', 'event-tickets-admin-accordion-js', 'tribe-timepicker' ];
 
 		$assets = [
@@ -226,7 +211,7 @@ class Tribe__Tickets__Assets {
 			[ 'event-tickets-admin-js', 'tickets.js', $ticket_js_deps ],
 		];
 
-		tribe_assets(
+		tec_assets(
 			$tickets_main,
 			$assets,
 			'admin_enqueue_scripts',
@@ -236,11 +221,22 @@ class Tribe__Tickets__Assets {
 				'localize'     => [
 					[
 						'name' => 'HeaderImageData',
-						'data' => $upload_header_data,
+						'data' => fn() => [
+							// Translators: %s is the ticket label singular.
+							'title'  => esc_html( sprintf( __( '%s header image', 'event-tickets' ), tribe_get_ticket_label_singular( 'header_image_title' ) ) ),
+							// Translators: %s is the ticket label singular lowercase.
+							'button' => esc_html( sprintf( __( 'Set as %s header', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'header_button' ) ) ),
+						],
 					],
 					[
 						'name' => 'TribeTickets',
-						'data' => $nonces,
+						'data' => fn() => [
+							'add_ticket_nonce'       => wp_create_nonce( 'add_ticket_nonce' ),
+							'edit_ticket_nonce'      => wp_create_nonce( 'edit_ticket_nonce' ),
+							'remove_ticket_nonce'    => wp_create_nonce( 'remove_ticket_nonce' ),
+							'duplicate_ticket_nonce' => wp_create_nonce( 'duplicate_ticket_nonce' ),
+							'ajaxurl'                => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
+						],
 					],
 					[
 						'name' => 'tribe_ticket_vars',
@@ -254,13 +250,13 @@ class Tribe__Tickets__Assets {
 					],
 					[
 						'name' => 'tribe_ticket_notices',
-						'data' => [
+						'data' => fn() => [
 							'confirm_alert' => __( 'Are you sure you want to delete this ticket? This cannot be undone.', 'event-tickets' ),
 						],
 					],
 					[
 						'name' => 'tribe_global_stock_admin_ui',
-						'data' => [
+						'data' => fn() => [
 							'nav_away_msg' => __( 'It looks like you have modified your shared capacity setting but have not saved or updated the post.', 'event-tickets' ),
 						],
 					],
@@ -294,7 +290,7 @@ class Tribe__Tickets__Assets {
 			'ajaxurl'                       => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
 		];
 
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tribe-tickets-admin-manager',
 			'admin/tickets-manager.js',
@@ -330,7 +326,7 @@ class Tribe__Tickets__Assets {
 			],
 		];
 
-		tribe_assets(
+		tec_assets(
 			$tickets_main,
 			$settings_assets,
 			'admin_enqueue_scripts',
@@ -340,7 +336,7 @@ class Tribe__Tickets__Assets {
 			]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tribe-tickets-admin-attendees',
 			'tickets-admin-attendees.css',
@@ -353,7 +349,7 @@ class Tribe__Tickets__Assets {
 			]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tickets-report-css',
 			'tickets-report.css',
@@ -366,7 +362,7 @@ class Tribe__Tickets__Assets {
 			]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tickets-report-print-css',
 			'tickets-report-print.css',
@@ -399,7 +395,7 @@ class Tribe__Tickets__Assets {
 			'confirmation_plural'   => esc_html__( 'Please confirm that you would like to delete these attendees.', 'event-tickets' ),
 		];
 
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tickets-attendees-js',
 			'tickets-attendees.js',
@@ -409,16 +405,34 @@ class Tribe__Tickets__Assets {
 				'localize' => [
 					[
 						'name' => 'Attendees',
-						'data' => function () use ( $config_data ) {
-							/**
-							 * Allow filtering the configuration data for the Attendee objects on Attendees report page.
-							 *
-							 * @since 5.2.0
-							 *
-							 * @param array $config_data List of configuration data to be localized.
-							 */
-							return apply_filters( 'tribe_tickets_attendees_report_js_config', $config_data );
-						},
+						/**
+						 * Allow filtering the configuration data for the Attendee objects on Attendees report page.
+						 *
+						 * @since 5.2.0
+						 *
+						 * @param array $config_data List of configuration data to be localized.
+						 */
+						'data' => static fn () => (array) apply_filters(
+							'tribe_tickets_attendees_report_js_config',
+							[
+								'nonce'                 => wp_create_nonce( 'email-attendee-list' ),
+								'required'              => esc_html__( 'You need to select a user or type a valid email address', 'event-tickets' ),
+								'sending'               => esc_html__( 'Sending...', 'event-tickets' ),
+								'ajaxurl'               => admin_url( 'admin-ajax.php' ),
+								'checkin_nonce'         => wp_create_nonce( 'checkin' ),
+								'uncheckin_nonce'       => wp_create_nonce( 'uncheckin' ),
+								'cannot_move'           => esc_html__( 'You must first select one or more tickets before you can move them!', 'event-tickets' ),
+								'confirmation_singular' => esc_html__( 'Please confirm that you would like to delete this attendee.', 'event-tickets' ),
+								'confirmation_plural'   => esc_html__( 'Please confirm that you would like to delete these attendees.', 'event-tickets' ),
+								'move_url'              => add_query_arg(
+									[
+										'dialog'    => \Tribe__Tickets__Main::instance()->move_tickets()->dialog_name(),
+										'check'     => wp_create_nonce( 'move_tickets' ),
+										'TB_iframe' => 'true',
+									]
+								),
+							]
+						),
 					],
 				],
 				'groups'   => [
@@ -428,7 +442,7 @@ class Tribe__Tickets__Assets {
 		);
 
 		// WP Admin and admin bar.
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tec-tickets-admin-wp',
 			'tickets-admin-wp.css',

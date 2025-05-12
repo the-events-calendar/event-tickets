@@ -16,9 +16,15 @@ use TEC\Tickets\Commerce\Reports\Attendees as Attendees_Reports;
  */
 class Module extends \Tribe__Tickets__Tickets {
 
+	/**
+	 * Constructor.
+	 *
+	 * @since 5.1.9
+	 * @since TBD Moved to do_init() to avoid issues with translations.
+	 */
 	public function __construct() {
 		// This needs to happen before parent construct.
-		$this->plugin_name = __( 'Tickets Commerce', 'event-tickets' );
+		$this->plugin_name = 'Tickets Commerce'; // Intentionally not translated.
 
 		parent::__construct();
 
@@ -222,6 +228,20 @@ class Module extends \Tribe__Tickets__Tickets {
 	 */
 	public static function get_instance() {
 		return tribe( static::class );
+	}
+
+	/**
+	 * Hooks the module, happens on the `wp` hook.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function hook() {
+		parent::hook();
+
+		// Overwrite with the translated name.
+		$this->plugin_name = __( 'Tickets Commerce', 'event-tickets' );
 	}
 
 	/**

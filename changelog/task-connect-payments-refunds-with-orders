@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Allow seated attendees to be manually deleted even if the event has been deleted already [ET-2440]
