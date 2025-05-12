@@ -100,6 +100,11 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab, addTab, updateTab, reo
 	// Determine if we should skip the payments tab completely
 	const [ skipPaymentsTab, setSkipPaymentsTab ] = useState(!!singleGateway);
 
+	const handlePaymentOptionChanged = ( selected ) => {
+		setPaymentOption(selected);
+		updateSettings({ paymentOption: selected });
+	};
+
 	useEffect(() => {
 		// Update UI state when country changes
 		if (countryCode) {
@@ -108,7 +113,7 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab, addTab, updateTab, reo
 
 			// If there's only one gateway for this country, set it
 			if (gateway) {
-				setPaymentOption(gateway);
+				handlePaymentOptionChanged(gateway);
 			}
 
 			// Set currency for this country if available
@@ -123,7 +128,7 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab, addTab, updateTab, reo
 			const gatewayPriority = ['stripe', 'square', 'paypal'];
 			const firstAvailableGateway = gatewayPriority.find(gateway => paymentGateways[gateway]);
 			if (firstAvailableGateway) {
-				setPaymentOption(firstAvailableGateway);
+				handlePaymentOptionChanged(firstAvailableGateway);
 			}
 		}
 	}, [paymentOption, paymentGateways]);
@@ -139,7 +144,7 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab, addTab, updateTab, reo
 			setCurrency,
 			setPaymentGateways,
 			paymentOption,
-			setPaymentOption,
+			setPaymentOption: handlePaymentOptionChanged,
 			countries,
 		});
 	};
@@ -243,7 +248,7 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab, addTab, updateTab, reo
 						<PaymentSelector
 							paymentGateways={paymentGateways}
 							paymentOption={paymentOption}
-							onPaymentOptionChange={setPaymentOption}
+							onPaymentOptionChange={handlePaymentOptionChanged}
 						/>
 					)}
 				</div>
