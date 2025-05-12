@@ -804,6 +804,11 @@ class Attendee {
 	 * @return array List of attendees.
 	 */
 	public function get_attendees_by_ticket_id( $ticket_id, $orm_provider ) {
+		// Check if Tickets Commerce is enabled.
+		if ( ! tec_tickets_commerce_is_enabled() ) {
+			return [];
+		}
+		
 		// Check cache.
 		$cache                  = tribe_cache();
 		$attendees_by_ticket_id = $cache->get( 'tec_tickets_attendees_by_ticket_id' );

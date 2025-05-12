@@ -1658,6 +1658,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					continue;
 				}
 
+				// Skip if the provider is Tickets Commerce but the module is disabled.
+				if ( $provider instanceof TEC\Tickets\Commerce\Module && ! tec_tickets_commerce_is_enabled() ) {
+					continue;
+				}
+
 				$attendee_data = $provider->get_attendee( $attendee, $post_id );
 
 				if ( ! $attendee_data ) {

@@ -339,9 +339,6 @@ class Module extends \Tribe__Tickets__Tickets {
 
 				break;
 			case $this->ticket_object:
-				if ( ! function_exists( 'tec_tickets_commerce_is_enabled' ) || ! tec_tickets_commerce_is_enabled() ) {
-					return [];
-				}
 				return tribe( Attendee::class )->get_attendees_by_ticket_id( $post_id, $this->orm_provider );
 
 				break;
@@ -486,10 +483,6 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * {@inheritdoc}
 	 */
 	public function get_attendee( $attendee, $post_id = 0 ) {
-		if ( ! function_exists( 'tec_tickets_commerce_is_enabled' ) || ! tec_tickets_commerce_is_enabled() ) {
-			return false;
-		}
-		
 		return tec_tc_get_attendee( $attendee, ARRAY_A );
 	}
 
