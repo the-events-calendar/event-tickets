@@ -11,8 +11,6 @@ trait With_Tickets_Commerce {
 	 * @before
 	 */
 	public function activate_tickets_commerce_as_provider(): void {
-		// Ensure the Tickets Commerce module is active.
-		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
 		add_filter( 'tribe_tickets_get_modules', static function ( $modules ) {
 			$modules[ Module::class ] = tribe( Module::class )->plugin_name;
 

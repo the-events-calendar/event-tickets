@@ -340,6 +340,26 @@
 	</div>
 
 	</div>
+
+<div
+	class="input_block ticket_advanced_TEC_Tickets_Commerce_Module tribe-dependent"
+	data-depends="#tec_tickets_ticket_provider"
+	data-condition-not="Tribe__Tickets__RSVP"
+>
+	<label
+		for="TEC_Tickets_Commerce_Module_capacity"
+		class="ticket_form_label ticket_form_left"
+	>
+		Capacity:	</label>
+	<input
+		type='text' id='TEC_Tickets_Commerce_Module_capacity'
+		name='tribe-ticket[capacity]'
+		class="ticket_field tribe-tpp-field-capacity ticket_form_right"
+		size='7'
+		value=''
+	/>
+	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
+</div>
 <div
 	class="input_block ticket_advanced_Tribe__Tickets__RSVP tribe-dependent"
 	data-depends="#tec_tickets_ticket_provider"
@@ -378,26 +398,6 @@
 		value="yes"
 			/>
 	<span class="tribe_soft_note ticket_form_right">Enable &quot;Can&#039;t Go&quot; responses</span>
-</div>
-
-<div
-	class="input_block ticket_advanced_TEC_Tickets_Commerce_Module tribe-dependent"
-	data-depends="#tec_tickets_ticket_provider"
-	data-condition-not="Tribe__Tickets__RSVP"
->
-	<label
-		for="TEC_Tickets_Commerce_Module_capacity"
-		class="ticket_form_label ticket_form_left"
-	>
-		Capacity:	</label>
-	<input
-		type='text' id='TEC_Tickets_Commerce_Module_capacity'
-		name='tribe-ticket[capacity]'
-		class="ticket_field tribe-tpp-field-capacity ticket_form_right"
-		size='7'
-		value=''
-	/>
-	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
 </div>
 			</section>
 			<div class="accordion">

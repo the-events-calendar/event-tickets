@@ -2,39 +2,22 @@
 
 use TEC\Tickets\Settings;
 
-/**
- * Checks whether out new Tickets system should load.
- *
- * In order the function will check the `TEC_TICKETS_COMMERCE` constant,
- * the `TEC_TICKETS_COMMERCE` environment variable and, finally, the `Manager::$option_enabled` option.
- *
- * @since 5.1.6
- *
- * @return bool Whether Tickets Commerce is enabled or not.
- */
-function tec_tickets_commerce_is_enabled() {
-	if ( defined( 'TEC_TICKETS_COMMERCE' ) ) {
-		return (bool) TEC_TICKETS_COMMERCE;
-	}
-
-	$env_var = getenv( 'TEC_TICKETS_COMMERCE' );
-	if ( false !== $env_var ) {
-		return (bool) $env_var;
-	}
-
-	$enabled = (bool) tribe_get_option( Settings::$tickets_commerce_enabled, false );
-
+if ( ! function_exists( 'tec_tickets_commerce_is_enabled' ) ) {
 	/**
-	 * Allows filtering of the Tickets Commerce provider, doing so will render
-	 * the methods and classes no longer load-able so keep that in mind.
+	 * Checks whether out new Tickets system should load.
+	 *
+	 * In order the function will check the `TEC_TICKETS_COMMERCE` constant,
+	 * the `TEC_TICKETS_COMMERCE` environment variable and, finally, the `Manager::$option_enabled` option.
 	 *
 	 * @since 5.1.6
+	 * @since TBD - Tickets commerce is always enabled now.
 	 *
-	 * @param boolean $enabled Determining if Tickets Commerce is enabled..
+	 * @return bool Whether Tickets Commerce is enabled or not.
 	 */
-	return apply_filters( 'tec_tickets_commerce_is_enabled', $enabled );
+	function tec_tickets_commerce_is_enabled() {
+		return true;
+	}
 }
-
 
 /**
  * Determine whether Tickets Commerce is in sandbox mode.
@@ -143,5 +126,4 @@ function tec_tribe_commerce_has_active_tickets() {
 	 * @param boolean $available should be available or not.
 	 */
 	return apply_filters( 'tec_tribe_commerce_has_active_tickets', $has_active_tickets );
-
 }
