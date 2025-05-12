@@ -205,7 +205,9 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Feature - Move QR code library to Common [TEC-5403]
 * Fix - Fix an issue when applying 100% off coupons to Seating tickets. [ET-2409]
 * Fix - Prevent instances of the `_load_textdomain_just_in_time` warning by moving all language after the `init` hook
-* Tweak - Removed filters: `tec_tickets_qr_code_can_use`
+* Tweak - Removed filters: `tec_tickets_qr_code_can_use`, `tribe_tickets_attendees_report_js_config`
+* Tweak - Added actions: `tec_tickets_fully_loaded`, `tec_tickets_promoter_fully_loaded`
+* Tweak - Removed actions: `tribe_tickets_plugin_loaded`
 * Language - 0 new strings added, 5 updated, 0 fuzzied, and 4 obsoleted.
 
 = [5.21.1.1] 2025-04-28 =
