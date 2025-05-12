@@ -148,7 +148,7 @@ class Payments extends Abstract_Step {
 	 */
 	private function handle_square_connection( $response, $params ): WP_REST_Response {
 		// Use the existing Square signup URL generation.
-		$signup_url = tribe( WhoDat::class )->connect_account();
+		$signup_url = tribe( WhoDat::class )->connect_account( true );
 
 		// Add the signup URL to the response data.
 		$data               = $response->get_data();
