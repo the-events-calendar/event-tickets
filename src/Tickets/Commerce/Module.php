@@ -227,7 +227,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Hooks the module, happens on the `wp` hook.
 	 *
-	 * @since TBD
+	 * @since 5.22.0
 	 *
 	 * @return void
 	 */

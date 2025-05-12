@@ -459,14 +459,14 @@ class Tribe__Tickets__Main {
 		/**
 		 * Fires once Event Tickets has completed basic setup.
 		 *
-		 * @deprecated TBD Use `tec_tickets_fully_loaded` instead.
+		 * @deprecated 5.22.0 Use `tec_tickets_fully_loaded` instead.
 		 */
-		do_action_deprecated( 'tribe_tickets_plugin_loaded', [], 'TBD', 'Use `tec_tickets_fully_loaded` instead.' );
+		do_action_deprecated( 'tribe_tickets_plugin_loaded', [], '5.22.0', 'Use `tec_tickets_fully_loaded` instead.' );
 
 		/**
 		 * Fires when Event Tickets is fully loaded.
 		 *
-		 * @since TBD
+		 * @since 5.22.0
 		 */
 		do_action( 'tec_tickets_fully_loaded' );
 	}

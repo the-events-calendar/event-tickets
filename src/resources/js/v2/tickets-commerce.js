@@ -309,7 +309,7 @@ tribe.tickets.commerce = {};
 	 * the page to be reloaded. Under normal circumstances, the timer would be reset
 	 * and the cart contents emptied when the page is reloaded.
 	 *
-	 * @since TBD
+	 * @since 5.22.0
 	 */
 	obj.disableInterruption = () => {
 		const setInterruptable = window.tec.tickets?.seating?.frontend?.session?.setIsInterruptable;
