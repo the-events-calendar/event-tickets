@@ -16,12 +16,16 @@ interface HandleNextTabParams {
 	addTab: (tab: {
 		id: string;
 		title: string;
-		content: React.ComponentType;
+		content: React.ComponentType<{
+			moveToNextTab: () => void;
+			skipToNextTab: () => void;
+		}>;
 		ref: React.RefObject<any>;
 		priority: number;
 		isVisible: boolean;
 	}) => void;
 	reorderTabs: () => void;
+	skipToNextTab: () => void;
 }
 
 /**
@@ -42,51 +46,45 @@ const handleNextTab = ({
 	setPaymentsTabAdded,
 	addTab,
 	reorderTabs,
+	skipToNextTab,
 }: HandleNextTabParams): void => {
 	// Save currency setting
-	updateSettings({ currency: currencyCode });
+	updateSettings({
+		currency: currencyCode,
+		// Mark payment option as connected to prevent the payments tab from being disabled
+		stripeConnected: paymentOption === 'stripe' ? true : undefined,
+		squareConnected: paymentOption === 'square' ? true : undefined,
+	});
 
-	// If we should skip the payments tab due to having only one gateway option
-	if (skipPaymentsTab) {
+	// If we should skip the payments tab or no payment gateway is selected
+	if (skipPaymentsTab || !['stripe', 'square', 'paypal'].includes(paymentOption)) {
 		moveToNextTab();
 		return;
 	}
 
-	// If Stripe or Square is selected and we need a payment processor
-	if (['stripe', 'square', 'paypal'].includes(paymentOption)) {
-		// Only add the tab if it doesn't already exist
-		if (!paymentsTabExists && !paymentsTabAdded) {
-			// Import the payments tab dynamically
-			import('../../payments/tab').then((module) => {
-				const PaymentsContent = module.default;
-
-				// Add the Payments tab after the current tab (Settings)
-				addTab({
-					id: 'payments',
-					title: __('Payments', 'event-tickets'),
-					content: PaymentsContent,
-					ref: React.createRef(),
-					priority: 25, // Between Settings (20) and Communication (30)
-					isVisible: true,
-				});
-
-				// Mark that we've added the tab
-				setPaymentsTabAdded(true);
-
-				// Reorder tabs based on priority
-				reorderTabs();
-
-				// Now move to next tab, which should be the newly added Payments tab
-				moveToNextTab();
-			});
-		} else {
-			// Tab already exists, just move to next tab
-			moveToNextTab();
-		}
-	} else {
-		// No payment gateway selected, just move to next tab
+	// If the payment tab already exists or was already added
+	if (paymentsTabExists || paymentsTabAdded) {
 		moveToNextTab();
+		return;
 	}
+
+	// Dynamic import and add the payments tab
+	import('../../payments/tab').then((module) => {
+		const PaymentsContent = module.default;
+
+		addTab({
+			id: 'payments',
+			title: __('Payments', 'event-tickets'),
+			content: PaymentsContent,
+			ref: React.createRef(),
+			priority: 25, // Between Settings (20) and Communication (30)
+			isVisible: true,
+		});
+
+		setPaymentsTabAdded(true);
+		reorderTabs();
+		moveToNextTab();
+	});
 };
 
 export default handleNextTab;

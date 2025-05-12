@@ -171,6 +171,7 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab, addTab, updateTab, reo
 			setPaymentsTabAdded,
 			addTab,
 			reorderTabs,
+			skipToNextTab,
 		});
 	};
 
