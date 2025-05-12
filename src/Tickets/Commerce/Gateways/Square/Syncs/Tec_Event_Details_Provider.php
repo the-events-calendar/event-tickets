@@ -109,6 +109,9 @@ class Tec_Event_Details_Provider extends Controller_Contract {
 
 		$data['item_data']['event'] = $event_data;
 
+		// Until we receive confirmation from Square that we can add those fields, we don't.
+		unset( $data['item_data']['event'] );
+
 		return $data;
 	}
 }
