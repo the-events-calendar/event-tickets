@@ -71,6 +71,13 @@ class Payment {
 			return null;
 		}
 
+		// Refresh the order object to ensure we have the latest data.
+		$order = tec_tc_get_order( $order->ID );
+
+		if ( ! $order ) {
+			return null;
+		}
+
 		$query_args = [];
 		$body       = [
 			'amount_money'    => [
