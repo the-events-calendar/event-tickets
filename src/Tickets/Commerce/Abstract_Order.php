@@ -2,9 +2,7 @@
 
 namespace TEC\Tickets\Commerce;
 
-use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Utils\Value;
-use Tribe__Utils__Array as Arr;
 use WP_Error;
 
 /**

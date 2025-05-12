@@ -14,6 +14,17 @@ use Tribe__Utils__Array as Arr;
 abstract class Abstract_Requests implements Requests_Interface {
 
 	/**
+	 * Get the headers.
+	 *
+	 * @since TBD
+	 *
+	 * @return array The headers.
+	 */
+	public static function get_headers(): array {
+		return [];
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public static function post( $endpoint, array $query_args = [], array $request_arguments = [], $raw = false ) {
@@ -53,9 +64,12 @@ abstract class Abstract_Requests implements Requests_Interface {
 			: add_query_arg( $query_args, $url );
 
 		$default_arguments = [
-			'headers' => [
-				'Authorization' => 'Bearer ' . tribe( static::$merchant )->get_client_secret(),
-			],
+			'headers' => array_merge(
+				[
+					'Authorization' => 'Bearer ' . tribe( static::$merchant )->get_client_secret(),
+				],
+				static::get_headers()
+			),
 		];
 
 		// By default, it's important that we have a body set for any method that is not the GET method.

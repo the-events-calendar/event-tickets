@@ -14,7 +14,7 @@ $help_text = $etp_enabled
 	: __( 'Thank you for using Event Tickets! We recommend looking through the settings below so that you can fine tune your specific ticketing needs. Here are some resources that can help.', 'event-tickets' );
 
 ?>
-<div class="tec-tickets__admin-banner">
+<div class="tec-tickets__admin-banner tec-settings-form__header-block tec-settings-form__header-block--horizontal">
 	<h3><?php echo esc_html__( 'Getting Started With Tickets', 'event-tickets' ); ?></h3>
 	<p class="tec-tickets__admin-banner-help-text"><?php echo esc_html__( $help_text ); ?></p>
 

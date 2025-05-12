@@ -10,19 +10,12 @@ import PropTypes from 'prop-types';
 import TicketsActionDashboard from '../action-dashboard/container';
 import TicketsSettingsDashboard from '../settings-dashboard/container'; // eslint-disable-line max-len
 
-const TicketsDashboard = ( {
-	clientId,
-	hideDashboard,
-	isSettingsOpen,
-} ) => {
+const TicketsDashboard = ( { clientId, hideDashboard, isSettingsOpen } ) => {
 	if ( hideDashboard ) {
 		return null;
 	}
 
-	return ( isSettingsOpen
-		? <TicketsSettingsDashboard />
-		: <TicketsActionDashboard clientId={ clientId } />
-	);
+	return isSettingsOpen ? <TicketsSettingsDashboard /> : <TicketsActionDashboard clientId={ clientId } />;
 };
 
 TicketsDashboard.propTypes = {

@@ -97,6 +97,51 @@ class Order extends Abstract_Order {
 	public static $gateway_order_id_meta_key = '_tec_tc_order_gateway_order_id';
 
 	/**
+	 * Which meta holds the gateway order object.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const GATEWAY_ORDER_OBJECT_META_KEY = '_tec_tc_order_gateway_order_object';
+
+	/**
+	 * Which meta holds the original gateway order id.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const ORIGINAL_GATEWAY_ORDER_ID_META_KEY = '_tec_tc_order_original_gateway_order_id';
+
+	/**
+	 * Which meta holds the gateway customer id.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const GATEWAY_CUSTOMER_ID_META_KEY = '_tec_tc_order_gateway_customer_id';
+
+	/**
+	 * Which meta holds the latest payload sent to the gateway.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const LATEST_PAYLOAD_HASH_SENT_TO_GATEWAY_META_KEY = '_tec_tc_order_latest_payload_hash_sent_to_gateway';
+
+	/**
+	 * Which meta holds the gateway order version.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const GATEWAY_ORDER_VERSION_META_KEY = '_tec_tc_order_gateway_order_version';
+
+	/**
 	 * Normally when dealing with the gateways we have a payload from the original creation of the Order on their side
 	 * of the API, we should store that whole Payload with this meta key so that this data can be used in the future.
 	 *
@@ -153,6 +198,42 @@ class Order extends Abstract_Order {
 	 * @var string
 	 */
 	public static $total_value_meta_key = '_tec_tc_order_total_value';
+
+	/**
+	 * Which meta holds the amount unaccounted for in the order.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const META_ORDER_TOTAL_AMOUNT_UNACCOUNTED = '_tec_tc_order_total_amount_unaccounted';
+
+	/**
+	 * Which meta holds the total tax amount in the order.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const META_ORDER_TOTAL_TAX = '_tec_tc_order_total_tax';
+
+	/**
+	 * Which meta holds the total tip amount in the order.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const META_ORDER_TOTAL_TIP = '_tec_tc_order_total_tip';
+
+	/**
+	 * Which meta holds the order created by.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const META_ORDER_CREATED_BY = '_tec_tc_order_created_by';
 
 	/**
 	 * Which meta holds the cart items used to setup this order.
@@ -438,8 +519,7 @@ class Order extends Abstract_Order {
 
 		// After modifying the status we add a meta to flag when it was modified.
 		if ( $updated ) {
-			$time = Dates::build_date_object()->format( Dates::DBDATETIMEFORMAT );
-			add_post_meta( $order_id, static::get_status_log_meta_key( $new_status ), $time );
+			add_post_meta( $order_id, static::get_status_log_meta_key( $new_status ), tec_get_current_milliseconds() );
 		}
 
 		return (bool) $updated;
@@ -634,7 +714,6 @@ class Order extends Abstract_Order {
 			'purchaser_first_name' => $purchaser['purchaser_first_name'],
 			'purchaser_last_name'  => $purchaser['purchaser_last_name'],
 			'purchaser_email'      => $purchaser['purchaser_email'],
-			'gateway_order_id'     => $this->generate_order_key( $hash ?? '', $purchaser['purchaser_email'] ),
 		];
 
 		if ( $hash ) {
@@ -1292,7 +1371,12 @@ class Order extends Abstract_Order {
 	 * @return bool
 	 */
 	public function has_on_checkout_screen_hold( int $order_id ): bool {
-		$on_screen_hold = (int) get_post_meta( $order_id, static::ON_CHECKOUT_SCREEN_HOLD_META, true );
+		$on_screen_hold = get_post_meta( $order_id, static::ON_CHECKOUT_SCREEN_HOLD_META, true );
+
+		// This is here because we previously stored the timestamp instead of DB milliseconds.
+		if ( is_numeric( $on_screen_hold ) ) {
+			$on_screen_hold = 0;
+		}
 
 		/**
 		 * Filters whether the order is on checkout screen hold.
@@ -1303,7 +1387,7 @@ class Order extends Abstract_Order {
 		 * @param bool $is_on_screen_hold Whether the order is on the checkout screen hold.
 		 * @param int  $order_id         The order ID.
 		 */
-		return (bool) apply_filters( 'tec_tickets_commerce_order_has_on_checkout_screen_hold', $on_screen_hold > time(), $order_id );
+		return (bool) apply_filters( 'tec_tickets_commerce_order_has_on_checkout_screen_hold', $on_screen_hold > tec_get_current_milliseconds(), $order_id );
 	}
 
 	/**
@@ -1321,7 +1405,7 @@ class Order extends Abstract_Order {
 		 *
 		 * @param int $timeout The default timeout.
 		 */
-		return apply_filters( 'tec_tickets_commerce_order_on_checkout_screen_hold_timeout', MINUTE_IN_SECONDS * 5 );
+		return (int) apply_filters( 'tec_tickets_commerce_order_on_checkout_screen_hold_timeout', MINUTE_IN_SECONDS * 5 );
 	}
 
 	/**
@@ -1332,7 +1416,8 @@ class Order extends Abstract_Order {
 	 * @return bool
 	 */
 	public function set_on_checkout_screen_hold( int $order_id ): bool {
-		$on_screen_hold = time() + $this->get_default_on_checkout_screen_hold_timeout();
+		$seconds = $this->get_default_on_checkout_screen_hold_timeout();
+		$on_screen_hold = tec_get_current_milliseconds( new \DateInterval( "PT{$seconds}S" ) );
 
 		$updated = (bool) update_post_meta( $order_id, static::ON_CHECKOUT_SCREEN_HOLD_META, $on_screen_hold );
 
@@ -1359,7 +1444,7 @@ class Order extends Abstract_Order {
 		);
 
 		return (bool) as_schedule_single_action(
-			$on_screen_hold + MINUTE_IN_SECONDS, // We schedule the action to run after the timeout.
+			tec_from_milliseconds_to_timestamp( $on_screen_hold ) + MINUTE_IN_SECONDS, // We schedule the action to run after the timeout.
 			'tec_tickets_commerce_async_webhook_process',
 			[
 				'order_id' => $order_id,
@@ -1429,5 +1514,66 @@ class Order extends Abstract_Order {
 		$hash  = empty( $hash ) ? wp_generate_password() : $hash;
 
 		return substr( md5( $hash . $email . $time ), 0, 12 );
+	}
+
+	/**
+	 * Get the order items.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $order The order post object.
+	 *
+	 * @return array The order items.
+	 */
+	public function get_order_items( WP_Post $order ): array {
+		return array_filter( array_merge( $order->items ?? [], $order->discounts ?? [], $order->service_charges ?? [] ) );
+	}
+
+	/**
+	 * Get the order total value.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $order The order post object.
+	 *
+	 * @return Value The order total value.
+	 */
+	public function get_orders_total_value( WP_Post $order ): Value {
+		return $this->get_value_total( $this->get_order_items( $order ) );
+	}
+
+	/**
+	 * Get the order created by.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id The order ID.
+	 *
+	 * @return string The order created by.
+	 */
+	public static function get_created_by( int $order_id ): string {
+		$created_by = trim( (string) get_post_meta( $order_id, self::META_ORDER_CREATED_BY, true ) );
+
+		if ( empty( $created_by ) ) {
+			return '';
+		}
+
+		switch ( $created_by ) {
+			case 'square-pos':
+				$translated = esc_html__( 'Square POS', 'event-tickets' );
+				break;
+			default:
+				$translated = $created_by;
+				break;
+		}
+
+		/**
+		 * Filters the order created by.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $created_by The order created by.
+		 */
+		return apply_filters( 'tec_tickets_commerce_order_created_by', $translated, $order_id );
 	}
 }

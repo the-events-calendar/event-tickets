@@ -1,4 +1,6 @@
 <?php
+defined( 'ABSPATH' ) || exit;
+
 $countries             = tribe( \TEC\Tickets\Commerce\Gateways\PayPal\Location\Country::class )->get_list();
 $default_country_code  = \TEC\Tickets\Commerce\Gateways\PayPal\Location\Country::DEFAULT_COUNTRY_CODE;
 $selected_country_code = $country_code;
@@ -44,3 +46,4 @@ if ( empty( $selected_country_code ) ) {
 		</a>
 	</div>
 </div>
+<?php

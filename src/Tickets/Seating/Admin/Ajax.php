@@ -398,7 +398,7 @@ class Ajax extends Controller_Contract {
 			Tickets_Main::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->add_localize_script( 'tec.tickets.seating.ajax', [ $this, 'get_ajax_data' ] )
+			->add_localize_script( 'tec.tickets.seating.ajaxData', [ $this, 'get_ajax_data' ] )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
 	}

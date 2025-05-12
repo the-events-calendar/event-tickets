@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7bbb7a682891e54099948e46166636ae",
+    "content-hash": "351eeb2361841416be19128d01f72fdb",
     "packages": [],
     "packages-dev": [
         {
@@ -1808,16 +1808,16 @@
         },
         {
             "name": "lucatume/wp-browser",
-            "version": "3.6.5",
+            "version": "3.7.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lucatume/wp-browser.git",
-                "reference": "d4a2067dd6dad99e7e278373fbb2a34809937d58"
+                "reference": "4f4e266bea123abd6a9517fb239ee4ec7735b2c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lucatume/wp-browser/zipball/d4a2067dd6dad99e7e278373fbb2a34809937d58",
-                "reference": "d4a2067dd6dad99e7e278373fbb2a34809937d58",
+                "url": "https://api.github.com/repos/lucatume/wp-browser/zipball/4f4e266bea123abd6a9517fb239ee4ec7735b2c7",
+                "reference": "4f4e266bea123abd6a9517fb239ee4ec7735b2c7",
                 "shasum": ""
             },
             "require": {
@@ -1893,7 +1893,7 @@
             ],
             "support": {
                 "issues": "https://github.com/lucatume/wp-browser/issues",
-                "source": "https://github.com/lucatume/wp-browser/tree/3.6.5"
+                "source": "https://github.com/lucatume/wp-browser/tree/3.7.12"
             },
             "funding": [
                 {
@@ -1901,7 +1901,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-06-26T07:02:06+00:00"
+            "time": "2025-02-22T12:33:32+00:00"
         },
         {
             "name": "lucatume/wp-snaphot-assertions",
@@ -4519,12 +4519,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/coding-standards.git",
-                "reference": "fa3c0b7387072d8fde885e386986e66ee2869f4b"
+                "reference": "86ebe9d4eb92e502d0cbd73e436a9e63e2c12e95"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/coding-standards/zipball/fa3c0b7387072d8fde885e386986e66ee2869f4b",
-                "reference": "fa3c0b7387072d8fde885e386986e66ee2869f4b",
+                "url": "https://api.github.com/repos/stellarwp/coding-standards/zipball/86ebe9d4eb92e502d0cbd73e436a9e63e2c12e95",
+                "reference": "86ebe9d4eb92e502d0cbd73e436a9e63e2c12e95",
                 "shasum": ""
             },
             "require": {
@@ -4555,6 +4555,10 @@
                 {
                     "name": "Matthew Batchelder",
                     "email": "borkweb@gmail.com"
+                },
+                {
+                    "name": "Gustavo Bordoni",
+                    "email": "bordoni.dev@gmail.com"
                 }
             ],
             "description": "Code sniffing rules for StellarWP",
@@ -4564,9 +4568,9 @@
                 "wordpress"
             ],
             "support": {
-                "source": "https://github.com/stellarwp/coding-standards/tree/main"
+                "source": "https://github.com/stellarwp/coding-standards/tree/2.1.0"
             },
-            "time": "2024-02-04T03:55:54+00:00"
+            "time": "2025-04-25T12:31:32+00:00"
         },
         {
             "name": "symfony/browser-kit",

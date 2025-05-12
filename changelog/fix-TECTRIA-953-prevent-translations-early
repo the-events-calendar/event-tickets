@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Prevent instances of the `_load_textdomain_just_in_time` warning by moving all language after the `init` hook
