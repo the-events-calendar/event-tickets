@@ -411,7 +411,6 @@ class Tribe__Tickets__Main {
 		// Start Up Common.
 		Tribe__Main::instance();
 
-<<<<<<< HEAD
 		/*
 		 * This is the main hook that will bootstrap the plugin.
 		 *
@@ -424,9 +423,6 @@ class Tribe__Tickets__Main {
 
 		// Admin home.
 		tribe_register_provider( Tribe\Tickets\Admin\Home\Service_Provider::class );
-=======
-		add_action( 'tribe_common_loaded', [ $this, 'bootstrap' ], 0 );
->>>>>>> master
 	}
 
 	/**
