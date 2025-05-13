@@ -213,13 +213,6 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			]
 		);
 
-		$webhook = tribe( Webhooks::class );
-
-		// We attempt to re-register the webhook if it has not been fetched in the last hour.
-		if ( $webhook->should_refresh_webhook() ) {
-			$webhook->register_webhook_endpoint();
-		}
-
 		// Process the webhook based on event type.
 		$this->process_webhook_event( $event_data );
 
