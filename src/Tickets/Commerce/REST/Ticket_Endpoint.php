@@ -12,6 +12,7 @@ namespace TEC\Tickets\Commerce\REST;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Free\Gateway;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
 
 use TEC\Tickets\Commerce\Status\Completed;
@@ -40,7 +41,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @var string
 	 */
-	protected $path = '/commerce/ticket';
+	protected string $path = '/commerce/ticket';
 
 	/**
 	 * Register the actual endpoint on WP Rest API.
@@ -105,6 +106,10 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		$response = [
 			'success' => false,
 		];
+
+		$ticket_module = tribe( Module::class );
+
+		$ticket_module->save_ticket( $post_id, $ticket, $raw_data = [] );
 
 		return new WP_REST_Response( $response );
 
