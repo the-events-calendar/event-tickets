@@ -8,6 +8,7 @@ import { compose } from 'redux';
  * WordPress dependencies
  */
 import { select } from '@wordpress/data';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -28,13 +29,31 @@ const getAttendeeRegistrationUrl = ( state, ownProps ) => {
 const mapStateToProps = ( state, ownProps ) => {
 	const isCreated = selectors.getTicketHasBeenCreated( state, ownProps );
 
-	return {
+	let mappedProps =  {
 		attendeeRegistrationURL: getAttendeeRegistrationUrl( state, ownProps ),
 		hasAttendeeInfoFields: selectors.getTicketHasAttendeeInfoFields( state, ownProps ),
 		isCreated,
 		isDisabled: selectors.isTicketDisabled( state, ownProps ) || ! isCreated,
 		isModalOpen: selectors.getTicketIsModalOpen( state, ownProps ),
 	};
+
+	/**
+	 * Filters the properties mapped from the state for the component.
+	 *
+	 * @since TBD
+	 *
+	 * @type {Object} mappedProps The properties mapped from the state for the component.
+	 * @type {Object} context.state The current state.
+	 * @type {Object} context.ownProps The properties passed to the component.
+	 */
+	return applyFilters(
+		'tec.tickets.blocks.AttendeeRegistration.mappedProps',
+		mappedProps,
+		{
+			state,
+			ownProps,
+		}
+	);
 };
 
 const mapDispatchToProps = ( dispatch, ownProps ) => {
