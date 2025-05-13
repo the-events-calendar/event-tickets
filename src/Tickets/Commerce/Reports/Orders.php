@@ -106,11 +106,11 @@ class Orders extends Report_Abstract {
 		 *
 		 * @since 5.2.0
 		 *
-		 * @return string
-		 * @var int    $event_id   The post ID.
-		 * @var array  $ticket_ids An array of ticket IDs.
+		 * @param string $report_url The Report URL.
+		 * @param int    $event_id   The post ID.
+		 * @param array  $ticket_ids An array of ticket IDs.
 		 *
-		 * @var string $report_url Report URL.
+		 * @return string
 		 */
 		$report_url = apply_filters( 'tec_tickets_commerce_reports_orders_event_link', $report_url, $event_id, $ticket_ids );
 
@@ -149,11 +149,11 @@ class Orders extends Report_Abstract {
 		 *
 		 * @since 5.2.0
 		 *
-		 * @return string
-		 * @var int    $event_id   The post ID.
-		 * @var array  $ticket_ids An array of ticket IDs.
+		 * @param string $report_url The Report URL.
+		 * @param int    $event_id   The post ID.
+		 * @param array  $ticket_ids An array of ticket IDs.
 		 *
-		 * @var string $report_url Report URL.
+		 * @return string
 		 */
 		$report_url = apply_filters( 'tec_tickets_commerce_reports_orders_ticket_link', $report_url, $event_id, $ticket_ids );
 
