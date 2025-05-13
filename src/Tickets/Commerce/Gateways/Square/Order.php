@@ -275,6 +275,13 @@ class Order extends Abstract_Order {
 			return null;
 		}
 
+		if ( $is_update && $order->gateway_order_id !== $square_order_id ) {
+			// The order has been changed in a way that now is being matched with a different Square order.
+			// For example, that's possible when an order has been refunded. The refund is a new Square order,
+			// which we store in `gateway_order_id` property.
+			return null;
+		}
+
 		if ( ! $is_update ) {
 			$items = $this->get_items_from_square_order( $square_order_id );
 
@@ -329,6 +336,25 @@ class Order extends Abstract_Order {
 			return null;
 		}
 
+		$payments = $square_order['tenders'] ?? [];
+
+		if ( ! empty( $payments ) ) {
+			$order_payments = array_flip( $this->get_payment_ids( $order ) );
+			foreach ( $payments as $payment ) {
+				$payment_id = $payment['id'] ?? false;
+
+				if ( ! $payment_id ) {
+					continue;
+				}
+
+				if ( isset( $order_payments[ $payment_id ] ) ) {
+					continue;
+				}
+
+				$this->add_payment_id( $order, $payment_id );
+			}
+		}
+
 		$status = $square_order['state'] ?? false;
 
 		if ( ! $status ) {
@@ -361,6 +387,22 @@ class Order extends Abstract_Order {
 					'event_data' => $event_data,
 				]
 			);
+			return $order;
+		}
+
+		if ( time() < $order->on_checkout_hold ) {
+			tribe( Webhooks::class )->add_pending_webhook( $order->ID, $status_obj->get_wp_slug(), $order->post_status, [ 'gateway_payload' => $event_data ] );
+
+			as_schedule_single_action(
+				$order->on_checkout_hold + MINUTE_IN_SECONDS,
+				'tec_tickets_commerce_async_webhook_process',
+				[
+					'order_id' => $order->ID,
+					'try'      => 0,
+				],
+				'tec-tickets-commerce-webhooks'
+			);
+
 			return $order;
 		}
 
@@ -689,13 +731,11 @@ class Order extends Abstract_Order {
 
 		$user_obj = new stdClass();
 
-		$user_obj->ID   = 0;
-		$user_obj->data = new stdClass();
-
-		$user_obj->data->user_email   = $remote_customer['customer']['email_address'];
-		$user_obj->data->display_name = $remote_customer['customer']['given_name'] . ' ' . $remote_customer['customer']['family_name'];
-		$user_obj->data->first_name   = $remote_customer['customer']['given_name'];
-		$user_obj->data->last_name    = $remote_customer['customer']['family_name'];
+		$user_obj->ID           = 0;
+		$user_obj->user_email   = $remote_customer['customer']['email_address'];
+		$user_obj->display_name = $remote_customer['customer']['given_name'] . ' ' . $remote_customer['customer']['family_name'];
+		$user_obj->first_name   = $remote_customer['customer']['given_name'];
+		$user_obj->last_name    = $remote_customer['customer']['family_name'];
 
 		return new WP_User( $user_obj );
 	}
@@ -741,9 +781,9 @@ class Order extends Abstract_Order {
 	 * @param WP_Post $order      The order object.
 	 * @param string  $payment_id The payment ID.
 	 *
-	 * @return bool|int
+	 * @return bool
 	 */
-	public function add_payment_id( WP_Post $order, string $payment_id ) {
+	public function add_payment_id( WP_Post $order, string $payment_id ): bool {
 		$added = Commerce_Meta::add( $order->ID, Payment::KEY_ORDER_PAYMENT_ID, $payment_id, [], 'post', false );
 
 		if ( ! $added ) {
@@ -752,7 +792,7 @@ class Order extends Abstract_Order {
 
 		Commerce_Meta::set( $order->ID, Payment::KEY_ORDER_PAYMENT_ID_TIME, tec_get_current_milliseconds(), [ $payment_id ], 'post', false );
 
-		return $added;
+		return (bool) $added;
 	}
 
 	/**
@@ -762,10 +802,10 @@ class Order extends Abstract_Order {
 	 *
 	 * @param WP_Post $order The order object.
 	 *
-	 * @return string|null
+	 * @return string[]
 	 */
-	public function get_payment_ids( WP_Post $order ): ?string {
-		return Commerce_Meta::get( $order->ID, Payment::KEY_ORDER_PAYMENT_ID, [], 'post', false, false );
+	public function get_payment_ids( WP_Post $order ): array {
+		return (array) Commerce_Meta::get( $order->ID, Payment::KEY_ORDER_PAYMENT_ID, [], 'post', false, false );
 	}
 
 	/**
