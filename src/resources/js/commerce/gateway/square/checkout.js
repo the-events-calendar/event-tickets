@@ -18,7 +18,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Checkout Selectors.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @type {Object}
 	 */
@@ -29,14 +29,14 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 		infoForm: '.tribe-tickets__commerce-checkout-purchaser-info-wrapper',
 		submitButton: '#tec-tc-gateway-square-checkout-button',
 		hiddenElement: '.tribe-common-a11y-hidden',
-		purchaserInfoForm: '.tribe-tickets__commerce-checkout-purchaser-info-wrapper__form',
+		purchaserInfoForm: '.tribe-tickets__commerce-checkout-purchaser-info-wrapper',
 		form: '.tribe-tickets__commerce-checkout-square-form',
 	};
 
 	/**
 	 * Square Payment Form.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @type {Object|null}
 	 */
@@ -45,7 +45,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Square Card instance.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @type {Object|null}
 	 */
@@ -54,7 +54,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Loader container.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @type {Object|null}
 	 */
@@ -63,7 +63,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Handle displaying errors to the end user
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @param {Array} errors An array of arrays. Each base array is keyed with the error code and contains a list of error messages.
 	 * @param {Function} afterDisplay Callback to run after displaying errors.
@@ -77,7 +77,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Get the request arguments to setup the calls.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @param {Object} data The data to send in the request.
 	 * @param {Object} headers The headers to send with the request.
@@ -115,7 +115,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Preventing errors to be thrown when using Ky
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @param {Object} error
 	 *
@@ -130,7 +130,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Preventing errors to be thrown when using Ky
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @param {Object} error
 	 *
@@ -145,7 +145,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Handles payment form errors.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @param {Object} error Which error we are dealing with.
 	 */
@@ -230,9 +230,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 		// Get form data
 		const formData = {};
 		const formElements = $( obj.selectors.purchaserInfoForm ).serializeArray();
-		$.each( formElements, function( i, element ) {
-			formData[ element.name ] = element.value;
-		} );
+		formData.purchaser = obj.getPurchaserData();
 
 		// Add the payment source ID
 		formData.payment_source_id = sourceId;
@@ -258,7 +256,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Initialize Square Web Payments SDK.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 */
 	obj.initializeSquare = async () => {
 		try {
@@ -295,7 +293,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Show a notice in the notice area.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 *
 	 * @param {Object} args The arguments for the notice.
 	 * @param {string} type The type of notice.
@@ -321,7 +319,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Loader related methods.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 */
 	obj.loader = {
 		// Shows the loading animation.
@@ -344,11 +342,21 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Handles the initialization of the checkout when the page loads.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
 	 */
 	obj.ready = () => {
 		obj.initializeSquare();
 	};
+
+	/**
+	 * Get the purchaser data from the form.
+	 *
+	 * @since TBD
+	 *
+	 * @return {Object} The purchaser data.
+	 */
+	obj.getPurchaserData = () =>
+		tribe.tickets.commerce.getPurchaserData( $( obj.selectors.purchaserInfoForm ) );
 
 	// When the document is ready, initialize the checkout.
 	$( obj.ready );
