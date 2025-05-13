@@ -463,38 +463,38 @@ export function* fetchTicket( action ) {
 			const startTime = yield call( momentUtil.toDatabaseTime, startMoment );
 			const startTimeInput = yield call( momentUtil.toTime, startMoment );
 
-			let endMoment = yield call( momentUtil.toMoment, '' );
-			let endDate = '';
-			let endDateInput = '';
-			let endTime = '';
-			let endTimeInput = '';
+			let endMoment = yield call( momentUtil.toMoment, available_until );
+			let endDate = yield call( momentUtil.toDatabaseDate, endMoment );
+			let endDateInput = yield datePickerFormat
+				? call( momentUtil.toDate, endMoment, datePickerFormat )
+				: call( momentUtil.toDate, endMoment );
+			let endTime = yield call( momentUtil.toDatabaseTime, endMoment );
+			let endTimeInput = yield call( momentUtil.toTime, endMoment );
 
-			if ( available_until ) { // eslint-disable-line camelcase
-				endMoment = yield call( momentUtil.toMoment, available_until );
-				endDate = yield call( momentUtil.toDatabaseDate, endMoment );
-				endDateInput = yield datePickerFormat
-					? call( momentUtil.toDate, endMoment, datePickerFormat )
-					: call( momentUtil.toDate, endMoment );
-				endTime = yield call( momentUtil.toDatabaseTime, endMoment );
-				endTimeInput = yield call( momentUtil.toTime, endMoment );
+			if ( ! available_until ) {
+				endMoment = yield call( momentUtil.toMoment, '' );
+				endDate = '';
+				endDateInput = '';
+				endTime = '';
+				endTimeInput = '';
 			}
 
 			const salePriceChecked = sale_price_data?.enabled || false;
 			const salePrice = sale_price_data?.sale_price || '';
 
-			const sale_start_date = sale_price_data?.start_date || ''; // eslint-disable-line camelcase
-			const saleStartDateMoment = yield call( momentUtil.toMoment, sale_start_date );
+			const saleStartDateMoment = yield call(
+				momentUtil.toMoment,
+				sale_price_data?.start_date || '',
+			);
 			const saleStartDate = yield call( momentUtil.toDatabaseDate, saleStartDateMoment );
-			const saleStartDateInput = yield datePickerFormat
-				? call( momentUtil.toDate, saleStartDateMoment, datePickerFormat )
-				: call( momentUtil.toDate, saleStartDateMoment );
+			const saleStartDateInput = yield call( momentUtil.toDate, saleStartDateMoment );
 
-			const sale_end_date = sale_price_data?.end_date || ''; // eslint-disable-line camelcase
-			const saleEndDateMoment = yield call( momentUtil.toMoment, sale_end_date );
+			const saleEndDateMoment = yield call(
+				momentUtil.toMoment,
+				sale_price_data?.end_date || '',
+			);
 			const saleEndDate = yield call( momentUtil.toDatabaseDate, saleEndDateMoment );
-			const saleEndDateInput = yield datePickerFormat
-				? call( momentUtil.toDate, saleEndDateMoment, datePickerFormat )
-				: call( momentUtil.toDate, saleEndDateMoment );
+			const saleEndDateInput = yield call( momentUtil.toDate, saleEndDateMoment );
 
 			const details = {
 				attendeeInfoFields: attendee_information_fields,
