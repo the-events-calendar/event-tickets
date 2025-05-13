@@ -65,14 +65,25 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	private string $location_id;
 
 	/**
+	 * The webhooks instance.
+	 *
+	 * @since TBD
+	 *
+	 * @var Webhooks
+	 */
+	private Webhooks $webhooks;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param Gateway $gateway The gateway instance.
+	 * @param Gateway  $gateway  The gateway instance.
+	 * @param Webhooks $webhooks The webhooks instance.
 	 */
-	public function __construct( Gateway $gateway ) {
+	public function __construct( Gateway $gateway, Webhooks $webhooks ) {
 		$this->location_id = $gateway->get_location_id();
+		$this->webhooks    = $webhooks;
 	}
 
 	/**
@@ -109,8 +120,6 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * @return bool|WP_Error Always returns true as we validate using the webhook signature.
 	 */
 	public function has_permission( WP_REST_Request $request ) {
-		$webhook = tribe( Webhooks::class );
-
 		// Get the webhook secret key from the URL.
 		$secret_key = $request->get_param( Webhooks::PARAM_WEBHOOK_KEY );
 
@@ -118,7 +127,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		$whodat_hash = $request->get_header( 'X-WhoDat-Hash' );
 		$payload     = $request->get_body();
 
-		if ( ! ( $webhook->verify_signature( $secret_key ) && $webhook->verify_whodat_signature( $payload, $whodat_hash, $secret_key ) ) ) {
+		if ( ! ( $this->webhooks->verify_signature( $secret_key ) && $this->webhooks->verify_whodat_signature( $payload, $whodat_hash, $secret_key ) ) ) {
 			do_action(
 				'tribe_log',
 				'error',
@@ -231,7 +240,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
-	protected function process_webhook_event( array $event_data ) {
+	public function process_webhook_event( array $event_data ) {
 		$event_type = $event_data['type'] ?? '';
 
 		if ( ! in_array( $event_type, Events::get_types(), true ) ) {
@@ -421,6 +430,21 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 					]
 				)
 				->save();
+		}
+
+		if ( time() < $order->on_checkout_hold ) {
+			$this->webhooks->add_pending_webhook( $order->ID, tribe( Refunded::class )->get_wp_slug(), $order->post_status, [ 'gateway_payload' => $event_data ] );
+
+			as_schedule_single_action(
+				$order->on_checkout_hold + MINUTE_IN_SECONDS,
+				'tec_tickets_commerce_async_webhook_process',
+				[
+					'order_id' => $order->ID,
+					'try'      => 0,
+				],
+				'tec-tickets-commerce-webhooks'
+			);
+			return;
 		}
 
 		// Update the order status.
