@@ -186,7 +186,7 @@ class Orders extends Report_Abstract {
 	 * Hooks the actions and filter required by the class.
 	 *
 	 * @since 5.2.0
-	 * @since TBD Add hook for `page_row_actions`
+	 * @since TBD Add hook for `page_row_actions`.
 	 *
 	 * @return void
 	 */
