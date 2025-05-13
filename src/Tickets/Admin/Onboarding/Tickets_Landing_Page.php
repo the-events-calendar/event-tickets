@@ -470,7 +470,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 				'sender_email' => tribe_get_option( 'tec-tickets-emails-sender-email', false ),
 			],
 			'stripe'   => [
-				'connected' => tribe_get_option( 'tickets_commerce_enabled', false ) && tribe_get_option( 'tickets_commerce_gateway_enabled_stripe', false ),
+				'connected' => tribe_get_option( 'tickets_commerce_enabled', false ) && tribe_get_option( '_tickets_commerce_gateway_enabled_stripe', false ),
 			],
 		];
 		$count_complete = 0;
@@ -542,7 +542,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 							[
 								'step-list__item' => true,
 								'tec-tickets-onboarding-step-1' => true,
-								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[1] ),
+								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[1] ) || !empty( $tab_settings['stripe']['connected'] ),
 							]
 						);
 						?>
