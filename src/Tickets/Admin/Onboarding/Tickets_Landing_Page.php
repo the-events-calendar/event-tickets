@@ -276,7 +276,8 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			return true;
 		}
 
-		$et_versions = (array) tribe_get_option( 'previous_etp_versions', [] );
+
+		$et_versions = (array) tribe_get_option( 'previous_event_tickets_versions', [] );
 		// If there is more than one previous version, don't show the wizard.
 		if ( count( $et_versions ) > 1 ) {
 			return false;
