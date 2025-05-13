@@ -460,6 +460,19 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		$installer      = Installer::get();
 		$tec_installed  = $installer->is_installed( 'the-events-calendar' );
 		$tec_activated  = $installer->is_active( 'the-events-calendar' );
+
+		$tab_settings   = [
+			'payments' => [
+				'currency' => tribe_get_option( 'tickets_commerce_enabled', false ) && tribe_get_option( 'tickets-commerce-currency-code', false ),
+			],
+			'emails'   => [
+				'sender_name' => tribe_get_option( 'tec-tickets-emails-sender-name', false ),
+				'sender_email' => tribe_get_option( 'tec-tickets-emails-sender-email', false ),
+			],
+			'stripe'   => [
+				'connected' => tribe_get_option( 'tickets_commerce_enabled', false ) && tribe_get_option( 'tickets_commerce_gateway_enabled_stripe', false ),
+			],
+		];
 		$count_complete = 0;
 		foreach ( [ 0, 1, 2 ] as $step ) {
 			if ( in_array( $step, $completed_tabs, true ) ) {
@@ -481,7 +494,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 							[
 								'step-list__item' => true,
 								'tec-tickets-onboarding-step-0' => true,
-								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[0] ),
+								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[0] ) || !empty( $tab_settings['payments']['currency'] ),
 							]
 						);
 						?>
@@ -503,7 +516,11 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 							[
 								'step-list__item' => true,
 								'tec-tickets-onboarding-step-2' => true,
-								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[2] ),
+								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[2] )
+									|| (
+										! empty( $tab_settings['emails']['sender_name'] )
+										&& ! empty( $tab_settings['emails']['sender_email'] )
+									),
 							]
 						);
 						?>
