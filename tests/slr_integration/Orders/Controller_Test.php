@@ -1496,6 +1496,8 @@ class Controller_Test extends Controller_Test_Case {
 		global $post;
 		$post = get_post( $event_id );
 
+		$this->set_fn_return( 'wp_create_nonce', 'test-nonce-745631543' );
+
 		$row_actions = apply_filters( 'post_row_actions', [], $post );
 
 		$this->assertContains( 'tickets_seats', array_keys( $row_actions ) );
