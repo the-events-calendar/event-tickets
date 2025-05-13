@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
 use Tribe__Utils__Array as Arr;
+use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 
 /**
  * Class Abstract_Webhooks.
@@ -11,7 +12,7 @@ use Tribe__Utils__Array as Arr;
  *
  * @package TEC\Tickets\Commerce\Gateways\Contracts
  */
-abstract class Abstract_Webhooks {
+abstract class Abstract_Webhooks extends Controller_Contract {
 
 	/**
 	 * Option name for the option to store pending webhooks.
@@ -23,13 +24,31 @@ abstract class Abstract_Webhooks {
 	public const PENDING_WEBHOOKS_KEY = '_tec_tickets_commerce_webhook_pending';
 
 	/**
+	 * Registers the filters and actions hooks added by the controller.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function do_register(): void {}
+
+	/**
+	 * Removes the filters and actions hooks added by the controller.
+	 *
+	 * @since TBD
+	 *
+	 * @return void Filters and actions hooks added by the controller are be removed.
+	 */
+	public function unregister(): void {}
+
+	/**
 	 * Gets the gateway for this webhook.
 	 *
 	 * @since 5.3.0
 	 *
 	 * @return Abstract_Gateway
 	 */
-	abstract public function get_gateway() : Abstract_Gateway;
+	abstract public function get_gateway(): Abstract_Gateway;
 
 	/**
 	 * Gets the merchant for this webhook.
@@ -38,7 +57,7 @@ abstract class Abstract_Webhooks {
 	 *
 	 * @return Abstract_Merchant
 	 */
-	abstract public function get_merchant() : Abstract_Merchant;
+	abstract public function get_merchant(): Abstract_Merchant;
 
 	/**
 	 * Returns the options key for webhook settings in the merchant mode.

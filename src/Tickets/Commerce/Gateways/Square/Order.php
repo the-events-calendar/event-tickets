@@ -383,6 +383,22 @@ class Order extends Abstract_Order {
 			return $order;
 		}
 
+		if ( time() < $order->on_checkout_hold ) {
+			tribe( Webhooks::class )->add_pending_webhook( $order->ID, $status_obj->get_wp_slug(), $order->post_status, [ 'gateway_payload' => $event_data ] );
+
+			as_schedule_single_action(
+				$order->on_checkout_hold + MINUTE_IN_SECONDS,
+				'tec_tickets_commerce_async_webhook_process',
+				[
+					'order_id' => $order->ID,
+					'try'      => 0,
+				],
+				'tec-tickets-commerce-webhooks'
+			);
+
+			return $order;
+		}
+
 		$this->commerce_order->modify_status( $order->ID, $status_obj->get_slug(), $event_data ? [ 'gateway_payload' => $event_data ] : [] );
 
 		return $order;

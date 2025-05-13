@@ -9,9 +9,11 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Webhooks;
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
 use TEC\Tickets\Commerce\Gateways\Square\WhoDat;
 use WP_Error;
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use Tribe__Date_Utils as Dates;
 use RuntimeException;
 
@@ -22,7 +24,7 @@ use RuntimeException;
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
-class Webhooks extends Controller_Contract {
+class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Option key for storing webhook secret key.
 	 *
@@ -58,6 +60,28 @@ class Webhooks extends Controller_Contract {
 	 * @var string
 	 */
 	public const OPTION_WEBHOOK_ID = 'tickets-commerce-square-webhook-id';
+
+	/**
+	 * Gets the gateway for this webhook.
+	 *
+	 * @since TBD
+	 *
+	 * @return Abstract_Gateway
+	 */
+	public function get_gateway(): Abstract_Gateway {
+		return tribe( Gateway::class );
+	}
+
+	/**
+	 * Gets the merchant for this webhook.
+	 *
+	 * @since TBD
+	 *
+	 * @return Abstract_Merchant
+	 */
+	public function get_merchant(): Abstract_Merchant {
+		return tribe( Merchant::class );
+	}
 
 	/**
 	 * Register the service provider.

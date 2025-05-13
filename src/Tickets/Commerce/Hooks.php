@@ -1181,7 +1181,7 @@ class Hooks extends Service_Provider {
 				tribe( Stripe_Hooks::class )->process_async_stripe_webhook( $order_id, $retry );
 				break;
 			case 'square':
-				tribe( Square_Hooks::class )->process_async_square_webhook( $order_id, $retry );
+				tribe( Square_Hooks::class )->process_async_webhook( $order_id, $retry );
 				break;
 			default:
 				return;

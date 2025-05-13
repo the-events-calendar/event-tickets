@@ -1356,14 +1356,14 @@ class Order extends Abstract_Order {
 			'try'      => 0,
 		];
 
-		if ( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', $args, 'tec-tickets-commerce-stripe-webhooks' ) ) {
+		if ( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', $args, 'tec-tickets-commerce-webhooks' ) ) {
 			return true;
 		}
 
 		return (bool) as_enqueue_async_action(
 			'tec_tickets_commerce_async_webhook_process',
 			$args,
-			'tec-tickets-commerce-stripe-webhooks'
+			'tec-tickets-commerce-webhooks'
 		);
 	}
 
@@ -1443,7 +1443,7 @@ class Order extends Abstract_Order {
 			'try'      => 0,
 		];
 
-		if ( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', $args, 'tec-tickets-commerce-stripe-webhooks' ) ) {
+		if ( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', $args, 'tec-tickets-commerce-webhooks' ) ) {
 			return true;
 		}
 
@@ -1451,7 +1451,7 @@ class Order extends Abstract_Order {
 			tec_from_milliseconds_to_timestamp( $on_screen_hold ) + MINUTE_IN_SECONDS, // We schedule the action to run after the timeout.
 			'tec_tickets_commerce_async_webhook_process',
 			$args,
-			'tec-tickets-commerce-stripe-webhooks'
+			'tec-tickets-commerce-webhooks'
 		);
 	}
 	/**
@@ -1484,7 +1484,7 @@ class Order extends Abstract_Order {
 			'try'      => 0,
 		];
 
-		if ( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', $args, 'tec-tickets-commerce-stripe-webhooks' ) ) {
+		if ( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', $args, 'tec-tickets-commerce-webhooks' ) ) {
 			return true;
 		}
 
@@ -1492,7 +1492,7 @@ class Order extends Abstract_Order {
 			time(),
 			'tec_tickets_commerce_async_webhook_process',
 			$args,
-			'tec-tickets-commerce-stripe-webhooks'
+			'tec-tickets-commerce-webhooks'
 		);
 	}
 
