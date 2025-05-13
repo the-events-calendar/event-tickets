@@ -202,21 +202,6 @@ class Tribe__Tickets__Assets {
 	public function admin_enqueue_scripts() {
 		/** @var Tribe__Tickets__Main $tickets_main */
 		$tickets_main = tribe( 'tickets.main' );
-
-		// Set up some data for our localize scripts.
-		$upload_header_data = [
-			'title'  => esc_html( sprintf( __( '%s header image', 'event-tickets' ), tribe_get_ticket_label_singular( 'header_image_title' ) ) ),
-			'button' => esc_html( sprintf( __( 'Set as %s header', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'header_button' ) ) ),
-		];
-
-		$nonces = [
-			'add_ticket_nonce'       => wp_create_nonce( 'add_ticket_nonce' ),
-			'edit_ticket_nonce'      => wp_create_nonce( 'edit_ticket_nonce' ),
-			'remove_ticket_nonce'    => wp_create_nonce( 'remove_ticket_nonce' ),
-			'duplicate_ticket_nonce' => wp_create_nonce( 'duplicate_ticket_nonce' ),
-			'ajaxurl'                => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
-		];
-
 		$ticket_js_deps = [ 'jquery-ui-datepicker', 'tribe-bumpdown', 'tribe-attrchange', 'underscore', 'tribe-validation', 'event-tickets-admin-accordion-js', 'tribe-timepicker' ];
 
 		$assets = [
@@ -236,11 +221,22 @@ class Tribe__Tickets__Assets {
 				'localize'     => [
 					[
 						'name' => 'HeaderImageData',
-						'data' => $upload_header_data,
+						'data' => fn() => [
+							// Translators: %s is the ticket label singular.
+							'title'  => esc_html( sprintf( __( '%s header image', 'event-tickets' ), tribe_get_ticket_label_singular( 'header_image_title' ) ) ),
+							// Translators: %s is the ticket label singular lowercase.
+							'button' => esc_html( sprintf( __( 'Set as %s header', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'header_button' ) ) ),
+						],
 					],
 					[
 						'name' => 'TribeTickets',
-						'data' => $nonces,
+						'data' => fn() => [
+							'add_ticket_nonce'       => wp_create_nonce( 'add_ticket_nonce' ),
+							'edit_ticket_nonce'      => wp_create_nonce( 'edit_ticket_nonce' ),
+							'remove_ticket_nonce'    => wp_create_nonce( 'remove_ticket_nonce' ),
+							'duplicate_ticket_nonce' => wp_create_nonce( 'duplicate_ticket_nonce' ),
+							'ajaxurl'                => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
+						],
 					],
 					[
 						'name' => 'tribe_ticket_vars',
@@ -254,13 +250,13 @@ class Tribe__Tickets__Assets {
 					],
 					[
 						'name' => 'tribe_ticket_notices',
-						'data' => [
+						'data' => fn() => [
 							'confirm_alert' => __( 'Are you sure you want to delete this ticket? This cannot be undone.', 'event-tickets' ),
 						],
 					],
 					[
 						'name' => 'tribe_global_stock_admin_ui',
-						'data' => [
+						'data' => fn() => [
 							'nav_away_msg' => __( 'It looks like you have modified your shared capacity setting but have not saved or updated the post.', 'event-tickets' ),
 						],
 					],
@@ -380,25 +376,6 @@ class Tribe__Tickets__Assets {
 			]
 		);
 
-		$move_url_args = [
-			'dialog'    => \Tribe__Tickets__Main::instance()->move_tickets()->dialog_name(),
-			'check'     => wp_create_nonce( 'move_tickets' ),
-			'TB_iframe' => 'true',
-		];
-
-		$config_data = [
-			'nonce'                 => wp_create_nonce( 'email-attendee-list' ),
-			'required'              => esc_html__( 'You need to select a user or type a valid email address', 'event-tickets' ),
-			'sending'               => esc_html__( 'Sending...', 'event-tickets' ),
-			'ajaxurl'               => admin_url( 'admin-ajax.php' ),
-			'checkin_nonce'         => wp_create_nonce( 'checkin' ),
-			'uncheckin_nonce'       => wp_create_nonce( 'uncheckin' ),
-			'cannot_move'           => esc_html__( 'You must first select one or more tickets before you can move them!', 'event-tickets' ),
-			'move_url'              => add_query_arg( $move_url_args ),
-			'confirmation_singular' => esc_html__( 'Please confirm that you would like to delete this attendee.', 'event-tickets' ),
-			'confirmation_plural'   => esc_html__( 'Please confirm that you would like to delete these attendees.', 'event-tickets' ),
-		];
-
 		tribe_asset(
 			$tickets_main,
 			'tickets-attendees-js',
@@ -409,16 +386,34 @@ class Tribe__Tickets__Assets {
 				'localize' => [
 					[
 						'name' => 'Attendees',
-						'data' => function () use ( $config_data ) {
-							/**
-							 * Allow filtering the configuration data for the Attendee objects on Attendees report page.
-							 *
-							 * @since 5.2.0
-							 *
-							 * @param array $config_data List of configuration data to be localized.
-							 */
-							return apply_filters( 'tribe_tickets_attendees_report_js_config', $config_data );
-						},
+						/**
+						 * Allow filtering the configuration data for the Attendee objects on Attendees report page.
+						 *
+						 * @since 5.2.0
+						 *
+						 * @param array $config_data List of configuration data to be localized.
+						 */
+						'data' => static fn () => (array) apply_filters(
+							'tribe_tickets_attendees_report_js_config',
+							[
+								'nonce'                 => wp_create_nonce( 'email-attendee-list' ),
+								'required'              => esc_html__( 'You need to select a user or type a valid email address', 'event-tickets' ),
+								'sending'               => esc_html__( 'Sending...', 'event-tickets' ),
+								'ajaxurl'               => admin_url( 'admin-ajax.php' ),
+								'checkin_nonce'         => wp_create_nonce( 'checkin' ),
+								'uncheckin_nonce'       => wp_create_nonce( 'uncheckin' ),
+								'cannot_move'           => esc_html__( 'You must first select one or more tickets before you can move them!', 'event-tickets' ),
+								'confirmation_singular' => esc_html__( 'Please confirm that you would like to delete this attendee.', 'event-tickets' ),
+								'confirmation_plural'   => esc_html__( 'Please confirm that you would like to delete these attendees.', 'event-tickets' ),
+								'move_url'              => add_query_arg(
+									[
+										'dialog'    => \Tribe__Tickets__Main::instance()->move_tickets()->dialog_name(),
+										'check'     => wp_create_nonce( 'move_tickets' ),
+										'TB_iframe' => 'true',
+									]
+								),
+							]
+						),
 					],
 				],
 				'groups'   => [
