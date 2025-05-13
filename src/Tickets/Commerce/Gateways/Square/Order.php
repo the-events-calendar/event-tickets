@@ -731,13 +731,11 @@ class Order extends Abstract_Order {
 
 		$user_obj = new stdClass();
 
-		$user_obj->ID   = 0;
-		$user_obj->data = new stdClass();
-
-		$user_obj->data->user_email   = $remote_customer['customer']['email_address'];
-		$user_obj->data->display_name = $remote_customer['customer']['given_name'] . ' ' . $remote_customer['customer']['family_name'];
-		$user_obj->data->first_name   = $remote_customer['customer']['given_name'];
-		$user_obj->data->last_name    = $remote_customer['customer']['family_name'];
+		$user_obj->ID           = 0;
+		$user_obj->user_email   = $remote_customer['customer']['email_address'];
+		$user_obj->display_name = $remote_customer['customer']['given_name'] . ' ' . $remote_customer['customer']['family_name'];
+		$user_obj->first_name   = $remote_customer['customer']['given_name'];
+		$user_obj->last_name    = $remote_customer['customer']['family_name'];
 
 		return new WP_User( $user_obj );
 	}
