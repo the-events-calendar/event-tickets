@@ -37,6 +37,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 * Adds the actions required by each Stripe component.
 	 *
 	 * @since 5.3.0
+	 * @since TBD Moved async webhook process to Commerce Hooks routing action.
 	 */
 	protected function add_actions() {
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
@@ -54,8 +55,6 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		add_action( 'wp_ajax_tec_tickets_commerce_gateway_stripe_verify_webhooks', [ $this, 'action_handle_verify_webhooks' ] );
 
 		add_action( 'wp_ajax_' . Webhooks::NONCE_KEY_SETUP, [ $this, 'action_handle_set_up_webhook' ] );
-
-		add_action( 'tec_tickets_commerce_async_webhook_process', [ $this, 'process_async_stripe_webhook' ], 10, 2 );
 	}
 
 	/**

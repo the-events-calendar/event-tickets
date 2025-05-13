@@ -1351,14 +1351,18 @@ class Order extends Abstract_Order {
 		 */
 		do_action( 'tec_tickets_commerce_order_checkout_completed', $order_id );
 
-		as_unschedule_action( 'tec_tickets_commerce_async_webhook_process', [ 'order_id' => $order_id ], 'tec-tickets-commerce-stripe-webhooks' );
+		$args = [
+			'order_id' => $order_id,
+			'try'      => 0,
+		];
+
+		if ( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', $args, 'tec-tickets-commerce-stripe-webhooks' ) ) {
+			return true;
+		}
 
 		return (bool) as_enqueue_async_action(
 			'tec_tickets_commerce_async_webhook_process',
-			[
-				'order_id' => $order_id,
-				'try'      => 0,
-			],
+			$args,
 			'tec-tickets-commerce-stripe-webhooks'
 		);
 	}
@@ -1416,7 +1420,7 @@ class Order extends Abstract_Order {
 	 * @return bool
 	 */
 	public function set_on_checkout_screen_hold( int $order_id ): bool {
-		$seconds = $this->get_default_on_checkout_screen_hold_timeout();
+		$seconds        = $this->get_default_on_checkout_screen_hold_timeout();
 		$on_screen_hold = tec_get_current_milliseconds( new \DateInterval( "PT{$seconds}S" ) );
 
 		$updated = (bool) update_post_meta( $order_id, static::ON_CHECKOUT_SCREEN_HOLD_META, $on_screen_hold );
@@ -1434,22 +1438,19 @@ class Order extends Abstract_Order {
 		 */
 		do_action( 'tec_tickets_commerce_order_on_checkout_screen_hold_set', $order_id, $on_screen_hold );
 
-		as_unschedule_action(
-			'tec_tickets_commerce_async_webhook_process',
-			[
-				'order_id' => $order_id,
-				'try'      => 0,
-			],
-			'tec-tickets-commerce-stripe-webhooks'
-		);
+		$args = [
+			'order_id' => $order_id,
+			'try'      => 0,
+		];
+
+		if ( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', $args, 'tec-tickets-commerce-stripe-webhooks' ) ) {
+			return true;
+		}
 
 		return (bool) as_schedule_single_action(
 			tec_from_milliseconds_to_timestamp( $on_screen_hold ) + MINUTE_IN_SECONDS, // We schedule the action to run after the timeout.
 			'tec_tickets_commerce_async_webhook_process',
-			[
-				'order_id' => $order_id,
-				'try'      => 0,
-			],
+			$args,
 			'tec-tickets-commerce-stripe-webhooks'
 		);
 	}
@@ -1478,22 +1479,19 @@ class Order extends Abstract_Order {
 		 */
 		do_action( 'tec_tickets_commerce_order_on_checkout_screen_hold_remove', $order_id );
 
-		as_unschedule_action(
-			'tec_tickets_commerce_async_webhook_process',
-			[
-				'order_id' => $order_id,
-				'try'      => 0,
-			],
-			'tec-tickets-commerce-stripe-webhooks'
-		);
+		$args = [
+			'order_id' => $order_id,
+			'try'      => 0,
+		];
+
+		if ( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', $args, 'tec-tickets-commerce-stripe-webhooks' ) ) {
+			return true;
+		}
 
 		return (bool) as_schedule_single_action(
 			time(),
 			'tec_tickets_commerce_async_webhook_process',
-			[
-				'order_id' => $order_id,
-				'try'      => 0,
-			],
+			$args,
 			'tec-tickets-commerce-stripe-webhooks'
 		);
 	}
