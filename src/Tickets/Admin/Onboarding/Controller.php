@@ -166,12 +166,6 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function redirect_tec_pages_to_guided_setup(): void {
-
-		// Early bail if not active.
-		if ( ! $this->is_active() ) {
-			return;
-		}
-
 		// Early bail if already on guided setup page.
 		if ( Landing_Page::$slug === tec_get_request_var( 'page' ) ) {
 			return;
