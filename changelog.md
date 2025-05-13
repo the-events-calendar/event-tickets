@@ -1,6 +1,6 @@
 # Changelog
 
-### [5.22.0] 2025-05-12
+### [5.22.0] 2025-05-13
 
 * Feature - Move QR-Related code from ET to Common [TEC-5426]
 * Feature - Move QR code library to Common [TEC-5403]
