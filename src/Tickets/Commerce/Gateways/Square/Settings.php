@@ -267,6 +267,10 @@ class Settings extends Abstract_Settings {
 		// Restore the original mode.
 		$merchant->set_mode( $original_mode );
 
+		if ( ! empty( $options ) ) {
+			$options = [ '' => __( 'Select a location', 'event-tickets' ) ] + $options;
+		}
+
 		// If there are no locations available, add a placeholder.
 		if ( empty( $options ) ) {
 			if ( $sandbox ) {
