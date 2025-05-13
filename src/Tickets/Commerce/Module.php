@@ -23,21 +23,8 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @since TBD Moved to do_init() to avoid issues with translations.
 	 */
 	public function __construct() {
-		if ( did_action( 'init' ) ) {
-			$this->do_init();
-		} else {
-			add_action( 'init', [ $this, 'do_init' ] );
-		}
-	}
-
-	/**
-	 * Initialize the module.
-	 *
-	 * @since TBD
-	 */
-	public function do_init() {
-		// This needs to happen before parent construct. But after the 'init' hook.
-		$this->plugin_name = __( 'Tickets Commerce', 'event-tickets' );
+		// This needs to happen before parent construct.
+		$this->plugin_name = 'Tickets Commerce'; // Intentionally not translated.
 
 		parent::__construct();
 
@@ -241,6 +228,20 @@ class Module extends \Tribe__Tickets__Tickets {
 	 */
 	public static function get_instance() {
 		return tribe( static::class );
+	}
+
+	/**
+	 * Hooks the module, happens on the `wp` hook.
+	 *
+	 * @since 5.22.0
+	 *
+	 * @return void
+	 */
+	public function hook() {
+		parent::hook();
+
+		// Overwrite with the translated name.
+		$this->plugin_name = __( 'Tickets Commerce', 'event-tickets' );
 	}
 
 	/**
