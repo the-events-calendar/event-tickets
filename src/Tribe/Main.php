@@ -899,7 +899,7 @@ class Tribe__Tickets__Main {
 		Tribe__Credits::init();
 		$this->maybe_set_et_version();
 		$this->maybe_set_options_for_old_installs();
-		$this->activation_page();
+
 	}
 
 	/**
