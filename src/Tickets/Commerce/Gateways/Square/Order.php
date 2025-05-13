@@ -329,6 +329,25 @@ class Order extends Abstract_Order {
 			return null;
 		}
 
+		$payments = $square_order['tenders'] ?? [];
+
+		if ( ! empty( $payments ) ) {
+			$order_payments = array_flip( $this->get_payment_ids( $order ) );
+			foreach ( $payments as $payment ) {
+				$payment_id = $payment['id'] ?? false;
+
+				if ( ! $payment_id ) {
+					continue;
+				}
+
+				if ( isset( $order_payments[ $payment_id ] ) ) {
+					continue;
+				}
+
+				$this->add_payment_id( $order, $payment_id );
+			}
+		}
+
 		$status = $square_order['state'] ?? false;
 
 		if ( ! $status ) {
@@ -741,9 +760,9 @@ class Order extends Abstract_Order {
 	 * @param WP_Post $order      The order object.
 	 * @param string  $payment_id The payment ID.
 	 *
-	 * @return bool|int
+	 * @return bool
 	 */
-	public function add_payment_id( WP_Post $order, string $payment_id ) {
+	public function add_payment_id( WP_Post $order, string $payment_id ): bool {
 		$added = Commerce_Meta::add( $order->ID, Payment::KEY_ORDER_PAYMENT_ID, $payment_id, [], 'post', false );
 
 		if ( ! $added ) {
@@ -752,7 +771,7 @@ class Order extends Abstract_Order {
 
 		Commerce_Meta::set( $order->ID, Payment::KEY_ORDER_PAYMENT_ID_TIME, tec_get_current_milliseconds(), [ $payment_id ], 'post', false );
 
-		return $added;
+		return (bool) $added;
 	}
 
 	/**
@@ -762,10 +781,10 @@ class Order extends Abstract_Order {
 	 *
 	 * @param WP_Post $order The order object.
 	 *
-	 * @return string|null
+	 * @return string[]
 	 */
-	public function get_payment_ids( WP_Post $order ): ?string {
-		return Commerce_Meta::get( $order->ID, Payment::KEY_ORDER_PAYMENT_ID, [], 'post', false, false );
+	public function get_payment_ids( WP_Post $order ): array {
+		return (array) Commerce_Meta::get( $order->ID, Payment::KEY_ORDER_PAYMENT_ID, [], 'post', false, false );
 	}
 
 	/**
