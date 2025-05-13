@@ -275,6 +275,13 @@ class Order extends Abstract_Order {
 			return null;
 		}
 
+		if ( $is_update && $order->gateway_order_id !== $square_order_id ) {
+			// The order has been changed in a way that now is being matched with a different Square order.
+			// For example, that's possible when an order has been refunded. The refund is a new Square order,
+			// which we store in `gateway_order_id` property.
+			return null;
+		}
+
 		if ( ! $is_update ) {
 			$items = $this->get_items_from_square_order( $square_order_id );
 
