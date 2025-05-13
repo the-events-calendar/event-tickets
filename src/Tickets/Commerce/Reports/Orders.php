@@ -186,6 +186,9 @@ class Orders extends Report_Abstract {
 	 * Hooks the actions and filter required by the class.
 	 *
 	 * @since 5.2.0
+	 * @since TBD Add hook for `page_row_actions`
+	 *
+	 * @return void
 	 */
 	public function hook() {
 		add_filter( 'post_row_actions', [ $this, 'add_orders_row_action' ], 10, 2 );
