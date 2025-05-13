@@ -29,7 +29,6 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 		infoForm: '.tribe-tickets__commerce-checkout-purchaser-info-wrapper',
 		submitButton: '#tec-tc-gateway-square-checkout-button',
 		hiddenElement: '.tribe-common-a11y-hidden',
-		purchaserInfoForm: '.tribe-tickets__commerce-checkout-purchaser-info-wrapper',
 		form: '.tribe-tickets__commerce-checkout-square-form',
 	};
 
@@ -228,12 +227,10 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	 */
 	obj.processPayment = async ( sourceId ) => {
 		// Get form data
-		const formData = {};
-		const formElements = $( obj.selectors.purchaserInfoForm ).serializeArray();
-		formData.purchaser = obj.getPurchaserData();
-
-		// Add the payment source ID
-		formData.payment_source_id = sourceId;
+		const formData = {
+			payment_source_id: sourceId,
+			purchaser: obj.getPurchaserData(),
+		};
 
 		try {
 			// First create an order via the REST API
@@ -356,7 +353,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	 * @return {Object} The purchaser data.
 	 */
 	obj.getPurchaserData = () =>
-		tribe.tickets.commerce.getPurchaserData( $( obj.selectors.purchaserInfoForm ) );
+		tribe.tickets.commerce.getPurchaserData( $( obj.selectors.infoForm ) );
 
 	// When the document is ready, initialize the checkout.
 	$( obj.ready );
