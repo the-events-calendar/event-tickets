@@ -67,6 +67,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 * @since TBD
 	 */
 	public function __construct() {
+		$this->initialize();
 		add_action( 'load-' . self::HELP_HUB_PAGE_ID, [ $this, 'initialize' ] );
 	}
 
