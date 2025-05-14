@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Prevents fatal if QR library in common has not loaded. [TEC-5497]
