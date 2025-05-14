@@ -1,3 +1,3 @@
 <?php
 
-remove_filter( 'tribe_tickets_plugin_loaded', function () {}, 10 );
+remove_action( 'tribe_tickets_plugin_loaded', function () {}, 10 );
