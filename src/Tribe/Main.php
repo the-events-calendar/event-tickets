@@ -431,9 +431,6 @@ class Tribe__Tickets__Main {
 		Tribe__Main::instance();
 
 		add_action( 'tribe_common_loaded', [ $this, 'bootstrap' ], 0 );
-
-		// Admin home.
-		tribe_register_provider( Tribe\Tickets\Admin\Home\Service_Provider::class );
 	}
 
 	/**
@@ -500,14 +497,14 @@ class Tribe__Tickets__Main {
 		/**
 		 * Fires once Event Tickets has completed basic setup.
 		 *
-		 * @deprecated TBD Use `tec_tickets_fully_loaded` instead.
+		 * @deprecated 5.22.0 Use `tec_tickets_fully_loaded` instead.
 		 */
-		do_action_deprecated( 'tribe_tickets_plugin_loaded', [], 'TBD', 'Use `tec_tickets_fully_loaded` instead.' );
+		do_action_deprecated( 'tribe_tickets_plugin_loaded', [], '5.22.0', 'Use `tec_tickets_fully_loaded` instead.' );
 
 		/**
 		 * Fires when Event Tickets is fully loaded.
 		 *
-		 * @since TBD
+		 * @since 5.22.0
 		 */
 		do_action( 'tec_tickets_fully_loaded' );
 	}
@@ -553,6 +550,9 @@ class Tribe__Tickets__Main {
 
 		// Views V2
 		tribe_register_provider( Tribe\Tickets\Events\Views\V2\Service_Provider::class );
+
+		// Admin home.
+		tribe_register_provider( Tribe\Tickets\Admin\Home\Service_Provider::class );
 
 		// Admin settings.
 		tribe_register_provider( Tribe\Tickets\Admin\Settings\Service_Provider::class );
