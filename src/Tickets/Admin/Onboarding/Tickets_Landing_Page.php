@@ -552,7 +552,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 							<?php esc_html_e( 'Stripe for online payments', 'event-tickets' ); ?>
 						</div>
 						<div class="step-list__item-right">
-							<a href="<?php echo esc_url( admin_url( "{$settings_url}&tc-section=stripe&tab=stripe" ) ); ?>" class="tec-admin-page__link">
+							<a href="<?php echo esc_url( admin_url( "{$settings_url}&tab=tickets-commerce" ) ); ?>" class="tec-admin-page__link">
 								<?php esc_html_e( 'Edit Stripe settings', 'event-tickets' ); ?>
 							</a>
 						</div>
