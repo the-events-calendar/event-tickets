@@ -1079,7 +1079,7 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
-	 * Provides the JS version number for JS scripts
+	 * Provides the JS version number for JS scripts.
 	 *
 	 * @return string
 	 */
