@@ -278,6 +278,11 @@ tribe.tickets.commerce = {};
 		$couponLabelElement.text( unescapedLabel );
 	};
 
+	/**
+	 * Binds the `Add Coupon` link to its respective event handler.
+	 *
+	 * @since 5.21.0
+	 */
 	obj.bindAddCouponLink = function() {
 		const hiddenName = obj.selectors.hiddenElement.className();
 		$document.on( 'click', obj.selectors.couponAddLink, function() {
@@ -296,6 +301,28 @@ tribe.tickets.commerce = {};
 		return window.tecTicketsCommerceGatewayStripeCheckout?.paymentIntentData?.id;
 	};
 
+	/**
+	 * Disables interruption functionality for the seating timer.
+	 *
+	 * This ensures that the seating timer is NOT reset and the cart is NOT cleared.
+	 * This is intended to be used when a coupon application or removal triggers
+	 * the page to be reloaded. Under normal circumstances, the timer would be reset
+	 * and the cart contents emptied when the page is reloaded.
+	 *
+	 * @since 5.22.0
+	 */
+	obj.disableInterruption = () => {
+		const setInterruptable = window.tec.tickets?.seating?.frontend?.session?.setIsInterruptable;
+		if ( 'function' === typeof setInterruptable ) {
+			setInterruptable( false );
+		}
+	};
+
+	/**
+	 * Binds the coupon "Apply" button to its respective event handler.
+	 *
+	 * @since 5.21.0
+	 */
 	obj.bindCouponApply = function() {
 		let ajaxInProgress = false;
 
@@ -372,6 +399,7 @@ tribe.tickets.commerce = {};
 
 						// Maybe reload the page if necessary.
 						if ( response.doReload ) {
+							obj.disableInterruption();
 							window.location.reload();
 						}
 					} else {
@@ -462,6 +490,7 @@ tribe.tickets.commerce = {};
 
 						// Maybe reload the page if necessary.
 						if ( response.doReload ) {
+							obj.disableInterruption();
 							window.location.reload();
 						}
 					} else {

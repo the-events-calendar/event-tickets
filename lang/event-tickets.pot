@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.21.1.1\n"
+"Project-Id-Version: Event Tickets 5.22.0\n"
 "Report-Msgid-Bugs-To: https://evnt.is/191x\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-04-28T18:06:34+00:00\n"
+"POT-Creation-Date: 2025-04-15T16:40:01+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: event-tickets\n"
@@ -9766,40 +9766,24 @@ msgstr ""
 msgid "Commerce Module invalid"
 msgstr ""
 
-#: src/Tickets/QR/Connector.php:264
+#: src/Tickets/QR/Connector.php:266
 msgid "Permission Error"
 msgstr ""
 
-#: src/Tickets/QR/Connector.php:269
+#: src/Tickets/QR/Connector.php:271
 msgid "The QR API key could not be deleted, please try again."
 msgstr ""
 
-#: src/Tickets/QR/Connector.php:274
+#: src/Tickets/QR/Connector.php:276
 msgid "The QR API key was not regenerated, please try again."
 msgstr ""
 
-#: src/Tickets/QR/Connector.php:280
+#: src/Tickets/QR/Connector.php:282
 msgid "The QR API key was generated, but generating the connection QR Code image failed."
 msgstr ""
 
-#: src/Tickets/QR/Connector.php:284
+#: src/Tickets/QR/Connector.php:286
 msgid "QR API Key Generated"
-msgstr ""
-
-#: src/Tickets/QR/Controller.php:154
-msgid "The QR code cannot be used, please contact your host and ask for `gzip` and `gd` support."
-msgstr ""
-
-#: src/Tickets/QR/Notices.php:81
-msgid "QR codes for tickets not available."
-msgstr ""
-
-#: src/Tickets/QR/Notices.php:82
-msgid "In order to have QR codes for your tickets you will need to have both the `php_gd2` and `gzuncompress` PHP extensions installed on your server. Please contact your hosting provider."
-msgstr ""
-
-#: src/Tickets/QR/Notices.php:83
-msgid "Learn more."
 msgstr ""
 
 #. Translators: %s is the ticket ID.

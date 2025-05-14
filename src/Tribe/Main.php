@@ -17,7 +17,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin.
 	 */
-	const VERSION = '5.21.1.1';
+	const VERSION = '5.22.0';
 
 	/**
 	 * Used to store the version history.
@@ -412,9 +412,6 @@ class Tribe__Tickets__Main {
 		Tribe__Main::instance();
 
 		add_action( 'tribe_common_loaded', [ $this, 'bootstrap' ], 0 );
-
-		// Admin home.
-		tribe_register_provider( Tribe\Tickets\Admin\Home\Service_Provider::class );
 	}
 
 	/**
@@ -449,7 +446,6 @@ class Tribe__Tickets__Main {
 		$this->user_event_confirmation_list_shortcode();
 		$this->move_tickets();
 		$this->move_ticket_types();
-		$this->activation_page();
 
 		Tribe__Tickets__JSON_LD__Order::hook();
 		Tribe__Tickets__JSON_LD__Type::hook();
@@ -459,8 +455,17 @@ class Tribe__Tickets__Main {
 
 		/**
 		 * Fires once Event Tickets has completed basic setup.
+		 *
+		 * @deprecated 5.22.0 Use `tec_tickets_fully_loaded` instead.
 		 */
-		do_action( 'tribe_tickets_plugin_loaded' );
+		do_action_deprecated( 'tribe_tickets_plugin_loaded', [], '5.22.0', 'Use `tec_tickets_fully_loaded` instead.' );
+
+		/**
+		 * Fires when Event Tickets is fully loaded.
+		 *
+		 * @since 5.22.0
+		 */
+		do_action( 'tec_tickets_fully_loaded' );
 	}
 
 	/**
@@ -504,6 +509,9 @@ class Tribe__Tickets__Main {
 
 		// Views V2
 		tribe_register_provider( Tribe\Tickets\Events\Views\V2\Service_Provider::class );
+
+		// Admin home.
+		tribe_register_provider( Tribe\Tickets\Admin\Home\Service_Provider::class );
 
 		// Admin settings.
 		tribe_register_provider( Tribe\Tickets\Admin\Settings\Service_Provider::class );
@@ -678,12 +686,12 @@ class Tribe__Tickets__Main {
 
 		add_filter( 'tribe_post_types', [ $this, 'inject_post_types' ] );
 
-		// Setup Help Tab texting
+		// Setup Help Tab texting.
 		add_action( 'tribe_help_pre_get_sections', [ $this, 'add_help_section_support_content' ] );
 		add_action( 'tribe_help_pre_get_sections', [ $this, 'add_help_section_featured_content' ] );
 		add_action( 'tribe_help_pre_get_sections', [ $this, 'add_help_section_extra_content' ] );
 		add_filter( 'tribe_support_registered_template_systems', [ $this, 'add_template_updates_check' ] );
-		add_action( 'tribe_tickets_plugin_loaded', [ 'Tribe__Support', 'getInstance' ] );
+		add_action( 'tec_tickets_fully_loaded', [ 'Tribe__Support', 'getInstance' ] );
 
 		// Setup Front End Display
 		add_action( 'tribe_events_inside_cost', 'tribe_tickets_buy_button', 10, 0 );
@@ -850,6 +858,7 @@ class Tribe__Tickets__Main {
 		Tribe__Credits::init();
 		$this->maybe_set_et_version();
 		$this->maybe_set_options_for_old_installs();
+		$this->activation_page();
 	}
 
 	/**
