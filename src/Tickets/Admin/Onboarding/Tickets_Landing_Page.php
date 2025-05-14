@@ -466,7 +466,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 				'currency' => tribe_get_option( 'tickets_commerce_enabled', false ) && tribe_get_option( 'tickets-commerce-currency-code', false ),
 			],
 			'emails'   => [
-				'sender_name' => tribe_get_option( 'tec-tickets-emails-sender-name', false ),
+				'sender_name'  => tribe_get_option( 'tec-tickets-emails-sender-name', false ),
 				'sender_email' => tribe_get_option( 'tec-tickets-emails-sender-email', false ),
 			],
 			'stripe'   => [
@@ -494,7 +494,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 							[
 								'step-list__item' => true,
 								'tec-tickets-onboarding-step-0' => true,
-								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[0] ) || !empty( $tab_settings['payments']['currency'] ),
+								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[0] ) || ! empty( $tab_settings['payments']['currency'] ),
 							]
 						);
 						?>
@@ -542,7 +542,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 							[
 								'step-list__item' => true,
 								'tec-tickets-onboarding-step-1' => true,
-								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[1] ) || !empty( $tab_settings['stripe']['connected'] ),
+								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[1] ) || ! empty( $tab_settings['stripe']['connected'] ),
 							]
 						);
 						?>
