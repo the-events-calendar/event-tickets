@@ -71,7 +71,6 @@ class Event_Item extends Item {
 			'product_type'         => 'EVENT',
 			'skip_modifier_screen' => true,
 			// 'categories'           => [],
-			// 'image_ids'            => [],
 		],
 	];
 
