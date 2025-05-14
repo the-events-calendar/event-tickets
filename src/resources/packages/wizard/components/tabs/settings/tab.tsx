@@ -71,6 +71,7 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab } ) => {
 		currency: currencyCode,
 		paymentOption,
 		currentTab: 1,
+		connectionStatus,
 	};
 
 	const handleConnect = async ( gateway: string ) => {
