@@ -221,7 +221,7 @@ final class Controller extends Controller_Contract {
 			[ false ],
 			'5.21.0',
 			'',
-			__( 'The coupon functionality is now included for all sites.', 'event-tickets' )
+			'The coupon functionality is now included for all sites.'
 		);
 	}
 

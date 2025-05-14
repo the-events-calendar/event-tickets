@@ -2,9 +2,9 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.21.1.1
+Stable tag: 5.22.0
 Requires at least: 6.5
-Tested up to: 6.7.2
+Tested up to: 6.8.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -198,6 +198,17 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.22.0] 2025-05-13 =
+
+* Feature - Move QR-Related code from ET to Common [TEC-5426]
+* Feature - Move QR code library to Common [TEC-5403]
+* Fix - Fix an issue when applying 100% off coupons to Seating tickets. [ET-2409]
+* Fix - Prevent instances of the `_load_textdomain_just_in_time` warning by moving all language after the `init` hook
+* Tweak - Removed filters: `tec_tickets_qr_code_can_use`, `tribe_tickets_attendees_report_js_config`
+* Tweak - Added actions: `tec_tickets_fully_loaded`, `tec_tickets_promoter_fully_loaded`
+* Tweak - Removed actions: `tribe_tickets_plugin_loaded`
+* Language - 0 new strings added, 5 updated, 0 fuzzied, and 4 obsoleted.
 
 = [5.21.1.1] 2025-04-28 =
 

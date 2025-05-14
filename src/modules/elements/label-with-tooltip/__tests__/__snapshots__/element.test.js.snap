@@ -13,9 +13,7 @@ exports[`Tooltip Element renders a tooltip 1`] = `
     <span>
       here is the tooltip text
     </span>
-    <span>
-      bottom left
-    </span>
+    <span />
     <span>
       <button
         aria-label="here is the tooltip text"
