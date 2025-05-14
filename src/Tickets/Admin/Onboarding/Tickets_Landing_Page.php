@@ -9,7 +9,6 @@
 
 namespace TEC\Tickets\Admin\Onboarding;
 
-use Tribe__Main;
 use TEC\Common\StellarWP\Installer\Installer;
 use TEC\Common\Admin\Abstract_Admin_Page;
 use TEC\Common\Admin\Traits\Is_Tickets_Page;
@@ -277,7 +276,8 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			return true;
 		}
 
-		$et_versions = (array) tribe_get_option( 'previous_etp_versions', [] );
+
+		$et_versions = (array) tribe_get_option( 'previous_event_tickets_versions', [] );
 		// If there is more than one previous version, don't show the wizard.
 		if ( count( $et_versions ) > 1 ) {
 			return false;
@@ -324,25 +324,8 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 */
 	public function admin_page_title(): void {
 		?>
-			<h1 class="tec-admin__header-title"><?php esc_html_e( 'Event Tickets', 'event-tickets' ); ?></h1>
+			<h1 class="tec-admin-page__header-title"><?php esc_html_e( 'Event Tickets', 'event-tickets' ); ?></h1>
 		<?php
-	}
-
-	/**
-	 * Get the logo source.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $source The source.
-	 *
-	 * @return string The logo source.
-	 */
-	public function logo_source( $source ): string {
-		if ( ! $this->is_on_page() ) {
-			return $source;
-		}
-
-		return tribe_resource_url( 'images/logo/the-events-calendar.svg', false, null, Tribe__Main::instance() );
 	}
 
 	/**
@@ -356,7 +339,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		$data         = tribe( Data::class );
 		$initial_data = [
 			/* Wizard History */
-      'forceDisplay'         => $this->force_wizard_display(),
+			'forceDisplay'         => $this->force_wizard_display(),
 			'begun'                => (bool) $data->get_wizard_setting( 'begun', false ),
 			'currentTab'           => absint( $data->get_wizard_setting( 'current_tab', 0 ) ),
 			'finished'             => (bool) $data->get_wizard_setting( 'finished', false ),
@@ -477,6 +460,19 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		$installer      = Installer::get();
 		$tec_installed  = $installer->is_installed( 'the-events-calendar' );
 		$tec_activated  = $installer->is_active( 'the-events-calendar' );
+
+		$tab_settings   = [
+			'payments' => [
+				'currency' => tribe_get_option( 'tickets_commerce_enabled', false ) && tribe_get_option( 'tickets-commerce-currency-code', false ),
+			],
+			'emails'   => [
+				'sender_name' => tribe_get_option( 'tec-tickets-emails-sender-name', false ),
+				'sender_email' => tribe_get_option( 'tec-tickets-emails-sender-email', false ),
+			],
+			'stripe'   => [
+				'connected' => tribe_get_option( 'tickets_commerce_enabled', false ) && tribe_get_option( '_tickets_commerce_gateway_enabled_stripe', false ),
+			],
+		];
 		$count_complete = 0;
 		foreach ( [ 0, 1, 2 ] as $step ) {
 			if ( in_array( $step, $completed_tabs, true ) ) {
@@ -484,12 +480,12 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			}
 		}
 		?>
-			<section class="tec-admin-page__content-section tec-tickets-admin-page__content-section">
-				<div class="tec-tickets-admin-page__content-section-header">
+			<section class="tec-admin-page__content-section">
+				<div class="tec-admin-page__content-section-header">
 					<h2 class="tec-admin-page__content-header"><?php esc_html_e( 'First-time setup', 'event-tickets' ); ?></h2>
 					<a class="tec-dismiss-admin-page" href="<?php echo esc_url( $action_url ); ?>"><?php esc_html_e( 'Dismiss this screen', 'event-tickets' ); ?></a>
 				</div>
-				<div class="tec-tickets-admin-page__content-section-subheader"><?php echo esc_html( $count_complete ) . '/3 ' . esc_html__( 'steps completed', 'event-tickets' ); ?></div>
+				<div class="tec-admin-page__content-section-subheader"><?php echo esc_html( $count_complete ) . '/3 ' . esc_html__( 'steps completed', 'event-tickets' ); ?></div>
 				<ul class="tec-admin-page__content-step-list">
 					<li
 						id="tec-tickets-onboarding-wizard-currency-item"
@@ -497,8 +493,8 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 						tec_classes(
 							[
 								'step-list__item' => true,
-								'tec-tickets-onboarding-step-1' => true,
-								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[0] ),
+								'tec-tickets-onboarding-step-0' => true,
+								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[0] ) || !empty( $tab_settings['payments']['currency'] ),
 							]
 						);
 						?>
@@ -520,7 +516,11 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 							[
 								'step-list__item' => true,
 								'tec-tickets-onboarding-step-2' => true,
-								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[2] ),
+								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[2] )
+									|| (
+										! empty( $tab_settings['emails']['sender_name'] )
+										&& ! empty( $tab_settings['emails']['sender_email'] )
+									),
 							]
 						);
 						?>
@@ -541,8 +541,8 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 						tec_classes(
 							[
 								'step-list__item' => true,
-								'tec-tickets-onboarding-step-3' => true,
-								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[1] ),
+								'tec-tickets-onboarding-step-1' => true,
+								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[1] ) || !empty( $tab_settings['stripe']['connected'] ),
 							]
 						);
 						?>
@@ -558,7 +558,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 						</div>
 					</li>
 				</ul>
-				<div class="tec-tickets-admin-page__content-section-videos">
+				<div class="tec-admin-page__content-section-mid">
 					<h2 class="tec-admin-page__content-header">
 						<?php esc_html_e( 'Create your first ticket', 'event-tickets' ); ?>
 					</h2>
