@@ -3,6 +3,7 @@
 namespace Tribe\Tickets\Test\REST\V1;
 
 use Tribe\Tickets\Test\Testcases\REST\V1\BaseRestCest;
+use Tribe\Tests\Traits\With_Uopz;
 use Restv1Tester;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
@@ -17,6 +18,26 @@ use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 class TicketSingularPermissionsCest extends BaseRestCest {
 	use RSVP_Ticket_Maker;
 	use Attendee_Maker;
+	use With_Uopz;
+
+	/**
+	 * Set up the test environment.
+	 *
+	 * @since TBD
+	 */
+	public function _before( Restv1Tester $I ) {
+		parent::_before( $I );
+		
+		// Suppress the deprecated 'tribe_tickets_plugin_loaded' hook warning
+		// to prevent interference with REST API response headers.
+		$this->set_fn_return( 'do_action_deprecated', function( $hook_name, $args, $version, $replacement ) {
+			if ( $hook_name === 'tribe_tickets_plugin_loaded' ) {
+				return;
+			}
+			// Call original function for other deprecations
+			return call_user_func_array( 'do_action_deprecated', func_get_args() );
+		}, true );
+	}
 
 	private function get_a_single_rsvp_id_having_attendees( Restv1Tester $I ) {
 		$post_id = $I->havePostInDatabase();
