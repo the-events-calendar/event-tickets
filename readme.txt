@@ -3,7 +3,7 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Stable tag: 5.22.0.1
-Requires at least: 6.5
+Requires at least: 6.6
 Tested up to: 6.8.1
 Requires PHP: 7.4
 License: GPLv2 or later
