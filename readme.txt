@@ -199,6 +199,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.22.0.1] 2025-05-14 =
+
+* Fix - Prevents fatal if QR library in common has not loaded. [TEC-5497]
+* Language - 0 new strings added, 38 updated, 0 fuzzied, and 5 obsoleted.
+
 = [5.22.0] 2025-05-13 =
 
 * Feature - Move QR-Related code from ET to Common [TEC-5426]
