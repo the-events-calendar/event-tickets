@@ -89,6 +89,7 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 	 * Returns the settings fields for the email.
 	 *
 	 * @since 5.8.4
+	 * @since TBD Updated html.
 	 *
 	 * @return array<string,mixed> The settings fields for the email.
 	 */
