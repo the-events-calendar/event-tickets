@@ -347,8 +347,8 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			'completedTabs'        => (array) $data->get_wizard_setting( 'completed_tabs', [] ),
 			'skippedTabs'          => (array) $data->get_wizard_setting( 'skipped_tabs', [] ),
 			'paymentOption'        => $data->get_wizard_setting( 'payment_option', '' ),
-			'currency'             => $last_send['currency'] ?? 'USD',
-			'country'              => $last_send['country'] ?? 'US',
+			'currency'             => $last_send['currency'] ?? '',
+			'country'              => $last_send['country'] ?? '',
 			/* nonces */
 			'action_nonce'         => wp_create_nonce( API::NONCE_ACTION ),
 			'_wpnonce'             => wp_create_nonce( 'wp_rest' ),
