@@ -57,7 +57,7 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab } ) => {
 	}, [paymentOption, updateSettings]);
 
 	useEffect(() => {
-		setCurrency(currency || countryCurrency || 'USD');
+		setCurrency(currency || countryCurrency);
 	}, [currency, countryCurrency]);
 
 	useEffect( () => {
