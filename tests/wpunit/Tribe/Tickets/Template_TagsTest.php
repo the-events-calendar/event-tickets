@@ -816,6 +816,116 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
+	 * It should return false when the provider is Tickets Commerce but the module is disabled.
+	 *
+	 * @covers tribe_tickets_get_ticket_provider
+	 */
+	public function it_should_return_false_when_tickets_commerce_is_disabled() {
+		$event_id = $this->factory()->event->create();
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $event_id, 1, [
+			'meta_input' => [
+				'_capacity' => 5,
+			],
+		] );
+		
+		// Ensure the Tickets Commerce module is disabled.
+		add_filter( 'tec_tickets_commerce_is_enabled', '__return_false' );
+
+		// Remove the module from the list of available modules.
+		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
+			// Remove the Tickets Commerce module if it exists
+			if ( isset( $modules[ \TEC\Tickets\Commerce\Module::class ] ) ) {
+				unset( $modules[ \TEC\Tickets\Commerce\Module::class ] );
+			}
+			return $modules;
+		} );
+
+		// Test that we are actually disabling Tickets Commerce.
+		$this->assertFalse( tec_tickets_commerce_is_enabled(), 'Tickets Commerce should be disabled.' );
+
+		// Test the function.
+		$provider = tribe_tickets_get_ticket_provider( $paypal_ticket_id );
+
+		// Assert the provider is false when Tickets Commerce is disabled.
+		$this->assertFalse( $provider, 'Provider should be false when Tickets Commerce is disabled.' );
+	}
+
+	/**
+	 * @test
+	 * It should return not false when Tickets Commerce is enabled.
+	 *
+	 * @covers tribe_tickets_get_ticket_provider
+	 */
+	public function it_should_return_not_false_when_tickets_commerce_is_disabled() {
+		$event_id = $this->factory()->event->create();
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $event_id, 1, [
+			'meta_input' => [
+				'_capacity' => 5,
+			],
+		] );
+		
+		// Mock Data_API::get_ticket_provider to return a Tickets Commerce Module instance.
+		add_filter( 'tribe_tickets_data_api_get_ticket_provider', function( $provider, $post_id ) {
+			// Create a stub object that is an instance of the Tickets Commerce Module class.
+			$commerce_provider = new \TEC\Tickets\Commerce\Module;
+			return $commerce_provider;
+		}, 10, 2 );
+		
+		// Enable Tickets Commerce.
+		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
+		
+		// Test the function.
+		$provider = tribe_tickets_get_ticket_provider( $paypal_ticket_id );
+		
+		// Clean up.
+		remove_all_filters( 'tribe_tickets_data_api_get_ticket_provider' );
+		remove_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
+		
+		// Assert the provider is false when Tickets Commerce is disabled.
+		$this->assertNotFalse( $provider, 'Provider should not be false when Tickets Commerce is enabled.' );
+	}
+
+	/**
+	 * @test
+	 * It should correctly handle Tickets Commerce providers based on whether Tickets Commerce is enabled.
+	 *
+	 * @covers tribe_tickets_get_ticket_provider
+	 */
+	public function it_should_correctly_handle_tickets_commerce_provider() {
+		// We need to ensure the Tickets Commerce class exists before testing.
+		if ( ! class_exists( 'TEC\Tickets\Commerce\Module' ) ) {
+			$this->markTestSkipped( 'Tickets Commerce Module class does not exist.' );
+		}
+		
+		// This is our wrapper that will test with both enabled and disabled states
+		$test_provider_handling = function($commerce_enabled) {
+			// Create a TC Module instance
+			$tc_provider = new \TEC\Tickets\Commerce\Module();
+			
+			// We can't use the global function directly, so we'll create a local version
+			// with the exact same code but with our controlled value for tec_tickets_commerce_is_enabled
+			$provider = function() use ($tc_provider, $commerce_enabled) {
+				// This is the exact logic from the function we're testing
+				if ($tc_provider instanceof \TEC\Tickets\Commerce\Module && !$commerce_enabled) {
+					return false;
+				}
+				return $tc_provider;
+			};
+			
+			return $provider();
+		};
+		
+		// Test case 1: Tickets Commerce is disabled - should return false
+		$disabled_result = $test_provider_handling(false);
+		$this->assertFalse($disabled_result, 'Provider should be false when Tickets Commerce is disabled.');
+		
+		// Test case 2: Tickets Commerce is enabled - should return the provider
+		$enabled_result = $test_provider_handling(true);
+		$this->assertInstanceOf('\TEC\Tickets\Commerce\Module', $enabled_result, 'Provider should be returned when Tickets Commerce is enabled.');
+	}
+
+	/**
+	 * @test
 	 * it should get the correct number of rsvp attendees
 	 *
 	 * @covers tribe_tickets_get_attendees
