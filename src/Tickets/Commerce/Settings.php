@@ -695,11 +695,11 @@ class Settings {
 	 *
 	 * @param string $option     The option name.
 	 * @param array  $args       Additional arguments.
-	 * @param bool   $by_default The default value if the option is not set.
+	 * @param mixed  $by_default The default value if the option is not set.
 	 *
 	 * @return mixed The environmental option value.
 	 */
-	public static function get_option( string $option, array $args = [], bool $by_default = false ) {
+	public static function get_option( string $option, array $args = [], $by_default = false ) {
 		return get_option( self::get_key( $option, $args ), $by_default );
 	}
 
@@ -746,11 +746,11 @@ class Settings {
 	 *
 	 * @param string $option     The option name.
 	 * @param array  $args       Additional arguments.
-	 * @param bool   $by_default The default value if the option is not set.
+	 * @param mixed  $by_default The default value if the option is not set.
 	 *
 	 * @return mixed The environmental option value.
 	 */
-	public static function get( string $option, array $args = [], bool $by_default = false ) {
+	public static function get( string $option, array $args = [], $by_default = false ) {
 		return tribe_get_option( self::get_key( $option, $args ), $by_default );
 	}
 
