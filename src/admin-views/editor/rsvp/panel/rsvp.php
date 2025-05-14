@@ -82,6 +82,13 @@ $ticket_type = $ticket_type ?? 'rsvp';
 					value="<?php echo esc_attr( $ticket_type ); ?>"
 				/>
 
+				<input
+					type='hidden'
+					id='post_ID'
+					name='post_ID'
+					value="<?php echo absint( $post_id ); ?>"
+				/>
+
 				<?php $this->template( 'editor/panel/fields/limit', get_defined_vars() ); ?>
 
 				<?php $this->template( 'editor/panel/fields/rsvp/dates', get_defined_vars() ); ?>

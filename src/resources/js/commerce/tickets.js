@@ -116,6 +116,7 @@ tribe.tickets.commerce.tickets = {};
 		event.preventDefault();
 
 		//@todo show error messages if missing required fields
+		//@todo Ticket Name... RSVP for Event or Post Name
 
 		console.log('button clicked');
 		console.log(obj.tickets);

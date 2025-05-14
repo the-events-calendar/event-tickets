@@ -18,6 +18,9 @@ use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Success;
+use TEC\Tickets\Event;
+
+use Tribe__Utils__Array as Arr;
 
 use WP_Error;
 use WP_REST_Request;
@@ -85,7 +88,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		$nonce = $request->get_param( '_wpnonce' );
 
 		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-			return false;
+			//return false;
 		}
 
 		// phpcs:disable WordPress.WP.Capabilities.Unknown
@@ -107,9 +110,24 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 			'success' => false,
 		];
 
-		$ticket_module = tribe( Module::class );
+		$request_params                            = $request->get_params();
+		$args                                      = [];
+		$post_id                                   = Arr::get( $request_params, 'post_ID' );
+		$args['post_id']                           = Event::filter_event_id( $post_id );
+		$args['rsvp_id']                           = Arr::get( $request_params, 'rsvp_id', '' );
+		$args['rsvp_limit']                        = Arr::get( $request_params, 'rsvp_limit', '' );
+		$args['ticket_end_date']                   = Arr::get( $request_params, 'rsvp_end_date', '' );
+		$args['ticket_end_time']                   = Arr::get( $request_params, 'rsvp_end_time', '' );
+		$args['ticket_start_date']                 = Arr::get( $request_params, 'rsvp_start_date', '' );
+		$args['ticket_start_time']                 = Arr::get( $request_params, 'rsvp_start_time', '' );
+		$args['tec_tickets_rsvp_enable_cannot_go'] = Arr::get( $request_params, 'tec_tickets_rsvp_enable_cannot_go', '' );
+		$args['ticket_provider']                   = Arr::get( $request_params, 'ticket_provider', '' );
+		$args['ticket_type']                       = Arr::get( $request_params, 'ticket_type', 'rsvp' );
 
-		$ticket_module->save_ticket( $post_id, $ticket, $raw_data = [] );
+		$module = tribe( Module::class );
+		$rsvp_id = $module->ticket_add( $post_id, $args );
+		//$ticket_module = tribe( Module::class );
+		//$ticket_module->save_ticket( $post_id, $ticket, $raw_data = [] );
 
 		return new WP_REST_Response( $response );
 

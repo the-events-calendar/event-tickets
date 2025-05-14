@@ -484,6 +484,8 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	 *
 	 * @since 5.8.0
 	 *
+	 * @deprecated TBD - RSVP moved to Tickets Commerce.
+	 *
 	 * @param int $post_id The ID of the post the form is being rendered for.
 	 */
 	public function render_rsvp_form_toggle( int $post_id ): void {

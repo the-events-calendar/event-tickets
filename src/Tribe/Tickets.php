@@ -802,7 +802,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$key   = __METHOD__ . '-' . $this->orm_provider . '-' . $post_id;
 
 			if ( isset( $cache[ $key ] ) && is_array( $cache[ $key ] ) ) {
-				return $cache[ $key ];
+				//return $cache[ $key ];
 			}
 
 			$default_provider = static::get_event_ticket_provider( $post_id );
