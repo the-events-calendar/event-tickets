@@ -15,6 +15,7 @@ use WP_REST_Request;
 use TEC\Tickets\Settings as Tickets_Settings;
 use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Commerce\Settings as Tickets_Commerce_Settings;
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway as Gateway;
 use TEC\Tickets\Admin\Onboarding\API;
 
 /**
@@ -55,6 +56,11 @@ class Settings extends Abstract_Step {
 
 		$currency = $settings['currency'] ?? tribe_get_option( Tickets_Commerce_Settings::$option_currency_code, 'USD' );
 		tribe_update_option( Currency::$currency_code_option, $currency );
+
+		// Enable the gateway.
+		$option_key   = Gateway::$option_enabled_prefix . $settings['paymentOption'];
+		$option_value = 'connected' === $settings['connectionStatus'] ? true : false;
+		tribe_update_option( $option_key, $option_value );
 
 		// Update the option.
 		$updated = tribe( API::class )->update_wizard_settings( $settings );
