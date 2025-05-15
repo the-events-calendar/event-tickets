@@ -38,7 +38,7 @@
     "lucatume/wp-snaphot-assertions": "^1.1.0",
     "phpunit/phpunit": "^6.5.14",
     "spatie/phpunit-snapshot-assertions": "^1.4.2",
-    "stellarwp/coding-standards": "dev-main",
+    "stellarwp/coding-standards": "^2.1",
     "the-events-calendar/tec-testing-facilities": "dev-master",
     "lucatume/codeception-snapshot-assertions": "^0.4.0",
     "automattic/jetpack-changelogger": "^4.2",
