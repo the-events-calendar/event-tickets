@@ -337,6 +337,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 */
 	public function get_initial_data(): array {
 		$data         = tribe( Data::class );
+		$last_send    = $data->get_wizard_setting( 'last_send', [] );
 		$initial_data = [
 			/* Wizard History */
 			'forceDisplay'         => $this->force_wizard_display(),
@@ -346,6 +347,8 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			'completedTabs'        => (array) $data->get_wizard_setting( 'completed_tabs', [] ),
 			'skippedTabs'          => (array) $data->get_wizard_setting( 'skipped_tabs', [] ),
 			'paymentOption'        => $data->get_wizard_setting( 'payment_option', '' ),
+			'currency'             => $last_send['currency'] ?? '',
+			'country'              => $last_send['country'] ?? '',
 			/* nonces */
 			'action_nonce'         => wp_create_nonce( API::NONCE_ACTION ),
 			'_wpnonce'             => wp_create_nonce( 'wp_rest' ),
@@ -466,7 +469,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 				'currency' => tribe_get_option( 'tickets_commerce_enabled', false ) && tribe_get_option( 'tickets-commerce-currency-code', false ),
 			],
 			'emails'   => [
-				'sender_name' => tribe_get_option( 'tec-tickets-emails-sender-name', false ),
+				'sender_name'  => tribe_get_option( 'tec-tickets-emails-sender-name', false ),
 				'sender_email' => tribe_get_option( 'tec-tickets-emails-sender-email', false ),
 			],
 			'stripe'   => [
@@ -494,7 +497,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 							[
 								'step-list__item' => true,
 								'tec-tickets-onboarding-step-0' => true,
-								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[0] ) || !empty( $tab_settings['payments']['currency'] ),
+								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[0] ) || ! empty( $tab_settings['payments']['currency'] ),
 							]
 						);
 						?>
@@ -542,7 +545,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 							[
 								'step-list__item' => true,
 								'tec-tickets-onboarding-step-1' => true,
-								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[1] ) || !empty( $tab_settings['stripe']['connected'] ),
+								'tec-admin-page__onboarding-step--completed' => isset( $completed_tabs[1] ) || ! empty( $tab_settings['stripe']['connected'] ),
 							]
 						);
 						?>
@@ -552,7 +555,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 							<?php esc_html_e( 'Stripe for online payments', 'event-tickets' ); ?>
 						</div>
 						<div class="step-list__item-right">
-							<a href="<?php echo esc_url( admin_url( "{$settings_url}&tc-section=stripe&tab=stripe" ) ); ?>" class="tec-admin-page__link">
+							<a href="<?php echo esc_url( admin_url( "{$settings_url}&tab=tickets-commerce" ) ); ?>" class="tec-admin-page__link">
 								<?php esc_html_e( 'Edit Stripe settings', 'event-tickets' ); ?>
 							</a>
 						</div>
