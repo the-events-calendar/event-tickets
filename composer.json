@@ -34,7 +34,7 @@
     "codeception/util-universalframework": "^1.0",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
     "fakerphp/faker": "^1.23",
-    "lucatume/wp-browser": "^3.1.4",
+    "lucatume/wp-browser": "3.7.12",
     "lucatume/wp-snaphot-assertions": "^1.1.0",
     "phpunit/phpunit": "^6.5.14",
     "spatie/phpunit-snapshot-assertions": "^1.4.2",
@@ -71,16 +71,16 @@
     "changelogger": {
       "changelog": "changelog.md",
       "types": {
-        "version" : "Version",
-        "feat" : "Feature",
-        "tweak" : "Tweak",
-        "fix" : "Fix",
-        "performance" : "Performance",
-        "security" : "Security",
-        "accessibility" : "Accessibility",
-        "compatibility" : "Compatibility",
-        "deprecated" : "Deprecated",
-        "language" : "Language"
+        "version": "Version",
+        "feat": "Feature",
+        "fix": "Fix",
+        "tweak": "Tweak",
+        "performance": "Performance",
+        "security": "Security",
+        "accessibility": "Accessibility",
+        "compatibility": "Compatibility",
+        "deprecated": "Deprecated",
+        "language": "Language"
       },
       "formatter": {
         "filename": "bin/class-tec-changelog-formatter.php"

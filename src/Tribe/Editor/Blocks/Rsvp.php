@@ -214,7 +214,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 			[
 				'localize' => [
 					'name' => 'TribeRsvp',
-					'data' => [
+					'data' => fn() => [
 						'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
 						'nonces'  => [
 							'rsvpHandle' => wp_create_nonce( 'tribe_tickets_rsvp_handle' )
@@ -243,7 +243,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 				'conditionals' => [ $this, 'should_enqueue_ari' ],
 				'localize' => [
 					'name' => 'TribeRsvp',
-					'data' => [
+					'data' => fn() => [
 						'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
 						'nonces'  => [
 							'rsvpHandle' => wp_create_nonce( 'tribe_tickets_rsvp_handle' )
@@ -268,7 +268,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 			[
 				'localize' => [
 					'name' => 'TribeRsvp',
-					'data' => [
+					'data' => fn() => [
 						'ajaxurl'    => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
 						'cancelText' => __( 'Are you sure you want to cancel?', 'event-tickets' ),
 					],
