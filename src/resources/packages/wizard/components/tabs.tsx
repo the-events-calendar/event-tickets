@@ -9,7 +9,6 @@ import Tab from "./tabs/tab";
 import WelcomeContent from "./tabs/welcome/tab";
 import SettingsContent from "./tabs/settings/tab";
 import CommunicationContent from "./tabs/communication/tab";
-import PaymentsContent from "./tabs/payments/tab";
 import EventsContent from "./tabs/events/tab";
 
 const OnboardingTabs = () => {

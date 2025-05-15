@@ -137,17 +137,9 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab, addTab, updateTab, reo
 		updateSettings({ paymentOption });
 	}, [paymentOption, updateSettings]);
 
-	// Wrapper for handleCurrencyChange
-	const onCurrencyChange = (e) => {
-		handleCurrencyChange({
-			e,
-			setCurrency,
-			setPaymentGateways,
-			paymentOption,
-			setPaymentOption: handlePaymentOptionChanged,
-			countries,
-		});
-	};
+	useEffect(() => {
+		setCurrency(currency || countryCurrency);
+	}, [currency, countryCurrency]);
 
 	// Wrapper for handleConnect
 	const onConnect = async (gateway: string) => {
@@ -214,6 +206,7 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab, addTab, updateTab, reo
 		currency: currencyCode,
 		paymentOption,
 		currentTab: 1,
+		connectionStatus,
 	};
 
 	// Check if we have country with only one gateway to handle display logic
