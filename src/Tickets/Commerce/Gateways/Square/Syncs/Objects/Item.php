@@ -367,6 +367,14 @@ abstract class Item implements JsonSerializable {
 
 		$image_id ??= $image_ids[ $product_type ] ?? null;
 
+		if ( $image_id ) {
+			$still_exists = Requests::get_with_cache( "catalog/object/{$image_id}" );
+
+			if ( empty( $still_exists['object'] ) ) {
+				$image_id = null;
+			}
+		}
+
 		if ( null === $image_id ) {
 			$data = [
 				'idempotency_key' => uniqid( 'square-image-' . $this->get_wp_id() . '-' . $product_type . '-', true ),

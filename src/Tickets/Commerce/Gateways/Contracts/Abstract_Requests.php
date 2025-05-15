@@ -80,8 +80,7 @@ abstract class Abstract_Requests implements Requests_Interface {
 		$request_arguments['headers'] = array_merge(
 			$request_arguments['headers'] ?? [],
 			[
-				'Square-Version' => '2021-12-15',
-				'Content-Type'   => 'multipart/form-data; boundary=' . $boundary,
+				'Content-Type' => 'multipart/form-data; boundary=' . $boundary,
 			]
 		);
 
