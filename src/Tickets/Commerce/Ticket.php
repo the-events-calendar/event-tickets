@@ -392,7 +392,8 @@ class Ticket extends Ticket_Data {
 		$return->start_time       = get_post_meta( $ticket_id, '_ticket_start_time', true );
 		$return->end_time         = get_post_meta( $ticket_id, '_ticket_end_time', true );
 		$return->sku              = get_post_meta( $ticket_id, '_sku', true );
-		$return->type              = get_post_meta( $ticket_id, '_sku', true );
+
+		$return->setType( get_post_meta( $ticket_id, '_type', true ) );
 
 		$qty_sold = get_post_meta( $ticket_id,  static::$sales_meta_key, true );
 

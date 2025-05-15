@@ -6,31 +6,31 @@
  *
  * @version TBD
  *
- * @var Tribe__Tickets__Ticket_Object|null $ticket                           The ticket object.
- * @var Tribe__Tickets__Tickets            $provider                         The provider instance.
- * @var array<string,string>               $modules                          The available ticket modules.
- * @var array<string,string>               $start_date_errors                The ticket start date errors.
- * @var int                                $post_id                          The post ID.
- * @var int                                $timepicker_step                  The timepicker step.
- * @var int|null                           $rsvp_id                          The ticket post ID, or null if new.
- * @var int|null                           $rsvp_limit                       The limit for the RSVP.
- * @var string                             $default_module_class             The default module class.
- * @var string                             $ticket_end_date                  The ticket end date.
- * @var string                             $provider_class                   The provider class.
- * @var string                             $rsvp_form_save_text              The RSVP form save text.
- * @var string                             $rsvp_required_type_error_message Error message for required RSVP type.
- * @var string                             $ticket_start_date                The ticket start date.
- * @var string                             $ticket_description               The ticket description.
- * @var string                             $ticket_end_date_aria_label       The ticket end date ARIA attribute.
- * @var string                             $ticket_end_date_help_text        The ticket end date help text.
- * @var string                             $ticket_end_time                  The ticket end time.
- * @var string                             $ticket_form_save_text            The ticket form save text.
- * @var string                             $ticket_name                      The ticket name.
- * @var string                             $ticket_start_date_aria_label     The ticket start date ARIA attribute.
- * @var string                             $ticket_start_time                The ticket start time.
- * @var string                             $timepicker_round                 The timepicker round.
- * @var string                             $ticket_type                      The type of Ticket the form is for.
- * @var Tribe__Tickets__Admin__Views       $this                             The admin views instance.
+ * @var Tribe__Tickets__Ticket_Object $tc_rsvp                          The TC RSVP object.
+ * @var Tribe__Tickets__Tickets       $provider                         The provider instance.
+ * @var array<string,string>          $modules                          The available ticket modules.
+ * @var array<string,string>          $start_date_errors                The ticket start date errors.
+ * @var int                           $post_id                          The post ID.
+ * @var int                           $timepicker_step                  The timepicker step.
+ * @var int|null                      $rsvp_id                          The ticket post ID, or null if new.
+ * @var int|null                      $rsvp_limit                       The limit for the RSVP.
+ * @var string                        $default_module_class             The default module class.
+ * @var string                        $ticket_end_date                  The ticket end date.
+ * @var string                        $provider_class                   The provider class.
+ * @var string                        $rsvp_form_save_text              The RSVP form save text.
+ * @var string                        $rsvp_required_type_error_message Error message for required RSVP type.
+ * @var string                        $ticket_start_date                The ticket start date.
+ * @var string                        $ticket_description               The ticket description.
+ * @var string                        $ticket_end_date_aria_label       The ticket end date ARIA attribute.
+ * @var string                        $ticket_end_date_help_text        The ticket end date help text.
+ * @var string                        $ticket_end_time                  The ticket end time.
+ * @var string                        $ticket_form_save_text            The ticket form save text.
+ * @var string                        $ticket_name                      The ticket name.
+ * @var string                        $ticket_start_date_aria_label     The ticket start date ARIA attribute.
+ * @var string                        $ticket_start_time                The ticket start time.
+ * @var string                        $timepicker_round                 The timepicker round.
+ * @var string                        $ticket_type                      The type of Ticket the form is for.
+ * @var Tribe__Tickets__Admin__Views  $this                             The admin views instance.
  */
 
 $ticket_type = $ticket_type ?? 'rsvp';
@@ -87,6 +87,13 @@ $ticket_type = $ticket_type ?? 'rsvp';
 					id='post_ID'
 					name='post_ID'
 					value="<?php echo absint( $post_id ); ?>"
+				/>
+
+				<input
+					type='hidden'
+					id='rsvp_id'
+					name='rsvp_id'
+					value="<?php echo absint( $rsvp_id ); ?>"
 				/>
 
 				<?php $this->template( 'editor/panel/fields/limit', get_defined_vars() ); ?>

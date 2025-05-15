@@ -16,6 +16,7 @@ use Tribe__Tickets__Main;
 use Tribe__Date_Utils;
 use Tribe__Tickets__Tickets;
 use WP_Post;
+use Tribe__Tickets__Ticket_Object;
 
 /**
  * Class Metabox.
@@ -66,7 +67,7 @@ class Metabox {
 		$start_time = Tribe__Date_Utils::time_only( $start_date, false );
 		$end_time   = Tribe__Date_Utils::time_only( $start_date, false );
 
-		$tickets           = Tribe__Tickets__Tickets::get_event_tickets( $post->ID );
+		$tc_rsvp = $this->get_tc_rsvp_ticket(  Tribe__Tickets__Tickets::get_event_tickets( $post->ID ) );
 
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
@@ -77,7 +78,7 @@ class Metabox {
 		// Add the data required by each panel to render correctly.
 		$context = array_merge( $context, ( new Ticket_Panel_Data( $post->ID ) )->to_array() );
 
-		$context['rsvp_id'] = 0;
+		$context['rsvp_id'] = $tc_rsvp->ID ?? null;
 		$context['rsvp_limit'] = 0;
 
 		return $admin_views->template(
@@ -85,4 +86,24 @@ class Metabox {
 			$context
 		);
 	}
+
+	/**
+	 * Get first ticket of type tc-rsvp
+	 *
+	 * @since TBD
+	 *
+	 * @param array $tickets List of ticket objects.
+	 *
+	 * @return Tribe__Tickets__Ticket_Object|null Matching ticket object or null if not found.
+	 */
+	public function get_tc_rsvp_ticket( array $tickets ) {
+		foreach ( $tickets as $ticket ) {
+			if ( $ticket instanceof Tribe__Tickets__Ticket_Object && $ticket->type() === 'tc-rsvp' ) {
+				return $ticket;
+			}
+		}
+
+		return null;
+	}
+
 }

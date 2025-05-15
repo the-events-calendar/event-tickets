@@ -1,9 +1,10 @@
 <?php
 /**
- * @var Tribe__Tickets__Admin__Views $admin_views
- * @var WP_Post                      $post
- * @var int                          $post_id
- * @var int                          $rsvp_id
+ * @var Tribe__Tickets__Admin__Views  $admin_views
+ * @var Tribe__Tickets__Ticket_Object $tc_rsvp The TC RSVP object.
+ * @var WP_Post                       $post
+ * @var int                           $post_id
+ * @var int                           $rsvp_id
  */
 
 ?>
@@ -22,7 +23,7 @@
 			'name'    => 'tec_tickets_rsvp_enable',
 			'label'   => 'Enable RSVP ',
 			'tooltip' => 'Allow users to register as attendees for this event',
-			'value'   => '',
+			'value'   => ! empty( $tc_rsvp->ID )
 		]
 	);
 	?>
