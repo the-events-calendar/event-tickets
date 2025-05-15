@@ -2,8 +2,8 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.22.0
-Requires at least: 6.5
+Stable tag: 5.22.0.1
+Requires at least: 6.6
 Tested up to: 6.8.1
 Requires PHP: 7.4
 License: GPLv2 or later
@@ -198,6 +198,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.22.0.1] 2025-05-14 =
+
+* Fix - Prevents fatal if QR library in common has not loaded. [TEC-5497]
+* Language - 0 new strings added, 38 updated, 0 fuzzied, and 5 obsoleted.
 
 = [5.22.0] 2025-05-13 =
 
