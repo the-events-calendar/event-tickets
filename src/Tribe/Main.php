@@ -454,18 +454,18 @@ class Tribe__Tickets__Main {
 		tribe( 'tickets.privacy' );
 
 		/**
-		 * Fires once Event Tickets has completed basic setup.
-		 *
-		 * @deprecated 5.22.0 Use `tec_tickets_fully_loaded` instead.
-		 */
-		do_action_deprecated( 'tribe_tickets_plugin_loaded', [], '5.22.0', 'Use `tec_tickets_fully_loaded` instead.' );
-
-		/**
 		 * Fires when Event Tickets is fully loaded.
 		 *
 		 * @since 5.22.0
 		 */
 		do_action( 'tec_tickets_fully_loaded' );
+
+		/**
+		 * Fires once Event Tickets has completed basic setup.
+		 *
+		 * @deprecated 5.22.0 Use `tec_tickets_fully_loaded` instead.
+		 */
+		do_action_deprecated( 'tribe_tickets_plugin_loaded', [], '5.22.0', 'Use `tec_tickets_fully_loaded` instead.' );
 	}
 
 	/**
@@ -527,6 +527,15 @@ class Tribe__Tickets__Main {
 
 		// Set up IAN Client - In-App Notifications.
 		tribe_register_provider( TEC\Tickets\Notifications\Provider::class );
+
+		/**
+		 * Allows other plugins and services to override/change the bound implementations.
+		 *
+		 * DO NOT put anything after this unless you _need to_ and know the implications!
+		 *
+		 * @since TBD
+		 */
+		do_action( 'tec_tickets_bound_implementations' );
 	}
 
 	/**
