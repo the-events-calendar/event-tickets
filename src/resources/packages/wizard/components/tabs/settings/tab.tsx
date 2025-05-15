@@ -57,7 +57,7 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab } ) => {
 	}, [paymentOption, updateSettings]);
 
 	useEffect(() => {
-		setCurrency(currency || countryCurrency || 'USD');
+		setCurrency(currency || countryCurrency);
 	}, [currency, countryCurrency]);
 
 	useEffect( () => {
@@ -71,6 +71,7 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab } ) => {
 		currency: currencyCode,
 		paymentOption,
 		currentTab: 1,
+		connectionStatus,
 	};
 
 	const handleConnect = async ( gateway: string ) => {
