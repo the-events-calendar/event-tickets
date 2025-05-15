@@ -188,7 +188,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		// When we have success we clear the cart.
 		tribe( Cart::class )->clear_cart();
-		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $order->gateway_order_id ], tribe( Success::class )->get_url() );
+		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $square_order_id ], tribe( Success::class )->get_url() );
 
 		// Remove the checkout screen hold.
 		$orders->remove_on_checkout_screen_hold( $order->ID );

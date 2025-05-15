@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
 use Tribe__Utils__Array as Arr;
+use InvalidArgumentException;
 
 /**
  * Abstract Requests Contract.
@@ -53,6 +54,68 @@ abstract class Abstract_Requests implements Requests_Interface {
 	}
 
 	/**
+	 * Perform a POST request with a file.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $endpoint The endpoint to request.
+	 * @param array  $request_arguments The request arguments.
+	 * @param bool   $raw Whether to return the raw response.
+	 *
+	 * @return array The response.
+	 *
+	 * @throws InvalidArgumentException If the filepath is not set or the file does not exist.
+	 */
+	public static function post_with_file( $endpoint, array $request_arguments = [], $raw = false ) {
+		if ( empty( $request_arguments['filepath'] ) ) {
+			throw new InvalidArgumentException( 'Filepath is required' );
+		}
+
+		if ( ! file_exists( $request_arguments['filepath'] ) ) {
+			throw new InvalidArgumentException( 'File does not exist' );
+		}
+
+		$boundary = uniqid( 'square-image-' . md5( wp_json_encode( $request_arguments['body'] ) ), true );
+
+		$request_arguments['headers'] = array_merge(
+			$request_arguments['headers'] ?? [],
+			[
+				'Content-Type' => 'multipart/form-data; boundary=' . $boundary,
+			]
+		);
+
+		$payload = '';
+
+		foreach ( ( $request_arguments['body'] ?? [] ) as $field => $value ) {
+			$payload .= '--' . $boundary;
+			$payload .= "\r\n";
+			$payload .= 'Content-Disposition: form-data; name="' . $field . '"';
+			$payload .= "\r\n\r\n";
+			$payload .= $value;
+			$payload .= "\r\n";
+		}
+
+		$filename      = basename( $request_arguments['filepath'] );
+		$file_contents = ( file_get_contents( $request_arguments['filepath'] ) );
+		$mime_type     = mime_content_type( $request_arguments['filepath'] );
+		unset( $request_arguments['filepath'] );
+
+		$payload .= '--' . $boundary;
+		$payload .= "\r\n";
+		$payload .= 'Content-Disposition: form-data; name="file"; filename="' . $filename . '"';
+		$payload .= "\r\n";
+		$payload .= 'Content-Type: ' . $mime_type . "\r\n";
+		$payload .= "\r\n";
+		$payload .= $file_contents;
+		$payload .= "\r\n";
+		$payload .= '--' . $boundary . '--';
+
+		$request_arguments['body'] = $payload;
+
+		return static::request( 'POST', $endpoint, [], $request_arguments, $raw );
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public static function request( $method, $url, array $query_args = [], array $request_arguments = [], $raw = false, $retries = 0 ) {
@@ -78,7 +141,9 @@ abstract class Abstract_Requests implements Requests_Interface {
 		}
 
 		foreach ( $default_arguments as $key => $default_argument ) {
-			$request_arguments[ $key ] = array_merge( $default_argument, Arr::get( $request_arguments, $key, [] ) );
+			$set_value = Arr::get( $request_arguments, $key, [] );
+
+			$request_arguments[ $key ] = is_array( $set_value ) ? array_merge( $default_argument, $set_value ) : $set_value;
 		}
 
 		if ( 'GET' !== $method ) {
@@ -97,6 +162,7 @@ abstract class Abstract_Requests implements Requests_Interface {
 		}
 
 		if ( 'GET' === $method ) {
+			// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_remote_get_wp_remote_get
 			$response = wp_remote_get( $url, $request_arguments );
 		} elseif ( 'POST' === $method ) {
 			$response = wp_remote_post( $url, $request_arguments );
