@@ -8,7 +8,13 @@ namespace TEC\Tickets\Installer;
 use TEC\Common\StellarWP\Installer\Installer;
 use TEC\Common\Contracts\Service_Provider;
 
-
+/**
+ * Class Provider
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Installer
+ */
 class Provider extends Service_Provider {
 
 

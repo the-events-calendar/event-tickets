@@ -240,6 +240,13 @@ class Tribe__Tickets__Main {
 		$this->redirect_to_wizard_on_activation();
 	}
 
+	/**
+	 * Redirect to the wizard on activation.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
 	public function redirect_to_wizard_on_activation() {
 		if ( is_network_admin() ) {
 			// Never redirect on network admin.
@@ -247,9 +254,9 @@ class Tribe__Tickets__Main {
 		}
 
 		// Get the checked plugins from the request. If there are more than one, we're doing a bulk activation.
-		$checked = $_POST['checked'] ?? [];
+		$checked = $_POST['checked'] ? count( $_POST['checked'] ) : 0;
 
-		if ( count( $checked ) > 1 ) {
+		if ( ! empty( $checked ) ) {
 			// If multiple plugins are being activated, set the wizard redirect transient, this should only trigger redirection on a ET admin page visit.
 			set_transient( '_tec_tickets_wizard_redirect', 1, 30 );
 		} else {
