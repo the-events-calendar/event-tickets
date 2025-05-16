@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Temp details reducer should set the temp capacity 1`] = `
-Object {
+{
   "capacity": 20,
   "capacityType": "unlimited",
   "description": "",
@@ -31,7 +31,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp capacity type 1`] = `
-Object {
+{
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -61,7 +61,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp description 1`] = `
-Object {
+{
   "capacity": "",
   "capacityType": "unlimited",
   "description": "new description",
@@ -91,7 +91,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp end date 1`] = `
-Object {
+{
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -121,13 +121,13 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp end date moment 1`] = `
-Object {
+{
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
   "endDate": "2019-07-19",
   "endDateInput": "July 19, 2019",
-  "endDateMoment": Object {
+  "endDateMoment": {
     "type": "moment",
   },
   "endTime": "21:30:00",
@@ -153,7 +153,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp end time 1`] = `
-Object {
+{
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -183,7 +183,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp end time input 1`] = `
-Object {
+{
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -213,7 +213,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp iac setting 1`] = `
-Object {
+{
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -243,7 +243,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp price 1`] = `
-Object {
+{
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -273,7 +273,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp sku 1`] = `
-Object {
+{
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -303,7 +303,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp start date 1`] = `
-Object {
+{
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -333,7 +333,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp start date moment 1`] = `
-Object {
+{
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -355,7 +355,7 @@ Object {
   "sku": "",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
-  "startDateMoment": Object {
+  "startDateMoment": {
     "type": "moment",
   },
   "startTime": "19:30:00",
@@ -365,7 +365,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp start time 1`] = `
-Object {
+{
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -395,7 +395,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp start time input 1`] = `
-Object {
+{
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -425,7 +425,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp title 1`] = `
-Object {
+{
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",

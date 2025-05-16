@@ -1,32 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Tickets reducer allClientIds should register ticket block 1`] = `
-Array [
+[
   "tribe",
 ]
 `;
 
 exports[`Tickets reducer allClientIds should remove ticket block 1`] = `
-Array [
+[
   "two",
 ]
 `;
 
-exports[`Tickets reducer allClientIds should remove ticket blocks 1`] = `Array []`;
+exports[`Tickets reducer allClientIds should remove ticket blocks 1`] = `[]`;
 
-exports[`Tickets reducer allClientIds should set the default state 1`] = `Array []`;
+exports[`Tickets reducer allClientIds should set the default state 1`] = `[]`;
 
 exports[`Tickets reducer byClientId should register ticket block 1`] = `
-Object {
-  "tribe": Object {
+{
+  "tribe": {
     "available": 0,
     "currencyDecimalPoint": ".",
     "currencyNumberOfDecimals": 2,
     "currencyPosition": "prefix",
     "currencySymbol": undefined,
     "currencyThousandsSep": ",",
-    "details": Object {
-      "attendeeInfoFields": Array [],
+    "details": {
+      "attendeeInfoFields": [],
       "capacity": "",
       "capacityType": "unlimited",
       "description": "",
@@ -64,7 +64,7 @@ Object {
     "isSelected": false,
     "provider": "",
     "sold": 0,
-    "tempDetails": Object {
+    "tempDetails": {
       "capacity": "",
       "capacityType": "unlimited",
       "description": "",
@@ -97,16 +97,16 @@ Object {
 `;
 
 exports[`Tickets reducer byClientId should remove ticket block 1`] = `
-Object {
-  "two": Object {},
+{
+  "two": {},
 }
 `;
 
-exports[`Tickets reducer byClientId should remove ticket blocks 1`] = `Object {}`;
+exports[`Tickets reducer byClientId should remove ticket blocks 1`] = `{}`;
 
 exports[`Tickets reducer tickets should set the default state 1`] = `
-Object {
-  "allClientIds": Array [],
-  "byClientId": Object {},
+{
+  "allClientIds": [],
+  "byClientId": {},
 }
 `;

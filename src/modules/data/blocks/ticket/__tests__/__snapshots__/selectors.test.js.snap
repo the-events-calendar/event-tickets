@@ -29,8 +29,8 @@ exports[`Ticket block selectors Amount reducers selectors getSharedTicketsAvaila
 exports[`Ticket block selectors Amount reducers selectors getSharedTicketsSold 1`] = `0`;
 
 exports[`Ticket block selectors Block selectors getBlock 1`] = `
-Object {
-  "headerImage": Object {
+{
+  "headerImage": {
     "alt": "",
     "id": 0,
     "src": "",
@@ -41,20 +41,20 @@ Object {
   "provider": "",
   "sharedCapacity": "",
   "tempSharedCapacity": "",
-  "tickets": Object {
-    "allClientIds": Array [
+  "tickets": {
+    "allClientIds": [
       "modern-tribe",
     ],
-    "byClientId": Object {
-      "modern-tribe": Object {
+    "byClientId": {
+      "modern-tribe": {
         "available": 0,
         "currencyDecimalPoint": ".",
         "currencyNumberOfDecimals": 2,
         "currencyPosition": "prefix",
         "currencySymbol": undefined,
         "currencyThousandsSep": ",",
-        "details": Object {
-          "attendeeInfoFields": Array [],
+        "details": {
+          "attendeeInfoFields": [],
           "capacity": "",
           "capacityType": "unlimited",
           "description": "",
@@ -92,7 +92,7 @@ Object {
         "isSelected": false,
         "provider": "",
         "sold": 0,
-        "tempDetails": Object {
+        "tempDetails": {
           "capacity": "",
           "capacityType": "unlimited",
           "description": "",
@@ -143,7 +143,7 @@ exports[`Ticket block selectors Block selectors getTicketsTempSharedCapacity 1`]
 exports[`Ticket block selectors Block selectors getTicketsTempSharedCapacityInt 1`] = `0`;
 
 exports[`Ticket block selectors Header image selectors getTicketsHeaderImage 1`] = `
-Object {
+{
   "alt": "",
   "id": 0,
   "src": "",
@@ -160,7 +160,7 @@ exports[`Ticket block selectors Misc selectors canCreateTickets 1`] = `false`;
 
 exports[`Ticket block selectors Misc selectors getDefaultTicketProvider 1`] = `""`;
 
-exports[`Ticket block selectors Misc selectors getTicketProviders 1`] = `Array []`;
+exports[`Ticket block selectors Misc selectors getTicketProviders 1`] = `[]`;
 
 exports[`Ticket block selectors Misc selectors hasMultipleTicketProviders 1`] = `false`;
 
@@ -181,8 +181,8 @@ exports[`Ticket block selectors Ticket details selectors getTicketCapacityType 1
 exports[`Ticket block selectors Ticket details selectors getTicketDescription 1`] = `""`;
 
 exports[`Ticket block selectors Ticket details selectors getTicketDetails 1`] = `
-Object {
-  "attendeeInfoFields": Array [],
+{
+  "attendeeInfoFields": [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -260,15 +260,15 @@ exports[`Ticket block selectors Ticket details selectors isTicketPast 1`] = `fal
 exports[`Ticket block selectors Ticket details selectors isUnlimitedTicket 1`] = `true`;
 
 exports[`Ticket block selectors Ticket selectors getTicket 1`] = `
-Object {
+{
   "available": 0,
   "currencyDecimalPoint": ".",
   "currencyNumberOfDecimals": 2,
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
   "currencyThousandsSep": ",",
-  "details": Object {
-    "attendeeInfoFields": Array [],
+  "details": {
+    "attendeeInfoFields": [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -306,7 +306,7 @@ Object {
   "isSelected": false,
   "provider": "",
   "sold": 0,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -376,7 +376,7 @@ exports[`Ticket block selectors Ticket temp details selectors getTicketTempCapac
 exports[`Ticket block selectors Ticket temp details selectors getTicketTempDescription 1`] = `""`;
 
 exports[`Ticket block selectors Ticket temp details selectors getTicketTempDetails 1`] = `
-Object {
+{
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -437,27 +437,27 @@ exports[`Ticket block selectors Ticket temp details selectors getTicketTempStart
 
 exports[`Ticket block selectors Ticket temp details selectors getTicketTempTitle 1`] = `""`;
 
-exports[`Ticket block selectors Tickets selectors getIndependentTickets 1`] = `Array []`;
+exports[`Ticket block selectors Tickets selectors getIndependentTickets 1`] = `[]`;
 
-exports[`Ticket block selectors Tickets selectors getSharedTickets 1`] = `Array []`;
+exports[`Ticket block selectors Tickets selectors getSharedTickets 1`] = `[]`;
 
 exports[`Ticket block selectors Tickets selectors getSharedTicketsCount 1`] = `0`;
 
 exports[`Ticket block selectors Tickets selectors getTickets 1`] = `
-Object {
-  "allClientIds": Array [
+{
+  "allClientIds": [
     "modern-tribe",
   ],
-  "byClientId": Object {
-    "modern-tribe": Object {
+  "byClientId": {
+    "modern-tribe": {
       "available": 0,
       "currencyDecimalPoint": ".",
       "currencyNumberOfDecimals": 2,
       "currencyPosition": "prefix",
       "currencySymbol": undefined,
       "currencyThousandsSep": ",",
-      "details": Object {
-        "attendeeInfoFields": Array [],
+      "details": {
+        "attendeeInfoFields": [],
         "capacity": "",
         "capacityType": "unlimited",
         "description": "",
@@ -495,7 +495,7 @@ Object {
       "isSelected": false,
       "provider": "",
       "sold": 0,
-      "tempDetails": Object {
+      "tempDetails": {
         "capacity": "",
         "capacityType": "unlimited",
         "description": "",
@@ -529,22 +529,22 @@ Object {
 `;
 
 exports[`Ticket block selectors Tickets selectors getTicketsAllClientIds 1`] = `
-Array [
+[
   "modern-tribe",
 ]
 `;
 
 exports[`Ticket block selectors Tickets selectors getTicketsArray 1`] = `
-Array [
-  Object {
+[
+  {
     "available": 0,
     "currencyDecimalPoint": ".",
     "currencyNumberOfDecimals": 2,
     "currencyPosition": "prefix",
     "currencySymbol": undefined,
     "currencyThousandsSep": ",",
-    "details": Object {
-      "attendeeInfoFields": Array [],
+    "details": {
+      "attendeeInfoFields": [],
       "capacity": "",
       "capacityType": "unlimited",
       "description": "",
@@ -582,7 +582,7 @@ Array [
     "isSelected": false,
     "provider": "",
     "sold": 0,
-    "tempDetails": Object {
+    "tempDetails": {
       "capacity": "",
       "capacityType": "unlimited",
       "description": "",
@@ -615,16 +615,16 @@ Array [
 `;
 
 exports[`Ticket block selectors Tickets selectors getTicketsByClientId 1`] = `
-Object {
-  "modern-tribe": Object {
+{
+  "modern-tribe": {
     "available": 0,
     "currencyDecimalPoint": ".",
     "currencyNumberOfDecimals": 2,
     "currencyPosition": "prefix",
     "currencySymbol": undefined,
     "currencyThousandsSep": ",",
-    "details": Object {
-      "attendeeInfoFields": Array [],
+    "details": {
+      "attendeeInfoFields": [],
       "capacity": "",
       "capacityType": "unlimited",
       "description": "",
@@ -662,7 +662,7 @@ Object {
     "isSelected": false,
     "provider": "",
     "sold": 0,
-    "tempDetails": Object {
+    "tempDetails": {
       "capacity": "",
       "capacityType": "unlimited",
       "description": "",
@@ -696,19 +696,19 @@ Object {
 
 exports[`Ticket block selectors Tickets selectors getTicketsCount 1`] = `1`;
 
-exports[`Ticket block selectors Tickets selectors getTicketsIdsInBlocks 1`] = `Array []`;
+exports[`Ticket block selectors Tickets selectors getTicketsIdsInBlocks 1`] = `[]`;
 
 exports[`Ticket block selectors Tickets selectors getUnlimitedTickets 1`] = `
-Array [
-  Object {
+[
+  {
     "available": 0,
     "currencyDecimalPoint": ".",
     "currencyNumberOfDecimals": 2,
     "currencyPosition": "prefix",
     "currencySymbol": undefined,
     "currencyThousandsSep": ",",
-    "details": Object {
-      "attendeeInfoFields": Array [],
+    "details": {
+      "attendeeInfoFields": [],
       "capacity": "",
       "capacityType": "unlimited",
       "description": "",
@@ -746,7 +746,7 @@ Array [
     "isSelected": false,
     "provider": "",
     "sold": 0,
-    "tempDetails": Object {
+    "tempDetails": {
       "capacity": "",
       "capacityType": "unlimited",
       "description": "",

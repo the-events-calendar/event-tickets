@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Temp details reducer should set the temp capacity 1`] = `
-Object {
+{
   "capacity": 20,
   "description": "",
   "endDate": "2019-07-19",
@@ -20,7 +20,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp description 1`] = `
-Object {
+{
   "capacity": "",
   "description": "new description",
   "endDate": "2019-07-19",
@@ -39,7 +39,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp end date 1`] = `
-Object {
+{
   "capacity": "",
   "description": "",
   "endDate": "January 1, 2018",
@@ -58,7 +58,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp end date input 1`] = `
-Object {
+{
   "capacity": "",
   "description": "",
   "endDate": "2019-07-19",
@@ -77,7 +77,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp end date moment 1`] = `
-Object {
+{
   "capacity": "",
   "description": "",
   "endDate": "2019-07-19",
@@ -96,7 +96,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp end time 1`] = `
-Object {
+{
   "capacity": "",
   "description": "",
   "endDate": "2019-07-19",
@@ -115,7 +115,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp end time input 1`] = `
-Object {
+{
   "capacity": "",
   "description": "",
   "endDate": "2019-07-19",
@@ -134,7 +134,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp not going responses 1`] = `
-Object {
+{
   "capacity": "",
   "description": "",
   "endDate": "2019-07-19",
@@ -153,7 +153,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp start date 1`] = `
-Object {
+{
   "capacity": "",
   "description": "",
   "endDate": "2019-07-19",
@@ -172,7 +172,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp start date input 1`] = `
-Object {
+{
   "capacity": "",
   "description": "",
   "endDate": "2019-07-19",
@@ -191,7 +191,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp start date moment 1`] = `
-Object {
+{
   "capacity": "",
   "description": "",
   "endDate": "2019-07-19",
@@ -210,7 +210,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp start time 1`] = `
-Object {
+{
   "capacity": "",
   "description": "",
   "endDate": "2019-07-19",
@@ -229,7 +229,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp start time input 1`] = `
-Object {
+{
   "capacity": "",
   "description": "",
   "endDate": "2019-07-19",
@@ -248,7 +248,7 @@ Object {
 `;
 
 exports[`Temp details reducer should set the temp title 1`] = `
-Object {
+{
   "capacity": "",
   "description": "",
   "endDate": "2019-07-19",
