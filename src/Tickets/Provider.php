@@ -59,7 +59,7 @@ class Provider extends Service_Provider {
 		$this->container->singleton( 'tickets.provider', $this );
 
 		// Loads the QR code controller.
-		$this->container->register( QR\Controller::class );
+		$this->container->register_on_action( 'tec_qr_code_loaded', QR\Controller::class );
 
 		// Loads all of tickets commerce.
 		$this->container->register( Commerce\Provider::class );
