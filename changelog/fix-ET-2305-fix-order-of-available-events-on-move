@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Fixed sort order in the move attendees dialog to display posts alphabetically by title instead of by post ID. [ET-2305]
