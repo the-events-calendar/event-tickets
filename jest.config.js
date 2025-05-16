@@ -10,6 +10,7 @@ module.exports = {
 	testMatch: pkg._filePath.jest.map((path) => `<rootDir>/${path}`),
 	modulePathIgnorePatterns: ['<rootDir>/common'],
 	moduleNameMapper: {
+		'^@moderntribe/tickets/(.*)': '<rootDir>/src/modules/$1',
 		'\\.(css|pcss)$': 'identity-obj-proxy',
 		'\\.(svg)$': '<rootDir>/__mocks__/icons.js',
 		// Seating feature.
