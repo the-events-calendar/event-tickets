@@ -60,8 +60,7 @@ class AttendeesRegistration extends PureComponent {
 					ref={ this.iframe }
 					src={ iframeURL }
 					title={ __( 'Attendee registration', 'event-tickets' ) }
-				>
-				</iframe>
+				></iframe>
 				<div className="tribe-editor__attendee-registration__modal-overlay">
 					<Spinner />
 				</div>
@@ -84,9 +83,7 @@ class AttendeesRegistration extends PureComponent {
 					{ ...restProps }
 				/>
 				{ showHelperText && (
-					<span className="tribe-editor__attendee-registration__helper-text">
-						{ helperText }
-					</span>
+					<span className="tribe-editor__attendee-registration__helper-text">{ helperText }</span>
 				) }
 			</div>
 		);

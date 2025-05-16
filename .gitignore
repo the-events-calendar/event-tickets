@@ -43,6 +43,8 @@ compiler.jar
 
 # Local packaging files
 .pup-*
+pup.phar
+.pup-zip
 
 # add this yourself to add githoooks - see .huskyrc.sample
 .huskyrc

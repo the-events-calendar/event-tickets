@@ -15,11 +15,8 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { Button } from '@moderntribe/common/elements';
-import { Card } from '@moderntribe/tickets/elements';
-import {
-	Close as CloseIcon,
-	Settings as SettingsIcon,
-} from '@moderntribe/tickets/icons';
+import { Card } from '../index';
+import { Close as CloseIcon, Settings as SettingsIcon } from '../../icons';
 import './style.pcss';
 
 const SettingsDashboard = ( {
@@ -44,14 +41,9 @@ const SettingsDashboard = ( {
 	),
 	onCloseClick = noop,
 } ) => (
-	<Card className={ classNames(
-		'tribe-editor__settings-dashboard',
-		className,
-	) }>
+	<Card className={ classNames( 'tribe-editor__settings-dashboard', className ) }>
 		<header className="tribe-editor__settings-dashboard__header">
-			<span className="tribe-editor__settings-dashboard__header-left">
-				{ headerLeft }
-			</span>
+			<span className="tribe-editor__settings-dashboard__header-left">{ headerLeft }</span>
 			<Button
 				className="tribe-editor__settings-dashboard__close-button"
 				onClick={ onCloseClick }
@@ -60,9 +52,7 @@ const SettingsDashboard = ( {
 				{ closeButtonLabel }
 			</Button>
 		</header>
-		<div className="tribe-editor__settings-dashboard__content">
-			{ content }
-		</div>
+		<div className="tribe-editor__settings-dashboard__content">{ content }</div>
 	</Card>
 );
 
