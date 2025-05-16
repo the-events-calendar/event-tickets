@@ -415,11 +415,11 @@ class Settings {
 
 		if ( ! tec_tickets_emails_is_enabled() ) {
 			$email_settings = [
-				'tickets-commerce-settings-email-group-start'     => [
+				'tickets-commerce-settings-email-group-start'   => [
 					'type' => 'html',
 					'html' => '<div class="tec-settings-form__content-section">',
 				],
-				'tickets-commerce-email-settings-heading' => [
+				'tickets-commerce-email-settings-heading'       => [
 					'type' => 'html',
 					'html' => '<h3  class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'Emails', 'event-tickets' ) . '</h3>',
 				],
