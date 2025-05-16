@@ -35,6 +35,8 @@ class Provider extends Service_Provider {
 	 * @since 5.1.6
 	 */
 	public function register() {
+		$this->container->register( Payments_Tab::class );
+
 		// Specifically prevents anything else from loading.
 		if ( ! tec_tickets_commerce_is_enabled() ) {
 			return;
@@ -80,7 +82,7 @@ class Provider extends Service_Provider {
 		$this->container->register( Status\Status_Handler::class );
 		$this->container->register( Flag_Actions\Flag_Action_Handler::class );
 
-		// Register Compatibility Classes
+		// Register Compatibility Classes.
 		$this->container->singleton( Compatibility\Events::class );
 
 		// Load any external SPs we might need.
@@ -142,7 +144,7 @@ class Provider extends Service_Provider {
 		$this->hooks = $hooks;
 		$hooks->register();
 
-		// Allow Hooks to be removed, by having the them registered to the container
+		// Allow Hooks to be removed, by having the them registered to the container.
 		$this->container->singleton( Hooks::class, $hooks );
 		$this->container->singleton( 'tickets.commerce.hooks', $hooks );
 	}

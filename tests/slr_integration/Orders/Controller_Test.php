@@ -96,7 +96,7 @@ class Controller_Test extends Controller_Test_Case {
 	public function asset_data_provider() {
 		$assets = [
 			'tec-tickets-seating-admin-seats-report'       => '/build/Seating/admin/seatsReport.js',
-			'tec-tickets-seating-admin-seats-report-style' => '/build/Seating/admin/seatsReport.css',
+			'tec-tickets-seating-admin-seats-report-style' => '/build/Seating/admin/style-seatsReport.css',
 		];
 
 		foreach ( $assets as $slug => $path ) {

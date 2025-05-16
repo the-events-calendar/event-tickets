@@ -31,6 +31,9 @@ if ( ! defined( 'TRIBE_NO_FREEMIUS' ) ) {
 
 add_filter( 'tec_admin_update_page_bypass', '__return_true' );
 
+// Disable the wizard so it does not interfere with tests using the admin views.
+add_filter( 'tec_tickets_onboarding_is_active', '__return_false' );
+
 // Self-invoking function to avoid polluting the global namespace.
 ( static function () {
 	$collected_logs = [];

@@ -13,22 +13,22 @@
 }
 
 .tribe-editor__settings-dashboard__header {
+	align-items: center;
 	display: flex;
 	justify-content: space-between;
-	align-items: center;
-	padding-top: var(--tec-spacer-5);
 	padding-bottom: var(--tec-spacer-1);
+	padding-top: var(--tec-spacer-5);
 }
 
 .tribe-editor__settings-dashboard__header-left,
 /* extra class to override gutenberg styles */
 .tribe-editor__settings-dashboard .tribe-editor__settings-dashboard__close-button {
-	flex: none;
-	display: flex;
 	align-items: center;
+	display: flex;
+	flex: none;
 	font-size: 15px;
-	line-height: 18px;
 	letter-spacing: 0.38px;
+	line-height: 18px;
 }
 
 .tribe-editor__settings-dashboard__header-left {
@@ -54,7 +54,7 @@
 .tribe-editor__settings-dashboard__close-button {
 
 	& > svg {
-		fill: var(--tec-color-text-primary-light);;
+		fill: var(--tec-color-text-primary-light);
 		margin-right: 6px;
 
 		path {
@@ -66,11 +66,11 @@
 	&:focus {
 
 		& > svg {
-			fill: var(--tec-color-text-primary);;
+			fill: var(--tec-color-text-primary);
 			margin-right: 6px;
 
 			path {
-				fill: var(--tec-color-text-primary);;
+				fill: var(--tec-color-text-primary);
 			}
 		}
 	}
@@ -85,7 +85,7 @@
 
 				&,
 				& path {
-					fill: #AEB4BB;
+					fill: #aeb4bb;
 				}
 			}
 		}
@@ -103,7 +103,7 @@
 	.tribe-editor__settings-dashboard__close-button:disabled &,
 	.tribe-editor__settings-dashboard__close-button:disabled:hover &,
 	.tribe-editor__settings-dashboard__close-button:disabled:focus & {
-		color: #AEB4BB;
+		color: #aeb4bb;
 	}
 }
 

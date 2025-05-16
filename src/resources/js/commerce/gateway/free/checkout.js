@@ -39,7 +39,7 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	 */
 	obj.selectors = {
 		submitButton: '#tec-tc-gateway-free-checkout-button',
-		hiddenElement: '.tribe-common-a11y-hidden'
+		hiddenElement: '.tribe-common-a11y-hidden',
 	};
 
 	/**
@@ -86,30 +86,26 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	 *
 	 * @since 5.10.0
 	 *
-	 * @param data
-	 * @param headers
+	 * @param  data
+	 * @param  headers
 	 *
 	 * @return {{headers: {"X-WP-Nonce"}, throwHttpErrors: boolean, json, hooks: {beforeError: (function(*): *)[]}}}
 	 */
 	obj.getRequestArgs = ( data, headers ) => {
 		if ( 'undefined' === typeof headers ) {
 			headers = {
-				'X-WP-Nonce': obj.checkout.nonce
+				'X-WP-Nonce': obj.checkout.nonce,
 			};
 		}
 
 		const args = {
-			headers: headers,
+			headers,
 			hooks: {
-				beforeRetry: [
-					obj.onBeforeRetry
-				],
-				beforeError: [
-					obj.onBeforeError
-				]
+				beforeRetry: [ obj.onBeforeRetry ],
+				beforeError: [ obj.onBeforeError ],
 			},
 			timeout: 30000,
-			throwHttpErrors: false
+			throwHttpErrors: false,
 		};
 
 		if ( data ) {
@@ -142,8 +138,8 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	 * @since 5.10.0
 	 *
 	 * @param {jQuery} $container Parent container of notice element.
-	 * @param {string} title Notice Title.
-	 * @param {string} content Notice message content.
+	 * @param {string} title      Notice Title.
+	 * @param {string} content    Notice message content.
 	 */
 	obj.showNotice = ( $container, title, content ) => {
 		if ( ! $container || ! $container.length ) {
@@ -180,7 +176,7 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 
 		tribe.tickets.loader.show( obj.checkoutContainer );
 
-		let order = await obj.handleCreateOrder();
+		const order = await obj.handleCreateOrder();
 		obj.submitButton( false );
 
 		if ( order.success ) {
@@ -208,7 +204,7 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 
 		try {
 			response = await tribe.ky.post( obj.checkout.orderEndpoint, args ).json();
-		} catch( error ) {
+		} catch ( error ) {
 			response = error;
 		}
 
@@ -224,7 +220,8 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	 *
 	 * @return {Object}
 	 */
-	obj.getPurchaserData = () => tribe.tickets.commerce.getPurchaserData( $( tribe.tickets.commerce.selectors.purchaserFormContainer ) );
+	obj.getPurchaserData = () =>
+		tribe.tickets.commerce.getPurchaserData( $( tribe.tickets.commerce.selectors.purchaserFormContainer ) );
 
 	/**
 	 * Bind script loader to trigger script dependent methods.

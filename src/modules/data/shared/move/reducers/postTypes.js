@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import * as types from '@moderntribe/tickets/data/shared/move/types';
+import * as types from '../types';
 
 export const DEFAULT_STATE = {
 	isFetching: false,
@@ -30,4 +30,3 @@ export default function postTypes( state = DEFAULT_STATE, action ) {
 			return state;
 	}
 }
-

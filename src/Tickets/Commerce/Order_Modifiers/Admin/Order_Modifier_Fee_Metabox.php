@@ -107,7 +107,7 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 		parent::__construct( $container );
 		// Set up the modifier strategy and manager for handling fees.
 		$this->controller = $controller;
-		$this->manager           = $manager;
+		$this->manager    = $manager;
 
 		// Set up the order modifiers repository for accessing fee data.
 		$this->order_modifiers_relationship_repository = $order_modifier_relationship;
@@ -166,7 +166,7 @@ class Order_Modifier_Fee_Metabox extends Controller_Contract {
 			'admin/order-modifiers/fees.js',
 			Main::VERSION
 		)
-			->add_to_group_path( 'et-core' )
+			->add_to_group_path( Main::class )
 			->set_condition( [ $this, 'should_enqueue_assets' ] )
 			->set_dependencies( 'jquery', 'tribe-dropdowns', 'tribe-select2' )
 			->enqueue_on( 'admin_enqueue_scripts' )

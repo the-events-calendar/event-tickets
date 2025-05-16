@@ -8,7 +8,7 @@ import { compose } from 'redux';
  * Internal dependencies
  */
 import RSVPContainerHeader from './template';
-import { actions, selectors } from '@moderntribe/tickets/data/blocks/rsvp';
+import { actions, selectors } from '../../../data/blocks/rsvp';
 import { withStore } from '@moderntribe/common/hoc';
 
 const mapStateToProps = ( state ) => ( {
@@ -23,7 +23,4 @@ const mapDispatchToProps = ( dispatch ) => ( {
 	setAddEditOpen: () => dispatch( actions.setRSVPIsAddEditOpen( true ) ),
 } );
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps, mapDispatchToProps ),
-)( RSVPContainerHeader );
+export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps ) )( RSVPContainerHeader );

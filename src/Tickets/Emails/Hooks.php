@@ -48,7 +48,7 @@ class Hooks extends Service_Provider {
 	 */
 	protected function add_actions() {
 		add_action( 'tribe_settings_do_tabs', [ $this, 'register_emails_tab' ], 17 );
-		add_action( 'tribe_settings_after_form_element_tab_emails', [ $this, 'action_add_preview_modal_button' ] );
+		add_action( 'tec_settings_footer_after_save_fields_tab_emails', [ $this, 'action_add_preview_modal_button' ] );
 		add_action( 'admin_footer', [ $this, 'action_add_preview_modal' ] );
 		add_action( 'template_redirect', [ $this, 'action_template_redirect_tickets_emails' ] );
 	}

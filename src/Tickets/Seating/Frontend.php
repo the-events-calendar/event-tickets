@@ -330,7 +330,7 @@ class Frontend extends Controller_Contract {
 				'tec-tickets-seating-session'
 			)
 			->add_localize_script(
-				'tec.tickets.seating.frontend.ticketsBlock',
+				'tec.tickets.seating.frontend.ticketsBlockData',
 				fn() => $this->get_ticket_block_data( get_the_ID() )
 			)
 			->enqueue_on( 'wp_enqueue_scripts' )
@@ -341,7 +341,7 @@ class Frontend extends Controller_Contract {
 		// Register the front-end CSS.
 		Asset::add(
 			'tec-tickets-seating-frontend-style',
-			'frontend/ticketsBlock.css',
+			'frontend/style-ticketsBlock.css',
 			ET::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )

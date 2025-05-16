@@ -14,6 +14,7 @@
 	}
 
 	.tribe-tickets__commerce-checkout-notice {
+
 		&.tribe-tickets__commerce-checkout-notice--visible {
 			display: block;
 		}
@@ -83,7 +84,7 @@
 	}
 
 	.tribe-tickets__commerce-checkout-cart-item-details-description-attendee-name {
-		font-weight: bold;
+		font-weight: 700;
 	}
 
 	.tribe-tickets__commerce-checkout-cart-item-details-description-attendee-fields {
@@ -98,15 +99,17 @@
 		position: relative;
 		white-space: nowrap;
 
-		&:after {
+		&::after {
 			border: var(--tec-spacer-0) solid var(--tec-color-background-transparent);
-			content: '';
+			content: "";
 			display: inline-block;
 			margin-bottom: 1px;
 		}
 
 		@media (--viewport-medium) {
+
 			.tribe-tickets& {
+
 				@mixin hidden;
 			}
 		}
@@ -117,7 +120,8 @@
 	}
 
 	.tribe-tickets__commerce-checkout-cart-item-details-button--more {
-		&:after {
+
+		&::after {
 			border-bottom: 0 none;
 			border-top: var(--tec-spacer-0) solid var(--tec-color-text-secondary);
 		}
@@ -126,14 +130,16 @@
 	.tribe-tickets__commerce-checkout-cart-item-details-button--less {
 		display: none;
 
-		&:after {
+		&::after {
 			border-bottom: var(--tec-spacer-0) solid var(--tec-color-text-secondary);
 			border-top: 0 none;
 		}
 	}
 
 	.tribe-tickets__commerce-checkout-cart-item-details--open {
+
 		.tribe-tickets__commerce-checkout-cart-item-details-button--more {
+
 			@mixin hidden;
 		}
 
@@ -156,6 +162,7 @@
 	}
 
 	.tribe-tickets__commerce-checkout-cart-item-price {
+
 		.tec-tickets-price {
 			display: flex;
 			gap: var(--tec-spacer-1);
@@ -187,7 +194,7 @@
 
 	.tribe-tickets__commerce-checkout-cart-item-quantity {
 		flex: 0 0 60px;
-		font-weight: bold;
+		font-weight: 700;
 	}
 
 	.tribe-tickets__commerce-checkout-cart-item-subtotal {
@@ -296,10 +303,11 @@
 	.tribe-tickets__commerce-checkout-must-login-registration-link {
 		color: var(--tec-color-accent-primary);
 		font-size: var(--tec-font-size-2);
-		font-weight: normal;
+		font-weight: 400;
 	}
 
 	&.tribe-common {
+
 		.tribe-tickets__commerce-checkout-footer-notice-error--no-gateway {
 			display: block;
 		}
@@ -326,7 +334,7 @@
 		font-family: var(--tec-font-family-sans-serif);
 		font-size: var(--tec-font-size-3);
 
-		&:after {
+		&::after {
 			border: 7px solid var(--tec-color-background-transparent);
 			border-bottom-width: 0;
 			border-top-color: var(--tec-color-text-primary-light);
@@ -338,10 +346,11 @@
 	}
 
 	.tribe-tickets__commerce-checkout-gateway-toggle--open {
+
 		.tribe-tickets__commerce-checkout-gateway-toggle-button {
 			color: #23282d;
 
-			&:after {
+			&::after {
 				border: 7px solid var(--tec-color-background-transparent);
 				border-bottom-color: #23282d;
 				border-bottom-width: 10px;

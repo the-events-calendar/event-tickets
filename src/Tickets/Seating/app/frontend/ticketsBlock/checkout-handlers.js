@@ -1,5 +1,5 @@
 import { applyFilters } from '@wordpress/hooks';
-import { setIsInterruptable } from '@tec/tickets/seating/frontend/session';
+import { setIsInterruptable } from '../../frontend/session';
 
 /**
  * Checks out a ticket using the Tickets Commerce module.
@@ -12,20 +12,20 @@ import { setIsInterruptable } from '@tec/tickets/seating/frontend/session';
  *
  * @return {Promise<boolean>} A promise that resolves to `true` if the checkout was successful, `false` otherwise.
  */
-export async function checkoutWithTicketsCommerce(data) {
-	const searchParams = new URLSearchParams(window.location.search);
-	searchParams.append('tec-tc-cart', 'redirect');
-	const cartUrl = `${window.location.origin}${window.location.pathname}?${searchParams}`;
+export async function checkoutWithTicketsCommerce( data ) {
+	const searchParams = new URLSearchParams( window.location.search );
+	searchParams.append( 'tec-tc-cart', 'redirect' );
+	const cartUrl = `${ window.location.origin }${ window.location.pathname }?${ searchParams }`;
 
 	// Call the backend to get the redirection URL with the cart data.
-	const response = await fetch(cartUrl, {
+	const response = await fetch( cartUrl, {
 		method: 'POST',
 		body: data,
-	});
+	} );
 
-	if (response.ok && response.url) {
+	if ( response.ok && response.url ) {
 		// We're going to leave the page: this should not interrupt the timer and clear the session.
-		setIsInterruptable(false);
+		setIsInterruptable( false );
 
 		// We got a Checkout page URL back: redirect to it.
 		window.location.href = response.url;
@@ -47,10 +47,10 @@ export async function checkoutWithTicketsCommerce(data) {
  *
  * @return {Function|null} The checkout handler for the provider, or `null` if none is found.
  */
-export function getCheckoutHandlerForProvider(provider) {
+export function getCheckoutHandlerForProvider( provider ) {
 	let checkoutHandler;
 
-	switch (provider) {
+	switch ( provider ) {
 		case 'TECTicketsCommerceModule':
 		case 'TEC\\Tickets\\Commerce\\Module':
 			checkoutHandler = checkoutWithTicketsCommerce;
@@ -68,11 +68,7 @@ export function getCheckoutHandlerForProvider(provider) {
 	 * @param {Function|null} checkoutHandler The checkout handler for the provider.
 	 * @param {string}        provider        The provider to get the checkout handler for.
 	 */
-	checkoutHandler = applyFilters(
-		'tec.tickets.seating.checkoutHandler',
-		checkoutHandler,
-		provider
-	);
+	checkoutHandler = applyFilters( 'tec.tickets.seating.checkoutHandler', checkoutHandler, provider );
 
 	return checkoutHandler;
 }

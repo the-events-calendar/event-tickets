@@ -40,14 +40,17 @@ class Tribe__Tickets__Editor__Blocks__Attendees
 	 * @return void
 	 */
 	public function assets() {
-		$gutenberg = Tribe__Tickets__Main::instance();
+		$et = Tribe__Tickets__Main::instance();
 
-		tribe_asset(
-			$gutenberg,
+		tec_asset(
+			$et,
 			'tribe-tickets-gutenberg-block-attendees-style',
-			'app/attendees/frontend.css',
+			'attendees/frontend.css',
 			[],
-			null
+			null,
+			[
+				'group_path' => get_class( $et ) . '-packages',
+			]
 		);
 	}
 

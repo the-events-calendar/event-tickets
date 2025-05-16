@@ -1,0 +1,27 @@
+/* -----------------------------------------------------------------------------
+ * Buttons:
+ *
+ * These are mainly the continue and skip buttons that control moving from
+ * one step to the next.
+ * ----------------------------------------------------------------------------- */
+
+.tec-tickets-onboarding__button,
+.tec-tickets-onboarding__button.is-primary,
+.tec-tickets-onboarding__button.is-secondary,
+.tec-tickets-onboarding__button.is-link {
+	margin: 0 auto;
+}
+
+.tec-tickets-onboarding__button.is-primary {
+	margin-top: var(--tec-spacer-4);
+}
+
+.tec-tickets-onboarding__button.is-link {
+	margin: auto;
+	margin-top: var(--tec-spacer-1);
+	text-decoration: none;
+}
+
+.install-success .tec-tickets-onboarding__button.is-primary {
+	margin-top: var(--tec-spacer-0);
+}

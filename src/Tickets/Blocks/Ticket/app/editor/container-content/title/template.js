@@ -15,7 +15,7 @@ import uniqid from 'uniqid';
  * Internal dependencies
  */
 import { Input, LabeledItem } from '@moderntribe/common/elements';
-import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { TICKET_LABELS } from '../../../../../../../modules/data/blocks/ticket/constants';
 import './styles.pcss';
 
 class Title extends PureComponent {
@@ -31,28 +31,26 @@ class Title extends PureComponent {
 	}
 
 	render() {
-		const {
-			isDisabled,
-			onTempTitleChange,
-			tempTitle,
-		} = this.props;
+		const { isDisabled, onTempTitleChange, tempTitle } = this.props;
 
 		return (
-			<div className={ classNames(
-				'tribe-editor__ticket__title',
-				'tribe-editor__ticket__content-row',
-				'tribe-editor__ticket__content-row--title',
-			) }>
+			<div
+				className={ classNames(
+					'tribe-editor__ticket__title',
+					'tribe-editor__ticket__content-row',
+					'tribe-editor__ticket__content-row--title'
+				) }
+			>
 				<LabeledItem
 					className="tribe-editor__ticket__title-label"
 					forId={ this.id }
 					isLabel={ true }
 					// eslint-disable-next-line no-undef
-					label={sprintf(
+					label={ sprintf(
 						/* Translators: %s - the singular label for a ticket. */
-						__('%s name', 'event-tickets'),
+						__( '%s name', 'event-tickets' ),
 						TICKET_LABELS.ticket.singular
-					)}
+					) }
 				/>
 
 				<Input

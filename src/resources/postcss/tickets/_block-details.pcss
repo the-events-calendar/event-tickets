@@ -6,6 +6,7 @@
 
 .event-tickets,
 .entry .entry-content .event-tickets {
+
 	/*
 		Block details/summary and controls
 	*/
@@ -44,7 +45,9 @@
 		padding-left: var(--tec-spacer-0);
 
 		.tribe-tickets__tickets-form & {
+
 			@media (--viewport-medium) {
+
 				@mixin hidden;
 			}
 		}
@@ -52,6 +55,7 @@
 
 	.tribe-tickets__tickets-item-details-summary-button--more,
 	.tribe-tickets__tickets-item-details-summary-button--less {
+
 		@mixin mobile-body-2;
 
 		background-color: transparent;
@@ -59,22 +63,25 @@
 		position: relative;
 		white-space: nowrap;
 
-		&:after {
+		&::after {
 			border: var(--tec-spacer-0) solid var(--tec-color-background-transparent);
-			content: '';
+			content: "";
 			display: inline-block;
 			margin-bottom: 1px;
 		}
 
 		@media (--viewport-medium) {
+
 			.tribe-tickets& {
+
 				@mixin hidden;
 			}
 		}
 	}
 
 	.tribe-tickets__tickets-item-details-summary-button--more {
-		&:after {
+
+		&::after {
 			border-bottom: 0 none;
 			border-top: var(--tec-spacer-0) solid var(--tec-color-text-secondary);
 		}
@@ -83,14 +90,16 @@
 	.tribe-tickets__tickets-item-details-summary-button--less {
 		display: none;
 
-		&:after {
+		&::after {
 			border-bottom: var(--tec-spacer-0) solid var(--tec-color-text-secondary);
 			border-top: 0 none;
 		}
 	}
 
 	.tribe__details--open {
+
 		.tribe-tickets__tickets-item-details-summary-button--more {
+
 			@mixin hidden;
 		}
 

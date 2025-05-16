@@ -1,10 +1,10 @@
 .tribe-editor__label-with-tooltip {
-	display: flex;
 	align-items: center;
+	display: flex;
 }
 
 .tribe-editor__labeled-item__label {
-	font-weight: bold;
+	font-weight: 700;
 
 	.tribe-editor__label-with-tooltip & {
 		flex: none;
@@ -12,24 +12,24 @@
 }
 
 .tribe-editor__label-with-tooltip__tooltip-label {
-	flex: none;
+	align-items: center;
 	background-color: transparent;
 	border: none;
-	padding: 0;
-	margin-top: -2px;
 	display: inline-flex;
-	align-items: center;
+	flex: none;
+	margin-top: -2px;
+	padding: 0;
 
 	& > * {
 		flex: none;
 	}
 
-	
+
 
 	& > .dashicons-info-outline {
 		color: var(--tec-color-icon-primary-alt);
 		font-family: dashicons;
-		font-feature-settings: 'clig' off, 'liga' off;
+		font-feature-settings: "clig" off, "liga" off;
 		font-size: var(--tec-font-size-3);
 		font-style: normal;
 		font-weight: var(--tec-font-weight-regular);

@@ -2,8 +2,8 @@
  * External dependencies
  */
 import classNames from 'classnames';
-import { LabeledItem, } from '@moderntribe/common/elements';
-import { useSelect, useDispatch, } from '@wordpress/data';
+import { LabeledItem } from '@moderntribe/common/elements';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { useCallback, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
@@ -35,25 +35,20 @@ const { storeName } = require( '../store' );
  * reloaded.
  *
  * @since 5.18.0
+ * @param          props
  *
  * @param {string} props.clientId The client ID of the ticket.
  * @return {JSX.Element}
- * @constructor
+ * @class
  */
 function FeesSection( props ) {
 	// Extract the clientId from the props.
 	const { clientId } = props;
 
 	// Get the available and automatic fees from the store.
-	const {
-		feesAvailable,
-		feesAutomatic,
-	} = useSelect(
-		( select ) => {
-			return select( storeName ).getAllFees();
-		},
-		[]
-	);
+	const { feesAvailable, feesAutomatic } = useSelect( ( select ) => {
+		return select( storeName ).getAllFees();
+	}, [] );
 
 	// Set up the state for the selected fees.
 	const { feesSelected, feesDisplayed } = useSelect(
@@ -61,7 +56,7 @@ function FeesSection( props ) {
 			return {
 				feesSelected: select( storeName ).getSelectedFees( clientId ),
 				feesDisplayed: select( storeName ).getDisplayedFees( clientId ),
-			}
+			};
 		},
 		[ clientId ]
 	);
@@ -86,11 +81,7 @@ function FeesSection( props ) {
 	const [ checkedFees, setCheckedFees ] = useState( feeIdSelectedMap );
 
 	// Set up the dispatch functions for working with the data store.
-	const {
-		addFeeToTicket,
-		removeFeeFromTicket,
-		addDisplayedFee,
-	} = useDispatch( storeName );
+	const { addFeeToTicket, removeFeeFromTicket, addDisplayedFee } = useDispatch( storeName );
 
 	/**
 	 * Handles the change event for the selected fees.
@@ -120,20 +111,14 @@ function FeesSection( props ) {
 
 	// Set up the state for the fee selection.
 	const [ isSelectingFee, setIsSelectingFee ] = useState( false );
-	const onAddFeeClick = useCallback(
-		() => {
-			setIsSelectingFee( true );
-		},
-		[ clientId ]
-	);
+	const onAddFeeClick = useCallback( () => {
+		setIsSelectingFee( true );
+	}, [ clientId ] );
 
 	// Set up the functions for the fee selection.
-	const onCancelFeeSelect = useCallback(
-		() => {
-			setIsSelectingFee( false );
-		},
-		[ clientId ]
-	);
+	const onCancelFeeSelect = useCallback( () => {
+		setIsSelectingFee( false );
+	}, [ clientId ] );
 
 	const onConfirmFeeSelect = useCallback(
 		( feeId ) => {
@@ -151,7 +136,7 @@ function FeesSection( props ) {
 			addDisplayedFee( clientId, feeId );
 		},
 		[ clientId, checkedFees ]
-	)
+	);
 
 	// Set up the fees that are available to be selected.
 	const selectableFees = feesAvailable.filter( ( fee ) => {
@@ -171,18 +156,13 @@ function FeesSection( props ) {
 			) }
 		>
 			<LabeledItem
-				className={ classNames(
-					'tribe-editor__labeled-item',
-					'tribe-editor__ticket__active-fees-label'
-				) }
+				className={ classNames( 'tribe-editor__labeled-item', 'tribe-editor__ticket__active-fees-label' ) }
 				label={ __( 'Ticket Fees', 'event-tickets' ) }
 			/>
 
 			<div className="tribe-editor__ticket__order_modifier_fees">
-
-				{ hasAutomaticFees ? (
-					feesAutomatic.map(
-						( fee ) => (
+				{ hasAutomaticFees
+					? feesAutomatic.map( ( fee ) => (
 							<CheckboxFeeWithTooltip
 								clientId={ clientId }
 								fee={ fee }
@@ -191,32 +171,32 @@ function FeesSection( props ) {
 								onChange={ () => {} }
 								tooltipText={ toolTipText }
 							/>
-						) )
-				) : null }
+					  ) )
+					: null }
 
-				{ hasDisplayedFees ? (
-					feesDisplayed.map( ( fee ) => (
-						<CheckboxFee
-							isDisabled={ false }
-							onChange={ onSelectedFeesChange }
-							isChecked={ checkedFees[ fee.id ] }
-							fee={ fee }
-							clientId={ clientId }
-						/>
-					) )
-				) : null }
+				{ hasDisplayedFees
+					? feesDisplayed.map( ( fee ) => (
+							<CheckboxFee
+								isDisabled={ false }
+								onChange={ onSelectedFeesChange }
+								isChecked={ checkedFees[ fee.id ] }
+								fee={ fee }
+								clientId={ clientId }
+							/>
+					  ) )
+					: null }
 
-				{ isSelectingFee
-					? <SelectFee
+				{ isSelectingFee ? (
+					<SelectFee
 						feesAvailable={ selectableFees }
 						onCancel={ onCancelFeeSelect }
 						onConfirm={ onConfirmFeeSelect }
 					/>
-					: <AddFee onClick={ onAddFeeClick }/> }
+				) : (
+					<AddFee onClick={ onAddFeeClick } />
+				) }
 
-				{ ! hasItemsToDisplay ? (
-					<p>{ __( 'No available fees.', 'event-tickets' ) }</p>
-				) : null }
+				{ ! hasItemsToDisplay ? <p>{ __( 'No available fees.', 'event-tickets' ) }</p> : null }
 			</div>
 		</div>
 	);

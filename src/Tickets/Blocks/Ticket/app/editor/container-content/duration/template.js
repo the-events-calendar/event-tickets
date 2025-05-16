@@ -14,41 +14,32 @@ import { Dashicon } from '@wordpress/components';
 /**
  * Internal dependencies
  */
-import { DateTimeRangePicker, LabelWithTooltip } from '@moderntribe/tickets/elements';
+import { DateTimeRangePicker, LabelWithTooltip } from '../../../../../../../modules/elements';
 import './style.pcss';
 
-const TicketDuration = ( {
-	hasDurationError,
-	...props
-} ) => (
-	<div className={ classNames(
-		'tribe-editor__ticket__duration',
-		'tribe-editor__ticket__content-row',
-		'tribe-editor__ticket__content-row--duration',
-	) }>
+const TicketDuration = ( { hasDurationError, ...props } ) => (
+	<div
+		className={ classNames(
+			'tribe-editor__ticket__duration',
+			'tribe-editor__ticket__content-row',
+			'tribe-editor__ticket__content-row--duration'
+		) }
+	>
 		<LabelWithTooltip
 			className="tribe-editor__ticket__duration-label-with-tooltip"
 			label={ __( 'Sale Duration', 'event-tickets' ) }
 			tooltipText={ __(
 				'If you do not set a start sale date, tickets will be available immediately.',
-				'event-tickets',
+				'event-tickets'
 			) }
-			tooltipLabel={
-				<Dashicon
-					className="tribe-editor__ticket__tooltip-label"
-					icon="info-outline"
-				/>
-			}
+			tooltipLabel={ <Dashicon className="tribe-editor__ticket__tooltip-label" icon="info-outline" /> }
 		/>
-		<DateTimeRangePicker
-			className="tribe-editor__ticket__duration-picker"
-			{ ...props }
-		/>
+		<DateTimeRangePicker className="tribe-editor__ticket__duration-picker" { ...props } />
 		{ hasDurationError && (
 			<span className="tribe-editor__ticket__duration-error">
 				{ __(
 					'There is an error with the selected sales duration. Please fix the issue before saving.', // eslint-disable-line max-len
-					'event-tickets',
+					'event-tickets'
 				) }
 			</span>
 		) }

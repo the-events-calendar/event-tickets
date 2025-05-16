@@ -13,8 +13,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { ActionButton } from '@moderntribe/tickets/elements';
-import { Settings as SettingsIcon } from '@moderntribe/tickets/icons';
+import { ActionButton } from '../../../../elements';
+import { Settings as SettingsIcon } from '../../../../icons';
 
 const SettingsActionButton = ( { isDisabled, onClick = noop } ) => (
 	<ActionButton

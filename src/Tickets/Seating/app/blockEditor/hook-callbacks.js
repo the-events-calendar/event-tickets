@@ -1,3 +1,4 @@
+import React from 'react';
 import { storeName } from './store';
 import { select, dispatch } from '@wordpress/data';
 import SeatType from './header/seat-type';
@@ -6,8 +7,7 @@ import Upsell from './settings/upsell';
 import Outage from './settings/outage';
 import { getTicketsSharedCapacityFromCommonStore } from './store/common-store-bridge';
 
-export const setSeatTypeForTicket = (clientId) =>
-	dispatch(storeName).setTicketSeatTypeByPostId(clientId);
+export const setSeatTypeForTicket = ( clientId ) => dispatch( storeName ).setTicketSeatTypeByPostId( clientId );
 
 /**
  * Filters whether the ticket is ASC.
@@ -19,8 +19,8 @@ export const setSeatTypeForTicket = (clientId) =>
  *
  * @return {boolean} Whether ticket is ASC.
  */
-export const filterTicketIsAsc = (isAsc, clientId) => {
-	return isAsc || !!select(storeName).getTicketSeatType(clientId);
+export const filterTicketIsAsc = ( isAsc, clientId ) => {
+	return isAsc || !! select( storeName ).getTicketSeatType( clientId );
 };
 
 /**
@@ -33,16 +33,13 @@ export const filterTicketIsAsc = (isAsc, clientId) => {
  *
  * @return {Array} The header details.
  */
-export const filterHeaderDetails = (items, clientId) => {
-	const hasSeats = select(storeName).isUsingAssignedSeating(clientId);
-	if (!hasSeats) {
+export const filterHeaderDetails = ( items, clientId ) => {
+	const hasSeats = select( storeName ).isUsingAssignedSeating( clientId );
+	if ( ! hasSeats ) {
 		return items;
 	}
-	const seatTypeId = select(storeName).getTicketSeatType(clientId);
-	let seatTypes = select(storeName).getSeatTypesForLayout(
-		select(storeName).getCurrentLayoutId(),
-		true
-	);
+	const seatTypeId = select( storeName ).getTicketSeatType( clientId );
+	let seatTypes = select( storeName ).getSeatTypesForLayout( select( storeName ).getCurrentLayoutId(), true );
 
 	/**
 	 * Seat types per layout may not be available initially. Even though thats the most accurate.
@@ -51,16 +48,14 @@ export const filterHeaderDetails = (items, clientId) => {
 	 *
 	 * Inconsistent return of getSeatTypesForLayout, we need to check for both array and object.
 	 */
-	if (!seatTypes || (Array.isArray(seatTypes) && !seatTypes.length)) {
-		seatTypes = select(storeName).getAllSeatTypes();
+	if ( ! seatTypes || ( Array.isArray( seatTypes ) && ! seatTypes.length ) ) {
+		seatTypes = select( storeName ).getAllSeatTypes();
 	}
 
-	const seatTypeName = Object.values(seatTypes).find(
-		(seatType) => seatType.id === seatTypeId
-	)?.name;
+	const seatTypeName = Object.values( seatTypes ).find( ( seatType ) => seatType.id === seatTypeId )?.name;
 
-	if (seatTypeName) {
-		items.push(<SeatType name={seatTypeName} />);
+	if ( seatTypeName ) {
+		items.push( <SeatType name={ seatTypeName } /> );
 	}
 
 	return items;
@@ -76,24 +71,24 @@ export const filterHeaderDetails = (items, clientId) => {
  *
  * @return {Object} The body of the request with the seating details.
  */
-export const filterSetBodyDetails = (body, clientId) => {
+export const filterSetBodyDetails = ( body, clientId ) => {
 	/**
 	 * On first save of a ticket, lock the Layout.
 	 * Doesn't matter if ASC or GAC, they layout should be locked.
 	 */
-	dispatch(storeName).setIsLayoutLocked(true);
+	dispatch( storeName ).setIsLayoutLocked( true );
 
-	const layoutId = select(storeName).getCurrentLayoutId();
-	if (!layoutId) {
+	const layoutId = select( storeName ).getCurrentLayoutId();
+	if ( ! layoutId ) {
 		return body;
 	}
 
-	const seatType = select(storeName).getTicketSeatType(clientId);
-	const eventCapacity = select(storeName).getEventCapacity();
-	body.append('ticket[seating][enabled]', seatType ? '1' : '0');
-	body.append('ticket[seating][seatType]', seatType ? seatType : '');
-	body.append('ticket[seating][layoutId]', layoutId);
-	body.append('ticket[event_capacity]', eventCapacity);
+	const seatType = select( storeName ).getTicketSeatType( clientId );
+	const eventCapacity = select( storeName ).getEventCapacity();
+	body.append( 'ticket[seating][enabled]', seatType ? '1' : '0' );
+	body.append( 'ticket[seating][seatType]', seatType ? seatType : '' );
+	body.append( 'ticket[seating][layoutId]', layoutId );
+	body.append( 'ticket[event_capacity]', eventCapacity );
 
 	return body;
 };
@@ -108,51 +103,42 @@ export const filterSetBodyDetails = (body, clientId) => {
  * @param {number} mappedProps.total     The total capacity.
  * @param {number} mappedProps.available The available capacity.
  */
-export const filterSeatedTicketsAvailabilityMappedProps = (mappedProps) => {
-	const store = select(storeName);
+export const filterSeatedTicketsAvailabilityMappedProps = ( mappedProps ) => {
+	const store = select( storeName );
 	const hasSeats = store.isUsingAssignedSeating();
 	const layoutLocked = store.isLayoutLocked();
 
-	if (!(hasSeats && layoutLocked)) {
+	if ( ! ( hasSeats && layoutLocked ) ) {
 		return mappedProps;
 	}
 
 	const layoutId = store.getCurrentLayoutId();
-	if (!layoutId) {
+	if ( ! layoutId ) {
 		return mappedProps;
 	}
 
-	const seatTypes = store.getSeatTypesForLayout(layoutId, true);
-	const activeSeatsByClient = Object.values(store.getSeatTypesByClientID());
-	const activeSeatsByPost = Object.values(store.getSeatTypesByPostID());
+	const seatTypes = store.getSeatTypesForLayout( layoutId, true );
+	const activeSeatsByClient = Object.values( store.getSeatTypesByClientID() );
+	const activeSeatsByPost = Object.values( store.getSeatTypesByPostID() );
 	const activeSeatTypes =
-		activeSeatsByPost.length > activeSeatsByClient.length
-			? activeSeatsByPost
-			: activeSeatsByClient;
+		activeSeatsByPost.length > activeSeatsByClient.length ? activeSeatsByPost : activeSeatsByClient;
 
 	const activeSeatTypesFiltered = activeSeatTypes.filter(
-		(value, index, array) => array.indexOf(value) === index
+		( value, index, array ) => array.indexOf( value ) === index
 	);
 
 	const activeSeatTypeTotalCapacity = activeSeatTypesFiltered.reduce(
-		(sum, type) =>
-			sum + parseInt(seatTypes[type] ? seatTypes[type].seats : 0),
+		( sum, type ) => sum + parseInt( seatTypes[ type ] ? seatTypes[ type ].seats : 0 ),
 		0
 	);
 
-	const seatTypeTotalCapacity = Object.values(seatTypes).reduce(
-		(sum, { seats }) => sum + parseInt(seats),
-		0
-	);
+	const seatTypeTotalCapacity = Object.values( seatTypes ).reduce( ( sum, { seats } ) => sum + parseInt( seats ), 0 );
 
-	const soldAndPending = Math.abs(
-		parseInt(mappedProps?.total || 0) -
-			parseInt(mappedProps?.available || 0)
-	);
+	const soldAndPending = Math.abs( parseInt( mappedProps?.total || 0 ) - parseInt( mappedProps?.available || 0 ) );
 
 	return {
 		total: seatTypeTotalCapacity,
-		available: Math.abs(activeSeatTypeTotalCapacity - soldAndPending),
+		available: Math.abs( activeSeatTypeTotalCapacity - soldAndPending ),
 	};
 };
 
@@ -165,27 +151,25 @@ export const filterSeatedTicketsAvailabilityMappedProps = (mappedProps) => {
  *
  * @return {Array} The settings fields.
  */
-export const filterSettingsFields = (fields) => {
-	const store = select(storeName);
+export const filterSettingsFields = ( fields ) => {
+	const store = select( storeName );
 	const status = store.getServiceStatus();
 
-	switch (status) {
+	switch ( status ) {
 		case 'not-connected':
 		case 'expired-license':
 		case 'invalid-license':
 		case 'no-license':
-			fields.push(<Upsell />);
+			fields.push( <Upsell /> );
 			break;
 		case 'down':
-			fields.push(<Outage />);
+			fields.push( <Outage /> );
 			break;
 		default:
 			const currentLayout = store.getCurrentLayoutId();
 			const layouts = store.getLayoutsInOptionFormat();
 
-			fields.push(
-				<LayoutSelect layouts={layouts} currentLayout={currentLayout} />
-			);
+			fields.push( <LayoutSelect layouts={ layouts } currentLayout={ currentLayout } /> );
 			break;
 	}
 
@@ -201,14 +185,14 @@ export const filterSettingsFields = (fields) => {
  *
  * @return {{isConfirmDisabled: boolean}} The filtered mapped props.
  */
-export const disableConfirmInTicketDashboard = (mappedProps) => {
-	const store = select(storeName);
+export const disableConfirmInTicketDashboard = ( mappedProps ) => {
+	const store = select( storeName );
 
-	if (store.isServiceStatusOk()) {
+	if ( store.isServiceStatusOk() ) {
 		return mappedProps;
 	}
 
-	if (!(store.isUsingAssignedSeating() && store.getCurrentLayoutId())) {
+	if ( ! ( store.isUsingAssignedSeating() && store.getCurrentLayoutId() ) ) {
 		return mappedProps;
 	}
 
@@ -226,14 +210,14 @@ export const disableConfirmInTicketDashboard = (mappedProps) => {
  *
  * @return {Array} The filtered actions.
  */
-export const removeAllActionsFromTicket = (actions) => {
-	const store = select(storeName);
+export const removeAllActionsFromTicket = ( actions ) => {
+	const store = select( storeName );
 
-	if (store.isServiceStatusOk()) {
+	if ( store.isServiceStatusOk() ) {
 		return actions;
 	}
 
-	if (!(store.isUsingAssignedSeating() && store.getCurrentLayoutId())) {
+	if ( ! ( store.isUsingAssignedSeating() && store.getCurrentLayoutId() ) ) {
 		return actions;
 	}
 
@@ -249,14 +233,14 @@ export const removeAllActionsFromTicket = (actions) => {
  *
  * @return {boolean} Whether the ticket is selected or not.
  */
-export const disableTicketSelection = (isSelected) => {
-	const store = select(storeName);
+export const disableTicketSelection = ( isSelected ) => {
+	const store = select( storeName );
 
-	if (store.isServiceStatusOk()) {
+	if ( store.isServiceStatusOk() ) {
 		return isSelected;
 	}
 
-	if (!(store.isUsingAssignedSeating() && store.getCurrentLayoutId())) {
+	if ( ! ( store.isUsingAssignedSeating() && store.getCurrentLayoutId() ) ) {
 		return isSelected;
 	}
 
@@ -274,23 +258,23 @@ export const disableTicketSelection = (isSelected) => {
  *
  * @return {boolean} Whether the button is disabled.
  */
-export const filterButtonIsDisabled = (isDisabled, state, ownProps) => {
-	if (isDisabled) {
+export const filterButtonIsDisabled = ( isDisabled, state, ownProps ) => {
+	if ( isDisabled ) {
 		// If disabled already, we have no reason to enable it.
 		return isDisabled;
 	}
 
-	const store = select(storeName);
+	const store = select( storeName );
 
-	if (!store.isUsingAssignedSeating()) {
+	if ( ! store.isUsingAssignedSeating() ) {
 		return isDisabled;
 	}
 
-	if (!store.getCurrentLayoutId()) {
+	if ( ! store.getCurrentLayoutId() ) {
 		return true;
 	}
 
-	if (!store.getTicketSeatType(ownProps.clientId)) {
+	if ( ! store.getTicketSeatType( ownProps.clientId ) ) {
 		return true;
 	}
 
@@ -308,10 +292,10 @@ export const filterButtonIsDisabled = (isDisabled, state, ownProps) => {
  * @return {React.Node|number} The shared capacity input component if the seating feature is enabled for the current post,
  *                              otherwise the shared capacity current value.
  */
-export function replaceSharedCapacityInput(sharedCapacityInput) {
-	const store = select(storeName);
+export function replaceSharedCapacityInput( sharedCapacityInput ) {
+	const store = select( storeName );
 
-	if (!store.isUsingAssignedSeating()) {
+	if ( ! store.isUsingAssignedSeating() ) {
 		return sharedCapacityInput;
 	}
 

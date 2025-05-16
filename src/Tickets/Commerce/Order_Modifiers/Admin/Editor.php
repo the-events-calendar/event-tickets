@@ -93,7 +93,7 @@ final class Editor extends Controller_Contract {
 		$this
 			->add_asset(
 				'tec-tickets-order-modifiers-block-editor',
-				'block-editor.js',
+				'blockEditor.js',
 			)
 			->set_dependencies(
 				'wp-hooks',
@@ -114,7 +114,7 @@ final class Editor extends Controller_Contract {
 		$this
 			->add_asset(
 				'tec-tickets-order-modifiers-block-editor-css',
-				'block-editor.css',
+				'style-blockEditor.css',
 			)
 			->enqueue_on( 'enqueue_block_editor_assets' )
 			->set_condition( fn() => $this->should_enqueue_assets() )

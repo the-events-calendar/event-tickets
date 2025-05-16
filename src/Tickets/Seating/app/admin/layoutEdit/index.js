@@ -1,10 +1,6 @@
 import './style.pcss';
-import {
-	getIframeElement,
-	initServiceIframe,
-	handleResize
-} from '@tec/tickets/seating/service/iframe';
-import { onReady, redirectTo } from '@tec/tickets/seating/utils';
+import { getIframeElement, initServiceIframe, handleResize } from '../../service/iframe';
+import { onReady, redirectTo } from '../../utils';
 import {
 	getAssociatedEventsUrl,
 	registerAction,
@@ -14,7 +10,7 @@ import {
 	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
 	GO_TO_ASSOCIATED_EVENTS,
 	INBOUND_SET_ELEMENT_HEIGHT,
-} from '@tec/tickets/seating/service/api';
+} from '../../service/api';
 import {
 	handleReservationsDeleted,
 	handleReservationsUpdatedFollowingSeatTypes,
@@ -49,27 +45,24 @@ export function goToAssociatedEvents( data ) {
  *
  * @return {Promise<void>} A promise that resolves when the iframe is initialized.
  */
-export async function init(dom) {
+export async function init( dom ) {
 	dom = dom || document;
 
-	registerAction(INBOUND_SET_ELEMENT_HEIGHT, (data) => handleResize( data, dom ));
+	registerAction( INBOUND_SET_ELEMENT_HEIGHT, ( data ) => handleResize( data, dom ) );
 
-	registerAction(RESERVATIONS_DELETED, handleReservationsDeleted);
+	registerAction( RESERVATIONS_DELETED, handleReservationsDeleted );
 
-	registerAction(SEAT_TYPES_UPDATED, handleSeatTypesUpdated);
+	registerAction( SEAT_TYPES_UPDATED, handleSeatTypesUpdated );
 
-	registerAction(SEAT_TYPE_DELETED, handleSeatTypeDeleted);
+	registerAction( SEAT_TYPE_DELETED, handleSeatTypeDeleted );
 
-	registerAction(
-		RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
-		handleReservationsUpdatedFollowingSeatTypes
-	);
+	registerAction( RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES, handleReservationsUpdatedFollowingSeatTypes );
 
-	registerAction(GO_TO_ASSOCIATED_EVENTS, goToAssociatedEvents);
+	registerAction( GO_TO_ASSOCIATED_EVENTS, goToAssociatedEvents );
 
-	await initServiceIframe(getIframeElement(dom));
+	await initServiceIframe( getIframeElement( dom ) );
 }
 
-onReady(() => {
-	init(document);
-});
+onReady( () => {
+	init( document );
+} );

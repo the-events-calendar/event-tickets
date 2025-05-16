@@ -40,7 +40,7 @@ class Base extends Controller {
 		$this->container->singleton( Repositories\Ticket_Groups::class, Repositories\Ticket_Groups::class );
 		$this->container->singleton( Repositories\Posts_And_Ticket_Groups::class, Repositories\Posts_And_Ticket_Groups::class );
 
-		tribe_asset(
+		tec_asset(
 			tribe( 'tickets.main' ),
 			'tec-tickets-flexible-tickets-style',
 			'flexible-tickets.css',

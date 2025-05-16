@@ -7,7 +7,7 @@
  *
  * @type   {Object}
  */
-tribe.tickets.commerce.gateway.stripe = tribe.tickets.commerce.gateway.stripe || {};
+window.tribe.tickets.commerce.gateway.stripe = window?.tribe?.tickets?.commerce?.gateway?.stripe || {};
 
 /**
  * This script Object for public usage of the methods.
@@ -84,11 +84,13 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Handle displaying errors to the end user in the cardErrors field
 	 *
-	 * @param array errors an array of arrays. Each base array is keyed with the error code and cotains a list of error
-	 *     messages.
+	 * @param array        errors an array of arrays. Each base array is keyed with the error code and cotains a list of error
+	 *                     messages.
+	 * @param errors
+	 * @param afterDisplay
 	 */
 	obj.handleErrorDisplay = ( errors, afterDisplay = () => {} ) => {
-		errors.map( e => obj.showNotice( {}, '', e[ 1 ] ) );
+		errors.map( ( e ) => obj.showNotice( {}, '', e[ 1 ] ) );
 
 		afterDisplay();
 	};
@@ -98,30 +100,26 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param data
-	 * @param headers
+	 * @param  data
+	 * @param  headers
 	 *
 	 * @return {{headers: {"X-WP-Nonce"}, throwHttpErrors: boolean, json, hooks: {beforeError: (function(*): *)[]}}}
 	 */
 	obj.getRequestArgs = ( data, headers ) => {
 		if ( 'undefined' === typeof headers ) {
 			headers = {
-				'X-WP-Nonce': obj.checkout.nonce
+				'X-WP-Nonce': obj.checkout.nonce,
 			};
 		}
 
 		const args = {
-			headers: headers,
+			headers,
 			hooks: {
-				beforeRetry: [
-					obj.onBeforeRetry
-				],
-				beforeError: [
-					obj.onBeforeError
-				]
+				beforeRetry: [ obj.onBeforeRetry ],
+				beforeError: [ obj.onBeforeError ],
 			},
 			timeout: 30000,
-			throwHttpErrors: false
+			throwHttpErrors: false,
 		};
 
 		if ( data ) {
@@ -164,7 +162,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Builds the wallets object to use when creating a Payment Element
 	 *
-	 * @returns {{applePay: string, googlePay: string}}
+	 * @return {{applePay: string, googlePay: string}}
 	 */
 	obj.getWallets = () => {
 		const settings = {
@@ -194,11 +192,12 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param {Object} error Which error we are dealing with.
+	 * @param          error.error
+	 * @param {Object} error       Which error we are dealing with.
 	 */
-	obj.onCardChange = ( {error} ) => {
+	obj.onCardChange = ( { error } ) => {
 		tribe.tickets.debug.log( 'stripe', 'cardChange', error );
-		let displayError = $( obj.selectors.cardErrors );
+		const displayError = $( obj.selectors.cardErrors );
 		if ( error ) {
 			displayError.text( error.message );
 		} else {
@@ -231,7 +230,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		}
 
 		if ( 'succeeded' === result.paymentIntent.status ) {
-			return ( obj.handlePaymentSuccess( result ) );
+			return obj.handlePaymentSuccess( result );
 		}
 	};
 
@@ -253,14 +252,9 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			const response = await obj.handleUpdateOrder( data.error.payment_intent );
 		}
 
-		return obj.handleErrorDisplay(
-			[
-				[ data.error.code, data.error.message ]
-			],
-			() => {
-				tribe.tickets.loader.hide( obj.checkoutContainer );
-			}
-		);
+		return obj.handleErrorDisplay( [ [ data.error.code, data.error.message ] ], () => {
+			tribe.tickets.loader.hide( obj.checkoutContainer );
+		} );
 	};
 
 	/**
@@ -278,7 +272,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		const response = await obj.handleUpdateOrder( data.paymentIntent );
 
 		// Redirect the user to the success page.
-		if  ( response.redirect_url && URL.canParse( response.redirect_url ) ) {
+		if ( response.redirect_url && URL.canParse( response.redirect_url ) ) {
 			window.location = response.redirect_url;
 		}
 		return true;
@@ -287,9 +281,9 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Handle payments in cases other than an automatic confirmation
 	 *
-	 * @param data
+	 * @param  data
 	 *
-	 * @returns {Promise<boolean>}
+	 * @return {Promise<boolean>}
 	 */
 	obj.handlePaymentDelayed = async ( data ) => {
 		tribe.tickets.debug.log( 'stripe', 'handlePaymentDelayed', data );
@@ -297,7 +291,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		const response = await obj.handleUpdateOrder( data.paymentIntent );
 
 		// Redirect the user to the success page.
-		if  ( response.redirect_url && URL.canParse( response.redirect_url ) ) {
+		if ( response.redirect_url && URL.canParse( response.redirect_url ) ) {
 			window.location = response.redirect_url;
 		}
 
@@ -315,13 +309,13 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 */
 	obj.handleUpdateOrder = async ( paymentIntent ) => {
 		const args = obj.getRequestArgs( {
-			client_secret: paymentIntent.client_secret
+			client_secret: paymentIntent.client_secret,
 		} );
 		let response;
 
 		try {
-			response = await ky.post( `${obj.checkout.orderEndpoint}/${paymentIntent.id}`, args ).json();
-		} catch( error ) {
+			response = await ky.post( `${ obj.checkout.orderEndpoint }/${ paymentIntent.id }`, args ).json();
+		} catch ( error ) {
 			response = error;
 		}
 
@@ -335,41 +329,45 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param {String} order The order object returned from the server.
+	 * @param {string} order The order object returned from the server.
 	 *
 	 * @return {Promise<*>}
 	 */
 	obj.submitMultiPayment = async ( order ) => {
 		// Only if we don't have the address fields to collect
-		if ( 0 === $('#tec-tc-gateway-stripe-render-payment').length ) {
-			return obj.stripeLib.confirmPayment( {
+		if ( 0 === $( '#tec-tc-gateway-stripe-render-payment' ).length ) {
+			return obj.stripeLib
+				.confirmPayment( {
+					elements: obj.stripeElements,
+					redirect: 'if_required',
+					confirmParams: {
+						return_url: order.return_url,
+					},
+				} )
+				.then( obj.handleConfirmPayment );
+		}
+
+		return obj.stripeLib
+			.confirmPayment( {
 				elements: obj.stripeElements,
 				redirect: 'if_required',
 				confirmParams: {
-					return_url: order.return_url
-				}
-			} ).then( obj.handleConfirmPayment );
-		}
-
-		return obj.stripeLib.confirmPayment( {
-			elements: obj.stripeElements,
-			redirect: 'if_required',
-			confirmParams: {
-				return_url: order.return_url,
-				shipping: {
-					name: obj.getPurchaserData().name,
-					phone: obj.getPurchaserData().phone,
-					address: {
-						line1: $('#tec-tc-purchaser-address1').val(),
-						line2: $('#tec-tc-purchaser-address2').val(),
-						city: $('#tec-tc-purchaser-city').val(),
-						state: $('#tec-tc-purchaser-state').val(),
-						postal_code: $('#tec-tc-purchaser-zip').val(),
-						country: $('#tec-tc-purchaser-country').val()
-					}
-				}
-			}
-		} ).then( obj.handleConfirmPayment );
+					return_url: order.return_url,
+					shipping: {
+						name: obj.getPurchaserData().name,
+						phone: obj.getPurchaserData().phone,
+						address: {
+							line1: $( '#tec-tc-purchaser-address1' ).val(),
+							line2: $( '#tec-tc-purchaser-address2' ).val(),
+							city: $( '#tec-tc-purchaser-city' ).val(),
+							state: $( '#tec-tc-purchaser-state' ).val(),
+							postal_code: $( '#tec-tc-purchaser-zip' ).val(),
+							country: $( '#tec-tc-purchaser-country' ).val(),
+						},
+					},
+				},
+			} )
+			.then( obj.handleConfirmPayment );
 	};
 
 	/**
@@ -383,14 +381,13 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		obj.submitButton( true );
 		if ( result.error ) {
 			return obj.handlePaymentError( result );
-		} else {
-
-			if ( result.paymentIntent.status === 'succeeded' ) {
-				return obj.handlePaymentSuccess( result );
-			}
-
-			return obj.handlePaymentDelayed( result );
 		}
+
+		if ( result.paymentIntent.status === 'succeeded' ) {
+			return obj.handlePaymentSuccess( result );
+		}
+
+		return obj.handlePaymentDelayed( result );
 	};
 
 	/**
@@ -398,15 +395,16 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @since 5.3.0
 	 *
-	 * @returns {Promise<*>}
+	 * @return {Promise<*>}
 	 */
 	obj.submitCardPayment = async () => {
-
-		return obj.stripeLib.confirmCardPayment( obj.checkout.paymentIntentData.key, {
-			payment_method: {
-				card: obj.cardElement,
-			}
-		} ).then( obj.handleConfirmCardPayment );
+		return obj.stripeLib
+			.confirmCardPayment( obj.checkout.paymentIntentData.key, {
+				payment_method: {
+					card: obj.cardElement,
+				},
+			} )
+			.then( obj.handleConfirmCardPayment );
 	};
 
 	/**
@@ -439,14 +437,14 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	obj.handleCreateOrder = async () => {
 		const args = obj.getRequestArgs( {
 			purchaser: obj.getPurchaserData(),
-			payment_intent: obj.checkout.paymentIntentData
+			payment_intent: obj.checkout.paymentIntentData,
 		} );
 		let response;
 
 		try {
 			// Fetch Publishable API Key and Initialize Stripe Elements on Ready
 			response = await ky.post( obj.checkout.orderEndpoint, args ).json();
-		} catch( error ) {
+		} catch ( error ) {
 			response = error;
 		}
 
@@ -471,7 +469,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 
 		tribe.tickets.loader.show( obj.checkoutContainer );
 
-		let order = await obj.handleCreateOrder();
+		const order = await obj.handleCreateOrder();
 		obj.submitButton( false );
 
 		if ( order.success ) {
@@ -530,7 +528,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		const options = obj.checkout.cardElementOptions;
 
 		// If there are no customized style options being added, use the previously defined default.
-		if( ! options.style ){
+		if ( ! options.style ) {
 			options.style = obj.checkout.cardElementStyle;
 		}
 
@@ -539,7 +537,6 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		obj.cardElement.mount( obj.selectors.cardElement );
 		obj.cardElement.on( 'change', obj.onCardChange );
 	};
-
 
 	/**
 	 * Configure the PaymentElement with separate fields.
@@ -550,7 +547,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 */
 	obj.setupPaymentElement = () => {
 		// Only if we don't have the address fields to collect
-		if ( 0 === $('#tec-tc-gateway-stripe-render-payment').length ) {
+		if ( 0 === $( '#tec-tc-gateway-stripe-render-payment' ).length ) {
 			const walletSettings = obj.getWallets();
 			// Instantiate the PaymentElement
 			obj.paymentElement = obj.stripeElements.create( 'payment', {
@@ -558,9 +555,9 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 					name: 'auto',
 					email: 'auto',
 					phone: 'auto',
-					address: 'auto'
+					address: 'auto',
 				},
-				wallets: walletSettings
+				wallets: walletSettings,
 			} );
 			obj.paymentElement.mount( obj.selectors.paymentElement );
 		}
@@ -570,64 +567,66 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		event.preventDefault();
 
 		const form = $( obj.selectors.infoForm );
-		const fields = form.find('input, select');
+		const fields = form.find( 'input, select' );
 		let valid = true;
-		fields.each((index, field) => {
-			field.classList.remove('error');
+		fields.each( ( index, field ) => {
+			field.classList.remove( 'error' );
 			field.nextElementSibling.classList.add( obj.selectors.hiddenElement.className() );
-			if (field.required && field.value === '') {
+			if ( field.required && field.value === '' ) {
 				valid = false;
-				field.classList.add('error');
+				field.classList.add( 'error' );
 				field.nextElementSibling.classList.remove( obj.selectors.hiddenElement.className() );
 			}
-		});
+		} );
 
-		if (!valid) {
+		if ( ! valid ) {
 			return;
 		}
 
 		$( obj.selectors.renderButton ).addClass( obj.selectors.hiddenElement.className() );
-		form.children('select, input').prop( 'disabled', true );
+		form.children( 'select, input' ).prop( 'disabled', true );
 		form.addClass( 'disabled' );
 		const walletSettings = obj.getWallets();
 		obj.paymentElement = obj.stripeElements.create( 'payment', {
 			defaultValues: {
 				billingDetails: {
-					name: $('#tec-tc-purchaser-name').val(),
-					email: $('#tec-tc-purchaser-email').val(),
+					name: $( '#tec-tc-purchaser-name' ).val(),
+					email: $( '#tec-tc-purchaser-email' ).val(),
 					phone: '',
 					address: {
-						line1: $('#tec-tc-purchaser-address1').val(),
-						line2: $('#tec-tc-purchaser-address2').val(),
-						city: $('#tec-tc-purchaser-city').val(),
-						state: $('#tec-tc-purchaser-state').val(),
-						country: $('#tec-tc-purchaser-country').val(),
-						postal_code: $('#tec-tc-purchaser-zip').val()
-					}
+						line1: $( '#tec-tc-purchaser-address1' ).val(),
+						line2: $( '#tec-tc-purchaser-address2' ).val(),
+						city: $( '#tec-tc-purchaser-city' ).val(),
+						state: $( '#tec-tc-purchaser-state' ).val(),
+						country: $( '#tec-tc-purchaser-country' ).val(),
+						postal_code: $( '#tec-tc-purchaser-zip' ).val(),
+					},
 				},
 				shippingDetails: {
-					name: $('#tec-tc-purchaser-name').val(),
-					email: $('#tec-tc-purchaser-email').val(),
+					name: $( '#tec-tc-purchaser-name' ).val(),
+					email: $( '#tec-tc-purchaser-email' ).val(),
 					phone: '',
 					address: {
-						line1: $('#tec-tc-purchaser-address1').val(),
-						line2: $('#tec-tc-purchaser-address2').val(),
-						city: $('#tec-tc-purchaser-city').val(),
-						state: $('#tec-tc-purchaser-state').val(),
-						country: $('#tec-tc-purchaser-country').val(),
-						postal_code: $('#tec-tc-purchaser-zip').val()
-					}
+						line1: $( '#tec-tc-purchaser-address1' ).val(),
+						line2: $( '#tec-tc-purchaser-address2' ).val(),
+						city: $( '#tec-tc-purchaser-city' ).val(),
+						state: $( '#tec-tc-purchaser-state' ).val(),
+						country: $( '#tec-tc-purchaser-country' ).val(),
+						postal_code: $( '#tec-tc-purchaser-zip' ).val(),
+					},
 				},
 			},
-			wallets: walletSettings
+			wallets: walletSettings,
 		} );
 		obj.paymentElement.mount( obj.selectors.paymentElement );
-		setTimeout(() => {
-			$('.tribe-tickets__commerce-checkout-gateways').get(0).scrollIntoView({behavior: 'smooth'});
+		setTimeout( () => {
+			$( '.tribe-tickets__commerce-checkout-gateways' ).get( 0 ).scrollIntoView( { behavior: 'smooth' } );
 			$( obj.selectors.submitButton ).removeClass( obj.selectors.hiddenElement.className() );
-			$('.tribe-tickets__commerce-checkout-section-header').removeClass( obj.selectors.hiddenElement.className() )
-		}, 2000);
-	}
+			$( '.tribe-tickets__commerce-checkout-section-header' ).removeClass(
+				obj.selectors.hiddenElement.className()
+			);
+		}, 2000 );
+	};
 
 	/**
 	 * Setup and initialize Stripe API.
@@ -637,7 +636,6 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @return {Promise<void>}
 	 */
 	obj.setupStripe = async () => {
-
 		if ( 0 === obj.checkout.paymentIntentData.length ) {
 			return;
 		}
@@ -672,7 +670,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @return {Object}
 	 */
-	obj.getPurchaserData = () => tribe.tickets.commerce.getPurchaserData( $( tribe.tickets.commerce.selectors.purchaserFormContainer ) );
+	obj.getPurchaserData = () =>
+		tribe.tickets.commerce.getPurchaserData( $( tribe.tickets.commerce.selectors.purchaserFormContainer ) );
 
 	/**
 	 * Shows the notice for the checkout container for Stripe.
@@ -680,8 +679,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @since 5.3.0
 	 *
 	 * @param {jQuery} $container Parent container of notice element.
-	 * @param {string} title Notice Title.
-	 * @param {string} content Notice message content.
+	 * @param {string} title      Notice Title.
+	 * @param {string} content    Notice message content.
 	 */
 	obj.showNotice = ( $container, title, content ) => {
 		if ( ! $container || ! $container.length ) {
@@ -730,4 +729,4 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	};
 
 	$( obj.ready );
-} )( jQuery, tribe.tickets.commerce.gateway.stripe, Stripe, tribe.ky );
+} )( jQuery, window.tribe.tickets.commerce.gateway.stripe, Stripe, tribe.ky );

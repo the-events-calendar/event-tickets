@@ -10,8 +10,8 @@ import { isString } from 'lodash';
  */
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
-import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
-import { globals, moment as momentUtil } from "@moderntribe/common/utils";
+import { selectors, actions } from '../../../../../../../modules/data/blocks/ticket';
+import { globals, moment as momentUtil } from '@moderntribe/common/utils';
 
 /**
  * Handles the change event of the from date input.
@@ -19,16 +19,16 @@ import { globals, moment as momentUtil } from "@moderntribe/common/utils";
  * @since 5.9.0
  *
  * @param {Function} dispatch The dispatch function.
- * @param {Object} ownProps The component's own props.
+ * @param {Object}   ownProps The component's own props.
  *
- * @returns {Function} The change event handler.
+ * @return {Function} The change event handler.
  */
 const onFromDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
 	const { clientId } = ownProps;
 
 	if (
-		( isString( dayPickerInput ) && dayPickerInput === '' )
-		|| ( ! isString( dayPickerInput ) && dayPickerInput.input.value === '' )
+		( isString( dayPickerInput ) && dayPickerInput === '' ) ||
+		( ! isString( dayPickerInput ) && dayPickerInput.input.value === '' )
 	) {
 		dispatch( actions.setTicketTempSaleStartDate( clientId, '' ) );
 		dispatch( actions.setTicketTempSaleStartDateMoment( clientId, '' ) );
@@ -45,17 +45,17 @@ const onFromDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerI
  *
  * @since 5.9.0
  *
- * @param dispatch The dispatch function.
- * @param ownProps The component's own props.
+ * @param  dispatch The dispatch function.
+ * @param  ownProps The component's own props.
  *
- * @returns {Function} The change event handler.
+ * @return {Function} The change event handler.
  */
 const onToDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
 	const { clientId } = ownProps;
 
 	if (
-		( isString( dayPickerInput ) && dayPickerInput === '' )
-		|| ( ! isString( dayPickerInput ) && dayPickerInput.input.value === '' )
+		( isString( dayPickerInput ) && dayPickerInput === '' ) ||
+		( ! isString( dayPickerInput ) && dayPickerInput.input.value === '' )
 	) {
 		dispatch( actions.setTicketTempSaleEndDate( clientId, '' ) );
 		dispatch( actions.setTicketTempSaleEndDateMoment( clientId, '' ) );
@@ -72,10 +72,10 @@ const onToDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInp
  *
  * @since 5.9.0
  *
- * @param state The state.
- * @param ownProps The component's own props.
+ * @param  state    The state.
+ * @param  ownProps The component's own props.
  *
- * @returns {Object} The component's props.
+ * @return {Object} The component's props.
  */
 const mapStateToProps = ( state, ownProps ) => {
 	const datePickerFormat = globals.tecDateSettings().datepickerFormat
@@ -86,8 +86,14 @@ const mapStateToProps = ( state, ownProps ) => {
 	const endDateMoment = selectors.getTicketTempSaleEndDateMoment( state, ownProps );
 	const fromDate = startDateMoment && startDateMoment.toDate();
 	const toDate = endDateMoment && endDateMoment.toDate();
-	const fromDateInput = typeof startDateMoment === 'object' && startDateMoment.isValid() ? selectors.getTicketTempSaleStartDateInput( state, ownProps ) : '';
-	const toDateInput = typeof endDateMoment === 'object' && endDateMoment.isValid() ? selectors.getTicketTempSaleEndDateInput( state, ownProps ) : '';
+	const fromDateInput =
+		typeof startDateMoment === 'object' && startDateMoment.isValid()
+			? selectors.getTicketTempSaleStartDateInput( state, ownProps )
+			: '';
+	const toDateInput =
+		typeof endDateMoment === 'object' && endDateMoment.isValid()
+			? selectors.getTicketTempSaleEndDateInput( state, ownProps )
+			: '';
 
 	return {
 		isDisabled: selectors.isTicketDisabled( state, ownProps ),
@@ -101,10 +107,10 @@ const mapStateToProps = ( state, ownProps ) => {
 		salePriceChecked: selectors.getTempSalePriceChecked( state, ownProps ),
 		salePrice: selectors.getTempSalePrice( state, ownProps ),
 		dateFormat: datePickerFormat,
-		fromDate: fromDate,
-		toDate: toDate,
-		fromDateInput: fromDateInput,
-		toDateInput: toDateInput,
+		fromDate,
+		toDate,
+		fromDateInput,
+		toDateInput,
 		validSalePrice: selectors.isTicketSalePriceValid( state, ownProps ),
 	};
 };
@@ -115,9 +121,9 @@ const mapStateToProps = ( state, ownProps ) => {
  * @since 5.9.0
  *
  * @param {Function} dispatch The dispatch function.
- * @param {Object} ownProps The component's own props.
+ * @param {Object}   ownProps The component's own props.
  *
- * @returns {Object} The component's props.
+ * @return {Object} The component's props.
  */
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 	toggleSalePrice: ( e ) => {
@@ -139,10 +145,4 @@ const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 /**
  * Connects the component to the store and exports it.
  */
-export default compose(
-	withStore(),
-	connect(
-		mapStateToProps,
-		mapDispatchToProps,
-	),
-)( Template );
+export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps ) )( Template );

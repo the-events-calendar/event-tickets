@@ -20,7 +20,7 @@ const lockId = 'tec.flexible-tickets.different-ticket-provider';
 function getEventProviderFromStore() {
 	const state = store.getState();
 	if (
-		!(
+		! (
 			state.tickets &&
 			state.tickets.blocks &&
 			state.tickets.blocks.ticket &&
@@ -37,14 +37,14 @@ function getEventProviderFromStore() {
  * Lock the post publish button when the event and series have different ticket providers.
  */
 function lockPostPublish() {
-	dispatch('core/editor').lockPostSaving(lockId);
+	dispatch( 'core/editor' ).lockPostSaving( lockId );
 }
 
 /**
  * Unlock the post publish button.
  */
 function unlockPostPublish() {
-	dispatch('core/editor').unlockPostSaving(lockId);
+	dispatch( 'core/editor' ).unlockPostSaving( lockId );
 }
 
 /**
@@ -55,7 +55,7 @@ function unlockPostPublish() {
  * @return {string} The title of the event read from the current state.
  */
 function getEventTitleFromState() {
-	return select('core/editor').getEditedPostAttribute('title');
+	return select( 'core/editor' ).getEditedPostAttribute( 'title' );
 }
 
 /**
@@ -65,12 +65,8 @@ function getEventTitleFromState() {
  * @param {string|null} seriesProvider The current series ticket provider.
  * @param {string}      seriesTitle    The title of the series.
  */
-function togglePublishLock(eventProvider, seriesProvider, seriesTitle) {
-	if (
-		eventProvider === seriesProvider ||
-		eventProvider === null ||
-		seriesProvider === null
-	) {
+function togglePublishLock( eventProvider, seriesProvider, seriesTitle ) {
+	if ( eventProvider === seriesProvider || eventProvider === null || seriesProvider === null ) {
 		unlockPostPublish();
 		removeDiscordantProviderNotice();
 
@@ -78,7 +74,7 @@ function togglePublishLock(eventProvider, seriesProvider, seriesTitle) {
 	}
 
 	lockPostPublish();
-	showDiscordantProviderNotice(getEventTitleFromState(), seriesTitle);
+	showDiscordantProviderNotice( getEventTitleFromState(), seriesTitle );
 }
 
 /**
@@ -86,14 +82,10 @@ function togglePublishLock(eventProvider, seriesProvider, seriesTitle) {
  *
  * @param {Event} event The 'change' event dispatched by Select2.
  */
-function togglePublishLockFromMetaboxEvent(event) {
-	const seriesProvider = getSeriesProviderFromEvent(event);
+function togglePublishLockFromMetaboxEvent( event ) {
+	const seriesProvider = getSeriesProviderFromEvent( event );
 	const eventProvider = getEventProviderFromStore();
-	togglePublishLock(
-		eventProvider,
-		seriesProvider,
-		getSeriesTitleFromEvent(event)
-	);
+	togglePublishLock( eventProvider, seriesProvider, getSeriesTitleFromEvent( event ) );
 }
 
 /**
@@ -103,23 +95,23 @@ function togglePublishLockFromTicketSettings() {
 	const seriesProvider = getSeriesProviderFromSelection();
 	const eventProvider = getEventProviderFromStore();
 	const seriesTitle = getSeriesTitleFromSelection();
-	togglePublishLock(eventProvider, seriesProvider, seriesTitle);
+	togglePublishLock( eventProvider, seriesProvider, seriesTitle );
 }
 
 /**
  * Subscribe to the series change event when the metabox is rendered.
  */
 function subscribeToSeriesChangeOnStateUpdate() {
-	if (!select('core/edit-post').areMetaBoxesInitialized()) {
+	if ( ! select( 'core/edit-post' ).areMetaBoxesInitialized() ) {
 		// Before metaboxes are initialized, the series metabox is not yet rendered.
 		return;
 	}
 
 	// Subscribe to the ticket provider change in the ticket settings metabox.
-	store.subscribe(togglePublishLockFromTicketSettings);
+	store.subscribe( togglePublishLockFromTicketSettings );
 
-	subscribeToSeriesChange(togglePublishLockFromMetaboxEvent);
+	subscribeToSeriesChange( togglePublishLockFromMetaboxEvent );
 }
 
 // Start by subscribing to core/edit-post section of the WP store.
-subscribe(subscribeToSeriesChangeOnStateUpdate, 'core/edit-post');
+subscribe( subscribeToSeriesChangeOnStateUpdate, 'core/edit-post' );

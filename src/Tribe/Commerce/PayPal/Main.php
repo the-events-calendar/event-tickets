@@ -399,7 +399,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	public function register_resources() {
 		$main = Tribe__Tickets__Main::instance();
 
-		tribe_assets(
+		tec_assets(
 			$main,
 			[
 				[
@@ -412,7 +412,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		);
 
 		// Admin assets
-		tribe_assets(
+		tec_assets(
 			$main,
 			[
 				[
