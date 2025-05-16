@@ -10,7 +10,7 @@
  * remove_action( 'some_action', [ tribe( TEC\Tickets\Hooks::class ), 'some_method' ] );
  * remove_action( 'some_action', [ tribe( 'tickets..hooks' ), 'some_method' ] );
  *
- * @since   5.1.6
+ * @since 5.1.6
  *
  * @package TEC\Tickets
  */
@@ -25,7 +25,7 @@ use WP_Post;
 /**
  * Class Hooks.
  *
- * @since   5.1.6
+ * @since 5.1.6
  *
  * @package TEC\Tickets
  */

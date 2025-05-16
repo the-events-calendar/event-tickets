@@ -5,12 +5,11 @@ namespace TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce;
 use Tribe__Utils__Array as Arr;
 use TEC\Tickets\Commerce\Communication\Email as Email_Communication;
-use TEC\Tickets\Commerce\Reports\Attendees as Attendees_Reports;
 
 /**
  * Class Tickets Provider class for Tickets Commerce
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce
  */
@@ -328,7 +327,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @return bool
 	 */
 	public function login_required() {
-		$requirements = (array) tribe_get_option( 'ticket-authentication-requirements', array() );
+		$requirements = (array) tribe_get_option( 'ticket-authentication-requirements', [] );
 
 		return in_array( 'event-tickets_all', $requirements, true );
 	}
@@ -367,7 +366,6 @@ class Module extends \Tribe__Tickets__Tickets {
 
 				break;
 		}
-
 	}
 
 	/**
@@ -511,7 +509,6 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 *
 	 * @param string|int $order_id
 	 *
 	 * @return array
@@ -559,7 +556,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Generate and store all the attendees information for a new order.
 	 *
-	 * @since      5.1.9
+	 * @since 5.1.9
 	 * @deprecated 5.2.0
 	 *
 	 * @param string $payment_status The tickets payment status, defaults to completed.
@@ -722,8 +719,8 @@ class Module extends \Tribe__Tickets__Tickets {
 		$extra              = [];
 		$extra['attendees'] = [
 			1 => [
-				'meta' => Arr::get( $attendee_data, 'attendee_meta', [] )
-			]
+				'meta' => Arr::get( $attendee_data, 'attendee_meta', [] ),
+			],
 		];
 		$extra['optout']    = ! Arr::get( $attendee_data, 'send_ticket_email', true );
 		$extra['iac']       = false;
@@ -734,7 +731,7 @@ class Module extends \Tribe__Tickets__Tickets {
 				'ticket_id' => $ticket->ID,
 				'quantity'  => 1,
 				'extra'     => $extra,
-			]
+			],
 		];
 
 		$purchaser = [
@@ -763,9 +760,7 @@ class Module extends \Tribe__Tickets__Tickets {
 			return $updated;
 		}
 
-		$attendee = tec_tc_attendees()->by( 'order_id', $order->ID )->first();
-
-		return $attendee;
+		return tec_tc_attendees()->by( 'order_id', $order->ID )->first();
 	}
 
 	/**

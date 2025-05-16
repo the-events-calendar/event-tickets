@@ -2,7 +2,7 @@
 /**
  * Handles the registration of all the Blocks managed by the plugin.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Blocks;
  */
@@ -29,7 +29,7 @@ use Tribe__Tickets__Main as Tickets_Plugin;
 /**
  * Class Controller.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Blocks;
  */
@@ -221,23 +221,23 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 * @param int|null      $post_id The ID of the post context of the print.
 	 */
 	public function render_ticket_edit_controls( Ticket_Object $ticket, int $post_id = null ): void {
-		if ( $ticket->get_event_id() !== $post_id ) {
-			// If the ticket is not associated with the current post, don't render the controls.
-			return;
-		}
+	 if ( $ticket->get_event_id() !== $post_id ) {
+	  // If the ticket is not associated with the current post, don't render the controls.
+	  return;
+	 }
 
-		/** @var Admin_Views $admin_views */
-		$admin_views           = tribe( 'tickets.admin.views' );
-		$show_duplicate_button = ! function_exists( 'tribe_is_community_edit_event_page' )
+	 /** @var Admin_Views $admin_views */
+	 $admin_views           = tribe( 'tickets.admin.views' );
+	 $show_duplicate_button = ! function_exists( 'tribe_is_community_edit_event_page' )
 								|| ! tribe_is_community_edit_event_page();
 
-		$admin_views->template(
-			'editor/list-row/edit',
-			[
-				'ticket'                => $ticket,
-				'show_duplicate_button' => $show_duplicate_button,
-			]
-		);
+	 $admin_views->template(
+	  'editor/list-row/edit',
+	  [
+	   'ticket'                => $ticket,
+	   'show_duplicate_button' => $show_duplicate_button,
+	  ]
+	 );
 	}
 
 	/**
@@ -248,13 +248,13 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 * @return void
 	 */
 	public function unregister(): void {
-		remove_action( 'init', tribe_callback( 'tickets.editor.meta', 'register' ), 15 );
-		remove_filter( 'register_meta_args', tribe_callback( 'tickets.editor.meta', 'register_meta_args' ) );
-		remove_action( 'tribe_plugins_loaded', [ $this, 'register_blocks' ], 300 );
-		remove_filter( 'rest_dispatch_request', tribe_callback( 'tickets.editor.meta', 'filter_rest_dispatch_request' ) );
-		remove_action( 'block_categories', tribe_callback( 'tickets.editor', 'block_categories' ) );
-		remove_action( 'block_categories_all', tribe_callback( 'tickets.editor', 'block_categories' ) );
-		remove_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle_buttons' ] );
-		remove_action( 'tec_tickets_list_row_edit', [ $this, 'render_ticket_edit_controls' ] );
+	 remove_action( 'init', tribe_callback( 'tickets.editor.meta', 'register' ), 15 );
+	 remove_filter( 'register_meta_args', tribe_callback( 'tickets.editor.meta', 'register_meta_args' ) );
+	 remove_action( 'tribe_plugins_loaded', [ $this, 'register_blocks' ], 300 );
+	 remove_filter( 'rest_dispatch_request', tribe_callback( 'tickets.editor.meta', 'filter_rest_dispatch_request' ) );
+	 remove_action( 'block_categories', tribe_callback( 'tickets.editor', 'block_categories' ) );
+	 remove_action( 'block_categories_all', tribe_callback( 'tickets.editor', 'block_categories' ) );
+	 remove_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle_buttons' ] );
+	 remove_action( 'tec_tickets_list_row_edit', [ $this, 'render_ticket_edit_controls' ] );
 	}
 }

@@ -2,7 +2,7 @@
 /**
  * The main service provider for the Tickets Admin area.
  *
- * @since   5.3.4
+ * @since 5.3.4
  * @package TEC\Tickets\Admin
  */
 
@@ -13,7 +13,7 @@ use Tribe__Tickets__Admin__Views as Admin_Views;
 /**
  * Service provider for the Tickets Admin area.
  *
- * @since   5.3.4
+ * @since 5.3.4
  * @package TEC\Tickets\Admin
  */
 class Provider extends \TEC\Common\Contracts\Service_Provider {

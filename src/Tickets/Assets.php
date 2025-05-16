@@ -2,19 +2,19 @@
 /**
  * Handles registering and setup for assets on Tickets.
  *
- * @since   5.1.6
+ * @since 5.1.6
  *
  * @package TEC\Tickets
  */
 
 namespace TEC\Tickets;
 
-use \TEC\Common\Contracts\Service_Provider;
+use TEC\Common\Contracts\Service_Provider;
 
 /**
  * Class Assets.
  *
- * @since   5.1.6
+ * @since 5.1.6
  *
  * @package TEC\Tickets
  */
