@@ -37,6 +37,14 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	const HELP_HUB_PAGE_ID = 'tickets_page_tec-tickets-help-hub';
 
 	/**
+	 * The slug of the help hub page.
+	 *
+	 * @since TBD
+	 * @var string
+	 */
+	const HELP_HUB_SLUG = 'tec-tickets-help-hub';
+
+	/**
 	 * Holds the URLs for the necessary icons.
 	 *
 	 * @since TBD
@@ -413,5 +421,23 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 		$page = tec_get_request_var( 'page' );
 
 		return Settings::$help_hub_slug === $page;
+	}
+
+	/**
+	 * Get the Help Hub page ID.
+	 *
+	 * @return string
+	 */
+	public function get_help_hub_id(): string {
+		return self::HELP_HUB_PAGE_ID;
+	}
+
+	/**
+	 * Retrieve the Help Hub slug.
+	 *
+	 * @return string The slug for the Help Hub.
+	 */
+	public function get_help_hub_slug(): string {
+		return Settings::$help_hub_slug;
 	}
 }
