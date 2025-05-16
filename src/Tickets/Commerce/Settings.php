@@ -345,7 +345,6 @@ class Settings {
 				'default'         => Currency::$currency_code_thousands_separator,
 				'validation_callback' => 'is_string',
 			],
-
 			static::$option_currency_number_of_decimals         => [
 				'type'            => 'text',
 				'label'           => esc_html__( 'Number of Decimals', 'event-tickets' ),

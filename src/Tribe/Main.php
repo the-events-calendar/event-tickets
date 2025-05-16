@@ -254,7 +254,7 @@ class Tribe__Tickets__Main {
 		}
 
 		// Get the checked plugins from the request. If there are more than one, we're doing a bulk activation.
-		$checked = $_POST['checked'] ? count( $_POST['checked'] ) : 0;
+		$checked = isset( $_POST['checked'] ) ? count( $_POST['checked'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 		if ( ! empty( $checked ) ) {
 			// If multiple plugins are being activated, set the wizard redirect transient, this should only trigger redirection on a ET admin page visit.
