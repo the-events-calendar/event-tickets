@@ -43,7 +43,7 @@ $default_end_time = '00:00:00';
 			class="tribe-datepicker tribe-field-start_date ticket_field"
 			name="rsvp_start_date"
 			id="rsvp_start_date"
-			v value="<?php echo esc_attr( $tc_rsvp ? $ticket_start_date : $default_start_date ); ?>"
+			value="<?php echo esc_attr( $tc_rsvp ? $ticket_start_date : $default_start_date ); ?>"
 			data-validation-type="datepicker"
 
 			data-validation-error="<?php echo esc_attr( wp_json_encode( $start_date_errors ) ); ?>"

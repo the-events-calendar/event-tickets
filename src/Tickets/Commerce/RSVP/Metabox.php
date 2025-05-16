@@ -73,13 +73,12 @@ class Metabox {
 		$admin_views = tribe( 'tickets.admin.views' );
 
 		$context = get_defined_vars();
-		//$panel_data =  ( new Ticket_Panel_Data( $post->ID ) )->to_array();
 
 		// Add the data required by each panel to render correctly.
-		$context = array_merge( $context, ( new Ticket_Panel_Data( $post->ID ) )->to_array() );
+		$context = array_merge( $context, ( new Ticket_Panel_Data( $post->ID, $tc_rsvp->ID ) )->to_array() );
 
 		$context['rsvp_id'] = $tc_rsvp->ID ?? null;
-		$context['rsvp_limit'] = 0;
+		$context['rsvp_limit'] = '';
 
 		return $admin_views->template(
 			[ 'editor', 'rsvp', 'metabox' ],

@@ -115,6 +115,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		$post_id                                   = Arr::get( $request_params, 'post_ID' );
 		$args['post_id']                           = Event::filter_event_id( $post_id );
 		$args['rsvp_id']                           = Arr::get( $request_params, 'rsvp_id', '' );
+		$args['ticket_id']                         = Arr::get( $request_params, 'rsvp_id', '' );
 		$args['rsvp_limit']                        = Arr::get( $request_params, 'rsvp_limit', '' );
 		$args['ticket_end_date']                   = Arr::get( $request_params, 'rsvp_end_date', '' );
 		$args['ticket_end_time']                   = Arr::get( $request_params, 'rsvp_end_time', '' );
