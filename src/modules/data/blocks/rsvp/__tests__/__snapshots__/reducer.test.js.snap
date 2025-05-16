@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`RSVP block reducer should set the created flag 1`] = `
-Object {
+{
   "created": true,
-  "details": Object {
+  "details": {
     "capacity": "",
     "description": "",
     "endDate": "2019-07-19",
@@ -22,7 +22,7 @@ Object {
   "goingCount": 0,
   "hasAttendeeInfoFields": false,
   "hasChanges": false,
-  "headerImage": Object {
+  "headerImage": {
     "alt": "",
     "id": 0,
     "src": "",
@@ -34,7 +34,7 @@ Object {
   "isSettingsLoading": false,
   "notGoingCount": 0,
   "settingsOpen": false,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "description": "",
     "endDate": "2019-07-19",
@@ -54,9 +54,9 @@ Object {
 `;
 
 exports[`RSVP block reducer should set the going count 1`] = `
-Object {
+{
   "created": false,
-  "details": Object {
+  "details": {
     "capacity": "",
     "description": "",
     "endDate": "2019-07-19",
@@ -75,7 +75,7 @@ Object {
   "goingCount": 10,
   "hasAttendeeInfoFields": false,
   "hasChanges": false,
-  "headerImage": Object {
+  "headerImage": {
     "alt": "",
     "id": 0,
     "src": "",
@@ -87,7 +87,7 @@ Object {
   "isSettingsLoading": false,
   "notGoingCount": 0,
   "settingsOpen": false,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "description": "",
     "endDate": "2019-07-19",
@@ -107,9 +107,9 @@ Object {
 `;
 
 exports[`RSVP block reducer should set the has attendee info fields 1`] = `
-Object {
+{
   "created": false,
-  "details": Object {
+  "details": {
     "capacity": "",
     "description": "",
     "endDate": "2019-07-19",
@@ -128,7 +128,7 @@ Object {
   "goingCount": 0,
   "hasAttendeeInfoFields": true,
   "hasChanges": false,
-  "headerImage": Object {
+  "headerImage": {
     "alt": "",
     "id": 0,
     "src": "",
@@ -140,7 +140,7 @@ Object {
   "isSettingsLoading": false,
   "notGoingCount": 0,
   "settingsOpen": false,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "description": "",
     "endDate": "2019-07-19",
@@ -160,9 +160,9 @@ Object {
 `;
 
 exports[`RSVP block reducer should set the has changes 1`] = `
-Object {
+{
   "created": false,
-  "details": Object {
+  "details": {
     "capacity": "",
     "description": "",
     "endDate": "2019-07-19",
@@ -181,7 +181,7 @@ Object {
   "goingCount": 0,
   "hasAttendeeInfoFields": false,
   "hasChanges": true,
-  "headerImage": Object {
+  "headerImage": {
     "alt": "",
     "id": 0,
     "src": "",
@@ -193,7 +193,7 @@ Object {
   "isSettingsLoading": false,
   "notGoingCount": 0,
   "settingsOpen": false,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "description": "",
     "endDate": "2019-07-19",
@@ -213,9 +213,9 @@ Object {
 `;
 
 exports[`RSVP block reducer should set the has duration error 1`] = `
-Object {
+{
   "created": false,
-  "details": Object {
+  "details": {
     "capacity": "",
     "description": "",
     "endDate": "2019-07-19",
@@ -235,7 +235,7 @@ Object {
   "hasAttendeeInfoFields": false,
   "hasChanges": false,
   "hasDurationError": true,
-  "headerImage": Object {
+  "headerImage": {
     "alt": "",
     "id": 0,
     "src": "",
@@ -247,7 +247,7 @@ Object {
   "isSettingsLoading": false,
   "notGoingCount": 0,
   "settingsOpen": false,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "description": "",
     "endDate": "2019-07-19",
@@ -267,9 +267,9 @@ Object {
 `;
 
 exports[`RSVP block reducer should set the id 1`] = `
-Object {
+{
   "created": false,
-  "details": Object {
+  "details": {
     "capacity": "",
     "description": "",
     "endDate": "2019-07-19",
@@ -288,7 +288,7 @@ Object {
   "goingCount": 0,
   "hasAttendeeInfoFields": false,
   "hasChanges": false,
-  "headerImage": Object {
+  "headerImage": {
     "alt": "",
     "id": 0,
     "src": "",
@@ -300,7 +300,7 @@ Object {
   "isSettingsLoading": false,
   "notGoingCount": 0,
   "settingsOpen": false,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "description": "",
     "endDate": "2019-07-19",
@@ -320,9 +320,9 @@ Object {
 `;
 
 exports[`RSVP block reducer should set the is loading 1`] = `
-Object {
+{
   "created": false,
-  "details": Object {
+  "details": {
     "capacity": "",
     "description": "",
     "endDate": "2019-07-19",
@@ -341,7 +341,7 @@ Object {
   "goingCount": 0,
   "hasAttendeeInfoFields": false,
   "hasChanges": false,
-  "headerImage": Object {
+  "headerImage": {
     "alt": "",
     "id": 0,
     "src": "",
@@ -353,7 +353,7 @@ Object {
   "isSettingsLoading": false,
   "notGoingCount": 0,
   "settingsOpen": false,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "description": "",
     "endDate": "2019-07-19",
@@ -373,9 +373,9 @@ Object {
 `;
 
 exports[`RSVP block reducer should set the is modal open 1`] = `
-Object {
+{
   "created": false,
-  "details": Object {
+  "details": {
     "capacity": "",
     "description": "",
     "endDate": "2019-07-19",
@@ -394,7 +394,7 @@ Object {
   "goingCount": 0,
   "hasAttendeeInfoFields": false,
   "hasChanges": false,
-  "headerImage": Object {
+  "headerImage": {
     "alt": "",
     "id": 0,
     "src": "",
@@ -406,7 +406,7 @@ Object {
   "isSettingsLoading": false,
   "notGoingCount": 0,
   "settingsOpen": false,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "description": "",
     "endDate": "2019-07-19",
@@ -426,9 +426,9 @@ Object {
 `;
 
 exports[`RSVP block reducer should set the is settings loading 1`] = `
-Object {
+{
   "created": false,
-  "details": Object {
+  "details": {
     "capacity": "",
     "description": "",
     "endDate": "2019-07-19",
@@ -447,7 +447,7 @@ Object {
   "goingCount": 0,
   "hasAttendeeInfoFields": false,
   "hasChanges": false,
-  "headerImage": Object {
+  "headerImage": {
     "alt": "",
     "id": 0,
     "src": "",
@@ -459,7 +459,7 @@ Object {
   "isSettingsLoading": true,
   "notGoingCount": 0,
   "settingsOpen": false,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "description": "",
     "endDate": "2019-07-19",
@@ -479,9 +479,9 @@ Object {
 `;
 
 exports[`RSVP block reducer should set the not going count 1`] = `
-Object {
+{
   "created": false,
-  "details": Object {
+  "details": {
     "capacity": "",
     "description": "",
     "endDate": "2019-07-19",
@@ -500,7 +500,7 @@ Object {
   "goingCount": 0,
   "hasAttendeeInfoFields": false,
   "hasChanges": false,
-  "headerImage": Object {
+  "headerImage": {
     "alt": "",
     "id": 0,
     "src": "",
@@ -512,7 +512,7 @@ Object {
   "isSettingsLoading": false,
   "notGoingCount": 10,
   "settingsOpen": false,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "description": "",
     "endDate": "2019-07-19",
@@ -532,9 +532,9 @@ Object {
 `;
 
 exports[`RSVP block reducer should set the settings open 1`] = `
-Object {
+{
   "created": false,
-  "details": Object {
+  "details": {
     "capacity": "",
     "description": "",
     "endDate": "2019-07-19",
@@ -553,7 +553,7 @@ Object {
   "goingCount": 0,
   "hasAttendeeInfoFields": false,
   "hasChanges": false,
-  "headerImage": Object {
+  "headerImage": {
     "alt": "",
     "id": 0,
     "src": "",
@@ -565,7 +565,7 @@ Object {
   "isSettingsLoading": false,
   "notGoingCount": 0,
   "settingsOpen": true,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "description": "",
     "endDate": "2019-07-19",
