@@ -30,8 +30,8 @@ const shouldRenderAssignedSeatingForm = true;
  *
  * @return {Function} The render function of the Capacity form with the seating options.
  */
-function filterRenderCapacityForm(renderDefaultForm, { clientId, ticketProvider }) {
-	if (!shouldRenderAssignedSeatingForm) {
+function filterRenderCapacityForm( renderDefaultForm, { clientId, ticketProvider } ) {
+	if ( ! shouldRenderAssignedSeatingForm ) {
 		return renderDefaultForm;
 	}
 
@@ -41,29 +41,16 @@ function filterRenderCapacityForm(renderDefaultForm, { clientId, ticketProvider 
 	}
 
 	// When no license, we DO NOT render the radios General vs Seating.
-	if ('no-license' === select(storeName).getServiceStatus()) {
+	if ( 'no-license' === select( storeName ).getServiceStatus() ) {
 		return renderDefaultForm;
 	}
 
-	return () => (
-		<CapacityForm
-			renderDefaultForm={renderDefaultForm}
-			clientId={clientId}
-		/>
-	);
+	return () => <CapacityForm renderDefaultForm={ renderDefaultForm } clientId={ clientId } />;
 }
 
-addFilter(
-	'tec.tickets.blocks.Ticket.Capacity.renderForm',
-	'tec.tickets.seating',
-	filterRenderCapacityForm
-);
+addFilter( 'tec.tickets.blocks.Ticket.Capacity.renderForm', 'tec.tickets.seating', filterRenderCapacityForm );
 
-addFilter(
-	'tec.tickets.blocks.setBodyDetails',
-	'tec.tickets.seating',
-	filterSetBodyDetails
-);
+addFilter( 'tec.tickets.blocks.setBodyDetails', 'tec.tickets.seating', filterSetBodyDetails );
 
 /**
  * Filters the action items of the dashboard to add the seating actions.
@@ -75,23 +62,19 @@ addFilter(
  *
  * @return {Array} The action items.
  */
-function filterDashboardActions(actions, { clientId }) {
-	const hasSeats = select(storeName).isUsingAssignedSeating(clientId);
-	const layoutLocked = select(storeName).isLayoutLocked();
+function filterDashboardActions( actions, { clientId } ) {
+	const hasSeats = select( storeName ).isUsingAssignedSeating( clientId );
+	const layoutLocked = select( storeName ).isLayoutLocked();
 
 	// Only show if there are seats and the post is saved.
-	if (hasSeats && layoutLocked) {
-		actions.push(<Seats />);
+	if ( hasSeats && layoutLocked ) {
+		actions.push( <Seats /> );
 	}
 
 	return actions;
 }
 
-addFilter(
-	'tec.tickets.blocks.Tickets.TicketsDashboardAction.actions',
-	'tec.tickets.seating',
-	filterDashboardActions
-);
+addFilter( 'tec.tickets.blocks.Tickets.TicketsDashboardAction.actions', 'tec.tickets.seating', filterDashboardActions );
 
 /**
  * Filters the ticket edit action items to remove the move button for seated tickets.
@@ -103,26 +86,18 @@ addFilter(
  *
  * @return {Array} The action items.
  */
-function filterMoveButtonAction(actions, clientId) {
-	const hasSeats = select(storeName).isUsingAssignedSeating(clientId);
-	if (!hasSeats) {
+function filterMoveButtonAction( actions, clientId ) {
+	const hasSeats = select( storeName ).isUsingAssignedSeating( clientId );
+	if ( ! hasSeats ) {
 		return actions;
 	}
 
-	return actions.filter((action) => action.key !== 'move');
+	return actions.filter( ( action ) => action.key !== 'move' );
 }
 
-addFilter(
-	'tec.tickets.blocks.Ticket.actionItems',
-	'tec.tickets.seating',
-	filterMoveButtonAction
-);
+addFilter( 'tec.tickets.blocks.Ticket.actionItems', 'tec.tickets.seating', filterMoveButtonAction );
 
-addFilter(
-	'tec.tickets.blocks.Ticket.header.detailItems',
-	'tec.tickets.seating',
-	filterHeaderDetails
-);
+addFilter( 'tec.tickets.blocks.Ticket.header.detailItems', 'tec.tickets.seating', filterHeaderDetails );
 
 addFilter(
 	'tec.tickets.blocks.Tickets.CapacityTable.mappedProps',
@@ -136,35 +111,15 @@ addFilter(
 	filterSeatedTicketsAvailabilityMappedProps
 );
 
-addFilter(
-	'tribe.editor.ticket.isAsc',
-	'tec.tickets.seating',
-	filterTicketIsAsc
-);
+addFilter( 'tribe.editor.ticket.isAsc', 'tec.tickets.seating', filterTicketIsAsc );
 
-addFilter(
-	'tec.tickets.blocks.Tickets.Settings.Fields',
-	'tec.tickets.seating',
-	filterSettingsFields
-);
+addFilter( 'tec.tickets.blocks.Tickets.Settings.Fields', 'tec.tickets.seating', filterSettingsFields );
 
-addAction(
-	'tec.tickets.blocks.ticketUpdated',
-	'tec.tickets.seating',
-	setSeatTypeForTicket
-);
+addAction( 'tec.tickets.blocks.ticketUpdated', 'tec.tickets.seating', setSeatTypeForTicket );
 
-addAction(
-	'tec.tickets.blocks.ticketCreated',
-	'tec.tickets.seating',
-	setSeatTypeForTicket
-);
+addAction( 'tec.tickets.blocks.ticketCreated', 'tec.tickets.seating', setSeatTypeForTicket );
 
-addFilter(
-	'tec.tickets.blocks.confirmButton.isDisabled',
-	'tec.tickets.seating',
-	filterButtonIsDisabled
-);
+addFilter( 'tec.tickets.blocks.confirmButton.isDisabled', 'tec.tickets.seating', filterButtonIsDisabled );
 
 addFilter(
 	'tec.tickets.blocks.Tickets.TicketsDashboardAction.mappedProps',
@@ -172,17 +127,9 @@ addFilter(
 	disableConfirmInTicketDashboard
 );
 
-addFilter(
-	'tec.tickets.blocks.Ticket.actionItems',
-	'tec.tickets.seating',
-	removeAllActionsFromTicket
-);
+addFilter( 'tec.tickets.blocks.Ticket.actionItems', 'tec.tickets.seating', removeAllActionsFromTicket );
 
-addFilter(
-	'tec.tickets.blocks.Ticket.isSelected',
-	'tec.tickets.seating',
-	disableTicketSelection
-);
+addFilter( 'tec.tickets.blocks.Ticket.isSelected', 'tec.tickets.seating', disableTicketSelection );
 
 addFilter(
 	'tec.tickets.blocks.Tickets.CapacityTable.sharedCapacityInput',

@@ -1,33 +1,29 @@
-var tribe_tickets_rsvp = {
+const tribe_tickets_rsvp = {
 	num_attendees: 0,
 	event: {},
 };
 
-(function( $, my ) {
+( function ( $, my ) {
 	'use strict';
 
-	my.init = function() {
+	my.init = function () {
 		my.$rsvp = $( '.tribe-events-tickets-rsvp' );
 		my.attendee_template = $( document.getElementById( 'tribe-tickets-rsvp-tmpl' ) ).html();
 
 		my.$rsvp.on( 'change input keyup', '.tribe-tickets-quantity', my.event.quantity_changed );
 
-		my.$rsvp.closest( '.cart' )
-			.on( 'submit', my.event.handle_submission );
+		my.$rsvp.closest( '.cart' ).on( 'submit', my.event.handle_submission );
 
-		$( '.tribe-rsvp-list' ).on( 'click', '.attendee-meta-row .toggle', function() {
-			$( this )
-				.toggleClass( 'on' )
-				.siblings( '.attendee-meta-details' )
-				.slideToggle();
+		$( '.tribe-rsvp-list' ).on( 'click', '.attendee-meta-row .toggle', function () {
+			$( this ).toggleClass( 'on' ).siblings( '.attendee-meta-details' ).slideToggle();
 		} );
 	};
 
-	my.quantity_changed = function( $quantity ) {
+	my.quantity_changed = function ( $quantity ) {
 		const $rsvp = $quantity.closest( '.tribe-events-tickets-rsvp' );
 		const $rsvpQtys = $rsvp.find( '.tribe-tickets-quantity' );
 		let rsvpQty = 0;
-		$rsvpQtys.each( function() {
+		$rsvpQtys.each( function () {
 			rsvpQty = rsvpQty + parseInt( $( this ).val(), 10 );
 		} );
 
@@ -38,24 +34,20 @@ var tribe_tickets_rsvp = {
 		}
 	};
 
-	my.validate_rsvp_info = function( $form ) {
+	my.validate_rsvp_info = function ( $form ) {
 		const $qty = $form.find( 'input.tribe-tickets-quantity' );
 		const $name = $form.find( 'input#tribe-tickets-full-name' );
 		const $email = $form.find( 'input#tribe-tickets-email' );
 		let rsvpQty = 0;
 
-		$qty.each( function() {
+		$qty.each( function () {
 			rsvpQty = rsvpQty + parseInt( $( this ).val(), 10 );
 		} );
 
-		return (
-			$name.val().trim().length &&
-			$email.val().trim().length &&
-			rsvpQty
-		);
+		return $name.val().trim().length && $email.val().trim().length && rsvpQty;
 	};
 
-	my.validate_meta = function( $form ) {
+	my.validate_meta = function ( $form ) {
 		const hasTicketsPlus = !! window.tribe_event_tickets_plus;
 		let isMetaValid = true;
 
@@ -66,17 +58,14 @@ var tribe_tickets_rsvp = {
 		return isMetaValid;
 	};
 
-	my.event.quantity_changed = function() {
+	my.event.quantity_changed = function () {
 		my.quantity_changed( $( this ) );
 	};
 
-	my.event.handle_submission = function( e ) {
+	my.event.handle_submission = function ( e ) {
 		const $form = $( this ).closest( 'form' );
 
-		const $rsvpMessages = $form.find(
-			'.tribe-rsvp-messages, ' +
-			'.tribe-rsvp-message-confirmation-error',
-		);
+		const $rsvpMessages = $form.find( '.tribe-rsvp-messages, ' + '.tribe-rsvp-message-confirmation-error' );
 
 		const $etpMetaMessages = $form.find( '.tribe-event-tickets-meta-required-message' );
 
@@ -85,9 +74,7 @@ var tribe_tickets_rsvp = {
 
 		// Show/Hide message about missing RSVP details (name, email, going/not) and/or missing ETP fields (if applicable).
 		if ( ! isRsvpInfoValid || ! isAttendeeMetaValid ) {
-			isRsvpInfoValid
-				? $rsvpMessages.hide()
-				: $rsvpMessages.show();
+			isRsvpInfoValid ? $rsvpMessages.hide() : $rsvpMessages.show();
 
 			if ( isAttendeeMetaValid ) {
 				$etpMetaMessages.hide();
@@ -97,9 +84,12 @@ var tribe_tickets_rsvp = {
 				$etpMetaMessages.show();
 			}
 
-			$( 'html, body' ).animate( {
-				scrollTop: $form.offset().top - 100,
-			}, 300 );
+			$( 'html, body' ).animate(
+				{
+					scrollTop: $form.offset().top - 100,
+				},
+				300
+			);
 
 			return false;
 		}
@@ -108,4 +98,4 @@ var tribe_tickets_rsvp = {
 	};
 
 	$( my.init );
-})( jQuery, tribe_tickets_rsvp );
+} )( jQuery, tribe_tickets_rsvp );

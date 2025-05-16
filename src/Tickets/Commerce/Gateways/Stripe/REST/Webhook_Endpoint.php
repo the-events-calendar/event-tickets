@@ -8,8 +8,6 @@ use WP_REST_Server;
 use WP_REST_Request;
 use WP_REST_Response;
 
-use Tribe__Utils__Array as Arr;
-
 /**
  * Class Webhook Endpoint.
  *
@@ -26,7 +24,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @var string
 	 */
-	protected $path = '/commerce/stripe/webhook';
+	protected string $path = '/commerce/stripe/webhook';
 
 	/**
 	 * Register the actual endpoint on WP Rest API.

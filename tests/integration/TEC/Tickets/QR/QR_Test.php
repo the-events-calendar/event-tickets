@@ -4,6 +4,7 @@ namespace TEC\Tickets\QR;
 
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\QR\QR;
+use TEC\Common\QR\Controller;
 
 /**
  * Class QR_Test.
@@ -29,13 +30,15 @@ class QR_Test extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_not_create_instance_of_module_and_return_WP_Error(): void {
-		add_filter( 'tec_qr_code_can_use',  '__return_false' );
+		add_filter( 'tec_qr_code_can_use', '__return_false' );
 
-		$qr_code = tribe( QR::class );
-		$this->assertNotInstanceOf( QR::class, $qr_code );
-		$this->assertInstanceOf( \WP_Error::class, $qr_code );
+		$controller = tribe( Controller::class );
+		$this->assertFalse( $controller->can_use() );
+		
+		// Check controller is inactive when filter returns false
+		$this->assertFalse( $controller->is_active() );
 
-		remove_filter( 'tec_qr_code_can_use',  '__return_false' );
+		remove_filter( 'tec_qr_code_can_use', '__return_false' );
 	}
 
 	/**
@@ -79,7 +82,7 @@ class QR_Test extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * @dataProvider qr_code_data_provider
 	 */
-	public function should_create_png_as_base64( $data  ): void {
+	public function should_create_png_as_base64( $data ): void {
 		$qr_code = tribe( QR::class );
 		$this->assertMatchesStringSnapshot( $qr_code->get_png_as_base64( $data ), $this->driver );
 	}

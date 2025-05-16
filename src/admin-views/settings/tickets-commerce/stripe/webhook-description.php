@@ -11,7 +11,7 @@ use TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
 
 $webhooks = tribe( Webhooks::class );
 ?>
-
+<fieldset>
 <p class="tec-tickets__admin-settings-tickets-commerce-gateway-group-description-stripe-webhooks contained">
 	<?php
 	printf(
@@ -53,5 +53,5 @@ $webhooks = tribe( Webhooks::class );
 		?>
 	</p>
 <?php endif; ?>
-<div class="clear"></div>
+</fieldset>
 <?php

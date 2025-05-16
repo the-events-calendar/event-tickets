@@ -18,11 +18,11 @@ tribe.tickets.page = {};
  * Initializes in a Strict env the code that manages the plugin tickets page.
  *
  * @since 5.0.3
- * @param  {Object} $   jQuery
- * @param  {Object} obj tribe.tickets.page
+ * @param {Object} $   jQuery
+ * @param {Object} obj tribe.tickets.page
  * @return {void}
  */
-( function( $, obj ) {
+( function ( $, obj ) {
 	const $document = $( document );
 
 	/*
@@ -41,7 +41,7 @@ tribe.tickets.page = {};
 	 * @param {jQuery} $container jQuery object of object of the tickets page container.
 	 * @return {void}
 	 */
-	obj.bindEvents = function( $container ) {
+	obj.bindEvents = function ( $container ) {
 		$document.trigger( 'beforeSetup.tribeTicketsPage', [ $container ] );
 
 		$document.trigger( 'afterSetup.tribeTicketsPage', [ $container ] );
@@ -53,11 +53,11 @@ tribe.tickets.page = {};
 	 * @since 5.0.3
 	 * @return {void}
 	 */
-	obj.ready = function() {
+	obj.ready = function () {
 		const $ticketsPage = $document.find( obj.selectors.container );
 
 		// Bind events for each tickets block.
-		$ticketsPage.each( function( index, block ) {
+		$ticketsPage.each( function ( index, block ) {
 			obj.bindEvents( $( block ) );
 		} );
 	};

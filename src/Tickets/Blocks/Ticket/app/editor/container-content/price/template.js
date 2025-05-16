@@ -15,10 +15,10 @@ import uniqid from 'uniqid';
 /**
  * Internal dependencies
  */
-import { PREFIX, SUFFIX, TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { PREFIX, SUFFIX, TICKET_LABELS } from '../../../../../../../modules/data/blocks/ticket/constants';
 import { LabeledItem } from '@moderntribe/common/elements';
 import './style.pcss';
-import SalePrice from "../sale-price/container";
+import SalePrice from '../sale-price/container';
 
 class Price extends PureComponent {
 	static propTypes = {
@@ -28,9 +28,9 @@ class Price extends PureComponent {
 		currencySymbol: PropTypes.string,
 		currencyThousandsSep: PropTypes.string,
 		isDisabled: PropTypes.bool,
-		minDefaultPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+		minDefaultPrice: PropTypes.oneOfType( [ PropTypes.string, PropTypes.number ] ),
 		onTempPriceChange: PropTypes.func.isRequired,
-		tempPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+		tempPrice: PropTypes.oneOfType( [ PropTypes.string, PropTypes.number ] ),
 		showSalePrice: PropTypes.bool,
 		clientId: PropTypes.string,
 	};
@@ -67,22 +67,24 @@ class Price extends PureComponent {
 		};
 
 		return (
-			<div className={ classNames(
-				'tribe-editor__ticket__price',
-				'tribe-editor__ticket__content-row',
-				'tribe-editor__ticket__content-row--price',
-			) }>
-				<div className={"tribe-editor__ticket__price-wrapper"}>
+			<div
+				className={ classNames(
+					'tribe-editor__ticket__price',
+					'tribe-editor__ticket__content-row',
+					'tribe-editor__ticket__content-row--price'
+				) }
+			>
+				<div className={ 'tribe-editor__ticket__price-wrapper' }>
 					<LabeledItem
 						className="tribe-editor__ticket__price-label"
 						forId={ this.id }
 						isLabel={ true }
 						// eslint-disable-next-line no-undef
-						label={sprintf(
+						label={ sprintf(
 							/* Translators: %s - the singular label for a ticket. */
-							__('%s price', 'event-tickets'),
+							__( '%s price', 'event-tickets' ),
 							TICKET_LABELS.ticket.singular
-						)}
+						) }
 					/>
 
 					<NumericFormat
@@ -99,7 +101,7 @@ class Price extends PureComponent {
 						value={ tempPrice }
 					/>
 				</div>
-				{ showSalePrice && <SalePrice clientId={clientId} /> }
+				{ showSalePrice && <SalePrice clientId={ clientId } /> }
 			</div>
 		);
 	}

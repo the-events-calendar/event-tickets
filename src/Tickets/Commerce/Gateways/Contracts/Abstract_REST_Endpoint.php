@@ -20,7 +20,7 @@ abstract class Abstract_REST_Endpoint implements REST_Endpoint_Interface, \Tribe
 	 *
 	 * @var string
 	 */
-	protected $path;
+	protected string $path;
 
 	/**
 	 * @inheritDoc

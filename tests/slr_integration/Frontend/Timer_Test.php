@@ -72,7 +72,7 @@ class Timer_Test extends Controller_Test_Case {
 	public function asset_data_provider() {
 		$assets = [
 			'tec-tickets-seating-session'       => '/build/Seating/frontend/session.js',
-			'tec-tickets-seating-session-style' => '/build/Seating/frontend/session.css',
+			'tec-tickets-seating-session-style' => '/build/Seating/frontend/style-session.css',
 		];
 
 		foreach ( $assets as $slug => $path ) {

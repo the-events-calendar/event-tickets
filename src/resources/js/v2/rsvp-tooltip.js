@@ -19,11 +19,11 @@ tribe.tickets.rsvp.tooltip = {};
  * Initializes in a Strict env the code that manages the RSVP Tooltip
  *
  * @since 5.0.0
- * @param  {Object} $   jQuery
- * @param  {Object} obj tribe.tickets.rsvp.tooltip
+ * @param {Object} $   jQuery
+ * @param {Object} obj tribe.tickets.rsvp.tooltip
  * @return {void}
  */
-( function( $, obj ) {
+( function ( $, obj ) {
 	const $document = $( document );
 
 	/**
@@ -59,13 +59,11 @@ tribe.tickets.rsvp.tooltip = {};
 	 * @param {Event} event event object
 	 * @return {void}
 	 */
-	obj.handleOriginFocus = function( event ) {
-		setTimeout( function() {
+	obj.handleOriginFocus = function ( event ) {
+		setTimeout( function () {
 			if (
 				event.data.target.is( ':focus' ) ||
-				event.data.target.hasClass(
-					obj.selectors.tribeTicketsRsvpTooltipTriggerHoverClass.className(),
-				)
+				event.data.target.hasClass( obj.selectors.tribeTicketsRsvpTooltipTriggerHoverClass.className() )
 			) {
 				event.data.target.tooltipster( 'open' );
 			}
@@ -79,7 +77,7 @@ tribe.tickets.rsvp.tooltip = {};
 	 * @param {Event} event event object
 	 * @return {void}
 	 */
-	obj.handleOriginBlur = function( event ) {
+	obj.handleOriginBlur = function ( event ) {
 		event.data.target.tooltipster( 'close' );
 	};
 
@@ -90,10 +88,8 @@ tribe.tickets.rsvp.tooltip = {};
 	 * @param {Event} event event object
 	 * @return {void}
 	 */
-	obj.handleOriginHoverIn = function( event ) {
-		event.data.target.addClass(
-			obj.selectors.tribeTicketsRsvpTooltipTriggerHoverClass.className(),
-		);
+	obj.handleOriginHoverIn = function ( event ) {
+		event.data.target.addClass( obj.selectors.tribeTicketsRsvpTooltipTriggerHoverClass.className() );
 	};
 
 	/**
@@ -103,10 +99,8 @@ tribe.tickets.rsvp.tooltip = {};
 	 * @param {Event} event event object
 	 * @return {void}
 	 */
-	obj.handleOriginHoverOut = function( event ) {
-		event.data.target.removeClass(
-			obj.selectors.tribeTicketsRsvpTooltipTriggerHoverClass.className(),
-		);
+	obj.handleOriginHoverOut = function ( event ) {
+		event.data.target.removeClass( obj.selectors.tribeTicketsRsvpTooltipTriggerHoverClass.className() );
 	};
 
 	/**
@@ -116,10 +110,8 @@ tribe.tickets.rsvp.tooltip = {};
 	 * @param {Event} event event object
 	 * @return {void}
 	 */
-	obj.handleTooltipHoverIn = function( event ) {
-		event.data.target.addClass(
-			obj.selectors.tribeTicketsRsvpTooltipThemeHoverClass.className(),
-		);
+	obj.handleTooltipHoverIn = function ( event ) {
+		event.data.target.addClass( obj.selectors.tribeTicketsRsvpTooltipThemeHoverClass.className() );
 	};
 
 	/**
@@ -129,10 +121,8 @@ tribe.tickets.rsvp.tooltip = {};
 	 * @param {Event} event event object
 	 * @return {void}
 	 */
-	obj.handleTooltipHoverOut = function( event ) {
-		event.data.target.removeClass(
-			obj.selectors.tribeTicketsRsvpTooltipThemeHoverClass.className(),
-		);
+	obj.handleTooltipHoverOut = function ( event ) {
+		event.data.target.removeClass( obj.selectors.tribeTicketsRsvpTooltipThemeHoverClass.className() );
 	};
 
 	/**
@@ -142,7 +132,7 @@ tribe.tickets.rsvp.tooltip = {};
 	 * @param {Event} event event object
 	 * @return {void}
 	 */
-	obj.handleInstanceClose = function( event ) {
+	obj.handleInstanceClose = function ( event ) {
 		const $origin = event.data.origin;
 		const $tooltip = $( event.tooltip );
 
@@ -163,7 +153,7 @@ tribe.tickets.rsvp.tooltip = {};
 	 * @param {Event} event event object
 	 * @return {void}
 	 */
-	obj.handleInstanceClosing = function( event ) {
+	obj.handleInstanceClosing = function ( event ) {
 		$( event.tooltip )
 			.off( 'mouseenter touchstart', obj.handleTooltipHoverIn )
 			.off( 'mouseleave touchleave', obj.handleTooltipHoverOut );
@@ -178,7 +168,7 @@ tribe.tickets.rsvp.tooltip = {};
 	 * @param {Object}   helper   helper object with tooltip origin
 	 * @return {void}
 	 */
-	obj.onFunctionInit = function( instance, helper ) {
+	obj.onFunctionInit = function ( instance, helper ) {
 		const $origin = $( helper.origin );
 		$origin
 			.on( 'focus', { target: $origin }, obj.handleOriginFocus )
@@ -199,7 +189,7 @@ tribe.tickets.rsvp.tooltip = {};
 	 * @param {Object}   helper   helper object with tooltip origin
 	 * @return {void}
 	 */
-	obj.onFunctionReady = function( instance, helper ) {
+	obj.onFunctionReady = function ( instance, helper ) {
 		const $tooltip = $( helper.tooltip );
 		$tooltip
 			.on( 'mouseenter touchstart', { target: $tooltip }, obj.handleTooltipHoverIn )
@@ -213,15 +203,10 @@ tribe.tickets.rsvp.tooltip = {};
 	 * @param {jQuery} $container jQuery object of view container.
 	 * @return {void}
 	 */
-	obj.deinitTooltips = function( $container ) {
-		$container
-			.find( obj.selectors.tooltipTrigger )
-			.each( function( index, trigger ) {
-				$( trigger )
-					.off()
-					.tooltipster( 'instance' )
-					.off();
-			} );
+	obj.deinitTooltips = function ( $container ) {
+		$container.find( obj.selectors.tooltipTrigger ).each( function ( index, trigger ) {
+			$( trigger ).off().tooltipster( 'instance' ).off();
+		} );
 	};
 
 	/**
@@ -231,22 +216,20 @@ tribe.tickets.rsvp.tooltip = {};
 	 * @param {jQuery} $container jQuery object of RSVP container.
 	 * @return {void}
 	 */
-	obj.initTooltips = function( $container ) {
+	obj.initTooltips = function ( $container ) {
 		const theme = $container.data( 'tribeTicketsRsvpTooltipTheme' );
 
-		$container
-			.find( obj.selectors.tooltipTrigger )
-			.each( function( index, trigger ) {
-				$( trigger ).tooltipster( {
-					animationDuration: 0,
-					interactive: true,
-					delay: [ obj.config.delayHoverIn, obj.config.delayHoverOut ],
-					delayTouch: [ obj.config.delayHoverIn, obj.config.delayHoverOut ],
-					theme: theme,
-					functionInit: obj.onFunctionInit,
-					functionReady: obj.onFunctionReady,
-				} );
+		$container.find( obj.selectors.tooltipTrigger ).each( function ( index, trigger ) {
+			$( trigger ).tooltipster( {
+				animationDuration: 0,
+				interactive: true,
+				delay: [ obj.config.delayHoverIn, obj.config.delayHoverOut ],
+				delayTouch: [ obj.config.delayHoverIn, obj.config.delayHoverOut ],
+				theme,
+				functionInit: obj.onFunctionInit,
+				functionReady: obj.onFunctionReady,
 			} );
+		} );
 	};
 
 	/**
@@ -256,7 +239,7 @@ tribe.tickets.rsvp.tooltip = {};
 	 * @param {jQuery} $container jQuery object of RSVP container.
 	 * @return {void}
 	 */
-	obj.initTheme = function( $container ) {
+	obj.initTheme = function ( $container ) {
 		$container.trigger( 'beforeTooltipInitTheme.tribeTicketsRsvp', [ $container ] );
 
 		const theme = [
@@ -273,12 +256,13 @@ tribe.tickets.rsvp.tooltip = {};
 	 * Deinitialize tooltip JS.
 	 *
 	 * @since 5.0.0
-	 * @param  {Event}  event    event object for 'beforeAjaxSuccess.tribeTicketsRsvp' event
-	 * @param  {jqXHR}  jqXHR    Request object
-	 * @param  {Object} settings Settings that this request was made with
+	 * @param {Event}  event    event object for 'beforeAjaxSuccess.tribeTicketsRsvp' event
+	 * @param {jqXHR}  jqXHR    Request object
+	 * @param {Object} settings Settings that this request was made with
 	 * @return {void}
 	 */
-	obj.deinit = function( event, jqXHR, settings ) { // eslint-disable-line no-unused-vars
+	obj.deinit = function ( event, jqXHR, settings ) {
+		// eslint-disable-line no-unused-vars
 		const $container = event.data.container;
 		obj.deinitTooltips( $container );
 		$container.off( 'beforeAjaxSuccess.tribeTicketsRsvp', obj.deinit );
@@ -288,12 +272,12 @@ tribe.tickets.rsvp.tooltip = {};
 	 * Initialize tooltips JS.
 	 *
 	 * @since 5.0.0
-	 * @param {Event}   event      event object for 'afterSetup.tribeTicketsRsvp' event
-	 * @param {number}  index      jQuery.each index param from 'afterSetup.tribeTicketsRsvp' event.
-	 * @param {jQuery}  $container jQuery object of view container.
+	 * @param {Event}  event      event object for 'afterSetup.tribeTicketsRsvp' event
+	 * @param {number} index      jQuery.each index param from 'afterSetup.tribeTicketsRsvp' event.
+	 * @param {jQuery} $container jQuery object of view container.
 	 * @return {void}
 	 */
-	obj.init = function( event, index, $container ) {
+	obj.init = function ( event, index, $container ) {
 		obj.initTheme( $container );
 		obj.initTooltips( $container );
 		$container.on( 'beforeAjaxSuccess.tribeTicketsRsvp', { container: $container }, obj.deinit );
@@ -305,12 +289,8 @@ tribe.tickets.rsvp.tooltip = {};
 	 * @since 5.0.0
 	 * @return {void}
 	 */
-	obj.ready = function() {
-		$document.on(
-			'afterSetup.tribeTicketsRsvp',
-			tribe.tickets.rsvp.manager.selectors.container,
-			obj.init,
-		);
+	obj.ready = function () {
+		$document.on( 'afterSetup.tribeTicketsRsvp', tribe.tickets.rsvp.manager.selectors.container, obj.init );
 	};
 
 	// Configure on document ready.

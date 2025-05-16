@@ -2,7 +2,7 @@
 /**
  * Internal dependencies
  */
-import { PREFIX_TICKETS_STORE } from '@moderntribe/tickets/data/utils';
+import { PREFIX_TICKETS_STORE } from '../../utils';
 
 //
 // ─── RSVP TYPES ─────────────────────────────────────────────────────────────────

@@ -12,7 +12,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { Card, SplitContainer } from '@moderntribe/tickets/elements';
+import { Card, SplitContainer } from '../../../elements';
 
 const RSVPInactiveBlock = ( { created, setAddEditOpen } ) => {
 	const title = created
@@ -26,20 +26,22 @@ const RSVPInactiveBlock = ( { created, setAddEditOpen } ) => {
 	/* eslint-disable max-len */
 	const leftColumn = (
 		<>
-			<h3 className="tribe-editor__rsvp-title tribe-common-h2 tribe-common-h4--min-medium">
-				{title}
-			</h3>
+			<h3 className="tribe-editor__rsvp-title tribe-common-h2 tribe-common-h4--min-medium">{ title }</h3>
 
 			<div className="tribe-editor__rsvp-description tribe-common-h6 tribe-common-h--alt tribe-common-b3--min-medium">
-				{description}
+				{ description }
 			</div>
 		</>
 	);
 
 	const rightColumn = (
 		<>
-			<button id="add-rsvp" className="tribe-common-c-btn tribe-common-b1 tribe-common-b2--min-medium" onClick={ setAddEditOpen }>
-				{ __( 'Add RSVP', 'event-tickets' )}
+			<button
+				id="add-rsvp"
+				className="tribe-common-c-btn tribe-common-b1 tribe-common-b2--min-medium"
+				onClick={ setAddEditOpen }
+			>
+				{ __( 'Add RSVP', 'event-tickets' ) }
 			</button>
 		</>
 	);
@@ -47,10 +49,7 @@ const RSVPInactiveBlock = ( { created, setAddEditOpen } ) => {
 
 	return (
 		<Card className="tribe-common tribe-editor__inactive-block--rsvp">
-			<SplitContainer
-				leftColumn={ leftColumn }
-				rightColumn={ rightColumn }
-			/>
+			<SplitContainer leftColumn={ leftColumn } rightColumn={ rightColumn } />
 		</Card>
 	);
 };

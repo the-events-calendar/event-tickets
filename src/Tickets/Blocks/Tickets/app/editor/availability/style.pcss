@@ -3,20 +3,20 @@
 	border-right: 1px solid var(--tec-color-border-secondary);
 	color: var(--tec-color-text-primary);
 	display: flex;
-	font-feature-settings: 'clig' off, 'liga' off;
 	font-family: var(--tec-font-family-sans-serif);
+	font-feature-settings: "clig" off, "liga" off;
 	font-size: var(--tec-font-size-2);
 	font-style: normal;
 	font-weight: var(--tec-font-weight-bold);
 	justify-content: flex-end;
-	line-height: 20px;
 	letter-spacing: 0.4px;
+	line-height: 20px;
 	padding: var(--tec-spacer-4) var(--tec-spacer-5) 0 0;
 
 	.dashicons-info-outline {
 		color: var(--tec-color-icon-primary-alt);
 		font-family: dashicons;
-		font-feature-settings: "clig" off,"liga" off;
+		font-feature-settings: "clig" off, "liga" off;
 		font-size: var(--tec-font-size-3);
 		font-style: normal;
 		font-weight: var(--tec-font-weight-regular);
@@ -28,7 +28,7 @@
 	flex: none;
 
 	.tribe-editor__numeric-label--count {
-		font-weight: bold;
+		font-weight: 700;
 	}
 
 	.tribe-editor__numeric-label--after {
@@ -41,7 +41,7 @@
 	+ .dashicons-info-outline {
 		color: var(--tec-color-icon-primary-alt);
 		font-family: dashicons;
-		font-feature-settings: 'clig' off, 'liga' off;
+		font-feature-settings: "clig" off, "liga" off;
 		font-size: 15px;
 		font-style: normal;
 		font-weight: var(--tec-font-weight-regular);
@@ -51,9 +51,9 @@
 		text-align: left;
 		width: 20px;
 
-		&:after {
+		&::after {
 			color: var(--tec-color-text-primary);
-			content: '|';
+			content: "|";
 			font-size: var(--tec-font-size-2);
 			font-style: normal;
 			font-weight: var(--tec-font-weight-regular);

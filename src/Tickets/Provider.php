@@ -70,14 +70,17 @@ class Provider extends Service_Provider {
 		// Loads all of tickets emails.
 		$this->container->register( Emails\Provider::class );
 
-		// Loads admin area.
+		// Loads admin area provider.
 		$this->container->register( Admin\Provider::class );
 
-		// Loads admin area.
+		// Loads the Site Health provider.
 		$this->container->register( Site_Health\Provider::class );
 
-		// Loads admin area.
+		// Loads the Telemetry provider.
 		$this->container->register( Telemetry\Provider::class );
+
+		// Loads the Installer provider.
+		$this->container->register( Installer\Provider::class );
 
 		// Loads Integrations.
 		$this->container->register( Integrations\Provider::class );

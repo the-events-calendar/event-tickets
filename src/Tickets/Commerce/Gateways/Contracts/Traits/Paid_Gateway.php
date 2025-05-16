@@ -25,6 +25,10 @@ trait Paid_Gateway {
 			return true;
 		}
 
+		if ( ! tribe( static::$merchant )->is_ready_to_sell() ) {
+			return false;
+		}
+
 		$cart_total = tribe( Cart::class )->get_cart_total();
 
 		return $cart_total > 0;

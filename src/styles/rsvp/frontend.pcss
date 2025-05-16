@@ -27,14 +27,14 @@
 
 .tribe-block__rsvp__icon {
 	align-items: center;
-	background: #ffffff;
+	background: #fff;
 	border-bottom: 1px dashed #b5bcc2;
 	color: #434343;
 	display: flex;
 	flex: none;
 	flex-direction: column;
 	font-size: 14px;
-	font-weight: bold;
+	font-weight: 700;
 	line-height: 17px;
 	padding: 20px 17px;
 	width: 100%;
@@ -63,9 +63,9 @@
 }
 
 .tribe-block__rsvp__title {
-	color: #000000;
+	color: #000;
 	font-size: 21px;
-	font-weight: bold;
+	font-weight: 700;
 	line-height: 28px;
 	margin-bottom: 12px;
 }
@@ -78,16 +78,16 @@
 }
 
 .tribe-block__rsvp__availability {
+	align-items: center;
 	color: #545d66;
 	display: flex;
-	align-items: center;
 	font-size: 12px;
 	line-height: 18px;
 }
 
 .tribe-block__rsvp__quantity {
 	font-size: 18px;
-	font-weight: bold;
+	font-weight: 700;
 	margin-right: 6px;
 }
 
@@ -110,14 +110,14 @@
 
 .tribe-block__rsvp__status-button {
 	align-items: center;
+	background: #fff;
 	border: 1px solid #545d66;
 	border-radius: 4px;
-	background: #ffffff;
 	color: #545d66;
 	display: flex;
 	font-family: var(--tec-font-family-sans-serif);
 	font-size: 14px;
-	font-weight: bold;
+	font-weight: 700;
 	height: 44px;
 	justify-content: center;
 	line-height: 1;
@@ -130,14 +130,14 @@
 
 	&:hover,
 	&:focus {
-		background: #ffffff;
-		border: 1px solid #000000;
-		color: #000000;
+		background: #fff;
+		border: 1px solid #000;
+		color: #000;
 	}
 
 	&.tribe-active {
-		border: 1px solid #000000;
-		color: #000000;
+		border: 1px solid #000;
+		color: #000;
 	}
 
 	&.tribe-inactive {
@@ -146,7 +146,7 @@
 
 		&:hover,
 		&:focus {
-			background: #ffffff;
+			background: #fff;
 			border: 1px solid #545d66;
 			color: #545d66;
 		}
@@ -203,10 +203,10 @@
 		appearance: textfield;
 		background: transparent;
 		border: none;
-		color: #000000;
+		color: #000;
 		font-family: var(--tec-font-family-sans-serif);
 		font-size: 30px;
-		font-weight: bold;
+		font-weight: 700;
 		height: 40px;
 		max-width: 48px;
 		padding: 4px 0;
@@ -227,7 +227,7 @@
 .tribe-block__rsvp__number-input-label {
 	display: block;
 	font-size: 14px;
-	font-weight: bold;
+	font-weight: 700;
 	line-height: 18px;
 	margin-top: 9px;
 	text-align: center;
@@ -240,10 +240,10 @@
 	position: relative;
 	width: 20px;
 
-	&:before,
-	&:after {
+	&::before,
+	&::after {
 		background-color: #aeb4bb;
-		content: '';
+		content: "";
 		height: 2px;
 		position: absolute;
 		width: 10px;
@@ -253,8 +253,8 @@
 	&:focus {
 		background: none;
 
-		&:before,
-		&:after {
+		&::before,
+		&::after {
 			background-color: #545d66;
 		}
 	}
@@ -263,8 +263,8 @@
 .tribe-block__rsvp__number-input-button--minus {
 	margin-left: -10px;
 
-	&:before,
-	&:after {
+	&::before,
+	&::after {
 		right: 0;
 	}
 }
@@ -272,12 +272,12 @@
 .tribe-block__rsvp__number-input-button--plus {
 	margin-right: -10px;
 
-	&:before,
-	&:after {
+	&::before,
+	&::after {
 		left: 0;
 	}
 
-	&:after {
+	&::after {
 		transform: rotate(90deg);
 	}
 }
@@ -290,7 +290,7 @@
 		&[type="text"],
 		&[type="email"] {
 			border-color: #e1e3e6;
-			color: #000000;
+			color: #000;
 			display: block;
 			font-family: var(--tec-font-family-sans-serif);
 			font-size: 16px;
@@ -309,7 +309,7 @@
 	label {
 		cursor: pointer;
 		font-size: var(--tec-font-size-2);
-		font-weight: normal;
+		font-weight: 400;
 
 		&[for^="tribe-tickets-attendees-list-optout"] {
 			align-items: flex-start;
@@ -319,7 +319,7 @@
 
 			input[type="checkbox"] {
 				appearance: none;
-				background-color: #ffffff;
+				background-color: #fff;
 				border: 1px solid #e1e3e6;
 				border-radius: 0;
 				cursor: pointer;
@@ -334,12 +334,12 @@
 					outline-offset: -2px;
 				}
 
-				&:checked:before {
+				&:checked::before {
 					color: #009fd4;
 					content: "\f147";
 					display: inline-block;
 					float: left;
-					font: normal 21px/1 dashicons;
+					font: 400 21px/1 dashicons;
 					margin: -3px 0 0 -4px;
 					speak: none;
 					vertical-align: middle;
@@ -351,14 +351,14 @@
 }
 
 .tribe-tickets-meta-option-label {
-	color: #000000;
+	color: #000;
 	font-size: 14px;
 	line-height: 18px;
 }
 
 .tribe-block__rsvp__message__error,
 .tribe-block__rsvp__message__success {
-	color: #000000;
+	color: #000;
 	font-size: 14px;
 	line-height: 18px;
 	padding: 20px;
@@ -366,7 +366,7 @@
 
 .tribe-block__rsvp__message__error {
 	background: #ffebe8;
-	border: 1px solid #cc0000;
+	border: 1px solid #c00;
 	display: none;
 	margin-bottom: 20px;
 }
@@ -384,10 +384,10 @@
 
 .tribe-block__rsvp__submit-button {
 	background: #009fd4;
-	color: #ffffff;
+	color: #fff;
 	font-family: var(--tec-font-family-sans-serif);
 	font-size: 15px;
-	font-weight: bold;
+	font-weight: 700;
 	line-height: 18px;
 	margin: 10px 0 0;
 	padding: 10px 23px;
@@ -398,8 +398,8 @@
 	}
 
 	&:disabled {
-		cursor: not-allowed;
 		background: #a2aab2;
+		cursor: not-allowed;
 	}
 }
 
@@ -408,15 +408,15 @@
 
 	th,
 	td {
-		padding: 0;
 		border: none;
+		padding: 0;
 		word-break: normal;
 	}
 }
 
 .tribe-common-c-loader.tribe-block__rsvp__loading {
 	align-items: center;
-	background: rgba( 255, 255, 255, .7 );
+	background: rgba(255, 255, 255, 0.7);
 	height: 100%;
 	justify-content: center;
 	left: 0;

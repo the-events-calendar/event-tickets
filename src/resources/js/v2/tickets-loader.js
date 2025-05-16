@@ -4,7 +4,7 @@
  * @since 5.0.3
  * @type   {Object}
  */
-tribe.tickets = tribe.tickets || {};
+window.tribe.tickets = window.tribe.tickets || {};
 
 /**
  * Configures ET Loader Object in the Global Tribe variable
@@ -18,11 +18,11 @@ tribe.tickets.loader = {};
  * Initializes in a Strict env the code that manages the plugin "loader".
  *
  * @since 5.0.3
- * @param  {Object} $   jQuery
- * @param  {Object} obj tribe.tickets.loader
+ * @param {Object} $   jQuery
+ * @param {Object} obj tribe.tickets.loader
  * @return {void}
  */
-( function( $, obj ) {
+( function ( $, obj ) {
 	/**
 	 * Selectors used for configuration and setup.
 	 *
@@ -41,7 +41,7 @@ tribe.tickets.loader = {};
 	 * @param {jQuery} $container jQuery object of the container.
 	 * @return {void}
 	 */
-	obj.show = function( $container ) {
+	obj.show = function ( $container ) {
 		const $loader = $container.find( obj.selectors.loader );
 
 		if ( $loader.length ) {
@@ -56,11 +56,11 @@ tribe.tickets.loader = {};
 	 * @param {jQuery} $container jQuery object of the container.
 	 * @return {void}
 	 */
-	obj.hide = function( $container ) {
+	obj.hide = function ( $container ) {
 		const $loader = $container.find( obj.selectors.loader );
 
 		if ( $loader.length ) {
 			$loader.addClass( obj.selectors.hiddenElement.className() );
 		}
 	};
-} )( jQuery, tribe.tickets.loader );
+} )( jQuery, window.tribe.tickets.loader );

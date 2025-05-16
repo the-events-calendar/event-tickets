@@ -418,7 +418,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		if ( $ts > strtotime( '-1 day', time() ) && $ts <= time() ) {
 			$show_date = sprintf(
 				/* translators: %s: human-readable time difference */
-				_x( '%s ago', '%s = human-readable time difference', 'woocommerce' ),
+				_x( '%s ago', '%s = human-readable time difference', 'event-tickets' ),
 				human_time_diff( $ts, time() )
 			);
 		} else {

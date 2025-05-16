@@ -21,12 +21,12 @@ tribe.tickets.admin.commerceSettings = {};
  * Initializes in a Strict env the code that manages the Tickets Commerce settings page.
  *
  * @since 5.1.6
- * @param  {Object} $   jQuery
- * @param  {Object} _   Underscore.js
- * @param  {Object} obj tribe.tickets.admin.commerceSettings
+ * @param {Object} $   jQuery
+ * @param {Object} _   Underscore.js
+ * @param {Object} obj tribe.tickets.admin.commerceSettings
  * @return {void}
  */
-( function( $, _, obj ) {
+( function ( $, _, obj ) {
 	const $document = $( document );
 
 	/**
@@ -49,18 +49,17 @@ tribe.tickets.admin.commerceSettings = {};
 		webHookSetUpLink: '#tec-tickets__admin-settings-webhook-set-up',
 	};
 
-	obj.observePayPalModal = function() {
+	obj.observePayPalModal = function () {
 		obj.paypalErrorQuickHelp = $( obj.selectors.troubleNotice );
 
-		const paypalModalObserver = new MutationObserver( function( mutationsRecord ) {
-			mutationsRecord.forEach( function( record ) {
-				record.removedNodes.forEach( function( node ) {
+		const paypalModalObserver = new MutationObserver( function ( mutationsRecord ) {
+			mutationsRecord.forEach( function ( record ) {
+				record.removedNodes.forEach( function ( node ) {
 					if ( 'PPMiniWin' !== node.getAttribute( 'id' ) ) {
 						return;
 					}
 
-					obj.paypalErrorQuickHelp[ 0 ] &&
-						obj.paypalErrorQuickHelp.removeClass( 'tribe-common-a11y-hidden' );
+					obj.paypalErrorQuickHelp[ 0 ] && obj.paypalErrorQuickHelp.removeClass( 'tribe-common-a11y-hidden' );
 				} );
 			} );
 		} );
@@ -71,7 +70,7 @@ tribe.tickets.admin.commerceSettings = {};
 		} );
 	};
 
-	obj.maybeShowModalAfterConnection = function() {
+	obj.maybeShowModalAfterConnection = function () {
 		if (
 			! window.location.search.match( /tc-status=paypal-signup-complete/i ) &&
 			! window.location.search.match( /tc-status=stripe-signup-complete/i )
@@ -79,7 +78,7 @@ tribe.tickets.admin.commerceSettings = {};
 			return;
 		}
 
-		tribe.dialogs.dialogs.forEach( function( dialog ) {
+		tribe.dialogs.dialogs.forEach( function ( dialog ) {
 			if ( 'paypal-connected-modal-id' === dialog.id ) {
 				dialog.a11yInstance.show();
 			}
@@ -88,16 +87,17 @@ tribe.tickets.admin.commerceSettings = {};
 				dialog.a11yInstance.show();
 			}
 
-			dialog.a11yInstance.node.querySelectorAll( '[data-js="a11y-close-button"]' )
-				.forEach( function( closeButton ) {
-					$( closeButton ).on( 'click', function() {
+			dialog.a11yInstance.node
+				.querySelectorAll( '[data-js="a11y-close-button"]' )
+				.forEach( function ( closeButton ) {
+					$( closeButton ).on( 'click', function () {
 						dialog.a11yInstance.hide();
 					} );
 				} );
 		} );
 	};
 
-	obj.setupPartnerLink = function( partnerLink ) {
+	obj.setupPartnerLink = function ( partnerLink ) {
 		const payPalLink = document.querySelector( '[data-paypal-button]' );
 
 		payPalLink.href = partnerLink + '&displayMode=minibrowser';
@@ -116,13 +116,13 @@ tribe.tickets.admin.commerceSettings = {};
 	 * @param {string} countryCode The country code.
 	 * @return {void}
 	 */
-	obj.requestPartnerUrl = function( countryCode ) {
+	obj.requestPartnerUrl = function ( countryCode ) {
 		// @todo Add AJAX handler for this.
 		fetch( ajaxurl + '?action=tribe_tickets_paypal_commerce_get_partner_url&country_code=' + countryCode ) // eslint-disable-line max-len
-			.then( function( response ) {
+			.then( function ( response ) {
 				return response.json();
 			} )
-			.then( function( res ) {
+			.then( function ( res ) {
 				// Handle success.
 				if ( true === res.success ) {
 					obj.setupPartnerLink( res.data.partnerLink );
@@ -130,14 +130,14 @@ tribe.tickets.admin.commerceSettings = {};
 
 				obj.buttonState.enable();
 			} )
-			.then( function() {
+			.then( function () {
 				// Handle the error notice.
 				// @todo Add AJAX handler for this.
 				fetch( ajaxurl + '?action=tribe_tickets_paypal_commerce_onboarding_trouble_notice' )
-					.then( function( response ) {
+					.then( function ( response ) {
 						return response.json();
 					} )
-					.then( function( res ) {
+					.then( function ( res ) {
 						if ( true !== res.success ) {
 							return;
 						}
@@ -155,7 +155,7 @@ tribe.tickets.admin.commerceSettings = {};
 			} );
 	};
 
-	obj.removeErrors = function() {
+	obj.removeErrors = function () {
 		const errorsContainer = document.querySelector( obj.selectors.errorMessageTemplate );
 
 		if ( errorsContainer ) {
@@ -164,11 +164,11 @@ tribe.tickets.admin.commerceSettings = {};
 	};
 
 	obj.buttonState = {
-		enable: function() {
+		enable() {
 			obj.onBoardingButton.attr( 'disabled', false );
 			obj.onBoardingButton.text( obj.onBoardingButton.data( 'initial-label' ) );
 		},
-		disable: function() {
+		disable() {
 			// Preserve initial label.
 			if ( ! obj.onBoardingButton.data( 'initial-label' ) ) {
 				obj.onBoardingButton.data( 'initial-label', obj.onBoardingButton.text().trim() );
@@ -181,7 +181,7 @@ tribe.tickets.admin.commerceSettings = {};
 		},
 	};
 
-	obj.handleConnectClick = function( evt ) {
+	obj.handleConnectClick = function ( evt ) {
 		evt.preventDefault();
 		obj.removeErrors();
 
@@ -192,13 +192,12 @@ tribe.tickets.admin.commerceSettings = {};
 		obj.paypalErrorQuickHelp = $( obj.selectors.troubleNotice );
 
 		// Hide paypal quick help message.
-		obj.paypalErrorQuickHelp[ 0 ] &&
-		obj.paypalErrorQuickHelp.addClass( 'tribe-common-a11y-hidden' );
+		obj.paypalErrorQuickHelp[ 0 ] && obj.paypalErrorQuickHelp.addClass( 'tribe-common-a11y-hidden' );
 
 		obj.requestPartnerUrl( countryCode );
 	};
 
-	obj.handleDisconnectClick = function( evt ) {
+	obj.handleDisconnectClick = function ( evt ) {
 		evt.preventDefault();
 		obj.removeErrors();
 
@@ -213,14 +212,14 @@ tribe.tickets.admin.commerceSettings = {};
 		fetch( ajaxurl + '?action=tribe_tickets_paypal_commerce_disconnect_account' );
 	};
 
-	obj.onBoardCallback = function( authCode, sharedId ) {
+	obj.onBoardCallback = function ( authCode, sharedId ) {
 		const query = '&authCode=' + authCode + '&sharedId=' + sharedId;
 
 		fetch( ajaxurl + '?action=tribe_tickets_paypal_commerce_user_on_boarded' + query )
-			.then( function( res ) {
+			.then( function ( res ) {
 				return res.json();
 			} )
-			.then( function( res ) {
+			.then( function ( res ) {
 				if ( true !== res.success ) {
 					// @todo Improve the error messaging here.
 					alert( 'Something went wrong while we were connecting your account, please try again.' );
@@ -233,7 +232,7 @@ tribe.tickets.admin.commerceSettings = {};
 			} );
 	};
 
-	obj.onWebHookSetUpLinkClick = function( evt ) {
+	obj.onWebHookSetUpLinkClick = function ( evt ) {
 		evt.preventDefault();
 		const target = $( evt.target );
 
@@ -243,31 +242,33 @@ tribe.tickets.admin.commerceSettings = {};
 			`<p id="tec-tickets-webhook-creation-update" class="tooltip description">
 			<span class="dashicons dashicons-update"></span>
 			<span>${ target.attr( 'data-loading-text' ) }</span>
-			</p>`,
+			</p>`
 		).insertAfter( target.closest( 'p' ) );
 
-		fetch( target.attr( 'href' ) ).then( function( res ) {
-			return res.json();
-		} ).then( function( res ) {
-			const updateEle = $( '#tec-tickets-webhook-creation-update' );
-			const updateDashIcon = updateEle.find( 'span.dashicons' );
-			const updateText = updateEle.find( 'span:not(.dashicons)' );
+		fetch( target.attr( 'href' ) )
+			.then( function ( res ) {
+				return res.json();
+			} )
+			.then( function ( res ) {
+				const updateEle = $( '#tec-tickets-webhook-creation-update' );
+				const updateDashIcon = updateEle.find( 'span.dashicons' );
+				const updateText = updateEle.find( 'span:not(.dashicons)' );
 
-			updateText.text( res.data.status );
+				updateText.text( res.data.status );
 
-			updateDashIcon.removeClass( 'dashicons-update' );
+				updateDashIcon.removeClass( 'dashicons-update' );
 
-			if ( true !== res.success ) {
-				updateDashIcon.addClass( 'dashicons-no' );
-				return;
-			}
+				if ( true !== res.success ) {
+					updateDashIcon.addClass( 'dashicons-no' );
+					return;
+				}
 
-			updateDashIcon.addClass( 'dashicons-yes' );
+				updateDashIcon.addClass( 'dashicons-yes' );
 
-			setTimeout( function() {
-				window.location.reload();
-			}, 700 );
-		} );
+				setTimeout( function () {
+					window.location.reload();
+				}, 700 );
+			} );
 	};
 
 	/**
@@ -276,7 +277,7 @@ tribe.tickets.admin.commerceSettings = {};
 	 * @since 5.1.6
 	 * @return {void}
 	 */
-	obj.ready = function() {
+	obj.ready = function () {
 		obj.onBoardingButton = $( obj.selectors.connectButton );
 		obj.disconnectButton = $( obj.selectors.disconnectPayPalAccountButton );
 		obj.setUpWebhookLink = $( obj.selectors.webHookSetUpLink );

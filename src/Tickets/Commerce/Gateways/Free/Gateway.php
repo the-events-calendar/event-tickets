@@ -29,7 +29,7 @@ class Gateway extends Abstract_Gateway {
 	 *
 	 * @var string $key The Gateway key.
 	 */
-	protected static $key = 'free';
+	protected static string $key = 'free';
 
 	/**
 	 * The Gateway label, we are hiding it for this gateway.

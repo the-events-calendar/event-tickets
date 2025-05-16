@@ -24,4 +24,4 @@
 /**
  * @type {StoreLocalizedData}
  */
-export const localizedData = window?.tec?.tickets?.seating?.blockEditor;
+export const localizedData = window?.tec?.tickets?.seating?.blockEditorData;

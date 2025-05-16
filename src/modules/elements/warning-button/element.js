@@ -16,24 +16,11 @@ import { Dashicon } from '@wordpress/components';
 import { Button } from '@moderntribe/common/elements';
 import './style.pcss';
 
-const WarningButton = ( {
-	children,
-	className,
-	icon,
-	...props
-} ) => {
+const WarningButton = ( { children, className, icon, ...props } ) => {
 	return (
-		<Button
-			className={ classNames( 'tribe-editor__warning-button', className ) }
-			{ ...props }
-		>
-			<Dashicon
-				className="tribe-editor__warning-button-icon"
-				icon={ icon }
-			/>
-			<span className="tribe-editor__warning-button-text">
-				{ children }
-			</span>
+		<Button className={ classNames( 'tribe-editor__warning-button', className ) } { ...props }>
+			<Dashicon className="tribe-editor__warning-button-icon" icon={ icon } />
+			<span className="tribe-editor__warning-button-text">{ children }</span>
 		</Button>
 	);
 };

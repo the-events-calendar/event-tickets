@@ -1,7 +1,6 @@
 import { getTicketIdFromCommonStore } from './common-store-bridge';
 
 export const selectors = {
-
 	getAllFees( state ) {
 		return {
 			feesAvailable: state.feesAvailable,
@@ -12,11 +11,7 @@ export const selectors = {
 	getSelectedFees( state, clientId ) {
 		const ticketPostId = getTicketIdFromCommonStore( clientId );
 
-		return (
-			state?.selectedFeesByClientId?.[ clientId ] ||
-			state?.selectedFeesByPostId?.[ ticketPostId ] ||
-			[]
-		);
+		return state?.selectedFeesByClientId?.[ clientId ] || state?.selectedFeesByPostId?.[ ticketPostId ] || [];
 	},
 
 	getDisplayedFees( state, clientId ) {
@@ -29,9 +24,8 @@ export const selectors = {
 		// Use the state to determine the displayed fees from available and selected.
 		const availableFees = state.feesAvailable;
 		const ticketPostId = getTicketIdFromCommonStore( clientId );
-		const selectedFees = state?.selectedFeesByClientId?.[ clientId ] ||
-			state?.selectedFeesByPostId?.[ ticketPostId ] ||
-			[];
+		const selectedFees =
+			state?.selectedFeesByClientId?.[ clientId ] || state?.selectedFeesByPostId?.[ ticketPostId ] || [];
 
 		const displayedFees = [];
 

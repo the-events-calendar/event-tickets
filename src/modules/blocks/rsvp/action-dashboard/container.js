@@ -13,34 +13,35 @@ import { select, dispatch as wpDispatch } from '@wordpress/data';
  * Internal dependencies
  */
 import RSVPActionDashboard from './template';
-import { actions, selectors, thunks } from '@moderntribe/tickets/data/blocks/rsvp';
+import { actions, selectors, thunks } from '../../../data/blocks/rsvp';
 import { withStore } from '@moderntribe/common/hoc';
 import { hasRecurrenceRules, noTicketsOnRecurring } from '@moderntribe/common/utils/recurrence';
 
-const getIsConfirmDisabled = ( state ) => (
+const getIsConfirmDisabled = ( state ) =>
 	! selectors.getRSVPTempTitle( state ) ||
-		! selectors.getRSVPHasChanges( state ) ||
-		selectors.getRSVPIsLoading( state ) ||
-		selectors.getRSVPHasDurationError( state )
-);
+	! selectors.getRSVPHasChanges( state ) ||
+	selectors.getRSVPIsLoading( state ) ||
+	selectors.getRSVPHasDurationError( state );
 
 const onCancelClick = ( state, dispatch ) => () => {
-	dispatch( actions.setRSVPTempDetails( {
-		tempTitle: selectors.getRSVPTitle( state ),
-		tempDescription: selectors.getRSVPDescription( state ),
-		tempCapacity: selectors.getRSVPCapacity( state ),
-		tempNotGoingResponses: selectors.getRSVPNotGoingResponses( state ),
-		tempStartDate: selectors.getRSVPStartDate( state ),
-		tempStartDateInput: selectors.getRSVPStartDateInput( state ),
-		tempStartDateMoment: selectors.getRSVPStartDateMoment( state ),
-		tempEndDate: selectors.getRSVPEndDate( state ),
-		tempEndDateInput: selectors.getRSVPEndDateInput( state ),
-		tempEndDateMoment: selectors.getRSVPEndDateMoment( state ),
-		tempStartTime: selectors.getRSVPStartTime( state ),
-		tempEndTime: selectors.getRSVPEndTime( state ),
-		tempStartTimeInput: selectors.getRSVPStartTimeInput( state ),
-		tempEndTimeInput: selectors.getRSVPEndTimeInput( state ),
-	} ) );
+	dispatch(
+		actions.setRSVPTempDetails( {
+			tempTitle: selectors.getRSVPTitle( state ),
+			tempDescription: selectors.getRSVPDescription( state ),
+			tempCapacity: selectors.getRSVPCapacity( state ),
+			tempNotGoingResponses: selectors.getRSVPNotGoingResponses( state ),
+			tempStartDate: selectors.getRSVPStartDate( state ),
+			tempStartDateInput: selectors.getRSVPStartDateInput( state ),
+			tempStartDateMoment: selectors.getRSVPStartDateMoment( state ),
+			tempEndDate: selectors.getRSVPEndDate( state ),
+			tempEndDateInput: selectors.getRSVPEndDateInput( state ),
+			tempEndDateMoment: selectors.getRSVPEndDateMoment( state ),
+			tempStartTime: selectors.getRSVPStartTime( state ),
+			tempEndTime: selectors.getRSVPEndTime( state ),
+			tempStartTimeInput: selectors.getRSVPStartTimeInput( state ),
+			tempEndTimeInput: selectors.getRSVPEndTimeInput( state ),
+		} )
+	);
 	dispatch( actions.setRSVPHasChanges( false ) );
 	dispatch( actions.setRSVPIsAddEditOpen( false ) );
 	wpDispatch( 'core/block-editor' ).clearSelectedBlock();
@@ -65,15 +66,19 @@ const onConfirmClick = ( state, dispatch ) => () => {
 	};
 
 	if ( ! selectors.getRSVPCreated( state ) ) {
-		dispatch( thunks.createRSVP( {
-			...payload,
-			postId: select( 'core/editor' ).getCurrentPostId(),
-		} ) );
+		dispatch(
+			thunks.createRSVP( {
+				...payload,
+				postId: select( 'core/editor' ).getCurrentPostId(),
+			} )
+		);
 	} else {
-		dispatch( thunks.updateRSVP( {
-			...payload,
-			id: selectors.getRSVPId( state ),
-		} ) );
+		dispatch(
+			thunks.updateRSVP( {
+				...payload,
+				id: selectors.getRSVPId( state ),
+			} )
+		);
 	}
 };
 
@@ -100,7 +105,4 @@ const mergeProps = ( stateProps, dispatchProps, ownProps ) => {
 	};
 };
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps, null, mergeProps ),
-)( RSVPActionDashboard );
+export default compose( withStore(), connect( mapStateToProps, null, mergeProps ) )( RSVPActionDashboard );

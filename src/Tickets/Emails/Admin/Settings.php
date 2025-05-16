@@ -133,7 +133,17 @@ class Settings {
 		$new_fields = [
 			[
 				'type' => 'html',
+				'html' => '<div class="tec-settings-form__content-section"><h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . esc_html__( 'Email Templates', 'event-tickets' ) . '</h3>',
+
+			],
+			[
+				'type' => 'html',
 				'html' => $template->template( 'message-templates', [ 'emails' => $emails ], false ),
+			],
+			[
+				'type' => 'html',
+				'html' => '</div>',
+
 			],
 		];
 
@@ -162,11 +172,15 @@ class Settings {
 		$new_fields = [
 			[
 				'type' => 'html',
-				'html' => '<h3>' . esc_html__( 'Sender Information', 'event-tickets' ) . '</h3>',
+				'html' => '<div class="tec-settings-form__content-section">',
 			],
 			[
 				'type' => 'html',
-				'html' => '<p>' . esc_html__( 'If fields are empty, sender information will be from the site owner set in WordPress general settings.', 'event-tickets' ) . '</p>',
+				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . esc_html__( 'Sender Information', 'event-tickets' ) . '</h3>',
+			],
+			[
+				'type' => 'html',
+				'html' => '<p class="tec-settings-form__description-text">' . esc_html__( 'If fields are empty, sender information will be from the site owner set in WordPress general settings.', 'event-tickets' ) . '</p>',
 			],
 			static::$option_sender_name  => [
 				'type'                => 'text',
@@ -187,6 +201,10 @@ class Settings {
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'email',
 				'can_be_empty'        => true,
+			],
+			[
+				'type' => 'html',
+				'html' => '</div>',
 			],
 		];
 
@@ -248,17 +266,23 @@ class Settings {
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function email_styling_fields( array $fields ): array {
-
 		$new_fields = [
-			[
+			'tec-settings-email-email-styling-wrapper-start' => [
 				'type' => 'html',
-				'html' => '<h3>' . esc_html__( 'Email Styling', 'event-tickets' ) . '</h3>',
+				'html' => '<div class="tec-settings-form__content-section">',
 			],
 			[
 				'type' => 'html',
-				'html' => '<p>' . esc_html__( 'Add a logo and customize link colors and footer information to personalize your communications.  If you\'d like more granular control over email styling, you can override the email templates in your theme.  Learn More', 'event-tickets' ) . '</p>',
+				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . esc_html__( 'Email Styling', 'event-tickets' ) . '</h3>',
 			],
-			static::$option_header_image_url  => [
+			[
+				'type' => 'html',
+				'html' => '<p class="tec-settings-form__description-text">' . esc_html__(
+					'Add a logo and customize link colors and footer information to personalize your communications.  If you\'d like more granular control over email styling, you can override the email templates in your theme.  Learn More',
+					'event-tickets'
+				) . '</p>',
+			],
+			static::$option_header_image_url               => [
 				'type'                => 'image',
 				'label'               => esc_html__( 'Header Image', 'event-tickets' ),
 				'size'                => 'medium',
@@ -266,7 +290,7 @@ class Settings {
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'url',
 			],
-			static::$option_header_image_alignment  => [
+			static::$option_header_image_alignment         => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Image Alignment', 'event-tickets' ),
 				'default'         => 'left',
@@ -277,7 +301,7 @@ class Settings {
 					'right'  => esc_html__( 'Right', 'event-tickets' ),
 				],
 			],
-			static::$option_header_bg_color  => [
+			static::$option_header_bg_color                => [
 				'type'                => 'color',
 				'label'               => esc_html__( 'Header/Footer Background', 'event-tickets' ),
 				'size'                => 'medium',
@@ -285,7 +309,7 @@ class Settings {
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'color',
 			],
-			static::$option_ticket_bg_color  => [
+			static::$option_ticket_bg_color                => [
 				'type'                => 'color',
 				'label'               => esc_html__( 'Ticket Color', 'event-tickets' ),
 				'size'                => 'medium',
@@ -293,7 +317,7 @@ class Settings {
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'color',
 			],
-			static::$option_footer_content  => [
+			static::$option_footer_content                 => [
 				'type'            => 'wysiwyg',
 				'label'           => esc_html__( 'Footer Content', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'Add custom links and instructions to the bottom of your emails.', 'event-tickets' ),
@@ -314,6 +338,10 @@ class Settings {
 						'link',
 					],
 				],
+			],
+			'tec-settings-email-email-styling-wrapper-end' => [
+				'type' => 'html',
+				'html' => '</div>',
 			],
 		];
 

@@ -1,8 +1,4 @@
-import {
-	ajaxUrl,
-	ajaxNonce,
-	ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID,
-} from '@tec/tickets/seating/ajax';
+import { ajaxUrl, ajaxNonce, ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID } from '../../ajax';
 
 /**
  * @typedef {Object} SeatTypeData
@@ -20,22 +16,20 @@ import {
  *
  * @return {Promise<SeatTypeData>} A promise that will be resolved when the seat types are fetched.
  */
-export async function fetchSeatTypesByLayoutId(layoutId) {
-	const url = new URL(ajaxUrl);
-	url.searchParams.set('action', ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID);
-	url.searchParams.set('layout', layoutId);
-	url.searchParams.set('_ajax_nonce', ajaxNonce);
-	const response = await fetch(url.toString(), {
+export async function fetchSeatTypesByLayoutId( layoutId ) {
+	const url = new URL( ajaxUrl );
+	url.searchParams.set( 'action', ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID );
+	url.searchParams.set( 'layout', layoutId );
+	url.searchParams.set( '_ajax_nonce', ajaxNonce );
+	const response = await fetch( url.toString(), {
 		method: 'GET',
 		headers: {
 			Accept: 'application/json',
 		},
-	});
+	} );
 
-	if (response.status !== 200) {
-		throw new Error(
-			`Failed to fetch seat types for layout ID ${layoutId}. Status: ${response.status}`
-		);
+	if ( response.status !== 200 ) {
+		throw new Error( `Failed to fetch seat types for layout ID ${ layoutId }. Status: ${ response.status }` );
 	}
 
 	const json = await response.json();
@@ -44,7 +38,7 @@ export async function fetchSeatTypesByLayoutId(layoutId) {
 }
 
 export const controls = {
-	FETCH_SEAT_TYPES_FOR_LAYOUT(action) {
-		return fetchSeatTypesByLayoutId(action.layoutId);
+	FETCH_SEAT_TYPES_FOR_LAYOUT( action ) {
+		return fetchSeatTypesByLayoutId( action.layoutId );
 	},
 };

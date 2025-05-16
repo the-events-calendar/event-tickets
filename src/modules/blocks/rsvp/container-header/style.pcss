@@ -1,14 +1,15 @@
 .tribe-editor__container-panel__header {
 
 	.tribe-editor__rsvp & {
-		display: flex;
 		align-items: center;
+		display: flex;
 	}
 }
 
 .tribe-editor__rsvp--selected {
 
 	&.tribe-editor__rsvp--add-edit-open {
+
 		.tribe-editor__rsvp-container .tribe-editor__container-panel__content {
 			display: block;
 		}
@@ -35,16 +36,16 @@
 
 	.tribe-editor__rsvp-container-header__title {
 		color: #141827;
+		font-size: 21px;
+		font-weight: 700;
+		letter-spacing: 0.16px;
+		line-height: 25px;
 		margin: 0;
 		padding-top: 3px;
-		font-weight: bold;
-		font-size: 21px;
-		line-height: 25px;
-		letter-spacing: 0.16px;
 	}
 
 	.tribe-editor__rsvp-container--disabled .tribe-editor__rsvp-container-header__title {
-		color: #AEB4BB;
+		color: #aeb4bb;
 	}
 }
 
@@ -53,9 +54,9 @@
 	display: flex;
 
 	svg {
+		fill: #8d949b;
 		flex: none;
 		margin: 6px 0 0 10px;
-		fill: #8d949b;
 	}
 }
 
@@ -66,9 +67,9 @@
 		background-color: transparent;
 		border: none;
 		color: #000;
-		font-family: 'Helvetica Neue', Helvetica, -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
+		font-family: "Helvetica Neue", Helvetica, -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
 		font-size: 21px;
-		font-weight: bold;
+		font-weight: 700;
 		letter-spacing: 0.16px;
 		line-height: 25px;
 		margin: 3px 0 0;
@@ -98,15 +99,15 @@
 }
 
 .tribe-editor__rsvp-container-header__description {
+	color: #545d66;
 	display: block;
-	color: #545D66;
-	padding-top: 7px;
 	font-size: 12px;
-	line-height: 18px;
 	letter-spacing: 0.04px;
+	line-height: 18px;
+	padding-top: 7px;
 
 	.tribe-editor__rsvp-container--disabled & {
-		color: #AEB4BB;
+		color: #aeb4bb;
 	}
 }
 
@@ -114,18 +115,18 @@
 .tribe-editor__rsvp {
 
 	.tribe-editor__rsvp-container-header__description-input {
-		display: flex;
-		width: 95%;
 		background-color: transparent;
-		color: #5d5d5d;
-		margin: 0;
-		padding: 0;
 		border: none;
-		font-family: 'Helvetica Neue', Helvetica, -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
+		color: #5d5d5d;
+		display: flex;
+		font-family: "Helvetica Neue", Helvetica, -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
 		font-size: 12px;
-		line-height: 18px;
 		letter-spacing: 0.04px;
+		line-height: 18px;
+		margin: 0;
 		max-height: 108px;
+		padding: 0;
+		width: 95%;
 
 		&:hover,
 		&:focus {
@@ -139,7 +140,7 @@
 			&:hover,
 			&:focus {
 				background-color: transparent;
-				color: #AEB4BB;
+				color: #aeb4bb;
 			}
 		}
 
@@ -157,7 +158,7 @@
 	padding-top: var(--tec-spacer-4);
 
 	.tribe-editor__rsvp-container--disabled & {
-		color: #AEB4BB;
+		color: #aeb4bb;
 	}
 }
 
@@ -174,23 +175,23 @@
 
 	.tribe-editor__rsvp-container-header__capacity-label & {
 		flex: none;
-		margin-left: 2px;
 		font-size: 12px;
 		letter-spacing: 0.04px;
+		margin-left: 2px;
 		white-space: pre;
 	}
 }
 
 .tribe-editor__rsvp-container-header__capacity-label-fallback {
+	color: #545d66;
 	display: block;
 	font-size: 12px;
-	line-height: 18px;
 	letter-spacing: 0.04px;
-	color: #545D66;
+	line-height: 18px;
 	padding-top: 15px;
 
 	.tribe-editor__rsvp-container--disabled & {
-		color: #AEB4BB;
+		color: #aeb4bb;
 	}
 }
 

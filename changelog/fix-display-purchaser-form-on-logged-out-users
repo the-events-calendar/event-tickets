@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+The purchaser form on TicketsCommerce checkout will only be displayed on logged out users.

@@ -13,13 +13,6 @@ comments on your PR and suggests changes. Be gentle with him, he's only
 trying to help. He also has a pretty good idea about what we'd like to
 see in terms of code formatting, so don't ignore him.
 
-## Gulp
-
-We compress/uglify our CSS and JS files using [Gulp](http://gulpjs.com/)
-via our very own [`product-taskmaster`](https://github.com/the-events-calendar/product-taskmaster)
-repo - which is a collection of gulp tasks. Here's how you get rolling
-with that.
-
 ### Prerequisites
 
 #### Install Node.js
@@ -52,7 +45,3 @@ rebuild and try again.
 ```
 npm rebuild
 ```
-
-### Using Gulp
-
-Our gulp tasks are documented in our [product-taskmanager README](https://github.com/the-events-calendar/product-taskmaster#gulp-tasks).

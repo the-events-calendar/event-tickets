@@ -306,11 +306,13 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 			return $this->filter_should_display_purchaser_info( false );
 		}
 
+		$is_user_logged_in = is_user_logged_in();
+
 		$must_login = $template->get( 'must_login', false );
-		if ( $must_login && ! is_user_logged_in() ) {
+		if ( $must_login && ! $is_user_logged_in ) {
 			return $this->filter_should_display_purchaser_info( false );
 		}
 
-		return $this->filter_should_display_purchaser_info( true );
+		return $this->filter_should_display_purchaser_info( ! $is_user_logged_in );
 	}
 }

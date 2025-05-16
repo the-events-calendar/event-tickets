@@ -23,13 +23,10 @@ function init() {
 		return;
 	}
 
-	const {
-		ticketPanelEditSelector,
-		ticketPanelEditDefaultProviderAttribute,
-		ticketsMetaboxSelector,
-	} = window.TECFtEditorData.classic;
+	const { ticketPanelEditSelector, ticketPanelEditDefaultProviderAttribute, ticketsMetaboxSelector } =
+		window.TECFtEditorData.classic;
 
-	const ticketsMetabox = jQuery(ticketsMetaboxSelector);
+	const ticketsMetabox = jQuery( ticketsMetaboxSelector );
 
 	/**
 	 * Get the event ticket provider from the ticket panel attribute.
@@ -38,8 +35,8 @@ function init() {
 	 */
 	function getEventProviderFromPanel() {
 		return document
-			.getElementById(ticketPanelEditSelector.substring(1))
-			.getAttribute(ticketPanelEditDefaultProviderAttribute);
+			.getElementById( ticketPanelEditSelector.substring( 1 ) )
+			.getAttribute( ticketPanelEditDefaultProviderAttribute );
 	}
 
 	/**
@@ -48,25 +45,21 @@ function init() {
 	 * @return {string} The event title.
 	 */
 	function getEventTitle() {
-		return document.getElementById('title').value;
+		return document.getElementById( 'title' ).value;
 	}
 
 	/**
 	 * Lock the post publish  and "Save Draft" buttons.
 	 */
 	function lockPostPublish() {
-		Array.from(document.querySelectorAll('#publish,#save-post')).forEach(
-			(el) => (el.disabled = true)
-		);
+		Array.from( document.querySelectorAll( '#publish,#save-post' ) ).forEach( ( el ) => ( el.disabled = true ) );
 	}
 
 	/**
 	 * Unlock the post publish and "Save Draft" buttons.
 	 */
 	function unlockPostPublish() {
-		Array.from(document.querySelectorAll('#publish,#save-post')).forEach(
-			(el) => (el.disabled = false)
-		);
+		Array.from( document.querySelectorAll( '#publish,#save-post' ) ).forEach( ( el ) => ( el.disabled = false ) );
 	}
 
 	/**
@@ -76,12 +69,8 @@ function init() {
 	 * @param {string|null} seriesProvider The current series ticket provider.
 	 * @param {string}      seriesTitle    Thte title of the currently selected series.
 	 */
-	function togglePublishLock(eventProvider, seriesProvider, seriesTitle) {
-		if (
-			eventProvider === seriesProvider ||
-			eventProvider === null ||
-			seriesProvider === null
-		) {
+	function togglePublishLock( eventProvider, seriesProvider, seriesTitle ) {
+		if ( eventProvider === seriesProvider || eventProvider === null || seriesProvider === null ) {
 			unlockPostPublish();
 			removeDiscordantProviderNotice();
 
@@ -89,7 +78,7 @@ function init() {
 		}
 
 		lockPostPublish();
-		showDiscordantProviderNotice(getEventTitle(), seriesTitle);
+		showDiscordantProviderNotice( getEventTitle(), seriesTitle );
 	}
 
 	/**
@@ -99,7 +88,7 @@ function init() {
 		const seriesProvider = getSeriesProviderFromSelection();
 		const eventProvider = getEventProviderFromPanel();
 		const seriesTitle = getSeriesTitleFromSelection();
-		togglePublishLock(eventProvider, seriesProvider, seriesTitle);
+		togglePublishLock( eventProvider, seriesProvider, seriesTitle );
 	}
 
 	/**
@@ -107,11 +96,11 @@ function init() {
 	 *
 	 * @param {Event} event The 'change' event dispatched by Select2.
 	 */
-	function onSeriesChange(event) {
-		const seriesProvider = getSeriesProviderFromEvent(event);
+	function onSeriesChange( event ) {
+		const seriesProvider = getSeriesProviderFromEvent( event );
 		const eventProvider = getEventProviderFromPanel();
-		const seriesTitle = getSeriesTitleFromEvent(event);
-		togglePublishLock(eventProvider, seriesProvider, seriesTitle);
+		const seriesTitle = getSeriesTitleFromEvent( event );
+		togglePublishLock( eventProvider, seriesProvider, seriesTitle );
 	}
 
 	/**
@@ -119,12 +108,12 @@ function init() {
 	 *
 	 * @param {Function} onChange The callback function to be called when the ticket panel is swapped.
 	 */
-	function subscribeToTicketProviderChange(onChange) {
-		ticketsMetabox.on('after_panel_swap.tickets', onChange);
+	function subscribeToTicketProviderChange( onChange ) {
+		ticketsMetabox.on( 'after_panel_swap.tickets', onChange );
 	}
 
-	subscribeToSeriesChange(onSeriesChange);
-	subscribeToTicketProviderChange(onTicketProviderChange);
+	subscribeToSeriesChange( onSeriesChange );
+	subscribeToTicketProviderChange( onTicketProviderChange );
 }
 
-onReady(init);
+onReady( init );

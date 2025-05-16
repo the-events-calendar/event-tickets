@@ -29,7 +29,7 @@ class Assets extends Service_Provider {
 		/** @var Tribe__Tickets__Main $tickets_main */
 		$tickets_main = tribe( 'tickets.main' );
 
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tribe-tickets-admin-commerce-settings',
 			'admin/tickets-commerce-settings.js',
@@ -42,7 +42,7 @@ class Assets extends Service_Provider {
 		);
 
 		// Tickets Commerce main styles.
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tribe-tickets-commerce-style',
 			'tickets-commerce.css',
@@ -61,7 +61,7 @@ class Assets extends Service_Provider {
 			]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tribe-tickets-commerce-js',
 			'v2/tickets-commerce.js',
@@ -80,7 +80,7 @@ class Assets extends Service_Provider {
 			]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tribe-tickets-commerce-notice-js',
 			'commerce/notice.js',
@@ -91,7 +91,7 @@ class Assets extends Service_Provider {
 			null
 		);
 
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tribe-tickets-commerce-base-gateway-checkout-toggler',
 			'commerce/gateway/toggler.js',

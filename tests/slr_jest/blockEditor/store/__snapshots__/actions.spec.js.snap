@@ -1,28 +1,28 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`actions every action should return what is expected 1`] = `
-Object {
+{
   "isUsingAssignedSeating": "test-1",
   "type": "SET_USING_ASSIGNED_SEATING",
 }
 `;
 
 exports[`actions every action should return what is expected 2`] = `
-Object {
+{
   "layoutId": "test-1",
   "type": "SET_LAYOUT",
 }
 `;
 
 exports[`actions every action should return what is expected 3`] = `
-Object {
+{
   "eventCapacity": "test-1",
   "type": "SET_EVENT_CAPACITY",
 }
 `;
 
 exports[`actions every action should return what is expected 4`] = `
-Object {
+{
   "layoutId": "test-1",
   "seatTypes": "test-2",
   "type": "SET_SEAT_TYPES_FOR_LAYOUT",
@@ -30,7 +30,7 @@ Object {
 `;
 
 exports[`actions every action should return what is expected 5`] = `
-Object {
+{
   "clientId": "test-1",
   "seatTypeId": "test-2",
   "type": "SET_TICKET_SEAT_TYPE",
@@ -38,28 +38,28 @@ Object {
 `;
 
 exports[`actions every action should return what is expected 6`] = `
-Object {
+{
   "clientId": "test-1",
   "type": "SET_TICKET_SEAT_TYPE_BY_POST_ID",
 }
 `;
 
 exports[`actions every action should return what is expected 7`] = `
-Object {
+{
   "layoutId": "test-1",
   "type": "FETCH_SEAT_TYPES_FOR_LAYOUT",
 }
 `;
 
 exports[`actions every action should return what is expected 8`] = `
-Object {
+{
   "isLayoutLocked": "test-1",
   "type": "LOCK_LAYOUT",
 }
 `;
 
 exports[`actions should have the correct actions 1`] = `
-Object {
+{
   "fetchSeatTypesForLayout": [Function],
   "setEventCapacity": [Function],
   "setIsLayoutLocked": [Function],

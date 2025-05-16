@@ -1,0 +1,59 @@
+/* -----------------------------------------------------------------------------
+ * TabPanel Content section
+ * ----------------------------------------------------------------------------- */
+.tec-tickets-onboarding__tab-content {
+	display: grid;
+	font-size: var(--tec-font-size-2);
+	gap: var(--tec-spacer-3);
+	margin: 0 auto;
+	max-width: min(100%, 100vw);
+	min-width: var(--tec-spacer-onboarding-content-min-width);
+	padding-bottom: var(--tec-spacer-5);
+	width: 100%;
+}
+
+.tec-tickets-onboarding__tab-content p:first-child {
+	margin-top: 0;
+}
+
+.tec-tickets-onboarding__tab-content p:last-child {
+	margin-bottom: 0;
+}
+
+
+
+.tec-tickets-onboarding__tab-content.install-success {
+	align-items: center;
+	background-color: var(--tec-color-background);
+	padding: var(--tec-spacer-5) var(--tec-spacer-7);
+	width: 300px;
+}
+
+@media (min-width: 500px) {
+	.tec-tickets-onboarding__tab-content {
+		max-width: min(100%, 100vw);
+		gap: var(--tec-spacer-2);
+	}
+}
+
+@media (min-width: 1024px) {
+	.tec-tickets-onboarding__tab-content {
+		max-width: 363px;
+	}
+}
+
+.tec-tickets-onboarding__content-header-icon {
+	height: 30px;
+	margin: 0 auto var(--tec-spacer-1);
+	width: 30px;
+}
+
+.tec-tickets-onboarding__content-install-icon {
+	margin: 0 auto var(--tec-spacer-1);
+}
+
+.tec-tickets-onboarding__welcome-header {
+	height: 180px;
+	margin-left: auto;
+	margin-right: auto;
+}

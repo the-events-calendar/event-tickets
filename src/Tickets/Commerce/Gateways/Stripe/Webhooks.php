@@ -99,56 +99,6 @@ class Webhooks extends Abstract_Webhooks {
 	}
 
 	/**
-	 * Add a pending webhook to the order.
-	 *
-	 * @since 5.18.1
-	 *
-	 * @param int    $order_id   Order ID.
-	 * @param string $new_status New status.
-	 * @param string $old_status Old status.
-	 * @param array  $metadata   Metadata.
-	 *
-	 * @return void
-	 */
-	public function add_pending_webhook( int $order_id, string $new_status, string $old_status, array $metadata = [] ): void {
-		add_post_meta(
-			$order_id,
-			self::PENDING_WEBHOOKS_KEY,
-			[
-				'new_status' => $new_status,
-				'metadata'   => $metadata,
-				'old_status' => $old_status,
-			]
-		);
-	}
-
-	/**
-	 * Get the pending webhooks for an order.
-	 *
-	 * @since 5.18.1
-	 *
-	 * @param int $order_id Order ID.
-	 *
-	 * @return array
-	 */
-	public function get_pending_webhooks( int $order_id ): array {
-		return (array) get_post_meta( $order_id, self::PENDING_WEBHOOKS_KEY );
-	}
-
-	/**
-	 * Delete the pending webhooks for an order.
-	 *
-	 * @since 5.18.1
-	 *
-	 * @param int $order_id Order ID.
-	 *
-	 * @return void
-	 */
-	public function delete_pending_webhooks( int $order_id ): void {
-		delete_post_meta( $order_id, self::PENDING_WEBHOOKS_KEY );
-	}
-
-	/**
 	 * Attempts to get the database option for the valid key from Stripe
 	 * This function was introduced to enable a cache-free polling of the database for the Valid Key, it will include a
 	 * filter to the WordPress All Options and remove the WordPress request cache for the option we are looking at.
@@ -534,26 +484,6 @@ class Webhooks extends Abstract_Webhooks {
 	}
 
 	/**
-	 * Get the max number of retries for the webhooks.
-	 *
-	 * @since 5.19.3
-	 *
-	 * @return int The number of retries.
-	 */
-	public function get_max_number_of_retries(): int {
-		/**
-		 * Filter the maximum number of attempts we will try to retry a webhook process.
-		 *
-		 * @since 5.19.3
-		 *
-		 * @param int $max_attempts How many attempts we will try to retry a webhook process. Defaults to 5.
-		 *
-		 * @return int
-		 */
-		return (int) apply_filters( 'tec_tickets_commerce_gateway_stripe_webhook_maximum_attempts', 5 );
-	}
-
-	/**
 	 * Includes a Copy button to the webhook UI.
 	 *
 	 * @since 5.3.0
@@ -592,11 +522,11 @@ class Webhooks extends Abstract_Webhooks {
 		return [
 			'tickets-commerce-gateway-settings-group-start-webhook'       => [
 				'type' => 'html',
-				'html' => '<div class="tribe-settings-form-wrap">',
+				'html' => '<div class="tec-settings-form__content-section">',
 			],
 			'tickets-commerce-gateway-settings-group-header-webhook'      => [
 				'type' => 'html',
-				'html' => '<h4 class="tec-tickets__admin-settings-tickets-commerce-gateway-group-header">' . esc_html__( 'Webhooks', 'event-tickets' ) . '</h4><div class="clear"></div>',
+				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . esc_html__( 'Webhooks', 'event-tickets' ) . '</h3>',
 			],
 			'tickets-commerce-gateway-settings-group-description-webhook' => [
 				'type' => 'html',
@@ -606,7 +536,7 @@ class Webhooks extends Abstract_Webhooks {
 				'type'       => 'text',
 				'label'      => esc_html__( 'Webhooks URL', 'event-tickets' ),
 				'tooltip'    => '',
-				'size'       => 'large',
+				'size'       => 'medium',
 				'default'    => tribe( Webhook_Endpoint::class )->get_route_url(),
 				'attributes' => [
 					'readonly' => 'readonly',
@@ -617,7 +547,7 @@ class Webhooks extends Abstract_Webhooks {
 				'type'                => 'text',
 				'label'               => esc_html__( 'Signing Secret', 'event-tickets' ),
 				'tooltip'             => $signing_key_tooltip,
-				'size'                => 'large',
+				'size'                => 'medium',
 				'default'             => '',
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'textarea',
@@ -630,7 +560,7 @@ class Webhooks extends Abstract_Webhooks {
 			],
 			'tickets-commerce-gateway-settings-group-end-webhook' => [
 				'type' => 'html',
-				'html' => '<div class="clear"></div></div>',
+				'html' => '</div>',
 			],
 		];
 	}

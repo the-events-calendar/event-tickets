@@ -9,25 +9,21 @@ import { compose } from 'redux';
  */
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
-import withSaveData from '@moderntribe/tickets/blocks/hoc/with-save-data';
-import {
-	selectors,
-	actions,
-	constants,
-} from '@moderntribe/tickets/data/blocks/ticket';
+import withSaveData from '../../../../../../modules/blocks/hoc/with-save-data';
+import { selectors, actions, constants } from '../../../../../../modules/data/blocks/ticket';
 import { applyFilters } from '@wordpress/hooks';
 import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
 import { __ } from '@wordpress/i18n';
 
 const { TICKET_LABELS } = constants;
 
-const mapStateToProps = (state, ownProps) => {
-	const isRecurring = hasRecurrenceRules(state);
+const mapStateToProps = ( state, ownProps ) => {
+	const isRecurring = hasRecurrenceRules( state );
 	// eslint-disable-next-line no-undef
 	const message = sprintf(
 		/* Translators: %s - the plural, lowercase label for a ticket. */
 		__(
-			'It looks like you have multiple ecommerce plugins active. We recommend running only one at a time. However, if you need to run multiple, please select which one to use to sell %s for this event. ', // eslint-disable-line max-len
+			'It looks like you have multiple ecommerce plugins active. We recommend running only one at a time. However, if you need to run multiple, please select which one to use to sell %s for this event.', // eslint-disable-line max-len
 			'event-tickets'
 		),
 		TICKET_LABELS.ticket.pluralLowercase
@@ -46,8 +42,8 @@ const mapStateToProps = (state, ownProps) => {
 	);
 	const messageElement = (
 		<p>
-			{message}
-			{<em>{note}</em>}
+			{ message }
+			{ <em>{ note }</em> }
 		</p>
 	);
 
@@ -56,7 +52,7 @@ const mapStateToProps = (state, ownProps) => {
 		hasMultipleProviders: selectors.hasMultipleTicketProviders(),
 		message: messageElement,
 		providers: selectors.getTicketProviders(),
-		selectedProvider: selectors.getTicketsProvider(state),
+		selectedProvider: selectors.getTicketsProvider( state ),
 	};
 
 	/**
@@ -69,22 +65,17 @@ const mapStateToProps = (state, ownProps) => {
 	 * @param {Object}  context.ownProps    The props passed to the block.
 	 * @param {boolean} context.isRecurring Whether the current post is a recurring event.
 	 */
-	mappedProps = applyFilters(
-		'tec.tickets.blocks.Tickets.Controls.mappedProps',
-		mappedProps,
-		{ state, ownProps, isRecurring }
-	);
+	mappedProps = applyFilters( 'tec.tickets.blocks.Tickets.Controls.mappedProps', mappedProps, {
+		state,
+		ownProps,
+		isRecurring,
+	} );
 
 	return mappedProps;
 };
 
-const mapDispatchToProps = (dispatch) => ({
-	onProviderChange: (e) =>
-		dispatch(actions.setTicketsProvider(e.target.name)),
-});
+const mapDispatchToProps = ( dispatch ) => ( {
+	onProviderChange: ( e ) => dispatch( actions.setTicketsProvider( e.target.name ) ),
+} );
 
-export default compose(
-	withStore(),
-	connect(mapStateToProps, mapDispatchToProps),
-	withSaveData()
-)(Template);
+export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps ), withSaveData() )( Template );

@@ -1,0 +1,12 @@
+/* -----------------------------------------------------------------------------
+ * This is just a collector for the various style pieces,
+ * this is the file that gets processed by webpack/wp-scripts.
+ * ----------------------------------------------------------------------------- */
+
+@import 'styles/variables.css';
+@import 'styles/modal.css';
+@import 'styles/tabs.css';
+@import 'styles/tab-content.css';
+@import 'styles/buttons.css';
+@import 'styles/form.css';
+@import 'styles/form-validation.css';
