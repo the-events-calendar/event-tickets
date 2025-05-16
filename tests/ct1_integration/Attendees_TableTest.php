@@ -105,4 +105,92 @@ class Attendees_TableTest extends WPTestCase {
 		$this->assertEquals( $quantity, count( $attendee_ids ) );
 		$this->assertEquals( $table->get_pagination_arg( 'total_items' ), count( $attendee_ids ) );
 	}
+
+	/**
+	 * @test
+	 * It should return false when the provider is Tickets Commerce but the module is disabled.
+	 * 
+	 * This test simulates a scenario where a user creates Tickets Commerce tickets,
+	 * then switches to a different provider and disables Tickets Commerce.
+	 * The code should prevent fatal errors by returning false for the provider.
+	 */
+	public function it_should_return_false_when_tickets_commerce_is_disabled() {
+		// First, create an event with a Tickets Commerce ticket.
+		$post = $this->given_a_migrated_single_event();
+		$event_id = $post->ID;
+		$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+		
+		// Verify ticket was created properly.
+		$this->assertNotEmpty( $ticket_id, 'Failed to create TC ticket' );
+		
+		// Handle the ways tec_tickets_commerce_is_enabled() might determine if commerce is enabled:
+		$original_env = getenv( 'TEC_TICKETS_COMMERCE' );
+		putenv( 'TEC_TICKETS_COMMERCE=0' );
+		
+		// Verify Tickets Commerce is disabled.
+		$this->assertFalse( tec_tickets_commerce_is_enabled(), 'Tickets Commerce should be disabled.' );
+		
+		// Reset any cached values.
+		tribe_singleton( 'tickets.data_api', new \Tribe__Tickets__Data_API );
+
+		// This is the key function we're testing - it should return false and not cause a fatal.
+		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+
+		// Clean up.
+		remove_all_filters( 'tec_tickets_commerce_is_enabled' );
+		
+		// Reset environment variable.
+		if ( $original_env !== false ) {
+			putenv( "TEC_TICKETS_COMMERCE=$original_env" );
+		} else {
+			putenv( 'TEC_TICKETS_COMMERCE' );  
+		}
+		
+		// Assert the provider is false when Tickets Commerce is disabled.
+		$this->assertFalse( $provider, 'Provider should be false when Tickets Commerce is disabled.' );
+	}
+
+	/**
+	 * @test
+	 * It should return the Tickets Commerce provider when the module is enabled.
+	 * 
+	 * This test verifies the normal, expected behavior when Tickets Commerce is enabled.
+	 */
+	public function it_should_return_tickets_commerce_provider_when_enabled() {
+		// First, create an event with a Tickets Commerce ticket.
+		$post = $this->given_a_migrated_single_event();
+		$event_id = $post->ID;
+		$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+		
+		// Verify ticket was created properly.
+		$this->assertNotEmpty( $ticket_id, 'Failed to create TC ticket' );
+		
+		// Set Tickets Commerce to enabled.
+		$original_env = getenv( 'TEC_TICKETS_COMMERCE' );
+		putenv( 'TEC_TICKETS_COMMERCE=1' );
+		
+		// Verify Tickets Commerce is enabled.
+		$this->assertTrue( tec_tickets_commerce_is_enabled(), 'Tickets Commerce should be enabled.' );
+		
+		// Reset any cached values.
+		tribe_singleton( 'tickets.data_api', new \Tribe__Tickets__Data_API );
+		
+		// Get the provider.
+		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+		
+		// Clean up.
+		remove_all_filters( 'tec_tickets_commerce_is_enabled' );
+		remove_all_filters( 'tribe_get_option' );
+		
+		// Reset environment variable.
+		if ( $original_env !== false ) {
+			putenv( "TEC_TICKETS_COMMERCE=$original_env" );
+		} else {
+			putenv( 'TEC_TICKETS_COMMERCE' );  // Unset
+		}
+		
+		// Assert the provider is returned correctly when Tickets Commerce is enabled.
+		$this->assertNotFalse( $provider, 'Provider should not be false when Tickets Commerce is enabled.' );
+		$this->assertInstanceOf( \TEC\Tickets\Commerce\Module::class, $provider, 'Provider should be a Tickets Commerce Module instance.' );
+	}
 }
