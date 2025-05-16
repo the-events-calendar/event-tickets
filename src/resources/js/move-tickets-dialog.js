@@ -249,16 +249,31 @@ var tribe_move_tickets = tribe_move_tickets || {};
 				// Clear the existing list
 				$post_choices.html( '' );
 				var total_posts = 0;
+                
+                // Convert the object to a sortable array
+                var posts_array = [];
+                for (var key in response.data.posts) {
+                    posts_array.push({
+                        id: key,
+                        title: response.data.posts[key]
+                    });
+                }
+                
+                // Sort by title alphabetically
+                posts_array.sort(function(a, b) {
+                    return a.title.localeCompare(b.title);
+                });
 
-				for ( var key in response.data.posts ) {
-					var post_id = parseInt( key, 10 );
-					var title = response.data.posts[ key ];
-					total_posts++;
+                // Use the sorted array to build the options
+                for (var i = 0; i < posts_array.length; i++) {
+                    var post_id = parseInt(posts_array[i].id, 10);
+                    var title = posts_array[i].title;
+                    total_posts++;
 
-					$post_choices.append(
-						'<label> <input type="radio" value="' + post_id + '" name="post-choice">' + title + '</label>'
-					);
-				}
+                    $post_choices.append(
+                        '<label> <input type="radio" value="' + post_id + '" name="post-choice">' + title + '</label>'
+                    );
+                }
 
 				if ( ! total_posts ) {
 					$post_choices.append(
