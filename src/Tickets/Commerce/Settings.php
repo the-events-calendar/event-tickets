@@ -265,7 +265,7 @@ class Settings {
 
 		$current_user = get_user_by( 'id', get_current_user_id() );
 
-		// phpcs:disable WordPress.Arrays.MultipleStatementAlignment.LongIndexSpaceBeforeDoubleArrow
+		// phpcs:disable WordPress.Arrays.MultipleStatementAlignment.LongIndexSpaceBeforeDoubleArrow, WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned
 		$settings = [
 			'tickets-commerce-settings-general-group-start'     => [
 				'type' => 'html',
@@ -411,7 +411,7 @@ class Settings {
 				'html' => '</div>',
 			],
 		];
-		// phpcs:enable WordPress.Arrays.MultipleStatementAlignment.LongIndexSpaceBeforeDoubleArrow
+		// phpcs:enable WordPress.Arrays.MultipleStatementAlignment.LongIndexSpaceBeforeDoubleArrow, WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned
 
 		if ( ! tec_tickets_emails_is_enabled() ) {
 			$email_settings = [
