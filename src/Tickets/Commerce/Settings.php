@@ -265,6 +265,7 @@ class Settings {
 
 		$current_user = get_user_by( 'id', get_current_user_id() );
 
+		// phpcs:disable WordPress.Arrays.MultipleStatementAlignment.LongIndexSpaceBeforeDoubleArrow
 		$settings = [
 			'tickets-commerce-settings-general-group-start'     => [
 				'type' => 'html',
@@ -410,6 +411,7 @@ class Settings {
 				'html' => '</div>',
 			],
 		];
+		// phpcs:enable WordPress.Arrays.MultipleStatementAlignment.LongIndexSpaceBeforeDoubleArrow
 
 		if ( ! tec_tickets_emails_is_enabled() ) {
 			$email_settings = [
@@ -535,7 +537,6 @@ class Settings {
 	public function get_featured_gateways_html() {
 		$manager  = tribe( Manager::class );
 		$gateways = $manager->get_gateways();
-
 		$template = $this->get_template();
 
 		return $template->template( 'gateways/container', [ 'gateways' => $gateways, 'manager' => $manager ], false );
