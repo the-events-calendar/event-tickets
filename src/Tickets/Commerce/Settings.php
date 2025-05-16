@@ -411,7 +411,6 @@ class Settings {
 				'html' => '</div>',
 			],
 		];
-		// phpcs:enable WordPress.Arrays.MultipleStatementAlignment.LongIndexSpaceBeforeDoubleArrow, WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned
 
 		if ( ! tec_tickets_emails_is_enabled() ) {
 			$email_settings = [
@@ -479,6 +478,7 @@ class Settings {
 					'html' => '</div>',
 				],
 			];
+			// phpcs:enable WordPress.Arrays.MultipleStatementAlignment.LongIndexSpaceBeforeDoubleArrow, WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned
 
 			$settings = array_merge( $settings, $email_settings );
 		}
