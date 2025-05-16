@@ -588,8 +588,8 @@ class Module extends \Tribe__Tickets__Tickets {
 		}
 
 		// Set provider-invariant ticket properties.
-		$ticket_type  = get_post_meta( $ticket_id, '_type', true ) ?: 'default';
-		$ticket->type = $ticket_type;
+		//$ticket_type  = get_post_meta( $ticket_id, '_type', true ) ?: 'default';
+		//$ticket->type = $ticket_type;
 
 		return $ticket;
 	}

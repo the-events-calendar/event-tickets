@@ -22,11 +22,11 @@
 
 // We don't display anything if there is no RSVP.
 if ( ! $has_rsvps ) {
-	return false;
+	//return false;
 }
 
 // Bail if there are no active RSVP.
-if ( empty( $active_rsvps ) ) {
+if ( empty( $tickets ) ) {
 	return;
 }
 
@@ -36,7 +36,7 @@ if ( empty( $active_rsvps ) ) {
 	id="<?php echo esc_attr( $block_html_id ); ?>"
 	class="tribe-common event-tickets"
 >
-	<?php foreach ( $active_rsvps as $rsvp ) : ?>
+	<?php foreach ( $tickets as $rsvp ) : ?>
 		<div
 			class="tribe-tickets__rsvp-wrapper"
 			data-rsvp-id="<?php echo esc_attr( $rsvp->ID ); ?>"
