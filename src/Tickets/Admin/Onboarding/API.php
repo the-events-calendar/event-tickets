@@ -42,7 +42,7 @@ class API extends Abstract_API {
 	 *
 	 * @since TBD
 	 *
-	 * @var string
+	 * @var  string
 	 */
 	protected const ROOT_NAMESPACE = 'tec/tickets/onboarding';
 

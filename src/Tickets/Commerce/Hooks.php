@@ -10,7 +10,7 @@
  * remove_action( 'some_action', [ tribe( TEC\Tickets\Commerce\Hooks::class ), 'some_method' ] );
  * remove_action( 'some_action', [ tribe( 'tickets.commerce.hooks' ), 'some_method' ] );
  *
- * @since 5.1.6
+ * @since   5.1.6
  *
  * @package TEC\Tickets\Commerce
  */
@@ -37,7 +37,7 @@ use TEC\Tickets\Hooks as Tickets_Hooks;
 /**
  * Class Hooks.
  *
- * @since 5.1.6
+ * @since   5.1.6
  *
  * @package TEC\Tickets\Commerce
  */
@@ -748,7 +748,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Register shortcodes.
 	 *
-	 * @see \Tribe\Shortcode\Manager::get_registered_shortcodes()
+	 * @see   \Tribe\Shortcode\Manager::get_registered_shortcodes()
 	 *
 	 * @since 5.1.6
 	 *
@@ -767,7 +767,7 @@ class Hooks extends Service_Provider {
 	 * If other modules are active, we should de prioritize this one (we want other commerce
 	 * modules to take priority over this one).
 	 *
-	 * @todo Determine if this is still needed.
+	 * @todo  Determine if this is still needed.
 	 *
 	 * @since 5.1.9
 	 *

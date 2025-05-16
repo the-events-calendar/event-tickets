@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * @since 5.1.6
+ * @since   5.1.6
  *
  * @package TEC\Tickets\Commerce
  */
@@ -9,6 +9,7 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce\Admin\Featured_Settings;
+use TEC\Tickets\Commerce\Gateways\Abstract_Gateway;
 use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
@@ -16,7 +17,7 @@ use TEC\Tickets\Commerce\Traits\Has_Mode;
 use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Settings as Tickets_Settings;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
-use Tribe__Template;
+use \Tribe__Template;
 use Tribe__Field_Conditional;
 use Tribe__Tickets__Main;
 use WP_Admin_Bar;
@@ -27,7 +28,7 @@ use WP_Admin_Bar;
  * This class will contain all of the settings handling and admin settings config implementation from
  * Tribe__Tickets__Commerce__PayPal__Main that is gateway-agnostic.
  *
- * @since 5.1.6
+ * @since   5.1.6
  * @package Tribe\Tickets\Commerce\Tickets_Commerce
  */
 class Settings {

@@ -2,7 +2,7 @@
 /**
  * The main service provider for the Tickets Commerce.
  *
- * @since 5.1.6
+ * @since   5.1.6
  * @package TEC\Tickets\Commerce
  */
 
@@ -16,7 +16,7 @@ use Tribe__Tickets__Main as Tickets_Plugin;
 /**
  * Service provider for the Tickets Commerce.
  *
- * @since 5.1.6
+ * @since   5.1.6
  * @package TEC\Tickets\Commerce
  */
 class Provider extends Service_Provider {
@@ -140,7 +140,7 @@ class Provider extends Service_Provider {
 	 * @since 5.1.6
 	 */
 	protected function register_hooks() {
-		$hooks       = new Hooks( $this->container );
+		$hooks = new Hooks( $this->container );
 		$this->hooks = $hooks;
 		$hooks->register();
 

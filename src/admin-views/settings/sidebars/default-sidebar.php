@@ -7,6 +7,7 @@
 
 declare( strict_types=1 );
 
+use TEC\Common\Admin\Entities\Br;
 use TEC\Common\Admin\Entities\Heading;
 use TEC\Common\Admin\Entities\Image;
 use TEC\Common\Admin\Entities\Link;

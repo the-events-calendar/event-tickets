@@ -9,7 +9,7 @@
 
 namespace TEC\Tickets\Commerce;
 
-use TEC\Common\Contracts\Service_Provider;
+use \TEC\Common\Contracts\Service_Provider;
 
 /**
  * Class Assets.
@@ -105,8 +105,8 @@ class Assets extends Service_Provider {
 							'default'    => __( 'Default checkout', 'event-tickets' ),
 							'additional' => __( 'Additional payment options', 'event-tickets' ),
 						];
-					},
-				],
+					}
+				]
 			]
 		);
 	}
