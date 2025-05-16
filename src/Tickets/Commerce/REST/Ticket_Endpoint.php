@@ -2,7 +2,7 @@
 /**
  * Tickets Commerce: Free Gateway Order Endpoint.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\Free
  */
@@ -31,7 +31,7 @@ use WP_REST_Server;
 /**
  * Class Ticket Endpoint.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\Free\REST
  */
@@ -55,10 +55,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		$namespace     = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
 		$documentation = tribe( 'tickets.rest-v1.endpoints.documentation' );
 
-		register_rest_route(
-			$namespace,
-			$this->get_endpoint_path(),
-			[
+		register_rest_route( $namespace, $this->get_endpoint_path(), [
 				[
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => [ $this, 'handle_create_ticket' ],
@@ -69,8 +66,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 					'callback'            => [ $this, 'handle_create_ticket' ],
 					'permission_callback' => [ $this, 'check_permission' ],
 				]
-			]
-		);
+			] );
 
 		$documentation->register_documentation_provider( $this->get_endpoint_path(), $this );
 	}
@@ -117,6 +113,10 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		$args['rsvp_id']                           = Arr::get( $request_params, 'rsvp_id', '' );
 		$args['ticket_id']                         = Arr::get( $request_params, 'rsvp_id', '' );
 		$args['rsvp_limit']                        = Arr::get( $request_params, 'rsvp_limit', '' );
+		$args['event_capacity']                    = Arr::get( $request_params, 'rsvp_limit', '' );
+		$args['tribe-ticket']['event_capacity']    = Arr::get( $request_params, 'rsvp_limit', '' );
+		$args['tribe-ticket']['capacity']          = Arr::get( $request_params, 'rsvp_limit', '' );
+		$args['tribe-ticket']['stock']             = Arr::get( $request_params, 'rsvp_limit', '' );
 		$args['ticket_end_date']                   = Arr::get( $request_params, 'rsvp_end_date', '' );
 		$args['ticket_end_time']                   = Arr::get( $request_params, 'rsvp_end_time', '' );
 		$args['ticket_start_date']                 = Arr::get( $request_params, 'rsvp_start_date', '' );
@@ -125,7 +125,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		$args['ticket_provider']                   = Arr::get( $request_params, 'ticket_provider', '' );
 		$args['ticket_type']                       = Arr::get( $request_params, 'ticket_type', 'tc-rsvp' );
 
-		$module = tribe( Module::class );
+		$module  = tribe( Module::class );
 		$rsvp_id = $module->ticket_add( $post_id, $args );
 		//$ticket_module = tribe( Module::class );
 		//$ticket_module->save_ticket( $post_id, $ticket, $raw_data = [] );
@@ -141,19 +141,13 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 
 		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
 
-		$created = tribe( Order::class )->modify_status(
-			$order->ID,
-			Pending::SLUG,
-		);
+		$created = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
 
 		if ( is_wp_error( $created ) ) {
 			return $created;
 		}
 
-		$updated = tribe( Order::class )->modify_status(
-			$order->ID,
-			Completed::SLUG,
-		);
+		$updated = tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
 
 		if ( is_wp_error( $updated ) ) {
 			return $updated;

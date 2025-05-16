@@ -78,7 +78,7 @@ class Metabox {
 		$context = array_merge( $context, ( new Ticket_Panel_Data( $post->ID, $tc_rsvp->ID ) )->to_array() );
 
 		$context['rsvp_id'] = $tc_rsvp->ID ?? null;
-		$context['rsvp_limit'] = '';
+		$context['rsvp_limit'] = $tc_rsvp->capacity() ?? '';
 
 		return $admin_views->template(
 			[ 'editor', 'rsvp', 'metabox' ],

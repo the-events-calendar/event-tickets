@@ -1191,6 +1191,7 @@ class Tribe__Tickets__Tickets_View {
 			}
 
 			$rendered_content  = $before_content;
+			$rendered_content .= $template->template( 'v2/rsvp', [], $echo );
 			$rendered_content .= $template->template( 'v2/tickets', [], $echo );
 
 			// Only append the attendees section if they did not hide the attendee list.
